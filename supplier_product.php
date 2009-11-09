@@ -3,23 +3,16 @@ include_once('common.php');
 //include_once('stock_functions.php');
 include_once('class.Product.php');
 
-$view_sales=$LU->checkRight(PROD_SALES_VIEW);
-$view_stock=$LU->checkRight(PROD_STK_VIEW);
-$view_orders=$LU->checkRight(ORDER_VIEW);
 
-$create=$LU->checkRight(PROD_CREATE);
-$modify=$LU->checkRight(PROD_MODIFY);
-$modify_stock=$LU->checkRight(PROD_STK_MODIFY);
-$smarty->assign('modify_stock',$modify_stock);
-$view_suppliers=$LU->checkRight(SUP_VIEW);
-$view_cust=$LU->checkRight(CUST_VIEW);
-$smarty->assign('view_suppliers',$view_suppliers);
-$smarty->assign('view_sales',$view_sales);
-$smarty->assign('view_stock',$view_stock);
-$smarty->assign('create',$create);
-$smarty->assign('modify',$modify);
-$smarty->assign('view_orders',$view_orders);
-$smarty->assign('view_customers',$view_cust);
+
+
+//smarty->assign('view_suppliers',$view_suppliers);
+//$smarty->assign('view_sales',$view_sales);
+//$smarty->assign('view_stock',$view_stock);
+//$smarty->assign('create',$create);
+//$smarty->assign('modify',$modify);
+//$smarty->assign('view_orders',$view_orders);
+//$smarty->assign('view_customers',$view_cust);
 
 $css_files=array(
 		 $yui_path.'reset-fonts-grids/reset-fonts-grids.css',

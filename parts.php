@@ -60,7 +60,7 @@ if(!$parts=mysql_fetch_array($result, MYSQL_ASSOC)   ){
  }
   
 
-$smarty->assign('parent','departments.php');
+$smarty->assign('parent','stores.php');
 $smarty->assign('title', _('Parts Index'));
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);

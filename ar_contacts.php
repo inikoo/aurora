@@ -1396,7 +1396,7 @@ if(isset( $_REQUEST['where']))
 		   'date'=>strftime("%a %e %b %Y", strtotime($row['History Date'])),
 		   'time'=>strftime("%H:%M", strtotime($row['History Date'])),
 		   'objeto'=>$row['Direct Object'],
-		   'note'=>$row['History Abstract'],
+		   'note'=>$row['History Abstract'].' <img class="button" d="no" id="ch'.$row['History Key'].'" hid="'.$row['History Key'].'" onClick="showdetails(this)" src="art/icons/closed.png" alt="Show details" />',
 		   'handle'=>$row['Author Name']
 		   );
    }

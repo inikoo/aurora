@@ -16,7 +16,8 @@ function showdetails(o){
     tr=Dom.getAncestorByTagName(o,'tr');
     row_index=tr.rowIndex+1;
     var table=Dom.getAncestorByTagName(o,'table');
-    if(details==0){
+    //alert(o);
+    if(details=='no'){
 	row_class=tr.getAttribute('class');
 
 	var request="ar_contacts.php?tipo=customer_history_details&id="+history_id;
@@ -39,8 +40,8 @@ function showdetails(o){
 
 			c3.setAttribute('colspan',3);
 			c3.innerHTML=r.details;
-			Dom.get('ch'+history_id).innerHTML='<?php echo _('Hide details')?>';
-			Dom.get('ch'+history_id).setAttribute('d',1);
+			Dom.get('ch'+history_id).src='art/icons/showed.png';
+			Dom.get('ch'+history_id).setAttribute('d','yes');
 
 			
 		    }
@@ -48,8 +49,8 @@ function showdetails(o){
 		}
 	    });   
     }else{
-	Dom.get('ch'+history_id).innerHTML='<?php echo _('view details')?>';
-	Dom.get('ch'+history_id).setAttribute('d',0);
+	Dom.get('ch'+history_id).src='art/icons/closed.png';
+	Dom.get('ch'+history_id).setAttribute('d','no');
 	table.deleteRow(row_index);
 
     }

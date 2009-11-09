@@ -38,8 +38,6 @@ $smarty->assign('modify',$modify);
 $smarty->assign('view',$_SESSION['state']['suppliers']['view']);
 
 $smarty->assign('show_details',$_SESSION['state']['suppliers']['details']);
-$smarty->assign('view_sales',$view_sales);
-$smarty->assign('view_stock',$view_stock);
 
 $smarty->assign('box_layout','yui-t4');
 
@@ -67,11 +65,11 @@ $js_files=array(
 		$yui_path.'container/container_core-min.js',
 		$yui_path.'menu/menu-min.js',
 		$yui_path.'calendar/calendar-min.js',
-		'js/common.js.php',
-		'js/table_common.js.php',
+		'common.js.php',
+		'table_common.js.php',
 		//	'js/calendar_common.js.php',
 
-		'js/suppliers.js.php'
+		'suppliers.js.php'
 		);
 
 

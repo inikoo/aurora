@@ -211,7 +211,7 @@ mysql_free_result($result);
 $smarty->assign('prev',$prev);
 $smarty->assign('next',$next);
 $smarty->assign('box_layout','yui-t0');
-$smarty->assign('parent','customers.php');
+$smarty->assign('parent','customers_server.php');
 $smarty->assign('title','Customer: '.$customer->get('customer name'));
 $customer_home=_("Customers List");
 $smarty->assign('id',$myconf['customer_id_prefix'].sprintf("%05d",$customer->id));

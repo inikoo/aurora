@@ -9,6 +9,7 @@ if(!$con){print "Error can not connect with database server\n";exit;}
 $db=@mysql_select_db($dns_db, $con);
 if (!$db){print "Error can not access the database\n";exit;}
 
+
 require_once '../../common_functions.php';
 mysql_query("SET time_zone ='+0:00'");
 mysql_query("SET NAMES 'utf8'");
@@ -23,7 +24,7 @@ require_once '../../conf/conf.php';
 $_SESSION['lang']=1;
 
 
-$stores=array(2,3);
+$stores=array(1,2,3);
 $forecast=true;
 
 
@@ -32,7 +33,7 @@ $tm=new TimeSeries(array('m','store (3) sales'));
   $tm->save_values();
   if($forecast)
     $tm->forecast();
-exit;
+//exit;
 
 
 

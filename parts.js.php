@@ -137,8 +137,8 @@ YAHOO.util.Event.addListener(window, "load", function() {
 									  })
 								     
 								     ,sortedBy : {
-									 key: "<?php echo$_SESSION['state']['parts']['table']['order']?>",
-									 dir: "<?php echo$_SESSION['state']['parts']['table']['order_dir']?>"
+									 key: "<?php echo $_SESSION['state']['parts']['table']['order']?>",
+									 dir: "<?php echo $_SESSION['state']['parts']['table']['order_dir']?>"
 								     }
 							   ,dynamicData : true
 
@@ -150,8 +150,8 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 
 	    
-	    this.table0.view='<?php echo$_SESSION['state']['parts']['view']?>';
-	    this.table0.filter={key:'<?php echo$_SESSION['state']['parts']['table']['f_field']?>',value:'<?php echo$_SESSION['state']['parts']['table']['f_value']?>'};
+	    this.table0.view='<?php echo $_SESSION['state']['parts']['view']?>';
+	    this.table0.filter={key:'<?php echo $_SESSION['state']['parts']['table']['f_field']?>',value:'<?php echo $_SESSION['state']['parts']['table']['f_value']?>'};
 		
 
 

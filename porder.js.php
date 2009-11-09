@@ -1,4 +1,5 @@
-<?phpinclude_once('common.php');
+<?php
+include_once('common.php');
 ?>
      var Dom   = YAHOO.util.Dom;
 var po_id='<?php echo$_SESSION['state']['po']['id']?>';

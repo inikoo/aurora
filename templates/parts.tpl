@@ -8,16 +8,19 @@
   <span class="nav2 onleft"><a class="selected" href="parts.php">{t}Parts{/t}</a></span>
   
   <div class="search_box" >
-     <span class="search_title" style="padding-right:15px">{t}Part Code{/t}:</span> <br><input size="8" class="text search" id="prod_search" value="" name="search"/><img align="absbottom" id="submit_search" class="submitsearch" src="art/icons/zoom.png" alt="Submit search"><br/>
+     <span class="search_title" style="padding-right:15px">{t}Part SKU{/t}:</span> <input size="8" class="text search" id="prod_search" value="" name="search"/><img align="absbottom" id="submit_search" class="submitsearch" src="art/icons/zoom.png" alt="Submit search"><br/>
     <span  class="search_msg"   id="search_msg"    ></span> <span  class="search_sugestion"   id="search_sugestion"    ></span>
-    <br/>
-    <span  class="state_details"  id="show_details">{t}show details{/t}</span>
+   
   </div>
 
-  <div id="top" class="top_bar">
-    <div id="short_menu" class="nodetails" style="{if $show_details}display:none;{/if}width:100%;margin-bottom:0px">
-      <div    {if $parts==0    }style="display:none"{/if}  >
-      <table style="float:left;margin:0 0 0 20px ;padding:0" class="options" >
+
+
+
+
+<div class="data_table" style="clear:both;">
+    <span class="clean_table_title">{t}Parts{/t}</span>
+ <div style="clear:both;margin:0 0px;padding:0 0px ;border-bottom:1px solid #999"></div>
+ <table style="float:left;margin:0 0 0 0px ;padding:0" class="options" >
 	<tr>
 	  <td  {if $view=='general'}class="selected"{/if} id="general" >{t}General{/t}</td>
 	  {if $view_stock}<td {if $view=='stock'}class="selected"{/if}  id="stock"  >{t}Stock{/t}</td>{/if}
@@ -42,17 +45,6 @@
 	  <td {if $avg=='week_eff'}class="selected"{/if} style="display:none"  avg="week_eff"  id="avg_week_eff"  >{t}W EAVG{/t}</td>
 	</tr>
        </table>
-      </div>
-      
-    </div>
-    
-    <div id="details" class="details" style="{if !$show_details}display:none;{/if}">
-      <div id="details_general"  {if $view!='general'}style="display:none"{/if}></div> 
-    </div>
-  </div>
-
-<div class="data_table" style="margin:25px 20px;">
-    <span class="clean_table_title">{t}Parts{/t}</span>
     <div  class="clean_table_caption"  style="clear:both;">
       <div style="float:left;"><div id="table_info0" class="clean_table_info"><span id="rtext0"></span> <span class="rtext_rpp" id="rtext_rpp0"></span> <span class="filter_msg"  id="filter_msg0"></span></div></div>
       <div class="clean_table_filter" id="clean_table_filter0"><div class="clean_table_info"><span id="filter_name0">{$filter_name}</span>: <input style="border-bottom:none" id='f_input0' value="{$filter_value}" size=10/><div id='f_container0'></div></div></div>
