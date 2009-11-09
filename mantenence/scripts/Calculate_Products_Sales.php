@@ -24,7 +24,7 @@ require_once '../../conf/conf.php';
 $stores=array(2,3);
 
 // $sql="select * from `Product History Dimension` PH  left join `Product Dimension` P on (P.`Product ID`=PH.`Product ID`)   where `Product Store Key` in (".join(',',$stores).")  order by `Product Key`  desc ";
-  $sql="select * from `Product History Dimension` PH  order by `Product Key`  desc ";
+  $sql="select * from `Product History Dimension` PH  order by `Product Key`   ";
 
 
 $result=mysql_query($sql);
@@ -33,7 +33,7 @@ while($row=mysql_fetch_array($result)   ){
   $product=new Product('id',$row['Product Key']);
   
   //$product->load('sales');
-  // $product->load('parts');
+   $product->load('parts');
   // print "caca";
   $product->load('sales');
 

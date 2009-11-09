@@ -57,7 +57,12 @@ $js_files=array(
 		);
 
 
+$family_order=$_SESSION['state']['family']['table']['order'];
+$family_period=$_SESSION['state']['family']['period'];
+$family_period_title=array('year'=>_('Last Year'),'quarter'=>_('Last Quarter'),'month'=>_('Last Month'),'week'=>_('Last Week'),'all'=>_('All'));
 
+$smarty->assign('family_period',$family_period);
+$smarty->assign('family_period_title',$family_period_title[$family_period]);
 
 
 // $_SESSION['views']['product_blocks'][5]=0;
@@ -135,7 +140,7 @@ if($product->data['Product First Sold Date']==''){
 
 }
 
-
+$_SESSION['state']['product']['code_timeline']['code']=$product->data['Product Code'];
 
 $product->load('part_location_list');
 $smarty->assign('product',$product);

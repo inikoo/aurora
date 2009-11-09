@@ -1,8 +1,63 @@
 <?php
 include_once('common.php');
+$store_period_title=array('year'=>_('Last Year'),'quarter'=>_('Last Quarter'),'month'=>_('Last Month'),'week'=>_('Last Week'),'all'=>_('All'));
+$title='';
+
+foreach( $store_period_title as $key=>$value){
+$title.=sprintf(',%s:"%s"',$key,$value);
+}
+$title=preg_replace('/^,/','',$title);
 ?>
+ var info_period_title={<?php echo $title ?>};
+  var current_store_period='<?php echo$_SESSION['state']['family']['period']?>';
     var plot='<?php echo $_SESSION['state']['product']['plot']?>';
   var Dom   = YAHOO.util.Dom;
+
+
+function change_info_period(period){
+    var patt=new RegExp("^(year|month|all|week|quarter)$");
+
+    if (patt.test(period)==true && current_store_period!=period){
+	//alert('info_'+current_store_period)
+	//	alert('ar_sessions.php?tipo=update&keys=store-period&value=');
+	Dom.get('info_'+current_store_period).style.display='none';
+	Dom.get('info_'+period).style.display='';
+	current_store_period=period;
+
+	Dom.get('info_title').innerHTML=info_period_title[period];
+	YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=family-period&value='+period);
+
+    }
+
+}
+
+function next_info_period(){
+    if(current_store_period=='all')
+        change_info_period('week');
+    else if(current_store_period=='week')    
+        change_info_period('month');
+    else if(current_store_period=='month')    
+        change_info_period('quarter');
+    else if(current_store_period=='quarter')    
+        change_info_period('year');        
+    else if(current_store_period=='year')    
+        change_info_period('all');
+}
+
+function previous_info_period(){
+    if(current_store_period=='all')
+        change_info_period('year');
+    else if(current_store_period=='week')    
+        change_info_period('all');
+    else if(current_store_period=='month')    
+        change_info_period('week');
+    else if(current_store_period=='quarter')    
+        change_info_period('month');        
+    else if(current_store_period=='year')    
+        change_info_period('quarter');
+}
+
+
 var change_plot_sigma=function(o){
 
     max_sigma=o.value;
@@ -142,7 +197,64 @@ var change_plot_sigma=function(o){
 
 		    <?php } ?>
 
+ var tableid=3;
+		      var tableDivEL="table"+tableid;
+		      
+		      var ColumnDefs = [
+					{key:"pid", label:"<?php echo _('Product ID')?>",width:100, sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+					,{key:"from", label:"<?php echo _('From')?>",width:120, sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+					,{key:"to", label:"<?php echo _('To')?>",width:120, sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 
+					,{key:"description", label:"<?php echo _('Description')?>",width:300, sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+					,{key:"parts", label:"<?php echo _('Parts')?>",width:65, sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+
+					];
+		    
+		      
+		      this.dataSource3 = new YAHOO.util.DataSource("ar_assets.php?tipo=product_code_timeline&tableid="+tableid);
+		      this.dataSource3.responseType = YAHOO.util.DataSource.TYPE_JSON;
+		      this.dataSource3.connXhrMode = "queueRequests";
+		      this.dataSource3.responseSchema = {
+			  resultsList: "resultset.data", 
+			  metaFields: {
+			    rowsPerPage:"resultset.records_perpage",
+			    rtext:"resultset.rtext",
+			    sort_key:"resultset.sort_key",
+			    sort_dir:"resultset.sort_dir",
+			    tableid:"resultset.tableid",
+			    filter_msg:"resultset.filter_msg",
+			    totalRecords: "resultset.total_records"
+			  },
+			  
+			  fields: [
+				  "pid","description","parts","from","to"
+				   ]};
+		      
+		      this.table3 = new YAHOO.widget.DataTable(tableDivEL, ColumnDefs,
+							       this.dataSource3, {
+								   //draggableColumns:true,
+								   renderLoopSize: 50,generateRequest : myRequestBuilder
+								 ,paginator : new YAHOO.widget.Paginator({
+									 rowsPerPage:<?php echo (!$_SESSION['state']['product']['orders']['nr']?25:$_SESSION['state']['product']['code_timeline']['nr'] )?>,containers : 'paginator3', 
+									 pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',
+									 previousPageLinkLabel : "<",
+									 nextPageLinkLabel : ">",
+									 firstPageLinkLabel :"<<",
+									 lastPageLinkLabel :">>",alwaysVisible:false
+									 ,template : "{FirstPageLink}{PreviousPageLink}<strong id='paginator_info3'>{CurrentPageReport}</strong>{NextPageLink}{LastPageLink}"
+								     })
+								   
+								   ,sortedBy : {
+								       key: "<?php echo $_SESSION['state']['product']['code_timeline']['order']?>",
+								       dir: "<?php echo $_SESSION['state']['product']['code_timeline']['order_dir']?>"
+								   }
+								   ,dynamicData : true
+								 
+							       }
+							       );
+		      this.table3.handleDataReturnPayload =myhandleDataReturnPayload;
+		      this.table3.doBeforeSortColumn = mydoBeforeSortColumn;
+		      this.table3.doBeforePaginatorChange = mydoBeforePaginatorChange;
 
 	    
 	    };
@@ -219,8 +331,8 @@ var  change_web_status =function(tipo){
 function init(){
      var Event = YAHOO.util.Event;
      var Dom   = YAHOO.util.Dom;
-
-
+YAHOO.util.Event.addListener("info_next", "click",next_info_period,0);
+YAHOO.util.Event.addListener("info_previous", "click",previous_info_period,0);
 
 
      YAHOO.util.Event.onContentReady("web_status_menu", function () {

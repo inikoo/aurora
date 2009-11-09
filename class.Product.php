@@ -293,8 +293,8 @@ public $new_value=false;
 	$this->get_data('pid',$this->found_id);
 	$this->create_key($data);
 	$sql=sprintf("update  `Product History Dimension` set `Product History Short Description`=%s ,`Product History XHTML Short Description`=%s ,`Product ID`=%d where `Product Key`=%d"
-		     ,prepare_mysql($this->get('short description'))
-		     ,prepare_mysql($this->get('xhtml short description'))
+		     ,prepare_mysql($this->get('historic short description'))
+		     ,prepare_mysql($this->get('historic xhtml short description'))
 		     ,$this->pid
 		     ,$this->id
 		     );
@@ -341,6 +341,19 @@ public $new_value=false;
     if (array_key_exists($key,$this->data))
       return $this->data[$key];
 
+
+    if (preg_match('/^(Total|1).*(Amount|Profit)$/',$key)) {
+      
+      $amount='Product '.$key;
+      
+      return money($this->data[$amount]);
+    }
+    if (preg_match('/^(Total|1).*(Quantity (Ordered|Invoiced|Delivered|)|Invoices|Pending Orders|Customers)$/',$key)) {
+
+      $amount='Product '.$key;
+      
+      return number($this->data[$amount]);
+    }
 
     switch ($key) {
     case('ID'):
@@ -699,28 +712,51 @@ public $new_value=false;
       return number($this->data['Product Net Weight'])."Kg";
       break;
 
+    case('historic short description'):
     case('short description'):
-      global $myconf;
-      $desc='';
-      if ($this->get('Product Units Per Case')>1) {
-	$desc=number($this->get('Product Units Per Case')).'x ';
+     
+      
+      if($key=='historic short description'){
+	$units=$this->get('Product Units Per Case');
+	$name=$this->data_historic['Product Name'];
+	$price=$this->data_historic['Product Price'];
+	$currency=$this->get('Product Currency');
+      }else{
+	$units=$this->get('Product Units Per Case');
+	$name=$this->get('Product Name');
+	$price=$this->get('Product Price');
+	$currency=$this->get('Product Currency');
       }
-      $desc.=' '.$this->get('Product Name');
-      if ($this->get('Product Price')>0) {
-	$desc.=' ('.money($this->get('Product Units Per Case')).')';
+      $desc='';
+      if ($units>1) {
+	$desc=number($units).'x ';
+      }
+      $desc.=' '.$name;
+      if ($price>0) {
+	$desc.=' ('.money($price,$currency).')';
       }
 
       return _trim($desc);
-
+  case('historic xhtml short description'):
     case('xhtml short description'):
-      global $myconf;
+       if($key=='historic xhtml short description'){
+	 $units=$this->get('Product Units Per Case');
+	 $name=$this->data_historic['Product Name'];
+	 $price=$this->data_historic['Product Price'];
+	 $currency=$this->get('Product Currency');
+       }else{
+	 $units=$this->get('Product Units Per Case');
+	 $name=$this->get('Product Name');
+	 $price=$this->get('Product Price');
+	 $currency=$this->get('Product Currency');
+       }
       $desc='';
-      if ($this->get('Product Units Per Case')>1) {
-	$desc=number($this->get('Product Units Per Case')).'x ';
+      if ($units>1) {
+	$desc=number($units).'x ';
       }
-      $desc.=' <span class="prod_sdesc">'.$this->get('Product Name').'</span>';
-      if ($this->get('Product Price')>0) {
-	$desc.=' ('.money($this->get('Product Units Per Case')).')';
+      $desc.=' <span class="prod_sdesc">'.$name.'</span>';
+      if ($price>0) {
+	$desc.=' ('.money($price,$currency).')';
       }
 
       return _trim($desc);
@@ -1077,7 +1113,18 @@ public $new_value=false;
 	$this->key=$this->id;
 
       }
+     
+    
 
+
+      $this->data_historic['Product Name']=$base_data_history['product history name'];
+      $this->data_historic['Product Price']=$base_data_history['product history price'];
+     
+
+	
+
+ 	
+      
     }
 
   }
@@ -1213,17 +1260,18 @@ public $new_value=false;
 		 ,prepare_mysql($this->get('xhtml short description'))
 		 ,$this->pid);
     mysql_query($sql);
-    if ($this->new_key) {
-      $sql=sprintf("update  `Product History Dimension` set `Product History Short Description`=%s ,`Product History XHTML Short Description`=%s ,`Product ID`=%d where `Product Key`=%d"
-		   ,prepare_mysql($this->get('short description'))
-		   ,prepare_mysql($this->get('xhtml short description'))
+   
+       
+    if($this->new_key){
+       $sql=sprintf("update  `Product History Dimension` set `Product History Short Description`=%s ,`Product History XHTML Short Description`=%s ,`Product ID`=%d where `Product Key`=%d"
+		   ,prepare_mysql($this->get('historic short description'))
+		   ,prepare_mysql($this->get('historic xhtml short description'))
 		   ,$this->pid
 		   ,$this->id
 		   );
       mysql_query($sql);
+      
     }
-       
-
 
        
         
@@ -1548,7 +1596,7 @@ public $new_value=false;
       $sql=sprintf("select `Part SKU` from `Product Part List` where `Product ID`=%d and `Product Part Most Recent`='Yes';",$this->data['Product ID']);
       $result=mysql_query($sql);
       while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
-	$parts.=sprintf(', <a href="part.php?sku=%d">%s</a>',$row['Part SKU'],$row['Part SKU']);
+	$parts.=sprintf(', <a href="part.php?sku=%d">SKU%005d</a>',$row['Part SKU'],$row['Part SKU']);
 	$mysql_where.=', '.$row['Part SKU'];
       }
       $parts=preg_replace('/^, /','',$parts);
@@ -1557,7 +1605,8 @@ public $new_value=false;
       if ($mysql_where=='')
 	$mysql_where=0;
       $supplied_by='';
-      $sql=sprintf("select  `Supplier Product Part Key`, `Supplier Product Code` ,  SD.`Supplier Key`,`Supplier Code` from `Supplier Product Part List` SPPL   left join `Supplier Dimension` SD on (SD.`Supplier Key`=SPPL.`Supplier Key`)   where `Part SKU` in (%s) order by `Supplier Key`;",$mysql_where);
+      $sql=sprintf("select  `Supplier Product Part Key`, `Supplier Product Code` ,  SD.`Supplier Key`,`Supplier Code` from `Supplier Product Part List` SPPL   left join `Supplier Dimension` SD on (SD.`Supplier Key`=SPPL.`Supplier Key`)   where `Part SKU` in (%s) order by `Supplier Key`;"
+		   ,$mysql_where);
       $result=mysql_query($sql);
 
       $supplier=array();
@@ -2878,7 +2927,7 @@ public $new_value=false;
     $affected=0;
     $sql=sprintf("update `Product History Dimension`  set `Product History Valid From`=%s where  `Product Key`=%d and `Product History Valid From`>%s   "
 		 ,prepare_mysql($date)
-		 ,prepare_mysql($this->id)
+		 ,$this->id
 		 ,prepare_mysql($date)
 
 		 );
@@ -2886,7 +2935,7 @@ public $new_value=false;
     $affected+=mysql_affected_rows();
     $sql=sprintf("update `Product History Dimension`  set `Product History Valid To`=%s where  `Product Key`=%d and `Product History Valid To`<%s   "
 		 ,prepare_mysql($date)
-		 ,prepare_mysql($this->id)
+		 ,$this->id
 		 ,prepare_mysql($date)
 
 		 );
@@ -2900,7 +2949,7 @@ public $new_value=false;
     $affected=0;
     $sql=sprintf("update `Product Dimension`  set `Product Valid From`=%s where  `Product ID`=%d and `Product Valid From`>%s   "
 		 ,prepare_mysql($date)
-		 ,prepare_mysql($this->pid)
+		 ,$this->pid
 		 ,prepare_mysql($date)
 
 		 );
@@ -2908,7 +2957,7 @@ public $new_value=false;
     $affected+=mysql_affected_rows();
     $sql=sprintf("update `Product Dimension`  set `Product Valid To`=%s where  `Product ID`=%d and `Product Valid To`<%s   "
 		 ,prepare_mysql($date)
-		 ,prepare_mysql($this->pid)
+		 ,$this->pid
 		 ,prepare_mysql($date)
 
 		 );
@@ -2995,7 +3044,16 @@ public $new_value=false;
     }
     $keys=preg_replace('/,$/','',$keys);
 
-    $sql=sprintf("select sum(`Cost Supplier`) as cost_sup,sum(`Invoice Transaction Gross Amount`) as gross ,sum(`Invoice Transaction Total Discount Amount`)as disc ,sum(`Shipped Quantity`) as delivered,sum(`Order Quantity`) as ordered,sum(`Invoice Quantity`) as invoiced  from `Order Transaction Fact` where `Consolidated`='Yes' and `Product Key` in (%s)",$keys);
+    $sql=sprintf("select count(Distinct `Order Key`) as pending_orders   from `Order Transaction Fact`   where  `Current Dispatching State` not in ('Unknown','Dispached','Cancelled')  and  `Product Key` in (%s)",$keys);
+    $result=mysql_query($sql);
+    $pending_orders=0;
+    if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+      $pending_orders=$row['pending_orders'];
+    }
+
+
+
+    $sql=sprintf("select  count(Distinct `Customer Key`)as customers ,count(Distinct `Invoice Key`)as invoices , sum(`Cost Supplier`) as cost_sup,sum(`Invoice Transaction Gross Amount`) as gross ,sum(`Invoice Transaction Total Discount Amount`)as disc ,sum(`Shipped Quantity`) as delivered,sum(`Order Quantity`) as ordered,sum(`Invoice Quantity`) as invoiced  from `Order Transaction Fact` where `Consolidated`='Yes' and `Product Key` in (%s)",$keys);
     // print "$sql\n";
     $result=mysql_query($sql);
     if ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
@@ -3010,6 +3068,9 @@ public $new_value=false;
       $this->data['Product Total Quantity Ordered']=$row['ordered'];
       $this->data['Product Total Quantity Invoiced']=$row['invoiced'];
       $this->data['Product Total Quantity Delivered']=$row['delivered'];
+       $this->data['Product Total Customers']=$row['customers'];
+      $this->data['Product Total Invoices']=$row['invoices'];
+      $this->data['Product Total Pending Orders']=$pending_orders;
     } else {
       $this->data['Product Total Invoiced Gross Amount']=0;
       $this->data['Product Total Invoiced Discount Amount']=0;
@@ -3020,8 +3081,11 @@ public $new_value=false;
       $this->data['Product Total Quantity Ordered']=0;
       $this->data['Product Total Quantity Invoiced']=0;
       $this->data['Product Total Quantity Delivered']=0;
+        $this->data['Product Total Customers']=0;
+      $this->data['Product Total Invoices']=0;
+      $this->data['Product Total Pending Orders']=0;
     }
-    $sql=sprintf("update `Product Dimension` set `Product Total Invoiced Gross Amount`=%.2f,`Product Total Invoiced Discount Amount`=%.2f,`Product Total Invoiced Amount`=%.2f,`Product Total Profit`=%.2f,`Product Total Margin`=%s, `Product Total Quantity Ordered`=%s , `Product Total Quantity Invoiced`=%s,`Product Total Quantity Delivered`=%s  where `Product ID`=%d "
+    $sql=sprintf("update `Product Dimension` set `Product Total Invoiced Gross Amount`=%.2f,`Product Total Invoiced Discount Amount`=%.2f,`Product Total Invoiced Amount`=%.2f,`Product Total Profit`=%.2f,`Product Total Margin`=%s, `Product Total Quantity Ordered`=%s , `Product Total Quantity Invoiced`=%s,`Product Total Quantity Delivered`=%s  ,`Product Total Customers`=%d,`Product Total Invoices`=%d,`Product Total Pending Orders`=%d  where `Product ID`=%d "
 		 ,$this->data['Product Total Invoiced Gross Amount']
 		 ,$this->data['Product Total Invoiced Discount Amount']
 		 ,$this->data['Product Total Invoiced Amount']
@@ -3032,6 +3096,11 @@ public $new_value=false;
 		 ,prepare_mysql($this->data['Product Total Quantity Ordered'])
 		 ,prepare_mysql($this->data['Product Total Quantity Invoiced'])
 		 ,prepare_mysql($this->data['Product Total Quantity Delivered'])
+   ,$this->data['Product Total Customers']
+		   ,$this->data['Product Total Invoices']
+		   ,$this->data['Product Total Pending Orders']
+		 
+
 		 ,$this->pid
 		 );
     if (!mysql_query($sql)) {

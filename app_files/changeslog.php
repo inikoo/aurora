@@ -71,6 +71,28 @@ ALTER TABLE `Store Dimension` ADD `Store 1 Week Acc Customers` MEDIUMINT UNSIGNE
 ALTER TABLE `Store Dimension` ADD `Store 1 Week Acc Invoices` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0' AFTER `Store 1 Week Acc Days Available` ;
 ALTER TABLE `Store Dimension` ADD `Store 1 Week Acc Pending Orders` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0' AFTER `Store 1 Week Acc Customers` ;
 
+ALTER TABLE `Product Dimension` ADD `Product Total Customers` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0' AFTER `Product Total Days Available` ;
+ALTER TABLE `Product Dimension` ADD `Product Total Invoices` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0' AFTER `Product Total Days Available` ;
+ALTER TABLE `Product Dimension` ADD `Product Total Pending Orders` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0' AFTER `Product Total Customers` ;
+
+ALTER TABLE `Product Dimension` ADD `Product 1 Year Acc Customers` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0' AFTER `Product 1 Year Acc Days Available` ;
+ALTER TABLE `Product Dimension` ADD `Product 1 Year Acc Invoices` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0' AFTER `Product 1 Year Acc Days Available` ;
+ALTER TABLE `Product Dimension` ADD `Product 1 Year Acc Pending Orders` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0' AFTER `Product 1 Year Acc Customers` ;
+
+ALTER TABLE `Product Dimension` ADD `Product 1 Quarter Acc Customers` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0' AFTER `Product 1 Quarter Acc Days Available` ;
+ALTER TABLE `Product Dimension` ADD `Product 1 Quarter Acc Invoices` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0' AFTER `Product 1 Quarter Acc Days Available` ;
+ALTER TABLE `Product Dimension` ADD `Product 1 Quarter Acc Pending Orders` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0' AFTER `Product 1 Quarter Acc Customers` ;
+
+ALTER TABLE `Product Dimension` ADD `Product 1 Month Acc Customers` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0' AFTER `Product 1 Month Acc Days Available` ;
+ALTER TABLE `Product Dimension` ADD `Product 1 Month Acc Invoices` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0' AFTER `Product 1 Month Acc Days Available` ;
+ALTER TABLE `Product Dimension` ADD `Product 1 Month Acc Pending Orders` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0' AFTER `Product 1 Month Acc Customers` ;
+
+ALTER TABLE `Product Dimension` ADD `Product 1 Week Acc Customers` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0' AFTER `Product 1 Week Acc Days Available` ;
+ALTER TABLE `Product Dimension` ADD `Product 1 Week Acc Invoices` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0' AFTER `Product 1 Week Acc Days Available` ;
+ALTER TABLE `Product Dimension` ADD `Product 1 Week Acc Pending Orders` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0' AFTER `Product 1 Week Acc Customers` ;
+
+
+
 ALTER TABLE `Order Dimension` ADD `Order Currency` VARCHAR( 3 ) NOT NULL DEFAULT 'GBP',ADD `Order Currency Exchange` FLOAT NOT NULL DEFAULT '1';
 ALTER TABLE `Product Family Dimension` ADD `Product Family Currency Code` VARCHAR( 3 ) NOT NULL DEFAULT 'GBP';
 ALTER TABLE `Product Department Dimension` ADD `Product Department Currency Code` VARCHAR( 3 ) NOT NULL DEFAULT 'GBP';

@@ -5,8 +5,57 @@ include_once('common.php');
 ?>
 var Dom   = YAHOO.util.Dom;
 
- var period='period_<?php echo $_SESSION['state']['stores']['period']?>';
-    var avg='avg_<?php echo $_SESSION['state']['stores']['avg']?>';
+var period='period_<?php echo $_SESSION['state']['stores']['period']?>';
+var avg='avg_<?php echo $_SESSION['state']['stores']['avg']?>';
+
+
+
+
+
+ YAHOO.util.Event.onAvailable("rendertarget", function () {
+
+
+var oMenu = new YAHOO.widget.Menu("menuwithgroups", { autosubmenudisplay: true } ); 
+oMenu.addItems([
+
+    [
+        { text: "Yahoo! Mail", url: "http://mail.yahoo.com" },
+        { text: "Yahoo! Address Book", url: "http://addressbook.yahoo.com" },
+        { text: "Yahoo! Calendar", url: "http://calendar.yahoo.com" },
+        { text: "Yahoo! Notepad", url: "http://notepad.yahoo.com" }
+    ],
+
+    [
+
+        { text: "Yahoo! Local", url: "http://local.yahoo.com" },
+        { text: "Yahoo! Maps", url: "http://maps.yahoo.com" },
+        { text: "Yahoo! Travel", url: "http://travel.yahoo.com" },
+        { text: "Yahoo! Shopping", url: "http://shopping.yahoo.com" } 
+    
+    ],
+
+    [
+
+        { text: "Yahoo! Messenger", url: "http://messenger.yahoo.com" },
+        { text: "Yahoo! 360", url: "http://360.yahoo.com" },
+        { text: "Yahoo! Groups", url: "http://groups.yahoo.com" },
+        { text: "Flickr Photo Sharing", url: "http://www.flickr.com" }
+    
+    ]
+
+]);
+
+oMenu.render("rendertarget"); 
+
+
+
+
+     }
+     );
+
+
+
+
 
     var change_view=function(e){
 	
