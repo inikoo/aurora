@@ -9,7 +9,11 @@ include_once('../../class.SupplierProduct.php');
 include_once('../../class.PartLocation.php');
 
 error_reporting(E_ALL);
-
+error_reporting(E_ALL);
+date_default_timezone_set('Europe/London');
+include_once('../../set_locales.php');
+require('../../locale.php');
+$_SESSION['locale_info'] = localeconv();
 
 
 $con=@mysql_connect($dns_host,$dns_user,$dns_pwd );
@@ -21,7 +25,7 @@ if (!$db){print "Error can not access the database\n";exit;}
   
 
 require_once '../../common_functions.php';
-mysql_query("SET time_zone ='UTC'");
+mysql_query("SET time_zone ='+0:00'");
 mysql_query("SET NAMES 'utf8'");
 require_once '../../conf/conf.php';           
 date_default_timezone_set('Europe/London');
@@ -34,6 +38,7 @@ print "Getting data from the oold database\n";
 
 $sql="select code,product_id,aw_old.in_out.date,aw_old.in_out.tipo,aw_old.in_out.quantity ,aw_old.in_out.notes from aw_old.in_out left join aw_old.product on (product.id=product_id) where product.code is not null and (aw_old.in_out.tipo=2 or aw_old.in_out.tipo=1)   order by product.id,date ";
 $result=mysql_query($sql);
+
 while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
   
   $date=$row['date'];
@@ -41,7 +46,7 @@ while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
   //   print $sql;
  
   $tipo=$row['tipo'];
- print $row['product_id']." $code     $tipo           \n";
+ print $row['product_id']." $code     $tipo           \r";
   $qty=$row['quantity'];
   $notes=$row['notes'];
   $sql=sprintf("select `Product ID` from `Product Dimension` P where   `Product Code`=%s and `Product Valid From`<=%s and `Product Valid To`>=%s order by `Product Valid To` desc ",prepare_mysql($code),prepare_mysql($date),prepare_mysql($date));
@@ -142,29 +147,43 @@ while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
   
   //extend range guess cust value
 
+
   $product=new Product('code_store',$code,1);
   if($product->id){
     $parts=$product->get('Parts SKU');
+
+
 
     if(count($parts)>=1){
       $part=new Part($parts[0]);
       if($part->sku){
 	//print_r($part);
 	$part->update_valid_dates($date);
-	$part_sku-$part->sku;
+	$part_sku=$part->sku;
+	
 	$cost_per_part=$part->get("Unit Cost",$date);
 	$parts_per_product=$part->items_per_product($product->pid);
-	$notes='';
+	
        if($tipo==2){
 
-      $sql=sprintf("insert into `Inventory Transaction Fact` (`Date`,`Part SKU`,`Inventory Transaction Type`,`Inventory Transaction Quantity`,`Inventory Transaction Amount`,`Note`,`Metadata`) values (%s,%s,'Audit',%s,%s,%s,'')",prepare_mysql($date),prepare_mysql($part_sku),prepare_mysql($qty*$parts_per_product),prepare_mysql($cost_per_part*$qty*$parts_per_product),prepare_mysql($notes));
+      $sql=sprintf("insert into `Inventory Transaction Fact` (`Date`,`Part SKU`,`Inventory Transaction Type`,`Inventory Transaction Quantity`,`Inventory Transaction Amount`,`Note`,`Metadata`) values (%s,%s,'Audit',%s,%s,%s,'')",
+      prepare_mysql($date),
+      prepare_mysql($part_sku),
+      prepare_mysql($qty*$parts_per_product),
+      prepare_mysql($cost_per_part*$qty*$parts_per_product),
+      prepare_mysql($notes,false));
       // print "$sql\n";
-       print "B: $sql\n";
+       //print "B: $sql\n";
       if(!mysql_query($sql))
 	exit("$sql can into insert Inventory Transaction Fact ");
     }else{
       
-      $sql=sprintf("insert into `Inventory Transaction Fact` (`Date`,`Part SKU`,`Inventory Transaction Type`,`Inventory Transaction Quantity`,`Inventory Transaction Amount`,`note`,`Metadata`) values (%s,%s,'In',%s,%s,%s,'')",prepare_mysql($date),prepare_mysql($part_sku),prepare_mysql($qty*$parts_per_product),prepare_mysql($cost_per_part*$qty*$parts_per_product),prepare_mysql($notes));
+      $sql=sprintf("insert into `Inventory Transaction Fact` (`Date`,`Part SKU`,`Inventory Transaction Type`,`Inventory Transaction Quantity`,`Inventory Transaction Amount`,`note`,`Metadata`) values (%s,%s,'In',%s,%s,%s,'')",
+      prepare_mysql($date),
+      prepare_mysql($part_sku),
+      prepare_mysql($qty*$parts_per_product),
+      prepare_mysql($cost_per_part*$qty*$parts_per_product),
+      prepare_mysql($notes,false));
       // print "$sql\n";
       if(!mysql_query($sql))
 	exit("$sql can into insert Inventory Transaction Fact ");
@@ -183,6 +202,7 @@ while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
 
 
 }
+mysql_free_result($result);
 
 print "                \rCleaning old data\n";
 

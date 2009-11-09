@@ -1,3 +1,4 @@
+
 {include file='header.tpl'}
 <div style="display:none; position:absolute; left:10px; top:200px; z-index:2" id="cal1Container"></div>
 
@@ -19,9 +20,6 @@
 <div  id="doc3" style="clear:both;" class="yui-g yui-t4" >
   <div id="yui-main"> 
     <div class="yui-b">
-      
-
-      
       <div  class="yui-gd" style="clear:both;padding:0;width:100%">
 	<div class="yui-u first" >
 	  <div id="photo_container" style="margin-top:10px">
@@ -33,10 +31,8 @@
 	    </div>
 	    <div style="width:160px;margin:auto;padding-top:5px"  >
 	      {foreach from=$images item=image  name=foo}
-	      {if $image.principal==0}
-	      <img  style="float:left;border:1px solid#ccc;padding:2px;margin:2px" src="{$image.tb}"  /></td>
-{/if}
-{/foreach}
+	      {if $image.principal==0} <img  style="float:left;border:1px solid#ccc;padding:2px;margin:2px" src="{$image.tb}"  /></td>{/if}
+              {/foreach}
 </div>
 	  
             
@@ -49,20 +45,71 @@
 	
 	<div class="yui-u">
 	  <h2>{$part->get('Part XHTML Description')}</h2>
-	  <h2>{t}Used in{/t}: {$part->get('Part XHTML Currently Used In')}</h2>
+	  <h2>{t}Sold as{/t}: {$part->get('Part XHTML Currently Used In')}</h2>
 	  <div class="yui-b"  style="width:100%;">
 	    <div class="yui-g" style="width:100%;font-size:90%"   >
               <div class="yui-u first">
 		<table    class="show_info_product">
 		  <td class="aright">
 		    
-		     <tr >
-
-		     </tr>
-		     <tr style="border-bottom:1px solid #5f84ae;">
-		       <td colspan=2><span id="edit_web_messages"></span></td>
-		     </tr>
+		     <tr><td>{t}Status{/t}:</td><td>{$part->get('Part Status')}</td></tr>
+		      <tr><td>{t}Keeping from{/t}:</td><td>{$part->get('Valid From')}</td></tr>
+		     <tr><td>{t}Supplied by{/t}:</td><td>{$part->get('Part XHTML Currently Supplied By')}</td></tr>
+		     <tr><td>{t}Cost{/t}:</td><td>{$part->get('Cost')}</td></tr>
 		</table>
+		 <table    class="show_info_product">
+      <tr >
+      <td colspan="2" class="aright" style="padding-right:10px"> <span class="product_info_sales_options" id="info_period"><span id="info_title">{$parts_period_title}</span></span>
+      <img id="info_previous" class="previous_button" style="cursor:pointer" src="art/icons/previous.png" alt="<"  title="previous" /> <img id="info_next" class="next_button" style="cursor:pointer"  src="art/icons/next.png" alt=">" tite="next"/></td>
+    </tr>
+       <tbody id="info_all" style="{if $parts_period!='all'}display:none{/if}">
+	<tr<td>{t}Required{/t}:</td><td class="aright">{$part->get('1 Year Acc Required')}</td></tr>
+      <tr<td>{t}Provided{/t}:</td><td class="aright">{$part->get('1 Year Acc Provided')}</td></tr>
+      <tr><td>{t}Acquired{/t}:</td><td class="aright">{$part->get('1 Year Acc Adquired')}</td></tr>
+      <tr><td>{t}Sold{/t}:</td><td class="aright">{$part->get('1 Year Sold')}</td></tr>
+      <tr><td>{t}Given{/t}:</td><td class="aright">{$part->get('1 Year Given')}</td></tr>
+	  <tr><td>{t}Broken{/t}:</td><td class="aright">{$part->get('1 Year Broken')}</td></tr>
+      <tr><td>{t}Lost{/t}:</td><td class="aright">{$part->get('1 Year Lost')}</td></tr>
+     </tbody>
+      <tbody id="info_year"  style="{if $parts_period!='year'}display:none{/if}">
+      <tr<td>{t}Sales{/t}:</td><td class="aright">{$part->get('1 Year Acc Required')}</td></tr>
+      <tr<td>{t}Profit{/t}:</td><td class="aright">{$part->get('1 Year Acc Provided')}</td></tr>
+      <tr><td>{t}GMROI{/t}:</td><td class="aright">{$part->get('1 Year Acc Adquired')}</td></tr>
+      
+
+      </tbody>
+        <tbody id="info_quarter" style="{if $parts_period!='quarter'}display:none{/if}"  >
+       <tr<td>{t}Required{/t}:</td><td class="aright">{$part->get('1 Year Acc Required')}</td></tr>
+      <tr<td>{t}Provided{/t}:</td><td class="aright">{$part->get('1 Year Acc Provided')}</td></tr>
+      <tr><td>{t}Acquired{/t}:</td><td class="aright">{$part->get('1 Year Acc Adquired')}</td></tr>
+      <tr><td>{t}Sold{/t}:</td><td class="aright">{$part->get('1 Year Sold')}</td></tr>
+      <tr><td>{t}Given{/t}:</td><td class="aright">{$part->get('1 Year Given')}</td></tr>
+	  <tr><td>{t}Broken{/t}:</td><td class="aright">{$part->get('1 Year Broken')}</td></tr>
+      <tr><td>{t}Lost{/t}:</td><td class="aright">{$part->get('1 Year Lost')}</td></tr>
+      </tbody>
+        <tbody id="info_month" style="{if $parts_period!='month'}display:none{/if}"  >
+         <tr<td>{t}Required{/t}:</td><td class="aright">{$part->get('1 Year Acc Required')}</td></tr>
+      <tr<td>{t}Provided{/t}:</td><td class="aright">{$part->get('1 Year Acc Provided')}</td></tr>
+      <tr><td>{t}Acquired{/t}:</td><td class="aright">{$part->get('1 Year Acc Adquired')}</td></tr>
+      <tr><td>{t}Sold{/t}:</td><td class="aright">{$part->get('1 Year Sold')}</td></tr>
+      <tr><td>{t}Given{/t}:</td><td class="aright">{$part->get('1 Year Given')}</td></tr>
+	  <tr><td>{t}Broken{/t}:</td><td class="aright">{$part->get('1 Year Broken')}</td></tr>
+      <tr><td>{t}Lost{/t}:</td><td class="aright">{$part->get('1 Year Lost')}</td></tr>
+	  
+      </tbody>
+       <tbody id="info_week" style="{if $parts_period!='week'}display:none{/if}"  >
+         <tr<td>{t}Required{/t}:</td><td class="aright">{$part->get('1 Year Acc Required')}</td></tr>
+      <tr<td>{t}Provided{/t}:</td><td class="aright">{$part->get('1 Year Acc Provided')}</td></tr>
+      <tr><td>{t}Acquired{/t}:</td><td class="aright">{$part->get('1 Year Acc Adquired')}</td></tr>
+      <tr><td>{t}Sold{/t}:</td><td class="aright">{$part->get('1 Year Sold')}</td></tr>
+      <tr><td>{t}Given{/t}:</td><td class="aright">{$part->get('1 Year Given')}</td></tr>
+	  <tr><td>{t}Broken{/t}:</td><td class="aright">{$part->get('1 Year Broken')}</td></tr>
+      <tr><td>{t}Lost{/t}:</td><td class="aright">{$part->get('1 Year Lost')}</td></tr>
+	  
+      </tbody>
+ </table>
+		
+		
 		<table    class="show_info_product">
 
 		</table>
@@ -90,28 +137,66 @@
 		    {if $nextbuy>0   }<tr><td rowspan="2">{t}Next shipment{/t}:</td><td>{$data.next_buy}</td></tr><tr><td class="noborder">{$data.nextbuy_when}</td>{/if}
 		    </tr>
 		  </table>
-		  
+		   <table    class="show_info_product">
+      <tr >
+      <td colspan="2" class="aright" style="padding-right:10px"> <span class="product_info_sales_options" id="info_period"><span id="info_title">{$parts_period_title}</span></span>
+      <img id="info_previous" class="previous_button" style="cursor:pointer" src="art/icons/previous.png" alt="<"  title="previous" /> <img id="info_next" class="next_button" style="cursor:pointer"  src="art/icons/next.png" alt=">" tite="next"/></td>
+    </tr>
+       <tbody id="info_all" style="{if $parts_period!='all'}display:none{/if}">
+	<tr<td>{t}Required{/t}:</td><td class="aright">{$part->get('1 Year Acc Required')}</td></tr>
+      <tr<td>{t}Provided{/t}:</td><td class="aright">{$part->get('1 Year Acc Provided')}</td></tr>
+      <tr><td>{t}Acquired{/t}:</td><td class="aright">{$part->get('1 Year Acc Adquired')}</td></tr>
+      <tr><td>{t}Sold{/t}:</td><td class="aright">{$part->get('1 Year Sold')}</td></tr>
+      <tr><td>{t}Given{/t}:</td><td class="aright">{$part->get('1 Year Given')}</td></tr>
+	  <tr><td>{t}Broken{/t}:</td><td class="aright">{$part->get('1 Year Broken')}</td></tr>
+      <tr><td>{t}Lost{/t}:</td><td class="aright">{$part->get('1 Year Lost')}</td></tr>
+     </tbody>
+      <tbody id="info_year"  style="{if $parts_period!='year'}display:none{/if}">
+      <tr<td>{t}Required{/t}:</td><td class="aright">{$part->get('1 Year Acc Required')}</td></tr>
+      <tr<td>{t}Provided{/t}:</td><td class="aright">{$part->get('1 Year Acc Provided')}</td></tr>
+      <tr><td>{t}Acquired{/t}:</td><td class="aright">{$part->get('1 Year Acc Adquired')}</td></tr>
+      <tr><td>{t}Sold{/t}:</td><td class="aright">{$part->get('1 Year Sold')}</td></tr>
+      <tr><td>{t}Given{/t}:</td><td class="aright">{$part->get('1 Year Given')}</td></tr>
+	  <tr><td>{t}Broken{/t}:</td><td class="aright">{$part->get('1 Year Broken')}</td></tr>
+      <tr><td>{t}Lost{/t}:</td><td class="aright">{$part->get('1 Year Lost')}</td></tr>
+
+
+      </tbody>
+        <tbody id="info_quarter" style="{if $parts_period!='quarter'}display:none{/if}"  >
+       <tr<td>{t}Required{/t}:</td><td class="aright">{$part->get('1 Year Acc Required')}</td></tr>
+      <tr<td>{t}Provided{/t}:</td><td class="aright">{$part->get('1 Year Acc Provided')}</td></tr>
+      <tr><td>{t}Acquired{/t}:</td><td class="aright">{$part->get('1 Year Acc Adquired')}</td></tr>
+      <tr><td>{t}Sold{/t}:</td><td class="aright">{$part->get('1 Year Sold')}</td></tr>
+      <tr><td>{t}Given{/t}:</td><td class="aright">{$part->get('1 Year Given')}</td></tr>
+	  <tr><td>{t}Broken{/t}:</td><td class="aright">{$part->get('1 Year Broken')}</td></tr>
+      <tr><td>{t}Lost{/t}:</td><td class="aright">{$part->get('1 Year Lost')}</td></tr>
+      </tbody>
+        <tbody id="info_month" style="{if $parts_period!='month'}display:none{/if}"  >
+         <tr<td>{t}Required{/t}:</td><td class="aright">{$part->get('1 Year Acc Required')}</td></tr>
+      <tr<td>{t}Provided{/t}:</td><td class="aright">{$part->get('1 Year Acc Provided')}</td></tr>
+      <tr><td>{t}Acquired{/t}:</td><td class="aright">{$part->get('1 Year Acc Adquired')}</td></tr>
+      <tr><td>{t}Sold{/t}:</td><td class="aright">{$part->get('1 Year Sold')}</td></tr>
+      <tr><td>{t}Given{/t}:</td><td class="aright">{$part->get('1 Year Given')}</td></tr>
+	  <tr><td>{t}Broken{/t}:</td><td class="aright">{$part->get('1 Year Broken')}</td></tr>
+      <tr><td>{t}Lost{/t}:</td><td class="aright">{$part->get('1 Year Lost')}</td></tr>
+	  
+      </tbody>
+       <tbody id="info_week" style="{if $parts_period!='week'}display:none{/if}"  >
+         <tr<td>{t}Required{/t}:</td><td class="aright">{$part->get('1 Year Acc Required')}</td></tr>
+      <tr<td>{t}Provided{/t}:</td><td class="aright">{$part->get('1 Year Acc Provided')}</td></tr>
+      <tr><td>{t}Acquired{/t}:</td><td class="aright">{$part->get('1 Year Acc Adquired')}</td></tr>
+      <tr><td>{t}Sold{/t}:</td><td class="aright">{$part->get('1 Year Sold')}</td></tr>
+      <tr><td>{t}Given{/t}:</td><td class="aright">{$part->get('1 Year Given')}</td></tr>
+	  <tr><td>{t}Broken{/t}:</td><td class="aright">{$part->get('1 Year Broken')}</td></tr>
+      <tr><td>{t}Lost{/t}:</td><td class="aright">{$part->get('1 Year Lost')}</td></tr>
+	  
+      </tbody>
+ </table>
 		  <table  class="show_info_product">
 
 
 		  </table>
-		  <table  class="show_info_product">
-		    
-
-
-		    <tr>
-		      <td>{t}Categories{/t}:</td>
-		      <td>{$categories}</td>
-		    </tr>
-		    <tr>
-		      <td>{t}Material{/t}:</td>
-		      <td>{$materials}</td>
-		    </tr>
-		    <tr>
-		      <td>{t}Ingredients{/t}:</td>
-		      <td>{$ingredients}</td>
-		    </tr>
-		  </table>
+		
 		
               </div>
 	    </div>
@@ -174,63 +259,9 @@
   </div> 
   
   
+ <div style="clear:both"></div>
 
-
-  <div id="block_plot" style="clear:both;{if $display.plot==0}display:none{/if}">
-    <div id="plot_options" class="plot_options" xstyle="float:right;width:130px">
-      <table border=0 class="plot_menu" style="margin-top:30px">
-	<tr class="top">
-	  <td class="left"></td>
-	  <td ><img src="art/icons/calendar_view_week.png" title="{t}Weekly{/t}"/></td>
-	  <td><img src="art/icons/calendar_view_month.png" title="{t}Monthy{/t}"/></td>
-	  <td><img src="art/icons/calendar_view_quarter.png" title="{t}Quarterly{/t}"/></td>
-	  <td><img src="art/icons/calendar_view_year.png" title="{t}Yearly{/t}"/></td>
-	    <tr>
-	      <td class="left"><img src="art/icons/money.png" title="{t}Net Sales{/t}"/></td>
-	      <td><img id="product_week_sales"   class="{if $plot_tipo=='product_week_sales'}selected{else}opaque{/if}" src="art/icons/chart_line.png" title="{t}Sales per week{/t}"/></td>
-	      <td><img id="product_month_sales" class="{if $plot_tipo=='product_month_sales'}selected{else}opaque{/if}" src="art/icons/chart_bar.png" title="{t}Sales per month{/t}"/></td>
-	      <td><img id="product_quarter_sales"   class="{if $plot_tipo=='product_quarter_sales'}selected{else}opaque{/if}" src="art/icons/chart_bar.png" title="{t}Sales per quarter{/t}"/></td>
-	      <td><img id="product_year_sales"   class="{if $plot_tipo=='product_year_sales'}selected{else}opaque{/if}" src="art/icons/chart_line.png" title="{t}Sales per year{/t}"/></td>
-	      
-	      <td></td>
-	    </tr>
-	<tr>
-	  <td class="left"><img src="art/icons/basket.png" title="{t}Outers Sold{/t}"/></td>
-	  <td><img  id="product_week_outers"  class="{if $plot_tipo=='product_week_outers'}selected{else}opaque{/if}"  src="art/icons/chart_line.png" title="{t}Outers sold per month{/t}"/></td>
-	  <td><img  id="product_week_outers"  class="{if $plot_tipo=='product_month_outers'}selected{else}opaque{/if}"  src="art/icons/chart_bar.png" title="{t}Outers sold per month{/t}"/></td>
-	  <td><img  id="product_week_outers"  class="{if $plot_tipo=='product_quarter_outers'}selected{else}opaque{/if}"  src="art/icons/chart_bar.png" title="{t}Outers sold  per quarter{/t}"/></td>
-	  <td><img   id="product_week_outers" class="{if $plot_tipo=='product_year_outers'}selected{else}opaque{/if}"  src="art/icons/chart_line.png" title="{t}Outers sold  per year{/t}"/></td>
-	  <td></td>
-	</tr>
-	    <tr>
-	      <td class="left"><img src="art/icons/package.png" title="{t}Stock{/t}"/></td>
-	      <td><img id="product_stock_history"  class="{if $plot_tipo=='product_stock_history'}selected{else}opaque{/if}"      src="art/icons/chart_line.png" title="{t}Stock History{/t}"/></td>
-	      <td></td>
-	      <td></td>
-	      <td></td>
-	    </tr>
-      </table>
-      <div class="other_options">
-	<table >
-	  <tr class="title"><td>Dates</td><tr> 
-	  <tr><td >Show last</td><tr> 
-	  <tr><td>  <input type="text" size="2" style="vertical-align:bottom;text-align:right" id="plot_months" value="{$plot_data.months}"/> <span style="cursor:pointer" onclick="change_plot_months(this)">months</span></td><tr> 
-	  <tr class="title"><td>Y-Axis Range</td><tr> 
-	  <tr><td>All <input type="radio" onchange="change_plot_sigma(this)" name="y_range" {if !$plot_data.max_sigma}checked="cheked"{/if} value="0"></td><tr> 
-	  <tr><td>&sigma; <input type="radio" name="y_range"  onchange="change_plot_sigma(this)"  {if $plot_data.max_sigma}checked="cheked"{/if} value="1"></td><tr> 
-
-	</table>
-      </div>
-      
-    </div>
-    <div id="xplot0" class="product_plot"  style="height:300px;{if $view_plot!=0};display:none{/if}" >
-	   <iframe id="the_plot" src ="plot.php?tipo={$plot_tipo}" frameborder=0 height="100%" scrolling="no" width="100%"></iframe>
-	 </div>
-	 
-
-
-      </div>
-      
+ 
 
       
 

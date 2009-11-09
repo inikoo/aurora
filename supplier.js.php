@@ -1,4 +1,6 @@
-<?phpinclude_once('common.php');?>
+<?php
+include_once('common.php');
+?>
 
   var Event = YAHOO.util.Event;
      var Dom   = YAHOO.util.Dom;
@@ -25,8 +27,8 @@ YAHOO.util.Event.addListener(window, "load", function() {
 		 var tableid=0;
 		    var tableDivEL="table"+tableid;
 		var ColumnDefs = [
-				  {key:"id", label:"<?php echo _('Id')?>",width:45,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				  ,{key:"code", label:"<?php echo _('Code')?>",  width:70,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				  
+				  {key:"code", label:"<?php echo _('Code')?>",  width:70,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				  ,{key:"name", label:"<?php echo _('Name')?>",<?php echo($_SESSION['state']['supplier']['products']['view']=='product_general'?'':'hidden:true,')?>width:300, sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				  ,{key:"usedin", label:"<?php echo _('Used In')?>", width:250,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 
@@ -38,7 +40,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 				  ];
 
-		this.dataSource0 = new YAHOO.util.DataSource("ar_assets.php?tipo=supplier_products&tableid="+tableid);
+		this.dataSource0 = new YAHOO.util.DataSource("ar_suppliers.php?tipo=supplier_products&tableid="+tableid);
 
    this.dataSource0.responseType = YAHOO.util.DataSource.TYPE_JSON;
 		    this.dataSource0.connXhrMode = "queueRequests";

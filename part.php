@@ -33,6 +33,15 @@ $smarty->assign('modify',$modify);
 $smarty->assign('view_orders',$view_orders);
 $smarty->assign('view_customers',$view_cust);
 
+
+
+$parts_period=$_SESSION['state']['parts']['period'];
+$parts_period_title=array('year'=>_('Last Year'),'quarter'=>_('Last Quarter'),'month'=>_('Last Month'),'week'=>_('Last Week'),'all'=>_('All'));
+
+$smarty->assign('parts_period',$parts_period);
+$smarty->assign('parts_period_title',$parts_period_title[$parts_period]);
+
+
 $css_files=array(
 		 $yui_path.'reset-fonts-grids/reset-fonts-grids.css',
 		 $yui_path.'menu/assets/skins/sam/menu.css',
@@ -52,8 +61,8 @@ $js_files=array(
 		$yui_path.'datatable/datatable-debug.js',
 		$yui_path.'container/container_core-min.js',
 		$yui_path.'menu/menu-min.js',
-		'js/common.js.php',
-		'js/table_common.js.php',
+		'common.js.php',
+		'table_common.js.php',
 		);
 
 
@@ -91,8 +100,8 @@ if(isset($_REQUEST['id']) and is_numeric($_REQUEST['id'])){
 
 
 $smarty->assign('part',$part);
-$smarty->assign('parent','departments.php');
-$smarty->assign('title',$part->get('Part SKU'));
+$smarty->assign('parent','stores.php');
+$smarty->assign('title',$part->get('SKU'));
 $plot_tipo=$_SESSION['state']['part']['plot'];
 $plot_data=$_SESSION['state']['part']['plot_data'];
 $smarty->assign('plot_tipo',$plot_tipo);
@@ -101,7 +110,7 @@ $smarty->assign('key_filter_number',$regex['key_filter_number']);
 $smarty->assign('key_filter_dimension',$regex['key_filter_dimension']);
 
 //$js_files[]= 'js/search.js';
-$js_files[]='js/part.js.php';
+$js_files[]='part.js.php';
 
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);

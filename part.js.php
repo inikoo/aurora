@@ -1,4 +1,5 @@
-<?phpinclude_once('common.php');?>
+<?php
+include_once('common.php');?>
     var plot='<?php echo$_SESSION['state']['product']['plot']?>';
   var Dom   = YAHOO.util.Dom;
 var change_plot_sigma=function(o){
@@ -17,7 +18,6 @@ var change_plot_sigma=function(o){
 YAHOO.util.Event.addListener(window, "load", function() {
 	tables = new function() {
 		
-		<?phpif($LU->checkRight(PROD_STK_VIEW)  ){?>
 		    var tableid=0;
 		    var tableDivEL="table"+tableid;
 		    var ColumnDefs = [
@@ -137,7 +137,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 		    this.table1.doBeforePaginatorChange = mydoBeforePaginatorChange;
 
 
-		    <?php } ?>
+		   
 
 
 	    

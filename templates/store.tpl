@@ -98,12 +98,13 @@
 
       </tbody>
         <tbody id="info_quarter" style="{if $stores_period!='quarter'}display:none{/if}"  >
-        <tr >
-	     <td>{t}Orders{/t}:</td><td class="aright">{$store->get('1 Quarter Acc Invoices')}</td>
-	    </tr>
-        <tr >
+         <tr >
 	  <td>{t}Customers{/t}:</td><td class="aright">{$store->get('1 Quarter Acc Customers')}</td>
 	</tr>
+       <tr >
+	     <td>{t}Invoices{/t}:</td><td class="aright">{$store->get('1 Quarter Acc Invoices')}</td>
+	    </tr>
+      
 	<tr >
 	  <td>{t}Sales{/t}:</td><td class=" aright">{$store->get('1 Quarter Acc Invoiced Amount')}</td>
 	</tr>
@@ -116,11 +117,12 @@
       </tbody>
         <tbody id="info_month" style="{if $stores_period!='month'}display:none{/if}"  >
         <tr >
-	     <td>{t}Orders{/t}:</td><td class="aright">{$store->get('1 Month Acc Invoices')}</td>
-	    </tr>
-        <tr >
 	  <td>{t}Customers{/t}:</td><td class="aright">{$store->get('1 Month Acc Customers')}</td>
 	</tr>
+       <tr >
+	     <td>{t}Invoices{/t}:</td><td class="aright">{$store->get('1 Month Acc Invoices')}</td>
+	    </tr>
+       
 	<tr >
 	  <td>{t}Sales{/t}:</td><td class=" aright">{$store->get('1 Month Acc Invoiced Amount')}</td>
 	</tr>
@@ -133,11 +135,12 @@
       </tbody>
        <tbody id="info_week" style="{if $stores_period!='week'}display:none{/if}"  >
         <tr >
-	     <td>{t}Orders{/t}:</td><td class="aright">{$store->get('1 Week Acc Invoices')}</td>
-	    </tr>
-        <tr >
 	  <td>{t}Customers{/t}:</td><td class="aright">{$store->get('1 Week Acc Customers')}</td>
 	</tr>
+       <tr >
+	     <td>{t}Invoices{/t}:</td><td class="aright">{$store->get('1 Week Acc Invoices')}</td>
+	    </tr>
+       
 	<tr >
 	  <td>{t}Sales{/t}:</td><td class=" aright">{$store->get('1 Week Acc Invoiced Amount')}</td>
 	</tr>
@@ -153,9 +156,7 @@
 
 </div>
 <div id="plot" class="top_bar" style="position:relative;left:-20px;clear:both;padding:0;margin:0;{if !$show_details}display:none;{/if}">
-  
-    
-      
+
       <div display="none" id="plot_info" keys="{$store->id}" ></div>
       <ul id="plot_chooser" class="tabs" style="margin:0 20px;padding:0 20px "  >
 	<li>
@@ -262,10 +263,6 @@
     </div>
     <div  id="table0"   class="data_table_container dtable btable with_total"> </div>
   </div>
-
-
-
-  
 </div> 
 
 <div id="rppmenu" class="yuimenu">
@@ -278,7 +275,6 @@
     </ul>
   </div>
 </div>
-
 <div id="filtermenu" class="yuimenu">
   <div class="bd">
     <ul class="first-of-type">
@@ -289,7 +285,6 @@
     </ul>
   </div>
 </div>
-
 <div id="plot_period_menu" class="yuimenu">
   <div class="bd">
     <ul class="first-of-type">
@@ -300,7 +295,6 @@
     </ul>
   </div>
 </div>
-
 <div id="plot_category_menu" class="yuimenu">
   <div class="bd">
     <ul class="first-of-type">
@@ -311,7 +305,6 @@
     </ul>
   </div>
 </div>
-
 <div id="info_period_menu" class="yuimenu">
   <div class="bd">
     <ul class="first-of-type">

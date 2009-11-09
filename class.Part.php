@@ -138,7 +138,7 @@ class part extends DB_Table{
 	  }elseif($force=='last'){
 
 	    $_from=$pl->last_inventory_audit();
-	     exit("Froim: $_from\n");
+	     //exit("Froim: $_from\n");
 	  }elseif($force=='continue'){
 	    $_from=$pl->last_inventory_date();
 	  }else{
@@ -581,7 +581,237 @@ class part extends DB_Table{
 
 
     case("sales"):
-      // the product wich this one is 
+    $this->update_sales();
+    
+    
+      break;
+    
+ case('forecast'):
+$this->forecast();
+break;
+
+  case('future costs'):
+    case('estimated cost'):
+
+$this->estimated_cost();
+break;
+  }
+  
+}
+
+  
+
+
+
+  function get($key='',$args=false){
+   
+    if(array_key_exists($key,$this->data))
+      return $this->data[$key];
+
+ if (preg_match('/^(Total|1).*(Amount|Storing)$/',$key)) {
+
+            $amount='Order '.$key;
+
+            return money($this->data[$amount]);
+        }	
+
+
+
+     $_key=preg_replace('/^part /','',$key);
+    if(isset($this->data[$_key]))
+      return $this->data[$key];
+
+    
+    switch($key){
+    case('SKU'):
+      return sprintf('SKU%5d',$this->sku);
+      break;
+       case('Unit Cost'):
+      return $this->get_unit_cost($args);
+      break;
+    case('Picking Location Key'):
+      $location_key=1;
+      return $location_key;
+      break;
+    case('Current Associated Locations'):
+
+      if(!$this->current_locations_loaded)
+	$this->load_current_locations();
+      return $this->current_associated_locations;
+   break;
+
+    case('Associated Locations'):
+      $associate=array();
+      $associated=array();
+      
+      if($args!=''){
+	$date=" and `Date`<='".date("Y-m-d H:i:s",strtotime($args))."'";
+      }else
+	$date='';
+      
+
+
+      $sql=sprintf("select `Location Key` from `Inventory Transaction Fact` where `Inventory Transaction Type`='Associate' and `Part SKU`=%d  %s  group by `Location Key`  ",$this->data['Part SKU'],$date);
+      //  print $sql;
+      $res=mysql_query($sql);
+      while($row=mysql_fetch_array($res)){
+	$associate[]=$row['Location Key'];
+      }
+      foreach($associate as $location_key){
+	$sql=sprintf("select `Inventory Transaction Type` from `Inventory Transaction Fact` where (`Inventory Transaction Type`='Associate' or `Inventory Transaction Type`='Disassociate') and `Part SKU`=%d and `Location Key`=%d %s order by `Date` desc limit 1 ",$this->data['Part SKU'],$location_key,$date);
+	//	  print $sql;
+	  $res=mysql_query($sql);
+	  if($row=mysql_fetch_array($res)){
+
+	    if($row['Inventory Transaction Type']=='Associate')
+	      $associated[]=$location_key;
+	  }
+	  
+      }
+      
+      return $associated;
+   break;
+      
+    }
+    
+    return false;
+  }
+  
+
+ 
+
+  function update_valid_dates($date){
+    $affected_from=0;
+    $affected_to=0;
+    $sql=sprintf("update `Part Dimension`  set `Part Valid From`=%s where  `Part SKU`=%d and `Part Valid From`>%s   "
+		 ,prepare_mysql($date)
+		 ,$this->id
+		 ,prepare_mysql($date)
+
+		 );
+    //     print $sql;
+    mysql_query($sql);
+    if($affected_from=mysql_affected_rows())
+      $this->data['Part Valid From']=$date;
+    $sql=sprintf("update `Part Dimension`  set `Part Valid To`=%s where  `Part SKU`=%d and `Part Valid To`<%s   "
+		 ,prepare_mysql($date)
+		 ,$this->id
+		 ,prepare_mysql($date)
+
+		 );
+    mysql_query($sql);
+    if($affected_to=mysql_affected_rows())
+      $this->data['Part Valid To']=$date;
+
+
+    return $affected_to+$affected_from;
+  }
+
+
+
+  function get_unit_cost($date=false){
+    
+
+
+    if($date){
+      // print "from date";
+        $sql=sprintf("select AVG(`Supplier Product Cost`) as cost from `Supplier Product Dimension` SP left join `Supplier Product Part List` B  on (SP.`Supplier Product Code`=B.`Supplier Product Code` and SP.`Supplier Key`=B.`Supplier Key`) where `Part SKU`=%d and ( (`Supplier Product Part Valid From`<=%s and `Supplier Product Part Valid To`>=%s and `Supplier Product Part Most Recent`='No') or (`Supplier Product Part Most Recent`='Yes' and `Supplier Product Part Valid From`<=%s )  )  "
+		     ,$this->sku
+		     ,prepare_mysql($date)
+		     ,prepare_mysql($date)
+		     ,prepare_mysql($date)
+		     );
+	//	print $sql;
+      $res=mysql_query($sql);
+      if($row=mysql_fetch_array($res)){
+	if(is_numeric($row['cost']))
+	  return $row['cost'];
+      }
+    }
+    // print "not found in date";
+    
+    $sql=sprintf("select AVG(`Supplier Product Cost`) as cost from `Supplier Product Dimension` SP left join `Supplier Product Part List` B  on (SP.`Supplier Product Code`=B.`Supplier Product Code` and SP.`Supplier Key`=B.`Supplier Key` ) where `Part SKU`=%d and `Supplier Product Part Most Recent`='Yes' ",$this->sku);
+    // print $sql;
+    $res=mysql_query($sql);
+    if($row=mysql_fetch_array($res)){
+      return $row['cost'];
+    }
+    
+    return 0;
+    
+    
+    
+
+  }
+
+
+  function load_locations($date=''){
+
+    if(preg_match('/\d{4}-\{d}2-\d{2}/',$date))
+      $this->load_locations_historic($date);
+    else
+      $this->load_current_locations();
+  }
+
+  function load_current_historic($date){
+    $this->all_historic_associated_locations=array();
+    $this->associated_location_on_date=array();
+
+      $sql=sprintf("select `Location Key` from `Inventory Transaction Fact` where `Inventory Transaction Type`='Associate' and `Part SKU`=%d  `Date`=%s  group by `Location Key`  ",$this->data['Part SKU'],$date);
+      //  print $sql;
+      $res=mysql_query($sql);
+      while($row=mysql_fetch_array($res)){
+	$this->all_historic_associated_locations[]=$row['Location Key'];
+      }
+      foreach($this->all_historic_associated_locations as $location_key){
+	$sql=sprintf("select `Inventory Transaction Type` from `Inventory Transaction Fact` where (`Inventory Transaction Type`='Associate' or `Inventory Transaction Type`='Disassociate') and `Part SKU`=%d and `Location Key`=%d %s order by `Date` desc limit 1 ",$this->data['Part SKU'],$location_key,$date);
+	//	  print $sql;
+	  $res=mysql_query($sql);
+	  if($row=mysql_fetch_array($res)){
+
+	    if($row['Inventory Transaction Type']=='Associate')
+	      $this->associated_location_on_date[]=$location_key;
+	  }
+	  
+      }
+    
+  }
+
+  function load_current_locations(){
+ $this->current_associated_locations=array();
+      $sql=sprintf("select `Location Key` from `Part Location Dimension` where   `Part SKU`=%d    group by `Location Key`  ",$this->data['Part SKU']);
+      //  print $sql;
+      $res=mysql_query($sql);
+      while($row=mysql_fetch_array($res)){
+	$this->current_associated_locations[]=$row['Location Key'];
+      }
+      $this->current_locations_loaded=true;
+ 
+  }
+
+
+  function items_per_product($product_ID,$date=false){
+    $where_date='';
+    if(!$date)
+      $where_date=' and `Product Part Most Recent`="Yes" ';
+     $sql=sprintf("select AVG(`Parts Per Product`) as parts_per_product from `Product Part List` where `Part SKU`=%d and  `Product ID`=%d %s  "
+		  ,$this->id
+		  ,$product_ID
+		  ,$where_date
+		  );
+     // print "$sql\n";
+    $parts_per_product=0;
+    $result3=mysql_query($sql);
+    if($row3=mysql_fetch_array($result3, MYSQL_ASSOC)   ){
+      if(is_numeric($row3['parts_per_product']))
+	$parts_per_product=$row3['parts_per_product'];
+    }
+    return $parts_per_product;
+
+  }
+
+function update_sales(){
+  // the product wich this one is 
       $sold=0;
       $required=0;
       $provided=0;
@@ -791,8 +1021,10 @@ class part extends DB_Table{
       if(!mysql_query($sql))
 	exit(" $sql\n error con not uopdate product part when loading sales");
 
-      break;
-    case('forecast'):
+}
+
+function forecast(){
+
       // -------------- simple forecast -------------------------
     
       if($this->data['Part Current Stock']=='' or $this->data['Part Current Stock']<0){
@@ -820,10 +1052,14 @@ class part extends DB_Table{
     
       if(!mysql_query($sql))
 	print "$sql\n";
-      break;
-    case('future costs'):
-    case('estimated cost'):
-     $sql=sprintf("select min(`Supplier Product Cost`*`Supplier Product Units Per Part`) as min_cost ,avg(`Supplier Product Cost`*`Supplier Product Units Per Part`) as avg_cost from `Supplier Product Dimension` SPD left join  `Supplier Product Part List` SPPL on (SPD.`Supplier Product ID`=SPPL.`Supplier Product ID`)  left join `Supplier Dimension` SD on (SD.`Supplier Key`=SPPL.`Supplier Key`)   where `Part SKU`=%d and `Supplier Product Part Most Recent`='Yes'",$this->data['Part SKU']);
+   
+    
+
+}
+
+
+function estimated_cost(){
+ $sql=sprintf("select min(`Supplier Product Cost`*`Supplier Product Units Per Part`) as min_cost ,avg(`Supplier Product Cost`*`Supplier Product Units Per Part`) as avg_cost from `Supplier Product Dimension` SPD left join  `Supplier Product Part List` SPPL on (SPD.`Supplier Product ID`=SPPL.`Supplier Product ID`)  left join `Supplier Dimension` SD on (SD.`Supplier Key`=SPPL.`Supplier Key`)   where `Part SKU`=%d and `Supplier Product Part Most Recent`='Yes'",$this->data['Part SKU']);
      //   print "$sql\n";
       $result=mysql_query($sql);
       if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
@@ -848,213 +1084,6 @@ class part extends DB_Table{
       //            print "$sql\n";
       if(!mysql_query($sql))
 	exit(" $sql\n error con not uopdate part futire costss");
-
-      break;
-    }
-
-
-  }
-  
-
-
-  
-
-
-
-  function get($key='',$args=false){
-   
-    if(array_key_exists($key,$this->data))
-      return $this->data[$key];
-
-     $_key=preg_replace('/^part /','',$key);
-    if(isset($this->data[$_key]))
-      return $this->data[$key];
-
-    
-    switch($key){
-    case('Unit Cost'):
-      return $this->get_unit_cost($args);
-      break;
-    case('Picking Location Key'):
-      $location_key=1;
-      return $location_key;
-      break;
-    case('Current Associated Locations'):
-
-      if(!$this->current_locations_loaded)
-	$this->load_current_locations();
-      return $this->current_associated_locations;
-   break;
-
-    case('Associated Locations'):
-      $associate=array();
-      $associated=array();
-      
-      if($args!=''){
-	$date=" and `Date`<='".date("Y-m-d H:i:s",strtotime($args))."'";
-      }else
-	$date='';
-      
-
-
-      $sql=sprintf("select `Location Key` from `Inventory Transaction Fact` where `Inventory Transaction Type`='Associate' and `Part SKU`=%d  %s  group by `Location Key`  ",$this->data['Part SKU'],$date);
-      //  print $sql;
-      $res=mysql_query($sql);
-      while($row=mysql_fetch_array($res)){
-	$associate[]=$row['Location Key'];
-      }
-      foreach($associate as $location_key){
-	$sql=sprintf("select `Inventory Transaction Type` from `Inventory Transaction Fact` where (`Inventory Transaction Type`='Associate' or `Inventory Transaction Type`='Disassociate') and `Part SKU`=%d and `Location Key`=%d %s order by `Date` desc limit 1 ",$this->data['Part SKU'],$location_key,$date);
-	//	  print $sql;
-	  $res=mysql_query($sql);
-	  if($row=mysql_fetch_array($res)){
-
-	    if($row['Inventory Transaction Type']=='Associate')
-	      $associated[]=$location_key;
-	  }
-	  
-      }
-      
-      return $associated;
-   break;
-      
-    }
-    
-    return false;
-  }
-  
-
- 
-
-  function update_valid_dates($date){
-    $affected_from=0;
-    $affected_to=0;
-    $sql=sprintf("update `Part Dimension`  set `Part Valid From`=%s where  `Part SKU`=%d and `Part Valid From`>%s   "
-		 ,prepare_mysql($date)
-		 ,$this->id
-		 ,prepare_mysql($date)
-
-		 );
-    //     print $sql;
-    mysql_query($sql);
-    if($affected_from=mysql_affected_rows())
-      $this->data['Part Valid From']=$date;
-    $sql=sprintf("update `Part Dimension`  set `Part Valid To`=%s where  `Part SKU`=%d and `Part Valid To`<%s   "
-		 ,prepare_mysql($date)
-		 ,$this->id
-		 ,prepare_mysql($date)
-
-		 );
-    mysql_query($sql);
-    if($affected_to=mysql_affected_rows())
-      $this->data['Part Valid To']=$date;
-
-
-    return $affected_to+$affected_from;
-  }
-
-
-
-  function get_unit_cost($date=false){
-    
-
-
-    if($date){
-      // print "from date";
-        $sql=sprintf("select AVG(`Supplier Product Cost`) as cost from `Supplier Product Dimension` SP left join `Supplier Product Part List` B  on (SP.`Supplier Product Code`=B.`Supplier Product Code` and SP.`Supplier Key`=B.`Supplier Key`) where `Part SKU`=%d and ( (`Supplier Product Part Valid From`<=%s and `Supplier Product Part Valid To`>=%s and `Supplier Product Part Most Recent`='No') or (`Supplier Product Part Most Recent`='Yes' and `Supplier Product Part Valid From`<=%s )  )  "
-		     ,$this->sku
-		     ,prepare_mysql($date)
-		     ,prepare_mysql($date)
-		     ,prepare_mysql($date)
-		     );
-	//	print $sql;
-      $res=mysql_query($sql);
-      if($row=mysql_fetch_array($res)){
-	if(is_numeric($row['cost']))
-	  return $row['cost'];
-      }
-    }
-    // print "not found in date";
-    
-    $sql=sprintf("select AVG(`Supplier Product Cost`) as cost from `Supplier Product Dimension` SP left join `Supplier Product Part List` B  on (SP.`Supplier Product Code`=B.`Supplier Product Code` and SP.`Supplier Key`=B.`Supplier Key` ) where `Part SKU`=%d and `Supplier Product Part Most Recent`='Yes' ",$this->sku);
-    // print $sql;
-    $res=mysql_query($sql);
-    if($row=mysql_fetch_array($res)){
-      return $row['cost'];
-    }
-    
-    return 0;
-    
-    
-    
-
-  }
-
-
-  function load_locations($date=''){
-
-    if(preg_match('/\d{4}-\{d}2-\d{2}/',$date))
-      $this->load_locations_historic($date);
-    else
-      $this->load_current_locations();
-  }
-
-  function load_current_historic($date){
-    $this->all_historic_associated_locations=array();
-    $this->associated_location_on_date=array();
-
-      $sql=sprintf("select `Location Key` from `Inventory Transaction Fact` where `Inventory Transaction Type`='Associate' and `Part SKU`=%d  `Date`=%s  group by `Location Key`  ",$this->data['Part SKU'],$date);
-      //  print $sql;
-      $res=mysql_query($sql);
-      while($row=mysql_fetch_array($res)){
-	$this->all_historic_associated_locations[]=$row['Location Key'];
-      }
-      foreach($this->all_historic_associated_locations as $location_key){
-	$sql=sprintf("select `Inventory Transaction Type` from `Inventory Transaction Fact` where (`Inventory Transaction Type`='Associate' or `Inventory Transaction Type`='Disassociate') and `Part SKU`=%d and `Location Key`=%d %s order by `Date` desc limit 1 ",$this->data['Part SKU'],$location_key,$date);
-	//	  print $sql;
-	  $res=mysql_query($sql);
-	  if($row=mysql_fetch_array($res)){
-
-	    if($row['Inventory Transaction Type']=='Associate')
-	      $this->associated_location_on_date[]=$location_key;
-	  }
-	  
-      }
-    
-  }
-
-  function load_current_locations(){
- $this->current_associated_locations=array();
-      $sql=sprintf("select `Location Key` from `Part Location Dimension` where   `Part SKU`=%d    group by `Location Key`  ",$this->data['Part SKU']);
-      //  print $sql;
-      $res=mysql_query($sql);
-      while($row=mysql_fetch_array($res)){
-	$this->current_associated_locations[]=$row['Location Key'];
-      }
-      $this->current_locations_loaded=true;
- 
-  }
-
-
-  function items_per_product($product_ID,$date=false){
-    $where_date='';
-    if(!$date)
-      $where_date=' and `Product Part Most Recent`="Yes" ';
-     $sql=sprintf("select AVG(`Parts Per Product`) as parts_per_product from `Product Part List` where `Part SKU`=%d and  `Product ID`=%d %s  "
-		  ,$this->id
-		  ,$product_ID
-		  ,$where_date
-		  );
-     // print "$sql\n";
-    $parts_per_product=0;
-    $result3=mysql_query($sql);
-    if($row3=mysql_fetch_array($result3, MYSQL_ASSOC)   ){
-      if(is_numeric($row3['parts_per_product']))
-	$parts_per_product=$row3['parts_per_product'];
-    }
-    return $parts_per_product;
-
-  }
-
+}
 
 }

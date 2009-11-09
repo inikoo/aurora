@@ -19,16 +19,10 @@
     <h1>{t}Corporate Overview{/t}</h1>
   </div>
 
-
-
-
 <div class="data_table" style="clear:both">
     <span class="clean_table_title">{t}Stores{/t}</span>
  <div style="clear:both;margin:0 0px;padding:0 20px ;border-bottom:1px solid #999"></div>
  <span   style="float:right;margin-left:80px" class="state_details"  id="change_display_mode" >{$display_mode_label}</span>
-
-
-
 <table style="float:left;margin:0 0 0 0px ;padding:0"  class="options" >
 	<tr><td  {if $view=='general'}class="selected"{/if} id="general" >{t}General{/t}</td>
 	  {if $view_stock}<td {if $view=='stock'}class="selected"{/if}  id="stock"  >{t}Stock{/t}</td>{/if}
@@ -56,7 +50,7 @@
 	</tr>
       </table>
        
-       <div  class="clean_table_caption"  style="clear:both;">
+    <div  class="clean_table_caption"  style="clear:both;">
 	 <div style="float:left;"><div id="table_info0" class="clean_table_info"><span id="rtext0"></span> <span class="rtext_rpp" id="rtext_rpp0"></span> <span class="filter_msg"  id="filter_msg0"></span></div></div>
 	 <div class="clean_table_filter" id="clean_table_filter0">
 	 <div class="clean_table_info" style="width:8.2em;padding-bottom:1px; ">

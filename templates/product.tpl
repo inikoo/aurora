@@ -221,30 +221,20 @@
 	
       </tr>
       <tr><td  colspan="5" style="text-align:center"><a href="edit_product.php?pid={$product->pid}">Edit Product</a></td></tr>
-
-      
     </table>
-    
-    
   </div>
   <div style="clear:both"></div>
-  
   <div   id="block_plot" style="clear:both;{if $display.plot==0}display:none{/if};margin-top:20px"  >
-
-    
-  <div style="clear:both"   id="plot_info" keys="{$product->pid}"   ></div>
-  
-
-
-      <ul id="plot_chooser" class="tabs" style="margin:0 20px;padding:0 20px "  >
-	<li>
-	  <span class="item {if $plot_tipo=='product'}selected{/if}" onClick="change_plot(this)" id="plot_store" tipo="store" category="{$plot_data.store.category}" period="{$plot_data.store.period}" >
-	    <span>{$product->get('Product Code')} {t}Product{/t}</span>
+    <div style="clear:both"   id="plot_info" keys="{$product->pid}"   ></div>
+    <ul id="plot_chooser" class="tabs" style="margin:0 20px;padding:0 20px "  >
+      <li>
+	<span class="item {if $plot_tipo=='product'}selected{/if}" onClick="change_plot(this)" id="plot_store" tipo="store" category="{$plot_data.store.category}" period="{$plot_data.store.period}" >
+	  <span>{$product->get('Product Code')} {t}Product{/t}</span>
 	  </span>
-	</li>
-	<li>
-	  <span class="item {if $plot_tipo=='part'}selected{/if}"  id="plot_top_departments" onClick="change_plot(this)" tipo="top_departments" category="{$plot_data.top_departments.category}" period="{$plot_data.top_departments.period}" name=""  >
-	    <span>{t}Parts{/t}</span>
+      </li>
+      <li>
+	<span class="item {if $plot_tipo=='part'}selected{/if}"  id="plot_top_departments" onClick="change_plot(this)" tipo="top_departments" category="{$plot_data.top_departments.category}" period="{$plot_data.top_departments.period}" name=""  >
+	  <span>{t}Parts{/t}</span>
 	  </span>
 	</li>
 

@@ -53,7 +53,7 @@ class PartLocation extends DB_Table{
       }else{
 
 
-      $tmp=split("_",$arg1);
+      $tmp=preg_split("/\_/",$arg1);
       if(count($tmp)==2){
 	$this->part_sku=$tmp[0];
 	$this->location_key=$tmp[1];
@@ -178,7 +178,7 @@ class PartLocation extends DB_Table{
 function last_inventory_audit(){
   $sql=sprintf("select DATE(`Date`) as Date from `Inventory Transaction Fact` where  `Part Sku`=%d and  `Location Key`=%d and (`Inventory Transaction Type`='Audit' or `Inventory Transaction Type`='Not Found' )  order by `Date` desc",$this->part_sku,$this->location_key);
     $result=mysql_query($sql);
-    print $sql;
+    //print $sql;
     if($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
       return $row['Date'];
     }else
@@ -377,7 +377,7 @@ function redo_daily_inventory($from,$to=''){
     $i = 0;
    
    
-    print sprintf("Calculating invebtory for part %s in location %s from %s to %s\n",$this->part_sku,$this->location_key,$start_date,$end_date);
+    print sprintf("Calculating inventory for part %s in location %s from %s to %s\n",$this->part_sku,$this->location_key,$start_date,$end_date);
 
     $qty_inicio='NULL';
     $value_inicio='NULL';
@@ -476,7 +476,7 @@ function redo_daily_inventory($from,$to=''){
 	    continue;
 	  if(is_numeric($qty_inicio)){
 	    if($qty_inicio==0)
-	      $cost=$this->get_cost($this->part_sku,$check_date);
+	      $cost=$this->part->get_unit_cost($check_date);
 	    else
 	      $cost=$value_inicio/$qty_inicio;
 	  
@@ -493,7 +493,8 @@ function redo_daily_inventory($from,$to=''){
 	    $value_inicio+=$adjust_amount;
 
 	  }else{
-	    $cost=$this->get_cost($this->part_sku,$check_date);
+	  print_r($this);
+	    $cost=$this->part->get_unit_cost($check_date);
 	    $qty_inicio=$qty;
 	    $value_inicio=$qty*$cost;
 
@@ -660,7 +661,7 @@ function redo_daily_inventory($from,$to=''){
 
        PRINT "Negative discrepancey: $neg_discrepancy\n";
       if($neg_discrepancy!=0)
-	$neg_discrepancy_value= $neg_discrepancy*$this->get_cost($this->part_sku);
+	$neg_discrepancy_value= $neg_discrepancy*$this->part->get_unit__cost();
       else
 	$neg_discrepancy_value=0;
       
@@ -697,42 +698,7 @@ function redo_daily_inventory($from,$to=''){
       }
     }
   }
-function get_cost($part_sku,$date=false){
-    
-    if(!$date)
-      $date=date('Y-m-d H:i:s');
-    
 
-    $sql=sprintf(" select AVG(SPD.`Supplier Product Cost` * SPPL.`Supplier Product Units Per Part`) as cost from `Supplier Product Dimension` SPD left join `Supplier Product Part List` SPPL on (SPD.`Supplier Product ID`=SPPL.`Supplier Product ID`)  where `Part SKU`=%s  and `Supplier Product Valid To`>=%s and  `Supplier Product Valid From`<=%s    ",prepare_mysql($part_sku),prepare_mysql($date),prepare_mysql($date));
-    //  print "\n\n\n\n$sql\n";
-    $result=mysql_query($sql);
-    if($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
-      if(is_numeric($row['cost']))
-	return $row['cost'];
-    }
-
-
-    $sql=sprintf(" select AVG(SPD.`Supplier Product Cost` * SPPL.`Supplier Product Units Per Part`) as cost from `Supplier Product Dimension` SPD left join `Supplier Product Part List` SPPL on (SPD.`Supplier Product ID`=SPPL.`Supplier Product ID`)  where `Part SKU`=%s  and `Supplier Product Valid To`<=%s limit 1 ",prepare_mysql($part_sku),prepare_mysql($date));
-
-    $result=mysql_query($sql);
-    if($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
-      if(is_numeric($row['cost']))
-	return $row['cost'];
-    }
-
-    $sql=sprintf(" select AVG(SPD.`Supplier Product Cost` * SPPL.`Supplier Product Units Per Part`) as cost from `Supplier Product Dimension` SPD left join `Supplier Product Part List` SPPL on (SPD.`Supplier Product ID`=SPPL.`Supplier Product ID`)  where `Part SKU`=%s  order by  `Supplier Product Valid To` desc ",prepare_mysql($part_sku),prepare_mysql($date));
-    // print "\n\n\n\n$sql\n";
-    $result=mysql_query($sql);
-    if($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
-      if(is_numeric($row['cost']))
-	return $row['cost'];
-    }
-
-
-    exit("error can no found supp ciost\n");
-
-
-  }
 function get_selling_price($part_sku,$date){
 
 

@@ -5,7 +5,7 @@
   <span class="nav2"><a href="suppliers.php">{t}Delivery Notes{/t}</a></span>
   <span class="nav2"><a href="suppliers.php">{t}History{/t}</a></span>
   <div id="yui-main">
-    <div class="yui-b" style="padding:0 20px">
+    <div class="yui-b" style="padding:0 0px">
       <div class="search_box" >
 	<table border=0 cellpadding="2" style="float:right;margin-top:20px;margin-bottom:10px;" class="view_options">
 	  <tr style="border-bottom:1px solid #ddd">

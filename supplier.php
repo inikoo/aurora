@@ -14,8 +14,6 @@
 include_once('common.php');
 include_once('class.Supplier.php');
 
-if(!$LU->checkRight(SUP_VIEW))
-  exit;
 
 
 $css_files=array(
@@ -23,7 +21,7 @@ $css_files=array(
 		 $yui_path.'menu/assets/skins/sam/menu.css',
 		 $yui_path.'calendar/assets/skins/sam/calendar.css',
 		 $yui_path.'button/assets/skins/sam/button.css',
-		 $yui_path.'autocomplete/assets/skins/sam/autocomplete.css',
+		 //$yui_path.'autocomplete/assets/skins/sam/autocomplete.css',
 
 		 'common.css',
 		 'button.css',
@@ -43,9 +41,9 @@ $js_files=array(
 		$yui_path.'container/container_core-min.js',
 		$yui_path.'menu/menu-min.js',
 		$yui_path.'calendar/calendar-min.js',
-		'js/common.js.php',
-		'js/table_common.js.php',
-		'js/supplier.js.php'
+		'common.js.php',
+		'table_common.js.php',
+		'supplier.js.php'
 		);
 
 

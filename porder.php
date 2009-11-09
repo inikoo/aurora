@@ -129,9 +129,9 @@ $js_files=array(
 		$yui_path.'container/container_core-min.js',
 		$yui_path.'menu/menu-min.js',
 		$yui_path.'calendar/calendar-min.js',
-		'js/common.js.php',
-		'js/table_common.js.php',
-	       	'js/porder.js.php'
+		'common.js.php',
+		'table_common.js.php',
+	       	'porder.js.php'
 		);
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);

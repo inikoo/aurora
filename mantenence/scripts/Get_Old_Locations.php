@@ -11,14 +11,20 @@ include_once('../../class.SupplierProduct.php');
 include_once('../../class.Location.php');
 include_once('../../class.PartLocation.php');
 
+
 error_reporting(E_ALL);
+date_default_timezone_set('Europe/London');
+include_once('../../set_locales.php');
+require('../../locale.php');
+$_SESSION['locale_info'] = localeconv();
+
 $con=@mysql_connect($dns_host,$dns_user,$dns_pwd );
 if(!$con){print "Error can not connect with database server\n";exit;}
 $dns_db='dw';
 $db=@mysql_select_db($dns_db, $con);
 if (!$db){print "Error can not access the database\n";exit;}
 require_once '../../common_functions.php';
-mysql_query("SET time_zone ='UTC'");
+mysql_query("SET time_zone ='+0:00'");
 mysql_query("SET NAMES 'utf8'");
 require_once '../../conf/conf.php';           
 date_default_timezone_set('Europe/London');
@@ -152,16 +158,18 @@ while($row2=mysql_fetch_array($result, MYSQL_ASSOC)   ){
 	 
 
 	    }elseif($associated[0]==$location->id){
-	     print "************\n";
+	     print "************  sku ".$sku."  loc ".$location->id."  :) \n";
 	  $part_location=new PartLocation('find',array('Part SKU'=>$sku,'Location Key'=>$location->id));
 
 	  //print_r($part_location);
 	  $part=new Part($sku);
+	  
 	  $part->load('calculate_stock_history','last');
+	  print "caca\n";
 	  
 
-	      if($stock_old_db>0)
-	     exit;
+	    //  if($stock_old_db>0)
+	     //exit;
   break;
 	    }else{
 	       $part_location=new PartLocation('find',array('Part SKU'=>$sku,'Location Key'=>$location->id),'create');
@@ -209,9 +217,10 @@ while($row2=mysql_fetch_array($result, MYSQL_ASSOC)   ){
      }
      
   }
+  mysql_free_result($result2xxx);
 
  }
-
+ mysql_free_result($result);
 
 
 ?>

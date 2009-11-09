@@ -149,7 +149,7 @@ $smarty->assign('details',$_SESSION['state']['customers']['details']);
 $smarty->assign('advanced_search',$_SESSION['state']['customers']['advanced_search']);
 
 
-$smarty->assign('parent','customers.php');
+$smarty->assign('parent','customers_server.php');
 $smarty->assign('title', _('Customers'));
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
