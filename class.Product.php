@@ -319,8 +319,8 @@ public $new_value=false;
 	$this->create($data);
       }
 
-      $this->update_valid_dates($raw_data['date1']);
-      $this->update_valid_dates($raw_data['date2']);
+      $this->update_valid_dates($raw_data['product valid from']);
+      $this->update_valid_dates($raw_data['product valid to']);
 
     }
 
@@ -1089,6 +1089,8 @@ public $new_value=false;
 
 
   function create_key($data,$set_as_current=true) {
+ 
+  
     $base_data_history=$this->get_base_data_history();
     foreach($data as $key=>$value) {
       $key=strtolower($key);
@@ -1096,6 +1098,9 @@ public $new_value=false;
       if (isset($base_data_history[$key]))
 	$base_data_history[$key]=_trim($value);
     }
+    
+     
+ 
     $keys='(';
     $values='values(';
     foreach($base_data_history as $key=>$value) {
@@ -2925,6 +2930,7 @@ public $new_value=false;
 
   function update_valid_dates_key($date) {
     $affected=0;
+    //print_r($this->data);
     $sql=sprintf("update `Product History Dimension`  set `Product History Valid From`=%s where  `Product Key`=%d and `Product History Valid From`>%s   "
 		 ,prepare_mysql($date)
 		 ,$this->id
@@ -2932,6 +2938,7 @@ public $new_value=false;
 
 		 );
     mysql_query($sql);
+   // print "$sql\n";
     $affected+=mysql_affected_rows();
     $sql=sprintf("update `Product History Dimension`  set `Product History Valid To`=%s where  `Product Key`=%d and `Product History Valid To`<%s   "
 		 ,prepare_mysql($date)
@@ -2940,7 +2947,10 @@ public $new_value=false;
 
 		 );
     mysql_query($sql);
+    //print "$sql\n";
     $affected+=mysql_affected_rows();
+   // if($affected)
+   //     exit;
     return $affected;
   }
 

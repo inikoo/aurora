@@ -864,13 +864,15 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 			  ,'supplier product code'=>$sup_prod_code
 			  ,'supplier product name'=>$description
 			  ,'auto_add'=>true
-			  ,'date1'=>$date_order
-			  ,'date2'=>$date2
+			  ,'product valid from'=>$date_order
+			  ,'product valid to'=>$date2
 			  ,'editor'=>array('Date'=>$date_order)
 			  );
    
       
       $product=new Product('find',$product_data,'create');
+      
+      
       if (!$product->id) {
 	print_r($product_data);
 	print "Error inserting a product\n";
