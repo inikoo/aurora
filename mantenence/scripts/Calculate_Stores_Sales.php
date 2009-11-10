@@ -33,9 +33,7 @@ while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
 
   $store=new Store($row['Store Key']);
   $store->load('sales');
-  //  if($myconf['currency_code']!=$store->data['Store Currency Code']){
-    $store->update_sales_default_currency();
-    //  }
+ 
 
 
   $store->load('products_info');

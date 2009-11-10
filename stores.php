@@ -12,6 +12,8 @@
  Version 2.0
 */
 include_once('common.php');
+include_once('assets_header_functions.php');
+
 //include_once('stock_functions.php');
 if(!$user->can_view('stores'))
   exit();
@@ -53,7 +55,8 @@ $css_files=array(
 		 'common.css',
 		 'container.css',
 		 'button.css',
-		 'table.css'
+		 'table.css',
+		 'css/dropdown.css'
 		 );
 $js_files=array(
 		
@@ -69,6 +72,7 @@ $js_files=array(
 		'js/php.default.min.js',
 		'common.js.php',
 		'table_common.js.php',
+		'js/dropdown.js'
 		);
 
 if($edit){
@@ -99,6 +103,8 @@ $smarty->assign('period',$_SESSION['state']['stores']['period']);
 $smarty->assign('parent','stores.php');
 $smarty->assign('title', _('Stores'));
 
+
+get_header_info(&$user,&$smarty);
 
 
 global $myconf;

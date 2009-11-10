@@ -30,8 +30,8 @@ class PartLocation extends DB_Table{
       $data=$arg1;
       if(isset($data['LocationPart'])){
 	$tmp=split("_",$data['LocationPart']);
-	$this->location_key=$tmp[0];
-	$this->part_sku=$tmp[1];
+	$this->location_key=$tmp[1];
+	$this->part_sku=$tmp[2];
 	
       }else{
 	print "---- $data   --------\n";
@@ -142,11 +142,12 @@ class PartLocation extends DB_Table{
     if($this->data=mysql_fetch_array($result, MYSQL_ASSOC)){
       $this->ok=true;
       $this->current=true;
-      $this->part=New Part($this->part_sku);
-      $this->location=New Location($this->location_key);
-
-
+    
     }
+
+    $this->part=New Part($this->part_sku);
+    $this->location=New Location($this->location_key);
+
   }
 
   function last_inventory_date(){
@@ -377,11 +378,13 @@ function redo_daily_inventory($from,$to=''){
     $i = 0;
    
    
-    print sprintf("Calculating inventory for part %s in location %s from %s to %s\n",$this->part_sku,$this->location_key,$start_date,$end_date);
+    print sprintf("z Calculating inventory for part %s in location %s from %s to %s\n",$this->part_sku,$this->location_key,$start_date,$end_date);
 
     $qty_inicio='NULL';
     $value_inicio='NULL';
    
+
+
     $sql=sprintf("delete from `Inventory Spanshot Fact` where `Part SKU`=%d and `Location Key`=%d and (`Date`>=%s and `Date`<=%s) "
 		 ,$this->part_sku
 		 ,$this->location_key
@@ -493,7 +496,7 @@ function redo_daily_inventory($from,$to=''){
 	    $value_inicio+=$adjust_amount;
 
 	  }else{
-	  print_r($this);
+	    // print_r($this);
 	    $cost=$this->part->get_unit_cost($check_date);
 	    $qty_inicio=$qty;
 	    $value_inicio=$qty*$cost;
@@ -598,7 +601,7 @@ function redo_daily_inventory($from,$to=''){
       }//end if the day
 
 
-
+     
       //
       if($associated){
 
@@ -1060,6 +1063,11 @@ function move_stock($data){
         return;  
   }
 
+  if($data['Quantity To Move']=='all'){
+    $data['Quantity To Move']=$this->data['Quantity On Hand'];
+
+  }
+
 
   if(!is_numeric($this->data['Quantity On Hand'])){
     $this->error=true;
@@ -1102,7 +1110,8 @@ function move_stock($data){
 				      ,'Origin'=>$this->location->data['Location Code']
 				      ));
   
-
+   $this->location->load('parts');
+   $destination->location->load('parts');
 
 }
 

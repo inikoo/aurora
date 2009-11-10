@@ -2,8 +2,30 @@
 <div id="bd" >
 
 
+{if $store_list_length>1}
+<dl class="dropdown">
+  <dt id="one-ddheader" onmouseover="ddMenu('one',1)" onmouseout="ddMenu('one',-1)" onclick="window.location='stores.php'" >{t}Stores{/t}</dt>
+  <dd id="one-ddcontent" onmouseover="cancelHide('one')" onmouseout="ddMenu('one',-1)">
+    <ul>
+      {foreach from=$tree_list item=store }
+      <li><a href="store.php?id={$store.id}" class="underline">{$store.code}</a></li>
+      {/foreach}
+    </ul>
+  </dd>
+</dl>
+{else}
+<dl class="dropdown">
+  <dt id="one-ddheader" onmouseover="ddMenu('one',1)" onmouseout="ddMenu('one',-1)" onclick="window.location='store.php?id={$store_id}'" >{t}Departments{/t}</dt>
+  <dd id="one-ddcontent" onmouseover="cancelHide('one')" onmouseout="ddMenu('one',-1)">
+    <ul>
+      {foreach from=$tree_list item=department }
+      <li><a href="department.php?id={$department.id}" class="underline">{$department.code}</a></li>
+      {/foreach}
+    </ul>
+  </dd>
+</dl>
 
-
+{/if}
 
  <span class="nav2 onleft" id="rendertarget">{t}Stores{/t}</span>
 

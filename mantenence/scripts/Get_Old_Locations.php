@@ -54,7 +54,7 @@ if(!$loc->id)
   mysql_query($sql);
 
 
-$sql=sprintf("select * from aw_old.product  order by code   ");
+$sql=sprintf("select * from aw_old.product   order by code   ");
 $result=mysql_query($sql);
 while($row2=mysql_fetch_array($result, MYSQL_ASSOC)   ){
   $product_code=$row2['code'];
@@ -108,18 +108,31 @@ while($row2=mysql_fetch_array($result, MYSQL_ASSOC)   ){
        if($used_for=='Picking'){
 	 print "PRIMARY Loc Name:".$row['code']." $product_code  LOC: ".$location->id." SKU: $sku \n";
 	
+	 //wrap it again
+	 
+	 print "wraping sku $sku\n";
+	 wrap_it($sku);
+
+	 
+
 	 $part= new Part($sku);
 	 $part->load('calculate_stock_history','last');
-	 // exit;
+
+
+	 print "--------------\n";
 	 $associated=$part->get('Current Associated Locations');
 	 $num_associated=count($associated);
+	 print_r($associated);
 	 print "Num associated $num_associated\n";
 	 
+
+	 // exit;
+
 	 switch($num_associated){
 	 case 1:
 	   if($associated[0]==1){
 	     //   print "+++++++++\n";
-	      $pl=new PartLocation('1_'.$sku);
+	      $pl=new PartLocation($sku.'_1');
 
 
 	      $note=_('Part')." SKU".$part->data['Part SKU']." "._('associated with')." ".$location->data['Location Code'];
@@ -133,12 +146,12 @@ while($row2=mysql_fetch_array($result, MYSQL_ASSOC)   ){
 			  ,'note_associate'=>''
 			  ,'note_in'=>$note
 
-			  ,'move_to'=>$location->id
-			  ,'qty'=>'all'
+			  ,'Destination Key'=>$location->id
+			  ,'Quantity To Move'=>'all'
 			  
 			  );
 	      // EXIT;
-	      $pl->move_to($data);
+	      $pl->move_stock($data);
 	   
 	      
 	      $data=array(
@@ -165,7 +178,7 @@ while($row2=mysql_fetch_array($result, MYSQL_ASSOC)   ){
 	  $part=new Part($sku);
 	  
 	  $part->load('calculate_stock_history','last');
-	  print "caca\n";
+	  // print "caca\n";
 	  
 
 	    //  if($stock_old_db>0)
@@ -222,5 +235,39 @@ while($row2=mysql_fetch_array($result, MYSQL_ASSOC)   ){
  }
  mysql_free_result($result);
 
+
+
+function wrap_it($sku){
+
+
+  $sql=sprintf("select * from `Inventory Transaction Fact` where `Inventory Transaction Type`='Associate' and `Part SKU`=%d  ",$sku);
+//print $sql;
+$res=mysql_query($sql);
+while($row=mysql_fetch_array($res)){
+  $date=$row['Date'];
+  $sku=$row['Part SKU'];
+  $location_key=$row['Location Key'];
+  
+  $sql=sprintf("select * from `Inventory Transaction Fact` where `Inventory Transaction Type`='Disassociate'  and `Date`>%s  and `Part SKU`=%d and `Location Key`=%d "
+	       ,prepare_mysql($date)
+	       ,$sku
+	       ,$location_key
+	       );
+  //print "$sql\n";
+  $res2=mysql_query($sql);
+  $do_it=true;
+  if($row2=mysql_fetch_array($res2)){
+    $do_it=false;
+
+  }
+  if($do_it){
+    //print "adding $sku $location_key\n";
+    $part_location=new PartLocation('find',array('Part SKU'=>$sku,'Location Key'=>$location_key),'create');
+  }
+
+}
+mysql_free_result($res);
+
+}
 
 ?>

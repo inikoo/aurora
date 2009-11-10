@@ -125,13 +125,15 @@ class part extends DB_Table{
       
       
       $sql=sprintf("select `Location Key` from `Inventory Transaction Fact` where `Part SKU`=%d group by `Location Key` ",$part_sku);
-      //print $sql;
+      print "$sql\n";
       $resultxxx=mysql_query($sql);
       while(($rowxxx=mysql_fetch_array($resultxxx, MYSQL_ASSOC))){
 	$skip=false;
 	$location_key=$rowxxx['Location Key'];
-	//print $location_key.'_'.$this->data['Part SKU']."\n";
-	$pl=new PartLocation($location_key.'_'.$this->data['Part SKU']);
+	print 'find PL '.$location_key.'_'.$this->data['Part SKU']."\n";
+	$pl=new PartLocation($this->data['Part SKU'].'_'.$location_key);
+
+
 	if($location_key==1){
 	  if($force=='all'){
 	    $_from=$this->data['Part Valid From'];
@@ -159,7 +161,7 @@ class part extends DB_Table{
 	  $from=strtotime($_from);
 	}
 
-       
+	
 	
 	if($from<$min)
 	  $from=$min;
@@ -172,22 +174,23 @@ class part extends DB_Table{
 
 	
 	if($from>$to){
-	  //   print("error    $part_sku $location_key  ".$rowx['Part Valid From']." ".$rowx['Part Valid To']."   \n   ");
+	     print("error    $part_sku $location_key  ".$rowx['Part Valid From']." ".$rowx['Part Valid To']."   \n   ");
 	  continue;
 	}
 	
 	
 	if($skip){
-	  //print "No trasactions: $part_sku $location_key \n"; 
+	  print "No trasactions: $part_sku $location_key \n"; 
 	  continue;
 	}
 	
 	$from=date("Y-m-d",$from);
 	$to=date("Y-m-d",$to);
-	//	print "** $part_sku $location_key  $from $to\n";
+      	print "** Redo daily inv S: $part_sku L: $location_key  $from $to\n";
 	//  $pl=new PartLocation(array('LocationPart'=>$location_key."_".$part_sku));
-	$pl->redo_daily_inventory($from,$to);
 	
+	$pl->redo_daily_inventory($from,$to);
+       
 	
       }
     
