@@ -15,7 +15,7 @@
 
 */
 include_once('common.php');
-//include_once('stock_functions.php');
+include_once('assets_header_functions.php');
 
 if(!$user->can_view('product departments'))
   exit();
@@ -39,7 +39,7 @@ if(isset($_REQUEST['edit']))
 else
   $edit=$_SESSION['state']['departments']['edit'];
 
-
+get_header_info($user,$smarty);
 
 $css_files=array(
 		 $yui_path.'reset-fonts-grids/reset-fonts-grids.css',
@@ -48,7 +48,8 @@ $css_files=array(
 		 'common.css',
 		 'container.css',
 		 'button.css',
-		 'table.css'
+		 'table.css',
+		  'css/dropdown.css'
 		 );
 $js_files=array(
 		
@@ -63,6 +64,7 @@ $js_files=array(
 		$yui_path.'menu/menu-min.js',
 		'common.js.php',
 		'table_common.js.php',
+		 'js/dropdown.js'
 		);
 
 if($edit){

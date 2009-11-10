@@ -3,18 +3,9 @@
 
 
 <div id="bd" >
-  
-<div id="sub_header">
-{if $next.id>0}<span class="nav2 onright"><a href="product.php?id={$next.id}">{$next.code} &rarr; </a></span>{/if}
-{if $prev.id>0}<span class="nav2 onright" ><a href="product.php?id={$prev.id}">&larr; {$prev.code}</a></span>{/if}
+ {include file='assets_navigation.tpl'}
+ 
 
- <span class="nav2 onleft"><a  href="departments.php">{t}Departments{/t}</a></span>
-  <span class="nav2 onleft"><a href="families.php">{t}Families{/t}</a></span>
-  <span class="nav2 onleft"><a href="products.php">{t}Products{/t}</a></span>
-  <span class="nav2 onleft"><a href="categories.php">{t}Categories{/t}</a></span>
-  <span class="nav2 onleft"><a href="parts.php">{t}Parts{/t}</a></span>
-
-</div>
 
 <div  id="doc3" style="clear:both;" class="yui-g yui-t4" >
   <div id="yui-main"> 

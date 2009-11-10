@@ -1,16 +1,6 @@
 {include file='header.tpl'}
 <div id="bd" >
-
-  {if $next.id>0}<span class="nav2 onright"><a href="department.php?id={$next.id}">{$next.code} &rarr; </a></span>{/if}
-  <span class="nav2 onright" ><a href="store.php?id={$store->id}">&uarr; {t}Up{/t}</a></span>
-  {if $prev.id>0}<span class="nav2 onright" ><a href="department.php?id={$prev.id}">&larr; {$prev.code}</a></span>{/if}
- 
-  
-  <span class="nav2 onleft"><a class="selected" href="store.php">{$store->get('Store Code')}</a></span>
-  <span class="nav2 onleft"><a href="families.php?store_key={$store->id}">{t}Families{/t}</a></span>
-  <span class="nav2 onleft"><a href="products.php?store_key={$store->id}">{t}Products{/t}</a></span>
-  <span class="nav2 onleft"><a href="categories.php?store_key={$store->id}">{t}Categories{/t}</a></span>
-
+ {include file='assets_navigation.tpl'}
   <div class="search_box">
     <span class="search_title">{t}Product Code{/t}:</span> <input size="8" class="text search" id="product_search" value="" name="search"/><img align="absbottom" id="product_submit_search" class="submitsearch" src="art/icons/zoom.png" alt="Submit search"><br/>
      <span  class="search_msg"   id="product_search_msg"    ></span> <span  class="search_sugestion"   id="product_search_sugestion"    ></span>
@@ -21,7 +11,7 @@
   </div>
   
   <div id="branch" style="clear:left;">
-     <span class="branch" ><a  href="store.php?id={$store->id}">{$store->get('Store Code')}</a> &rarr; {$department->get('Product Department Name')}</span>
+     <span class="branch" ><a  href="store.php?id={$store->id}">{$store->get('Store Name')}</a> &rarr; {$department->get('Product Department Name')}</span>
   </div>
 
 <div id="no_details_title" style="clear:left;{if $show_details}display:none;{/if}">

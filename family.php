@@ -15,6 +15,7 @@ include_once('common.php');
 include_once('class.Family.php');
 include_once('class.Store.php');
 include_once('class.Department.php');
+include_once('assets_header_functions.php');
 
 if(!isset($_REQUEST['id']) or !is_numeric($_REQUEST['id']))
   $family_id=$_SESSION['state']['family']['id'];
@@ -46,13 +47,14 @@ else
   $edit=$_SESSION['state']['family']['editing'];
 if(!$modify)
   $edit=false;
+$smarty->assign('view_parts',$user->can_view('parts'));
 
 $smarty->assign('view_sales',$view_sales);
 $smarty->assign('view_stock',$view_stock);
 $smarty->assign('create',$create);
 $smarty->assign('modify',$modify);
 
-
+get_header_info($user,$smarty);
 $css_files=array(
 		 $yui_path.'reset-fonts-grids/reset-fonts-grids.css',
 		 $yui_path.'menu/assets/skins/sam/menu.css',
@@ -61,7 +63,8 @@ $css_files=array(
 		 'common.css',
 		 'container.css',
 		 'button.css',
-		 'table.css'
+		 'table.css',
+		  'css/dropdown.css'
 		 );
 $js_files=array(
 		$yui_path.'utilities/utilities.js',
@@ -75,6 +78,7 @@ $js_files=array(
 		'js/php.default.min.js',
 		'common.js.php',
 		'table_common.js.php',
+		 'js/dropdown.js'
 		);
 
 if($edit){
