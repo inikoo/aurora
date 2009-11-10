@@ -344,7 +344,7 @@ class Store extends DB_Table{
     case('sales'):
      
       $this->update_store_sales();
-     
+      $this->update_sales_default_currency();
    
      
       break;

@@ -782,7 +782,7 @@ if(isset( $_REQUEST['tableid']))
 
     $adata[]=array(
 
-		   'sku'=>sprintf('<a href="part_manage_stock.php?id=%d">%s</a>',$data['Part SKU'],$data['Part SKU'])
+		   'sku'=>sprintf('<a href="part.php?sku=%d">%05d</a>',$data['Part SKU'],$data['Part SKU'])
 		   ,'description'=>$data['Part XHTML Description']
 		   ,'current_qty'=>sprintf('<span  used="0"  value="%s" id="s%s"  onclick="fill_value(%s,%d,%d)">%s</span>',$data['Quantity On Hand'],$loc_sku,$data['Quantity On Hand'],$data['Location Key'],$data['Part SKU'],number($data['Quantity On Hand']))
 		   ,'changed_qty'=>sprintf('<span   used="0" id="cs%s"  onclick="change_reset(\'%s\',%d)"   ">0</span>',$loc_sku,$loc_sku,$data['Part SKU'])
@@ -965,7 +965,7 @@ if(isset( $_REQUEST['tableid']))
    
     $adata[]=array(
 		   
-		   'sku'=>sprintf('<a href="part_manage_stock.php?id=%d">SKU%05d</a>',$data['Part SKU'],$data['Part SKU'])
+		   'sku'=>sprintf('<a href="part.php?id=%d&edit_stock=1">SKU%05d</a>',$data['Part SKU'],$data['Part SKU'])
 		   ,'part_sku'=>$data['Part SKU']
 		   ,'location_key'=>$data['Location Key']
 

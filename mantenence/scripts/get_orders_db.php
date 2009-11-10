@@ -1955,7 +1955,7 @@ $data['Order Currency Exchange']=1;
     }
 
 
-     if ($contador % 250 == 0){
+     if ($contador % 500 == 0){
        update_data($to_update);
        $to_update=array(
 'products'=>array(),

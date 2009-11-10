@@ -31,7 +31,15 @@ require_once '../../conf/conf.php';
 date_default_timezone_set('Europe/London');
 $not_found=00;
 
+
+
+
+
 $sql="delete from  `Inventory Transaction Fact` where `Inventory Transaction Type` in ('Audit','In','Associate','Disassociate','Move In','Move Out','Adjust','Not Found','Lost','Broken') ";
+mysql_query($sql);
+$sql="delete  from `Part Location Dimension`  ";
+mysql_query($sql);
+$sql="delete  from `Location Dimension` where `Location Key`>1 ";
 mysql_query($sql);
 
 print "Getting data from the oold database\n";
@@ -68,8 +76,8 @@ while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
       $parts_per_product=$row3['Parts Per Product'];
     }
     
-    
-    $cost_per_part=get_cost($part_sku,$date);
+    $part=new Part($part_sku);
+    $cost_per_part=$part->get_unit_cost($date);
     //$sp_id=get_sp_id($part_sku,$date);
     //$sp=new SupplierProduct('')
     //print "$code $date $part_sku\n "; 
@@ -77,7 +85,7 @@ while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
     if($tipo==2){
 
       $sql=sprintf("insert into `Inventory Transaction Fact` (`Date`,`Part SKU`,`Inventory Transaction Type`,`Inventory Transaction Quantity`,`Inventory Transaction Amount`,`Note`,`Metadata`,`History Type`) values (%s,%s,'Audit',%s,%s,%s,'','Normal')",prepare_mysql($date),prepare_mysql($part_sku),prepare_mysql($qty*$parts_per_product),prepare_mysql($cost_per_part*$qty*$parts_per_product),prepare_mysql($notes));
-       print "A: $sql\n";
+      //       print "A: $sql\n";
       if(!mysql_query($sql))
 	exit("$sql can into insert Inventory Transaction Fact ");
     }else{
@@ -117,9 +125,10 @@ while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
       $part_sku=$row3['Part SKU'];
       $parts_per_product=$row3['Parts Per Product'];
     }
+    $part=new Part($part_sku);
+    $cost_per_part=$part->get_unit_cost($date);
     
-    
-    $cost_per_part=get_cost($part_sku,$date);
+    // $cost_per_part=get_cost($part_sku,$date);
     //$sp_id=get_sp_id($part_sku,$date);
    
 
@@ -127,7 +136,7 @@ while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
 
       $sql=sprintf("insert into `Inventory Transaction Fact` (`Date`,`Part SKU`,`Inventory Transaction Type`,`Inventory Transaction Quantity`,`Inventory Transaction Amount`,`Note`,`Metadata`) values (%s,%s,'Audit',%s,%s,%s,'')",prepare_mysql($date),prepare_mysql($part_sku),prepare_mysql($qty*$parts_per_product),prepare_mysql($cost_per_part*$qty*$parts_per_product),prepare_mysql($notes));
       // print "$sql\n";
-       print "B: $sql\n";
+      //print "B: $sql\n";
       if(!mysql_query($sql))
 	exit("$sql can into insert Inventory Transaction Fact ");
     }else{
@@ -208,6 +217,9 @@ print "                \rCleaning old data\n";
 
 $sql="delete  from `Inventory Transaction Fact`  where `Inventory Transaction Type`='Not Found' ";
 mysql_query($sql);
+$sql="delete  from `Part Location Dimension`  ";
+mysql_query($sql);
+
 //$sql="delete  from `Part Location Dimension`  ";
 //mysql_query($sql);
 
@@ -284,6 +296,37 @@ while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
   }
 }
 
+
+print "creating part-locations\n";
+
+$sql=sprintf("select * from `Inventory Transaction Fact` where `Inventory Transaction Type`='Associate'   ");
+//print $sql;
+$res=mysql_query($sql);
+while($row=mysql_fetch_array($res)){
+  $date=$row['Date'];
+  $sku=$row['Part SKU'];
+  $location_key=$row['Location Key'];
+  
+  $sql=sprintf("select * from `Inventory Transaction Fact` where `Inventory Transaction Type`='Disassociate'  and `Date`>%s  and `Part SKU`=%d and `Location Key`=%d "
+	       ,prepare_mysql($date)
+	       ,$sku
+	       ,$location_key
+	       );
+  //print "$sql\n";
+  $res2=mysql_query($sql);
+  $do_it=true;
+  if($row2=mysql_fetch_array($res2)){
+    $do_it=false;
+
+  }
+  if($do_it){
+    //print "adding $sku $location_key\n";
+    $part_location=new PartLocation('find',array('Part SKU'=>$sku,'Location Key'=>$location_key),'create');
+  }
+
+}
+mysql_free_result($res);
+
 /*   print "creation locations"; */
   
 /*   $sql="select * from `Inventory Transaction Fact` where `Inventory Transaction Type` in ('Associate') order by Date "; */
@@ -321,41 +364,6 @@ function get_sp_id($part_sku,$date){
 
 
 
-
-function get_cost($part_sku,$date){
-
-
-   $sql=sprintf(" select AVG(SPD.`Supplier Product Cost` * SPPL.`Supplier Product Units Per Part`) as cost from `Supplier Product Dimension` SPD left join `Supplier Product Part List` SPPL on (SPD.`Supplier Product Code`=SPPL.`Supplier Product Code` and SPD.`Supplier Key`=SPPL.`Supplier Key`)  where `Part SKU`=%s  and `Supplier Product Valid To`>=%s and  `Supplier Product Valid From`<=%s    ",prepare_mysql($part_sku),prepare_mysql($date),prepare_mysql($date));
-   // print "\n\n\n\n$sql\n";
-   $result=mysql_query($sql);
-  if($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
-    if(is_numeric($row['cost']))
-    return $row['cost'];
-  }
-
-
-  $sql=sprintf(" select AVG(SPD.`Supplier Product Cost` * SPPL.`Supplier Product Units Per Part`) as cost from `Supplier Product Dimension` SPD left join `Supplier Product Part List` SPPL on (SPD.`Supplier Product Code`=SPPL.`Supplier Product Code` and SPD.`Supplier Key`=SPPL.`Supplier Key`)  where `Part SKU`=%s  and `Supplier Product Valid To`<=%s limit 1 ",prepare_mysql($part_sku),prepare_mysql($date));
-
- $result=mysql_query($sql);
-  if($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
-    if(is_numeric($row['cost']))
-      return $row['cost'];
-  }
-
- $sql=sprintf(" select AVG(SPD.`Supplier Product Cost` * SPPL.`Supplier Product Units Per Part`) as cost from `Supplier Product Dimension` SPD left join `Supplier Product Part List` SPPL on (SPD.`Supplier Product Code`=SPPL.`Supplier Product Code` and SPD.`Supplier Key`=SPPL.`Supplier Key`)  where `Part SKU`=%s  order by  `Supplier Product Valid To` desc ",prepare_mysql($part_sku),prepare_mysql($date));
- //  print "\n\n\n\n$sql\n";
- $result=mysql_query($sql);
-  if($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
-    if(is_numeric($row['cost']))
-      return $row['cost'];
-  }
-
-
- print ("error can no found supp cost Part SKU:".$part_sku."  \n");
-
- return 1;
-
-}
 
 
 
