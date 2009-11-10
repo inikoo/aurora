@@ -1,11 +1,7 @@
 {include file='header.tpl'}
 <div id="bd" >
-  <span class="nav2 onleft"><a  href="stores.php">{t}Stores{/t}</a></span>
- <span class="nav2 onleft"><a href="departments.php">{t}Departments{/t}</a></span>
-  <span class="nav2 onleft"><a href="families.php">{t}Families{/t}</a></span>
-  <span class="nav2 onleft"><a href="products.php">{t}Products{/t}</a></span>
-  <span class="nav2 onleft"><a href="categories.php">{t}Categories{/t}</a></span>
-  <span class="nav2 onleft"><a class="selected" href="parts.php">{t}Parts{/t}</a></span>
+ {include file='assets_navigation.tpl'}
+
   
   <div class="search_box" >
      <span class="search_title" style="padding-right:15px">{t}Part SKU{/t}:</span> <input size="8" class="text search" id="prod_search" value="" name="search"/><img align="absbottom" id="submit_search" class="submitsearch" src="art/icons/zoom.png" alt="Submit search"><br/>

@@ -1,4 +1,4 @@
-<?
+<?php
 
 function get_header_info($user,$smarty){
   $store_list=array();

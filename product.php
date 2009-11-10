@@ -13,6 +13,7 @@
 */
 include_once('common.php');
 include_once('class.Product.php');
+include_once('assets_header_functions.php');
 
 $view_sales=$user->can_view('product sales');
 $view_stock=$user->can_view('product stock');
@@ -33,6 +34,8 @@ $smarty->assign('create',$create);
 $smarty->assign('modify',$modify);
 $smarty->assign('view_orders',$view_orders);
 $smarty->assign('view_customers',$view_cust);
+
+get_header_info($user,$smarty);
 
 $css_files=array(
 		 $yui_path.'reset-fonts-grids/reset-fonts-grids.css',

@@ -12,6 +12,8 @@
  Version 2.0
 */
 include_once('common.php');
+include_once('assets_header_functions.php');
+
 if(!$user->can_view('products'))
   exit();
 $view_sales=$user->can_view('product sales');
@@ -30,6 +32,9 @@ $smarty->assign('view_sales',$view_sales);
 $smarty->assign('view_stock',$view_stock);
 $smarty->assign('create',$create);
 $smarty->assign('modify',$modify);
+
+get_header_info($user,$smarty);
+
 
 $q='';
 if(isset($_REQUEST['search']) and $_REQUEST['search']!=''  ){
@@ -84,7 +89,8 @@ $css_files=array(
 		 'common.css',
 		 'button.css',
 		 'container.css',
-		 'table.css'
+		 'table.css',
+		 'css/dropdown.css'
 		 );
 $js_files=array(
 
@@ -101,7 +107,8 @@ $js_files=array(
 		'common.js.php',
 		'table_common.js.php',
 		'js/search.js',
-		'products.js.php'
+		'products.js.php',
+		'js/dropdown.js'
 		);
 
 

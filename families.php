@@ -2,6 +2,8 @@
 //@author Raul Perusquia <rulovico@gmail.com>
 //Copyright (c) 2009 LW
 include_once('common.php');
+include_once('assets_header_functions.php');
+
 if(!$user->can_view('product families'))
   exit();
 
@@ -14,6 +16,9 @@ $smarty->assign('view_sales',$view_sales);
 $smarty->assign('view_stock',$view_stock);
 $smarty->assign('create',$create);
 $smarty->assign('modify',$modify);
+
+get_header_info($user,$smarty);
+
 $css_files=array(
 		 $yui_path.'reset-fonts-grids/reset-fonts-grids.css',
 		 $yui_path.'menu/assets/skins/sam/menu.css',
@@ -21,7 +26,8 @@ $css_files=array(
 		 'common.css',
 		 'container.css',
 		 'button.css',
-		 'table.css'
+		 'table.css',
+		  'css/dropdown.css'
 		 );
 $js_files=array(
 		$yui_path.'utilities/utilities.js',
@@ -36,6 +42,7 @@ $js_files=array(
 		'table_common.js.php',
 		'js/search.js',
 		'families.js.php',
+		 'js/dropdown.js'
 		);
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);

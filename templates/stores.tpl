@@ -1,39 +1,9 @@
 {include file='header.tpl'}
 <div id="bd" >
 
+{include file='assets_navigation.tpl'}
 
-{if $store_list_length>1}
-<dl class="dropdown">
-  <dt id="one-ddheader" onmouseover="ddMenu('one',1)" onmouseout="ddMenu('one',-1)" onclick="window.location='stores.php'" >{t}Stores{/t}</dt>
-  <dd id="one-ddcontent" onmouseover="cancelHide('one')" onmouseout="ddMenu('one',-1)">
-    <ul>
-      {foreach from=$tree_list item=store }
-      <li><a href="store.php?id={$store.id}" class="underline">{$store.code}</a></li>
-      {/foreach}
-    </ul>
-  </dd>
-</dl>
-{else}
-<dl class="dropdown">
-  <dt id="one-ddheader" onmouseover="ddMenu('one',1)" onmouseout="ddMenu('one',-1)" onclick="window.location='store.php?id={$store_id}'" >{t}Departments{/t}</dt>
-  <dd id="one-ddcontent" onmouseover="cancelHide('one')" onmouseout="ddMenu('one',-1)">
-    <ul>
-      {foreach from=$tree_list item=department }
-      <li><a href="department.php?id={$department.id}" class="underline">{$department.code}</a></li>
-      {/foreach}
-    </ul>
-  </dd>
-</dl>
 
-{/if}
-
- <span class="nav2 onleft" id="rendertarget">{t}Stores{/t}</span>
-
- <span class="nav2 onleft"><a class="selected" href="stores.php">{t}Stores{/t}</a></span>
- 
-  <span class="nav2 onleft"><a href="products.php?parent=none">{t}Products{/t}</a></span>
-  <span class="nav2 onleft"><a href="categories.php">{t}Categories{/t}</a></span>
-  {if $view_parts}<span class="nav2 onleft"><a href="parts.php">{t}Parts{/t}</a></span>{/if}
 
   <div class="search_box">
     <span class="search_title">{t}Product Code{/t}:</span> <input size="8" class="text search" id="product_search" value="" name="search"/><img align="absbottom" id="product_submit_search" class="submitsearch" src="art/icons/zoom.png" alt="Submit search"><br/>

@@ -1,5 +1,7 @@
 <?php
 include_once('common.php');
+include_once('assets_header_functions.php');
+
 $smarty->assign('box_layout','yui-t0');
 $css_files=array(
 		 $yui_path.'reset-fonts-grids/reset-fonts-grids.css',
@@ -9,7 +11,8 @@ $css_files=array(
 		 'common.css',
 		 'button.css',
 		 'container.css',
-		 'table.css'
+		 'table.css',
+		  'css/dropdown.css'
 		 );
 $js_files=array(
 
@@ -25,7 +28,8 @@ $js_files=array(
 		'common.js.php',
 		'table_common.js.php',
 		'js/search_product.js',
-		'parts.js.php'
+		'parts.js.php',
+		 'js/dropdown.js'
 		);
 
 if(!$user->can_view('parts')){
@@ -49,6 +53,8 @@ $smarty->assign('view_sales',$view_sales);
 $smarty->assign('view_stock',$view_stock);
 $smarty->assign('create',$create);
 $smarty->assign('modify',$modify);
+
+get_header_info($user,$smarty);
 
 $q='';
 

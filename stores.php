@@ -104,7 +104,7 @@ $smarty->assign('parent','stores.php');
 $smarty->assign('title', _('Stores'));
 
 
-get_header_info(&$user,&$smarty);
+get_header_info($user,$smarty);
 
 
 global $myconf;

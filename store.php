@@ -13,7 +13,7 @@
 */
 include_once('common.php');
 include_once('class.Store.php');
-
+include_once('assets_header_functions.php');
 
 
 
@@ -58,7 +58,7 @@ $smarty->assign('stores_period_title',$stores_period_title[$stores_period]);
 
 
 
-
+get_header_info($user,$smarty);
 
 
 
@@ -76,11 +76,11 @@ $css_files=array(
 		 $yui_path.'menu/assets/skins/sam/menu.css',
 		 $yui_path.'button/assets/skins/sam/button.css',
 		 $yui_path.'assets/skins/sam/autocomplete.css',
-
 		 'common.css',
 		 'container.css',
 		 'button.css',
-		 'table.css'
+		 'table.css',
+		 'css/dropdown.css'
 		 );
 $js_files=array(
 		$yui_path.'utilities/utilities.js',
@@ -95,6 +95,7 @@ $js_files=array(
 		'js/php.default.min.js',
 		'common.js.php',
 		'table_common.js.php',
+		'js/dropdown.js'
 		);
 
 if($edit){
