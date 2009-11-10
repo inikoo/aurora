@@ -201,12 +201,13 @@ var change_plot_sigma=function(o){
 		      var tableDivEL="table"+tableid;
 		      
 		      var ColumnDefs = [
-					{key:"pid", label:"<?php echo _('Product ID')?>",width:100, sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-					,{key:"from", label:"<?php echo _('From')?>",width:120, sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-					,{key:"to", label:"<?php echo _('To')?>",width:120, sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+					{key:"pid", label:"<?php echo _('Product ID (Key)')?>",width:125, sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+					,{key:"from", label:"<?php echo _('From')?>",width:100, sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+					,{key:"to", label:"<?php echo _('To')?>",width:100, sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 
 					,{key:"description", label:"<?php echo _('Description')?>",width:300, sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-					,{key:"parts", label:"<?php echo _('Parts')?>",width:65, sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+					,{key:"parts", label:"<?php echo _('Parts')?>",width:65, sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+,{key:"sales", label:"<?php echo _('Sales')?>",width:75, sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 
 					];
 		    
@@ -227,7 +228,7 @@ var change_plot_sigma=function(o){
 			  },
 			  
 			  fields: [
-				  "pid","description","parts","from","to"
+				  "pid","description","parts","from","to","sales"
 				   ]};
 		      
 		      this.table3 = new YAHOO.widget.DataTable(tableDivEL, ColumnDefs,

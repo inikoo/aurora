@@ -10,8 +10,21 @@ include_once('../../class.Order.php');
 include_once('../../class.Invoice.php');
 include_once('../../class.DeliveryNote.php');
 include_once('../../class.Email.php');
+include_once('../../class.TimeSeries.php');
 
 $store_code='U';
+
+
+$to_update=array(
+'products'=>array(),
+'products_id'=>array(),
+'products_code'=>array(),
+'families'=>array(),
+'departments'=>array(),
+'stores'=>array(),
+'parts'=>array()
+);
+
 
 $con=@mysql_connect($dns_host,$dns_user,$dns_pwd );
 if (!$con) {
@@ -878,6 +891,15 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 	print "Error inserting a product\n";
 	exit;
       }
+      
+      
+      $to_update['products'][$product->id]=1;
+      
+       $to_update['products_id'][$product->data['Product ID']]=1;
+        $to_update['products_code'][$product->data['Product Code']]=1;
+$to_update['families'][$product->data['Product Family Key']]=1;
+      $to_update['departments'][$product->data['Product Main Department Key']]=1;
+      $to_update['stores'][$product->data['Product Store Key']]=1;
      
       $supplier_code=_trim($transaction['supplier_code']);
       if ($supplier_code=='' or $supplier_code=='0' or  preg_match('/^costa$/i',$supplier_code))
@@ -993,6 +1015,7 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 	    //print_r($sp_data);
       $supplier_product=new SupplierProduct('find',$sp_data,'create');
       
+      $to_update['parts'][$part->sku]=1;
       
       if($supplier_product->new or $part->new){
 	$rules=array();
@@ -1932,11 +1955,104 @@ $data['Order Currency Exchange']=1;
     }
 
 
+     if ($contador % 250 == 0){
+       update_data($to_update);
+       $to_update=array(
+'products'=>array(),
+'products_id'=>array(),
+'products_code'=>array(),
+'families'=>array(),
+'departments'=>array(),
+'stores'=>array(),
+'parts'=>array()
+
+);
+     }
+    
   }
   mysql_free_result($result);
  }
 mysql_free_result($res);
 
+  
+  function update_data($to_update){
+  
+  $tm=new TimeSeries(array('q','invoices'));
+  $tm->to_present=true;$tm->get_values();$tm->save_values();
+  $tm=new TimeSeries(array('m','invoices'));
+ 
+  $tm->to_present=true;$tm->get_values();  $tm->save_values();
+  
+  $tm=new TimeSeries(array('y','invoices'));
+  $tm->to_present=true;$tm->get_values();$tm->save_values();
+  
+  
+  foreach($to_update['products'] as $key=>$value){
+    $product=new Product($key);
+    $product->load('sales');
+    
+    
+  }
+  
+    foreach($to_update['products_id'] as $key=>$value){
+   
+       $tm=new TimeSeries(array('m','product id ('.$key.') sales'));$tm->get_values();$tm->save_values();
+   $tm=new TimeSeries(array('y','product id ('.$key.') sales'));$tm->get_values();$tm->save_values();
+    $tm=new TimeSeries(array('q','product id ('.$key.') sales'));$tm->get_values();$tm->save_values();
+     $tm=new TimeSeries(array('m','product id ('.$key.') profit'));$tm->get_values();$tm->save_values();
+   $tm=new TimeSeries(array('y','product id ('.$key.') profit'));$tm->get_values();$tm->save_values();
+    $tm=new TimeSeries(array('q','product id ('.$key.') profit'));$tm->get_values();$tm->save_values();
+   
+    
+  }
+
+  
+  
+  
+    foreach($to_update['families'] as $key=>$value){
+    $product=new Family($key);
+    $product->load('sales');
+      $tm=new TimeSeries(array('m','family ('.$key.') sales'));$tm->get_values();$tm->save_values();
+   $tm=new TimeSeries(array('y','family ('.$key.') sales'));$tm->get_values();$tm->save_values();
+    $tm=new TimeSeries(array('q','family ('.$key.') sales'));$tm->get_values();$tm->save_values();
+     $tm=new TimeSeries(array('m','family ('.$key.') profit'));$tm->get_values();$tm->save_values();
+   $tm=new TimeSeries(array('y','family ('.$key.') profit'));$tm->get_values();$tm->save_values();
+    $tm=new TimeSeries(array('q','family ('.$key.') profit'));$tm->get_values();$tm->save_values();
+  }
+    foreach($to_update['departments'] as $key=>$value){
+    $product=new Department($key);
+    $product->load('sales');
+     $tm=new TimeSeries(array('m','department ('.$key.') sales'));$tm->get_values();$tm->save_values();
+     $tm=new TimeSeries(array('y','department ('.$key.') sales'));$tm->get_values();$tm->save_values();
+     $tm=new TimeSeries(array('q','department ('.$key.') sales'));$tm->get_values();$tm->save_values();
+      $tm=new TimeSeries(array('m','department ('.$key.') profit'));$tm->get_values();$tm->save_values();
+     $tm=new TimeSeries(array('y','department ('.$key.') profit'));$tm->get_values();$tm->save_values();
+     $tm=new TimeSeries(array('q','department ('.$key.') profit'));$tm->get_values();$tm->save_values();
+  }
+    foreach($to_update['stores'] as $key=>$value){
+    $product=new Store($key);
+    $product->load('sales');
+    $tm=new TimeSeries(array('m','store ('.$key.') sales'));$tm->to_present=true;$tm->get_values();$tm->save_values();
+   $tm=new TimeSeries(array('y','store ('.$key.') sales'));$tm->to_present=true;$tm->get_values();$tm->save_values();
+    $tm=new TimeSeries(array('q','store ('.$key.') sales'));$tm->to_present=true;$tm->get_values();$tm->save_values();
+     $tm=new TimeSeries(array('m','store ('.$key.') profit'));$tm->to_present=true;$tm->get_values();$tm->save_values();
+   $tm=new TimeSeries(array('y','store ('.$key.') profit'));$tm->to_present=true;$tm->get_values();$tm->save_values();
+    $tm=new TimeSeries(array('q','store ('.$key.') profit'));$tm->to_present=true;$tm->get_values();$tm->save_values();
+  }
+   foreach($to_update['parts'] as $key=>$value){
+    $product=new Part('sku',$key);
+    $product->load('sales');
+  }
+ 
+  printf("updated P:%d F%d D%d S%d\n"
+  ,count($to_update['products'])
+  ,count($to_update['families'])
+  ,count($to_update['departments'])
+  ,count($to_update['stores'])
+  
+  );
+  }
+  
   
 //  print_r($data);
 //print "\n$tipo_order\n";

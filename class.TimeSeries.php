@@ -16,6 +16,8 @@ Class TimeSeries  {
   public $error=false;
   public $label='';
   public $no_negative_values=true;  public $no_data=true;
+  public $to_present=false;
+  
   function TimeSeries($arg){
   
     if(!is_array($arg) or !(count($arg)==2  or count($arg)==3)  )
@@ -422,6 +424,16 @@ Class TimeSeries  {
 
 
   function get_values(){
+  
+  if($this->to_present){
+$this->last_date=date('Y-m-d');
+}else{
+    if(!$this->last_date=$this->last_date()){
+        $this->values=array();
+        return;
+    }
+}
+  
     switch($this->freq){
     case('Monthly'):
       $this->get_values_per_month();
@@ -848,8 +860,6 @@ if($number_values<=6)
       return;
 
 
-    $this->last_date=date("Y-m-d");
-
     $first_dd=date("Y-m",strtotime($this->start_date));
     $last_dd=date("Y-m",strtotime($this->last_date));
     $current_dd=date("Y-m");
@@ -880,7 +890,7 @@ if($number_values<=6)
 		 ,$this->where
 		 );
  
-    print "$sql\n";
+    //print "$sql\n";
     //exit;
     $res=mysql_query($sql);
   
@@ -1299,7 +1309,25 @@ if($number_values<=6)
 
 
 
-
+function last_date(){
+ $sql=sprintf("select %s as date from %s where %s IS NOT NULL %s  order by %s desc limit 1  "
+		 ,$this->date_field
+		
+		
+		 ,$this->table
+		 ,$this->date_field
+		 ,$this->where
+		 ,$this->date_field
+		 );
+    // print $sql;
+    $res=mysql_query($sql);
+    if($row=mysql_fetch_array($res)){
+    return $row['date'];
+    
+    }else
+    return false;
+    
+}
 
   function last_complete_month(){
     //  return "2009-07-31 23:59:59";
@@ -1317,7 +1345,7 @@ if($number_values<=6)
     if($row=mysql_fetch_array($res)){
       $last_time=mktime(0, 0, 0, date($row["m"])-1 , -1, date($row["y"]));
       if($last_time>mktime(0, 0, 0, date("m") , date("d"), date("y") ))
-	$last_time=mktime(0, 0, 0, date("m") , -1, date("y"));
+	     $last_time=mktime(0, 0, 0, date("m") , -1, date("y"));
       return date("Y-m-d", $last_time); 
     }
   }
