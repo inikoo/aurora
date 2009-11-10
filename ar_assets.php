@@ -8054,7 +8054,11 @@ function product_code_timeline() {
 
     $adata=array();
     while ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
-      $id=sprintf("<a href='product.php?pid=%d'>%05d (%d)</a>",$row['Product ID'],$row['Product ID'],$row['Product Key']);
+      $id=sprintf("<a href='product.php?pid=%d'>%05d</a> <a href='product.php?key=%d'>(%05d)</a>"
+      ,$row['Product ID'],$row['Product ID']
+      ,$row['Product Key'] ,$row['Product Key']
+      
+      );
         $adata[]=array(
                      'pid'=>$id
 		     ,'description'=>$row['Product History XHTML Short Description']
@@ -8062,7 +8066,7 @@ function product_code_timeline() {
 		     ,'parts'=>$row['Product XHTML Parts']
 		     ,'from'=>strftime("%e %b %Y", strtotime($row['Product History Valid From']))
 		     ,'to'=>strftime("%e %b %Y", strtotime($row['Product History Valid To']))
-		   
+		   ,'sales'=>money($row['Product History Total Invoiced Amount'],$row['Product Currency'])
                  );
 
     }
