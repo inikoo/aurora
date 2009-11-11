@@ -189,11 +189,12 @@ ids=['period_all','period_year','period_quarter','period_month','period_week'];
  
  ids=['avg_totals','avg_month','avg_week',"avg_month_eff","avg_week_eff"];
  YAHOO.util.Event.addListener(ids, "click",change_avg,0);
- 
- YAHOO.util.Event.addListener('show_details', "click",show_details,'products')
-
-YAHOO.util.Event.addListener('product_submit_search', "click",submit_search,'product');
+ YAHOO.util.Event.addListener('product_submit_search', "click",submit_search,'product');
  YAHOO.util.Event.addListener('product_search', "keydown", submit_search_on_enter,'product');
+
+ //YAHOO.util.Event.addListener('show_details', "click",show_details,'products')
+
+
 
      
 

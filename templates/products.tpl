@@ -2,33 +2,12 @@
 <div id="bd" >
  {include file='assets_navigation.tpl'}
   
- <div class="search_box" >
-    <span class="search_title">{t}Product Code{/t}:</span> <input size="8" class="text search" id="product_search" value="" name="search"/><img align="absbottom" id="product_submit_search" class="submitsearch" src="art/icons/zoom.png" alt="Submit search"><br/>
-     <span  class="search_msg"   id="product_search_msg"    ></span> <span  class="search_sugestion"   id="product_search_sugestion"    ></span>
-     <br/>
-     <span  id="show_details" style="float:right;{if $show_details}display:none{/if}" class="state_details"  onClick="show_details()" >{t}Show details{/t}</span>
-  </div>
- <div style="clear:left;margin:0 20px">
-    <h1>Products</h1>
-  </div>
-
-  <div id="top" class="top_bar">
-
-    <div id="short_menu" class="nodetails" style="{if $show_details}display:none;{/if}width:100%;margin-bottom:0px">
-      <div    {if $total_products==0    }style="display:none"{/if}  >
-      
-      
-      </div>
-
-    </div>
-    
-    <div id="details" class="details" style="{if !$show_details}display:none;{/if}">
-      <div id="details_general"  {if $view!='general'}style="display:none"{/if}></div> 
-    </div>
-  </div>
+ 
+ 
+  
 
 
-  <div class="data_table" style="margin:25px 20px;">
+  <div class="data_table" style="margin:0px;clear:both">
     <span class="clean_table_title">{t}Products{/t}</span>
 
      <div style="clear:both;margin:0 0px;padding:0 20px ;border-bottom:1px solid #999"></div>

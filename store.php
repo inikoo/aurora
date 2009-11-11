@@ -16,13 +16,11 @@ include_once('class.Store.php');
 include_once('assets_header_functions.php');
 
 
-
 if(isset($_REQUEST['id']) and is_numeric($_REQUEST['id']) ){
   $store_id=$_REQUEST['id'];
 
 }else{
   $store_id=$_SESSION['state']['store']['id'];
-
 }
 
 
@@ -39,7 +37,7 @@ $view_sales=$user->can_view('product sales');
 $view_stock=$user->can_view('product stock');
 $create=$user->can_create('product departments');
 
-$modify=$user->can_edit('stores',$store->id);
+$modify=$user->can_edit('stores');
 
 
 
@@ -56,10 +54,15 @@ $stores_period_title=array('year'=>_('Last Year'),'quarter'=>_('Last Quarter'),'
 $smarty->assign('stores_period',$stores_period);
 $smarty->assign('stores_period_title',$stores_period_title[$stores_period]);
 
-
-
+$show_details=$_SESSION['state']['store']['details'];
+$smarty->assign('show_details',$show_details);
 get_header_info($user,$smarty);
 
+$general_options_list=array();
+if($modify)
+  $general_options_list[]=array('tipo'=>'url','url'=>'store.php?edit=1','label'=>_('Edit Store'));
+$general_options_list[]=array('tipo'=>'js','state'=>$show_details,'id'=>'details','label'=>($show_details?_('Hide Details'):_('Show Details')));
+$smarty->assign('general_options_list',$general_options_list);
 
 
 if(isset($_REQUEST['edit']))
@@ -70,6 +73,10 @@ else
 
 if(!$modify)
   $edit=false;
+
+
+
+
 
 $css_files=array(
 		 $yui_path.'reset-fonts-grids/reset-fonts-grids.css',
@@ -126,7 +133,7 @@ if(isset($_REQUEST['view'])){
 
  }
 $smarty->assign('view',$_SESSION['state']['store']['view']);
-$smarty->assign('show_details',$_SESSION['state']['store']['details']);
+
 
 $smarty->assign('show_percentages',$_SESSION['state']['store']['percentages']);
 $smarty->assign('avg',$_SESSION['state']['store']['avg']);

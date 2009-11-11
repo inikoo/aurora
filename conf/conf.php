@@ -252,7 +252,43 @@ $default_state=array(
 
                             ),
 
-
+		   'product_categories'=>array(
+					       'category'=>0,
+					       'from'=>'',
+					       'to'=>'',
+					       'period'=>'year',
+					       'percentages'=>0,
+					       'mode'=>'all',
+					       'avg'=>'totals',
+					       'view'=>'general',
+					       'from'=>'',
+					       'to'=>'',
+					       'exchange_type'=>'day2day',
+					       'exchange_value'=>1,
+					       'show_default_currency'=>false,
+					       'subcategories'=>array(
+								      
+								       'order'=>'name',
+								       'order_dir'=>'',
+								       'sf'=>0,
+								       'nr'=>25,
+								       'where'=>'where true',
+								       'f_field'=>'name',
+								       'f_value'=>'',
+								    
+								       ),
+					       'products'=>array(
+								 
+								 'order'=>'code',
+								 'order_dir'=>'',
+								 'sf'=>0,
+								 'nr'=>25,
+								 'where'=>'where true',
+								 'f_field'=>'code',
+								 'f_value'=>'',
+								
+								 ),
+					       ),
 
                    'products'=>array(
                                   'details'=>false,

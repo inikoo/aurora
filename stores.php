@@ -40,6 +40,11 @@ $smarty->assign('create',$create);
 $smarty->assign('modify',$modify);
 
 
+if($modify)
+  $general_options_list[]=array('tipo'=>'url','url'=>'stores.php?edit=1','label'=>_('Edit Stores'));
+$smarty->assign('general_options_list',$general_options_list);
+
+
 if(isset($_REQUEST['edit']))
   $edit=$_REQUEST['edit'];
 else

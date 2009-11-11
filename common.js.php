@@ -1,8 +1,7 @@
 <?php 
 include_once('common.php');
-
-
 ?>
+
 //@author Raul Perusquia <rulovico@gmail.com>
 //Copyright (c) 2009 LW
 var Dom   = YAHOO.util.Dom;
@@ -316,24 +315,24 @@ keychar = String.fromCharCode(keynum);
 		this.hide();
     }
 
-    
-var show_details=function(e,location){
+function change_details(e,the_scope){
 
-     var state=this.getAttribute('state');
-     if(state==1){
-	 Dom.get('details').style.display='none';
-	 YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys='+location+'-details&value=0');
-	 this.setAttribute('state',0);
-     }else{
-	 Dom.get('details').style.display='';
-	 YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys='+location+'-details&value=1');
-	 this.setAttribute('state',1);
-     }
-
-     var tmp=this.innerHTML;
-     this.innerHTML=this.getAttribute('atitle');
-     this.setAttribute('atitle',tmp);
-     
+    var state =this.getAttribute('state');
+    if(state==1){
+	Dom.get("info").style.display='none';
+	Dom.get("plot").style.display='none';
+	Dom.get("no_details_title").style.display='';
+	this.innerHTML='<? echo _('Show Details')?>';
+	this.setAttribute('state',0);
+	YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys='+the_scope+'-details&value=0');
+    }else{
+	Dom.get("info").style.display='';
+	Dom.get("plot").style.display='';
+	Dom.get("no_details_title").style.display='none';
+	this.innerHTML='<? echo _('Hide Details')?>';
+	this.setAttribute('state',1);
+	YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys='+the_scope+'-details&value=1');
+    }
 }
 
 var show_percentages=function(e,location){

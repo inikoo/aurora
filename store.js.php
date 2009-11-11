@@ -178,29 +178,8 @@ YAHOO.util.Event.addListener(window, "load", function() {
     });
 
 
-function show_details(){
-    Dom.get("store_info").style.display='';
-        Dom.get("plot").style.display='';
-        Dom.get("no_details_title").style.display='none';
 
-    Dom.get("show_details").style.display='none';
-        Dom.get("hide_details").style.display='';
 
-    YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=store-details&value=1')
-}
-
-function hide_details(){
-   Dom.get("store_info").style.display='none';
-        Dom.get("plot").style.display='none';
-        Dom.get("no_details_title").style.display='';
-    
-    
-    Dom.get("show_details").style.display='';
-            Dom.get("hide_details").style.display='none';
-
-    //  alert('ar_sessions.php?tipo=update&keys=store-details&value=0')
-    YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=store-details&value=0')
-}
 
 function change_info_period(period){
     var patt=new RegExp("^(year|month|all|week|quarter)$");
@@ -389,7 +368,7 @@ YAHOO.util.Event.addListener("info_next", "click",next_info_period,0);
 YAHOO.util.Event.addListener("info_previous", "click",previous_info_period,0);
 
  
- // YAHOO.util.Event.addListener('show_details', "click",show_details,'departments');
+YAHOO.util.Event.addListener('details', "click",change_details,'store');
  YAHOO.util.Event.addListener('show_percentages', "click",show_percentages,'departments');
 
 
