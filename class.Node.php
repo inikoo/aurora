@@ -84,7 +84,7 @@ $this->HtmlTree = array(
 "FirstLevelOpenTag" 		=> '<li><a href="?id=[id]">[id]</a><ul>', // this is printed for the ROOT parent ( node has children/sub-nodes) ie : <ul><li><h2>[name]</h2>
 "FirstLevelOpenTagSelected" => '<li><a href="?id=[id]"><b>[id]</b></a><ul>', // this is printed for the ROOT parent ( node has children/sub-nodes) ie : <ul><li><h2>[name]</h2>
 "LevelOpenTag" 				=> '<li><a href="?id=[id]">[id]</a><ul>', // this is printed for the parent ( node has children/sub-nodes) ie : <ul><li><h2>[name]</h2>
-"LevelOpenTagSelected"  	=> '<li><a href="?id=[id]"><b>[id]</b></a><ul>' , // // this is printed for the parent ( node has children/sub-nodes) .. WHEN SELECTED! ie : <ul><li><h2><STRONG>[name]</STRONG></h2> 
+"LevelOpenTagSelected"  	=> '<li><a href="?id=[id]"><b>[id]</b></a><ul>' , // // this is printed for the parent ( node has children/sub-nodes) .. WHEN SELECTED! ie : <ul><li><h2><STRONG>[name]cp </STRONG></h2> 
 "Node"			 				=> '<li><a href="?id=[id]">[id]</a></li>', // node item tag .. 
 "NodeSelected"	 				=> '<li><a href="?id=[id]"><b>[id]</b></a></li>' , // node item tag .. when selected !
 "FirstLevelCloseTag"  		=> '</ul></li>', // ROOT parent tag closer. ( when getting out of sub-level)

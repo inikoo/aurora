@@ -1,19 +1,12 @@
 {include file='header.tpl'}
 <div id="bd" >
 {include file='assets_navigation.tpl'}
-  <div class="search_box" >
-    <span class="search_title">{t}Product Code{/t}:</span> <input size="8" class="text search" id="product_search" value="" name="search"/><img align="absbottom" id="product_submit_search" class="submitsearch" src="art/icons/zoom.png" alt="Submit search"><br/>
-    <span  class="search_msg"   id="product_search_msg"    ></span> <span  class="search_sugestion"   id="product_search_sugestion"    ></span>
-     <br/>
-     {if $modify}<a   href="store.php?edit=1"  style="float:right;margin-left:15px" class="state_details"  >{t}Edit{/t}</a>{/if}
-     <span id="show_details" style="float:right;{if $show_details}display:none{/if}" class="state_details"  onClick="show_details()" >{t}Show details{/t}</span>
-     <span id="hide_details" class="state_details"  style="{if !$show_details}display:none{/if}"  onClick="hide_details()"> {t}Hide details{/t}</span>
-</div>
+ 
 
 <div id="no_details_title" style="clear:left;{if $show_details}display:none;{/if}">
     <h1>Store: {$store->get('Store Name')} ({$store->get('Store Code')})</h1>
   </div>
-<div id="store_info" style="clear:left;margin:20px 0 10px 0;padding:0;{if !$show_details}display:none;{/if}">
+<div id="info" style="clear:left;margin:20px 0 10px 0;padding:0;{if !$show_details}display:none;{/if}">
 
 <h2 style="margin:0;padding:0">{t}Store Information{/t}</h2>
 <div style="width:350px;float:left">

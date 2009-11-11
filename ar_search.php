@@ -133,6 +133,7 @@ mysql_free_result($result);
 }
 
 function search_products($q,$tipo,$user){
+  global $myconf;
  if ($tipo=='product_manage_stock')
         $target='product_manage_stock.php';
     else

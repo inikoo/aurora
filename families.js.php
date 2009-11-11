@@ -196,14 +196,14 @@ var Dom   = YAHOO.util.Dom;
  YAHOO.util.Event.addListener(ids, "click",change_avg,0);
 
 
- YAHOO.util.Event.addListener('show_details', "click",show_details,'families');
 
- YAHOO.util.Event.addListener('show_percentages', "click",show_percentages,'families');
 
 
  YAHOO.util.Event.addListener('product_submit_search', "click",submit_search,'product');
  YAHOO.util.Event.addListener('product_search', "keydown", submit_search_on_enter,'product');
+ //YAHOO.util.Event.addListener('show_details', "click",show_details,'families');
 
+ YAHOO.util.Event.addListener('show_percentages', "click",show_percentages,'families');
 
 
 

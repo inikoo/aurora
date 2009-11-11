@@ -1,47 +1,9 @@
 {include file='header.tpl'}
 <div id="bd" >
  {include file='assets_navigation.tpl'} 
- <div class="search_box" >
-    <span class="search_title">{t}Product Code{/t}:</span> <input size="8" class="text search" id="product_search" value="" name="search"/><img align="absbottom" id="product_submit_search" class="submitsearch" src="art/icons/zoom.png" alt="Submit search"><br/>
-     <span  class="search_msg"   id="product_search_msg"    ></span> <span  class="search_sugestion"   id="product_search_sugestion"    ></span>
-     <br/>
-     <span  class="state_details" state="{$show_details}"  id="show_details"  atitle="{if $show_details}{t}show details{/t}{else}{t}hide details{/t}{/if}"  >{if $show_details}{t}hide details{/t}{else}{t}show details{/t}{/if}</span>
- </div>
+
   
-  <div id="top" class="top_bar">
-     
-
-    <div id="details" class="details" style="{if !$show_details}display:none;{/if}">
-      <div id="details_general"  {if $view!='general'}style="display:none"{/if}>
-	<table>
-	  <tr>
-	    <td>{t}Number of Products{/t}:</td><td class="aright">{$products}</td>
-	</tr>
-	  <tr>
-	    <td>{t}Number of Families{/t}:</td><td class="aright">{$families}</td>
-	  </tr>
-	  <tr>
-	    <td>{t}Number of Departments{/t}:</td><td class="aright">{$departments}</td>
-	  </tr>
-	</table>
-      </div>
-      <div id="details_stock"  {if $view!='stock'}style="display:none"{/if}>
-	<table   >
-	  <tr>
-	    <td>{t}Stock Value{/t}:</td><td class="aright">{$stock_value}</td>
-	  </tr>
-	</table>
-      </div>
-      <div id="details_sales"  {if $view!='sales'}style="display:none"{/if}>
-	<table  >
-	  <tr>
-	    <td>{t}Total Sales{/t}:</td><td class="aright">{$total_sales}</td>
-	  </tr>
-	</table>
-      </div>
-    </div>
-
-  </div>
+  
   
    <div class="data_table" style="margin:0px;clear:both">
     <span class="clean_table_title">{t}Families{/t}</span>
