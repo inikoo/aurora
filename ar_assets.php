@@ -8184,7 +8184,7 @@ function list_product_subcategories(){
 
 
 
-    $sql="select count(*) as total from `Category Dimension`   $where $wheref";
+    $sql="select count(*) as total   from `Category Dimension` S  left join `Product Category Dimension` PC on (`Category Key`=PC.`Product Category Key`)  $where $wheref";
     $result=mysql_query($sql);
     if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
         $total=$row['total'];
@@ -8195,7 +8195,7 @@ function list_product_subcategories(){
         $filtered=0;
         $total_records=$total;
     } else {
-        $sql="select count(*) as total from `Category Dimension`   $where ";
+        $sql="select count(*) as total  from `Category Dimension` S  left join `Product Category Dimension` PC on (`Category Key`=PC.`Product Category Key`)   $where ";
 
         $result=mysql_query($sql);
         if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
@@ -8289,159 +8289,159 @@ function list_product_subcategories(){
 
 
 
-    $sql="select sum(`Product Category For Sale Products`) as sum_active,sum(`Product Category Families`) as sum_families  from  `Category Dimension` left join   `Product Category Dimension` on (`Category Key`=`Product Category Key`) $where $wheref   ";
-    $result=mysql_query($sql);
-    if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-        $sum_families=$row['sum_families'];
-        $sum_active=$row['sum_active'];
-    }
-    mysql_free_result($result);
+   /*  $sql="select sum(`Product Category For Sale Products`) as sum_active,sum(`Product Category Families`) as sum_families  from  `Category Dimension` left join   `Product Category Dimension` on (`Category Key`=`Product Category Key`) $where $wheref   "; */
+/*     $result=mysql_query($sql); */
+/*     if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) { */
+/*         $sum_families=$row['sum_families']; */
+/*         $sum_active=$row['sum_active']; */
+/*     } */
+/*     mysql_free_result($result); */
 
-    global $myconf;
+/*     global $myconf; */
 
-    if ($period=='all') {
+/*     if ($period=='all') { */
 
 
-        $sum_total_sales=0;
-        $sum_month_sales=0;
-	$sum_total_profit_plus=0;
-	$sum_total_profit_minus=0;
-	$sum_total_profit=0;
-  	if($exchange_type=='day2day'){
-	  $sql=sprintf("select sum(if(`Product Category DC Total Profit`<0,`Product Category DC Total Profit`,0)) as total_profit_minus,sum(if(`Product Category DC Total Profit`>=0,`Product Category DC Total Profit`,0)) as total_profit_plus,sum(`Product Category DC Total Invoiced Amount`) as sum_total_sales  from  `Category Dimension` left join   `Product Category Default Currency` on (`Category Key`=`Product Category Key`)     %s %s",$where,$wheref);
-	  //	  print $sql;
-	  $result=mysql_query($sql);
-	  if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+/*         $sum_total_sales=0; */
+/*         $sum_month_sales=0; */
+/* 	$sum_total_profit_plus=0; */
+/* 	$sum_total_profit_minus=0; */
+/* 	$sum_total_profit=0; */
+/*   	if($exchange_type=='day2day'){ */
+/* 	  $sql=sprintf("select sum(if(`Product Category DC Total Profit`<0,`Product Category DC Total Profit`,0)) as total_profit_minus,sum(if(`Product Category DC Total Profit`>=0,`Product Category DC Total Profit`,0)) as total_profit_plus,sum(`Product Category DC Total Invoiced Amount`) as sum_total_sales  from  `Category Dimension` left join   `Product Category Dimension` on (`Category Key`=`Product Category Key`)     %s %s",$where,$wheref); */
+/* 	  	  print $sql; */
+/* 	  $result=mysql_query($sql); */
+/* 	  if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) { */
 	    
-            $sum_total_sales+=$row['sum_total_sales'];
+/*             $sum_total_sales+=$row['sum_total_sales']; */
 
-            $sum_total_profit_plus=+$row['total_profit_plus'];
-            $sum_total_profit_minus=+$row['total_profit_minus'];
-            $sum_total_profit+=$row['total_profit_plus']-$row['total_profit_minus'];
-	  }
-	  mysql_free_result($result);
-	}else{
-	  $sql=sprintf("select sum(if(`Product Category Total Profit`<0,`Product Category Total Profit`,0)) as total_profit_minus,sum(if(`Product Category Total Profit`>=0,`Product Category Total Profit`,0)) as total_profit_plus,sum(`Product Category Total Invoiced Amount`) as sum_total_sales  from `Product Category Dimension`  S   %s %s and `Product Category Currency Code`!= %s ",$where,$wheref,prepare_mysql($myconf['currency_code']));
-	//print $sql;
-        $result=mysql_query($sql);
-        if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+/*             $sum_total_profit_plus=+$row['total_profit_plus']; */
+/*             $sum_total_profit_minus=+$row['total_profit_minus']; */
+/*             $sum_total_profit+=$row['total_profit_plus']-$row['total_profit_minus']; */
+/* 	  } */
+/* 	  mysql_free_result($result); */
+/* 	}else{ */
+/* 	  $sql=sprintf("select sum(if(`Product Category Total Profit`<0,`Product Category Total Profit`,0)) as total_profit_minus,sum(if(`Product Category Total Profit`>=0,`Product Category Total Profit`,0)) as total_profit_plus,sum(`Product Category Total Invoiced Amount`) as sum_total_sales  from `Product Category Dimension`  S   %s %s and `Product Category Currency Code`!= %s ",$where,$wheref,prepare_mysql($myconf['currency_code'])); */
+/* 	print $sql; */
+/*         $result=mysql_query($sql); */
+/*         if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) { */
 
-            $sum_total_sales+=$row['sum_total_sales']*$exchange_value;
+/*             $sum_total_sales+=$row['sum_total_sales']*$exchange_value; */
 
-            $sum_total_profit_plus+=$row['total_profit_plus']*$exchange_value;
-            $sum_total_profit_minus+=$row['total_profit_minus']*$exchange_value;
-            $sum_total_profit+=$row['total_profit_plus']-$row['total_profit_minus'];
-        }
-        mysql_free_result($result);
+/*             $sum_total_profit_plus+=$row['total_profit_plus']*$exchange_value; */
+/*             $sum_total_profit_minus+=$row['total_profit_minus']*$exchange_value; */
+/*             $sum_total_profit+=$row['total_profit_plus']-$row['total_profit_minus']; */
+/*         } */
+/*         mysql_free_result($result); */
 
-	}
+/* 	} */
 
 
 
-    }
-    elseif($period=='year') {
+/*     } */
+/*     elseif($period=='year') { */
 
-        $sum_total_sales=0;
-        $sum_month_sales=0;
-	$sum_total_profit_plus=0;
-	$sum_total_profit_minus=0;
-	$sum_total_profit=0;
+/*         $sum_total_sales=0; */
+/*         $sum_month_sales=0; */
+/* 	$sum_total_profit_plus=0; */
+/* 	$sum_total_profit_minus=0; */
+/* 	$sum_total_profit=0; */
 
 
        
-	if($exchange_type=='day2day'){
-	  $sql=sprintf("select sum(if(`Product Category DC 1 Year Acc Profit`<0,`Product Category DC 1 Year Acc Profit`,0)) as total_profit_minus,sum(if(`Product Category DC 1 Year Acc Profit`>=0,`Product Category DC 1 Year Acc Profit`,0)) as total_profit_plus,sum(`Product Category DC 1 Year Acc Invoiced Amount`) as sum_total_sales  from  `Category Dimension` left join   `Product Category Default Currency` on (`Category Key`=`Product Category Key`)  %s %s",$where,$wheref);
-	  //print $sql;
-	  $result=mysql_query($sql);
-	  if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+/* 	if($exchange_type=='day2day'){ */
+/* 	  $sql=sprintf("select sum(if(`Product Category DC 1 Year Acc Profit`<0,`Product Category DC 1 Year Acc Profit`,0)) as total_profit_minus,sum(if(`Product Category DC 1 Year Acc Profit`>=0,`Product Category DC 1 Year Acc Profit`,0)) as total_profit_plus,sum(`Product Category DC 1 Year Acc Invoiced Amount`) as sum_total_sales  from  `Category Dimension` left join   `Product Category Dimension` on (`Category Key`=`Product Category Key`)  %s %s",$where,$wheref); */
+/* 	  print $sql; */
+/* 	  $result=mysql_query($sql); */
+/* 	  if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) { */
 	    
-            $sum_total_sales+=$row['sum_total_sales'];
+/*             $sum_total_sales+=$row['sum_total_sales']; */
 
-            $sum_total_profit_plus=+$row['total_profit_plus'];
-            $sum_total_profit_minus=+$row['total_profit_minus'];
-            $sum_total_profit+=$row['total_profit_plus']-$row['total_profit_minus'];
-	  }
-	  mysql_free_result($result);
-	}else{
-	  $sql=sprintf("select sum(if(`Product Category 1 Year Acc Profit`<0,`Product Category 1 Year Acc Profit`,0)) as total_profit_minus,sum(if(`Product Category 1 Year Acc Profit`>=0,`Product Category 1 Year Acc Profit`,0)) as total_profit_plus,sum(`Product Category 1 Year Acc Invoiced Amount`) as sum_total_sales  from `Product Category Dimension`  S   %s %s and `Product Category Currency Code`!= %s ",$where,$wheref,prepare_mysql($myconf['currency_code']));
-	  //print $sql;
-        $result=mysql_query($sql);
-        if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+/*             $sum_total_profit_plus=+$row['total_profit_plus']; */
+/*             $sum_total_profit_minus=+$row['total_profit_minus']; */
+/*             $sum_total_profit+=$row['total_profit_plus']-$row['total_profit_minus']; */
+/* 	  } */
+/* 	  mysql_free_result($result); */
+/* 	}else{ */
+/* 	  $sql=sprintf("select sum(if(`Product Category 1 Year Acc Profit`<0,`Product Category 1 Year Acc Profit`,0)) as total_profit_minus,sum(if(`Product Category 1 Year Acc Profit`>=0,`Product Category 1 Year Acc Profit`,0)) as total_profit_plus,sum(`Product Category 1 Year Acc Invoiced Amount`) as sum_total_sales  from `Product Category Dimension`  S   %s %s and `Product Category Currency Code`!= %s ",$where,$wheref,prepare_mysql($myconf['currency_code'])); */
+/* 	  print $sql; */
+/*         $result=mysql_query($sql); */
+/*         if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) { */
 
-            $sum_total_sales+=$row['sum_total_sales']*$exchange_value;
+/*             $sum_total_sales+=$row['sum_total_sales']*$exchange_value; */
 
-            $sum_total_profit_plus+=$row['total_profit_plus']*$exchange_value;
-            $sum_total_profit_minus+=$row['total_profit_minus']*$exchange_value;
-            $sum_total_profit+=$row['total_profit_plus']-$row['total_profit_minus'];
-        }
-        mysql_free_result($result);
+/*             $sum_total_profit_plus+=$row['total_profit_plus']*$exchange_value; */
+/*             $sum_total_profit_minus+=$row['total_profit_minus']*$exchange_value; */
+/*             $sum_total_profit+=$row['total_profit_plus']-$row['total_profit_minus']; */
+/*         } */
+/*         mysql_free_result($result); */
 
-	}
+/* 	} */
 	
 	
 	
 
 
-    }
-    elseif($period=='quarter') {
+/*     } */
+/*     elseif($period=='quarter') { */
 
-        $sum_total_sales=0;
-        $sum_month_sales=0;
-        $sql="select sum(if(`Product Category 1 Quarter Acc Profit`<0,`Product Category 1 Quarter Acc Profit`,0)) as total_profit_minus,sum(if(`Product Category 1 Quarter Acc Profit`>=0,`Product Category 1 Quarter Acc Profit`,0)) as total_profit_plus,sum(`Product Category For Sale Products`) as sum_active,sum(`Product Category 1 Quarter Acc Invoiced Amount`) as sum_total_sales   from `Product Category Dimension`  $where $wheref   ";
+/*         $sum_total_sales=0; */
+/*         $sum_month_sales=0; */
+/*         $sql="select sum(if(`Product Category 1 Quarter Acc Profit`<0,`Product Category 1 Quarter Acc Profit`,0)) as total_profit_minus,sum(if(`Product Category 1 Quarter Acc Profit`>=0,`Product Category 1 Quarter Acc Profit`,0)) as total_profit_plus,sum(`Product Category For Sale Products`) as sum_active,sum(`Product Category 1 Quarter Acc Invoiced Amount`) as sum_total_sales   from `Product Category Dimension`  $where $wheref   "; */
 
-        $result=mysql_query($sql);
-        if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+/*         $result=mysql_query($sql); */
+/*         if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) { */
 
-            $sum_total_sales=$row['sum_total_sales'];
+/*             $sum_total_sales=$row['sum_total_sales']; */
 
-            $sum_total_profit_plus=$row['total_profit_plus'];
-            $sum_total_profit_minus=$row['total_profit_minus'];
-            $sum_total_profit=$row['total_profit_plus']-$row['total_profit_minus'];
-        }
-        mysql_free_result($result);
+/*             $sum_total_profit_plus=$row['total_profit_plus']; */
+/*             $sum_total_profit_minus=$row['total_profit_minus']; */
+/*             $sum_total_profit=$row['total_profit_plus']-$row['total_profit_minus']; */
+/*         } */
+/*         mysql_free_result($result); */
 
-    }
-    elseif($period=='month') {
+/*     } */
+/*     elseif($period=='month') { */
 
-        $sum_total_sales=0;
-        $sum_month_sales=0;
-        $sql="select sum(if(`Product Category 1 Month Acc Profit`<0,`Product Category 1 Month Acc Profit`,0)) as total_profit_minus,sum(if(`Product Category 1 Month Acc Profit`>=0,`Product Category 1 Month Acc Profit`,0)) as total_profit_plus,sum(`Product Category For Sale Products`) as sum_active,sum(`Product Category 1 Month Acc Invoiced Amount`) as sum_total_sales   from `Product Category Dimension`  $where $wheref   ";
+/*         $sum_total_sales=0; */
+/*         $sum_month_sales=0; */
+/*         $sql="select sum(if(`Product Category 1 Month Acc Profit`<0,`Product Category 1 Month Acc Profit`,0)) as total_profit_minus,sum(if(`Product Category 1 Month Acc Profit`>=0,`Product Category 1 Month Acc Profit`,0)) as total_profit_plus,sum(`Product Category For Sale Products`) as sum_active,sum(`Product Category 1 Month Acc Invoiced Amount`) as sum_total_sales   from `Product Category Dimension`  $where $wheref   "; */
 
-        $result=mysql_query($sql);
-        if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+/*         $result=mysql_query($sql); */
+/*         if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) { */
 
-            $sum_total_sales=$row['sum_total_sales'];
+/*             $sum_total_sales=$row['sum_total_sales']; */
 
-            $sum_total_profit_plus=$row['total_profit_plus'];
-            $sum_total_profit_minus=$row['total_profit_minus'];
-            $sum_total_profit=$row['total_profit_plus']-$row['total_profit_minus'];
-        }
-        mysql_free_result($result);
+/*             $sum_total_profit_plus=$row['total_profit_plus']; */
+/*             $sum_total_profit_minus=$row['total_profit_minus']; */
+/*             $sum_total_profit=$row['total_profit_plus']-$row['total_profit_minus']; */
+/*         } */
+/*         mysql_free_result($result); */
 
-    }
-    elseif($period=='week') {
+/*     } */
+/*     elseif($period=='week') { */
 
-        $sum_total_sales=0;
-        $sum_month_sales=0;
-        $sql="select sum(if(`Product Category 1 Week Acc Profit`<0,`Product Category 1 Week Acc Profit`,0)) as total_profit_minus,sum(if(`Product Category 1 Week Acc Profit`>=0,`Product Category 1 Week Acc Profit`,0)) as total_profit_plus,sum(`Product Category For Sale Products`) as sum_active,sum(`Product Category 1 Week Acc Invoiced Amount`) as sum_total_sales   from `Product Category Dimension`   $where $wheref  ";
+/*         $sum_total_sales=0; */
+/*         $sum_month_sales=0; */
+/*         $sql="select sum(if(`Product Category 1 Week Acc Profit`<0,`Product Category 1 Week Acc Profit`,0)) as total_profit_minus,sum(if(`Product Category 1 Week Acc Profit`>=0,`Product Category 1 Week Acc Profit`,0)) as total_profit_plus,sum(`Product Category For Sale Products`) as sum_active,sum(`Product Category 1 Week Acc Invoiced Amount`) as sum_total_sales   from `Product Category Dimension`   $where $wheref  "; */
 
-        $result=mysql_query($sql);
-        if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+/*         $result=mysql_query($sql); */
+/*         if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) { */
 
-            $sum_total_sales=$row['sum_total_sales'];
+/*             $sum_total_sales=$row['sum_total_sales']; */
 
-            $sum_total_profit_plus=$row['total_profit_plus'];
-            $sum_total_profit_minus=$row['total_profit_minus'];
-            $sum_total_profit=$row['total_profit_plus']-$row['total_profit_minus'];
-        }
-        mysql_free_result($result);
+/*             $sum_total_profit_plus=$row['total_profit_plus']; */
+/*             $sum_total_profit_minus=$row['total_profit_minus']; */
+/*             $sum_total_profit=$row['total_profit_plus']-$row['total_profit_minus']; */
+/*         } */
+/*         mysql_free_result($result); */
 
-    }
+/*     } */
 
 
 
-    $sql="select *  from `Category Dimension` S  left join `Product Category Default Currency` DC on (`Category Key`=DC.`Product Category Key`) left join `Product Category Dimension` PC on (`Category Key`=PC.`Product Category Key`)   $where $wheref  order by $order $order_direction limit $start_from,$number_results    ";
-    //    print $sql;
+    $sql="select *  from `Category Dimension` S  left join `Product Category Dimension` PC on (`Category Key`=PC.`Product Category Key`)   $where $wheref  order by $order $order_direction limit $start_from,$number_results    ";
+    // print $sql;
     $res = mysql_query($sql);
 
     $total=mysql_num_rows($res);
@@ -8748,7 +8748,7 @@ function list_product_subcategories(){
 	  $sales=$tsall;
 	  $profit=$tprofit;
 	}	  
-	$name=$row['Category Name'];
+	$name=$row['Product Category Key'].' '.$row['Category Name']." (".$row['Product Category Store Key'].")";
         $adata[]=array(
 		       'id'=>$row['Category Key'],
 		       'name'=>$name,
@@ -8771,46 +8771,46 @@ function list_product_subcategories(){
     }
     mysql_free_result($res);
 
-    if ($percentages) {
-        $sum_sales='100.00%';
-        $sum_profit='100.00%';
-//       $sum_low=
-//   $sum_optimal=$row['Product Category Optimal Availability Products'];
-//   $sum_low=$row['Product Category Low Availability Products'];
-//   $sum_critical=$row['Product Category Critical Availability Products'];
-//   $sum_surplus=$row['Product Category Surplus Availability Products'];
-    } else {
-        $sum_sales=money($sum_total_sales);
-        $sum_profit=money($sum_total_profit);
-    }
+   /*  if ($percentages) { */
+/*         $sum_sales='100.00%'; */
+/*         $sum_profit='100.00%'; */
+/* //       $sum_low= */
+/* //   $sum_optimal=$row['Product Category Optimal Availability Products']; */
+/* //   $sum_low=$row['Product Category Low Availability Products']; */
+/* //   $sum_critical=$row['Product Category Critical Availability Products']; */
+/* //   $sum_surplus=$row['Product Category Surplus Availability Products']; */
+/*     } else { */
+/*         $sum_sales=money($sum_total_sales); */
+/*         $sum_profit=money($sum_total_profit); */
+/*     } */
 
-    $sum_outofstock=number($sum_outofstock);
-    $sum_low=number($sum_low);
-    $sum_optimal=number($sum_optimal);
-    $sum_critical=number($sum_critical);
-    $sum_surplus=number($sum_surplus);
-    $sum_unknown=number($sum_unknown);
-    $sum_departments=number($sum_departments);
-    $sum_families=number($sum_families);
-    $sum_todo=number($sum_todo);
-    $sum_discontinued=number($sum_discontinued);
-    $adata[]=array(
+/*     $sum_outofstock=number($sum_outofstock); */
+/*     $sum_low=number($sum_low); */
+/*     $sum_optimal=number($sum_optimal); */
+/*     $sum_critical=number($sum_critical); */
+/*     $sum_surplus=number($sum_surplus); */
+/*     $sum_unknown=number($sum_unknown); */
+/*     $sum_departments=number($sum_departments); */
+/*     $sum_families=number($sum_families); */
+/*     $sum_todo=number($sum_todo); */
+/*     $sum_discontinued=number($sum_discontinued); */
+/*     $adata[]=array( */
 
-                 'name'=>_('Total'),
-                 'active'=>number($sum_active),
-                 'sales'=>$sum_sales,
-                 'profit'=>$sum_profit,
-                 'todo'=>$sum_todo,
-                 'discontinued'=>$sum_discontinued,
-                 'low'=>$sum_low,
-                 'critical'=>$sum_critical,
-                 'surplus'=>$sum_surplus,
-                 'optimal'=>$sum_optimal,
-                 'outofstock'=>$sum_outofstock,
-                 'stock_error'=>$sum_unknown,
-                 'departments'=>$sum_departments,
-                 'families'=>$sum_families
-             );
+/*                  'name'=>_('Total'), */
+/*                  'active'=>number($sum_active), */
+/*                  'sales'=>$sum_sales, */
+/*                  'profit'=>$sum_profit, */
+/*                  'todo'=>$sum_todo, */
+/*                  'discontinued'=>$sum_discontinued, */
+/*                  'low'=>$sum_low, */
+/*                  'critical'=>$sum_critical, */
+/*                  'surplus'=>$sum_surplus, */
+/*                  'optimal'=>$sum_optimal, */
+/*                  'outofstock'=>$sum_outofstock, */
+/*                  'stock_error'=>$sum_unknown, */
+/*                  'departments'=>$sum_departments, */
+/*                  'families'=>$sum_families */
+/*              ); */
 
 
     // if($total<$number_results)
@@ -8818,7 +8818,7 @@ function list_product_subcategories(){
     //else
     //  $rtext='';
 
-    $total_records=ceil($total_records/$number_results)+$total_records;
+    //   $total_records=ceil($total_records/$number_results)+$total_records;
 
     $response=array('resultset'=>
                                 array('state'=>200,

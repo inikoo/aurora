@@ -154,18 +154,50 @@ class Category extends DB_Table {
         return false;
     }
 
-
-
+    function load($key,$args=''){
+      switch($key){
+      case('sales'):
+	$this->update_sales();
+	break;
+	
+      case('product_data'):
+	$this->update_product_data();
+	break;
+      }
+    }
+    
 
     function update_sales(){
+      $sql="select * from `Store Dimension`";
+      $result=mysql_query($sql);
+      while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
+	$this->update_sales_store($row['Store Key']);
+      }
+      mysql_free_result($result);
+    }
+
+
+
+ function update_product_data(){
+      $sql="select * from `Store Dimension`";
+      $result=mysql_query($sql);
+      while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
+	$this->update_store_product_data($row['Store Key']);
+      }
+      mysql_free_result($result);
+    }
+
+    function update_sales_store($store_key){
+      // print_r($this->data);
+
       if($this->data['Category Subject']!='Product')
 	return;
 
       
   $on_sale_days=0;
      
-    $sql="select count(*) as prods,min(`Product For Sale Since Date`) as ffrom ,max(`Product Last Sold Date`) as tto, sum(if(`Product Sales State`='For sale',1,0)) as for_sale   from `Product Dimension` as P left join `Product Category Bridge` as B on (B.`Product Key`=P.`Product Key`)  where `Category Key`=".$this->id;
-
+  $sql=sprintf("select count(*) as prods,min(`Product For Sale Since Date`) as ffrom ,max(`Product Last Sold Date`) as tto, sum(if(`Product Sales State`='For sale',1,0)) as for_sale   from `Product Dimension` as P left join `Category Bridge` as B on (B.`Subject Key`=P.`Product ID`)  where `Subject`='Product' and `Category Key`=%d and `Product Store Key`=%d",$this->id,$store_key);
+  //print "$sql\n";
     $result=mysql_query($sql);
     if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
       $from=strtotime($row['ffrom']);
@@ -184,13 +216,14 @@ class Category extends DB_Table {
 
     }
  
-    $sql="select count(Distinct `Order Key`) as pending_orders   from `Order Transaction Fact` OTF  left join `Product Category Bridge` B  on  (B.`Product Key`=OTF.`Product Key`)   where  `Current Dispatching State` not in ('Unknown','Dispached','Cancelled')  and  `Category Key`=".$this->id;
+    $sql=sprintf("select count(Distinct `Order Key`) as pending_orders   from `Order Transaction Fact` OTF left join `Product History Dimension` PH on (PH.`Product Key`=OTF.`Product Key`)  left join `Category Bridge` B  on  (B.`Subject Key`=PH.`Product ID`)   where `Subject`='Product' and  `Current Dispatching State` not in ('Unknown','Dispached','Cancelled')  and  `Category Key`=%d and `Store Key`=%d",$this->id,$store_key);
+    //print $sql;
     $result=mysql_query($sql);
     $pending_orders=0;
     if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
       $pending_orders=$row['pending_orders'];
     }
-    $sql="select    count(Distinct `Customer Key`)as customers ,count(Distinct `Invoice Key`)as invoices ,  sum(`Cost Supplier`) as cost_sup,sum(`Invoice Transaction Gross Amount`) as gross ,sum(`Invoice Transaction Total Discount Amount`)as disc ,sum(`Shipped Quantity`) as delivered,sum(`Order Quantity`) as ordered,sum(`Invoice Quantity`) as invoiced  from `Order Transaction Fact`  OTF  left join `Product Category Bridge` B  on  (B.`Product Key`=OTF.`Product Key`)  where `Category Key`=".$this->id;
+    $sql=sprintf("select    count(Distinct `Customer Key`)as customers ,count(Distinct `Invoice Key`)as invoices ,  sum(`Cost Supplier`) as cost_sup,sum(`Invoice Transaction Gross Amount`) as gross ,sum(`Invoice Transaction Total Discount Amount`)as disc ,sum(`Shipped Quantity`) as delivered,sum(`Order Quantity`) as ordered,sum(`Invoice Quantity`) as invoiced  from `Order Transaction Fact`  OTF   left join `Product History Dimension` PH on (PH.`Product Key`=OTF.`Product Key`)   left join `Category Bridge` B  on  (B.`Subject Key`=PH.`Product ID`)  where `Subject`='Product' and `Category Key`=%d and `Store Key`=%d",$this->id,$store_key);
 
 
     //print "$sql\n\n";
@@ -213,7 +246,7 @@ class Category extends DB_Table {
       $this->data['Product Category Total Invoices']=$row['invoices'];
       $this->data['Product Category Total Pending Orders']=$pending_orders;
 
-      $sql=sprintf("update `Product Category Dimension` set `Product Category Total Invoiced Gross Amount`=%s,`Product Category Total Invoiced Discount Amount`=%s,`Product Category Total Invoiced Amount`=%s,`Product Category Total Profit`=%s, `Product Category Total Quantity Ordered`=%s , `Product Category Total Quantity Invoiced`=%s,`Product Category Total Quantity Delivered`=%s ,`Product Category Total Days On Sale`=%f ,`Product Category Valid From`=%s,`Product Category Valid To`=%s ,`Product Category Total Customers`=%d,`Product Category Total Invoices`=%d,`Product Category Total Pending Orders`=%d  where `Product Category Key`=%d "
+      $sql=sprintf("update `Product Category Dimension` set `Product Category Total Invoiced Gross Amount`=%s,`Product Category Total Invoiced Discount Amount`=%s,`Product Category Total Invoiced Amount`=%s,`Product Category Total Profit`=%s, `Product Category Total Quantity Ordered`=%s , `Product Category Total Quantity Invoiced`=%s,`Product Category Total Quantity Delivered`=%s ,`Product Category Total Days On Sale`=%f ,`Product Category Valid From`=%s,`Product Category Valid To`=%s ,`Product Category Total Customers`=%d,`Product Category Total Invoices`=%d,`Product Category Total Pending Orders`=%d  where `Product Category Key`=%d and `Product Category Store Key`=%d  "
 		   ,prepare_mysql($this->data['Product Category Total Invoiced Gross Amount'])
 		   ,prepare_mysql($this->data['Product Category Total Invoiced Discount Amount'])
 		   ,prepare_mysql($this->data['Product Category Total Invoiced Amount'])
@@ -229,8 +262,9 @@ class Category extends DB_Table {
 		   ,$this->data['Product Category Total Invoices']
 		   ,$this->data['Product Category Total Pending Orders']
 		   ,$this->id
+		   ,$store_key
 		   );
-     
+      //  print "$sql\n";
       if(!mysql_query($sql))
 	exit("$sql\ncan not update dept sales\n");
     }
@@ -561,7 +595,41 @@ class Category extends DB_Table {
 
     }
  
+   
+ function update_store_product_data($store_key){
+
+      if($this->data['Category Subject']!='Product')
+	return;
 
 
+   $sql=sprintf("select sum(if(`Product Record Type`='In process',1,0)) as in_process,sum(if(`Product Sales State`='Unknown',1,0)) as sale_unknown, sum(if(`Product Sales State`='Discontinued',1,0)) as discontinued,sum(if(`Product Sales State`='Not for sale',1,0)) as not_for_sale,sum(if(`Product Sales State`='For sale',1,0)) as for_sale,sum(if(`Product Availability State`='Unknown',1,0)) as availability_unknown,sum(if(`Product Availability State`='Optimal',1,0)) as availability_optimal,sum(if(`Product Availability State`='Low',1,0)) as availability_low,sum(if(`Product Availability State`='Critical',1,0)) as availability_critical,sum(if(`Product Availability State`='Surplus',1,0)) as availability_surplus,sum(if(`Product Availability State`='Out Of Stock',1,0)) as availability_outofstock from `Product Dimension`  left join `Category Bridge` on (`Subject Key`=`Product ID`)  where `Subject`='Product' and   `Product Store Key`=%d and `Category Key`=%d",$store_key,$this->id);
+   // print "$sql\n\n\n";
+   
+    $result=mysql_query($sql);
+    if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
+
+      $sql=sprintf("update `Product Category Dimension` set `Product Category In Process Products`=%d,`Product Category For Sale Products`=%d ,`Product Category Discontinued Products`=%d ,`Product Category Not For Sale Products`=%d ,`Product Category Unknown Sales State Products`=%d, `Product Category Optimal Availability Products`=%d , `Product Category Low Availability Products`=%d ,`Product Category Critical Availability Products`=%d ,`Product Category Out Of Stock Products`=%d,`Product Category Unknown Stock Products`=%d ,`Product Category Surplus Availability Products`=%d where `Product Category Store Key`=%d and `Product Category Key`=%d  ",
+		   $row['in_process'],
+		   $row['for_sale'],
+		   $row['discontinued'],
+		   $row['not_for_sale'],
+		   $row['sale_unknown'],
+		   $row['availability_optimal'],
+		   $row['availability_low'],
+		   $row['availability_critical'],
+		   $row['availability_outofstock'],
+		   $row['availability_unknown'],
+		   $row['availability_surplus'],
+		   $store_key,
+		   $this->id
+		   );
+      //print "$sql\n";exit;
+      mysql_query($sql);
+      $this->get_data('id',$this->id);
+    
+    }
+
+ 
+  }
 
 }

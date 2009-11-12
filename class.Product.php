@@ -3027,6 +3027,17 @@ public $new_value=false;
 
   }
 
+
+  function load_categories(){
+    $sql=sprintf("select `Category Key` from `Category Bridge` where `Subject`='Product' and `Subject Key`=%d",$this->data['Product ID']);
+    // print "$sql\n";
+    $res=mysql_query($sql);
+    $this->categories=array();
+    while ($row=mysql_fetch_array($res)) {
+      $this->categories[$row['Category Key']]=$row['Category Key'];
+    }
+  }
+
   function get_historic_keys_with_same_code() {
     $sql=sprintf("select PHD.`Product Key` from `Product History Dimension` PHD left join `Product Dimension` PD on (PD.`Product ID`=PHD.`Product ID`)  where `Product Code`=%s group by `Product Key`"
 		 ,prepare_mysql($this->code));
@@ -4271,8 +4282,6 @@ function update_description($description){
 
  function add_category($category_key){
 
-  
-
    $num_inserted_categories=0;
    $num_inserted_errors=0;
    $sql=sprintf("select PCB.`Category Key`,`Category Position`,`Category Name` from `Category Bridge` PCB left join `Category Dimension` C on (C.`Category Key`=PCB.`Category Key`)   where  PCB.`Subject Key`=%d  and `Subject`='Product'  and PCB.`Category Key`=%d   " ,$this->pid,$category_key);
@@ -4284,20 +4293,62 @@ function update_description($description){
     }
     mysql_free_result($res);
     
+
+    
+    
+    
+
+
     $sql=sprintf("select * from `Category Dimension`    where  `Category Key`=%d   " ,$category_key);
-   
+    //print "$sql\n";
     $res=mysql_query($sql);
     if($row=mysql_fetch_array($res)){
       $cat_added=$row['Category Name'];
       //      print preg_replace('/^\d+>/','',$row['Category Position'])."\n";
       $category_location=preg_split('/>/',  preg_replace('/>$/','',preg_replace('/^\d+>/','',$row['Category Position']))  )   ;
+      $category_parents=preg_replace('/\d+>$/','',$row['Category Position']);
+      $category_deep=$row['Category Deep'];
+      $to_delete=array();
+      if($row['Category Default']=='Yes'){
+	$default=true;
+	
+	
+      }else{
+	$default=false;
+      }
+
+     
+
       foreach($category_location as $category_location_key){
 	$sql=sprintf("insert into  `Category Bridge`   values (%d,'Product',%d) ",$category_location_key,$this->pid);
-       
+	//print "$sql\n";
 	if(mysql_query($sql)){
 	  if(mysql_affected_rows()>0){
 	    $num_inserted_categories++;
 	    $this->updated_fields['Product Category'][$category_location_key]=1;
+
+	    if($default){
+	      $sql=sprintf("select `Category Key` from `Category Dimension` where `Category Position` like '%s%%' and `Category Default`='No' and `Category Deep`=%d  "
+			   ,$category_parents
+			   ,$category_deep
+			   );
+	       $_res=mysql_query($sql);
+	       while($_row=mysql_fetch_array($_res)){
+		 $this->remove_category($_row['Category Key']);
+	       }
+	    }else{
+	       $sql=sprintf("select `Category Key` from `Category Dimension` where `Category Position` like '%s%%' and `Category Default`='Yes' and `Category Deep`=%d  "
+			   ,$category_parents
+			   ,$category_deep
+			   );
+	       $_res=mysql_query($sql);
+	       while($_row=mysql_fetch_array($_res)){
+		 $this->remove_category($_row['Category Key']);
+	       }
+
+	    }
+
+
 	  }
 	}else
 	  $num_inserted_errors++;

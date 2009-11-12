@@ -77,7 +77,7 @@ $data=array('`Category Name`'=>'Soap');
 $nodes->add_new(1 , $data);
 $data=array('`Category Name`'=>'Incense');
 $nodes->add_new(1 , $data);
-$data=array('`Category Name`'=>'Aromatheraphy');
+$data=array('`Category Name`'=>'Holistic Theraphies');
 $nodes->add_new(1 , $data);
 $data=array('`Category Name`'=>'Bathroom Product');
 $nodes->add_new(1 , $data);
