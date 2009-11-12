@@ -107,7 +107,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    this.dataSource0.responseSchema = {
 		resultsList: "resultset.data", 
 		metaFields: {
-		       rtext:"resultset.rtext",
+		    rtext:"resultset.rtext",
 		    rtext_rpp:"resultset.rtext_rpp",
 		    rowsPerPage:"resultset.records_perpage",
 		    sort_key:"resultset.sort_key",
