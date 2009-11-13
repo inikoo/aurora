@@ -132,7 +132,7 @@ $mode_options=array(
 
 $display_mode='value';
 $display_mode_label=_('Values');
-if($_SESSION['state']['stores']['percentages']){
+if($_SESSION['state']['product_categories']['percentages']){
   $display_mode='percentages';
   $display_mode_label=_('Percentages');
 }
@@ -143,14 +143,7 @@ if($distinct_currencies>1){
   if($_SESSION['state']['stores']['table']['show_default_currency']){
     $display_mode='value_default_d2d';
     $display_mode_label=_("Values in")." ".$myconf['currency_code']." ("._('d2d').")";
-
-    
-    
-    
   }
-  
-  
-  
 }
 
 

@@ -10,7 +10,21 @@ var avg='avg_<?php echo $_SESSION['state']['product_categories']['avg']?>';
 
 
 
+function change_category(){
+    if(Dom.hasClass(this,'selected'))
+    	return;
+    //alert(this)
+     Dom.removeClass(Dom.getElementsByClassName('selected','span','cat_chooser'),'selected');
+    Dom.addClass(this,'selected');
+    var table_id=0
+    var table=tables['table'+table_id];
+    var datasource=tables['dataSource'+table_id];
+    var request='&category=' + this.getAttribute('cat_id');
+    datasource.sendRequest(request,table.onDataReturnInitializeTable, table);   
 
+
+    
+}
 
 
 
@@ -224,6 +238,10 @@ var oACDS = new YAHOO.util.FunctionDataSource(mygetTerms);
  YAHOO.util.Event.addListener(ids, "click",change_period,0);
  ids=['avg_totals','avg_month','avg_week',"avg_month_eff","avg_week_eff"];
  YAHOO.util.Event.addListener(ids, "click",change_avg,0);
+
+ var elements = Dom.getElementsByClassName('cat_chooser','span','cat_chooser');
+
+     YAHOO.util.Event.addListener(elements, "click",change_category);
 
  //YAHOO.util.Event.addListener('show_details', "click",show_details,'product_categories');
  YAHOO.util.Event.addListener('show_percentages', "click",show_percentages,'product_categories');

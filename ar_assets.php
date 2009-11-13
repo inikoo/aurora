@@ -8173,7 +8173,15 @@ function list_product_subcategories(){
     // print_r($_SESSION['tables']['families_list']);
 
     //  print_r($_SESSION['tables']['families_list']);
-    $root_category=$_SESSION['state']['product_categories']['category'];
+
+    if (isset( $_REQUEST['category'])) {
+      $root_category=$_REQUEST['category'];
+      $_SESSION['state']['product_categories']['category']=$avg;
+    } else
+      $root_category=$_SESSION['state']['product_categories']['category'];
+
+
+
     $where=sprintf("where `Category Position` like '%d>%%'  and `Category Deep`>1 ",$root_category);
 
     $filter_msg='';
