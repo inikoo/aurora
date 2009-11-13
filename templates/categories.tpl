@@ -5,16 +5,18 @@
   <h1>{t}Categories{/t}</h1>
 </div>
 
- <div style="margin-bottom:20px">
+ <div style="margin-bottom:20px" id="cat_chooser">
   {foreach from=$main_category_list item=category name=foo}
-  <span class="button" {if $category.selected}class="selected"{/if} {if $smarty.foreach.foo.first}style="margin:0"{/if}   id="root_{$category.id}" >{$category.name}</span>
+  <span class="button  cat_chooser {if $category.selected==1}selected{/if}" {if $smarty.foreach.foo.first}style="margin:0"{/if}   id="root_{$category.id}" cat_id={$category.id}  >{$category.name}</span>
 {/foreach}
  </div>
 
 <div class="data_table" style="clear:both">
     <span class="clean_table_title">{t}Subcategories{/t}</span>
  <div style="clear:both;margin:0 0px;padding:0 20px ;border-bottom:1px solid #999"></div>
+ <span   style="float:right;margin-left:80px" class="state_details"  id="change_stores" >{$display_stores}</span>
  <span   style="float:right;margin-left:80px" class="state_details"  id="change_display_mode" >{$display_mode_label}</span>
+
 <table style="float:left;margin:0 0 0 0px ;padding:0"  class="options" >
 	<tr><td  {if $view=='general'}class="selected"{/if} id="general" >{t}General{/t}</td>
 	  {if $view_stock}<td {if $view=='stock'}class="selected"{/if}  id="stock"  >{t}Stock{/t}</td>{/if}

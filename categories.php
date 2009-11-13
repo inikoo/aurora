@@ -60,9 +60,43 @@ while($row=mysql_fetch_array($res)){
     $category=$row['Category Key'];
   $main_category_list[]=array('name'=>$row['Category Name'],'id'=>$row['Category Key'],'selected'=>( $category==$row['Category Key']?1:0));
 }
+//print_r($main_category_list);
 mysql_free_result($res);
 $smarty->assign('main_category_list',$main_category_list);
 $_SESSION['state']['product_categories']['category']=$category;
+
+global $myconf;
+$stores=array();
+$sql=sprintf("select count(distinct `Store Currency Code` ) as distint_currencies, sum(IF(`Store Currency Code`=%s,1,0)) as default_currency    from `Store Dimension` "
+	     ,prepare_mysql($myconf['currency_code']));
+
+$res=mysql_query($sql);
+if($row=mysql_fetch_array($res)){
+  $distinct_currencies=$row['distint_currencies'];
+  $default_currency=$row['default_currency'];
+}
+
+
+
+$display_mode='value';
+$display_mode_label=_('Values');
+if($_SESSION['state']['product_categories']['percentages']){
+  $display_mode='percentages';
+  $display_mode_label=_('Percentages');
+}
+
+if($distinct_currencies>1){
+  $mode_options[]=array('mode'=>'value_default_d2d','label'=>_("Values in")." ".$myconf['currency_code']." ("._('d2d').")");
+
+  if($_SESSION['state']['stores']['table']['show_default_currency']){
+    $display_mode='value_default_d2d';
+    $display_mode_label=_("Values in")." ".$myconf['currency_code']." ("._('d2d').")";
+  }
+}
+
+
+$smarty->assign('display_mode',$display_mode);
+$smarty->assign('display_mode_label',$display_mode_label);
 
 
 $smarty->display('categories.tpl');
