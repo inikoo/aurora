@@ -4,7 +4,7 @@
 	  "http://www.w3c.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="{$lang_code}">
-  <head>
+<head>
     <title>{$title}</title>
     <link href="art/kaktus-icon.png" rel="shortcut icon" type="image/x-icon" />
     {foreach from=$css_files item=i }
@@ -17,8 +17,8 @@
         
   </head>
   <body  class=" yui-skin-sam kaktus">
-    <div id="{$page_layout}" class="{$box_layout}">
-      <div id="hd" >
+   <div id="{$page_layout}" class="{$box_layout}">
+   <div id="hd" >
   	        <div style="float:right;font-size:77%;margin:0px 20px 0.15em 0">
 	            <span id="top_message" style=";margin-right:30px"></span>
 	            <a style=";margin-right:15px">{t}Help{/t}</a>
@@ -35,4 +35,47 @@
 	          </ul>
         	</div> 
       </div> 
-      
+   
+  
+<div id="bd" >
+<h1>{t}Site Map{/t}</h1>
+<ul id="sitemap">
+			<li><a href="#" title="Click here for...">Home</a>
+				<ul>
+					<li><a href="#" title="Click here for...">About Us</a></li>
+					<li><a href="#" title="Click here for...">Equipment</a>
+
+						<ul>
+							<li><a href="#" title="Click here for...">Equipment 1</a></li>
+							<li><a href="#" title="Click here for...">Equipment 2</a></li>
+							<li><a href="#" title="Click here for...">Equipment 3</a></li>
+						</ul>
+					</li>
+					<li><a href="#" title="Click here for...">Services</a>
+
+						<ul>
+							<li><a href="#" title="Click here for...">Service 1</a></li>
+							<li><a href="#" title="Click here for...">Service 2</a>
+								<ul>
+									<li><a href="#" title="Click here for...">Example 1</a>
+										<ul>
+											<li><a href="#" title="Click here for...">Case Study</a></li>
+
+										</ul>
+									</li>
+									<li><a href="#" title="Click here for...">Example 2</a></li>
+								</ul>
+							</li>
+							<li><a href="#" title="Click here for...">Service 3</a></li>
+							<li><a href="#" title="Click here for...">Service 4</a></li>
+
+						</ul>
+					</li>
+					<li><a href="#" title="Click here for...">Contact Us</a></li>
+				</ul>
+			</li>		
+		</ul>
+
+
+</div>
+{include file='footer.tpl'}

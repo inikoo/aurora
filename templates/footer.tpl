@@ -1,4 +1,9 @@
-<div id="ft">{t}Powered by Kaktus{/t}</div> 
+<div id="ft">
+<a href="site_map.php">{t}Site Map{/t}</a>
+<a style="margin-left:10px" href="terms_use.php">{t}Terms of use{/t}</a>
+
+<div style="margin-top:2px">{t}Powered by Kaktus{/t}</div>
+</div> 
 
 </div>
 <div id="langmenu" class="yuimenu">

@@ -36,83 +36,21 @@ $smarty->assign('store',$store);
 
 $_SESSION['state']['customers']['store']=$store_id;
 
-// $q='';
-// $q_id=0;
-// $not_fount=false;
+$modify=$user->can_edit('customers');
 
-// if(isset($_REQUEST['q_id1']) and $_REQUEST['q_id1']!=''  ){
-//   // SEARCH!!!!!!!!!!!!
-//   $q=$_REQUEST['q_id1'];
-//   $sql=sprintf("select id from customer where id='%s' ",addslashes($q));
+$show_details=$_SESSION['state']['customers']['details'];
+$smarty->assign('details',$show_details);
 
-//   $result=mysql_query($sql);
-
-//   if($found=mysql_fetch_array($result, MYSQL_ASSOC)){
-//     header('Location: customer.php?id='. $found['id']);
-//     exit;
-//   }else{
-//     $not_fount=true;
-//     $smarty->assign('search1',$q);
-//     $_SESSION['tables']['customers_list'][4]=sprintf("where id='%s'",addslashes($q));
-//     $_SESSION['tables']['customers_list'][5]='id';
-//     $_SESSION['tables']['customers_list'][6]='';
-//   }
-
-  
+$general_options_list=array();
 
 
-//  }else{
-//   $_SESSION['state']['customer']['where']='where true ';
-//  }
+if($modify)
+  $general_options_list[]=array('tipo'=>'url','url'=>'new_customer.php?edit=1','label'=>_('Add Customer'));
 
-// if(isset($_REQUEST['q_id2'])  ){
-//   // SEARCH!!!!!!!!!!!!
-//   $q=$_REQUEST['q_id2'];
-//   $q_id=2;
-//   $sql=sprintf("select id from customer where id2='%s' ",addslashes($q));
+$general_options_list[]=array('tipo'=>'js','state'=>$show_details,'id'=>'details','label'=>($show_details?_('Hide Details'):_('Show Details')));
+$general_options_list[]=array('tipo'=>'js','state'=>'','id'=>'advanced_search','label'=>_('Advanced Search'));
 
-//   $result=mysql_query($sql);
-//   if($result->numRows()==1){
-//     if($found=mysql_fetch_array($result, MYSQL_ASSOC)){
-//       header('Location: customer.php?id='. $found['id']);
-//       exit;
-//     }
-//   }
-//   $_SESSION['tables']['customers_list'][5]='id2';
-//   $_SESSION['tables']['customers_list'][6]=addslashes($q); 
-
-//   $smarty->assign('search2',$q);
-
-
-
-//  }
-
-// if(isset($_REQUEST['pc'])   ){
-//   // SEARCH!!!!!!!!!!!!
-//   $q=$_REQUEST['pc'];
-//   $q_id=3;
-//   $sql=sprintf("select id from customer where id3='%s' ",addslashes($q));
-//   $result=mysql_query($sql);
-//   if($result->numRows()==1){
-//     if($found=mysql_fetch_array($result, MYSQL_ASSOC)){
-//       header('Location: customer.php?id='. $found['id']);
-//       exit;
-//     }
-//   }
-//   $_SESSION['tables']['customers_list'][5]='id3';
-//   $_SESSION['tables']['customers_list'][6]=addslashes($q); 
-  
-//   $smarty->assign('search3',$q);
-
-//  }
-
-
-
-
-
-$smarty->assign('box_layout','yui-t0');
-
-
+$smarty->assign('general_options_list',$general_options_list);
 
 
 
@@ -145,8 +83,7 @@ $js_files=array(
 		);
 
 
-$smarty->assign('details',$_SESSION['state']['customers']['details']);
-$smarty->assign('advanced_search',$_SESSION['state']['customers']['advanced_search']);
+//$smarty->assign('advanced_search',$_SESSION['state']['customers']['advanced_search']);
 
 
 $smarty->assign('parent','customers_server.php');

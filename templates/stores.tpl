@@ -7,7 +7,7 @@
 
 <div class="data_table" style="clear:both">
     <span class="clean_table_title">{t}Stores{/t}</span>
- <div style="clear:both;margin:0 0px;padding:0 20px ;border-bottom:1px solid #999"></div>
+ <div class="table_top_bar" ></div>
  <span   style="float:right;margin-left:80px" class="state_details"  id="change_display_mode" >{$display_mode_label}</span>
 <table style="float:left;margin:0 0 0 0px ;padding:0"  class="options" >
 	<tr><td  {if $view=='general'}class="selected"{/if} id="general" >{t}General{/t}</td>

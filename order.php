@@ -29,6 +29,13 @@ if(!($user->can_view('stores') and in_array($order->data['Order Store Key'],$use
 }
 
 $customer=new Customer($order->get('order customer key'));
+
+if(isset($_REQUEST['pick_aid'])){
+    $js_file='order_pick_aid.js.php';
+   $template='order_pick_aid.tpl';
+}else{
+
+
 switch($order->get('Order Current Dispatch State')){
   
  case('in process'):
@@ -48,7 +55,7 @@ switch($order->get('Order Current Dispatch State')){
   break;
   
  }
-
+}
 $smarty->assign('order',$order);
 $smarty->assign('customer',$customer);
 

@@ -1,39 +1,22 @@
 {include file='header.tpl'}
 <div id="bd" >
-  <span class="nav2 onleft"><a  class="selected"  href="customers.php">{t}Customers{/t}</a></span>
-<span class="nav2 onleft"><a href="companies.php">{t}Companies{/t}</a></span>
-<span class="nav2 onleft"><a   href="contacts.php">{t}Personal Contacts{/t}</a></span>
-  <div >
+{include file='contacts_navigation.tpl'}
 
-
-    
-  <div class="search_box" style="padding:0;margin:0">
-<div style="padding:0 0 5px 0">
- <a style="padding-left:20px" id="but_advanced_search"  class="state_details" href="search_customers.php">{t}Advanced Search{/t}</a>
- <span style="padding-left:20px" id="but_show_details" state="{$details}" atitle="{if $details==0}{t}Hide Details{/t}{else}{t}Show Details{/t}{/if}" class="state_details"   >{if $details==1}{t}Hide Details{/t}{else}{t}Show Details{/t}{/if}</span>
- <a style="padding-left:20px" id="but_new_customer"  class="state_details" href="new_customer.php">{t}New Customer{/t}</a>       
-</div>
-
-       <span class="search_title" style="padding-right:15px" tipo="customer_name">{t}Customer Name{/t}:</span> 
-       <input size="8" class="text search" id="customer_search" value="" name="search"/><img align="absbottom" id="customer_submit_search" class="submitsearch" src="art/icons/zoom.png" alt="Submit search"><br/>
-       <span  class="product_search_msg"   id="customer_search_msg"    ></span> <span  class="search_sugestion"   id="customer_search_sugestion"    ></span>
-            
-  </div>
-  <div style="clear:left;xmargin:0 20px">
-    <h1>Store: {$store->get('Store Name')} ({$store->get('Store Code')})</h1>
+  <div id="no_details_title"  style="clear:left;xmargin:0 20px;{if $details!=0}display:none{/if}">
+    <h1>{t}Store{/t}: {$store->get('Store Name')} ({$store->get('Store Code')})</h1>
   </div>
 
- <div id="top" class="top_bar">
+
    
     
 
 
-    <div id="details"  style="clear:left;margin-top:10px;padding:0 20px;width:770px;{if $details==0}display:none{/if}">
-      <h2>{t}Customers Details{/t}</h2>
+    <div id="info"  style="clear:left;margin-top:10px;padding:0 0px;width:770px;{if $details==0}display:none{/if}">
+      <h2>{t}Customers Information{/t} ({$store->get('Store Code')})</h2>
       <p style="width:475px">{$overview_text}</p>
       <div id="plot" style="width:940px;border:0px solid black;padding:0">
 	
-	<div style="float:right;font-size:80%;margin:20px  0 0 0;border:0px solid red;position:relative;left:-20px">
+	<div style="float:right;font-size:80%;border:0px solid red;position:relative;left:-20px">
 	  <table class="options">
 	    <tr><td id="customer_month_population" onclick="change_plot(this)">Customers</td></tr>
 	    <tr><td id="customer_month_growth" onclick="change_plot(this)">Growth</td></tr>
@@ -49,7 +32,7 @@
 
 
     </div>
-</div>
+
     
     <div id="the_table" class="data_table" style="clear:both">
       <span class="clean_table_title">Customers List</span>
