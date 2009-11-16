@@ -275,7 +275,8 @@ YAHOO.util.Event.onContentReady("rppmenu", function () {
 
 
 
-YAHOO.util.Event.addListener('but_show_details', "click",show_details,'customers');
+YAHOO.util.Event.addListener('details', "click",change_details,'customers');
+
 var ids=['general','contact','address','ship_to_address','balance','rank'];
 YAHOO.util.Event.addListener(ids, "click",change_view);
 //YAHOO.util.Event.addListener('submit_advanced_search', "click",submit_advanced_search);

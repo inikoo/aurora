@@ -322,15 +322,17 @@ function change_details(e,the_scope){
 	Dom.get("info").style.display='none';
 	Dom.get("plot").style.display='none';
 	Dom.get("no_details_title").style.display='';
-	this.innerHTML='<? echo _('Show Details')?>';
+	this.innerHTML='<?php echo _('Show Details')?>';
 	this.setAttribute('state',0);
+	
 	YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys='+the_scope+'-details&value=0');
     }else{
 	Dom.get("info").style.display='';
 	Dom.get("plot").style.display='';
 	Dom.get("no_details_title").style.display='none';
-	this.innerHTML='<? echo _('Hide Details')?>';
+	this.innerHTML='<?php echo _('Hide Details')?>';
 	this.setAttribute('state',1);
+	//alert('ar_sessions.php?tipo=update&keys='+the_scope+'-details&value=1');
 	YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys='+the_scope+'-details&value=1');
     }
 }

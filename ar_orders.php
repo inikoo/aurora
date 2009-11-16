@@ -29,7 +29,9 @@ if(!isset($_REQUEST['tipo']))
 
 $tipo=$_REQUEST['tipo'];
 switch($tipo){
-
+case('transactions_to_pick'):
+list_transactions_to_pick();
+break;
  case('create_po'):
    $po=new Order('po',array('supplier_id'=>$_SESSION['state']['supplier']['id']));
    if(is_numeric($po->id)){
@@ -2529,6 +2531,57 @@ function transactions_to_process(){
    echo json_encode($response);
 }
 
+function list_transactions_to_pick(){
+ if(isset( $_REQUEST['id']) and is_numeric( $_REQUEST['id']))
+     $order_id=$_REQUEST['id'];
+   else
+     $order_id=$_SESSION['state']['order']['id'];
+   
 
+
+
+   $where=' where `Order Key`='.$order_id;
+
+   $total_charged=0;
+   $total_discounts=0;
+   $total_picks=0;
+
+   $data=array();
+   $sql="select `Part XHTML Currently Used In`,Part.`Part SKU`,`Part XHTML Description`,sum(`Order Quantity`*`Parts Per Product`) as qty ,`Part XHTML Picking Location` from `Order Transaction Fact` O left join `Product History Dimension` PH on (O.`Product key`=PH.`Product Key`) left join `Product Part List` PL on (PH.`Product ID`=PL.`Product ID`)  left join  `Part Dimension` Part on  (Part.`Part SKU`=PL.`Part SKU`)  $where  group by Part.`Part SKU` ";
+   
+   $result=mysql_query($sql);
+   while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
+  
+     $sku=sprintf('<a href="part.php?sku=%d">SKU%05d</a>',$row['Part SKU'],$row['Part SKU']);
+     $data[]=array(
+
+		   'sku'=>$sku
+		   ,'description'=>$row['Part XHTML Description']
+		   ,'used_in'=>$row['Part XHTML Currently Used In']
+		   ,'quantity'=>number($row['qty'])
+		   ,'location'=>$row['Part XHTML Picking Location']
+		  
+		   );
+   }
+
+
+ 
+   
+
+   $response=array('resultset'=>
+		   array('state'=>200,
+			 'data'=>$data
+// 			 'total_records'=>$total,
+// 			 'records_offset'=>$start_from,
+// 			 'records_returned'=>$start_from+$res->numRows(),
+// 			 'records_perpage'=>$number_results,
+// 			 'records_text'=>$rtext,
+// 			 'records_order'=>$order,
+// 			 'records_order_dir'=>$order_dir,
+// 			 'filtered'=>$filtered
+			 )
+		   );
+   echo json_encode($response);
+}
 
 ?>
