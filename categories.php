@@ -21,6 +21,7 @@ if($modify)
 //$general_options_list[]=array('tipo'=>'js','state'=>$show_details,'id'=>'details','label'=>($show_details?_('Hide Details'):_('Show Details')));
 $smarty->assign('general_options_list',$general_options_list);
 
+$smarty->assign('view',$_SESSION['state']['product_categories']['view']);
 
 
 $css_files=array(
@@ -66,16 +67,73 @@ $smarty->assign('main_category_list',$main_category_list);
 $_SESSION['state']['product_categories']['category']=$category;
 
 global $myconf;
-$stores=array();
-$sql=sprintf("select count(distinct `Store Currency Code` ) as distint_currencies, sum(IF(`Store Currency Code`=%s,1,0)) as default_currency    from `Store Dimension` "
-	     ,prepare_mysql($myconf['currency_code']));
+
+//first check
+
+
+
+
+
+$sql=sprintf("select count(distinct `Store Currency Code` ) as distint_currencies, sum(IF(`Store Currency Code`=%s,1,0)) as default_currency    from `Store Dimension` where `Store Key` in (%s) "
+	     ,prepare_mysql($myconf['currency_code']),join(',',$user->stores) );
 
 $res=mysql_query($sql);
 if($row=mysql_fetch_array($res)){
   $distinct_currencies=$row['distint_currencies'];
   $default_currency=$row['default_currency'];
 }
+$num_stores=count($user->stores);
 
+
+if($num_stores==1){
+
+
+
+}else{
+
+  $display_stores=$_SESSION['state']['product_categories']['stores'];
+
+ 
+  if(is_numeric($display_stores) and in_array($display_stores,$user->stores)){
+    //todo: take this data from $user->store
+    $sql=sprintf("select `Store Code` from `Store Dimesion` where `Store Key`=%d");
+    $res=mysql_query($sql);
+    if($row=mysql_query($res)){
+      $display_stores_label==$row['Store Code'].' '._('Store Only');
+    }else{
+      $display_stores_label=_('All Stores');
+    }
+    
+  }else{
+    $display_stores_label=_('All Stores');
+  }
+    
+
+
+  $smarty->assign('display_stores',$display_stores);
+  $smarty->assign('display_stores_label',$display_stores_label);
+
+  $display_stores_mode=$_SESSION['state']['product_categories']['stores_mode'];
+  $display_stores_mode_label=array('grouped'=>_('Stores Grouped'),'ungrouped'=>'Showing each Store data');
+  $smarty->assign('display_stores_mode',$display_stores_mode);
+  $smarty->assign('display_stores_mode_label',$display_stores_mode_label[$display_stores_mode]);
+  
+  if($distinct_currencies==1){
+  
+
+    
+  }else{
+    if($distinct_currencies>1){
+      $mode_options[]=array('mode'=>'value_default_d2d','label'=>_("Values in")." ".$myconf['currency_code']." ("._('d2d').")");
+      
+      if($_SESSION['state']['stores']['table']['show_default_currency']){
+	$display_mode='value_default_d2d';
+	$display_mode_label=_("Values in")." ".$myconf['currency_code']." ("._('d2d').")";
+      }
+    }
+  
+  }
+}
 
 
 $display_mode='value';
@@ -85,14 +143,7 @@ if($_SESSION['state']['product_categories']['percentages']){
   $display_mode_label=_('Percentages');
 }
 
-if($distinct_currencies>1){
-  $mode_options[]=array('mode'=>'value_default_d2d','label'=>_("Values in")." ".$myconf['currency_code']." ("._('d2d').")");
 
-  if($_SESSION['state']['stores']['table']['show_default_currency']){
-    $display_mode='value_default_d2d';
-    $display_mode_label=_("Values in")." ".$myconf['currency_code']." ("._('d2d').")";
-  }
-}
 
 
 $smarty->assign('display_mode',$display_mode);

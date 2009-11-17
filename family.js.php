@@ -27,6 +27,43 @@ var addtotals =function (){
 }
 
 
+    function get_thumbnails(){
+	var table_id=0;
+	var request='ar_assets.php?tipo=products&parent=family';
+	YAHOO.util.Connect.asyncRequest('POST',request ,{
+	    success:function(o) {
+
+		var r =  YAHOO.lang.JSON.parse(o.responseText);
+		if(r.resultset.state==200){
+		    var container=Dom.get('thumbnails'+table_id);
+		    for(x in r.resultset.data){
+			if(r.resultset.data[x].type=='item'){
+			var img = new YAHOO.util.Element(document.createElement('img')); 
+			img.set('src', r.resultset.data[x].image); 
+			
+			var internal_span = new YAHOO.util.Element(document.createElement('span')); 
+			internal_span.set('innerHTML', r.resultset.data[x].code); 
+		 
+			var div = new YAHOO.util.Element(document.createElement('div')); 
+		
+
+			img.appendTo(div); 
+			internal_span.appendTo(div); 
+		
+		
+
+			div.appendTo(container); 
+			}
+		    }
+		      
+		}
+		
+	    }
+	    
+	    });
+    }
+
+
 function change_info_period(period){
     var patt=new RegExp("^(year|month|all|week|quarter)$");
     if (patt.test(period)==true && current_store_period!=period){
@@ -55,6 +92,9 @@ function next_info_period(){
     else if(current_store_period=='year')    
         change_info_period('all');
 }
+
+
+
 
 function previous_info_period(){
     if(current_store_period=='all')
@@ -255,7 +295,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
  function init(){
  var Dom   = YAHOO.util.Dom;
 
-
+ get_thumbnails();
 
 ids=['general','sales','stock','parts','cats'];
  YAHOO.util.Event.addListener(ids, "click",change_view);

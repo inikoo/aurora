@@ -2103,15 +2103,16 @@ public $new_value=false;
       break;
     case('images'):
 
-      $sql=sprintf("select ID.`Image Key`,`Image Caption`,`Image URL`,`Image Filename`,`Image Type`,`Image File Size`,`Image File Checksum`,`Image Width`,`Image Height`,`Image File Format` from `Image Bridge` PIB left join `Image Dimension` ID on (PIB.`Image Key`=ID.`Image Key`) where `Subject Type`='Product' and `Subject Key`=%d",$this->pid);
+      $sql=sprintf("select PIB.`Is Principal`,ID.`Image Key`,`Image Caption`,`Image URL`,`Image Filename`,`Image Type`,`Image File Size`,`Image File Checksum`,`Image Width`,`Image Height`,`Image File Format` from `Image Bridge` PIB left join `Image Dimension` ID on (PIB.`Image Key`=ID.`Image Key`) where `Subject Type`='Product' and `Subject Key`=%d",$this->pid);
 
+      //      print $sql;
       $res=mysql_query($sql);
       $this->images_small=array();
       $this->images_thumb=array();
       $this->images_original=array();
 
 
-      while ($row=mysql_fetch_array($res)) {
+      while ($row=mysql_fetch_array($res,MYSQL_ASSOC )) {
 	if ($row['Image Type']=='Small')
 	  $this->images_small[$row['Image Key']]=$row;
 	elseif($row['Image Type']=='Thumb')
@@ -2154,6 +2155,32 @@ public $new_value=false;
 
   }
 
+  function update_main_image(){
+    $this->load('images');
+    $num_images=count($this->images_original);
+    $main_image_src='art/nopic.png';
+    if($num_images>0){
+      
+      //print_r($this->images_original);
+      foreach( $this->images_original as $image ){
+	// print_r($image);
+	$main_image_src=$image['Image Filename'];
+	  if($image['Is Principal']=='Yes'){
+	    
+	    break;
+	  }
+      }
+    }
+    
+    $sql=sprintf("update `Product Dimension` set `Product Main Image`=%s  where `Product ID`=%d",
+		 prepare_mysql($main_image_src)
+		 ,$this->data['Product ID']
+		 );
+    //print "$sql\n";
+    mysql_query($sql);
+  }
+
+
   /*
     Function: load_original_image
     Carga diferentes tipos de imagenes, Crea y actualiza datos de las tablas Product Image Bridge, Product Image, Image Dimension
@@ -2162,14 +2189,6 @@ public $new_value=false;
 
   function add_image($file,$args='') {
    $tmp_images_dir='app_files/pics/';
-
-
-/*    if(preg_match('/images_dir=.+\s?/',$args,$match)){ */
-/*      $tmp_images_dir=preg_replace('/images_dir=/','',$match[0]); */
-/*      $tmp_images_dir=preg_replace('/images_dir=/','',$match[0]); */
-
-/*    }    */
-
 
 
     $principal='No';
@@ -2181,7 +2200,7 @@ public $new_value=false;
     $checksum=md5_file($file);
     $same_as_other=false;
     
-
+    
 
 
     foreach($this->images_original as $_key=>$_value) {
@@ -2202,14 +2221,15 @@ public $new_value=false;
 
     }
 
-    $code=$this->get('Product Code');
+    $code=$this->data['Product Code'];
     $target_path = $tmp_images_dir;
     //print filesize($file)."-----Z\n";
-
+    
     ob_start();
     system("uname");
    $mimetype='Unknown';
    $system='Unknown';
+   
    $_system = ob_get_clean();
    
     if(preg_match('/darwin/i',$_system)){
@@ -2220,7 +2240,7 @@ public $new_value=false;
       
     }elseif(preg_match('/linux/i',$_system)){
       $system='Linux'; 
-      $mimetype = system("file -ib $filename");
+      $mimetype = system("file -ib $file ");
     }else{
       $system='Other';  
     }
@@ -2233,7 +2253,8 @@ public $new_value=false;
     else{
         $format='other';
     }
-   // print "$system $mimetype";
+    // print "$system $mimetype $format";
+    //exit;
    // return;
     
     
@@ -2248,12 +2269,15 @@ public $new_value=false;
          
     // print "-----------------";
     if ($im) {
-
+      
      
       //print $tmp_images_dir.strtolower($this->data['Product Family Code']);
    
-      if (!file_exists($tmp_images_dir.strtolower($this->data['Product Family Code'])))
-	mkdir($tmp_images_dir.strtolower($this->data['Product Family Code']), 0700);
+      if (!file_exists($tmp_images_dir.strtolower($this->data['Product Family Code']))){
+	//print getcwd();
+	//print $tmp_images_dir.strtolower($this->data['Product Family Code']);
+	mkdir($tmp_images_dir.strtolower($this->data['Product Family Code']), 0770);
+      }
       $name=$tmp_images_dir.strtolower($this->data['Product Family Code']).'/'.strtolower('Original_'.$code.'_'.$this->id.'.'.$format);
 
 
@@ -2275,44 +2299,45 @@ public $new_value=false;
 
          if($format=='jpeg')
           imagejpeg($im,$name );
-    elseif($format=='png')    
+	 elseif($format=='png')    
            imagepng($im,$name );
-
-     
-      $image_data['Image Data']=$news_imgfile;
-
-      $keys='(';
-      $values='values(';
-      foreach($image_data as $key=>$value) {
-	$keys.="`$key`,";
-	if (preg_match('/url/i',$key))
-	  $values.="'".addslashes($value)."',";
-	else
+	 
+	 
+	 $image_data['Image Data']=$news_imgfile;
+	 
+	 $keys='(';
+	 $values='values(';
+	 foreach($image_data as $key=>$value) {
+	   $keys.="`$key`,";
+	   if (preg_match('/url/i',$key))
+	     $values.="'".addslashes($value)."',";
+	   else
 	  $values.=prepare_mysql($value).",";
-      }
-      $keys=preg_replace('/,$/',')',$keys);
-      $values=preg_replace('/,$/',')',$values);
-      $sql=sprintf("insert into `Image Dimension` %s %s",$keys,$values);
-
+	 }
+	 $keys=preg_replace('/,$/',')',$keys);
+	 $values=preg_replace('/,$/',')',$values);
+	 $sql=sprintf("insert into `Image Dimension` %s %s",$keys,$values);
+	 //print "$sql\n";
       if (mysql_query($sql)) {
 	$image_key=mysql_insert_id();
-
+	
 	if ($principal=='Yes') {
 	  $sql=sprintf("update `Image Bridge` set `Is Princial`='No' where   `Subject Type`='Product' and  `Subject Key`=%d",$this->pid);
 	  mysql_query($sql);
 	}
-
+	
 	if (count($this->images_original)==0)
 	  $principal='Yes';
-
+	
 	$sql=sprintf("insert into `Image Bridge` values ('Product',%d,%d,%s)",$this->pid,$image_key,prepare_mysql($principal));
-	//print $sql;
+	//	print "$sql\n";
 	mysql_query($sql);
 	$url=sprintf('image.php?id=%d',$image_key);
 
 	$sql=sprintf("update `Image Dimension` set `Image URL`=%s  where `Image Key`=%d",prepare_mysql($url),$image_key);
 	//print $sql;
 	mysql_query($sql);
+	$this->msg="image added";
       }
 
 

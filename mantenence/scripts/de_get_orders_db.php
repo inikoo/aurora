@@ -825,7 +825,10 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
       $product_data=array(
 			  'Product Store Key'=>$store_key
 			  ,'Product Main Department Key'=>$dept_key
-			  ,'Product Record Type'=>'Normal'
+			  ,'product sales state'=>'For sale'
+			  ,'product type'=>'Normal'
+			  ,'product record type'=>'Normal'
+			  ,'product web state'=>'Online Auto'
 			  ,'Product Family Key'=>$fam_key
 			  ,'product code'=>$code
 			  ,'product name'=>$description
@@ -842,8 +845,8 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 			  ,'supplier product code'=>$sup_prod_code
 			  ,'supplier product name'=>$description
 			  ,'auto_add'=>true
-			  ,'date1'=>$date_order
-			  ,'date2'=>$date2
+			    ,'product valid from'=>$date_order
+			  ,'product valid to'=>$date2
 			  ,'editor'=>array('Date'=>$date_order)
 			  );
    

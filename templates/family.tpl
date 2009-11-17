@@ -150,9 +150,15 @@
 
    <div class="data_table"  style="clear:both">
      <span id="table_title" class="clean_table_title">{t}Products{/t}</span>
-     <div style="clear:both;margin:0 0px;padding:0 20px ;border-bottom:1px solid #999"></div>
 
+
+     <span id="data_table_type0" style="float:right" class="state_details">{t}List{/t}</span>
+     <span id="data_table_type0" style="float:right;margin-right:15px" class="state_details">{t}Thumbnails{/t}</span>
+
+     <div style="clear:both;margin:0 0px;padding:0 20px ;border-bottom:1px solid #999"></div>
      
+
+     <div id="list0" class="list" style="clear:both">
      <span   style="float:right;margin-left:80px" class="state_details" state="{$show_percentages}"  id="show_percentages"  atitle="{if $show_percentages}{t}Normal Mode{/t}{else}{t}Comparison Mode{/t}{/if}"  >{if $show_percentages}{t}Comparison Mode{/t}{else}{t}Normal Mode{/t}{/if}</span>
      
      <table style="float:left;margin:0 0 5px 0px ;padding:0"  class="options" >
@@ -187,9 +193,10 @@
       <div class="clean_table_filter" id="clean_table_filter0"><div class="clean_table_info"><span id="filter_name0">{$filter_name}</span>: <input style="border-bottom:none" id='f_input0' value="{$filter_value}" size=10/><div id='f_container0'></div></div></div>
       <div class="clean_table_controls" style="" ><div><span  style="margin:0 5px" id="paginator0"></span></div></div>
     </div>
+    <div id="thumbnails0" class="thumbnails"></div>
     <div  id="table0"   class="data_table_container dtable btable with_total"> </div>
   </div>
-
+</div>
 
 </div> 
 

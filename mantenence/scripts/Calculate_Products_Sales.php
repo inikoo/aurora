@@ -20,8 +20,13 @@ mysql_query("SET NAMES 'utf8'");
 require_once '../../conf/conf.php';           
 
 
+
+
 //$sql="select * from `Product Dimension` where `Product Code`='FO-A1'";
-$stores=array(2,3);
+$stores=array(1,2,3);
+
+
+
 
 // $sql="select * from `Product History Dimension` PH  left join `Product Dimension` P on (P.`Product ID`=PH.`Product ID`)   where `Product Store Key` in (".join(',',$stores).")  order by `Product Key`  desc ";
   $sql="select * from `Product History Dimension` PH  order by `Product Key`   ";

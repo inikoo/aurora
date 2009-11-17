@@ -60,7 +60,7 @@ $force_update=false;
 
 
 $orders_array_full_path = glob("/mnt/*/Orders/*.xls");
-$orders_array_full_path=array_reverse($orders_array_full_path);
+//$orders_array_full_path=array_reverse($orders_array_full_path);
 
 
 if(count($orders_array_full_path)==0)
@@ -79,7 +79,7 @@ $good_files=array();
 $good_files_number=array();
 
 foreach($orders_array as $order_index=>$order){
-  if(preg_match('/^\d{4,5}$/i',$order)){
+  if(preg_match('/^\d{4,5}$/i',$order) or preg_match('/^1\d{5}$/i',$order)  ){
     $good_files[]=$orders_array_full_path[$order_index];
     $good_files_number[]=$order;
 
@@ -90,7 +90,7 @@ foreach($orders_array as $order_index=>$order){
 
 
 foreach($orders_array as $order_index=>$order){
-  if(preg_match('/^\d{4,5}r$|^\d{4,5}ref$|^\d{4,5}\s?refund$|^\d{4,5}rr$|^\d{4,5}ra$|^\d{4,5}r2$|^\d{4,5}\-2ref$|^\d{5}rpl$|^\d{5}sht?$|^\d{5}rfn$/i',$order)){
+  if(preg_match('/^\d{4,5}r$|^\d{4,5}ref$|^\d{4,5}\s?refund$|^\d{4,5}rr$|^\d{4,5}ra$|^\d{4,5}r2$|^\d{4,5}\-2ref$|^\d{5}rpl$|^\d{5}sht?$|^\d{5}rfn$|^1\d{5}(ref|sht|rpl)$/i',$order)){
      $good_files[]=$orders_array_full_path[$order_index];
     $good_files_number[]=$order;
   }
