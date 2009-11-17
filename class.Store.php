@@ -348,8 +348,10 @@ class Store extends DB_Table{
    
      
       break;
-  
-
+    case('products_info'):
+      $this->update_product_data();
+      $this->update_families();
+      break;
     }
    
   }

@@ -62,7 +62,7 @@ $force_update=false;
 
 
 $orders_array_full_path = glob("/mnt/z/Orders-germany/*.xls");
-$orders_array_full_path=array_reverse($orders_array_full_path);
+//$orders_array_full_path=array_reverse($orders_array_full_path);
 
 
 if(count($orders_array_full_path)==0)

@@ -128,7 +128,10 @@ function get_tipo_order($ltipo,$header){
  
   $parent_id='';
   $tipo=0;
-if(preg_match('/FOLGESENDUNG/i',$ltipo)){
+ if(preg_match('/proforma/i',$ltipo)){
+
+    $tipo=20;
+  }if(preg_match('/FOLGESENDUNG/i',$ltipo)){
 
 
     $tipo=8;
@@ -147,7 +150,7 @@ if(preg_match('/FOLGESENDUNG/i',$ltipo)){
     $tipo=1;
   }elseif(preg_match('/FACTURE. sample order|facture|facutura|FACTURE|RECHNUNG/i',$ltipo)){
     $tipo=2;
-  }elseif(preg_match('/STORNIERT/i',$ltipo)){
+  }elseif(preg_match('/STORNIERT|STORNIERUNG/i',$ltipo)){
     $tipo=3;
     $header['notes2']=preg_replace('/^STORNIERT?$/i','',$header['notes2']);
 

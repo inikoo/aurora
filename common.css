@@ -668,3 +668,9 @@ position:relative;top:1px;
 .plot_iframe {position:relative;left:-20px}
 
 .currency_exchanged{font-style:italic}
+.thumbnails{margin-top:10px}
+.thumbnails div{height:160px;width:136px;float:left;text-align:center;margin-bottom:15px;padding:bottom:10px}
+.thumbnails span{display:block;width:100%;text-align:center;margin-bottom:5px;color:red}
+
+.thumbnails img{max-height:140px;max-width: 130px;align:center;margin-top:5px}
+

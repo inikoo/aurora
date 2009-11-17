@@ -14,8 +14,9 @@
 <div class="data_table" style="clear:both">
     <span class="clean_table_title">{t}Subcategories{/t}</span>
  <div style="clear:both;margin:0 0px;padding:0 20px ;border-bottom:1px solid #999"></div>
- <span   style="float:right;margin-left:80px" class="state_details"  id="change_stores" >{$display_stores}</span>
- <span   style="float:right;margin-left:80px" class="state_details"  id="change_display_mode" >{$display_mode_label}</span>
+ <span   style="float:right;margin-left:20px" class="state_details"  id="change_stores_mode" >{$display_stores_mode_label}</span>
+ <span   style="float:right;margin-left:20px" class="state_details"  id="change_stores" >{$display_stores_label}</span>
+ <span   style="float:right;margin-left:20px" class="state_details"  id="change_display_mode" >{$display_mode_label}</span>
 
 <table style="float:left;margin:0 0 0 0px ;padding:0"  class="options" >
 	<tr><td  {if $view=='general'}class="selected"{/if} id="general" >{t}General{/t}</td>
