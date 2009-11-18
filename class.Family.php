@@ -1255,6 +1255,99 @@ function update_product_data(){
   $this->get_data('id',$this->id);
 }
 
+
+
+
+function product_timeline($extra_where=''){
+  //todo: this scheme dont take in count products with 2 sku or sku changing over time
+  $min_date=date('Y-m-d H:i:s');
+  $max_date=date('Y-m-d H:i:s');
+  
+  $sql=sprintf("select `Product Code`,`Product ID`,`Product Sales State`,`Product Valid From`,`Product Valid To` from `Product Dimension`  where `Product Family Key`=%d  %s  ",$this->id,$extra_where);
+  $res=mysql_query($sql);
+  $products=array();
+  $skus=array();
+  while($row=mysql_fetch_array($res)){
+    if(strtotime($min_date)>strtotime($row['Product Valid From']))
+      $min_date=$row['Product Valid From'];
+    if(strtotime($min_date)>strtotime($row['Product Valid To']))
+      $min_date=$row['Product Valid To'];
+    
+    $_product=new Product('pid',$row['Product ID']);
+    $units_per_case=$_product->data['Product Units Per Case'];
+    $sku=$_product->get('Parts SKU');
+
+    
+    $products[]=array(
+		      'code'=>$row['Product Code'],'units_per_case'=>$units_per_case,'sku'=>$sku[0],'id'=>$row['Product ID'],'from'=>$row['Product Valid From'],'to'=>($row['Product Sales State']=='Normal'?date('Y-m-d H:i:s'):$row['Product Valid To']));
+  }
+  //print "$min_date $max_date\n";
+  //print_r($products);
+  
+  $sql=sprintf("select `Date` from kbase.`Date Dimension` where `Date`>=DATE(%s) and `Date`<=DATE(%s)",prepare_mysql($min_date),prepare_mysql($max_date));
+  $res=mysql_query($sql);
+  $dates=array();
+  $dates_skus=array();
+  $dates_ppp=array();
+  //print $sql;
+  while($row=mysql_fetch_array($res)){
+    $dates[$row['Date']]=array();
+    $dates_skus[$row['Date']]=array();
+    $dates_ppp[$row['Date']]=array();
+    foreach($products as $product){
+      if(!(strtotime($product['to'])<strtotime($row['Date'].' OO:00:00')  or  strtotime($product['from'])>strtotime($row['Date'].' 23:59:59')  )){
+	$dates[$row['Date']][]=$product['id'];
+	$dates_skus[$row['Date']][]=$product['sku'];
+	$dates_ppp[$row['Date']][]=$product['units_per_case'];
+      }
+
+    }
+    sort($dates[$row['Date']]);
+
+  }
+
+  //  print_r($dates);
+  
+  $border_dates=array();
+  $pivot=array();
+  foreach($dates as $key=>$date){
+    if($pivot!=$date){
+      //print "$key\n";
+      $border_dates[]=$key;
+    }
+    $pivot=$date;
+  }
+  $border_dates[]=$key;
+  //print_r($border_dates);
+  $counter=0;
+  $product_interval=array();
+  foreach($border_dates as $border){
+
+    $recent='No';
+    if($counter==count($border_dates)-1)
+      $recent='Yes';
+    if($counter>0){
+      $product_interval[]=array(
+				'Product IDs'=>$dates[$lower_bound],
+				'Product SKUs'=>$dates_skus[$lower_bound],
+				'Products Per Part'=>$dates_ppp[$lower_bound],
+				'Valid From'=>$lower_bound.' 00:00:00',
+				'Valid To'=>date('Y-m-d h:i:s',strtotime($border.' -1 second')),
+				'Most Recent'=>$recent
+				);
+    }
+    $lower_bound=$border;
+    $counter++;
+  }
+
+  //print_r($product_interval);
+
+  return $product_interval;
+
+
+}
+
+
 }
 
 ?>

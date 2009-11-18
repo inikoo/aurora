@@ -822,10 +822,15 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 
       //      print_r($transaction);
 
+
+
+
       $product_data=array(
 			  'Product Store Key'=>$store_key
 			  ,'Product Main Department Key'=>$dept_key
 			  ,'product sales state'=>'For sale'
+			  ,'product locale'=>'de_DE'
+			  ,'Product Currency'=>'EUR'
 			  ,'product type'=>'Normal'
 			  ,'product record type'=>'Normal'
 			  ,'product web state'=>'Online Auto'
