@@ -837,7 +837,7 @@ $header_data['Order Main Source Type']='Unknown';
 			  ,'product type'=>'Normal'
 			  ,'product record type'=>'Normal'
 			  ,'product web state'=>'Online Auto'
-
+			  
 			  ,'Product Family Key'=>$fam_key
 			  ,'Product Locale'=>'fr_FR'
 			  ,'Product Currency'=>'EUR'

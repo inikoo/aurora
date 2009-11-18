@@ -827,8 +827,8 @@ $price=$cols[7];
 		  'product special characteristic'=>$special_char,
 		  'product net weight'=>$_w,
 		  'product gross weight'=>$_w,
-		  'date1'=>date('Y-m-d H:i:s'),
-		  'date2'=>date('Y-m-d H:i:s'),
+		  'product valid from'=>date('Y-m-d H:i:s'),
+		  'product valid to'=>date('Y-m-d H:i:s'),
 		  'deals'=>$deals
 		    );
 
