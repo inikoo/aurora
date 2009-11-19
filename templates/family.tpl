@@ -1,14 +1,7 @@
 {include file='header.tpl'}
 <div id="bd" >
  {include file='assets_navigation.tpl'}
-  <div class="search_box" >
 
-   <span class="search_title">{t}Product Code{/t}:</span> <input size="8" class="text search" id="product_search" value="" name="search"/><img align="absbottom" id="product_submit_search" class="submitsearch" src="art/icons/zoom.png" alt="Submit search"><br/>
-     <span  class="search_msg"   id="product_search_msg"    ></span> <span  class="product_search_sugestion"   id="search_sugestion"    ></span>
-     <br/>
-    <span  class="state_details" state="{$show_details}"  id="show_details"  atitle="{if $show_details}{t}show details{/t}{else}{t}hide details{/t}{/if}"  >{if $show_details}{t}hide details{/t}{else}{t}show details{/t}{/if}</span>
-  
-  </div>
   
 
  <div style="clear:left;">
@@ -193,7 +186,7 @@
       <div class="clean_table_filter" id="clean_table_filter0"><div class="clean_table_info"><span id="filter_name0">{$filter_name}</span>: <input style="border-bottom:none" id='f_input0' value="{$filter_value}" size=10/><div id='f_container0'></div></div></div>
       <div class="clean_table_controls" style="" ><div><span  style="margin:0 5px" id="paginator0"></span></div></div>
     </div>
-    <div id="thumbnails0" class="thumbnails"></div>
+    <div id="thumbnails0" class="thumbnails" style="display:none"></div>
     <div  id="table0"   class="data_table_container dtable btable with_total"> </div>
   </div>
 </div>
