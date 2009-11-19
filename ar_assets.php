@@ -4352,7 +4352,7 @@ function list_products() {
         $adata[]=array(
 
                      'code'=>$code,
-                     'name'=>$row['Product Name'],
+                     'name'=>$row['Product XHTML Short Description'],
                      'shortname'=>number($row['Product Units Per Case']).'x @'.money($row['Product Price']/$row['Product Units Per Case']).' '._('ea'),
                      'family'=>$row['Product Family Name'],
                      'dept'=>$row['Product Main Department Name'],
