@@ -55,6 +55,18 @@ $smarty->assign('create',$create);
 $smarty->assign('modify',$modify);
 
 get_header_info($user,$smarty);
+
+$show_details=$_SESSION['state']['family']['details'];
+
+$smarty->assign('table_type',$_SESSION['state']['family']['table_type']);
+
+
+$general_options_list=array();
+if($modify)
+  $general_options_list[]=array('tipo'=>'url','url'=>'family.php?edit=1','label'=>_('Edit Family'));
+$general_options_list[]=array('tipo'=>'js','state'=>$show_details,'id'=>'details','label'=>($show_details?_('Hide Details'):_('Show Details')));
+$smarty->assign('general_options_list',$general_options_list);
+
 $css_files=array(
 		 $yui_path.'reset-fonts-grids/reset-fonts-grids.css',
 		 $yui_path.'menu/assets/skins/sam/menu.css',
@@ -78,8 +90,10 @@ $js_files=array(
 		'js/php.default.min.js',
 		'common.js.php',
 		'table_common.js.php',
+
 		 'js/dropdown.js'
 		);
+
 
 if($edit){
   $smarty->assign('edit',$_SESSION['state']['family']['edit']);
@@ -88,8 +102,9 @@ if($edit){
   $js_files[]='country_select.js.php';
   $js_files[]='edit_family.js.php';
  }else{
+ $js_files[]='js/search.js';
   $js_files[]='family.js.php';
-  $js_files[]='js/search.js.php';
+  
 
  }
 
@@ -169,6 +184,87 @@ $smarty->assign('next',$next);
 
  }
 
+
+
+$plot_tipo=$_SESSION['state']['family']['plot'];
+$plot_data=$_SESSION['state']['family']['plot_data'][$plot_tipo];
+$plot_period=$plot_data['period'];
+$plot_category=$plot_data['category'];
+
+
+$info_period_menu=array(
+			array("period"=>'week','label'=>_('Last Week'),'title'=> _('Last Week'))
+		     ,array("period"=>'month','label'=>_('Last Month'),'title'=>_('Last Month'))
+		     ,array("period"=>'quarter','label'=>_('Last Quarter'),'title'=>_('Last Quarter'))
+		     ,array("period"=>'year','label'=>_('Last Year'),'title'=>_('Last Year'))
+		     ,array("period"=>'all','label'=>_('All'),'title'=>_('All'))
+		     );
+$smarty->assign('info_period_menu',$info_period_menu);
+
+$plot_args='tipo=family&category='.$plot_category.'&period='.$plot_period.'&keys='.$family_id.'&currency='.$store->data['Store Currency Code'];
+
+if($plot_tipo=='top_departments'){
+  $number_children=3;
+  $plot_args.=sprintf('&top_children=%d',$number_children);
+}
+
+if($plot_tipo=='pie'){
+  $pie_forecast=$plot_data['forecast'];
+  
+  if($plot_data['date']=='today'){
+    $plot_date=date('Y-m-d');
+    $smarty->assign('plot_date',$plot_date);
+    $smarty->assign('plot_formated_date',strftime("%b %Y",strtotime($plot_date)));
+
+  }
+
+  $plot_args=sprintf('tipo=children_share&item=family&category=%s&period=%s&keys=%d&date=%s&forecast=%s'
+		     ,$plot_category
+		     ,$plot_period
+		     ,$family_id
+		     ,$plot_date
+		     ,$plot_data['forecast']);
+}
+
+$smarty->assign('plot_tipo',$plot_tipo);
+$smarty->assign('plot_args',$plot_args);
+$smarty->assign('plot_page',$plot_data['page']);
+$smarty->assign('plot_period',$plot_period);
+$smarty->assign('plot_category',$plot_period);
+$smarty->assign('plot_data',$_SESSION['state']['family']['plot_data']);
+
+
+if($plot_tipo=='pie'){
+  if($plot_period=='m')
+    $plot_formated_period='Month';
+  elseif($plot_period=='y')
+    $plot_formated_period='Year';
+    elseif($plot_period=='q')
+      $plot_formated_period='Quarter';
+    elseif($plot_period=='w')
+      $plot_formated_period='Week';
+  }else{
+    if($plot_period=='m')
+      $plot_formated_period='Monthly';
+    elseif($plot_period=='y')
+      $plot_formated_period='Yearly';
+    elseif($plot_period=='q')
+      $plot_formated_period='Quarterly';
+    elseif($plot_period=='w')
+      $plot_formated_period='Weekly';
+  }
+  
+if($plot_category=='profit')
+  $plot_formated_category=_('Profits');
+else
+  $plot_formated_category=_('Net Item Sales');
+
+
+
+
+
+
+
 $smarty->assign('parent','departments.php');
 $smarty->assign('title',$family->get('Product Family Code').' - '.$family->get('Product Family Name'));
 
@@ -202,7 +298,7 @@ $paginator_menu=array(10,25,50,100,500);
 $smarty->assign('paginator_menu',$paginator_menu);
 
 $smarty->assign('view',$_SESSION['state']['products']['view']);
-$smarty->assign('show_details',$_SESSION['state']['products']['details']);
+$smarty->assign('show_details',$_SESSION['state']['family']['details']);
 $smarty->assign('period',$_SESSION['state']['products']['period']);
 $smarty->assign('avg',$_SESSION['state']['products']['avg']);
 

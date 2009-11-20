@@ -135,6 +135,9 @@ if($mode=='code'){
    
 
 $product= new product($mode,$tag);
+$store= new store($product->data['Product Store Key']);
+
+$smarty->assign('store',$store);
 
 $display=$_SESSION['state']['product']['display'];
 

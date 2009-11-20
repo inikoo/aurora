@@ -369,7 +369,7 @@ YAHOO.util.Event.addListener("info_previous", "click",previous_info_period,0);
 
  
 YAHOO.util.Event.addListener('details', "click",change_details,'store');
- YAHOO.util.Event.addListener('show_percentages', "click",show_percentages,'departments');
+YAHOO.util.Event.addListener('show_percentages', "click",show_percentages,'departments');
 
 
  YAHOO.util.Event.addListener('product_submit_search', "click",submit_search,'product');

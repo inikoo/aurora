@@ -292,8 +292,28 @@ YAHOO.util.Event.addListener(window, "load", function() {
     });
 
 
+function change_table_type(e,table_id){
+if(Dom.hasClass(this, 'state_details_selected'))
+ return;
+ var elements=Dom.getElementsByClassName('state_details_selected', 'span', 'table_type');
+ Dom.removeClass(elements, 'state_details_selected');
+ Dom.addClass(this, 'state_details_selected');
+ if(this.id=='table_type_list'){
+ Dom.get('thumbnails'+table_id).style.display='none'
+  Dom.get('table'+table_id).style.display=''
+Dom.get('table'+table_id).style.display=''
+ 
+ }else{
+  Dom.get('thumbnails'+table_id).style.display=''
+ Dom.get('table'+table_id).style.display='none'
+Dom.get('list_options'+table_id).style.display='none'
+ 
+ }
+ 
+}
+
  function init(){
- var Dom   = YAHOO.util.Dom;
+ 
 
  get_thumbnails();
 
@@ -303,16 +323,21 @@ ids=['general','sales','stock','parts','cats'];
  YAHOO.util.Event.addListener(ids, "click",change_period,0);
  ids=['avg_totals','avg_month','avg_week',"avg_month_eff","avg_week_eff"];
  YAHOO.util.Event.addListener(ids, "click",change_avg,0);
+ ids=['table_type_thumbnail','table_type_list'];
+ YAHOO.util.Event.addListener(ids, "click",change_table_type,0);
+ 
      
 YAHOO.util.Event.addListener("info_next", "click",next_info_period,0);
 YAHOO.util.Event.addListener("info_previous", "click",previous_info_period,0);
 
-     YAHOO.util.Event.addListener('show_details', "click",show_details,'products');
+    
+YAHOO.util.Event.addListener('details', "click",change_details,'family');
+//YAHOO.util.Event.addListener('show_percentages', "click",show_percentages,'departments');
 
-     YAHOO.util.Event.addListener('product_submit_search', "click",submit_search,'product');
+
+
+ YAHOO.util.Event.addListener('product_submit_search', "click",submit_search,'product');
  YAHOO.util.Event.addListener('product_search', "keydown", submit_search_on_enter,'product');
-
-
 
 
 

@@ -987,6 +987,10 @@ $sql=sprintf("select count(*) as num ,sum(`Delivery Note Weight`) as w  from `De
     $orders_state[$row['state']]=array(
 				       'orders'=>number($row['orders'])
 				       ,'orders_percentage'=>percentage($row['orders'],$orders_total)
+				        ,'net'=>money($row['net_potential'])
+				       ,'net_percentage'=>percentage($row['net_potential'],$orders_total_net)
+				       
+				       
 				       //,'net_chargable'=>money($row['net'],$currency)
 				       //  ,'net_potential'=>money($row['net_potential'],$currency)
 				       //,'net_paid'=>money($row['net']-$row['net_balance'],$currency)
