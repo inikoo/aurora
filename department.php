@@ -45,6 +45,7 @@ else
 if(!$modify)
   $edit=false;
 
+$smarty->assign('view_parts',$user->can_view('parts'));
 
 $smarty->assign('view_sales',$view_sales);
 $smarty->assign('view_stock',$view_stock);
@@ -52,6 +53,16 @@ $smarty->assign('create',$create);
 $smarty->assign('modify',$modify);
 
 get_header_info($user,$smarty);
+$show_details=$_SESSION['state']['family']['details'];
+$smarty->assign('table_type',$_SESSION['state']['department']['table_type']);
+$general_options_list=array();
+if($modify)
+  $general_options_list[]=array('tipo'=>'url','url'=>'department.php?edit=1','label'=>_('Edit Department'));
+$general_options_list[]=array('tipo'=>'js','state'=>$show_details,'id'=>'details','label'=>($show_details?_('Hide Details'):_('Show Details')));
+$smarty->assign('general_options_list',$general_options_list);
+
+
+
 
 $css_files=array(
 		 $yui_path.'reset-fonts-grids/reset-fonts-grids.css',

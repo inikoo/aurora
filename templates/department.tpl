@@ -1,9 +1,14 @@
 {include file='header.tpl'}
 <div id="bd" >
  {include file='assets_navigation.tpl'}
- 
-  
-<div id="department_info" style="margin:10px 0;padding:0;{if !$show_details}display:none;{/if}">
+ <div style="clear:left;"> 
+ <span class="branch" ><a  href="store.php?id={$store->id}">{$store->get('Store Name')}</a> &rarr; {$department->get('Product Department Name')}</span>
+ </div>
+ <div id="no_details_title" style="clear:left;{if $show_details}display:none;{/if}">
+    <h1>Department: {$department->get('Product Department Name')} ({$department->get('Product Department Code')})</h1>
+  </div> 
+
+<div id="info" style="margin:10px 0;padding:0;{if !$show_details}display:none;{/if}">
 
 <h2 style="margin:0;padding:0">{t}Department Information{/t}:</h2>
 <div style="width:350px;float:left">

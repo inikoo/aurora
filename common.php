@@ -100,6 +100,8 @@ $smarty->assign('user',$user->data['User Alias']);
 $user->read_groups();
 $user->read_rights();
 $user->read_stores();
+$user->read_warehouses();
+
 //print_r($user);
 //exit;
 $nav_menu=array();

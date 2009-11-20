@@ -210,8 +210,12 @@
 
      
     <div id="list_options0"> 
-    <div style="clear:both;margin:0 0px;padding:0 20px ;border-bottom:1px solid #999"></div>
-    <span   style="float:right;margin-left:80px" class="state_details" state="{$show_percentages}"  id="show_percentages"  atitle="{if $show_percentages}{t}Normal Mode{/t}{else}{t}Comparison Mode{/t}{/if}"  >{if $show_percentages}{t}Comparison Mode{/t}{else}{t}Normal Mode{/t}{/if}</span>     
+      <div style="clear:both;margin:0 0px;padding:0 20px ;border-bottom:1px solid #999"></div>
+      <span   style="float:right;margin-left:20px" class="state_details" state="{$show_percentages}"  id="show_percentages"  atitle="{if $show_percentages}{t}Normal Mode{/t}{else}{t}Comparison Mode{/t}{/if}"  >{if $show_percentages}{t}Comparison Mode{/t}{else}{t}Normal Mode{/t}{/if}</span>     
+      <span   style="float:right;margin-left:80px" class="state_details" state="{$show_only}"  id="show_only"    >{$show_only_label}</span>   
+
+
+
     <table style="float:left;margin:0 0 5px 0px ;padding:0"  class="options" >
        <tr><td  {if $view=='general'}class="selected"{/if} id="general" >{t}General{/t}</td>
 	  {if $view_stock}<td {if $view=='stock'}class="selected"{/if}  id="stock"  >{t}Stock{/t}</td>{/if}

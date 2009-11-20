@@ -26,7 +26,7 @@ $smarty->assign('modify_stock',$modify_stock);
 $view_suppliers=$user->can_view('suppliers');
 $view_cust=$user->can_view('customers');
 
-
+$smarty->assign('view_parts',$user->can_view('parts'));
 $smarty->assign('view_suppliers',$view_suppliers);
 $smarty->assign('view_sales',$view_sales);
 $smarty->assign('view_stock',$view_stock);
@@ -44,7 +44,8 @@ $css_files=array(
 		 'common.css',
 		 'container.css',
 		 'button.css',
-		 'table.css'
+		 'table.css',
+		 'css/dropdown.css'
 		 );
 $js_files=array(
 		$yui_path.'utilities/utilities.js',
@@ -57,6 +58,7 @@ $js_files=array(
 		$yui_path.'menu/menu-min.js',
 		'common.js.php',
 		'table_common.js.php',
+		'js/dropdown.js'
 		);
 
 
@@ -152,6 +154,21 @@ $product->load('part_location_list');
 $smarty->assign('product',$product);
 $smarty->assign('product_id',$product->data['Product Current Key']);
 $smarty->assign('data',$product->data);
+
+get_header_info($user,$smarty);
+
+$general_options_list=array();
+if($modify)
+  $general_options_list[]=array('tipo'=>'url','url'=>'product.php?edit=1','label'=>_('Edit Product'));
+$smarty->assign('general_options_list',$general_options_list);
+
+
+
+
+
+
+
+
 $web_status_error=false;
 $web_status_error_title='';
  if($product->get('Product Web State')=='Online For Sale'){

@@ -11,8 +11,6 @@ var Dom   = YAHOO.util.Dom;
 var add_user_dialog_others;
 var add_user_dialog;
 
-
-
 var  group_name=new Object;
 
 <?php
@@ -23,9 +21,19 @@ foreach($_group as $key=>$value){
 print $g;
 ?>
 var  store_name=new Object;
+var  warehouse_name=new Object;
 
 <?php
   // todo: only list active stores
+    $s='';
+$sql="select `Warehouse Key`,`Warehouse Code` from `Warehouse Dimension`  ";
+$res=mysql_query($sql);
+while($row=mysql_fetch_array($res)){
+    $s.="warehouse_name[".$row['Warehouse Key']."]='".$row['Warehouse Code']."';";
+}
+mysql_free_result($res);
+print $s;
+
     $s='';
 $sql="select `Store Key`,`Store Code` from `Store Dimension`  ";
 $res=mysql_query($sql);
@@ -34,6 +42,8 @@ while($row=mysql_fetch_array($res)){
 }
 mysql_free_result($res);
 print $s;
+
+
 
 ?>
     
@@ -54,7 +64,7 @@ var edit_active=function (callback, newValue) {
     datatable = this.getDataTable();                                                                                                                                                               
     //              for( x in record)                                                                                                                                                              
     user_id=record.getData('id');                                                                                                                                                                  
-    var request='ar_edit_users.php?tipo=edit_user&user_id='+escape(user_id)+'&key=' + column.key + '&newValue=' + escape(newValue) + '&oldValue=' + escape(oldValue)                                    
+    var request='ar_edit_users.php?tipo=edit_user&user_id='+escape(user_id)+'&key=' + column.key + '&newvalue=' + escape(newValue) + '&oldvalue=' + escape(oldValue)                                    
     //                alert(request);                                                                                                                                                                              
     YAHOO.util.Connect.asyncRequest(                                                                                                                                                               
 				    'POST',                                                                                                                                                        
@@ -88,13 +98,13 @@ var edit_active=function (callback, newValue) {
 		datatable = this.getDataTable();
 		//		for( x in record)
 		user_id=record.getData('id');
-		var request='ar_edit_users.php?tipo=edit_user&user_id='+escape(user_id)+'&key=' + column.key + '&newValue=' + escape(newValue) + '&oldValue=' + escape(oldValue)
-		//			alert(request);
+		var request='ar_edit_users.php?tipo=edit_user&user_id='+escape(user_id)+'&key=' + column.key + '&newvalue=' + escape(newValue) + '&oldvalue=' + escape(oldValue)
+		//	alert(request);
 		YAHOO.util.Connect.asyncRequest(
 						'POST',
 						request, {
 						    success:function(o) {
-						       alert(o.responseText);
+							// alert(o.responseText);
 							var r = YAHOO.lang.JSON.parse(o.responseText);
 							if (r.state == 200) {
 							    callback(true, r.data);
@@ -146,7 +156,25 @@ var edit_active=function (callback, newValue) {
 		
 	    };
 	    
-	       var stores=function(el, oRecord, oColumn, oData){
+	       var warehouses=function(el, oRecord, oColumn, oData){
+		//  var tmp = oData.split(',');
+		if(oData==''){
+		      el.innerHTML ='';
+		      return;
+		}
+		var tmp=oData;
+		var swarehouses='';
+		  for(x in tmp){
+		      if(swarehouses=='')
+			  swarehouses=warehouse_name[tmp[x]];
+		      else
+			  swarehouses=swarehouses+', '+warehouse_name[tmp[x]]
+			      }
+		el.innerHTML =swarehouses;
+		
+	       };
+
+ var stores=function(el, oRecord, oColumn, oData){
 		//  var tmp = oData.split(',');
 		if(oData==''){
 		      el.innerHTML ='';
@@ -162,11 +190,12 @@ var edit_active=function (callback, newValue) {
 			      }
 		el.innerHTML =sstores;
 		
-	    };
+	       };
+
 
 	   
 	    var ColumnDefs = [
-	     {key:"user_id", label:"", hidden:true,action:"none",isPrimaryKey:true}
+	     {key:"id", label:"", hidden:true,action:"none",isPrimaryKey:true}
 			       ,{key:"password",label:"" ,width:16 }
 			      ,{key:"isactive",label:"<?php echo _('Active')?>" ,className:'aright',formatter:active,width:45 ,editor: new YAHOO.widget.RadioCellEditor({radioOptions:[{label:"Yes", value:"Yes"}, {label:"No", value:"No"}]
 			      ,defaultValue:"0",asyncSubmitter:edit_active }) }
@@ -210,7 +239,28 @@ var edit_active=function (callback, newValue) {
 				    })  
 				 
 			      
-			      }
+	     } ,{key:"warehouses",formatter:warehouses, label:"<?php echo _('Warehouses')?>",sortable:true,className:"aleft"
+				 	, editor: new YAHOO.widget.CheckboxCellEditor({
+					asyncSubmitter:edit_group,checkboxOptions:[
+										   <?php
+										   $s='';
+										   $sql="select `Warehouse Key`,`Warehouse Code`,`Warehouse Name` from `Warehouse Dimension`  ";
+										   $res=mysql_query($sql);
+										   while($row=mysql_fetch_array($res)){
+										       $code=$row['Warehouse Code'];
+										       $key=$row['Warehouse Key'];
+										       $name=$row['Warehouse Name'];
+										       $s.="{label:'$code<br>', value:$key},";
+										   }
+										   mysql_free_result($res);
+										   preg_replace('/,$/','',$s);
+										   print $s;
+										   ?>
+										   ]
+				    })  
+				 
+			      
+	     }
 
 
 			      ];
@@ -233,7 +283,7 @@ var edit_active=function (callback, newValue) {
 		
 		
 		fields: [
-			 "user_id","isactive","handle","name","email","lang","groups","tipo","active","password","stores"
+			 "id","isactive","handle","name","email","lang","groups","tipo","active","password","stores","warehouses"
 			 ]};
 
 	    this.table0 = new YAHOO.widget.DataTable(tableDivEL, ColumnDefs,

@@ -1,8 +1,16 @@
 <?php
 include_once('common.php');
 include_once('class.Warehouse.php');
+include_once('location_header_functions.php');
 
-$smarty->assign('box_layout','yui-t0');
+
+
+if(isset($_REQUEST['id']) and is_numeric($_REQUEST['id']) ){
+  $store_id=$_REQUEST['id'];
+
+}else{
+  $store_id=$_SESSION['state']['store']['id'];
+}
 
 
 $css_files=array(
@@ -14,7 +22,8 @@ $css_files=array(
 		 'common.css',
 		 'button.css',
 		 'container.css',
-		 'table.css'
+		 'table.css',
+		 'css/dropdown.css'
 		 );
 $js_files=array(
 
@@ -30,6 +39,7 @@ $js_files=array(
 		'common.js.php',
 		'table_common.js.php',
 		'calendar_common.js.php',
+		'js/dropdown.js',
 		'warehouse.js.php'
 		);
 
@@ -44,7 +54,7 @@ $smarty->assign('js_files',$js_files);
 $smarty->assign('table_title',_('Location List'));
 
 
-$warehouse=new warehouse($_SESSION['state']['warehouse']['id']);
+$warehouse=new warehouse($warehouse_id);
 
 
 $tipo_filter=$_SESSION['state']['warehouse']['locations']['f_field'];

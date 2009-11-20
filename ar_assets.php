@@ -3672,7 +3672,7 @@ function list_products() {
 
 
     $_SESSION['state']['products']['table']=array('order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value
-                                            ,'mode'=>$mode,'restrictions'=>'','parent'=>$parent
+                                            ,'mode'=>$mode,'restrictions'=>$restrictions,'parent'=>$parent
                                                  );
 
 
@@ -3747,7 +3747,7 @@ function list_products() {
     $wheref.=" and  `Product Name` like '%".addslashes($f_value)."%'";
 
     $sql="select count(*) as total from $db_table  $where $wheref   ";
-    // print $sql;
+    //print_r($conf);exit;
     $res=mysql_query($sql);
     if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
         $total=$row['total'];

@@ -10,6 +10,7 @@ if(!$user->can_view('stores')  ){
 }
 $view_sales=$user->can_view('product sales');
 $view_stock=$user->can_view('product stock');
+$smarty->assign('view_parts',$user->can_view('parts'));
 $smarty->assign('view_sales',$view_sales);
 $smarty->assign('view_stock',$view_stock);
 $modify=false;
@@ -22,6 +23,8 @@ if($modify)
 $smarty->assign('general_options_list',$general_options_list);
 
 $smarty->assign('view',$_SESSION['state']['product_categories']['view']);
+
+
 
 
 $css_files=array(

@@ -1,30 +1,15 @@
 {include file='header.tpl'}
 <div style="display:none; position:absolute; left:10px; top:200px; z-index:2" id="cal1Container"></div>
-
-
 <div id="bd" >
-  
-<div id="sub_header">
-{if $next.id>0}<span class="nav2 onright"><a href="product.php?id={$next.id}">{$next.code} &rarr; </a></span>{/if}
-{if $prev.id>0}<span class="nav2 onright" ><a href="product.php?id={$prev.id}">&larr; {$prev.code}</a></span>{/if}
-<span class="nav2 onright"><a href="family.php?id={$family_id}">&uarr; {$product->get('Product Family Name')}</a></span>
-<span class="nav2 onright"><a href="department.php?id={$department_id}">&uarr;&uarr; {$product->get('Product Main Department Name')}</a></span>
- <span class="nav2 onleft"><a  href="departments.php">{t}Departments{/t}</a></span>
-  <span class="nav2 onleft"><a href="families.php">{t}Families{/t}</a></span>
-  <span class="nav2 onleft"><a href="products.php">{t}Products{/t}</a></span>
-  <span class="nav2 onleft"><a href="categories.php">{t}Categories{/t}</a></span>
-  <span class="nav2 onleft"><a href="parts.php">{t}Parts{/t}</a></span>
+{include file='assets_navigation.tpl'}
 
-</div>
 
 <div style="clear:left;"> 
  <span class="branch" ><a  href="store.php?id={$store->id}">{$store->get('Store Name')}</a> &rarr; <a  href="department.php?id={$product->get('Product Main Department Key')}">{$product->get('Product Main Department Name')}</a> &rarr; <a  href="family.php?id={$product->get('Product Family Key')}">{$product->get('Product Family Name')}</a></span>
 </div>
 
  <div class="search_box" >
-      <span class="search_title" style="padding-right:15px">{t}Product Code{/t}:</span> <br><input size="8" class="text search" id="product_search" value="" name="search"/><img align="absbottom" id="product_submit_search" class="submitsearch" src="art/icons/zoom.png" alt="Submit search"><br/>
-      <span  class="product_search_msg"   id="product_search_msg"    ></span> <span  class="search_sugestion"   id="product_search_sugestion"    ></span>
-      <br/>
+     
   <table border=0 cellpadding="2" style="float:right;margin-top:20px;" class="view_options">
       <tr style="border-bottom:1px solid #ddd">
 	

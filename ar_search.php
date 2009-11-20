@@ -170,13 +170,14 @@ function search_products($q,$tipo,$user){
     // try to get similar results
     //   if($myconf['product_code_separator']!=''){
     if (  ($myconf['product_code_separator']!='' and   preg_match('/'.$myconf['product_code_separator'].'/',$q)) or  $myconf['product_code_separator']==''  ) {
-        $sql=sprintf("select damlev(UPPER(%s),UPPER(`Product Code`)) as dist1,    damlev(UPPER(SOUNDEX(%s)),UPPER(SOUNDEX(`Product Code`))) as dist2,        `Product Code` as code,`product id` as id from `Product Dimension`  where  Product  Store Key` in (%s)     order by dist1,dist2 limit 1;"
+        $sql=sprintf("select damlev(UPPER(%s),UPPER(`Product Code`)) as dist1,    damlev(UPPER(SOUNDEX(%s)),UPPER(SOUNDEX(`Product Code`))) as dist2,        `Product Code` as code,`product id` as id from `Product Dimension`  where  `Product Store Key` in (%s)     order by dist1,dist2 limit 1;"
 		     ,prepare_mysql($q)
 		     ,prepare_mysql($q)
 		     ,join(',',$user->stores)
 		     );
         $result=mysql_query($sql);
-        if ($found=mysql_fetch_array($result, MYSQL_ASSOC)) {
+	//	print $sql;     
+   if ($found=mysql_fetch_array($result, MYSQL_ASSOC)) {
             if ($found['dist1']<3) {
                 echo json_encode(array('state'=>400,'msg1'=>_('Did you mean'),'msg2'=>'<a href="'.$target.'?pid='.$found['id'].'">'.$found['code'].'</a>'));
                 mysql_free_result($result);
