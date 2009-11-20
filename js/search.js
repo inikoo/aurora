@@ -11,6 +11,7 @@ var submit_search_on_enter=function(e,tipo){
 };
 
 var submit_search=function(e,data){
+
     if(typeof( data ) == 'string')
 	var data={tipo:data,container:data};
     

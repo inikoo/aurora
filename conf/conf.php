@@ -713,6 +713,7 @@ $default_state=array(
                                     'avg'=>'totals',
                                     'restrictions'=>'',
                                     'editing'=>false,
+                                    'table_type'=>'list',
                                     'edit'=>'description',
                                     'plot'=>'department',
                                     'plot_data'=>array('department'=>array(
@@ -786,12 +787,31 @@ $default_state=array(
                                 'avg'=>'totals',
                                 'edit'=>'description',
                                 'editing'=>false,
-                                'plot'=>'family_sales_month',
-                                'pie'=>array(
-                                          'period'=>'month'
-                                                   ,'date'=>'today'
-                                                           ,'forecast'=>'no'
-                                      ),
+                                'table_type'=>'list',
+                                'plot'=>'family',
+                               'plot_data'=>array('family'=>array(
+                                                              'period'=>'m',
+                                                              'category'=>'sales',
+                                                              'page'=>'plot.php'
+                                                          )
+                                                          ,'top_products'=>array(
+                                                                                 'period'=>'m',
+                                                                                 'category'=>'sales',
+                                                                                 'page'=>'plot.php'
+                                                                             )
+                                                                             ,'pie'=>array(
+                                                                                        'period'=>'m',
+                                                                                        'category'=>'sales',
+                                                                                        'page'=>'pie.php',
+                                                                                        'forecast'=>'no',
+                                                                                        'date'=>'today'
+                                                                                    )
+                                                 ),
+                                
+                                
+                                
+                                
+                              
                                 'table'=>array(
                                             'order'=>'code',
                                             'order_dir'=>'',

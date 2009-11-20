@@ -403,7 +403,9 @@ We received <b>{$orders_total}</b> orders on {if $tipo=='m'}{$period}{/if},   <b
   <td>{$k}</td>
   <td  style="padding:0 4px 0 0;" >{$v.orders}</td>
   <td style="text-align:left;padding:0 0 0 0;">({$v.orders_percentage})</td>
-  <td>{$v.net}</td>
+   <td  style="padding:0 4px 0 0;" >{$v.net}</td>
+  <td style="text-align:left;padding:0 0 0 0;">({$v.net_percentage})</td>
+  
 
 </tr>
 {/foreach}
