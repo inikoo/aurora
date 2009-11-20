@@ -27,7 +27,7 @@ $create=$user->can_create('products');
 $modify=$user->can_edit('products');
 
 
-
+$smarty->assign('view_parts',$user->can_view('parts'));
 $smarty->assign('view_sales',$view_sales);
 $smarty->assign('view_stock',$view_stock);
 $smarty->assign('create',$create);

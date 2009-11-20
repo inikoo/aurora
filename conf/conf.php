@@ -779,7 +779,8 @@ $default_state=array(
                                 'details'=>false,
                                 'percentages'=>false,
                                 'view'=>'general',
-                                'edit_view'=>'view_name',
+                                
+				'edit_view'=>'view_name',
                                 'id'=>1,
                                 'period'=>'year',
                                 'percentage'=>0,
@@ -813,13 +814,14 @@ $default_state=array(
                                 
                               
                                 'table'=>array(
-                                            'order'=>'code',
-                                            'order_dir'=>'',
-                                            'sf'=>0,
-                                            'nr'=>20,
-                                            'where'=>'where true',
-                                            'f_field'=>'id',
-                                            'f_value'=>''
+					       'show_only'=>'forsale',
+					       'order'=>'code',
+					       'order_dir'=>'',
+					       'sf'=>0,
+					       'nr'=>20,
+					       'where'=>'where true',
+					       'f_field'=>'id',
+					       'f_value'=>''
 
                                         ),
                                 'history'=>array(

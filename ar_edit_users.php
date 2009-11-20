@@ -549,16 +549,15 @@ case('updateone'):
 
 function edit_user(){
   global $editor;
- $user=new User($_REQUEST['user_id']);
- $user->editor=$editor;
- if($user->id){
-   $data=array(
-	       'value'=>$_REQUEST['newvalue'],
-	       //'user_id'=>$LU->getProperty('auth_user_id')
-	       );
-   //print_r($data);
-   //exit;
+  $user=new User($_REQUEST['user_id']);
+  $user->editor=$editor;
+  if($user->id){
+    $data=array(
+		'value'=>$_REQUEST['newvalue'],
+		);
     $user->update($_REQUEST['key'],$data);
+
+
    if($user->updated)
      $response=array('state'=>200,'data'=>$user->new_value);
    else

@@ -12,6 +12,9 @@
  Version 2.0
 */
 include_once('class.DB_Table.php');
+include_once('class.Store.php');
+include_once('class.Warehouse.php');
+
 class User extends DB_Table{
 
 
@@ -185,51 +188,66 @@ class User extends DB_Table{
   }
 
 
-function update_stores($value){
+  function update_warehouses($value){
     $this->updated=false;
+    
+    if($this->data['User Type']!='Staff')
+      return;
+    $warehouses=preg_split('/,/',$value);
+    foreach($warehouses as $key=>$value){
+      if(!is_numeric($value) )
+	unset($warehouses[$key]);
+    }
+    $this->read_warehouses();
+    $old_warehouses=$this->warehouses;
+    $to_delete = array_diff($old_warehouses, $warehouses);
+    $to_add = array_diff($warehouses, $old_warehouses);
+    $changed=0;
+    if(count($to_delete)>0){
+      $changed+=$this->delete_warehouse($to_delete);
+    }
+    if(count($to_add)>0){
+      $changed+=$this->add_warehouse($to_add);
+    }
+    $this->read_warehouses();	
+    if($changed>0){
+      $this->updated=true;
+      $this->new_value=$this->warehouses;
+    }
+  }
 
-if($this->data['User Type']!='Staff')
-return;
+  function update_stores($value){
+    $this->updated=false;
+    
+    if($this->data['User Type']!='Staff')
+      return;
+    $stores=preg_split('/,/',$value);
+    foreach($stores as $key=>$value){
+      if(!is_numeric($value) )
+	unset($stores[$key]);
+    }
+    $this->read_stores();
+    $old_stores=$this->stores;
+    $to_delete = array_diff($old_stores, $stores);
+    $to_add = array_diff($stores, $old_stores);
+    $changed=0;
+    if(count($to_delete)>0){
+      $changed+=$this->delete_store($to_delete);
+    }
+    if(count($to_add)>0){
+      $changed+=$this->add_store($to_add);
+    }
+    $this->read_stores();	
+    if($changed>0){
+      $this->updated=true;
+      $this->new_value=$this->stores;
+    }
+  }
 
+  
+  
+  
 
-     $stores=preg_split('/,/',$value);
-     foreach($stores as $key=>$value){
-       if(!is_numeric($value) )
-	 unset($stores[$key]);
-     }
-       
-
-     $this->read_stores();
-     
-     
-     $old_stores=$this->stores;
-     //     print_r($old_stores);
-     //print_r($stores);
-     $to_delete = array_diff($old_stores, $stores);
-     $to_add = array_diff($stores, $old_stores);
-     //	print_r($to_delete);
-     //		print_r($to_add);
-	
-   $changed=0;
-     
-	if(count($to_delete)>0){
-	  $changed+=$this->delete_store($to_delete);
-
-	}
-	if(count($to_add)>0){
-	  $changed+=$this->add_store($to_add);
-
-	}
-	$this->read_stores();	
-	
-	if($changed>0){
-	  $this->updated=true;
-	    $this->new_value=$this->stores;
-	}
-
-	
-
-}
 
   function update_groups($value){
     
@@ -284,6 +302,9 @@ function update($tipo,$data){
     break;
  case('stores'):
    $this->update_stores($data['value']);
+    break;
+ case('warehouses'):
+   $this->update_warehouses($data['value']);
     break;
  case('name'):
  case('alias'):
@@ -428,7 +449,7 @@ function add_store($to_add,$history=true){
     $store=new Store($scope_id);
     if(!$store->id)
     continue;
-    $sql=sprintf("insert into `User Right Scope Bridge`values (%d,%d) ",$this->id,$scope_id);
+    $sql=sprintf("insert into `User Right Scope Bridge`values (%d,'Store',%d) ",$this->id,$scope_id);
      //print $sql;
      mysql_query($sql);
       if (mysql_affected_rows()>0) {
@@ -447,19 +468,20 @@ function add_store($to_add,$history=true){
 
  }
 
+
  function delete_store($to_delete,$history=true){
-$changed=0;
+   $changed=0;
    foreach($to_delete as $scope_id){
-    $store=new Store($scope_id);
-    if(!$store->id)
-    continue;
-     $sql=sprintf("delete from `User Right Scope Bridge` where `User Key`=%d and `scope Key`=%d ",$this->id,$scope_id);
+     $store=new Store($scope_id);
+     if(!$store->id)
+       continue;
+     $sql=sprintf("delete from `User Right Scope Bridge` where `User Key`=%d and `scope Key`=%d and `Scope`='Store' ",$this->id,$scope_id);
      mysql_query($sql);
    }
    if (mysql_affected_rows()>0) {
-   $changed++;
+     $changed++;
      $history_data=array(
-		 'note'=>_('User Rights Disassociated with Store')
+			 'note'=>_('User Rights Disassociated with Store')
 			 ,'details'=>_trim(_('User')." ".$this->data['User Alias']." "._('rights disassociated with')." ".$store->data['Store Name'])
 			 ,'action'=>'disassociate'
 			 ,'indirect_object'=>'Store'
@@ -468,7 +490,59 @@ $changed=0;
      $this->add_history($history_data);
      
    }
-return $changed;
+   return $changed;
+ }
+
+
+function add_warehouse($to_add,$history=true){
+   $changed=0;
+   foreach($to_add as $scope_id){
+    
+    $warehouse=new Warehouse($scope_id);
+    if(!$warehouse->id)
+    continue;
+    $sql=sprintf("insert into `User Right Scope Bridge`values (%d,'Warehouse',%d) ",$this->id,$scope_id);
+     //print $sql;
+     mysql_query($sql);
+      if (mysql_affected_rows()>0) {
+     $changed++;
+     $history_data=array(
+			 'note'=>_('User Rights Associated with Warehouse')
+			 ,'details'=>_trim(_('User')." ".$this->data['User Alias']." "._('rights associated with')." ".$warehouse->data['Warehouse Name'])
+			 ,'action'=>'associate'
+			 ,'indirect_object'=>'Warehouse'
+			 ,'indirect_object_key'=>$warehouse->id
+			 );
+     $this->add_history($history_data);
+   }
+   }
+   return $changed;
+
+ }
+
+
+ function delete_warehouse($to_delete,$history=true){
+   $changed=0;
+   foreach($to_delete as $scope_id){
+     $warehouse=new Warehouse($scope_id);
+     if(!$warehouse->id)
+       continue;
+     $sql=sprintf("delete from `User Right Scope Bridge` where `User Key`=%d and `scope Key`=%d and `Scope`='Warehouse'",$this->id,$scope_id);
+     mysql_query($sql);
+   }
+   if (mysql_affected_rows()>0) {
+     $changed++;
+     $history_data=array(
+			 'note'=>_('User Rights Disassociated with Warehouse')
+			 ,'details'=>_trim(_('User')." ".$this->data['User Alias']." "._('rights disassociated with')." ".$warehouse->data['Warehouse Name'])
+			 ,'action'=>'disassociate'
+			 ,'indirect_object'=>'Warehouse'
+			 ,'indirect_object_key'=>$warehouse->id
+			 );
+     $this->add_history($history_data);
+     
+   }
+   return $changed;
  }
 
 
@@ -568,23 +642,7 @@ function can_do_this_key($right_type,$tag,$tag_key){
   }else
     return false;
   
-  
-  
-//    $right_data=$this->rights_allow[$right_type][$tag];
-//  else
-//    return false;
-//  if($right_data['Right Access']=='All')
-//    return true;
-//  elseif($right_data['Right Access']=='Some'){
-//    if(preg_match('/,$tag_key,/',$right_data['Rigth Access Keys']))
-//      return true;
-//  } elseif($right_data['Right Access']=='Except'){
-//    if(!preg_match('/,$tag_key,/',$right_data['Rigth Access Keys']))
-//      return true;
-//  }
-//  return false;
-
-  
+ 
 }
 
 
@@ -608,12 +666,34 @@ function read_groups(){
 
 
 
+function  read_warehouses() {
+
+    $this->warehouses=array();
+    $sql=sprintf("select * from `User Right Scope Bridge` where `User Key`=%d and `Scope`='Warehouse'"
+                 , $this->id);
+    $res=mysql_query($sql);
+    while ($row=mysql_fetch_array($res)) {
+        $this->warehouses[]=$row['Scope Key'];
+    }
+    $this->warehouse_righs='none';
+    if ($this->data['User Type']=='Staff') {
+        $sql="select count(*) as num_warehouses from `Warehouse Dimension`";
+        $res=mysql_query($sql);
+        $row=mysql_fetch_array($res);
+        $num_warehouses=$row['num_warehouses'];
+        $num_warehouses=count($this->warehouses);
+        if ($num_warehouses==$num_warehouses)
+            $this->warehouse_rights='all';
+        else
+            $this->warehouse_righs='some';
+    }
+}
+
 function  read_stores() {
 
     $this->stores=array();
-    $sql=sprintf("select * from `User Right Scope Bridge` where `User Key`=%d"
+    $sql=sprintf("select * from `User Right Scope Bridge` where `User Key`=%d and `Scope`='Store' "
                  , $this->id);
-
     $res=mysql_query($sql);
     while ($row=mysql_fetch_array($res)) {
         $this->stores[]=$row['Scope Key'];
@@ -629,12 +709,11 @@ function  read_stores() {
             $this->store_rights='all';
         else
             $this->store_righs='some';
-
-
-
     }
-
 }
+
+
+
 
 function read_rights(){
   

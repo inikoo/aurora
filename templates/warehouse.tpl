@@ -1,9 +1,8 @@
 {include file='header.tpl'}
 <div id="bd" >
+{include file='locations_navigation.tpl'}
 
-  <span class="nav2 onleft {if $view=='areas'}{/if}" >{t}Areas{/t}</span>
-  <span class="nav2 onleft {if $view=='locations'}{/if}" >{t}Locations{/t}</span>
-
+  
  
 
   <div class="search_box no_top_nav"   >
