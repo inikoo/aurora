@@ -589,7 +589,7 @@ td.margin_note{widht:20px;font-family:times;font-size:80%;padding-right:20px;pad
 
 div.tabbed_container{border:1px solid #ccc;padding:20px 20px;clear:both;margin-bottom:20px}
 
-ul.tabs{margin-left:20px;margin-top:25px}
+ul.tabs{margin-left:20px;margin-top:10px}
 
 .tabs span.item
 {

@@ -2,7 +2,7 @@
 include_once('common.php');
 
 ?>
-var editing='<?php echo $_SESSION['state']['warehouse']['edit']?>';
+
 
 YAHOO.util.Event.addListener(window, "load", function() {
     tables = new function() {
@@ -69,14 +69,13 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    var tableid=1; // Change if you have more the 1 table
 	    var tableDivEL="table"+tableid;
 	    var LocationsColumnDefs = [
-	    {key:"wa_key", label:"", hidden:true,action:"none",isPrimaryKey:true}
-				       ,{key:"code", label:"<?php echo _('Code')?>", width:80,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC},editor: new YAHOO.widget.TextboxCellEditor({asyncSubmitter: CellEdit}),object:'warehouse_area'}
-				       ,{key:"name", label:"<?php echo _('Name')?>", width:120,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC},editor: new YAHOO.widget.TextboxCellEditor({asyncSubmitter: CellEdit}),object:'warehouse_area'}
-				       ,{key:"description", label:"<?php echo _('Description')?>",width:260,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC},editor: new YAHOO.widget.TextboxCellEditor({asyncSubmitter: CellEdit}),object:'warehouse_area'}
+				       {key:"code", label:"<?php echo _('Code')?>", width:100,sortable:true,formatter:this.customer_name,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				       ,{key:"name", label:"<?php echo _('Area')?>", width:50,sortable:true,formatter:this.customer_name,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				       ,{key:"locations", label:"<?php echo _('Locations')?>",width:100,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 
 					 ];
 	    //?tipo=locations&tid=0"
-	    this.dataSource1 = new YAHOO.util.DataSource("ar_edit_warehouse.php?tipo=warehouse_areas&tableid=1");
+	    this.dataSource1 = new YAHOO.util.DataSource("ar_warehouse.php?tipo=warehouse_areas&tableid=1");
 	    this.dataSource1.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource1.connXhrMode = "queueRequests";
 	    this.dataSource1.responseSchema = {
@@ -91,9 +90,9 @@ YAHOO.util.Event.addListener(window, "load", function() {
 		    totalRecords: "resultset.total_records" // Access to value in the server response
 		},
 		fields: [
-			 "wa_key"
+			 "id"
 			 ,"code"
-			 ,'description'
+			 ,'locations'
 			 ,'name'
 			 ]};
 	    this.table1 = new YAHOO.widget.DataTable(tableDivEL, LocationsColumnDefs,
@@ -122,116 +121,17 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    this.table1.filter={key:'<?php echo$_SESSION['state']['warehouse']['warehouse_area']['f_field']?>',value:'<?php echo$_SESSION['state']['warehouse']['warehouse_area']['f_value']?>'};
 	    YAHOO.util.Event.addListener('yui-pg0-0-page-report', "click",myRowsPerPageDropdown)	
 
- 
-	    this.table1.subscribe("cellMouseoverEvent", highlightEditableCell);
-	    this.table1.subscribe("cellMouseoutEvent", this.table1.onEventUnhighlightCell);
-	    this.table1.subscribe("cellClickEvent", onCellClick);
 
 
 	};
     });
 
 
-function change_block(e){
-     if(editing!=this.id){
-	
-	
-
-	Dom.get('description_block').style.display='none';
-	Dom.get('areas_block').style.display='none';
-	Dom.get('locations_block').style.display='none';
-	
-	Dom.get(this.id+'_block').style.display='';
-	Dom.removeClass(editing,'selected');
-	
-	Dom.addClass(this, 'selected');
-	
-	YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=warehouse-edit&value='+this.id );
-	
-	editing=this.id;
-    }
-
-
-
-}
-
-function show_add_area_dialog(){
-Dom.get('new_warehouse_area_block').style.display='';
-Dom.get('new_warehouse_area_messages').style.display='';
-
-Dom.get('add_area_here').style.display='none';
-Dom.get('close_add_area').style.display='';
-Dom.get('save_area').style.display='';
-
-
-}
-function hide_add_area_dialog(){
-reset_area_data();
-Dom.get('new_warehouse_area_block').style.display='none';
-Dom.get('new_warehouse_area_messages').style.display='none';
-
-Dom.get('add_area_here').style.display='';
-Dom.get('close_add_area').style.display='none';
-Dom.get('save_area').style.display='none';
-}
-
-var area_data =new Object;
-
-
-function get_area_data(){
-    area_data['Warehouse Key']=Dom.get('warehouse_key').value;
-    area_data['Warehouse Area Name']=Dom.get('area_name').value;
-    area_data['Warehouse Area Code']=Dom.get('area_code').value;
-    area_data['Warehouse Area Description']=Dom.get('area_description').value;
-
-}
-
-function reset_area_data(){
-    Dom.get('warehouse_key').value=Dom.get('warehouse_key').getAttribute('ovalue');
-    Dom.get('area_name').value=Dom.get('area_name').getAttribute('ovalue');
-    Dom.get('area_code').value=Dom.get('area_code').getAttribute('ovalue');
-    Dom.get('area_description').innerHTML=Dom.get('area_description').getAttribute('ovalue');
-
-}
-
-function add_area(){
-    get_area_data();
-  
-    var json_value = YAHOO.lang.JSON.stringify(area_data);
-    var request='ar_edit_warehouse.php?tipo=new_area&values=' + encodeURIComponent(json_value); 
-//alert(request);    
-    YAHOO.util.Connect.asyncRequest('POST',request ,{
-	    success:function(o) {
-	 alert(o.responseText);
-		var r =  YAHOO.lang.JSON.parse(o.responseText);
-		if(r.action=='created'){
-		    reset_area_data();
-		    var table=tables['table1']
-		    var datasource=tables['dataSource1'];
-		    
-		    datasource.sendRequest('',table.onDataReturnInitializeTable, table);      
-		}else if(r.action=='error'){
-		    alert(r.msg);
-		}
-			    
-
-			
-	    }
-	});
-}
-
-
 
 
  function init(){
  var Dom   = YAHOO.util.Dom;
-   var ids = ["description","areas","locations"]; 
-    YAHOO.util.Event.addListener(ids, "click", change_block);
-  var ids = ["add_area","add_area_here"]; 
-  YAHOO.util.Event.addListener(ids, "click", show_add_area_dialog);
 
-YAHOO.util.Event.addListener('save_area', "click", add_area);
-YAHOO.util.Event.addListener('close_add_area', "click",hide_add_area_dialog );
 
  var oACDS0 = new YAHOO.util.FunctionDataSource(mygetTerms);
  oACDS0.queryMatchContains = true;
@@ -273,7 +173,12 @@ YAHOO.util.Event.onContentReady("rppmenu1", function () {
 	 YAHOO.util.Event.addListener("paginator_info1", "click", oMenu.show, null, oMenu);
     });
 
- var change_view=function(e){
+
+
+
+
+
+  var change_view=function(e){
       var tipo=this.id;
       var table=tables['table0'];
       old_view=table.view;
@@ -294,14 +199,23 @@ YAHOO.util.Event.onContentReady("rppmenu1", function () {
 	  table.hideColumn('last_order');
 	  table.hideColumn('orders');
 	  table.hideColumn('super_total');
+
+
       }
+
+
       YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=locations-view&value='+escape(tipo));
   }
+
+
 
 YAHOO.util.Event.addListener('but_show_details', "click",show_details,'locations');
 var ids=['general','contact'];
 YAHOO.util.Event.addListener(ids, "click",change_view);
 //YAHOO.util.Event.addListener('submit_advanced_search', "click",submit_advanced_search);
+
+
+
  }
 
 YAHOO.util.Event.onDOMReady(init);

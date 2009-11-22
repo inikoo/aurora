@@ -59,13 +59,6 @@ $show_details=$_SESSION['state']['store']['details'];
 $smarty->assign('show_details',$show_details);
 get_header_info($user,$smarty);
 
-$general_options_list=array();
-if($modify)
-  $general_options_list[]=array('tipo'=>'url','url'=>'store.php?edit=1','label'=>_('Edit Store'));
-$general_options_list[]=array('tipo'=>'js','state'=>$show_details,'id'=>'details','label'=>($show_details?_('Hide Details'):_('Show Details')));
-$smarty->assign('general_options_list',$general_options_list);
-
-
 if(isset($_REQUEST['edit']))
   $edit=$_REQUEST['edit'];
 else
@@ -74,6 +67,19 @@ else
 
 if(!$modify)
   $edit=false;
+
+if(!$edit){
+$general_options_list=array();
+
+if($modify)
+  $general_options_list[]=array('tipo'=>'url','url'=>'store.php?edit=1','label'=>_('Edit Store'));
+$general_options_list[]=array('tipo'=>'js','state'=>$show_details,'id'=>'details','label'=>($show_details?_('Hide Details'):_('Show Details')));
+
+}else{
+  $general_options_list[]=array('tipo'=>'url','url'=>'store.php?edit=0','label'=>_('Exit Edit'));
+}
+$smarty->assign('general_options_list',$general_options_list);
+
 
 
 

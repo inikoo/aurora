@@ -1,8 +1,36 @@
 <?php
 include_once('common.php');
 include_once('class.Warehouse.php');
+if(isset($_REQUEST['id']) and is_numeric($_REQUEST['id']) ){
+  $warehouse_id=$_REQUEST['id'];
 
-$smarty->assign('box_layout','yui-t0');
+}else{
+  $warehouse_id=$_SESSION['state']['warehouse']['id'];
+}
+$warehouse=new warehouse($warehouse_id);
+if(!($user->can_view('warehouses') and in_array($warehouse_id,$user->warehouses)   ) ){
+  header('Location: index.php');
+   exit;
+}
+$modify=$user->can_edit('warehouses');
+if(!$modify ){
+  header('Location: warehouse.php');
+   exit;
+}
+$edit=true;
+$warehouse=new warehouse($warehouse_id);
+
+
+$general_options_list=array();
+$general_options_list[]=array('tipo'=>'url','url'=>'warehouse.php','label'=>_('Exit Edit'));
+$general_options_list[]=array('tipo'=>'url','url'=>'new_warehouse_area.php?warehouse_id='.$warehouse_id,'label'=>_('Add Area'));
+$general_options_list[]=array('tipo'=>'url','url'=>'new_location.php?warehouse_id='.$warehouse_id,'label'=>_('Add Location'));
+
+
+$smarty->assign('general_options_list',$general_options_list);
+
+$smarty->assign('edit',$_SESSION['state']['warehouse']['edit']);
+
 
 
 $css_files=array(
@@ -27,7 +55,7 @@ $js_files=array(
 		$yui_path.'datatable/datatable-min.js',
 		$yui_path.'container/container_core-min.js',
 		$yui_path.'menu/menu-min.js',
-		$yui_path.'calendar/calendar-min.js',
+		
 		'common.js.php',
 		'table_common.js.php',
 		'js/edit_common.js',
@@ -46,7 +74,7 @@ $smarty->assign('js_files',$js_files);
 $smarty->assign('table_title',_('Location List'));
 
 
-$warehouse=new warehouse($_SESSION['state']['warehouse']['id']);
+
 
 
 $tipo_filter=$_SESSION['state']['warehouse']['locations']['f_field'];

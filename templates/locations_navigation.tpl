@@ -1,3 +1,4 @@
+
 {if $warehouse_list_length>1}
 <dl class="dropdown">
   <dt id="one-ddheader" onmouseover="ddMenu('one',1)" onmouseout="ddMenu('one',-1)" onclick="window.location='warehouses.php'" >{t}Warehouses{/t}</dt>
@@ -11,9 +12,10 @@
 </dl>
 {else}
 <dl class="dropdown">
-  <dt id="one-ddheader" onmouseover="ddMenu('one',1)" onmouseout="ddMenu('one',-1)" onclick="window.location='warehouse.php?id={$warehouse_id}'" >{t}Departments{/t}</dt>
+  <dt id="one-ddheader" onclick="window.location='warehouses.php'" ><span>{t}Warehouses{/t}</span> <img onmouseover="ddMenu('one',1)" onmouseout="ddMenu('one',-1)" src="art/icons/abajo_white.png"/></dt>
   <dd id="one-ddcontent" onmouseover="cancelHide('one')" onmouseout="ddMenu('one',-1)">
     <ul>
+      <li><a href="warehouse.php?id={$warehouse_id}" class="parent">{$warehouse_name}</a></li>
       {foreach from=$tree_list item=warehouse_area }
       <li><a href="warehouse_area.php?id={$warehouse_area.id}" class="underline">{$warehouse_area.code}</a></li>
       {/foreach}
@@ -22,8 +24,10 @@
 </dl>
 
 {/if}
-<span class="nav2 onleft"><a href="locations.php">{t}Locations{/t}</a></span>
+
+
 <span class="nav2 onleft"><a href="warehouse_areas.php">{t}Areas{/t}</a></span>
+<span class="nav2 onleft"><a href="locations.php">{t}Locations{/t}</a></span>
 {if $view_parts}<span class="nav2 onleft"><a href="parts.php">{t}Parts{/t}</a></span>{/if}
 
 

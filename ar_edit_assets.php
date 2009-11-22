@@ -985,10 +985,15 @@ $conf=$_SESSION['state']['stores']['table'];
   }else
     $avg=$_SESSION['state']['stores']['avg'];
 
-    $_SESSION['state']['stores']['table']=array('order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value);
-  // print_r($_SESSION['tables']['families_list']);
-
-  //  print_r($_SESSION['tables']['families_list']);
+    $_SESSION['state']['stores']['table']['order']=$order;
+     $_SESSION['state']['stores']['table']['order_dir']=$order_direction;
+      $_SESSION['state']['stores']['table']['nr']=$number_results;
+       $_SESSION['state']['stores']['table']['sf']=$start_from;
+        $_SESSION['state']['stores']['table']['where']=$where
+         $_SESSION['state']['stores']['table']['_field']=$f_field;
+          $_SESSION['state']['stores']['table']['f_value']=f_value;
+    
+ 
 $where=" ";
    
  $filter_msg='';

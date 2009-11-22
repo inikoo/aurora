@@ -221,10 +221,10 @@ $default_state=array(
                                             'from'=>'',
                                             'to'=>'',
                                             'elements'=>array(),
-					    'dispatch'=>'',
-					    'paid'=>'',
-					    'order_type'=>''
-					       ),
+                                            'dispatch'=>'',
+                                            'paid'=>'',
+                                            'order_type'=>''
+                                        ),
                                 'invoices'=>array(
                                                'order'=>'date',
                                                'order_dir'=>'',
@@ -252,45 +252,45 @@ $default_state=array(
 
                             ),
 
-		   'product_categories'=>array(
-					       'category'=>0,
-					       'from'=>'',
-					       'to'=>'',
-					       'period'=>'year',
-					       'percentages'=>0,
-					       'mode'=>'all',
-					       'avg'=>'totals',
-					       'view'=>'general',
-					       'from'=>'',
-					       'to'=>'',
-					       'exchange_type'=>'day2day',
-					       'stores'=>'all',
-					       'stores_mode'=>'grouped',
-					       'exchange_value'=>1,
-					       'show_default_currency'=>false,
-					       'subcategories'=>array(
-								      
-								       'order'=>'name',
-								       'order_dir'=>'',
-								       'sf'=>0,
-								       'nr'=>1000,
-								       'where'=>'where true',
-								       'f_field'=>'name',
-								       'f_value'=>'',
-								    
-								       ),
-					       'products'=>array(
-								 
-								 'order'=>'code',
-								 'order_dir'=>'',
-								 'sf'=>0,
-								 'nr'=>25,
-								 'where'=>'where true',
-								 'f_field'=>'code',
-								 'f_value'=>'',
-								
-								 ),
-					       ),
+                   'product_categories'=>array(
+                                            'category'=>0,
+                                            'from'=>'',
+                                            'to'=>'',
+                                            'period'=>'year',
+                                            'percentages'=>0,
+                                            'mode'=>'all',
+                                            'avg'=>'totals',
+                                            'view'=>'general',
+                                            'from'=>'',
+                                            'to'=>'',
+                                            'exchange_type'=>'day2day',
+                                            'stores'=>'all',
+                                            'stores_mode'=>'grouped',
+                                            'exchange_value'=>1,
+                                            'show_default_currency'=>false,
+                                            'subcategories'=>array(
+
+                                                                'order'=>'name',
+                                                                'order_dir'=>'',
+                                                                'sf'=>0,
+                                                                'nr'=>1000,
+                                                                'where'=>'where true',
+                                                                'f_field'=>'name',
+                                                                'f_value'=>'',
+
+                                                            ),
+                                            'products'=>array(
+
+                                                           'order'=>'code',
+                                                           'order_dir'=>'',
+                                                           'sf'=>0,
+                                                           'nr'=>25,
+                                                           'where'=>'where true',
+                                                           'f_field'=>'code',
+                                                           'f_value'=>'',
+
+                                                       ),
+                                        ),
 
                    'products'=>array(
                                   'details'=>false,
@@ -361,6 +361,7 @@ $default_state=array(
                                        ),
                    'warehouse'=>array(
                                    'id'=>1,
+                                   'edit'=>'description',
                                    'locations'=>array(
                                                    'order'=>'code',
                                                    'order_dir'=>'',
@@ -381,6 +382,21 @@ $default_state=array(
                                                                      'f_value'=>'',
                                                                      'parent'=>'warehouse'
                                                                  )
+
+                               ),
+                  'warehouses'=>array(
+                                   
+                                   'table'=>array(
+                                                   'order'=>'code',
+                                                   'order_dir'=>'',
+                                                   'sf'=>0,
+                                                   'nr'=>50,
+                                                   'where'=>'where true',
+                                                   'f_field'=>'code',
+                                                   'f_value'=>'',
+                                                   'elements'=>array()
+                                               )
+                                           
 
                                ),
                    'warehouse_area'=>array(
@@ -779,8 +795,8 @@ $default_state=array(
                                 'details'=>false,
                                 'percentages'=>false,
                                 'view'=>'general',
-                                
-				'edit_view'=>'view_name',
+
+                                'edit_view'=>'view_name',
                                 'id'=>1,
                                 'period'=>'year',
                                 'percentage'=>0,
@@ -790,38 +806,38 @@ $default_state=array(
                                 'editing'=>false,
                                 'table_type'=>'list',
                                 'plot'=>'family',
-                               'plot_data'=>array('family'=>array(
-                                                              'period'=>'m',
-                                                              'category'=>'sales',
-                                                              'page'=>'plot.php'
-                                                          )
-                                                          ,'top_products'=>array(
-                                                                                 'period'=>'m',
-                                                                                 'category'=>'sales',
-                                                                                 'page'=>'plot.php'
-                                                                             )
-                                                                             ,'pie'=>array(
-                                                                                        'period'=>'m',
-                                                                                        'category'=>'sales',
-                                                                                        'page'=>'pie.php',
-                                                                                        'forecast'=>'no',
-                                                                                        'date'=>'today'
-                                                                                    )
-                                                 ),
-                                
-                                
-                                
-                                
-                              
+                                'plot_data'=>array('family'=>array(
+                                                                'period'=>'m',
+                                                                'category'=>'sales',
+                                                                'page'=>'plot.php'
+                                                            )
+                                                            ,'top_products'=>array(
+                                                                                'period'=>'m',
+                                                                                'category'=>'sales',
+                                                                                'page'=>'plot.php'
+                                                                            )
+                                                                            ,'pie'=>array(
+                                                                                       'period'=>'m',
+                                                                                       'category'=>'sales',
+                                                                                       'page'=>'pie.php',
+                                                                                       'forecast'=>'no',
+                                                                                       'date'=>'today'
+                                                                                   )
+                                                  ),
+
+
+
+
+
                                 'table'=>array(
-					       'show_only'=>'forsale',
-					       'order'=>'code',
-					       'order_dir'=>'',
-					       'sf'=>0,
-					       'nr'=>20,
-					       'where'=>'where true',
-					       'f_field'=>'id',
-					       'f_value'=>''
+                                            'show_only'=>'forsale',
+                                            'order'=>'code',
+                                            'order_dir'=>'',
+                                            'sf'=>0,
+                                            'nr'=>20,
+                                            'where'=>'where true',
+                                            'f_field'=>'id',
+                                            'f_value'=>''
 
                                         ),
                                 'history'=>array(
@@ -895,31 +911,31 @@ $default_state=array(
                                  'details'=>false,
                                  'plot'=>'product',
                                  'plot_data'=>array('product'=>array(
-								     'period'=>'m'
-								     ,'category'=>'sales'
-								     ,'page'=>'plot.php'
-								     )
-						    
-						    ),
-				 
+                                                                  'period'=>'m'
+                                                                           ,'category'=>'sales'
+                                                                                       ,'page'=>'plot.php'
+                                                              )
 
-				 
+                                                   ),
+
+
+
                                  'mode'=>'pid',
                                  'tag'=>1,
                                  'edit'=>'description',
                                  'display'=>array('details'=>0,'plot'=>1,'orders'=>0,'customers'=>0,'stock_history'=>0),
                                  'server'=>array(
-						 'tag'=>'',
-						 'order'=>'store',
-						 'order_dir'=>'',
-						 'sf'=>0,
-						 'nr'=>15,
-						 'where'=>'where true',
-						 'f_field'=>'id',
-						 'f_value'=>'',
-						 'from'=>'',
-						 'to'=>''
-						 ),
+                                              'tag'=>'',
+                                              'order'=>'store',
+                                              'order_dir'=>'',
+                                              'sf'=>0,
+                                              'nr'=>15,
+                                              'where'=>'where true',
+                                              'f_field'=>'id',
+                                              'f_value'=>'',
+                                              'from'=>'',
+                                              'to'=>''
+                                          ),
                                  'orders'=>array(
                                               'order'=>'date',
                                               'order_dir'=>'',
@@ -931,18 +947,18 @@ $default_state=array(
                                               'from'=>'',
                                               'to'=>''
                                           ),
-				 'code_timeline'=>array(
-							'code'=>'',
-							'order'=>'from',
-							'order_dir'=>'desc',
-							'sf'=>0,
-							'nr'=>15,
-							'where'=>'where true',
-							'f_field'=>'pid',
-							'f_value'=>'',
-							'from'=>'',
-							'to'=>''
-                                          ),
+                                 'code_timeline'=>array(
+                                                     'code'=>'',
+                                                     'order'=>'from',
+                                                     'order_dir'=>'desc',
+                                                     'sf'=>0,
+                                                     'nr'=>15,
+                                                     'where'=>'where true',
+                                                     'f_field'=>'pid',
+                                                     'f_value'=>'',
+                                                     'from'=>'',
+                                                     'to'=>''
+                                                 ),
                                  'customers'=>array(
                                                  'order'=>'dispached',
                                                  'order_dir'=>'desc',
