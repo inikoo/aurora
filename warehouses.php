@@ -5,14 +5,8 @@ include_once('location_header_functions.php');
 
 
 
-if(isset($_REQUEST['id']) and is_numeric($_REQUEST['id']) ){
-  $warehouse_id=$_REQUEST['id'];
 
-}else{
-  $warehouse_id=$_SESSION['state']['warehouse']['id'];
-}
-$warehouse=new warehouse($warehouse_id);
-if(!($user->can_view('warehouses') and in_array($warehouse_id,$user->warehouses)   ) ){
+if(!($user->can_view('warehouses')  ) ){
   header('Location: index.php');
    exit;
 }
@@ -33,9 +27,9 @@ get_header_info($user,$smarty);
 
 $general_options_list=array();
 if($modify)
-  $general_options_list[]=array('tipo'=>'url','url'=>'edit_warehouse.php','label'=>_('Edit Warehouse'));
-$general_options_list[]=array('tipo'=>'js','state'=>$show_details,'id'=>'details','label'=>($show_details?_('Hide Details'):_('Show Details')));
-$general_options_list[]=array('tipo'=>'js','state'=>$show_details,'id'=>'details','label'=>($show_details?_('Hide Map'):_('Show Map')));
+  $general_options_list[]=array('tipo'=>'url','url'=>'edit_warehouse.php','label'=>_('Edit Warehouses'));
+  $general_options_list[]=array('tipo'=>'url','url'=>'edit_warehouse.php','label'=>_('Add Warehouse'));
+
 
 $smarty->assign('general_options_list',$general_options_list);
 
@@ -69,49 +63,27 @@ $js_files=array(
 		'table_common.js.php',
 		'calendar_common.js.php',
 		'js/dropdown.js',
-		'warehouse.js.php'
+		'warehouses.js.php'
 		);
 
 
 
 
 $smarty->assign('parent','warehouse.php');
-$smarty->assign('title', _('Warehouse'));
+$smarty->assign('title', _('Warehouses'));
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
 
-$smarty->assign('table_title',_('Location List'));
-
-
-$tipo_filter=$_SESSION['state']['warehouse']['locations']['f_field'];
+$tipo_filter=$_SESSION['state']['warehouses']['table']['f_field'];
 $smarty->assign('filter0',$tipo_filter);
-$smarty->assign('filter_value0',$_SESSION['state']['warehouse']['locations']['f_value']);
+$smarty->assign('filter_value0',$_SESSION['state']['warehouses']['table']['f_value']);
 $filter_menu=array(
-		   'code'=>array('db_key'=>_('code'),'menu_label'=>'Location Code','label'=>'Code'),
+		   'code'=>array('db_key'=>_('code'),'menu_label'=>'Warehouse Code','label'=>'Code'),
 		   );
 $smarty->assign('filter_menu0',$filter_menu);
 $smarty->assign('filter_name0',$filter_menu[$tipo_filter]['label']);
 $paginator_menu=array(10,25,50,100,500);
 $smarty->assign('paginator_menu0',$paginator_menu);
 
-$tipo_filter=$_SESSION['state']['warehouse']['warehouse_area']['f_field'];
-$smarty->assign('filter1',$tipo_filter);
-$smarty->assign('filter_value1',$_SESSION['state']['warehouse']['warehouse_area']['f_value']);
-$filter_menu=array(
-		   'code'=>array('db_key'=>_('code'),'menu_label'=>'Area Code','label'=>'Code'),
-		   );
-$smarty->assign('filter_menu1',$filter_menu);
-$smarty->assign('filter_name1',$filter_menu[$tipo_filter]['label']);
-$paginator_menu=array(10,25,50,100,500);
-$smarty->assign('paginator_menu1',$paginator_menu);
-
-
-
-$smarty->assign('warehouse',$warehouse);
-//print_r($warehouse->get('areas'));
-
-$smarty->assign('paginator_menu',$paginator_menu);
-
-
-$smarty->display('warehouse.tpl');
+$smarty->display('warehouses.tpl');
 ?>

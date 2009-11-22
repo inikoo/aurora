@@ -1,11 +1,20 @@
 {include file='header.tpl'}
 <div id="bd" >
-  <div id="sub_header">
-    <span class="nav2 onleft" style="">{t}Editing Store{/t}: <span style="font-style: italic;">{$store->get('Store Name')}</span> (<span style="font-style: italic;">{$store->get('Store Code')}</span>)</span>
-    <span class="nav2 onright" style="margin-left:20px"><a href="store.php?edit=0">{t}Exit edit{/t}</a></span>
-  </div>
-  
- 
+<div class="search_box" style="margin-top:15px">
+  <div class="general_options">
+    {foreach from=$general_options_list item=options }
+        {if $options.tipo=="url"}
+            <span onclick="window.location.href='{$options.url}'" >{$options.label}</span>
+        {else}
+            <span  id="{$options.id}" state="{$options.state}">{$options.label}</span>
+        {/if}
+    {/foreach}
+    </div>
+</div>
+<div style="clear:left;margin:0 0px">
+    <h1>{t}Editing Store{/t}: <span id="title_name">{$store->get('Store Name')}</span> (<span id="title_code">{$store->get('Store Code')}</span>)</h1>
+</div>
+
   <ul class="tabs" id="chooser_ul" style="clear:both">
     <li> <span class="item {if $edit=='description'}selected{/if}"  id="description">  <span> {t}Description{/t}</span></span></li>
     <li> <span class="item {if $edit=='campaigns'}selected{/if}"  id="campaigns">  <span> {t}Campaings{/t}</span></span></li>

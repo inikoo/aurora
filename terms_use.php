@@ -15,15 +15,23 @@
 include_once('common.php');
 
 
+$site_address='kactus-isystems.com';
+$cancel_email='contact@kactus-isystems.com';
+
+$smarty->assign('site_address',$site_address);
+$smarty->assign('cancel_email',$cancel_email);
+
+
+
 $css_files=array(
 		 $yui_path.'reset-fonts-grids/reset-fonts-grids.css',
 		 $yui_path.'menu/assets/skins/sam/menu.css',
-		 $yui_path.'calendar/assets/skins/sam/calendar.css',
-		 $yui_path.'button/assets/skins/sam/button.css',
+		// $yui_path.'calendar/assets/skins/sam/calendar.css',
+		// $yui_path.'button/assets/skins/sam/button.css',
 		 'common.css',
-		 'button.css',
-		 'container.css',
-		 'table.css'
+		 //'button.css',
+		//'container.css',
+		 'css/terms_use.css'
 		 );
 $js_files=array(
 
@@ -39,21 +47,19 @@ $js_files=array(
 		'common.js.php',
 		'table_common.js.php',
 		'js/search.js',
-		'map_site.js.php'
+		'terms_use.js.php'
 		);
 
 
-
-
 $smarty->assign('parent','index.php');
-$smarty->assign('title', _('Site Map'));
+$smarty->assign('title', _('Terms & Conditions'));
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
 
 
 
 
-$smarty->display('site_map.tpl');
+$smarty->display('terms_use.tpl');
 
 
 
