@@ -1,13 +1,23 @@
 {include file='header.tpl'}
 <div id="bd" >
-<div id="sub_header">
-  <span class="nav2 onleft" style="">{t}Editing Stores{/t}</span>
-  <span class="nav2 onright" style="margin-left:20px"><a href="store.php?edit=0">{t}Exit edit{/t}</a></span>
+<div class="search_box" style="margin-top:15px">
+  <div class="general_options">
+    {foreach from=$general_options_list item=options }
+        {if $options.tipo=="url"}
+            <span onclick="window.location.href='{$options.url}'" >{$options.label}</span>
+        {else}
+            <span  id="{$options.id}" state="{$options.state}">{$options.label}</span>
+        {/if}
+    {/foreach}
+    </div>
+</div>
+<div style="clear:left;margin:0 0px">
+    <h1>{t}Editing Stores{/t}</h1>
 </div>
 
 <div id="doc3" style="clear:both;" class="yui-g yui-t4" >
     <ul class="tabs" id="chooser_ul">
-      <li> <span class="item {if $edit=='description'}selected{/if}"  id="description">  <span> {t}Description{/t}</span></span></li>
+      <li> <span class="item {if $edit=='description'}selected{/if}"  id="description">  <span> {t}Corporation{/t}</span></span></li>
       <li> <span class="item {if $edit=='stores'}selected{/if}" id="stores"  ><span> {t}Stores{/t}</span></span></li>
     </ul>
     <div id="yui-main" class="tabbed_container"> 
@@ -23,13 +33,18 @@
       </div>
       
       <div  class="edit_block" style="margin:0;padding:0 0px;{if $edit!="stores"}display:none{/if}"  id="d_stores">
-      
-
-
+      <div class="general_options" style="float:right">
+	<span   style="margin-right:10px"  id="add_store" class="state_details" >Create Store</span>
+	<span  style="margin-right:10px;display:none"  id="save_store" class="state_details">{t}Save{/t}</span>
+	<span style="margin-right:10px;display:none" id="close_add_store" class="state_details">{t}Close Dialog{/t}</span>
+	
+      </div>
+      <div id="new_store_messages" style="float:left;padding:5px;border:1px solid #ddd;width:480px;margin-bottom:15px;display:none">
+      </div>
 
 	<div   class="data_table" style="margin:10px 20px 25px 20px">
 
-	  	<div style="margin:0 0 10px 0;padding:10px;border:1px solid #ccc;zdisplay:none" id="new_store_dialog" >
+	  <div style="margin:0 0 10px 0;padding:10px;border:1px solid #ccc;zdisplay:none" id="new_store_dialog" >
 	<table class="edit">
 	  <tr class="first"><td class="label" >{t}Code{/t}:</td><td><input  id="new_code" onKeyUp="new_store_changed(this)"    onMouseUp="new_store_changed(this)"  onChange="new_store_changed(this)"  name="code" changed=0 type='text' class='text' style="width:15em" MAXLENGTH="16" value="" /></td></tr>
 	  <tr><td class="label" >{t}Full Name{/t}:</td><td><input   id="new_name" onKeyUp="new_store_changed(this)"    onMouseUp="new_store_changed(this)"  onChange="new_store_changed(this)"  name="name" changed=0 type='text'  MAXLENGTH="255" style="width:30em"  class='text' value="" /></td>

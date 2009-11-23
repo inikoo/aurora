@@ -1,5 +1,21 @@
 
 
+function swap_radio(){
+    swap_this_radio(this);
+}
+
+function swap_this_radio(o){
+    if(Dom.hasClass(o,'selected'))
+	return;
+    else{
+	var parent=o.parentNode;
+	elemets=Dom.getElementsByClassName('selected', 'span', parent);
+	Dom.removeClass(elemets,'selected');
+	Dom.addClass(o,'selected');
+	Dom.get('shelf_type_type').value=o.getAttribute('radio_value');
+    }
+}
+
 
 
   var CellEdit = function (callback, newValue) {
@@ -11,7 +27,7 @@
     
     if(column.object=='company')
 	ar_file='ar_edit_contacts.php';
-    else if(column.object=='warehouse_area' || column.object=='part_location')
+    else if(column.object=='warehouse_area' || column.object=='part_location'|| column.object=='shelf_type')
 	ar_file='ar_edit_warehouse.php';
 	else if(column.object=='user' )
 	ar_file='ar_edit_users.php';
