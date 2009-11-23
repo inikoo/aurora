@@ -412,6 +412,45 @@ $default_state=array(
                                                         'elements'=>array()
                                                     )
                                     ),
+		   'shelf_types'=>array(
+					'view'=>'general',
+                                        'table'=>array(
+                                                        'order'=>'name',
+                                                        'order_dir'=>'',
+                                                        'sf'=>0,
+                                                        'nr'=>25,
+                                                        'where'=>'where true',
+                                                        'f_field'=>'name',
+                                                        'f_value'=>'',
+                                                        'elements'=>array()
+                                                    )
+                                    ),
+		   'shelf_location_types'=>array(
+                                      
+                                        'table'=>array(
+                                                        'order'=>'name',
+                                                        'order_dir'=>'',
+                                                        'sf'=>0,
+                                                        'nr'=>25,
+                                                        'where'=>'where true',
+                                                        'f_field'=>'name',
+                                                        'f_value'=>'',
+                                                        'elements'=>array()
+                                                    )
+                                    ),
+		   'shelfs'=>array(
+                                       
+                                        'table'=>array(
+                                                        'order'=>'code',
+                                                        'order_dir'=>'',
+                                                        'sf'=>0,
+                                                        'nr'=>25,
+                                                        'where'=>'where true',
+                                                        'f_field'=>'code',
+                                                        'f_value'=>'',
+                                                        'elements'=>array()
+                                                    )
+                                    ),
 
                    'customers'=>array(
                                    'store'=>'',

@@ -4,7 +4,6 @@ include_once('../../app_files/db/dns.php');
 include_once('../../class.Department.php');
 include_once('../../class.Campaign.php');
 include_once('../../class.Charge.php');
-
 include_once('../../class.Family.php');
 include_once('../../class.Product.php');
 include_once('../../class.Supplier.php');
@@ -12,7 +11,6 @@ include_once('../../class.Part.php');
 include_once('../../class.Warehouse.php');
 include_once('../../class.Node.php');
 include_once('../../class.Shipping.php');
-
 include_once('../../class.SupplierProduct.php');
 
 error_reporting(E_ALL);

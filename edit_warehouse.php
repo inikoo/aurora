@@ -30,7 +30,17 @@ $general_options_list[]=array('tipo'=>'url','url'=>'new_location.php?warehouse_i
 $smarty->assign('general_options_list',$general_options_list);
 
 $smarty->assign('edit',$_SESSION['state']['warehouse']['edit']);
+$smarty->assign('shelf_type_view',$_SESSION['state']['shelf_types']['view']);
 
+$units_tipo=array(
+		  'Pallet'=>array('fname'=>_('Pallet Rack'))
+		  ,'Shelf'=>array('fname'=>_('Shelf'))
+		  ,'Drawer'=>array('fname'=>_('Drawer'))
+		  ,'Other'=>array('fname'=>_('Other'),'selected'=>true)
+		  );
+$smarty->assign('shelf_default_type','other');
+
+$smarty->assign('shelf_types',$units_tipo);
 
 
 $css_files=array(
@@ -78,24 +88,35 @@ $smarty->assign('table_title',_('Location List'));
 
 
 $tipo_filter=$_SESSION['state']['warehouse']['locations']['f_field'];
-$smarty->assign('filter',$tipo_filter);
-$smarty->assign('filter_value',$_SESSION['state']['warehouse']['locations']['f_value']);
+$smarty->assign('filter0',$tipo_filter);
+$smarty->assign('filter0_value',$_SESSION['state']['warehouse']['locations']['f_value']);
 
 $filter_menu=array(
 		   'code'=>array('db_key'=>_('code'),'menu_label'=>'Location Code','label'=>'Code'),
 		   );
-$smarty->assign('filter_menu',$filter_menu);
-$smarty->assign('filter_name',$filter_menu[$tipo_filter]['label']);
+$smarty->assign('filter_menu0',$filter_menu);
+$smarty->assign('filter_name0',$filter_menu[$tipo_filter]['label']);
 
 $paginator_menu=array(10,25,50,100,500);
-$smarty->assign('paginator_menu',$paginator_menu);
+$smarty->assign('paginator_menu0',$paginator_menu);
 
-
+$tipo_filter=$_SESSION['state']['warehouse']['warehouse_area']['f_field'];
+$smarty->assign('filter1',$tipo_filter);
+$smarty->assign('filter_value1',$_SESSION['state']['warehouse']['warehouse_area']['f_value']);
+$filter_menu=array(
+		   'code'=>array('db_key'=>_('code'),'menu_label'=>'Area Code','label'=>'Code'),
+		   );
+$smarty->assign('filter_menu1',$filter_menu);
+$smarty->assign('filter_name1',$filter_menu[$tipo_filter]['label']);
+$paginator_menu=array(10,25,50,100,500);
+$smarty->assign('paginator_menu1',$paginator_menu);
 
 $smarty->assign('warehouse',$warehouse);
 //print_r($warehouse->get('areas'));
 
 $smarty->assign('paginator_menu',$paginator_menu);
+
+
 
 
 $smarty->display('edit_warehouse.tpl');
