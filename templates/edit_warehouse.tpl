@@ -111,7 +111,7 @@
        <div  id="table0"   class="data_table_container dtable btable "> </div>
      </div>
    </div>
-   <div id="shelfblock" style="{if $edit!='shelf'}display:none{/if}" >
+   <div id="shelf_block" style="{if $edit!='shelf'}display:none{/if}" >
 
 </div>
 <div id="shelf_types_block" style="{if $edit!='shelf_types'}display:none{/if}" >

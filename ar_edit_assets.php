@@ -989,9 +989,9 @@ $conf=$_SESSION['state']['stores']['table'];
      $_SESSION['state']['stores']['table']['order_dir']=$order_direction;
       $_SESSION['state']['stores']['table']['nr']=$number_results;
        $_SESSION['state']['stores']['table']['sf']=$start_from;
-        $_SESSION['state']['stores']['table']['where']=$where
+        $_SESSION['state']['stores']['table']['where']=$where;
          $_SESSION['state']['stores']['table']['_field']=$f_field;
-          $_SESSION['state']['stores']['table']['f_value']=f_value;
+          $_SESSION['state']['stores']['table']['f_value']=$f_value;
     
  
 $where=" ";
