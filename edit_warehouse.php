@@ -65,16 +65,12 @@ $js_files=array(
 		$yui_path.'datatable/datatable-min.js',
 		$yui_path.'container/container_core-min.js',
 		$yui_path.'menu/menu-min.js',
-		
 		'common.js.php',
 		'table_common.js.php',
 		'js/edit_common.js',
-		
 		'edit_warehouse.js.php'
 		);
 
-
- 
  
 $smarty->assign('parent','warehouse.php');
 $smarty->assign('title', _('Warehouse'));

@@ -1,5 +1,4 @@
 <?php
-
 include_once('../../app_files/db/dns.php');
 include_once('../../class.Department.php');
 include_once('../../class.Campaign.php');
@@ -33,12 +32,7 @@ mysql_query("SET NAMES 'utf8'");
 require_once '../../conf/conf.php';           
 date_default_timezone_set('Europe/London');
 
-//create_shipping();exit;
-
 $_department_code='';
-
-
-
 $software='Get_Products.php';
 $version='V 1.0';
 
@@ -54,7 +48,7 @@ $products=false;
 $count=0;
 
 $store_key=1;
-;
+//----------------------------------OK
 
 $nodes=new Nodes('`Category Dimension`');
 $data=array('`Category Name`'=>'Use');
@@ -111,8 +105,6 @@ $data=array('`Category Name`'=>'Esoteric');
 $nodes->add_new(3 , $data);
 $data=array('`Category Name`'=>'Fantasy');
 $nodes->add_new(3 , $data);
-
-
 
 
 $store_data=array('Store Code'=>'UK',
