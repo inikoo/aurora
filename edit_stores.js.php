@@ -184,16 +184,17 @@ function cancel_add_store(){
 function hide_add_store_dialog(){
     Dom.get('new_store_dialog').style.display='none';
     Dom.get('add_store').style.display='';
-    Dom.get('save_new_store').style.display='none';
-    Dom.get('cancel_add_store').style.display='none';
+    Dom.get('save_store').style.display='none';
+    Dom.get('close_add_store').style.display='none';
 }
 
 function show_add_store_dialog(){
     Dom.get('new_store_dialog').style.display='';
     Dom.get('add_store').style.display='none';
-    Dom.get('save_new_store').style.display='';
-    Dom.addClass('save_new_store','disabled');
-    Dom.get('cancel_add_store').style.display='';
+    Dom.get('save_store').style.display='';
+    Dom.addClass('save_store','disabled');
+   Dom.get('close_add_store').style.display='';
+    
 }
 
 function init(){
@@ -202,7 +203,7 @@ function init(){
      YAHOO.util.Event.addListener('add_store', "click", show_add_store_dialog);
 
      YAHOO.util.Event.addListener('save_new_store', "click",save_new_store);
-     YAHOO.util.Event.addListener('cancel_add_store', "click", cancel_add_store);
+     YAHOO.util.Event.addListener('close_add_store', "click", cancel_add_store);
 
      var Countries_DS = new YAHOO.util.FunctionDataSource(match_country);
      Countries_DS.responseSchema = {fields: ["id", "name", "code","code2a"]}
@@ -211,6 +212,14 @@ function init(){
      Countries_AC.resultTypeList = false;
      Countries_AC.formatResult = country_formatResult;
      Countries_AC.itemSelectEvent.subscribe(onCountrySelected);
+     
+     
+     var Countries_AC = new YAHOO.widget.AutoComplete("currency", "currency_container", Countries_DS);
+     Countries_AC.useShadow = true;
+     Countries_AC.resultTypeList = false;
+     Countries_AC.formatResult = country_formatResult;
+     Countries_AC.itemSelectEvent.subscribe(onCountrySelected);
+     
 
 }
 

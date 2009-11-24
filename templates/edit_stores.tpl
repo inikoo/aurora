@@ -15,15 +15,13 @@
     <h1>{t}Editing Stores{/t}</h1>
 </div>
 
-<div id="doc3" style="clear:both;" class="yui-g yui-t4" >
     <ul class="tabs" id="chooser_ul">
       <li> <span class="item {if $edit=='description'}selected{/if}"  id="description">  <span> {t}Corporation{/t}</span></span></li>
       <li> <span class="item {if $edit=='stores'}selected{/if}" id="stores"  ><span> {t}Stores{/t}</span></span></li>
     </ul>
-    <div id="yui-main" class="tabbed_container"> 
+    <div  class="tabbed_container"> 
       
-      <div id="edit_messages">
-	</div>
+      <div id="edit_messages"></div>
       <div  class="edit_block" style="margin:0;padding:0 0px;{if $edit!="description"}display:none{/if}"  id="d_description">
 	<table class="edit">
 	  <tr><td>{t}Corporation Name{/t}:</td><td><input  id="name" onKeyUp="description_changed(this)"    onMouseUp="description_changed(this)"  onChange="description_changed(this)" changed=0 type='text' class='text' style="width:15em" MAXLENGTH="16" value="" /></td></tr>
@@ -31,7 +29,6 @@
 	</table>
 	
       </div>
-      
       <div  class="edit_block" style="margin:0;padding:0 0px;{if $edit!="stores"}display:none{/if}"  id="d_stores">
       <div class="general_options" style="float:right">
 	<span   style="margin-right:10px"  id="add_store" class="state_details" >Create Store</span>
@@ -42,12 +39,12 @@
       <div id="new_store_messages" style="float:left;padding:5px;border:1px solid #ddd;width:480px;margin-bottom:15px;display:none">
       </div>
 
-	<div   class="data_table" style="margin:10px 20px 25px 20px">
+	
 
-	  <div style="margin:0 0 10px 0;padding:10px;border:1px solid #ccc;zdisplay:none" id="new_store_dialog" >
+	  <div id="new_store_dialog" style="float:left;padding:5px;border:1px solid #ddd;width:480px;margin-bottom:15px;display:none"  >
 	<table class="edit">
 	  <tr class="first"><td class="label" >{t}Code{/t}:</td><td><input  id="new_code" onKeyUp="new_store_changed(this)"    onMouseUp="new_store_changed(this)"  onChange="new_store_changed(this)"  name="code" changed=0 type='text' class='text' style="width:15em" MAXLENGTH="16" value="" /></td></tr>
-	  <tr><td class="label" >{t}Full Name{/t}:</td><td><input   id="new_name" onKeyUp="new_store_changed(this)"    onMouseUp="new_store_changed(this)"  onChange="new_store_changed(this)"  name="name" changed=0 type='text'  MAXLENGTH="255" style="width:30em"  class='text' value="" /></td>
+	  <tr><td class="label" >{t}Name{/t}:</td><td><input   id="new_name" onKeyUp="new_store_changed(this)"    onMouseUp="new_store_changed(this)"  onChange="new_store_changed(this)"  name="name" changed=0 type='text'  MAXLENGTH="255" style="width:20em"  class='text' value="" /></td>
 	   
 	  <tr>
 	    
@@ -66,23 +63,25 @@
  <div  style="width:15em;position:relative;top:00px" >
 		<input id="currency" style="text-align:left;width:18em" type="text">
 		<div id="currency_container" style="" ></div>
-	      </div> <input id="currency_code" value="" type="hidden"> </td>
+	      </div> <input id="currency_code" value="" type="hidden" ></td>
 </tr>	  
 <tr>
-<td class="label">{t}Locale{/t}:</td><td></td>
+<td class="label">{t}Locale{/t}:</td>
+<div class="options" style="margin:5px 0" id="shelf_type_type_container">
+		   <input type="hidden" value="{$shelf_default_type}" ovalue="{$shelf_default_type}" id="shelf_type_type"  >
+		  {foreach from=$locales item=locale key=locale_key}
+		    <span class="radio{if $locale.selected} selected{/if}"  id="radio_shelf_type_{$locale_key}" radio_value="{$locale_key}">{$locale.name}</span> 
+		  {/foreach}
+		</div>
+<td></td>
 </tr>
 
 	</table>
 	</div>
 
+<div   class="data_table" style="clear:both">
 	  <span class="clean_table_title">{t}Stores{/t}</span>
-	  <table class="options" style="float:right;padding:0;margin:0">
-	    <tr>
-	      <td  id="add_store">Add Store</td>
-	      <td  style="display:none" id="save_new_store">{t}Save New Store{/t}</td>
-	      <td  style="display:none" id="cancel_add_store">{t}Cancel{/t}</td>
-	    </tr>
-	  </table>
+	 
 
   <div  class="clean_table_caption"  style="clear:both;">
     <div style="float:left;"><div id="table_info0" class="clean_table_info"><span id="rtext0"></span> <span class="rtext_rpp" id="rtext_rpp0"></span> <span class="filter_msg"  id="filter_msg0"></span></div></div>
@@ -92,6 +91,7 @@
   <div  id="table0"   class="data_table_container dtable btable "> </div>
 </div>
 </div>
+
   </div>
 </div>
 
