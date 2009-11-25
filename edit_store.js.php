@@ -405,7 +405,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 				       ];
 	    //?tipo=customers&tid=0"
 	    
-	    this.dataSource2 = new YAHOO.util.DataSource("ar_assets.php?tipo=charges_in_store&tableid=2");
+	    this.dataSource2 = new YAHOO.util.DataSource("ar_edit_assets.php?tipo=edit_charges&tableid=2");
 	    this.dataSource2.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource2.connXhrMode = "queueRequests";
 	    this.dataSource2.responseSchema = {

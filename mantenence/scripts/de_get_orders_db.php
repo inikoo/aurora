@@ -1306,8 +1306,8 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
       $data['Order Currency Exchange']=$exchange;
 
       $data['store_id']=$store_key;
-     $payment_method=parse_payment_method($header_data['pay_method']);
-	  $lag=(strtotime($date_inv)-strtotime($date_order))/24/3600;
+      $payment_method=parse_payment_method($header_data['pay_method']);
+      $lag=(strtotime($date_inv)-strtotime($date_order))/24/3600;
 	  if($lag==0 or $lag<0)
 	    $lag='';
 	  $taxable='Yes';
@@ -2076,7 +2076,7 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 	$dn=new DEliveryNote('create',$data_dn,$data_dn_transactions,$parent_order);
     
       
-	$sql="update fr_orders_data.orders set last_transcribed=NOW() where id=".$order_data_id;
+	$sql="update de_orders_data.orders set last_transcribed=NOW() where id=".$order_data_id;
 	mysql_query($sql);
     }
 

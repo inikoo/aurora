@@ -27,8 +27,8 @@
        <span style="display:none" id="description_num_changes"></span>
     <div id="description_errors"></div>
     <table >
-      <tr><td>{t}Code{/t}:</td><td><input  id="code" onKeyUp="edit_dept_changed(this)"    onMouseUp="edit_dept_changed(this)"  onChange="edit_dept_changed(this)"  name="code" changed=0 type='text' class='text' style="width:15em" MAXLENGTH="16" value="{$family->get('Product Family Code')}" ovalue="{$family->get('Product Family Code')}"  /></td></tr>
-      <tr><td>{t}Name{/t}:</td><td><input   id="name" onKeyUp="edit_dept_changed(this)"    onMouseUp="edit_dept_changed(this)"  onChange="edit_dept_changed(this)"  name="name" changed=0 type='text'  MAXLENGTH="255" style="width:30em"  class='text' value="{$family->get('Product Family Name')}"  ovalue="{$family->get('Product Family Name')}"  /></td>
+      <tr><td>{t}Code{/t}:</td><td><input  id="code" onKeyUp="edit_family_changed(this)"    onMouseUp="edit_family_changed(this)"  onChange="edit_family_changed(this)"  name="code" changed=0 type='text' class='text' style="width:15em" MAXLENGTH="16" value="{$family->get('Product Family Code')}" ovalue="{$family->get('Product Family Code')}"  /></td></tr>
+      <tr><td>{t}Name{/t}:</td><td><input   id="name" onKeyUp="edit_family_changed(this)"    onMouseUp="edit_family_changed(this)"  onChange="edit_family_changed(this)"  name="name" changed=0 type='text'  MAXLENGTH="255" style="width:30em"  class='text' value="{$family->get('Product Family Name')}"  ovalue="{$family->get('Product Family Name')}"  /></td>
 	<td>
 	  <span class="save" id="description_save" onclick="save('description')" style="display:none">{t}Update{/t}</span><span class="reset" id="description_reset" onclick="reset('description')" style="display:none">{t}Reset{/t}</span>
       </td></tr>

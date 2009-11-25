@@ -33,7 +33,7 @@ $store=new Store($department->get('Product Department Store Key'));
 $view_sales=$user->can_view('product sales');
 $view_stock=$user->can_view('product stock');
 $create=$user->can_create('product families');
-$modify=$user->can_edit('stores',$store->id);
+$modify=$user->can_edit('stores');
 
 
 
@@ -126,43 +126,56 @@ $store_period_title=array('year'=>_('Last Year'),'quarter'=>_('Last Quarter'),'m
 $smarty->assign('store_period',$store_period);
 $smarty->assign('store_period_title',$store_period_title[$store_period]);
 
+ $store_order='`Product Department Code`';
+    if ($store_order=='families')
+        $store_order='`Product Department Families`';
+    if ($store_order=='todo')
+        $store_order='`Product Department In Process Products`';
+    if ($store_order=='profit') {
+        if ($store_period=='all')
+            $store_order='`Product Department Total Profit`';
+        elseif($store_period=='year')
+        $store_order='`Product Department 1 Year Acc Profit`';
+        elseif($store_period=='quarter')
+        $store_order='`Product Department 1 Quarter Acc Profit`';
+        elseif($store_period=='month')
+        $store_order='`Product Department 1 Month Acc Profit`';
+        elseif($store_period=='week')
+        $store_order='`Product Department 1 Week Acc Profit`';
+    }
+    elseif($store_order=='sales') {
+        if ($store_period=='all')
+            $store_order='`Product Department Total Invoiced Amount`';
+        elseif($store_period=='year')
+        $store_order='`Product Department 1 Year Acc Invoiced Amount`';
+        elseif($store_period=='quarter')
+        $store_order='`Product Department 1 Quarter Acc Invoiced Amount`';
+        elseif($store_period=='month')
+        $store_order='`Product Department 1 Month Acc Invoiced Amount`';
+        elseif($store_period=='week')
+        $store_order='`Product Department 1 Week Acc Invoiced Amount`';
 
-
-If($store_order=='profit'){
-    if($store_period=='all')
-      $store_order='`Product Department Total Profit`';
-    elseif($store_period=='year')
-      $store_order='`Product Department 1 Year Acc Profit`';
-    elseif($store_period=='quarter')
-      $store_order='`Product Department 1 Quarter Acc Profit`';
-    elseif($store_period=='month')
-      $store_order='`Product Department 1 Month Acc Profit`';
-    elseif($store_period=='week')
-      $store_order='`Product Department 1 Week Acc Profit`';
-  }elseif($store_order=='sales'){
-    if($store_period=='all')
-      $store_order='`Product Department Total Invoiced Amount`';
-    elseif($store_period=='year')
-      $store_order='`Product Department 1 Year Acc Invoiced Amount`';
-    elseif($store_period=='quarter')
-      $store_order='`Product Department 1 Quarter Acc Invoiced Amount`';
-    elseif($store_period=='month')
-      $store_order='`Product Department 1 Month Acc Invoiced Amount`';
-    elseif($store_period=='week')
-      $store_order='`Product Department 1 Week Acc Invoiced Amount`';
-
-  }
-  elseif($store_order=='name')
+    }
+    elseif($store_order=='name')
     $store_order='`Product Department Name`';
-  elseif($store_order=='families')
-    $store_order='`Product Department Families`';
-  elseif($store_order=='active')
+    elseif($store_order=='code')
+    $store_order='`Product Department Code`';
+    elseif($store_order=='active')
     $store_order='`Product Department For Sale Products`';
-  elseif($store_order=='outofstock')
+    elseif($store_order=='outofstock')
     $store_order='`Product Department Out Of Stock Products`';
-  elseif($store_order=='stockerror')
+    elseif($store_order=='stock_error')
     $store_order='`Product Department Unknown Stock Products`';
+    elseif($store_order=='surplus')
+    $store_order='`Product Department Surplus Availability Products`';
+    elseif($store_order=='optimal')
+    $store_order='`Product Department Optimal Availability Products`';
+    elseif($store_order=='low')
+    $store_order='`Product Department Low Availability Products`';
+    elseif($store_order=='critical')
+    $store_order='`Product Department Critical Availability Products`';
 
+  
 
 
 $sql=sprintf("select `Product Department Key` as id,`Product Department Code` as code  from `Product Department Dimension` where `Product Department Store Key`=%d and   %s<%s order by %s desc  ",$department->data['Product Department Store Key'],$store_order,prepare_mysql($department->get(str_replace('`','',$store_order))),$store_order);
