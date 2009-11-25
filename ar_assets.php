@@ -2893,7 +2893,8 @@ function list_departments() {
         $rtext_rpp=' ('._('Showing all').')';
     $_dir=$order_direction;
     $_order=$order;
-
+    
+    $order='`Product Department Code`';
     if ($order=='families')
         $order='`Product Department Families`';
     if ($order=='todo')
@@ -6203,59 +6204,59 @@ function list_stores() {
 
     $_dir=$order_direction;
     $_order=$order;
-
-    if ($order=='families')
-        $order='`Store Families`';
-    elseif($order=='departments')
-    $order='`Store Departments`';
-    elseif($order=='code')
     $order='`Store Code`';
+    if ($order=='families')
+      $order='`Store Families`';
+    elseif($order=='departments')
+      $order='`Store Departments`';
+    elseif($order=='code')
+      $order='`Store Code`';
     elseif($order=='todo')
-    $order='`Store In Process Products`';
+      $order='`Store In Process Products`';
     elseif($order=='discontinued')
-    $order='`Store In Process Products`';
+      $order='`Store In Process Products`';
     else if ($order=='profit') {
-        if ($period=='all')
-            $order='`Store Total Profit`';
-        elseif($period=='year')
+      if ($period=='all')
+	$order='`Store Total Profit`';
+      elseif($period=='year')
         $order='`Store 1 Year Acc Profit`';
-        elseif($period=='quarter')
+      elseif($period=='quarter')
         $order='`Store 1 Quarter Acc Profit`';
-        elseif($period=='month')
+      elseif($period=='month')
         $order='`Store 1 Month Acc Profit`';
-        elseif($period=='week')
+      elseif($period=='week')
         $order='`Store 1 Week Acc Profit`';
     }
     elseif($order=='sales') {
-        if ($period=='all')
-            $order='`Store Total Invoiced Amount`';
-        elseif($period=='year')
+      if ($period=='all')
+	$order='`Store Total Invoiced Amount`';
+      elseif($period=='year')
         $order='`Store 1 Year Acc Invoiced Amount`';
-        elseif($period=='quarter')
+      elseif($period=='quarter')
         $order='`Store 1 Quarter Acc Invoiced Amount`';
-        elseif($period=='month')
+      elseif($period=='month')
         $order='`Store 1 Month Acc Invoiced Amount`';
         elseif($period=='week')
-        $order='`Store 1 Week Acc Invoiced Amount`';
-
+	  $order='`Store 1 Week Acc Invoiced Amount`';
+	
     }
     elseif($order=='name')
-    $order='`Store Name`';
+      $order='`Store Name`';
     elseif($order=='active')
-    $order='`Store For Sale Products`';
+      $order='`Store For Sale Products`';
     elseif($order=='outofstock')
-    $order='`Store Out Of Stock Products`';
+      $order='`Store Out Of Stock Products`';
     elseif($order=='stock_error')
-    $order='`Store Unknown Stock Products`';
+      $order='`Store Unknown Stock Products`';
     elseif($order=='surplus')
-    $order='`Store Surplus Availability Products`';
+      $order='`Store Surplus Availability Products`';
     elseif($order=='optimal')
-    $order='`Store Optimal Availability Products`';
+      $order='`Store Optimal Availability Products`';
     elseif($order=='low')
-    $order='`Store Low Availability Products`';
+      $order='`Store Low Availability Products`';
     elseif($order=='critical')
-    $order='`Store Critical Availability Products`';
-
+      $order='`Store Critical Availability Products`';
+    
 
 
     $sql="select sum(`Store For Sale Products`) as sum_active,sum(`Store Families`) as sum_families  from `Store Dimension` $where $wheref   ";
