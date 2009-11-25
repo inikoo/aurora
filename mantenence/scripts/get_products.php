@@ -1511,6 +1511,10 @@ if(preg_match('/^Wenzels$/i',$supplier_code)){
 	$part=new Part('new',$part_data);
 	//	print_r($part->data);
 	
+
+	
+
+	
 	$rules[]=array('Part Sku'=>$part->data['Part SKU'],
 		       'Supplier Product Units Per Part'=>$units
 		       ,'supplier product part most recent'=>'Yes'
@@ -1518,6 +1522,9 @@ if(preg_match('/^Wenzels$/i',$supplier_code)){
 		       ,'supplier product part valid to'=>date('Y-m-d H:i:s')
 		       ,'factor supplier product'=>1
 		       );
+
+	
+
 	$supplier_product->new_part_list('',$rules);
 	
 	$part_list[]=array(
@@ -1528,7 +1535,7 @@ if(preg_match('/^Wenzels$/i',$supplier_code)){
 			   'Parts Per Product'=>1,
 			   'Product Part Type'=>'Simple Pick'
 			   );
-	$product->new_part_list('',$part_list);
+	$product->new_part_list(array(),$part_list);
 	$supplier_product->load('used in');
 	$product->load('parts');
 	$part->load('used in');
