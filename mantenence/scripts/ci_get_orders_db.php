@@ -1,5 +1,4 @@
 <?php
-//x
 error_reporting(E_ALL);
 include_once('../../app_files/db/dns.php');
 include_once('../../class.Department.php');
@@ -10,8 +9,20 @@ include_once('../../class.Order.php');
 include_once('../../class.Invoice.php');
 include_once('../../class.DeliveryNote.php');
 include_once('../../class.Email.php');
+include_once('../../class.TimeSeries.php');
 
 $store_code='E';
+
+$to_update=array(
+'products'=>array(),
+'products_id'=>array(),
+'products_code'=>array(),
+'families'=>array(),
+'departments'=>array(),
+'stores'=>array(),
+'parts'=>array()
+);
+
 
 $con=@mysql_connect($dns_host,$dns_user,$dns_pwd );
 if (!$con) {
@@ -25,7 +36,7 @@ if (!$db) {
 }
 
 require_once '../../common_functions.php';
-mysql_query("SET time_zone ='UTC'");
+mysql_query("SET time_zone ='+0:00'");
 mysql_query("SET NAMES 'utf8'");
 require_once '../../conf/timezone.php';
 date_default_timezone_set(TIMEZONE) ;
@@ -39,7 +50,7 @@ $_SESSION['locale_info'] = localeconv();
 date_default_timezone_set('Europe/London');
 $_SESSION['lang']=1;
 
-
+$currency='EUR';
 
 
 
@@ -80,17 +91,17 @@ if (!$dept_promo->id) {
 $dept_no_dept_key=$dept_no_dept->id;
 $dept_promo_key=$dept_promo->id;
 
-$fam_no_fam=new Family('code_store','PND_GB',$store_key);
+$fam_no_fam=new Family('code_store','PND_ES',$store_key);
 if (!$fam_no_fam->id) {
     $fam_data=array(
-                  'Product Family Code'=>'PND_GB',
+                  'Product Family Code'=>'PND_ES',
                   'Product Family Name'=>'Productos sin familia',
                   'Product Family Main Department Key'=>$dept_no_dept_key
               );
     $fam_no_fam=new Family('create',$fam_data);
     $fam_no_fam_key=$fam_no_fam->id;
 }
-$fam_promo=new Family('code_store','Promo_GB',$store_key);
+$fam_promo=new Family('code_store','Promo_ES',$store_key);
 if (!$fam_promo->id) {
     $fam_data=array(
                   'code'=>'Promo_GB',
@@ -134,20 +145,19 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
         $result_test=mysql_query($sql);
         if ($row_test=mysql_fetch_array($result_test, MYSQL_ASSOC)) {
             if ($row_test['num']==0) {
-                //print "NEW $contador $order_data_id $filename \n";
+                print "NEW $contador $order_data_id $filename \n";
 
             } else {
                 $update=true;
-                //print "UPD $contador $order_data_id $filename \n";
+                print "UPD $contador $order_data_id $filename \n";
             }
         }
         mysql_free_result($result_test);
-        $header=mb_unserialize($row['header']);
+        
+	$header=mb_unserialize($row['header']);
         $products=mb_unserialize($row['products']);
         $filename_number=str_replace('.xls','',str_replace($row2['directory'],'',$row2['filename']));
-        $map_act=$_map_act;
-        $map=$_map;
-        $y_map=$_y_map;
+        $map_act=$_map_act;$map=$_map;$y_map=$_y_map;
 
         // tomando en coeuntas diferencias en la posicion de los elementos
         $prod_map=$y_map;
@@ -552,7 +562,7 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
             }
 
             // print_r($transaction);
-
+ $fam_sp='';
             $fam_key=$fam_no_fam_key;
             $dept_key=$dept_no_dept_key;
             if (preg_match('/^pi-|catalogue|^info|Mug-26x|OB-39x|SG-xMIXx|wsl-1275x|wsl-1474x|wsl-1474x|wsl-1479x|^FW-|^MFH-XX$|wsl-1513x|wsl-1487x|wsl-1636x|wsl-1637x/i',_trim($transaction['code']))) {
@@ -566,17 +576,46 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
             $sql=sprintf('select * from `Product Family Dimension` where `Product Family Store Key`=%d and `Product Family Code`=%s'
                          ,$store_key
                          ,prepare_mysql($__code));
-            $result=mysql_query($sql);
+	    
+            $resultxxx=mysql_query($sql);
             // print $sql;
-            if ( ($__row=mysql_fetch_array($result, MYSQL_ASSOC))) {
+            if ( ($__row=mysql_fetch_array($resultxxx, MYSQL_ASSOC))) {
                 $fam_key=$__row['Product Family Key'];
                 $dept_key=$__row['Product Family Main Department Key'];
+		$fam_sp=$__row['Product Family Special Characteristic'];
             }
+	    mysql_free_result($resultxxx);
+	    $code=_trim($transaction['code']);
+	    $special_char=$description;
+
+	    if($fam_sp!=''){
+	      $_special_char=$special_char;
+	      $fam_sp=preg_replace('/[^a-z^0-9^\.^\-^"^\s]/i','',$fam_sp);
+	      $special_char=_trim(preg_replace("/$fam_sp/",'',$special_char));
+	      $fam_sp=preg_replace('/s$/i','',$fam_sp);
+	      $special_char=_trim(preg_replace("/$fam_sp/",'',$special_char));
+	      if($special_char=='')
+		$special_char=$_special_char;
+	      //print " ==> $special_char  \n";
+	    }
+
+
+
+
+
 
 
 $code=_trim($transaction['code']);
 
             $product_data=array(
+				'product sales state'=>'For sale',
+				'product type'=>'Normal',
+				,'Product Locale'=>'es_ES'
+				,'Product Currency'=>'EUR'
+				'product record type'=>'Normal',
+				'product web state'=>'Online Auto',
+				'product special characteristic'=>$special_char
+
                               'Product Store Key'=>$store_key,
                               'Product Main Department Key'=>$dept_key,
                               'Product Family Key'=>$fam_key,
@@ -597,8 +636,8 @@ $code=_trim($transaction['code']);
                               'supplier product code'=>$sup_prod_code,
                               'supplier product name'=>$description,
                               'auto_add'=>true,
-                              'date1'=>$date_order,
-                              'date2'=>$date2,
+                              'product valid from'=>$date_order,
+                              'product valid to'=>$date2,
                               'editor'=>array('Date'=>$date_order)
                           );
 
@@ -608,7 +647,14 @@ $code=_trim($transaction['code']);
                 print "Error inserting a product\n";
                 exit;
             }
-
+  $to_update['products'][$product->id]=1;
+      
+       $to_update['products_id'][$product->data['Product ID']]=1;
+        $to_update['products_code'][$product->data['Product Code']]=1;
+$to_update['families'][$product->data['Product Family Key']]=1;
+      $to_update['departments'][$product->data['Product Main Department Key']]=1;
+      $to_update['stores'][$product->data['Product Store Key']]=1;
+     
       
             $supplier_code=_trim($transaction['supplier_code']);
             if ($supplier_code=='' or $supplier_code=='0' or  preg_match('/^costa$/i',$supplier_code))
@@ -667,25 +713,26 @@ $code=_trim($transaction['code']);
                     print_r($product);
                     exit("error: $sql");
                 }
+		mysql_free_result($res_x);	
                 $used_parts_sku=$part_sku;
                 $part=new Part('sku',$part_sku);
                 $part->update_valid_dates($date_order);
                 $part->update_valid_dates($date2);
 
-
-                $sql=sprintf("update  `Product Part Valid From`=%s from `Product Part List` where `Product Part Valid From`>%s and `Product ID`=%d and `Part SKU`=%d and  `Product Part Most Recent`='Yes'"
-                             ,prepare_mysql($date_order)
-                             ,prepare_mysql($date_order)
+	$sql=sprintf("update `Product Part List` set `Product Part Valid From`=%s  where `Product Part Valid From`>%s and `Product ID`=%d and `Part SKU`=%d and  `Product Part Most Recent`='Yes'"
+		     ,prepare_mysql($date_order)
+		     ,prepare_mysql($date_order)
+		     ,$product->pid
+		     ,$part->sku
+		     );
+	mysql_query($sql);
+	$sql=sprintf("update `Product Part List` set `Product Part Valid To`=%s   where `Product Part Valid To`<%s and `Product ID`=%d and `Part SKU`=%d and  `Product Part Most Recent`='Yes'"
+		     ,prepare_mysql($date2)
+		     ,prepare_mysql($date2)
                              ,$product->pid
-                             ,$part->sku
-                            );
-                mysql_query($sql);
-                $sql=sprintf("update  `Product Part Valid To`=%s from `Product Part List` where `Product Part Valid To`<%s and `Product ID`=%d and `Part SKU`=%d and  `Product Part Most Recent`='Yes'"
-                             ,prepare_mysql($date2)
-                             ,prepare_mysql($date2)
-                             ,$product->pid
-                             ,$part->sku
-                            );
+		     ,$part->sku
+		     );
+              
                 mysql_query($sql);
                 $parts_per_product=1;
                 $used_parts_sku=array($part->sku=>array('parts_per_product'=>$parts_per_product,'unit_cost'=>$supplier_product_cost*$transaction['units']));
@@ -694,7 +741,11 @@ $code=_trim($transaction['code']);
 
 
 
-            //creamos una supplier parrt nueva
+   
+
+
+
+         //creamos una supplier parrt nueva
             $scode=$sup_prod_code;
             $scode=_trim($scode);
             $scode=preg_replace('/^\"\s*/','',$scode);

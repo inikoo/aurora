@@ -245,7 +245,7 @@ public $new_value=false;
 		     ,prepare_mysql($data['product unit type'])
 		     ,$data['product store key']
 		     );
-	print "aqui zxseu $sql\n";
+	//	print "aqui zxseu $sql\n";
 	$result2=mysql_query($sql);
 	if ($row2=mysql_fetch_array($result2)) {
 	  $this->found_in_id=true;
@@ -1392,7 +1392,7 @@ public $new_value=false;
     $keys=preg_replace('/,$/',')',$keys);
     $values=preg_replace('/,$/',')',$values);
     $sql=sprintf("insert into `Product Part Dimension` %s %s",$keys,$values);
-    print "$sql\n";
+    //print "$sql\n";
     if (mysql_query($sql)) {
       $product_part_key=mysql_insert_id(); 
 

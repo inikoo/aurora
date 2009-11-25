@@ -487,31 +487,31 @@ foreach($__cols as $cols){
       else
 	//	print "************".$current_promotion."\n";
 	$deals[]=array(
-		       'deal campain name'=>'Club Oro'
-		       ,'deal trigger'=>'Order'
-		       ,'deal description'=>$allowance.' if last order within 1 calendar month'
-		       ,'deal terms type'=>'Order Interval'
-		       ,'deal terms description'=>'last order within 1 calendar month'
-		       ,'deal allowance description'=>$allowance
-		       ,'deal allowance type'=>'Percentage Off'
-		       ,'deal allowance target'=>'Product'
-		       ,'deal allowance target key'=>''
-		       ,'deal begin date'=>'2006-01-01 00:00:00'
-		       ,'deal expiration date'=>date("Y-m-d 23:59:59",strtotime('now + 1 year'))
+		       'Deal Name'=>'Club Oro'
+		       ,'Deal Trigger'=>'Order'
+		       ,'Deal Description'=>$allowance.' if last order within 1 calendar month'
+		       ,'Deal Terms Type'=>'Order Interval'
+		       ,'Deal Terms Description'=>'last order within 1 calendar month'
+		       ,'Deal Allowance Description'=>$allowance
+		       ,'Deal Allowance Type'=>'Percentage Off'
+		       ,'Deal Allowance Target'=>'Product'
+		       ,'Deal Allowance Target Key'=>''
+		       ,'Deal Begin Date'=>''
+		       ,'Deal Expiration Date'=>''
 		       );
       
       $deals[]=array(
-		     'deal campain name'=>''
-		     ,'deal trigger'=>'Family'
-		     ,'deal description'=>$allowance.' if '.$terms.' same family'
-		     ,'deal terms type'=>'Family Quantity Ordered'
-		     ,'deal terms description'=>'order '.$terms
-		     ,'deal allowance description'=>$allowance
-		     ,'deal allowance type'=>'Percentage Off'
-		     ,'deal allowance target'=>'Product'
-		     ,'deal allowance target key'=>''
-		     ,'deal begin date'=>'2006-01-01 00:00:00'
-		     ,'deal expiration date'=>date("Y-m-d 23:59:59",strtotime('now + 1 year'))
+		     'Deal Name'=>''
+		     ,'Deal Trigger'=>'Family'
+		     
+		     ,'Deal Terms Type'=>'Family Quantity Ordered'
+		     ,'Deal Terms Description'=>'order '.$terms
+		     ,'Deal Allowance Description'=>$allowance
+		     ,'Deal Allowance Type'=>'Percentage Off'
+		     ,'Deal Allowance Target'=>'Product'
+		     ,'Deal Allowance Target Key'=>''
+		     ,'Deal Begin Date'=>''
+		     ,'Deal Expiration Date'=>''
 		     );	
 
       
@@ -524,31 +524,31 @@ foreach($__cols as $cols){
       $terms=_trim(strtolower($match[0]));
 
       $deals[]=array(
-		     'deal campain name'=>'Club Oro'
-		     ,'deal trigger'=>'Order'
-		     ,'deal description'=>$allowance.' if last order within 1 calendar month'
-		     ,'deal terms type'=>'Order Interval'
-		     ,'deal terms description'=>'last order within 1 calendar month'
-		     ,'deal allowance description'=>$allowance
-		     ,'deal allowance type'=>'Percentage Off'
-		     ,'deal allowance target'=>'Product'
-		     ,'deal allowance target key'=>''
-		     ,'deal begin date'=>'2006-01-01 00:00:00'
-		     ,'deal expiration date'=>date("Y-m-d 23:59:59",strtotime('now + 1 year'))
+		     'Deal Name'=>'Club Oro'
+		     ,'Deal Trigger'=>'Order'
+		     ,'Deal Description'=>$allowance.' if last order within 1 calendar month'
+		     ,'Deal Terms Type'=>'Order Interval'
+		     ,'Deal Terms Description'=>'last order within 1 calendar month'
+		     ,'Deal Allowance Description'=>$allowance
+		     ,'Deal Allowance Type'=>'Percentage Off'
+		     ,'Deal Allowance Target'=>'Product'
+		     ,'Deal Allowance Target Key'=>''
+		     ,'Deal Begin Date'=>''
+		     ,'Deal Expiration Date'=>''
 		     );
 
       $deals[]=array(
-		     'deal campain name'=>''
-		     ,'deal trigger'=>'Family'
-		     ,'deal description'=>$allowance.' if '.$terms.' same family'
-		     ,'deal terms type'=>'Family Quantity Ordered'
-		     ,'deal terms description'=>'order '.$terms
-		     ,'deal allowance description'=>$allowance
-		     ,'deal allowance type'=>'Percentage Off'
-		     ,'deal allowance target'=>'Product'
-		     ,'deal allowance target key'=>''
-		     ,'deal begin date'=>'2006-01-01 00:00:00'
-		     ,'deal expiration date'=>date("Y-m-d 23:59:59",strtotime('now + 1 year'))
+		     'Deal Name'=>''
+		     ,'Deal Trigger'=>'Family'
+		     ,'Deal Description'=>$allowance.' if '.$terms.' same family'
+		     ,'Deal Terms Type'=>'Family Quantity Ordered'
+		     ,'Deal Terms Description'=>'order '.$terms
+		     ,'Deal Allowance Description'=>$allowance
+		     ,'Deal Allowance Type'=>'Percentage Off'
+		     ,'Deal Allowance Target'=>'Product'
+		     ,'Deal Allowance Target Key'=>''
+		     ,'Deal Begin Date'=>''
+		     ,'Deal Expiration Date'=>''
 		       
 		     );	
 	
@@ -562,17 +562,17 @@ foreach($__cols as $cols){
       $get=_trim(preg_replace('/[^\d]/','',$match[0]));
 
       $deals[]=array(
-		     'deal campain name'=>'Oferta n x m'
-		     ,'deal trigger'=>'Product'
-		     ,'deal description'=>'buy '.$buy.' get '.$get.' free'
-		     ,'deal terms type'=>'Product Quantity Ordered'
-		     ,'deal terms description'=>'foreach '.$buy
-		     ,'deal allowance description'=>$get.' free'
-		     ,'deal allowance type'=>'Get Free'
-		     ,'deal allowance target'=>'Product'
-		     ,'deal allowance target key'=>''
-		     ,'deal begin date'=>'2006-01-01 00:00:00'
-		     ,'deal expiration date'=>date("Y-m-d 23:59:59",strtotime('now + 1 year'))
+		     'Deal Name'=>'Oferta n x m'
+		     ,'Deal Trigger'=>'Product'
+		     ,'Deal Description'=>'buy '.$buy.' get '.$get.' free'
+		     ,'Deal Terms Type'=>'Product Quantity Ordered'
+		     ,'Deal Terms Description'=>'foreach '.$buy
+		     ,'Deal Allowance Description'=>$get.' free'
+		     ,'Deal Allowance Type'=>'Get Free'
+		     ,'Deal Allowance Target'=>'Product'
+		     ,'Deal Allowance Target Key'=>''
+		     ,'Deal Begin Date'=>''
+		     ,'Deal Expiration Date'=>''
 		     );	
 
 
@@ -731,8 +731,8 @@ foreach($__cols as $cols){
 
 
  foreach($deals as $deal_data){
-     //         print_r($deal_data);
-     //exit;
+       print_r($deal_data);
+   //exit;
 
       $deal_data['Store Key']=$store_key;
 
@@ -820,10 +820,8 @@ foreach($__cols as $cols){
 		    'product rrp'=>$rrp,
 		    'product units per case'=>$units,
 		    'product name'=>$description,
-		    'product family code'=>$current_fam_code,
-		    'product family name'=>$current_fam_name,
-		    'product main department name'=>$department_name,
-		    'product main department code'=>$department_code,
+		  
+		    'product family key'=>$family->id,
 		    'product special characteristic'=>$special_char,
 		    'product family special characteristic'=>$fam_special_char,
 		    'product net weight'=>$_w,
@@ -919,6 +917,7 @@ foreach($__cols as $cols){
 	$part=new Part('new',$part_data);
 	//	print_r($part->data);
 	
+
 	$rules[]=array('Part Sku'=>$part->data['Part SKU'],
 		       'Supplier Product Units Per Part'=>$units
 		       ,'supplier product part most recent'=>'Yes'
@@ -926,8 +925,13 @@ foreach($__cols as $cols){
 		       ,'supplier product part valid to'=>date('Y-m-d H:i:s')
 		       ,'factor supplier product'=>1
 		       );
-	$supplier_product->new_part_list('',$rules);
+
 	
+
+	$supplier_product->new_part_list('',$rules);
+
+	
+	$pl_header=array();
 	$part_list[]=array(
 			   'Product ID'=>$product->get('Product ID'),
 			   'Part SKU'=>$part->get('Part SKU'),
@@ -936,7 +940,7 @@ foreach($__cols as $cols){
 			   'Parts Per Product'=>1,
 			   'Product Part Type'=>'Simple Pick'
 			   );
-	$product->new_part_list('',$part_list);
+	$product->new_part_list($pl_header,$part_list);
 	$supplier_product->load('used in');
 	$product->load('parts');
 	$part->load('used in');
@@ -944,7 +948,7 @@ foreach($__cols as $cols){
     	$product->load('cost');
       }
     
-    }
+    
   }else{
 
 

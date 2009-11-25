@@ -124,7 +124,6 @@ $sql="select * from  orders_data.orders  where   (last_transcribed is NULL  or l
 //$sql="select * from  orders_data.orders  where filename like '/mnt/%/Orders/15720.xls' or filename like '/mnt/%/Orders/60000.xls' or  filename like '/mnt/%/Orders/15sdfsd593.xls' order by filename";
 
 //$sql="select *,orders_data.orders.id as id  from dw2.`Order Transaction Fact` X left join  orders_data.orders on (orders_data.orders.id=REPLACE(`Metadata`,'U',''))  where `Customer Key` in (729,11701) group by `Metadata` order by filename;";
-
 $contador=0;
 //print $sql;
 $res=mysql_query($sql);
@@ -842,9 +841,9 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
      $code=_trim($transaction['code']);
      $special_char=$description;
   
-      if($fam_sp!=''){
-     $_special_char=$special_char;
-     $fam_sp=preg_replace('/[^a-z^0-9^\.^\-^"^\s]/i','',$fam_sp);
+     if($fam_sp!=''){
+       $_special_char=$special_char;
+       $fam_sp=preg_replace('/[^a-z^0-9^\.^\-^"^\s]/i','',$fam_sp);
        $special_char=_trim(preg_replace("/$fam_sp/",'',$special_char));
        $fam_sp=preg_replace('/s$/i','',$fam_sp);
        $special_char=_trim(preg_replace("/$fam_sp/",'',$special_char));
@@ -856,7 +855,7 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
       $product_data=array(
 			  'product sales state'=>'For sale',
 			  'product type'=>'Normal',
-			   ,'Product Locale'=>'en_BG'
+			   ,'Product Locale'=>'en_GB'
 			  ,'Product Currency'=>'GBP'
 			  'product record type'=>'Normal',
 			  'product web state'=>'Online Auto',
