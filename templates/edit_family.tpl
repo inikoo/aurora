@@ -69,14 +69,13 @@
       </div>
       
       <div  class="edit_block" style="margin:0;padding:0 0px;{if $edit!="products"}display:none{/if}"  id="d_products">
-	<div   style="margin:0 0 10px 0;padding:10px;border:1px solid #ccc;display:none"  id="new_product_dialog" >
+	<div   style="margin:0 0 10px 0;padding:10px;border:1px solid #ccc;xdisplay:none"  id="new_product_dialog" >
 	  <div id="new_product_messages" class="messages_block"></div>
 	  <table class="edit" >
-	    	<tr><td>{t}Code{/t}:</td><td><input name="code" id="new_code"  onKeyUp="new_product_changed(this)"    onMouseUp="new_product_changed(this)"  onChange="new_product_changed(this)"  name="code" changed=0 type='text' class='text' SIZE="16" value="" MAXLENGTH="16"/></td></tr>
-	<tr><td>{t}Name{/t}:</td><td><input name="name"  id="new_name"  onKeyUp="new_product_changed(this)"    onMouseUp="new_product_changed(this)"  onChange="new_product_changed(this)"  name="code" changed=0  type='text'  SIZE="35" MAXLENGTH="80" class='text' value=""   /></td></tr>
-	<tr><td>{t}Short descriprtion{/t}:</td><td><input name="sdescription"  id="new_sdescription"  onKeyUp="new_product_changed(this)"    onMouseUp="new_product_changed(this)"  onChange="new_product_changed(this)"  name="code" changed=0  type='text'  SIZE="35" MAXLENGTH="32" class='text' /></td></tr>
-
-	<tr><td>{t}Units/Case{/t}:</td><td><input name="units" id="new_units"  onKeyUp="new_product_changed(this)"    onMouseUp="new_product_changed(this)"  onChange="new_product_changed(this)" SIZE="4" type='text'  MAXLENGTH="20" class='text' /><span style="margin-left:20px;">{t}Type of Unit{/t}:</span>	
+	    <tr><td class="label" style="width:7em">{t}Code{/t}:</td><td><input name="code" id="new_code"  onKeyUp="new_product_changed(this)"    onMouseUp="new_product_changed(this)"  onChange="new_product_changed(this)"  name="code" changed=0 type='text' class='text' SIZE="16" value="" MAXLENGTH="16"/></td></tr>
+    	<tr><td class="label" >{t}Name{/t}:</td><td><input name="name"  id="new_name"  onKeyUp="new_product_changed(this)"    onMouseUp="new_product_changed(this)"  onChange="new_product_changed(this)"  name="code" changed=0  type='text'  SIZE="35" MAXLENGTH="80" class='text' value=""   /></td></tr>
+	    <tr><td class="label">{t}Special Char{/t}:</td><td><input name="sdescription"  id="new_sdescription"  onKeyUp="new_product_changed(this)"    onMouseUp="new_product_changed(this)"  onChange="new_product_changed(this)"  name="code" changed=0  type='text'  SIZE="35" MAXLENGTH="32" class='text' /></td></tr>
+	    <tr><td class="label">{t}Units/Case{/t}:</td><td><input name="units" id="new_units"  onKeyUp="new_product_changed(this)"    onMouseUp="new_product_changed(this)"  onChange="new_product_changed(this)" SIZE="4" type='text'  MAXLENGTH="20" class='text' /><span style="margin-left:20px;">{t}Type of Unit{/t}:</span>	
 	 
 <div class="options" style="margin:5px 0;display:inline">
   {foreach from=$units_tipo item=unit_tipo key=part_id }
@@ -89,12 +88,12 @@
 	      <option value="{$tipo_id}">{$tipo}</option>
 	      {/foreach}
 	</select></td></tr>
-	<tr><td>{t}Price{/t}:</td><td>Per Outer: <input name="price" type='text'  SIZE="6" MAXLENGTH="20" class='text' /><span id="label_price_per_unit" style="margin-left:15px">Per Unit:</span> <input name="price_unit" id="nwe_price_unit"  type='text'  SIZE="6" MAXLENGTH="20" class='text' /></td></tr>
-	<tr><td>{t}Retail Price{/t}:</td><td>Per Outer:  <input name="rrp" type='text'  SIZE="6" MAXLENGTH="20" class='text' /><span id="label_price_per_unit" style="margin-left:15px">Per Unit:</span> <input name="rrp_unit" id="new_rrp_unit" type='text'  SIZE="6" MAXLENGTH="20" class='text' /></td></tr>
+	<tr><td class="label">{t}Price{/t}:</td><td>Per Outer: <input name="price" type='text'  SIZE="6" MAXLENGTH="20" class='text' /><span id="label_price_per_unit" style="margin-left:15px">Per Unit:</span> <input name="price_unit" id="nwe_price_unit"  type='text'  SIZE="6" MAXLENGTH="20" class='text' /></td></tr>
+	<tr><td class="label">{t}Retail Price{/t}:</td><td>Per Outer:  <input name="rrp" type='text'  SIZE="6" MAXLENGTH="20" class='text' /><span id="label_price_per_unit" style="margin-left:15px">Per Unit:</span> <input name="rrp_unit" id="new_rrp_unit" type='text'  SIZE="6" MAXLENGTH="20" class='text' /></td></tr>
 
-	<tr style="height:40px"><td style="vertical-align:middle">{t}Parts{/t}:</td><td style="vertical-align:middle">
+	<tr style="height:40px"><td style="vertical-align:middle" class="label">{t}Parts{/t}:</td><td style="vertical-align:middle">
 	    <span class="save" onclick="create_part()">Create Part</span>
-	    <span class="save" onclick="guess_part()">Guess Part</span>
+	    
 	    <span class="save"  onclick="assing_part()">Assign Part</span>
 
 	    <span style="margin-left:10px;display:none" id="dmenu_label">{t}SKU/description{/t}:</span><span id="dmenu_position"></span>
@@ -105,9 +104,51 @@
 
 </td></tr>
 
+<tr><td colspan="2">
+	    <div id="new_part_container"  class=""  style="border:1px solid #ccc">
+	   <table class="edit" >
+	    <tr><td class="label" style="width:7em">{t}Description{/t}:</td><td><input name="code" id="new_part_description"  name="code" changed=0 type='text' class='text' SIZE="16" value="" MAXLENGTH="16"/></td></tr>
+    	<tr><td class="label" >{t}Gross Weight{/t}:</td><td><input name="name"  id="new_name"     name="code" changed=0  type='text'  SIZE="6" MAXLENGTH="80" class='text' value=""   /> Kg</td></tr>
+	    <tr><td class="label">{t}Supplier{/t}:</td>
+	     <td  style="text-align:left">
+	      <div  style="width:15em;position:relative;top:00px" >
+		<input id="supplier" style="text-align:left;width:18em" type="text">
+		<div id="supplier_container" style="" ></div>
+	      </div>
+	    </td>
+	  </tr>
+	  <input id="supplier_key" value="1" type="hidden">
+    <tr><td class="label">{t}Supplier Part Code{/t}:</td><td><input name="units" id="new_units"  SIZE="4" type='text'  MAXLENGTH="20" class='text' /><span style="margin-left:20px;">{t}Type of Unit{/t}:</span>	
+	    <tr><td class="label">{t}Supplier Part Cost{/t}:</td><td><input name="units" id="new_units"  SIZE="4" type='text'  MAXLENGTH="20" class='text' /><span style="margin-left:20px;">{t}Type of Unit{/t}:</span>	
+
+	 </table>
+	    </div>
+	</td></tr>
 
 
-	<tr><td></td><td>
+<tr><td colspan="2">
+	    <div id="new_part_container"  class=""  style="border:1px solid #ccc">
+	   <table class="edit" >
+	  
+	   <tr><td class="label" style="width:7em">{t}Part{/t}:</td>
+	     <td  style="text-align:left">
+	      <div  style="width:20em;position:relative;top:00px" >
+		<input id="part" style="text-align:left;width:23em" type="text">
+		<div id="part_container" style="" ></div>
+	      </div>
+	    </td>
+	  </tr>
+	  <input id="part_sku" value="" type="hidden">
+	    
+	    
+	   	    
+	
+	 </table>
+	    </div>
+	</td></tr>
+
+
+	<tr><td colspan="2">
 	    <div id="parts_list_container"  class="data_table_container dtable btable " >
 	      <table  id="table_parts_list">
 		<thead> 

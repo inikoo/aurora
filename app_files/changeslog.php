@@ -113,7 +113,6 @@ ADD `Supplier Main Plain FAX` VARCHAR( 100 ) NOT NULL DEFAULT '' AFTER `Supplier
 ALTER TABLE `Product Dimension` ADD `Product Main Image` VARCHAR( 255 ) NOT NULL DEFAULT 'art/nopic.png' AFTER `Product XHTML Short Description` ;
 ALTER TABLE `dw`.`Image Bridge` DROP INDEX `Subject Type` ,
 ADD INDEX `Subject Type` ( `Subject Type` ) 
-
  */
 
 

@@ -5130,6 +5130,7 @@ function list_products_with_same_code() {
 }
 
 function find_part() {
+
     if (!isset($_REQUEST['query']) or $_REQUEST['query']=='') {
         $response= array(
                        'state'=>400,
@@ -5161,9 +5162,12 @@ function find_part() {
 
 
         $_data[]= array(
+        
                       'info'=>sprintf("%s:%05d - %s",_('SKU'),$data['Part SKU'],$data['Part XHTML Description'])
-                             ,'sku'=>$data['Part SKU']
-                                    ,'description'=>$data['Part XHTML Description']
+                              ,'info_plain'=>sprintf("%s:%05d - %s",_('SKU'),$data['Part SKU'],strip_tags($data['Part XHTML Description']))
+
+                 ,'sku'=>$data['Part SKU']
+                             ,'description'=>$data['Part XHTML Description']
                                                    ,'usedin'=>$data['Part Currently Used In']
 
                                                              //	 'sku'=>sprintf('<a href="part.php?sku=%d">%s</a>',$data['Part SKU'],$data['Part SKU'])
