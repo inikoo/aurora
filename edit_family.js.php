@@ -104,7 +104,7 @@ function new_product_changed(o){
 
 }
 var description_num_changed=0;
-var description_warnings= new Object();
+var description_partrnings= new Object();
 var description_errors= new Object();
 
 
@@ -288,7 +288,7 @@ function reset(tipo){
 	Dom.get(editing+'_reset').style.display='none';
 
 	Dom.get(editing+'_num_changes').innerHTML=description_num_changed;
-	description_warnings= new Object();
+	description_partrnings= new Object();
 	description_errors= new Object();
 	
     }
@@ -489,7 +489,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 									      previousPageLinkLabel : "<",
  									      nextPageLinkLabel : ">",
  									      firstPageLinkLabel :"<<",
- 									      lastPageLinkLabel :">>",rowsPerPageOptions : [10,25,50,100,250,500],alwaysVisible:false
+ 									      lastPageLinkLabel :">>",rowsPerPageOptions : [10,25,50,100,250,500],alpartysVisible:false
 									      ,template : "{FirstPageLink}{PreviousPageLink}<strong id='paginator_info0'>{CurrentPageReport}</strong>{NextPageLink}{LastPageLink}"
 									  })
 								     
@@ -593,7 +593,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 						     , {
 							 renderLoopSize: 50,generateRequest : myRequestBuilder
 							 ,paginator : new YAHOO.widget.Paginator({
-								 rowsPerPage    : <?php echo$_SESSION['state']['store']['deals']['nr']?>,containers : 'paginator4', alwaysVisible:false,
+								 rowsPerPage    : <?php echo$_SESSION['state']['store']['deals']['nr']?>,containers : 'paginator4', alpartysVisible:false,
 								 pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',
 								 previousPageLinkLabel : "<",
 								 nextPageLinkLabel : ">",
@@ -658,11 +658,57 @@ function show_add_product_dialog(){
 
 function init(){
  
-    function mygetTerms(query) {multireload();};
-    var oACDS = new YAHOO.widget.DS_JSFunction(mygetTerms);
-    oACDS.queryMatchContains = true;
-    var oAutoComp = new YAHOO.widget.AutoComplete("f_input0","filtercontainer0", oACDS);
-    oAutoComp.minQueryLength = 0; 
+ 
+	part_selected= function(sType, aArgs) {
+	    var myAC = aArgs[0]; var elLI = aArgs[1]; var oData = aArgs[2]; 
+	    Dom.get("part_sku").value = oData[1];
+	    
+	};
+
+     var partDS = new YAHOO.util.XHRDataSource("ar_assets.php");
+     partDS.responseType = YAHOO.util.XHRDataSource.TYPE_JSON;
+ 	partDS.responseSchema = {
+ 	    resultsList : "data",
+ 	    fields : ["info_plain","sku","info"]
+ 	};
+	var partAC = new YAHOO.widget.AutoComplete("part", "part_container", partDS);
+	partAC.generateRequest = function(sQuery) {
+
+	    return "?tipo=find_part&query=" + sQuery ;
+	};
+	partAC.forceSelection = true; 
+	
+	partAC.itemSelectEvent.subscribe(part_selected); 
+    partAC.resultTypeList = false;
+    partAC.formatResult = function(oResultData, sQuery, sResultMatch) {
+    return oResultData.info;
+};
+
+    	supplier_selected= function(sType, aArgs) {
+	    var myAC = aArgs[0]; var elLI = aArgs[1]; var oData = aArgs[2]; 
+	    Dom.get("supplier_key").value = oData[2];
+	    
+	};
+
+     var supplierDS = new YAHOO.util.XHRDataSource("ar_suppliers.php");
+     supplierDS.responseType = YAHOO.util.XHRDataSource.TYPE_JSON;
+ 	supplierDS.responseSchema = {
+ 	    resultsList : "data",
+ 	    fields : ["name","code","key"]
+ 	};
+	var supplierAC = new YAHOO.widget.AutoComplete("supplier", "supplier_container", supplierDS);
+	supplierAC.generateRequest = function(sQuery) {
+
+	    return "?tipo=find_supplier&query=" + sQuery ;
+	};
+	supplierAC.forceSelection = true; 
+	
+	supplierAC.itemSelectEvent.subscribe(supplier_selected); 
+    supplierAC.resultTypeList = false;
+    supplierAC.formatResult = function(oResultData, sQuery, sResultMatch) {
+    return '<b>'+oResultData.code+'</b> '+oResultData.name;
+};
+
     
     var ids = ["description","products","discounts","pictures","web"]; 
     YAHOO.util.Event.addListener(ids, "click", change_block);
@@ -680,34 +726,7 @@ YAHOO.util.Event.onDOMReady(init);
 
 
 var dmenu_data;
-YAHOO.util.Event.onContentReady("dmenu_input", function () {
 
-
-	var oDS = new YAHOO.util.XHRDataSource("ar_assets.php");
- 	oDS.responseType = YAHOO.util.XHRDataSource.TYPE_JSON;
- 	oDS.responseSchema = {
- 	    resultsList : "data",
- 	    fields : ["info","sku","description","usedin"]
- 	};
- 	var oAC = new YAHOO.widget.AutoComplete("dmenu_input", "dmenu_container", oDS);
- 	oAC.generateRequest = function(sQuery) {
-
- 	    return "?tipo=part_search&query=" + sQuery ;
- 	};
-
-  	var myHandler = function(sType, aArgs) {
-
-  	    dmenu_data = aArgs[2];
-
-  	};
-  	oAC.itemSelectEvent.subscribe(myHandler);
-
-
-
-
- 	oAC.forceSelection = true; 
- 	oAC.itemSelectEvent.subscribe(dmenu_selected); 
-    });
 
 var dmenu_selected=function(){
      var data = {

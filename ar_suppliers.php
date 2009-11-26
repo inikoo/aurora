@@ -15,6 +15,9 @@ if(!isset($_REQUEST['tipo']))
 
 $tipo=$_REQUEST['tipo'];
 switch($tipo){
+case('find_supplier'):
+find_supplier();
+break;
 case('supplier_products'):
     list_supplier_products();
 
@@ -1702,6 +1705,52 @@ function list_supplier_products() {
 }
 
 
+function find_supplier() {
 
+    if (!isset($_REQUEST['query']) or $_REQUEST['query']=='') {
+        $response= array(
+                       'state'=>400,
+                       'data'=>array()
+                   );
+        echo json_encode($response);
+        return;
+    }
+
+
+    if (isset($_REQUEST['except']) and  isset($_REQUEST['except_id'])  and   is_numeric($_REQUEST['except_id']) and $_REQUEST['except']=='supplier' ) {
+
+        $sql=sprintf("select `Supplier Key`,`Supplier Name`,`Supplier Code` from `Supplier Dimension` where  (`Supplier Code`=%s or `Supplier Name` like '%%%s%%' ) and `Supplier Key`!=%d limit 20 "
+        ,prepare_mysql($_REQUEST['query']),addslashes($_REQUEST['query']),$_REQUEST['except_id']);
+
+    } else {
+        $sql=sprintf("select `Supplier Key`,`Supplier Name`,`Supplier Code` from `Supplier Dimension` where  (`Supplier Code`=%s or `Supplier Name` like '%%%s%%' ) limit 20"
+        ,prepare_mysql($_REQUEST['query']),addslashes($_REQUEST['query']));
+
+    }
+  
+
+    $_data=array();
+    $res=mysql_query($sql);
+
+    while ($data=mysql_fetch_array($res)) {
+        
+        $_data[]= array(
+        
+                     
+                 'key'=>$data['Supplier Key']
+                             ,'code'=>$data['Supplier Code']
+                                                   ,'name'=>$data['Supplier Name']
+
+                                                           
+                  );
+    }
+    $response= array(
+                   'state'=>200,
+                   'data'=>$_data
+               );
+    echo json_encode($response);
+
+
+}
 
 ?>
