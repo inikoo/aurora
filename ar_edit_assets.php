@@ -20,7 +20,23 @@ if(!isset($_REQUEST['tipo']))
 
 $tipo=$_REQUEST['tipo'];
 switch($tipo){
+case('edit_part_new_product'):
+  if(isset($_REQUEST['part_sku']))
+    edit_part_new_product($_REQUEST['part_sku']);
+  break;
+case('delete_part_new_product'):
+   if(isset($_REQUEST['part_sku']))
+     delete_part_new_product($_REQUEST['part_sku']);
+ break;
+case('add_part_new_product'):
 
+  if(isset($_REQUEST['sku']))
+    add_part_new_product($_REQUEST['sku']);
+
+   break;
+case('part_list'):
+  list_parts_in_product();
+  break;
 case('edit_charges'):
   list_charges_for_edition();
   break;
@@ -167,6 +183,16 @@ function create_family(){
      $response=array('state'=>400,'msg'=>_('Error'));
    echo json_encode($response);
 }
+
+function delete_part_new_product($sku){
+
+  unset($_SESSION['state']['new_product']['parts'][$sku]);
+  print 'Ok';
+  
+   
+}
+
+
 function delete_family(){
  if(!isset($_REQUEST['id']))
      return 'Error: no family specificated';
@@ -1943,4 +1969,268 @@ mysql_free_result($result);
 
 
 
+function list_parts_in_product(){
+
+   $conf=$_SESSION['state']['product']['parts'];
+
+
+if(isset( $_REQUEST['product_id']))
+     $product_id=$_REQUEST['product_id'];
+   else
+     $product_id=$_SESSION['state']['product']['id'];
+
+
+   if(isset( $_REQUEST['sf']))
+     $start_from=$_REQUEST['sf'];
+   else
+     $start_from=$conf['sf'];
+   
+
+   if(isset( $_REQUEST['nr'])){
+     $number_results=$_REQUEST['nr'];
+     if($start_from>0){
+       $page=floor($start_from/$number_results);
+       $start_from=$start_from-$page;
+     }
+   
+   }else
+     $number_results=$conf['nr'];
+
+
+   if(isset( $_REQUEST['o']))
+     $order=$_REQUEST['o'];
+   else
+    $order=$conf['order'];
+   if(isset( $_REQUEST['od']))
+     $order_dir=$_REQUEST['od'];
+   else
+     $order_dir=$conf['order_dir'];
+   $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
+   if(isset( $_REQUEST['where']))
+     $where=addslashes($_REQUEST['where']);
+   else
+     $where=$conf['where'];
+   
+    
+   if(isset( $_REQUEST['f_field']))
+     $f_field=$_REQUEST['f_field'];
+   else
+     $f_field=$conf['f_field'];
+   
+   if(isset( $_REQUEST['f_value']))
+     $f_value=$_REQUEST['f_value'];
+   else
+     $f_value=$conf['f_value'];
+
+   
+   if(isset( $_REQUEST['tableid']))
+     $tableid=$_REQUEST['tableid'];
+   else
+    $tableid=0;
+   
+   
+   $_SESSION['state']['product']['parts']=array('order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value);
+   
+  
+ 
+
+   if($product_id){
+   
+   $filter_msg='';
+  
+   $wheref='';
+   $where=sprintf("where `Product ID`=%d ",$product_id);;
+   
+   if($f_field=='sku' and $f_value!='')
+     $wheref.=sprintf(" and `Part SKU`=%d   ",$f_value);
+   
+  
+
+   $sql="select count(*) as total from `Product Part List`   $where $wheref";
+   //  print $sql;
+   $result=mysql_query($sql);
+   if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
+     $total=$row['total'];
+   }
+mysql_free_result($result);
+     
+     if($wheref==''){
+       $filtered=0;$total_records=$total;
+   }else{
+     $sql="select count(*) as total `Deal Part List`   $where ";
+
+     $result=mysql_query($sql);
+     if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
+      $total_records=$row['total'];
+	 $filtered=$total_records-$total;
+     }
+mysql_free_result($result);
+
+   }
+
+  
+     $rtext=$total_records." ".ngettext('part','parts',$total_records);
+     if($total_records>$number_results)
+       $rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
+     else
+       $rtext_rpp=' ('._('Showing all').')';
+
+  if($total==0 and $filtered>0){
+       switch($f_field){
+     case('name'):
+	 $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any deal with this name ")." <b>".$f_value."*</b> ";
+	 break;
+       case('description'):
+	 $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any deal with description like ")." <b>".$f_value."*</b> ";
+       break;
+     }
+   }
+   elseif($filtered>0){
+     switch($f_field){
+      case('name'):
+       $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total "._('deals with name like')." <b>".$f_value."*</b> <span onclick=\"remove_filter($tableid)\" id='remove_filter$tableid' class='remove_filter'>"._('Show All')."</span>";
+       break; 
+     case('description'):
+       $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total "._('deals with description like')." <b>".$f_value."*</b> <span onclick=\"remove_filter($tableid)\" id='remove_filter$tableid' class='remove_filter'>"._('Show All')."</span>";
+       break; 
+     }
+   }else
+      $filter_msg='';
+  /*  }else{//products parts for new product */
+     
+/*      $total=count($_SESSION['state']['new_product']['parts']); */
+/*      $total_records=$total; */
+/*      $filtered=0; */
+/*    } */
+
+
+
+   $_dir=$order_direction;
+   $_order=$order;
+   
+  
+   $order='`Part SKU`';
+
+ 
+   $sql="select *  from `Product Part List` $where    order by $order $order_direction limit $start_from,$number_results    ";
+   //print $sql;
+   $res = mysql_query($sql);
+   $total=mysql_num_rows($res);
+   $adata=array();
+   while($row=mysql_fetch_array($res, MYSQL_ASSOC) ) {
+     // $meta_data=preg_split('/,/',$row['Deal Allowance Metadata']);
+     
+     
+     $adata[]=array(
+		    'sku'=>$row['Part SKU'],
+		    'description'=>'x',
+		    'picks'=>'c',
+		    'notes'=>'v'
+		    
+		    );
+   }
+  mysql_free_result($res);
+
+   }else{
+     $adata=array();
+     if(isset($_SESSION['state']['new_product']['parts'])){
+       foreach($_SESSION['state']['new_product']['parts'] as $values)
+	 $adata[]=$values;
+     }
+     $rtext=_('Choose or create a part');
+     $rtext_rpp='';
+     $total_records=count($adata);
+     $filter_msg='';
+     $_dir=$order_direction;
+     $_order=$order;
+
+     if($total_records>0){
+       $rtext=$total_records." ".ngettext('part','parts',$total_records);
+     }
+       
+   }
+
+
+
+   $response=array('resultset'=>
+		   array('state'=>200,
+			 'data'=>$adata,
+			 'sort_key'=>$_order,
+			 'sort_dir'=>$_dir,
+			 'tableid'=>$tableid,
+			 'filter_msg'=>$filter_msg,
+			 'rtext'=>$rtext,
+			 'rtext_rpp'=>$rtext_rpp,
+			 'total_records'=>$total_records,
+			 'records_offset'=>$start_from,
+			 'records_perpage'=>$number_results,
+			 )
+		   );
+   echo json_encode($response);
+}
+
+function add_part_new_product($sku){
+  
+  $part=new Part('sku',$sku);
+  if($part->sku){
+    // $_SESSION['state']['new_product']['parts']=array();
+    if(!isset($_SESSION['state']['new_product']['parts']))
+      $_SESSION['state']['new_product']['parts']=array();
+    $tmp=$_SESSION['state']['new_product']['parts'];
+    if(array_key_exists($part->sku,$tmp)){
+      $_SESSION['state']['new_product']['parts'][$part->sku]['picks']=$_SESSION['state']['new_product']['parts'][$part->sku]['picks']+1;
+      $msg=_('Part already selected, incesiong oick number');
+    }else{
+      $_SESSION['state']['new_product']['parts'][$part->sku]=array(
+								   'part_sku'=>$part->sku
+								   ,'sku'=>$part->get_sku()
+								   ,'description'=>$part->data['Part XHTML Description']
+								   ,'picks'=>1
+								   ,'notes'=>''
+								   ,'delete'=>'<img src="art/icons/delete.png"/>'
+								   );
+      $msg=_('Adding part to list');
+    }
+    $response=array('state'=>200,'msg'=>$msg);
+    echo json_encode($response);
+
+  }else{
+    $response=array('state'=>400,'msg'=>'Part SKU not found');
+     echo json_encode($response);
+    
+  }
+
+}
+
+function edit_part_new_product($sku){
+  if(isset($_SESSION['state']['new_product']['parts'])){
+     $tmp=$_SESSION['state']['new_product']['parts'];
+     if(array_key_exists($sku,$tmp)){
+       switch($_REQUEST['key']){
+       case('picks'):
+	 $picks=$_REQUEST['newvalue'];
+	 if(is_numeric($picks)){
+	   $_SESSION['state']['new_product']['parts'][$sku]['picks']=$picks;
+	   $response=array('state'=>200,'newvalue'=>$picks);
+	   echo json_encode($response);
+	   return;
+	 }
+	 break;
+       case('notes'):
+	 
+	  $_SESSION['state']['new_product']['parts'][$sku]['notes']=$_REQUEST['newvalue'];
+	   $response=array('state'=>200,'newvalue'=>$_REQUEST['newvalue']);
+	   echo json_encode($response);
+	   return;
+
+	 break;
+       }
+
+
+     }
+     $response=array('state'=>200,'msg'=>_('Wrong value'));
+     echo json_encode($response);
+  }
+
+}
 ?>

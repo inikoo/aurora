@@ -19,7 +19,7 @@ function swap_this_radio(o){
 
 
   var CellEdit = function (callback, newValue) {
-     
+      
     var record = this.getRecord(),
     column = this.getColumn(),
     oldValue = this.value,
@@ -35,7 +35,7 @@ function swap_this_radio(o){
 	ar_file='ar_edit_assets.php';
     //   alert(column.object)
     var request='tipo=edit_'+column.object+'&key=' + column.key + '&newvalue=' + encodeURIComponent(newValue) + '&oldvalue=' + encodeURIComponent(oldValue)+ myBuildUrl(datatable,record);
-    alert(request);
+    alert('R:'+request);
 
     YAHOO.util.Connect.asyncRequest(
 				    'POST',
@@ -77,7 +77,9 @@ var onCellClick = function(oArgs) {
 			else
 			    ar_file='ar_edit_assets.php';
 
-			//	alert(ar_file+'?tipo=delete_'+column.object + myBuildUrl(this,record))
+
+
+				alert(ar_file+'?tipo=delete_'+column.object + myBuildUrl(this,record))
 
 			YAHOO.util.Connect.asyncRequest(
 							'GET',
@@ -92,17 +94,17 @@ var onCellClick = function(oArgs) {
 								}
 							    },
 								failure: function (o) {
-                            alert(o.statusText);
+								alert(o.statusText);
 							    },
 								scope:this
-			    }
+								}
 							);
 		    }
 		    }
 		    break;
-	
+		    
 		default:
-
+		    
 		    this.onEventShowCellEditor(oArgs);
 		    break;
 		}

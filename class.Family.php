@@ -1347,6 +1347,23 @@ function product_timeline($extra_where=''){
 
 }
 
+function get_next_product_code(){
+  
+  $sql=sprintf("select `Product Code File As` from `Product Dimension` where `Product Family Key`=%d order by  `Product Code File As` limit 1 ",$this->id);
+  $res=mysql_query($sql);
+  if($row=mysql_fetch_array($res)){
+    $next_code=$row['Product Code File As'];
+    if(preg_match('/^[a-z]+\-\d+$/')){
+
+    }
+
+
+    return $next_code;
+  }else
+    return '';
+  
+}
+
 
 }
 

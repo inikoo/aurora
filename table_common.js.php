@@ -6,12 +6,6 @@ include_once('set_locales.php');
 //Copyright (c) 2009 LW
 
 
-
-
-
-
-
-
 var remove_filter= function (tableid){
     var Dom   = YAHOO.util.Dom;
     Dom.get('f_input'+tableid).value='';

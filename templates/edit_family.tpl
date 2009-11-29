@@ -72,7 +72,8 @@
 	<div   style="margin:0 0 10px 0;padding:10px;border:1px solid #ccc;xdisplay:none"  id="new_product_dialog" >
 	  <div id="new_product_messages" class="messages_block"></div>
 	  <table class="edit" >
-	    <tr><td class="label" style="width:7em">{t}Code{/t}:</td><td><input name="code" id="new_code"  onKeyUp="new_product_changed(this)"    onMouseUp="new_product_changed(this)"  onChange="new_product_changed(this)"  name="code" changed=0 type='text' class='text' SIZE="16" value="" MAXLENGTH="16"/></td></tr>
+	    <tr><td class="label" style="width:7em">{t}Code{/t}:</td><td>
+		<input name="code" id="new_code"  onKeyUp="new_product_changed(this)"    onMouseUp="new_product_changed(this)"  onChange="new_product_changed(this)"  name="code" changed=0 type='text' class='text' SIZE="16"  MAXLENGTH="16" value="{$family->get_next_product_code()}"/></td></tr>
     	<tr><td class="label" >{t}Name{/t}:</td><td><input name="name"  id="new_name"  onKeyUp="new_product_changed(this)"    onMouseUp="new_product_changed(this)"  onChange="new_product_changed(this)"  name="code" changed=0  type='text'  SIZE="35" MAXLENGTH="80" class='text' value=""   /></td></tr>
 	    <tr><td class="label">{t}Special Char{/t}:</td><td><input name="sdescription"  id="new_sdescription"  onKeyUp="new_product_changed(this)"    onMouseUp="new_product_changed(this)"  onChange="new_product_changed(this)"  name="code" changed=0  type='text'  SIZE="35" MAXLENGTH="32" class='text' /></td></tr>
 	    <tr><td class="label">{t}Units/Case{/t}:</td><td><input name="units" id="new_units"  onKeyUp="new_product_changed(this)"    onMouseUp="new_product_changed(this)"  onChange="new_product_changed(this)" SIZE="4" type='text'  MAXLENGTH="20" class='text' /><span style="margin-left:20px;">{t}Type of Unit{/t}:</span>	
@@ -104,62 +105,76 @@
 
 </td></tr>
 
-<tr><td colspan="2">
-	    <div id="new_part_container"  class=""  style="border:1px solid #ccc">
-	   <table class="edit" >
-	    <tr><td class="label" style="width:7em">{t}Description{/t}:</td><td><input name="code" id="new_part_description"  name="code" changed=0 type='text' class='text' SIZE="16" value="" MAXLENGTH="16"/></td></tr>
-    	<tr><td class="label" >{t}Gross Weight{/t}:</td><td><input name="name"  id="new_name"     name="code" changed=0  type='text'  SIZE="6" MAXLENGTH="80" class='text' value=""   /> Kg</td></tr>
-	    <tr><td class="label">{t}Supplier{/t}:</td>
-	     <td  style="text-align:left">
-	      <div  style="width:15em;position:relative;top:00px" >
-		<input id="supplier" style="text-align:left;width:18em" type="text">
-		<div id="supplier_container" style="" ></div>
-	      </div>
-	    </td>
-	  </tr>
-	  <input id="supplier_key" value="1" type="hidden">
-    <tr><td class="label">{t}Supplier Part Code{/t}:</td><td><input name="units" id="new_units"  SIZE="4" type='text'  MAXLENGTH="20" class='text' /><span style="margin-left:20px;">{t}Type of Unit{/t}:</span>	
-	    <tr><td class="label">{t}Supplier Part Cost{/t}:</td><td><input name="units" id="new_units"  SIZE="4" type='text'  MAXLENGTH="20" class='text' /><span style="margin-left:20px;">{t}Type of Unit{/t}:</span>	
+	    <tr>
+	      <td colspan="2">
+		<div id="new_part_container"  class=""  style="padding-top:10px;border:1px solid #ccc">
+		    <div class="general_options" style="float:right">
 
-	 </table>
-	    </div>
-	</td></tr>
-
-
-<tr><td colspan="2">
-	    <div id="new_part_container"  class=""  style="border:1px solid #ccc">
-	   <table class="edit" >
-	  
-	   <tr><td class="label" style="width:7em">{t}Part{/t}:</td>
-	     <td  style="text-align:left">
-	      <div  style="width:20em;position:relative;top:00px" >
-		<input id="part" style="text-align:left;width:23em" type="text">
-		<div id="part_container" style="" ></div>
-	      </div>
-	    </td>
-	  </tr>
-	  <input id="part_sku" value="" type="hidden">
-	    
-	    
-	   	    
-	
-	 </table>
-	    </div>
-	</td></tr>
-
-
-	<tr><td colspan="2">
-	    <div id="parts_list_container"  class="data_table_container dtable btable " >
-	      <table  id="table_parts_list">
-		<thead> 
-		  <tr><th>{t}SKU{/t}</th><th>Part Description</th><th>Used in</th><th>Parts per Pick</th><th>Note to Picker</th><th></th></tr>
-		</thead>
-		<tbody> 
-
+		      <span style="margin-right:10px;display:none"  id="save_area" class="state_details">{t}Save{/t}</span>
+		      <span style="margin-right:10px;" id="close_add_area" class="state_details">{t}Close Dialog{/t}</span>
+		      
+		    </div>
 		  
-		</tbody> 
-	      </table>
-	    </div>
+		  <table class="edit" >
+		    <tr><td class="label" style="width:7em">{t}Description{/t}:</td><td><input name="code" id="new_part_description"  name="code" changed=0 type='text' class='text' SIZE="16" value="" MAXLENGTH="16"/></td></tr>
+    		    <tr><td class="label" >{t}Gross Weight{/t}:</td><td><input name="name"  id="new_name"     name="code" changed=0  type='text'  SIZE="6" MAXLENGTH="80" class='text' value=""   /> Kg</td></tr>
+		    <tr><td class="label">{t}Supplier{/t}:</td>
+		      <td  style="text-align:left">
+			<div  style="width:15em;position:relative;top:00px" >
+			  <input id="supplier" style="text-align:left;width:18em" type="text">
+			  <div id="supplier_container" style="" ></div>
+			</div>
+		      </td>
+		    </tr>
+		    <input id="supplier_key" value="1" type="hidden">
+		    <tr><td>
+		      </td><td>
+			<table border=0 class="edit">
+			  <tr><td class="label" style="width:4em">{t}Code{/t}:</td><td><input  id="supplier_product_code"  SIZE="4" type='text'  MAXLENGTH="20" class='text' /></tr>
+			  <tr><td class="label">{t}Cost{/t}:</td><td><input  id="supplier_produc_cost"  SIZE="4" type='text'  MAXLENGTH="20" class='text' /></tr>
+			  <tr><td class="label">{t}Name{/t}:</td><td><input  id="supplier_produc_name"  SIZE="12" type='text'  MAXLENGTH="20" class='text' /></tr>
+			  <tr><td class="label">{t}Description{/t}:</td><td><textarea  id="supplier_product_description"  SIZE="4" type='text'  MAXLENGTH="20" class='text' ></textarea></tr>
+			</table>
+			
+		      </td>
+		    </tr>
+		  </table>
+		  </div>
+	      </td>
+	    </tr>
+	
+
+
+
+	    <tr><td colspan="2">
+		<div id="new_part_container"  class=""  style="border:1px solid #ccc">
+		  <table border=1 class="edit" >
+		    
+		    <tr><td class="label" style="width:7em">{t}Part{/t}:</td>
+		      <td  style="text-align:left">
+			<div  style="width:20em;position:relative;top:00px" >
+			  <input id="part" style="text-align:left;width:23em" type="text">
+			  <div id="part_container" style="" ></div>
+			</div>
+		      </td>
+		    </tr>
+		    <input id="part_sku" value="" type="hidden">
+		  </table>
+		</div>
+	    </td></tr>
+	    
+	    
+	    <tr><td colspan="2">
+		<div id="part_list"  class="data_table" >
+		  <span class="clean_table_title">{t}Part List{/t}</span> 
+		   <div  class="clean_table_caption"  style="clear:both;">
+		     <div style="float:left;"><div id="table_info5" class="clean_table_info"><span id="rtext5"></span> <span class="rtext_rpp" id="rtext_rpp5"></span> <span class="filter_msg"  id="filter_msg5"></span></div></div>
+		     <div class="clean_table_filter" style="display:none" id="clean_table_filter5"><div class="clean_table_info"><span id="filter_name5">{$filter_name5}</span>: <input style="border-bottom:none" id='f_input5' value="{$filter_value0}" size=10/><div id='f_container5'></div></div></div>
+		     <div class="clean_table_controls" style="" ><div><span  style="margin:0 5px" id="paginator5"></span></div></div>
+		   </div>
+		  
+		  <div  id="table5"   class="data_table_container dtable btable "></div>
+		</div>
 	</td></tr>
 
 
@@ -167,37 +182,37 @@
 	  </table>
 	</div>
 
-	 <div   class="data_table" >
-
-    <span class="clean_table_title">{t}Products{/t}</span> 
-    
-    <table class="options" style="float:right;padding:0;margin:0;">
-      <tr>
-	<td  id="add_product">Add Product</td>
-	<td  style="display:none" id="save_new_product">Save New Product</td>
-	<td  style="display:none" id="cancel_add_product">Cancel</td>
-      </tr>
-    </table>
-    <div style="clear:both;margin:0 0px;padding:0 20px ;border-bottom:1px solid #999"></div>
-     <span style="float:right;margin-left:80px" class="state_details"  id="restrictions" value="for_sale" on click="change_multiple(this)"  >{t}products for sale{/t}</span>
-   
-<table style="float:left;margin:0 0 0 0px ;padding:0"  class="options" >
-	<tr><td  {if $view=='view_state'}class="selected"{/if} id="view_state" >{t}State{/t}</td>
-	  {if $view_stock}<td {if $view=='view_name'}class="selected"{/if}  id="view_name"  >{t}Name{/t}</td>{/if}
-	  {if $view_sales}<td  {if $view=='view_price'}class="selected"{/if}  id="view_price"  >{t}Price{/t}</td>{/if}
-	</tr>
-</table>
-
-
-   
-
-    <div  class="clean_table_caption"  style="clear:both;">
-      <div style="float:left;"><div id="table_info0" class="clean_table_info"><span id="rtext0"></span> <span class="rtext_rpp" id="rtext_rpp0"></span> <span class="filter_msg"  id="filter_msg0"></span></div></div>
-      <div class="clean_table_filter" style="display:none" id="clean_table_filter0"><div class="clean_table_info"><span id="filter_name0">{$filter_name0}</span>: <input style="border-bottom:none" id='f_input0' value="{$filter_value0}" size=10/><div id='f_container0'></div></div></div>
-      <div class="clean_table_controls" style="" ><div><span  style="margin:0 5px" id="paginator0"></span></div></div>
-    </div>
-    <div  id="table0"   class="data_table_container dtable btable "> </div>
-  </div>
+	<div   class="data_table" >
+	  
+	  <span class="clean_table_title">{t}Products{/t}</span> 
+	  
+	  <table class="options" style="float:right;padding:0;margin:0;">
+	    <tr>
+	      <td  id="add_product">Add Product</td>
+	      <td  style="display:none" id="save_new_product">Save New Product</td>
+	      <td  style="display:none" id="cancel_add_product">Cancel</td>
+	    </tr>
+	  </table>
+	  <div style="clear:both;margin:0 0px;padding:0 20px ;border-bottom:1px solid #999"></div>
+	  <span style="float:right;margin-left:80px" class="state_details"  id="restrictions" value="for_sale" on click="change_multiple(this)"  >{t}products for sale{/t}</span>
+	  
+	  <table style="float:left;margin:0 0 0 0px ;padding:0"  class="options" >
+	    <tr><td  {if $view=='view_state'}class="selected"{/if} id="view_state" >{t}State{/t}</td>
+	      {if $view_stock}<td {if $view=='view_name'}class="selected"{/if}  id="view_name"  >{t}Name{/t}</td>{/if}
+	      {if $view_sales}<td  {if $view=='view_price'}class="selected"{/if}  id="view_price"  >{t}Price{/t}</td>{/if}
+	    </tr>
+	  </table>
+	  
+	  
+	  
+	  
+	  <div  class="clean_table_caption"  style="clear:both;">
+	    <div style="float:left;"><div id="table_info0" class="clean_table_info"><span id="rtext0"></span> <span class="rtext_rpp" id="rtext_rpp0"></span> <span class="filter_msg"  id="filter_msg0"></span></div></div>
+	    <div class="clean_table_filter" style="display:none" id="clean_table_filter0"><div class="clean_table_info"><span id="filter_name0">{$filter_name0}</span>: <input style="border-bottom:none" id='f_input0' value="{$filter_value0}" size=10/><div id='f_container0'></div></div></div>
+	    <div class="clean_table_controls" style="" ><div><span  style="margin:0 5px" id="paginator0"></span></div></div>
+	  </div>
+	  <div  id="table0"   class="data_table_container dtable btable "> </div>
+	</div>
 
       </div>
 
