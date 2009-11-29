@@ -39,6 +39,11 @@ function change_block(e){
 		datatable = this.getDataTable(),
 		recordIndex = datatable.getRecordIndex(record);
 
+		alert(	'tipo=edit_'+column.object+'&key=' + column.key + '&newvalue=' + 
+						encodeURIComponent(newValue) + '&oldvalue=' + encodeURIComponent(oldValue)+ 
+						myBuildUrl(datatable,record))
+
+
 		YAHOO.util.Connect.asyncRequest(
 						'POST',
 						'ar_edit_assets.php', {
@@ -517,44 +522,44 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 		
 
-	    var tableid=1; // Change if you have more the 1 table
-	    var tableDivEL="table"+tableid;
-	    var OrdersColumnDefs = [ 
-				    {key:"sku", label:"SKU", width:100, action:"none",isPrimaryKey:true}
-				    ,{key:"description", label:"<?php echo _('Description')?>", width:220,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				    ,{key:"usedin", label:"<?php echo _('Used in')?>",width:100, sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				    ,{key:"partsperpick", label:"<?php echo _('Parts/Pick')?>",width:70,className:"aleft"}
-				    ,{key:"notes", label:"<?php echo _('Notes to Pickers')?>",width:180,className:"aleft"}
-				    ,{key:"delete", label:"",width:20,className:"aleft",action:"delete",object:'tmp_partlist'}
+// 	    var tableid=1; // Change if you have more the 1 table
+// 	    var tableDivEL="table"+tableid;
+// 	    var OrdersColumnDefs = [ 
+// 				    {key:"sku", label:"SKU", width:100, action:"none",isPrimaryKey:true}
+// 				    ,{key:"description", label:"<?php echo _('Description')?>", width:220,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+// 				    ,{key:"usedin", label:"<?php echo _('Used in')?>",width:100, sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+// 				    ,{key:"partsperpick", label:"<?php echo _('Parts/Pick')?>",width:70,className:"aleft"}
+// 				    ,{key:"notes", label:"<?php echo _('Notes to Pickers')?>",width:180,className:"aleft"}
+// 				    ,{key:"delete", label:"",width:20,className:"aleft",action:"delete",object:'tmp_partlist'}
 
 
 
-				     ];
+// 				     ];
 
-	    this.dataSource1 = new YAHOO.util.DataSource(YAHOO.util.Dom.get("table_parts_list")); 
-	    this.dataSource1.responseType = YAHOO.util.DataSource.TYPE_HTMLTABLE; 
-	    this.dataSource1.responseSchema = {
-		fields: [
-			 "sku",
-			 "description",
-			 'usedin','partsperpick','notes','delete'
-			 ]};
+// 	    this.dataSource1 = new YAHOO.util.DataSource(YAHOO.util.Dom.get("table_parts_list")); 
+// 	    this.dataSource1.responseType = YAHOO.util.DataSource.TYPE_HTMLTABLE; 
+// 	    this.dataSource1.responseSchema = {
+// 		fields: [
+// 			 "sku",
+// 			 "description",
+// 			 'usedin','partsperpick','notes','delete'
+// 			 ]};
 	    
-	    this.table1 = new YAHOO.widget.DataTable("parts_list_container", OrdersColumnDefs,
-						     this.dataSource1, {
-								     sortedBy : {
-									 key: "sku",
-									 dir: "desc"
-								     },
-								     MSG_EMPTY:"<?php echo _('Please assign a part')?>"
-						     }
-						     );
+// 	    this.table1 = new YAHOO.widget.DataTable("parts_list_container", OrdersColumnDefs,
+// 						     this.dataSource1, {
+// 								     sortedBy : {
+// 									 key: "sku",
+// 									 dir: "desc"
+// 								     },
+// 								     MSG_EMPTY:"<?php echo _('Please assign a part')?>"
+// 						     }
+// 						     );
 
 
 
-	    this.table1.subscribe("cellMouseoverEvent", highlightEditableCell);
-	    this.table1.subscribe("cellMouseoutEvent", unhighlightEditableCell);
-	    this.table1.subscribe("cellClickEvent", tmponCellClick);
+// 	    this.table1.subscribe("cellMouseoverEvent", highlightEditableCell);
+// 	    this.table1.subscribe("cellMouseoutEvent", unhighlightEditableCell);
+// 	    this.table1.subscribe("cellClickEvent", tmponCellClick);
 	    
     var tableid=4; // Change if you have more the 1 table
 	    var tableDivEL="table"+tableid;
@@ -567,10 +572,79 @@ YAHOO.util.Event.addListener(window, "load", function() {
 				       ];
 	    //?tipo=customers&tid=0"
 	    
-	    this.dataSource4 = new YAHOO.util.DataSource("ar_edit_assets.php?tipo=edit_deals&parent=family&tableid=4");
-	    this.dataSource4.responseType = YAHOO.util.DataSource.TYPE_JSON;
-	    this.dataSource4.connXhrMode = "queueRequests";
-	    this.dataSource4.responseSchema = {
+// 	    this.dataSource4 = new YAHOO.util.DataSource("ar_edit_assets.php?tipo=edit_deals&parent=family&tableid=4");
+// 	    this.dataSource4.responseType = YAHOO.util.DataSource.TYPE_JSON;
+// 	    this.dataSource4.connXhrMode = "queueRequests";
+// 	    this.dataSource4.responseSchema = {
+// 		resultsList: "resultset.data", 
+// 		metaFields: {
+// 		    rowsPerPage:"resultset.records_perpage",
+// 		    sort_key:"resultset.sort_key",
+// 		    sort_dir:"resultset.sort_dir",
+// 		    tableid:"resultset.tableid",
+// 		    filter_msg:"resultset.filter_msg",
+// 		    rtext:"resultset.rtext",
+// 		    totalRecords: "resultset.total_records" // Access to value in the server response
+// 		},
+		
+		
+// 		fields: [
+// 			 "name"
+// 			 ,"description","from","to"
+
+// 			 ]};
+//  this.table4 = new YAHOO.widget.DataTable(tableDivEL, CustomersColumnDefs,
+// 						     this.dataSource4
+// 						     , {
+// 							 renderLoopSize: 50,generateRequest : myRequestBuilder
+// 							 ,paginator : new YAHOO.widget.Paginator({
+// 								 rowsPerPage    : <?php echo$_SESSION['state']['store']['deals']['nr']?>,containers : 'paginator4', alpartysVisible:false,
+// 								 pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',
+// 								 previousPageLinkLabel : "<",
+// 								 nextPageLinkLabel : ">",
+// 								 firstPageLinkLabel :"<<",
+// 								 lastPageLinkLabel :">>",rowsPerPageOptions : [10,25,50,100,250,500]
+// 								 ,template : "{FirstPageLink}{PreviousPageLink}<strong id='paginator_info4'>{CurrentPageReport}</strong>{NextPageLink}{LastPageLink}"
+// 							     })
+							 
+// 							 ,sortedBy : {
+// 							     key: "<?php echo$_SESSION['state']['store']['deals']['order']?>",
+// 							     dir: "<?php echo$_SESSION['state']['store']['deals']['order_dir']?>"
+// 							 },
+// 							 dynamicData : true
+							 
+// 						     }
+						     
+// 						     );
+	    
+// 	    this.table4.handleDataReturnPayload =myhandleDataReturnPayload;
+// 	    this.table4.doBeforeSortColumn = mydoBeforeSortColumn;
+// 	    this.table4.doBeforePaginatorChange = mydoBeforePaginatorChange;
+
+	  
+		    
+// 	    this.table4.filter={key:'<?php echo $_SESSION['state']['store']['deals']['f_field']?>',value:'<?php echo $_SESSION['state']['store']['deals']['f_value']?>'};
+
+
+	     var tableid=5; // Change if you have more the 1 table
+	    var tableDivEL="table"+tableid;
+
+	    var CustomersColumnDefs = [
+				       {key:"part_sku", label:"", hidden:true,action:"none",isPrimaryKey:true}
+				       ,{key:"sku",label:"<?php echo _('SKU')?>", width:60,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				       ,{key:"picks",label:"<?php echo _('Picks')?>", width:30,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}, editor: new YAHOO.widget.TextboxCellEditor({asyncSubmitter: CellEdit}),object:'part_new_product'}
+				       ,{key:"description",label:"<?php echo _('Part Name')?>", width:230,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				       ,{key:"notes",label:"<?php echo _('Notes for picker')?>", width:170,className:"aleft", editor: new YAHOO.widget.TextboxCellEditor({asyncSubmitter: CellEdit}),object:'part_new_product' }
+				       ,{key:"delete",label:"", width:20,className:"aleft",action:'delete',object:'part_new_product'}
+				       
+				       ];
+	    //?tipo=customers&tid=0"
+	    
+	    this.dataSource5 = new YAHOO.util.DataSource("ar_edit_assets.php?tipo=part_list&product_id=0&tableid=5");
+	    //this.dataSource5 =  new YAHOO.util.DataSource("ar_edit_assets.php?tipo=edit_deals&parent=family&tableid=4");
+	    this.dataSource5.responseType = YAHOO.util.DataSource.TYPE_JSON;
+	    this.dataSource5.connXhrMode = "queueRequests";
+	    this.dataSource5.responseSchema = {
 		resultsList: "resultset.data", 
 		metaFields: {
 		    rowsPerPage:"resultset.records_perpage",
@@ -584,27 +658,27 @@ YAHOO.util.Event.addListener(window, "load", function() {
 		
 		
 		fields: [
-			 "name"
-			 ,"description","from","to"
+			 "sku"
+			 ,"description","picks","notes","delete","part_sku"
 
 			 ]};
- this.table4 = new YAHOO.widget.DataTable(tableDivEL, CustomersColumnDefs,
-						     this.dataSource4
+ this.table5 = new YAHOO.widget.DataTable(tableDivEL, CustomersColumnDefs,
+						     this.dataSource5
 						     , {
 							 renderLoopSize: 50,generateRequest : myRequestBuilder
 							 ,paginator : new YAHOO.widget.Paginator({
-								 rowsPerPage    : <?php echo$_SESSION['state']['store']['deals']['nr']?>,containers : 'paginator4', alpartysVisible:false,
+								 rowsPerPage    :<?php echo $_SESSION['state']['product']['parts']['nr']?> ,containers : 'paginator5', alpartysVisible:false,
 								 pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',
 								 previousPageLinkLabel : "<",
 								 nextPageLinkLabel : ">",
 								 firstPageLinkLabel :"<<",
 								 lastPageLinkLabel :">>",rowsPerPageOptions : [10,25,50,100,250,500]
-								 ,template : "{FirstPageLink}{PreviousPageLink}<strong id='paginator_info4'>{CurrentPageReport}</strong>{NextPageLink}{LastPageLink}"
+								 ,template : "{FirstPageLink}{PreviousPageLink}<strong id='paginator_info5'>{CurrentPageReport}</strong>{NextPageLink}{LastPageLink}"
 							     })
 							 
 							 ,sortedBy : {
-							     key: "<?php echo$_SESSION['state']['store']['deals']['order']?>",
-							     dir: "<?php echo$_SESSION['state']['store']['deals']['order_dir']?>"
+							     key: "<?php echo $_SESSION['state']['product']['parts']['order']?>",
+							     dir: "<?php echo $_SESSION['state']['product']['parts']['order_dir']?>"
 							 },
 							 dynamicData : true
 							 
@@ -612,16 +686,16 @@ YAHOO.util.Event.addListener(window, "load", function() {
 						     
 						     );
 	    
-	    this.table4.handleDataReturnPayload =myhandleDataReturnPayload;
-	    this.table4.doBeforeSortColumn = mydoBeforeSortColumn;
-	    this.table4.doBeforePaginatorChange = mydoBeforePaginatorChange;
+	    this.table5.handleDataReturnPayload =myhandleDataReturnPayload;
+	    this.table5.doBeforeSortColumn = mydoBeforeSortColumn;
+	    this.table5.doBeforePaginatorChange = mydoBeforePaginatorChange;
 
+
+	    this.table5.subscribe("cellMouseoverEvent", highlightEditableCell);
+	    this.table5.subscribe("cellMouseoutEvent", unhighlightEditableCell);
+	    this.table5.subscribe("cellClickEvent", onCellClick);
 		    
-		    
-	    this.table4.filter={key:'<?php echo $_SESSION['state']['store']['deals']['f_field']?>',value:'<?php echo $_SESSION['state']['store']['deals']['f_value']?>'};
-
-
-
+	    this.table5.filter={key:'<?php echo $_SESSION['state']['product']['parts']['f_field']?>',value:'<?php echo $_SESSION['state']['product']['parts']['f_value']?>'};
 
 
 	};
@@ -661,7 +735,36 @@ function init(){
  
 	part_selected= function(sType, aArgs) {
 	    var myAC = aArgs[0]; var elLI = aArgs[1]; var oData = aArgs[2]; 
-	    Dom.get("part_sku").value = oData[1];
+	    //	    Dom.get("part_sku").value = oData[1];
+	  
+	    var ar_file='ar_edit_assets.php';
+	    YAHOO.util.Connect.asyncRequest(
+						'POST',
+						ar_file, {
+						    success:function(o) {
+								alert(o.responseText);
+							var r = YAHOO.lang.JSON.parse(o.responseText);
+							if (r.state == 200) {
+							    var table=tables['table5'];
+							    var datasource=tables['dataSource5'];
+							    var request='';
+							    datasource.sendRequest(request,table.onDataReturnInitializeTable, table); 
+							    
+							} else {
+							    alert(r.msg);
+							    
+							}
+						    },
+							failure:function(o) {
+							alert(o.statusText);
+							
+						    },
+							scope:this
+							},
+						'tipo=add_part_new_product&sku='+oData['sku']
+						
+					    );  
+
 	    
 	};
 

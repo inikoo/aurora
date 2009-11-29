@@ -603,17 +603,22 @@ break;
 }
 
   
-
+  function get_sku(){
+    return sprintf("SKU%05d",$this->sku);
+    
+  }
 
 
   function get($key='',$args=false){
    
+  
+
     if(array_key_exists($key,$this->data))
       return $this->data[$key];
-
- if (preg_match('/^(Total|1).*(Amount|Storing)$/',$key)) {
-
-            $amount='Order '.$key;
+    
+    if (preg_match('/^(Total|1).*(Amount|Storing)$/',$key)) {
+      
+      $amount='Order '.$key;
 
             return money($this->data[$amount]);
         }	
