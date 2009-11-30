@@ -31,7 +31,7 @@ class Order extends DB_Table{
   //	Public $id = false;
   //	Public $tipo;
   //	Public $staus = 'new';
-
+  var $ghost_order=false;
   Public $skip_update_product_sales=false;
 
   function __construct($arg1 = false, $arg2 = false) {
@@ -81,6 +81,35 @@ class Order extends DB_Table{
 
     $type = $data ['type'];
     switch ($type) {
+
+
+    case('system'):
+      // print_r($data);
+      $this->data ['Order Type'] = $data ['Order Type'];
+      $this->get_data_from_customer($data['Customer Key']);
+      $this->data ['Order Current Dispatch State'] = 'In Process';
+      $this->data ['Order Current Payment State'] = 'Waiting Payment';
+      $this->data ['Order Current XHTML State'] = 'In Process';
+      $this->data ['Order Sale Reps IDs'] =$this->editor['User Key'];
+      $this->data ['Order For'] = 'Customer';
+      $this->data ['Order Date'] = date('Y-m-d H:i:s');
+      $this->data ['Order Customer Message']='';
+      $this->data ['Order Original Data MIME Type']='none';
+      $this->data ['Order Original Data']='';
+      $this->data ['Order Main Source Type']='Call';
+      if(isset($data['Order Main Source Type']) and preg_match('/^(Internet|Call|Store|Unknown|Email|Fax)$/i'))
+	$this->data ['Order Main Source Type']=$data['Order Main Source Type'];
+      
+      $this->next_public_id();
+      
+
+  $this->create_order_header ();
+  foreach ( $this->data ['Order Sale Reps IDs'] as $sale_rep_id ) {
+    $sql = sprintf ( "insert into `Order Sales Rep Bridge`  (%d,%d)", $this->id, $sale_rep_id );
+  }
+
+
+      break;
     case ('direct_data_injection') :
 			  
       $this->data ['Delivery Note Key'] = '';
@@ -150,7 +179,11 @@ class Order extends DB_Table{
 	$this->data ['Order XHTML Store'] = _ ( 'Unknown' );
 	$this->data ['Order Currency Code']=$myconf['currency_code'];
       }
-				
+	
+      
+
+
+			
 
       if(isset($data['Order Currency Code']))
 	$this->data ['Order Currency Code']=$data['Order Currency Code'];
@@ -170,7 +203,7 @@ class Order extends DB_Table{
       $this->data ['Order Customer Key'] = $customer->id;
       $this->data ['Order Customer Name'] = $customer->data[ 'Customer Name' ];
      
-       $this->data ['Order Customer Contact Name'] = $data ['Order Customer Contact Name'];
+      $this->data ['Order Customer Contact Name'] = $data ['Order Customer Contact Name'];
       $this->data ['Order Current Dispatch State'] = 'In Process';
       $this->data ['Order Current Payment State'] = 'Waiting Payment';
       $this->data ['Order Current XHTML State'] = 'In Process';
@@ -1913,7 +1946,7 @@ class Order extends DB_Table{
 
   function update_totals_from_order_transactions($force_total=false){
       
-    if($this->ghost_order) 
+    if($this->ghost_order or !$this->data ['Order Key']) 
       return;
 
     if(!$force_total)
@@ -2076,6 +2109,73 @@ function set_charges($charges,$tax_rate=0){
    $this->load('totals');
  }
 
+function get_data_from_customer($customer_key,$store_key=false){
+  $customer=new Customer($customer_key);
+  if(!$customer->id){
+    $customer= new Customer('create anonymous');
+  }else
+    $store_key=$customer->data['Customer Store Key'];
+  
+
+  $this->get_data_from_store($store_key);
+  if($this->error)
+    return;
+ 
+  $ship_to= new Ship_To($customer->data['Customer Main Ship To Key']);
+
+  $this->billing_address=new Address($customer->data['Customer Main Address Key']);
+  $this->data ['Order Customer Key'] = $customer->id;
+  $this->data ['Order Customer Name'] = $customer->data[ 'Customer Name' ];
+  $this->data ['Order Customer Contact Name'] = $customer->data ['Customer Main Contact Name'];
+
+
+
+
+
+  
+
+
 }
+
+
+function get_data_from_store($store_key){
+  $store=new Store($store_key);
+  if(!$store->id){
+    $this->error=true;
+    return;
+  }
+
+
+  $this->data ['Order Store Key'] = $store->id;
+  $this->data ['Order Store Code'] = $store->data[ 'Store Code' ];
+  $this->data ['Order XHTML Store'] = sprintf ( '<a href="store.php?id=%d">%s</a>', $store->id, $store->data[ 'Store Code' ] );
+  $this->data ['Order Currency']=$store->data[ 'Store Currency Code' ];
+  $this->public_id_format=$store->data[ 'Store Order Public ID Format' ];
+
+}
+
+
+
+  function next_public_id(){
+      $sql=sprintf("insert into `Order Public ID %d` ",$this->data['Order Store Key']);
+      $public_id=mysql_insert_id();
+      $this->data['Order Public ID']=sprintf($this->public_id_format,$public_id);
+      $this->data['Order File As']=$public_id;
+    }
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
 
 ?>

@@ -301,11 +301,15 @@ function update($key,$a1=false,$a2=false){
    $this->msg='Nothing to change';
    
    switch($key){
+   case('special_char'):
+   case('Product Family Special Characteristic'):
+     $this->update_field('Product Family Special Characteristic',$a1);
+     break;
    case('code'):
 
      if($a1==$this->data['Product Family Code']){
        $this->updated=true;
-       $this->newvalue=$a1;
+       $this->new_value=$a1;
        return;
        
      }
@@ -334,7 +338,7 @@ function update($key,$a1=false,$a2=false){
 		);
       if(mysql_query($sql)){
 	$this->msg=_('Family code updated');
-	$this->updated=true;$this->newvalue=$a1;
+	$this->updated=true;$this->new_value=$a1;
 	
 		$this->data['Product Family Code']=$a1;
 	$editor_data=$this->get_editor_data();
@@ -343,13 +347,13 @@ function update($key,$a1=false,$a2=false){
 		     prepare_mysql($editor_data['subject']),
 		     $editor_data['subject_key'],
 		     prepare_mysql('edited'),
-		     prepare_mysql('Department'),
+		     prepare_mysql('Family'),
 		     $this->id,
 		     "''",
 		     "''",
 		     0,
-		     prepare_mysql(_('Product Family Changed').' ('.$this->get('Product Family Name').')' ),
-		     prepare_mysql(_('Store')." ".$this->data['Product Family Name']." "._('code changed from').' '.$old_value." "._('to').' '. $this->get('Product Family Code')  ),
+		     prepare_mysql(_('Product family Code changed').' ('.$this->get('Product Family Code').')' ),
+		     prepare_mysql(_('Family')." ".$this->data['Product Family Name']." "._('changed code from').' '.$old_value." "._('to').' '. $this->get('Product Family Code')  ),
 		     prepare_mysql($editor_data['date']),
 		     prepare_mysql($editor_data['author']),
 		     $editor_data['author_key']
@@ -369,7 +373,7 @@ function update($key,$a1=false,$a2=false){
 
      if($a1==$this->data['Product Family Name']){
        $this->updated=true;
-       $this->newvalue=$a1;
+       $this->new_value=$a1;
        return;
        
      }
@@ -397,7 +401,7 @@ function update($key,$a1=false,$a2=false){
 		);
       if(mysql_query($sql)){
 	$this->msg=_('Family name updated');
-	$this->updated=true;$this->newvalue=$a1;
+	$this->updated=true;$this->new_value=$a1;
 	
 	$this->data['Product Family Name']=$a1;
 	$editor_data=$this->get_editor_data();
@@ -418,7 +422,7 @@ function update($key,$a1=false,$a2=false){
 		     $editor_data['author_key']
 		     );
 	mysql_query($sql);
-	
+
       }else{
 	$this->msg=_("Error: Family name could not be updated");
 
@@ -697,6 +701,16 @@ function update($key,$a1=false,$a2=false){
 
 
      break;
+
+ case('Product Family Description Length'):
+      return strlen($this->data['Product Family Description']);
+      break;
+    case('Product Family Description MD5 Hash'):
+      return md5($this->data['Product Family Description']);
+      break;
+
+
+
    case('Full Order Form'):
      global $site_checkout_address,$site_checkout_id,$site_url;
      
@@ -1348,13 +1362,17 @@ function product_timeline($extra_where=''){
 }
 
 function get_next_product_code(){
-  
-  $sql=sprintf("select `Product Code File As` from `Product Dimension` where `Product Family Key`=%d order by  `Product Code File As` limit 1 ",$this->id);
+  $next_code='';
+  $sql=sprintf("select `Product Code File As` from `Product Dimension` where `Product Family Key`=%d order by  `Product Code File As` desc limit 1 ",$this->id);
   $res=mysql_query($sql);
   if($row=mysql_fetch_array($res)){
     $next_code=$row['Product Code File As'];
-    if(preg_match('/^[a-z]+\-\d+$/')){
-
+    if(preg_match('/^[a-z]+\-\d+$/',$row['Product Code File As'])){
+      $last_number=1;
+      if(preg_match('/\d+$/',$row['Product Code File As'],$match)){
+	$last_number+=$match[0];
+      }
+      $next_code=sprintf("%s-%02d",$this->data['Product Family Code'],$last_number);
     }
 
 

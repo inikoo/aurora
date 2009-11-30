@@ -24,6 +24,8 @@
 
        <table style="float:right;margin-top:20px">
 	 <tr><td class="but" id="note">{t}Quick Note{/t}</td></tr>
+	 <tr><td class="but" id="take_order">{t}Take Order{/t}</td></tr>
+
 	 <tr style="display:none"><td class="but" id="long_note">{t}Long Note{/t}</td></tr>
 	 <tr style="display:none"><td class="but" id="attach">{t}Attach File{/t}</td></tr>
 	 <tr style="display:none"><td class="but" id="call" >{t}Call{/t}</td></tr>

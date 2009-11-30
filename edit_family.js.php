@@ -193,6 +193,8 @@ var description_errors= new Object();
 
 
 function update_form(){
+
+    
     if(editing=='description'){
 	this_errors=description_errors;
 	this_num_changed=description_num_changed
@@ -229,18 +231,18 @@ function update_form(){
 }
 
 
-function create_part(){
-    var part_description=Dom.get('new_name').value;
-    if(part_description=='')
-	part_description='??';
-    var part_used_in=Dom.get('new_code').value;
-    if(part_used_in=='')
-	part_used_in='??';
+//function create_part(){
+//    var part_description=Dom.get('new_name').value;
+//    if(part_description=='')
+//	part_description='??';
+//    var part_used_in=Dom.get('new_code').value;
+//    if(part_used_in=='')
+//	part_used_in='??';
 
 
-    var data={sku:'TBC',description:part_description,usedin:part_used_in,partsperpick:1,notes:'',delete:'<img src="art/icons/cross.png">'}
-    tables.table1.addRow(data, 0);
-}
+//    var data={sku:'TBC',description:part_description,usedin:part_used_in,partsperpick:1,notes:'',delete:'<img src="art/icons/cross.png">'}
+//    tables.table1.addRow(data, 0);
+//}
 
 function edit_family_changed(o){
     var ovalue=o.getAttribute('ovalue');
@@ -256,13 +258,18 @@ function edit_family_changed(o){
 	}
 	if(name=='name'){
 	    if(o.value==''){
-		description_errors.name="<?php echo _("The family name  can not be empty")?>";
+		description_errors.name="<?php echo _("The family name can not be empty")?>";
 	    }else if(o.value.lenght>255){
 		description_errors.name="<?php echo _("The product code can not have more than 255  characters")?>";
 	    }else
 		delete description_errors.name;
 	}
-	
+	if(name=='special_char'){
+	    if(o.value==''){
+		description_errors.special_char="<?php echo _("The family special characteristic can not be empty")?>";
+	    }else
+		delete description_errors.special_char;
+	}
 
 
 	if(o.getAttribute('changed')==0){
@@ -287,6 +294,9 @@ function reset(tipo){
 	tag='code';
 	Dom.get(tag).value=Dom.get(tag).getAttribute('ovalue');
 	Dom.get(tag).setAttribute('changed',0);
+	tag='special_char';
+	Dom.get(tag).value=Dom.get(tag).getAttribute('ovalue');
+	Dom.get(tag).setAttribute('changed',0);
 
 	description_num_changed=0;
 	Dom.get(editing+'_save').style.display='none';
@@ -303,7 +313,7 @@ function reset(tipo){
 function save(tipo){
 
     if(tipo=='description'){
-	var keys=new Array("code","name");
+	var keys=new Array("code","name","special_char");
 	for (x in keys)
 	    {
 		 key=keys[x];
@@ -316,10 +326,10 @@ function save(tipo){
 		    var request='ar_edit_assets.php?tipo=edit_family&key=' + key+ '&newvalue=' + 
 			encodeURIComponent(newValue) + '&oldvalue=' + encodeURIComponent(oldValue)+ 
 			'&id='+family_id;
-
+		  
 		    YAHOO.util.Connect.asyncRequest('POST',request ,{
 			    success:function(o) {
-				//alert(o.responseText);
+				alert(o.responseText);
 				var r =  YAHOO.lang.JSON.parse(o.responseText);
 				if(r.state==200){
 				    var element=Dom.get(r.key);
@@ -327,7 +337,18 @@ function save(tipo){
 				    element.value=r.newvalue;
 				    element.setAttribute('changed',0);
 				    description_num_changed--;
-				 
+				    var table=tables.table1;
+				    var datasource=tables.dataSource1;
+				    var request='';
+				    datasource.sendRequest(request,table.onDataReturnInitializeTable, table); 
+				    if(r.key=='name')
+					Dom.get('title_name').innerHTML=r.newvalue;
+				    
+				     if(r.key=='code')
+					Dom.get('title_code').innerHTML=r.newvalue;
+				    
+
+
 				}else{
 				    Dom.get('description_errors').innerHTML='<span class="error">'+r.msg+'</span>';
 				    
@@ -434,6 +455,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    var tableDivEL="table"+tableid;
 	    var OrdersColumnDefs = [ 
 				    {key:"id", label:"", hidden:true,action:"none",isPrimaryKey:true}
+				    ,{key:"go", label:"", width:20,action:"none"}
 				    ,{key:"code",<?php echo($_SESSION['state']['family']['edit_view']!='view_price'?'':'hidden:true,')?>  label:"<?php echo _('Code')?>", width:70,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				    ,{key:"code_price",<?php echo($_SESSION['state']['family']['edit_view']=='view_price'?'':'hidden:true,')?>  label:"<?php echo _('Code')?>", width:70,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 
@@ -479,7 +501,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 		},
 		
 		fields: [
-			 "code","units_info","code_price",
+			 "code","units_info","code_price",'go',
 			 "name",
 			 'delete','delete_type','id','sdescription','price','unit_rrp','units','unit_type','rrp_info','price_info','unit_price','margin','processing','sales_state','sales_state','web_state'
 			 ]};
@@ -519,6 +541,78 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    this.table0.subscribe("cellClickEvent", onCellClick);
 	    
 	    this.table0.view='<?php echo$_SESSION['state']['family']['edit_view']?>';
+
+
+
+   var tableid=1; // Change if you have more the 1 table
+	    var tableDivEL="table"+tableid;
+
+	    var CustomersColumnDefs = [
+				       {key:"date",label:"<?php echo _('Date')?>", width:200,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				       ,{key:"author",label:"<?php echo _('Author')?>", width:70,sortable:true,formatter:this.customer_name,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				       //     ,{key:"tipo", label:"<?php echo _('Type')?>", width:90,sortable:true,formatter:this.customer_name,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				       //,{key:"diff_qty",label:"<?php echo _('Qty')?>", width:90,sortable:true,formatter:this.customer_name,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				       ,{key:"abstract", label:"<?php echo _('Description')?>", width:370,sortable:true,formatter:this.customer_name,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				       ];
+	    //?tipo=customers&tid=0"
+
+	    this.dataSource1 = new YAHOO.util.DataSource("ar_assets.php?tipo=family_history&tableid=1");
+	    this.dataSource1.responseType = YAHOO.util.DataSource.TYPE_JSON;
+	    this.dataSource1.connXhrMode = "queueRequests";
+	    this.dataSource1.responseSchema = {
+		resultsList: "resultset.data", 
+		metaFields: {
+		    rowsPerPage:"resultset.records_perpage",
+		    sort_key:"resultset.sort_key",
+		    sort_dir:"resultset.sort_dir",
+		    tableid:"resultset.tableid",
+		    filter_msg:"resultset.filter_msg",
+		    rtext:"resultset.rtext",
+		    totalRecords: "resultset.total_records" // Access to value in the server response
+		},
+		
+		
+		fields: [
+			 "id"
+			 ,"note"
+			 ,'author','date','tipo','abstract','details'
+			 ]};
+	    
+	    this.table1 = new YAHOO.widget.DataTable(tableDivEL, CustomersColumnDefs,
+						     this.dataSource1
+						     , {
+
+							 renderLoopSize: 50,generateRequest : myRequestBuilder
+							 ,paginator : new YAHOO.widget.Paginator({
+								 rowsPerPage    : <?php echo$_SESSION['state']['family']['history']['nr']?>,containers : 'paginator1', alwaysVisible:false,
+								 pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',
+								 previousPageLinkLabel : "<",
+								 nextPageLinkLabel : ">",
+								 firstPageLinkLabel :"<<",
+								 lastPageLinkLabel :">>",rowsPerPageOptions : [10,25,50,100,250,500]
+								 ,template : "{FirstPageLink}{PreviousPageLink}<strong id='paginator_info1'>{CurrentPageReport}</strong>{NextPageLink}{LastPageLink}"
+							     })
+							 
+							 ,sortedBy : {
+							     key: "<?php echo$_SESSION['state']['family']['history']['order']?>",
+							     dir: "<?php echo$_SESSION['state']['family']['history']['order_dir']?>"
+							 },
+							 dynamicData : true
+							 
+						     }
+						     
+						     );
+	    
+	    this.table1.handleDataReturnPayload =myhandleDataReturnPayload;
+	    this.table1.doBeforeSortColumn = mydoBeforeSortColumn;
+	    this.table1.doBeforePaginatorChange = mydoBeforePaginatorChange;
+
+		    
+		    
+	    this.table1.filter={key:'<?php echo$_SESSION['state']['family']['history']['f_field']?>',value:'<?php echo$_SESSION['state']['family']['history']['f_value']?>'};
+	    YAHOO.util.Event.addListener('yui-pg0-0-page-report', "click",myRowsPerPageDropdown);
+
+
 
 		
 
@@ -698,6 +792,12 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    this.table5.filter={key:'<?php echo $_SESSION['state']['product']['parts']['f_field']?>',value:'<?php echo $_SESSION['state']['product']['parts']['f_value']?>'};
 
 
+
+
+
+
+
+
 	};
     });
 
@@ -827,20 +927,35 @@ YAHOO.util.Event.onDOMReady(init);
  YAHOO.util.Event.addListener(ids, "click",change_view)
 
 
+YAHOO.util.Event.onContentReady("rppmenu0", function () {
+	 var oMenu = new YAHOO.widget.Menu("rppmenu0", { context:["rtext_rpp0","tl", "tr"]  });
+	 oMenu.render();
+	 oMenu.subscribe("show", oMenu.focus);
+	 YAHOO.util.Event.addListener("rtext_rpp0", "click", oMenu.show, null, oMenu);
+    });
 
-var dmenu_data;
+YAHOO.util.Event.onContentReady("filtermenu0", function () {
+	 var oMenu = new YAHOO.widget.Menu("filtermenu0", { context:["filter_name0","tr", "br"]  });
+	 oMenu.render();
+	 oMenu.subscribe("show", oMenu.focus);
+	 YAHOO.util.Event.addListener("filter_name0", "click", oMenu.show, null, oMenu);
+    });
 
 
-var dmenu_selected=function(){
-     var data = {
-	"sku":dmenu_data[1]
-	,"description":dmenu_data[2]
-	,"usedin":dmenu_data[3]
-    }; 
-          Dom.get("dmenu_input").value='';
 
-     var row={sku:data.sku,description:data.description,usedin:data.usedin,partsperpick:1,notes:'',delete:'<img src="art/icons/cross.png">'}
-     tables.table1.addRow(row, 0);
+ //var dmenu_data;
 
-     alert(tables.table1);
-}
+
+ //var dmenu_selected=function(){
+ //    var data = {
+ //	"sku":dmenu_data[1]
+ //	,"description":dmenu_data[2]
+ //	,"usedin":dmenu_data[3]
+ //  }; 
+ //       Dom.get("dmenu_input").value='';
+
+ //  var row={sku:data.sku,description:data.description,usedin:data.usedin,partsperpick:1,notes:'',delete:'<img src="art/icons/cross.png">'}
+ //   tables.table1.addRow(row, 0);
+
+ //     alert(tables.table1);
+ //}

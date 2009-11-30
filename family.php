@@ -59,12 +59,17 @@ get_header_info($user,$smarty);
 $show_details=$_SESSION['state']['family']['details'];
 $smarty->assign('table_type',$_SESSION['state']['family']['table_type']);
 $general_options_list=array();
-if($modify)
-  $general_options_list[]=array('tipo'=>'url','url'=>'family.php?edit=1','label'=>_('Edit Family'));
-$general_options_list[]=array('tipo'=>'js','state'=>$show_details,'id'=>'details','label'=>($show_details?_('Hide Details'):_('Show Details')));
-$smarty->assign('general_options_list',$general_options_list);
 
+if($edit){
+  $general_options_list[]=array('tipo'=>'url','url'=>'family.php?edit=0','label'=>_('Exit Edit'));
 
+}else{
+  if($modify)
+    $general_options_list[]=array('tipo'=>'url','url'=>'family.php?edit=1','label'=>_('Edit Family'));
+  $general_options_list[]=array('tipo'=>'js','state'=>$show_details,'id'=>'details','label'=>($show_details?_('Hide Details'):_('Show Details')));
+
+}
+  $smarty->assign('general_options_list',$general_options_list);
 $show_only=$_SESSION['state']['family']['table']['show_only'];
 $show_only_labels=array('forsale'=>_('For Sale Only'));
 

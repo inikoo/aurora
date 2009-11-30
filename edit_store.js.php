@@ -146,6 +146,17 @@ function save(tipo){
 				    element.value=r.newvalue;
 				    element.setAttribute('changed',0);
 				    description_num_changed--;
+				     var table=tables.table1;
+				    var datasource=tables.dataSource1;
+				    var request='';
+				    datasource.sendRequest(request,table.onDataReturnInitializeTable, table); 
+				    if(r.key=='name')
+					Dom.get('title_name').innerHTML=r.newvalue;
+				    
+				     if(r.key=='code')
+					Dom.get('title_code').innerHTML=r.newvalue;
+				    
+
 				 
 				}else{
 				    //Dom.get('description_errors').innerHTML='<span class="error">'+r.msg+'</span>';
@@ -264,8 +275,9 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    var tableDivEL="table"+tableid;
 	    var OrdersColumnDefs = [ 
 				    {key:"id", label:"<?php echo _('Key')?>", width:20,sortable:false,isPrimaryKey:true,hidden:true} 
+				    ,{key:"go",label:'',width:20,}
 				    ,{key:"code", label:"<?php echo _('Code')?>", width:100,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC},  editor: new YAHOO.widget.TextboxCellEditor({asyncSubmitter: CellEdit}),object:'department'}
-				    ,{key:"name", label:"<?php echo _('Name')?>", width:350,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}, editor: new YAHOO.widget.TextboxCellEditor({asyncSubmitter: CellEdit}),object:'department' }
+				    ,{key:"name", label:"<?php echo _('Name')?>", width:340,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}, editor: new YAHOO.widget.TextboxCellEditor({asyncSubmitter: CellEdit}),object:'department' }
 				    ,{key:"delete", label:"", width:170,sortable:false,className:"aleft",action:'delete',object:'department'}
 				    ,{key:"delete_type", label:"",hidden:true,isTypeKey:true}
 				     ];
@@ -285,7 +297,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 		},
 		
 		fields: [
-			 'id','code','name','delete','delete_type'
+			 'id','code','name','delete','delete_type','go'
 			 ]};
 	    
 	    this.table0 = new YAHOO.widget.DataTable(tableDivEL, OrdersColumnDefs,
@@ -610,16 +622,19 @@ function hide_add_department_dialog(){
     Dom.get('new_department_dialog').style.display='none';
     Dom.get('add_department').style.display='';
     Dom.get('save_new_department').style.display='none';
-    Dom.get('cancel_add_department').style.display='none';
+    Dom.get('close_add_department').style.display='none';
 }
 
 function show_add_department_dialog(){
     Dom.get('new_department_dialog').style.display='';
     Dom.get('add_department').style.display='none';
     Dom.get('save_new_department').style.display='';
+
     Dom.addClass('save_new_department','disabled');
-    Dom.get('cancel_add_department').style.display='';
+    Dom.get('close_add_department').style.display='';
     Dom.get('new_code').focus();
+
+
 }
 
 
@@ -628,7 +643,7 @@ function init(){
     YAHOO.util.Event.addListener(ids, "click", change_block);
     YAHOO.util.Event.addListener('add_department', "click", show_add_department_dialog);
     YAHOO.util.Event.addListener('save_new_department', "click",save_new_department);
-    YAHOO.util.Event.addListener('cancel_add_department', "click", cancel_add_department);
+    YAHOO.util.Event.addListener('close_add_department', "click", cancel_add_department);
 
 }
 

@@ -2152,13 +2152,13 @@ public $new_value=false;
 
 
       while ($row=mysql_fetch_array($res)) {
-	if ($row['Image Type']=='Original')
+	if ($row['Image Type']=='Original'){
 	  if ($row['Image Height']!=0)
 	    $ratio=$row['Image Width']/$row['Image Height'];
 	  else
 	    $ratio=1;
 	$this->images_slideshow[]=array('url'=>$row['Image URL'],'filename'=>$row['Image Filename'],'ratio'=>$ratio,'caption'=>$row['Image Caption'],'is_principal'=>$row['Is Principal'],'id'=>$row['Image Key']);
-
+	}
       }
 
 

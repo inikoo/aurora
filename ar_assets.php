@@ -1229,7 +1229,7 @@ case('search'):
     // try to get similar results
     //   if($myconf['product_code_separator']!=''){
     if (  ($myconf['product_code_separator']!='' and   preg_match('/'.$myconf['product_code_separator'].'/',$q)) or  $myconf['product_code_separator']==''  ) {
-        $sql=sprintf("select levenshtein(UPPER(%s),UPPER(code)) as dist1,    levenshtein(UPPER(SOUNDEX(%s)),UPPER(SOUNDEX(code))) as dist2,        code,id from product  order by dist1,dist2 limit 1;",prepare_mysql($q),prepare_mysql($q));
+        $sql=sprintf("select levenshtein(UPPER(%s),UPPER(code)) as dist1,levenshtein(UPPER(SOUNDEX(%s)),UPPER(SOUNDEX(code))) as dist2,code,id from product  order by dist1,dist2 limit 1;",prepare_mysql($q),prepare_mysql($q));
         $result=mysql_query($sql);
         if ($found=mysql_fetch_array($result, MYSQL_ASSOC)) {
             if ($found['dist1']<3) {
@@ -5990,9 +5990,9 @@ function list_asset_history($asset_type) {
 
 
     if ($total==0)
-        $rtext=_('No stock movements');
+        $rtext=_('No history records');
     else
-        $rtext=$total.' '.ngettext('stock operation','stock operations',$total);
+        $rtext=$total.' '.ngettext('record','records',$total);
 
 
     if ($order=='date')

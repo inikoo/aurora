@@ -6,23 +6,57 @@ if(!$user->can_view('orders')){
    exit;
 }
   
+$new=false;
+if(isset($_REQUEST['new']))
+  $new=true;
+
+if($new){
+  
+  if(isset($_REQUEST['customer_key']) and is_numeric($_REQUEST['customer_key']) ){
+    $customer=new Customer($_REQUEST['customer_key']);
+    if(!$customer->id)
+      $customer=new Customer('create anonymous');
+  }else
+    $customer=new Customer('create anonymous');
+$editor=array(
+	      'Author Name'=>$user->data['User Alias'],
+	      'Author Type'=>$user->data['User Type'],
+	      'Author Key'=>$user->data['User Parent Key'],
+	      'User Key'=>$user->id
+	      );
+
+  $order_data=array('type'=>'system'
+		    ,'Customer Key'=>$customer->id
+		    ,'Order Type'=>'Order'
+		    ,'editor'=>$editor
+		    );
+
+  $order=new Order('new',$order_data);
+  if($order->error){
+    exit('error');
+  }else{
+    $js_file='order_in_process.js.php';
+    $template='order_in_process.tpl';
+  }
+
+
+}else{
 
 if(!isset($_REQUEST['id']) or !is_numeric($_REQUEST['id'])){
     header('Location: orders_server.php?msg=wrong_id');
    exit;
 }
 
+
 $order_id=$_REQUEST['id'];
 
-$_SESSION['state']['order']['id']=$order_id;
 
+$_SESSION['state']['order']['id']=$order_id;
 if(!$order=new Order($order_id)){
    header('Location: orders_server.php?msg=order_not_found');
    exit;
 
 }
- 
-
 if(!($user->can_view('stores') and in_array($order->data['Order Store Key'],$user->stores)   ) ){
   header('Location: orders_server.php');
    exit;
@@ -56,6 +90,10 @@ switch($order->get('Order Current Dispatch State')){
   
  }
 }
+
+}
+
+
 $smarty->assign('order',$order);
 $smarty->assign('customer',$customer);
 

@@ -1,10 +1,19 @@
 {include file='header.tpl'}
 <div id="bd" >
-  <div id="sub_header">
-    <span class="nav2 onleft" style="">{t}Editing Family{/t}: <span id="title_name" style="font-style: italic;">{$family->get('Product Family Name')}</span> (<span id="title_code" style="font-style: italic;">{$family->get('Product Family Code')}</span>)</span>
-    <span class="nav2 onright" style="margin-left:20px"><a href="family.php?edit=0">{t}Exit edit{/t}</a></span>
-  </div>
-
+  <div class="search_box" style="margin-top:15px">
+  <div class="general_options">
+    {foreach from=$general_options_list item=options }
+        {if $options.tipo=="url"}
+            <span onclick="window.location.href='{$options.url}'" >{$options.label}</span>
+        {else}
+            <span  id="{$options.id}" state="{$options.state}">{$options.label}</span>
+        {/if}
+    {/foreach}
+    </div>
+</div>
+<div style="clear:left;margin:0 0px">
+    <h1>{t}Editing Family{/t}: <span id="title_name">{$family->get('Product Family Name')}</span> (<span id="title_code">{$family->get('Product Family Code')}</span>)</h1>
+</div>
   <ul class="tabs" id="chooser_ul" style="clear:both">
     <li> <span class="item {if $edit=='description'}selected{/if}"  id="description">  <span> {t}Description{/t}</span></span></li>
     <li> <span class="item {if $edit=='discounts'}selected{/if}"  id="discounts">  <span> {t}Discounts{/t}</span></span></li>
@@ -26,12 +35,25 @@
     <div  class="edit_block" style="{if $edit!="description"}display:none{/if}"  id="d_description">
        <span style="display:none" id="description_num_changes"></span>
     <div id="description_errors"></div>
-    <table >
-      <tr><td>{t}Code{/t}:</td><td><input  id="code" onKeyUp="edit_family_changed(this)"    onMouseUp="edit_family_changed(this)"  onChange="edit_family_changed(this)"  name="code" changed=0 type='text' class='text' style="width:15em" MAXLENGTH="16" value="{$family->get('Product Family Code')}" ovalue="{$family->get('Product Family Code')}"  /></td></tr>
-      <tr><td>{t}Name{/t}:</td><td><input   id="name" onKeyUp="edit_family_changed(this)"    onMouseUp="edit_family_changed(this)"  onChange="edit_family_changed(this)"  name="name" changed=0 type='text'  MAXLENGTH="255" style="width:30em"  class='text' value="{$family->get('Product Family Name')}"  ovalue="{$family->get('Product Family Name')}"  /></td>
-	<td>
-	  <span class="save" id="description_save" onclick="save('description')" style="display:none">{t}Update{/t}</span><span class="reset" id="description_reset" onclick="reset('description')" style="display:none">{t}Reset{/t}</span>
-      </td></tr>
+  <div class="general_options" style="float:right">
+
+		      <span style="margin-right:10px;display:none"  onclick="save('description')" id="description_save" class="state_details">{t}Save Changes{/t}</span>
+		      <span style="margin-right:10px;display:none;" id="description_reset" onclick="reset('description')" i class="state_details">{t}Reset{/t}</span>
+		      
+		    </div>
+
+    <table class="edit">
+      <tr><td class="label">{t}Code{/t}:</td><td><input  id="code" onKeyUp="edit_family_changed(this)"    onMouseUp="edit_family_changed(this)"  onChange="edit_family_changed(this)"  name="code" changed=0 type='text' class='text' style="width:15em" MAXLENGTH="16" value="{$family->get('Product Family Code')}" ovalue="{$family->get('Product Family Code')}"  /></td></tr>
+      <tr><td class="label">{t}Name{/t}:</td><td><input   id="name" onKeyUp="edit_family_changed(this)"    onMouseUp="edit_family_changed(this)"  onChange="edit_family_changed(this)"  name="name" changed=0 type='text'  MAXLENGTH="255" style="width:30em"  class='text' value="{$family->get('Product Family Name')}"  ovalue="{$family->get('Product Family Name')}"  /></td>
+</tr>
+         <tr><td class="label">{t}Family Char{/t}:</td><td><input  id="special_char" onKeyUp="edit_family_changed(this)"    onMouseUp="edit_family_changed(this)"  onChange="edit_family_changed(this)"  name="special_char" changed="0" type='text' class='text' style="width:20em" value="{$family->get('Product Family Special Characteristic')}" ovalue="{$family->get('Product Family Special Characteristic')}"  /></td></tr>
+      <tr id="tr_details">
+	  <td class="label">{t}Detailed Description{/t}:</td>
+	  <td colspan="2"><textarea id="details" name="v_details" changed=0 olength="{$family->get('Product Family Description Length')}"  ovalue="{$family->get('Product Family Description')}"  ohash="{$family->get('Product Family Description MD5 Hash')}" rows="20" cols="100">{$family->get('Product Family Description')}</textarea>
+	  </td>
+	</tr>
+      
+
     </table>
     </div>
       <div  class="edit_block" style="margin:0;padding:0 0px;{if $edit!="pictures"}display:none{/if}"  id="d_pictures">
@@ -73,11 +95,11 @@
 	  <div id="new_product_messages" class="messages_block"></div>
 	  <table class="edit" >
 	    <tr><td class="label" style="width:7em">{t}Code{/t}:</td><td>
-		<input name="code" id="new_code"  onKeyUp="new_product_changed(this)"    onMouseUp="new_product_changed(this)"  onChange="new_product_changed(this)"  name="code" changed=0 type='text' class='text' SIZE="16"  MAXLENGTH="16" value="{$family->get_next_product_code()}"/></td></tr>
-    	<tr><td class="label" >{t}Name{/t}:</td><td><input name="name"  id="new_name"  onKeyUp="new_product_changed(this)"    onMouseUp="new_product_changed(this)"  onChange="new_product_changed(this)"  name="code" changed=0  type='text'  SIZE="35" MAXLENGTH="80" class='text' value=""   /></td></tr>
+		<input name="code" id="new_code"  onKeyUp="new_product_changed(this)"    onMouseUp="new_product_changed(this)"  onChange="new_product_changed(this)"  name="code" changed=0 type='text' class='text' SIZE="16"  MAXLENGTH="16" value="{$family->get_next_product_code()}"/>  <span style="margin-left:20px;">{t}Family Char{/t}: {$family->get('Family Special Characeristic')}</span>	</td></tr>
+    	    <tr><td class="label" >{t}Name{/t}:</td><td><input name="name"  id="new_name"  onKeyUp="new_product_changed(this)"    onMouseUp="new_product_changed(this)"  onChange="new_product_changed(this)"  name="code" changed=0  type='text'  SIZE="35" MAXLENGTH="80" class='text' value=""   /></td></tr>
 	    <tr><td class="label">{t}Special Char{/t}:</td><td><input name="sdescription"  id="new_sdescription"  onKeyUp="new_product_changed(this)"    onMouseUp="new_product_changed(this)"  onChange="new_product_changed(this)"  name="code" changed=0  type='text'  SIZE="35" MAXLENGTH="32" class='text' /></td></tr>
 	    <tr><td class="label">{t}Units/Case{/t}:</td><td><input name="units" id="new_units"  onKeyUp="new_product_changed(this)"    onMouseUp="new_product_changed(this)"  onChange="new_product_changed(this)" SIZE="4" type='text'  MAXLENGTH="20" class='text' /><span style="margin-left:20px;">{t}Type of Unit{/t}:</span>	
-	 
+		
 <div class="options" style="margin:5px 0;display:inline">
   {foreach from=$units_tipo item=unit_tipo key=part_id }
 <span {if $unit_tipo.selected}class="selected"{/if} id="unit_tipo_{$unit_tipo.name}">{$unit_tipo.fname}</span>
@@ -220,7 +242,16 @@
 
 
 
-  
+ <div id="the_table1" class="data_table" style=" clear:both">
+  <span class="clean_table_title">{t}History{/t}</span>
+  <div  id="clean_table_caption1" class="clean_table_caption"  style="clear:both;">
+    <div style="float:left;"><div id="table_info1" class="clean_table_info"><span id="rtext1"></span> <span class="filter_msg"  id="filter_msg1"></span></div></div>
+    <div id="clean_table_filter1" class="clean_table_filter" style="display:none">
+      <div class="clean_table_info"><span id="filter_name1">{$filter_name}</span>: <input style="border-bottom:none" id='f_input1' value="{$filter_value}" size=10/><div id='f_container'></div></div></div>
+    <div class="clean_table_controls" style="" ><div><span  style="margin:0 5px" id="paginator1"></span></div></div>
+  </div>
+  <div  id="table1"   class="data_table_container dtable btable "> </div>
+</div> 
   
  
  
@@ -228,4 +259,25 @@
 
   
 </div> 
+<div id="filtermenu0" class="yuimenu">
+  <div class="bd">
+    <ul class="first-of-type">
+      <li style="text-align:left;margin-left:10px;border-bottom:1px solid #ddd">{t}Filter options{/t}:</li>
+      {foreach from=$filter_menu item=menu }
+      <li class="yuimenuitem"><a class="yuimenuitemlabel" onClick="change_filter('{$menu.db_key}','{$menu.label}',0)"> {$menu.menu_label}</a></li>
+      {/foreach}
+    </ul>
+  </div>
+</div>
+<div id="rppmenu0" class="yuimenu">
+  <div class="bd">
+    <ul class="first-of-type">
+       <li style="text-align:left;margin-left:10px;border-bottom:1px solid #ddd">{t}Rows per Page{/t}:</li>
+      {foreach from=$paginator_menu item=menu }
+      <li class="yuimenuitem"><a class="yuimenuitemlabel" onClick="change_rpp({$menu},0)"> {$menu}</a></li>
+      {/foreach}
+    </ul>
+  </div>
+</div>
+
 {include file='footer.tpl'}

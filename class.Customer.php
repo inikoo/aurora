@@ -61,7 +61,12 @@ class Customer extends DB_Table{
       $this->get_data('id',$arg1);
        return;
     }
+    if (preg_match('/create anonymous|create anonimous$/i',$arg1)) {
+      $this->create_anonymous();
+      return;
+    }
     
+
     if($arg1=='new'){
       $this->find($arg2,'create');
        return;
@@ -112,7 +117,7 @@ class Customer extends DB_Table{
        $raw_data['Customer Name']=$staff->data['Staff Name'];
      }else{
        $contact=new Contact('create anonymous');
-  $_raw_data=$contact->data;
+       $_raw_data=$contact->data;
        foreach($raw_data as $key=>$value){
 	 $raw_data[preg_replace('/Contact/','Customer',$key)]=$value;
        }
@@ -636,6 +641,21 @@ class Customer extends DB_Table{
 
 
    }
+
+
+ private function create_anonymous() {
+
+   $contact=new Contact('create anonymous');
+   $_raw_data=$contact->data;
+   foreach($raw_data as $key=>$value){
+     $raw_data[preg_replace('/Contact/','Customer',$key)]=$value;
+   }
+    $raw_data['Customer Staff Key']=0;
+    $raw_data['Customer Main Contact Key']=$contact->id;
+    $raw_data['Customer Name']=_('Unknown Customer');
+    $this->create($raw_data);
+ }
+
 
 
    function create_old($data=false,$args){

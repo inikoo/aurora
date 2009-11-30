@@ -39,3 +39,5 @@ table.form_state {width:300px;font-size:80%}
 table.form_state td{text-align:center;border-top:1px solid #ccc}
 table.form_state td.aright{text-align:right}
 table.form_state td.aleft{text-align:left}
+.disabled{cursor:default;color:#ddd}
+.disabled:hover{cursor:default;color:#ddd}
