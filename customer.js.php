@@ -217,6 +217,13 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	};
     });
 
+
+function take_order(){
+    location.href='order.php?new=1&customer_key=<?php echo $_SESSION['state']['customer']['id']?>'; 
+
+
+}
+
 var oMenu;
 function init(){
 
@@ -268,6 +275,10 @@ Event.addListener('customer_search', "keydown", submit_search_on_enter,search_da
 dialog_note = new YAHOO.widget.Dialog("dialog_note", {context:["note","tr","tl"]  ,visible : false,close:false,underlay: "none",draggable:false});
 dialog_note.render();
 Event.addListener("note", "click", dialog_note.show,dialog_note , true);
+Event.addListener("take_order", "click", take_order , true);
+
+
+
 dialog_long_note = new YAHOO.widget.Dialog("dialog_long_note", {context:["customer_data","tl","tl"] ,visible : false,close:false,underlay: "none",draggable:false});
 dialog_long_note.render();
 Event.addListener("long_note", "click", dialog_long_note.show,dialog_long_note , true);

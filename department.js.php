@@ -399,3 +399,18 @@ YAHOO.util.Event.onContentReady("info_period_menu", function () {
 	 oMenu.subscribe("show", oMenu.focus);
 	 YAHOO.util.Event.addListener("info_period", "click", oMenu.show, null, oMenu);
     });
+
+YAHOO.util.Event.onContentReady("rppmenu0", function () {
+
+	 var oMenu = new YAHOO.widget.Menu("rppmenu0", { context:["rtext_rpp0","tl", "tr"]  });
+	 oMenu.render();
+	 oMenu.subscribe("show", oMenu.focus);
+	 YAHOO.util.Event.addListener("rtext_rpp0", "click", oMenu.show, null, oMenu);
+    });
+
+YAHOO.util.Event.onContentReady("filtermenu0", function () {
+	 var oMenu = new YAHOO.widget.Menu("filtermenu0", { context:["filter_name0","tr", "br"]  });
+	 oMenu.render();
+	 oMenu.subscribe("show", oMenu.focus);
+	 YAHOO.util.Event.addListener("filter_name0", "click", oMenu.show, null, oMenu);
+    });

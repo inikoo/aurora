@@ -87,8 +87,14 @@
 	
       </div>
        <div  class="edit_block" style="margin:0;padding:0 0px;{if $edit!="discounts"}display:none{/if}"  id="d_discounts">
-	<div  class="new_item_dialog"  id="new_deal_dialog" style="display:none">
+	
+
+
+	 <div  class="new_item_dialog"  id="new_deal_dialog" style="display:none">
 	   <div id="new_deal_messages" class="messages_block"></div>
+	   
+
+
 	   <table class="edit" >
 	     <tr><td>{t}Deal Name{/t}:</td><td><input  id="new_deal_name" onKeyUp="new_deal_changed(this)"    onMouseUp="new_deal_changed(this)"  onChange="new_deal_changed(this)"  changed=0 type='text' class='text' style="width:15em" MAXLENGTH="16" value="" /></td></tr>
 	     <tr><td>{t}Deal Description{/t}:</td><td><input   id="new_deal_description" onKeyUp="new_deal_changed(this)"    onMouseUp="new_deal_changed(this)"  onChange="new_deal_changed(this)" changed=0 type='text'  MAXLENGTH="255" style="width:30em"  class='text' value="" /></td>
@@ -179,10 +185,19 @@
       </div>
       
       <div  class="edit_block" style="{if $edit!="departments"}display:none{/if}"  id="d_departments">
-      
-      <div  class="new_item_dialog"  id="new_department_dialog" style="display:none"  >
+       <div class="general_options" style="float:right">
+	<span   style="margin-right:10px"  id="add_department" class="state_details" >Create Department</span>
+	<span  style="margin-right:10px;display:none"  id="save_new_department" class="state_details">{t}Save{/t}</span>
+	<span style="margin-right:10px;display:none" id="close_add_department" class="state_details">{t}Close Dialog{/t}</span>
 	
+      </div>
+      <div  class="new_item_dialog"  id="new_department_dialog" style="display:none"  >
+
       <div id="new_department_messages" class="messages_block"></div>
+
+      
+
+
 	  <table class="edit">
 	    <tr><td>{t}Code{/t}:</td><td><input  id="new_code" onKeyUp="new_dept_changed(this)"    onMouseUp="new_dept_changed(this)"  onChange="new_dept_changed(this)"  name="code" changed=0 type='text' class='text' style="width:15em" MAXLENGTH="16" value="" /></td></tr>
 	    <tr><td>{t}Full Name{/t}:</td><td><input   id="new_name" onKeyUp="new_dept_changed(this)"    onMouseUp="new_dept_changed(this)"  onChange="new_dept_changed(this)"  name="name" changed=0 type='text'  MAXLENGTH="255" style="width:30em"  class='text' value="" /></td>
@@ -192,13 +207,7 @@
 	
 	<div   class="data_table" sxtyle="margin:25px 20px">
 	  <span class="clean_table_title">{t}Departments{/t}</span>
-	  <table class="options" style="float:right;padding:0;margin:0">
-	    <tr>
-	      <td  id="add_department">Add Department</td>
-	      <td  style="display:none" id="save_new_department">Save New Department</td>
-	      <td  style="display:none" id="cancel_add_department">Cancel</td>
-	    </tr>
-	  </table>
+	 
 	  <div  class="clean_table_caption"  style="clear:both;">
 	    <div style="float:left;"><div id="table_info0" class="clean_table_info"><span id="rtext0"></span> <span class="rtext_rpp" id="rtext_rpp0"></span> <span class="filter_msg"  id="filter_msg0"></span></div></div>
 	    <div class="clean_table_filter" style="display:none" id="clean_table_filter0"><div class="clean_table_info"><span id="filter_name0">{$filter_name0}</span>: <input style="border-bottom:none" id='f_input0' value="{$filter_value0}" size=10/><div id='f_container0'></div></div></div>

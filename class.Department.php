@@ -308,7 +308,7 @@ class Department extends DB_Table {
 
             if ($a1==$this->data['Product Department Code']) {
                 $this->updated=true;
-                $this->newvalue=$a1;
+                $this->new_value=$a1;
                 return;
 
             }
@@ -339,7 +339,7 @@ class Department extends DB_Table {
             if (mysql_query($sql)) {
                 $this->msg=_('Department code updated');
                 $this->updated=true;
-                $this->newvalue=$a1;
+                $this->new_value=$a1;
 
                 $this->data['Product Department Code']=$a1;
                 $editor_data=$this->get_editor_data();
@@ -375,7 +375,7 @@ class Department extends DB_Table {
 
             if ($a1==$this->data['Product Department Name']) {
                 $this->updated=true;
-                $this->newvalue=$a1;
+                $this->new_value=$a1;
                 return;
 
             }
@@ -402,7 +402,7 @@ class Department extends DB_Table {
             if (mysql_query($sql)) {
                 $this->msg=_('Department name updated');
                 $this->updated=true;
-                $this->newvalue=$a1;
+                $this->new_value=$a1;
                 $this->data['Product Department Name']=$a1;
                 $editor_data=$this->get_editor_data();
                 $sql=sprintf("insert into `History Dimension`  (`Subject`,`Subject Key`,`Action`,`Direct Object`,`Direct Object Key`,`Preposition`,`Indirect Object`,`Indirect Object Key`,`History Abstract`,`History Details`,`History Date`,`Author Name`,`Author Key`) values (%s,%d,%s,%s,%d,%s,%s,%d,%s,%s,%s,%s,%s)   ",

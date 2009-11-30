@@ -16,7 +16,12 @@ if(!isset($_REQUEST['tipo']))
     exit;
   }
 
-
+$editor=array(
+	      'Author Name'=>$user->data['User Alias'],
+	      'Author Type'=>$user->data['User Type'],
+	      'Author Key'=>$user->data['User Parent Key'],
+	      'User Key'=>$user->id
+	      );
 
 $tipo=$_REQUEST['tipo'];
 switch($tipo){
@@ -118,19 +123,20 @@ case('edit_products'):
    
  }
 function create_store(){
+  global $editor;
   if(isset($_REQUEST['name'])  and  isset($_REQUEST['code'])   ){
     $store=new Store('find',array(
-					      'Store Code'=>$_REQUEST['code']
-					      ,'Store Name'=>$_REQUEST['name']
-					      
+				  'Store Code'=>$_REQUEST['code']
+				  ,'Store Name'=>$_REQUEST['name']
+				  ,'editor'=>$editor
 				  ),'create');
     if(!$store->new){
-       $state='400';
+      $state='400';
     }else{
       
       $state='200';
     }
-     $response=array('state'=>$state,'msg'=>$store->msg);
+    $response=array('state'=>$state,'msg'=>$store->msg);
   }
   
   else
@@ -138,12 +144,14 @@ function create_store(){
   echo json_encode($response);
 }
 function create_department(){
+  global $editor;
  if(isset($_REQUEST['name'])  and  isset($_REQUEST['code'])   ){
      $store_key=$_SESSION['state']['store']['id'];
      $department=new Department('find',array(
 					      'Product Department Code'=>$_REQUEST['code']
 					      ,'Product Department Name'=>$_REQUEST['name']
 					      ,'Product Department Store Key'=>$store_key
+					      ,'editor'=>$editor
 					       ),'create');
      if(!$department->new){
        $state='400';
@@ -157,6 +165,7 @@ function create_department(){
    echo json_encode($response);
 }
 function create_family(){
+  global $editor;
  if(isset($_REQUEST['name'])  and  isset($_REQUEST['code'])   ){
      $department_key=$_SESSION['state']['department']['id'];
      
@@ -167,7 +176,7 @@ function create_family(){
 				       ,'Product Family Description'=>$_REQUEST['description']
 				       ,'Product Family Special Characteristic'=>$_REQUEST['special_char']
 				       ,'Product Family Main Department Key'=>$department_key
-
+				       ,'editor'=>$editor
 				       ));
      if(!$family->new){
        $state='401';
@@ -268,10 +277,12 @@ function delete_department(){
 }
 function edit_store(){
   $store=new Store($_REQUEST['id']);
+  global $editor;
+  $store->editor=$editor;
    $store->update($_REQUEST['key'],stripslashes(urldecode($_REQUEST['newvalue'])),stripslashes(urldecode($_REQUEST['oldvalue'])));
      
    if($store->updated){
-     $response= array('state'=>200,'newvalue'=>$store->newvalue,'key'=>$_REQUEST['key']);
+     $response= array('state'=>200,'newvalue'=>$store->new_value,'key'=>$_REQUEST['key']);
 	  
    }else{
      $response= array('state'=>400,'msg'=>$store->msg,'key'=>$_REQUEST['key']);
@@ -280,13 +291,16 @@ function edit_store(){
 }
 function edit_department(){
   $department=new Department($_REQUEST['id']);
-   $department->update($_REQUEST['key'],stripslashes(urldecode($_REQUEST['newvalue'])),stripslashes(urldecode($_REQUEST['oldvalue'])));
+  global $editor;
+  $department->editor=$editor;
+
+ $department->update($_REQUEST['key'],stripslashes(urldecode($_REQUEST['newvalue'])),stripslashes(urldecode($_REQUEST['oldvalue'])));
    
    //   $response= array('state'=>400,'msg'=>print_r($_REQUEST);
    //echo json_encode($response);  
    // exit;
    if($department->updated){
-     $response= array('state'=>200,'newvalue'=>$department->newvalue,'key'=>$_REQUEST['key']);
+     $response= array('state'=>200,'newvalue'=>$department->new_value,'key'=>$_REQUEST['key']);
 	  
    }else{
      $response= array('state'=>400,'msg'=>$department->msg,'key'=>$_REQUEST['key']);
@@ -296,7 +310,8 @@ function edit_department(){
 }
 function edit_product(){
   $product=new product('pid',$_REQUEST['id']);
- 
+  global $editor;
+ $product->editor=$editor;
    $translator=array(
 		     'name'=>'Product Name',
 		     'sdescription'=>'Product Special Characteristic',
@@ -326,11 +341,13 @@ function edit_product(){
 
 function edit_family(){
  $family=new family($_REQUEST['id']);
-   $family->update($_REQUEST['key'],stripslashes(urldecode($_REQUEST['newvalue'])),stripslashes(urldecode($_REQUEST['oldvalue'])));
-   
+ global $editor;
+ $family->editor=$editor;
+ $family->update($_REQUEST['key'],stripslashes(urldecode($_REQUEST['newvalue'])),stripslashes(urldecode($_REQUEST['oldvalue'])));
+ 
 
    if($family->updated){
-     $response= array('state'=>200,'newvalue'=>$family->newvalue,'key'=>$_REQUEST['key']);
+     $response= array('state'=>200,'newvalue'=>$family->new_value,'key'=>$_REQUEST['key']);
 	  
    }else{
      $response= array('state'=>400,'msg'=>$family->msg,'key'=>$_REQUEST['key']);
@@ -748,9 +765,10 @@ $adata[]=array(
 	       'rrp_info'=>$customer_margin,
 
 	       'delete'=>$delete,
-	       'delete_type'=>$delete_type
-
-		   );
+	       'delete_type'=>$delete_type,
+	       'go'=>sprintf("<a href='product.php?pid=%d&edit=1'><img src='art/icons/page_go.png' alt='go'></a>",$row['Product ID'])
+	       
+	       );
   }
 mysql_free_result($res);
   $response=array('resultset'=>
@@ -922,7 +940,8 @@ $adata[]=array(
 	       'code'=>$row['Product Family Code'],
 	       'name'=>$row['Product Family Name'],
 	       'delete'=>$delete,
-	       'delete_type'=>$delete_type
+	       'delete_type'=>$delete_type,
+	       'go'=>sprintf("<a href='family.php?id=%d&edit=1'><img src='art/icons/page_go.png' alt='go'></a>",$row['Product Family Key'])
 
 		   );
   }
@@ -1091,6 +1110,7 @@ mysql_free_result($result);
 		    ,'name'=>$row['Store Name']
 		    ,'delete'=>$delete
 		    ,'delete_type'=>$delete_type
+		    ,'go'=>sprintf("<a href='store.php?id=%d&edit=1'><img src='art/icons/page_go.png' alt='go'></a>",$row['Store Key'])
 		  );
   }
 
@@ -1271,8 +1291,9 @@ function list_departments_for_edition(){
 		     'name'=>$row['Product Department Name'],
 		     'code'=>$row['Product Department Code'],
 		     'delete'=>$delete,
-		     'delete_type'=>$delete_type
-		   );
+		     'delete_type'=>$delete_type,
+		     'go'=>sprintf("<a href='department.php?id=%d&edit=1'><img src='art/icons/page_go.png' alt='go'></a>",$row['Product Department Key'])
+		     );
    }
  
 mysql_free_result($res);

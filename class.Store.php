@@ -371,7 +371,7 @@ class Store extends DB_Table{
 
       if(_trim($a1)==$this->data['Store Code']){
 	$this->updated=true;
-	$this->newvalue=$a1;
+	$this->new_value=$a1;
 	return;
        
       }
@@ -399,7 +399,7 @@ class Store extends DB_Table{
 		   );
       if(mysql_query($sql)){
 	$this->msg=_('Store code updated');
-	$this->updated=true;$this->newvalue=$a1;
+	$this->updated=true;$this->new_value=$a1;
 	$this->data['Store Code']=$a1;
 	$editor_data=$this->get_editor_data();
 	$sql=sprintf("insert into `History Dimension`  (`Subject`,`Subject Key`,`Action`,`Direct Object`,`Direct Object Key`,`Preposition`,`Indirect Object`,`Indirect Object Key`,`History Abstract`,`History Details`,`History Date`,`Author Name`,`Author Key`) values (%s,%d,%s,%s,%d,%s,%s,%d,%s,%s,%s,%s,%s)   ",
@@ -412,8 +412,8 @@ class Store extends DB_Table{
 		     "''",
 		     "''",
 		     0,
-		     prepare_mysql(_('Store Code Changed').' ('.$this->get('Store Name').')' ),
-		     prepare_mysql(_('Store')." ".$this->data['Store Name']." "._('code changed from').' '.$old_value." "._('to').' '. $this->get('Store Code')  ),
+		     prepare_mysql(_('Store Code Changed').' ('.$this->get('Store Code').')' ),
+		     prepare_mysql(_('Store')." ".$this->data['Store Name']." "._('changed code from').' '.$old_value." "._('to').' '. $this->get('Store Code')  ),
 		     prepare_mysql($editor_data['date']),
 		     prepare_mysql($editor_data['author']),
 		     $editor_data['author_key']
@@ -434,7 +434,7 @@ class Store extends DB_Table{
      
       if(_trim($a1)==$this->data['Store Name']){
 	$this->updated=true;
-	$this->newvalue=$a1;
+	$this->new_value=$a1;
 	return;
        
       }
@@ -464,7 +464,7 @@ class Store extends DB_Table{
 		   );
       if(mysql_query($sql)){
 	$this->msg=_('Store name updated');
-	$this->updated=true;$this->newvalue=$a1;
+	$this->updated=true;$this->new_value=$a1;
 	$this->data['Store Name']=$a1;
 	$editor_data=$this->get_editor_data();
 	$sql=sprintf("insert into `History Dimension`  (`Subject`,`Subject Key`,`Action`,`Direct Object`,`Direct Object Key`,`Preposition`,`Indirect Object`,`Indirect Object Key`,`History Abstract`,`History Details`,`History Date`,`Author Name`,`Author Key`) values (%s,%d,%s,%s,%d,%s,%s,%d,%s,%s,%s,%s,%s)   ",

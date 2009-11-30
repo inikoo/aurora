@@ -31,7 +31,7 @@ if(isset($_REQUEST['id']) and is_numeric($_REQUEST['id']) ){
   $_SESSION['state']['customer']['id']=$_REQUEST['id'];
   $customer_id=$_REQUEST['id'];
 }else{
-  $customer_id=$_SESSION['state']['company']['id'];
+  $customer_id=$_SESSION['state']['customer']['id'];
 }
 
 
