@@ -9,10 +9,14 @@ Class CurrencyExchange  {
     
     if($action=='get'){
       $this->currency_pair=$currency_pair;
+      if($date=='now'){
+      return $this->current_exchange();
+      }
+      
       $this->parse_dates($date,$date2);
       $this->get_exchange();
       return $this->$exchange;
-      return;
+     
     }    
     if($action=='load'){
        if($this->is_currency_pair($currency_pair)){
@@ -84,7 +88,7 @@ Class CurrencyExchange  {
 
 
   function get_data_scalar($load_on_unknown=false){
-    $this->exchange=false
+    $this->exchange=false;
      $sql=sprintf("select `Exchange` from kbase.`History Currency Exchange Dimension` where `Currency Pair`=%s and `Date`=DATE(%s)     "
 		  ,prepare_mysql($this->currency_pair)
 		  ,prepare_mysql($this->from));
@@ -112,8 +116,8 @@ Class CurrencyExchange  {
   
   function parse_dates($date,$date2){
      if(!$date){
-      $this->from=date('Y-d-m');
-      $this->to=date('Y-d-m');
+      $this->from=date('Y-m-d');
+      $this->to=date('Y-m-d');
     }else{
       $this->from=$date;
       if(!$date2)
@@ -131,14 +135,30 @@ Class CurrencyExchange  {
 
   function load_currency_exchange(){
     $random=md5(mt_rand());
-    $tmp_file="tmp/currency_$random.txt";
+    $tmp_file="app_files/tmp/currency_$random.txt";
     $days=100;
-
+print_r($this);
     $from=date("Ymd",strtotime($this->from));
     $to=date("Ymd",strtotime($this->to));
 
-
+print sprintf("./mantenence/scripts/get_currency_exchange.py  %s %s %s=X > %s",$from,$to,$this->currency_pair,$tmp_file);
     exec(sprintf("./mantenence/scripts/get_currency_exchange.py  %s %s %s=X > %s",$from,$to,$this->currency_pair,$tmp_file));
+
+$row = 1;
+$handle = fopen($tmp_file, "r");
+while (($data = fgetcsv($handle, 1000, ",")) !== FALSE) {
+    $num = count($data);
+    $pair=preg_replace('/=X/','',$data[0]);
+    $date=date("Y-m-d",strtotime($data[1]));
+    $exchange=$data[2];
+
+    $sql=sprintf("insert into kbase.`History Currency Exchange Dimension` values (%s,%s,%f)  "
+    ,prepare_mysql($date) ,prepare_mysql($pair),$exchange);
+    print "$sql\n";
+    mysql_query($sql);
+}
+fclose($handle);
+unset($tmp_file);
 
 
   }
@@ -147,9 +167,29 @@ Class CurrencyExchange  {
     
     if(!preg_match('/^[a-z]{6}$/i',$currency_pair))
       return false;
-    $currency1=substr($currency_pair)
-    
+    $this->currency1=substr($currency_pair,3);
+    $this->currency2=substr($currency_pair,3,3);
+    return true;
   }
+
+function current_exchange(){
+$url = "http://quote.yahoo.com/d/quotes.csv?s=". $this->currency1 . $this->currency2 . "=X". "&f=l1&e=.csv";
+  print $url;
+  
+  $handle = fopen($url, "r");
+  $contents = fread($handle,2000);
+  fclose($handle);
+  if(is_numeric($contents) and $contents>0){
+    $exchange_rate=$contents;
+    $sql=sprintf("insert into kbase.`History Currency Exchange Dimension` values (%s,%s,%f) on duplicate update `Exchange`=%f "
+    ,prepare_mysql(date('Y-m-d')) ,prepare_mysql($pair),$exchange,$exchange);
+    print "$sql\n";
+    mysql_query($sql);
+      
+return $exchange;
+  }
+return $false;
+
 
 }
 
