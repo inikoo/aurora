@@ -84,18 +84,28 @@ class Order extends DB_Table{
 
 
     case('system'):
+    global $myconf;
       // print_r($data);
       $this->data ['Order Type'] = $data ['Order Type'];
       $this->get_data_from_customer($data['Customer Key']);
       $this->data ['Order Current Dispatch State'] = 'In Process';
       $this->data ['Order Current Payment State'] = 'Waiting Payment';
       $this->data ['Order Current XHTML State'] = 'In Process';
-      $this->data ['Order Sale Reps IDs'] =$this->editor['User Key'];
+      $this->data ['Order Sale Reps IDs'] =array($this->editor['User Key']);
       $this->data ['Order For'] = 'Customer';
       $this->data ['Order Date'] = date('Y-m-d H:i:s');
       $this->data ['Order Customer Message']='';
       $this->data ['Order Original Data MIME Type']='none';
       $this->data ['Order Original Data']='';
+      $this->data ['Order Original Metadata']='';
+              $this->data ['Order Currency Exchange']=1;
+      if($this->data ['Order Currency']!=$myconf['currency_code']){
+       if($ce=new CurrencyExchange('get',$this->data ['Order Currency'].$this->data ['Order Currency'],'now'))
+        $this->data ['Order Currency Exchange']=$ce;
+       }
+      
+        
+
       $this->data ['Order Main Source Type']='Call';
       if(isset($data['Order Main Source Type']) and preg_match('/^(Internet|Call|Store|Unknown|Email|Fax)$/i'))
 	$this->data ['Order Main Source Type']=$data['Order Main Source Type'];
@@ -2122,7 +2132,7 @@ function get_data_from_customer($customer_key,$store_key=false){
     return;
  
   $ship_to= new Ship_To($customer->data['Customer Main Ship To Key']);
-
+$this->data ['Order XHTML Ship Tos']=$ship_to->data['Ship To XHTML Address'];
   $this->billing_address=new Address($customer->data['Customer Main Address Key']);
   $this->data ['Order Customer Key'] = $customer->id;
   $this->data ['Order Customer Name'] = $customer->data[ 'Customer Name' ];

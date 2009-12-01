@@ -7,26 +7,27 @@ include_once('../../class.Product.php');
 include_once('../../class.Supplier.php');
 include_once('../../class.Part.php');
 include_once('../../class.SupplierProduct.php');
+include_once('../../class.CurrencyExchange.php');
+
 error_reporting(E_ALL);
-
-
+date_default_timezone_set('Europe/London');
+include_once('../../set_locales.php');
+require('../../locale.php');
+$_SESSION['locale_info'] = localeconv();
 
 $con=@mysql_connect($dns_host,$dns_user,$dns_pwd );
 
 if(!$con){print "Error can not connect with database server\n";exit;}
-$dns_db='dw';
+//$dns_db='dw';
 $db=@mysql_select_db($dns_db, $con);
 if (!$db){print "Error can not access the database\n";exit;}
   
 
 require_once '../../common_functions.php';
-mysql_query("SET time_zone ='UTC'");
+mysql_query("SET time_zone ='+0:00'");
 mysql_query("SET NAMES 'utf8'");
 require_once '../../conf/conf.php';           
 date_default_timezone_set('Europe/London');
-
-
-
 
 
 $software='Get_Products.php';
@@ -35,9 +36,12 @@ $version='V 1.0';
 $Data_Audit_ETL_Software="$software $version";
 
 
-$start_date='2003-01-07';
+$start_date='2003-01-01';
 
-$end_date='2012-01-04';
+$end_date=date('Y-m-d');
+chdir('../../');
+$ce=new CurrencyExchange('load','GBPEUR',$start_date,$end_date);
+exit;
 
 
 //./get_currency_exchange.py   20030101 20090701 GBPEUR=X >> currency_dat
