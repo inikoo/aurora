@@ -18,13 +18,13 @@ if($new){
       $customer=new Customer('create anonymous');
   }else
     $customer=new Customer('create anonymous');
-$editor=array(
-	      'Author Name'=>$user->data['User Alias'],
-	      'Author Type'=>$user->data['User Type'],
-	      'Author Key'=>$user->data['User Parent Key'],
-	      'User Key'=>$user->id
-	      );
-
+  $editor=array(
+		'Author Name'=>$user->data['User Alias'],
+		'Author Type'=>$user->data['User Type'],
+		'Author Key'=>$user->data['User Parent Key'],
+		'User Key'=>$user->id
+		);
+  
   $order_data=array('type'=>'system'
 		    ,'Customer Key'=>$customer->id
 		    ,'Order Type'=>'Order'
@@ -38,6 +38,30 @@ $editor=array(
     $js_file='order_in_process.js.php';
     $template='order_in_process.tpl';
   }
+  $_SESSION['state']['order']['id']=$order->id;
+  $_SESSION['state']['order']['store_key']=$order->data['']
+  $smarty->assign('show_all',false);
+
+  $tipo_filter=$_SESSION['state']['products']['table']['f_field'];
+  $smarty->assign('filter',$tipo_filter);
+  $smarty->assign('filter_value',$_SESSION['state']['products']['table']['f_value']);
+  $filter_menu=array(
+		   'code'=>array('db_key'=>'code','menu_label'=>'Code starting with  <i>x</i>','label'=>'Code')
+		   ,'family'=>array('db_key'=>'family','menu_label'=>'Family starting with  <i>x</i>','label'=>'Code')
+		   ,'name'=>array('db_key'=>'name','menu_label'=>'Name starting with  <i>x</i>','label'=>'Code')
+
+		     );
+  $smarty->assign('filter_menu',$filter_menu);
+  $smarty->assign('filter_name',$filter_menu[$tipo_filter]['label']);
+
+
+$paginator_menu=array(10,25,50,100);
+$smarty->assign('paginator_menu',$paginator_menu);
+  
+  
+
+
+
 
 
 }else{

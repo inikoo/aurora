@@ -296,12 +296,6 @@ $smarty->assign('home',$product_home);
  $smarty->assign('store',$store);
  $smarty->assign('department',$department);
 
-// $smarty->assign('family_id',$family->id);
-
-// $smarty->assign('family_description',$family->data['description']);
-
-// $smarty->assign('units_tipo',$_units_tipo);
-
 
 $smarty->assign('filter','code');
 $smarty->assign('filter_name',_('Product code'));

@@ -604,7 +604,21 @@ if(!$user->can_view('orders'))
    echo json_encode($response);
    break;
  case('transactions_to_process'):
-   transactions_to_process();
+   
+   if(isset( $_REQUEST['show_all']) and preg_match('/^(yes|no)$/',$_REQUEST['show_all'])  ){
+    
+     if($_REQUEST['show_all']=='yes')
+       $show_all=true;
+     else
+       $show_all=false;
+     $_SESSION['state']['order']['show_all']=$show_all;
+   }else
+     $show_all=$_SESSION['state']['order']['show_all'];
+  
+   if($show_all)
+     products_to_sell();
+   else
+     transactions_to_process();
   
    break;
  case('transactions_invoice'):
@@ -2473,6 +2487,259 @@ mysql_free_result($res);
 		   );
    echo json_encode($response);
 }
+
+
+
+
+function products_to_sell(){
+  if(isset( $_REQUEST['id']) and is_numeric( $_REQUEST['id'])){
+     $order_id=$_REQUEST['id'];
+     $_SESSION['state']['order']['id']=$order_id;
+  }else
+     $order_id=$_SESSION['state']['order']['id'];
+
+   if(isset( $_REQUEST['store_key']) and is_numeric( $_REQUEST['store_key'])){
+     $store_key=$_REQUEST['store_key'];
+     $_SESSION['state']['order']['store_key']=$store_key;
+   }else
+     $store_key=$_SESSION['state']['order']['store_key'];
+$conf=$_SESSION['state']['products']['table'];
+  if (isset( $_REQUEST['sf']))
+        $start_from=$_REQUEST['sf'];
+    else
+        $start_from=$conf['sf'];
+    if (!is_numeric($start_from))
+        $start_from=0;
+
+    if (isset( $_REQUEST['nr'])) {
+        $number_results=$_REQUEST['nr'];
+
+        if ($start_from>0) {
+            $page=floor($start_from/$number_results);
+            $start_from=$start_from-$page;
+        }
+
+    }      else
+        $number_results=$conf['nr'];
+   
+  if (isset( $_REQUEST['o']))
+        $order=$_REQUEST['o'];
+    else
+        $order=$conf['order'];
+
+    if (isset( $_REQUEST['od']))
+        $order_dir=$_REQUEST['od'];
+    else
+        $order_dir=$conf['order_dir'];
+    $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
+
+
+
+    if (isset( $_REQUEST['where']))
+        $where=addslashes($_REQUEST['where']);
+    else
+        $where=$conf['where'];
+
+
+    if (isset( $_REQUEST['f_field']))
+        $f_field=$_REQUEST['f_field'];
+    else
+        $f_field=$conf['f_field'];
+
+    if (isset( $_REQUEST['f_value']))
+        $f_value=$_REQUEST['f_value'];
+    else
+        $f_value=$conf['f_value'];
+
+
+    if (isset( $_REQUEST['tableid']))
+        $tableid=$_REQUEST['tableid'];
+    else
+        $tableid=0;
+
+   $_SESSION['state']['products']['table']=array(
+						 'order'=>$order
+						 ,'order_dir'=>$order_direction
+						 ,'nr'=>$number_results
+						 ,'sf'=>$start_from
+						 ,'where'=>$where
+						 ,'f_field'=>$f_field
+						 ,'f_value'=>$f_value
+                                                 );
+   
+     $_order=$order;
+    $_dir=$order_direction;
+    $filter_msg='';
+    $wheref='';
+    if ($f_field=='code' and $f_value!='')
+        $wheref.=" and  `Product Code` like '".addslashes($f_value)."%'";
+    elseif($f_field=='name' and $f_value!='')
+    $wheref.=" and  `Product Name` like '%".addslashes($f_value)."%'";
+
+    $sql="select count(*) as total from `Product Dimension`  $where $wheref   ";
+    //print_r($conf);exit;
+    // print $sql;
+    $res=mysql_query($sql);
+    if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+        $total=$row['total'];
+    }
+    if ($wheref=='') {
+        $filtered=0;
+        $total_records=$total;
+    } else {
+        $sql="select count(*) as total from `Product Dimension`  $where   ";
+        $res=mysql_query($sql);
+        if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+            $total_records=$row['total'];
+            $filtered=$total_records-$total;
+        }
+
+    }
+
+
+    $rtext=$total_records." ".ngettext('product','products',$total_records);
+    if ($total_records>$number_results)
+        $rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
+    else
+        $rtext_rpp=' '._('(Showing all)');
+
+    if ($total==0 and $filtered>0) {
+        switch ($f_field) {
+        case('code'):
+            $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any product with code like ")." <b>".$f_value."*</b> ";
+            break;
+        case('name'):
+            $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any product with name like ")." <b>".$f_value."*</b> ";
+            break;
+        }
+    }
+    elseif($filtered>0) {
+        switch ($f_field) {
+        case('code'):
+            $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total "._('products with code like')." <b>".$f_value."*</b> <span onclick=\"remove_filter($tableid)\" id='remove_filter$tableid' class='remove_filter'>"._('Show All')."</span>";
+            break;
+        case('name'):
+            $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total "._('products with name like')." <b>".$f_value."*</b> <span onclick=\"remove_filter($tableid)\" id='remove_filter$tableid' class='remove_filter'>"._('Show All')."</span>";
+            break;
+        }
+    }
+    else
+        $filter_msg='';
+
+    $_order=$order;
+    $_order_dir=$order_dir;
+    $order='`Product Code File As`';
+    if ($order=='stock')
+      $order='`Product Availability`';
+    if ($order=='code')
+      $order='`Product Code File As`';
+    else if ($order=='name')
+      $order='`Product Name`';
+    else if ($order=='available_for')
+      $order='`Product Available Days Forecast`';
+    elseif($order=='family') {
+      $order='`Product Family`Code';
+    }
+    elseif($order=='dept') {
+      $order='`Product Main Department Code`';
+    }
+    elseif($order=='expcode') {
+      $order='`Product Tariff Code`';
+    }
+    elseif($order=='parts') {
+      $order='`Product XHTML Parts`';
+    }
+    elseif($order=='supplied') {
+      $order='`Product XHTML Supplied By`';
+    }
+    elseif($order=='gmroi') {
+      $order='`Product GMROI`';
+    }
+    elseif($order=='state') {
+      $order='`Product Sales State`';
+    }
+    elseif($order=='web') {
+      $order='`Product Web State`';
+    }
+
+ $sql="select  * from `Product Dimension` P   $where $wheref order by $order $order_direction limit $start_from,$number_results    ";
+    //print $sql;
+    $res = mysql_query($sql);
+    $adata=array();
+ while ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+   if (is_numeric($row['Product Availability']))
+            $stock=number($row['Product Availability']);
+        else
+            $stock='?';
+$type=$row['Product Sales State'];
+        if ($row['Product Record Type']=='In Process')
+            $type.='<span style="color:red">*</span>';
+switch ($row['Product Web State']) {
+        case('Online Force Out of Stock'):
+            $web_state=_('Out of Stock');
+            break;
+        case('Online Auto'):
+            $web_state=_('Auto');
+            break;
+        case('Unknown'):
+            $web_state=_('Unknown');
+        case('Offline'):
+            $web_state=_('Offline');
+            break;
+        case('Online Force Hide'):
+            $web_state=_('Hide');
+            break;
+        case('Online Force For Sale'):
+            $web_state=_('Sale');
+            break;
+        default:
+            $web_state=$row['Product Web State'];
+        }
+
+
+ $adata[]=array(
+
+                     'code'=>$row['Product Code'],
+                     'description'=>$row['Product XHTML Short Description'],
+                     'shortname'=>number($row['Product Units Per Case']).'x @'.money($row['Product Price']/$row['Product Units Per Case']).' '._('ea'),
+                     'family'=>$row['Product Family Name'],
+                     'dept'=>$row['Product Main Department Name'],
+                     'expcode'=>$row['Product Tariff Code'],
+                     'parts'=>$row['Product XHTML Parts'],
+                     'supplied'=>$row['Product XHTML Supplied By'],
+                     'gmroi'=>$row['Product GMROI'],
+                     'stock_value'=>money($row['Product Stock Value']),
+                     'stock'=>$stock,
+		     
+                     'state'=>$type,
+                     'web'=>$web_state,
+		     'image'=>$row['Product Main Image'],
+		     'type'=>'item'
+                 );
+
+
+ }
+
+ $response=array('resultset'=>
+                                array('state'=>200,
+                                      'data'=>$adata,
+                                      'sort_key'=>$_order,
+                                      'sort_dir'=>$_dir,
+                                      'tableid'=>$tableid,
+                                      'filter_msg'=>$filter_msg,
+                                      'rtext'=>$rtext,
+                                      'rtext_rpp'=>$rtext_rpp,
+                                      'total_records'=>$total_records,
+                                      'records_offset'=>$start_from,
+                                      'records_perpage'=>$number_results,
+                                     )
+                   );
+    echo json_encode($response);
+
+
+}
+
+
 function transactions_to_process(){
  if(isset( $_REQUEST['id']) and is_numeric( $_REQUEST['id']))
      $order_id=$_REQUEST['id'];
@@ -2492,7 +2759,11 @@ function transactions_to_process(){
    $sql="select * from `Order Transaction Fact` O left join `Product History Dimension` PH on (O.`Product key`=PH.`Product Key`) left join `Product Dimension` P on (P.`Product ID`=PH.`Product ID`)  $where   ";
    
    //  $sql="select  p.id as id,p.code as code ,product_id,p.description,units,ordered,dispached,charge,discount,promotion_id    from transaction as t left join product as p on (p.id=product_id)  $where    ";
-   //   print $sql;
+   
+   
+   
+   
+
    $result=mysql_query($sql);
    while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
    //   $total_charged+=$row['charge'];
