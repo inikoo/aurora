@@ -21,7 +21,7 @@ include_once('class.Ship_To.php');
 include_once('class.Invoice.php');
 include_once('class.DeliveryNote.php');
 
-//xnclude_once('search_customer.php');
+
 
 
 class Order extends DB_Table{
@@ -2167,7 +2167,8 @@ function get_data_from_store($store_key){
 
 
   function next_public_id(){
-      $sql=sprintf("insert into `Order Public ID %d` ",$this->data['Order Store Key']);
+      $sql=sprintf("insert into `Order Public ID %d` value() ",$this->data['Order Store Key']);
+      mysql_query($sql);
       $public_id=mysql_insert_id();
       $this->data['Order Public ID']=sprintf($this->public_id_format,$public_id);
       $this->data['Order File As']=$public_id;
