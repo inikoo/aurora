@@ -29,13 +29,16 @@ function swap_this_radio(o){
 	ar_file='ar_edit_contacts.php';
     else if(column.object=='warehouse_area' || column.object=='part_location'|| column.object=='shelf_type')
 	ar_file='ar_edit_warehouse.php';
-	else if(column.object=='user' )
+    else if(column.object=='user' )
 	ar_file='ar_edit_users.php';
+     else if(column.object=='new_order' )
+	ar_file='ar_edit_orders.php';
+    
     else
 	ar_file='ar_edit_assets.php';
     //   alert(column.object)
     var request='tipo=edit_'+column.object+'&key=' + column.key + '&newvalue=' + encodeURIComponent(newValue) + '&oldvalue=' + encodeURIComponent(oldValue)+ myBuildUrl(datatable,record);
-    alert('R:'+request);
+    //    alert('R:'+request);
 
     YAHOO.util.Connect.asyncRequest(
 				    'POST',

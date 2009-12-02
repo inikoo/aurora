@@ -63,6 +63,7 @@ function save(tipo){
     case('note'):
 	var value=escape(Dom.get(tipo+"_input").value);
 	var request="ar_contacts.php?tipo=update_customer&key=new_note&value="+value;
+	alert(request);
 	YAHOO.util.Connect.asyncRequest('POST',request ,{
 		success:function(o) {
 		    //	alert(o.responseText);

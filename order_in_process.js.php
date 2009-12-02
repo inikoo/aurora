@@ -3,6 +3,46 @@ include_once('common.php');?>
 
 YAHOO.namespace ("invoice"); 
 
+  var CellEdit = function (callback, newValue) {
+      
+    var record = this.getRecord(),
+    column = this.getColumn(),
+    oldValue = this.value,
+    datatable = this.getDataTable();
+    var 	ar_file='ar_edit_orders.php';
+    
+    var request='tipo=edit_'+column.object+'&key=' + column.key + '&newvalue=' + encodeURIComponent(newValue) + '&oldvalue=' + encodeURIComponent(oldValue)+ myBuildUrl(datatable,record);
+    //    alert('R:'+request);
+
+    YAHOO.util.Connect.asyncRequest(
+				    'POST',
+				    ar_file, {
+					success:function(o) {
+					    //   alert(o.responseText);
+					    var r = YAHOO.lang.JSON.parse(o.responseText);
+					    if (r.state == 200) {
+						for(x in r.data){
+
+						    Dom.get(x).innerHTML=r.data[x];
+						}
+						callback(true, r.newvalue);
+					    } else {
+						alert(r.msg);
+						callback();
+					    }
+					},
+					    failure:function(o) {
+					    alert(o.statusText);
+					    callback();
+					},
+					    scope:this
+					    },
+				    request
+				    
+				    );  
+  };
+
+
 
 YAHOO.util.Event.addListener(window, "load", function() {
     YAHOO.invoice.XHR_JSON = new function() {
@@ -18,17 +58,23 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 
 	    var InvoiceColumnDefs = [
-				     {key:"code", label:"<?php echo _('Code')?>",width:80,sortable:false,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				     ,{key:"description", label:"<?php echo _('Description')?>",width:340,sortable:false,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				        {key:"pid", label:"<?php echo _('Product ID')?>", width:20,sortable:false,isPrimaryKey:true,hidden:true} 
+				     
+					,{key:"code", label:"<?php echo _('Code')?>",width:80,sortable:false,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				     ,{key:"description", label:"<?php echo _('Description')?>",width:400,sortable:false,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				     //				     ,{key:"tariff_code", label:"<?php echo _('Tariff Code')?>",width:80,sortable:false,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				     ,{key:"quantity",label:"<?php echo _('Qty')?>", width:50,sortable:false,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-				       ,{key:"gross",label:"<?php echo _('Amount')?>", width:70,sortable:false,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-				       ,{key:"discount",label:"<?php echo _('Discounts')?>", width:70,sortable:false,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-				     ,{key:"to_charge",label:"<?php echo _('To Charge')?>", width:75,sortable:false,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				     ,{key:"stock",label:"<?php echo _('Able')?>", width:80,sortable:false,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				     ,{key:"quantity",label:"<?php echo _('Qty')?>", width:40,sortable:false,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC},  editor: new YAHOO.widget.TextboxCellEditor({asyncSubmitter: CellEdit}),object:'new_order'}
+				     ,{key:"change",label:"", width:40,className:"aleft",sortable:false}
+				    
+
+				     //  ,{key:"gross",label:"<?php echo _('Amount')?>", width:70,sortable:false,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				     //  ,{key:"discount",label:"<?php echo _('Discounts')?>", width:70,sortable:false,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				     // ,{key:"to_charge",label:"<?php echo _('To Charge')?>", width:75,sortable:false,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 				     ];
 
 
-	    this.InvoiceDataSource = new YAHOO.util.DataSource("ar_orders.php?tipo=transactions_to_process&tid=0&show_all=yes");
+	    this.InvoiceDataSource = new YAHOO.util.DataSource("ar_edit_orders.php?tipo=transactions_to_process&tid=0&show_all=yes");
 	    this.InvoiceDataSource.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.InvoiceDataSource.connXhrMode = "queueRequests";
 	    this.InvoiceDataSource.responseSchema = {
@@ -48,7 +94,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 			 ,"description"
 			 ,"quantity"
 			 ,"discount"
-			 ,"to_charge","gross","tariff_code"
+			 ,"to_charge","gross","tariff_code","stock","change","pid"
 			 // "promotion_id",
 			 ]};
 	    this.InvoiceDataTable = new YAHOO.widget.DataTable(tableDivEL, InvoiceColumnDefs,
@@ -62,7 +108,9 @@ YAHOO.util.Event.addListener(window, "load", function() {
  this.InvoiceDataTable.handleDataReturnPayload =myhandleDataReturnPayload;
 	    this.InvoiceDataTable.doBeforeSortColumn = mydoBeforeSortColumn;
 	    this.InvoiceDataTable.doBeforePaginator = mydoBeforePaginatorChange;
-	
+	   this.InvoiceDataTable.subscribe("cellMouseoverEvent", highlightEditableCell);
+	    this.InvoiceDataTable.subscribe("cellMouseoutEvent", unhighlightEditableCell);
+	    this.InvoiceDataTable.subscribe("cellClickEvent", onCellClick);
 
 
     
@@ -73,7 +121,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 
 function init(){
-
+    parent.location.hash = "done";
 
 
 }
