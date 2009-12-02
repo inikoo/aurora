@@ -46,6 +46,11 @@ case('edit_address'):
 case('edit_company'):
   edit_company();
   break;
+case('edit_customer'):
+  edit_customer();
+  break;
+
+
 case('edit_contact'):
    $data=prepare_values($_REQUEST,array(
 			     'id'=>array('type'=>'key')
@@ -845,4 +850,29 @@ function new_company($data){
   echo json_encode($response);  
 
 }
+
+
+function edit_customer(){
+  $department=new Department($_REQUEST['id']);
+  global $editor;
+  $department->editor=$editor;
+
+ $department->update($_REQUEST['key'],stripslashes(urldecode($_REQUEST['newvalue'])),stripslashes(urldecode($_REQUEST['oldvalue'])));
+   
+   //   $response= array('state'=>400,'msg'=>print_r($_REQUEST);
+   //echo json_encode($response);  
+   // exit;
+   if($department->updated){
+     $response= array('state'=>200,'newvalue'=>$department->new_value,'key'=>$_REQUEST['key']);
+	  
+   }else{
+     $response= array('state'=>400,'msg'=>$department->msg,'key'=>$_REQUEST['key']);
+   }
+   echo json_encode($response);  
+
+}
+
+
+
+
 ?>

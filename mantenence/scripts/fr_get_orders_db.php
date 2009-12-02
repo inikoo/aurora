@@ -1044,7 +1044,7 @@ if ($product->new_id ) {
 
       if($transaction['order']!=0){
       $products_data[]=array(
-			     'product_id'=>$product->id
+			     'Product Key'=>$product->id
 			     ,'Estimated Weight'=>$product->data['Product Gross Weight']*$transaction['order']
 			     ,'qty'=>$transaction['order']
 			     ,'gross_amount'=>$transaction['order']*$transaction['price']
@@ -1071,7 +1071,7 @@ if ($product->new_id ) {
       }
       
       $data_invoice_transactions[]=array(
-					 'product_id'=>$product->id
+					 'Product Key'=>$product->id
 					 ,'invoice qty'=>$transaction['order']-$transaction['reorder']
 					 ,'gross amount'=>$gross_amount
 					 ,'discount amount'=>$net_discount
@@ -1084,7 +1084,7 @@ if ($product->new_id ) {
       $estimated_w+=$product->data['Product Gross Weight']*($transaction['order']-$transaction['reorder']);
       //print "$estimated_w ".$product->data['Product Gross Weight']." ".($transaction['order']-$transaction['reorder'])."\n";
       $data_dn_transactions[]=array(
-				    'product_id'=>$product->id
+				    'Product Key'=>$product->id
 				    ,'Estimated Weight'=>$product->data['Product Gross Weight']*($transaction['order']-$transaction['reorder'])
 				    ,'Product ID'=>$product->data['Product ID']
 				    ,'Delivery Note Quantity'=>$transaction['order']-$transaction['reorder']
@@ -1109,7 +1109,7 @@ if ($product->new_id ) {
       }
       if($transaction['bonus']>0){
 	$products_data[]=array(
-			       'product_id'=>$product->id
+			       'Product Key'=>$product->id
 			       ,'qty'=>0
 			       ,'gross_amount'=>0
 			       ,'discount_amount'=>0
@@ -1117,7 +1117,7 @@ if ($product->new_id ) {
 			       ,'units_per_case'=>$product->data['Product Units Per Case']
 			       );
 	$data_invoice_transactions[]=array(
-					   'product_id'=>$product->id
+					   'Product Key'=>$product->id
 					   ,'invoice qty'=>$transaction['bonus']
 					   ,'gross amount'=>($transaction['bonus'])*$transaction['price']
 					   ,'discount amount'=>($transaction['bonus'])*$transaction['price']
@@ -1126,7 +1126,7 @@ if ($product->new_id ) {
     
     $estimated_w+=$product->data['Product Gross Weight']*$transaction['bonus'];
 	$data_dn_transactions[]=array(
-				      'product_id'=>$product->id
+				      'Product Key'=>$product->id
 				      ,'Product ID'=>$product->data['Product ID']
 				      ,'Delivery Note Quantity'=>$transaction['bonus']
 				      ,'Current Autorized to Sell Quantity'=>$transaction['bonus']
@@ -1878,7 +1878,7 @@ $currency='EUR';
 
 
 	foreach($data_invoice_transactions as $key=>$data){
-	  $product=new Product($data_invoice_transactions[$key]['product_id']);
+	  $product=new Product($data_invoice_transactions[$key]['Product Key']);
 	  if($product->id){
 	    $description=_('Refund for')." ".$data_invoice_transactions[$key]['invoice qty']." ".$product->data['Product Code'] ;
 	  }else
