@@ -25,7 +25,7 @@ function swap_this_radio(o){
     oldValue = this.value,
     datatable = this.getDataTable();
     
-    if(column.object=='company')
+    if(column.object=='company' || column.object=='customer' || column.object=='contact' )
 	ar_file='ar_edit_contacts.php';
     else if(column.object=='warehouse_area' || column.object=='part_location'|| column.object=='shelf_type')
 	ar_file='ar_edit_warehouse.php';

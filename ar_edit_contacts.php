@@ -49,6 +49,9 @@ case('edit_company'):
 case('edit_customer'):
   edit_customer();
   break;
+case('edit_customers'):
+  list_customers();
+  break;
 
 
 case('edit_contact'):
@@ -851,28 +854,318 @@ function new_company($data){
 
 }
 
+ 
 
-function edit_customer(){
-  $department=new Department($_REQUEST['id']);
-  global $editor;
-  $department->editor=$editor;
+function edit_customer() {
+    $customer=new customer($_REQUEST['customer_key']);
+    global $editor;
+    $customer->editor=$editor;
+  
+    $key=$_REQUEST['key'];
+    $key_dic=array(
+    'name'=>'Customer Name'
+   ,'email'=>'Customer Email'
+			 ,'telephone'=>'Customer Main Plain Telephone'
+			 ,'contact_name'=>'Email'
+			 ,"address"=>'Address'
+			 ,"town"=>'Main Address Town'
+			 ,"postcode"=>'Main Address Town'
+			 ,"region"=>'Main Address Town'
+			 ,"country"=>'Main Address Country'
+			 ,"ship_address"=>'Main Ship To'
+			 ,"ship_town"=>'Main Ship To Town'
+			 ,"ship_postcode"=>'Main Ship To Postal Code'
+			 ,"ship_region"=>'Main Ship To Country Region'
+			 ,"ship_country"=>'Main Ship To Country'
+    
+    );
+    if(array_key_exists($_REQUEST['key'],$key_dic))
+       $key=$key_dic[$_REQUEST['key']];
+    
+        
+    $customer->update(array($key=>stripslashes(urldecode($_REQUEST['newvalue']))));
 
- $department->update($_REQUEST['key'],stripslashes(urldecode($_REQUEST['newvalue'])),stripslashes(urldecode($_REQUEST['oldvalue'])));
-   
-   //   $response= array('state'=>400,'msg'=>print_r($_REQUEST);
-   //echo json_encode($response);  
-   // exit;
-   if($department->updated){
-     $response= array('state'=>200,'newvalue'=>$department->new_value,'key'=>$_REQUEST['key']);
-	  
-   }else{
-     $response= array('state'=>400,'msg'=>$department->msg,'key'=>$_REQUEST['key']);
-   }
-   echo json_encode($response);  
+    if ($customer->updated) {
+        $response= array('state'=>200,'newvalue'=>$customer->new_value,'key'=>$_REQUEST['key']);
+
+    } else {
+        $response= array('state'=>400,'msg'=>$customer->msg,'key'=>$_REQUEST['key']);
+    }
+    echo json_encode($response);
 
 }
 
 
+function list_customers(){
 
+
+global $myconf;
+
+  $conf=$_SESSION['state']['customers']['table'];
+  if(isset( $_REQUEST['sf']))
+     $start_from=$_REQUEST['sf'];
+   else
+     $start_from=$conf['sf'];
+   if(isset( $_REQUEST['nr']))
+     $number_results=$_REQUEST['nr'];
+   else
+     $number_results=$conf['nr'];
+  if(isset( $_REQUEST['o']))
+    $order=$_REQUEST['o'];
+  else
+    $order=$conf['order'];
+  if(isset( $_REQUEST['od']))
+    $order_dir=$_REQUEST['od'];
+  else
+    $order_dir=$conf['order_dir'];
+    if(isset( $_REQUEST['f_field']))
+     $f_field=$_REQUEST['f_field'];
+   else
+     $f_field=$conf['f_field'];
+
+  if(isset( $_REQUEST['f_value']))
+     $f_value=$_REQUEST['f_value'];
+   else
+     $f_value=$conf['f_value'];
+if(isset( $_REQUEST['where']))
+     $where=$_REQUEST['where'];
+   else
+     $where=$conf['where'];
+
+  
+   if(isset( $_REQUEST['tableid']))
+    $tableid=$_REQUEST['tableid'];
+  else
+    $tableid=0;
+
+   if(isset( $_REQUEST['store_id'])    ){
+     $store=$_REQUEST['store_id'];
+     $_SESSION['state']['customers']['store']=$store;
+   }else
+     $store=$_SESSION['state']['customers']['store'];
+
+
+   $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
+   $_SESSION['state']['customers']['table']=array('order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value);
+   $filter_msg='';
+   $wheref='';
+   
+   
+   if(is_numeric($store)){
+     $where.=sprintf(' and `Customer Store Key`=%d ',$store);
+   }
+   
+
+
+   
+   
+  if(($f_field=='customer name'     )  and $f_value!=''){
+    $wheref="  and  `Customer Name` like '%".addslashes($f_value)."%'";
+  }elseif(($f_field=='postcode'     )  and $f_value!=''){
+    $wheref="  and  `Customer Main Address Postal Code` like '%".addslashes($f_value)."%'";
+    
+    
+    
+  }else if($f_field=='id'  )
+     $wheref.=" and  `Customer ID` like '".addslashes(preg_replace('/\s*|\,|\./','',$f_value))."%' ";
+  else if($f_field=='maxdesde' and is_numeric($f_value) )
+    $wheref.=" and  (TO_DAYS(NOW())-TO_DAYS(`Customer Last Order Date`))<=".$f_value."    ";
+  else if($f_field=='mindesde' and is_numeric($f_value) )
+    $wheref.=" and  (TO_DAYS(NOW())-TO_DAYS(`Customer Last Order Date`))>=".$f_value."    ";
+  else if($f_field=='max' and is_numeric($f_value) )
+    $wheref.=" and  `Customer Orders`<=".$f_value."    ";
+  else if($f_field=='min' and is_numeric($f_value) )
+    $wheref.=" and  `Customer Orders`>=".$f_value."    ";
+  else if($f_field=='maxvalue' and is_numeric($f_value) )
+    $wheref.=" and  `Customer Net Balance`<=".$f_value."    ";
+  else if($f_field=='minvalue' and is_numeric($f_value) )
+    $wheref.=" and  `Customer Net Balance`>=".$f_value."    ";
+
+
+
+
+
+
+   $sql="select count(*) as total from `Customer Dimension`  $where $wheref";
+
+   $res=mysql_query($sql);
+     if($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+
+     $total=$row['total'];
+   }if($wheref!=''){
+     $sql="select count(*) as total_without_filters from `Customer Dimension`  $where ";
+     $res=mysql_query($sql);
+     if($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+    
+       $total_records=$row['total_without_filters'];
+       $filtered=$row['total_without_filters']-$total;
+     }
+
+   }else{
+     $filtered=0;
+     $filter_total=0;
+     $total_records=$total;
+   }
+    mysql_free_result($res);
+
+   $rtext=$total_records." ".ngettext('identified customers','identified customers',$total_records);
+   if($total_records>$number_results)
+     $rtext.=sprintf(" <span class='rtext_rpp'>(%d%s)</span>",$number_results,_('rpp'));
+
+   if($total==0 and $filtered>0){
+     switch($f_field){
+     case('customer name'):
+       $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any customer like")." <b>$f_value</b> ";
+       break;
+     }
+   }
+   elseif($filtered>0){
+     switch($f_field){
+     case('customer name'):
+       $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total "._('customers with name like')." <b>".$f_value."*</b> <span onclick=\"remove_filter($tableid)\" id='remove_filter$tableid' class='remove_filter'>"._('Show All')."</span>";
+       break;
+     }
+   }else
+      $filter_msg='';
+   
+
+
+
+
+   $_order=$order;
+   $_dir=$order_direction;
+   // if($order=='location'){
+//      if($order_direction=='desc')
+//        $order='country_code desc ,town desc';
+//      else
+//        $order='country_code,town';
+//      $order_direction='';
+//    }
+
+//     if($order=='total'){
+//       $order='supertotal';
+//    }
+    
+
+   if($order=='name')
+     $order='`Customer File As`';
+   elseif($order=='id')
+     $order='`Customer ID`';
+   elseif($order=='location')
+     $order='`Customer Main Location`';
+   elseif($order=='orders')
+     $order='`Customer Orders`';
+   elseif($order=='email')
+     $order='`Customer Email`';
+   elseif($order=='telephone')
+     $order='`Customer Main Telehone`';
+   elseif($order=='last_order')
+     $order='`Customer Last Order Date`';
+   elseif($order=='contact_name')
+     $order='`Customer Main Contact Name`';
+   elseif($order=='address')
+     $order='`Customer Main Location`';
+   elseif($order=='town')
+     $order='`Customer Main Address Town`';
+   elseif($order=='postcode')
+     $order='`Customer Main Address Postal Code`';
+   elseif($order=='region')
+     $order='`Customer Main Address Country First Division`';
+   elseif($order=='country')
+     $order='`Customer Main Address Country`';
+   //  elseif($order=='ship_address')
+   //  $order='`customer main ship to header`';
+   elseif($order=='ship_town')
+     $order='`Customer Main Ship To Town`';
+   elseif($order=='ship_postcode')
+     $order='`Customer Main Ship To Postal Code`';
+   elseif($order=='ship_region')
+     $order='`Customer Main Ship To Country Region`';
+   elseif($order=='ship_country')
+     $order='`Customer Main Ship To Country`';
+   elseif($order=='net_balance')
+     $order='`Customer Net Balance`';
+   elseif($order=='balance')
+     $order='`Customer Outstanding Net Balance`';
+   elseif($order=='total_profit')
+     $order='`Customer Profit`';
+   elseif($order=='total_payments')
+     $order='`Customer Net Payments`';
+   elseif($order=='top_profits')
+     $order='`Customer Profits Top Percentage`';
+   elseif($order=='top_balance')
+     $order='`Customer Balance Top Percentage`';
+   elseif($order=='top_orders')
+     $order='``Customer Orders Top Percentage`';
+   elseif($order=='top_invoices')
+     $order='``Customer Invoices Top Percentage`';
+    elseif($order=='total_refunds')
+     $order='`Customer Total Refunds`';
+    
+  elseif($order=='activity')
+     $order='`Customer Type by Activity`';
+
+   $sql="select   *,`Customer Net Refunds`+`Customer Tax Refunds` as `Customer Total Refunds`  from `Customer Dimension`  $where $wheref  order by $order $order_direction limit $start_from,$number_results";
+   //   print $sql;
+   $adata=array();
+  
+  
+  
+  $result=mysql_query($sql);
+  while($data=mysql_fetch_array($result, MYSQL_ASSOC)){
+
+
+
+
+   
+    $adata[]=array(
+		   
+		   'customer_key'=>$data['Customer Key'],
+		   'name'=>$data['Customer Name'],
+		  
+		   
+		   'email'=>$data['Customer Main Plain Email'],
+		   'telephone'=>$data['Customer Main Telephone'],
+		   
+		   'contact_name'=>$data['Customer Main Contact Name'],
+		   'address'=>$data['Customer Main Location'],
+		   'town'=>$data['Customer Main Address Town'],
+		   'postcode'=>$data['Customer Main Address Postal Code'],
+		   'region'=>$data['Customer Main Address Country First Division'],
+		   'country'=>$data['Customer Main Address Country'],
+		
+		   'ship_town'=>$data['Customer Main Ship To Town'],
+		   'ship_postcode'>$data['Customer Main Ship To Postal Code'],
+		   'ship_region'=>$data['Customer Main Ship To Country Region'],
+		   'ship_country'=>$data['Customer Main Ship To Country'],
+		 
+		   'go'=>sprintf("<a href='edit_customer.php?id=%d'><img src='art/icons/page_go.png' alt='go'></a>",$data['Customer Key'])
+
+		   );
+  }
+mysql_free_result($result);
+
+
+
+
+  $response=array('resultset'=>
+		   array('state'=>200,
+			 'data'=>$adata,
+			 'rtext'=>$rtext,
+			 'sort_key'=>$_order,
+			 'sort_dir'=>$_dir,
+			 'tableid'=>$tableid,
+			 'filter_msg'=>$filter_msg,
+			 'total_records'=>$total,
+			 'records_offset'=>$start_from,
+
+			 'records_perpage'=>$number_results,
+			 'records_order'=>$order,
+			 'records_order_dir'=>$order_dir,
+			 'filtered'=>$filtered
+			 )
+		   );
+   echo json_encode($response);
+}
 
 ?>
