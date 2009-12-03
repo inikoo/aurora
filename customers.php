@@ -46,7 +46,7 @@ $general_options_list=array();
 
 if($modify){
   $general_options_list[]=array('tipo'=>'url','url'=>'edit_customers.php','label'=>_('Edit Customers'));
-   $general_options_list[]=array('tipo'=>'url','url'=>'new_customer.php?edit=1','label'=>_('Add Customer'));
+   $general_options_list[]=array('tipo'=>'url','url'=>'new_customer.php','label'=>_('Add Customer'));
 }
 $general_options_list[]=array('tipo'=>'js','state'=>$show_details,'id'=>'details','label'=>($show_details?_('Hide Details'):_('Show Details')));
 $general_options_list[]=array('tipo'=>'js','state'=>'','id'=>'advanced_search','label'=>_('Advanced Search'));

@@ -856,34 +856,55 @@ function new_company($data){
 
  
 
+
 function edit_customer() {
-    $customer=new customer($_REQUEST['customer_key']);
-    global $editor;
-    $customer->editor=$editor;
+  $key=$_REQUEST['key'];
+ 
   
-    $key=$_REQUEST['key'];
-    $key_dic=array(
-    'name'=>'Customer Name'
-   ,'email'=>'Customer Email'
-			 ,'telephone'=>'Customer Main Plain Telephone'
-			 ,'contact_name'=>'Email'
-			 ,"address"=>'Address'
-			 ,"town"=>'Main Address Town'
-			 ,"postcode"=>'Main Address Town'
-			 ,"region"=>'Main Address Town'
-			 ,"country"=>'Main Address Country'
-			 ,"ship_address"=>'Main Ship To'
-			 ,"ship_town"=>'Main Ship To Town'
-			 ,"ship_postcode"=>'Main Ship To Postal Code'
-			 ,"ship_region"=>'Main Ship To Country Region'
-			 ,"ship_country"=>'Main Ship To Country'
+  $customer=new customer($_REQUEST['customer_key']);
+  global $editor;
+  $customer->editor=$editor;
+  
+  if($key=='Attach'){
+    // print_r($_FILES);
+    $note=stripslashes(urldecode($_REQUEST['newvalue']));
+    $target_path = "uploads/".'attach_'.date('U');
+    $original_name=$_FILES['testFile']['name'];
+    $type=$_FILES['testFile']['type'];
+    $data=array('Caption'=>$note,'Original Name'=>$original_name,'Type'=>$type);
+
+    if(move_uploaded_file($_FILES['testFile']['tmp_name'],$target_path )) {
+      $customer->add_attach($target_path,$data);
+      
+    }
+  }else{
     
+
+    
+    $key_dic=array(
+		   'name'=>'Customer Name'
+		   ,'email'=>'Customer Email'
+		   ,'telephone'=>'Customer Main Plain Telephone'
+		   ,'contact_name'=>'Email'
+		   ,"address"=>'Address'
+		   ,"town"=>'Main Address Town'
+		   ,"postcode"=>'Main Address Town'
+		   ,"region"=>'Main Address Town'
+		   ,"country"=>'Main Address Country'
+		   ,"ship_address"=>'Main Ship To'
+		   ,"ship_town"=>'Main Ship To Town'
+		   ,"ship_postcode"=>'Main Ship To Postal Code'
+		   ,"ship_region"=>'Main Ship To Country Region'
+		   ,"ship_country"=>'Main Ship To Country'
+		   
     );
     if(array_key_exists($_REQUEST['key'],$key_dic))
        $key=$key_dic[$_REQUEST['key']];
     
-        
+    
     $customer->update(array($key=>stripslashes(urldecode($_REQUEST['newvalue']))));
+  }
+
 
     if ($customer->updated) {
         $response= array('state'=>200,'newvalue'=>$customer->new_value,'key'=>$_REQUEST['key']);

@@ -2,7 +2,7 @@
 <div id="bd" >
  {include file='suppliers_navigation.tpl'}
  <div id="no_details_title"  style="clear:left;xmargin:0 20px;{if $details!=0}display:none{/if}">
-    <h1>{t}Suppliers{/t}</h1>
+    <h1>{t}Edit Suppliers{/t}</h1>
   </div>
 
 

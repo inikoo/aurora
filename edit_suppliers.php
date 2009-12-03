@@ -19,36 +19,20 @@ if(!($user->can_view('suppliers'))){
    exit;
 }
 
-
-$q='';
-$sql="select count(*) as numberof from `Supplier Dimension`";
-$result=mysql_query($sql);
-if(!$suppliers=mysql_fetch_array($result, MYSQL_ASSOC))
+if(!($user->can_edit('suppliers'))){
+  header('Location: suppliers.php');
   exit;
+}
 
 
-$create=$user->can_create('suppliers');
-
-$modify=$user->can_edit('suppliers');
-
-
-$smarty->assign('create',$create);
-$smarty->assign('modify',$modify);
-
-$smarty->assign('view',$_SESSION['state']['suppliers']['view']);
-
-$smarty->assign('show_details',$_SESSION['state']['suppliers']['details']);
 
 
 $general_options_list=array();
 
 
-if($modify){
-  $general_options_list[]=array('tipo'=>'url','url'=>'edit_suppliers.php','label'=>_('Edit Suppliers'));
+
+  $general_options_list[]=array('tipo'=>'url','url'=>'suppliers.php','label'=>_('Exit Edit'));
    $general_options_list[]=array('tipo'=>'url','url'=>'new_suppler.php','label'=>_('Add Supplier'));
-}
-//$general_options_list[]=array('tipo'=>'js','state'=>$show_details,'id'=>'details','label'=>($show_details?_('Hide Details'):_('Show Details')));
-//$general_options_list[]=array('tipo'=>'js','state'=>'','id'=>'advanced_search','label'=>_('Advanced Search'));
 
 $smarty->assign('general_options_list',$general_options_list);
 
@@ -67,7 +51,7 @@ $css_files=array(
 		 'common.css',
 		 'button.css',
 		 'container.css',
-		 'table.css'
+		 'table.css','css/edit.css'
 		 );
 $js_files=array(
 
@@ -82,9 +66,9 @@ $js_files=array(
 		$yui_path.'calendar/calendar-min.js',
 		'common.js.php',
 		'table_common.js.php',
-		//	'js/calendar_common.js.php',
-
-		'suppliers.js.php'
+	
+		'js/edit_common.js',
+		'edit_suppliers.js.php'
 		);
 
 
@@ -92,18 +76,15 @@ $js_files=array(
 
 
 $smarty->assign('parent','suppliers.php');
-$smarty->assign('title', _('Suppliers'));
+$smarty->assign('title', _('Edit Suppliers'));
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
 
 
 
-$smarty->assign('total_suppliers',$suppliers['numberof']);
-$smarty->assign('table_title',_('Suppliers List'));
-
-$tipo_filter=($q==''?$_SESSION['state']['suppliers']['table']['f_field']:'public_id');
+$tipo_filter=$_SESSION['state']['suppliers']['table']['f_field'];
 $smarty->assign('filter',$tipo_filter);
-$smarty->assign('filter_value',($q==''?$_SESSION['state']['suppliers']['table']['f_value']:addslashes($q)));
+$smarty->assign('filter_value',$_SESSION['state']['suppliers']['table']['f_value']);
 
 
 $filter_menu=array(
@@ -119,9 +100,5 @@ $smarty->assign('filter_name',$filter_menu[$tipo_filter]['label']);
 $paginator_menu=array(10,25,50,100,500);
 $smarty->assign('paginator_menu',$paginator_menu);
 
-
-
-
-
-$smarty->display('suppliers.tpl');
+$smarty->display('edit_suppliers.tpl');
 ?>

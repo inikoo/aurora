@@ -24,6 +24,8 @@
 
        <table style="float:right;margin-top:20px">
 	 <tr><td class="but" id="note">{t}Quick Note{/t}</td></tr>
+	 <tr><td class="but" id="attach">{t}Attach File{/t}</td></tr>
+
 	 <tr><td class="but" id="take_order">{t}Take Order{/t}</td></tr>
 
 	 <tr style="display:none"><td class="but" id="long_note">{t}Long Note{/t}</td></tr>
@@ -155,6 +157,32 @@
     <span  onclick="save('note')" id="note_save"  class="unselectable_text button"     style="visibility:hidden;" >{t}Save{/t} <img src="art/icons/disk.png" ></span></td></tr>
 </table>
 </div>
+
+<div id="dialog_attach">
+  <div id="attach_msg"></div>
+  <table >
+     <tr><td colspan=2>
+
+	  {t}Note{/t}:<br/> <input type="text" id="attach_note"/>
+
+    </td><tr>
+    <tr><td colspan=2>
+	<form action="upload.php" enctype="multipart/form-data" method="post" id="attach_form">
+
+
+	  <input type="file" name="testFile"/>
+
+	</form>
+    </td><tr>
+	
+    <tr class="buttons" style="font-size:100%">
+  <td style="text-align:center;width:50%">
+    <span  class="state_details" onClick="close_dialog('attach')" >{t}Cancel{/t}</span></td>
+  <td style="text-align:center;width:50%">
+    <span  onclick="save('attach')" id="upload_attach"  class="state_details"     xstyle="visibility:hidden;" >{t}Upload{/t}</span></td></tr>
+</table>
+</div>
+
 
 <div id="dialog_long_note">
   <div id="long_note_msg"></div>

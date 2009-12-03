@@ -2244,8 +2244,8 @@ public $new_value=false;
     
     ob_start();
     system("uname");
-   $mimetype='Unknown';
-   $system='Unknown';
+    $mimetype='Unknown';
+    $system='Unknown';
    
    $_system = ob_get_clean();
    
@@ -2257,7 +2257,9 @@ public $new_value=false;
       
     }elseif(preg_match('/linux/i',$_system)){
       $system='Linux'; 
-      $mimetype = system("file -ib $file ");
+      ob_start();
+      system("file -ib $file ");
+      $mimetype=ob_get_clean();
     }else{
       $system='Other';  
     }

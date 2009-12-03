@@ -1391,13 +1391,17 @@ if(isset( $_REQUEST['where']))
    $data=array();
    while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
      
+     if($row['History Details']=='')
+       $note=$row['History Abstract'];
+     else
+       $note=$row['History Abstract'].' <img class="button" d="no" id="ch'.$row['History Key'].'" hid="'.$row['History Key'].'" onClick="showdetails(this)" src="art/icons/closed.png" alt="Show details" />';
 
      $data[]=array(
 		   'id'=>$row['History Key'],
 		   'date'=>strftime("%a %e %b %Y", strtotime($row['History Date'])),
 		   'time'=>strftime("%H:%M", strtotime($row['History Date'])),
 		   'objeto'=>$row['Direct Object'],
-		   'note'=>$row['History Abstract'].' <img class="button" d="no" id="ch'.$row['History Key'].'" hid="'.$row['History Key'].'" onClick="showdetails(this)" src="art/icons/closed.png" alt="Show details" />',
+		   'note'=>$note,
 		   'handle'=>$row['Author Name']
 		   );
    }
