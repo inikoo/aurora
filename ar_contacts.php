@@ -1158,7 +1158,8 @@ if(isset( $_REQUEST['where']))
 		   'ship_postcode'>$data['Customer Main Ship To Postal Code'],
 		   'ship_region'=>$data['Customer Main Ship To Country Region'],
 		   'ship_country'=>$data['Customer Main Ship To Country'],
-		   'activity'=>$data['Customer Type by Activity'],
+		   'activity'=>$data['Customer Type by Activity']
+
 		   );
   }
 mysql_free_result($result);

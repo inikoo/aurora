@@ -21,11 +21,7 @@ include_once('class.Order.php');
 include_once('class.Address.php');
 
 class Customer extends DB_Table{
-
-
- 
-
-  var $contact_data=false;
+ var $contact_data=false;
   var $ship_to=array();
 
   function __construct($arg1=false,$arg2=false) {
