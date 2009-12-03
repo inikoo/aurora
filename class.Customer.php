@@ -19,6 +19,7 @@ include_once('class.DB_Table.php');
 include_once('class.Contact.php');
 include_once('class.Order.php');
 include_once('class.Address.php');
+include_once('class.Attachment.php');
 
 class Customer extends DB_Table{
  var $contact_data=false;
@@ -1020,8 +1021,14 @@ class Customer extends DB_Table{
    /*Function: update_field_switcher
    */
  function update_field_switcher($field,$value,$options=''){
-   
+
    switch($field){
+   case('Note'):
+     $this->add_note($value);
+     break;
+   case('Attach'):
+     $this->add_attach($value);
+     break; 
    case('Customer Main Telephone'):
    case('Customer Main Plain Telephone'):
    case('Customer Main Telephone Key'):
@@ -2182,6 +2189,88 @@ class Customer extends DB_Table{
    
    return $order_key;
  }
+
+ function add_note($note){
+   $note=_trim($note);
+   if($note==''){
+     $this->msg=_('Empty note');
+     return;
+   }
+   $details='';
+   if(strlen($note)>64){
+     $words=preg_split('/\s/',$note);
+     $len=0;
+     $note='';
+     $details='';
+     foreach($words as $word){
+       $len+=strlen($world);
+       if($note=='')
+	 $note=$world;
+       else{
+	 if($len<64)
+	   $note.=' '.$world;
+	 else
+	   $details.=' '.$world;
+
+       }
+     }
+     
+     
+     
+   }
+
+  $history_data=array(
+		      'note'=>$note
+		      ,'details'=>$details
+		      ,'action'=>'created'
+		      ,'direct_object'=>'Note'
+		      ,'prepostion'=>'about'
+		      ,'indirect_object'=>'Customer'
+		      ,'indirect_object_key'=>$this->id
+		      );
+  $this->add_history($history_data);
+  $this->updated=true;
+  $this->new_value='';
+ }
+
+
+
+
+
+
+ function add_attach($file,$data){
+
+
+   $data=array(
+	       'file'=>$file
+	       ,'Attachment Caption'=>$data['Caption']
+	       ,'Attachment MIME Type'=>$data['Type']
+	       ,'Attachment File Original Name'=>$data['Original Name']
+	       );
+
+  
+   $attach=new Attachment('find',$data,'create');
+
+   if($attach->new){
+
+
+     $history_data=array(
+			 'note'=>$attach->get_abstract()
+			 ,'details'=>$attach->get_details()
+			 ,'action'=>'associated'
+			 ,'direct_object'=>'Attachment'
+			 ,'prepostion'=>''
+			 ,'indirect_object'=>'Customer'
+			 ,'indirect_object_key'=>$this->id
+			 );
+     $this->add_history($history_data);
+     $this->updated=true;
+     $this->new_value='';
+   }
+
+ }
+
+
 
 
  }

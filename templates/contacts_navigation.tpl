@@ -14,6 +14,8 @@
 {/if}
  <span class="nav2 onleft"><a class="selected"  href="companies.php">{t}Companies{/t}</a></span>
 <span class="nav2 onleft"><a    href="contacts.php">{t}Personal Contacts{/t}</a></span>
+<span class="nav2 onleft"><a    href="requests.php">{t}Requests{/t}</a></span>
+<span class="nav2 onleft"><a    href="marketing.php">{t}Marketing{/t}</a></span>
 
 
 <div class="search_box">

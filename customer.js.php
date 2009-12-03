@@ -7,6 +7,8 @@ include_once('common.php');
 var Event = YAHOO.util.Event;
 var dialog_note;
 
+var customer_key=<?php echo $_SESSION['state']['customer']['id']?>;
+
 function showdetails(o){
 
 
@@ -62,8 +64,8 @@ function save(tipo){
     switch(tipo){
     case('note'):
 	var value=escape(Dom.get(tipo+"_input").value);
-	var request="ar_contacts.php?tipo=update_customer&key=new_note&value="+value;
-	alert(request);
+	var request="ar_edit_contacts.php?tipo=edit_customer&key=Note&customer_key="+customer_key+"&newvalue="+value;
+	//alert(request);
 	YAHOO.util.Connect.asyncRequest('POST',request ,{
 		success:function(o) {
 		    //	alert(o.responseText);
@@ -132,7 +134,14 @@ function close_dialog(tipo){
 // 	dialog_note.hide();
 
 // 	break;
+  case('attach'):
 
+	Dom.get(tipo+"_note").value='';
+	//	Dom.get(tipo+'_save').style.visibility='hidden';
+	dialog_attach.hide();
+
+	break;
+    
     case('note'):
 
 	Dom.get(tipo+"_input").value='';
@@ -225,6 +234,36 @@ function take_order(){
 
 }
 
+var upload_attach = function(e){
+    
+    var uploadHandler = {
+	upload: function(o) {
+	    alert(o.responseText);
+	    var r =  YAHOO.lang.JSON.parse(o.responseText);
+	    if (r.state==200) {
+		close_dialog('attach');
+		var table=tables['table0'];
+		var datasource=tables['dataSource0'];
+		var request='';
+		datasource.sendRequest(request,table.onDataReturnInitializeTable, table);    
+		
+	    }else
+		Dom.get('attach_msg').innerHTML=r.msg;
+	    
+	    
+	    
+      }
+    }; 
+    
+    YAHOO.util.Connect.setForm('attach_form', true);
+    var note=encodeURIComponent(Dom.get('attach_note').value)
+    var request="ar_edit_contacts.php?tipo=edit_customer&key=Attach&customer_key="+customer_key+"&newvalue="+note;
+
+    YAHOO.util.Connect.asyncRequest('POST',request, uploadHandler);
+}
+
+
+
 var oMenu;
 function init(){
 
@@ -275,9 +314,14 @@ Event.addListener('customer_search', "keydown", submit_search_on_enter,search_da
 
 dialog_note = new YAHOO.widget.Dialog("dialog_note", {context:["note","tr","tl"]  ,visible : false,close:false,underlay: "none",draggable:false});
 dialog_note.render();
-Event.addListener("note", "click", dialog_note.show,dialog_note , true);
-Event.addListener("take_order", "click", take_order , true);
+dialog_attach = new YAHOO.widget.Dialog("dialog_attach", {context:["attach","tr","tl"]  ,visible : false,close:false,underlay: "none",draggable:false});
+dialog_attach.render();
 
+Event.addListener("note", "click", dialog_note.show,dialog_note , true);
+Event.addListener("attach", "click", dialog_attach.show,dialog_attach , true);
+
+Event.addListener("take_order", "click", take_order , true);
+Event.on('upload_attach', 'click', upload_attach);
 
 
 dialog_long_note = new YAHOO.widget.Dialog("dialog_long_note", {context:["customer_data","tl","tl"] ,visible : false,close:false,underlay: "none",draggable:false});

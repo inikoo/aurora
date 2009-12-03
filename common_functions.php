@@ -1408,4 +1408,49 @@ function translate_written_number($string){
 
         return true;
     }
+
+
+function guess_file_mime($file){
+    
+    ob_start();
+    system("uname");
+    $mimetype='unknown';
+    $system='Unknown';
+    
+     $_system = ob_get_clean();
+   
+   if(preg_match('/darwin/i',$_system)){
+     ob_start();
+     $system='Mac';
+     system("file -I $file");
+     $mimetype=ob_get_clean();
+     
+   }elseif(preg_match('/linux/i',$_system)){
+     $system='Linux'; 
+     ob_start();
+     system("file -ib $file ");
+     $mimetype=ob_get_clean();
+   }else{
+     $system='Other';  
+   }
+   //ob_get_clean();
+   
+   return $mimetype;
+  
+}
+
+
+function formatBytes($bytes, $precision = 1) {
+    $units = array('B', 'KB', 'MB', 'GB', 'TB');
+  
+    $bytes = max($bytes, 0);
+    $pow = floor(($bytes ? log($bytes) : 0) / log(1024));
+    $pow = min($pow, count($units) - 1);
+  
+    $bytes /= pow(1024, $pow);
+  
+    return number($bytes, $precision) . ' ' . $units[$pow];
+} 
+
+
 ?>

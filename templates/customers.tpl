@@ -5,14 +5,8 @@
   <div id="no_details_title"  style="clear:left;xmargin:0 20px;{if $details!=0}display:none{/if}">
     <h1>{t}Store{/t}: {$store->get('Store Name')} ({$store->get('Store Code')})</h1>
   </div>
-
-
-   
-    
-
-
-    <div id="info"  style="clear:left;margin-top:10px;padding:0 0px;width:770px;{if $details==0}display:none{/if}">
-      <h2>{t}Customers Information{/t} ({$store->get('Store Code')})</h2>
+  <div id="info"  style="clear:left;margin-top:10px;padding:0 0px;width:770px;{if $details==0}display:none{/if}">
+    <h2>{t}Customers Information{/t} ({$store->get('Store Code')})</h2>
       <p style="width:475px">{$overview_text}</p>
       <div id="plot" style="width:940px;border:0px solid black;padding:0">
 	
