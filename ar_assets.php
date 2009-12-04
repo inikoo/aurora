@@ -2946,12 +2946,13 @@ function list_departments() {
 
     $sum_families=0;
     $sum_active=0;
-    $sql="select sum(`Product Department For Sale Products`) as sum_active,sum(`Product Department Families`) as sum_families  from `Product Department Dimension` $where   ";
+    $sum_discontinued=0;
+    $sql="select sum(`Product Department For Sale Products`) as sum_active, sum(`Product Department Discontinued Products`) as sum_discontinued,sum(`Product Department Families`) as sum_families  from `Product Department Dimension` $where   ";
     $result=mysql_query($sql);
     if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
         $sum_families=$row['sum_families'];
         $sum_active=$row['sum_active'];
-
+	$sum_discontinued=$row['sum_discontinued'];
     }
 
     if ($period=='all') {
@@ -3494,6 +3495,7 @@ function list_departments() {
                      'families'=>number($row['Product Department Families']),
                      'active'=>number($row['Product Department For Sale Products']),
                      'todo'=>number($row['Product Department In Process Products']),
+		     'discontinued'=>number($row['Product Department Discontinued Products']),
 
                      'outofstock'=>number($row['Product Department Out Of Stock Products']),
                      'stock_error'=>number($row['Product Department Unknown Stock Products']),
@@ -3527,7 +3529,8 @@ function list_departments() {
                  'families'=>number($sum_families),
                  'active'=>number($sum_active),
                  'sales'=>$tsall,
-                 'profit'=>$tprofit
+                 'profit'=>$tprofit,
+		 'discontinued'=>number($sum_discontinued)
 // 		 'outofstock'=>number($row['product department out of stock products']),
 // 		 'stockerror'=>number($row['product department unknown stock products']),
 // 		 'stock_value'=>money($row['product department stock value']),

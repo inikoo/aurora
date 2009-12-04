@@ -1382,6 +1382,50 @@ function get_next_product_code(){
   
 }
 
+function update_sales_state(){
+  
+  $products_data=array(
+		       'For Sale'=>0
+		       ,'Discontinued'=>0
+		       ,'Not for Sale'=>0
+		       ,'Discontinued'=>0
+		       ,'Unknown'=>0
+		       ,'Out of Stock'=>0
+		       ,'No Applicable'=>0
+
+		       );
+  $sql=sprintf("select `Product Sales State`,count(*) as Number   from `Product Dimension` where `Product Family Key`=%d group by `Product Sales State`",$this->id);
+ 
+  $res=mysql_query($sql);
+ 
+   while($row=mysql_fetch_array($res)){
+     $products_data[$row['Product Sales State']]=$row['Number'];
+
+    }
+
+  if($products_data['For Sale']==0){
+    if($products_data['Discontinued']>0)
+      $this->data['Product Family Sales State']='Discontinued';
+    elseif($products_data['Out of Stock']>0)
+      $this->data['Product Family Sales State']='Out of Stock';
+    elseif($products_data['Not for Sale']>0)
+      $this->data['Product Family Sales State']='Not for Sale';
+    elseif($products_data['No Applicable']>0)
+      $this->data['Product Family Sales State']='No Applicable';
+    else
+      $this->data['Product Family Sales State']='Unknown';
+  }else
+    $this->data['Product Family Sales State']='For Sale';
+  
+  $sql=sprintf("update `Product Family Dimension`  set `Product Family Sales State`=%s  where `Product Family Key`=%d "
+	       ,prepare_mysql($this->data['Product Family Sales State'])
+	       ,$this->id
+	       );
+  mysql_query($sql);
+  
+
+}
+
 
 }
 
