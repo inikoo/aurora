@@ -1791,264 +1791,9 @@ public $new_value=false;
 
       break;
     case('days'):
+      $this->update_days();
 
-
-      $tdays = (strtotime($this->data['Product Valid To']) - strtotime($this->data['Product Valid From'])) / (60 * 60 * 24);
-
-
-      if (strtotime($this->data['Product Valid To'])<strtotime('today -1 year'))
-	$ydays=0;
-      else {
-	$_to=strtotime($this->data['Product Valid To']);
-	if (strtotime($this->data['Product Valid From'])<strtotime('today -1 year'))
-	  $_from=strtotime('today -1 year');
-	else
-	  $_from=strtotime($this->data['Product Valid From']);
-	$ydays=($_to-$_from)/ (60 * 60 * 24);
-      }
-
-
-      if (strtotime($this->data['Product Valid To'])<strtotime('today -3 month'))
-	$qdays=0;
-      else {
-	$_to=strtotime($this->data['Product Valid To']);
-	if (strtotime($this->data['Product Valid From'])<strtotime('today -3 month'))
-	  $_from=strtotime('today -3 month');
-	else
-	  $_from=strtotime($this->data['Product Valid From']);
-	$qdays=($_to-$_from)/ (60 * 60 * 24);
-      }
-
-      if (strtotime($this->data['Product Valid To'])<strtotime('today -1 month'))
-	$mdays=0;
-      else {
-	$_to=strtotime($this->data['Product Valid To']);
-	if (strtotime($this->data['Product Valid From'])<strtotime('today -1 month'))
-	  $_from=strtotime('today -1 month');
-	else
-	  $_from=strtotime($this->data['Product Valid From']);
-	$mdays=($_to-$_from)/ (60 * 60 * 24);
-      }
-      if (strtotime($this->data['Product Valid To'])<strtotime('today -1 week'))
-	$wdays=0;
-      else {
-	$_to=strtotime($this->data['Product Valid To']);
-	if (strtotime($this->data['Product Valid From'])<strtotime('today -1 week'))
-	  $_from=strtotime('today -1 week');
-	else
-	  $_from=strtotime($this->data['Product Valid From']);
-	$wdays=($_to-$_from)/ (60 * 60 * 24);
-      }
-
-
-      $for_sale_since=$this->data['Product Valid From'];
-      $last_sold_date=$this->data['Product Valid To'];
-
-
-
-      $sql=sprintf("update `Product Dimension` set `Product Total Days On Sale`=%f , `Product 1 Year Acc Days On Sale`=%f ,`Product 1 Quarter Acc Days On Sale`=%f ,`Product 1 Month Acc Days On Sale`=%f ,`Product 1 Week Acc Days On Sale`=%f  where `Product Key`=%d "
-		   ,$tdays
-		   ,$ydays
-		   ,$qdays
-		   ,$mdays
-		   ,$wdays
-
-
-		   ,$this->id
-		   );
-      // print "$sql\n";
-      if (!mysql_query($sql))
-	exit("$sql\ncan not update product days\n");
-
-      //same code
-      $total_days=array();
-      $y_days=array();
-      $q_days=array();
-      $m_days=array();
-      $w_days=array();
-
-
-
-      $sql=sprintf("select `Product Key`,`Product For Sale Since Date`,`Product Last Sold Date`,`Product Sales State` from `Product Dimension` where `Product Code`=%s",prepare_mysql($this->data['Product Code']));
-      $result=mysql_query($sql);
-      // print $sql;
-      while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
-	$from=strtotime($row['Product For Sale Since Date']);
-	$to=strtotime($row['Product Last Sold Date']);
-
-	if ($row['Product Sales State']=='For Sale')
-	  $to=strtotime('today');
-
-	if ($from>$to) {
-	  print "Error ".$this->data['Product Code']." (".$row['Product Key'].")  wrong dates skipping \n";
-	  continue;
-	}
-
-	$start_date = date("Y-m-d",$from);
-	$check_date = $start_date;
-	$end_date =date("Y-m-d",$to);
-
-
-
-	$i=0;
-	while ($check_date != $end_date) {
-
-
-	  if (isset($total_days[$check_date]))
-	    $total_days[$check_date]++;
-	  else
-	    $total_days[$check_date]=1;
-
-	  $_date=strtotime($check_date);
-
-	  if ($_date>strtotime('today - 1 year')) {
-	    if (isset($y_days[$check_date]))
-	      $y_days[$check_date]++;
-	    else
-	      $y_days[$check_date]=1;
-	  }
-	  if ($_date>strtotime('today - 3 month')) {
-	    if (isset($q_days[$check_date]))
-	      $q_days[$check_date]++;
-	    else
-	      $q_days[$check_date]=1;
-	  }
-	  if ($_date>strtotime('today - 1 month')) {
-	    if (isset($m_days[$check_date]))
-	      $m_days[$check_date]++;
-	    else
-	      $m_days[$check_date]=1;
-	  }
-	  if ($_date>strtotime('today - 3 month')) {
-	    if (isset($w_days[$check_date]))
-	      $w_days[$check_date]++;
-	    else
-	      $w_days[$check_date]=1;
-	  }
-
-
-	  $check_date = date ("Y-m-d", strtotime ("+1 day", strtotime($check_date)));
-	  $i++;
-
-	  if ($i > 50000) {
-	    die ("$start_date  $end_date   to many days Error a!");
-	  }
-	}
-	//   print "$start_date $end_date ".count($total_days)."\n";
-      }
-      // print_r($days);
-      $total_days=count($total_days);
-      $y_days=count($y_days);
-      $q_days=count($y_days);
-      $m_days=count($y_days);
-      $w_days=count($y_days);
-
-      $sql=sprintf("update `Product Dimension` set `Product Same Code Total Days On Sale`=%f ,`Product Same Code 1 Year Acc Days On Sale`=%f , `Product Same Code 1 Quarter Acc Days On Sale`=%f, `Product Same Code 1 Month Acc Days On Sale`=%f , `Product Same Code 1 Week Acc Days On Sale`=%f where  `Product Key`=%d "
-		   ,$total_days
-		   ,$y_days
-		   ,$q_days
-		   ,$m_days
-		   ,$w_days
-		   ,$this->id
-		   );
-
-      if (!mysql_query($sql))
-	exit("$sql\ncan not update product same code total days\n");
-
-
-      $total_days=array();
-      $y_days=array();
-      $q_days=array();
-      $m_days=array();
-      $w_days=array();
-
-
-
-      $sql=sprintf("select `Product Key`,`Product For Sale Since Date`,`Product Last Sold Date`,`Product Sales State` from `Product Dimension` where `Product ID`=%s",prepare_mysql($this->data['Product ID']));
-      $result=mysql_query($sql);
-
-      while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
-	$from=strtotime($row['Product For Sale Since Date']);
-	$to=strtotime($row['Product Last Sold Date']);
-
-	if ($row['Product Sales State']=='For Sale')
-	  $to=strtotime('today');
-
-
-	if ($from>$to) {
-	  print "Error ".$this->data['Product Code']." (".$row['Product Key'].")   wrong dates  ".$row['Product For Sale Since Date']." - ".$row['Product Last Sold Date']."  skipping \n";
-	  continue;
-	}
-
-
-	$start_date = date("Y-m-d",$from);
-	$check_date = $start_date;
-	$end_date =date("Y-m-d",$to);
-
-	//  print $this->data['Product Code']." $start_date $end_date  $check_date  \n";
-
-	$i=0;
-	while ($check_date != $end_date) {
-
-	  if (isset($total_days[$check_date]))
-	    $total_days[$check_date]++;
-	  else
-	    $total_days[$check_date]=1;
-
-	  $_date=strtotime($check_date);
-
-	  if ($_date>strtotime('today - 1 year')) {
-	    if (isset($y_days[$check_date]))
-	      $y_days[$check_date]++;
-	    else
-	      $y_days[$check_date]=1;
-	  }
-	  if ($_date>strtotime('today - 3 month')) {
-	    if (isset($q_days[$check_date]))
-	      $q_days[$check_date]++;
-	    else
-	      $q_days[$check_date]=1;
-	  }
-	  if ($_date>strtotime('today - 1 month')) {
-	    if (isset($m_days[$check_date]))
-	      $m_days[$check_date]++;
-	    else
-	      $m_days[$check_date]=1;
-	  }
-	  if ($_date>strtotime('today - 3 month')) {
-	    if (isset($w_days[$check_date]))
-	      $w_days[$check_date]++;
-	    else
-	      $w_days[$check_date]=1;
-	  }
-
-
-	  $check_date = date ("Y-m-d", strtotime ("+1 day", strtotime($check_date)));
-	  $i++;
-	  if ($i > 50000) {
-	    die ("$start_date  $end_date   to many days Error! b\n");
-	  }
-
-	}
-	//         print "$start_date $end_date ".count($days)."\n";
-      }
-      // print_r($days);
-      $total_days=count($total_days);
-      $y_days=count($y_days);
-      $q_days=count($y_days);
-      $m_days=count($y_days);
-      $w_days=count($y_days);
-      $sql=sprintf("update `Product Dimension` set `Product Same ID Total Days On Sale`=%f ,`Product Same ID 1 Year Acc Days On Sale`=%f , `Product Same ID 1 Quarter Acc Days On Sale`=%f, `Product Same ID 1 Month Acc Days On Sale`=%f , `Product Same ID 1 Week Acc Days On Sale`=%f where  `Product Key`=%d "
-		   ,$total_days
-		   ,$y_days
-		   ,$q_days
-		   ,$m_days
-		   ,$w_days
-		   ,$this->id
-		   );
-
-      if (!mysql_query($sql))
-	exit("$sql\ncan not update product same id total days\n");
+      
 
 
 
@@ -4765,6 +4510,280 @@ function update_description($description){
    
    $this->product_part=$part_list;
  }
+
+
+ function update_days(){
+
+
+
+   $sql=sprintf("select `Product History For Sale Since Date`,`Product History Last Sold Date`  from `Product History Dimension` where `Product Key`=%s",prepare_mysql($this->pid));
+   $result=mysql_query($sql);
+   
+   if ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
+     
+     
+
+   $tdays = (strtotime($row['Product History Last Sold Date']) - strtotime($row['Product History For Sale Since Date'])) / (60 * 60 * 24);
+
+
+      if (strtotime($row['Product History Last Sold Date'])<strtotime('today -1 year'))
+	$ydays=0;
+      else {
+	$_to=strtotime($row['Product History Last Sold Date']);
+	if (strtotime($row['Product History For Sale Since Date'])<strtotime('today -1 year'))
+	  $_from=strtotime('today -1 year');
+	else
+	  $_from=strtotime($row['Product History For Sale Since Date']);
+	$ydays=($_to-$_from)/ (60 * 60 * 24);
+      }
+
+
+      if (strtotime($row['Product History Last Sold Date'])<strtotime('today -3 month'))
+	$qdays=0;
+      else {
+	$_to=strtotime($row['Product History Last Sold Date']);
+	if (strtotime($row['Product History For Sale Since Date'])<strtotime('today -3 month'))
+	  $_from=strtotime('today -3 month');
+	else
+	  $_from=strtotime($row['Product History For Sale Since Date']);
+	$qdays=($_to-$_from)/ (60 * 60 * 24);
+      }
+
+      if (strtotime($row['Product History Last Sold Date'])<strtotime('today -1 month'))
+	$mdays=0;
+      else {
+	$_to=strtotime($row['Product History Last Sold Date']);
+	if (strtotime($row['Product History For Sale Since Date'])<strtotime('today -1 month'))
+	  $_from=strtotime('today -1 month');
+	else
+	  $_from=strtotime($row['Product History For Sale Since Date']);
+	$mdays=($_to-$_from)/ (60 * 60 * 24);
+      }
+      if (strtotime($row['Product History Last Sold Date'])<strtotime('today -1 week'))
+	$wdays=0;
+      else {
+	$_to=strtotime($row['Product History Last Sold Date']);
+	if (strtotime($row['Product History For Sale Since Date'])<strtotime('today -1 week'))
+	  $_from=strtotime('today -1 week');
+	else
+	  $_from=strtotime($row['Product History For Sale Since Date']);
+	$wdays=($_to-$_from)/ (60 * 60 * 24);
+      }
+
+
+      $for_sale_since=$row['Product History For Sale Since Date'];
+      $last_sold_date=$row['Product History Last Sold Date'];
+
+
+
+      $sql=sprintf("update `Product History Dimension` set `Product History Total Days On Sale`=%f , `Product History 1 Year Acc Days On Sale`=%f ,`Product History 1 Quarter Acc Days On Sale`=%f ,`Product History 1 Month Acc Days On Sale`=%f ,`Product History 1 Week Acc Days On Sale`=%f  where `Product key`=%d "
+		   ,$tdays
+		   ,$ydays
+		   ,$qdays
+		   ,$mdays
+		   ,$wdays
+
+
+		   ,$this->id
+		   );
+      // print "$sql\n";
+      if (!mysql_query($sql))
+	exit("$sql\ncan not update product days\n");
+   }
+
+
+      //same code
+      $total_days=array();
+      $y_days=array();
+      $q_days=array();
+      $m_days=array();
+      $w_days=array();
+
+
+
+      $sql=sprintf("select min(`Product For Sale Since Date`) as since ,max(`Product Last Sold Date`) as last ,sum(IF(`Product Sales State`='For Sale',1,0)) state from `Product Dimension` where `Product Code`=%s",prepare_mysql($this->data['Product Code']));
+      $result=mysql_query($sql);
+      // print $sql;
+      if ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
+	$from=strtotime($row['since']);
+	$to=strtotime($row['last']);
+
+	if ($row['state']>0)
+	  $to=strtotime('today');
+
+	if ($from>$to) {
+	  print "Error ".$this->data['Product Code']." (".$row['Product Key'].")  wrong dates skipping \n";
+	  continue;
+	}
+
+	$start_date = date("Y-m-d",$from);
+	$check_date = $start_date;
+	$end_date =date("Y-m-d",$to);
+
+
+
+	$i=0;
+	while ($check_date != $end_date) {
+
+
+	  if (isset($total_days[$check_date]))
+	    $total_days[$check_date]++;
+	  else
+	    $total_days[$check_date]=1;
+
+	  $_date=strtotime($check_date);
+
+	  if ($_date>strtotime('today - 1 year')) {
+	    if (isset($y_days[$check_date]))
+	      $y_days[$check_date]++;
+	    else
+	      $y_days[$check_date]=1;
+	  }
+	  if ($_date>strtotime('today - 3 month')) {
+	    if (isset($q_days[$check_date]))
+	      $q_days[$check_date]++;
+	    else
+	      $q_days[$check_date]=1;
+	  }
+	  if ($_date>strtotime('today - 1 month')) {
+	    if (isset($m_days[$check_date]))
+	      $m_days[$check_date]++;
+	    else
+	      $m_days[$check_date]=1;
+	  }
+	  if ($_date>strtotime('today - 3 month')) {
+	    if (isset($w_days[$check_date]))
+	      $w_days[$check_date]++;
+	    else
+	      $w_days[$check_date]=1;
+	  }
+
+
+	  $check_date = date ("Y-m-d", strtotime ("+1 day", strtotime($check_date)));
+	  $i++;
+
+	  if ($i > 50000) {
+	    die ("$start_date  $end_date   to many days Error a!");
+	  }
+	}
+	//   print "$start_date $end_date ".count($total_days)."\n";
+      }
+      // print_r($days);
+      $total_days=count($total_days);
+      $y_days=count($y_days);
+      $q_days=count($y_days);
+      $m_days=count($y_days);
+      $w_days=count($y_days);
+
+      $sql=sprintf("update `Product Same Code Dimension` set `Product Same Code Total Days On Sale`=%f ,`Product Same Code 1 Year Acc Days On Sale`=%f , `Product Same Code 1 Quarter Acc Days On Sale`=%f, `Product Same Code 1 Month Acc Days On Sale`=%f , `Product Same Code 1 Week Acc Days On Sale`=%f where  `Product Code`=%s "
+		   ,$total_days
+		   ,$y_days
+		   ,$q_days
+		   ,$m_days
+		   ,$w_days
+		   ,prepare_mysql($this->data['Product Code'])
+		   );
+
+      if (!mysql_query($sql))
+	exit("$sql\ncan not update product same code total days\n");
+
+
+      $total_days=array();
+      $y_days=array();
+      $q_days=array();
+      $m_days=array();
+      $w_days=array();
+
+
+
+      $sql=sprintf("select `Product For Sale Since Date`,`Product Last Sold Date`,`Product Sales State` from `Product Dimension` where `Product ID`=%s",prepare_mysql($this->data['Product ID']));
+      $result=mysql_query($sql);
+
+      if ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
+	$from=strtotime($row['Product For Sale Since Date']);
+	$to=strtotime($row['Product Last Sold Date']);
+
+	if ($row['Product Sales State']=='For Sale')
+	  $to=strtotime('today');
+
+
+	if ($from>$to) {
+	  print "Error ".$this->data['Product Code']." (".$row['Product Key'].")   wrong dates  ".$row['Product For Sale Since Date']." - ".$row['Product Last Sold Date']."  skipping \n";
+	  continue;
+	}
+
+
+	$start_date = date("Y-m-d",$from);
+	$check_date = $start_date;
+	$end_date =date("Y-m-d",$to);
+
+	//  print $this->data['Product Code']." $start_date $end_date  $check_date  \n";
+
+	$i=0;
+	while ($check_date != $end_date) {
+
+	  if (isset($total_days[$check_date]))
+	    $total_days[$check_date]++;
+	  else
+	    $total_days[$check_date]=1;
+
+	  $_date=strtotime($check_date);
+
+	  if ($_date>strtotime('today - 1 year')) {
+	    if (isset($y_days[$check_date]))
+	      $y_days[$check_date]++;
+	    else
+	      $y_days[$check_date]=1;
+	  }
+	  if ($_date>strtotime('today - 3 month')) {
+	    if (isset($q_days[$check_date]))
+	      $q_days[$check_date]++;
+	    else
+	      $q_days[$check_date]=1;
+	  }
+	  if ($_date>strtotime('today - 1 month')) {
+	    if (isset($m_days[$check_date]))
+	      $m_days[$check_date]++;
+	    else
+	      $m_days[$check_date]=1;
+	  }
+	  if ($_date>strtotime('today - 3 month')) {
+	    if (isset($w_days[$check_date]))
+	      $w_days[$check_date]++;
+	    else
+	      $w_days[$check_date]=1;
+	  }
+
+
+	  $check_date = date ("Y-m-d", strtotime ("+1 day", strtotime($check_date)));
+	  $i++;
+	  if ($i > 50000) {
+	    die ("$start_date  $end_date   to many days Error! b\n");
+	  }
+
+	}
+	//         print "$start_date $end_date ".count($days)."\n";
+      }
+      // print_r($days);
+      $total_days=count($total_days);
+      $y_days=count($y_days);
+      $q_days=count($y_days);
+      $m_days=count($y_days);
+      $w_days=count($y_days);
+      $sql=sprintf("update `Product Dimension` set `Product Total Days On Sale`=%f ,`Product 1 Year Acc Days On Sale`=%f , `Product 1 Quarter Acc Days On Sale`=%f, `Product 1 Month Acc Days On Sale`=%f , `Product 1 Week Acc Days On Sale`=%f where  `Product ID`=%d "
+		   ,$total_days
+		   ,$y_days
+		   ,$q_days
+		   ,$m_days
+		   ,$w_days
+		   ,$this->pid
+		   );
+
+      if (!mysql_query($sql))
+	exit("$sql\ncan not update product same id total days\n");
+
+ }
+
 
 }
 ?>

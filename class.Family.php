@@ -1422,7 +1422,7 @@ function update_sales_state(){
 	       ,$this->id
 	       );
   mysql_query($sql);
-  print $sql;
+  //print $sql;
 
 }
 
