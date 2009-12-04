@@ -38,14 +38,14 @@ while($row=mysql_fetch_array($result)   ){
   $product=new Product('id',$row['Product Key']);
   
   //$product->load('sales');
-   $product->load('parts');
+  //   $product->load('parts');
   // print "caca";
-  $product->load('sales');
+  //$product->load('sales');
 
 
   if(isset($argv[1]) and $argv[1]=='first' and isset($argv[2]) and $argv[2]=='aw'){
     
-  
+    
     
     if($product->data['Product Same Code Most Recent']=='Yes'){
       $state='For sale';
@@ -71,8 +71,8 @@ while($row=mysql_fetch_array($result)   ){
 	}
 	
     }else{
-	$state='Historic';
-	$discontinued_state='No Applicable';
+      $state='Historic';
+      	$discontinued_state='No Applicable';
 	
       }
       
@@ -100,7 +100,7 @@ while($row=mysql_fetch_array($result)   ){
 		,prepare_mysql($discontinued_state)
 
 		,$product->id);
-   // print "$sql\n\n";
+    print "$sql\n\n";
   if(!mysql_query($sql))
     exit("can not upodate state of the product");
 

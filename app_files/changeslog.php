@@ -113,7 +113,50 @@ ADD `Supplier Main Plain FAX` VARCHAR( 100 ) NOT NULL DEFAULT '' AFTER `Supplier
 ALTER TABLE `Product Dimension` ADD `Product Main Image` VARCHAR( 255 ) NOT NULL DEFAULT 'art/nopic.png' AFTER `Product XHTML Short Description` ;
 ALTER TABLE `dw`.`Image Bridge` DROP INDEX `Subject Type` ,
 ADD INDEX `Subject Type` ( `Subject Type` ) 
+
+ALTER TABLE `Product Department Dimension` ADD `Product Department Total Avg Week Sales Per Family` DECIMAL( 10, 2 ) NOT NULL DEFAULT '0';
+ALTER TABLE `Product Department Dimension` ADD `Product Department 1 Year Acc Avg Week Sales Per Family` DECIMAL( 10, 2 ) NOT NULL DEFAULT '0';
+ALTER TABLE `Product Department Dimension` ADD `Product Department 1 Quarter Acc Avg Week Sales Per Family` DECIMAL( 10, 2 ) NOT NULL DEFAULT '0';
+ALTER TABLE `Product Department Dimension` ADD `Product Department 1 Month Acc Avg Week Sales Per Family` DECIMAL( 10, 2 ) NOT NULL DEFAULT '0';
+ALTER TABLE `Product Department Dimension` ADD `Product Department 1 Week Acc Avg Week Sales Per Family` DECIMAL( 10, 2 ) NOT NULL DEFAULT '0';
+
+ALTER TABLE `Product Department Dimension` ADD `Product Department Total Avg Week Profit Per Family` DECIMAL( 10, 2 ) NOT NULL DEFAULT '0';
+ALTER TABLE `Product Department Dimension` ADD `Product Department 1 Year Acc Avg Week Profit Per Family` DECIMAL( 10, 2 ) NOT NULL DEFAULT '0';
+ALTER TABLE `Product Department Dimension` ADD `Product Department 1 Quarter Acc Avg Week Profit Per Family` DECIMAL( 10, 2 ) NOT NULL DEFAULT '0';
+ALTER TABLE `Product Department Dimension` ADD `Product Department 1 Month Acc Avg Week Profit Per Family` DECIMAL( 10, 2 ) NOT NULL DEFAULT '0';
+ALTER TABLE `Product Department Dimension` ADD `Product Department 1 Week Acc Avg Week Profit Per Family` DECIMAL( 10, 2 ) NOT NULL DEFAULT '0';
+
+
+ALTER TABLE `Product Department Dimension` ADD `Product Department Total Avg Week Sales Per Product` DECIMAL( 10, 2 ) NOT NULL DEFAULT '0';
+ALTER TABLE `Product Department Dimension` ADD `Product Department 1 Year Acc Avg Week Sales Per Product` DECIMAL( 10, 2 ) NOT NULL DEFAULT '0';
+ALTER TABLE `Product Department Dimension` ADD `Product Department 1 Quarter Acc Avg Week Sales Per Product` DECIMAL( 10, 2 ) NOT NULL DEFAULT '0';
+ALTER TABLE `Product Department Dimension` ADD `Product Department 1 Month Acc Avg Week Sales Per Product` DECIMAL( 10, 2 ) NOT NULL DEFAULT '0';
+ALTER TABLE `Product Department Dimension` ADD `Product Department 1 Week Acc Avg Week Sales Per Product` DECIMAL( 10, 2 ) NOT NULL DEFAULT '0';
+
+ALTER TABLE `Product Department Dimension` ADD `Product Department Total Avg Week Profit Per Product` DECIMAL( 10, 2 ) NOT NULL DEFAULT '0';
+ALTER TABLE `Product Department Dimension` ADD `Product Department 1 Year Acc Avg Week Profit Per Product` DECIMAL( 10, 2 ) NOT NULL DEFAULT '0';
+ALTER TABLE `Product Department Dimension` ADD `Product Department 1 Quarter Acc Avg Week Profit Per Product` DECIMAL( 10, 2 ) NOT NULL DEFAULT '0';
+ALTER TABLE `Product Department Dimension` ADD `Product Department 1 Month Acc Avg Week Profit Per Product` DECIMAL( 10, 2 ) NOT NULL DEFAULT '0';
+ALTER TABLE `Product Department Dimension` ADD `Product Department 1 Week Acc Avg Week Profit Per Product` DECIMAL( 10, 2 ) NOT NULL DEFAULT '0';
+
+
+ALTER TABLE `Product Family Dimension` ADD `Product Family Total Avg Week Sales Per Product` DECIMAL( 10, 2 ) NOT NULL DEFAULT '0';
+ALTER TABLE `Product Family Dimension` ADD `Product Family 1 Year Acc Avg Week Sales Per Product` DECIMAL( 10, 2 ) NOT NULL DEFAULT '0';
+ALTER TABLE `Product Family Dimension` ADD `Product Family 1 Quarter Acc Avg Week Sales Per Product` DECIMAL( 10, 2 ) NOT NULL DEFAULT '0';
+ALTER TABLE `Product Family Dimension` ADD `Product Family 1 Month Acc Avg Week Sales Per Product` DECIMAL( 10, 2 ) NOT NULL DEFAULT '0';
+ALTER TABLE `Product Family Dimension` ADD `Product Family 1 Week Acc Avg Week Sales Per Product` DECIMAL( 10, 2 ) NOT NULL DEFAULT '0';
+
+ALTER TABLE `Product Family Dimension` ADD `Product Family Total Avg Week Profit Per Product` DECIMAL( 10, 2 ) NOT NULL DEFAULT '0';
+ALTER TABLE `Product Family Dimension` ADD `Product Family 1 Year Acc Avg Week Profit Per Product` DECIMAL( 10, 2 ) NOT NULL DEFAULT '0';
+ALTER TABLE `Product Family Dimension` ADD `Product Family 1 Quarter Acc Avg Week Profit Per Product` DECIMAL( 10, 2 ) NOT NULL DEFAULT '0';
+ALTER TABLE `Product Family Dimension` ADD `Product Family 1 Month Acc Avg Week Profit Per Product` DECIMAL( 10, 2 ) NOT NULL DEFAULT '0';
+ALTER TABLE `Product Family Dimension` ADD `Product Family 1 Week Acc Avg Week Profit Per Product` DECIMAL( 10, 2 ) NOT NULL DEFAULT '0';
+ALTER TABLE `Product Family Dimension` ADD `Product Family Sales State` ENUM( 'For sale', 'Out of Stock', 'Not for Sale', 'Discontinued', 'Unknown', 'No Applicable' ) NOT NULL DEFAULT 'For sale' AFTER `Product Family Main Department Name` 
+
+
  */
+
+
 
 
 ?>
