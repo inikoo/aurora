@@ -697,7 +697,7 @@ function list_products_for_edition(){
       $processing=_('Editing');
 
     switch($row['Product Sales State']){
-    case('For sale'):
+    case('For Sale'):
       case('Out of Stock'):
 	$sales_state=_('For Sale');
 	break;

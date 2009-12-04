@@ -74,7 +74,7 @@ if(isset($_REQUEST['parent'])   ){
 
 
 
-$sql="select count(*) as total_products,sum(if(`Product Sales State`='For sale',1,0)) as for_sale  from `Product Dimension` ";
+$sql="select count(*) as total_products,sum(if(`Product Sales State`='For Sale',1,0)) as for_sale  from `Product Dimension` ";
 $result=mysql_query($sql);
 if(!$products=mysql_fetch_array($result, MYSQL_ASSOC))
   exit;

@@ -800,7 +800,7 @@ $price=$cols[7];
 
 
        $data=array(
-		  'product sales state'=>'For sale',
+		  'product sales state'=>'For Sale',
 		  'product type'=>'Normal',
 		  'product record type'=>'Normal',
 		  'product web state'=>'Online Auto',

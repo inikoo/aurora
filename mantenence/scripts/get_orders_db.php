@@ -853,7 +853,7 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
      }
 
       $product_data=array(
-			  'product sales state'=>'For sale',
+			  'product sales state'=>'For Sale',
 			  'product type'=>'Normal',
 			   ,'Product Locale'=>'en_GB'
 			  ,'Product Currency'=>'GBP'

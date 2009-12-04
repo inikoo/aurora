@@ -994,7 +994,7 @@ public $new_value=false;
   function get_base_data() {
     global $myconf;
     $base_data=array(
-		     'product sales state'=>'For sale',
+		     'product sales state'=>'For Sale',
 		     'product type'=>'Normal',
 		     'product record type'=>'In process',
 		     'product web state'=>'Offline',
@@ -1746,7 +1746,7 @@ public $new_value=false;
 
 
 
-      } else if ($this->data['Product Sales State']=='For sale') {
+      } else if ($this->data['Product Sales State']=='For Sale') {
 	if (!is_numeric($stock)) {
 	  $tipo='Unknown';
 	}
@@ -1876,7 +1876,7 @@ public $new_value=false;
 	$from=strtotime($row['Product For Sale Since Date']);
 	$to=strtotime($row['Product Last Sold Date']);
 
-	if ($row['Product Sales State']=='For sale')
+	if ($row['Product Sales State']=='For Sale')
 	  $to=strtotime('today');
 
 	if ($from>$to) {
@@ -1971,7 +1971,7 @@ public $new_value=false;
 	$from=strtotime($row['Product For Sale Since Date']);
 	$to=strtotime($row['Product Last Sold Date']);
 
-	if ($row['Product Sales State']=='For sale')
+	if ($row['Product Sales State']=='For Sale')
 	  $to=strtotime('today');
 
 
@@ -4466,7 +4466,7 @@ function update_description($description){
 
    while($row=mysql_fetch_array($res)){
     $data=array(
-		'product sales state'=>'For sale',
+		'product sales state'=>'For Sale',
 		'product type'=>'Mix',
 		'product record type'=>'Normal',
 		'product web state'=>'Offline',
