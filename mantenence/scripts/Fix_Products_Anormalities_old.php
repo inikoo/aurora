@@ -323,7 +323,7 @@ foreach($__cols as $cols){
 	$_w='';
       
       $data=array(
-		  'product sale state'=>'For sale',
+		  'product sale state'=>'For Sale',
 		  'product code'=>$code,
 		  'product price'=>sprintf("%.2f",$price),
 		  'product rrp'=>$rrp,

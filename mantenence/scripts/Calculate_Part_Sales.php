@@ -48,7 +48,7 @@ while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
   if($row2=mysql_fetch_array($result2, MYSQL_ASSOC)   ){
 
     
-    if(preg_match('/^For sale|Not for sale|Unknown/i',$row2['Product Sales State'])){
+    if(preg_match('/^For Sale|Not for sale|Unknown/i',$row2['Product Sales State'])){
       $in_use='In Use';
       $part_valid_to= date("Y-m-d H:i:s");
 

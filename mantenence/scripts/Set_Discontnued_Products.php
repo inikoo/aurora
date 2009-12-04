@@ -29,7 +29,7 @@ $stores=array(1,2,3);
 
 
 // $sql="select * from `Product History Dimension` PH  left join `Product Dimension` P on (P.`Product ID`=PH.`Product ID`)   where `Product Store Key` in (".join(',',$stores).")  order by `Product Key`  desc ";
-  $sql="select * from `Product Dimension`  ";
+  $sql="select * from `Product Dimension` ";
 
 
 $result=mysql_query($sql);

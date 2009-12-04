@@ -126,7 +126,7 @@ while($_product=mysql_fetch_array($result, MYSQL_ASSOC)   ){
 
 
  $data=array(
-		  'product sales state'=>'For sale',
+		  'product sales state'=>'For Sale',
 		  'product type'=>'Normal',
 		  'product record type'=>'Normal',
 		  'product web state'=>'Online Auto',

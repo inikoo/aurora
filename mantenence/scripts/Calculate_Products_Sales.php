@@ -48,7 +48,7 @@ while($row=mysql_fetch_array($result)   ){
     
     
     if($product->data['Product Same Code Most Recent']=='Yes'){
-      $state='For sale';
+      $state='For Sale';
 	$discontinued_state='No';
 	if($product->data['Product 1 Year Acc Quantity Ordered']==0 and (strtotime($product->data['Product Valid From'])<strtotime('today -1 year')    )){
 	  //check if has stock
@@ -86,9 +86,9 @@ while($row=mysql_fetch_array($result)   ){
     $record_state='Normal';
     $state='Discontinued';
     $web_state='Online';
-  }elseif($state=='For sale'){
+  }elseif($state=='For Sale'){
     $record_state='Normal';
-    $state='For sale';
+    $state='For Sale';
     $web_state='Online';
  }
   

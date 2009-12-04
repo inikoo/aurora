@@ -1238,7 +1238,7 @@ $sql=sprintf("select count(Distinct `Order Key`) as pending_orders   from `Order
  }
 
 function update_product_data(){
- $sql=sprintf("select sum(if(`Product Record Type`='In process',1,0)) as in_process,sum(if(`Product Sales State`='Unknown',1,0)) as sale_unknown, sum(if(`Product Sales State`='Discontinued',1,0)) as discontinued,sum(if(`Product Sales State`='Not for sale',1,0)) as not_for_sale,sum(if(`Product Sales State`='For sale',1,0)) as for_sale,sum(if(`Product Availability State`='Unknown',1,0)) as availability_unknown,sum(if(`Product Availability State`='Optimal',1,0)) as availability_optimal
+ $sql=sprintf("select sum(if(`Product Record Type`='In process',1,0)) as in_process,sum(if(`Product Sales State`='Unknown',1,0)) as sale_unknown, sum(if(`Product Sales State`='Discontinued',1,0)) as discontinued,sum(if(`Product Sales State`='Not for sale',1,0)) as not_for_sale,sum(if(`Product Sales State`='For Sale',1,0)) as for_sale,sum(if(`Product Availability State`='Unknown',1,0)) as availability_unknown,sum(if(`Product Availability State`='Optimal',1,0)) as availability_optimal
 ,sum(if(`Product Availability State`='Low',1,0)) as availability_low
 ,sum(if(`Product Availability State`='Surplus',1,0)) as availability_surplus
 
@@ -1422,7 +1422,7 @@ function update_sales_state(){
 	       ,$this->id
 	       );
   mysql_query($sql);
-  
+  print $sql;
 
 }
 
