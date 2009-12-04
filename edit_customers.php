@@ -47,21 +47,10 @@ $smarty->assign('store',$store);
 
 $_SESSION['state']['customers']['store']=$store_id;
 
-
-
 $general_options_list=array();
-
-
 $general_options_list[]=array('tipo'=>'url','url'=>'customers.php','label'=>_('Exit Edit'));
- $general_options_list[]=array('tipo'=>'url','url'=>'new_customer.php?edit=1','label'=>_('Add Customer'));
-
+$general_options_list[]=array('tipo'=>'url','url'=>'new_customer.php?edit=1','label'=>_('Add Customer'));
 $smarty->assign('general_options_list',$general_options_list);
-
-
-
-
-
-
 
 $css_files=array(
 		 $yui_path.'reset-fonts-grids/reset-fonts-grids.css',
