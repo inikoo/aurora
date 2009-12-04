@@ -185,7 +185,20 @@ $default_state=array(
 							  )
 				    ),
 
-
+'marketing'=>array(
+				    
+				    'table'=>array(
+							  'order'=>'date',
+							  'order_dir'=>'desc',
+							  'sf'=>0,
+							  'nr'=>25,
+							  'where'=>'where true',
+							  'f_field'=>'subject',
+							  'f_value'=>'',
+							  'from'=>'',
+							  'to'=>''
+							  )
+				    ),
 		     'reports'=>array(
 				      'view'=>'sales',
 				      'sales'=>array(
