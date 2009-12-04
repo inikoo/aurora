@@ -68,12 +68,25 @@ $js_files=array(
 		'table_common.js.php',
 	
 		'js/edit_common.js',
+	
 		'edit_suppliers.js.php'
 		);
 
 
 
+ $js_files[]='js/validate_telecom.js';
+  $js_files[]='new_company.js.php?scope=supplier';
+  $js_files[]='edit_address.js.php';
+  $js_files[]='edit_contact_from_parent.js.php';
+  $js_files[]='edit_contact_telecom.js.php';
+  $js_files[]='edit_contact_name.js.php';
+  $js_files[]='edit_contact_email.js.php';
 
+
+$smarty->assign('edit',$_SESSION['state']['suppliers']['edit']);
+
+
+$smarty->assign('scope','supplier');
 
 $smarty->assign('parent','suppliers.php');
 $smarty->assign('title', _('Edit Suppliers'));

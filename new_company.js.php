@@ -23,9 +23,14 @@ while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
 mysql_free_result($result);
 $country_list=preg_replace('/^\,/','',$country_list);
 
+$scope='company';
+if(isset($_REQUEST['scope']) and preg_match('/supplier|customer/',$_REQUEST['scope']))
+    $scope=$_REQUEST['scope'];
+$action_after_create=$_SESSION['state'][$scope]['action_after_create'];
 
 
-
+print "var scope='$scope';";
+print "var action_after_create='$action_after_create';";
 
 ?>
 var Dom   = YAHOO.util.Dom;
@@ -181,7 +186,13 @@ function get_address_data(){
     company_data['Company Address Country Fifth Division']=Dom.get('address_country_d5').value;
 }
 
+function pick_it(key){
+    get_data();
+    var json_value = YAHOO.lang.JSON.stringify(company_data); 
+    
+    window.location='edit_'+scope+'.php?id='+key+'&data=';
 
+}
 
 function get_data(){
     get_company_data();
@@ -201,17 +212,21 @@ var save_new_company=function(e){
 
     
     var json_value = YAHOO.lang.JSON.stringify(company_data); 
-    var request='ar_edit_contacts.php?tipo=new_company&values=' + encodeURIComponent(json_value); 
-    alert(request);
-    return;
+    var request='ar_edit_contacts.php?tipo=new_'+scope+'&values=' + encodeURIComponent(json_value); 
+    //    alert(request);
+
     YAHOO.util.Connect.asyncRequest('POST',request ,{
 	    success:function(o) {
-	
+		//alert(o.responseText);
 		var r =  YAHOO.lang.JSON.parse(o.responseText);
-		if(r.action=='updated'){
-		    Dom.get(items[i]).value=r.value;
-		    Dom.get(items[i]).getAttribute('ovalue')=r.newvalue;
-		    save_details++;
+		if(r.action=='created'){
+		    if(action_after_create=='add_another'){
+
+
+		    }else{
+		        window.location=scope+'.php?id='+r.company_key;
+		    }
+		    
 		}else if(r.action=='error'){
 		    alert(r.msg);
 		}
@@ -275,14 +290,14 @@ var find_company=function(){
 		
 		for(x in r.candidates_data){
 		    
-		    Dom.get("results").innerHTML+='<div style="width:100%;xborder:1px solid red"><div style="width:200px;margin:5px 0px;float:left;margin-right:15px" class="contact_display">'+r.candidates_data[x]['card']+'</div> <div style="xborder:1px solid blue;margin-left:230px;;margin-top:5px"><div id="score_'+r.candidates_data[x]['tipo']+r.candidates_data[x]['key']+'" >'+r.candidates_data[x]['score']+'</div> <span class="button edit" style="margin:10px 0;float:left"><?php echo _('Choose This')?></span><div style="clear:both"></div><div style="clear:both"> </div>';
+		    Dom.get("results").innerHTML+='<div style="width:100%;xborder:1px solid red;"><div style="xborder:1px solid blue;width:200px;margin:0px 0px 10px 0;float:left;margin-left:100px" class="contact_display">'+r.candidates_data[x]['card']+'</div> <div style="xborder:1px solid green;margin-left:350px;;margin-top:5px"><div id="score_'+r.candidates_data[x]['tipo']+r.candidates_data[x]['key']+'" >'+r.candidates_data[x]['score']+'</div> <span onclick="pick_it('+r.candidates_data[x]['key']+')"  class="state_details" style="margin:10px 0;float:left"><?php echo _('Choose This')?></span><div style="clear:both"></div><div style="clear:both"> </div>';
 		    
 		    var found_img='';
 		    // alert(r.candidates_data[x]['found']);return;
 		    if(r.candidates_data[x]['found']==1)
 			found_img='<img src="art/icons/award_star_gold_1.png"/>';
 		    
-		    Dom.get('score_'+r.candidates_data[x]['tipo']+r.candidates_data[x]['key']).innerHTML=star_rating(r.candidates_data[x]['score'],200).innerHTML+found_img+'<span style="font-size:80%;margin-left:10px">('+Math.round(r.candidates_data[x]['score'])+')</span>';
+		    Dom.get('score_'+r.candidates_data[x]['tipo']+r.candidates_data[x]['key']).innerHTML=star_rating(r.candidates_data[x]['score'],200).innerHTML+found_img+'<span style="font-size:80%;margin-left:0px"> Score ('+Math.round(r.candidates_data[x]['score'])+')</span>';
 		    
 		    
 		    
@@ -374,22 +389,23 @@ var find_company=function(){
 
 function display_form_state(){
     
-   
-
+    
+    
     if(company_found==true){
 	Dom.get('mark_company_found').style.display='';
     }else{
 	Dom.get('mark_company_found').style.display='none';
 
     }
-
+    
     for (i in validate_data){
-
+	// alert(i+'_valid')
 	if(validate_data[i].validated==true)
 	    Dom.get(i+'_valid').innerHTML="<img src='art/icons/accept.png'>";
-	else
-	    Dom.get(i+'_valid').innerHTML="<img src='art/icons/cross.png'>";
-
+	else{
+	    
+	    //Dom.get(i+'_valid').innerHTML="<img src='art/icons/cross.png'>";
+	}
 
 	if(validate_data[i].inputed==true){
 	    
@@ -397,9 +413,9 @@ function display_form_state(){
 	  
 
 
-	}else
-	    Dom.get(i+'_inputed').innerHTML="";
-
+	}else{
+	    //Dom.get(i+'_inputed').innerHTML="";
+	}
 	
 
     }
@@ -674,21 +690,9 @@ function  validate_email(email) {
 
 
 
-
     function init(){
     
-	//   var ids = ["personal","pictures","work","other"]; 
-	//	YAHOO.util.Event.addListener(ids, "click", change_block);
-	// YAHOO.util.Event.addListener('save_details_button', "click",save_details );
 
-	//YAHOO.util.Event.addListener('cancel_save_details_button', "click",cancel_save_details );
-	//YAHOO.util.Event.addListener('add_address_button', "click",edit_address,false );
-
-
-	//var ids = ["name","fiscal_name","tax_number","registration_number"]; 
-	
-	
-	//	YAHOO.util.Event.addListener('address_postal_code', "keyup",validate_postal_code);
  
 	YAHOO.util.Event.addListener('Telephone', "blur",telephone_inputed);
 
@@ -871,6 +875,17 @@ function  validate_email(email) {
 	var company_name_oAutoComp = new YAHOO.widget.AutoComplete("Company_Name","Company_Name_Container", company_name_oACDS);
 	company_name_oAutoComp.minQueryLength = 0; 
 	company_name_oAutoComp.queryDelay = 0.75;
+
+	if(scope=='supplier'){
+	    
+	    var supplier_code_oACDS = new YAHOO.util.FunctionDataSource(validate_supplier_code);
+	    supplier_code_oACDS.queryMatchContains = true;
+	    var supplier_code_oAutoComp = new YAHOO.widget.AutoComplete("Supplier_Code","Supplier_Code_Container", supplier_code_oACDS);
+	    supplier_code_oAutoComp.minQueryLength = 0; 
+	    supplier_code_oAutoComp.queryDelay = 0.75;
+	    
+	}
+
 
 	var contact_name_oACDS = new YAHOO.util.FunctionDataSource(validate_contact_name);
 	contact_name_oACDS.queryMatchContains = true;

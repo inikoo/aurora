@@ -68,6 +68,7 @@ $js_files=array(
   
   $sql=sprintf("select * from kbase.`Salutation Dimension` S left join kbase.`Language Dimension` L on S.`Language Code`=L.`Language ISO 639-1 Code` where `Language ISO 639-1 Code`=%s limit 1000",prepare_mysql($myconf['lang']));
 //print $sql;
+
 $result=mysql_query($sql);
   $salutations=array();
   while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
