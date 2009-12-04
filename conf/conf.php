@@ -560,7 +560,7 @@ $default_state=array(
 
 		     'customer'=>array(
 				       'id'=>1,
-
+				       'action_after_create'=>'continue',
 				       'table'=>array(
 						      'order'=>'date',
 						      'order_dir'=>'desc',
@@ -577,7 +577,7 @@ $default_state=array(
 				       ),
 		     'company'=>array(
 				      'id'=>1,
-
+				      'action_after_create'=>'continue',
 				      'table'=>array(
 						     'order'=>'date',
 						     'order_dir'=>'desc',
@@ -612,7 +612,7 @@ $default_state=array(
 		     'suppliers'=>array(
 					'details'=>false,
 					'view'=>'general',
-
+					'edit'=>'suppliers',
 					'table'=>array(
 						       'order'=>'name',
 						       'order_dir'=>'',
@@ -1270,6 +1270,7 @@ $default_state=array(
 
 		     'supplier'=>array(
 				       'details'=>false,
+				       'action_after_create'=>'continue',
 				       'plot'=>'sales_month',
 				       'id'=>1,
 				       'display'=>array('details'=>0,'history'=>0,'products'=>1,'po'=>0),
