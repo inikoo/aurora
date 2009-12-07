@@ -2956,7 +2956,8 @@ function list_departments() {
     }
 
     if ($period=='all') {
-
+      //$aws_p=money($row['Product Department Total Avg Week Sales Per Product']);
+      // $awp_p=money($row['Product Department Total Avg Week Profit Per Product']);
 
         $sum_total_sales=0;
         $sum_month_sales=0;
@@ -3004,7 +3005,8 @@ function list_departments() {
         mysql_free_result($result);
     }
     elseif($period=='year') {
-
+      //$aws_p=money($data['Product Department 1 Year Acc Avg Week Sales Per Product']);
+      //$awp_p=money($data['Product Department 1 Year Acc Avg Week Profit Per Product']);
         $sum_total_sales=0;
         $sum_month_sales=0;
         $sql="select max(`Product Department 1 Year Acc Days Available`) as 'Product Department 1 Year Acc Days Available',max(`Product Department 1 Year Acc Days On Sale`) as 'Product Department 1 Year Acc Days On Sale', sum(if(`Product Department 1 Year Acc Profit`<0,`Product Department 1 Year Acc Profit`,0)) as total_profit_minus,sum(if(`Product Department 1 Year Acc Profit`>=0,`Product Department 1 Year Acc Profit`,0)) as total_profit_plus,sum(`Product Department For Sale Products`) as sum_active,sum(`Product Department 1 Year Acc Invoiced Amount`) as sum_total_sales  from `Product Department Dimension`  $where  ";
@@ -3068,7 +3070,8 @@ function list_departments() {
         mysql_free_result($result);
     }
     elseif($period=='quarter') {
-
+      // $aws_p=money($row['Product Department 1 Quarter Acc Avg Week Sales Per Product']);
+      //$awp_p=money($row['Product Department 1 Quarter Acc Avg Week Profit Per Product']);
         $sum_total_sales=0;
         $sum_month_sales=0;
         $sql="select max(`Product Department 1 Quarter Acc Days Available`) as 'Product Department 1 Quarter Acc Days Available',max(`Product Department 1 Quarter Acc Days On Sale`) as 'Product Department 1 Quarter Acc Days On Sale',sum(if(`Product Department 1 Quarter Acc Profit`<0,`Product Department 1 Quarter Acc Profit`,0)) as total_profit_minus,sum(if(`Product Department 1 Quarter Acc Profit`>=0,`Product Department 1 Quarter Acc Profit`,0)) as total_profit_plus,sum(`Product Department For Sale Products`) as sum_active,sum(`Product Department 1 Quarter Acc Invoiced Amount`) as sum_total_sales   from `Product Department Dimension`  $where  ";
@@ -3120,7 +3123,9 @@ function list_departments() {
         mysql_free_result($result);
     }
     elseif($period=='month') {
-
+      //$aws_p=money($row['Product Department 1 Month Acc Avg Week Sales Per Product']);
+      //$awp_p=money($row['Product Department 1 Month Acc Avg Week Profit Per Product']);
+      
         $sum_total_sales=0;
         $sum_month_sales=0;
         $sql="select max(`Product Department 1 Month Acc Days Available`) as 'Product Department 1 Month Acc Days Available',max(`Product Department 1 Month Acc Days On Sale`) as 'Product Department 1 Month Acc Days On Sale',sum(if(`Product Department 1 Month Acc Profit`<0,`Product Department 1 Month Acc Profit`,0)) as total_profit_minus,sum(if(`Product Department 1 Month Acc Profit`>=0,`Product Department 1 Month Acc Profit`,0)) as total_profit_plus,sum(`Product Department For Sale Products`) as sum_active,sum(`Product Department 1 Month Acc Invoiced Amount`) as sum_total_sales   from `Product Department Dimension`   $where ";
@@ -3128,7 +3133,7 @@ function list_departments() {
         $result=mysql_query($sql);
         if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
 
-
+	  
    if ($avg=='totals')
                     $factor=1;
                 elseif($avg=='month') {
@@ -3171,7 +3176,8 @@ function list_departments() {
         mysql_free_result($result);
     }
     elseif($period=='week') {
-
+      //$aws_p=money($row['Product Department 1 Week Acc Avg Week Sales Per Product']);
+      //$awp_p=money($row['Product Department 1 Week Acc Avg Week Profit Per Product']);
         $sum_total_sales=0;
         $sum_month_sales=0;
         $sql="select max(`Product Department 1 Week Acc Days Available`) as 'Product Department 1 Week Acc Days Available',max(`Product Department 1 Week Acc Days On Sale`) as 'Product Department 1 Week Acc Days On Sale',sum(if(`Product Department 1 Week Acc Profit`<0,`Product Department 1 Week Acc Profit`,0)) as total_profit_minus,sum(if(`Product Department 1 Week Acc Profit`>=0,`Product Department 1 Week Acc Profit`,0)) as total_profit_plus,sum(`Product Department For Sale Products`) as sum_active,sum(`Product Department 1 Week Acc Invoiced Amount`) as sum_total_sales   from `Product Department Dimension`  $where  ";
@@ -3179,7 +3185,9 @@ function list_departments() {
         $result=mysql_query($sql);
         if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
 
- if ($avg=='totals')
+	  
+	 
+	  if ($avg=='totals')
                     $factor=1;
                 elseif($avg=='month') {
                     if ($row['Product Department 1 Week Acc Days On Sale']>0)
@@ -3236,6 +3244,26 @@ function list_departments() {
       	$currency_code=$row['Product Department Currency Code'];
         $code=sprintf('<a href="department.php?id=%d">%s</a>',$row['Product Department Key'],$row['Product Department Code']);
         $name=sprintf('<a href="department.php?id=%d">%s</a>',$row['Product Department Key'],$row['Product Department Name']);
+
+
+
+	if ($period=='all') {
+	  $aws_p=money($row['Product Department Total Avg Week Sales Per Product']);
+	  $awp_p=money($row['Product Department Total Avg Week Profit Per Product']);
+	}elseif($period=='year'){
+	  $aws_p=money($row['Product Department 1 Year Acc Avg Week Sales Per Product']);
+	  $awp_p=money($row['Product Department 1 Year Acc Avg Week Profit Per Product']);
+	}elseif($period=='quarter'){
+	  $aws_p=money($row['Product Department 1 Quarter Acc Avg Week Sales Per Product']);
+	  $awp_p=money($row['Product Department 1 Quarter Acc Avg Week Profit Per Product']);
+	}elseif($period=='month'){
+	  $aws_p=money($row['Product Department 1 Month Acc Avg Week Sales Per Product']);
+	  $awp_p=money($row['Product Department 1 Month Acc Avg Week Profit Per Product']);
+	}elseif($period=='week'){
+	  $aws_p=money($row['Product Department 1 Week Acc Avg Week Sales Per Product']);
+	  $awp_p=money($row['Product Department 1 Week Acc Avg Week Profit Per Product']);
+	}
+
 
         if ($percentages) {
             if ($period=='all') {
@@ -3507,7 +3535,9 @@ function list_departments() {
 
 
                      'sales'=>$tsall,
-                     'profit'=>$tprofit
+                     'profit'=>$tprofit,
+		     'aws_p'=>$aws_p,
+                     'awp_p'=>$awp_p
 
                  );
 
@@ -4374,6 +4404,7 @@ function list_products() {
                      'web'=>$web_state,
 		     'image'=>$row['Product Main Image'],
 		     'type'=>'item'
+		    
                  );
     }
 
@@ -5009,26 +5040,26 @@ function list_parts() {
 
 
         $adata[]=array(
-                     'sku'=>sprintf('<a href="part.php?id=%d">%06d</a>',$data['Part SKU'],$data['Part SKU'])
-                           ,'description'=>$data['Part XHTML Description']
-                                          ,'used_in'=>$data['Part XHTML Currently Used In']
-                                                     ,'supplied_by'=>$data['Part XHTML Currently Supplied By']
-                                                                    ,'stock'=>number($data['Part Current Stock'])
-                                                                             ,'available_for'=>interval($data['Part XHTML Available For Forecast'])
-                                                                                              ,'stock_value'=>money($data['Part Current Stock Cost'])
+		       'sku'=>sprintf('<a href="part.php?id=%d">%06d</a>',$data['Part SKU'],$data['Part SKU'])
+		       ,'description'=>$data['Part XHTML Description']
+		       ,'used_in'=>$data['Part XHTML Currently Used In']
+		       ,'supplied_by'=>$data['Part XHTML Currently Supplied By']
+		       ,'stock'=>number($data['Part Current Stock'])
+		       ,'available_for'=>interval($data['Part XHTML Available For Forecast'])
+		       ,'stock_value'=>money($data['Part Current Stock Cost'])
                                                                                                              ,'sold'=>$sold
-                                                                                                                     ,'given'=>$given
-                                                                                                                              ,'money_in'=>$sold_amount
-                                                                                                                                          ,'profit'=>$abs_profit
+		       ,'given'=>$given
+		       ,'money_in'=>$sold_amount
+		       ,'profit'=>$abs_profit
                                                                                                                                                     ,'profit_sold'=>$profit_sold
-                                                                                                                                                                   ,'margin'=>$margin
-                                                                                                                                                                             ,'avg_stock'=>$avg_stock
-                                                                                                                                                                                          ,'avg_stockvalue'=>$avg_stockvalue
-                                                                                                                                                                                                            ,'keep_days'=>$keep_days
-                                                                                                                                                                                                                         ,'outstock_days'=>$outstock_days
-                                                                                                                                                                                                                                          ,'unknown_days'=>$unknown_days
-                                                                                                                                                                                                                                                          ,'gmroi'=>$gmroi
-                 );
+		       ,'margin'=>$margin
+		       ,'avg_stock'=>$avg_stock
+		       ,'avg_stockvalue'=>$avg_stockvalue
+		       ,'keep_days'=>$keep_days
+		       ,'outstock_days'=>$outstock_days
+		       ,'unknown_days'=>$unknown_days
+		       ,'gmroi'=>$gmroi
+		       );
     }
 
     $total_title=_('Total');
