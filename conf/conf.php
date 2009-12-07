@@ -1270,6 +1270,7 @@ $default_state=array(
 
 		     'supplier'=>array(
 				       'details'=>false,
+				       'edit'=>'details',
 				       'action_after_create'=>'continue',
 				       'plot'=>'sales_month',
 				       'id'=>1,

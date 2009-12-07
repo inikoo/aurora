@@ -75,6 +75,10 @@ case('edit_email'):
 
   edit_email($data);
   break;
+case('remove_address'):
+case('delete_address'):
+  delete_address();
+  break;
 case('remove_email'):
 case('delete_email'):
   delete_email();
@@ -141,8 +145,11 @@ global $editor;
 
  }
 
- 
- $contact_data['editor']=$editor;
+ $contact->editor=$editor;
+
+
+ // print_r($contact_data);
+ // return;
  $contact->update($contact_data);
  
  $contact->reread();
@@ -199,7 +206,7 @@ global $editor;
    $company_key=$_REQUEST['id'];
 
  $company=new Company($company_key);
-
+ $company->editor=$editor;
  if(!$company->id){
    $response=array('state'=>400,'msg'=>_('Company not found'));
     echo json_encode($response);
@@ -216,10 +223,12 @@ global $editor;
 		   );
 		  
   if (array_key_exists($_REQUEST['key'], $translator)) {
+    
     $update_data=array(
-		       'editor'=>$editor
-		       ,$translator[$_REQUEST['key']]=>stripslashes(urldecode($_REQUEST['newvalue']))
+		      
+		       $translator[$_REQUEST['key']]=>stripslashes(urldecode($_REQUEST['newvalue']))
 		       );
+    print_r($update_data);
     $company->update($update_data);
     
     if($company->error_updated){
@@ -485,10 +494,10 @@ if( !isset($_REQUEST['value']) ){
    
  $translator=array(
 		     'country_code'=>'Address Country Code'
-		     ,'country_d1'=>'Address Country Primary Division'
+		     ,'country_d1'=>'Address Country First Division'
 		     ,'country_d2'=>'Address Country Secondary Division'
 		     ,'town'=>'Address Town'
-		     ,'town_d1'=>'Address Town Primary Division'
+		     ,'town_d1'=>'Address Town First Division'
 		     ,'town_d2'=>'Address Town Secondary Division'
 		     ,'postal_code'=>'Address Postal Code'
 		     ,'street'=>'Street Data'
@@ -527,12 +536,12 @@ if( !isset($_REQUEST['value']) ){
      $updated_address_data=array(
 				 'country'=>$address->data['Address Country Name']
 				 ,'country_code'=>$address->data['Address Country Code']
-				 ,'country_d1'=> $address->data['Address Country Primary Division']
-				 ,'country_d2'=> $address->data['Address Country Secondary Division']
+				 ,'country_d1'=> $address->data['Address Country First Division']
+				 ,'country_d2'=> $address->data['Address Country Second Division']
 				 ,'town'=> $address->data['Address Town']
 				 ,'postal_code'=> $address->data['Address Postal Code']
-				 ,'town_d1'=> $address->data['Address Town Primary Division']
-				 ,'town_d2'=> $address->data['Address Town Secondary Division']
+				 ,'town_d1'=> $address->data['Address Town First Division']
+				 ,'town_d2'=> $address->data['Address Town Second Division']
 				 ,'fuzzy'=> $address->data['Address Fuzzy']
 				 ,'street'=> $address->display('street')
 				 ,'building'=>  $address->data['Address Building']
@@ -697,11 +706,11 @@ global $editor;
 
    $translator=array(
 		     'country_code'=>'Address Country Code'
-		     ,'country_d1'=>'Address Country Primary Division'
-		     ,'country_d2'=>'Address Country Secondary Division'
+		     ,'country_d1'=>'Address Country First Division'
+		     ,'country_d2'=>'Address Country Second Division'
 		     ,'town'=>'Address Town'
-		     ,'town_d1'=>'Address Town Primary Division'
-		     ,'town_d2'=>'Address Town Secondary Division'
+		     ,'town_d1'=>'Address Town First Division'
+		     ,'town_d2'=>'Address Town Second Division'
 		     ,'postal_code'=>'Address Postal Code'
 		     ,'street'=>'Street Data'
 		     ,'internal'=>'Address Internal'
@@ -729,12 +738,12 @@ global $editor;
      $updated_address_data=array(
 				 'country'=>$address->data['Address Country Name']
 				 ,'country_code'=>$address->data['Address Country Code']
-				 ,'country_d1'=> $address->data['Address Country Primary Division']
-				 ,'country_d2'=> $address->data['Address Country Secondary Division']
+				 ,'country_d1'=> $address->data['Address Country First Division']
+				 ,'country_d2'=> $address->data['Address Country Second Division']
 				 ,'town'=> $address->data['Address Town']
 				 ,'postal_code'=> $address->data['Address Postal Code']
-				 ,'town_d1'=> $address->data['Address Town Primary Division']
-				 ,'town_d2'=> $address->data['Address Town Secondary Division']
+				 ,'town_d1'=> $address->data['Address Town First Division']
+				 ,'town_d2'=> $address->data['Address Town Second Division']
 				 ,'fuzzy'=> $address->data['Address Fuzzy']
 				 ,'street'=> $address->display('street')
 				 ,'building'=>  $address->data['Address Building']
@@ -822,6 +831,82 @@ global $editor;
     
    echo json_encode($response);
 }
+
+
+function delete_address(){
+global $editor;
+
+  if( !isset($_REQUEST['value']) or !is_numeric($_REQUEST['value']) ){
+    $response=array('state'=>400,'msg'=>'Error no value');
+    echo json_encode($response);
+    return;
+   }
+   
+ 
+   if( !isset($_REQUEST['subject_key'])  or !is_numeric($_REQUEST['subject_key']) or $_REQUEST['subject_key']<=0  ){
+     $response=array('state'=>400,'msg'=>'Error wrong subject_key');
+     echo json_encode($response);
+    return;
+   }
+
+
+
+   if( !isset($_REQUEST['subject'])  
+       or !is_numeric($_REQUEST['subject_key'])
+       or $_REQUEST['subject_key']<=0       or !preg_match('/^company|contact$/i',$_REQUEST['subject'])
+       
+       ){
+     $response=array('state'=>400,'msg'=>'Error wrong subject/subject key');
+      echo json_encode($response);
+    return;
+   }
+   $subject_type=$_REQUEST['subject'];
+   $subject_key=$_REQUEST['subject_key'];
+
+   if(preg_match('/^company$/i',$subject_type))
+     $subject=new Company($subject_key);
+   else{
+     $subject=new Contact($subject_key);
+   }
+   
+   
+   if(!$subject->id){
+     $response=array('state'=>400,'msg'=>'Subject not found');
+     echo json_encode($response);
+     return;
+   }
+   
+   
+   
+   $address_key=$_REQUEST['value'];
+
+  
+
+   $subject->remove_address($address_key);
+   
+   if($subject->updated){
+     $action='deleted';
+     $msg=_('Address deleted');
+     $subject->reread();
+   }else{
+     $action='nochage';
+     $msg=_('Address could not be deleted');
+   }
+  
+   
+
+   $response=array('state'=>200,'action'=>$action,'msg'=>$msg,'address_key'=>$address_key,'xhtml_subject'=>$subject->display('card'),'main_address_key'=>$subject->get_main_address_key());
+     
+    
+   echo json_encode($response);
+}
+
+
+
+
+
+
+
 function edit_company2(){
   $company=new Company($_REQUEST['id']);
    $company->update($_REQUEST['key'],stripslashes(urldecode($_REQUEST['newvalue'])),stripslashes(urldecode($_REQUEST['oldvalue'])));

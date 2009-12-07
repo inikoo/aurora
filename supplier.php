@@ -84,22 +84,47 @@ $smarty->assign('title','Supplier: '.$supplier->get('Supplier Code'));
 
 
 if($edit){
- $sql=sprintf("select * from kbase.`Salutation Dimension` S left join kbase.`Language Dimension` L on S.`Language Key`=L.`Language Key` where `Language Code`=%s limit 1000",prepare_mysql($myconf['lang']));
+ $sql=sprintf("select * from kbase.`Salutation Dimension` S left join kbase.`Language Dimension` L on S.`Language Code`=L.`Language ISO 639-1 Code`  where `Language Code`=%s limit 1000",prepare_mysql($myconf['lang']));
   $result=mysql_query($sql);
   $salutations=array();
   while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
     $salutations[]=array('txt'=>$row['Salutation'],'relevance'=>$row['Relevance'],'id'=>$row['Salutation Key']);
   }
   $smarty->assign('prefix',$salutations);
-  $editing_block='details';
+  $editing_block=$_SESSION['state']['supplier']['edit'];
   $smarty->assign('edit',$editing_block);
 
+  $addresses=$company->get_addresses();
+  $smarty->assign('addresses',$addresses);
+  $number_of_addresses=count($addresses);
+  $smarty->assign('number_of_addresses',$number_of_addresses);
 
-    $js_files[]=sprintf('js/edit_company.js.php?edit=%s&id=%d',$editing_block,$company->id);
- $smarty->assign('from','supplier');
- $smarty->assign('css_files',$css_files);
-$smarty->assign('js_files',$js_files);
- $smarty->display('edit_company.tpl');
+  $contacts=$company->get_contacts();
+  $smarty->assign('contacts',$contacts);
+  $number_of_contacts=count($contacts);
+  $smarty->assign('number_of_contacts',$number_of_contacts);
+
+  $smarty->assign('scope','Supplier');
+
+
+$js_files[]='js/validate_telecom.js';
+ 
+  $js_files[]='edit_address.js.php';
+  $js_files[]='edit_contact_from_parent.js.php';
+  $js_files[]='edit_contact_telecom.js.php';
+  $js_files[]='edit_contact_name.js.php';
+  $js_files[]='edit_contact_email.js.php';
+
+  $js_files[]=sprintf('edit_company.js.php?edit=%s&id=%d',$editing_block,$company->id);
+  $js_files[]=sprintf('edit_supplier.js.php');
+
+  $css_files[]=$yui_path.'assets/skins/sam/autocomplete.css';
+  $css_files[]='css/edit_address.css';
+
+  $smarty->assign('from','supplier');
+  $smarty->assign('css_files',$css_files);
+  $smarty->assign('js_files',$js_files);
+  $smarty->display('edit_supplier.tpl');
 
 }else{
 

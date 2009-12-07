@@ -16,7 +16,7 @@
       <table class="edit" border=0 >
 	
 	{if $scope=='supplier'}
-	<tr class="first"><td style="" class="label">Supplier Code:</td>
+	<tr class="first"><td style="" class="label">{t}Supplier Code{/t}:</td>
 	  <td  style="text-align:left">
 	    <div  style="width:15em;position:relative;top:00px" >
 	      <input style="text-align:left;width:18em" id="Supplier_Code" value="" ovalue="" valid="0">
@@ -24,10 +24,10 @@
 	    </div>
 	  </td>
 	</tr>
-	<tr >
+
 	{/if}
 	
-	<tr class="first"><td style="" class="label">Company Name:</td>
+	<tr class="first"><td style="" class="label">{t}Company Name{/t}:</td>
 	  <td  style="text-align:left">
 	    <div  style="width:15em;position:relative;top:00px" >
 	      <input style="text-align:left;width:18em" id="Company_Name" value="" ovalue="" valid="0">
@@ -37,7 +37,7 @@
 	</tr>
 	<tr >
 	  
-	  <td style=";" class="label">Contact Name:</td>
+	  <td style=";" class="label">{t}Contact Name{/t}:</td>
 	  <td>
 	    
 	    <input style="width:18em" id="Contact_Name" value="" >

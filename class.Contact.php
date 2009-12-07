@@ -2276,14 +2276,15 @@ class Contact extends DB_Table {
 
 
             if (preg_match('/^(Address.*Data|Contact Main Email Key|Contact Main Telphone Key|Contact Main Mobile Key|Contact Name Components)$/',$key)) {
-                $this->update_field_switcher($key,$value,$options);
+	      
+	      $this->update_field_switcher($key,$value,$options);
 
 
             }
             elseif(array_key_exists($key,$base_data)) {
 
                 if ($value!=$this->data[$key]) {
-                    //print "xxx $key,$value,$options\n";
+                    print "xxx $key,$value,$options\n";
                     $this->update_field_switcher($key,$value,$options);
 
                 }
@@ -2316,8 +2317,8 @@ class Contact extends DB_Table {
             $this->update_fax($value);
             break;
         case('Contact Name Components'):
-            $this->update_telephone($value);
-            break;
+	  //$this->update_telephone($value);
+	  // break;
 
             $this->update_Contact_Name_Components($value,$options);
             break;

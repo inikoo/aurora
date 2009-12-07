@@ -9,12 +9,37 @@ var Address_Type_Changes=0;
 var Address_Function_Changes=0;
 
 
+function change_main_address(o,address_key){
+    //    var checked=o.getAttribute('checked');
+    if(o.checked=='checked'){
+	return;
+	
+	
+    }else{
+
+	var elements = YAHOO.util.Dom.getElementsByClassName('address_main', 'input'); 
+	for( var i in elements){
+	    elements[i].checked='';
+	}
+	o.checked='checked';
+    }
+
+
+
+
+
+}
+
+
 var save_address=function(){
 
     var table='address';
-    if(Dom.get('address_key').value==0)
+
+
+    if(Dom.get('address_key').value==0){
 	create_address();
-    else
+	return;
+    }else
 	var address_key=Dom.get('address_key').value;
     
     save_address_elements=0;
@@ -32,7 +57,7 @@ var save_address=function(){
 	
 	YAHOO.util.Connect.asyncRequest('POST',request ,{
 		success:function(o) {
-		    //	alert(o.responseText);
+		    	alert(o.responseText);
 		    var r =  YAHOO.lang.JSON.parse(o.responseText);
 		    if(r.action=='updated'){
 			Dom.get('address_display'+address_key).innerHTML=r.xhtml_address;
@@ -139,7 +164,7 @@ var create_address=function(){
     
     YAHOO.util.Connect.asyncRequest('POST',request ,{
 	    success:function(o) {
-	       	//alert(o.responseText);
+	       	alert(o.responseText);
 		var r =  YAHOO.lang.JSON.parse(o.responseText);
 		if(r.action=='created'){
 
@@ -248,6 +273,24 @@ var cancel_edit_address=function (){
 };
 
 var delete_address=function (e,address_button){
+    var address_key=address_button.getAttribute('address_id')
+    var request='ar_edit_contacts.php?tipo=delete_address&value='+address_key+'&subject='+Subject+'&subject_key='+Subject_Key; 
+   
+    YAHOO.util.Connect.asyncRequest('POST',request ,{
+		success:function(o) {
+		    	alert(o.responseText);
+		    var r =  YAHOO.lang.JSON.parse(o.responseText);
+		    if(r.action=='deleted'){
+
+			Dom.get('address_container'+address_key).style.display='none';
+			
+
+		    }else if(r.action=='error'){
+			alert(r.msg);
+		    }
+		}
+	    });
+
 
 
 }

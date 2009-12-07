@@ -89,7 +89,7 @@ function show_details_email(o){
 
 }
 
-function validate_email2(o){
+function validate_email(o){
     var email=o.value;
     var email_key=o.getAttribute('email_key');
     
