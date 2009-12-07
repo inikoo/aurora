@@ -1119,6 +1119,101 @@ class Department extends DB_Table {
     }
 
 
+    function update_averages_per_item(){
+
+      
+      $sql=sprintf("select *  from `Product Dimension` where `Product Main Department Key`=%d  ",$this->id);
+      $res=mysql_query($sql);
+      $avg_weekly_sales_per_product=0;
+      $avg_weekly_sales_per_product_1y=0;
+      $avg_weekly_sales_per_product_1q=0;
+      $avg_weekly_sales_per_product_1m=0;
+      $avg_weekly_sales_per_product_1w=0;
+      $avg_weekly_profit_per_product=0;
+      $avg_weekly_profit_per_product_1y=0;
+      $avg_weekly_profit_per_product_1q=0;
+      $avg_weekly_profit_per_product_1m=0;
+      $avg_weekly_profit_per_product_1w=0;
+      $count=0;
+      $count_1y=0;
+      $count_1q=0;
+      $count_1m=0;
+      $count_1w=0;
+      while($row=mysql_fetch_array($res)){
+	if( $row['Product Total Days On Sale']>0){
+	  $avg_weekly_sales_per_product+=7*$row['Product Total Invoiced Amount']/$row['Product Total Days On Sale'];
+	  $avg_weekly_profit_per_product+=7*$row['Product Total Profit']/$row['Product Total Days On Sale'];
+	  $count++;
+	}
+	if( $row['Product 1 Year Acc Days On Sale']>0){
+	  $avg_weekly_sales_per_product_1y+=7*$row['Product 1 Year Acc Invoiced Amount']/$row['Product 1 Year Acc Days On Sale'];
+	  $avg_weekly_profit_per_product_1y+=7*$row['Product 1 Year Acc Profit']/$row['Product 1 Year Acc Days On Sale'];
+	  $count_1y++;
+	}
+	if( $row['Product 1 Quarter Acc Days On Sale']>0){
+	  $avg_weekly_sales_per_product_1q+=7*$row['Product 1 Quarter Acc Invoiced Amount']/$row['Product 1 Quarter Acc Days On Sale'];
+	  $avg_weekly_profit_per_product_1q+=7*$row['Product 1 Quarter Acc Profit']/$row['Product 1 Quarter Acc Days On Sale'];
+	   $count_1q++;
+	}
+	if( $row['Product 1 Month Acc Days On Sale']>0){
+	  $avg_weekly_sales_per_product_1m+=7*$row['Product 1 Month Acc Invoiced Amount']/$row['Product 1 Month Acc Days On Sale'];
+	  $avg_weekly_profit_per_product_1m+=7*$row['Product 1 Month Acc Profit']/$row['Product 1 Month Acc Days On Sale'];
+	   $count_1m++;
+	}
+	if( $row['Product 1 Week Acc Days On Sale']>0){
+	  $avg_weekly_sales_per_product_1w+=7*$row['Product 1 Week Acc Invoiced Amount']/$row['Product 1 Week Acc Days On Sale'];
+	  $avg_weekly_profit_per_product_1w+=7*$row['Product 1 Week Acc Profit']/$row['Product 1 Week Acc Days On Sale'];
+
+	  $count_1w++;
+
+	}
+	 
+      }
+      if($count!=0){
+	$avg_weekly_sales_per_product=$avg_weekly_sales_per_product/$count;
+	$avg_weekly_sales_per_product_1y/=$count_1y;
+	$avg_weekly_sales_per_product_1q/=$count_1q;
+	$avg_weekly_sales_per_product_1m/=$count_1m;
+	$avg_weekly_sales_per_product_1w/=$count_1w;
+	$avg_weekly_profit_per_product/=$count;
+	$avg_weekly_profit_per_product_1y/=$count_1y;
+	$avg_weekly_profit_per_product_1q/=$count_1q;
+	$avg_weekly_profit_per_product_1m/=$count_1m;
+	$avg_weekly_profit_per_product_1w/=$count_1w;
+      
+      
+      }
+
+      $this->data['Product Department Total Avg Week Sales Per Product']=$avg_weekly_sales_per_product;
+      $this->data['Product Department Total Avg Week Profit Per Product']=$avg_weekly_profit_per_product;
+      $this->data['Product Department 1 Year Acc Avg Week Sales Per Product']=$avg_weekly_sales_per_product_1y;
+      $this->data['Product Department 1 Year Acc Avg Week Profit Per Product']=$avg_weekly_profit_per_product_1y;
+      $this->data['Product Department 1 Quarter Acc Avg Week Sales Per Product']=$avg_weekly_sales_per_product_1q;
+      $this->data['Product Department 1 Quarter Acc Avg Week Profit Per Product']=$avg_weekly_profit_per_product_1q;
+      $this->data['Product Department 1 Month Acc Avg Week Sales Per Product']=$avg_weekly_sales_per_product_1m;
+      $this->data['Product Department 1 Month Acc Avg Week Profit Per Product']=$avg_weekly_profit_per_product_1m;
+      $this->data['Product Department 1 Week Acc Avg Week Sales Per Product']=$avg_weekly_sales_per_product_1w;
+      $this->data['Product Department 1 Week Acc Avg Week Profit Per Product']=$avg_weekly_profit_per_product_1w;
+
+
+      $sql=sprintf("update `Product Department Dimension` set `Product Department Total Avg Week Sales Per Product`=%.2f , `Product Department Total Avg Week Profit Per Product`=%.2f ,`Product Department 1 Year Acc Avg Week Sales Per Product`=%.2f , `Product Department 1 Year Acc Avg Week Profit Per Product`=%.2f,`Product Department 1 Quarter Acc Avg Week Sales Per Product`=%.2f , `Product Department 1 Quarter Acc Avg Week Profit Per Product`=%.2f,`Product Department 1 Month Acc Avg Week Sales Per Product`=%.2f , `Product Department 1 Month Acc Avg Week Profit Per Product`=%.2f ,`Product Department 1 Week Acc Avg Week Sales Per Product`=%.2f , `Product Department 1 Week Acc Avg Week Profit Per Product`=%.2f where `Product Department Key`=%d   "
+		   ,$this->data['Product Department Total Avg Week Sales Per Product']
+		   ,$this->data['Product Department Total Avg Week Profit Per Product']
+		   ,$this->data['Product Department 1 Year Acc Avg Week Sales Per Product']
+		   ,$this->data['Product Department 1 Year Acc Avg Week Profit Per Product']
+		   ,$this->data['Product Department 1 Quarter Acc Avg Week Sales Per Product']
+		   ,$this->data['Product Department 1 Quarter Acc Avg Week Profit Per Product']
+		   ,$this->data['Product Department 1 Month Acc Avg Week Sales Per Product']
+		   ,$this->data['Product Department 1 Month Acc Avg Week Profit Per Product']
+		   ,$this->data['Product Department 1 Week Acc Avg Week Sales Per Product']
+		   ,$this->data['Product Department 1 Week Acc Avg Week Profit Per Product']
+
+		   ,$this->id);
+	mysql_query($sql);
+	//print "$sql\n";
+    }
+
+
     function update_product_data() {
         $sql=sprintf("select sum(if(`Product Sales State`='Unknown',1,0)) as sale_unknown, sum(if(`Product Sales State`='Discontinued',1,0)) as discontinued,sum(if(`Product Sales State`='Not for sale',1,0)) as not_for_sale,sum(if(`Product Sales State`='For Sale',1,0)) as for_sale,sum(if(`Product Record Type`='In Process',1,0)) as in_process,sum(if(`Product Availability State`='Unknown',1,0)) as availability_unknown,sum(if(`Product Availability State`='Optimal',1,0)) as availability_optimal,sum(if(`Product Availability State`='Low',1,0)) as availability_low,sum(if(`Product Availability State`='Critical',1,0)) as availability_critical,sum(if(`Product Availability State`='Surplus',1,0)) as availability_surplus,sum(if(`Product Availability State`='Out Of Stock',1,0)) as availability_outofstock from `Product Dimension` P  where `Product Main Department Key`=%d",$this->id);
 	//   print "$sql\n\n\n";
