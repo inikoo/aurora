@@ -15,7 +15,7 @@ include_once('class.Company.php');
 //    $edit_block=$_REQUEST['edit'];
 //}
 $salutation="''";
-$sql="select `Salutation` from kbase.`Salutation Dimension` where `Language Key`=1";
+$sql="select `Salutation` from kbase.`Salutation Dimension` where `Language Code`='en'";
 $result=mysql_query($sql);
 while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
     $salutation.=',"'.$row['Salutation'].'"';
@@ -229,12 +229,12 @@ foreach($addresses as $index=>$address){
 			 ,$address->id
 			 ,prepare_mysql($address->data['Address Country Name'],false)
 			 ,prepare_mysql($address->data['Address Country Code'],false)
-			 ,prepare_mysql($address->data['Address Country Primary Division'],false)
-			 ,prepare_mysql($address->data['Address Country Secondary Division'],false)
+			 ,prepare_mysql($address->data['Address Country First Division'],false)
+			 ,prepare_mysql($address->data['Address Country Second Division'],false)
 			 ,prepare_mysql($address->data['Address Town'],false)
 			 ,prepare_mysql($address->data['Address Postal Code'],false)
-			 ,prepare_mysql($address->data['Address Town Primary Division'],false)
-			 ,prepare_mysql($address->data['Address Town Secondary Division'],false)
+			 ,prepare_mysql($address->data['Address Town First Division'],false)
+			 ,prepare_mysql($address->data['Address Town Second Division'],false)
 			 ,prepare_mysql($address->data['Address Fuzzy'],false)
 			 ,prepare_mysql($address->display('street',false),false)
 			 ,prepare_mysql($address->data['Address Building'],false)
