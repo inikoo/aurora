@@ -415,6 +415,7 @@ function init(){
 
     YAHOO.util.Event.addListener('cancel_save_details_button', "click",cancel_save_details );
     YAHOO.util.Event.addListener('add_address_button', "click",edit_address,false );
+    YAHOO.util.Event.addListener('add_contact_button', "click",edit_contact,false );
 
 
     var ids = ["name","fiscal_name","tax_number","registration_number"]; 
