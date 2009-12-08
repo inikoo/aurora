@@ -63,7 +63,7 @@ function showdetails(o){
 function save(tipo){
     switch(tipo){
     case('note'):
-	var value=escape(Dom.get(tipo+"_input").value);
+	var value=encodeURIComponent(Dom.get(tipo+"_input").value);
 	var request="ar_edit_contacts.php?tipo=edit_customer&key=Note&customer_key="+customer_key+"&newvalue="+value;
 	//alert(request);
 	YAHOO.util.Connect.asyncRequest('POST',request ,{

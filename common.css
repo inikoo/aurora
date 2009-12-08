@@ -371,7 +371,7 @@ table.options_mini{margin:0 ;float:right;border-collapse: separate;;border-spaci
 .show_options span.selected:hover {color:#ebe69f;}
 
 
-.edit_block{clear:both;margin:0 auto;width:800px;padding:0px 20px;xborder: 1px solid black}
+.edit_block{clear:both;margin:0 auto;xwidth:800px;padding:0px 0px;margin:0;xborder: 1px solid black}
 .calendar_year { margin: 10px 0 0 0  }
 .calendar_year  td{text-align:center;font-size:10px;font-weight:800;width:16px;border:1px solid #82aadf;cursor:pointer;border-top:3px solid #ff9958;color:#777}
 .calendar_year td a{color:#777}

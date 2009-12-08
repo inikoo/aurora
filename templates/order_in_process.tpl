@@ -2,8 +2,12 @@
 <div id="bd" >
   <div id="yui-main">
     <div class="yui-b">
+      <div style="text-align:right">
+	<span class="state_details" id="cancel">Cancel</span>
+	<span class="state_details" id="done" style="margin-left:20px">Send to Warehouse</span>
 
-      <div class="yui-b" style="border:1px solid #ccc;text-align:left;padding:10px;margin: 30px 0 10px 0">
+      </div>
+      <div class="yui-b" style="border:1px solid #ccc;text-align:left;padding:10px;margin: 0px 0 10px 0">
 
        <div style="xborder:1px solid #ddd;width:350px;float:left"> 
         <h1 style="padding:0 0 10px 0">{t}Order{/t} {$order->get('Order Public ID')}</h1>
@@ -66,7 +70,7 @@
      
     <div id="list_options0"> 
       <div style="clear:both;margin:0 0px;padding:0 20px ;border-bottom:1px solid #999"></div>
-      <span   style="float:right;margin-left:20px" class="state_details" state="{$show_all}"  id="show_all"  atitle="{if !$show_all}{t}Show only ordered{/t}{else}{t}All products availeable{/t}{/if}"  >{if $show_all}{t}Show only ordered{/t}{else}{t}All products availeable{/t}{/if}</span>     
+      <span   style="float:right;margin-left:20px" class="state_details" state="{$show_all}"  id="show_all"  atitle="{if !$show_all}{t}Show only ordered{/t}{else}{t}Show all products available{/t}{/if}"  >{if $show_all}{t}Show only ordered{/t}{else}{t}Show all products available{/t}{/if}</span>     
       
 
 
@@ -144,4 +148,27 @@
 
 
 </div> 
+
+
+<div id="dialog_cancel">
+  <div style="text-align:left;margin-left:5px">{t}Reason of cancellation{/t}</div>
+  <div id="cancel_msg"></div>
+  
+  <table >
+    <tr><td colspan=2>
+	<textarea style="height:100px" id="cancel_input" onkeyup="change(event,this,'cancel')"></textarea>
+      </td>
+    <tr>
+    <tr class="buttons" style="font-size:100%">
+  <td style="text-align:center;width:50%">
+    <span  class="unselectable_text state_details" onClick="close_dialog('cancel')" >{t}Go Back{/t}</span></td>
+  <td style="text-align:center;width:50%">
+    <span  onclick="save('cancel')" id="cancel_save"  class="unselectable_text state_details"     style="visibility:hidden;" >{t}Continue{/t}</span></td></tr>
+</table>
+</div>
+
+
+
+
+
 {include file='footer.tpl'}

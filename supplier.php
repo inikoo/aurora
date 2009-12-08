@@ -43,7 +43,7 @@ $js_files=array(
 		$yui_path.'calendar/calendar-min.js',
 		'common.js.php',
 		'table_common.js.php',
-		'supplier.js.php'
+	
 		);
 
 
@@ -82,6 +82,19 @@ $smarty->assign('parent','suppliers.php');
 $smarty->assign('title','Supplier: '.$supplier->get('Supplier Code'));
 
 
+$tipo_filter=$_SESSION['state']['supplier']['products']['f_field'];
+$smarty->assign('filter',$tipo_filter);
+$smarty->assign('filter_value0',$_SESSION['state']['supplier']['products']['f_value']);
+
+$filter_menu=array( 
+		   'p.code'=>array('db_key'=>_('p.code'),'menu_label'=>'Our Product Code','label'=>'Code'),
+		   'sup_code'=>array('db_key'=>_('sup_code'),'menu_label'=>'Supplier Product Code','label'=>'Supplier Code'),
+		   );
+$smarty->assign('filter_menu0',$filter_menu);
+$smarty->assign('filter_name0',$filter_menu[$tipo_filter]['label']);
+$paginator_menu=array(10,25,50,100,500);
+$smarty->assign('paginator_menu0',$paginator_menu);
+
 
 if($edit){
  $sql=sprintf("select * from kbase.`Salutation Dimension` S left join kbase.`Language Dimension` L on S.`Language Code`=L.`Language ISO 639-1 Code`  where `Language Code`=%s limit 1000",prepare_mysql($myconf['lang']));
@@ -106,8 +119,8 @@ if($edit){
 
   $smarty->assign('scope','Supplier');
 
-
-$js_files[]='js/validate_telecom.js';
+  $js_files[]='js/edit_common.js';
+  $js_files[]='js/validate_telecom.js';
  
   $js_files[]='edit_address.js.php';
   $js_files[]='edit_contact_from_parent.js.php';
@@ -124,10 +137,16 @@ $js_files[]='js/validate_telecom.js';
   $smarty->assign('from','supplier');
   $smarty->assign('css_files',$css_files);
   $smarty->assign('js_files',$js_files);
+  
+  
+
   $smarty->display('edit_supplier.tpl');
 
-}else{
+  
 
+
+}else{
+$js_files[]=sprintf('supplier.js.php');
 $smarty->assign('display',$_SESSION['state']['supplier']['display']);
 $smarty->assign('products_view',$_SESSION['state']['supplier']['products']['view']);
 $smarty->assign('products_percentage',$_SESSION['state']['supplier']['products']['percentage']);
@@ -138,18 +157,7 @@ $smarty->assign('products_period',$_SESSION['state']['supplier']['products']['pe
 
 
 
-$tipo_filter=$_SESSION['state']['supplier']['products']['f_field'];
-$smarty->assign('filter',$tipo_filter);
-$smarty->assign('filter_value0',$_SESSION['state']['supplier']['products']['f_value']);
 
-$filter_menu=array( 
-		   'p.code'=>array('db_key'=>_('p.code'),'menu_label'=>'Our Product Code','label'=>'Code'),
-		   'sup_code'=>array('db_key'=>_('sup_code'),'menu_label'=>'Supplier Product Code','label'=>'Supplier Code'),
-		   );
-$smarty->assign('filter_menu0',$filter_menu);
-$smarty->assign('filter_name0',$filter_menu[$tipo_filter]['label']);
-$paginator_menu=array(10,25,50,100,500);
-$smarty->assign('paginator_menu0',$paginator_menu);
 
 
 

@@ -694,9 +694,24 @@ class Order extends DB_Table{
     }
   }
 	
-  function cancel() {
-		
-    $this->data ['Order Current Payment State'] = 'Cancelled';
+  function cancel($note='',$date=false) {
+    $this->cancelled=false;
+    if(preg_match('/Dispached/',$this->data ['Order Current Dispatch State'])){
+      $this->msg=_('Order can not be cancelled, because has already been dispached');
+
+    }
+    if(preg_match('/Cancelled/',$this->data ['Order Current Dispatch State'])){
+      $this->_('Order is already cancelled');
+
+    }else{
+
+      if(!$date)
+	$date=date('Y-d-m H:i:s');
+      $this->data ['Order Cancelled Date'] = $date;
+
+      $this->data ['Order Cancel Note'] = $note;
+
+      $this->data ['Order Current Payment State'] = 'Cancelled';
     $this->data ['Order Current Dispatch State'] = 'Cancelled';
     $this->data ['Order Current XHTML State'] = _ ( 'Order Cancelled' );
     $this->data ['Order XHTML Invoices'] = '';
@@ -707,12 +722,15 @@ class Order extends DB_Table{
     $this->data ['Order Outstanding Balance Total Amount'] = 0;
     $this->data ['Order Outstanding Balance Net Amount'] = 0;
     $this->data ['Order Outstanding Balance Tax Amount'] = 0;
+    
 
-    $sql = sprintf ( "update `Order Dimension` set `Order Current Payment State`=%s,`Order Current Dispatch State`=%s,`Order Current XHTML State`=%s,`Order XHTML Invoices`='',`Order XHTML Delivery Notes`='' ,`Order Balance Net Amount`=0,`Order Balance Tax Amount`=0,`Order Balance Total Amount`=0 ,`Order Outstanding Balance Net Amount`=0,`Order Outstanding Balance Tax Amount`=0,`Order Outstanding Balance Total Amount`=0,`Order Profit Amount`=0  where `Order Key`=%d"
+
+    $sql = sprintf ( "update `Order Dimension` set `Order Cancelled Date`=%s, `Order Current Payment State`=%s,`Order Current Dispatch State`=%s,`Order Current XHTML State`=%s,`Order XHTML Invoices`='',`Order XHTML Delivery Notes`='' ,`Order Balance Net Amount`=0,`Order Balance Tax Amount`=0,`Order Balance Total Amount`=0 ,`Order Outstanding Balance Net Amount`=0,`Order Outstanding Balance Tax Amount`=0,`Order Outstanding Balance Total Amount`=0,`Order Profit Amount`=0,`Order Cancel Note`=%s  where `Order Key`=%d"
+		     , prepare_mysql ( $this->data ['Order Cancelled Date'] )
 		     , prepare_mysql ( $this->data ['Order Current Payment State'] )
 		     , prepare_mysql ( $this->data ['Order Current Dispatch State'] )
 		     , prepare_mysql ( $this->data ['Order Current XHTML State'] )
-
+		     , prepare_mysql ( $this->data ['Order Cancel Note'] )
 				 
 		     , $this->id );
     if (! mysql_query ( $sql ))
@@ -723,7 +741,14 @@ class Order extends DB_Table{
       ;
     if (! mysql_query ( $sql ))
       exit ( "$sql error dfsdfs doerde.pgp" );
+
+
+    $this->cancelled=true;
 	
+    }
+
+
+
   }
 	
   function no_payment_applicable() {
@@ -1055,6 +1080,10 @@ class Order extends DB_Table{
 	case('Date'):
 	return strftime('%D',strtotime($this->data['Order Date']));
 	break;
+    case('Cancel Date'):
+	return strftime('%D',strtotime($this->data['Order Cancelled Date']));
+	break;
+
     case ('Order Main Ship To Key') :
       $sql = sprintf ( "select `Ship To Key`,count(*) as  num from `Order Transaction Fact` where `Order Key`=%d group by `Ship To Key` order by num desc limit 1", $this->id );
       $res = mysql_query ( $sql );
