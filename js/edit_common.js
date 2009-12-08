@@ -33,13 +33,13 @@ function swap_this_radio(o){
 	ar_file='ar_edit_users.php';
      else if(column.object=='new_order' )
 	ar_file='ar_edit_orders.php';
-       else if(column.object=='supplier' )
+       else if(column.object=='supplier' || column.object=='product_supplier' )
 	ar_file='ar_edit_suppliers.php';
     else
 	ar_file='ar_edit_assets.php';
     //   alert(column.object)
     var request='tipo=edit_'+column.object+'&key=' + column.key + '&newvalue=' + encodeURIComponent(newValue) + '&oldvalue=' + encodeURIComponent(oldValue)+ myBuildUrl(datatable,record);
-      alert('R:'+request);
+    //alert('R:'+request);
 
     YAHOO.util.Connect.asyncRequest(
 				    'POST',

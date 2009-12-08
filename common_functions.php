@@ -1440,6 +1440,10 @@ function guess_file_mime($file){
 }
 
 
+
+
+
+
 function formatBytes($bytes, $precision = 1) {
     $units = array('B', 'KB', 'MB', 'GB', 'TB');
   
@@ -1450,6 +1454,30 @@ function formatBytes($bytes, $precision = 1) {
     $bytes /= pow(1024, $pow);
   
     return number($bytes, $precision) . ' ' . $units[$pow];
+} 
+
+
+function getEnumVals($table,$field,$sorted=true)
+{
+   
+    $result=mysql_query('show columns from '.$table.';');
+    while($tuple=mysql_fetch_assoc($result))
+    {
+        if($tuple['Field'] == $field)
+        {
+            $types=$tuple['Type'];
+            $beginStr=strpos($types,"(")+1;
+            $endStr=strpos($types,")");
+            $types=substr($types,$beginStr,$endStr-$beginStr);
+            $types=str_replace("'","",$types);
+            $types=split(',',$types);
+            if($sorted)
+                sort($types);
+            break;
+        }
+    }
+  
+    return($types);
 } 
 
 

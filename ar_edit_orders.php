@@ -20,6 +20,9 @@ $editor=array(
 $tipo=$_REQUEST['tipo'];
 
 switch($tipo){
+case('cancel'):
+  cancel_order();
+  break;
 case('edit_new_order'):
   edit_new_order();
   break;
@@ -48,13 +51,36 @@ default:
   
 }
 
+
+function cancel_order(){
+  $order_key=$_SESSION['state']['order']['id'];
+
+  $order=new Order($order_key);
+  if(isset($_REQUEST['note']))
+    $note=stripslashes(urldecode($_REQUEST['note']));
+  else
+    $note='';
+	
+  $order->cancel($note);
+  if($order->cancelled){
+    $response=array('state'=>200,'order_key'=>$order->id);
+  echo json_encode($response);
+  }else{
+    $response=array('state'=>400,'msg'=>$this->msg);
+    echo json_encode($response);
+
+  }
+  
+}
+
+
 function edit_new_order(){
   
   $order_key=$_SESSION['state']['order']['id'];
   $product_pid=$_REQUEST['pid'];
   $quantity=$_REQUEST['newvalue'];
   
-  if(is_numeric($quantity) and $quantity>0){
+  if(is_numeric($quantity) and $quantity>=0){
 
   $order=new Order($order_key);
   
@@ -166,6 +192,23 @@ $conf=$_SESSION['state']['products']['table'];
     else
         $tableid=0;
 
+    
+if(isset( $_REQUEST['show_all']) and preg_match('/^(yes|no)$/',$_REQUEST['show_all'])  ){
+      
+      if($_REQUEST['show_all']=='yes')
+	$show_all=true;
+      else
+       $show_all=false;
+      $_SESSION['state']['order']['show_all']=$show_all;
+    }else
+      $show_all=$_SESSION['state']['order']['show_all'];
+
+
+
+
+    //    print_r($_SESSION['state']['order']);
+
+
    $_SESSION['state']['products']['table']=array(
 						 'order'=>$order
 						 ,'order_dir'=>$order_direction
@@ -177,13 +220,32 @@ $conf=$_SESSION['state']['products']['table'];
                                                  );
    
 
+if(!$show_all){
+  $start_from=0;
+  $number_results=1000;
+  
+}
 
 
 
 
 
-   $where=sprintf('where `Product Store Key`=%d  ',$store_key);
-   $sql_qty=sprintf('IFNULL((select sum(`Order Quantity`) from `Order Transaction Fact` where `Product Key`=`Product Current Key` and `Order Key`=%d),0) as `Order Quantity`',$order_id); 
+
+   if(!$show_all){
+     
+     $table='  `Order Transaction Fact` OTF  left join `Product History Dimension` PHD on (PHD.`Product Key`=OTF.`Product Key`) left join `Product Dimension` P on (PHD.`Product ID`=P.`Product ID`)  ';
+     $where=sprintf(' where `Order Quantity`>0 and `Order Key`=%d',$order_id);
+     $sql_qty='';
+   }else{
+    $table=' `Product Dimension` ';
+     $where=sprintf('where `Product Store Key`=%d   ',$store_key);
+     $sql_qty=sprintf(',IFNULL((select sum(`Order Quantity`) from `Order Transaction Fact` where `Product Key`=`Product Current Key` and `Order Key`=%d),0) as `Order Quantity`',$order_id); 
+
+     
+   }
+
+
+  
 
      $_order=$order;
     $_dir=$order_direction;
@@ -193,10 +255,11 @@ $conf=$_SESSION['state']['products']['table'];
         $wheref.=" and  `Product Code` like '".addslashes($f_value)."%'";
     elseif($f_field=='name' and $f_value!='')
     $wheref.=" and  `Product Name` like '%".addslashes($f_value)."%'";
-
-    $sql="select count(*) as total from `Product Dimension`   $where $wheref   ";
-    //print_r($conf);exit;
-    // print $sql;
+   
+      $sql="select count(*) as total from $table   $where $wheref   ";
+ 
+    // print_r($conf);exit;
+      //    print $sql;
     $res=mysql_query($sql);
     if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
         $total=$row['total'];
@@ -280,44 +343,49 @@ $conf=$_SESSION['state']['products']['table'];
       $order='`Product Web State`';
     }
 
- $sql="select  *,$sql_qty from `Product Dimension`    $where $wheref order by $order $order_direction limit $start_from,$number_results    ";
- // print $sql;
+
+    
+
+ $sql="select  * $sql_qty from $table   $where $wheref order by $order $order_direction limit $start_from,$number_results    ";
+ 
     $res = mysql_query($sql);
+
     $adata=array();
  while ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+
    if (is_numeric($row['Product Availability']))
-            $stock=number($row['Product Availability']);
-        else
-            $stock='?';
-$type=$row['Product Sales State'];
-        if ($row['Product Record Type']=='In Process')
+     $stock=number($row['Product Availability']);
+   else
+     $stock='?';
+   $type=$row['Product Sales State'];
+   if ($row['Product Record Type']=='In Process')
             $type.='<span style="color:red">*</span>';
-switch ($row['Product Web State']) {
-        case('Online Force Out of Stock'):
-            $web_state=_('Out of Stock');
-            break;
+   switch ($row['Product Web State']) {
+   case('Online Force Out of Stock'):
+     $web_state=_('Out of Stock');
+     break;
         case('Online Auto'):
-            $web_state=_('Auto');
-            break;
-        case('Unknown'):
-            $web_state=_('Unknown');
+	  $web_state=_('Auto');
+	  break;
+   case('Unknown'):
+     $web_state=_('Unknown');
         case('Offline'):
-            $web_state=_('Offline');
+	  $web_state=_('Offline');
+	  break;
+   case('Online Force Hide'):
+     $web_state=_('Hide');
             break;
-        case('Online Force Hide'):
-            $web_state=_('Hide');
-            break;
-        case('Online Force For Sale'):
-            $web_state=_('Sale');
-            break;
+   case('Online Force For Sale'):
+     $web_state=_('Sale');
+     break;
         default:
-            $web_state=$row['Product Web State'];
-        }
+	  $web_state=$row['Product Web State'];
+   }
+   
 
-
- $adata[]=array(
-		'pid'=>$row['Product ID'],
-		'code'=>$row['Product Code'],
+   $adata[]=array(
+		  'pid'=>$row['Product ID'],
+		  'code'=>$row['Product Code'],
 		'description'=>$row['Product XHTML Short Description'],
 		'shortname'=>number($row['Product Units Per Case']).'x @'.money($row['Product Price']/$row['Product Units Per Case']).' '._('ea'),
 		'family'=>$row['Product Family Name'],

@@ -10,6 +10,9 @@ $css_files=array(
 		 $yui_path.'reset-fonts-grids/reset-fonts-grids.css',
 		 $yui_path.'menu/assets/skins/sam/menu.css',
 		 $yui_path.'button/assets/skins/sam/button.css',
+		 
+		 $yui_path.'editor/assets/skins/sam/editor.css',
+		 'text_editor.css',
 		 'common.css',
 		 'container.css',
 		 'table.css'
@@ -22,7 +25,8 @@ $js_files=array(
 		$yui_path.'datasource/datasource-min.js',
 		$yui_path.'autocomplete/autocomplete-min.js',
 		$yui_path.'datatable/datatable-min.js',
-		$yui_path.'container/container_core-min.js',
+		$yui_path.'container/container-min.js',
+
 		$yui_path.'menu/menu-min.js',
 		$yui_path.'calendar/calendar-min.js',
 		'common.js.php',
@@ -56,7 +60,7 @@ if(isset($_REQUEST['new']) ){
   if($order->error)
     exit('error');
  
-
+  $_SESSION['state']['order']['show_all']=true;
   header('Location: order.php?id='.$order->id);
   exit;
   
@@ -96,13 +100,14 @@ if(isset($_REQUEST['pick_aid'])){
   switch($order->get('Order Current Dispatch State')){
     
   case('In Process'):
+
     $js_files[]='js/edit_common.js';
     $js_files[]='order_in_process.js.php';
     $template='order_in_process.tpl';
     
    
     $_SESSION['state']['order']['store_key']=$order->data['Order Store Key'];
-    $smarty->assign('show_all',false);
+    $smarty->assign('show_all',$_SESSION['state']['order']['show_all']);
     
     $tipo_filter=$_SESSION['state']['products']['table']['f_field'];
     $smarty->assign('filter',$tipo_filter);
@@ -129,6 +134,12 @@ if(isset($_REQUEST['pick_aid'])){
     
     $js_files[]='order_dispached.js.php';
     $template='order_dispached.tpl';
+  break; 
+ case('Cancelled'):
+
+    
+    $js_files[]='order_cancelled.js.php';
+    $template='order_cancelled.tpl';
   break; 
 
  default:

@@ -34,8 +34,14 @@ case('new_supplier'):
  new_supplier($data);
  
  break;
+case('supplier_products'):
+  list_supplier_products();
+  break;
 case('edit_supplier'):
   edit_supplier();
+  break;
+case('edit_product_supplier'):
+  edit_product_supplier();
   break;
 case('complex_edit_supplier'):
   complex_edit_supplier();
@@ -107,6 +113,60 @@ function edit_supplier() {
     echo json_encode($response);
 
 }
+
+function edit_product_supplier() {
+  $key=$_REQUEST['key'];
+ 
+  
+  $supplier=new SupplierProduct('id',$_REQUEST['sph_key']);
+  global $editor;
+  $supplier->editor=$editor;
+  
+  if($key=='Attach'){
+    // print_r($_FILES);
+    $note=stripslashes(urldecode($_REQUEST['newvalue']));
+    $target_path = "uploads/".'attach_'.date('U');
+    $original_name=$_FILES['testFile']['name'];
+    $type=$_FILES['testFile']['type'];
+    $data=array('Caption'=>$note,'Original Name'=>$original_name,'Type'=>$type);
+
+    if(move_uploaded_file($_FILES['testFile']['tmp_name'],$target_path )) {
+      $supplier->add_attach($target_path,$data);
+      
+    }
+  }else{
+    
+
+    
+    $key_dic=array(
+		   'name'=>'Supplier Product Name'
+		   ,'description'=>'Supplier Product Description'
+		   ,'unit_type'=>'Supplier Product Unit Type'
+		   ,'units'=>'Supplier Product Units Per Case'
+		   ,"cost"=>'Supplier Product Cost'
+
+		   
+    );
+    if(array_key_exists($_REQUEST['key'],$key_dic))
+       $key=$key_dic[$_REQUEST['key']];
+    
+    
+    $supplier->update(array($key=>stripslashes(urldecode($_REQUEST['newvalue']))));
+  }
+
+
+    if ($supplier->updated) {
+        $response= array('state'=>200,'newvalue'=>$supplier->new_value,'key'=>$_REQUEST['key']);
+
+    } else {
+        $response= array('state'=>400,'msg'=>$supplier->msg,'key'=>$_REQUEST['key']);
+    }
+    echo json_encode($response);
+
+}
+
+
+
 
 function complex_edit_supplier(){
 global $editor;
@@ -340,5 +400,192 @@ if(isset( $_REQUEST['where']))
 		   );
    echo json_encode($response);
 }
+
+
+function list_supplier_products() {
+    $conf=$_SESSION['state']['supplier']['products'];
+    if (isset( $_REQUEST['sf']))
+        $start_from=$_REQUEST['sf'];
+    else
+        $start_from=$conf['sf'];
+    if (isset( $_REQUEST['nr']))
+        $number_results=$_REQUEST['nr'];
+    else
+        $number_results=$conf['nr'];
+    if (isset( $_REQUEST['o']))
+        $order=$_REQUEST['o'];
+    else
+        $order=$conf['order'];
+    if (isset( $_REQUEST['od']))
+        $order_dir=$_REQUEST['od'];
+    else
+        $order_dir=$conf['order_dir'];
+    if (isset( $_REQUEST['f_field']))
+        $f_field=$_REQUEST['f_field'];
+    else
+        $f_field=$conf['f_field'];
+
+    if (isset( $_REQUEST['f_value']))
+        $f_value=$_REQUEST['f_value'];
+    else
+        $f_value=$conf['f_value'];
+    if (isset( $_REQUEST['where']))
+        $where=$_REQUEST['where'];
+    else
+        $where=$conf['where'];
+
+
+    if (isset( $_REQUEST['id']))
+        $supplier_id=$_REQUEST['id'];
+    else
+        $supplier_id=$_SESSION['state']['supplier']['id'];
+
+
+    if (isset( $_REQUEST['tableid']))
+        $tableid=$_REQUEST['tableid'];
+    else
+        $tableid=0;
+
+    if (isset( $_REQUEST['product_view']))
+        $product_view=$_REQUEST['product_view'];
+    else
+        $product_view=$conf['view'];
+    if (isset( $_REQUEST['product_period']))
+        $product_period=$_REQUEST['product_period'];
+    else
+        $product_period=$conf['period'];
+
+    if (isset( $_REQUEST['product_percentage']))
+        $product_percentage=$_REQUEST['product_percentage'];
+    else
+        $product_percentage=$conf['percentage'];
+
+    $filter_msg='';
+    $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
+    $_order=$order;
+    $_dir=$order_direction;
+
+
+    $_SESSION['state']['supplier']['products']=array('order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value
+            ,'view'=>$product_view
+                    ,'percentage'=>$product_percentage
+                                  ,'period'=>$product_period
+                                                    );
+    $_SESSION['state']['supplier']['id']=$supplier_id;
+
+    $where=$where.' and `supplier key`='.$supplier_id;
+
+
+    $wheref='';
+
+
+    if (($f_field=='code' ) and $f_value!='')
+        $wheref.=" and  `Supplier Product XHTML Used In` like '".addslashes($f_value)."%'";
+    if ($f_field=='sup_code' and $f_value!='')
+        $wheref.=" and  `Supplier Product Code` like '".addslashes($f_value)."%'";
+
+
+
+
+
+
+
+
+    $sql="select count(*) as total from `Supplier Product Dimension`  $where $wheref ";
+
+
+    $result=mysql_query($sql);
+    if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+        $total=$row['total'];
+    }
+    if ($wheref=='') {
+        $filtered=0;
+        $total_records=$total;
+    } else {
+
+        $sql="select count(*) as total `Supplier Product Dimension`  $where  ";
+        $result=mysql_query($sql);
+        if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+            $total_records=$row['total'];
+            $filtered=$row['total']-$total;
+        }
+
+    }
+
+    $rtext=$total_records." ".ngettext('pruduct','products',$total_records);
+    if ($total_records>$number_results)
+        $rtext.=sprintf(" <span class='rtext_rpp'>(%d%s)</span>",$number_results,_('rpp'));
+    $filter_msg='';
+
+    switch ($f_field) {
+    case('p.code'):
+        if ($total==0 and $filtered>0)
+            $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any product with code")." <b>".$f_value."*</b> ";
+        elseif($filtered>0)
+        $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ("._('products with code')." <b>".$f_value."*</b>) <span onclick=\"remove_filter($tableid)\" id='remove_filter$tableid' class='remove_filter'>"._('Show All')."</span>";
+        break;
+    case('sup_code'):
+        if ($total==0 and $filtered>0)
+            $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any product with supplier code")." <b>".$f_value."*</b> ";
+        elseif($filtered>0)
+        $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ("._('products with supplier code')." <b>".$f_value."*</b>) <span onclick=\"remove_filter($tableid)\" id='remove_filter$tableid' class='remove_filter'>"._('Show All')."</span>";
+        break;
+
+    }
+    if ($order=='id')
+        $order='`Supplier Product ID`';
+    elseif($order=='code')
+    $order='`Supplier Product Code`';
+    elseif($order='usedin')
+    $order='`Supplier Product XHTML Used In`';
+
+    $sql="select * from `Supplier Product Dimension`  $where $wheref  order by $order $order_direction limit $start_from,$number_results ";
+    $data=array();
+
+    $result=mysql_query($sql);
+    while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
+
+
+       
+
+
+
+        $data[]=array(
+		      'sph_key'=>$row['Supplier Product Current Key']
+		      ,'code'=>$row['Supplier Product Code']
+		      
+                      
+		      ,'name'=>$row['Supplier Product Name']
+		      ,'cost'=>money($row['Supplier Product Cost'])
+		      ,'usedin'=>$row['Supplier Product XHTML Used In']
+		      ,'unit_type'=>$row['Supplier Product Unit Type']
+		      ,'units'=>$row['Supplier Product Units Per Case']
+
+		      
+		      );
+    }
+
+
+    $response=array('resultset'=>
+                                array('state'=>200,
+                                      'data'=>$data,
+                                      'sort_key'=>$_order,
+                                      'sort_dir'=>$_dir,
+                                      'tableid'=>$tableid,
+                                      'filter_msg'=>$filter_msg,
+                                      'rtext'=>$rtext,
+                                      'total_records'=>$total,
+                                      'records_offset'=>$start_from,
+                                      'records_returned'=>$start_from+$total,
+                                      'records_perpage'=>$number_results,
+                                      'records_text'=>$rtext,
+                                      'records_order'=>$order,
+                                      'records_order_dir'=>$order_dir,
+                                      'filtered'=>$filtered
+                                     )
+                   );
+    echo json_encode($response);
+}
+
 
 ?>

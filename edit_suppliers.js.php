@@ -86,8 +86,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 		this.table0.subscribe("cellClickEvent", onCellClick);
 
 
-	    };
-    });
+	    };});
 
 
 var change_view=function(e){

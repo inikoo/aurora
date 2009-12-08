@@ -2,8 +2,8 @@
 include_once('common.php');
 ?>
 
-  var Event = YAHOO.util.Event;
-     var Dom   = YAHOO.util.Dom;
+    var Event = YAHOO.util.Event;
+var Dom   = YAHOO.util.Dom;
 var create_new_po=function(){
     var request='ar_orders.php?tipo=create_po';
     YAHOO.util.Connect.asyncRequest('POST',request ,{
@@ -16,7 +16,7 @@ var create_new_po=function(){
 		}
 	    }
 	});    
-
+    
 }
 
 

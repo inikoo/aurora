@@ -6,8 +6,7 @@ include_once('common.php');
  var period='period_<?php echo$_SESSION['state']['products']['period']?>';
     var avg='avg_<?php echo$_SESSION['state']['products']['avg']?>';
 
-   function  change_view(e){
-	
+   function  change_view(e){	
 	tipo=this.id;
 	
 	var table=tables['table0'];
