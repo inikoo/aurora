@@ -306,13 +306,13 @@ function edit_address(index,address_identifier){
 
 
     }
+    
     Dom.setStyle([address_identifier+'address_form',address_identifier+'cancel_edit_address'], 'display', ''); 
     Dom.get(address_identifier+"cancel_edit_address").setAttribute('address_key',index);
-
     data=Address_Data[index];
-    
+   
     for (key in data){
-	item=Dom.get('address_'+key);
+	item=Dom.get(address_identifier+'address_'+key);
 	item.value=data[key];
 	item.setAttribute('ovalue',data[key]);
 	
@@ -322,13 +322,13 @@ function edit_address(index,address_identifier){
 	if(key=='function'){
 	    var address_function=data[key];
 	    for (address_function_key in address_function){
-		Dom.addClass('address_function_'+address_function[address_function_key],'selected')
+		Dom.addClass(address_identifier+'address_function_'+address_function[address_function_key],'selected')
 		    }
 	}
 	if(key=='type'){
 	    var address_type=data[key];
 	    for (address_type_key in address_type){
-		Dom.addClass('address_type_'+address_type[address_type_key],'selected')
+		Dom.addClass(address_identifier+'address_type_'+address_type[address_type_key],'selected')
 		    }
 	}
     }
