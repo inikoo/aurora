@@ -561,6 +561,7 @@ $default_state=array(
 		     'customer'=>array(
 				       'id'=>1,
 				       'action_after_create'=>'continue',
+				       'edit'=>'details',
 				       'table'=>array(
 						      'order'=>'date',
 						      'order_dir'=>'desc',

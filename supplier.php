@@ -14,6 +14,10 @@
 include_once('common.php');
 include_once('class.Supplier.php');
 
+if(!$user->can_view('suppliers'))
+  exit();
+$modify=$user->can_edit('suppliers');
+
 
 
 $css_files=array(
@@ -53,7 +57,8 @@ if(isset($_REQUEST['edit']) and $_REQUEST['edit']){
   $edit=true;
   $_REQUEST['id']=$_REQUEST['edit'];
  }
-
+if(!$modify)
+  $edit=false;
 
 
 if(isset($_REQUEST['id']) and is_numeric($_REQUEST['id']))
@@ -77,7 +82,6 @@ $smarty->assign('address',$address);
 
 
 
-$smarty->assign('box_layout','yui-t0');
 $smarty->assign('parent','suppliers.php');
 $smarty->assign('title','Supplier: '.$supplier->get('Supplier Code'));
 

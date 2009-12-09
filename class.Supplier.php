@@ -569,12 +569,31 @@ function valid_id($id){
 
 
      break;
+   case('Supplier Company Name'):
+     $this->update_company_name($value,$options);
+     break;
+
    default:
      $this->update_field($field,$value,$options);
    }
 
    
  }
+
+ function update_company_name($value,$options){
+  
+     $company=new Company($this->data['Supplier Company Key']);
+     $company->editor=$this->editor;
+     $company->update(array('Company Name'=>$value));
+
+     if($company->updated){
+      
+       $this->updated=true;
+       $this->new_value=$company->new_value;
+     }
+
+ }
+
 
  /*function:get_formated_id
      Returns formated id

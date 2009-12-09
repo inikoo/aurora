@@ -1000,7 +1000,7 @@ class Company extends DB_Table {
         $old_value=$this->data['Company Name'];
         $this->data['Company Name']=$value;
         $this->data['Company File As']=$this->file_as($this->data['Company Name']);
-        $sql=sprintf("update `Company Dimension` set `Company name`=%s,`Company File As`=%s where `Company Key`=%d "
+        $sql=sprintf("update `Company Dimension` set `Company Name`=%s,`Company File As`=%s where `Company Key`=%d "
                      ,prepare_mysql($this->data['Company Name'])
                      ,prepare_mysql($this->data['Company File As'])
                      ,$this->id);
@@ -1024,40 +1024,41 @@ class Company extends DB_Table {
 
             $history_data=array(
                               'note'=>_('Company Name Changed')
-                                     ,'details'=>_trim(_('Company name chaged').": ".$old_value." -> ".$this->data['Company Name'])
-                                                ,'indirect_object'=>'Name'
-                          );
+			      ,'details'=>_trim(_('Company name chaged').": ".$old_value." -> ".$this->data['Company Name'])
+			      ,'indirect_object'=>'Name'
+				);
             $this->add_history($history_data);
             $this->add_history($history_data);
 
             // update childen and parents
-
+	    
             $sql=sprintf("select `Contact Key` from `Contact Dimension` where `Contact Company Key`=%d  ",$this->id);
             $res=mysql_query($sql);
             while ($row=mysql_fetch_array($res)) {
-                $contact=new Contact ($row['Contact Key']);
-                $contact->editor=$this->editor;
-                $contact->update(array('Contact Company Name'=>$this->data['Company Name']));
+	      $contact=new Contact ($row['Contact Key']);
+	      $contact->editor=$this->editor;
+	      $contact->update(array('Contact Company Name'=>$this->data['Company Name']));
             }
-
-
+	    
+	    
             $sql=sprintf("select `Supplier Key` from `Supplier Dimension` where `Supplier Company Key`=%d  ",$this->id);
             $res=mysql_query($sql);
             while ($row=mysql_fetch_array($res)) {
-                $supplier=new Supplier ($row['Supplier Key']);
-                $supplier->editor=$this->editor;
-                $supplier->update(array('Supplier Company Name'=>$this->data['Company Name']));
+	      $supplier=new Supplier ($row['Supplier Key']);
+	      $supplier->editor=$this->editor;
+	      ;
+	      $supplier->update(array('Supplier Name'=>$this->data['Company Name']));
             }
-
+	    
             $sql=sprintf("select `Customer Key` from `Customer Dimension` where `Customer Company Key`=%d  ",$this->id);
             $res=mysql_query($sql);
             while ($row=mysql_fetch_array($res)) {
-                $customer=new Customer ($row['Customer Key']);
+	      $customer=new Customer ($row['Customer Key']);
                 $customer->editor=$this->editor;
                 $customer->update(array('Customer Company Name'=>$this->data['Company Name']));
             }
-
-
+	    
+	    
 
         }
 

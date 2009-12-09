@@ -16,18 +16,13 @@ function change_main_address(o,address_key){
 	
 	
     }else{
-
+	
 	var elements = YAHOO.util.Dom.getElementsByClassName('address_main', 'input'); 
 	for( var i in elements){
 	    elements[i].checked='';
 	}
 	o.checked='checked';
     }
-
-
-
-
-
 }
 
 
@@ -223,10 +218,10 @@ var update_address_buttons=function(){
 	 Dom.setStyle(['save_edit_address'], 'display', ''); 
     }
 
-}
+};
 
 
-var cancel_edit_address=function (){
+function cancel_edit_address(){
     changes_address=0;
     index=Dom.get("cancel_edit_address").getAttribute('address_key');
     Dom.setStyle(['address_showcase','move_address_button','add_address_button'], 'display', ''); 
@@ -293,25 +288,29 @@ var delete_address=function (e,address_button){
 
 
 
-}
+};
 
 
-var edit_address=function (e,address_button){
-    if(address_button==false)
+function edit_address(index,address_identifier){
+    if(index==false)
 	index=0;
-    else
-	index=address_button.getAttribute('address_id')
+
+    if(address_identifier==undefined)
+	address_identifier='';
 
     Current_Address_Index=index;
     changes_address=0;
-    Dom.setStyle(['address_showcase','move_address_button','add_address_button'], 'display', 'none'); 
-    Dom.setStyle(['address_form','cancel_edit_address'], 'display', ''); 
-    Dom.get("cancel_edit_address").setAttribute('address_key',index);
-   
 
- 
+    if(address_identifier==''){
+	Dom.setStyle(['address_showcase','move_address_button','add_address_button'], 'display', 'none'); 
+
+
+    }
+    Dom.setStyle([address_identifier+'address_form',address_identifier+'cancel_edit_address'], 'display', ''); 
+    Dom.get(address_identifier+"cancel_edit_address").setAttribute('address_key',index);
+
     data=Address_Data[index];
-   
+    
     for (key in data){
 	item=Dom.get('address_'+key);
 	item.value=data[key];
@@ -319,73 +318,66 @@ var edit_address=function (e,address_button){
 	
 	if(key=='country_code')
 	    update_address_labels(data[key]);
-
+	
 	if(key=='function'){
 	    var address_function=data[key];
 	    for (address_function_key in address_function){
 		Dom.addClass('address_function_'+address_function[address_function_key],'selected')
-	    }
+		    }
 	}
 	if(key=='type'){
 	    var address_type=data[key];
 	    for (address_type_key in address_type){
-
 		Dom.addClass('address_type_'+address_type[address_type_key],'selected')
-	    }
+		    }
 	}
-	
-
-	
     }
+};
+
+var update_address_labels=function(country_code){
+    var labels=new Object();
+    
+    if(Country_Address_Labels[country_code]== undefined){
+	return
+	    }else
+	labels=Country_Address_Labels[country_code];
     
     
-  }
-
-
-    var update_address_labels=function(country_code){
-	var labels=new Object();
-	
-	if(Country_Address_Labels[country_code]== undefined){
-	    return
-	}else
-	    labels=Country_Address_Labels[country_code];
-	
-
-	for (index in Address_Keys){
-	    key=Address_Keys[index];
-	    if(labels[key]!=undefined){
-
-		if(labels[key].name!=undefined){
-		    Dom.get('label_address_'+key).innerHTML=labels[key].name;
-		}
-
-		if(labels[key].in_use!=undefined && !labels[key].in_use){
-		    
+    for (index in Address_Keys){
+	key=Address_Keys[index];
+	if(labels[key]!=undefined){
+	    
+	    if(labels[key].name!=undefined){
+		Dom.get('label_address_'+key).innerHTML=labels[key].name;
+	    }
+	    
+	    if(labels[key].in_use!=undefined && !labels[key].in_use){
+		
+		Dom.setStyle('tr_address_'+key,'display','none');
+	    }else{
+		Dom.setStyle('tr_address_'+key,'display','');
+		
+		
+		if(labels[key].hide!=undefined && labels[key].hide){
 		    Dom.setStyle('tr_address_'+key,'display','none');
+		    
+		    if(key=='country_d1'){
+			Dom.setStyle('show_'+key,'display','');
+		    }
+		    
 		}else{
 		    Dom.setStyle('tr_address_'+key,'display','');
-		    
-		    
-		    if(labels[key].hide!=undefined && labels[key].hide){
-			Dom.setStyle('tr_address_'+key,'display','none');
-			
-			if(key=='country_d1'){
-			Dom.setStyle('show_'+key,'display','');
-			}
-			
-		    }else{
-			Dom.setStyle('tr_address_'+key,'display','');
-			if(key=='country_d1'){
-			    Dom.setStyle('show_'+key,'display','none');
-			}
-			
+		    if(key=='country_d1'){
+			Dom.setStyle('show_'+key,'display','none');
 		    }
+		    
 		}
-		
 	    }
+	    
 	}
-	
-    };
+    }
+    
+};
 
 
 var on_address_type_change=function(){

@@ -79,61 +79,73 @@ $smarty->assign('customer',$customer);
 
 
 if($edit ){
-
+  $smarty->assign('customer_type',$customer->data['Customer Type']);
+   $css_files[]=$yui_path.'assets/skins/sam/autocomplete.css';
+    $css_files[]='css/edit_address.css';
+    $css_files[]='css/edit.css';
+    $js_files[]='js/edit_common.js';
+    $js_files[]='js/validate_telecom.js';
+  
   if($customer->data['Customer Type']=='Company'){
-
     $company=new Company($customer->data['Customer Company Key']);
     $smarty->assign('company',$company);
-	
+    
     $offset=1;// 0 is reserved to new address
     $addresses=$company->get_addresses($offset);
     $smarty->assign('addresses',$addresses);
     $number_of_addresses=count($addresses);
     $smarty->assign('number_of_addresses',$number_of_addresses);
+    
+    $contacts=$company->get_contacts($offset);
+    $smarty->assign('contacts',$contacts);
+    $number_of_contacts=count($contacts);
+    $smarty->assign('number_of_contacts',$number_of_contacts);
+    $js_files[]=sprintf('edit_company.js.php?id=%d&scope=Customer&scope_key=%d',$company->id,$customer->id);
+    
+  }else{
 
-  $contacts=$company->get_contacts($offset);
-  $smarty->assign('contacts',$contacts);
-  $number_of_contacts=count($contacts);
-  $smarty->assign('number_of_contacts',$number_of_contacts);
+    $contact=new Contact($customer->data['Customer Main Contact Key']);
+    $smarty->assign('contact',$contact);
+    
 
-  $smarty->assign('scope','customer');
-  $smarty->assign('scope_key',$customer->id);
 
-  
-  
-  $sql=sprintf("select * from kbase.`Salutation Dimension` S left join kbase.`Language Dimension` L on S.`Language Key`=L.`Language Key` where `Language Code`=%s limit 1000",prepare_mysql($myconf['lang']));
-  $result=mysql_query($sql);
-  $salutations=array();
-  while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
-    $salutations[]=array('txt'=>$row['Salutation'],'relevance'=>$row['Relevance'],'id'=>$row['Salutation Key']);
-  }
-   mysql_free_result($result);
-
+  }    
   
 
-
-
-  $smarty->assign('prefix',$salutations);
-  $editing_block='details';
-
-  $smarty->assign('edit',$editing_block);
-  $css_files[]=$yui_path.'autocomplete/assets/skins/sam/autocomplete.css';
-  $css_files[]='css/edit.css';
-
-
-  $js_files[]='js/validate_telecom.js';
-  $js_files[]=sprintf('edit_company.js.php?id=%d&scope=Customer&scope_key=%d',$company->id,$customer->id);
-  $js_files[]='edit_address.js.php';
-  $js_files[]='edit_contact_from_parent.js.php';
-  $js_files[]='edit_contact_telecom.js.php';
-  $js_files[]='edit_contact_name.js.php';
-  $js_files[]='edit_contact_email.js.php';
+    $smarty->assign('scope','customer');
+    $smarty->assign('scope_key',$customer->id);
+    
+    
+    
+    
+    $sql=sprintf("select * from kbase.`Salutation Dimension` S left join kbase.`Language Dimension` L on S.`Language Code`=L.`Language ISO 639-1 Code`  where `Language Code`=%s limit 1000",prepare_mysql($myconf['lang']));
+    $result=mysql_query($sql);
+    $salutations=array();
+    while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
+      $salutations[]=array('txt'=>$row['Salutation'],'relevance'=>$row['Relevance'],'id'=>$row['Salutation Key']);
+    }
+    mysql_free_result($result);
+    
+    $smarty->assign('prefix',$salutations);
+    
+    $editing_block=$_SESSION['state']['customer']['edit'];
+    $smarty->assign('edit',$editing_block);
+    
+   
+    $js_files[]='edit_address.js.php';
+    $js_files[]='edit_contact_from_parent.js.php';
+	
+    $js_files[]='edit_contact_telecom.js.php';
+    $js_files[]='edit_contact_name.js.php';
+    $js_files[]='edit_contact_email.js.php';
+    $js_files[]=sprintf('edit_customer.js.php');
+    
 
   $smarty->assign('css_files',$css_files);
   $smarty->assign('js_files',$js_files);
-  $smarty->display('edit_company.tpl');
+  $smarty->display('edit_customer.tpl');
   exit();
-  }
+  
 
 }else{
 

@@ -17,80 +17,80 @@ var create_new_po=function(){
 	    }
 	});    
     
-}
-
+};
+    
 
 YAHOO.util.Event.addListener(window, "load", function() {
 	tables = new function() {
-
-
-		 var tableid=0;
-		    var tableDivEL="table"+tableid;
+		
+		    
+		var tableid=0;
+		var tableDivEL="table"+tableid;
 		var ColumnDefs = [
 				  
 				  {key:"code", label:"<?php echo _('Code')?>",  width:70,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				  ,{key:"name", label:"<?php echo _('Name')?>",<?php echo($_SESSION['state']['supplier']['products']['view']=='product_general'?'':'hidden:true,')?>width:300, sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				  ,{key:"usedin", label:"<?php echo _('Used In')?>", width:250,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-
+				  
 				  ,{key:"required", label:"<?php echo _('Required')?>",<?php echo($_SESSION['state']['supplier']['products']['view']=='product_sales'?'':'hidden:true,')?> width:55,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 				  ,{key:"provided", label:"<?php echo _('Used')?>",<?php echo($_SESSION['state']['supplier']['products']['view']=='product_sales'?'':'hidden:true,')?> width:55,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 				  ,{key:"sales", label:"<?php echo _('Sales')?>",<?php echo($_SESSION['state']['supplier']['products']['view']=='product_sales'?'':'hidden:true,')?> width:55,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 				  ,{key:"profit", label:"<?php echo _('Profit')?>",<?php echo($_SESSION['state']['supplier']['products']['view']=='product_sales'?'':'hidden:true,')?> width:55,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-
-
+				  
+				  
 				  ];
-
+		
 		this.dataSource0 = new YAHOO.util.DataSource("ar_suppliers.php?tipo=supplier_products&tableid="+tableid);
-
-   this.dataSource0.responseType = YAHOO.util.DataSource.TYPE_JSON;
-		    this.dataSource0.connXhrMode = "queueRequests";
-		    this.dataSource0.responseSchema = {
-			resultsList: "resultset.data", 
-			metaFields: {
-			    rowsPerPage:"resultset.records_perpage",
-			    rtext:"resultset.rtext",
-			    sort_key:"resultset.sort_key",
-			    sort_dir:"resultset.sort_dir",
-			    tableid:"resultset.tableid",
-			    filter_msg:"resultset.filter_msg",
-			    totalRecords: "resultset.total_records"
-			},
+		
+		this.dataSource0.responseType = YAHOO.util.DataSource.TYPE_JSON;
+		this.dataSource0.connXhrMode = "queueRequests";
+		this.dataSource0.responseSchema = {
+		    resultsList: "resultset.data", 
+		    metaFields: {
+			rowsPerPage:"resultset.records_perpage",
+			rtext:"resultset.rtext",
+			sort_key:"resultset.sort_key",
+			sort_dir:"resultset.sort_dir",
+			tableid:"resultset.tableid",
+			filter_msg:"resultset.filter_msg",
+			totalRecords: "resultset.total_records"
+		    },
 			
-			fields: [
-				 "id","code","name","cost","usedin","profit","allcost","used","required","provided","lost","broken","allcost","sales"
-				 ]};
-	    
-		    this.table0 = new YAHOO.widget.DataTable(tableDivEL, ColumnDefs,
+		    fields: [
+			     "id","code","name","cost","usedin","profit","allcost","used","required","provided","lost","broken","allcost","sales"
+			     ]};
+		
+		this.table0 = new YAHOO.widget.DataTable(tableDivEL, ColumnDefs,
 							     this.dataSource0, {
-								 //draggableColumns:true,
-								 renderLoopSize: 50,generateRequest : myRequestBuilder
-								 ,paginator : new YAHOO.widget.Paginator({
-									 rowsPerPage:<?php echo$_SESSION['state']['supplier']['products']['nr']?>,containers : 'paginator0', 
-									 pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',
-									 previousPageLinkLabel : "<",
-									 nextPageLinkLabel : ">",
- 									      firstPageLinkLabel :"<<",
+							     //draggableColumns:true,
+							     renderLoopSize: 50,generateRequest : myRequestBuilder
+							     ,paginator : new YAHOO.widget.Paginator({
+								     rowsPerPage:<?php echo$_SESSION['state']['supplier']['products']['nr']?>,containers : 'paginator0', 
+								     pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',
+								     previousPageLinkLabel : "<",
+								     nextPageLinkLabel : ">",
+								     firstPageLinkLabel :"<<",
 									 lastPageLinkLabel :">>",rowsPerPageOptions : [10,25,50,100,250,500],alwaysVisible:false
-									 ,template : "{FirstPageLink}{PreviousPageLink}<strong id='paginator_info0'>{CurrentPageReport}</strong>{NextPageLink}{LastPageLink}"
-								     })
-								 
-								 ,sortedBy : {
-								     key: "<?php echo$_SESSION['state']['supplier']['products']['order']?>",
-								     dir: "<?php echo$_SESSION['state']['supplier']['products']['order_dir']?>"
-								 }
-								 ,dynamicData : true
-								 
+								     ,template : "{FirstPageLink}{PreviousPageLink}<strong id='paginator_info0'>{CurrentPageReport}</strong>{NextPageLink}{LastPageLink}"
+								 })
+							     
+							     ,sortedBy : {
+								 key: "<?php echo$_SESSION['state']['supplier']['products']['order']?>",
+								 dir: "<?php echo$_SESSION['state']['supplier']['products']['order_dir']?>"
 							     }
-							     );
+							     ,dynamicData : true
+							     
+							 }
+							 );
 		this.table0.handleDataReturnPayload =myhandleDataReturnPayload;
 		this.table0.doBeforeSortColumn = mydoBeforeSortColumn;
 		this.table0.doBeforePaginatorChange = mydoBeforePaginatorChange;
 		this.table0.filter={key:'<?php echo$_SESSION['state']['supplier']['products']['f_field']?>',value:'<?php echo$_SESSION['state']['supplier']['products']['f_value']?>'};
 		this.table0.view='<?php echo$_SESSION['state']['supplier']['products']['view']?>';
-
-			     var tableid=1; // Change if you have more the 1 table
-	    var tableDivEL="table"+tableid;
-	    var SuppliersColumnDefs = [
+		
+		var tableid=1; // Change if you have more the 1 table
+		var tableDivEL="table"+tableid;
+		var SuppliersColumnDefs = [
 				       {key:"id", label:"<?php echo _('Id')?>",  width:60,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				       ,{key:"tipo", label:"<?php echo _('Type')?>",width:200, sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				       ,{key:"date_index", label:"<?php echo _('Date')?>", width:200,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}

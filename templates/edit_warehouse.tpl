@@ -20,16 +20,16 @@
     <li> <span class="item {if $edit=='areas'}selected{/if}"  id="areas">  <span> {t}Areas{/t}</span></span></li>
   <li> <span class="item {if $edit=='shelfs'}selected{/if}"  id="shelfs">  <span> {t}Shelfs{/t}</span></span></li>
     <li> <span class="item {if $edit=='locations'}selected{/if}"  id="locations">  <span> {t}Locations{/t}</span></span></li>
-     <li> <span class="item {if $edit=='shelf_types'}selected{/if}"  id="shelf_types">  <span> {t}Shelf Types{/t}</span></span></li>
- <li> <span class="item {if $edit=='location_types'}selected{/if}"  id="location_types">  <span> {t}Location Types{/t}</span></span></li>
-  </ul>
-<div class="tabbed_container" > 
+	<li> <span class="item {if $edit=='shelf_types'}selected{/if}"  id="shelf_types">  <span> {t}Shelf Types{/t}</span></span></li>
+	    <li> <span class="item {if $edit=='location_types'}selected{/if}"  id="location_types">  <span> {t}Location Types{/t}</span></span></li>
+		</ul>
+		<div class="tabbed_container" > 
    <div id="description_block" style="{if $edit!='description'}display:none{/if}" >
-   
+														   
      <div style="float:right">
-	<span class="save" style="display:none" id="description_save" onclick="save('description')">{t}Save{/t}</span>
-	<span id="description_reset"  style="display:none"   class="undo" onclick="reset('description')">{t}Cancel{/t}</span>
-      </div>
+														   <span class="save" style="display:none" id="description_save" onclick="save('description')">{t}Save{/t}</span>
+														       <span id="description_reset"  style="display:none"   class="undo" onclick="reset('description')">{t}Cancel{/t}</span>
+															   </div>
 	
       <table style="margin:0;" class="edit" border=0>
 	<tr><td class="label">{t}Warehouse Code{/t}:</td><td>

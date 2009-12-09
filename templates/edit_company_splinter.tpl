@@ -369,7 +369,7 @@
 		  
 		  <input type="checkbox" class='Is_Main' /> {t}Main{/t}
 		  <span class="small_button small_button_edit" id="delete_address_button0" address_id="0" onclick="delete_address(event,this)" >{t}Remove{/t}</span>
-		  <span class="small_button small_button_edit" id="edit_address_button0" address_id="0" onclick="edit_address(event,this)" >{t}Edit{/t}</span>
+		  <span class="small_button small_button_edit" id="edit_address_button0" address_id="0" onclick="edit_address(0)" >{t}Edit{/t}</span>
 		</div>
 	      </div>
 	      
@@ -386,7 +386,7 @@
 		  <input  onchange="change_main_address(this,{$address->id})" type="checkbox" class='Is_Main address_main' {if $address->is_main()}checked="checked" value="Yes" ovalue="Yes"{else}value="No" ovalue="No"{/if} /> {t}Main{/t}
 		  </div>
 		  <span class="small_button small_button_edit" id="delete_address_button{$address->id}" address_id="{$address->id}" onclick="delete_address(event,this)" >{t}Remove{/t}</span>
-		  <span class="small_button small_button_edit" id="edit_address_button{$address->id}" address_id="{$address->id}" onclick="edit_address(event,this)" >{t}Edit{/t}</span>
+		  <span class="small_button small_button_edit" id="edit_address_button{$address->id}" address_id="{$address->id}" onclick="edit_address({$address->id})" >{t}Edit{/t}</span>
 		</div>
 	      </div>
 	      {/foreach}
@@ -490,7 +490,7 @@
 	  <tr >
 	    <td class="label" style="width:160px">{t}Internal{/t}:</td><td  style="text-align:left"><input style="text-align:left;width:18em" id="address_internal" value="" ovalue="" ></td>
 	  </tr>
-
+</tbody>
  
 
 	</table>
