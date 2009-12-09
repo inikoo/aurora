@@ -1470,7 +1470,7 @@ function getEnumVals($table,$field,$sorted=true)
             $endStr=strpos($types,")");
             $types=substr($types,$beginStr,$endStr-$beginStr);
             $types=str_replace("'","",$types);
-            $types=split(',',$types);
+            $types=preg_split('/\,/',$types);
             if($sorted)
                 sort($types);
             break;
