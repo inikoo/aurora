@@ -1,4 +1,4 @@
-<tbody id="{$address_identifier}address_form" style="xdisplay:none"   >
+<tbody id="{$address_identifier}address_form" style="display:none"   >
   <tr id="{$address_identifier}tr_address_type">
     <td class="label">
       <span id="{$address_identifier}show_description" onclick="show_description()" class="small_button" style="padding:0 1px;font-size:50%;position:relative;top:-2px;">+</span> {t}Address Type{/t}:</td><td  style="text-align:left"   id="{$address_identifier}address_type" value="" ovalue=""  >

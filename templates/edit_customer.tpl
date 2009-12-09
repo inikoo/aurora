@@ -88,15 +88,26 @@
 
      </table>
 
-   <div id="customer_contact_address" style="float:left;xborder:1px solid #ddd;width:420px">
+   <div id="customer_contact_address" style="float:left;xborder:1px solid #ddd;width:400px;margin-right:40px">
      <div style="border-bottom:1px solid #777;margin-bottom:5px">
-       {t}Contact Address{/t}:
+       {t}Contact Address{/t}:<span class="state_details" style="float:right;display:none" address_key="" id="contact_cancel_edit_address">{t}Cancel{/t}</span>
      </div>
        <table>
        {include file='edit_address_splinter.tpl' address_identifier='contact_'}
 
      </table>
    </div>
+
+ <div id="customer_contact_address" style="float:left;xborder:1px solid #ddd;width:400px;">
+     <div style="border-bottom:1px solid #777;margin-bottom:5px">
+       {t}Billing Address{/t}:<span class="state_details" style="float:right;display:none" address_key="" id="billing_cancel_edit_address">{t}Cancel{/t}</span>
+     </div>
+       <table>
+       {include file='edit_address_splinter.tpl' address_identifier='billing_'}
+
+     </table>
+   </div>
+
 
 <div style="clear:both"></div>
 
