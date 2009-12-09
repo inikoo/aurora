@@ -41,3 +41,6 @@ table.form_state td.aright{text-align:right}
 table.form_state td.aleft{text-align:left}
 .disabled{cursor:default;color:#ddd}
 .disabled:hover{cursor:default;color:#ddd}
+
+.edit_td_alert{font-size:80%;color:red}
+.edit_td_alert a{color:red;text-decoration:underline}

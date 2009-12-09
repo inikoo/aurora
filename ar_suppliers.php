@@ -18,6 +18,10 @@ switch($tipo){
 case('find_supplier'):
 find_supplier();
 break;
+case('is_supplier_code'):
+is_supplier_code();
+break;
+
 case('supplier_products'):
     list_supplier_products();
 
@@ -1702,6 +1706,57 @@ function list_supplier_products() {
                                      )
                    );
     echo json_encode($response);
+}
+
+
+function is_supplier_code(){
+if (!isset($_REQUEST['query'])) {
+        $response= array(
+                       'state'=>400,
+                       'msg'=>'Error'
+                   );
+        echo json_encode($response);
+        return;
+    }else
+    $query=$_REQUEST['query'];
+    if($query==''){
+       $response= array(
+                       'state'=>200,
+                       'found'=>0
+                   );
+        echo json_encode($response);
+        return;
+    }
+    
+    
+    
+$sql=sprintf("select `Supplier Key`,`Supplier Name`,`Supplier Code` from `Supplier Dimension` where  `Supplier Code`=%s  "
+        ,prepare_mysql($query)
+        );
+$res=mysql_query($sql);
+
+    if ($data=mysql_fetch_array($res)) {
+   $msg=sprintf('Supplier <a href="supplier.php?id=%d">%s</a> already has this code (%s)'
+   ,$data['Supplier Key']
+   ,$data['Supplier Name']
+   ,$data['Supplier Code']
+   );
+   $response= array(
+                       'state'=>200,
+                       'found'=>1,
+                       'msg'=>$msg
+                   );
+        echo json_encode($response);
+        return;
+    }else{
+       $response= array(
+                       'state'=>200,
+                       'found'=>0
+                   );
+        echo json_encode($response);
+        return;
+    }
+
 }
 
 

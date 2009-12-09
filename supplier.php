@@ -103,6 +103,7 @@ if($edit){
   while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
     $salutations[]=array('txt'=>$row['Salutation'],'relevance'=>$row['Relevance'],'id'=>$row['Salutation Key']);
   }
+  mysql_free_result($result);
   $smarty->assign('prefix',$salutations);
   $editing_block=$_SESSION['state']['supplier']['edit'];
   $smarty->assign('edit',$editing_block);
@@ -133,6 +134,7 @@ if($edit){
 
   $css_files[]=$yui_path.'assets/skins/sam/autocomplete.css';
   $css_files[]='css/edit_address.css';
+  $css_files[]='css/edit.css';
 
   $smarty->assign('from','supplier');
   $smarty->assign('css_files',$css_files);
