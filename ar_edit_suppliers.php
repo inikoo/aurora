@@ -80,7 +80,8 @@ function edit_supplier() {
 
     
     $key_dic=array(
-		   'name'=>'Supplier Name'
+		   'name'=>'Supplier Company Name'
+		   ,'code'=>'Supplier Code'
 		   ,'email'=>'Supplier Email'
 		   ,'telephone'=>'Supplier Main Plain Telephone'
 		   ,'contact_name'=>'Email'

@@ -7,6 +7,7 @@ foreach(getEnumVals('`Supplier Product Dimension`','Supplier Product Unit Type')
 }
 $unit_list=preg_replace('/^,/','',$unit_list);
 
+ print "var supplier_id='".$_SESSION['state']['supplier']['id']."';";
 
  print "var units_list=[$unit_list]";
 ?>
@@ -19,8 +20,8 @@ var editing='<?php echo $_SESSION['state']['supplier']['edit']?>';
 
 
 var validate_scope_data={
-'code':{'changed':false,'validated':true,'required':true,'group':1,'type':'item','regexp':"[a-z\\d]+"}
-,'name':{'changed':false,'validated':true,'required':true,'group':1,'type':'item','regexp':"[a-z\\d]+"}
+    'code':{'changed':false,'validated':true,'required':true,'group':1,'type':'item','regexp':"[a-z\\d]+",'name':'Supplier_Code'}
+    ,'name':{'changed':false,'validated':true,'required':true,'group':1,'type':'item','regexp':"[a-z\\d]+",'name':'Supplier_Name'}
 
 };
 
@@ -29,6 +30,9 @@ var validate_scope_data={
 function validate_scope(){
 var changed=false;
 var errors=false;
+//alert(validate_scope_data['name'].changed+'v:'+validate_scope_data['name'].validated)
+
+
     for(item in validate_scope_data){
     
         if(validate_scope_data[item].changed==true)
@@ -38,15 +42,15 @@ var errors=false;
     }
     
     if(changed ){
-    Dom.get('reset_edit_supplier').style.visibility='visible';
-    if(!errors)
-    Dom.get('save_edit_supplier').style.visibility='visible';
-else
-    Dom.get('save_edit_supplier').style.visibility='hidden';
+	Dom.get('reset_edit_supplier').style.visibility='visible';
+	if(!errors)
+	    Dom.get('save_edit_supplier').style.visibility='visible';
+	else
+	    Dom.get('save_edit_supplier').style.visibility='hidden';
 
     }else{
-        Dom.get('reset_edit_supplier').style.visibility='hidden';
-    Dom.get('reset_edit_supplier').style.visibility='hidden';
+        Dom.get('save_edit_supplier').style.visibility='hidden';
+	Dom.get('reset_edit_supplier').style.visibility='hidden';
 
     }
     
@@ -209,11 +213,13 @@ function change_block(e){
 
 
 function validate_supplier_code(query){
-
+ query=unescape(query);
     var old_code=Dom.get('Supplier_Code').getAttribute('ovalue');
  
-if(old_code.toLowerCase()!=query.toLowerCase()){  
-                                  validate_scope_data.code.changed=true;
+
+
+    if(old_code.toLowerCase()!=trim(query.toLowerCase())){  
+    validate_scope_data.code.changed=true;
 
 	var request='ar_suppliers.php?tipo=is_supplier_code&query='+query; 
  // alert(request)
@@ -258,28 +264,93 @@ if(old_code.toLowerCase()!=query.toLowerCase()){
 }
 
 function validate_supplier_name(query){
+    query=unescape(query);
     var old_name=Dom.get('Supplier_Name').getAttribute('ovalue');
-   if(old_name.toLowerCase()!=query.toLowerCase()){  
-     var validator=new RegExp(validate_scope_data.name.regexp,"i");
-            if(!validator.test(query)){
-	           
-	                validate_scope_data.code.validated=false;
-                    Dom.get('Supplier_Name_msg').innerHTML='<?php echo _('Invalid Supplier Name')?>';
+  
+    //    alert(trim(query.toLowerCase())+'<-')
+  if(old_name.toLowerCase()!=trim(query.toLowerCase())){  
+	validate_scope_data.name.changed=true;
+	var validator=new RegExp(validate_scope_data.name.regexp,"i");
+	if(!validator.test(query)){
+	    
+	    validate_scope_data.code.validated=false;
+	    Dom.get('Supplier_Name_msg').innerHTML='<?php echo _('Invalid Supplier Name')?>';
+	    
+	}else{
+	    validate_scope_data.name.validated=true;
+	    Dom.get('Supplier_Name_msg').innerHTML='';
+            
+	}
+    }
+    else{
+	validate_scope_data.name.validated=true;
+	validate_scope_data.name.changed=false;
+	
+    }
+    
+    validate_scope();   
+    
+}
 
-                 }else{
-                  validate_scope_data.name.validated=true;
-                    Dom.get('Supplier_Name_msg').innerHTML='';
-                 
-                 }
-                 }
-                 else{
-                 validate_scope_data.name.validated=true;
-                                  validate_scope_data.name.changed=false;
+function save_edit_supplier(){
+    
+    for(item in validate_scope_data){
+	if(validate_scope_data[item].changed){
+	var item_input=Dom.get(validate_scope_data[item].name);
+	var request='ar_edit_suppliers.php?tipo=edit_supplier&key=' + item+ '&newvalue=' + 
+	    encodeURIComponent(item_input.value) + 
+	    '&supplier_key='+supplier_id;
+	
+	YAHOO.util.Connect.asyncRequest('POST',request ,{
+		success:function(o) {
+		    //alert(o.responseText)
+		    var r =  YAHOO.lang.JSON.parse(o.responseText);
+		    if(r.state==200){
+			
+			validate_scope_data[r.key].changed=false;
+			validate_scope_data[r.key].validated=true;
+			Dom.get(validate_scope_data[r.key].name).setAttribute('ovalue',r.newvalue);
+			Dom.get(validate_scope_data[r.key].name).value=r.newvalue;
+			Dom.get(validate_scope_data[r.key].name+'_msg').innerHTML='<?php echo _('Updated')?>';
+			
+			//var table=tables.table1;
+			//	var datasource=tables.dataSource1;
+			//var request='';
+			//datasource.sendRequest(request,table.onDataReturnInitializeTable, table); 
+			if(r.key=='name'){
+			    Dom.get('title_name').innerHTML=r.newvalue;
+			    Dom.get('name').value=r.newvalue;
+			    Dom.get('name').setAttribute('ovalue',r.newvalue);
 
+			}
+			
+			if(r.key=='code')
+			    Dom.get('title_code').innerHTML=r.newvalue;
+		    }else{
+			validate_scope_data[r.key].changed=true;
+			validate_scope_data[r.key].validated=false;
+			Dom.get(validate_scope_data[r.key].name+'_msg').innerHTML=r.msg;
+			
 		    }
 		    
-		 validate_scope();   
-	
+		}
+			    
+	    });
+	}
+    }
+    
+    
+}
+
+function reset_edit_supplier(){
+    for(item in validate_scope_data){
+	var item_input=Dom.get(validate_scope_data[item].name);
+	item_input.value=item_input.getAttribute('ovalue');
+	validate_scope_data[item].changed=false;
+	validate_scope_data[item].validated=true;
+	Dom.get(validate_scope_data[item].name+'_msg').innerHTML='';
+    }
+    validate_scope(); 
 }
 
     function init(){
@@ -294,20 +365,21 @@ function validate_supplier_name(query){
 	var ids = ["products","details","company"]; 
 	YAHOO.util.Event.addListener(ids, "click", change_block);
 	
-	
-	
+	YAHOO.util.Event.addListener('save_edit_supplier', "click", save_edit_supplier);
+	YAHOO.util.Event.addListener('reset_edit_supplier', "click", reset_edit_supplier);
+		
 	 var supplier_code_oACDS = new YAHOO.util.FunctionDataSource(validate_supplier_code);
 	    supplier_code_oACDS.queryMatchContains = true;
 	    var supplier_code_oAutoComp = new YAHOO.widget.AutoComplete("Supplier_Code","Supplier_Code_Container", supplier_code_oACDS);
 	    supplier_code_oAutoComp.minQueryLength = 0; 
-	    supplier_code_oAutoComp.queryDelay = 0.75;
+	    supplier_code_oAutoComp.queryDelay = 0.25;
 	
 	
 	 var supplier_name_oACDS = new YAHOO.util.FunctionDataSource(validate_supplier_name);
 	    supplier_name_oACDS.queryMatchContains = true;
 	    var supplier_name_oAutoComp = new YAHOO.widget.AutoComplete("Supplier_Name","Supplier_Name_Container", supplier_name_oACDS);
 	    supplier_name_oAutoComp.minQueryLength = 0; 
-	    supplier_name_oAutoComp.queryDelay = 0.5;
+	    supplier_name_oAutoComp.queryDelay = 0.1;
 
 
 	}

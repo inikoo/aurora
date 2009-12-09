@@ -12,7 +12,7 @@
     </div>
 </div>
  <div id="no_details_title"  style="clear:left;xmargin:0 20px;{if $details!=0}display:none{/if}">
-    <h1>{t}Edit Supplier{/t}: {$supplier->get('Supplier Name')} ({$supplier->get('Supplier Code')})</h1>
+    <h1>{t}Edit Supplier{/t}: <span id="title_name">{$supplier->get('Supplier Name')}</span> (<span id="title_code">{$supplier->get('Supplier Code')}</span>)</h1>
   </div>
 
   <ul class="tabs" id="chooser_ul" style="clear:both">

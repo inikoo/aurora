@@ -2284,7 +2284,7 @@ class Contact extends DB_Table {
             elseif(array_key_exists($key,$base_data)) {
 
                 if ($value!=$this->data[$key]) {
-                    print "xxx $key,$value,$options\n";
+		  //print "xxx $key,$value,$options\n";
                     $this->update_field_switcher($key,$value,$options);
 
                 }
