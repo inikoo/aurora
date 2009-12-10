@@ -608,10 +608,10 @@ class Customer extends DB_Table{
 	$this->update_email($main_email_key);
       }
       if($this->data['Customer Type']=='Company'){
-	$this->update_company($company_key);
+	$this->update_company($company_key,true);
 	
       }else{
-	
+	$this->update_contact($contact_key,true);
 
       }
       
@@ -844,7 +844,7 @@ class Customer extends DB_Table{
 
  }
 
- /*
+/*
   function:update_email
   */
  function update_email($email_key=false){
@@ -857,17 +857,17 @@ class Customer extends DB_Table{
 
    }
 
-   
-   $old_value=$this->data['Customer Main Email Key'];
+
+$old_value=$this->data['Customer Main Email Key'];
    if($old_value  and $old_value!=$email_key   ){
      $this->remove_email();
      }
 
    $sql=sprintf("insert into `Email Bridge` values (%d,'Customer',%d,%s,'Yes','Yes')",
-		$email->id,
-		$this->id,
-		prepare_mysql(_('Customer Main Email'))
-		);
+                $email->id,
+                $this->id,
+                prepare_mysql(_('Customer Main Email'))
+                );
    mysql_query($sql);
 
    $old_plain_email=$this->data['Customer Main Plain Email'];
@@ -875,72 +875,271 @@ class Customer extends DB_Table{
    $this->data['Customer Main Plain Email']=$email->display('plain');
    $this->data['Customer Main XHTML Email']=$email->display('xhtml');
    $sql=sprintf("update `Customer Dimension` set `Customer Main Email Key`=%d,`Customer Main Plain Email`=%s,`Customer Main XHTML Email`=%s where `Customer Key`=%d"
-		
-		,$this->data['Customer Main Email Key']
-		,prepare_mysql($this->data['Customer Main Plain Email'])
-		,prepare_mysql($this->data['Customer Main XHTML Email'])
-		,$this->id
-		);
+
+                ,$this->data['Customer Main Email Key']
+                ,prepare_mysql($this->data['Customer Main Plain Email'])
+                ,prepare_mysql($this->data['Customer Main XHTML Email'])
+                ,$this->id
+                );
    if(mysql_query($sql)){
-     
-     if($old_plain_email!=$this->data['Customer Main Plain Email']){
+if($old_plain_email!=$this->data['Customer Main Plain Email']){
        $this->updated=true;
        $note=_('Email changed');
        if($old_value){
-	 $old_email=new Email($old_value);
-	 $details=_('Customer email changed from')." \"".$old_email->display('plain')."\" "._('to')." \"".$this->data['Customer Main Plain Email']."\"";
+        
+         $details=_('Customer email changed from')." \"".$old_plain_email."\" "._('to')." \"".$this->data['Customer Main Plain Email']."\"";
        }else{
-	 $details=_('Customer email set to')." \"".$this->data['Customer Main Plain Email']."\"";
+         $details=_('Customer email set to')." \"".$this->data['Customer Main Plain Email']."\"";
        }
-       
+
        $history_data=array(
-			   'indirect_object'=>'Email'
-			   ,'details'=>$details
-			   ,'note'=>$note
-			   );
+                           'indirect_object'=>'Email'
+                           ,'indirect_object'=>$email->id
+                           ,'details'=>$details
+                           ,'note'=>$note
+                           );
        $this->add_history($history_data);
      }
-       
-     
+
+
 
    }else{
      $this->error=true;
-     
+
    }
- 
-       
+
+
  }
 
 
-/*   /\* */
-/*    Function: base_data */
-/*    Initializes an array with the default field values */
-/*    *\/ */
-/*  function base_data(){ */
-/*    $data=array(); */
-
-/*    $ignore_fields=array('Customer Key'); */
-
-/*    $result = mysql_query("SHOW COLUMNS FROM `Customer Dimension`"); */
-/*    if (!$result) { */
-/*      echo 'Could not run query: ' . mysql_error(); */
-/*      exit; */
-/*    } */
-/*    if (mysql_num_rows($result) > 0) { */
-/*      while ($row = mysql_fetch_assoc($result)) { */
-/*        if(!in_array($row['Field'],$ignore_fields)) */
-/* 	 $data[$row['Field']]=$row['Default']; */
-/*      } */
-/*    } */
-/*    if(preg_match('/not? replace/i',$args)) */
-/*      return $data; */
-/*    if(preg_match('/replace/i',$args)) */
-/*      $this->data=$data; */
-
-/*  } */
 
 
 
+
+
+ /*
+  function:update_contact
+  */
+function update_contact($contact_key=false) {
+$this->associated=false;
+    if (!$contact_key)
+        return;
+    $contact=new contact($contact_key);
+    if (!$contact->id) {
+        $this->msg='contact not found';
+        return;
+
+    }
+
+
+    $old_contact_key=$this->data['Customer Main Contact Key'];
+
+    if ($old_contact_key  and $old_contact_key!=$contact_key   ) {
+        $this->remove_contact();
+    }
+
+    $sql=sprintf("insert into `Contact Bridge` values (%d,'Customer',%d,'Yes','Yes')",
+                 $contact->id,
+                 $this->id
+                );
+    mysql_query($sql);
+    if(mysql_affected_rows()){
+    $this->associated=true;
+    
+    }
+    
+    
+
+    $old_name=$this->data['Customer Main Contact Name'];
+    if ($old_name!=$contact->display('name')) {
+
+
+        if ($this->data['Customer Type']=='Person'
+            and $this->data['Customer Name']!=$contact->display('name')) {
+            $old_customer_name=$this->data['Customer Name'];
+            $this->data['Customer Name']=$contact->display('name');
+            $this->data['Customer File As']=$contact->data['Contact File As'];
+            $sql=sprintf("update `Customer Dimension` set `Customer Name`=%d,`Customer File As`=%s where `Customer Key`=%d"
+                         ,prepare_mysql($this->data['Customer Name'])
+                         ,prepare_mysql($this->data['Customer File As'])
+                         ,$this->id
+                        );
+            mysql_query($sql);
+            $note=_('Contact name changed');
+            $details=_('Customer Name changed from')." \"".$old_customer_name."\" "._('to')." \"".$this->data['Customer Name']."\"";
+            $history_data=array(
+                              'indirect_object'=>'Customer Name'
+                                                ,'details'=>$details
+                                                           ,'note'=>$note
+                                                                   ,'action'=>'edited'
+                          );
+            $this->add_history($history_data);
+
+        }
+
+        $this->data['Customer Main Contact Key']=$contact->id;
+        $this->data['Customer Main Contact Name']=$contact->display('name');
+        $sql=sprintf("update `Customer Dimension` set `Customer Main Contact Key`=%d,`Customer Main Contact Name`=%s where `Customer Key`=%d"
+
+                     ,$this->data['Customer Main Contact Key']
+                     ,prepare_mysql($this->data['Customer Main Contact Name'])
+                     ,$this->id
+                    );
+        mysql_query($sql);
+
+
+
+        $this->updated=true;
+
+
+
+
+
+
+        $note=_('Customer contact name changed');
+        if ($old_contact_key) {
+            $details=_('Customer contact name changed from')." \"".$old_name."\" "._('to')." \"".$this->data['Customer Main Contact Name']."\"";
+        } else {
+            $details=_('Customer contact set to')." \"".$this->data['Customer Main Contact Name']."\"";
+        }
+
+        $history_data=array(
+                          'indirect_object'=>'Customer Main Contact Name'
+
+                                            ,'details'=>$details
+                                                       ,'note'=>$note
+                                                               ,'action'=>'edited'
+                      );
+        $this->add_history($history_data);
+
+    }
+
+
+if($this->associated){
+ $note=_('Contact name changed');
+            $details=_('Contact')." ".$contact->display('name')." (".$contact->get_formated_id_link().") "._('associated with Customer:')." ".$this->data['Customer Name']." (".$this->get_formated_id_link().")";
+            $history_data=array(
+                              'indirect_object'=>'Customer Name'
+                                                ,'details'=>$details
+                                                           ,'note'=>$note
+                                                                   ,'action'=>'edited',
+                                                                    'deep'=>2
+                          );
+            $this->add_history($history_data,true);
+}
+
+}
+
+function update_company($company_key=false) {
+$this->associated=false;
+    if (!$company_key)
+        return;
+    $company=new company($company_key);
+    if (!$company->id) {
+        $this->msg='company not found';
+        return;
+
+    }
+
+
+    $old_company_key=$this->data['Customer Company Key'];
+
+    if ($old_company_key  and $old_company_key!=$company_key   ) {
+        $this->remove_company();
+    }
+
+    $sql=sprintf("insert into `Company Bridge` values (%d,'Customer',%d,'Yes','Yes')",
+                 $company->id,
+                 $this->id
+                );
+    mysql_query($sql);
+    if(mysql_affected_rows()){
+    $this->associated=true;
+    
+    }
+    
+    
+
+    $old_name=$this->data['Customer Company Name'];
+    if ($old_name!=$company->data['Company Name']) {
+
+
+        if ($this->data['Customer Type']=='Company' and $this->data['Customer Name']!=$company->data['Company Name']) {
+            $old_customer_name=$this->data['Customer Name'];
+            $this->data['Customer Name']=$company->data['Company Name'];
+            $this->data['Customer File As']=$company->data['Company File As'];
+            $sql=sprintf("update `Customer Dimension` set `Customer Main Name`=%d,`Customer File As`=%s where `Customer Key`=%d"
+                         ,prepare_mysql($this->data['Customer Name'])
+                         ,prepare_mysql($this->data['Customer File As'])
+                         ,$this->id
+                        );
+            mysql_query($sql);
+            $note=_('Company name changed');
+            $details=_('Customer Name changed from')." \"".$old_customer_name."\" "._('to')." \"".$this->data['Customer Name']."\"";
+            $history_data=array(
+                              'indirect_object'=>'Customer Name'
+                                                ,'details'=>$details
+                                                           ,'note'=>$note
+                                                                   ,'action'=>'edited'
+                          );
+            $this->add_history($history_data);
+
+        }
+
+        $this->data['Customer Company Key']=$company->id;
+        $this->data['Customer Company Name']=$company->data['Company Name'];
+        $sql=sprintf("update `Customer Dimension` set `Customer Company Key`=%d,`Customer Company Name`=%s where `Customer Key`=%d"
+
+                     ,$this->data['Customer Company Key']
+                     ,prepare_mysql($this->data['Customer Company Name'])
+                     ,$this->id
+                    );
+        mysql_query($sql);
+
+
+
+        $this->updated=true;
+
+
+
+
+
+
+        $note=_('Customer company name changed');
+        if ($old_company_key) {
+            $details=_('Customer company name changed from')." \"".$old_name."\" "._('to')." \"".$this->data['Customer Company Name']."\"";
+        } else {
+            $details=_('Customer company set to')." \"".$this->data['Customer Company Name']."\"";
+        }
+
+        $history_data=array(
+                          'indirect_object'=>'Customer Company Name'
+
+                                            ,'details'=>$details
+                                                       ,'note'=>$note
+                                                               ,'action'=>'edited'
+                      );
+        $this->add_history($history_data);
+
+    }
+
+
+if($this->associated){
+ $note=_('Company name changed');
+            $details=_('Company')." ".$company->data['Company Name']." (".$company->get_formated_id_link().") "._('associated with Customer:')." ".$this->data['Customer Name']." (".$this->get_formated_id_link().")";
+            $history_data=array(
+                              'indirect_object'=>'Customer Name'
+                                                ,'details'=>$details
+                                                           ,'note'=>$note
+                                                                   ,'action'=>'edited',
+                                                                    'deep'=>2
+                          );
+            $this->add_history($history_data,true);
+}
+
+$this->update_contact($company->data['Company Main Contact Key']);
+
+}
 
  public function update_no_normal_data(){
 
@@ -1696,6 +1895,19 @@ class Customer extends DB_Table{
  }
 
 
+  /*function:get_formated_id_link
+     Returns formated id_link
+    */
+   function get_formated_id_link(){
+   
+     
+    
+
+     return sprintf('<a href="customer.php?id=%d">%s</a>',$this->id, $this->get_formated_id());
+
+   }
+
+
    /*function:get_formated_id
      Returns formated id
     */
@@ -1873,6 +2085,101 @@ class Customer extends DB_Table{
        
 
  }
+
+
+
+function remove_company($company_key=false){
+
+   
+    if(!$company_key){
+     $company_key=$this->data['Customer Main Company Key'];
+   }
+   
+   
+   $company=new company($company_key);
+   if(!$company->id){
+     $this->error=true;
+     $this->msg='Wrong company key when trying to remove it';
+     $this->msg_updated='Wrong company key when trying to remove it';
+   }
+
+   $company->set_scope('Customer',$this->id);
+   if( $company->associated_with_scope){
+     
+     $sql=sprintf("delete `Company Bridge`  where `Subject Type`='Customer' and  `Subject Key`=%d  and `Company Key`=%d",
+		  $this->id
+		  
+		  ,$this->data['Customer Main Company Key']
+		  );
+     mysql_query($sql);
+     
+     if($company->id==$this->data['Customer Main Company Key']){
+       $sql=sprintf("update `Customer Dimension` set `Customer Company Name`='' , `Customer Company Key`=''  where `Customer Key`=%d"
+		    ,$this->id
+		    );
+       
+       mysql_query($sql);
+       if($this->data['Customer Type']=='Company'){
+         $sql=sprintf("update `Customer Dimension` set `Customer Name`='' , `Customer File As`=''  where `Customer Key`=%d"
+		    ,$this->id
+		    );
+       
+       mysql_query($sql);
+       
+       }
+       
+       
+     }
+   }
+ }
+
+
+
+function remove_contact($contact_key=false){
+
+   
+    if(!$contact_key){
+     $contact_key=$this->data['Customer Main Contact Key'];
+   }
+   
+   
+   $contact=new contact($contact_key);
+   if(!$contact->id){
+     $this->error=true;
+     $this->msg='Wrong contact key when trying to remove it';
+     $this->msg_updated='Wrong contact key when trying to remove it';
+   }
+
+   $contact->set_scope('Customer',$this->id);
+   if( $contact->associated_with_scope){
+     
+     $sql=sprintf("delete `Contact Bridge`  where `Subject Type`='Customer' and  `Subject Key`=%d  and `Contact Key`=%d",
+		  $this->id
+		  
+		  ,$this->data['Customer Main Contact Key']
+		  );
+     mysql_query($sql);
+     
+     if($contact->id==$this->data['Customer Main Contact Key']){
+       $sql=sprintf("update `Customer Dimension` set `Customer Main Contact Name`='' , `Customer Main Contact Key`=''  where `Customer Key`=%d"
+		    ,$this->id
+		    );
+       
+       mysql_query($sql);
+       if($this->data['Customer Type']=='Person'){
+         $sql=sprintf("update `Customer Dimension` set `Customer Name`='' , `Customer File As`=''  where `Customer Key`=%d"
+		    ,$this->id
+		    );
+       
+       mysql_query($sql);
+       
+       }
+       
+       
+     }
+   }
+ }
+
 
  function get_main_email_key(){
     return $this->data['Customer Main Email Key'];

@@ -966,20 +966,20 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 	$part->update_valid_dates($date2);
 	
 	
-	$sql=sprintf("update `Product Part List` set `Product Part Valid From`=%s  where `Product Part Valid From`>%s and `Product ID`=%d and `Part SKU`=%d and  `Product Part Most Recent`='Yes'"
-		     ,prepare_mysql($date_order)
-		     ,prepare_mysql($date_order)
-		     ,$product->pid
-		     ,$part->sku
-		     );
-	mysql_query($sql);
-	$sql=sprintf("update `Product Part List` set `Product Part Valid To`=%s   where `Product Part Valid To`<%s and `Product ID`=%d and `Part SKU`=%d and  `Product Part Most Recent`='Yes'"
-		     ,prepare_mysql($date2)
-		     ,prepare_mysql($date2)
-                             ,$product->pid
-		     ,$part->sku
-		     );
-	mysql_query($sql);
+//	$sql=sprintf("update `Product Part List` set `Product Part Valid From`=%s  where `Product Part Valid From`>%s and `Product ID`=%d and `Part SKU`=%d and  `Product Part Most Recent`='Yes'"
+//		     ,prepare_mysql($date_order)
+//		     ,prepare_mysql($date_order)
+//		     ,$product->pid
+//		     ,$part->sku
+//		     );
+//	mysql_query($sql);
+//	$sql=sprintf("update `Product Part List` set `Product Part Valid To`=%s   where `Product Part Valid To`<%s and `Product ID`=%d and `Part SKU`=%d and  `Product Part Most Recent`='Yes'"
+//		     ,prepare_mysql($date2)
+//		     ,prepare_mysql($date2)
+  //                           ,$product->pid
+	//	     ,$part->sku
+	//	     );
+//	mysql_query($sql);
 	$parts_per_product=1;
                 $used_parts_sku=array($part->sku=>array('parts_per_product'=>$parts_per_product,'unit_cost'=>$supplier_product_cost*$transaction['units']));
 		
