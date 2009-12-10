@@ -2893,15 +2893,43 @@ function list_departments() {
         $rtext_rpp=' ('._('Showing all').')';
     $_dir=$order_direction;
     $_order=$order;
+    //    print $period;
     
     $order='`Product Department Code`';
-    if ($order=='families')
+    if ($_order=='families')
         $order='`Product Department Families`';
-    if ($order=='todo')
-        $order='`Product Department In Process Products`';
-    if ($order=='profit') {
+    if ($_order=='todo')
+      $order='`Product Department In Process Products`';
+    if ($_order=='aws_p') {
+      
+      if ($period=='all')
+	$order='`Product Department Total Avg Week Sales Per Product`';
+      elseif($period=='year')
+        $order='`Product Department 1 Year Acc Avg Week Sales Per Product`';
+      elseif($period=='quarter')
+	$order='`Product Department 1 Quarter Acc Avg Week Sales Per Product`';
+      elseif($period=='month')
+	$order='`Product Department 1 Month Acc Avg Week Sales Per Product`';
+      elseif($period=='week')
+	$order='`Product Department 1 Week Acc Avg Week Sales Per Product`';
+    }
+    if ($_order=='awp_p') {
+
+      if ($period=='all')
+	$order='`Product Department Total Avg Week Profit Per Product`';
+      elseif($period=='year')
+        $order='`Product Department 1 Year Acc Avg Week Profit Per Product`';
+      elseif($period=='quarter')
+	$order='`Product Department 1 Quarter Acc Avg Week Profit Per Product`';
+      elseif($period=='month')
+	$order='`Product Department 1 Month Acc Avg Week Profit Per Product`';
+      elseif($period=='week')
+	$order='`Product Department 1 Week Acc Avg Week Profit Per Product`';
+    }
+
+    if ($_order=='profit') {
         if ($period=='all')
-            $order='`Product Department Total Profit`';
+	  $order='`Product Department Total Profit`';
         elseif($period=='year')
         $order='`Product Department 1 Year Acc Profit`';
         elseif($period=='quarter')
@@ -2911,7 +2939,7 @@ function list_departments() {
         elseif($period=='week')
         $order='`Product Department 1 Week Acc Profit`';
     }
-    elseif($order=='sales') {
+    elseif($_order=='sales') {
         if ($period=='all')
             $order='`Product Department Total Invoiced Amount`';
         elseif($period=='year')
@@ -2924,23 +2952,23 @@ function list_departments() {
         $order='`Product Department 1 Week Acc Invoiced Amount`';
 
     }
-    elseif($order=='name')
+    elseif($_order=='name')
     $order='`Product Department Name`';
-    elseif($order=='code')
+    elseif($_order=='code')
     $order='`Product Department Code`';
-    elseif($order=='active')
+    elseif($_order=='active')
     $order='`Product Department For Sale Products`';
-    elseif($order=='outofstock')
+    elseif($_order=='outofstock')
     $order='`Product Department Out Of Stock Products`';
-    elseif($order=='stock_error')
+    elseif($_order=='stock_error')
     $order='`Product Department Unknown Stock Products`';
-    elseif($order=='surplus')
+    elseif($_order=='surplus')
     $order='`Product Department Surplus Availability Products`';
-    elseif($order=='optimal')
+    elseif($_order=='optimal')
     $order='`Product Department Optimal Availability Products`';
-    elseif($order=='low')
+    elseif($_order=='low')
     $order='`Product Department Low Availability Products`';
-    elseif($order=='critical')
+    elseif($_order=='critical')
     $order='`Product Department Critical Availability Products`';
 
 
@@ -2956,6 +2984,7 @@ function list_departments() {
     }
 
     if ($period=='all') {
+
       //$aws_p=money($row['Product Department Total Avg Week Sales Per Product']);
       // $awp_p=money($row['Product Department Total Avg Week Profit Per Product']);
 
@@ -3236,7 +3265,7 @@ function list_departments() {
 
     $res = mysql_query($sql);
     $adata=array();
-    //print "$period";
+    //  print "$sql";
     global $myconf;
     $currency_code=$myconf['currency_code'];
     $sum_active=0;
