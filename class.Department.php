@@ -221,14 +221,18 @@ class Department extends DB_Table {
         $keys='(';
         $values='values(';
         foreach($data as $key=>$value) {
-            $keys.="`$key`,";
-            $values.=prepare_mysql($value).",";
+	  $keys.="`$key`,";
+	  if($key=='Product Department Description')
+	    $values.=prepare_mysql($value,false).",";
+
+	  else
+	    $values.=prepare_mysql($value).",";
         }
         $keys=preg_replace('/,$/',')',$keys);
         $values=preg_replace('/,$/',')',$values);
         $sql=sprintf("insert into `Product Department Dimension` %s %s",$keys,$values);
 
-        //  print "$sql\n";
+	//   print "$sql\n";
         if (mysql_query($sql)) {
             $this->id = mysql_insert_id();
             $this->msg=_("Department Added");
@@ -259,7 +263,8 @@ class Department extends DB_Table {
             $store->update_departments();
             return;
         } else {
-            $this->msg=_("$sql Error can not create department");
+	  $this->error=true;
+	  $this->msg=_("$sql Error can not create department");
 
         }
 

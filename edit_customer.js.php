@@ -13,6 +13,10 @@ var editing='<?php echo $_SESSION['state']['customer']['edit']?>';
 
 var validate_scope_data={
     'name':{'changed':false,'validated':true,'required':true,'group':1,'type':'item','regexp':"[a-z\\d]+",'name':'Customer_Name'}
+    ,'contact':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','regexp':"[a-z\\d]+",'name':'Customer_Main_Contact_Name'}
+    ,'email':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','regexp':regexp_valid_email,'name':'Customer_Main_Email'}
+    ,'telephone':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','regexp':"[exp\d\(\)\[\]\-\s]+",'name':'Customer_Main_Telephone'}
+
 };
 
 
@@ -55,6 +59,7 @@ function change_block(e){
 
 	Dom.get('d_details').style.display='none';
 	Dom.get('d_company').style.display='none';
+	Dom.get('d_delivery').style.display='none';
 
 	Dom.get('d_'+this.id).style.display='';
 
@@ -70,6 +75,55 @@ function change_block(e){
 
 
 }
+
+
+
+function validate_customer_email(query){
+    query=unescape(query);
+    var old_code=Dom.get('Supplier_Main_Email').getAttribute('ovalue');
+    if(old_code.toLowerCase()!=trim(query.toLowerCase())){  
+	validate_scope_data.code.changed=true;
+	
+	var request='ar_contacts.php?tipo=used_email&scope=customer&scope_key='+customer_id+'query='+query; 
+	YAHOO.util.Connect.asyncRequest('POST',request ,{
+		success:function(o) {
+		    //alert(o.responseText)
+		    var r =  YAHOO.lang.JSON.parse(o.responseText);
+		    if(r.state==200){
+			if(r.found=='outside'){
+			    Dom.get('Supplier_Main_Email_msg').innerHTML=r.msg;
+			    validate_scope_data.code.validated=false;
+			}else{
+			    Dom.get('Supplier_Main_Email_msg').innerHTML='';
+		    validate_scope_data.code.validated=true;
+		    
+		    var validator=new RegExp(validate_scope_data.code.regexp,"i");
+		    if(!validator.test(query)){
+			
+	                validate_scope_data.code.validated=false;
+			Dom.get('Supplier_Main_Email_msg').innerHTML='<?php echo _('Invalid Email')?>';
+			
+		    }
+		    
+		    
+			}
+			validate_scope(); 
+			
+		    }else
+			Dom.get(msg_div).innerHTML='<span class="error">'+r.msg+'</span>';
+		}
+		
+	    });
+    }else{
+	validate_scope_data.code.validated=true;
+	validate_scope_data.code.changed=false;
+	validate_scope(); 
+    }
+}
+
+
+
+
 function validate_customer_name(query){
     query=unescape(query);
     var old_name=Dom.get('Customer_Name').getAttribute('ovalue');
@@ -161,7 +215,7 @@ function init(){
     oACDS.queryMatchContains = true;
     var oAutoComp = new YAHOO.widget.AutoComplete("f_input0","f_container", oACDS);
     oAutoComp.minQueryLength = 0; 
-    var ids = ["details","company"]; 
+    var ids = ["details","company","delivery"]; 
     YAHOO.util.Event.addListener(ids, "click", change_block);
     
     YAHOO.util.Event.addListener('save_edit_customer', "click", save_edit_customer);
@@ -170,12 +224,30 @@ function init(){
     var customer_name_oACDS = new YAHOO.util.FunctionDataSource(validate_customer_name);
     customer_name_oACDS.queryMatchContains = true;
     var customer_name_oAutoComp = new YAHOO.widget.AutoComplete("Customer_Name","Customer_Name_Container", customer_name_oACDS);
-	customer_name_oAutoComp.minQueryLength = 0; 
-	customer_name_oAutoComp.queryDelay = 0.1;
+    customer_name_oAutoComp.minQueryLength = 0; 
+    customer_name_oAutoComp.queryDelay = 0.1;
 	
-	edit_address(<?php echo $customer->data['Customer Main Address Key']?>,'contact_');
-	
-	edit_address(<?php echo $customer->data['Customer Billing Address Key']?>,'contact_');
+    
+    var customer_email_oACDS = new YAHOO.util.FunctionDataSource(validate_customer_email);
+    customer_email_oACDS.queryMatchContains = true;
+    var customer_email_oAutoComp = new YAHOO.widget.AutoComplete("Customer_Main_Email","Customer_Main_Email_Container", customer_email_oACDS);
+    customer_email_oAutoComp.minQueryLength = 0; 
+    customer_email_oAutoComp.queryDelay = 0.1;
+
+
+
+	<?php
+	      print sprintf("edit_address(%d,'contact_');",$customer->data['Customer Main Address Key']);
+	if($customer->data['Customer Main Address Key']!=$customer->data['Customer Billing Address Key']){
+	    	      print sprintf("edit_address(%d,'billing_');",$customer->data['Customer Billing Address Key']);
+
+	}{
+
+
+	}
+	    ?>
+
+
 
 }
 

@@ -19,11 +19,24 @@
     <li> <span class="item {if $edit=='details'}selected{/if}"  id="details">  <span> {t}Customer Details{/t}</span></span></li>
 
     <li> <span class="item {if $edit=='company'}selected{/if}"  id="company">  <span> {t}Company Details{/t}</span></span></li>
-   
+    <li> <span class="item {if $edit=='delivery'}selected{/if}"  id="delivery">  <span> {t}Delivery Options{/t}</span></span></li>
    
   </ul>
 
  <div class="tabbed_container" > 
+<div  class="edit_block" style="{if $edit!="delivery"}display:none{/if}"  id="d_delivery">
+ <div id="customer_contact_address" style="float:left;xborder:1px solid #ddd;width:400px;margin-right:40px">
+     <div style="border-bottom:1px solid #777;margin-bottom:5px">
+       {t}Main Delivery Address{/t}:<span class="state_details" style="float:right;display:none" address_key="" id="delivery_cancel_edit_address">{t}Cancel{/t}</span>
+     </div>
+       <table>
+       {include file='edit_address_splinter.tpl' address_identifier='delivery_'}
+
+     </table>
+   </div>
+</div>
+
+
    <div  class="edit_block" style="{if $edit!="details"}display:none{/if}"  id="d_details">
   
        <div class="general_options" style="float:right">
@@ -104,9 +117,32 @@
      </div>
        <table>
        {include file='edit_address_splinter.tpl' address_identifier='billing_'}
-
+       <span style="font-weight:600">Same as contact address</span> 
+       <br/><span class="state_details">Set up different address</span>
      </table>
    </div>
+
+<div id="customer_contact_address" style="float:left;xborder:1px solid #ddd;width:400px;">
+     <div style="border-bottom:1px solid #777;margin-bottom:5px">
+       {t}Delivery Address{/t}:<span class="state_details" style="float:right;display:none" address_key="" id="billing_cancel_edit_address">{t}Cancel{/t}</span>
+     </div>
+     
+     {if ($customer->get('Customer Delivery Address Link')=='Main') or ( $customer->get('Customer Delivery Address Link')=='Billing'  and  ($customer->get('Customer Main Address Key')==$customer->get('Customer Billing Address Key'))   )   }
+     <span style="font-weight:600">Same as contact address</span> 
+     <br/><span class="state_details">Set up different address</span>
+    
+      {elseif $customer->get('Customer Delivery Address Link')=='Billing'}
+     
+     <span style="font-weight:600">Same as billing address</span> 
+     <br/><span class="state_details">Set up different address</span>
+     {else}
+     {$customer->delivery_address_xhtml()}
+     <br/><span class="state_details">Set up different address</span>
+     {/if}
+
+
+   </div>
+
 
 
 <div style="clear:both"></div>

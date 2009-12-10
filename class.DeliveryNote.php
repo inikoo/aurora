@@ -374,6 +374,8 @@ class DeliveryNote extends DB_Table {
     */
 
     function pick_simple($transacions_data) {
+
+    
         $line_number = 0;
         $amount = 0;
         $discounts = 0;
@@ -406,10 +408,10 @@ class DeliveryNote extends DB_Table {
                 $parts_per_product = $part_data['parts_per_product'];
                 $part_unit_cost=$part_data['unit_cost'];
                 $cost = $part_unit_cost * $parts_per_product * $data ['Shipped Quantity'];
-
+		
                 $cost_supplier += $cost;
-
-                $product = new product ($data ['product_id'] );
+		
+                $product = new product ($data ['Product Key'] );
                 $a = sprintf ( '<a href="product.php?id=%d">%s</a>', $product->id, $product->code );
                 unset ( $product );
                 //$note = $a . ', ' . $order->data ['Order Current XHTML State'];

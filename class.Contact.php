@@ -863,10 +863,6 @@ class Contact extends DB_Table {
     private function create ($data,$options='',$address_home_data=false) {
 
 
-      /*   print "-------------------\n$options\n"; */
-/*         print_r($data); */
-/* 	if($data['Contact Name']=='Veronica Ambler') */
-/* 	  exit; */
         global $myconf;
         if (is_string($data))
             $data['Contact Name']=$data;
@@ -947,63 +943,71 @@ class Contact extends DB_Table {
         // exit;
         if (mysql_query($sql)) {
             $this->id= mysql_insert_id();
-            $this->new=true;
+
             $this->get_data('id',$this->id);
-
-
+	    $history_data=array(
+			  'note'=>_('Contact Created')
+			  ,'details'=>_trim(_('New contact')." \"".$this->display('name')."\"  "._('added'))
+			  ,'action'=>'created'
+			  );
+	    $this->add_history($history_data);
+            $this->new=true;
+	    
+	    
+	    
             if ($this->data['Contact Fuzzy']=='No') {
-                $history_data=array(
-                                  'note'=>_('Contact Created')
-                                         ,'details'=>_trim(_('Contact')." \"".$this->display('name')."\"  "._('created'))
-                                                    ,'action'=>'created'
-                              );
-                $this->add_history($history_data);
+	      $history_data=array(
+				    'note'=>_('Contact Created')
+				    ,'details'=>_trim(_('Contact')." \"".$this->display('name')."\"  "._('created'))
+				    ,'action'=>'created'
+				  );
+	      $this->add_history($history_data);
             }
-
+	    
 
             if (preg_match('/parent\:none|parent\:customer/',$options)) {
+	      
+	      
+	      // Has no parent add emails,tels ect to the contact
+	      if ($this->data['Contact Main Plain Email']!='') {
 
-
-                // Has no parent add emails,tels ect to the contact
-                if ($this->data['Contact Main Plain Email']!='') {
-
-                    $email_data['Email']=$data['Contact Main Plain Email'];
-                    $email_data['Email Contact Name']=$this->display('name');
-                    $email_data['editor']=$this->editor;
-                    $email=new Email("find in contact ".$this->id." create",$email_data);
-                    if (!$email->error) {
-                        //Collect data about email found
-                        //print $email->msg."\n";
-                        // exit("find_companycontact: email found\n");
-
-
-                        $this->add_email(array(
+		$email_data['Email']=$data['Contact Main Plain Email'];
+		$email_data['Email Contact Name']=$this->display('name');
+		$email_data['editor']=$this->editor;
+		$email=new Email("find in contact ".$this->id." create",$email_data);
+		if (!$email->error) {
+		  //Collect data about email found
+		  //print $email->msg."\n";
+		  // exit("find_companycontact: email found\n");
+		  
+		  
+		  $this->add_email(array(
                                              'Email Key'=>$email->id
-                                                         ,'Email Description'=>'Personal'
+					     ,'Email Description'=>'Personal'
                                          ),'principal no_history');
-                    }
+		}
+		
+	      }
+	      
+	      
 
-                }
-
-
-
-                $address_home_data['editor']=$this->editor;
-                $home_address=new Address("find in contact ".$this->id." create update",$address_home_data);
-                if ($home_address->error) {
-                    print $home_address->msg."\n";
-                    exit("find_contact: home address found\n");
-                }
-		//print_r($address_home_data);
+	      $address_home_data['editor']=$this->editor;
+	      $home_address=new Address("find in contact ".$this->id." create update",$address_home_data);
+	      if ($home_address->error) {
+		print $home_address->msg."\n";
+		exit("find_contact: home address found\n");
+	      }
+	      //print_r($address_home_data);
 		//print_r($home_address);
-
-                $this->add_address(array(
+	      
+	      $this->add_address(array(
                                        'Address Key'=>$home_address->id
-                                                     ,'Address Type'=>array('Home')
-                                                                     ,'Address Function'=>array('Contact')
-
+				       ,'Address Type'=>array('Home')
+				       ,'Address Function'=>array('Contact')
+				       
                                    ));
-
-
+	      
+	      
 
 
 
@@ -1229,35 +1233,54 @@ class Contact extends DB_Table {
 
     */
 
-    function add_company($data,$args='principal') {
-        //print "adding company to ".$this->id."  ($args)";
-        //print_r($data);
-
-        if (isset($data['Company Key'])) {
-            $company=new Company('id',$data['Company Key']);
-        } else {
-            return;
-        }
-        if ($company->id) {
-            $sql=sprintf("insert into  `Contact Bridge` (`Contact Key`,`Subject Type`, `Subject Key`,`Is Main`) values (%d,'Company',%d,%s)  "
-
-                         ,$this->id
-                         ,$company->id
+    function add_company($data,$args='principal',$force_history=false) {
+      //print "adding company to ".$this->id."  ($args)";
+      //print_r($data);
+      
+      $this->associated=false;
+      $this->associated_as_main=false;
+      
+      if (isset($data['Company Key'])) {
+	$company=new Company('id',$data['Company Key']);
+      } else {
+	return;
+      }
+      if ($company->id) {
+	$sql=sprintf("insert into  `Contact Bridge` (`Contact Key`,`Subject Type`, `Subject Key`,`Is Main`) values (%d,'Company',%d,%s)  "
+		     
+		     ,$this->id
+		     ,$company->id
                          ,prepare_mysql(preg_match('/principal/i',$args)?'Yes':'No')
-                        );
+		     );
+	
+	mysql_query($sql);
+	$this->associated=true;
+	if (preg_match('/principal/i',$args)) {
+	  $this->associated_as_main=true;
+	  $sql=sprintf("update `Contact Dimension` set `Contact Company Name`=%s ,`Contact Company Key`=%s where `Contact Key`=%d"
+		       ,prepare_mysql($company->data['Company Name'])
+		       ,prepare_mysql($company->id)
+			   ,$this->id);
+	  $this->data['Contact Company Name']=$company->data['Company Name'];
+	  $this->data['Contact Company Key']=$company->id;
+	  
+	  mysql_query($sql);
+	}
+      }
+      
+      $history_data=array(
+			  'note'=>_('Contact Associated with Company')
+			  ,'direct_object'=>'Contact'
+			  ,'direct_object_key'=>$this->id
+			  ,'indirect_object'=>'Company'
+			  ,'indirect_object_key'=>$company->id
+			  ,'details'=>_trim(_('Contact').' '.$this->display('name').' '._('associated with Company').": \"".$company->data['Company Name']."\"  "._('created'))
+			  ,'action'=>'associated'
+			  ,'deep'=>2
+			  );
+      $this->add_history($history_data,$force_history);
 
-            mysql_query($sql);
-            if (preg_match('/principal/i',$args)) {
-                $sql=sprintf("update `Contact Dimension` set `Contact Company Name`=%s ,`Contact Company Key`=%s where `Contact Key`=%d"
-                             ,prepare_mysql($company->data['Company Name'])
-                             ,prepare_mysql($company->id)
-                             ,$this->id);
-                $this->data['Contact Company Name']=$company->data['Company Name'];
-                $this->data['Contact Company Key']=$company->id;
 
-                mysql_query($sql);
-            }
-        }
     }
     /* Method: update_main_data
        Update the redundant data
@@ -2429,7 +2452,10 @@ class Contact extends DB_Table {
             break;
 
         default:
-            $this->update_field($field,$value,$options);
+	  $base_data=$this->base_data();
+	  if(array_key_exists($field,$base_data)) {
+	    $this->update_field($field,$value,$options);
+	  }
         }
 
     }

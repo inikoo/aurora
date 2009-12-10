@@ -147,6 +147,11 @@ $dept_data=array(
 		   );
 
 $dept_no_dept=new Department('find',$dept_data,'create');
+if($dept_no_dept->error){
+  print_r($dept_no_dept);
+  exit;
+}
+
 $dept_no_dept_key=$dept_no_dept->id;
 
 $dept_data=array(

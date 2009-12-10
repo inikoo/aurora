@@ -436,7 +436,7 @@ class Customer extends DB_Table{
 
      $main_telephone_key=false;
      $main_fax_key=false;
-
+     $main_email_key=false;
 
      //print_r($raw_data);
        //  exit;
@@ -460,14 +460,11 @@ class Customer extends DB_Table{
        $this->data['Customer Main FAX']='';
        $this->data['Customer Main Plain FAX']='';
        $company=new company('find in customer create update',$raw_data);
+       $company_key=$company->id;
        
-       $this->data['Customer Company Key']=$company->id;
-       $this->data['Customer Company Name']=$company->data['Company Name'];
        
       if($company->data['Company Main Email Key']){
-	$this->data['Customer Main Email Key']=$company->data['Company Main Email Key'];
-	$this->data['Customer Main XHTML Email']=$company->data['Company Main XHTML Email'];
-	$this->data['Customer Main Plain Email']=$company->data['Company Main Plain Email'];
+	$main_email_key=$company->data['Company Main Email Key'];
       }
       if($company->data['Company Main Telephone Key']){
 	$main_telephone_key=$company->data['Company Main Telephone Key'];
@@ -475,30 +472,28 @@ class Customer extends DB_Table{
       if($company->data['Company Main FAX Key']){
 	$main_fax_key=$company->data['Company Main FAX Key'];
       }
-      $this->data['Customer Main Contact Key']=$company->data['Company Main Contact Key'];
-      $this->data['Customer Main Contact Name']=$company->data['Company Main Contact Name'];
+     
       
-    
+      
       
      }elseif($this->data['Customer Type']=='Person'){
-      $this->data['Customer Main Email Key']=0;
-      $this->data['Customer Main XHTML Email']='';
-      $this->data['Customer Main Plain Email']='';
-      $this->data['Customer Main Telephone Key']=0;
-      $this->data['Customer Main Telephone']='';
-      $this->data['Customer Main Plain Telephone']='';
-      $this->data['Customer Main FAX Key']=0;
-      $this->data['Customer Main FAX']='';
-      $this->data['Customer Main Plain FAX']='';
+       $this->data['Customer Main Email Key']=0;
+       $this->data['Customer Main XHTML Email']='';
+       $this->data['Customer Main Plain Email']='';
+       $this->data['Customer Main Telephone Key']=0;
+       $this->data['Customer Main Telephone']='';
+       $this->data['Customer Main Plain Telephone']='';
+       $this->data['Customer Main FAX Key']=0;
+       $this->data['Customer Main FAX']='';
+       $this->data['Customer Main Plain FAX']='';
       
       if(!$this->data['Customer Main Contact Key'])
 	$contact=new contact('find in customer create update',$raw_data);
       else
 	$contact=new contact($this->data['Customer Main Contact Key']);
-
-      $this->data['Customer Main Contact Key']=$contact->id;
-      $this->data['Customer Main Contact Name']=$contact->data['Contact Name'];
-      $this->data['Customer Name']=$contact->data['Contact Name'];
+      
+      $contact_key=$contact->id;
+      
 
       //address!!!!!!!!!!!!!
       
@@ -508,9 +503,7 @@ class Customer extends DB_Table{
 
 
       if($contact->data['Contact Main Email Key']){
-	$this->data['Customer Main Email Key']=$contact->data['Contact Main Email Key'];
-	$this->data['Customer Main XHTML Email']=$contact->data['Contact Main XHTML Email'];
-	$this->data['Customer Main Plain Email']=$contact->data['Contact Main Plain Email'];
+	$main_email_key=$contact->data['Contact Main Email Key'];
       }
       if($contact->data['Contact Main Telephone Key']){
 	$main_telephone_key=$contact->data['Contact Main Telephone Key'];
@@ -599,16 +592,29 @@ class Customer extends DB_Table{
     $sql="insert into `Customer Dimension` ($keys) values ($values)";
   
     if(mysql_query($sql)){
-      $this->new=true;
+      
       $this->id=mysql_insert_id();
       $this->get_data('id',$this->id);
       
       $history_data=array(
-			    'note'=>_('New Customer')
+			  'note'=>_('Customer Created')
 			  ,'details'=>_trim(_('New customer')." \"".$this->data['Customer Name']."\"  "._('added'))
 			  ,'action'=>'created'
 			  );
       $this->add_history($history_data);
+      $this->new=true;
+
+      if($main_email_key){
+	$this->update_email($main_email_key);
+      }
+      if($this->data['Customer Type']=='Company'){
+	$this->update_company($company_key);
+	
+      }else{
+	
+
+      }
+      
 
 
       if($main_telephone_key){
@@ -619,12 +625,15 @@ class Customer extends DB_Table{
 			     ));
 	
       }
-      if($main_fax_key)
+
+
+
+      if($main_fax_key){
 	$this->add_tel(array(
 			     'Telecom Key'=>$main_fax_key
 			     ,'Telecom Type'=>'Contact Fax'
 			     ));
-
+      }
 
 
 
@@ -655,297 +664,6 @@ class Customer extends DB_Table{
 
 
 
-   function create_old($data=false,$args){
-
-
-     //print_r($data);
-
-   global $myconf;
-   //   $this->unknown_contact=$myconf['unknown_contact'];
-   //$this->unknown_company=$myconf['unknown_company'];
-   //$this->unknown_customer=$myconf['unknown_customer'];
-   //$contact_name=$this->unknown_contact;
-   //$company_name=$this->unknown_company;
-   $unique_id=$this->get_id();
-   
-   //$type='Unknown';
-
-   if(isset($data['type']) and ($data['type']=='Company' or $data['type']=='Person'))
-     $type=$data['type'];
-   
-   if(isset($data['contact_name']) and $data['contact_name']!='')
-     $contact_name=$data['contact_name'];
-    if(isset($data['company_name']) and $data['company_name']!='')
-     $company_name=$data['company_name'];
-   
-   $data_contact=array('name'=>$contact_name);
-   if(isset($data['address_data']))
-     $data_contact['address_data']=$data['address_data'];
-   if(isset($data['email'])){
-     $data_contact['email']=$data['email'];
-     if($type=='Company')
-       $data_contact['Email Description']='Work';
-   }
-   if(isset($data['telephone']))
-     $data_contact['telephone']=$data['telephone'];
-   if(isset($data['fax']))
-     $data_contact['fax']=$data['fax'];
-   
-   $shipping=false;
-   $shipping_cold_sale=false;
-   $shipping_same=false;
-   $shipping_same_contact=false;
-   $shipping_same_address=false;
-   
-  //  if(isset($data['shipping']) and isset($data['shipping_data'])){
-//       $shipping=true;
-//       switch($data['shipping']){
-//       case('same'):
-// 	$shipping_same=true;
-// 	break;
-//       case('same_contact'):
-// 	$shipping_same=false;
-// 	$shipping_same_contact=false;
-// 	$shipping_same_address=true;
-// 	break;	
-//       case('shipping_cold_sale'):
-// 	$shipping_cold_sale=true;
-// 	$shipping_same=false;
-// 	$shipping_same_contact=false;
-// 	$shipping_same_address=false;
-// 	break;
-//       case('same_address'):
-// 	$shipping_same=false;
-// 	$shipping_same_contact=true;
-// 	$shipping_same_address=false;
-// 	if($type!='Company'){
-// 	  $type='Company';
-// 	  $company_name=$contact_name;
-// 	}
-
-// 	break;
-//       default:
-// 	$shipping_same=false;
-// 	$shipping_same_contact=true;
-// 	$shipping_same_address=false;
-// 	break;	
-//       }
-
-//    }
-
-
-   $main_contact=new contact('new',$data_contact);
-   
-   $this->base_data();
- // print_r($main_contact->data);
-
-   if($type=='Company'){
-     $company=new company('new',
-			  array('name'=>$company_name,'contact key'=>$main_contact->id)
-			  );
-     $customer_name=$company->get('Company Name');
-     $customer_file_as=$company->get('Company File As');
-     
-     $company_key=$company->id;
-
-
-   }else{
-
-     $customer_name=$main_contact->get('Contact Name');
-     $customer_file_as=$main_contact->get('Contact File As');
-     $company_key='';
-   }
-
-   
-
-   if($customer_name=='Unknown Contact' or $customer_name=='Unknown Company')
-     $customer_name=$this->unknown_customer;
-   
-   $address=new Address($main_contact->get('Contact Main Address Key'));
-   if(!$address->id){
-     print_r($data_contact);
-     print_r($main_contact->data);
-     dsadasdas();
-   }
-
-    $sql=sprintf("insert into `Customer Dimension` (`Customer ID`,`Customer Main Contact Key`,`Customer Main Contact Name`,`Customer Name`,`Customer File As`,`Customer Type`,`Customer Company Key`,`Customer Main Address Key`,`Customer Main Location`,`Customer Main XHTML Address`,`Customer Main Plain Address`,`Customer Main XHTML Email`,`Customer Email`,`Customer Main Email Key`,`Customer Main Telephone`,`Customer Main Telephone Key`,`Customer Main Address Header`,`Customer Main Address Town`,`Customer Main Address Postal Code`,`Customer Main Address Country Region`,`Customer Main Address Country`,`Customer Main Address Country Key`) values (%d,%d,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
-		 ,$unique_id
-		 ,$main_contact->id
-		 ,prepare_mysql($main_contact->get('Contact Name'))
-		 ,prepare_mysql($customer_name)
-		 ,prepare_mysql($customer_file_as)
-
-		 ,prepare_mysql($type)
-		 ,prepare_mysql($company_key)
-		 ,prepare_mysql($main_contact->get('Contact Main Address Key'))
-		 ,prepare_mysql($main_contact->get('Contact Main Location'))
-		 ,prepare_mysql($main_contact->get('Contact Main XHTML Address'))
-		 ,prepare_mysql($main_contact->get('Contact Main Plain Address'))
-
-		 ,prepare_mysql($main_contact->get('Contact Main XHTML Email'))
-		 ,prepare_mysql(strip_tags($main_contact->get('Contact Main XHTML Email')))
-		 ,prepare_mysql($main_contact->get('Contact Main Email Key'))
-		 ,prepare_mysql($main_contact->get('Contact Main Telephone'))
-		 ,prepare_mysql($main_contact->get('Contact Main Telephone Key'))
-		 ,prepare_mysql($address->display('header'))
-		 ,prepare_mysql($address->get('Address Town'))
-		 ,prepare_mysql($address->get('Postal Code'))
-		 ,prepare_mysql($address->get('Address Country First Division'))
-		 ,prepare_mysql($address->get('Address Country Name'))
-		 ,prepare_mysql($address->get('Address Country Key'))
-	       );
-    //  print_r($main_contact->data);
-    
-    //print_r($data);
-   //  print "$sql\n";
-//     exit;
-
-    if(mysql_query($sql)){
-      
-      $this->id =  mysql_insert_id();
-      $this->get_data('id',$this->id);
-
-      
-      if(isset($data['other id']) and $data['other id']!=''){
-
-	$sql=sprintf("update `Customer Dimension` set `Customer Other ID`=%s where `Customer Key`=%d",prepare_mysql($data['other id']),$this->id);
-
-	if(!mysql_query($sql))
-	  exit("can not update customer other id\n");
-      }
-      
-
-/*       if(isset($data['has_shipping']) and $data['has_shipping'] and  isset($data['shipping_data']) and is_array($data['shipping_data'])){ */
-	
-/* 	if($data['same_address'] and $data['same_contact'] and $data['same_company'] and $data['same_telephone']){ */
-/* 	  $this->add_ship_to('shipping_same_as_main','Yes'); */
-/*       }else{ */
-	  
-/* 	  $this->shipping['contact_key']=''; */
-/* 	  $this->shipping['contact']=''; */
-/* 	  $this->shipping['company_key']=''; */
-/* 	  $this->shipping['company']=''; */
-/* 	  $this->shipping['telephone']=''; */
-/* 	  $this->shipping['telephone_key']=''; */
-/* 	  $this->shipping['email']=''; */
-/* 	  $this->shipping['email_key']=''; */
-/* 	  $this->shipping['address']=''; */
-/* 	  $this->shipping['address_key']=''; */
-/* 	  $this->shipping['address_country_key']=''; */
-	  
-
-
-/* 	if(!$data['same_address']){ */
-/* 	  $shipping_address=new Address('new',$data['shipping_data']); */
-/* 	  $this->shipping['address_key']=$shipping_address->id; */
-/* 	  $this->shipping['address']=$shipping_address->get('XHTML Address'); */
-/* 	  $this->shipping['address_country_key']=$shipping_address->get('Address Country Key'); */
-/* 	}else{ */
-/* 	  $this->shipping['address_key']=$this->get('Customer Main Address Key'); */
-/* 	  $this->shipping['address']=$this->get('Customer Main XHTML Address'); */
-/* 	  $this->shipping['address_country_key']=$this->get('Customer Main Address Country Key'); */
-/* 	} */
-
-/* 	if(!$data['same_company']){ */
-/* 	  $this->shipping['company_key']=false; */
-/* 	  $this->shipping['company']=$data['shipping_data']['company']; */
-/* 	}else{ */
-/* 	  $this->shipping['company_key']=$this->get('Customer Company Key'); */
-/* 	  $this->shipping['company']=$this->get('Customer Company Name'); */
-
-/* 	} */
-
-/* 	if(!$data['same_contact']){ */
-
-/* 	  if(!$this->shipping['company_key']){ */
-/* 	    $this->shipping['contact_key']=false; */
-/* 	    $this->shipping['contact']=$data['shipping_data']['name']; */
-/* 	  }else{ */
-/* 	    //add a new contact */
-/* 	    $_data=array( */
-/* 			 'name'=>$data['shipping_data']['name'], */
-/* 			 'email'=>$data['shipping_data']['email'], */
-/* 			 'telephone'=>$data['shipping_data']['telephone'], */
-/* 			 'address_key'=>$this->shipping['address_key'] */
-
-/* 			 ); */
-/* 	    $shipping_contact=new Contact('new',$_data); */
-/* 	    $this->shipping['contact_key']=$shipping_contact->id; */
-/* 	    $this->shipping['contact']=$shipping_contact->get('Contact Name'); */
-/* 	  } */
-
-
-/* 	}else{ */
-/* 	  $shipping['contact']=$this->get('Customer Main Contact Name'); */
-/* 	  $shipping['contact_key']=$this->get('Customer Main Contact Key'); */
-	  
-/* 	} */
-/* 	$shipping_contact_key=$shipping['contact_key']; */
-
-
-/* // 	if(!$data['same_email']){ */
-/* // 	  $shipping_contact=new Contact($shipping_contact_key); */
-/* // 	  if($shipping_contact->id){ */
-/* // 	    $shipping_contact->add_email(array('email'=>$data['shipping_data']['email'])); */
-/* // 	    $this->shipping['email_key']=$shipping_contact->add_email; */
-/* // 	    if($this->shipping['email_key']){ */
-/* // 	    $email=new Email($this->shipping['email_key']); */
-/* // 	    $this->shipping['email_key']=$email->display('html'); */
-/* // 	    }else */
-/* // 	      $this->shipping['email_key']=''; */
-/* // 	  }else{ */
-/* // 	    $this->shipping['email_key']=''; */
-/* // 	    $this->shipping['email']='<a href="mailto:'.$data['shipping_data']['email'].'">'.$data['shipping_data']['email'].'</a>'; */
-/* // 	  } */
-/* // 	}else{ */
-/* // 	   $this->shipping['email_key']=$this->get('Customer Main Email Key'); */
-/* // 	   $this->shipping['email']=$this->get('Customer Main XHTML Email'); */
-/* // 	} */
-
-/* 	if(!$data['same_telephone']){ */
-/* 	  $shipping_contact=new Contact($shipping_contact_key); */
-/* 	  if($shipping_contact->id){ */
-/* 	    $shipping_contact->add_tel(array( */
-/* 					     'Telecom Original Number'=>$data['shipping_data']['telephone'] */
-/* 					     ) */
-/* 				       ); */
-	    
-/* 	    if($shipping_contact->add_telecom){ */
-/* 	      //  print "hola\n"; */
-/* 	      $shipping_tel=new Telecom($shipping_contact->add_telecom); */
-
-/* 	      $this->shipping['telephone_key']=$shipping_tel->id; */
-/* 	      $this->shipping['telephone']=$shipping_tel->display('html'); */
-/* 	    } */
-/* 	    else{ */
-/* 	      $this->shipping['telephone_key']=''; */
-/* 	      $this->shipping['telephone']=$data['shipping_data']['telephone']; */
-/* 	    } */
-/* 	  }else{ */
-/* 	    $this->shipping['telephone_key']=''; */
-/* 	    $this->shipping['telephone']=$data['shipping_data']['telephone']; */
-/* 	  } */
-/* 	}else{ */
-/* 	   $this->shipping['telephone_key']=$this->get('Customer Main Telephone Key'); */
-/* 	   $this->shipping['telephone']=$this->get('Customer Main Telephone'); */
-
-/* 	} */
-	
-/* 	//print_r($this->shipping); */
-	
-/* 	$this->add_ship_to('other','Yes'); */
-/*       } */
-
-/*       } */
-      //      $this->data['Customer Last Ship To Key']=$this->data['Customer Main Ship To Key']
-      
-    }else{
-      print "Error, customer con not be created\n";exit;
-      
-    }
-
-
- }
 
  function add_ship_to($args='shipping_same_as_main',$is_principal='Yes'){
    
@@ -1041,8 +759,11 @@ class Customer extends DB_Table{
      return;
      break;
    default:
-     $this->update_field($field,$value,$options);
-   }
+     $base_data=$this->base_data();
+     if(array_key_exists($field,$base_data)) {
+       $this->update_field($field,$value,$options);
+     }
+  }
  }
 
  
@@ -1130,23 +851,40 @@ class Customer extends DB_Table{
    if(!$email_key)
      return;
    $email=new Email($email_key);
-   if(!$email->id)
+   if(!$email->id){
+     $this->msg='Email not found';
      return;
 
-   if($email->id!=$this->data['Customer Main Email Key']){
-     $old_value=$this->data['Customer Main Email Key'];
-     $this->data['Customer Main Email Key']=$email->id;
-     $this->data['Customer Main Plain Email']=$email->display('plain');
-     $this->data['Customer Main XHTML Email']=$email->display('xhtml');
-     $sql=sprintf("update `Customer Dimension` set `Customer Main Email Key`=%d,`Customer Main Plain Email`=%s,`Customer Main XHTML Email`=%s where `Customer Key`=%d"
+   }
 
-		  ,$this->data['Customer Main Email Key']
-		  ,prepare_mysql($this->data['Customer Main Plain Email'])
-		  ,prepare_mysql($this->data['Customer Main XHTML Email'])
-		  ,$this->id
-		  );
-     if(mysql_query($sql)){
-       
+   
+   $old_value=$this->data['Customer Main Email Key'];
+   if($old_value  and $old_value!=$email_key   ){
+     $this->remove_email();
+     }
+
+   $sql=sprintf("insert into `Email Bridge` values (%d,'Customer',%d,%s,'Yes','Yes')",
+		$email->id,
+		$this->id,
+		prepare_mysql(_('Customer Main Email'))
+		);
+   mysql_query($sql);
+
+   $old_plain_email=$this->data['Customer Main Plain Email'];
+   $this->data['Customer Main Email Key']=$email->id;
+   $this->data['Customer Main Plain Email']=$email->display('plain');
+   $this->data['Customer Main XHTML Email']=$email->display('xhtml');
+   $sql=sprintf("update `Customer Dimension` set `Customer Main Email Key`=%d,`Customer Main Plain Email`=%s,`Customer Main XHTML Email`=%s where `Customer Key`=%d"
+		
+		,$this->data['Customer Main Email Key']
+		,prepare_mysql($this->data['Customer Main Plain Email'])
+		,prepare_mysql($this->data['Customer Main XHTML Email'])
+		,$this->id
+		);
+   if(mysql_query($sql)){
+     
+     if($old_plain_email!=$this->data['Customer Main Plain Email']){
+       $this->updated=true;
        $note=_('Email changed');
        if($old_value){
 	 $old_email=new Email($old_value);
@@ -1161,51 +899,16 @@ class Customer extends DB_Table{
 			   ,'note'=>$note
 			   );
        $this->add_history($history_data);
-       
-       
-
-
-
-     }else{
-       $this->error=true;
-       
      }
-     
-
-     
-   }elseif($email->display('plain')!=$this->data['Customer Main Plain Email']){
-     $old_value=$this->data['Customer Main Plain Email'];
-     
-     $this->data['Customer Main Plain Email']=$email->display('plain');
-     $this->data['Customer Main XHTML Email']=$email->display('xhtml');
-     $sql=sprintf("update `Customer Dimension` set `Customer Main Plain Email`=%s,`Customer Main XHTML Email`=%s where `Customer Key`=%d"
-		  
-
-		  ,prepare_mysql($this->data['Customer Main Plain Email'])
-		  ,prepare_mysql($this->data['Customer Main XHTML Email'])
-		  ,$this->id
-		  );
-     if(mysql_query($sql)){
-       $field='Customer Email';
-       $note=$field.' '._('Changed');
-       $details=$field.' '._('Changed')." ".$old_value." -> ".$this->data['Customer Main Plain Email'];
        
-       $history_data=array('indirect_object'=>'Email','details'=>$details,'note'=>$note);
-       $this->add_history($history_data);
-       
-
-
-
-     }else{
-       $this->error=true;
-       
-     }
      
 
+   }else{
+     $this->error=true;
+     
    }
-
-
-
+ 
+       
  }
 
 
@@ -2123,8 +1826,6 @@ class Customer extends DB_Table{
     }
 
 
-
-
 /* Method: remove_email
   Delete the email from Customer
   
@@ -2134,7 +1835,7 @@ class Customer extends DB_Table{
   Parameter:
   $args -     string  options
  */
- function remove_email($email_key){
+ function remove_email($email_key=false){
 
    
     if(!$email_key){
@@ -2271,6 +1972,10 @@ class Customer extends DB_Table{
  }
 
 
+ function delivery_address_xhtml(){
+   $deliver_address=new Ship_To($this->data['Customer Main Ship To Key']);
+   return $deliver_address->data['Ship To XHTML Address'];
+ }
 
 
  }

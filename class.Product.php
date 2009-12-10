@@ -118,14 +118,14 @@ public $new_value=false;
       } else
 	return;
       mysql_free_result($result);
-      $sql=sprintf("select `Product Locale`,`Product Code`,`Product Current Key`,`Product Gross Weight`,`Product Units Per Case`,`Product Code`,`Product Type`,`Product Record Type`,`Product Sales State`,`Product To Be Discontinued` from `Product Dimension` where `Product ID`=%d ",$this->pid);
+      $sql=sprintf("select `Product Family Key`,`Product Main Department Key`,`Product Store Key`,`Product Locale`,`Product Code`,`Product Current Key`,`Product Gross Weight`,`Product Units Per Case`,`Product Code`,`Product Type`,`Product Record Type`,`Product Sales State`,`Product To Be Discontinued` from `Product Dimension` where `Product ID`=%d ",$this->pid);
       //  print $sql;
       $result=mysql_query($sql);
       //print "hols";
       if ( $row=mysql_fetch_array($result, MYSQL_ASSOC)) {
 	$this->locale=$row['Product Locale'];
 	$this->code=$row['Product Code'];
-	$items_from_parent=array('Product Current Key','Product Gross Weight','Product Units Per Case','Product Code','Product Type','Product Record Type','Product Sales State','Product To Be Discontinued');
+	$items_from_parent=array('Product Current Key','Product Gross Weight','Product Units Per Case','Product Code','Product Type','Product Record Type','Product Sales State','Product To Be Discontinued','Product Family Key','Product Main Department Key','Product Store Key');
 	foreach($items_from_parent as $item)
 	  $this->data[$item]=$row[$item];
 	
@@ -1158,7 +1158,7 @@ public $new_value=false;
       $base_data['product units per case']=1;
 
     
-
+    //    print_r($base_data);
 	
     $family=new Family($base_data['product family key']);
     if(!$family->id){
@@ -1168,9 +1168,11 @@ public $new_value=false;
       exit('error family');
       return;
     }
-	
-	
+    // print ($family->new.' x:');
+    //print_r($family->data['Product Family Main Department Key']);
+    //exit;
     $department=new Department($family->data['Product Family Main Department Key']);
+    
     $base_data['product main department key']=$department->id;
     $base_data['product main department code']=$department->data['Product Department Code'];
     $base_data['product main department name']=$department->data['Product Department Name'];

@@ -665,15 +665,15 @@ class Company extends DB_Table {
         if (mysql_query($sql)) {
             $this->id = mysql_insert_id();
             $this->get_data('id',$this->id);
-            $this->new=true;
+           
             //      print_r($this->data);
             $history_data=array(
-                              'note'=>_('Company Created')
-                                     ,'details'=>_trim(_('Company')." \"".$this->data['Company Name']."\"  "._('created'))
-                                                ,'action'=>'created'
-                          );
+				'note'=>_('Company Created')
+				,'details'=>_trim(_('Company')." \"".$this->data['Company Name']."\"  "._('created'))
+				,'action'=>'created'
+				);
             $this->add_history($history_data);
-
+	    $this->new=true;
 
 
 
@@ -681,7 +681,7 @@ class Company extends DB_Table {
             //print_r($this->data);
             $contact->add_company(array(
                                       'Company Key'=>$this->id
-                                  ));
+					),'principal',true);
 
 
 
@@ -944,7 +944,13 @@ class Company extends DB_Table {
             $this->update_Company_Old_ID($value,$options);
             break;
         default:
-            $this->update_field($field,$value,$options);
+	     $base_data=$this->base_data();
+     if(array_key_exists($field,$base_data)) {
+       $this->update_field($field,$value,$options);
+     }
+
+
+           
         }
 
     }
@@ -1779,7 +1785,7 @@ class Company extends DB_Table {
                              ,prepare_mysql($function)
                             );
 
-	      print $sql;
+	      //	      print $sql;
 
                 if (!mysql_query($sql))
                     print("$sql\n error can no create company address bridge");
