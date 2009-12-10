@@ -5343,7 +5343,17 @@ if($act_data['town']=='Hornbæk - Sjælland'){
     
   //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
   // fix contracts
+  if($act_data['name']=='Antonio Laborda - Jabón Jabón'){
+    $act_data['name']='Jabón Jabón';
+    $act_data['contact']='Antonio Laborda';
+  }
     
+  if($act_data['name']=='Virginia Cabrera Rivera' and $act_data['contact']=='David GTX'){
+    $act_data['name']='David GTX';
+   $act_data['contact']='Virginia Cabrera Rivera';
+  }
+
+
     
   $extra_contact=false;
   if($act_data['contact']!=''){
@@ -5370,8 +5380,12 @@ if($act_data['town']=='Hornbæk - Sjælland'){
     $there_is_contact=true;
   }else{
     $there_is_contact=false;
-    if(!preg_match('/C \& P Trading|Peter \& Paul Ltd|Health.*Beauty.*Salon|plant.*herb/i',$act_data['name']))
+    if(!preg_match('/C \& P Trading|Peter \& Paul Ltd|Health.*Beauty.*Salon|plant.*herb|Amanatur S L/i',$act_data['name']))
       $act_data['contact']=$act_data['name'];
+    if(!preg_match('/^(pompas)$/i',$act_data['name']))
+      $act_data['contact']=$act_data['name'];
+
+   
 
   }
     

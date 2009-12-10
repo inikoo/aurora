@@ -108,7 +108,7 @@ $order=$_SESSION['state']['contacts']['table']['order'];
 if($order=='name')
   $order='Contact File As';
 elseif($order=='id')
-$order='contact id';
+$order='Contact Key';
 elseif($order=='location')
 $order='Contact Main Location';
 elseif($order=='email')
@@ -117,6 +117,11 @@ elseif($order=='telephone')
 $order='Contact Main Plain Telehone';
 elseif($order=='address')
 $order='Contact Main Plain Address';
+elseif($order=='id')
+$order='Contact Key';
+
+
+
 /* elseif($order=='town') */
 /* $order='contact main address town'; */
 /* elseif($order=='postcode') */

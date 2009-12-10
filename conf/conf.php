@@ -591,7 +591,21 @@ $default_state=array(
 						     'to'=>'',
 						     'details'=>0,
 						     'elements'=>array('h_comp'=>1,'h_cont'=>1,'note'=>1)
-						     )
+						     ),
+				      'history'=>array(
+						     'where'=>'where true',
+						     'f_field'=>'abstract',
+						     'f_value'=>'',
+						     'order'=>'date',
+						     'order_dir'=>'desc',
+						     'sf'=>0,
+						     'nr'=>25,
+						     'from'=>'',
+						     'to'=>'',
+						     'elements'=>''
+						     ),
+
+
 				      ),
 		     'contact'=>array(
 				      'id'=>1,
@@ -608,7 +622,20 @@ $default_state=array(
 						     'to'=>'',
 						     'details'=>0,
 						     'elements'=>array('h_cont'=>1,'note'=>1)
+						     ),
+				      'history'=>array(
+						     'where'=>'where true',
+						     'f_field'=>'abstract',
+						     'f_value'=>'',
+						     'order'=>'date',
+						     'order_dir'=>'desc',
+						     'sf'=>0,
+						     'nr'=>25,
+						     'from'=>'',
+						     'to'=>'',
+						     'elements'=>''
 						     )
+
 				      ),
 		     'suppliers'=>array(
 					'details'=>false,

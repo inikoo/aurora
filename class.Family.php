@@ -227,7 +227,7 @@ $this->get_data('id',$this->found_key);
    $keys=preg_replace('/,$/',')',$keys);
    $values=preg_replace('/,$/',')',$values);
    $sql=sprintf("insert into `Product Family Dimension` %s %s",$keys,$values);
-   
+  
    // print_r($data);
 
    if(mysql_query($sql)){
@@ -263,6 +263,7 @@ $this->get_data('id',$this->found_key);
      $this->new=true;
 
    }else{
+     $this->error=true;
      $this->msg=_("$sql  Error can not create the family");
    }   
  }

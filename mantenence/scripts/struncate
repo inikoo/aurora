@@ -22,4 +22,12 @@ TRUNCATE `Category Bridge`;
 TRUNCATE `Campaign Dimension`;
 TRUNCATE `Campaign Deal Schema`;
 TRUNCATE `Charge Dimension`;
+TRUNCATE `Attachment Dimension`;
 
+TRUNCATE `Image Bridge`;
+TRUNCATE `Order Public ID 1`;
+truncate `Product Part Dimension`;
+truncate `Product Family Bridge`;
+truncate `Shipping Dimension`;
+truncate `Staff Dimension`;
+truncate `Warehouse Area Dimension`
