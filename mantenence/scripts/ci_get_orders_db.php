@@ -53,7 +53,6 @@ $_SESSION['lang']=1;
 $currency='EUR';
 
 
-
 include_once('ci_local_map.php');
 include_once('ci_map_order_functions.php');
 
@@ -117,7 +116,7 @@ $fam_promo_key=$fam_promo->id;
 
 
 $sql="select * from  ci_orders_data.orders  where   (last_transcribed is NULL  or last_read>last_transcribed) and filename not like '%UK%'  and filename not like '%test%'  and filename!='/media/sda3/share/PEDIDOS 08/60005902.xls' and  filename!='/media/sda3/share/PEDIDOS 09/60008607.xls' and  filename!='/media/sda3/share/PEDIDOS 09/60009626.xls' and  filename!='/media/sda3/share/PEDIDOS 09/60011693.xls'and  filename!='/media/sda3/share/PEDIDOS 09/60011905.xls' order by filename ";
-$sql="select * from  ci_orders_data.orders where filename like '/media/sda3/share/%/60000129.xls'  order by filename";
+//$sql="select * from  ci_orders_data.orders where filename like '/media/sda3/share/%/60000129.xls'  order by filename";
 //7/60002384.xls
 //$sql="select * from  ci_orders_data.orders where filename like '/media/sda3/share/%/60000142.xls'  order by filename";
 //$sql="select * from  ci_orders_data.orders  where (filename like '%Orders2005%' or  filename like '%PEDIDOS%.xls') and (last_transcribed is NULL  or last_read>last_transcribed) and filename!='/media/sda3/share/PEDIDOS 08/60005902.xls' and  filename!='/media/sdas3/share/PEDIDOS 09/s60008607.xls' and  filename!='/media/sda3/share/PEDIsDOS 09/60009626.xls' or filename='%600s03600.xls'   order by date";
@@ -721,21 +720,20 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
 	$part->update_valid_dates($date_order);
 	$part->update_valid_dates($date2);
 
-	$sql=sprintf("update `Product Part List` set `Product Part Valid From`=%s  where `Product Part Valid From`>%s and `Product ID`=%d and `Part SKU`=%d and  `Product Part Most Recent`='Yes'"
-		     ,prepare_mysql($date_order)
-		     ,prepare_mysql($date_order)
-		     ,$product->pid
-		     ,$part->sku
-		     );
-	mysql_query($sql);
-	$sql=sprintf("update `Product Part List` set `Product Part Valid To`=%s   where `Product Part Valid To`<%s and `Product ID`=%d and `Part SKU`=%d and  `Product Part Most Recent`='Yes'"
-		     ,prepare_mysql($date2)
-		     ,prepare_mysql($date2)
-		     ,$product->pid
-		     ,$part->sku
-		     );
-              
-	mysql_query($sql);
+	//$sql=sprintf("update `Product Part List` set `Product Part Valid From`=%s  where `Product Part Valid From`>%s and `Product ID`=%d and `Part SKU`=%d and  `Product Part Most Recent`='Yes'"
+	//	     ,prepare_mysql($date_order)
+	//	     ,prepare_mysql($date_order)
+//		     ,$product->pid
+		  //   ,$part->sku
+		   //  );
+	//mysql_query($sql);
+	//$sql=sprintf("update `Product Part List` set `Product Part Valid To`=%s   where `Product Part Valid To`<%s and `Product ID`=%d and `Part SKU`=%d and  `Product Part Most Recent`='Yes'"
+	//	     ,prepare_mysql($date2)
+//		     ,prepare_mysql($date2)
+//		     ,$product->pid
+//		     ,$part->sku
+//		     );              
+//	mysql_query($sql);
 	$parts_per_product=1;
 	$used_parts_sku=array($part->sku=>array('parts_per_product'=>$parts_per_product,'unit_cost'=>$supplier_product_cost*$transaction['units']));
                 
@@ -789,15 +787,17 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
 	$supplier_product->new_part_list('',$rules);
       }else{
 	//Note assuming only one sppl 
-	$sql=sprintf("update  ``Supplier Product Part Valid From`=%s from `Supplier Product Part List` where `Supplier Product Part Valid From`>%s and `Supplier Product Code`=%s and `Supplier Key`=%d and `Part SKU`=%d and  `Product Part Most Recent`='Yes'"
-		     ,prepare_mysql($date_order)
+	$sql=sprintf("update  `Supplier Product Part List` set `Supplier Product Part Valid From`=%s  where `Supplier Product Part Valid From`>%s and `Supplier Product Code`=%s and `Supplier Key`=%d and `Part SKU`=%d and  `Supplier Product Part Most Recent`='Yes'"
+	
+	,prepare_mysql($date_order)
 		     ,prepare_mysql($date_order)
 		     ,prepare_mysql($supplier_product->code)
 		     ,$supplier_product->supplier_key
 		     ,$part->sku
 		     );
+	//print $sql;
 	mysql_query($sql);
-	$sql=sprintf("update  `Supplier Product Part Valid To`=%s from `Supplier Product Part List` where `Supplier Product Part Valid To`<%s and `Supplier Product Code`=%s `Supplier Key`=%d and `Part SKU`=%d and  `Product Part Most Recent`='Yes'"
+	$sql=sprintf("update  `Supplier Product Part List` set  `Supplier Product Part Valid To`=%s  where `Supplier Product Part Valid To`<%s and `Supplier Product Code`=%s and 	`Supplier Key`=%d and `Part SKU`=%d and  `Supplier Product Part Most Recent`='Yes'"
 		     ,prepare_mysql($date2)
 		     ,prepare_mysql($date2)
 		     ,prepare_mysql($supplier_product->code)

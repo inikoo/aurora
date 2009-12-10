@@ -3561,6 +3561,18 @@ class Contact extends DB_Table {
 
 
 
+
+ /*function:get_formated_id_link
+     Returns formated id_link
+    */
+   function get_formated_id_link(){
+ 
+     return sprintf('<a href="contact.php?id=%d">%s</a>',$this->id, $this->get_formated_id());
+
+   }
+
+
+
     /*function:get_formated_id
       Returns formated id
      */
@@ -3598,7 +3610,6 @@ class Contact extends DB_Table {
         $this->load_metadata();
 
     }
-
     function load_metadata() {
 
 

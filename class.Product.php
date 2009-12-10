@@ -1403,7 +1403,8 @@ public $new_value=false;
 
       if ($base_data['product part most recent']=='Yes') {
 
-	  $sql=sprintf("update `Product Part Dimension` set `Product Part Most Recent`='No',`Product Part Most Recent Key`=%d where `Product ID`=%d  and `Product Part ID`!=%d      ",$product_part_key,$base_data['product id'],$product_part_key);
+	  $sql=sprintf("update `Product Part Dimension` set `Product Part Most Recent`='No',`Product Part Most Recent Key`=%d where `Product ID`=%d  and `Product Part Key`!=%d      "
+	  ,$product_part_key,$base_data['product id'],$product_part_key);
 	  mysql_query($sql);
 
 	  $sql=sprintf('update `Product Part Dimension` set `Product Part Most Recent Key`=%d where `Product Part Key`=%d',$product_part_key,$product_part_key);

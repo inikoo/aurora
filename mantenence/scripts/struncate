@@ -30,4 +30,5 @@ truncate `Product Part Dimension`;
 truncate `Product Family Bridge`;
 truncate `Shipping Dimension`;
 truncate `Staff Dimension`;
-truncate `Warehouse Area Dimension`
+truncate `Warehouse Area Dimension`;
+truncate `Company Bridge`;

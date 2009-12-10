@@ -2201,6 +2201,16 @@ if($principal){
         return $addresses;
 
     }
+    
+     /*function:get_formated_id_link
+     Returns formated id_link
+    */
+   function get_formated_id_link(){
+ 
+     return sprintf('<a href="company.php?id=%d">%s</a>',$this->id, $this->get_formated_id());
+
+   }
+
 
     /*function:get_formated_id
       Returns formated id
@@ -2366,6 +2376,64 @@ if($principal){
 	mysql_query($sql);
 
     }
+
+
+
+function set_scope($raw_scope='',$scope_key=0) {
+        $scope='Unknown';
+        $raw_scope=_trim($raw_scope);
+        if (preg_match('/^customers?$/i',$raw_scope)) {
+            $scope='Customer';
+        
+        } else if (preg_match('/^(supplier)$/i',$raw_scope)) {
+            $scope='Supplier';
+        } 
+        
+        $this->scope=$scope;
+        $this->scope_key=$scope_key;
+        $this->load_metadata();
+
+    }
+    function load_metadata() {
+
+
+
+
+
+        $where_scope=sprintf(' and `Subject Type`=%s',prepare_mysql($this->scope));
+
+        $where_scope_key='';
+        if ($this->scope_key)
+            $where_scope_key=sprintf(' and `Subject Key`=%d',$this->scope_key);
+
+
+
+
+        $sql=sprintf("select * from `Company Bridge` where `Company Key`=%d %s  %s  order by `Is Main` desc"
+                     ,$this->id
+                     ,$where_scope
+                     ,$where_scope_key
+                    );
+        $res=mysql_query($sql);
+
+
+
+        $this->data['Company Is Main']='No';
+        $this->data['Company Is Active']='No';
+
+        $this->associated_with_scope=false;
+        while ($row=mysql_fetch_array($res)) {
+            $this->associated_with_scope=true;
+
+            $this->data['Company Is Main']=$row['Is Main'];
+            $this->data['Company Is Active']=$row['Is Active'];
+
+        }
+
+
+    }
+
+
 
 
 }

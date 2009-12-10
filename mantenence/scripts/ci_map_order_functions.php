@@ -5347,10 +5347,46 @@ if($act_data['town']=='Hornbæk - Sjælland'){
     $act_data['name']='Jabón Jabón';
     $act_data['contact']='Antonio Laborda';
   }
+  
+    if($act_data['name']=='Encarnación Jimenez Marquez' and $act_data['contact']=='0'){
+    $act_data['name']='';
+    $act_data['contact']='Encarnación Jimenez Marquez';
+  }
+  
     
-  if($act_data['name']=='Virginia Cabrera Rivera' and $act_data['contact']=='David GTX'){
-    $act_data['name']='David GTX';
-   $act_data['contact']='Virginia Cabrera Rivera';
+  if(
+  ($act_data['name']=='Virginia Cabrera Rivera' and $act_data['contact']=='David GTX')
+  or ($act_data['name']=='Marisa Gómez' and $act_data['contact']=='Naturalmente')
+  or ($act_data['name']=='Ignacio Galán Olaizola' and $act_data['contact']=='Mandala')
+  or ($act_data['name']=='Sandra Romay Naixes' and $act_data['contact']=='Tribu´s')
+  or ($act_data['name']=='Soledad Martin Santos' and $act_data['contact']=='Tu Luz')
+  or ($act_data['name']=='Mari Carmen de La Muela Vega' and $act_data['contact']=='Joyeria Caro')
+  or ($act_data['name']=='Aniceto de Leon Viñoly' and $act_data['contact']=='La Caja Roja')
+  or ($act_data['name']=='Mº del Carmen López Carreira' and $act_data['contact']=='Eiroa-2')
+  or ($act_data['name']=='Sonsoles Luque Delgado' and $act_data['contact']=='Isla Web')
+  or ($act_data['name']=='Adriana Ramos Ruiz' and $act_data['contact']=='Jaboneria')
+  or ($act_data['name']=='Francisca Castillo Gil' and $act_data['contact']=='Bis a Bis')
+  or ($act_data['name']=='Judit Plana Rodriguez' and $act_data['contact']=='Solluna')
+ or ($act_data['name']=='Sylvie Felten' and $act_data['contact']=='Aparte')
+ or ($act_data['name']=='Rosa Maria Moraleda Sanchez' and $act_data['contact']=='Miro 13')
+ or ($act_data['name']=='Alberto Markuerkiaga Santiso' and $act_data['contact']=='Dra!')
+ or ($act_data['name']=='Susana Rodriguez Lozano' and $act_data['contact']=='Mr Ayudas')
+ or ($act_data['name']=='Juan Carlos Mirabal' and $act_data['contact']=='C')
+ or ($act_data['name']=='Laudelina Saavedra Montesdeoca' and $act_data['contact']=='Herbolario Aguamar')
+ or (preg_match('/Gina Younis Hevia/i',$act_data['name'])  and preg_match('/Gong Marbella/i',$act_data['contact']) )
+ or (preg_match('/Maria Josefa Aparicio Arrebol/i',$act_data['name'])  and preg_match('/Duna/i',$act_data['contact']) )
+ or (preg_match('/Marisa R/i',$act_data['name'])  and preg_match('/Ilusiones/i',$act_data['contact']) )
+ or (preg_match('/Burgui/i',$act_data['name'])  and preg_match('/Burbuja/i',$act_data['contact']) )
+  or (preg_match('/Herbolario|Perfumeria|Jauja|Herboristeria|El Rincon del Papi|Artterapia|Centro De Estetica|Artesano Grabador de Vidrio|Psicolodia Logopedia Montserrat Baulenas|Centro Tiempo Crista|Mais Festa/i',$act_data['contact']) )
+  or (preg_match('/^tienda |joyeria |Papeleria /i',$act_data['contact']) )
+  or (preg_match('/^(rayas|papel|Artesano|Gipp|La Mar de Cosas|Jabón Jabón|Jaboneria|Chucotattoo|La Misma)$/i',$act_data['contact']) )
+ or (preg_match('/^Mª /i',$act_data['name']) and  act_data['contact']!='')
+// or (preg_match('//i',$act_data['name'])  and preg_match('//i',$act_data['contact']) )
+ //or ($act_data['name']=='' and $act_data['contact']=='')
+  ){
+   $_tmp=$act_data['name'];
+   $act_data['name']=$act_data['contact'];
+    $act_data['contact']=$_tmp;
   }
 
 
