@@ -889,15 +889,19 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
       }
 
       $part_list=array();
+      
 
+      
       if ($product->new_id ) {
 	//	print "NEW Product ID $code \n";
-
+	
 	//	print_r($product);
 	//	exit;
 	// Take the part form the Uk equivalent
 	$uk_product=new Product('code_store',$code,1);
 	$parts=$uk_product->get('Parts SKU');
+	
+	
 	if(isset($parts[0])){
 	  // print "found part \n";
 	  $part=new Part('sku',$parts[0]);
@@ -912,7 +916,6 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 	  $parts_per_product=1;
 	  
 	}else{
-	  //print "part not found \n";
 	  
 	  //creamos una parte nueva
 	    $part_data=array(
@@ -937,22 +940,37 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 			       );
 	  }
 	//	print_r($part_list);
-	$product->new_part_list('',$part_list);
+	$product->new_part_list(array(),$part_list);
 	
 	  $used_parts_sku=array($part->sku => array('parts_per_product'=>$parts_per_product,'unit_cost'=>$supplier_product_cost*$transaction['units']));
 	
-	} else {
+      } else {
 	
-	  $sql=sprintf("select `Part SKU` from `Product Part List` where  `Product ID`=%d ",$product->pid);
-	  $res_x=mysql_query($sql);
-	  if ($row_x=mysql_fetch_array($res_x)) {
+
+	
+	$sql=sprintf("select `Part SKU` from `Product Part List` where  `Product ID`=%d ",$product->pid);
+	//	print "$code $sql\n";
+	$res_x=mysql_query($sql);
+	if ($row_x=mysql_fetch_array($res_x)) {
 	    $part_sku=$row_x['Part SKU'];
-	  } else {
-	    print_r($product);
-	    exit("error: $sql");
-	  }
-	  $used_parts_sku=$part_sku;
-	  $part=new Part('sku',$part_sku);
+	    
+	    if(!$part_sku){
+	      
+	      exit("$code $sql de_get_orders line 959\n");
+	    }
+
+	} else {
+	  print_r($product);
+	  exit("error: $sql");
+	}
+	
+	
+	$used_parts_sku=$part_sku;
+	
+	$part=new Part('sku',$part_sku);
+	
+	//print_r($part);
+
 	  $part->update_valid_dates($date_order);
 	  $part->update_valid_dates($date2);
 	
@@ -1017,6 +1035,7 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 			 ,'supplier product part valid to'=>$date2
 			 ,'factor supplier product'=>1
 			 );
+	 
 	  $supplier_product->new_part_list('',$rules);
 	}else{
 	  //Note assuming only one sppl 

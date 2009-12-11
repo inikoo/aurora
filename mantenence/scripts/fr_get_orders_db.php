@@ -944,7 +944,7 @@ if ($product->new_id ) {
 			   );
 	}
 	//	print_r($part_list);
-	$product->new_part_list('',$part_list);
+	$product->new_part_list(array(),$part_list);
 	
 	$used_parts_sku=array($part->sku => array('parts_per_product'=>$parts_per_product,'unit_cost'=>$supplier_product_cost*$transaction['units']));
 

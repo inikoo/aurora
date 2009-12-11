@@ -831,8 +831,8 @@ foreach($__cols as $cols){
 		    'product family special characteristic'=>$fam_special_char,
 		    'product net weight'=>$_w,
 		    'product gross weight'=>$_w,
-		     'product valid from'=>date('Y-m-d H:i:s'),
-		  'product valid to'=>date('Y-m-d H:i:s'),
+		    'product valid from'=>date('Y-m-d H:i:s'),
+		    'product valid to'=>date('Y-m-d H:i:s'),
 		    'deals'=>$deals
 		    
 		    );
@@ -840,7 +840,7 @@ foreach($__cols as $cols){
 	//print_r($data);
 	//exit;
 
-	
+
 
        	$product=new Product('find',$data,'create');
 	if($product->new){

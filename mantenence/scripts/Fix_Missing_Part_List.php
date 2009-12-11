@@ -36,8 +36,12 @@ while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
   if($number_parts==0){
     print "$sql  $number_parts \n";
     print $row['Product Code']."\n";
+
+
+    $code=$row['Product Code'];
+    $code=preg_replace('/L\&P/','LLP',$code);
     
-    $uk_product=new Product('code_store',$row['Product Code'],1);
+    $uk_product=new Product('code_store',$code,1);
     $parts=$uk_product->get('Parts SKU');
     $part_list=array();
 
@@ -52,8 +56,13 @@ $part_list[]=array(
  			   );
   
   $product=new Product('pid',$row['Product ID']);
-  $product->new_part_list('',$part_list);
+  $product->new_part_list(array(),$part_list);
+
+
   print_r($part_list);
+  //  exit;
+
+
   }  
 
 
