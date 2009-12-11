@@ -5724,9 +5724,10 @@ if($act_data['town']=='Hornbæk - Sjælland'){
     $customer_data['other id']=$act_data['act'];
   else
     $customer_data['other id']='';
-      
-    // print_r($customer_data);
-
+    //   print "+++++++++++++++\n";    
+   print_r($header_data);
+   print_r($act_data);
+   exit;
   return $customer_data;
 
 
