@@ -424,6 +424,7 @@ protected function create($data,$options=''){
   if($row=mysql_fetch_array($res)){
     print "Error trying to add a duplicate email:\n";
     print_r($data);
+    exit;
   }
 
     

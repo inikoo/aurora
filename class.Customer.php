@@ -665,73 +665,96 @@ class Customer extends DB_Table{
 
 
 
- function add_ship_to($args='shipping_same_as_main',$is_principal='Yes'){
+ function add_ship_to($ship_to_key,$is_principal='Yes'){
    
    $is_active='Yes';
    
 
 
-   if($args=='shipping_same_as_main'){
-     //TODO
-     
-   }elseif(is_numeric($args) and $args>0){
-     $ship_to=new Ship_To('id',$args);
-   }   
 
    if($is_principal!='Yes')
      $is_principal='No';
    
    
    $sql=sprintf("insert into `Customer Ship To Bridge` values (%d,%d,'%s','Yes',0,NOW(),NOW()) on duplicate key update `Is Principal`='%s' ,`Is Active`='Yes'  "
-        ,$this->id
-        ,$ship_to->id
-        ,$is_principal
-        ,$is_principal);
+		,$this->id
+		,$ship_to_key
+		,$is_principal
+		,$is_principal);
    
    mysql_query($sql);
 
    
+   if($is_principal='Yes'){
+     $this->update_main_ship_to($ship_to_key);
+
+   }
    
-   
-   
-   $sql=sprintf("select count(*) as total,sum(if(`Is Active`='Yes',1,0)) as active from `Customer Ship To Bridge` where `Customer Key`=%d ",$this->id);
+   $this->update_ship_to_stats();
+ }
+
+
+
+function update_ship_to_stats(){
+$sql=sprintf("select count(*) as total,sum(if(`Is Active`='Yes',1,0)) as active from `Customer Ship To Bridge` where `Customer Key`=%d ",$this->id);
    // print $sql;
    $result=mysql_query($sql);
    if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
      $active=$row['active'];
      $total=$row['total'];
    }
-   
-   if($is_principal='Yes'){
-     
 
 
+   $sql=sprintf("update `Customer Dimension` set `Customer Active Ship To Records`=%d,`Customer Total Ship To Records`=%d where `Customer Key`=%d"
+		
+		  ,$active
+		  ,$total
+		  ,$this->id
+		  );
+     mysql_query($sql);
 
-     $sql=sprintf("update `Customer Dimension` set `Customer Main Ship To Key`=%s,`Customer Main Ship To Town`=%s,`Customer Main Ship To Postal Code`=%s,`Customer Main Ship To Country`=%s,`Customer Main Ship To Country Key`=%s,`Customer Main Ship To Country Code`=%s,`Customer Main Ship To Country 2 Alpha Code`=%s,`Customer Active Ship To Records`=%d,`Customer Total Ship To Records`=%d where `Customer Key`=%d"
-		  ,prepare_mysql($ship_to->id)
+
+}
+
+
+ function update_main_ship_to($ship_to_key=false){
+
+   if($ship_to_key)
+     $ship_to=new Ship_To($ship_to_key);
+
+   else
+     $ship_to=new Ship_To($this->data['Customer Main Ship To Key']);
+
+
+ 
+
+
+ $sql=sprintf("update `Customer Dimension` set `Customer Main Ship To Key`=%d,`Customer Main Ship To Town`=%s,`Customer Main Ship To Postal Code`=%s,`Customer Main Ship To Country`=%s,`Customer Main Ship To Country Key`=%s,`Customer Main Ship To Country Code`=%s,`Customer Main Ship To Country 2 Alpha Code`=%s where `Customer Key`=%d"
+		  ,$ship_to->id
 		  ,prepare_mysql($ship_to->data['Ship To Town'])
 		  ,prepare_mysql($ship_to->data['Ship To Postal Code'])
 		  ,prepare_mysql($ship_to->data['Ship To Country'])
 		  ,prepare_mysql($ship_to->data['Ship To Country Key'])
 		  ,prepare_mysql($ship_to->data['Ship To Country Code'])
 		  ,prepare_mysql($ship_to->data['Ship To Country 2 Alpha Code'])
-		  ,$active
-		  ,$total
+	
 		  ,$this->id
 		  );
      mysql_query($sql);
+
      
-   }else{
- $sql=sprintf("update `Customer Dimension` set `Customer Active Ship To Records`=%d,`Customer Total Ship To Records`=%d where `Customer Key`=%d"
-		  ,$active
-		  ,$total
-		  ,$this->id
-		  );
-     mysql_query($sql);
-   }
+     $this->data['Customer Main Ship To Key']=$ship_to->id;
+     $this->data['Customer Main Ship To Town']=$ship_to->data['Ship To Town'];
+     $this->data['Customer Main Ship To Country']=$ship_to->data['Ship To Country'];
+     $this->data['Customer Main Ship To Postal Code']=$ship_to->data['Ship To Postal Code'];
+     $this->data['Customer Main Ship To Country Key']=$ship_to->data['Ship To Country Key'];
+     $this->data['Customer Main Ship To Country Code']=$ship_to->data['Ship To Country Code'];
+     $this->data['Customer Main Ship To Country 2 Alpha Code']=$ship_to->data['Ship To Country 2 Alpha Code'];
+
+
+
+
  }
-
-
 
 
 
@@ -1821,12 +1844,30 @@ $this->update_contact($company->data['Company Main Contact Key']);
 
 
  function update_address_data($address_key=false){
-
+   
    if(!$address_key)
      return;
    $address=new Address($address_key);
    if(!$address->id)
      return;
+
+   if($address->id!=$this->data['Customer Main Address Key'] and $this->data['Customer Billing Address Link']=='Contact'){
+     $this->data['Customer Billing Address Key']=$address->id;
+      $sql=sprintf("update `Customer Dimension` set `Customer Billing Address Key`=%d   where `Customer Key`=%d"
+		   
+		   ,$this->data['Customer Billing Address Key']
+		   
+
+		   
+		   ,$this->id
+		   );
+
+      
+      mysql_query($sql);
+      
+      
+   }
+
 
    if(
       $address->id!=$this->data['Customer Main Address Key']
@@ -1868,6 +1909,17 @@ $this->update_contact($company->data['Company Main Contact Key']);
 
      if(!mysql_query($sql))
        exit("\n\nerror $sql\n");
+
+
+
+
+     
+     
+  
+   
+
+
+
        
      if($old_value!=$this->data['Customer Main XHTML Address']){
      
@@ -2280,9 +2332,68 @@ function remove_contact($contact_key=false){
 
 
  function delivery_address_xhtml(){
-   $deliver_address=new Ship_To($this->data['Customer Main Ship To Key']);
-   return $deliver_address->data['Ship To XHTML Address'];
+   if($this->data['Customer Delivery Address Link']=='None'){
+     $deliver_address=new Ship_To($this->data['Customer Main Ship To Key']);
+     return $deliver_address->data['Ship To XHTML Address'];
+   }
+
+   if($this->data['Customer Delivery Address Link']=='Billing')
+     $address=new Address($this->data['Customer Billing Address Key']);
+   else
+     $address=new Address($this->data['Customer Main Address Key']);
+
+   return $address->display('xhtml');
+
  }
+
+
+function set_current_ship_to($return='key'){
+  if(preg_match('/object/i',$return))
+    return $this->set_current_ship_to_get_object();
+  else
+    return $this->set_current_ship_to_get_key();
+  
+}
+
+
+ function set_current_ship_to_get_key(){
+   if($this->data['Customer Delivery Address Link']=='None'){
+     return $this->data['Customer Main Ship To Key'];
+   }
+
+   if($this->data['Customer Delivery Address Link']=='Billing')
+     $address=new Address($this->data['Customer Billing Address Key']);
+   else
+     $address=new Address($this->data['Customer Main Address Key']);
+   
+   
+     $line=$address->display('3lines');
+     
+     $shipping_addresses['Address Line 1']=$line[1];
+     $shipping_addresses['Address Line 2']=$line[2];
+     $shipping_addresses['Address Line 3']=$line[3];
+     $shipping_addresses['Address Town']=$address->data['Address Town'];
+     $shipping_addresses['Address Postal Code']=$address->data['Address Postal Code'];
+     $shipping_addresses['Address Country Name']=$address->data['Address Country Name'];
+     $shipping_addresses['Address Country Primary Division']=$address->data['Address Country First Division'];
+     $shipping_addresses['Address Country Secondary Division']=$address->data['Address Country Second Division'];
+     $ship_to= new Ship_To('find create',$shipping_addresses);
+     
+     
+     
+     return $ship_to->id;
+     
+
+ }
+
+
+ function set_current_ship_to_get_object(){
+   $ship_to=new Ship_To($this->set_current_ship_to());
+   return $ship_to;
+     
+
+ }
+
 
 
  }

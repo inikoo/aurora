@@ -122,7 +122,7 @@ class Company extends DB_Table {
         $address_data=array('Company Address Line 1'=>'','Company Address Town'=>'','Company Address Line 2'=>'','Company Address Line 3'=>'','Company Address Postal Code'=>'','Company Address Country Name'=>'','Company Address Country Primary Division'=>'','Company Address Country Secondary Division'=>'');
 
 
-
+	
         if (preg_match('/(from|on|in|at) supplier/',$options)) {
             foreach($raw_data as $key=>$val) {
                 $_key=preg_replace('/Supplier /','Company ',$key);
@@ -513,7 +513,23 @@ class Company extends DB_Table {
 
         $this->data['Company Main Contact Name']=$contact->display('name');
         $this->data['Company Main Contact Key']=$contact->id;
+	//===delete down
+ $address_data=array('Company Address Line 1'=>'','Company Address Town'=>'','Company Address Line 2'=>'','Company Address Line 3'=>'','Company Address Postal Code'=>'','Company Address Country Name'=>'','Company Address Country Primary Division'=>'','Company Address Country Secondary Division'=>'');
+        foreach($raw_address_data as $key=>$value) {
+            if (array_key_exists($key,$address_data))
+                $address_data[$key]=$value;
+        }
 
+
+
+
+        $address_data['editor']=$this->editor;
+	$address=new Address("find in company create",$address_data);
+	//print_r($address);
+
+
+	
+	//== delete up
 
         if (email::wrong_email($this->data['Company Main Plain Email']))
             $this->data['Company Main Plain Email']='';
@@ -525,9 +541,9 @@ class Company extends DB_Table {
             $email_data['Email Contact Name']=$this->data['Company Main Contact Name'];
 
             $email_data['editor']=$this->editor;
-
+	  
             $email=new Email("find in company create",$email_data);
-            // exit;
+            //exit;
             if (!$email->error) {
                 $this->data['Company Main Plain Email']=$email->display('plain');
                 $this->data['Company Main XHTML Email']=$email->display('xhtml');
@@ -555,8 +571,13 @@ class Company extends DB_Table {
 
         $address_data['editor']=$this->editor;
         //  print_r($address_data);
-        $address=new Address("find in company create",$address_data);
-        //print_r($raw_data);
+        
+	
+	$address=new Address("find in company create",$address_data);
+	//print_r($address);
+	//	 exit;
+	
+	//print_r($raw_data);
 
         // print_r($raw_address_data);
 	if($use_contact){
@@ -571,6 +592,8 @@ class Company extends DB_Table {
 	 }else if (!$address->new) {
 	  //print_r($address);
 	  print ("dupplicate address\n");
+	  print_r($address);
+
 	  $address_data['editor']=$this->editor;
 	  $address=new Address("find in company create force",$address_data);
 

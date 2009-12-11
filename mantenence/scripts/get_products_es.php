@@ -736,7 +736,7 @@ foreach($__cols as $cols){
 
 
  foreach($deals as $deal_data){
-       print_r($deal_data);
+   // print_r($deal_data);
    //exit;
 
       $deal_data['Store Key']=$store_key;

@@ -133,7 +133,7 @@ class Order extends DB_Table{
 			
       $data['Customer Data']['editor']=$this->editor;
       $data['Customer Data']['editor']['Date']=date("Y-m-d H:i:s",strtotime($data['Customer Data']['editor']['Date']." -1 second"));
-				
+      $this->data ['Order XHTML Ship Tos']='';			
 
       if($data['staff sale']=='Yes'){
 				  
@@ -142,11 +142,28 @@ class Order extends DB_Table{
 	$this->data ['Order XHTML Ship Tos']=_('Collection');
 	$this->data ['Order Ship To Keys']=0;
 				
+      }
+
+
+      elseif(!isset($data['Shipping Address']) or !is_array($data['Shipping Address']) or array_empty($data['Shipping Address']) or $data['Delivery Note Dispatch Method']=='Collected'){
+	$customer = new Customer ( 'find create', $data['Customer Data'] );
+	$data['Delivery Note Dispatch Method']='Collected';
+	$this->data ['Order Ship To Keys']=0;
       }else{
 	//print "Cust data\n";
 	//print_r($data['Customer Data']);
 				  
 	$customer = new Customer ( 'find create', $data['Customer Data'] );
+
+	if($customer->data['Customer Delivery Address Link']=='None'){
+	  $ship_to= new Ship_To('find create',$data['Shipping Address']);
+	}else{
+	  $ship_to= $customer->set_current_ship_to('return object');
+	}
+	$this->data ['Order XHTML Ship Tos']=$ship_to->data['Ship To XHTML Address'];
+	$this->data ['Order Ship To Keys']=$ship_to->id;
+	$customer->add_ship_to($ship_to->id,'Yes');
+
 	//print_r($customer);
 	if(isset($data['Shipping Address']) and is_array($data['Shipping Address']) and !array_empty($data['Shipping Address'])){
 	  $ship_to= new Ship_To('find create',$data['Shipping Address']);
@@ -157,18 +174,14 @@ class Order extends DB_Table{
       }
 				
 			     
-      if($data['Delivery Note Dispatch Method']=='Collected'){
-	$this->data ['Order XHTML Ship Tos']=_('Collection');
-	$this->data ['Order Ship To Keys']=0;
-      }
-      //	print_r($customer);
-      $this->billing_address=new Address($customer->data['Customer Main Address Key']);
+      
+      $this->billing_address=new Address($customer->data['Customer Billing Address Key']);
 				
 
 
 
       if(!$customer->id or $customer->data[ 'Customer Name' ]==''){
-	print "caca\n";
+	print "Customer Can not be found or cusromer name is null\n";
 	print_r($data['Customer Data'] );
 	print_r($customer);
 	exit;
