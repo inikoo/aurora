@@ -3928,28 +3928,50 @@ function setup_contact($act_data,$header_data,$date_index){
     $header_data['postcode']='';
 
   // print_r($act_data);
+ 
+  
   // print_r($header_data);
     
   if(!isset($act_data) or count($act_data)==0){
-    $act_data['name']='';
-    $act_data['contact']='';
-    $act_data['a1']='';
-    $act_data['a2']='';
-    $act_data['postcode']='';
+  
+  
+    $email='';
+  $tel=$header_data['phone'];
+  if(preg_match('/[a-z0-9\.\-]+\@[a-z0-9\.\-]+/',$header_data['phone'],$match)){
+     $email=$match[0];
+     $tel=preg_replace("/$email/",'',$header_data['phone']);
+  }
+  $country='Spain';
+  $postalcode=$header_data['postcode'];
+  if(preg_match('/^Espa.a \d+$/i',$header_data['postcode'])){
+    $tmp=preg_split('/\s/',$header_data['postcode']);
+    $country=$tmp[0];
+    $postalcode=$tmp[1];
+  }
+  
+  
+  
+    print "order without act\n";
+    $skip_del_address=true;
+    $act_data['name']=$header_data['trade_name'];
+    $act_data['contact']=$header_data['customer_contact'];
+    $act_data['a1']=$header_data['address1'];
+    $act_data['a2']=$header_data['address2'];
+    $act_data['postcode']=$postalcode;
     $act_data['country_d2']='';
-    $act_data['name']='';
     $act_data['a3']='';
-    $act_data['town']='';
-    $act_data['tel']='';
+    $act_data['town']=$header_data['city'];
+    $act_data['tel']=$tel;
     $act_data['fax']='';
     $act_data['mob']='';
     $act_data['source']='';
     $act_data['act']='';
-    $act_data['email']='';
-    $act_data['country']='';
+    $act_data['email']=$email;
+    $act_data['country']=$country;
     
     $act_data['town_d1']='';
     $act_data['town_d2']='';
+ 
 
 
     //print_r($header_data);
@@ -5725,9 +5747,7 @@ if($act_data['town']=='Hornbæk - Sjælland'){
   else
     $customer_data['other id']='';
     //   print "+++++++++++++++\n";    
-   print_r($header_data);
-   print_r($act_data);
-   exit;
+  
   return $customer_data;
 
 
