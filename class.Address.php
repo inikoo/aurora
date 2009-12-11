@@ -271,19 +271,24 @@ class Address extends DB_Table{
     //Exact match
     if(!$find_fuzzy){
 
-
-if($data['Address Fuzzy']=='Yes'){
-
-
-}else{
+     
+      
+      if($data['Address Fuzzy']=='Yes'){
+	
+	
+      }else{
    
 
-      $fields=array('Address Fuzzy','Address Street Number','Address Building','Address Street Name','Address Street Type','Address Town Second Division','Address Town First Division','Address Town','Address Country First Division','Address Country Second Division','Address Country Key','Address Postal Code','Military Address','Military Installation Address','Military Installation Name');
+
+      $fields=array('Address Fuzzy','Address Internal','Address Street Number','Address Building','Address Street Name','Address Street Type','Address Town Second Division','Address Town First Division','Address Town','Address Country First Division','Address Country Second Division','Address Country Key','Address Postal Code','Military Address','Military Installation Address','Military Installation Name');
 		  
       $sql="select A.`Address Key`,`Subject Key`,`Subject Type` from `Address Dimension`  A  left join `Address Bridge` AB  on (AB.`Address Key`=A.`Address Key`) where `Subject Type`='Contact' ";
       foreach($fields as $field){
 	$sql.=sprintf(' and `%s`=%s',$field,prepare_mysql($data[$field],false));
       }
+      //print_r($raw_data);
+      // print $sql;
+      
       $result=mysql_query($sql);
       $num_results=mysql_num_rows($result);
       if($num_results==1){
@@ -1114,6 +1119,21 @@ if($data['Address Fuzzy']=='Yes'){
   function display($tipo=''){
     $separator="\n";
     switch($tipo){
+
+    case('3lines'):
+      $lines=array('','','','');
+      if($this->data['Address Internal']!='' and $this->data['Address Building']!=''){
+	$lines[1]=$this->data['Address Internal'];
+	$lines[2]=$this->data['Address Building'];
+	$lines[3]=$this->display('street');
+      }elseif($this->data['Address Internal']=='' and $this->data['Address Building']==''){
+
+	$lines[1]=$this->display('street');
+      }elseif($this->data['Address Internal']!='' or $this->data['Address Building']!=''){
+	$lines[1]=_trim($this->data['Address Internal'].' '.$this->data['Address Building']);
+	$lines[2]=$this->display('street');
+      }
+      return $lines;
     case('mini'):
       $street=_trim($this->data['Address Street Number'].' '.$this->data['Address Street Name'].' '.$this->data['Address Street Type']);
       if(strlen($street)<2)
@@ -1130,6 +1150,9 @@ if($data['Address Fuzzy']=='Yes'){
     case('location'):
       return $this->location($this->data);
       break;
+
+    
+
     case('plain'):
       return $this->plain($this->data);
       break;
@@ -1321,21 +1344,34 @@ if($data['Address Fuzzy']=='Yes'){
     if($string=='')
       return false;
 
+
+
+
     $string=_trim($string);
     // if(preg_match('/^\d+[a-z]?\s+\w|^\s*calle\s+|\s+close\s*$|/\s+lane\s*$|\s+street\s*$|\s+st\.?\s*$/i',$string))
 
+    //print "Street: $string ";
+
     if(preg_match('/\s+rd\.?\s*$|\s+road\s*$|^\d+[a-z]?\s+\w|^\s*calle\s+|\s+close\s*$|\s+lane\s*$|\s+street\s*$|\s+st\.?\s*$/i',$string))
-      return true;
-    if(preg_match('/[a-z\-\#\,]{1,}\s*\d/i',$string))
-      return true;
+      $is_street= true;
+    elseif(preg_match('/[a-z\-\#\,]{1,}\s*\d/i',$string))
+      $is_street= true;
 
-    if(preg_match('/\d.*[a-z]{1,}/i',$string))
-      return true;
+    elseif(preg_match('/\d.*[a-z]{1,}/i',$string))
+      $is_street= true;
 
-    if(preg_match('/^c\/\s?/i',$string))
-      return true;
+    elseif(preg_match('/^c\/\s?/i',$string))
+      $is_street= true;
+    else
+      $is_street= false;
 
-    return false;
+    // if($is_street)
+    //  print "-> yes \n";
+    //else
+    //  print "-> no \n";
+
+    return $is_street;
+
   }
   /*
     Function: is_internal
@@ -2181,7 +2217,7 @@ if($data['Address Fuzzy']=='Yes'){
 			//print $raw_data['Address Line 1']."----------------\n";
 			// print $raw_data['Address Line 2']."----------------\n";
 
-
+		
 
 			if($raw_data['Address Line 1']==''){
 				if($raw_data['Address Line 2']==''){
@@ -2337,6 +2373,13 @@ if($data['Address Fuzzy']=='Yes'){
 			}
 
 
+			if($s_a1 and !$f_a2 and !$f_a3){
+			  $raw_data['Address Line 3']=$raw_data['Address Line 1'];
+			  $raw_data['Address Line 1']='';
+			}
+			
+
+
 			// print "Street grade 1-$s_a1 2-$s_a2 3-$s_a3 \n";
 			//   print "Internal grade 1-$i_a1 2-$i_a2 3-$i_a3 \n";
 			//   print "Filled grade 1-$f_a1 2-$f_a2 3-$f_a3 \n";
@@ -2351,6 +2394,11 @@ if($data['Address Fuzzy']=='Yes'){
 				}
 
 			}
+
+
+
+
+
 
 
 			//   exit;
@@ -3879,7 +3927,7 @@ if($data['Address Fuzzy']=='Yes'){
 			$data['Address Country Second Division Code']=0;
 		}
 
-
+		
 
 		$sql=sprintf("select `Geography Key` as id,`Country Second Division Code` , `Country First Division Code` from kbase.`Town Dimension` where (`Town Name`='%s'  ) and `Country Code`=%d",addslashes($data['Address Town']),addslashes($data['Address Town']),addslashes($data['Address Town']),$data['Address Country Code']);
 		//	print $sql;
@@ -3900,7 +3948,7 @@ if($data['Address Fuzzy']=='Yes'){
 		else
 		$data['Address Town Key']=0;
 
-
+		
 
 
 		if(preg_match('/\d+\s*\-\s*\d+/',$raw_data['Address Line 3'])){
@@ -3931,7 +3979,7 @@ if($data['Address Fuzzy']=='Yes'){
 			$data[$key]=mb_ucwords(_trim($val));
 		}
 
-
+		
 		$street_data=Address::parse_street(mb_ucwords(_trim($raw_data['Address Line 3'])));
 
 		foreach($street_data as $key=>$value){
@@ -3991,9 +4039,8 @@ if($data['Address Fuzzy']=='Yes'){
 		//  print_r($data['Address Country 2 Alpha Code']);
 
 
-
-
-
+		
+	
 		return $data;
 	}
 

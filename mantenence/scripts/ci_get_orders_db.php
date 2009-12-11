@@ -12,7 +12,7 @@ include_once('../../class.Email.php');
 include_once('../../class.TimeSeries.php');
 
 $store_code='E';
-
+$calculate_no_normal_every =2500;
 $to_update=array(
 		 'products'=>array(),
 		 'products_id'=>array(),
@@ -116,7 +116,7 @@ $fam_promo_key=$fam_promo->id;
 
 
 $sql="select * from  ci_orders_data.orders  where   (last_transcribed is NULL  or last_read>last_transcribed) and filename not like '%UK%'  and filename not like '%test%'  and filename!='/media/sda3/share/PEDIDOS 08/60005902.xls' and  filename!='/media/sda3/share/PEDIDOS 09/60008607.xls' and  filename!='/media/sda3/share/PEDIDOS 09/60009626.xls' and  filename!='/media/sda3/share/PEDIDOS 09/60011693.xls'and  filename!='/media/sda3/share/PEDIDOS 09/60011905.xls' order by filename ";
-//$sql="select * from  ci_orders_data.orders where filename like '/media/sda3/share/%/60000129.xls'  order by filename";
+//$sql="select * from  ci_orders_data.orders where filename like '/media/sda3/share/%/60000216.xls'  order by filename";
 //7/60002384.xls
 //$sql="select * from  ci_orders_data.orders where filename like '/media/sda3/share/%/60000142.xls'  order by filename";
 //$sql="select * from  ci_orders_data.orders  where (filename like '%Orders2005%' or  filename like '%PEDIDOS%.xls') and (last_transcribed is NULL  or last_read>last_transcribed) and filename!='/media/sda3/share/PEDIDOS 08/60005902.xls' and  filename!='/media/sdas3/share/PEDIDOS 09/s60008607.xls' and  filename!='/media/sda3/share/PEDIsDOS 09/60009626.xls' or filename='%600s03600.xls'   order by date";
@@ -154,6 +154,7 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
     mysql_free_result($result_test);
         
     $header=mb_unserialize($row['header']);
+    //   print_r($header);exit;
     $products=mb_unserialize($row['products']);
     $filename_number=str_replace('.xls','',str_replace($row2['directory'],'',$row2['filename']));
     $map_act=$_map_act;$map=$_map;$y_map=$_y_map;
@@ -166,6 +167,8 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
     list($act_data,$header_data)=read_header($header,$map_act,$y_map,$map,false);
     $header_data=filter_header($header_data);
     list($tipo_order,$parent_order_id)=get_tipo_order($header_data['ltipo'],$header_data);
+
+
 
     if (preg_match('/^\d{5}sh$/i',$filename_number)) {
       $tipo_order=7;
@@ -317,6 +320,9 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
       $customer_data[$key]=$value;
 
     }
+
+    $customer_data['Customer Delivery Address Link']='Contact';
+
     if ($customer_data['Customer Type']=='Company')
       $customer_data['Customer Name']=$customer_data['Customer Company Name'];
     else
@@ -334,6 +340,10 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
     }
     $shipping_addresses=array();
     if (isset($_customer_data['address_data']) and $_customer_data['has_shipping']) {
+     
+      if(!is_same_address($_customer_data)){
+	$customer_data['Customer Delivery Address Link']='None';
+      }
       $shipping_addresses['Address Line 1']=$_customer_data['shipping_data']['address1'];
       $shipping_addresses['Address Line 2']=$_customer_data['shipping_data']['address2'];
       $shipping_addresses['Address Line 3']=$_customer_data['shipping_data']['address3'];
@@ -344,6 +354,13 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
       $shipping_addresses['Address Country Secondary Division']=$_customer_data['shipping_data']['country_d2'];
       unset($customer_data['shipping_data']);
     }
+
+    
+
+    
+
+
+
 
     if (strtotime($date_order)>strtotime($date2)) {
       print "Warning (Fecha Factura anterior Fecha Orden) $filename $date_order  $date2 \n";
@@ -1837,7 +1854,7 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
 
 
-      if ($contador % 500 == 0){
+      if ($contador % $calculate_no_normal_every  == 0){
 	update_data($to_update);
 	$to_update=array(
 			 'products'=>array(),
@@ -1856,6 +1873,7 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
     mysql_free_result($result);
   }
   mysql_free_result($res);
+update_data($to_update);
 
   //  print_r($data);
   //print "\n$tipo_order\n";
@@ -1937,6 +1955,32 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
   
 	   );
   }
+
+
+
+function is_same_address($data){
+  $address1=$data['address_data'];
+  $address2=$data['shipping_data'];
+  unset($address1['telephone']);
+  unset($address2['telephone']);
+  unset($address2['email']);
+  unset($address1['company']);
+  unset($address2['company']);
+  unset($address1['name']);
+  unset($address2['name']);
+  //  print_r($address1);
+  //print_r($address2);
+
+  if($address1==$address2)
+    return true;
+  else
+    return false;
+  
+
+
+
+
+}
 
 
   ?>

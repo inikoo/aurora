@@ -14,7 +14,7 @@ include_once('../../class.TimeSeries.php');
 
 $store_code='U';
 
-
+$calculate_no_normal_every =10000;
 $to_update=array(
 'products'=>array(),
 'products_id'=>array(),
@@ -346,7 +346,16 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
       unset($customer_data['address_data']);
     }
     $shipping_addresses=array();
+        $customer_data['Customer Delivery Address Link']='Contact';
+	
     if(isset($_customer_data['address_data']) and $_customer_data['has_shipping']){
+
+  if(!is_same_address($_customer_data)){
+	$customer_data['Customer Delivery Address Link']='None';
+      }
+  
+      
+
       $shipping_addresses['Address Line 1']=$_customer_data['shipping_data']['address1'];
       $shipping_addresses['Address Line 2']=$_customer_data['shipping_data']['address2'];
       $shipping_addresses['Address Line 3']=$_customer_data['shipping_data']['address3'];
@@ -2077,7 +2086,7 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 
 
 
-     if ($contador % 500 == 0){
+     if ($contador % $calculate_no_normal_every == 0){
        update_data($to_update);
        $to_update=array(
 'products'=>array(),
@@ -2095,6 +2104,7 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
   mysql_free_result($result);
  }
 mysql_free_result($res);
+update_data($to_update);
 
   
   function update_data($to_update){
@@ -2175,6 +2185,31 @@ mysql_free_result($res);
   );
   }
   
+
+function is_same_address($data){
+  $address1=$data['address_data'];
+  $address2=$data['shipping_data'];
+  unset($address1['telephone']);
+  unset($address2['telephone']);
+  unset($address2['email']);
+  unset($address1['company']);
+  unset($address2['company']);
+  unset($address1['name']);
+  unset($address2['name']);
+  //  print_r($address1);
+  //print_r($address2);
+
+  if($address1==$address2)
+    return true;
+  else
+    return false;
+  
+
+
+
+
+}
+
   
 //  print_r($data);
 //print "\n$tipo_order\n";

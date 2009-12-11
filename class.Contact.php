@@ -326,6 +326,9 @@ class Contact extends DB_Table {
         if (!array_empty( $address_work_data)) {
 
             $address=new Address("find in contact $find_fuzzy",$address_work_data);
+	   
+
+
 
             $country_code=$address->raw_data['Address Country Code'];
 

@@ -340,8 +340,13 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
       $customer_data['Customer Address Country Secondary Division']=$_customer_data['address_data']['country_d2'];
       unset($customer_data['address_data']);
     }
+    $customer_data['Customer Delivery Address Link']='Contact';
     $shipping_addresses=array();
     if(isset($_customer_data['address_data']) and $_customer_data['has_shipping']){
+        if(!is_same_address($_customer_data)){
+	$customer_data['Customer Delivery Address Link']='None';
+      }
+
       $shipping_addresses['Address Line 1']=$_customer_data['shipping_data']['address1'];
       $shipping_addresses['Address Line 2']=$_customer_data['shipping_data']['address2'];
       $shipping_addresses['Address Line 3']=$_customer_data['shipping_data']['address3'];
@@ -2084,6 +2089,27 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
   }mysql_free_result($result);
 }
 mysql_free_result($res);
+
+
+function is_same_address($data){
+  $address1=$data['address_data'];
+  $address2=$data['shipping_data'];
+  unset($address1['telephone']);
+  unset($address2['telephone']);
+  unset($address2['email']);
+  unset($address1['company']);
+  unset($address2['company']);
+  unset($address1['name']);
+  unset($address2['name']);
+  //  print_r($address1);
+  //print_r($address2);
+
+  if($address1==$address2)
+    return true;
+  else
+    return false;
+}
+
 
   
 //  print_r($data);

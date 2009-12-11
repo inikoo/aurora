@@ -98,7 +98,7 @@ $_map['tax1']=array('row'=>8+1,'col'=>18+2);
 $_map['city']=array('row'=>9+1,'col'=>6+2,'tipo'=>'name');
 $_map['total_topay']=array('row'=>11,'col'=>18+2);
 $_map['tax2']=array('row'=>9+1,'col'=>18+2);
-$_map['postcode']=array('row'=>10+1,'col'=>+26);
+$_map['postcode']=array('row'=>10+1,'col'=>6+2);
 $_map['notes2']=array('row'=>10+1,'col'=>8+2);
 $_map['shipping']=array('row'=>11+1,'col'=>14+2);
 $_map['customer_contact']=array('row'=>13+1,'col'=>6+2,'tipo'=>'name');
