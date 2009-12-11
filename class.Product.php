@@ -118,14 +118,14 @@ public $new_value=false;
       } else
 	return;
       mysql_free_result($result);
-      $sql=sprintf("select `Product Family Key`,`Product Main Department Key`,`Product Store Key`,`Product Locale`,`Product Code`,`Product Current Key`,`Product Gross Weight`,`Product Units Per Case`,`Product Code`,`Product Type`,`Product Record Type`,`Product Sales State`,`Product To Be Discontinued` from `Product Dimension` where `Product ID`=%d ",$this->pid);
+      $sql=sprintf("select `Product Family Code`,`Product Family Key`,`Product Main Department Key`,`Product Store Key`,`Product Locale`,`Product Code`,`Product Current Key`,`Product Gross Weight`,`Product Units Per Case`,`Product Code`,`Product Type`,`Product Record Type`,`Product Sales State`,`Product To Be Discontinued` from `Product Dimension` where `Product ID`=%d ",$this->pid);
       //  print $sql;
       $result=mysql_query($sql);
       //print "hols";
       if ( $row=mysql_fetch_array($result, MYSQL_ASSOC)) {
 	$this->locale=$row['Product Locale'];
 	$this->code=$row['Product Code'];
-	$items_from_parent=array('Product Current Key','Product Gross Weight','Product Units Per Case','Product Code','Product Type','Product Record Type','Product Sales State','Product To Be Discontinued','Product Family Key','Product Main Department Key','Product Store Key');
+	$items_from_parent=array('Product Family Code','Product Current Key','Product Gross Weight','Product Units Per Case','Product Code','Product Type','Product Record Type','Product Sales State','Product To Be Discontinued','Product Family Key','Product Main Department Key','Product Store Key');
 	foreach($items_from_parent as $item)
 	  $this->data[$item]=$row[$item];
 	
