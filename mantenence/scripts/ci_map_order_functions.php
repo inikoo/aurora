@@ -5380,7 +5380,7 @@ if($act_data['town']=='Hornbæk - Sjælland'){
   or (preg_match('/Herbolario|Perfumeria|Jauja|Herboristeria|El Rincon del Papi|Artterapia|Centro De Estetica|Artesano Grabador de Vidrio|Psicolodia Logopedia Montserrat Baulenas|Centro Tiempo Crista|Mais Festa/i',$act_data['contact']) )
   or (preg_match('/^tienda |joyeria |Papeleria /i',$act_data['contact']) )
   or (preg_match('/^(rayas|papel|Artesano|Gipp|La Mar de Cosas|Jabón Jabón|Jaboneria|Chucotattoo|La Misma)$/i',$act_data['contact']) )
- or (preg_match('/^Mª /i',$act_data['name']) and  act_data['contact']!='')
+ or (preg_match('/^Mª /i',$act_data['name']) and  $act_data['contact']!='')
 // or (preg_match('//i',$act_data['name'])  and preg_match('//i',$act_data['contact']) )
  //or ($act_data['name']=='' and $act_data['contact']=='')
   ){
