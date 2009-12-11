@@ -588,8 +588,8 @@ foreach($__cols as $cols){
 		'product family special characteristic'=>$fam_special_char,
 		'product net weight'=>$_w,
 		'product gross weight'=>$_w,
-		 'date1'=>date('Y-m-d H:i:s'),
-		  'date2'=>date('Y-m-d H:i:s'),
+		 'product valid from'=>date('Y-m-d H:i:s'),
+		  'product valid to'=>date('Y-m-d H:i:s'),
 		//'deals'=>$deals
 		);
     //     print_r($cols);
@@ -608,7 +608,7 @@ foreach($__cols as $cols){
  			   'Product Part Type'=>'Simple Pick'
  			   );
 	
- 	$product->new_part_list('',$part_list);
+ 	$product->new_part_list(array(),$part_list);
 	//	print_r($product->data);
  	$product->load('parts');
 	$part =new Part('sku',$parts[0]);

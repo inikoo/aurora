@@ -1397,7 +1397,7 @@ public $new_value=false;
     $keys=preg_replace('/,$/',')',$keys);
     $values=preg_replace('/,$/',')',$values);
     $sql=sprintf("insert into `Product Part Dimension` %s %s",$keys,$values);
-    //print "$sql\n";
+    // print "$sql\n";
     if (mysql_query($sql)) {
       $product_part_key=mysql_insert_id(); 
 

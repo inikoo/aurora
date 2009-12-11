@@ -862,13 +862,13 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
      }
 
       $product_data=array(
-			  'product sales state'=>'For Sale',
-			  'product type'=>'Normal',
-			   ,'Product Locale'=>'en_GB'
+			  'product sales state'=>'For Sale'
+			  ,'product type'=>'Normal'
+			  ,'Product Locale'=>'en_GB'
 			  ,'Product Currency'=>'GBP'
-			  'product record type'=>'Normal',
-			  'product web state'=>'Online Auto',
-			  'product special characteristic'=>$special_char
+			  ,'product record type'=>'Normal'
+			  ,'product web state'=>'Online Auto'
+			  ,'product special characteristic'=>$special_char
 			  ,'Product Store Key'=>$store_key
 			  ,'Product Main Department Key'=>$dept_key
 			  ,'Product Family Key'=>$fam_key
@@ -1144,8 +1144,8 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
     
 	$estimated_w+=$product->data['Product Gross Weight']*$transaction['bonus'];
 	$data_dn_transactions[]=array(
-				     
-				      'Product ID'=>$product->data['Product ID']
+				      'Product Key'=>$product->id
+				      ,'Product ID'=>$product->data['Product ID']
 				      ,'Delivery Note Quantity'=>$transaction['bonus']
 				      ,'Current Autorized to Sell Quantity'=>$transaction['bonus']
 				      ,'Shipped Quantity'=>$transaction['bonus']
