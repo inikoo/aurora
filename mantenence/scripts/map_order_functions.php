@@ -4223,8 +4223,6 @@ function setup_contact($act_data,$header_data,$date_index){
 
     }
 
-  
-
 
 
     // Try to fix it
@@ -4531,10 +4529,10 @@ function setup_contact($act_data,$header_data,$date_index){
 	$act_data['postcode']='04661';
 	break;	
 
-      case(15320):
-      case(17357):
-      case(60454):
-      case(39099):
+  //    case(15320):
+  //    case(17357):
+  //    case(60454):
+  //    case(39099):
 	//$customer_id=insert_customer('NULL',array(7,1,2,3,11,10),$date_index,($this_is_order_number==1?true:false));
 	//return array(false,$customer_id,false,false,false,true,$co);
 	
@@ -4945,12 +4943,70 @@ function setup_contact($act_data,$header_data,$date_index){
 	$act_data['name']=$name;
 	$skip_del_address=true;
 	$act_data['contact']=$name;
+break;
+    case(39099):
+	$act_data['contact']='Mrs M Lindfield';
+	$act_data['a1']='6 Summers Mead';
+	$act_data['name']='';
+	$act_data['town']='Bristol';
+	$act_data['postcode']='BS37 7RB';
+	
+	$act_data['tel']='01454 311 307';
+		$act_data['mob']='07812058525';
 
+	$skip_del_address=true;
+	break;
+
+case(17357):
+$act_data['name']='Lantons';
+	break;
+	case(60454):
+$act_data['name']='Collette';
 	break;
       default:
-	//print_r($header_data);
-	//	print_r($act_data);
-	//exit("NO ACT DATzA\n");
+	
+	$email='';
+  $tel=$header_data['phone'];
+  if(preg_match('/[a-z0-9\.\-]+\@[a-z0-9\.\-]+/',$header_data['phone'],$match)){
+     $email=$match[0];
+     $tel=preg_replace("/$email/",'',$header_data['phone']);
+  }
+  $country='';
+  $postalcode=$header_data['postcode'];
+  if(preg_match('/^[a-z]{4,} \d+$/i',$header_data['postcode'])){
+    $tmp=preg_split('/\s/',$header_data['postcode']);
+    $country=$tmp[0];
+    $postalcode=$tmp[1];
+  }
+  
+//
+  //    case(60454):
+  //    case(39099):
+ 
+    print "order without act\n";
+    $skip_del_address=true;
+    $act_data['name']=$header_data['trade_name'];
+    $act_data['contact']=$header_data['customer_contact'];
+    $act_data['a1']=$header_data['address1'];
+    $act_data['a2']=$header_data['address2'];
+    $act_data['postcode']=$postalcode;
+    $act_data['country_d2']='';
+    $act_data['a3']='';
+    $act_data['town']=$header_data['city'];
+    $act_data['tel']=$tel;
+    $act_data['fax']='';
+    $act_data['mob']='';
+    $act_data['source']='';
+    $act_data['act']='';
+    $act_data['email']=$email;
+    $act_data['country']=$country;
+    
+    $act_data['town_d1']='';
+    $act_data['town_d2']='';
+  
+	
+	
+	
       }
 
     }else
@@ -4959,6 +5015,11 @@ function setup_contact($act_data,$header_data,$date_index){
   
   }
 
+
+if($act_data['name']=='Cleaners (Mrs Mop)' and $act_data['contact']=='' ){
+$act_data['name']='Cleaners';
+$act_data['contact']='Mrs Mop';
+}
 
   if(preg_match('/ancient wisdom/i',$act_data['name']) and $act_data['act']!='35871' ){
     // Pecial case of staff sales or show room sales
@@ -8878,7 +8939,7 @@ if($act_data['name']=='Igneous Products' and $act_data['contact']=='Les'){
     $customer_data['other id']='';
       
   
-
+//print_r($header_data);print_r($act_data);exit;
   return $customer_data;
 
 

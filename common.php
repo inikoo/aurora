@@ -144,6 +144,7 @@ if($user->can_view('customers')){
 if($user->can_view('warehouses'))
 $nav_menu[] = array(_('Warehouse'), 'warehouse.php');
 
+
 if($user->can_view('stores')){
     if(count($user->stores)==1){
     $nav_menu[] = array(_('Products'), 'store.php?id='.$user->stores[0]);

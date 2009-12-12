@@ -119,7 +119,7 @@ $sql="select * from  orders_data.orders  where   (last_transcribed is NULL  or l
 
 
 //$sql="select * from  orders_data.orders where filename like '%refund.xls'   order by filename";
-//$sql="select * from  orders_data.orders  where filename like '/mnt/%/Orders/97306.xls' order by filename";
+//$sql="select * from  orders_data.orders  where filename like '/mnt/%/Orders/39099.xls' order by filename";
 
 //$sql="select * from  orders_data.orders  where filename like '/mnt/%/Orders/15720.xls' or filename like '/mnt/%/Orders/60000.xls' or  filename like '/mnt/%/Orders/15sdfsd593.xls' order by filename";
 
@@ -1781,7 +1781,8 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 	}
       
       
-	$sql="update de_orders_data.orders set last_transcribed=NOW() where id=".$order_data_id;
+	$sql="update orders_data.orders set last_transcribed=NOW() where id=".$order_data_id;
+	//print "$sql\n";
 	mysql_query($sql);
       }elseif($tipo_order==9 ){
 	// refund
@@ -1997,14 +1998,14 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 	//print "STSRT----------\n\n\n";
 	//$order->load('totals');
 	//	print "END------------\n\n\n";
-	$sql="update de_orders_data.orders set last_transcribed=NOW() where id=".$order_data_id;
+	$sql="update orders_data.orders set last_transcribed=NOW() where id=".$order_data_id;
 	mysql_query($sql);
       
 
 	//      exit("refund");
       }else if($tipo_order==11){
 	//TODO make quites and insert them in the customer space
-	$sql="update de_orders_data.orders set last_transcribed=NOW() where id=".$order_data_id;
+	$sql="update orders_data.orders set last_transcribed=NOW() where id=".$order_data_id;
 	mysql_query($sql);
     
       }elseif($tipo_order==6 or $tipo_order==7 ){
@@ -2079,7 +2080,7 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 	$dn=new DEliveryNote('create',$data_dn,$data_dn_transactions,$parent_order);
     
       
-	$sql="update de_orders_data.orders set last_transcribed=NOW() where id=".$order_data_id;
+	$sql="update orders_data.orders set last_transcribed=NOW() where id=".$order_data_id;
 	mysql_query($sql);
     }
 

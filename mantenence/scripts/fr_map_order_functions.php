@@ -4068,9 +4068,9 @@ function setup_contact($act_data,$header_data,$date_index){
      $email=$match[0];
      $tel=preg_replace("/$email/",'',$header_data['phone']);
   }
-  $country='x';
-  $postalcode='';
-  if(preg_match('/^France \d+$/i',$header_data['postcode'])){
+  $country='France';
+  $postalcode=$header_data['postcode'];
+  if(preg_match('/^[a-z]{4,} \d+$/i',$header_data['postcode'])){
     $tmp=preg_split('/\s/',$header_data['postcode']);
     $country=$tmp[0];
     $postalcode=$tmp[1];
@@ -4080,7 +4080,7 @@ function setup_contact($act_data,$header_data,$date_index){
   if(!isset($act_data) or count($act_data)==0){
     print "order without act\n";
     $skip_del_address=true;
-    $act_data['name']=$header_data['trade_name'].'x';
+    $act_data['name']=$header_data['trade_name'];
     $act_data['contact']=$header_data['customer_contact'];
     $act_data['a1']=$header_data['address1'];
     $act_data['a2']=$header_data['address2'];
