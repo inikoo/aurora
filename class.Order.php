@@ -180,8 +180,8 @@ class Order extends DB_Table{
 
 
 
-      if(!$customer->id or $customer->data[ 'Customer Name' ]==''){
-	print "Customer Can not be found or cusromer name is null\n";
+      if(!$customer->id ){
+	print "Customer Can not be found \n";
 	print_r($data['Customer Data'] );
 	print_r($customer);
 	exit;
@@ -227,6 +227,8 @@ class Order extends DB_Table{
       $this->data ['Order Type'] = $data ['Order Type'];
 				
       $this->data ['Order Customer Key'] = $customer->id;
+      
+      
       $this->data ['Order Customer Name'] = $customer->data[ 'Customer Name' ];
      
       $this->data ['Order Customer Contact Name'] = $data ['Order Customer Contact Name'];

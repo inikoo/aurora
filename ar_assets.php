@@ -30,13 +30,18 @@ require_once 'class.PartLocation.php';
 
 
 if (!isset($_REQUEST['tipo'])) {
-    $response=array('state'=>405,'resp'=>_('Non acceptable request').' (t)');
+    $response=array('state'=>405,'msg'=>_('Non acceptable request').' (t)');
     echo json_encode($response);
     exit;
 }
 
 $tipo=$_REQUEST['tipo'];
 switch ($tipo) {
+case('is_store_code'):is_store_code();break;
+case('is_department_code'):is_department_code();break;
+case('is_family_code'):is_family_code();break;
+case('is_product_code'):is_product_code();break;
+
 case('charges'):
     list_charges();
     break;
@@ -894,7 +899,7 @@ case('locations_name'):
 
 case('update_product'):
     if (!isset($_REQUEST['product_id'])) {
-        $response=array('state'=>400,'resp'=>_('Error'));
+        $response=array('state'=>400,'msg'=>_('Error'));
         echo json_encode($response);
         break;
     }
@@ -986,7 +991,7 @@ case('changepic'):
     $response=array('resultset'=>
                                 array(
                                     'state'=>400,
-                                    'resp'=>_('Error')
+                                    'msg'=>_('Error')
                                 )
                    );
     echo json_encode($response);
@@ -1079,7 +1084,7 @@ case('uploadpic'):
 // 	     $res2 = mysql_query($sql);
 // 	     while($row2=mysql_fetch_array($res2, MYSQL_ASSOC))) {
 // 	       if($c==$row2['checksum']){
-// 		 $response=array('state'=>400,'resp'=>_('Image already uploaded'));
+// 		 $response=array('state'=>400,'msg'=>_('Image already uploaded'));
 // 		 echo json_encode($response);
 // 		 break 2;
 // 	       }
@@ -1186,13 +1191,13 @@ case('uploadpic'):
 
 
 //      }else{
-//        $response=array('state'=>400,'resp'=>_('Error'));
+//        $response=array('state'=>400,'msg'=>_('Error'));
 //        echo json_encode($response);
 //        break;
 //      }
 
 //    }
-//  $response=array('state'=>400,'resp'=>_('Error'));
+//  $response=array('state'=>400,'msg'=>_('Error'));
 //        echo json_encode($response);
 //        break;
 
@@ -2721,7 +2726,7 @@ case('stock_history'):
 
 default:
 
-    $response=array('state'=>404,'resp'=>_('Operation not found'));
+    $response=array('state'=>404,'msg'=>_('Operation not found'));
     echo json_encode($response);
 
 }
@@ -8589,6 +8594,62 @@ function list_product_subcategories(){
                    );
     echo json_encode($response);
 }
+
+
+
+
+
+
+function is_store_code(){
+if (!isset($_REQUEST['query'])) {
+        $response= array(
+                       'state'=>400,
+                       'msg'=>'Error'
+                   );
+        echo json_encode($response);
+        return;
+    }else
+    $query=$_REQUEST['query'];
+    if($query==''){
+       $response= array(
+                       'state'=>200,
+                       'found'=>0
+                   );
+        echo json_encode($response);
+        return;
+    }
+    
+    
+    
+$sql=sprintf("select `Store Key`,`Store Name`,`Store Code` from `Store Dimension` where  `Store Code`=%s  "
+        ,prepare_mysql($query)
+        );
+$res=mysql_query($sql);
+
+    if ($data=mysql_fetch_array($res)) {
+   $msg=sprintf('Store <a href="store.php?id=%d">%s</a> already has this code (%s)'
+   ,$data['Store Key']
+   ,$data['Store Name']
+   ,$data['Store Code']
+   );
+   $response= array(
+                       'state'=>200,
+                       'found'=>1,
+                       'msg'=>$msg
+                   );
+        echo json_encode($response);
+        return;
+    }else{
+       $response= array(
+                       'state'=>200,
+                       'found'=>0
+                   );
+        echo json_encode($response);
+        return;
+    }
+
+}
+
 
 
 ?>

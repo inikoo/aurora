@@ -225,13 +225,23 @@ class Customer extends DB_Table{
       //  print "customer Found: ".$this->found_key."  \n";
     }
     
+    if($create and (
+    ($raw_data['Customer Main Contact Name']=='' and  $raw_data['Customer Type']=='Person') 
+    or ($raw_data['Customer Company Name']=='' and  $raw_data['Customer Type']=='company')
+    )
+    ){
+    $this->create_anonymous();
+    return;
+    }
+    
+    
     if($create){
     
       if($this->found){
 
-	if($raw_data['Customer Type']=='Person'){
+	   if($raw_data['Customer Type']=='Person'){
 	  $child=new Contact ('find in customer create update',$raw_data);
-	}else{
+   	}else{
 	  $child=new Company ('find in customer create update',$raw_data);
 	}
 
@@ -652,14 +662,56 @@ class Customer extends DB_Table{
  private function create_anonymous() {
 
    $contact=new Contact('create anonymous');
-   $_raw_data=$contact->data;
+   $raw_data=$contact->data;
    foreach($raw_data as $key=>$value){
      $raw_data[preg_replace('/Contact/','Customer',$key)]=$value;
    }
     $raw_data['Customer Staff Key']=0;
     $raw_data['Customer Main Contact Key']=$contact->id;
     $raw_data['Customer Name']=_('Unknown Customer');
-    $this->create($raw_data);
+
+
+ $this->data=$this->base_data();
+     foreach($raw_data as $key=>$value){
+       if(array_key_exists($key,$this->data)){
+	 $this->data[$key]=_trim($value);
+       }
+    }
+
+ $keys='';
+    $values='';
+    foreach($this->data as $key=>$value){
+      $keys.=",`".$key."`";
+
+      if(preg_match('/Key$/',$key))
+	$values.=','.prepare_mysql($value);
+      else
+	$values.=','.prepare_mysql($value,false);
+    }
+    $values=preg_replace('/^,/','',$values);
+    $keys=preg_replace('/^,/','',$keys);
+
+    $sql="insert into `Customer Dimension` ($keys) values ($values)";
+  
+    if(mysql_query($sql)){
+      
+      $this->id=mysql_insert_id();
+      $this->get_data('id',$this->id);
+      
+      $history_data=array(
+			  'note'=>_('Anonymous Customer Created')
+			  ,'details'=>_trim(_('New anonymous customer added').' ('.$this->get_formated_id_link().')' )
+			  ,'action'=>'created'
+			  
+			  );
+      $this->add_history($history_data);
+      $this->new=true;
+      
+      }
+
+
+
+
  }
 
 
