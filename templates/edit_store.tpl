@@ -14,6 +14,7 @@
 <div style="clear:left;margin:0 0px">
     <h1>{t}Editing Store{/t}: <span id="title_name">{$store->get('Store Name')}</span> (<span id="title_code">{$store->get('Store Code')}</span>)</h1>
 </div>
+  <div id="msg_div"></div>
 
   <ul class="tabs" id="chooser_ul" style="clear:both">
     <li> <span class="item {if $edit=='description'}selected{/if}"  id="description">  <span> {t}Description{/t}</span></span></li>
@@ -37,22 +38,30 @@
 	<tr>
 	  <td>{t}Store Name{/t}:</td><td  class="aright">{$store->get('Store Name')}</td>
 	</tr>
+	
+	
+	
       </table>
     </div>
     <div  class="edit_block" style="{if $edit!="description"}display:none{/if}"  id="d_description">
       
       <div style="float:right">
-	<span class="save" style="display:none" id="description_save" onclick="save('description')">{t}Save{/t}</span>
-	<span id="description_reset"  style="display:none"   class="undo" onclick="reset('description')">{t}Cancel{/t}</span>
+	<span class="save" style="display:none" id="save_edit_store" onclick="save('description')">{t}Save{/t}</span>
+	<span id="reset_edit_store"  style="display:none"   class="undo" onclick="reset('description')">{t}Cancel{/t}</span>
       </div>
 	
+	
+	
+     
+	
+	
       <table style="margin:0;" class="edit" border=0>
-	<tr><td class="label">{t}Store Code{/t}:</td><td>
+	<tr><td class="label" >{t}Store Code{/t}:</td><td>
+		 <div  style="width:15em" >
+
 	      <input  
 		 id="code" 
-		 onKeyUp="changed(this)" 
-		 onMouseUp="changed(this)"  
-		 onChange="changed(this)"  
+		 
 		 name="code" 
 		 changed=0 
 		 type='text' 
@@ -62,7 +71,11 @@
 		 value="{$store->get('Store Code')}" 
 		 ovalue="{$store->get('Store Code')}"  
 		 />
+		 <div id="code_Container" style="" ></div>
+         </div>
 	    </td>
+	     <td id="code_msg" class="edit_td_alert" style="width:300px"></td>
+
 	  </tr>
 	  <tr><td class="label">{t}Store Name{/t}:</td><td>
 	      <input   

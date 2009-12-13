@@ -163,3 +163,91 @@ function radio_changed(o){
     parent.setAttribute('value',o.getAttribute('name'));
 }
 
+
+
+
+
+function validate_scope(){
+var changed=false;
+var errors=false;
+
+for(item in validate_scope_data){
+    
+        if(validate_scope_data[item].changed==true)
+            changed=true;
+         if(validate_scope_data[item].validated==false)
+            errors=true;
+ }
+    
+    if(changed ){
+	Dom.get('reset_edit_'+scope).style.visibility='visible';
+	if(!errors)
+	    Dom.get('save_edit_'+scope).style.visibility='visible';
+	else
+	    Dom.get('save_edit_'+scope).style.visibility='hidden';
+
+    }else{
+        Dom.get('save_edit_'+scope).style.visibility='hidden';
+	Dom.get('reset_edit_'+scope).style.visibility='hidden';
+
+    }
+    
+    
+    
+}
+function validate_general(item,query){
+ var data= validate_scope_data[item];
+
+ var old_code=Dom.get(data.name).getAttribute('ovalue');
+  if(old_code.toLowerCase()!=trim(query.toLowerCase())){  
+  data.changed=true;
+
+if(data.ar=='find'){
+  var request=data.ar_request+query; 
+ // alert(request)
+  YAHOO.util.Connect.asyncRequest('POST',request ,{
+	    success:function(o) {
+		//alert(o.responseText)
+		var r =  YAHOO.lang.JSON.parse(o.responseText);
+		if(r.state==200){
+		    if(r.found==1){
+		    Dom.get(data.name+'_msg').innerHTML=r.msg;
+		    validate_scope_data[item].validated=false;
+		    }else{
+            Dom.get(data.name+'_msg').innerHTML='';
+		    validate_scope_data[item].validated=true;
+		    for(validator_index in data.validation){
+		    validator_data=data.validation[validator_index];
+		     var validator=new RegExp(validator_data.regexp,"i");
+            if(!validator.test(query)){
+	           
+	                validate_scope_data[item].validated=false;
+                   Dom.get(data.name+'_msg').innerHTML=validator_data.invalid_msg;
+                    break;
+                 }
+		    }
+		    
+		    }
+		    validate_scope(); 
+
+		}else
+		    Dom.get('msg_div').innerHTML='<span class="error">'+r.msg+'</span>';
+	    }
+	    
+	    });
+}else{
+                 validate_scope_data[item].validated=true;
+                                  validate_scope_data[item].changed=false;
+ validate_scope(); 
+		    }
+		    
+		}
+
+
+}
+
+
+
+
+
+

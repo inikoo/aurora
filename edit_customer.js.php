@@ -50,6 +50,8 @@ var errors=false;
     
     
 }
+
+
 function change_block(e){
      if(editing!=this.id){
 	

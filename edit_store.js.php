@@ -8,6 +8,21 @@ var description_errors= new Object();
 var id=<?php echo$_SESSION['state']['store']['id']?>;
 var editing='<?php echo $_SESSION['state']['store']['edit']?>';
 
+var scope='store';
+
+var validate_scope_data={
+    'name':{'changed':false,'validated':true,'required':true,'group':1,'type':'item','regexp':"[a-z\\d]+",'name':'name','ar':false}
+    ,'code':{'changed':false,'validated':true,'required':false,'group':1,'type':'item'
+    ,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Store Code')?>'}]
+    ,'name':'code','ar':'find','ar_request':'ar_assets.php?tipo=is_store_code&query='}
+   
+};
+
+
+function validate_code(query){
+ validate_general('code',unescape(query));
+}
+
 
 var description=new Object();
 description={'name':{'changed':0,'column':'Store Name'},'code':{'changed':0,'column':'Store Code'}};
@@ -346,7 +361,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 				       ];
 	    //?tipo=customers&tid=0"
 	    
-	    this.dataSource1 = new YAHOO.util.DataSource("ar_assets.php?tipo=store_history&tableid=1");
+	    this.dataSource1 = new YAHOO.util.DataSource("ar_history.php?tipo=history&type=store&tableid=1");
 	    this.dataSource1.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource1.connXhrMode = "queueRequests";
 	    this.dataSource1.responseSchema = {
@@ -644,6 +659,15 @@ function init(){
     YAHOO.util.Event.addListener('add_department', "click", show_add_department_dialog);
     YAHOO.util.Event.addListener('save_new_department', "click",save_new_department);
     YAHOO.util.Event.addListener('close_add_department', "click", cancel_add_department);
+
+    var store_code_oACDS = new YAHOO.util.FunctionDataSource(validate_code);
+    store_code_oACDS.queryMatchContains = true;
+    var store_code_oAutoComp = new YAHOO.widget.AutoComplete("code","code_Container", store_code_oACDS);
+    store_code_oAutoComp.minQueryLength = 0; 
+    store_code_oAutoComp.queryDelay = 0.1;
+    
+    
+    
 
 }
 
