@@ -119,7 +119,7 @@ $sql="select * from  orders_data.orders  where   (last_transcribed is NULL  or l
 
 
 //$sql="select * from  orders_data.orders where filename like '%refund.xls'   order by filename";
-$sql="select * from  orders_data.orders  where filename like '/mnt/%/Orders/15343.xls' order by filename";
+//$sql="select * from  orders_data.orders  where filename like '/mnt/%/Orders/15343.xls' order by filename";
 
 //$sql="select * from  orders_data.orders  where filename like '/mnt/%/Orders/15720.xls' or filename like '/mnt/%/Orders/60000.xls' or  filename like '/mnt/%/Orders/15sdfsd593.xls' order by filename";
 
@@ -1508,7 +1508,7 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 	      print "ast order not found created new one\n";
 	      $data['Order Type']='Order';
 	      $parent_order=new Order('new',$data);
-	      exit;
+	      
 	    }
 
 	  }
