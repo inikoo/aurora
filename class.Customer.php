@@ -606,17 +606,9 @@ class Customer extends DB_Table{
       $this->id=mysql_insert_id();
       $this->get_data('id',$this->id);
       
-      $history_data=array(
-			  'note'=>_('Customer Created')
-			  ,'details'=>_trim(_('New customer')." \"".$this->data['Customer Name']."\"  "._('added'))
-			  ,'action'=>'created'
-			  );
-      $this->add_history($history_data);
-      $this->new=true;
+     
 
-      if($main_email_key){
-	$this->update_email($main_email_key);
-      }
+    
       if($this->data['Customer Type']=='Company'){
 	$this->update_company($company_key,true);
 	
@@ -624,8 +616,16 @@ class Customer extends DB_Table{
 	$this->update_contact($contact_key,true);
 
       }
-      
-
+       $history_data=array(
+			  'note'=>_('Customer Created')
+			  ,'details'=>_trim(_('New customer')." \"".$this->data['Customer Name']."\"  "._('added'))
+			  ,'action'=>'created'
+			  );
+      $this->add_history($history_data);
+      $this->new=true;
+      if($main_email_key){
+	$this->update_email($main_email_key);
+      }
 
       if($main_telephone_key){
 
@@ -635,16 +635,13 @@ class Customer extends DB_Table{
 			     ));
 	
       }
-
-
-
       if($main_fax_key){
 	$this->add_tel(array(
 			     'Telecom Key'=>$main_fax_key
 			     ,'Telecom Type'=>'Contact Fax'
 			     ));
       }
-
+      
 
 
     }else{

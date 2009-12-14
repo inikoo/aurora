@@ -285,6 +285,9 @@ class supplier extends DB_Table{
 
     //print_r($raw_data);
 
+    $main_email_key=false;
+$main_telephone_key=false;
+ $main_fax_key=false;
     $this->data=$this->base_data();
     foreach($raw_data as $key=>$value){
       if(array_key_exists($key,$this->data)){
@@ -317,19 +320,22 @@ class supplier extends DB_Table{
     
 
     if($company->data['Company Main Email Key']){
-      $this->data['Supplier Main Email Key']=$company->data['Company Main Email Key'];
-      $this->data['Supplier Main XHTML Email']=$company->data['Company Main XHTML Email'];
-      $this->data['Supplier Main Plain Email']=$company->data['Company Main Plain Email'];
+      $main_email_key=$company->data['Company Main Email Key'];
+      //$this->data['Supplier Main Email Key']=$company->data['Company Main Email Key'];
+      //$this->data['Supplier Main XHTML Email']=$company->data['Company Main XHTML Email'];
+      //$this->data['Supplier Main Plain Email']=$company->data['Company Main Plain Email'];
     }
     if($company->data['Company Main Telephone Key']){
-      $this->data['Supplier Main Telephone Key']=$company->data['Company Main Telephone Key'];
-      $this->data['Supplier Main XHTML Telephone']=$company->data['Company Main Telephone'];
-      $this->data['Supplier Main Plain Telephone']=$company->data['Company Main Plain Telephone'];
+      $main_telephone_key=$company->data['Company Main Telephone Key'];
+      //$this->data['Supplier Main Telephone Key']=$company->data['Company Main Telephone Key'];
+      //$this->data['Supplier Main XHTML Telephone']=$company->data['Company Main Telephone'];
+      //$this->data['Supplier Main Plain Telephone']=$company->data['Company Main Plain Telephone'];
     }
     if($company->data['Company Main FAX Key']){
-      $this->data['Supplier Main FAX Key']=$company->data['Company Main FAX Key'];
-      $this->data['Supplier Main XHTML FAX']=$company->data['Company Main FAX'];
-      $this->data['Supplier Main Plain FAX']=$company->data['Company Main Plain FAX'];
+      $main_fax_key=$company->data['Company Main FAX Key'];
+      //$this->data['Supplier Main FAX Key']=$company->data['Company Main FAX Key'];
+      //$this->data['Supplier Main XHTML FAX']=$company->data['Company Main FAX'];
+      //$this->data['Supplier Main Plain FAX']=$company->data['Company Main Plain FAX'];
     }
      if($company->data['Company Main Web Site']){
        $this->data['Company Main Web Site']=$company->data['Company Main Web Site'];
@@ -337,8 +343,8 @@ class supplier extends DB_Table{
      }
     
     $this->data['Supplier Main Contact Key']=$company->data['Company Main Contact Key'];
-    $this->data['Supplier Main Contact Name']=$company->data['Company Main Contact Name'];
-    $this->data['Supplier Fiscal Name']=$company->data['Company Fiscal Name'];
+    //$this->data['Supplier Main Contact Name']=$company->data['Company Main Contact Name'];
+    //$this->data['Supplier Fiscal Name']=$company->data['Company Fiscal Name'];
     
     
     //    print_r( $this->data);
@@ -359,7 +365,39 @@ class supplier extends DB_Table{
 
       $this->id=mysql_insert_id();
       $this->get_data('id',$this->id);
+      
+      $this->update_company($company->id,true);
+       $history_data=array(
+			  'note'=>_('Supplier Created')
+			  ,'details'=>_trim(_('New supplier')." \"".$this->data['Supplier Name']."\"  "._('added'))
+			  ,'action'=>'created'
+			  );
+      $this->add_history($history_data);
       $this->new=true;
+
+      
+       if($main_email_key){
+	$this->update_email($main_email_key);
+      }
+
+      if($main_telephone_key){
+
+	$this->add_tel(array(
+			     'Telecom Key'=>$main_telephone_key
+			     ,'Telecom Type'=>'Contact Telephone'
+			     ));
+	
+      }
+      if($main_fax_key){
+	$this->add_tel(array(
+			     'Telecom Key'=>$main_fax_key
+			     ,'Telecom Type'=>'Contact Fax'
+			     ));
+      }
+
+
+
+
       
     }else{
       // print "Error can not create supplier $sql\n";
@@ -594,7 +632,13 @@ function valid_id($id){
 
  }
 
+ /*function:get_formated_id_link
+     Returns formated id_link
+    */
+   function get_formated_id_link(){
+     return sprintf('<a href="supplier.php?id=%d">%s</a>',$this->id, $this->get_formated_id());
 
+   }
  /*function:get_formated_id
      Returns formated id
     */
@@ -615,6 +659,513 @@ function valid_id($id){
 
    }
 
+
+
+/*
+  function:update_email
+  */
+ function update_email($email_key=false){
+   if(!$email_key)
+     return;
+   $email=new Email($email_key);
+   if(!$email->id){
+     $this->msg='Email not found';
+     return;
+
+   }
+
+
+$old_value=$this->data['Supplier Main Email Key'];
+   if($old_value  and $old_value!=$email_key   ){
+     $this->remove_email();
+     }
+
+   $sql=sprintf("insert into `Email Bridge` values (%d,'Supplier',%d,%s,'Yes','Yes')",
+                $email->id,
+                $this->id,
+                prepare_mysql(_('Supplier Main Email'))
+                );
+   mysql_query($sql);
+
+   $old_plain_email=$this->data['Supplier Main Plain Email'];
+   $this->data['Supplier Main Email Key']=$email->id;
+   $this->data['Supplier Main Plain Email']=$email->display('plain');
+   $this->data['Supplier Main XHTML Email']=$email->display('xhtml');
+   $sql=sprintf("update `Supplier Dimension` set `Supplier Main Email Key`=%d,`Supplier Main Plain Email`=%s,`Supplier Main XHTML Email`=%s where `Supplier Key`=%d"
+
+                ,$this->data['Supplier Main Email Key']
+                ,prepare_mysql($this->data['Supplier Main Plain Email'])
+                ,prepare_mysql($this->data['Supplier Main XHTML Email'])
+                ,$this->id
+                );
+   if(mysql_query($sql)){
+if($old_plain_email!=$this->data['Supplier Main Plain Email']){
+       $this->updated=true;
+       $note=_('Email changed');
+       if($old_value){
+        
+         $details=_('Supplier email changed from')." \"".$old_plain_email."\" "._('to')." \"".$this->data['Supplier Main Plain Email']."\"";
+       }else{
+         $details=_('Supplier email set to')." \"".$this->data['Supplier Main Plain Email']."\"";
+       }
+
+       $history_data=array(
+                           'indirect_object'=>'Email'
+                           ,'indirect_object'=>$email->id
+                           ,'details'=>$details
+                           ,'note'=>$note
+                           );
+       $this->add_history($history_data);
+     }
+
+
+
+   }else{
+     $this->error=true;
+
+   }
+
+
+ }
+
+/* Method: remove_email
+  Delete the email from Supplier
+  
+  Delete telecom record  this record to the Supplier
+
+
+  Parameter:
+  $args -     string  options
+ */
+ function remove_email($email_key=false){
+
+   
+    if(!$email_key){
+     $email_key=$this->data['Supplier Main Email Key'];
+   }
+   
+   
+   $email=new email($email_key);
+   if(!$email->id){
+     $this->error=true;
+     $this->msg='Wrong email key when trying to remove it';
+     $this->msg_updated='Wrong email key when trying to remove it';
+   }
+
+   $email->set_scope('Supplier',$this->id);
+   if( $email->associated_with_scope){
+     
+     $sql=sprintf("delete `Email Bridge`  where `Subject Type`='Supplier' and  `Subject Key`=%d  and `Email Key`=%d",
+		  $this->id
+		  
+		  ,$this->data['Supplier Main Email Key']
+		  );
+     mysql_query($sql);
+     
+     if($email->id==$this->data['Supplier Main Email Key']){
+       $sql=sprintf("update `Supplier Dimension` set `Supplier Main XHTML Email`='', `Supplier Main Plain Email`='' , `Supplier Main Email Key`=''  where `Supplier Key`=%d"
+		    ,$this->id
+		    );
+       
+       mysql_query($sql);
+     }
+   }
+   
+
+       
+
+ }
+
+
+function update_company($company_key=false) {
+$this->associated=false;
+    if (!$company_key)
+        return;
+    $company=new company($company_key);
+    if (!$company->id) {
+        $this->msg='company not found';
+        return;
+
+    }
+
+
+    $old_company_key=$this->data['Supplier Company Key'];
+
+    if ($old_company_key  and $old_company_key!=$company_key   ) {
+        $this->remove_company();
+    }
+
+    $sql=sprintf("insert into `Company Bridge` values (%d,'Supplier',%d,'Yes','Yes')",
+                 $company->id,
+                 $this->id
+                );
+    mysql_query($sql);
+    if(mysql_affected_rows()){
+    $this->associated=true;
+    
+    }
+    
+    
+
+    $old_name=$this->data['Supplier Name'];
+    if ($old_name!=$company->data['Company Name']) {
+
+
+        if ($this->data['Supplier Name']!=$company->data['Company Name']) {
+            $old_supplier_name=$this->data['Supplier Name'];
+            $this->data['Supplier Name']=$company->data['Company Name'];
+            $this->data['Supplier File As']=$company->data['Company File As'];
+            $sql=sprintf("update `Supplier Dimension` set `Supplier Main Name`=%d,`Supplier File As`=%s where `Supplier Key`=%d"
+                         ,prepare_mysql($this->data['Supplier Name'])
+                         ,prepare_mysql($this->data['Supplier File As'])
+                         ,$this->id
+                        );
+            mysql_query($sql);
+            $note=_('Company name changed');
+            $details=_('Supplier Name changed from')." \"".$old_supplier_name."\" "._('to')." \"".$this->data['Supplier Name']."\"";
+            $history_data=array(
+                              'indirect_object'=>'Supplier Name'
+                                                ,'details'=>$details
+                                                           ,'note'=>$note
+                                                                   ,'action'=>'edited'
+                          );
+            $this->add_history($history_data);
+
+        }
+
+        $this->data['Supplier Company Key']=$company->id;
+        $this->data['Supplier Company Name']=$company->data['Company Name'];
+        $sql=sprintf("update `Supplier Dimension` set `Supplier Company Key`=%d,`Supplier Company Name`=%s where `Supplier Key`=%d"
+
+                     ,$this->data['Supplier Company Key']
+                     ,prepare_mysql($this->data['Supplier Company Name'])
+                     ,$this->id
+                    );
+        mysql_query($sql);
+
+
+
+        $this->updated=true;
+
+
+
+
+
+
+        $note=_('Supplier company name changed');
+        if ($old_company_key) {
+            $details=_('Supplier company name changed from')." \"".$old_name."\" "._('to')." \"".$this->data['Supplier Company Name']."\"";
+        } else {
+            $details=_('Supplier company set to')." \"".$this->data['Supplier Company Name']."\"";
+        }
+
+        $history_data=array(
+                          'indirect_object'=>'Supplier Company Name'
+
+                                            ,'details'=>$details
+                                                       ,'note'=>$note
+                                                               ,'action'=>'edited'
+                      );
+        $this->add_history($history_data);
+
+    }
+
+
+if($this->associated){
+ $note=_('Company name changed');
+            $details=_('Company')." ".$company->data['Company Name']." (".$company->get_formated_id_link().") "._('associated with Supplier:')." ".$this->data['Supplier Name']." (".$this->get_formated_id_link().")";
+            $history_data=array(
+                              'indirect_object'=>'Supplier Name'
+                                                ,'details'=>$details
+                                                           ,'note'=>$note
+                                                                   ,'action'=>'edited',
+                                                                    'deep'=>2
+                          );
+            $this->add_history($history_data,true);
 }
+
+$this->update_contact($company->data['Company Main Contact Key']);
+
+}
+
+
+
+
+
+/* Method: add_tel
+  Add/Update an telecom to the Supplier
+*/
+   function add_tel($data,$args='principal'){
+     
+     $principal=false;
+     if(preg_match('/not? principal/',$args) ){
+       $principal=false;
+     }elseif( preg_match('/principal/',$args)){
+       $principal=true;
+     }
+
+   
+
+   
+      if(is_numeric($data)){
+	$tmp=$data;
+	unset($data);
+	$data['Telecom Key']=$tmp;
+      }
+      
+      if(isset($data['Telecom Key'])){
+	$telecom=new Telecom('id',$data['Telecom Key']);
+      }
+
+      if(!isset($data['Telecom Type'])  or $data['Telecom Type']!='Contact Fax' )
+	$data['Telecom Type']='Contact Telephone';
+
+
+
+      if($data['Telecom Type']=='Contact Telephone'){
+	$field='Supplier Main Telephone';
+	$field_key='Supplier Main Telephone Key';
+	$field_plain='Supplier Main Plain Telephone';
+	$old_principal_key=$this->data['Supplier Main Telephone Key'];
+	$old_value=$this->data['Supplier Main Telephone']." (Id:".$this->data['Supplier Main Telephone Key'].")";
+      }else{
+	$field='Supplier Main FAX';
+	$field_key='Supplier Main FAX Key';
+	$field_plain='Supplier Main Plain FAX';
+	$old_principal_key=$this->data['Supplier Main FAX Key'];
+	$old_value=$this->data['Supplier Main FAX']." (Id:".$this->data['Supplier Main FAX Key'].")";
+      }
+
+	
+      
+      if($telecom->id){
+	
+	//	print "$principal $old_principal_key ".$telecom->id."  \n";
+
+	
+	if($principal and $old_principal_key!=$telecom->id){
+	  $sql=sprintf("update `Telecom Bridge`  set `Is Main`='No' where `Subject Type`='Supplier' and  `Subject Key`=%d  ",
+		       $this->id
+		       ,$telecom->id
+		       );
+	  mysql_query($sql);
+	  
+	  $sql=sprintf("update `Supplier Dimension` set `%s`=%s , `%s`=%d  , `%s`=%s  where `Supplier Key`=%d"
+		       ,$field
+		       ,prepare_mysql($telecom->display('html'))
+		       ,$field_key
+		       ,$telecom->id
+		       ,$field_plain
+		       ,prepare_mysql($telecom->display('plain'))
+		       ,$this->id
+		      );
+	  mysql_query($sql);
+	  $history_data=array(
+			      'note'=>$field." "._('Changed')
+			      ,'details'=>$field." "._('changed')." "
+			      .$old_value." -> ".$telecom->display('html')
+			      ." (Id:"
+			      .$telecom->id
+			      .")"
+			      ,'action'=>'created'
+			      );
+	  if(!$this->new)
+	    $this->add_history($history_data);
+	 
+	  
+	}
+
+	
+	
+	$sql=sprintf("insert into  `Telecom Bridge` (`Telecom Key`, `Subject Key`,`Subject Type`,`Telecom Type`,`Is Main`) values (%d,%d,'Supplier',%s,%s)  ON DUPLICATE KEY UPDATE `Telecom Type`=%s ,`Is Main`=%s  "
+		     ,$telecom->id
+		     ,$this->id
+		     ,prepare_mysql($data['Telecom Type'])
+		     ,prepare_mysql($principal?'Yes':'No')
+		     ,prepare_mysql($data['Telecom Type'])
+		     ,prepare_mysql($principal?'Yes':'No')
+		     );
+	mysql_query($sql);
+	
+
+
+	
+
+
+      }
+
+      
+      
+
+
+
+   }
+
+
+ /*
+  function:update_contact
+  */
+function update_contact($contact_key=false) {
+$this->associated=false;
+    if (!$contact_key)
+        return;
+    $contact=new contact($contact_key);
+    if (!$contact->id) {
+        $this->msg='contact not found';
+        return;
+
+    }
+
+
+    $old_contact_key=$this->data['Supplier Main Contact Key'];
+
+    if ($old_contact_key  and $old_contact_key!=$contact_key   ) {
+        $this->remove_contact();
+    }
+
+    $sql=sprintf("insert into `Contact Bridge` values (%d,'Supplier',%d,'Yes','Yes')",
+                 $contact->id,
+                 $this->id
+                );
+    mysql_query($sql);
+    if(mysql_affected_rows()){
+    $this->associated=true;
+    
+    }
+    
+    
+
+    $old_name=$this->data['Supplier Main Contact Name'];
+    if ($old_name!=$contact->display('name')) {
+
+
+        if ($this->data['Supplier Type']=='Person'
+            and $this->data['Supplier Name']!=$contact->display('name')) {
+            $old_supplier_name=$this->data['Supplier Name'];
+            $this->data['Supplier Name']=$contact->display('name');
+            $this->data['Supplier File As']=$contact->data['Contact File As'];
+            $sql=sprintf("update `Supplier Dimension` set `Supplier Name`=%d,`Supplier File As`=%s where `Supplier Key`=%d"
+                         ,prepare_mysql($this->data['Supplier Name'])
+                         ,prepare_mysql($this->data['Supplier File As'])
+                         ,$this->id
+                        );
+            mysql_query($sql);
+            $note=_('Contact name changed');
+            $details=_('Supplier Name changed from')." \"".$old_supplier_name."\" "._('to')." \"".$this->data['Supplier Name']."\"";
+            $history_data=array(
+                              'indirect_object'=>'Supplier Name'
+                                                ,'details'=>$details
+                                                           ,'note'=>$note
+                                                                   ,'action'=>'edited'
+                          );
+            $this->add_history($history_data);
+
+        }
+
+        $this->data['Supplier Main Contact Key']=$contact->id;
+        $this->data['Supplier Main Contact Name']=$contact->display('name');
+        $sql=sprintf("update `Supplier Dimension` set `Supplier Main Contact Key`=%d,`Supplier Main Contact Name`=%s where `Supplier Key`=%d"
+
+                     ,$this->data['Supplier Main Contact Key']
+                     ,prepare_mysql($this->data['Supplier Main Contact Name'])
+                     ,$this->id
+                    );
+        mysql_query($sql);
+
+
+
+        $this->updated=true;
+
+
+
+
+
+
+        $note=_('Supplier contact name changed');
+        if ($old_contact_key) {
+            $details=_('Supplier contact name changed from')." \"".$old_name."\" "._('to')." \"".$this->data['Supplier Main Contact Name']."\"";
+        } else {
+            $details=_('Supplier contact set to')." \"".$this->data['Supplier Main Contact Name']."\"";
+        }
+
+        $history_data=array(
+                          'indirect_object'=>'Supplier Main Contact Name'
+
+                                            ,'details'=>$details
+                                                       ,'note'=>$note
+                                                               ,'action'=>'edited'
+                      );
+        $this->add_history($history_data);
+
+    }
+
+
+if($this->associated){
+ $note=_('Contact name changed');
+            $details=_('Contact')." ".$contact->display('name')." (".$contact->get_formated_id_link().") "._('associated with Supplier:')." ".$this->data['Supplier Name']." (".$this->get_formated_id_link().")";
+            $history_data=array(
+                              'indirect_object'=>'Supplier Name'
+                                                ,'details'=>$details
+                                                           ,'note'=>$note
+                                                                   ,'action'=>'edited',
+                                                                    'deep'=>2
+                          );
+            $this->add_history($history_data,true);
+}
+
+}
+
+
+
+
+
+function remove_company($company_key=false){
+
+   
+    if(!$company_key){
+     $company_key=$this->data['Supplier Company Key'];
+   }
+   
+   
+   $company=new company($company_key);
+   if(!$company->id){
+     $this->error=true;
+     $this->msg='Wrong company key when trying to remove it';
+     $this->msg_updated='Wrong company key when trying to remove it';
+   }
+
+   $company->set_scope('Supplier',$this->id);
+   if( $company->associated_with_scope){
+     
+     $sql=sprintf("delete `Company Bridge`  where `Subject Type`='Supplier' and  `Subject Key`=%d  and `Company Key`=%d",
+		  $this->id
+		  
+		  ,$this->data['Supplier Company Key']
+		  );
+     mysql_query($sql);
+     
+     if($company->id==$this->data['Supplier Company Key']){
+       $sql=sprintf("update `Supplier Dimension` set `Supplier Company Name`='' , `Supplier Company Key`=''  where `Supplier Key`=%d"
+		    ,$this->id
+		    );
+       
+       mysql_query($sql);
+       if($this->data['Supplier Type']=='Company'){
+         $sql=sprintf("update `Supplier Dimension` set `Supplier Name`='' , `Supplier File As`=''  where `Supplier Key`=%d"
+		    ,$this->id
+		    );
+       
+       mysql_query($sql);
+       
+       }
+       
+       
+     }
+   }
+ }
+}
+
+
+
 
 ?>

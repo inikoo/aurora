@@ -224,15 +224,21 @@ class Deal extends DB_Table {
       case('Product Quantity Ordered'):
       case('Department Quantity Ordered'):
       case('Store Quantity Ordered'):
-	$term_description=translate_written_number($term_description);
-
 	
-	if (preg_match('/order \d+ or more/i',$term_description,$match))
+	//print("$term_description\n");
+	$term_description=translate_written_number($term_description);
+	
+
+
+	if (preg_match('/^\d+$/i',$term_description,$match))
+	  return $term_description;
+	if (preg_match('/order \d+( or more)?/i',$term_description,$match))
 	  return preg_replace('/[^\d]/','',$match[0]);
 	if (preg_match('/buy \d+/i',$term_description,$match))
 	  return preg_replace('/[^\d]/','',$match[0]);
 	if (preg_match('/\d+ oder mehr/i',$term_description,$match))
 	  return preg_replace('/[^\d]/','',$match[0]);
+
 	break;
       case('Order Interval'):
 	if (preg_match('/order (within|since|every) \d+ days?/i',$term_description,$match))
@@ -386,7 +392,26 @@ class Deal extends DB_Table {
       return $input_terms;
     }
     
-    
+
+    function get_xhtml_status(){
+      switch($this->data['Deal Status']){
+      case('Active'):
+	return '<img src="art/icons/accept.png" />';
+	break;
+      case('Finish'):
+	return '<img src="art/icons/time_delete.png" />';
+	break;
+      case('Wating'):
+	return '<img src="art/icons/clock_go.png" />';
+	break;
+      case('Suspended'):
+	return '<img src="art/icons/stop.png" />';
+	break;
+
+
+      }
+
+    }
 
     
 }

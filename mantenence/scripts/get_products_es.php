@@ -236,7 +236,7 @@ $gold_camp->create_deal('Free [Charge Name]',$data);
 $gold_reward_cam_id=$gold_camp->id;
 
 $campaign=array(
-		     'Campaign Name'=>'Volumen Discount'
+		     'Campaign Name'=>'Mayoreo en Familia'
 		     ,'Campaign Trigger'=>'Family'
 		     ,'Campaign Description'=>'Percentage off when order more than some quantity of products in the same family'
 		     ,'Campaign Begin Date'=>''
@@ -434,7 +434,7 @@ foreach($__cols as $cols){
   $part_code=_trim($cols[22]);
   $supplier_cost=$cols[26];
   
-
+ 
  
   // if(preg_match('/Reed-13/i',$code)){
   // print_r($cols);
@@ -464,17 +464,24 @@ foreach($__cols as $cols){
   
   if($is_product){
     
-    //    print " |$code\n";
+    // print " $code\n";
 
      if($cols[8]=='' and $price=='')
     continue;
 
     
+
+    
+
+
     $part_list=array();
     $rules=array();
     
     $current_fam_name=$fam_name;
     $current_fam_code=$fam_code;
+    
+    
+
     if($new_family){
       //    print "New family $column $promotion_position \n";
       if($promotion!='' and  ($column-$promotion_position)<4 ){
@@ -483,14 +490,22 @@ foreach($__cols as $cols){
 	$current_promotion='';
       $new_family=false;
     }
+
+    
+
+    // print $current_promotion;
+
     $deals=array();
-    if(preg_match('/off\s+\d+\s+or\s+more/i',_trim($current_promotion))){
-      if(preg_match('/^\d+\% off/i',$current_promotion,$match))
+    if(preg_match('/\%/i',_trim($current_promotion))){
+      if(preg_match('/\d+\%/i',$current_promotion,$match))
 	$allowance=$match[0];
-      if(preg_match('/off.*more/i',$current_promotion,$match))
-	$terms=preg_replace('/^off\s*/i','',$match[0]);
-      else
-	//	print "************".$current_promotion."\n";
+      preg_replace('/\d+\%/','',$current_promotion);
+
+      if(preg_match('/\d+/i',$current_promotion,$match))
+	$terms=$match[0];
+      
+     
+	
 	$deals[]=array(
 		       'Deal Name'=>'Club Oro'
 		       ,'Deal Trigger'=>'Order'
@@ -504,9 +519,8 @@ foreach($__cols as $cols){
 		       ,'Deal Begin Date'=>''
 		       ,'Deal Expiration Date'=>''
 		       );
-      
       $deals[]=array(
-		     'Deal Name'=>''
+		     'Deal Name'=>'Mayoreo en Familia'
 		     ,'Deal Trigger'=>'Family'
 		     
 		     ,'Deal Terms Type'=>'Family Quantity Ordered'
@@ -519,48 +533,11 @@ foreach($__cols as $cols){
 		     ,'Deal Expiration Date'=>''
 		     );	
 
-      
-      
-    }elseif(preg_match('/\d+\s*or more\s*\d+\%$/i',_trim($current_promotion))){
+  
+       
+    }elseif(preg_match('/^Ofertas? \d+\s?x\s?\d+$/i',_trim($current_promotion))){
       // print $current_promotion." *********\n";
-      preg_match('/\d+\%$/i',$current_promotion,$match);
-      $allowance=$match[0].' off';
-      preg_match('/\d+\s*or more/i',$current_promotion,$match);
-      $terms=_trim(strtolower($match[0]));
-
-      $deals[]=array(
-		     'Deal Name'=>'Club Oro'
-		     ,'Deal Trigger'=>'Order'
-		     ,'Deal Description'=>$allowance.' if last order within 1 calendar month'
-		     ,'Deal Terms Type'=>'Order Interval'
-		     ,'Deal Terms Description'=>'last order within 1 calendar month'
-		     ,'Deal Allowance Description'=>$allowance
-		     ,'Deal Allowance Type'=>'Percentage Off'
-		     ,'Deal Allowance Target'=>'Product'
-		     ,'Deal Allowance Target Key'=>''
-		     ,'Deal Begin Date'=>''
-		     ,'Deal Expiration Date'=>''
-		     );
-
-      $deals[]=array(
-		     'Deal Name'=>''
-		     ,'Deal Trigger'=>'Family'
-		     ,'Deal Description'=>$allowance.' if '.$terms.' same family'
-		     ,'Deal Terms Type'=>'Family Quantity Ordered'
-		     ,'Deal Terms Description'=>'order '.$terms
-		     ,'Deal Allowance Description'=>$allowance
-		     ,'Deal Allowance Type'=>'Percentage Off'
-		     ,'Deal Allowance Target'=>'Product'
-		     ,'Deal Allowance Target Key'=>''
-		     ,'Deal Begin Date'=>''
-		     ,'Deal Expiration Date'=>''
-		       
-		     );	
-	
-
-    }elseif(preg_match('/^Oferta \d+\s?x\s?\d+$/i',_trim($current_promotion))){
-      // print $current_promotion." *********\n";
-      preg_match('/Ofertas \d+/i',$current_promotion,$match);
+      preg_match('/Ofertas? \d+/i',$current_promotion,$match);
       $buy=_trim(preg_replace('/[^\d]/','',$match[0]));
 
       preg_match('/x\s?\d+/i',$current_promotion,$match);
@@ -584,6 +561,10 @@ foreach($__cols as $cols){
     }else
        $deals=array();
     
+
+   
+
+
     $units=$cols[7];
     if($units=='' OR $units<=0)
       $units=1;
@@ -736,12 +717,12 @@ foreach($__cols as $cols){
 
 
  foreach($deals as $deal_data){
-   // print_r($deal_data);
-   //exit;
+   //   print_r($deal_data);
+  
 
       $deal_data['Store Key']=$store_key;
 
-      if(preg_match('/Family Volume/i',$deal_data['Deal Name'])){
+      if(preg_match('/Mayoreo en Familia/i',$deal_data['Deal Name'])){
 	//$deal_data['Deal Campaign Key']=$volume_cam_id;
 	//$deal_data['Deal Name']=preg_replace('/Family/',$family->data['Product Family Code'],$deal_data['Deal Name']);
 	//$deal_data['Deal Description']=preg_replace('/same family/',$family->data['Product Family Name'].' outers',$deal_data['Deal Description']);
@@ -754,7 +735,7 @@ foreach($__cols as $cols){
 		    'Deal Terms Description'=>$deal_data['Deal Terms Description']
 		    
 		    );
-
+	//print_r($data);
 	$vol_camp->create_deal('[Product Family Code] Volume Discount',$data);
 
 
@@ -764,13 +745,13 @@ foreach($__cols as $cols){
       if(preg_match('/Oro/i',$deal_data['Deal Name'])){
 	//$deal_data['Deal Campaign Key']=$gold_reward_cam_id;
 	//$deal_data['Deal Name']=$family->data['Product Family Code'].' '.$deal_data['Deal Name'];
-
 	$data=array(
 		    'Deal Trigger Key'=>$family->id,
 		    'Deal Allowance Target Key'=>$family->id,
 		    'Deal Allowance Description'=>$deal_data['Deal Allowance Description']
 		    );
 
+	//	print_r($gold_camp);exit;
 	$gold_camp->create_deal('[Product Family Code] Club Oro',$data);
 
       }
@@ -839,7 +820,6 @@ foreach($__cols as $cols){
 	//	print_r($cols);
 	//print_r($data);
 	//exit;
-
 
 
        	$product=new Product('find',$data,'create');
@@ -997,8 +977,12 @@ foreach($__cols as $cols){
 
       
     }
-    
-    if(preg_match('/off\s+\d+\s+or\s+more|\s*\d+\s*or more\s*\d+|buy \d+ get \d+ free|\d+ o m.as y obtendr.s \s+\% descuanto/i',_trim($cols[8]))){
+   
+    if(
+       preg_match('/off\s+\d+\s+or\s+more|\s*\d+\s*or more\s*\d+|buy \d+ get \d+ free|\d+ o m.as y obtendr.s \s+\% descuanto/i',_trim($cols[8]))
+       or 
+        preg_match('/\d+\% desc|Descuento del \d+\%|Oferta \d+\s*x\s*\d+|Oferta \d+\% Descuento|Pide .*\d+\% descuento|\d+% Descuento desde \d+|Rebajas al \d+%|Descuento \d+%|Rebajas \d+%|\d+% Descuento comprando \d+|\d% Descuento al comprar \d|Comprando \d+ .* \d+% Desc|\d+% Desc.*\d+/i',_trim($cols[8]))
+       ){
       
 
       $promotion=$cols[8];

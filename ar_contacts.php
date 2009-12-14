@@ -1362,21 +1362,7 @@ function customer_advanced_search(){
 		   );	
 echo json_encode($response);
 }
-function customer_history_details(){
-  if(isset($_REQUEST['id']) and is_numeric($_REQUEST['id'])){
-     $sql=sprintf("select `History Details` as details from `History Dimension` where `History Key`=%d",$_REQUEST['id']);
-     $res = mysql_query($sql);
-     if($data=mysql_fetch_array($res, MYSQL_ASSOC)) {
-       $response=array('state'=>200,'details'=>$data['details']);
-       echo json_encode($response);
-       return;
-     }
-     mysql_free_result($res);
-   }
-   $response=array('state'=>400,'msg'=>_("Can not get history details"));
-   echo json_encode($response);
-   return;
-}
+
 function list_staff(){
   global $myconf;
 

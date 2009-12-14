@@ -676,4 +676,7 @@ position:relative;top:1px;
 .thumbnails span{display:block;width:100%;text-align:center;margin-bottom:5px;color:red}
 
 .thumbnails img{max-height:140px;max-width: 130px;align:center;margin-top:5px}
+.diff_del{color:red}
+
+.diff_ins{color:green}
 

@@ -16,21 +16,26 @@ var editing='<?php echo $_SESSION['state']['store']['edit']?>';
 var scope='store';
 var scope_edit_ar_file='ar_edit_assets.php';
 var scope_key_name='id';
-var scope_key=<?php echo$_SESSION['state']['store']['id']?>;
-
+var scope_key=<?php echo$_SESSION['state']['family']['id']?>;
 
 	
+
+
+
+
 
 
 
 var validate_scope_data={
 'store':{
     'name':{'changed':false,'validated':true,'required':true,'group':1,'type':'item'
-    ,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Store Name')?>'}],'name':'name'
-    ,'ar':'find','ar_request':'ar_assets.php?tipo=is_store_name&query='}
+	    ,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Store Name')?>'}],'name':'name'
+	    ,'ar':'find','ar_request':'ar_assets.php?tipo=is_store_name&query='}
     ,'code':{'changed':false,'validated':true,'required':false,'group':1,'type':'item'
-    ,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Store Code')?>'}]
-    ,'name':'code','ar':'find','ar_request':'ar_assets.php?tipo=is_store_code&query='}
+	     ,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Store Code')?>'}]
+	     ,'name':'code','ar':'find','ar_request':'ar_assets.php?tipo=is_store_code&query='}
+    
+
    }
 };
 
@@ -52,17 +57,17 @@ function save_edit_store(){
 function post_item_updated_actions(branch,key,newvalue){
 
  if(key=='name')
-					Dom.get('title_name').innerHTML=newvalue;
-				    
-				     else if(key=='code')
-					Dom.get('title_code').innerHTML=newvalue;
+     Dom.get('title_name').innerHTML=newvalue;
+ 
+ else if(key=='code')
+     Dom.get('title_code').innerHTML=newvalue;
 
-
-var table=tables.table1;
-				    var datasource=tables.dataSource1;
-				    var request='';
-				    datasource.sendRequest(request,table.onDataReturnInitializeTable, table); 
-
+ 
+ var table=tables.table1;
+ var datasource=tables.dataSource1;
+ var request='';
+ datasource.sendRequest(request,table.onDataReturnInitializeTable, table); 
+ 
 }
 
 
