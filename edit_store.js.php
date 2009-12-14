@@ -1,6 +1,11 @@
 <?php
 include_once('common.php');
 ?>
+
+var Event = YAHOO.util.Event;
+var Dom   = YAHOO.util.Dom;
+
+
 var can_add_department=false;
 var description_num_changed=0;
 var description_warnings= new Object();
@@ -9,130 +14,63 @@ var id=<?php echo$_SESSION['state']['store']['id']?>;
 var editing='<?php echo $_SESSION['state']['store']['edit']?>';
 
 var scope='store';
+var scope_edit_ar_file='ar_edit_assets.php';
+var scope_key_name='id';
+var scope_key=<?php echo$_SESSION['state']['store']['id']?>;
+
+
+	
+
+
 
 var validate_scope_data={
-    'name':{'changed':false,'validated':true,'required':true,'group':1,'type':'item','regexp':"[a-z\\d]+",'name':'name','ar':false}
+'store':{
+    'name':{'changed':false,'validated':true,'required':true,'group':1,'type':'item'
+    ,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Store Name')?>'}],'name':'name'
+    ,'ar':'find','ar_request':'ar_assets.php?tipo=is_store_name&query='}
     ,'code':{'changed':false,'validated':true,'required':false,'group':1,'type':'item'
     ,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Store Code')?>'}]
     ,'name':'code','ar':'find','ar_request':'ar_assets.php?tipo=is_store_code&query='}
-   
+   }
 };
 
 
 function validate_code(query){
- validate_general('code',unescape(query));
+ validate_general('store','code',unescape(query));
+}
+function validate_name(query){
+ validate_general('store','name',unescape(query));
+}
+function reset_edit_store(){
+ reset_edit_general('store');
+}
+function save_edit_store(){
+ save_edit_general('store');
 }
 
 
-var description=new Object();
-description={'name':{'changed':0,'column':'Store Name'},'code':{'changed':0,'column':'Store Code'}};
+function post_item_updated_actions(branch,key,newvalue){
 
-var Event = YAHOO.util.Event;
-var Dom   = YAHOO.util.Dom;
-
-
-function update_form(){
-    if(editing=='description'){
-	this_errors=description_errors;
-	this_num_changed=description_num_changed
-
-    }
-  
-    if(this_num_changed>0){
-	Dom.get(editing+'_save').style.display='';
-	Dom.get(editing+'_reset').style.display='';
-
-    }else{
-	Dom.get(editing+'_save').style.display='none';
-	Dom.get(editing+'_reset').style.display='none';
-
-    }
-    //Dom.get(editing+'_num_changes').innerHTML=this_num_changed;
-    //errors_div=Dom.get(editing+'_errors');
-    //errors_div.innerHTML='';
+ if(key=='name')
+					Dom.get('title_name').innerHTML=newvalue;
+				    
+				     else if(key=='code')
+					Dom.get('title_code').innerHTML=newvalue;
 
 
-    //    for (x in this_errors)
-    //	{
-    //	    // alert(errors[x]);
-    //	    Dom.get(editing+'_save').style.display='none';
-    //	    errors_div.innerHTML=errors_div.innerHTML+' '+this_errors[x];
-    //	}
-
-
-
+var table=tables.table1;
+				    var datasource=tables.dataSource1;
+				    var request='';
+				    datasource.sendRequest(request,table.onDataReturnInitializeTable, table); 
 
 }
 
 
-function changed(o){
-    var ovalue=o.getAttribute('ovalue');
-    var name=o.name;
-    if(ovalue!=trim(o.value)){
-	if(name=='code'){
-	    if(o.value==''){
-		description_errors.code="<?php echo _("The department code can not be empty")?>";
-	    }else if(o.value.lenght>16){
-		description_errors.code="<?php echo _("The product code can not have more than 16 characters")?>";
-	    }else
-		delete description_errors.code;
-	}
-	if(name=='name'){
-	    if(o.value==''){
-		description_errors.name="<?php echo _("The department name  can not be empty")?>";
-	    }else if(o.value.lenght>255){
-		description_errors.name="<?php echo _("The product code can not have more than 255  characters")?>";
-	    }else
-		delete description_errors.name;
-	}
-	
 
 
-	if(o.getAttribute('changed')==0){
-	    update_changes('+');
-	    o.setAttribute('changed',1);
-	}
-    }else{
-	if(o.getAttribute('changed')==1){
-	    update_changes('-');
-	    o.setAttribute('changed',0);
-	}
-    }
-    update_form();
-}
-
-function update_changes(changed){
-    if(editing=='description'){
-	if(changed=='+')
-	    description_num_changed++;
-	else
-	    description_num_changed--;
- 
-    }	
-}
 
 
-function reset(tipo){
 
-    if(tipo=='description'){
-	tag='name';
-	Dom.get(tag).value=Dom.get(tag).getAttribute('ovalue');
-	Dom.get(tag).setAttribute('changed',0);
-	tag='code';
-	Dom.get(tag).value=Dom.get(tag).getAttribute('ovalue');
-	Dom.get(tag).setAttribute('changed',0);
-
-	description_num_changed=0;
-	Dom.get(editing+'_save').style.display='none';
-	Dom.get(editing+'_reset').style.display='none';
-
-	//Dom.get(editing+'_num_changes').innerHTML=description_num_changed;
-	//description_warnings= new Object();
-	//description_errors= new Object();
-	
-    }
-    update_form();
-}
 
 function save(tipo){
 
@@ -660,13 +598,22 @@ function init(){
     YAHOO.util.Event.addListener('save_new_department', "click",save_new_department);
     YAHOO.util.Event.addListener('close_add_department', "click", cancel_add_department);
 
+
+    YAHOO.util.Event.addListener('reset_edit_store', "click", reset_edit_store);
+    YAHOO.util.Event.addListener('save_edit_store', "click", save_edit_store);
+
+
     var store_code_oACDS = new YAHOO.util.FunctionDataSource(validate_code);
     store_code_oACDS.queryMatchContains = true;
     var store_code_oAutoComp = new YAHOO.widget.AutoComplete("code","code_Container", store_code_oACDS);
     store_code_oAutoComp.minQueryLength = 0; 
     store_code_oAutoComp.queryDelay = 0.1;
     
-    
+     var store_name_oACDS = new YAHOO.util.FunctionDataSource(validate_name);
+    store_name_oACDS.queryMatchContains = true;
+    var store_name_oAutoComp = new YAHOO.widget.AutoComplete("name","name_Container", store_name_oACDS);
+    store_name_oAutoComp.minQueryLength = 0; 
+    store_name_oAutoComp.queryDelay = 0.1;
     
 
 }

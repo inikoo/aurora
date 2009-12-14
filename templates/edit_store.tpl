@@ -45,17 +45,19 @@
     </div>
     <div  class="edit_block" style="{if $edit!="description"}display:none{/if}"  id="d_description">
       
-      <div style="float:right">
-	<span class="save" style="display:none" id="save_edit_store" onclick="save('description')">{t}Save{/t}</span>
-	<span id="reset_edit_store"  style="display:none"   class="undo" onclick="reset('description')">{t}Cancel{/t}</span>
-      </div>
+     
+	 <div class="general_options" style="float:right">
 	
+	<span  style="margin-right:10px;visibility:hidden"  id="save_edit_store" class="state_details">{t}Save{/t}</span>
+	<span style="margin-right:10px;visibility:hidden" id="reset_edit_store" class="state_details">{t}Reset{/t}</span>
+	
+      </div>
 	
 	
      
 	
 	
-      <table style="margin:0;" class="edit" border=0>
+      <table style="margin:0;clear:both" class="edit" border=0>
 	<tr><td class="label" >{t}Store Code{/t}:</td><td>
 		 <div  style="width:15em" >
 
@@ -78,11 +80,10 @@
 
 	  </tr>
 	  <tr><td class="label">{t}Store Name{/t}:</td><td>
+	  <div  style="width:30em" >
 	      <input   
 		 id="name" 
-		 onKeyUp="changed(this)"    
-		 onMouseUp="changed(this)"  
-		 onChange="changed(this)"  
+		
 		 name="name" 
 		 changed=0 
 		 type='text'  
@@ -90,9 +91,14 @@
 		 style="width:30em"  
 		 class='text' 
 		 value="{$store->get('Store Name')}"  
-		     ovalue="{$store->get('Store Name')}"  
+		  ovalue="{$store->get('Store Name')}"  
 		 />
+		 <div id="name_Container" style="" ></div>
+         </div>
 	    </td>
+	     <td id="name_msg" class="edit_td_alert" style="width:300px"></td>
+		 
+	    
 	  </tr>
 	</table>
       </div>
