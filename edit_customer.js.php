@@ -11,12 +11,14 @@ var Dom   = YAHOO.util.Dom;
 var editing='<?php echo $_SESSION['state']['customer']['edit']?>';
 
 
-var validate_scope_data={
+var validate_scope_data=
+{
+'customer':{
     'name':{'changed':false,'validated':true,'required':true,'group':1,'type':'item','regexp':"[a-z\\d]+",'name':'Customer_Name'}
     ,'contact':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','regexp':"[a-z\\d]+",'name':'Customer_Main_Contact_Name'}
     ,'email':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','regexp':regexp_valid_email,'name':'Customer_Main_Email'}
     ,'telephone':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','regexp':"[exp\d\(\)\[\]\-\s]+",'name':'Customer_Main_Telephone'}
-
+}
 };
 
 

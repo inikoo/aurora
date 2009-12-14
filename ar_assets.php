@@ -41,6 +41,7 @@ case('is_store_code'):is_store_code();break;
 case('is_department_code'):is_department_code();break;
 case('is_family_code'):is_family_code();break;
 case('is_product_code'):is_product_code();break;
+case('is_store_name'):is_store_name();break;
 
 case('charges'):
     list_charges();
@@ -8649,7 +8650,54 @@ $res=mysql_query($sql);
     }
 
 }
+function is_store_name(){
+if (!isset($_REQUEST['query'])) {
+        $response= array(
+                       'state'=>400,
+                       'msg'=>'Error'
+                   );
+        echo json_enname($response);
+        return;
+    }else
+    $query=$_REQUEST['query'];
+    if($query==''){
+       $response= array(
+                       'state'=>200,
+                       'found'=>0
+                   );
+        echo json_encode($response);
+        return;
+    }
+    
+    
+    
+$sql=sprintf("select `Store Key`,`Store Code` from `Store Dimension` where  `Store Name`=%s  "
+        ,prepare_mysql($query)
+        );
+$res=mysql_query($sql);
 
+    if ($data=mysql_fetch_array($res)) {
+   $msg=sprintf('Another store (<a href="store.php?id=%d">%s</a>) already has this name'
+   ,$data['Store Key']
+   ,$data['Store Code']
+   );
+   $response= array(
+                       'state'=>200,
+                       'found'=>1,
+                       'msg'=>$msg
+                   );
+        echo json_encode($response);
+        return;
+    }else{
+       $response= array(
+                       'state'=>200,
+                       'found'=>0
+                   );
+        echo json_encode($response);
+        return;
+    }
+
+}
 
 
 ?>
