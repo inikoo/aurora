@@ -1798,13 +1798,13 @@ function list_deals_for_edition(){
    $_SESSION['state'][$parent]['deals']=array('order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value);
    
    if($parent=='store')
-     $where=sprintf("where  `Store Key`=%d and `Deal Trigger`='Order'    ",$parent_id);
+     $where=sprintf("where  `Store Key`=%d and D.`Deal Trigger`='Order'    ",$parent_id);
    elseif($parent=='department')
-     $where=sprintf("where    `Deal Trigger`='Department' and  `Deal Trigger Key`=%d   ",$parent_id);
+     $where=sprintf("where    D.`Deal Trigger`='Department' and  D.`Deal Trigger Key`=%d   ",$parent_id);
    elseif($parent=='family')
-     $where=sprintf("where    `Deal Trigger`='Family' and  `Deal Trigger Key`=%d   ",$parent_id);
+     $where=sprintf("where    D.`Deal Trigger`='Family' and  D.`Deal Trigger Key`=%d   ",$parent_id);
    elseif($parent=='product')
-     $where=sprintf("where    `Deal Trigger`='Product' and  `Deal Trigger Key`=%d   ",$parent_id);
+     $where=sprintf("where    D.`Deal Trigger`='Product' and  D.`Deal Trigger Key`=%d   ",$parent_id);
    else
      $where=sprintf("where true ");;
 
@@ -1819,7 +1819,7 @@ if($f_field=='description' and $f_value!='')
   elseif($f_field=='name' and $f_value!='')
     $wheref.=" and  `Deal Name` like '".addslashes($f_value)."%'";
 
-   $sql="select count(*) as total from `Deal Dimension`   $where $wheref";
+   $sql="select count(*) as total from `Deal Dimension` D   $where $wheref";
    //  print $sql;
    $result=mysql_query($sql);
    if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
@@ -1830,7 +1830,7 @@ mysql_free_result($result);
      if($wheref==''){
        $filtered=0;$total_records=$total;
    }else{
-     $sql="select count(*) as total `Deal Dimension`   $where ";
+     $sql="select count(*) as total `Deal Dimension`  D  $where ";
 
      $result=mysql_query($sql);
      if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
@@ -1874,14 +1874,14 @@ mysql_free_result($result);
    $_order=$order;
    
    if($order=='name')
-     $order='`Deal Name`';
+     $order='D.`Deal Name`';
    elseif($order=='description')
       $order='`Deal Terms Description`,`Deal Allowance Description`';
    else
-     $order='`Deal Name`';
+     $order='D.`Deal Name`';
 
  
-   $sql="select *  from `Deal Dimension` $where    order by $order $order_direction limit $start_from,$number_results    ";
+   $sql="select D.`Deal Trigger`,`Deal Key`,D.`Deal Name`,`Campaign Deal Schema Key`,`Campaign Name`,`Campaign Deal Schema Key`  from `Deal Dimension` D left join `Campaign Deal Schema`CDS  on (CDS.`Deal Schema Key`=`Campaign Deal Schema Key`) left join `Campaign Dimension`C  on (CDS.`Campaign Key`=C.`Campaign Key`)  $where    order by $order $order_direction limit $start_from,$number_results    ";
    //print $sql;
    $res = mysql_query($sql);
    $total=mysql_num_rows($res);
@@ -1898,12 +1898,21 @@ mysql_free_result($result);
      $input_allowance='';
      foreach($deal->allowance_input_form() as $form_data){
        $input_allowance.=sprintf('<td style="text-align:right;width:150px;padding-right:10px" >%s</td>
-       <td style="width:15em"  style="text-align:left"><input  %s class="%s" style="width:5em" value="%s" /> %s</td>',
-       $form_data['Label'],
-       ($form_data['Lock Value']?'READONLY':''),
-       $form_data['Value Class'],
-       $form_data['Value'],
-       $form_data['Lock Label']);
+       <td style="width:15em"  style="text-align:left"><input id="input_deal_allowance%d" onKeyUp="deal_allowance_changed(%d)" %s class="%s" style="width:5em" value="%s" /> %s <span id="deal_allowance_save%d" style="visibility:hidden" class="state_details" onClick="deal_allowance_save(%d)">'._('Save').'</span> <span id="deal_allowance_reset%d" style="visibility:hidden" style="margin-left:10px "class="state_details"  onClick="deal_allowance_reset(%d)">'._('Reset').'</span></td>'
+				 ,$form_data['Label']
+				   ,$row['Deal Key']
+				 ,$row['Deal Key']
+				 ,($form_data['Lock Value']?'READONLY':'')
+				 ,$form_data['Value Class']
+				 ,$form_data['Value']
+				 ,$form_data['Lock Label']
+				 ,$row['Deal Key']
+				 ,$row['Deal Key']
+				 ,$row['Deal Key']
+				 ,$row['Deal Key']	 
+
+
+				 );
      }
      $input_term='';
      foreach($deal->terms_input_form() as $form_data){
@@ -1936,12 +1945,20 @@ mysql_free_result($result);
        {
 
 	 $input_term=sprintf('<td style="text-align:right;width:150px;padding-right:10px" >%s</td>
-	 <td style="width:15em"  style="text-align:left"><input %s class="%s" style="width:5em" value="%s" /> %s</td>'
-	 ,$form_data['Label']
-	 ,($form_data['Lock Value']?'READONLY':'')
-	 ,$form_data['Value Class']
-	 ,$form_data['Value']
-	 ,$form_data['Lock Label']);;
+	 <td style="width:15em"  style="text-align:left"><input id="input_deal_term%d" onKeyUp="deal_term_changed(%d)" %s class="%s" style="width:5em" value="%s" ovalue="%s" /> %s <span id="deal_term_save%d" style="visibility:hidden" class="state_details" onClick="deal_term_save(%d)">'._('Save').'</span> <span id="deal_term_reset%d" style="visibility:hidden" style="margin-left:10px "class="state_details"  onClick="deal_term_reset(%d)">'._('Reset').'</span></td>'
+			     ,$form_data['Label']
+			     ,$row['Deal Key']
+			     ,$row['Deal Key']
+			     ,($form_data['Lock Value']?'READONLY':'')
+			     ,$form_data['Value Class']
+			     ,$form_data['Value']
+			     ,$form_data['Value']
+			     ,$form_data['Lock Label']
+			     ,$row['Deal Key']
+			     ,$row['Deal Key']
+			     ,$row['Deal Key']
+			     ,$row['Deal Key']
+			     );
 
        }
 
@@ -1952,8 +1969,13 @@ mysql_free_result($result);
      $edit='<table style="margin:10px"><tr style="border:none">'.$input_allowance.'</tr><tr style="border:none">'.$input_term.'</tr></table>';
      
      
+     $name=$row['Deal Name'];
+       if($row['Campaign Deal Schema Key']){
+	 $name.=sprintf('<br/><a style="text-decoration:underline" href="edit_campaign.php?id=%d">%s</a>',$row['Campaign Deal Schema Key'],$row['Campaign Name']);
+       }
      $adata[]=array(
-		    'name'=>$row['Deal Name'],
+		    'status'=>$deal->get_xhtml_status(),
+		    'name'=>$name,
 		    'description'=>$deal->get('Description').$edit,
 		    'from'=>'',
 		    'to'=>''

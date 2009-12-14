@@ -16,8 +16,9 @@
 <div style="clear:left;margin:0 0px">
     <h1>{t}Editing Family{/t}: <span id="title_name">{$family->get('Product Family Name')}</span> (<span id="title_code">{$family->get('Product Family Code')}</span>)</h1>
 </div>
+<div id="msg_div"></div>
   <ul class="tabs" id="chooser_ul" style="clear:both">
-    <li> <span class="item {if $edit=='description'}selected{/if}"  id="description">  <span> {t}Description{/t}</span></span></li>
+    <li> <span class="item {if $edit=='details'}selected{/if}"  id="details">  <span> {t}Description{/t}</span></span></li>
     <li> <span class="item {if $edit=='discounts'}selected{/if}"  id="discounts">  <span> {t}Discounts{/t}</span></span></li>
     <li> <span class="item {if $edit=='pictures'}selected{/if}" id="pictures"  ><span>  {t}Pictures{/t}</span></span></li>
     <li> <span class="item {if $edit=='products'}selected{/if}" id="products"  ><span> {t}Products{/t}</span></span></li>
@@ -34,26 +35,99 @@
 	  </tr>
 	</table>
       </div>
-    <div  class="edit_block" style="{if $edit!="description"}display:none{/if}"  id="d_description">
-       <span style="display:none" id="description_num_changes"></span>
-    <div id="description_errors"></div>
-  <div class="general_options" style="float:right">
+    <div  class="edit_block" style="{if $edit!="details"}display:none{/if}"  id="d_details">
+      
+    
+      <div class="general_options" style="float:right">
+	
+	<span  style="margin-right:10px;visibility:hidden"  id="save_edit_family" class="state_details">{t}Save{/t}</span>
+	<span style="margin-right:10px;visibility:hidden" id="reset_edit_family" class="state_details">{t}Reset{/t}</span>
+	
+      </div>
 
-		      <span style="margin-right:10px;display:none"  onclick="save('description')" id="description_save" class="state_details">{t}Save Changes{/t}</span>
-		      <span style="margin-right:10px;display:none;" id="description_reset" onclick="reset('description')" i class="state_details">{t}Reset{/t}</span>
-		      
-		    </div>
 
-    <table class="edit">
-      <tr><td class="label">{t}Code{/t}:</td><td><input  id="code" onKeyUp="edit_family_changed(this)"    onMouseUp="edit_family_changed(this)"  onChange="edit_family_changed(this)"  name="code" changed=0 type='text' class='text' style="width:15em" MAXLENGTH="16" value="{$family->get('Product Family Code')}" ovalue="{$family->get('Product Family Code')}"  /></td></tr>
-      <tr><td class="label">{t}Name{/t}:</td><td><input   id="name" onKeyUp="edit_family_changed(this)"    onMouseUp="edit_family_changed(this)"  onChange="edit_family_changed(this)"  name="name" changed=0 type='text'  MAXLENGTH="255" style="width:30em"  class='text' value="{$family->get('Product Family Name')}"  ovalue="{$family->get('Product Family Name')}"  /></td>
-</tr>
-         <tr><td class="label">{t}Family Char{/t}:</td><td><input  id="special_char" onKeyUp="edit_family_changed(this)"    onMouseUp="edit_family_changed(this)"  onChange="edit_family_changed(this)"  name="special_char" changed="0" type='text' class='text' style="width:20em" value="{$family->get('Product Family Special Characteristic')}" ovalue="{$family->get('Product Family Special Characteristic')}"  /></td></tr>
-      <tr id="tr_details">
-	  <td class="label">{t}Detailed Description{/t}:</td>
-	  <td colspan="2"><textarea id="details" name="v_details" changed=0 olength="{$family->get('Product Family Description Length')}"  ovalue="{$family->get('Product Family Description')}"  ohash="{$family->get('Product Family Description MD5 Hash')}" rows="20" cols="100">{$family->get('Product Family Description')}</textarea>
-	  </td>
-	</tr>
+
+    <table styel="clear:both" class="edit">
+      <tr><td class="label" >{t}Family Code{/t}:</td><td>
+	 <div  style="width:15em" >
+
+	      <input  
+		 id="code" 
+		 
+		
+		 changed=0 
+		 type='text' 
+		 class='text' 
+		 style="width:15em" 
+		 MAXLENGTH="16" 
+		 value="{$family->get('Product Family Code')}" 
+		 ovalue="{$family->get('Product Family Code')}"  
+		 />
+		 <div id="code_Container" style="" ></div>
+         </div>
+	    </td>
+	     <td id="code_msg" class="edit_td_alert" style="width:300px"></td>
+
+	  </tr>
+	  <tr><td class="label">{t}Family Name{/t}:</td><td>
+	      <div  style="width:30em" >
+		<input   
+		   id="name" 
+		  
+		   changed=0 
+		   type='text'  
+		   MAXLENGTH="255" 
+		   style="width:30em"  
+		   class='text' 
+		   value="{$family->get('Product Family Name')}"  
+		   ovalue="{$family->get('Product Family Name')}"  
+		   />
+		<div id="name_Container" style="" ></div>
+              </div>
+	    </td>
+	     <td id="name_msg" class="edit_td_alert" style="width:300px"></td>
+	  </tr>
+	  <tr><td class="label">{t}Family Char{/t}:</td><td>
+	      <div  style="width:30em" >
+		<input   
+		   id="special_char" 
+		 
+		   type='text'  
+		   MAXLENGTH="255" 
+		   style="width:30em"  
+		   class='text' 
+		   value="{$family->get('Product Family Special Characteristic')}"  
+		   ovalue="{$family->get('Product Family Special Characteristic')}"  
+		   />
+		<div id="special_char_Container" style="" ></div>
+              </div>
+	    </td>
+	     <td id="special_char_msg" class="edit_td_alert" style="width:300px"></td>
+	  </tr>
+      <tr style="height:80px"><td class="label">{t}Description{/t}:</td><td>
+	      <div  style="width:30em" >
+		<textarea   
+		   id="description" 
+		   name="description" 
+		   rows="5"
+		   style="width:30em"  
+		   class='text' 
+		   value="{$family->get('Product Family Description')}"  
+		   ovalue="{$family->get('Product Family Description')}"  
+		   />{$family->get('Product Family Description')}</textarea>
+		<div id="description_Container" style="" ></div>
+              </div>
+
+	    </td>
+	     <td id="description_msg" class="edit_td_alert" style="width:300px"></td>
+	  </tr>
+
+
+
+
+
+
+    
       
 
     </table>

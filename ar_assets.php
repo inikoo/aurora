@@ -40,6 +40,9 @@ switch ($tipo) {
 case('is_store_code'):is_store_code();break;
 case('is_department_code'):is_department_code();break;
 case('is_family_code'):is_family_code();break;
+case('is_family_name'):is_family_name();break;
+case('is_family_special_char'):is_family_special_char();break;
+
 case('is_product_code'):is_product_code();break;
 case('is_store_name'):is_store_name();break;
 
@@ -8698,6 +8701,162 @@ $res=mysql_query($sql);
     }
 
 }
+
+
+
+
+
+function is_family_name(){
+  if (!isset($_REQUEST['query']) or !isset($_REQUEST['store_key'])) {
+        $response= array(
+                       'state'=>400,
+                       'msg'=>'Error'
+                   );
+        echo json_enname($response);
+        return;
+    }else
+    $query=$_REQUEST['query'];
+    if($query==''){
+       $response= array(
+                       'state'=>200,
+                       'found'=>0
+                   );
+        echo json_encode($response);
+        return;
+    }
+    
+    $store_key=$_REQUEST['store_key'];
+    
+$sql=sprintf("select `Product Family Key`,`Product Family Code` from `Product Family Dimension` where  `Product Family Store Key`=%d and  `Product Family Name`=%s  "
+	     ,$store_key
+	     ,prepare_mysql($query)
+        );
+$res=mysql_query($sql);
+
+    if ($data=mysql_fetch_array($res)) {
+   $msg=sprintf('Another family (<a href="family.php?id=%d">%s</a>) already has this name'
+   ,$data['Product Family Key']
+   ,$data['Product Family Code']
+   );
+   $response= array(
+                       'state'=>200,
+                       'found'=>1,
+                       'msg'=>$msg
+                   );
+        echo json_encode($response);
+        return;
+    }else{
+       $response= array(
+                       'state'=>200,
+                       'found'=>0
+                   );
+        echo json_encode($response);
+        return;
+    }
+
+}
+
+function is_family_code(){
+if (!isset($_REQUEST['query']) or !isset($_REQUEST['store_key']) ) {
+        $response= array(
+                       'state'=>400,
+                       'msg'=>'Error'
+                   );
+        echo json_encode($response);
+        return;
+    }else
+    $query=$_REQUEST['query'];
+    if($query==''){
+       $response= array(
+                       'state'=>200,
+                       'found'=>0
+                   );
+        echo json_encode($response);
+        return;
+    }
+    
+     $store_key=$_REQUEST['store_key'];
+    
+$sql=sprintf("select `Product Family Key`,`Product Family Name`,`Product Family Code` from `Product Family Dimension` where `Product Family Store Key`=%d and `Product Family Code`=%s  "
+	     ,$store_key
+	     ,prepare_mysql($query)
+        );
+$res=mysql_query($sql);
+
+    if ($data=mysql_fetch_array($res)) {
+   $msg=sprintf('Family <a href="family.php?id=%d">%s</a> already has this code (%s)'
+   ,$data['Product Family Key']
+   ,$data['Product Family Name']
+   ,$data['Product Family Code']
+   );
+   $response= array(
+                       'state'=>200,
+                       'found'=>1,
+                       'msg'=>$msg
+                   );
+        echo json_encode($response);
+        return;
+    }else{
+       $response= array(
+                       'state'=>200,
+                       'found'=>0
+                   );
+        echo json_encode($response);
+        return;
+    }
+
+}
+
+function is_family_special_char(){
+  if (!isset($_REQUEST['query']) or !isset($_REQUEST['store_key'])) {
+        $response= array(
+                       'state'=>400,
+                       'msg'=>'Error'
+                   );
+        echo json_enname($response);
+        return;
+    }else
+    $query=$_REQUEST['query'];
+    if($query==''){
+       $response= array(
+                       'state'=>200,
+                       'found'=>0
+                   );
+        echo json_encode($response);
+        return;
+    }
+    
+    $store_key=$_REQUEST['store_key'];
+    
+$sql=sprintf("select `Product Family Key`,`Product Family Code` from `Product Family Dimension` where  `Product Family Store Key`=%d and  `Product Family Special Characteristic`=%s  "
+	     ,$store_key
+	     ,prepare_mysql($query)
+        );
+$res=mysql_query($sql);
+
+    if ($data=mysql_fetch_array($res)) {
+   $msg=sprintf('Another family (<a href="family.php?id=%d">%s</a>) has the same special characteristic'
+   ,$data['Product Family Key']
+   ,$data['Product Family Code']
+   );
+   $response= array(
+                       'state'=>200,
+                       'found'=>1,
+                       'msg'=>$msg
+                   );
+        echo json_encode($response);
+        return;
+    }else{
+       $response= array(
+                       'state'=>200,
+                       'found'=>0
+                   );
+        echo json_encode($response);
+        return;
+    }
+
+}
+
 
 
 ?>

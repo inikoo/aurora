@@ -83,7 +83,6 @@
 	  <div  style="width:30em" >
 	      <input   
 		 id="name" 
-		
 		 name="name" 
 		 changed=0 
 		 type='text'  

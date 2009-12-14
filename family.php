@@ -22,7 +22,10 @@ if(!isset($_REQUEST['id']) or !is_numeric($_REQUEST['id']))
  else
    $family_id=$_REQUEST['id'];
 $_SESSION['state']['family']['id']=$family_id;
+
 $family=new Family($family_id);
+$_SESSION['state']['department']['id']=$family->data['Product Family Main Department Key'];
+$_SESSION['state']['store']['id']=$family->data['Product Family Store Key'];
 
 
 

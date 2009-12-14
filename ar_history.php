@@ -23,8 +23,9 @@ switch($tipo){
 case('history'):
     list_history($_REQUEST['type']);
     break;
-case('customer_history_details'):
-   customer_history_details();
+
+case('history_details'):
+  history_details();
    break;
  break;
 case('customer_history'):
@@ -37,6 +38,22 @@ list_customer_history();
    
  }
 
+
+function history_details(){
+  if(isset($_REQUEST['id']) and is_numeric($_REQUEST['id'])){
+     $sql=sprintf("select `History Details` as details from `History Dimension` where `History Key`=%d",$_REQUEST['id']);
+     $res = mysql_query($sql);
+     if($data=mysql_fetch_array($res, MYSQL_ASSOC)) {
+       $response=array('state'=>200,'details'=>$data['details']);
+       echo json_encode($response);
+       return;
+     }
+     mysql_free_result($res);
+   }
+   $response=array('state'=>400,'msg'=>_("Can not get history details"));
+   echo json_encode($response);
+   return;
+}
 
 
 function list_customer_history(){
@@ -445,12 +462,18 @@ function list_history($asset_type) {
         $author=$data['Author Name'];
 
 
+	if($data['History Details']=='')
+       $note=$data['History Abstract'];
+     else
+       $note=$data['History Abstract'].' <img class="button" d="no" id="ch'.$data['History Key'].'" hid="'.$data['History Key'].'" onClick="showdetails(this)" src="art/icons/closed.png" alt="Show details" />';
+
+
+
         $adata[]=array(
 
 		       'author'=>$author
 		       ,'tipo'=>$tipo
-		       ,'abstract'=>$data['History Abstract']
-		       ,'details'=>$data['History Details']
+		       ,'abstract'=>$note
 		       ,'date'=>strftime("%a %e %b %Y %T", strtotime($data['History Date'])),
 		       );
     }

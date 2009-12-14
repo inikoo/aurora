@@ -431,9 +431,61 @@ function update($key,$a1=false,$a2=false){
 	
       }
       break;	
+
+   case('description'):
+     $this->update_description($a1);
+
+     break;
+
+
    }
 
  }
+
+
+function update_description($description){
+  
+  $old_description=$this->data['Product Family Description'];
+  $this->update_field('Product Family Description',$description,'nohistory');
+
+  if($this->updated){
+    set_include_path(get_include_path() . PATH_SEPARATOR . 'external_libs/PEAR');
+    include_once 'Text/Diff.php';
+    include_once 'Text/Diff/Renderer/inline.php';
+    
+    $lines1=preg_split('/\n/',$old_description);
+    $lines2=preg_split('/\n/',$this->data['Product Family Description']);
+
+
+    $diff = new Text_Diff('native', array($lines1,$lines2));
+    $renderer = new Text_Diff_Renderer_inline();
+
+    $rendered_difference= preg_replace('/\<del\>/','<span class="diff_del">',$renderer->render($diff));
+    $rendered_difference= preg_replace('/\<\/del\>/','</span>',$rendered_difference);
+    $rendered_difference= preg_replace('/\<ins\>/','<span class="diff_ins">',$rendered_difference);
+    $rendered_difference= preg_replace('/\<\/ins\>/','</span>',$rendered_difference);
+
+
+    
+    $history_data=array(
+			'note'=>_('Product Family Description Changed')
+			,'details'=>$rendered_difference
+			,'action'=>'edited'
+			,'indirect_object'=>'Product Family Description'
+			);
+    // print_r($history_data);
+    $this->add_history($history_data);
+    
+
+  }
+
+
+
+  //todo maje nice highlited diff history
+
+}
+
+
 /*
     Function: delete
     Funcion que permite eliminar registros en la tabla Product Family Dimension,Product Family Department Bridge, cuidando la integridad referencial con los productos.

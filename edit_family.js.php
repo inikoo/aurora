@@ -1,11 +1,105 @@
 <?php
 //@author Raul Perusquia <rulovico@gmail.com>
 //Copyright (c) 2009 LW
-include_once('common.php');?>
+
+include_once('common.php');
+$sql=sprintf("select * from `Deal Dimension`D where D.`Deal Trigger`='Family' and D.`Deal Trigger Key`= %d ",$_SESSION['state']['family']['id']);
+$res=mysql_query($sql);
+$deal_data="";
+while($row=mysql_fetch_array($res)){
+  $deal_data.=sprintf(',"%d":{"terms":{"ovalue":"%s","type":"%s"},"allowance":{"ovalue":"%s","type":"%s"}}'."\n"
+		      ,$row['Deal Key']
+		      ,$row['Deal Terms Metadata']
+		      ,$row['Deal Terms Type']
+		      ,$row['Deal Allowance Metadata']
+		      ,$row['Deal Allowance Type']
+		      );
+
+}
+$deal_data=preg_replace('/^,/','',$deal_data);
+$deal_data="var deal_data={\n$deal_data};\n";
+print $deal_data;
+
+?>
 var Event = YAHOO.util.Event;
 var Dom   = YAHOO.util.Dom;
 var family_id=<?php echo$_SESSION['state']['family']['id']?>;
 editing='<?php echo $_SESSION['state']['family']['edit']?>';
+var scope_key=<?php echo$_SESSION['state']['family']['id']?>;
+var scope='family';
+var scope_edit_ar_file='ar_edit_assets.php';
+var scope_key_name='id';
+var store_key=<?php echo$_SESSION['state']['store']['id']?>;
+
+
+
+
+var validate_scope_data={
+'family':{
+    'name':{'changed':false,'validated':true,'required':true,'group':1,'type':'item'
+	    ,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Family Name')?>'}],'name':'name'
+	    ,'ar':'find','ar_request':'ar_assets.php?tipo=is_family_name&store_key='+store_key+'&query='}
+    ,'code':{'changed':false,'validated':true,'required':false,'group':1,'type':'item'
+	     ,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Family Code')?>'}]
+	     ,'name':'code','ar':'find','ar_request':'ar_assets.php?tipo=is_family_code&store_key='+store_key+'&query='}
+    ,'special_char':{'changed':false,'validated':true,'required':false,'group':1,'type':'item'
+		     ,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Family Special Characteristic')?>'}]
+		     ,'name':'special_char','ar':'find','ar_request':'ar_assets.php?tipo=is_family_special_char&store_key='+store_key+'&query='}
+    ,'description':{'changed':false,'validated':true,'required':false,'group':1,'type':'item'
+		,'validation':[]
+		,'name':'description','ar':false}
+   }
+};
+
+
+
+
+
+
+
+
+function validate_code(query){
+
+ validate_general('family','code',unescape(query));
+}
+function validate_name(query){
+ validate_general('family','name',unescape(query));
+}
+function validate_special_char(query){
+ validate_general('family','special_char',unescape(query));
+}
+
+function validate_description(query){
+   
+ validate_general('family','description',unescape(query));
+}
+
+
+function reset_edit_family(){
+ reset_edit_general('family');
+}
+function save_edit_family(){
+ save_edit_general('family');
+}
+
+
+function post_item_updated_actions(branch,key,newvalue){
+
+ if(key=='name')
+     Dom.get('title_name').innerHTML=newvalue;
+ 
+ else if(key=='code')
+     Dom.get('title_code').innerHTML=newvalue;
+
+ 
+ var table=tables.table1;
+ var datasource=tables.dataSource1;
+ var request='';
+ datasource.sendRequest(request,table.onDataReturnInitializeTable, table); 
+ 
+}
+
+
 
 
 function change_block(e){
@@ -18,7 +112,7 @@ function change_block(e){
      
      
 	 Dom.get('d_products').style.display='none';
-	 Dom.get('d_description').style.display='none';
+	 Dom.get('d_details').style.display='none';
 	 Dom.get('d_discounts').style.display='none';
 	 Dom.get('d_pictures').style.display='none';
 	 Dom.get('d_web').style.display='none';
@@ -108,6 +202,98 @@ function new_product_changed(o){
 
 
 }
+
+
+
+function deal_term_save(deal_key){
+
+}
+function deal_term_reset(deal_key){
+    var data=deal_data[deal_key]['terms'];
+    old_value=data.ovalue;
+    Dom.get('deal_term_term'+deal_key).value=old_value;
+    Dom.get('deal_term_save'+deal_key).style.visibility='hidden';
+    Dom.get('deal_term_reset'+deal_key).style.visibility='hidden';
+}
+
+
+
+function deal_term_changed(deal_key){
+    var data=deal_data[deal_key]['terms'];
+    old_value=data.ovalue;
+    new_value=Dom.get('deal_term_term'+deal_key).value;
+
+    if(old_value!=new_value){
+	Dom.get('deal_term_reset'+deal_key).style.visibility='visible';
+
+    switch(data.type){
+    case('Order Interval'):
+
+	break;
+
+    case('Family Quantity Ordered'):
+	
+	
+	Dom.get('deal_term_save'+deal_key).style.visibility='visible';
+
+	var validator=/^\d+$/;
+	if(!validator.test(new_value)){
+	      Dom.get('deal_term_save'+deal_key).style.visibility='hidden';
+	}
+	break;
+
+
+    }
+    }else{
+	
+	Dom.get('deal_term_save'+deal_key).style.visibility='hidden';
+	Dom.get('deal_term_reset'+deal_key).style.visibility='hidden';
+
+    }
+
+}
+
+
+function deal_allowance_changed(deal_key){
+    var data=deal_data[deal_key]['allowances'];
+    old_value=data.ovalue;
+    new_value=Dom.get('input_deal_allowance'+deal_key).value;
+
+    if(old_value!=new_value){
+	Dom.get('input_deal_reset'+deal_key).style.visibility='visible';
+
+    switch(data.type){
+    case('Get Same Fre'):
+	break;
+    case('Get Free'):
+	break;
+    
+    case('Percentage Off'):
+	
+	
+	Dom.get('input_deal_save'+deal_key).style.visibility='visible';
+
+	var validator=/^(\d+|\.\d+|\d+.|\d+\.\d+)\s*\%?$/;
+	if(!validator.test(new_value)){
+	      Dom.get('input_deal_save'+deal_key).style.visibility='hidden';
+	}
+	break;
+
+
+    }
+    }else{
+	
+	Dom.get('input_deal_save'+deal_key).style.visibility='hidden';
+	Dom.get('input_deal_reset'+deal_key).style.visibility='hidden';
+
+    }
+
+}
+
+
+
+
+
 var description_num_changed=0;
 var description_partrnings= new Object();
 var description_errors= new Object();
@@ -556,7 +742,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 				       ];
 	    //?tipo=customers&tid=0"
 
-	    this.dataSource1 = new YAHOO.util.DataSource("ar_assets.php?tipo=family_history&tableid=1");
+	    this.dataSource1 = new YAHOO.util.DataSource("ar_history.php?tipo=history&type=family&tableid=1");
 	    this.dataSource1.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource1.connXhrMode = "queueRequests";
 	    this.dataSource1.responseSchema = {
@@ -659,65 +845,66 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    var tableDivEL="table"+tableid;
 
 	    var CustomersColumnDefs = [
-				       {key:"name",label:"<?php echo _('Name')?>", width:120,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				       ,{key:"description",label:"<?php echo _('Description')?>", width:400,sortable:true,formatter:this.customer_name,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				          {key:"status",label:"", width:16,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+					  ,{key:"name",label:"<?php echo _('Name')?>", width:100,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				       ,{key:"description",label:"<?php echo _('Description')?>", width:420,sortable:true,formatter:this.customer_name,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				       ,{key:"from",label:"<?php echo _('Valid From')?>", width:80,sortable:true,formatter:this.customer_name,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				       ,{key:"to",label:"<?php echo _('Valid Until')?>", width:80,sortable:true,formatter:this.customer_name,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				       ];
 	    //?tipo=customers&tid=0"
 	    
-// 	    this.dataSource4 = new YAHOO.util.DataSource("ar_edit_assets.php?tipo=edit_deals&parent=family&tableid=4");
-// 	    this.dataSource4.responseType = YAHOO.util.DataSource.TYPE_JSON;
-// 	    this.dataSource4.connXhrMode = "queueRequests";
-// 	    this.dataSource4.responseSchema = {
-// 		resultsList: "resultset.data", 
-// 		metaFields: {
-// 		    rowsPerPage:"resultset.records_perpage",
-// 		    sort_key:"resultset.sort_key",
-// 		    sort_dir:"resultset.sort_dir",
-// 		    tableid:"resultset.tableid",
-// 		    filter_msg:"resultset.filter_msg",
-// 		    rtext:"resultset.rtext",
-// 		    totalRecords: "resultset.total_records" // Access to value in the server response
-// 		},
+	    this.dataSource4 = new YAHOO.util.DataSource("ar_edit_assets.php?tipo=edit_deals&parent=family&tableid=4");
+	    this.dataSource4.responseType = YAHOO.util.DataSource.TYPE_JSON;
+	    this.dataSource4.connXhrMode = "queueRequests";
+	    this.dataSource4.responseSchema = {
+		resultsList: "resultset.data", 
+		metaFields: {
+		    rowsPerPage:"resultset.records_perpage",
+		    sort_key:"resultset.sort_key",
+		    sort_dir:"resultset.sort_dir",
+		    tableid:"resultset.tableid",
+		    filter_msg:"resultset.filter_msg",
+		    rtext:"resultset.rtext",
+		    totalRecords: "resultset.total_records" // Access to value in the server response
+		},
 		
 		
-// 		fields: [
-// 			 "name"
-// 			 ,"description","from","to"
+		fields: [
+			 "name"
+			 ,"description","from","to","status"
 
-// 			 ]};
-//  this.table4 = new YAHOO.widget.DataTable(tableDivEL, CustomersColumnDefs,
-// 						     this.dataSource4
-// 						     , {
-// 							 renderLoopSize: 50,generateRequest : myRequestBuilder
-// 							 ,paginator : new YAHOO.widget.Paginator({
-// 								 rowsPerPage    : <?php echo$_SESSION['state']['store']['deals']['nr']?>,containers : 'paginator4', alpartysVisible:false,
-// 								 pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',
-// 								 previousPageLinkLabel : "<",
-// 								 nextPageLinkLabel : ">",
-// 								 firstPageLinkLabel :"<<",
-// 								 lastPageLinkLabel :">>",rowsPerPageOptions : [10,25,50,100,250,500]
-// 								 ,template : "{FirstPageLink}{PreviousPageLink}<strong id='paginator_info4'>{CurrentPageReport}</strong>{NextPageLink}{LastPageLink}"
-// 							     })
+			 ]};
+ this.table4 = new YAHOO.widget.DataTable(tableDivEL, CustomersColumnDefs,
+						     this.dataSource4
+						     , {
+							 renderLoopSize: 50,generateRequest : myRequestBuilder
+							 ,paginator : new YAHOO.widget.Paginator({
+								 rowsPerPage    : <?php echo$_SESSION['state']['store']['deals']['nr']?>,containers : 'paginator4', alpartysVisible:false,
+								 pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',
+								 previousPageLinkLabel : "<",
+								 nextPageLinkLabel : ">",
+								 firstPageLinkLabel :"<<",
+								 lastPageLinkLabel :">>",rowsPerPageOptions : [10,25,50,100,250,500]
+								 ,template : "{FirstPageLink}{PreviousPageLink}<strong id='paginator_info4'>{CurrentPageReport}</strong>{NextPageLink}{LastPageLink}"
+							     })
 							 
-// 							 ,sortedBy : {
-// 							     key: "<?php echo$_SESSION['state']['store']['deals']['order']?>",
-// 							     dir: "<?php echo$_SESSION['state']['store']['deals']['order_dir']?>"
-// 							 },
-// 							 dynamicData : true
+							 ,sortedBy : {
+							     key: "<?php echo$_SESSION['state']['store']['deals']['order']?>",
+							     dir: "<?php echo$_SESSION['state']['store']['deals']['order_dir']?>"
+							 },
+							 dynamicData : true
 							 
-// 						     }
+						     }
 						     
-// 						     );
+						     );
 	    
-// 	    this.table4.handleDataReturnPayload =myhandleDataReturnPayload;
-// 	    this.table4.doBeforeSortColumn = mydoBeforeSortColumn;
-// 	    this.table4.doBeforePaginatorChange = mydoBeforePaginatorChange;
+	    this.table4.handleDataReturnPayload =myhandleDataReturnPayload;
+	    this.table4.doBeforeSortColumn = mydoBeforeSortColumn;
+	    this.table4.doBeforePaginatorChange = mydoBeforePaginatorChange;
 
 	  
 		    
-// 	    this.table4.filter={key:'<?php echo $_SESSION['state']['store']['deals']['f_field']?>',value:'<?php echo $_SESSION['state']['store']['deals']['f_value']?>'};
+	    this.table4.filter={key:'<?php echo $_SESSION['state']['store']['deals']['f_field']?>',value:'<?php echo $_SESSION['state']['store']['deals']['f_value']?>'};
 
 
 	     var tableid=5; // Change if you have more the 1 table
@@ -833,18 +1020,18 @@ function show_add_product_dialog(){
 function init(){
  
  
-	part_selected= function(sType, aArgs) {
-	    var myAC = aArgs[0]; var elLI = aArgs[1]; var oData = aArgs[2]; 
-	    //	    Dom.get("part_sku").value = oData[1];
-	  
-	    var ar_file='ar_edit_assets.php';
-	    YAHOO.util.Connect.asyncRequest(
-						'POST',
-						ar_file, {
-						    success:function(o) {
-								alert(o.responseText);
-							var r = YAHOO.lang.JSON.parse(o.responseText);
-							if (r.state == 200) {
+    part_selected= function(sType, aArgs) {
+	var myAC = aArgs[0]; var elLI = aArgs[1]; var oData = aArgs[2]; 
+	//	    Dom.get("part_sku").value = oData[1];
+	
+	var ar_file='ar_edit_assets.php';
+	YAHOO.util.Connect.asyncRequest(
+					'POST',
+					ar_file, {
+					    success:function(o) {
+						alert(o.responseText);
+						var r = YAHOO.lang.JSON.parse(o.responseText);
+						if (r.state == 200) {
 							    var table=tables['table5'];
 							    var datasource=tables['dataSource5'];
 							    var request='';
@@ -913,18 +1100,55 @@ function init(){
 };
 
     
-    var ids = ["description","products","discounts","pictures","web"]; 
+    var ids = ["details","products","discounts","pictures","web"]; 
     YAHOO.util.Event.addListener(ids, "click", change_block);
     
     // YAHOO.util.Event.addListener('add_product', "click", show_add_product_dialog);
     //YAHOO.util.Event.addListener('save_new_product', "click",save_new_product);
     //YAHOO.util.Event.addListener('cancel_add_product', "click", cancel_add_product);
+
+
+ids=['view_name','view_price','view_state'];
+YAHOO.util.Event.addListener(ids, "click",change_view)
+
+ YAHOO.util.Event.addListener('reset_edit_family', "click", reset_edit_family);
+    YAHOO.util.Event.addListener('save_edit_family', "click", save_edit_family);
+
+
+var family_code_oACDS = new YAHOO.util.FunctionDataSource(validate_code);
+    family_code_oACDS.queryMatchContains = true;
+    var family_code_oAutoComp = new YAHOO.widget.AutoComplete("code","code_Container", family_code_oACDS);
+    family_code_oAutoComp.minQueryLength = 0; 
+    family_code_oAutoComp.queryDelay = 0.1;
+    
+     var family_name_oACDS = new YAHOO.util.FunctionDataSource(validate_name);
+    family_name_oACDS.queryMatchContains = true;
+    var family_name_oAutoComp = new YAHOO.widget.AutoComplete("name","name_Container", family_name_oACDS);
+    family_name_oAutoComp.minQueryLength = 0; 
+    family_name_oAutoComp.queryDelay = 0.1;
+
+   var family_special_char_oACDS = new YAHOO.util.FunctionDataSource(validate_special_char);
+    family_special_char_oACDS.queryMatchContains = true;
+    var family_special_char_oAutoComp = new YAHOO.widget.AutoComplete("special_char","special_char_Container", family_special_char_oACDS);
+    family_special_char_oAutoComp.minQueryLength = 0; 
+    family_special_char_oAutoComp.queryDelay = 0.1;
+
+    var family_description_oACDS = new YAHOO.util.FunctionDataSource(validate_description);
+    family_description_oACDS.queryMatchContains = true;
+    var family_description_oAutoComp = new YAHOO.widget.AutoComplete("description","description_Container", family_description_oACDS);
+    family_description_oAutoComp.minQueryLength = 0; 
+    family_description_oAutoComp.queryDelay = 0.1;
+
+
 }
 
 YAHOO.util.Event.onDOMReady(init);
 
- ids=['view_name','view_price','view_state'];
- YAHOO.util.Event.addListener(ids, "click",change_view)
+ 
+    
+
+
+
 
 
 YAHOO.util.Event.onContentReady("rppmenu0", function () {
