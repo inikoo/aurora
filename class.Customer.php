@@ -198,7 +198,7 @@ class Customer extends DB_Table{
 
     if($child->found){
       
-      //print_r($child);
+      
       $this->found_child=true;
       $this->found_child_key=$child->found_key;
       $customer_found_keys=$child->get_customers_key();
@@ -217,6 +217,8 @@ class Customer extends DB_Table{
       $this->candidate=$child->candidate;
 
     }
+    
+
     
 
     // print "$options";
@@ -2289,13 +2291,19 @@ function remove_contact($contact_key=false){
 
  function get_last_order(){
    $order_key=0;
-   $sql=sprintf("select `Order Key` from `Order Dimension` where `Order Customer Key`=%d order by `Order Date` desc limit 1 ",$this->id);
-   //print $sql;
+   $sql=sprintf("select `Order Key` from `Order Dimension` where `Order Customer Key`=%d order by `Order Date` desc  ",$this->id);
+   // $sql=sprintf("select *  from `Order Dimension` limit 10");
+   // print "$sql\n";
    $res=mysql_query($sql);
-   if($row=mysql_fetch_array($res)){
-     $order_key=$row['Order Key'];
+
+   if($row=mysql_fetch_array($res,MYSQL_ASSOC)){
+     //   print_r($row);
+       $order_key=$row['Order Key'];
+       //print "****************$order_key\n";
+
+       //  exit;
    }
-   
+  
    return $order_key;
  }
 

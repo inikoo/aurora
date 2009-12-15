@@ -2139,6 +2139,8 @@ if($principal){
       */
     function get_customers_key($args='') {
         $sql=sprintf("select `Customer Key` from `Customer Dimension` where  `Customer Type`='Company' and `Customer Company Key`=%d  ",$this->id);
+	//	print_r($sql);
+
         $customer_keys=array();
         $result=mysql_query($sql);
         while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
