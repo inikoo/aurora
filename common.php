@@ -59,8 +59,16 @@ if(!$is_already_logged_in){
   include_once('app_files/key.php');
   $auth=new Auth(IKEY,SKEY);
   $handle = (array_key_exists('_login_', $_REQUEST)) ? $_REQUEST['_login_'] : false;
+  
+  
   $sk = (array_key_exists('ep', $_REQUEST)) ? $_REQUEST['ep'] : false;
-  $auth->authenticate($handle,$sk);
+
+  if(!$sk and array_key_exists('mk', $_REQUEST)    ){
+    $auth->authenticate_from_masterkey($_REQUEST['mk']);
+  }else{
+    $auth->authenticate($handle,$sk);
+  }
+  
   if($auth->is_authenticated()){
     $_SESSION['logged_in']=true;
     $_SESSION['user_key']=$auth->get_user_key();
@@ -117,9 +125,9 @@ if($user->is('Supplier'))
   $nav_menu[] = array(_('My Products'), 'myproducts.php');
 
 if($user->can_view('reports')){
-  if(count($user->stores)==1){
-    $nav_menu[] = array(_('Reports'), sprintf('report_sales.php?store_key=%d&tipo=m&y=%d&m=%d',$user->stores[0],date('Y'),date('m')));
-    }else
+  // if(count($user->stores)==1){
+  //  $nav_menu[] = array(_('Reports'), sprintf('report_sales.php?store_key=%d&tipo=m&y=%d&m=%d',$user->stores[0],date('Y'),date('m')));
+  //  }else
 
  $nav_menu[] = array(_('Reports'), 'reports.php');
 }
