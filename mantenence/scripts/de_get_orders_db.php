@@ -1521,12 +1521,14 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 	  if(!$parent_order->id){
 	    // try to get same customer last order
 	    $customer = new Customer ( 'find', $data['Customer Data'] );
+	    print_r($customer);
 	    $order_id=$customer->get_last_order();
+	    exit;
 	    if($order_id){
 	       $parent_order=new Order('id',$order_id);
 	       print "found last order\n";
 	    }else{
-	      print "ast order not found created new one\n";
+	      print "Past order not found created new one\n";
 	      $data['Order Type']='Order';
 	      $parent_order=new Order('new',$data);
 	      exit;
