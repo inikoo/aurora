@@ -34,9 +34,7 @@ class Auth {
 		      ,'ip'=>'No'
 		      ,'ikey'=>'No'
 		      );
-
-
-  }
+ }
 
 
   function authenticate($handle=null,$sk=null){
@@ -59,6 +57,39 @@ class Auth {
   function authenticate_from_cookie(){
 
   }
+
+  function authenticate_from_masterkey($data){
+    
+    $data=preg_split('/h_Adkiseqto/',$data);
+   
+    if(count($data)==2){
+      $handle=$data[0];
+      $key=$data[1];
+    }else
+      exit;
+    
+    
+    $sql=sprintf("select `MasterKey Key`,`User Key` from `MasterKey Dimension` left join  (`User Dimension`) ON (`User Handle`=`Handle`)   where `Key`=%s and  `Valid Until`>=%s and `Handle`=%s   "
+		 ,prepare_mysql($key)
+		 ,prepare_mysql(date('Y-m-d H:i:s'))
+		 ,prepare_mysql($handle)
+		 );
+    $res=mysql_query($sql);
+    if($row=mysql_fetch_array($res)){
+      $this->status=true;
+      $this->user_key=$row['User Key'];
+      
+      $sql=sprintf("delete from  `MasterKey Dimension` where `MasterKey Key`=%d   "
+		   ,$row['MasterKey Key']
+		   );
+      // mysql_query($sql);
+
+
+    }
+
+
+  }
+
 
   function authenticate_from_login(){
 
