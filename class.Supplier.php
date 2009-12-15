@@ -1039,29 +1039,7 @@ $this->associated=false;
     if ($old_name!=$contact->display('name')) {
 
 
-        if ($this->data['Supplier Type']=='Person'
-            and $this->data['Supplier Name']!=$contact->display('name')) {
-            $old_supplier_name=$this->data['Supplier Name'];
-            $this->data['Supplier Name']=$contact->display('name');
-            $this->data['Supplier File As']=$contact->data['Contact File As'];
-            $sql=sprintf("update `Supplier Dimension` set `Supplier Name`=%d,`Supplier File As`=%s where `Supplier Key`=%d"
-                         ,prepare_mysql($this->data['Supplier Name'])
-                         ,prepare_mysql($this->data['Supplier File As'])
-                         ,$this->id
-                        );
-            mysql_query($sql);
-            $note=_('Contact name changed');
-            $details=_('Supplier Name changed from')." \"".$old_supplier_name."\" "._('to')." \"".$this->data['Supplier Name']."\"";
-            $history_data=array(
-                              'indirect_object'=>'Supplier Name'
-                                                ,'details'=>$details
-                                                           ,'note'=>$note
-                                                                   ,'action'=>'edited'
-                          );
-            $this->add_history($history_data);
-
-        }
-
+       
         $this->data['Supplier Main Contact Key']=$contact->id;
         $this->data['Supplier Main Contact Name']=$contact->display('name');
         $sql=sprintf("update `Supplier Dimension` set `Supplier Main Contact Key`=%d,`Supplier Main Contact Name`=%s where `Supplier Key`=%d"
