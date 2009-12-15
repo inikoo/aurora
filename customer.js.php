@@ -168,7 +168,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 				      ,{key:"note", label:"<?php echo _('Notes')?>",className:"aleft",width:400}
 					   ];
 		
-		    this.dataSource0  = new YAHOO.util.DataSource("ar_contacts.php?tipo=customer_history&tid="+tableid);
+		    this.dataSource0  = new YAHOO.util.DataSource("ar_history.php?tipo=customer_history&tid="+tableid);
 		    this.dataSource0.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource0.connXhrMode = "queueRequests";
 	    this.dataSource0.responseSchema = {
