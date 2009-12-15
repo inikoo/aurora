@@ -1898,13 +1898,16 @@ mysql_free_result($result);
      $input_allowance='';
      foreach($deal->allowance_input_form() as $form_data){
        $input_allowance.=sprintf('<td style="text-align:right;width:150px;padding-right:10px" >%s</td>
-       <td style="width:15em"  style="text-align:left"><input id="input_deal_allowance%d" onKeyUp="deal_allowance_changed(%d)" %s class="%s" style="width:5em" value="%s" /> %s <span id="deal_allowance_save%d" style="visibility:hidden" class="state_details" onClick="deal_allowance_save(%d)">'._('Save').'</span> <span id="deal_allowance_reset%d" style="visibility:hidden" style="margin-left:10px "class="state_details"  onClick="deal_allowance_reset(%d)">'._('Reset').'</span></td>'
+       <td style="width:15em"  style="text-align:left"><input id="deal_allowance%d" onKeyUp="deal_allowance_changed(%d)" %s class="%s" style="width:5em" value="%s" ovalue="%s" /> %s 
+       <span id="deal_allowance_save%d" style="visibility:hidden" class="state_details" onClick="deal_allowance_save(%d)">'._('Save').'</span> 
+       <span id="deal_allowance_reset%d" style="visibility:hidden" style="margin-left:10px "class="state_details"  onClick="deal_allowance_reset(%d)">'._('Reset').'</span></td>'
 				 ,$form_data['Label']
 				   ,$row['Deal Key']
 				 ,$row['Deal Key']
 				 ,($form_data['Lock Value']?'READONLY':'')
 				 ,$form_data['Value Class']
 				 ,$form_data['Value']
+				  ,$form_data['Value']
 				 ,$form_data['Lock Label']
 				 ,$row['Deal Key']
 				 ,$row['Deal Key']
@@ -1945,7 +1948,7 @@ mysql_free_result($result);
        {
 
 	 $input_term=sprintf('<td style="text-align:right;width:150px;padding-right:10px" >%s</td>
-	 <td style="width:15em"  style="text-align:left"><input id="input_deal_term%d" onKeyUp="deal_term_changed(%d)" %s class="%s" style="width:5em" value="%s" ovalue="%s" /> %s <span id="deal_term_save%d" style="visibility:hidden" class="state_details" onClick="deal_term_save(%d)">'._('Save').'</span> <span id="deal_term_reset%d" style="visibility:hidden" style="margin-left:10px "class="state_details"  onClick="deal_term_reset(%d)">'._('Reset').'</span></td>'
+	 <td style="width:15em"  style="text-align:left"><input id="deal_term%d" onKeyUp="deal_term_changed(%d)" %s class="%s" style="width:5em" value="%s" ovalue="%s" /> %s <span id="deal_term_save%d" style="visibility:hidden" class="state_details" onClick="deal_term_save(%d)">'._('Save').'</span> <span id="deal_term_reset%d" style="visibility:hidden" style="margin-left:10px "class="state_details"  onClick="deal_term_reset(%d)">'._('Reset').'</span></td>'
 			     ,$form_data['Label']
 			     ,$row['Deal Key']
 			     ,$row['Deal Key']

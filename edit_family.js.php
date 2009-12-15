@@ -7,7 +7,7 @@ $sql=sprintf("select * from `Deal Dimension`D where D.`Deal Trigger`='Family' an
 $res=mysql_query($sql);
 $deal_data="";
 while($row=mysql_fetch_array($res)){
-  $deal_data.=sprintf(',"%d":{"terms":{"ovalue":"%s","type":"%s"},"allowance":{"ovalue":"%s","type":"%s"}}'."\n"
+  $deal_data.=sprintf(',"%d":{"terms":{"ovalue":"%s","type":"%s"},"allowances":{"ovalue":"%s","type":"%s"}}'."\n"
 		      ,$row['Deal Key']
 		      ,$row['Deal Terms Metadata']
 		      ,$row['Deal Terms Type']
@@ -16,6 +16,7 @@ while($row=mysql_fetch_array($res)){
 		      );
 
 }
+mysql_free_result($res);
 $deal_data=preg_replace('/^,/','',$deal_data);
 $deal_data="var deal_data={\n$deal_data};\n";
 print $deal_data;
@@ -220,8 +221,8 @@ function deal_term_reset(deal_key){
 
 function deal_term_changed(deal_key){
     var data=deal_data[deal_key]['terms'];
-    old_value=data.ovalue;
-    new_value=Dom.get('deal_term_term'+deal_key).value;
+    old_value=Dom.get('deal_term'+deal_key).getAttribute('ovalue');
+    new_value=Dom.get('deal_term'+deal_key).value;
 
     if(old_value!=new_value){
 	Dom.get('deal_term_reset'+deal_key).style.visibility='visible';
@@ -252,15 +253,42 @@ function deal_term_changed(deal_key){
     }
 
 }
+function deal_allowance_save(item,deal_key){
+
+	var request='ar_edit_assets?tipo=edit_deal&key=' + item+ '&newvalue=' + 
+	    encodeURIComponent(value) +  '&oldvalue=' + 
+	    '&deal_key='+deal_key;
+	//		alert(request)
+	YAHOO.util.Connect.asyncRequest('POST',request ,{
+		success:function(o) {
+		    //		   	    alert(o.responseText)
+		    var r =  YAHOO.lang.JSON.parse(o.responseText);
+		    if(r.state==200){
+			
+			
+			
+		
+		    }else{
+			validate_scope_data[branch][r.key].changed=true;
+			validate_scope_data[branch][r.key].validated=false;
+			Dom.get(validate_scope_data[branch][r.key].name+'_msg').innerHTML=r.msg;
+			
+		    }
+		    
+		}
+			    
+	    });
+	}
 
 
 function deal_allowance_changed(deal_key){
     var data=deal_data[deal_key]['allowances'];
-    old_value=data.ovalue;
-    new_value=Dom.get('input_deal_allowance'+deal_key).value;
+        old_value=Dom.get('deal_allowance'+deal_key).getAttribute('ovalue');
 
+    new_value=Dom.get('deal_allowance'+deal_key).value;
+     //alert(old_value+'->'+new_value)
     if(old_value!=new_value){
-	Dom.get('input_deal_reset'+deal_key).style.visibility='visible';
+	Dom.get('deal_allowance_reset'+deal_key).style.visibility='visible';
 
     switch(data.type){
     case('Get Same Fre'):
@@ -271,11 +299,11 @@ function deal_allowance_changed(deal_key){
     case('Percentage Off'):
 	
 	
-	Dom.get('input_deal_save'+deal_key).style.visibility='visible';
+	Dom.get('deal_allowance_save'+deal_key).style.visibility='visible';
 
 	var validator=/^(\d+|\.\d+|\d+.|\d+\.\d+)\s*\%?$/;
 	if(!validator.test(new_value)){
-	      Dom.get('input_deal_save'+deal_key).style.visibility='hidden';
+	      Dom.get('deal_allowance_save'+deal_key).style.visibility='hidden';
 	}
 	break;
 
@@ -283,8 +311,8 @@ function deal_allowance_changed(deal_key){
     }
     }else{
 	
-	Dom.get('input_deal_save'+deal_key).style.visibility='hidden';
-	Dom.get('input_deal_reset'+deal_key).style.visibility='hidden';
+	Dom.get('deal_allowance_save'+deal_key).style.visibility='hidden';
+	Dom.get('deal_allowance_reset'+deal_key).style.visibility='hidden';
 
     }
 
