@@ -413,5 +413,41 @@ class Deal extends DB_Table {
 
     }
 
+
+
+    function update_term($thin_description){
+      $this->updated=false;
+
+
+      switch($this->data['Deal Terms Type']){
+      case('Family Quantity Ordered'):
+      case('Product Quantity Ordered'):
+	if(!numeric($thin_description)){
+	  $this->msg=_('Term should be numeric');
+	}elseif($thin_description<=0){
+	    $this->msg=_('Term should be more than zero');
+	  }
+	
+	$term_description="order ".number($thin_description)." or more";
+
+      }
+
+      
+      $term_metadata=$this->parse_term_metadata(
+						    $this->data['Deal Terms Type']
+						    ,$term_description
+						    );
+      if($term_metadata!=$this->data['Deal Terms Metadata']){
+
+	$sql=sprintf("update `Deal Dimension` set `Deal Terms Description`=%s ,`Deal Terms Metadata`=%s where `Deal Dimension`=%d"
+	,mysql_query($term_description)
+	,mysql_query($term_metadata)
+	,$this->id
+	);
+    }
+
+
+    }
+
     
 }

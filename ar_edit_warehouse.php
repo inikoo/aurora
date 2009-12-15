@@ -270,8 +270,8 @@ function list_warehouse_areas_for_edition(){
 	$warehouse_id=$_SESSION['state']['warehouse']['id'];
    
 
-      $conf=$_SESSION['state']['warehouse_area']['table'];
-      $conf2=$_SESSION['state']['warehouse_area'];
+      $conf=$_SESSION['state']['warehouse']['warehouse_area'];
+
       $conf_table='warehouse_area';
 
       if(isset( $_REQUEST['parent']))
@@ -331,7 +331,7 @@ function list_warehouse_areas_for_edition(){
 
       
       
-      $_SESSION['state'][$conf_table]['table']=array('order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value,'parent'=>$parent);
+      $_SESSION['state']['warehouse']['warehouse_area']=array('order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value,'parent'=>$parent);
      
       
       
