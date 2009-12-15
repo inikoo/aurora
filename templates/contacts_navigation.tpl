@@ -12,10 +12,10 @@
 {else}
 <span class="nav2 onleft"><a href="customers.php">{t}Customers{/t}</a></span>
 {/if}
- <span class="nav2 onleft"><a class="selected"  href="companies.php">{t}Companies{/t}</a></span>
-<span class="nav2 onleft"><a    href="contacts.php">{t}Personal Contacts{/t}</a></span>
-<span class="nav2 onleft"><a    href="requests.php">{t}Requests{/t}</a></span>
-<span class="nav2 onleft"><a    href="marketing.php">{t}Marketing{/t}</a></span>
+ <span class="nav2 onleft"><a {if $nav_parent=='companies'}class="selected"{/if}  href="companies.php">{t}Companies{/t}</a></span>
+<span class="nav2 onleft"><a  {if $nav_parent=='contacts'}class="selected"{/if}   href="contacts.php">{t}Personal Contacts{/t}</a></span>
+<span class="nav2 onleft"><a  {if $nav_parent=='requests'}class="selected"{/if}   href="requests.php">{t}Requests{/t}</a></span>
+<span class="nav2 onleft"><a  {if $nav_parent=='marketing'}class="selected"{/if}   href="marketing.php">{t}Marketing{/t}</a></span>
 
 
 <div class="search_box">
