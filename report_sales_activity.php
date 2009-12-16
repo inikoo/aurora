@@ -37,25 +37,14 @@ $js_files=array(
 $smarty->assign('parent','reports.php');
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
-$tipo=$_REQUEST['tipo'];
-include_once('report_dates.php');
 
+$link='';
 
+$to=date('Y-d-m H:i:s');
+$from=date('Y-d-m H:i:s',strtotime('now -1 day'));
+   $int=prepare_mysql_dates($from,$to,'`Invoice Date`','date start end');
 
-
-
-
-
-
-$_SESSION['state']['report']['sales']['to']=$to;
-$_SESSION['state']['report']['sales']['from']=$from;
-$_SESSION['state']['report']['sales']['period']=$period;
-global $myconf;
-  
-/* $valid_rates=array( */
-/* 		   array('date'=>'01-01-2000','rate'=>17.5), */
-/* 		   array('date'=>'01-12-2008','rate'=>15) */
-/* 		   ); */
+$title=_('Sales Activity Report');
 
 $store_data=array();
 $sql="select `Store Name`,`Store Key`,`Store Currency Code` from `Store Dimension`";
@@ -76,7 +65,8 @@ while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
 				       ,'invoices'=>0
 				       );
   
-   $sql=sprintf("select `Invoice Category`,`Store Name`,`Store Key`,`Store Currency Code`,sum(if(`Invoice Title`='Invoice',1,0)) as invoices,sum(`Invoice Total Net Amount`) as net,sum(`Invoice Total Tax Amount`) as tax ,sum(`Invoice Total Net Amount`*`Invoice Currency Exchange`) as eq_net,sum(`Invoice Total Tax Amount`*`Invoice Currency Exchange`) as eq_tax from `Invoice Dimension` I left join `Store Dimension` S on (S.`Store Key`=`Invoice Store Key`) where `Invoice Store Key`=%d %s group by `Invoice Category`",$row['Store Key'],$int[0]);
+   $sql=sprintf("select  count(DISTINCT `Invoice Customer Key`) as customers, `Invoice Category`,`Store Name`,`Store Key`,`Store Currency Code`,sum(if(`Invoice Title`='Invoice',1,0)) as invoices,sum(`Invoice Total Net Amount`) as net,sum(`Invoice Total Tax Amount`) as tax ,sum(`Invoice Total Net Amount`*`Invoice Currency Exchange`) as eq_net,sum(`Invoice Total Tax Amount`*`Invoice Currency Exchange`) as eq_tax from `Invoice Dimension` I left join `Store Dimension` S on (S.`Store Key`=`Invoice Store Key`) where `Invoice Store Key`=%d %s group by `Invoice Category`"
+   ,$row['Store Key'],$int[0]);
   $result2=mysql_query($sql);
   if(mysql_num_rows($result2) >1 ){
   while($row2=mysql_fetch_array($result2, MYSQL_ASSOC)){
@@ -84,6 +74,7 @@ while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
 								       'store'=>''
 								       ,'substore'=>sprintf("%s",$row2['Invoice Category'])
 								       ,'invoices'=>number($row2['invoices'])
+								       ,'customers'=>number($row2['customers'])
 								       ,'net'=>money($row2['net'],$row['Store Currency Code'])
 								       ,'tax'=>money($row2['tax'],$row['Store Currency Code'])
 								       ,'eq_net'=>money($row2['eq_net'])
@@ -91,6 +82,8 @@ while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
 								       ,'_eq_net'=>$row2['eq_net']
 								       ,'_eq_tax'=>$row2['eq_tax']
 								       ,'currency_code'=>$row['Store Currency Code']
+								       ,'_invoices'=>$row2['invoices']
+                                        ,'_customers'=>$row2['customers']
 								       );
   }
 
@@ -100,18 +93,22 @@ while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
 
 
 
-$sql="select `Invoice Store Key`,sum(if(`Invoice Title`='Invoice',1,0)) as invoices,sum(`Invoice Total Net Amount`) as net,sum(`Invoice Total Tax Amount`) as tax ,sum(`Invoice Total Net Amount`*`Invoice Currency Exchange`) as eq_net,sum(`Invoice Total Tax Amount`*`Invoice Currency Exchange`) as eq_tax from `Invoice Dimension` where true ".$int[0]." group by `Invoice Store Key`";
+$sql="select count(DISTINCT `Invoice Customer Key`) as customers, `Invoice Store Key`,sum(if(`Invoice Title`='Invoice',1,0)) as invoices,sum(`Invoice Total Net Amount`) as net,sum(`Invoice Total Tax Amount`) as tax ,sum(`Invoice Total Net Amount`*`Invoice Currency Exchange`) as eq_net,sum(`Invoice Total Tax Amount`*`Invoice Currency Exchange`) as eq_tax from `Invoice Dimension` where true ".$int[0]." group by `Invoice Store Key`";
 //print $sql;
 $result=mysql_query($sql);
 $sum_net_eq=0;
 $sum_tax_eq=0;
 $sum_inv=0;
+$sum_customers=0;
 $mixed_currencies=false;
+$number_stores=0;
 while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
+$number_stores++;
   $sum_net_eq+=$row['eq_net'];
   $sum_tax_eq+=$row['eq_tax'];
   $sum_inv+=$row['invoices'];
-
+  $sum_customers+=$row['customers'];
+  $store_data[$row['Invoice Store Key']]['customers']='<b>'.number($row['customers']).'</b>';
   $store_data[$row['Invoice Store Key']]['invoices']='<b>'.number($row['invoices']).'</b>';
   $store_data[$row['Invoice Store Key']]['net']='<b>'.money($row['net'],$store_data[$row['Invoice Store Key']]['currency_code']).'</b>';
   $store_data[$row['Invoice Store Key']]['tax']='<b>'.money($row['tax'],$store_data[$row['Invoice Store Key']]['currency_code']).'</b>';
@@ -119,36 +116,30 @@ while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
   $store_data[$row['Invoice Store Key']]['eq_tax']=money($row['eq_tax']);
   $store_data[$row['Invoice Store Key']]['_eq_net']=$row['eq_net'];
   $store_data[$row['Invoice Store Key']]['_eq_ta']=$row['eq_tax'];
+  $store_data[$row['Invoice Store Key']]['_invoices']= $row['invoices'];
+  $store_data[$row['Invoice Store Key']]['_customers']= $row['customers'];
 
-  
- /*  $sql=sprintf("select `Invoice Category`,`Store Name`,`Store Key`,`Store Currency Code`,sum(if(`Invoice Title`='Invoice',1,0)) as invoices,sum(`Invoice Total Net Amount`) as net,sum(`Invoice Total Tax Amount`) as tax ,sum(`Invoice Total Net Amount`*`Invoice Currency Exchange`) as eq_net,sum(`Invoice Total Tax Amount`*`Invoice Currency Exchange`) as eq_tax from `Invoice Dimension` I left join `Store Dimension` S on (S.`Store Key`=`Invoice Store Key`) where `Invoice Store Key`=%d %s group by `Invoice Category`",$row['Invoice Store Key'],$int[0]); */
-/*   $result2=mysql_query($sql); */
-/*   if(mysql_num_rows($result2) >1 ){ */
-/*   while($row2=mysql_fetch_array($result2, MYSQL_ASSOC)){ */
-/*     $store_data[]=array( */
-/* 			'store'=>'' */
-/* 			,'substore'=>sprintf("%s",$row2['Invoice Category']) */
-/* 			,'invoices'=>number($row2['invoices']) */
-/* 			,'net'=>money($row2['net'],$row['Store Currency Code']) */
-/* 			,'tax'=>money($row2['tax'],$row['Store Currency Code']) */
-/* 			,'eq_net'=>money($row2['eq_net']) */
-/* 			,'eq_tax'=>money($row2['eq_tax']) */
-/* 			,'_eq_net'=>$row2['eq_net'] */
-/* 			,'_eq_tax'=>$row2['eq_tax'] */
-/* 			,'currency_code'=>$row['Store Currency Code'] */
-/* 			); */
-/*   }       */
+ 
 }
 //mysql_free_result($result2);
 
 mysql_free_result($result);
 foreach($store_data as $key=>$val){
   if($val['store']!=''){
+  if($number_stores>1){
+   $store_data[$key]['per_invoices']=percentage($val['_invoices'],$sum_inv);
+   $store_data[$key]['per_customers']=percentage($val['_customers'],$sum_customers);
+
   if($val['currency_code']!=$myconf['currency_code'])
     $store_data[$key]['per_eq_net']='<span class="mix_currency">'.percentage($val['_eq_net'],$sum_net_eq).'</span>';
   else
     $store_data[$key]['per_eq_net']=percentage($val['_eq_net'],$sum_net_eq);
-  }else{
+ }
+ 
+ }else{
+     $store_data[$key]['sub_per_invoices']=percentage($val['_invoices'],$sum_inv);
+     $store_data[$key]['sub_per_customers']=percentage($val['_customers'],$sum_customers);
+
      if($val['currency_code']!=$myconf['currency_code'])
     $store_data[$key]['sub_per_eq_net']='<span class="mix_currency">'.percentage($val['_eq_net'],$sum_net_eq).'</span>';
   else
@@ -158,7 +149,7 @@ foreach($store_data as $key=>$val){
 
 }
 
-
+if($number_stores>1){
 if($mixed_currencies){
   $store_data[]=array(
 		   'store'=>_('Total')
@@ -177,67 +168,22 @@ if($mixed_currencies){
 		      );
 
 }
-  
+}  
 
 
 
 //print_r($store_data);
 $smarty->assign('store_data',$store_data);
 
-$plot_tipo=$_SESSION['state']['report']['sales']['plot'];
-//print $plot_tipo.preg_replace('/tipo/i','dtipo',$link);
-$smarty->assign('plot_tipo',$plot_tipo.preg_replace('/tipo/i','dtipo',$link));
 
 
 $day_interval=get_time_interval(strtotime($from),(strtotime($to)))+1;
-$smarty->assign('tipo',$tipo);
-$smarty->assign('period',$period);
 
 $smarty->assign('title',$title);
-$smarty->assign('year',date('Y'));
-$smarty->assign('month',date('m'));
-$smarty->assign('month_name',date('M'));
 
-
-$smarty->assign('week',date('W'));
-$smarty->assign('from',date('d-m-Y'));
-$smarty->assign('to',date('d-m-Y'));
 $smarty->assign('currency',$myconf['currency_symbol']);
 
-$plot_tipo=$_SESSION['state']['report']['sales']['plot'];
-$plot_data=$_SESSION['state']['report']['sales']['plot_data'][$plot_tipo];
-$plot_category=$plot_data['category'];
-if($tipo=='y'){
-  $plot_period='m';
-}elseif($tipo=='m'){
-  $plot_period='w';
-}
 
-$plot_args='tipo=store&category='.$plot_category.'&period='.$plot_period.'&keys=all&from='.$from.'&to='.$to;
-$smarty->assign('plot_tipo',$plot_tipo);
-$smarty->assign('plot_args',$plot_args);
-$smarty->assign('plot_page',$plot_data['page']);
-$smarty->assign('plot_period',$plot_period);
-$smarty->assign('plot_category',$plot_period);
-$smarty->assign('plot_data',$_SESSION['state']['store']['plot_data']);
-
-
- if($plot_period=='m')
-      $plot_formated_period='Monthly';
-    elseif($plot_period=='y')
-      $plot_formated_period='Yearly';
-    elseif($plot_period=='q')
-      $plot_formated_period='Quarterly';
-    elseif($plot_period=='w')
-      $plot_formated_period='Weekly';
-
-if($plot_category=='profit')
-  $plot_formated_category=_('Profits');
-else
-  $plot_formated_category=_('Net Sales');
-$smarty->assign('plot_formated_category',$plot_formated_category);
-$smarty->assign('plot_formated_period',$plot_formated_period);
-
-$smarty->display('report_sales_main.tpl');
+$smarty->display('report_sales_activity.tpl');
 ?>
 

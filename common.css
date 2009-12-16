@@ -256,7 +256,6 @@ img{vertical-align:bottom}
 
 .view_options td {cursor:pointer}
 
-
 .report_sales1 td {text-align:right;padding:0 15px;}
 .compact td{ padding:0 12.5px; }
 .report_sales1 tr {border-top:1px solid #ddd}
@@ -269,8 +268,8 @@ img{vertical-align:bottom}
 .report_sales1 tr.first {border-top:1px solid #999;}
 .report_sales1 tr.partners {border-top:1px solid #999}
 .report_sales1 tr.total,.report_sales1 tr.subtotal {border-top:1px solid #999}
-.report_sales1 tr.total {height:30px;vertical-align:top;font-weight:800}
-.report_sales1 tr.last {height:30px;vertical-align:top;border-bottom:1px solid #999}
+.report_sales1 tr.total {vertical-align:top;font-weight:800}
+.report_sales1 tr.last {vertical-align:top;border-bottom:1px solid #999}
 .report_sales1 tr.last td {border-bottom:1px solid #999}
 
 
@@ -665,7 +664,9 @@ position:relative;top:1px;
 .product_info_sales_options{cursor:pointer}
 
 .block_list{width:800px}
-.block_list div{cursor:pointer;text-align:center;margin:20px;padding:20px;width:100px;height:100px;float:left;border:1px solid #ddd}
+.block_list h2{border-bottom:1px solid #ddd;padding:10px 0 0 0}
+
+.block_list div{font-size:90%;cursor:pointer;text-align:center;margin-right:20px;padding:10px 10px 0 10px;width:120px;height:100px;float:left;border:0px solid #ddd}
 
 .plot {width:930px;}
 .plot_iframe {position:relative;left:-20px}
