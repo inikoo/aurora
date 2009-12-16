@@ -26,9 +26,13 @@
 <td>{$data.per_customers}{$data.sub_per_customers}</td>
 <td style="padding-right:0px;padding-left:20px">{$data.net}</td>
 <td>{$data.per_eq_net}{$data.sub_per_eq_net}</td>
+<td class="space" style="width:20px"></td>
+<td id="compare_invoices"  style="background:{$data.compare_invoices_color}" class="compare">{$data.compare_invoices}</td>
+<td id="compare_customers" style="background:{$data.compare_customers_color}" class="compare">{$data.compare_customers}</td>
+<td id="compare_net" style="background:{$data.compare_net_color}" class="compare">{$data.compare_net}</td>
 {/foreach}
-<tr style="height:15px;border:none"><td><td></td></td><td colspan="4" style="text-align:center"></td><td></td></tr>
-<tr style="xheight:30px;border:none;font-size:90%"><td></td><td colspan="6" style="text-align:center">{t}Last Week Sales Activity{/t}</td></tr>
+<tr class="space" style="height:15px;"><td><td></td></td><td colspan="4" style="text-align:center"></td><td></td></tr>
+<tr style="border:none;font-size:90%"><td></td><td colspan="6" style="text-align:center">{t}Last Week Sales Activity{/t}</td></tr>
 </table>
 
 
