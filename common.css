@@ -666,7 +666,8 @@ position:relative;top:1px;
 .block_list{width:800px}
 .block_list h2{border-bottom:1px solid #ddd;padding:10px 0 0 0}
 
-.block_list div{font-size:90%;cursor:pointer;text-align:center;margin-right:20px;padding:10px 10px 0 10px;width:120px;height:100px;float:left;border:0px solid #ddd}
+.block_list div{font-size:90%;cursor:pointer;text-align:center;margin-right:20px;padding:10px 10px 5px 10px;margin-bottom:10px;width:120px;height:90px;float:left;border:0px solid #ddd}
+.block_list img{width:120px;margin-top:4px}
 
 .plot {width:930px;}
 .plot_iframe {position:relative;left:-20px}

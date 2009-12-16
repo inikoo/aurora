@@ -122,8 +122,17 @@ $default_state=array(
 				    ),
 		     'reports'=>array(
 				      'view'=>'sales',
+
+
+
 				      'sales'=>array(
 						     'plot'=>'total_sales_month'
+						     ,'store_key'=>1
+						     ,'tipo'=>'y'
+						     ,'y'=>date('Y')
+						     ,'m'=>date('m')
+						     ,'d'=>date('d')
+						     ,'w'=>date('W')
 						     )
 				      ,'stock'=>array(
                                                       'plot'=>'total_outofstock_month'

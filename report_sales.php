@@ -37,7 +37,19 @@ $js_files=array(
 $smarty->assign('parent','reports.php');
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
-$tipo=$_REQUEST['tipo'];
+
+if(isset($_REQUEST['tipo']) and preg_match('/y|m|d|q|w/',$_REQUEST['tipo'])){
+  $tipo=$_REQUEST['tipo'];
+  $_SESSION['state']['reports']['sales']['tipo']=$tipo;
+}else{
+  $tipo=$_SESSION['state']['reports']['sales']['tipo'];
+  
+}
+
+
+
+
+
 include_once('report_dates.php');
 
 

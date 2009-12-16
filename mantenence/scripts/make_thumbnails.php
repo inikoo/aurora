@@ -7,6 +7,7 @@ include_once('../../class.Supplier.php');
 include_once('../../class.Part.php');
 include_once('../../class.SupplierProduct.php');
 include_once('../../class.Image.php');
+include_once('../../class.Page.php');
 
 date_default_timezone_set('Europe/London');
 
@@ -25,28 +26,51 @@ require_once '../../conf/conf.php';
 
 
 mt_srand(make_seed());
-chdir("../../external_libs/html2imagev3");
 
+
+$sql="select * from `Page Dimension` P  left join `Page Internal Dimension`  I on (P.`Page Key`=I.`Page Key`) where `Page Type`='Internal' and `Page Section`='Reports'";
+
+$res=mysql_query($sql);
+while($row=mysql_fetch_array($res)){
+chdir("../../external_libs/html2imagev3");
 $handle='root';
 $pwd=create_master_key($handle);
 $filename='tn_tmp_'.rand().'.jpg';
 
 
-$path='app_files/pics/';
+$path='app_files/pics/tmp/';
 $img_name=$path.$filename;
+$img_name_tmp=$path.'tmp_'.$filename;
+
+
 if (file_exists($img_name)) {
  unlink($img_name);
 }
-$url='http://tunder/ci/report_sales_server.php';
+$url='http://tunder/ci/'.$row['Page URL'];
+
+
 $url_args='?mk='.$handle.'h_Adkiseqto'.$pwd;
-$command='export LD_LIBRARY_PATH=./;./html2image '.$url.$url_args." ../../$img_name";
-print $command."\n";
+$command='export LD_LIBRARY_PATH=./;./html2image '.$url.$url_args." ../../$img_name_tmp -d 750 ;rm core.*; convert -resize 120 ../../$img_name_tmp ../../$img_name;rm ../../$img_name_tmp    ";
+//print $command."\n";
 exec($command);
 chdir('../../');
 
-$data=array('file'=>$filename);
+$data=array(
+	    'file'=>$filename
+	    ,'path'=>'thumbnails/'
+	    ,'name'=>preg_replace('/[^a-z]/i','',$row['Page Title'])
+	    ,'caption'=>$row['Page Title']
+	    );
+
 $image=new Image('find',$data,'create');
-print_r($image);
+$page=new Page($row['Page Key']);
+$page->update_thumbnail_key($image->id);
+chdir('mantenence/scripts/');
+
+}
+
+//$sql="insert into `Image Bridge` (`Subject`,`Subject Key`,`Image Key`) values('Website',%d,%d)",$page_key,
+
 
 
 

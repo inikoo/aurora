@@ -31,6 +31,8 @@ class Image  {
   function Image($a1,$a2=false,$a3=false) {
 
     $this->path='app_files/pics/';
+    $this->tmp_path='app_files/pics/tmp/';
+    $this->name='';
     $this->found=false;
 
 
@@ -51,16 +53,22 @@ class Image  {
 
  function get_data($id){
    $sql=sprintf("select `Image Key`,`Image Caption`,`Image URL`,`Image Filename`,`Image Type`,`Image File Checksum`,`Image Width`,`Image Height`,`Image File Size`,`Image File Format` from `Image Dimension` where `Image Key`=%d ",$id);
-   print $sql;
+   // print $sql;
    $result=mysql_query($sql);
    if($this->data=mysql_fetch_array($result, MYSQL_ASSOC)   )
-     $this->id=$this->data['Image  Key'];
+     $this->id=$this->data['Image Key'];
     
  
  }
 
 
  function find($raw_data,$options){
+   if(!isset($raw_data['file'])){
+     $this->error=true;
+     $this->msg='no file given';
+     return;
+   }
+   
 
     if(isset($raw_data['editor'])){
      foreach($raw_data['editor'] as $key=>$value){
@@ -72,9 +80,39 @@ class Image  {
    }
 
 
+
+
     $file=$raw_data['file'];
+
+    if(preg_match('/\.\.\//',$file)){
+      $this->error=true;
+      $this->msg=_('Invalid filename, return paths forbiden');
+      return;
+    }
+
+    if(isset($raw_data['name'])){
+      $this->name=$raw_data['name'];
+    }
    
-   
+
+
+    $this->caption='';
+    if(isset($raw_data['caption'])){
+      $this->caption=$raw_data['caption'];
+    }
+
+
+
+    if(isset($raw_data['path'])){
+      if(preg_match('/\.\.\//',$raw_data['path'])){
+      $this->error=true;
+      $this->msg=_('Invalid destination path, return paths forbiden');
+      return;
+    }
+
+
+      $this->path.=$raw_data['path'];
+    }
 
     $create='';
     $update='';
@@ -86,12 +124,13 @@ class Image  {
     }
 
 
-    $checksum=md5_file($this->path.$file);
+    $this->checksum=md5_file($this->tmp_path.$file);
 
 
+    
 
     $sql=sprintf("select `Image Key` from `Image Dimension` where `Image File Checksum`=%s"
-		 ,prepare_mysql($checksum)
+		 ,prepare_mysql($this->checksum)
 		 
 		 );
     $res=mysql_query($sql);
@@ -114,18 +153,18 @@ class Image  {
 
 
  function create($file,$args='') {
-   $tmp_images_dir=$this->path;
+   
 
    
-   $target_path = $tmp_images_dir;
-   //print filesize($file)."-----Z\n";
-   
+  
+   $filename=$this->tmp_path.$file;
    ob_start();
    system("uname");
    $mimetype='Unknown';
    $system='Unknown';
    $_system = ob_get_clean();
     
+
    if(preg_match('/darwin/i',$_system)){
      ob_start();
       $system='Mac';
@@ -152,37 +191,44 @@ class Image  {
     
     
     if($format=='jpeg')
-        $im = @imagecreatefromjpeg($file);
+      $im = @imagecreatefromjpeg($filename);
     elseif($format=='png')    
-         $im = @imagecreatefrompng($file);
+         $im = @imagecreatefrompng($filename);
     else{
-    $this->error=true;
-    $this->msg=_('File format not supported');
+      $this->error=true;
+      $this->msg=_('File format not supported');
     }
          
     // print "-----------------";
     if ($im) {
 
      
+      if (!file_exists($this->path))
+	mkdir($this->path, 0700);
       
+      $name=$this->path.$this->checksum.'.'.$format;
+	  
       
-
-
-      $news_imgfile = addslashes(fread(fopen($file, "r"), filesize($file)));
-
-
-      $image_data=array(
-			'Image Width' => imagesx($im),
-			'Image Height' => imagesy($im),
-			'Image File Size'=>$s=filesize($file),
-			'Image File Checksum'=>$checksum,
-			'Image Caption'=>$this->data['Product Name'],
-			'Image Filename'=>$file,
-			'Image URL'=>'',
+      if($this->name=='')
+	$this->name=$file;
+      else
+	$this->name.=$format;
+	  
+	  $news_imgfile = addslashes(fread(fopen($filename, "r"), filesize($filename)));
+	  
+	  
+	  $image_data=array(
+			    'Image Width' => imagesx($im),
+			    'Image Height' => imagesy($im),
+			    'Image File Size'=>filesize($filename),
+			    'Image File Checksum'=>$this->checksum,
+			    'Image Caption'=>$this->caption,
+			    'Image Filename'=>$this->name,
+			'Image URL'=>$name,
 			'Image File Format'=>$format,
 			'Image Type'=>'Original'
                         );
-      //print_r($image_data);
+
 
       if($format=='jpeg')
 	imagejpeg($im,$name );
@@ -196,7 +242,7 @@ class Image  {
       $values='values(';
       foreach($image_data as $key=>$value) {
 	$keys.="`$key`,";
-	if (preg_match('/url/i',$key))
+	if (preg_match('/caption/i',$key))
 	  $values.="'".addslashes($value)."',";
 	else
 	  $values.=prepare_mysql($value).",";
@@ -204,18 +250,18 @@ class Image  {
       $keys=preg_replace('/,$/',')',$keys);
       $values=preg_replace('/,$/',')',$values);
       $sql=sprintf("insert into `Image Dimension` %s %s",$keys,$values);
-      
+
       if (mysql_query($sql)) {
 	$this->id=mysql_insert_id();
-	$url=sprintf('image.php?id=%d',$image_key);
-	$sql=sprintf("update `Image Dimension` set `Image URL`=%s  where `Image Key`=%d",prepare_mysql($url),$this->id);
-	mysql_query($sql);
+
 	$this->get_data($this->id);
+      }else{
+	$this->error=true;
       }
 
 
     }
-    unlink($file);
+    unlink($filename);
 
   }
 
