@@ -146,8 +146,15 @@ if($tipo=='f'){
 
  }elseif($tipo=='y'){
   
-
+  if(isset($_REQUEST['y']) and preg_match('/^\d$/',$_REQUEST['y'])){
   $year=$_REQUEST['y'];
+  $_SESSION['state']['reports']['sales']['1']=$year;
+}else{
+  $year=$_SESSION['state']['reports']['sales']['y'];
+  
+}
+  
+
 
    
    $_time=mktime(0, 0, 0,1 ,1 , $year);
