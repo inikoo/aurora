@@ -73,6 +73,7 @@ function getOrdinal($number){
 
 function prepare_mysql_datetime($datetime,$tipo='datetime'){
 
+ 
   if($datetime=='')
     return array('mysql_date'=>'','status'=>'empty','ok'=>false);
   $time='';
@@ -96,15 +97,17 @@ function prepare_mysql_datetime($datetime,$tipo='datetime'){
   $date=str_replace('/','-',$date);
   $date=preg_split('/-/',$date);
 
-  
+
  if(preg_match('/datetime/',$tipo)){
    
    $mysql_datetime= trim(join ('-',array_reverse($date)).' '.$time);
  }else{
+   
+
    $mysql_datetime= join ('-',array_reverse($date));
-    if(preg_match('/start/',$tipo))
+    if(preg_match('/start/i',$tipo))
       $mysql_datetime.=' 00:00:00';
-    elseif(preg_match('/end/',$tipo))
+    elseif(preg_match('/end/i',$tipo))
       $mysql_datetime.=' 23:59:59';
     
   }
