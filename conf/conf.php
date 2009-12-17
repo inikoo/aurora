@@ -204,6 +204,19 @@ $default_state=array(
 						 'to'=>'',
 						 'elements'=>array()
 						 )
+				     ,'ready_to_pick_dn'=>array(
+						 'order'=>'date',
+						 'order_dir'=>'',
+						 'sf'=>0,
+						 'nr'=>25,
+						 'where'=>'where true',
+						 'f_field'=>'public_id',
+						 'f_value'=>'',
+						 'from'=>'',
+						 'to'=>'',
+						 'elements'=>array()
+						 )
+
 
 				     ),
 
