@@ -20,6 +20,10 @@ $editor=array(
 $tipo=$_REQUEST['tipo'];
 
 switch($tipo){
+case('ready_to_pick_orders'):
+   ready_to_pick_orders();
+   break;
+  break;
 case('cancel'):
   cancel_order();
   break;
@@ -426,4 +430,218 @@ if(!$show_all){
     echo json_encode($response);
 
 
+}
+
+
+function ready_to_pick_orders((){
+ 
+    $conf=$_SESSION['state']['']['ready_to_pick_dn'];
+    if(isset( $_REQUEST['sf']))
+      $start_from=$_REQUEST['sf'];
+    else
+      $start_from=$conf['sf'];
+   if(isset( $_REQUEST['nr']))
+     $number_results=$_REQUEST['nr'];
+   else
+     $number_results=$conf['nr'];
+   if(isset( $_REQUEST['o']))
+     $order=$_REQUEST['o'];
+  else
+    $order=$conf['order'];
+   if(isset( $_REQUEST['od']))
+    $order_dir=$_REQUEST['od'];
+   else
+     $order_dir=$conf['order_dir'];
+    if(isset( $_REQUEST['f_field']))
+      $f_field=$_REQUEST['f_field'];
+    else
+      $f_field=$conf['f_field'];
+    
+    if(isset( $_REQUEST['f_value']))
+      $f_value=$_REQUEST['f_value'];
+   else
+     $f_value=$conf['f_value'];
+    if(isset( $_REQUEST['where']))
+     $where=$_REQUEST['where'];
+    else
+      $where=$conf['where'];
+    
+   if(isset( $_REQUEST['tableid']))
+    $tableid=$_REQUEST['tableid'];
+  else
+    $tableid=0;
+
+ 
+
+   $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
+
+  
+     
+     
+     $_SESSION['state']['orders']['ready_to_pick_dn']=array(
+						 'order'=>$order,
+						 'order_dir'=>$order_direction,
+						 'nr'=>$number_results,
+						 'sf'=>$start_from,
+						 'where'=>$where,
+						 'f_field'=>$f_field,
+						 'f_value'=>$f_value,
+						 'dispatch'=>$dispatch,
+						 'paid'=>$paid,
+						 'order_type'=>$order_type
+
+						 );
+   
+
+ 
+
+
+
+  
+   
+
+  
+   $where.=' and `Delivery Note State`="Ready to be Picked" ';
+   
+
+   $wheref='';
+
+  if($f_field=='max' and is_numeric($f_value) )
+    $wheref.=" and  (TO_DAYS(NOW())-TO_DAYS(`Delivery Note Last Updated Date`))<=".$f_value."    ";
+  else if($f_field=='min' and is_numeric($f_value) )
+    $wheref.=" and  (TO_DAYS(NOW())-TO_DAYS(`Delivery Note Last Updated Date`))>=".$f_value."    ";
+   elseif($f_field=='customer_name' and $f_value!='')
+    $wheref.=" and  `Delivery Note Customer Name` like '".addslashes($f_value)."%'";
+   elseif($f_field=='public_id' and $f_value!='')
+    $wheref.=" and  `Delivery Note Public ID` like '".addslashes($f_value)."%'";
+
+
+   
+
+
+   
+
+   
+  $sql="select count(*) as total from `Delivery Note Dimension`   $where $wheref ";
+  //print $sql ;
+   $result=mysql_query($sql);
+  if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
+    $total=$row['total'];
+  }
+  if($where==''){
+    $filtered=0;
+     $total_records=$total;
+  }else{
+    
+      $sql="select count(*) as total from `Delivery Note Dimension`  $where";
+      $result=mysql_query($sql);
+      if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
+	$total_records=$row['total'];
+	$filtered=$total_records-$total;
+      }
+      
+  }
+  mysql_free_result($result);
+
+  $rtext=$total_records." ".ngettext('order','orders',$total_records);
+
+  if($total_records>$number_results)
+    $rtext_rpp=sprintf(" (%d%s)",$number_results,_('rpp'));
+  else
+    $rtext_rpp=sprintf("Showing all orders");
+
+  $filter_msg='';
+
+     switch($f_field){
+     case('public_id'):
+       if($total==0 and $filtered>0)
+	 $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any order with number")." <b>".$f_value."*</b> ";
+       elseif($filtered>0)
+	 $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ("._('orders starting with')." <b>$f_value</b>) <span onclick=\"remove_filter($tableid)\" id='remove_filter$tableid' class='remove_filter'>"._('Show All')."</span>";
+       break;
+     case('customer_name'):
+       if($total==0 and $filtered>0)
+	 $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any order with customer")." <b>".$f_value."*</b> ";
+       elseif($filtered>0)
+	 $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ("._('orders with customer')." <b>".$f_value."*</b>) <span onclick=\"remove_filter($tableid)\" id='remove_filter$tableid' class='remove_filter'>"._('Show All')."</span>";
+       break;  
+     case('minvalue'):
+       if($total==0 and $filtered>0)
+	 $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any order minimum value of")." <b>".money($f_value)."</b> ";
+       elseif($filtered>0)
+	 $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ("._('orders with min value of')." <b>".money($f_value)."*</b>) <span onclick=\"remove_filter($tableid)\" id='remove_filter$tableid' class='remove_filter'>"._('Show All')."</span>";
+       break;  
+  
+ case('max'):
+       if($total==0 and $filtered>0)
+	 $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any order older than")." <b>".number($f_value)."</b> "._('days');
+       elseif($filtered>0)
+	 $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ("._('last')." <b>".number($f_value)."</b> "._('days orders').") <span onclick=\"remove_filter($tableid)\" id='remove_filter$tableid' class='remove_filter'>"._('Show All')."</span>";
+       break;  
+     }
+
+
+
+   
+   $_order=$order;
+   $_dir=$order_direction;
+
+   
+   if($order=='date')
+     $order='`Delivery Note Date`';
+   else if($order=='last_date')
+     $order='`Delivery Note Last Updated Date`';
+   else if($order=='id')
+     $order='`Delivery Note File As`';
+   else if($order=='state')
+     $order='`Delivery Note Current Dispatch State`,`Delivery Note Current Payment State`';
+   else if($order=='total_amount')
+     $order='`Delivery Note Total Amount`';
+else if($order=='customer')
+     $order='`Delivery Note Customer Name`';
+
+  $sql="select `Delivery Note Key`,`Delivery Note Public ID`,`Delivery Note Customer Key`,`Delivery Note Customer Name`,`Delivery Note Last Updated Date`,`Delivery Note Date`,`Delivery Note Total Amount` ,`Delivery Note Current XHTML State` from `Delivery Note Dimension`  $where $wheref  order by $order $order_direction limit $start_from,$number_results ";
+  //  print $sql;
+  global $myconf;
+
+   $data=array();
+
+   $res = mysql_query($sql);
+   while($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+    
+     if($row['Delivery Note Date Created']=='')
+       $lap='';
+     else
+       $lap=date('U')-date('U',strtotime($row['Delivery Note Date Created']));
+    
+     $w=
+
+     $data[]=array(
+		   'id'=>$row['Delivery Note Public ID']
+		   ,'customer'=>$row['Delivery Note Customer Name']
+		   ,'wating_lap'=>$lap
+		   ,'e_weight'=>$w
+		   );
+   }
+mysql_free_result($res);
+   $response=array('resultset'=>
+		   array('state'=>200,
+			 'data'=>$data,
+			 'rtext'=>$rtext,
+			 'rtext_rpp'=>$rtext_rpp,
+			 'sort_key'=>$_order,
+			 'sort_dir'=>$_dir,
+			 'tableid'=>$tableid,
+			 'filter_msg'=>$filter_msg,
+			 'total_records'=>$total,
+			 'records_offset'=>$start_from,
+			 'records_returned'=>$start_from+$total,
+			 'records_perpage'=>$number_results,
+
+			 'records_order'=>$order,
+			 'records_order_dir'=>$order_dir,
+			 'filtered'=>$filtered
+			 )
+		   );
+   echo json_encode($response);
 }

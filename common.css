@@ -258,11 +258,11 @@ img{vertical-align:bottom}
 
 .report_sales1 td {text-align:right;padding:0 15px;}
 .compact td{ padding:0 12.5px; }
-.report_sales1 tr td{border-top:1px solid #ddd}
+.xreport_sales1 tr td{border-top:1px solid #ddd}
 
 .report_sales1 tr.org {background:b2bef8;border-top:1px solid RoyalBlue;border-bottom:1px solid RoyalBlue}
 .report_sales1 tr.outside {}
-.report_sales1 tr.geo,.report_sales1 tr.first  {}
+.report_sales1 tr.geo,.report_sales1 tr.first  {border-top:1px solid #ddd;border-bottom:1px solid #ddd}
 .report_sales1 tr.title td{border-top:none;border-bottom:1px solid #bbb;;font-weight:400}
 
 .report_sales1 tr.first {border-top:1px solid #999;}
@@ -272,12 +272,16 @@ img{vertical-align:bottom}
 .report_sales1 tr.last {vertical-align:top;}
 
 .report_sales1 tr.last td {border-bottom:1px solid #999}
-.report_sales1 tr.space td{border:1px solid#fff}
+.report_sales1 tr.space td{border:1px solid #fff}
 
-.report_sales1 tr td.space {border:1px solid#fff}
-.report_sales1 td.compare {font-size:80%;border:2px solid #fff;margin:0px 2px;
+.report_sales1 tr td.space {border:1px solid #fff}
+.report_sales1 td.compare ,.report_sales1 tr.last  td.compare{font-size:80%;border:2px solid #fff;margin:0px 2px}
+.report_sales1 td.compare_title {text-align:center;color:#777;font-size:70%}
 
 
+.bracket td{padding:0;border:0px}
+
+.report_sales1 tr.bracket_label td{padding:0;border-top: 0px solid red;;text-align:center;color:#777;font-size:90%;padding-top:5px;font-weight:800}
 
 }
 
