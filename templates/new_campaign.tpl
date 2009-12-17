@@ -1,9 +1,19 @@
 {include file='header.tpl'}
 <div id="bd" >
-  <span class="nav2 onleft"><a href="contacts.php">{t}Contact's List{/t}</a></span>
-  <span class="nav2 onleft"><a href="customers.php">{t}Customer's List{/t}</a></span>
-    
-  <div >
+  <div class="search_box" style="margin-top:15px">
+  <div class="general_options">
+    {foreach from=$general_options_list item=options }
+        {if $options.tipo=="url"}
+            <span onclick="window.location.href='{$options.url}'" >{$options.label}</span>
+        {else}
+            <span  id="{$options.id}" state="{$options.state}">{$options.label}</span>
+        {/if}
+    {/foreach}
+    </div>
+</div>
+
+
+<div >
     
  <div class="search_box" style="margin-top:30px;font-size:90%;" id="the_search_box" >
 
@@ -74,28 +84,24 @@
 
     </div>
   </div>
-</div>
-</div> 
-<div id="filtermenu" class="yuimenu">
-  <div class="bd">
-    <ul class="first-of-type">
-       <li style="text-align:left;margin-left:10px;border-bottom:1px solid #ddd">{t}Filter options{/t}:</li>
-      {foreach from=$filter_menu item=menu }
-      <li class="yuimenuitem"><a class="yuimenuitemlabel" onClick="change_filter('{$menu.db_key}','{$menu.label}',0)"> {$menu.menu_label}</a></li>
-      {/foreach}
-    </ul>
-  </div>
+
+
+
+<div style="clear:left;margin:0 0px">
+    <h1>{t}New Campaign{/t}</h1>
+    <div class="block_list" style="clear:both;">
+    <div style="background-image:url('art/basic.gif');background-repeat:no-repeat;background-position:center 0px;height:20px;padding:140px 0 0 0;" onClick="mail_layout('basic')" ">{t}Basic{/t}</div>
+    <div style="background-image:url('art/postcard.gif');background-repeat:no-repeat;background-position:center 0px;height:20px;padding:140px 0 0 0;" onClick="mail_layout('basic')" ">{t}Postcard{/t}</div>
+    <div style="background-image:url('art/left_column.gif');background-repeat:no-repeat;background-position:center 0px;height:20px;padding:140px 0 0 0;" onClick="mail_layout('basic')" ">{t}Left Column{/t}</div>
+    <div style="background-image:url('art/right_column.gif');background-repeat:no-repeat;background-position:center 0px;height:20px;padding:140px 0 0 0;" onClick="mail_layout('basic')" ">{t}Right Column{/t}</div>
+
+ </div>
+    
+    
+   
+    
+    
 </div>
 
-<div id="rppmenu" class="yuimenu">
-  <div class="bd">
-    <ul class="first-of-type">
-       <li style="text-align:left;margin-left:10px;border-bottom:1px solid #ddd">{t}Rows per Page{/t}:</li>
-      {foreach from=$paginator_menu item=menu }
-      <li class="yuimenuitem"><a class="yuimenuitemlabel" onClick="change_rpp({$menu},0)"> {$menu}</a></li>
-      {/foreach}
-    </ul>
-  </div>
 </div>
-
 {include file='footer.tpl'}
