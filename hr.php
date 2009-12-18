@@ -1,7 +1,25 @@
 <?php
 include_once('common.php');
-if(!$user->can_view('staff'))
-  exit();
+if(!$user->can_view('staff')){
+   header('Location: index.php');
+   exit;
+}
+
+$modify=$user->can_edit('staff');
+
+$general_options_list=array();
+
+
+if($modify){
+  $general_options_list[]=array('tipo'=>'url','url'=>'edit_staff.php','label'=>_('Edit Staff'));
+   $general_options_list[]=array('tipo'=>'url','url'=>'new_customer.php','label'=>_('Add Staff'));
+}
+
+$smarty->assign('general_options_list',$general_options_list);
+
+
+
+
 
 $css_files=array(
 		 $yui_path.'reset-fonts-grids/reset-fonts-grids.css',

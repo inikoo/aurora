@@ -14,17 +14,28 @@
 
 include_once('common.php');
 include_once('class.Contact.php');
-if(!$LU->checkRight(CUST_VIEW))
-  exit;
+
+
+if(!$user->can_view('contacts')){
+  header('Location: index.php');
+  exit();
+}
+if(!$user->can_edit('customers')){
+  header('Location: customers.php');
+  exit();
+
+}
 
 $css_files=array(
 		 $yui_path.'reset-fonts-grids/reset-fonts-grids.css',
-		 $yui_path.'assets/skins/sam/container.css',
-		 $yui_path.'assets/skins/sam/button.css',
-		 $yui_path.'assets/skins/sam/skin.css',
-		 'external_libs/inputex/css/inputEx.css',		  
-		 'common.css'
-		
+		 $yui_path.'menu/assets/skins/sam/menu.css',
+	
+		 $yui_path.'build/assets/skins/sam/skin.css',
+		 $yui_path.'autocomplete/assets/skins/sam/autocomplete.css',
+		 'common.css',
+		 'container.css',
+		 'table.css',
+		 'css/edit.css'
 		 );
 $js_files=array(
 		$yui_path.'utilities/utilities.js',
@@ -33,15 +44,18 @@ $js_files=array(
 		$yui_path.'datasource/datasource-min.js',
 		$yui_path.'autocomplete/autocomplete-min.js',
 		$yui_path.'datatable/datatable-min.js',
-		$yui_path.'container/container-min.js',
-		$yui_path.'editor/editor-min.js',
+		$yui_path.'container/container_core-min.js',
 		$yui_path.'menu/menu-min.js',
-		$yui_path.'calendar/calendar-min.js',
-		'js/common.js.php',
-		'js/table_common.js.php',
-		'js/search.js',
-		'external_libs/inputex/build/inputex-min.js',
-		'js/new_contact.js.php'
+		'common.js.php',
+		'table_common.js.php',
+		'js/edit_common.js',
+		'js/validate_telecom.js',
+		'edit_address.js.php',
+		'edit_contact_from_parent.js.php',
+		'edit_contact_telecom.js.php',
+		'edit_contact_name.js.php',
+		'edit_contact_email.js.php',
+		'new_contact.js.php'
 		);
 
 

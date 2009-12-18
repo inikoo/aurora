@@ -120,9 +120,10 @@ var highlightEditableCell = function(oArgs) {
     column = this.getColumn(target);
     record = this.getRecord(target);
    
-
+   
     switch (column.action) {
     case 'delete':
+    case 'pick_it':
 	//for(x in target)
 	//  alert(x+' '+target[x])
 	
@@ -145,6 +146,7 @@ var unhighlightEditableCell = function(oArgs) {
 
 		switch (column.action) {
 		case 'delete':
+		case 'pick_it':
 		    this.unhighlightRow(target);
 		default:
 		    if(YAHOO.util.Dom.hasClass(target, "yui-dt-editable")) {

@@ -433,9 +433,9 @@ if(!$show_all){
 }
 
 
-function ready_to_pick_orders((){
+function ready_to_pick_orders(){
  
-    $conf=$_SESSION['state']['']['ready_to_pick_dn'];
+    $conf=$_SESSION['state']['orders']['ready_to_pick_dn'];
     if(isset( $_REQUEST['sf']))
       $start_from=$_REQUEST['sf'];
     else
@@ -486,9 +486,7 @@ function ready_to_pick_orders((){
 						 'where'=>$where,
 						 'f_field'=>$f_field,
 						 'f_value'=>$f_value,
-						 'dispatch'=>$dispatch,
-						 'paid'=>$paid,
-						 'order_type'=>$order_type
+
 
 						 );
    
@@ -523,7 +521,7 @@ function ready_to_pick_orders((){
 
    
   $sql="select count(*) as total from `Delivery Note Dimension`   $where $wheref ";
-  //print $sql ;
+  // print $sql ;
    $result=mysql_query($sql);
   if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
     $total=$row['total'];
@@ -585,23 +583,18 @@ function ready_to_pick_orders((){
    
    $_order=$order;
    $_dir=$order_direction;
-
    
-   if($order=='date')
-     $order='`Delivery Note Date`';
-   else if($order=='last_date')
-     $order='`Delivery Note Last Updated Date`';
-   else if($order=='id')
+   $order='`Delivery Note Date Created`';
+   if($order=='id')
      $order='`Delivery Note File As`';
-   else if($order=='state')
-     $order='`Delivery Note Current Dispatch State`,`Delivery Note Current Payment State`';
-   else if($order=='total_amount')
-     $order='`Delivery Note Total Amount`';
-else if($order=='customer')
+   else if($order=='customer')
      $order='`Delivery Note Customer Name`';
+   
+   
+   
 
-  $sql="select `Delivery Note Key`,`Delivery Note Public ID`,`Delivery Note Customer Key`,`Delivery Note Customer Name`,`Delivery Note Last Updated Date`,`Delivery Note Date`,`Delivery Note Total Amount` ,`Delivery Note Current XHTML State` from `Delivery Note Dimension`  $where $wheref  order by $order $order_direction limit $start_from,$number_results ";
-  //  print $sql;
+  $sql="select `Delivery Note Key`,`Delivery Note ID`,`Delivery Note Customer Key`,`Delivery Note Customer Name`,`Delivery Note Date Created`,`Delivery Note Estimated Weight` from `Delivery Note Dimension`  $where $wheref  order by $order $order_direction limit $start_from,$number_results ";
+  // print $sql;
   global $myconf;
 
    $data=array();
@@ -612,15 +605,18 @@ else if($order=='customer')
      if($row['Delivery Note Date Created']=='')
        $lap='';
      else
-       $lap=date('U')-date('U',strtotime($row['Delivery Note Date Created']));
+       $lap=RelativeTime(date('U',strtotime($row['Delivery Note Date Created'])));
     
-     $w=
+     $w=weight($row['Delivery Note Estimated Weight']);
 
      $data[]=array(
-		   'id'=>$row['Delivery Note Public ID']
+		   'id'=>$row['Delivery Note ID']
+		   ,'public_id'=>sprintf("%d05",$row['Delivery Note ID'])
 		   ,'customer'=>$row['Delivery Note Customer Name']
 		   ,'wating_lap'=>$lap
 		   ,'e_weight'=>$w
+		   ,'date'=>$row['Delivery Note Date Created']
+		   ,'pick_it'=>_('Pick it')
 		   );
    }
 mysql_free_result($res);

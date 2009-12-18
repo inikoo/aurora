@@ -1,5 +1,20 @@
 {include file='header.tpl'}
 <div id="bd" >
+<span class="nav2 onleft"><a href="hr.php">{t}Staff List{/t}</a></span>
+
+<div class="search_box" style="">
+  <div class="general_options">
+{foreach from=$general_options_list item=options }
+{if $options.tipo=="url"}
+ <span onclick="window.location.href='{$options.url}'" >{$options.label}</span>
+{else}
+ <span  id="{$options.id}" state="{$options.state}">{$options.label}</span>
+{/if}
+{/foreach}
+</div>
+  
+</div>  
+
 
  <div id="no_details_title"  style="clear:left;xmargin:0 20px;{if $details!=0}display:none{/if}">
     <h1>{t}Staff{/t}</h1>
@@ -7,7 +22,7 @@
 
  
 <div class="data_table" style="clear:both">
-   <span class="clean_table_title">{t}Suppliers List{/t}</span>
+   <span class="clean_table_title">{t}Staff List{/t}</span>
    <div style="clear:both;margin:0 0px;padding:0 20px ;border-bottom:1px solid #999"></div>
    <table style="float:left;margin:0 0 0 0px ;padding:0"  class="options" >
 	<tr>

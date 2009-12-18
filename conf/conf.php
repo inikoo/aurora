@@ -552,7 +552,7 @@ $default_state=array(
 				      ),
 		     'contact'=>array(
 				      'id'=>1,
-
+				      'action_after_create'=>'continue',
 				      'table'=>array(
 						     'order'=>'date',
 						     'order_dir'=>'desc',

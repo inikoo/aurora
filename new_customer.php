@@ -4,8 +4,18 @@
 //Copyright (c) 2009 LW
 include_once('common.php');
 include_once('class.Customer.php');
-if(!$LU->checkRight(CUST_VIEW))
-  exit;
+
+if(!$user->can_view('customers')){
+  header('Location: index.php');
+  exit();
+}
+
+
+if(!$user->can_edit('customers')){
+  header('Location: customers.php');
+  exit();
+
+}
 
 
 $css_files=array(
