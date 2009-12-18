@@ -83,3 +83,28 @@
 </div>
 
 {include file='footer.tpl'}
+
+
+<div id="pick_it_dialog">
+{foreach from=$pickers_list item=picker}
+<div></div>
+{/foreach}
+
+<table class="edit">
+<tr class="first"><td style="" class="label">{t}Staff Name{/t}:</td>
+   <td  style="text-align:left">
+     <div  style="width:15em;position:relative;top:00px" >
+       <input style="text-align:left;width:18em" id="Staff_Name" value="" ovalue="" valid="0">
+       <div id="Staff_Name_Container" style="" ></div>
+     </div>
+   </td>
+   <td id="Staff_Name_msg" class="edit_td_alert"></td>
+ </tr>
+</table>
+
+<table class="edit">
+  <tr><td>{t}PIN{/t}:</td><td><input /></td></tr>
+  <tr><td colspan="2"><span class="button">Cancel</span><span class="button">Go</span><td></tr>
+</table>
+
+<div>

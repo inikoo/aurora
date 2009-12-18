@@ -15,6 +15,7 @@ include_once('common.php');
 include_once('class.Store.php');
 
 if(!$user->can_view('customers')){
+  header('Location: index.php');
   exit();
 }
 
@@ -62,7 +63,7 @@ $smarty->assign('general_options_list',$general_options_list);
 $css_files=array(
 		 $yui_path.'reset-fonts-grids/reset-fonts-grids.css',
 		 $yui_path.'menu/assets/skins/sam/menu.css',
-		 //		 $yui_path.'datatable/assets/skins/sam/datatable.css',
+	
 		 $yui_path.'build/assets/skins/sam/skin.css',
 		 'common.css',
 		 'container.css',

@@ -33,7 +33,15 @@ case('find_company'):
 				       ));
   find_company($data['values']);
   break;
- 
+ case('find_contact'):
+   require_once 'ar_edit_common.php';
+   $data=prepare_values($_REQUEST,array(
+					'values'=>array('type'=>'json array')
+					));
+   find_contact($data['values']);
+  break;
+
+
  case('contacts'):
  list_contacts();
    break;
@@ -1591,7 +1599,55 @@ function find_company($data){
   $response=array('candidates_data'=>$candidates_data,'action'=>$action,'found_key'=>$found_key);
   echo json_encode($response);
 }
+function find_contact($data){
+  $candidates_data=array();
+  // quick try to find the email
+  if($data['Contact Main Plain Email']!=''){
+    $sql=sprintf("select T.`Email Key`,`Subject Key` from `Email Dimension` T left join `Email Bridge` TB  on (TB.`Email Key`=T.`Email Key`) where `Email`=%s and `Subject Type`='Contact'  " 
+		 ,prepare_mysql($data['Contact Main Plain Email'])
+		 );
+    $result=mysql_query($sql);
+    if($row=mysql_fetch_array($result)){
+      $contact=new Contact($row['Subject Key']);
+      $subject_key=$contact->id;
+      $candidates_data[]= array('card'=>$contact->display('card'),'score'=>1000,'key'=>$contact->id,'tipo'=>'contact','found'=>1);
+      $response=array('candidates_data'=>$candidates_data,'action'=>'found_email','found_key'=>$subject_key);
+      echo json_encode($response);
+      return;
+    }
+  }
 
+
+
+  $max_results=8;
+
+  $contact=new contact('find fuzzy',$data);
+  $found_key=0;
+  if($contact->found){
+    $action='found';
+    $found_key=$contact->found_key;
+  }else
+    $action='nothing_found';
+  
+ 
+ 
+  foreach($contact->candidate as $contact_key=>$score){
+    if($count>$max_results)
+      break;
+    $_contact=new Contact ($contact_key);
+
+    $found=0;
+    if($contact->found_key==$_contact->id)
+      $found=1;
+    $candidates_data[]= array('card'=>$_contact->display('card'),'score'=>$score,'key'=>$_contact->id,'tipo'=>'contact','found'=>$found);
+   
+    $count++;
+  }
+  //print_r($company->candidate_companies);
+  
+  $response=array('candidates_data'=>$candidates_data,'action'=>$action,'found_key'=>$found_key);
+  echo json_encode($response);
+}
 
 function used_email(){
   
