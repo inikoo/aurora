@@ -15,6 +15,101 @@ include_once('common.php');
 include_once('class.Product.php');
 include_once('assets_header_functions.php');
 
+
+
+
+if(isset($_REQUEST['code'])){
+  $mode='code';
+  $tag=$_REQUEST['code'];
+ }elseif(isset($_REQUEST['pid'])){
+  $mode='pid';
+  $tag=$_REQUEST['pid'];
+  
+ 
+  
+  
+ }elseif(isset($_REQUEST['key'])){
+  $mode='key';
+  $tag=$_REQUEST['key'];
+  }else{
+  $tag=$_SESSION['state']['product']['tag'];
+  $mode=$_SESSION['state']['product']['mode'];
+ }
+$_SESSION['state']['product']['tag']=$tag;
+$_SESSION['state']['product']['mode']=$mode;
+
+$_SESSION['state']['product']['orders']['mode']=$mode;
+$_SESSION['state']['product']['customers']['mode']=$mode;
+
+
+if($mode=='pid'){
+ if(isset($_REQUEST['edit']) and $_REQUEST['edit']){
+  header('Location: edit_product.php?pid='.$tag);
+  exit();
+  }
+
+}elseif($mode=='code'){
+  $sql=sprintf("select `Product ID`  from `Product Dimension` where `Product Code`=%s  and `Product Store Key` in (%s)   ;"
+	       ,prepare_mysql($tag)
+	       ,join(',',$user->stores)
+	       );
+
+  $result=mysql_query($sql);
+  //print $sql;
+  
+  if(mysql_num_rows($result)>1){
+    $_SESSION['state']['product']['server']['tag']=$tag;
+    $js_files[]= 'js/search.js';
+    $js_files[]='product.js.php'; 
+    $js_files[]='product_server.js.php'; 
+    $smarty->assign('css_files',$css_files);
+    $smarty->assign('js_files',$js_files);
+    $smarty->assign('code',$tag);
+    $smarty->display('product_server.tpl');
+     mysql_free_result($result);
+    exit;
+  }elseif(mysql_num_rows($result)==0){
+  
+  header('Location: index.php');
+   exit;
+  
+  }else{
+  
+  
+  
+  $row=mysql_fetch_array($result, MYSQL_ASSOC);
+  mysql_free_result($result);
+     $tag=$row['Product ID'];
+     $mode='pid';
+     $_SESSION['state']['product']['tag']=$tag;
+     $_SESSION['state']['product']['mode']=$mode;
+  
+  }
+  
+} 
+    
+   
+
+$product= new product($mode,$tag);
+$store= new store($product->data['Product Store Key']);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 $view_sales=$user->can_view('product sales');
 $view_stock=$user->can_view('product stock');
 $view_orders=$user->can_view('orders');
@@ -34,6 +129,11 @@ $smarty->assign('create',$create);
 $smarty->assign('modify',$modify);
 $smarty->assign('view_orders',$view_orders);
 $smarty->assign('view_customers',$view_cust);
+
+
+
+
+
 
 get_header_info($user,$smarty);
 
@@ -80,64 +180,6 @@ $smarty->assign('family_period_title',$family_period_title[$family_period]);
 
 // $smarty->assign('view_plot',$_SESSION['views']['product_plot']);
 
-if(isset($_REQUEST['code'])){
-  $mode='code';
-  $tag=$_REQUEST['code'];
- }elseif(isset($_REQUEST['pid'])){
-  $mode='pid';
-  $tag=$_REQUEST['pid'];
- }elseif(isset($_REQUEST['key'])){
-  $mode='key';
-  $tag=$_REQUEST['key'];
-  }else{
-  $tag=$_SESSION['state']['product']['tag'];
-  $mode=$_SESSION['state']['product']['mode'];
- }
-$_SESSION['state']['product']['tag']=$tag;
-$_SESSION['state']['product']['mode']=$mode;
-$_SESSION['state']['product']['orders']['mode']=$mode;
-$_SESSION['state']['product']['customers']['mode']=$mode;
-
-
-
-
-
-
-
-if($mode=='code'){
-  $sql=sprintf("select `Product ID`  from `Product Dimension` where `Product Code`=%s  and `Product Store Key` in (%s)   ;"
-	       ,prepare_mysql($tag)
-	       ,join(',',$user->stores)
-	       );
-
-  $result=mysql_query($sql);
-  //print $sql;
-  
-  if(mysql_num_rows($result)>1){
-    $_SESSION['state']['product']['server']['tag']=$tag;
-    $js_files[]= 'js/search.js';
-    $js_files[]='product.js.php'; 
-    $js_files[]='product_server.js.php'; 
-    $smarty->assign('css_files',$css_files);
-    $smarty->assign('js_files',$js_files);
-    $smarty->assign('code',$tag);
-    $smarty->display('product_server.tpl');
-     mysql_free_result($result);
-    exit;
-  }
-  if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
-     $tag=$row['Product ID'];
-     $mode='pid';
-     $_SESSION['state']['product']['tag']=$tag;
-     $_SESSION['state']['product']['mode']=$mode;
-  }
-  mysql_free_result($result);
-} 
-    
-   
-
-$product= new product($mode,$tag);
-$store= new store($product->data['Product Store Key']);
 
 $smarty->assign('store',$store);
 

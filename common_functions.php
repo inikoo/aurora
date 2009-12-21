@@ -1424,6 +1424,8 @@ function translate_written_number($string){
 }    
 
  function shuffle_assoc(&$array) {
+        if(count($array)==0)
+           return;
         $keys = array_keys($array);
 
         shuffle($keys);

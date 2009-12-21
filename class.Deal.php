@@ -302,17 +302,36 @@ class Deal extends DB_Table {
 	return $input_allowance;
     }
     
+    
+      function get_thin_allowance_description($allowance=false,$metadata=false){
+        if(!$allowance)
+            $allowance=$this->data['Deal Allowance Type'];
+        if(!$metadata)
+            $metadata=$this->data['Deal Allowance Metadata'];
+            
+            $label='';
+            $value='';
+            
+               switch($allowance){
+    case('Percentage Off'):
+	$label=_('Discount');
+	$value=percentage($metadata,1);
+	break;
+
+      }
+            
+        return array($label,$value);    
+    }
+    
+    
     function allowance_individual_input_form($allowance,$metadata){
 
 
       $input_allowance=array();
       $input_allowance['Value Class']='';
-      switch($allowance){
-      case('Percentage Off'):
-	$input_allowance['Label']=_('Discount');
-	$input_allowance['Value']=percentage($metadata,1);
-	break;
-      }
+  
+   list($input_allowance['Label'],$input_allowance['Value'])=$this->get_thin_allowance_description($allowance,$metadata);
+  
 
       if($this->data['Deal Allowance Lock']=='Yes'){
 	$allowance_lock_img='<img src="art/icons/lock.png" alr="Locked"/>';
@@ -342,26 +361,31 @@ class Deal extends DB_Table {
 	return $input_terms;
     }
     
-    function terms_individual_input_form($terms,$metadata){
-     
-      $input_terms=array();
-      $input_terms['Value Class']='';
-
-      //print "** $terms -> $metadata **\n";
-      switch($terms){
+    
+    
+    function get_thin_terms_description($terms=false,$metadata=false){
+        if(!$terms)
+            $terms=$this->data['Deal Terms Type'];
+        if(!$metadata)
+            $metadata=$this->data['Deal Terms Metadata'];
+            
+            $label='';
+            $value='';
+            
+               switch($terms){
       case('Order Interval'):
-	$input_terms['Label']=_('If').' '._('order within');
-	$input_terms['Value']=$metadata;
+	$label=_('If').' '._('order within');
+	$value=$metadata;
 	break;
 	 case('Family Quantity Ordered'):
-	$input_terms['Label']=_('If').' '._('order more than');
-	$input_terms['Value']=number($metadata);
+	$label=_('If').' '._('order more than');
+	$value=number($metadata);
 	break;
       case('Shipping Country'):
-	$input_terms['Label']=_('If').' '._('Shipping Destination');
+	$label=_('If').' '._('Shipping Destination');
 	
 	$country=new Country ('code',$metadata);
-	$input_terms['Value']=$country->data['Country Name'];
+	$value=$country->data['Country Name'];
 	$input_terms['Value Class']='country';
 	break;
       case('Order Items Net Amount'):
@@ -371,12 +395,25 @@ class Deal extends DB_Table {
 	    $metadata=preg_replace("/^$conditional/",'',$metadata);
 	  }
 
-	  $input_terms['Label']=_trim($terms.' '.$conditional);
-	  $input_terms['Value']=$metadata;
+	  $label=_trim($terms.' '.$conditional);
+	  $value=$metadata;
 	break;
 
 
       }
+            
+        return array($label,$value);    
+    }
+    
+    function terms_individual_input_form($terms,$metadata){
+     
+      $input_terms=array();
+      $input_terms['Value Class']='';
+
+      list($input_terms['Label'],$input_terms['Value'])=$this->get_thin_terms_description($terms,$metadata);
+
+      //print "** $terms -> $metadata **\n";
+   
       
       if($this->data['Deal Terms Lock']=='Yes'){
 	$terms_lock_img='<img src="art/icons/lock.png" alr="Locked"/>';
@@ -413,6 +450,27 @@ class Deal extends DB_Table {
 
     }
 
+   /*Function: update_field_switcher
+   */
+ function update_field_switcher($field,$value,$options=''){
+
+   switch($field){
+   case('term'):
+     $this->update_term($value);
+     break;
+   case('allowance'):
+     $this->update_allowance($value);
+     break; 
+   default:
+     $base_data=$this->base_data();
+     if(array_key_exists($field,$base_data)) {
+       $this->update_field($field,$value,$options);
+     }
+  }
+ }
+
+ 
+
 
 
     function update_term($thin_description){
@@ -422,10 +480,12 @@ class Deal extends DB_Table {
       switch($this->data['Deal Terms Type']){
       case('Family Quantity Ordered'):
       case('Product Quantity Ordered'):
-	if(!numeric($thin_description)){
+	if(!is_numeric($thin_description)){
 	  $this->msg=_('Term should be numeric');
+	  return;
 	}elseif($thin_description<=0){
 	    $this->msg=_('Term should be more than zero');
+	    return;
 	  }
 	
 	$term_description="order ".number($thin_description)." or more";
@@ -439,15 +499,68 @@ class Deal extends DB_Table {
 						    );
       if($term_metadata!=$this->data['Deal Terms Metadata']){
 
-	$sql=sprintf("update `Deal Dimension` set `Deal Terms Description`=%s ,`Deal Terms Metadata`=%s where `Deal Dimension`=%d"
-	,mysql_query($term_description)
-	,mysql_query($term_metadata)
+	$sql=sprintf("update `Deal Dimension` set `Deal Terms Description`=%s ,`Deal Terms Metadata`=%s where `Deal Key`=%d"
+	,prepare_mysql($term_description)
+	,prepare_mysql($term_metadata)
 	,$this->id
 	);
+
+		mysql_query($sql);
+$this->data['Deal Terms Description']=$term_description;
+$this->data['Deal Terms Metadata']=$term_metadata;
+
+    $this->updated=true;
+  list($label,$new_thin_description)=$this->get_thin_terms_description();
+	$this->new_value=$new_thin_description;
+
     }
 
 
     }
 
-    
+     function update_allowance($thin_description){
+      $this->updated=false;
+
+
+      switch($this->data['Deal Allowance Type']){
+      case('Percentage Off'):
+      $thin_description=preg_replace('/\s*%$/','',$thin_description);
+      
+	if(!is_numeric($thin_description)){
+	  $this->msg=_('allowance should be numeric');
+	  return;
+	}
+	    $thin_description=abs($thin_description);
+	    
+	        if($thin_description>100){
+	    $this->msg=_('allowance can not be more than 100%');
+	    return;
+	  }
+	
+	$allowance_description=number($thin_description)."%";
+
+      }
+
+      
+      $allowance_metadata=$this->parse_allowance_metadata(
+						    $this->data['Deal Allowance Type']
+						    ,$allowance_description
+						    );
+      if($allowance_metadata!=$this->data['Deal Allowance Metadata']){
+
+	$sql=sprintf("update `Deal Dimension` set `Deal Allowance Description`=%s ,`Deal Allowance Metadata`=%s where `Deal Key`=%d"
+	,prepare_mysql($allowance_description)
+	,prepare_mysql($allowance_metadata)
+	,$this->id
+	);
+	mysql_query($sql);
+	$this->updated=true;
+	$this->data['Deal Allowance Description']=$allowance_description;
+$this->data['Deal Allowance Metadata']=$allowance_metadata;
+list($label,$new_thin_description)=$this->get_thin_allowance_description();
+	$this->new_value=$new_thin_description;
+    }
+
+
+    }
 }

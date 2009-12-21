@@ -3,6 +3,12 @@ include_once('common.php');
 include_once('class.Product.php');
 include_once('class.Node.php');
 
+
+
+
+
+
+
 $view_sales=$user->can_view('product sales');
 $view_stock=$user->can_view('product stock');
 $view_orders=$user->can_view('orders');
@@ -26,13 +32,16 @@ $smarty->assign('view_orders',$view_orders);
 $view_cust=$user->can_view('customers');
 $smarty->assign('view_cust',$view_cust);
 
-if(!isset($_REQUEST['pid']) and is_numeric($_REQUEST['pid']))
-  $product_id=1;
-else
+if(isset($_REQUEST['pid']) and is_numeric($_REQUEST['pid'])){
   $product_id=$_REQUEST['pid'];
+  $_SESSION['state']['product']['mode']='pid';
+  $_SESSION['state']['product']['tag']=$product_id;
+}elseif($_SESSION['state']['product']['mode']=='pid'){
+  $product_id=$_SESSION['state']['product']['tag'];
 
-
-$_SESSION['state']['product']['pid']=$product_id;
+}else{
+  exit('do not know what to do tying to editing no pid mode product');
+}
 
 if(!$product= new product('pid',$product_id))
   exit('Error product not found');
@@ -42,6 +51,11 @@ $store=new Store($product->data['Product Store Key']);
 
 $smarty->assign('product',$product);
 $smarty->assign('store',$store);
+
+$general_options_list=array();
+$general_options_list[]=array('tipo'=>'url','url'=>'product.php?edit=0','label'=>_('Exit Edit'));
+$smarty->assign('general_options_list',$general_options_list);
+
 
 
 $product->load('images_slideshow');

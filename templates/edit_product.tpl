@@ -1,10 +1,24 @@
 {include file='header.tpl'}
 <div style="display:none; position:absolute; left:10px; top:200px; z-index:2" id="cal1Container"></div>
 <div id="bd" >
-  <div id="sub_header">
-    <span class="nav2 onleft" style="">{t}Editing Product{/t}: <span style="font-style: italic;">{$product->get('Product Name')}</span> (<span style="font-style: italic;">{$product->get('Product Code')}</span>)</span>
-    <span class="nav2 onright" style="margin-left:20px"><a href="product.php?id={$product_id}">{t}Exit edit{/t}</a></span>
-  </div>
+
+<div class="search_box" style="margin-top:15px">
+  <div class="general_options">
+    {foreach from=$general_options_list item=options }
+        {if $options.tipo=="url"}
+            <span onclick="window.location.href='{$options.url}'" >{$options.label}</span>
+        {else}
+            <span  id="{$options.id}" state="{$options.state}">{$options.label}</span>
+        {/if}
+    {/foreach}
+    </div>
+</div>
+<div style="clear:left;margin:0 0px">
+    <h1>{t}Editing Product{/t}: <span id="title_name">{$product->get('Product Name')}</span> (<span id="title_code">{$product->get('Product Code')}</span>)</h1>
+</div>
+
+
+
   
   <ul class="tabs" id="chooser_ul">
     <li><span  class="item {if $edit=='config'}selected{/if}" id="config" > <span>{t}Parts{/t}</span></span></li>
@@ -435,7 +449,7 @@
     {foreach from=$images item=image  name=foo}
     <div id="image{$image.id}" class="image"  >
       <div>{$image.name}</div>
-      <img class="picture" style="border:none"    src="{$image.filename}" width="160"    /> 
+      <img class="picture" style="border:none"    src="{$image.small_url}" width="160"    /> 
       <div >
 	<span>{$image.caption}</span> 
 	<img  onClick="show_edit_caption({$image.id})" src="art/icons/edit.gif" style="cursor:pointer;position:relative;bottom:2px">
