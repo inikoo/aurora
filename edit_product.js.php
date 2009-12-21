@@ -492,7 +492,7 @@ function delete_image(image_id,image_name){
 		success:function(o) {
 		    //alert(o.responseText);
 		    var r =  YAHOO.lang.JSON.parse(o.responseText);
-		    if(r.ok){
+		    if(r.state==200){
 			Dom.get('image'+image_id).style.display='none';
 			if(r.new_principal!=''){
 			    var new_principal=r.new_principal;
@@ -1611,7 +1611,7 @@ YAHOO.util.Event.onContentReady("adding_new_part", function () {
  	var oAC = new YAHOO.widget.AutoComplete("new_part_input", "new_part_container", oDS);
  	oAC.resultTypeList = false; 
 	oAC.generateRequest = function(sQuery) {
- 	    return "?tipo=parts_name&except_product=<?php echo $_SESSION['state']['product']['pid']?>&query=" + sQuery ;
+ 	    return "?tipo=parts_name&except_product=<?php echo $_SESSION['state']['product']['tag']?>&query=" + sQuery ;
  	};
 	oAC.forceSelection = true; 
 	oAC.itemSelectEvent.subscribe(part_selected); 

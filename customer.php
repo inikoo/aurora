@@ -14,8 +14,14 @@
 
 include_once('common.php');
 include_once('class.Customer.php');
-if(!$user->can_view('customers'))
-  exit();
+if(!$user->can_view('customers')){
+
+header('Location: customers.php');
+   exit;
+ 
+
+}
+
 $modify=$user->can_edit('contacts');
 
 $edit=false;

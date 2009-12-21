@@ -11,10 +11,21 @@
     {/foreach}
     </div>
 </div>
+<h1>{t}New Campaign{/t}</h1>
+<div>
+<h2>{t}Define Goals{/t}</h2>
+
+<table class="edit">
+<tr><td class="label">{t}Campaign Name:{/t}</td><td><input type="text" value=""></td></tr>
+<tr><td class="label">{t}Campaign Objetives:{/t}</td><td><textarea></textarea></td></tr>
+</table>
+</div>
+
 
 
 <div >
-    
+<h2>{t}Create Email List{/t}</h2>
+
  <div class="search_box" style="margin-top:30px;font-size:90%;" id="the_search_box" >
 
    <table>
@@ -22,31 +33,24 @@
      <tr><td style="text-align:right">{t}All Customers{/t}</td><td><input checked="checked" name="geo_group" id="geo_group_all" value="all" type="radio"></td></tr>
      <tr><td style="text-align:right">{$home} {t}Customers{/t}</td><td><input  name="geo_group"  id="geo_group_home" value="home" type="radio"></td></tr>
      <tr><td style="text-align:right">{t}Foreign Customers{/t}</td><td><input  name="geo_group"  id="geo_group_nohome" value="nohome" type="radio"></td></tr>
-     <tr><td colspan="" style="text-align:right;border-bottom:1px solid #ccc;height:30px;vertical-align:bottom" >Only Customers:</td></tr>
-     <tr><td style="text-align:right">{t}with Email{/t}</td><td><input   id="with_email"  type="checkbox"></td></tr>
-     <tr><td style="text-align:right">{t}with Telephone{/t}</td><td><input    id="with_tel"  type="checkbox"></td></tr>
-
+   
    </table>
  </div>
    
    
-   <div>
-   
-      <h2 style="margin:10px 20px 0 20px">{t}Advanced Search{/t}</h2>
-      <div id="advanced_search" tipo=1 style="margin:0px 20px ;padding:0 20px;width:700px;border:1px solid #ccc;">
 
-      <table >
-	<form>
+      <table class="edit" border=0>
+	
 	<tr><td colspan="2"><b>Customers who..</b></td></tr>
       <tr><td>ordered this product(s)</td><td><input id="product_ordered1" value="" size="40" /></td><tr>
       <tr><td>but didn't order this product(s)</td><td><input id="product_not_ordered1" value="" size="40" /></td><tr>
       <tr><td>and did't receive this product(s)</td><td><input id="product_not_received1" value="" size="40" /></td><tr>
-      <tr><td>during this period</td><td><input id="v_calpop1" type="text" class="text" size="11" maxlength="10" name="from" value="{$from}"/><img   id="calpop1" class="calpop" src="art/icons/calendar_view_month.png" align="absbottom" alt=""   /> <span class="calpop">&rarr;</span> <input   class="calpop" id="v_calpop2" size="11" maxlength="10"   type="text" class="text" size="8" name="to" value="{$to}"/><img   id="calpop2" class="calpop_to" src="art/icons/calendar_view_month.png" align="absbottom" alt=""   /> </td><td  style="text-align:right;vertical-align:middle"><span  style="margin-left:20px;border:1px solid #ccc;padding:4px 5px;cursor:pointer" id="submit_advanced_search">Start Search <img style="vertical-align:bottom" src="art/icons/zoom.png"/></span>
+      <tr><td>during this period</td><td><input id="v_calpop1" type="text" class="text" size="11" maxlength="10" name="from" value="{$from}"/><img   id="calpop1" class="calpop" src="art/icons/calendar_view_month.png" align="absbottom" alt=""   /> <span class="calpop">&rarr;</span> <input   class="calpop" id="v_calpop2" size="11" maxlength="10"   type="text" class="text" size="8" name="to" value="{$to}"/><img   id="calpop2" class="calpop_to" src="art/icons/calendar_view_month.png" align="absbottom" alt=""   /> </td></tr>
+      <tr style="height:30px;"><td  style="vertical-align:bottom;"><span  style="margin-left:0px;border:1px solid #ccc;padding:4px 5px;cursor:pointer" id="submit_advanced_search">{t}Create List{/t}</span>
 </td></tr>
       </table>
-      </form>
-       </table>
-    </div>
+      
+   
       
       <div style="padding:30px 40px;display:none" id="searching">
 	{t}Search in progress{/t} <img src="art/progressbar.gif"/>
@@ -83,12 +87,11 @@
       </div>
 
     </div>
-  </div>
 
 
 
 <div style="clear:left;margin:0 0px">
-    <h1>{t}New Campaign{/t}</h1>
+    <h2>{t}Choose Email Layout{/t}</h2>
     <div class="block_list" style="clear:both;">
     <div style="background-image:url('art/basic.gif');background-repeat:no-repeat;background-position:center 0px;height:20px;padding:140px 0 0 0;" onClick="mail_layout('basic')" ">{t}Basic{/t}</div>
     <div style="background-image:url('art/postcard.gif');background-repeat:no-repeat;background-position:center 0px;height:20px;padding:140px 0 0 0;" onClick="mail_layout('basic')" ">{t}Postcard{/t}</div>
@@ -97,8 +100,16 @@
 
  </div>
     
+<div style="clear:left;margin:0 0px">
+    <h2>{t}Compose Email{/t}</h2>
+ <table class="edit">
+<tr><td class="label">{t}Email Subject:{/t}</td><td><input type="text" value=""></td></tr>
+<tr><td class="label">{t}Email:{/t}</td><td></td></tr>
+<tr><td colspan="2"><textarea id="email_body" name="v_details" changed=0 olength=""  ovalue=""  ohash="" rows="20" cols="100"></textarea>
+
+</table>   
     
-   
+ </div>  
     
     
 </div>

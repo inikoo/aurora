@@ -2,7 +2,7 @@
 
 <div id="bd" >
 
-  <div class="search_box" style="margin-top:15px">
+<div class="search_box" style="margin-top:15px">
   <div class="general_options">
     {foreach from=$general_options_list item=options }
         {if $options.tipo=="url"}
@@ -16,6 +16,8 @@
 <div style="clear:left;margin:0 0px">
     <h1>{t}Editing Family{/t}: <span id="title_name">{$family->get('Product Family Name')}</span> (<span id="title_code">{$family->get('Product Family Code')}</span>)</h1>
 </div>
+
+
 <div id="msg_div"></div>
   <ul class="tabs" id="chooser_ul" style="clear:both">
     <li> <span class="item {if $edit=='details'}selected{/if}"  id="details">  <span> {t}Description{/t}</span></span></li>
@@ -132,9 +134,49 @@
 
     </table>
     </div>
-      <div  class="edit_block" style="margin:0;padding:0 0px;{if $edit!="pictures"}display:none{/if}"  id="d_pictures">
-	
+    
+    <div class="edit_block" {if $edit!="pictures"}style="display:none"{/if}  id="d_pictures">
+
+  {include file='new_image_splinter.tpl'}
+  
+  <div  id="images" class="edit_images" principal="{$data.principal_image}" >
+    {foreach from=$images item=image  name=foo}
+    <div id="image{$image.id}" class="image"  >
+      <div>{$image.name}</div>
+      <img class="picture" style="border:none"    src="{$image.filename}" width="160"    /> 
+      <div >
+	<span>{$image.caption}</span> 
+	<img  onClick="show_edit_caption({$image.id})" src="art/icons/edit.gif" style="cursor:pointer;position:relative;bottom:2px">
+	<div style="display:none">
+	<textarea class="caption" style="width:160px;margin-bottom:5px" onkeydown="caption_changed(this)" id="img_caption{$image.id}" image_id="{$image.id}" ovalue="{$image.caption}">{$image.caption} </textarea>
+	<img style="vertical-align:top;"  class="caption" id="save_img_caption{$image.id}" onClick="save_image('img_caption',{$image.id})" title="{t}Save caption{/t}" alt="{t}Save caption{/t}"   src="art/icons/disk.png">
+	<img style="vertical-align:top"  class="caption" id="save_img_caption{$image.id}" onClick="save_image('img_caption',{$image.id})" title="{t}Save caption{/t}" alt="{t}Save caption{/t}"   src="art/icons/bullet_come.png">
+	</div>
       </div>
+      <div class="operations">
+
+	{if $image.is_principal=='Yes'}
+	<span class="img_set_principal"  ><img id="img_set_principal{$image.id}" onClick="set_image_as_principal(this)" title="{t}Main Image{/t}" image_id="{$image.id}" principal="1" src="art/icons/asterisk_orange.png"></span>
+	{else}
+	<span  class="img_set_principal" style="cursor:pointer"  >
+	  <img id="img_set_principal{$image.id}" onClick="set_image_as_principal(this)" title="{t}Set as the principal image{/t}" image_id="{$image.id}" principal="0" src="art/icons/picture_empty.png"></span>
+	{/if}
+	<span style="cursor:pointer;" onClick="delete_image({$image.id},'{$image.name}')"><img src="art/icons/delete.png" alt="{t}Delete{/t}" title="{t}Delete{/t}"></span>
+
+      </div>
+     
+    
+    </div>
+    {/foreach}
+    <div style="clear:both"></div>
+  </div>
+
+
+
+</div>
+    
+    
+     
       <div  class="edit_block" style="margin:0;padding:0 0px;{if $edit!="discounts"}display:none{/if}"  id="d_discounts">
 		<div  class="new_item_dialog"  id="new_deal_dialog" style="display:none">
 	   <div id="new_deal_messages" class="messages_block"></div>

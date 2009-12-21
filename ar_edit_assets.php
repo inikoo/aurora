@@ -87,6 +87,9 @@ case('edit_product'):
  edit_store();
 
    break;
+ case('edit_deal'):
+ edit_deal();
+   break;
 
  case('new_store'):
    
@@ -355,19 +358,70 @@ function edit_family(){
    echo json_encode($response); 
 }
 
+
+function edit_deal(){
+ $deal=new deal($_REQUEST['deal_key']);
+ global $editor;
+ $deal->editor=$editor;
+ $deal->update(array($_REQUEST['key']=>stripslashes(urldecode($_REQUEST['newvalue']))));
+ 
+
+   if($deal->updated){
+     $response= array('state'=>200,'newvalue'=>$deal->new_value,'key'=>$_REQUEST['key'],'description'=>$deal->get('Description'));
+	  
+   }else{
+     $response= array('state'=>400,'msg'=>$deal->msg,'key'=>$_REQUEST['key']);
+   }
+   echo json_encode($response); 
+}
+
+
+
 function upload_image($subject='product'){
   
-  print_r($_REQUEST);
-  $target_path = "uploads/".'pimg_'.date('U');
-  if(move_uploaded_file($_FILES['testFile']['tmp_name'],$target_path )) {
-    if($subject=='product')
-      $subject=new product('pid',$_REQUEST['id']);
-    
-    $subject->add_image($target_path);
-      
-      
-    }
+// print_r($_FILES);
+ //return;
+ $target_path = "app_files/pics/tmp/";
+ $filename='pimg_'.date('U');
+  if(move_uploaded_file($_FILES['testFile']['tmp_name'],$target_path.$filename )) {
+   include_once('class.Image.php');
+   
+   $name=preg_replace('/\.[a-z]+$/i','',$_FILES['testFile']['name']);
 
+   $name=preg_replace('/[^a-z^\.^0-9]/i','_',$name);
+   $data=array(
+	    'file'=>$filename
+	    ,'path'=>'assets/'
+	    ,'name'=>$name
+	    ,'original_name'=>$_FILES['testFile']['name']
+	    ,'type'=>$_FILES['testFile']['type']
+	    ,'caption'=>''
+	    );
+//print_r($data);
+$image=new Image('find',$data,'create');
+ 
+  
+   if(!$image->error){
+   
+   if($image->new){
+   $image->create_thumbnail();  
+      $image->create_small();  
+   $image->create_large();  
+}
+   
+  if($subject=='product')
+      $subject=new product('pid',$_REQUEST['id']);
+    $subject->add_image($image->id);
+      $response= array('state'=>200,'msg'=>$image->msg,'image_key'=>$image->id);
+ echo json_encode($response); 
+return;
+}else{
+     $response= array('state'=>400,'msg'=>$image->msg);
+ echo json_encode($response); 
+ return;
+}
+
+  }
   }
 
 
@@ -1330,6 +1384,28 @@ function delete_image(){
   $scope_key=$_REQUEST['scope_key'];
   $image_key=$_REQUEST['image_key'];
 
+if($scope=='product')
+    $subject=new Product('pid',$scope_key);
+elseif($scope=='family')
+    $subject=new Product($scope_key);
+elseif($scope=='department')
+    $subject=new Product($scope_key);    
+
+$subject->delete_image($image_key);
+$image=new Image($image_key)
+$image->delete();
+
+if($subject->deleted){
+ $response=array('state'=>200,'msg'=>$msg,'image_key'=>$image->id);
+    echo json_encode($response);
+
+}else{
+ $response=array('state'=>400,'msg'=>$msg);
+    echo json_encode($response);
+
+}
+return;
+
 }
 
 function list_charges_for_edition(){
@@ -1979,7 +2055,7 @@ mysql_free_result($result);
      $adata[]=array(
 		    'status'=>$deal->get_xhtml_status(),
 		    'name'=>$name,
-		    'description'=>$deal->get('Description').$edit,
+		    'description'=>'<span id="deal_description'.$deal->id.'">'.$deal->get('Description').'</span>'.$edit,
 		    'from'=>'',
 		    'to'=>''
 		    

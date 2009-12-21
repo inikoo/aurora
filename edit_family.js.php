@@ -204,9 +204,57 @@ function new_product_changed(o){
 
 }
 
-
-
 function deal_term_save(deal_key){
+deal_save(deal_key,'term');
+}
+function deal_allowance_save(deal_key){
+deal_save(deal_key,'allowance');
+}
+function deal_save(deal_key,key){
+	
+        
+       
+        var newValue=Dom.get('deal_'+key+deal_key).value;
+        var oldValue=Dom.get('deal_'+key+deal_key).getAttribute('ovalue');
+
+		var request='tipo=edit_deal&key=' + key + '&newvalue=' + 
+						encodeURIComponent(newValue) + '&oldvalue=' + encodeURIComponent(oldValue)+ '&deal_key='+deal_key
+			
+//alert(request);
+//return;
+		YAHOO.util.Connect.asyncRequest(
+						'POST',
+						'ar_edit_assets.php', {
+						    success:function(o) {
+								alert(o.responseText);
+							var r = YAHOO.lang.JSON.parse(o.responseText);
+							if (r.state == 200) {
+
+							 
+								Dom.get('deal_description'+deal_key).innerHTML=r.description;
+								Dom.get('deal_'+key+deal_key).setAttribute=('ovalue',r.newvalue);
+								Dom.get('deal_'+key+deal_key).value=r.newvalue;
+
+								Dom.get('deal_'+key+'_save'+deal_key).style.display='none';
+								Dom.get('deal_'+key+'_reset'+deal_key).style.display='none';
+								
+							    }else{
+						
+								
+								
+							    }
+						
+						    },
+							failure:function(o) {
+							alert(o.statusText);
+							callback();
+						    },
+							scope:this
+							},
+						request
+						
+						);  
+
 
 }
 function deal_term_reset(deal_key){
@@ -253,7 +301,7 @@ function deal_term_changed(deal_key){
     }
 
 }
-function deal_allowance_save(item,deal_key){
+function old_deal_allowance_save(item,deal_key){
 
 	var request='ar_edit_assets?tipo=edit_deal&key=' + item+ '&newvalue=' + 
 	    encodeURIComponent(value) +  '&oldvalue=' + 

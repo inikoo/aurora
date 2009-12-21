@@ -1870,47 +1870,31 @@ public $new_value=false;
 
       break;
     case('images'):
-
-      $sql=sprintf("select PIB.`Is Principal`,ID.`Image Key`,`Image Caption`,`Image URL`,`Image Filename`,`Image Type`,`Image File Size`,`Image File Checksum`,`Image Width`,`Image Height`,`Image File Format` from `Image Bridge` PIB left join `Image Dimension` ID on (PIB.`Image Key`=ID.`Image Key`) where `Subject Type`='Product' and `Subject Key`=%d",$this->pid);
-
-      //      print $sql;
-      $res=mysql_query($sql);
-      $this->images_small=array();
-      $this->images_thumb=array();
-      $this->images_original=array();
-
-
-      while ($row=mysql_fetch_array($res,MYSQL_ASSOC )) {
-	if ($row['Image Type']=='Small')
-	  $this->images_small[$row['Image Key']]=$row;
-	elseif($row['Image Type']=='Thumb')
-	  $this->images_thumb[$row['Image Key']]=$row;
-	elseif($row['Image Type']=='Original')
-	  $this->images_original[$row['Image Key']]=$row;
-
-      }
-
+       
+       $this->load_images();
+       
+       
+    
 
       break;
 
 
 
     case('images_slideshow'):
-      $sql=sprintf("select `Is Principal`,ID.`Image Key`,`Image Caption`,`Image URL`,`Image Filename`,`Image Type`,`Image File Size`,`Image File Checksum`,`Image Width`,`Image Height`,`Image File Format` from `Image Bridge` PIB left join `Image Dimension` ID on (PIB.`Image Key`=ID.`Image Key`) where `Subject Type`='Product' and   `Subject Key`=%d",$this->pid);
+      $sql=sprintf("select `Image Thumbnail URL`,`Image Small URL`,`Is Principal`,ID.`Image Key`,`Image Caption`,`Image URL`,`Image Filename`,`Image File Size`,`Image File Checksum`,`Image Width`,`Image Height`,`Image File Format` from `Image Bridge` PIB left join `Image Dimension` ID on (PIB.`Image Key`=ID.`Image Key`) where `Subject Type`='Product' and   `Subject Key`=%d",$this->pid);
       //       print $sql;
       $res=mysql_query($sql);
       $this->images_slideshow=array();
 
 
       while ($row=mysql_fetch_array($res)) {
-	if ($row['Image Type']=='Original'){
 	  if ($row['Image Height']!=0)
 	    $ratio=$row['Image Width']/$row['Image Height'];
 	  else
 	    $ratio=1;
-	$this->images_slideshow[]=array('url'=>$row['Image URL'],'filename'=>$row['Image Filename'],'ratio'=>$ratio,'caption'=>$row['Image Caption'],'is_principal'=>$row['Is Principal'],'id'=>$row['Image Key']);
+	$this->images_slideshow[]=array('small_url'=>$row['Image Small URL'],'thumbnail_url'=>$row['Image Thumbnail URL'],'filename'=>$row['Image Filename'],'ratio'=>$ratio,'caption'=>$row['Image Caption'],'is_principal'=>$row['Is Principal'],'id'=>$row['Image Key']);
 	}
-      }
+      
 
 
 
@@ -1948,6 +1932,25 @@ public $new_value=false;
     mysql_query($sql);
   }
 
+function load_images(){
+  $sql=sprintf("select PIB.`Is Principal`,ID.`Image Key`,`Image Caption`,`Image URL`,`Image Thumbnail URL`,`Image Small URL`,`Image Large URL`,`Image Filename`,`Image File Size`,`Image File Checksum`,`Image Width`,`Image Height`,`Image File Format` from `Image Bridge` PIB left join `Image Dimension` ID on (PIB.`Image Key`=ID.`Image Key`) where `Subject Type`='Product' and `Subject Key`=%d",$this->pid);
+
+      //      print $sql;
+      $res=mysql_query($sql);
+      $this->images_small=array();
+      $this->images_thumb=array();
+      $this->images_original=array();
+
+
+      while ($row=mysql_fetch_array($res,MYSQL_ASSOC )) {
+	
+	  $this->images[$row['Image Key']]=$row;
+
+      }
+
+
+}
+
 
   /*
     Function: load_original_image
@@ -1955,166 +1958,44 @@ public $new_value=false;
   */
 
 
-  function add_image($file,$args='') {
+
+  function add_image($image_key,$args='') {
    $tmp_images_dir='app_files/pics/';
 
 
     $principal='No';
     if (preg_match('/principal/i',$args))
       $principal='Yes';
-    if (!$this->images)
-      $this->load('images');
-
-    $checksum=md5_file($file);
-    $same_as_other=false;
-    
-    
-
-
-    foreach($this->images_original as $_key=>$_value) {
-      if ($_value['Image File Checksum']==$checksum) {
-	$same_as_other=true;
-	$same_as=$_value['Image Filename'];
-	return;
-      }
-
-    }
-
-    if ($same_as_other) {
-      //     $res[$key]['msg']=_('Image already uploaded')." (".$same_as.")";
-      //$res[$key]['ok']=false;
-      unlink($file);
-      //     exit;
-      //   continue;
-
-    }
-
-    $code=$this->data['Product Code'];
-    $target_path = $tmp_images_dir;
-    //print filesize($file)."-----Z\n";
-    
-    ob_start();
-    system("uname");
-    $mimetype='Unknown';
-    $system='Unknown';
    
-   $_system = ob_get_clean();
-   
-    if(preg_match('/darwin/i',$_system)){
-     ob_start();
-      $system='Mac';
-      system("file -I $file");
-      $mimetype=ob_get_clean();
-      
-    }elseif(preg_match('/linux/i',$_system)){
-      $system='Linux'; 
-      ob_start();
-      system("file -ib $file ");
-      $mimetype=ob_get_clean();
-    }else{
-      $system='Other';  
-    }
-   
-   
-    if(preg_match('/png/i',$mimetype))
-        $format='png';
-    elseif(preg_match('/jpeg/i',$mimetype))
-        $format='jpeg';
-    else{
-        $format='other';
-    }
-    // print "$system $mimetype $format";
-    //exit;
-   // return;
-    
-    
-    if($format=='jpeg')
-        $im = @imagecreatefromjpeg($file);
-    elseif($format=='png')    
-         $im = @imagecreatefrompng($file);
-    else{
-    $this->error=true;
-    $this->msg=_('File format not supported');
-    }
-         
-    // print "-----------------";
-    if ($im) {
-      
-     
-      //print $tmp_images_dir.strtolower($this->data['Product Family Code']);
-   
-      if (!file_exists($tmp_images_dir.strtolower($this->data['Product Family Code']))){
-	//print getcwd();
-	//print $tmp_images_dir.strtolower($this->data['Product Family Code']);
-	mkdir($tmp_images_dir.strtolower($this->data['Product Family Code']), 0770);
-      }
-      $name=$tmp_images_dir.strtolower($this->data['Product Family Code']).'/'.strtolower('Original_'.$code.'_'.$this->id.'.'.$format);
-
-
-      $news_imgfile = addslashes(fread(fopen($file, "r"), filesize($file)));
-
-
-      $image_data=array(
-			'Image Width' => imagesx($im),
-			'Image Height' => imagesy($im),
-			'Image File Size'=>$s=filesize($file),
-			'Image File Checksum'=>$checksum,
-			'Image Caption'=>$this->data['Product Name'],
-			'Image Filename'=>$name,
-			'Image URL'=>'',
-			'Image File Format'=>$format,
-			'Image Type'=>'Original'
-                        );
-      //print_r($image_data);
-
-         if($format=='jpeg')
-          imagejpeg($im,$name );
-	 elseif($format=='png')    
-           imagepng($im,$name );
-	 
-	 
-	 $image_data['Image Data']=$news_imgfile;
-	 
-	 $keys='(';
-	 $values='values(';
-	 foreach($image_data as $key=>$value) {
-	   $keys.="`$key`,";
-	   if (preg_match('/url/i',$key))
-	     $values.="'".addslashes($value)."',";
-	   else
-	  $values.=prepare_mysql($value).",";
-	 }
-	 $keys=preg_replace('/,$/',')',$keys);
-	 $values=preg_replace('/,$/',')',$values);
-	 $sql=sprintf("insert into `Image Dimension` %s %s",$keys,$values);
-	 //print "$sql\n";
-      if (mysql_query($sql)) {
-	$image_key=mysql_insert_id();
 	
-	if ($principal=='Yes') {
-	  $sql=sprintf("update `Image Bridge` set `Is Princial`='No' where   `Subject Type`='Product' and  `Subject Key`=%d",$this->pid);
-	  mysql_query($sql);
-	}
-	
-	if (count($this->images_original)==0)
+ $sql=sprintf("select count(*) as num from `Image Bridge` PIB left join `Image Dimension` ID on (PIB.`Image Key`=ID.`Image Key`) where  `Subject Type`='Product' and `Subject Key`=%d",$this->pid);
+
+      $res=mysql_query($sql);
+    
+     $row=mysql_fetch_array($res,MYSQL_ASSOC );
+$number_images=$row['num'];
+
+
+	if ($number_images==0)
 	  $principal='Yes';
 	
-	$sql=sprintf("insert into `Image Bridge` values ('Product',%d,%d,%s)",$this->pid,$image_key,prepare_mysql($principal));
+	$sql=sprintf("insert into `Image Bridge` values ('Product',%d,%d,%s) on duplicate key update `Is Principal`=%s "
+	    ,$this->pid
+	    ,$image_key
+	    ,prepare_mysql($principal)
+	    	    ,prepare_mysql($principal)
+
+	    );
 	//	print "$sql\n";
 	mysql_query($sql);
-	$url=sprintf('image.php?id=%d',$image_key);
 
-	$sql=sprintf("update `Image Dimension` set `Image URL`=%s  where `Image Key`=%d",prepare_mysql($url),$image_key);
-	//print $sql;
-	mysql_query($sql);
 	$this->msg="image added";
       }
 
 
-    }
-    unlink($file);
+    
 
-  }
+  
 
   /*
     Function: update
@@ -4006,6 +3887,38 @@ function update_description($description){
 }
 
 
+
+function remove_image($image_key){
+
+$this->load_images();
+
+if(array_key_exists($image_key,$this->images)){
+$sql=sprintf("delete from `Image Bridge` where `Subject Type`='Product' and `Subject Key`=%d  and `Image Key`=%d",$this->id,$image_key);
+mysql_query($sql);
+
+$this->updated;
+$was_principal=($this->images[$image_key]['Is Principal']=='Yes'?true:false);
+unset($this->images[$image_key]);
+
+if($was_principal and count($this->images)>0){
+$this->update_principal_image();
+
+}
+
+}
+
+
+}
+
+
+function update_principal_image($image_key=false){
+    if(!$image_key){
+    
+    
+    }
+
+}
+
   function remove_category($category_key){
    
     $sql=sprintf("select PCB.`Category Key`,`Category Position`,`Category Name` from `Category Bridge` PCB left join `Category Dimension` C on (C.`Category Key`=PCB.`Category Key`)   where  PCB.`Subject Key`=%d  and `Subject`='Product'  and PCB.`Category Key`=%d   " ,$this->pid,$category_key);
@@ -4204,8 +4117,8 @@ function update_description($description){
 
 
    $product_intervals=$family->product_timeline($regex);
-   // print_r($product_intervals);
-   // exit;
+   //print_r($product_intervals);
+   //exit;
    if(!$code)
      $code=$family->data['Product Family Code'].'-Rnd';
    $product_id_transfer_data=array();
@@ -4254,8 +4167,7 @@ function update_description($description){
        $product_created=true;
    }
 
-   //print_r($rnd_product);
-   // exit;
+   
 
 
    if($product_created){
@@ -4287,12 +4199,13 @@ function update_description($description){
 	
      }
      $rnd_product->new_part_list($parts_header_data,$part_list);
+     print "Part List Data:\n";
      print_r($parts_header_data);
      print_r($part_list);
    }
    }
    //  print_r($product_id_transfer_data);
-   //exit;
+  
    
    // long and horrible proces of trasfering the product
    foreach($product_id_transfer_data as $transfer_data){
@@ -4341,16 +4254,20 @@ function update_description($description){
        print $sql;
        $res2=mysql_query($sql);
        while($row2=mysql_fetch_array($res2)){
-	 print " Old SKU ".$sku." in ".$row2['Date']." ITF rows (to be modified)\n";
-	 $part_list=$rnd_product->get_part_list($row2['Date']);
-	 shuffle_assoc($part_list);
-	 //print_r($part_list);
-	 $count_parts=count($part_list);
-	 $qty=abs(floor($row2['Inventory Transaction Quantity']*$this->data['Product Units Per Case']));
-	 print "************** $qty  \n";
-	 for($i=0;$i<=$qty;$i++){
-	   shuffle($part_list);
-	   $sku=$part_list[0]['Part SKU'];
+	        print " Old SKU ".$sku." in ".$row2['Date']." ITF rows (to be modified)\n";
+	        $part_list=$rnd_product->get_part_list($row2['Date']);
+	        if(count($part_list)==0){
+	            print "error part list zero for this date chack part list creation dor rd product\n";
+	            exit;
+	        }
+	        shuffle_assoc($part_list);
+	        //print_r($part_list);
+	        $count_parts=count($part_list);
+	        $qty=abs(floor($row2['Inventory Transaction Quantity']*$this->data['Product Units Per Case']));
+	        print "************** $qty  \n";
+	        for($i=0;$i<=$qty;$i++){
+	            shuffle($part_list);
+	            $sku=$part_list[0]['Part SKU'];
 
 
 	   
