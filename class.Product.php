@@ -1892,7 +1892,7 @@ public $new_value=false;
 	    $ratio=$row['Image Width']/$row['Image Height'];
 	  else
 	    $ratio=1;
-	$this->images_slideshow[]=array('small_url'=>$row['Image Small URL'],'thumbnail_url'=>$row['Image Thumbnail URL'],'filename'=>$row['Image Filename'],'ratio'=>$ratio,'caption'=>$row['Image Caption'],'is_principal'=>$row['Is Principal'],'id'=>$row['Image Key']);
+	  $this->images_slideshow[]=array('name'=>$row['Image Filename'],'small_url'=>$row['Image Small URL'],'thumbnail_url'=>$row['Image Thumbnail URL'],'filename'=>$row['Image Filename'],'ratio'=>$ratio,'caption'=>$row['Image Caption'],'is_principal'=>$row['Is Principal'],'id'=>$row['Image Key']);
 	}
       
 
@@ -1937,9 +1937,8 @@ function load_images(){
 
       //      print $sql;
       $res=mysql_query($sql);
-      $this->images_small=array();
-      $this->images_thumb=array();
-      $this->images_original=array();
+      $this->images=array();
+     
 
 
       while ($row=mysql_fetch_array($res,MYSQL_ASSOC )) {
@@ -1988,6 +1987,32 @@ $number_images=$row['num'];
 	    );
 	//	print "$sql\n";
 	mysql_query($sql);
+
+
+
+
+
+       $sql=sprintf("select `Image Thumbnail URL`,`Image Small URL`,`Is Principal`,ID.`Image Key`,`Image Caption`,`Image URL`,`Image Filename`,`Image File Size`,`Image File Checksum`,`Image Width`,`Image Height`,`Image File Format` from `Image Bridge` PIB left join `Image Dimension` ID on (PIB.`Image Key`=ID.`Image Key`) where `Subject Type`='Product' and   `Subject Key`=%d and  PIB.`Image Key`=%d"
+		    ,$this->pid
+		    ,$image_key
+		    );
+       //  print $sql;
+      $res=mysql_query($sql);
+
+      if ($row=mysql_fetch_array($res)) {
+	  if ($row['Image Height']!=0)
+	    $ratio=$row['Image Width']/$row['Image Height'];
+	  else
+	    $ratio=1;
+	$this->new_value=array('small_url'=>$row['Image Small URL'],'thumbnail_url'=>$row['Image Thumbnail URL'],'filename'=>$row['Image Filename'],'ratio'=>$ratio,'caption'=>$row['Image Caption'],'is_principal'=>$row['Is Principal'],'id'=>$row['Image Key']);
+      
+	
+	$this->images_slideshow[]=$this->new_value;
+      }
+
+      
+
+
 
 	$this->msg="image added";
       }

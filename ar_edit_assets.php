@@ -411,11 +411,25 @@ $image=new Image('find',$data,'create');
    
   if($subject=='product')
       $subject=new product('pid',$_REQUEST['id']);
-    $subject->add_image($image->id);
-      $response= array('state'=>200,'msg'=>$image->msg,'image_key'=>$image->id);
- echo json_encode($response); 
-return;
-}else{
+  $subject->add_image($image->id);
+  
+  
+  
+  
+
+  $msg=array(
+	     'set_main'=>'x'
+	     ,'main'=>'y'
+	     
+	     );
+  
+
+
+
+  $response= array('state'=>200,'msg'=>$msg,'image_key'=>$image->id,'data'=>$subject->new_value);
+  echo json_encode($response); 
+  return;
+   }else{
      $response= array('state'=>400,'msg'=>$image->msg);
  echo json_encode($response); 
  return;
@@ -1392,7 +1406,7 @@ elseif($scope=='department')
     $subject=new Product($scope_key);    
 
 $subject->delete_image($image_key);
-$image=new Image($image_key)
+$image=new Image($image_key);
 $image->delete();
 
 if($subject->deleted){

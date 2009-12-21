@@ -13,6 +13,9 @@ if(isset($_REQUEST['cats'])){
 ?>
 var Event = YAHOO.util.Event;
 var Dom   = YAHOO.util.Dom;
+var scope='product';
+var scope_key='<?php echo $_SESSION['state']['product']['tag']?>';
+
 
 var current_form = 'description';
 var num_changed = 0;
@@ -1462,6 +1465,8 @@ function init(){
 	var ids = ["description","pictures","prices","parts","dimat","config"]; 
 	YAHOO.util.Event.addListener(ids, "click", change_block);
 	
+	YAHOO.util.Event.on('uploadButton', 'click', onUploadButtonClick);
+		
 
 	//Details textarea editor ---------------------------------------------------------------------
 	var texteditorConfig = {
@@ -1489,117 +1494,9 @@ function init(){
 	YAHOO.util.Event.addListener("browse_cat", "click", cat_list.show, null, cat_list); 
 
 
-
-
- var onUploadButtonClick = function(e){
-    //the second argument of setForm is crucial,
-    //which tells Connection Manager this is a file upload form
-    YAHOO.util.Connect.setForm('testForm', true);
-
-    var uploadHandler = {
-      upload: function(o) {
-	    alert(o.responseText);
-	    var r =  YAHOO.lang.JSON.parse(o.responseText);
-	    if(r.ok){
-		var images=Dom.get('images');
-		var image_div=document.createElement("div");
-		image_div.setAttribute("id", "image"+r.data.id);
-		image_div.setAttribute("class",'image');
-
-		var name_div=document.createElement("div");
-		name_div.innerHTML=r.data.name;
-		
-		
-		var picture_img=document.createElement("img");
-		picture_img.setAttribute("src", r.data.med);
-		picture_img.setAttribute("class", 'picture');
-
-		var operations_div=document.createElement("div");
-		operations_div.setAttribute("class",'operations');
-		var set_principal_span=document.createElement("span");
-		set_principal_span.setAttribute("class",'img_set_principal');
-		set_principal_span.style.cursor='pointer';
-		
-		var set_principal_img=document.createElement("img");
-		set_principal_img.setAttribute("id", "img_set_principal"+r.data.id);
-		set_principal_img.setAttribute("image_id", r.data.id);
-
-
-		set_principal_img.setAttribute("onClick", 'set_image_as_principal(this)');
-		
-		if(r.is_principal==1){
-		    Dom.get('images').setAttribute('principal',r.data.id)
-		    set_principal_img.setAttribute("principal", 1);
-		    set_principal_img.setAttribute("src", 'art/icons/asterisk_orange.png');
-		    set_principal_img.setAttribute("title", "<?php echo _('Main Image')?>");
-		}else{
-		    set_principal_img.setAttribute("principal", 0);
-		    set_principal_img.setAttribute("src", 'art/icons/picture_empty.png');
-		    set_principal_img.setAttribute("title", "<?php echo _('Set as the principal image')?>");
-		}	
-
-
-
-		set_principal_span.appendChild(set_principal_img);
-		var delete_span=document.createElement("span");
-		delete_span.style.cursor='pointer';
-		delete_span.innerHTML='<?php echo _('Delete')?> <img src="art/icons/cross.png">';
-		delete_span.setAttribute("onClick", 'delete_image('+r.data.id+',"'+r.data.name+'")');
-
-		operations_div.appendChild(set_principal_span);
-		operations_div.appendChild(delete_span);
-
-
-		var caption_div=document.createElement("div");
-		caption_div.setAttribute("class",'caption');
-		var caption_tag_div=document.createElement("div");
-		caption_tag_div.innerHTML='<?php echo _('Caption')?>:';
-		var save_caption_span=document.createElement("span");
-		save_caption_span.setAttribute("class",'save');
-		var save_caption_img=document.createElement("img");
-		save_caption_img.setAttribute("src",'art/icons/disk.png');
-		save_caption_img.setAttribute("title",'<?php echo _('Save caption')?>');
-		save_caption_img.setAttribute("id",'save_img_caption'+r.data.id);
-		save_caption_img.setAttribute("onClick",'save_image("img_caption",'+r.data.id+')');
-		save_caption_img.setAttribute("class",'caption');
-
-
-		var caption_textarea=document.createElement("textarea");
-		caption_textarea.setAttribute("id",'img_caption'+r.data.id);
-		caption_textarea.setAttribute("image_id",r.data.id);
-		caption_textarea.setAttribute("ovalue",'');
-		caption_textarea.setAttribute("onkeydown",'caption_changed(this)');
-		caption_textarea.setAttribute("class",'caption');
-		//caption_textarea.style.width='150px';
-
-		save_caption_span.appendChild(save_caption_img);
-		caption_div.appendChild(caption_tag_div);
-		caption_div.appendChild(save_caption_span);
-		caption_div.appendChild(caption_textarea);
-
-		image_div.appendChild(name_div);
-		image_div.appendChild(picture_img);
-		image_div.appendChild(operations_div);
-		image_div.appendChild(caption_div);
-
-		images.appendChild(image_div);
-
-
-	    }else
-		alert(r.msg);
-	    
-	    
-
-      }
-    };
-    var request='ar_edit_assets.php?tipo=upload_product_image&subject=product&id='+product_id;
-    YAHOO.util.Connect.asyncRequest('POST',request, uploadHandler);
-  };
-  YAHOO.util.Event.on('uploadButton', 'click', onUploadButtonClick);
-
-
-
 }
+
+ 
 YAHOO.util.Event.onContentReady("adding_new_part", function () {
 	var oDS = new YAHOO.util.XHRDataSource("ar_parts.php");
  	oDS.responseType = YAHOO.util.XHRDataSource.TYPE_JSON;
@@ -1649,7 +1546,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 				       ];
 	    //?tipo=customers&tid=0"
 
-	    this.dataSource0 = new YAHOO.util.DataSource("ar_assets.php?tipo=product_history");
+	    this.dataSource0 = new YAHOO.util.DataSource("ar_history.php?tipo=history&type=product&tableid=0");
 	    this.dataSource0.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource0.connXhrMode = "queueRequests";
 	    this.dataSource0.responseSchema = {

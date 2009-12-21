@@ -3,12 +3,6 @@ include_once('common.php');
 include_once('class.Product.php');
 include_once('class.Node.php');
 
-
-
-
-
-
-
 $view_sales=$user->can_view('product sales');
 $view_stock=$user->can_view('product stock');
 $view_orders=$user->can_view('orders');
@@ -129,9 +123,9 @@ $js_files=array(
 		'js/php.default.min.js',
 		'common.js.php',
 		'table_common.js.php',
-		'js/edit_common.js'
-	
-
+		'js/edit_common.js',
+		'js/upload_image.js'
+		
 		);
 
 
@@ -150,6 +144,7 @@ $js_files=array(
 		'common.js.php',
 		'js/search.js',
 		'table_common.js.php',
+		'js/upload_image.js'
 		);
 
 

@@ -270,8 +270,10 @@ function get_format($filename){
       $mimetype=ob_get_clean();
       
     }elseif(preg_match('/linux/i',$_system)){
+     ob_start();
       $system='Linux'; 
       $mimetype = system("file -ib $filename");
+      $mimetype=ob_get_clean();
     }else{
       $system='Other';  
      
@@ -485,7 +487,7 @@ $res=mysql_query($sql);
 }
 
 
-function delete($force=false;){
+function delete($force=false){
 $this->load_subjects();
     $num_subjects=count($this->subjects);
     
