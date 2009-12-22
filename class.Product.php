@@ -1978,7 +1978,7 @@ $number_images=$row['num'];
 	if ($number_images==0)
 	  $principal='Yes';
 	
-	$sql=sprintf("insert into `Image Bridge` values ('Product',%d,%d,%s) on duplicate key update `Is Principal`=%s "
+	$sql=sprintf("insert into `Image Bridge` values ('Product',%d,%d,%s,'') on duplicate key update `Is Principal`=%s "
 	    ,$this->pid
 	    ,$image_key
 	    ,prepare_mysql($principal)
@@ -2004,7 +2004,7 @@ $number_images=$row['num'];
 	    $ratio=$row['Image Width']/$row['Image Height'];
 	  else
 	    $ratio=1;
-	$this->new_value=array('small_url'=>$row['Image Small URL'],'thumbnail_url'=>$row['Image Thumbnail URL'],'filename'=>$row['Image Filename'],'ratio'=>$ratio,'caption'=>$row['Image Caption'],'is_principal'=>$row['Is Principal'],'id'=>$row['Image Key']);
+	$this->new_value=array('name'=>$row['Image Filename'],'small_url'=>$row['Image Small URL'],'thumbnail_url'=>$row['Image Thumbnail URL'],'filename'=>$row['Image Filename'],'ratio'=>$ratio,'caption'=>$row['Image Caption'],'is_principal'=>$row['Is Principal'],'id'=>$row['Image Key']);
       
 	
 	$this->images_slideshow[]=$this->new_value;
@@ -3943,6 +3943,23 @@ function update_principal_image($image_key=false){
     }
 
 }
+
+function update_image_caption($image_key,$value){
+$value=_trim($value);
+$this->load_images();
+if($this->images[$image_key]['caption']==$value){
+   
+   $sql=sprintf("update `Image Bridge` set `Image Caption`=%s where where `Subject Type`='Product' and `Subject Key`=%d  and `Image Key`=%d"
+  ,prepare_mysql($value)
+  ,$this->id,$image_key);
+   mysql_query($sql);
+   $this->new_value=$value;
+   $this->updated=true;
+   $this->images[$image_key]['caption']=$value;
+}else
+    $this->msg=_('Nothing to change');
+}
+
 
   function remove_category($category_key){
    

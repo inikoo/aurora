@@ -10,30 +10,21 @@
 
 
     {foreach from=$images item=image  name=foo}
-    <div id="image_container{$image.id}" class="image"  >
+    <div id="image_container{$image.id}" class="image"  image_id="{$image.id}" is_principal="{$image.is_principal}" >
       <div class="image_name" id="image_name$image.id}">{$image.name}</div>
-      <img class="picture" style="border:none"    src="{$image.small_url}" width="160"    /> 
-      <div class="image_showcase">
-	<span  class="image_caption" id="image_caption{$image.id}" >{$image.caption}</span> 
-	<img  class="edit_image_caption" onClick="show_edit_caption({$image.id})" src="art/icons/edit.gif" style="cursor:pointer;position:relative;bottom:2px">
-	<div style="display:none">
-	<textarea class="caption" style="width:160px;margin-bottom:5px" onkeydown="caption_changed(this)" id="img_caption{$image.id}" image_id="{$image.id}" ovalue="{$image.caption}">{$image.caption} </textarea>
-	<img style="vertical-align:top;"  class="caption" id="save_img_caption{$image.id}" onClick="save_image('img_caption',{$image.id})" title="{t}Save caption{/t}" alt="{t}Save caption{/t}"   src="art/icons/disk.png">
-	<img style="vertical-align:top"  class="caption" id="save_img_caption{$image.id}" onClick="save_image('img_caption',{$image.id})" title="{t}Save caption{/t}" alt="{t}Save caption{/t}"   src="art/icons/bullet_come.png">
-	</div>
-      </div>
+      <img class="delete" src="art/icons/delete.png" alt="{t}Delete{/t}" title="{t}Delete{/t}" onClick="delete_image()">
+      <img class="picture" style="border:1px solid #ccc;width:100%"    src="{$image.small_url}"    /> 
       <div class="operations">
-
-	<span  style="{if $image.is_principal=='Yes'} {else}display:none{/if}"   class="img_set_principal"  ><img id="img_set_principal{$image.id}" onClick="set_image_as_principal(this)" title="{t}Main Image{/t}" image_id="{$image.id}" principal="1" src="art/icons/asterisk_orange.png"></span>
-	
-	<span  style="{if $image.is_principal=='Yes'}display:none{else}{/if}" class="img_set_principal" style="cursor:pointer"  >
-	  <img id="img_set_principal{$image.id}" onClick="set_image_as_principal(this)" title="{t}Set as the principal image{/t}" image_id="{$image.id}" principal="0" src="art/icons/picture_empty.png"></span>
-
-	<span style="cursor:pointer;" image_id="{$image.id}" onClick="delete_image()"><img src="art/icons/delete.png" alt="{t}Delete{/t}" title="{t}Delete{/t}"></span>
-
+	  <img id="img_principal{$image.id}"  style="{if $image.is_principal=='Yes'} {else}display:none{/if}"  title="{t}Main Image{/t}"  src="art/icons/bullet_star.png">
+	  <img id="img_set_principal{$image.id}" style="{if $image.is_principal=='Yes'}display:none{else}{/if}"  onClick="set_image_as_principal(this)" title="{t}Set as the principal image{/t}" image_id="{$image.id}" principal="0" src="art/icons/picture_empty.png">
+      <img id="img_edit_caption{$image.id}" onClick="edit_caption(this)" src="art/icons/caption.gif" alt="{t}Edit Caption{/t}" title="{t}Edit Caption{/t}">
+      <img id="img_save_caption{$image.id}" style="display:none" onClick="save_caption(this)" src="art/icons/bullet_gray_disk.png" alt="{t}Save Caption{/t}" title="{t}Save Caption{/t}">
+      <img id="img_reset_caption{$image.id}" style="display:none" onClick="reset_caption(this)" src="art/icons/bullet_come.png" alt="{t}Edit Caption{/t}" title="{t}Edit Caption{/t}">
       </div>
-     
-    
+      <span  style="" class="caption" id="caption{$image.id}" >{$image.caption}</span> 
+	  <textarea class="edit_caption" style="display:none" onkeyup="caption_changed(this)" id="edit_caption{$image.id}" image_id="{$image.id}" ovalue="{$image.caption}">{$image.caption}</textarea>
+	
+      
     </div>
     {/foreach}
     <div style="clear:both"></div>
