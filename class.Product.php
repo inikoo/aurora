@@ -39,12 +39,14 @@ class product extends DB_Table {
   public $parts_location=false;
   public $mode='pid';
   public $system_format=true;
+  public $msg='';
 
   public $new_key=false;
   public $new_code=false;
 public $new_value=false;
   // Variable: new
   // Indicate if a new product was created
+  public $deleted=false;
 
   public $new_id=false;
   public $location_to_update=false;
@@ -3921,7 +3923,7 @@ if(array_key_exists($image_key,$this->images)){
 $sql=sprintf("delete from `Image Bridge` where `Subject Type`='Product' and `Subject Key`=%d  and `Image Key`=%d",$this->id,$image_key);
 mysql_query($sql);
 
-$this->updated;
+$this->updated=true;
 $was_principal=($this->images[$image_key]['Is Principal']=='Yes'?true:false);
 unset($this->images[$image_key]);
 
@@ -3930,6 +3932,9 @@ $this->update_principal_image();
 
 }
 
+}else{
+
+  $this->msg=_('Image not associated');
 }
 
 

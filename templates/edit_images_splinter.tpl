@@ -11,9 +11,9 @@
 
     {foreach from=$images item=image  name=foo}
     <div id="image_container{$image.id}" class="image"  image_id="{$image.id}" is_principal="{$image.is_principal}" >
-      <div class="image_name" id="image_name$image.id}">{$image.name}</div>
-      <img class="delete" src="art/icons/delete.png" alt="{t}Delete{/t}" title="{t}Delete{/t}" onClick="delete_image()">
-      <img class="picture" style="border:1px solid #ccc;width:100%"    src="{$image.small_url}"    /> 
+      <div class="image_name" id="image_name{$image.id}">{$image.name}</div>
+      <img class="delete" src="art/icons/delete.png" alt="{t}Delete{/t}" title="{t}Delete{/t}" onClick="delete_image(this)">
+      <img class="picture"src="{$image.small_url}"    /> 
       <div class="operations">
 	  <img id="img_principal{$image.id}"  style="{if $image.is_principal=='Yes'} {else}display:none{/if}"  title="{t}Main Image{/t}"  src="art/icons/bullet_star.png">
 	  <img id="img_set_principal{$image.id}" style="{if $image.is_principal=='Yes'}display:none{else}{/if}"  onClick="set_image_as_principal(this)" title="{t}Set as the principal image{/t}" image_id="{$image.id}" principal="0" src="art/icons/picture_empty.png">
