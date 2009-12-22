@@ -484,76 +484,7 @@ function delete_part(id,name){
 
 
 }
-function delete_image(image_id,image_name){
-    var answer = confirm("<?php echo _('Are you sure you want to delete this image')?> ("+image_name+")");
-    if (answer){
 
-	
-
-	var request='ar_edit_assets.php?tipo=delete_image&scope=product&scope_key='+product_id+'&value='+escape(image_id);
-	YAHOO.util.Connect.asyncRequest('POST',request ,{
-		success:function(o) {
-		    //alert(o.responseText);
-		    var r =  YAHOO.lang.JSON.parse(o.responseText);
-		    if(r.state==200){
-			Dom.get('image'+image_id).style.display='none';
-			if(r.new_principal!=''){
-			    var new_principal=r.new_principal;
-			    Dom.get('images').setAttribute('principal',new_principal);
-			    var new_but=Dom.get('img_set_principal'+new_principal);
-			    new_but.setAttribute('title','<?php echo _('Main Image')?>');
-			    new_but.setAttribute('principal',1);
-			    new_but.setAttribute('src',"art/icons/asterisk_orange.png");		
-			    new_but.style.cursor="default";
-			}
-
-		    }else
-			alert(r.msg);
-		}
-		
-	    });
-    }
-
-
-}
-function set_image_as_principal(o){
-
-    if(o.getAttribute('principal')==1)
-	return;
-    image_id=o.getAttribute('image_id');
-
-    var request='ar_assets.php?tipo=ep_update&key=img_set_principal'+'&value='+escape(image_id);
-    YAHOO.util.Connect.asyncRequest('POST',request ,{
-	    success:function(o) {
-		var r =  YAHOO.lang.JSON.parse(o.responseText);
-		    if(r.ok){
-			var old_principal=Dom.get('images').getAttribute('principal');
-			var new_principal=image_id;
-			Dom.get('images').setAttribute('principal',new_principal);
-			var old_but=Dom.get('img_set_principal'+old_principal);
-			var new_but=Dom.get('img_set_principal'+new_principal);
-			old_but.setAttribute('title','<?php echo _('Set as the principal image')?>');
-			old_but.setAttribute('principal',0);
-			old_but.setAttribute('src',"art/icons/picture_empty.png");
-			old_but.style.cursor="pointer";
-			new_but.setAttribute('title','<?php echo _('Main Image')?>');
-			new_but.setAttribute('principal',1);
-			new_but.setAttribute('src',"art/icons/asterisk_orange.png");		
-			new_but.style.cursor="default";
-		    }else
-			alert(r.msg);
-		}
-		 
-	    });
-
-}
-function caption_changed(o){
-    if(o.value!=o.getAttribute('ovalue')){
-	Dom.get("save_img_caption"+o.getAttribute('image_id')).style.visibility='visible';
-    }else
-	Dom.get("save_img_caption"+o.getAttribute('image_id')).style.visibility='hidden';
-
-}
 function description_changed(o){
 	var ovalue=o.getAttribute('ovalue');
 	var name=o.name;

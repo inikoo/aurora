@@ -68,8 +68,8 @@ $this->format='';
 
 
  function get_data($id){
-   $sql=sprintf("select `Image Key`,`Image Caption`,`Image URL`,`Image Thumbnail URL`,`Image Small URL`,`Image Large URL`,`Image Filename`,`Image File Checksum`,`Image Width`,`Image Height`,`Image File Size`,`Image File Format` from `Image Dimension` where `Image Key`=%d ",$id);
-   // print $sql;
+   $sql=sprintf("select `Image Key`,`Image URL`,`Image Thumbnail URL`,`Image Small URL`,`Image Large URL`,`Image Filename`,`Image File Checksum`,`Image Width`,`Image Height`,`Image File Size`,`Image File Format` from `Image Dimension` where `Image Key`=%d ",$id);
+   print $sql;
    $result=mysql_query($sql);
    if($this->data=mysql_fetch_array($result, MYSQL_ASSOC)   )
      $this->id=$this->data['Image Key'];
@@ -116,10 +116,7 @@ $this->format='';
     }
 
 
-    $this->caption='';
-    if(isset($raw_data['caption'])){
-      $this->caption=$raw_data['caption'];
-    }
+   
    $this->mime_type='';
     if(isset($raw_data['type'])){
       $this->mime_type=$raw_data['type'];
@@ -202,7 +199,6 @@ $this->format='';
 			    'Image Height' =>  $this->im_y,
 			    'Image File Size'=>filesize($filename),
 			    'Image File Checksum'=>$this->checksum,
-			    'Image Caption'=>$this->caption,
 			    'Image Filename'=>$this->name,
 			'Image URL'=>$name,
 			'Image Original Filename'=>$this->original_name,
@@ -222,9 +218,7 @@ $this->saveImage($this->im,$name);
       $values='values(';
       foreach($image_data as $key=>$value) {
 	$keys.="`$key`,";
-	if (preg_match('/caption/i',$key))
-	  $values.="'".addslashes($value)."',";
-	else
+	
 	  $values.=prepare_mysql($value).",";
       }
       $keys=preg_replace('/,$/',')',$keys);

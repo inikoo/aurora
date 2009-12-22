@@ -541,15 +541,7 @@ span.small{font-size:80%}
 .inbox td span.selected{ border:1px solid #777;color:#000;border-bottom:1px solid white;position:relative;top:1px}
 .inbox_form  span.button,.inbox span.button,.edit span.button{border:1px solid #777;padding:4px 4px;cursor:pointer; }
 
-.edit_images{ margin:20px 0;width:800px;font-size:80% }
-.edit_images div.image{float:left;width:180px;margin:10px  20px 10px 0; }
-.edit_images img.picture {border:1px solid #ccc }
-.edit_images .img_set_principal{ float:right;margin-right:25px }
 
-.edit_images div.operations,.edit_images div.captio{ margin-top:5px }
-.edit_images div.caption span.save { float:right;margin-right:5px }
-.edit_images div.caption span.save img.caption {visibility:hidden;cursor:pointer }
-.edit_images div.caption textarea.caption{ width:150px }
 #d_config table.tipo {height:8em;font-size:100%;font-weight:600;}
 #d_config table.tipo{ ;border-collapse: separate;;border-spacing:10px 0px}
 #d_config table.tipo div{padding:10px;margin:10px;border:1px solid #ddd;width:20em;height:4em}

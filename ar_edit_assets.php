@@ -8,6 +8,7 @@ require_once 'class.Family.php';
 require_once 'class.Order.php';
 require_once 'class.Location.php';
 require_once 'class.PartLocation.php';
+require_once 'class.Image.php';
 
 if(!isset($_REQUEST['tipo']))
   {
@@ -418,9 +419,11 @@ $image=new Image('find',$data,'create');
   
 
   $msg=array(
-	     'set_main'=>'x'
-	     ,'main'=>'y'
-	     
+	     'set_main'=>_('Set Main')
+	     ,'main'=>_('Main Image')
+	     ,'caption'=>_('Caption')
+	     ,'save_caption'=>_('Save caption')
+	     ,'delete'=>_('Delete')
 	     );
   
 
@@ -1405,8 +1408,10 @@ elseif($scope=='family')
 elseif($scope=='department')
     $subject=new Product($scope_key);    
 
-$subject->delete_image($image_key);
+$subject->remove_image($image_key);
 $image=new Image($image_key);
+print_r($image);
+
 $image->delete();
 
 if($subject->deleted){
