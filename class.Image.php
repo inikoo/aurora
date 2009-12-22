@@ -53,23 +53,23 @@ $this->error=false;
 $this->format='';
 
     if (is_numeric($a1) and !$a2) {
-      $this->get_data('id',$a1);
-    } else if (($a1=='new' or $a1=='create') and is_string($a2) ) {
-      $this->find($a2,'create');
-    }
-    elseif($a1=='find') {
-      $this->find($a2,$a3);
 
+      $this->get_data('id',$a1);
+    }else if (($a1=='new' or $a1=='create') and is_string($a2) ) {
+      $this->find($a2,'create');
+    }elseif($a1=='find') {
+      $this->find($a2,$a3);
+      
     }
     else
-      $this->get_data($a1);
+      $this->get_data($a1,$a2);
   }
 
 
 
- function get_data($id){
+  function get_data($tipo='id',$id){
    $sql=sprintf("select `Image Key`,`Image URL`,`Image Thumbnail URL`,`Image Small URL`,`Image Large URL`,`Image Filename`,`Image File Checksum`,`Image Width`,`Image Height`,`Image File Size`,`Image File Format` from `Image Dimension` where `Image Key`=%d ",$id);
-   print $sql;
+
    $result=mysql_query($sql);
    if($this->data=mysql_fetch_array($result, MYSQL_ASSOC)   )
      $this->id=$this->data['Image Key'];
@@ -158,7 +158,7 @@ $this->format='';
     if($row=mysql_fetch_array($res)){
       $this->found=true;
       $this->found_key=$row['Image Key'];
-      $this->get_data($this->found_key);
+      $this->get_data('id',$this->found_key);
     }
 
     if(!$this->found and $create){
@@ -228,7 +228,7 @@ $this->saveImage($this->im,$name);
       if (mysql_query($sql)) {
 	$this->id=mysql_insert_id();
 $this->new=true;
-	$this->get_data($this->id);
+$this->get_data('id',$this->id);
       }else{
 	$this->error=true;
       }

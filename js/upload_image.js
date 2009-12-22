@@ -100,19 +100,23 @@ return;
 
 
 
-function delete_image(image_id,image_name){
+function delete_image(o){
+
+    
+    image_key=o.parentNode.getAttribute('image_id');
     var answer = confirm('Delete');
     if (answer){
 
 	
 
-	var request='ar_edit_assets.php?tipo=delete_image&scope='+scope+'&scope_key='+scope_key+'&image_key='+escape(image_id);
+	var request='ar_edit_assets.php?tipo=delete_image&scope='+scope+'&scope_key='+scope_key+'&image_key='+escape(image_key);
+	//	alert(request)
 	YAHOO.util.Connect.asyncRequest('POST',request ,{
 		success:function(o) {
-		    alert(o.responseText);
+		    // alert(o.responseText);
 		    var r =  YAHOO.lang.JSON.parse(o.responseText);
 		    if(r.state==200){
-			Dom.get('image'+image_id).style.display='none';
+			Dom.get('image_container'+image_key).style.display='none';
 			
 
 		    }else
@@ -140,14 +144,29 @@ var onUploadButtonClick = function(e){
 	    if(r.state==200){
 
 		var images=Dom.get('images');
+		
 		var image_div=document.createElement("div");
-		image_div.setAttribute("id", "image"+r.data.id);
+		image_div.setAttribute("id", "image_container"+r.data.id);
 		image_div.setAttribute("class",'image');
+		image_div.setAttribute("image_id", r.data.id);
+		image_div.setAttribute("is_principal", r.data.is_principal);
+				
+		
+		var delete_img=document.createElement("img");
+		delete_img.setAttribute("class",'delete');
+		delete_img.setAttribute("src",'art/icons/delete.png');
+		delete_img.setAttribute("alt",r.msg.delete);
+		delete_img.setAttribute("title",r.msg.delete);
+		delete_img.setAttribute("onClick", 'delete(this)');
+		
 
 		var name_div=document.createElement("div");
+		name_div.setAttribute("id", "image_name"+r.data.id);
 		name_div.innerHTML=r.data.name;
 		       
 		
+
+
 		var picture_img=document.createElement("img");
 		picture_img.setAttribute("src", r.data.small_url);
 		picture_img.setAttribute("class", 'picture');

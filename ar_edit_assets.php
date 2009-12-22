@@ -1408,18 +1408,18 @@ elseif($scope=='family')
 elseif($scope=='department')
     $subject=new Product($scope_key);    
 
+
 $subject->remove_image($image_key);
 $image=new Image($image_key);
-print_r($image);
 
 $image->delete();
 
-if($subject->deleted){
- $response=array('state'=>200,'msg'=>$msg,'image_key'=>$image->id);
+if($subject->updated){
+ $response=array('state'=>200,'msg'=>$subject->msg,'image_key'=>$image->id);
     echo json_encode($response);
 
 }else{
- $response=array('state'=>400,'msg'=>$msg);
+ $response=array('state'=>400,'msg'=>$subject->msg);
     echo json_encode($response);
 
 }
