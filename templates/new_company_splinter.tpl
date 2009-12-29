@@ -35,9 +35,9 @@
 	    </div>
 	  </td>
 	</tr>
-	<tr >
+	<tr style="{if $scope=='corporation'}display:none{/if}" >
 	  
-	  <td style=";" class="label">{t}Contact Name{/t}:</td>
+	  <td class="label">{t}Contact Name{/t}:</td>
 	  <td>
 	    
 	    <input style="width:18em" id="Contact_Name" value="" >
@@ -82,7 +82,7 @@
 	  
 	</tbody>
 	
-	<tr id="email_mould" >
+	<tr id="email_mould" style="{if $scope=='corporation'}display:none{/if}"  >
 	  <td  class="label"  >{t}Email{/t}:</td>
 	  <td >
 	    <input style="width:18em" id="Email" class="Email"  to_delete=0 value="" ovalue="" email_key="" valid=""   />
@@ -90,7 +90,7 @@
 	    
 	  </td>
 	</tr>
- 	<tr id="telephone_mould" cstyle="">
+ 	<tr id="telephone_mould"  style="{if $scope=='corporation'}display:none{/if}" >
 	  <td  class="label">
 	    
 	    {t}Telephone{/t}:
@@ -260,7 +260,7 @@
 
 	<div style="font-size:80%;margin-bottom:10px;display:none" id="mark_company_found">{t}Company found{/t}</div>
 	
-	<table class="form_state">
+	<table class="form_state" style="display:none">
 	  <caption>{t}State of the form{/t}</caption>
 	  <tr><th style="width:10em"></th><th style="width:50px">{t}Show{/t}</th><th>{t}Input{/t}</th><th>{t}Valid{/t}</th></tr>
 	  <tr><td class="aleft">{t}Company Name{/t}</td><td style="text-align:center"  id="company_name_show"><img src='art/icons/accept.png'></td><td id="company_name_inputed"></td><td id="company_name_valid"></td></tr>

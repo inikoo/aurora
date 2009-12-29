@@ -19,12 +19,11 @@ if(!isset($_REQUEST['tipo']))  {
 
 $tipo=$_REQUEST['tipo'];
 switch($tipo){
-
 case('used_email'):
   used_email();
   
-
   break;
+
 case('find_company'):
   require_once 'ar_edit_common.php';
   $data=prepare_values($_REQUEST,array(
@@ -40,8 +39,35 @@ case('find_company'):
 					));
    find_contact($data['values']);
   break;
-
-
+case('is_company_area_code'):
+  is_company_area_code();
+  break;
+case('is_company_area_name'):
+  is_company_area_name();
+  break;
+  case('is_company_department_code'):
+  is_company_department_code();
+  break;
+case('is_company_department_name'):
+  is_company_department_name();
+  break;
+  case('find_company_area'):
+   require_once 'ar_edit_common.php';
+   $data=prepare_values($_REQUEST,array(
+					'parent_key'=>array('type'=>'number')
+					,'query'=>array('type'=>'string')
+					));
+  find_company_area($data);
+  break;
+    case('find_company_department'):
+     require_once 'ar_edit_common.php';
+   $data=prepare_values($_REQUEST,array(
+					'parent_key'=>array('type'=>'number')
+					,'grandparent_key'=>array('type'=>'number')
+					,'query'=>array('type'=>'string')
+					));
+  find_company_department($data);
+  break;
  case('contacts'):
  list_contacts();
    break;
@@ -59,9 +85,15 @@ if(!$user->can_view('customers'))
     exit();
   list_customers();
    break;
+case('company_areas'):
 
+  list_company_areas();
+   break;
 
+case('company_departments'):
 
+  list_company_departments();
+   break;
 case('plot_order_interval'):
 
   $now="'2008-04-18 08:30:00'";
@@ -1599,6 +1631,75 @@ function find_company($data){
   $response=array('candidates_data'=>$candidates_data,'action'=>$action,'found_key'=>$found_key);
   echo json_encode($response);
 }
+function find_company_area($data){
+$extra_where='';
+if($data['parent_key']){
+    $extra_where=sprintf(' and `Company Key`=%d',$data['parent_key']);
+}
+
+$adata=array();
+$sql=sprintf("select `Company Area Key` ,`Company Area Code` ,`Company Area Name` from `Company Area Dimension`  where  (`Company Area Name` like '%%%s%%' or `Company Area Code` like '%s%%') %s limit 10" 
+,addslashes($data['query'])
+,addslashes($data['query'])
+,$extra_where
+
+		 );
+    $result=mysql_query($sql);
+    while($row=mysql_fetch_array($result)){
+    
+    
+    $adata[]=array(
+		     
+		     'key'=>$row['Company Area Key'],
+		     'code'=>$row['Company Area Code'],
+		     'name'=>$row['Company Area Name']
+		     );
+    }
+    $response=array('data'=>$adata);
+   echo json_encode($response);
+
+
+}
+
+function find_company_department($data){
+$extra_where='';
+if($data['parent_key']){
+    $extra_where.=sprintf(' and D.`Company Area Key`=%d',$data['parent_key']);
+}
+if($data['grandparent_key']){
+    $extra_where.=sprintf(' and `Company Key`=%d',$data['grandparent_key']);
+}
+
+$adata=array();
+$sql=sprintf("select `Company Department Key` ,`Company Department Code` ,`Company Department Name`,D.`Company Area Key` ,`Company Area Code` ,`Company Area Name` from `Company Department Dimension` D left join `Company Area Dimension` A on (A.`Company Area Key`=D.`Company Area Key`)  where  (`Company Department Name` like '%%%s%%' or `Company Department Code` like '%s%%') %s limit 10" 
+,addslashes($data['query'])
+,addslashes($data['query'])
+,$extra_where
+
+		 );
+    $result=mysql_query($sql);
+    while($row=mysql_fetch_array($result)){
+    
+    
+    $adata[]=array(
+		     
+		     'key'=>$row['Company Department Key'],
+		     'code'=>$row['Company Department Code'],
+		     'name'=>$row['Company Department Name'],
+		     'area_key'=>$row['Company Area Key'],
+		     'area_code'=>$row['Company Area Code'],
+		     'area_name'=>$row['Company Area Name'],
+		     );
+    }
+    $response=array('data'=>$adata);
+   echo json_encode($response);
+
+
+}
+
+
+
+
 function find_contact($data){
   $candidates_data=array();
   // quick try to find the email
@@ -1630,7 +1731,7 @@ function find_contact($data){
     $action='nothing_found';
   
  
- 
+ $count=0;
   foreach($contact->candidate as $contact_key=>$score){
     if($count>$max_results)
       break;
@@ -1668,6 +1769,656 @@ function used_email(){
 
 
 }
+
+
+function is_company_area_code(){
+if (!isset($_REQUEST['query']) or !isset($_REQUEST['company_key']) ) {
+        $response= array(
+                       'state'=>400,
+                       'msg'=>'Error'
+                   );
+        echo json_encode($response);
+        return;
+    }else
+    $query=$_REQUEST['query'];
+    if($query==''){
+       $response= array(
+                       'state'=>200,
+                       'found'=>0
+                   );
+        echo json_encode($response);
+        return;
+    }
+    
+     $company_key=$_REQUEST['company_key'];
+    
+$sql=sprintf("select `Company Area Key`,`Company Area Name`,`Company Area Code` from `Company Area Dimension` where `Company Key`=%d and `Company Area Code`=%s  "
+	     ,$company_key
+	     ,prepare_mysql($query)
+        );
+$res=mysql_query($sql);
+
+    if ($data=mysql_fetch_array($res)) {
+   $msg=sprintf('Company Area <a href="company_area.php?id=%d">%s</a> already has this code (%s)'
+   ,$data['Company Area Key']
+   ,$data['Company Area Name']
+   ,$data['Company Area Code']
+   );
+   $response= array(
+                       'state'=>200,
+                       'found'=>1,
+                       'msg'=>$msg
+                   );
+        echo json_encode($response);
+        return;
+    }else{
+       $response= array(
+                       'state'=>200,
+                       'found'=>0
+                   );
+        echo json_encode($response);
+        return;
+    }
+
+}
+function is_company_area_name(){
+if (!isset($_REQUEST['query']) or !isset($_REQUEST['company_key']) ) {
+        $response= array(
+                       'state'=>400,
+                       'msg'=>'Error'
+                   );
+        echo json_encode($response);
+        return;
+    }else
+    $query=$_REQUEST['query'];
+    if($query==''){
+       $response= array(
+                       'state'=>200,
+                       'found'=>0
+                   );
+        echo json_encode($response);
+        return;
+    }
+    
+     $company_key=$_REQUEST['company_key'];
+    
+$sql=sprintf("select `Company Area Key`,`Company Area Name`,`Company Area Code` from `Company Area Dimension` where `Company Key`=%d and `Company Area Name`=%s  "
+	     ,$company_key
+	     ,prepare_mysql($query)
+        );
+$res=mysql_query($sql);
+
+    if ($data=mysql_fetch_array($res)) {
+   $msg=sprintf('Another Company Area <a href="company_area.php?id=%d">(%s)</a> already has this name'
+   ,$data['Company Area Key']
+   ,$data['Company Area Code']
+   );
+   $response= array(
+                       'state'=>200,
+                       'found'=>1,
+                       'msg'=>$msg
+                   );
+        echo json_encode($response);
+        return;
+    }else{
+       $response= array(
+                       'state'=>200,
+                       'found'=>0
+                   );
+        echo json_encode($response);
+        return;
+    }
+
+}
+function list_company_areas(){
+
+
+
+
+
+$conf=$_SESSION['state']['company_areas']['table'];
+   if(isset( $_REQUEST['view']))
+     $view=$_REQUEST['view'];
+   else
+     $view=$_SESSION['state']['company_areas']['view'];
+     
+   if(isset( $_REQUEST['sf']))
+     $start_from=$_REQUEST['sf'];
+   else
+     $start_from=$conf['sf'];
+   if(!is_numeric($start_from))
+     $start_from=0;
+
+   if(isset( $_REQUEST['nr'])){
+     $number_results=$_REQUEST['nr'];
+   }else
+     $number_results=$conf['nr'];
+
+      
+   if(isset( $_REQUEST['o']))
+     $order=$_REQUEST['o'];
+   else
+     $order=$conf['order'];
+      
+   if(isset( $_REQUEST['od']))
+     $order_dir=$_REQUEST['od'];
+   else
+     $order_dir=$conf['order_dir'];
+   $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
+      
+      
+  
+   if(isset( $_REQUEST['where']))
+     $where=addslashes($_REQUEST['where']);
+   else
+     $where=$conf['where'];
+      
+      
+   if(isset( $_REQUEST['f_field']))
+     $f_field=$_REQUEST['f_field'];
+   else
+     $f_field=$conf['f_field'];
+      
+   if(isset( $_REQUEST['f_value']))
+     $f_value=$_REQUEST['f_value'];
+   else
+     $f_value=$conf['f_value'];
+      
+      
+   if(isset( $_REQUEST['tableid']))
+     $tableid=$_REQUEST['tableid'];
+   else
+     $tableid=0;
+
+
+
+
+   if(isset( $_REQUEST['parent']))
+     $parent=$_REQUEST['parent'];
+   else
+     $parent=$conf['parent'];
+
+   if(isset( $_REQUEST['mode']))
+     $mode=$_REQUEST['mode'];
+   else
+     $mode=$conf['mode'];
+   
+   if(isset( $_REQUEST['restrictions']))
+     $restrictions=$_REQUEST['restrictions'];
+   else
+     $restrictions=$conf['restrictions'];
+
+    
+    
+    
+   $_SESSION['state']['company_areas']['table']=array('order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value
+						 ,'mode'=>$mode,'restrictions'=>'','parent'=>$parent
+						 );
+      
+     
+    
+  
+   $group='';
+
+   
+  
+
+      
+   $filter_msg='';
+     
+   $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
+     
+   //  if(!is_numeric($start_from))
+   //        $start_from=0;
+   //      if(!is_numeric($number_results))
+   //        $number_results=25;
+     
+
+   $_order=$order;
+   $_dir=$order_direction;
+   $filter_msg='';
+   $wheref='';
+   if($f_field=='company name' and $f_value!='')
+     $wheref.=" and  `Company Name` like '%".addslashes($f_value)."%'";
+   elseif($f_field=='email' and $f_value!='')
+     $wheref.=" and  `Company Main Plain Email` like '".addslashes($f_value)."%'";
+     
+   $sql="select count(*) as total from `Company Area Dimension`  $where $wheref   ";
+//print $sql;
+   $res=mysql_query($sql);
+   if($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+     $total=$row['total'];
+   }
+   if($wheref==''){
+     $filtered=0;
+     $total_records=$total;
+   } else{
+     $sql="select count(*) as total from `Company Area Dimension`  $where   ";
+     $res=mysql_query($sql);
+     if($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+       $total_records=$row['total'];
+       $filtered=$total_records-$total;
+     }
+
+   }
+mysql_free_result($res);
+     
+   $rtext=$total_records." ".ngettext('company area','company areas',$total_records);
+   if($total_records>$number_results)
+     $rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
+   else
+     $rtext_rpp=' '._('(Showing all)');
+     
+   if($total==0 and $filtered>0){
+     switch($f_field){
+     case('name'):
+       $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any contact with name like ")." <b>".$f_value."*</b> ";
+       break;
+     case('email'):
+       $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any contact with email like ")." <b>".$f_value."*</b> ";
+       break;
+     }
+   }
+   elseif($filtered>0){
+     switch($f_field){
+     case('name'):
+       $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total "._('companies with name like')." <b>".$f_value."*</b> <span onclick=\"remove_filter($tableid)\" id='remove_filter$tableid' class='remove_filter'>"._('Show All')."</span>";
+       break;
+     case('email'):
+       $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total "._('companies with email like')." <b>".$f_value."*</b> <span onclick=\"remove_filter($tableid)\" id='remove_filter$tableid' class='remove_filter'>"._('Show All')."</span>";
+       break; 
+     }
+   }else
+      $filter_msg='';
+       
+   $_order=$order;
+   $_order_dir=$order_dir;
+          $order='`Company Area Name`';
+
+   if($order=='code')
+     $order='`Company Area Code`';
+  
+
+
+   $sql="select  * from `Company Area Dimension` P  $where $wheref $group order by $order $order_direction limit $start_from,$number_results    ";
+  
+   $res = mysql_query($sql);
+   $adata=array();
+
+   // print "$sql";
+   while($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+    
+     
+   
+    $adata[]=array(
+		  
+		   
+		    
+
+		    'code'=>sprintf('<a href="company_area.php?id=%d">%s</a>',$row['Company Area Key'],$row['Company Area Code'])
+		   		    ,'name'=>sprintf('<a href="company_area.php?id=%d">%s</a>',$row['Company Area Key'],$row['Company Area Name'])
+
+		   );
+  }
+mysql_free_result($res);
+
+
+   // $total_records=ceil($total_records/$number_results)+$total_records;
+
+  $response=array('resultset'=>
+		  array('state'=>200,
+			'data'=>$adata,
+			'sort_key'=>$_order,
+			'sort_dir'=>$_dir,
+			'tableid'=>$tableid,
+			'filter_msg'=>$filter_msg,
+			'rtext'=>$rtext,
+			'rtext_rpp'=>$rtext_rpp,
+			'total_records'=>$total_records,
+			'records_offset'=>$start_from,
+			'records_perpage'=>$number_results,
+			)
+		  );
+
+       
+
+
+   echo json_encode($response);
+
+}
+
+
+function is_company_department_code(){
+if (!isset($_REQUEST['query']) or !isset($_REQUEST['company_key']) ) {
+        $response= array(
+                       'state'=>400,
+                       'msg'=>'Error'
+                   );
+        echo json_encode($response);
+        return;
+    }else
+    $query=$_REQUEST['query'];
+    if($query==''){
+       $response= array(
+                       'state'=>200,
+                       'found'=>0
+                   );
+        echo json_encode($response);
+        return;
+    }
+    
+     $company_key=$_REQUEST['company_key'];
+    
+$sql=sprintf("select `Company Department Key`,`Company Department Name`,`Company Department Code` from `Company Department Dimension` where `Company Key`=%d and `Company Department Code`=%s  "
+	     ,$company_key
+	     ,prepare_mysql($query)
+        );
+$res=mysql_query($sql);
+
+    if ($data=mysql_fetch_array($res)) {
+   $msg=sprintf('Company Department <a href="company_department.php?id=%d">%s</a> already has this code (%s)'
+   ,$data['Company Department Key']
+   ,$data['Company Department Name']
+   ,$data['Company Department Code']
+   );
+   $response= array(
+                       'state'=>200,
+                       'found'=>1,
+                       'msg'=>$msg
+                   );
+        echo json_encode($response);
+        return;
+    }else{
+       $response= array(
+                       'state'=>200,
+                       'found'=>0
+                   );
+        echo json_encode($response);
+        return;
+    }
+
+}
+function is_company_department_name(){
+if (!isset($_REQUEST['query']) or !isset($_REQUEST['company_key']) ) {
+        $response= array(
+                       'state'=>400,
+                       'msg'=>'Error'
+                   );
+        echo json_encode($response);
+        return;
+    }else
+    $query=$_REQUEST['query'];
+    if($query==''){
+       $response= array(
+                       'state'=>200,
+                       'found'=>0
+                   );
+        echo json_encode($response);
+        return;
+    }
+    
+     $company_key=$_REQUEST['company_key'];
+    
+$sql=sprintf("select `Company Department Key`,`Company Department Name`,`Company Department Code` from `Company Department Dimension` where `Company Key`=%d and `Company Department Name`=%s  "
+	     ,$company_key
+	     ,prepare_mysql($query)
+        );
+$res=mysql_query($sql);
+
+    if ($data=mysql_fetch_array($res)) {
+   $msg=sprintf('Another Company Department <a href="company_department.php?id=%d">(%s)</a> already has this name'
+   ,$data['Company Department Key']
+   ,$data['Company Department Code']
+   );
+   $response= array(
+                       'state'=>200,
+                       'found'=>1,
+                       'msg'=>$msg
+                   );
+        echo json_encode($response);
+        return;
+    }else{
+       $response= array(
+                       'state'=>200,
+                       'found'=>0
+                   );
+        echo json_encode($response);
+        return;
+    }
+
+}
+function list_company_departments(){
+
+$conf=$_SESSION['state']['company_departments']['table'];
+  if(isset( $_REQUEST['parent'])){
+     $parent=$_REQUEST['parent'];
+   $_SESSION['state']['company_departments']['parent']=$parent;
+   }else
+     $parent= $_SESSION['state']['company_departments']['parent'];
+
+if($parent=='area'){
+$conf_table='company_area';
+
+   $conf=$_SESSION['state']['company_area']['departments'];
+
+}else{
+$conf_table='company_departments';
+   $conf=$_SESSION['state'][$conf_table]['table'];
+
+}
+
+   if(isset( $_REQUEST['view']))
+     $view=$_REQUEST['view'];
+   else
+     $view=$_SESSION['state']['company_departments']['view'];
+     
+   if(isset( $_REQUEST['sf']))
+     $start_from=$_REQUEST['sf'];
+   else
+     $start_from=$conf['sf'];
+   if(!is_numeric($start_from))
+     $start_from=0;
+
+   if(isset( $_REQUEST['nr'])){
+     $number_results=$_REQUEST['nr'];
+   }else
+     $number_results=$conf['nr'];
+
+      
+   if(isset( $_REQUEST['o']))
+     $order=$_REQUEST['o'];
+   else
+     $order=$conf['order'];
+      
+   if(isset( $_REQUEST['od']))
+     $order_dir=$_REQUEST['od'];
+   else
+     $order_dir=$conf['order_dir'];
+   $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
+      
+      
+  
+   if(isset( $_REQUEST['where']))
+     $where=addslashes($_REQUEST['where']);
+   else
+     $where=$conf['where'];
+      
+      
+   if(isset( $_REQUEST['f_field']))
+     $f_field=$_REQUEST['f_field'];
+   else
+     $f_field=$conf['f_field'];
+      
+   if(isset( $_REQUEST['f_value']))
+     $f_value=$_REQUEST['f_value'];
+   else
+     $f_value=$conf['f_value'];
+      
+      
+   if(isset( $_REQUEST['tableid']))
+     $tableid=$_REQUEST['tableid'];
+   else
+     $tableid=0;
+
+
+
+
+ 
+   
+   if(isset( $_REQUEST['restrictions']))
+     $restrictions=$_REQUEST['restrictions'];
+   else
+     $restrictions=$conf['restrictions'];
+
+    
+       if($parent=='area'){
+   $_SESSION['state']['company_area']['departments']=array('order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value
+						 ,'restrictions'=>'','parent'=>$parent
+						 );
+      }else{
+      $_SESSION['state']['company_departments']['table']=array('order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value
+						 ,'restrictions'=>'','parent'=>$parent
+						 );
+      }
+     
+ 
+     
+    
+    if($parent=='area'){
+    $where.=sprintf(' and P.`Company Area Key`=%d',$_SESSION['state']['company_area']['id']);
+    }
+    
+  
+   $group='';
+
+   
+
+
+      
+   $filter_msg='';
+     
+   $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
+     
+   //  if(!is_numeric($start_from))
+   //        $start_from=0;
+   //      if(!is_numeric($number_results))
+   //        $number_results=25;
+     
+
+   $_order=$order;
+   $_dir=$order_direction;
+   $filter_msg='';
+   $wheref='';
+   if($f_field=='company name' and $f_value!='')
+     $wheref.=" and  `Company Name` like '%".addslashes($f_value)."%'";
+   elseif($f_field=='email' and $f_value!='')
+     $wheref.=" and  `Company Main Plain Email` like '".addslashes($f_value)."%'";
+     
+   $sql="select count(*) as total from `Company Department Dimension`  $where $wheref   ";
+//print $sql;
+   $res=mysql_query($sql);
+   if($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+     $total=$row['total'];
+   }
+   if($wheref==''){
+     $filtered=0;
+     $total_records=$total;
+   } else{
+     $sql="select count(*) as total from `Company Department Dimension`  $where   ";
+     $res=mysql_query($sql);
+     if($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+       $total_records=$row['total'];
+       $filtered=$total_records-$total;
+     }
+
+   }
+mysql_free_result($res);
+     
+   $rtext=$total_records." ".ngettext('company department','company departments',$total_records);
+   if($total_records>$number_results)
+     $rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
+   else
+     $rtext_rpp=' '._('(Showing all)');
+     
+   if($total==0 and $filtered>0){
+     switch($f_field){
+     case('name'):
+       $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any contact with name like ")." <b>".$f_value."*</b> ";
+       break;
+     case('email'):
+       $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any contact with email like ")." <b>".$f_value."*</b> ";
+       break;
+     }
+   }
+   elseif($filtered>0){
+     switch($f_field){
+     case('name'):
+       $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total "._('companies with name like')." <b>".$f_value."*</b> <span onclick=\"remove_filter($tableid)\" id='remove_filter$tableid' class='remove_filter'>"._('Show All')."</span>";
+       break;
+     case('email'):
+       $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total "._('companies with email like')." <b>".$f_value."*</b> <span onclick=\"remove_filter($tableid)\" id='remove_filter$tableid' class='remove_filter'>"._('Show All')."</span>";
+       break; 
+     }
+   }else
+      $filter_msg='';
+       
+   $_order=$order;
+   $_order_dir=$order_dir;
+          $order='`Company Department Name`';
+
+   if($order=='code')
+     $order='`Company Department Code`';
+  
+
+
+   $sql="select  * from `Company Department Dimension` P left join `Company Area Dimension` A on (P.`Company Area Key`=A.`Company Area Key`)  $where $wheref $group order by $order $order_direction limit $start_from,$number_results    ";
+  
+   $res = mysql_query($sql);
+   $adata=array();
+
+   // print "$sql";
+   while($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+    
+     
+   
+    $adata[]=array(
+		  
+		   
+		    
+		    'area'=>sprintf('<a href="company_area.php?id=%d">%s</a>',$row['Company Area Key'],$row['Company Area Code'])
+
+		    ,'code'=>sprintf('<a href="company_department.php?id=%d">%s</a>',$row['Company Department Key'],$row['Company Department Code'])
+		   		    ,'name'=>sprintf('<a href="company_department.php?id=%d">%s</a>',$row['Company Department Key'],$row['Company Department Name'])
+
+		   );
+  }
+mysql_free_result($res);
+
+
+   // $total_records=ceil($total_records/$number_results)+$total_records;
+
+  $response=array('resultset'=>
+		  array('state'=>200,
+			'data'=>$adata,
+			'sort_key'=>$_order,
+			'sort_dir'=>$_dir,
+			'tableid'=>$tableid,
+			'filter_msg'=>$filter_msg,
+			'rtext'=>$rtext,
+			'rtext_rpp'=>$rtext_rpp,
+			'total_records'=>$total_records,
+			'records_offset'=>$start_from,
+			'records_perpage'=>$number_results,
+			)
+		  );
+
+       
+
+
+   echo json_encode($response);
+
+}
+
 
 
 ?>

@@ -9,6 +9,7 @@ require_once 'class.Customer.php';
 
 require_once 'class.Timer.php';
 
+require_once 'ar_edit_common.php';
 
 
 
@@ -23,7 +24,14 @@ switch($tipo){
 case('history'):
     list_history($_REQUEST['type']);
     break;
-
+case('indirect_history'):
+ $data=prepare_values($_REQUEST,array(
+			     'parent'=>array('type'=>'string')
+			     ,'parent_key'=>array('type'=>'key')
+			     ,'scope'=>array('type'=>'string')
+			     ));
+    list_indirect_history($data);
+    break;
 case('history_details'):
   history_details();
    break;
@@ -316,7 +324,15 @@ function list_history($asset_type) {
         $asset='Contact';
     }elseif($asset_type=='company') {
         $asset='Company';
+    }elseif($asset_type=='company_area') {
+        $asset='Company Area';
+    }elseif($asset_type=='company_department') {
+        $asset='Company Department';
+    }elseif($asset_type=='position') {
+        $asset='Position';
     }
+
+
 
 
 
@@ -498,5 +514,219 @@ function list_history($asset_type) {
     echo json_encode($response);
 
 }
+
+
+function list_indirect_history($data) {
+
+$parent_key=$data['parent_key'];
+$scope=$data['scope'];
+
+
+
+if($scope=='company_area'){
+  $scope='Company Area';
+  $scope_parent_key_column='Company Key';
+    $scope_key_column='Company Area Key';
+
+  $scope_table='Company Area Dimension';
+}  
+if($scope=='company_department'){
+$scope='Company Department';
+  $scope_table='Company Department Dimension';
+    $scope_key_column='Company Department Key';
+  $scope_parent_key_column='Company Key';
+
+
+}
+
+
+
+    $conf=$_SESSION['state'][$data['parent']]['history'];
+    
+   
+    if (isset( $_REQUEST['elements']))
+        $elements=$_REQUEST['elements'];
+    else
+        $elements=$conf['elements'];
+
+    if (isset( $_REQUEST['from']))
+        $from=$_REQUEST['from'];
+    else
+        $from=$conf['from'];
+    if (isset( $_REQUEST['to']))
+        $to=$_REQUEST['to'];
+    else
+        $to=$conf['to'];
+    if (isset( $_REQUEST['sf']))
+        $start_from=$_REQUEST['sf'];
+    else
+        $start_from=$conf['sf'];
+    if (isset( $_REQUEST['nr']))
+        $number_results=$_REQUEST['nr'];
+    else
+        $number_results=$conf['nr'];
+    if (isset( $_REQUEST['o']))
+        $order=$_REQUEST['o'];
+    else
+        $order=$conf['order'];
+    if (isset( $_REQUEST['od']))
+        $order_dir=$_REQUEST['od'];
+    else
+        $order_dir=$conf['order_dir'];
+    $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
+    if (isset( $_REQUEST['where']))
+        $where=addslashes($_REQUEST['where']);
+    else
+        $where=$conf['where'];
+
+    if (isset( $_REQUEST['f_field']))
+        $f_field=$_REQUEST['f_field'];
+    else
+        $f_field=$conf['f_field'];
+
+    if (isset( $_REQUEST['f_value']))
+        $f_value=$_REQUEST['f_value'];
+    else
+        $f_value=$conf['f_value'];
+    if (isset( $_REQUEST['tableid']))
+        $tableid=$_REQUEST['tableid'];
+    else
+        $tableid=0;
+
+
+    list($date_interval,$error)=prepare_mysql_dates($from,$to);
+    if ($error) {
+        list($date_interval,$error)=prepare_mysql_dates($conf['from'],$conf['to']);
+    } else {
+        $_SESSION['state'][$data['parent']]['history']['from']=$from;
+        $_SESSION['state'][$data['parent']]['history']['to']=$to;
+    }
+
+    $_SESSION['state'][$data['parent']]['history']=
+        array(
+            'order'=>$order,
+            'order_dir'=>$order_direction,
+            'nr'=>$number_results,
+            'sf'=>$start_from,
+            'where'=>$where,
+            'f_field'=>$f_field,
+            'f_value'=>$f_value,
+            'from'=>$from,
+            'to'=>$to,
+            'elements'=>$elements
+        );
+
+
+    //print_r($_SESSION['state'][$data['parent']]['history']);
+
+    $_order=$order;
+    $_dir=$order_direction;
+    $filter_msg='';
+
+
+    $where='where true';
+
+    $wheref='';
+
+    $table=sprintf(' `History Dimension`H  left join `%s` X on (H.`Direct Object Key`=X.`%s`)  ',$scope_table,$scope_key_column);
+    $where=$where.sprintf(" and `Subject`='User'  and  `Direct Object`='%s' and X.`%s`='%d'     "
+                          ,$scope
+                          ,$scope_parent_key_column
+                          ,$parent_key
+                         );
+
+  
+    //   $where =$where.$view.sprintf(' and asset_id=%d  %s',$asset_id,$date_interval);
+
+    $sql="select count(*) as total from  $table   $where $wheref";
+   // print "$sql";
+    $result=mysql_query($sql);
+    if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+        $total=$row['total'];
+    }
+    if ($wheref=='')
+        $filtered=0;
+    else {
+        $sql="select count(*) as total from  $table  $where ";
+
+        $result=mysql_query($sql);
+        if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+            $filtered=$row['total']-$total;
+        }
+
+    }
+
+
+    if ($total==0)
+        $rtext=_('No history records');
+    else
+        $rtext=$total.' '.ngettext('record','records',$total);
+
+    if($order_direction=='')
+      $rev_order_direction=' desc';
+    else
+      $rev_order_direction='';
+    
+    $order='`History Date` '.$order_direction.',`History Key`  '.$rev_order_direction;
+	
+
+    $sql=sprintf("select  * from $table left join `User Dimension` U on (U.`User Key`=H.`Subject Key`)   $where $wheref order by $order  limit $start_from,$number_results ");
+    // print $sql;
+    $result=mysql_query($sql);
+    $adata=array();
+    while ($data=mysql_fetch_array($result, MYSQL_ASSOC)) {
+
+
+
+        $tipo=$data['Action'];
+        $author=$data['Author Name'];
+
+
+	if($data['History Details']=='')
+       $note=$data['History Abstract'];
+     else
+       $note=$data['History Abstract'].' <img class="button" d="no" id="ch'.$data['History Key'].'" hid="'.$data['History Key'].'" onClick="showdetails(this)" src="art/icons/closed.png" alt="Show details" />';
+
+
+
+        $adata[]=array(
+
+		       'author'=>$author
+		       ,'tipo'=>$tipo
+		       ,'abstract'=>$note
+		       ,'date'=>strftime("%a %e %b %Y %T", strtotime($data['History Date'])),
+		       );
+    }
+    $response=array('resultset'=>
+                                array('state'=>200,
+                                      'data'=>$adata,
+                                      'sort_key'=>$_order,
+                                      'sort_dir'=>$_dir,
+                                      'rtext'=>$rtext,
+                                      'tableid'=>$tableid,
+                                      'filter_msg'=>$filter_msg,
+                                      'total_records'=>$total,
+                                      'records_offset'=>$start_from,
+                                      'records_returned'=>$start_from+$total,
+                                      'records_perpage'=>$number_results,
+                                      'records_text'=>$rtext,
+                                      'records_order'=>$order,
+                                      'records_order_dir'=>$order_dir,
+                                      'filtered'=>$filtered
+                                     )
+                   );
+    echo json_encode($response);
+
+}
+
+
+
+
+
+
+
+
+
+
 
 ?>

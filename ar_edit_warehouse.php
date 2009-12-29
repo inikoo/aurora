@@ -6,6 +6,8 @@ require_once 'class.WarehouseArea.php';
 require_once 'class.PartLocation.php';
 require_once 'class.ShelfType.php';
 
+require_once 'ar_edit_common.php';
+
 
 if(!isset($_REQUEST['tipo']))
   {
@@ -32,6 +34,13 @@ case('new_area'):
   break;
 case('new_shelf_type'):
   new_shelf_type();
+  break;
+  case('new_shelf'):
+  $data=prepare_values($_REQUEST,array(
+			     'values'=>array('type'=>'json array')
+			   
+			     ));
+  new_shelf($data);
   break;
 case('new_location'):
   new_location();
@@ -1324,7 +1333,7 @@ function list_shelf_types_for_edition(){
        $max_vol=number($row['Location Max Volume']);
 
      if($row['Shelf Type Location Max Weight']!='')
-       $max_weight=number($row['Location Max Weight']);
+       $max_weight=number($row['Shelf Type Location Max Weight']);
      if($row['Shelf Type Location Deep']!='')
        $deep=number($row['Shelf Type Location Deep']);
 
@@ -1379,7 +1388,25 @@ function list_shelf_types_for_edition(){
 
    }
 
+function new_shelf($data){
+require_once 'class.Shelf.php';
 
+$shelf_data=$data['values']['Shelf Data'];
+$locations_data=$data['values']['Locations Data'];
+
+$shelf=new Shelf('find',$shelf_data,'create');
+if($shelf->new){
+foreach($locations_data as $_data){
+ foreach($_data as $j=>$__data){
+   $shelf->add_location($__data);
+ }
+
+}
+    
+
+}
+
+}
 
 
 

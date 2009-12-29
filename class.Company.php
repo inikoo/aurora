@@ -1056,7 +1056,7 @@ class Company extends DB_Table {
 			      ,'details'=>_trim(_('Company name chaged').": ".$old_value." -> ".$this->data['Company Name'])
 			      ,'indirect_object'=>'Name'
 				);
-            $this->add_history($history_data);
+            
             $this->add_history($history_data);
 
             // update childen and parents
@@ -2458,7 +2458,28 @@ function set_scope($raw_scope='',$scope_key=0) {
 
     }
 
+function add_area($data){
+include_once('class.CompanyArea.php');
+$data['Company Key']=$this->id;
+$data['editor']=$this->editor;
+$area=new CompanyArea('find',$data,'create');
+if($area->id){
+$this->updated=true;
 
+}
+}
+
+
+function add_department($data){
+include_once('class.CompanyDepartment.php');
+$data['Company Key']=$this->id;
+$data['editor']=$this->editor;
+$department=new CompanyDepartment('find',$data,'create');
+if($department->id){
+$this->updated=true;
+
+}
+}
 
 
 }

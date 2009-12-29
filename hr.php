@@ -12,7 +12,7 @@ $general_options_list=array();
 
 if($modify){
   $general_options_list[]=array('tipo'=>'url','url'=>'edit_staff.php','label'=>_('Edit Staff'));
-   $general_options_list[]=array('tipo'=>'url','url'=>'new_customer.php','label'=>_('Add Staff'));
+   $general_options_list[]=array('tipo'=>'url','url'=>'new_staff.php','label'=>_('Add Staff'));
 }
 
 $smarty->assign('general_options_list',$general_options_list);
@@ -44,7 +44,9 @@ $js_files=array(
 		);
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
-$smarty->assign('parent','staff.php');
+$smarty->assign('parent','hr.php');
+$smarty->assign('sub_parent','hr');
+
 $smarty->assign('title', _('Staff'));
 
 $tipo_filter=$_SESSION['state']['hr']['staff']['f_field'];

@@ -53,7 +53,7 @@
 	  <div id="photo_container" style="margin-top:10px;float:left">
 	    <div style="border:1px solid #ddd;padding-top:0;width:220px;xheight:230px;text-align:center;margin:0 10px 0 0px">
 	      <span style="font-size:150%;font-weight:800">{$product->get('Product Code')}</span>
-	      <div id="imagediv"   style="border:1px solid #ddd;width:{$div_img_width}px;hceight:{$div_img_height}px;padding:5px 5px;xborder:none;cursor:pointer;xbackground:red;margin: 0 0 10px 9px;vertical-align:middle">
+	      <div id="imagediv"   style="border:1px solid #ddd;width:{$div_img_width}px;height:{$div_img_height}px;padding:5px 5px;xborder:none;cursor:pointer;xbackground:red;margin: 0 0 10px 9px;vertical-align:middle">
 		<img src="{ if $num_images>0}{$images[0].small_url}{else}art/nopic.png{/if}"  style="vertical-align:middle;display:block;" width="{$img_width}px" valign="center" border=1  id="image"   alt="{t}Image{/t}"/>
 	      </div>
 	    </div>
@@ -61,8 +61,8 @@
 	    { if $num_images>1}
 	    <div style="width:160px;margin:auto;padding-top:5px"  >
 	      {foreach from=$images item=image  name=foo}
-	      {if $image.principal==0}
-	      <img  style="float:left;border:1px solid#ccc;padding:2px;margin:2px" src="{$image.tb}"  />
+	      {if $image.is_principal==0}
+	      <img  style="float:left;border:1px solid#ccc;padding:2px;margin:2px;cursor:pointer" src="{$image.thumbnail_url}"  title="" alt="" />
 	      {/if}
 	      {/foreach}
 	    </div>
@@ -71,10 +71,7 @@
 	    
 	  </div>
 	  
-	  
 
-
-	
 	<div style="float:left;margin-left:20px">
 	  <h2>{$product->get('Product Name')} [{$product->get('Product ID')}]</h2>
 	  <div class=""  style="width:100%;">
