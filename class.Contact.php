@@ -140,6 +140,7 @@ class Contact extends DB_Table {
             }
         }
 
+
         $this->candidate=array();
         $this->found=false;
         $create='';
@@ -152,6 +153,9 @@ class Contact extends DB_Table {
         }
 
         $data=$this->base_data();
+        
+
+        
         $address_home_data=array(
 				 'Contact Home Address Line 1'=>'',
 				 'Contact Home Address Town'=>'',

@@ -16,10 +16,7 @@ function is_type($type,$value){
    if(!is_string($value) and $value!='')
      return false;
    break;
- case('string'):
-   if(!is_string($value))
-     return false;
-   break;
+
  case('array'):
    if(!is_array($value))
      return false;
@@ -63,7 +60,7 @@ function prepare_values($data,$value_names){
       if(!is_type($spected_type,$data[$value_name]))
 	exit(json_encode(array('state'=>400,'msg'=>'Error wrong value 3')));
       
-      $parsed_data[$value_name]=$data[$value_name];
+      $parsed_data[$value_name]=stripslashes(urldecode($data[$value_name]));
       break;
     case('enum'):
       if(!preg_match($extra_data['valid values regex'],$data[$value_name]))
@@ -91,7 +88,8 @@ function prepare_values($data,$value_names){
 	    exit(json_encode(array('state'=>400,'msg'=>'Error wrong 5 value')));
 	}
 	foreach($raw_data as $key=>$value){
-	  $raw_data[$key]=preg_replace('/\\\\\'/',"'",$value);
+	  if(is_string($value)) 
+	     $raw_data[$key]=preg_replace('/\\\\\'/',"'",$value);
 	}
 
 	$parsed_data[$value_name]=$raw_data;

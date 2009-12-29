@@ -34,6 +34,14 @@ case('new_company'):
   new_company($data);
 
 break;
+case('new_contact'):
+ $data=prepare_values($_REQUEST,array(
+			     'values'=>array('type'=>'json array')
+			   
+			     ));
+  new_contact($data);
+
+break;
 case('new_address'):
   new_address();
   break;
@@ -52,8 +60,20 @@ case('edit_customer'):
 case('edit_customers'):
   list_customers();
   break;
-
-
+case('create_company_area'):
+   $data=prepare_values($_REQUEST,array(
+			     'values'=>array('type'=>'json array')
+			     ,'parent_key'=>array('type'=>'key')
+			     ));
+  new_company_area($data);
+  break;
+case('create_company_department'):
+   $data=prepare_values($_REQUEST,array(
+			     'values'=>array('type'=>'json array')
+			     ,'parent_key'=>array('type'=>'key')
+			     ));
+  new_company_department($data);
+  break;
 case('edit_contact'):
    $data=prepare_values($_REQUEST,array(
 			     'id'=>array('type'=>'key')
@@ -74,6 +94,20 @@ case('edit_email'):
 			     ));
 
   edit_email($data);
+  break;
+case('delete_company_area'): 
+ $data=prepare_values($_REQUEST,array(
+			     'id'=>array('type'=>'key')
+			     ,'delete_type'=>array('type'=>'string')
+			     ));
+  delete_company_area($data);
+  break;
+  case('delete_company_department'): 
+ $data=prepare_values($_REQUEST,array(
+			     'id'=>array('type'=>'key')
+			     ,'delete_type'=>array('type'=>'string')
+			     ));
+  delete_company_department($data);
   break;
 case('remove_address'):
 case('delete_address'):
@@ -98,8 +132,32 @@ case('edit_telecom'):
 			     ));
   edit_telecom($data);
   break;
-  
+  case('new_corporation'):
+ $data=prepare_values($_REQUEST,array(
+			     'values'=>array('type'=>'json array')
+			   
+			     ));
+  new_corporation($data);
 
+break;
+case('edit_company_areas'):
+list_company_areas();
+break;
+case('edit_company_departments'):
+list_company_departments();
+break;
+case('edit_company_area'):
+ $data=prepare_values($_REQUEST,array('id'=>array('type'=>'key'),'newvalue' =>array('type'=>'string'),'key' =>array('type'=>'string_value')));
+ edit_company_area($data);
+break;
+case('edit_company_department'):
+$data=prepare_values($_REQUEST,array('id'=>array('type'=>'key'),'newvalue' =>array('type'=>'string'),'key' =>array('type'=>'string_value')));
+edit_company_area($data);
+break;
+ default:
+
+   $response=array('state'=>404,'resp'=>_('Operation not found'));
+   echo json_encode($response);
 }
 function edit_contact($data){
 global $editor;
@@ -902,8 +960,51 @@ global $editor;
 }
 
 
+function delete_company_area($data){
+include_once('class.CompanyArea.php');
+global $editor;
+    $subject=new CompanyArea($data['id']);
+   if(!$subject->id){
+     $response=array('state'=>400,'msg'=>'Area not found');
+     echo json_encode($response);
+     return;
+   }
+   $subject->editor=$editor;
+   $subject->delete();
+      if($subject->deleted){
+     $action='deleted';
+     $msg=_('Area deleted');
+     
+   }else{
+     $action='nochage';
+     $msg=_('Area could not be deleted');
+   }
+  $response=array('state'=>200,'action'=>$action);
+  echo json_encode($response);
+}
 
-
+function delete_company_department($data){
+include_once('class.CompanyDepartment.php');
+global $editor;
+    $subject=new CompanyDepartment($data['id']);
+   if(!$subject->id){
+     $response=array('state'=>400,'msg'=>'Department not found');
+     echo json_encode($response);
+     return;
+   }
+   $subject->editor=$editor;
+   $subject->delete();
+      if($subject->deleted){
+     $action='deleted';
+     $msg=_('Department deleted');
+     
+   }else{
+     $action='nochage';
+     $msg=_('Department could not be deleted');
+   }
+  $response=array('state'=>200,'action'=>$action);
+  echo json_encode($response);
+}
 
 
 
@@ -921,7 +1022,7 @@ function edit_company2(){
 }
 function new_company($data){
   Timer::timing_milestone('begin');
-
+global $editor;
 
   $company=new Company('find create',$data['values']);
   if($company->new){
@@ -939,6 +1040,51 @@ function new_company($data){
 
 }
 
+function new_corporation($data){
+  Timer::timing_milestone('begin');
+global $editor;
+
+  $company=new Company('find create',$data['values']);
+  
+  if(!$company->id){
+        $response= array('state'=>400,'action'=>'error','company_key'=>0,'msg'=>$company->msg);
+  echo json_encode($response);  
+exit; 
+  }
+  
+  
+  $sql=sprintf("insert into `Corporation Dimension` (`Corporation Name`,`Corporation Company Key`) values (%s,%d)"
+    ,prepare_mysql($company->data['Company Name'])
+    ,$company->id
+  );
+mysql_query($sql);
+
+    $response= array('state'=>200,'action'=>'created','company_key'=>$company->id);
+ 
+
+  echo json_encode($response);  
+
+}
+
+function new_contact($data){
+  Timer::timing_milestone('begin');
+global $editor;
+
+  $contact=new Contact('find create',$data['values']);
+  if($contact->new){
+    $response= array('state'=>200,'action'=>'created','contact_key'=>$contact->id);
+  }else{
+    if($contact->found)
+      $response= array('state'=>400,'action'=>'found','contact_key'=>$contact->found_key);
+    else
+      $response= array('state'=>400,'action'=>'error','contact_key'=>0,'msg'=>$contact->msg);
+  }
+ 
+  //Timer::dump_profile();
+
+  echo json_encode($response);  
+
+}
  
 
 
@@ -1273,5 +1419,573 @@ mysql_free_result($result);
 		   );
    echo json_encode($response);
 }
+
+
+function list_company_areas(){
+
+
+
+
+
+$conf=$_SESSION['state']['company_areas']['table'];
+   if(isset( $_REQUEST['view']))
+     $view=$_REQUEST['view'];
+   else
+     $view=$_SESSION['state']['company_areas']['view'];
+     
+   if(isset( $_REQUEST['sf']))
+     $start_from=$_REQUEST['sf'];
+   else
+     $start_from=$conf['sf'];
+   if(!is_numeric($start_from))
+     $start_from=0;
+
+   if(isset( $_REQUEST['nr'])){
+     $number_results=$_REQUEST['nr'];
+   }else
+     $number_results=$conf['nr'];
+
+      
+   if(isset( $_REQUEST['o']))
+     $order=$_REQUEST['o'];
+   else
+     $order=$conf['order'];
+      
+   if(isset( $_REQUEST['od']))
+     $order_dir=$_REQUEST['od'];
+   else
+     $order_dir=$conf['order_dir'];
+   $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
+      
+      
+  
+   if(isset( $_REQUEST['where']))
+     $where=addslashes($_REQUEST['where']);
+   else
+     $where=$conf['where'];
+      
+      
+   if(isset( $_REQUEST['f_field']))
+     $f_field=$_REQUEST['f_field'];
+   else
+     $f_field=$conf['f_field'];
+      
+   if(isset( $_REQUEST['f_value']))
+     $f_value=$_REQUEST['f_value'];
+   else
+     $f_value=$conf['f_value'];
+      
+      
+   if(isset( $_REQUEST['tableid']))
+     $tableid=$_REQUEST['tableid'];
+   else
+     $tableid=0;
+
+
+
+
+   if(isset( $_REQUEST['parent']))
+     $parent=$_REQUEST['parent'];
+   else
+     $parent=$conf['parent'];
+
+   if(isset( $_REQUEST['mode']))
+     $mode=$_REQUEST['mode'];
+   else
+     $mode=$conf['mode'];
+   
+   if(isset( $_REQUEST['restrictions']))
+     $restrictions=$_REQUEST['restrictions'];
+   else
+     $restrictions=$conf['restrictions'];
+
+    
+    
+    
+   $_SESSION['state']['company_areas']['table']=array('order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value
+						 ,'mode'=>$mode,'restrictions'=>'','parent'=>$parent
+						 );
+      
+     
+    
+  
+   $group='';
+
+   
+  
+
+      
+   $filter_msg='';
+     
+   $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
+     
+   //  if(!is_numeric($start_from))
+   //        $start_from=0;
+   //      if(!is_numeric($number_results))
+   //        $number_results=25;
+     
+
+   $_order=$order;
+   $_dir=$order_direction;
+   $filter_msg='';
+   $wheref='';
+   if($f_field=='company name' and $f_value!='')
+     $wheref.=" and  `Company Name` like '%".addslashes($f_value)."%'";
+   elseif($f_field=='email' and $f_value!='')
+     $wheref.=" and  `Company Main Plain Email` like '".addslashes($f_value)."%'";
+     
+   $sql="select count(*) as total from `Company Area Dimension`  $where $wheref   ";
+//print $sql;
+   $res=mysql_query($sql);
+   if($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+     $total=$row['total'];
+   }
+   if($wheref==''){
+     $filtered=0;
+     $total_records=$total;
+   } else{
+     $sql="select count(*) as total from `Company Area Dimension`  $where   ";
+     $res=mysql_query($sql);
+     if($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+       $total_records=$row['total'];
+       $filtered=$total_records-$total;
+     }
+
+   }
+mysql_free_result($res);
+     
+   $rtext=$total_records." ".ngettext('company area','company areas',$total_records);
+   if($total_records>$number_results)
+     $rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
+   else
+     $rtext_rpp=' '._('(Showing all)');
+     
+   if($total==0 and $filtered>0){
+     switch($f_field){
+     case('name'):
+       $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any contact with name like ")." <b>".$f_value."*</b> ";
+       break;
+     case('email'):
+       $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any contact with email like ")." <b>".$f_value."*</b> ";
+       break;
+     }
+   }
+   elseif($filtered>0){
+     switch($f_field){
+     case('name'):
+       $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total "._('companies with name like')." <b>".$f_value."*</b> <span onclick=\"remove_filter($tableid)\" id='remove_filter$tableid' class='remove_filter'>"._('Show All')."</span>";
+       break;
+     case('email'):
+       $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total "._('companies with email like')." <b>".$f_value."*</b> <span onclick=\"remove_filter($tableid)\" id='remove_filter$tableid' class='remove_filter'>"._('Show All')."</span>";
+       break; 
+     }
+   }else
+      $filter_msg='';
+       
+   $_order=$order;
+   $_order_dir=$order_dir;
+          $order='`Company Area Name`';
+
+   if($order=='code')
+     $order='`Company Area Code`';
+  
+
+
+   $sql="select  * from `Company Area Dimension` P  $where $wheref $group order by $order $order_direction limit $start_from,$number_results    ";
+  
+   $res = mysql_query($sql);
+   $adata=array();
+
+   // print "$sql";
+   while($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+    
+      if($row['Company Area Number Employees']>0){
+     $delete='';
+     }else{
+     $delete='<img src="art/icons/delete.png"/>';
+   }
+   
+    $adata[]=array(
+		  
+		   
+		    'id'=>$row['Company Area Key']
+		    
+		   ,'go'=>sprintf("<a href='company_area.php?edit=1&id=%d'><img src='art/icons/page_go.png' alt='go'></a>",$row['Company Area Key'])
+
+		    ,'code'=>$row['Company Area Code']
+		   ,'name'=>$row['Company Area Name']
+		   ,'delete'=>$delete
+		   ,'delete_type'=>'delete'
+		   );
+  }
+mysql_free_result($res);
+
+
+   // $total_records=ceil($total_records/$number_results)+$total_records;
+
+  $response=array('resultset'=>
+		  array('state'=>200,
+			'data'=>$adata,
+			'sort_key'=>$_order,
+			'sort_dir'=>$_dir,
+			'tableid'=>$tableid,
+			'filter_msg'=>$filter_msg,
+			'rtext'=>$rtext,
+			'rtext_rpp'=>$rtext_rpp,
+			'total_records'=>$total_records,
+			'records_offset'=>$start_from,
+			'records_perpage'=>$number_results,
+			)
+		  );
+
+       
+
+
+   echo json_encode($response);
+
+}
+
+
+function list_company_departments(){
+
+$conf=$_SESSION['state']['company_departments']['table'];
+  if(isset( $_REQUEST['parent'])){
+     $parent=$_REQUEST['parent'];
+   $_SESSION['state']['company_departments']['parent']=$parent;
+   }else
+     $parent= $_SESSION['state']['company_departments']['parent'];
+
+if($parent=='area'){
+$conf_table='company_area';
+
+   $conf=$_SESSION['state']['company_area']['departments'];
+
+}else{
+$conf_table='company_departments';
+   $conf=$_SESSION['state'][$conf_table]['table'];
+
+}
+
+   if(isset( $_REQUEST['view']))
+     $view=$_REQUEST['view'];
+   else
+     $view=$_SESSION['state']['company_departments']['view'];
+     
+   if(isset( $_REQUEST['sf']))
+     $start_from=$_REQUEST['sf'];
+   else
+     $start_from=$conf['sf'];
+   if(!is_numeric($start_from))
+     $start_from=0;
+
+   if(isset( $_REQUEST['nr'])){
+     $number_results=$_REQUEST['nr'];
+   }else
+     $number_results=$conf['nr'];
+
+      
+   if(isset( $_REQUEST['o']))
+     $order=$_REQUEST['o'];
+   else
+     $order=$conf['order'];
+      
+   if(isset( $_REQUEST['od']))
+     $order_dir=$_REQUEST['od'];
+   else
+     $order_dir=$conf['order_dir'];
+   $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
+      
+      
+  
+   if(isset( $_REQUEST['where']))
+     $where=addslashes($_REQUEST['where']);
+   else
+     $where=$conf['where'];
+      
+      
+   if(isset( $_REQUEST['f_field']))
+     $f_field=$_REQUEST['f_field'];
+   else
+     $f_field=$conf['f_field'];
+      
+   if(isset( $_REQUEST['f_value']))
+     $f_value=$_REQUEST['f_value'];
+   else
+     $f_value=$conf['f_value'];
+      
+      
+   if(isset( $_REQUEST['tableid']))
+     $tableid=$_REQUEST['tableid'];
+   else
+     $tableid=0;
+
+
+
+
+ 
+   
+   if(isset( $_REQUEST['restrictions']))
+     $restrictions=$_REQUEST['restrictions'];
+   else
+     $restrictions=$conf['restrictions'];
+
+    
+    if($parent=='area'){
+    
+   $_SESSION['state']['company_area']['departments']=array('order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value
+						 ,'restrictions'=>'','parent'=>$parent
+						 );
+      }else{
+      $_SESSION['state']['company_departments']['table']=array('order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value
+						 ,'restrictions'=>'','parent'=>$parent
+						 );
+      }
+     
+    
+    if($parent=='area'){
+    $where.=sprintf(' and `Company Area Key`=%d',$_SESSION['state']['company_area']['id']);
+    }
+    
+  
+   $group='';
+
+   
+  
+
+      
+   $filter_msg='';
+     
+   $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
+     
+   //  if(!is_numeric($start_from))
+   //        $start_from=0;
+   //      if(!is_numeric($number_results))
+   //        $number_results=25;
+     
+
+   $_order=$order;
+   $_dir=$order_direction;
+   $filter_msg='';
+   $wheref='';
+   if($f_field=='company name' and $f_value!='')
+     $wheref.=" and  `Company Name` like '%".addslashes($f_value)."%'";
+   elseif($f_field=='email' and $f_value!='')
+     $wheref.=" and  `Company Main Plain Email` like '".addslashes($f_value)."%'";
+     
+   $sql="select count(*) as total from `Company Department Dimension`  $where $wheref   ";
+//print $sql;
+   $res=mysql_query($sql);
+   if($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+     $total=$row['total'];
+   }
+   if($wheref==''){
+     $filtered=0;
+     $total_records=$total;
+   } else{
+     $sql="select count(*) as total from `Company Department Dimension`  $where   ";
+     $res=mysql_query($sql);
+     if($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+       $total_records=$row['total'];
+       $filtered=$total_records-$total;
+     }
+
+   }
+mysql_free_result($res);
+     
+   $rtext=$total_records." ".ngettext('company department','company departments',$total_records);
+   if($total_records>$number_results)
+     $rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
+   else
+     $rtext_rpp=' '._('(Showing all)');
+     
+   if($total==0 and $filtered>0){
+     switch($f_field){
+     case('name'):
+       $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any contact with name like ")." <b>".$f_value."*</b> ";
+       break;
+     case('email'):
+       $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any contact with email like ")." <b>".$f_value."*</b> ";
+       break;
+     }
+   }
+   elseif($filtered>0){
+     switch($f_field){
+     case('name'):
+       $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total "._('companies with name like')." <b>".$f_value."*</b> <span onclick=\"remove_filter($tableid)\" id='remove_filter$tableid' class='remove_filter'>"._('Show All')."</span>";
+       break;
+     case('email'):
+       $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total "._('companies with email like')." <b>".$f_value."*</b> <span onclick=\"remove_filter($tableid)\" id='remove_filter$tableid' class='remove_filter'>"._('Show All')."</span>";
+       break; 
+     }
+   }else
+      $filter_msg='';
+       
+   $_order=$order;
+   $_order_dir=$order_dir;
+          $order='`Company Department Name`';
+
+   if($order=='code')
+     $order='`Company Department Code`';
+  
+
+
+   $sql="select  * from `Company Department Dimension` P  $where $wheref $group order by $order $order_direction limit $start_from,$number_results    ";
+  
+   $res = mysql_query($sql);
+   $adata=array();
+
+   // print "$sql";
+   while($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+    
+     
+     if($row['Company Department Number Employees']>0){
+     $delete='';
+     }else{
+     $delete='<img src="art/icons/delete.png"/>';
+   }
+    $adata[]=array(
+		  
+		   
+		    'id'=>$row['Company Department Key']
+		    
+		   ,'go'=>sprintf("<a href='edit_company_department.php?id=%d'><img src='art/icons/page_go.png' alt='go'></a>",$row['Company Department Key'])
+
+		    ,'code'=>$row['Company Department Code']
+		   ,'name'=>$row['Company Department Name']
+		   		   ,'area'=>$row['Company Area Key']
+		   ,'delete'=>$delete
+		   ,'delete_type'=>'delete'
+
+
+		   );
+  }
+mysql_free_result($res);
+
+
+   // $total_records=ceil($total_records/$number_results)+$total_records;
+
+  $response=array('resultset'=>
+		  array('state'=>200,
+			'data'=>$adata,
+			'sort_key'=>$_order,
+			'sort_dir'=>$_dir,
+			'tableid'=>$tableid,
+			'filter_msg'=>$filter_msg,
+			'rtext'=>$rtext,
+			'rtext_rpp'=>$rtext_rpp,
+			'total_records'=>$total_records,
+			'records_offset'=>$start_from,
+			'records_perpage'=>$number_results,
+			)
+		  );
+
+       
+
+
+   echo json_encode($response);
+
+}
+
+
+
+function new_company_area($data){
+global $editor;
+$company=new Company($data['parent_key']);
+$company->editor=$editor;
+if($company->id){
+$company->add_area($data['values']);
+if($company->updated){
+    $response= array('state'=>200,'action'=>'created');
+
+}else{
+      $response= array('state'=>400,'action'=>'error','company_key'=>0,'msg'=>$company->msg);
+
+}
+
+}else{
+      $response= array('state'=>400,'action'=>'error','company_key'=>0,'msg'=>$company->msg);
+
+}
+  echo json_encode($response);  
+
+}
+
+
+function new_company_department($data){
+global $editor;
+$company=new Company($data['parent_key']);
+$company->editor=$editor;
+if($company->id){
+$company->add_department($data['values']);
+if($company->updated){
+    $response= array('state'=>200,'action'=>'created');
+
+}else{
+      $response= array('state'=>400,'action'=>'error','company_key'=>0,'msg'=>$company->msg);
+
+}
+
+}else{
+      $response= array('state'=>400,'action'=>'error','company_key'=>0,'msg'=>$company->msg);
+
+}
+  echo json_encode($response);  
+
+}
+
+
+
+function edit_company_area($data){
+include_once('class.CompanyArea.php');
+global $editor;
+
+
+ $company_area=new CompanyArea($data['id']);
+ $company_area->editor=$editor;
+
+ if(!$company_area->id){
+   $response=array('state'=>400,'msg'=>_('Company Area not found'));
+    echo json_encode($response);
+	 return;
+ }
+  
+ $translator=array(
+		   'name'=>'Company Area Name'
+		   ,'code'=>'Company Area Code'
+		   ,'description'=>'Company Area Description'
+
+		   );
+		  
+  if (array_key_exists($data['key'], $translator)) {
+    
+    $update_data=array(
+		      
+		       $translator[$data['key']]=>$data['newvalue']
+		       );
+    //print_r($update_data);
+    $company_area->update($update_data);
+    
+    if($company_area->error_updated){
+      $response=array('state'=>200,'action'=>'error','msg'=>$company_area->msg_updated,'key'=>$_REQUEST['key']);
+    }else{
+    
+      if($company_area->updated){
+	$response=array('state'=>200,'action'=>'updated','msg'=>$company_area->msg_updated,'key'=>$_REQUEST['key'],'newvalue'=>$company_area->new_value);
+      }else{
+	$response=array('state'=>200,'action'=>'nochange','msg'=>$company_area->msg_updated,'key'=>$_REQUEST['key']);
+
+      }
+
+    }
+
+
+  }else{
+    $response=array('state'=>400,'msg'=>'Key not in Scope');
+  }
+  echo json_encode($response);
+
+}
+
+
 
 ?>

@@ -13,6 +13,8 @@
 */
 
 require_once 'common.php';
+require_once 'ar_edit_common.php';
+
 if(!isset($_REQUEST['tipo']))
   {
     $response=array('state'=>405,'resp'=>_('Non acceptable request').' (t)');
@@ -29,10 +31,20 @@ case('parts_at_location'):
   parts_at_location();
   break;
 case('find_warehouse_area'):
-  find_warehouse_area();
+$data=prepare_values($_REQUEST,array(
+			     'query'=>array('type'=>'string')
+			     ,'parent_key'=>array('type'=>'string')
+			     ));
+  find_warehouse_area($data);
   break;
 case('find_location'):
   find_location();
+  break;
+  case('find_shelf_type'):
+   $data=prepare_values($_REQUEST,array(
+			     'query'=>array('type'=>'string')
+			     ));
+  find_shelf_type($data);
   break;
 case('locations'):
   list_location();
@@ -395,14 +407,14 @@ function list_warehouse_area(){
    echo json_encode($response);
 }
 
-function find_warehouse_area(){
-  if(!isset($_REQUEST['query']))
-    $q='';
-  else
-    $q=$_REQUEST['query'];
-  $where='';
-  if(isset($_REQUEST['parent']) and $_REQUEST['parent']=='warehouse')
-    $where=sprintf(' and `Warehouse Key`=%d ',$_SESSION['state']['warehouse']['id']);
+function find_warehouse_area($data){
+
+ $q=$data['query'];
+
+$where='';
+  if( $_REQUEST['parent_key'])
+    $where=sprintf(' and `Warehouse Key`=%d ',$data['parent_key']);
+
 
     $sql=sprintf("select `Warehouse Area Key`,`Warehouse Area Code`,`Warehouse Area Name` from `Warehouse Area Dimension` where (`Warehouse Area Code`like '%s%%' or `Warehouse Area Name` like '%%%s%%'   )  %s  order by `Warehouse Area Name` limit 10 "
 		 ,addslashes($q)
@@ -425,6 +437,46 @@ function find_warehouse_area(){
 
 
 }
+
+function find_shelf_type($data){
+  
+   $q=$data['query'];
+  $where='';
+    $sql=sprintf("select *  from `Shelf Type Dimension` where (`Shelf Type Name`like '%s%%' or `Shelf Type Description` like '%%%s%%'   )  %s  order by `Shelf Type Name` limit 10 "
+		 ,addslashes($q)
+		 ,addslashes($q)
+		 ,$where
+		 );
+    //print $sql;
+    $res=mysql_query($sql);
+    while($row=mysql_fetch_array($res)){
+    
+        $info=sprintf("<h3>%s</h3><p>%s</p>",$row['Shelf Type Name'],$row['Shelf Type Description']);
+      $adata[]=array(
+		      	    "key"=>$row['Shelf Type Key']
+		      	    ,"name"=>$row['Shelf Type Name']
+		      	    ,"description"=>$row['Shelf Type Description']
+		      	    ,"type"=>$row['Shelf Type Type']
+		      	    ,"rows"=>$row['Shelf Type Rows']
+		      	    ,"columns"=>$row['Shelf Type Columns']
+		      	    ,"l_height"=>$row['Shelf Type Location Height']
+		      	    ,"l_length"=>$row['Shelf Type Location Length']
+		      	    ,'l_deep'=>$row['Shelf Type Location Deep']
+		      	    ,'l_weight'=>$row['Shelf Type Location Max Weight']
+		      	    ,'l_volume'=>$row['Shelf Type Location Max Volume']
+                    ,'info'=>$info
+		    
+		     
+		     );
+    }
+    $response=array('data'=>$adata);
+   echo json_encode($response);
+
+
+}
+
+
+
 
 function find_location(){
   if(!isset($_REQUEST['query']))

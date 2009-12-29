@@ -24,8 +24,11 @@ mysql_free_result($result);
 $country_list=preg_replace('/^\,/','',$country_list);
 
 $scope='company';
-if(isset($_REQUEST['scope']) and preg_match('/supplier|customer/',$_REQUEST['scope']))
+$action_after_create='continue';
+if(isset($_REQUEST['scope']) and preg_match('/supplier|customer|corporation/',$_REQUEST['scope']))
     $scope=$_REQUEST['scope'];
+
+if($scope!='corporation')    
 $action_after_create=$_SESSION['state'][$scope]['action_after_create'];
 
 
@@ -213,18 +216,23 @@ var save_new_company=function(e){
     
     var json_value = YAHOO.lang.JSON.stringify(company_data); 
     var request='ar_edit_contacts.php?tipo=new_'+scope+'&values=' + encodeURIComponent(json_value); 
-    //    alert(request);
-
+//       alert(request);
+//return;
     YAHOO.util.Connect.asyncRequest('POST',request ,{
 	    success:function(o) {
-		//alert(o.responseText);
+		alert(o.responseText);
 		var r =  YAHOO.lang.JSON.parse(o.responseText);
 		if(r.action=='created'){
 		    if(action_after_create=='add_another'){
 
 
 		    }else{
+		        if(scope=='corporation'){
+		           window.location='edit_company_areas.php?edit=new_company_areas';
+
+		        }else{
 		        window.location=scope+'.php?id='+r.company_key;
+		        }
 		    }
 		    
 		}else if(r.action=='error'){
@@ -245,7 +253,7 @@ var find_company=function(){
     var json_value = YAHOO.lang.JSON.stringify(company_data); 
 	    
     var request='ar_contacts.php?tipo=find_company&values=' + encodeURIComponent(json_value); 
-    // alert(request) ;
+//     alert(request) ;
 
     YAHOO.util.Connect.asyncRequest('POST',request ,{
 	    success:function(o) {

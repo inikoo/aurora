@@ -209,7 +209,7 @@ function init(){
 	var waAC = new YAHOO.widget.AutoComplete("location_area", "location_area_container", waDS);
 	waAC.generateRequest = function(sQuery) {
 
-	    return "?tipo=find_warehouse_area&query=" + sQuery ;
+	    return "?tipo=find_warehouse_area&parent_key=0&query=" + sQuery ;
 	};
 	waAC.forceSelection = true; 
 	wa_selected= function(sType, aArgs) {

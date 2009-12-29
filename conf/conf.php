@@ -473,6 +473,57 @@ $default_state=array(
 
 
 				       ),
+				        'positions'=>array(
+					'view'=>'general',
+					'parent'=>'none',
+					'details'=>0,
+					'table'=>array(
+						       'order'=>'code',
+						       'order_dir'=>'',
+						       'sf'=>0,
+						       'nr'=>25,
+						       'where'=>'where true',
+						       'f_field'=>'name',
+						       'f_value'=>'',
+						       'mode'=>'',
+						       'restrictions'=>'none',
+						       'parent'=>''
+						       )
+						       ),
+				        'company_departments'=>array(
+					'view'=>'general',
+					'parent'=>'none',
+					'details'=>0,
+					'table'=>array(
+						       'order'=>'code',
+						       'order_dir'=>'',
+						       'sf'=>0,
+						       'nr'=>25,
+						       'where'=>'where true',
+						       'f_field'=>'company name',
+						       'f_value'=>'',
+						       'mode'=>'',
+						       'restrictions'=>'none',
+						       'parent'=>''
+						       )
+						       ),
+						          'company_areas'=>array(
+					'view'=>'general',
+					'parent'=>'none',
+					'details'=>0,
+					'table'=>array(
+						       'order'=>'name',
+						       'order_dir'=>'',
+						       'sf'=>0,
+						       'nr'=>25,
+						       'where'=>'where true',
+						       'f_field'=>'company name',
+						       'f_value'=>'',
+						       'mode'=>'',
+						       'restrictions'=>'none',
+						       'parent'=>''
+						       )
+						       ),
 		     'companies'=>array(
 					'view'=>'general',
 					'details'=>0,
@@ -597,6 +648,32 @@ $default_state=array(
 		     'hr'=>array(
 				 'view'=>'staff',
 				 'staff'=>array(
+						'order'=>'name',
+						'order_dir'=>'',
+						'sf'=>0,
+						'nr'=>50,
+						'where'=>'where true',
+						'f_field'=>'name',
+						'f_value'=>''
+						),
+						'areas'=>array(
+						'order'=>'name',
+						'order_dir'=>'',
+						'sf'=>0,
+						'nr'=>50,
+						'where'=>'where true',
+						'f_field'=>'name',
+						'f_value'=>''
+						),
+						'departments'=>array(
+						'order'=>'name',
+						'order_dir'=>'',
+						'sf'=>0,
+						'nr'=>50,
+						'where'=>'where true',
+						'f_field'=>'name',
+						'f_value'=>''
+						),'positions'=>array(
 						'order'=>'name',
 						'order_dir'=>'',
 						'sf'=>0,
@@ -1286,8 +1363,103 @@ $default_state=array(
 							'to'=>'',
 							'elements'=>array()
 							)
-				       )
+				       ),
+ 'company_area'=>array(
+				      'id'=>0,
+				      'action_after_create'=>'continue',
+				      'edit'=>'details',
+				      'departments'=>array(
+						     'order'=>'code',
+						     'order_dir'=>'desc',
+						     'sf'=>0,
+						     'nr'=>10,
+						     'where'=>'where true',
+						     'f_field'=>'name',
+						     'f_value'=>'',
+						     'from'=>'',
+						     'to'=>'',
+						     'details'=>0,
+						     'elements'=>array('h_comp'=>1,'h_cont'=>1,'note'=>1)
+						     ),
+				      'history'=>array(
+						     'where'=>'where true',
+						     'f_field'=>'abstract',
+						     'f_value'=>'',
+						     'order'=>'date',
+						     'order_dir'=>'desc',
+						     'sf'=>0,
+						     'nr'=>25,
+						     'from'=>'',
+						     'to'=>'',
+						     'elements'=>''
+						     ),
 
+
+				      ),
+				      'company_department'=>array(
+				      'id'=>0,
+				      'action_after_create'=>'continue',
+				      'edit'=>'details',
+				      'table'=>array(
+						     'order'=>'code',
+						     'order_dir'=>'desc',
+						     'sf'=>0,
+						     'nr'=>10,
+						     'where'=>'where true',
+						     'f_field'=>'name',
+						     'f_value'=>'',
+						     'from'=>'',
+						     'to'=>'',
+						     'details'=>0,
+						     'elements'=>array('h_comp'=>1,'h_cont'=>1,'note'=>1)
+						     ),
+				      'history'=>array(
+						     'where'=>'where true',
+						     'f_field'=>'abstract',
+						     'f_value'=>'',
+						     'order'=>'date',
+						     'order_dir'=>'desc',
+						     'sf'=>0,
+						     'nr'=>25,
+						     'from'=>'',
+						     'to'=>'',
+						     'elements'=>''
+						     ),
+
+
+				      ),
+				       'position'=>array(
+				      'id'=>0,
+				      'action_after_create'=>'continue',
+				      'edit'=>'details',
+				      'employees'=>array(
+						     'order'=>'code',
+						     'order_dir'=>'desc',
+						     'sf'=>0,
+						     'nr'=>10,
+						     'where'=>'where true',
+						     'f_field'=>'name',
+						     'f_value'=>'',
+						     'from'=>'',
+						     'to'=>'',
+						     'details'=>0,
+						     'elements'=>array('h_comp'=>1,'h_cont'=>1,'note'=>1)
+						     ),
+				      'history'=>array(
+						     'where'=>'where true',
+						     'f_field'=>'abstract',
+						     'f_value'=>'',
+						     'order'=>'date',
+						     'order_dir'=>'desc',
+						     'sf'=>0,
+						     'nr'=>25,
+						     'from'=>'',
+						     'to'=>'',
+						     'elements'=>''
+						     ),
+
+
+				      ),
 
 		     );
 

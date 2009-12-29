@@ -1,9 +1,6 @@
-
-
 function swap_radio(){
     swap_this_radio(this);
 }
-
 function swap_this_radio(o){
     if(Dom.hasClass(o,'selected'))
 	return;
@@ -15,22 +12,21 @@ function swap_this_radio(o){
 	Dom.get('shelf_type_type').value=o.getAttribute('radio_value');
     }
 }
-
-
-
-  var CellEdit = function (callback, newValue) {
+var CellEdit = function (callback, newValue) {
       
     var record = this.getRecord(),
     column = this.getColumn(),
     oldValue = this.value,
     datatable = this.getDataTable();
     
-    if(column.object=='company' || column.object=='customer' || column.object=='contact' )
+    if(column.object=='company' || column.object=='customer' || column.object=='contact' || column.object=='company_area'  || column.object=='company_department')
 	ar_file='ar_edit_contacts.php';
     else if(column.object=='warehouse_area' || column.object=='part_location'|| column.object=='shelf_type')
 	ar_file='ar_edit_warehouse.php';
     else if(column.object=='user' )
 	ar_file='ar_edit_users.php';
+	 else if(column.object=='position' || column.object=='staff' )
+	ar_file='ar_edit_hr.php';
      else if(column.object=='new_order' )
 	ar_file='ar_edit_orders.php';
        else if(column.object=='supplier' || column.object=='product_supplier' )
@@ -39,13 +35,13 @@ function swap_this_radio(o){
 	ar_file='ar_edit_assets.php';
     //   alert(column.object)
     var request='tipo=edit_'+column.object+'&key=' + column.key + '&newvalue=' + encodeURIComponent(newValue) + '&oldvalue=' + encodeURIComponent(oldValue)+ myBuildUrl(datatable,record);
-    //alert('R:'+request);
+   // alert('R:'+request);
 
     YAHOO.util.Connect.asyncRequest(
 				    'POST',
 				    ar_file, {
 					success:function(o) {
-					    // alert(o.responseText);
+					     alert(o.responseText);
 					    var r = YAHOO.lang.JSON.parse(o.responseText);
 					    if (r.state == 200) {
 						
@@ -74,27 +70,33 @@ var onCellClick = function(oArgs) {
 		    if(record.getData('delete')!=''){
 
 		    if (confirm('Are you sure, you want to delete this row?')) {
-			if(column.object=='company')
+			if(column.object=='company' || column.object=='company_area' || column.object=='company_department')
 			    ar_file='ar_edit_contacts.php';
 			else if(column.object=='warehouse_area' || column.object=='location')
 			    ar_file='ar_edit_warehouse.php';
+			else if(column.object=='position')
+			    ar_file='ar_edit_staff.php';    
 			else
 			    ar_file='ar_edit_assets.php';
 
 
 
-				alert(ar_file+'?tipo=delete_'+column.object + myBuildUrl(this,record))
+				//alert(ar_file+'?tipo=delete_'+column.object + myBuildUrl(this,record))
 
 			YAHOO.util.Connect.asyncRequest(
 							'GET',
 							ar_file+'?tipo=delete_'+column.object + myBuildUrl(this,record),
 							{
 							    success: function (o) {
+								//alert(o.responseText);
+								 var r = YAHOO.lang.JSON.parse(o.responseText);
+								if (r.state == 200 && r.action=='deleted') {
 								
-								if (o.responseText == 'Ok') {
 								    this.deleteRow(target);
+								
+								
 								} else {
-								    alert(o.responseText);
+								    alert(r.msg);
 								}
 							    },
 								failure: function (o) {
@@ -113,7 +115,6 @@ var onCellClick = function(oArgs) {
 		    break;
 		}
 	    };   
-
 var highlightEditableCell = function(oArgs) {
 
     var target = oArgs.target;
@@ -139,7 +140,6 @@ var highlightEditableCell = function(oArgs) {
 	}
     }
 };
-
 var unhighlightEditableCell = function(oArgs) {
 		var target = oArgs.target;
 		column = this.getColumn(target);
@@ -154,7 +154,6 @@ var unhighlightEditableCell = function(oArgs) {
 		    }
 		}
 	    };
-
 function radio_changed(o){
     parent=o.parentNode;
 
@@ -166,10 +165,40 @@ function radio_changed(o){
 }
 
 
-
-
-
 function validate_scope(branch){
+
+if(validate_scope_type[branch]=='new')
+    validate_scope_new(branch)
+else
+    validate_scope_edit(branch)
+
+ 
+}
+
+
+function validate_scope_new(branch){
+var errors=false;
+
+for(item in validate_scope_data[branch]){
+  //  alert(item+ 'V:'+validate_scope_data[branch][item].validated+' D:'+validate_scope_data[branch][item].required);
+         if(validate_scope_data[branch][item].validated==false   ||    (validate_scope_data[branch][item].required &&  Dom.get(validate_scope_data[branch][item].name).value=='' )  )
+            errors=true;
+ }
+    
+   
+	if(errors)
+	    Dom.addClass('save_edit_'+branch,'disabled');
+else
+	    Dom.removeClass('save_edit_'+branch,'disabled');
+
+  
+ 
+}
+
+
+
+
+function validate_scope_edit(branch){
 var changed=false;
 var errors=false;
 
@@ -182,26 +211,28 @@ for(item in validate_scope_data[branch]){
  }
     
     if(changed ){
-	Dom.get('reset_edit_'+scope).style.visibility='visible';
+	Dom.get('reset_edit_'+branch).style.visibility='visible';
 	if(!errors)
-	    Dom.get('save_edit_'+scope).style.visibility='visible';
+	    Dom.get('save_edit_'+branch).style.visibility='visible';
 	else
-	    Dom.get('save_edit_'+scope).style.visibility='hidden';
+	    Dom.get('save_edit_'+branch).style.visibility='hidden';
 
     }else{
-        Dom.get('save_edit_'+scope).style.visibility='hidden';
-	Dom.get('reset_edit_'+scope).style.visibility='hidden';
+        Dom.get('save_edit_'+branch).style.visibility='hidden';
+	Dom.get('reset_edit_'+branch).style.visibility='hidden';
 
     }
-    
-    
-    
+ 
 }
+
+
+
+
+
 function validate_general(branch,item,query){
  var data= validate_scope_data[branch][item];
 
  var old_code=Dom.get(data.name).getAttribute('ovalue');
- 
   if(old_code!=trim(query)){  
  
  
@@ -212,7 +243,7 @@ if(data.ar=='find'){
  // alert(request)
   YAHOO.util.Connect.asyncRequest('POST',request ,{
 	    success:function(o) {
-	      //alert(o.responseText)
+	     // alert(o.responseText)
 		var r =  YAHOO.lang.JSON.parse(o.responseText);
 		if(r.state==200){
 		    if(r.found==1){
@@ -241,10 +272,10 @@ if(data.ar=='find'){
 }else{
 Dom.get(data.name+'_msg').innerHTML='';
 		    validate_scope_data[branch][item].validated=true;
-
  for(validator_index in data.validation){
 		    validator_data=data.validation[validator_index];
 		     var validator=new RegExp(validator_data.regexp,"i");
+           // alert(validator_data.regexp+' Q:'+query)
             if(!validator.test(query)){
 	           
 	                validate_scope_data[branch][item].validated=false;
@@ -272,7 +303,6 @@ Dom.get(data.name+'_msg').innerHTML='';
 		    }
 		    
 		}
-
 function reset_edit_general(branch){
     for(item in validate_scope_data[branch]){
 	var item_input=Dom.get(validate_scope_data[branch][item].name);
@@ -283,14 +313,17 @@ function reset_edit_general(branch){
     }
     validate_scope(branch); 
 };
-
 function post_item_updated_actions(branch,key,newvalue){
 return true;
 }
+function post_create_actions(branch){
 
-
-
+}
 function save_edit_general(branch){
+    
+    
+     operation='edit';
+     
     
     for(item in validate_scope_data[branch]){
 	if(validate_scope_data[branch][item].changed){
@@ -302,11 +335,12 @@ function save_edit_general(branch){
 	var updated_items=0;
 	
 	
-	var request=scope_edit_ar_file+'?tipo=edit_'+scope+'&key=' + item+ '&newvalue=' + 
+	var request=scope_edit_ar_file+'?tipo='+operation+'_'+scope+'&key=' + item+ '&newvalue=' + 
 	    encodeURIComponent(item_input.value) +  '&oldvalue=' + 
 	    encodeURIComponent(item_input.getAttribute('ovalue')) + 
 	    '&'+scope_key_name+'='+scope_key;
-	//		alert(request)
+			
+	
 	YAHOO.util.Connect.asyncRequest('POST',request ,{
 		success:function(o) {
 		    //		   	    alert(o.responseText)
@@ -336,6 +370,51 @@ function save_edit_general(branch){
     }
   
 }
+function save_new_general(branch){
+     operation='create';
+    var values=new Object();
+    
+    for(item in validate_scope_data[branch]){
+alert(validate_scope_data[branch][item].name)
+	var item_input=Dom.get(validate_scope_data[branch][item].name);
+	values[validate_scope_data[branch][item].dbname]=item_input.value;
+    }	
+
+
+	//encodeURIComponent(item_input.value)
+	 jsonificated_values=YAHOO.lang.JSON.stringify(values);
+	
+	
+	var request=scope_edit_ar_file+'?tipo='+operation+'_'+branch+'&parent='+parent+'&parent_key=' + parent_key+ '&values=' + 
+	    jsonificated_values
+	   alert(request)
+		
+	YAHOO.util.Connect.asyncRequest('POST',request ,{
+		success:function(o) {
+		    	   	   // alert(o.responseText);
+		    	   	   
+		    var r =  YAHOO.lang.JSON.parse(o.responseText);
+		    if(r.state==200){
+			
+			
+			reset_edit_general(branch);
+			post_create_actions(branch);
+			
+		
+		    }else{
+			alert(r.msg);
+			
+		    }
+		    
+		
+			    
+	    }
+	    });
+	    
+	    }
+	
+    
+  
 
 
 

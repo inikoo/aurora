@@ -151,6 +151,9 @@ var onUploadButtonClick = function(e){
 		image_div.setAttribute("image_id", r.data.id);
 		image_div.setAttribute("is_principal", r.data.is_principal);
 				
+		var name_div=document.createElement("div");
+		name_div.setAttribute("id", "image_name"+r.data.id);
+		name_div.innerHTML=r.data.name;		
 		
 		var delete_img=document.createElement("img");
 		delete_img.setAttribute("class",'delete');
@@ -159,89 +162,90 @@ var onUploadButtonClick = function(e){
 		delete_img.setAttribute("title",r.msg.delete);
 		delete_img.setAttribute("onClick", 'delete(this)');
 		
-
-		var name_div=document.createElement("div");
-		name_div.setAttribute("id", "image_name"+r.data.id);
-		name_div.innerHTML=r.data.name;
-		       
+        var picture_img=document.createElement("img");
+		picture_img.setAttribute("class",'picture');
+		picture_img.setAttribute("src",r.data.small_url);
 		
-
-
-		var picture_img=document.createElement("img");
-		picture_img.setAttribute("src", r.data.small_url);
-		picture_img.setAttribute("class", 'picture');
-		picture_img.setAttribute("width", '160');
-
 		var operations_div=document.createElement("div");
 		operations_div.setAttribute("class",'operations');
-		var set_principal_span=document.createElement("span");
-		set_principal_span.setAttribute("class",'img_set_principal');
-		set_principal_span.style.cursor='pointer';
-		
+
+		var principal_img=document.createElement("img");
+		principal_img.setAttribute("id", "img_principal"+r.data.id);
+		principal_img.setAttribute("image_id", r.data.id);
+        principal_img.setAttribute("alt",r.msg.principal);
+		principal_img.setAttribute("title",r.msg.principal);
+		principal_img.setAttribute("src",'art/icons/bullet_star.png');
+	
 		var set_principal_img=document.createElement("img");
 		set_principal_img.setAttribute("id", "img_set_principal"+r.data.id);
 		set_principal_img.setAttribute("image_id", r.data.id);
-		
-		
-		
-		set_principal_img.setAttribute("onClick", 'set_image_as_principal(this)');
-		
-		if(r.is_principal==1){
-		    Dom.get('images').setAttribute('principal',r.data.id)
-		    set_principal_img.setAttribute("principal", 1);
-		    set_principal_img.setAttribute("src", 'art/icons/asterisk_orange.png');
-		    set_principal_img.setAttribute("title", r.msg.main);
+        set_principal_img.setAttribute("onClick", 'set_image_as_principal(this)');
+        set_principal_img.setAttribute("alt",r.msg.set_principal);
+		set_principal_img.setAttribute("title",r.msg.set_principal);		
+		set_principal_img.setAttribute("src",'art/icons/bullet_gray_star.png');
+
+		if(r.data.is_principal!='Yes'){
+		 principal_img.setAttribute("style",'display:none');
 		}else{
-		    set_principal_img.setAttribute("principal", 0);
-		    set_principal_img.setAttribute("src", 'art/icons/picture_empty.png');
-		    set_principal_img.setAttribute("title", r.msg.set_main);
+		   set_principal_img.setAttribute("style",'display:none');
 		}	
 
+      var edit_caption_img=document.createElement("img");
+		edit_caption_img.setAttribute("src",'art/icons/caption.gif');
+	    edit_caption_img.setAttribute("alt",r.msg.edit_caption);
+		edit_caption_img.setAttribute("title",r.msg.edit_caption);
+		edit_caption_img.setAttribute("id",'img_edit_caption'+r.data.id);
+		edit_caption_img.setAttribute("onClick",'edit_caption(this)');
 
-		set_principal_span.appendChild(set_principal_img);
-		var delete_span=document.createElement("span");
-		delete_span.style.cursor='pointer';
-		delete_span.innerHTML=' <img src="art/icons/delete.png">';
-		delete_span.setAttribute("image_id", r.data.id);
-		delete_span.setAttribute("onClick", 'delete_image(this)');
-		operations_div.appendChild(set_principal_span);
-		operations_div.appendChild(delete_span);
 
-		var caption_div=document.createElement("div");
-		caption_div.setAttribute("class",'caption');
-		var caption_tag_div=document.createElement("div");
-		caption_tag_div.innerHTML=r.msg.caption;
-		
-		var save_caption_img=document.createElement("img");
-		save_caption_img.setAttribute("src",'art/icons/disk.png');
-				save_caption_img.setAttribute("alt",'art/icons/disk.png');
 
+        var save_caption_img=document.createElement("img");
+		save_caption_img.setAttribute("src",'art/icons/bullet_gray_disk.png');
+	    save_caption_img.setAttribute("alt",r.msg.save_caption);
 		save_caption_img.setAttribute("title",r.msg.save_caption);
-		save_caption_img.setAttribute("id",'save_img_caption'+r.data.id);
-		save_caption_img.setAttribute("onClick",'save_image("img_caption",'+r.data.id+')');
-		save_caption_img.setAttribute("class",'caption');
-				save_caption_img.setAttribute("style",'display:none');
+		save_caption_img.setAttribute("id",'img_save_caption'+r.data.id);
+		save_caption_img.setAttribute("onClick",'save_caption(this)');
+	    save_caption_img.setAttribute("style",'display:none');
+
+        var reset_caption_img=document.createElement("img");
+		reset_caption_img.setAttribute("src",'art/icons/bullet_gray_disk.png');
+	    reset_caption_img.setAttribute("alt",r.msg.reset_caption);
+		reset_caption_img.setAttribute("title",r.msg.reset_caption);
+		reset_caption_img.setAttribute("id",'img_reset_caption'+r.data.id);
+		reset_caption_img.setAttribute("onClick",'reset_caption(this)');
+	    reset_caption_img.setAttribute("style",'display:none');
 
 
-
+		var caption_span=document.createElement("span");
+		caption_span.setAttribute("class",'caption');
+		caption_span.setAttribute("id",'caption'+r.data.id);
+		caption_span.innerHTML=r.data.caption;
+		
+		
 		var caption_textarea=document.createElement("textarea");
-		caption_textarea.setAttribute("id",'img_caption'+r.data.id);
-		caption_textarea.setAttribute("image_id",r.data.id);
+		caption_textarea.setAttribute("id",'edit_caption'+r.data.id);
 		caption_textarea.setAttribute("ovalue",'');
-		caption_textarea.setAttribute("onkeydown",'caption_changed(this)');
-		caption_textarea.setAttribute("class",'caption');
-		caption_textarea.style.width='140px';
+	    caption_textarea.setAttribute("value",'');
+	    caption_textarea.setAttribute("class",'edit_caption');
 
-		caption_div.appendChild(caption_tag_div);
-		caption_div.appendChild(save_caption_img);
-		caption_div.appendChild(caption_textarea);
+		caption_textarea.setAttribute("onkeyup",'caption_changed(this)');
+		caption_textarea.setAttribute("class",'edit_caption');
+		caption_textarea.setAttribute("style",'display:none');
+
+		operations_div.appendChild(principal_img);
+		operations_div.appendChild(set_principal_img);
+		operations_div.appendChild(edit_caption_img);
+		operations_div.appendChild(save_caption_img);
+		operations_div.appendChild(reset_caption_img);
 
 		image_div.appendChild(name_div);
+		image_div.appendChild(delete_img);
 		image_div.appendChild(picture_img);
 		image_div.appendChild(operations_div);
-		image_div.appendChild(caption_div);
+		image_div.appendChild(caption_span);
+		image_div.appendChild(caption_textarea);
 
-		images.appendChild(image_div);
+		images.insertBefore(image_div,Dom.get('image_footer'));
 
 
 	    }else

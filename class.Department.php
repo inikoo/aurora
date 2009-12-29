@@ -462,7 +462,7 @@ class Department extends DB_Table {
 
             $this->deleted=true;
         } else {
-            $this->msg=_('Department can not be deleted because it has assosiated some products');
+            $this->msg=_('Department can not be deleted because it has associated some products');
 
         }
     }
