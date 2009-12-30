@@ -221,7 +221,22 @@ class Shelf extends DB_Table{
     }
   }
 
-  
+    function update_children(){
+   $sql=sprintf('select count(*) as number from `Location Dimension` where `Location Shelf Key`=%d',$this->id);
+        $res=mysql_query($sql);
+        $number_locations=0;
+        if ($row=mysql_fetch_array($res)) {
+            $number_locations=$row['number'];
+        }
+
+        $sql=sprintf('update `Shelf Dimension` set `Shelf Number Locations`=%d where `Shelf Key`=%d'
+        ,$number_locations
+        
+        ,$this->id
+        );
+        mysql_query($sql);
+        $this->get_data('id',$this->id);
+  }
      
 }
 

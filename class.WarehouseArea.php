@@ -187,38 +187,7 @@ class WarehouseArea extends DB_Table{
  
 
 
-  function xupdate($data){
-    foreach($data as $key =>$value)
-      switch($key){
-      case('code'):
-	$name=_trim($value);
-	
-	if($name==''){
-	  $this->msg=_('Wrong warehouse area code');
-	  $this->update_ok=false;
-	  return;
-	}
 
-	if($name==$this->data['Warehose Area Code']){
-	  $this->msg=_('Nothing to change');
-	  $this->update_ok=false;
-	  return;
-	}
-
-	$WA=new WarehouseArea('code',$value);
-	if($WA->id){
-	  $this->msg=_('Another ware house has the same name');
-	  $this->update_ok=false;
-	  return;
-	}
-	$this->data['Wareahouse Area Code']=$name;
-	$this->msg=_('Warehouse Area name changed');
-	$this->update_ok=true;
-	break;
-      }
-    
-    
-  }
 
 
   function load($key=''){
@@ -278,7 +247,27 @@ class WarehouseArea extends DB_Table{
   }
 
   
-     
+  function update_children(){
+   $sql=sprintf('select count(*) as number from `Location Dimension` where `Location Warehouse Area Key`=%d',$this->id);
+        $res=mysql_query($sql);
+        $number_locations=0;
+        if ($row=mysql_fetch_array($res)) {
+            $number_locations=$row['number'];
+        }
+$sql=sprintf('select count(*) as number from `Shelf Dimension` where `Shelf Area Key`=%d',$this->id);
+        $res=mysql_query($sql);
+        $number_shelfs=0;
+        if ($row=mysql_fetch_array($res)) {
+            $number_shelfs=$row['number'];
+        }
+        $sql=sprintf('update `Warehouse Area Dimension` set `Warehouse Area Number Locations`=%d , `Warehouse Area Number Shelfs`=%d where `Warehouse Area Key`=%d'
+        ,$number_locations
+        ,$number_shelfs
+        ,$this->id
+        );
+        mysql_query($sql);
+        $this->get_data('id',$this->id);
+  }
 }
 
 ?>

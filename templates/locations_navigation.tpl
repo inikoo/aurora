@@ -26,9 +26,10 @@
 {/if}
 
 
-<span class="nav2 onleft"><a href="warehouse_areas.php">{t}Areas{/t}</a></span>
-<span class="nav2 onleft"><a href="locations.php">{t}Locations{/t}</a></span>
-{if $view_parts}<span class="nav2 onleft"><a href="parts.php">{t}Parts{/t}</a></span>{/if}
+<span class="nav2 onleft"><a {if $sub_parent=='areas'}class="selected"{/if} href="warehouse_areas.php">{t}Areas{/t}</a></span>
+<span class="nav2 onleft"><a {if $sub_parent=='shelfs'}class="selected"{/if} href="shelfs.php">{t}Shelfs{/t}</a></span>
+<span class="nav2 onleft"><a {if $sub_parent=='locations'}class="selected"{/if} href="locations.php">{t}Locations{/t}</a></span>
+{if $view_parts}<span {if $sub_parent=='parts'}class="selected"{/if} class="nav2 onleft"><a href="parts.php">{t}Parts{/t}</a></span>{/if}
 
 
 

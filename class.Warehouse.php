@@ -247,6 +247,40 @@ function create($data){
 
   }
   
+    function update_children(){
+   $sql=sprintf('select count(*) as number from `Location Dimension` where `Location Warehouse Key`=%d',$this->id);
+        $res=mysql_query($sql);
+        $number_locations=0;
+        if ($row=mysql_fetch_array($res)) {
+            $number_locations=$row['number'];
+        }
+
+ $sql=sprintf('select count(*) as number from `Shelf Dimension` where `Shelf Warehouse Key`=%d',$this->id);
+        $res=mysql_query($sql);
+        $number_shelfs=0;
+        if ($row=mysql_fetch_array($res)) {
+            $number_shelfs=$row['number'];
+        }
+
+ $sql=sprintf('select count(*) as number from `Warehouse Area Dimension` where `Warehouse Key`=%d',$this->id);
+        $res=mysql_query($sql);
+        $number_areas=0;
+        if ($row=mysql_fetch_array($res)) {
+            $number_areas=$row['number'];
+        }
+
+
+        $sql=sprintf('update `Warehouse Dimension` set `Warehouse Number Locations`=%d ,`Warehouse Number Shelfs`=%d  ,`Warehouse Number Areas`=%d  where `Warehouse Key`=%d'
+        ,$number_locations
+        ,$number_shelfs
+        ,$number_areas
+        ,$this->id
+        );
+        mysql_query($sql);
+        $this->get_data('id',$this->id);
+  }
+  
+  
 }
 
 ?>
