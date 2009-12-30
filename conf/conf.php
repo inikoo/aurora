@@ -357,7 +357,20 @@ $default_state=array(
 							   )
 			
 			),
-					
+				'shelfs'=>array(
+			'parent'=>'none',
+			'table'=>array(
+							   'order'=>'code',
+							   'order_dir'=>'',
+							   'sf'=>0,
+							   'nr'=>25,
+							   'where'=>'where true',
+							   'f_field'=>'code',
+							   'f_value'=>'',
+							   'elements'=>array()
+							   )
+			
+			),		
 		     'warehouses'=>array(
                                    
 					 'table'=>array(

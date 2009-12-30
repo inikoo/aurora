@@ -49,6 +49,9 @@ case('find_location'):
 case('locations'):
   list_locations();
   break;
+  case('shelfs'):
+  list_shelfs();
+  break;
 case('warehouse_areas'):
   list_warehouse_area();
   break;
@@ -252,7 +255,184 @@ elseif($order=='warehouse')
 		   );
    echo json_encode($response);
 }
+function list_shelfs(){
+$conf=$_SESSION['state']['shelfs']['table'];
+   
+   if(isset( $_REQUEST['sf']))
+     $start_from=$_REQUEST['sf'];
+   else
+     $start_from=$conf['sf'];
+   if(isset( $_REQUEST['nr']))
+     $number_results=$_REQUEST['nr'];
+   else
+     $number_results=$conf['nr'];
+   if(isset( $_REQUEST['o']))
+     $order=$_REQUEST['o'];
+   else
+    $order=$conf['order'];
+   if(isset( $_REQUEST['od']))
+     $order_dir=$_REQUEST['od'];
+   else
+     $order_dir=$conf['order_dir'];
+   $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
+   if(isset( $_REQUEST['where']))
+     $where=addslashes($_REQUEST['where']);
+   else
+     $where=$conf['where'];
 
+    
+   if(isset( $_REQUEST['f_field']))
+     $f_field=$_REQUEST['f_field'];
+   else
+     $f_field=$conf['f_field'];
+   
+   if(isset( $_REQUEST['f_value']))
+     $f_value=$_REQUEST['f_value'];
+   else
+     $f_value=$conf['f_value'];
+
+   
+   if(isset( $_REQUEST['tableid']))
+     $tableid=$_REQUEST['tableid'];
+   else
+    $tableid=0;
+   
+ if(isset( $_REQUEST['parent'])){
+     $parent=$_REQUEST['parent'];
+    $_SESSION['state']['shelfs']['parent']=$parent;
+   }else
+   $parent=$_SESSION['state']['shelfs']['parent'];
+   
+ 
+ 
+  
+   $_SESSION['state']['shelfs']['table']=array('order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value);
+   
+   
+   switch($parent){
+   case('warehouse'):
+   $where.=sprintf(' and `Shelf Warehouse Key`=%d',$_SESSION['state']['warehouse']['id']);
+   break;
+   case('warehouse_area'):
+   $where.=sprintf(' and `Shelf Area Key`=%d',$_SESSION['state']['warehouse_area']['id']);
+   break;
+   case('shelf'):
+   $where.=sprintf(' and `Shelf Shelf Key`=%d',$_SESSION['state']['shelf']['id']);
+   break;
+   }
+   
+   
+     $wheref='';
+   if($f_field=='code' and $f_value!='')
+     $wheref.=" and  `Shelf Code` like '".addslashes($f_value)."%'";
+   
+
+   
+   
+   $sql="select count(*) as total from `Shelf Dimension`    $where $wheref";
+   // print $sql;
+   $result=mysql_query($sql);
+   if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
+     $total=$row['total'];
+   }
+   if($wheref==''){
+       $filtered=0;
+       $total_records=$total;
+   }else{
+     $sql="select count(*) as total from `Shelf Dimension`  $where ";
+
+     $result=mysql_query($sql);
+     if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
+       $total_records=$row['total'];
+       $filtered=$row['total']-$total;
+     }
+
+   }
+
+   
+
+
+
+
+   if($total==0 and $filtered>0){
+     switch($f_field){
+     case('code'):
+       $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any shelf name starting with")." <b>$f_value</b> ";
+       break;
+     }
+   }elseif($filtered>0){
+     switch($f_field){
+     case('code'):
+       $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total "._('only shelfs starting with')." <b>$f_value</b> <span onclick=\"remove_filter($tableid)\" id='remove_filter$tableid' class='remove_filter'>"._('Show All')."</span>";
+       break;
+     }
+   }else
+      $filter_msg='';
+   
+   
+   $rtext=$total_records." ".ngettext('shelf','shelfs',$total_records);
+   if($total_records>$number_results)
+     $rtext.=sprintf(" <span class='rtext_rpp'>(%d%s)</span>",$number_results,_('rpp'));
+  $_order=$order;
+  $_dir=$order_direction;
+
+
+    $order='`Shelf Code`';
+  if($order=='parts')
+    $order='`Shelf Distinct Parts`';
+ if($order=='locations')
+    $order='`Shelf Number Locations`';
+ elseif($order=='area')
+    $order='`Warehouse Area Code`';
+elseif($order=='warehouse')
+    $order='`Warehouse Code`';
+  $data=array();
+  $sql="select * from `Shelf Dimension` left join `Warehouse Area Dimension` WAD on (`Shelf Area Key`=WAD.`Warehouse Area Key`) left join `Warehouse Dimension` WD on (`Shelf Warehouse Key`=WD.`Warehouse Key`)  $where $wheref   order by $order $order_direction limit $start_from,$number_results    ";
+  //  print $sql;
+  $result=mysql_query($sql);
+  while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
+    $code=sprintf('<a href="shelf.php?id=%d" >%s</a>',$row['Shelf Key'],$row['Shelf Code']);
+
+   
+
+    if($row['Warehouse Area Code']=='')
+      $area=_('Unknown');
+    else
+      $area=sprintf('<a href="warehouse_area.php?id=%d">%s</a>',$row['Warehouse Area Key'],$row['Warehouse Area Code']);
+            $warehouse=sprintf('<a href="warehouse.php?id=%d">%s</a>',$row['Warehouse Key'],$row['Warehouse Code']);
+
+    $data[]=array(
+		 'id'=>$row['Shelf Key']
+		// ,'tipo'=>$tipo
+		 ,'code'=>$code
+		 ,'area'=>$area
+		 ,'warehouse'=>$warehouse
+		 		 ,'locations'=>number($row['Shelf Number Locations'])
+
+		 ,'parts'=>number($row['Shelf Distinct Parts'])
+		 
+		 );
+  }
+  $response=array('resultset'=>
+		   array('state'=>200,
+			 'data'=>$data,
+			 'sort_key'=>$_order,
+			 'sort_dir'=>$_dir,
+			 'tableid'=>$tableid,
+			 'filter_msg'=>$filter_msg,
+			 'rtext'=>$rtext,
+			 'total_records'=>$total,
+			 'records_offset'=>$start_from,
+			 'records_returned'=>$start_from+$total,
+			'records_perpage'=>$number_results,
+			 
+			 'records_order'=>$order,
+			'records_order_dir'=>$order_dir,
+			'filtered'=>$filtered
+			 )
+		   );
+   echo json_encode($response);
+}
 function list_warehouse_area(){
  
       if(isset( $_REQUEST['warehouse']) and  is_numeric( $_REQUEST['warehouse']))
