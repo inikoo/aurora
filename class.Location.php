@@ -12,6 +12,12 @@
  Version 2.0
 */
 include_once('class.Part.php');
+include_once('class.Warehouse.php');
+include_once('class.WarehouseArea.php');
+include_once('class.Shelf.php');
+
+
+
 class Location extends DB_Table{
 
 
@@ -125,9 +131,25 @@ class Location extends DB_Table{
       if(array_key_exists($key,$this->data))
 	  $this->data[$key]=_trim($value);
     }
-    
-
-    
+     $warehouse_area=new WarehouseArea($this->data['Location Warehouse Area Key']);
+     if(!$warehouse_area->id){
+     $this->error=true;
+     $this->msg='WA not found';
+     return;
+     
+     }
+     $warehouse=new Warehouse($this->data['Location Warehouse Key']);
+    if(!$warehouse->id){
+     $this->error=true;
+     $this->msg='W not found';
+     return;
+     }
+     
+       if($warehouse->id!=$warehouse_area->data['Warehouse Key']){
+     $this->error=true;
+     $this->msg='WA not in W';
+     return;
+     }
 
     if($this->data['Location Code']==''){
       $error=true;
@@ -140,19 +162,20 @@ class Location extends DB_Table{
       $this->msg='Wrong location usage: '.$this->data['Location Mainly Used For'];
       return;
     }
+    if(!$this->data['Location Max Volume']){
      if($this->data['Location Shape Type']=='Box' 
        and is_numeric($this->data['Location Width']) and $this->data['Location Width']>0 
        and is_numeric($this->data['Location Deepth']) and $this->data['Location Deepth']>0 
-       and is_numeric($this->data['Location Heigth']) and $this->data['Location Heigth']>0 
+       and is_numeric($this->data['Location Height']) and $this->data['Location Height']>0 
        ){
-      $this->data['Location Max Volume']=$this->data['Location Width']*$this->data['Location Deepth']*$this->data['Location Heigth']*0.001;
+      $this->data['Location Max Volume']=$this->data['Location Width']*$this->data['Location Deepth']*$this->data['Location Height']*0.001;
     }if($this->data['Location Shape Type']=='Cylinder' 
        and is_numeric($this->data['Location Radius']) and $this->data['Location Radius']>0 
-       and is_numeric($this->data['Location Heigth']) and $this->data['Location Heigth']>0 
+       and is_numeric($this->data['Location Height']) and $this->data['Location Height']>0 
        ){
-      $this->data['Location Max Volume']=3.151592*$this->data['Location Radius']*$this->data['Location Radius']*$this->data['Location Heigth']*0.001;
+      $this->data['Location Max Volume']=3.151592*$this->data['Location Radius']*$this->data['Location Radius']*$this->data['Location Height']*0.001;
     }
-
+}
      $keys='(';$values='values(';
       foreach($this->data as $key=>$value){
 
@@ -169,11 +192,26 @@ class Location extends DB_Table{
     // exit;
     if(mysql_query($sql)){
       $this->id= mysql_insert_id();
-      $this->new=true;
-      $this->get_data('id',$this->id);
+      
       $note=_('Location Created');
       $details=_('Location')." ".$this->data['Location Code']." "._('created');
-      
+       $history_data=array(
+			  'note'=>$note
+			  ,'details'=>$details
+			  ,'action'=>'created'
+			  );
+	  $this->add_history($history_data);
+      $this->new=true;
+      $this->get_data('id',$this->id);
+
+    $warehouse->update_children();
+    $warehouse_area->update_children();
+    
+     if($data['Location Shelf Key']){
+     $shelf=new Shelf($data['Location Shelf Key']);
+     if($shelf->id)
+        $shelf->update_children();
+     }
       
     }else{
       exit($sql);

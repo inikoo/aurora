@@ -280,13 +280,13 @@ $this->deleted=true;
 
        
         $sql=sprintf('select count(*) as number from `Company Position Dimension` where `Company Department Key`=%d',$this->id);
-        $res-mysql_query($sql);
+        $res=mysql_query($sql);
         $number_positions=0;
         if ($row=mysql_fetch_array($res)) {
             $number_positions=$row['number'];
         }        
         $sql=sprintf('select count(*) as number from `Staff Dimension` where `Company Department Key`=%d',$this->id);
-        $res-mysql_query($sql);
+        $res=mysql_query($sql);
         $number_employees=0;
         if ($row=mysql_fetch_array($res)) {
             $number_employees=$row['number'];
