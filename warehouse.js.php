@@ -76,7 +76,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 					 ];
 	    //?tipo=locations&tid=0"
-	    this.dataSource1 = new YAHOO.util.DataSource("ar_warehouse.php?tipo=warehouse_areas&tableid=1");
+	    this.dataSource1 = new YAHOO.util.DataSource("ar_warehouse.php?tipo=warehouse_areas&parent=warehouse&tableid=1");
 	    this.dataSource1.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource1.connXhrMode = "queueRequests";
 	    this.dataSource1.responseSchema = {
@@ -101,7 +101,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 								 , {
 								     renderLoopSize: 50,generateRequest : myRequestBuilder
 								       ,paginator : new YAHOO.widget.Paginator({
-									      rowsPerPage    : <?php echo$_SESSION['state']['warehouse']['warehouse_area']['nr']?>,containers : 'paginator', 
+									      rowsPerPage    : <?php echo$_SESSION['state']['warehouse_area']['table']['nr']?>,containers : 'paginator', 
  									      pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',
 									      previousPageLinkLabel : "<",
  									      nextPageLinkLabel : ">",
@@ -110,8 +110,8 @@ YAHOO.util.Event.addListener(window, "load", function() {
 									      ,template : "{FirstPageLink}{PreviousPageLink}<strong id='paginator_info0'>{CurrentPageReport}</strong>{NextPageLink}{LastPageLink}"
 									  })
 								     ,sortedBy : {
-									 key: "<?php echo$_SESSION['state']['warehouse']['warehouse_area']['order']?>",
-									 dir: "<?php echo$_SESSION['state']['warehouse']['warehouse_area']['order_dir']?>"
+									 key: "<?php echo$_SESSION['state']['warehouse_area']['table']['order']?>",
+									 dir: "<?php echo$_SESSION['state']['warehouse_area']['table']['order_dir']?>"
 								     },
 								     dynamicData : true
 								  }
@@ -119,7 +119,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    this.table1.handleDataReturnPayload =myhandleDataReturnPayload;
 	    this.table1.doBeforeSortColumn = mydoBeforeSortColumn;
 	    this.table1.doBeforePaginatorChange = mydoBeforePaginatorChange;
-	    this.table1.filter={key:'<?php echo$_SESSION['state']['warehouse']['warehouse_area']['f_field']?>',value:'<?php echo$_SESSION['state']['warehouse']['warehouse_area']['f_value']?>'};
+	    this.table1.filter={key:'<?php echo$_SESSION['state']['warehouse_area']['table']['f_field']?>',value:'<?php echo$_SESSION['state']['warehouse_area']['table']['f_value']?>'};
 	    YAHOO.util.Event.addListener('yui-pg0-0-page-report', "click",myRowsPerPageDropdown)	
 
 
