@@ -53,7 +53,7 @@ case('locations'):
   list_shelfs();
   break;
 case('warehouse_areas'):
-  list_warehouse_area();
+  list_warehouse_areas();
   break;
   case('warehouses'):
   list_warehouses();
@@ -433,22 +433,19 @@ elseif($order=='warehouse')
 		   );
    echo json_encode($response);
 }
-function list_warehouse_area(){
+function list_warehouse_areas(){
  
-      if(isset( $_REQUEST['warehouse']) and  is_numeric( $_REQUEST['warehouse']))
-	$warehouse_id=$_REQUEST['warehouse'];
-      else
-	$warehouse_id=$_SESSION['state']['warehouse']['id'];
    
-
-      $conf=$_SESSION['state']['warehouse']['warehouse_area'];
-      //  $conf2=$_SESSION['state']['warehouse_area'];
-      $conf_table='warehouse_area';
-
-      if(isset( $_REQUEST['parent']))
+      $conf=$_SESSION['state']['warehouse_areas']['table'];
+     
+     
+     
+     
+      if(isset( $_REQUEST['parent'])){
 	$parent=$_REQUEST['parent'];
-      else
-	$parent=$conf['parent'];
+     $_SESSION['state']['warehouse_areas']['parent']=$parent;
+     } else
+	$parent=$_SESSION['state']['warehouse_areas']['parent'];
 
 
       if(isset( $_REQUEST['sf'])){
@@ -502,14 +499,22 @@ function list_warehouse_area(){
 
       
       
-      $_SESSION['state'][$conf_table]['table']=array('order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value,'parent'=>$parent);
+      $_SESSION['state']['warehouse_area']['table']=array('order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value,'parent'=>$parent);
      
       
       
       switch($parent){
       case('warehouse'):
+         if(isset( $_REQUEST['warehouse']) and  is_numeric( $_REQUEST['warehouse']))
+	$warehouse_id=$_REQUEST['warehouse'];
+      else
+	$warehouse_id=$_SESSION['state']['warehouse']['id'];
+   
+
+      
+      
 	$where=sprintf("where  `Warehouse Key`=%d",$warehouse_id);
-	break;
+	
       default:
 	$where='where true';
 	  
@@ -565,7 +570,7 @@ function list_warehouse_area(){
   elseif($order=='shelfs')
      $order='`Warehouse Area Number Shelfs`';
  
-   $sql="select *  from `Warehouse Area Dimension` $where $wheref order by $order $order_direction limit $start_from,$number_results    ";
+   $sql="select *  from `Warehouse Area Dimension` WA left join `Warehouse Dimension` W  on (WA.`Warehouse Key`=W.`Warehouse Key`) $where $wheref order by $order $order_direction limit $start_from,$number_results    ";
    // print $sql;
    $res = mysql_query($sql);
    $adata=array();
@@ -576,6 +581,8 @@ function list_warehouse_area(){
    while($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
      $code=sprintf('<a href="warehouse_area.php?id=%d">%s</a>',$row['Warehouse Area Key'],$row['Warehouse Area Code']);
      $name=sprintf('<a href="warehouse_area.php?id=%d">%s</a>',$row['Warehouse Area Key'],$row['Warehouse Area Name']);
+          $warehouse=sprintf('<a href="warehouse.php?id=%d">%s</a>',$row['Warehouse Key'],$row['Warehouse Code']);
+
      $locations=number($row['Warehouse Area Number Locations']);
         $shelfs=number($row['Warehouse Area Number Shelfs']);
 
@@ -584,8 +591,11 @@ function list_warehouse_area(){
 		   'name'=>$name,
 		   'locations'=>$locations,
 		   		   'shelfs'=>$shelfs,
+		   		   'parts'=>number($row['Warehouse Area Distinct Parts']),
+		   		   'warehouse'=>$warehouse,
 
 		   'description'=>$row['Warehouse Area Description']
+		   
 		   );
   }
   mysql_free_result($res);
