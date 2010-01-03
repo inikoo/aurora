@@ -21,8 +21,7 @@ class supplierproduct extends DB_Table {
 
         if (is_numeric($a1) and !$a2) {
             $this->get_data('id',$a1);
-        }
-        else if (($a1=='new' or $a1=='create') and is_array($a2) ) {
+        } else if (($a1=='new' or $a1=='create') and is_array($a2) ) {
             $this->msg=$this->create($a2);
         }
         elseif($a1=='find') {
@@ -58,7 +57,7 @@ class supplierproduct extends DB_Table {
         }
         $data=$this->base_data();
         foreach($raw_data as $key=>$value) {
-            if(array_key_exists($key,$data))
+            if (array_key_exists($key,$data))
                 $data[$key]=_trim($value);
         }
 
@@ -89,13 +88,13 @@ class supplierproduct extends DB_Table {
                          ,$data['Supplier Product Cost']
 
                         );
-           // print("$sql\n");
+            // print("$sql\n");
             $result2=mysql_query($sql);
             if ($row2=mysql_fetch_array($result2)) {
                 $this->found_in_key=true;
                 $this->found_key=$row2['SPH Key'];
                 $this->get_data('key',$this->found_key);
-                
+
             }
         }
 
@@ -118,7 +117,7 @@ class supplierproduct extends DB_Table {
 
             }
             else {
-	      // print_r($data);
+                // print_r($data);
                 $this->create($data);
             }
 
@@ -153,15 +152,15 @@ class supplierproduct extends DB_Table {
                 if ($row=mysql_fetch_array($result2, MYSQL_ASSOC)   ) {
                     $this->code=$row['Supplier Product Code'];
                     $this->supplier_key=$row['Supplier Key'];
-                    foreach($row as $key=>$value){
-		      $this->data[$key]=$value;
-		    }
-		    
-		    
+                    foreach($row as $key=>$value) {
+                        $this->data[$key]=$value;
+                    }
+
+
                 } else {
                     $this->code='';
                     $this->supplier_key='';
-                    $this->data['Product Supplier Code']='';
+                    $this->data['Supplier Product Code']='';
                     $this->data['Supplier Key']='';
 
                 }
@@ -208,11 +207,11 @@ class supplierproduct extends DB_Table {
                    );
         foreach($data as $key=>$value) {
             $key=strtolower(preg_replace('/^supplier product /i','sph ',$key));
-              if (array_key_exists($key,$base_data))
-          
+            if (array_key_exists($key,$base_data))
+
                 $base_data[$key]=_trim($value);
         }
-         
+
         $base_data['Supplier Product Code']=$data['Supplier Product Code'];
         $base_data['Supplier Key']=$data['Supplier Key'];
 
@@ -225,13 +224,14 @@ class supplierproduct extends DB_Table {
         $keys=preg_replace('/,$/',')',$keys);
         $values=preg_replace('/,$/',')',$values);
         $sql=sprintf("insert into `Supplier Product History Dimension` %s %s",$keys,$values);
-	// print "$sql\n\n";
+        // print "$sql\n\n";
         if (mysql_query($sql)) {
-             $this->key = mysql_insert_id();
+            $this->key = mysql_insert_id();
             $this->new_key=true;
-            $this->get_data('key',$this->key);
+        $this->new_key_id=$this->key;
+        $this->get_data('key',$this->key);
             //print $this->key."\n";
-        
+
         } else {
             print "$sql  Error can not create Product Supplier\n";
             exit;
@@ -248,18 +248,18 @@ class supplierproduct extends DB_Table {
                        'supplier product cost'=>'',
                        'supplier product valid from'=>date("Y-m-d H:i:s"),
                        'supplier product valid to'=>date("Y-m-d H:i:s"),
-                    
+
                    );
-       
+
         foreach($data as $key=>$value) {
             if (isset($base_data[strtolower($key)]))
                 $base_data[strtolower($key)]=_trim($value);
         }
-         $supplier=new Supplier($base_data['supplier key']);
+        $supplier=new Supplier($base_data['supplier key']);
         $base_data['supplier code']=$supplier->data['Supplier Code'];
         $base_data['supplier name']=$supplier->data['Supplier Name'];
         $base_data['supplier product current key']=$this->key;
-        
+
         $keys='(';
         $values='values(';
         foreach($base_data as $key=>$value) {
@@ -269,12 +269,12 @@ class supplierproduct extends DB_Table {
         $keys=preg_replace('/,$/',')',$keys);
         $values=preg_replace('/,$/',')',$values);
         $sql=sprintf("insert into `Supplier Product Dimension` %s %s",$keys,$values);
-       //  print "$sql\n\n";
+        //  print "$sql\n\n";
         if (mysql_query($sql)) {
-        //print mysql_affected_rows()."\n";
+            //print mysql_affected_rows()."\n";
             $this->code = $base_data['supplier product code'];
             $this->supplier_key = $base_data['supplier key'];
-
+            $this->new_key_id=mysql_insert_id();
             $this->new_code=true;
 
             $this->get_data('code',$this->code,$this->supplier_key);
@@ -290,9 +290,9 @@ class supplierproduct extends DB_Table {
 
             $used_in_products='';
             $sql=sprintf("select PD.`Product ID`,`Product Code` from `Supplier Product Part List` SPPL left join `Product Part List` PPL on (SPPL.`Part SKU`=PPL.`Part SKU`) left join `Product Dimension` PD on (PPL.`Product ID`=PD.`Product ID`) where `Supplier Product Code`=%s and `Supplier Key`=%d and `Supplier Product Part Most Recent`='Yes' group by `Product Code`;"
-            ,prepare_mysql($this->code)
-            ,$this->supplier_key
-            );
+                         ,prepare_mysql($this->code)
+                         ,$this->supplier_key
+                        );
 
 
             $result=mysql_query($sql);
@@ -303,9 +303,9 @@ class supplierproduct extends DB_Table {
 
             $used_in_parts='';
             $sql=sprintf("select PD.`Part SKU` from `Supplier Product Part List` SPPL  left join `Part Dimension` PD on (SPPL.`Part SKU`=PD.`Part SKU`) where `Supplier Product Code`=%s and `Supplier Key`=%d  and `Supplier Product Part Most Recent`='Yes' group by PD.`Part SKU`;"
-  ,prepare_mysql($this->code)   
-            ,$this->supplier_key
-            );
+                         ,prepare_mysql($this->code)
+                         ,$this->supplier_key
+                        );
             $result=mysql_query($sql);
             $num_parts=0;
             // print "$sql\n";
@@ -323,10 +323,10 @@ class supplierproduct extends DB_Table {
                 $used_in_parts='(SKUs:'.$used_in_parts.')';
 
             $sql=sprintf("update `Supplier Product Dimension` set `Supplier Product XHTML Used In`=%s where `Supplier Product Code`=%s and `Supplier Key`=%d"
-                ,prepare_mysql(_trim($used_in_products.' '.$used_in_parts))
-                ,prepare_mysql($this->code)
-                ,$this->supplier_key
-                );
+                         ,prepare_mysql(_trim($used_in_products.' '.$used_in_parts))
+                         ,prepare_mysql($this->code)
+                         ,$this->supplier_key
+                        );
             //print "$sql\n";
             if (!mysql_query($sql))
                 exit("$sql error can not update used in insuppiler product \n");
@@ -337,8 +337,8 @@ class supplierproduct extends DB_Table {
         case('parts'):
 
             $sql=sprintf("select PD.`Part SKU` as sku from `Supplier Product Dimension` SPD left join `Supplier Product Part List` SPPL on (SPD.`Supplier Product ID`=SPPL.`Supplier Product ID`)  left join `Part Dimension` PD on (SPPL.`Part SKU`=PD.`Part SKU`) where `Supplier Product Key`=%d group by PD.`Part SKU`;"
-            ,$this->data['Supplier Product Key']
-            );
+                         ,$this->data['Supplier Product Key']
+                        );
             $result=mysql_query($sql);
             $num_parts=0;
             $this->parts_sku=array();
@@ -855,6 +855,10 @@ class supplierproduct extends DB_Table {
 
 
         switch ($key) {
+case('Formated Cost'):
+//print_r($this->data);
+//return $this->data['Supplier Product Cost'];
+return money($this->data['Supplier Product Cost'],$this->data['Supplier Product Currency']);
 
         }
 
@@ -886,7 +890,7 @@ class supplierproduct extends DB_Table {
     }
     function new_part_list($product_list_id,$part_list) {
 
-       // if (!$this->valid_id($product_list_id))
+        // if (!$this->valid_id($product_list_id))
         //    $product_list_id=$this->new_part_list_id();
 //print_r($this);
         $_base_data=array(
@@ -903,8 +907,8 @@ class supplierproduct extends DB_Table {
         foreach($part_list as $data) {
             $base_data=$_base_data;
             foreach($data as $key=>$value) {
-            $key=strtolower($key);
-                               if (array_key_exists($key,$base_data))
+                $key=strtolower($key);
+                if (array_key_exists($key,$base_data))
 
                     $base_data[$key]=_trim($value);
             }
@@ -945,7 +949,7 @@ class supplierproduct extends DB_Table {
         }
 
     }
- 
+
     function update_valid_dates($date) {
         $this->update_valid_dates_key($date);
         $this->update_valid_dates_code($date);
@@ -955,7 +959,7 @@ class supplierproduct extends DB_Table {
         $affected=0;
         $sql=sprintf("update `Supplier Product History Dimension`  set `SPH Valid From`=%s where  `SPH Key`=%d and `SPH Valid From`>%s   "
                      ,prepare_mysql($date)
-		     ,prepare_mysql($this->id)
+                     ,prepare_mysql($this->id)
                      ,prepare_mysql($date)
 
                     );
@@ -963,7 +967,7 @@ class supplierproduct extends DB_Table {
         $affected+=mysql_affected_rows();
         $sql=sprintf("update `Supplier Product History Dimension`  set `SPH Valid To`=%s where  `SPH Key`=%d and `SPH Valid To`<%s   "
                      ,prepare_mysql($date)
-		     ,prepare_mysql($this->id)
+                     ,prepare_mysql($this->id)
                      ,prepare_mysql($date)
 
                     );
@@ -976,7 +980,7 @@ class supplierproduct extends DB_Table {
         $sql=sprintf("update `Supplier Product Dimension`  set `Supplier Product Valid From`=%s where  `Supplier Product Code`=%s and `Supplier Key`=%d and `Supplier Product Valid From`>%s   "
                      ,prepare_mysql($this->code)
                      ,prepare_mysql($date)
-		     ,$this->supplier_key
+                     ,$this->supplier_key
                      ,prepare_mysql($date)
 
                     );
@@ -984,7 +988,7 @@ class supplierproduct extends DB_Table {
         $affected+=mysql_affected_rows();
         $sql=sprintf("update `Supplier Product Dimension`  set `Supplier Product Valid To`=%s where  `Supplier Product Code`=%s and `Supplier Key`=%d  and `Supplier Product Valid To`<%s   "
                      ,prepare_mysql($date)
-		     ,prepare_mysql($this->code)
+                     ,prepare_mysql($this->code)
                      ,$this->supplier_key
                      ,prepare_mysql($date)
 
@@ -993,4 +997,231 @@ class supplierproduct extends DB_Table {
         $affected+=mysql_affected_rows();
         return $affected;
     }
+
+
+    function update_cost($value) {
+        $change_at='now';
+
+        $amount=$value;
+        if ($amount==$this->data['Supplier Product Cost']) {
+            $this->updated=false;
+            $this->new_value=money($amount,$this->data['Supplier Product Currency']);
+            return;
+
+        }
+        $old_formated_price=$this->get('Formated Price');
+        $sql=sprintf("select `SPH Key` from `Supplier Product History Dimension` where `Supplier Product Code`=%s and `Supplier Key`=%d and `SPH Cost`=%.2f "
+
+                     ,prepare_mysql($this->code)
+                     ,$this->supplier_key
+                     ,$amount
+                    );
+     //   print $sql;
+        $res=mysql_query($sql);
+
+        $num_historic_records=mysql_num_rows($res);
+        if ($num_historic_records==0) {
+            $data=array(
+                    'SPH Cost'=>$amount
+                    ,'Supplier Product Code'=>$this->code
+                    ,'Supplier Key'=>$this->supplier_key
+            );
+            $this->create_key($data);
+
+            if ($change_at=='now') {
+                $this->change_current_key($this->new_key_id);
+
+            }
+            $this->updated=true;
+
+        }
+        elseif($num_historic_records==1) {
+            $row=mysql_fetch_array($res);
+            $key_matched=$row['SPH Key'];
+            if ($change_at=='now') {
+                $this->change_current_key($key_matched);
+
+            }
+            $this->updated=true;
+        }
+        else {
+            exit("exit more that one hitoric product\n ");
+
+        }
+
+
+
+        if ($this->updated) {
+
+           
+
+
+            $this->new_value=$this->get('Formated Cost');
+
+$note=_('Supplier Product Cost Changed').' ('.$this->code.','.$this->get('Formated Cost').')';
+$details=_('Supplier Product').": ".$this->code." (Supplier:".$this->data['Supplier Code'].") "._('cost changed').' '._('from')." ".$old_formated_price."  "._('to').' '. $this->get('Formated Cost') ;
+$action='edited';            
+
+        
+
+        }
+
+
+    }
+
+
+
+
+
+ function update_field_switcher($field,$value,$options=''){
+switch($field){
+case('Supplier Product Cost'):
+$this->update_cost($value);
+break;
+case('Supplier Product Buy State'):
+$this->update_buy_state($value);
+break;
+default:
+   $base_data=$this->base_data();
+      if (preg_match('/^Address.*Data$/',$field))
+     $this->update_field($field,$value,$options);
+   elseif(array_key_exists($field,$base_data)) {
+     
+     if ($value!=$this->data[$field]) {
+       
+       $this->update_field($field,$value,$options);
+     }
+   }
+   
+   
+}
+   
+   
+ }
+
+ function change_current_key($new_current_key) {
+
+    $sql=sprintf("select `SPH Cost` from `Supplier Product History Dimension` where `Supplier Key`=%d and `Supplier Product Code`=%s and `SPH Key`=%d "
+		 ,$this->supplier_key
+		 ,prepare_mysql($this->code)
+		 ,$new_current_key
+		 );
+//print $sql;
+    $res=mysql_query($sql);
+    $num_historic_records=mysql_num_rows($res);
+    if ($num_historic_records==0) {
+      $this->error=true;
+      $this->msg.=';Can not change product current key because mre key is not associated with ID';
+      return;
+    }
+    $row=mysql_fetch_array($res);
+
+    $price=$row['SPH Cost'];
+
+
+    $sql=sprintf("update `Supplier Product Dimension` set `Supplier Product Cost`=%.2f,`Supplier Product Current Key`=%d  where `Supplier Product Code`=%s and `Supplier Key`=%d "
+		 ,$price
+		 ,$new_current_key
+		,prepare_mysql($this->code)
+		,$this->supplier_key
+		 );
+		// print $sql;
+    mysql_query($sql);
+    $this->data['Supplier Product Cost']=sprintf("%.2f",$price);
+    $this->data['Supplier Product Current Key']=$new_current_key;
+
+    $this->id =$new_current_key;
+   
+
+  }
+  
+  
+  protected function update_buy_state($value,$options=''){
+  $field='Supplier Product Buy State';
+  //print "** Update Field $field $value\n";
+  
+  $old_value=_('Unknown');
+  
+  $key_field=$this->table_name." Key";
+  if($this->table_name=='Supplier Product')
+    $key_field='Supplier Product Current Key';
+  
+  $sql="select `".$field."` as value from  `".$this->table_name." Dimension`  where `$key_field`=".$this->id;
+  //print "$sql\n";
+  $result=mysql_query($sql);
+  if($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
+    $old_value=$row['value'];
+  }
+   
+
+  $sql="update `".$this->table_name." Dimension` set `".$field."`=".prepare_mysql($value)." where `$key_field`=".$this->id;
+//  print $sql;
+
+   mysql_query($sql);
+  $affected=mysql_affected_rows();
+  if($affected==-1){
+    $this->msg.=' '._('Record can not be updated')."\n";
+    $this->error_updated=true;
+    $this->error=true;
+   
+    return;
+  }elseif($affected==0){
+    //$this->msg.=' '._('Same value as the old record');
+    
+  }else{
+  
+  
+  if($value=='Deleted'){
+    $deleted_code=$this->code.'.deleted';
+    $sql=sprintf("update `Supplier Product Dimension` set `Supplier Product Code`=%s where `Supplier Product Code`=%s and `Supplier Key`=%d "
+    ,prepare_mysql($deleted_code)
+    ,prepare_mysql($this->code)
+    ,$this->supplier_key
+    );
+    //print $sql;
+    mysql_query($sql);
+     $sql=sprintf("update `Supplier Product History Dimension` set `Supplier Product Code`=%s where `Supplier Product Code`=%s and `Supplier Key`=%d "
+    ,prepare_mysql($deleted_code)
+    ,prepare_mysql($this->code)
+    ,$this->supplier_key
+    );
+    mysql_query($sql);
+  }
+  
+    $this->data[$field]=$value;
+    $this->msg.=" $field "._('Record updated').", \n";
+    $this->msg_updated.=" $field "._('Record updated').", \n";
+    $this->updated=true;
+    $this->new_value=$value;
+   
+    $save_history=true;
+    if(preg_match('/no( |\_)history|nohistory/i',$options))
+      $save_history=false;
+    if(
+       preg_match('/customer|contact|company|order|staff|supplier|address|telecom|user|store|product|company area|company department|position/i',$this->table_name)
+       and !$this->new 
+       and $save_history
+       ){
+      $history_data=array(
+			  'indirect_object'=>$field
+			  ,'old_value'=>$old_value
+			  ,'new_value'=>$value
+			  
+			  );
+      if($this->table_name=='Product Family')
+      	$history_data['direct_object']='Family';
+      if($this->table_name=='Product Department')
+      	$history_data['direct_object']='Department';
+      	
+
+      $this->add_history($history_data);
+      
+    }
+
+  }
+
+}
+
+  
+
 }

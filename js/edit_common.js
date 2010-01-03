@@ -13,15 +13,15 @@ function swap_this_radio(o){
     }
 }
 var CellEdit = function (callback, newValue) {
-      
     var record = this.getRecord(),
     column = this.getColumn(),
     oldValue = this.value,
     datatable = this.getDataTable();
+    recordIndex = datatable.getRecordIndex(record);
     
     if(column.object=='company' || column.object=='customer' || column.object=='contact' || column.object=='company_area'  || column.object=='company_department')
 	ar_file='ar_edit_contacts.php';
-    else if(column.object=='warehouse_area' || column.object=='part_location'|| column.object=='shelf_type')
+    else if(column.object=='warehouse_area' || column.object=='part_location'|| column.object=='shelf_type' || column.object=='location')
 	ar_file='ar_edit_warehouse.php';
     else if(column.object=='user' )
 	ar_file='ar_edit_users.php';
@@ -35,15 +35,22 @@ var CellEdit = function (callback, newValue) {
 	ar_file='ar_edit_assets.php';
     //   alert(column.object)
     var request='tipo=edit_'+column.object+'&key=' + column.key + '&newvalue=' + encodeURIComponent(newValue) + '&oldvalue=' + encodeURIComponent(oldValue)+ myBuildUrl(datatable,record);
-   // alert('R:'+request);
+ // alert('R:'+request);
 
     YAHOO.util.Connect.asyncRequest(
 				    'POST',
 				    ar_file, {
 					success:function(o) {
-					     alert(o.responseText);
+					    alert(o.responseText);
 					    var r = YAHOO.lang.JSON.parse(o.responseText);
 					    if (r.state == 200) {
+						
+						if(r.key=='cost' && column.object=='product_supplier'){
+						    var data = record.getData();
+						    data['sph_key']=r.sp_current_key;
+                            data['cost']=r.newvalue;
+					        datatable.updateRow(recordIndex,data);
+						}
 						
 						callback(true, r.newvalue);
 					    } else {
@@ -65,34 +72,54 @@ var onCellClick = function(oArgs) {
 		var target = oArgs.target,
 		column = this.getColumn(target),
 		record = this.getRecord(target);
+	
+     var recordIndex = this.getRecordIndex(record);
+		
+		
 		switch (column.action) {
 		case 'delete':
 		    if(record.getData('delete')!=''){
 
-		    if (confirm('Are you sure, you want to delete this row?')) {
+var delete_type=record.getData('delete_type');
+
+
+
+
+		    if (confirm('Are you sure, you want to '+delete_type+' this row?')) {
 			if(column.object=='company' || column.object=='company_area' || column.object=='company_department')
 			    ar_file='ar_edit_contacts.php';
 			else if(column.object=='warehouse_area' || column.object=='location')
 			    ar_file='ar_edit_warehouse.php';
 			else if(column.object=='position')
 			    ar_file='ar_edit_staff.php';    
+			else if(column.object=='supplier_product' || column.object=='supplier')
+			    ar_file='ar_edit_suppliers.php';        
 			else
 			    ar_file='ar_edit_assets.php';
 
 
 
-				//alert(ar_file+'?tipo=delete_'+column.object + myBuildUrl(this,record))
+				alert(ar_file+'?tipo=delete_'+column.object + myBuildUrl(this,record))
 
 			YAHOO.util.Connect.asyncRequest(
 							'GET',
 							ar_file+'?tipo=delete_'+column.object + myBuildUrl(this,record),
 							{
 							    success: function (o) {
-								//alert(o.responseText);
+								alert(o.responseText);
 								 var r = YAHOO.lang.JSON.parse(o.responseText);
 								if (r.state == 200 && r.action=='deleted') {
 								
 								    this.deleteRow(target);
+								
+								
+								}else if(r.state == 200 && r.action=='discontinued') {
+								
+									    var data = record.getData();
+						    data['delete']=r.delete;
+                            data['delete_type']=r.delete_type;
+					        this.updateRow(recordIndex,data);
+								   
 								
 								
 								} else {

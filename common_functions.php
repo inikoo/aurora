@@ -412,7 +412,7 @@ function money_cents($amount){
 }
 
 
-function weight($w){
+function weight($w,$unit='Kg'){
   return number($w).'Kg';
 }
 
@@ -1509,6 +1509,65 @@ function getEnumVals($table,$field,$sorted=true)
   
     return($types);
 } 
+
+function parse_number($value){
+if(is_numeric($value))
+return $value;
+
+$value=preg_replace('/[^\.^\,\d]/','',$value);
+if(preg_match('/\.\d?$/',$value)){
+$value=preg_replace('/\,/','',$value);
+
+}elseif(preg_match('/\..*\,\d?$/',$value)){
+$value=preg_replace('/\./','',$value);
+$value=preg_replace('/,/',',',$value);
+}
+return (float) $value;
+
+
+}
+
+function parse_weight($value){
+$unit='Kg';
+$value=_trim($value);
+if(preg_match('/(lb?s|pounds?|libras?)$/i',$value)){
+    $value=parse_number($value)*.4545 ;
+    $unit='Lb';
+}elseif(preg_match('/(g|grams?|gms)$/i',$value)){
+    $value=parse_number($value)*0.001 ;
+    $unit='g';
+}elseif(preg_match('/(tons?|tonnes?|t)$/i',$value)){
+    $value=parse_number($value)*1000 ;
+    $unit='t';
+}else
+$value=parse_number($value);
+
+return array($value,$unit);
+}
+
+function parse_volume($value){
+$unit='L';
+$value=_trim($value);
+if(preg_match('/(cc|cm3)$/i',$value)){
+    $value=parse_number($value)*.001 ;
+    $unit='cm3';
+}elseif(preg_match('/(cubic meter|cubic m|m3)$/i',$value)){
+    $value=parse_number($value)*1000 ;
+    $unit='m3';
+}elseif(preg_match('/(mL)$/i',$value)){
+    $value=parse_number($value)*001 ;
+    $unit='mL';
+}else
+$value=parse_number($value);
+
+return array($value,$unit);
+}
+
+
+function volume($value,$unit='L'){
+
+return number($value).'L';
+}
 
 
 ?>

@@ -1,47 +1,9 @@
 {include file='header.tpl'}
 <div id="bd" >
-  <span class="nav2"><a href="suppliers.php">{t}Suppliers{/t}</a></span>
-  <span class="nav2"><a href="suppliers.php">{t}Purchase Orders{/t}</a></span>
-  <span class="nav2"><a href="suppliers.php">{t}Delivery Notes{/t}</a></span>
-  <span class="nav2"><a href="suppliers.php">{t}History{/t}</a></span>
-  <div id="yui-main">
-    <div class="yui-b" style="padding:0 0px">
-      <div class="search_box" >
-	<table border=0 cellpadding="2" style="float:right;margin-top:20px;margin-bottom:10px;" class="view_options">
-	  <tr style="border-bottom:1px solid #ddd">
-	    <th><img src="art/icons/information.png" title="{t}Supplier Details{/t}"/></th>
-	    <th><img src="art/icons/bricks.png" title="{t}Supplier Products{/t}"/></th>
-	    <th><img src="art/icons/page_paste.png" title="{t}Purchase Orders{/t}"/></th>
-	    <th><img src="art/icons/script.png" title="{t}History{/t}"/></th>
-	  </tr>
-	  <tr style="height:18px;border-bottom:1px solid #ddd">
-	    <td  id="change_view_details"  state="{$display.details}" block="details"  
-		 {if $display.details==0}title="{t}Show Supplier Details{/t}" atitle="{t}Hide Supplier Details{/t}"{else}atitle="Hide Supplier Details"  title="{t}Hide Supplier Details{/t}"{/if} >
-	      <img {if $hide.details==0}style="opacity:0.2"{/if} src="art/icons/tick.png"  id="but_logo_details"  /></td>
-
-	    <td  id="change_view_products" state="{$display.products}" block="products"  
-		 {if $display.products==0} title="{t}Show Products{/t}" atitle="{t}Hide Products{/t}"{else} atitle="{t}Show Products{/t}" title="{t}Hide Products{/t}"{/if} >
-	      <img {if $display.products==0}style="opacity:0.2"{/if} src="art/icons/tick.png"  id="but_logo_products"  /></td>
-	    
-	    <td  state="{$display.po}" block="po"  id="change_view_po" 
-		 {if $display.po==0}title="{t}Show the Purchase Orders{/t}" atitle="{t}Hide the Purchase Orders{/t}" {else} atitle="{t}Show the Purchase Orders{/t}" title="{t}Hide the Purchase Orders{/t}" {/if} >
-	  <img {if $display.po==0}style="opacity:0.2"{/if} src="art/icons/tick.png"    id="but_logo_po"   /></td>
-	    
-	    <td  state="{$display.history}" block="history"   id="change_view_history" {if $display.history==0}title="{t}Show History{/t}" atitle="{t}Hide History{/t}"{else}atitle="{t}Show History{/t}" title="{t}Hide History{/t}"{/if} ><img {if $display.history==0}style="opacity:0.2"{/if} src="art/icons/tick.png"    id="but_logo_history"   /></td>
-	    
-	
-	  </tr>
-	</table>
-	<table >
-	  <tr><td  style="text-align:right"><a href="supplier.php?edit={$supplier_id}">Edit Supplier</a></td></tr>
-	  <tr><td  style="text-align:right"><a class="but" href="porder.php?new=1&supplier_id={$supplier_id}" >New Purchase Order</a></td></tr>
-	  
-	</table>
-      </div>
-      
-      
-      <h1>{$supplier->get('Supplier Name')} <span style="color:SteelBlue">{$id}</span></h1> 
-      <table style="width:500px" >
+ {include file='suppliers_navigation.tpl'}
+  <div id="no_details_title" style="clear:left;{if $show_details}display:none;{/if}">
+  <h1>{t}Supplier{/t}: {$supplier->get('Supplier Name')} <span style="color:SteelBlue">({$supplier->get('Supplier Code')})</span></h1>
+   <table style="width:500px" >
 	
 	<tr>
 	  <td valign="top">{$company->get('Company Main XHTML Address')}</td>
@@ -69,16 +31,65 @@
 	 
        </table>
 
-       <div  id="block_details"  style="{if $display.details==0}display:none;{/if}"   >
-	 <h2 style="font-size:150%">{t}Supplier Overview{/t}</h2>
-	 <table style="padding:0;margin:0;border-top:1px solid black;;border-bottom:1px solid black;width:500px">
-	   <tr>
-	     <td>
-	       {$supplier_overview}
-	     </td>
-	   </tr>
-	 </table>
-	 	<table    class="show_info_product" style="width:500px"  >
+  
+  </div>
+  
+ 
+ 
+      
+      <table border=0 cellpadding="2" style="float:right;margin-top:20px;margin-bottom:10px;display:none" class="view_options">
+	  <tr style="border-bottom:1px solid #ddd">
+	    <th><img src="art/icons/information.png" title="{t}Supplier Details{/t}"/></th>
+	    <th><img src="art/icons/bricks.png" title="{t}Supplier Products{/t}"/></th>
+	    <th><img src="art/icons/page_paste.png" title="{t}Purchase Orders{/t}"/></th>
+	    <th><img src="art/icons/script.png" title="{t}History{/t}"/></th>
+	  </tr>
+	  <tr style="height:18px;border-bottom:1px solid #ddd">
+	    <td  id="change_view_details"  state="{$display.details}" block="details"  
+		 {if $display.details==0}title="{t}Show Supplier Details{/t}" atitle="{t}Hide Supplier Details{/t}"{else}atitle="Hide Supplier Details"  title="{t}Hide Supplier Details{/t}"{/if} >
+	      <img {if $hide.details==0}style="opacity:0.2"{/if} src="art/icons/tick.png"  id="but_logo_details"  /></td>
+
+	    <td  id="change_view_products" state="{$display.products}" block="products"  
+		 {if $display.products==0} title="{t}Show Products{/t}" atitle="{t}Hide Products{/t}"{else} atitle="{t}Show Products{/t}" title="{t}Hide Products{/t}"{/if} >
+	      <img {if $display.products==0}style="opacity:0.2"{/if} src="art/icons/tick.png"  id="but_logo_products"  /></td>
+	    
+	    <td  state="{$display.po}" block="po"  id="change_view_po" 
+		 {if $display.po==0}title="{t}Show the Purchase Orders{/t}" atitle="{t}Hide the Purchase Orders{/t}" {else} atitle="{t}Show the Purchase Orders{/t}" title="{t}Hide the Purchase Orders{/t}" {/if} >
+	  <img {if $display.po==0}style="opacity:0.2"{/if} src="art/icons/tick.png"    id="but_logo_po"   /></td>
+	    
+	    <td  state="{$display.history}" block="history"   id="change_view_history" {if $display.history==0}title="{t}Show History{/t}" atitle="{t}Hide History{/t}"{else}atitle="{t}Show History{/t}" title="{t}Hide History{/t}"{/if} ><img {if $display.history==0}style="opacity:0.2"{/if} src="art/icons/tick.png"    id="but_logo_history"   /></td>
+	    
+	
+	  </tr>
+	</table>
+      
+      
+
+       <div  id="info"  style="{if !$show_details}display:none;{/if};clear:left"   >
+	 <h2 style="font-size:150%;">{t}Supplier Details{/t}</h2>
+	
+	<div style="clear:both">
+	<div style="width:300px;float:left">
+  <table    class="show_info_product">
+
+    <tr >
+      <td>{t}Code{/t}:</td><td class="price">{$supplier->get('Supplier Code')}</td>
+    </tr>
+    <tr >
+      <td>{t}Name{/t}:</td><td>{$supplier->get('Supplier Name')}</td>
+    </tr>
+  <tr >
+      <td>{t}Location{/t}:</td><td>{$supplier->get('Supplier Location')}</td>
+    </tr>
+    <tr >
+      <td>{t}Email{/t}:</td><td>{$supplier->get('Supplier Main XHTML Email')}</td>
+    </tr> 
+    
+</table>
+ 
+</div>
+	<div style="width:320px;margin-left:10px;float:left">
+	 	<table    class="show_info_product"     >
 		  <tr>
 		    <td>{t}Items availeable{/t}:</td><td class="aright">{$supplier->get('Supplier Active Supplier Products')} </td>
 		  </tr>
@@ -88,7 +99,7 @@
 		  </tr>
 		</table>
 
-		<table    class="show_info_product" style="width:500px"  >
+		<table    class="show_info_product"  >
 		  <tr>
 		    <td>{t}Total Sales{/t}:</td><td class="aright">{$supplier->get('Total Parts Sold Amount')} </td>
 		  </tr>
@@ -100,8 +111,9 @@
 		  </tr>
 		  
 		</table>
-
-
+</div>
+<div style="{if !$show_details}display:none;{/if};clear:both"  id="plot"></div>
+</div>
        </div>
 
 

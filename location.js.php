@@ -60,13 +60,13 @@ var highlightEditableCell = function(oArgs) {
      ar_file='ar_edit_warehouse.php';
      
      var request='tipo=edit_'+column.object+'&key=' + column.key + '&newvalue=' + encodeURIComponent(newValue) + '&oldvalue=' + encodeURIComponent(oldValue)+ myBuildUrl(datatable,record);
-    // alert(request);
+    alert(request);
 
     YAHOO.util.Connect.asyncRequest(
 				    'POST',
 				    ar_file, {
 					success:function(o) {
-					    // alert(o.responseText);
+					    alert(o.responseText);
 					    var r = YAHOO.lang.JSON.parse(o.responseText);
 					    if (r.state == 200) {
 						
@@ -981,6 +981,7 @@ function init(){
  Editor_move_items = new YAHOO.widget.Panel("Editor_move_items",{close:false,visible:false}); 
  Editor_move_items.render();	
 
+YAHOO.util.Event.addListener('details', "click",change_details,'location');
 
 
 Event.addListener('location_submit_search', "click",submit_search,'location');

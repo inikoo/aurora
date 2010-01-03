@@ -391,17 +391,8 @@ $default_state=array(
 
 					 ),
 		     'warehouse_area'=>array(
-					     'id'=>1,
-					     'locations'=>array(
-								'order'=>'code',
-								'order_dir'=>'',
-								'sf'=>0,
-								'nr'=>25,
-								'where'=>'where true',
-								'f_field'=>'code',
-								'f_value'=>'',
-								'elements'=>array()
-								)
+					     'id'=>1
+					   
 					     ),
 		     'shelf_types'=>array(
 					  'view'=>'general',
@@ -1214,6 +1205,7 @@ $default_state=array(
 		     'location'=>array(
 				       'location'=>false,
 				       'id'=>1,
+				       'details'=>false,
 				       'parts'=>array(
 						      'order'=>'sku',
 						      'order_dir'=>'',

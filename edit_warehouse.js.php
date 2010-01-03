@@ -1,6 +1,22 @@
 <?php
 include_once('common.php');
 
+$location_type=array('Picking'=>_('Picking'),'Storing'=>_('Storing'),'Loading'=>_('Loading'),'Displaying'=>_('Displaying'),'Other'=>_('Other'));
+
+
+
+
+$l='';$ln='';
+foreach($location_type as $key=>$value){
+    $l.=",'$value'";
+    $ln.=",'$key':'$value'";
+}
+$l=preg_replace('/^,/','',$l);
+$ln=preg_replace('/^,/','',$ln);
+
+print 'var location_type_options=['.$l."];\n";
+print 'var location_type_name={'.$ln."};\n";
+
 ?>
 var editing='<?php echo $_SESSION['state']['warehouse']['edit']?>';
 
@@ -77,7 +93,7 @@ shelf_locations_data=new Object();
                 if(i==1){
                 shelf_cols_data[j]={'length':length}
                 }
-               shelf_locations_data[i][j]={'Location Shape Type':'Box','Location Height':height,'Location Width':length,'Location Deepth':deep,'Location Code':get_location_code(i,j),'Location Max Weight':max_weight,'Location Max Volume':max_volume}
+               shelf_locations_data[i][j]={'Location Shape Type':'Box','Location Height':height,'Location Width':length,'Location Deep':deep,'Location Code':get_location_code(i,j),'Location Max Weight':max_weight,'Location Max Volume':max_volume}
                // alert(i+'_'+j)
             }
  }
@@ -218,16 +234,30 @@ var s_values=new Object();
 YAHOO.util.Event.addListener(window, "load", function() {
     tables = new function() {
 
+
+function location_type_formatter(el, oRecord, oColumn, oData){
+el.innerHTML =location_type_name[oData];
+}
 	    var tableid=0; // Change if you have more the 1 table
 	    var tableDivEL="table"+tableid;
 	    var LocationsColumnDefs = [
-				       {key:"code", label:"<?php echo _('Code')?>", width:50,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				       ,{key:"area", label:"<?php echo _('Area')?>", width:50,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				       ,{key:"shelf", label:"<?php echo _('Shelf')?>", width:50,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				       ,{key:"shelf_type", label:"<?php echo _('Location Type')?>", width:150,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				       ,{key:"tipo", label:"<?php echo _('Used for')?>",width:100,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				      
-				      
+	    
+	       {key:"id", label:"", width:20,sortable:false,isPrimaryKey:true,hidden:true} 
+	    
+	    				       ,{key:"go", label:"", width:50,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+
+				       ,{key:"code", label:"<?php echo _('Code')?>", width:50,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC},  editor: new YAHOO.widget.TextboxCellEditor({asyncSubmitter: CellEdit}),object:'location'}
+				    
+				   // ,{key:"tipo", label:"<?php echo _('Used for')?>",width:100,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				      ,{key:"tipo",formatter:location_type_formatter,label:"<?php echo _('Used for')?>",className:"aleft"
+				, editor:new YAHOO.widget.RadioCellEditor({radioOptions:location_type_options,disableBtns:true,asyncSubmitter: CellEdit}),object:'location'
+			      }
+				    
+				    
+				    
+				    ,{key:"max_weight", label:"<?php echo _('Max Weight')?>",width:100,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC},  editor: new YAHOO.widget.TextboxCellEditor({asyncSubmitter: CellEdit}),object:'location'}
+                    ,{key:"max_volumen", label:"<?php echo _('Max Vol')?>",width:100,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC},  editor: new YAHOO.widget.TextboxCellEditor({asyncSubmitter: CellEdit}),object:'location'}
+
 					 ];
 	    //?tipo=locations&tid=0"
 	    this.dataSource0 = new YAHOO.util.DataSource("ar_edit_warehouse.php?tipo=locations");
@@ -247,17 +277,16 @@ YAHOO.util.Event.addListener(window, "load", function() {
 		fields: [
 			 "id"
 			 ,"code"
-			 ,'location'
-			 ,'parts'
+			 
 			 ,'max_weight'
-			 ,'max_volumen','tipo',"area"
+			 ,'max_volumen','tipo',"go"
 			 ]};
 	    this.table0 = new YAHOO.widget.DataTable(tableDivEL, LocationsColumnDefs,
 								   this.dataSource0
 								 , {
 								     renderLoopSize: 50,generateRequest : myRequestBuilder
 								       ,paginator : new YAHOO.widget.Paginator({
-									      rowsPerPage    : <?php echo$_SESSION['state']['warehouse']['locations']['nr']?>,containers : 'paginator', 
+									      rowsPerPage    : <?php echo$_SESSION['state']['locations']['table']['nr']?>,containers : 'paginator', 
  									      pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',
 									      previousPageLinkLabel : "<",
  									      nextPageLinkLabel : ">",
@@ -266,8 +295,8 @@ YAHOO.util.Event.addListener(window, "load", function() {
 									      ,template : "{FirstPageLink}{PreviousPageLink}<strong id='paginator_info0'>{CurrentPageReport}</strong>{NextPageLink}{LastPageLink}"
 									  })
 								     ,sortedBy : {
-									 key: "<?php echo$_SESSION['state']['warehouse']['locations']['order']?>",
-									 dir: "<?php echo$_SESSION['state']['warehouse']['locations']['order_dir']?>"
+									 key: "<?php echo$_SESSION['state']['locations']['table']['order']?>",
+									 dir: "<?php echo$_SESSION['state']['locations']['table']['order_dir']?>"
 								     },
 								     dynamicData : true
 								  }
@@ -275,8 +304,16 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    this.table0.handleDataReturnPayload =myhandleDataReturnPayload;
 	    this.table0.doBeforeSortColumn = mydoBeforeSortColumn;
 	    this.table0.doBeforePaginatorChange = mydoBeforePaginatorChange;
-	    this.table0.filter={key:'<?php echo$_SESSION['state']['warehouse']['locations']['f_field']?>',value:'<?php echo$_SESSION['state']['warehouse']['locations']['f_value']?>'};
-	    YAHOO.util.Event.addListener('yui-pg0-0-page-report', "click",myRowsPerPageDropdown);
+	    this.table0.filter={key:'<?php echo$_SESSION['state']['locations']['table']['f_field']?>',value:'<?php echo$_SESSION['state']['locations']['table']['f_value']?>'};
+	  
+	  
+	     this.table0.subscribe("cellMouseoverEvent", highlightEditableCell);
+	    this.table0.subscribe("cellMouseoutEvent", unhighlightEditableCell);
+	    this.table0.subscribe("cellClickEvent", onCellClick);
+
+	  
+	  
+	  YAHOO.util.Event.addListener('yui-pg0-0-page-report', "click",myRowsPerPageDropdown);
 	
 	    var tableid=1; // Change if you have more the 1 table
 	    var tableDivEL="table"+tableid;
@@ -313,7 +350,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 								 , {
 								     renderLoopSize: 50,generateRequest : myRequestBuilder
 								       ,paginator : new YAHOO.widget.Paginator({
-									      rowsPerPage    : <?php echo$_SESSION['state']['warehouse']['warehouse_area']['nr']?>,containers : 'paginator', 
+									      rowsPerPage    : <?php echo$_SESSION['state']['warehouse_areas']['table']['nr']?>,containers : 'paginator', 
  									      pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',
 									      previousPageLinkLabel : "<",
  									      nextPageLinkLabel : ">",
@@ -322,8 +359,8 @@ YAHOO.util.Event.addListener(window, "load", function() {
 									      ,template : "{FirstPageLink}{PreviousPageLink}<strong id='paginator_info0'>{CurrentPageReport}</strong>{NextPageLink}{LastPageLink}"
 									  })
 								     ,sortedBy : {
-									 key: "<?php echo$_SESSION['state']['warehouse']['warehouse_area']['order']?>",
-									 dir: "<?php echo$_SESSION['state']['warehouse']['warehouse_area']['order_dir']?>"
+									 key: "<?php echo$_SESSION['state']['warehouse_areas']['table']['order']?>",
+									 dir: "<?php echo$_SESSION['state']['warehouse_areas']['table']['order_dir']?>"
 								     },
 								     dynamicData : true
 								  }
@@ -331,7 +368,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    this.table1.handleDataReturnPayload =myhandleDataReturnPayload;
 	    this.table1.doBeforeSortColumn = mydoBeforeSortColumn;
 	    this.table1.doBeforePaginatorChange = mydoBeforePaginatorChange;
-	    this.table1.filter={key:'<?php echo$_SESSION['state']['warehouse']['warehouse_area']['f_field']?>',value:'<?php echo$_SESSION['state']['warehouse']['warehouse_area']['f_value']?>'};
+	    this.table1.filter={key:'<?php echo$_SESSION['state']['warehouse_areas']['table']['f_field']?>',value:'<?php echo$_SESSION['state']['warehouse_areas']['table']['f_value']?>'};
 	    YAHOO.util.Event.addListener('yui-pg0-0-page-report', "click",myRowsPerPageDropdown)	
 
  

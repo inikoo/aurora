@@ -1,3 +1,13 @@
+function cancel_new_email(o){
+ var email_key=o.getAttribute('email_key');
+    var email=Dom.get('Email'+email_key).value;
+    
+   alert('canceling new enmail')
+   
+ //lculate_num_changed_in_email();
+
+}
+
 function calculate_num_changed_in_email(){
     var changed=new Object();
         var to_delete=0;
@@ -146,6 +156,8 @@ function add_email(description){
 	if(description== undefined)
 	    description='Work';
 	Dom.get('Email_Description'+email_key).value=description;
+
+	
 	
 	if(Contact_Data[Current_Contact_Index]['Number_Of_Emails']+Number_New_Emails==0 ){
 	    Dom.get('Email_Is_Main'+email_key).value='Yes';
@@ -193,6 +205,15 @@ function clone_email(email_key){
      element_array[0].setAttribute('email_key',email_key);
      element_array[0].id='Email_Description'+email_key;
 
+ 
+   
+    var element_array=Dom.getElementsByClassName('cancel_new_email', 'span',insertedElement);
+     element_array[0].setAttribute('email_key',email_key);
+     element_array[0].id='cancel_new_email_button'+email_key;
+          element_array[0].style.display='';
+
+     
+
      var element_array=Dom.getElementsByClassName('email_to_delete', 'span',insertedElement);
      element_array[0].setAttribute('email_key',email_key);
      element_array[0].id='email_to_delete'+email_key;
@@ -200,13 +221,17 @@ function clone_email(email_key){
      var element_array=Dom.getElementsByClassName('delete_email', 'span',insertedElement);
      element_array[0].setAttribute('email_key',email_key);
      element_array[0].id='delete_email_button'+email_key;
-     
      var element_array=Dom.getElementsByClassName('undelete_email', 'span',insertedElement);
      element_array[0].setAttribute('email_key',email_key);
      element_array[0].id='undelete_email_button'+email_key;
+    
      
-
      
+         var patt1=new RegExp("new");
+  if(patt1.test(email_key)){
+      Dom.get('cancel_new_email_button'+email_key).style.display='';
+     Dom.get('delete_email_button'+email_key).style.display='none';
+  }
      var element_array=Dom.getElementsByClassName('Email_Description', 'span',insertedElement);
      for(i in  element_array){
 	 var label=element_array[i].getAttribute('label');

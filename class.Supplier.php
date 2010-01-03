@@ -794,7 +794,7 @@ $this->associated=false;
     if ($old_company_key  and $old_company_key!=$company_key   ) {
         $this->remove_company();
     }
-
+    if($old_company_key!=$company_key){
     $sql=sprintf("insert into `Company Bridge` values (%d,'Supplier',%d,'Yes','Yes')",
                  $company->id,
                  $this->id
@@ -804,7 +804,7 @@ $this->associated=false;
     $this->associated=true;
     
     }
-    
+    }
     
 
     $old_name=$this->data['Supplier Name'];
@@ -815,7 +815,7 @@ $this->associated=false;
             $old_supplier_name=$this->data['Supplier Name'];
             $this->data['Supplier Name']=$company->data['Company Name'];
             $this->data['Supplier File As']=$company->data['Company File As'];
-            $sql=sprintf("update `Supplier Dimension` set `Supplier Main Name`=%d,`Supplier File As`=%s where `Supplier Key`=%d"
+            $sql=sprintf("update `Supplier Dimension` set `Supplier Name`=%d,`Supplier File As`=%s where `Supplier Key`=%d"
                          ,prepare_mysql($this->data['Supplier Name'])
                          ,prepare_mysql($this->data['Supplier File As'])
                          ,$this->id
@@ -835,10 +835,10 @@ $this->associated=false;
 
         $this->data['Supplier Company Key']=$company->id;
         $this->data['Supplier Company Name']=$company->data['Company Name'];
-        $sql=sprintf("update `Supplier Dimension` set `Supplier Company Key`=%d,`Supplier Company Name`=%s where `Supplier Key`=%d"
+        $sql=sprintf("update `Supplier Dimension` set `Supplier Company Key`=%d,`Supplier Fiscal Name`=%s where `Supplier Key`=%d"
 
                      ,$this->data['Supplier Company Key']
-                     ,prepare_mysql($this->data['Supplier Company Name'])
+                     ,prepare_mysql($company->data['Company Fiscal Name'])
                      ,$this->id
                     );
         mysql_query($sql);
@@ -1006,6 +1006,8 @@ $this->update_contact($company->data['Company Main Contact Key']);
   function:update_contact
   */
 function update_contact($contact_key=false) {
+
+
 $this->associated=false;
     if (!$contact_key)
         return;
@@ -1022,7 +1024,7 @@ $this->associated=false;
     if ($old_contact_key  and $old_contact_key!=$contact_key   ) {
         $this->remove_contact();
     }
-
+    if($old_contact_key!=$contact_key){
     $sql=sprintf("insert into `Contact Bridge` values (%d,'Supplier',%d,'Yes','Yes')",
                  $contact->id,
                  $this->id
@@ -1033,7 +1035,7 @@ $this->associated=false;
     
     }
     
-    
+    }
 
     $old_name=$this->data['Supplier Main Contact Name'];
     if ($old_name!=$contact->display('name')) {
@@ -1049,7 +1051,7 @@ $this->associated=false;
                      ,$this->id
                     );
         mysql_query($sql);
-
+//print $sql;
 
 
         $this->updated=true;

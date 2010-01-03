@@ -921,7 +921,7 @@ class Address extends DB_Table{
       if(array_key_exists($key,$base_data)){
 
 	if($value!=$this->data[$key]){
-
+     
 	  $this->update_field_switcher($key,$value,$options);
 	}
 
@@ -932,7 +932,26 @@ class Address extends DB_Table{
 
     if(!$this->updated)
       $this->msg.=' '._('Nothing to be updated')."\n";
-
+    else{
+  
+            foreach($this->get_company_key() as $company_key) {
+                $company=New Company($company_key);
+                $company->update_address_data($this->id);
+                print($company->msg);
+            }
+            foreach($this->get_contact_key() as $contact_key) {
+                $contact=New contact($contact_key);
+                $contact->update_address_data($this->id);
+                print($contact->msg);
+            }
+            foreach($this->get_customer_key() as $customer_key) {
+                $customer=New Customer($customer_key);
+                $customer->update_address_data($this->id);
+                print($customer->msg);
+            }
+         
+    
+    }
   }
 
   /*
@@ -942,6 +961,7 @@ class Address extends DB_Table{
   // function update($data){
   // }
   function update_field_switcher($field,$value,$options=''){
+  //print "$field\n"; 
     switch($field){
     case('Address Primary Postal Code'):
     case('Address Secondary Postal Code'):
@@ -961,10 +981,13 @@ class Address extends DB_Table{
 
       }
       break;
+    case('Address Country Code'):
+        $this->update_country_code($value);
+    break;
     case('Street Data'):
       $data=$this->parse_street($value,$this->data['Address Country Code']);
       foreach($data as $street_field=>$street_value){
-	$this->update_field($street_field,$street_value,$options);
+	  $this->update_field($street_field,$street_value,$options);
       }
 
       break;
@@ -1549,7 +1572,6 @@ class Address extends DB_Table{
     $code -  _integer_ Country Code
   */
   public static  function is_country_code($code){
-
     if(!preg_match('/^[a-z]{3}$/i',$code))
       return false;
 
@@ -1683,6 +1705,26 @@ class Address extends DB_Table{
 		return false;
 
 	}
+	
+	function update_country_code($code){
+	//print $code;
+	$data=$this->prepare_country_data($code);
+	$sql=sprintf('update `Address Dimension` set `Address Country Key`=%d,`Address Country Name`=%s,`Address Country Code`=%s,`Address Country 2 Alpha Code`=%s,`Address World Region`=%s,`Address Continent`=%s where `Address Key`=%d  '
+        ,$data['Address Country Key']
+		,prepare_mysql($data['Address Country Name'])
+				,prepare_mysql($data['Address Country Code'])
+
+		,prepare_mysql($data['Address Country 2 Alpha Code'])
+		,prepare_mysql($data['Address World Region'])
+		,prepare_mysql($data['Address Continent'])
+		,$this->id
+	); 
+	mysql_query($sql);
+	if(mysql_affected_rows()){
+$this->updated=true;
+     }
+	}
+	
 	/*
 	 Function:
 	 Prepare the Country Data
@@ -1691,6 +1733,17 @@ class Address extends DB_Table{
 	 */
 	public static function prepare_country_data($data){
 		global $myconf;
+
+if(is_string($data)){
+$code=$data;
+$data=array();
+$data['Address Country Key']='';
+		$data['Address Country Code']=$code ;
+		$data['Address Country 2 Alpha Code']='';
+		$data['Address Country Name']='';
+		$data['Address Country First Division']='';
+		$data['Address Town']='';$data['Address Country Second Division']='';
+}
 
 		if($data['Address Country Key']=='' and
 		$data['Address Country Code']=='' and
@@ -1724,14 +1777,13 @@ class Address extends DB_Table{
 			$data['Address Country Key']=$myconf['country_id'];
 
 		}
-
-
-
+		
 
 		if( $data['Address Country Key'] and   Address::is_country_key($data['Address Country Key'])){
 
 			$country=new Country('id',$data['Address Country Key']);
-		}elseif( $data['Address Country Code']!='UNK'  and Address::is_country_code($data['Address Country Code'])){
+		}else
+		if( $data['Address Country Code']!='UNK'  and Address::is_country_code($data['Address Country Code'])){
 
 			$country=new Country('code',$data['Address Country Code']);
 		}elseif($data['Address Country 2 Alpha Code']!='XX' and  Address::is_country_2alpha_code($data['Address Country 2 Alpha Code'])){
@@ -1742,7 +1794,6 @@ class Address extends DB_Table{
 		}
 
 		//  print_r($country);
-
 		$data['Address Country Key']=$country->id;
 		$data['Address Country Code']=$country->data['Country Code'];
 		$data['Address Country 2 Alpha Code']=$country->data['Country 2 Alpha Code'];
@@ -4203,6 +4254,48 @@ class Address extends DB_Table{
 		return false;
 
 	}
+
+
+
+  /*
+         function: get_customer_key
+         Returns the Customer Key if the contact is one
+        */
+    function get_customer_key() {
+        $sql=sprintf("select `Customer Key` from `Customer Dimension` where `Customer Type`='Person' and `Customer Main Address Key`=%d  ",$this->id);
+        $customer_keys=array();
+        $result=mysql_query($sql);
+        while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+            $customer_keys[$row['Customer Key']]= $row['Customer Key'];
+
+        }
+        return $customer_keys;
+    }
+    function get_company_key() {
+        $sql=sprintf("select `Company Key` from `Company Dimension` where `Company Main Address Key`=%d  ",$this->id);
+        //print $sql;
+        $company_keys=array();
+        $result=mysql_query($sql);
+        while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+            $company_keys[$row['Company Key']]= $row['Company Key'];
+
+        }
+        return $company_keys;
+    }
+ 
+
+    function get_contact_key() {
+        $sql=sprintf("select `Contact Key` from `Contact Dimension` where `Contact Main Address Key`=%d  ",$this->id);
+        $contact_keys=array();
+        $result=mysql_query($sql);
+        while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+            $contact_keys[$row['Contact Key']]= $row['Contact Key'];
+
+        }
+        return $contact_keys;
+    }
+
+
 
 }
 

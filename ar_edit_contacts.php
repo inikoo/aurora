@@ -34,11 +34,15 @@ case('new_company'):
   new_company($data);
 
 break;
+case('create_contact'):
+
 case('new_contact'):
  $data=prepare_values($_REQUEST,array(
-			     'values'=>array('type'=>'json array')
-			   
+			     'value'=>array('type'=>'json array')
+			   ,'subject'=>array('type'=>'string')
+			,'subject_key'=>array('type'=>'key')
 			     ));
+			  //   print_r($data);exit;
   new_contact($data);
 
 break;
@@ -789,6 +793,7 @@ global $editor;
      echo json_encode($response);
      return;
    }
+   
    $address->update($update_data,'cascade');
   
     
@@ -1023,6 +1028,7 @@ function edit_company2(){
 function new_company($data){
   Timer::timing_milestone('begin');
 global $editor;
+$data['editor']=$editor;
 
   $company=new Company('find create',$data['values']);
   if($company->new){
@@ -1067,10 +1073,41 @@ mysql_query($sql);
 }
 
 function new_contact($data){
-  Timer::timing_milestone('begin');
+ 
 global $editor;
+$contact_data=array();
+foreach($data['value'] as $key=>$values){
 
-  $contact=new Contact('find create',$data['values']);
+if($key=='Contact_Name_Components'){
+    $tmp=array();
+    foreach($values as $_key=>$_values){
+    $tmp[preg_replace('/\_/',' ',$_key)]=$_values;
+    }
+    $values=$tmp;
+}
+$contact_data[preg_replace('/\_/',' ',$key)]=$values;
+
+}
+
+switch($data['subject']){
+case('Company'):
+$company=new Company($data['subject_key']);
+
+ $contact=new Contact('find create',$contact_data);
+ //print_r($contact_data);
+   $contact->add_company(array(
+                                      'Company Key'=>$company->id
+					),'',true);
+  
+
+break;
+default:
+  $contact=new Contact('find create',$contact_data);
+
+}
+
+ 
+  
   if($contact->new){
     $response= array('state'=>200,'action'=>'created','contact_key'=>$contact->id);
   }else{

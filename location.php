@@ -23,10 +23,25 @@ $create=$user->can_create('products');
 $modify=$user->can_edit('products');
 $modify_stock=$user->can_edit('product stock');
 
+
+
+
+
 $smarty->assign('modify_stock',$modify_stock);
 
 $view_suppliers=$user->can_view('suppliers');
 $view_cust=$user->can_view('customers');
+
+$show_details=$_SESSION['state']['location']['details'];
+$smarty->assign('show_details',$show_details);
+$general_options_list=array();
+if($modify)
+  $general_options_list[]=array('tipo'=>'url','url'=>'edit_warehouse.php','label'=>_('Edit Location'));
+$general_options_list[]=array('tipo'=>'js','state'=>$show_details,'id'=>'details','label'=>($show_details?_('Hide Details'):_('Show Details')));
+
+$smarty->assign('general_options_list',$general_options_list);
+
+
 
 
 $smarty->assign('view_suppliers',$view_suppliers);
@@ -47,7 +62,9 @@ $css_files=array(
 		 'common.css',
 		 //	 'container.css',
 		 'button.css',
-		 'table.css'
+		 'table.css',
+		 		 'css/dropdown.css'
+
 		 );
 $js_files=array(
 		$yui_path.'utilities/utilities.js',
@@ -61,6 +78,8 @@ $js_files=array(
 		'common.js.php',
 		'js/search.js',
 		'table_common.js.php',
+				'js/dropdown.js',
+
 		);
 
 
@@ -73,7 +92,7 @@ $_SESSION['state']['location']['id']=$location_id;
 
 
 $location= new location($location_id);
-$order=$_SESSION['state']['warehouse']['locations']['order'];
+$order=$_SESSION['state']['locations']['table']['order'];
 
 if($order=='code'){
   $order='`Location Code`';
@@ -95,11 +114,13 @@ $sql=sprintf("select `Location Key` as id,`Location Code` as code from `Location
 $result=mysql_query($sql);
 if(!$prev=mysql_fetch_array($result, MYSQL_ASSOC))
   $prev=array('id'=>0,'code'=>'');
+mysql_free_result($result);
 $sql=sprintf("select `Location Key` as id,`Location Code` as code  from `Location Dimension` where  %s>'%s'   order by %s   ",$order,$location->data[$_order],$order);
 //print "$sql";
 $result=mysql_query($sql);
 if(!$next=mysql_fetch_array($result, MYSQL_ASSOC))
   $next=array('id'=>0,'code'=>'');
+mysql_free_result($result);
 
 $smarty->assign('prev',$prev);
 $smarty->assign('next',$next);
