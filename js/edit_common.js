@@ -99,7 +99,7 @@ var delete_type=record.getData('delete_type');
 
 
 
-				alert(ar_file+'?tipo=delete_'+column.object + myBuildUrl(this,record))
+			//	alert(ar_file+'?tipo=delete_'+column.object + myBuildUrl(this,record))
 
 			YAHOO.util.Connect.asyncRequest(
 							'GET',
