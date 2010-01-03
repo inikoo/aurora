@@ -28,7 +28,8 @@ include_once('class.Company.php');
 class Contact extends DB_Table {
     public $scope=false;
     public $scope_key=false;
-    /*
+    private  $new_home_telephone_keys=array();
+   /*
       Constructor: Contact
 
       Initializes the class, Search/Load or Create for the data set
@@ -721,9 +722,14 @@ class Contact extends DB_Table {
 
         if ($create and !$this->found) {
             $this->create($data,$options);
-            $this->update_address($address_home_data,'Home');
-            $this->update_address($address_work_data,'Work');
-
+            $new_work_address_key=$this->update_address($address_home_data,'Home');
+            $new_home_address_key=$this->update_address($address_work_data,'Work');
+            if(!$new_work_address_key){
+	    foreach($this->new_home_telephone_keys as $tel_key=>$tmp){
+	     $sql=sprintf("insert into `Address Telecom Bridge` values (%d,%d)",$new_home_address_key,$tel_key);
+              mysql_query($sql);
+	    }
+	    }
         }
 
 
@@ -883,7 +889,7 @@ class Contact extends DB_Table {
      (example end)
 
     */
-    private function create ($data,$options='',$address_home_data=false) {
+    private function create ($data,$options='') {
 //print_r($data);exit;
         global $myconf;
         if (is_string($data))
@@ -985,7 +991,7 @@ class Contact extends DB_Table {
             if ($this->data['Contact Fuzzy']=='No') {
                 $history_data=array(
                                   'note'=>_('Contact Created')
-                                         ,'details'=>_trim(_('Contact')." \"".$this->display('name')."\"  "._('created'))
+                                      ,'details'=>_trim(_('Contact')." \"".$this->display('name')."\"  "._('created'))
                                                     ,'action'=>'created'
                               );
                 $this->add_history($history_data);
@@ -1017,24 +1023,24 @@ class Contact extends DB_Table {
                 }
 
 
-                if (is_array($address_home_data)) {
-                    $address_home_data['editor']=$this->editor;
-                    $home_address=new Address("find in contact ".$this->id." create update",$address_home_data);
-                    if ($home_address->error) {
-                        print $home_address->msg."\n";
-                        exit("find_contact: home address found\n");
-                    }
-                    //print_r($address_home_data);
-                    //print_r($home_address);
+/*                 if (is_array($address_home_data)) { */
+/*                     $address_home_data['editor']=$this->editor; */
+/*                     $home_address=new Address("find in contact ".$this->id." create update",$address_home_data); */
+/*                     if ($home_address->error) { */
+/*                         print $home_address->msg."\n"; */
+/*                         exit("find_contact: home address found\n"); */
+/*                     } */
+/*                     //print_r($address_home_data); */
+/*                     //print_r($home_address); */
 
-                    $this->add_update_address(array(
-                                                  'Address Key'=>$home_address->id
-                                                                ,'Address Type'=>array('Home')
-                                                                                ,'Address Function'=>array('Contact')
+/*                     $this->add_update_address(array( */
+/*                                                   'Address Key'=>$home_address->id */
+/*                                                                 ,'Address Type'=>array('Home') */
+/*                                                                                 ,'Address Function'=>array('Contact') */
 
-                                              ));
+/*                                               )); */
 
-                }
+/*                 } */
 
 
 
@@ -1093,9 +1099,10 @@ class Contact extends DB_Table {
                                                'Telecom Key'=>$telephone->id
                                                              ,'Telecom Type'=>'Home Telephone'
                                            ));
+$this->new_home_telephone_keys[$telephone->id]=1;
 
-                            $sql=sprintf("insert into `Address Telecom Bridge` values (%d,%d)",$home_address->id,$telephone->id);
-                            mysql_query($sql);
+// $sql=sprintf("insert into `Address Telecom Bridge` values (%d,%d)",$home_address->id,$telephone->id);
+//                          mysql_query($sql);
 
 
 
@@ -1128,11 +1135,10 @@ class Contact extends DB_Table {
                         } else {
                             $this->add_tel(array(
                                                'Telecom Key'=>$telephone->id
-                                                             ,'Telecom Type'=>'Home Telephone'
-                                           ));
-
-                            $sql=sprintf("insert into `Address Telecom Bridge` values (%d,%d)",$home_address->id,$telephone->id);
-                            mysql_query($sql);
+                                              ,'Telecom Type'=>'Home Telephone'
+						 ));
+			    $this->new_home_telephone_keys[$telephone->id]=1;
+                           
 
                         }
 
@@ -1162,8 +1168,9 @@ class Contact extends DB_Table {
                                                              ,'Telecom Type'=>'Home Fax'
                                            ));
 
-                            $sql=sprintf("insert into `Address Telecom Bridge` values (%d,%d)",$home_address->id,$telephone->id);
-                            mysql_query($sql);
+$this->new_home_telephone_keys[$telephone->id]=1;
+//   $sql=sprintf("insert into `Address Telecom Bridge` values (%d,%d)",$home_address->id,$telephone->id);
+//                          mysql_query($sql);
 
                         }
                     }
@@ -1841,8 +1848,13 @@ class Contact extends DB_Table {
             $res=mysql_query($sql);
             if ($row=mysql_fetch_array($res)) {
 
-
-                $this->add_update_address(array('Address Key'=>$row['Address Key']),'principal');
+	      $sql='update `Address Bridge` set `Is Main`="Yes" where  `Subject Key`=%d and `Subject Type`="Contact" and `Address Description`=%s and `Address Key`=%d  '
+  ,$this->id
+                         ,prepare_mysql($address->data['Address Description'])
+                         ,$address_key
+		);;
+	    mysql_query($sql);
+                $this->update_address_data($row['Address Key']);
 
                 if ($company_key=$this->company_key('principal')) {
                     $company=new Company('id',$company_key);
@@ -1891,7 +1903,7 @@ class Contact extends DB_Table {
        Function: update_address
        Update/Create address
       */
-    function update_address($data,$type='Work') {
+    function update_address($data,$type='Work',$options='principal') {
 
 
         if (!array_empty($data)) {
@@ -1899,14 +1911,14 @@ class Contact extends DB_Table {
             if ($address->id) {
                 if ($type=='Home') {
                     $address_data=array(
-                                      'Address Key'=>$address->id
+                                      'Address'=>$address
                                                     ,'Address Type'=>array('Home')
                                                                     ,'Address Function'=>array('Contact')
 
                                   );
                 } else {
                     $address_data=array(
-                                      'Address Key'=>$address->id
+                                      'Address'=>$address
                                                     ,'Address Type'=>array('Work')
                                                                     ,'Address Function'=>array('Contact')
 
@@ -1915,10 +1927,10 @@ class Contact extends DB_Table {
                 }
 
 
-                $this->add_update_address($address_data,"principal");
+                return $this->add_update_address($address_data,$options);
             }
         }
-
+	return false;
     }
 
     function update_address_data($address_key=false) {
@@ -2081,34 +2093,16 @@ class Contact extends DB_Table {
      integer address key of the added/updated address
     */
 
-    function add_update_address($data,$args='principal') {
+    private function add_update_address($data,$args='principal') {
 
         // print_r($data);
 
+      $this->updated=false;
+
+      $principal=preg_match('/principal/i',$args);
 
 
-        if (!$data)
-            $address=new address('fuzzy all');
-        elseif(is_numeric($data) )
-        $address=new address('fuzzy country',$data);
-        elseif(is_array($data)) {
-
-            if (isset($data['Address Key'])) {
-
-                $address=new address('id',$data['Address Key']);
-            }    else
-                $address=new address('find in contact '.$this->id.' create',$data);
-
-        }
-        else
-            $address=new address('fuzzy all');
-
-        if (!$address->id) {
-
-            return;
-
-        }
-
+	$address=$data['Address'];
         if ($address->updated or $address->new)
             $this->updated=true;
 
@@ -2126,16 +2120,20 @@ class Contact extends DB_Table {
                              ,prepare_mysql($function)
                             );
                 mysql_query($sql);
-                if (mysql_affected_rows() )
+                if (mysql_affected_rows() ){
                     $this->updated=true;
+		    
 
+		}
 
             }
         }
 
 
 
-        if (preg_match('/principal/i',$args) and $this->updated) {
+
+
+        if ($principal and $this->updated) {
 
             $sql=sprintf("update `Address Bridge`  set `Is Main`='No' where `Subject Type`='Contact' and  `Subject Key`=%d  and `Address Key`!=%d",
                          $this->id
@@ -2150,11 +2148,16 @@ class Contact extends DB_Table {
             mysql_query($sql);
 
             $this->update_address_data($address->id);
+	    // whe have to update 
+
         }
 
 
 
-
+	if($this->updated)
+	  return $address->id;
+	else
+	  return false;
 
 
     }

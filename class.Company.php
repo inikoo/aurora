@@ -982,7 +982,7 @@ class Company extends DB_Table {
        Function: update_address
        Update/Create address
       */
-    private function update_address($data,$type='Work') {
+    private function update_address($data,$type='Work',$options='') {
 
 
 
@@ -996,15 +996,14 @@ class Company extends DB_Table {
 
 
 
-        $_data['Address Type']=array('Work');
-        $_data['Address Function']=array('Contact');
+      
 
 
 
         $contact=new Contact($this->data['Company Main Contact Key']);
         $contact->editor=$this->editor;
         $contact->editor=$this->editor;
-        $contact->add_address($_data,"principal");
+        $contact->update_address($_data,'Work',$options);
 
     }
 
