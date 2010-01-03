@@ -107,7 +107,7 @@ $smarty->assign('period',$_SESSION['state']['departments']['period']);
 
 
 
-$smarty->assign('parent','stores.php');
+$smarty->assign('parent','products');
 $smarty->assign('title', _('Departments'));
 //$smarty->assign('total_stores',$stores['numberof']);
 //$smarty->assign('table_title',$table_title);

@@ -89,7 +89,7 @@ $smarty->assign('edit',$_SESSION['state']['suppliers']['edit']);
 
 $smarty->assign('scope','supplier');
 
-$smarty->assign('parent','suppliers.php');
+$smarty->assign('parent','suppliers');
 $smarty->assign('title', _('Edit Suppliers'));
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);

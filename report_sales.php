@@ -34,7 +34,7 @@ $js_files=array(
 
 
 
-$smarty->assign('parent','reports.php');
+$smarty->assign('parent','reports');
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
 
@@ -317,7 +317,7 @@ $smarty->display('report_sales.tpl');
 
 //  }else{
 
-// $smarty->assign('parent','reports.php');
+// $smarty->assign('parent','reports');
 // $smarty->assign('title', _('Sales Reports'));
 // $smarty->assign('css_files',$css_files);
 // $smarty->assign('js_files',$js_files);

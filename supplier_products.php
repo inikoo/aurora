@@ -50,7 +50,7 @@ $smarty->assign('period',$_SESSION['state']['supplier_products']['period']);
 
 
 $smarty->assign('box_layout','yui-t0');
-$smarty->assign('parent','suppliers.php');
+$smarty->assign('parent','suppliers');
 $smarty->assign('title','Supplier Products List');
 
 

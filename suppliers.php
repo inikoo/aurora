@@ -91,7 +91,7 @@ $js_files=array(
 
 
 
-$smarty->assign('parent','suppliers.php');
+$smarty->assign('parent','suppliers');
 $smarty->assign('title', _('Suppliers'));
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);

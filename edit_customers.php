@@ -78,7 +78,7 @@ $js_files=array(
 		);
 
 
-$smarty->assign('parent','customers_server.php');
+$smarty->assign('parent','customers');
 $smarty->assign('title', _('Edit Customers'));
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);

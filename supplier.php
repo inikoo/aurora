@@ -48,13 +48,18 @@ $show_details=$_SESSION['state']['supplier']['details'];
 $smarty->assign('show_details',$show_details);
 
 $general_options_list=array();
+
+if($edit){
+  $general_options_list[]=array('tipo'=>'url','url'=>'supplier.php?id='.$supplier_id,'label'=>_('Exit Edit'));
+
+}else{
 if($modify){
   $general_options_list[]=array('tipo'=>'url','url'=>'supplier.php?edit='.$supplier_id,'label'=>_('Edit Supplier'));
   $general_options_list[]=array('tipo'=>'url','url'=>'porder.php?new=1&supplier_id='.$supplier_id,'label'=>_('New Purchase Order'));
 
 }
 $general_options_list[]=array('tipo'=>'js','state'=>$show_details,'id'=>'details','label'=>($show_details?_('Hide Details'):_('Show Details')));
-
+}
 
 
 
@@ -106,7 +111,7 @@ $smarty->assign('address',$address);
 
 
 
-$smarty->assign('parent','suppliers.php');
+$smarty->assign('parent','suppliers');
 $smarty->assign('title','Supplier: '.$supplier->get('Supplier Code'));
 
 

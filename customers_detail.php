@@ -33,7 +33,7 @@ $js_files=array(
 
 
 
-$smarty->assign('parent','customers.php');
+$smarty->assign('parent','customers');
 $smarty->assign('title', _('Customers'));
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);

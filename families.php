@@ -101,7 +101,7 @@ $smarty->assign('families',number($families['numberof']));
 // $smarty->assign('families',number($families['numberof']));
 // $smarty->assign('products',number($products['numberof']));
 
-$smarty->assign('parent','families.php');
+$smarty->assign('parent','products');
 $smarty->assign('title', _('Product Families'));
 //$smarty->assign('total_families',$families['numberof']);
 

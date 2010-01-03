@@ -30,7 +30,7 @@
 	        <div id="navsite" style="clear:right">
         	  <ul>
 	            {foreach from=$nav_menu item=menu }
-	            <li {if $menu[1]==$parent} class="selected"{/if}><a href="{$menu[1]}"{if $menu[1]==$parent} class="selected"{/if} >{$menu[0]}</a></li>
+	            <li {if $menu[2]==$parent} class="selected"{/if}><a href="{$menu[1]}">{$menu[0]}</a></li>
 	            {/foreach}
 	          </ul>
         	</div> 

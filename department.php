@@ -204,7 +204,7 @@ $smarty->assign('next',$next);
 
 
 
-$smarty->assign('parent','stores.php');
+$smarty->assign('parent','products');
 
 $product_home="Products Home";
 $smarty->assign('home',$product_home);

@@ -380,7 +380,7 @@ $js_files=array(
 
 
 
-$smarty->assign('parent','assets_tree.php');
+$smarty->assign('parent','products');
 $smarty->assign('title', _('Uploading new products file'));
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);

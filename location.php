@@ -131,7 +131,7 @@ $location->load('product');
 //print_r($locations);
 
 
-$smarty->assign('parent','warehouse.php');
+$smarty->assign('parent','warehouses');
 $smarty->assign('title',_('Location ').$location->data['Location Code']);
 
 $smarty->assign('has_stock',$location->get('Location Has Stock'));

@@ -34,7 +34,7 @@ $js_files=array(
 
 if(!$user->can_view('parts')){
 
-  $smarty->assign('parent','index.php');
+  $smarty->assign('parent','home');
   $smarty->assign('title', _('Forbidden'));
   $smarty->assign('css_files',$css_files);
   $smarty->assign('js_files',$js_files);
@@ -66,7 +66,7 @@ if(!$parts=mysql_fetch_array($result, MYSQL_ASSOC)   ){
  }
   
 
-$smarty->assign('parent','stores.php');
+$smarty->assign('parent','products');
 $smarty->assign('title', _('Parts Index'));
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);

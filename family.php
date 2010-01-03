@@ -281,7 +281,7 @@ else
 
 
 
-$smarty->assign('parent','departments.php');
+$smarty->assign('parent','products');
 $smarty->assign('title',$family->get('Product Family Code').' - '.$family->get('Product Family Name'));
 
 

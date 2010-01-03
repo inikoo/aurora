@@ -155,7 +155,7 @@ if($edit){
 }else{
 
 $smarty->assign('box_layout','yui-t0');
-$smarty->assign('parent','contacts.php');
+$smarty->assign('parent','contacts');
 $smarty->assign('title','Contact: '.$contact->data['Contact Name']);
 
 

@@ -79,7 +79,7 @@ $locations=($product->get('locations'));
 $smarty->assign('locations',$locations);
 //print_r($locations);
 
-$smarty->assign('parent','departments.php');
+$smarty->assign('parent','products');
 $smarty->assign('title',$product->get('code'));
 
 

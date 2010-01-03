@@ -44,7 +44,7 @@ $js_files=array(
 		);
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
-$smarty->assign('parent','hr.php');
+$smarty->assign('parent','staff');
 $smarty->assign('sub_parent','hr');
 
 $smarty->assign('title', _('Staff'));
