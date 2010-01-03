@@ -122,7 +122,7 @@ class Contact extends DB_Table {
      */
     function find($raw_data,$options) {
         //    print $options."\n";
-       //  print_r($raw_data);
+        //  print_r($raw_data);
 
         $find_fuzzy=false;
 
@@ -181,14 +181,14 @@ class Contact extends DB_Table {
 
 
 
-   if(array_key_exists('Contact Name Components',$raw_data) and is_array($raw_data['Contact Name Components'])){
-   
-   $options.=' components';
-            foreach($raw_data['Contact Name Components'] as $key=>$value){
-            $data[$key]=$value;
+        if (array_key_exists('Contact Name Components',$raw_data) and is_array($raw_data['Contact Name Components'])) {
+
+            $options.=' components';
+            foreach($raw_data['Contact Name Components'] as $key=>$value) {
+                $data[$key]=$value;
             }
-            
-            }
+
+        }
 
 
 
@@ -276,7 +276,7 @@ class Contact extends DB_Table {
             foreach($raw_data as $key=>$val) {
                 if (array_key_exists($key,$address_home_data)) {
                     $key2=preg_replace('/Contact Home /','',$key);
-                 //   $address_data['Home'][$key2]=$val;
+                    //   $address_data['Home'][$key2]=$val;
                     $address_home_data[$key]=$val;
                 }
             }
@@ -284,7 +284,7 @@ class Contact extends DB_Table {
                 if (array_key_exists($key,$address_work_data)) {
                     $address_work_data[$key]=$val;
                     $key2=preg_replace('/Contact Work /','',$key);
-                   // $address_data['Work'][$key2]=$val;
+                    // $address_data['Work'][$key2]=$val;
                 }
             }
 
@@ -458,11 +458,11 @@ class Contact extends DB_Table {
 
 
         if ($data['Contact Fuzzy']!='Yes') {
-            if(array_key_exists('Contact Name Components',$data) and is_array($data['Contact Name Components'])){
-            $name_data=$data['Contact Name Components'];
-            }else{
-            $name_data=$this->parse_name($data['Contact Name']);
-            
+            if (array_key_exists('Contact Name Components',$data) and is_array($data['Contact Name Components'])) {
+                $name_data=$data['Contact Name Components'];
+            } else {
+                $name_data=$this->parse_name($data['Contact Name']);
+
             }
             $name=$this->name($name_data);
 
@@ -721,16 +721,16 @@ class Contact extends DB_Table {
 
         if ($create and !$this->found) {
             $this->create($data,$options);
-                $this->update_address($address_home_data,'Home');
-                $this->update_address($address_work_data,'Work');            
-            
-     }
+            $this->update_address($address_home_data,'Home');
+            $this->update_address($address_work_data,'Work');
+
+        }
 
 
         if ($update and $this->found) {
             $this->update($raw_data,$options);
-                $this->update_address($address_home_data,'Home');
-                $this->update_address($address_work_data,'Work');
+            $this->update_address($address_home_data,'Home');
+            $this->update_address($address_work_data,'Work');
 
         }
 
@@ -896,12 +896,12 @@ class Contact extends DB_Table {
             if (array_key_exists($key,$this->data))
                 $this->data[$key]=_trim($value);
         }
- if(!preg_match('/components/i',$options)){
- 
+        if (!preg_match('/components/i',$options)) {
 
 
 
-      
+
+
             $parsed_data=$this->parse_name($this->data['Contact Name']);
             foreach($parsed_data as $key=>$val) {
                 if (array_key_exists($key,$this->data))
@@ -1017,24 +1017,24 @@ class Contact extends DB_Table {
                 }
 
 
-                if(is_array($address_home_data)){
-                $address_home_data['editor']=$this->editor;
-                $home_address=new Address("find in contact ".$this->id." create update",$address_home_data);
-                if ($home_address->error) {
-                    print $home_address->msg."\n";
-                    exit("find_contact: home address found\n");
+                if (is_array($address_home_data)) {
+                    $address_home_data['editor']=$this->editor;
+                    $home_address=new Address("find in contact ".$this->id." create update",$address_home_data);
+                    if ($home_address->error) {
+                        print $home_address->msg."\n";
+                        exit("find_contact: home address found\n");
+                    }
+                    //print_r($address_home_data);
+                    //print_r($home_address);
+
+                    $this->add_update_address(array(
+                                                  'Address Key'=>$home_address->id
+                                                                ,'Address Type'=>array('Home')
+                                                                                ,'Address Function'=>array('Contact')
+
+                                              ));
+
                 }
-                //print_r($address_home_data);
-                //print_r($home_address);
-
-                $this->add_update_address(array(
-                                       'Address Key'=>$home_address->id
-                                                     ,'Address Type'=>array('Home')
-                                                                     ,'Address Function'=>array('Contact')
-
-                                   ));
-
-                   }
 
 
 
@@ -1920,8 +1920,8 @@ class Contact extends DB_Table {
         }
 
     }
-    
-      function update_address_data($address_key=false) {
+
+    function update_address_data($address_key=false) {
 
 
 
@@ -1939,7 +1939,7 @@ class Contact extends DB_Table {
 
             $this->data['Contact Main Country Key']=$address->data['Address Country Key'];
             $this->data['Contact Main Country']=$address->data['Address Country Name'];
-                        $this->data['Contact Main Country Code']=$address->data['Address Country Code'];
+            $this->data['Contact Main Country Code']=$address->data['Address Country Code'];
 
             $this->data['Contact Main Location']=$address->display('location');
 
@@ -2037,10 +2037,10 @@ class Contact extends DB_Table {
         }
 
     }
-    
-    
-    
-    
+
+
+
+
     /*
       Function: create_anonymous
       Create an anonymous contact
@@ -2134,7 +2134,7 @@ class Contact extends DB_Table {
         }
 
 
-    
+
         if (preg_match('/principal/i',$args) and $this->updated) {
 
             $sql=sprintf("update `Address Bridge`  set `Is Main`='No' where `Subject Type`='Contact' and  `Subject Key`=%d  and `Address Key`!=%d",
@@ -2148,11 +2148,11 @@ class Contact extends DB_Table {
                         );
 
             mysql_query($sql);
-            
+
             $this->update_address_data($address->id);
-          }
-            
-        
+        }
+
+
 
 
 
@@ -2296,36 +2296,42 @@ class Contact extends DB_Table {
     }
 
 
-function delete(){
+    function delete() {
 
-$sql=sprintf("select * from `Contact Bridge`  where   `Contact Key`=%d",
-                         $this->id
-                       
-                        );
-     $res=mysql_query($sql);
-     while ( $row=mysql_fetch_array ( $res  ))
-     {
-         if($row['Subject Type']=='Company'){
-            $company=new Company($row['Subject Key']);
-            $company->remove_contact($this->id);
-         
-         }
-     }
+        $sql=sprintf("select * from `Contact Bridge`  where   `Contact Key`=%d",
+                     $this->id
 
-  $sql=sprintf("delete from `Contact Dimension`  where `Contact Key`=%d",
-                         $this->id
-                         
-                        );
-  mysql_query($sql);
-if (mysql_affected_rows()) {
-   
+                    );
+        $res=mysql_query($sql);
+        while ( $row=mysql_fetch_array ( $res  )) {
+            if ($row['Subject Type']=='Company') {
+                $company=new Company($row['Subject Key']);
+                $company->remove_contact($this->id);
+
+            }
+        }
+
+
+       foreach($this->get_emails() as $email){
+          $sql=sprintf('delete from `Email Bridge`');
+       }
+
+
+
+        $sql=sprintf("delete from `Contact Dimension`  where `Contact Key`=%d",
+                     $this->id
+
+                    );
+        mysql_query($sql);
+        if (mysql_affected_rows()) {
+
             $this->deleted=true;
-            
-
-}
 
 
-}
+        }
+
+
+    }
 
 
     /* Method: remove_tel

@@ -114,53 +114,53 @@ $user->read_warehouses();
 //exit;
 $nav_menu=array();
 if($user->can_view('users'))
-  	$nav_menu[] = array(_('Users'), 'users_staff.php');
+  	$nav_menu[] = array(_('Users'), 'users_staff.php','users');
 else
-	 $nav_menu[] = array(_('Profile'), 'user.php');
+	 $nav_menu[] = array(_('Profile'), 'user.php','users');
 if($user->can_view('staff'))
-  $nav_menu[] = array(_('Staff'), 'hr.php');
+  $nav_menu[] = array(_('Staff'), 'hr.php','staff');
 if($user->can_view('suppliers'))
-  $nav_menu[] = array(_('Suppliers'), 'suppliers.php');
+  $nav_menu[] = array(_('Suppliers'), 'suppliers.php','suppliers');
 if($user->is('Supplier'))
-  $nav_menu[] = array(_('My Products'), 'myproducts.php');
+  $nav_menu[] = array(_('My Products'), 'myproducts.php','myproducts');
 
 if($user->can_view('reports')){
   // if(count($user->stores)==1){
   //  $nav_menu[] = array(_('Reports'), sprintf('report_sales.php?store_key=%d&tipo=m&y=%d&m=%d',$user->stores[0],date('Y'),date('m')));
   //  }else
 
- $nav_menu[] = array(_('Reports'), 'reports.php');
+ $nav_menu[] = array(_('Reports'), 'reports.php','reports');
 }
 
 if($user->can_view('orders')){
 
 if(count($user->stores)==1){
-    $nav_menu[] = array(_('Orders'), 'orders.php?store='.$user->stores[0]);
+    $nav_menu[] = array(_('Orders'), 'orders.php?store='.$user->stores[0],'orders');
     }else
-$nav_menu[] = array(_('Orders'), 'orders_server.php');
+$nav_menu[] = array(_('Orders'), 'orders_server.php','orders');
 
 }
 
 if($user->can_view('customers')){
 
   if(count($user->stores)==1){
-    $nav_menu[] = array(_('Customers'), 'customers.php?store='.$user->stores[0]);
+    $nav_menu[] = array(_('Customers'), 'customers.php?store='.$user->stores[0],'customers');
     }else
-  $nav_menu[] = array(_('Customers'), 'customers_server.php');
+  $nav_menu[] = array(_('Customers'), 'customers_server.php','customers');
 
 }
 if($user->can_view('warehouses'))
-$nav_menu[] = array(_('Warehouse'), 'warehouse.php');
+$nav_menu[] = array(_('Warehouse'), 'warehouse.php','warehouses');
 
 
 if($user->can_view('stores')){
     if(count($user->stores)==1){
-    $nav_menu[] = array(_('Products'), 'store.php?id='.$user->stores[0]);
+    $nav_menu[] = array(_('Products'), 'store.php?id='.$user->stores[0],'products');
     }else
-    $nav_menu[] = array(_('Products'), 'stores.php');
+    $nav_menu[] = array(_('Products'), 'stores.php','products');
 }
 
-$nav_menu[] = array(_('Home'), 'index.php');
+$nav_menu[] = array(_('Home'), 'index.php','home');
 
 $smarty->assign('nav_menu',$nav_menu);
 $smarty->assign('theme',$myconf['theme']);

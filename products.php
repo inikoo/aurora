@@ -116,7 +116,7 @@ $js_files=array(
 
 
 
-$smarty->assign('parent','departments.php');
+$smarty->assign('parent','products');
 $smarty->assign('title', _('Product Index'));
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);

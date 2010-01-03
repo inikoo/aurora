@@ -80,7 +80,7 @@ $smarty->assign('map_excludes',$map_exclude);
 
 $smarty->assign('tipo',$tipo);
 
-$smarty->assign('parent','reports.php');
+$smarty->assign('parent','reports');
 $smarty->assign('title', _('Reports'));
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);

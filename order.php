@@ -154,7 +154,7 @@ $smarty->assign('customer',$customer);
 
 
 
-$smarty->assign('parent','order.php');
+$smarty->assign('parent','orders');
 $smarty->assign('title',_('Order').' '.$order->get('Order Public ID') );
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);

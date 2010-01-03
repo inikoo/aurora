@@ -76,7 +76,7 @@ $js_files=array(
 		'table_common.js.php',
 		);
 
-$smarty->assign('parent','hr.php');
+$smarty->assign('parent','staff');
 $smarty->assign('sub_parent','areas');
 
 if(!$edit){

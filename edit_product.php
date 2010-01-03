@@ -148,7 +148,7 @@ $js_files=array(
 		);
 
 
-$smarty->assign('parent','assets_tree.php');
+$smarty->assign('parent','products');
 $smarty->assign('title',$product->get('Product Code'));
 
 

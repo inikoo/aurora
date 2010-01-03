@@ -58,7 +58,7 @@ if($_SESSION['state']['po']['items']['all_products'] or $_SESSION['state']['po']
 else
   $smarty->assign('show_all',0);
 
-$smarty->assign('parent','suppliers.php');
+$smarty->assign('parent','suppliers');
 $smarty->assign('currency',$myconf['currency_symbol']);
 $smarty->assign('decimal_point',$myconf['decimal_point']);
 $smarty->assign('thousand_sep',$myconf['thousand_sep']);

@@ -27,7 +27,7 @@ $js_files=array(
 		);
 
 $_SESSION['state']['customers']['advanced_search']['where']='';
-$smarty->assign('parent','customers.php');
+$smarty->assign('parent','customers');
 $smarty->assign('title', _('Advanced Search, Customers'));
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);

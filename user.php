@@ -52,7 +52,7 @@ $js_files=array(
 
 
 
-$smarty->assign('parent','user.php');
+$smarty->assign('parent','users');
 $smarty->assign('title', _('User'));
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);

@@ -100,7 +100,7 @@ if(isset($_REQUEST['id']) and is_numeric($_REQUEST['id'])){
 
 
 $smarty->assign('part',$part);
-$smarty->assign('parent','stores.php');
+$smarty->assign('parent','products');
 $smarty->assign('title',$part->get('SKU'));
 $plot_tipo=$_SESSION['state']['part']['plot'];
 $plot_data=$_SESSION['state']['part']['plot_data'];

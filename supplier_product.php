@@ -117,7 +117,7 @@ $smarty->assign('web_status_error_title',$web_status_error_title);
 
 
 
-$smarty->assign('parent','departments.php');
+$smarty->assign('parent','products');
 $smarty->assign('title',$product->get('Product Code'));
 
 

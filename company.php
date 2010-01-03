@@ -182,7 +182,7 @@ if($edit){
 }else{
 
 $smarty->assign('box_layout','yui-t0');
-$smarty->assign('parent','customers.php');
+$smarty->assign('parent','customers');
 $smarty->assign('title','Company: '.$company->data['Company Name']);
 
 

@@ -257,7 +257,7 @@ $smarty->assign('plot_category_menu',$plot_category_menu);
 
 $smarty->assign('store',$store);
 
-$smarty->assign('parent','store.php');
+$smarty->assign('parent','products');
 $smarty->assign('title', $store->data['Store Name']);
 
 if($edit){

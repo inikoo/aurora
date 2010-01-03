@@ -37,7 +37,7 @@ $edit=false;
 
 
 
-$smarty->assign('parent','customers.php');
+$smarty->assign('parent','customers');
 $smarty->assign('title', _('Companies'));
 
 $q='';

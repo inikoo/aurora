@@ -105,7 +105,7 @@ $smarty->assign('avg',$_SESSION['state']['stores']['avg']);
 $smarty->assign('period',$_SESSION['state']['stores']['period']);
 
 
-$smarty->assign('parent','stores.php');
+$smarty->assign('parent','products');
 $smarty->assign('title', _('Stores'));
 
 

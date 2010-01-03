@@ -59,7 +59,7 @@ $js_files=array(
 
 
 
-$smarty->assign('parent','orders.php');
+$smarty->assign('parent','orders');
 $smarty->assign('title',_('Invoice').' '.$invoice->get('Invoice Public ID') );
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);

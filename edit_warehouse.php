@@ -74,7 +74,7 @@ $js_files=array(
 		);
 
  
-$smarty->assign('parent','warehouse.php');
+$smarty->assign('parent','warehouses');
 $smarty->assign('title', _('Warehouse'));
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);

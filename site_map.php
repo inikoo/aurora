@@ -52,7 +52,7 @@ $yui_path.'utilities/utilities.js',
 
 
 
-$smarty->assign('parent','index.php');
+$smarty->assign('parent','home');
 $smarty->assign('title', _('Site Map'));
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);

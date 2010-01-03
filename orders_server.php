@@ -57,7 +57,7 @@ $js_files=array(
 
 $q='';
 
-$smarty->assign('parent','orders_server.php');
+$smarty->assign('parent','orders');
 $smarty->assign('title', _('Orders'));
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);

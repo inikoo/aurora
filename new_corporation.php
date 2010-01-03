@@ -92,7 +92,7 @@ $result=mysql_query($sql);
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
 
-$smarty->assign('parent','hr.php');
+$smarty->assign('parent','staff');
 $smarty->assign('title','Creating My Company');
 
 $smarty->assign('scope','corporation');

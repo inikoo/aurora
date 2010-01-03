@@ -55,7 +55,7 @@ $smarty->assign('box_layout','yui-t4');
 
 
 
-$smarty->assign('parent','users.php');
+$smarty->assign('parent','users');
 $smarty->assign('title', _('Users'));
 
 

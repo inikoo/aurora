@@ -68,7 +68,7 @@ $smarty->assign('prefix',$_prefix);
 
 //$smarty->assign('country',$country);
 
-$smarty->assign('parent','customers.php');
+$smarty->assign('parent','customers');
 $smarty->assign('title', _('Contacts'));
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
