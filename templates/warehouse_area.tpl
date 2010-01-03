@@ -1,7 +1,8 @@
 {include file='header.tpl'}
 <div id="bd" >
 {include file='locations_navigation.tpl'}
-
+ <div style="clear:left;"> 
+ <span class="branch" >{t}Warehouse{/t}: <a  href="warehouse.php?id={$warehouse_area->get('Warehouse Area Warehouse Key')}">{$warehouse_area->get('Warehouse Name')}({$warehouse_area->get('Warehouse Code')})</a></span>
  <div style="clear:left;margin:0 0px">
     <h1>{t}Warehouse Area{/t}: {$warehouse_area->get('Warehouse Area Name')} ({$warehouse_area->get('Warehouse Area Code')})</h1>
   </div>

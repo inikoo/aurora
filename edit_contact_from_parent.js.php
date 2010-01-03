@@ -51,13 +51,14 @@ Number_New_Telecoms['fax']=0;
 var Number_New_Contact_Address=0;
 
 var save_contact=function(){
-
     var table='contact';
-    if(Dom.get('Contact_Key').value==0)
-	create_contact();
-    else
+    if(Dom.get('Contact_Key').value==0){
+	var contact_key=0;
+    var action='create';
+    }else{
 	var contact_key=Dom.get('Contact_Key').value;
-    
+    var action='edit';
+   }
     save_contact_elements=0;
 
     
@@ -76,7 +77,7 @@ var save_contact=function(){
 	value['Contact_Name_Components']=name_value;
 	
 	var json_value = YAHOO.lang.JSON.stringify(value); 
-	var request='ar_edit_contacts.php?tipo=edit_'+escape(table)+ '&value=' + json_value+'&id='+contact_key+'&subject='+Subject+'&subject_key='+Subject_Key; 
+	var request='ar_edit_contacts.php?tipo='+action+'_'+escape(table)+ '&value=' + json_value+'&id='+contact_key+'&subject='+Subject+'&subject_key='+Subject_Key; 
 	alert(request);
 	YAHOO.util.Connect.asyncRequest('POST',request ,{
 		success:function(o) {

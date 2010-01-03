@@ -49,7 +49,7 @@ var save_address=function(){
     
 	var json_value = YAHOO.lang.JSON.stringify(value); 
 	var request='ar_edit_contacts.php?tipo=edit_'+escape(table)+ '&value=' + json_value+'&id='+address_key+'&subject='+Subject+'&subject_key='+Subject_Key; 
-	
+	alert(request);
 	YAHOO.util.Connect.asyncRequest('POST',request ,{
 		success:function(o) {
 		    	alert(o.responseText);

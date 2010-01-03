@@ -34,6 +34,13 @@ case('new_supplier'):
  new_supplier($data);
  
  break;
+ case('new_supplier'):
+  $data=prepare_values($_REQUEST,array(
+			     'values'=>array('type'=>'json array')
+			   
+			     ));
+  new_supplier($data);
+  break;
 case('supplier_products'):
   list_supplier_products();
   break;
@@ -41,13 +48,35 @@ case('edit_supplier'):
   edit_supplier();
   break;
 case('edit_product_supplier'):
-  edit_product_supplier();
+
+			     $data=prepare_values($_REQUEST,array(
+			     'newvalue'=>array('type'=>'string')
+			     ,'key'=>array('type'=>'string')
+			     ,'sph_key'=>array('type'=>'key')
+			   
+			     ));
+  edit_product_supplier($data);
   break;
 case('complex_edit_supplier'):
   complex_edit_supplier();
   break;
 case('edit_suppliers'):
   edit_suppliers();
+  break;
+  case('delete_supplier_product'):
+   $data=prepare_values($_REQUEST,array(
+			     'delete_type'=>array('type'=>'string')
+			     ,'sph_key'=>array('type'=>'key')
+			   
+			     ));
+			     
+$data['delete_type']=preg_replace('/discontinue/','Discontinued',$data['delete_type']);
+$data['delete_type']=preg_replace('/delete/','Deleted',$data['delete_type']);
+
+$data['newvalue']=$data['delete_type'];
+$data['key']='Supplier Product Buy State';			     
+//print_r($data);
+  edit_product_supplier($data);
   break;
 default:
    $response=array('state'=>405,'resp'=>'Unknown Type');
@@ -115,24 +144,24 @@ function edit_supplier() {
 
 }
 
-function edit_product_supplier() {
-  $key=$_REQUEST['key'];
+function edit_product_supplier($data) {
+  $key=$data['key'];
  
   
-  $supplier=new SupplierProduct('id',$_REQUEST['sph_key']);
+  $supplier_product=new SupplierProduct('id',$data['sph_key']);
   global $editor;
-  $supplier->editor=$editor;
+  $supplier_product->editor=$editor;
   
   if($key=='Attach'){
     // print_r($_FILES);
-    $note=stripslashes(urldecode($_REQUEST['newvalue']));
+    $note=$data['newvalue'];
     $target_path = "uploads/".'attach_'.date('U');
     $original_name=$_FILES['testFile']['name'];
     $type=$_FILES['testFile']['type'];
     $data=array('Caption'=>$note,'Original Name'=>$original_name,'Type'=>$type);
 
     if(move_uploaded_file($_FILES['testFile']['tmp_name'],$target_path )) {
-      $supplier->add_attach($target_path,$data);
+      $supplier_product->add_attach($target_path,$data);
       
     }
   }else{
@@ -141,26 +170,48 @@ function edit_product_supplier() {
     
     $key_dic=array(
 		   'name'=>'Supplier Product Name'
+		   ,'code'=>'Supplier Product Code'
 		   ,'description'=>'Supplier Product Description'
 		   ,'unit_type'=>'Supplier Product Unit Type'
 		   ,'units'=>'Supplier Product Units Per Case'
 		   ,"cost"=>'Supplier Product Cost'
-
+       
 		   
     );
-    if(array_key_exists($_REQUEST['key'],$key_dic))
-       $key=$key_dic[$_REQUEST['key']];
+    if(array_key_exists($key,$key_dic))
+       $key=$key_dic[$key];
     
     
-    $supplier->update(array($key=>stripslashes(urldecode($_REQUEST['newvalue']))));
+    $supplier_product->update(array($key=>$data['newvalue']));
   }
 
 
-    if ($supplier->updated) {
-        $response= array('state'=>200,'newvalue'=>$supplier->new_value,'key'=>$_REQUEST['key']);
+    if ($supplier_product->updated) {
+        $response= array(
+        'state'=>200,
+        'newvalue'=>$supplier_product->new_value,
+        'key'=>$key,
+        'sp_current_key'=>$supplier_product->data['Supplier Product Current Key']
+        
+        );
 
+        if($key=='Supplier Product Buy State'){
+        if($supplier_product->new_value=='Discontinued'){
+            $response['action']='discontinued';
+            $response['delete']='<img src="art/icons/delete.png" title="'._('Discontinue').'"/>';
+            $response['delete_type']='delete';
+        }else if($supplier_product->new_value=='Deleted'){
+            $response['action']='deleted';
+            $response['delete']='';
+            $response['delete_type']='';        
+        
+        }
+        
+        
+        }
+     
     } else {
-        $response= array('state'=>400,'msg'=>$supplier->msg,'key'=>$_REQUEST['key']);
+        $response= array('state'=>400,'msg'=>$supplier_product->msg,'key'=>$key);
     }
     echo json_encode($response);
 
@@ -474,7 +525,7 @@ function list_supplier_products() {
                                                     );
     $_SESSION['state']['supplier']['id']=$supplier_id;
 
-    $where=$where.' and `supplier key`='.$supplier_id;
+    $where=$where.' and `Supplier Product Buy State` in ("Ok","Discontinued") and `supplier key`='.$supplier_id;
 
 
     $wheref='';
@@ -493,7 +544,7 @@ function list_supplier_products() {
 
 
     $sql="select count(*) as total from `Supplier Product Dimension`  $where $wheref ";
-
+//print $sql;
 
     $result=mysql_query($sql);
     if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
@@ -548,19 +599,34 @@ function list_supplier_products() {
 
 
        
+ if($row['Supplier Product Buy State']=='Ok'){
+   $delete_type='discontinue';
 
+     $delete='<img src="art/icons/discontinue.png" title="'._('Discontinue').'"/>';
+   }elseif($row['Supplier Product Buy State']=='Discontinued'){
+   $delete='<img src="art/icons/delete.png"/>';
+  $delete_type='delete';
+   }else{
+  $delete='';
+  $delete_type='';
+  }
+  
 
 
         $data[]=array(
 		      'sph_key'=>$row['Supplier Product Current Key']
 		      ,'code'=>$row['Supplier Product Code']
-		      
+		      		   ,'go'=>sprintf("<a href='product_supplier.php?code=%s&supplier_key=%d&edit=1'><img src='art/icons/page_go.png' alt='go'></a>"
+		      		   ,$row['Supplier Product Code'],$row['Supplier Key'])
+
                       
 		      ,'name'=>$row['Supplier Product Name']
 		      ,'cost'=>money($row['Supplier Product Cost'])
-		      ,'usedin'=>$row['Supplier Product XHTML Used In']
+		      //,'usedin'=>$row['Supplier Product XHTML Used In']
 		      ,'unit_type'=>$row['Supplier Product Unit Type']
 		      ,'units'=>$row['Supplier Product Units Per Case']
+,'delete'=>$delete
+		   ,'delete_type'=>$delete_type
 
 		      
 		      );
@@ -587,6 +653,33 @@ function list_supplier_products() {
                    );
     echo json_encode($response);
 }
+
+function new_supplier($data){
+global $editor;
+$supplier_data=Array();
+foreach($data['values'] as $key=>$value){
+    $supplier_data[preg_replace('/^company /i','Supplier ',$key)]=$value;
+}
+
+$supplier_data['editor']=$editor;
+//print_r($supplier_data);
+//return;
+
+  $supplier=new Supplier('find',$supplier_data,'create');
+  if($supplier->new){
+    $response= array('state'=>200,'action'=>'created','supplier_key'=>$supplier->id);
+  }else{
+    if($supplier->found)
+      $response= array('state'=>400,'action'=>'found','supplier_key'=>$supplier->found_key);
+    else
+      $response= array('state'=>400,'action'=>'error','supplier_key'=>0,'msg'=>$supplier->msg);
+  }
+ 
+
+  echo json_encode($response);  
+
+}
+
 
 
 ?>

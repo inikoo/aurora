@@ -197,10 +197,19 @@ function pick_it(key){
 
 }
 
+function get_scope_data(){
+if(scope=='supplier'){
+    company_data['Supplier Code']=Dom.get('Supplier_Code').value;
+
+}
+
+}
+
 function get_data(){
     get_company_data();
     get_contact_data();
     get_address_data();
+    get_scope_data();
 }
 
 
@@ -213,11 +222,15 @@ var save_new_company=function(e){
 
     get_data();
 
+    if(scope=='supplier'){
+        var ar_file='ar_edit_suppliers.php';
+    }else
+        var ar_file='ar_edit_contacts.php';
+    
     
     var json_value = YAHOO.lang.JSON.stringify(company_data); 
-    var request='ar_edit_contacts.php?tipo=new_'+scope+'&values=' + encodeURIComponent(json_value); 
-//       alert(request);
-//return;
+    var request=ar_file+'?tipo=new_'+scope+'&values=' + encodeURIComponent(json_value); 
+ // alert(request);return;
     YAHOO.util.Connect.asyncRequest('POST',request ,{
 	    success:function(o) {
 		alert(o.responseText);
@@ -230,8 +243,16 @@ var save_new_company=function(e){
 		        if(scope=='corporation'){
 		           window.location='edit_company_areas.php?edit=new_company_areas';
 
-		        }else{
-		        window.location=scope+'.php?id='+r.company_key;
+		        }else if(scope=='supplier'){
+		           window.location='edit_supplier.php?edit='+r.supplier_key;
+
+		        }else if(scope=='customer'){
+		           window.location='edit_customer.php?id='+r.customer_key;
+
+		        }
+		        
+		        else{
+		        window.location='company.php?id='+r.company_key;
 		        }
 		    }
 		    

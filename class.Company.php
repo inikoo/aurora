@@ -708,7 +708,7 @@ class Company extends DB_Table {
 
 
 
-            $contact->add_address(array(
+            $contact->add_update_address(array(
                                       'Address Key'=>$this->data['Company Main Address Key']
                                                     ,'Address Type'=>array('Work')
                                                                     ,'Address Function'=>array('Contact')
@@ -995,7 +995,6 @@ class Company extends DB_Table {
         }
 
 
-        $_data['editor']=$this->editor;
 
         $_data['Address Type']=array('Work');
         $_data['Address Function']=array('Contact');
@@ -1003,6 +1002,7 @@ class Company extends DB_Table {
 
 
         $contact=new Contact($this->data['Company Main Contact Key']);
+        $contact->editor=$this->editor;
         $contact->editor=$this->editor;
         $contact->add_address($_data,"principal");
 
@@ -2480,6 +2480,102 @@ $this->updated=true;
 
 }
 }
+
+
+ /*
+  function:update_contact
+  */
+function update_contact($contact_key=false) {
+
+
+$this->associated=false;
+    if (!$contact_key)
+        return;
+    $contact=new contact($contact_key);
+    if (!$contact->id) {
+        $this->msg='contact not found';
+        return;
+
+    }
+
+
+    $old_contact_key=$this->data['Company Main Contact Key'];
+
+    if ($old_contact_key  and $old_contact_key!=$contact_key   ) {
+        $this->remove_contact();
+    }
+    if($old_contact_key!=$contact_key){
+    $sql=sprintf("insert into `Contact Bridge` values (%d,'Company',%d,'Yes','Yes')",
+                 $contact->id,
+                 $this->id
+                );
+    mysql_query($sql);
+    if(mysql_affected_rows()){
+    $this->associated=true;
+    
+    }
+    
+    }
+
+    $old_name=$this->data['Company Main Contact Name'];
+    if ($old_name!=$contact->display('name')) {
+
+
+       
+        $this->data['Company Main Contact Key']=$contact->id;
+        $this->data['Company Main Contact Name']=$contact->display('name');
+        $sql=sprintf("update `Company Dimension` set `Company Main Contact Key`=%d,`Company Main Contact Name`=%s where `Company Key`=%d"
+
+                     ,$this->data['Company Main Contact Key']
+                     ,prepare_mysql($this->data['Company Main Contact Name'])
+                     ,$this->id
+                    );
+        mysql_query($sql);
+print $sql;
+
+
+        $this->updated=true;
+
+
+
+
+
+
+        $note=_('Company contact name changed');
+        if ($old_contact_key) {
+            $details=_('Company contact name changed from')." \"".$old_name."\" "._('to')." \"".$this->data['Company Main Contact Name']."\"";
+        } else {
+            $details=_('Company contact set to')." \"".$this->data['Company Main Contact Name']."\"";
+        }
+
+        $history_data=array(
+                          'indirect_object'=>'Company Main Contact Name'
+
+                                            ,'details'=>$details
+                                                       ,'note'=>$note
+                                                               ,'action'=>'edited'
+                      );
+        $this->add_history($history_data);
+
+    }
+
+
+if($this->associated){
+ $note=_('Contact name changed');
+            $details=_('Contact')." ".$contact->display('name')." (".$contact->get_formated_id_link().") "._('associated with Company:')." ".$this->data['Company Name']." (".$this->get_formated_id_link().")";
+            $history_data=array(
+                              'indirect_object'=>'Company Name'
+                                                ,'details'=>$details
+                                                           ,'note'=>$note
+                                                                   ,'action'=>'edited',
+                                                                    'deep'=>2
+                          );
+            $this->add_history($history_data,true);
+}
+
+}
+
+
 
 
 }

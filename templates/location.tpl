@@ -1,21 +1,25 @@
 {include file='header.tpl'}
 <div style="display:none; position:absolute; left:10px; top:200px; z-index:2" id="cal1Container"></div>
 <div id="bd" >
-<div id="sub_header">
-  {if $next.id>0}<span class="nav2 onright"><a href="location.php?id={$next.id}">{$next.code} &rarr; </a></span>{/if}
-  {if $prev.id>0}<span class="nav2 onright" ><a href="location.php?id={$prev.id}">&larr; {$prev.code}</a></span>{/if}
-  <span class="nav2 onleft"><a href="warehouse.php">{t}Location index{/t}</a></span>
-</div>
-
-<div class="search_box" >
-  <span class="search_title" style="padding-right:15px">{t}Location{/t}:</span> <br><input size="8" class="text search" id="location_search" value="" name="search"/><img align="absbottom" id="location_submit_search" class="submitsearch" src="art/icons/zoom.png" alt="Submit search"><br/>
-  <span  class="search_msg"   id="location_search_msg"    ></span> <span  class="search_sugestion"   id="location_search_sugestion"    ></span>
-  <br/>
-  <a style="font-weight:800;color:#777;cursor:pointer" href="edit_location.php?id={$location->get('Location Key')}">{t}Edit Location{/t}</a>
-</div>
+{include file='locations_navigation.tpl'}
+ <div style="clear:left;"> 
+ <span class="branch" ><a  href="warehouse.php?id={$location->get('Location Warehouse Key')}">{$location->get('Warehouse Name')}({$location->get('Warehouse Code')})</a> &rarr; <a  href="warehouse_area.php?id={$location->get('Location Warehouse Area Key')}">{$location->get('Warehouse Area Name')}({$location->get('Warehouse Area Code')})</a> {if $location->get('Location Shelf Key')} &rarr; <a  href="shelf.php?id={$location->get('Location Shelf Key')}">{t}Shelf{/t} {$location->get('Shelf Code')}</a>{/if}</span>
+ </div>
+ <div id="no_details_title" style="clear:left;{if $show_details}display:none;{/if}">
+    <h1>{t}Location{/t}: {$location->get('Location Code')}
+    {if $next.id>0}<a class="prev" href="location.php?id={$prev.id}" ><img src="art/icons/previous.png" alt="<" title="{$prev.code}"  /></a></span>{/if}
+    {if $next.id>0}<a class="next" href="location.php?id={$next.id}" ><img src="art/icons/next.png" alt=">" title="{$next.code}"  /></a></span>{/if}
+     </h1>
+  </div>
 
 
-  <div style="clear:left;margin-top:30px;padding-left:20px;width:20em">
+
+<div id="info" style="{if !$show_details}display:none;{/if}">
+ <h1>{t}Location{/t}: {$location->get('Location Code')}
+    {if $next.id>0}<a class="prev" href="location.php?id={$prev.id}" ><img src="art/icons/previous.png" alt="<" title="{$prev.code}"  /></a></span>{/if}
+    {if $next.id>0}<a class="next" href="location.php?id={$next.id}" ><img src="art/icons/next.png" alt=">" title="{$next.code}"  /></a></span>{/if}
+     </h1>
+  <div style="clear:left;margin-top:5px;width:20em">
     <table class="show_info_product">
       <tr><td>{t}Location{/t}:</td><td style="font-weight:800">{$location->get('Location Code')}</td></tr>
       <tr><td>{t}Used for{/t}:</td><td>{$location->get('Location Mainly Used For')}</td></tr>
@@ -27,9 +31,10 @@
 
 
 </div>
+</div>
+<div id="plot" style="{if !$show_details}display:none;{/if}"></div>
 
-
-<div id="the_table1" class="data_table" style="margin:20px 20px 0px 20px; clear:both;padding-top:10px">
+<div id="the_table1" class="data_table" style=" clear:both;padding-top:10px">
 
   <div style="">
     <div style="float:right;padding:0;margin:0">
@@ -72,7 +77,7 @@
   <div  id="table1"   class="data_table_container dtable btable "> </div>
 </div>
 
-<div id="the_table0" class="data_table" style="margin:20px 20px 0px 20px; clear:both;padding-top:10px">
+<div id="the_table0" class="data_table" style="clear:both;padding-top:10px">
   
   <span class="clean_table_title">{t}History{/t}</span>
   <div  id="clean_table_caption0" class="clean_table_caption"  style="clear:both;">
@@ -89,7 +94,7 @@
 
    
     
-
+</div>
 
 
 

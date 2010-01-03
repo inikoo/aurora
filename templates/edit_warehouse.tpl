@@ -90,27 +90,35 @@
     
     
     
+   
+    
+    
      <div id="the_table1" class="data_table" style="margin:0px 0px;clear:left;">
        <span class="clean_table_title">{t}Warehouse Areas{/t}</span>
        <div  class="clean_table_caption"  style="clear:both;">
 	 <div style="float:left;"><div id="table_info1" class="clean_table_info"><span id="rtext1"></span> <span class="filter_msg"  id="filter_msg1"></span></div></div>
-	 <div class="clean_table_filter" id="clean_table_filter1"><div class="clean_table_info"><span id="filter_name1">{$filter_name1}</span>: <input style="border-bottom:none" id='f_input0' value="{$filter_value1}" size=10/><div id='f_container0'></div></div></div>
+	 <div class="clean_table_filter" id="clean_table_filter1"><div class="clean_table_info"><span id="filter_name1">{$filter_name1}</span>: <input style="border-bottom:none" id='f_input1' value="{$filter_value1}" size=10/><div id='f_container1'></div></div></div>
 	 <div class="clean_table_controls" style="" ><div><span  style="margin:0 5px" id="paginator1"></span></div></div>
        </div>
        <div  id="table1"   class="data_table_container dtable btable "> </div>
      </div>
    </div>
    <div id="locations_block" style="{if $edit!='locations'}display:none{/if}" >
-     <div id="the_table0" class="data_table" style="margin:20px 0px;clear:both">
+ 
+ 
+ 
+ 
+ <div id="the_table0" class="data_table" style="margin:20px 0px;clear:both">
        <span class="clean_table_title">{t}Locations{/t}</span>
        <div  class="clean_table_caption"  style="clear:both;">
 	 <div style="float:left;"><div id="table_info0" class="clean_table_info"><span id="rtext0"></span> <span class="filter_msg"  id="filter_msg0"></span></div></div>
-	 <div class="clean_table_filter" id="clean_table_filter0"><div class="clean_table_info"><span id="filter_name0">{$filter_name0}</span>: <input style="border-bottom:none" id='f_input0' value="{$filter_value0}" size=10/><div id='f_container0'></div></div></div>
+	 <div class="clean_table_filter" id="clean_table_filter0"><div class="clean_table_info"><span style="" id="filter_name0">{$filter_name0}</span>: <input  id='f_input0' value="{$filter_value0}" size=10/><div  id='f_container0'></div></div></div>
 	 <div class="clean_table_controls" style="" ><div><span  style="margin:0 5px" id="paginator0"></span></div></div>
        </div>
        <div  id="table0"   class="data_table_container dtable btable "> </div>
      </div>
    </div>
+   
    <div id="shelfs_block" style="{if $edit!='shelfs'}display:none{/if}" >
 
 <div class="general_options" style="float:right">

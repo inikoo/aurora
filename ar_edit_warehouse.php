@@ -213,6 +213,60 @@ function update_warehouse_area(){
   }
 }
 
+function update_location(){
+ 
+  if(
+      !isset($_REQUEST['id'])
+     or !isset($_REQUEST['newvalue'])
+     ){
+    $response=array('state'=>400,'action'=>'error','msg'=>'no data');
+    echo json_encode($response);
+     return;
+  }
+    
+  $id=$_REQUEST['id'];
+  $key=$_REQUEST['key'];
+  $new_value=stripslashes(urldecode($_REQUEST['newvalue']));
+
+  $traslator=array(
+		   'code'=>'Location Code',
+		   'deep'=>'Location Deep',
+		   'length'=>'Location Length',
+		   'height'=>'Location Height',
+		   'max_weight'=>'Location Max Weight',
+		   'max_volumen'=>'Location Max Volume',
+		   'tipo'=>'Location Mainly Used For',
+		   );
+  if(array_key_exists($_REQUEST['key'],$traslator)){
+    $key=$traslator[$_REQUEST['key']];
+  }else{
+    $response=array('state'=>400,'action'=>'error','msg'=>'Unknown key '.$_REQUEST['key']);
+    echo json_encode($response);
+    return;
+  }    
+
+
+  $location=new Location($id);
+  if(!$location->id){
+    $response=array('state'=>400,'action'=>'error','msg'=>'object not found');
+    echo json_encode($response);
+     return;
+  }
+  
+  $location->update(array($key=>$new_value));
+  if($location->updated){
+    $response=array('state'=>200,'action'=>'updates','msg'=>$location->msg,'newvalue'=>$location->new_value);
+     echo json_encode($response);
+     return;
+  }else{
+    $response=array('state'=>400,'action'=>'nochange','msg'=>$location->msg);
+    echo json_encode($response);
+     return;
+
+  }
+}
+
+
 
 function update_shelf_type(){
  
@@ -604,210 +658,6 @@ if( !isset($_REQUEST['values']) ){
 }
 
 
-function list_locations_for_edition(){
-  if(isset( $_REQUEST['warehouse']) and  is_numeric( $_REQUEST['warehouse']))
-    $warehouse_id=$_REQUEST['warehouse'];
-  else
-    $warehouse_id=$_SESSION['state']['warehouse']['id'];
-  
-   if(isset( $_REQUEST['warehouse_area']) and  is_numeric( $_REQUEST['warehouse_area']))
-    $warehouse_area_id=$_REQUEST['warehouse_area'];
-  else
-    $warehouse_area_id=$_SESSION['state']['warehouse_area']['id'];
-
-
-
-
-      $conf=$_SESSION['state']['warehouse_area']['table'];
-      $conf2=$_SESSION['state']['warehouse_area'];
-      $conf_table='warehouse_area';
-
-      if(isset( $_REQUEST['parent']))
-	$parent=$_REQUEST['parent'];
-      else
-	$parent=$conf['parent'];
-
-
-
-
-
-      if(isset( $_REQUEST['sf'])){
-	$start_from=$_REQUEST['sf'];
-	
-	
-      }else
-	$start_from=$conf['sf'];
-      if(isset( $_REQUEST['nr'])){
-	$number_results=$_REQUEST['nr'];
-	if($start_from>0){
-	  $page=floor($start_from/$number_results);
-	  $start_from=$start_from-$page;
-	}
-	
-      }else
-	$number_results=$conf['nr'];
-      if(isset( $_REQUEST['o']))
-	$order=$_REQUEST['o'];
-      else
-	$order=$conf['order'];
-      if(isset( $_REQUEST['od']))
-	$order_dir=$_REQUEST['od'];
-      else
-	$order_dir=$conf['order_dir'];
-      $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
-      if(isset( $_REQUEST['where']))
-	$where=addslashes($_REQUEST['where']);
-      else
-     $where=$conf['where'];
-      
-    
-      if(isset( $_REQUEST['f_field']))
-	$f_field=$_REQUEST['f_field'];
-      else
-	$f_field=$conf['f_field'];
-      
-      if(isset( $_REQUEST['f_value']))
-	$f_value=$_REQUEST['f_value'];
-      else
-	$f_value=$conf['f_value'];
-      
-      
-      if(isset( $_REQUEST['tableid']))
-	$tableid=$_REQUEST['tableid'];
-      else
-    $tableid=0;
-      
-      
-    
-
-      
-      
-      $_SESSION['state'][$conf_table]['table']=array('order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value,'parent'=>$parent);
-     
-      
-      
-      switch($parent){
-      case('warehouse'):
-	$where=sprintf("where  `Location Warehouse Key`=%d",$warehouse_id);
-	break;
-      default:
-	$where='where true';
-	  
-	  }   
-
-      $filter_msg='';
-      $wheref='';
-      if($f_field=='area' and $f_value!='')
-	$wheref.=" and  `Location Area Code` like '".addslashes($f_value)."%'";
-      if($f_field=='code' and $f_value!='')
-	$wheref.=" and  `Location Code` like '".addslashes($f_value)."%'";
-   
-   
-
-   
-   
-   $sql="select count(*) as total from `Location Dimension`   $where $wheref";
-   //  print $sql;
-   $res = mysql_query($sql); 
-   if($row=mysql_fetch_array($res)) {
-     $total=$row['total'];
-   }
-   mysql_free_result($res);
-   if($wheref==''){
-     $filtered=0; $total_records=$total;
-   }else{
-     $sql="select count(*) as total `Location`   $where ";
-     
-     $result=mysql_query($sql);
-     if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
-      	$total_records=$row['total'];
-	$filtered=$total_records-$total;
-	mysql_free_result($result);
-     }
-
-   }
-
- $rtext=$total_records." ".ngettext('location','locations',$total_records);
-  if($total_records>$number_results)
-    $rtext_rpp=sprintf(" (%d%s)",$number_results,_('rpp'));
-  else
-    $rtext_rpp=' ('._('Showing all').')';
-   $_dir=$order_direction;
-   $_order=$order;
-   
-   $order='`Location Code`';
-   if($order=='used_for')
-     $order='`Location Mainly Used For`';
-   elseif($order=='code')
-     $order='`Location Code`';
-   elseif($order=='area')
-     $order='`Location Area Code`';
-   elseif($order=='max_slots')
-     $order='`Location Max Slots`';
-   elseif($order=='max_weight')
-     $order='`Location Max Weight`';
-  elseif($order=='max_vol')
-     $order='`Location Max Volume`';
-
-   $sql="select *  from `Location Dimension` left join `Warehouse Area Dimension` WAD on (`Location Warehouse Area Key`=WAD.`Warehouse Area Key`)  $where $wheref order by $order $order_direction limit $start_from,$number_results    ";
-
-   
-
-   // print $sql;
-   $res = mysql_query($sql);
-   $adata=array();
-   
-   $sum_active=0;
-   
-   
-   while($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
-     $user_for=$row['Location Mainly Used For'];
-     $area=$row['Warehouse Area Code'];
-     $max_vol='';
-     if($row['Location Max Volume']!='')
-       $max_vol=number($row['Location Max Volume']).'L';
-     $max_weight='';
-     if($row['Location Max Weight']!='')
-       $max_weight=number($row['Location Max Weight']).'Kg';
-     
-     $adata[]=array(
-		    'location_key'=>$row['Location Key']
-		    ,'code'=>$row['Location Code']
-		    ,'used_for'=>$user_for
-		    ,'max_slots'=>$row['Location Max Slots']
-		    ,'area'=>$area
-		    ,'max_vol'=>$max_vol
-		    ,'max_weight'=>$max_weight
-		    ,'delete'=>'<img alt="'._('Delete').'" src="art/icons/cross.png" />'
-		    );
-   }
-  mysql_free_result($res);
-
-  
-
-
-
-
-
-  
-  
-  $response=array('resultset'=>
-		  array('state'=>200,
-			'data'=>$adata,
-			'sort_key'=>$_order,
-			'sort_dir'=>$_dir,
-			'tableid'=>$tableid,
-			'filter_msg'=>$filter_msg,
-			'rtext'=>$rtext,
-			'rtext_rpp'=>$rtext_rpp,
-			'total_records'=>$total_records,
-			'records_offset'=>$start_from,
-			'records_perpage'=>$number_results,
-			)
-		   );
-   echo json_encode($response);
-
-   }
 
 
 function delete_location(){
@@ -1029,7 +879,7 @@ function move_stock(){
   }
 
 function list_locations(){
-$conf=$_SESSION['state']['warehouse']['locations'];
+$conf=$_SESSION['state']['locations']['table'];
    
    if(isset( $_REQUEST['sf']))
      $start_from=$_REQUEST['sf'];
@@ -1071,7 +921,14 @@ $conf=$_SESSION['state']['warehouse']['locations'];
     $tableid=0;
    
 
+    if(isset( $_REQUEST['parent'])){
+     $parent=$_REQUEST['parent'];
+    $_SESSION['state']['locations']['parent']=$parent;
+   }else
+   $parent=$_SESSION['state']['locations']['parent'];
    
+ 
+ 
    
  
    $wheref='';
@@ -1080,7 +937,22 @@ $conf=$_SESSION['state']['warehouse']['locations'];
    
 
   
-   $_SESSION['state']['warehouse']['locations']=array('order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value);
+   $_SESSION['state']['locations']['table']=array('order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value);
+   
+   
+   
+     
+   switch($parent){
+   case('warehouse'):
+   $where.=sprintf(' and `Location Warehouse Key`=%d',$_SESSION['state']['warehouse']['id']);
+   break;
+   case('warehouse_area'):
+   $where.=sprintf(' and `Location Warehouse Area Key`=%d',$_SESSION['state']['warehouse_area']['id']);
+   break;
+   case('shelf'):
+   $where.=sprintf(' and `Location Shelf Key`=%d',$_SESSION['state']['shelf']['id']);
+   break;
+   }
    
    
    $sql="select count(*) as total from `Location Dimension`    $where $wheref";
@@ -1148,27 +1020,42 @@ $conf=$_SESSION['state']['warehouse']['locations'];
   //  print $sql;
   $result=mysql_query($sql);
   while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
-    $code=sprintf('<a href="location.php?id=%d" >%s</a>',$row['Location Key'],$row['Location Code']);
     $tipo=$row['Location Mainly Used For'];
 
     if($row['Location Max Weight']=='' or $row['Location Max Weight']<=0)
       $max_weight=_('Unknown');
     else
-      $max_weight=number($row['Location Max Weight'])._('Kg');
+      $max_weight=weight($row['Location Max Weight']);
     if($row['Location Max Volume']==''  or $row['Location Max Volume']<=0)
       $max_vol=_('Unknown');
     else
-      $max_vol=number($row['Location Max Volume'])._('L');
+      $max_vol=volume($row['Location Max Volume']);
 
     if($row['Warehouse Area Code']=='')
       $area=_('Unknown');
     else
       $area=$row['Warehouse Area Code'];
+      
+      
+      
+         if($row['Location Distinct Parts']>0){
+     $delete='';
+     }else{
+     $delete='<img src="art/icons/delete.png"/>';
+   }
+      
+      
+      
     $data[]=array(
 		 'id'=>$row['Location Key']
+		 ,'go'=>sprintf("<a href='location.php?edit=1&id=%d'><img src='art/icons/page_go.png' alt='go'></a>",$row['Location Key'])
+
+		  
+		   ,'delete'=>$delete
+		   ,'delete_type'=>'delete'
 		 ,'tipo'=>$tipo
-		 ,'code'=>$code
-		 ,'area'=>$area
+		 ,'code'=>$row['Location Code']
+		
 		 ,'parts'=>number($row['Location Distinct Parts'])
 		 ,'max_weight'=>$max_weight
 		 ,'max_volumen'=>$max_vol

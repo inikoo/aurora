@@ -85,9 +85,9 @@ $smarty->assign('table_title',_('Location List'));
 
 
 
-$tipo_filter=$_SESSION['state']['warehouse']['locations']['f_field'];
+$tipo_filter=$_SESSION['state']['locations']['table']['f_field'];
 $smarty->assign('filter0',$tipo_filter);
-$smarty->assign('filter0_value',$_SESSION['state']['warehouse']['locations']['f_value']);
+$smarty->assign('filter0_value',$_SESSION['state']['locations']['table']['f_value']);
 
 $filter_menu=array(
 		   'code'=>array('db_key'=>_('code'),'menu_label'=>'Location Code','label'=>'Code'),
@@ -98,9 +98,9 @@ $smarty->assign('filter_name0',$filter_menu[$tipo_filter]['label']);
 $paginator_menu=array(10,25,50,100,500);
 $smarty->assign('paginator_menu0',$paginator_menu);
 
-$tipo_filter=$_SESSION['state']['warehouse']['warehouse_area']['f_field'];
+$tipo_filter=$_SESSION['state']['warehouse_areas']['table']['f_field'];
 $smarty->assign('filter1',$tipo_filter);
-$smarty->assign('filter_value1',$_SESSION['state']['warehouse']['warehouse_area']['f_value']);
+$smarty->assign('filter_value1',$_SESSION['state']['warehouse_areas']['table']['f_value']);
 $filter_menu=array(
 		   'code'=>array('db_key'=>_('code'),'menu_label'=>'Area Code','label'=>'Code'),
 		   );

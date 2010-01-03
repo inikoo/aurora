@@ -21,7 +21,7 @@ class WarehouseArea extends DB_Table{
 
   var $locations=false;
 
-
+var $warehouse=false;
 
   function WarehouseArea($arg1=false,$arg2=false,$arg3=false) {
 
@@ -203,6 +203,15 @@ class WarehouseArea extends DB_Table{
 
 
   function get($key,$data=false){
+   
+  
+   if(preg_match('/^warehouse (code|name)/i',$key)){
+   
+    if(!$this->warehouse)
+        $warehouse=new Warehouse($this->data['Warehouse Key']);
+     return $warehouse->get($key);
+    }
+  
     switch($key){
     case('num_locations'):
     case('number_locations'):

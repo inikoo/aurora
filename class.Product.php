@@ -1682,9 +1682,9 @@ public $new_value=false;
       $stock_tipo_method='basic1';
 
       // get parts;
-      $sql=sprintf(" select `Part Current Stock`,`Parts Per Product` from `Part Dimension` PD left join   `Product Part List` PPL on (PD.`Part SKU`=PPL.`Part SKU`)  left join `Product Part Dimension` PPD on (`PPD`.`Product Part Key`=`PPL.`Product Part Key`)   where PPL.`Product ID`=%s  and `Product Part Most Recent`='Yes' group by PD.`Part SKU`  ",prepare_mysql($this->data['Product ID']));
+      $sql=sprintf(" select `Part Current Stock`,`Parts Per Product` from `Part Dimension` PD       left join `Product Part List` PPL on (PD.`Part SKU`=PPL.`Part SKU`)       left join `Product Part Dimension` PPD on (PPD.`Product Part Key`=PPL.`Product Part Key`)        where PPL.`Product ID`=%d  and `Product Part Most Recent`='Yes' group by PD.`Part SKU`  ",$this->data['Product ID']);
 
-      //print $sql;
+     // print $sql;
       $result=mysql_query($sql);
       $stock=99999999999;
       $change=false;

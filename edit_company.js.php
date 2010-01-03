@@ -495,7 +495,7 @@ function init(){
         Dom.get("address_country_code").value = oData.code;
         Dom.get("address_country_2acode").value = oData.code2a;
         myAC.getInputEl().value = oData.name + " (" + oData.code + ") ";
-
+on_address_item_change();
 	update_address_labels(oData.code);
 
     };

@@ -212,6 +212,7 @@ function init(){
     oACDS.queryMatchContains = true;
     var oAutoComp = new YAHOO.widget.AutoComplete("f_input0","f_container0", oACDS);
     oAutoComp.minQueryLength = 0; 
+YAHOO.util.Event.addListener('details', "click",change_details,'supplier');
 
 
     ids=['product_general','product_sales','product_stock','product_forecast'];

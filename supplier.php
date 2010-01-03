@@ -19,6 +19,48 @@ if(!$user->can_view('suppliers'))
 $modify=$user->can_edit('suppliers');
 
 
+$edit=false;
+if(isset($_REQUEST['edit']) and $_REQUEST['edit']){
+  $edit=true;
+  $_REQUEST['id']=$_REQUEST['edit'];
+ }
+if(!$modify)
+  $edit=false;
+
+
+if(isset($_REQUEST['id']) and is_numeric($_REQUEST['id']))
+  $supplier_id=$_REQUEST['id'];
+else
+  $supplier_id=$_SESSION['state']['supplier']['id'];
+
+$_SESSION['state']['supplier']['id']=$supplier_id;
+
+$smarty->assign('supplier_id',$supplier_id);
+
+$supplier=new Supplier($supplier_id);
+if(!$supplier->id){
+header('Location: suppliers.php?msg=SNPF');
+   exit;
+}
+
+
+$show_details=$_SESSION['state']['supplier']['details'];
+$smarty->assign('show_details',$show_details);
+
+$general_options_list=array();
+if($modify){
+  $general_options_list[]=array('tipo'=>'url','url'=>'supplier.php?edit='.$supplier_id,'label'=>_('Edit Supplier'));
+  $general_options_list[]=array('tipo'=>'url','url'=>'porder.php?new=1&supplier_id='.$supplier_id,'label'=>_('New Purchase Order'));
+
+}
+$general_options_list[]=array('tipo'=>'js','state'=>$show_details,'id'=>'details','label'=>($show_details?_('Hide Details'):_('Show Details')));
+
+
+
+
+$smarty->assign('general_options_list',$general_options_list);
+
+
 
 $css_files=array(
 		 $yui_path.'reset-fonts-grids/reset-fonts-grids.css',
@@ -52,25 +94,7 @@ $js_files=array(
 
 
 
-$edit=false;
-if(isset($_REQUEST['edit']) and $_REQUEST['edit']){
-  $edit=true;
-  $_REQUEST['id']=$_REQUEST['edit'];
- }
-if(!$modify)
-  $edit=false;
 
-
-if(isset($_REQUEST['id']) and is_numeric($_REQUEST['id']))
-  $supplier_id=$_REQUEST['id'];
-else
-  $supplier_id=$_SESSION['state']['supplier']['id'];
-
-$_SESSION['state']['supplier']['id']=$supplier_id;
-
-$smarty->assign('supplier_id',$supplier_id);
-
-$supplier=new Supplier($supplier_id);
 
 $company=new Company($supplier->data['Supplier Company Key']);
 //$supplier->load('contacts');

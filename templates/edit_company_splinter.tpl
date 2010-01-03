@@ -39,7 +39,7 @@
  
 
 <div  style="margin:0"  class="edit_block" id="d_company_contacts">
-  <table class="edit" border=1>
+  <table class="edit" border=0>
     <tr class="title"><td>{t}Contacts{/t}: 
 	<span class="state_details" id="personal_num_changes"></span>
 	<span class="state_details" id="email_num_changes"></span>
@@ -87,11 +87,11 @@
     </tr>
     
     <tr id="contact_form" style="display:none">
-      <td colspan=2 >
-	<table border=1 class="edit" style="margin-top:50px" id="edit_contact_table">
+      <td colspan=2 style="padding:0">
+	<table border=1 class="edit" style="margin:10px 0 0 0;padding:0" id="edit_contact_table">
 	  <tr >
 	    <input type="hidden" id="Contact_Key" value="" ovalue=""  />
-	    <td style="xwidth:160px;" class="label">Name:</td>
+	    <td style="width:160px;" class="" >Name:</td>
 	    <td><input style="width:16em" id="Contact_Name" value="" onkeyup="contact_name_changed(this)"></td>
 	    <td >
 	      <table border=0 class="edit" style="xdisplay:none;position:relative;top:-6px;" >
@@ -146,8 +146,8 @@
       <td class="label">{t}Title{/t}:</td><td><input id="Contact_Title"></td>
     </tr>
     
-    <tr class="title">
-      <td colspan=3 >{t}Contact Email & Mobiles{/t}:
+    <tr class="titlev">
+      <td colspan=3 ><span id="title_email_and_mbiles" style='display:none'>{t}Contact Email & Mobiles{/t}:</span>
 	<span style="display:none" class="small_button" id="cancel_edit_contact_button"  onclick="cancel_save_email()" >Cancel Edit Email</span>
 	<span style="display:none" class="small_button" id="cancel_edit_contact_button"  onclick="cancel_save_email()">Cancel Edit Mobile</span>
 	<span style="display:none" class="small_button" id="save_add_email_button" onclick="save_email()" >Save Email</span>
@@ -160,17 +160,19 @@
     
     
     <tr id="email_mould" class="mould" style="display:none;">
-      <td  class="label"  >{t}Email{/t}:</td>
-      <td >
+      <td  class="" style="padding-left:10px" >{t}Email{/t}:</td>
+      <td style="padding-left:10px">
 	<span class="email_to_delete" style="display:none;text-decoration:line-through"></span>
 	<input style="width:90%" class="Email"  to_delete=0 value="" ovalue="" email_key="" valid=""   onkeyup="validate_email(this);email_change()" /><br/>
 	
       </td>
       <td>
-	<input class="Email_Is_Main" type="checkbox" ovalue="No"  onclick="update_is_main_email(this)"/><span>{t}Main{/t}</span>
+	<input class="Email_Is_Main" type="checkbox" ovalue="No"  onclick="update_is_main_email(this)"/><span> {t}Main{/t}</span>
 	
 	<span class="small_button undelete_email"  style="display:none" email_key="" onclick="unmark_email_to_delete(this)">{t}Cancel Delete{/t}</span>
 	<span class="small_button delete_email"  email_key="" onclick="mark_email_to_delete(this)">{t}Delete{/t}</span>
+	<span class="small_button cancel_new_email" style="display:none" email_key="" onclick="cancel_new_email(this)">{t}Cancel New Email{/t}</span>
+
 	<span class="small_button show_details_email" style="display:none" email_key="" action="Show" onclick="show_details_email(this)">{t}Edit Details{/t}</span>
 	
 	<br/><table border=0 class="edit" style="margin-top:10px;display:none" >
@@ -193,7 +195,7 @@
       </td>
     </tr>
     <tr id="mobile_mould" class="mould" style="display:none;xbackground:red">
-      <td  class="label">
+      <td  class="" style="padding-left:10px" >
 	<span id="show_description" onclick="show_details_telecom(this)" 
 	      class="show_details_telecom" telecom_type="mobile" action="Show" style="padding:0 1px;cursor:pointer">
 	  <img src='art/icons/application_put.png' alt="D"/>
@@ -221,13 +223,13 @@
       <td  class="label">{t}Number{/t}:</td><td ><input  class="Number" style="width:7em" value="" ovalue=""  onkeyup="telecom_component_change(this)"   />
       </td>
     </tr>
-    <tr class="title" >
+    <tr class="title" style="height:30px">
       <td colspan=3 >{t}Contact Address & Landlines{/t}:
 	<span style=""  class="small_button" id="add_address_to_contact_button" >Add Address</span>
       </td>
     </tr>
-    <tr id="address_mould" class="mould" style="display:none">
-      <td class="Address" style="font-size:70%"></td>
+    <tr id="address_mould" class="mould" style="display:none;">
+      <td class="Address" style="font-size:70%;padding-left:10px"></td>
       <td colspan=2>
 	<input type="checkbox"  class="Is_Main"/> {t}Main{/t}
 	<span style="display:none" tel_key="" class="small_button" id="cancel_edit_tel_button" >Cancel Edit Telephone</span>
@@ -241,7 +243,7 @@
 	<span class="small_button" id="add_move_button" >Move from Address</span>
 	<span class="small_button Add_Telecom" container_key='' telecom_type='telephone' onclick="add_telecom(this)">Add Telephone</span>
 	<span class="small_button Add_Telecom" container_key='' telecom_type='fax' onclick="add_telecom(this)">Add Fax</span>
-	<table style="margin-top:10px;width:100%" border=1>
+	<table style="margin-top:10px;width:100%" border=0>
 	  <tr id="telephone_mould" class="tr_telecom mould" style="display:none;">
 	    <td  class="label">
 	      <span id="show_description" onclick="show_details_telecom(this)" 
