@@ -113,6 +113,12 @@ case('delete_company_area'):
 			     ));
   delete_company_department($data);
   break;
+case('delete_contact'):
+ $data=prepare_values($_REQUEST,array(
+			     'contact_key'=>array('type'=>'key')
+			     ));
+delete_contact($data);
+break;
 case('remove_address'):
 case('delete_address'):
   delete_address();
@@ -2023,6 +2029,24 @@ global $editor;
 
 }
 
+function delete_contact($data){
+$contact=new Contact($data['contact_key']);
+if($contact->id){
+$contact->delete();
+  if($contact->deleted){
+	$response=array('state'=>200,'action'=>'deleted','msg'=>$contact->msg);
+	 echo json_encode($response);
+	 exit;
+   }else{     
+	$response=array('state'=>400,'action'=>'nochange','msg'=>$contact->msg);
+ echo json_encode($response);
+	 exit;
+}
+  }
+  $response=array('state'=>400,'action'=>'error','msg'=>'Error');
+ echo json_encode($response);
+	 exit;
 
+}
 
 ?>

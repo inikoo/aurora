@@ -400,6 +400,34 @@ var cancel_edit_contact=function (){
 };
 var delete_contact=function (e,contact_button){
 
+var contact_key=contact_button.getAttribute('contact_id');
+var request='ar_edit_contacts.php?tipo=delete_contact&contact_key='+contact_key;
+//alert(request);
+YAHOO.util.Connect.asyncRequest(
+							'GET',
+							request,
+							{
+							    success: function (o) {
+								//alert(o.responseText);
+								 var r = YAHOO.lang.JSON.parse(o.responseText);
+								if (r.state == 200 && r.action=='deleted') {
+								
+							Dom.get('contact_container'+contact_key).style.display='none';
+								   
+								
+								
+								} else {
+								    alert(r.msg);
+								}
+							    },
+								failure: function (o) {
+								alert(o.statusText);
+							    },
+								scope:this
+								}
+							);
+
+
 }
 var edit_contact=function (e,contact_button){
     

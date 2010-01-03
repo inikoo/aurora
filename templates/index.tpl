@@ -22,6 +22,8 @@
 <div style="clear:both">
 <table>
 <tr><td>Nov 4 2009</td><td>Problem Rendering the Close Button on Calendar Pop Out</td></tr>
+<tr><td style="text-align:right">Jan   2010</td><td>Review Contact Deletion</td></tr>
+
 <caption>{t}Known Issues{/t}</caption>
 </table>
 </div>

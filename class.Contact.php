@@ -2296,6 +2296,36 @@ class Contact extends DB_Table {
     }
 
 
+function delete(){
+
+$sql=sprintf("select * from `Contact Bridge`  where   `Contact Key`=%d",
+                         $this->id
+                       
+                        );
+     $res=mysql_query($sql);
+     while ( $row=mysql_fetch_array ( $res  ))
+     {
+         if($row['Subject Type']=='Company'){
+            $company=new Company($row['Subject Key']);
+            $company->remove_contact($this->id);
+         
+         }
+     }
+
+  $sql=sprintf("delete from `Contact Dimension`  where `Contact Key`=%d",
+                         $this->id
+                         
+                        );
+  mysql_query($sql);
+if (mysql_affected_rows()) {
+   
+            $this->deleted=true;
+            
+
+}
+
+
+}
 
 
     /* Method: remove_tel
