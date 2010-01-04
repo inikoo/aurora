@@ -311,7 +311,10 @@ class Order extends DB_Table{
 	    if($this->data['Order Original Data Filename']!=''){
 	      $just_filename=preg_replace('/^.*\//','',$this->data['Order Original Data Filename']);
 	      
-	      $details .='<br/>'._('Local Shortcut').": <a href='file:".$this->data['Order Original Data Filename']."'><img src='art/icons/page_excel.png'> ".$just_filename."</a>";
+	      $details .='<div >'._('Original Source').":<img src='art/icons/page_excel.png'> ".$this->data['Order Original Data MIME Type']."</div>";
+	      $details .='<div style="color:777;font-size:80%">'._('Original Source Filename').":<img src='art/icons/page_excel.png'> ".$just_filename."</div>";
+
+
 	    }
 	  }
 				      

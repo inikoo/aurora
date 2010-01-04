@@ -114,7 +114,7 @@ $fam_promo_key=$fam_promo->id;
 
 
 
-$sql="select * from  orders_data.orders  where   (last_transcribed is NULL  or last_read>last_transcribed) and deleted='No' order by filename ";
+$sql="select * from  orders_data.orders  where   (last_transcribed is NULL  or last_read>last_transcribed) and deleted='No'   order by filename ";
 
 $sql="select * from  orders_data.orders  where   (last_transcribed is NULL  or last_read>last_transcribed) and deleted='No' and filename like '/mnt/z/Orders/100%'  order by filename ";
 
@@ -185,21 +185,21 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
     //print_r($header_data);
     list($tipo_order,$parent_order_id,$header_data)=get_tipo_order($header_data['ltipo'],$header_data);
 
-    if(preg_match('/^\d{5}sh$/i',$filename_number)){
+    if(preg_match('/^1?\d{5}sh$/i',$filename_number)){
       $tipo_order=7;
       $parent_order_id=preg_replace('/sh/i','',$filename_number);
     }
-    if(preg_match('/^\d{5}sht$/i',$filename_number)){
+    if(preg_match('/^1?\d{5}sht$/i',$filename_number)){
       $tipo_order=7;
       $parent_order_id=preg_replace('/sht/i','',$filename_number);
     }
 
-    if(preg_match('/^\d{5}rpl$/i',$filename_number)){
+    if(preg_match('/^1?\d{5}rpl$/i',$filename_number)){
       $tipo_order=6;
       $parent_order_id=preg_replace('/rpl/i','',$filename_number);
 
     }
-    if(preg_match('/^\d{4,5}r$|^\d{4,5}ref$|^\d{4,5}\s?refund$|^\d{4,5}rr$|^\d{4,5}ra$|^\d{4,5}r2$|^\d{4,5}\-2ref$|^\d{5}rfn$/i',$filename_number)){
+    if(preg_match('/^1?\d{4,5}r$|^1?\d{4,5}ref$|^1?\d{4,5}\s?refund$|^1?\d{4,5}rr$|^1?\d{4,5}ra$|^1?\d{4,5}r2$|^1?\d{4,5}\-2ref$|^1?\d{5}rfn$/i',$filename_number)){
       $tipo_order=9;
       $parent_order_id=preg_replace('/r$|ref$|refund$|rr$|ra$|r2$|\-2ref$|rfn$/i','',$filename_number);
     }
@@ -398,7 +398,7 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
       $data['order customer message']='';
     
    
-    $tmp_filename=preg_replace('/\/mnt\/z\/Orders\//',"\\\\\\networkspace1\\openshare",$row2['filename']);
+    $tmp_filename=preg_replace('/\/mnt\/z\/Orders\//',"\\\\\\networkspace1\\openshare\\",$row2['filename']);
     $tmp_filename=preg_replace('/\//',"\\",$tmp_filename);
 
     $data['Order Original Data Filename']=$tmp_filename;
