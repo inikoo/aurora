@@ -388,10 +388,18 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
     if ($data['order customer message']==0)
       $data['order customer message']='';
     
+
+    $tmp_filename=preg_replace('/\/media\/sda3\/share/',"\\\\\\networkspace1\\openshare",$row2['filename']);
+    $tmp_filename=preg_replace('/\//',"\\",$tmp_filename);
+   
+
+    $data['Order Original Data Filename']=$tmp_filename;
     $data['order original data mime type']='application/vnd.ms-excel';
-    $data['order original data']=$row2['filename'];
-    $data['order original data source']='DB:ci_orders_data.order.data';
-    $data['order original metadata']=$store_code.$row2['id'];
+    $data['order original data']='';
+    $data['order original data source']='Excel File';
+    $data['Order Original Metadata']=$store_code.$row2['id'];
+    
+
     $data['Order Main Source Type']='Unknown';
     //print_r($header_data);
 

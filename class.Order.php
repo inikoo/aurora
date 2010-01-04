@@ -93,10 +93,10 @@ class Order extends DB_Table{
       $this->data ['Order Current XHTML State'] = 'In Process';
       $this->data ['Order Sale Reps IDs'] =array($this->editor['User Key']);
       $this->data ['Order For'] = 'Customer';
-      $this->data ['Order Date'] = date('Y-m-d H:i:s');
+     $this->data ['Order Date'] = date('Y-m-d H:i:s');
       $this->data ['Order Customer Message']='';
       $this->data ['Order Original Data MIME Type']='none';
-      $this->data ['Order Original Data']='';
+
       $this->data ['Order Original Metadata']='';
       $this->data ['Order Currency Exchange']=1;
       if($this->data ['Order Currency']!=$myconf['currency_code']){
@@ -249,13 +249,13 @@ class Order extends DB_Table{
       $this->data ['Order Sale Reps IDs'] = $data ['Order Sale Reps IDs'];
 				
       $this->data ['Order Original Data MIME Type'] = $data ['order original data mime type'];
-      $this->data ['Order Original Data'] = $data ['order original data'];
+      //      $this->data ['Order Original Data'] = $data ['order original data'];
       $this->data ['Order Original Data Source'] = $data ['order original data source'];
-				
       if (isset ( $data ['Order Original Metadata'] ))
 	$this->data ['Order Original Metadata'] = $data ['Order Original Metadata'];
       else
-	$this->data ['Order Original Metadata'] = '';
+	$this->data ['Order Original Metadata']='';
+	$this->data ['Order Original Data Filename'] = $data ['Order Original Data Filename'];
 				
       $this->data ['Order Main Source Type'] = $data ['Order Main Source Type'];
       if(isset($data ['Order For']))
@@ -307,7 +307,13 @@ class Order extends DB_Table{
 	default :
 	  $note = sprintf ( '%s <a href="order.php?id=%d">%s</a>', _('Order'),$this->data ['Order Key'], $this->data ['Order Public ID'] );
 	  $details = sprintf ( '%s (<a href="customer.php?id=%d">%s</a>) place an order on %s', $customer->get ( 'Customer Name' ), $customer->id,$customer->get('Formated ID'), strftime ( "%e %b %Y %H:%M", strtotime ( $this->data ['Order Date'] ) ) );
-				   
+	  if($this->data['Order Original Data MIME Type']='application/vnd.ms-excel'){
+	    if($this->data['Order Original Data Filename']!=''){
+	      $just_filename=preg_replace('/^.*\//','',$this->data['Order Original Data Filename']);
+	      
+	      $details .='<br/>'._('Local Shortcut').": <a href='file:".$this->data['Order Original Data Filename']."'><img src='art/icons/page_excel.png'> ".$just_filename."</a>";
+	    }
+	  }
 				      
 	}
 	$history_data=array(
@@ -582,7 +588,7 @@ class Order extends DB_Table{
 	$this->data ['Order Current Xhtml State'] = 'In Process';
 	$this->data ['Order Customer Message'] = _trim ( $edata ['message'] );
 	$this->data ['Order Original Data Mime Type'] = 'text/plain';
-	$this->data ['Order Original Data'] = $email;
+	//$this->data ['Order Original Data'] = $email;
 	$this->data ['order main store key'] = $store->id;
 	$this->data ['order main store code'] = $store->get ( 'code' );
 	$this->data ['order main store type'] = $store->get ( 'type' );
@@ -1030,23 +1036,30 @@ class Order extends DB_Table{
     //     $sql="select sum(`Order Transaction Gross Amount`) as gross,sum(`Order Transaction Total Discount Amount`) from `Order Transaction Fact` where "
 	  
 	  
-    $sql = sprintf ( "insert into `Order Dimension` (`Order Customer Contact Name`,`Order For`,`Order File As`,`Order Date`,`Order Last Updated Date`,`Order Public ID`,`Order Store Key`,`Order Store Code`,`Order Main Source Type`,`Order Customer Key`,`Order Customer Name`,`Order Current Dispatch State`,`Order Current Payment State`,`Order Current XHTML State`,`Order Customer Message`,`Order Original Data MIME Type`,`Order Original Data`,`Order XHTML Ship Tos`,`Order Items Gross Amount`,`Order Items Discount Amount`,`Order Original Metadata`,`Order XHTML Store`,`Order Type`,`Order Currency`,`Order Currency Exchange`) values (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,'%s',%s,%s,%s,%.2f,%.2f,%s,%s,%s,%s,%f)"
+    $sql = sprintf ( "insert into `Order Dimension` (`Order Customer Contact Name`,`Order For`,`Order File As`,`Order Date`,`Order Last Updated Date`,`Order Public ID`,`Order Store Key`,`Order Store Code`,`Order Main Source Type`,`Order Customer Key`,`Order Customer Name`,`Order Current Dispatch State`,`Order Current Payment State`,`Order Current XHTML State`,`Order Customer Message`,`Order Original Data MIME Type`,`Order XHTML Ship Tos`,`Order Items Gross Amount`,`Order Items Discount Amount`,`Order Original Metadata`,`Order XHTML Store`,`Order Type`,`Order Currency`,`Order Currency Exchange`,`Order Original Data Filename`) values (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%.2f,%.2f,%s,%s,%s,%s,%f,%s)"
 		     , prepare_mysql ( $this->data ['Order Customer Contact Name'],false )
 		     , prepare_mysql ( $this->data ['Order For'] )
 		     , prepare_mysql ( $this->data ['Order File As'] )
 		     , prepare_mysql ( $this->data ['Order Date'] )
-		     , prepare_mysql ( $this->data ['Order Date'] ), prepare_mysql ( $this->data ['Order Public ID'] ), prepare_mysql ( $this->data ['Order Store Key'] ), prepare_mysql ( $this->data ['Order Store Code'] ), 
+		     , prepare_mysql ( $this->data ['Order Date'] )
+		     , prepare_mysql ( $this->data ['Order Public ID'] )
+		     , prepare_mysql ( $this->data ['Order Store Key'] )
+		     , prepare_mysql ( $this->data ['Order Store Code'] )
 		     
-		     prepare_mysql ( $this->data ['Order Main Source Type'] ), prepare_mysql ( $this->data ['Order Customer Key'] ), prepare_mysql ( $this->data ['Order Customer Name'] ), prepare_mysql ( $this->data ['Order Current Dispatch State'] ), prepare_mysql ( $this->data ['Order Current Payment State'] ), prepare_mysql ( $this->data ['Order Current XHTML State'] ), addslashes ( $this->data ['Order Customer Message'] ), prepare_mysql ( $this->data ['Order Original Data MIME Type'] ), prepare_mysql ( $this->data ['Order Original Data'] ), prepare_mysql ( $this->data ['Order XHTML Ship Tos'] ), 
+		     ,prepare_mysql ( $this->data ['Order Main Source Type'] )
+		     , prepare_mysql ( $this->data ['Order Customer Key'] ), prepare_mysql ( $this->data ['Order Customer Name'] ), prepare_mysql ( $this->data ['Order Current Dispatch State'] ), prepare_mysql ( $this->data ['Order Current Payment State'] ), prepare_mysql ( $this->data ['Order Current XHTML State'] )
+		     , prepare_mysql ( $this->data ['Order Customer Message'] )
+		     , prepare_mysql ( $this->data ['Order Original Data MIME Type'] ), prepare_mysql ( $this->data ['Order XHTML Ship Tos'] ), 
 			   
 		     $this->data ['Order Gross Amount'], $this->data ['Order Discount Amount'], prepare_mysql ( $this->data ['Order Original Metadata'] ), prepare_mysql ( $this->data ['Order XHTML Store'] )
 		     , prepare_mysql ( $this->data ['Order Type'] ) 
 		     ,prepare_mysql( $this->data ['Order Currency'] )
 		     , $this->data ['Order Currency Exchange'] 
+		      ,prepare_mysql( $this->data ['Order Original Data Filename'] )
 		     )
 	    
       ;
-    //    print "Aqui $sql \n";
+    //  print "Aqui $sql \n";exit;
     If (mysql_query ( $sql )) {
       $this->id = mysql_insert_id ();
       $this->data ['Order Key'] = $this->id;

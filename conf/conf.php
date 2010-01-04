@@ -570,6 +570,7 @@ $default_state=array(
 				       'id'=>1,
 				       'action_after_create'=>'continue',
 				       'edit'=>'details',
+				         'details'=>false,
 				       'table'=>array(
 						      'order'=>'date',
 						      'order_dir'=>'desc',

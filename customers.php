@@ -55,10 +55,7 @@ $general_options_list[]=array('tipo'=>'js','state'=>'','id'=>'advanced_search','
 $smarty->assign('general_options_list',$general_options_list);
 
 
-
-
-
-
+ 
 
 $css_files=array(
 		 $yui_path.'reset-fonts-grids/reset-fonts-grids.css',

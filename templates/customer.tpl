@@ -1,79 +1,41 @@
 {include file='header.tpl'}
-<div id="bd" style="padding:0 20px">
-<span class="nav2 onright"  {if $next.id==0}style="display:none"{/if} ><a id="next" href="customer.php?id={$next.id}">{$next.name} &rarr; </a></span>
-<span class="nav2 onright"  {if $prev.id==0}style="display:none"{/if}  ><a id="prev" href="customer.php?id={$prev.id}">&larr; {$prev.name}</a></span>
-<span class="nav2 onleft"><a href="customers.php">{t}Customers List{/t}</a></span>
-
-
-<span class="nav2"><a href="customers.php">{$home}</a></span>
-
-
-  <div id="yui-main" >
-
-  <div class="search_box" >
-       <span class="search_title" style="padding-right:15px" tipo="customer_name">{t}Customer Name{/t}:</span> <br>
-       <input size="8" class="text search" id="customer_search" value="" name="search"/><img align="absbottom" id="customer_submit_search" class="submitsearch" src="art/icons/zoom.png" alt="Submit search"><br/>
-       <span  class="product_search_msg"   id="customer_search_msg"    ></span> <span  class="search_sugestion"   id="customer_search_sugestion"    ></span>
-       <br/>
-       <span id="but_show_details" state="{$details}" atitle="{if $details==0}{t}Hide Details{/t}{else}{t}Show Details{/t}{/if}" class="state_details"   >{if $details==1}{t}Hide Details{/t}{else}{t}Show Details{/t}{/if}</span>
-
-       
-
-
-       <br/><a id="but_edit" href="customer.php?edit={$customer->id}" title="{t}Edit Customer Data{/t}" class="state_details" href=""   >{t}Edit Customer{/t}</a>
-
-       <table style="float:right;margin-top:20px">
-	 <tr><td class="but" id="note">{t}Quick Note{/t}</td></tr>
-	 <tr><td class="but" id="attach">{t}Attach File{/t}</td></tr>
-
-	 <tr><td class="but" id="take_order">{t}Take Order{/t}</td></tr>
-
-	 <tr style="display:none"><td class="but" id="long_note">{t}Long Note{/t}</td></tr>
-	 <tr style="display:none"><td class="but" id="attach">{t}Attach File{/t}</td></tr>
-	 <tr style="display:none"><td class="but" id="call" >{t}Call{/t}</td></tr>
-	 <tr style="display:none"><td class="but" id="email" >{t}Email{/t}</td></tr>
-	 <tr style="display:none"><td class="but" id="others" >{t}Other{/t}</td></tr>
-
-       </table>
-       
-  </div>
-
-
-<table border=0 cellpadding="2" style="float:right;margin-top:5px;" class="view_options">
-      <tr style="border-bottom:1px solid #ddd">
-	
-	<th><img src="art/icons/information.png" title="{t}Product Details{/t}"/></th>
-	<th><img src="art/icons/chart_line.png" title="{t}Charts{/t}"/></th>
-	<th><img  src="art/icons/cart.png" title="{t}Orders{/t}"/></th>
-	<th><img src="art/icons/user_green.png" title="{t}Customers{/t}"/></th>
-	<th><img src="art/icons/package.png" title="{t}Stock{/t}"/></th>
-      </tr>
-      <tr style="height:18px;border-bottom:1px solid #ddd">
-	<td  id="change_view_details" 
-	     {if $display.details==0}title="{t}Show Product Details{/t}" atitle="{t}Hide Product Details{/t}"{else}atitle="Hide Product Details"  title="{t}Hide Product Details{/t}"{/if} >
-	  <img {if $hide.details==0}style="opacity:0.2"{/if} src="art/icons/tick.png"  id="but_logo_details"  /></td>
-	{if $view_orders}
-	<td  id="change_view_plot" state="{$display.plot}" block="plot"  
-	     {if $display.plot==0} title="{t}Show Charts{/t}" atitle="{t}Hide Charts{/t}"{else} atitle="{t}Show Charts{/t}" title="{t}Hide Charts{/t}"{/if} >
-	  <img {if $display.plot==0}style="opacity:0.2"{/if} src="art/icons/tick.png"  id="but_logo_plot"  /></td>
-	
-	<td  state="{$display.orders}" block="orders"  id="change_view_orders" 
-	     {if $display.orders==0}title="{t}Show Orders{/t}" atitle="{t}Hide Orders{/t}" {else} atitle="{t}Show Orders{/t}" title="{t}Hide Orders{/t}" {/if} >
-	  <img {if $display.orders==0}style="opacity:0.2"{/if} src="art/icons/tick.png"    id="but_logo_orders"   /></td>
-	{/if}
-	<td  state="{$display.customers}" block="customers"   id="change_view_customers" {if $display.customers==0}title="{t}Show Customers who have ordered this product{/t}" atitle="{t}Hide Customers who have ordered this product{/t}"{else}atitle="{t}Show Customers who have ordered this product{/t}" title="{t}Hide Customers who have ordered this product{/t}"{/if} ><img {if $display.customers==0}style="opacity:0.2"{/if} src="art/icons/tick.png"    id="but_logo_customers"   /></td>
-	<td   state="{$display.stock_history}" block="stock_history"  id="change_view_stock_history" {if $display.stock_history==0}title="{t}Show Stock History{/t}" atitle="{t}Hide Stock History{/t}"{else}atitle="{t}Show Stock History{/t}" title="{t}Hide Stock History{/t}"{/if} ><img {if $display.stock_history==0}style="opacity:0.2"{/if} src="art/icons/tick.png"    id="but_logo_stock_history"   /></td>
-	
-      </tr>
-
-
+<div id="bd">
+  {include file='contacts_navigation.tpl'}
+  <div id="no_details_title"  style="clear:left;xmargin:0 20px;{if $details!=0}display:none{/if}">
+    <h1>{$customer->get('Customer Name')} <span style="color:SteelBlue">{$id}</span>
+      {if $next.id>0}<a class="prev" href="customer.php?id={$prev.id}" ><img src="art/icons/previous.png" alt="<" title="{$prev.name}"  /></a>{/if}
+      {if $next.id>0}<a class="next" href="customer.php?id={$next.id}" ><img src="art/icons/next.png" alt=">" title="{$next.name}"  /></a>{/if}
       
-    </table>
+    </h1> 
+    
+  </div>
+  
+  
+     
+  
+  <table class="quick_button" style="clear:both;float:right;margin-top:0px;">
+    <tr><td  id="note">{t}Quick Note{/t}</td></tr>
+    <tr><td  id="attach">{t}Attach File{/t}</td></tr>
+    
+    <tr><td id="take_order">{t}Take Order{/t}</td></tr>
+    
+    <tr style="display:none"><td  id="long_note">{t}Long Note{/t}</td></tr>
+    <tr style="display:none"><td  id="attach">{t}Attach File{/t}</td></tr>
+    <tr style="display:none"><td id="call" >{t}Call{/t}</td></tr>
+<tr style="display:none"><td  id="email" >{t}Email{/t}</td></tr>
+    <tr style="display:none"><td id="others" >{t}Other{/t}</td></tr>
+    
+  </table>
+       
+ 
 
 
 
-    <div class="yui-b" >
-       <h1>{$customer->get('Customer Name')} <span style="color:SteelBlue">{$id}</span></h1> 
+
+
+
+   
+     
 <table id="customer_data" style="width:500px" border=0>
 
 <tr>
