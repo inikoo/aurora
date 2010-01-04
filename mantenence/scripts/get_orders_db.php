@@ -116,7 +116,7 @@ $fam_promo_key=$fam_promo->id;
 
 $sql="select * from  orders_data.orders  where   (last_transcribed is NULL  or last_read>last_transcribed) and deleted='No' order by filename ";
 
-
+$sql="select * from  orders_data.orders  where   (last_transcribed is NULL  or last_read>last_transcribed) and deleted='No' and filename like '/mnt/z/Orders/100%'  order by filename ";
 
 //$sql="select * from  orders_data.orders where filename like '%refund.xls'   order by filename";
 //$sql="select * from  orders_data.orders  where filename like '/mnt/%/Orders/15343.xls' order by filename";
@@ -397,11 +397,17 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
     if($data['order customer message']==0)
       $data['order customer message']='';
     
-    $data['order original data mime type']='application/vnd.ms-excel';
-    $data['order original data']=$row2['filename'];
-    $data['order original data source']='DB:orders_data.order.data';
-    $data['Order Original Metadata']=$store_code.$row2['id'];
+   
+    $tmp_filename=preg_replace('/\/mnt\/z\/Orders\//',"\\\\\\networkspace1\\openshare",$row2['filename']);
+    $tmp_filename=preg_replace('/\//',"\\",$tmp_filename);
 
+    $data['Order Original Data Filename']=$tmp_filename;
+    $data['order original data mime type']='application/vnd.ms-excel';
+    $data['order original data']='';
+    $data['order original data source']='Excel File';
+
+    $data['Order Original Metadata']=$store_code.$row2['id'];
+    
     //print_r($header_data);
 
     $products_data=array();

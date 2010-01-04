@@ -689,3 +689,6 @@ position:relative;top:1px;
 
 .diff_ins{color:green}
 
+
+.quick_button td{color:#fff;background:#334556;font-weight:800;border:2px solid #fff;cursor:pointer}
+.quick_button td:hover{background:#131536;}

@@ -211,24 +211,42 @@ if($edit ){
      $order='``Customer Invoices Top Percentage`';
     elseif($order=='total_refunds')
      $order='`Customer Total Refunds`';
+else
+   $order='`Customer File As`';
 
-$sql=sprintf("select `Customer Name` as name from `Customer Dimension`   where  %s < %s  order by %s desc  limit 1",$order,prepare_mysql($customer->get($order)),$order);
+   $_order=preg_replace('/`/','',$order);
+$sql=sprintf("select `Customer Key` as id , `Customer Name` as name from `Customer Dimension`   where  %s < %s  order by %s desc  limit 1",$order,prepare_mysql($customer->get($_order)),$order);
 //print $sql;
 $result=mysql_query($sql);
 if(!$prev=mysql_fetch_array($result, MYSQL_ASSOC))
-  $prev=array('id'=>0,'code'=>'');
+  $prev=array('id'=>0,'name'=>'');
 mysql_free_result($result);
 
 $smarty->assign('prev',$prev);
-$sql=sprintf("select  `Customer Name` as name from `Customer Dimension`     where  %s>%s  order by %s   ",$order,prepare_mysql($customer->get($order)),$order);
+$sql=sprintf("select `Customer Key` as id , `Customer Name` as name from `Customer Dimension`     where  %s>%s  order by %s   ",$order,prepare_mysql($customer->get($_order)),$order);
 $result=mysql_query($sql);
 if(!$next=mysql_fetch_array($result, MYSQL_ASSOC))
-  $next=array('id'=>0,'code'=>'');
+  $next=array('id'=>0,'name'=>'');
 mysql_free_result($result);
 
 $smarty->assign('prev',$prev);
 $smarty->assign('next',$next);
-$smarty->assign('box_layout','yui-t0');
+
+
+
+$show_details=$_SESSION['state']['customer']['details'];
+$smarty->assign('show_details',$show_details);
+$general_options_list=array();
+if($modify)
+  $general_options_list[]=array('tipo'=>'url','url'=>'edit_customer.php','label'=>_('Edit Customer'));
+$general_options_list[]=array('tipo'=>'js','state'=>$show_details,'id'=>'details','label'=>($show_details?_('Hide Details'):_('Show Details')));
+
+$smarty->assign('general_options_list',$general_options_list);
+
+
+
+
+
 $smarty->assign('parent','customers');
 $smarty->assign('title','Customer: '.$customer->get('customer name'));
 $customer_home=_("Customers List");

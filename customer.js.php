@@ -11,7 +11,7 @@ var customer_key=<?php echo $_SESSION['state']['customer']['id']?>;
 
 function showdetails(o){
 
-
+  
 
     var history_id=o.getAttribute('hid');
     var details=o.getAttribute('d');
@@ -22,8 +22,9 @@ function showdetails(o){
     if(details=='no'){
 	row_class=tr.getAttribute('class');
 
-	var request="ar_contacts.php?tipo=customer_history_details&id="+history_id;
-	YAHOO.util.Connect.asyncRequest('POST',request ,{
+	var request="ar_history.php?tipo=history_details&id="+history_id;
+	//alert(request)	
+YAHOO.util.Connect.asyncRequest('POST',request ,{
 		success:function(o) {
 		    var r =  YAHOO.lang.JSON.parse(o.responseText);
 		    if (r.state==200) {
@@ -238,7 +239,7 @@ var upload_attach = function(e){
     
     var uploadHandler = {
 	upload: function(o) {
-	    alert(o.responseText);
+	//alert(o.responseText);
 	    var r =  YAHOO.lang.JSON.parse(o.responseText);
 	    if (r.state==200) {
 		close_dialog('attach');
