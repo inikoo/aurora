@@ -274,6 +274,7 @@ if(isset( $_REQUEST['where']))
      else
        $note=$row['History Abstract'].' <img class="button" d="no" id="ch'.$row['History Key'].'" hid="'.$row['History Key'].'" onClick="showdetails(this)" src="art/icons/closed.png" alt="Show details" />';
 
+
      $data[]=array(
 		   'id'=>$row['History Key'],
 		   'date'=>strftime("%a %e %b %Y", strtotime($row['History Date'])),

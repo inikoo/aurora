@@ -440,8 +440,9 @@
 </div>
 <div class="edit_block" {if $edit!="pictures"}style="display:none"{/if}  id="d_pictures">
 
- 
+
 {include file='edit_images_splinter.tpl'}
+
 
 
 
