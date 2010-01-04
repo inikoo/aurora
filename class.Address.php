@@ -929,7 +929,6 @@ class Address extends DB_Table{
 	$this->update_field_switcher($key,$value,$options);
       }
     }
-
     if(!$this->updated)
       $this->msg.=' '._('Nothing to be updated')."\n";
     else{
@@ -944,7 +943,7 @@ class Address extends DB_Table{
                 $contact->update_address_data($this->id);
                 print($contact->msg);
             }
-            foreach($this->get_customer_key() as $customer_key) {
+            foreach($this->get_customer_keys() as $customer_key) {
                 $customer=New Customer($customer_key);
                 $customer->update_address_data($this->id);
                 print($customer->msg);
@@ -4261,7 +4260,7 @@ $data['Address Country Key']='';
          function: get_customer_key
          Returns the Customer Key if the contact is one
         */
-    function get_customer_key() {
+    function get_customer_keys() {
         $sql=sprintf("select `Customer Key` from `Customer Dimension` where `Customer Type`='Person' and `Customer Main Address Key`=%d  ",$this->id);
         $customer_keys=array();
         $result=mysql_query($sql);
