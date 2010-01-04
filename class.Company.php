@@ -405,7 +405,7 @@ class Company extends DB_Table {
     }
 
     function get($key,$arg1=false) {
-        //  print $key."xxxxxxxx";
+      //  print $key."xxxxxxxx";
 
         if (array_key_exists($key,$this->data))
             return $this->data[$key];
@@ -1059,11 +1059,11 @@ class Company extends DB_Table {
 
 
             $history_data=array(
-                              'note'=>_('Company Name Changed')
-                                     ,'details'=>_trim(_('Company name chaged').": ".$old_value." -> ".$this->data['Company Name'])
-                                                ,'indirect_object'=>'Name'
-                          );
-
+				'note'=>_('Company Name Changed')
+				,'details'=>_trim(_('Company name chaged').": ".$old_value." -> ".$this->data['Company Name'])
+				,'indirect_object'=>'Name'
+				);
+	    
             $this->add_history($history_data);
 
             // update childen and parents

@@ -142,6 +142,8 @@ class Contact extends DB_Table {
         }
 
 
+	//	print_r($this->editor);
+
         $this->candidate=array();
         $this->found=false;
         $create='';
@@ -1308,14 +1310,14 @@ $sql=sprintf("insert into `Address Telecom Bridge` values (%d,%d)",$home_address
 
         $history_data=array(
                           'note'=>_('Contact Associated with Company')
-                                 ,'direct_object'=>'Contact'
-                                                  ,'direct_object_key'=>$this->id
-                                                                       ,'indirect_object'=>'Company'
-                                                                                          ,'indirect_object_key'=>$company->id
-                                                                                                                 ,'details'=>_trim(_('Contact').' '.$this->display('name').' '._('associated with Company').": \"".$company->data['Company Name']."\"  "._('created'))
-                                                                                                                            ,'action'=>'associated'
-                                                                                                                                      ,'deep'=>2
-                      );
+			  ,'direct_object'=>'Contact'
+			  ,'direct_object_key'=>$this->id
+			  ,'indirect_object'=>'Company'
+			  ,'indirect_object_key'=>$company->id
+			  ,'details'=>_trim(_('Contact').' '.$this->display('name').' '._('associated with Company').": \"".$company->data['Company Name']."\"  "._('created'))
+			  ,'action'=>'associated'
+			  ,'deep'=>2
+			    );
         $this->add_history($history_data,$force_history);
 
 
