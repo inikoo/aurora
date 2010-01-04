@@ -721,22 +721,19 @@ class Contact extends DB_Table {
         }
 
         if ($create and !$this->found) {
-            $this->create($data,$options);
-            $new_work_address_key=$this->update_address($address_home_data,'Home');
-            $new_home_address_key=$this->update_address($address_work_data,'Work');
-            if(!$new_work_address_key){
-	    foreach($this->new_home_telephone_keys as $tel_key=>$tmp){
-	     $sql=sprintf("insert into `Address Telecom Bridge` values (%d,%d)",$new_home_address_key,$tel_key);
-              mysql_query($sql);
-	    }
-	    }
+            $this->create($data,$address_home_data,$options);
+        
+          
         }
 
 
         if ($update and $this->found) {
             $this->update($raw_data,$options);
-            $this->update_address($address_home_data,'Home');
-            $this->update_address($address_work_data,'Work');
+           if($main_home_address_key=$this->get_main_home_address_key()){
+            $this->update_address($main_home_address_key,$address_home_data);
+           }
+           
+        
 
         }
 
@@ -889,7 +886,7 @@ class Contact extends DB_Table {
      (example end)
 
     */
-    private function create ($data,$options='') {
+    private function create ($data,$address_home_data,$options='') {
 //print_r($data);exit;
         global $myconf;
         if (is_string($data))
@@ -1022,25 +1019,26 @@ class Contact extends DB_Table {
 
                 }
 
+$home_address_key=0;
+                 if (is_array($address_home_data) and !array_empty($address_home_data)) { 
+                     $address_home_data['editor']=$this->editor; 
+                     $home_address=new Address("find in contact ".$this->id." create update",$address_home_data); 
+                     if ($home_address->error) { 
+                         print $home_address->msg."\n"; 
+                         exit("find_contact: home address found\n"); 
+                     } 
+                     //print_r($address_home_data); 
+                     //print_r($home_address); 
 
-/*                 if (is_array($address_home_data)) { */
-/*                     $address_home_data['editor']=$this->editor; */
-/*                     $home_address=new Address("find in contact ".$this->id." create update",$address_home_data); */
-/*                     if ($home_address->error) { */
-/*                         print $home_address->msg."\n"; */
-/*                         exit("find_contact: home address found\n"); */
-/*                     } */
-/*                     //print_r($address_home_data); */
-/*                     //print_r($home_address); */
+                     $this->associate_address(array( 
+                                                   'Address Key'=>$home_address->id 
+                                                                 ,'Address Type'=>array('Home') 
+                                                                                 ,'Address Function'=>array('Contact') 
 
-/*                     $this->add_update_address(array( */
-/*                                                   'Address Key'=>$home_address->id */
-/*                                                                 ,'Address Type'=>array('Home') */
-/*                                                                                 ,'Address Function'=>array('Contact') */
+                                               )); 
+                     $home_address_key=$home_address->id;                          
 
-/*                                               )); */
-
-/*                 } */
+                 } 
 
 
 
@@ -1099,7 +1097,10 @@ class Contact extends DB_Table {
                                                'Telecom Key'=>$telephone->id
                                                              ,'Telecom Type'=>'Home Telephone'
                                            ));
-$this->new_home_telephone_keys[$telephone->id]=1;
+//$this->new_home_telephone_keys[$telephone->id]=1;
+ $sql=sprintf("insert into `Address Telecom Bridge` values (%d,%d)",$home_address_key,$telephone->id);
+              mysql_query($sql);
+
 
 // $sql=sprintf("insert into `Address Telecom Bridge` values (%d,%d)",$home_address->id,$telephone->id);
 //                          mysql_query($sql);
@@ -1137,8 +1138,9 @@ $this->new_home_telephone_keys[$telephone->id]=1;
                                                'Telecom Key'=>$telephone->id
                                               ,'Telecom Type'=>'Home Telephone'
 						 ));
-			    $this->new_home_telephone_keys[$telephone->id]=1;
-                           
+			  //  $this->new_home_telephone_keys[$telephone->id]=1;
+                     $sql=sprintf("insert into `Address Telecom Bridge` values (%d,%d)",$home_address_key,$telephone->id);
+              mysql_query($sql);      
 
                         }
 
@@ -1168,7 +1170,9 @@ $this->new_home_telephone_keys[$telephone->id]=1;
                                                              ,'Telecom Type'=>'Home Fax'
                                            ));
 
-$this->new_home_telephone_keys[$telephone->id]=1;
+//$this->new_home_telephone_keys[$telephone->id]=1;
+$sql=sprintf("insert into `Address Telecom Bridge` values (%d,%d)",$home_address_key,$telephone->id);
+              mysql_query($sql);
 //   $sql=sprintf("insert into `Address Telecom Bridge` values (%d,%d)",$home_address->id,$telephone->id);
 //                          mysql_query($sql);
 
@@ -1649,7 +1653,7 @@ $this->new_home_telephone_keys[$telephone->id]=1;
                     $company->editor=$this->editor;
                     $company->update_email($email->id);
 
-                    $customer_found_keys=$company->get_customers_key();
+                    $customer_found_keys=$company->get_customer_keys();
                     foreach($customer_found_keys as $customer_found_key) {
                         $customer=new Customer($customer_found_key);
                         $customer->editor=$this->editor;
@@ -1657,7 +1661,7 @@ $this->new_home_telephone_keys[$telephone->id]=1;
                     }
                 }
 
-                $customer_found_keys=$this->get_customers_key();
+                $customer_found_keys=$this->get_customer_keys();
                 foreach($customer_found_keys as $customer_found_key) {
                     $customer=new Customer($customer_found_key);
                     $customer->editor=$this->editor;
@@ -1730,7 +1734,7 @@ $this->new_home_telephone_keys[$telephone->id]=1;
                     $company->update_email($row['Email Key']);
                     $company->remove_email($email->id);
 
-                    $customer_found_keys=$company->get_customers_key();
+                    $customer_found_keys=$company->get_customer_keys();
                     foreach($customer_found_keys as $customer_found_key) {
                         $customer=new Customer($customer_found_key);
                         $customer->editor=$this->editor;
@@ -1848,7 +1852,7 @@ $this->new_home_telephone_keys[$telephone->id]=1;
             $res=mysql_query($sql);
             if ($row=mysql_fetch_array($res)) {
 
-	      $sql='update `Address Bridge` set `Is Main`="Yes" where  `Subject Key`=%d and `Subject Type`="Contact" and `Address Description`=%s and `Address Key`=%d  '
+	      $sql=sprintf('update `Address Bridge` set `Is Main`="Yes" where  `Subject Key`=%d and `Subject Type`="Contact" and `Address Description`=%s and `Address Key`=%d  '
   ,$this->id
                          ,prepare_mysql($address->data['Address Description'])
                          ,$address_key
@@ -1856,20 +1860,20 @@ $this->new_home_telephone_keys[$telephone->id]=1;
 	    mysql_query($sql);
                 $this->update_address_data($row['Address Key']);
 
-                if ($company_key=$this->company_key('principal')) {
-                    $company=new Company('id',$company_key);
-                    $company->editor=$this->editor;
-                    $company->update_address($row['Address Key']);
-                    $company->remove_address($address->id);
+               // if ($company_key=$this->company_key('principal')) {
+               //     $company=new Company('id',$company_key);
+                //    $company->editor=$this->editor;
+                 //   $company->update_address($row['Address Key']);
+                  //  $company->remove_address($address->id);
 
-                    $customer_found_keys=$company->get_customers_key();
-                    foreach($customer_found_keys as $customer_found_key) {
-                        $customer=new Customer($customer_found_key);
-                        $customer->editor=$this->editor;
-                        $customer->update_address($row['Address Key']);
-                        $customer->remove_address($address->id);
-                    }
-                }
+                   // $customer_found_keys=$company->get_customer_keys();
+                   // foreach($customer_found_keys as $customer_found_key) {
+                    //    $customer=new Customer($customer_found_key);
+                     //   $customer->editor=$this->editor;
+                      //  $customer->update_address($row['Address Key']);
+                      //  $customer->remove_address($address->id);
+                  //  }
+                //}
 
 
 
@@ -1896,42 +1900,27 @@ $this->new_home_telephone_keys[$telephone->id]=1;
 
     }
 
+  function update_address($address_key,$data) {
 
-
-
-    /*
-       Function: update_address
-       Update/Create address
-      */
-    function update_address($data,$type='Work',$options='principal') {
-
-
-        if (!array_empty($data)) {
-            $address=new address('find in contact '.$this->id.' '.$type.' ',$data);
-            if ($address->id) {
-                if ($type=='Home') {
-                    $address_data=array(
-                                      'Address'=>$address
-                                                    ,'Address Type'=>array('Home')
-                                                                    ,'Address Function'=>array('Contact')
-
-                                  );
-                } else {
-                    $address_data=array(
-                                      'Address'=>$address
-                                                    ,'Address Type'=>array('Work')
-                                                                    ,'Address Function'=>array('Contact')
-
-                                  );
-
-                }
-
-
-                return $this->add_update_address($address_data,$options);
-            }
+        $address=new Address($address_key);
+        if(!$address->id){
+        $this->error=true;
+        return;
         }
-	return false;
+        $address_keys=$this->get_address_keys();
+        if(!array_key_exists($address->id,$address_keys)){
+         $this->error=true;
+         $this->msg='Address not associated with company';
+        }
+        
+        $address->editor=$this->editor;
+        $address->update($data);// Address Object would update the address not normal data;
+        
+
     }
+
+
+
 
     function update_address_data($address_key=false) {
 
@@ -1956,7 +1945,7 @@ $this->new_home_telephone_keys[$telephone->id]=1;
             $this->data['Contact Main Location']=$address->display('location');
 
 
-            $sql=sprintf("update `Contact Dimension` set `Contact Main Address Key`=%d,`Contact Main Plain Address`=%s,`Contact Main XHTML Address`=%s,`Contact Main Country`=%s,`Address Country Code`=%s,`Contact Main Location`=%s,`Contact Main Country Key`=%d where `Contact Key`=%d"
+            $sql=sprintf("update `Contact Dimension` set `Contact Main Address Key`=%d,`Contact Main Plain Address`=%s,`Contact Main XHTML Address`=%s,`Contact Main Country`=%s,`Contact Main Country Code`=%s,`Contact Main Location`=%s,`Contact Main Country Key`=%d where `Contact Key`=%d"
 
                          ,$this->data['Contact Main Address Key']
                          ,prepare_mysql($this->data['Contact Main Plain Address'])
@@ -2093,31 +2082,31 @@ $this->new_home_telephone_keys[$telephone->id]=1;
      integer address key of the added/updated address
     */
 
-    private function add_update_address($data,$args='principal') {
+    function associate_address($data,$args='') {
 
         // print_r($data);
 
       $this->updated=false;
 
       $principal=preg_match('/principal/i',$args);
+if(count($this->get_address_keys())==0)
+$principal=true;
 
-
-	$address=$data['Address'];
-        if ($address->updated or $address->new)
-            $this->updated=true;
+	$address_key=$data['Address Key'];
+        //if ($address->updated or $address->new)
+         //   $this->updated=true;
 
 
 
         foreach($data['Address Type'] as $type) {
             foreach($data['Address Function'] as $function) {
 
-                $sql=sprintf("insert into `Address Bridge` (`Subject Type`,`Subject Key`,`Address Key`,`Address Type`,`Address Function`) values ('Contact',%d,%d,%s,%s)  ON DUPLICATE KEY UPDATE `Address Type`=%s,`Address Function`=%s",
+                $sql=sprintf("insert into `Address Bridge` (`Subject Type`,`Subject Key`,`Address Key`,`Address Type`,`Address Function`) values ('Contact',%d,%d,%s,%s)  ON DUPLICATE KEY UPDATE `Is Active`='Yes'",
                              $this->id
-                             ,$address->id
+                             ,$address_key
                              ,prepare_mysql($type)
                              ,prepare_mysql($function)
-                             ,prepare_mysql($type)
-                             ,prepare_mysql($function)
+                            
                             );
                 mysql_query($sql);
                 if (mysql_affected_rows() ){
@@ -2133,31 +2122,25 @@ $this->new_home_telephone_keys[$telephone->id]=1;
 
 
 
-        if ($principal and $this->updated) {
+        if ($principal ) {
 
             $sql=sprintf("update `Address Bridge`  set `Is Main`='No' where `Subject Type`='Contact' and  `Subject Key`=%d  and `Address Key`!=%d",
                          $this->id
-                         ,$address->id
+                         ,$address_key
                         );
             mysql_query($sql);
             $sql=sprintf("update `Address Bridge`  set `Is Main`='Yes' where `Subject Type`='Contact' and  `Subject Key`=%d  and `Address Key`=%d",
                          $this->id
-                         ,$address->id
+                         ,$address_key
                         );
 
             mysql_query($sql);
 
-            $this->update_address_data($address->id);
+            $this->update_address_data($address_key);
 	    // whe have to update 
 
         }
 
-
-
-	if($this->updated)
-	  return $address->id;
-	else
-	  return false;
 
 
     }
@@ -2681,7 +2664,7 @@ $this->new_home_telephone_keys[$telephone->id]=1;
                 $staff->update_contact($this->id);
                 print($staff->msg);
             }
-            foreach($this->get_customer_key() as $customer_key) {
+            foreach($this->get_customer_keys() as $customer_key) {
                 $customer=New Customer($customer_key);
                 $customer->update_contact($this->id);
                 print($customer->msg);
@@ -3537,6 +3520,38 @@ $this->new_home_telephone_keys[$telephone->id]=1;
         return $mobile;
     }
 
+function get_main_home_address_key(){
+
+ $sql=sprintf("select * from `Address Bridge` CB where   `Subject Type`='Contact' and `Subject Key`=%d  and `Address Type`='Home' order by `Is Main` desc  ",$this->id);
+        $result=mysql_query($sql);
+
+        if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+           
+            return $row['Address Key'];
+        }else
+        return 0;
+
+
+}
+
+
+  function get_address_keys() {
+
+
+        $sql=sprintf("select * from `Address Bridge` CB where   `Subject Type`='Contact' and `Subject Key`=%d  group by `Address Key` order by `Is Main` desc  ",$this->id);
+        $address_keys=array();
+        $result=mysql_query($sql);
+
+        while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+           
+            $address_keys[$row['Address Key']]= $row['Address Key'];
+        }
+        return $address_keys;
+
+    }
+
+
+
     /*
          function:get_main_address_data
          Array with the data components of the main address
@@ -3560,7 +3575,7 @@ $this->new_home_telephone_keys[$telephone->id]=1;
          function: get_customer_key
          Returns the Customer Key if the contact is one
         */
-    function get_customer_key() {
+    function get_customer_keys() {
         $sql=sprintf("select `Customer Key` from `Customer Dimension` where `Customer Type`='Person' and `Customer Main Contact Key`=%d  ",$this->id);
         $customer_keys=array();
         $result=mysql_query($sql);

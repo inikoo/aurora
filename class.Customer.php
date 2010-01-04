@@ -201,7 +201,7 @@ class Customer extends DB_Table{
       
       $this->found_child=true;
       $this->found_child_key=$child->found_key;
-      $customer_found_keys=$child->get_customers_key();
+      $customer_found_keys=$child->get_customer_keys();
       if(count($customer_found_keys)>0){
 	foreach($customer_found_keys as $customer_found_key){
 	  $tmp_customer=new Customer($customer_found_key);

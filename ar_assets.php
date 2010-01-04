@@ -3861,13 +3861,14 @@ function list_products() {
 
     if ($order=='stock')
         $order='`Product Availability`';
-    if ($order=='code')
+    if ($order=='code' or $order=='codename')
         $order='`Product Code File As`';
     else if ($order=='name')
         $order='`Product Name`';
     else if ($order=='available_for')
         $order='`Product Available Days Forecast`';
-
+  else if ($order=='shortname')
+        $order='`Product Available Days Forecast`';
 
     if ($order=='profit') {
         if ($period=='all')
@@ -3943,7 +3944,14 @@ function list_products() {
     }
     elseif($order=='web') {
         $order='`Product Web State`';
+    }elseif($order=='stock_state') {
+        $order='`Product Availability State`';
+    }elseif($order=='stock_forecast') {
+        $order='`Product Available Days Forecast`';
     }
+    
+    
+ 
 
     $sum_total_sales=0;
     $sum_total_profit=0;
@@ -4410,11 +4418,15 @@ function list_products() {
             $web_state=$row['Product Web State'];
         }
 
+$stock_state=$row['Product Availability State'];
+        $stock_forecast=interval($row['Product Available Days Forecast']);
         $adata[]=array(
 
                      'code'=>$code,
                      'name'=>$row['Product XHTML Short Description'],
-                     'shortname'=>number($row['Product Units Per Case']).'x @'.money($row['Product Price']/$row['Product Units Per Case']).' '._('ea'),
+                     'smallname'=>'<span style="font-size:70%;">'.$row['Product XHTML Short Description'].'</span>',
+                     'stock_state'=>$stock_state,
+                     'stock_forecast'=>$stock_forecast,
                      'family'=>$row['Product Family Name'],
                      'dept'=>$row['Product Main Department Name'],
                      'expcode'=>$row['Product Tariff Code'],
@@ -5451,7 +5463,7 @@ function list_families() {
 
     $_order=$order;
     $_dir=$order_direction;
-
+ $order='`Product Family Code`';
     if ($order=='profit') {
         if ($period=='all')
             $order='`Product Family Total Profit`';
@@ -5479,6 +5491,8 @@ function list_families() {
     }
     elseif($order=='code')
     $order='`Product Family Code`';
+     elseif($order=='stock_value')
+    $order='`Product Family Stock Value`';
     elseif($order=='name')
     $order='`Product Family Name`';
     elseif($order=='active')
