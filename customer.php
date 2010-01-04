@@ -94,6 +94,9 @@ if($edit ){
   
   if($customer->data['Customer Type']=='Company'){
     $company=new Company($customer->data['Customer Company Key']);
+    if(!$company->id){
+      print "error no company found".print_r($customer);
+    }
     $smarty->assign('company',$company);
     
     $offset=1;// 0 is reserved to new address
@@ -238,7 +241,7 @@ $show_details=$_SESSION['state']['customer']['details'];
 $smarty->assign('show_details',$show_details);
 $general_options_list=array();
 if($modify)
-  $general_options_list[]=array('tipo'=>'url','url'=>'edit_customer.php','label'=>_('Edit Customer'));
+  $general_options_list[]=array('tipo'=>'url','url'=>'customer.php?edit='.$customer->id,'label'=>_('Edit Customer'));
 $general_options_list[]=array('tipo'=>'js','state'=>$show_details,'id'=>'details','label'=>($show_details?_('Hide Details'):_('Show Details')));
 
 $smarty->assign('general_options_list',$general_options_list);

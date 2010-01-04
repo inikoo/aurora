@@ -139,7 +139,7 @@ class Customer extends DB_Table{
   function find($raw_data,$options=''){
 
     //print "===================================\n";
-
+   
     $this->found_child=false;
     $this->found_child_key=0;
     $this->found=false;
@@ -154,7 +154,7 @@ class Customer extends DB_Table{
 		    
       }
     }
-
+    // print_r($this->editor);exit;
 
    $create='';
    $update='';
@@ -241,7 +241,7 @@ class Customer extends DB_Table{
     
       if($this->found){
 
-	   if($raw_data['Customer Type']=='Person'){
+	if($raw_data['Customer Type']=='Person'){
 	  $child=new Contact ('find in customer create update',$raw_data);
    	}else{
 	  $child=new Company ('find in customer create update',$raw_data);
@@ -445,13 +445,15 @@ class Customer extends DB_Table{
 
 
    function create($raw_data,$args=''){
+     
+
 
      $main_telephone_key=false;
      $main_fax_key=false;
      $main_email_key=false;
 
      //print_r($raw_data);
-       //  exit;
+         
      $this->data=$this->base_data();
      foreach($raw_data as $key=>$value){
        if(array_key_exists($key,$this->data)){
@@ -472,6 +474,7 @@ class Customer extends DB_Table{
        $this->data['Customer Main FAX']='';
        $this->data['Customer Main Plain FAX']='';
        $company=new company('find in customer create update',$raw_data);
+       
        $company_key=$company->id;
        
        
@@ -608,23 +611,25 @@ class Customer extends DB_Table{
       $this->id=mysql_insert_id();
       $this->get_data('id',$this->id);
       
-     
-
-    
-      if($this->data['Customer Type']=='Company'){
-	$this->update_company($company_key,true);
-	
-      }else{
-	$this->update_contact($contact_key,true);
-
-      }
-       $history_data=array(
+      $history_data=array(
 			  'note'=>_('Customer Created')
 			  ,'details'=>_trim(_('New customer')." \"".$this->data['Customer Name']."\"  "._('added'))
 			  ,'action'=>'created'
 			  );
       $this->add_history($history_data);
       $this->new=true;
+      
+      
+    
+      if($this->data['Customer Type']=='Company'){
+	
+	$this->update_company($company_key,true);
+	
+      }else{
+	$this->update_contact($contact_key,true);
+
+      }
+      
       if($main_email_key){
 	$this->update_email($main_email_key);
       }
@@ -1025,7 +1030,7 @@ $this->associated=false;
     
 
     $old_name=$this->data['Customer Main Contact Name'];
-    if ($old_name!=$contact->display('name')) {
+    if ($old_name!=$contact->display('name') or $this->new) {
 
 
         if ($this->data['Customer Type']=='Person'
@@ -1090,7 +1095,7 @@ $this->associated=false;
 
 
 if($this->associated){
- $note=_('Contact name changed');
+  $note=_('Contact Associted with Customer');
             $details=_('Contact')." ".$contact->display('name')." (".$contact->get_formated_id_link().") "._('associated with Customer:')." ".$this->data['Customer Name']." (".$this->get_formated_id_link().")";
             $history_data=array(
                               'indirect_object'=>'Customer Name'
@@ -1105,12 +1110,20 @@ if($this->associated){
 }
 
 function update_company($company_key=false) {
+
+  // print "XxX \n";
+
 $this->associated=false;
-    if (!$company_key)
-        return;
+if (!$company_key){
+  print "error no comapby key";
+  return;
+}
+
+
     $company=new company($company_key);
     if (!$company->id) {
         $this->msg='company not found';
+	 print $this->msg;
         return;
 
     }
@@ -1135,7 +1148,9 @@ $this->associated=false;
     
 
     $old_name=$this->data['Customer Company Name'];
-    if ($old_name!=$company->data['Company Name']) {
+    // print $old_name.'->'.$company->data['Company Name'];
+
+    if ($old_name!=$company->data['Company Name'] or $this->new) {
 
 
         if ($this->data['Customer Type']=='Company' and $this->data['Customer Name']!=$company->data['Company Name']) {
@@ -1170,7 +1185,7 @@ $this->associated=false;
                     );
         mysql_query($sql);
 
-
+	//print $sql;
 
         $this->updated=true;
 
@@ -1199,7 +1214,7 @@ $this->associated=false;
 
 
 if($this->associated){
- $note=_('Company name changed');
+ $note=_('Company associated with Customer');
             $details=_('Company')." ".$company->data['Company Name']." (".$company->get_formated_id_link().") "._('associated with Customer:')." ".$this->data['Customer Name']." (".$this->get_formated_id_link().")";
             $history_data=array(
                               'indirect_object'=>'Customer Name'

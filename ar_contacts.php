@@ -1055,7 +1055,7 @@ if(isset( $_REQUEST['where']))
 //       $order='supertotal';
 //    }
     
-
+$order='`Customer File As`';
    if($order=='name')
      $order='`Customer File As`';
    elseif($order=='id')
@@ -1113,7 +1113,7 @@ if(isset( $_REQUEST['where']))
     
   elseif($order=='activity')
      $order='`Customer Type by Activity`';
-
+  
    $sql="select   *,`Customer Net Refunds`+`Customer Tax Refunds` as `Customer Total Refunds`  from `Customer Dimension`  $where $wheref  order by $order $order_direction limit $start_from,$number_results";
    //   print $sql;
    $adata=array();
