@@ -3804,11 +3804,11 @@ function list_products() {
     $wheref='';
     if ($f_field=='code' and $f_value!='')
         $wheref.=" and  `Product Code` like '".addslashes($f_value)."%'";
-    elseif($f_field=='name' and $f_value!='')
+    elseif($f_field=='description' and $f_value!='')
     $wheref.=" and  `Product Name` like '%".addslashes($f_value)."%'";
 
     $sql="select count(*) as total from $db_table  $where $wheref   ";
-    //print_r($conf);exit;
+
     $res=mysql_query($sql);
     if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
         $total=$row['total'];
@@ -5405,10 +5405,10 @@ function list_families() {
     if ($f_field=='code' and $f_value!='')
         $wheref.=" and `Product Family Code`  like '".addslashes($f_value)."%'";
     if ($f_field=='description' and $f_value!='')
-        $wheref.=" and `Product Family Name`  like '".addslashes($f_value)."%'";
+        $wheref.=" and `Product Family Name`  like '%".addslashes($f_value)."%'";
 
     $sql="select count(*) as total from `Product Family Dimension`      $where $wheref";
-    //print $sql;
+   
     $res=mysql_query($sql);
     if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
         $total=$row['total'];
@@ -5460,10 +5460,10 @@ function list_families() {
 
 
 
-
+    
     $_order=$order;
     $_dir=$order_direction;
- $order='`Product Family Code`';
+    // $order='`Product Family Code`';
     if ($order=='profit') {
         if ($period=='all')
             $order='`Product Family Total Profit`';
@@ -5516,7 +5516,8 @@ function list_families() {
     $order='`Product Family Low Availability Products`';
     elseif($order=='critical')
     $order='`Product Family Critical Availability Products`';
-
+    else
+      $order='`Product Family Code`';
 
 
 

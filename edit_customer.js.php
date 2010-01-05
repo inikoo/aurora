@@ -13,26 +13,28 @@ var editing='<?php echo $_SESSION['state']['customer']['edit']?>';
 
 var validate_scope_data=
 {
-'customer':{
-    'name':{'changed':false,'validated':true,'required':true,'group':1,'type':'item','regexp':"[a-z\\d]+",'name':'Customer_Name'}
-    ,'contact':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','regexp':"[a-z\\d]+",'name':'Customer_Main_Contact_Name'}
-    ,'email':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','regexp':regexp_valid_email,'name':'Customer_Main_Email'}
-    ,'telephone':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','regexp':"[exp\d\(\)\[\]\-\s]+",'name':'Customer_Main_Telephone'}
-}
+    'customer':{
+	'name':{'changed':false,'validated':true,'required':true,'group':1,'type':'item','name':'Customer_Name','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Customer Name')?>'}]}
+	,'contact':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'Customer_Main_Contact_Name','validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Contact Name')?>'}]}
+	,'email':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'Customer_Main_Email','validation':[{'regexp':regexp_valid_email,'invalid_msg':'<?php echo _('Invalid Email')?>'}]}
+	,'telephone':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'Customer_Main_Telephone','validation':[{'regexp':"[ext\\d\\(\\)\\[\\]\\-\\s]+",'invalid_msg':'<?php echo _('Invalid Telephone')?>'}]}
+    }
 };
 
+//"[ext\d\(\)\[\]\-\s]+"
+var validate_scope_metadata={'customer':{'type':'edit','ar_file':'ar_edit_contacts.php','key_name':'customer_key','key':<?php echo $_SESSION['state']['customer']['id']?>}};
 
-function validate_scope(){
-var changed=false;
-var errors=false;
-//alert(validate_scope_data['name'].changed+'v:'+validate_scope_data['name'].validated)
-
-
-    for(item in validate_scope_data){
+function validate_scope_old(){
+    var changed=false;
+    var errors=false;
+    //alert(validate_scope_data['name'].changed+'v:'+validate_scope_data['name'].validated)
     
+    
+    for(item in validate_scope_data){
+	
         if(validate_scope_data[item].changed==true)
             changed=true;
-         if(validate_scope_data[item].validated==false)
+	if(validate_scope_data[item].validated==false)
             errors=true;
     }
     
@@ -82,140 +84,35 @@ function change_block(e){
 
 
 
+
+
 function validate_customer_email(query){
-    query=unescape(query);
-    var old_code=Dom.get('Supplier_Main_Email').getAttribute('ovalue');
-    if(old_code.toLowerCase()!=trim(query.toLowerCase())){  
-	validate_scope_data.code.changed=true;
-	
-	var request='ar_contacts.php?tipo=used_email&scope=customer&scope_key='+customer_id+'query='+query; 
-	YAHOO.util.Connect.asyncRequest('POST',request ,{
-		success:function(o) {
-		    //alert(o.responseText)
-		    var r =  YAHOO.lang.JSON.parse(o.responseText);
-		    if(r.state==200){
-			if(r.found=='outside'){
-			    Dom.get('Supplier_Main_Email_msg').innerHTML=r.msg;
-			    validate_scope_data.code.validated=false;
-			}else{
-			    Dom.get('Supplier_Main_Email_msg').innerHTML='';
-		    validate_scope_data.code.validated=true;
-		    
-		    var validator=new RegExp(validate_scope_data.code.regexp,"i");
-		    if(!validator.test(query)){
-			
-	                validate_scope_data.code.validated=false;
-			Dom.get('Supplier_Main_Email_msg').innerHTML='<?php echo _('Invalid Email')?>';
-			
-		    }
-		    
-		    
-			}
-			validate_scope(); 
-			
-		    }else
-			Dom.get(msg_div).innerHTML='<span class="error">'+r.msg+'</span>';
-		}
-		
-	    });
-    }else{
-	validate_scope_data.code.validated=true;
-	validate_scope_data.code.changed=false;
-	validate_scope(); 
-    }
+ validate_general('customer','email',unescape(query));
 }
-
-
-
-
 function validate_customer_name(query){
-    query=unescape(query);
-    var old_name=Dom.get('Customer_Name').getAttribute('ovalue');
-  
-    //    alert(trim(query.toLowerCase())+'<-')
-  if(old_name.toLowerCase()!=trim(query.toLowerCase())){  
-	validate_scope_data.name.changed=true;
-	var validator=new RegExp(validate_scope_data.name.regexp,"i");
-	if(!validator.test(query)){
-	    
-	    validate_scope_data.code.validated=false;
-	    Dom.get('Customer_Name_msg').innerHTML='<?php echo _('Invalid Customer Name')?>';
-	    
-	}else{
-	    validate_scope_data.name.validated=true;
-	    Dom.get('Customer_Name_msg').innerHTML='';
-            
-	}
-    }
-    else{
-	validate_scope_data.name.validated=true;
-	validate_scope_data.name.changed=false;
-	
-    }
-    
-    validate_scope();   
-    
+ validate_general('customer','name',unescape(query));
 }
-function save_edit_customer(){
-    
-    for(item in validate_scope_data){
-	if(validate_scope_data[item].changed){
-	var item_input=Dom.get(validate_scope_data[item].name);
-	var request='ar_edit_contacts.php?tipo=edit_customer&key=' + item+ '&newvalue=' + 
-	    encodeURIComponent(item_input.value) + 
-	    '&customer_key='+customer_id;
-	
-	YAHOO.util.Connect.asyncRequest('POST',request ,{
-		success:function(o) {
-		    //alert(o.responseText)
-		    var r =  YAHOO.lang.JSON.parse(o.responseText);
-		    if(r.state==200){
-			
-			validate_scope_data[r.key].changed=false;
-			validate_scope_data[r.key].validated=true;
-			Dom.get(validate_scope_data[r.key].name).setAttribute('ovalue',r.newvalue);
-			Dom.get(validate_scope_data[r.key].name).value=r.newvalue;
-			Dom.get(validate_scope_data[r.key].name+'_msg').innerHTML='<?php echo _('Updated')?>';
-			
-			//var table=tables.table1;
-			//	var datasource=tables.dataSource1;
-			//var request='';
-			//datasource.sendRequest(request,table.onDataReturnInitializeTable, table); 
-			if(r.key=='name'){
-			    Dom.get('title_name').innerHTML=r.newvalue;
-			    Dom.get('name').value=r.newvalue;
-			    Dom.get('name').setAttribute('ovalue',r.newvalue);
+function validate_customer_telephone(query){
+ validate_general('customer','telephone',unescape(query));
+}
+function validate_customer_main_contact_name(query){
+ validate_general('customer','contact',unescape(query));
+}
 
-			}
-			
-		
-		    }else{
-			validate_scope_data[r.key].changed=true;
-			validate_scope_data[r.key].validated=false;
-			Dom.get(validate_scope_data[r.key].name+'_msg').innerHTML=r.msg;
-			
-		    }
-		    
-		}
-			    
-	    });
-	}
-    }
-    
-    
+
+
+
+function save_edit_customer(){
+    save_edit_general('customer');
 }
 function reset_edit_customer(){
-    for(item in validate_scope_data){
-	var item_input=Dom.get(validate_scope_data[item].name);
-	item_input.value=item_input.getAttribute('ovalue');
-	validate_scope_data[item].changed=false;
-	validate_scope_data[item].validated=true;
-	Dom.get(validate_scope_data[item].name+'_msg').innerHTML='';
-    }
-    validate_scope(); 
-};
+    reset_edit_general('customer')
+}
+
+
 function init(){
-    var oACDS = new YAHOO.util.FunctionDataSource(mygetTerms);
+  
+  var oACDS = new YAHOO.util.FunctionDataSource(mygetTerms);
     oACDS.queryMatchContains = true;
     var oAutoComp = new YAHOO.widget.AutoComplete("f_input0","f_container", oACDS);
     oAutoComp.minQueryLength = 0; 
@@ -224,19 +121,33 @@ function init(){
     
     YAHOO.util.Event.addListener('save_edit_customer', "click", save_edit_customer);
     YAHOO.util.Event.addListener('reset_edit_customer', "click", reset_edit_customer);
-    
+
     var customer_name_oACDS = new YAHOO.util.FunctionDataSource(validate_customer_name);
     customer_name_oACDS.queryMatchContains = true;
     var customer_name_oAutoComp = new YAHOO.widget.AutoComplete("Customer_Name","Customer_Name_Container", customer_name_oACDS);
     customer_name_oAutoComp.minQueryLength = 0; 
     customer_name_oAutoComp.queryDelay = 0.1;
-	
+
     
     var customer_email_oACDS = new YAHOO.util.FunctionDataSource(validate_customer_email);
     customer_email_oACDS.queryMatchContains = true;
     var customer_email_oAutoComp = new YAHOO.widget.AutoComplete("Customer_Main_Email","Customer_Main_Email_Container", customer_email_oACDS);
     customer_email_oAutoComp.minQueryLength = 0; 
     customer_email_oAutoComp.queryDelay = 0.1;
+
+
+    var customer_telephone_oACDS = new YAHOO.util.FunctionDataSource(validate_customer_telephone);
+    customer_telephone_oACDS.queryMatchContains = true;
+    var customer_telephone_oAutoComp = new YAHOO.widget.AutoComplete("Customer_Main_Telephone","Customer_Main_Telephone_Container", customer_telephone_oACDS);
+    customer_telephone_oAutoComp.minQueryLength = 0; 
+    customer_telephone_oAutoComp.queryDelay = 0.1;
+    
+     var customer_main_contact_name_oACDS = new YAHOO.util.FunctionDataSource(validate_customer_main_contact_name);
+    customer_main_contact_name_oACDS.queryMatchContains = true;
+    var customer_main_contact_name_oAutoComp = new YAHOO.widget.AutoComplete("Customer_Main_Contact_Name","Customer_Main_Contact_Name_Container", customer_main_contact_name_oACDS);
+    customer_main_contact_name_oAutoComp.minQueryLength = 0; 
+    customer_main_contact_name_oAutoComp.queryDelay = 0.1;
+
 
 
 

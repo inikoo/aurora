@@ -1016,8 +1016,60 @@ public function update($data,$options=''){
         }
         mysql_free_result($res);
         
-               
- 
+        $sql=sprintf("select `Customer Key` as `Subject Key`  from `Customer Dimension` where `Customer Main FAX Key`=%d;",$this->id);
+        $res=mysql_query($sql);
+        while($row=mysql_fetch_array($res)){
+            $customer=new Customer($row['Subject Key']);
+            $customer->update_fax($this->id); 
+        }
+        mysql_free_result($res);       
+	
+	
+	$sql=sprintf("select `Customer Key` as `Subject Key`  from `Customer Dimension` where `Customer Main Telephone Key`=%d;",$this->id);
+        $res=mysql_query($sql);
+        while($row=mysql_fetch_array($res)){
+            $customer=new Customer($row['Subject Key']);
+            $customer->update_telephone($this->id); 
+        }
+        mysql_free_result($res);      
+
+
+  
+        $sql=sprintf("select `Supplier Key` as `Subject Key`  from `Supplier Dimension` where `Supplier Main FAX Key`=%d;",$this->id);
+        $res=mysql_query($sql);
+        while($row=mysql_fetch_array($res)){
+            $supplier=new Supplier($row['Subject Key']);
+            $supplier->update_fax($this->id); 
+        }
+        mysql_free_result($res);       
+	
+	
+	$sql=sprintf("select `Supplier Key` as `Subject Key`  from `Supplier Dimension` where `Supplier Main Telephone Key`=%d;",$this->id);
+        $res=mysql_query($sql);
+        while($row=mysql_fetch_array($res)){
+            $supplier=new Supplier($row['Subject Key']);
+            $supplier->update_telephone($this->id); 
+        }
+        mysql_free_result($res);      
+
+
+
+	  $sql=sprintf("select `Company Key` as `Subject Key`  from `Company Dimension` where `Company Main FAX Key`=%d;",$this->id);
+        $res=mysql_query($sql);
+        while($row=mysql_fetch_array($res)){
+            $company=new Company($row['Subject Key']);
+            $company->update_fax($this->id); 
+        }
+        mysql_free_result($res);       
+	
+	
+	$sql=sprintf("select `Company Key` as `Subject Key`  from `Company Dimension` where `Company Main Telephone Key`=%d;",$this->id);
+        $res=mysql_query($sql);
+        while($row=mysql_fetch_array($res)){
+            $company=new Company($row['Subject Key']);
+            $company->update_telephone($this->id); 
+        }
+        mysql_free_result($res);      
 
 
 

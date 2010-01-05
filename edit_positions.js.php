@@ -50,7 +50,8 @@ var validate_scope_data={
    }
 };
 
-var validate_scope_type={'position':'new'};
+var validate_scope_metadata={'position':{'type':'new','ar_file':'ar_edit_warehouse.php'}};
+
 
 function validate_code(query){
  validate_general('position','code',unescape(query));

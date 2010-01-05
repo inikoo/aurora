@@ -1143,6 +1143,73 @@ function remove_company($company_key=false){
      }
    }
  }
+
+ function update_telephone($telecom_key) {
+
+        $old_telecom_key=$this->data['Supplier Main Telephone Key'];
+
+        $telecom=new Telecom($telecom_key);
+        if (!$telecom->id) {
+            $this->error=true;
+            $this->msg='Telecom not found';
+            $this->msg_updated.=',Telecom not found';
+            return;
+        }
+        $old_value=$this->data['Supplier Main Telephone'];
+        $sql=sprintf("update `Supplier Dimension` set `Supplier Main Telephone`=%s ,`Supplier Main Plain Telephone`=%s  ,`Supplier Main Telephone Key`=%d where `Supplier Key`=%d "
+                     ,prepare_mysql($telecom->display('xhtml'))
+                     ,prepare_mysql($telecom->display('plain'))
+                     ,$telecom->id
+                     ,$this->id
+                    );
+        mysql_query($sql);
+        if (mysql_affected_rows()) {
+
+            $this->updated;
+            if ($old_value!=$telecom->display('xhtml'))
+                $history_data=array(
+                                  'indirect_object'=>'Supplier Main Telephone'
+                                                    ,'old_value'=>$old_value
+                                                                 ,'new_value'=>$telecom->display('xhtml')
+                              );
+            $this->add_history($history_data);
+        }
+
+    }
+
+    function update_fax($telecom_key) {
+
+
+        $old_telecom_key=$this->data['Supplier Main FAX Key'];
+
+        $telecom=new Telecom($telecom_key);
+        if (!$telecom->id) {
+            $this->error=true;
+            $this->msg='Telecom not found';
+            $this->msg_updated.=',Telecom not found';
+            return;
+        }
+        $old_value=$this->data['Supplier Main FAX'];
+        $sql=sprintf("update `Supplier Dimension` set `Supplier Main FAX`=%s ,`Supplier Main Plain FAX`=%s  ,`Supplier Main Plain FAX`=%d where `Supplier Key`=%d "
+                     ,prepare_mysql($telecom->display('xhtml'))
+                     ,prepare_mysql($telecom->display('plain'))
+                     ,$telecom->id
+                     ,$this->id
+                    );
+        mysql_query($sql);
+        if (mysql_affected_rows()) {
+            $this->updated;
+            if ($old_value!=$telecom->display('xhtml'))
+                $history_data=array(
+                                  'indirect_object'=>'Supplier Main FAX'
+                                                    ,'old_value'=>$old_value
+                                                                 ,'new_value'=>$telecom->display('xhtml')
+                              );
+            $this->add_history($history_data);
+        }
+
+    }
+
 }
 
 

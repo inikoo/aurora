@@ -2739,8 +2739,29 @@ $principal=true;
 
         } else {
 
-            $this->msg=_('Contact name  updated');
+            $this->msg=_('Contact name updated');
             $this->updated=true;
+	    $this->new_value=$this->display();
+
+	    //updating parents
+
+	   	
+	    $sql=sprintf("select `Customer Key` as `Subject Key`  from `Customer Dimension` where `Customer Main Contact Key`=%d;",$this->id);
+	    $res=mysql_query($sql);
+	    while($row=mysql_fetch_array($res)){
+	      
+	      $customer=new Customer($row['Subject Key']);
+	      $customer->editor=$this->editor;
+	      $customer->update_main_contact_name($this->display());
+	      if($customer->data['Customer Type']=='Person'){
+
+		$customer->update_name($this->display());
+	      }
+	    }
+	    mysql_free_result($res);     
+	    
+	    
+
 
         }
 
