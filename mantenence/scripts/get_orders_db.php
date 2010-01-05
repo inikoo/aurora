@@ -116,7 +116,7 @@ $fam_promo_key=$fam_promo->id;
 
 $sql="select * from  orders_data.orders  where   (last_transcribed is NULL  or last_read>last_transcribed) and deleted='No'   order by filename ";
 
-$sql="select * from  orders_data.orders  where   (last_transcribed is NULL  or last_read>last_transcribed) and deleted='No' and filename like '/mnt/z/Orders/100%'  order by filename ";
+$sql="select * from  orders_data.orders  where   (last_transcribed is NULL  or last_read>last_transcribed) and deleted='No' and filename like '/mnt/z/Orders/%'  order by filename ";
 
 //$sql="select * from  orders_data.orders where filename like '%refund.xls'   order by filename";
 //$sql="select * from  orders_data.orders  where filename like '/mnt/%/Orders/15343.xls' order by filename";
@@ -398,7 +398,7 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
       $data['order customer message']='';
     
    
-    $tmp_filename=preg_replace('/\/mnt\/z\/Orders\//',"\\\\\\networkspace1\\openshare\\",$row2['filename']);
+    $tmp_filename=preg_replace('/\/mnt\/z\/Orders\//',"\\\\\\networkspace1\\openshare\\Orders\\",$row2['filename']);
     $tmp_filename=preg_replace('/\//',"\\",$tmp_filename);
 
     $data['Order Original Data Filename']=$tmp_filename;
