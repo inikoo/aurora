@@ -18,7 +18,8 @@
     <tr><td  id="attach">{t}Attach File{/t}</td></tr>
     
     <tr><td id="take_order">{t}Take Order{/t}</td></tr>
-    
+
+
     <tr style="display:none"><td  id="long_note">{t}Long Note{/t}</td></tr>
     <tr style="display:none"><td  id="attach">{t}Attach File{/t}</td></tr>
     <tr style="display:none"><td id="call" >{t}Call{/t}</td></tr>

@@ -29,7 +29,10 @@
 <div  class="edit_block" style="{if $edit!="delivery"}display:none{/if}"  id="d_delivery">
  <div id="customer_contact_address" style="float:left;xborder:1px solid #ddd;width:400px;margin-right:40px">
      <div style="border-bottom:1px solid #777;margin-bottom:5px">
-       {t}Main Delivery Address{/t}:<span class="state_details" style="float:right;display:none" address_key="" id="delivery_cancel_edit_address">{t}Cancel{/t}</span>
+
+       {t}Main Delivery Address{/t}:
+       <span class="state_details" style="float:right;display:none" address_key="" id="delivery_cancel_edit_address">{t}Cancel{/t}</span>
+       <span class="state_details" style="float:right;display:none" address_key="" id="delivery_save_edit_address">{t}Save{/t}</span>
      </div>
        <table>
        {include file='edit_address_splinter.tpl' address_identifier='delivery_'}
@@ -104,8 +107,14 @@
      </table>
 
    <div id="customer_contact_address" style="float:left;xborder:1px solid #ddd;width:400px;margin-right:40px">
-     <div style="border-bottom:1px solid #777;margin-bottom:5px">
-       {t}Contact Address{/t}:<span class="state_details" style="float:right;display:none" address_key="" id="contact_cancel_edit_address">{t}Cancel{/t}</span>
+     <div >
+     <span class="state_details" style="float:right;display:none" address_key="" id="contact_cancel_edit_address">{t}Cancel{/t}</span>
+     <span class="state_details" style="float:right;display:none;margin-right:10px" address_key="" id="contact_save_address_button">{t}Save{/t}</span>
+     </div>
+  <div style="border-bottom:1px solid #777;margin-bottom:5px">
+       
+       {t}Contact Address{/t}:
+   
      </div>
        <table>
        {include file='edit_address_splinter.tpl' address_identifier='contact_'}
@@ -121,10 +130,11 @@
        {include file='edit_address_splinter.tpl' address_identifier='billing_'}
        <span style="font-weight:600">Same as contact address</span> 
        <br/><span class="state_details">Set up different address</span>
-     </table>
+       
+       </table>
    </div>
-
-<div id="customer_contact_address" style="float:left;xborder:1px solid #ddd;width:400px;">
+ 
+ <div id="customer_delivery_address" style="float:left;xborder:1px solid #ddd;width:400px;">
      <div style="border-bottom:1px solid #777;margin-bottom:5px">
        {t}Delivery Address{/t}:<span class="state_details" style="float:right;display:none" address_key="" id="billing_cancel_edit_address">{t}Cancel{/t}</span>
      </div>
