@@ -309,12 +309,11 @@ class Order extends DB_Table{
 	  $details = sprintf ( '%s (<a href="customer.php?id=%d">%s</a>) place an order on %s', $customer->get ( 'Customer Name' ), $customer->id,$customer->get('Formated ID'), strftime ( "%e %b %Y %H:%M", strtotime ( $this->data ['Order Date'] ) ) );
 	  if($this->data['Order Original Data MIME Type']='application/vnd.ms-excel'){
 	    if($this->data['Order Original Data Filename']!=''){
-	      // $just_filename=preg_replace('/^.*\//','',$this->data['Order Original Data Filename']);
-	         
+
 	      $details .='<div >'._('Original Source').":<img src='art/icons/page_excel.png'> ".$this->data['Order Original Data MIME Type']."</div>";
+
 	      $details .='<div>'._('Original Source Filename').": ".$this->data['Order Original Data Filename']."</div>";
 
-	    
 
 
 	    }
