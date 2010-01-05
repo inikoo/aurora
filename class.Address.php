@@ -984,7 +984,10 @@ class Address extends DB_Table{
         $this->update_country_code($value);
     break;
     case('Street Data'):
+      //      print $value;
       $data=$this->parse_street($value,$this->data['Address Country Code']);
+      //print_r($data);
+      //exit;
       foreach($data as $street_field=>$street_value){
 	  $this->update_field($street_field,$street_value,$options);
       }
@@ -1241,6 +1244,16 @@ class Address extends DB_Table{
       }
       return _trim($address);
 
+    case('Country Divisions'):
+      $division='';
+      if($this->data['Address Country Second Division']!='')
+	$division.=','.$this->data['Address Country Second Division'];
+      if($this->data['Address Country First Division']!='')
+	$division.=','.$this->data['Address Country First Division'];
+      $division=preg_replace('/^,/','',$division);
+      return $division;
+      
+      
     case('header'):
 
       $separator=', ';
@@ -1832,10 +1845,10 @@ $data['Address Country Key']='';
 			$len=strlen($number);
 			$name=substr($line,$len);
 		}elseif(preg_match('/(\#|no\.?)?\s*\d+(bis)?[a-z]?\s*$/i',$line,$match)){
-			// print "--------".$match[0]."-------------";
+		  //	 print "--------".$match[0]."-------------";
 			$number=$match[0];
-			$len=strlen($number)+1;
-			$name=substr($line,0,strlen($line)-$len);
+			$len=strlen($number);
+			$name=_trim(substr($line,0,strlen($line)-$len));
 
 		}else{
 			$name=$line;

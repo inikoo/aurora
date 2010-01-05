@@ -747,18 +747,18 @@ global $editor;
 
 
 
-   if( !isset($_REQUEST['subject'])  
-       or !is_numeric($_REQUEST['subject_key'])
-       or $_REQUEST['subject_key']<=0
-       or !preg_match('/^company|contact$/i',$_REQUEST['subject'])
+/*    if( !isset($_REQUEST['subject'])   */
+/*        or !is_numeric($_REQUEST['subject_key']) */
+/*        or $_REQUEST['subject_key']<=0 */
+/*        or !preg_match('/^company|contact$/i',$_REQUEST['subject']) */
        
-       ){
-     $response=array('state'=>400,'msg'=>'Error wrong subject/subject key');
-      echo json_encode($response);
-    return;
-   }
-   $subject=$_REQUEST['subject'];
-   $subject_key=$_REQUEST['subject_key'];
+/*        ){ */
+/*      $response=array('state'=>400,'msg'=>'Error wrong subject/subject key'); */
+/*       echo json_encode($response); */
+/*     return; */
+/*    } */
+/*    $subject=$_REQUEST['subject']; */
+/*    $subject_key=$_REQUEST['subject_key']; */
 
 
    $address=new Address('id',$_REQUEST['id']);
@@ -792,13 +792,13 @@ global $editor;
      }
    }
    
-   $address->find("in $subject $subject_key");
-   if($address->found_in){
-     $msg=_('Address already associated with contact');
-     $response=array('state'=>200,'action'=>'error','msg'=>$msg,'key'=>'');
-     echo json_encode($response);
-     return;
-   }
+/*    $address->find("in $subject $subject_key"); */
+/*    if($address->found_in){ */
+/*      $msg=_('Address already associated with contact'); */
+/*      $response=array('state'=>200,'action'=>'error','msg'=>$msg,'key'=>''); */
+/*      echo json_encode($response); */
+/*      return; */
+/*    } */
    
    $address->update($update_data,'cascade');
   
@@ -823,7 +823,7 @@ global $editor;
      $response=array('state'=>200,'action'=>'updated','msg'=>$address->msg_updated,'key'=>'','updated_data'=>$updated_address_data,'xhtml_address'=>$address->display('xhtml'));
    }else{
      if($address->error_updated)
-       $response=array('state'=>200,'action'=>'error','msg'=>$company->msg_updated,'key'=>$translator[$_REQUEST['key']]);
+       $response=array('state'=>200,'action'=>'error','msg'=>$address->msg_updated,'key'=>$translator[$_REQUEST['key']]);
      else
        $response=array('state'=>200,'action'=>'nochange','msg'=>$address->msg_updated,'key'=>'');
      
@@ -1157,7 +1157,7 @@ function edit_customer() {
     
     $key_dic=array(
 		   'name'=>'Customer Name'
-		   ,'email'=>'Customer Email'
+		   ,'email'=>'Customer Main Plain Email'
 		   ,'telephone'=>'Customer Main Plain Telephone'
 		   ,'contact'=>'Customer Main Contact Name'
 		   ,"address"=>'Address'

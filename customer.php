@@ -254,6 +254,7 @@ $general_options_list=array();
 if($modify)
   $general_options_list[]=array('tipo'=>'url','url'=>'customer.php?edit='.$customer->id,'label'=>_('Edit Customer'));
 $general_options_list[]=array('tipo'=>'js','state'=>$show_details,'id'=>'details','label'=>($show_details?_('Hide Details'):_('Show Details')));
+  $general_options_list[]=array('tipo'=>'url','url'=>'customer_csv.php?id='.$customer->id,'label'=>_('CSV Data'));
 
 
 

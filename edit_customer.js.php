@@ -112,6 +112,7 @@ function reset_edit_customer(){
 
 function init(){
   
+
   var oACDS = new YAHOO.util.FunctionDataSource(mygetTerms);
     oACDS.queryMatchContains = true;
     var oAutoComp = new YAHOO.widget.AutoComplete("f_input0","f_container", oACDS);
@@ -148,19 +149,25 @@ function init(){
     customer_main_contact_name_oAutoComp.minQueryLength = 0; 
     customer_main_contact_name_oAutoComp.queryDelay = 0.1;
 
-
+   
 
 
 	<?php
 	      print sprintf("edit_address(%d,'contact_');",$customer->data['Customer Main Address Key']);
 	if($customer->data['Customer Main Address Key']!=$customer->data['Customer Billing Address Key']){
-	    	      print sprintf("edit_address(%d,'billing_');",$customer->data['Customer Billing Address Key']);
+	    
+	    print sprintf("alert('caca');edit_address(%d,'billing_');",$customer->data['Customer Billing Address Key']);
 
 	}{
 
 
 	}
 	    ?>
+
+	     var ids = ["contact_address_description","contact_address_country_d1","contact_address_country_d2","contact_address_town","contact_address_town_d2","contact_address_town_d1","contact_address_postal_code","contact_address_street","contact_address_internal","contact_address_building"]; 
+	     YAHOO.util.Event.addListener(ids, "keyup", on_address_item_change,'contact_');
+	     YAHOO.util.Event.addListener(ids, "change",on_address_item_change,'contact_');
+	     YAHOO.util.Event.addListener('contact_save_address_button', "click",save_address,'contact_');
 
 
 

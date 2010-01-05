@@ -4425,7 +4425,8 @@ $stock_state=$row['Product Availability State'];
                      'code'=>$code,
                      'name'=>$row['Product XHTML Short Description'],
                      'smallname'=>'<span style="font-size:70%;">'.$row['Product XHTML Short Description'].'</span>',
-                     'stock_state'=>$stock_state,
+                     
+		     'stock_state'=>$stock_state,
                      'stock_forecast'=>$stock_forecast,
                      'family'=>$row['Product Family Name'],
                      'dept'=>$row['Product Main Department Name'],

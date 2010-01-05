@@ -1095,7 +1095,7 @@ class Company extends DB_Table {
 		$customer->update_name($this->data['Company Name']);
 	      }
             }
-
+	     mysql_free_result($res);     
 
 
         }

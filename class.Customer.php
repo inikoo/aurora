@@ -549,6 +549,8 @@ class Customer extends DB_Table{
     if(isset($raw_data['Customer Billing Address'])){
       $billing_address=new address('find create update',$raw_data['Customer Billing Address']);
       $this->data['Customer Main Address Key']=$billing_address->id;
+      $this->data['Customer Billing Address Key']=$billing_address->id;
+
       $this->data['Customer Main Address Country Code']=$billing_address->data['Address Country Code'];
       $this->data['Customer Main Address 2 Alpha Country Code']=$billing_address->data['Address Country 2 Alpha Code'];
 
@@ -571,6 +573,8 @@ class Customer extends DB_Table{
      if($billing_address_key){
        $billing_address=new address($billing_address_key);
        $this->data['Customer Main Address Key']=$billing_address->id;
+       $this->data['Customer Billing Address Key']=$billing_address->id;
+
        $this->data['Customer Main Address Country Code']=$billing_address->data['Address Country Code'];
        $this->data['Customer Main Address Country 2 Alpha Code']=$billing_address->data['Address Country 2 Alpha Code'];
        $this->data['Customer Main Location']=$billing_address->data['Address Location'];
@@ -836,7 +840,9 @@ $sql=sprintf("select count(*) as total,sum(if(`Is Active`='Yes',1,0)) as active 
    case('Customer Main Plain Telephone'):
      $this->update_child_telephone($value);
      break;
-
+ case('Customer Main Plain Email'):
+     $this->update_child_email($value);
+     break;
    case('Customer Main Telephone'):
    case('Customer Main Plain Telephone'):
    case('Customer Main Telephone Key'):
@@ -859,66 +865,16 @@ $sql=sprintf("select count(*) as total,sum(if(`Is Active`='Yes',1,0)) as active 
 
 
  function update_name($value,$options=''){
-   //print "** Update Field $field $value\n";
-   $field='Customer Name'; 
-  $old_value=_('Unknown');
-  
-  $key_field=$this->table_name." Key";
- 
-  
-  $sql="select `".$field."` as value from  `".$this->table_name." Dimension`  where `$key_field`=".$this->id;
-  //print "$sql\n";
-  $result=mysql_query($sql);
-  if($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
-    $old_value=$row['value'];
-  }
-   
-
-  $sql="update `".$this->table_name." Dimension` set `".$field."`=".prepare_mysql($value)." where `$key_field`=".$this->id;
-//  print $sql;
-
-   mysql_query($sql);
-  $affected=mysql_affected_rows();
-  if($affected==-1){
-    $this->msg.=' '._('Record can not be updated')."\n";
-    $this->error_updated=true;
-    $this->error=true;
-   
-    return;
-  }elseif($affected==0){
-    //$this->msg.=' '._('Same value as the old record');
-    
-  }else{
-    $this->data[$field]=$value;
-    $this->msg.=" $field "._('Record updated').", \n";
-    $this->msg_updated.=" $field "._('Record updated').", \n";
-    $this->updated=true;
-    $this->new_value=$value;
-   
-    $save_history=true;
-    if(preg_match('/no( |\_)history|nohistory/i',$options))
-      $save_history=false;
-    if(
-      
-      !$this->new 
-       and $save_history
-       ){
-      $history_data=array(
-			  'indirect_object'=>$field
-			  ,'old_value'=>$old_value
-			  ,'new_value'=>$value
-			  
-			  );
-    
-      	
-
-      $this->add_history($history_data);
-      
-    }
-
-  }
-
+   $field='Customer Name';
+   $this->update_field($field,$value,$options);
  }
+ function update_main_contact_name($value,$options=''){
+   $field='Customer Main Contact Name';
+   $this->update_field($field,$value,$options);
+ }
+
+
+
 
  function update_child_main_contact_name($value){
    $contact=new Contact($this->data['Customer Main Contact Key']);
@@ -978,8 +934,6 @@ $sql=sprintf("select count(*) as total,sum(if(`Is Active`='Yes',1,0)) as active 
  function update_child_telephone($value){
 
 
-
-
    $telephone_key=$this->data['Customer Main Telephone Key'];
    if(!$telephone_key){
      $this->add_child_tel($value);
@@ -997,6 +951,24 @@ $sql=sprintf("select count(*) as total,sum(if(`Is Active`='Yes',1,0)) as active 
 
 
 
+ function update_child_email($value){
+
+
+   $email_key=$this->data['Customer Main Email Key'];
+   if(!$email_key){
+     $this->add_child_email($value);
+   }
+   $email=new Email($email_key);
+   if($email->id){
+     $email->update_Email($value);
+     if($email->updated){
+       $this->updated=true;
+       $this->new_value=$email->display('plain');
+     }
+     $this->msg=$email->msg;
+   }
+   
+}
 
 
 
@@ -1924,6 +1896,7 @@ $this->update_contact($company->data['Company Main Contact Key']);
 
 
    switch($key){
+
    case("ID"):
    case("Formated ID"):
      return $this->get_formated_id();
@@ -2692,6 +2665,40 @@ function set_current_ship_to($return='key'){
 
     }
 
+
+    function export_data(){
+
+      $address=new Address($this->data['Customer Main Address Key']);
+      $address_lines=$address->display('3lines');
+      
+      $export_data=array(
+			 "Public"
+			 ,"David"
+			 ,$this->data['Customer Name']
+			 ,$this->data['Customer Main Contact Name']
+			 ,$address_lines[1]
+			 ,$address_lines[3]
+			 ,$address_lines[2]
+			 ,$this->data['Customer Main Address Town']
+			 ,$address->display('Country Divisions')
+			 ,$this->data['Customer Main Address Postal Code']
+			 ,$this->data['Customer Main Address Country']
+			 ,"Staff"
+			 ,$this->data['Customer Main Telephone']
+			 ,$this->data['Customer Main FAX']
+			 ,""
+			 ,"mobile"
+			 ,"26/09/2002","David","","","","03/03/2003","","","","Wholesaler website","","","","","2","","Gold Reward Member","Philip","","","","","900","","","","","","","","","","","","","","","David","Hardy","","","","","","","","","","","Graeme","Ancient Wisdom","","","","1","","","","","","","","","","","","",""
+			 ,$this->data['Customer Last Delivery Instructions']
+			 ,$this->data['Customer Last Order Instructions']
+			 ,"Yes","","","28/01/2001","05/01/2010",""
+			 ,$this->data['Customer Main Plain Email']
+			 ,""
+			 ,
+);
+  
+      return $export_data;
+    }
 
 
  }
