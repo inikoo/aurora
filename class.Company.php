@@ -1089,9 +1089,11 @@ class Company extends DB_Table {
             $sql=sprintf("select `Customer Key` from `Customer Dimension` where `Customer Company Key`=%d  ",$this->id);
             $res=mysql_query($sql);
             while ($row=mysql_fetch_array($res)) {
-                $customer=new Customer ($row['Customer Key']);
-                $customer->editor=$this->editor;
-                $customer->update(array('Customer Company Name'=>$this->data['Company Name']));
+	      $customer=new Customer ($row['Customer Key']);
+	      if($customer->data['Customer Type']=='Company'){
+		$customer->editor=$this->editor;
+		$customer->update_name($this->data['Company Name']);
+	      }
             }
 
 
@@ -2598,6 +2600,71 @@ $principal=true;
 
     }
 
+ function update_telephone($telecom_key) {
+
+        $old_telecom_key=$this->data['Company Main Telephone Key'];
+
+        $telecom=new Telecom($telecom_key);
+        if (!$telecom->id) {
+            $this->error=true;
+            $this->msg='Telecom not found';
+            $this->msg_updated.=',Telecom not found';
+            return;
+        }
+        $old_value=$this->data['Company Main Telephone'];
+        $sql=sprintf("update `Company Dimension` set `Company Main Telephone`=%s ,`Company Main Plain Telephone`=%s  ,`Company Main Telephone Key`=%d where `Company Key`=%d "
+                     ,prepare_mysql($telecom->display('xhtml'))
+                     ,prepare_mysql($telecom->display('plain'))
+                     ,$telecom->id
+                     ,$this->id
+                    );
+        mysql_query($sql);
+        if (mysql_affected_rows()) {
+
+            $this->updated;
+            if ($old_value!=$telecom->display('xhtml'))
+                $history_data=array(
+                                  'indirect_object'=>'Company Main Telephone'
+                                                    ,'old_value'=>$old_value
+                                                                 ,'new_value'=>$telecom->display('xhtml')
+                              );
+            $this->add_history($history_data);
+        }
+
+    }
+
+    function update_fax($telecom_key) {
+
+
+        $old_telecom_key=$this->data['Company Main FAX Key'];
+
+        $telecom=new Telecom($telecom_key);
+        if (!$telecom->id) {
+            $this->error=true;
+            $this->msg='Telecom not found';
+            $this->msg_updated.=',Telecom not found';
+            return;
+        }
+        $old_value=$this->data['Company Main FAX'];
+        $sql=sprintf("update `Company Dimension` set `Company Main FAX`=%s ,`Company Main Plain FAX`=%s  ,`Company Main Plain FAX`=%d where `Company Key`=%d "
+                     ,prepare_mysql($telecom->display('xhtml'))
+                     ,prepare_mysql($telecom->display('plain'))
+                     ,$telecom->id
+                     ,$this->id
+                    );
+        mysql_query($sql);
+        if (mysql_affected_rows()) {
+            $this->updated;
+            if ($old_value!=$telecom->display('xhtml'))
+                $history_data=array(
+                                  'indirect_object'=>'Company Main FAX'
+                                                    ,'old_value'=>$old_value
+                                                                 ,'new_value'=>$telecom->display('xhtml')
+                              );
+            $this->add_history($history_data);
+        }
+
+    }
 
 
 

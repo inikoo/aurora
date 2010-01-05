@@ -1,6 +1,8 @@
 {include file='header.tpl'}
 <div id="bd" >
+
 <div class="search_box" style="margin-top:15px">
+
   <div class="general_options">
     {foreach from=$general_options_list item=options }
         {if $options.tipo=="url"}

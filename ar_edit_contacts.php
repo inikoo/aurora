@@ -1159,7 +1159,7 @@ function edit_customer() {
 		   'name'=>'Customer Name'
 		   ,'email'=>'Customer Email'
 		   ,'telephone'=>'Customer Main Plain Telephone'
-		   ,'contact_name'=>'Email'
+		   ,'contact'=>'Customer Main Contact Name'
 		   ,"address"=>'Address'
 		   ,"town"=>'Main Address Town'
 		   ,"postcode"=>'Main Address Town'

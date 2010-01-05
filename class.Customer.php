@@ -825,7 +825,18 @@ $sql=sprintf("select count(*) as total,sum(if(`Is Active`='Yes',1,0)) as active 
      break;
    case('Attach'):
      $this->add_attach($value);
+     break;
+   case('Customer Name'):
+     $this->update_child_name($value);
      break; 
+   case('Customer Main Contact Name'):
+     $this->update_child_main_contact_name($value);
+     break; 
+
+   case('Customer Main Plain Telephone'):
+     $this->update_child_telephone($value);
+     break;
+
    case('Customer Main Telephone'):
    case('Customer Main Plain Telephone'):
    case('Customer Main Telephone Key'):
@@ -845,7 +856,152 @@ $sql=sprintf("select count(*) as total,sum(if(`Is Active`='Yes',1,0)) as active 
   }
  }
 
+
+
+ function update_name($value,$options=''){
+   //print "** Update Field $field $value\n";
+   $field='Customer Name'; 
+  $old_value=_('Unknown');
+  
+  $key_field=$this->table_name." Key";
  
+  
+  $sql="select `".$field."` as value from  `".$this->table_name." Dimension`  where `$key_field`=".$this->id;
+  //print "$sql\n";
+  $result=mysql_query($sql);
+  if($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
+    $old_value=$row['value'];
+  }
+   
+
+  $sql="update `".$this->table_name." Dimension` set `".$field."`=".prepare_mysql($value)." where `$key_field`=".$this->id;
+//  print $sql;
+
+   mysql_query($sql);
+  $affected=mysql_affected_rows();
+  if($affected==-1){
+    $this->msg.=' '._('Record can not be updated')."\n";
+    $this->error_updated=true;
+    $this->error=true;
+   
+    return;
+  }elseif($affected==0){
+    //$this->msg.=' '._('Same value as the old record');
+    
+  }else{
+    $this->data[$field]=$value;
+    $this->msg.=" $field "._('Record updated').", \n";
+    $this->msg_updated.=" $field "._('Record updated').", \n";
+    $this->updated=true;
+    $this->new_value=$value;
+   
+    $save_history=true;
+    if(preg_match('/no( |\_)history|nohistory/i',$options))
+      $save_history=false;
+    if(
+      
+      !$this->new 
+       and $save_history
+       ){
+      $history_data=array(
+			  'indirect_object'=>$field
+			  ,'old_value'=>$old_value
+			  ,'new_value'=>$value
+			  
+			  );
+    
+      	
+
+      $this->add_history($history_data);
+      
+    }
+
+  }
+
+ }
+
+ function update_child_main_contact_name($value){
+   $contact=new Contact($this->data['Customer Main Contact Key']);
+   $contact->editor=$this->editor;
+   $contact->update(array('Contact Name'=>$value));
+   
+   if($contact->updated){
+     
+     $this->updated=true;
+     $this->new_value=$contact->new_value;
+   }
+
+ }
+
+
+ function update_child_name($value){
+
+   if($value==''){
+     $this->error=true;
+     $this->msg=_('Invalid Customer Name');
+     return;
+   }
+
+   if($this->data['Customer Type']=='Company'){
+     $company=new Company($this->data['Customer Company Key']);
+     $company->editor=$this->editor;
+     $company->update(array('Company Name'=>$value));
+
+     if($company->updated){
+      
+       $this->updated=true;
+       $this->new_value=$company->new_value;
+     }
+
+   }else{
+     $contact=new Contact($this->data['Customer Main Contact Key']);
+     $contact->editor=$this->editor;
+     $contact->update(array('Contact Name'=>$value));
+
+     if($contact->updated){
+      
+       $this->updated=true;
+       $this->new_value=$contact->new_value;
+     }
+
+   }
+
+ }
+
+ function add_child_tel($value){
+   
+
+ } 
+
+
+
+ function update_child_telephone($value){
+
+
+
+
+   $telephone_key=$this->data['Customer Main Telephone Key'];
+   if(!$telephone_key){
+     $this->add_child_tel($value);
+   }
+   $telephone=new Telecom($telephone_key);
+   if($telephone->id){
+     $telephone->update_number($value);
+     if($telephone->updated){
+       $this->updated=true;
+       $this->new_value=$telephone->display('xhtml');
+     }
+   }
+   
+}
+
+
+
+
+
+
+
+
  /*
   function:update_main_contact_key
   */
@@ -922,6 +1078,9 @@ $sql=sprintf("select count(*) as total,sum(if(`Is Active`='Yes',1,0)) as active 
    }
 
  }
+
+
+
 
 /*
   function:update_email
@@ -2465,6 +2624,73 @@ function set_current_ship_to($return='key'){
      
 
  }
+
+
+   function update_telephone($telecom_key) {
+
+        $old_telecom_key=$this->data['Customer Main Telephone Key'];
+
+        $telecom=new Telecom($telecom_key);
+        if (!$telecom->id) {
+            $this->error=true;
+            $this->msg='Telecom not found';
+            $this->msg_updated.=',Telecom not found';
+            return;
+        }
+        $old_value=$this->data['Customer Main Telephone'];
+        $sql=sprintf("update `Customer Dimension` set `Customer Main Telephone`=%s ,`Customer Main Plain Telephone`=%s  ,`Customer Main Telephone Key`=%d where `Customer Key`=%d "
+                     ,prepare_mysql($telecom->display('xhtml'))
+                     ,prepare_mysql($telecom->display('plain'))
+                     ,$telecom->id
+                     ,$this->id
+                    );
+        mysql_query($sql);
+        if (mysql_affected_rows()) {
+
+            $this->updated;
+            if ($old_value!=$telecom->display('xhtml'))
+                $history_data=array(
+                                  'indirect_object'=>'Customer Main Telephone'
+                                                    ,'old_value'=>$old_value
+                                                                 ,'new_value'=>$telecom->display('xhtml')
+                              );
+            $this->add_history($history_data);
+        }
+
+    }
+
+    function update_fax($telecom_key) {
+
+
+        $old_telecom_key=$this->data['Customer Main FAX Key'];
+
+        $telecom=new Telecom($telecom_key);
+        if (!$telecom->id) {
+            $this->error=true;
+            $this->msg='Telecom not found';
+            $this->msg_updated.=',Telecom not found';
+            return;
+        }
+        $old_value=$this->data['Customer Main FAX'];
+        $sql=sprintf("update `Customer Dimension` set `Customer Main FAX`=%s ,`Customer Main Plain FAX`=%s  ,`Customer Main Plain FAX`=%d where `Customer Key`=%d "
+                     ,prepare_mysql($telecom->display('xhtml'))
+                     ,prepare_mysql($telecom->display('plain'))
+                     ,$telecom->id
+                     ,$this->id
+                    );
+        mysql_query($sql);
+        if (mysql_affected_rows()) {
+            $this->updated;
+            if ($old_value!=$telecom->display('xhtml'))
+                $history_data=array(
+                                  'indirect_object'=>'Customer Main FAX'
+                                                    ,'old_value'=>$old_value
+                                                                 ,'new_value'=>$telecom->display('xhtml')
+                              );
+            $this->add_history($history_data);
+        }
+
+    }
 
 
 

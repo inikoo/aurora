@@ -85,6 +85,13 @@ $smarty->assign('customer',$customer);
 
 
 if($edit ){
+$general_options_list=array();
+
+ 
+$general_options_list[]=array('tipo'=>'url','url'=>'customer.php?id='.$customer->id,'label'=>_('Exit Edit'));
+$smarty->assign('general_options_list',$general_options_list);
+
+
   $smarty->assign('customer_type',$customer->data['Customer Type']);
    $css_files[]=$yui_path.'assets/skins/sam/autocomplete.css';
     $css_files[]='css/edit_address.css';
@@ -240,9 +247,15 @@ $smarty->assign('next',$next);
 $show_details=$_SESSION['state']['customer']['details'];
 $smarty->assign('show_details',$show_details);
 $general_options_list=array();
+
+ 
+
+
 if($modify)
   $general_options_list[]=array('tipo'=>'url','url'=>'customer.php?edit='.$customer->id,'label'=>_('Edit Customer'));
 $general_options_list[]=array('tipo'=>'js','state'=>$show_details,'id'=>'details','label'=>($show_details?_('Hide Details'):_('Show Details')));
+
+
 
 $smarty->assign('general_options_list',$general_options_list);
 

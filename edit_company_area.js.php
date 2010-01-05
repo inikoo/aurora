@@ -55,7 +55,7 @@ var validate_scope_data={
 };
 
 
-var validate_scope_type={'company_area':'edit','company_department':'new'};
+var validate_scope_metadata={'company_area':{'type':'edit','ar_file':'ar_edit_warehouse.php'},'company_department':{'type':'new','ar_file':'ar_edit_warehouse.php'}};
 
 
 

@@ -44,7 +44,8 @@ var validate_scope_data={
    }
 };
 
-var validate_scope_type={'company_department':'new'};
+
+var validate_scope_metadata={'company_department':{'type':'new','ar_file':'ar_edit_warehouse.php'}};
 
 function validate_code(query){
  validate_general('company_department','code',unescape(query));

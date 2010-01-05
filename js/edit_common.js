@@ -194,7 +194,7 @@ function radio_changed(o){
 
 function validate_scope(branch){
 
-if(validate_scope_type[branch]=='new')
+if(validate_scope_metadata[branch]['type']=='new')
     validate_scope_new(branch)
 else
     validate_scope_edit(branch)
@@ -265,6 +265,7 @@ function validate_general(branch,item,query){
  
   if(old_code.toLowerCase()!=trim(query.toLowerCase())){  
   validate_scope_data[branch][item].changed=true;
+
 if(data.ar=='find'){
   var request=data.ar_request+query; 
  // alert(request)
@@ -298,13 +299,13 @@ if(data.ar=='find'){
 	    });
 }else{
 Dom.get(data.name+'_msg').innerHTML='';
-		    validate_scope_data[branch][item].validated=true;
- for(validator_index in data.validation){
-		    validator_data=data.validation[validator_index];
-		     var validator=new RegExp(validator_data.regexp,"i");
-           // alert(validator_data.regexp+' Q:'+query)
-            if(!validator.test(query)){
-	           
+validate_scope_data[branch][item].validated=true;
+for(validator_index in data.validation){
+    validator_data=data.validation[validator_index];
+    var validator=new RegExp(validator_data.regexp,"i");
+ 
+    if(!validator.test(query)){
+	
 	                validate_scope_data[branch][item].validated=false;
                    Dom.get(data.name+'_msg').innerHTML=validator_data.invalid_msg;
                     break;
@@ -329,7 +330,8 @@ Dom.get(data.name+'_msg').innerHTML='';
                    validate_scope(branch); 
 		    }
 		    
-		}
+ 
+}
 function reset_edit_general(branch){
     for(item in validate_scope_data[branch]){
 	var item_input=Dom.get(validate_scope_data[branch][item].name);
@@ -348,29 +350,31 @@ function post_create_actions(branch){
 }
 function save_edit_general(branch){
     
-    
+   
      operation='edit';
-     
-    
+     scope_edit_ar_file=validate_scope_metadata[branch]['ar_file'];
+     branch_key=validate_scope_metadata[branch]['key'];
+     branch_key_name=validate_scope_metadata[branch]['key_name'];
     for(item in validate_scope_data[branch]){
+
 	if(validate_scope_data[branch][item].changed){
-	var item_input=Dom.get(validate_scope_data[branch][item].name);
+	    var item_input=Dom.get(validate_scope_data[branch][item].name);
+	    
+	    
+
 	
-	
-	
-	
-	var updated_items=0;
-	
-	
-	var request=scope_edit_ar_file+'?tipo='+operation+'_'+scope+'&key=' + item+ '&newvalue=' + 
-	    encodeURIComponent(item_input.value) +  '&oldvalue=' + 
-	    encodeURIComponent(item_input.getAttribute('ovalue')) + 
-	    '&'+scope_key_name+'='+scope_key;
-			
-	
+	    var updated_items=0;
+	    
+	    
+	    var request=scope_edit_ar_file+'?tipo='+operation+'_'+branch+'&key=' + item+ '&newvalue=' + 
+		encodeURIComponent(item_input.value) +  '&oldvalue=' + 
+		encodeURIComponent(item_input.getAttribute('ovalue')) + 
+		'&'+branch_key_name+'='+branch_key;
+	    //  alert(request);
+
 	YAHOO.util.Connect.asyncRequest('POST',request ,{
 		success:function(o) {
-		    //		   	    alert(o.responseText)
+		       		   	    alert(o.responseText)
 		    var r =  YAHOO.lang.JSON.parse(o.responseText);
 		    if(r.state==200){
 			
