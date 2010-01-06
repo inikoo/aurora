@@ -537,9 +537,7 @@ class Company extends DB_Table {
 
             $email_data['Email']=$this->data['Company Main Plain Email'];
             $email_data['Email Contact Name']=$this->data['Company Main Contact Name'];
-
             $email_data['editor']=$this->editor;
-
             $email=new Email("find in company create",$email_data);
             //exit;
             if (!$email->error) {
@@ -603,6 +601,7 @@ class Company extends DB_Table {
         $this->data['Company Main Plain Address']=$address->display('plain');
         $this->data['Company Main Country Key']=$address->data['Address Country Key'];
         $this->data['Company Main Country']=$address->data['Address Country Name'];
+        $this->data['Company Main Country Code']=$address->data['Address Country Code'];
         $this->data['Company Main Location']=$address->display('location');
 
 
@@ -725,12 +724,7 @@ class Company extends DB_Table {
 
 
             if ($this->data['Company Main Email Key']) {
-                $email_data=array(
-                                'Email Key'=>$this->data['Company Main Email Key']
-                                            ,'Email Description'=>'Work'
-                            );
-                //      print_r($email_data);
-                $contact->add_email($email_data);
+               
 
                 $this->add_email($this->data['Company Main Email Key']);
 
@@ -1447,7 +1441,8 @@ class Company extends DB_Table {
     }
 
     function add_email($email_data,$args='principal') {
-
+$this->updated=false;
+$this->new_email=0;
         if (is_numeric($email_data)) {
             $tmp=$email_data;
             unset($email_data);
@@ -1465,12 +1460,29 @@ class Company extends DB_Table {
         elseif(is_array($email_data)) {
             $email_data['Editor']=$this->editor;
             $email=new Email('find in company create',$email_data['Email Key']);
+            
+            // pass this email to the contact
+            
+            
 
         }
         else
-            return;
+            return 0;
 
-        if ($email->id) {
+
+
+$this->new_email=$email->id;
+if ($email->id) {
+
+$contact=new Contact($this->data['Company Main Contact Key']);
+if($contact->id){
+ $contact_email_data=array(
+                                'Email Key'=>$email->id
+                                            ,'Email Description'=>'Work'
+                            );
+                //      print_r($email_data);
+                $contact->add_email($contact_email_data);
+}
 
             $sql=sprintf("insert into `Email Bridge` (`Email Key`,`Subject Type`,`Subject Key`,`Email Description`,`Is Main`,`Is Active`) values (%d,'Company',%d,%s,'Yes','Yes')  ON DUPLICATE KEY UPDATE `Email Description`=%s   "
                          ,$email->id
@@ -1494,20 +1506,26 @@ class Company extends DB_Table {
                             );
                 mysql_query($sql);
 
-                $sql=sprintf("update `Company Dimension` set `Company Main XHTML Email`=%s ,`Company Main Plain Email`=%s,`Company Main Email Key`=%d where `Company Key`=%d"
-                             ,prepare_mysql($email->display('html'))
-                             ,prepare_mysql($email->display('plain'))
-                             ,$email->id
-                             ,$this->id
-                            );
-                mysql_query($sql);
+              //  $sql=sprintf("update `Company Dimension` set `Company Main XHTML Email`=%s ,`Company Main Plain Email`=%s,`Company Main Email Key`=%d where `Company Key`=%d"
+              //               ,prepare_mysql($email->display('html'))
+              //               ,prepare_mysql($email->display('plain'))
+              //               ,$email->id
+              //               ,$this->id
+              //              );
+              //  mysql_query($sql);
+                
+                
+                
+                
+                
+                
             }
 
 
 
         }
 
-
+    
 
 
 

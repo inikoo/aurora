@@ -2081,11 +2081,12 @@ $number_images=$row['num'];
 
 	}
 
-	$sql=sprintf("update `Product Dimension` set `Product Web State`=%s  where  `Product Key`=%d "
+	$sql=sprintf("update `Product Dimension` set `Product Web State`=%s  where  `Product ID`=%d "
 		     ,prepare_mysql($web_state)
-		     ,$this->id
+		     ,$this->pid
 		     );
-	if ($this->DBquery($sql)) {
+		     mysql_query($sql);
+	if (mysql_affected_rows()>0) {
 	  $this->msg=_('Product Web State updated');
 	  $this->updated=true;
 
@@ -2102,44 +2103,8 @@ $number_images=$row['num'];
       break;
 
     case('sales_state'):
+$this->update_sales_state($a1);
 
-      if (
-	  $a1==_('For Sale')
-	  or $a1==_('Discontinue')
-	  or $a1==_('Not For Sale')
-	  ) {
-
-
-	switch ($a1) {
-	case(_('For Sale')):
-	  $web_state='For Sale';
-	  break;
-	case(_('Discontinue')):
-	  $web_state='Discontinued';
-	  break;
-	case(_('Not For Sale')):
-	  $web_state=_('Not for Sale');
-	  break;
-	}
-
-	$sql=sprintf("update `Product Dimension` set `Product Sales State`=%s  where  `Product Key`=%d "
-		     ,prepare_mysql($web_state)
-		     ,$this->id
-		     );
-	if (mysql_query($sql)) {
-	  $this->msg=_('Product Sales State updated');
-	  $this->updated=true;
-
-	  $this->new_value=$a1;
-	  return;
-	} else {
-	  $this->msg=_("Error: Product sales state could not be updated ");
-	  $this->updated=false;
-	  return;
-	}
-      } else
-	$this->msg=_("Error: wrong value")." [Sales State] ($a1)";
-      $this->updated=false;
       break;
     case('processing'):
 
@@ -4819,6 +4784,45 @@ if($this->images[$image_key]['caption']==$value){
       return;
  }
 
+function update_sales_state($value){
+      if (
+	  $value==_('For Sale')
+	  or $value==_('Discontinue')
+	  or $value==_('Not For Sale')
+	  ) {
 
+
+	switch ($value) {
+	case(_('For Sale')):
+	  $sales_state='For Sale';
+	  break;
+	case(_('Discontinue')):
+	  $sales_state='Discontinued';
+	  break;
+	case(_('Not For Sale')):
+	  $sales_state=_('Not for Sale');
+	  break;
+	}
+
+	$sql=sprintf("update `Product Dimension` set `Product Sales State`=%s  where  `Product ID`=%d "
+		     ,prepare_mysql($sales_state)
+		     ,$this->pid
+		     );
+	//print $sql;	     
+	if (mysql_query($sql)) {
+	  $this->msg=_('Product Sales State updated');
+	  $this->updated=true;
+
+	  $this->new_value=$value;
+	  return;
+	} else {
+	  $this->msg=_("Error: Product sales state could not be updated ");
+	  $this->updated=false;
+	  return;
+	}
+      } else
+	$this->msg=_("Error: wrong value")." [Sales State] ($value)";
+      $this->updated=false;
+}
 }
 ?>

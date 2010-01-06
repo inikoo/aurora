@@ -1492,9 +1492,16 @@ $sql=sprintf("insert into `Address Telecom Bridge` values (%d,%d)",$home_address
 
 
 
-        if (isset($data['Email Key'])) {
+        if ( array_key_exists('Email Key',$data) ) {
 
             $email=new Email('id',$data['Email Key']);
+            if(!$email->id){
+                print_r($data);
+                exit('fatal error when adding email to contact class.Contact.php');
+            
+            }
+            
+            
             $email->set_scope('Contact',$this->id);
             if ( $email->associated_with_scope) {
                 $email_not_associated=false;
@@ -1509,6 +1516,14 @@ $sql=sprintf("insert into `Address Telecom Bridge` values (%d,%d)",$home_address
 
 
         } else {
+
+            if(!isset($data['Email'])){
+               
+                print_r($data);
+                print_r($this);
+                exit("Strange error class.Contact.php");
+            
+            }
 
             $email=$data['Email'];
             if (isset($data['Email Description']))

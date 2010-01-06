@@ -663,6 +663,9 @@ function list_products_for_edition(){
     $order='`Product Code`';
   elseif($order=='name')
     $order='`Product Name`';
+     elseif($order=='shortname')
+     $order='`Product XHTML Short Description`';
+    
   else
     $order='`Product Code`';
 
@@ -813,7 +816,7 @@ $adata[]=array(
 	       'id'=>$row['Product ID'],
 	       'code'=>$row['Product Code'],
 	       'code_price'=>sprintf('%s <a href="edit_product.php?pid=%d&edit=prices"><img src="art/icons/external.png"/></a>',$row['Product Code'],$row['Product ID']),
-	       
+	       'smallname'=>'<span style="font-size:70%;">'.$row['Product XHTML Short Description'].'</span>',
 
 	       'name'=>$row['Product Name'],
 	       'processing'=>$processing,
