@@ -559,9 +559,27 @@ function update_Email($data,$options=''){
     $this->warning=true;
   }
 
+ $old_value=$this->data['Email'];
+  if($old_value==$data){
+    $this->msg=_('Nothing to change');
+    return;
+    
+  
+  }
+
+    $sql=sprintf("select * from `Email Dimension` where `Email` like binary %s   ",prepare_mysql($data));
+    $res=mysql_query($sql);
+   // print $sql;
+    while($row=mysql_fetch_array($res)){
+    print_r($row);
+    print"email %s alredy n the system whan trying to updating it !!!!!!!! cjack in class.Email.php\n";  
+    return;
+    }
 
 
-  $old_value=$this->data['Email'];
+ 
+  
+  
   $sql=sprintf("update `Email Dimension` set `Email`=%s where `Email Key`=%d ",prepare_mysql($data),$this->id);
   mysql_query($sql);
   
@@ -613,7 +631,13 @@ function update_Email($data,$options=''){
       $customer->update_email($this->id);
     }
 
-
+   $sql=sprintf("select `Supplier Key` from  `Supplier Dimension` where `Supplier Main Email Key`=%d group by `Supplier Key`",$this->id);
+    $res=mysql_query($sql);
+    while($row=mysql_fetch_array($res)){
+      $supplier=new Supplier($row['Supplier Key']);
+      $supplier=new Supplier($row['Supplier Key']);
+      $supplier->update_email($this->id);
+    }
 
   }
   

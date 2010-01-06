@@ -209,7 +209,7 @@
       </div>
       
       <div  class="edit_block" style="margin:0;padding:0 0px;{if $edit!="products"}display:none{/if}"  id="d_products">
-	<div   style="margin:0 0 10px 0;padding:10px;border:1px solid #ccc;xdisplay:none"  id="new_product_dialog" >
+	<div   style="margin:0 0 10px 0;padding:10px;border:1px solid #ccc;display:none"  id="new_product_dialog" >
 	  <div id="new_product_messages" class="messages_block"></div>
 	  <table class="edit" >
 	    <tr><td class="label" style="width:7em">{t}Code{/t}:</td><td>
@@ -247,7 +247,7 @@
 
 	    <tr>
 	      <td colspan="2">
-		<div id="new_part_container"  class=""  style="padding-top:10px;border:1px solid #ccc">
+		<div id="new_part_container"  class=""  style="padding-top:10px;border:1px solid #ccc;">
 		    <div class="general_options" style="float:right">
 
 		      <span style="margin-right:10px;display:none"  id="save_area" class="state_details">{t}Save{/t}</span>
