@@ -590,13 +590,13 @@ function get_shelf_type_data(){
     shelf_type_data['Shelf Type Name']=Dom.get('shelf_type_name').value;
     shelf_type_data['Shelf Type Description']=Dom.get('shelf_type_description').value;
     shelf_type_data['Shelf Type Type']=Dom.get('shelf_type_type').value;
-    shelf_type_data['Shelf Rows']=Dom.get('shelf_type_rows').value;
-    shelf_type_data['Shelf Columns']=Dom.get('shelf_type_columns').value;
-    shelf_type_data['Shelf Location Length']=Dom.get('shelf_type_length').value;
-    shelf_type_data['Shelf Location Deep']=Dom.get('shelf_type_deep').value;
-    shelf_type_data['Shelf Location Height']=Dom.get('shelf_type_height').value;
-    shelf_type_data['Shelf Location Max Weight']=Dom.get('shelf_type_weight').value;
-    shelf_type_data['Shelf Location Max Volume']=Dom.get('shelf_type_volume').value;
+    shelf_type_data['Shelf Type Rows']=Dom.get('shelf_type_rows').value;
+    shelf_type_data['Shelf Type Columns']=Dom.get('shelf_type_columns').value;
+    shelf_type_data['Shelf Type Location Length']=Dom.get('shelf_type_length').value;
+    shelf_type_data['Shelf Type Location Deep']=Dom.get('shelf_type_deep').value;
+    shelf_type_data['Shelf Type Location Height']=Dom.get('shelf_type_height').value;
+    shelf_type_data['Shelf Type Location Max Weight']=Dom.get('shelf_type_weight').value;
+    shelf_type_data['Shelf Type Location Max Volume']=Dom.get('shelf_type_volume').value;
 
 }
 
@@ -625,7 +625,7 @@ function add_shelf_type(){
     // return;
     YAHOO.util.Connect.asyncRequest('POST',request ,{
 	    success:function(o) {
-		//alert(o.responseText);
+		alert(o.responseText);
 		var r =  YAHOO.lang.JSON.parse(o.responseText);
 		if(r.action=='created'){
 		    reset_shelf_type_data();

@@ -877,7 +877,7 @@ class Company extends DB_Table {
     protected function update_field_switcher($field,$value,$options='') {
 
 
-
+      
 
 
         switch ($field) {
@@ -900,11 +900,14 @@ class Company extends DB_Table {
 
             }
             elseif(!email::wrong_email($value)) {
+
+	     
                 $contact=new Contact($this->data['Company Main Contact Key']);
                 $contact->editor=$this->editor;
                 $email_data=array('Email'=>$value);
-                $contact->add_email($email_data);// <- will update company
-            }
+                
+		$contact->add_email($email_data);// <- will update company
+	    }
 
             break;
         case('Company Main Telephone'):
@@ -1076,7 +1079,7 @@ class Company extends DB_Table {
             while ($row=mysql_fetch_array($res)) {
                 $supplier=new Supplier ($row['Supplier Key']);
                 $supplier->editor=$this->editor;
-                ;
+               
                 $supplier->update(array('Supplier Name'=>$this->data['Company Name']));
             }
 
@@ -1087,6 +1090,8 @@ class Company extends DB_Table {
 	      if($customer->data['Customer Type']=='Company'){
 		$customer->editor=$this->editor;
 		$customer->update_name($this->data['Company Name']);
+		$customer->update_file_as($this->data['Company File As']);
+
 	      }
             }
 	     mysql_free_result($res);     

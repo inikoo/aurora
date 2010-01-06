@@ -53,6 +53,9 @@ $general_options_list[]=array('tipo'=>'js','state'=>$show_details,'id'=>'details
 $general_options_list[]=array('tipo'=>'js','state'=>'','id'=>'advanced_search','label'=>_('Advanced Search'));
 
 $smarty->assign('general_options_list',$general_options_list);
+$smarty->assign('search_label',_('Customers'));
+$smarty->assign('search_scope','customers');
+
 
 
  
@@ -77,7 +80,7 @@ $js_files=array(
 		$yui_path.'menu/menu-min.js',
 		'common.js.php',
 		'table_common.js.php',
-		'search.js',
+		'js/search.js',
 		'customers.js.php'
 		);
 

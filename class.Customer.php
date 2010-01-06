@@ -2,7 +2,7 @@
 /*
  File: Customer.php
 
- This file contains the Customer Class
+ This file cSontains the Customer Class
 
  About:
  Autor: Raul Perusquia <rulovico@gmail.com>
@@ -243,31 +243,59 @@ class Customer extends DB_Table {
 
             if ($this->found) {
 
-                if ($raw_data['Customer Type']=='Person') {
+	      if ($raw_data['Customer Type']=='Person') {
+
+		//$raw_data['Customer Main Plain Email']==''
+		//check for spacial case, everything different except the email
+		print_r($raw_data);
+		//	print_r($child);
+		if(isset($child->data['Contact Key']) and $raw_data['Customer Main Plain Email']==$child->data['Contact Main Plain Email']
+		   and (levenshtein($child->data['Contact Name'],$raw_data['Customer Main Contact Name'])/(strlen($child->data['Contact Name'])+1))>.3
+
+		   ){
+		  
+		  $child->remove_email($child->data['Contact Main Email Key']);
+		   $this->create($raw_data);
+		  
+		  
+		  return;
+		}
+		
+
                     $child=new Contact ('find in customer create update',$raw_data);
                 } else {
+	
+		   
                     $child=new Company ('find in customer create update',$raw_data);
                 }
 
                 //	$child->editor=$this->editor;
-                $this->update($raw_data);
+		//	print "ssssss";
+		//print_r($raw_data);
+		$raw_data_to_update=array();
+		$raw_data_to_update['Customer Old ID']=$raw_data['Customer Old ID'];
+	
+
+		$this->update($raw_data_to_update);
+		//print "ssssssss";
 
             } else {
 
                 if ($this->found_child) {
-                    //	    print "----------------------------------******************\n";
-                    //print_r($raw_data);
-                    //print_r( $child->translate_data($raw_data,'from customer')  );
-                    //print "-----------------------------------------------\n";
+		  //   	    print "----------------------------------******************\n";
+                  //  print_r($raw_data);
+                  //  print_r( $child->translate_data($raw_data,'from customer')  );
+                  //  print "-----------------------------------------------\n";
 
                     if ($raw_data['Customer Type']=='Person') {
+		   
 
-                        $contact=new contact('find in customer create update',$raw_data);
-                        $raw_data['Customer Main Contact Key']=$contact->id;
-
+		      $contact=new contact('find in customer create update',$raw_data);
+		      $raw_data['Customer Main Contact Key']=$contact->id;
+		      
                     } else {
-                        $company=new company('find in customer create update',$raw_data);
-                        $raw_data['Customer Company Key']=$company->id;
+		      $company=new company('find in customer create update',$raw_data);
+		      $raw_data['Customer Company Key']=$company->id;
                     }
 
 
@@ -479,7 +507,7 @@ class Customer extends DB_Table {
             $company=new company('find in customer create update',$raw_data);
 
             $company_key=$company->id;
-
+	    $this->data['Customer File As']=$company->data['Company File As'];
 
             if ($company->data['Company Main Email Key']) {
                 $main_email_key=$company->data['Company Main Email Key'];
@@ -517,7 +545,8 @@ class Customer extends DB_Table {
             //address!!!!!!!!!!!!!
 
 
-
+	    $this->data['Customer File As']=$contact->data['Contact File As'];
+		    
 
 
 
@@ -827,22 +856,24 @@ class Customer extends DB_Table {
     /*Function: update_field_switcher
     */
     function update_field_switcher($field,$value,$options='') {
-
-        switch ($field) {
-        case('Note'):
-            $this->add_note($value);
+      if(is_string($value))
+	$value=_trim($value);
+     
+      switch ($field) {
+      case('Note'):
+	$this->add_note($value);
+	break;
+      case('Attach'):
+	$this->add_attach($value);
             break;
-        case('Attach'):
-            $this->add_attach($value);
-            break;
-        case('Customer Name'):
-            $this->update_child_name($value);
-            break;
-        case('Customer Main Contact Name'):
+      case('Customer Name'):
+	$this->update_child_name($value);
+	break;
+      case('Customer Main Contact Name'):
             $this->update_child_main_contact_name($value);
             break;
-
-        case('Customer Main Plain Telephone'):
+	    
+      case('Customer Main Plain Telephone'):
             $this->update_child_telephone($value);
             break;
         case('Customer Main Plain Email'):
@@ -870,9 +901,18 @@ class Customer extends DB_Table {
 
 
     function update_name($value,$options='') {
+
         $field='Customer Name';
         $this->update_field($field,$value,$options);
+	
     }
+     function update_file_as($value,$options='') {
+        $field='Customer File As';
+        $this->update_field($field,$value,$options.' nohistory');
+	
+    }
+    
+
     function update_main_contact_name($value,$options='') {
         $field='Customer Main Contact Name';
         $this->update_field($field,$value,$options);
@@ -885,7 +925,8 @@ class Customer extends DB_Table {
         $contact=new Contact($this->data['Customer Main Contact Key']);
         $contact->editor=$this->editor;
         $contact->update(array('Contact Name'=>$value));
-
+	
+	
         if ($contact->updated) {
 
             $this->updated=true;
@@ -1313,13 +1354,13 @@ function update_contact($contact_key=false) {
             $old_customer_name=$this->data['Customer Name'];
             $this->data['Customer Name']=$contact->display('name');
             $this->data['Customer File As']=$contact->data['Contact File As'];
-            $sql=sprintf("update `Customer Dimension` set `Customer Name`=%d,`Customer File As`=%s where `Customer Key`=%d"
+            $sql=sprintf("update `Customer Dimension` set `Customer Name`=%s,`Customer File As`=%s where `Customer Key`=%d"
                          ,prepare_mysql($this->data['Customer Name'])
                          ,prepare_mysql($this->data['Customer File As'])
                          ,$this->id
                         );
             mysql_query($sql);
-            $note=_('Contact name changed');
+	    $note=_('Contact name changed');
             $details=_('Customer Name changed from')." \"".$old_customer_name."\" "._('to')." \"".$this->data['Customer Name']."\"";
             $history_data=array(
                               'indirect_object'=>'Customer Name'
@@ -1478,12 +1519,12 @@ function update_company($company_key=false) {
 
         $history_data=array(
                           'indirect_object'=>'Customer Company Name'
-
-                                            ,'details'=>$details
-                                                       ,'note'=>$note
-                                                               ,'action'=>'edited'
+			  
+			  ,'details'=>$details
+			  ,'note'=>$note
+			  ,'action'=>'edited'
                       );
-        $this->add_history($history_data);
+        //$this->add_history($history_data);
 
     }
 
@@ -2476,6 +2517,15 @@ function remove_email($email_key=false) {
 
             mysql_query($sql);
         }
+
+ $history_data=array(
+                              'note'=>_('Customer Email Deteted')
+			      ,'indirect_object'=>'Email'
+			      ,'details'=>_trim(_('Email').": \"".$email->data['Email']."\"  "._('disassociated from customer').' '.$this->data['Customer Name'])
+                                                ,'action'=>'disassociate'
+                          );
+            $this->add_history($history_data);
+
     }
 
 

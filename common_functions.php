@@ -862,6 +862,8 @@ function extract_product_groups($str,
 //print _trim('        d ca        ca  caca    ');
 
 function _trim($string){
+ 
+
   $string=preg_replace('/\xC2\xA0\s*$/',' ',$string);
   $string=preg_replace('/\xA0\s*/',' ',$string);
   $string=preg_replace('/\s+/',' ',trim($string));
@@ -1561,6 +1563,44 @@ if(preg_match('/(cc|cm3)$/i',$value)){
 $value=parse_number($value);
 
 return array($value,$unit);
+}
+
+function parse_distance($value){
+
+
+$original_unit='m';
+$value=_trim($value);
+if(preg_match('/(cent.metro?|centimeter?|cm)$/i',$value)){
+    $value=parse_number($value)/100 ;
+    $original_unit='cm';
+}elseif(preg_match('/(mm|milimiters?)$/i',$value)){
+    $value=parse_number($value)/1000 ;
+    $original_unit='mm';
+}elseif(preg_match('/(inches|inch|in)$/i',$value)){
+    $value=parse_number($value)*0.0254;
+    $original_unit='inch';
+}elseif(preg_match('/(foot|feets?|ft)$/i',$value)){
+    $value=parse_number($value)*0.3048;
+    $original_unit='ft';
+}elseif(preg_match('/(mile?|milles?)$/i',$value)){
+    $value=parse_number($value)* 1609.344;
+    $original_unit='mile';
+}else
+$value=parse_number($value);
+
+return array($value,$original_unit);
+}
+
+function distance($value,$unit='m'){
+  switch($unit){
+  case('cm'):
+    return number($value*100).'cm';
+  case('mm'):
+    return number($value*1000).'mm';
+  default:
+    return number($value).'m';
+  }
+
 }
 
 

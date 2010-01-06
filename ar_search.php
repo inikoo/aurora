@@ -1,6 +1,7 @@
 <?php
 require_once 'common.php';
 require_once('class.Email.php');
+require_once 'ar_edit_common.php';
 
 
 if (!isset($_REQUEST['tipo'])) {
@@ -17,7 +18,7 @@ case('product_manage_stock'):
 case('edit_product'):
  $q=$_REQUEST['q'];
 search_products($q,$tipo,$user);
-   
+ 
     return;
 case('location'):
     $q=$_REQUEST['q'];
@@ -27,7 +28,12 @@ case('customer_name'):
    search_customer_name($user);
    break;
 case('customer'):
-   search_customer($user);
+case('customers'):
+   $data=prepare_values($_REQUEST,array(
+			     'q'=>array('type'=>'string')
+			     ));
+    $data['user']=$user;
+   search_customer($data);
    break;
 default:
     $response=array('state'=>404,'resp'=>"Operation not found $tipo");
@@ -36,7 +42,69 @@ default:
 }
 
 
-function search_customer($user){
+function search_customer($data){
+  
+  $user=$data['user'];
+  $q=$data['q'];
+    // $q=_trim($_REQUEST['q']);
+    $stores=join(',',$user->stores);
+    
+    $total_found=0;
+    $emails_found=0;
+    $emails_results='<table>';
+    // Email serach
+    if(strlen($q)>3 or preg_match('/@/',$q)){
+      $sql=sprintf('select `Customer Key`,`Customer Name`,`Customer Main Plain Email` from `Customer Dimension` where `Customer Store Key` in (%s) and  `Customer Main Plain Email` like "%s%%"  limit 5'
+		   ,$stores
+		   ,addslashes($q)
+		   );
+      // print $sql;
+      $res=mysql_query($sql);
+      while($row=mysql_fetch_array($res)){
+	$result=sprintf('<tr><td><a href="customer.php?id=%d">%s</a></td><td class="aright">%s</td></tr>',$row['Customer Key'],$row['Customer Name'],$row['Customer Main Plain Email']);
+	$emails_found++;
+	$emails_results.=$result;
+	$total_found++;
+      }
+      
+    }
+    $emails_results.='</table>';
+
+
+ $names_found=0;
+ $names_results='<table>';
+ // Email serach
+ if(strlen($q)>2){
+   $sql=sprintf('select `Customer Key`,`Customer Name` from `Customer Dimension` where `Customer Store Key` in (%s) and  `Customer Name` like "%s%%"  limit 5'
+		   ,$stores
+		,addslashes($q)
+		);
+   //  print $sql;
+      $res=mysql_query($sql);
+      while($row=mysql_fetch_array($res)){
+	$result=sprintf('<tr><td class="aright"><a href="customer.php?id=%d">%s</a></td></tr>',$row['Customer Key'],$row['Customer Name']);
+	$names_found++;
+	$names_results.=$result;
+	$total_found++;
+      }
+
+    }
+  $names_results.='</table>';
+
+    
+    $data=array('results'=>$total_found,'emails'=>$emails_found,'emails_results'=>$emails_results
+		,'names'=>$names_found,'names_results'=>$names_results);
+    $response=array('state'=>200,'data'=>$data);
+    echo json_encode($response);
+}
+
+
+
+
+
+
+
+function search_customer_old($user){
 
     $q=_trim($_REQUEST['q']);
     $stores=join(',',$user->stores);
@@ -76,7 +144,7 @@ function search_customer($user){
     
     
     
-  // print_r($search_data);
+   print_r($search_data);
       $_SESSION['search']=array('Type'=>'Customer','Data'=>$search_data);
         echo json_encode(array('state'=>200,'url'=>'customers_lookup.php?res=y'));
         return;
