@@ -333,14 +333,16 @@ function list_warehouse_areas_for_edition(){
 	$warehouse_id=$_SESSION['state']['warehouse']['id'];
    
 
-      $conf=$_SESSION['state']['warehouse']['warehouse_area'];
+      $conf=$_SESSION['state']['warehouse_areas']['table'];
 
       $conf_table='warehouse_area';
 
-      if(isset( $_REQUEST['parent']))
-	$parent=$_REQUEST['parent'];
-      else
-	$parent=$conf['parent'];
+      if(isset( $_REQUEST['parent'])){
+	$parent=$_REQUEST['parent'];			      
+	
+	$_SESSION['state']['warehouse_areas']['parent']=$parent;
+      }else
+	$parent=$_SESSION['state']['warehouse_areas']['parent'];
 
 
       if(isset( $_REQUEST['sf'])){
@@ -456,7 +458,7 @@ function list_warehouse_areas_for_edition(){
 
  
    $sql="select *  from `Warehouse Area Dimension` $where $wheref order by $order $order_direction limit $start_from,$number_results    ";
-   // print $sql;
+  
    $res = mysql_query($sql);
    $adata=array();
    

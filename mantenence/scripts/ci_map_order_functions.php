@@ -5364,6 +5364,18 @@ if($act_data['town']=='Hornbæk - Sjælland'){
     }
   }
     
+  $act_data['name']=preg_replace('/\\\"/i',' ',$act_data['name']);
+  $act_data['contact']=preg_replace('/\\\"/i',' ',$act_data['contact']);
+  $header_data['trade_name']=preg_replace('/\\\"/i',' ',$header_data['trade_name']);
+
+  
+  if($act_data['name']=='Eujopa.s.l'){
+    $act_data['name']='Eujopa S.L.';
+  }
+if($act_data['name']=='S. coop. mad. Los Apisquillos'){
+    $act_data['name']='S. Coop. Mad. Los Apisquillos';
+  }
+
   //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
   // fix contracts
   if($act_data['name']=='Antonio Laborda - Jabón Jabón'){
@@ -5371,9 +5383,17 @@ if($act_data['town']=='Hornbæk - Sjælland'){
     $act_data['contact']='Antonio Laborda';
   }
 
-
  
-   
+
+
+
+if($act_data['name']=='La Tasca de Oscar' and $act_data['contact']==''){
+    $act_data['contact']='Rosa Amelia Fariña Rodriguez';
+
+  }
+
+
+
   
   
     if($act_data['name']=='Encarnación Jimenez Marquez' and $act_data['contact']=='0'){
@@ -5391,7 +5411,11 @@ if($act_data['town']=='Hornbæk - Sjælland'){
   or ($act_data['name']=='Mari Carmen de La Muela Vega' and $act_data['contact']=='Joyeria Caro')
   or ($act_data['name']=='Aniceto de Leon Viñoly' and $act_data['contact']=='La Caja Roja')
   or ($act_data['name']=='Mº del Carmen López Carreira' and $act_data['contact']=='Eiroa-2')
+  or ($act_data['name']=='Fermin Gutierrez' and $act_data['contact']=='Fermin')
+
   or ($act_data['name']=='Sonsoles Luque Delgado' and $act_data['contact']=='Isla Web')
+  or ($act_data['name']=='Mercedes Manito Mantero' and $act_data['contact']=='Mercedes')
+
   or ($act_data['name']=='Adriana Ramos Ruiz' and $act_data['contact']=='Jaboneria')
   or ($act_data['name']=='Francisca Castillo Gil' and $act_data['contact']=='Bis a Bis')
   or ($act_data['name']=='Judit Plana Rodriguez' and $act_data['contact']=='Solluna')
@@ -5405,9 +5429,9 @@ if($act_data['town']=='Hornbæk - Sjælland'){
  or (preg_match('/Maria Josefa Aparicio Arrebol/i',$act_data['name'])  and preg_match('/Duna/i',$act_data['contact']) )
  or (preg_match('/Marisa R/i',$act_data['name'])  and preg_match('/Ilusiones/i',$act_data['contact']) )
  or (preg_match('/Burgui/i',$act_data['name'])  and preg_match('/Burbuja/i',$act_data['contact']) )
-  or (preg_match('/Herbolario|Perfumeria|Jauja|Herboristeria|El Rincon del Papi|Artterapia|Centro De Estetica|Artesano Grabador de Vidrio|Psicolodia Logopedia Montserrat Baulenas|Centro Tiempo Crista|Mais Festa/i',$act_data['contact']) )
-  or (preg_match('/^tienda |joyeria |Papeleria /i',$act_data['contact']) )
-  or (preg_match('/^(rayas|papel|Artesano|Gipp|La Mar de Cosas|Jabón Jabón|Jaboneria|Chucotattoo|La Misma)$/i',$act_data['contact']) )
+  or (preg_match('/Herbolario|Perfumeria|Jauja|Herboristeria|El Rincon del Papi|Comercial Fermer.n|Ochun y Yemaya S.C.P.|Pompitas de |Artesan(í|i)a|Esoterico?|Craft Market|Artterapia|Centro De Estetica|Artesano Grabador de Vidrio|Psicolodia Logopedia Montserrat Baulenas|Centro Tiempo Crista|Mais Festa|Pompas de Jab.n|Q.guay\!/i',$act_data['contact']) )
+  or (preg_match('/^tienda |joyeria |Papeleria|^bazar|^restaurant|^el |^las |^los |^la /i',$act_data['contact']) )
+  or (preg_match('/^(rayas|papel|Artesano|Gipp|La Mar de Cosas|Jabón Jabón|Angelus|Pompas|Jaboneria|Arfin|Samadhi|Zig Zag|Style|Salem|Videotarot|El duende|Sensual|Ariestética|Burbujitas|Chucotattoo|La Misma|D.e|Dunes|Dulce Pina|Naturshop|Amanatur S L|Lady Of the Stones|Splash|Fragancias|Lima Limon)$/i',$act_data['contact']) )
  or (preg_match('/^Mª /i',$act_data['name']) and  $act_data['contact']!='')
 // or (preg_match('//i',$act_data['name'])  and preg_match('//i',$act_data['contact']) )
  //or ($act_data['name']=='' and $act_data['contact']=='')
@@ -5472,7 +5496,33 @@ if($act_data['town']=='Hornbæk - Sjælland'){
       $tipo_customer='Company';
       $act_data['contact']='';
     }
+ 
+
+    
+
+
+    $tmp_array=array('Burbujas Online S.L.','Sona Florida S.L.L.','Fisioglobal SCP','Naturshop','Amanatur S L');
+    foreach($tmp_array as $__name){
+      if($act_data['name']==$__name and $act_data['contact']==$__name  ){
+	 $tipo_customer='Company';
+	 $act_data['contact']='';
+	
+      }
+    }
+
+
+
+
+
   }
+
+  $act_data['contact']=preg_replace('/^m\.angeles /i','Mª Angeles ',$act_data['contact']);
+  $act_data['name']=preg_replace('/ (S\s*L\.|S\.L\.|S\.L|SL)$/i',' S.L.',$act_data['name']);
+  $act_data['name']=preg_replace('/ (S\s*C\.|S\.C\.|S\.C|SC)$/i',' S.C.',$act_data['name']);
+  $act_data['name']=preg_replace('/ (s\.L\s*L|SLL|S\s*L\.L\.|S\.L\.L\.|S\.LL)$/i',' S.L.L.',$act_data['name']);
+  $act_data['name']=preg_replace('/ (S\s*a\.|S\.a\.|S\.a|Sa)$/i',' S.A.',$act_data['name']);
+
+  
 
   //  print_r($act_data);
   
@@ -5740,6 +5790,8 @@ if($act_data['town']=='Hornbæk - Sjælland'){
 
   //  $customer_data['other_id']=$act_data['act'];
 
+  //  print_r($customer_data);
+  //print_r($act_data);
   //$customer_data['address_data']=
   
     if(isset($act_data['act']))

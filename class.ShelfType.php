@@ -67,7 +67,7 @@ class ShelfType extends DB_Table{
     if(preg_match('/update/i',$options)){
       $update='update';
     }
-    print_r($raw_data);
+    //  print_r($raw_data);
     $data=$this->base_data();
     foreach($raw_data as $key=>$val){
       $_key=$key;
@@ -115,6 +115,21 @@ class ShelfType extends DB_Table{
 	if(array_key_exists($key,$this->data))
 	  $this->data[$key]=_trim($value);
       }
+
+      if(!is_numeric($this->data['Shelf Type Rows']) or $this->data['Shelf Type Rows']<1 ){
+	$this->data['Shelf Type Rows']=1;
+      }
+
+      if($this->data['Shelf Type Location Height']!=){
+	list($this->data['Shelf Type Location Height'],$dump)=parse_distance($this->data['Shelf Type Location Height']);
+      }
+       if($this->data['Shelf Type Location Length']!=){
+	list($this->data['Shelf Type Location Length'],$dump)=parse_distance($this->data['Shelf Type Location Length']);
+      }
+        if($this->data['Shelf Type Location Deep']!=){
+	list($this->data['Shelf Type Location Deep'],$dump)=parse_distance($this->data['Shelf Type Location Deep']);
+      }
+
       
       if($this->data['Shelf Type Name']==''){
 	$this->msg=('Shelf type name is a requeried value');
@@ -122,6 +137,10 @@ class ShelfType extends DB_Table{
 	$this->error=true;
 	return;
       }
+
+
+
+
      /*  $warehouse=new Warehouse('id',$this->data['Warehouse Key']); */
 /*       if(!$warehouse->id){ */
 /* 	$this->msg=('Wrong warehouse key'); */
@@ -130,36 +149,35 @@ class ShelfType extends DB_Table{
 /* 	return; */
 
 /*       } */
-      
+      // print_r($this->data);
 
       $keys='(';$values='values(';
       foreach($this->data as $key=>$value){
-
 	$keys.="`$key`,";
 	$_mode=true;
 	if($key=='Shelf Type Description')
 	  $_mode=false;
 	$values.=prepare_mysql($value,$_mode).",";
       }
-    
-    $keys=preg_replace('/,$/',')',$keys);
-    $values=preg_replace('/,$/',')',$values);
-
-    $sql=sprintf("insert into `Shelf Type Dimension` %s %s",$keys,$values);
-    //print "$sql\n";
-    // exit;
-    if(mysql_query($sql)){
-      $this->id= mysql_insert_id();
-      $this->new=true;
-      $this->get_data('id',$this->id);
-      $note=_('Shelf Type Created');
-      $details=_('Shelf Type')." ".$this->data['Shelf Type Code']." "._('created');
-
-
-    }else{
-      exit($sql);
-    }
-
+      
+      $keys=preg_replace('/,$/',')',$keys);
+      $values=preg_replace('/,$/',')',$values);
+      
+      $sql=sprintf("insert into `Shelf Type Dimension` %s %s",$keys,$values);
+      //print "$sql\n";
+      // exit;
+      if(mysql_query($sql)){
+	$this->id= mysql_insert_id();
+	$this->new=true;
+	$this->get_data('id',$this->id);
+	$note=_('Shelf Type Created');
+	$details=_('Shelf Type')." ".$this->data['Shelf Type Name']." "._('created');
+	
+	
+      }else{
+	exit($sql);
+      }
+      
     }
 
   function get_data($key,$tag){

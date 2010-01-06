@@ -154,7 +154,7 @@ class Order extends DB_Table{
 	//print_r($data['Customer Data']);
 				  
 	$customer = new Customer ( 'find create', $data['Customer Data'] );
-
+	//print_r($customer->data);
 	if($customer->data['Customer Delivery Address Link']=='None'){
 	  $ship_to= new Ship_To('find create',$data['Shipping Address']);
 	}else{

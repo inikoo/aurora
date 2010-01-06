@@ -1567,6 +1567,9 @@ $sql=sprintf("insert into `Address Telecom Bridge` values (%d,%d)",$home_address
 
         }
 
+	
+
+
 
 
         if ($email->id) {
@@ -1621,7 +1624,7 @@ $sql=sprintf("insert into `Address Telecom Bridge` values (%d,%d)",$home_address
             }
 
 
-
+	   
             if ($principal) {
 
                 $sql=sprintf("update `Email Bridge`  set `Is Main`='No' where `Subject Type`='Contact' and  `Subject Key`=%d  and `Email Key`!=%d",
@@ -1649,6 +1652,7 @@ $sql=sprintf("insert into `Address Telecom Bridge` values (%d,%d)",$home_address
                 $history_data['note']='Email Associated';
                 $history_data['details']=_($email->display('plain')." "._('associated with')." ".$this->display("name")." "._('contact'));
             }
+
 
             if ($updated) {
 
@@ -1687,6 +1691,7 @@ $sql=sprintf("insert into `Address Telecom Bridge` values (%d,%d)",$home_address
             }
 
         }
+
     }
 
 
@@ -1759,6 +1764,14 @@ $sql=sprintf("insert into `Address Telecom Bridge` values (%d,%d)",$home_address
                         $customer->remove_email($email->id);
                     }
                 }
+		$customer_found_keys=$this->get_customer_keys();
+                    foreach($customer_found_keys as $customer_found_key) {
+                        $customer=new Customer($customer_found_key);
+                        $customer->editor=$this->editor;
+                        $customer->update_email($row['Email Key']);
+                        $customer->remove_email($email->id);
+                    }
+
 
 
 
@@ -1768,6 +1781,27 @@ $sql=sprintf("insert into `Address Telecom Bridge` values (%d,%d)",$home_address
                             );
                 mysql_query($sql);
 
+  if ($company_key=$this->company_key('principal')) {
+                    $company=new Company('id',$company_key);
+                    $company->editor=$this->editor;
+                    $company->update_email($row['Email Key']);
+                    $company->remove_email($email->id);
+
+                    $customer_found_keys=$company->get_customer_keys();
+                    foreach($customer_found_keys as $customer_found_key) {
+                        $customer=new Customer($customer_found_key);
+                        $customer->editor=$this->editor;
+                        $customer->remove_email($email->id);
+                    }
+                }
+		$customer_found_keys=$this->get_customer_keys();
+                    foreach($customer_found_keys as $customer_found_key) {
+                        $customer=new Customer($customer_found_key);
+                        $customer->editor=$this->editor;
+                        $customer->remove_email($email->id);
+                    }
+
+
             }
 
         }
@@ -1775,11 +1809,20 @@ $sql=sprintf("insert into `Address Telecom Bridge` values (%d,%d)",$home_address
         $sql=sprintf("delete from `Email Bridge` where `Subject Key`=%d and `Subject Type`='Contact'  and `Email Key`=%d ",$this->id,$email->id);
         mysql_query($sql);
 
+	
+ $history_data=array(
+                              'note'=>_('Contact Email Deteted')
+			      ,'indirect_object'=>'Email'
+			      ,'details'=>_trim(_('Email').": \"".$email->data['Email']."\"  "._('disassociated from contact').' '.$this->display('names'))
+                                                ,'action'=>'disassociate'
+                          );
+            $this->add_history($history_data);
+
 
         $email->destroy();
 
 
-
+	
 
 
 
@@ -2684,7 +2727,9 @@ $principal=true;
             foreach($this->get_customer_keys() as $customer_key) {
                 $customer=New Customer($customer_key);
                 $customer->update_contact($this->id);
-                print($customer->msg);
+		
+
+		// print($customer->msg);
             }
         }
 

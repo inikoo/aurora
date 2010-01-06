@@ -31,12 +31,12 @@ $result=mysql_query($sql);
 while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
 
 
-  $product=new Department($row['Product Department Key']);
-  $product->load('sales');
-  $product->load('products_info');
+  $department=new Department($row['Product Department Key']);
+  $department->load('sales');
+  $department->load('products_info');
 
   
-  print $product->id."\r";
+  print $department->data['Product Department Code']."\n";
  }
 
 mysql_free_result($result);
