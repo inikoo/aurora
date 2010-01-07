@@ -331,14 +331,14 @@ $default_state=array(
 					'id'=>1,
 					'edit'=>'description'
 					),
-			
-			'locations'=>array(
+		     
+		     'locations'=>array(
 			'parent'=>'none',
 			'table'=>array(
-							   'order'=>'code',
-							   'order_dir'=>'',
-							   'sf'=>0,
-							   'nr'=>25,
+				       'order'=>'code',
+				       'order_dir'=>'',
+				       'sf'=>0,
+				       'nr'=>25,
 							   'where'=>'where true',
 							   'f_field'=>'code',
 							   'f_value'=>'',
@@ -375,12 +375,12 @@ $default_state=array(
                                            
 
 					 ),
-					  'warehouse_areas'=>array(
-                                  	'parent'=>'none', 
-					 'table'=>array(
-							'order'=>'code',
-							'order_dir'=>'',
-							'sf'=>0,
+		     'warehouse_areas'=>array(
+					      'parent'=>'none', 
+					      'table'=>array(
+							     'order'=>'code',
+							     'order_dir'=>'',
+							     'sf'=>0,
 							'nr'=>50,
 							'where'=>'where true',
 							'f_field'=>'code',
