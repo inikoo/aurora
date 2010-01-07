@@ -5521,6 +5521,7 @@ if($act_data['name']=='La Tasca de Oscar' and $act_data['contact']==''){
   $act_data['name']=preg_replace('/ (S\s*C\.|S\.C\.|S\.C|SC)$/i',' S.C.',$act_data['name']);
   $act_data['name']=preg_replace('/ (s\.L\s*L|SLL|S\s*L\.L\.|S\.L\.L\.|S\.LL)$/i',' S.L.L.',$act_data['name']);
   $act_data['name']=preg_replace('/ (S\s*a\.|S\.a\.|S\.a|Sa)$/i',' S.A.',$act_data['name']);
+  $act_data['name']=preg_replace('/ (C\s*B\.|C\.B\.|C\.B|CB)$/i',' C.B.',$act_data['name']);
 
   
 
@@ -5790,7 +5791,8 @@ if($act_data['name']=='La Tasca de Oscar' and $act_data['contact']==''){
 
   //  $customer_data['other_id']=$act_data['act'];
 
-  //  print_r($customer_data);
+    //print_r($customer_data);
+  //exit;
   //print_r($act_data);
   //$customer_data['address_data']=
   
@@ -5799,6 +5801,12 @@ if($act_data['name']=='La Tasca de Oscar' and $act_data['contact']==''){
   else
     $customer_data['other id']='';
     //   print "+++++++++++++++\n";    
+  
+  
+  if($customer_data['email']=='jordisubiranaballesteros@hotmail.com' and $customer_data['contact_name']!='Iolanda Catarina Martinez Angelico'){
+ // print_r($customer_data);
+  $customer_data['email']='';
+  }
   
   return $customer_data;
 

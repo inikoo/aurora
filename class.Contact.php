@@ -936,7 +936,7 @@ class Contact extends DB_Table {
 
 
         if ($this->data['Contact Name']=='') {
-            $this->data['Contact Name']=$myconf['unknown_contact'];
+            $this->data['Contact Name']='! '.$myconf['unknown_contact'];
             $this->data['Contact Informal Greeting']=$myconf['unknown_informal_greting'];
             $this->data['Contact Formal Greeting']=$myconf['unknown_formal_greting'];
         }
@@ -1811,7 +1811,7 @@ $sql=sprintf("insert into `Address Telecom Bridge` values (%d,%d)",$home_address
 
 	
  $history_data=array(
-                              'note'=>_('Contact Email Deteted')
+                              'note'=>_('Contact Email Deleted')
 			      ,'indirect_object'=>'Email'
 			      ,'details'=>_trim(_('Email').": \"".$email->data['Email']."\"  "._('disassociated from contact').' '.$this->display('names'))
                                                 ,'action'=>'disassociate'
@@ -2664,7 +2664,7 @@ $principal=true;
         if ($data=='') {
             $this->msg.=_('Warning, contact name should not be blank')."\n";
             $this->warning=true;
-            $this->data['Contact Name']=$myconf['unknown_contact'];
+            $this->data['Contact Name']='! '.$myconf['unknown_contact'];
             $this->data['Contact Informal Greeting']=$myconf['unknown_informal_greting'];
             $this->data['Contact Formal Greeting']=$myconf['unknown_formal_greting'];
 
@@ -2709,6 +2709,14 @@ $principal=true;
 
             $this->msg=_('Contact name updated');
             $this->updated=true;
+            
+            $history_data=array(
+				'note'=>_('Company Name Changed')
+				,'details'=>_trim(_('Contact name chaged').": ".$old_value." -> ".$this->data['Contact Name'])
+				,'indirect_object'=>'Name'
+				,'action'=>'edited'
+				);
+            
             foreach($this->get_supplier_key() as $supplier_key) {
                 $supplier=New Supplier($supplier_key);
                 $supplier->update_contact($this->id);

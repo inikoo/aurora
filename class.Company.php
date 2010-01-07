@@ -379,6 +379,7 @@ class Company extends DB_Table {
                     //print_r($this->card());
                     // Create contact
                     $contact=new Contact("find in company create",$raw_data);
+                    $contact->editor=$this->editor;
                     $this->data['Company Main Contact Name']=$contact->display('name');
                     $this->data['Company Main Contact Key']=$contact->id;
                     $contact->add_company(array(
@@ -1614,7 +1615,7 @@ if($contact->id){
         $email->set_scope('Company',$this->id);
         if ( $email->associated_with_scope) {
 
-            $sql=sprintf("delete `Email Bridge`  where `Subject Type`='Company' and  `Subject Key`=%d  and `Email Key`=%d",
+            $sql=sprintf("delete from  `Email Bridge`  where `Subject Type`='Company' and  `Subject Key`=%d  and `Email Key`=%d",
                          $this->id
 
                          ,$this->data['Company Main Email Key']
@@ -2031,6 +2032,7 @@ $principal=true;
         if ($contact->data['Contact Is Main']=='Yes') {
             if (count($contacts_keys)==1) {
                 $fuzzy_contact=new Contact('create anonymous');
+                $fuzzy_contact->editor=$this->editor;
                 $fuzzy_contact->add_company(array('Company Key'=>$this->id));
                 $fuzzy_contact->add_address(array(
                                                 'Address Key'=>$this->data['Company Main Address Key']

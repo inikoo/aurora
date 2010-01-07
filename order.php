@@ -141,9 +141,12 @@ if(isset($_REQUEST['pick_aid'])){
     $js_files[]='order_cancelled.js.php';
     $template='order_cancelled.tpl';
   break; 
-
+case('Unknown'):
+ $js_files[]='order_unknown.js.php';
+    $template='order_unknown.tpl';
+break;
  default:
-   exit('todo');
+   exit('todo '.$order->get('Order Current Dispatch State'));
   break;
 }  
 }

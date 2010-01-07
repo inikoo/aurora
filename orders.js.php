@@ -270,18 +270,24 @@ var clear_interval = function(e){
  
  var change_dispatch_type=function(e){
      var new_dispatch=this.id;
-
+ var table=tables.table0;
+	 var datasource=tables.dataSource0;
      if(new_dispatch!=dispatch){
 
+if(dispatch)
 	 Dom.removeClass(dispatch,'selected');
 	 Dom.addClass(new_dispatch,'selected');
 
 	 dispatch=new_dispatch;
-	 var table=tables.table0;
-	 var datasource=tables.dataSource0;
+	
 	 var request='&dispatch='+dispatch;
-	 datasource.sendRequest(request,table.onDataReturnInitializeTable, table);       
+     }else{
+     Dom.removeClass(dispatch,'selected');
+	 var request='&dispatch=';
+
      }
+ 	 datasource.sendRequest(request,table.onDataReturnInitializeTable, table);       
+
  }
 
 
