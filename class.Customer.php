@@ -188,6 +188,8 @@ class Customer extends DB_Table {
 
 
         }
+     //   print "xxxxx\n";
+        
         $raw_data['Customer Type']=ucwords($raw_data['Customer Type']);
         //print $raw_data['Customer Type']."\n";
         if ($raw_data['Customer Type']=='Person') {
@@ -196,7 +198,7 @@ class Customer extends DB_Table {
             $child=new Company ('find in customer use old_id',$raw_data);
         }
 
-        // print_r($child);
+     //    print_r($child);
 
         if ($child->found) {
 
@@ -204,6 +206,8 @@ class Customer extends DB_Table {
             $this->found_child=true;
             $this->found_child_key=$child->found_key;
             $customer_found_keys=$child->get_customer_keys();
+            //print "chlld found".print_r($child)."\n";
+            //print_r($customer_found_keys);
             if (count($customer_found_keys)>0) {
                 foreach($customer_found_keys as $customer_found_key) {
                     $tmp_customer=new Customer($customer_found_key);
@@ -247,16 +251,19 @@ class Customer extends DB_Table {
 
 		//$raw_data['Customer Main Plain Email']==''
 		//check for spacial case, everything different except the email
-		print_r($raw_data);
+		//print_r($raw_data);
 		//	print_r($child);
 		if(isset($child->data['Contact Key']) and $raw_data['Customer Main Plain Email']==$child->data['Contact Main Plain Email']
 		   and (levenshtein($child->data['Contact Name'],$raw_data['Customer Main Contact Name'])/(strlen($child->data['Contact Name'])+1))>.3
 
 		   ){
-		  
+		  print "super change!\n";
 		  $child->remove_email($child->data['Contact Main Email Key']);
-		   $this->create($raw_data);
 		  
+		  $_customer = new Customer ( 'find create', $raw_data );
+		  
+		  $this->get_data('id',$_customer->id);
+		  return;
 		  
 		  return;
 		}
@@ -285,10 +292,30 @@ class Customer extends DB_Table {
 		  //   	    print "----------------------------------******************\n";
                   //  print_r($raw_data);
                   //  print_r( $child->translate_data($raw_data,'from customer')  );
-                  //  print "-----------------------------------------------\n";
+                 //   print "-----------------------------------------------\n";
 
                     if ($raw_data['Customer Type']=='Person') {
 		   
+
+
+
+if(isset($child->data['Contact Key']) and $raw_data['Customer Main Plain Email']==$child->data['Contact Main Plain Email']
+		   and (levenshtein($child->data['Contact Name'],$raw_data['Customer Main Contact Name'])/(strlen($child->data['Contact Name'])+1))>.3
+
+		   ){
+		  print "super change!\n";
+		  $child->remove_email($child->data['Contact Main Email Key']);
+		  
+		  $_customer = new Customer ( 'find create', $raw_data );
+		  
+		  $this->get_data('id',$_customer->id);
+		  return;
+		  
+		  return;
+		}
+
+
+
 
 		      $contact=new contact('find in customer create update',$raw_data);
 		      $raw_data['Customer Main Contact Key']=$contact->id;
@@ -2503,7 +2530,7 @@ function remove_email($email_key=false) {
     $email->set_scope('Customer',$this->id);
     if ( $email->associated_with_scope) {
 
-        $sql=sprintf("delete `Email Bridge`  where `Subject Type`='Customer' and  `Subject Key`=%d  and `Email Key`=%d",
+        $sql=sprintf("delete from `Email Bridge`  where `Subject Type`='Customer' and  `Subject Key`=%d  and `Email Key`=%d",
                      $this->id
 
                      ,$this->data['Customer Main Email Key']

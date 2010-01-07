@@ -928,8 +928,13 @@ if(isset( $_REQUEST['where']))
      $order='`Order Last Updated Date`';
    else if($order=='id')
      $order='`Order File As`';
-   else if($order=='state')
-     $order='`Order Current Dispatch State`,`Order Current Payment State`';
+   else if($order=='state'){
+  // if($order_direction=='desc')
+//     $order='`Order Current Dispatch State`,`Order Current Payment State`';
+//else
+//$order='`Order Current Payment State`,`Order Current Dispatch State`';
+$order='`Order Current XHTML State`';
+}
    else if($order=='total_amount')
      $order='`Order Total Amount`';
 else if($order=='customer')
