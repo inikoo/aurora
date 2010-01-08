@@ -12,7 +12,9 @@ $css_files=array(
 		 'common.css',
 		 'button.css',
 		 'container.css',
-		 'table.css'
+		 'table.css',
+		 		 'css/dropdown.css'
+
 		 );
 $js_files=array(
 
@@ -29,7 +31,9 @@ $js_files=array(
 		'table_common.js.php',
 		'calendar_common.js.php',
 
-		'report_sales.js.php'
+		'report_sales.js.php',
+				 'js/dropdown.js'
+
 		);
 
 
@@ -56,6 +60,10 @@ global $myconf;
 /* 		   array('date'=>'01-01-2000','rate'=>17.5), */
 /* 		   array('date'=>'01-12-2008','rate'=>15) */
 /* 		   ); */
+
+
+$int=prepare_mysql_dates($from,$to,'`Invoice Date`','date start end');
+
 
 $store_data=array();
 $sql="select `Store Name`,`Store Key`,`Store Currency Code` from `Store Dimension`";

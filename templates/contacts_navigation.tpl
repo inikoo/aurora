@@ -32,7 +32,7 @@
     <span class="search_title" >{t}{$search_label}{/t}:</span>
     <input size="25" class="text search" id="{$search_scope}_search" value="" name="search"/><img align="absbottom" id="{$search_scope}_submit_search" class="submitsearch" src="art/icons/zoom.png" alt="Submit search"><div id="{$search_scope}_search_Container" style="display:none"></div>
     <div style="position:relative;font-size:80%">
-      <div id="{$search_scope}_search_results" style="display:none;background:#fff;border:1px solid #777;padding:10px;width:500px;position:absolute;z-index:20;left:-520px">
+      <div id="{$search_scope}_search_results" style="display:none;background:#fff;border:1px solid #777;padding:10px;margin-top:20px;width:500px;position:absolute;z-index:20;left:-520px">
 	
 	<div id="{$search_scope}_search_names"  style="display:none;font-size:120%">
 	  <div  style="border-bottom:1px solid #ccc;width:300px;font-weight:800;margin-bottom:5px">{t}Cutomer Name{/t}</div>

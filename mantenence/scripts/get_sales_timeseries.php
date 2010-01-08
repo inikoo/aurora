@@ -24,7 +24,7 @@ require_once '../../conf/conf.php';
 $_SESSION['lang']=1;
 
 
-$stores=array(1,2,3);
+$stores=array(1);
 $forecast=true;
 
 
@@ -38,14 +38,16 @@ $forecast=true;
 
 if(true){
   print "inv\n";
-/*   $tm=new TimeSeries(array('w','invoices')); */
-/*   $tm->get_values(); */
-/*   $tm->save_values(); */
-/*   if($forecast) */
-/*     $tm->forecast(); */
+
 
  
 
+  $tm=new TimeSeries(array('w','invoices'));
+  $tm->get_values();
+  $tm->save_values();
+  if($forecast)
+    $tm->forecast();
+    
   $tm=new TimeSeries(array('q','invoices'));
   $tm->get_values();
   $tm->save_values();
@@ -76,6 +78,14 @@ while( $row=mysql_fetch_array($res)){
 /*   $tm->save_values(); */
 /*   if($forecast) */
 /*     $tm->forecast(); */
+
+$tm=new TimeSeries(array('w','store ('.$row['Store Key'].') sales'));
+  $tm->get_values();
+  $tm->save_values();
+  if($forecast)
+    $tm->forecast();
+
+
 $tm=new TimeSeries(array('m','store ('.$row['Store Key'].') sales'));
   $tm->get_values();
   $tm->save_values();
@@ -110,7 +120,7 @@ if($myconf['currency_code']!=$store->data['Store Currency Code']){
 }
  
 
-
+exit;
 $sql="select * from `Product Department Dimension`  where `Product Department Store Key` in (".join(',',$stores).")    ";
 $res=mysql_query($sql);
 while($row=mysql_fetch_array($res)){
@@ -171,11 +181,11 @@ $sql="select * from `Product Dimension`   where `Product Store Key` in (".join('
 $res=mysql_query($sql);
 while($row=mysql_fetch_array($res)){
   //print 'product id ('.$row['Product Code'].') '.$row['Product ID'].' sales'."\n";
- /*  $tm=new TimeSeries(array('w','product id ('.$row['Product ID'].') sales')); */
-/*   $tm->get_values(); */
-/*   $tm->save_values(); */
-/*    if($forecast) */
-/*   $tm->forecast(); */
+  $tm=new TimeSeries(array('w','product id ('.$row['Product ID'].') sales'));
+  $tm->get_values(); 
+  $tm->save_values(); 
+   if($forecast) 
+   $tm->forecast(); 
  unset($tm);
  $tm=new TimeSeries(array('m','product id ('.$row['Product ID'].') sales'));
   $tm->get_values();
@@ -204,11 +214,11 @@ $sql="select * from `Product Same Code Dimension` ";
 $res=mysql_query($sql);
 while($row=mysql_fetch_array($res)){
   // print 'product code ('.$row['Product Code'].') sales'."\n";
-/*   $tm=new TimeSeries(array('w','product code ('.$row['Product Code'].') sales')); */
-/*   $tm->get_values(); */
-/*   $tm->save_values(); */
-/*   if($forecast) */
-/*     $tm->forecast(); */
+  $tm=new TimeSeries(array('w','product code ('.$row['Product Code'].') sales')); 
+   $tm->get_values(); 
+   $tm->save_values(); 
+   if($forecast) 
+     $tm->forecast(); 
 
  $tm=new TimeSeries(array('m','product code ('.$row['Product Code'].') sales'));
   $tm->get_values();

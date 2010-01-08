@@ -1,5 +1,6 @@
 {include file='header.tpl'}
 <div id="bd" >
+{include file='reports_navigation.tpl'}
 
 
 {foreach from=$report_index item=report_category}

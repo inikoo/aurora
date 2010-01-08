@@ -2,7 +2,6 @@
 
 
 
-
 if($tipo=='f'){
 
   $from=$_REQUEST['from'];
@@ -85,8 +84,23 @@ if($tipo=='f'){
 
 
  }elseif($tipo=='m'){
+ if(isset($_REQUEST['y'])){
+ 
    $year=$_REQUEST['y'];
-   $month=$_REQUEST['m'];
+   $_SESSION['state']['report']['y']=$year;
+   
+   }else
+   $year=$_SESSION['state']['report']['y'];
+   
+    if(isset($_REQUEST['m'])){
+
+    $month=$_REQUEST['m'];
+   $_SESSION['state']['report']['m']=$month;
+   
+   }else
+   $month=$_SESSION['state']['report']['m'];
+   
+ 
    
    $_time=mktime(0, 0, 0,$month ,1 , $year);
    $_time_n=mktime(0, 0, 0,$month+1 ,1 , $year);
@@ -145,8 +159,8 @@ if($tipo=='f'){
 
 
  }elseif($tipo=='y'){
-  
-  if(isset($_REQUEST['y']) and preg_match('/^\d$/',$_REQUEST['y'])){
+ 
+ if(isset($_REQUEST['y']) and preg_match('/^\d{2,4}$/',$_REQUEST['y'])){
   $year=$_REQUEST['y'];
   $_SESSION['state']['reports']['sales']['1']=$year;
 }else{

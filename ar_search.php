@@ -92,6 +92,27 @@ function search_customer($data){
   $names_results.='</table>';
 
     
+     $locations_found=0;
+ $locations_results='<table>';
+ // Email serach
+ if(strlen($q)>2){
+   $sql=sprintf('select `Customer Key`,`Customer Name` from `Customer Dimension` where `Customer Store Key` in (%s) and  `Customer Name` like "%s%%"  limit 5'
+		   ,$stores
+		,addslashes($q)
+		);
+   //  print $sql;
+      $res=mysql_query($sql);
+      while($row=mysql_fetch_array($res)){
+	$result=sprintf('<tr><td class="aright"><a href="customer.php?id=%d">%s</a></td></tr>',$row['Customer Key'],$row['Customer Name']);
+	$locations_found++;
+	$locations_results.=$result;
+	$total_found++;
+      }
+
+    }
+  $locations_results.='</table>';
+    
+    
     $data=array('results'=>$total_found,'emails'=>$emails_found,'emails_results'=>$emails_results
 		,'names'=>$names_found,'names_results'=>$names_results);
     $response=array('state'=>200,'data'=>$data);

@@ -1,5 +1,7 @@
 {include file='header.tpl'}
 <div id="bd" >
+{include file='reports_navigation.tpl'}
+
 <div id="sub_header">
 {if $next}<span class="nav2 onright"><a href="report_sales.php?{$next.url}">{$next.title}</a></span>{/if}
 {if $prev}<span class="nav2 onright" ><a href="report_sales.php?{$prev.url}">{$prev.title}</a></span>{/if}

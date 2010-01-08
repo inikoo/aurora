@@ -12,7 +12,8 @@ $css_files=array(
 		 'common.css',
 		 'button.css',
 		 'container.css',
-		 'table.css'
+		 'table.css',
+		 'css/dropdown.css'
 		 );
 $js_files=array(
 
@@ -29,7 +30,8 @@ $js_files=array(
 		'table_common.js.php',
 		'calendar_common.js.php',
 
-		'report_sales.js.php'
+		'report_sales.js.php',
+		 'js/dropdown.js'
 		);
 
 
@@ -43,14 +45,88 @@ $smarty->assign('js_files',$js_files);
 $to=date('d-m-Y');
 $from=date('d-m-Y',strtotime('now -7 day'));
 
+
+
+$period=$_SESSION['state']['report']['activity']['period'];
+switch($period){
+case('day'):
+$to=date('d-m-Y');
+$from=date('d-m-Y',strtotime('now -1 day'));
+$period_label=_('Last 24hrs Sales Activity');
+case('year'):
+$to=date('d-m-Y');
+$from=date('d-m-Y',strtotime('now -1 year'));
+$period_label=_('Last Year Sales Activity');
+case('month'):
+$to=date('d-m-Y');
+$from=date('d-m-Y',strtotime('now -1 month'));
+$period_label=_('Last Month Sales Activity');
+case('week'):
+default:
+$to=date('d-m-Y');
+$from=date('d-m-Y',strtotime('now -7 day'));
+$period_label=_('Last Week Sales Activity');
+
+
+}
+
+
+
+
+$compare_against=$_SESSION['state']['report']['activity']['compare'];
+switch($compare_against){
+case('previous_period'):
+$compare_label=_('Change against previous period');
+
+switch($period){
+
+case('day'):
+$compare_from=date('d-m-Y',strtotime("$to -2 day"));
+$compare_to=date('d-m-Y',strtotime("$to -1 day"));
+case('year'):
+$compare_from=date('d-m-Y',strtotime("$to -2 year"));
+$compare_to=date('d-m-Y',strtotime("$to -1 year"));
+case('month'):
+$compare_from=date('d-m-Y',strtotime("$to -2 month"));
+$compare_to=date('d-m-Y',strtotime("$to -1 month"));
+case('week'):
+default:
+
+$compare_from=date('d-m-Y',strtotime("$to -2 week"));
+$compare_to=date('d-m-Y',strtotime("$to -1 week"));
+
+}
+
+case('last_year'):
+default:
+$compare_label=_('Change against last year');
 $compare_from=date('d-m-Y',strtotime("$from -1 year"));
 $compare_to=date('d-m-Y',strtotime("$to -1 year"));
+}
 
+$smarty->assign('compare_label',$compare_label);
+$smarty->assign('period_label',$period_label);
 
 $int=prepare_mysql_dates($from,$to,'`Invoice Date`','date start end');
 $compare_int=prepare_mysql_dates($compare_from,$compare_to,'`Invoice Date`','date start end');
 
+$compare_menu=array(
+			array("compare"=>'previous_period','label'=> _('Previous period'))
+		     ,array("compare"=>'last_year','label'=>_('Same period last year'))
+		    
+		     );
+$smarty->assign('compare_menu',$compare_menu);
+$period_menu=array(
+			array("period"=>'day','label'=> _('Last Day'))
+		     ,array("period"=>'week','label'=>_('Last week'))
+		     ,array("period"=>'month','label'=>_('Last Month'))
+		     ,array("period"=>'quarter','label'=>_('Last Quarter'))
+		     ,array("period"=>'year','label'=>_('Last Year'))
+		    
+		     );
+$smarty->assign('period_menu',$period_menu);
 
+//print_r($period_menu);
 list($store_data,$activity_data,$total)=report_data($int);
 $compare_data=report_data($compare_int);
 

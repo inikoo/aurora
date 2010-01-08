@@ -1,10 +1,6 @@
 {include file='header.tpl'}
 <div id="bd" >
-
-  <div class="top_navigation">
-  <span class="nav2 onleft link {if $tipo=='sales'}selected{/if}" id="sales">{t}Sales by date{/t}</span>
-  <span class="nav2 onleft link {if $tipo=='geosales'}selected{/if}" id="geosales" >{t}Sales by location{/t}</span>
-  </div>
+{include file='reports_navigation.tpl'}
 
 
 

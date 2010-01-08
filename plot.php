@@ -514,7 +514,7 @@ case('product'):
   $_SESSION['state'][$plot_page]['plot']=$plot_name;
   $_SESSION['state'][$plot_page]['plot_data'][$plot_name]['period']=$period;
   $_SESSION['state'][$plot_page]['plot_data'][$plot_name]['category']=$category;
-  //  print "$plot_page $plot_name $category";
+  // print "$plot_page $plot_name $category";
 
   $title='';
   $ar_address=sprintf('ar_plot.php?tipo=general&item=%s&category=%s&period=%s&split=yes&item_keys=%s&from=%s&to=%s'
@@ -526,7 +526,8 @@ case('product'):
 		      ,$to
 		      );
   
-  //print $ar_address;
+  
+ // print $ar_address;
   $fields='"date"';
     foreach($item_key_array as $key){
       $fields.=',"value'.$key.'","tip_value'.$key.'","forecast'.$key.'","tip_forecast'.$key.'","tails'.$key.'","tip_tails'.$key.'"';
