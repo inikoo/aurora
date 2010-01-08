@@ -12,7 +12,8 @@ $css_files=array(
 		 'common.css',
 		 'button.css',
 		 'container.css',
-		 'table.css'
+		 'table.css',
+		  'css/dropdown.css'
 		 );
 $js_files=array(
 
@@ -29,7 +30,8 @@ $js_files=array(
 		'table_common.js.php',
 		'calendar_common.js.php',
 
-		'report_sales.js.php'
+		'report_sales.js.php',
+		 'js/dropdown.js'
 		);
 
 

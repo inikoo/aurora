@@ -34,7 +34,8 @@ $css_files=array(
 		 $yui_path.'button/assets/skins/sam/button.css',
 		 'common.css',
 		 'container.css',
-		 'table.css'
+		 'table.css',
+		 'css/dropdown.css'
 		 );
 $js_files=array(
 
@@ -53,7 +54,9 @@ $js_files=array(
 
 
 		'common.js.php',
-		'report_sales_server.js.php'
+		'report_sales_server.js.php',
+		'js/dropdown.js'
+
 		);
 
 

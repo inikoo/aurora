@@ -1,20 +1,18 @@
 {include file='header.tpl'}
 <div id="bd" >
-<div id="sub_header">
-{if $next}<span class="nav2 onright"><a href="report_sales_main.php?{$next.url}">{$next.title}</a></span>{/if}
-{if $prev}<span class="nav2 onright" ><a href="report_sales_main.php?{$prev.url}">{$prev.title}</a></span>{/if}
-{if $up}<span class="nav2 onright" style="margin-left:20px"><a href="report_sales_main.php?{$up.url}">{$up.title}</a></span>{/if}
+{include file='reports_navigation.tpl'}
 
-<span class="nav2"><a href="reports.php">{t}Sales Reports{/t}</a></span>
-<span class="nav2"><a href="assets_department.php?id={$department_id}">{$department}</a></span>
-<span class="nav2"><a href="assets_family.php?id={$family_id}"></a></span>
-</div>
-     
 
 
 
 <div class="cal_menu" style="width:150px" >
+      {if $up}<a class="prev" href="report_sales_main.php?{$up.url}" ><img src="art/icons/up.png" alt="&uarr;" title="{$up.title}"  /></a>{/if}
+
 <span>{$tipo_title}</span> <span id="period">{$period}</span>
+      {if $prev}<a class="prev" href="report_sales_main.php?{$prev.url}" ><img src="art/icons/previous.png" alt="<" title="{$prev.title}"  /></a>{/if}
+      {if $next}<a class="next" href="report_sales_main.php?{$next.url}" ><img src="art/icons/next.png" alt=">" title="{$next.title}"  /></a>{/if}
+
+
 {if $tipo=='y'}
 <table  class="calendar_year">
 <tr>
@@ -63,7 +61,21 @@
 </table>
 
 {/if}
+<div class="custom_dates" >
+<span id="show_custom_dates">{t}Custom Dates{/t}</span>
+<div id="custom_dates_form" style="margin-top:5px">
+{t}From{/t}:<span style="position:relative;left:0px;"><input id="v_calpop1" type="text" class="text" size="11" maxlength="10" name="from" value="{$from}"/>
+ <img   id="calpop1" class="calpop" src="art/icons/calendar_view_month.png" align="absbottom" alt=""   /><br/>
+ <span >{t}To:{/t}</span> <input   id="v_calpop2" size="11" maxlength="10"   type="text" class="text" size="8" name="to" value="{$to}"/>
+ <img   id="calpop2" class="calpop" src="art/icons/calendar_view_month.png" align="absbottom" alt=""   /><br/>
+ 
+ <span  class="state_details" id="go_free_report" style="margin-right:16px;position:relative;top:2px"/>Get Report</span>
+	</span>
+	<div id="cal1Container" style="position:absolute;display:none; z-index:2"></div>
+	<div style="position:relative;right:-120px"><div id="cal2Container" style="display:none; z-index:2;position:absolute"></div></div>
 
+</div>
+</div>
 </div>
 
 <h1 style="clear:left">{$title}</h1>

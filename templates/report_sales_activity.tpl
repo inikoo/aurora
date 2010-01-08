@@ -51,8 +51,8 @@
 </tr>
 
 <tr class="bracket_label" >
-<td></td><td colspan="6" >{t}Last Week Sales Activity{/t}</td><td></td>
-<td colspan="3" class="compare_label">Change agains last year</td>
+<td></td><td colspan="6" class="period_label">{$period_label}</td><td></td>
+<td colspan="3" class="compare_label">{$compare_label}</td>
 </tr>
 
 
@@ -97,6 +97,17 @@
 
 
 </div>
-
+<div id="period_menu" class="yuimenu">
+  <div class="bd">
+    <ul class="first-of-type">
+       <li style="text-align:left;margin-left:10px;border-bottom:1px solid #ddd">{t}Period{/t}:</li>
+      {foreach from=$period_menu item=menu }
+      <li class="yuimenuitem"><a class="yuimenuitemlabel" onClick="change_period('{$menu.period}')"> {$menu.label}</a></li>
+      {/foreach}
+    </ul>
+  </div>
+</div>
 {include file='footer.tpl'}
+
+
 

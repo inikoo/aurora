@@ -87,6 +87,7 @@ if(!$is_already_logged_in){
 include_once('set_locales.php');
 require('locale.php');
 $_SESSION['locale_info'] = localeconv();
+$_SESSION['locale_info']['currency_symbol']=$myconf['currency_symbol'];
 
 $smarty->assign('lang_code',$_SESSION['text_locale_code']);
 $smarty->assign('lang_country_code',strtolower($_SESSION['text_locale_country_code']));

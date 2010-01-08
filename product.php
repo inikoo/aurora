@@ -17,6 +17,32 @@ include_once('assets_header_functions.php');
 
 
 
+$css_files=array(
+		 $yui_path.'reset-fonts-grids/reset-fonts-grids.css',
+		 $yui_path.'menu/assets/skins/sam/menu.css',
+		 $yui_path.'button/assets/skins/sam/button.css',
+		 'common.css',
+		 'container.css',
+		 'button.css',
+		 'table.css',
+		 'css/dropdown.css'
+		 );
+$js_files=array(
+		$yui_path.'utilities/utilities.js',
+		$yui_path.'json/json-min.js',
+		$yui_path.'paginator/paginator-min.js',
+		$yui_path.'datasource/datasource-min.js',
+		$yui_path.'autocomplete/autocomplete-min.js',
+		$yui_path.'datatable/datatable-debug.js',
+		$yui_path.'container/container_core-min.js',
+		$yui_path.'menu/menu-min.js',
+		'common.js.php',
+		'table_common.js.php',
+		'js/dropdown.js'
+		);
+
+
+
 
 if(isset($_REQUEST['code'])){
   $mode='code';
@@ -137,29 +163,7 @@ $smarty->assign('view_customers',$view_cust);
 
 get_header_info($user,$smarty);
 
-$css_files=array(
-		 $yui_path.'reset-fonts-grids/reset-fonts-grids.css',
-		 $yui_path.'menu/assets/skins/sam/menu.css',
-		 $yui_path.'button/assets/skins/sam/button.css',
-		 'common.css',
-		 'container.css',
-		 'button.css',
-		 'table.css',
-		 'css/dropdown.css'
-		 );
-$js_files=array(
-		$yui_path.'utilities/utilities.js',
-		$yui_path.'json/json-min.js',
-		$yui_path.'paginator/paginator-min.js',
-		$yui_path.'datasource/datasource-min.js',
-		$yui_path.'autocomplete/autocomplete-min.js',
-		$yui_path.'datatable/datatable-debug.js',
-		$yui_path.'container/container_core-min.js',
-		$yui_path.'menu/menu-min.js',
-		'common.js.php',
-		'table_common.js.php',
-		'js/dropdown.js'
-		);
+
 
 
 $family_order=$_SESSION['state']['family']['table']['order'];
@@ -175,6 +179,7 @@ $smarty->assign('family_period_title',$family_period_title[$family_period]);
 //   $hide[$key]=($value==1?0:1);
 // }
 // //print_r($hide);
+
 
 
 

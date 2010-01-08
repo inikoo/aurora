@@ -116,7 +116,7 @@ $fam_promo_key=$fam_promo->id;
 
 
 $sql="select * from  ci_orders_data.orders  where   (last_transcribed is NULL  or last_read>last_transcribed) and filename not like '%UK%'  and filename not like '%test%'  and filename!='/media/sda3/share/PEDIDOS 08/60005902.xls' and  filename!='/media/sda3/share/PEDIDOS 09/60008607.xls' and  filename!='/media/sda3/share/PEDIDOS 09/60009626.xls' and  filename!='/media/sda3/share/PEDIDOS 09/60011693.xls' and  filename!='/media/sda3/share/PEDIDOS 09/60011905.xls' and  filename!='/media/sda3/share/PEDIDOS 08/60007219.xls'     order by filename ";
-//$sql="select * from  ci_orders_data.orders where filename like '/media/sda3/share/%/600021%.xls'  order by filename";
+$sql="select * from  ci_orders_data.orders where filename like '/media/sda3/share/%/60013311.xls'  order by filename";
 //7/60002384.xls
 //$sql="select * from  ci_orders_data.orders where filename like '/media/sda3/share/%/60000142.xls'  order by filename";
 //$sql="select * from  ci_orders_data.orders  where (filename like '%Orders2005%' or  filename like '%PEDIDOS%.xls') and (last_transcribed is NULL  or last_read>last_transcribed) and filename!='/media/sda3/share/PEDIDOS 08/60005902.xls' and  filename!='/media/sdas3/share/PEDIDOS 09/s60008607.xls' and  filename!='/media/sda3/share/PEDIsDOS 09/60009626.xls' or filename='%600s03600.xls'   order by date";
@@ -156,6 +156,8 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
     $header=mb_unserialize($row['header']);
     //   print_r($header);exit;
     $products=mb_unserialize($row['products']);
+   
+    
     $filename_number=str_replace('.xls','',str_replace($row2['directory'],'',$row2['filename']));
     $map_act=$_map_act;$map=$_map;$y_map=$_y_map;
 
@@ -408,6 +410,7 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
     $data['Order Main Source Type']='Unknown';
     //print_r($header_data);
 
+
     $products_data=array();
     $data_invoice_transactions=array();
     $data_dn_transactions=array();
@@ -420,8 +423,15 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
     //echo "Memory: ".memory_get_usage(true) . "\n";
     foreach($transactions as $transaction) {
       $transaction['code']=_trim($transaction['code']);
-
       if (preg_match('/credit|refund/i',$transaction['code'])) {
+
+
+if (preg_match('/^Abono Debido devolución de cd/i',$transaction['description'])) {
+	  $credit_parent_public_id='';
+	  $credit_value=$transaction['credit'];
+	  $credit_description='Abobo debido a devolución de CDs';
+	  $total_credit_value+=$credit_value;
+	}
 
 
 	if (preg_match('/^abono debido por factura no\.\:\d{8}$/i',$transaction['description'])) {
@@ -462,11 +472,8 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
 			 ,'parent_date'=>$_parent_order_date
 			 );
 
-
 	continue;
       }
-
-
 
       $__code=strtolower($transaction['code']);
 
@@ -1076,8 +1083,22 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
     }
 
-    //print "$tipo_order \n";
 
+
+
+    //print "$tipo_order \n";
+    //print_r($products_data);
+    //print_r($credits);
+    if(count($products_data)==0 and count($credits)>0){
+        $tipo_order=9;
+    //print"xxxx";
+    }
+    
+    //exit('xz 23');
+    
+    
+    
+    
     $sales_rep_data=get_user_id($header_data['takenby'],true,'&view=processed');
     $data['Order XHTML Sale Reps']=$sales_rep_data['xhtml'];
     $data['Order Sale Reps IDs']=$sales_rep_data['id'];

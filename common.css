@@ -393,9 +393,9 @@ table.options_mini{margin:0 ;float:right;border-collapse: separate;;border-spaci
 .calendar_year tr.top  td{border-bottom:2px solid #999;}
 
 
-.cal_menu{clear:both;float:right;border:1px solid #ccc;padding:10px;width:180px;margin-top:10px }
-
-
+.cal_menu{clear:both;float:right;border:1px solid #ccc;padding:10px;width:180px;margin-top:00px;position:relative;top:-12px }
+.cal_menu .custom_dates{text-align:right;font-size:80%;margin-top:5px}
+.cal_menu .custom_dates img{height:12.5px}
 .plot_options{width:130px;float:right;text-align:right  }
 .plot_options h3{text-align:left;font-weight:bold;margin-top:10px  }
 .plot_options .other_options {clear:both;text-align:right;font-size:80%}
