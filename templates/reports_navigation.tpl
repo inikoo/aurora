@@ -1,10 +1,15 @@
 <dl class="dropdown">
-  <dt id="one-ddheader" onmouseover="ddMenu('one',1)" onmouseout="ddMenu('one',-1)" onclick="window.location='reports.php'" >{t}Reports Index{/t}</dt>
+  <dt style="width:89px" id="one-ddheader" onmouseover="ddMenu('one',1)" onmouseout="ddMenu('one',-1)" onclick="window.location='reports.php'" >{t}General Index{/t}</dt>
   <dd id="one-ddcontent" onmouseover="cancelHide('one')" onmouseout="ddMenu('one',-1)">
     <ul>
       
       <li ><a href="report_sales_server.php" class="underline">{t}Sales{/t}</a></li>
-     
+                  <li ><a href="report_sales_main.php" class="underline">{t}Sales Overview{/t}</a></li>
+
+            <li ><a href="report_sales.php" class="underline">{t}Sales Details{/t}</a></li>
+
+           <li ><a href="report_activity.php" class="underline">{t}Activity{/t}</a></li>
+
     </ul>
   </dd>
 </dl>
