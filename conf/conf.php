@@ -1231,7 +1231,8 @@ $default_state=array(
                                                   )
                               ),
                    'report'=>array(
-                   'y'=>date('Y')
+                   'tipo'=>'m'
+                   ,'y'=>date('Y')
                    ,'m'=>date('m')
                    ,'d'=>date('d')
                    ,'w'=>1
