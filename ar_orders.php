@@ -1865,7 +1865,7 @@ if(isset( $_REQUEST['where']))
 
      $_SESSION['state']['orders']['dn']=array('order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value);
      $_SESSION['state']['orders']['view']=$view;
-     $date_interval=prepare_mysql_dates($from,$to,'date_index','only_dates');
+     $date_interval=prepare_mysql_dates($from,$to,'`Delivery Note Date`','only_dates');
      if($date_interval['error']){
        $date_interval=prepare_mysql_dates($_SESSION['state']['orders']['from'],$_SESSION['state']['orders']['to']);
      }else{
@@ -2320,7 +2320,7 @@ if(isset( $_REQUEST['where']))
 
      $_SESSION['state']['orders']['invoices']=array('order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value);
      $_SESSION['state']['orders']['view']=$view;
-     $date_interval=prepare_mysql_dates($from,$to,'date_index','only_dates');
+     $date_interval=prepare_mysql_dates($from,$to,'`Invoice Date`','only_dates');
      if($date_interval['error']){
        $date_interval=prepare_mysql_dates($_SESSION['state']['orders']['from'],$_SESSION['state']['orders']['to']);
      }else{
