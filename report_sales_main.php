@@ -30,8 +30,9 @@ $js_files=array(
 		'common.js.php',
 		'table_common.js.php',
 		'calendar_common.js.php',
-
+'report_sales_main.js.php',
 		'report_sales.js.php',
+		
 				 'js/dropdown.js'
 
 		);
@@ -52,7 +53,7 @@ include_once('report_dates.php');
 
 
 
-
+$smarty->assign('report_url','report_sales_main.php');
 
 
 
@@ -219,6 +220,9 @@ $smarty->assign('from',$from);
 $smarty->assign('to',$to);
 $smarty->assign('currency',$myconf['currency_symbol']);
 
+if($period!=''){
+$smarty->assign('display_plot',true);
+
 $plot_tipo=$_SESSION['state']['report']['sales']['plot'];
 $plot_data=$_SESSION['state']['report']['sales']['plot_data'][$plot_tipo];
 $plot_category=$plot_data['category'];
@@ -260,6 +264,7 @@ else
   $plot_formated_category=_('Net Sales');
 $smarty->assign('plot_formated_category',$plot_formated_category);
 $smarty->assign('plot_formated_period',$plot_formated_period);
+}
 
 $smarty->display('report_sales_main.tpl');
 ?>

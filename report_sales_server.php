@@ -62,9 +62,9 @@ $js_files=array(
 
 $plot_title=array(
 		  'total_sales_groupby_month'=>_('Net sales grouped by month')."."
-		  ,'total_sales_month'=>_('Monthly net sales')."."
+		  ,'total_sales_month'=>_('Monthly net sales').".");
 
-);
+
 
 $smarty->assign('plot_title',$plot_title);
 $smarty->assign('plot_tipo',$tipo_plot);

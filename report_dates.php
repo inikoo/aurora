@@ -7,6 +7,8 @@ if($tipo=='f'){
   $from=$_REQUEST['from'];
   $to=$_REQUEST['to'];
   $title=_('Sales Report');
+  $period='';
+  $link=$link="&tipo=f&from=".$from."&to=".$to;
  }elseif($tipo=='w'){
    $year=$_REQUEST['y'];
    $week=$_REQUEST['w'];
@@ -41,7 +43,7 @@ if($tipo=='f'){
 
    $smarty->assign('up',array('url'=>'tipo=y&y='.date("Y",$_time),'title'=>date("Y",$_time)));
    $smarty->assign('next',array('url'=>'tipo=w&w='.date("W",$_time_n).'&y='.date("Y",$_time_n),'title'=>_('Week').' '.date("W-Y",$_time_n)));
-   $smarty->assign('prev',array('url'=>'tipo=w&m='.date("W",$_time_p).'&y='.date("Y",$_time_p),'title'=>_('Week').' '.date("W-Y",$_time_p)));
+   $smarty->assign('prev',array('url'=>'tipo=w&w='.date("W",$_time_p).'&y='.date("Y",$_time_p),'title'=>_('Week').' '.date("W-Y",$_time_p)));
 
 
    $w=array();
