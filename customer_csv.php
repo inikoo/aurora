@@ -27,7 +27,6 @@ if(isset($_REQUEST['id']) and is_numeric($_REQUEST['id']) ){
 
 header("Content-type: application/octet-stream");
 header("Content-Disposition: attachment; filename=\"out.txt\"");
-
 $customer=new customer($customer_id);
 $csv_data=$customer->export_data();
 $out = fopen('php://output', 'w');

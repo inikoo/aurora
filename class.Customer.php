@@ -2894,6 +2894,31 @@ function export_data() {
 
     $address=new Address($this->data['Customer Main Address Key']);
     $address_lines=$address->display('3lines');
+  $export_data=array(
+                     "Public"
+                     ,"David"
+                     ,$this->data['Customer Name']
+                     ,$this->data['Customer Main Contact Name']
+                     ,$address_lines[1]
+                     ,$address_lines[3]
+                     ,$address_lines[2]
+                     ,$this->data['Customer Main Address Town']
+                     ,$address->display('Country Divisions')
+                     ,$this->data['Customer Main Address Postal Code']
+                     ,$this->data['Customer Main Address Country']
+                     ,"Staff"
+                     ,$this->data['Customer Main Telephone']
+                     ,$this->data['Customer Main FAX']
+                     ,""
+                     ,"mobile"
+                     ,"26/09/2002","David","","","","03/03/2003","","","","Wholesaler website","","","","","2","","Gold Reward Member","Philip","","","","","900","","","","","","","","","","","","","","","David","Hardy","","","","","","","","","","","Graeme","Ancient Wisdom","","","","1","","","","","","","","","","","","",""
+                //     ,$this->data['Customer Last Delivery Instructions']
+                 //    ,$this->data['Customer Last Order Instructions']
+                     ,"Yes","","","28/01/2001","05/01/2010",""
+                     ,$this->data['Customer Main Plain Email']
+                     ,""
+                     ,
+                 );
 
     $export_data=array(
                      "Public"
@@ -2913,8 +2938,8 @@ function export_data() {
                      ,""
                      ,"mobile"
                      ,"26/09/2002","David","","","","03/03/2003","","","","Wholesaler website","","","","","2","","Gold Reward Member","Philip","","","","","900","","","","","","","","","","","","","","","David","Hardy","","","","","","","","","","","Graeme","Ancient Wisdom","","","","1","","","","","","","","","","","","",""
-                     ,$this->data['Customer Last Delivery Instructions']
-                     ,$this->data['Customer Last Order Instructions']
+                     ,''
+                     ,''
                      ,"Yes","","","28/01/2001","05/01/2010",""
                      ,$this->data['Customer Main Plain Email']
                      ,""

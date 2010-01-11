@@ -162,10 +162,10 @@ function get_contact_data(){
 	company_data['Company Main Telephone']=Dom.get('Telephone').value;
 
 
-	if(validate_data.email.validated==true)
+//	if(validate_data.email.validated==true)
 	    company_data['Company Main Plain Email']=Dom.get('Email').value;
-	else
-	    company_data['Company Main Plain Email']="";
+//	else
+//	    company_data['Company Main Plain Email']="";
 }
 
 function get_address_data(){
@@ -230,10 +230,10 @@ var save_new_company=function(e){
     
     var json_value = YAHOO.lang.JSON.stringify(company_data); 
     var request=ar_file+'?tipo=new_'+scope+'&values=' + encodeURIComponent(json_value); 
- // alert(request);return;
-    YAHOO.util.Connect.asyncRequest('POST',request ,{
+// alert(request);return;
+ YAHOO.util.Connect.asyncRequest('POST',request ,{
 	    success:function(o) {
-		alert(o.responseText);
+		//alert(o.responseText);
 		var r =  YAHOO.lang.JSON.parse(o.responseText);
 		if(r.action=='created'){
 		    if(action_after_create=='add_another'){
@@ -247,7 +247,7 @@ var save_new_company=function(e){
 		           window.location='edit_supplier.php?edit='+r.supplier_key;
 
 		        }else if(scope=='customer'){
-		           window.location='edit_customer.php?id='+r.customer_key;
+		           window.location='customer.php?id='+r.customer_key;
 
 		        }
 		        
@@ -645,6 +645,7 @@ function validate_postal_code(){
 }
 
 function email_inputed(){
+return;
     var item='email';
     var value=Dom.get('Email').value.replace(/\s+/,"");
     var tr=Dom.get('email_mould')
@@ -668,6 +669,7 @@ function email_inputed(){
 }
 
 function  validate_email(email) {
+
     var email=unescape(email);
     var o=Dom.get("Email");
     var tr=Dom.get('email_mould');
@@ -682,7 +684,7 @@ function  validate_email(email) {
 
 
     if(validate_data.email.inputed==true){
-	if(isValidEmail(email)){
+	if(isValidEmail(email) || true){
 	    Dom.removeClass(tr,'no_validated');
 	    Dom.addClass(tr,'validated');
 	    validate_data.email.validated=true;
@@ -706,7 +708,6 @@ function  validate_email(email) {
 
 
     }
-
     get_contact_data();
     validate_form();
 
@@ -716,7 +717,12 @@ function  validate_email(email) {
 
 };
 
+function xvalidate_email(){
+ get_contact_data();
+    validate_form();
 
+    find_company();
+}
 
 
     function init(){
@@ -922,7 +928,7 @@ function  validate_email(email) {
 	contact_name_oAutoComp.minQueryLength = 0; 
 	contact_name_oAutoComp.queryDelay = 0.75;
 
-	var email_name_oACDS = new YAHOO.util.FunctionDataSource(validate_email);
+	var email_name_oACDS = new YAHOO.util.FunctionDataSource(xvalidate_email);
 	email_name_oACDS.queryMatchContains = true;
 	var email_name_oAutoComp = new YAHOO.widget.AutoComplete("Email","Email_Container", email_name_oACDS);
 	email_name_oAutoComp.minQueryLength = 0; 
