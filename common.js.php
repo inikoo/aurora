@@ -337,8 +337,6 @@ keychar = String.fromCharCode(keynum);
 
 
  function updateCal() {
-	
-
      var txtDate1 = document.getElementById("v_calpop"+this.id);
 
      if (txtDate1.value != "") {

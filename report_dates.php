@@ -263,7 +263,7 @@ if($tipo=='f'){
 		);
    }
    
-
+ $link="&tipo=w&d=".$day."&y=".$year."&m=".$month;
     $smarty->assign('w',$w);
 
 

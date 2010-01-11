@@ -1345,7 +1345,7 @@ function customer_advanced_search(){
 
 
   
-  $sql="select count(distinct customer_id) as total  from customer left join orden on (customer_id=customer.id) left join transaction on (order_id=orden.id) left join product on (product_id=product.id) left join product_group on (group_id=product_group.id) left join product_department on (product_group.department_id=product_department.id)    left join address on (main_bill_address=address.id) left join list_country on (country=list_country.name)   $where  ";
+  $sql="select count(distinct customer_id) as total  from customer left join orden on (customer_id=customer.id) left join transaction on (order_id=orden.id) left join product on (product_id=product.id) left join product_group on (group_id=product_group.id) left join product_department on (product_group.department_id=product_department.id)    left join address on (main_bill_address=address.id) left join list_country on (country=list_country.name)   $where  group by `Customer Key` ";
  //print $sql;
 
    $res=mysql_query($sql);

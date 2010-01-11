@@ -803,9 +803,6 @@ if(isset( $_REQUEST['where']))
      $where.=sprintf(' and `Order Store Key`=%d ',$store);
    }
 
-
-
-
    $where.=$date_interval['mysql'];
    
 

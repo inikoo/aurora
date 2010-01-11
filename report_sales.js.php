@@ -148,6 +148,45 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 
 function init(){
+
+
+
+
+
+    	cal2 = new YAHOO.widget.Calendar("cal2","cal2Container", { title:"<?php echo _('Choose a date')?>:", close:true } );
+ 
+	cal2.update=updateCal;
+
+	cal2.id=2;
+	cal2.render();
+
+	cal2.cfg.setProperty("iframe", true);
+	
+	cal2.cfg.setProperty("zIndex", 10);
+	//cal2.stackIframe();
+	//cal2..showIframe();
+	//alert(updateCal);
+
+	cal2.update();
+
+	cal2.selectEvent.subscribe(handleSelect, cal2, true);
+	
+ 
+	cal1 = new YAHOO.widget.Calendar("cal1","cal1Container", { title:"<?php echo _('Choose a date')?>:", close:true } );
+	cal1.update=updateCal;cal1.id=1;cal1.render();
+
+	cal1.cfg.setProperty("iframe", true);
+	
+	cal1.cfg.setProperty("zIndex", 10);
+	cal1.update();cal1.selectEvent.subscribe(handleSelect, cal1, true); 
+	YAHOO.util.Event.addListener("calpop1", "click", cal1.show, cal1, true);
+	YAHOO.util.Event.addListener("calpop2", "click", cal2.show, cal2, true);
+	
+	
+	
+	
+
+
     
 var oACDS = new YAHOO.util.FunctionDataSource(mygetTerms);
  oACDS.queryMatchContains = true;

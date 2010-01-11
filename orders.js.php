@@ -144,10 +144,10 @@ YAHOO.util.Event.addListener(window, "load", function() {
  var tableid=2; // Change if you have more the 1 table
 	    var tableDivEL="table"+tableid;
 	    var OrdersColumnDefs = [
-				       {key:"id", label:"<?php echo _('Number')?>", width:50,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				       {key:"id", label:"<?php echo _('Number')?>", width:90,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				       ,{key:"date", label:"<?php echo _('Date')?>", width:70,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-				       ,{key:"type", label:"<?php echo _('Type')?>", width:50,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				       ,{key:"customer",label:"<?php echo _('Customer')?>", width:220,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				       ,{key:"type", label:"<?php echo _('Type')?>", width:70,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				       ,{key:"customer",label:"<?php echo _('Customer')?>", width:280,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				       ,{key:"orders",label:"<?php echo _('Order')?>", width:300,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 
 				       
@@ -239,32 +239,137 @@ var Dom   = YAHOO.util.Dom;
  cal1.render();
  cal1.update();
  cal1.selectEvent.subscribe(handleSelect, cal1, true); 
+
+cal2i = new YAHOO.widget.Calendar("cal2i","cal2iContainer", { title:"<?php echo _('Choose a date')?>:", close:true } );
+ cal2i.update=updateCal;
+ cal2i.id='2i';
+ cal2i.render();
+ cal2i.update();
+ cal2i.selectEvent.subscribe(handleSelect, cal2i, true); 
+ cal1i = new YAHOO.widget.Calendar("cal1i","cal1iContainer", { title:"<?php echo _('Choose a date')?>:", close:true } );
+ cal1i.update=updateCal;
+ cal1i.id='1i';
+ cal1i.render();
+ cal1i.update();
+ cal1i.selectEvent.subscribe(handleSelect, cal1i, true);  
+ 
+cal2dn = new YAHOO.widget.Calendar("cal2dn","cal2dnContainer", { title:"<?php echo _('Choose a date')?>:", close:true } );
+ cal2dn.update=updateCal;
+ cal2dn.id='2dn';
+ cal2dn.render();
+ cal2dn.update();
+ cal2dn.selectEvent.subscribe(handleSelect, cal2dn, true); 
+ cal1dn = new YAHOO.widget.Calendar("cal1dn","cal1dnContainer", { title:"<?php echo _('Choose a date')?>:", close:true } );
+ cal1dn.update=updateCal;
+ cal1dn.id='1dn';
+ cal1dn.render();
+ cal1dn.update();
+ cal1dn.selectEvent.subscribe(handleSelect, cal1dn, true);  
+
+
+ 
  YAHOO.util.Event.addListener("calpop1", "click", cal1.show, cal1, true);
  YAHOO.util.Event.addListener("calpop2", "click", cal2.show, cal2, true);
-	
-var clear_interval = function(e){
+ YAHOO.util.Event.addListener("calpop1i", "click", cal1i.show, cal1i, true);
+ YAHOO.util.Event.addListener("calpop2i", "click", cal2i.show, cal2i, true);
+ YAHOO.util.Event.addListener("calpop1dn", "click", cal1dn.show, cal1dn, true);
+ YAHOO.util.Event.addListener("calpop2dn", "click", cal2dn.show, cal2dn, true);
+ 
+
+var clear_interval = function(e,suffix){
+
      Dom.get("v_calpop1").value='';
      Dom.get("v_calpop2").value='';
-     var table=tables.table0;
-     var datasource=tables.dataSource0;
-     var request='&sf=0&from=&to=';
-     Dom.get('clear_interval').style.display='none';
-     datasource.sendRequest(request,table.onDataReturnInitializeTable, table);       
+     Dom.get("v_calpop1i").value='';
+     Dom.get("v_calpop2i").value='';
+     Dom.get("v_calpop1dn").value='';
+     Dom.get("v_calpop2dn").value='';
+          Dom.get('clear_interval').style.display='none';
+          Dom.get('clear_intervali').style.display='none';
+          Dom.get('clear_intervaldn').style.display='none';
+
      
+  //   if(suffix==''){
+   //  var table=tables.table0;
+    // var datasource=tables.dataSource0;
+    //  }else if(suffix=='i'){
+   //  var table=tables.table1;
+   //  var datasource=tables.dataSource1;
+   //  }else if(suffix=='dn'){
+   //   var table=tables.table2;
+   //  var datasource=tables.dataSource2;
+   //  }
+    var table=tables.table0;
+    var datasource=tables.dataSource0;
+     var request='&sf=0&from=&to=';
+     datasource.sendRequest(request,table.onDataReturnInitializeTable, table);       
+  var table=tables.table1;
+    var datasource=tables.dataSource1;
+     var request='&sf=0&from=&to=';
+     datasource.sendRequest(request,table.onDataReturnInitializeTable, table);       
+     var table=tables.table2;
+    var datasource=tables.dataSource2;
+     var request='&sf=0&from=&to=';
+     datasource.sendRequest(request,table.onDataReturnInitializeTable, table);       
+  
+  
  }
 
- var change_interval = function(e){
-     from=Dom.get("v_calpop1").value;
-     to=Dom.get("v_calpop2").value;
+ var change_interval = function(e,suffix){
+ 
+ 
+ 
+     from=Dom.get("v_calpop1"+suffix).value;
+     to=Dom.get("v_calpop2"+suffix).value;
+
+
+
 
      if(from=='' && to=='')
-	 Dom.get('clear_interval').style.display='none';
+	 Dom.get('clear_interval'+suffix).style.display='none';
      else
-	 Dom.get('clear_interval').style.display='';
-     var table=tables.table0;
+	 Dom.get('clear_interval'+suffix).style.display='';
+ 
+
+
+ if(suffix==''){
+ var table=tables.table0;
+     var datasource=tables.dataSource0;
+     Dom.get("v_calpop2i").value=to;
+     Dom.get("v_calpop1i").value=from;
+     Dom.get("v_calpop2dn").value=to;
+     Dom.get("v_calpop1dn").value=from;
+     
+     }else if(suffix=='i'){
+     var table=tables.table1;
+     var datasource=tables.dataSource1;
+       Dom.get("v_calpop2").value=to;
+     Dom.get("v_calpop1").value=from;
+     Dom.get("v_calpop2dn").value=to;
+     Dom.get("v_calpop1dn").value=from;
+     
+     }else if(suffix=='dn'){
+    
+       Dom.get("v_calpop2i").value=to;
+     Dom.get("v_calpop1i").value=from;
+     Dom.get("v_calpop2").value=to;
+     Dom.get("v_calpop1").value=from;
+     
+     }
+            var table=tables.table0;
      var datasource=tables.dataSource0;
      var request='&sf=0&from=' +from+'&to='+to;
-     datasource.sendRequest(request,table.onDataReturnInitializeTable, table);       
+ datasource.sendRequest(request,table.onDataReturnInitializeTable, table);  
+       var table=tables.table1;
+     var datasource=tables.dataSource1;
+     var request='&sf=0&from=' +from+'&to='+to;
+ datasource.sendRequest(request,table.onDataReturnInitializeTable, table);  
+ 
+        var table=tables.table2;
+     var datasource=tables.dataSource2;
+     var request='&sf=0&from=' +from+'&to='+to;
+ datasource.sendRequest(request,table.onDataReturnInitializeTable, table);  
+ 
      
  }
  
@@ -291,8 +396,13 @@ if(dispatch)
  }
 
 
- YAHOO.util.Event.addListener("submit_interval", "click", change_interval);
- YAHOO.util.Event.addListener("clear_interval", "click", clear_interval);
+ YAHOO.util.Event.addListener("submit_interval", "click", change_interval,'');
+ YAHOO.util.Event.addListener("clear_interval", "click", clear_interval,'');
+ YAHOO.util.Event.addListener("submit_intervali", "click", change_interval,'i');
+ YAHOO.util.Event.addListener("clear_intervali", "click", clear_interval,'i');
+YAHOO.util.Event.addListener("submit_intervaldn", "click", change_interval,'dn');
+ YAHOO.util.Event.addListener("clear_intervaldn", "click", clear_interval,'dn'); 
+ 
  var ids =Array("in_process","dispached","cancelled") ;
 YAHOO.util.Event.addListener(ids, "click", change_dispatch_type);
 
@@ -308,8 +418,8 @@ YAHOO.util.Event.addListener(ids, "click", change_dispatch_type);
 
 		//Dom.get('details_'+view).style.display='none';
 		//Dom.get('details_'+new_view).style.display='';
-		Dom.get(view+'_show_only').style.display='none';
-		Dom.get(new_view+'_show_only').style.display='';
+	//	Dom.get(view+'_show_only').style.display='none';
+//		Dom.get(new_view+'_show_only').style.display='';
 		
 
 

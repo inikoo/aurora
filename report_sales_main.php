@@ -59,6 +59,8 @@ include_once('report_dates.php');
 $_SESSION['state']['report']['sales']['to']=$to;
 $_SESSION['state']['report']['sales']['from']=$from;
 $_SESSION['state']['report']['sales']['period']=$period;
+
+
 global $myconf;
   
 /* $valid_rates=array( */
@@ -213,8 +215,8 @@ $smarty->assign('month_name',date('M'));
 
 
 $smarty->assign('week',date('W'));
-$smarty->assign('from',date('d-m-Y'));
-$smarty->assign('to',date('d-m-Y'));
+$smarty->assign('from',$from);
+$smarty->assign('to',$to);
 $smarty->assign('currency',$myconf['currency_symbol']);
 
 $plot_tipo=$_SESSION['state']['report']['sales']['plot'];
@@ -224,6 +226,10 @@ if($tipo=='y'){
   $plot_period='m';
 }elseif($tipo=='m'){
   $plot_period='w';
+}elseif($tipo=='w'){
+  $plot_period='d';
+}elseif($tipo=='d'){
+  $plot_period='h';
 }
 
 $plot_args='tipo=store&category='.$plot_category.'&period='.$plot_period.'&keys=all&from='.$from.'&to='.$to;
@@ -243,7 +249,11 @@ $smarty->assign('plot_data',$_SESSION['state']['store']['plot_data']);
       $plot_formated_period='Quarterly';
     elseif($plot_period=='w')
       $plot_formated_period='Weekly';
-
+  elseif($plot_period=='d')
+      $plot_formated_period='Daily';
+      elseif($plot_period=='h')
+      $plot_formated_period='Every Hour';
+      
 if($plot_category=='profit')
   $plot_formated_category=_('Profits');
 else
