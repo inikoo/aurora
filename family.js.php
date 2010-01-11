@@ -317,7 +317,7 @@ if(Dom.hasClass(this, 'state_details_selected'))
  if(this.id=='table_type_list'){
  Dom.get('thumbnails'+table_id).style.display='none'
   Dom.get('table'+table_id).style.display=''
-Dom.get('table'+table_id).style.display=''
+Dom.get('list_options'+table_id).style.display=''
  
  }else{
   Dom.get('thumbnails'+table_id).style.display=''

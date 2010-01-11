@@ -380,6 +380,9 @@ class DeliveryNote extends DB_Table {
         $amount = 0;
         $discounts = 0;
         foreach ( $transacions_data as $data ) {
+        
+       // print_r($data);
+        
             if ($this->data ['Delivery Note Number Pickers'] == 1)
                 $picking_key = $this->data ['Delivery Note Pickers IDs'] [0];
             else {

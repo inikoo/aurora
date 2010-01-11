@@ -96,16 +96,17 @@ while($row=mysql_fetch_array($res)){
       $title=$row['Page Parent Category'];
 
     }
+    if(!isset($report_index[$row['Page Parent Category']]))
     $report_index[$row['Page Parent Category']]=array('title'=>$title,'reports'=>array());
   }
   $title=$row['Page Short Title'];
   
-  $report_index[$row['Page Parent Category']]['reports'][]=array('title'=>$title,'url'=>$row['Page URL'],'snapshot'=>$row['Image URL']);
+  $report_index[$row['Page Parent Category']]['reports'][$title]=array('title'=>$title,'url'=>$row['Page URL'],'snapshot'=>$row['Image URL']);
     
 
 }
 
-
+//print_r($report_index);
 $smarty->assign('report_index',$report_index);
 
 

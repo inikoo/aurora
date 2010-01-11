@@ -960,6 +960,19 @@ Assig a category inside rhe store to the invoice
  }
  
  
+ 
+ 
+ function add_tax_item($code='UNK',$amount=0,$is_base='Yes'){
+ $sql=sprintf("insert into `Invoice Tax Bridge` values (%d,%s,%.2f,%s)"
+    ,$this->id
+    ,prepare_mysql($code)
+    ,$amount
+    ,prepare_mysql($is_base)
+    );
+ mysql_query($sql);
+ }
+ 
+ 
 }
 
 ?>

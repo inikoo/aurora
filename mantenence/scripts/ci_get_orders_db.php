@@ -116,7 +116,7 @@ $fam_promo_key=$fam_promo->id;
 
 
 $sql="select * from  ci_orders_data.orders  where   (last_transcribed is NULL  or last_read>last_transcribed) and filename not like '%UK%'  and filename not like '%test%'  and filename!='/media/sda3/share/PEDIDOS 08/60005902.xls' and  filename!='/media/sda3/share/PEDIDOS 09/60008607.xls' and  filename!='/media/sda3/share/PEDIDOS 09/60009626.xls' and  filename!='/media/sda3/share/PEDIDOS 09/60011693.xls' and  filename!='/media/sda3/share/PEDIDOS 09/60011905.xls' and  filename!='/media/sda3/share/PEDIDOS 08/60007219.xls'     order by filename ";
-$sql="select * from  ci_orders_data.orders where filename like '/media/sda3/share/%/60013311.xls'  order by filename";
+//$sql="select * from  ci_orders_data.orders where filename like '/media/sda3/share/%/60000604.xls'  order by filename";
 //7/60002384.xls
 //$sql="select * from  ci_orders_data.orders where filename like '/media/sda3/share/%/60000142.xls'  order by filename";
 //$sql="select * from  ci_orders_data.orders  where (filename like '%Orders2005%' or  filename like '%PEDIDOS%.xls') and (last_transcribed is NULL  or last_read>last_transcribed) and filename!='/media/sda3/share/PEDIDOS 08/60005902.xls' and  filename!='/media/sdas3/share/PEDIDOS 09/s60008607.xls' and  filename!='/media/sda3/share/PEDIsDOS 09/60009626.xls' or filename='%600s03600.xls'   order by date";
@@ -130,6 +130,8 @@ $contador=0;
 //print $sql;
 $res=mysql_query($sql);
 while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
+//if($row2['filename']=='/media/sda3/share/Orders2005/60000604.xls')
+// exit();
     $sql="select * from ci_orders_data.data where id=".$row2['id'];
     $result=mysql_query($sql);
     if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
@@ -154,7 +156,7 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
         mysql_free_result($result_test);
 
         $header=mb_unserialize($row['header']);
-        //   print_r($header);exit;
+        // print_r($header);exit;
         $products=mb_unserialize($row['products']);
 
 
@@ -929,7 +931,7 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
                 $estimated_w+=$product->data['Product Gross Weight']*$transaction['bonus'];
                 $data_dn_transactions[]=array(
 
-                                            'Product ID'=>$product->data['Product ID']
+                                            'Product Key'=>$product->data['Product Key']
                                                          ,'Delivery Note Quantity'=>$transaction['bonus']
                                                                                    ,'Current Autorized to Sell Quantity'=>$transaction['bonus']
                                                                                                                          ,'Shipped Quantity'=>$transaction['bonus']
@@ -1002,7 +1004,7 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
         //    print_r($customer_data);
         //continue;
 
-        //  print_r($data);
+          //print_r($data);
         $data['staff sale']=$header_data['staff sale'];
         $data['staff sale key']=$header_data['staff sale key'];
 
@@ -1137,7 +1139,7 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
 
 
-            //print_r($data);
+            //print_r($header_data);
             //Tipo order
             // 1 DELIVERY NOTE
             // 2 INVOICE
@@ -1168,7 +1170,6 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
                     $data_invoice_transactions[$key]['tax code']=$tax_code;
                     $data_invoice_transactions[$key]['tax amount']=$tax_rate*($val['gross amount']-($val['discount amount']));
                 }
-
 
 
 
@@ -1230,7 +1231,6 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
                          );
 
                 //$order->create_dn_simple($data_dn,$data_dn_transactions);
-
                 $dn=new DeliveryNote('create',$data_dn,$data_dn_transactions,$order);
                 $order->update_delivery_notes('save');
                 $order->update_dispatch_state('Ready to Pick');
@@ -1250,6 +1250,9 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
                     //$order->create_invoice_simple($data_invoice,$data_invoice_transactions);
 
                     $invoice=new Invoice ('create',$data_invoice,$data_invoice_transactions,$order->id);
+//to update otter scripts read TODO
+                    $invoice->add_tax_item('IVA',$header_data['tax1'],'Yes');
+                    $invoice->add_tax_item('I2',$header_data['tax2'],'Yes');
 
                     foreach($credits as $credit) {
 
@@ -1278,9 +1281,11 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
                             // 	    exit;
                         }
                     }
-                
+                                //print_r($data_dn_transactions);
+
                 $dn->pick_simple($data_dn_transactions);
                 $order->update_dispatch_state('Ready to Pack');
+              // print"xxxxxxxxxxxxxxxxxxxxxxxxxxxxx\n";
 
                 $dn->pack('all');
                 $order->update_dispatch_state('Ready to Ship');
@@ -1393,6 +1398,8 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
                                   );
 
                     $invoice=new Invoice ('create',$data_invoice,$data_invoice_transactions,$parent_order->id);
+                     $invoice->add_tax_item('IVA',$header_data['tax1'],'Yes');
+                    $invoice->add_tax_item('I2',$header_data['tax2'],'Yes');
                 } else {// no payment
 
 
@@ -1535,6 +1542,8 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
                                   );
                     // $order->create_invoice_simple($data_invoice,$data_invoice_transactions);
                     $invoice=new Invoice ('create',$data_invoice,$data_invoice_transactions,$order->id);
+                     $invoice->add_tax_item('IVA',$header_data['tax1'],'Yes');
+                    $invoice->add_tax_item('I2',$header_data['tax2'],'Yes');
                     $invoice->data['Invoice Paid Date']=$date_inv;
                     $invoice->pay('full',
                                   array(
@@ -1792,6 +1801,8 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
             print $order->id;
 
             $refund = new Invoice('create refund',$data_invoice,$data_refund_transactions,$order);
+             $refund->add_tax_item('IVA',$header_data['tax1'],'Yes');
+                    $refund->add_tax_item('I2',$header_data['tax2'],'Yes');
             $refund->data['Invoice Paid Date']=$date_inv;
             $refund->pay('full',
                          array(
