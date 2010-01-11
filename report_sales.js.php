@@ -1,6 +1,10 @@
 <?php
 include_once('common.php');
 ?>
+
+var Event = YAHOO.util.Event;
+var Dom   = YAHOO.util.Dom;
+
     var view='invoices';
     var panel1;
 
@@ -149,9 +153,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 function init(){
 
-
-
-
+	Event.addListener('go_free_report', "click", go_free);
 
     	cal2 = new YAHOO.widget.Calendar("cal2","cal2Container", { title:"<?php echo _('Choose a date')?>:", close:true } );
  
