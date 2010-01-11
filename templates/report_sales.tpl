@@ -2,62 +2,12 @@
 <div id="bd" >
 {include file='reports_navigation.tpl'}
 
+{include file='calendar_splinter.tpl'}
 
 
 
 
-<div class="cal_menu" >
-<span>{$tipo_title}</span> <span id="period">{$period}</span>
-{if $tipo=='y'}
-<table  class="calendar_year">
-<tr>
-<td><a href="report_sales.php?tipo=m&y={$period}&m=1">{$m[0]}</a></td>
-<td><a href="report_sales.php?tipo=m&y={$period}&m=2">{$m[1]}</a></td>
-<td><a href="report_sales.php?tipo=m&y={$period}&m=3">{$m[2]}</a></td>
-</tr><tr>
-<td><a href="report_sales.php?tipo=m&y={$period}&m=4">{$m[3]}</a></td>
-<td><a href="report_sales.php?tipo=m&y={$period}&m=5">{$m[4]}</a></td>
-<td><a href="report_sales.php?tipo=m&y={$period}&m=6">{$m[5]}</a></td>
-</tr><tr>
-<td><a href="report_sales.php?tipo=m&y={$period}&m=7">{$m[6]}</a></td>
-<td><a href="report_sales.php?tipo=m&y={$period}&m=8">{$m[7]}</a></td>
-<td><a href="report_sales.php?tipo=m&y={$period}&m=9">{$m[8]}</a></td>
-</tr><tr>
-<td><a href="report_sales.php?tipo=m&y={$period}&m=10">{$m[9]}</a></td>
-<td><a href="report_sales.php?tipo=m&y={$period}&m=11">{$m[10]}</a></td>
-<td><a href="report_sales.php?tipo=m&y={$period}&m=12">{$m[11]}</a></td>
-</tr>
-</table>
-{/if}
-{if $tipo=='w' or $tipo=='m' or $tipo=='d'}
-<table  class="calendar_year">
-<tr>
-<td>w</td>
-<td>M</td>
-<td>T</td>
-<td>W</td>
-<td>T</td>
-<td>F</td>
-<td>S</td>
-<td>D</td>
-</tr>
-{foreach from=$w item=week}
-<tr>
-<td><a href="report_sales.php?tipo=w&y={$week.year}&w={$week.number}">{$week.number}</a></td>
-<td><a href="report_sales.php?tipo=d&y={$week.year}&m={$week.m_mon}&d={$week.mon}">{$week.mon}</a></td>
-<td><a href="report_sales.php?tipo=d&y={$week.year}&m={$week.m_tue}&d={$week.tue}">{$week.tue}</a></td>
-<td><a href="report_sales.php?tipo=d&y={$week.year}&m={$week.m_wed}&d={$week.wed}">{$week.wed}</a></td>
-<td><a href="report_sales.php?tipo=d&y={$week.year}&m={$week.m_thu}&d={$week.thu}">{$week.thu}</a></td>
-<td><a href="report_sales.php?tipo=d&y={$week.year}&m={$week.m_fri}&d={$week.fri}">{$week.fri}</a></td>
-<td><a href="report_sales.php?tipo=d&y={$week.year}&m={$week.m_sat}&d={$week.sat}">{$week.sat}</a></td>
-<td><a href="report_sales.php?tipo=d&y={$week.year}&m={$week.m_sun}&d={$week.sun}">{$week.sun}</a></td>
-</tr>
-{/foreach}
-</table>
 
-{/if}
-
-</div>
 
 <h1 style="clear:left">{$title}</h1>
 
