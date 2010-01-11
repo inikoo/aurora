@@ -86,7 +86,7 @@ if(isset( $_REQUEST['umbral']))
      $where.=sprintf(' and `Customer Store Key`=%d ',$store);
    }
    
-$where.=sprintf(' and total>%f and Year(`Invoice Date`)=%d',$umbral,$year );
+$where.=sprintf(' and Year(`Invoice Date`)=%d',$umbral,$year );
    
    
   if(($f_field=='customer name'     )  and $f_value!=''){

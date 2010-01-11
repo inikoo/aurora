@@ -171,16 +171,14 @@ function init(){
 	var ids = ["net_sales_gmonth","net_diff1y_sales_month_per","net_diff1y_sales_month_net"]; 
  	Event.addListener(ids, "change", change_plot);
 
-
-
 	var go_free = function(e){
 	    var from=Dom.get('v_calpop1').value;
 	    var to=Dom.get('v_calpop2').value;
 	    location.href='report_sales.php?tipo=f&from='+from+'&to='+to; 
 	}
 	var ids = ["go_free_report"]; 
-	Event.addListener(ids, "change", go_free);
-
+	
+	Event.addListener(ids, "click", go_free);
 	var change_front_page = function(e){
 	    tipo=this.id;
 	    
