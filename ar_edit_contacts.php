@@ -34,6 +34,18 @@ case('new_company'):
   new_company($data);
 
 break;
+
+case('new_customer'):
+
+ $data=prepare_values($_REQUEST,array(
+			     'values'=>array('type'=>'json array')
+			   
+			     ));
+  new_customer($data);
+  
+
+break;
+
 case('create_contact'):
 
 case('new_contact'):
@@ -1051,6 +1063,42 @@ $data['editor']=$editor;
   echo json_encode($response);  
 
 }
+
+function new_customer($data){
+  Timer::timing_milestone('begin');
+global $editor;
+$data['editor']=$editor;
+
+
+
+
+
+foreach($data['values'] as $key=>$value){
+  $data['values'][preg_replace('/^Company / ','Customer ',$key)]=$value;
+}
+$data['values']['Customer Company Name']=$data['values']['Company Name'];
+//print_r($data['values']);
+
+
+  $customer=new Customer('find create',$data['values']);
+  if($customer->new){
+    $response= array('state'=>200,'action'=>'created','customer_key'=>$customer->id);
+  }else{
+    if($customer->found)
+      $response= array('state'=>400,'action'=>'found','customer_key'=>$customer->found_key);
+    else
+      $response= array('state'=>400,'action'=>'error','customer_key'=>0,'msg'=>$customer->msg);
+  }
+ 
+  //Timer::dump_profile();
+
+  echo json_encode($response);  
+
+}
+
+
+
+
 
 function new_corporation($data){
   Timer::timing_milestone('begin');

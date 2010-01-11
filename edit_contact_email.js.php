@@ -100,8 +100,10 @@ function show_details_email(o){
 }
 
 function validate_email(o){
+return;
+
     var email=o.value;
-    var email_key=o.getAttribute('email_key');
+  //  var email_key=o.getAttribute('email_key');
     
     if(isValidEmail(email)){
 	o.setAttribute('valid',1);
