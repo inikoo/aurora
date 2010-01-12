@@ -847,22 +847,15 @@ global $editor;
 }
 function delete_email(){
 global $editor;
-
-  if( !isset($_REQUEST['value']) or !is_numeric($_REQUEST['value']) ){
+  if( !isset($_REQUEST['value'])  ){
     $response=array('state'=>400,'msg'=>'Error no value');
     echo json_encode($response);
     return;
    }
    
+
+
  
-   if( !isset($_REQUEST['id'])  or !is_numeric($_REQUEST['id']) or $_REQUEST['id']<=0  ){
-     $response=array('state'=>400,'msg'=>'Error wrong id');
-     echo json_encode($response);
-    return;
-   }
-
-
-
    if( !isset($_REQUEST['subject'])  
        or !is_numeric($_REQUEST['subject_key'])
        or $_REQUEST['subject_key']<=0       or !preg_match('/^company|contact$/i',$_REQUEST['subject'])
@@ -889,9 +882,11 @@ global $editor;
    }
    
    
-   
    $email_key=$_REQUEST['value'];
-
+if(!is_numeric($email_key)){
+$email = new Email('email',$email_key);
+$email_key=$email->id;
+}
   
 
    $subject->remove_email($email_key);

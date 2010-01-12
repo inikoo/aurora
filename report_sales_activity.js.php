@@ -146,25 +146,44 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 
 
-
 function init(){
     
-var oACDS = new YAHOO.util.FunctionDataSource(mygetTerms);
- oACDS.queryMatchContains = true;
- var oAutoComp = new YAHOO.widget.AutoComplete("f_input0","f_container0", oACDS);
- oAutoComp.minQueryLength = 0; 
+//var oACDS = new YAHOO.util.FunctionDataSource(mygetTerms);
+// oACDS.queryMatchContains = true;
+// var oAutoComp = new YAHOO.widget.AutoComplete("f_input0","f_container0", oACDS);
+ //oAutoComp.minQueryLength = 0; 
 
 
- panel1 = new YAHOO.widget.Panel("orders1", { visible:false, constraintoviewport:true } );
-    panel1.render();
+ //panel1 = new YAHOO.widget.Panel("orders1", { visible:false, constraintoviewport:true } );
+  //  panel1.render();
 
-    YAHOO.util.Event.addListener("invoices", "click", show_invoices);
-    YAHOO.util.Event.addListener("invoices_total", "click", show_invoices);
-    YAHOO.util.Event.addListener("invoices_home", "click", show_invoices_home);
-    YAHOO.util.Event.addListener("invoices_nohome", "click", show_invoices_nohome);
-    YAHOO.util.Event.addListener("invoices_partner", "click", show_invoices_partner);
+   // YAHOO.util.Event.addListener("invoices", "click", show_invoices);
+   // YAHOO.util.Event.addListener("invoices_total", "click", show_invoices);
+   // YAHOO.util.Event.addListener("invoices_home", "click", show_invoices_home);
+   // YAHOO.util.Event.addListener("invoices_nohome", "click", show_invoices_nohome);
+   // YAHOO.util.Event.addListener("invoices_partner", "click", show_invoices_partner);
 
 
 }
 
 YAHOO.util.Event.onDOMReady(init);
+
+function change_period(e,x){
+location.href='report_sales_activity.php?period='+e;
+}
+
+function change_compare(){
+alert('x')
+}
+YAHOO.util.Event.onContentReady("period_menu", function () {
+	var oMenu = new YAHOO.widget.Menu("period_menu", { context:["period_label","tr", "br"]  });
+	 oMenu.render();
+	 oMenu.subscribe("show", oMenu.focus);
+	 YAHOO.util.Event.addListener("period_label", "click", oMenu.show, null, oMenu);
+    });
+YAHOO.util.Event.onContentReady("compare_menu", function () {
+	var oMenu = new YAHOO.widget.Menu("compare_menu", { context:["compare_label","tr", "br"]  });
+	 oMenu.render();
+	 oMenu.subscribe("show", oMenu.focus);
+	 YAHOO.util.Event.addListener("compare_label", "click", oMenu.show, null, oMenu);
+    });

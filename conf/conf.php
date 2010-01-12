@@ -1,6 +1,8 @@
 <?php
 
 
+$report_data=array('ES1'=>array('umbral'=>3000,'year'=>date('Y')-1));
+
 
 $myconf=array(
 
@@ -89,6 +91,8 @@ $myconf=array(
 
 
 $default_state=array(
+
+                   'report_data'=>$report_data, 
                    'order'=>array(
                                'id'=>''
                                     ,'show_all'=>false

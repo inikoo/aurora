@@ -2,6 +2,12 @@
 <div id="bd" >
 {include file='reports_navigation.tpl'}
 
+<div style="float:right;font-size:70%">
+{t}Limit{/t}: <input type="text" id="limite" name="limite" size=10 value="{$umbral}"/>
+{t}Year{/t}:  <input type="text" id="year" name="year" size=4 value="{$year}"/> <span class="state_details" style="font-size:100%;margin-left:10px" id="submit_report">Prepare Report</span>
+
+</div>
+
   <div id="no_details_title"  style="clear:left;xmargin:0 20px;{if $details!=0}display:none{/if}">
     <h1>Modelo 347</h1>
   </div>
@@ -9,7 +15,7 @@
 
     
     <div id="the_table" class="data_table" style="clear:both">
-      <span class="clean_table_title">{t}Customers{/t}</span>
+      <span class="clean_table_title">{$titulo}</span>
       
       
      <div id="table_type">
@@ -36,26 +42,6 @@
   </div>
 </div>
 </div> 
-<div id="filtermenu" class="yuimenu">
-  <div class="bd">
-    <ul class="first-of-type">
-       <li style="text-align:left;margin-left:10px;border-bottom:1px solid #ddd">{t}Filter options{/t}:</li>
-      {foreach from=$filter_menu item=menu }
-      <li class="yuimenuitem"><a class="yuimenuitemlabel" onClick="change_filter('{$menu.db_key}','{$menu.label}',0)"> {$menu.menu_label}</a></li>
-      {/foreach}
-    </ul>
-  </div>
-</div>
 
-<div id="rppmenu" class="yuimenu">
-  <div class="bd">
-    <ul class="first-of-type">
-       <li style="text-align:left;margin-left:10px;border-bottom:1px solid #ddd">{t}Rows per Page{/t}:</li>
-      {foreach from=$paginator_menu item=menu }
-      <li class="yuimenuitem"><a class="yuimenuitemlabel" onClick="change_rpp({$menu},0)"> {$menu}</a></li>
-      {/foreach}
-    </ul>
-  </div>
-</div>
 
 {include file='footer.tpl'}

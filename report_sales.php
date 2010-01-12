@@ -40,7 +40,7 @@ $smarty->assign('parent','reports');
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
 
-if(isset($_REQUEST['tipo']) and preg_match('/y|m|d|q|w/',$_REQUEST['tipo'])){
+if(isset($_REQUEST['tipo']) and preg_match('/y|m|d|q|w|f/',$_REQUEST['tipo'])){
   $tipo=$_REQUEST['tipo'];
   $_SESSION['state']['reports']['sales']['tipo']=$tipo;
 }else{

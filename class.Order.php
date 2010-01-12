@@ -130,6 +130,27 @@ class Order extends DB_Table{
 	$this->ghost_order = false;
 				
    
+   
+        if (! isset ( $data ['store_id'] ))
+	$data ['store_id'] = 0;
+				
+      $store = new Store ( 'id', $data ['store_id'] );
+      if ($store->id) {
+	$this->data ['Order Store Key'] = $store->id;
+	$this->data ['Order Store Code'] = $store->data[ 'Store Code' ];
+					
+	$this->data ['Order XHTML Store'] = sprintf ( '<a href="store.php?id=%d">%s</a>', $store->id, $store->data[ 'Store Code' ] );
+	$this->data ['Order Currency']=$store->data[ 'Store Currency Code' ];
+    $store_country_code=$store->data['Store Home Country Code 2 Alpha'];
+    } else {
+	$this->data ['Order Store Key'] = '';
+	$this->data ['Order Store Code'] = '';
+	$this->data ['Order XHTML Store'] = _ ( 'Unknown' );
+	$this->data ['Order Currency']=$myconf['currency_code'];
+	    $store_country_code='XX';
+
+      }
+   
 			
       $data['Customer Data']['editor']=$this->editor;
       $data['Customer Data']['editor']['Date']=date("Y-m-d H:i:s",strtotime($data['Customer Data']['editor']['Date']." -1 second"));
@@ -139,21 +160,26 @@ class Order extends DB_Table{
 				  
 	$staff=new Staff('id',$data['staff sale key']);
 	$customer = new Customer ( 'find staff create', $staff ); 
+	 $this->data ['Order Main Country 2 Alpha Code']=$store_country_code;
+	
 	$this->data ['Order XHTML Ship Tos']=_('Collection');
 	$this->data ['Order Ship To Keys']=0;
-				
-      }
-
-
-      elseif(!isset($data['Shipping Address']) or !is_array($data['Shipping Address']) or array_empty($data['Shipping Address']) or $data['Delivery Note Dispatch Method']=='Collected'){
+				$this->data ['Order Main Country 2 Alpha Code']=$store_country_code;
+      }elseif(!isset($data['Shipping Address']) or !is_array($data['Shipping Address']) or array_empty($data['Shipping Address']) or $data['Delivery Note Dispatch Method']=='Collected'){
 	$customer = new Customer ( 'find create', $data['Customer Data'] );
 	$data['Delivery Note Dispatch Method']='Collected';
 	$this->data ['Order Ship To Keys']=0;
+		      $this->data ['Order Main Country 2 Alpha Code']=$customer -> data['Customer Main Address Country 2 Alpha Code'];
+
       }else{
 	//print "Cust data\n";
 	//print_r($data['Customer Data']);
 				  
 	$customer = new Customer ( 'find create', $data['Customer Data'] );
+	      $this->data ['Order Main Country 2 Alpha Code']=$customer -> data['Customer Main Address Country 2 Alpha Code'];
+
+	
+	
 	//print_r($customer);
 	if($customer->data['Customer Delivery Address Link']=='None'){
 	  $ship_to= new Ship_To('find create',$data['Shipping Address']);
@@ -189,22 +215,7 @@ class Order extends DB_Table{
 
 				
 
-      if (! isset ( $data ['store_id'] ))
-	$data ['store_id'] = 0;
-				
-      $store = new Store ( 'id', $data ['store_id'] );
-      if ($store->id) {
-	$this->data ['Order Store Key'] = $store->id;
-	$this->data ['Order Store Code'] = $store->data[ 'Store Code' ];
-					
-	$this->data ['Order XHTML Store'] = sprintf ( '<a href="store.php?id=%d">%s</a>', $store->id, $store->data[ 'Store Code' ] );
-	$this->data ['Order Currency']=$store->data[ 'Store Currency Code' ];
-      } else {
-	$this->data ['Order Store Key'] = '';
-	$this->data ['Order Store Code'] = '';
-	$this->data ['Order XHTML Store'] = _ ( 'Unknown' );
-	$this->data ['Order Currency']=$myconf['currency_code'];
-      }
+ 
 	
       
 
@@ -1040,8 +1051,10 @@ class Order extends DB_Table{
     //     $sql="select sum(`Order Transaction Gross Amount`) as gross,sum(`Order Transaction Total Discount Amount`) from `Order Transaction Fact` where "
 	  
 	  
-    $sql = sprintf ( "insert into `Order Dimension` (`Order Customer Contact Name`,`Order For`,`Order File As`,`Order Date`,`Order Last Updated Date`,`Order Public ID`,`Order Store Key`,`Order Store Code`,`Order Main Source Type`,`Order Customer Key`,`Order Customer Name`,`Order Current Dispatch State`,`Order Current Payment State`,`Order Current XHTML State`,`Order Customer Message`,`Order Original Data MIME Type`,`Order XHTML Ship Tos`,`Order Items Gross Amount`,`Order Items Discount Amount`,`Order Original Metadata`,`Order XHTML Store`,`Order Type`,`Order Currency`,`Order Currency Exchange`,`Order Original Data Filename`) values (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%.2f,%.2f,%s,%s,%s,%s,%f,%s)"
-		     , prepare_mysql ( $this->data ['Order Customer Contact Name'],false )
+    $sql = sprintf ( "insert into `Order Dimension` (`Order Main Country 2 Alpha Code`,`Order Customer Contact Name`,`Order For`,`Order File As`,`Order Date`,`Order Last Updated Date`,`Order Public ID`,`Order Store Key`,`Order Store Code`,`Order Main Source Type`,`Order Customer Key`,`Order Customer Name`,`Order Current Dispatch State`,`Order Current Payment State`,`Order Current XHTML State`,`Order Customer Message`,`Order Original Data MIME Type`,`Order XHTML Ship Tos`,`Order Items Gross Amount`,`Order Items Discount Amount`,`Order Original Metadata`,`Order XHTML Store`,`Order Type`,`Order Currency`,`Order Currency Exchange`,`Order Original Data Filename`) values (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%.2f,%.2f,%s,%s,%s,%s,%f,%s)"
+		   		     , prepare_mysql ( $this->data ['Order Main Country 2 Alpha Code'] )
+
+		   , prepare_mysql ( $this->data ['Order Customer Contact Name'],false )
 		     , prepare_mysql ( $this->data ['Order For'] )
 		     , prepare_mysql ( $this->data ['Order File As'] )
 		     , prepare_mysql ( $this->data ['Order Date'] )
@@ -2334,6 +2347,40 @@ function get_data_from_store($store_key){
   function update_discounts(){
     $this->updated_items=array();
   }
+
+
+ function categorize($args=''){
+   $store=new store($this->data['Order Store Key']);
+   
+   
+   
+   if($store->id==1){
+     $this->data['Order Category']=$store->data['Store Home Country Short Name'];
+     if($this->data['Order Main Country 2 Alpha Code']!=$store->data['Store Home Country Code 2 Alpha'])
+     $this->data['Order Category']='Export';
+     if($this->data['Order For']=='Staff')
+       $this->data['Order Category']='Staff';
+     if($this->data['Order For']=='Partner')
+       $this->data['Order Category']='Partner';
+   }else{
+      $this->data['Order Category']='All';
+   }
+   if(!preg_match('/nosave|no_save/i',$args)){
+
+     $sql = sprintf ( "update `Order Dimension` set `Order Category`=%s  where `Order Key`=%d"
+		      , prepare_mysql($this->data['Order Category'])
+		      , $this->data ['Order Key'] 
+		      );
+		     // print $sql;
+     if (! mysql_query ( $sql ))
+       exit ( "$sql\n xcan not update order dimension after cat\n" );
+     
+   }
+
+ }
+ 
+ 
+
 
 }
 

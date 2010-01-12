@@ -244,15 +244,15 @@
       <div id="company_found_dialog" style="display:none;float:right;border:1px solid #ccc;width:200px;padding:6px 10px;margin-top:3px;font-size:80%;color:#555">
 	{t}Another contact has been found with the similar details{/t}.
 	<table style="margin:10px 0">
-	  <tr><td><span td style="cursor:pointer;text-decoration:underline" id="pick_founded">{t}Pick contact founded{/t} (<span id="founded_name"></span>)</span></td></tr>
-	  <tr><td><span td style="cursor:pointer;text-decoration:underline" id="force_new">{t}Confirm is new contact and Save{/t}</span></td></tr>
+	  <tr><td><span  style="cursor:pointer;text-decoration:underline" id="pick_founded">{t}Pick contact founded{/t} (<span id="founded_name"></span>)</span></td></tr>
+	  <tr><td><span  style="cursor:pointer;text-decoration:underline"    onClick="force_new()" >{t}Confirm is new contact and Save{/t}</span></td></tr>
 	</table>
       </div>
       <div id="email_found_dialog" style="display:none;float:right;border:1px solid #ccc;width:200px;padding:6px 10px;margin-top:3px;font-size:80%;color:#555">
 	{t}Another contact has the same email{/t}.
 	<table style="margin:10px 0">
-	  <tr><td style="cursor:pointer">{t}Edit contact founded{/t}</td></tr>
-	  <tr><td><span td style="cursor:pointer;text-decoration:underline" id="force_new">{t}Confirm is new contact and Save{/t}</span><br><span style="color:red">{t}Founded contact data will be deleted to avoid muliplicity{/t}</span></td></tr>
+	  <tr><td style="cursor:pointer" onclick="edit_contact_founded()">{t}Edit contact founded{/t}</td></tr>
+	  <tr><td><span  style="cursor:pointer;text-decoration:underline" id="force_new" onClick="force_new()">{t}Confirm is new contact and Save{/t}</span><br><span style="color:red">{t}Founded contact data will be deleted to avoid muliplicity{/t}</span></td></tr>
 	</table>
       </div>
 
