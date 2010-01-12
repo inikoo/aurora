@@ -6,6 +6,7 @@ include_once('class.Contact.php');
 include_once('class.Company.php');
 
 
+
 $salutation="''";
 $sql="select `Salutation` from kbase.`Salutation Dimension` where `Language Code`='en'";
 $result=mysql_query($sql);
@@ -68,6 +69,7 @@ var suggest_d3=false;
 var suggest_d4=false;
 var suggest_d4=false;
 var suggest_town=false;
+var contact_with_same_email=0;
 
 var company_found_email=false;
 
@@ -267,6 +269,29 @@ var save_new_company=function(e){
 
 }
     
+function edit_contact_founded(){
+location.href='company.php?edit='+contact_with_same_email;
+}
+
+
+function force_new(){
+var email=Dom.get('Email').value;
+var request='ar_edit_contacts.php?tipo=delete_email&value=' +email+'&subject=company&subject_key='+company_found_key; 
+	
+	YAHOO.util.Connect.asyncRequest('POST',request ,{
+			    success:function(o) {
+			     alert(o.responseText);
+				var r =  YAHOO.lang.JSON.parse(o.responseText);
+				
+				//save_new_company();
+			    }
+			});
+
+
+
+}
+
+
 
 var find_company=function(){
    
@@ -288,6 +313,7 @@ var find_company=function(){
 		    company_found_email=true;
 		    company_found_key=r.found_key;
 		    display_form_state();
+		    contact_with_same_email=r.found_key;
 		    //alert(company_found+' '+company_found_email);
 		     update_save_button();
 		}else if(r.action=='found'){

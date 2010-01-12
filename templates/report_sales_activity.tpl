@@ -51,8 +51,8 @@
 </tr>
 
 <tr class="bracket_label" >
-<td></td><td colspan="6" class="period_label">{$period_label}</td><td></td>
-<td colspan="3" class="compare_label">{$compare_label}</td>
+<td></td><td colspan="6" class="period_label"><span id="period_label">{$period_label}</span></td><td></td>
+<td colspan="3" class="compare_label"><span id="compare_label">{$compare_label}</span></td>
 </tr>
 
 
@@ -73,13 +73,13 @@
 </tr>
 
 <tr class="title">
-<td></td><td>{t}Prev Due{/t}</td><td colspan="5" rowspan="3">
+<td colspan="11" rowspan="3">
 <table style="width:100%" border=0>
-<tr><td>R</td><td>C</td><td>iP</td><td>PP</td><td>R</td><td>D</td></tr>
-{foreach from=$activity_data   item=data name=foo }
-<tr class="geo"><td>{$data.received}</td><td>{$data.cancelled}</td><td>{$data.in_process}</td><td>{$data.in_warehouse}</td><td>{$data.ready}</td><td>{$data.dispached}</td>
-
+<tr><td></td><td>Prevs Due</td><td>Received</td><td>Cancelled</td><td>In Process</td><td>In Warehouse</td><td>Ready</td><td>Dispatched</td>
 </tr>
+
+{foreach from=$activity_data   item=data name=foo }
+<tr class="geo"><td>{$data.store}{$data.substore}</td><td>{$data.prevs_due}</td><td>{$data.received}</td><td>{$data.cancelled}</td><td>{$data.in_process}</td><td>{$data.in_warehouse}</td><td>{$data.ready}</td><td>{$data.dispached}</td></tr>
 
 {/foreach}
 </table>
@@ -89,9 +89,7 @@
 </td>
 </tr>
 
-{foreach from=$store_data   item=data name=foo}
-<tr {if $smarty.foreach.foo.last}class="last"{else}class="geo"{/if}><td class="label"> {$data.store}{$data.substore}</td></tr>
-{/foreach}
+
 
 </table>
 
@@ -103,6 +101,16 @@
        <li style="text-align:left;margin-left:10px;border-bottom:1px solid #ddd">{t}Period{/t}:</li>
       {foreach from=$period_menu item=menu }
       <li class="yuimenuitem"><a class="yuimenuitemlabel" onClick="change_period('{$menu.period}')"> {$menu.label}</a></li>
+      {/foreach}
+    </ul>
+  </div>
+</div>
+<div id="compare_menu" class="yuimenu">
+  <div class="bd">
+    <ul class="first-of-type">
+       <li style="text-align:left;margin-left:10px;border-bottom:1px solid #ddd">{t}compare{/t}:</li>
+      {foreach from=$compare_menu item=menu }
+      <li class="yuimenuitem"><a class="yuimenuitemlabel" onClick="change_compare('{$menu.compare}')"> {$menu.label}</a></li>
       {/foreach}
     </ul>
   </div>

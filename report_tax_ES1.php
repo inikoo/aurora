@@ -24,6 +24,29 @@ $general_options_list=array();
 $smarty->assign('general_options_list',$general_options_list);
 
 
+if(isset($_REQUEST['year'])){
+$year=$_REQUEST['year'];
+$_SESSION['state']['report_data']['ES1']['year']=$year;
+}
+
+
+if(isset($_REQUEST['umbral'])){
+list($tmp,$umbral)=parse_money($_REQUEST['umbral']);
+$_SESSION['state']['report_data']['ES1']['umbral']=$umbral;
+}
+
+
+$year=$_SESSION['state']['report_data']['ES1']['year'];
+$umbral=$_SESSION['state']['report_data']['ES1']['umbral'];
+
+
+$titulo=_('Customers who invoiced more than').' '.money($umbral).' '._('in').' '.$year;
+
+$smarty->assign('titulo',$titulo);
+$smarty->assign('umbral',money($umbral));
+$smarty->assign('year',$year);
+
+
 $css_files=array(
 		 $yui_path.'reset-fonts-grids/reset-fonts-grids.css',
 		 $yui_path.'menu/assets/skins/sam/menu.css',
@@ -47,19 +70,18 @@ $js_files=array(
 		'table_common.js.php',
 		'js/search.js',
 		'js/dropdown.js',
-		'report_tax_ES1.js.php'
+		'report_tax_ES1.js.php?umbral='.$umbral.'&year='.$year
 		);
 
 
 //$smarty->assign('advanced_search',$_SESSION['state']['customers']['advanced_search']);
 
 
-$smarty->assign('parent','customers');
-$smarty->assign('title', _('Customers'));
+$smarty->assign('parent','reports');
+$smarty->assign('title', _('Modelo 337'));
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
 
-$smarty->assign('table_title',_('Customers List'));
 
 
 

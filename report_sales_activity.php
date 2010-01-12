@@ -30,7 +30,7 @@ $js_files=array(
 		'table_common.js.php',
 		'calendar_common.js.php',
 
-		'report_sales.js.php',
+		'report_sales_activity.js.php',
 		 'js/dropdown.js'
 		);
 
@@ -47,20 +47,29 @@ $from=date('d-m-Y',strtotime('now -7 day'));
 
 
 
+
+if(isset($_REQUEST['period'])){
+$period=$_REQUEST['period'];
+$_SESSION['state']['report']['activity']['period']=$period;
+}else
 $period=$_SESSION['state']['report']['activity']['period'];
+
 switch($period){
 case('day'):
 $to=date('d-m-Y');
 $from=date('d-m-Y',strtotime('now -1 day'));
 $period_label=_('Last 24hrs Sales Activity');
+break;
 case('year'):
 $to=date('d-m-Y');
 $from=date('d-m-Y',strtotime('now -1 year'));
 $period_label=_('Last Year Sales Activity');
+break;
 case('month'):
 $to=date('d-m-Y');
 $from=date('d-m-Y',strtotime('now -1 month'));
 $period_label=_('Last Month Sales Activity');
+break;
 case('week'):
 default:
 $to=date('d-m-Y');
@@ -69,7 +78,6 @@ $period_label=_('Last Week Sales Activity');
 
 
 }
-
 
 
 
@@ -120,7 +128,7 @@ $period_menu=array(
 			array("period"=>'day','label'=> _('Last Day'))
 		     ,array("period"=>'week','label'=>_('Last week'))
 		     ,array("period"=>'month','label'=>_('Last Month'))
-		     ,array("period"=>'quarter','label'=>_('Last Quarter'))
+		   //  ,array("period"=>'quarter','label'=>_('Last Quarter'))
 		     ,array("period"=>'year','label'=>_('Last Year'))
 		    
 		     );
@@ -137,6 +145,8 @@ $title=_('Sales Activity Report');
 foreach($store_data as $key=>$val){
   //get_color_in_gradient($factor,$HexFrom, $HexTo)
   
+  if(!isset($store_data[$key]) or !isset($compare_data[0][$key]))
+  continue;
   $store_data[$key]['compare_invoices_color']=background_color($val['_invoices'],$compare_data[0][$key]['_invoices']);
   $store_data[$key]['compare_customers_color']=background_color($val['_customers'],$compare_data[0][$key]['_customers']);
   $store_data[$key]['compare_net_color']=background_color($val['_eq_net'],$compare_data[0][$key]['_eq_net']);
@@ -248,7 +258,7 @@ function report_data($int){
      $activity_data[$row['Store Key']]=array(
 					 'store'=>sprintf('<a href="report_sales.php?store_key=%d%s">%s</a>',$row['Store Key'],$link,$row['Store Name'])
 					 ,'received'=>0
-					 ,'in_process'=>0
+					 ,'in_process'=>'x'
 
 					 );
 
@@ -280,16 +290,32 @@ function report_data($int){
 
 
 
-     $sql=sprintf("select `Order Category`,count(*) as received , sum(IF(`Order Current Dispatch State`='In Process',1,0)) as in_process from  `Order Dimension` I  where `Order Store Key`=%d %s group by  `Order Category`"
+     $sql=sprintf("select `Order Category`,count(*) as received ,sum(IF(`Order Current Dispatch State`='Picking',1,0)) as picking, sum(IF(`Order Current Dispatch State`='Cancelled',1,0)) as cancelled ,sum(IF(`Order Current Dispatch State`='In Process',1,0)) as in_process, sum(IF(`Order Current Dispatch State`='Ready to Pick',1,0)) as ready_to_pick, sum(IF(`Order Current Dispatch State`='Picking',1,0)) as picking, sum(IF(`Order Current Dispatch State`='Ready to Pack',1,0)) as ready_to_pack , sum(IF(`Order Current Dispatch State`='Ready to Ship',1,0)) as ready_to_ship,  sum(IF(`Order Current Dispatch State`='Dispached',1,0)) as dispached from  `Order Dimension` I  where `Order Store Key`=%d %s group by  `Order Category`"
 		  ,$row['Store Key'],preg_replace('/Invoice/','Order',$int[0]));
     $result2=mysql_query($sql);
     if(mysql_num_rows($result2) >1 ){
       while($row2=mysql_fetch_array($result2, MYSQL_ASSOC)){
+      
+      $sql=sprintf("select count(*) as due from `Order Dimension` where `Order Category`=%s and `Order Current Dispatch State` in ('In Process','Ready to Pick','Picking','Ready to Pack','Ready to Ship','Packing') %s"
+      ,prepare_mysql($row2['Order Category'])
+      ,preg_replace('/>=/','<',preg_replace('/Invoice/','Order',$int[0]))
+      );
+      $result2_tmp=mysql_query($sql);
+      $total_orders_due=0;
+      if($row3=mysql_fetch_array($result2_tmp)){
+      $total_orders_due=$row3['due'];
+      }
+      
 	$activity_data[$row['Store Key'].'.'.$row2['Order Category']]=array(
 									 'store'=>''
+									 ,'prevs_due'=>number($total_orders_due)
 									 ,'substore'=>sprintf("%s",$row2['Order Category'])
 									 ,'received'=>number($row2['received'])
 									 ,'in_process'=>number($row2['in_process'])
+									 ,'cancelled'=>number($row2['cancelled'])
+									 ,'ready'=>number($row2['ready_to_ship'])
+									 ,'dispached'=>number($row2['dispached'])
+									 ,'in_warehouse'=>number($row2['ready_to_pick']+$row2['picking']+$row2['ready_to_pack'])
 									 );
       }
       
@@ -336,7 +362,6 @@ mysql_free_result($result);
  $sql=sprintf("select `Order Store Key`,count(*) as received , sum(IF(`Order Current Dispatch State`='In Process',1,0)) as in_process, sum(IF(`Order Current Dispatch State`='Ready to Pick',1,0)) as ready_to_pick, sum(IF(`Order Current Dispatch State`='Picking',1,0)) as picking, sum(IF(`Order Current Dispatch State`='Ready to Pack',1,0)) as ready_to_pack , sum(IF(`Order Current Dispatch State`='Ready to Ship',1,0)) as ready_to_ship,  sum(IF(`Order Current Dispatch State`='Dispached',1,0)) as dispached, sum(IF(`Order Current Dispatch State`='Cancelled',1,0)) as cancelled  from  `Order Dimension` I  where  true %s group by  `Order Store Key`"
 	      ,preg_replace('/Invoice/','Order',$int[0]));
 $result=mysql_query($sql);
-//print $sql;
 $sum_received=0;
 $sum_in_process=0;
 while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
@@ -349,12 +374,39 @@ while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
   $activity_data[$row['Order Store Key']]['in_warehouse']='<b>'.number($row['ready_to_pick']+$row['picking']+$row['ready_to_pack']).'</b>';
   $activity_data[$row['Order Store Key']]['ready']='<b>'.number($row['ready_to_ship']).'</b>';
   $activity_data[$row['Order Store Key']]['dispached']='<b>'.number($row['dispached']).'</b>';
-  $activity_data[$row['Order Store Key']]['cancelled']='<b>'.number($row['dispached']).'</b>';
+  $activity_data[$row['Order Store Key']]['cancelled']='<b>'.number($row['cancelled']).'</b>';
+
+
+
+
+// $sql=sprintf("select `Order Store Key`,count(*) as received , sum(IF(`Order Current Dispatch State`='In Process',1,0)) as in_process, sum(IF(`Order Current Dispatch State`='Ready to Pick',1,0)) as ready_to_pick, sum(IF(`Order Current Dispatch State`='Picking',1,0)) as picking, sum(IF(`Order Current Dispatch State`='Ready to Pack',1,0)) as ready_to_pack , sum(IF(`Order Current Dispatch State`='Ready to Ship',1,0)) as ready_to_ship,  sum(IF(`Order Current Dispatch State`='Dispached',1,0)) as dispached, sum(IF(`Order Current Dispatch State`='Cancelled',1,0)) as cancelled  from  `Order Dimension` I  where  true %s group by  `Order Store Key`"
+//	      ,preg_replace('/Invoice/','Order',$int[0]));
+//$result2=mysql_query($sql);
+
+//while($row2=mysql_fetch_array($result2, MYSQL_ASSOC)){
+
+ 
+  
+  //$activity_data[$row['Order Store Key']]['received']='<b>'.number($row2['received']).'</b>';
+  //$activity_data[$row['Order Store Key']]['in_process']='<b>'.number($row2['in_process']).'</b>';
+  //$activity_data[$row['Order Store Key']]['in_warehouse']='<b>'.number($row2['ready_to_pick']+$row2['picking']+$row2['ready_to_pack']).'</b>';
+  //$activity_data[$row['Order Store Key']]['ready']='<b>'.number($row2['ready_to_ship']).'</b>';
+  //$activity_data[$row['Order Store Key']]['dispached']='<b>'.number($row2['dispached']).'</b>';
+  //$activity_data[$row['Order Store Key']]['cancelled']='<b>'.number($row2['cancelled']).'</b>';
+
+
+ 
+//}
+//mysql_free_result($result);
+
+
 
 
  
 }
 mysql_free_result($result);
+
+
 
 
 $totals=array(
