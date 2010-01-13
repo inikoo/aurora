@@ -116,7 +116,7 @@ $fam_promo_key=$fam_promo->id;
 
 
 $sql="select * from  ci_orders_data.orders  where   (last_transcribed is NULL  or last_read>last_transcribed) and filename not like '%UK%'  and filename not like '%test%'  and filename!='/media/sda3/share/PEDIDOS 08/60005902.xls' and  filename!='/media/sda3/share/PEDIDOS 09/60008607.xls' and  filename!='/media/sda3/share/PEDIDOS 09/60009626.xls' and  filename!='/media/sda3/share/PEDIDOS 09/60011693.xls' and  filename!='/media/sda3/share/PEDIDOS 09/60011905.xls' and  filename!='/media/sda3/share/PEDIDOS 08/60007219.xls'     order by filename ";
-//$sql="select * from  ci_orders_data.orders where filename like '/media/sda3/share/%/60000604.xls'  order by filename";
+//$sql="select * from  ci_orders_data.orders where filename like '/media/sda3/share/%/60010130.xls'  order by filename";
 //7/60002384.xls
 //$sql="select * from  ci_orders_data.orders where filename like '/media/sda3/share/%/60000142.xls'  order by filename";
 //$sql="select * from  ci_orders_data.orders  where (filename like '%Orders2005%' or  filename like '%PEDIDOS%.xls') and (last_transcribed is NULL  or last_read>last_transcribed) and filename!='/media/sda3/share/PEDIDOS 08/60005902.xls' and  filename!='/media/sdas3/share/PEDIDOS 09/s60008607.xls' and  filename!='/media/sda3/share/PEDIsDOS 09/60009626.xls' or filename='%600s03600.xls'   order by date";
@@ -174,7 +174,7 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
         $header_data=filter_header($header_data);
         list($tipo_order,$parent_order_id)=get_tipo_order($header_data['ltipo'],$header_data);
 
-
+//print_r($header_data);exit;
 
         if (preg_match('/^\d{5}sh$/i',$filename_number)) {
             $tipo_order=7;
@@ -426,6 +426,7 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
         $estimated_w=0;
         //echo "Memory: ".memory_get_usage(true) . "\n";
         foreach($transactions as $transaction) {
+        //print_r($transaction);
             $transaction['code']=_trim($transaction['code']);
             if (preg_match('/credit|refund/i',$transaction['code'])) {
 
@@ -1004,7 +1005,7 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
         //    print_r($customer_data);
         //continue;
 
-          //print_r($data);
+         // print_r($data);exit;
         $data['staff sale']=$header_data['staff sale'];
         $data['staff sale key']=$header_data['staff sale key'];
 
@@ -1036,7 +1037,6 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
         // 9 refund
         // 10 crdit
         // 11 quote
-
 
         if ($update) {
             print "Updated ";
@@ -1090,18 +1090,21 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
 
 
-        //print "$tipo_order \n";
-        //print_r($products_data);
-        //print_r($credits);
+       
         if (count($products_data)==0 and count($credits)>0) {
+        //TODO in uk
             $tipo_order=9;
-            //print"xxxx";
+if($header_data['date_inv']=='1899-12-30')
+$header_data['date_inv']=$header_data['date_order'];
         }
 
         //exit('xz 23');
 
-
-
+//print_r($header_data);
+ //print "$tipo_order \n";
+  //      print_r($products_data);
+   //     print_r($credits);
+  //    exit;
 
         $sales_rep_data=get_user_id($header_data['takenby'],true,'&view=processed');
         $data['Order XHTML Sale Reps']=$sales_rep_data['xhtml'];
@@ -1154,6 +1157,18 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
             else if ($tipo_order==5)
                 $data['Order Type']='Donation';
 
+
+                foreach($data['products'] as $key=>$val) {
+                    $data['products'][$key]['tax_rate']=$tax_rate;
+                    $data['products'][$key]['tax_code']=$tax_code;
+                 //   $data['products'][$key]['tax amount']=$tax_rate*($val['gross amount']-($val['discount amount']));
+                }
+
+
+           // print_r($data['products']);
+            
+            
+          //  exit;
 
 
             if ( $tipo_order!=8 ) {
@@ -1602,6 +1617,10 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
             } else if ($tipo_order==3) {
                 $order->cancel();
 
+            }else{
+            //TODO in english site 
+                $order->load('totals');
+           
             }
 
 
@@ -1947,6 +1966,7 @@ update_data($to_update);
 
 function update_data($to_update) {
 
+if(false){
     $tm=new TimeSeries(array('q','invoices'));
     $tm->to_present=true;
     $tm->get_values();
@@ -1969,7 +1989,10 @@ function update_data($to_update) {
 
 
     }
+    
+    }
 
+if(false){
     foreach($to_update['products_id'] as $key=>$value) {
 
         $tm=new TimeSeries(array('m','product id ('.$key.') sales'));
@@ -1993,22 +2016,23 @@ function update_data($to_update) {
 
 
     }
-
+}
 
 
 
     foreach($to_update['families'] as $key=>$value) {
         $product=new Family($key);
         $product->load('sales');
-        $tm=new TimeSeries(array('m','family ('.$key.') sales'));
-        $tm->get_values();
-        $tm->save_values();
-        $tm=new TimeSeries(array('y','family ('.$key.') sales'));
-        $tm->get_values();
-        $tm->save_values();
-        $tm=new TimeSeries(array('q','family ('.$key.') sales'));
-        $tm->get_values();
-        $tm->save_values();
+       if(false){
+       // $tm=new TimeSeries(array('m','family ('.$key.') sales'));
+       // $tm->get_values();
+       // $tm->save_values();
+       // $tm=new TimeSeries(array('y','family ('.$key.') sales'));
+       // $tm->get_values();
+       // $tm->save_values();
+       // $tm=new TimeSeries(array('q','family ('.$key.') sales'));
+       // $tm->get_values();
+       // $tm->save_values();
         $tm=new TimeSeries(array('m','family ('.$key.') profit'));
         $tm->get_values();
         $tm->save_values();
@@ -2018,10 +2042,12 @@ function update_data($to_update) {
         $tm=new TimeSeries(array('q','family ('.$key.') profit'));
         $tm->get_values();
         $tm->save_values();
+        }
     }
     foreach($to_update['departments'] as $key=>$value) {
         $product=new Department($key);
         $product->load('sales');
+        if(false){
         $tm=new TimeSeries(array('m','department ('.$key.') sales'));
         $tm->get_values();
         $tm->save_values();
@@ -2040,10 +2066,12 @@ function update_data($to_update) {
         $tm=new TimeSeries(array('q','department ('.$key.') profit'));
         $tm->get_values();
         $tm->save_values();
+        }
     }
     foreach($to_update['stores'] as $key=>$value) {
         $product=new Store($key);
         $product->load('sales');
+        if(false){
         $tm=new TimeSeries(array('m','store ('.$key.') sales'));
         $tm->to_present=true;
         $tm->get_values();
@@ -2068,6 +2096,7 @@ function update_data($to_update) {
         $tm->to_present=true;
         $tm->get_values();
         $tm->save_values();
+        }
     }
     foreach($to_update['parts'] as $key=>$value) {
         $product=new Part('sku',$key);

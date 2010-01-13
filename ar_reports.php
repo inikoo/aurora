@@ -95,7 +95,7 @@ $_order='';
 $_dir='';
 $total=0;
 
-   $sql="select   `Customer Main Location`,`Customer Key`,`Customer Name`,`Customer ID`,`Customer Main XHTML Email`,count(DISTINCT `Invoice Key`) as invoices,sum(`Invoice Total Amount`) as total from  `Invoice Dimension` I left join  `Customer Dimension` C  on (I.`Invoice Customer Key`=C.`Customer Key`)  $where $wheref  group by `Customer Key` order by total desc";
+   $sql="select  GROUP_CONCAT(`Invoice Key`) as invoice_keys,`Customer Main Location`,`Customer Key`,`Customer Name`,`Customer ID`,`Customer Main XHTML Email`,count(DISTINCT `Invoice Key`) as invoices,sum(`Invoice Total Amount`) as total, sum(`Invoice Total Net Amount`) as net from  `Invoice Dimension` I left join  `Customer Dimension` C  on (I.`Invoice Customer Key`=C.`Customer Key`)  $where $wheref  group by `Customer Key` order by total desc";
    $adata=array();
   
   
@@ -107,13 +107,35 @@ if($data['total']<$umbral)
 break;  
 $total++;
 
+$tax1=0;
+$tax2=0;
+
+$sql2=sprintf("select `Tax Code`,sum(`Tax Amount`) as amount from `Invoice Tax Bridge` where `Invoice Key` in (%s) group by `Tax Code`  ", $data['invoice_keys']);
+$res2=mysql_query($sql2);
+while($row2=mysql_fetch_array($res2)){
+//print_r($row2);
+if($row2['Tax Code']=='IVA'){
+$tax1=$row2['amount'];
+}
+if($row2['Tax Code']=='I2'){
+$tax2=$row2['amount'];
+}
+
+}
+
     $id="<a href='customer.php?id=".$data['Customer Key']."'>".$myconf['customer_id_prefix'].sprintf("%05d",$data['Customer ID']).'</a>'; 
     $name="<a href='customer.php?id=".$data['Customer Key']."'>".$data['Customer Name'].'</a>'; 
+
+$tax1=0;
+$tax2=0;
 
     $adata[]=array(
 		   'id'=>$id,
 		   'name'=>$name,
 		   'total'=>money($data['total']),
+		   'net'=>money($data['net']),
+		   'tax1'=>money($tax1),
+		   'tax2'=>money($tax2),
 		   'invoices'=>number($data['invoices']),
 		   'location'=>$data['Customer Main Location']
 		  

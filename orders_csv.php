@@ -147,8 +147,8 @@ if(isset( $_REQUEST['where']))
 
 header("Content-type: application/octet-stream");
 header("Content-Disposition: attachment; filename=\"orders.csv\"");
-$out = fopen('php://output', 'w');
-
+//$out = fopen('php://output', 'w');
+$csv='';
 $sql="select `Order Total Net Amount`,`Order Total Tax Amount`,`Order Type`,`Order Currency Exchange`,`Order Currency`,`Order Key`,`Order Public ID`,`Order Customer Key`,`Order Customer Name`,`Order Last Updated Date`,`Order Date`,`Order Total Amount` ,`Order Current XHTML State` from `Order Dimension`  $where $wheref   ";
   //  print $sql;
   global $myconf;
@@ -167,23 +167,30 @@ $sql="select `Order Total Net Amount`,`Order Total Tax Amount`,`Order Type`,`Ord
 		   'date'=>strftime("%d/%m/%Y %H:%M", strtotime($row['Order Date'])),
 		   'state'=>$state,
 		   'order_type'=>$row['Order Type'],
-		   'total_net'=>$row['Order Total Net Amount'],
-		   'total_tax'=>$row['Order Total Tax Amount'],
-		   'total_amount'=>$row['Order Total Amount']
+		   'total_net'=>money($row['Order Total Net Amount']),
+		   'total_tax'=>money($row['Order Total Tax Amount']),
+		   'total_amount'=>money($row['Order Total Amount'])
 
 		   );
-		   fputcsv($out, $data);
+	$_csv='';
+	foreach($data as $key=>$value){
+$_csv.="\t".$value;
+}
+
+$csv.=preg_replace('/^\t/','',$_csv)."\n";
+		  // fputcsv($out, $data);
    }
 mysql_free_result($res);
 
 
+print chr(255).chr(254).mb_convert_encoding( $csv, 'UTF-16LE', 'UTF-8'); 
 
 
 
 
 
 
-fclose($out);
+//fclose($out);
 
 
 

@@ -33,7 +33,11 @@ YAHOO.util.Event.addListener(window, "load", function() {
 				       
 				       ,{key:"location", label:"<?php echo _('Location')?>",sortable:false,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 				       ,{key:"invoices", label:"<?php echo _('Invoices')?>",sortable:false,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-				      ,{key:"total", label:"<?php echo _('Total')?>",sortable:false,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				      ,{key:"net", label:"<?php echo _('Net')?>",sortable:false,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+      ,{key:"tax1", label:"<?php echo _('IVA')?>",sortable:false,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+      ,{key:"tax2", label:"<?php echo _('IE')?>",sortable:false,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+
+,{key:"total", label:"<?php echo _('Total')?>",sortable:false,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 
 
 					 ];
@@ -59,7 +63,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 			 'name',
 			
 			 'location',
-			 'total','invoices'
+			 'total','invoices','tax1','tax2','net'
 			 ]};
 	    //__You shouls not change anything from here
 
