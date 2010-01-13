@@ -406,7 +406,7 @@ if(!$show_all){
 		     'image'=>$row['Product Main Image'],
 		     'type'=>'item',
 		     'change'=>'+ -',
-
+'to_charge'=>money($row['Order Transaction Gross Amount']-$row['Order Transaction Total Discount Amount'])
 		     
                  );
 

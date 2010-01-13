@@ -175,7 +175,7 @@ $conf=$_SESSION['state']['hr']['staff'];
 if($order=='name')
   $order='`Staff Name`';
 
-   $sql="select * from `Staff Dimension` SD left join `Contact Dimension` CD on (`Contact Key`=`Staff Contact Key`)  $where $wheref order by $order $order_direction limit $start_from,$number_results";
+   $sql="select * from `Staff Dimension` SD left join `Contact Dimension` CD on (`Contact Key`=`Staff Contact Key`)  left join `Company Department Dimension`  on (`Company Department Dimension Key`=`Staff Department Key`)   $where $wheref order by $order $order_direction limit $start_from,$number_results";
 
    $adata=array();
    $res=mysql_query($sql);
@@ -188,7 +188,7 @@ if($order=='name')
 		    'id'=>$id,
 		    'alias'=>$data['Staff Alias'],
 		    'name'=>$data['Staff Name'],
-		    'department'=>$data['Staff Department Key'],
+		    'department'=>$data['Company Department Name'],
 		    'area'=>$data['Staff Area Key'],
 		    'position'=>$data['Staff Position Key']
 		    

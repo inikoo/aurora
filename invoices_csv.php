@@ -12,7 +12,18 @@
  Version 2.0
 */
 
+
+/**
+**
+ * MS-Excel stream handler
+ * Excel export example
+ * @author      Ignatius Teo            <ignatius@act28.com>
+ * @copyright   (C)2004 act28.com       <http://act28.com>
+ * @date        21 Oct 2004
+ */
+
 include_once('common.php');
+
 if(!$user->can_view('orders')){
   exit();
 }
@@ -48,14 +59,6 @@ if(isset( $_REQUEST['where']))
       $to=$_SESSION['state']['orders']['to'];
   }
 
- 
- 
- 
-
-
-
-  
-
 
      if(isset( $_REQUEST['store_id'])    ){
        $store=$_REQUEST['store_id'];
@@ -66,7 +69,7 @@ if(isset( $_REQUEST['where']))
      
   
  
- $date_interval=prepare_mysql_dates($from,$to,'`Order Date`','only_dates');
+ $date_interval=prepare_mysql_dates($from,$to,'`Invoice Date`','only_dates');
      if($date_interval['error']){
        $date_interval=prepare_mysql_dates($_SESSION['state']['orders']['from'],$_SESSION['state']['orders']['to']);
      }else{
@@ -105,14 +108,15 @@ else if($f_field=='maxvalue' and is_numeric($f_value) )
    
  
 
-
-header("Content-type: application/octet-stream");
+header('Content-type: text/html; charset=utf16le');
 header("Content-Disposition: attachment; filename=\"invoices.csv\"");
-$out = fopen('php://output', 'w');
+
+//$out = fopen('php://output', 'w');
+$csv='';
 
 $tax_data=array();
 
-  $sql="select  I.`Invoice Key`,(select GROUP_CONCAT(`Tax Code`,',',`Tax Amount` SEPARATOR ':')  from `Invoice Tax Bridge` where `Invoice Key`=I.`Invoice Key`) as `Tax Spread`, `Invoice Total Net Amount`,`Invoice Has Been Paid In Full`,`Invoice Key`,`Invoice XHTML Orders`,`Invoice XHTML Delivery Notes`,`Invoice Public ID`,`Invoice Customer Key`,`Invoice Customer Name`,`Invoice Date`,`Invoice Total Amount`  from `Invoice Dimension` I  $where $wheref limit 10 ";
+  $sql="select  I.`Invoice Key`,(select GROUP_CONCAT(`Tax Code`,',',`Tax Amount` SEPARATOR ':')  from `Invoice Tax Bridge` where `Invoice Key`=I.`Invoice Key`) as `Tax Spread`, `Invoice Total Net Amount`,`Invoice Has Been Paid In Full`,`Invoice Key`,`Invoice XHTML Orders`,`Invoice XHTML Delivery Notes`,`Invoice Public ID`,`Invoice Customer Key`,`Invoice Customer Name`,`Invoice Date`,`Invoice Total Amount`  from `Invoice Dimension` I  $where $wheref  ";
   // print $sql;
 
    $data=array();
@@ -143,8 +147,8 @@ $tax_data[$row['Invoice Key']][$__tax_data[0]]=$__tax_data[1];
 		   ,'date'=>strftime("%e/%m/%Y", strtotime($row['Invoice Date']))
 		   
 		   ,'state'=>$state
-		   ,'orders'=>$row['Invoice XHTML Orders']
-		   ,'dns'=>$row['Invoice XHTML Delivery Notes']
+		   //,'orders'=>$row['Invoice XHTML Orders']
+		  // ,'dns'=>$row['Invoice XHTML Delivery Notes']
 		   		   ,'total_amount'=>money($row['Invoice Total Amount'])
 
 		   ,'net'=>money($row['Invoice Total Net Amount'])
@@ -153,6 +157,8 @@ $tax_data[$row['Invoice Key']][$__tax_data[0]]=$__tax_data[1];
 
 		   
 		   );
+		   
+		   
 		   //  print_r($data);
 		//   fputcsv($out, $data);
    }
@@ -164,18 +170,28 @@ $tax_data[$row['Invoice Key']][$__tax_data[0]]=$__tax_data[1];
    foreach($tax_codes as $tax_code){
   
    if(array_key_exists($tax_code,$tax_data[$_data['key']])){
-   $_data[$tax_code]=$tax_data[$_data['key']][$tax_code];
+   $_data[$tax_code]=money($tax_data[$_data['key']][$tax_code]);
    }else{
-   $_data[$tax_code]=0;
+   $_data[$tax_code]=money(0);
    }
    }
-       fputcsv($out, $_data);
+$_csv='';     
+foreach($_data as $key=>$value){
+$_csv.="\t".$value;
+}
+
+$csv.=preg_replace('/^\t/','',$_csv)."\n";
+
+     // fputcsv($out, $_data,"\t");
+
+//print_r($_data);
 
    }
    
 mysql_free_result($res);
 
 
+print chr(255).chr(254).mb_convert_encoding( $csv, 'UTF-16LE', 'UTF-8'); 
 
 
 
@@ -183,8 +199,7 @@ mysql_free_result($res);
 
 
 
-
-fclose($out);
+//fclose($out);
 
 
 

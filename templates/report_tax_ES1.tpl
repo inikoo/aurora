@@ -19,7 +19,7 @@
       
       
      <div id="table_type">
-         <a  style="float:right"  class="table_type state_details"  href="report_tax_ES1_csv.php" >{t}Export (CSV){/t}</a>
+         <a  style="float:right"  class="table_type state_details"  href="report_tax_ES1_csv.php?umbral={$umbral}&year={$year}" >{t}Export (CSV){/t}</a>
 
      </div>
      
