@@ -1,4 +1,4 @@
-<div class="cal_menu" style="width:150px" >
+<div class="cal_menu" style="width:155px" >
       {if $up}<a class="prev" href="{$report_url}?{$up.url}" ><img src="art/icons/up.png" alt="&uarr;" title="{$up.title}"  /></a>{/if}
 
 <span>{$tipo_title}</span> <span id="period">{$period}</span>
@@ -55,10 +55,11 @@
 {/foreach}
 </table>
 
+
 {/if}
 <div class="custom_dates" >
-<span id="show_custom_dates">{t}Custom Dates{/t}</span>
-<div id="custom_dates_form" style="margin-top:5px">
+<span id="show_custom_dates" class="state_details">{t}Custom Dates{/t}</span>
+<div id="custom_dates_form" style="margin-top:5px;{if $tipo!='f'}display:none{/if}">
 {t}From{/t}:<span style="position:relative;left:0px;"><input id="v_calpop1" type="text" class="text" size="11" maxlength="10" name="from" value="{$from}"/>
  <img   id="calpop1" class="calpop" src="art/icons/calendar_view_month.png" align="absbottom" alt=""   /><br/>
  <span >{t}To:{/t}</span> <input   id="v_calpop2" size="11" maxlength="10"   type="text" class="text" size="8" name="to" value="{$to}"/>

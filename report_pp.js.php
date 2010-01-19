@@ -1,4 +1,4 @@
-<?phpinclude_once('common.php');?>
+<?php include_once('common.php');?>
 YAHOO.util.Event.addListener(window, "load", function() {
     tables = new function() {
 	    //START OF THE TABLE=========================================================================================================================
@@ -20,7 +20,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 				       
 				       ];
 	    //?tipo=customers&tid=0"
-	    this.dataSource0 = new YAHOO.util.DataSource("ar_orders.php?tipo=pickers_report");
+	    this.dataSource0 = new YAHOO.util.DataSource("ar_reports.php?tipo=pickers_report");
 	    this.dataSource0.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource0.connXhrMode = "queueRequests";
 	    this.dataSource0.responseSchema = {
@@ -79,7 +79,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 				       
 				       ];
 	    //?tipo=customers&tid=0"
-	    this.dataSource1 = new YAHOO.util.DataSource("ar_orders.php?tipo=packers_report");
+	    this.dataSource1 = new YAHOO.util.DataSource("ar_reports.php?tipo=packers_report");
 	    this.dataSource1.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource1.connXhrMode = "queueRequests";
 	    this.dataSource1.responseSchema = {

@@ -5,6 +5,10 @@ include_once('common.php');
 if(!$user->can_view('orders'))
   exit();
 ?>
+
+var Dom   = YAHOO.util.Dom;
+
+
 var view='<?php echo$_SESSION['state']['orders']['view']?>'
 var dispatch='<?php echo$_SESSION['state']['orders']['table']['dispatch']?>'
 var paid='<?php echo$_SESSION['state']['orders']['table']['paid']?>'
@@ -214,7 +218,6 @@ YAHOO.util.Event.addListener(window, "load", function() {
 function init(){
 
     
-var Dom   = YAHOO.util.Dom;
 
 
 //  var oACDS = new YAHOO.util.FunctionDataSource(mygetTerms);

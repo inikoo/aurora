@@ -18,6 +18,7 @@ Class TimeSeries  {
     public $no_negative_values=true;
     public $no_data=true;
     public $to_present=false;
+    public $metadata='';
 
     function TimeSeries($arg) {
 
@@ -482,7 +483,7 @@ Class TimeSeries  {
             print_r($this);
         }
 
-        $sql=sprintf("insert into `Time Series Dimension` values (%s,%s,%s,%d,%d,%d,%s,%f,%d,'First','','')   ON DUPLICATE KEY UPDATE  `Time Series Value`=%f ,`Time Series Count`=%d ,`Time Series Type`='First' ,`Time Series Tag`='',`Time Series Parent Key`=%d "
+        $sql=sprintf("insert into `Time Series Dimension` values (%s,%s,%s,%d,%d,%d,%s,%f,%d,'First','','','')   ON DUPLICATE KEY UPDATE  `Time Series Value`=%f ,`Time Series Count`=%d ,`Time Series Type`='First' ,`Time Series Tag`='',`Time Series Parent Key`=%d "
                      ,prepare_mysql($this->first['date'])
                      ,prepare_mysql($this->freq)
                      ,prepare_mysql($this->name)
@@ -500,7 +501,7 @@ Class TimeSeries  {
 
 
         foreach($this->values as $date=>$data) {
-            $sql=sprintf("insert into `Time Series Dimension` values (%s,%s,%s,%d,%d,%d,%s,%f,%d,'Data','','')   ON DUPLICATE KEY UPDATE  `Time Series Value`=%f ,`Time Series Count`=%d ,`Time Series Type`='Data' ,`Time Series Tag`='' ,`Time Series Parent Key`=%d "
+            $sql=sprintf("insert into `Time Series Dimension` values (%s,%s,%s,%d,%d,%d,%s,%f,%d,'Data','','','')   ON DUPLICATE KEY UPDATE  `Time Series Value`=%f ,`Time Series Count`=%d ,`Time Series Type`='Data' ,`Time Series Tag`='' ,`Time Series Parent Key`=%d "
                          ,prepare_mysql($date)
                          ,prepare_mysql($this->freq)
                          ,prepare_mysql($this->name)
@@ -519,7 +520,7 @@ Class TimeSeries  {
         }
 
         if (isset($this->current)) {
-            $sql=sprintf("insert into `Time Series Dimension` values (%s,%s,%s,%d,%d,%d,%s,%f,%d,'Current','','')   ON DUPLICATE KEY UPDATE  `Time Series Value`=%f ,`Time Series Count`=%d ,`Time Series Type`='Current' ,`Time Series Tag`='' ,`Time Series Parent Key`=%d "
+            $sql=sprintf("insert into `Time Series Dimension` values (%s,%s,%s,%d,%d,%d,%s,%f,%d,'Current','','','')   ON DUPLICATE KEY UPDATE  `Time Series Value`=%f ,`Time Series Count`=%d ,`Time Series Type`='Current' ,`Time Series Tag`='' ,`Time Series Parent Key`=%d "
                          ,prepare_mysql($this->current['date'])
                          ,prepare_mysql($this->freq)
                          ,prepare_mysql($this->name)
@@ -548,19 +549,23 @@ Class TimeSeries  {
         // exit;
     }
 
-    function save_forecast() {
+    function save_forecast($label='Forecast') {
 
-        $sql=sprintf("delete from `Time Series Dimension`  where `Time Series Name` in (%s) and `Time Series Frequency`=%s and `Time Series Name Key`=%d and `Time Series Name Second Key`=%d and `Time Series Type`='Forecast'"
+        $sql=sprintf("delete from `Time Series Dimension`  where `Time Series Name` in (%s) and `Time Series Frequency`=%s and `Time Series Name Key`=%d and `Time Series Name Second Key`=%d and `Time Series Type`=%s and `Time Series Metadata`=%s "
                      ,prepare_mysql($this->name)
                      ,prepare_mysql($this->freq)
                      ,$this->name_key
                      ,$this->name_key2
+		     ,prepare_mysql($label)
+		     ,prepare_mysql($this->metadata)
                     );
 
         mysql_query($sql);
 
+	if(!is_array($this->forecast))
+	  return;
         foreach($this->forecast as $date=>$data) {
-            $sql=sprintf("insert into `Time Series Dimension` values (%s,%s,%s,%d,%d,%d,%s,%f,%d,'Forecast','',%s)    "
+            $sql=sprintf("insert into `Time Series Dimension` values (%s,%s,%s,%d,%d,%d,%s,%f,%d,%s,%s,'',%s)    "
                          ,prepare_mysql($date)
                          ,prepare_mysql($this->freq)
                          ,prepare_mysql($this->name)
@@ -570,6 +575,8 @@ Class TimeSeries  {
                          ,prepare_mysql($this->label)
                          ,$data['value']
                          ,$data['count']
+			 ,prepare_mysql($label)
+			 ,prepare_mysql($this->metadata)
                          ,prepare_mysql($data['deviation'])
                         );
             mysql_query($sql);
@@ -581,11 +588,50 @@ Class TimeSeries  {
     }
 
 
+
+    function targets($start_date){
+      if ($this->no_data)
+            return;
+      if ($this->has_only_zeros()) {
+
+        } else {
+
+	  if ($this->freq=='Monthly'){
+	    
+	    $this->forecast=$this->R_script($end_date);
+	    $this->save_forecast('target');
+	  }else {
+
+
+            }
+        }
+      
+
+    }
+
+
     function forecast() {
 
         if ($this->no_data)
             return;
 
+       
+        if ($this->has_only_zeros()) {
+
+        } else {
+
+	  if ($this->freq=='Monthly'){
+	    
+	    $this->forecast=$this->R_script();
+	    $this->save_forecast();
+	  }else {
+                $this->forecast_using_monthly_data();
+
+            }
+        }
+    }
+
+    function has_only_zeros(){
         $only_zero_values=true;
         foreach($this->values as $key=>$data) {
             if ($data['value']!=0 or $data['count']!=0) {
@@ -593,105 +639,88 @@ Class TimeSeries  {
                 break;
             }
         }
-        if ($only_zero_values) {
+	return $only_zero_values;
 
-        } else {
 
-            if ($this->freq=='Monthly')
-                $this->R_script();
-            else {
-                $this->forecast_using_monthly_data();
-
-            }
-        }
     }
+
 
     function forecast_using_monthly_data() {
         //exit("todo");
         return;
     }
 
-    function R_script() {
+    function R_script($until=false,$number_period_for_forecasting=false) {
 
         $read=false;
         $forecast=array();
 
         $values='';
         $count='';
+
+	$from=$this->first_complete_year."-".$this->first_complete_bin."-01";
+	$from_time=strtotime($from);
+
+	if(!$until)
+	  $until=date('Y-m-d');
+	$until_time=strtotime($until);
+
         foreach($this->values as $key=>$data) {
+	  if($until_time>=strtotime($key)){
+	  
             $values.=sprintf(',%f',$data['value']);
             $count.=sprintf(',%d',$data['count']);
+	  }
         }
+
+	$start_year=date("Y",$from_time);
+	$start_bin=date("m",$from_time);
+	//	print $this->first_complete_year." ".$this->first_complete_bin."\n";
+	//	print_r($this->values);
+	//	exit($values);
 
         $number_values=count($this->values);
-        print "values : $number_values\n";
 
-        $few_points=false;
-        if ($number_values<=6)
-            $few_points=true;
-
-        if ($number_values<=1)
-            return;
-        elseif($number_values<=3) {
-            $number_period_for_forecasting=1;
-        }
-        elseif($number_values<=5) {
-            $number_period_for_forecasting=1;
-        }
-        elseif($number_values<=7) {
-            $number_period_for_forecasting=3;
-        }
-        elseif($number_values<=9) {
-            $number_period_for_forecasting=4;
-        }
-        elseif($number_values<=11) {
-            $number_period_for_forecasting=6;
-            if (date("m")==5 )
-                $number_period_for_forecasting=7;
-        }
-        elseif($number_values<=48) {
-            $number_period_for_forecasting=12;
-            if (date("m")==12 )
-                $number_period_for_forecasting=13;
-
-        }
-        elseif($number_values<=72) {
-            $number_period_for_forecasting=24;
-            if (date("m")==12 )
-                $number_period_for_forecasting=15;
-        }
-        else {
-            $number_period_for_forecasting=36;
-            if (date("m")==12 )
-                $number_period_for_forecasting=37;
-
-        }
+	if($number_values<2)
+	  return array();
 
 
+	if ($number_values<=6)
+	  $few_points=true;
+	else
+	  $few_points=false;
+	// print "values : $number_values\n";
+
+
+	if(!$number_period_for_forecasting)
+	  $number_period_for_forecasting=$this->guess_number_of_forecats_bins($number_values);
+	
         $values=preg_replace('/^,/','',$values);
         $count=preg_replace('/^,/','',$count);
-
-        // print_r($this->values);
+	
+	
+	
+        
         //print $values;
         $script=sprintf("library(forecast,quietly );values=c(%s);",$values);
         if (!$few_points) {
-            $script.=sprintf("ts= ts(values, start=c(%d,%d),frequency = %d);",$this->first_complete_year,$this->first_complete_bin,$this->frequency);
-            $script.="fit<-ets(ts);fcast =forecast(fit,$number_period_for_forecasting);print(fcast) ;print ('--count data--');";
-            $script.=sprintf("values=c(%s);",$count);
-            $script.=sprintf("ts= ts(values, start=c(%d,%d),frequency = %d);",$this->first_complete_year,$this->first_complete_bin,$this->frequency);
-            $script.="fit<-ets(ts);fcast = forecast(fit,$number_period_for_forecasting);print(fcast) ;";
+	  $script.=sprintf("ts= ts(values, start=c(%d,%d),frequency = %d);",$start_year,$start_bin,$this->frequency);
+	  $script.="fit<-ets(ts);fcast =forecast(fit,$number_period_for_forecasting);print(fcast) ;print ('--count data--');";
+	  $script.=sprintf("values=c(%s);",$count);
+	  $script.=sprintf("ts= ts(values, start=c(%d,%d),frequency = %d);",$start_year,$start_bin,$this->frequency);
+	  $script.="fit<-ets(ts);fcast = forecast(fit,$number_period_for_forecasting);print(fcast) ;";
         } else {
-            $script.=sprintf("ts= ts(values, start=c(%d,%d),frequency = %d);",$this->first_complete_year,$this->first_complete_bin,$this->frequency);
-            $script.="fit<-arima(ts);fcast =forecast(fit,$number_period_for_forecasting);print(fcast) ;print ('--count data--');";
-            $script.=sprintf("values=c(%s);",$count);
-            $script.=sprintf("ts= ts(values, start=c(%d,%d),frequency = %d);",$this->first_complete_year,$this->first_complete_bin,$this->frequency);
-            $script.="fit<-arima(ts);fcast = forecast(fit,$number_period_for_forecasting);print(fcast) ;";
-
+	  $script.=sprintf("ts= ts(values, start=c(%d,%d),frequency = %d);",$start_year,$start_bin,$this->frequency);
+	  $script.="fit<-arima(ts);fcast =forecast(fit,$number_period_for_forecasting);print(fcast) ;print ('--count data--');";
+	  $script.=sprintf("values=c(%s);",$count);
+	  $script.=sprintf("ts= ts(values, start=c(%d,%d),frequency = %d);",$start_year,$start_bin,$this->frequency);
+	  $script.="fit<-arima(ts);fcast = forecast(fit,$number_period_for_forecasting);print(fcast) ;";
+	  
         }
-        // print $script;
-        //exit;
-
-
+        //print $script;
+       
+	
+	
         $cmd = "echo \"$script\" |  R --vanilla --slave -q";
 
         $handle = popen($cmd, "r");
@@ -798,9 +827,8 @@ Class TimeSeries  {
 
 
             //print_r($forecast);
-
-            $this->forecast=$forecast;
-            $this->save_forecast();
+	    return $forecast;
+            
         }
 
 
@@ -1406,7 +1434,7 @@ Class TimeSeries  {
     }
 
 
-    function  plot_data($from=false,$to=false) {
+    function plot_data($from=false,$to=false) {
 
         $tipo='';
         $suffix='';
@@ -1985,6 +2013,57 @@ if(isset($current_value[0])){
             $yearweek=$row2['Year Week Normalized'];
 
         return $yearweek;
+
+    }
+
+
+
+    function guess_number_of_forecats_bins($number_values){
+
+
+        if ($number_values<=6)
+            $few_points=true;
+
+        if ($number_values<=1)
+	  return 0;
+        elseif($number_values<=3) {
+            $number_period_for_forecasting=1;
+        }
+        elseif($number_values<=5) {
+            $number_period_for_forecasting=1;
+        }
+        elseif($number_values<=7) {
+            $number_period_for_forecasting=3;
+        }
+        elseif($number_values<=9) {
+            $number_period_for_forecasting=4;
+        }
+        elseif($number_values<=11) {
+            $number_period_for_forecasting=6;
+            if (date("m")==5 )
+                $number_period_for_forecasting=7;
+        }
+        elseif($number_values<=48) {
+            $number_period_for_forecasting=12;
+            if (date("m")==12 )
+                $number_period_for_forecasting=13;
+
+        }
+        elseif($number_values<=72) {
+            $number_period_for_forecasting=24;
+            if (date("m")==12 )
+                $number_period_for_forecasting=15;
+        }
+        else {
+            $number_period_for_forecasting=36;
+            if (date("m")==12 )
+                $number_period_for_forecasting=37;
+
+        }
+    
+
+	return $number_period_for_forecasting;
+
 
     }
 

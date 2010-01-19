@@ -125,27 +125,27 @@ $default_state=array(
                                            )
                                ),
                    'reports'=>array(
-                                 'view'=>'sales',
+				    'view'=>'sales',
+				    
 
-
-
-                                 'sales'=>array(
-                                             'plot'=>'total_sales_month'
-                                                    ,'store_key'=>1
-                                                                 ,'tipo'=>'y'
-                                                                         ,'y'=>date('Y')
-                                                                              ,'m'=>date('m')
+				    
+				    'sales'=>array(
+						   'plot'=>'total_sales_month'
+						   ,'store_key'=>1
+						   ,'tipo'=>'y'
+						   ,'y'=>date('Y')
+						   ,'m'=>date('m')
                                                                                    ,'d'=>date('d')
-                                                                                        ,'w'=>date('W')
-                                         )
-                                         ,'stock'=>array(
-                                                      'plot'=>'total_outofstock_month'
-                                                  )
+						   ,'w'=>date('W')
+						   )
+				    ,'stock'=>array(
+						    'plot'=>'total_outofstock_month'
+						    )
                                                   ,'geosales'=>array(
-                                                                  'level'=>'region'
-                                                                          ,'region'=>'world'
-                                                                                    ,'map_exclude'=>''
-                                                                                                   ,'table'=>array(
+								     'level'=>'region'
+								     ,'region'=>'world'
+								     ,'map_exclude'=>''
+								     ,'table'=>array(
                                                                                                                 'order'=>'country_code',
                                                                                                                 'order_dir'=>'',
                                                                                                                 'sf'=>0,
@@ -155,11 +155,11 @@ $default_state=array(
                                                                                                                 'f_value'=>'',
                                                                                                                 'from'=>'',
                                                                                                                 'to'=>''
-
+														
                                                                                                             ),
-                                                              )
-
-                             ),
+								     )
+				    
+				    ),
 
                    'orders'=>array(
                                 'details'=>false,
@@ -1274,22 +1274,25 @@ $default_state=array(
                                               'f_value'=>'',
                                               'elements'=>array()
 
-                                          ),
-                                'packers'=>array(
-                                              'order'=>'tipo',
-                                              'order_dir'=>'',
-                                              'sf'=>0,
-                                              'nr'=>10000,
+						 ),
+		   'packers'=>array(
+				    'order'=>'tipo',
+				    'order_dir'=>'',
+				    'sf'=>0,
+				    'nr'=>10000,
                                               'from'=>'',
-                                              'to'=>'',
-                                              'where'=>'where true',
-                                              'f_field'=>'',
+				    'to'=>'',
+				    'where'=>'where true',
+				    'f_field'=>'',
                                               'f_value'=>'',
-                                              'elements'=>array()
+				    'elements'=>array()
+				    
+				    ),
+		   'customers'=>array('top'=>100,'criteria'=>'net_balance','f_value'=>'','f_field'=>'customer_name','store_id'=>1,'from'=>'','to'=>'')
+		   
 
-                                          )
-
-                            ),
+		   
+				   ),
                    'stores'=>array(
                                 'details'=>false,
                                 'percentages'=>false,
