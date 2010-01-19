@@ -25,7 +25,7 @@
 	  </span>
 	</li>
 	<li>
-	  <span class="item {if $plot_tipo=='top_departments'}selected{/if}"  id="plot_top_departments" onClick="change_plot(this)" tipo="top_departments" category="{$plot_data.top_departments.category}" period="{$plot_data.top_departments.period}" name=""  >
+	  <span class="item {if $plot_tipo=='growth'}selected{/if}"  id="plot_growth" onClick="change_plot(this)" tipo="growth" category="" period="" name=""  >
 	    <span>{t}Growth{/t}</span>
 	  </span>
 	</li>
