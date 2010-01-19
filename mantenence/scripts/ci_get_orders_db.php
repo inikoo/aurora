@@ -379,7 +379,7 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
             print "new date: ".$date2."\n";
         }
 
-        if (strtotime($date_order)>strtotime('today')   ) {
+        if (strtotime($date_order)>strtotime('now')   ) {
             print "ERROR (Fecha en el futuro) $filename  $date_order   \n ";
             continue;
         }
