@@ -37,6 +37,7 @@ $js_files=array(
 
 		);
 
+$root_title=_('Sales Report');
 
 
 $smarty->assign('parent','reports');

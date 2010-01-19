@@ -253,6 +253,8 @@ function report_data($int){
 					 ,'_eq_tax'=>0
 					 ,'_eq_net'=>0
 					 ,'invoices'=>0
+					 ,'_invoices'=>0
+					 ,'_customers'=>0
 					 );
 
      $activity_data[$row['Store Key']]=array(

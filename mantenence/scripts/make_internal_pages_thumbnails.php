@@ -62,8 +62,10 @@ $data=array(
 	    ,'caption'=>$row['Page Title']
 	    );
 
+//print_r($data);
 $image=new Image('find',$data,'create');
 $page=new Page($row['Page Key']);
+//print_r($image);
 $page->update_thumbnail_key($image->id);
 chdir('mantenence/scripts/');
 

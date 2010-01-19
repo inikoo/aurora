@@ -218,7 +218,9 @@ $this->saveImage($this->im,$name);
       $values='values(';
       foreach($image_data as $key=>$value) {
 	$keys.="`$key`,";
-	
+	if($key=='Image Original Filename')
+	  $values.=prepare_mysql($value,false).",";
+	else
 	  $values.=prepare_mysql($value).",";
       }
       $keys=preg_replace('/,$/',')',$keys);
@@ -227,10 +229,11 @@ $this->saveImage($this->im,$name);
 
       if (mysql_query($sql)) {
 	$this->id=mysql_insert_id();
-$this->new=true;
-$this->get_data('id',$this->id);
+	$this->new=true;
+	$this->get_data('id',$this->id);
       }else{
 	$this->error=true;
+	$this->msg='Can not insert the image '.mysql_error();
       }
 
 
