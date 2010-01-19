@@ -49,6 +49,7 @@ if(isset($_REQUEST['tipo']) and preg_match('/y|m|d|q|w|f/',$_REQUEST['tipo'])){
 }
 
 
+$root_title=_('Sales Report');
 
 
 

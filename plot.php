@@ -323,7 +323,7 @@ case('product'):
 
 
 plot_assets();
-
+render_flash_plot();
     break;
 
     
@@ -463,7 +463,8 @@ $options='yAxis.minimum = 0;';
    
 
 function render_flash_plot(){
-global $yui_path,$currency_symbol,$title,$fields,$yfields,$xfield,$ar_address;
+  global $yui_path,$currency_symbol,$title,$fields,$yfields,$xfield,$ar_address,$options,$staked,$tipo_chart,$style;
+
 $alt=_('Unable to load Flash content. The YUI Charts Control requires Flash Player 9.0.45 or higher. You can download the latest version of Flash Player from the ').'<a href="http://www.adobe.com/go/getflashplayer">Adobe Flash Player Download Center</a>.';
 $out='<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN""http://www.w3c.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" content="text/html; charset=UTF-8"   >
@@ -656,7 +657,7 @@ mysql_free_result($result);
 }
 
 function plot_assets(){
-global $color_palette;
+  global $color_palette,$yfields,$fields,$yfield_label_type,$tipo_chart,$xfield,$ar_address;
    if(isset($_REQUEST['from']))
     $from=$_REQUEST['from'];
   else
@@ -827,7 +828,10 @@ global $color_palette;
     $xfield=array('label'=>_('Date'),'name'=>'date','tipo_axis'=>'Category','axis'=>'justyears');
     $style='';
     $tipo_chart='LineChart';
-    render_flash_plot();
+
+
+
+   
 
 }
 
