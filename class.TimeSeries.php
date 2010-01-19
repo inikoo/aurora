@@ -1500,10 +1500,10 @@ Class TimeSeries  {
 
 
 
-    function plot_data_per_month($tipo,$suffix,$from,$to) {
+    function plot_data_per_month($tipo,$suffix,$from,$to,$currency='') {
 
 
-        $currency='GBP';
+       
 
 
         $data=array();

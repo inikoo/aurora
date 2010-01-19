@@ -39,67 +39,10 @@ if(isset($_REQUEST['currency']))
 switch($tipo){
 
 case('sales_by_store');
-
 case('sales_share_by_store');
-$_tipo=$tipo;
-$staked=true;
-
-$dtipo='y';
-if(isset($_REQUEST['dtipo']))
-  $dtipo=$_REQUEST['dtipo'];
-
-$extra='';
-if($dtipo=='y'){
-  $y=date('Y');
-  if(isset($_REQUEST['y']))
-  $y=$_REQUEST['y'];
-  $extra='&y='.$y;
-}elseif($dtipo=='m'){
-  $y=date('Y');
-  $m=date('m');
-
-  if(isset($_REQUEST['y']))
-    $y=$_REQUEST['y'];
-  if(isset($_REQUEST['m']))
-    $m=$_REQUEST['m'];
-  
-  $extra='&y='.$y.'&m='.$m;
-}
+plot_sales_by_store($tipo);
 
 
-
-$ar_address='ar_plot.php?tipo='.$tipo.'&dtipo='.$dtipo.$extra;
-//print $ar_address;
-$tipo=$_REQUEST['dtipo'];
-include_once('report_dates.php');
-$int=prepare_mysql_dates($from,$to,'`Invoice Date`','date start end');
-
-$sql=sprintf("select CONCAT(`Store Code`,'',`Invoice Category`) as tag from `Invoice Dimension`  left join `Store Dimension` S on (S.`Store Key`=`Invoice Store Key`) where true %s group by `Invoice Store Key`,`Invoice Category`",$int[0]);
-
-$fields='"date"';
- $yfields=array();
- $result=mysql_query($sql);
-  while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
-    
-
-    if($_tipo=='sales_by_store'){
-      $fields.=',"'.$row['tag'].'","tip_'.$row['tag'].'"';
-      $yfields[]=array('label'=>$row['tag'],'name'=>$row['tag']);
-      $yfield_label_type='formatCurrencyAxisLabel';
-    }else{
-      $fields.=',"share_bug_'.$row['tag'].'","share_'.$row['tag'].'","tip_share_bug_'.$row['tag'].'"';
-      $yfields[]=array('label'=>"share_bug_".$row['tag'],'name'=>"share_bug_".$row['tag']);
-      $yfield_label_type='formatPercentageAxisLabelx2BUG';
-
-    }
-    
-    
-
-  }
-mysql_free_result($result);
-   $xfield=array('label'=>_('Date'),'name'=>'date','tipo_axis'=>'Category');
-   $style='size:1';
-   $tipo_chart='ColumnChart';
 
 break;
 
@@ -378,6 +321,342 @@ case('department'):
 case('family'):
 case('product'):
 
+
+plot_assets();
+
+    break;
+
+    
+    
+case('total_sales_month'):
+  $title=_("Total Net Sales per Month");
+  $ar_address='ar_plot.php?tipo=invoiced_month_sales';
+  $fields='"value","tip_value","date","forecast","tip_forecast","tails","tip_tails"';
+  $yfields=array(
+		 array('label'=>_('Forecast'),'name'=>'forecast','style'=>'color:0x8dd5e7') 
+		 , array('label'=>_('Tails'),'name'=>'tails','style'=>'color:0x00b8bf,fillColor:0xffffff') 
+		 ,array('label'=>_('Month Net Sales'),'name'=>'value','style'=>'color:0x00b8bf')
+        
+		 );;
+  $yfield_label_type='formatCurrencyAxisLabel';
+
+   $xfield=array('label'=>_('Date'),'name'=>'date','tipo_axis'=>'Category','axis'=>'justyears');
+   $style='';
+   $tipo_chart='LineChart';
+   break;
+ case('net_diff1y_sales_month'):
+   
+   $title=_("Monthy net sales change compared with previous year");
+   $ar_address='ar_plot.php?tipo=net_diff1y_sales_month';
+   $fields='"sales_diff","tip_sales_diff","date"';
+   $yfields=array(
+		  array('label'=>_('Month Net Sales'),'name'=>'sales_diff','axis'=>'formatCurrencyAxisLabel','style'=>'size:10,color: 0x62a74b')
+		  );
+   $yfield_label_type='formatCurrencyAxisLabel';
+   $xfield=array('label'=>_('Date'),'name'=>'date','tipo_axis'=>'Category','axis'=>'justyears');
+   $tipo_chart='ColumnChart';$style='';
+   break;
+ case('net_diff1y_sales_month_per'):
+   $title=_("Monthy net sales change compared with previos year");
+   $ar_address='ar_plot.php?tipo=net_diff1y_sales_month';
+   $fields='"sales_diff_per","tip_sales_diff_per","date"';
+   $yfields=array(
+		  array('label'=>_('Month Net Sales'),'name'=>'sales_diff_per','style'=>'size:10,color: 0x62a74b')
+		  );;
+   
+   $yfield_label_type='formatPercentageAxisLabel';
+   $xfield=array('label'=>_('Date'),'name'=>'date','tipo_axis'=>'Category','axis'=>'justyears');
+   $tipo_chart='ColumnChart';$style='';
+   break;
+ case('total_sales_week'):
+   $title=_("Total Net Sales per Week");
+   $ar_address='ar_plot.php?tipo=invoiced_week_sales';
+   $fields='"sales","tip_sales","date"';
+   $yfields=array(array('label'=>_('Week Net Sales'),'name'=>'sales','axis'=>'formatCurrencyAxisLabel','style'=>'size:3'));;
+   $xfield=array('label'=>_('Date'),'name'=>'date','tipo_axis'=>'Category');
+   $style='';
+   $tipo_chart='LineChart';
+   break;
+
+ case('total_sales_groupby_month'):
+   
+
+   $title=_("Total Net Sales per Month (Group by month)");
+   $ar_address='ar_plot.php?tipo=montly_sales_group_by_month';
+   $fields='"date"';
+    for($i=date('Y');$i>=date('Y')-5;$i--){
+      $fields.=",'sales$i','tip_sales$i'";
+    }
+   $_year=date('Y');
+   $_years=5;
+   if($_years>5)
+     $_years=5;
+   
+   
+
+   while($_years>0) {
+     $_years--;
+     $year=$_year-$_years;
+     $yfields[]=array('label'=>$year
+		      ,'name'=>'sales'.$year
+		      ,'axis'=>'formatCurrencyAxisLabel','style'=>"size:10,color:".$colors[$_years].",alpha:.9");
+
+   }
+
+
+  //  $yfields=array(
+		  
+// 		  array('label'=>_('2004'),'name'=>'sales2004','axis'=>'formatCurrencyAxisLabel','style'=>"size:10,color: 0x62a74b,alpha:.9"),
+// 		  array('label'=>_('2005'),'name'=>'sales2005','axis'=>'formatCurrencyAxisLabel','style'=>"size:10, color: 0xc665a7,alpha:.9"),
+// 		  array('label'=>_('2006'),'name'=>'sales2006','axis'=>'formatCurrencyAxisLabel','style'=>"size:10, color: 0x4dbc9b,alpha:.9"),
+// 		  array('label'=>_('2007'),'name'=>'sales2007','axis'=>'formatCurrencyAxisLabel','style'=>"size:10,color: 0xe2654f,alpha:.9"),
+// 		  array('label'=>_('2008'),'name'=>'sales2008','axis'=>'formatCurrencyAxisLabel','style'=>"size:10,color: 0x4c77d1,alpha:.9")
+
+// 		  );
+
+   $xfield=array('label'=>_('Date'),'name'=>'date','tipo_axis'=>'Category');
+   $style='legend:{display: "bottom"}';
+   $tipo_chart='ColumnChart';
+   break;
+ case('total_outofstock_month'):
+   $title="Percentage of products (& Picks) marked as out of stock per month";
+   $ar_address='ar_orders.php?tipo=plot_month_outofstock';
+   $fields='"per_product_outstock","per_picks_outstock","tip_per_product_outstock","tip_per_picks_outstock","date"';
+   $yfields=array(
+		  
+		  array('label'=>_('Products Out of Stock'),'name'=>'per_product_outstock','axis'=>'formatPercentageAxisLabel'),
+		  array('label'=>_('Picks Out of Stock'),'name'=>'per_picks_outstock','axis'=>'formatPercentageAxisLabel'),
+
+
+		  );
+
+   $xfield=array('label'=>_('Date'),'name'=>'date','tipo_axis'=>'Category','xaxis'=>'justyears');
+   $style='minorGridLines:{size:5,color: 0x4c77d1},  legend:{display: "bottom"}';
+   $tipo_chart='LineChart';
+   break;
+ case('part_stock_history'):
+   $title="Part Stock History";
+   $ar_address='ar_assets.php?tipo=plot_daily_part_stock_history';
+   if(isset($_REQUEST['sku']) and is_numeric($_REQUEST['sku']))
+     $ar_address.='&sku='.$_REQUEST['sku'];
+   $fields='"stock","tip_stock","tip_sales","sales","date"';
+   $yfields=array(
+		  
+		  array('label'=>_('Stock'),'name'=>'stock','axis'=>'formatNumberAxisLabel','style'=>'size:3,lineSize:2'),
+
+
+
+		  );
+
+
+$options='yAxis.minimum = 0;';
+
+   $xfield=array('label'=>_('Date'),'name'=>'date','tipo_axis'=>'Category');
+   $style='minorGridLines:{size:5,color: 0x4c77d1}';
+   $tipo_chart='LineChart';
+   break;
+ default:
+   exit;
+   
+
+ }
+   
+
+function render_flash_plot(){
+global $yui_path,$currency_symbol,$title,$fields,$yfields,$xfield,$ar_address;
+$alt=_('Unable to load Flash content. The YUI Charts Control requires Flash Player 9.0.45 or higher. You can download the latest version of Flash Player from the ').'<a href="http://www.adobe.com/go/getflashplayer">Adobe Flash Player Download Center</a>.';
+$out='<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN""http://www.w3c.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" content="text/html; charset=UTF-8"   >
+  <head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
+
+
+
+ <script type="text/javascript" src="'.$yui_path.'utilities/utilities.js"></script>
+       <script type="text/javascript" src="'.$yui_path.'json/json-min.js"></script>
+       <script type="text/javascript" src="'.$yui_path.'datasource/datasource-min.js"></script>
+       <script type="text/javascript" src="'.$yui_path.'charts/charts-min.js"></script>
+
+</head> <body><div style="font-size:8pt;height:300px" id=plot>'.$alt.'</div><div style="font-family:Verdana, Arial, sans-serif;text-align:center;font-size:10pt;position:relative;bottom:300px;">'.$title.'</div></body>
+ <script type="text/javascript">
+
+
+ function formatCurrencyAxisLabel( value ){
+if( value==0)
+    return "";
+else if ( value>=499){
+return YAHOO.util.Number.format( value/1000,{prefix: "'.$currency_symbol.'",thousandsSeparator: ",",decimalPlaces: 0})+"K";
+}
+else if ( value<=-10000){
+return YAHOO.util.Number.format( value/1000,{prefix: "'.$currency_symbol.'",thousandsSeparator: ",",decimalPlaces: 0})+"K";
+}
+else
+return YAHOO.util.Number.format( value,{prefix: "'.$currency_symbol.'",thousandsSeparator: ",",decimalPlaces: 2});
+}
+
+ function formatPercentageAxisLabel( value ){
+return value+"%";
+}
+ function formatPercentageAxisLabelx2BUG( value ){
+return 2*value+"%";
+}
+
+
+
+
+ function formatNumberAxisLabel( value ){return YAHOO.util.Number.format( value,{prefix: "",thousandsSeparator: ",",decimalPlaces: 0});}
+ function formatPercentageAxisLabel( value ){return YAHOO.util.Number.format( value,{prefix: "",thousandsSeparator: ",",decimalPlaces: 0})+"%";}
+
+ function DataTipText( item, index, series ){return item["tip_"+series["yField"]]    }
+
+ YAHOO.widget.Chart.SWFURL = "'.$yui_path.'charts/assets/charts.swf";
+ 	
+var jsonData = new YAHOO.util.DataSource( "'.$ar_address.'" );
+ 	jsonData.connMethodPost = true;
+ 	jsonData.responseType = YAHOO.util.DataSource.TYPE_JSON;
+ 	jsonData.responseSchema =
+ 	{
+ 			resultsList: "resultset.data",
+ 			fields: ['.$fields.']
+ 	};
+
+ var seriesDef = ['."\n";
+$i=0;
+
+foreach($yfields as $yfield){
+
+  if(isset($yfield['type']))
+    $type='type:"'.$yfield['type'].'",';
+  else
+    $type='';
+  $out.=($i>0?',':'').'{  '.$type.'  displayName: "'.$yfield['label'].'",  yField: "'.$yfield['name'].'" '.(isset($yfield['style'])?',style:{'.$yfield['style'].'}':'').'}'."\n";
+  $i++;
+}
+$out.='];'."\n".'var yAxis = new YAHOO.widget.NumericAxis();';
+
+if(isset($yfield_label_type))
+    $out.='yAxis.labelFunction = "'.$yfield_label_type.'";';
+
+else
+  $out.='yAxis.labelFunction = "formatNumberAxisLabel";';
+
+
+if(isset($max))
+  $out.='yAxis.maximum = '.$max.';'; 
+$out.='
+
+function fdate(value){
+return value.replace(/^\d*x/g,"");
+}
+
+function justyears(value){
+var isjanuary= /^01/;
+if(isjanuary.test(value))
+value=value.match(/\d{2}$/g)[0]
+else
+value=""
+return value;
+}
+
+var xAxis = new YAHOO.widget.'.$xfield['tipo_axis'].'Axis();
+
+'.(isset($xfield['axis'])?'xAxis.labelFunction = "'.$xfield['axis'].'";':'').'
+
+'.$options.'
+
+
+var styleDef={xAxis:{labelRotation:-90,labelSpacing:0 }};
+
+'.($staked?'yAxis.stackingEnabled = true':'').'
+
+var mychart = new YAHOO.widget.'.($staked?'Stacked':'').$tipo_chart.'( '.($tipo_chart=='CartesianChart'?"'line',":'').'  "plot", jsonData,
+
+ 	{
+style:{'.$style.'}          ,
+ wmode: "transparent",
+          series: seriesDef,
+ 	 xField: "'.$xfield['name'].'",
+ 	 yAxis: yAxis,
+	 xAxis: xAxis,
+         dataTipFunction: "DataTipText",
+ 	 style:styleDef,
+         expressInstall: "assets/expressinstall.swf"
+ 	});
+
+
+ </script>
+ </html>';
+
+ print $out;
+}
+
+
+function plot_sales_by_store($tipo){
+
+$_tipo=$tipo;
+$staked=true;
+
+$dtipo='y';
+if(isset($_REQUEST['dtipo']))
+  $dtipo=$_REQUEST['dtipo'];
+
+$extra='';
+if($dtipo=='y'){
+  $y=date('Y');
+  if(isset($_REQUEST['y']))
+  $y=$_REQUEST['y'];
+  $extra='&y='.$y;
+}elseif($dtipo=='m'){
+  $y=date('Y');
+  $m=date('m');
+
+  if(isset($_REQUEST['y']))
+    $y=$_REQUEST['y'];
+  if(isset($_REQUEST['m']))
+    $m=$_REQUEST['m'];
+  
+  $extra='&y='.$y.'&m='.$m;
+}
+
+
+
+$ar_address='ar_plot.php?tipo='.$tipo.'&dtipo='.$dtipo.$extra;
+//print $ar_address;
+$tipo=$_REQUEST['dtipo'];
+include_once('report_dates.php');
+$int=prepare_mysql_dates($from,$to,'`Invoice Date`','date start end');
+
+$sql=sprintf("select CONCAT(`Store Code`,'',`Invoice Category`) as tag from `Invoice Dimension`  left join `Store Dimension` S on (S.`Store Key`=`Invoice Store Key`) where true %s group by `Invoice Store Key`,`Invoice Category`",$int[0]);
+
+$fields='"date"';
+ $yfields=array();
+ $result=mysql_query($sql);
+  while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
+    
+
+    if($_tipo=='sales_by_store'){
+      $fields.=',"'.$row['tag'].'","tip_'.$row['tag'].'"';
+      $yfields[]=array('label'=>$row['tag'],'name'=>$row['tag']);
+      $yfield_label_type='formatCurrencyAxisLabel';
+    }else{
+      $fields.=',"share_bug_'.$row['tag'].'","share_'.$row['tag'].'","tip_share_bug_'.$row['tag'].'"';
+      $yfields[]=array('label'=>"share_bug_".$row['tag'],'name'=>"share_bug_".$row['tag']);
+      $yfield_label_type='formatPercentageAxisLabelx2BUG';
+
+    }
+    
+    
+
+  }
+mysql_free_result($result);
+   $xfield=array('label'=>_('Date'),'name'=>'date','tipo_axis'=>'Category');
+   $style='size:1';
+   $tipo_chart='ColumnChart';
+}
+
+function plot_assets(){
+global $color_palette;
    if(isset($_REQUEST['from']))
     $from=$_REQUEST['from'];
   else
@@ -548,275 +827,8 @@ case('product'):
     $xfield=array('label'=>_('Date'),'name'=>'date','tipo_axis'=>'Category','axis'=>'justyears');
     $style='';
     $tipo_chart='LineChart';
-    break;
+    render_flash_plot();
 
-    
-    
-case('total_sales_month'):
-  $title=_("Total Net Sales per Month");
-  $ar_address='ar_plot.php?tipo=invoiced_month_sales';
-  $fields='"value","tip_value","date","forecast","tip_forecast","tails","tip_tails"';
-  $yfields=array(
-		 array('label'=>_('Forecast'),'name'=>'forecast','style'=>'color:0x8dd5e7') 
-		 , array('label'=>_('Tails'),'name'=>'tails','style'=>'color:0x00b8bf,fillColor:0xffffff') 
-		 ,array('label'=>_('Month Net Sales'),'name'=>'value','style'=>'color:0x00b8bf')
-        
-		 );;
-  $yfield_label_type='formatCurrencyAxisLabel';
-
-   $xfield=array('label'=>_('Date'),'name'=>'date','tipo_axis'=>'Category','axis'=>'justyears');
-   $style='';
-   $tipo_chart='LineChart';
-   break;
- case('net_diff1y_sales_month'):
-   
-   $title=_("Monthy net sales change compared with previous year");
-   $ar_address='ar_plot.php?tipo=net_diff1y_sales_month';
-   $fields='"sales_diff","tip_sales_diff","date"';
-   $yfields=array(
-		  array('label'=>_('Month Net Sales'),'name'=>'sales_diff','axis'=>'formatCurrencyAxisLabel','style'=>'size:10,color: 0x62a74b')
-		  );
-   $yfield_label_type='formatCurrencyAxisLabel';
-   $xfield=array('label'=>_('Date'),'name'=>'date','tipo_axis'=>'Category','axis'=>'justyears');
-   $tipo_chart='ColumnChart';$style='';
-   break;
- case('net_diff1y_sales_month_per'):
-   $title=_("Monthy net sales change compared with previos year");
-   $ar_address='ar_plot.php?tipo=net_diff1y_sales_month';
-   $fields='"sales_diff_per","tip_sales_diff_per","date"';
-   $yfields=array(
-		  array('label'=>_('Month Net Sales'),'name'=>'sales_diff_per','style'=>'size:10,color: 0x62a74b')
-		  );;
-   
-   $yfield_label_type='formatPercentageAxisLabel';
-   $xfield=array('label'=>_('Date'),'name'=>'date','tipo_axis'=>'Category','axis'=>'justyears');
-   $tipo_chart='ColumnChart';$style='';
-   break;
- case('total_sales_week'):
-   $title=_("Total Net Sales per Week");
-   $ar_address='ar_plot.php?tipo=invoiced_week_sales';
-   $fields='"sales","tip_sales","date"';
-   $yfields=array(array('label'=>_('Week Net Sales'),'name'=>'sales','axis'=>'formatCurrencyAxisLabel','style'=>'size:3'));;
-   $xfield=array('label'=>_('Date'),'name'=>'date','tipo_axis'=>'Category');
-   $style='';
-   $tipo_chart='LineChart';
-   break;
-
- case('total_sales_groupby_month'):
-   
-
-   $title=_("Total Net Sales per Month (Group by month)");
-   $ar_address='ar_plot.php?tipo=montly_sales_group_by_month';
-   $fields='"date"';
-    for($i=date('Y');$i>=date('Y')-5;$i--){
-      $fields.=",'sales$i','tip_sales$i'";
-    }
-   $_year=date('Y');
-   $_years=5;
-   if($_years>5)
-     $_years=5;
-   
-   
-
-   while($_years>0) {
-     $_years--;
-     $year=$_year-$_years;
-     $yfields[]=array('label'=>$year
-		      ,'name'=>'sales'.$year
-		      ,'axis'=>'formatCurrencyAxisLabel','style'=>"size:10,color:".$colors[$_years].",alpha:.9");
-
-   }
-
-
-  //  $yfields=array(
-		  
-// 		  array('label'=>_('2004'),'name'=>'sales2004','axis'=>'formatCurrencyAxisLabel','style'=>"size:10,color: 0x62a74b,alpha:.9"),
-// 		  array('label'=>_('2005'),'name'=>'sales2005','axis'=>'formatCurrencyAxisLabel','style'=>"size:10, color: 0xc665a7,alpha:.9"),
-// 		  array('label'=>_('2006'),'name'=>'sales2006','axis'=>'formatCurrencyAxisLabel','style'=>"size:10, color: 0x4dbc9b,alpha:.9"),
-// 		  array('label'=>_('2007'),'name'=>'sales2007','axis'=>'formatCurrencyAxisLabel','style'=>"size:10,color: 0xe2654f,alpha:.9"),
-// 		  array('label'=>_('2008'),'name'=>'sales2008','axis'=>'formatCurrencyAxisLabel','style'=>"size:10,color: 0x4c77d1,alpha:.9")
-
-// 		  );
-
-   $xfield=array('label'=>_('Date'),'name'=>'date','tipo_axis'=>'Category');
-   $style='legend:{display: "bottom"}';
-   $tipo_chart='ColumnChart';
-   break;
- case('total_outofstock_month'):
-   $title="Percentage of products (& Picks) marked as out of stock per month";
-   $ar_address='ar_orders.php?tipo=plot_month_outofstock';
-   $fields='"per_product_outstock","per_picks_outstock","tip_per_product_outstock","tip_per_picks_outstock","date"';
-   $yfields=array(
-		  
-		  array('label'=>_('Products Out of Stock'),'name'=>'per_product_outstock','axis'=>'formatPercentageAxisLabel'),
-		  array('label'=>_('Picks Out of Stock'),'name'=>'per_picks_outstock','axis'=>'formatPercentageAxisLabel'),
-
-
-		  );
-
-   $xfield=array('label'=>_('Date'),'name'=>'date','tipo_axis'=>'Category','xaxis'=>'justyears');
-   $style='minorGridLines:{size:5,color: 0x4c77d1},  legend:{display: "bottom"}';
-   $tipo_chart='LineChart';
-   break;
- case('part_stock_history'):
-   $title="Part Stock History";
-   $ar_address='ar_assets.php?tipo=plot_daily_part_stock_history';
-   if(isset($_REQUEST['sku']) and is_numeric($_REQUEST['sku']))
-     $ar_address.='&sku='.$_REQUEST['sku'];
-   $fields='"stock","tip_stock","tip_sales","sales","date"';
-   $yfields=array(
-		  
-		  array('label'=>_('Stock'),'name'=>'stock','axis'=>'formatNumberAxisLabel','style'=>'size:3,lineSize:2'),
-
-
-
-		  );
-
-
-$options='yAxis.minimum = 0;';
-
-   $xfield=array('label'=>_('Date'),'name'=>'date','tipo_axis'=>'Category');
-   $style='minorGridLines:{size:5,color: 0x4c77d1}';
-   $tipo_chart='LineChart';
-   break;
- default:
-   exit;
-   
-
- }
-   
-
-
-
-$alt=_('Unable to load Flash content. The YUI Charts Control requires Flash Player 9.0.45 or higher. You can download the latest version of Flash Player from the ').'<a href="http://www.adobe.com/go/getflashplayer">Adobe Flash Player Download Center</a>.';
-$out='<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN""http://www.w3c.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" content="text/html; charset=UTF-8"   >
-  <head>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-
-
-
-
- <script type="text/javascript" src="'.$yui_path.'utilities/utilities.js"></script>
-       <script type="text/javascript" src="'.$yui_path.'json/json-min.js"></script>
-       <script type="text/javascript" src="'.$yui_path.'datasource/datasource-min.js"></script>
-       <script type="text/javascript" src="'.$yui_path.'charts/charts-min.js"></script>
-
-</head> <body><div style="font-size:8pt;height:300px" id=plot>'.$alt.'</div><div style="font-family:Verdana, Arial, sans-serif;text-align:center;font-size:10pt;position:relative;bottom:300px;">'.$title.'</div></body>
- <script type="text/javascript">
-
-
- function formatCurrencyAxisLabel( value ){
-if( value==0)
-    return "";
-else if ( value>=499){
-return YAHOO.util.Number.format( value/1000,{prefix: "'.$currency_symbol.'",thousandsSeparator: ",",decimalPlaces: 0})+"K";
 }
-else if ( value<=-10000){
-return YAHOO.util.Number.format( value/1000,{prefix: "'.$currency_symbol.'",thousandsSeparator: ",",decimalPlaces: 0})+"K";
-}
-else
-return YAHOO.util.Number.format( value,{prefix: "'.$currency_symbol.'",thousandsSeparator: ",",decimalPlaces: 2});
-}
-
- function formatPercentageAxisLabel( value ){
-return value+"%";
-}
- function formatPercentageAxisLabelx2BUG( value ){
-return 2*value+"%";
-}
-
-
-
-
- function formatNumberAxisLabel( value ){return YAHOO.util.Number.format( value,{prefix: "",thousandsSeparator: ",",decimalPlaces: 0});}
- function formatPercentageAxisLabel( value ){return YAHOO.util.Number.format( value,{prefix: "",thousandsSeparator: ",",decimalPlaces: 0})+"%";}
-
- function DataTipText( item, index, series ){return item["tip_"+series["yField"]]    }
-
- YAHOO.widget.Chart.SWFURL = "'.$yui_path.'charts/assets/charts.swf";
- 	
-var jsonData = new YAHOO.util.DataSource( "'.$ar_address.'" );
- 	jsonData.connMethodPost = true;
- 	jsonData.responseType = YAHOO.util.DataSource.TYPE_JSON;
- 	jsonData.responseSchema =
- 	{
- 			resultsList: "resultset.data",
- 			fields: ['.$fields.']
- 	};
-
- var seriesDef = ['."\n";
-$i=0;
-
-foreach($yfields as $yfield){
-
-  if(isset($yfield['type']))
-    $type='type:"'.$yfield['type'].'",';
-  else
-    $type='';
-  $out.=($i>0?',':'').'{  '.$type.'  displayName: "'.$yfield['label'].'",  yField: "'.$yfield['name'].'" '.(isset($yfield['style'])?',style:{'.$yfield['style'].'}':'').'}'."\n";
-  $i++;
-}
-$out.='];'."\n".'var yAxis = new YAHOO.widget.NumericAxis();';
-
-if(isset($yfield_label_type))
-    $out.='yAxis.labelFunction = "'.$yfield_label_type.'";';
-
-else
-  $out.='yAxis.labelFunction = "formatNumberAxisLabel";';
-
-
-if(isset($max))
-  $out.='yAxis.maximum = '.$max.';'; 
-$out.='
-
-function fdate(value){
-return value.replace(/^\d*x/g,"");
-}
-
-function justyears(value){
-var isjanuary= /^01/;
-if(isjanuary.test(value))
-value=value.match(/\d{2}$/g)[0]
-else
-value=""
-return value;
-}
-
-var xAxis = new YAHOO.widget.'.$xfield['tipo_axis'].'Axis();
-
-'.(isset($xfield['axis'])?'xAxis.labelFunction = "'.$xfield['axis'].'";':'').'
-
-'.$options.'
-
-
-var styleDef={xAxis:{labelRotation:-90,labelSpacing:0 }};
-
-'.($staked?'yAxis.stackingEnabled = true':'').'
-
-var mychart = new YAHOO.widget.'.($staked?'Stacked':'').$tipo_chart.'( '.($tipo_chart=='CartesianChart'?"'line',":'').'  "plot", jsonData,
-
- 	{
-style:{'.$style.'}          ,
- wmode: "transparent",
-          series: seriesDef,
- 	 xField: "'.$xfield['name'].'",
- 	 yAxis: yAxis,
-	 xAxis: xAxis,
-         dataTipFunction: "DataTipText",
- 	 style:styleDef,
-         expressInstall: "assets/expressinstall.swf"
- 	});
-
-
- </script>
- </html>';
-
- print $out;
-
-
-
-
-
 
 ?>
