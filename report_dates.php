@@ -6,7 +6,7 @@ if($tipo=='f'){
 
   $from=$_REQUEST['from'];
   $to=$_REQUEST['to'];
-  $title=_('Sales Report');
+  $title=$root_title;
   $period='';
   $link=$link="&tipo=f&from=".$from."&to=".$to;
  }elseif($tipo=='w'){
@@ -39,7 +39,7 @@ if($tipo=='f'){
    $from=date("d-m-Y", $_time);
    $to=date("d-m-Y", $_time_n);
    $period=_('Week').' '.date("W Y", $_time);
-   $title="$period ($ffrom-$fto)"._('Sales Report');
+   $title="$period ($ffrom-$fto)".$root_title;
 
    $smarty->assign('up',array('url'=>'tipo=y&y='.date("Y",$_time),'title'=>date("Y",$_time)));
    $smarty->assign('next',array('url'=>'tipo=w&w='.date("W",$_time_n).'&y='.date("Y",$_time_n),'title'=>_('Week').' '.date("W-Y",$_time_n)));
@@ -111,7 +111,7 @@ if($tipo=='f'){
    $from=date("d-m-Y", $_time);
    $to=date("d-m-Y", mktime(0, 0, 0, $month+1, 0, $year));
    $period=strftime("%B %Y", $_time);
-   $title="$period "._('Sales Report');
+   $title="$period ".$root_title;
 
    $smarty->assign('up',array('url'=>'tipo=y&y='.date("Y",$_time),'title'=>date("Y",$_time)));
    $smarty->assign('next',array('url'=>'tipo=m&m='.date("m",$_time_n).'&y='.date("Y",$_time_n),'title'=>date("F",$_time_n)));
@@ -180,7 +180,7 @@ if($tipo=='f'){
    $from=date("d-m-Y", $_time);
    $to=date("d-m-Y", mktime(0, 0, 0, 1, 0, $year+1));
    $period=date("Y", $_time);
-   $title="$period "._('Sales Report');
+   $title="$period ".$root_title;
 
    $smarty->assign('tipo_title',_('Annual Report'));
    $smarty->assign('next',array('url'=>'tipo=y&y='.date("Y",$_time_n),'title'=>date("Y",$_time_n)));
@@ -224,7 +224,7 @@ if($tipo=='f'){
    $from=date("d-m-Y", $_time);
    $to=date("d-m-Y", $_time);
     $period=strftime("%A %e %B %Y", $_time);
-   $title="$period "._('Sales Report');
+   $title="$period ".$root_title;
 
    $smarty->assign('up',array('url'=>'tipo=m&m='.date("m",$_time_n).'&y='.date("Y",$_time),'title'=>strftime("%B",$_time)));
    $smarty->assign('next',array('url'=>'tipo=d&m='.date("m",$_time_n).'&y='.date("Y",$_time_n).'&d='.date("d",$_time_n),'title'=>strftime("%e %b %y",$_time_n)));

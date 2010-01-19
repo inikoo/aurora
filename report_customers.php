@@ -29,7 +29,7 @@ $js_files=array(
 		'table_common.js.php',
 		'calendar_common.js.php',
 
-		'report_pp.js.php',
+		'report_customers.js.php',
 		'js/dropdown.js'
 		);
 
@@ -46,20 +46,25 @@ $_SESSION['state']['report']['tipo']=$tipo;
 $tipo=$_SESSION['state']['report']['tipo'];
 
 
-$root_title=_('Pickers & Packers Report');
+$root_title=_('Customer Report');
 include_once('report_dates.php');
 
 
-$smarty->assign('report_url','report_pp.php');
+$smarty->assign('report_url','report_customers.php');
 
 
   
-$_SESSION['state']['report']['pickers']['from']=$from;
-$_SESSION['state']['report']['pickers']['to']=$to;
-$_SESSION['state']['report']['packers']['from']=$from;
-$_SESSION['state']['report']['packers']['to']=$to;
+$_SESSION['state']['report']['customers']['from']=$from;
+$_SESSION['state']['report']['customers']['to']=$to;
+$_SESSION['state']['report']['customers']['store']=join(',',$user->stores);
 
-$int=prepare_mysql_dates($from,$to,'`Invoice Date`','date start end');
+
+$smarty->assign('criteria',$_SESSION['state']['report']['customers']['criteria']);
+$smarty->assign('top',$_SESSION['state']['report']['customers']['top']);
+
+
+
+//$int=prepare_mysql_dates($from,$to,'`Invoice Date`','date start end');
 
 
 //$interval_data=sales_in_interval($from,$to);
@@ -79,7 +84,7 @@ $smarty->assign('week',date('W'));
 $smarty->assign('from',date('d-m-Y'));
 $smarty->assign('to',date('d-m-Y'));
 
-$smarty->display('report_pp.tpl');
+$smarty->display('report_customers.tpl');
 
 
 ?>

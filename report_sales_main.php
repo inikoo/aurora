@@ -30,7 +30,7 @@ $js_files=array(
 		'common.js.php',
 		'table_common.js.php',
 		'calendar_common.js.php',
-'report_sales_main.js.php',
+		'report_sales_main.js.php',
 		'report_sales.js.php',
 		
 				 'js/dropdown.js'
