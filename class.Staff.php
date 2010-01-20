@@ -15,7 +15,7 @@
   //require_once 'class.Name.php';
 require_once 'class.Email.php';
 
-class Staff{
+class Staff extends DB_Table{
 
   var $data=array();
   var $items=array();
@@ -28,6 +28,10 @@ class Staff{
 
 
   function __construct($key='id',$data=false) {
+
+     $this->table_name='Staff';
+     $this->ignore_fields=array('Staff Key');
+
 
      $this->status_names=array(0=>'new');
 
@@ -51,6 +55,11 @@ class Staff{
   }
 
   
+
+
+
+
+
 
   function get_data($key,$id){
     
@@ -125,6 +134,105 @@ class Staff{
 
    }
 
+
+
+   function find($raw_data){
+
+     if(isset($raw_data['editor'])){
+       foreach($raw_data['editor'] as $key=>$value){
+	 
+	 if(array_key_exists($key,$this->editor))
+	 $this->editor[$key]=$value;
+	 
+       }
+     }
+     
+     
+     $create='';
+     $update='';
+     if(preg_match('/create/i',$options)){
+       $create='create';
+     }
+     if(preg_match('/update/i',$options)){
+       $update='update';
+     }
+
+     if($create){
+        $child=new Contact ('find in staff create update',$raw_data);
+	if($child->error){
+	  $this->error=true;
+	  $this->error=$child->error;
+	  return;
+	}
+	$raw_data['Staff Contact Key']=$child->id;
+	
+     }
+
+
+
+   }
+
+
+   function create($data){
+   //print_r($raw_data);
+
+
+     $contact=new Contact($data['Staff Contact Key']);
+     $data['Staff Name']=$contact->display('name');
+     
+
+
+    $this->data=$this->base_data();
+    foreach($data as $key=>$value){
+      if(array_key_exists($key,$this->data)){
+	$this->data[$key]=_trim($value);
+      }
+    }
+
+  
+
+   
+
+
+    $keys='';
+    $values='';
+    foreach($this->data as $key=>$value){
+      $keys.=",`".$key."`";
+      $values.=','.prepare_mysql($value,false);
+    }
+    $values=preg_replace('/^,/','',$values);
+    $keys=preg_replace('/^,/','',$keys);
+
+    $sql="insert into `Staff Dimension` ($keys) values ($values)";
+    //print $sql;
+
+    if(mysql_query($sql)){
+
+      $this->id=mysql_insert_id();
+      $this->get_data('id',$this->id);
+      
+      $this->update_company($company->id,true);
+       $history_data=array(
+			  'note'=>_('Staff Created')
+			  ,'details'=>_trim(_('New staff')." \"".$this->data['Staff Name']."\"  "._('added'))
+			  ,'action'=>'created'
+			  );
+      $this->add_history($history_data);
+      $this->new=true;
+
+      
+  
+
+
+      
+    }else{
+      // print "Error can not create staff $sql\n";
+    }
+
+
+
+
+   }
 
 
 }

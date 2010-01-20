@@ -109,10 +109,7 @@ class supplier extends DB_Table{
    */
 
   function get_data($tipo,$id){
-
-    
-
-    $this->data=$this->base_data();
+   $this->data=$this->base_data();
     
  
 
@@ -286,8 +283,8 @@ class supplier extends DB_Table{
     //print_r($raw_data);
 
     $main_email_key=false;
-$main_telephone_key=false;
- $main_fax_key=false;
+    $main_telephone_key=false;
+    $main_fax_key=false;
     $this->data=$this->base_data();
     foreach($raw_data as $key=>$value){
       if(array_key_exists($key,$this->data)){

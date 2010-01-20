@@ -1092,10 +1092,10 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
        
         if (count($products_data)==0 and count($credits)>0) {
-        //TODO in uk
+        
             $tipo_order=9;
-if($header_data['date_inv']=='1899-12-30')
-$header_data['date_inv']=$header_data['date_order'];
+	    if($header_data['date_inv']=='1899-12-30')
+	      $header_data['date_inv']=$header_data['date_order'];
         }
 
         //exit('xz 23');
@@ -1618,7 +1618,7 @@ $header_data['date_inv']=$header_data['date_order'];
                 $order->cancel();
 
             }else{
-            //TODO in english site 
+            
                 $order->load('totals');
            
             }

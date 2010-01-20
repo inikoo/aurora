@@ -1304,6 +1304,15 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
        
     //print "$tipo_order \n";
        
+
+  if (count($products_data)==0 and count($credits)>0) {
+       
+            $tipo_order=9;
+	    if($header_data['date_inv']=='1899-12-30')
+	      $header_data['date_inv']=$header_data['date_order'];
+        }
+
+
     $sales_rep_data=get_user_id($header_data['takenby'],true,'&view=processed');
     $data['Order XHTML Sale Reps']=$sales_rep_data['xhtml'];
     $data['Order Sale Reps IDs']=$sales_rep_data['id'];
@@ -1783,6 +1792,9 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 
 	}else if($tipo_order==3){
 	  $order->cancel();
+
+	}else{
+ $order->load('totals');
 
 	}
       

@@ -1801,6 +1801,8 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 	}else if($tipo_order==3){
 	  $order->cancel();
 
+	}else{
+	  $order->load('totals');
 	}
       
       
