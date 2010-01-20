@@ -28,6 +28,9 @@ require_once '../../conf/conf.php';
 mt_srand(make_seed());
 
 
+$root_url=$argv[1];
+
+
 $sql="select * from `Page Dimension` P  left join `Page Internal Dimension`  I on (P.`Page Key`=I.`Page Key`) where `Page Type`='Internal' and `Page Section`='Reports'";
 
 $res=mysql_query($sql);
@@ -46,10 +49,12 @@ $img_name_tmp=$path.'tmp_'.$filename;
 if (file_exists($img_name)) {
  unlink($img_name);
 }
-$url='http://tunder/ci/'.$row['Page URL'];
+$url='http://'.$root_url.'/'.$row['Page URL'];
 
 
 $url_args='?mk='.$handle.'h_Adkiseqto'.$pwd;
+print "$url$url_args\n";
+
 $command='export LD_LIBRARY_PATH=./;./html2image '.$url.$url_args." ../../$img_name_tmp -d 750 ;rm core.*; convert -resize 120 ../../$img_name_tmp ../../$img_name;rm ../../$img_name_tmp    ";
 //print $command."\n";
 exec($command);
@@ -66,8 +71,14 @@ $data=array(
 $image=new Image('find',$data,'create');
 $page=new Page($row['Page Key']);
 //print_r($image);
+if($image->error){
+  print $image->msg."\n";
+}else{
+
 $page->update_thumbnail_key($image->id);
+}
 chdir('mantenence/scripts/');
+
 
 }
 

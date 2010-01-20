@@ -17,39 +17,33 @@ require_once 'class.Email.php';
 
 class Staff extends DB_Table{
 
-  var $data=array();
-  var $items=array();
-  var $status_names=array();
-  var $id;
-  var $tipo;
-  var $contact=false;
+ 
 
 
 
 
-  function __construct($key='id',$data=false) {
+  function __construct($arg1=false,$arg2=false,$arg3=false) {
 
      $this->table_name='Staff';
      $this->ignore_fields=array('Staff Key');
 
-
-     $this->status_names=array(0=>'new');
-
-
-     if($key=='new' and is_array($data)){
-       $this->create_order($data);
-       if(!$this->id)
-	 return;
-       $key='id';
-       $data=$this->id;
+  if(is_numeric($arg1)){
+       $this->get_data('id',$arg1);
+       return ;
      }
+     if(preg_match('/^find/i',$arg1)){
      
+       $this->find($arg2,$arg3);
+       return;
+     }   
+
+     if(preg_match('/create|new/i',$arg1)){
      
-     if(is_numeric($key) and !$data){
-       $data=$key;
-       $key='id';
-     }
-     $this->get_data($key,$data);
+       $this->find($arg2,'create');
+       return;
+     }       
+     $this->get_data($arg1,$arg2);
+   
      
 
   }
@@ -136,7 +130,9 @@ class Staff extends DB_Table{
 
 
 
-   function find($raw_data){
+   function find($raw_data,$options){
+
+     
 
      if(isset($raw_data['editor'])){
        foreach($raw_data['editor'] as $key=>$value){
@@ -158,13 +154,16 @@ class Staff extends DB_Table{
      }
 
      if($create){
+       
         $child=new Contact ('find in staff create update',$raw_data);
+
 	if($child->error){
 	  $this->error=true;
 	  $this->error=$child->error;
 	  return;
 	}
 	$raw_data['Staff Contact Key']=$child->id;
+	$this->create($raw_data);
 	
      }
 
@@ -174,8 +173,8 @@ class Staff extends DB_Table{
 
 
    function create($data){
-   //print_r($raw_data);
-
+  
+   
 
      $contact=new Contact($data['Staff Contact Key']);
      $data['Staff Name']=$contact->display('name');
@@ -190,7 +189,7 @@ class Staff extends DB_Table{
     }
 
   
-
+   
    
 
 
@@ -211,7 +210,13 @@ class Staff extends DB_Table{
       $this->id=mysql_insert_id();
       $this->get_data('id',$this->id);
       
-      $this->update_company($company->id,true);
+
+      if(!$this->data['Staff ID']){
+	$sql=sprintf("update `Staff Dimension` set `Staff ID`=%d where `Staff Key`=%d",$this->id,$this->id);
+	mysql_query($sql);
+      }
+	
+     
        $history_data=array(
 			  'note'=>_('Staff Created')
 			  ,'details'=>_trim(_('New staff')." \"".$this->data['Staff Name']."\"  "._('added'))
