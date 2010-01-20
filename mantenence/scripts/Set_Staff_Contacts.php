@@ -18,6 +18,8 @@ include_once('../../class.Family.php');
 include_once('../../class.Product.php');
 include_once('../../class.Supplier.php');
 include_once('../../class.Order.php');
+include_once('../../class.Staff.php');
+
 error_reporting(E_ALL);
 $con=@mysql_connect($dns_host,$dns_user,$dns_pwd );
 if(!$con){print "Error can not connect with database server\n";exit;}
@@ -46,6 +48,8 @@ $Data_Audit_ETL_Software="$software $version";
 
 //Create company
 
+
+
 $data=array(
 	    'Company Name'=>'Ancient Wisdom'
 	    ,'Company Fiscal Name'=>'Ancient Wisdom Marketing Ltd'
@@ -64,89 +68,87 @@ $data=array(
 
 $company=new Company('find create auto',$data);
 
+$sql=sprintf("insert into `Corporation Dimension` values (%s,%d) ",$company->data['Company Name'],$company->id );
+mysql_query($sql);
+
 
 $sql="select * from  `Staff Dimension`  where `Staff Name`!='David' ";
-$sql="select * from  `Staff Dimension`  ";
+$sql="select * from  `User Dimension` where `User Handle`!='root' ";
 ;
 $res=mysql_query($sql);
 while($row=mysql_fetch_array($res, MYSQL_ASSOC)){
   
-  // $name='Contact Name'=>ucwords($row['Staff Name']);
-  
-  $data_contact=array(
-		      'Contact Name'=>ucwords($row['Staff Name'])
-		      //,'Contact Company Key'=>$company->id
-		      );
-  if($row['Staff Alias']=='raul'){
+  $data_contact=array();
+$data_contact['Contact Name']=ucwords($row['User Handle']);
+
+  if($row['User Handle']=='raul'){
     $data_contact=array(
 			'Contact Name'=>'Mr Raul Alejandro Perusquia Flores'
 			,'Contact Main Pain Email'=>'rulovico@gmail.com'
 			);
   }
-   if($row['Staff Alias']=='martina'){
+   if($row['User Handle']=='martina'){
     $data_contact=array(
 			'Contact Name'=>'Martina Otte'
 			,'Contact Main Plain Email'=>'martina@aw-gechenke.com'
 			);
-  }if($row['Staff Alias']=='kerry'){
+  }if($row['User Handle']=='kerry'){
     $data_contact=array(
 			'Contact Name'=>'Miss Kerry Miskelly'
 			,'Contact Main Plain Email'=>'kerry@ancientwisdom.biz'
 			);
-  }if($row['Staff Alias']=='katka'){
+  }if($row['User Handle']=='katka'){
     $data_contact=array(
 			'Contact Name'=>'Katka Buchy'
 			,'Contact Main Plain Email'=>'katka@ancientwisdom.biz'
 			);
-  }if($row['Staff Alias']=='philippe'){
+  }if($row['User Handle']=='philippe'){
     $data_contact=array(
 			'Contact Name'=>'Philippe Buchy'
 			,'Contact Main Mobile'=>''
 			);
-  }if($row['Staff Alias']=='amanda'){
+  }if($row['User Handle']=='amanda'){
     $data_contact=array(
 			'Contact Name'=>'Miss Amanda Fray'
 			,'Contact Main Mobile'=>''
 			);
-  }if($row['Staff Alias']=='slavka'){
+  }if($row['User Handle']=='slavka'){
     $data_contact=array(
 			'Contact Name'=>'Slavka Hardy'
 			,'Contact Main Plain Email'=>'slavka@ancientwisdom.biz'
 			);
-  }if($row['Staff Alias']=='alan'){
+  }if($row['User Handle']=='alan'){
     $data_contact=array(
 			'Contact Name'=>'Mr Alan Wormald'
 			,'Contact Main Plain Email'=>'alan@ancientwisdom.biz'
 			);
   }
 
-   
+$data_contact['Staff Alias']=ucwords($row['User Handle']);
+
+
    //  print_r($data_contact);
-  $contact=new contact('find in company create',$data_contact);
-  //print_r($contact);
+$staff=new Staff('find',$data_contact,'create');
+ 
+
+
+ //print_r($contact);
+  $contact=new Contact($staff->data['Staff Contact Key']);
   $company->add_contact($contact->id,'no_principal');
      
-  $contact->add_address(array(
-				  'Address Key'=>$company->data['Company Main Address Key']
-				  ,'Address Type'=>array('Work')
-				  ,'Address Function'=>array('Contact')
+ /*  $contact->add_address(array( */
+/* 				  'Address Key'=>$company->data['Company Main Address Key'] */
+/* 				  ,'Address Type'=>array('Work') */
+/* 				  ,'Address Function'=>array('Contact') */
 
-			      ));
+/* 			      )); */
   
 
-  if($row['Staff Currently Working']=='No'){
-    $company->remove_contact($contact->id);
-    if($company->error){
-      print $company->msg."\n";
-      exit;
-    }
-  }
+  
 
-  $sql=sprintf("update `Staff Dimension` set `Staff Alias`=%s,`Staff Name`=%s,`Staff Contact Key`=%d where `Staff Key`=%d"
-	       ,prepare_mysql(strtolower($row['Staff Alias']))
-	       ,prepare_mysql(ucwords($row['Staff Name']))
-	       ,$contact->id
-	       ,$row['Staff Key']
+  $sql=sprintf("update `User Dimension` set `User Parent Key`=%d, `User Key`=%d"
+	       ,$staff->id
+	       ,$row['User Key']
 	       );
   mysql_query($sql);
  }

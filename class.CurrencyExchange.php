@@ -7,30 +7,33 @@ Class CurrencyExchange  {
 
   function CurrencyExchange($action,$currency_pair=false,$date=false,$date2=false){
     
-    if($action=='get'){
-      $this->currency_pair=$currency_pair;
-      if($date=='now'){
-      return $this->current_exchange();
-      }
+    $this->currency_pair=$currency_pair;
+    $this->parse_dates($date,$date2);
+
+ /*    if($action=='get'){ */
+/*       $this->currency_pair=$currency_pair; */
+/*       if($date=='now'){ */
+/*       return $this->current_exchange(); */
+/*       } */
       
-      $this->parse_dates($date,$date2);
-      $this->get_exchange();
-      return $this->$exchange;
+/*       $this->parse_dates($date,$date2); */
+/*       $this->get_exchange(); */
+/*       return $this->exchange; */
      
-    }    
-    if($action=='load'){
-       if($this->is_currency_pair($currency_pair)){
-	 $this->currency_pair=$currency_pair;
-	 $this->parse_dates($date,$date2);
-	 $this->load_currency_exchange();
-	   return;
-       }
-    }
-    if($this->is_currency_pair($action)){
-       $this->parse_dates($currency_pair,$date);
-       $this->get_exchange();
-       return;
-    }
+/*     }     */
+/*     if($action=='load'){ */
+/*        if($this->is_currency_pair($currency_pair)){ */
+/* 	 $this->currency_pair=$currency_pair; */
+/* 	 $this->parse_dates($date,$date2); */
+/* 	 $this->load_currency_exchange(); */
+/* 	   return; */
+/*        } */
+/*     } */
+/*     if($this->is_currency_pair($action)){ */
+/*        $this->parse_dates($currency_pair,$date); */
+/*        $this->get_exchange(); */
+/*        return; */
+/*     } */
 
   }
 
@@ -50,8 +53,23 @@ Class CurrencyExchange  {
     }
   }
 
+
+  function get_exchange(){
+  
+    $this->get_data_scalar();
+    if(!$this->exchange){
+      
+      $this-> load_currency_exchange();
+      $this->get_data_scalar();
+      
+    }
+    return $this->exchange;
+    
+
+  }
+
  function get_data_array($load_on_unknown=false){
-   
+   $this->exchange =array();
      $sql=sprintf("select `Exchange`,`Date` from kbase.`History Currency Exchange Dimension` where `Currency Pair`=%s and `Date`>=%s and `Date`<=%s     "
 		  ,prepare_mysql($this->currency_pair)
 		  ,prepare_mysql($this->from)
@@ -137,28 +155,28 @@ Class CurrencyExchange  {
     $random=md5(mt_rand());
     $tmp_file="app_files/tmp/currency_$random.txt";
     $days=100;
-print_r($this);
+   
     $from=date("Ymd",strtotime($this->from));
     $to=date("Ymd",strtotime($this->to));
 
-print sprintf("./mantenence/scripts/get_currency_exchange.py  %s %s %s=X > %s",$from,$to,$this->currency_pair,$tmp_file);
+    //    print sprintf("./mantenence/scripts/get_currency_exchange.py  %s %s %s=X > %s",$from,$to,$this->currency_pair,$tmp_file);
     exec(sprintf("./mantenence/scripts/get_currency_exchange.py  %s %s %s=X > %s",$from,$to,$this->currency_pair,$tmp_file));
-
-$row = 1;
-$handle = fopen($tmp_file, "r");
-while (($data = fgetcsv($handle, 1000, ",")) !== FALSE) {
-    $num = count($data);
+    
+    $row = 1;
+    $handle = fopen($tmp_file, "r");
+    while (($data = fgetcsv($handle, 1000, ",")) !== FALSE) {
+      $num = count($data);
     $pair=preg_replace('/=X/','',$data[0]);
     $date=date("Y-m-d",strtotime($data[1]));
     $exchange=$data[2];
 
     $sql=sprintf("insert into kbase.`History Currency Exchange Dimension` values (%s,%s,%f)  "
     ,prepare_mysql($date) ,prepare_mysql($pair),$exchange);
-    print "$sql\n";
+    //print "$sql\n";
     mysql_query($sql);
-}
-fclose($handle);
-unset($tmp_file);
+    }
+    fclose($handle);
+    unset($tmp_file);
 
 
   }
@@ -191,6 +209,7 @@ return $exchange;
 return $false;
 
 
+}
 }
 
 ?>

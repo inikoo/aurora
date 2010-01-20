@@ -1376,6 +1376,7 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 	
 	if( $tipo_order!=8 ){
 	$order= new Order('new',$data);
+	$order->categorize();
 	$order->set_shipping(round($header_data['shipping']+$extra_shipping,2),$tax_rate);
 	$order->set_charges(round($header_data['charges'],2),$tax_rate);
 	}
@@ -1531,7 +1532,7 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 	      print "Past order not found created new one\n";
 	      $data['Order Type']='Order';
 	      $parent_order=new Order('new',$data);
-	      exit;
+	       $order->categorize();
 	    }
 
 	  }
@@ -1628,6 +1629,7 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 
 			      ));
 	  $parent_order-> update_payment_state('Paid');
+	  $invoice->categorize('save');
 	  }
 	  
 	  $dn->dispatch('all',$data_dn_transactions);
@@ -1866,7 +1868,7 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 	  $data['Order Type']='Order';
 	  $data['store_id']=$store_key;
 	  $order= new Order('new',$data);
-     
+	  $order->categorize();
       
 	
 
@@ -2003,7 +2005,7 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 
 	//		print_r($data_refund_transactions);
 	//$order->create_refund_simple($data_invoice,$data_refund_transactions);
-	print $order->id;
+	//	print $order->id;
 	
 	$refund = new Invoice('create refund',$data_invoice,$data_refund_transactions,$order); 
 	$refund->data['Invoice Paid Date']=$date_inv;
@@ -2015,6 +2017,7 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 			   ,'Invoice Total Amount'=>round($header_data['total_topay']*$factor,2)
 			   )   
 		     );
+	$refund->categorize('save');
 	if($order->id)
 	  $order-> update_payment_state('Paid');
 

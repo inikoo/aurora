@@ -463,7 +463,7 @@ $options='yAxis.minimum = 0;';
    
 
 function render_flash_plot(){
-  global $yui_path,$currency_symbol,$title,$fields,$yfields,$xfield,$ar_address,$options,$staked,$tipo_chart,$style;
+  global $yui_path,$currency_symbol,$title,$fields,$yfields,$xfield,$ar_address,$options,$staked,$tipo_chart,$style,$yfield_label_type;
 
 $alt=_('Unable to load Flash content. The YUI Charts Control requires Flash Player 9.0.45 or higher. You can download the latest version of Flash Player from the ').'<a href="http://www.adobe.com/go/getflashplayer">Adobe Flash Player Download Center</a>.';
 $out='<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN""http://www.w3c.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -487,7 +487,7 @@ $out='<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN""http://www.
 if( value==0)
     return "";
 else if ( value>=499){
-return YAHOO.util.Number.format( value/1000,{prefix: "'.$currency_symbol.'",thousandsSeparator: ",",decimalPlaces: 0})+"K";
+return YAHOO.util.Number.format( value/1000,{prefix: "'.$currency_symbol.'",thousandsSeparator: ",",decimalPlaces: 1})+"K";
 }
 else if ( value<=-10000){
 return YAHOO.util.Number.format( value/1000,{prefix: "'.$currency_symbol.'",thousandsSeparator: ",",decimalPlaces: 0})+"K";

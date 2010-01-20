@@ -32,3 +32,5 @@ truncate `Shipping Dimension`;
 truncate `Staff Dimension`;
 truncate `Warehouse Area Dimension`;
 truncate `Company Bridge`;
+truncate `Category Bridge`;truncate `History Dimension`;truncate `Invoice Tax Bridge`;
+;truncate `Company Area Dimension`;truncate `Corporation Dimension`;
