@@ -234,6 +234,29 @@ class Contact extends DB_Table {
 
 
 
+        } elseif(preg_match('/from stadd|in stadd/i',$options)) {
+            foreach($raw_data as $key=>$val) {
+                if (preg_match('/Stadd Address/i',$key)) {
+                    $_key=preg_replace('/Stadd Address/i','Contact Home Address',$key);
+                } else
+                    $_key=preg_replace('/Stadd /','Contact ',$key);
+                $data[$_key]=$val;
+
+
+                if (array_key_exists($_key,$address_home_data))
+                    $address_home_data[$_key]=$val;
+
+                //	print " $key -> $_key = $val \n";
+
+            }
+            $parent='stadd';
+
+            //  print_r($data);
+            //  print_r($address_work_data);
+            //  exit;
+
+
+
         }
         elseif(preg_match('/from Company|in company/i',$options)) {
             foreach($raw_data as $key=>$val) {

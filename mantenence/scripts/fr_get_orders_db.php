@@ -1746,6 +1746,8 @@ $currency='EUR';
       }else if($tipo_order==3){
 	  $order->cancel();
 
+      }else{
+	$order->load('totals');
       }
       
       
