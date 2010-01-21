@@ -124,16 +124,23 @@ $_map_act['tax_number']=87;
 
 
 function get_tipo_order($ltipo,$header){
+  
+ 
 
 
   $parent_id='';
   $tipo=0;
-  if(preg_match('/DELIVERY NOTE|nota de envio|BON DE COMMANDE/i',$ltipo)){
+
+  
+ if(preg_match('/proforma|pro-froma|pro forma|PROFORMA/i',$ltipo)){
+
+    $tipo=11;
+  }elseif(preg_match('/DELIVERY NOTE|nota de envio|BON DE COMMANDE/i',$ltipo)){
 
     $tipo=1;
   }elseif(preg_match('/FACTURE. sample order|facture|facutura|FACTURE/i',$ltipo)){
     $tipo=2;
-  }elseif(preg_match('/^ANNULER/i',$ltipo)){
+  }elseif(preg_match('/ANNULER|cancel/i',$ltipo)){
     $tipo=3;
     $header['notes2']=preg_replace('/^ANNULER?$/i','',$header['notes2']);
 
@@ -183,7 +190,7 @@ function get_tipo_order($ltipo,$header){
     exit("tipo not found\n");
   }
   
-
+ 
   
   $tmp='';
 

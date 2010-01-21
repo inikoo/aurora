@@ -172,10 +172,13 @@ class Order extends DB_Table{
 		      $this->data ['Order Main Country 2 Alpha Code']=$customer -> data['Customer Main Address Country 2 Alpha Code'];
 
       }else{
-	//print "Cust data\n";
-	//print_r($data['Customer Data']);
+       	//print "Cust data\n";
+	//	print_r($data['Customer Data']);
 				  
 	$customer = new Customer ( 'find create', $data['Customer Data'] );
+
+	//	print_r($customer);
+
 	      $this->data ['Order Main Country 2 Alpha Code']=$customer -> data['Customer Main Address Country 2 Alpha Code'];
 
 	

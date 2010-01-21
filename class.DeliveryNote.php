@@ -114,6 +114,9 @@ class DeliveryNote extends DB_Table {
 
         $this->data ['Delivery Note Metadata'] = $order->data ['Order Original Metadata'];
         $this->data ['Delivery Note Weight'] = $dn_data ['Delivery Note Weight'];
+	
+	
+
         $this->data ['Delivery Note XHTML Pickers'] = $dn_data ['Delivery Note XHTML Pickers'];
         $this->data ['Delivery Note Number Pickers'] = $dn_data ['Delivery Note Number Pickers'];
         $this->data ['Delivery Note Pickers IDs'] = $dn_data ['Delivery Note Pickers IDs'];
@@ -722,6 +725,32 @@ class DeliveryNote extends DB_Table {
 
 
     }
+
+
+    function set_parcels($parcels,$parcel_type='Box'){
+
+      if(is_numeric($parcels)){
+      $sql=sprintf("update `Delivery Note Dimension` set `Delivery Note Number Parcels`=%d, `Delivery Note Parcel Type`=%s where `Delivery Note Key`=%d"
+		   ,$parcels
+		   ,prepare_mysql($parcel_type)
+		   ,$this->id
+		   );
+      $this->data['Delivery Note Number Parcels']=$parcels;
+      }else{
+	$sql=sprintf("update `Delivery Note Dimension` set `Delivery Note Number Parcels`=NULL, `Delivery Note Parcel Type`=%s where `Delivery Note Key`=%d"
+		   
+		     ,prepare_mysql($parcel_type)
+		     ,$this->id
+		     );
+	$this->data['Delivery Note Number Parcels']='';
+      }
+      mysql_query($sql);
+      // print $sql;
+      $this->data['Delivery Note Parcel Type']=$parcel_type;
+
+
+    }
+
 
 }
 

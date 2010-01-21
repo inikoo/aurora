@@ -70,6 +70,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 		metaFields: {
 		    rowsPerPage:"resultset.records_perpage",
 		    rtext:"resultset.rtext",
+		    rtext_rpp:"resultset.rtext_rpp",
 		    sort_key:"resultset.sort_key",
 		    sort_dir:"resultset.sort_dir",
 		    tableid:"resultset.tableid",
@@ -170,10 +171,10 @@ YAHOO.util.Event.onContentReady("filtermenu", function () {
 
 
 YAHOO.util.Event.onContentReady("rppmenu", function () {
-	 var oMenu = new YAHOO.widget.Menu("rppmenu", { context:["filter_name0","tr", "bl"]  });
+	 var oMenu = new YAHOO.widget.Menu("rppmenu", { context:["rtext_rpp0","tl", "br"]  });
 	 oMenu.render();
 	 oMenu.subscribe("show", oMenu.focus);
-	 YAHOO.util.Event.addListener("paginator_info0", "click", oMenu.show, null, oMenu);
+	 YAHOO.util.Event.addListener("rtext_rpp0", "click", oMenu.show, null, oMenu);
     });
 
 
@@ -191,16 +192,16 @@ YAHOO.util.Event.onContentReady("rppmenu", function () {
       Dom.get('ship_to_address').className='';
       Dom.get('balance').className='';
       Dom.get('rank').className='';
-
+      
       Dom.get(tipo).className='selected';
-       table.hideColumn('location');
-     table.hideColumn('last_order');
-       table.hideColumn('orders');
-
-       table.hideColumn('email');
-       table.hideColumn('telephone');
+      table.hideColumn('location');
+      table.hideColumn('last_order');
+      table.hideColumn('orders');
+      
+      table.hideColumn('email');
+      table.hideColumn('telephone');
       table.hideColumn('contact_name');
-      table.hideColumn('name');
+      
       table.hideColumn('address');
       table.hideColumn('town');
       table.hideColumn('postcode');
@@ -221,6 +222,7 @@ YAHOO.util.Event.onContentReady("rppmenu", function () {
       table.hideColumn('top_invoices');
       table.hideColumn('top_balance');
       table.hideColumn('top_profits');
+      table.hideColumn('activity');
 
 
 
@@ -229,7 +231,7 @@ YAHOO.util.Event.onContentReady("rppmenu", function () {
 	  table.showColumn('location');
 	  table.showColumn('last_order');
 	  table.showColumn('orders');
-	  table.showColumn('total_payments');
+	  table.showColumn('activity');
 	  Dom.get('general').className='selected';
       }else if(tipo=='contact'){
 	  table.showColumn('name');

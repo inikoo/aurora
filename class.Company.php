@@ -205,6 +205,10 @@ class Company extends DB_Table {
         /* 	$this->candidate_companies[$company_key]=$score; */
         /*     } */
 
+	//  print "Company candidates berfore name\n";
+	//  print_r($this->candidate_companies);
+
+
         if ($raw_data['Company Name']!='') {
 
             $max_score=80;
@@ -214,11 +218,12 @@ class Company extends DB_Table {
                          ,prepare_mysql($raw_data['Company Name'])
                         );
             $result=mysql_query($sql);
-
+	    //   print "$sql\n";
             while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
                 if ($row['dist1']>=1)
                     break;
                 $score=$max_score*pow(1-  $row['dist1'] ,3  );
+		$extra_score=0;
                 $company_key=$row['Company Key'];
 
                 foreach($this->candidate as $candidate_key=>$candidate_score) {
@@ -227,24 +232,26 @@ class Company extends DB_Table {
                                  ,$company_key
                                 );
                     $res=mysql_query($sql);
+		    //  print "$sql\n";
                     $match_data=mysql_fetch_array($res);
                     if ($match_data['matched']>0) {
+		      //		      print "matched $score $score_plus_for_match \n";
                         $this->candidate[$candidate_key]+=$score_plus_for_match;
-                        $score+=$score_plus_for_match;
+                        $extra_score=$score_plus_for_match;
                     }
 
                 }
 
-
+		
                 if (isset($this->candidate_companies[$company_key]))
-                    $this->candidate_companies[$company_key]+=$score;
+                    $this->candidate_companies[$company_key]+=$score+$extra_score;
                 else
-                    $this->candidate_companies[$company_key]=$score;
+                    $this->candidate_companies[$company_key]=$score+$extra_score;
             }
 
         }
 
-
+	
 
         if (!empty($this->candidate_companies)) {
             arsort($this->candidate_companies);
@@ -258,18 +265,18 @@ class Company extends DB_Table {
             }
 
         }
-
+	
         $this->number_candidate_companies=count($this->candidate_companies);
 
-        /*   if(count($this->candidate)>0){ */
-        /*         print "Contact candidates\n"; */
-        /* 	print_r($this->candidate); */
-        /*     } */
-        /*     //  if(count($this->candidate_companies)>0){ */
-        /*       print "Company candidates\n"; */
-        /*       print_r($this->candidate_companies); */
-        /*       //    } */
-
+/* 	if(count($this->candidate)>0){ */
+/* 	  print "Contact candidates\n"; */
+/* 	  print_r($this->candidate); */
+/* 	} */
+/* 	if(count($this->candidate_companies)>0){ */
+/* 	  print "Company candidates\n"; */
+/* 	  print_r($this->candidate_companies); */
+/* 	} */
+	
 
         if ($this->found )
             $this->get_data('id',$this->found_key);
@@ -302,7 +309,7 @@ class Company extends DB_Table {
 
 
             //
-            //             print "$create $update   Company Found:".$this->found." ".$this->found_key."   \nContact Found:".$contact->found." ".$contact->found_key."  \n";
+	    //                         print "$create $update   Company Found:".$this->found." ".$this->found_key."   \nContact Found:".$contact->found." ".$contact->found_key."  \n";
 
             // exit;
 
@@ -351,7 +358,11 @@ class Company extends DB_Table {
 
 
             if ($update and $this->found) {
+
+	     
+
                 if ($contact->found) {
+		   
                     $contact->set_scope('Company',$this->id);
                     // print_r($contact);
 
@@ -371,10 +382,34 @@ class Company extends DB_Table {
 
                     $this->get_data('id',$this->found_key);
                     //print_r($this->card());
-                    $this->update_address($this->data['Company Main Address Key'],$address_data);//Change in contact normal data shold be here
-                    $this->update($raw_data);
-                } else {
+		    //print_r($address_data);
 
+                    //$this->update_address($this->data['Company Main Address Key'],$address_data);//Change in contact normal data shold be here
+                   
+
+		    $address_data['editor']=$this->editor;
+		    $address=new Address("find in company ".$this->id." create",$address_data);
+		    $contact->associate_address(array(
+							'Address Key'=>$address->id
+							,'Address Type'=>array('Work')
+							,'Address Function'=>array('Contact')
+							
+                                         ),'principal');
+		$this->associate_address(array(
+                                   'Address Key'=>$address->id
+				   ,'Address Type'=>array('Office')
+                                   ,'Address Function'=>array('Contact')
+
+						),'principal');
+
+		    
+		
+
+		    $this->update($raw_data);
+		    //		    print "shoooooooooooolddd be updated\n\n\n\n\n";
+
+		} else {
+		 
                     $this->get_data('id',$this->found_key);
                     //print_r($this->card());
                     // Create contact
@@ -387,8 +422,27 @@ class Company extends DB_Table {
                                           ));
 
 
-                    $this->update_address($this->data['Company Main Address Key'],$address_data);
-                    $this->update($raw_data);
+                    //$this->update_address($this->data['Company Main Address Key'],$address_data);
+                    
+
+   $address_data['editor']=$this->editor;
+		    $address=new Address("find in company ".$this->id." create",$address_data);
+		    $contact->associate_address(array(
+							'Address Key'=>$address->id
+							,'Address Type'=>array('Work')
+							,'Address Function'=>array('Contact')
+							
+                                         ),'principal');
+		$this->associate_address(array(
+                                   'Address Key'=>$address->id
+				   ,'Address Type'=>array('Office')
+                                   ,'Address Function'=>array('Contact')
+
+						),'principal');
+
+
+
+		    $this->update($raw_data);
 
                 }
 
@@ -505,8 +559,10 @@ class Company extends DB_Table {
 
             $contact=new Contact("find in company create",$raw_data);
             if (!$contact->new) {
-                print_r($contact);
-                exit("can not add contant to company\n");
+	      print_r($contact);
+              print_r($contact->get_company_key());
+
+	      exit("can not add contant to company\n");
             }
         }
 
@@ -760,10 +816,10 @@ class Company extends DB_Table {
                                                                     ,'Telecom Is Main'=>'Yes'
                                   ));
                 $this->add_tel(array(
-                                   'Telecom Key'=>$Company_Main_Telephone_Key
-                                                 ,'Telecom Type'=>$company_telecom_type
-                                                                 ,'Telecom Is Main'=>'Yes'
-                               ));
+				     'Telecom Key'=>$Company_Main_Telephone_Key
+				     ,'Telecom Type'=>$company_telecom_type
+				     ,'Telecom Is Main'=>'Yes'
+				     ));
 
 
 
@@ -878,7 +934,7 @@ class Company extends DB_Table {
     protected function update_field_switcher($field,$value,$options='') {
 
 
-      
+      //      print "$field -> $value\n";
 
 
         switch ($field) {
@@ -914,7 +970,7 @@ class Company extends DB_Table {
         case('Company Main Telephone'):
             // check if plain numbers are the same
 
-            // print "Updation company telecom\n NEW value $value\n";
+	  // print "Updation company telecom\n NEW value $value\n";
 
             $contact=new Contact($this->data['Company Main Contact Key']);
             $contact->editor=$this->editor;
@@ -933,8 +989,17 @@ class Company extends DB_Table {
                                   'Telecom Raw Number'=>$value
                                                        ,'Telecom Type'=>'Work Telephone'
                               );
-                    $contact->add_tel($tel_data,$options.' principal');
-                }
+                    //print_r($tel_data);
+		    $contact->add_tel($tel_data,$options.' principal');
+                
+		     $this->add_tel(array(
+					  'Telecom Key'=>$contact->data['Contact Main Telephone Key']
+					  ,'Telecom Type'=>'Office Telephone'
+					  ,'Telecom Is Main'=>'Yes'
+					  ));
+
+
+		}
 
             }
             break;
@@ -956,6 +1021,15 @@ class Company extends DB_Table {
                                                        ,'Telecom Type'=>'Work Fax'
                               );
                     $contact->add_tel($tel_data,$options.' principal');
+
+		    $this->add_tel(array(
+					  'Telecom Key'=>$contact->data['Contact Main FAX Key']
+					  ,'Telecom Type'=>'Office Fax'
+					  ,'Telecom Is Main'=>'Yes'
+					  ));
+
+
+
                 }
             }
             break;
@@ -1914,7 +1988,7 @@ $principal=true;
 
 
 
-
+	//	print "----------------> $principal <-----\n";
 
 
         if ($principal) {
@@ -1938,6 +2012,17 @@ $principal=true;
                         );
             if (!mysql_query($sql))
                 exit("$sql\n");
+
+	    $sql=sprintf("update `Company Dimension` set  `Company Main Contact Name`=%s,`Company Main Contact Key`=%s where `Company Key`=%d"
+                         ,prepare_mysql($contact->display('name'))
+                         
+                         ,$contact->id
+			 ,$this->id
+                        );
+            if (!mysql_query($sql))
+                exit("$sql\n");
+
+
 
         }
 

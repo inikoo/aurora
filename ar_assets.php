@@ -3456,8 +3456,8 @@ function list_departments() {
                 }
 
 
-                $tsall=money($row['Product Department 1 Quarter Acc Invoiced Amount']*$factor);
-                $tprofit=money($row['Product Department 1 Quarter Acc Profit']*$factor);
+                $tsall=$row['Product Department 1 Quarter Acc Invoiced Amount']*$factor;
+                $tprofit=$row['Product Department 1 Quarter Acc Profit']*$factor;
             }
             elseif($period=='month') {
                 if ($avg=='totals')
@@ -3561,8 +3561,9 @@ function list_departments() {
                      'critical'=>number($row['Product Department Critical Availability Products']),
 
 
-                     'sales'=>$tsall,
-                     'profit'=>$tprofit,
+		      'sales'=>$tsall,
+
+		     'profit'=>$tprofit,
 		     'aws_p'=>$aws_p,
                      'awp_p'=>$awp_p
 

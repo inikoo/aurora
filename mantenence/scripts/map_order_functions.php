@@ -8875,9 +8875,9 @@ if($act_data['name']=='Igneous Products' and $act_data['contact']=='Les'){
   $shop_address_data['default_country_id']=30;
 
   if(isset($act_data['act']))
-    $customer_data['other id']=$act_data['act'];
+    $customer_data['Customer Old ID']=$act_data['act'];
   else
-    $customer_data['other id']='';
+    $customer_data['Customer Old ID']='';
       
   
   $customer_data['type']=$tipo_customer;
@@ -8934,9 +8934,9 @@ if($act_data['name']=='Igneous Products' and $act_data['contact']=='Les'){
   //$customer_data['address_data']=
   
     if(isset($act_data['act']))
-    $customer_data['other id']=$act_data['act'];
+    $customer_data['Customer Old ID']=$act_data['act'];
   else
-    $customer_data['other id']='';
+    $customer_data['Customer Old ID']='';
       
   
 //print_r($header_data);print_r($act_data);exit;

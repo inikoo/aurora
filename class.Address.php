@@ -21,6 +21,7 @@ class Address extends DB_Table{
 
   private $scope=false;
   private $scope_key=false;
+  public $default_country_code=false;
   /*
     Constructor: Address
     Initializes the class, trigger  Search/Load/Create for the data set
@@ -232,7 +233,7 @@ class Address extends DB_Table{
 			
     switch($data['Address Input Format']){
     case('3 Line'):
-      $data=$this->prepare_3line($data);
+      $data=$this->prepare_3line($data,'untrusted',$this->get_default('Country 2 Alpha Code'));
 		  
       $data['Address Input Format']='DB Fields';
       break;
@@ -264,10 +265,7 @@ class Address extends DB_Table{
     if($mode=='Contact')
       $options.=' anonymous';
 
-    //	print "f: $find_fuzzy\n";
-
-    //rint_r($data);
-
+  
     //Exact match
     if(!$find_fuzzy){
 
@@ -287,7 +285,7 @@ class Address extends DB_Table{
 	$sql.=sprintf(' and `%s`=%s',$field,prepare_mysql($data[$field],false));
       }
       //print_r($raw_data);
-      // print $sql;
+      // print "$sql\n";
       
       $result=mysql_query($sql);
       $num_results=mysql_num_rows($result);
@@ -296,7 +294,7 @@ class Address extends DB_Table{
 	$this->found=true;
 	$this->found_key=$row['Address Key'];
 	$this->get_data('id',$row['Address Key']);
-	$this->candidate[$row['Subject Key']]=100;
+	$this->candidate[$row['Subject Key']]=110;
 	}		
 		    
       }
@@ -854,7 +852,9 @@ class Address extends DB_Table{
 
     switch($data['Address Input Format']){
     case('3 Line'):
-      $this->data=$this->prepare_3line($data);
+    
+      $this->data=$this->prepare_3line($data,'untrusted',$this->get_dafault('Country 2 Alpha Code'));
+
       break;
     case('DB Fields'):
       $this->data=$this->prepare_DBfields($data);
@@ -1656,10 +1656,10 @@ class Address extends DB_Table{
 	 In the moment only for GBR
 	 */
 	function parse_postcode($postcode,$country_code=''){
-		global $myconf;
+
 
 		if(!preg_match('/^[a-z]{3}$/i',$country_code)){
-			$country_code=$myconf['country_code'];
+		  $country_code=$this->get_default('Country Code');
 
 		}
 		$postcode=_trim($postcode);
@@ -1743,8 +1743,8 @@ $this->updated=true;
 
 
 	 */
-	public static function prepare_country_data($data){
-		global $myconf;
+	public static function prepare_country_data($data,$default_2alpha_code='XX'){
+
 
 if(is_string($data)){
 $code=$data;
@@ -1785,8 +1785,8 @@ $data['Address Country Key']='';
 				}
 			}
 
-			if($data['Address Country Key']=='')
-			$data['Address Country Key']=$myconf['country_id'];
+			if($data['Address Country 2 Alpha Code']=='')
+			  $data['Address Country 2 Alpha Code']=$default_2alpha_code;
 
 		}
 		
@@ -1906,8 +1906,8 @@ $data['Address Country Key']='';
 	 $untrusted - _boleean_
 	 */
 
-	public static function prepare_3line($raw_data,$args='untrusted'){
-		global $myconf;
+	public static function prepare_3line($raw_data,$args='untrusted',$default_2alpha_code='XX'){
+
 
 		//       print "========== ADDEWESS PARSING ================\n";
 
@@ -2040,7 +2040,7 @@ $data['Address Country Key']='';
 
 		
 		if($data['Address Country Code']=='UNK'){
-		  $data=Address::prepare_country_data($data);
+		  $data=Address::prepare_country_data($data,$default_2alpha_code);
 		  $country=new Country('code','UNK');
 		  $raw_data['Address Country Name']=$country->data['Country Name'];
 		  
@@ -2053,7 +2053,7 @@ $data['Address Country Key']='';
 
 
 		if($data['Address Country Name']==''){
-			if($myconf['country_2acode']=='GB'){
+		  if( $default_2alpha_code   =='GB'){
 
 				//	if(preg_match('/norfork/i,'$data['Address Country Second Division]']))
 				//  $data['Address Country Name']='United Kingdom';
@@ -2068,7 +2068,7 @@ $data['Address Country Key']='';
 					$data['Address Postal Code']=$data['Address Country Name'];
 					$data['Address Country Name']='United Kingdom';
 				}
-			}elseif($myconf['country_2acode']=='ES'){
+			}elseif($default_2alpha_code =='ES'){
 
 				//if( preg_match('/^\d{5}$/',_trim($raw_data['Address Country Name'])) and ( _trim($data['Address Postal Code'])=='' or preg_match('/^(spain|Espa.a)$/i',_trim($data['Address Postal Code'])))){
 				if( preg_match('/^\d{5}$/',_trim($raw_data['Address Country Name']))
@@ -2095,7 +2095,7 @@ $data['Address Country Key']='';
 
 
 
-		$data=Address::prepare_country_data($data);
+		$data=Address::prepare_country_data($data,$default_2alpha_code);
 		// print_r($data);
 		//exit;
 		// foreach($country as $key=>$value){
@@ -2109,7 +2109,7 @@ $data['Address Country Key']='';
 			$tmp=new Country('find',$_tmp);
 			if($tmp->data['Country Code']!='UNK'){
 				$data['Address Country Key']=$tmp->id;
-				$data=Address::prepare_country_data($data);
+				$data=Address::prepare_country_data($data,$default_2alpha_code);
 			}
 		}
 
@@ -2124,7 +2124,7 @@ $data['Address Country Key']='';
 
 		if(preg_match('/^\s*BFPO\s*\d{1,}\s*$/i',$_p)){
 			$data['Address Country Name']='UK';
-			$data=Address::prepare_country_data($data);
+			$data=Address::prepare_country_data($data,$default_2alpha_code);
 
 
 			//$data['Address Country Name']=preg_replace('/^,|[,\.]$/','',$data['Address Country Name']);
@@ -4308,7 +4308,19 @@ $data['Address Country Key']='';
     }
 
 
+    function get_default($key){
 
+      if(!$this->default_country_code){
+	global $myconf;
+	$this->default_country_code=$myconf['country_code'];
+      }
+
+      if(!isset($this->default_country))
+	$this->default_country=new Country('code',$this->default_country_code);
+      // print $this->default_country->get($key)." ".$this->default_country_code." $key sss\n";
+      return $this->default_country->get($key);
+
+    }
 }
 
 
