@@ -189,7 +189,8 @@ class Customer extends DB_Table {
 
         }
      //   print "xxxxx\n";
-        
+	//	$raw_data['Customer Main Plain Email']='mail@ancientwisdom.biz';
+
         $raw_data['Customer Type']=ucwords($raw_data['Customer Type']);
         //print $raw_data['Customer Type']."\n";
         if ($raw_data['Customer Type']=='Person') {
@@ -197,8 +198,10 @@ class Customer extends DB_Table {
         } else {
             $child=new Company ('find in customer use old_id',$raw_data);
         }
+	
 
-     //    print_r($child);
+
+	
 
         if ($child->found) {
 
@@ -238,54 +241,104 @@ class Customer extends DB_Table {
                     or ($raw_data['Customer Company Name']=='' and  $raw_data['Customer Type']=='company')
                 )
            ) {
-            $this->create_anonymous();
+            $this->create_anonymous($raw_data['Customer Store Key']);
             return;
         }
 
 
         if ($create) {
+	
+	  if ($this->found) {
+	    
+	    if ($raw_data['Customer Type']=='Person') {
+	      
+	      //$raw_data['Customer Main Plain Email']==''
+	      //check for spacial case, everything different except the email
+	      //print_r($raw_data);
+	      //	print_r($child);
+	      if(isset($child->data['Contact Key']) and $raw_data['Customer Main Plain Email']!='' and $raw_data['Customer Main Plain Email']==$child->data['Contact Main Plain Email']
+		 and (levenshtein($child->data['Contact Name'],$raw_data['Customer Main Contact Name'])/(strlen($child->data['Contact Name'])+1))>.3
 
-            if ($this->found) {
-
-	      if ($raw_data['Customer Type']=='Person') {
-
-		//$raw_data['Customer Main Plain Email']==''
-		//check for spacial case, everything different except the email
-		//print_r($raw_data);
-		//	print_r($child);
-		if(isset($child->data['Contact Key']) and $raw_data['Customer Main Plain Email']==$child->data['Contact Main Plain Email']
-		   and (levenshtein($child->data['Contact Name'],$raw_data['Customer Main Contact Name'])/(strlen($child->data['Contact Name'])+1))>.3
-
-		   ){
-		  print "super change!\n";
-		  $child->remove_email($child->data['Contact Main Email Key']);
+		 ){
+		print "super change!\n";
 		  
-		  $_customer = new Customer ( 'find create', $raw_data );
-		  
-		  $this->get_data('id',$_customer->id);
-		  return;
-		  
-		  return;
+		
+		$child->remove_email($child->data['Contact Main Email Key']);
+		
+		$_customer = new Customer ( 'find create', $raw_data );
+		
+		$this->get_data('id',$_customer->id);
+		 
+		
+		return;
 		}
 		
 
-                    $child=new Contact ('find in customer create update',$raw_data);
-                } else {
-	
-		   
-                    $child=new Company ('find in customer create update',$raw_data);
-                }
+	       $child=new Contact ('find in customer create update',$raw_data);
+	       //$child
+		    
 
-                //	$child->editor=$this->editor;
-		//	print "ssssss";
-		//print_r($raw_data);
+
+	      } else {// Bussiness
+	
+
+	
+		$child=new Company ('find in customer create update',$raw_data);
+
+	/* 	$contact_data_to_be_updated=array(); */
+/* 		foreach($raw_data as $key=>$value){ */
+/* 		  if(!preg_match('/Customer Main Contact Name|Customer Mobile|[Customer Main Plain Email/',$key)) */
+/* 		    $value=''; */
+/* 		  $contact_data_to_be_updated[preg_replace('/^Customer /','Company ',$key)]=$value; */
+/* 		} */
+		
+/* 		//	print_r($contact_data_to_be_updated); */
+/* 		$child_contact=new Contact("find in company ".$child->id." create",$contact_data_to_be_updated); */
+/* 		$child_contact->add_company(array( */
+/* 						  'Company Key'=>$this->id */
+/* 						  ),'principal',true); */
+/* 		print_r($child_contact); */
+/* 		exit; */
+/* 		$address_data_to_be_updated=array(); */
+/* 		foreach($raw_data as $key=>$value){ */
+/* 		  if(preg_match('/^Customer Address/',$key)) */
+/* 		    $address_data_to_be_updated[preg_replace('/^Customer /','',$key)]=$value; */
+/* 		} */
+/* 		$address_data_to_be_updated['editor']=$this->editor; */
+/* 		$address=new Address("find in company ".$child->id." create",$address_data_to_be_updated); */
+/* 		$child_contact->associate_address(array( */
+/* 							'Address Key'=>$address->id */
+/* 							,'Address Type'=>array('Work') */
+/* 							,'Address Function'=>array('Contact') */
+							
+/*                                          ),'principal'); */
+/* 		$child->associate_address(array( */
+/*                                    'Address Key'=>$address->id */
+/* 				   ,'Address Type'=>array('Office') */
+/*                                    ,'Address Function'=>array('Contact') */
+
+/* 						),'principal'); */
+
+
+
+/* 		$data_to_be_updated=array(); */
+/* 		foreach($raw_data as $key=>$value){ */
+/* 		  $data_to_be_updated[preg_replace('/^Customer /','Company ',$key)]=$value; */
+/* 		} */
+/* 		$child->update($data_to_be_updated); */
+
+/*                 } */
+
+/*                 //	$child->editor=$this->editor; */
+/* 		//	print "ssssss"; */
+/* 		//print_r($raw_data); */
 		$raw_data_to_update=array();
 		$raw_data_to_update['Customer Old ID']=$raw_data['Customer Old ID'];
 	
 
 		$this->update($raw_data_to_update);
 		//print "ssssssss";
-
+	    }
             } else {
 
                 if ($this->found_child) {
@@ -728,7 +781,7 @@ if(isset($child->data['Contact Key']) and $raw_data['Customer Main Plain Email']
     }
 
 
-    private function create_anonymous() {
+    private function create_anonymous($store_key=1) {
 
         $contact=new Contact('create anonymous');
         $raw_data=$contact->data;
@@ -738,7 +791,7 @@ if(isset($child->data['Contact Key']) and $raw_data['Customer Main Plain Email']
         $raw_data['Customer Staff Key']=0;
         $raw_data['Customer Main Contact Key']=$contact->id;
         $raw_data['Customer Name']=_('Unknown Customer');
-
+	$raw_data['Customer Store Key']=$store_key;
 
         $this->data=$this->base_data();
         foreach($raw_data as $key=>$value) {
@@ -768,9 +821,9 @@ if(isset($child->data['Contact Key']) and $raw_data['Customer Main Plain Email']
             $this->get_data('id',$this->id);
 
             $history_data=array(
-                              'note'=>_('Anonymous Customer Created')
-                                     ,'details'=>_trim(_('New anonymous customer added').' ('.$this->get_formated_id_link().')' )
-                                                ,'action'=>'created'
+				'note'=>_('Anonymous Customer Created')
+				,'details'=>_trim(_('New anonymous customer added').' ('.$this->get_formated_id_link().')' )
+				,'action'=>'created'
 
                           );
             $this->add_history($history_data);

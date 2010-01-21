@@ -5731,9 +5731,9 @@ if($act_data['name']=='La Tasca de Oscar' and $act_data['contact']==''){
   $shop_address_data['default_country_id']=$myconf['country_id'];
 
   if(isset($act_data['act']))
-    $customer_data['other id']=$act_data['act'];
+    $customer_data['Customer Old ID']=$act_data['act'];
   else
-    $customer_data['other id']='';
+    $customer_data['Customer Old ID']='';
 
 
 
@@ -5797,9 +5797,9 @@ if($act_data['name']=='La Tasca de Oscar' and $act_data['contact']==''){
   //$customer_data['address_data']=
   
     if(isset($act_data['act']))
-    $customer_data['other id']=$act_data['act'];
+    $customer_data['Customer Old ID']=$act_data['act'];
   else
-    $customer_data['other id']='';
+    $customer_data['Customer Old ID']='';
     //   print "+++++++++++++++\n";    
   
   

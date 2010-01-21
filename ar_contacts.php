@@ -1016,10 +1016,19 @@ if(isset( $_REQUEST['where']))
      $total_records=$total;
    }
     mysql_free_result($res);
+    
+    // $rtext=$total_records." ".ngettext('identified customers','identified customers',$total_records);
 
-   $rtext=$total_records." ".ngettext('identified customers','identified customers',$total_records);
-   if($total_records>$number_results)
-     $rtext.=sprintf(" <span class='rtext_rpp'>(%d%s)</span>",$number_results,_('rpp'));
+    $rtext=$total_records." ".ngettext('customer','customers',$total_records);
+    if($total_records>$number_results)
+      $rtext_rpp=sprintf(" (%d%s)",$number_results,_('rpp'));
+    else
+      $rtext_rpp=sprintf("Showing all customers");
+
+   
+
+    //if($total_records>$number_results)
+    // $rtext.=sprintf(" <span class='rtext_rpp'>(%d%s)</span>",$number_results,_('rpp'));
 
    if($total==0 and $filtered>0){
      switch($f_field){
@@ -1213,6 +1222,7 @@ mysql_free_result($result);
 		   array('state'=>200,
 			 'data'=>$adata,
 			 'rtext'=>$rtext,
+			 'rtext_rpp'=>$rtext_rpp,
 			 'sort_key'=>$_order,
 			 'sort_dir'=>$_dir,
 			 'tableid'=>$tableid,
@@ -1391,6 +1401,7 @@ function customer_advanced_search(){
 			 'sort_dir'=>$_dir,
 			 'tableid'=>$tableid,
 			 'rtext'=>$rtext,
+			 'rtext_rpp'=>$rtext_rpp,
 			 'filter_msg'=>$filter_msg,
 			 'total_records'=>$total,
 			 'records_offset'=>$start_from,

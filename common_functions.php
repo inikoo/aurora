@@ -1610,4 +1610,22 @@ return number($value).'L';
 }
 
 
+function parse_parcels($value){
+$unit='Box';
+$value=_trim($value);
+if(preg_match('/(pallet)$/i',$value)){
+    $value=parse_number($value)*.4545 ;
+    $unit='Pallet';
+}elseif(preg_match('/(sobre|envelope)$/i',$value)){
+    $value=parse_number($value)*0.001 ;
+    $unit='Envelope';
+}else
+$value=parse_number($value);
+
+return array($value,$unit);
+}
+
+
+
+
 ?>

@@ -12,6 +12,8 @@ include_once('../../class.Email.php');
 include_once('../../class.TimeSeries.php');
 
 $store_code='E';
+$__currency_code='EUR';
+
 $calculate_no_normal_every =2500;
 $to_update=array(
 		 'products'=>array(),
@@ -1228,6 +1230,8 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
 	$picker_data=get_user_id($header_data['pickedby'],true,'&view=picks');
 	$packer_data=get_user_id($header_data['packedby'],true,'&view=packs');
 	$order_type=$data['Order Type'];
+		list($parcels,$parcel_type)=parse_parcels($header_data['parcels']);
+	
 	$data_dn=array(
 		       'Delivery Note Date'=>$date_inv
 		       ,'Delivery Note ID'=>$header_data['order_num']
@@ -1257,6 +1261,8 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
 	  $dn->pick_simple($data_dn_transactions);
 	  $order->update_dispatch_state('Ready to Pack');
 	  $dn->pack('all');
+	  $dn->set_parcels($parcels,$parcel_type);
+	  
 	  $order->update_dispatch_state('Ready to Ship');
 	  $order->load('totals');
 	  $order->update_dispatch_state('Dispached');
@@ -1304,6 +1310,7 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
 	  // print"xxxxxxxxxxxxxxxxxxxxxxxxxxxxx\n";
 
 	  $dn->pack('all');
+	   $dn->set_parcels($parcels,$parcel_type);
 	  $order->update_dispatch_state('Ready to Ship');
 	  $invoice->data['Invoice Paid Date']=$date_inv;
 	  $invoice->pay('full',
@@ -1427,6 +1434,8 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
 	$parent_order->update_dispatch_state('Ready to Pack');
 
 	$dn->pack('all');
+	 $dn->set_parcels($parcels,$parcel_type);
+
 	$parent_order->update_dispatch_state('Ready to Ship');
 	if ($header_data['total_topay']!=0) {
 	  $invoice->data['Invoice Paid Date']=$date_inv;
@@ -1581,6 +1590,7 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
 	  $order->update_dispatch_state('Ready to Pack');
 
 	  $dn->pack('all');
+	   $dn->set_parcels($parcels,$parcel_type);
 	  $order->update_dispatch_state('Ready to Ship');
 	  $dn->dispatch('all',$data_dn_transactions);
 	  $order->update_dispatch_state('Dispached');
@@ -1594,6 +1604,7 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
 	  $order->update_dispatch_state('Ready to Pack');
 
 	  $dn->pack('all');
+	   $dn->set_parcels($parcels,$parcel_type);
 	  $order->update_dispatch_state('Ready to Ship');
 	  $dn->dispatch('all',$data_dn_transactions);
 	  $order->update_dispatch_state('Dispached');

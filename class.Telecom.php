@@ -285,12 +285,13 @@ function find($raw_data,$options){
      
       $len_tel=strlen($data['Telecom Area Code'].$data['Telecom Number']);
       
-    $sql=sprintf("select `Telecom Extension`,`Telecom Country Telephone Code`,`Telecom Extension`,damlevlim(CONCAT(`Telecom Area Code`,`Telecom Number`),%s,4) as dist1,T.`Telecom Key`,`Subject Key` from `Telecom Dimension` T left join `Telecom Bridge` TB  on (TB.`Telecom Key`=T.`Telecom Key`)  where  `Subject Type`='Contact' and  damlevlim(CONCAT(`Telecom Area Code`,`Telecom Number`),%s,4)<4  order by dist1  limit 100 "
+    $sql=sprintf("select `Telecom Extension`,`Telecom Country Telephone Code`,`Telecom Extension`,damlevlim(CONCAT(IFNULL(`Telecom Area Code`,''),IFNULL(`Telecom Number`,'')),%s,4) as dist1,T.`Telecom Key`,`Subject Key` from `Telecom Dimension` T left join `Telecom Bridge` TB  on (TB.`Telecom Key`=T.`Telecom Key`)  where  `Subject Type`='Contact' and  damlevlim(CONCAT(IFNULL(`Telecom Area Code`,''),IFNULL(`Telecom Number`,'')),%s,4)<4  order by dist1  limit 100 "
 		 ,prepare_mysql($data['Telecom Area Code'].$data['Telecom Number'])
 		 ,prepare_mysql($data['Telecom Area Code'].$data['Telecom Number'])
 		 );
     
     //$sql=sprintf("select * from `Telecom Dimension`  limit10 ",prepare_mysql($data['Telecom Area Code'].$data['Telecom Number']));
+   
     $result=mysql_query($sql);
     // print $sql."<br><br>";
     // echo mysql_errno() . ": " . mysql_error() . "\n";

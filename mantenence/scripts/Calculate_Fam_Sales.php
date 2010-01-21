@@ -25,7 +25,7 @@ require_once '../../common_functions.php';
 mysql_query("SET time_zone ='+0:00'");
 mysql_query("SET NAMES 'utf8'");
 require_once '../../conf/conf.php';           
-$stores=array(1);
+$stores=array(1,2,3);
 
 $sql="select * from `Product Family Dimension`  where `Product Family Store Key` in (".join(',',$stores).") ";
 //print $sql;

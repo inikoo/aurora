@@ -234,12 +234,12 @@ class Contact extends DB_Table {
 
 
 
-        } elseif(preg_match('/from stadd|in stadd/i',$options)) {
+        } elseif(preg_match('/from staff|in staff/i',$options)) {
             foreach($raw_data as $key=>$val) {
-                if (preg_match('/Stadd Address/i',$key)) {
-                    $_key=preg_replace('/Stadd Address/i','Contact Home Address',$key);
+                if (preg_match('/Staff Address/i',$key)) {
+                    $_key=preg_replace('/Staff Address/i','Contact Home Address',$key);
                 } else
-                    $_key=preg_replace('/Stadd /','Contact ',$key);
+                    $_key=preg_replace('/Staff /','Contact ',$key);
                 $data[$_key]=$val;
 
 
@@ -249,7 +249,7 @@ class Contact extends DB_Table {
                 //	print " $key -> $_key = $val \n";
 
             }
-            $parent='stadd';
+            $parent='staff';
 
             //  print_r($data);
             //  print_r($address_work_data);
@@ -260,6 +260,8 @@ class Contact extends DB_Table {
         }
         elseif(preg_match('/from Company|in company/i',$options)) {
             foreach($raw_data as $key=>$val) {
+
+	 
 
                 if ($key=='Company Name') {
                     $_key='Contact Company Name';
@@ -277,6 +279,7 @@ class Contact extends DB_Table {
                 if (array_key_exists($_key,$data))
                     $data[$_key]=$val;
 
+   
 
 
                 if (array_key_exists($_key,$address_work_data))
@@ -317,7 +320,7 @@ class Contact extends DB_Table {
 
         }
 
-
+	//print_r($data);
 
         $options.=' parent:'.$parent;
 
@@ -400,13 +403,14 @@ class Contact extends DB_Table {
 
         //Timer::timing_milestone('end  find  contact address / begin tel');
 
+	
 
 
         if ($data['Contact Main Telephone']!=''  ) {
             //print "TRing to fund a telefone numner ".$data['Contact Main Telephone']." \n";
 
             $tel=new Telecom("find in contact country code $country_code",$data['Contact Main Telephone']);
-            //print_r($tel);
+	    // print_r($tel->candidate);
             foreach($tel->candidate as $key=>$val) {
 
                 if ($data['Contact Fuzzy']=='Yes')
@@ -707,7 +711,7 @@ class Contact extends DB_Table {
         /*       print "Candidates from ----------------------|\n"; */
         /*     } */
 
-
+	//print_r($this->candidate);
         foreach($this->candidate as $key => $value) {
 
             if ($value>=200) {
@@ -736,8 +740,8 @@ class Contact extends DB_Table {
 
 
         //print "-Contact Candidates $options\n";
-        //print_r($this->candidate);
-
+	//    print_r($this->candidate);
+    
         if ($this->found) {
             $this->get_data('id',$this->found_key);
 
@@ -2332,16 +2336,19 @@ $principal=true;
                 $note=$data['Telecom Type']." "._('Associated (Main)');
                 $description=_('Main').' '.$data['Telecom Type'].' '._('set to')." ".$telecom->display('xhtml');
                 $history_data=array(
-                                  'note'=>$note
-                                         ,'details'=>$description
-                                                    ,'action'=>'associated'
-                                                              ,'direct_object'=>$data['Telecom Type']
-                                                                               ,'direct_object_key'=>$telecom->id
+				    'note'=>$note
+				    ,'details'=>$description
+				    ,'action'=>'associated'
+				    ,'direct_object'=>$data['Telecom Type']
+				    ,'direct_object_key'=>$telecom->id
                                                                                                     ,'indirect_object'=>'Contact'
-                                                                                                                       ,'indirect_object_key'=>$this->id
-                              );
+				    ,'indirect_object_key'=>$this->id
+				    );
                 if (!$this->new)
-                    $this->add_history($history_data);
+		  $this->add_history($history_data);
+
+		$this->get_data('id',$this->id);
+
 
             }
 

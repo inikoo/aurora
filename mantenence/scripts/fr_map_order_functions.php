@@ -5154,6 +5154,14 @@ if($act_data['town']=='Hornbæk - Sjælland'){
     $act_data['town']='Cartagena';
     $act_data['postcode']='30383';
   }
+
+
+  if(preg_match('/france/i',$act_data['postcode'] )                  ){
+    $act_data['country']='France';
+    $act_data['postcode']='';
+  }
+
+
   if($act_data['postcode']=='07760 Ciutadella'){
     $act_data['town']='Ciutadella';
     $act_data['postcode']='07760';
@@ -5170,6 +5178,12 @@ if($act_data['town']=='Hornbæk - Sjælland'){
     $act_data['country_d2']='Monaghan';
     $act_data['a3']='';
   }
+
+if(preg_match('/france/i',$header_data['postcode'] )                  ){
+    $header_data['country']='France';
+    $header_data['postcode']='';
+  }
+
 
 
   if($act_data['town']=='Port Angeles (wa)'){
@@ -5462,6 +5476,8 @@ if($act_data['town']=='Hornbæk - Sjælland'){
   //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
   // fix contracts
     
+ 
+
     
   $extra_contact=false;
   if($act_data['contact']!=''){
@@ -5582,7 +5598,7 @@ if($act_data['town']=='Hornbæk - Sjælland'){
     $different_del_address=true;
 
 
-    
+   
 
 
     $a_diff=array_diff_assoc($del_address_data,$shop_address_data);
@@ -5707,10 +5723,14 @@ if($act_data['town']=='Hornbæk - Sjælland'){
   $shop_address_data['default_country_id']=30;
 
   if(isset($act_data['act']))
-    $customer_data['other id']=$act_data['act'];
+    $customer_data['Customer Old ID']=$act_data['act'];
   else
-    $customer_data['other id']='';
-      
+    $customer_data['Customer Old ID']='';
+  if($shop_address_data['country']=='')  
+     $shop_address_data['country']='France';
+
+
+ 
   
   $customer_data['type']=$tipo_customer;
   $customer_data['contact_name']=$act_data['contact'];
@@ -5721,7 +5741,6 @@ if($act_data['town']=='Hornbæk - Sjælland'){
   $customer_data['mobile']=$act_data['mob'];
   $customer_data['address_data']=$shop_address_data;
   $customer_data['address_data']['type']='3line';
-
   $customer_data['address_data']=$shop_address_data;
   $customer_data['address_data']['type']='3line';
   $customer_data['address_data']['name']=$act_data['contact'];
@@ -5732,11 +5751,8 @@ if($act_data['town']=='Hornbæk - Sjælland'){
   if($customer_data['has_shipping']){
     $del_address_data['default_country_id']=30;
     $customer_data['shipping_data']=$del_address_data;
-
     $customer_data['shipping_data']['name']=$header_data['customer_contact'];
     $customer_data['shipping_data']['company']=$header_data['trade_name'];
-
-
     $_tel=preg_split('/ /',$header_data['phone']);
     $email=$_tel[count($_tel)-1];
     if(preg_match('/@/i',$email)){
@@ -5766,9 +5782,9 @@ if($act_data['town']=='Hornbæk - Sjælland'){
   //$customer_data['address_data']=
   
     if(isset($act_data['act']))
-    $customer_data['other id']=$act_data['act'];
+    $customer_data['Customer Old ID']=$act_data['act'];
   else
-    $customer_data['other id']='';
+    $customer_data['Customer Old ID']='';
       
   
 

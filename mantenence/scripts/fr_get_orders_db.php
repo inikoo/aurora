@@ -16,7 +16,15 @@ $store_code='F';
 $__currency_code='EUR';
 
 $calculate_no_normal_every =500;
-
+$to_update=array(
+		 'products'=>array(),
+		 'products_id'=>array(),
+		 'products_code'=>array(),
+		 'families'=>array(),
+		 'departments'=>array(),
+		 'stores'=>array(),
+		 'parts'=>array()
+		 );
 
 $con=@mysql_connect($dns_host,$dns_user,$dns_pwd );
 if (!$con) {
@@ -117,7 +125,7 @@ $fam_promo_key=$fam_promo->id;
 
 $sql="select * from  fr_orders_data.orders  where   (last_transcribed is NULL  or last_read>last_transcribed) and deleted='No'   order by filename  ";
 //$sql="select * from  fr_orders_data.orders where filename like '%refund.xls'   order by filename";
-//$sql="select * from  fr_orders_data.orders  where filename like '/mnt/%.xls'  order by filename";
+//$sql="select * from  fr_orders_data.orders  where filename like '/mnt/%FR0129.xls'  order by filename";
 
 
 $contador=0;
@@ -1369,8 +1377,7 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 
       // print_r($data['products']);
             
-            
-      //  exit;
+    
 
 
       if ( $tipo_order!=8 ) {
@@ -1430,6 +1437,11 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 	$picker_data=get_user_id($header_data['pickedby'],true,'&view=picks');
 	$packer_data=get_user_id($header_data['packedby'],true,'&view=packs');
 	$order_type=$data['Order Type'];
+
+	// TODO in the Ci, DE
+	list($parcels,$parcel_type)=parse_parcels($header_data['parcels']);
+
+
 	$data_dn=array(
 		       'Delivery Note Date'=>$date_inv
 		       ,'Delivery Note ID'=>$header_data['order_num']
@@ -1446,6 +1458,7 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 		       ,'Delivery Note Has Shipping'=>$_customer_data['has_shipping']
 		       ,'Delivery Note Shipper Code'=>$header_data['shipper_code']
 		       ,'Delivery Note Dispatch Method'=>$data['Delivery Note Dispatch Method']
+		    
 		       );
 
 	//$order->create_dn_simple($data_dn,$data_dn_transactions);
@@ -1459,6 +1472,7 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 	  $dn->pick_simple($data_dn_transactions);
 	  $order->update_dispatch_state('Ready to Pack');
 	  $dn->pack('all');
+	  $dn->set_parcels($parcels,$parcel_type);
 	  $order->update_dispatch_state('Ready to Ship');
 	  $order->load('totals');
 	  $order->update_dispatch_state('Dispached');
@@ -1506,6 +1520,7 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 	  // print"xxxxxxxxxxxxxxxxxxxxxxxxxxxxx\n";
 
 	  $dn->pack('all');
+	  $dn->set_parcels($parcels,$parcel_type);
 	  $order->update_dispatch_state('Ready to Ship');
 	  $invoice->data['Invoice Paid Date']=$date_inv;
 	  $invoice->pay('full',
@@ -1629,6 +1644,7 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 	$parent_order->update_dispatch_state('Ready to Pack');
 
 	$dn->pack('all');
+	$dn->set_parcels($parcels,$parcel_type);
 	$parent_order->update_dispatch_state('Ready to Ship');
 	if ($header_data['total_topay']!=0) {
 	  $invoice->data['Invoice Paid Date']=$date_inv;
@@ -1783,6 +1799,7 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 	  $order->update_dispatch_state('Ready to Pack');
 
 	  $dn->pack('all');
+	  $dn->set_parcels($parcels,$parcel_type);
 	  $order->update_dispatch_state('Ready to Ship');
 	  $dn->dispatch('all',$data_dn_transactions);
 	  $order->update_dispatch_state('Dispached');
@@ -1796,6 +1813,7 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 	  $order->update_dispatch_state('Ready to Pack');
 
 	  $dn->pack('all');
+	  $dn->set_parcels($parcels,$parcel_type);
 	  $order->update_dispatch_state('Ready to Ship');
 	  $dn->dispatch('all',$data_dn_transactions);
 	  $order->update_dispatch_state('Dispached');
@@ -2335,10 +2353,16 @@ function is_same_address($data) {
     return false;
 
 
-
+  
+  
+  
 
 
 }
+
+
+
+
 
 
 ?>

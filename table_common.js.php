@@ -39,6 +39,7 @@ var myhandleDataReturnPayload= function(oRequest, oResponse, oPayload) {
 
       YAHOO.util.Dom.get('rtext'+oResponse.meta.tableid).innerHTML=oResponse.meta.rtext;
     
+    
     if(oResponse.meta.rtext_rpp != undefined){
 
 	YAHOO.util.Dom.get('rtext_rpp'+oResponse.meta.tableid).innerHTML=oResponse.meta.rtext_rpp;
@@ -164,7 +165,7 @@ var change_rpp=function (rpp,tableid){
     var Dom   = YAHOO.util.Dom;
     var table=tables['table'+tableid];
     
-    table.get('paginator').setRowsPerPage(rpp+1)
+    table.get('paginator').setRowsPerPage(rpp)
 
 }
 

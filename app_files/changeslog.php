@@ -154,6 +154,9 @@ ALTER TABLE `Product Family Dimension` ADD `Product Family 1 Week Acc Avg Week P
 ALTER TABLE `Product Family Dimension` ADD `Product Family Sales State` ENUM( 'For sale', 'Out of Stock', 'Not for Sale', 'Discontinued', 'Unknown', 'No Applicable' ) NOT NULL DEFAULT 'For sale' AFTER `Product Family Main Department Name` 
 
 
+ALTER TABLE `Delivery Note Dimension` ADD `Delivery Note Number Parcels` SMALLINT UNSIGNED NOT NULL DEFAULT '0',
+ADD `Delivery Note Parcel Type` ENUM( 'Box', 'Pallet', 'Envelope' ) NOT NULL DEFAULT 'Box'
+
  */
 
 
