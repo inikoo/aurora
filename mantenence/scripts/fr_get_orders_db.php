@@ -424,12 +424,18 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
     if($data['order customer message']==0)
       $data['order customer message']='';
 
+  
+
+  $tmp_filename=preg_replace('/\/mnt\/z\/Orders-france\//',"\\\\\\networkspace1\\openshare\\Orders\\",$row2['filename']);
+    $tmp_filename=preg_replace('/\//',"\\",$tmp_filename);
+
+    $data['Order Original Data Filename']=$tmp_filename;
     $data['order original data mime type']='application/vnd.ms-excel';
-    $data['order original data']=$row2['filename'];
-    $data['order original data source']='DB:fr_orders_data.order.data';
+    $data['order original data']='';
+    $data['order original data source']='Excel File';
+
     $data['Order Original Metadata']=$store_code.$row2['id'];
-    $data['Order Main Source Type']='Unknown';
-    //print_r($header_data);
+
 
     $products_data=array();
     $data_invoice_transactions=array();

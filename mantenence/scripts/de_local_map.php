@@ -166,7 +166,7 @@ function get_tipo_order($ltipo,$header){
 }elseif(preg_match('/Damaged Parcel|shotages|MISSING|Missing Parcel|missing\s+\d|^reemplazo por falta|SHORTAHGE|shortages|Missing From Order|missing form order|Mising from|^Missing Item|Missing - Replacement|^Shortage|Lost Parcel/i',$ltipo)){
 
     $tipo=7;
- }elseif(preg_match('/^REMBOURSEMENT/i',$ltipo)){
+ }elseif(preg_match('/^REMBOURSEMENT|RÜCKERSTATTUNG/i',$ltipo)){
     $tipo=9;
     $header['notes']=preg_replace('/^refund$/i','',$header['notes']);
     $header['notes2']=preg_replace('/^refund$/i','',$header['notes2']);
