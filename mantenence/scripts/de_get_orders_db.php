@@ -12,6 +12,7 @@ include_once('../../class.Invoice.php');
 include_once('../../class.DeliveryNote.php');
 include_once('../../class.Email.php');
 include_once('../../class.CurrencyExchange.php');
+include_once('common_read_orders_functions.php');
 
 $store_code='D';
 $__currency_code='EUR';
@@ -124,7 +125,7 @@ $fam_promo_key=$fam_promo->id;
 
 $sql="select * from  de_orders_data.orders  where   (last_transcribed is NULL  or last_read>last_transcribed) and deleted='No'  order by filename  ";
 //$sql="select * from  de_orders_data.orders where filename like '%refund.xls'   order by filename";
-//$sql="select * from  de_orders_data.orders  where filename like '/mnt/%DE0071.xls'  order by filename";
+//$sql="select * from  de_orders_data.orders  where filename like '/mnt/%DE0266.xls'  order by filename";
 
 
 $contador=0;
@@ -212,7 +213,6 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
     // }
 
     list($date_index,$date_order,$date_inv)=get_dates($row2['timestamp'],$header_data,$tipo_order,true);
-  
   
 
     
@@ -984,7 +984,7 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 	  print_r($product);
 	  exit("error: $sql");
 	}
-	
+	mysql_free_result($res_x);
 	
 	$used_parts_sku=$part_sku;
 	
@@ -995,21 +995,21 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 	  $part->update_valid_dates($date_order);
 	  $part->update_valid_dates($date2);
 	
-	
+	// TODO FIXME 
 	  $sql=sprintf("update `Product Part List` set `Product Part Valid From`=%s  where `Product Part Valid From`>%s and `Product ID`=%d and `Part SKU`=%d and  `Product Part Most Recent`='Yes'"
 		       ,prepare_mysql($date_order)
 		       ,prepare_mysql($date_order)
 		       ,$product->pid
 		       ,$part->sku
 		       );
-	  mysql_query($sql);
+	  //mysql_query($sql);
 	  $sql=sprintf("update `Product Part List` set `Product Part Valid To`=%s   where `Product Part Valid To`<%s and `Product ID`=%d and `Part SKU`=%d and  `Product Part Most Recent`='Yes'"
 		       ,prepare_mysql($date2)
 		       ,prepare_mysql($date2)
 		       ,$product->pid
 		       ,$part->sku
 		       );
-	  mysql_query($sql);
+	 // mysql_query($sql);
 	  $parts_per_product=1;
 	  $used_parts_sku=array($part->sku=>array('parts_per_product'=>$parts_per_product,'unit_cost'=>$supplier_product_cost*$transaction['units']));
 		
@@ -1280,6 +1280,9 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 
       exit("error exhange is zero for $exchange_date\n");
     }
+list($parcels,$parcel_type)=parse_parcels($header_data['parcels']);
+
+//print_r($header_data);print "$tipo_order\n";
 
     // print_r($products_data);
     // exit;
@@ -1462,8 +1465,9 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 	$packer_data=get_user_id($header_data['packedby'],true,'&view=packs');
 	$order_type=$data['Order Type'];
 
-	// TODO in the Ci, DE
-	list($parcels,$parcel_type)=parse_parcels($header_data['parcels']);
+
+
+	
 
 
 	$data_dn=array(
@@ -1590,6 +1594,8 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 	  $weight=$estimated_w;
 	else
 	  $weight=$header_data['weight'];
+
+
 
 
 	$picker_data=get_user_id($header_data['pickedby'],true,'&view=picks');

@@ -98,7 +98,11 @@ class Ship_To extends DB_Table {
    $data=$this->base_data();
 
 
-   $address_data=Address::prepare_3line($raw_data);
+
+$_address=new Address();
+$address_data=$_address->prepare_3line($raw_data);
+
+
 
    foreach( $this->prepare_data($address_data) as $key=> $value){
      $data[$key]=$value;

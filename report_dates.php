@@ -31,7 +31,7 @@ if($tipo=='f'){
 
    }else
      die('error no year-week found');
-
+mysql_free_result($result);
 
 
    $ffrom=date("d/m", $_time);
@@ -76,7 +76,7 @@ if($tipo=='f'){
 
 		);
    }
-   
+   mysql_free_result($result);
    $link="&tipo=w&y=".$year."&w=".$week;
     $smarty->assign('w',$w);
 
@@ -150,7 +150,7 @@ if($tipo=='f'){
 
 		);
    }
-   
+   mysql_free_result($result);
    $link="&tipo=m&y=".$year."&m=".$month;
    $smarty->assign('w',$w);
 
@@ -264,7 +264,7 @@ if($tipo=='f'){
 
 		);
    }
-   
+   mysql_free_result($result);
    $link="&tipo=d&d=".$day."&y=".$year."&m=".$month;
     $smarty->assign('w',$w);
 

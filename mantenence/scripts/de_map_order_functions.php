@@ -2747,31 +2747,7 @@ function set_principal_address($recipient_id,$tipo,$address_id,$date_index='',$h
 
 
 function check_email_address($email) {
-// First, we check that there's one @ symbol, and that the lengths are right
-if (!ereg("^[^@]{1,64}@[^@]{1,255}$", $email)) {
-// Email invalid because wrong number of characters in one section, or wrong number of @ symbols.
-return false;
-}
-// Split it into sections to make life easier
-$email_array = explode("@", $email);
-$local_array = explode(".", $email_array[0]);
-for ($i = 0; $i < sizeof($local_array); $i++) {
-if (!ereg("^(([A-Za-z0-9!#$%&'*+/=?^_`{|}~-][A-Za-z0-9!#$%&'*+/=?^_`{|}~\.-]{0,63})|(\"[^(\\|\")]{0,62}\"))$", $local_array[$i])) {
-return false;
-}
-}
-if (!ereg("^\[?[0-9\.]+\]?$", $email_array[1])) { // Check if domain is IP. If not, it should be valid domain name
-$domain_array = explode(".", $email_array[1]);
-if (sizeof($domain_array) < 2) {
-return false; // Not enough parts to domain
-}
-for ($i = 0; $i < sizeof($domain_array); $i++) {
-if (!ereg("^(([A-Za-z0-9][A-Za-z0-9-]{0,61}[A-Za-z0-9])|([A-Za-z0-9]+))$", $domain_array[$i])) {
-return false;
-}
-}
-}
-return true;
+return Email::is_valid($email);
 }
 
 function get_address_raw(){
@@ -3990,62 +3966,12 @@ function set_transactions($transactions,$order_id,$tipo_order,$parent_order_id,$
 }
 
 
-function get_dates($filedate,$header_data,$tipo_order,$new_file=true){
 
-
-  $datetime_updated=date("Y-m-d H:i:s",$filedate);
-  $time_updated_menos30min=date("H:i:s",$filedate-1800);
-
-  list($date_updated,$time_updated)=split(' ',$datetime_updated);
-  if($new_file){
-    if($tipo_order==2  or $tipo_order==6 or $tipo_order==7 or $tipo_order==9   ){
-      
-      //print_r($header_data);
-      if($header_data['date_inv']=='' or $header_data['date_inv']=='1970-01-01')
-	$header_data['date_inv']=$header_data['date_order'];
-      
-      if($date_updated ==$header_data['date_inv']){
-	
-	$date_charged=$date_updated." ".$time_updated;
-// 	if($header_data['date_inv']==$header_data['date_order']){
-// 	  $date_processed=$header_data['date_order']." ".$time_updated_menos30min;
-// 	  print "caca";
-// 	}else
-	$date_processed=$header_data['date_order']." 09:30:00";
-	if(strtotime($date_processed)>strtotime($date_charged))
-	  $date_processed=$header_data['date_order']." ".$time_updated_menos30min;
-
-      }else{
-	$date_charged=$header_data['date_inv']." 16:30:00";
-	$date_processed=$header_data['date_order']." 09:30:00";
-      }
-      $date_index=$date_charged;
-    }else{
-
-
-
-      $date_charged="NULL";
-      if($date_updated ==$header_data['date_order']){
-	//print $header_data['date_order']." xssssssssssssxx";
-	$date_processed=$date_updated." ".$time_updated;
-	// print "$date_processed  xssssssssssssxx\n";
-
-      }
-      else
-	$date_processed=$header_data['date_order']." 08:30:00";
-      $date_index=$date_processed;
-
-      // print $date_index." xxx\n";
-
-    }
-  }
-  //  print "$date_index,$date_processed,$date_charged\n";
-  return array($date_index,$date_processed,$date_charged);
-
-}
 
 
 function setup_contact($act_data,$header_data,$date_index){
+
+
   $co='';
   $header_data['country_d2']='';
   $header_data['country']='';
@@ -6703,6 +6629,10 @@ if(preg_match('/^101 Reykjavik$/i',$act_data['town'])){
     // print_r($act_data);
   }
 
+ if(preg_match('/^Sterreich$/i',$act_data['country']) ){
+   
+    $act_data['country']='Österreich';
+  }
 
   if(preg_match('/Drogheda.*Co Louth/i',$act_data['town'])){
 

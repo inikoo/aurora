@@ -3386,7 +3386,7 @@ $principal=true;
       First Name Key of the First Name Dimension  DB record or 0 if not found
 
       */
-    function is_givenname($name) {
+    public static function is_givenname($name) {
         $sql=sprintf("select `First Name Key` as id from  kbase.`First Name Dimension` where `First Name`=%s",prepare_mysql($name));
         $result=mysql_query($sql);
         if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
@@ -3407,7 +3407,7 @@ $principal=true;
       */
 
 
-    function is_surname($name) {
+  public static    function is_surname($name) {
 
         $sql=sprintf("select `Surname` as id from  kbase.`Surname Dimension` where `Surname`=%s",prepare_mysql($name));
         $result=mysql_query($sql);

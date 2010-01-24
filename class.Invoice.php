@@ -152,9 +152,11 @@ $this->data ['Invoice Customer Contact Name'] = $invoice_data ['Invoice Customer
     if($myconf['currency_code']!=$this->data['Invoice Currency']){
       //print $myconf['currency_code'].' -> '.$this->data['Invoice Currency']."\n";
       if(isset($invoice_data['Invoice Currency Exchange'])){
-	$this->data['Invoice Currency Exchange']=$invoice_data['Invoice Currency Exhange'];
+	$this->data['Invoice Currency Exchange']=$invoice_data['Invoice Currency Exchange'];
       }else{
 	$exchange=1;
+	
+	
 	$sql=sprintf("select `Exchange` from `History Currency Exchange Dimension` where `Currency Pair`='EURGBP' and `Date`=DATE(%s)"
 		    ,prepare_mysql($this->data ['Invoice Date'] ));
        

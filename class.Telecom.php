@@ -504,7 +504,7 @@ protected function create($data,$optios=''){
    
    
   */
- function parse_number($number,$country_code='UNK'){
+public static  function parse_number($number,$country_code='UNK'){
    //    print "parsing number $number $country_code\n";
 
    $data=array('Telecom Technology Type'=>'Unknown'
