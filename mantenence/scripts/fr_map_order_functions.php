@@ -2747,31 +2747,7 @@ function set_principal_address($recipient_id,$tipo,$address_id,$date_index='',$h
 
 
 function check_email_address($email) {
-// First, we check that there's one @ symbol, and that the lengths are right
-if (!ereg("^[^@]{1,64}@[^@]{1,255}$", $email)) {
-// Email invalid because wrong number of characters in one section, or wrong number of @ symbols.
-return false;
-}
-// Split it into sections to make life easier
-$email_array = explode("@", $email);
-$local_array = explode(".", $email_array[0]);
-for ($i = 0; $i < sizeof($local_array); $i++) {
-if (!ereg("^(([A-Za-z0-9!#$%&'*+/=?^_`{|}~-][A-Za-z0-9!#$%&'*+/=?^_`{|}~\.-]{0,63})|(\"[^(\\|\")]{0,62}\"))$", $local_array[$i])) {
-return false;
-}
-}
-if (!ereg("^\[?[0-9\.]+\]?$", $email_array[1])) { // Check if domain is IP. If not, it should be valid domain name
-$domain_array = explode(".", $email_array[1]);
-if (sizeof($domain_array) < 2) {
-return false; // Not enough parts to domain
-}
-for ($i = 0; $i < sizeof($domain_array); $i++) {
-if (!ereg("^(([A-Za-z0-9][A-Za-z0-9-]{0,61}[A-Za-z0-9])|([A-Za-z0-9]+))$", $domain_array[$i])) {
-return false;
-}
-}
-}
-return true;
+return Email::is_valid($email);
 }
 
 function get_address_raw(){
@@ -3996,7 +3972,7 @@ function get_dates($filedate,$header_data,$tipo_order,$new_file=true){
   $datetime_updated=date("Y-m-d H:i:s",$filedate);
   $time_updated_menos30min=date("H:i:s",$filedate-1800);
 
-  list($date_updated,$time_updated)=split(' ',$datetime_updated);
+  list($date_updated,$time_updated)=preg_split('/\s/',$datetime_updated);
   if($new_file){
     if($tipo_order==2  or $tipo_order==6 or $tipo_order==7 or $tipo_order==9   ){
       
@@ -4069,8 +4045,12 @@ function setup_contact($act_data,$header_data,$date_index){
      $tel=preg_replace("/$email/",'',$header_data['phone']);
   }
   $country='France';
+
+if(!$header_data['postcode'])
+$header_data['postcode']='';
   $postalcode=$header_data['postcode'];
-  if(preg_match('/^[a-z]{4,} \d+$/i',$header_data['postcode'])){
+ if(preg_match('/^[a-z]{4,} \d+$/i',$header_data['postcode'])){
+ 
     $tmp=preg_split('/\s/',$header_data['postcode']);
     $country=$tmp[0];
     $postalcode=$tmp[1];

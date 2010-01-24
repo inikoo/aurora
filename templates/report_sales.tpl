@@ -17,16 +17,28 @@
 </p>
 <table class="report_sales1">
 <tr><td></td><td>{t}Invoices{/t}</td><td>{t}Net Sales{/t}</td><td>{t}Tax{/t}</td></tr>
-<tr class="first"><td class="label">{$home}</td><td>{$invoices_home} <img id="invoices_home" style="vertical-align:middle;cursor:pointer" title="{t}Display home orders invoiced in this period{/t}"src="art/icons/magnify-clip.png" /></td><td>{$net_home}</td><td>{$tax_home}</td></tr>
+<tr class="first">
+<td class="label">{$home}</td><td>{$invoices_home} <img id="invoices_home" style="vertical-align:middle;cursor:pointer" title="{t}Display home orders invoiced in this period{/t}"src="art/icons/magnify-clip.png" /></td>
+<td></td>
+<td>{$net_home}</td>
+<td>{$tax_home}</td>
+</tr>
 
-<tr class="first"><td class="label">{t}Exports{/t}</td><td>{$invoices_nohome} <img id="invoices_nohome" style="vertical-align:middle;cursor:pointer" title="{t}Display export orders invoiced in this period{/t}"src="art/icons/magnify-clip.png"/></td><td>{$net_nohome}</td><td>{$tax_nohome}</td><td>{$refund_invoices_nohome}</td><td>{$refund_nohome}</td></tr>
+<tr class="first"><td class="label">{t}Exports{/t}</td><td>{$invoices_nohome} <img id="invoices_nohome" style="vertical-align:middle;cursor:pointer" title="{t}Display export orders invoiced in this period{/t}"src="art/icons/magnify-clip.png"/></td><td>{$net_nohome}</td><td>{$tax_nohome}</td></tr>
 {if invoices_partner!=0}
-<tr class="partners"><td>Partners</td><td class="label">{$invoices_p} <img id="invoices_partner" style="vertical-align:middle;cursor:pointer" title="{t}Display pertner's orders invoiced in this period{/t}"src="art/icons/magnify-clip.png"/></td><td>{$net_p}</td><td>{$tax_p}</td><td>{$refund_invoices_p}</td><td>{$refund_p}</td></tr>
+<tr class="partners"><td>Partners</td><td class="label">{$invoices_p} <img id="invoices_partner" style="vertical-align:middle;cursor:pointer" title="{t}Display pertner's orders invoiced in this period{/t}"src="art/icons/magnify-clip.png"/></td><td>{$net_p}</td><td>{$tax_p}</td></tr>
 {/if}
 {if $invoices_unk!=0}
-<tr class="first"><td class="label">{t}Unknown{/t}</td><td>{$invoices_unk} <img id="invoices_nohome" style="vertical-align:middle;cursor:pointer" title="{t}Display export orders invoiced in this period{/t}"src="art/icons/magnify-clip.png"/></td><td>{$net_unk}</td><td>{$tax_unk}</td><td>{$refund_invoices_unk}</td><td>{$refund_unk}</td></tr>
+<tr class="first"><td class="label">{t}Unknown{/t}</td><td>{$invoices_unk} <img id="invoices_unknown" style="vertical-align:middle;cursor:pointer" title="{t}Display export orders invoiced in this period{/t}" src="art/icons/magnify-clip.png"/></td><td>{$net_unk}</td><td>{$tax_unk}</td></tr>
 {/if}
-<tr class="total" ><td>Total</td><td>{$total_invoices} <img id="invoices_total" style="vertical-align:middle;cursor:pointer" title="{t}Display orders invoiced in this period{/t}"src="art/icons/magnify-clip.png"/></td><td>{$total_net}</td><td>{$total_tax}</td><td>{$refund_invoices}</td><td>{$refund}</td></tr>
+<tr class="total" ><td>Total</td><td>{$total_invoices} <img id="invoices_total" style="vertical-align:middle;cursor:pointer" title="{t}Display orders invoiced in this period{/t}"src="art/icons/magnify-clip.png"/></td><td>{$total_net}</td><td>{$total_tax}</td></tr>
+
+
+</table>
+
+<h2>Tax Break Down</h2>
+
+<table class="report_sales1">
 <tr class="title"><td class="label">{t}Taxable Invoices{/t}</td></tr>
 {foreach from=$taxable   item=data key=rate}
 <tr class="geo"><td class="label">{$rate} {t}rate{/t}</td><td>{$data.invoices}</td><td>{$data.sales}</td><td>{$data.tax}</td></tr>
@@ -43,9 +55,8 @@
 <tr class="geo"><td class="label"><img src="art/icons/error.png"/> {t}Non zero rate{/t}</td><td>{$data.invoices}</td><td>{$data.sales}</td><td>{$data.tax}</td></tr>
 {/foreach}
 <tr class="total"><td class="label">{t}Total{/t}</td><td>{$invoices_notaxeable_all}</td><td>{$net_notaxable_all}</td><td>{$tax_notaxable_all}</td></tr>
-
-
 </table>
+
 <h2>Money Balance</h2>
 <p>{t}Itemised net sales balances{/t}:</p>
 
@@ -460,5 +471,36 @@ The export sales represent   {$per_export} ({$per_export_nop} without partners) 
  </div>
 </div> 
 	</div> 
+	
+	<div id="orders1">
+	<div class="data_table" style="clear:both;">
+    <span   class="clean_table_title" id="clean_table_title0"></span>
+    <div style="clear:both;margin:0 0px;padding:0 20px ;border-bottom:1px solid #999"></div>
+    
+   
+    
+    
+	
+	
+
+
+    <div  class="clean_table_caption"  style="clear:both;">
+      <div style="float:left;"><div id="table_info0" class="clean_table_info"><span id="rtext0"></span> <span class="rtext_rpp" id="rtext_rpp0"></span> <span class="filter_msg"  id="filter_msg0"></span></div></div>
+      
+
+      <div class="clean_table_filter" id="clean_table_filter0">
+	
+	<div class="clean_table_info" style="width:10.2em;padding-bottom:1px;" >
+	  <span id="filter_name0" style="margin-right:5px">{$filter_name}:</span>
+	  <input style="border-bottom:none;width:6em;border-bottom:none" id='f_input0' value="{$filter_value}" size=10/>
+	  <div id='f_container0'></div>
+	</div>
+      </div>
+      <div class="clean_table_controls" style="" ><div><span  style="margin:0 5px" id="paginator0"></span></div></div>
+    </div>
+    <div  id="table0"   class="data_table_container dtable btable"> </div>
+  </div>
+	</div>
+	
 {include file='footer.tpl'}
 

@@ -173,18 +173,18 @@ class Order extends DB_Table{
 
       }else{
        	//print "Cust data\n";
-	//	print_r($data['Customer Data']);
+	//print_r($data['Customer Data']);
 				  
 	$customer = new Customer ( 'find create', $data['Customer Data'] );
-
 	//	print_r($customer);
 
 	      $this->data ['Order Main Country 2 Alpha Code']=$customer -> data['Customer Main Address Country 2 Alpha Code'];
 
-	
+ 	
 	
 	//print_r($customer);
 	if($customer->data['Customer Delivery Address Link']=='None'){
+
 	  $ship_to= new Ship_To('find create',$data['Shipping Address']);
 	}else{
 	  $ship_to= $customer->set_current_ship_to('return object');
@@ -203,7 +203,7 @@ class Order extends DB_Table{
       }
 				
 			     
-      
+     
       $this->billing_address=new Address($customer->data['Customer Billing Address Key']);
 				
 

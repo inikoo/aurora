@@ -9,7 +9,7 @@ var Dom   = YAHOO.util.Dom;
     var panel1;
 
  var show_invoices=function(){
-     Dom.get('clean_table_title0').innerHTML='<?php echo _('Orders invoiced').' '.$_SESSION['state']['report']['sales']['period']?>.';
+    Dom.get('clean_table_title0').innerHTML='<?php echo _('Orders invoiced').' '.$_SESSION['state']['report']['sales']['period']?>.';
      request="ar_orders.php?tipo=report_invoices&saveto=report_sales&where="+escape('where true')+"&view=invoices&sf=0&nr=10&from=<?php echo$_SESSION['state']['report']['sales']['from']?>&to=<?php echo$_SESSION['state']['report']['sales']['to']?>"
      //  alert(request);
      var table=tables.table0;
@@ -39,6 +39,18 @@ var show_invoices_nohome=function(){
      panel1.show();
 
  }
+   
+var show_invoices_unknown=function(){
+     Dom.get('clean_table_title0').innerHTML='<?php echo _('Unknown location orders').' '.$_SESSION['state']['report']['sales']['period']?>';
+     request="ar_orders.php?tipo=report_invoices&saveto=report_sales&where="+escape('where  `Invoice For Partner`="No" and `Invoice Billing Country 2 Alpha Code`="XX"')+"&view=invoices&sf=0&nr=10&from=<?php echo$_SESSION['state']['report']['sales']['from']?>&to=<?php echo$_SESSION['state']['report']['sales']['to']?>"
+
+     var table=tables.table0;
+     var datasource=tables.dataSource0;
+     datasource.sendRequest(request,table.onDataReturnInitializeTable, table);       
+     panel1.show();
+
+ }
+      
    
 var show_invoices_partner=function(){
      Dom.get('clean_table_title0').innerHTML='<?php echo _('Partners orders invoiced').' '.$_SESSION['state']['report']['sales']['period']?>';
@@ -93,7 +105,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 					 ];
 	    
 	    this.dataSource0 = new YAHOO.util.DataSource("ar_orders.php?tipo=report_invoices&view="+view+"&nr=10&from=<?php echo$_SESSION['state']['report']['sales']['from']?>&to=<?php echo$_SESSION['state']['report']['sales']['to']?>");
-
+//alert("ar_orders.php?tipo=report_invoices&view="+view+"&nr=10&from=<?php echo$_SESSION['state']['report']['sales']['from']?>&to=<?php echo$_SESSION['state']['report']['sales']['to']?>")
 	    this.dataSource0.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource0.connXhrMode = "queueRequests";
 	    this.dataSource0.responseSchema = {
@@ -132,8 +144,8 @@ YAHOO.util.Event.addListener(window, "load", function() {
 									  })
 								     
 								     ,sortedBy : {
-									 key: "<?php echo$_SESSION['state']['orders']['table']['order']?>",
-									 dir: "<?php echo$_SESSION['state']['orders']['table']['order_dir']?>"
+									 key: "<?php echo $_SESSION['state']['report']['sales']['order']?>",
+									 dir: "<?php echo $_SESSION['state']['report']['sales']['order_dir']?>"
 								     }
 							   ,dynamicData : true
 
@@ -150,12 +162,35 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 
 
-
+	var go_free = function(e){
+	    var from=Dom.get('v_calpop1').value;
+	    var to=Dom.get('v_calpop2').value;
+	    location.href='report_sales.php?tipo=f&from='+from+'&to='+to; 
+	}
 function init(){
+
+var oACDS = new YAHOO.util.FunctionDataSource(mygetTerms);
+ oACDS.queryMatchContains = true;
+ var oAutoComp = new YAHOO.widget.AutoComplete("f_input0","f_container0", oACDS);
+ oAutoComp.minQueryLength = 0; 
+
+
+ panel1 = new YAHOO.widget.Panel("orders1", { visible:false, constraintoviewport:true } );
+    panel1.render();
+
+    YAHOO.util.Event.addListener("invoices", "click", show_invoices);
+    YAHOO.util.Event.addListener("invoices_total", "click", show_invoices);
+    YAHOO.util.Event.addListener("invoices_home", "click", show_invoices_home);
+    YAHOO.util.Event.addListener("invoices_nohome", "click", show_invoices_nohome);
+        YAHOO.util.Event.addListener("invoices_unknown", "click", show_invoices_unknown);
+
+    YAHOO.util.Event.addListener("invoices_partner", "click", show_invoices_partner);
+
+
 
 	Event.addListener('go_free_report', "click", go_free);
 
-    	cal2 = new YAHOO.widget.Calendar("cal2","cal2Container", { title:"<?php echo _('Choose a date')?>:", close:true } );
+cal2 = new YAHOO.widget.Calendar("cal2","cal2Container", { title:"<?php echo _('Choose a date')?>:", close:true } );
  
 	cal2.update=updateCal;
 
@@ -172,7 +207,7 @@ function init(){
 	cal2.update();
 
 	cal2.selectEvent.subscribe(handleSelect, cal2, true);
-	
+
  
 	cal1 = new YAHOO.widget.Calendar("cal1","cal1Container", { title:"<?php echo _('Choose a date')?>:", close:true } );
 	cal1.update=updateCal;cal1.id=1;cal1.render();
@@ -184,26 +219,12 @@ function init(){
 	YAHOO.util.Event.addListener("calpop1", "click", cal1.show, cal1, true);
 	YAHOO.util.Event.addListener("calpop2", "click", cal2.show, cal2, true);
 	
-	
-	
-	
+alert('x');
 
+	
+	
 
     
-var oACDS = new YAHOO.util.FunctionDataSource(mygetTerms);
- oACDS.queryMatchContains = true;
- var oAutoComp = new YAHOO.widget.AutoComplete("f_input0","f_container0", oACDS);
- oAutoComp.minQueryLength = 0; 
-
-
- panel1 = new YAHOO.widget.Panel("orders1", { visible:false, constraintoviewport:true } );
-    panel1.render();
-
-    YAHOO.util.Event.addListener("invoices", "click", show_invoices);
-    YAHOO.util.Event.addListener("invoices_total", "click", show_invoices);
-    YAHOO.util.Event.addListener("invoices_home", "click", show_invoices_home);
-    YAHOO.util.Event.addListener("invoices_nohome", "click", show_invoices_nohome);
-    YAHOO.util.Event.addListener("invoices_partner", "click", show_invoices_partner);
 
 
 }

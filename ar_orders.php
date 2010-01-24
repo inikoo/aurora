@@ -2038,7 +2038,7 @@ if(isset( $_REQUEST['where']))
     $tableid=$_REQUEST['tableid'];
   else
     $tableid=0;
-
+//print $where;
 
    $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
 
@@ -2054,8 +2054,9 @@ if(isset( $_REQUEST['where']))
      $_SESSION['state']['report']['sales']['f_value']=$f_value;
      $_SESSION['state']['report']['sales']['to']=$to;
      $_SESSION['state']['report']['sales']['from']=$from;
-     $date_interval=prepare_mysql_dates($from,$to,'`Invoice Date`','only_dates');
-     
+$store=$_SESSION['state']['report']['sales']['store_key'];
+    $date_interval=prepare_mysql_dates($from,$to,'`Invoice Date`','only_dates');
+    
    }else{
       if(isset( $_REQUEST['store_id'])    ){
      $store=$_REQUEST['store_id'];

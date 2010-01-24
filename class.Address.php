@@ -133,9 +133,9 @@ class Address extends DB_Table{
   */
 
   function find($raw_data,$options=''){
-    //print "$options\n";
+   // print "$options\n";
     //  print_r($raw_data);
-			
+
     $find_fuzzy=false;
 	  
     if(preg_match('/fuzzy/i',$options)){
@@ -756,7 +756,7 @@ class Address extends DB_Table{
 	
 
 
-    //print_r($this->candidate);
+   // print_r($data);
     //exit("");
 
 
@@ -831,10 +831,10 @@ class Address extends DB_Table{
     <Address>
 
   */
-  protected function create($data){
+   function create($data){
 
-    //  print_r($data);
-
+  //   print_r($data);
+//exit;
    
 
 
@@ -853,14 +853,13 @@ class Address extends DB_Table{
     switch($data['Address Input Format']){
     case('3 Line'):
     
-      $this->data=$this->prepare_3line($data,'untrusted',$this->get_dafault('Country 2 Alpha Code'));
+      $this->data=$this->prepare_3line($data,'untrusted',$this->get_default('Country 2 Alpha Code'));
 
       break;
     case('DB Fields'):
       $this->data=$this->prepare_DBfields($data);
       break;
     }
-
 
     $this->data['Address Plain']=$this->plain($this->data);
     $keys='';
@@ -1906,7 +1905,7 @@ $data['Address Country Key']='';
 	 $untrusted - _boleean_
 	 */
 
-	public static function prepare_3line($raw_data,$args='untrusted',$default_2alpha_code='XX'){
+	 function prepare_3line($raw_data,$args='untrusted',$default_2alpha_code='XX'){
 
 
 		//       print "========== ADDEWESS PARSING ================\n";
@@ -1924,8 +1923,8 @@ $data['Address Country Key']='';
 		if(count($raw_data)>0){
 
 			foreach($raw_data as $key=>$val){
-				if($val!='' and ($key!='Address Fuzzy' and $key!='Address Data Last Update'and $key!='Address Input Format' and $key!='Military Address'  )){
-					//	print "NO EMTOY KEY $key\n";
+				if($val and ($key!='Address Fuzzy' and $key!='Address Data Last Update'and $key!='Address Input Format' and $key!='Military Address'  )){
+					//print "NO EMTOY KEY $key $val\n";
 					$empty=false;
 					break;
 				}
@@ -1963,7 +1962,6 @@ $data['Address Country Key']='';
 
 
 
-
 		if($empty){
 
 
@@ -1974,6 +1972,8 @@ $data['Address Country Key']='';
 			$data['Address Country Key']=$country->id;
 			$data['Address Fuzzy']='Yes';
 			$data['Address Fuzzy Type']='All';
+			
+			//print_r($data);
 		}
 		//--------------------------------------------------------------------------
 		// Common errors related to the country
@@ -2096,8 +2096,7 @@ $data['Address Country Key']='';
 
 
 		$data=Address::prepare_country_data($data,$default_2alpha_code);
-		// print_r($data);
-		//exit;
+		
 		// foreach($country as $key=>$value){
 		//  if(array_key_exists($key,$data)){
 		//	$data[$key]=_trim($value);
@@ -2264,7 +2263,7 @@ $data['Address Country Key']='';
 			// this is going to ve dirty
 			//print_r($data);
 
-			if(Address::is_street($raw_data['Address Line 2']) and  $raw_data['Address Line 1']!=''  and $raw_data['Address Line 3']==''  ){
+			if($this->is_street($raw_data['Address Line 2']) and  $raw_data['Address Line 1']!=''  and $raw_data['Address Line 3']==''  ){
 				$tmp=preg_split('/\s*,\s*/i',$raw_data['Address Line 1']);
 				if(count($tmp)==2 and !preg_match('/^\d*$/i',$tmp[0])   and !preg_match('/^\d*$/i',$tmp[1]) ){
 					$raw_data['Address Line 3']=$raw_data['Address Line 2'];
@@ -2397,16 +2396,16 @@ $data['Address Country Key']='';
 
 			$f_c1=($data['Address Country First Division']==''?false:true);
 			$f_c2=($data['Address Country Second Division']==''?false:true);
-			$t_t=Address::is_town($data['Address Town']);
-			$t_c1=Address::is_town($data['Address Country First Division']);
-			$t_c2=Address::is_town($data['Address Country Second Division']);
+			$t_t=$this->is_town($data['Address Town']);
+			$t_c1=$this->is_town($data['Address Country First Division']);
+			$t_c2=$this->is_town($data['Address Country Second Division']);
 
-			$s_a1=Address::is_street($raw_data['Address Line 1']);
-			$s_a2=Address::is_street($raw_data['Address Line 2']);
-			$s_a3=Address::is_street($raw_data['Address Line 3']);
-			$i_a1=Address::is_internal($raw_data['Address Line 1']);
-			$i_a2=Address::is_internal($raw_data['Address Line 2']);
-			$i_a3=Address::is_internal($raw_data['Address Line 3']);
+			$s_a1=$this->is_street($raw_data['Address Line 1']);
+			$s_a2=$this->is_street($raw_data['Address Line 2']);
+			$s_a3=$this->is_street($raw_data['Address Line 3']);
+			$i_a1=$this->is_internal($raw_data['Address Line 1']);
+			$i_a2=$this->is_internal($raw_data['Address Line 2']);
+			$i_a3=$this->is_internal($raw_data['Address Line 3']);
 
 
 			// especial case when to town is presente but the first division seems to be a town
@@ -4100,7 +4099,6 @@ $data['Address Country Key']='';
 
 		$data['Address Location']=Address::location($data);
 		//  print_r($data['Address Country 2 Alpha Code']);
-
 
 		
 	
