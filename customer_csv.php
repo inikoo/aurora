@@ -76,7 +76,7 @@ $export_data=array(
 		   ,"m"
 		   ,"n"
 		   ,"o"
-		   ,"p"
+		   ,$number_orders+1
 		   ,"900"
 		   ,"q"
 		   ,""

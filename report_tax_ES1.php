@@ -24,7 +24,7 @@ $general_options_list=array();
 $smarty->assign('general_options_list',$general_options_list);
 
 
-if(isset($_REQUEST['year']) and preg_replace('/\d{2,4}/',$_REQUEST['year'])){
+if(isset($_REQUEST['year']) and preg_match('/\d{2,4}/',$_REQUEST['year'])){
 $year=$_REQUEST['year'];
 $_SESSION['state']['report_data']['ES1']['year']=$year;
 }
