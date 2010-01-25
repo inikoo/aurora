@@ -31,6 +31,7 @@ case('customer'):
 case('customers'):
    $data=prepare_values($_REQUEST,array(
 			     'q'=>array('type'=>'string')
+			     ,'scope'=>array('type'=>'string')
 			     ));
     $data['user']=$user;
    search_customer($data);
@@ -47,6 +48,11 @@ function search_customer($data){
   $user=$data['user'];
   $q=$data['q'];
     // $q=_trim($_REQUEST['q']);
+    
+  if($data['scope']=='store'){
+    $stores=$_SESSION['state']['customers']['store'];
+    
+  }else
     $stores=join(',',$user->stores);
     
     $total_found=0;
@@ -79,7 +85,7 @@ function search_customer($data){
 		   ,$stores
 		,addslashes($q)
 		);
-   //  print $sql;
+   // print $sql;
       $res=mysql_query($sql);
       while($row=mysql_fetch_array($res)){
 	$result=sprintf('<tr><td class="aright"><a href="customer.php?id=%d">%s</a></td></tr>',$row['Customer Key'],$row['Customer Name']);
@@ -91,19 +97,46 @@ function search_customer($data){
     }
   $names_results.='</table>';
 
+
+
+ $contacts_found=0;
+ $contacts_results='<table>';
+ // Email serach
+ if(strlen($q)>2){
+   $sql=sprintf('select `Customer Key`,`Customer Name`,`Customer Main Contact Name` from `Customer Dimension` where `Customer Store Key` in (%s) and  `Customer Main Contact Name` like "%s%%" and `Customer Type`="Company" limit 5'
+		   ,$stores
+		,addslashes($q)
+		);
+  
+      $res=mysql_query($sql);
+      while($row=mysql_fetch_array($res)){
+	$result=sprintf('<tr><td class="aright"><a href="customer.php?id=%d">%s <b>%s</b></a></td></tr>',$row['Customer Key'],$row['Customer Name'],$row['Customer Main Contact Name']);
+	$contacts_found++;
+	$contacts_results.=$result;
+	$total_found++;
+      }
+
+    }
+  $contacts_results.='</table>';
+
+
+
+
+
+
     
      $locations_found=0;
  $locations_results='<table>';
  // Email serach
- if(strlen($q)>2){
-   $sql=sprintf('select `Customer Key`,`Customer Name` from `Customer Dimension` where `Customer Store Key` in (%s) and  `Customer Name` like "%s%%"  limit 5'
+ if(strlen($q)>1){
+   $sql=sprintf('select `Customer Key`,`Customer Name`,`Customer Main Address Postal Code`,`Customer Main Location` from `Customer Dimension` where `Customer Store Key` in (%s) and  `Customer Main Address Postal Code` like "%s%%"  limit 5'
 		   ,$stores
 		,addslashes($q)
 		);
-   //  print $sql;
+   // print $sql;
       $res=mysql_query($sql);
       while($row=mysql_fetch_array($res)){
-	$result=sprintf('<tr><td class="aright"><a href="customer.php?id=%d">%s</a></td></tr>',$row['Customer Key'],$row['Customer Name']);
+	$result=sprintf('<tr><td class="aright"><a href="customer.php?id=%d">%s</a> %s <b>%s</b></td></tr>',$row['Customer Key'],$row['Customer Name'],$row['Customer Main Location'],$row['Customer Main Address Postal Code']);
 	$locations_found++;
 	$locations_results.=$result;
 	$total_found++;
@@ -113,8 +146,12 @@ function search_customer($data){
   $locations_results.='</table>';
     
     
-    $data=array('results'=>$total_found,'emails'=>$emails_found,'emails_results'=>$emails_results
-		,'names'=>$names_found,'names_results'=>$names_results);
+    $data=array('results'=>$total_found
+		,'emails'=>$emails_found,'emails_results'=>$emails_results
+		,'names'=>$names_found,'names_results'=>$names_results
+		,'locations'=>$locations_found,'locations_results'=>$locations_results
+		,'contacts'=>$contacts_found,'contacts_results'=>$contacts_results
+		);
     $response=array('state'=>200,'data'=>$data);
     echo json_encode($response);
 }
