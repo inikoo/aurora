@@ -150,7 +150,17 @@ function close_dialog(tipo){
 	dialog_note.hide();
 
 	break;
+    
+ case('make_order'):
+
+     //	Dom.get(tipo+"_input").value='';
+	//Dom.get(tipo+'_save').style.visibility='hidden';
+	dialog_make_order.hide();
+
+	break;
     }
+
+
 };
 
  
@@ -318,8 +328,14 @@ dialog_note.render();
 dialog_attach = new YAHOO.widget.Dialog("dialog_attach", {context:["attach","tr","tl"]  ,visible : false,close:false,underlay: "none",draggable:false});
 dialog_attach.render();
 
+dialog_make_order = new YAHOO.widget.Dialog("dialog_make_order", {context:["make_order","tr","tl"]  ,visible : false,close:false,underlay: "none",draggable:false});
+dialog_make_order.render();
+
+
 Event.addListener("note", "click", dialog_note.show,dialog_note , true);
 Event.addListener("attach", "click", dialog_attach.show,dialog_attach , true);
+Event.addListener("make_order", "click", dialog_make_order.show,dialog_make_order , true);
+
 
 Event.addListener("take_order", "click", take_order , true);
 Event.on('upload_attach', 'click', upload_attach);

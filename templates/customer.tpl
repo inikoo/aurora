@@ -18,6 +18,7 @@
     <tr><td  id="attach">{t}Attach File{/t}</td></tr>
     
     <tr><td id="take_order">{t}Take Order{/t}</td></tr>
+    <tr><td id="make_order">{t}Make Order{/t}</td></tr>
 
 
     <tr style="display:none"><td  id="long_note">{t}Long Note{/t}</td></tr>
@@ -150,6 +151,7 @@
 <div id="dialog_long_note">
   <div id="long_note_msg"></div>
   <table >
+
     <tr><td colspan=2>
 	<textarea id="long_note_input"></textarea>
       </td>
@@ -159,6 +161,28 @@
     <span  class="unselectable_text button" onClick="close_dialog('long_note')" >{t}Cancel{/t} <img src="art/icons/cross.png"/></span></td>
   <td style="text-align:center;width:50%">
     <span  onclick="save('long_note')" id="long_note_save"  class="unselectable_text button"   >{t}Save{/t} <img src="art/icons/disk.png" ></span></td></tr>
+</table>
+</div>
+
+
+<div id="dialog_make_order">
+  <div id="long_note_msg"></div>
+  <table >
+<tr><td colspan=2>{t}Courier{/t}:</td><tr><tr><td colspan=2><input /></td></tr>
+
+<tr><td colspan=2>{t}Special Instructions{/t}:</td></tr>
+    <tr><td colspan=2>
+	<textarea id="make_order_special_instructions"></textarea>
+      </td>
+    <tr>
+    <tr class="buttons" style="font-size:100%">
+
+
+
+  <td style="text-align:center;width:50%">
+    <span  class="unselectable_text state_details" onClick="close_dialog('make_order')" >{t}Cancel{/t}</span></td>
+  <td style="text-align:center;width:50%">
+    <span  onclick="window.open('customer_csv.php?id={$customer->get('Customer Key')}','Download');close_dialog('make_order')" id="make_order_save"  class="unselectable_text state_details"   >{t}Export{/t}</span></td></tr>
 </table>
 </div>
 
