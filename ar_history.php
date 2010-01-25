@@ -192,7 +192,7 @@ if(isset( $_REQUEST['where']))
 
    
    $sql="select count(*) as total from  `History Dimension`   $where $wheref ";
- // print $sql;
+   //  print $sql;
    $result=mysql_query($sql);
    if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
      $total=$row['total'];
