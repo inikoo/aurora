@@ -39,15 +39,21 @@ var submit_search=function(e,data){
 }
 
 
+function search_customers_in_store(query){
+    search_customers(query,'store');
+}
 
-function search_customers(query){
+
+    function search_customers(query,scope){
     
+     
+
     var ar_file='ar_search.php';
-    var request='tipo=customers&q='+escape(query);
+    var request='tipo=customers&q='+escape(query)+'&scope='+scope;
     
     var search_scope='customers';
-    var result_categories={'emails':1,'names':1,'contacts':1}
-
+    var result_categories={'emails':1,'names':1,'contacts':1,'locations':1}
+    
     YAHOO.util.Connect.asyncRequest(
 				    'POST',
 				    ar_file, {
