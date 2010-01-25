@@ -81,7 +81,7 @@ function search_customer($data){
  $names_results='<table>';
  // Email serach
  if(strlen($q)>2){
-   $sql=sprintf('select `Customer Key`,`Customer Name` from `Customer Dimension` where `Customer Store Key` in (%s) and  `Customer Name` like "%s%%"  limit 5'
+   $sql=sprintf('select `Customer Key`,`Customer Name` from `Customer Dimension` where `Customer Store Key` in (%s) and  `Customer Name`  REGEXP "[[:<:]]%s"   limit 5'
 		   ,$stores
 		,addslashes($q)
 		);
@@ -103,7 +103,7 @@ function search_customer($data){
  $contacts_results='<table>';
  // Email serach
  if(strlen($q)>2){
-   $sql=sprintf('select `Customer Key`,`Customer Name`,`Customer Main Contact Name` from `Customer Dimension` where `Customer Store Key` in (%s) and  `Customer Main Contact Name` like "%s%%" and `Customer Type`="Company" limit 5'
+   $sql=sprintf('select `Customer Key`,`Customer Name`,`Customer Main Contact Name` from `Customer Dimension` where `Customer Store Key` in (%s) and  `Customer Main Contact Name` REGEXP "[[:<:]]%s"   and `Customer Type`="Company" limit 5'
 		   ,$stores
 		,addslashes($q)
 		);
