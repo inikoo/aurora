@@ -375,6 +375,7 @@ $tax2=0;
 
 $sql2=sprintf("select `Tax Code`,sum(`Tax Amount`) as amount from `Invoice Tax Bridge` where `Invoice Key` in (%s) group by `Tax Code`  ", $data['invoice_keys']);
 $res2=mysql_query($sql2);
+//print "$sql2<br>";
 while($row2=mysql_fetch_array($res2)){
 //print_r($row2);
 if($row2['Tax Code']=='IVA'){
@@ -389,8 +390,6 @@ $tax2=$row2['amount'];
     $id="<a href='customer.php?id=".$data['Customer Key']."'>".$myconf['customer_id_prefix'].sprintf("%05d",$data['Customer ID']).'</a>'; 
     $name="<a href='customer.php?id=".$data['Customer Key']."'>".$data['Customer Name'].'</a>'; 
 
-$tax1=0;
-$tax2=0;
 
     $adata[]=array(
 		   'id'=>$id,
