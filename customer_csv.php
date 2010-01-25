@@ -41,18 +41,18 @@ $number_orders=$customer->data['Customer Orders'];
 $export_data=array(
 		   "Public"
 		   ,""
-		   ,$this->data['Customer Name']
-		   ,$this->data['Customer Main Contact Name']
+		   ,$customer->data['Customer Name']
+		   ,$customer->data['Customer Main Contact Name']
 		   ,$address_lines[1]
 		   ,$address_lines[3]
 		   ,$address_lines[2]
-		   ,$this->data['Customer Main Address Town']
+		   ,$customer->data['Customer Main Address Town']
 		   ,$address->display('Country Divisions')
-		   ,$this->data['Customer Main Address Postal Code']
-		   ,$this->data['Customer Main Address Country']
+		   ,$customer->data['Customer Main Address Postal Code']
+		   ,$customer->data['Customer Main Address Country']
 		   ,"Staff"
-		   ,$this->data['Customer Main Telephone']
-		   ,$this->data['Customer Main FAX']
+		   ,$customer->data['Customer Main Telephone']
+		   ,$customer->data['Customer Main FAX']
 		   ,"a"
 		   ,"mobile"
 		   ,"26/09/2002"
@@ -89,12 +89,12 @@ $export_data=array(
 		   ,''
 		   ,''
 		   ,"Yes","","","","",""
-		   ,$this->data['Customer Main Plain Email']
+		   ,$customer->data['Customer Main Plain Email']
                          ,""
                          ,
                      );
 
-        return $export_data;
+     
 
 
 
@@ -103,7 +103,7 @@ $export_data=array(
 
 
 
-$csv_data=$customer->export_data();
+$csv_data=$export_data;
 $out = fopen('php://output', 'w');
 fputcsv($out, $csv_data,"\t");
 fclose($out);
