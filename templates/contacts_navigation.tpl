@@ -52,7 +52,10 @@
 	  <div  style="border-bottom:1px solid #ccc;width:300px;font-weight:800;margin-bottom:5px">{t}Locations{/t}</div>
 	  <div  id="{$search_scope}_search_locations_results" ></div>
 	</div>
-
+	<div id="{$search_scope}_search_tax_numbers"  style="display:none;">
+	  <div  style="border-bottom:1px solid #ccc;width:300px;font-weight:800;margin-bottom:5px">{t}Tax Numbers{/t}</div>
+	  <div  id="{$search_scope}_search_tax_numbers_results" ></div>
+	</div>
 
 
 </div>

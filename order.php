@@ -1,5 +1,7 @@
 <?php
 include_once('common.php');
+include_once('class.CurrencyExchange.php');
+
 include_once('class.Order.php');
 if(!$user->can_view('orders')){
   header('Location: index.php');
@@ -52,6 +54,7 @@ if(isset($_REQUEST['new']) ){
 		    ,'Customer Key'=>$customer->id
 		    ,'Order Type'=>'Order'
 		    ,'editor'=>$editor
+		    
 		    );
 
   $order=new Order('new',$order_data);

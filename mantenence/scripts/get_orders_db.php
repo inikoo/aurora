@@ -118,7 +118,7 @@ $fam_promo_key=$fam_promo->id;
 
 $sql="select * from  orders_data.orders  where   (last_transcribed is NULL  or last_read>last_transcribed) and deleted='No'   order by filename ";
 
-//$sql="select * from  orders_data.orders  where   (last_transcribed is NULL  or last_read>last_transcribed) and deleted='No' and filename like '/mnt/z/Orders/%'  order by filename ";
+$sql="select * from  orders_data.orders  where   (last_transcribed is NULL  or last_read>last_transcribed) and deleted='No' and filename like '/mnt/z/Orders/1%'  order by filename ";
 
 //$sql="select * from  orders_data.orders where filename like '%refund.xls'   order by filename";
 //$sql="select * from  orders_data.orders  where filename like '/mnt/%/Orders/15343.xls' order by filename";
@@ -964,7 +964,14 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 			   );
 	$product->new_part_list(array(),$part_list);
 	
-	$used_parts_sku=array($part->sku => array('parts_per_product'=>$parts_per_product,'unit_cost'=>$supplier_product_cost*$transaction['units']));
+	$used_parts_sku=array(
+			      $part->sku => array(
+						  'parts_per_product'=>$parts_per_product
+						  ,'unit_cost'=>$supplier_product_cost*$transaction['units']
+						  
+						  )
+			      
+			      );
 	
       } else {
 	
@@ -1065,6 +1072,13 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
                 mysql_query($sql);
             
       }
+
+
+      $used_parts_sku[$part->sku]['supplier_product_key']=$supplier_product->id;
+    
+      
+      //here add the supplier product key
+      
       
       if($transaction['order']!=0){
 	$products_data[]=array(

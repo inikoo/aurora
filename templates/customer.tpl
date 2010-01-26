@@ -2,12 +2,13 @@
 <div id="bd">
   {include file='contacts_navigation.tpl'}
   <div id="no_details_title"  style="clear:left;xmargin:0 20px;{if $details!=0}display:none{/if}">
-    <h1>{$customer->get('Customer Name')} <span style="color:SteelBlue">{$id}</span>
+    <h1 style="padding-bottom:0px">{$customer->get('Customer Name')} <span style="color:SteelBlue">{$id}</span>
       {if $next.id>0}<a class="prev" href="customer.php?id={$prev.id}" ><img src="art/icons/previous.png" alt="<" title="{$prev.name}"  /></a>{/if}
       {if $next.id>0}<a class="next" href="customer.php?id={$next.id}" ><img src="art/icons/next.png" alt=">" title="{$next.name}"  /></a>{/if}
       
     </h1> 
-    
+
+{if $customer->get('Customer Tax Number')!=''}<h2 style="padding:0">{$customer->get('Customer Tax Number')}</h2>{/if}    
   </div>
   
   

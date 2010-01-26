@@ -273,6 +273,7 @@ function find($raw_data,$options){
     
     $intl_code_max_score=10;
     $ext_code_max_score=10;
+    $ext_max_score=10;
     $tel_max_score=80;
     $exact_match_bonus=10;
     $this->found=false;
@@ -524,8 +525,8 @@ public static  function parse_number($number,$country_code='UNK'){
        $number=$tmp[0];
        $data['Telecom Extension']=$tmp[1];
      }elseif(count($tmp)>2){
-       $this->error=true;
-       $this->msg=_('Error in number');
+       //$this->error=true;
+       //$this->msg=_('Error in number');
        
      }
    }

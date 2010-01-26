@@ -384,8 +384,7 @@ class DeliveryNote extends DB_Table {
         $discounts = 0;
         foreach ( $transacions_data as $data ) {
         
-       // print_r($data);
-        
+       
             if ($this->data ['Delivery Note Number Pickers'] == 1)
                 $picking_key = $this->data ['Delivery Note Pickers IDs'] [0];
             else {
@@ -409,12 +408,13 @@ class DeliveryNote extends DB_Table {
 
 
 
+
             foreach( $data['pick_method_data']['parts_sku'] as $part_sku=>$part_data) {
 
                 $parts_per_product = $part_data['parts_per_product'];
                 $part_unit_cost=$part_data['unit_cost'];
                 $cost = $part_unit_cost * $parts_per_product * $data ['Shipped Quantity'];
-		
+		$supplier_product_key=$part_data['supplier_product_key'];
                 $cost_supplier += $cost;
 		
                 $product = new product ($data ['Product Key'] );
@@ -429,7 +429,7 @@ class DeliveryNote extends DB_Table {
                     $_typo = "'No Dispached'";
                 else
                     $_typo = "'Sale'";
-                $sql = sprintf ( "insert into `Inventory Transaction Fact`  (`Date`,`Part SKU`,`Location Key`,`Inventory Transaction Quantity`,`Inventory Transaction Type`,`Inventory Transaction Amount`,`Required`,`Given`,`Amount In`,`Metadata`,`Note`) values (%s,%s,%d,%s,%s,%.2f,%f,%f,%f,%s,%s) "
+                $sql = sprintf ( "insert into `Inventory Transaction Fact`  (`Date`,`Part SKU`,`Location Key`,`Inventory Transaction Quantity`,`Inventory Transaction Type`,`Inventory Transaction Amount`,`Required`,`Given`,`Amount In`,`Metadata`,`Note`,`Supplier Product Key`) values (%s,%s,%d,%s,%s,%.2f,%f,%f,%f,%s,%s,%s) "
                                  ,prepare_mysql ( $this->data ['Delivery Note Date'] ),
                                  prepare_mysql ( $part_sku ),
                                  $location_id,
@@ -441,6 +441,7 @@ class DeliveryNote extends DB_Table {
                                  $data ['amount in'],
                                  prepare_mysql ( $this->data ['Delivery Note Metadata'] ),
                                  prepare_mysql ( $note )
+				 ,$supplier_product_key
                                );
                 //  print "$sql\n";
                 if (! mysql_query ( $sql ))
@@ -579,7 +580,8 @@ class DeliveryNote extends DB_Table {
                                  , prepare_mysql ( $note )
                                  , $data ['pick_method_data'] ['supplier product key']
                                );
-                //  print "$sql\n";
+		print "$sql\n";
+		exit;
                 if (! mysql_query ( $sql ))
                     exit ( "can not create Warehouse * 888 $sql   Inventory Transaction Fact\n" );
             } else

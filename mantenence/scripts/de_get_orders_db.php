@@ -125,7 +125,7 @@ $fam_promo_key=$fam_promo->id;
 
 $sql="select * from  de_orders_data.orders  where   (last_transcribed is NULL  or last_read>last_transcribed) and deleted='No'  order by filename  ";
 //$sql="select * from  de_orders_data.orders where filename like '%refund.xls'   order by filename";
-//$sql="select * from  de_orders_data.orders  where filename like '/mnt/%DE0266.xls'  order by filename";
+//$sql="select * from  de_orders_data.orders  where filename like '/mnt/%DE0093.xls'  order by filename";
 
 
 $contador=0;
@@ -304,8 +304,7 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
       $header_data['notes']='';
     }
 
-
-
+   
 
 
     $transactions=read_products($products,$prod_map);
@@ -314,9 +313,11 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
     //     echo "Memory: ".memory_get_usage() . "x\n";
     $_customer_data=setup_contact($act_data,$header_data,$date_index2);
 
-    // print_r($_customer_data);
-    // exit('hola mundo');
-    
+    $customer_data=array();
+  
+      if(isset($header_data['tax_number']) and $header_data['tax_number']!=''){
+      $customer_data['Customer Tax Number']=$header_data['tax_number'];
+    }
 
     //    print_r($_customer_data);
     foreach($_customer_data as $_key =>$value){
@@ -335,7 +336,8 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 	$key=preg_replace('/^fax$/','Customer Main FAX',$_key);
       if($_key=='mobile')
 	$key=preg_replace('/^mobile$/','Customer Mobile',$_key);
-
+      // if($_key=='tax_number')
+      //	$key=preg_replace('/^tax_number$/','Customer Tax Number',$_key);
       $customer_data[$key]=$value;
 
     }
@@ -1078,7 +1080,7 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 	  mysql_query($sql);
             
 	}
-
+ $used_parts_sku[$part->sku]['supplier_product_key']=$supplier_product->id;
 	
 	//print "Start -------------------\n";
 	//print_r($product);
