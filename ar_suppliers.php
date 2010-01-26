@@ -1578,9 +1578,17 @@ function list_supplier_products() {
 
     }
 
-    $rtext=$total_records." ".ngettext('pruduct','products',$total_records);
-    if ($total_records>$number_results)
-        $rtext.=sprintf(" <span class='rtext_rpp'>(%d%s)</span>",$number_results,_('rpp'));
+
+
+ $rtext=$total_records." ".ngettext('product','products',$total_records);
+    if($total_records>$number_results)
+      $rtext_rpp=sprintf(" (%d%s)",$number_results,_('rpp'));
+    else
+      $rtext_rpp=sprintf("Showing all products");
+
+
+
+  
     $filter_msg='';
 
     switch ($f_field) {
@@ -1667,11 +1675,11 @@ function list_supplier_products() {
 
 
         $data[]=array(
-                    'code'=>sprintf('<a href="supplier_product.php?code=%s&supplier_key=%d">%s</a>'
+                    'code'=>sprintf('<a href="supplier_product.php?code=%s&supplier_key=%d">%s</a> '.$row['Units Per Carton']
                     ,$row['Supplier Product Code'],$row['Supplier Key'],$row['Supplier Product Code'])
                     
                       
-                                 ,'name'=>$row['Supplier Product Name']
+		    ,'name'=>$row['Supplier Product Name']
                                          ,'cost'=>money($row['Supplier Product Cost'])
                                                  ,'usedin'=>$row['Supplier Product XHTML Used In']
                                                            ,'profit'=>$profit
@@ -1695,6 +1703,7 @@ function list_supplier_products() {
                                       'tableid'=>$tableid,
                                       'filter_msg'=>$filter_msg,
                                       'rtext'=>$rtext,
+				      'rtext_rpp'=>$rtext_rpp,
                                       'total_records'=>$total,
                                       'records_offset'=>$start_from,
                                       'records_returned'=>$start_from+$total,

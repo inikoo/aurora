@@ -27,8 +27,16 @@ $_SESSION['lang']=1;
 $stores=array(1);
 $forecast=true;
 
-
-
+//$sql="select * from `Part Dimension`  ";
+//$result=mysql_query($sql);
+//while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
+// $tm=new TimeSeries(array('m','part sku ('.$row['Part SKU'].') required'));
+// $tm->get_values();
+// $tm->save_values();
+// if($forecast)
+//    $tm->forecast();
+//}
+// exit;
 
 
 

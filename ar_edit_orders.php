@@ -5,10 +5,11 @@ require_once 'class.Order.php';
 
 if(!isset($_REQUEST['tipo']))
   {
-    $response=array('state'=>405,'resp'=>_('Non acceptable request').' (t)');
+    $response=array('state'=>407,'resp'=>_('Non acceptable request').' (t)');
     echo json_encode($response);
     exit;
   }
+
 
 $editor=array(
 	      'Author Name'=>$user->data['User Alias'],
@@ -243,7 +244,7 @@ if(!$show_all){
    }else{
     $table=' `Product Dimension` ';
      $where=sprintf('where `Product Store Key`=%d   ',$store_key);
-     $sql_qty=sprintf(',IFNULL((select sum(`Order Quantity`) from `Order Transaction Fact` where `Product Key`=`Product Current Key` and `Order Key`=%d),0) as `Order Quantity`',$order_id); 
+     $sql_qty=sprintf(',IFNULL((select sum(`Order Quantity`) from `Order Transaction Fact` where `Product Key`=`Product Current Key` and `Order Key`=%d),0) as `Order Quantity`, IFNULL((select sum(`Order Transaction Total Discount Amount`) from `Order Transaction Fact` where `Product Key`=`Product Current Key` and `Order Key`=1165),0) as `Order Transaction Total Discount Amount`, IFNULL((select sum(`Order Transaction Gross Amount`) from `Order Transaction Fact` where `Product Key`=`Product Current Key` and `Order Key`=1165),0) as `Order Transaction Gross Amount` ',$order_id); 
 
      
    }
@@ -350,11 +351,12 @@ if(!$show_all){
 
     
 
- $sql="select  * $sql_qty from $table   $where $wheref order by $order $order_direction limit $start_from,$number_results    ";
+ $sql="select  `Product Availability`,`Product Sales State`,`Product ID`,`Product Code`,`Product XHTML Short Description`,`Product Price`,`Product Units Per Case`,`Product Record Type`,`Product Web State`,`Product Family Name`,`Product Main Department Name`,`Product Tariff Code`,`Product XHTML Parts`,`Product GMROI`,`Product XHTML Parts`,`Product XHTML Supplied By`,`Product Stock Value`,`Product Main Image` $sql_qty from $table   $where $wheref order by $order $order_direction limit $start_from,$number_results    ";
  
     $res = mysql_query($sql);
 
     $adata=array();
+    //   print $sql;
  while ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
    if (is_numeric($row['Product Availability']))
@@ -396,17 +398,17 @@ if(!$show_all){
 		'dept'=>$row['Product Main Department Name'],
 		'expcode'=>$row['Product Tariff Code'],
                      'parts'=>$row['Product XHTML Parts'],
-                     'supplied'=>$row['Product XHTML Supplied By'],
-                     'gmroi'=>$row['Product GMROI'],
-                     'stock_value'=>money($row['Product Stock Value']),
+		  'supplied'=>$row['Product XHTML Supplied By'],
+		  'gmroi'=>$row['Product GMROI'],
+		  'stock_value'=>money($row['Product Stock Value']),
                      'stock'=>$stock,
-		     'quantity'=>$row['Order Quantity'],
-                     'state'=>$type,
-                     'web'=>$web_state,
-		     'image'=>$row['Product Main Image'],
-		     'type'=>'item',
-		     'change'=>'+ -',
-'to_charge'=>money($row['Order Transaction Gross Amount']-$row['Order Transaction Total Discount Amount'])
+		  'quantity'=>$row['Order Quantity'],
+		  'state'=>$type,
+		  'web'=>$web_state,
+		  'image'=>$row['Product Main Image'],
+		  'type'=>'item',
+		  'change'=>'+ -',
+		  'to_charge'=>money($row['Order Transaction Gross Amount']-$row['Order Transaction Total Discount Amount'])
 		     
                  );
 

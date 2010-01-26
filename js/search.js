@@ -52,7 +52,7 @@ function search_customers_in_store(query){
     var request='tipo=customers&q='+escape(query)+'&scope='+scope;
     
     var search_scope='customers';
-    var result_categories={'emails':1,'names':1,'contacts':1,'locations':1}
+    var result_categories={'emails':1,'names':1,'contacts':1,'locations':1,'tax_numbers':1}
     
     YAHOO.util.Connect.asyncRequest(
 				    'POST',

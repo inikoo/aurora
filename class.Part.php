@@ -616,14 +616,27 @@ break;
     if(array_key_exists($key,$this->data))
       return $this->data[$key];
     
-    if (preg_match('/^(Total|1).*(Amount|Storing)$/',$key)) {
+    if (preg_match('/^(Total|1).*(Amount|Profit)$/',$key)) {
       
-      $amount='Order '.$key;
+      $amount='Part '.$key;
 
-            return money($this->data[$amount]);
-        }	
+      return money($this->data[$amount]);
+    }	
+
+  if (preg_match('/^(Total|1).*(Margin)$/',$key)) {
+      
+      $amount='Part '.$key;
+
+      return percentage($this->data[$amount],1);
+    }	
 
 
+ if (preg_match('/^(Total|1).*(Given|Lost|Required|Sold|Provided|Broken|Adquired)$/',$key)) {
+      
+      $amount='Part '.$key;
+
+      return number($this->data[$amount]);
+    }	
 
      $_key=preg_replace('/^part /','',$key);
     if(isset($this->data[$_key]))

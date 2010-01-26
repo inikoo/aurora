@@ -326,6 +326,14 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
     //     echo "Memory: ".memory_get_usage() . "x\n";
     $_customer_data=setup_contact($act_data,$header_data,$date_index2);
 
+
+ $customer_data=array();
+    
+    if(isset($header_data['tax_number']) and $header_data['tax_number']!=''){
+      $customer_data['Customer Tax Number']=$header_data['tax_number'];
+    }
+    
+
     //    print_r($_customer_data);
     foreach($_customer_data as $_key =>$value){
       $key=$_key;
@@ -1072,7 +1080,7 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
             
       }
 
-
+ $used_parts_sku[$part->sku]['supplier_product_key']=$supplier_product->id;
 
       if($transaction['order']!=0){
 	$products_data[]=array(

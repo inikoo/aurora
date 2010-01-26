@@ -151,35 +151,85 @@ Class CurrencyExchange  {
 
 
 
-  function load_currency_exchange(){
+  function load_currency_exchange($from=false,$to=false,$fixing_date=false){
     $random=md5(mt_rand());
     $tmp_file="app_files/tmp/currency_$random.txt";
     $days=100;
    
-    $from=date("Ymd",strtotime($this->from));
-    $to=date("Ymd",strtotime($this->to));
+    if(!$from)
+      $from=date("Ymd",strtotime($this->from));
+    if(!$to)
+      $to=date("Ymd",strtotime($this->to));
 
-    //    print sprintf("./mantenence/scripts/get_currency_exchange.py  %s %s %s=X > %s",$from,$to,$this->currency_pair,$tmp_file);
+    //print sprintf("./mantenence/scripts/get_currency_exchange.py  %s %s %s=X > %s",$from,$to,$this->currency_pair,$tmp_file);
     exec(sprintf("./mantenence/scripts/get_currency_exchange.py  %s %s %s=X > %s",$from,$to,$this->currency_pair,$tmp_file));
     
-    $row = 1;
+    $rows = 0;
     $handle = fopen($tmp_file, "r");
     while (($data = fgetcsv($handle, 1000, ",")) !== FALSE) {
+      
       $num = count($data);
-    $pair=preg_replace('/=X/','',$data[0]);
-    $date=date("Y-m-d",strtotime($data[1]));
-    $exchange=$data[2];
-
-    $sql=sprintf("insert into kbase.`History Currency Exchange Dimension` values (%s,%s,%f)  "
-    ,prepare_mysql($date) ,prepare_mysql($pair),$exchange);
-    //print "$sql\n";
-    mysql_query($sql);
+      $pair=preg_replace('/=X/','',$data[0]);
+      $date=date("Y-m-d",strtotime($data[1]));
+      $exchange=$data[2];
+      
+  
+      
+      
+      $sql=sprintf("insert into kbase.`History Currency Exchange Dimension` values (%s,%s,%f)  "
+		   ,prepare_mysql($date) ,prepare_mysql($pair),$exchange);
+      //print "$sql\n";
+      mysql_query($sql);
+      $rows++;
     }
     fclose($handle);
     unset($tmp_file);
 
 
+    if($from==$to and $rows==0  ){
+      // this meas that yahoo do not have this day try the day before
+      $this->load_currency_missing_day(date("Y-m-d",strtotime($this->from)));
+
+    }
+
   }
+
+  function load_currency_missing_day($day){
+   $random=md5(mt_rand());
+    $tmp_file="app_files/tmp/currency_$random.txt";
+   
+  
+      $from=date("Ymd",strtotime($day.' -1 day'));
+      $to=$from;
+
+    // print sprintf("./mantenence/scripts/get_currency_exchange.py  %s %s %s=X > %s",$from,$to,$this->currency_pair,$tmp_file);
+    exec(sprintf("./mantenence/scripts/get_currency_exchange.py  %s %s %s=X > %s",$from,$to,$this->currency_pair,$tmp_file));
+    
+    $rows = 0;
+    $handle = fopen($tmp_file, "r");
+    while (($data = fgetcsv($handle, 1000, ",")) !== FALSE) {
+      
+      $num = count($data);
+      $pair=preg_replace('/=X/','',$data[0]);
+      $date=$day;
+      $exchange=$data[2];
+      
+  
+      
+      
+      $sql=sprintf("insert into kbase.`History Currency Exchange Dimension` values (%s,%s,%f)  "
+		   ,prepare_mysql($date) ,prepare_mysql($pair),$exchange);
+      //print "$sql\n";
+      mysql_query($sql);
+      $rows++;
+    }
+    fclose($handle);
+    unset($tmp_file);
+    
+  
+  }
+
+
 
   function is_currency_pair($currency_pair){
     

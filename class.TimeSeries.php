@@ -216,6 +216,9 @@ Class TimeSeries  {
                or preg_match('/store \((\d|,)+\) profit/i',$this->name,$match)
               ) {
 
+
+
+
             $store_key_array=array();
             if (preg_match('/\(.+\)/',$match[0],$keys)) {
                 $keys=preg_replace('/\(|\)/','',$keys[0]);
@@ -420,13 +423,126 @@ Class TimeSeries  {
 
             $this->where=sprintf(" and `Product Code` in %s ",$product_codes);
             $this->max_forecast_bins=12;
+        }        elseif(preg_match('/product id \((\d|,)+\) sales?/i',$this->name,$match)
+               or preg_match('/product id \((\d|,)+\) profit?$/i',$this->name,$match)
+              ) {
+            $product_key_array=array();
+            if (preg_match('/\(.+\)/',$match[0],$keys)) {
+                $keys=preg_replace('/\(|\)/','',$keys[0]);
+                $keys=preg_split('/\s*,\s*/',$keys);
+                $product_keys='(';
+                foreach($keys as $key) {
+                    if (is_numeric($key)) {
+                        $product_keys.=sprintf("%d,",$key);
+                        $product_key_array[]=$key;
+                    }
+                }
+                $product_keys=preg_replace('/,$/',')',$product_keys);
+            }
+            $num_keys=count($product_key_array);
+            if ( $num_keys==0) {
+                $this->error=true;
+                return;
+            }
+
+
+            if (preg_match('/sales?$/i',$this->name)) {
+                $tipo='sales';
+                $name='PidS';
+            } else {
+                $tipo='profit';
+                $name='PidP';
+            }
+
+
+            if ($num_keys>1) {
+                $this->name=$name.$product_keys;
+                foreach( $product_key_array as $key) {
+                    $product=new Product('pid',$key);
+                    $this->label.=','.$product->data['Product Code']." (".$product->data['Product ID'].")";
+                }
+                $this->label=preg_replace('/^,/','',$this->label);
+            } else {
+                $this->name=$name;
+                $this->name_key=preg_replace('/\(|\)/','',$product_keys);
+                $product=new Product('pid',$this->name_key);
+                $this->label=$product->data['Product Code']." (".$product->data['Product ID'].")";
+                $this->parent_key=$product->data['Product Family Key'];
+            }
+
+            $this->count='count(Distinct `Order Key`)';
+            $this->date_field='`Invoice Date`';
+            $this->table='`Order Transaction Fact` OTF left join `Product History Dimension` HP  on (OTF.`Product Key`=HP.`Product Key`)   left join `Product Dimension` P  on (P.`Product ID`=HP.`Product ID`)   ';
+
+
+
+            if ($tipo=='sales')
+                $this->value_field="`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`-`Invoice Transaction Net Refund Amount`";
+            else
+                $this->value_field='(`Invoice Transaction Gross Amount`-IFNULL(`Invoice Transaction Total Discount Amount`,0)+IFNULL(`Invoice Transaction Shipping Amount`,0)+IFNULL(`Invoice Transaction Charges Amount`,0)-IFNULL(`Cost Supplier`,0)-IFNULL(`Cost Manufacure`,0)-IFNULL(`Cost Storing`,0)-IFNULL(`Cost Handing`,0)-IFNULL(`Cost Shipping`,0))';
+
+
+            $this->where=sprintf(" and HP.`Product ID` in %s ",$product_keys);
+            $this->max_forecast_bins=12;
+        }elseif(preg_match('/part sku \((\d|,)+\) required/i',$this->name,$match)) {
+	  
+	 
+	  
+
+	  $this->prepare_part_requiered_provided($match[0]);
+	  
+	 
         }
 
 
     }
 
 
+    function prepare_part_requiered_provided($keys_data){
+      $part_sku_array=array();
+      if (preg_match('/\(.+\)/',$keys_data,$keys)) {
+	$keys=preg_replace('/\(|\)/','',$keys[0]);
+	$keys=preg_split('/\s*,\s*/',$keys);
+	$part_skus='(';
+	foreach($keys as $key) {
+	  if (is_numeric($key)) {
+	    $part_skus.=sprintf("%d,",$key);
+	    $part_sku_array[]=$key;
+	  }
+	}
+	$part_skus=preg_replace('/,$/',')',$part_skus);
+      }
+      
+      $this->keys=$keys;
+      $tipo='required';
+      $name='SkuR';
+      
 
+      $this->label=$part_skus;
+      $this->name=$name.$part_skus;
+      
+      if(count($part_sku_array)==1 ){
+	$this->name_key=$part_sku_array[0];
+	$part=new Part($this->name_key);
+	$this->label=$part->get_sku();
+      }
+      
+     
+      $this->parent_key=false;
+      
+      $this->count='count(Distinct `Date`)';
+      $this->date_field='`Date`';
+      $this->table='`Inventory Transaction Fact`   ';
+	  
+	  
+      $this->value_field='Required';
+	  
+      $this->where=sprintf(" and `Part SKU` in %s ",$part_skus);
+      $this->max_forecast_bins=12;
+
+      // print_r($this);
+
+    }
 
 
 
@@ -551,6 +667,8 @@ Class TimeSeries  {
 
     function save_forecast($label='Forecast') {
 
+     
+
         $sql=sprintf("delete from `Time Series Dimension`  where `Time Series Name` in (%s) and `Time Series Frequency`=%s and `Time Series Name Key`=%d and `Time Series Name Second Key`=%d and `Time Series Type`=%s and `Time Series Metadata`=%s "
                      ,prepare_mysql($this->name)
                      ,prepare_mysql($this->freq)
@@ -576,11 +694,11 @@ Class TimeSeries  {
                          ,$data['value']
                          ,$data['count']
 			 ,prepare_mysql($label)
-			 ,prepare_mysql($this->metadata)
+			 ,prepare_mysql($this->metadata,false)
                          ,prepare_mysql($data['deviation'])
                         );
             mysql_query($sql);
-            // print $sql;
+
         }
 
 
@@ -621,7 +739,7 @@ Class TimeSeries  {
         } else {
 
 	  if ($this->freq=='Monthly'){
-	    
+	   
 	    $this->forecast=$this->R_script();
 	    $this->save_forecast();
 	  }else {
@@ -895,6 +1013,8 @@ Class TimeSeries  {
 
 
     function get_values_per_month() {
+
+     
 
         $this->first_complete_month();
         if ($this->no_data)

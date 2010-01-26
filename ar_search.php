@@ -122,6 +122,33 @@ function search_customer($data){
 
 
 
+ $tax_numbers_found=0;
+ $tax_numbers_results='<table>';
+ // Email serach
+ if(strlen($q)>2){
+
+   if(is_numeric($q)){
+  $sql=sprintf('select `Customer Key`,`Customer Name`,`Customer Tax Number` from `Customer Dimension` where `Customer Store Key` in (%s) and  `Customer Tax Number` like "%%%s%%"  limit 5'
+		   ,$stores
+		,$q
+		);
+   }else{
+   $sql=sprintf('select `Customer Key`,`Customer Name`,`Customer Tax Number` from `Customer Dimension` where `Customer Store Key` in (%s) and  `Customer Tax Number` REGEXP "[[:<:]]%s"  limit 5'
+		   ,$stores
+		,addslashes($q)
+		);
+   }
+   
+      $res=mysql_query($sql);
+      while($row=mysql_fetch_array($res)){
+	$result=sprintf('<tr><td class="aright"><a href="customer.php?id=%d">%s <b>%s</b></a></td></tr>',$row['Customer Key'],$row['Customer Name'],$row['Customer Tax Number']);
+	$tax_numbers_found++;
+	$tax_numbers_results.=$result;
+	$total_found++;
+      }
+
+    }
+  $tax_numbers_results.='</table>';
 
 
     
@@ -144,6 +171,17 @@ function search_customer($data){
 
     }
   $locations_results.='</table>';
+
+
+
+
+
+
+
+
+
+
+
     
     
     $data=array('results'=>$total_found
@@ -151,6 +189,7 @@ function search_customer($data){
 		,'names'=>$names_found,'names_results'=>$names_results
 		,'locations'=>$locations_found,'locations_results'=>$locations_results
 		,'contacts'=>$contacts_found,'contacts_results'=>$contacts_results
+		,'tax_numbers'=>$tax_numbers_found,'tax_numbers_results'=>$tax_numbers_results
 		);
     $response=array('state'=>200,'data'=>$data);
     echo json_encode($response);

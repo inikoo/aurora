@@ -21,7 +21,7 @@ if (!$db){print "Error can not access the database\n";exit;}
 require_once '../../common_functions.php';
 mysql_query("SET time_zone ='UTC'");
 mysql_query("SET NAMES 'utf8'");
-require_once '../../myconf/conf.php';           
+require_once '../../conf/conf.php';           
 date_default_timezone_set('Europe/London');
 
 //select `Product Key`,`Product Code` from `Supplier Product Dimension` SPD left join `Supplier Product Part List` SPPL on (SPD.`Supplier Product ID`=SPPL.`Supplier Product ID`) left join `Product Part List` PPL on (SPPL.`Part SKU`=PPL.`Part SKU`) left join `Product Dimension` PD on (PPL.`Product ID`=PD.`Product ID`) where `Supplier Product Key`=133;
@@ -31,10 +31,12 @@ date_default_timezone_set('Europe/London');
 $sql="select * from `Supplier Product Dimension`  ";
 $result=mysql_query($sql);
 while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
-  $sp=new SupplierProduct($row['Supplier Product Key']);
+  $sp=new SupplierProduct('id',$row['Supplier Product Current Key']);
   //$sp->load('used in');
+  $sp->load('current_key_sales');
   $sp->load('sales');
-  print $row['Supplier Product Key']."\r";
+
+  print $row['Supplier Product Current Key']."\r";
  }
 
 

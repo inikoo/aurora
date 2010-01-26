@@ -93,18 +93,21 @@ class Order extends DB_Table{
       $this->data ['Order Current XHTML State'] = 'In Process';
       $this->data ['Order Sale Reps IDs'] =array($this->editor['User Key']);
       $this->data ['Order For'] = 'Customer';
-     $this->data ['Order Date'] = date('Y-m-d H:i:s');
+      $this->data ['Order Date'] = date('Y-m-d H:i:s');
       $this->data ['Order Customer Message']='';
       $this->data ['Order Original Data MIME Type']='none';
+      $this->data ['Order Original Data Filename']='';
 
+      
       $this->data ['Order Original Metadata']='';
       $this->data ['Order Currency Exchange']=1;
       if($this->data ['Order Currency']!=$myconf['currency_code']){
-       if($ce=new CurrencyExchange('get',$this->data ['Order Currency'].$this->data ['Order Currency'],'now'))
-        $this->data ['Order Currency Exchange']=$ce;
-       }
+     
       
-        
+      $currency_exchange = new CurrencyExchange('get',$this->data ['Order Currency'].$this->data ['Order Currency'],'now');
+      $exchange= $currency_exchange->get_exchange();
+      $this->data ['Order Currency Exchange']=$exchange;
+      }   
 
       $this->data ['Order Main Source Type']='Call';
       if(isset($data['Order Main Source Type']) and preg_match('/^(Internet|Call|Store|Unknown|Email|Fax)$/i'))
@@ -2313,6 +2316,7 @@ function get_data_from_customer($customer_key,$store_key=false){
   $this->data ['Order Customer Key'] = $customer->id;
   $this->data ['Order Customer Name'] = $customer->data[ 'Customer Name' ];
   $this->data ['Order Customer Contact Name'] = $customer->data ['Customer Main Contact Name'];
+  $this->data ['Order Main Country 2 Alpha Code'] = $customer->data ['Customer Main Address Country 2 Alpha Code'];
 
 
 
