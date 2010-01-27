@@ -34,8 +34,9 @@ $sql=
 "INSERT INTO `dw`.`Location Dimension` (
 `Location Key` ,
 `Location Warehouse Key` ,
+`Location Warehouse Area Key` ,
+
 `Location Code` ,
-`Location Area` ,
 `Location Mainly Used For` ,
 `Location Max Weight` ,
 `Location Max Volume` ,
@@ -45,7 +46,7 @@ $sql=
 `Location Stock Value`
 )
 VALUES (
-'1', '1', 'Unknown', 'Unknown', 'Picking', NULL , NULL , NULL , '0', 'Unknown', '0.00'
+'1', '1', '1','Unknown', 'Picking', NULL , NULL , NULL , '0', 'Unknown', '0.00'
 );";
 
 
@@ -75,16 +76,17 @@ while($row2=mysql_fetch_array($result, MYSQL_ASSOC)   ){
      $used_for='Picking';
      if(preg_match('/\d\-\d+\-\d/',$location_code))
        $used_for='Storing';
-     $location=new Location('code',$location_code);
-     if(!$location->id){
-       
-       $location=new Location('create',array(
+    // $location=new Location('code',$location_code);
+   //  if(!$location->id){
+       $location=new Location('find',array(
 					     'Location Warehouse Key'=>1
-					     ,'Location Area'=>''
+					     ,'Location Warehouse Area Key'=>1
 					     ,'Location Code'=>$location_code
 					     ,'Location Mainly Used For'=>$used_for
-					     ));
-     }
+					     ),'create');
+     
+    
+     //}
      //     // only work if is one to one relation
      
 
