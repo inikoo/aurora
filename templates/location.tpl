@@ -153,7 +153,7 @@
 	  </table>
 	  <div class="yui-dt-button">
 	    <button onclick="save_move_items();" class="yui-dt-default">{t}Save{/t}</button>
-	    <button onclick="Editor_move_items.cfg.setProperty('visible',false);" >{t}Cancel{/t}</button>
+	    <button onclick="close_move_dialog()" >{t}Cancel{/t}</button>
 	  </div>
     </div>
 </div>

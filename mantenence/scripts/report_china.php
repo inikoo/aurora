@@ -62,25 +62,29 @@ $total_req=$part->data['Part Total Required'];
 $req_per_month=30*$total_req/$days;
 $units_per_carton=$sp->data['Units Per Carton'];
 if(is_numeric($units_per_carton)){
-$cartons_3m=((3*$req_per_month)-$stock)/$units_per_carton;
-$cartons_6m=((3*$req_per_month)-$stock)/$units_per_carton;
+  $cartons_3m=ceil(((3*$req_per_month)-$stock)/$units_per_carton);
+  $cartons_6m=ceil(((6*$req_per_month)-$stock)/$units_per_carton);
 if($cartons_3m<0);
     $cartons_3m=0;
 if($cartons_6m<0);
     $cartons_6m=0;
 }else{
 $cartons_3m='ND';
-$cartons_3m='ND';
+$cartons_6m='ND';
 }
-$u3m=((3*$req_per_month)-$stock);
-$u6m=((3*$req_per_month)-$stock);
+$u3m= ((3.0*$req_per_month)-$stock);
+$u6m=(float) ((6.0*$req_per_month)-$stock);
 
-if($u3m<0);
+if($u3m<0)
     $u3m=0;
-if($u6m<0);
+    if($u6m<0)
     $u6m=0;
 
-  print "$code,$stock,$units_per_carton,$days,$total_req,$req_per_month,$u3m,$cartons_3m,$u6m,$cartons_6m\n";
+    if($u3m>0 and $cartons_3m==0 )
+      $cartons_3m=1;
+ if($u6m>0 and $cartons_6m==0 )
+      $cartons_6m=1;
+    print "$code,$stock,$units_per_carton,$days,$total_req,$req_per_month,$u3m,$cartons_3m,  $u6m,$cartons_6m\n";
  }
 
 

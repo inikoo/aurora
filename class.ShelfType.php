@@ -125,19 +125,19 @@ class ShelfType extends DB_Table{
 
 
 
-      if($this->data['Shelf Type Location Height']!=){
+      if($this->data['Shelf Type Location Height']!=''){
 	list($this->data['Shelf Type Location Height'],$dump)=parse_distance($this->data['Shelf Type Location Height']);
       }
-       if($this->data['Shelf Type Location Length']!=){
+       if($this->data['Shelf Type Location Length']!=''){
 	list($this->data['Shelf Type Location Length'],$dump)=parse_distance($this->data['Shelf Type Location Length']);
       }
-       if($this->data['Shelf Type Location Deep']!=){
+       if($this->data['Shelf Type Location Deep']!=''){
 	list($this->data['Shelf Type Location Deep'],$dump)=parse_distance($this->data['Shelf Type Location Deep']);
       }
-       if($this->data['Shelf Type Location Max Weight']!=){
+       if($this->data['Shelf Type Location Max Weight']!=''){
 	list($this->data['Shelf Type Location Max Weight'],$dump)=parse_weight($this->data['Shelf Type Location Max Weight']);
       }
-       if($this->data['Shelf Type Location Max Weight']!=){
+       if($this->data['Shelf Type Location Max Weight']!=''){
 	list($this->data['Shelf Type Location Max Weight'],$dump)=parse_weight($this->data['Shelf Type Location Max Weight']);
       }
 

@@ -4,16 +4,7 @@
 
 <div id="bd" >
   
-  <div id="sub_header">
-    {if $next.id>0}<span class="nav2 onright"><a href="product_manage_stock.php?id={$next.id}">{$next.code} &rarr; </a></span>{/if}
-    {if $prev.id>0}<span class="nav2 onright" ><a href="product_manage_stock.php?id={$prev.id}">&larr; {$prev.code}</a></span>{/if}
-    <span class="nav2 onright"><a href="family.php?id={$family_id}">&uarr; {$family}</a></span>
-    <span class="nav2 onright"><a href="department.php?id={$department_id}">&uarr;&uarr; {$department}</a></span>
-    <span class="nav2 on left"><a href="departments.php">{t}Departments{/t}</a></span>
-    <span class="nav2 onleft"><a href="categories.php">{t}Categories{/t}</a></span>
-    <span class="nav2 onleft"><a href="products.php">{t}Product index{/t}</a></span>
-  </div>
-  
+ 
   
 
   <div  style="clear:left;padding:10px 20px;width:220px;float:left">
@@ -40,18 +31,7 @@
 
   <div  id="manage_stock" class="manage_stock" style=";width:680px;float:left">
     
-    <div class="search_box" style="clear:none;float:right;width:120px" >
-         <span class="search_title">{t}Product Code{/t}:</span> <input size="8"	class="text search" id="product_manage_stock_search" value="" name="search"/><img align="absbottom" id="product_manage_stock_submit_search" class="submitsearch" src="art/icons/zoom.png" alt="Submit search"><br/>
-     <span  class="search_msg"   id="product_manage_stock_search_msg"    ></span> <span  class="search_sugestion"   id="product_manage_stock_search_sugestion"    ></span>
-      
-  <br/>
-      <span>{t}Return to product pages{/t}:</span><br/>
-      <a href="product.php?id={$data.id}">{$data.code}</a>
-      {foreach from=$same_products item=product key=sproduct_id name=foo}
-       <br/><a href="product.php?id={$sproduct_id}">{$product.code}</a>
-      {/foreach}
-      
-    </div>
+   
 
     <table class="options" style="float:left">
       <tr class="title">

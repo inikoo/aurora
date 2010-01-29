@@ -32,7 +32,38 @@ date_default_timezone_set('Europe/London');
 $not_found=00;
 
 
+$sql=
+"INSERT INTO `dw`.`Location Dimension` (
+`Location Key` ,
+`Location Warehouse Key` ,
+`Location Warehouse Area Key` ,
 
+`Location Code` ,
+`Location Mainly Used For` ,
+`Location Max Weight` ,
+`Location Max Volume` ,
+`Location Max Slots` ,
+`Location Distinct Parts` ,
+`Location Has Stock` ,
+`Location Stock Value`
+)
+VALUES (
+'1', '1', '1','Unknown', 'Picking', NULL , NULL , NULL , '0', 'Unknown', '0.00'
+);";
+
+
+$loc= new Location(1);
+if(!$loc->id)
+  mysql_query($sql);
+
+
+$wa_data=array(
+'Warehouse Area Name'=>'Unknown'
+,'Warehouse Area Code'=>'Unk'
+,'Warehouse Key'=>1
+);
+
+$wa=new WarehouseArea('find',$wa_data,'create');
 
 
 $sql="delete from  `Inventory Transaction Fact` where `Inventory Transaction Type` in ('Audit','In','Associate','Disassociate','Move In','Move Out','Adjust','Not Found','Lost','Broken') ";

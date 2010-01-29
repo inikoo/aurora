@@ -2309,6 +2309,7 @@ function get_data_from_customer($customer_key,$store_key=false){
     return;
  
   $ship_to= new Ship_To($customer->data['Customer Main Ship To Key']);
+  print_r($customer);
   $this->data ['Order XHTML Ship Tos']=$ship_to->data['Ship To XHTML Address'];
   $this->data ['Order Ship To Keys']=$ship_to->id;
 

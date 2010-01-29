@@ -188,7 +188,7 @@ $conf=$_SESSION['state']['locations']['table'];
   $_dir=$order_direction;
 
 
-    $order='`Location Code`';
+  
   if($order=='parts')
     $order='`Location Distinct Parts`';
  elseif($order=='max_volumen')
@@ -201,6 +201,10 @@ $conf=$_SESSION['state']['locations']['table'];
     $order='`Warehouse Area Code`';
 elseif($order=='warehouse')
     $order='`Warehouse Code`';
+else
+   $order='`Location Code`';
+
+
   $data=array();
   $sql="select * from `Location Dimension` left join `Warehouse Area Dimension` WAD on (`Location Warehouse Area Key`=WAD.`Warehouse Area Key`) left join `Warehouse Dimension` WD on (`Location Warehouse Key`=WD.`Warehouse Key`)  $where $wheref   order by $order $order_direction limit $start_from,$number_results    ";
   //  print $sql;
@@ -722,9 +726,10 @@ function find_location(){
 	if($_REQUEST['with']=='stock')
 	  $where.=sprintf(' and (`Quantity On Hand` IS NOT NULL and `Quantity On Hand`>0 ')   ;
       }
-     $sql=sprintf("select LD.`Location Key`,`Location Code`,IFNULL(`Quantity On Hand`,0) as `Quantity On Hand` from `Location Dimension` LD left join `Part Location Dimension` PLD on (PLD.`Location Key`=LD.`Location Key`)   where (`Location Code` like '%s%%' )  %s  order by `Location Code` limit 10 "
-		 ,addslashes($q)
-		 ,$where
+     $sql=sprintf("select LD.`Location Key`,`Location Code`,(select `Quantity On Hand` from `Part Location Dimension` t where t.`Location Key`=LD.`Location Key` and `Part SKU`=%d) as `Quantity On Hand` from `Location Dimension` LD    where (`Location Code` like '%s%%' )  %s  order by `Location Code` limit 10 "
+		  ,$part_sku
+		  ,addslashes($q)
+		  ,$where
 		 );
 
    }else{
@@ -733,9 +738,11 @@ function find_location(){
 		 ,$where
 		 );
    }
-   //print $sql;
+   //  print $sql;
     $res=mysql_query($sql);
     while($row=mysql_fetch_array($res)){
+      if(!is_numeric($row['Quantity On Hand']))
+	$row['Quantity On Hand']=0;
       $adata[]=array(
 		     
 		     'key'=>$row['Location Key'],
