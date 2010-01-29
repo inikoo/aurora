@@ -873,7 +873,7 @@ function move_stock(){
      return;
 
    }else{
-     $response=array('state'=>200,'action'=>'ok','msg'=>$part_location->msg,'qty_from'=>$part_location->data['Quantity On Hand'],'qty_to'=>$part_location->data['Quantity On Hand'],'stock'=>$part_location->part->get('Part Current Stock'));
+     $response=array('state'=>200,'action'=>'ok','msg'=>$part_location->msg,'qty_from'=>$part_location->data['Quantity On Hand'],'stock'=>$part_location->part->get('Part Current Stock'));
      echo json_encode($response);
      return;
 

@@ -55,12 +55,22 @@ if(!$loc->id)
   mysql_query($sql);
 
 
+$wa_data=array(
+'Warehouse Area Name'=>'Unknown'
+,'Warehouse Area Code'=>'Unk'
+,'Warehouse Key'=>1
+);
+
+$wa=new WarehouseArea('find',$wa_data,'create');
+
+
+
 $sql=sprintf("select * from aw_old.product   order by code   ");
 $result=mysql_query($sql);
 while($row2=mysql_fetch_array($result, MYSQL_ASSOC)   ){
   $product_code=$row2['code'];
   $stock_old_db=$row2['stock'];
-  //print $row2['id']." $product_code \n";
+  print $row2['id']." $product_code \n";
   $sql="select * from aw_old.location  where product_id=".$row2['id']."    " ;
   $result2xxx=mysql_query($sql);
   $primary=true;
@@ -185,21 +195,21 @@ while($row2=mysql_fetch_array($result, MYSQL_ASSOC)   ){
 
 	    //  if($stock_old_db>0)
 	     //exit;
-  break;
-	    }else{
-	       $part_location=new PartLocation('find',array('Part SKU'=>$sku,'Location Key'=>$location->id),'create');
-	       $part_location->associate();
+	  break;
+	   }else{
+	     $part_location=new PartLocation('find',array('Part SKU'=>$sku,'Location Key'=>$location->id),'create');
+	     $part_location->associate();
 	       $part->load('calculate_stock_history','last');
-	      
-
+	       
+	       
 	       //  if($stock_old_db!=0)
 	       // exit;
-
+	       
 	       break;
-	     
-
+	       
+	       
 	    }
-	      break;
+	   break;
 	 case 0:
 	   $part_location=new PartLocation('find',array('Part SKU'=>$sku,'Location Key'=>$location->id),'create');
 	   $part_location->associate();

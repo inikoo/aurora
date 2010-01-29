@@ -1,4 +1,4 @@
-<?phpinclude_once('common.php')?>
+<?php include_once('common.php')?>
 
     var Dom   = YAHOO.util.Dom;
 var Event = YAHOO.util.Event;
@@ -1160,7 +1160,7 @@ YAHOO.util.Event.onContentReady("manage_stock_products", function () {
  	};
  	var oAC = new YAHOO.widget.AutoComplete("new_product_input", "new_product_container", oDS);
  	oAC.generateRequest = function(sQuery) {
- 	    return "?tipo=products_name&except=location&except_id=<?php echo$_SESSION['state']['product']['id']?>&query=" + sQuery ;
+ 	    return "?tipo=products_name&except=location&except_id=<?php echo $_SESSION['state']['product']['tag']?>&query=" + sQuery ;
  	};
 
 	var myHandler = function(sType, aArgs) {

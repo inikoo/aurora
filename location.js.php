@@ -60,13 +60,13 @@ var highlightEditableCell = function(oArgs) {
      ar_file='ar_edit_warehouse.php';
      
      var request='tipo=edit_'+column.object+'&key=' + column.key + '&newvalue=' + encodeURIComponent(newValue) + '&oldvalue=' + encodeURIComponent(oldValue)+ myBuildUrl(datatable,record);
-    alert(request);
+     //alert(request);
 
     YAHOO.util.Connect.asyncRequest(
 				    'POST',
 				    ar_file, {
 					success:function(o) {
-					    alert(o.responseText);
+					    //alert(o.responseText);
 					    var r = YAHOO.lang.JSON.parse(o.responseText);
 					    if (r.state == 200) {
 						
@@ -272,6 +272,15 @@ function move_qty_changed(){
 }
 
 
+
+function close_move_dialog(){
+    Dom.get('move_stock_right').innerHTML='';
+    Dom.get('move_qty').value='';
+    Dom.get('location_move_to_input').value='';
+    
+
+Editor_move_items.cfg.setProperty('visible',false);
+}
 
 var remove_prod=function (pl_id,part_sku){
     var request='ar_assets.php?tipo=pml_desassociate_location&id='+ escape(pl_id)+'&msg=&part_sku='+ escape(part_sku);
@@ -493,7 +502,7 @@ YAHOO.util.Event.onContentReady("location_move_to", function () {
  	oAC.generateRequest = function(sQuery) {
 	    
 	    var sku=Dom.get("move_sku").value
-	    // alert("?tipo=find_location&except_location=<?php echo$_SESSION['state']['location']['id']?>&get_data=sku"+sku+"&query=" + sQuery)
+	    //alert("?tipo=find_location&except_location=<?php echo$_SESSION['state']['location']['id']?>&get_data=sku"+sku+"&query=" + sQuery);
  	    return "?tipo=find_location&except_location=<?php echo$_SESSION['state']['location']['id']?>&get_data=sku"+sku+"&query=" + sQuery ;
  	};
 	oAC.forceSelection = true; 
@@ -795,7 +804,7 @@ function save_move_items(){
     
     YAHOO.util.Connect.asyncRequest('POST',request ,{
 	    success:function(o) {
-		//alert(o.responseText);
+		alert(o.responseText);
 		var r =  YAHOO.lang.JSON.parse(o.responseText);
 		if(r.action=='ok'){
 		    Dom.get('flow').setAttribute('flow','right');
@@ -808,10 +817,10 @@ function save_move_items(){
 
 
 		    record=datatable.getRecord(Dom.get("move_record_index").value);
-		    datatable.updateCell(record,'qty',r.qty);
+		    datatable.updateCell(record,'qty',r.qty_from);
 		    
 
-		    if(r.qty==0){
+		    if(r.qty_from==0){
 			 datatable.updateCell(record,'delete',delete_label);
 			 datatable.updateCell(record,'lost','');
 			 

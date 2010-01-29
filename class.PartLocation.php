@@ -664,7 +664,7 @@ function redo_daily_inventory($from,$to=''){
 
        PRINT "Negative discrepancey: $neg_discrepancy\n";
       if($neg_discrepancy!=0)
-	$neg_discrepancy_value= $neg_discrepancy*$this->part->get_unit__cost();
+	$neg_discrepancy_value= $neg_discrepancy*$this->part->get_unit_cost();
       else
 	$neg_discrepancy_value=0;
       
