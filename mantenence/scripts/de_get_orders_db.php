@@ -1350,6 +1350,18 @@ list($parcels,$parcel_type)=parse_parcels($header_data['parcels']);
 	print "$sql Warning can no delete oldhidt nio prod";
 	
     }
+
+
+ if (count($products_data)==0 and count($credits)>0) {
+        
+      $tipo_order=9;
+      if($header_data['date_inv']=='1899-12-30' or $header_data['date_inv']=='1970-01-01'){
+	$header_data['date_inv']=$header_data['date_order'];
+	$date_inv=$header_data['date_inv'];
+      }
+    }
+    
+
        
     //print "$tipo_order \n";
     $data['Order Currency']=$currency;

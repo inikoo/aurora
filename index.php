@@ -17,6 +17,9 @@ include_once('common.php');
 include_once('class.Product.php');
 include_once('class.Order.php');
 
+$general_options_list=array();
+$general_options_list[]=array('tipo'=>'js','state'=>'','id'=>'edit_widgets','label'=>_('Customize Page'));
+$smarty->assign('general_options_list',$general_options_list);
 
 
 
