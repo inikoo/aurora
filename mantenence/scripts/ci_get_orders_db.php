@@ -10,6 +10,8 @@ include_once('../../class.Invoice.php');
 include_once('../../class.DeliveryNote.php');
 include_once('../../class.Email.php');
 include_once('../../class.TimeSeries.php');
+include_once('common_read_orders_functions.php');
+
 
 $store_code='E';
 $__currency_code='EUR';
@@ -118,7 +120,7 @@ $fam_promo_key=$fam_promo->id;
 
 
 $sql="select * from  ci_orders_data.orders  where   (last_transcribed is NULL  or last_read>last_transcribed) and filename not like '%UK%'  and filename not like '%test%'  and filename!='/media/sda3/share/PEDIDOS 08/60005902.xls' and  filename!='/media/sda3/share/PEDIDOS 09/60008607.xls' and  filename!='/media/sda3/share/PEDIDOS 09/60009626.xls' and  filename!='/media/sda3/share/PEDIDOS 09/60011693.xls' and  filename!='/media/sda3/share/PEDIDOS 09/60011905.xls' and  filename!='/media/sda3/share/PEDIDOS 08/60007219.xls'     order by filename ";
-//$sql="select * from  ci_orders_data.orders where filename like '/media/sda3/share/%/60010130.xls'  order by filename";
+$sql="select * from  ci_orders_data.orders where filename like '/media/sda3/share/%/60010130.xls'  order by filename";
 //7/60002384.xls
 //$sql="select * from  ci_orders_data.orders where filename like '/media/sda3/share/%/60000142.xls'  order by filename";
 //$sql="select * from  ci_orders_data.orders  where (filename like '%Orders2005%' or  filename like '%PEDIDOS%.xls') and (last_transcribed is NULL  or last_read>last_transcribed) and filename!='/media/sda3/share/PEDIDOS 08/60005902.xls' and  filename!='/media/sdas3/share/PEDIDOS 09/s60008607.xls' and  filename!='/media/sda3/share/PEDIsDOS 09/60009626.xls' or filename='%600s03600.xls'   order by date";
@@ -148,9 +150,24 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
     $result_test=mysql_query($sql);
     if ($row_test=mysql_fetch_array($result_test, MYSQL_ASSOC)) {
       if ($row_test['num']==0) {
-	print "NEW $contador $order_data_id $filename \n";
 
-      } else {
+	// test also for invoices please
+
+	$sql_in_invoices=sprintf("select count(*) as num  from `Invoice Dimension`  where `Invoice Metadata`=%s  "
+				 ,prepare_mysql($store_code.$order_data_id));
+	$result_test_in_invoices=mysql_query($sql_in_invoices);
+	if ($row_test_in_invoices=mysql_fetch_array($result_test_in_invoices, MYSQL_ASSOC)) {
+	  if ($row_test_in_invoices['num']==0) {
+	    
+	    
+	    print "NEW $contador $order_data_id $filename \n";
+	  }else{
+	    $update=true;
+	    print "UPD $contador $order_data_id $filename \n";
+	  }
+	}
+      }else{
+	
 	$update=true;
 	print "UPD $contador $order_data_id $filename \n";
       }
@@ -1068,6 +1085,7 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
       if (!mysql_query($sql))
 	print "$sql Warning can no delete old order";
       $sql=sprintf("delete from `Invoice Dimension` where `Invoice Metadata`=%s", prepare_mysql($store_code.$order_data_id));
+      //rint "$sql\n";
       if (!mysql_query($sql))
 	print "$sql Warning can no delete old inv";
       $sql=sprintf("delete from `Delivery Note Dimension` where `Delivery Note Metadata`=%s", prepare_mysql($store_code.$order_data_id));
@@ -1096,17 +1114,19 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
     if (count($products_data)==0 and count($credits)>0) {
         
       $tipo_order=9;
-      if($header_data['date_inv']=='1899-12-30')
+      if($header_data['date_inv']=='1899-12-30' or $header_data['date_inv']=='1970-01-01'){
 	$header_data['date_inv']=$header_data['date_order'];
+	$date_inv=$header_data['date_inv'];
+      }
     }
 
     //exit('xz 23');
 
-    //print_r($header_data);
-    //print "$tipo_order \n";
+    //   print_r($header_data);
+      //print "$tipo_order \n";
     //      print_r($products_data);
     //     print_r($credits);
-    //    exit;
+    //     exit;
 
     $sales_rep_data=get_user_id($header_data['takenby'],true,'&view=processed');
     $data['Order XHTML Sale Reps']=$sales_rep_data['xhtml'];
@@ -1740,7 +1760,7 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
 			  ,'Invoice Currency Exchange'=>$exchange
 			  ,'Invoice Customer Contact Name'=>$customer_data['Customer Main Contact Name']
                           );
-      //	print_r($data_invoice);
+      	print_r($data_invoice);
 
       $data_refund_transactions=array();
       $sum_net=0;

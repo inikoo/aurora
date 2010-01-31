@@ -3809,8 +3809,6 @@ function set_transactions($transactions,$order_id,$tipo_order,$parent_order_id,$
 
 
 
-
-
 function setup_contact($act_data,$header_data,$date_index){
   $co='';
   $header_data['country_d2']='';
