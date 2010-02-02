@@ -48,7 +48,7 @@ $smarty->assign('js_files',$js_files);
 setlocale(LC_MESSAGES, $myconf['lang'].'_'.$myconf['country'].($myconf['encoding']!=''?'.'.$myconf['encoding']:''));
 $current_lang=$myconf['lang'];
 if(isset($_REQUEST['_lang']) and is_numeric($_REQUEST['_lang'])){
-  $sql="select `Language Code` as code ,`Country 2 Alpha Code`  as country_code  from `Language Dimension` where `Language Key`=".$_REQUEST['_lang'];
+  $sql="select kbase.`Language Code` as code ,`Country 2 Alpha Code`  as country_code  from `Language Dimension` where `Language Key`=".$_REQUEST['_lang'];
   
   $result=mysql_query($sql);
   if($sql_data=mysql_fetch_array($result, MYSQL_ASSOC)   ){
@@ -71,25 +71,23 @@ $smarty->assign('password', _('Password'));
 $smarty->assign('log_in', _('Log in'));
 
 
-$other_langs=array();
-$sql="select `Language Key` as id,`Language Original Name` as original_name, `Language Code` as code    from `Language Dimension`";
+/* other_langs=array(); */
+/* $sql="select kbase.`Language Key` as id,`Language Original Name` as original_name, `Language Code` as code    from `Language Dimension`"; */
+
+/*  $result=mysql_query($sql); */
+/*        while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){ */
+
+/*   if($row['code']==$current_lang){ */
+/*     $smarty->assign('lang_id', $row['id']); */
+/*     $smarty->assign('lang_code', $row['code']); */
+/*   }else */
+/*     $other_langs[$row['id']]=$row['original_name']; */
+/* } */
+
+/* mysql_free_result($result); */
 
 
-
- $result=mysql_query($sql);
-       while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
-
-  if($row['code']==$current_lang){
-    $smarty->assign('lang_id', $row['id']);
-    $smarty->assign('lang_code', $row['code']);
-  }else
-    $other_langs[$row['id']]=$row['original_name'];
-}
-
-mysql_free_result($result);
-
-
-$smarty->assign('other_langs', $other_langs);
+/* $smarty->assign('other_langs', $other_langs); */
 
 $smarty->display('login.tpl');
 

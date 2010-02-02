@@ -277,7 +277,8 @@ location.href='company.php?edit='+contact_with_same_email;
 function force_new(){
 var email=Dom.get('Email').value;
 var request='ar_edit_contacts.php?tipo=delete_email&value=' +email+'&subject=company&subject_key='+company_found_key; 
-	
+alert(request);
+return;
 	YAHOO.util.Connect.asyncRequest('POST',request ,{
 			    success:function(o) {
 			     alert(o.responseText);

@@ -1673,7 +1673,6 @@ if($contact->id){
      */
     function remove_email($email_key) {
 
-
         if (!$email_key) {
             $email_key=$this->data['Company Main Email Key'];
         }
@@ -1687,7 +1686,8 @@ if($contact->id){
         }
 
         $email->set_scope('Company',$this->id);
-        if ( $email->associated_with_scope) {
+	//	print_r($email);
+	if ( $email->associated_with_scope) {
 
             $sql=sprintf("delete from  `Email Bridge`  where `Subject Type`='Company' and  `Subject Key`=%d  and `Email Key`=%d",
                          $this->id
@@ -1695,7 +1695,15 @@ if($contact->id){
                          ,$this->data['Company Main Email Key']
                         );
             mysql_query($sql);
+	    
+	    $customer_found_keys=$this->get_customer_keys();
+	    foreach($customer_found_keys as $customer_found_key) {
+	       $customer=new Customer($customer_found_key);
+	       $customer->editor=$this->editor;
+	       $customer->remove_email($email->id);
+	    }
 
+	   
             if ($email->id==$this->data['Company Main Email Key']) {
                 $sql=sprintf("update `Company Dimension` set `Company Main XHTML Email`='' , `Company Main Plain Email`='' , `Company Main Email Key`=''  where `Company Key`=%d"
                              ,$this->id

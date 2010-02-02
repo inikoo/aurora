@@ -86,9 +86,9 @@ list_invoices_grouped_per_month();
 case('net_diff1y_sales_month'):
 list_invoices_1y_change_per_month();
  break;
-case('customer_month_growth'): 
-case('customer_month_population'): 
-    list_customer_population_per_month();
+case('active_customer_month_growth'): 
+case('active_customer_month_population'): 
+    list_active_customer_population_per_month();
     break;
 default:
    $response=array('state'=>404,'resp'=>_('Operation not found'));
@@ -683,7 +683,7 @@ function list_invoices_per_week(){
 // echo '{"resultset":{"state":200,"data":{"tip":"Sales October 2008\n\u00a329,085.85\n-87.4% change (last month)\n-89.5% change (last year)\n(240 Orders)","tip_losses":"Lost Sales October 2008\n\u00a30.00 (0.0%)","sales":"34429","losses":0,"date":"10-2008"}}}';
 
 }
-function list_customer_population_per_month(){
+function list_active_customer_population_per_month(){
  
   global $myconf;
   $first_day=$myconf['data_since'];
@@ -698,7 +698,7 @@ function list_customer_population_per_month(){
      $first_day=$row['first_day'];
   }
 
-   $sql="select date_format(`First Day`,'%c') as month, `First Day` as date, `Year Month` as yearmonth  from `Month Dimension` where `First Day`>'$first_day' and `First Day` < NOW(); ";
+   $sql="select date_format(`First Day`,'%c') as month, `First Day` as date, `Year Month` as yearmonth  from kbase.`Month Dimension` where `First Day`>'$first_day' and `First Day` < NOW(); ";
 
    $data=array();
    $res = mysql_query($sql);

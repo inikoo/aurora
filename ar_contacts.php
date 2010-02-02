@@ -1178,6 +1178,11 @@ if(isset( $_REQUEST['where']))
     $id="<a href='customer.php?id=".$data['Customer Key']."'>".$myconf['customer_id_prefix'].sprintf("%05d",$data['Customer ID']).'</a>'; 
     $name="<a href='customer.php?id=".$data['Customer Key']."'>".$data['Customer Name'].'</a>'; 
 
+    if($data['Customer Orders']==0)
+      $last_order_date='';
+    else
+      $last_order_date=strftime("%e %b %Y", strtotime($data['Customer Last Order Date']));
+
     $adata[]=array(
 		   'id'=>$id,
 		   'name'=>$name,
@@ -1186,7 +1191,8 @@ if(isset( $_REQUEST['where']))
 		   'invoices'=>$data['Customer Orders Invoiced'],
 		   'email'=>$data['Customer Main XHTML Email'],
 		   'telephone'=>$data['Customer Main Telephone'],
-		   'last_order'=>strftime("%e %b %Y", strtotime($data['Customer Last Order Date'])),
+		   'last_order'=>$last_order_date,
+		   
 		   'total_payments'=>money($data['Customer Net Payments']),
 		   'net_balance'=>money($data['Customer Net Balance']),
 		   'total_refunds'=>money($data['Customer Net Refunds']),
