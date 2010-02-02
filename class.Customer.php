@@ -230,15 +230,24 @@ class Customer extends DB_Table {
             $this->get_data('id',$this->found_key);
             //  print "customer Found: ".$this->found_key."  \n";
         }
+	
 
-        if ($create and (
-                    ($raw_data['Customer Main Contact Name']=='' and  $raw_data['Customer Type']=='Person')
-                    or ($raw_data['Customer Company Name']=='' and  $raw_data['Customer Type']=='company')
-                )
-           ) {
-            $this->create_anonymous($raw_data);
-            return;
-        }
+	
+
+	
+	if ($create and (
+			 ($raw_data['Customer Main Contact Name']=='' and  $raw_data['Customer Type']=='Person')
+			 or ($raw_data['Customer Company Name']=='' and  $raw_data['Customer Type']=='Company')
+			 )
+	    ) {
+
+	  global $myconf;
+	    $raw_data['Customer Company Name']=$myconf['unknown_contact'];
+	    $raw_data['Customer Main Contact Name']=$myconf['unknown_contact'];
+	    $raw_data['Customer Name']=$myconf['unknown_contact'];
+	  //	  $this->create_anonymous($raw_data);
+	    // return;
+	 }
 
 
 
@@ -609,9 +618,10 @@ class Customer extends DB_Table {
             $this->data['Customer Main FAX']='';
             $this->data['Customer Main Plain FAX']='';
 
-            if (!$this->data['Customer Main Contact Key'])
-                $contact=new contact('find in customer create update',$raw_data);
-            else
+            if (!$this->data['Customer Main Contact Key']){
+	     
+	      $contact=new contact('find in customer create update',$raw_data);
+            }else
                 $contact=new contact($this->data['Customer Main Contact Key']);
 
             $contact_key=$contact->id;
@@ -807,23 +817,23 @@ $address_data['Address Input Format']='3 Line';
  
 
 
-        $contact=new Contact('create anonymous');
+ $contact=new Contact('create anonymous',$raw_data,'from customer');
         $data=$contact->data;
         foreach($data as $key=>$value) {
             $data[preg_replace('/Contact/','Customer',$key)]=$value;
         }
-         $data['Customer Main Address Key']=$anon_address->id;
-          $data['Customer Billing Address Key']=$anon_address->id;
-
-                $data['Customer Main Address Country Code']=$anon_address->data['Address Country Code'];
-                $data['Customer Main Address Country 2 Alpha Code']=$anon_address->data['Address Country 2 Alpha Code'];
-                $data['Customer Main Location']=$anon_address->data['Address Location'];
-                $data['Customer Main Address Town']=$anon_address->data['Address Town'];
-                $data['Customer Main Address Postal Code']=$anon_address->data['Address Postal Code'];
-                $data['Customer Main Address Country First Division']=$anon_address->data['Address Country First Division'];
-                $data['Customer Main XHTML Address']=$anon_address->display('html');
-                $data['Customer Main Plain Address']=$anon_address->display('plain');
-         
+	$data['Customer Main Address Key']=$anon_address->id;
+	$data['Customer Billing Address Key']=$anon_address->id;
+	
+	$data['Customer Main Address Country Code']=$anon_address->data['Address Country Code'];
+	$data['Customer Main Address Country 2 Alpha Code']=$anon_address->data['Address Country 2 Alpha Code'];
+	$data['Customer Main Location']=$anon_address->data['Address Location'];
+	$data['Customer Main Address Town']=$anon_address->data['Address Town'];
+	  $data['Customer Main Address Postal Code']=$anon_address->data['Address Postal Code'];
+	  $data['Customer Main Address Country First Division']=$anon_address->data['Address Country First Division'];
+	  $data['Customer Main XHTML Address']=$anon_address->display('html');
+	  $data['Customer Main Plain Address']=$anon_address->display('plain');
+	  
          
          
          
@@ -2770,44 +2780,63 @@ $address_data['Address Input Format']='3 Line';
         return $order_key;
     }
 
-    function add_note($note) {
+    function add_note($note,$details='',$date=false) {
         $note=_trim($note);
         if ($note=='') {
             $this->msg=_('Empty note');
             return;
         }
-        $details='';
-        if (strlen($note)>64) {
+
+
+	if($details==''){
+
+
+	  $details='';
+	  if (strlen($note)>64) {
             $words=preg_split('/\s/',$note);
             $len=0;
             $note='';
             $details='';
             foreach($words as $word) {
-                $len+=strlen($world);
-                if ($note=='')
-                    $note=$world;
-                else {
-                    if ($len<64)
-                        $note.=' '.$world;
-                    else
-                        $details.=' '.$world;
-
-                }
+	      $len+=strlen($word);
+	      if ($note=='')
+		$note=$word;
+	      else {
+		if ($len<64)
+		  $note.=' '.$word;
+		else
+		  $details.=' '.$word;
+		
+	      }
             }
+	    
+	    
+
+	  }
+
+	}
 
 
 
-        }
+
 
         $history_data=array(
-                          'note'=>$note
-                                 ,'details'=>$details
-                                            ,'action'=>'created'
-                                                      ,'direct_object'=>'Note'
-                                                                       ,'prepostion'=>'about'
-                                                                                     ,'indirect_object'=>'Customer'
-                                                                                                        ,'indirect_object_key'=>$this->id
-                      );
+			    'note'=>$note
+			    ,'details'=>$details
+			    ,'action'=>'created'
+			    ,'direct_object'=>'Note'
+			    ,'prepostion'=>'about'
+			    ,'indirect_object'=>'Customer'
+			    ,'indirect_object_key'=>$this->id
+
+
+
+			    );
+
+	if($date!='')
+	  $history_data['date']=$date;
+	//print_r($history_data);
+	
         $this->add_history($history_data);
         $this->updated=true;
         $this->new_value='';

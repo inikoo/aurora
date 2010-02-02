@@ -914,7 +914,7 @@ function load_metadata(){
     $res=mysql_query($sql);
 
 
-  
+    //    print $sql;
     $this->associated_with_scope=false;
     while($row=mysql_fetch_array($res)){
         $this->associated_with_scope=true;

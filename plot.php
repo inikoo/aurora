@@ -48,21 +48,25 @@ break;
 
 
 
-case('customer_month_population');
+case('active_customer_month_population');
 
-  $ar_address='ar_plot.php?tipo='.$tipo;
+$ar_address='ar_plot.php?tipo='.$tipo;
+print $ar_address;
 $fields='"date","active","tip_active"';
-  // $fields='"tip_lost","lost","date","new","tip_new","active","tip_active"';
-   $yfields=array(
-		  array('label'=>_('Active'),'name'=>'active','axis'=>'formatNumberAxisLabel','style'=>'size:5,lineSize:2'),
+// $fields='"tip_lost","lost","date","new","tip_new","active","tip_active"';
+$yfields=array(
+	       array('label'=>_('Active'),'name'=>'active','axis'=>'formatNumberAxisLabel','style'=>'size:5,lineSize:2'),
 		  //  array('label'=>_('New'),'name'=>'new','axis'=>'formatNumberAxisLabel','style'=>'size:5,lineSize:2'),
 		  // array('label'=>_('Lost'),'name'=>'lost','axis'=>'formatNumberAxisLabel','style'=>'size:5,lineSize:2')
+	       
+	       );
+$xfield=array('label'=>_('Date'),'name'=>'date','tipo_axis'=>'Category','axis'=>'fdate');
+$style='size:1';
+$tipo_chart='LineChart';
+render_flash_plot();
 
-		  );
-   $xfield=array('label'=>_('Date'),'name'=>'date','tipo_axis'=>'Category','axis'=>'fdate');
-   $style='size:1';
-   $tipo_chart='LineChart';
-   break;
+
+break;
 case('customer_month_growth');
 $staked=true;
   $ar_address='ar_plot.php?tipo='.$tipo;

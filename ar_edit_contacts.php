@@ -868,10 +868,13 @@ global $editor;
    $subject_type=$_REQUEST['subject'];
    $subject_key=$_REQUEST['subject_key'];
 
-   if(preg_match('/^company$/i',$subject_type))
+  
+   if(preg_match('/^company$/i',$subject_type)){
      $subject=new Company($subject_key);
-   else{
+     $is_company=true;
+   }else{
      $subject=new Contact($subject_key);
+     $is_company=false;
    }
    
    
@@ -883,13 +886,23 @@ global $editor;
    
    
    $email_key=$_REQUEST['value'];
-if(!is_numeric($email_key)){
-$email = new Email('email',$email_key);
-$email_key=$email->id;
-}
-  
-
+   if(!is_numeric($email_key)){
+     $email = new Email('email',$email_key);
+     $email_key=$email->id;
+   }
+   
+   
    $subject->remove_email($email_key);
+   if($is_company){
+     $contact_found_keys=$subject->get_contact_keys();
+     print_r($contact_found_keys);
+     foreach($contact_found_keys as $contact_found_key) {
+       $contact=new Contact($contact_found_key);
+       $contact->editor=$subject->editor;
+       $contact->remove_email($email->id);
+     }
+   }
+
    
    if($subject->updated){
      $action='deleted';

@@ -56,7 +56,7 @@ class Contact extends DB_Table {
       (end example)
 
     */
-    function Contact($arg1=false,$arg2=false) {
+    function Contact($arg1=false,$arg2=false,$arg3=false) {
 
         global $myconf;
 
@@ -67,7 +67,7 @@ class Contact extends DB_Table {
 
 
         if (preg_match('/create anonymous|create anonimous$/i',$arg1)) {
-            $this->create_anonymous();
+	  $this->create_anonymous($arg2,$arg3);
             return;
         }
         if (preg_match('/^(new|create)$/i',$arg1)) {
@@ -140,6 +140,10 @@ class Contact extends DB_Table {
 
             }
         }
+
+
+
+
 
 
 	//	print_r($this->editor);
@@ -1048,7 +1052,7 @@ class Contact extends DB_Table {
 
                 }
 
-$home_address_key=0;
+		$home_address_key=0;
                  if (is_array($address_home_data) and !array_empty($address_home_data)) { 
                      $address_home_data['editor']=$this->editor; 
                      $home_address=new Address("find in contact ".$this->id." create update",$address_home_data); 
@@ -2129,26 +2133,54 @@ $sql=sprintf("insert into `Address Telecom Bridge` values (%d,%d)",$home_address
 
 
 
+
     /*
       Function: create_anonymous
       Create an anonymous contact
      */
 
-    private function create_anonymous() {
+    private function create_anonymous($raw_data,$options='') {
         global $myconf;
+
+
+	if (isset($raw_data['editor']) and is_array($raw_data['editor'])) {
+	  foreach($raw_data['editor'] as $key=>$value) {
+	    
+	    if (array_key_exists($key,$this->editor))
+	      $this->editor[$key]=$value;
+	    
+	  }
+        }
+	
+	
+	
+	
+
+
+
         $this->data['Contact Fuzzy']='Yes';
         $this->data['Contact Name']=$myconf['unknown_contact'];
         $this->data['Contact Informal Greeting']=$myconf['unknown_informal_greting'];
         $this->data['Contact Formal Greeting']=$myconf['unknown_formal_greting'];
         $this->data['Contact File As']=$this->display('file_as');
         $this->data['Contact ID']=$this->get_new_id();
+
+	
+
+	
+
+
         $sql="INSERT INTO `dw`.`Contact Dimension` (`Contact ID`, `Contact Salutation`, `Contact Name`, `Contact File As`, `Contact First Name`, `Contact Surname`, `Contact Suffix`, `Contact Gender`, `Contact Informal Greeting`, `Contact Formal Greeting`, `Contact Profession`, `Contact Title`, `Contact Company Name`, `Contact Company Key`, `Contact Company Department`, `Contact Company Department Key`, `Contact Manager Name`, `Contact Manager Key`, `Contact Assistant Name`, `Contact Assistant Key`, `Contact Main Address Key`, `Contact Main Location`, `Contact Main XHTML Address`, `Contact Main Plain Address`, `Contact Main Country Key`, `Contact Main Country`, `Contact Main Country Code`, `Contact Main Telephone`, `Contact Main Plain Telephone`, `Contact Main Telephone Key`, `Contact Main Mobile`, `Contact Main Plain Mobile`, `Contact Main Mobile Key`, `Contact Main FAX`, `Contact Main Plain FAX`, `Contact Main Fax Key`, `Contact Main XHTML Email`, `Contact Main Plain Email`, `Contact Main Email Key`, `Contact Fuzzy`) VALUES (".$this->data['Contact ID'].", 'NULL', ".prepare_mysql($this->data['Contact Name']).",".prepare_mysql($this->data['Contact File As']).", 'NULL',NULL, NULL, 'Unknown',".prepare_mysql($this->data['Contact Informal Greeting']).",".prepare_mysql($this->data['Contact Formal Greeting']).", NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '', NULL, NULL, NULL, NULL, '', NULL, NULL, '', NULL, NULL, '', NULL, NULL, '', NULL, 'Yes');";
 
         if (mysql_query($sql)) {
             $this->id= mysql_insert_id();
             $this->new=true;
             $this->get_data('id',$this->id);
-        } else {
+        
+	    
+
+
+	} else {
             $this->msg="Error can not create anonymous contact";
             $this->new=false;
         }
