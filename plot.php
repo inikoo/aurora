@@ -46,13 +46,21 @@ plot_sales_by_store($tipo);
 
 break;
 
+break;
+case('customers');
+case('active_customers');
 
+$period='m';
+$category='total';
+  if(isset($_REQUEST['period']))
+    $period=$_REQUEST['period'];
+if(isset($_REQUEST['category']))
+  $category=$_REQUEST['category'];
+$ar_address='ar_plot.php?tipo='.$tipo.'&period='.$period.'&category='.$category;
+//print $ar_address;
 
-case('active_customer_month_population');
-
-$ar_address='ar_plot.php?tipo='.$tipo;
-print $ar_address;
 $fields='"date","active","tip_active"';
+
 // $fields='"tip_lost","lost","date","new","tip_new","active","tip_active"';
 $yfields=array(
 	       array('label'=>_('Active'),'name'=>'active','axis'=>'formatNumberAxisLabel','style'=>'size:5,lineSize:2'),

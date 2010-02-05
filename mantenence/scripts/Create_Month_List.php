@@ -25,11 +25,11 @@ require_once '../../conf/conf.php';
 date_default_timezone_set('Europe/London');
 
 
-$sql="trucate `Month Dimension`";
+$sql="trucate kbase.`Month Dimension`";
  mysql_query($sql);
-$start_date='2003-01-01';
+$start_date='1960-01-01';
 
-$end_date='2012-01-01';
+$end_date='2020-01-01';
 
 $i=0;
 $date=strtotime($start_date);
@@ -37,9 +37,9 @@ $date=strtotime($start_date);
 while($date<strtotime($end_date)){
   $i++;
   $last_day= date('Y-m-d',strtotime(date("Y-m-d",strtotime(date('Y-m-d',$date).' +1 month')).' -1 day ' ));
-  $sql=sprintf("insert into `Month Dimension` values ('%s','%s','%s','%s')",date('Ym',$date),date('Y-m-d',$date),$last_day,date('m',$date));
+  $sql=sprintf("insert into kbase.`Month Dimension` values ('%s','%s','%s','%s')",date('Ym',$date),date('Y-m-d',$date),$last_day,date('m',$date));
   mysql_query($sql);
-  print "$sql\n";
+  //print "$sql\n";
   $date=strtotime(date('Y-m-d',$date).' +1 month');
   if($i>100000)
     exit;

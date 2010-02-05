@@ -9,6 +9,9 @@ if(!isset($_REQUEST['tipo']))
     exit;
   }
 
+
+
+
 $plot_type=$_REQUEST['tipo'];
 switch($plot_type){
 case('invoiced_month_sales'):
@@ -86,15 +89,24 @@ list_invoices_grouped_per_month();
 case('net_diff1y_sales_month'):
 list_invoices_1y_change_per_month();
  break;
-case('active_customer_month_growth'): 
-case('active_customer_month_population'): 
+case('active_customers'): 
+  if($_REQUEST['period']=='m')
     list_active_customer_population_per_month();
-    break;
+  
+  break;
+case('customers'): 
+  if($_REQUEST['period']=='m')
+    list_customer_population_per_month();
+  elseif($_REQUEST['period']=='y')
+    list_customer_population_per_year();
+  break;
 default:
-   $response=array('state'=>404,'resp'=>_('Operation not found'));
+   $response=array('state'=>405,'resp'=>_('Operation not found'));
    echo json_encode($response);
    
  }
+
+
 
 function list_product_sales_per_week(){
   $mode=$_SESSION['state']['product']['mode'];
@@ -803,6 +815,243 @@ mysql_free_result($res);
 
       echo json_encode($response);
 }
+
+
+function list_customer_population_per_month(){
+ 
+  $sql="select MIN(`Customer First Contacted Date`) as data_since from `Customer Dimension`;";
+  $res=mysql_query($sql);
+  if($row=mysql_fetch_array($res)){
+    $first_day=$row['data_since'];
+
+  }else{
+    global $myconf;
+    $first_day=$myconf['data_since'];
+    
+  }
+  $first_yearmonth=date("Ym",strtotime($first_day));
+
+  //print $first_day;
+  
+
+  $sql="select min(`Customer First Order Date`) first_day from `Customer Dimension`  ; ";
+  $res = mysql_query($sql); 
+  if($row=mysql_fetch_array($res)) {
+    $first_day=$row['first_day'];
+  }
+
+  $sql="select date_format(`First Day`,'%c') as month, `First Day` as date, `Year Month` as yearmonth  from kbase.`Month Dimension` where `First Day`>'$first_day' and `First Day` < NOW(); ";
+
+  $data=array();
+  $res = mysql_query($sql);
+  $i=0;
+  $last_month='';
+  $res = mysql_query($sql); 
+  while($row=mysql_fetch_array($res)) {
+    $index[$row['yearmonth']]=$i;
+
+
+    $data[]=array(
+		  'tip_lost'=>_('No customer lost'),
+		  'tip_new'=>_('No new customers'),
+		  'tip_active'=>_('No active customers'),
+		  'tip_diff'=>_('No change in the number of customers'),
+		  'month'=>$row['month'],
+		  '_date'=>$row['date'],
+		  'date'=>strftime("%b %y",strtotime($row['date'])),
+		  'yearmonth'=>$row['yearmonth'],
+		  'new'=>0,
+		  'lost'=>0,
+		  'active'=>0,
+		   
+		  );
+
+    $i++;
+  }
+
+  mysql_free_result($res);
+
+
+
+  $sql="select count(*) as new, DATE_FORMAT(`Customer First Contacted Date`,'%Y%m') yearmonth from `Customer Dimension`    group by DATE_FORMAT(`Customer First Contacted Date`,'%m%Y')";
+  //print $sql;
+  $res=mysql_query($sql);
+  while($row=mysql_fetch_array($res)){
+    //     print $row['yearmonth']."\n";
+    if(isset($index[$row['yearmonth']])){
+      $_index=$index[$row['yearmonth']];
+      $data[$_index]['new']=(float)$row['new'];
+      $data[$_index]['tip_new']=_('New Customers')."\n".strftime("%b %y",strtotime($data[$_index]['_date']))."\n".number($row['new']);
+    }
+  }
+
+  mysql_free_result($res);
+   
+ 
+  $_data[]=0;
+  $active=0;
+  foreach($data as $_index=>$value){
+    $last_month_customers=0;
+    $active+=($data[$_index]['new']);
+    $data[$_index]['active']=$active;
+    $data[$_index]['tip_active']=strftime("%b %y",strtotime($data[$_index]['_date']))."\n"._('Total customers contacts').": ".number($active)."\n"._('New this month').": ".number($data[$_index]['new']);
+
+    $data[$_index]['tip_diff']=strftime("%b %y",strtotime($data[$_index]['_date']))." "._('Customer Growth')."\n".number($data[$_index]['new']-$last_month_customers);
+
+  }
+  $_data=array();
+
+  foreach($data as $_index=>$value){
+   
+      
+    if($first_yearmonth<$data[$_index]['yearmonth']){
+       
+      $_data[]=array(
+		     'tip_lost'=>$value['tip_lost'],
+		     'tip_new'=>$value['tip_new'],
+		     'tip_active'=>$value['tip_active'],
+		     'tip_diff'=>$value['tip_diff'],
+		     'date'=>$value['date'],
+		     'new'=>$value['new'],
+		     'lost'=>-$value['lost'],
+		     'active'=>$value['active'],
+		     'diff'=>$value['new']-$last_month_customers
+		     );
+
+	
+    }
+
+  }
+
+
+
+  //   exit;
+
+  $response=array('resultset'=>
+		  array('state'=>200,
+			'data'=>$_data,
+			)
+		  );
+
+  echo json_encode($response);
+}
+
+
+function list_customer_population_per_year(){
+
+  $sql="select YEAR(MIN(`Customer First Contacted Date`)) as data_since from `Customer Dimension`;";
+  $res=mysql_query($sql);
+  if($row=mysql_fetch_array($res)){
+    $first_year=$row['data_since'];
+
+  }else{
+    global $myconf;
+    $first_day=$myconf['data_since'];
+    $first_year=date("Y",strtotime($first_day));
+  }    
+
+  
+
+  $current_year=date('Y');
+  if($first_year>=$current_year)
+    return;
+  $last_year=$current_year;
+  
+
+
+  $year=$first_year;
+
+    $i=0;
+  while($year<=$last_year) {
+    $index[$year]=$i;
+
+    $date=$year.'-01-01';
+    $data[]=array(
+		  'tip_lost'=>_('No customer lost'),
+		  'tip_new'=>_('No new customers'),
+		  'tip_active'=>_('No active customers'),
+		  'tip_diff'=>_('No change in the number of customers'),
+		  '_date'=>$date,
+		  'year'=>$year,
+		  'date'=>strftime("%Y",strtotime($date)),
+		  'yearmonth'=>$date,
+		  'new'=>0,
+		  'lost'=>0,
+		  'active'=>0
+		  
+		  );
+    
+    $i++;
+    $year++;
+  }
+
+
+
+
+  $sql="select count(*) as new, YEAR(`Customer First Contacted Date`) year from `Customer Dimension`    group by YEAR(`Customer First Contacted Date`)";
+ 
+ $res=mysql_query($sql);
+  while($row=mysql_fetch_array($res)){
+    //     print $row['yearmonth']."\n";
+    if(isset($index[$row['year']])){
+      $_index=$index[$row['year']];
+      $data[$_index]['new']=(float)$row['new'];
+      $data[$_index]['tip_new']=$row['year'].' '._('New Customers')."\n".number($row['new']);
+    }
+  }
+
+  mysql_free_result($res);
+   
+ 
+  $_data[]=0;
+  $active=0;
+  foreach($data as $_index=>$value){
+    $last_month_customers=0;
+    $active+=($data[$_index]['new']);
+    $data[$_index]['active']=$active;
+    $data[$_index]['tip_active']=strftime("%Y",strtotime($data[$_index]['_date']))."\n"._('Total customers contacts').": ".number($active)."\n"._('New this year').": ".number($data[$_index]['new']);
+
+    $data[$_index]['tip_diff']=strftime("%Y",strtotime($data[$_index]['_date']))." "._('Customer Growth')."\n".number($data[$_index]['new']-$last_month_customers);
+
+  }
+  $_data=array();
+
+  foreach($data as $_index=>$value){
+   
+      
+    if($first_year<$data[$_index]['year']){
+       
+      $_data[]=array(
+		     'tip_lost'=>$value['tip_lost'],
+		     'tip_new'=>$value['tip_new'],
+		     'tip_active'=>$value['tip_active'],
+		     'tip_diff'=>$value['tip_diff'],
+		     'date'=>$value['date'],
+		     'new'=>$value['new'],
+		     'lost'=>-$value['lost'],
+		     'active'=>$value['active'],
+		     'diff'=>$value['new']-$last_month_customers
+		     );
+
+	
+    }
+
+  }
+
+
+
+  //   exit;
+
+  $response=array('resultset'=>
+		  array('state'=>200,
+			'data'=>$_data,
+			)
+		  );
+
+  echo json_encode($response);
+}
+
+
 function list_invoices_grouped_per_month(){
 $number_years=4;
   $from='2004-07-00';
