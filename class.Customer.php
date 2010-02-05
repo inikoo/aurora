@@ -2836,8 +2836,9 @@ $address_data['Address Input Format']='3 Line';
 	if($date!='')
 	  $history_data['date']=$date;
 	//print_r($history_data);
-	
-        $this->add_history($history_data);
+	//	print "adding history\n";
+        $this->add_history($history_data,$force_save=true);
+	//print "====  ================  |";
         $this->updated=true;
         $this->new_value='';
     }

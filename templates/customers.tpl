@@ -5,19 +5,33 @@
   <div id="no_details_title"  style="clear:left;xmargin:0 20px;{if $details!=0}display:none{/if}">
     <h1>{t}Store{/t}: {$store->get('Store Name')} ({$store->get('Store Code')})</h1>
   </div>
-  <div id="info"  style="clear:left;margin-top:10px;padding:0 0px;width:770px;{if $details==0}display:none{/if}">
+  <div id="info"  style="clear:left;margin-top:10px;padding:0 0px;width:910px;{if $details==0}display:none{/if}">
     <h2>{t}Customers Information{/t} ({$store->get('Store Code')})</h2>
       <p style="width:475px">{$overview_text}</p>
-      <div id="plot" style="width:940px;border:0px solid black;padding:0">
+      <div id="plot"  class="top_bar" style="width:100%;;position:relative;clear:both;padding:0;margin:0px;{if !$details}display:none;{/if}">
+	<ul id="plot_chooser" class="tabs" style="margin:0 0px;padding:0 20px "  >
+	  <li>
+	    <span class="item  {if $plot_tipo=='customers'}selected{/if}" onClick="change_plot(this)" id="plot_customers" tipo="customers" category="{$plot_data.customers.category}" period="{$plot_data.customers.period}" >
+	      <span>{t}All Contacts{/t}</span>
+	    </span>
+	  </li>
+	  <li>
+	    <span class="item  {if $plot_tipo=='active_customers'}selected{/if}"  id="plot_active_customers" onClick="change_plot(this)" tipo="active_customers" category="{$plot_data.active_customers.category}" period="{$plot_data.active_customers.period}" name=""  >
+	      <span>{t}Actual Customers{/t}</span>
+	    </span>
+	  </li>
+	  
+	</ul> 
+	<ul id="plot_options" class="tabs" style="{if $plot_tipo=='pie'}display:none{/if};position:relative;top:.6em;float:right;margin:0 20px;padding:0 20px;font-size:90% "  >
+	  <li><span class="item option"> <span id="plot_category"  category="{$plot_category}" style="xborder:1px solid black;display:inline-block; vertical-align:middle">{$plot_formated_category}</span></span></li>
+	  <li><span class="item option"> <span id="plot_period"   period="{$plot_period}" style="xborder:1px solid black;display:inline-block; vertical-align:middle">{$plot_formated_period}</span></span></li>
+	</ul> 
 	
-	<div style="float:right;font-size:80%;border:0px solid red;position:relative;left:-20px">
-	  <table class="options">
-	    <tr><td id="customer_month_population" onclick="change_plot(this)">Customers</td></tr>
-	    <tr><td id="customer_month_growth" onclick="change_plot(this)">Growth</td></tr>
-
-	  </table>
-	</div>
-	<iframe id="the_plot" src ="plot.php?tipo={$plot_tipo}" style="position:relative;left:-30px" frameborder=0 height="310" scrolling="no" width="850"></iframe>
+	<div style="clear:both;margin:0 0px;padding:0 20px ;border-bottom:1px solid #999">
+	  
+      </div>
+      
+      <iframe id="the_plot" src ="{$plot_page}?{$plot_args}"  frameborder=0 height="325" scrolling="no" width="100%"></iframe>
       </div>
       <p style="width:475px">{$top_text}</p>
       <p style="width:475px">{$export_text}</p>

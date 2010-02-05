@@ -644,8 +644,9 @@ class Company extends DB_Table {
 
         } else if (!$address->new) {
             //print_r($address);
-            print ("dupplicate address\n");
-            print_r($address);
+            print ("Duplicate address: ".$address->display('plain')."\n");
+            
+	  
 
             $address_data['editor']=$this->editor;
             $address=new Address("find in company create force",$address_data);

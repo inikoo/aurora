@@ -161,7 +161,93 @@ $overview_text=translate("We have had  %1\$s  customers so far, %2\$s of them st
 			 ,$new_customers_1m
 			 ,percentage($new_customers_1m,$active_customers+$new_customers));
  $smarty->assign('overview_text',$overview_text);
-$smarty->assign('plot_tipo',$_SESSION['state']['customers']['plot']);
+//$smarty->assign('plot_tipo',$_SESSION['state']['customers']['plot']);
+
+
+
+$plot_tipo=$_SESSION['state']['customers']['plot'];
+$plot_data=$_SESSION['state']['customers']['plot_data'][$plot_tipo];
+$plot_period=$plot_data['period'];
+$plot_category=$plot_data['category'];
+
+
+
+
+$plot_args='tipo='.$plot_tipo.'&category='.$plot_category.'&period='.$plot_period.'&keys='.$store_id.'&currency='.$store->data['Store Currency Code'];
+
+
+
+if($plot_tipo=='pie'){
+  $pie_forecast=$plot_data['forecast'];
+  
+  if($plot_data['date']=='today'){
+    $plot_date=date('Y-m-d');
+    $smarty->assign('plot_date',$plot_date);
+    $smarty->assign('plot_formated_date',strftime("%b %Y",strtotime($plot_date)));
+
+  }
+
+  $plot_args=sprintf('tipo=children_share&item=store&category=%s&period=%s&keys=%d&date=%s&forecast=%s'
+		     ,$plot_category
+		     ,$plot_period
+		     ,$store_id
+		     ,$plot_date
+		     ,$plot_data['forecast']);
+}
+
+$smarty->assign('plot_tipo',$plot_tipo);
+$smarty->assign('plot_args',$plot_args);
+$smarty->assign('plot_page',$plot_data['page']);
+$smarty->assign('plot_period',$plot_period);
+$smarty->assign('plot_category',$plot_period);
+$smarty->assign('plot_data',$_SESSION['state']['store']['plot_data']);
+
+
+if($plot_tipo=='pie'){
+  if($plot_period=='m')
+    $plot_formated_period='Month';
+  elseif($plot_period=='y')
+    $plot_formated_period='Year';
+    elseif($plot_period=='q')
+      $plot_formated_period='Quarter';
+    elseif($plot_period=='w')
+      $plot_formated_period='Week';
+  }else{
+    if($plot_period=='m')
+      $plot_formated_period='Monthly';
+    elseif($plot_period=='y')
+      $plot_formated_period='Yearly';
+    elseif($plot_period=='q')
+      $plot_formated_period='Quarterly';
+    elseif($plot_period=='w')
+      $plot_formated_period='Weekly';
+  }
+  
+if($plot_category=='growth')
+  $plot_formated_category=_('Growth');
+else
+  $plot_formated_category=_('Total');
+
+
+$smarty->assign('plot_formated_category',$plot_formated_category);
+$smarty->assign('plot_formated_period',$plot_formated_period);
+
+
+
+$plot_period_menu=array(
+
+		     array("period"=>'m','label'=>_('Montly'))
+		     ,array("period"=>'q','label'=>_('Quarterly'))
+		     ,array("period"=>'y','label'=>_('Yearly'))
+		     );
+$smarty->assign('plot_period_menu',$plot_period_menu);
+
+$plot_category_menu=array(
+		     array("category"=>'total','label'=>_('Total'))
+		     ,array("category"=>'growth','label'=>_('Growth'))
+		     );
+$smarty->assign('plot_category_menu',$plot_category_menu);
+
 
 
 // $home_country='United Kingdom';

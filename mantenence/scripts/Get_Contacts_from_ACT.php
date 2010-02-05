@@ -118,11 +118,25 @@ if (($handle = fopen($filename, "r")) !== FALSE) {
     $act_data=act_transformations($act_data);
 $history_data=get_history_data($act_data['history']);
     $act_data['history']=$history_data;
+
+
+
+    if($act_data['name']=='' and $act_data['contact']=='' and $act_data['email']=='' and $act_data['tel']=='' 
+       and $act_data['fax']==''
+       and $act_data['mob']==''
+       
+       ){
+      
+      continue;
+    }
+
+
+
     $contacts[$row]=$act_data;
     $contacts_date[$row]=$creation_time;
     
     // print_r($act_data);
-    // if($row>500)
+    // if($row>100)
     //  break;
      print "$row\r";
 
@@ -149,6 +163,10 @@ usort($contacts, 'compare');
 
 
 foreach($contacts as $act_data){
+
+  if(strtotime($act_data['creation_date'])<=strtotime('2006-10-22'))
+    continue;
+
   if($act_data['name']!=$act_data['contact'] )
     $tipo_customer='Company';
   else{	  
@@ -268,6 +286,11 @@ foreach($contacts as $act_data){
 
     $customer = new Customer ( 'find create',  $customer_data);
     
+    //   if(count($act_data['history'])>0){
+    //  print "Customer ".$customer->id." with History\n\n\n\n\n\n";
+    //  print_r($act_data['history']);
+    // }
+
     foreach($act_data['history'] as $h_tipo=>$histories){
       if($h_tipo=='Note')
 	foreach($histories as $date=>$history){
