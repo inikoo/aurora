@@ -805,7 +805,6 @@ mysql_free_result($res);
 
 
 
-   //   exit;
 
    $response=array('resultset'=>
 		   array('state'=>200,
@@ -894,6 +893,7 @@ function list_customer_population_per_month(){
     $last_month_customers=0;
     $active+=($data[$_index]['new']);
     $data[$_index]['active']=$active;
+
     $data[$_index]['tip_active']=strftime("%b %y",strtotime($data[$_index]['_date']))."\n"._('Total customers contacts').": ".number($active)."\n"._('New this month').": ".number($data[$_index]['new']);
 
     $data[$_index]['tip_diff']=strftime("%b %y",strtotime($data[$_index]['_date']))." "._('Customer Growth')."\n".number($data[$_index]['new']-$last_month_customers);
@@ -923,7 +923,8 @@ function list_customer_population_per_month(){
 
   }
 
-
+//print_r($_data);
+//     exit;
 
   //   exit;
 

@@ -4,13 +4,99 @@ include_once('common.php');
    var Event = YAHOO.util.Event;
      var Dom   = YAHOO.util.Dom;
 
+var category_labels={'total':'<?php echo _('Number')?>','growth':'<?php echo _('Growth')?>'};
+var period_labels={'m':'<?php echo _('Montly')?>','y':'<?php echo _('Yearly')?>','w':'<?php echo _('Weekly')?>','q':'<?php echo _('Quarterly')?>'};
+var pie_period_labels={'m':'<?php echo _('Month')?>','y':'<?php echo _('Year')?>','w':'<?php echo _('Week')?>','q':'<?php echo _('Quarter')?>'};
 
-function change_plot(o){
-  
-    
-    Dom.get('the_plot').src = 'plot.php?tipo='+o.id;
-    YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=customers-plot&value='+o.id);
+var plot='<?php echo$_SESSION['state']['customers']['plot']?>';
+ 
+
+function change_plot_category(category){
+    o=Dom.get('plot_'+plot);
+    o.setAttribute("category",category);
+
+    change_plot(o);
 }
+function change_plot_period(period){
+    o=Dom.get('plot_'+plot);
+    
+    o.setAttribute("period",period);
+
+    change_plot(o);
+}
+function change_plot(o){
+    //  if(!Dom.hasClass(o,'selected')){
+
+	var keys=Dom.get("plot_info").getAttribute("keys");
+	
+
+	
+	var tipo=o.getAttribute("tipo");
+	var category=o.getAttribute("category");
+	var period=o.getAttribute("period");
+
+
+	if(tipo=='pie'){
+	    plot='pie';
+	
+	    var forecast=o.getAttribute("forecast");
+	    var date=o.getAttribute("date");
+
+	    
+
+	    Dom.get("the_plot").width="500px";
+	    var plot_url='pie.php?tipo=children_share&item=store&period='+period+'&category='+category+'&forecast='+forecast+'&date='+date+'&keys='+keys;
+	    //alert(plot_url)
+	    plot_code=tipo;
+	    Dom.get("pie_options").style.display='';
+	    Dom.get("plot_options").style.display='none';
+
+	    old_selected=Dom.getElementsByClassName('selected', 'td', 'pie_period_options');
+	    for( var i in old_selected )
+		Dom.removeClass(old_selected[i],'selected');
+	    Dom.addClass("pie_period_"+period,'selected');
+	    old_selected=Dom.getElementsByClassName('selected', 'td', 'pie_category_options');
+	    for( var i in old_selected )
+		Dom.removeClass(old_selected[i],'selected');
+	    Dom.addClass("pie_category_"+category,'selected');
+	    
+	}else if(tipo=='top_departments'){
+	    plot='top_departments';
+	    top_children=3;
+	    Dom.get("pie_options").style.display='none';
+	    var plot_url='plot.php?tipo=store&top_children='+top_children+'&category='+category+'&period='+period+'&keys='+keys;
+	    Dom.get("the_plot").width="100%";
+	    plot_code=tipo+'_'+category+'_'+period;
+
+
+	    Dom.get("plot_category").innerHTML=category_labels[category];
+	    Dom.get("plot_period").innerHTML=period_labels[period];
+	    Dom.get("plot_options").style.display='';
+
+	}else{
+	     plot='customers';
+	    //Dom.get("pie_options").style.display='none';
+	    var plot_url='plot.php?tipo='+tipo+'&category='+category+'&period='+period+'&keys='+keys;
+	    Dom.get("the_plot").width="100%";
+	    plot_code=tipo+'_'+category+'_'+period;
+
+
+	    Dom.get("plot_category").innerHTML=category_labels[category];
+	    Dom.get("plot_period").innerHTML=period_labels[period];
+	    Dom.get("plot_options").style.display='';
+	}
+
+
+//	alert(plot_url);
+        Dom.get("the_plot").src=plot_url; 
+	old_selected=Dom.getElementsByClassName('selected', 'span', 'plot_chooser');
+	for( var i in old_selected ){
+	    Dom.removeClass(old_selected[i],'selected');
+	}
+	Dom.addClass(o,'selected');
+	
+}
+
 
 YAHOO.util.Event.addListener(window, "load", function() {
     tables = new function() {
@@ -300,3 +386,20 @@ store_name_oAutoComp.queryDelay = 0.15;
 }
 
 YAHOO.util.Event.onDOMReady(init);
+
+
+
+YAHOO.util.Event.onContentReady("plot_period_menu", function () {
+	 var oMenu = new YAHOO.widget.Menu("plot_period_menu", { context:["plot_period","br", "tr"]  });
+	 oMenu.render();
+	 oMenu.subscribe("show", oMenu.focus);
+	 YAHOO.util.Event.addListener("plot_period", "click", oMenu.show, null, oMenu);
+    });
+YAHOO.util.Event.onContentReady("plot_category_menu", function () {
+	 var oMenu = new YAHOO.widget.Menu("plot_category_menu", { context:["plot_category","br", "tr"]  });
+	 oMenu.render();
+	 oMenu.subscribe("show", oMenu.focus);
+	 YAHOO.util.Event.addListener("plot_category", "click", oMenu.show, null, oMenu);
+    });
+
+

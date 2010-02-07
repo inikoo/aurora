@@ -9,6 +9,7 @@
     <h2>{t}Customers Information{/t} ({$store->get('Store Code')})</h2>
       <p style="width:475px">{$overview_text}</p>
       <div id="plot"  class="top_bar" style="width:100%;;position:relative;clear:both;padding:0;margin:0px;{if !$details}display:none;{/if}">
+<span id="plot_info" keys="{$store->get('Store Key')}">
 	<ul id="plot_chooser" class="tabs" style="margin:0 0px;padding:0 20px "  >
 	  <li>
 	    <span class="item  {if $plot_tipo=='customers'}selected{/if}" onClick="change_plot(this)" id="plot_customers" tipo="customers" category="{$plot_data.customers.category}" period="{$plot_data.customers.period}" >
@@ -90,6 +91,27 @@
        <li style="text-align:left;margin-left:10px;border-bottom:1px solid #ddd">{t}Rows per Page{/t}:</li>
       {foreach from=$paginator_menu item=menu }
       <li class="yuimenuitem"><a class="yuimenuitemlabel" onClick="change_rpp({$menu},0)"> {$menu}</a></li>
+      {/foreach}
+    </ul>
+  </div>
+</div>
+
+<div id="plot_period_menu" class="yuimenu">
+  <div class="bd">
+    <ul class="first-of-type">
+      <li style="text-align:left;margin-left:10px;border-bottom:1px solid #ddd">{t}Plot frequency{/t}:</li>
+      {foreach from=$plot_period_menu item=menu }
+      <li class="yuimenuitem"><a class="yuimenuitemlabel" onClick="change_plot_period('{$menu.period}')"> {$menu.label}</a></li>
+      {/foreach}
+    </ul>
+  </div>
+</div>
+<div id="plot_category_menu" class="yuimenu">
+  <div class="bd">
+    <ul class="first-of-type">
+      <li style="text-align:left;margin-left:10px;border-bottom:1px solid #ddd">{t}Plot Type{/t}:</li>
+      {foreach from=$plot_category_menu item=menu }
+      <li class="yuimenuitem"><a class="yuimenuitemlabel" onClick="change_plot_category('{$menu.category}')"> {$menu.label}</a></li>
       {/foreach}
     </ul>
   </div>

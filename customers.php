@@ -200,7 +200,7 @@ $smarty->assign('plot_args',$plot_args);
 $smarty->assign('plot_page',$plot_data['page']);
 $smarty->assign('plot_period',$plot_period);
 $smarty->assign('plot_category',$plot_period);
-$smarty->assign('plot_data',$_SESSION['state']['store']['plot_data']);
+$smarty->assign('plot_data',$_SESSION['state']['customers']['plot_data']);
 
 
 if($plot_tipo=='pie'){

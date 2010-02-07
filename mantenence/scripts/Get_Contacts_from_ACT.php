@@ -56,7 +56,9 @@ $contacts_date=array();
 if (($handle = fopen($filename, "r")) !== FALSE) {
   while (($data = fgetcsv($handle, filesize($filename), ",")) !== FALSE) {
     $num = count($data);
-    if($num!=105)
+  
+  //print "$num $row\n";
+  if($num!=105)
       break;
 
     if($row==0){
@@ -64,7 +66,10 @@ if (($handle = fopen($filename, "r")) !== FALSE) {
       $row++;continue;
     }    
     $row++;
-    
+   
+   
+   ;
+   
     $cols=array();
     foreach($data as $key=>$col){
       if($convert_encoding)
@@ -155,7 +160,7 @@ $history_data=get_history_data($act_data['history']);
 
 usort($contacts, 'compare');
 //print_r($contacts);
-
+//exit("fin\n");
 
 //$fp = fopen('contacts_act_file.csv', 'w');
 //foreach ($contacts as $line) {    fputcsv($fp, $line);}
@@ -164,8 +169,8 @@ usort($contacts, 'compare');
 
 foreach($contacts as $act_data){
 
-  if(strtotime($act_data['creation_date'])<=strtotime('2006-10-22'))
-    continue;
+ // if(strtotime($act_data['creation_date'])<=strtotime('2006-10-22'))
+ //   continue;
 
   if($act_data['name']!=$act_data['contact'] )
     $tipo_customer='Company';

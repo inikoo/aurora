@@ -243,8 +243,6 @@ function change_plot_period(period){
 
     change_plot(o);
 }
-
-
 function change_plot(o){
     //  if(!Dom.hasClass(o,'selected')){
 

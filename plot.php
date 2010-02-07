@@ -50,27 +50,45 @@ break;
 case('customers');
 case('active_customers');
 
-$period='m';
-$category='total';
-  if(isset($_REQUEST['period']))
+$_SESSION['state']['customers']['plot']=$tipo;
+
+
+  if(isset($_REQUEST['period'])){
     $period=$_REQUEST['period'];
-if(isset($_REQUEST['category']))
+    $_SESSION['state']['customers']['plot_data'][$tipo]['period']=$period;
+
+    }else
+    $period=$_SESSION['state']['customers']['plot_data'][$tipo]['period'];
+    
+if(isset($_REQUEST['category'])){
   $category=$_REQUEST['category'];
+  $_SESSION['state']['customers']['plot_data'][$tipo]['category']=$category;
+
+  }
+$category=$_SESSION['state']['customers']['plot_data'][$tipo]['category'];
+  
+  
+ // print_r($tipo);
+  
 $ar_address='ar_plot.php?tipo='.$tipo.'&period='.$period.'&category='.$category;
 //print $ar_address;
 
-$fields='"date","active","tip_active"';
 
 // $fields='"tip_lost","lost","date","new","tip_new","active","tip_active"';
-$yfields=array(
-	       array('label'=>_('Active'),'name'=>'active','axis'=>'formatNumberAxisLabel','style'=>'size:5,lineSize:2'),
-		  //  array('label'=>_('New'),'name'=>'new','axis'=>'formatNumberAxisLabel','style'=>'size:5,lineSize:2'),
-		  // array('label'=>_('Lost'),'name'=>'lost','axis'=>'formatNumberAxisLabel','style'=>'size:5,lineSize:2')
-	       
-	       );
+
 $xfield=array('label'=>_('Date'),'name'=>'date','tipo_axis'=>'Category','axis'=>'fdate');
 $style='size:1';
+if($category=='total'){
+$yfields=array(array('label'=>_('Active'),'name'=>'active','axis'=>'formatNumberAxisLabel','style'=>'size:5,lineSize:2'));
 $tipo_chart='LineChart';
+$fields='"date","active","tip_active"';
+
+}else{
+$yfields=array(array('label'=>_('New Customers'),'name'=>'new','axis'=>'formatNumberAxisLabel','style'=>'size:5,lineSize:2'));
+$fields='"date","new","tip_new"';
+
+$tipo_chart='ColumnChart';
+}
 render_flash_plot();
 
 
@@ -594,7 +612,8 @@ style:{'.$style.'}          ,
 	 xAxis: xAxis,
          dataTipFunction: "DataTipText",
  	 style:styleDef,
-         expressInstall: "assets/expressinstall.swf"
+         expressInstall: "assets/expressinstall.swf",
+         polling: 2000 
  	});
 
 
