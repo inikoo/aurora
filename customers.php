@@ -47,8 +47,9 @@ $general_options_list=array();
 
 if($modify){
   $general_options_list[]=array('tipo'=>'url','url'=>'edit_customers.php','label'=>_('Edit Customers'));
-   $general_options_list[]=array('tipo'=>'url','url'=>'new_customer.php','label'=>_('Add Customer'));
+   $general_options_list[]=array('tipo'=>'js','id'=>'new_customer','label'=>_('Add Customer'));
 }
+
 $general_options_list[]=array('tipo'=>'js','state'=>$show_details,'id'=>'details','label'=>($show_details?_('Hide Details'):_('Show Details')));
 $general_options_list[]=array('tipo'=>'js','state'=>'','id'=>'advanced_search','label'=>_('Advanced Search'));
 
@@ -63,9 +64,10 @@ $smarty->assign('search_scope','customers');
 $css_files=array(
 		 $yui_path.'reset-fonts-grids/reset-fonts-grids.css',
 		 $yui_path.'menu/assets/skins/sam/menu.css',
-	
+		 $yui_path.'button/assets/skins/sam/button.css',
 		 $yui_path.'build/assets/skins/sam/skin.css',
 		 'common.css',
+		 'button.css',
 		 'container.css',
 		 'table.css'
 		 );
@@ -76,7 +78,7 @@ $js_files=array(
 		$yui_path.'datasource/datasource-min.js',
 		$yui_path.'autocomplete/autocomplete-min.js',
 		$yui_path.'datatable/datatable.js',
-		$yui_path.'container/container_core-min.js',
+		$yui_path.'container/container-min.js',
 		$yui_path.'menu/menu-min.js',
 		'common.js.php',
 		'table_common.js.php',

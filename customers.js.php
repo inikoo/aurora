@@ -11,6 +11,16 @@ var pie_period_labels={'m':'<?php echo _('Month')?>','y':'<?php echo _('Year')?>
 var plot='<?php echo$_SESSION['state']['customers']['plot']?>';
  
 
+function close_dialog(tipo){
+	dialog_new_customer.hide();
+}
+
+function new_customer(tipo){
+    location.href='new_customer.php?tipo='+tipo;
+    dialog_new_customer.hide();
+}
+
+
 function change_plot_category(category){
     o=Dom.get('plot_'+plot);
     o.setAttribute("category",category);
@@ -241,6 +251,9 @@ YAHOO.util.Event.addListener(window, "load", function() {
  var Dom   = YAHOO.util.Dom;
 
 
+ 
+
+
  var oACDS = new YAHOO.util.FunctionDataSource(mygetTerms);
  oACDS.queryMatchContains = true;
  var oAutoComp = new YAHOO.widget.AutoComplete("f_input0","f_container", oACDS);
@@ -380,6 +393,13 @@ store_name_oACDS.queryMatchContains = true;
 var store_name_oAutoComp = new YAHOO.widget.AutoComplete(search_scope+"_search",search_scope+"_search_Container", store_name_oACDS);
 store_name_oAutoComp.minQueryLength = 0; 
 store_name_oAutoComp.queryDelay = 0.15;
+
+
+
+
+dialog_new_customer = new YAHOO.widget.Dialog("dialog_new_customer", {context:["new_customer","tr","tl"]  ,visible : false,close:false,underlay: "none",draggable:false});
+dialog_new_customer.render();
+Event.addListener("new_customer", "click", dialog_new_customer.show,dialog_new_customer , true);
 
 
  

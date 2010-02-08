@@ -3,7 +3,7 @@
 {include file='contacts_navigation.tpl'}
 
   <div id="no_details_title"  style="clear:left;xmargin:0 20px;{if $details!=0}display:none{/if}">
-    <h1>{t}Store{/t}: {$store->get('Store Name')} ({$store->get('Store Code')})</h1>
+    <h1>{t}Customers{/t} ({$store->get('Store Code')})</h1>
   </div>
   <div id="info"  style="clear:left;margin-top:10px;padding:0 0px;width:910px;{if $details==0}display:none{/if}">
     <h2>{t}Customers Information{/t} ({$store->get('Store Code')})</h2>
@@ -116,5 +116,23 @@
     </ul>
   </div>
 </div>
+
+
+<div id="dialog_new_customer" style="padding:10px">
+  <div id="new_customer_msg"></div>
+  {t}Create new Customer{/t}:
+  
+  <table style="margin:10px">
+<tr>
+ <td> <span  style="margin:0 10px" class="unselectable_text state_details" onClick="new_customer('company')" >{t}Company{/t}</span></td>
+ <td> <span  style="margin:0 10px" class="unselectable_text state_details" onClick="new_customer('person')" >{t}Individual{/t}</span></td>
+</tr>
+  </table>
+  <span  class="unselectable_text state_details" onClick="close_dialog('make_order')" >{t}Cancel{/t}</span>
+
+
+</div>
+
+
 
 {include file='footer.tpl'}

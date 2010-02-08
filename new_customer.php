@@ -1,15 +1,15 @@
 <?php
 /*
- File: company.php 
+  File: company.php 
 
- UI company page
+  UI company page
 
- About: 
- Autor: Raul Perusquia <rulovico@gmail.com>
+  About: 
+  Autor: Raul Perusquia <rulovico@gmail.com>
  
- Copyright (c) 2009, Kaktus 
+  Copyright (c) 2009, Kaktus 
  
- Version 2.0
+  Version 2.0
 */
 
 include_once('common.php');
@@ -22,20 +22,11 @@ $modify=$user->can_edit('contacts');
 $create=$user->can_create('contacts');
 
 if(!$modify or!$create){
-exit();
+  exit();
 }
-
-
 
 $css_files=array(
 		 $yui_path.'reset-fonts-grids/reset-fonts-grids.css',
-		 
-		 //		 $yui_path.'assets/skins/sam/container.css',
-		 // $yui_path.'assets/skins/sam/menu.css',
-		 //$yui_path.'assets/skins/sam/button.css',
-		 //$yui_path.'assets/skins/sam/editor.css',
-		 //$yui_path.'assets/skins/sam/autocomplete.css',
-
 
 		 'text_editor.css',
 		 'common.css',
@@ -59,60 +50,69 @@ $js_files=array(
 		'js/phpjs.js',
 		'common.js.php',
 		'table_common.js.php',
-		'js/search.js',
-		'company.js.php'
+		'js/search.js'
+	
 		);
 
 
- 
-  
-  $sql=sprintf("select * from kbase.`Salutation Dimension` S left join kbase.`Language Dimension` L on S.`Language Code`=L.`Language ISO 639-1 Code` where `Language ISO 639-1 Code`=%s limit 1000",prepare_mysql($myconf['lang']));
+ $sql=sprintf("select * from kbase.`Salutation Dimension` S left join kbase.`Language Dimension` L on S.`Language Code`=L.`Language ISO 639-1 Code` where `Language ISO 639-1 Code`=%s limit 1000",prepare_mysql($myconf['lang']));
 //print $sql;
 
 $result=mysql_query($sql);
-  $salutations=array();
-  while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
-    $salutations[]=array('txt'=>$row['Salutation'],'relevance'=>$row['Relevance'],'id'=>$row['Salutation Key']);
-  }
-  mysql_free_result($result);
+$salutations=array();
+while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
+  $salutations[]=array('txt'=>$row['Salutation'],'relevance'=>$row['Relevance'],'id'=>$row['Salutation Key']);
+}
+mysql_free_result($result);
 
 
 
-  $smarty->assign('prefix',$salutations);
-  $editing_block='details';
+$smarty->assign('prefix',$salutations);
+$editing_block='details';
+$smarty->assign('edit',$editing_block);
 
-  $smarty->assign('edit',$editing_block);
-  $css_files[]='css/edit.css';
-  $css_files[]=$yui_path.'autocomplete/assets/skins/sam/autocomplete.css';
-
-  $js_files[]='js/validate_telecom.js';
-  $js_files[]='new_company.js.php?scope=customer';
-  $js_files[]='edit_address.js.php';
-  $js_files[]='edit_contact_from_parent.js.php';
-  $js_files[]='edit_contact_telecom.js.php';
-  $js_files[]='edit_contact_name.js.php';
-  $js_files[]='edit_contact_email.js.php';
+$css_files[]='css/edit.css';
+$css_files[]=$yui_path.'autocomplete/assets/skins/sam/autocomplete.css';
 
 
+$tipo='company';
+if(isset($_REQUEST['tipo']) and $_REQUEST['tipo']=='person'){
+  $tipo='person';
+}
 
+if($tipo=='company'){
+$js_files[]='company.js.php';
+$js_files[]='js/validate_telecom.js';
+$js_files[]='new_company.js.php?scope=customer';
+$js_files[]='edit_address.js.php';
+$js_files[]='edit_contact_from_parent.js.php';
+$js_files[]='edit_contact_telecom.js.php';
+$js_files[]='edit_contact_name.js.php';
+$js_files[]='edit_contact_email.js.php';
+$tpl_file='new_company.tpl';
+}else{
 
+$js_files[]='js/validate_telecom.js';
+$js_files[]='edit_address.js.php';
+$js_files[]='edit_contact_from_parent.js.php';
+$js_files[]='edit_contact_telecom.js.php';
+$js_files[]='edit_contact_name.js.php';
+$js_files[]='edit_contact_email.js.php';
+$js_files[]='edit_contact_email.js.php';
+$js_files[]='new_contact.js.php?scope=customer';
+
+$tpl_file='new_contact.tpl';
+}
 
 
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
-
-
-
-
-
-
 $smarty->assign('box_layout','yui-t0');
 $smarty->assign('parent','customers');
-$smarty->assign('title','Creating Company');
+$smarty->assign('title','Creating New Customer');
+$smarty->display($tpl_file);
 
 
-
-$smarty->display('new_company.tpl');
 
 
 ?>
