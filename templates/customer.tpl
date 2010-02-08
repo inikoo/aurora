@@ -30,14 +30,7 @@
     
   </table>
        
- 
 
-
-
-
-
-
-   
      
 <table id="customer_data" style="width:500px" border=0>
 
@@ -169,22 +162,22 @@
 <div id="dialog_make_order">
   <div id="long_note_msg"></div>
   <table >
-<tr><td colspan=2>{t}Courier{/t}:</td><tr><tr><td colspan=2><input /></td></tr>
-
-<tr><td colspan=2>{t}Special Instructions{/t}:</td></tr>
+    <tr><td colspan=2>{t}Courier{/t}:</td><tr><tr><td colspan=2><input /></td></tr>
+    
+    <tr><td colspan=2>{t}Special Instructions{/t}:</td></tr>
     <tr><td colspan=2>
 	<textarea id="make_order_special_instructions"></textarea>
       </td>
     <tr>
     <tr class="buttons" style="font-size:100%">
-
-
-
-  <td style="text-align:center;width:50%">
-    <span  class="unselectable_text state_details" onClick="close_dialog('make_order')" >{t}Cancel{/t}</span></td>
-  <td style="text-align:center;width:50%">
-    <span  onclick="window.open('customer_csv.php?id={$customer->get('Customer Key')}','Download');close_dialog('make_order')" id="make_order_save"  class="unselectable_text state_details"   >{t}Export{/t}</span></td></tr>
-</table>
+      
+      
+      
+      <td style="text-align:center;width:50%">
+	<span  class="unselectable_text state_details" onClick="close_dialog('make_order')" >{t}Cancel{/t}</span></td>
+      <td style="text-align:center;width:50%">
+	<span  onclick="window.open('customer_csv.php?id={$customer->get('Customer Key')}','Download');close_dialog('make_order')" id="make_order_save"  class="unselectable_text state_details"   >{t}Export{/t}</span></td></tr>
+  </table>
 </div>
 
 
