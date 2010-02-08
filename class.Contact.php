@@ -3050,7 +3050,8 @@ $principal=true;
 
     */
     public static function parse_name($raw_name) {
-        $name=array(
+
+   $name=array(
                   'prefix'=>'',
                   'first'=>'',
                   'middle'=>'',
@@ -3058,7 +3059,14 @@ $principal=true;
                   'suffix'=>'',
                   'alias'=>''
               );
-        $raw_name=_trim($raw_name);
+
+     $raw_name=_trim($raw_name);
+      if(preg_match('/^(ann?a|rosa) mar(i|í)a$/i',$raw_name)){
+	$name['first']=$raw_name;
+      }else{
+	
+        
+      
         $forbiden_names=array('sir/madam','sir,madam');
 
         if (in_array(strtolower($raw_name),$forbiden_names))
@@ -3216,7 +3224,7 @@ $principal=true;
 
         }
 
-
+      }
 
         foreach($name as $key=>$value) {
             $name[$key]=mb_ucwords($value);

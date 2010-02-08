@@ -37,7 +37,7 @@ $result=mysql_query($sql);
 while($row=mysql_fetch_array($result)   ){
   $product=new Product('id',$row['Product Key']);
   
-  //$product->load('sales');
+  $product->load('sales');
   //   $product->load('parts');
   // print "caca";
   //$product->load('sales');

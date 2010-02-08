@@ -26,20 +26,20 @@
   </ul>
 
  <div class="tabbed_container" > 
-<div  class="edit_block" style="{if $edit!="delivery"}display:none{/if}"  id="d_delivery">
- <div id="customer_contact_address" style="float:left;xborder:1px solid #ddd;width:400px;margin-right:40px">
-     <div style="border-bottom:1px solid #777;margin-bottom:5px">
+   <div  class="edit_block" style="{if $edit!="delivery"}display:none{/if}"  id="d_delivery">
 
-       {t}Main Delivery Address{/t}:
+     <div style="border-bottom:1px solid #777;margin-bottom:5px;width:400px">
+       <span style="float:right" class="state_details" >{t}Same as Contact Address{/t}</span>
+       {t}Delivery Address{/t}:
        <span class="state_details" style="float:right;display:none" address_key="" id="delivery_cancel_edit_address">{t}Cancel{/t}</span>
        <span class="state_details" style="float:right;display:none" address_key="" id="delivery_save_edit_address">{t}Save{/t}</span>
-     </div>
-       <table>
-       {include file='edit_address_splinter.tpl' address_identifier='delivery_'}
 
-     </table>
+     </div>
+     
+     {$customer->delivery_address_xhtml()}
+
    </div>
-</div>
+
 
 
    <div  class="edit_block" style="{if $edit!="details"}display:none{/if}"  id="d_details">

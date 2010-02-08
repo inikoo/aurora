@@ -681,7 +681,7 @@ foreach($__cols as $cols){
 	  $department_code='BET';
 	if(preg_match('/Ancient Wisdom Aromatherapy Dept/i',$department_name) )
 	  $department_code='Aterp';
-      	if(preg_match('/Woodware Dept/i',$department_name) )
+      	if(preg_match('/Woodware Dept|Departamento de Madera/i',$department_name) )
 	  $department_code='Wood';
 	if($department_code==''){
 	

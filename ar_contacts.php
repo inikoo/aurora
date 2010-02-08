@@ -1176,7 +1176,7 @@ if(isset( $_REQUEST['where']))
 
 
     $id="<a href='customer.php?id=".$data['Customer Key']."'>".$myconf['customer_id_prefix'].sprintf("%05d",$data['Customer ID']).'</a>'; 
-    $name="<a href='customer.php?id=".$data['Customer Key']."'>".$data['Customer Name'].'</a>'; 
+    $name="<a href='customer.php?id=".$data['Customer Key']."'>".$data['Customer Name'].' ('.$data['Customer Type'].')</a>'; 
 
     if($data['Customer Orders']==0)
       $last_order_date='';
