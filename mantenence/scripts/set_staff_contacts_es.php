@@ -74,7 +74,7 @@ $res=mysql_query($sql);
 while($row=mysql_fetch_array($res, MYSQL_ASSOC)){
   
   //$name='Contact Name'=>ucwords($row['Staff Name']);
- // print "caca";
+  print "caca";
   $data_contact=array(
 		      'Contact Name'=>ucwords($row['Staff Alias'])
 		      //,'Contact Company Key'=>$company->id
@@ -125,7 +125,7 @@ while($row=mysql_fetch_array($res, MYSQL_ASSOC)){
   }
 
    
-//   print_r($data_contact);
+  print_r($data_contact);
   $contact=new contact('find in company create',$data_contact);
 //  print_r($contact);
 //  exit;

@@ -2231,7 +2231,7 @@ $principal=true;
             $article=_trim($match[0]);
             $name.=' '.$article;
         }
-        $no_standar_characters_regex='/^[^a-z0-9]*/';
+        $no_standar_characters_regex='/^[^a-zA-Z0-9\!\?]*/i';
         $name=preg_replace($no_standar_characters_regex,'',$name);
 
 

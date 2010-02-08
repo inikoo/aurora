@@ -320,13 +320,7 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
     }
 
 
-    if ($_customer_data['company_name']==$_customer_data['contact_name']) {
-      if (preg_match('/jabones|S\.L\.$|Ldª$| SL$|Herboristeria|Asoc\. |^Asociaci.n |^Centro |^FPH C\.B\.$|Fisioglobal|^Amigos de | S\.A\.$|Associació Cultural|Associaci.n Cultural| C\.B$|^Asociación [a-z]+$| S\.A\.$| S\.C\.?$|Sucrolotes SLL - La Guinda| C\.B\.?$|lenilunio S\.c\.a$|^Laboratorios |Burbujas Castellón|^Rama SC$| S\.L\.?$| S\.l\.n\.e\.?$| s\.c\.a\.?$|Tecnologias|^Papeleria |Algoazul - L.da/i',$_customer_data['contact_name'])) {
-	$_customer_data['contact_name']='';
-	$_customer_data['type']='Company';
-      }
-
-    }
+  
 
     foreach($_customer_data as $_key =>$value) {
       $key=$_key;
