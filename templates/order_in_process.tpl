@@ -23,21 +23,21 @@
           <div style="border:0px solid #ddd;width:190px;float:right">
 	 <table border=0  style="width:100%;border-top:1px solid #333;border-bottom:1px solid #333;width:100%,padding:0;margin:0;float:right;margin-left:0px" >
 	   
-	   <tr    ><td  class="aright" >{t}Items Gross{/t}</td><td width=100 class="aright" id="order_items_gross">{$order->get('Items Gross Amount')}</td></tr>
+	   <tr  {if $order->get('Order Items Discount Amount')==0 }style="display:none"{/if}   ><td  class="aright" >{t}Items Gross{/t}</td><td width=100 class="aright" id="order_items_gross">{$order->get('Items Gross Amount')}</td></tr>
 	   <tr  {if $order->get('Order Items Discount Amount')==0 }style="display:none"{/if}   ><td  class="aright" >{t}Discounts{/t}</td><td width=100 class="aright"  id="order_items_discount">-{$order->get('Items Discount Amount')}</td></tr>
 	   
-	  
-	   <tr><td  class="aright" >{t}Items Net{/t}</td><td width=100 class="aright" id="order_net">{$order->get('Items Net Amount')}</td></tr>
+	   
+	   <tr><td  class="aright" >{t}Items Net{/t}</td><td width=100 class="aright" id="order_items_net">{$order->get('Items Net Amount')}</td></tr>
 	 
-	   <tr  {if $order->get('Order Net Credited Amount')==0}style="display:none"{/if}><td  class="aright" >{t}Credits{/t}</td><td width=100 class="aright">{$order->get('Net Credited Amount')}</td></tr>
+	   <tr  {if $order->get('Order Net Credited Amount')==0}style="display:none"{/if}><td  class="aright" >{t}Credits{/t}</td><td width=100 class="aright" id="order_credits"  >{$order->get('Net Credited Amount')}</td></tr>
 	   
-	   {if  $order->get('Order Charges Net Amount')}<tr><td  class="aright" >{t}Charges{/t}</td><td width=100 class="aright">{$order->get('Charges Net Amount')}</td></tr>{/if}
-	   <tr style="border-bottom:1px solid #777"><td  class="aright" >{t}Shipping{/t}</td><td width=100 class="aright">{$order->get('Shipping Net Amount')}</td></tr>
-	   <tr><td  class="aright" >{t}Net{/t}</td><td width=100 class="aright">{$order->get('Total Net Amount')}</td></tr>
+	   {if  $order->get('Order Charges Net Amount')}<tr><td  class="aright" >{t}Charges{/t}</td><td id="order_charges"  width=100 class="aright">{$order->get('Charges Net Amount')}</td></tr>{/if}
+	   <tr style="border-bottom:1px solid #777"><td  class="aright" >{t}Shipping{/t}</td><td id="order_shipping" width=100 class="aright">{$order->get('Shipping Net Amount')}</td></tr>
+	   <tr><td  class="aright" >{t}Net{/t}</td><td id="order_net" width=100 class="aright">{$order->get('Total Net Amount')}</td></tr>
 	   
 	   
-	   <tr style="border-bottom:1px solid #777"><td  class="aright" >{t}VAT{/t}</td><td width=100 class="aright">{$order->get('Total Tax Amount')}</td></tr>
-	   <tr><td  class="aright" >{t}Total{/t}</td><td width=100 class="aright"><b>{$order->get('Total Amount')}</b></td></tr>
+	   <tr style="border-bottom:1px solid #777"><td  class="aright" >{t}VAT{/t}</td><td id="order_tax" width=100 class="aright">{$order->get('Total Tax Amount')}</td></tr>
+	   <tr><td  class="aright" >{t}Total{/t}</td><td id="order_total" width=100 class="aright"><b>{$order->get('Total Amount')}</b></td></tr>
 	   
 	 </table>
        </div>

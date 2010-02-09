@@ -75,7 +75,7 @@ function close_dialog(tipo){
     var ar_file='ar_edit_orders.php';
     
     var request='tipo=edit_'+column.object+'&key=' + column.key + '&newvalue=' + encodeURIComponent(newValue) + '&oldvalue=' + encodeURIComponent(oldValue)+ myBuildUrl(datatable,record);
-    //    alert('R:'+request);
+    //lert('R:'+request);
 
     YAHOO.util.Connect.asyncRequest(
 				    'POST',

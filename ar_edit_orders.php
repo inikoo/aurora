@@ -89,7 +89,6 @@ function edit_new_order(){
 
   $order=new Order($order_key);
   
- 
 
   $product=new Product('pid',$product_pid);
 
@@ -113,14 +112,26 @@ function edit_new_order(){
   
 
   $order->add_order_transaction($data);
+
   $order->update_discounts();
+  $order->update_item_totals_from_order_transactions();
+  $order->update_charges();
   $order->get_original_totals();
   $order->update_totals('save');
+
   $order->update_totals_from_order_transactions();
+  
   $updated_data=array(
 		      'order_items_gross'=>$order->get('Items Gross Amount')
 		      ,'order_items_discount'=>$order->get('Items Discount Amount')
-		      ,'order_net'=>$order->get('Items Net Amount')
+		      ,'order_items_net'=>$order->get('Items Net Amount')
+		      ,'order_net'=>$order->get('Total Net Amount')
+		      ,'order_tax'=>$order->get('Total Tax Amount')
+		      ,'order_charges'=>$order->get('Charges Net Amount')
+		      ,'order_credits'=>$order->get('Net Credited Amount')
+		      ,'order_shipping'=>$order->get('Shipping Net Amount')
+		      ,'order_total'=>$order->get('Total Amount')
+
 		      );
 
   $response= array('state'=>200,'newvalue'=>$quantity,'key'=>$_REQUEST['key'],'data'=>$updated_data);

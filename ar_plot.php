@@ -698,20 +698,17 @@ function list_invoices_per_week(){
 function list_active_customer_population_per_month(){
  
   global $myconf;
-  $first_day=$myconf['data_since'];
-  $first_yearmonth=date("Ym",strtotime($first_day));
-
-  // print $first_day;
-  
 
   $sql="select min(`Customer First Order Date`) first_day from `Customer Dimension`  ; ";
   $res = mysql_query($sql); 
   if($row=mysql_fetch_array($res)) {
      $first_day=$row['first_day'];
-  }
+     $first_yearmonth=date("Ym",strtotime($first_day));
+  }else
+    return;
 
-   $sql="select date_format(`First Day`,'%c') as month, `First Day` as date, `Year Month` as yearmonth  from kbase.`Month Dimension` where `First Day`>'$first_day' and `First Day` < NOW(); ";
-
+   $sql="select date_format(`First Day`,'%c') as month, `First Day` as date, `Year Month` as yearmonth  from kbase.`Month Dimension` where `Last Day`>'$first_day' and `First Day` < NOW(); ";
+   // print $first_day;
    $data=array();
    $res = mysql_query($sql);
    $i=0;
@@ -758,7 +755,7 @@ function list_active_customer_population_per_month(){
 mysql_free_result($res);
    
    $sql="select count(*) as  lost  , DATE_FORMAT(`Customer Lost Date`,'%Y%m') yearmonth  from `Customer Dimension` where `Active Customer`='No'  and `Actual Customer`='Yes'   group by DATE_FORMAT(`Customer Lost Date`,'%m%Y');";
-   // print $sql;
+   //print $sql;
    $res=mysql_query($sql);
    while($row=mysql_fetch_array($res)){
      //     print $row['yearmonth']."\n";
@@ -773,6 +770,7 @@ mysql_free_result($res);
    $active=0;
    foreach($data as $_index=>$value){
      $active+=($data[$_index]['new']-$data[$_index]['lost']);
+     //$active+=($data[$_index]['new']);
      $data[$_index]['active']=$active;
      $data[$_index]['tip_active']=_('Active Customers')."\n".strftime("%b %y",strtotime($data[$_index]['_date']))."\n".number($active);
 
@@ -781,10 +779,13 @@ mysql_free_result($res);
    }
    $_data=array();
 
+
+  
+
     foreach($data as $_index=>$value){
    
       
-      if($first_yearmonth<$data[$_index]['yearmonth']){
+       if($first_yearmonth<=$data[$_index]['yearmonth']){
        
 	$_data[]=array(
 		   'tip_lost'=>$value['tip_lost'],
@@ -799,7 +800,7 @@ mysql_free_result($res);
 		   );
 
 	
-      }
+	   }
 
    }
 
@@ -818,26 +819,14 @@ mysql_free_result($res);
 
 function list_customer_population_per_month(){
  
-  $sql="select MIN(`Customer First Contacted Date`) as data_since from `Customer Dimension`;";
-  $res=mysql_query($sql);
-  if($row=mysql_fetch_array($res)){
-    $first_day=$row['data_since'];
-
-  }else{
-    global $myconf;
-    $first_day=$myconf['data_since'];
-    
-  }
-  $first_yearmonth=date("Ym",strtotime($first_day));
-
-  //print $first_day;
-  
+ 
 
   $sql="select min(`Customer First Order Date`) first_day from `Customer Dimension`  ; ";
   $res = mysql_query($sql); 
   if($row=mysql_fetch_array($res)) {
     $first_day=$row['first_day'];
-  }
+  }else
+    return;
 
   $sql="select date_format(`First Day`,'%c') as month, `First Day` as date, `Year Month` as yearmonth  from kbase.`Month Dimension` where `First Day`>'$first_day' and `First Day` < NOW(); ";
 

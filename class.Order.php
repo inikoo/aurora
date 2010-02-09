@@ -613,8 +613,8 @@ class Order extends DB_Table{
 	$this->data ['order main store key'] = $store->id;
 	$this->data ['order main store code'] = $store->get ( 'code' );
 	$this->data ['order main store type'] = $store->get ( 'type' );
-	$this->data ['order gross amount'] = $edata ['subtotal'];
-	$this->data ['order shipping amount'] = $edata ['shipping'];
+	$this->data ['order items gross amount'] = $edata ['subtotal'];
+	$this->data ['order items shipping amount'] = $edata ['shipping'];
 					
 	$this->data ['order discount ammont'] = $edata ['discount'] + $edata ['voucher'];
 	$this->data ['order total tax amount'] = $edata ['tax'];
@@ -732,6 +732,7 @@ class Order extends DB_Table{
     
     if(!$this->ghost_order){
       $this->get_data('id',$this->id);
+      $this->update_item_totals_from_order_transactions();
       $this->update_totals_from_order_transactions();
     }
   }
@@ -834,6 +835,15 @@ class Order extends DB_Table{
       $ship_to_key=$data ['ship to key'];
     
     
+    $tax_code=$this->data['Order Tax Code'];
+    $tax_rate=$this->data['Order Tax Rate'];
+
+    if(array_key_exists('tax_code',$data))
+      $tax_code=$data['tax_code'];
+    if(array_key_exists('tax_rate',$data))
+      $tax_rate=$data['tax_rate'];
+    
+    
     if($this->data['Order Current Dispatch State']=='In Process'){
 
       $sql=sprintf("select `Order Line` from `Order Transaction Fact` where `Order Key`=%d and `Product Key`=%d ",$this->id,$data ['Product Key']);
@@ -846,17 +856,16 @@ class Order extends DB_Table{
 			  , $data ['discount_amount']
 			  ,$this->id,$data ['Product Key']);
 	 mysql_query($sql);
-
-      }else
-      
- $sql = sprintf ( "insert into `Order Transaction Fact` (`Transaction Tax Rate`,`Transaction Tax Code`,`Order Currency Code`,`Estimated Weight`,`Order Date`,`Backlog Date`,`Order Last Updated Date`,`Product Key`,`Current Dispatching State`,`Current Payment State`,`Customer Key`,`Order Key`,`Order Public ID`,`Order Line`,`Order Quantity`,`Ship To Key`,`Order Transaction Gross Amount`,`Order Transaction Total Discount Amount`,`Metadata`,`Store Key`,`Units Per Case`,`Customer Message`) values (%f,%s,%s,%s,%s,%s,%s,%d,%s,%s,%s,%s,%s,%d,%s,%s,%.2f,%.2f,%s,%s,%f,'')   "
-		    ,$data['tax_rate']
-		    ,prepare_mysql ($data['tax_code'])
-		    , prepare_mysql ( $this->data ['Order Currency'] )
-		     , prepare_mysql ( $data ['Estimated Weight'] )
-		     , prepare_mysql ( $data ['date'] )
-		     , prepare_mysql ( $data ['date'] )
-		     , prepare_mysql ( $data ['date'] )
+	 
+      }else{
+	$sql = sprintf ( "insert into `Order Transaction Fact` (`Transaction Tax Rate`,`Transaction Tax Code`,`Order Currency Code`,`Estimated Weight`,`Order Date`,`Backlog Date`,`Order Last Updated Date`,`Product Key`,`Current Dispatching State`,`Current Payment State`,`Customer Key`,`Order Key`,`Order Public ID`,`Order Line`,`Order Quantity`,`Ship To Key`,`Order Transaction Gross Amount`,`Order Transaction Total Discount Amount`,`Metadata`,`Store Key`,`Units Per Case`,`Customer Message`) values (%f,%s,%s,%s,%s,%s,%s,%d,%s,%s,%s,%s,%s,%d,%s,%s,%.2f,%.2f,%s,%s,%f,'')   "
+			 ,$tax_rate
+			 ,prepare_mysql ($tax_code)
+			 , prepare_mysql ( $this->data ['Order Currency'] )
+		  , prepare_mysql ( $data ['Estimated Weight'] )
+		  , prepare_mysql ( $data ['date'] )
+		  , prepare_mysql ( $data ['date'] )
+		  , prepare_mysql ( $data ['date'] )
 		     , $data ['Product Key']
 		     , prepare_mysql ( $data ['Current Dispatching State'] )
 		     , prepare_mysql ( $data ['Current Payment State'] )
@@ -872,10 +881,13 @@ class Order extends DB_Table{
 		     , prepare_mysql ( $this->data ['Order Store Key'] )
 		  , $data ['units_per_case']
 		  );
+      }
     }else{
 
 
-    $sql = sprintf ( "insert into `Order Transaction Fact` (`Order Currency Code`,`Estimated Weight`,`Order Date`,`Backlog Date`,`Order Last Updated Date`,`Product Key`,`Current Dispatching State`,`Current Payment State`,`Customer Key`,`Order Key`,`Order Public ID`,`Order Line`,`Order Quantity`,`Ship To Key`,`Order Transaction Gross Amount`,`Order Transaction Total Discount Amount`,`Metadata`,`Store Key`,`Units Per Case`,`Customer Message`) values (%s,%s,%s,%s,%s,%d,%s,%s,%s,%s,%s,%d,%s,%s,%.2f,%.2f,%s,%s,%f,'') "
+    $sql = sprintf ( "insert into `Order Transaction Fact` (`Transaction Tax Rate`,`Transaction Tax Code`,`Order Currency Code`,`Estimated Weight`,`Order Date`,`Backlog Date`,`Order Last Updated Date`,`Product Key`,`Current Dispatching State`,`Current Payment State`,`Customer Key`,`Order Key`,`Order Public ID`,`Order Line`,`Order Quantity`,`Ship To Key`,`Order Transaction Gross Amount`,`Order Transaction Total Discount Amount`,`Metadata`,`Store Key`,`Units Per Case`,`Customer Message`) values (%s,%s,%s,%s,%s,%d,%s,%s,%s,%s,%s,%d,%s,%s,%.2f,%.2f,%s,%s,%f,'') "
+		     ,$tax_rate
+		     ,prepare_mysql ($tax_code)
 		     , prepare_mysql ( $this->data ['Order Currency'] )
 		     , prepare_mysql ( $data ['Estimated Weight'] )
 		     , prepare_mysql ( $data ['date'] )
@@ -904,7 +916,7 @@ class Order extends DB_Table{
       exit ( "$sql can not update order trwansiocion facrt after invoice 1223" );
 		
     //  print "$sql\n";
-	
+    $this->update_transaction_discount($data ['line_number'],$data ['Product Key'],$data ['qty'],$data ['gross_amount']);
 
   }
 	
@@ -1054,13 +1066,16 @@ class Order extends DB_Table{
   function create_order_header() {
 		
     //calculate the order total
-    $this->data ['Order Gross Amount'] = 0;
-    $this->data ['Order Discount Amount'] = 0;
+    $this->data ['Order Items Gross Amount'] = 0;
+    $this->data ['Order Items Discount Amount'] = 0;
     //     $sql="select sum(`Order Transaction Gross Amount`) as gross,sum(`Order Transaction Total Discount Amount`) from `Order Transaction Fact` where "
 	  
 	  
-    $sql = sprintf ( "insert into `Order Dimension` (`Order Main Country 2 Alpha Code`,`Order Customer Contact Name`,`Order For`,`Order File As`,`Order Date`,`Order Last Updated Date`,`Order Public ID`,`Order Store Key`,`Order Store Code`,`Order Main Source Type`,`Order Customer Key`,`Order Customer Name`,`Order Current Dispatch State`,`Order Current Payment State`,`Order Current XHTML State`,`Order Customer Message`,`Order Original Data MIME Type`,`Order XHTML Ship Tos`,`Order Items Gross Amount`,`Order Items Discount Amount`,`Order Original Metadata`,`Order XHTML Store`,`Order Type`,`Order Currency`,`Order Currency Exchange`,`Order Original Data Filename`) values (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%.2f,%.2f,%s,%s,%s,%s,%f,%s)"
-		   		     , prepare_mysql ( $this->data ['Order Main Country 2 Alpha Code'] )
+    $sql = sprintf ( "insert into `Order Dimension` (`Order Tax Code`,`Order Tax Rate`,`Order Main Country 2 Alpha Code`,`Order Customer Contact Name`,`Order For`,`Order File As`,`Order Date`,`Order Last Updated Date`,`Order Public ID`,`Order Store Key`,`Order Store Code`,`Order Main Source Type`,`Order Customer Key`,`Order Customer Name`,`Order Current Dispatch State`,`Order Current Payment State`,`Order Current XHTML State`,`Order Customer Message`,`Order Original Data MIME Type`,`Order XHTML Ship Tos`,`Order Items Gross Amount`,`Order Items Discount Amount`,`Order Original Metadata`,`Order XHTML Store`,`Order Type`,`Order Currency`,`Order Currency Exchange`,`Order Original Data Filename`) values (%s,%f,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%.2f,%.2f,%s,%s,%s,%s,%f,%s)"
+		     ,prepare_mysql ($this->data ['Order Tax Code'] )
+		     ,$this->data ['Order Tax Rate']
+		     
+		     , prepare_mysql ( $this->data ['Order Main Country 2 Alpha Code'] )
 
 		   , prepare_mysql ( $this->data ['Order Customer Contact Name'],false )
 		     , prepare_mysql ( $this->data ['Order For'] )
@@ -1076,7 +1091,7 @@ class Order extends DB_Table{
 		     , prepare_mysql ( $this->data ['Order Customer Message'] )
 		     , prepare_mysql ( $this->data ['Order Original Data MIME Type'] ), prepare_mysql ( $this->data ['Order XHTML Ship Tos'] ), 
 			   
-		     $this->data ['Order Gross Amount'], $this->data ['Order Discount Amount'], prepare_mysql ( $this->data ['Order Original Metadata'] ), prepare_mysql ( $this->data ['Order XHTML Store'] )
+		     $this->data ['Order Items Gross Amount'], $this->data ['Order Items Discount Amount'], prepare_mysql ( $this->data ['Order Original Metadata'] ), prepare_mysql ( $this->data ['Order XHTML Store'] )
 		     , prepare_mysql ( $this->data ['Order Type'] ) 
 		     ,prepare_mysql( $this->data ['Order Currency'] )
 		     , $this->data ['Order Currency Exchange'] 
@@ -1253,6 +1268,9 @@ class Order extends DB_Table{
 	
   }
 	
+ 
+
+
   function load($key = '', $args = '') {
     switch ($key) {
     case('Order Total Net Amount'):
@@ -1291,9 +1309,11 @@ class Order extends DB_Table{
 
       //      print "+++".$this->data ['Order Current Payment State']."+++\n";
 
-      if ($this->data ['Order Current Payment State'] == 'Waiting Payment') 
+      if ($this->data ['Order Current Payment State'] == 'Waiting Payment') {
+	$this->update_item_totals_from_order_transactions();
+
 	$this->update_totals_from_order_transactions();
-      else
+      }else
 	$this->update_totals_from_invoice_transactions();
 
       break;
@@ -1448,7 +1468,7 @@ class Order extends DB_Table{
     global $_order_status;
     switch ($tipo) {
     case ('Order Refund Amount') :
-      $this->data ['r Charges Amount'] = $data;
+      $this->data ['Charges Amount'] = $data;
       $sql = sprintf ( "update `Order Dimension` set `Order Refund Amount`=%.2f  where `Order Key`=%d", $this->data ['r Charges Amount'], $this->id );
       if (! mysql_query ( $sql ))
 	exit ( "arror can not update cancel\n" );
@@ -1937,6 +1957,11 @@ class Order extends DB_Table{
     $this->data['Order Balance Total Amount']=$this->data ['Order Items Total Amount'];
 	  
   }
+
+
+
+
+
 	
   /*
     function: update_totals
@@ -1946,26 +1971,26 @@ class Order extends DB_Table{
   function update_totals($args=''){
     global $myconf;
 
-
+    
     $lines=$this->get_next_line_number()-1;
     
     if($this->data['Order Current Dispatch State']=='In Process'){
-    $sql = sprintf ( "update `Order Dimension` set `Order Original Lines`=%d where  `Order Key`=%d "
-		     ,$lines
-		     ,$this->data ['Order Key'] 
-		     );
+      $sql = sprintf ( "update `Order Dimension` set `Order Original Lines`=%d where  `Order Key`=%d "
+		       ,$lines
+		       ,$this->data ['Order Key'] 
+		       );
     
-    if (! mysql_query ( $sql ))
-      exit ( "$sql error con no update total items " );
+      if (! mysql_query ( $sql ))
+	exit ( "$sql error con no update total items " );
     }
-  $sql = sprintf ( "update `Order Dimension` set `Order Current Lines`=%d  where  `Order Key`=%d "
+    $sql = sprintf ( "update `Order Dimension` set `Order Current Lines`=%d  where  `Order Key`=%d "
 		     ,$lines
 		     ,$this->data ['Order Key'] 
 		     );
     
     if (! mysql_query ( $sql ))
       exit ( "$sql error con no update total items " );
-
+    
 
     $this->data['Order Balance Net Amount']=0;
     $this->data['Order Balance Tax Amount']=0;
@@ -2008,9 +2033,7 @@ class Order extends DB_Table{
 		   ,$this->data['Order Outstanding Balance Total Amount']
 		   ,$this->data['Order Tax Refund Amount']
 		   ,$this->data['Order Net Refund Amount']
-
 		   ,$this->data['Order Profit Amount']
-
 		   ,$this->id); 
       // print "$sql\n";
 	    
@@ -2116,6 +2139,47 @@ class Order extends DB_Table{
   }
 
 
+
+  function update_item_totals_from_order_transactions(){
+      if($this->ghost_order or !$this->data ['Order Key']) 
+      return;
+
+    
+
+	$sql = "select sum(`Order Transaction Gross Amount`) as gross,sum(`Order Transaction Total Discount Amount`) as discount, sum((`Order Transaction Gross Amount`-`Order Transaction Total Discount Amount`)*`Transaction Tax Rate`) as item_tax  from `Order Transaction Fact` where `Order Key`=" . $this->data ['Order Key'];
+		//print "$sql\n";
+	$result = mysql_query ( $sql );
+	if ($row = mysql_fetch_array ( $result, MYSQL_ASSOC )) {
+	  //	  $total = $row ['gross'] + $row ['tax'] + $row ['shipping']  - $row ['discount'] + $this->data ['Order Items Adjust Amount'];
+		
+	  $this->data ['Order Items Gross Amount'] = $row ['gross'];
+	  $this->data ['Order Items Discount Amount'] = $row ['discount'];
+	  $this->data ['Order Items Net Amount'] = $row ['gross'] - $row ['discount'] ;
+	  $this->data ['Order Items Tax Amount'] = $row ['item_tax'] ;
+
+	  
+	  $sql = sprintf ( "update `Order Dimension` set `Order Items Gross Amount`=%.2f, `Order Items Discount Amount`=%.2f, `Order Items Net Amount`=%.2f , `Order Items Tax Amount`=%.2f where  `Order Key`=%d "
+			   , $this->data ['Order Items Gross Amount']
+			   , $this->data ['Order Items Discount Amount']
+			   , $this->data ['Order Items Net Amount']
+			   , $this->data ['Order Items Tax Amount']
+			   
+
+	  , $this->data ['Order Key'] 
+	  );
+	  
+	  	//print "Aqui2 $sql\n";
+	  //exit;
+	  mysql_query ( $sql );				
+		
+	  
+	    
+	    
+	}
+
+  }
+
+
   function update_totals_from_order_transactions($force_total=false){
     if($this->ghost_order or !$this->data ['Order Key']) 
       return;
@@ -2124,39 +2188,30 @@ class Order extends DB_Table{
       $force_total=array();
     
 
-	$sql = "select sum(`Order Transaction Gross Amount`) as gross,sum(`Order Transaction Total Discount Amount`) as discount, sum((`Order Transaction Gross Amount`-`Order Transaction Total Discount Amount`)*`Transaction Tax Rate`) as item_tax,   sum(`Invoice Transaction Shipping Amount`) as shipping,sum(`Invoice Transaction Charges Amount`) as charges ,sum(`Invoice Transaction Total Tax Amount`) as tax   from `Order Transaction Fact` where `Order Key`=" . $this->data ['Order Key'];
-		//print "$sql\n";
-	$result = mysql_query ( $sql );
-	if ($row = mysql_fetch_array ( $result, MYSQL_ASSOC )) {
-	  $total = $row ['gross'] + $row ['tax'] + $row ['shipping'] + $row ['charges'] - $row ['discount'] + $this->data ['Order Items Adjust Amount'];
-		
-	  $this->data ['Order Gross Amount'] = $row ['gross'];
-	  $this->data ['Order Discount Amount'] = $row ['discount'];
-	  $this->data ['Order Items Net Amount'] = $row ['gross'] - $row ['discount'] ;
-	  $this->data ['Order Items Tax Amount'] = $row ['item_tax'] ;
-
-	  $this->data ['Order Total Tax Amount'] = $this->data ['Order Items Tax Amount'] + $this->data ['Order Shipping Tax Amount']+  $this->data ['Order Charges Tax Amount'];
-	  $this->data ['Order Total Net Amount']=$this->data ['Order Items Net Amount']+  $this->data ['Order Shipping Net Amount']+  $this->data ['Order Charges Net Amount'];
-	  
-	  $this->data ['Order Total Amount'] = $this->data ['Order Total Tax Amount'] + $this->data ['Order Total Net Amount'];
-	  $this->data ['Order Total To Pay Amount'] = $this->data ['Order Total Amount'];
-	  
-	  if(array_key_exists('Order Items Net Amount',$force_total))
-	    $this->data ['Order Items Adjust Amount']=$force_total['Order Items Net Amount']-$this->data ['Order Items Net Amount'] ;
-	  else
-	    $this->data ['Order Items Adjust Amount']=0;
-	  
-	  $sql = sprintf ( "update `Order Dimension` set `Order Items Gross Amount`=%.2f, `Order Items Discount Amount`=%.2f, `Order Items Net Amount`=%.2f 
-	  , `Order Total Net Amount`=%.2f 
-	  ,`Order Total Tax Amount`=%.2f ,`Order Shipping Net Amount`=%.2f ,`Order Charges Net Amount`=%.2f ,`Order Total Amount`=%.2f 
+   
+    $this->data ['Order Total Tax Amount'] = $this->data ['Order Items Tax Amount'] + $this->data ['Order Shipping Tax Amount']+  $this->data ['Order Charges Tax Amount'];
+    $this->data ['Order Total Net Amount']=$this->data ['Order Items Net Amount']+  $this->data ['Order Shipping Net Amount']+  $this->data ['Order Charges Net Amount'];
+    
+    $this->data ['Order Total Amount'] = $this->data ['Order Total Tax Amount'] + $this->data ['Order Total Net Amount'];
+    $this->data ['Order Total To Pay Amount'] = $this->data ['Order Total Amount'];
+    
+    if(array_key_exists('Order Items Net Amount',$force_total))
+      $this->data ['Order Items Adjust Amount']=$force_total['Order Items Net Amount']-$this->data ['Order Items Net Amount'] ;
+    else
+      $this->data ['Order Items Adjust Amount']=0;
+    
+    $sql = sprintf ( "update `Order Dimension` set 
+	   `Order Total Net Amount`=%.2f 
+	  ,`Order Total Tax Amount`=%.2f ,`Order Shipping Net Amount`=%.2f ,`Order Shipping Tax Amount`=%.2f ,`Order Charges Net Amount`=%.2f ,`Order Charges Tax Amount`=%.2f ,`Order Total Amount`=%.2f 
 	  , `Order Balance Total Amount`=%.2f  where  `Order Key`=%d "
-	  , $this->data ['Order Gross Amount']
-	  , $this->data ['Order Discount Amount']
-	  , $this->data ['Order Items Net Amount']
 	  , $this->data ['Order Total Net Amount']	  
 	  , $this->data ['Order Total Tax Amount']
 	  , $this->data ['Order Shipping Net Amount']
+		     , $this->data ['Order Shipping Tax Amount']
+
 	  , $this->data ['Order Charges Net Amount']
+	  , $this->data ['Order Charges Tax Amount']
+
 	  , $this->data ['Order Total Amount']
 	  , $this->data ['Order Total To Pay Amount']
 	  , $this->data ['Order Key'] 
@@ -2168,15 +2223,16 @@ class Order extends DB_Table{
 		
 	  if (! mysql_query ( $sql ))
 	    exit ( "$sql eroro2 con no update totals" );
-	    
-	    
-	}
+
+
+
+	
   }
 
  function update_totals_from_invoice_transactions(){
 	      
-	$this->data ['Order Gross Amount'] = 0;
-	$this->data ['Order Discount Amount'] = 0;
+	$this->data ['Order Items Gross Amount'] = 0;
+	$this->data ['Order Items Discount Amount'] = 0;
 	$this->data ['Order Shipping Net Amount'] = 0;
 	$this->data ['Order Charges Net Amount'] = 0;
 	$this->data ['Order Shipping Tax Amount'] = 0;
@@ -2195,8 +2251,8 @@ class Order extends DB_Table{
 	$tax_refund = 0;
 	if ($row = mysql_fetch_array ( $result, MYSQL_ASSOC )) {
 		
-	  $this->data ['Order Gross Amount'] = $row ['gross'];
-	  $this->data ['Order Discount Amount'] = $row ['discount'];
+	  $this->data ['Order Items Gross Amount'] = $row ['gross'];
+	  $this->data ['Order Items Discount Amount'] = $row ['discount'];
 	  $this->data ['Order Shipping Net Amount'] = $row ['shipping'];
 	  $this->data ['Order Charges Net Amount'] = $row ['charges'];
 	  $this->data ['Order Shipping Tax Amount'] = $row ['tax_shipping'];
@@ -2244,7 +2300,7 @@ class Order extends DB_Table{
 	//print "$net_refund $tax_refund\n";
 	//print "tax ".$this->data['Order Total Tax Amount'].' '.$this->data['Order Total Tax Amount'].' '.$tax_refund."\n";
 	$this->data ['Order Total Tax Amount'] = $this->data ['Order Total Tax Amount'] + $tax_refund;
-	$this->data ['Order Items Net Amount'] = $this->data ['Order Gross Amount'] - $this->data ['Order Discount Amount'];
+	$this->data ['Order Items Net Amount'] = $this->data ['Order Items Gross Amount'] - $this->data ['Order Items Discount Amount'];
 	$this->data ['Order Total Net Amount'] = $this->data ['Order Items Net Amount'] + $this->data ['Order Shipping Net Amount'] + $this->data ['Order Charges Net Amount'] + $net_refund;
 	//print "tax ".$this->data['Order Total Tax Amount'].' '.$this->data['Order Total Tax Amount'].' '.$tax_refund."\n";
 					
@@ -2256,7 +2312,7 @@ class Order extends DB_Table{
 					
 
 	$this->data ['Order Total Amount'] = $this->data ['Order Total Net Amount'] + $this->data ['Order Total Tax Amount'];
-	$sql = sprintf ( "update `Order Dimension` set `Order Items Gross Amount`=%.2f, `Order Items Discount Amount`=%.2f, `Order Items Net Amount`=%.2f ,`Order Total Tax Amount`=%.2f ,`Order Shipping Net Amount`=%.2f ,`Order Charges Net Amount`=%.2f,`Order Shipping Tax Amount`=%.2f ,`Order Charges Tax Amount`=%.2f ,`Order Total Net Amount`=%.2f ,`Order Total Amount`=%.2f , `Order Balance Total Amount`=%.2f  where  `Order Key`=%d ", $this->data ['Order Gross Amount'], $this->data ['Order Discount Amount'], $this->data ['Order Items Net Amount'], $this->data ['Order Total Tax Amount'], $this->data ['Order Shipping Net Amount'], $this->data ['Order Charges Net Amount'], $this->data ['Order Shipping Tax Amount'], $this->data ['Order Charges Tax Amount'], $this->data ['Order Total Net Amount'], $this->data ['Order Total Amount'], $balance, $this->data ['Order Key'] );
+	$sql = sprintf ( "update `Order Dimension` set `Order Items Gross Amount`=%.2f, `Order Items Discount Amount`=%.2f, `Order Items Net Amount`=%.2f ,`Order Total Tax Amount`=%.2f ,`Order Shipping Net Amount`=%.2f ,`Order Charges Net Amount`=%.2f,`Order Shipping Tax Amount`=%.2f ,`Order Charges Tax Amount`=%.2f ,`Order Total Net Amount`=%.2f ,`Order Total Amount`=%.2f , `Order Balance Total Amount`=%.2f  where  `Order Key`=%d ", $this->data ['Order Items Gross Amount'], $this->data ['Order Items Discount Amount'], $this->data ['Order Items Net Amount'], $this->data ['Order Total Tax Amount'], $this->data ['Order Shipping Net Amount'], $this->data ['Order Charges Net Amount'], $this->data ['Order Shipping Tax Amount'], $this->data ['Order Charges Tax Amount'], $this->data ['Order Total Net Amount'], $this->data ['Order Total Amount'], $balance, $this->data ['Order Key'] );
 					
 	//print "$sql\n";
 	//	exit;
@@ -2307,9 +2363,20 @@ function get_data_from_customer($customer_key,$store_key=false){
   $this->get_data_from_store($store_key);
   if($this->error)
     return;
+
+
+  if($customer->data['Customer Active Ship To Records']==0){
+    $ship_to= $customer->set_current_ship_to('return object');
+    // $this->data ['Order XHTML Ship Tos']=$ship_to->data['Ship To XHTML Address'];
+    //$this->data ['Order Ship To Keys']=$ship_to->id;
+    $customer->add_ship_to($ship_to->id,'Yes');
+  }
  
   $ship_to= new Ship_To($customer->data['Customer Main Ship To Key']);
-  print_r($customer);
+ 
+
+
+ //   print_r($customer);
   $this->data ['Order XHTML Ship Tos']=$ship_to->data['Ship To XHTML Address'];
   $this->data ['Order Ship To Keys']=$ship_to->id;
 
@@ -2322,8 +2389,9 @@ function get_data_from_customer($customer_key,$store_key=false){
 
 
 
+  $this->data ['Order Tax Rate'] = $customer->get('Tax Rate');
+  $this->data ['Order Tax Code'] = $customer->get('Tax Code');
 
-  
 
 
 }
@@ -2404,7 +2472,89 @@ function get_data_from_store($store_key){
 
  }
  
+
+
  
+
+
+
+
+
+
+
+function update_charges(){
+  
+  $sql=sprintf("select * from `Charge Dimension` where `Charge Trigger`='Order' and `Charge Trigger Key` in (0,%d)  "
+	       ,$this->id
+	       );
+  $res=mysql_query($sql);
+  $charges=0;
+  //print $sql;
+  while($row=mysql_fetch_array($res)){
+    $apply_charge=false;
+    if($row['Charge Type']=='Amount'){
+      $terms_components=preg_split('/\s/',$row['Charge Terms Metadata']);
+      $operator=$terms_components[0];
+      $currency_code=$terms_components[1];
+      $amount=$terms_components[2];
+      
+      switch($operator){
+      case('<'):
+
+	//print "$amount\n";
+
+	if($this->data[$row['Charge Terms Type']]<$amount)
+	  $apply_charge=true;
+	break;
+      case('>'):
+	if($this->data[$row['Charge Terms Type']]>$amount)
+	  $apply_charge=true;
+	break;
+	 case('<='):
+	if($this->data[$row['Charge Terms Type']]<=$amount)
+	  $apply_charge=true;
+	break;
+      case('>='):
+	if($this->data[$row['Charge Terms Type']]>=$amount)
+	  $apply_charge=true;
+	break;
+
+
+      }
+      
+      
+    }
+
+    if($apply_charge)
+      $charges+=$row['Charge Metadata'];
+  }
+
+  // print $this->data["Order Items Gross Amount"]."--------------\n";
+
+  $this->data['Order Charges Net Amount']=$charges;
+  $this->data['Order Charges Tax Amount']=$charges*$this->data['Order Tax Rate'];
+
+
+
+}
+
+
+
+function update_transaction_discount($line_number,$product_key,$qty,$amount){
+  
+  $product=new Product('key',$product_key);
+  $family_key=$product->data['Product Family Key'];
+
+  $sql=sprintf("select * from `Deal Dimension` where `Deal Trigger`='Family' and `Charge Trigger Key` =%d  "
+	       ,$family_key
+	       );
+  $res=mysql_query($sql);
+  $discounts=0;
+  //print $sql;
+  while($row=mysql_fetch_array($res)){
+    switch($row['Deal Terms Type'])
+
+  }
 
 
 }
@@ -2415,7 +2565,7 @@ function get_data_from_store($store_key){
 
 
 
-
+}
 
 
 

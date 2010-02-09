@@ -120,7 +120,7 @@ $fam_promo_key=$fam_promo->id;
 
 
 $sql="select * from  ci_orders_data.orders  where   (last_transcribed is NULL  or last_read>last_transcribed) and filename not like '%UK%'  and filename not like '%test%'  and filename!='/media/sda3/share/PEDIDOS 08/60005902.xls' and  filename!='/media/sda3/share/PEDIDOS 09/60008607.xls' and  filename!='/media/sda3/share/PEDIDOS 09/60009626.xls' and  filename!='/media/sda3/share/PEDIDOS 09/60011693.xls' and  filename!='/media/sda3/share/PEDIDOS 09/60011905.xls' and  filename!='/media/sda3/share/PEDIDOS 08/60007219.xls'     order by filename ";
-$sql="select * from  ci_orders_data.orders where filename like '/media/sda3/share/%/60010130.xls'  order by filename";
+//$sql="select * from  ci_orders_data.orders where filename like '/media/sda3/share/%/60010130.xls'  order by filename";
 //7/60002384.xls
 //$sql="select * from  ci_orders_data.orders where filename like '/media/sda3/share/%/60000142.xls'  order by filename";
 //$sql="select * from  ci_orders_data.orders  where (filename like '%Orders2005%' or  filename like '%PEDIDOS%.xls') and (last_transcribed is NULL  or last_read>last_transcribed) and filename!='/media/sda3/share/PEDIDOS 08/60005902.xls' and  filename!='/media/sdas3/share/PEDIDOS 09/s60008607.xls' and  filename!='/media/sda3/share/PEDIsDOS 09/60009626.xls' or filename='%600s03600.xls'   order by date";
@@ -319,7 +319,7 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
       $customer_data['Customer Tax Number']=$header_data['tax_number'];
     }
 
-
+    
   
 
     foreach($_customer_data as $_key =>$value) {
@@ -346,6 +346,9 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
     }
 
     $customer_data['Customer Delivery Address Link']='Contact';
+    $customer_data['Customer First Contacted Date']=$date_order;
+
+
 
     if ($customer_data['Customer Type']=='Company')
       $customer_data['Customer Name']=$customer_data['Customer Company Name'];
@@ -863,9 +866,9 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
       }
 
+      
 
-
-
+ $used_parts_sku[$part->sku]['supplier_product_key']=$supplier_product->id;
 
 
 
@@ -1117,7 +1120,7 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
     //exit('xz 23');
 
     //   print_r($header_data);
-      //print "$tipo_order \n";
+    //print "$tipo_order \n";
     //      print_r($products_data);
     //     print_r($credits);
     //     exit;
@@ -1244,7 +1247,7 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
 	$picker_data=get_user_id($header_data['pickedby'],true,'&view=picks');
 	$packer_data=get_user_id($header_data['packedby'],true,'&view=packs');
 	$order_type=$data['Order Type'];
-		list($parcels,$parcel_type)=parse_parcels($header_data['parcels']);
+	list($parcels,$parcel_type)=parse_parcels($header_data['parcels']);
 	
 	$data_dn=array(
 		       'Delivery Note Date'=>$date_inv
@@ -1324,7 +1327,7 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
 	  // print"xxxxxxxxxxxxxxxxxxxxxxxxxxxxx\n";
 
 	  $dn->pack('all');
-	   $dn->set_parcels($parcels,$parcel_type);
+	  $dn->set_parcels($parcels,$parcel_type);
 	  $order->update_dispatch_state('Ready to Ship');
 	  $invoice->data['Invoice Paid Date']=$date_inv;
 	  $invoice->pay('full',
@@ -1448,7 +1451,7 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
 	$parent_order->update_dispatch_state('Ready to Pack');
 
 	$dn->pack('all');
-	 $dn->set_parcels($parcels,$parcel_type);
+	$dn->set_parcels($parcels,$parcel_type);
 
 	$parent_order->update_dispatch_state('Ready to Ship');
 	if ($header_data['total_topay']!=0) {
@@ -1604,7 +1607,7 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
 	  $order->update_dispatch_state('Ready to Pack');
 
 	  $dn->pack('all');
-	   $dn->set_parcels($parcels,$parcel_type);
+	  $dn->set_parcels($parcels,$parcel_type);
 	  $order->update_dispatch_state('Ready to Ship');
 	  $dn->dispatch('all',$data_dn_transactions);
 	  $order->update_dispatch_state('Dispached');
@@ -1618,7 +1621,7 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
 	  $order->update_dispatch_state('Ready to Pack');
 
 	  $dn->pack('all');
-	   $dn->set_parcels($parcels,$parcel_type);
+	  $dn->set_parcels($parcels,$parcel_type);
 	  $order->update_dispatch_state('Ready to Ship');
 	  $dn->dispatch('all',$data_dn_transactions);
 	  $order->update_dispatch_state('Dispached');
@@ -1754,7 +1757,7 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
 			  ,'Invoice Currency Exchange'=>$exchange
 			  ,'Invoice Customer Contact Name'=>$customer_data['Customer Main Contact Name']
                           );
-      	print_r($data_invoice);
+      print_r($data_invoice);
 
       $data_refund_transactions=array();
       $sum_net=0;
