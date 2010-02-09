@@ -78,16 +78,32 @@ $ar_address='ar_plot.php?tipo='.$tipo.'&period='.$period.'&category='.$category;
 
 $xfield=array('label'=>_('Date'),'name'=>'date','tipo_axis'=>'Category','axis'=>'fdate');
 $style='size:1';
+
 if($category=='total'){
-$yfields=array(array('label'=>_('Active'),'name'=>'active','axis'=>'formatNumberAxisLabel','style'=>'size:5,lineSize:2'));
-$tipo_chart='LineChart';
-$fields='"date","active","tip_active"';
-
+  $yfields=array(array('label'=>_('Active'),'name'=>'active','axis'=>'formatNumberAxisLabel','style'=>'size:5,lineSize:2'));
+  $tipo_chart='LineChart';
+  $fields='"date","active","tip_active"';
+  
 }else{
-$yfields=array(array('label'=>_('New Customers'),'name'=>'new','axis'=>'formatNumberAxisLabel','style'=>'size:5,lineSize:2'));
-$fields='"date","new","tip_new"';
+  if($tipo=='customers'){
+  $yfields=array(array('label'=>_('New Customers'),'name'=>'new','axis'=>'formatNumberAxisLabel','style'=>'size:5,lineSize:2'));
+  $fields='"date","new","tip_new"';
+  }else{
+    $fields='"date","diff","tip_diff","new","tip_new","lost","lost_tip"';
+    $yfields=array(
+		  
 
-$tipo_chart='ColumnChart';
+		  array('label'=>_('New'),'name'=>'new','axis'=>'formatNumberAxisLabel','style'=>'color:0x7076f4,alpha:0.2')
+		  ,array('label'=>_('Lost'),'name'=>'lost','axis'=>'formatNumberAxisLabel','style'=>'color:0x7076f4,alpha:0.2')
+
+		  ,array('label'=>_('Change'),'name'=>'diff','type'=>'line','axis'=>'formatNumberAxisLabel','style'=>'size:5,lineSize:3,color:0x3390e7')
+		  //  array('label'=>_('New'),'name'=>'new','axis'=>'formatNumberAxisLabel','style'=>'size:5,lineSize:2'),
+		  // array('label'=>_('Lost'),'name'=>'lost','axis'=>'formatNumberAxisLabel','style'=>'size:5,lineSize:2')
+
+		  );
+
+  }
+  $tipo_chart='ColumnChart';
 }
 render_flash_plot();
 

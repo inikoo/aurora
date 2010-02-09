@@ -186,19 +186,13 @@ class Contact extends DB_Table {
                                'Contact Work Address Country Secondary Division'=>''
                            );
 
-
-
         if (array_key_exists('Contact Name Components',$raw_data) and is_array($raw_data['Contact Name Components'])) {
 
             $options.=' components';
             foreach($raw_data['Contact Name Components'] as $key=>$value) {
                 $data[$key]=$value;
             }
-
         }
-
-
-
 
         if (preg_match('/from supplier/',$options)) {
             foreach($raw_data as $key=>$val) {
@@ -217,11 +211,16 @@ class Contact extends DB_Table {
         }
         elseif(preg_match('/from customer|in customer/i',$options)) {
             foreach($raw_data as $key=>$val) {
-                if (preg_match('/Customer Address/i',$key)) {
+	         if($key=='Customer Main Contact Name'){
+	      		$_key='Contact Name';
+	      }else 
+if (preg_match('/Customer Address/i',$key)) {
                     $_key=preg_replace('/Customer Address/i','Contact Home Address',$key);
                 } else
                     $_key=preg_replace('/Customer /','Contact ',$key);
                 $data[$_key]=$val;
+
+		
 
 
                 if (array_key_exists($_key,$address_home_data))
@@ -231,7 +230,7 @@ class Contact extends DB_Table {
 
             }
             $parent='customer';
-
+	    //  print "xxxsssx\n";
             //  print_r($data);
             //  print_r($address_work_data);
             //  exit;
@@ -254,19 +253,9 @@ class Contact extends DB_Table {
 
             }
             $parent='staff';
-
-            //  print_r($data);
-            //  print_r($address_work_data);
-            //  exit;
-
-
-
         }
         elseif(preg_match('/from Company|in company/i',$options)) {
             foreach($raw_data as $key=>$val) {
-
-	 
-
                 if ($key=='Company Name') {
                     $_key='Contact Company Name';
                 }
@@ -323,8 +312,8 @@ class Contact extends DB_Table {
 
 
         }
-
-	//print_r($data);
+	//	print "8888888\n";
+	//	print_r($data);
 
         $options.=' parent:'.$parent;
 
@@ -375,10 +364,6 @@ class Contact extends DB_Table {
         if (!array_empty( $address_work_data)) {
 
             $address=new Address("find in contact $find_fuzzy",$address_work_data);
-
-
-
-
             $country_code=$address->raw_data['Address Country Code'];
 
             foreach($address->candidate as $key=>$val) {
@@ -761,11 +746,22 @@ class Contact extends DB_Table {
 
 
         if ($update and $this->found) {
-            $this->update($raw_data,$options);
+	  //	  print "------> updating here ,----\n";
+
+	  $data_to_update=array(
+				'Contact Name'=>$data['Contact Name']
+				,'Contact Old ID'=>$data['Contact Old ID']
+				,'Contact Main Telephone'=>$data['Contact Main Telephone']
+				,'Contact Main FAX'=>$data['Contact Main FAX']
+				,'Contact Main Mobile'=>$data['Contact Main Mobile']
+				,'Contact Main Plain Email'=>$data['Contact Main Plain Email']
+				);
+
+            $this->update($data_to_update,$options);
            if($main_home_address_key=$this->get_main_home_address_key()){
             $this->update_address($main_home_address_key,$address_home_data);
            }
-           
+           $this->get_data('id',$this->id);
         
 
         }
@@ -2538,7 +2534,7 @@ $principal=true;
             elseif(array_key_exists($key,$base_data)) {
 
                 if ($value!=$this->data[$key]) {
-                    //print "xxx $key,$value,$options\n";
+		  //print "xxx $key,$value,$options\n";
                     $this->update_field_switcher($key,$value,$options);
 
                 }
@@ -3365,11 +3361,18 @@ $principal=true;
      */
     public static function name($data) {
         global $myconf;
-        if (array_empty($data))
-            return $myconf['unknown_contact'];
+	// if (array_empty($data))
+	//  $name=$myconf['unknown_contact'];
+	//else
+	  $name=_trim($data['Contact Salutation'].' '.$data['Contact First Name'].' '.$data['Contact Surname'].' '.$data['Contact Suffix']);
+        
+	if ($name=='')
+            $name= $myconf['unknown_contact'];
+	
+	if ($name=='')
+            $name='?';
 
-        $name=_trim($data['Contact Salutation'].' '.$data['Contact First Name'].' '.$data['Contact Surname'].' '.$data['Contact Suffix']);
-        return $name;
+	return $name;
 
     }
 
