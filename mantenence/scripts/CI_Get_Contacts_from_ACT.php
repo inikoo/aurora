@@ -155,8 +155,8 @@ if (($handle = fopen($filename, "r")) !== FALSE) {
     $contacts_date[$row]=$creation_time;
     
     //print_r($act_data);
-     if($row>1000)
-       break;
+   //  if($row>1000)
+   //    break;
     print "$row\r";
 
     // print_r($cols);
@@ -550,12 +550,16 @@ if($act_data['contact']=='Aventura2007s.c.p'){
 }
     
 
-if($act_data['name']=='0neida Beceira'){
-  $act_data['name']='Oneida Beceira';
-}
-if($act_data['contact']=='0neida Beceira'){
-  $act_data['contact']='Oneida Beceira';
-}
+if($act_data['name']=='0neida Beceira'){ $act_data['name']='Oneida Beceira';}
+if($act_data['contact']=='0neida Beceira'){$act_data['contact']='Oneida Beceira';}
+
+
+if($act_data['name']=='Kalamazad A'){ $act_data['name']='A Kalamazad';}
+if($act_data['contact']=='Kalamazad A'){$act_data['contact']='A Kalamazad';}
+
+
+
+
 if($act_data['name']=='0rganiza del principado S.L.'){
   $act_data['name']='Organiza del principado S.L.';
 }
@@ -695,19 +699,23 @@ if($act_data['name']=='0rganiza del principado S.L.'){
   $act_data['name']=preg_replace('/ (-?\s*L\.da|LDA|l\.d\.a)$/i',' L.D.A.',$act_data['name']);
   $act_data['name']=preg_replace('/,\s*(-?\s*L\.da|LDA|l\.d\.a)$/i',' L.D.A.',$act_data['name']);
   $act_data['name']=preg_replace('/ (s\.?\s*c\.?\s*p)$/i',' S.C.P.',$act_data['name']);
+$act_data['name']=preg_replace('/ S.l.n.e$/i',' S.L.N.E.',$act_data['name']);
+  $act_data['name']=preg_replace('/ S\.?l\.?u\.?$/i',' S.L.U.',$act_data['name']);
 
-  
 
 if ($act_data['name']==$act_data['contact'] and $act_data['contact']!='') {
   if (preg_match('/^Bazar |^Alta Bisuteria | shop$|^Perfumer.a |Sociedad Cooperativa|souvenirs|^supermercados |^bisuteria | hoteles?$|^hotels? |^eventos |^terra |Avenue de |\d|^equilibrio |^la estrella |^verde |complementos |^joyeria |^regalos |bisiter.a|est.tica|peluquer.a|yoga |el zoco|jabones|S\.L\.$|Ldª$| SL$|Herboristeria|Asoc\. |^Asociaci.n |^Centro |^FPH C\.B\.$|Fisioglobal|^Amigos de | S\.A\.$|Associació Cultural|Associaci.n Cultural| C\.B$|^Asociación [a-z]+$| S\.A\.$| S\.C\.?$|Sucrolotes SLL - La Guinda| C\.B\.?$|lenilunio S\.c\.a$|^Laboratorios |Burbujas Castellón|^Rama SC$| S\.L\.?$| S\.l\.n\.e\.?$| s\.c\.a\.?$|Tecnologias|^Papeleria | S\.L\.U\.$| L\.D\.A\.$| C\.B\.$| S\.L\.L\.$/i',$act_data['name'])) {
     $act_data['contact']='';
     
-  }elseif (preg_match('/^(centro)\s+/i',$act_data['name'])) {
+  }elseif (preg_match('/^(centro)\s+|Publicidad/i',$act_data['name'])) {
     $act_data['contact']='';
-  }elseif (preg_match('/^(Aires De Mexico|Al Tuntun|Al Tun Tun|Laboladecristal|Gretel|Garcivera|S Espay|Ambar Diseño|Concha y Carlos|amina|Amica|America|Ameica|ambar|Amas de Casa Virgen del Carmen |Altieri|Alternativa|Alquimia|signa|Shiam|Singular|Sol y Luna - La Tienda de Mayca|Soyzoe|Splin|Spleen|Etetica Suvita|para ti|thot|tgoreti|el tintero|la tinaja|de todo|top|toke|etnia|a tope|topaz|toque|Un Toque de Estilo|tosca|tasca|toten|totem|touch|Abalorios Trini|La Traperia de Hellin|utop.a|venus|verdi|Art I vi|tigre volador|Walkiria|Waleska|Watermelon|Xarxa|Xaica|Xacris|Whatever|Waza|HM Woman|Interbisu Xxi|Yoryera|zeppo|yerba|yesi|zeida|zaguan|azahar|zaloa|zaleos|yuca|zurron|Fengzhu Zhu|Zidarra|De Zeta|)$/i',$act_data['name'])) {
+  }elseif (preg_match('/^(Fgdf|poeme|Populi|Minerales Porto Pi|Servi Print|Prince|Prysma|Carros Publicidad|Objetivo Publicidad|Publiexpress|Puerimueble|Plata Punto Com|puri|Que Punto|Expo Regalo|Expo Regalo|Don Regalo|Scruples|Scruples|seducir|Si Tu Me Dices Ven |Sol y Sol|sp|spiral|Britt-Inger St|Sthmuck|star|Dream Store|Struch|stylo|Sueños|Sunmarine|Supercien|Mai Tai|tayhe|tagore|tamy|tanisa|tauros?|aries|capricornio|Tayhe|Modas Teis|Temporada|Tendencia|they|La Tienda de Merche|Artemaniashop|arrumaco|Bolsos Arpel|arrels|Electro Aroche|Aroa y Maria del Mar|Armonia|Arlequin|Tele Arcos|archi|arco|Arantxa Bisuteria, Regalos y Complementos|Antiquo|Alhambra|Albutt|Alanb|Elemento Agua|Aguamarina|Acuario|Africa|Acuario|Acuarela|Accessorize|Accessoris|Molts Accesoris|Aires De Mexico|Al Tuntun|Al Tun Tun|Laboladecristal|Gretel|Garcivera|S Espay|Ambar Diseño|Concha y Carlos|amina|Amica|America|Ameica|ambar|Amas de Casa Virgen del Carmen |Altieri|Alternativa|Alquimia|signa|Shiam|Singular|Sol y Luna - La Tienda de Mayca|Soyzoe|Splin|Spleen|Etetica Suvita|para ti|thot|tgoreti|el tintero|la tinaja|de todo|top|toke|etnia|a tope|topaz|toque|Un Toque de Estilo|tosca|tasca|toten|totem|touch|Abalorios Trini|La Traperia de Hellin|utop.a|venus|verdi|Art I vi|tigre volador|Walkiria|Waleska|Watermelon|Xarxa|Xaica|Xacris|Whatever|Waza|HM Woman|Interbisu Xxi|Yoryera|zeppo|yerba|yesi|zeida|zaguan|azahar|zaloa|zaleos|yuca|zurron|Fengzhu Zhu|Zidarra|De Zeta|)$/i',$act_data['name'])) {
 	$act_data['contact']='';
-	
-      }
+ }elseif (preg_match('/^(la|el|los|las|spa|tele) /i',$act_data['name'])) {
+	$act_data['contact']='';
+ }
+ 
+ 
 }
 
     

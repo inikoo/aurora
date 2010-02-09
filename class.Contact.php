@@ -3198,7 +3198,12 @@ $principal=true;
 
 
                 // firt the most obious choise
-            } else if (      Contact::is_givenname($names[0]) and Contact::is_givenname($names[1]) and    Contact::is_surname($names[2])  and  Contact::is_surname($names[3])     ) {
+            } else if (      Contact::is_givenname($names[0])  and    strlen($names[1])==1 and  Contact::is_surname($names[2])  and  Contact::is_surname($names[3])     ) {
+
+                $name['first']=$names[0];
+                 $name['middle']=$names[1];
+                $name['last']=$names[2].' '.$names[3];
+            }else if (      Contact::is_givenname($names[0]) and Contact::is_givenname($names[1]) and    Contact::is_surname($names[2])  and  Contact::is_surname($names[3])     ) {
 
                 $name['first']=$names[0].' '.$names[1];
                 $name['last']=$names[2].' '.$names[3];
