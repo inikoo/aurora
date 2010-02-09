@@ -803,6 +803,8 @@ class Company extends DB_Table {
                     $contact_telecom_type='Work Telephone';
                     $company_telecom_type='Office Telephone';
 
+
+
                     $sql=sprintf("insert into `Address Telecom Bridge` values (%d,%d)"
                                  ,$this->data['Company Main Address Key']
                                  ,$Company_Main_Telephone_Key

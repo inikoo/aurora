@@ -2552,7 +2552,7 @@ function update_transaction_discount($line_number,$product_key,$qty,$amount){
   $discounts=0;
   //print $sql;
   while($row=mysql_fetch_array($res)){
-    switch($row['Deal Terms Type'])
+    //switch($row['Deal Terms Type'])
 
   }
 

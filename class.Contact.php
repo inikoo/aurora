@@ -2928,7 +2928,7 @@ $principal=true;
             $this->data['Contact Old ID'].=$key.',';
         }
 
-        $sql=sprintf("update `Contact Dimension` set `'Contact Old ID`=%s where `Contact Key`=%d "
+        $sql=sprintf("update `Contact Dimension` set `Contact Old ID`=%s where `Contact Key`=%d "
                      ,prepare_mysql($this->data['Contact Old ID'])
                      ,$this->id);
         mysql_query($sql);
