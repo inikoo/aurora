@@ -110,10 +110,43 @@ function edit_new_order(){
 	     
 	      );
   
+  $disconted_products=$order->get_discounted_products();
 
-  $order->add_order_transaction($data);
-
+  $transaction_data=$order->add_order_transaction($data);
   $order->update_discounts();
+
+  $new_disconted_products=$order->get_discounted_products();
+  foreach($new_disconted_products as $key=>$value){
+    $disconted_products[$key]=$value;
+  }
+  //print_r($disconted_products);
+
+  $adata=array();
+  
+  if(count($disconted_products)>0){
+
+  $product_keys=join(',',$disconted_products);
+  $sql=sprintf("select (select `Deal Info` from `Order Transaction Deal Bridge` OTDB where OTDB.`Order Key`=OTF.`Order Key` and OTDB.`Order Line`=OTF.`Order Line`) as `Deal Info`,P.`Product ID`,`Product XHTML Short Description`,`Order Transaction Gross Amount`,`Order Transaction Total Discount Amount` from `Order Transaction Fact` OTF  left join `Product History Dimension` PHD on (PHD.`Product Key`=OTF.`Product Key`) left join `Product Dimension` P on (PHD.`Product ID`=P.`Product ID`) where OTF.`Order Key`=%d and OTF.`Product Key` in (%s)",$order->id,$product_keys);
+  
+  
+  // print $sql;
+  $res = mysql_query($sql);
+  $adata=array();
+  
+  while ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+    $deal_info='';
+    if($row['Deal Info']!=''){
+      $deal_info=' <span class="deal_info">'.$row['Deal Info'].'</span>';
+    }
+  
+    $adata[$row['Product ID']]=array(
+		   'pid'=>$row['Product ID'],
+		   'description'=>$row['Product XHTML Short Description'].$deal_info,
+		   'to_charge'=>money($row['Order Transaction Gross Amount']-$row['Order Transaction Total Discount Amount'],$order->data['Order Currency'])
+		   );		   
+      };
+  }
+
   $order->update_item_totals_from_order_transactions();
   $order->update_charges();
   $order->get_original_totals();
@@ -121,6 +154,9 @@ function edit_new_order(){
 
   $order->update_totals_from_order_transactions();
   
+
+  
+
   $updated_data=array(
 		      'order_items_gross'=>$order->get('Items Gross Amount')
 		      ,'order_items_discount'=>$order->get('Items Discount Amount')
@@ -131,10 +167,12 @@ function edit_new_order(){
 		      ,'order_credits'=>$order->get('Net Credited Amount')
 		      ,'order_shipping'=>$order->get('Shipping Net Amount')
 		      ,'order_total'=>$order->get('Total Amount')
-
+		      
 		      );
+  
 
-  $response= array('state'=>200,'newvalue'=>$quantity,'key'=>$_REQUEST['key'],'data'=>$updated_data);
+
+  $response= array('state'=>200,'quantity'=>$transaction_data['qty'],'key'=>$_REQUEST['key'],'data'=>$updated_data,'to_charge'=>$transaction_data['to_charge'],'discount_data'=>$adata,'discounts'=>($order->data['Order Items Discount Amount']!=0?true:false));
   }else
     $response= array('state'=>200,'newvalue'=>$_REQUEST['oldvalue'],'key'=>$_REQUEST['key']);
  echo json_encode($response);  
@@ -234,6 +272,11 @@ if(isset( $_REQUEST['show_all']) and preg_match('/^(yes|no)$/',$_REQUEST['show_a
 						 ,'f_field'=>$f_field
 						 ,'f_value'=>$f_value
                                                  );
+
+
+
+
+   
    
 
 if(!$show_all){
@@ -251,11 +294,11 @@ if(!$show_all){
      
      $table='  `Order Transaction Fact` OTF  left join `Product History Dimension` PHD on (PHD.`Product Key`=OTF.`Product Key`) left join `Product Dimension` P on (PHD.`Product ID`=P.`Product ID`)  ';
      $where=sprintf(' where `Order Quantity`>0 and `Order Key`=%d',$order_id);
-     $sql_qty='';
+     $sql_qty=', `Order Quantity`,`Order Transaction Gross Amount`,`Order Transaction Total Discount Amount`,(select `Deal Info` from `Order Transaction Deal Bridge` OTDB where OTDB.`Order Key`=OTF.`Order Key` and OTDB.`Order Line`=OTF.`Order Line`) as `Deal Info`';
    }else{
-    $table=' `Product Dimension` ';
+    $table=' `Product Dimension` P ';
      $where=sprintf('where `Product Store Key`=%d   ',$store_key);
-     $sql_qty=sprintf(',IFNULL((select sum(`Order Quantity`) from `Order Transaction Fact` where `Product Key`=`Product Current Key` and `Order Key`=%d),0) as `Order Quantity`, IFNULL((select sum(`Order Transaction Total Discount Amount`) from `Order Transaction Fact` where `Product Key`=`Product Current Key` and `Order Key`=1165),0) as `Order Transaction Total Discount Amount`, IFNULL((select sum(`Order Transaction Gross Amount`) from `Order Transaction Fact` where `Product Key`=`Product Current Key` and `Order Key`=1165),0) as `Order Transaction Gross Amount` ',$order_id); 
+     $sql_qty=sprintf(',IFNULL((select sum(`Order Quantity`) from `Order Transaction Fact` where `Product Key`=`Product Current Key` and `Order Key`=%d),0) as `Order Quantity`, IFNULL((select sum(`Order Transaction Total Discount Amount`) from `Order Transaction Fact` where `Product Key`=`Product Current Key` and `Order Key`=%d),0) as `Order Transaction Total Discount Amount`, IFNULL((select sum(`Order Transaction Gross Amount`) from `Order Transaction Fact` where `Product Key`=`Product Current Key` and `Order Key`=%d),0) as `Order Transaction Gross Amount` ,(  select `Deal Info` from `Order Transaction Fact` OTF left join `Order Transaction Deal Bridge` OTDB  on (OTDB.`Order Line`=OTF.`Order Line`) where OTF.`Product Key`=`Product Current Key` and OTDB.`Order Key`=%d )  as `Deal Info` ',$order_id,$order_id,$order_id,$order_id); 
 
      
    }
@@ -284,7 +327,7 @@ if(!$show_all){
         $filtered=0;
         $total_records=$total;
     } else {
-        $sql="select count(*) as total from `Product Dimension`   $where   ";
+        $sql="select count(*) as total from $table  $where   ";
         $res=mysql_query($sql);
         if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
             $total_records=$row['total'];
@@ -362,12 +405,12 @@ if(!$show_all){
 
     
 
- $sql="select  `Product Availability`,`Product Sales State`,`Product ID`,`Product Code`,`Product XHTML Short Description`,`Product Price`,`Product Units Per Case`,`Product Record Type`,`Product Web State`,`Product Family Name`,`Product Main Department Name`,`Product Tariff Code`,`Product XHTML Parts`,`Product GMROI`,`Product XHTML Parts`,`Product XHTML Supplied By`,`Product Stock Value`,`Product Main Image` $sql_qty from $table   $where $wheref order by $order $order_direction limit $start_from,$number_results    ";
+ $sql="select  `Product Availability`,`Product Sales State`,P.`Product ID`,`Product Code`,`Product XHTML Short Description`,`Product Price`,`Product Units Per Case`,`Product Record Type`,`Product Web State`,`Product Family Name`,`Product Main Department Name`,`Product Tariff Code`,`Product XHTML Parts`,`Product GMROI`,`Product XHTML Parts`,`Product XHTML Supplied By`,`Product Stock Value`  $sql_qty from $table   $where $wheref order by $order $order_direction limit $start_from,$number_results    ";
  
     $res = mysql_query($sql);
 
     $adata=array();
-    //   print $sql;
+    //  print $sql;
  while ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
    if (is_numeric($row['Product Availability']))
@@ -400,10 +443,15 @@ if(!$show_all){
    }
    
 
+   $deal_info='';
+   if($row['Deal Info']!=''){
+     $deal_info=' <span class="deal_info">'.$row['Deal Info'].'</span>';
+   }
+
    $adata[]=array(
 		  'pid'=>$row['Product ID'],
 		  'code'=>$row['Product Code'],
-		'description'=>$row['Product XHTML Short Description'],
+		'description'=>$row['Product XHTML Short Description'].$deal_info,
 		'shortname'=>number($row['Product Units Per Case']).'x @'.money($row['Product Price']/$row['Product Units Per Case']).' '._('ea'),
 		'family'=>$row['Product Family Name'],
 		'dept'=>$row['Product Main Department Name'],
@@ -411,14 +459,16 @@ if(!$show_all){
                      'parts'=>$row['Product XHTML Parts'],
 		  'supplied'=>$row['Product XHTML Supplied By'],
 		  'gmroi'=>$row['Product GMROI'],
-		  'stock_value'=>money($row['Product Stock Value']),
+		  //		  'stock_value'=>money($row['Product Stock Value']),
                      'stock'=>$stock,
 		  'quantity'=>$row['Order Quantity'],
 		  'state'=>$type,
 		  'web'=>$web_state,
-		  'image'=>$row['Product Main Image'],
+		  //		  'image'=>$row['Product Main Image'],
 		  'type'=>'item',
-		  'change'=>'+ -',
+		  'add'=>'+',
+		  'remove'=>'-',
+		  //'change'=>'<span onClick="quick_change("+",'.$row['Product ID'].')" class="quick_add">+</span> <span class="quick_add" onClick="quick_change("-",'.$row['Product ID'].')" >-</span>',
 		  'to_charge'=>money($row['Order Transaction Gross Amount']-$row['Order Transaction Total Discount Amount'])
 		     
                  );
@@ -435,7 +485,7 @@ if(!$show_all){
                                       'filter_msg'=>$filter_msg,
                                       'rtext'=>$rtext,
                                       'rtext_rpp'=>$rtext_rpp,
-                                      'total_records'=>$total_records,
+                                      'total_records'=>$total_records-$filtered,
                                       'records_offset'=>$start_from,
                                       'records_perpage'=>$number_results,
                                      )

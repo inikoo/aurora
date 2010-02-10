@@ -914,9 +914,12 @@ class Order extends DB_Table{
 
     if (! mysql_query ( $sql ))
       exit ( "$sql can not update order trwansiocion facrt after invoice 1223" );
+
+
+    return array('to_charge'=>money($data ['gross_amount']-$data ['discount_amount'],$this->data['Order Currency']),'qty'=>$data ['qty']);
 		
     //  print "$sql\n";
-    $this->update_transaction_discount($data ['line_number'],$data ['Product Key'],$data ['qty'],$data ['gross_amount']);
+
 
   }
 	
@@ -2437,12 +2440,7 @@ function get_data_from_store($store_key){
   }
 
 
-  function update_discounts(){
-    $this->updated_items=array();
-  }
-
-
- function categorize($args=''){
+function categorize($args=''){
    $store=new store($this->data['Order Store Key']);
    
    
@@ -2540,29 +2538,150 @@ function update_charges(){
 
 
 
-function update_transaction_discount($line_number,$product_key,$qty,$amount){
+function update_discounts(){
+   $this->allowance=array('Family Percentage Off'=>array());
+     $this->deals=array('Family'=>array('Deal'=>false,'Terms'=>false,'Deal Multiplicity'=>0,'Terms Multiplicity'=>0));
+
+  $sql=sprintf("select `Order Line`,`Product Key`,`Order Transaction Gross Amount`,`Order Quantity` from `Order Transaction Fact` where `Order Key`=%d",$this->id);
+  $res_lines=mysql_query($sql);
+  while($row_lines=mysql_fetch_array($res_lines)){
   
+    $line_number=$row_lines['Order Line'];
+    $product_key=$row_lines['Product Key'];
+    $qty=$row_lines['Order Quantity'];
+    $amount=$row_lines['Order Transaction Gross Amount'];
+    
+  //  print "$line_number,$product_key,$qty,$amount\n";
+ 
   $product=new Product('key',$product_key);
   $family_key=$product->data['Product Family Key'];
 
-  $sql=sprintf("select * from `Deal Dimension` where `Deal Trigger`='Family' and `Charge Trigger Key` =%d  "
+  $sql=sprintf("select * from `Deal Dimension` where `Deal Trigger`='Family' and `Deal Trigger Key` =%d and `Deal Status`='Active'  "
 	       ,$family_key
 	       );
   $res=mysql_query($sql);
   $discounts=0;
-  //print $sql;
+  // print $sql;
+
+
   while($row=mysql_fetch_array($res)){
-    //switch($row['Deal Terms Type'])
 
+    $terms_ok=false;
+    switch($row['Deal Terms Type']){
+    case('Family Quantity Ordered'):
+      $this->deals['Family']['Deal']=true;
+      $this->deals['Family']['Deal Multiplicity'];
+
+      $qty_family=0;
+      $sql=sprintf('select sum(`Order Quantity`) as qty  from `Order Transaction Fact` OTF left join `Product History Dimension` PH on (OTF.`Product Key`=PH.`Product Key`)left join `Product Dimension` P on (P.`Product ID`=PH.`Product ID`) where `Order Key`=%d and `Product Family Key`=%d '
+		   ,$this->id
+		   ,$family_key
+		   );
+      // print $sql;
+      $res2=mysql_query($sql);
+      if($row2=mysql_fetch_array($res2)){
+	$qty_family=$row2['qty'];
+      }
+      if($qty_family>=$row['Deal Terms Metadata']){
+	$terms_ok=true;;
+	$this->deals['Family']['Terms']=true;
+      }	$this->deals['Family']['Terms Multiplicity']++;
+
+
+      break;
+    }
+
+    
+    switch($row['Deal Allowance Type']){
+    case('Percentage Off'):
+      switch($row['Deal Allowance Target']){
+      case('Family'):
+	if($terms_ok){
+
+	  $percentage=$row['Deal Allowance Metadata'];
+	  if(isset($this->allowance['Family Percentage Off'][$family_key])){
+	    if($this->allowance['Family Percentage Off'][$family_key]['Percentage Off']<$percentage)
+	      $this->allowance['Family Percentage Off'][$family_key]['Percentage Off']=$percentage;
+	  }else
+	    $this->allowance['Family Percentage Off'][$family_key]=array(
+									 'Family Key'=>$family_key
+									 ,'Percentage Off'=>$percentage
+									 ,'Deal Key'=>$row['Deal Key']
+									 ,'Deal Info'=>$row['Deal Name'].' '.$row['Deal Allowance Description']
+									 );
+	      }
+
+	break;
+      }
+
+
+      break;
+    }
   }
-
+  }
+  $this->apply_allowances();
 
 }
 
+function get_discounted_products(){
+  $sql=sprintf('select  `Product Key` from   `Order Transaction Deal Bridge`   where `Order Key`=%d  group by `Product Key` '
+	       ,$this->id
+	       );
+  $res=mysql_query($sql);
+  $disconted_products=array();
+  while($row=mysql_fetch_array($res)){
+    $disconted_products[$row['Product Key']]=$row['Product Key'];
+  }
+  return $disconted_products;
+  
+}
+
+
+function apply_allowances(){
+
+  
+
+  $sql=sprintf('update `Order Transaction Fact` OTF left join `Product History Dimension` PH on (OTF.`Product Key`=PH.`Product Key`)left join `Product Dimension` P on (P.`Product ID`=PH.`Product ID`) set  `Order Transaction Total Discount Amount`=0 where `Order Key`=%d  '
+		   ,$this->id
+	       );
+  mysql_query($sql);
+  $sql=sprintf("delete from `Order Transaction Deal Bridge` where `Order Key` =%d",$this->id);
+  mysql_query($sql);
+
+  foreach($this->allowance['Family Percentage Off'] as $allowance_data){
+   
+    
+    $sql=sprintf('update `Order Transaction Fact` OTF left join `Product History Dimension` PH on (OTF.`Product Key`=PH.`Product Key`)left join `Product Dimension` P on (P.`Product ID`=PH.`Product ID`) set  `Order Transaction Total Discount Amount`=`Order Transaction Gross Amount`*%f where `Order Key`=%d and `Product Family Key`=%d '
+		 ,$allowance_data['Percentage Off']
+		 ,$this->id
+		 ,$allowance_data['Family Key']
+		 );
+    mysql_query($sql);
+
+     $sql=sprintf('select OTF.`Product Key`,`Order Line`,`Order Transaction Gross Amount` from  `Order Transaction Fact` OTF left join `Product History Dimension` PH on (OTF.`Product Key`=PH.`Product Key`)left join `Product Dimension` P on (P.`Product ID`=PH.`Product ID`) where `Order Key`=%d and `Product Family Key`=%d '
+		 ,$this->id
+		 ,$allowance_data['Family Key']
+		 );
+     // print $sql;
+     $res=mysql_query($sql);
+     while($row=mysql_fetch_array($res)){
+       $sql=sprintf("insert into `Order Transaction Deal Bridge` values (%d,%d,%d,%d,%s,%f,0)"
+		    ,$this->id
+		    ,$row['Order Line']
+		    ,$row['Product Key']
+		    ,$allowance_data['Deal Key']
+		    ,prepare_mysql($allowance_data['Deal Info'])
+		    ,$row['Order Transaction Gross Amount']*$allowance_data['Percentage Off']
+		    );
+       mysql_query($sql);
+     }
 
 
 
+    
+  }
 
+}
 
 
 }

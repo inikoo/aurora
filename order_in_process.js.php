@@ -6,6 +6,100 @@ var Event = YAHOO.util.Event;
 YAHOO.namespace ("invoice"); 
 
 
+var myonCellClick = function(oArgs) {
+
+
+    var target = oArgs.target,
+    column = this.getColumn(target),
+    record = this.getRecord(target);
+
+
+    
+    datatable = this;
+    var records=this.getRecordSet();
+    //alert(records.getLength())
+   
+
+    //return;
+
+    //alert(datatable)
+    var recordIndex = this.getRecordIndex(record);
+
+		
+    switch (column.action) {
+    case('add_object'):
+    case('remove_object'):
+	var data = record.getData();
+
+	if(column.action=='add_object')
+	    var new_qty=parseFloat(data['quantity'])+1;
+	else
+	    var new_qty=parseFloat(data['quantity'])-1;
+
+ var ar_file='ar_edit_orders.php';
+	request='tipo=edit_new_order&key=quantity&newvalue='+new_qty+'&oldvalue='+data['quantity']+'&pid='+ data['pid'];
+	YAHOO.util.Connect.asyncRequest(
+				    'POST',
+				    ar_file, {
+					success:function(o) {
+					    //  alert(o.responseText);
+					    var r = YAHOO.lang.JSON.parse(o.responseText);
+					    if (r.state == 200) {
+						for(x in r.data){
+
+						    Dom.get(x).innerHTML=r.data[x];
+						}
+
+						if(r.discounts){
+						    Dom.get('tr_order_items_gross').style.display='';
+						}else{
+						    Dom.get('tr_order_items_gross').style.display='none';
+
+						}
+
+						datatable.updateCell(record,'quantity',r.quantity);
+						datatable.updateCell(record,'to_charge',r.to_charge);
+					
+
+
+						for(var i=0; i<records.getLength(); i++) {
+						    var rec=records.getRecord(i);
+						    if(r.discount_data[rec.getData('pid')]!=undefined){
+						    datatable.updateCell(rec,'to_charge',r.discount_data[rec.getData('pid')].to_charge);
+						    datatable.updateCell(rec,'description',r.discount_data[rec.getData('pid')].description);
+						    }
+						}
+
+						//for (i in r.discount_data){
+						//    alert(i+' '+r.discount_data[i].to_charge);
+						//}
+						
+						//	callback(true, r.newvalue);
+					    } else {
+						alert(r.msg);
+						//	callback();
+					    }
+					},
+					    failure:function(o) {
+					    alert(o.statusText);
+					    // callback();
+					},
+					    scope:this
+					    },
+				    request
+				    
+				    );  
+	
+	break;
+   
+		    
+    default:
+		    
+	this.onEventShowCellEditor(oArgs);
+	break;
+    }
+};   
+
 function change(e,o,tipo){
     switch(tipo){
     case('cancel'):
@@ -72,23 +166,46 @@ function close_dialog(tipo){
     column = this.getColumn(),
     oldValue = this.value,
     datatable = this.getDataTable();
+    var records=datatable.getRecordSet();
     var ar_file='ar_edit_orders.php';
     
     var request='tipo=edit_'+column.object+'&key=' + column.key + '&newvalue=' + encodeURIComponent(newValue) + '&oldvalue=' + encodeURIComponent(oldValue)+ myBuildUrl(datatable,record);
-    //lert('R:'+request);
+    //alert('R:'+request);
 
     YAHOO.util.Connect.asyncRequest(
 				    'POST',
 				    ar_file, {
 					success:function(o) {
-					       alert(o.responseText);
+					    // alert(o.responseText);
 					    var r = YAHOO.lang.JSON.parse(o.responseText);
 					    if (r.state == 200) {
 						for(x in r.data){
 
 						    Dom.get(x).innerHTML=r.data[x];
 						}
-						callback(true, r.newvalue);
+					      
+if(r.discounts){
+						    Dom.get('tr_order_items_gross').style.display='';
+						}else{
+						    Dom.get('tr_order_items_gross').style.display='none';
+
+						}
+
+						datatable.updateCell(record,'quantity',r.quantity);
+						datatable.updateCell(record,'to_charge',r.to_charge);
+					
+
+
+						for(var i=0; i<records.getLength(); i++) {
+						    var rec=records.getRecord(i);
+						    if(r.discount_data[rec.getData('pid')]!=undefined){
+						    datatable.updateCell(rec,'to_charge',r.discount_data[rec.getData('pid')].to_charge);
+						    datatable.updateCell(rec,'description',r.discount_data[rec.getData('pid')].description);
+						    }
+						}
+						callback(true,r.quantity);
+						
+
 					    } else {
 						alert(r.msg);
 						callback();
@@ -126,8 +243,9 @@ YAHOO.util.Event.addListener(window, "load", function() {
 				     //				     ,{key:"tariff_code", label:"<?php echo _('Tariff Code')?>",width:80,sortable:false,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				     ,{key:"stock",label:"<?php echo _('Able')?>", width:80,sortable:false,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 				     ,{key:"quantity",label:"<?php echo _('Qty')?>", width:40,sortable:false,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC},  editor: new YAHOO.widget.TextboxCellEditor({asyncSubmitter: CellEdit}),object:'new_order'}
-				     ,{key:"change",label:"", width:40,className:"aleft",sortable:false}
-				    
+					//,{key:"change",label:"", width:40,className:"aleft",sortable:false}
+					,{key:"add",label:"", width:5,sortable:false,action:'add_object',object:'new_order'}
+					,{key:"remove",label:"", width:5,sortable:false,action:'remove_object',object:'new_order'}
 
 				     //  ,{key:"gross",label:"<?php echo _('Amount')?>", width:70,sortable:false,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 				     //  ,{key:"discount",label:"<?php echo _('Discounts')?>", width:70,sortable:false,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
@@ -155,12 +273,12 @@ YAHOO.util.Event.addListener(window, "load", function() {
 			 ,"description"
 			 ,"quantity"
 			 ,"discount"
-			 ,"to_charge","gross","tariff_code","stock","change","pid"
+			 ,"to_charge","gross","tariff_code","stock","add","remove","pid"
 			 // "promotion_id",
 			 ]};
 	    this.table0 = new YAHOO.widget.DataTable(tableDivEL, InvoiceColumnDefs,
 								   this.dataSource0, {
-								      renderLoopSize: 50,generateRequest : myRequestBuilderwithTotals
+								      renderLoopSize: 50,generateRequest : myRequestBuilder
 								       ,paginator : new YAHOO.widget.Paginator({
 									      rowsPerPage:<?php echo$_SESSION['state']['products']['table']['nr']+1?>,containers : 'paginator0', 
  									      pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',
@@ -186,7 +304,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    this.table0.doBeforePaginator = mydoBeforePaginatorChange;
 	    this.table0.subscribe("cellMouseoverEvent", highlightEditableCell);
 	    this.table0.subscribe("cellMouseoutEvent", unhighlightEditableCell);
-	    this.table0.subscribe("cellClickEvent", onCellClick);
+	    this.table0.subscribe("cellClickEvent", myonCellClick);
 	    
 	    this.table0.view='<?php echo$_SESSION['state']['products']['view']?>';
 	    this.table0.filter={key:'<?php echo$_SESSION['state']['products']['table']['f_field']?>',value:'<?php echo$_SESSION['state']['products']['table']['f_value']?>'};
@@ -220,6 +338,7 @@ function change_show_all(){
    var table=tables['table0'];
    var datasource=tables['dataSource0'];
    var request='&show_all='+show_all;
+   // alert(request);
    datasource.sendRequest(request,table.onDataReturnInitializeTable, table); 
 }
 
