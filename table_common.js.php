@@ -142,7 +142,7 @@ var mygetTerms =function (query) {
 
     table.filter.value=Dom.get('f_input'+table_id).value;
     var request='&sf=0&f_field=' +table.filter.key + '&f_value=' + table.filter.value;
-    /// alert(request);
+
     datasource.sendRequest(request,table.onDataReturnInitializeTable, table);       
 };
 
@@ -164,7 +164,7 @@ var change_filter=function (key,label,tableid){
 var change_rpp=function (rpp,tableid){
     var Dom   = YAHOO.util.Dom;
     var table=tables['table'+tableid];
-    
+
     table.get('paginator').setRowsPerPage(rpp)
 
 }
