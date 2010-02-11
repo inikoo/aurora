@@ -12,7 +12,8 @@ include_once('../../class.DeliveryNote.php');
 include_once('../../class.Email.php');
 include_once('../../class.TimeSeries.php');
 include_once('../../class.CurrencyExchange.php');
-include_once('map_order_functions.php');
+//include_once('map_order_functions.php');
+include_once('common_read_orders_functions.php');
 
 $con=@mysql_connect($dns_host,$dns_user,$dns_pwd );
 if (!$con) {
@@ -269,6 +270,8 @@ foreach($contacts as $act_data){
       	$customer_data['Customer Store Key']=3;
 
 
+      if($customer_data['Customer Store Key']==1)
+	continue;
       $customer_data['Customer First Contacted Date']=$act_data['creation_date'];
    
 
