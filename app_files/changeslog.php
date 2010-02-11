@@ -161,7 +161,7 @@ ALTER TABLE `Customer Dimension` CHANGE `Customer Delivery Address Link` `Custom
 ALTER TABLE `Order Dimension` ADD `Order Tax Rate` DECIMAL( 8, 6 ) NOT NULL ,ADD `Order Tax Code` VARCHAR( 16 ) NOT NULL ;
 ALTER TABLE `Customer Dimension` CHANGE `Customer tax Category` `Customer Tax Category` VARCHAR( 64 ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'Default';
 CREATE TABLE `costadw`.`Tax Category Dimension` (`Tax Category Code` VARCHAR( 16 ) NOT NULL ,`Tax Category Name` VARCHAR( 256 ) NOT NULL ,`Tax Category Rate` DECIMAL( 8, 6 ) NOT NULL ,PRIMARY KEY ( `Tax Category Code` )) ENGINE = MYISAM ;
-ALTER TABLE `Tax Category Dimension` CHANGE `Tax Category Code` `Tax Category Code` VARCHAR( 16 ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL , CHANGE `Tax Category Name` `Tax Category Name` VARCHAR( 256 ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL ;ALTER TABLE `Tax Category Dimension`  DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci
+ALTER TABLE `Tax Category Dimension` CHANGE `Tax Category Code` `Tax Category Code` VARCHAR( 16 ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL , CHANGE `Tax Category Name` `Tax Category Name` VARCHAR( 256 ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL ;ALTER TABLE `Tax Category Dimension`  DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
 ALTER TABLE `Order Dimension` CHANGE `Orders Items Tax Amount` `Order Items Tax Amount` DECIMAL( 12, 2 ) NOT NULL DEFAULT '0.00'
 
  */

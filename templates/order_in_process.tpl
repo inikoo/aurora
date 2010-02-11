@@ -15,7 +15,9 @@
         {$contact}<br/>
            {if $tel!=''}{t}Tel{/t}: {$tel}<br/>{/if}
 	<div style="float:left;line-height: 1.0em;margin:5px 20px 0 0;color:#444;font-size:80%;width:140px"><span style="font-weight:500;color:#000">{t}Contact Address{/t}</span>:<br/><b>{$customer->get('Customer Main Contact Name')}</b><br/>{$customer->get('Customer Main XHTML Address')}</div>
-	<div style="float:left;line-height: 1.0em;margin:5px 0 0 0px;color:#444;font-size:80%;width:140px"><span style="font-weight:500;color:#000">{t}Shipping Address{/t}</span>:<br/>{$order->get('Order XHTML Ship Tos')}</div>
+	<div style="float:left;line-height: 1.0em;margin:5px 0 0 0px;color:#444;font-size:80%;width:140px"><span style="font-weight:500;color:#000">{t}Shipping Address{/t}</span>:<br/>{$order->get('Order XHTML Ship Tos')}
+<span class="state_details" style="display:block;margin-top:10px">Change Delivery Address</span>
+</div>
 	
 <div style="clear:both"></div>
        </div>

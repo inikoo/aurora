@@ -27,16 +27,22 @@
 
  <div class="tabbed_container" > 
    <div  class="edit_block" style="{if $edit!="delivery"}display:none{/if}"  id="d_delivery">
+     
+     <div style="width:400px;border: 1px solid black;float:right;text-align:right">
+       <span class="state_details">Add New Delivery Address</span>
+       </div>
 
      <div style="border-bottom:1px solid #777;margin-bottom:5px;width:400px">
        <span style="float:right" class="state_details" >{t}Same as Contact Address{/t}</span>
        {t}Delivery Address{/t}:
        <span class="state_details" style="float:right;display:none" address_key="" id="delivery_cancel_edit_address">{t}Cancel{/t}</span>
        <span class="state_details" style="float:right;display:none" address_key="" id="delivery_save_edit_address">{t}Save{/t}</span>
-
+       
      </div>
      
      {$customer->delivery_address_xhtml()}
+     
+
 
    </div>
 
