@@ -11,6 +11,9 @@ include_once('../../class.Invoice.php');
 include_once('../../class.DeliveryNote.php');
 include_once('../../class.Email.php');
 include_once('../../class.CurrencyExchange.php');
+include_once('common_read_orders_functions.php');
+
+
 
 $store_code='F';
 $__currency_code='EUR';
@@ -372,7 +375,8 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
       unset($customer_data['address_data']);
     }
     $customer_data['Customer Delivery Address Link']='Contact';
-	
+    $customer_data['Customer First Contacted Date']=$date_order;
+
     $shipping_addresses=array();
     if(isset($_customer_data['address_data']) and $_customer_data['has_shipping']){
 
@@ -1374,7 +1378,8 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
       $tax_code='ZV';
     }
 
-
+       $data['Order Tax Code']=$tax_code;
+    $data['Order Tax Rate']=$tax_rate;
 
 
     if($tipo_order==2 or $tipo_order==1  or $tipo_order==4 or $tipo_order==5 or   $tipo_order==3 or   $tipo_order==8    )  {

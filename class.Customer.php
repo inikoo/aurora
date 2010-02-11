@@ -981,6 +981,10 @@ class Customer extends DB_Table {
     case('Customer Main Plain Email'):
       $this->update_child_email($value);
       break;
+    case('Customer First Contacted Date'):
+  
+      break; 
+
     case('Customer Main Telephone'):
     case('Customer Main Plain Telephone'):
     case('Customer Main Telephone Key'):
@@ -1662,7 +1666,10 @@ class Customer extends DB_Table {
 	       or ( date('U',strtotime($this->data['Customer First Contacted Date']))>$first_order_date  )
 	       )
 	  ) {
-	$sql=sprintf("update `Customer Dimension` set `Customer First Contacted Date`=%d  where `Customer Key`=%d"
+
+	print $this->data['Customer First Contacted Date']." ->  ".$row['date']."\n";
+
+	$sql=sprintf("update `Customer Dimension` set `Customer First Contacted Date`=%s  where `Customer Key`=%d"
 		     ,prepare_mysql($row['date'])
 		     ,$this->id
 		     );

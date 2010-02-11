@@ -90,15 +90,35 @@ case('net_diff1y_sales_month'):
 list_invoices_1y_change_per_month();
  break;
 case('active_customers'): 
+  if(isset($_REQUEST['store_keys']) )
+    $store_keys=$_REQUEST['store_keys'];
+  else
+    $store_keys=$_SESSION['state']['customers']['store'];
+
+  
+
+  if(preg_match('/[^\d\,\s]/',$store_keys))
+    return;
+
+  $data=array('Store Keys'=>$store_keys);
   if($_REQUEST['period']=='m')
-    list_active_customer_population_per_month();
+    list_active_customer_population_per_month($data);
   
   break;
 case('customers'): 
+
+  if(isset($_REQUEST['store_keys']) )
+    $store_keys=$_REQUEST['store_keys'];
+  else
+    $store_keys=$_SESSION['state']['customers']['store'];
+
+  if(preg_match('/[^\d\,\s]/',$store_keys))
+    return;
+  $data=array('Store Keys'=>$store_keys);
   if($_REQUEST['period']=='m')
-    list_customer_population_per_month();
+    list_customer_population_per_month($data);
   elseif($_REQUEST['period']=='y')
-    list_customer_population_per_year();
+    list_customer_population_per_year($data);
   break;
 default:
    $response=array('state'=>405,'resp'=>_('Operation not found'));
@@ -695,11 +715,11 @@ function list_invoices_per_week(){
 // echo '{"resultset":{"state":200,"data":{"tip":"Sales October 2008\n\u00a329,085.85\n-87.4% change (last month)\n-89.5% change (last year)\n(240 Orders)","tip_losses":"Lost Sales October 2008\n\u00a30.00 (0.0%)","sales":"34429","losses":0,"date":"10-2008"}}}';
 
 }
-function list_active_customer_population_per_month(){
- 
+function list_active_customer_population_per_month($data){
+  $store_keys=$data['Store Keys'];
   global $myconf;
 
-  $sql="select min(`Customer First Order Date`) first_day from `Customer Dimension`  ; ";
+  $sql=sprintf("select min(`Customer First Order Date`) first_day from `Customer Dimension`   where `Customer Store Key` in (%s) ; ",$store_keys);;
   $res = mysql_query($sql); 
   if($row=mysql_fetch_array($res)) {
      $first_day=$row['first_day'];
@@ -740,7 +760,7 @@ function list_active_customer_population_per_month(){
 
 
 
-   $sql="select count(*) as new, DATE_FORMAT(`Customer First Order Date`,'%Y%m') yearmonth from `Customer Dimension`  where `Actual Customer`='Yes'  group by DATE_FORMAT(`Customer First Order Date`,'%m%Y')";
+   $sql="select count(*) as new, DATE_FORMAT(`Customer First Order Date`,'%Y%m') yearmonth from `Customer Dimension`  where `Actual Customer`='Yes' and `Customer Store Key` in (".$store_keys.") group by DATE_FORMAT(`Customer First Order Date`,'%m%Y')";
    // print $sql;
    $res=mysql_query($sql);
    while($row=mysql_fetch_array($res)){
@@ -754,7 +774,7 @@ function list_active_customer_population_per_month(){
 
 mysql_free_result($res);
    
-   $sql="select count(*) as  lost  , DATE_FORMAT(`Customer Lost Date`,'%Y%m') yearmonth  from `Customer Dimension` where `Active Customer`='No'  and `Actual Customer`='Yes'   group by DATE_FORMAT(`Customer Lost Date`,'%m%Y');";
+   $sql="select count(*) as  lost  , DATE_FORMAT(`Customer Lost Date`,'%Y%m') yearmonth  from `Customer Dimension` where `Active Customer`='No'  and `Actual Customer`='Yes' and  `Customer Store Key` in (".$store_keys.") group by DATE_FORMAT(`Customer Lost Date`,'%m%Y');";
    //print $sql;
    $res=mysql_query($sql);
    while($row=mysql_fetch_array($res)){
@@ -817,16 +837,22 @@ mysql_free_result($res);
 }
 
 
-function list_customer_population_per_month(){
+function list_customer_population_per_month($data){
  
- 
+  $store_keys=$data['Store Keys'];
+  
+  $sql=sprintf("select min(`Customer First Contacted Date`) first_day, count(*) as number from `Customer Dimension` where `Customer Store Key` in (%s) ; ",$store_keys);;
 
-  $sql="select min(`Customer First Order Date`) first_day from `Customer Dimension`  ; ";
   $res = mysql_query($sql); 
   if($row=mysql_fetch_array($res)) {
+    if($row['number']==0)
+      return;
     $first_day=$row['first_day'];
-  }else
-    return;
+    $first_yearmonth=date("Ym",strtotime($first_day));
+  }
+   
+
+  
 
   $sql="select date_format(`First Day`,'%c') as month, `First Day` as date, `Year Month` as yearmonth  from kbase.`Month Dimension` where `First Day`>'$first_day' and `First Day` < NOW(); ";
 
@@ -861,7 +887,7 @@ function list_customer_population_per_month(){
 
 
 
-  $sql="select count(*) as new, DATE_FORMAT(`Customer First Contacted Date`,'%Y%m') yearmonth from `Customer Dimension`    group by DATE_FORMAT(`Customer First Contacted Date`,'%m%Y')";
+  $sql="select count(*) as new, DATE_FORMAT(`Customer First Contacted Date`,'%Y%m') yearmonth from `Customer Dimension` where `Customer Store Key` in ($store_keys)   group by DATE_FORMAT(`Customer First Contacted Date`,'%m%Y')";
   //print $sql;
   $res=mysql_query($sql);
   while($row=mysql_fetch_array($res)){
@@ -928,8 +954,8 @@ function list_customer_population_per_month(){
 
 
 function list_customer_population_per_year(){
-
-  $sql="select YEAR(MIN(`Customer First Contacted Date`)) as data_since from `Customer Dimension`;";
+$store_keys=$data['Store Keys'];
+$sql=sprintf("select YEAR(MIN(`Customer First Contacted Date`)) as data_since from `Customer Dimension` where `Customer Store Key` in (%s) ;",$store_keys);
   $res=mysql_query($sql);
   if($row=mysql_fetch_array($res)){
     $first_year=$row['data_since'];
@@ -978,7 +1004,7 @@ function list_customer_population_per_year(){
 
 
 
-  $sql="select count(*) as new, YEAR(`Customer First Contacted Date`) year from `Customer Dimension`    group by YEAR(`Customer First Contacted Date`)";
+  $sql="select count(*) as new, YEAR(`Customer First Contacted Date`) year from `Customer Dimension`  where `Customer Store Key` in (".$store_keys.")  group by YEAR(`Customer First Contacted Date`)";
  
  $res=mysql_query($sql);
   while($row=mysql_fetch_array($res)){

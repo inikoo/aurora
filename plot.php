@@ -67,6 +67,7 @@ if(isset($_REQUEST['category'])){
   }
 $category=$_SESSION['state']['customers']['plot_data'][$tipo]['category'];
   
+
   
  // print_r($tipo);
   

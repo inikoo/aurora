@@ -358,6 +358,8 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
       unset($customer_data['address_data']);
     }
     $customer_data['Customer Delivery Address Link']='Contact';
+
+
     $shipping_addresses=array();
     if(isset($_customer_data['address_data']) and $_customer_data['has_shipping']){
         if(!is_same_address($_customer_data)){
@@ -403,7 +405,7 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
       continue;
     }
    
-
+  $customer_data['Customer First Contacted Date']=$date_order;
     $extra_shipping=0;
 
     $data=array();
@@ -1397,7 +1399,8 @@ list($parcels,$parcel_type)=parse_parcels($header_data['parcels']);
     }
 
 
-
+    $data['Order Tax Code']=$tax_code;
+    $data['Order Tax Rate']=$tax_rate;
 
     if($tipo_order==2 or $tipo_order==1  or $tipo_order==4 or $tipo_order==5 or   $tipo_order==3 or   $tipo_order==8    )  {
       
