@@ -278,6 +278,18 @@ var upload_attach = function(e){
 var oMenu;
 function init(){
 
+
+search_scope='customers';
+//Event.addListener(search_scope+'_submit_search', "click",submit_search,search_scope);
+//Event.addListener(search_scope+'_search', "keydown", submit_search_on_enter,search_scope);
+ 
+var store_name_oACDS = new YAHOO.util.FunctionDataSource(search_customers_in_store);
+store_name_oACDS.queryMatchContains = true;
+var store_name_oAutoComp = new YAHOO.widget.AutoComplete(search_scope+"_search",search_scope+"_search_Container", store_name_oACDS);
+store_name_oAutoComp.minQueryLength = 0; 
+store_name_oAutoComp.queryDelay = 0.15;
+
+
 //     var shortcut_next = new YAHOO.util.KeyListener(document, {keys:89 },  { fn:key_press });
 //         alert("cac");
 //     shortcut_next.enable();

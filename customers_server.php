@@ -53,8 +53,13 @@ $js_files=array(
 		);
 
 
+
+
+
+
 $smarty->assign('details',$_SESSION['state']['customers']['details']);
 $smarty->assign('advanced_search',$_SESSION['state']['customers']['advanced_search']);
+
 
 
 $smarty->assign('parent','customers');
@@ -65,6 +70,10 @@ $smarty->assign('js_files',$js_files);
 $smarty->assign('table_title',_('Customers List'));
 
 
+$general_options_list=array();
+$smarty->assign('general_options_list',$general_options_list);
+$smarty->assign('search_label',_('Customers'));
+$smarty->assign('search_scope','customers');
 
 
 $tipo_filter=$_SESSION['state']['customers']['table']['f_field'];
