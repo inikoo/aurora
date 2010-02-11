@@ -176,14 +176,29 @@ class Order extends DB_Table{
 
       }else{
        	//print "Cust data\n";
-	//print_r($data['Customer Data']);
-				  
+	//	print_r($data['Customer Data']);
+	
+	//-------------------------
+      
+	//-----------------------
+
+			  
 	$customer = new Customer ( 'find create', $data['Customer Data'] );
-	//	print_r($customer);
+	//print_r($customer);
+	if( date("Y-m-d",strtotime($customer->data['Customer First Contacted Date']))==date("Y-m-d",strtotime($data ['order date']))  ){
+	  $data ['order date']=date("Y-m-d H:i:s",strtotime($customer->data['Customer First Contacted Date'])+900  );
+	  
+	}
+	  
 
-	      $this->data ['Order Main Country 2 Alpha Code']=$customer -> data['Customer Main Address Country 2 Alpha Code'];
 
- 	
+	$this->data ['Order Main Country 2 Alpha Code']=$customer -> data['Customer Main Address Country 2 Alpha Code'];
+
+	
+	
+	$this->data['Order Tax Code']=$data['Order Tax Code'];;
+	$this->data['Order Tax Rate']=$data['Order Tax Rate'];
+
 	
 	//print_r($customer);
 	if($customer->data['Customer Delivery Address Link']=='None'){
@@ -885,7 +900,7 @@ class Order extends DB_Table{
     }else{
 
 
-    $sql = sprintf ( "insert into `Order Transaction Fact` (`Transaction Tax Rate`,`Transaction Tax Code`,`Order Currency Code`,`Estimated Weight`,`Order Date`,`Backlog Date`,`Order Last Updated Date`,`Product Key`,`Current Dispatching State`,`Current Payment State`,`Customer Key`,`Order Key`,`Order Public ID`,`Order Line`,`Order Quantity`,`Ship To Key`,`Order Transaction Gross Amount`,`Order Transaction Total Discount Amount`,`Metadata`,`Store Key`,`Units Per Case`,`Customer Message`) values (%s,%s,%s,%s,%s,%d,%s,%s,%s,%s,%s,%d,%s,%s,%.2f,%.2f,%s,%s,%f,'') "
+    $sql = sprintf ( "insert into `Order Transaction Fact` (`Transaction Tax Rate`,`Transaction Tax Code`,`Order Currency Code`,`Estimated Weight`,`Order Date`,`Backlog Date`,`Order Last Updated Date`,`Product Key`,`Current Dispatching State`,`Current Payment State`,`Customer Key`,`Order Key`,`Order Public ID`,`Order Line`,`Order Quantity`,`Ship To Key`,`Order Transaction Gross Amount`,`Order Transaction Total Discount Amount`,`Metadata`,`Store Key`,`Units Per Case`,`Customer Message`) values (%f,%s,%s,%s,%s,%s,%s,%d,%s,%s,%s,%s,%s,%d,%s,%s,%.2f,%.2f,%s,%s,%f,'') "
 		     ,$tax_rate
 		     ,prepare_mysql ($tax_code)
 		     , prepare_mysql ( $this->data ['Order Currency'] )

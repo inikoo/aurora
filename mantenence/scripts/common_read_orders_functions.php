@@ -21,7 +21,7 @@ function get_dates($filedate,$header_data,$tipo_order,$new_file=true){
 	  $date_processed=$header_data['date_order']." ".$time_updated_menos30min;
 
       }else{
-	$date_charged=$header_data['date_inv']." 16:30:00";
+	$date_charged=$header_data['date_inv']." 17:30:00";
 	$date_processed=$header_data['date_order']." 09:30:00";
       }
       $date_index=$date_charged;

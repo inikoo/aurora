@@ -1157,6 +1157,9 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
       $tax_code='ZV';
     }
 
+       $data['Order Tax Code']=$tax_code;
+       $data['Order Tax Rate']=$tax_rate;
+
     if ($tipo_order==1 or $tipo_order==2  or $tipo_order==3 or $tipo_order==4 or   $tipo_order==5 or   $tipo_order==8    )  {
 
 

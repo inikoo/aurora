@@ -24,23 +24,16 @@ function new_customer(tipo){
 function change_plot_category(category){
     o=Dom.get('plot_'+plot);
     o.setAttribute("category",category);
-
     change_plot(o);
 }
 function change_plot_period(period){
     o=Dom.get('plot_'+plot);
-    
     o.setAttribute("period",period);
-
     change_plot(o);
 }
 function change_plot(o){
     //  if(!Dom.hasClass(o,'selected')){
-
 	var keys=Dom.get("plot_info").getAttribute("keys");
-	
-
-	
 	var tipo=o.getAttribute("tipo");
 	var category=o.getAttribute("category");
 	var period=o.getAttribute("period");
@@ -84,11 +77,12 @@ function change_plot(o){
 	    Dom.get("plot_options").style.display='';
 
 	}else{
-	     plot='customers';
+	     plot=tipo;
 	    //Dom.get("pie_options").style.display='none';
-	    var plot_url='plot.php?tipo='+tipo+'&category='+category+'&period='+period+'&keys='+keys;
-	    Dom.get("the_plot").width="100%";
-	    plot_code=tipo+'_'+category+'_'+period;
+	    //alert('plot.php?tipo='+tipo+'&category='+category+'&period='+period+'&keys='+keys)
+	     var plot_url='plot.php?tipo='+tipo+'&category='+category+'&period='+period+'&keys='+keys;
+	     Dom.get("the_plot").width="100%";
+	     plot_code=tipo+'_'+category+'_'+period;
 
 
 	    Dom.get("plot_category").innerHTML=category_labels[category];

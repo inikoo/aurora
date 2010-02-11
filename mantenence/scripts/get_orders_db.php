@@ -348,8 +348,9 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
       unset($customer_data['address_data']);
     }
     $shipping_addresses=array();
-        $customer_data['Customer Delivery Address Link']='Contact';
-	
+    $customer_data['Customer Delivery Address Link']='Contact';
+    $customer_data['Customer First Contacted Date']=$date_order;
+
     if(isset($_customer_data['address_data']) and $_customer_data['has_shipping']){
 
   if(!is_same_address($_customer_data)){
@@ -1377,8 +1378,9 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
       $tax_code='ZV';
     }
 
-
-
+       $data['Order Tax Code']=$tax_code;
+       $data['Order Tax Rate']=$tax_rate;
+    
 
     if($tipo_order==2 or $tipo_order==1  or $tipo_order==4 or $tipo_order==5 or   $tipo_order==3 or   $tipo_order==8    )  {
       
