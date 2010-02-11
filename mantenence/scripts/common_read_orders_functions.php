@@ -164,10 +164,19 @@ if($act_data['name']=='Michelle A(aromatherapy,indian Head Massage Therap'){
   }
 
 if(preg_match('/^524 95 Ljung$/i',$act_data['town']) and $act_data['postcode']=''){
-    $act_data['town']='Ljung$'; 
+    $act_data['town']='Ljung'; 
     $act_data['postcode']='52495';
 
   }
+
+if(preg_match('/^CH\s*-\s*\d+\s+/i',$act_data['town'],$match) and $act_data['postcode']=''){
+  $act_data['town']=preg_replace('/^CH\s*-\s*\d+\s+','',$act_data['town']); 
+  $act_data['postcode']=_trim($match[0]);
+}
+if(preg_match('/^(d)?\d{4,}\s+/i',$act_data['town'],$match) and $act_data['postcode']=''){
+  $act_data['town']=preg_replace('/^\d{4,}\s+/i','',$act_data['town']); 
+  $act_data['postcode']=_trim($match[0]);
+}
 
 
 
