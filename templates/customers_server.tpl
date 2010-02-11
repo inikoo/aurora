@@ -1,18 +1,8 @@
 {include file='header.tpl'}
 <div id="bd" >
-  <span class="nav2 onleft"><a  class="selected"  href="customers.php">{t}Customers{/t}</a></span>
-  <span class="nav2 onleft"><a href="companies.php">{t}Companies{/t}</a></span>
-  <span class="nav2 onleft"><a   href="contacts.php">{t}Personal Contacts{/t}</a></span>
-
-  
-  <div class="search_box" >
-    <span class="search_title" style="padding-right:15px" tipo="customer_name">{t}Customer Name{/t}:</span> <br>
-    <input size="8" class="text search" id="customer_search" value="" name="search"/><img align="absbottom" id="customer_submit_search" class="submitsearch" src="art/icons/zoom.png" alt="Submit search"><br/>
-    <span  class="product_search_msg"   id="customer_search_msg"    ></span> <span  class="search_sugestion"   id="customer_search_sugestion"    ></span>
-    <br/>
-    <a id="but_advanced_search"  class="state_details" href="search_customers.php">{t}Advanced Search{/t}</a>
  
-  </div>
+{include file='contacts_navigation.tpl'}
+
   
   <div style="clear:left;">
     <h1>{t}Customer Corporate Overview{/t}</h1>

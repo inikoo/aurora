@@ -164,6 +164,8 @@ $smarty->assign('general_options_list',$general_options_list);
   
 
 }else{
+  $smarty->assign('search_label',_('Customers'));
+$smarty->assign('search_scope','customers');
 
   
   $order=$_SESSION['state']['customers']['table']['order'];

@@ -27,9 +27,11 @@ require_once '../../conf/conf.php';
 
 mt_srand(make_seed());
 
-
+$root_url='';
 $root_url=$argv[1];
-
+if(!$root_url){
+  exit("root page as argument please\n");
+}
 
 $sql="select * from `Page Dimension` P  left join `Page Internal Dimension`  I on (P.`Page Key`=I.`Page Key`) where `Page Type`='Internal' and `Page Section`='Reports'";
 
