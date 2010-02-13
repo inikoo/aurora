@@ -113,12 +113,13 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
  function init(){
  var Dom   = YAHOO.util.Dom;
-
- var store_name_oACDS = new YAHOO.util.FunctionDataSource(search_customers_in_store);
+search_scope='customers';
+var store_name_oACDS = new YAHOO.util.FunctionDataSource(search_customers_in_store);
 store_name_oACDS.queryMatchContains = true;
 var store_name_oAutoComp = new YAHOO.widget.AutoComplete(search_scope+"_search",search_scope+"_search_Container", store_name_oACDS);
 store_name_oAutoComp.minQueryLength = 0; 
 store_name_oAutoComp.queryDelay = 0.15;
+
 
 
  var oACDS = new YAHOO.util.FunctionDataSource(mygetTerms);

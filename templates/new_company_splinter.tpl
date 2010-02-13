@@ -14,7 +14,9 @@
       
       <div  style="float:left;width:370px" >
       <table class="edit" border=0 >
-	
+	{if $scope=='customer'}
+<input type="hidden" value="{$store_key}" id="Store_Key"/>
+{/if}
 	{if $scope=='supplier'}
 	<tr class="first"><td style="" class="label">{t}Supplier Code{/t}:</td>
 	  <td  style="text-align:left">
@@ -82,7 +84,7 @@
 	  
 	</tbody>
 	
-	<tr id="email_mould" style="{if $scope=='corporation'}display:none{/if}"  >
+	<tr id="email_mould"   style="{if $scope=='corporation'}display:none{/if}"  >
 	  <td  class="label"  >{t}Email{/t}:</td>
 	  <td >
 	    <input style="width:18em" id="Email" class="Email"  to_delete=0 value="" ovalue="" email_key="" valid=""   />

@@ -25,6 +25,13 @@ if(!$modify or!$create){
   exit();
 }
 
+
+
+$store_key=$_SESSION['state']['customers']['store'];
+$smarty->assign('store_key',$store_key);
+$smarty->assign('scope','customer');
+
+
 $css_files=array(
 		 $yui_path.'reset-fonts-grids/reset-fonts-grids.css',
 

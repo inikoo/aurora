@@ -12,6 +12,7 @@ include_once('../../class.DeliveryNote.php');
 include_once('../../class.Email.php');
 include_once('../../class.TimeSeries.php');
 include_once('../../class.CurrencyExchange.php');
+include_once('common_read_orders_functions.php');
 
 $store_code='U';
 $__currency_code='GBP';
@@ -118,7 +119,7 @@ $fam_promo_key=$fam_promo->id;
 
 $sql="select * from  orders_data.orders  where   (last_transcribed is NULL  or last_read>last_transcribed) and deleted='No'   order by filename ";
 
-$sql="select * from  orders_data.orders  where   (last_transcribed is NULL  or last_read>last_transcribed) and deleted='No' and filename like '/mnt/z/Orders/1%'  order by filename ";
+$sql="select * from  orders_data.orders  where   (last_transcribed is NULL  or last_read>last_transcribed) and deleted='No' and filename like '/mnt/%/Orders/4%'  order by filename ";
 
 //$sql="select * from  orders_data.orders where filename like '%refund.xls'   order by filename";
 //$sql="select * from  orders_data.orders  where filename like '/mnt/%/Orders/15343.xls' order by filename";
@@ -1348,7 +1349,7 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
     //print "$tipo_order \n";
     $data['Order Currency']=$currency;
     $data['Order Currency Exchange']=$exchange;
-    $sales_rep_data=get_user_id($header_data['takenby'],true,'&view=processed');
+    $sales_rep_data=get_user_id($header_data['takenby'],true,'&view=processed',$header_data['order_num']);
     $data['Order XHTML Sale Reps']=$sales_rep_data['xhtml'];
     $data['Order Customer Contact Name']=$customer_data['Customer Main Contact Name'];
     $data['Order Sale Reps IDs']=$sales_rep_data['id'];
@@ -1381,7 +1382,6 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
        $data['Order Tax Code']=$tax_code;
        $data['Order Tax Rate']=$tax_rate;
     
-
     if($tipo_order==2 or $tipo_order==1  or $tipo_order==4 or $tipo_order==5 or   $tipo_order==3 or   $tipo_order==8    )  {
       
        if ($tipo_order==1 or $tipo_order==2 or  $tipo_order==3  )
@@ -1401,8 +1401,8 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 
       // print_r($data['products']);
             
-    
-
+      
+      //print_r($data);
 
       if ( $tipo_order!=8 ) {
 	$order= new Order('new',$data);
@@ -1458,8 +1458,8 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 	  $weight=$header_data['weight'];
 
 
-	$picker_data=get_user_id($header_data['pickedby'],true,'&view=picks');
-	$packer_data=get_user_id($header_data['packedby'],true,'&view=packs');
+	$picker_data=get_user_id($header_data['pickedby'],true,'&view=picks',$header_data['order_num']);
+	$packer_data=get_user_id($header_data['packedby'],true,'&view=packs',$header_data['order_num']);
 	$order_type=$data['Order Type'];
 
 	// TODO in the Ci, DE
@@ -1592,8 +1592,8 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 	  $weight=$header_data['weight'];
 
 
-	$picker_data=get_user_id($header_data['pickedby'],true,'&view=picks');
-	$packer_data=get_user_id($header_data['packedby'],true,'&view=packs');
+	$picker_data=get_user_id($header_data['pickedby'],true,'&view=picks',$header_data['order_num']);
+	$packer_data=get_user_id($header_data['packedby'],true,'&view=packs',$header_data['order_num']);
 	$order_type='Follow on';  ;
 	$data_dn=array(
 		       'Delivery Note Date'=>$date_inv
@@ -1703,8 +1703,8 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 	  $weight=$header_data['weight'];
 
 
-	$picker_data=get_user_id($header_data['pickedby'],true,'&view=picks');
-	$packer_data=get_user_id($header_data['packedby'],true,'&view=packs');
+	$picker_data=get_user_id($header_data['pickedby'],true,'&view=picks',$header_data['order_num']);
+	$packer_data=get_user_id($header_data['packedby'],true,'&view=packs',$header_data['order_num']);
 
 	$order_type=$data['Order Type'];
 
@@ -2116,8 +2116,8 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 	$weight=$header_data['weight'];
 
 
-      $picker_data=get_user_id($header_data['pickedby'],true,'&view=picks');
-      $packer_data=get_user_id($header_data['packedby'],true,'&view=packs');
+      $picker_data=get_user_id($header_data['pickedby'],true,'&view=picks',$header_data['order_num']);
+      $packer_data=get_user_id($header_data['packedby'],true,'&view=packs',$header_data['order_num']);
 
       // 	print_r($picker_data);
 
