@@ -1908,8 +1908,6 @@ $data['Address Country Key']='';
 	 function prepare_3line($raw_data,$args='untrusted',$default_2alpha_code='XX'){
 
 
-		//       print "========== ADDEWESS PARSING ================\n";
-
 
 
 		if(!isset($raw_data['Address Line 1']))
@@ -4100,8 +4098,8 @@ $data['Address Country Key']='';
 		$data['Address Location']=Address::location($data);
 		//  print_r($data['Address Country 2 Alpha Code']);
 
-		
-	
+		//	print_r($data);
+		//exit;
 		return $data;
 	}
 

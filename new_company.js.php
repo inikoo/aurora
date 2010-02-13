@@ -33,6 +33,7 @@ if($scope!='corporation')
 $action_after_create=$_SESSION['state'][$scope]['action_after_create'];
 
 
+
 print "var scope='$scope';";
 print "var action_after_create='$action_after_create';";
 
@@ -204,6 +205,13 @@ if(scope=='supplier'){
     company_data['Supplier Code']=Dom.get('Supplier_Code').value;
 
 }
+if(scope=='customer'){
+    // alert(Dom.get('Store_Key'))
+    company_data['Customer Store Key']=Dom.get('Store_Key').value;
+
+}
+
+
 
 }
 
@@ -232,10 +240,11 @@ var save_new_company=function(e){
     
     var json_value = YAHOO.lang.JSON.stringify(company_data); 
     var request=ar_file+'?tipo=new_'+scope+'&values=' + encodeURIComponent(json_value); 
-// alert(request);return;
- YAHOO.util.Connect.asyncRequest('POST',request ,{
+    // alert(request);return;
+    YAHOO.util.Connect.asyncRequest('POST',request ,{
 	    success:function(o) {
-		//alert(o.responseText);
+		alert(o.responseText);
+		//return;
 		var r =  YAHOO.lang.JSON.parse(o.responseText);
 		if(r.action=='created'){
 		    if(action_after_create=='add_another'){
@@ -547,6 +556,7 @@ function contact_name_inputed(){
 
 
 function  validate_telephone(original_query) {
+    
     var tr=Dom.get('telephone_mould');
     var o=Dom.get('Telephone');
     value=original_query.replace(/[^\d]/g,"");
@@ -557,9 +567,12 @@ function  validate_telephone(original_query) {
 	validate_data[item].inputed=false;
 	validate_data[item].validated=true;
 	Dom.removeClass(tr,'no_validated');
+	Dom.removeClass(tr,'validated');
+
 	return;
     }
-    
+    else
+	validate_data[item].inputed=true;
 
 
     var validator=new RegExp(validate_data[item].regexp,"i");
@@ -580,6 +593,7 @@ function  validate_telephone(original_query) {
 	    validate_data[item].validated=true;
 	}else{
 	    Dom.removeClass(tr,'validated');
+	    
 	    validate_data[item].validated=false;
 
 	}
@@ -636,6 +650,14 @@ function validate_postal_code(){
     var item='postal_code';
 
     var valid=postal_regex.test(postal_code);
+
+    if(postal_code!=''){
+	validate_data.postal_code.inputed=true;
+    }else{
+	validate_data.postal_code.inputed=true;
+		
+    }
+
 
     if(validate_data.postal_code.inputed==true){
 	if(valid){
@@ -695,23 +717,29 @@ return;
     
 }
 
-function  validate_email(email) {
+function  validate_email_address(email) {
+ 
+    
 
     var email=unescape(email);
     var o=Dom.get("Email");
     var tr=Dom.get('email_mould');
-
+    var item='email';
     if(email==''){
 	validate_data['email'].inputed=false;
 	validate_data.email.validated=true;
 	Dom.removeClass(tr,'no_validated');
+	Dom.removeClass(tr,'validated');
+
 	return;
-    }
+    }else
+	validate_data.email.inputed=true;
 
-
+    
+    // alert(email+' '+isValidEmail(email))
 
     if(validate_data.email.inputed==true){
-	if(isValidEmail(email) || true){
+	if(isValidEmail(email)){
 	    Dom.removeClass(tr,'no_validated');
 	    Dom.addClass(tr,'validated');
 	    validate_data.email.validated=true;
@@ -723,6 +751,7 @@ function  validate_email(email) {
     }else{
 	
 	Dom.removeClass(o,'no_validated');
+	
 	if(isValidEmail(email) ){
 	    Dom.addClass(tr,'validated');
 	    validate_data.email.validated=true;
@@ -744,12 +773,6 @@ function  validate_email(email) {
 
 };
 
-function xvalidate_email(){
- get_contact_data();
-    validate_form();
-
-    find_company();
-}
 
 
     function init(){
@@ -955,11 +978,11 @@ function xvalidate_email(){
 	contact_name_oAutoComp.minQueryLength = 0; 
 	contact_name_oAutoComp.queryDelay = 0.75;
 
-	var email_name_oACDS = new YAHOO.util.FunctionDataSource(xvalidate_email);
+	var email_name_oACDS = new YAHOO.util.FunctionDataSource(validate_email_address);
 	email_name_oACDS.queryMatchContains = true;
 	var email_name_oAutoComp = new YAHOO.widget.AutoComplete("Email","Email_Container", email_name_oACDS);
 	email_name_oAutoComp.minQueryLength = 0; 
-	contact_name_oAutoComp.queryDelay = 0.75;
+	email_name_oAutoComp.queryDelay = 0.75;
 
 	
 

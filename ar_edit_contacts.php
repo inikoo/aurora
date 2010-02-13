@@ -1075,7 +1075,7 @@ $data['editor']=$editor;
 function new_customer($data){
   Timer::timing_milestone('begin');
 global $editor;
-$data['editor']=$editor;
+
 
 
 
@@ -1086,6 +1086,9 @@ foreach($data['values'] as $key=>$value){
 }
 $data['values']['Customer Company Name']=$data['values']['Company Name'];
 //print_r($data['values']);
+$data['values']['editor']=$editor;
+
+//print_r($data['values']);return;
 
 
   $customer=new Customer('find create',$data['values']);

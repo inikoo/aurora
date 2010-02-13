@@ -1458,8 +1458,8 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 	  $weight=$header_data['weight'];
 
 
-	$picker_data=get_user_id($header_data['pickedby'],true,'&view=picks');
-	$packer_data=get_user_id($header_data['packedby'],true,'&view=packs');
+	$picker_data=get_user_id($header_data['pickedby'],true,'&view=picks',$header_data['order_num']);
+	$packer_data=get_user_id($header_data['packedby'],true,'&view=packs',$header_data['order_num']);
 	$order_type=$data['Order Type'];
 
 	// TODO in the Ci, DE

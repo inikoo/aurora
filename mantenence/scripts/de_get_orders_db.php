@@ -1368,7 +1368,7 @@ list($parcels,$parcel_type)=parse_parcels($header_data['parcels']);
     //print "$tipo_order \n";
     $data['Order Currency']=$currency;
     $data['Order Currency Exchange']=$exchange;
-    $sales_rep_data=get_user_id($header_data['takenby'],true,'&view=processed');
+    $sales_rep_data=get_user_id($header_data['takenby'],true,'&view=processed',$header_data['order_num']);
     $data['Order XHTML Sale Reps']=$sales_rep_data['xhtml'];
     $data['Order Customer Contact Name']=$customer_data['Customer Main Contact Name'];
     $data['Order Sale Reps IDs']=$sales_rep_data['id'];
@@ -1478,8 +1478,8 @@ list($parcels,$parcel_type)=parse_parcels($header_data['parcels']);
 	  $weight=$header_data['weight'];
 
 
-	$picker_data=get_user_id($header_data['pickedby'],true,'&view=picks');
-	$packer_data=get_user_id($header_data['packedby'],true,'&view=packs');
+	$picker_data=get_user_id($header_data['pickedby'],true,'&view=picks',$header_data['order_num']);
+	$packer_data=get_user_id($header_data['packedby'],true,'&view=packs',$header_data['order_num']);
 	$order_type=$data['Order Type'];
 
 
@@ -1615,8 +1615,11 @@ list($parcels,$parcel_type)=parse_parcels($header_data['parcels']);
 
 
 
-	$picker_data=get_user_id($header_data['pickedby'],true,'&view=picks');
-	$packer_data=get_user_id($header_data['packedby'],true,'&view=packs');
+	$picker_data=get_user_id($header_data['pickedby'],true,'&view=picks',$header_data['order_num']);
+	$packer_data=get_user_id($header_data['packedby'],true,'&view=packs',$header_data['order_num']);
+
+
+
 	$order_type='Follow on';  ;
 	$data_dn=array(
 		       'Delivery Note Date'=>$date_inv
@@ -1726,8 +1729,8 @@ list($parcels,$parcel_type)=parse_parcels($header_data['parcels']);
 	  $weight=$header_data['weight'];
 
 
-	$picker_data=get_user_id($header_data['pickedby'],true,'&view=picks');
-	$packer_data=get_user_id($header_data['packedby'],true,'&view=packs');
+	$picker_data=get_user_id($header_data['pickedby'],true,'&view=picks',$header_data['order_num']);
+	$packer_data=get_user_id($header_data['packedby'],true,'&view=packs',$header_data['order_num']);
 
 	$order_type=$data['Order Type'];
 
@@ -2139,8 +2142,8 @@ list($parcels,$parcel_type)=parse_parcels($header_data['parcels']);
 	$weight=$header_data['weight'];
 
 
-      $picker_data=get_user_id($header_data['pickedby'],true,'&view=picks');
-      $packer_data=get_user_id($header_data['packedby'],true,'&view=packs');
+      $picker_data=get_user_id($header_data['pickedby'],true,'&view=picks',$header_data['order_num']);
+      $packer_data=get_user_id($header_data['packedby'],true,'&view=packs',$header_data['order_num']);
 
       // 	print_r($picker_data);
 

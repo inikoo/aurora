@@ -48,7 +48,7 @@ $js_files=array(
 		$yui_path.'menu/menu-min.js',
 		'common.js.php',
 		'table_common.js.php',
-		'search.js',
+		'js/search.js',
 		'customers_server.js.php'
 		);
 

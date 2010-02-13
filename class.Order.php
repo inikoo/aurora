@@ -126,6 +126,10 @@ class Order extends DB_Table{
     case ('direct_data_injection') :
 			  
       $this->data ['Delivery Note Key'] = '';
+
+      
+	$this->data['Order Tax Code']=$data['Order Tax Code'];;
+	$this->data['Order Tax Rate']=$data['Order Tax Rate'];
 				
       if (isset ( $data ['ghost_order'] ))
 	$this->ghost_order = true;
@@ -196,11 +200,10 @@ class Order extends DB_Table{
 
 	
 	
-	$this->data['Order Tax Code']=$data['Order Tax Code'];;
-	$this->data['Order Tax Rate']=$data['Order Tax Rate'];
+
 
 	
-	//print_r($customer);
+
 	if($customer->data['Customer Delivery Address Link']=='None'){
 
 	  $ship_to= new Ship_To('find create',$data['Shipping Address']);

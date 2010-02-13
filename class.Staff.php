@@ -153,7 +153,25 @@ class Staff extends DB_Table{
        $update='update';
      }
 
-     if($create){
+
+     $data=$this->base_data();
+    foreach($raw_data as $key=>$value) {
+      if (array_key_exists($key,$data)) {
+	$data[$key]=_trim($value);
+      }
+    } 
+
+     
+    $sql=sprintf("select `Staff Key` from `Staff Dimension` where `Staff Alias`=%s",prepare_mysql($data['Staff Alias']));
+    $res=mysql_query($sql);
+    if($row=mysql_fetch_array($res)){
+      $this->found=true;
+      $this->found_key=$row['Staff Key'];
+      $this->get_data('id',$this->found_key);
+    }
+    
+
+     if($create and !$this->found){
        
         $child=new Contact ('find in staff create update',$raw_data);
 
