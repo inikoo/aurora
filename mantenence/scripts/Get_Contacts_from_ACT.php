@@ -125,7 +125,7 @@ if (($handle = fopen($filename, "r")) !== FALSE) {
 $history_data=get_history_data($act_data['history']);
     $act_data['history']=$history_data;
 
-
+print_r($history_data);
 
     if($act_data['name']=='' and $act_data['contact']=='' and $act_data['email']=='' and $act_data['tel']=='' 
        and $act_data['fax']==''

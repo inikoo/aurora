@@ -838,6 +838,7 @@ $default_state=array(
                                        ),
 
                            ),
+                    
                    'departments'=>array(
                                      'details'=>false,
                                      'percentages'=>false,
@@ -1471,6 +1472,15 @@ $default_state=array(
 
 
                                         ),
+                                        'deals'=>array('table'=>array(
+                                           'where'=>'where true',
+                                           'f_field'=>'name',
+                                           'f_value'=>'',
+                                           'order'=>'name',
+                                           'order_dir'=>'',
+                                           'sf'=>0,
+                                           'nr'=>25,
+                                       )),       
                    'position'=>array(
                                   'id'=>0,
                                   'action_after_create'=>'continue',
