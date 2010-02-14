@@ -7110,7 +7110,7 @@ function list_deals() {
     if ( isset($_REQUEST['parent']))
         $parent= $_REQUEST['parent'];
 
-    if ($parent=='store')
+    if ($parent=='store' or $parent=='store_with_children')
         $parent_id=$_SESSION['state']['store']['id'];
     elseif($parent=='department')
     $parent_id=$_SESSION['state']['department']['id'];
@@ -7120,9 +7120,12 @@ function list_deals() {
     $parent_id=$_SESSION['state']['product']['pid'];
     else
         return;
+if($parent=='store_with_children'){
+$conf=$_SESSION['state']['deals']['table'];
 
+}else{
     $conf=$_SESSION['state'][$parent]['deals'];
-
+}
 
     if (isset( $_REQUEST['sf']))
         $start_from=$_REQUEST['sf'];
@@ -7172,13 +7175,17 @@ function list_deals() {
     else
         $tableid=0;
 
-
+if($parent=='store_with_children')
+$conf=$_SESSION['state']['deals']['table']=array('order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value);
+else
     $_SESSION['state'][$parent]['deals']=array('order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value);
 
     if ($parent=='store')
-        $where=sprintf("where  `Store Key`=%d and `Deal Trigger`='Order'    ",$parent_id);
+        $where=sprintf("where  (`Store Key`=%d and `Deal Trigger`='Order')     ",$parent_id);
+          if ($parent=='store_with_children')
+        $where=sprintf("where  `Store Key`=%d     ",$parent_id);
     elseif($parent=='department')
-    $where=sprintf("where    `Deal Trigger`='Department' and  `Deal Trigger Key`=%d   ",$parent_id);
+    $where=sprintf("where    `Deal Trigger`='Department' and  `Deal Trigger Key`=%d     ",$parent_id);
     elseif($parent=='family')
     $where=sprintf("where    `Deal Trigger`='Family' and  `Deal Trigger Key`=%d   ",$parent_id);
     elseif($parent=='product')
@@ -7258,7 +7265,7 @@ function list_deals() {
 
 
     $sql="select *  from `Deal Dimension` $where    order by $order $order_direction limit $start_from,$number_results    ";
-
+//print $sql;
     $res = mysql_query($sql);
 
     $total=mysql_num_rows($res);
@@ -7269,7 +7276,9 @@ function list_deals() {
 
         $adata[]=array(
                      'name'=>$row['Deal Name'],
-                     'description'=>$row['Deal Terms Description'].' &rArr; '.$row['Deal Allowance Description']
+                     'description'=>$row['Deal Terms Description'].' &rArr; '.$row['Deal Allowance Description'],
+                     'trigger'=>$row['Deal Trigger'],
+                     'target'=>$row['Deal Allowance Target']
 
 
                  );
