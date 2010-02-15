@@ -73,7 +73,7 @@ function search_customers_in_store(query){
 						    for (i in result_categories){
 							if(r.data[i]>0){
 							    Dom.get(search_scope+'_search_'+i).style.display='';
-							    Dom.get(search_scope+'_search_'+i+'_results').innerHTML=r.data[i+'_results'];
+							    Dom.get(search_scope+'_search_'+i+'_results').innerHTML=r.data[i+'_results']+' '+r.data.results;
 							}else{
 							    Dom.get(search_scope+'_search_'+i).style.display='none';
 							    Dom.get(search_scope+'_search_'+i+'_results').innerHTML='';

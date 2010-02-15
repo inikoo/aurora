@@ -1666,7 +1666,7 @@ Class TimeSeries  {
                      ,$this->name_key2
                      ,$where_dates['mysql']
                     );
-        //print "$sql<br>";
+	// print "$sql<br>";
 
         $prev_month='';
         $prev_year=array();
@@ -1724,57 +1724,54 @@ Class TimeSeries  {
             // print $row['dd']."<br>\n";
             if ($row['Time Series Type']=='First') {
                 $first_value=array($row['dd'],$row['value'],$tip) ;
+		
+            }elseif ($row['Time Series Type']=='Current') {
+	      
 
-            }
-            if ($row['Time Series Type']=='Current') {
+	      
+	      $current_value=array($row['dd'],$row['value'],$tip) ;
+	      
 
-
-
-                $current_value=array($row['dd'],$row['value'],$tip) ;
-
-
-
-                $data[$current_value[0]]['tails'.$suffix]=(float) $current_value[1];
-                $data[$current_value[0]]['tip_tails'.$suffix]= $current_value[2];
+	      
+	      $data[$current_value[0]]['tails'.$suffix]=(float) $current_value[1];
+	      $data[$current_value[0]]['tip_tails'.$suffix]= $current_value[2];
                 $data[$last_complete_value[0]]['tails'.$suffix]=(float) $last_complete_value[1];
                 $data[$last_complete_value[0]]['tip_tails'.$suffix]='';
              
 
+            }elseif ($row['Time Series Type']=='Data' ) {
+	      if (!$data_region and isset($first_value)) {
+		
+		$data[$first_value[0]]['tails'.$suffix]=(float) $first_value[1];
+		$data[$first_value[0]]['tip_tails'.$suffix]=$first_value[2];
+		$data[$row['dd']]['tails'.$suffix]=(float) $row['value'];
+		$data[$row['dd']]['tip_tails'.$suffix]=$tip;
+		
+	      }
+	      $data_region=true;
+	      
+	      // if ($row['Time Series Type']=='Current') {
+	      $data[$row['dd']]['value'.$suffix]=(float) $row['value'];
+	      $data[$row['dd']]['tip_value'.$suffix]=$tip.$row['Time Series Type'];
+	      // }
+              
+	      $last_complete_value=array($row['dd'],$row['value'],$tip) ;
+	      
+              
+	      
+	      
+	    }elseif ($row['Time Series Type']=='Forecast' ) {
+	      
+	      if (!$forecast_region and isset($last_complete_value[0])) {
+		$data[$last_complete_value[0]]['forecast'.$suffix]=(float) $last_complete_value[1];
+	      }
+	      $forecast_region=true;
+	      $data[$row['dd']]['forecast'.$suffix]=(float) $row['value'];
+	      $data[$row['dd']]['tip_forecast'.$suffix]=$tip;
             }
-            if ($row['Time Series Type']=='Data' ) {
-                if (!$data_region and isset($first_value)) {
-
-                    $data[$first_value[0]]['tails'.$suffix]=(float) $first_value[1];
-                    $data[$first_value[0]]['tip_tails'.$suffix]=$first_value[2];
-                    $data[$row['dd']]['tails'.$suffix]=(float) $row['value'];
-                    $data[$row['dd']]['tip_tails'.$suffix]=$tip;
-
-                }
-                $data_region=true;
-
-               // if ($row['Time Series Type']=='Current') {
-                $data[$row['dd']]['value'.$suffix]=(float) $row['value'];
-                $data[$row['dd']]['tip_value'.$suffix]=$tip.$row['Time Series Type'];
-               // }
-                
-                $last_complete_value=array($row['dd'],$row['value'],$tip) ;
-         
-                 
-         
-         
-         }
-            if ($row['Time Series Type']=='Forecast' ) {
-
-                if (!$forecast_region) {
-                    $data[$last_complete_value[0]]['forecast'.$suffix]=(float) $last_complete_value[1];
-                }
-                $forecast_region=true;
-                $data[$row['dd']]['forecast'.$suffix]=(float) $row['value'];
-                $data[$row['dd']]['tip_forecast'.$suffix]=$tip;
-            }
-
-
-
+	    
+	    
+	    
             $prev_month=$row['value'];
             $prev_year[$row['month']]=$row['value'];
         }

@@ -855,7 +855,7 @@ function plot_assets(){
 		      );
   
   
- // print $ar_address;
+  //print $ar_address;
   $fields='"date"';
     foreach($item_key_array as $key){
       $fields.=',"value'.$key.'","tip_value'.$key.'","forecast'.$key.'","tip_forecast'.$key.'","tails'.$key.'","tip_tails'.$key.'"';
