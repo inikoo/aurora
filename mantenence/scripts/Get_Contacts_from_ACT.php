@@ -66,10 +66,7 @@ if (($handle = fopen($filename, "r")) !== FALSE) {
       //   print_r($data);exit;
       $row++;continue;
     }    
-    $row++;
-   
-   
-   ;
+    $row++;;
    
     $cols=array();
     foreach($data as $key=>$col){
@@ -99,6 +96,9 @@ if (($handle = fopen($filename, "r")) !== FALSE) {
     $act_data['country']=mb_ucwords($cols[$map_act['country']+3]);
     $act_data['tel']=$cols[$map_act['tel']+3];
     $act_data['fax']=$cols[$map_act['fax']+3];
+
+    $act_data['takenby']=$cols[41-5];
+
     $act_data['mob']=$cols[$map_act['mob']+3];
     $act_data['source']=$cols[$map_act['source']+3];
     $act_data['act']=$cols[$map_act['act']+3];
@@ -125,7 +125,7 @@ if (($handle = fopen($filename, "r")) !== FALSE) {
 $history_data=get_history_data($act_data['history']);
     $act_data['history']=$history_data;
 
-print_r($history_data);
+    //print_r($history_data);
 
     if($act_data['name']=='' and $act_data['contact']=='' and $act_data['email']=='' and $act_data['tel']=='' 
        and $act_data['fax']==''
@@ -141,10 +141,10 @@ print_r($history_data);
     $contacts[$row]=$act_data;
     $contacts_date[$row]=$creation_time;
     
-    // print_r($act_data);
-    // if($row>100)
-    //  break;
-     print "$row\r";
+    //print ($act_data['takenby']."\n");
+     // if($row>100)
+     // break;
+     // print "$row\r";
 
        // print_r($cols);
     
@@ -158,7 +158,7 @@ print_r($history_data);
   fclose($handle);
 }
 //print_r($contacts);
-
+//exit;
 usort($contacts, 'compare');
 //print_r($contacts);
 //exit("fin\n");
@@ -266,11 +266,11 @@ foreach($contacts as $act_data){
       $customer_data['Customer Store Key']=1;
       if(preg_match('/aw-geschenke/i',$_customer_data['Customer Source']))
 	$customer_data['Customer Store Key']=2;
-      if(preg_match('/nabil/i',$act_data['creator']))
+      if(preg_match('/nabil/i',$act_data['takenby']))
       	$customer_data['Customer Store Key']=3;
 
 
-      if($customer_data['Customer Store Key']==1)
+      if($customer_data['Customer Store Key']!=1)
 	continue;
       $customer_data['Customer First Contacted Date']=$act_data['creation_date'];
    

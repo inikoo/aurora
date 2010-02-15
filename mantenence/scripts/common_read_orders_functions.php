@@ -134,7 +134,7 @@ function get_user_id($oname,$return_xhtml=false,$tag='',$order=''){
     }else{
       
       // print "$original_name\n";
-      $valid_names=array('janka','peter','lyndsey','rebecca','michell','samantha','richard','albert','debbie','chris','barry','donna','malcolm','michelle','adriana','daniela'
+      $valid_names=array('andrea','scott','mark','janka','peter','lyndsey','rebecca','michell','samantha','richard','albert','debbie','chris','barry','donna','malcolm','michelle','adriana','daniela'
 			 ,'stacey','matus','lucie','caleb','olga','bev','jim','eliska','carole,','zoe','katka','urszula','dana','craig','tomas','eric','neil','slavka','anthony','anita','annetta','simon','stefanie','steve','agmet','nabil','brett');
       
       $contact_name=$_name;
