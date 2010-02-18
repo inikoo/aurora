@@ -28,6 +28,13 @@ case('ready_to_pick_orders'):
 case('cancel'):
   cancel_order();
   break;
+case('send_to_warehouse'):
+  if(isset($_REQUEST['order_key']) and is_numeric($_REQUEST['order_key']) )
+    $order_key=$_REQUEST['order_key'];
+  else
+    $order_key=$_SESSION['state']['order']['id'];
+    send_to_warehouse($order_key);
+  break;
 case('edit_new_order'):
   edit_new_order();
   break;
@@ -57,6 +64,7 @@ default:
 }
 
 
+
 function cancel_order(){
   $order_key=$_SESSION['state']['order']['id'];
 
@@ -70,6 +78,29 @@ function cancel_order(){
   if($order->cancelled){
     $response=array('state'=>200,'order_key'=>$order->id);
   echo json_encode($response);
+  }else{
+    $response=array('state'=>400,'msg'=>$this->msg);
+    echo json_encode($response);
+
+  }
+  
+}
+
+
+
+function send_to_warehouse($order_key){
+
+  $order=new Order($order_key);
+	
+
+
+  
+
+
+  $order->send_to_warehouse();
+  if(!$order->error){
+    $response=array('state'=>200,'order_key'=>$order->id);
+    echo json_encode($response);
   }else{
     $response=array('state'=>400,'msg'=>$this->msg);
     echo json_encode($response);

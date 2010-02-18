@@ -1,8 +1,13 @@
 <?php
-include_once('common.php');?>
-   var Dom   = YAHOO.util.Dom;
+include_once('common.php');
+$order_key=0;
+if(isset($_REQUEST['order_key']) )
+    $order_key=$_REQUEST['order_key'];
+print "var order_key=$order_key;";
+?>
+var Dom   = YAHOO.util.Dom;
 var Event = YAHOO.util.Event;
-    var dialog_cancel;
+var dialog_cancel;
 YAHOO.namespace ("invoice"); 
 
 
@@ -378,6 +383,31 @@ function save(tipo){
 }
 
 function create_delivery_note(){
+	var ar_file='ar_edit_orders.php'; 
+    	var request='tipo=send_to_warehouse&order_key='+order_key;
+
+
+	YAHOO.util.Connect.asyncRequest(
+					'POST',
+					ar_file, {
+					    success:function(o) {
+						alert(o.responseText);
+						return;
+						var r = YAHOO.lang.JSON.parse(o.responseText);
+						if (r.state == 200) {
+						window.location.reload();
+						}
+					    },
+					failure:function(o) {
+					    alert(o.statusText);
+					    
+					},
+					scope:this
+				    },
+				    request
+				    
+				    );  
+
 
 }
 
@@ -407,6 +437,9 @@ var myDialog = new YAHOO.widget.Dialog("myDialog");
 
 dialog_cancel.render();
   YAHOO.util.Event.addListener("cancel", "click",open_cancel_dialog );
+   YAHOO.util.Event.addListener("done", "click",create_delivery_note );
+
+
 
 }
 

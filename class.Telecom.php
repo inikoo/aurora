@@ -129,7 +129,7 @@ Function:display
    create|update - methos will create or update the telephone number with the data provided
 */
 function find($raw_data,$options){
-  // print_r($raw_data);
+
 
   
   if(isset($raw_data['editor']) and is_array($raw_data['editor'])){
@@ -271,6 +271,11 @@ function find($raw_data,$options){
     if($mode=='Contact')
       $options.=' anonymous';
     
+
+    // print_r($data);
+    
+
+
     $intl_code_max_score=10;
     $ext_code_max_score=10;
     $ext_max_score=10;
@@ -294,43 +299,45 @@ function find($raw_data,$options){
     //$sql=sprintf("select * from `Telecom Dimension`  limit10 ",prepare_mysql($data['Telecom Area Code'].$data['Telecom Number']));
    
     $result=mysql_query($sql);
-    // print $sql."<br><br>";
+    //print $sql."<br><br>";
     // echo mysql_errno() . ": " . mysql_error() . "\n";
     while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
       $contact_key=$row['Subject Key'];
       if($row['dist1']>3)
 	break;
       $dist=$row['dist1']/$len_tel;
+
+
       $score=$tel_max_score*exp(-100*$dist*$dist);
       $_score=$score;
-
+      //print "Dat: $len_tel ".$row['dist1']." $score\n";
       if($row['dist1']==0){
 	$score+=$exact_match_bonus;
 	$this->found_number=1;
       }
      
-  
+      //   print "1******************* $score\n";
       if($row['Telecom Country Telephone Code']==$data['Telecom Country Telephone Code']){
 	if($data['Telecom Country Telephone Code']!=''){
 	  $this->found_intl_code=1;
-	  $score+= $intl_code_max_score*$_score;
+	  $score+= $intl_code_max_score;
 	}
       }else{
 	if($data['Telecom Country Telephone Code']!='' and $row['Telecom Country Telephone Code']!='')
 	  $this->found_intl_code=-2;
       }
-      
+      //    print "2******************* $score\n";
       if($row['Telecom Extension']==$data['Telecom Extension']){
 	if($data['Telecom Extension']!=''){
 	  $this->found_ext=2;
-	  $score+= $ext_max_score*$_score;
+	  $score+= $ext_max_score;
 	}
       }else{
 	if($data['Telecom Extension']!='' and $row['Telecom Extension']!='')
 	  $this->found_ext=-2;
       }
       
-
+      //   print "3******************* $score\n";
        if(isset($this->candidate[$contact_key]))
 	$this->candidate[$contact_key]+=$score;
       else
@@ -396,8 +403,8 @@ function find($raw_data,$options){
 
     }
 
-
-
+  //  print "tel:";
+  //print_r($this->candidate);
 
 }
 

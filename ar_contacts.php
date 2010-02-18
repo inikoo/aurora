@@ -976,7 +976,7 @@ if(isset( $_REQUEST['where']))
     
     
   }else if($f_field=='id'  )
-     $wheref.=" and  `Customer ID` like '".addslashes(preg_replace('/\s*|\,|\./','',$f_value))."%' ";
+     $wheref.=" and  `Customer Key` like '".addslashes(preg_replace('/\s*|\,|\./','',$f_value))."%' ";
   else if($f_field=='maxdesde' and is_numeric($f_value) )
     $wheref.=" and  (TO_DAYS(NOW())-TO_DAYS(`Customer Last Order Date`))<=".$f_value."    ";
   else if($f_field=='mindesde' and is_numeric($f_value) )
@@ -1068,7 +1068,7 @@ if(isset( $_REQUEST['where']))
    if($order=='name')
      $order='`Customer File As`';
    elseif($order=='id')
-     $order='`Customer ID`';
+     $order='`Customer Key`';
    elseif($order=='location')
      $order='`Customer Main Location`';
    elseif($order=='orders')
@@ -1175,7 +1175,7 @@ if(isset( $_REQUEST['where']))
 //        $tel=($data['icode']!=''?'+'.$data['icode'].' ':'').$data['number'];
 
 
-    $id="<a href='customer.php?id=".$data['Customer Key']."'>".$myconf['customer_id_prefix'].sprintf("%05d",$data['Customer ID']).'</a>'; 
+    $id="<a href='customer.php?id=".$data['Customer Key']."'>".$myconf['customer_id_prefix'].sprintf("%05d",$data['Customer Key']).'</a>'; 
     $name="<a href='customer.php?id=".$data['Customer Key']."'>".$data['Customer Name'].' ('.$data['Customer Type'].')</a>'; 
 
     if($data['Customer Orders']==0)

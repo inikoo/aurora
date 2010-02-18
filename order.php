@@ -105,7 +105,7 @@ if(isset($_REQUEST['pick_aid'])){
   case('In Process'):
 
     $js_files[]='js/edit_common.js';
-    $js_files[]='order_in_process.js.php';
+    $js_files[]='order_in_process.js.php?order_key='.$order_id;
     $template='order_in_process.tpl';
     
    

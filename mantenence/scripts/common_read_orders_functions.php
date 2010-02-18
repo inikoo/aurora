@@ -29,14 +29,14 @@ function get_user_id($oname,$return_xhtml=false,$tag='',$order=''){
     
     $_name=preg_replace('/^\s*/','',$_name);
     $_name=preg_replace('/\s*$/','',$_name);
-    if(preg_match('/michele|michell/i',$_name)   )
+    if(preg_match('/^(michele|michell|mich)$/i',$_name)   )
       $_name='michelle';
     else if( $_name=='salvka' or    preg_match('/^slavka/i',$_name) or $_name=='slavke' or $_name=='slavla' )
       $_name='slavka';
     else if(preg_match('/^malcom$/i',$_name)  )
       $_name='malcolm';
 
-    else if(preg_match('/katerina/i',$_name) or $_name=='katka]' or   $_name=='katk'   )
+    else if(preg_match('/katerina/i',$_name) or $_name=='katka]' or   $_name=='katk'  or   $_name=='(katka)'   or   $_name==': katka' )
       $_name='katka';
     else if(preg_match('/richard w/i',$_name) or $_name=='rich')
       $_name='richard';
@@ -46,7 +46,7 @@ function get_user_id($oname,$return_xhtml=false,$tag='',$order=''){
       $_name='philippe';
     else if(preg_match('/amanada|amand\s*$/i',$_name))
       $_name='amanda';
-    else if(preg_match('/janette/i',$_name) or $_name=='jqnet' )
+    else if(preg_match('/janette/i',$_name) or $_name=='jqnet' or $_name==': janet'  )
       $_name='janet';
     else if(preg_match('/pete/i',$_name))
       $_name='peter';
@@ -90,7 +90,7 @@ function get_user_id($oname,$return_xhtml=false,$tag='',$order=''){
       $_name='craig';
     else if($_name=='k ' or $_name=='k' or $_name=='katerina2')
       $_name='katka';
-    else if($_name=='daniella' or $_name=='daniella' )
+    else if($_name=='daniella' or $_name=='daniella' or $_name=='dan' )
       $_name='daniela';
     else if($_name=='cc' or $_name==' cc')
       $_name='chris';
@@ -108,7 +108,7 @@ function get_user_id($oname,$return_xhtml=false,$tag='',$order=''){
       $_name='zoe';
     else if($_name=='cph')
       $_name='caleb';
-    else if($_name=='jenka')
+    else if($_name=='jenka' or  $_name=='len' or  $_name=='le'  )
       $_name='lenka';
     else if($_name=='jjanka' or $_name=='jan')
       $_name='janka';
@@ -134,7 +134,7 @@ function get_user_id($oname,$return_xhtml=false,$tag='',$order=''){
     }else{
       
       // print "$original_name\n";
-      $valid_names=array('andrea','scott','mark','janka','peter','lyndsey','rebecca','michell','samantha','richard','albert','debbie','chris','barry','donna','malcolm','michelle','adriana','daniela'
+      $valid_names=array('darna','jarina','mini','andrea','scott','mark','janka','peter','lyndsey','rebecca','michell','samantha','richard','albert','debbie','chris','barry','donna','malcolm','michelle','adriana','daniela'
 			 ,'stacey','matus','lucie','caleb','olga','bev','jim','eliska','carole,','zoe','katka','urszula','dana','craig','tomas','eric','neil','slavka','anthony','anita','annetta','simon','stefanie','steve','agmet','nabil','brett');
       
       $contact_name=$_name;
@@ -441,8 +441,8 @@ function get_user_id($oname,$return_xhtml=false,$tag='',$order=''){
     
 
       $tmp_array=preg_split('/\s+/',$act_data['postcode']) ;
-
-      if(count($tmp_array)==2){
+     
+      if(count($tmp_array)==2 and !preg_match('/\d/',$act_data['postcode']) ){
 	$sql=sprintf("select `Country Name` as name from kbase.`Country Dimension` left join kbase.`Country Alias Dimension` on  (`Country Alias Code`=`Country Code`) where `Country Alias`=%s or `Country Name`=%s ",prepare_mysql($tmp_array[0]),prepare_mysql($tmp_array[0]));
 
 
@@ -460,16 +460,29 @@ function get_user_id($oname,$return_xhtml=false,$tag='',$order=''){
 	  $act_data['country']=$row['name'];
 	  $act_data['postcode']=$tmp_array[0];
 	}
-      }elseif(count($tmp_array)==1){
-	$sql=sprintf("select `Country Name` as name from kbase.`Country Dimension` left join kbase.`Country Alias Dimension` on  (`Country Alias Code`=`Country Code`) where `Country Alias`=%s or `Country Name`=%s",prepare_mysql($tmp_array[0]),prepare_mysql($tmp_array[0]));
+      }elseif(count($tmp_array)==1 and !preg_match('/\d/',$act_data['postcode']) and $act_data['postcode']!=''){
+
+	$sql=sprintf("select `Country Name` as name from kbase.`Country Dimension`  `Country Name`=%s",prepare_mysql($tmp_array[0]));
 
 
 	$result = mysql_query($sql) or die('Query failed: ' . mysql_error());
 	if($row = mysql_fetch_array($result, MYSQL_ASSOC)) {
 	  $act_data['country']=$row['name'];
 	  $act_data['postcode']='';
-	}
+	}else{
 	
+	  $sql=sprintf("select `Country Name` as name from kbase.`Country Dimension` left join kbase.`Country Alias Dimension` on  (`Country Alias Code`=`Country Code`) where `Country Alias`=%s",prepare_mysql($tmp_array[0]));
+
+	  
+	  $result = mysql_query($sql) or die('Query failed: ' . mysql_error());
+	  if($row = mysql_fetch_array($result, MYSQL_ASSOC)) {
+	    $act_data['country']=$row['name'];
+	  $act_data['postcode']='';
+	  }
+	
+	}
+
+
 
       }
     }else{
