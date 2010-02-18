@@ -462,8 +462,7 @@ function get_user_id($oname,$return_xhtml=false,$tag='',$order=''){
 	}
       }elseif(count($tmp_array)==1 and !preg_match('/\d/',$act_data['postcode']) and $act_data['postcode']!=''){
 
-	$sql=sprintf("select `Country Name` as name from kbase.`Country Dimension`  `Country Name`=%s",prepare_mysql($tmp_array[0]));
-
+	$sql=sprintf("select `Country Name` as name from kbase.`Country Dimension` where  `Country Name`=%s",prepare_mysql($tmp_array[0]));
 
 	$result = mysql_query($sql) or die('Query failed: ' . mysql_error());
 	if($row = mysql_fetch_array($result, MYSQL_ASSOC)) {

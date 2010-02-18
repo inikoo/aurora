@@ -1911,12 +1911,12 @@ public $new_value=false;
 
   function update_main_image(){
     $this->load('images');
-    $num_images=count($this->images_original);
+    $num_images=count($this->images);
     $main_image_src='art/nopic.png';
     if($num_images>0){
       
       //print_r($this->images_original);
-      foreach( $this->images_original as $image ){
+      foreach( $this->images as $image ){
 	// print_r($image);
 	$main_image_src=$image['Image Filename'];
 	  if($image['Is Principal']=='Yes'){
