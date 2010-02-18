@@ -179,8 +179,8 @@ class Order extends DB_Table{
 		      $this->data ['Order Main Country 2 Alpha Code']=$customer -> data['Customer Main Address Country 2 Alpha Code'];
 
       }else{
-       	//print "Cust data\n";
-	//	print_r($data['Customer Data']);
+	// print "Cust data\n";
+	//	  	print_r($data['Customer Data']);
 	
 	//-------------------------
       
@@ -730,7 +730,7 @@ class Order extends DB_Table{
 	switch ($_SESSION ['lang']) {
 	default :
 	  $abstract = sprintf ( 'Internet Order <a href="order.php?id=%d">%s</a>', $this->data['Order Key'], $this->data['Order Public ID'] );
-	  $note = sprintf ( '%s (<a href="customer.php?id=%d">%s) place an order by internet using IP:%d at %s', $customer->get ( 'customer name' ), $customer->id, $customer->get ( 'customer id' ), $edata ['ip_number'], strftime ( "%e %b %Y %H:%M", strtotime ( $this->data ['order date'] ) ) );
+	  $note = sprintf ( '%s (<a href="customer.php?id=%d">%s) place an order by internet using IP:%d at %s', $customer->get ( 'customer name' ), $customer->id, $customer->id, $edata ['ip_number'], strftime ( "%e %b %Y %H:%M", strtotime ( $this->data ['order date'] ) ) );
 	}
 					
 	$sql = sprintf ( "insert into `History Dimension` (`History Date`,`Subject`,`Subject Key`,`Action`,`Direct Object`,`Direct Object Key`,`History Details`,`Author Key`,`Author Name`) values(%s,'Customer','%s','Placed','Order',%d,%s,0,%s)", prepare_mysql ( $this->data ['order date'] ), $customer->id, $this->data ['order key'], prepare_mysql ( $note ), prepare_mysql ( _ ( 'System' ) ) );
@@ -754,7 +754,36 @@ class Order extends DB_Table{
       $this->update_totals_from_order_transactions();
     }
   }
-	
+  
+  function send_to_warehouse(){
+   
+    
+    $sql=sprintf("select sum(`Order Quantity`*`Parts Per Product`) as qty, PA.`Part SKU` as sku,`Part XHTML Picking Location` as location,`Part XHTML Description` as description,`Part XHTML Currently Used In` as notes from `Order Transaction Fact` OTF left join `Product Dimension` P  on (OTF.`Product Key`=P.`Product Current Key`) left join `Product Part Dimension` PPD on (PPD.`Product ID`=P.`Product ID`) left join `Product Part List` PPL on (PPL.`Product Part Key`=PPD.`Product Part Key`) left join `Part Dimension` PA on (PA.`Part SKU`=PPL.`Part SKU`)   where OTF.`Order Key`=%d  and  PPD.`Product Part Most Recent`='Yes'   group by PA.`Part SKU`  " 
+		 ,$this->id);
+    $res=mysql_query($sql);
+    //    print "$sql\n";
+    while($row=mysql_fetch_array($res)){
+     
+
+      $sql=sprintf("insert into `Part Picking Fact` values (%d,%d,%f,0,%s,%s,%s,NULL)"
+		   ,$this->id
+		   ,$row['sku']
+		   ,$row['qty']
+		   ,prepare_mysql($row['location'],false)
+		   ,prepare_mysql($row['description'],false)
+		   ,prepare_mysql($row['notes'],false)
+		   );
+
+      //  print "$sql\n";
+      mysql_query($sql);
+
+    }
+
+
+
+  }
+
+
   function cancel($note='',$date=false) {
     $this->cancelled=false;
     if(preg_match('/Dispached/',$this->data ['Order Current Dispatch State'])){
@@ -1760,7 +1789,7 @@ class Order extends DB_Table{
   }
 	
   function cutomer_rankings() {
-    $sql = sprintf ( "select `Customer Key` as id,`Customer Orders` as orders, (select count(*) from `Customer Dimension` as TC where TC.`Customer Orders`<C.`Customer Orders`) as better,(select count(DISTINCT `Customer ID` ) from `Customer Dimension`) total  from `Customer Dimension` as C order by `Customer Orders` desc ;" );
+    $sql = sprintf ( "select `Customer Key` as id,`Customer Orders` as orders, (select count(*) from `Customer Dimension` as TC where TC.`Customer Orders`<C.`Customer Orders`) as better,(select count(DISTINCT `Customer Key` ) from `Customer Dimension`) total  from `Customer Dimension` as C order by `Customer Orders` desc ;" );
 		
     $orders = - 99999;
     $position = 0;

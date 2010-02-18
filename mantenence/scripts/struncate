@@ -30,7 +30,7 @@ truncate `Product Part Dimension`;
 truncate `Product Family Bridge`;
 truncate `Shipping Dimension`;
 truncate `Staff Dimension`;
-truncate `Warehouse Area Dimension`;
+truncate `Warehouse Area Dimension`;TRUNCATE `Part Picking Fact` ;truncate `MasterKey Dimension`;truncate `Order Transaction Deal Bridge`;
 truncate `Company Bridge`;
 truncate `Category Bridge`;truncate `History Dimension`;truncate `Invoice Tax Bridge`;
 ;truncate `Company Area Dimension`;truncate `Corporation Dimension`;

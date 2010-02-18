@@ -20,7 +20,7 @@ if (!$con) {
   print "Error can not connect with database server\n";
   exit;
 }
-//$dns_db='dw_tmp';
+$dns_db='dw';
 $db=@mysql_select_db($dns_db, $con);
 if (!$db) {
   print "Error can not access the database\n";
@@ -144,7 +144,7 @@ $history_data=get_history_data($act_data['history']);
     //print ($act_data['takenby']."\n");
      // if($row>100)
      // break;
-     // print "$row\r";
+      print "$row\r";
 
        // print_r($cols);
     
@@ -270,8 +270,8 @@ foreach($contacts as $act_data){
       	$customer_data['Customer Store Key']=3;
 
 
-      if($customer_data['Customer Store Key']!=1)
-	continue;
+      //if($customer_data['Customer Store Key']!=1)
+      //continue;
       $customer_data['Customer First Contacted Date']=$act_data['creation_date'];
    
 

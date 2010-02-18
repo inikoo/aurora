@@ -214,7 +214,7 @@ class Company extends DB_Table {
 
       $max_score=80;
       $score_plus_for_match=40;
-      $sql=sprintf("select `Company Key`,damlev(UPPER(%s),UPPER(`Company Name`))/LENGTH(`Company Name`) as dist1 from `Company Dimension`   order by dist1  limit 10"
+      $sql=sprintf("select `Company Key`,damlevlim256(UPPER(%s),UPPER(`Company Name`),8)/LENGTH(`Company Name`) as dist1 from `Company Dimension`   order by dist1  limit 10"
 		   ,prepare_mysql($raw_data['Company Name'])
 		   ,prepare_mysql($raw_data['Company Name'])
 		   );
@@ -269,14 +269,14 @@ class Company extends DB_Table {
 	
     $this->number_candidate_companies=count($this->candidate_companies);
 
-    /* 	if(count($this->candidate)>0){ */
-    /* 	  print "Contact candidates\n"; */
-    /* 	  print_r($this->candidate); */
-    /* 	} */
-    /* 	if(count($this->candidate_companies)>0){ */
-    /* 	  print "Company candidates\n"; */
-    /* 	  print_r($this->candidate_companies); */
-    /* 	} */
+  /*   	if(count($this->candidate)>0){ */
+/*     	  print "Contact candidates\n"; */
+/*     	  print_r($this->candidate); */
+/*     	} */
+/*     	if(count($this->candidate_companies)>0){ */
+/*     	  print "Company candidates\n"; */
+/*     	  print_r($this->candidate_companies); */
+/*     	} */
 	
 
     if ($this->found )
@@ -310,7 +310,7 @@ class Company extends DB_Table {
 
 
       //
-      //                         print "$create $update   Company Found:".$this->found." ".$this->found_key."   \nContact Found:".$contact->found." ".$contact->found_key."  \n";
+      //    print "$create $update   Company Found:".$this->found." ".$this->found_key."   \nContact Found:".$contact->found." ".$contact->found_key."  \n";
 
       // exit;
 
@@ -331,8 +331,10 @@ class Company extends DB_Table {
 
       }
 
-      // if($this->found)
-      //	print "Company founded ".$this->found_key."  \n";
+      // if($this->found)a
+      //   print "Company founded ".$this->found_key."  \n";
+
+      //      print "Company founded ".$this->found_key."  \n";
 
       if ($create and !$this->found) {
 
@@ -546,7 +548,7 @@ class Company extends DB_Table {
     $extra_mobile_key=false;
 
     $this->data['Company File As']=$this->file_as($this->data['Company Name']);
-    $this->data['Company ID']=$this->get_new_id();
+
 
     $use_contact=0;
     if (preg_match('/use contact \d+/',$options)) {
@@ -869,22 +871,7 @@ class Company extends DB_Table {
 
 
 
-  function get_new_id() {
 
-    $sql="select max(`Company ID`)  as company_id from `Company Dimension`";
-    $result=mysql_query($sql);
-    if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-      if (!preg_match('/\d*/',_trim($row['company_id']),$match))
-	$match[0]=1;
-      $right_side=$match[0];
-      $number=(double) $right_side;
-      $number++;
-      $id=$number;
-    } else {
-      $id=1;
-    }
-    return $id;
-  }
 
   function load($key='',$args) {
     switch ($key) {
@@ -2377,7 +2364,7 @@ class Company extends DB_Table {
     if (!is_numeric($min_number_zeros))
       $min_number_zeros=4;
 
-    return sprintf("%s%0".$min_number_zeros."d",$myconf['company_id_prefix'], $this->data['Company ID']);
+    return sprintf("%s%0".$min_number_zeros."d",$myconf['company_id_prefix'], $this->id);
 
   }
   function get_main_email_key() {

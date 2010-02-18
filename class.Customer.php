@@ -314,16 +314,17 @@ class Customer extends DB_Table {
 
 	  if ($raw_data['Customer Type']=='Person') {
 
-	    //  print_r($raw_data);
+	    //print_r($raw_data);
 	    //print_r($child->data);
 
 	    if (isset($child->data['Contact Key']) and $raw_data['Customer Main Plain Email']!='' and  $raw_data['Customer Main Plain Email']==$child->data['Contact Main Plain Email']
 		and (levenshtein($child->data['Contact Name'],$raw_data['Customer Main Contact Name'])/(strlen($child->data['Contact Name'])+1))>.3
 
 		) {
-	      print "super change2!\n";
+	      //print "super change2!\n";
 	      $child->remove_email($child->data['Contact Main Email Key']);
-
+	      //  print_r($child);
+	      //exit;
 	      $_customer = new Customer ( 'find create', $raw_data );
 
 	      $this->get_data('id',$_customer->id);
@@ -541,7 +542,7 @@ class Customer extends DB_Table {
     //  print_r($this->data);
     // exit;
     
-    $this->data['Customer ID']=$this->new_id();
+
     if ($this->data['Customer Type']=='Company') {
       $this->data['Customer Main Email Key']=0;
       $this->data['Customer Main XHTML Email']='';
@@ -2318,26 +2319,7 @@ class Customer extends DB_Table {
   }
 
 
-  function new_id() {
 
-    $sql="select max(`Customer ID`)  as customer_id from `Customer Dimension`";
-    $result=mysql_query($sql);
-    if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-
-
-      if (!preg_match('/\d*/',_trim($row['customer_id']),$match))
-	$match[0]=1;
-      $right_side=$match[0];
-      // print "$right_side\n";
-      $number=(double) $right_side;
-      $number++;
-      $id=$number;
-    } else {
-      $id=1;
-    }
-    // print "$id\n";
-    return $id;
-  }
 
 
 
@@ -2476,7 +2458,7 @@ class Customer extends DB_Table {
     if (!is_numeric($min_number_zeros))
       $min_number_zeros=4;
 
-    return sprintf("%s%0".$min_number_zeros."d",$myconf['customer_id_prefix'], $this->data['Customer ID']);
+    return sprintf("%s%0".$min_number_zeros."d",$myconf['customer_id_prefix'], $this->id);
 
   }
 

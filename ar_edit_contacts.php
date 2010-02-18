@@ -1321,7 +1321,7 @@ if(isset( $_REQUEST['where']))
     
     
   }else if($f_field=='id'  )
-     $wheref.=" and  `Customer ID` like '".addslashes(preg_replace('/\s*|\,|\./','',$f_value))."%' ";
+     $wheref.=" and  `Customer Key` like '".addslashes(preg_replace('/\s*|\,|\./','',$f_value))."%' ";
   else if($f_field=='maxdesde' and is_numeric($f_value) )
     $wheref.=" and  (TO_DAYS(NOW())-TO_DAYS(`Customer Last Order Date`))<=".$f_value."    ";
   else if($f_field=='mindesde' and is_numeric($f_value) )
@@ -1404,7 +1404,7 @@ if(isset( $_REQUEST['where']))
    if($order=='name')
      $order='`Customer File As`';
    elseif($order=='id')
-     $order='`Customer ID`';
+     $order='`Customer Key`';
    elseif($order=='location')
      $order='`Customer Main Location`';
    elseif($order=='orders')

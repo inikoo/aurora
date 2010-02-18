@@ -172,7 +172,7 @@ $smarty->assign('search_scope','customers');
   if($order=='name')
     $order='`Customer File As`';
   elseif($order=='id')
-    $order='`Customer ID`';
+    $order='`Customer Key`';
   elseif($order=='location')
      $order='`Customer Main Location`';
    elseif($order=='orders')

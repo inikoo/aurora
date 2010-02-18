@@ -358,7 +358,7 @@ $_order='';
 $_dir='';
 $total=0;
 
-   $sql="select  GROUP_CONCAT(`Invoice Key`) as invoice_keys,`Customer Main Location`,`Customer Key`,`Customer Name`,`Customer ID`,`Customer Main XHTML Email`,count(DISTINCT `Invoice Key`) as invoices,sum(`Invoice Total Amount`) as total, sum(`Invoice Total Net Amount`) as net from  `Invoice Dimension` I left join  `Customer Dimension` C  on (I.`Invoice Customer Key`=C.`Customer Key`)  $where $wheref  group by `Customer Key` order by total desc";
+   $sql="select  GROUP_CONCAT(`Invoice Key`) as invoice_keys,`Customer Main Location`,`Customer Key`,`Customer Name`,`Customer Main XHTML Email`,count(DISTINCT `Invoice Key`) as invoices,sum(`Invoice Total Amount`) as total, sum(`Invoice Total Net Amount`) as net from  `Invoice Dimension` I left join  `Customer Dimension` C  on (I.`Invoice Customer Key`=C.`Customer Key`)  $where $wheref  group by `Customer Key` order by total desc";
    $adata=array();
   
   
@@ -387,7 +387,7 @@ $tax2=$row2['amount'];
 
 }
 
-    $id="<a href='customer.php?id=".$data['Customer Key']."'>".$myconf['customer_id_prefix'].sprintf("%05d",$data['Customer ID']).'</a>'; 
+    $id="<a href='customer.php?id=".$data['Customer Key']."'>".$myconf['customer_id_prefix'].sprintf("%05d",$data['Customer Key']).'</a>'; 
     $name="<a href='customer.php?id=".$data['Customer Key']."'>".$data['Customer Name'].'</a>'; 
 
 
@@ -521,8 +521,7 @@ global $myconf;
     
     
     
-/*   }else if($f_field=='id'  ) */
-/*      $wheref.=" and  `Customer ID` like '".addslashes(preg_replace('/\s*|\,|\./','',$f_value))."%' "; */
+
 /*   else if($f_field=='maxdesde' and is_numeric($f_value) ) */
 /*     $wheref.=" and  (TO_DAYS(NOW())-TO_DAYS(`Customer Last Order Date`))<=".$f_value."    "; */
 /*   else if($f_field=='mindesde' and is_numeric($f_value) ) */
@@ -609,7 +608,7 @@ global $myconf;
      $order='`Balance`';
 
   
-   $sql="select  `Customer Type by Activity`,`Customer Last Order Date`,`Customer Main Telephone`,`Customer Key`,`Customer ID`,`Customer Name`,`Customer Main Location`,`Customer Main XHTML Email`,`Customer Main Address Town`,`Customer Main Address Country First Division`,`Customer Main Ship To Postal Code`,count(DISTINCT `Invoice Key`) as Invoices , sum(`Invoice Total Net Amount`) as Balance  from `Customer Dimension` C left join `Invoice Dimension` I on (`Customer Key`=`Invoice Customer Key`)   $where $wheref  group by `Invoice Customer Key` order by $order $order_direction limit $start_from,$number_results";
+   $sql="select  `Customer Type by Activity`,`Customer Last Order Date`,`Customer Main Telephone`,`Customer Key`,`Customer Name`,`Customer Main Location`,`Customer Main XHTML Email`,`Customer Main Address Town`,`Customer Main Address Country First Division`,`Customer Main Ship To Postal Code`,count(DISTINCT `Invoice Key`) as Invoices , sum(`Invoice Total Net Amount`) as Balance  from `Customer Dimension` C left join `Invoice Dimension` I on (`Customer Key`=`Invoice Customer Key`)   $where $wheref  group by `Invoice Customer Key` order by $order $order_direction limit $start_from,$number_results";
    // print $sql;
    $adata=array();
   
@@ -623,7 +622,7 @@ global $myconf;
   
 
 
-    $id="<a href='customer.php?id=".$data['Customer Key']."'>".$myconf['customer_id_prefix'].sprintf("%05d",$data['Customer ID']).'</a>'; 
+    $id="<a href='customer.php?id=".$data['Customer Key']."'>".$myconf['customer_id_prefix'].sprintf("%05d",$data['Customer Key']).'</a>'; 
     $name="<a href='customer.php?id=".$data['Customer Key']."'>".$data['Customer Name'].'</a>'; 
 
     $adata[]=array(
