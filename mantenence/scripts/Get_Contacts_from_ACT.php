@@ -141,6 +141,7 @@ $history_data=get_history_data($act_data['history']);
     $contacts[$row]=$act_data;
     $contacts_date[$row]=$creation_time;
     
+
     //print ($act_data['takenby']."\n");
      // if($row>100)
      // break;
@@ -225,6 +226,7 @@ foreach($contacts as $act_data){
     $_customer_data['Customer Usual Payment Method']=$act_data['pay_method'];
     
    
+    $creator=strtolower($data['creator']);
     
 
 
