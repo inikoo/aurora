@@ -37,28 +37,6 @@
     <div style="position:relative;font-size:80%">
       <div id="{$search_scope}_search_results" style="display:none;background:#fff;border:1px solid #777;padding:10px;margin-top:0px;width:500px;position:absolute;z-index:20;left:-520px">
 	
-	<div id="{$search_scope}_search_names"  style="display:none;font-size:120%">
-	  <div  style="border-bottom:1px solid #ccc;width:300px;font-weight:800;margin-bottom:5px">{t}Customer Name{/t}</div>
-	  <div  id="{$search_scope}_search_names_results" ></div>
-	</div>
-	
-
-	<div id="{$search_scope}_search_emails" style="display:none;">
-	  <div  style="border-bottom:1px solid #ccc;width:300px;font-weight:800;margin-bottom:5px">{t}Emails{/t}</div>
-	  <div  id="{$search_scope}_search_emails_results" ></div>
-	</div>
-	<div id="{$search_scope}_search_contacts"  style="display:none;">
-	  <div  style="border-bottom:1px solid #ccc;width:300px;font-weight:800;margin-bottom:5px">{t}Contacts{/t}</div>
-	  <div  id="{$search_scope}_search_contacts_results" ></div>
-	</div>
-		<div id="{$search_scope}_search_locations"  style="display:none;">
-	  <div  style="border-bottom:1px solid #ccc;width:300px;font-weight:800;margin-bottom:5px">{t}Locations{/t}</div>
-	  <div  id="{$search_scope}_search_locations_results" ></div>
-	</div>
-	<div id="{$search_scope}_search_tax_numbers"  style="display:none;">
-	  <div  style="border-bottom:1px solid #ccc;width:300px;font-weight:800;margin-bottom:5px">{t}Tax Numbers{/t}</div>
-	  <div  id="{$search_scope}_search_tax_numbers_results" ></div>
-	</div>
 
 
 </div>

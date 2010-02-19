@@ -20,7 +20,6 @@ var submit_search=function(e,data){
     if(q=='')
 	return;
     var request='ar_search.php?tipo='+data.tipo+'&q='+escape(q);
-    // alert(request);
     YAHOO.util.Connect.asyncRequest('POST',request ,{
 	    success:function(o) {
 		//		alert(o.responseText)
@@ -58,27 +57,36 @@ function search_customers_in_store(query){
 				    'POST',
 				    ar_file, {
 					success:function(o) {
-					    //   alert(o.responseText);
+					      alert(o.responseText);
 					    var r = YAHOO.lang.JSON.parse(o.responseText);
 					    if (r.state == 200) {
 						if(r.data.results==0){
-						    Dom.get(search_scope+'_search_results').style.display='none';
-						    for (i in result_categories){
-							Dom.get(search_scope+'_search_'+i).style.display='none';
-							Dom.get(search_scope+'_search_'+i+'_results').innerHTML='';
+						 //    Dom.get(search_scope+'_search_results').style.display='none';
+// 						    for (i in result_categories){
+// 							Dom.get(search_scope+'_search_'+i).style.display='none';
+// 							Dom.get(search_scope+'_search_'+i+'_results').innerHTML='';
 							
-						    }
+// 						    }
+						    
+						    Dom.get(search_scope+'_search_results').style.display='none';
+						    Dom.get(search_scope+'_search_results').innerHTML=''
+						    
+
 						}else{
-						    Dom.get(search_scope+'_search_results').style.display='';
-						    for (i in result_categories){
-							if(r.data[i]>0){
-							    Dom.get(search_scope+'_search_'+i).style.display='';
-							    Dom.get(search_scope+'_search_'+i+'_results').innerHTML=r.data[i+'_results']+' '+r.data.results;
-							}else{
-							    Dom.get(search_scope+'_search_'+i).style.display='none';
-							    Dom.get(search_scope+'_search_'+i+'_results').innerHTML='';
-							}
-						    }
+						    
+						    
+			 			    Dom.get(search_scope+'_search_results').style.display='';
+						    Dom.get(search_scope+'_search_results').innerHTML=r.data;
+
+// 						    for (i in result_categories){
+// 							if(r.data[i]>0){
+// 							    Dom.get(search_scope+'_search_'+i).style.display='';
+// 							    Dom.get(search_scope+'_search_'+i+'_results').innerHTML=r.data[i+'_results']+' '+r.data.results;
+// 							}else{
+// 							    Dom.get(search_scope+'_search_'+i).style.display='none';
+// 							    Dom.get(search_scope+'_search_'+i+'_results').innerHTML='';
+// 							}
+// 						    }
 						    
 
 						}

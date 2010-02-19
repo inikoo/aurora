@@ -464,7 +464,7 @@ class Contact extends DB_Table {
 	 
 	
 
-      $sql=sprintf("select `Contact Key` from `Contact Dimension` where `Contact Old ID` like '%%,%s,%%'",addslashes($data['Contact Old ID']));
+      $sql=sprintf("select `Contact Key` from `Contact Old ID Bridge` where `Contact Old ID`=%s",prepare_mysql($data['Contact Old ID']));
       $res=mysql_query($sql);
       while ($row=mysql_fetch_array($res)) {
 	$val=100;
@@ -485,16 +485,66 @@ class Contact extends DB_Table {
 	$name_data=$data['Contact Name Components'];
       } else {
 	$name_data=$this->parse_name($data['Contact Name']);
-
+	
       }
       $name=$this->name($name_data);
-
+      
       $salutation_max_semiscore=5;
       $first_name_max_score=27;
       $surname_max_score=63;
 
 
+      if(!$find_fuzzy){
+	if ($name_data['Contact First Name']!='') {
+	  $sql=sprintf("select `Contact Salutation`,`Contact Key` from `Contact Dimension` where  `Contact First Name`=%s  and `Contact First Name` is not null   limit 200"
+		       ,prepare_mysql($name_data['Contact First Name'])
+		       
+		       );
 
+	  $result=mysql_query($sql);
+	  while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+	
+	    
+	    $score=$first_name_max_score;
+	  if ($name_data['Contact Salutation']!='' and $name_data['Contact Salutation']=$row['Contact Salutation'])
+	    $score+=$salutation_max_semiscore;
+	  $contact_key=$row['Contact Key'];
+	  if (isset($this->candidate[$contact_key]))
+	    $this->candidate[$contact_key]+=$score;
+	  else
+	    $this->candidate[$contact_key]=$score;
+	}
+	  
+	}
+
+
+
+   if ($name_data['Contact Surname']!='') {
+	$sql=sprintf("select `Contact Salutation`,`Contact Key` from `Contact Dimension`  where  `Contact Surname`=%s and   `Contact Surname` is not null   limit 200"
+		     ,prepare_mysql($name_data['Contact Surname'])
+
+		     );
+
+	$result=mysql_query($sql);
+	while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+
+	  $score=$surname_max_score;
+	  if ($name_data['Contact Salutation']!='' and $name_data['Contact Salutation']=$row['Contact Salutation'])
+	    $score+=$salutation_max_semiscore;
+	  $contact_key=$row['Contact Key'];
+	  if (isset($this->candidate[$contact_key]))
+	    $this->candidate[$contact_key]+=$score;
+	  else
+	    $this->candidate[$contact_key]=$score;
+	}
+      }
+
+
+	
+
+
+
+      }else{
       if ($name_data['Contact First Name']!='') {
 	$sql=sprintf("select `Contact Salutation`,`Contact Key`,damlevlim256(UPPER(%s),UPPER(`Contact First Name`),3)/LENGTH(`Contact First Name`) as dist1 from `Contact Dimension` where  `Contact First Name` is not null  order by dist1  limit 80"
 		     ,prepare_mysql($name_data['Contact First Name'])
@@ -541,10 +591,17 @@ class Contact extends DB_Table {
 	    $this->candidate[$contact_key]=$score;
 	}
       }
-    }
+      }
+
+
+   }
+
+
+
+
 
     if (isset($raw_data['Contact Old ID']) and $raw_data['Contact Old ID']!='') {
-      $sql=sprintf("select `Contact Key` from `Contact Dimension` where `Contact Old ID` like '%%,%s,%%'",addslashes($raw_data['Contact Old ID']));
+      $sql=sprintf("select `Contact Key` from `Contact Dimension` where `Contact Old ID`=%s",prepare_mysql($raw_data['Contact Old ID']));
       $res=mysql_query($sql);
       while ($row=mysql_fetch_array($res)) {
 	$val=100;
@@ -555,6 +612,8 @@ class Contact extends DB_Table {
 	  $this->candidate[$key]=$val;
       }
     }
+
+
     if (isset($raw_data['Contact Tax Number'])) {
       $contacts_in_company=array();
       $raw_data['Contact Tax Number']=_trim($raw_data['Contact Tax Number']);
@@ -946,9 +1005,9 @@ class Contact extends DB_Table {
     }
 
 
-    if ($this->data['Contact Old ID']) {
-      $this->data['Contact Old ID']=",".$this->data['Contact Old ID'].",";
-    }
+    //if ($this->data['Contact Old ID']) {
+    //  $this->data['Contact Old ID']=",".$this->data['Contact Old ID'].",";
+    // }
 
     $prepared_data=$this->prepare_name_data($this->data);
     foreach($prepared_data as $key=>$val) {
@@ -984,6 +1043,10 @@ class Contact extends DB_Table {
       $this->data['Contact Fuzzy']='No';
 
 
+    if($this->data['Contact First Name']=='Mr')
+      exit("error with salitation");
+
+
     $keys='(';
     $values='values(';
     foreach($this->data as $key=>$value) {
@@ -1006,6 +1069,13 @@ class Contact extends DB_Table {
     // exit;
     if (mysql_query($sql)) {
       $this->id= mysql_insert_id();
+
+
+      if (_trim($this->data['Contact Old ID'])) {
+	$sql=sprintf("insert into `Contact Old ID Bridge` values (%d,%s)",$this->id,prepare_mysql(_trim($this->data['Contact Old ID'])));
+	mysql_query($sql);
+      }
+
 
       $this->get_data('id',$this->id);
       $history_data=array(
@@ -2951,12 +3021,25 @@ class Contact extends DB_Table {
     }
 
   }
+
+
+  function get_contact_old_id(){
+    $old_ids=array();
+    $sql=sprintf("select `Contact Old ID` from `Contact Old ID Bridge` where `Contact Key`=%d",$this->id);
+    $res=mysql_query($sql);
+    while($row=mysql_fetch_array($res)){
+      $old_ids[$row['Contact Old ID']]=$row['Contact Old ID'];
+    }
+    return $old_ids;
+    
+  }
+
   /* Function:update_Contact_Old_ID
      Updates the contact old id
 
   */
   private function update_Contact_Old_ID($contact_old_id,$options) {
-    $contact_old_id=_($contact_old_id);
+    $contact_old_id=_trim($contact_old_id);
     if ($contact_old_id=='') {
       $this->new=false;
       $this->msg.=" Contact Old ID name should have a value";
@@ -2968,11 +3051,11 @@ class Contact extends DB_Table {
 
     $old_value=$this->data['Contact Old ID'];
     $individual_ids=array();
-    foreach(preg_split('/,/',$old_value) as $individual_id) {
-      if (_trim($individual_id)!='') {
-	$individual_ids[$individual_id]=true;
-      }
-    }
+
+    
+    $individual_ids=$this->get_contact_old_id();
+
+
 
     if (array_key_exists($contact_old_id, $individual_ids)) {
       $this->msg.=' '._('Contact Old ID already in record')."\n";
@@ -2980,17 +3063,10 @@ class Contact extends DB_Table {
       return;
     }
 
-
-
-    $this->data['Contact Old ID']=',';
-    foreach($individual_ids as $key=>$val) {
-      $this->data['Contact Old ID'].=$key.',';
-    }
-
-    $sql=sprintf("update `Contact Dimension` set `Contact Old ID`=%s where `Contact Key`=%d "
-		 ,prepare_mysql($this->data['Contact Old ID'])
-		 ,$this->id);
+    $sql=sprintf("insert into `Contact Old ID Bridge` values (%d,%s)",$this->id,prepare_mysql(_trim($this->data['Contact Old ID'])));
     mysql_query($sql);
+    
+    
     $affected=mysql_affected_rows();
 
     if ($affected==-1) {
@@ -3012,26 +3088,7 @@ class Contact extends DB_Table {
   }
 
 
-  /*     function get_new_id() { */
-
-  /*         $sql="select max(`Contact ID`)  as contact_id from `Contact Dimension`"; */
-  /*         $result=mysql_query($sql); */
-  /*         if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) { */
-
-  /*             if (!preg_match('/\d*\/',_trim($row['contact_id']),$match)) */
-  /*                 $match[0]=1; */
-  /*             $right_side=$match[0]; */
-  /*             $number=(double) $right_side; */
-  /*             $number++; */
-  /*             $id=$number; */
-  /*         } else { */
-  /*             $id=1; */
-  /*         } */
-  /*         return $id; */
-  /*     } */
-
-
-
+ 
   function parse_address($data) {
     $address_data=array(
 			'Street Number'=>'',
@@ -3106,6 +3163,8 @@ class Contact extends DB_Table {
   */
   public static function parse_name($raw_name) {
 
+    //  print "--> $raw_name\n";
+
     $name=array(
 		'prefix'=>'',
 		'first'=>'',
@@ -3135,7 +3194,21 @@ class Contact extends DB_Table {
       $raw_name=preg_replace('/\./',' ',$raw_name);
       $names=preg_split('/\s+/',$raw_name);
 
-      $parts=count($names);
+      //  print_r($names);
+
+     
+
+      
+      if(Contact::is_prefix($names[0])){
+	$name['prefix']=array_shift($names);
+	
+	//	  print_r($names);
+	
+
+      }
+
+       $parts=count($names);
+
 
       switch ($parts) {
       case(1):
@@ -3299,7 +3372,7 @@ class Contact extends DB_Table {
     $data['Contact Surname']=_trim($name['last']);
     $data['Contact Suffix']=_trim($name['suffix']);
 
-
+    //print_r($data);
     return $data;
 
 

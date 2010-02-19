@@ -1921,4 +1921,86 @@ function get_user_id($oname,$return_xhtml=false,$tag='',$order=''){
   }
 
 
+function parse_tax_number($tax_number){
+ 
+  $tax_number=_trim($tax_number);
+  if(!$tax_number or $tax_number=='no vat' or $tax_number=='5 / 10' or preg_match('/@|PLS CHARGE ORDER BEFORE PICKING|not VAT registered|Monday|Tuesday|not registered/i',$tax_number))
+    return '';
+
+  
+
+  // print "--->$tax_number<-\n";
+
+ 
+
+
+
+ $tax_number=preg_replace('/tax id\s*:?\s*-?\s*/i','',$tax_number);
+ $tax_number=preg_replace('/V\.a\.t\. N.*:\s*-?\s*/i','',$tax_number);
+
+ $tax_number=preg_replace('/VAT NO\s*-\s*/i','',$tax_number);
+  $tax_number=preg_replace('/^VAT No\.\:\s*/i','',$tax_number);
+  $tax_number=preg_replace('/^vat no\s*(\.|:)?\s*/i','',$tax_number);
+  $tax_number=preg_replace('/^vat\s*(\:|\-)?\s*/i','',$tax_number);
+  $tax_number=preg_replace('/^vat\s*reg\*(\:|\-)?\s*/i','',$tax_number);
+ $tax_number=preg_replace('/\-?\s*Checked and Valid$/i','',$tax_number);
+ $tax_number=preg_replace('/\-?\s*valid and checked$/i','',$tax_number);
+
+ $tax_number=preg_replace('/Customer |SA VAT NO |tva:\s*|TVA Intracom : /i','',$tax_number);
+ $tax_number=preg_replace('/^tva fr/i','FR',$tax_number);
+
+
+ $tax_number=preg_replace('/tax\s*:?\s*/i','',$tax_number);
+ $tax_number=preg_replace('/not$/i','',$tax_number);
+
+  $tax_number=preg_replace('/\-?\s*ok$/i','',$tax_number);
+  $tax_number=preg_replace('/\-?\s*checked$/i','',$tax_number);
+  $tax_number=preg_replace('/\s*ckecked$/i','',$tax_number);
+  $tax_number=preg_replace('/\-?\s*checked\s+valid\.?$/i','',$tax_number);
+  $tax_number=preg_replace('/\s*\-?\s*valid$/i','',$tax_number);
+  $tax_number=preg_replace('/\s*\-?\s*verified$/i','',$tax_number);
+  $tax_number=preg_replace('/\s*\-?\s*Checked\s*\!{0,5}$/i','',$tax_number);
+  $tax_number=preg_replace('/\-?\s*\(checked\)$/i','',$tax_number);
+  $tax_number=preg_replace('/\-?\s*\(check ok\)$/i','',$tax_number);
+ $tax_number=preg_replace('/\-?\s*valid\s*\(HM\)$/i','',$tax_number);
+$tax_number=preg_replace('/\-?\s*checked by customs$/i','',$tax_number);
+$tax_number=preg_replace('/\s*\-\s*$/i','',$tax_number);
+$tax_number=preg_replace('/( - Valid by customs|need to)$/i','',$tax_number);
+
+  if(preg_match('/EL137399039 checkedEL-137399039/i',$tax_number))
+    $tax_number='EL137399039';
+ if(preg_match('/PT:503958271, validPT-503958271/i',$tax_number))
+    $tax_number='PT-503958271';
+ if(preg_match('/NL060484305B02 validNL060484305B02 valid/i',$tax_number))
+    $tax_number='NL060484305B02';
+ if(preg_match('/^IE : 3756781C$/i',$tax_number))
+    $tax_number='IE3756781C';
+
+
+
+
+
+ if(preg_match('/^(es|cz|sk|si|se|ro|pl|mt|lv|lu|lt|gb|be|bg|ee|el|fi|cy|nl|mt|be|atu|hu|it|se|de|at|ch|dk|pt|fr|ie)(\s|\-|\d|\:)/i',$tax_number)){
+   $number=preg_replace('/^\s*(\-|\:)?\s*/','',substr($tax_number,2));
+   $tax_number=strtoupper(substr($tax_number,0,2)).' '.$number;
+   
+ }
+
+
+if(preg_match('/^(es\s*x)/i',$tax_number)){
+   $number=preg_replace('/^\s*(\-|\:)?\s*/','',substr($tax_number,2));
+   $tax_number='ES '.$number;
+   
+ }
+
+
+
+
+  $tax_number=_trim($tax_number);
+
+  return $tax_number;
+
+}
+
+
   ?>

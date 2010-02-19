@@ -214,40 +214,84 @@ class Company extends DB_Table {
 
       $max_score=80;
       $score_plus_for_match=40;
-      $sql=sprintf("select `Company Key`,damlevlim256(UPPER(%s),UPPER(`Company Name`),8)/LENGTH(`Company Name`) as dist1 from `Company Dimension`   order by dist1  limit 10"
-		   ,prepare_mysql($raw_data['Company Name'])
-		   ,prepare_mysql($raw_data['Company Name'])
-		   );
-      $result=mysql_query($sql);
-      //   print "$sql\n";
-      while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-	if ($row['dist1']>=1)
-	  break;
-	$score=$max_score*pow(1-  $row['dist1'] ,3  );
-	$extra_score=0;
-	$company_key=$row['Company Key'];
 
-	foreach($this->candidate as $candidate_key=>$candidate_score) {
-	  $sql=sprintf("select count(*) matched from `Contact Bridge` where `Contact Key`=%d and `Subject Key`=%d  and `Subject Type`='Company' and `Is Active`='Yes'  "
-		       ,$candidate_key
-		       ,$company_key
-		       );
-	  $res=mysql_query($sql);
-	  //  print "$sql\n";
+
+      if($find_fuzzy){
+
+      
+	$sql=sprintf("select `Company Key`,damlevlim256(UPPER(%s),UPPER(`Company Name`),8)/LENGTH(`Company Name`) as dist1 from `Company Dimension`   order by dist1  limit 10"
+		     ,prepare_mysql($raw_data['Company Name'])
+		     
+		     );
+	$result=mysql_query($sql);
+	//   print "$sql\n";
+	while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+	  if ($row['dist1']>=1)
+	    break;
+	  $score=$max_score*pow(1-  $row['dist1'] ,3  );
+	  $extra_score=0;
+	  $company_key=$row['Company Key'];
+	  
+	  foreach($this->candidate as $candidate_key=>$candidate_score) {
+	    $sql=sprintf("select count(*) matched from `Contact Bridge` where `Contact Key`=%d and `Subject Key`=%d  and `Subject Type`='Company' and `Is Active`='Yes'  "
+			 ,$candidate_key
+			 ,$company_key
+			 );
+	    $res=mysql_query($sql);
+	    //  print "$sql\n";
 	  $match_data=mysql_fetch_array($res);
 	  if ($match_data['matched']>0) {
 	    //		      print "matched $score $score_plus_for_match \n";
 	    $this->candidate[$candidate_key]+=$score_plus_for_match;
 	    $extra_score=$score_plus_for_match;
 	  }
-
-	}
-
+	  
+	  }
+	  
 		
-	if (isset($this->candidate_companies[$company_key]))
-	  $this->candidate_companies[$company_key]+=$score+$extra_score;
-	else
-	  $this->candidate_companies[$company_key]=$score+$extra_score;
+	  if (isset($this->candidate_companies[$company_key]))
+	    $this->candidate_companies[$company_key]+=$score+$extra_score;
+	  else
+	    $this->candidate_companies[$company_key]=$score+$extra_score;
+	}
+      }else{
+	  
+	$sql=sprintf("select `Company Key` from `Company Dimension` where `Company Name`=%s   limit 10"
+		     ,prepare_mysql($raw_data['Company Name'])
+		     );
+
+	$result=mysql_query($sql);
+	//   print "$sql\n";
+	while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+
+	  $score=$max_score;
+	  $extra_score=0;
+	  $company_key=$row['Company Key'];
+	  
+	  foreach($this->candidate as $candidate_key=>$candidate_score) {
+	    $sql=sprintf("select count(*) matched from `Contact Bridge` where `Contact Key`=%d and `Subject Key`=%d  and `Subject Type`='Company' and `Is Active`='Yes'  "
+			 ,$candidate_key
+			 ,$company_key
+			 );
+	    $res=mysql_query($sql);
+	    //  print "$sql\n";
+	  $match_data=mysql_fetch_array($res);
+	  if ($match_data['matched']>0) {
+	    //		      print "matched $score $score_plus_for_match \n";
+	    $this->candidate[$candidate_key]+=$score_plus_for_match;
+	    $extra_score=$score_plus_for_match;
+	  }
+	  
+	  }
+	  
+		
+	  if (isset($this->candidate_companies[$company_key]))
+	    $this->candidate_companies[$company_key]+=$score+$extra_score;
+	  else
+	    $this->candidate_companies[$company_key]=$score+$extra_score;
+	}
+	
+	
       }
 
     }
@@ -540,9 +584,6 @@ class Company extends DB_Table {
       }
     }
 
-    if ($this->data['Company Old ID']) {
-      $this->data['Company Old ID']=",".$this->data['Company Old ID'].",";
-    }
 
 
     $extra_mobile_key=false;
@@ -737,6 +778,10 @@ class Company extends DB_Table {
       $this->new=true;
 
 
+      if (_trim($this->data['Company Old ID'])) {
+	$sql=sprintf("insert into `Company Old ID Bridge` values (%d,%s)",$this->id,prepare_mysql(_trim($this->data['Company Old ID'])));
+	mysql_query($sql);
+      }
 
       //   print "00000000000000000000000000000\n";
       //print_r($this->data);
@@ -1147,13 +1192,25 @@ class Company extends DB_Table {
 
   }
 
+  function get_company_old_id(){
+    $old_ids=array();
+    $sql=sprintf("select `Company Old ID` from `Company Old ID Bridge` where `Company Key`=%d",$this->id);
+    $res=mysql_query($sql);
+    while($row=mysql_fetch_array($res)){
+      $old_ids[$row['Company Old ID']]=$row['Company Old ID'];
+    }
+    return $old_ids;
+    
+  }
+ 
+
 
   /* Function:update_Company_Old_ID
      Updates the company old id
 
   */
   private function update_Company_Old_ID($company_old_id,$options) {
-    $company_old_id=_($company_old_id);
+    $company_old_id=_trim($company_old_id);
     if ($company_old_id=='') {
       $this->new=false;
       $this->msg.=" Company Old ID name should have a value";
@@ -1165,11 +1222,11 @@ class Company extends DB_Table {
 
     $old_value=$this->data['Company Old ID'];
     $individual_ids=array();
-    foreach(preg_split('/,/',$old_value) as $individual_id) {
-      if (_trim($individual_id)!='') {
-	$individual_ids[$individual_id]=true;
-      }
-    }
+
+    
+    $individual_ids=$this->get_company_old_id();
+
+
 
     if (array_key_exists($company_old_id, $individual_ids)) {
       $this->msg.=' '._('Company Old ID already in record')."\n";
@@ -1177,17 +1234,10 @@ class Company extends DB_Table {
       return;
     }
 
-
-
-    $this->data['Company Old ID']=',';
-    foreach($individual_ids as $key=>$val) {
-      $this->data['Company Old ID'].=$key.',';
-    }
-
-    $sql=sprintf("update `Company Dimension` set `Company Old ID`=%s where `Company Key`=%d "
-		 ,prepare_mysql($this->data['Company Old ID'])
-		 ,$this->id);
+    $sql=sprintf("insert into `Company Old ID Bridge` values (%d,%s)",$this->id,prepare_mysql(_trim($this->data['Company Old ID'])));
     mysql_query($sql);
+    
+    
     $affected=mysql_affected_rows();
 
     if ($affected==-1) {
@@ -1478,7 +1528,7 @@ class Company extends DB_Table {
       $sql=sprintf("insert into  `Company Web Site Bridge` (`Page Key`, `Company Key`) values (%d,%d)  ",$page->id,$this->id);
       mysql_query($sql);
       if (preg_match('/principal/i',$args)) {
-	$sql=sprintf("update `Company Dimension` set `Company Main XHTML Page`=%s where `Contact Key`=%d",prepare_mysql($page->display('html')),$this->id);
+	$sql=sprintf("update `Company Dimension` set `Company Main XHTML Page`=%s where `Company Key`=%d",prepare_mysql($page->display('html')),$this->id);
 	// print "$sql\n";
 	mysql_query($sql);
       }
