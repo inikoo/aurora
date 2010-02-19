@@ -1,14 +1,9 @@
 <?php
 
-
-
-
 function mb_unserialize($serial_str) {
 $out = preg_replace('!s:(\d+):"(.*?)";!se', "'s:'.strlen('$2').':\"$2\";'", $serial_str );
 return unserialize($out);
 } 
-
-
 
 function parse_payment_method($method){
 
@@ -3158,6 +3153,8 @@ function get_payment_method($method){
 }
 
 
+
+
 function get_tax_number($data){
   global $myconf;
   $data['tax_number']='';
@@ -3192,42 +3189,8 @@ function get_tax_number($data){
     }
     //print "OTN: $tax_number\n";
   // print "tax number: $tax_number\n";
-  $tax_number=_trim($tax_number);
-  // print "$tax_number\n";
- $tax_number=preg_replace('/tax id\s*:?\s*-?\s*/i','',$tax_number);
- $tax_number=preg_replace('/V\.a\.t\. N.*:\s*-?\s*/i','',$tax_number);
+    $tax_number=parse_tax_number($tax_number);
 
- $tax_number=preg_replace('/VAT NO\s*-\s*/i','',$tax_number);
-  $tax_number=preg_replace('/^VAT No\.\:\s*/i','',$tax_number);
-  $tax_number=preg_replace('/^vat no\s*(\.|:)?\s*/i','',$tax_number);
-  $tax_number=preg_replace('/^vat\s*(\:|\-)?\s*/i','',$tax_number);
-  $tax_number=preg_replace('/^vat\s*reg\*(\:|\-)?\s*/i','',$tax_number);
- $tax_number=preg_replace('/\-?\s*Checked and Valid$/i','',$tax_number);
- $tax_number=preg_replace('/\-?\s*valid and checked$/i','',$tax_number);
- $tax_number=preg_replace('/tax\s*:?\s*/i','',$tax_number);
-
-  $tax_number=preg_replace('/\-?\s*ok$/i','',$tax_number);
-  $tax_number=preg_replace('/\-?\s*checked$/i','',$tax_number);
-  $tax_number=preg_replace('/\s*ckecked$/i','',$tax_number);
-  $tax_number=preg_replace('/\-?\s*checked\s+valid\.?$/i','',$tax_number);
-  $tax_number=preg_replace('/\s*\-?\s*valid$/i','',$tax_number);
-  $tax_number=preg_replace('/\s*\-?\s*verified$/i','',$tax_number);
-  $tax_number=preg_replace('/\s*\-?\s*Checked\s*\!{0,5}$/i','',$tax_number);
-  $tax_number=preg_replace('/\-?\s*\(checked\)$/i','',$tax_number);
-  $tax_number=preg_replace('/\-?\s*\(check ok\)$/i','',$tax_number);
- $tax_number=preg_replace('/\-?\s*valid\s*\(HM\)$/i','',$tax_number);
-$tax_number=preg_replace('/\-?\s*checked by customs$/i','',$tax_number);
-
-  if(preg_match('/EL137399039 checkedEL-137399039/i',$tax_number))
-    $tax_number='EL137399039';
- if(preg_match('/PT:503958271, validPT-503958271/i',$tax_number))
-    $tax_number='PT-503958271';
- if(preg_match('/NL060484305B02 validNL060484305B02 valid/i',$tax_number))
-    $tax_number='NL060484305B02';
- if(preg_match('/^IE : 3756781C$/i',$tax_number))
-    $tax_number='IE3756781C';
-
-  $tax_number=_trim($tax_number);
   // print "TN: $tax_number\n";
   if(
      preg_match('/^[a-z]{1,2}\s*\-?\s*[a-z0-9]{8,12}\s*$/i',$tax_number) 
@@ -3318,6 +3281,7 @@ $tax_number=preg_replace('/\-?\s*checked by customs$/i','',$tax_number);
   return $data;
 
 }
+
 
 
 function update_orden($order_id,

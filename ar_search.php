@@ -43,7 +43,7 @@ default:
 }
 
 
-function search_customer($data){
+function search_customer_by_parts($data){
   
   $user=$data['user'];
   $q=$data['q'];
@@ -197,6 +197,140 @@ function search_customer($data){
 
 
 
+function search_customer($data){
+  
+  $max_results=10;
+
+  $user=$data['user'];
+  $q=$data['q'];
+    // $q=_trim($_REQUEST['q']);
+    
+  if($q==''){
+    $response=array('state'=>200,'results'=>0,'data'=>'');
+    echo json_encode($response);
+    
+  }
+
+
+  if($data['scope']=='store'){
+    $stores=$_SESSION['state']['customers']['store'];
+    
+  }else
+    $stores=join(',',$user->stores);
+    
+  $candidates=array();
+  $sql=sprintf('select `Customer Key`,`Customer Name` from `Customer Dimension` where `Customer Store Key` in (%s) and `Customer Name`  like "%s%%" limit 100 ',$stores,$q);
+  //print $sql;
+  $res=mysql_query($sql);
+  while($row=mysql_fetch_array($res)){
+    if($row['Customer Name']==$q)
+      $candidates[$row['Customer Key']]=110;
+    else{
+
+      $len_name=strlen($row['Customer Name']);
+      $len_q=strlen($q);
+      $factor=$len_q/$len_name;
+      $candidates[$row['Customer Key']]=100*$factor;
+    }   
+  }
+
+  $sql=sprintf('select `Subject Key`,`Email` from `Email Bridge` EB  left join `Email Dimension` E on (EB.`Email Key`=E.`Email Key`) left join `Customer Dimension` CD on (CD.`Customer Key`=`Subject Key`)  where `Customer Store Key` in (3)  and `Subject Type`="Customer" and  `Email`  like "%s%%" limit 100 ',$stores,$q);
+  $res=mysql_query($sql);
+  while($row=mysql_fetch_array($res)){
+    if($row['Email']==$q){
+      
+      $candidates[$row['Customer Key']]=120;
+    }else{
+
+      $len_name=strlen($row['Email']);
+      $len_q=strlen($q);
+ $factor=$len_q/$len_name;
+      $candidates[$row['Customer Key']]=100*$factor;
+    }   
+  }
+  //print_r($candidates);
+
+  
+ $sql=sprintf('select `Customer Key`,`Customer Main Address Postal Code` from `Customer Dimension` where `Customer Store Key` in (%s) and  `Customer Main Address Postal Code` like "%s%%"  limit 150'
+		   ,$stores
+		,addslashes($q)
+		);
+   // print $sql;
+      $res=mysql_query($sql);
+      while($row=mysql_fetch_array($res)){
+  
+	if($row['Customer Main Address Postal Code']==$q){
+      
+	  $candidates[$row['Customer Key']]=50;
+    }else{
+
+      $len_name=$row['Customer Main Address Postal Code'];
+      $len_q=strlen($q);
+      $factor=$len_name/$len_q;
+      $candidates[$row['Customer Key']]=20*$factor;
+    }   
+
+      }
+
+
+
+ $sql=sprintf('select `Subject Key`,`Contact Name` from `Contact Bridge` EB  left join `Contact Dimension` E on (EB.`Contact Key`=E.`Contact Key`) left join `Customer Dimension` CD on (CD.`Customer Key`=`Subject Key`)  where `Customer Store Key` in (3)  and `Subject Type`="Customer" and  `Contact Name`  REGEXP "[[:<:]]%s"  limit 100 ',$stores,$q);
+  $res=mysql_query($sql);
+  while($row=mysql_fetch_array($res)){
+    if($row['Contact']==$q){
+      
+      $candidates[$row['Customer Key']]=120;
+    }else{
+
+      $len_name=$row['Contact'];
+      $len_q=strlen($q);
+      $factor=$len_name/$len_q;
+      $candidates[$row['Customer Key']]=100*$factor;
+    }   
+  }
+
+  asort($candidates);
+  $total_candidates=count($candidates);
+  
+  if($total_candidates==0){
+    $response=array('state'=>200,'results'=>0,'data'=>'');
+    echo json_encode($response);
+  }
+  
+
+  $counter=0;
+  $customer_keys='';
+
+  $results=array();
+ 
+  //print_r($candidates);
+  foreach($candidates as $key=>$val){
+    $counter++;
+    $customer_keys.=','.$key;
+    $results[$key]='';
+    if($counter>$max_results)
+      break;
+  }
+  $customer_keys=preg_replace('/^,/','',$customer_keys);
+
+  $sql=sprintf("select `Customer Key`,`Customer Name`,`Customer Type`,`Customer Main XHTML Email`,`Customer Main Location`,`Customer Tax Number` from `Customer Dimension` where `Customer Key` in (%s)",$customer_keys);
+   $res=mysql_query($sql);
+   // print $sql; 
+
+$customer_card='<table>'
+ while($row=mysql_fetch_array($res)){
+
+    $customer_card.='<tr><td>'.$row['Customer Name'].'</td></tr>';
+
+    $results[$row['Customer Key']]=$customer_card;
+  }
+$customer_card.='</table>'
+
+  
+  $response=array('state'=>200,'results'=>count($results),'data'=>$results);
+  echo json_encode($response);
+  
+}
 
 
 

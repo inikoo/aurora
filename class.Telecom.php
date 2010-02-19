@@ -130,7 +130,10 @@ Function:display
 */
 function find($raw_data,$options){
 
-
+  $find_fuzzy=false;
+  if (preg_match('/fuzzy/i',$options)) {
+    $find_fuzzy='fuzzy';
+  }
   
   if(isset($raw_data['editor']) and is_array($raw_data['editor'])){
       foreach($raw_data['editor'] as $key=>$value){
@@ -291,7 +294,9 @@ function find($raw_data,$options){
      
       $len_tel=strlen($data['Telecom Area Code'].$data['Telecom Number']);
       
-    $sql=sprintf("select `Telecom Extension`,`Telecom Country Telephone Code`,`Telecom Extension`,damlevlim(CONCAT(IFNULL(`Telecom Area Code`,''),IFNULL(`Telecom Number`,'')),%s,4) as dist1,T.`Telecom Key`,`Subject Key` from `Telecom Dimension` T left join `Telecom Bridge` TB  on (TB.`Telecom Key`=T.`Telecom Key`)  where  `Subject Type`='Contact' and  damlevlim(CONCAT(IFNULL(`Telecom Area Code`,''),IFNULL(`Telecom Number`,'')),%s,4)<4  order by dist1  limit 100 "
+      if($find_fuzzy){
+      
+      $sql=sprintf("select `Telecom Extension`,`Telecom Country Telephone Code`,`Telecom Extension`,damlevlim(CONCAT(IFNULL(`Telecom Area Code`,''),IFNULL(`Telecom Number`,'')),%s,4) as dist1,T.`Telecom Key`,`Subject Key` from `Telecom Dimension` T left join `Telecom Bridge` TB  on (TB.`Telecom Key`=T.`Telecom Key`)  where  `Subject Type`='Contact' and  damlevlim(CONCAT(IFNULL(`Telecom Area Code`,''),IFNULL(`Telecom Number`,'')),%s,4)<4  order by dist1  limit 100 "
 		 ,prepare_mysql($data['Telecom Area Code'].$data['Telecom Number'])
 		 ,prepare_mysql($data['Telecom Area Code'].$data['Telecom Number'])
 		 );
@@ -368,6 +373,90 @@ function find($raw_data,$options){
        
        
     }
+
+      }else{// Not fuzzy serch
+  $sql=sprintf("select `Telecom Extension`,`Telecom Country Telephone Code`,`Telecom Extension`,T.`Telecom Key`,`Subject Key` from `Telecom Dimension` T left join `Telecom Bridge` TB  on (TB.`Telecom Key`=T.`Telecom Key`)  where  `Subject Type`='Contact'  and  `Telecom Area Code`=%s and `Telecom Number`=%s   limit 100 "
+	       ,prepare_mysql($data['Telecom Area Code'],false)
+	       ,prepare_mysql($data['Telecom Number'],false)
+	       
+		 );
+    
+    //$sql=sprintf("select * from `Telecom Dimension`  limit10 ",prepare_mysql($data['Telecom Area Code'].$data['Telecom Number']));
+  // print $sql;
+    $result=mysql_query($sql);
+    //print $sql."<br><br>";
+    // echo mysql_errno() . ": " . mysql_error() . "\n";
+    while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
+      $contact_key=$row['Subject Key'];
+     
+
+
+      $score=$tel_max_score;
+      $_score=$score;
+      //print "Dat: $len_tel ".$row['dist1']." $score\n";
+
+	$score+=$exact_match_bonus;
+	$this->found_number=1;
+
+     
+      //   print "1******************* $score\n";
+      if($row['Telecom Country Telephone Code']==$data['Telecom Country Telephone Code']){
+	if($data['Telecom Country Telephone Code']!=''){
+	  $this->found_intl_code=1;
+	  $score+= $intl_code_max_score;
+	}
+      }else{
+	if($data['Telecom Country Telephone Code']!='' and $row['Telecom Country Telephone Code']!='')
+	  $this->found_intl_code=-2;
+      }
+      //    print "2******************* $score\n";
+      if($row['Telecom Extension']==$data['Telecom Extension']){
+	if($data['Telecom Extension']!=''){
+	  $this->found_ext=2;
+	  $score+= $ext_max_score;
+	}
+      }else{
+	if($data['Telecom Extension']!='' and $row['Telecom Extension']!='')
+	  $this->found_ext=-2;
+      }
+      
+      //   print "3******************* $score\n";
+       if(isset($this->candidate[$contact_key]))
+	$this->candidate[$contact_key]+=$score;
+      else
+	$this->candidate[$contact_key]=$score;
+
+
+
+
+
+       if(!$this->found and(  $this->found_number and ($this->found_ext>=0 and $this->found_intl_code>=0) ) ){
+	 $this->found=true;
+	 $this->get_data('id',$row['Telecom Key']);
+	 
+	 //print "----> ".$row['Telecom Key']."\n";
+	 if($mode=='Contact in' or $mode=='Company in'){
+	if(in_array($row['Subject Key'],$in_contact)){
+	  
+	  $this->found_in=true;
+	  $this->found_out=false;
+	}else{
+	  
+	  $this->found_in=false;
+	  $this->found_out=true;
+	}
+	 }
+
+       }
+       
+       
+    }
+
+      }
+
+
+
+
     }
 
     
@@ -451,7 +540,7 @@ protected function create($data,$optios=''){
 		prepare_mysql($this->data['Telecom Technology Type']),
 		prepare_mysql($this->data['Telecom Country Telephone Code']),
 		prepare_mysql($this->data['Telecom National Access Code'],false),
-		prepare_mysql($this->data['Telecom Area Code']),
+		prepare_mysql($this->data['Telecom Area Code'],false),
 		prepare_mysql($this->data['Telecom Number']),
 		prepare_mysql($this->data['Telecom Extension'],false),
 		prepare_mysql($this->data['Telecom Plain Number'])

@@ -108,10 +108,14 @@ if (($handle = fopen($filename, "r")) !== FALSE) {
     $act_data['pay_method']=$cols[37+3];
     $act_data['history']=$cols[97];
     $act_data['creator']=$cols[68];
+    $act_data['international_email']=$cols[$map_act['int_email']+3];
+    $act_data['tax_number']=parse_tax_number($cols[$map_act['real_tax_number']+3]);
+
+
     //    print $cols[92]."\n";
 
     $act_data['country_d1']='';
-    $act_data['vat_number']=$cols[88+3];
+    //  $act_data['vat_number']=$cols[88+3];
     $tmp=preg_split('/\s/',$cols[0]);
     $tmp2=preg_split('/\//',$tmp[0]);
     $formated_time=$tmp2[2].'-'.$tmp2[1].'-'.$tmp2[0].' '.$tmp[1];
@@ -141,10 +145,10 @@ $history_data=get_history_data($act_data['history']);
     $contacts[$row]=$act_data;
     $contacts_date[$row]=$creation_time;
     
-
-    //print ($act_data['takenby']."\n");
-     // if($row>100)
-     // break;
+    // if($act_data['tax_number']!='')
+    //  print ($act_data['tax_number']."\n");
+    //      if($row>4000)
+    //  break;
       print "$row\r";
 
        // print_r($cols);
@@ -159,7 +163,7 @@ $history_data=get_history_data($act_data['history']);
   fclose($handle);
 }
 //print_r($contacts);
-//exit;
+
 usort($contacts, 'compare');
 //print_r($contacts);
 //exit("fin\n");
@@ -167,9 +171,11 @@ usort($contacts, 'compare');
 //$fp = fopen('contacts_act_file.csv', 'w');
 //foreach ($contacts as $line) {    fputcsv($fp, $line);}
 //fclose($fp);
-
-
+print "\n";
+$contador=0;
 foreach($contacts as $act_data){
+  $contador++;
+  print "$contador\r";
 
  // if(strtotime($act_data['creation_date'])<=strtotime('2006-10-22'))
  //   continue;
@@ -207,6 +213,24 @@ foreach($contacts as $act_data){
     $_customer_data['contact_name']=$act_data['contact'];
     $_customer_data['company_name']=$act_data['name'];
     $_customer_data['email']=$email_data['email'];
+ 
+
+
+      $customer_data['Customer Store Key']=1;
+      if(preg_match('/aw-geschenke/i',$act_data['source']))
+	$customer_data['Customer Store Key']=2;
+      if(preg_match('/nabil/i',$act_data['takenby']))
+      	$customer_data['Customer Store Key']=3;
+
+
+
+
+
+
+    if($customer_data['Customer Store Key']!=1)
+      $_customer_data['email']=$act_data['international_email'];
+
+
     $_customer_data['telephone']=_trim($act_data['tel']);
     $_customer_data['fax']=$act_data['fax'];
     $_customer_data['mobile']=$act_data['mob'];
@@ -225,17 +249,17 @@ foreach($contacts as $act_data){
     $_customer_data['Customer Meta Category']=$act_data['category'];
     $_customer_data['Customer Usual Payment Method']=$act_data['pay_method'];
     
-   
-    $creator=strtolower($data['creator']);
+    $_customer_data['Customer Tax Number']=$act_data['tax_number'];
+
     
 
 
     // print_r($_customer_data);
 
     
-      if(isset($header_data['tax_number']) and $header_data['tax_number']!=''){
-      $customer_data['Customer Tax Number']=$header_data['tax_number'];
-    }
+    //if(isset($header_data['tax_number']) and $header_data['tax_number']!=''){
+    //  $customer_data['Customer Tax Number']=$header_data['tax_number'];
+    // }
 
     foreach($_customer_data as $_key =>$value){
       $key=$_key;
@@ -265,15 +289,12 @@ foreach($contacts as $act_data){
       $customer_data['Customer Name']=$customer_data['Customer Main Contact Name'];
     if(isset($_customer_data['address_data'])){
 
-      $customer_data['Customer Store Key']=1;
-      if(preg_match('/aw-geschenke/i',$_customer_data['Customer Source']))
-	$customer_data['Customer Store Key']=2;
-      if(preg_match('/nabil/i',$act_data['takenby']))
-      	$customer_data['Customer Store Key']=3;
+   
 
+    
+	
 
-      //if($customer_data['Customer Store Key']!=1)
-      //continue;
+	//continue;
       $customer_data['Customer First Contacted Date']=$act_data['creation_date'];
    
 
@@ -290,7 +311,7 @@ foreach($contacts as $act_data){
     }
     $shipping_addresses=array();
     $customer_data['Customer Delivery Address Link']='Contact';
-    //print_r($_customer_data);
+    // print_r($_customer_data);
     // print_r($act_data);
     
 

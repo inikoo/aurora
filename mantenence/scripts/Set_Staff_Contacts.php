@@ -72,9 +72,8 @@ $sql=sprintf("insert into `Corporation Dimension` values (%s,%d) ",$company->dat
 mysql_query($sql);
 
 
-$sql="select * from  `Staff Dimension`  where `Staff Name`!='David' ";
-$sql="select * from  `User Dimension` where `User Handle`!='root' ";
-;
+//$sql="select * from  `Staff Dimension`  where `Staff Name`!='David' ";
+$sql="select * from  `User Dimension` where `User Handle`!='root' ";;
 $res=mysql_query($sql);
 while($row=mysql_fetch_array($res, MYSQL_ASSOC)){
   
