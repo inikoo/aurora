@@ -274,18 +274,19 @@ function search_customer($data){
 
 
 
- $sql=sprintf('select `Subject Key`,`Contact Name` from `Contact Bridge` EB  left join `Contact Dimension` E on (EB.`Contact Key`=E.`Contact Key`) left join `Customer Dimension` CD on (CD.`Customer Key`=`Subject Key`)  where `Customer Store Key` in (3)  and `Subject Type`="Customer" and  `Contact Name`  REGEXP "[[:<:]]%s"  limit 100 ',$stores,$q);
-  $res=mysql_query($sql);
+ $sql=sprintf('select `Subject Key`,`Contact Name` from `Contact Bridge` EB  left join `Contact Dimension` E on (EB.`Contact Key`=E.`Contact Key`) left join `Customer Dimension` CD on (CD.`Customer Key`=`Subject Key`)  where `Customer Store Key` in (%s)  and `Subject Type`="Customer" and  `Contact Name`  REGEXP "[[:<:]]%s"  limit 100 ',$stores,$q);
+ //rint $sql; 
+$res=mysql_query($sql);
   while($row=mysql_fetch_array($res)){
-    if($row['Contact']==$q){
+    if($row['Contact Name']==$q){
       
-      $candidates[$row['Customer Key']]=120;
+      $candidates[$row['Subject Key']]=120;
     }else{
 
-      $len_name=$row['Contact'];
+      $len_name=$row['Contact Name'];
       $len_q=strlen($q);
       $factor=$len_name/$len_q;
-      $candidates[$row['Customer Key']]=100*$factor;
+      $candidates[$row['Subject Key']]=100*$factor;
     }   
   }
 
