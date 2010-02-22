@@ -774,7 +774,9 @@ function interval($days,$units='auto'){
   
 
 function get_time_interval($d1,$d2,$units='days'){
+
   $interval=$d2-$d1;
+
   switch($units){
   case('days'):
     $interval=number($interval/3600/24,2);

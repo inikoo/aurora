@@ -36,7 +36,7 @@
     <input size="25" class="text search" id="{$search_scope}_search" value="" name="search"/><img align="absbottom" id="{$search_scope}_submit_search" class="submitsearch" src="art/icons/zoom.png" alt="Submit search"><div id="{$search_scope}_search_Container" style="display:none"></div>
     <div style="position:relative;font-size:80%">
       <div id="{$search_scope}_search_results" style="display:none;background:#fff;border:1px solid #777;padding:10px;margin-top:0px;width:500px;position:absolute;z-index:20;left:-520px">
-	
+	<table id="{$search_scope}_search_results_table"></table>
 
 
 </div>

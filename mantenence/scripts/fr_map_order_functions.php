@@ -4356,8 +4356,10 @@ function read_header($raw_header_data,$map_act,$y_map,$map,$convert_encoding=tru
     $act_data['mob']=$cols[$map_act['mob']];
     $act_data['source']=$cols[$map_act['source']];
     $act_data['act']=$cols[$map_act['act']];
-    $act_data['email']=$cols[count($cols)-1];
     $act_data['country_d1']='';
+
+    $act_data['email']=$cols[$map_act['int_email']];
+
     //  if($act_data['a1']==0)$act_data['a1']='';
     //if($act_data['a2']==0)$act_data['a2']='';
     //if($act_data['a3']==0)$act_data['a3']='';

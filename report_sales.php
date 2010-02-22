@@ -35,12 +35,13 @@ $js_files=array(
 		);
 
 
+$stores=join(',',$user->stores);
 
 $smarty->assign('parent','reports');
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
 
-if(isset($_REQUEST['tipo']) and preg_match('/y|m|d|q|w|f/',$_REQUEST['tipo'])){
+if(isset($_REQUEST['tipo']) and preg_match('/y|m|d|q|w|f|all/',$_REQUEST['tipo'])){
   $tipo=$_REQUEST['tipo'];
   $_SESSION['state']['reports']['sales']['tipo']=$tipo;
 }else{
@@ -50,21 +51,22 @@ if(isset($_REQUEST['tipo']) and preg_match('/y|m|d|q|w|f/',$_REQUEST['tipo'])){
 
 
 $root_title=_('Sales Report');
-
+if(isset($_REQUEST['store_key']) and is_numeric($_REQUEST['store_key']))
+  $_SESSION['state']['report']['sales']['store_key']=$_REQUEST['store_key'];
+$store_key=$_SESSION['state']['report']['sales']['store_key'];
 
 include_once('report_dates.php');
 
 
 
 
-if(isset($_REQUEST['store_key']) and is_numeric($_REQUEST['store_key']))
-  $_SESSION['state']['report']['sales']['store_key']=$_REQUEST['store_key'];
+
 
 
 $_SESSION['state']['report']['sales']['to']=$to;
 $_SESSION['state']['report']['sales']['from']=$from;
 $_SESSION['state']['report']['sales']['period']=$period;
-$store_key=$_SESSION['state']['report']['sales']['store_key'];
+
   
 /* $valid_rates=array( */
 /* 		   array('date'=>'01-01-2000','rate'=>17.5), */
@@ -104,8 +106,9 @@ $smarty->assign('balance',$interval_data['balance']);
 
 
 
-$day_interval=get_time_interval(strtotime($from),(strtotime($to)))+1;
 
+$formated_day_interval=get_time_interval(strtotime($from),(strtotime($to)))+1;
+$day_interval=(strtotime($to)-strtotime($from))/3600/24;
    if($day_interval>=7){
      $_from=$from;
      $_to=$to;
