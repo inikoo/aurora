@@ -219,7 +219,7 @@ function search_customer($data){
     $stores=join(',',$user->stores);
     
   $candidates=array();
-  $sql=sprintf('select `Customer Key`,`Customer Name` from `Customer Dimension` where `Customer Store Key` in (%s) and `Customer Name`  like "%s%%" limit 100 ',$stores,$q);
+  $sql=sprintf('select `Customer Key`,`Customer Name` from `Customer Dimension` where `Customer Store Key` in (%s) and `Customer Name`   REGEXP "[[:<:]]%s" limit 100 ',$stores,$q);
   //print $sql;
   $res=mysql_query($sql);
   while($row=mysql_fetch_array($res)){
