@@ -49,7 +49,7 @@ mysql_free_result($result);
    
    $int[0]='and `Invoice Store Key` in ('.addslashes($store_key).') '.$int[0];
    
-
+   //print $int[0]."<br>";
 
   // Get refunds first
   

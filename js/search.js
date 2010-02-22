@@ -43,13 +43,18 @@ function search_customers_in_store(query){
 }
 
 
+function go_to_result(){
+    location.href=this.getAttribute('link')+this.getAttribute('key');
+}
+
+
     function search_customers(query,scope){
     
      
 
     var ar_file='ar_search.php';
     var request='tipo=customers&q='+escape(query)+'&scope='+scope;
-    
+    //alert(request)
     var search_scope='customers';
     var result_categories={'emails':1,'names':1,'contacts':1,'locations':1,'tax_numbers':1}
     
@@ -57,9 +62,12 @@ function search_customers_in_store(query){
 				    'POST',
 				    ar_file, {
 					success:function(o) {
-					      alert(o.responseText);
+					    //alert(o.responseText);
 					    var r = YAHOO.lang.JSON.parse(o.responseText);
 					    if (r.state == 200) {
+					
+						    Dom.get(search_scope+'_search_results').removeChild(Dom.get(search_scope+'_search_results_table'));
+
 						if(r.data.results==0){
 						 //    Dom.get(search_scope+'_search_results').style.display='none';
 // 						    for (i in result_categories){
@@ -69,24 +77,50 @@ function search_customers_in_store(query){
 // 						    }
 						    
 						    Dom.get(search_scope+'_search_results').style.display='none';
-						    Dom.get(search_scope+'_search_results').innerHTML=''
-						    
+						    //Dom.get(search_scope+'_search_results').innerHTML=''
+						    oTbl=document.createElement("Table");
+						    oTbl.id=search_scope+'_search_results_table';
+						    Dom.get(search_scope+'_search_results').appendChild(oTbl);
 
 						}else{
 						    
 						    
 			 			    Dom.get(search_scope+'_search_results').style.display='';
-						    Dom.get(search_scope+'_search_results').innerHTML=r.data;
+						    
 
-// 						    for (i in result_categories){
-// 							if(r.data[i]>0){
-// 							    Dom.get(search_scope+'_search_'+i).style.display='';
-// 							    Dom.get(search_scope+'_search_'+i+'_results').innerHTML=r.data[i+'_results']+' '+r.data.results;
-// 							}else{
-// 							    Dom.get(search_scope+'_search_'+i).style.display='none';
-// 							    Dom.get(search_scope+'_search_'+i+'_results').innerHTML='';
-// 							}
-// 						    }
+
+						    oTbl=document.createElement("Table");
+						    Dom.addClass(oTbl,'search_result');
+						    var link=r.link;
+						    var first=true;
+						    for(result_key in r.data){
+							oTR= oTbl.insertRow(-1);
+							oTR.setAttribute('key',result_key);
+							oTR.setAttribute('link',link);
+
+							
+							oTR.onclick = go_to_result;
+							var oTD= oTR.insertCell(0);
+							Dom.addClass(oTD,'naked');
+						
+							if(first){
+							    oTD.innerHTML='<img src="art/icons/arrow_right.png" alt="go">';
+
+							first=false;
+							}
+
+							var oTD= oTR.insertCell(1);
+							oTD.innerHTML=r.data[result_key ].key;
+							var oTD= oTR.insertCell(2);
+							oTD.innerHTML=r.data[result_key ].name;
+							var oTD= oTR.insertCell(3);
+							oTD.innerHTML=r.data[result_key ].address
+
+						    }
+						    oTbl.id=search_scope+'_search_results_table';
+						    Dom.get(search_scope+'_search_results').appendChild(oTbl);
+						 
+// 						    
 						    
 
 						}

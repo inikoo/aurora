@@ -166,16 +166,26 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    var from=Dom.get('v_calpop1').value;
 	    var to=Dom.get('v_calpop2').value;
 	    location.href='report_sales.php?tipo=f&from='+from+'&to='+to; 
-	}
+	};
+
+function quick_link(e,tipo){
+    location.href='report_sales.php?tipo='+tipo;
+};
+
 function init(){
 
-var oACDS = new YAHOO.util.FunctionDataSource(mygetTerms);
- oACDS.queryMatchContains = true;
- var oAutoComp = new YAHOO.widget.AutoComplete("f_input0","f_container0", oACDS);
- oAutoComp.minQueryLength = 0; 
+
+    Event.addListener('quick_all', "click", quick_link,'all');
 
 
- panel1 = new YAHOO.widget.Panel("orders1", { visible:false, constraintoviewport:true } );
+
+    var oACDS = new YAHOO.util.FunctionDataSource(mygetTerms);
+    oACDS.queryMatchContains = true;
+    var oAutoComp = new YAHOO.widget.AutoComplete("f_input0","f_container0", oACDS);
+    oAutoComp.minQueryLength = 0; 
+    
+    
+    panel1 = new YAHOO.widget.Panel("orders1", { visible:false, constraintoviewport:true } );
     panel1.render();
 
     YAHOO.util.Event.addListener("invoices", "click", show_invoices);
@@ -188,14 +198,14 @@ var oACDS = new YAHOO.util.FunctionDataSource(mygetTerms);
 
 
 
-	Event.addListener('go_free_report', "click", go_free);
-
-cal2 = new YAHOO.widget.Calendar("cal2","cal2Container", { title:"<?php echo _('Choose a date')?>:", close:true } );
- 
-	cal2.update=updateCal;
-
-	cal2.id=2;
-	cal2.render();
+    Event.addListener('go_free_report', "click", go_free);
+    
+    cal2 = new YAHOO.widget.Calendar("cal2","cal2Container", { title:"<?php echo _('Choose a date')?>:", close:true } );
+    
+    cal2.update=updateCal;
+    
+    cal2.id=2;
+    cal2.render();
 
 	cal2.cfg.setProperty("iframe", true);
 	

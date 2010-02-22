@@ -2,7 +2,19 @@
 
 
 
-if($tipo=='f'){
+if($tipo=='all'){
+  $tipo='f';
+  $sql=sprintf("select DATE(min(`Invoice Date`)) as date  from `Invoice Dimension` where `Invoice Store Key`=%d",$store_key);;
+ $res=mysql_query($sql);
+  if($row=mysql_fetch_array($res)){
+    $from=date("d-m-Y",strtotime($row['date']));
+  }
+  $to=date("d-m-Y");
+  $title=$root_title;
+  $period='';
+ $link="&tipo=f&from=".$from."&to=".$to;
+ //print $link;
+}elseif($tipo=='f'){
 
   $from=$_REQUEST['from'];
   $to=$_REQUEST['to'];

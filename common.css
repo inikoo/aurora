@@ -699,3 +699,8 @@ position:relative;top:1px;
 .quick_button td:hover{background:#131536;}
 
 .table_type {margin-top:.6em}
+
+.search_result{color:#777;width:98%;float:right}
+.search_result tr{cursor:pointer}
+.search_result td{padding:2px 10px;border-top:1px solid #ccc;border-bottom:1px solid #aaa}
+.search_result td.naked {cursor:default;border:none}

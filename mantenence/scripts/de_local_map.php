@@ -119,7 +119,7 @@ $_map_act['mob']=15;
 $_map_act['source']=25;
 $_map_act['act']=38;
 $_map_act['tax_number']=87;
-
+$_map_act['int_email']=40;
 
 
 

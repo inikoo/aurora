@@ -8,7 +8,7 @@ function change_plot(o){
 	var tipo=o.getAttribute("tipo");
 	var category=o.getAttribute("category");
 	var period=o.getAttribute("period");
-alert(category)
+	//alert(category)
 
 	if(tipo=='pie'){
 	    plot='pie';

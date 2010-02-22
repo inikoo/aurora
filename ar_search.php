@@ -234,18 +234,18 @@ function search_customer($data){
     }   
   }
 
-  $sql=sprintf('select `Subject Key`,`Email` from `Email Bridge` EB  left join `Email Dimension` E on (EB.`Email Key`=E.`Email Key`) left join `Customer Dimension` CD on (CD.`Customer Key`=`Subject Key`)  where `Customer Store Key` in (3)  and `Subject Type`="Customer" and  `Email`  like "%s%%" limit 100 ',$stores,$q);
+  $sql=sprintf('select `Subject Key`,`Email` from `Email Bridge` EB  left join `Email Dimension` E on (EB.`Email Key`=E.`Email Key`) left join `Customer Dimension` CD on (CD.`Customer Key`=`Subject Key`)  where `Customer Store Key` in (%s)  and `Subject Type`="Customer" and  `Email`  like "%s%%" limit 100 ',$stores,$q);
   $res=mysql_query($sql);
   while($row=mysql_fetch_array($res)){
     if($row['Email']==$q){
       
-      $candidates[$row['Customer Key']]=120;
+      $candidates[$row['Subject Key']]=120;
     }else{
 
       $len_name=strlen($row['Email']);
       $len_q=strlen($q);
  $factor=$len_q/$len_name;
-      $candidates[$row['Customer Key']]=100*$factor;
+      $candidates[$row['Subject Key']]=100*$factor;
     }   
   }
   //print_r($candidates);
@@ -295,6 +295,7 @@ function search_customer($data){
   if($total_candidates==0){
     $response=array('state'=>200,'results'=>0,'data'=>'');
     echo json_encode($response);
+    return;
   }
   
 
@@ -303,7 +304,7 @@ function search_customer($data){
 
   $results=array();
  
-  //print_r($candidates);
+
   foreach($candidates as $key=>$val){
     $counter++;
     $customer_keys.=','.$key;
@@ -313,21 +314,29 @@ function search_customer($data){
   }
   $customer_keys=preg_replace('/^,/','',$customer_keys);
 
-  $sql=sprintf("select `Customer Key`,`Customer Name`,`Customer Type`,`Customer Main XHTML Email`,`Customer Main Location`,`Customer Tax Number` from `Customer Dimension` where `Customer Key` in (%s)",$customer_keys);
+  $sql=sprintf("select `Customer Key`,`Customer Main Contact Name`,`Customer Name`,`Customer Type`,`Customer Main Plain Email`,`Customer Main Location`,`Customer Tax Number` from `Customer Dimension` where `Customer Key` in (%s)",$customer_keys);
    $res=mysql_query($sql);
-   // print $sql; 
 
-$customer_card='<table>'
+
+   //   $customer_card='<table>';
  while($row=mysql_fetch_array($res)){
 
-    $customer_card.='<tr><td>'.$row['Customer Name'].'</td></tr>';
+   if($row['Customer Type']=='Company'){
+     $name=$row['Customer Name'].'<br/>'.$row['Customer Main Contact Name'];
+   }else{
+     $name=$row['Customer Name'];
 
-    $results[$row['Customer Key']]=$customer_card;
+   }
+
+   $address=$row['Customer Main Plain Email'].'<br/>'.$row['Customer Main Location'];
+
+
+   $results[$row['Customer Key']]=array('key'=>sprintf('%05d',$row['Customer Key']),'name'=>$name,'address'=>$address);
   }
-$customer_card.='</table>'
+ //$customer_card.='</table>';
 
   
-  $response=array('state'=>200,'results'=>count($results),'data'=>$results);
+ $response=array('state'=>200,'results'=>count($results),'data'=>$results,'link'=>'customer.php?id=');
   echo json_encode($response);
   
 }
