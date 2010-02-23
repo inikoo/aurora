@@ -149,7 +149,7 @@ $history_data=get_history_data($act_data['history']);
     //  print ($act_data['tax_number']."\n");
     //      if($row>4000)
     //  break;
-      print "$row\r";
+    //      print "$row\r";
 
        // print_r($cols);
     
@@ -171,11 +171,11 @@ usort($contacts, 'compare');
 //$fp = fopen('contacts_act_file.csv', 'w');
 //foreach ($contacts as $line) {    fputcsv($fp, $line);}
 //fclose($fp);
-print "\n";
+//print "\n";
 $contador=0;
 foreach($contacts as $act_data){
   $contador++;
-  print "$contador\r";
+  //  print "$contador\r";
 
  // if(strtotime($act_data['creation_date'])<=strtotime('2006-10-22'))
  //   continue;

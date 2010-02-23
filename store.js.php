@@ -355,6 +355,14 @@ function change_avg(e,table_id){
 
 
  function init(){
+
+     search_scope='products';
+     var store_name_oACDS = new YAHOO.util.FunctionDataSource(search_products_in_store);
+     store_name_oACDS.queryMatchContains = true;
+     var store_name_oAutoComp = new YAHOO.widget.AutoComplete(search_scope+"_search",search_scope+"_search_Container", store_name_oACDS);
+     store_name_oAutoComp.minQueryLength = 0; 
+     store_name_oAutoComp.queryDelay = 0.15;
+
  var Dom   = YAHOO.util.Dom;
  var oACDS = new YAHOO.util.FunctionDataSource(mygetTerms);
  oACDS.queryMatchContains = true;

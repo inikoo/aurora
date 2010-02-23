@@ -39,23 +39,23 @@ var submit_search=function(e,data){
 
 
 function search_customers_in_store(query){
-    search_customers(query,'store');
+    search(query,'customers','store');
 }
-
+function search_products_in_store(query){
+    search(query,'products','store');
+}
 
 function go_to_result(){
     location.href=this.getAttribute('link')+this.getAttribute('key');
 }
 
 
-    function search_customers(query,scope){
-    
-     
-
+function search(query,subject,scope){
     var ar_file='ar_search.php';
-    var request='tipo=customers&q='+escape(query)+'&scope='+scope;
-    //alert(request)
-    var search_scope='customers';
+
+    var request='tipo='+subject+'&q='+escape(query)+'&scope='+scope;
+    //  alert(request)
+    //	return;
     var result_categories={'emails':1,'names':1,'contacts':1,'locations':1,'tax_numbers':1}
     
     YAHOO.util.Connect.asyncRequest(
@@ -66,26 +66,26 @@ function go_to_result(){
 					    var r = YAHOO.lang.JSON.parse(o.responseText);
 					    if (r.state == 200) {
 					
-						    Dom.get(search_scope+'_search_results').removeChild(Dom.get(search_scope+'_search_results_table'));
+						    Dom.get(subject+'_search_results').removeChild(Dom.get(subject+'_search_results_table'));
 
 						if(r.data.results==0){
-						 //    Dom.get(search_scope+'_search_results').style.display='none';
+						 //    Dom.get(subject+'_search_results').style.display='none';
 // 						    for (i in result_categories){
-// 							Dom.get(search_scope+'_search_'+i).style.display='none';
-// 							Dom.get(search_scope+'_search_'+i+'_results').innerHTML='';
+// 							Dom.get(subject+'_search_'+i).style.display='none';
+// 							Dom.get(subject+'_search_'+i+'_results').innerHTML='';
 							
 // 						    }
 						    
-						    Dom.get(search_scope+'_search_results').style.display='none';
-						    //Dom.get(search_scope+'_search_results').innerHTML=''
+						    Dom.get(subject+'_search_results').style.display='none';
+						    //Dom.get(subject+'_search_results').innerHTML=''
 						    oTbl=document.createElement("Table");
-						    oTbl.id=search_scope+'_search_results_table';
-						    Dom.get(search_scope+'_search_results').appendChild(oTbl);
+						    oTbl.id=subject+'_search_results_table';
+						    Dom.get(subject+'_search_results').appendChild(oTbl);
 
 						}else{
 						    
 						    
-			 			    Dom.get(search_scope+'_search_results').style.display='';
+			 			    Dom.get(subject+'_search_results').style.display='';
 						    
 
 
@@ -95,11 +95,13 @@ function go_to_result(){
 						    var first=true;
 						    for(result_key in r.data){
 							oTR= oTbl.insertRow(-1);
-							oTR.setAttribute('key',result_key);
-							oTR.setAttribute('link',link);
+
+
+						
 
 							
-							oTR.onclick = go_to_result;
+							
+
 							var oTD= oTR.insertCell(0);
 							Dom.addClass(oTD,'naked');
 						
@@ -109,16 +111,30 @@ function go_to_result(){
 							first=false;
 							}
 
-							var oTD= oTR.insertCell(1);
-							oTD.innerHTML=r.data[result_key ].key;
-							var oTD= oTR.insertCell(2);
-							oTD.innerHTML=r.data[result_key ].name;
-							var oTD= oTR.insertCell(3);
-							oTD.innerHTML=r.data[result_key ].address
+							if(subject=='customers'){
+							    oTR.setAttribute('key',result_key);
+							    oTR.setAttribute('link',link);
+							    var oTD= oTR.insertCell(1);
+							    oTD.innerHTML=r.data[result_key ].key;
+							    var oTD= oTR.insertCell(2);
+							    oTD.innerHTML=r.data[result_key ].name;
+							    var oTD= oTR.insertCell(3);
+							    oTD.innerHTML=r.data[result_key ].address;
+							}else if(subject=='products'){
+							    oTR.setAttribute('key',r.data[result_key ].key);
+							    oTR.setAttribute('link',r.data[result_key ].link);
+							    
+							    var oTD= oTR.insertCell(1);
+							    oTD.innerHTML=r.data[result_key ].code;
+							    var oTD= oTR.insertCell(2);
+							    oTD.innerHTML=r.data[result_key ].description;
 
+							}
+							oTR.onclick = go_to_result;
+							
 						    }
-						    oTbl.id=search_scope+'_search_results_table';
-						    Dom.get(search_scope+'_search_results').appendChild(oTbl);
+						    oTbl.id=subject+'_search_results_table';
+						    Dom.get(subject+'_search_results').appendChild(oTbl);
 						 
 // 						    
 						    

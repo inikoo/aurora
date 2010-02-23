@@ -13,13 +13,21 @@ if (!isset($_REQUEST['tipo'])) {
 $tipo=$_REQUEST['tipo'];
 switch ($tipo) {
 
-case('product'):
-case('product_manage_stock'):
-case('edit_product'):
- $q=$_REQUEST['q'];
-search_products($q,$tipo,$user);
- 
-    return;
+case('products'):
+  //case('product_manage_stock'):
+  //case('edit_product'):
+  //$q=$_REQUEST['q'];
+  //search_products($q,$tipo,$user);
+  $data=prepare_values($_REQUEST,array(
+			     'q'=>array('type'=>'string')
+			     ,'scope'=>array('type'=>'string')
+			     ));
+    $data['user']=$user;
+   search_products($data);
+   break;
+
+
+    
 case('location'):
     $q=$_REQUEST['q'];
      search_location($q,$tipo,$user);
@@ -441,7 +449,137 @@ mysql_free_result($result);
 
 }
 
-function search_products($q,$tipo,$user){
+
+function search_products($data){
+$max_results=10;
+ $user=$data['user'];
+  $q=$data['q'];
+    // $q=_trim($_REQUEST['q']);
+    
+  if($q==''){
+    $response=array('state'=>200,'results'=>0,'data'=>'');
+    echo json_encode($response);
+    
+  }
+
+
+  if($data['scope']=='store'){
+    $stores=$_SESSION['state']['customers']['store'];
+    
+  }else
+    $stores=join(',',$user->stores);
+
+ $candidates=array();
+ $sql=sprintf('select `Product Family Key`,`Product Family Code` from `Product Family Dimension` where `Product Family Store Key` in (%s) and `Product Family Code` like "%s%%" limit 100 ',$stores,addslashes($q));
+  //print $sql;
+  $res=mysql_query($sql);
+  while($row=mysql_fetch_array($res)){
+    if($row['Product Family Code']==$q)
+      $candidates['F '.$row['Product Family Key']]=210;
+    else{
+
+      $len_name=strlen($row['Product Family Code']);
+      $len_q=strlen($q);
+      $factor=$len_q/$len_name;
+      $candidates['F '.$row['Product Family Key']]=200*$factor;
+    }   
+  }
+ $sql=sprintf('select `Product ID`,`Product Code` from `Product Dimension` where `Product Store Key` in (%s) and `Product Code` like "%s%%" limit 100 ',$stores,addslashes($q));
+  //print $sql;
+  $res=mysql_query($sql);
+  while($row=mysql_fetch_array($res)){
+    if($row['Product Code']==$q)
+      $candidates['P '.$row['Product ID']]=110;
+    else{
+
+      $len_name=strlen($row['Product Code']);
+      $len_q=strlen($q);
+      $factor=$len_q/$len_name;
+      $candidates['P '.$row['Product ID']]=100*$factor;
+    }   
+  }
+
+
+  
+ arsort($candidates);
+ // $candidates=array_reverse($candidates);
+ //print_r($candidates); 
+ $total_candidates=count($candidates);
+  
+  if($total_candidates==0){
+    $response=array('state'=>200,'results'=>0,'data'=>'');
+    echo json_encode($response);
+    return;
+  }
+  
+
+  $counter=0;
+  $customer_keys='';
+
+  $results=array();
+  $family_keys='';
+  $products_keys='';
+
+  foreach($candidates as $key=>$val){
+    $_key=preg_split('/ /',$key);
+    if($_key[0]=='F'){
+      $family_keys.=','.$_key[1];
+      $results[$key]='';
+    }else{
+      $products_keys.=','.$_key[1];
+      $results[$key]='';
+
+    }
+    
+    $counter++;
+
+    if($counter>$max_results)
+      break;
+  }
+  $family_keys=preg_replace('/^,/','',$family_keys);
+  $products_keys=preg_replace('/^,/','',$products_keys);
+
+  if($family_keys){
+    $sql=sprintf("select `Product Family Key`,`Product Family Name`,`Product Family Code`  from `Product Family Dimension` where `Product Family Key` in (%s)",$family_keys);
+    $res=mysql_query($sql);
+    while($row=mysql_fetch_array($res)){
+      
+      $results['F '.$row['Product Family Key']]=array('code'=>$row['Product Family Code'],'description'=>$row['Product Family Name'],'link'=>'family.php?id=','key'=>$row['Product Family Key']);
+    }
+  }
+
+  if($products_keys){
+    $sql=sprintf("select `Product ID`,`Product XHTML Short Description`,`Product Code`  from `Product Dimension` where `Product ID` in (%s)",$products_keys);
+    $res=mysql_query($sql);
+    while($row=mysql_fetch_array($res)){
+     
+      $results['P '.$row['Product ID']]=array('code'=>$row['Product Code'],'description'=>$row['Product XHTML Short Description'],'link'=>'product.php?pid=','key'=>$row['Product ID']);
+    }
+  }
+
+  
+
+  
+ $response=array('state'=>200,'results'=>count($results),'data'=>$results,'link'=>'');
+  echo json_encode($response);
+
+
+
+
+
+
+
+
+
+
+
+
+
+}
+
+
+
+function search_products_old($q,$tipo,$user){
   global $myconf;
  if ($tipo=='product_manage_stock')
         $target='product_manage_stock.php';

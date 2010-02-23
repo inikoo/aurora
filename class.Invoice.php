@@ -96,6 +96,8 @@ class Invoice extends DB_Table {
       $sql=sprintf("select * from `Invoice Dimension` where  `Invoice Public ID`=%s",prepare_mysql($tag));
     else
       return;
+    //print $sql;
+
     $result=mysql_query($sql);
     if($this->data=mysql_fetch_array($result, MYSQL_ASSOC)   )
       $this->id=$this->data['Invoice Key'];

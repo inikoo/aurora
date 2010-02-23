@@ -40,9 +40,12 @@ $forecast=true;
 
 
 
-//$tm=new TimeSeries(array('w','product id (7279) sales'));
-// $tm->get_values();$tm->save_values();
-//exit;
+$tm=new TimeSeries(array('m','invoice category:UK-AWR'));
+//print_r($tm);
+ $tm->get_values();$tm->save_values();
+exit;
+
+
 
 if(true){
   print "inv\n";
