@@ -60,7 +60,40 @@ Class TimeSeries  {
 
         if (!$this->name or !$this->freq)
             return;
-        if (preg_match('/invoices? profit/i',$this->name)) {
+
+	if(preg_match('/^invoice category:/i',$this->name)){
+
+	  $category=_trim(preg_replace('/^invoice category:/','',$this->name));
+	  if(!is_numeric($category))
+	    $sql=sprintf("select *  from `Invoice Category Dimension` where `Invoice Category Code`=%s",prepare_mysql($category));
+	  else
+	    $sql=sprintf("select *  from `Invoice Category Dimension` where `Invoice Category Key`=%d",$category);
+
+	  //print $sql;
+
+	  $res=mysql_query($sql);
+	  if($row=mysql_fetch_array($res)){
+	    $category_key=$row['Invoice Category Key'];
+	    $category_code=$row['Invoice Category Code'];
+
+	  }else{
+	    $this->error=true;
+	    $this->msg="Invoice category not found";
+	   
+	    return;
+	  }
+
+	  $this->name_key=$category_key;
+	  $this->name='invoice cat';
+	  $this->count='count(*)';
+	  $this->date_field='`Invoice Date`';
+	  $this->table='`Invoice Dimension`';
+	  $this->value_field='`Invoice Currency Exchange`*`Invoice Total Net Amount`';
+	  $this->max_forecast_bins=12;
+	  $this->where=sprintf(' and `Invoice Category Key`=%d',$category_key);
+	  $this->label=_('Sales')." (".$category_code.")";
+		
+        }elseif (preg_match('/invoices? profit/i',$this->name)) {
             $this->name='profit';
             $this->count='count(*)';
             $this->date_field='`Invoice Date`';
@@ -548,18 +581,20 @@ Class TimeSeries  {
 
 
     function get_values() {
-
-        if ($this->to_present) {
-            $this->last_date=date('Y-m-d');
-        } else {
-            if (!$this->last_date=$this->last_date()) {
-                $this->values=array();
-                return;
-            }
-        }
+     
+      if ($this->to_present) {
+	$this->last_date=date('Y-m-d');
+      } else {
+	if (!$this->last_date=$this->last_date()) {
+	 
+	  print "caca";
+	  return;
+	}
+      }
 
         switch ($this->freq) {
         case('Monthly'):
+	
             $this->get_values_per_month();
             break;
         case('Yearly'):
@@ -583,9 +618,10 @@ Class TimeSeries  {
 
     function save_values() {
 
+
         if ($this->no_data)
             return;
-
+ 
         $sql=sprintf("update `Time Series Dimension` set `Time Series Tag`='D' where `Time Series Name` in (%s) and `Time Series Frequency`=%s and `Time Series Name Key`=%d  and `Time Series Name Second Key`=%d  "
                      ,prepare_mysql($this->name)
                      ,prepare_mysql($this->freq)
@@ -593,7 +629,6 @@ Class TimeSeries  {
                      ,$this->name_key2
 
                     );
-        //print $sql;
 
         if (!isset($this->first)) {
             print_r($this);
@@ -632,7 +667,7 @@ Class TimeSeries  {
                          ,$this->parent_key
                         );
             mysql_query($sql);
-            //print "$sql<br>";
+	    // print "$sql<br>";
         }
 
         if (isset($this->current)) {
@@ -675,8 +710,10 @@ Class TimeSeries  {
                      ,$this->name_key
                      ,$this->name_key2
 		     ,prepare_mysql($label)
-		     ,prepare_mysql($this->metadata)
+		     ,prepare_mysql($this->metadata,false)
                     );
+
+		print $sql;
 
         mysql_query($sql);
 
@@ -1029,7 +1066,7 @@ Class TimeSeries  {
                      ,prepare_mysql($this->start_date)
                      ,prepare_mysql($this->last_date)
                     );
-        //print $sql;
+	
         $res=mysql_query($sql);
         $this->values=array();
         while ($row=mysql_fetch_array($res)) {
@@ -1051,7 +1088,7 @@ Class TimeSeries  {
                      ,$this->where
                     );
 
-        //print "$sql\n";
+	//  print "$sql\n";
         //exit;
         $res=mysql_query($sql);
 
@@ -1481,7 +1518,7 @@ Class TimeSeries  {
                      ,$this->where
                      ,$this->date_field
                     );
-        // print $sql;
+         print $sql;
         $res=mysql_query($sql);
         if ($row=mysql_fetch_array($res)) {
             return $row['date'];
@@ -1698,7 +1735,7 @@ Class TimeSeries  {
 
             if ($tipo=='SI' or $tipo=='PI') {
                 $tip=$row['Time Series Label'].' '._('Sales')
-                     ." ".strftime("%B %Y", strtotime('@'.$row['date']))."\n".money($row['value'],$currency)."\n".$diff_prev_month.$diff_prev_year."(".$row['count']." "._('Invoices').")";
+		  ." ".strftime("%B %Y", strtotime('@'.$row['date']))."\n".money($row['value'],$currency).($row['Time Series Type']=='Forecast'?" ("._('Forecast').")":"")."\n".$diff_prev_month.$diff_prev_year."(".$row['count']." "._('Invoices').")";
 
             }
             elseif($tipo=="PO") {

@@ -13,10 +13,9 @@ if(!isset($_REQUEST['id']) or !is_numeric($_REQUEST['id']))
 $invoice_id=$_REQUEST['id'];
 
 $_SESSION['state']['invoice']['id']=$invoice_id;
-
-if(!$invoice=new Invoice($invoice_id))
+$invoice=new Invoice($invoice_id);
+if(!$invoice->id)
   exit(_('Error, invoice not found'));
-
 
 
 $customer=new Customer($invoice->data['Invoice Customer Key']);

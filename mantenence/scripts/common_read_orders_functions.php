@@ -116,6 +116,10 @@ function get_user_id($oname,$return_xhtml=false,$tag='',$order=''){
       $_name='jirina';
     else if($_name=='agh')
       $_name='agmet';
+  else if($_name=='steffanie')
+      $_name='stefanie';
+ else if($_name=='kerrry')
+      $_name='kerry';
     else if($_name=='anthony' or $_name=='antony')
       $_name='anthony';
     else if(preg_match('/martina otte/i',$_name))
@@ -134,8 +138,8 @@ function get_user_id($oname,$return_xhtml=false,$tag='',$order=''){
     }else{
       
       // print "$original_name\n";
-      $valid_names=array('darna','jarina','mini','andrea','scott','mark','janka','peter','lyndsey','rebecca','michell','samantha','richard','albert','debbie','chris','barry','donna','malcolm','michelle','adriana','daniela'
-			 ,'stacey','matus','lucie','caleb','olga','bev','jim','eliska','carole,','zoe','katka','urszula','dana','craig','tomas','eric','neil','slavka','anthony','anita','annetta','simon','stefanie','steve','agmet','nabil','brett');
+      $valid_names=array('darna','jarina','mini','andrea','scott','mark','janka','peter','lyndsey','rebecca','micheal','samantha','richard','albert','debbie','chris','barry','donna','malcolm','michelle','adriana','daniela'
+			 ,'stacey','matus','lucie','caleb','olga','bev','jim','eliska','carole','zoe','katka','urszula','dana','craig','tomas','eric','neil','slavka','anthony','anita','annetta','simon','stefanie','steve','agmet','nabil','brett','jirina');
       
       $contact_name=$_name;
       
