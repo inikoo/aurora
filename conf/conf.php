@@ -66,7 +66,7 @@ $myconf=array(
             'cache_dir' => 'server_files/smarty/cache',
             'config_dir' => 'server_files/smarty/configs',
             'images_dir' => 'server_files/images/',
-            'yui_version'=>'2.7.0',
+            'yui_version'=>'2.8.0r4',
             'staff_prefix'=>'SF',
             'supplier_id_prefix'=>'S',
             'po_id_prefix'=>'PO',
@@ -1249,31 +1249,34 @@ $default_state=array(
                                                   )
                               ),
                    'report'=>array(
-                   'tipo'=>'m'
-                   ,'y'=>date('Y')
-                   ,'m'=>date('m')
-                   ,'d'=>date('d')
-                   ,'w'=>1
-                   ,'activity'=>array('compare'=>'last_year','period'=>'week'),
+				   'tipo'=>'m'
+				   ,'y'=>date('Y')
+				   ,'m'=>date('m')
+				   ,'d'=>date('d')
+				   ,'w'=>1
+				   ,'activity'=>array('compare'=>'last_year','period'=>'week'),
                    
-                                'sales'=>array(
-                                            'store_key'=>1,
-                                            'from'=>'',
-                                            'to'=>'',
-                                            'period'=>'',
-                                            'order'=>'date',
-                                            'order_dir'=>'desc',
-                                            'sf'=>0,
-                                            'nr'=>25,
-                                            'plot'=>'sales',
-                                            'plot_data'=>array('sales'=>array(
-                                                                           'category'=>'sales',
-                                                                           'page'=>'plot.php'
-                                                                       )
-                                                                       ,'growth'=>array(
-                                                                                     'category'=>'growth',
-                                                                                     'page'=>'plot.php'
-                                                                                 )
+				   'sales'=>array(
+						  'store_key'=>1,
+						  'from'=>'',
+						  'to'=>'',
+						  'period'=>'',
+						  'order'=>'date',
+						  'order_dir'=>'desc',
+						  'sf'=>0,
+						  'nr'=>25,
+						  'plot'=>'per_store',
+						  'plot_data'=>array('per_store'=>array(
+											'category'=>'sales',
+											'page'=>'plot.php',
+											'period'=>'m'
+											
+											)
+								     ,'per_category'=>array(
+											    'category'=>'sales',
+											    'page'=>'plot.php',
+											    'period'=>'m'
+											    )
                                                               ),
                                         ),
                                 'pickers'=>array(

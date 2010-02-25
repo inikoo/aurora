@@ -16,6 +16,10 @@ $color_palette=array(
 		     ,array('value'=>'0x4dbc9b','forecast'=>'0x99edd4')
 		     ,array('value'=>'0xe2654f','forecast'=>'0xef9f91')
 		     ,array('value'=>'0x4c77d1','forecast'=>'0x97b3ed')
+
+
+		     
+		     
 		     );
   
 
@@ -37,7 +41,29 @@ if(isset($_REQUEST['currency']))
   $currency_symbol=currency_symbol($_REQUEST['currency']);
 
 switch($tipo){
+case('invoice_categories'):
 
+  $keys=$_REQUEST['keys'];
+  $array_keys=preg_split('/,/',preg_replace('/\(|\)/','',$keys));
+  //  print_r($array_keys);
+  $title="";
+  $ar_address='ar_plot.php?tipo=general&item=invoice_category&category=&period=m&stack=yes&item_keys='.$keys;
+  //  print  $ar_address;
+  $fields='"date"';
+  $yfields=array();
+  foreach($array_keys as $key){
+    $fields.=',"key_'.$key.'","tip_key_'.$key.'"';
+    $yfields[]=array('label'=>'Category '.$key,'name'=>'key_'.$key,'style'=>'size:5');
+  }
+
+  $yfield_label_type='formatCurrencyAxisLabel';
+
+   $xfield=array('label'=>_('Date'),'name'=>'date','tipo_axis'=>'Category','axis'=>'justyears');
+   $style='';
+   $staked=true;
+   $tipo_chart='ColumnChart';
+render_flash_plot();
+  break;
 case('sales_by_store');
 case('sales_share_by_store');
 plot_sales_by_store($tipo);
@@ -524,6 +550,8 @@ $out='<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN""http://www.
  <script type="text/javascript" src="'.$yui_path.'utilities/utilities.js"></script>
        <script type="text/javascript" src="'.$yui_path.'json/json-min.js"></script>
        <script type="text/javascript" src="'.$yui_path.'datasource/datasource-min.js"></script>
+<script type="text/javascript" src="'.$yui_path.'swf/swf-min.js"></script>
+
        <script type="text/javascript" src="'.$yui_path.'charts/charts-min.js"></script>
 
 </head> <body><div style="font-size:8pt;height:300px" id=plot>'.$alt.'</div><div style="font-family:Verdana, Arial, sans-serif;text-align:center;font-size:10pt;position:relative;bottom:300px;">'.$title.'</div></body>
@@ -630,7 +658,7 @@ style:{'.$style.'}          ,
          dataTipFunction: "DataTipText",
  	 style:styleDef,
          expressInstall: "assets/expressinstall.swf",
-         polling: 2000 
+         polling: 1800000 
  	});
 
 
@@ -855,7 +883,7 @@ function plot_assets(){
 		      );
   
   
-  //print $ar_address;
+  // print $ar_address;
   $fields='"date"';
     foreach($item_key_array as $key){
       $fields.=',"value'.$key.'","tip_value'.$key.'","forecast'.$key.'","tip_forecast'.$key.'","tails'.$key.'","tip_tails'.$key.'"';

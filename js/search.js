@@ -62,13 +62,13 @@ function search(query,subject,scope){
 				    'POST',
 				    ar_file, {
 					success:function(o) {
-					    //alert(o.responseText);
+					    //   alert(o.responseText);
 					    var r = YAHOO.lang.JSON.parse(o.responseText);
 					    if (r.state == 200) {
 					
 						    Dom.get(subject+'_search_results').removeChild(Dom.get(subject+'_search_results_table'));
-
-						if(r.data.results==0){
+						    //alert(r.results)
+						if(r.results==0){
 						 //    Dom.get(subject+'_search_results').style.display='none';
 // 						    for (i in result_categories){
 // 							Dom.get(subject+'_search_'+i).style.display='none';
@@ -125,8 +125,10 @@ function search(query,subject,scope){
 							    oTR.setAttribute('link',r.data[result_key ].link);
 							    
 							    var oTD= oTR.insertCell(1);
-							    oTD.innerHTML=r.data[result_key ].code;
+							    oTD.innerHTML=r.data[result_key ].image;
 							    var oTD= oTR.insertCell(2);
+							    oTD.innerHTML=r.data[result_key ].code;
+							    var oTD= oTR.insertCell(3);
 							    oTD.innerHTML=r.data[result_key ].description;
 
 							}

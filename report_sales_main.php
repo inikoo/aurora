@@ -30,9 +30,9 @@ $js_files=array(
 		'common.js.php',
 		'table_common.js.php',
 		'calendar_common.js.php',
-		'report_sales_main.js.php',
+
 		'report_sales.js.php',
-		
+		'report_sales_main.js.php',
 		'js/dropdown.js'
 
 		);
@@ -49,8 +49,40 @@ if(isset($_REQUEST['tipo'])){
 }else
   $tipo=$_SESSION['state']['report']['tipo'];
 
+$sql=sprintf("select count(*) as num_stores from  `Store Dimension` ");
+$res=mysql_query($sql);
 
-$store_key=$user->stores;
+if($row=mysql_fetch_array($res)){
+  $num_stores=$row['num_stores'];
+}else{
+  exit("no stores");
+}
+
+
+$store_keys=join(',',$user->stores);
+$store_key=$store_keys;
+
+$sql=sprintf("select `Invoice Category Key` from  `Invoice Category Dimension` where `Store Key` in (%s)",$store_keys);
+//print $sql;
+$res=mysql_query($sql);
+$invoice_category_key=array();
+while($row=mysql_fetch_array($res)){
+  $invoice_category_key[]=$row['Invoice Category Key'];
+}
+
+
+
+if($num_stores==count($user->stores))
+  $store_keys='all';
+  
+  
+
+$smarty->assign('store_keys',$store_keys);
+
+
+$smarty->assign('invoice_category_keys','('.join(',',$invoice_category_key).')');
+
+
 include_once('report_dates.php');
 
 
@@ -246,14 +278,14 @@ $smarty->assign('currency',$myconf['currency_symbol']);
 
 
 
-  $plot_args='tipo=store&category='.$plot_category.'&period='.$plot_period.'&keys=all&from='.$from.'&to='.$to;
+  $plot_args='tipo=store&category='.$plot_category.'&period='.$plot_period.'&keys='.$store_keys.'&from='.$from.'&to='.$to;
   $smarty->assign('plot_tipo',$plot_tipo);
   $smarty->assign('plot_args',$plot_args);
   $smarty->assign('plot_page',$plot_data['page']);
   $smarty->assign('plot_period',$plot_period);
   $smarty->assign('plot_category',$plot_period);
-  $smarty->assign('plot_data',$_SESSION['state']['store']['plot_data']);
-
+  $smarty->assign('plot_data',$_SESSION['state']['report']['sales']['plot_data']);
+//print_r($_SESSION['state']['report']['sales']['plot_data']);
 
   if($plot_period=='m')
     $plot_formated_period='Monthly';
@@ -275,6 +307,20 @@ $smarty->assign('currency',$myconf['currency_symbol']);
   $smarty->assign('plot_formated_category',$plot_formated_category);
   $smarty->assign('plot_formated_period',$plot_formated_period);
 //}
+
+
+
+
+
+
+$plot_category_menu=array(
+		     array("category"=>'sales','label'=>_('Net Item Sales'))
+		     ,array("category"=>'profit','label'=>_('Profit'))
+		     );
+$smarty->assign('plot_category_menu',$plot_category_menu);
+
+
+
 
 $smarty->display('report_sales_main.tpl');
 ?>

@@ -17,16 +17,16 @@
 </table>
 
 <div id="plot" class="top_bar" style="position:relative;left:-20px;clear:both;padding:0;margin:0;{if !$display_plot}display:none{/if}">
-<div display="none" id="plot_info" keys="{$store->id}" ></div>
+<div display="none" id="plot_info" keys="{$store_keys}"  invoice_category_keys="{$invoice_category_keys}"   ></div>
       <ul id="plot_chooser" class="tabs" style="margin:0 20px;padding:0 20px "  >
 	<li>
-	  <span class="item {if $plot_tipo=='store'}selected{/if}" onClick="change_plot(this)" id="plot_store" tipo="store" category="{$plot_data.store.category}" period="{$plot_data.store.period}" >
-	    <span>Totals</span>
+	  <span class="item {if $plot_tipo=='per_store'}selected{/if}" onClick="change_plot(this)" id="plot_per_store" tipo="par_store" category="{$plot_data.per_store.category}" period="{$plot_data.per_store.period}" >
+	    <span>Invoices per Store</span>
 	  </span>
 	</li>
 	<li>
-	  <span class="item {if $plot_tipo=='growth'}selected{/if}"  id="plot_growth" onClick="change_plot(this)" tipo="growth" category="" period="" name=""  >
-	    <span>{t}Growth{/t}</span>
+	  <span class="item {if $plot_tipo=='per_category'}selected{/if}"  id="plot_per_category" onClick="change_plot(this)" tipo="per_category" category="{$plot_data.per_category.category}" period="{$plot_data.per_category.period}" name=""  >
+	    <span>{t}Invoices per Category{/t}</span>
 	  </span>
 	</li>
 
@@ -34,7 +34,8 @@
       
       <ul id="plot_options" class="tabs" style="{if $plot_tipo=='pie'}display:none{/if};position:relative;top:.6em;float:right;margin:0 20px;padding:0 20px;font-size:90% "  >
 	<li><span class="item"> <span id="plot_category"  category="{$plot_category}" style="xborder:1px solid black;display:inline-block; vertical-align:middle">{$plot_formated_category}</span></span></li>
-
+	<li><span class="item"> <span id="plot_period"   period="{$plot_period}" style="xborder:1px solid black;display:inline-block; vertical-align:middle">{$plot_formated_period}</span></span></li>
+    	
       </ul> 
 
       <div style="clear:both;margin:0 20px;padding:0 20px ;border-bottom:1px solid #999">

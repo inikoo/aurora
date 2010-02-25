@@ -37,7 +37,14 @@ if(isset($_REQUEST['to']))
 $category=$_REQUEST['category'];
 $split=(isset($_REQUEST['split']) and preg_match('/yes/i',$_REQUEST['split']) ?true:false);
 $item_keys=$_REQUEST['item_keys'];
+
+if(isset($_REQUEST['stack']) and preg_match('/yes/i',$_REQUEST['stack'])){
+
+list_stack_item($tipo,$category,$period,$item_keys,$from,$to);
+
+}else{
 list_item($tipo,$category,$period,$item_keys,$split,$from,$to);
+}
 break;
 case('invoiced_store_month_sales'):
 list_store_invoices_per_month();
@@ -271,7 +278,7 @@ mysql_free_result($res);
 			 )
 		   );
 
-      echo json_encode($response);
+     echo json_encode($response);
       }
 function list_product_sales_per_quarter(){
        $mode=$_SESSION['state']['product']['mode'];
@@ -448,11 +455,75 @@ function list_store_invoices_per_month(){
   echo json_encode($response);
 }
 
-function list_item($tipo,$category,$period,$item_keys,$split=true,$from=false,$to=false){
+
+function list_stack_item($tipo,$category,$period,$item_keys,$split=true,$from=false,$to=false){
+ $_data=array();
+
+ $item_keys=preg_replace('/\(|\)/','',$item_keys);
+
+ foreach(preg_split('/\s*,\s*/',$item_keys) as $key){
+
+      if(!is_numeric($key))
+	continue;
+      $tm=new TimeSeries(array($period,"$tipo ($key) $category"));
+      $tmp_data=$tm->plot_data($from,$to);
+      //  print_r($tmp_data);
+      foreach($tmp_data as $date=>$values){
+	if(isset($values['tail'])){
+	  $value=$values['tail'];
+	  $value_tip=$values['tip_tail'];
+
+	}elseif(isset($values['value'])){
+	  $value=$values['value'];
+	  $value_tip=$values['tip_value'];
+
+	}else
+	  continue;
+	
+	
+	
+	$_values=array('key_'.$tm->name_key=>$value,'tip_key_'.$tm->name_key=>$value_tip);
+
+	if(isset($_data[$date])){
+	  $_data[$date]=array_merge($_data[$date],$_values);
+	}else
+	  $_data[$date]=$_values;
+      }
+
+
+
+    }
+
+ ksort($_data);
+
+ foreach($_data as $date=>$values){
+   $_date=array('date'=>$date);
+   $data[]=array_merge($_date,$values);
+ }
+
+
+ //$data=array();
+ //$data[]= array("date"=>"2003-09","key_2"=>64081,"key_4"=>164081);
+ //$data[]=array("date"=>"2003-10","key_2"=>67081,"key_4"=>264081) ;
+
+ 
+ $response=array('resultset'=>
+		  array(
+			'state'=>200,
+			'data'=>$data
+			)
+		  );
+  
+  echo json_encode($response);
+
+}
+
+
+function list_item($tipo,$category,$period,$item_keys,$split=false,$from=false,$to=false){
   
   $_data=array();
 
-
+  
   
   if($split){
 
@@ -460,9 +531,9 @@ function list_item($tipo,$category,$period,$item_keys,$split=true,$from=false,$t
     foreach(preg_split('/\s*,\s*/',$item_keys) as $key){
       if(!is_numeric($key))
 	continue;
-      //      print "$tipo ($key) sales";
+      // print "$tipo ($key) $category";
       $tm=new TimeSeries(array($period,"$tipo ($key) $category"));
-      //print_r($tm);
+      // print_r($tm);
       $tmp_data=$tm->plot_data($from,$to);
       unset($tm);
       foreach($tmp_data as $key=>$values){
@@ -471,7 +542,10 @@ function list_item($tipo,$category,$period,$item_keys,$split=true,$from=false,$t
 	}else
 	  $_data[$key]=$values;
       }
+     
     }
+    
+
   }else{
     //  print "$period $tipo $item_keys sales";
 
@@ -479,6 +553,9 @@ function list_item($tipo,$category,$period,$item_keys,$split=true,$from=false,$t
     $tm=new TimeSeries(array($period,"$tipo $item_keys $category"));
     $_data=$tm->plot_data($from,$to);
   }
+  //$_data=asort($_data);
+  ksort($_data);
+
   $data=array();
   foreach($_data as $__data)
     $data[]=$__data;

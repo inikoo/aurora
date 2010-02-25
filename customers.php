@@ -44,7 +44,6 @@ $smarty->assign('details',$show_details);
 
 $general_options_list=array();
 
-
 if($modify){
   $general_options_list[]=array('tipo'=>'url','url'=>'edit_customers.php','label'=>_('Edit Customers'));
    $general_options_list[]=array('tipo'=>'js','id'=>'new_customer','label'=>_('Add Customer'));
