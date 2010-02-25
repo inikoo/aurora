@@ -1,14 +1,23 @@
+
+var category_labels={'sales':'<?php echo _('Net Sales')?>','profit':'<?php echo _('Profits')?>'};
+var period_labels={'m':'<?php echo _('Montly')?>','y':'<?php echo _('Yearly')?>','w':'<?php echo _('Weekly')?>','q':'<?php echo _('Quarterly')?>'};
+
+function quick_link(e,tipo){
+    location.href='report_sales_main.php?tipo='+tipo;
+};
+
 function change_plot(o){
     //  if(!Dom.hasClass(o,'selected')){
 
 	var keys=Dom.get("plot_info").getAttribute("keys");
-	
+	var invoice_category_keys=Dom.get("plot_info").getAttribute("invoice_category_keys");
+
 
 	
 	var tipo=o.getAttribute("tipo");
 	var category=o.getAttribute("category");
 	var period=o.getAttribute("period");
-	//alert(category)
+
 
 	if(tipo=='pie'){
 	    plot='pie';
@@ -34,11 +43,11 @@ function change_plot(o){
 		Dom.removeClass(old_selected[i],'selected');
 	    Dom.addClass("pie_category_"+category,'selected');
 	    
-	}else if(tipo=='growth'){
+	}else if(tipo=='per_category'){
 	    plot=tipo;
 	    
 	    //Dom.get("pie_options").style.display='none';
-	    var plot_url='plot.php?tipo=store&category='+category+'&period='+period+'&keys='+keys;
+	    var plot_url='plot.php?tipo=invoice_categories&category='+category+'&period='+period+'&keys='+invoice_category_keys+'&wrapper=store&wrapper_keys='+keys;
 	    Dom.get("the_plot").width="100%";
 	    plot_code=tipo+'_'+category+'_'+period;
 

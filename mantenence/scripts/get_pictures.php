@@ -74,14 +74,13 @@ foreach($pics as $key=>$value){
      
      $data=array(
 	    'file'=>'tmp.jpg'
-	    ,'path'=>'pics/'
+	    ,'path'=>'assets/'
 	    ,'name'=>$row['Product Code']
 	    ,'caption'=>''
 	    );
 
-//print_r($data);
+     //print_r($data);
 $image=new Image('find',$data,'create');
-     
       $product->add_image($image->id,'principal');
       //print_r($product);
       // print $product->msg."\n";

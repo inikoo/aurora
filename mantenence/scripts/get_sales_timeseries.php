@@ -39,19 +39,26 @@ $forecast=true;
 // exit;
 
 
-
-$tm=new TimeSeries(array('m','invoice category:UK-AWR'));
-//print_r($tm);
- $tm->get_values();$tm->save_values();
-exit;
-
-
+$sql="select * from `Invoice Category Dimension`  ";
+$result=mysql_query($sql);
+while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
+  print $row['Invoice Category Code']."\n";
+  $tm=new TimeSeries(array('m','invoice category:'.$row['Invoice Category Code']));
+  $tm->get_values();$tm->save_values();
+  $tm->forecast();
+  $tm=new TimeSeries(array('w','invoice category:'.$row['Invoice Category Code']));
+  $tm->get_values();$tm->save_values();
+  $tm->forecast();
+  $tm=new TimeSeries(array('q','invoice category:'.$row['Invoice Category Code']));
+  $tm->get_values();$tm->save_values();
+  $tm->forecast();
+   $tm=new TimeSeries(array('y','invoice category:'.$row['Invoice Category Code']));
+  $tm->get_values();$tm->save_values();
+  $tm->forecast();
+};
 
 if(true){
   print "inv\n";
-
-
- 
 
   $tm=new TimeSeries(array('w','invoices'));
   $tm->get_values();
@@ -130,7 +137,7 @@ if($myconf['currency_code']!=$store->data['Store Currency Code']){
  
 }
  
-
+exit;
 
 $sql="select * from `Product Department Dimension`  where `Product Department Store Key` in (".join(',',$stores).")    ";
 $res=mysql_query($sql);

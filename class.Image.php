@@ -183,7 +183,11 @@ $this->format='';
       if (!file_exists($this->path))
 	mkdir($this->path, 0700);
       
-      $name=$this->path.$this->checksum.'.'.$this->format;
+      if (!file_exists($this->path.'/original'))
+	mkdir($this->path.'/original', 0700);
+
+
+      $name=$this->path.'original/'.$this->checksum.'.'.$this->format;
 	  
       
       if($this->name=='')
@@ -200,9 +204,9 @@ $this->format='';
 			    'Image File Size'=>filesize($filename),
 			    'Image File Checksum'=>$this->checksum,
 			    'Image Filename'=>$this->name,
-			'Image URL'=>$name,
-			'Image Original Filename'=>$this->original_name,
-			'Image File Format'=>$this->format,
+			    'Image URL'=>$name,
+			    'Image Original Filename'=>$this->original_name,
+			    'Image File Format'=>$this->format,
                         );
 
 
@@ -240,7 +244,36 @@ $this->saveImage($this->im,$name);
     }
     unlink($filename);
 
+    $this->create_thumbnail();
+        $this->create_small();
+    $this->create_large();
+
+
   }
+// scale the image constraining proportions (maxX and maxY)
+
+ function create_thumbnail(){
+ 
+
+
+   $this->transformToFit(25,20);
+   if($this->error){
+     $this->msg=_('Can not resize image');
+     return;
+        }
+   
+   if (!file_exists($this->path.'thumbnails'))
+     mkdir($this->path.'thumbnails', 0700);
+   
+
+   $name=$this->path.'thumbnails/'.$this->checksum.'.'.$this->format;
+   $this->saveImage($this->resized_im,$name);
+   
+   $sql=sprintf("update `Image Dimension` set `Image Thumbnail URL`=%s where `Image Key`=%d ",prepare_mysql($name),$this->id);
+   mysql_query($sql);
+   $this->data['Image Thumbnail URL']=$name;
+ }
+
 
 
 function get_format($filename){
@@ -334,15 +367,16 @@ function get_format($filename){
 
 
     function saveImage($im,$destImage){
-    
-       if($this->format=='jpeg' or $this->format=='psd' )
+     
+      if($this->format=='jpeg' or $this->format=='psd' ){
 	imagejpeg($im,$destImage ,$this->jpgCompression);
-      elseif($this->format=='png' or $this->format=='wbmp')    
+	
+      }elseif($this->format=='png' or $this->format=='wbmp')    
 	imagepng($im,$destImage);
-    elseif($this->format=='gif')    
+      elseif($this->format=='gif')    
 	imagegif($im,$destImage);
-    
-       
+      
+      
     } 
 
 function setCompression($val=70){
@@ -361,26 +395,7 @@ function setCompression($val=70){
         $this->resized_im = $dst_img;
     } 
 
-// scale the image constraining proportions (maxX and maxY)
- 
-    function create_thumbnail(){
-      $this->transformToFit(25,20);
-      if($this->error){
-        $this->msg=_('Can not resize image');
-        return;
-        }
-        
-           $name=$this->path.'tb_'.$this->checksum.'.'.$this->format;
 
-       $this->saveImage($this->resized_im,$name);
-       $sql=sprintf("update `Image Dimension` set `Image Thumbnail URL`=%s where `Image Key`=%d"
-            ,prepare_mysql($name)
-            ,$this->id
-        );
-        mysql_query($sql);
-        $this->data['Image Thumbnail URL']=$name;
-      
-    }
     
     
     // scale the image constraining proportions (maxX and maxY)
@@ -391,8 +406,15 @@ function setCompression($val=70){
         $this->msg=_('Can not resize image');
         return;
         }
+      
         
-           $name=$this->path.'sm_'.$this->checksum.'.'.$this->format;
+   if (!file_exists($this->path.'small'))
+     mkdir($this->path.'small', 0700);
+   
+
+   $name=$this->path.'small/'.$this->checksum.'.'.$this->format;
+
+
 
        $this->saveImage($this->resized_im,$name);
        $sql=sprintf("update `Image Dimension` set `Image Small URL`=%s where `Image Key`=%d"
@@ -412,7 +434,12 @@ function setCompression($val=70){
         return;
         }
         
-           $name=$this->path.'lg_'.$this->checksum.'.'.$this->format;
+       if (!file_exists($this->path.'large'))
+     mkdir($this->path.'large', 0700);
+   
+
+   $name=$this->path.'large/'.$this->checksum.'.'.$this->format;
+   $this->saveImage($this->resized_im,$name);
 
        $this->saveImage($this->resized_im,$name);
        $sql=sprintf("update `Image Dimension` set `Image Large URL`=%s where `Image Key`=%d"

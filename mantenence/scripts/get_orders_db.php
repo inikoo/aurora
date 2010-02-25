@@ -1200,9 +1200,12 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 
 
     // print_r($products_data);
-
-
     $data['Order For']='Customer';
+
+
+    if(isset($customer_data['Customer Main Plain Email']) and $customer_data['Customer Main Plain Email']=='carlos@aw-regalos.com')
+      $data['Order For']='Partner';
+
     
     $data['Order Main Source Type']='Unknown';
     if(  $header_data['showroom']=='Yes')

@@ -61,9 +61,13 @@ Class TimeSeries  {
         if (!$this->name or !$this->freq)
             return;
 
-	if(preg_match('/^invoice category:/i',$this->name)){
+	if(preg_match('/^invoice(\s|_)category:?/i',$this->name)){
 
-	  $category=_trim(preg_replace('/^invoice category:/','',$this->name));
+	  $category=_trim(preg_replace('/^invoice(\s|_)category:?/','',$this->name));
+	  $category=preg_replace('/^\(/','',$category);
+	  $category=preg_replace('/\)$/','',$category);
+
+
 	  if(!is_numeric($category))
 	    $sql=sprintf("select *  from `Invoice Category Dimension` where `Invoice Category Code`=%s",prepare_mysql($category));
 	  else
@@ -587,7 +591,7 @@ Class TimeSeries  {
       } else {
 	if (!$this->last_date=$this->last_date()) {
 	 
-	  print "caca";
+	  //  print "caca2";
 	  return;
 	}
       }
@@ -713,7 +717,7 @@ Class TimeSeries  {
 		     ,prepare_mysql($this->metadata,false)
                     );
 
-		print $sql;
+	//	print $sql;
 
         mysql_query($sql);
 
@@ -1518,7 +1522,7 @@ Class TimeSeries  {
                      ,$this->where
                      ,$this->date_field
                     );
-         print $sql;
+	//         print $sql;
         $res=mysql_query($sql);
         if ($row=mysql_fetch_array($res)) {
             return $row['date'];
@@ -1591,7 +1595,12 @@ Class TimeSeries  {
     }
 
 
+ 
+
+
     function plot_data($from=false,$to=false) {
+
+
 
         $tipo='';
         $suffix='';
@@ -1604,6 +1613,11 @@ Class TimeSeries  {
         if ($this->name=='invoices') {
 
             $tipo='SI';
+            $suffix='';
+
+        }elseif ($this->name=='invoice cat') {
+
+            $tipo='PI';
             $suffix='';
 
         }
@@ -1639,7 +1653,6 @@ Class TimeSeries  {
 
 
     function set_labels() {
-
         $tipo='';
         $suffix='';
         if ($this->name=='profit') {
@@ -1665,6 +1678,11 @@ Class TimeSeries  {
             $suffix=preg_replace('/.*\(/','',$this->name_key);
             $suffix=preg_replace('/\)/','',$suffix);
             $suffix=preg_replace('/,/','_',$suffix);
+        }elseif(preg_match('/^(PDP|SP|PFP|PidP|PcodeP)/',$this->name)) {
+            $tipo='PP';
+            $suffix=preg_replace('/.*\(/','',$this->name_key);
+            $suffix=preg_replace('/\)/','',$suffix);
+            $suffix=preg_replace('/,/','_',$suffix);
         }
 
 
@@ -1684,7 +1702,6 @@ Class TimeSeries  {
 
 
 
-
     function plot_data_per_month($tipo,$suffix,$from,$to,$currency='') {
 
 
@@ -1692,7 +1709,7 @@ Class TimeSeries  {
 
 
         $data=array();
-
+	
         $where_dates=prepare_mysql_dates($from,$to,"`Time Series Date`");
         //print "-> $from,$to\n";
         //print_r($where_dates);
@@ -1703,7 +1720,7 @@ Class TimeSeries  {
                      ,$this->name_key2
                      ,$where_dates['mysql']
                     );
-	// print "$sql<br>";
+	//print "$sql<br>";
 
         $prev_month='';
         $prev_year=array();
@@ -1823,7 +1840,7 @@ if(isset($current_value[0])){
 
         //foreach($data as $__data)
         //   $_data[]=$__data;
-        //print_r($data);
+	// print_r($data);
         return $data;
 
     }

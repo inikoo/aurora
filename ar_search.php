@@ -298,7 +298,7 @@ $res=mysql_query($sql);
     }   
   }
 
-  asort($candidates);
+  arsort($candidates);
   $total_candidates=count($candidates);
   
   if($total_candidates==0){
@@ -459,19 +459,25 @@ $max_results=10;
   if($q==''){
     $response=array('state'=>200,'results'=>0,'data'=>'');
     echo json_encode($response);
-    
+    return;
   }
 
 
   if($data['scope']=='store'){
-    $stores=$_SESSION['state']['customers']['store'];
+    $stores=$_SESSION['state']['store']['id'];
     
   }else
     $stores=join(',',$user->stores);
 
+ 
+  if(!$stores){
+    $response=array('state'=>200,'results'=>0,'data'=>'','mgs'=>'Store Error');
+    echo json_encode($response);
+    return;
+  }
  $candidates=array();
  $sql=sprintf('select `Product Family Key`,`Product Family Code` from `Product Family Dimension` where `Product Family Store Key` in (%s) and `Product Family Code` like "%s%%" limit 100 ',$stores,addslashes($q));
-  //print $sql;
+ //print $sql;
   $res=mysql_query($sql);
   while($row=mysql_fetch_array($res)){
     if($row['Product Family Code']==$q)
@@ -543,17 +549,19 @@ $max_results=10;
     $sql=sprintf("select `Product Family Key`,`Product Family Name`,`Product Family Code`  from `Product Family Dimension` where `Product Family Key` in (%s)",$family_keys);
     $res=mysql_query($sql);
     while($row=mysql_fetch_array($res)){
-      
-      $results['F '.$row['Product Family Key']]=array('code'=>$row['Product Family Code'],'description'=>$row['Product Family Name'],'link'=>'family.php?id=','key'=>$row['Product Family Key']);
+       $image='';
+      $results['F '.$row['Product Family Key']]=array('image'=>$image,'code'=>$row['Product Family Code'],'description'=>$row['Product Family Name'],'link'=>'family.php?id=','key'=>$row['Product Family Key']);
     }
   }
 
   if($products_keys){
-    $sql=sprintf("select `Product ID`,`Product XHTML Short Description`,`Product Code`  from `Product Dimension` where `Product ID` in (%s)",$products_keys);
+    $sql=sprintf("select `Product ID`,`Product XHTML Short Description`,`Product Code`,`Product Main Image`  from `Product Dimension`   where `Product ID` in (%s)",$products_keys);
     $res=mysql_query($sql);
     while($row=mysql_fetch_array($res)){
-     
-      $results['P '.$row['Product ID']]=array('code'=>$row['Product Code'],'description'=>$row['Product XHTML Short Description'],'link'=>'product.php?pid=','key'=>$row['Product ID']);
+      $image='';
+      if($row['Product Main Image']!='art/nopic.png')
+	$image=sprintf('<img src="%s"> ',preg_replace('/small/','thumbnails',$row['Product Main Image']));
+      $results['P '.$row['Product ID']]=array('image'=>$image,'code'=>$row['Product Code'],'description'=>$row['Product XHTML Short Description'],'link'=>'product.php?pid=','key'=>$row['Product ID']);
     }
   }
 

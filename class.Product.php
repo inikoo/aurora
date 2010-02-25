@@ -1918,7 +1918,7 @@ public $new_value=false;
       //print_r($this->images_original);
       foreach( $this->images as $image ){
 	// print_r($image);
-	$main_image_src=$image['Image Filename'];
+	$main_image_src=$image['Image Small URL'];
 	  if($image['Is Principal']=='Yes'){
 	    
 	    break;
@@ -1930,7 +1930,7 @@ public $new_value=false;
 		 prepare_mysql($main_image_src)
 		 ,$this->data['Product ID']
 		 );
-    //print "$sql\n";
+    // print "$sql\n";
     mysql_query($sql);
   }
 
@@ -3202,7 +3202,7 @@ $this->update_sales_state($a1);
 		 ,prepare_mysql($this->data['Product Same Code Total Quantity Ordered'])
 		 ,prepare_mysql($this->data['Product Same Code Total Quantity Invoiced'])
 		 ,prepare_mysql($this->data['Product Same Code Total Quantity Delivered'])
-		 ,$this->id
+		 ,prepare_mysql($this->code)
 		 );
     if (!mysql_query($sql))
       exit("$sql\ncan not update product historic sales\n");

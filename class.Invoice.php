@@ -940,20 +940,39 @@ Assig a category inside rhe store to the invoice
    
    
    if($store->id==1){
-     $this->data['Invoice Category']=$store->data['Store Home Country Short Name'];
-     if($this->data['Invoice Billing Country 2 Alpha Code']!=$store->data['Store Home Country Code 2 Alpha'])
-     $this->data['Invoice Category']='Export';
-     if($this->data['Invoice For']=='Staff')
-       $this->data['Invoice Category']='Staff';
-     if($this->data['Invoice For']=='Partner')
-       $this->data['Invoice Category']='Partner';
-   }else{
-      $this->data['Invoice Category']='All';
+     $this->data['Invoice Category']=$store->data['Store Code'].'-'.$store->data['Store Home Country Short Name'];
+     $this->data['Invoice Category Key']=2;
+     if($this->data['Invoice Billing Country 2 Alpha Code']!=$store->data['Store Home Country Code 2 Alpha']){
+       $this->data['Invoice Category']=$store->data['Store Code'].'-Export';
+       $this->data['Invoice Category Key']=4;
+       
+     }
+     if($this->data['Invoice For']=='Staff'){
+       $this->data['Invoice Category']=$store->data['Store Code'].'-Staff';
+       $this->data['Invoice Category Key']=3;
+       
+     }
+     if($this->data['Invoice For']=='Partner'){
+       $this->data['Invoice Category']=$store->data['Store Code'].'-Partner';
+       $this->data['Invoice Category Key']=5;
+
+     }
+
+   }else if($store->id==2){
+      $this->data['Invoice Category']=$store->data['Store Code'].'-All';
+      $this->data['Invoice Category Key']=7;
+	     
+
+   }elseif($store->id==3){
+     $this->data['Invoice Category']=$store->data['Store Code'].'-All';
+     $this->data['Invoice Category Key']=9;
+
    }
    if(preg_match('/save/i',$args)){
 
-     $sql = sprintf ( "update `Invoice Dimension` set `Invoice Category`=%s  where `Invoice Key`=%d"
+     $sql = sprintf ( "update `Invoice Dimension` set `Invoice Category`=%s ,`Invoice Category Key`=%d  where `Invoice Key`=%d"
 		      , prepare_mysql($this->data['Invoice Category'])
+		      , $this->data ['Invoice Category Key'] 
 		      , $this->data ['Invoice Key'] 
 		      );
      if (! mysql_query ( $sql ))
