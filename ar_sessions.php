@@ -14,7 +14,7 @@ $tipo=$_REQUEST['tipo'];
 
 switch($tipo){
  case('update'):
-   $keys=split('-',$_REQUEST['keys']);
+   $keys=preg_split('/-/',$_REQUEST['keys']);
    switch(count($keys)){
    case 1:
      $value=$_REQUEST['value'];
@@ -23,10 +23,10 @@ switch($tipo){
      break;
    case 2:
      $value=$_REQUEST['value'];
-     // print $_SESSION['state'][$keys[0]][$keys[1]]."\n";
+     //print $_SESSION['state'][$keys[0]][$keys[1]]."\n";
      $_SESSION['state'][$keys[0]][$keys[1]]=$value;
      //print $_SESSION['state'][$keys[0]][$keys[1]]."\n";
-     $data=$session->read(session_id( ));
+   //  $data=$session->read(session_id( ));
      
      
     

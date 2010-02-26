@@ -73,7 +73,14 @@ var change_view=function(e){
 	Dom.get(table.view).className="";
 	Dom.get(tipo).className="selected";
 	table.view=tipo;
-	YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=store-view&value=' + escape(tipo) );
+	//alert('ar_sessions.php?tipo=update&keys=store-view&value=' + escape(tipo))
+	YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=store-view&value=' + escape(tipo) ,{
+					success:function(o) {
+					       
+					    }
+					    }
+	
+	);
     }
 }
 
