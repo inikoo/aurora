@@ -1,7 +1,9 @@
 <?php
+
 include_once('common.php');
 include_once('report_functions.php');
 include_once('class.Store.php');
+
 
 $css_files=array(
 		 $yui_path.'reset-fonts-grids/reset-fonts-grids.css',
@@ -29,14 +31,12 @@ $js_files=array(
 		'common.js.php',
 		'table_common.js.php',
 		'calendar_common.js.php',
-
 		'report_sales.js.php',
-		 'js/dropdown.js'
+		'js/dropdown.js'
 		);
 
 
 $stores=join(',',$user->stores);
-
 $smarty->assign('parent','reports');
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
@@ -46,7 +46,6 @@ if(isset($_REQUEST['tipo']) and preg_match('/y|m|d|q|w|f|all/',$_REQUEST['tipo']
   $_SESSION['state']['reports']['sales']['tipo']=$tipo;
 }else{
   $tipo=$_SESSION['state']['reports']['sales']['tipo'];
-  
 }
 
 
@@ -56,12 +55,6 @@ if(isset($_REQUEST['store_key']) and is_numeric($_REQUEST['store_key']))
 $store_key=$_SESSION['state']['report']['sales']['store_key'];
 
 include_once('report_dates.php');
-
-
-
-
-
-
 
 $_SESSION['state']['report']['sales']['to']=$to;
 $_SESSION['state']['report']['sales']['from']=$from;

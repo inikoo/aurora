@@ -91,7 +91,8 @@ $myconf=array(
 
 
 $default_state=array(
-
+		     'export'=>'xls',
+		     
                    'report_data'=>$report_data, 
                    'order'=>array(
                                'id'=>''
@@ -135,29 +136,29 @@ $default_state=array(
 						   ,'tipo'=>'y'
 						   ,'y'=>date('Y')
 						   ,'m'=>date('m')
-                                                                                   ,'d'=>date('d')
+						   ,'d'=>date('d')
 						   ,'w'=>date('W')
 						   )
 				    ,'stock'=>array(
 						    'plot'=>'total_outofstock_month'
 						    )
-                                                  ,'geosales'=>array(
+				    ,'geosales'=>array(
 								     'level'=>'region'
 								     ,'region'=>'world'
 								     ,'map_exclude'=>''
 								     ,'table'=>array(
-                                                                                                                'order'=>'country_code',
-                                                                                                                'order_dir'=>'',
-                                                                                                                'sf'=>0,
-                                                                                                                'nr'=>25,
-                                                                                                                'where'=>'where true',
-                                                                                                                'f_field'=>'country',
-                                                                                                                'f_value'=>'',
-                                                                                                                'from'=>'',
-                                                                                                                'to'=>''
-														
+										     'order'=>'country_code',
+										     'order_dir'=>'',
+										     'sf'=>0,
+										     'nr'=>25,
+										     'where'=>'where true',
+										     'f_field'=>'country',
+										     'f_value'=>'',
+										     'from'=>'',
+										     'to'=>''
+										     
                                                                                                             ),
-								     )
+						       )
 				    
 				    ),
 
@@ -1257,7 +1258,7 @@ $default_state=array(
 				   ,'activity'=>array('compare'=>'last_year','period'=>'week'),
                    
 				   'sales'=>array(
-						  'store_key'=>1,
+						  'store_keys'=>'all',
 						  'from'=>'',
 						  'to'=>'',
 						  'period'=>'',
@@ -1292,20 +1293,20 @@ $default_state=array(
                                               'elements'=>array()
 
 						 ),
-		   'packers'=>array(
-				    'order'=>'tipo',
-				    'order_dir'=>'',
-				    'sf'=>0,
+				   'packers'=>array(
+						    'order'=>'tipo',
+						    'order_dir'=>'',
+						    'sf'=>0,
 				    'nr'=>10000,
-                                              'from'=>'',
-				    'to'=>'',
-				    'where'=>'where true',
-				    'f_field'=>'',
+						    'from'=>'',
+						    'to'=>'',
+						    'where'=>'where true',
+						    'f_field'=>'',
                                               'f_value'=>'',
-				    'elements'=>array()
-				    
-				    ),
-		   'customers'=>array('top'=>100,'criteria'=>'net_balance','f_value'=>'','f_field'=>'customer_name','store_id'=>1,'from'=>'','to'=>'')
+						    'elements'=>array()
+						    
+						    ),
+				   'customers'=>array('store_keys'=>'all','top'=>100,'criteria'=>'net_balance','f_value'=>'','f_field'=>'customer_name','from'=>'','to'=>'')
 		   
 
 		   

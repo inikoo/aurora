@@ -2,6 +2,11 @@
 include_once('common.php');
 include_once('report_functions.php');
 
+
+
+
+
+
 $css_files=array(
 		 $yui_path.'reset-fonts-grids/reset-fonts-grids.css',
 		 $yui_path.'menu/assets/skins/sam/menu.css',
@@ -30,7 +35,9 @@ $js_files=array(
 		'calendar_common.js.php',
 
 		'report_customers.js.php',
-		'js/dropdown.js'
+		'js/dropdown.js',
+		'js/export.js'
+
 		);
 
 
@@ -46,17 +53,28 @@ $_SESSION['state']['report']['tipo']=$tipo;
 $tipo=$_SESSION['state']['report']['tipo'];
 
 
+
+
 $root_title=_('Customer Report');
-include_once('report_dates.php');
-
-
 $smarty->assign('report_url','report_customers.php');
 
+if($_SESSION['state']['report']['customers']['store_keys']=='all')
+  $store_keys=join(',',$user->stores);
+else
+  $store_keys=$_SESSION['state']['report']['customers']['store_keys'];
 
-  
+
+include_once('report_dates.php');
 $_SESSION['state']['report']['customers']['from']=$from;
 $_SESSION['state']['report']['customers']['to']=$to;
-$_SESSION['state']['report']['customers']['store']=join(',',$user->stores);
+
+
+
+$export_output['type']=$_SESSION['state']['export'];
+$export_output['label']=$export_data[$_SESSION['state']['export']]['label'];
+//print_r($export_output);
+$smarty->assign('export',$export_output);
+$smarty->assign('export_menu',$export_data);
 
 
 $smarty->assign('criteria',$_SESSION['state']['report']['customers']['criteria']);
