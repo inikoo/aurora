@@ -58,12 +58,25 @@ if($row=mysql_fetch_array($res)){
   exit("no stores");
 }
 
+if($_SESSION['state']['report']['sales']['store_keys']=='all'){
+  $store_keys=join(',',$user->stores);
+  $formated_store_keys='all';
+}
+else{
+  $store_keys=$_SESSION['state']['report']['sales']['store_keys'];
+  $formated_store_keys=$store_keys;
 
-$store_keys=join(',',$user->stores);
+}
+
+if($store_keys=='all'){
+  global $user;
+  $store_keys=join(',',$user->stores);
+
+}
 $store_key=$store_keys;
 
 $sql=sprintf("select `Invoice Category Key` from  `Invoice Category Dimension` where `Store Key` in (%s)",$store_keys);
-//print $sql;
+///print $sql;
 $res=mysql_query($sql);
 $invoice_category_key=array();
 while($row=mysql_fetch_array($res)){
@@ -72,12 +85,10 @@ while($row=mysql_fetch_array($res)){
 
 
 
-if($num_stores==count($user->stores))
-  $store_keys='all';
-  
+
   
 
-$smarty->assign('store_keys',$store_keys);
+$smarty->assign('store_keys',$formated_store_keys);
 
 
 $smarty->assign('invoice_category_keys','('.join(',',$invoice_category_key).')');

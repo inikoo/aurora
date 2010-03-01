@@ -9,11 +9,6 @@ require_once "class.Session.php";
 require_once "class.Auth.php";
 require_once "class.User.php";
 
-
-
-
-
-
 $default_DB_link=mysql_connect($dns_host,$dns_user,$dns_pwd );
 if(!$default_DB_link){print "Error can not connect with database server\n";}
 $db_selected=mysql_select_db($dns_db, $default_DB_link);
@@ -166,6 +161,13 @@ $nav_menu[] = array(_('Home'), 'index.php','home');
 $smarty->assign('nav_menu',$nav_menu);
 $smarty->assign('theme',$myconf['theme']);
 $smarty->assign('my_name',$myconf['name']);
+
+$export_data=array(
+		   'xls'=>array('label'=>_('Export as xls'),'title'=>'Excel 2005 (xls)')
+		   ,'xlsx'=>array('label'=>_('Export as xlsx'),'title'=>'Excel 2007 (xlsx)')
+		   ,'csv'=>array('label'=>_('Export as csv'),'title'=>_('Comma separated values (vsv)'))
+		   ,'pdf'=>array('label'=>_('Export as pdf'),'title'=>'PDF')
+		   );
 
 
 ?>

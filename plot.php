@@ -600,6 +600,9 @@ var jsonData = new YAHOO.util.DataSource( "'.$ar_address.'" );
  var seriesDef = ['."\n";
 $i=0;
 
+
+
+
 foreach($yfields as $yfield){
 
   if(isset($yfield['type']))
@@ -734,7 +737,10 @@ mysql_free_result($result);
 
 function plot_assets(){
   global $color_palette,$yfields,$fields,$yfield_label_type,$tipo_chart,$xfield,$ar_address;
-   if(isset($_REQUEST['from']))
+ 
+
+
+  if(isset($_REQUEST['from']))
     $from=$_REQUEST['from'];
   else
     $from=false;
@@ -791,6 +797,7 @@ function plot_assets(){
     $plot_name='product';
     $plot_page='product';
   }
+
   $item_keys='';
   $item_key_array=array();
   if($request_keys=='all' and $tipo=='store'){
@@ -821,6 +828,7 @@ function plot_assets(){
     $item_key_array[]=$request_keys;
   }
   if(count($item_key_array)==0){
+    print "error";
     return;
   }
   
@@ -883,7 +891,9 @@ function plot_assets(){
 		      );
   
   
-  // print $ar_address;
+  //print $ar_address;
+
+
   $fields='"date"';
     foreach($item_key_array as $key){
       $fields.=',"value'.$key.'","tip_value'.$key.'","forecast'.$key.'","tip_forecast'.$key.'","tails'.$key.'","tip_tails'.$key.'"';

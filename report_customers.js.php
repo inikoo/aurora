@@ -22,8 +22,11 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 	    var CustomersColumnDefs = [
 				       {key:"position", label:"", width:20,sortable:false,className:"aleft"}
+				       ,{key:"store", label:"S", width:20,sortable:false,className:"aleft"}
 				       ,{key:"id", label:"<?php echo$customers_ids[0]?>",width:60,sortable:false,<?php echo($_SESSION['state']['customers']['view']=='general'?'':'hidden:true,')?>className:"aright"}
-				       ,{key:"name", label:"<?php echo _('Customer Name')?>", width:250,sortable:false,className:"aleft"}
+				       ,{key:"name", label:"<?php echo _('Customer Name')?>", width:240,sortable:false,className:"aleft"}
+
+				      
 				       ,{key:"location", label:"<?php echo _('Location')?>",<?php echo($_SESSION['state']['customers']['view']=='general'?'':'hidden:true,')?> width:230,sortable:false,className:"aleft"}
 				       ,{key:"last_order", label:"<?php echo _('Last Order')?>",<?php echo($_SESSION['state']['customers']['view']=='loyalty'?'':'hidden:true,')?>width:100,sortable:false,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 				       ,{key:"invoices", label:"<?php echo _('Invoices')?>",<?php echo($_SESSION['state']['customers']['view']=='general'?'':'hidden:true,')?>sortable:false,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
@@ -90,7 +93,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 			 ,"address","town","postcode","region","country"
 			 ,"ship_address","ship_town","ship_postcode","ship_region","ship_country"
 			 ,"total_paymants","total_refunds","net_balance","total_profit","balance"
-			 ,"top_orders","top_invoices","top_balance","top_profits","invoices"
+			 ,"top_orders","top_invoices","top_balance","top_profits","invoices","store"
 			 ]};
 	    //__You shouls not change anything from here
 
@@ -168,12 +171,36 @@ var table=tables['table0'];
       datasource.sendRequest(request,table.onDataReturnInitializeTable, table);   
 }
 
+function export_data(){
+    o=Dom.get('export');
+    output=o.getAttribute('output');
+    location.href='export.php?ar_file=ar_reports&tipo=customers&output='+output;
+    
+}
+
 
 function init(){
     var ids=['net_balance','invoices'];
     YAHOO.util.Event.addListener(ids, "click", change_criteria);
-    var ids=['top10','top25','top100'];
-    YAHOO.util.Event.addListener(ids, "click", change_top);
+    var ids=['top10','top25','top100','top200'];
+ 
+   YAHOO.util.Event.addListener(ids, "click", change_top);
+
+   YAHOO.util.Event.addListener('export', "click", export_data);
+   //YAHOO.util.Event.addListener('export', "contextmenu", change_export_type,'export');
+
+
+
+  var oContextMenu = new YAHOO.widget.ContextMenu("export_menu", {
+        trigger: 'export'
+    });
+ 
+  
+    oContextMenu.render(document.body);
+
+
+
+
 
 }
 

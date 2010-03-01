@@ -32,6 +32,10 @@ Replace Non-English characters to its ANSI equivalent.
 
  */
 
+
+
+
+
 function clean_accents($str){
 
   
@@ -779,7 +783,7 @@ function get_time_interval($d1,$d2,$units='days'){
 
   switch($units){
   case('days'):
-    $interval=number($interval/3600/24,2);
+    $interval=$interval/3600/24;
     
   }
 
@@ -1628,6 +1632,22 @@ return array($value,$unit);
 }
 
 
+function number2alpha($number){
+  $alpha=  chr(65+fmod($number-1,26));
+  $pos=floor(($number-1)/26);
+  
+  $prefix='';
+  if($pos>0){
+    $prefix=number2alpha($pos);
+  }
+  
+  return $prefix.$alpha;
 
+
+
+
+  
+
+}
 
 ?>

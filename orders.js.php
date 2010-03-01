@@ -230,19 +230,21 @@ function init(){
  var oAutoComp = new YAHOO.widget.AutoComplete("f_input0","f_container0", oACDS);
  oAutoComp.minQueryLength = 0; 
 
+
+
  cal2 = new YAHOO.widget.Calendar("cal2","cal2Container", { title:"<?php echo _('Choose a date')?>:", close:true } );
+ 
  cal2.update=updateCal;
- cal2.id=2;
+ cal2.id='2';
  cal2.render();
  cal2.update();
  cal2.selectEvent.subscribe(handleSelect, cal2, true); 
  cal1 = new YAHOO.widget.Calendar("cal1","cal1Container", { title:"<?php echo _('Choose a date')?>:", close:true } );
  cal1.update=updateCal;
- cal1.id=1;
+ cal1.id='1';
  cal1.render();
  cal1.update();
  cal1.selectEvent.subscribe(handleSelect, cal1, true); 
-
 cal2i = new YAHOO.widget.Calendar("cal2i","cal2iContainer", { title:"<?php echo _('Choose a date')?>:", close:true } );
  cal2i.update=updateCal;
  cal2i.id='2i';
@@ -255,7 +257,7 @@ cal2i = new YAHOO.widget.Calendar("cal2i","cal2iContainer", { title:"<?php echo 
  cal1i.render();
  cal1i.update();
  cal1i.selectEvent.subscribe(handleSelect, cal1i, true);  
- 
+
 cal2dn = new YAHOO.widget.Calendar("cal2dn","cal2dnContainer", { title:"<?php echo _('Choose a date')?>:", close:true } );
  cal2dn.update=updateCal;
  cal2dn.id='2dn';
@@ -269,6 +271,7 @@ cal2dn = new YAHOO.widget.Calendar("cal2dn","cal2dnContainer", { title:"<?php ec
  cal1dn.update();
  cal1dn.selectEvent.subscribe(handleSelect, cal1dn, true);  
 
+ 
 
  
  YAHOO.util.Event.addListener("calpop1", "click", cal1.show, cal1, true);

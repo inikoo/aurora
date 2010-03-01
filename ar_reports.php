@@ -2,11 +2,17 @@
 require_once 'common.php';
 
 
+if(!isset($output_type))
+  $output_type='ajax';
+
+
 
 if (!isset($_REQUEST['tipo'])) {
+  if($output_type=='ajax'){
     $response=array('state'=>405,'msg'=>_('Non acceptable request').' (t)');
     echo json_encode($response);
-    exit;
+  }
+  return;
 }
 
 $tipo=$_REQUEST['tipo'];
@@ -18,7 +24,7 @@ case('packers_report'):
    packers_report();
    break;
 case('customers'):
-  list_customers();
+  $results=list_customers();
   break;
 case('ES_1'):
 es_1();
@@ -26,6 +32,8 @@ break;
 
 
 }
+
+
 
 function pickers_report(){
    $conf=$_SESSION['state']['report']['pickers'];
@@ -433,7 +441,7 @@ $rtext=number($total).' '._('Records found');
 function list_customers(){
 
 
-global $myconf;
+  global $myconf,$output_type,$user;
 
   $conf=$_SESSION['state']['report']['customers'];
 
@@ -487,13 +495,17 @@ global $myconf;
   else
     $tableid=0;
 
-   if(isset( $_REQUEST['store_id'])    ){
-     $store=$_REQUEST['store_id'];
-     $_SESSION['state']['report']['customers']['store']=$store;
+   if(isset( $_REQUEST['store_keys'])    ){
+     $store=$_REQUEST['store_keys'];
+     $_SESSION['state']['report']['customers']['store_keys']=$store;
    }else
-     $store=$_SESSION['state']['report']['customers']['store'];
+     $store=$_SESSION['state']['report']['customers']['store_keys'];
 
+   if($store=='all'){
+      $store=join(',',$user->stores);
 
+   }
+   
   
    $filter_msg='';
    $wheref='';
@@ -505,6 +517,7 @@ global $myconf;
    if(is_numeric($store)){
      $where.=sprintf(' and `Customer Store Key`=%d ',$store);
    }else{
+     
      $where.=sprintf(' and `Customer Store Key` in (%s) ',$store);
 
    }
@@ -608,7 +621,7 @@ global $myconf;
      $order='`Balance`';
 
   
-   $sql="select  `Customer Type by Activity`,`Customer Last Order Date`,`Customer Main Telephone`,`Customer Key`,`Customer Name`,`Customer Main Location`,`Customer Main XHTML Email`,`Customer Main Address Town`,`Customer Main Address Country First Division`,`Customer Main Ship To Postal Code`,count(DISTINCT `Invoice Key`) as Invoices , sum(`Invoice Total Net Amount`) as Balance  from `Customer Dimension` C left join `Invoice Dimension` I on (`Customer Key`=`Invoice Customer Key`)   $where $wheref  group by `Invoice Customer Key` order by $order $order_direction limit $start_from,$number_results";
+   $sql="select  `Store Code`,`Customer Type by Activity`,`Customer Last Order Date`,`Customer Main Telephone`,`Customer Key`,`Customer Name`,`Customer Main Location`,`Customer Main XHTML Email`,`Customer Main Address Town`,`Customer Main Address Country First Division`,`Customer Main Ship To Postal Code`,count(DISTINCT `Invoice Key`) as Invoices , sum(`Invoice Total Net Amount`) as Balance  from `Customer Dimension` C left join `Invoice Dimension` I on (`Customer Key`=`Invoice Customer Key`) left join `Store Dimension` SD on (C.`Customer Store Key`=SD.`Store Key`)  $where $wheref  group by `Invoice Customer Key` order by $order $order_direction limit $start_from,$number_results";
    // print $sql;
    $adata=array();
   
@@ -629,6 +642,7 @@ global $myconf;
 		   'position'=>'<b>'.$position++.'</b>',
 		   'id'=>$id,
 		   'name'=>$name,
+		   'store'=>$data['Store Code'],
 		   'location'=>$data['Customer Main Location'],
 		   //  'orders'=>number($data['Customer Orders']),
 		   'invoices'=>$data['Invoices'],
@@ -683,7 +697,13 @@ mysql_free_result($result);
 			 'filtered'=>$filtered
 			 )
 		   );
-   echo json_encode($response);
+  if($output_type=='ajax'){
+    echo json_encode($response);
+    return;
+  }else{
+    return $response;
+  }
+
 }
 
 ?>
