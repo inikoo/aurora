@@ -478,7 +478,7 @@ $max_results=10;
   $extra_q='';
   $array_q=preg_split('/\s/',$q);
   if(count($array_q>1)){
-  $q=array_pop($array_q)
+  $q=array_shift($array_q);
   $extra_q=join(' ',$array_q);
   }
   
@@ -489,7 +489,7 @@ $max_results=10;
  //print $sql;
   $res=mysql_query($sql);
   while($row=mysql_fetch_array($res)){
-    if($row['Product Family Code']==$q){
+    if(strtolower($row['Product Family Code'])==strtolower($q)){
       $candidates['F '.$row['Product Family Key']]=210;
      $found_family=$row['Product Family Key'];
   
@@ -501,22 +501,22 @@ $max_results=10;
       $candidates['F '.$row['Product Family Key']]=200*$factor;
     }   
   }
-  
+  //print $extra_q;
  if($found_family){
  if($extra_q){
  
-  $sql=sprintf('select `Product ID`,`Product Name` from `Product Dimension` where `Product Family Key`=%d order by damlevlim256(UPPER(%s),UPPER(`Product Name`),100)  limit 6 ',$found_family,addslashes($q));
+  $sql=sprintf('select damlevlim256(UPPER(%s),UPPER(`Product Name`),100) as dist , `Product ID`,`Product Name` from `Product Dimension` where `Product Family Key`=%d order by damlevlim256(UPPER(%s),UPPER(`Product Name`),100)  limit 6 ',prepare_mysql($extra_q),$found_family,prepare_mysql($extra_q));
   //print $sql;
   $res=mysql_query($sql);
   while($row=mysql_fetch_array($res)){
    
-     
+     $factor=exp(-$row['dist']*$row['dist']/(strlen($extra_q)));
       $candidates['P '.$row['Product ID']]=100*$factor;
     }   
   }
  
  
- }
+ 
  
  }else{
   
