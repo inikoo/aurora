@@ -480,6 +480,7 @@ $max_results=10;
   if(count($array_q>1)){
   $q=array_shift($array_q);
   $extra_q=join(' ',$array_q);
+  
   }
   
   $found_family=false;
@@ -505,13 +506,17 @@ $max_results=10;
  if($found_family){
  if($extra_q){
  
-  $sql=sprintf('select damlevlim256(UPPER(%s),UPPER(`Product Name`),100) as dist , `Product ID`,`Product Name` from `Product Dimension` where `Product Family Key`=%d order by damlevlim256(UPPER(%s),UPPER(`Product Name`),100)  limit 6 ',prepare_mysql($extra_q),$found_family,prepare_mysql($extra_q));
+ $sql=sprintf("SELECT `Product ID`, MATCH(`Product Name`) AGAINST (%s) as Relevance FROM `Product Dimension` WHERE   `Product Family Key`=%d  and MATCH
+(`Product Name`) AGAINST(%s IN
+BOOLEAN MODE) HAVING Relevance > 0.2 ORDER
+BY Relevance DESC",prepare_mysql($extra_q),$found_family,prepare_mysql('+'.join(' +',$array_q)));
+ 
+  //$sql=sprintf('select damlevlim256(UPPER(%s),UPPER(`Product Name`),100) as dist , `Product ID`,`Product Name` from `Product Dimension` where `Product Family Key`=%d order by damlevlim256(UPPER(%s),UPPER(`Product Name`),100)  limit 6 ',prepare_mysql($extra_q),$found_family,prepare_mysql($extra_q));
   //print $sql;
   $res=mysql_query($sql);
   while($row=mysql_fetch_array($res)){
    
-     $factor=exp(-$row['dist']*$row['dist']/(strlen($extra_q)));
-      $candidates['P '.$row['Product ID']]=100*$factor;
+      $candidates['P '.$row['Product ID']]=$row['Relevance'];
     }   
   }
  
