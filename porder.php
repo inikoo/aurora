@@ -4,32 +4,56 @@ include_once('class.Supplier.php');
 include_once('class.PurchaseOrder.php');
 
 
+///print_r($_REQUEST);
 
-if(isset($_REQUEST['new']) 
+
+if(isset($_REQUEST['id'])){
+
+  $po=new PurchaseOrder($_REQUEST['id']);
+  if(!$po->id)
+    exit("Error po can no be found");
+  $supplier=new Supplier('id',$po->data['Purchase Order Supplier Key']);
+}else if(isset($_REQUEST['new']) 
    and isset($_REQUEST['supplier_id']) 
    and is_numeric($_REQUEST['supplier_id'])
    and $_REQUEST['supplier_id']>0
    ){
   $supplier=new Supplier('id',$_REQUEST['supplier_id']);
+    $editor=array(
+		'Author Name'=>$user->data['User Alias'],
+		'Author Type'=>$user->data['User Type'],
+		'Author Key'=>$user->data['User Parent Key'],
+		'User Key'=>$user->id
+		);
+
   $data=array(
 	      'Purchase Order Supplier Key'=>$supplier->id
 	      ,'Purchase Order Supplier Name'=>$supplier->data['Supplier Name']
-	      
+	      ,'editor'=>$editor
 	      );
 
   $po=new PurchaseOrder('new',$data);
+  if($po->error)
+    exit('error');
+
+  $_SESSION['state']['porder']['show_all']=true;
+  //  $_SESSION['state']['porder']['supplier_key']=$supplier->id;
+
+
+  header('Location: porder.php?id='.$po->id);
+  exit;
   
 
- }else if(isset($_REQUEST['id'])){
-     $po=new PurchaseOrder($_REQUEST['id']);
-     if(!$po->id)
-       exit("Error po can no be found");
-     $supplier=new Supplier('id',$po->data['Purchase Order Supplier Key']);
-   }
+}else{
+  exit("error");
+
+}
    
 
+
    $po_id = $po->id;
-   $_SESSION['state']['po']['id']=$po->id;
+   $_SESSION['state']['porder']['id']=$po->id;
+   $_SESSION['state']['porder']['supplier_key']=$supplier->id;
    $_SESSION['state']['supplier']['id']=$supplier->id;
    //print_r($po->data);
    $smarty->assign('po',$po);
@@ -53,7 +77,8 @@ if(isset($_REQUEST['new'])
 // $smarty->assign('status',$_SESSION['state']['po']['status']);
 
 
-if($_SESSION['state']['po']['items']['all_products'] or $_SESSION['state']['po']['items']['all_products_supplier'])
+//if($_SESSION['state']['po']['items']['products'] or $_SESSION['state']['po']['items']['all_products_supplier'])
+if($_SESSION['state']['porder']['show_all'])
   $smarty->assign('show_all',1);
 else
   $smarty->assign('show_all',0);
@@ -64,13 +89,13 @@ $smarty->assign('decimal_point',$myconf['decimal_point']);
 $smarty->assign('thousand_sep',$myconf['thousand_sep']);
 
 
-$tipo_filter=$_SESSION['state']['po']['items']['f_field'];
+$tipo_filter=$_SESSION['state']['porder']['products']['f_field'];
 $smarty->assign('filter',$tipo_filter);
-$smarty->assign('filter_value0',$_SESSION['state']['po']['items']['f_value']);
+$smarty->assign('filter_value0',$_SESSION['state']['porder']['products']['f_value']);
 
 $filter_menu=array( 
 		   'p.code'=>array('db_key'=>_('p.code'),'menu_label'=>'Our Product Code','label'=>'Code'),
-		   'sup_code'=>array('db_key'=>_('sup_code'),'menu_label'=>'Supplier Product Code','label'=>'Supplier Code'),
+		   'code'=>array('db_key'=>_('code'),'menu_label'=>'Supplier Product Code','label'=>'Supplier Code'),
 		    );
 $smarty->assign('filter_menu0',$filter_menu);
 $smarty->assign('filter_name0',$filter_menu[$tipo_filter]['label']);
@@ -133,6 +158,11 @@ $js_files=array(
 		'table_common.js.php',
 	       	'porder.js.php'
 		);
+
+
+  $js_files[]='js/edit_common.js';
+
+
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
 

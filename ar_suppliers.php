@@ -1675,23 +1675,23 @@ function list_supplier_products() {
 
 
         $data[]=array(
-                    'code'=>sprintf('<a href="supplier_product.php?code=%s&supplier_key=%d">%s</a> '.$row['Units Per Carton']
-                    ,$row['Supplier Product Code'],$row['Supplier Key'],$row['Supplier Product Code'])
-                    
+		      'code'=>sprintf('<a href="supplier_product.php?code=%s&supplier_key=%d">%s</a> '
+				      ,$row['Supplier Product Code'],$row['Supplier Key'],$row['Supplier Product Code'])
+		      
                       
-		    ,'name'=>$row['Supplier Product Name']
-                                         ,'cost'=>money($row['Supplier Product Cost'])
-                                                 ,'usedin'=>$row['Supplier Product XHTML Used In']
-                                                           ,'profit'=>$profit
-                                                                     ,'allcost'=>$allcost
-                                                                                ,'used'=>$used
+		      ,'name'=>$row['Supplier Product Name']
+		      ,'cost'=>money($row['Supplier Product Cost'])
+		      ,'usedin'=>$row['Supplier Product XHTML Used In']
+		      ,'profit'=>$profit
+		      ,'allcost'=>$allcost
+		      ,'used'=>$used
                                                                                         ,'required'=>$required
-                                                                                                    ,'provided'=>$provided
-                                                                                                                ,'lost'=>$lost
-                                                                                                                        ,'broken'=>$broken
-                                                                                                                                  ,'sales'=>$sold
-
-                );
+		      ,'provided'=>$provided
+		      ,'lost'=>$lost
+		      ,'broken'=>$broken
+		      ,'sales'=>$sold
+		      
+		      );
     }
 
 

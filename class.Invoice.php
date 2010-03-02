@@ -968,7 +968,7 @@ Assig a category inside rhe store to the invoice
      $this->data['Invoice Category Key']=9;
 
    }
-   if(preg_match('/save/i',$args)){
+   if(!preg_match('/nosave|no_save/i',$args)){
 
      $sql = sprintf ( "update `Invoice Dimension` set `Invoice Category`=%s ,`Invoice Category Key`=%d  where `Invoice Key`=%d"
 		      , prepare_mysql($this->data['Invoice Category'])

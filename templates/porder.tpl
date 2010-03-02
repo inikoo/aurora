@@ -13,7 +13,7 @@
 
 <div >
 
-<div style="padding:0px;float:right;width:350px;margin:0px 20px;text-align:right;xborder: 1px solid black">
+<div style="padding:0px;float:right;width:350px;text-align:right;xborder: 1px solid black">
   <table class="submit_order"  border=0>
     <tr><td>{$po->get('Purchase Order Creation Date')}</td><td style="text-align:right">{t}Created{/t}</td></tr>
 
@@ -22,7 +22,7 @@
     <tr id="submit_noready" {if  !$po->get('Purchase Order Submited Date')}style="display:none"{/if} ><td></td><td id="submit_po" onClick="submit_order(this)" class="but">{t}Submit{/t}</td></tr>
    
     <tr id="submit_dialog" style="display:none"><td colspan=2>
-	<table >
+	<table>
 	  <tr><td>{t}Submited Date{/t}:</td><td><input id="v_calpop1" style="text-align:right;"  class="text" name="submites_date" type="text"  size="10" maxlength="10"  value="{$date}"    /><img   id="calpop1" style="cursor:pointer" src="art/icons/calendar_view_month.png" align="top" alt=""   />  <div id="cal1Container" style="position:absolute;display:none; z-index:2">	</td></tr>
 	  <tr><td class="aright">{t}Time{/t}:</td><td class="aright"><input id="v_time"   style="text-align:right;" class="text" name="expected_date" type="text"  size="5" maxlength="5"  value="{$time}"   /><img   id="calpop1" style="cursor:pointer" src="art/icons/time.png" align="top" alt=""   /> 	</td></tr>
 	  <tr><td>{t}Expected Date{/t}:</td><td><input id="v_calpop2" style="text-align:right;"  class="text" name="expected_date" type="text"  size="10" maxlength="10"     /><img   id="calpop2" style="cursor:pointer" src="art/icons/calendar_view_month.png" align="top" alt=""   /> <div id="cal2Container" style="display:none; z-index:2;position:absolute"></div>	</td></tr>
@@ -104,23 +104,21 @@
 </div>
 
 
-<div class="prodinfo" style="margin-left:20px;width:550px;margin-top:25px;xborder:1px solid black;font-size:85%">
+<div class="prodinfo" style="width:550px;margin-top:25px;xborder:1px solid black;font-size:85%">
  <table  border=1 style="float:right">
-    <tr><td>{t}Goods{/t}:</td><td id="goods" class="aright">{$po->get('Purchase Order Net Items Amount')}</td></tr>
-    <tr><td>{t}Shipping{/t}:</td><td class="aright" id="shipping"  >{$po->get('Purchase Order Net Shipping Amount')}</td></tr>
-    <tr> <tr><td>{t}Vat{/t}:</td><td id="vat" class="aright"   >{$po->get('Purchase Order Total Tax Amount')}</td></tr>
-    <tr id="other_charge"  {if $n_value_other==0}style="display:none"{/if} ><td >{t}Other{/t}:</td><td class="aright"  id="other"  >{$value_other}</td>
-    </tr>
-    <tr  {if $n_value_dif==0}style="display:none"{/if}  ><td>{t}Diff{/t}:</td><td class="stock aright" style="background:red">{$value_dif}</td></tr>
-    <tr>
-      <td>{t}Total{/t}</td><td id="total" class="stock aright ">{$po->get('Purchase Order Total Amount')}</td>
-    </tr>
+    <tr><td>{t}Goods{/t}:</td><td id="goods" class="aright">{$po->get('Items Net Amount')}</td></tr>
+    <tr><td>{t}Shipping{/t}:</td><td class="aright" id="shipping"  >{$po->get('Shipping Net Amount')}</td></tr>
+    <tr><td>{t}Tax{/t}:</td><td id="vat" class="aright"   >{$po->get('Total Tax Amount')}</td></tr>
+    <tr><td>{t}Total{/t}</td><td id="total" class="stock aright ">{$po->get('Total Amount')}</td></tr>
+    
     
   </table>
 
-  <h1 style="padding:0px 0 10px 0;width:300px;xborder:1px solid red" id="po_title">{$title}</h1>
-  <table border=1 style="float:left">
-    <tr><td>{t}Purchase Order Id{/t}:</td><td class="aright">{$po->get('Purchase Order Public ID')}</td></tr>
+  <h1 style="padding:0px 0 10px 0;width:300px;xborder:1px solid red" id="po_title">{t}Purchase Order{/t}: {$po->get('Purchase Order Public ID')}</h1>
+  <table border=0 style="float:left">
+    <tr><td>{t}Purchase Order Id{/t}:</td><td class="aright">{$po->get('Purchase Order Key')}</td></tr>
+    <tr><td>{t}Supplier{/t}:</td><td class="aright">{$supplier->get('Supplier Name')}</td></tr>
+
     <tr {if $dn_number==''}style="display:none"{/if} id="row_public_id" ><td>{t}Invoice Number{/t}:</td><td id="public_id" class="aright">{$dn_number}</td><td class="aright" id="edit_public_id" style="display:none" ><input style="text-align:right" class="text" size="7"  id="v_invoice_number"  name="invoice_number" value="{$dn_number}"  /></td></tr>
     <tr {if $tipo lt 1}style="display:none"{/if}  id="row_invoice_date"><td>{t}Invoice Date{/t}:</td><td id="invoice_date" >{$po_date_invoice}</td>
       <td class="aright" id="edit_invoice_date" style="display:none" >
@@ -210,21 +208,60 @@
 
 
 
-<div id="the_table" class="data_table" style="margin:20px 20px;clear:both">
-  <span class="clean_table_title">{t}Products{/t}</span>
+<div id="the_table" class="data_table" style="margin:20px 0px;clear:both">
+  <span class="clean_table_title">{t}Supplier Products{/t}</span>
+  	<div id="table_type">
+	  <span id="table_type_list" style="float:right;color:brown" class="table_type state_details {if $table_type=='list'}state_details_selected{/if}">{t}Recomended Order{/t}</span>
+	  
+	</div>
+
+<div id="todelete" style="display:none">
   <span onClick="swap_show_items(this)"  status="{$status}"  id="show_items" class="but {if !$show_all}selected{/if}  ">Items</span>
   <span onClick="swap_show_all_products(this)" status="{$status}" {if $status!=0}style="display:none"{/if} id="show_all_products"  class="but {if $show_all}selected{/if}">Show all supplier products</span>
   <span onClick="swap_show_all_products(this,1)" style="display:none" id="show_amend"  class="but">Amend order</span>
   <span onClick="swap_item_found(this)" style="display:none" id="show_found"  class="but">Add Product Found in Delivery</span>
   <span onClick="swap_new_item_found(this)" style="display:none" id="show_new_found"  class="but">Undentificated Product Found in Delivery</span>
+  </div>
 
+  <div id="list_options0"> 
+      <div style="clear:both;margin:0 0px;padding:0 20px ;border-bottom:1px solid #999"></div>
+      <span   style="float:right;margin-left:20px" class="state_details" state="{$show_all}"  id="show_all"  atitle="{if !$show_all}{t}Show only ordered{/t}{else}{t}Show all products available{/t}{/if}"  >{if $show_all}{t}Show only ordered{/t}{else}{t}Show all products available{/t}{/if}</span>     
+      
 
+      
+      <table style="float:left;margin:0 0 5px 0px ;padding:0"  class="options" >
+	<tr><td  {if $view=='general'}class="selected"{/if} id="general" >{t}General{/t}</td>
+	  <td {if $view=='stock'}class="selected"{/if}  id="stock"  >{t}Discounts{/t}</td>
+	  <td  {if $view=='sales'}class="selected"{/if}  id="sales"  >{t}Properties{/t}</td>
+	</tr>
+      </table>
+      <table id="period_options" style="float:left;margin:0 0 0 20px ;padding:0{if $view!='sales' };display:none{/if}"  class="options_mini" >
+	<tr>
+	  <td  {if $period=='all'}class="selected"{/if} period="all"  id="period_all" >{t}All{/t}</td>
+	  <td {if $period=='year'}class="selected"{/if}  period="year"  id="period_year"  >{t}1Yr{/t}</td>
+	  <td  {if $period=='quarter'}class="selected"{/if}  period="quarter"  id="period_quarter"  >{t}1Qtr{/t}</td>
+	  <td {if $period=='month'}class="selected"{/if}  period="month"  id="period_month"  >{t}1M{/t}</td>
+	  <td  {if $period=='week'}class="selected"{/if} period="week"  id="period_week"  >{t}1W{/t}</td>
+	</tr>
+      </table>
+      <table  id="avg_options" style="float:left;margin:0 0 0 20px ;padding:0{if $view!='sales' };display:none{/if}"  class="options_mini" >
+	<tr>
+	  <td {if $avg=='totals'}class="selected"{/if} avg="totals"  id="avg_totals" >{t}Totals{/t}</td>
+	  <td {if $avg=='month'}class="selected"{/if}  avg="month"  id="avg_month"  >{t}M AVG{/t}</td>
+	  <td {if $avg=='week'}class="selected"{/if}  avg="week"  id="avg_week"  >{t}W AVG{/t}</td>
+	  <td {if $avg=='month_eff'}class="selected"{/if} style="display:none" avg="month_eff"  id="avg_month_eff"  >{t}M EAVG{/t}</td>
+	  <td {if $avg=='week_eff'}class="selected"{/if} style="display:none"  avg="week_eff"  id="avg_week_eff"  >{t}W EAVG{/t}</td>
+	</tr>
+      </table>
+    </div>
+
+  
   <div  class="clean_table_caption"  style="clear:both;">
-    <div style="float:left;"><div id="table_info0" class="clean_table_info"><span id="rtext0"></span> <span class="filter_msg"  id="filter_msg0"></span></div></div>
+    <div style="float:left;"><div id="table_info0" class="clean_table_info"><span id="rtext0"></span> <span class="rtext_rpp" id="rtext_rpp0"></span> <span class="filter_msg"  id="filter_msg0"></span></div></div>
     <div class="clean_table_filter" {if !$show_all}style="visibility:hidden"{/if} id="clean_table_filter0"><div class="clean_table_info"><span id="filter_name0">{t}Product Code{/t}</span>: <input style="border-bottom:none" id='f_input0' value="{$filter_value}" size=10/><div id='f_container'></div></div></div>
     <div class="clean_table_controls" {if !$show_all}style="visibility:hidden"{/if}  id="clean_table_controls0" ><div><span  style="margin:0 5px" id="paginator"></span></div></div>
   </div>
-  <div  id="table0"   class="data_table_container dtable btable "> </div>
+  <div  id="table0"  style="font-size:80%" class="data_table_container dtable btable "> </div>
 </div>
 {if $items>0}
 <div  id="table0" class="dtable btable" style="margin-bottom:0"></div>

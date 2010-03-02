@@ -57,16 +57,17 @@
        
        
        <div style="clear:both"></div>
-     </div>
-<div class="data_table"  style="clear:both">
-     <span id="table_title" class="clean_table_title">{t}Items{/t}</span>
+      </div>
 
-     <div id="table_type">
-       <span id="table_type_list" style="float:right;color:brown" class="table_type state_details {if $table_type=='list'}state_details_selected{/if}">{t}Recomendations{/t}</span>
-       <span id="table_type_list" style="float:right;margin-right:10px" class="table_type state_details {if $table_type=='list'}state_details_selected{/if}">{t}List{/t}</span>
-       <span id="table_type_thumbnail" style="float:right;margin-right:10px" class="table_type state_details {if $table_type=='thumbnails'}state_details_selected{/if}">{t}Thumbnails{/t}</span>
-     </div>
-     
+      <div class="data_table"  style="clear:both">
+	<span id="table_title" class="clean_table_title">{t}Items{/t}</span>
+
+	<div id="table_type">
+	  <span id="table_type_list" style="float:right;color:brown" class="table_type state_details {if $table_type=='list'}state_details_selected{/if}">{t}Recomendations{/t}</span>
+	  <span id="table_type_list" style="float:right;margin-right:10px" class="table_type state_details {if $table_type=='list'}state_details_selected{/if}">{t}List{/t}</span>
+	  <span id="table_type_thumbnail" style="float:right;margin-right:10px" class="table_type state_details {if $table_type=='thumbnails'}state_details_selected{/if}">{t}Thumbnails{/t}</span>
+	</div>
+	
      
 
      
@@ -75,14 +76,14 @@
       <span   style="float:right;margin-left:20px" class="state_details" state="{$show_all}"  id="show_all"  atitle="{if !$show_all}{t}Show only ordered{/t}{else}{t}Show all products available{/t}{/if}"  >{if $show_all}{t}Show only ordered{/t}{else}{t}Show all products available{/t}{/if}</span>     
       
 
-
-    <table style="float:left;margin:0 0 5px 0px ;padding:0"  class="options" >
-       <tr><td  {if $view=='general'}class="selected"{/if} id="general" >{t}General{/t}</td>
-	 <td {if $view=='stock'}class="selected"{/if}  id="stock"  >{t}Discounts{/t}</td>
-	 <td  {if $view=='sales'}class="selected"{/if}  id="sales"  >{t}Properties{/t}</td>
+      
+      <table style="float:left;margin:0 0 5px 0px ;padding:0"  class="options" >
+	<tr><td  {if $view=='general'}class="selected"{/if} id="general" >{t}General{/t}</td>
+	  <td {if $view=='stock'}class="selected"{/if}  id="stock"  >{t}Discounts{/t}</td>
+	  <td  {if $view=='sales'}class="selected"{/if}  id="sales"  >{t}Properties{/t}</td>
 	</tr>
       </table>
-    <table id="period_options" style="float:left;margin:0 0 0 20px ;padding:0{if $view!='sales' };display:none{/if}"  class="options_mini" >
+      <table id="period_options" style="float:left;margin:0 0 0 20px ;padding:0{if $view!='sales' };display:none{/if}"  class="options_mini" >
 	<tr>
 	  <td  {if $period=='all'}class="selected"{/if} period="all"  id="period_all" >{t}All{/t}</td>
 	  <td {if $period=='year'}class="selected"{/if}  period="year"  id="period_year"  >{t}1Yr{/t}</td>
@@ -91,7 +92,7 @@
 	  <td  {if $period=='week'}class="selected"{/if} period="week"  id="period_week"  >{t}1W{/t}</td>
 	</tr>
       </table>
-    <table  id="avg_options" style="float:left;margin:0 0 0 20px ;padding:0{if $view!='sales' };display:none{/if}"  class="options_mini" >
+      <table  id="avg_options" style="float:left;margin:0 0 0 20px ;padding:0{if $view!='sales' };display:none{/if}"  class="options_mini" >
 	<tr>
 	  <td {if $avg=='totals'}class="selected"{/if} avg="totals"  id="avg_totals" >{t}Totals{/t}</td>
 	  <td {if $avg=='month'}class="selected"{/if}  avg="month"  id="avg_month"  >{t}M AVG{/t}</td>
@@ -101,6 +102,8 @@
 	</tr>
       </table>
     </div>
+
+
     <div  class="clean_table_caption"  style="clear:both;">
       <div style="float:left;"><div id="table_info0" class="clean_table_info"><span id="rtext0"></span> <span class="rtext_rpp" id="rtext_rpp0"></span> <span class="filter_msg"  id="filter_msg0"></span></div></div>
       <div class="clean_table_filter" id="clean_table_filter0"><div class="clean_table_info"><span id="filter_name0">{$filter_name}</span>: <input style="border-bottom:none" id='f_input0' value="{$filter_value}" size=10/><div id='f_container0'></div></div></div>
