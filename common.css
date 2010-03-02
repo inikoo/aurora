@@ -337,10 +337,10 @@ table.but_edit{clear:both;float:right}
 
 
 
-table.options{margin:0 ;float:right;border-collapse: separate;;border-spacing:3px  3px;font-size:100%;font-weight:600;}
+table.options{margin:0 ;float:right;border-collapse: separate;;border-spacing:3px  3px;font-size:100%;xfont-weight:600;}
 
 
-.options td,.options span{border:1px solid #aaa;color:#aaa;text-align:center;padding:2px 3px 2px 3px;cursor:pointer}
+.options td,.options span{font-size:85%;border:1px solid #aaa;color:#aaa;text-align:center;padding:0px 7px 0px 7px;cursor:pointer;}
 
 .options td:hover,  .options span:hover{border:1px solid #777;color:#777}
 

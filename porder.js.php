@@ -25,6 +25,146 @@ var match_invoice_save=function(){
 }
 
 
+var myCellEdit = function (callback, newValue) {
+    var record = this.getRecord(),
+    column = this.getColumn(),
+    oldValue = this.value,
+    datatable = this.getDataTable();
+    recordIndex = datatable.getRecordIndex(record);
+   
+    ar_file='ar_edit_porders.php';
+    
+    var request='tipo=edit_'+column.object+'&key=' + column.key + '&newvalue=' + encodeURIComponent(newValue) + '&oldvalue=' + encodeURIComponent(oldValue)+ myBuildUrl(datatable,record);
+    //alert(ar_file+'?'+request);
+
+    YAHOO.util.Connect.asyncRequest(
+				    'POST',
+				    ar_file, {
+					success:function(o) {
+					    alert(o.responseText);
+					    var r = YAHOO.lang.JSON.parse(o.responseText);
+					    if (r.state == 200) {
+						
+						
+						for(x in r.data){
+						    Dom.get(x).innerHTML=r.data[x];
+						}
+						
+		
+						callback(true, r.quantity);
+					    } else {
+						alert(r.msg);
+						callback();
+					    }
+					},
+					    failure:function(o) {
+					    alert(o.statusText);
+					    callback();
+					},
+					    scope:this
+					    },
+				    request
+						
+				    );  
+};
+
+
+
+
+var myonCellClick = function(oArgs) {
+
+
+    var target = oArgs.target,
+    column = this.getColumn(target),
+    record = this.getRecord(target);
+
+
+    
+    datatable = this;
+    var records=this.getRecordSet();
+    //alert(records.getLength())
+   
+    // alert(column.action);
+    //return;
+
+    //alert(datatable)
+    var recordIndex = this.getRecordIndex(record);
+
+		
+    switch (column.action) {
+   
+    case('add_object'):
+    case('remove_object'):
+	var data = record.getData();
+
+	if(column.action=='add_object')
+	    var new_qty=parseFloat(data['quantity'])+1;
+	else
+	    var new_qty=parseFloat(data['quantity'])-1;
+
+	var ar_file='ar_edit_porders.php';
+	request='tipo=edit_new_porder&key=quantity&newvalue='+new_qty+'&oldvalue='+data['quantity']+'&id='+ data['id'];
+	alert(ar_file+'?'+request)
+	YAHOO.util.Connect.asyncRequest(
+				    'POST',
+				    ar_file, {
+					success:function(o) {
+					    //  alert(o.responseText);
+					    var r = YAHOO.lang.JSON.parse(o.responseText);
+					    if (r.state == 200) {
+						for(x in r.data){
+
+						    Dom.get(x).innerHTML=r.data[x];
+						}
+
+					
+
+						datatable.updateCell(record,'quantity',r.quantity);
+						datatable.updateCell(record,'to_charge',r.to_charge);
+					
+
+
+						for(var i=0; i<records.getLength(); i++) {
+						    var rec=records.getRecord(i);
+						    if(r.discount_data[rec.getData('pid')]!=undefined){
+						    datatable.updateCell(rec,'to_charge',r.discount_data[rec.getData('pid')].to_charge);
+						    datatable.updateCell(rec,'description',r.discount_data[rec.getData('pid')].description);
+						    }
+						}
+
+						//for (i in r.discount_data){
+						//    alert(i+' '+r.discount_data[i].to_charge);
+						//}
+						
+						//	callback(true, r.newvalue);
+					    } else {
+						alert(r.msg);
+						//	callback();
+					    }
+					},
+					    failure:function(o) {
+					    alert(o.statusText);
+					    // callback();
+					},
+					    scope:this
+					    },
+				    request
+				    
+				    );  
+	
+	break;
+   
+		    
+    default:
+		    
+	this.onEventShowCellEditor(oArgs);
+	break;
+    }
+};   
+
+
+
+
 
 var eqty=function(o,id,units){
     Dom.get('diff'+id).innerHTML=0;
@@ -599,26 +739,28 @@ YAHOO.util.Event.addListener(window, "load", function() {
 		var tableid=0;
 		var tableDivEL="table"+tableid;
 		var ColumnDefs = [
-				  {key:"code", label:"<?php echo _('Code')?>", width:80,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				  ,{key:"sup_code", label:"<?php echo _('S Code')?>", width:70,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				  ,{key:"description", label:"<?php echo _('Description')?>",width:285, sortable:false,className:"aleft"}
-				  ,{key:"stock", label:"<?php echo _('Stock O(U)')?>",width:90,className:"aright"}
-				  ,{key:"stock_time", label:"<?php echo _('Stock Time')?>",width:75,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-				  ,{key:"expected_qty_edit", label:"<?php echo _('Qty O[U]')?>",width:70,className:"aright"}
-				  ,{key:"expected_qty", label:"<?php echo _('Qty O[U]')?>",width:100,className:"aright"}
-				  ,{key:"price_unit", label:"<?php echo _('Price (U)')?>",width:65,className:"aright"}
-				  ,{key:"expected_price", label:"<?php echo _('E Cost')?>",width:70,className:"aright"}
-				  ,{key:"qty_edit", label:"<?php echo _('Qty [U]')?>",width:50,className:"aright",hidden:true}
-				  ,{key:"diff", label:"<?php echo _('&Delta;U')?>",width:40,className:"aright",hidden:true}
-				  ,{key:"damaged_edit", label:"<?php echo _('Damaged')?>",width:60,className:"aright",hidden:true}
-
-				  ,{key:"damaged", label:"<?php echo _('Damaged')?>",width:60,className:"aright"}
-				  ,{key:"usable", label:"<?php echo _('In O[U]')?>",width:55,className:"aright"}
+				  {key:"id", label:"<?php echo _('SPK')?>", width:20,sortable:false,isPrimaryKey:true,hidden:true} 
+				     
+				  ,{key:"code", label:"<?php echo _('Code')?>", width:80,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				 
+				  ,{key:"description", label:"<?php echo _('Description')?>",width:350, sortable:false,className:"aleft"}
+				  ,{key:"quantity",label:"<?php echo _('Qty')?>", width:40,sortable:false,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC},  editor: new YAHOO.widget.TextboxCellEditor({asyncSubmitter: myCellEdit}),object:'new_porder','action':'change_qty'}
+				  // ,{key:"stock", label:"<?php echo _('Stock O(U)')?>",width:90,className:"aright"}
+				  // ,{key:"stock_time", label:"<?php echo _('Stock Time')?>",width:75,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				  // ,{key:"expected_qty_edit", label:"<?php echo _('Qty O[U]')?>",width:70,className:"aright"}
+				  // ,{key:"expected_qty", label:"<?php echo _('Qty O[U]')?>",width:100,className:"aright"}
+				  // ,{key:"price_unit", label:"<?php echo _('Price (U)')?>",width:65,className:"aright"}
+				  // ,{key:"expected_price", label:"<?php echo _('E Cost')?>",width:70,className:"aright"}
+				  // ,{key:"qty_edit", label:"<?php echo _('Qty [U]')?>",width:50,className:"aright",hidden:true}
+				  // ,{key:"diff", label:"<?php echo _('&Delta;U')?>",width:40,className:"aright",hidden:true}
+				  //,{key:"damaged_edit", label:"<?php echo _('Damaged')?>",width:60,className:"aright",hidden:true}
+				  //,{key:"damaged", label:"<?php echo _('Damaged')?>",width:60,className:"aright"}
+				  //,{key:"usable", label:"<?php echo _('In O[U]')?>",width:55,className:"aright"}
 
 
 				  ];
 		
-		this.dataSource0 = new YAHOO.util.DataSource("ar_assets.php?tipo=withsupplier_po&tableid="+tableid);
+		this.dataSource0 = new YAHOO.util.DataSource("ar_edit_porders.php?tipo=po_transactions_to_process&tableid="+tableid);
 		
 		this.dataSource0.responseType = YAHOO.util.DataSource.TYPE_JSON;
 		this.dataSource0.connXhrMode = "queueRequests";
@@ -627,6 +769,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 			metaFields: {
 			    rowsPerPage:"resultset.records_perpage",
 			     rtext:"resultset.rtext",
+			     rtext_rpp:"resultset.rtext_rpp",
 			    sort_key:"resultset.sort_key",
 			    sort_dir:"resultset.sort_dir",
 			    tableid:"resultset.tableid",
@@ -635,7 +778,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 			},
 			
 			fields: [
-				 "id","family_id","fam","code","description","stock","price_unit","price_outer","delete","p2s_id","sup_code","group_id","qty","expected_price","price","expected_qty","expected_qty_edit","damaged","damaged_edit","qty_edit","diff","usable"
+				 "id","code","description","quantity"
 				 ]};
 	    
 		    this.table0 = new YAHOO.widget.DataTable(tableDivEL, ColumnDefs,
@@ -660,9 +803,14 @@ YAHOO.util.Event.addListener(window, "load", function() {
 								 
 							     }
 							     );
-		    this.table0.handleDataReturnPayload =myhandleDataReturnPayload;
-		    this.table0.doBeforeSortColumn = mydoBeforeSortColumn;
+		this.table0.handleDataReturnPayload =myhandleDataReturnPayload;
+		this.table0.doBeforeSortColumn = mydoBeforeSortColumn;
 		this.table0.doBeforePaginatorChange = mydoBeforePaginatorChange;
+  this.table0.subscribe("cellMouseoverEvent", highlightEditableCell);
+	    this.table0.subscribe("cellMouseoutEvent", unhighlightEditableCell);
+	    this.table0.subscribe("cellClickEvent", myonCellClick);
+
+
 		this.table0.filter={key:'<?php echo$_SESSION['state']['supplier']['products']['f_field']?>',value:'<?php echo$_SESSION['state']['supplier']['products']['f_value']?>'};
 	    }
 	    }

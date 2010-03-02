@@ -31,11 +31,13 @@ var CellEdit = function (callback, newValue) {
 	ar_file='ar_edit_orders.php';
     else if(column.object=='supplier' || column.object=='product_supplier' )
 	ar_file='ar_edit_suppliers.php';
+else if(column.object=='new_porder'  )
+	ar_file='ar_edit_porders.php';
     else
 	ar_file='ar_edit_assets.php';
     //   alert(column.object)
     var request='tipo=edit_'+column.object+'&key=' + column.key + '&newvalue=' + encodeURIComponent(newValue) + '&oldvalue=' + encodeURIComponent(oldValue)+ myBuildUrl(datatable,record);
-    // alert('R:'+request);
+    alert(ar_file+'?'+request);
 
     YAHOO.util.Connect.asyncRequest(
 				    'POST',

@@ -93,23 +93,39 @@ $myconf=array(
 $default_state=array(
 		     'export'=>'xls',
 		     
-                   'report_data'=>$report_data, 
+		     'report_data'=>$report_data, 
+		     'porder'=>array(
+                               'id'=>''
+			       ,'show_all'=>false ,'supplier_key'=>0
+			       ,'products'=>array(
+						      'order'=>'code',
+						      'order_dir'=>'',
+						      'sf'=>0,
+						      'nr'=>25,
+						      'where'=>'where true',
+						      'f_field'=>'code',
+						      'f_value'=>'',
+						      'from'=>'',
+						      'to'=>''
+						      )
+				  ), 
+
                    'order'=>array(
                                'id'=>''
-                                    ,'show_all'=>false
-                                                ,'store_key'=>0
-                                                             ,'all_products'=>array(
-                                                                                 'order'=>'code',
-                                                                                 'order_dir'=>'',
-                                                                                 'sf'=>0,
-                                                                                 'nr'=>25,
-                                                                                 'where'=>'where true',
-                                                                                 'f_field'=>'code',
-                                                                                 'f_value'=>'',
-                                                                                 'from'=>'',
-                                                                                 'to'=>''
-                                                                             )
-                           ),
+			       ,'show_all'=>false
+			       ,'store_key'=>0
+			       ,'all_products'=>array(
+						      'order'=>'code',
+						      'order_dir'=>'',
+						      'sf'=>0,
+						      'nr'=>25,
+						      'where'=>'where true',
+						      'f_field'=>'code',
+						      'f_value'=>'',
+						      'from'=>'',
+						      'to'=>''
+						      )
+				  ),
 
                    'marketing'=>array(
 

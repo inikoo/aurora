@@ -73,6 +73,8 @@ if($store_keys=='all'){
   $store_keys=join(',',$user->stores);
 
 }
+
+
 $store_key=$store_keys;
 
 $sql=sprintf("select `Invoice Category Key` from  `Invoice Category Dimension` where `Store Key` in (%s)",$store_keys);

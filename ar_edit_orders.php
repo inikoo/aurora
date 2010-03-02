@@ -39,22 +39,8 @@ case('edit_new_order'):
   edit_new_order();
   break;
  case('transactions_to_process'):
-   products_to_sell();
-   return;
-   if(isset( $_REQUEST['show_all']) and preg_match('/^(yes|no)$/',$_REQUEST['show_all'])  ){
-    
-     if($_REQUEST['show_all']=='yes')
-       $show_all=true;
-     else
-       $show_all=false;
-     $_SESSION['state']['order']['show_all']=$show_all;
-   }else
-     $show_all=$_SESSION['state']['order']['show_all'];
+    transactions_to_process();
   
-   if($show_all)
-     products_to_sell();
-   else
-     transactions_to_process();
   
    break;
 default:
@@ -211,7 +197,7 @@ function edit_new_order(){
 }
 
 
-function products_to_sell(){
+function transactions_to_process(){
   if(isset( $_REQUEST['id']) and is_numeric( $_REQUEST['id'])){
      $order_id=$_REQUEST['id'];
      $_SESSION['state']['order']['id']=$order_id;
