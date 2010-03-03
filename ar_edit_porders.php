@@ -243,7 +243,7 @@ if(!$show_all){
 
     
 
- $sql="select  `Supplier Product Unit Type`,`Supplier Product Tax Code`,`Supplier Product Current Key`,`Supplier Product Code`,`Supplier Product Name`,`Supplier Product Cost`,`Supplier Product Units Per Case`,`Supplier Product Unit Type`  $sql_qty from $table   $where $wheref order by $order $order_direction limit $start_from,$number_results    ";
+ $sql="select  `Supplier Product XHTML Used In` ,`Supplier Product Unit Type`,`Supplier Product Tax Code`,`Supplier Product Current Key`,`Supplier Product Code`,`Supplier Product Name`,`Supplier Product Cost`,`Supplier Product Units Per Case`,`Supplier Product Unit Type`  $sql_qty from $table   $where $wheref order by $order $order_direction limit $start_from,$number_results    ";
  
     $res = mysql_query($sql);
 
@@ -251,16 +251,25 @@ if(!$show_all){
     //  print $sql;
  while ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
-  
+if($row['Purchase Order Quantity']==0)
+  $amount='';
+else
+$amount=money($row['Purchase Order Amount']);
 
+$unit_type=$row['Supplier Product Unit Type'];
+if($unit_type=='ea'){
+$unit_type='piece';
+}
    $adata[]=array(
 		  'id'=>$row['Supplier Product Current Key'],
 		  'code'=>$row['Supplier Product Code'],
 		  'description'=>'<span style="font-size:95%">'.number($row['Supplier Product Units Per Case']).'x '.$row['Supplier Product Name'].' @'.money($row['Supplier Product Cost']/$row['Supplier Product Units Per Case']).' '.$row['Supplier Product Unit Type'].'</span>',
-		
+		'used_in'=>$row['Supplier Product XHTML Used In'],
 		  'quantity'=>$row['Purchase Order Quantity'],
+		  		  'amount'=>$amount,
+		  'unit_type'=>$unit_type,
+
 		  'tax_code'=>$row['Supplier Product Tax Code'],
-		  'unit_type'=>$row['Supplier Product Unit Type'],
 		  'add'=>'+',
 		  'remove'=>'-',
 		  'to_charge'=>money($row['Purchase Order Amount'])
@@ -357,7 +366,7 @@ function edit_new_porder(){
 
   $response= array('state'=>200,'quantity'=>$transaction_data['qty'],'key'=>$_REQUEST['key'],'data'=>$updated_data,'to_charge'=>$transaction_data['to_charge']);
   }else
-    $response= array('state'=>200,'newvalue'=>$_REQUEST['oldvalue'],'key'=>$_REQUEST['key']);
+    $response= array('state'=>200,'quantity'=>$_REQUEST['oldvalue'],'key'=>$_REQUEST['key']);
  echo json_encode($response);  
   
 }
