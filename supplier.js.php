@@ -1,6 +1,10 @@
 <?php
 include_once('common.php');
+
+
 ?>
+   var supplier_key='<?php echo$_SESSION['state']['supplier']['id']?>';
+
 
     var Event = YAHOO.util.Event;
 var Dom   = YAHOO.util.Dom;
@@ -91,18 +95,20 @@ YAHOO.util.Event.addListener(window, "load", function() {
 		var tableid=1; // Change if you have more the 1 table
 		var tableDivEL="table"+tableid;
 		var SuppliersColumnDefs = [
-				       {key:"id", label:"<?php echo _('Id')?>",  width:60,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				       ,{key:"tipo", label:"<?php echo _('Type')?>",width:200, sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				       ,{key:"date_index", label:"<?php echo _('Date')?>", width:200,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-				       ,{key:"items", label:"<?php echo _('Items')?>", width:90,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-				       ,{key:"total", label:"<?php echo _('Total')?>", width:90,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-				       ];
+					   {key:"id", label:"<?php echo _('Id')?>",  width:100,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+					   ,{key:"date", label:"<?php echo _('Date')?>", width:200,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+					   ,{key:"status", label:"<?php echo _('Type')?>",width:300, sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 
-	    this.dataSource1 = new YAHOO.util.DataSource("ar_orders.php?tipo=po_supplier&tableid=1");
-	    this.dataSource1.responseType = YAHOO.util.DataSource.TYPE_JSON;
-	    this.dataSource1.connXhrMode = "queueRequests";
-	    this.dataSource1.responseSchema = {
-		resultsList: "resultset.data", 
+					   ,{key:"items", label:"<?php echo _('Items')?>", width:90,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+					   ,{key:"total", label:"<?php echo _('Total')?>", width:90,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				       ];
+		
+		this.dataSource1 = new YAHOO.util.DataSource("ar_porders.php?tipo=purchase_orders&parent=supplier&parent_key="+supplier_key+"&tableid=1");
+		//	alert("ar_porders.php?tipo=purchase_orders&parent=supplier&parent_key="+supplier_key+"tableid=1")
+	this.dataSource1.responseType = YAHOO.util.DataSource.TYPE_JSON;
+		this.dataSource1.connXhrMode = "queueRequests";
+		this.dataSource1.responseSchema = {
+		    resultsList: "resultset.data", 
 		metaFields: {
 		    rtext:"resultset.rtext",
 		    rowsPerPage:"resultset.records_perpage",
@@ -115,8 +121,8 @@ YAHOO.util.Event.addListener(window, "load", function() {
 		
 		fields: [
 			 "id"
-			 ,"tipo"
-			 ,"date_index"
+			 ,"status"
+			 ,"date"
 			 ,"items"
 			 ,"total"
 
@@ -126,7 +132,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 						     this.dataSource1, {draggableColumns:true,
 							   renderLoopSize: 50,generateRequest : myRequestBuilder
 								       ,paginator : new YAHOO.widget.Paginator({
-									       rowsPerPage    : <?php echo$_SESSION['state']['supplier']['po']['nr']?>,containers : 'paginator1', 
+									       rowsPerPage    : <?php echo$_SESSION['state']['porders']['table']['nr']?>,containers : 'paginator1', 
  									      pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',
 									      previousPageLinkLabel : "<",
  									      nextPageLinkLabel : ">",
@@ -136,8 +142,8 @@ YAHOO.util.Event.addListener(window, "load", function() {
 									  })
 								     
 								     ,sortedBy : {
-									 key: "<?php echo$_SESSION['state']['supplier']['po']['order']?>",
-									 dir: "<?php echo$_SESSION['state']['supplier']['po']['order_dir']?>"
+									 key: "<?php echo$_SESSION['state']['porders']['table']['order']?>",
+									 dir: "<?php echo$_SESSION['state']['porders']['table']['order_dir']?>"
 								     }
 							   ,dynamicData : true
 
@@ -146,7 +152,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    this.table1.handleDataReturnPayload =myhandleDataReturnPayload;
 	    this.table1.doBeforeSortColumn = mydoBeforeSortColumn;
 	    this.table1.doBeforePaginatorChange = mydoBeforePaginatorChange;
-	    this.table1.filter={key:'<?php echo$_SESSION['state']['supplier']['po']['f_field']?>',value:'<?php echo$_SESSION['state']['supplier']['po']['f_value']?>'};
+	    this.table1.filter={key:'<?php echo$_SESSION['state']['porders']['table']['f_field']?>',value:'<?php echo$_SESSION['state']['porders']['table']['f_value']?>'};
 
 
 

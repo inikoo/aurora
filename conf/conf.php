@@ -97,6 +97,7 @@ $default_state=array(
 		     'porder'=>array(
                                'id'=>''
 			       ,'show_all'=>false ,'supplier_key'=>0
+			       ,'view'=>'used_in'
 			       ,'products'=>array(
 						      'order'=>'code',
 						      'order_dir'=>'',
@@ -109,7 +110,24 @@ $default_state=array(
 						      'to'=>''
 						      )
 				  ), 
-
+		     'porders'=>array(
+                               'id'=>''
+			       ,'show_all'=>false 
+			       ,'parent'=>'supplier'
+			       ,'parent_key'=>0
+			       ,'table'=>array(
+						      'order'=>'date',
+						      'view'=>'general',
+						      'order_dir'=>'',
+						      'sf'=>0,
+						      'nr'=>25,
+						      'where'=>'where true',
+						      'f_field'=>'public_id',
+						      'f_value'=>'',
+						      'from'=>'',
+						      'to'=>''
+						      )
+				  ), 
                    'order'=>array(
                                'id'=>''
 			       ,'show_all'=>false

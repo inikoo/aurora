@@ -88,12 +88,19 @@ function get($key=''){
    if (array_key_exists ( $key, $this->data ))
       return $this->data [$key];
 	 
-      if (preg_match('/^(Total|Items|(Shipping |Charges )?Net).*(Amount)$/',$key)) {
+   if($key=='Number Items')
+     return number($this->data ['Purchase Order Number Items']);
+   if (preg_match('/^(Total|Items|(Shipping |Charges )?Net).*(Amount)$/',$key)) {
+     $amount='Purchase Order '.$key;
+     return money($this->data[$amount]);
+   }	
+   if (preg_match('/Date$/',$key)) {
+     $date='Purchase Order '.$key;
+     return strftime("%e-%b-%Y %H:%M",strtotime($this->data[$date]));
+   }	
+   
+      
 
-            $amount='Purchase Order '.$key;
-
-            return money($this->data[$amount]);
-        }	
 
     if(array_key_exists($key,$this->data))
       return $this->data[$key];
@@ -109,6 +116,12 @@ function get($key=''){
 
 
     if($this->data['Purchase Order Current Dispatch State']=='In Process'){
+
+      if($data ['qty']==0){
+	 $sql=sprintf("delete from `Purchase Order Transaction Fact` where `Purchase Order Key`=%d and `Supplier Product Key`=%d ",$this->id,$data ['Supplier Product Key']);
+	  mysql_query($sql);
+      }else{
+
 
       $sql=sprintf("select `Purchase Order Line` from `Purchase Order Transaction Fact` where `Purchase Order Key`=%d and `Supplier Product Key`=%d ",$this->id,$data ['Supplier Product Key']);
       $res=mysql_query($sql);
@@ -146,6 +159,8 @@ function get($key=''){
 	//	print "$sql";
 	mysql_query($sql);
       }
+      }
+
     }else{
 
 
@@ -167,12 +182,12 @@ function get($key=''){
 	
  function get_next_line_number(){
     
-    $sql=sprintf("select count(*) as num_lines from `Purchase Order Transaction Fact` where `Purchase Order Key`=%d ",$this->id);
+    $sql=sprintf("select MAX(`Purchase Order Line`) as max_line from `Purchase Order Transaction Fact` where `Purchase Order Key`=%d ",$this->id);
     $res=mysql_query($sql);
     
     $line_number=1;
     if($row=mysql_fetch_array($res))
-      $line_number+=$row['num_lines'];
+      $line_number=(int) $row['max_line']+1;
     return $line_number;
     
     
@@ -180,15 +195,17 @@ function get($key=''){
 
 
  function get_next_public_id($supplier_key){
-   $sql=sprintf("select count(*) as num_pos from `Purchase Order Dimension` where `Purchase Order Key`=%d ",$this->id);
+   $supplier=new Supplier($supplier_key);
+   $code=$supplier->data['Supplier Code'];
+
+   $sql=sprintf("select `Purchase Order Public ID` from `Purchase Order Dimension` where `Purchase Order Supplier Key`=%d order by REPLACE(`Purchase Order Public ID`,%s,'') desc limit 1",$supplier_key,prepare_mysql($code));
    $res=mysql_query($sql);
    
    $line_number=1;
    if($row=mysql_fetch_array($res))
-      $line_number+=$row['num_pos'];
-   $supplier=new Supplier($supplier_key);
+     $line_number= (int) preg_replace('/[^\d]/','',$row['Purchase Order Public ID'])+1;
    
-   return sprintf('%s%04d',$supplier->data['Supplier Code'],$line_number);
+   return sprintf('%s%04d',$code,$line_number);
    
  }
 
@@ -200,16 +217,21 @@ function get($key=''){
 
  function update_item_totals_from_order_transactions(){
 
-   $sql = "select sum(`Purchase Order Net Amount`) as net, sum(`Purchase Order Tax Amount`) as tax,  sum(`Purchase Order Shipping Amount`) as shipping from `Purchase Order Transaction Fact` where `Purchase Order Key`=" . $this->id;
+
+
+
+   $sql = "select count(Distinct `Supplier Product Key`) as num_items ,sum(`Purchase Order Net Amount`) as net, sum(`Purchase Order Tax Amount`) as tax,  sum(`Purchase Order Shipping Amount`) as shipping from `Purchase Order Transaction Fact` where `Purchase Order Key`=" . $this->id;
    //print "$sql\n";
    $result = mysql_query ( $sql );
    if ($row = mysql_fetch_array ( $result, MYSQL_ASSOC )) {
      //	  $total = $row ['gross'] + $row ['tax'] + $row ['shipping']  - $row ['discount'] + $this->data ['Order Items Adjust Amount'];
      
 	  $this->data ['Purchase Order Items Net Amount'] = $row ['net'];
+	  $this->data ['Purchase Order Number Items'] = $row ['num_items'];
+
 	  
-	  
-	  $sql = sprintf ( "update `Purchase Order Dimension` set   `Purchase Order Items Net Amount`=%.2f , `Purchase Order Items Tax Amount`=%.2f where  `Purchase Order Key`=%d "
+	  $sql = sprintf ( "update `Purchase Order Dimension` set `Purchase Order Number Items`=%d , `Purchase Order Items Net Amount`=%.2f , `Purchase Order Items Tax Amount`=%.2f where  `Purchase Order Key`=%d "
+			   , $this->data ['Purchase Order Number Items']
 			   , $this->data ['Purchase Order Items Net Amount']
 			   , $this->data ['Purchase Order Items Tax Amount']
 			   
@@ -226,6 +248,20 @@ function get($key=''){
 	
  }
 
+ function get_number_items(){
+   $num_items=0;
+   $sql=sprintf("select count(Distinct `Supplier Product Key`) as num_items  from `Purchase Order Transaction Fact` where `Purchase Order Key`=%d",$this->id);
+   $result = mysql_query ( $sql );
+   if ($row = mysql_fetch_array ( $result, MYSQL_ASSOC )) {
+     $num_items=$row['num_items'];
+   }
+
+   return $num_items;
+ }
+
+ 
+
+
 
  function update_totals_from_order_transactions($force_total=false){
   
@@ -240,29 +276,26 @@ function get($key=''){
     
     $this->data ['Purchase Order Total Amount'] = $this->data ['Purchase Order Total Tax Amount'] + $this->data ['Purchase Order Total Net Amount'];
     $this->data ['Purchase Order Total To Pay Amount'] = $this->data ['Purchase Order Total Amount'];
-    
-   
-    
     $sql = sprintf ( "update `Purchase Order Dimension` set `Purchase Order Total Net Amount`=%.2f ,`Purchase Order Total Tax Amount`=%.2f ,`Purchase Order Shipping Net Amount`=%.2f ,`Purchase Order Shipping Tax Amount`=%.2f ,`Purchase Order Charges Net Amount`=%.2f ,`Purchase Order Charges Tax Amount`=%.2f ,`Purchase Order Total Amount`=%.2f , `Purchase Order Total To Pay Amount`=%.2f  where  `Purchase Order Key`=%d "
 		     , $this->data ['Purchase Order Total Net Amount']	  
 		     , $this->data ['Purchase Order Total Tax Amount']
 		     , $this->data ['Purchase Order Shipping Net Amount']
 		     , $this->data ['Purchase Order Shipping Tax Amount']
-
-	  , $this->data ['Purchase Order Charges Net Amount']
-	  , $this->data ['Purchase Order Charges Tax Amount']
-
-	  , $this->data ['Purchase Order Total Amount']
-	  , $this->data ['Purchase Order Total To Pay Amount']
-	  , $this->data ['Purchase Order Key'] 
-	  );
-		
-
+		     
+		     , $this->data ['Purchase Order Charges Net Amount']
+		     , $this->data ['Purchase Order Charges Tax Amount']
+		     
+		     , $this->data ['Purchase Order Total Amount']
+		     , $this->data ['Purchase Order Total To Pay Amount']
+		     , $this->data ['Purchase Order Key'] 
+		     );
+    
+    
 	  //exit;
-						
-		
-	  if (! mysql_query ( $sql ))
-	    exit ( "$sql eroro2 con no update totals" );
+    
+    
+    if (! mysql_query ( $sql ))
+      exit ( "$sql eroro2 con no update totals" );
 
 
 
@@ -271,8 +304,31 @@ function get($key=''){
 
 
 
+ function delete(){
+
+   if($this->data['Purchase Order Current Dispatch State']=='In Process'){
+     $sql=sprintf("delete from `Purchase Order Dimension` where `Purchase Order Key`=%d",$this->id);
+     mysql_query($sql);
+     $sql=sprintf("delete from `Purchase Order Transaction Fact` where `Purchase Order Key`=%d",$this->id);
+     mysql_query($sql);
+   }else{
+     $this->error=true;
+     $this->msg='Can not deleted submitted purchase orders';
+   }
+ }
 
 
+function submit($data){
+
+  $date=$data['Purchase Order Submitted Date'];
+  
+  
+  $sql=sprintf("update `Purchase Order Dimension` set `Purchase Order Submitted Date`=%s,`Purchase Order Current Dispatch State`='Submitted'   where `Purchase Order Key`=%d",prepare_mysql($date),$this->id);
+  mysql_query($sql);
+
+  $sql=sprintf("update `Purchase Order Transaction Fact` set  `Purchase Order Last Updated Date`=%s `Purchase Order Current Dispatching State`='Submitted'  where `Purchase Order Key`=%d",prepare_mysql($date),$this->id);
+   mysql_query($sql);
+}
 
 
 }

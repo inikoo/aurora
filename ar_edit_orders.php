@@ -427,7 +427,7 @@ if(!$show_all){
     $res = mysql_query($sql);
 
     $adata=array();
-    //  print $sql;
+
  while ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
    if (is_numeric($row['Product Availability']))

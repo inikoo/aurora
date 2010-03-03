@@ -20,9 +20,16 @@
     <tr id="submit_ready" {if $po->get('Purchase Order Submitted Date')==''}style="display:none"{/if}  ><td id="submit_date">{$po->get('Purchase Order Submitted Date')}</td><td class="aright">{t}Submitted{/t}</td></tr>
     
     {if  $po->get('Purchase Order Submitted Date')==''}
-    <tr id="submit_noready"  ><td></td><td id="submit_po"  class="but">{t}Submit{/t}</td></tr>
+    <tr id="submit_noready"  ><td></td><td id="submit_po" onClick="submit_order(this)" class="but">{t}Submit{/t}</td></tr>
     
-   
+    <tr id="submit_dialog" style="display:none"><td colspan=2>
+	<table>
+	  <tr><td>{t}Submitted Date{/t}:</td><td><input id="v_calpop1" style="text-align:right;"  class="text" name="submites_date" type="text"  size="10" maxlength="10"  value="{$date}"    /><img   id="calpop1" style="cursor:pointer" src="art/icons/calendar_view_month.png" align="top" alt=""   />  <div id="cal1Container" style="position:absolute;display:none; z-index:2">	</td></tr>
+	  <tr><td class="aright">{t}Time{/t}:</td><td class="aright"><input id="v_time"   style="text-align:right;" class="text" name="expected_date" type="text"  size="5" maxlength="5"  value="{$time}"   /><img   id="calpop1" style="cursor:pointer" src="art/icons/time.png" align="top" alt=""   /> 	</td></tr>
+	  <tr><td>{t}Expected Date{/t}:</td><td><input id="v_calpop2" style="text-align:right;"  class="text" name="expected_date" type="text"  size="10" maxlength="10"     /><img   id="calpop2" style="cursor:pointer" src="art/icons/calendar_view_month.png" align="top" alt=""   /> <div id="cal2Container" style="display:none; z-index:2;position:absolute"></div>	</td></tr>
+	    <tr><td colspan=2 class="aright"><span style="cursor:pointer;margin-right:16px"  onClick="submit_order_save(this)"  >Save <img   src="art/icons/disk.png" align="top" alt=""   /></span></td></tr>
+	</table>
+    </td></tr>
     {/if}
 
     
@@ -162,7 +169,7 @@
 
 
 
-    <tr><td>{t}Items{/t}:</td><td class="aright" id="distinct_products">{$po->get('Number Items')}</td></tr>
+    <tr><td>{t}Items{/t}:</td><td class="aright" id="distinct_products">{$po->get('Purchase Order Distinct Items')}</td></tr>
   </table>
 
   <div style="clear:left" id="match_invoice">
@@ -237,9 +244,9 @@
 
       
       <table style="float:left;margin:0 0 5px 0px ;padding:0"  class="options" >
-	<tr><td  {if $view=='used_in'}class="selected"{/if} id="general" >{t}Used In{/t}</td>
-	  <td {if $view=='stock'}class="selected"{/if}  id="stock"  >{t}Stock{/t}</td>
-	  <td  {if $view=='sales'}class="selected"{/if}  id="sales"  >{t}Sales{/t}</td>
+	<tr><td  {if $view=='general'}class="selected"{/if} id="general" >{t}General{/t}</td>
+	  <td {if $view=='stock'}class="selected"{/if}  id="stock"  >{t}Discounts{/t}</td>
+	  <td  {if $view=='sales'}class="selected"{/if}  id="sales"  >{t}Properties{/t}</td>
 	</tr>
       </table>
       <table id="period_options" style="float:left;margin:0 0 0 20px ;padding:0{if $view!='sales' };display:none{/if}"  class="options_mini" >
@@ -332,39 +339,6 @@
   </div>
 </div>
 
-<div id="submit_dialog" style="padding:10px 15px">
-  <div id="submit_dialog_msg"></div>
-  <table>
-    <tr>
-      <td class="aright" style="width:100px">{t}Submit Method{/t}:</td><td>
-	<div class="options" style="margin:0px 0;width:200px" id="submit_method_container">
-	  <input type="hidden" value="{$submit_method_default}" ovalue="{$submit_method_default}" id="shelf_type_type"  >
-	  {foreach from=$submit_method item=unit_tipo key=name} <span style="float:left;margin-bottom:5px;margin-right:5px" class="radio{if $unit_tipo.selected} selected{/if}"  id="radio_shelf_type_{$name}" radio_value="{$name}">{$unit_tipo.fname}</span> {/foreach}
-	</div>
-      </td>
-    </tr>
-    <input type="hidden" id="date_type" value="now"/>
-    <tr id="tr_manual_submit_date">
-      <td class="aright">{t}Submit Date{/t}:</td><td style="position:relative"><span style="position:absolute;left:200px" class="state_details" onClick="submit_date_manually()">{t}Modify{/t}</span>{t}Now{/t} </td>
-    </tr>
-    <tbody style="display:none" id="tbody_manual_submit_date">
-      <tr>
-	<td class="aright">{t}Submitted Date{/t}:</td><td><input id="v_calpop1" style="text-align:right;"  class="text" name="submites_date" type="text"  size="10" maxlength="10"  value="{$date}"    /><img   id="calpop1" style="cursor:pointer" src="art/icons/calendar_view_month.png" align="top" alt=""   />  <div id="cal1Container" style="position:absolute;display:none; z-index:2">	</td></tr>
-      <tr><td class="aright">{t}Time{/t}:</td><td ><input id="v_time"   style="text-align:right;" class="text" name="expected_date" type="text"  size="5" maxlength="5"  value="{$time}"   /><img   id="calpop1" style="cursor:pointer" src="art/icons/time.png" align="top" alt=""   /> 	</td></tr>
-      <tr><td>{t}Expected Date{/t}:</td><td><input id="v_calpop2" style="text-align:right;"  class="text" name="expected_date" type="text"  size="10" maxlength="10"     /><img   id="calpop2" style="cursor:pointer" src="art/icons/calendar_view_month.png" align="top" alt=""   /> <div id="cal2Container" style="display:none; z-index:2;position:absolute"></div>	</td></tr>
-    </tbody>
-    
-    <tr >
-      <td class="aright">{t}Submit By{/t}:</td><td style="position:relative"> <span class="state_details" style="position:absolute;left:200px">{t}Modify{/t}</span><span id="submited_by">{$user}</span></td>
-    </tr>
-
-    <tr><td colspan=2 style="border-top:1px solid #ddd;text-align:center;padding:10px 0 0 0">
-	<span class="state_details" onClick="close_dialog('submit')"  >Cancel</span>
-	<span style="margin-left:50px" class="state_details" onClick="submit_order_save(this)"  >Save</span>
-    
-    </td></tr>
-  </table>
-</div>
 
 
 {include file='footer.tpl'}

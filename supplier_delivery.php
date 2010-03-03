@@ -14,12 +14,12 @@ if(isset($_REQUEST['id'])){
     exit("Error po can no be found");
   $supplier=new Supplier('id',$po->data['Purchase Order Supplier Key']);
 }else if(isset($_REQUEST['new']) 
-	 and isset($_REQUEST['supplier_id']) 
-	 and is_numeric($_REQUEST['supplier_id'])
-	 and $_REQUEST['supplier_id']>0
-	 ){
+   and isset($_REQUEST['supplier_id']) 
+   and is_numeric($_REQUEST['supplier_id'])
+   and $_REQUEST['supplier_id']>0
+   ){
   $supplier=new Supplier('id',$_REQUEST['supplier_id']);
-  $editor=array(
+    $editor=array(
 		'Author Name'=>$user->data['User Alias'],
 		'Author Type'=>$user->data['User Type'],
 		'Author Key'=>$user->data['User Parent Key'],
@@ -62,7 +62,7 @@ if(isset($_REQUEST['id'])){
    $smarty->assign('supplier',$supplier);
 
 
-   $smarty->assign('title',_('Purchase Order').': '.$po->data['Purchase Order Public ID']);
+   $smarty->assign('title',$supplier->data['Supplier Code']."<br/>"._('Purchase Order').' '.$po->data['Purchase Order Key']." (".$po->data['Purchase Order Current XHTML State'].")");
    
    
 //    $_SESSION['state']['po']['items']['all_products']=false;
@@ -128,19 +128,7 @@ $smarty->assign('staff_cols',$num_cols);
 
 
 
-$submit_method=array(
-		     'Internet'=>array('fname'=>_('Internet'))
-		     ,'Telephone'=>array('fname'=>_('Telephone'))
-		     ,'Fax'=>array('fname'=>_('Fax'))
-		     ,'In Person'=>array('fname'=>_('In Person'))
-		     ,'Email'=>array('fname'=>_('Email'))
-		     ,'Post'=>array('fname'=>_('Post'))
-		     ,'Other'=>array('fname'=>_('Other'),'selected'=>true)
-	
-		  );
-$smarty->assign('default_submit_method','Other');
-$smarty->assign('submit_method',$submit_method);
-$smarty->assign('user',$user->data['User Alias']);
+
 
 
 
@@ -162,10 +150,8 @@ $js_files=array(
 		$yui_path.'paginator/paginator-min.js',
 		$yui_path.'datasource/datasource-min.js',
 		$yui_path.'autocomplete/autocomplete-min.js',
-		$yui_path.'container/container-min.js',
-		
 		$yui_path.'datatable/datatable.js',
-
+		$yui_path.'container/container_core-min.js',
 		$yui_path.'menu/menu-min.js',
 		$yui_path.'calendar/calendar-min.js',
 		'common.js.php',

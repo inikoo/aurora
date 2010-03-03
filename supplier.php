@@ -55,6 +55,8 @@ if($edit){
 }else{
 if($modify){
   $general_options_list[]=array('tipo'=>'url','url'=>'supplier.php?edit='.$supplier_id,'label'=>_('Edit Supplier'));
+  $general_options_list[]=array('tipo'=>'url','url'=>'supplier_invoice.php?new=1&supplier_id='.$supplier_id,'label'=>_('Input Invoice'));
+  $general_options_list[]=array('tipo'=>'url','url'=>'supplier_delivery.php?new=1&supplier_id='.$supplier_id,'label'=>_('New Delivery'));
   $general_options_list[]=array('tipo'=>'url','url'=>'porder.php?new=1&supplier_id='.$supplier_id,'label'=>_('New Purchase Order'));
 
 }
