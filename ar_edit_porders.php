@@ -26,6 +26,9 @@ $tipo=$_REQUEST['tipo'];
 
 
 switch($tipo){
+case('delete'):
+  delete_purchase_order();
+  break;
 case('po_transactions_to_process'):
  po_transactions_to_process();
    break;
@@ -38,7 +41,25 @@ default:
   echo json_encode($response);
 }
 
+function delete_purchase_order(){
+  if(isset( $_REQUEST['id']) and is_numeric( $_REQUEST['id'])){
+     $order_id=$_REQUEST['id'];
+     $_SESSION['state']['porder']['id']=$order_id;
+  }else
+     $order_id=$_SESSION['state']['porder']['id'];
 
+  $po=new PurchaseOrder($order_id);
+  $supplier_key=$po->data['Purchase Order Supplier Key'];
+  $po->delete();
+  if(!$po->error){
+    $response= array('state'=>200,'supplier_key'=>$supplier_key);
+
+  }else{
+    $response= array('state'=>400,'msg'=>$po->msg);
+
+  }
+   echo json_encode($response);  
+}
 
 function po_transactions_to_process(){
  if(isset( $_REQUEST['id']) and is_numeric( $_REQUEST['id'])){
@@ -144,18 +165,18 @@ if(!$show_all){
 
 
    if($show_all){
-      $table=' `Supplier Product Dimension` P ';
+      $table=' `Supplier Product Dimension` PD ';
      $where=sprintf('where `Supplier Key`=%d   ',$supplier_key);
-     $sql_qty=sprintf(',IFNULL((select sum(`Purchase Order Quantity`) from `Purchase Order Transaction Fact` where `Supplier Product Key`=`Supplier Product Current Key` and `Purchase Order Key`=%d),0) as `Purchase Order Quantity`, IFNULL((select sum(`Purchase Order Net Amount`) from `Purchase Order Transaction Fact` where `Supplier Product Key`=`Supplier Product Current Key` and `Purchase Order Key`=%d),0) as `Purchase Order Amount` ',$order_id,$order_id); 
+     $sql_qty=sprintf(',IFNULL((select sum(`Purchase Order Quantity`) from `Purchase Order Transaction Fact` where `Supplier Product Key`=`Supplier Product Current Key` and `Purchase Order Key`=%d),0) as `Purchase Order Quantity`, IFNULL((select sum(`Purchase Order Net Amount`) from `Purchase Order Transaction Fact` where `Supplier Product Key`=`Supplier Product Current Key` and `Purchase Order Key`=%d),0) as `Purchase Order Net Amount` ',$order_id,$order_id); 
 
 
 
 
 
    }else{
-     $table='  `Order Transaction Fact` OTF  left join `Product History Dimension` PHD on (PHD.`Product Key`=OTF.`Product Key`) left join `Product Dimension` P on (PHD.`Product ID`=P.`Product ID`)  ';
-     $where=sprintf(' where `Order Quantity`>0 and `Order Key`=%d',$order_id);
-     $sql_qty=', `Order Quantity`,`Order Transaction Gross Amount`,`Order Transaction Total Discount Amount`,(select `Deal Info` from `Order Transaction Deal Bridge` OTDB where OTDB.`Order Key`=OTF.`Order Key` and OTDB.`Order Line`=OTF.`Order Line`) as `Deal Info`';
+     $table='  `Purchase Order Transaction Fact` OTF  left join `Supplier Product History Dimension` PHD on (`SPH Key`=`Supplier Product Key`) left join `Supplier Product Dimension` PD on (PD.`Supplier Product Code`=PHD.`Supplier Product Code` and PD.`Supplier Key`=PHD.`Supplier Key`) ';
+     $where=sprintf(' where  `Purchase Order Key`=%d',$order_id);
+     $sql_qty=', `Purchase Order Quantity`,`Purchase Order Net Amount`';
 
   
      
@@ -176,7 +197,7 @@ if(!$show_all){
       $sql="select count(*) as total from $table   $where $wheref   ";
  
     // print_r($conf);exit;
-      // print $sql;
+      //    print $sql;
     $res=mysql_query($sql);
     if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
         $total=$row['total'];
@@ -243,18 +264,18 @@ if(!$show_all){
 
     
 
- $sql="select  `Supplier Product XHTML Used In` ,`Supplier Product Unit Type`,`Supplier Product Tax Code`,`Supplier Product Current Key`,`Supplier Product Code`,`Supplier Product Name`,`Supplier Product Cost`,`Supplier Product Units Per Case`,`Supplier Product Unit Type`  $sql_qty from $table   $where $wheref order by $order $order_direction limit $start_from,$number_results    ";
+ $sql="select  `Supplier Product XHTML Used In` ,`Supplier Product Unit Type`,`Supplier Product Tax Code`,`Supplier Product Current Key`,PD.`Supplier Product Code`,`Supplier Product Name`,`Supplier Product Cost`,`Supplier Product Units Per Case`,`Supplier Product Unit Type`  $sql_qty from $table   $where $wheref order by $order $order_direction limit $start_from,$number_results    ";
  
     $res = mysql_query($sql);
 
     $adata=array();
-    //  print $sql;
+    // print $sql;
  while ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
 if($row['Purchase Order Quantity']==0)
   $amount='';
 else
-$amount=money($row['Purchase Order Amount']);
+$amount=money($row['Purchase Order Net Amount']);
 
 $unit_type=$row['Supplier Product Unit Type'];
 if($unit_type=='ea'){
@@ -272,7 +293,7 @@ $unit_type='piece';
 		  'tax_code'=>$row['Supplier Product Tax Code'],
 		  'add'=>'+',
 		  'remove'=>'-',
-		  'to_charge'=>money($row['Purchase Order Amount'])
+
 		     
                  );
 
@@ -359,7 +380,7 @@ function edit_new_porder(){
 		      // ,'order_credits'=>$order->get('Net Credited Amount')
 		      ,'shipping'=>$order->get('Shipping Net Amount')
 		      ,'total'=>$order->get('Total Amount')
-		      
+		      ,'distinct_products'=>$order->get('Number Items')
 		      );
   
 

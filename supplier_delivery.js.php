@@ -1,10 +1,9 @@
 <?php
 include_once('common.php');
 ?>
-     var Dom   = YAHOO.util.Dom;var Event = YAHOO.util.Event;
+     var Dom   = YAHOO.util.Dom;
 var po_id='<?php echo$_SESSION['state']['porder']['id']?>';
 var supplier_id='<?php echo$_SESSION['state']['supplier']['id']?>';
-var show_all='<?php echo $_SESSION['state']['porder']['show_all']?>';
 
 var receivers = new Object;
 var checkers= new Object;
@@ -12,7 +11,7 @@ var checkers= new Object;
 var active_editor='';
 var receiver_list;
 var checker_list;
-var submit_dialog;
+
 
 var match_invoice_open=function(){
     Dom.get("match_invoice").style.display='none'
@@ -52,12 +51,7 @@ var myCellEdit = function (callback, newValue) {
 						    Dom.get(x).innerHTML=r.data[x];
 						}
 						
-						datatable.updateCell(record,'amount',r.to_charge);
-					
-						if(r.quantity==0 && !show_all){
-						    datatable.deleteRow(record);
-						}
-						
+		datatable.updateCell(record,'amount',r.to_charge);
 						callback(true, r.quantity);
 					    } else {
 						alert(r.msg);
@@ -67,9 +61,6 @@ var myCellEdit = function (callback, newValue) {
 					    failure:function(o) {
 					    alert(o.statusText);
 					    callback();
-					    
-					  
-
 					},
 					    scope:this
 					    },
@@ -134,10 +125,7 @@ var myonCellClick = function(oArgs) {
 						r.to_charge='';
 						datatable.updateCell(record,'amount',r.to_charge);
 					
-						if(r.quantity==0 && !show_all){
-						    this.deleteRow(target);
-						}
-						
+
 
 						//	callback(true, r.newvalue);
 					    } else {
@@ -167,18 +155,6 @@ var myonCellClick = function(oArgs) {
 
 
 
-function close_dialog(tipo){
-   switch(tipo){
-   case('submit'):
-       submit_dialog.hide();
-       Dom.get('tr_manual_submit_date').style.display="";
-       Dom.get('tbody_manual_submit_date').style.display="none";
-       Dom.get('date_type').value='auto';
-
-       break;
-   }
-  
-} 
 
 
 var eqty=function(o,id,units){
@@ -343,31 +319,22 @@ var select_staff=function(o,e,tipo){
 }
 
 var clear_editors=function(){
-    //Dom.get('cancel_dialog').style.display='none';
-    //Dom.get('submit_dialog').style.display='none';
-    //Dom.get('expected_dialog').style.display='none';
-    //Dom.get('receive_dialog').style.display='none';
-    //Dom.get('check_dialog').style.display='none';
-    //Dom.get('consolidate_dialog').style.display='none';
-    //Dom.get('cancel_dialog').style.display='none';
-    active_editor='';
+    Dom.get('cancel_dialog').style.display='none';
+    Dom.get('submit_dialog').style.display='none';
+    Dom.get('expected_dialog').style.display='none';
+    Dom.get('receive_dialog').style.display='none';
+    Dom.get('check_dialog').style.display='none';
+    Dom.get('consolidate_dialog').style.display='none';
+    Dom.get('cancel_dialog').style.display='none';
+	active_editor='';
 }
 
 var submit_order_save=function(o){
-    
+    var date=Dom.get('v_calpop1').value;
+    var time=Dom.get('v_time').value;
+    var edate=Dom.get('v_calpop2').value;
 
-    var submit_date=Dom.get('v_calpop1').value;
-    var submit_time=Dom.get('v_time').value;
-    var estimated_date=Dom.get('v_calpop2').value;
-    var date_type=Dom.get('date_type').value;
-    var submit_method=Dom.get('submit_method').value;
-    
-    var user_alias=Dom.get('input_submitted_by').innerHTML;
-
-    
-
-
-    var request='ar_edit_porders.php?tipo=submit&submit_method='+escape(submit_method)+'&date_type='+escape(date_type)+'&user_alias='+escape(user_alias)+'&submit_date='+escape(submit_date)+'&submit_time='+escape(submit_time)+'&estimeted_date='+escape(estimated_date)+'&order_id='+escape(po_id);
+    var request='ar_assets.php?tipo=order_submit&tipo_order=po&date='+escape(date)+'&time='+escape(time)+'&edate='+escape(edate)+'&order_id='+escape(po_id);
     //alert(request);
     YAHOO.util.Connect.asyncRequest('POST',request ,{
 	    
@@ -536,8 +503,6 @@ var cancel_order_save=function(o){
 
 
 var submit_order=function(o){
-
-
     if(active_editor=='submit')
 	clear_editors();
     else{
@@ -545,8 +510,6 @@ var submit_order=function(o){
 	Dom.get('submit_dialog').style.display='';
 	active_editor='submit'
     }
-
-    
 
 }
 var change_et_order=function(o){
@@ -868,55 +831,10 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    }
     );
 
-function change_show_all(){
-
-  var state=this.getAttribute('state');
-  var alter=Dom.get('show_all').getAttribute('atitle');
-
-  var current=Dom.get('show_all').innerHTML;
-  Dom.get('show_all').innerHTML=alter;
-  Dom.get('show_all').setAttribute('atitle',current);
 
 
-  if(state==1){
-      show_all=0;
-      tag='no'
-      Dom.get('show_all').setAttribute('state',0);
-  }else{
-      show_all=1;
-       tag='yes'
-      Dom.get('show_all').setAttribute('state',1);
-
-      
-  }
-  
-    
-   var table=tables['table0'];
-   var datasource=tables['dataSource0'];
-   var request='&show_all='+tag;
-   // alert(request);
-   datasource.sendRequest(request,table.onDataReturnInitializeTable, table); 
-}
-
-function submit_date_manually(){
-    Dom.get('tr_manual_submit_date').style.display="none";
-    Dom.get('tbody_manual_submit_date').style.display="";
-    Dom.get('date_type').value='manual';
-}
 
  function init(){
-
-    YAHOO.util.Event.addListener('show_all', "click",change_show_all);
-
-    submit_dialog = new YAHOO.widget.Dialog("submit_dialog", {context:["submit_po","tr","tl"]  ,visible : false,close:false,underlay: "none",draggable:false});
-    submit_dialog.render();
-
-    
-    Event.addListener("submit_po", "click", submit_dialog.show,submit_dialog , true);
-
- var ids=Dom.getElementsByClassName('radio', 'span', 'submit_method_container');
-     YAHOO.util.Event.addListener(ids, "click", swap_radio);
-
      var oACDS = new YAHOO.util.FunctionDataSource(mygetTerms);
      oACDS.queryMatchContains = true;
      var oAutoComp = new YAHOO.widget.AutoComplete("f_input0","f_container", oACDS);
@@ -993,8 +911,6 @@ function submit_date_manually(){
 
  }
 
-
-
 YAHOO.util.Event.onDOMReady(init);
 YAHOO.util.Event.onContentReady("filtermenu", function () {
 	 var oMenu = new YAHOO.widget.Menu("filtermenu", { context:["filter_name0","tr", "br"]  });
@@ -1005,10 +921,10 @@ YAHOO.util.Event.onContentReady("filtermenu", function () {
 
 
 YAHOO.util.Event.onContentReady("rppmenu", function () {
-	 var oMenu = new YAHOO.widget.Menu("rppmenu", { context:["rtext_rpp0","tl", "tr"]  });
+	 var oMenu = new YAHOO.widget.Menu("rppmenu", { context:["filter_name0","tr", "bl"]  });
 	 oMenu.render();
 	 oMenu.subscribe("show", oMenu.focus);
-	 YAHOO.util.Event.addListener("rtext_rpp0", "click", oMenu.show, null, oMenu);
+	 YAHOO.util.Event.addListener("paginator_info0", "click", oMenu.show, null, oMenu);
     });
 
 

@@ -337,6 +337,7 @@ Event.addListener('customer_search', "keydown", submit_search_on_enter,search_da
 
 dialog_note = new YAHOO.widget.Dialog("dialog_note", {context:["note","tr","tl"]  ,visible : false,close:false,underlay: "none",draggable:false});
 dialog_note.render();
+
 dialog_attach = new YAHOO.widget.Dialog("dialog_attach", {context:["attach","tr","tl"]  ,visible : false,close:false,underlay: "none",draggable:false});
 dialog_attach.render();
 
