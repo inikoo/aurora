@@ -128,7 +128,7 @@ class User extends DB_Table{
     //    print "acac---- $key ----  $data ---asasqqqqqqqqq";
     if($key=='handle')
       $sql=sprintf("select * from  `User Dimension` where `User Handle`=%s",prepare_mysql($data));
-
+ 
     else
       $sql=sprintf("select * from `User Dimension` where `User Key`=%d",$data);
      

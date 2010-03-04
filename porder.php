@@ -141,6 +141,7 @@ $submit_method=array(
 $smarty->assign('default_submit_method','Other');
 $smarty->assign('submit_method',$submit_method);
 $smarty->assign('user',$user->data['User Alias']);
+$smarty->assign('user_staff_key',$user->data['User Parent Key']);
 
 
 

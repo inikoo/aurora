@@ -367,7 +367,7 @@ var submit_order_save=function(o){
     
 
 
-    var request='ar_edit_porders.php?tipo=submit&submit_method='+escape(submit_method)+'&date_type='+escape(date_type)+'&user_alias='+escape(user_alias)+'&submit_date='+escape(submit_date)+'&submit_time='+escape(submit_time)+'&estimeted_date='+escape(estimated_date)+'&order_id='+escape(po_id);
+    var request='ar_edit_porders.php?tipo=submit&submit_method='+escape(submit_method)+'&date_type='+escape(date_type)+'&user_alias='+escape(user_alias)+'&submit_date='+escape(submit_date)+'&submit_time='+escape(submit_time)+'&estimated_date='+escape(estimated_date)+'&id='+escape(po_id);
     //alert(request);
     YAHOO.util.Connect.asyncRequest('POST',request ,{
 	    

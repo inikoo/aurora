@@ -29,6 +29,9 @@ switch($tipo){
 case('delete'):
   delete_purchase_order();
   break;
+  case('submit'):
+  submit_purchase_order();
+  break;
 case('po_transactions_to_process'):
  po_transactions_to_process();
    break;
@@ -41,7 +44,7 @@ default:
   echo json_encode($response);
 }
 
-function delete_purchase_order(){
+function submit_purchase_order(){
   if(isset( $_REQUEST['id']) and is_numeric( $_REQUEST['id'])){
      $order_id=$_REQUEST['id'];
      $_SESSION['state']['porder']['id']=$order_id;
@@ -60,7 +63,73 @@ function delete_purchase_order(){
   }
    echo json_encode($response);  
 }
+function delete_purchase_order() {
+    global $user;
+    if (isset( $_REQUEST['id']) and is_numeric( $_REQUEST['id'])) {
+        $order_id=$_REQUEST['id'];
+        $_SESSION['state']['porder']['id']=$order_id;
+    } else
+        $order_id=$_SESSION['state']['porder']['id'];
 
+    $po=new PurchaseOrder($order_id);
+
+    $data=array(
+              'Purchase Order Submitted Date'=>date('Y-m-d H:i:s'),
+              'Purchase Order Main Buyer Key'=>$user->data['User Parent Key'],
+              'Purchase Order Main Buyer Name'=>$user->data['User Alias'],
+              'Purchase Order Main Source Type'=>'Unknown',
+              'Purchase Order Estimated Receiving Date'=>''
+          )
+
+    if (isset($_REQUEST['date_type']) and $_REQUEST['date_type']=='manual' ) {
+        if (isset($_REQUEST['submit_date']) and  isset($_REQUEST['submit_time']) ) {
+            $_date=$_REQUEST['submit_date'].' '.$_REQUEST['submit_time'];
+            $date_data=prepare_mysql_datetime($_date);
+            if (!$date_data['ok']) {
+                $response= array('state'=>400,'msg'=>_('Wrong date/time'));
+                echo json_encode($response);
+                return;
+            }
+            $data['Purchase Order Submitted Date']=$date_data['mysql_date'];
+        }
+    }
+
+
+    if (isset($_REQUEST['estimated_date'])  ) {
+        $date_data=prepare_mysql_datetime($_date,'midday');
+        if ($date_data['ok']) {
+            $data['Purchase Order Estimated Receiving Date']=$date_data['mysql_date'];
+        }
+
+    }
+    if (isset($_REQUEST['submit_method'])  ) {
+            $data['Purchase Order Main Source Type']=$_REQUEST['submit_method'];
+         }
+    if (isset($_REQUEST['user_alias'])  ) {
+    
+    $staff=new Staff($_REQUEST['staff_key']);
+    if(!$staff->id){
+      $response= array('state'=>400,'msg'=>'Wrong Sumitter');
+                echo json_encode($response);
+                return;
+    }
+    
+            $data['Purchase Order Main Buyer Key']=$staff->id;
+                        $data['Purchase Order Main Buyer Name']=$staff->data['Staff Alias'];
+
+         }
+
+
+    $po->submit($data);
+    if (!$po->error) {
+        $response= array('state'=>200,'supplier_key'=>$supplier_key);
+
+    } else {
+        $response= array('state'=>400,'msg'=>$po->msg);
+
+    }
+    echo json_encode($response);
+}
 function po_transactions_to_process(){
  if(isset( $_REQUEST['id']) and is_numeric( $_REQUEST['id'])){
      $order_id=$_REQUEST['id'];

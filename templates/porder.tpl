@@ -338,7 +338,7 @@
     <tr>
       <td class="aright" style="width:100px">{t}Submit Method{/t}:</td><td>
 	<div class="options" style="margin:0px 0;width:200px" id="submit_method_container">
-	  <input type="hidden" value="{$submit_method_default}" ovalue="{$submit_method_default}" id="shelf_type_type"  >
+	  <input type="hidden" value="{$submit_method_default}" ovalue="{$submit_method_default}" id="submit_method"  >
 	  {foreach from=$submit_method item=unit_tipo key=name} <span style="float:left;margin-bottom:5px;margin-right:5px" class="radio{if $unit_tipo.selected} selected{/if}"  id="radio_shelf_type_{$name}" radio_value="{$name}">{$unit_tipo.fname}</span> {/foreach}
 	</div>
       </td>
@@ -355,7 +355,9 @@
     </tbody>
     
     <tr >
-      <td class="aright">{t}Submit By{/t}:</td><td style="position:relative"> <span class="state_details" style="position:absolute;left:200px">{t}Modify{/t}</span><span id="submited_by">{$user}</span></td>
+        <input type="hidden" id="submited_by" value="$user_staff_key"/>
+
+      <td class="aright">{t}Submit By{/t}:</td><td style="position:relative"> <span class="state_details" style="position:absolute;left:200px">{t}Modify{/t}</span><span id="submited_by_alias">{$user}</span></td>
     </tr>
 
     <tr><td colspan=2 style="border-top:1px solid #ddd;text-align:center;padding:10px 0 0 0">
