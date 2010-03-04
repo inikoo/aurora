@@ -358,7 +358,8 @@ $unit_type='piece';
 		  'description'=>'<span style="font-size:95%">'.number($row['Supplier Product Units Per Case']).'x '.$row['Supplier Product Name'].' @'.money($row['Supplier Product Cost']/$row['Supplier Product Units Per Case']).' '.$row['Supplier Product Unit Type'].'</span>',
 		'used_in'=>$row['Supplier Product XHTML Used In'],
 		  'quantity'=>$row['Purchase Order Quantity'],
-		  		  'amount'=>$amount,
+		  'quantity_static'=>number($row['Purchase Order Quantity']),
+		  'amount'=>$amount,
 		  'unit_type'=>$unit_type,
 
 		  'tax_code'=>$row['Supplier Product Tax Code'],

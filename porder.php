@@ -86,6 +86,7 @@ $_SESSION['state']['supplier']['id']=$supplier->id;
 $smarty->assign('po',$po);
 $smarty->assign('supplier',$supplier);
 $smarty->assign('title',_('Purchase Order').': '.$po->data['Purchase Order Public ID']);
+$smarty->assign('view',$_SESSION['state']['porder']['view']);
 
 $tipo_filter=$_SESSION['state']['porder']['products']['f_field'];
 $smarty->assign('filter',$tipo_filter);
@@ -168,7 +169,7 @@ break;
 case('Submitted'):
 
   
-  $js_files[]='porder_in_submitted.js.php';
+  $js_files[]='porder_submitted.js.php';
   $js_files[]='js/edit_common.js';
   $smarty->assign('css_files',$css_files);
   $smarty->assign('js_files',$js_files);
