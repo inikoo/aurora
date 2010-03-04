@@ -50,34 +50,59 @@ if(isset($_REQUEST['id'])){
 }
    
 
-
-   $po_id = $po->id;
-   $_SESSION['state']['porder']['id']=$po->id;
-   $_SESSION['state']['porder']['supplier_key']=$supplier->id;
-   $_SESSION['state']['supplier']['id']=$supplier->id;
-   //print_r($po->data);
-   $smarty->assign('po',$po);
-   
-   
-   $smarty->assign('supplier',$supplier);
-
-
-   $smarty->assign('title',_('Purchase Order').': '.$po->data['Purchase Order Public ID']);
-   
-   
-//    $_SESSION['state']['po']['items']['all_products']=false;
-
-// if($po->data['items']==0)
-//   $_SESSION['state']['po']['items']['all_products_supplier']=true;
-//  else
-//    $_SESSION['state']['po']['items']['all_products_supplier']=false;
-
-
-// $_SESSION['state']['po']['status']=floor($po->data['status_id']*.1);
-// $smarty->assign('status',$_SESSION['state']['po']['status']);
+$css_files=array(
+		 $yui_path.'reset-fonts-grids/reset-fonts-grids.css',
+		 $yui_path.'menu/assets/skins/sam/menu.css',
+		 $yui_path.'calendar/assets/skins/sam/calendar.css',
+		 $yui_path.'button/assets/skins/sam/button.css',
+		 'common.css',
+		 'button.css',
+		 'container.css',
+		 'table.css'
+		 );
+$js_files=array(
+		$yui_path.'utilities/utilities.js',
+		$yui_path.'json/json-min.js',
+		$yui_path.'paginator/paginator-min.js',
+		$yui_path.'datasource/datasource-min.js',
+		$yui_path.'autocomplete/autocomplete-min.js',
+		$yui_path.'container/container-min.js',
+		$yui_path.'datatable/datatable.js',
+		$yui_path.'menu/menu-min.js',
+		$yui_path.'calendar/calendar-min.js',
+		'common.js.php',
+		'table_common.js.php',
+		);
 
 
-//if($_SESSION['state']['po']['items']['products'] or $_SESSION['state']['po']['items']['all_products_supplier'])
+
+
+
+$po_id = $po->id;
+$_SESSION['state']['porder']['id']=$po->id;
+$_SESSION['state']['porder']['supplier_key']=$supplier->id;
+$_SESSION['state']['supplier']['id']=$supplier->id;
+//print_r($po->data);
+$smarty->assign('po',$po);
+$smarty->assign('supplier',$supplier);
+$smarty->assign('title',_('Purchase Order').': '.$po->data['Purchase Order Public ID']);
+
+$tipo_filter=$_SESSION['state']['porder']['products']['f_field'];
+$smarty->assign('filter',$tipo_filter);
+$smarty->assign('filter_value0',$_SESSION['state']['porder']['products']['f_value']);
+$filter_menu=array( 
+		   'p.code'=>array('db_key'=>_('p.code'),'menu_label'=>'Our Product Code','label'=>'Code'),
+		   'code'=>array('db_key'=>_('code'),'menu_label'=>'Supplier Product Code','label'=>'Supplier Code'),
+		    );
+$smarty->assign('filter_menu0',$filter_menu);
+$smarty->assign('filter_name0',$filter_menu[$tipo_filter]['label']);
+
+$paginator_menu=array(10,25,50,100,500);
+$smarty->assign('paginator_menu',$paginator_menu);
+
+
+switch($po->data['Purchase Order Current Dispatch State']){
+case('In Process'):
 if($_SESSION['state']['porder']['show_all'])
   $smarty->assign('show_all',1);
 else
@@ -89,19 +114,7 @@ $smarty->assign('decimal_point',$myconf['decimal_point']);
 $smarty->assign('thousand_sep',$myconf['thousand_sep']);
 
 
-$tipo_filter=$_SESSION['state']['porder']['products']['f_field'];
-$smarty->assign('filter',$tipo_filter);
-$smarty->assign('filter_value0',$_SESSION['state']['porder']['products']['f_value']);
-//print_r($_SESSION['state']['porder']);
-$filter_menu=array( 
-		   'p.code'=>array('db_key'=>_('p.code'),'menu_label'=>'Our Product Code','label'=>'Code'),
-		   'code'=>array('db_key'=>_('code'),'menu_label'=>'Supplier Product Code','label'=>'Supplier Code'),
-		    );
-$smarty->assign('filter_menu0',$filter_menu);
-$smarty->assign('filter_name0',$filter_menu[$tipo_filter]['label']);
 
-$paginator_menu=array(10,25,50,100,500);
-$smarty->assign('paginator_menu',$paginator_menu);
 
 $smarty->assign('date',date("d-m-Y"));
 $smarty->assign('time',date("H:i"));
@@ -114,15 +127,13 @@ $num_cols=5;
 $staff=array();
 while($row=mysql_fetch_array($res, MYSQL_ASSOC)){
   $staff[]=array('alias'=>$row['alias'],'id'=>$row['id'],'position_id'=>$row['position_id']);
- }
+}
 
 //$staff= array_transverse($staff,$num_cols);
 //print_r($staff);
 foreach($staff as $key=>$_staff){
   $staff[$key]['mod']=fmod($key,$num_cols);
 }
-
-
 $smarty->assign('staff',$staff);
 $smarty->assign('staff_cols',$num_cols);
 
@@ -137,50 +148,36 @@ $submit_method=array(
 		     ,'Post'=>array('fname'=>_('Post'))
 		     ,'Other'=>array('fname'=>_('Other'),'selected'=>true)
 	
-		  );
+		     );
 $smarty->assign('default_submit_method','Other');
 $smarty->assign('submit_method',$submit_method);
+
 $smarty->assign('user',$user->data['User Alias']);
 $smarty->assign('user_staff_key',$user->data['User Parent Key']);
 
 
 
-$css_files=array(
-		 $yui_path.'reset-fonts-grids/reset-fonts-grids.css',
-		 $yui_path.'menu/assets/skins/sam/menu.css',
-		 $yui_path.'calendar/assets/skins/sam/calendar.css',
-		 
-		 $yui_path.'button/assets/skins/sam/button.css',
-
-		 'common.css',
-		 'button.css',
-		 'container.css',
-		 'table.css'
-		 );
-$js_files=array(
-		$yui_path.'utilities/utilities.js',
-		$yui_path.'json/json-min.js',
-		$yui_path.'paginator/paginator-min.js',
-		$yui_path.'datasource/datasource-min.js',
-		$yui_path.'autocomplete/autocomplete-min.js',
-		$yui_path.'container/container-min.js',
-		
-		$yui_path.'datatable/datatable.js',
-
-		$yui_path.'menu/menu-min.js',
-		$yui_path.'calendar/calendar-min.js',
-		'common.js.php',
-		'table_common.js.php',
-	       	'porder.js.php'
-		);
 
 
-  $js_files[]='js/edit_common.js';
-
-
+$js_files[]='porder_in_process.js.php';
+$js_files[]='js/edit_common.js';
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
+$smarty->display('porder_in_process.tpl');
+break;
+case('Submitted'):
+
+  
+  $js_files[]='porder_in_submitted.js.php';
+  $js_files[]='js/edit_common.js';
+  $smarty->assign('css_files',$css_files);
+  $smarty->assign('js_files',$js_files);
+  $smarty->display('porder_submitted.tpl');
 
 
-$smarty->display('porder.tpl');
+  break;
+
+}
+
+
 ?>

@@ -235,9 +235,9 @@
 		  <tr>
 		    <td>{t}Available{/t}:<td class="stock aright" id="stock">{$product->get('Product Availability')}</td>
 		  </tr>
-		  <tr>
-		    {if $nextbuy>0   }<tr><td rowspan="2">{t}Next shipment{/t}:</td><td>{$data.next_buy}</td></tr><tr><td class="noborder">{$data.nextbuy_when}</td>{/if}
-		    </tr>
+		  
+		    {if $product->get('Product Next Supplier Shipment')   }<tr><td rowspan="2" style="font-size:75%">{$product->get('Product Next Supplier Shipment')}</td></tr>{/if}
+		   
 		</table>
 		{if $product->get('Number of Parts')>0}
 		<table class="show_info_product" style="float:right;width:100%"  >
