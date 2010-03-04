@@ -729,6 +729,36 @@ break;
   }
 
 
+  function get_suppliers(){
+    $suppliers=array();
+      $sql=sprintf("select `Supplier Product Code`,  SD.`Supplier Key`,`Supplier Code` from `Supplier Product Part List` SPPL   left join `Supplier Dimension` SD on (SD.`Supplier Key`=SPPL.`Supplier Key`)   
+      where `Part SKU`=%d  order by `Supplier Key`;",$this->data['Part SKU']);
+      $result=mysql_query($sql);
+      while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
+	$suppliers[$row['Supplier Key']]=array('Supplier Key'=>$row['Supplier Key']);
+      }
+      return $suppliers;
+  }
+
+function get_supplier_products(){
+    $supplier_products=array();
+      $sql=sprintf("select `Supplier Product Units Per Part`,`Supplier Product Code`,  SD.`Supplier Key`,`Supplier Code` from `Supplier Product Part List` SPPL   left join `Supplier Dimension` SD on (SD.`Supplier Key`=SPPL.`Supplier Key`)   
+      where `Part SKU`=%d ;",$this->data['Part SKU']);
+      $result=mysql_query($sql);
+      while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
+	$supplier_products[$row['Supplier Key'].$row['Supplier Product Code']]=array(
+										     'Supplier Key'=>$row['Supplier Key']
+										     ,'Supplier Product Code'=>$row['Supplier Product Code']
+										     ,'Supplier Product Units Per Part'=>$row['Supplier Product Units Per Part']
+
+										     );
+      }
+      return $supplier_products;
+  }
+
+
+  
+
 
   function get_unit_cost($date=false){
     

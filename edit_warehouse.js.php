@@ -659,7 +659,7 @@ function get_location_code(row,col){
      YAHOO.util.Event.addListener(ids, "click", show_add_area_dialog);
     var ids = ["add_shelf"]; 
      YAHOO.util.Event.addListener(ids, "click", show_add_shelf_dialog);
-          YAHOO.util.Event.addListener('save_shelf', "click", add_shelf);
+     YAHOO.util.Event.addListener('save_shelf', "click", add_shelf);
 
 
      YAHOO.util.Event.addListener('save_area', "click", add_area);
@@ -670,7 +670,8 @@ function get_location_code(row,col){
      YAHOO.util.Event.addListener('close_add_shelf_type', "click",hide_add_shelf_type_dialog );
 
      var ids=Dom.getElementsByClassName('radio', 'span', 'shelf_type_type_container');
-     YAHOO.util.Event.addListener(ids, "click", swap_radio);
+     YAHOO.util.Event.addListener(ids, "click", swap_radio,'shelf_type_type');
+
 
      var ids=['shelf_type_general_view','shelf_type_dimensions_view'];
      YAHOO.util.Event.addListener(ids, "click",change_shelf_type_view);

@@ -284,12 +284,12 @@ class supplierproduct extends DB_Table {
         }
 
     }
-    function load($data_to_be_read,$args='') {
-        switch ($data_to_be_read) {
-        case('used in'):
 
-            $used_in_products='';
-            $sql=sprintf("select PD.`Product ID`,`Product Code` from `Supplier Product Part List` SPPL left join `Product Part List` PPL on (SPPL.`Part SKU`=PPL.`Part SKU`) left join `Product Dimension` PD on (PPL.`Product ID`=PD.`Product ID`) where `Supplier Product Code`=%s and `Supplier Key`=%d and `Supplier Product Part Most Recent`='Yes' group by `Product Code`;"
+
+
+    function get_products(){
+      $products=array();
+       $sql=sprintf("select PD.`Product ID`,`Product Code`,`Supplier Product Units Per Part`,`Parts Per Product` from `Supplier Product Part List` SPPL left join `Product Part List` PPL on (SPPL.`Part SKU`=PPL.`Part SKU`) left join `Product Dimension` PD on (PPL.`Product ID`=PD.`Product ID`) where `Supplier Product Code`=%s and `Supplier Key`=%d and `Supplier Product Part Most Recent`='Yes' group by `Product Code`;"
                          ,prepare_mysql($this->code)
                          ,$this->supplier_key
                         );
@@ -297,7 +297,24 @@ class supplierproduct extends DB_Table {
 
             $result=mysql_query($sql);
             while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
-                $used_in_products.=sprintf(', <a href="product.php?pid=%d">%s</a>',$row['Product ID'],$row['Product Code']);
+	      $units_ratio=  1.0/$row['Supplier Product Units Per Part']/$row['Parts Per Product'];
+	      $products[$row['Product ID']]=array('Product ID'=>$row['Product ID'],'Product Code'=>$row['Product Code'],'Units Ratio'=>$units_ratio);
+            }
+	 
+	    return $products;
+    }
+
+
+
+    function load($data_to_be_read,$args='') {
+        switch ($data_to_be_read) {
+        case('used in'):
+
+            $used_in_products='';
+          
+	    $products=$this->get_products();
+	    foreach( $products as $product ) {
+                $used_in_products.=sprintf(', <a href="product.php?pid=%d">%s</a>',$product['Product ID'],$product['Product Code']);
             }
             $used_in_products=preg_replace('/^, /','',$used_in_products);
 

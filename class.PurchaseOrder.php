@@ -320,15 +320,57 @@ function get($key=''){
 
 function submit($data){
 
-  $date=$data['Purchase Order Submitted Date'];
+
+  foreach($data as $key=>$value){
+    if(array_key_exists($key,$this->data)){
+      $this->data[$key]=$value;
+    }
+
+  }
+
+  $sql=sprintf("update `Purchase Order Dimension` set `Purchase Order Submitted Date`=%s,`Purchase Order Estimated Receiving Date`=%s,`Purchase Order Main Source Type`=%s,`Purchase Order Main Buyer Key`=%s,`Purchase Order Main Buyer Name`=%s,`Purchase Order Current Dispatch State`='Submitted'   where `Purchase Order Key`=%d"
+	       ,prepare_mysql($data['Purchase Order Submitted Date'])
+	       ,prepare_mysql($data['Purchase Order Estimated Receiving Date'])
+	       ,prepare_mysql($data['Purchase Order Main Source Type'])
+	       ,prepare_mysql($data['Purchase Order Main Buyer Key'])
+	       ,prepare_mysql($data['Purchase Order Main Buyer Name'])
+	       ,$this->id);
   
   
-  $sql=sprintf("update `Purchase Order Dimension` set `Purchase Order Submitted Date`=%s,`Purchase Order Current Dispatch State`='Submitted'   where `Purchase Order Key`=%d",prepare_mysql($date),$this->id);
   mysql_query($sql);
 
-  $sql=sprintf("update `Purchase Order Transaction Fact` set  `Purchase Order Last Updated Date`=%s `Purchase Order Current Dispatching State`='Submitted'  where `Purchase Order Key`=%d",prepare_mysql($date),$this->id);
+  $sql=sprintf("update `Purchase Order Transaction Fact` set  `Purchase Order Last Updated Date`=%s `Purchase Order Current Dispatching State`='Submitted'  where `Purchase Order Key`=%d",prepare_mysql($data['Purchase Order Submitted Date']),$this->id);
    mysql_query($sql);
+
+
+   $sql=sprintf("select `Supplier Product Key`,`Purchase Order Quantity` from `Purchase Order Transaction Fact` where `Purchase Order Key`=%d",$this->id);
+   $res=mysql_query($sql);
+   while($row=mysql_fetch_array($res)){
+     $supplier_product=new SupplierProduct('key',$row['Supplier Product Key']);
+     $products=$supplier_product->get_products();
+     foreach($products as $product){
+       $product=new Product('pid',$product['Product ID']);
+       $product->update_next_supplier_shippment();
+       
+     }
+     
+   }
+     
+     
+   
+
+     //   $sql=sprintf("update `Product Dimension` set `Product Next Supplier Shipment`=%s where `Product ID`=%d",$product_id);
+
+
 }
+
+
+
+
+
+
+
+
 
 
 }

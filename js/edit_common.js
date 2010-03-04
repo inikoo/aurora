@@ -1,7 +1,7 @@
-function swap_radio(){
-    swap_this_radio(this);
+function swap_radio(e,input_element){
+    swap_this_radio(this,input_element);
 }
-function swap_this_radio(o){
+function swap_this_radio(o,input_element){
     if(Dom.hasClass(o,'selected'))
 	return;
     else{
@@ -9,7 +9,8 @@ function swap_this_radio(o){
 	elemets=Dom.getElementsByClassName('selected', 'span', parent);
 	Dom.removeClass(elemets,'selected');
 	Dom.addClass(o,'selected');
-	Dom.get('shelf_type_type').value=o.getAttribute('radio_value');
+	
+	Dom.get(input_element).value=o.getAttribute('radio_value');
     }
 }
 var CellEdit = function (callback, newValue) {

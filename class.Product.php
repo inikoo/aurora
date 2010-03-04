@@ -4436,7 +4436,7 @@ if($this->images[$image_key]['caption']==$value){
 		   ,$product_part_key);
        $res2=mysql_query($sql);
 
-       while($row2=mysql_fetch_array($res2)){
+       while($row2=mysql_fetch_array($res2,MYSQL_ASSOC)){
 	 $part_list[$row2['Part SKU']]=$row2;
        }
 
@@ -4444,6 +4444,7 @@ if($this->images[$image_key]['caption']==$value){
    }
    
    $this->product_part=$part_list;
+return $part_list;
  }
 
 
@@ -4824,5 +4825,59 @@ function update_sales_state($value){
 	$this->msg=_("Error: wrong value")." [Sales State] ($value)";
       $this->updated=false;
 }
+
+
+function update_next_supplier_shippment(){
+
+  $part_list=$this->get_part_list();
+
+
+  if(count($part_list)==1){
+    $this->update_next_supplier_shippment_simple($part_list);
+    return;
+  }
+
+}
+
+function update_next_supplier_shippment_simple($part_list){
+  
+  $part_list=array_shift($part_list);
+  //  print_r($part_list);
+  $part=new Part($part_list['Part SKU']);
+  
+  $supplier_products=$part->get_supplier_products();
+  $next_shippment='';
+  foreach($supplier_products as $supplier_product){
+    //    print_r($supplier_product);
+    
+    $sql=sprintf("select `Purchase Order Estimated Receiving Date`,`Purchase Order Submitted Date`,`Purchase Order Public ID`,POTF.`Purchase Order Key`,`Purchase Order Quantity` from `Purchase Order Transaction Fact` POTF  left join `Supplier Product Dimension` SPD on (`Supplier Product Current Key`=`Supplier Product Key`) left join `Purchase Order Dimension` PO on (PO.`Purchase Order Key`=POTF.`Purchase Order Key`) where SPD.`Supplier Product Code`=%s and SPD.`Supplier Key`=%d"
+		 ,prepare_mysql($supplier_product['Supplier Product Code'])
+		 ,$supplier_product['Supplier Key']
+		 
+		 );
+    $res=mysql_query($sql);
+    //    print $sql;
+    while($row=mysql_fetch_array($res)){
+      $number=floor($row['Purchase Order Quantity']/$supplier_product['Supplier Product Units Per Part']/$part_list['Parts Per Product']);
+  
+      if($number<1)
+	continue;
+      $next_shippment.=sprintf("<br/>%s, PO <a href='porder.php?id=%d'>%s</a>:<br/>An order has been placed for  <b>%s outers</b>."
+			       ,strftime("%e %b %y", strtotime($row['Purchase Order Submitted Date']))
+			       ,$row['Purchase Order Key']
+			       ,$row['Purchase Order Public ID']
+			       ,number($number)
+			       );
+    }
+
+  }
+  $next_shippment=preg_replace('/^\<br\/\>/','',$next_shippment);
+  
+  $sql=sprintf("update `Product Dimension` set `Product Next Supplier Shipment`=%s where `Product ID`=%d",prepare_mysql($next_shippment,false),$this->data['Product ID']);
+  // print "$sql\n";
+  mysql_query($sql);
+
+    }
+
 }
 ?>
