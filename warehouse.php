@@ -29,6 +29,8 @@ $general_options_list[]=array('tipo'=>'js','state'=>$show_details,'id'=>'details
 $general_options_list[]=array('tipo'=>'js','state'=>$show_details,'id'=>'details','label'=>($show_details?_('Hide Map'):_('Show Map')));
 
 
+$smarty->assign('search_label',_('Locations'));
+$smarty->assign('search_scope','locations');
 
 
 $smarty->assign('general_options_list',$general_options_list);

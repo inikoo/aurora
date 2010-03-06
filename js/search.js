@@ -45,6 +45,13 @@ function search_products_in_store(query){
     search(query,'products','store');
 }
 
+function search_locations_in_warehouse(query){
+    search(query,'locations','warehouse');
+}
+}
+
+
+
 function go_to_result(){
     location.href=this.getAttribute('link')+this.getAttribute('key');
 }
@@ -56,7 +63,7 @@ function search(query,subject,scope){
     var request='tipo='+subject+'&q='+escape(query)+'&scope='+scope;
     //  alert(request)
     //	return;
-    var result_categories={'emails':1,'names':1,'contacts':1,'locations':1,'tax_numbers':1}
+    
     
     YAHOO.util.Connect.asyncRequest(
 				    'POST',
