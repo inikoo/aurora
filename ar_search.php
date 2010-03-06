@@ -29,8 +29,15 @@ case('products'):
 
     
 case('location'):
-    $q=$_REQUEST['q'];
-     search_location($q,$tipo,$user);
+    $data=prepare_values($_REQUEST,array(
+			     'q'=>array('type'=>'string')
+			     ,'scope'=>array('type'=>'string')
+			     ));
+    $data['user']=$user;
+   search_locations($data);
+   break;
+
+
     break;
 case('customer_name'):
    search_customer_name($user);
@@ -448,7 +455,27 @@ mysql_free_result($result);
 
 
 }
+function search_locations($data){
+$max_results=10;
+ $user=$data['user'];
+  $q=$data['q'];
+ if($q==''){
+    $response=array('state'=>200,'results'=>0,'data'=>'');
+    echo json_encode($response);
+    return;
+  }
 
+
+  if($data['scope']=='store'){
+    $warehouses=$_SESSION['state']['warehouse']['id'];
+    
+  }else
+    $warehouses=join(',',$user->warehouses);
+
+
+
+
+}
 
 function search_products($data){
 $max_results=10;
@@ -699,7 +726,10 @@ function search_products_old($q,$tipo,$user){
 }
 
 
-function search_location($q,$tipo,$user){
+
+
+
+function search_location_old($q,$tipo,$user){
     $sql=sprintf("select id from location where name='%s' ",addslashes($q));
     $result=mysql_query($sql);
     if ($found=mysql_fetch_array($result, MYSQL_ASSOC)) {

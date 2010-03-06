@@ -2,7 +2,7 @@
 include_once('common.php');
 
 ?>
-
+ var Dom   = YAHOO.util.Dom;
 
 YAHOO.util.Event.addListener(window, "load", function() {
     tables = new function() {
@@ -131,7 +131,13 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 
  function init(){
- var Dom   = YAHOO.util.Dom;
+
+    search_scope='locations';
+     var store_name_oACDS = new YAHOO.util.FunctionDataSource(search_locations_in_warehouse);
+     store_name_oACDS.queryMatchContains = true;
+     var store_name_oAutoComp = new YAHOO.widget.AutoComplete(search_scope+"_search",search_scope+"_search_Container", store_name_oACDS);
+     store_name_oAutoComp.minQueryLength = 0; 
+     store_name_oAutoComp.queryDelay = 0.15;
 
 
  var oACDS0 = new YAHOO.util.FunctionDataSource(mygetTerms);
