@@ -139,7 +139,6 @@ YAHOO.util.Event.addListener(window, "load", function() {
      store_name_oAutoComp.minQueryLength = 0; 
      store_name_oAutoComp.queryDelay = 0.15;
 
-
  var oACDS0 = new YAHOO.util.FunctionDataSource(mygetTerms);
  oACDS0.queryMatchContains = true;
  var oAutoComp0 = new YAHOO.widget.AutoComplete("f_input0","f_container0", oACDS0);

@@ -65,6 +65,7 @@ $js_files=array(
 		'table_common.js.php',
 		'calendar_common.js.php',
 		'js/dropdown.js',
+		'js/search.js',
 		'warehouse.js.php'
 		);
 

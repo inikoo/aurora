@@ -133,7 +133,18 @@
 </div>
 
 
-
+<div id="delete_dialog" style="padding:10px 15px">
+  <div id="delete_dialog_msg" class="dialog_msg" style="padding:0 0 10px 0 ">{t}Note: this action can not be undone{/t}.</div>
+  <table style="width:250px">
+   
+    <tr><td style="border-top:1px solid #ddd;text-align:center;padding:10px 0 0 0">
+	<span class="state_details" onClick="close_dialog('delete')"  >{t}Cancel{/t}</span>
+	<span style="margin-left:50px" class="state_details" onClick="delete_order()"  >{t}Delete Purchase Order{/t}</span>
+    
+    </td>
+</tr>
+  </table>
+</div>
 
 
 <div id="submit_dialog" style="padding:10px 15px">

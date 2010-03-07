@@ -29,6 +29,9 @@ switch($tipo){
 case('delete'):
   delete_purchase_order();
   break;
+  case('cancel'):
+  cancel_purchase_order();
+  break;
   case('submit'):
     require_once 'class.Staff.php';
 
@@ -132,6 +135,49 @@ function submit_purchase_order() {
     }
     echo json_encode($response);
 }
+function cancel_purchase_order() {
+    global $user;
+    if (isset( $_REQUEST['id']) and is_numeric( $_REQUEST['id'])) {
+        $order_id=$_REQUEST['id'];
+        $_SESSION['state']['porder']['id']=$order_id;
+    } else
+        $order_id=$_SESSION['state']['porder']['id'];
+
+    $po=new PurchaseOrder($order_id);
+
+
+    $data=array(
+              'Purchase Order Cancelled Date'=>date('Y-m-d H:i:s'),
+              'Purchase Order Cancel Note'=>'',
+		);
+    
+ 
+
+    if (isset($_REQUEST['cancelled_date']) and $_REQUEST['cancelled_date']==''    ) {
+        $date_data=prepare_mysql_datetime($_REQUEST['cancelled_date'],'datetime');
+        if ($date_data['ok']) {
+            $data['Purchase Order Cancelled Date']=$date_data['mysql_date'];
+        }
+
+    }
+   if(isset($_REQUEST['note'])){
+$data['Purchase Order Cancel Notes']=$_REQUEST['note'];
+}
+
+
+
+
+    $po->cancel($data);
+    if (!$po->error) {
+        $response= array('state'=>200);
+
+    } else {
+        $response= array('state'=>400,'msg'=>$po->msg);
+
+    }
+    echo json_encode($response);
+}
+
 function po_transactions_to_process(){
  if(isset( $_REQUEST['id']) and is_numeric( $_REQUEST['id'])){
      $order_id=$_REQUEST['id'];

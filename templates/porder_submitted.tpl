@@ -116,7 +116,25 @@
 
 
 
+<div id="cancel_dialog" style="padding:10px 15px">
+  <div id="cancel_dialog_msg"></div>
+  <table>
+   <tr><td style="width:100px">{t}Note{/t}:</td><td style="width:100px"></td></tr>
+    <tr>
+    <td colspan="2">
+    <textarea style="width:100%;margin-bottom:10px" id="cancel_note"></textarea>
+    </td>
+    </tr>
+  
 
+    <tr><td colspan=2 style="border-top:1px solid #ddd;text-align:center;padding:10px 0 0 0">
+	<span class="state_details" onClick="close_dialog('cancel')"  >{t}Close{/t}</span>
+	<span style="margin-left:50px" class="state_details" onClick="cancel_order_save()"  >{t}Cancel Purchase Order{/t}</span>
+    
+    </td>
+</tr>
+  </table>
+</div>
 
 <div id="submit_dialog" style="padding:10px 15px">
   <div id="submit_dialog_msg"></div>

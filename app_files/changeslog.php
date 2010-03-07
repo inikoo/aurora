@@ -164,6 +164,9 @@ CREATE TABLE `costadw`.`Tax Category Dimension` (`Tax Category Code` VARCHAR( 16
 ALTER TABLE `Tax Category Dimension` CHANGE `Tax Category Code` `Tax Category Code` VARCHAR( 16 ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL , CHANGE `Tax Category Name` `Tax Category Name` VARCHAR( 256 ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL ;ALTER TABLE `Tax Category Dimension`  DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
 ALTER TABLE `Order Dimension` CHANGE `Orders Items Tax Amount` `Order Items Tax Amount` DECIMAL( 12, 2 ) NOT NULL DEFAULT '0.00'
 
+ALTER TABLE `Purchase Order Dimension` ADD `Purchase Order Cancelled Date` DATETIME NULL DEFAULT NULL AFTER `Purchase Order Consolidated Date` ;
+ALTER TABLE `Purchase Order Transaction Fact` CHANGE `Purchase Order Current Dispatching State` `Purchase Order Current Dispatching State` ENUM( 'In Process', 'Submitted', 'Cancelled' ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'In Process';
+ALTER TABLE `Purchase Order Dimension` ADD `Purchase Order Cancelled Date` DATETIME NULL DEFAULT NULL ,ADD `Purchase Order Cancel Note` VARCHAR( 1024 ) NOT NULL DEFAULT ''
  */
 
 

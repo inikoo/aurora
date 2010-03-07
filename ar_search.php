@@ -28,7 +28,7 @@ case('products'):
 
 
     
-case('location'):
+case('locations'):
     $data=prepare_values($_REQUEST,array(
 			     'q'=>array('type'=>'string')
 			     ,'scope'=>array('type'=>'string')
@@ -456,7 +456,7 @@ mysql_free_result($result);
 
 }
 function search_locations($data){
-$max_results=10;
+$max_results=12;
  $user=$data['user'];
   $q=$data['q'];
  if($q==''){
@@ -471,6 +471,70 @@ $max_results=10;
     
   }else
     $warehouses=join(',',$user->warehouses);
+
+
+  $results=array();
+  
+  $number_results=0;
+  
+ 
+ 
+    $sql=sprintf("select `Warehouse Area Name` ,`Location Key`,`Location Code`, `Location Mainly Used For` from `Location Dimension` left join `Warehouse Area Dimension` WA on (`Warehouse Area Key`=`Location Warehouse Area Key`)  where `Location Warehouse Key` in (%s) and `Location Code`=%s",$warehouses,prepare_mysql($q));
+  // print $sql;
+   $res=mysql_query($sql);
+    while($row=mysql_fetch_array($res)){
+      if($number_results>$max_results)
+        continue;
+      $results[]=array('type'=>'Location','area'=>$row['Warehouse Area Name'],'code'=>$row['Location Code'],'use'=>$row['Location Mainly Used For'],'link'=>'location.php?id=','key'=>$row['Location Key']);
+        $number_results++;
+
+  }
+  
+ 
+ 
+ if(preg_match('/sku\d+/i',$q)){
+ 
+ $sql=sprintf('select `Location Mainly Used For`,`Warehouse Area Name` ,L.`Location Key`,`Location Code`,P.`Part SKU`, `Quantity On Hand`,`Part XHTML Description`,`Part Currently Used In`  from `Part Location Dimension`  PL left join `Location Dimension` L on (PL.`Location Key`=L.`Location Key`) left join `Part Dimension` P on (P.`Part SKU`=PL.`Part SKU`) left join `Warehouse Area Dimension` WA on (`Warehouse Area Key`=`Location Warehouse Area Key`) where `Location Warehouse Key` in (%s) and PL.`Part SKU`=%s ',$warehouses,addslashes(preg_replace('/^sku/i','',$q)));
+  $res=mysql_query($sql);
+  while($row=mysql_fetch_array($res)){
+     if($number_results>$max_results)
+        continue;
+      $results[]=array('type'=>'Part','use'=>$row['Location Mainly Used For'],'area'=>$row['Warehouse Area Name'],  'used_in'=>$row['Part Currently Used In'],'stock'=>$row['Quantity On Hand'],'code'=>$row['Location Code'],'sku'=>$row['Part SKU'],'description'=>$row['Part XHTML Description'],'link'=>'location.php?id=','key'=>$row['Location Key']);
+               $number_results++;
+
+  }
+ }
+ 
+ 
+ $sql=sprintf('select `Location Mainly Used For`,`Warehouse Area Name` ,`Part XHTML Description`,PL.`Part SKU`,`Quantity On Hand`,L.`Location Key`,GROUP_CONCAT(`Product Code`," (",`Store Code`,")") as `Product Code`,`Location Code` from `Part Location Dimension` PL left join `Location Dimension` L on (PL.`Location Key`=L.`Location Key`) left join `Part Dimension` P on (P.`Part SKU`=PL.`Part SKU`) left join `Product Part List` PPL on (PPL.`Part SKU`=p.`Part SKU`) left join `Product Part Dimension` PPD on (PPD.`Product Part Key`=PPL.`Product Part Key`) left join `Product Dimension` PD on (PD.`Product ID`=PPL.`Product ID`) left join `Store Dimension` on (`Product Store Key`=`Store Key`) left join `Warehouse Area Dimension` WA on (`Warehouse Area Key`=`Location Warehouse Area Key`) where `Product Part Most Recent`="Yes" and `Location Warehouse Key` in (%s) and PD.`Product Code`=%s group by PL.`Location Key`',$warehouses,prepare_mysql($q));
+ 
+ //print $sql;
+ $res=mysql_query($sql);
+  while($row=mysql_fetch_array($res)){
+    if($number_results>$max_results)
+        continue;
+      $results[]=array('type'=>'Part','use'=>$row['Location Mainly Used For'],'area'=>$row['Warehouse Area Name'],'used_in'=>$row['Product Code'],'stock'=>$row['Quantity On Hand'],'code'=>$row['Location Code'],'sku'=>$row['Part SKU'],'description'=>$row['Part XHTML Description'],'link'=>'location.php?id=','key'=>$row['Location Key']);
+                      $number_results++;
+
+  }
+ 
+$limit=$max_results-$number_results;
+if($limit>0){
+
+    $sql=sprintf('select `Warehouse Area Name` ,`Location Key`,`Location Code`, `Location Mainly Used For` from `Location Dimension` left join `Warehouse Area Dimension` WA on (`Warehouse Area Key`=`Location Warehouse Area Key`)  where `Location Warehouse Key` in (%s) and `Location Code` like "%s%%" limit %d ',$warehouses,addslashes($q),$limit);
+   //print $sql;
+   $res=mysql_query($sql);
+    while($row=mysql_fetch_array($res)){
+     
+      $results[]=array('type'=>'Location','area'=>$row['Warehouse Area Name'],'code'=>$row['Location Code'],'use'=>$row['Location Mainly Used For'],'link'=>'location.php?id=','key'=>$row['Location Key']);
+ 
+ }
+ }
+
+
+  
+ $response=array('state'=>200,'results'=>count($results),'data'=>$results,'link'=>'');
+  echo json_encode($response);
 
 
 
