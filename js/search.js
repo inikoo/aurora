@@ -47,7 +47,7 @@ function search_products_in_store(query){
 
 function search_locations_in_warehouse(query){
     search(query,'locations','warehouse');
-}
+
 }
 
 
@@ -61,7 +61,7 @@ function search(query,subject,scope){
     var ar_file='ar_search.php';
 
     var request='tipo='+subject+'&q='+escape(query)+'&scope='+scope;
-    //  alert(request)
+   //  alert(request)
     //	return;
     
     
@@ -112,11 +112,11 @@ function search(query,subject,scope){
 							var oTD= oTR.insertCell(0);
 							Dom.addClass(oTD,'naked');
 						
-							if(first){
-							    oTD.innerHTML='<img src="art/icons/arrow_right.png" alt="go">';
+						//	if(first){
+						//	    oTD.innerHTML='<img src="art/icons/arrow_right.png" alt="go">';
 
-							first=false;
-							}
+						//	first=false;
+						//	}
 
 							if(subject=='customers'){
 							    oTR.setAttribute('key',result_key);
@@ -138,7 +138,31 @@ function search(query,subject,scope){
 							    var oTD= oTR.insertCell(3);
 							    oTD.innerHTML=r.data[result_key ].description;
 
+							}else if(subject=='locations'){
+							    oTR.setAttribute('key',r.data[result_key ].key);
+							    oTR.setAttribute('link',r.data[result_key ].link);
+							    
+							      var oTD= oTR.insertCell(1);
+							    oTD.innerHTML=r.data[result_key ].code;
+							    var oTD= oTR.insertCell(2);
+							    oTD.innerHTML=r.data[result_key ].area;
+							     var oTD= oTR.insertCell(3);
+							    oTD.innerHTML=r.data[result_key ].use;
+							    
+							    if(r.data[result_key ].type=='Part'){
+							   
+							    var oTD= oTR.insertCell(4);
+							    oTD.innerHTML=r.data[result_key ].sku+' ('+r.data[result_key ].used_in+')';
+							    }else{
+							    var oTD= oTR.insertCell(4);
+							    oTD.innerHTML='';
+							   
+							  }
+
 							}
+							
+							
+							
 							oTR.onclick = go_to_result;
 							
 						    }

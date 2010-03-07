@@ -14,6 +14,7 @@ var receiver_list;
 var checker_list;
 var submit_dialog;
 var staff_dialog;
+var cancel_dialog;
 
 
 
@@ -168,6 +169,11 @@ function close_dialog(tipo){
 	Dom.get('date_type').value='auto';
 
 	break;
+	case('cancel'):
+	cancel_dialog.hide();
+	
+
+	break;
     case('staff'):
 	staff_dialog.hide();
 
@@ -260,18 +266,19 @@ var select_staff=function(o,e){
 
 
 
-	var cancel_order_save=function(o){
-	    var date=Dom.get('v_calpop6').value;
-	    var time=Dom.get('v_time6').value;
-
-	    var request='ar_assets.php?tipo=order_cancel&tipo_order=po&date='+escape(date)+'&time='+escape(time)+'&order_id='+escape(po_id);
+	var cancel_order_save=function(){
+	var note=Dom.get('cancel_note').value;
+	
+	 	var request='ar_edit_porders.php?tipo=cancel&note='+escape(note)+'&id='+escape(po_id);
 	    YAHOO.util.Connect.asyncRequest('POST',request ,{
 	    
 		    success:function(o) {
-
+alert(o.responseText)
 			var r =  YAHOO.lang.JSON.parse(o.responseText);
 			if (r.state == 200) {
-			}
+			location.href='porder.php?id='+po_id;
+			}else
+			alert(r.msg);
 		    }
 		});    
 	}
@@ -430,93 +437,30 @@ function submit_date_manually(){
 
 
 function init(){
+//alert('x');
+ cancel_dialog = new YAHOO.widget.Dialog("cancel_dialog", {context:["cancel_po","tr","tl"]  ,visible : false,close:false,underlay: "none",draggable:false});
+    cancel_dialog.render();
+     Event.addListener("cancel_po", "click", cancel_dialog.show,cancel_dialog , true);
+//alert('x');
 
-    YAHOO.util.Event.addListener('show_all', "click",change_show_all);
+    //YAHOO.util.Event.addListener('show_all', "click",change_show_all);
 
     submit_dialog = new YAHOO.widget.Dialog("submit_dialog", {context:["submit_po","tr","tl"]  ,visible : false,close:false,underlay: "none",draggable:false});
     submit_dialog.render();
     staff_dialog = new YAHOO.widget.Dialog("staff_dialog", {context:["get_submiter","tr","tl"]  ,visible : false,close:false,underlay: "none",draggable:false});
     staff_dialog.render();
 
-    Event.addListener("submit_po", "click", submit_dialog.show,submit_dialog , true);
-    Event.addListener("get_submiter", "click", staff_dialog.show,staff_dialog , true);
 
-    var ids=Dom.getElementsByClassName('radio', 'span', 'submit_method_container');
-    YAHOO.util.Event.addListener(ids, "click", swap_radio,'submit_method');
+    Event.addListener("submit_po", "click", submit_dialog.show,submit_dialog , true);
+ Event.addListener("get_canceller", "click", staff_dialog.show,staff_dialog , true);
+ //  alert('x');
 
     var oACDS = new YAHOO.util.FunctionDataSource(mygetTerms);
     oACDS.queryMatchContains = true;
     var oAutoComp = new YAHOO.widget.AutoComplete("f_input0","f_container", oACDS);
     oAutoComp.minQueryLength = 0; 
 
-    cal2 = new YAHOO.widget.Calendar("cal2","cal2Container", { title:"<?php echo _('Choose a date')?>:", close:true } );
-    cal2.update=updateCal;
-    cal2.id=2;
-    cal2.render();
-    cal2.update();
-    cal2.selectEvent.subscribe(handleSelect, cal2, true); 
-
-    cal1 = new YAHOO.widget.Calendar("cal1","cal1Container", { title:"<?php echo _('Choose a date')?>:", close:true } );
-    cal1.update=updateCal;
-    cal1.id=1;
-    cal1.render();
-    cal1.update();
-    cal1.selectEvent.subscribe(handleSelect, cal1, true); 
-    cal3 = new YAHOO.widget.Calendar("cal3","cal3Container", { title:"<?php echo _('Choose a date')?>:", close:true } );
-    cal3.update=updateCal;
-    cal3.id=3;
-    cal3.render();
-    cal3.update();
-    cal3.selectEvent.subscribe(handleSelect, cal3, true); 
-    cal4 = new YAHOO.widget.Calendar("cal4","cal4Container", { title:"<?php echo _('Choose a date')?>:", close:true } );
-    cal4.update=updateCal;
-    cal4.id=4;
-    cal4.render();
-    cal4.update();
-    cal4.selectEvent.subscribe(handleSelect, cal4, true); 
-
-     
-    cal5 = new YAHOO.widget.Calendar("cal5","cal5Container", { title:"<?php echo _('Choose a date')?>:", close:true } );
-    cal5.update=updateCal;
-    cal5.id=5;
-    cal5.render();
-    cal5.update();
-    cal5.selectEvent.subscribe(handleSelect, cal5, true); 
-
-
-    cal7 = new YAHOO.widget.Calendar("cal7","cal7Container", { title:"<?php echo _('Choose a date')?>:", close:true } );
-    cal7.update=updateCal;
-    cal7.id=7;
-    cal7.render();
-    cal7.update();
-    cal7.selectEvent.subscribe(handleSelect, cal7, true); 
-
-
-    YAHOO.util.Event.addListener("calpop1", "click", cal1.show, cal1, true);
-    YAHOO.util.Event.addListener("calpop2", "click", cal2.show, cal2, true);
-    YAHOO.util.Event.addListener("calpop3", "click", cal3.show, cal3, true);
-
-    YAHOO.util.Event.addListener("calpop4", "click", cal4.show, cal4, true);
-    YAHOO.util.Event.addListener("calpop5", "click", cal5.show, cal5, true);
-
-    YAHOO.util.Event.addListener("calpop7", "click", cal7.show, cal7, true);//expected
-
-
-
-
-
-
-    receiver_list = new YAHOO.widget.Menu("receiver_list", {context:["staff_list_row","tr", "br","beforeShow"]  });
-    receiver_list.render();
-    receiver_list.subscribe("show", receiver_list.focus);
-    YAHOO.util.Event.addListener("choose_receiver", "click", receiver_list.show, null, receiver_list);
-
-    checker_list = new YAHOO.widget.Menu("checker_list", {context:["staff_list_row","tr", "br","beforeShow"]  });
-    checker_list.render();
-    checker_list.subscribe("show", checker_list.focus);
-    YAHOO.util.Event.addListener("choose_checker", "click", checker_list.show, null, checker_list); 
-
-
+ 
 
 }
 

@@ -177,7 +177,15 @@ case('Submitted'):
 
 
   break;
+break;
+case('Cancelled'):
+  $js_files[]='porder_cancelled.js.php';
+  $smarty->assign('css_files',$css_files);
+  $smarty->assign('js_files',$js_files);
+  $smarty->display('porder_cancelled.tpl');
 
+
+  break;
 }
 
 

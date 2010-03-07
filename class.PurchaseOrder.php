@@ -355,16 +355,45 @@ function submit($data){
      }
      
    }
-     
-     
-   
-
-     //   $sql=sprintf("update `Product Dimension` set `Product Next Supplier Shipment`=%s where `Product ID`=%d",$product_id);
-
 
 }
 
 
+function cancel($data){
+ foreach($data as $key=>$value){
+    if(array_key_exists($key,$this->data)){
+      $this->data[$key]=$value;
+    }
+
+  }
+
+ $sql=sprintf("update `Purchase Order Dimension` set `Purchase Order Cancelled Date`=%s,`Purchase Order Cancel Note`=%s, `Purchase Order Current Dispatch State`='Cancelled'   where `Purchase Order Key`=%d"
+	   ,prepare_mysql($this->data['Purchase Order Cancelled Date'])
+	   	,prepare_mysql($this->data['Purchase Order Cancel Note'],false)
+	       ,$this->id);
+  mysql_query($sql);
+//print $sql;
+  $sql=sprintf("update `Purchase Order Transaction Fact` set  `Purchase Order Last Updated Date`=%s `Purchase Order Current Dispatching State`='Cancelled'  where `Purchase Order Key`=%d"
+  ,prepare_mysql($data['Purchase Order Cancelled Date'])
+  ,$this->id
+  );
+   mysql_query($sql);
+
+
+   $sql=sprintf("select `Supplier Product Key`,`Purchase Order Quantity` from `Purchase Order Transaction Fact` where `Purchase Order Key`=%d",$this->id);
+   $res=mysql_query($sql);
+   while($row=mysql_fetch_array($res)){
+     $supplier_product=new SupplierProduct('key',$row['Supplier Product Key']);
+     $products=$supplier_product->get_products();
+     foreach($products as $product){
+       $product=new Product('pid',$product['Product ID']);
+       $product->update_next_supplier_shippment();
+       
+     }
+     
+   }
+
+}
 
 
 

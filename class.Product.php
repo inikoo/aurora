@@ -4850,25 +4850,37 @@ function update_next_supplier_shippment_simple($part_list){
   foreach($supplier_products as $supplier_product){
     //    print_r($supplier_product);
     
-    $sql=sprintf("select `Purchase Order Estimated Receiving Date`,`Purchase Order Submitted Date`,`Purchase Order Public ID`,POTF.`Purchase Order Key`,`Purchase Order Quantity` from `Purchase Order Transaction Fact` POTF  left join `Supplier Product Dimension` SPD on (`Supplier Product Current Key`=`Supplier Product Key`) left join `Purchase Order Dimension` PO on (PO.`Purchase Order Key`=POTF.`Purchase Order Key`) where SPD.`Supplier Product Code`=%s and SPD.`Supplier Key`=%d"
+    $sql=sprintf("select `Purchase Order Current Dispatch State`,`Purchase Order Cancelled Date`,`Purchase Order Estimated Receiving Date`,`Purchase Order Submitted Date`,`Purchase Order Public ID`,POTF.`Purchase Order Key`,`Purchase Order Quantity` from `Purchase Order Transaction Fact` POTF  left join `Supplier Product Dimension` SPD on (`Supplier Product Current Key`=`Supplier Product Key`) left join `Purchase Order Dimension` PO on (PO.`Purchase Order Key`=POTF.`Purchase Order Key`) where `Purchase Order Current Dispatch State` in ('Submitted','Cancelled') and  SPD.`Supplier Product Code`=%s and SPD.`Supplier Key`=%d order by PO.`Purchase Order Last Updated Date` "
 		 ,prepare_mysql($supplier_product['Supplier Product Code'])
 		 ,$supplier_product['Supplier Key']
 		 
 		 );
     $res=mysql_query($sql);
-    //    print $sql;
+      //  print $sql;
     while($row=mysql_fetch_array($res)){
       $number=floor($row['Purchase Order Quantity']/$supplier_product['Supplier Product Units Per Part']/$part_list['Parts Per Product']);
   
       if($number<1)
 	continue;
+	if ($row['Purchase Order Current Dispatch State']=='Cancelled' ){
+	if(date('U')-strtotime($row['Purchase Order Cancelled Date']<604800)){
+	$next_shippment.=sprintf("<span style='text-decoration:line-through'><br/>%s, PO <a href='porder.php?id=%d'>%s</a>:<br/>An order has been placed for  <b>%s outers</b></span> %s order cancelled."
+			       ,strftime("%e %b %y", strtotime($row['Purchase Order Submitted Date']))
+			       ,$row['Purchase Order Key']
+			       ,$row['Purchase Order Public ID']
+			       ,number($number)
+			       ,strftime("%e %b %y", strtotime($row['Purchase Order Cancelled Date']))
+			       );
+	}
+	}else{
       $next_shippment.=sprintf("<br/>%s, PO <a href='porder.php?id=%d'>%s</a>:<br/>An order has been placed for  <b>%s outers</b>."
 			       ,strftime("%e %b %y", strtotime($row['Purchase Order Submitted Date']))
 			       ,$row['Purchase Order Key']
 			       ,$row['Purchase Order Public ID']
 			       ,number($number)
 			       );
-    }
+   }
+   }
 
   }
   $next_shippment=preg_replace('/^\<br\/\>/','',$next_shippment);
