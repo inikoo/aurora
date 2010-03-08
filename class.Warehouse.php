@@ -95,7 +95,7 @@ class Warehouse extends DB_Table{
       $data['Warehouse Name']=$data['Warehouse Code'];
     
 
-    $sql=sprintf("select * from `Warehouse Dimension` where `Warehouse Code`=%s  "
+    $sql=sprintf("select `Warehouse Key` from `Warehouse Dimension` where `Warehouse Code`=%s  "
 		 ,prepare_mysql($data['Warehouse Code'])
 		 ); 
 
