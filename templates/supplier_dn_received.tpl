@@ -3,12 +3,10 @@
 <div id="bd" >
 
 <div class="order_actions" >
-    <span class="state_details" onClick="location.href='supplier.php?id={$supplier->get('Supplier Key')}'" style="float:left;margin-top:2px" >{t}Return to Supplier Page{/t}</span>
+    <span class="state_details" onClick="location.href='supplier.php?id={$supplier->get('Supplier Key')}'" style="float:left;margin-top:2px" >{t}Supplier Page{/t}</span>
 
-  <span class="state_details" id="cancel_po">{t}Cancel{/t}</span>
-  <span class="state_details" id="invoice_po" style="margin-left:20px">{t}Match to Invoice{/t}</span>
-  <span class="state_details" id="dn_po" style="margin-left:20px">{t}Match to Deliver Note{/t}</span>
-
+  <span class="state_details" id="delete_po">{t}Delete{/t}</span>
+  <span class="state_details" id="submit_po" style="margin-left:20px">{t}Submit{/t}</span>
 </div>
 
 
@@ -16,31 +14,22 @@
     
     
 
-    <table style="width:200px;" class="order_header" >
-      <tr><td>{t}Goods{/t}:</td><td id="goods" class="aright">{$po->get('Items Net Amount')}</td></tr>
-      <tr><td>{t}Shipping{/t}:</td><td class="aright" id="shipping"  >{$po->get('Shipping Net Amount')}</td></tr>
-      <tr><td>{t}Tax{/t}:</td><td id="vat" class="aright"   >{$po->get('Total Tax Amount')}</td></tr>
-      <tr><td>{t}Total{/t}</td><td id="total" class="stock aright ">{$po->get('Total Amount')}</td></tr>
-    
-    </table>
-    
-    
-    <div style="border:0px solid red;xwidth:290px;float:right">
-    <table  border=0  class="order_header"  style="margin-right:30px;float:right">
-      <tr><td class="aright" style="padding-right:40px">{t}Created{/t}:</td><td>{$po->get('Creation Date')}</td></tr>
-      <tr><td class="aright" style="padding-right:40px">{t}Submitted{/t}:</td><td>{$po->get('Submitted Date')}</td></tr>
-      <tr><td colspan="2" class="aright">{t}via{/t} {$po->get('Purchase Order Main Source Type')} {t}by{/t} {$po->get('Purchase Order Main Buyer Name')}</td></tr>
-      <tr><td class="aright" style="padding-right:40px">{t}Estimated Delivery{/t}:</td>{if $po->get('Purchase Order Estimated Receiving Date')==''}<td class="aright">{t}Unknown{/t}</td>{else}<td>{$po->get('Estimated Receiving Date')}</td>{/if}</tr>
 
+    
+    
+    <div style="border:0px solid red;width:290px;float:right">
+    <table  border=0  class="order_header"  style="margin-right:30px;float:right">
+      <tr><td class="aright" style="padding-right:40px">{t}Created{/t}:</td><td>{$supplier_dn->get('Creation Date')}</td></tr>
+    
     </table>
     </div>
     
     
-    <h1 style="padding:0px 0 10px 0;width:300px;xborder:1px solid red" id="po_title">{t}Purchase Order{/t}: {$po->get('Purchase Order Public ID')}</h1>
+    <h1 style="padding:0px 0 10px 0;width:300px;xborder:1px solid red" id="po_title">{t}Supplier Delivery Note{/t}: {$supplier_dn->get('Supplier Delivery Note Public ID')}</h1>
     <table border=0 style="">
-      <tr><td>{t}Purchase Order Id{/t}:</td><td class="aright">{$po->get('Purchase Order Key')}</td></tr>
+      <tr><td>{t}Supplier Delivery Note Key{/t}:</td><td class="aright">{$supplier_dn->get('Supplier Delivery Note Key')}</td></tr>
       <tr><td>{t}Supplier{/t}:</td><td class="aright"><a href="supplier.php?id={$supplier->get('Supplier Key')}">{$supplier->get('Supplier Name')}</a></td></tr>
-      <tr><td>{t}Items{/t}:</td><td class="aright" id="distinct_products">{$po->get('Number Items')}</td></tr>
+      <tr><td>{t}Items{/t}:</td><td class="aright" id="distinct_products">{$supplier_dn->get('Number Items')}</td></tr>
     </table>
 
   
@@ -60,25 +49,48 @@
 <div id="the_table" class="data_table" style="margin:20px 0px;clear:both">
   <span class="clean_table_title">{t}Supplier Products{/t}</span>
   	<div id="table_type">
-	  <span id="table_type_list" style="float:right;color:brown" class="table_type state_details {if $table_type=='list'}state_details_selected{/if}">{t}Amend Purchase Order{/t}</span>
+	  <span id="table_type_list" style="float:right;color:brown" class="table_type state_details {if $table_type=='list'}state_details_selected{/if}">{t}Recomended Order{/t}</span>
 	  
 	</div>
 
-
+<div id="todelete" style="display:none">
+  <span onClick="swap_show_items(this)"  status="{$status}"  id="show_items" class="but {if !$show_all}selected{/if}  ">Items</span>
+  <span onClick="swap_show_all_products(this)" status="{$status}" {if $status!=0}style="display:none"{/if} id="show_all_products"  class="but {if $show_all}selected{/if}">Show all supplier products</span>
+  <span onClick="swap_show_all_products(this,1)" style="display:none" id="show_amend"  class="but">Amend order</span>
+  <span onClick="swap_item_found(this)" style="display:none" id="show_found"  class="but">Add Product Found in Delivery</span>
+  <span onClick="swap_new_item_found(this)" style="display:none" id="show_new_found"  class="but">Undentificated Product Found in Delivery</span>
+  </div>
 
   <div id="list_options0"> 
       <div style="clear:both;margin:0 0px;padding:0 20px ;border-bottom:1px solid #999"></div>
-      <span   style="float:right;margin-left:20px;display:none" class="state_details" state="{$show_all}"  id="show_all"  atitle="{if !$show_all}{t}Show only ordered{/t}{else}{t}Show all products available{/t}{/if}"  >{if $show_all}{t}Show only ordered{/t}{else}{t}Show all products available{/t}{/if}</span>     
+      <span   style="float:right;margin-left:20px" class="state_details" state="{$show_all}"  id="show_all"  atitle="{if !$show_all}{t}Show only ordered{/t}{else}{t}Show all products available{/t}{/if}"  >{if $show_all}{t}Show only ordered{/t}{else}{t}Show all products available{/t}{/if}</span>     
       
 
       
       <table style="float:left;margin:0 0 5px 0px ;padding:0"  class="options" >
 	<tr><td  {if $view=='used_in'}class="selected"{/if} id="general" >{t}Used In{/t}</td>
-	  <td {if $view=='history'}class="selected"{/if}  id="stock"  >{t}History{/t}</td>
-
+	  <td {if $view=='stock'}class="selected"{/if}  id="stock"  >{t}Stock{/t}</td>
+	  <td  {if $view=='sales'}class="selected"{/if}  id="sales"  >{t}Sales{/t}</td>
 	</tr>
       </table>
-    
+      <table id="period_options" style="float:left;margin:0 0 0 20px ;padding:0{if $view!='sales' };display:none{/if}"  class="options_mini" >
+	<tr>
+	  <td  {if $period=='all'}class="selected"{/if} period="all"  id="period_all" >{t}All{/t}</td>
+	  <td {if $period=='year'}class="selected"{/if}  period="year"  id="period_year"  >{t}1Yr{/t}</td>
+	  <td  {if $period=='quarter'}class="selected"{/if}  period="quarter"  id="period_quarter"  >{t}1Qtr{/t}</td>
+	  <td {if $period=='month'}class="selected"{/if}  period="month"  id="period_month"  >{t}1M{/t}</td>
+	  <td  {if $period=='week'}class="selected"{/if} period="week"  id="period_week"  >{t}1W{/t}</td>
+	</tr>
+      </table>
+      <table  id="avg_options" style="float:left;margin:0 0 0 20px ;padding:0{if $view!='sales' };display:none{/if}"  class="options_mini" >
+	<tr>
+	  <td {if $avg=='totals'}class="selected"{/if} avg="totals"  id="avg_totals" >{t}Totals{/t}</td>
+	  <td {if $avg=='month'}class="selected"{/if}  avg="month"  id="avg_month"  >{t}M AVG{/t}</td>
+	  <td {if $avg=='week'}class="selected"{/if}  avg="week"  id="avg_week"  >{t}W AVG{/t}</td>
+	  <td {if $avg=='month_eff'}class="selected"{/if} style="display:none" avg="month_eff"  id="avg_month_eff"  >{t}M EAVG{/t}</td>
+	  <td {if $avg=='week_eff'}class="selected"{/if} style="display:none"  avg="week_eff"  id="avg_week_eff"  >{t}W EAVG{/t}</td>
+	</tr>
+      </table>
     </div>
 
   
@@ -115,38 +127,18 @@
 </div>
 
 
-
-<div id="cancel_dialog" style="padding:10px 15px">
-  <div id="cancel_dialog_msg"></div>
-  <table>
-    <tr><td style="width:100px">{t}Note{/t}:</td><td style="width:100px"></td></tr>
-    <tr>
-      <td colspan="2">
-	<textarea style="width:100%;margin-bottom:10px" id="cancel_note"></textarea>
-      </td>
-    </tr>
-    <tr><td colspan=2 style="border-top:1px solid #ddd;text-align:center;padding:10px 0 0 0">
-	<span class="state_details" onClick="close_dialog('cancel')"  >{t}Close{/t}</span>
-	<span style="margin-left:50px" class="state_details" onClick="cancel_order_save()"  >{t}Cancel Purchase Order{/t}</span>
-      </td>
-    </tr>
-  </table>
-</div>
-
-<div id="dn_dialog" style="padding:10px 15px">
-  <div id="dn_dialog_msg"></div>
-  <table>
-    <tr><td style="width:150px">{t}Delivery Note Number{/t}:</td><td style="width:100px"><input id="dn_number" value=""></td></tr>
+<div id="delete_dialog" style="padding:10px 15px">
+  <div id="delete_dialog_msg" class="dialog_msg" style="padding:0 0 10px 0 ">{t}Note: this action can not be undone{/t}.</div>
+  <table style="width:250px">
+   
+    <tr><td style="border-top:1px solid #ddd;text-align:center;padding:10px 0 0 0">
+	<span class="state_details" onClick="close_dialog('delete')"  >{t}Cancel{/t}</span>
+	<span style="margin-left:50px" class="state_details" onClick="delete_order()"  >{t}Delete Purchase Order{/t}</span>
     
-    <tr><td colspan=2 style="border-top:1px solid #ddd;text-align:center;padding:10px 0 0 0">
-	<span class="state_details" onClick="close_dialog('dn')"  >{t}Close{/t}</span>
-	<span style="margin-left:50px" class="state_details" onClick="dn_order_save()"  >{t}Match to Delivery Note{/t}</span>
-      </td>
-    </tr>
+    </td>
+</tr>
   </table>
 </div>
-
-
 
 
 <div id="submit_dialog" style="padding:10px 15px">

@@ -110,6 +110,22 @@ $default_state=array(
 						      'to'=>''
 						      )
 				  ), 
+		     'supplier_dn'=>array(
+                               'id'=>''
+			       ,'show_all'=>false ,'supplier_key'=>0
+			       ,'view'=>'used_in'
+			       ,'products'=>array(
+						      'order'=>'code',
+						      'order_dir'=>'',
+						      'sf'=>0,
+						      'nr'=>25,
+						      'where'=>'where true',
+						      'f_field'=>'code',
+						      'f_value'=>'',
+						      'from'=>'',
+						      'to'=>''
+						      )
+				  ), 
 		     'porders'=>array(
                                'id'=>''
 			       ,'show_all'=>false 
@@ -128,6 +144,7 @@ $default_state=array(
 						      'to'=>''
 						      )
 				  ), 
+
                    'order'=>array(
                                'id'=>''
 			       ,'show_all'=>false
