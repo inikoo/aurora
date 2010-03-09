@@ -154,7 +154,7 @@ $smarty->assign('paginator_menu',$paginator_menu);
 
 
 switch($supplier_delivery_note->data['Supplier Delivery Note Current State']){
-case('Received'):
+case('In Process'):
 
 
 
@@ -203,11 +203,11 @@ $smarty->assign('user_staff_key',$user->data['User Parent Key']);
 
 
 
-$js_files[]='supplier_dn_received.js.php';
+$js_files[]='supplier_dn_in_process.js.php';
 $js_files[]='js/edit_common.js';
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
-$smarty->display('supplier_dn_received.tpl');
+$smarty->display('supplier_dn_in_process.tpl');
 break;
 case('Submitted'):
 
