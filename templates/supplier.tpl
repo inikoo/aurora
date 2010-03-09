@@ -115,6 +115,9 @@
 <div style="{if !$show_details}display:none;{/if};clear:both"  id="plot"></div>
 </div>
        </div>
+       
+
+
 
   <div  id="block_pending" class="data_table" style="margin:25px 0px;">
 	 <span class="clean_table_title">{t}Pending Orders{/t}</span>
@@ -155,15 +158,39 @@
 	 </div>
        </div>
        
-       <div  id="block_po" class="data_table" style="margin:25px 0px;">
+<div style="border-bottom:0px solid #ccc;width:100%;text-align:right"><span class="state_details{if $orders_view=='po'}_selected{/if}" style="margin-right:25px">{t}Purchase Orders{/t}</span><span style="margin-right:25px">{t}Delivery Notes{/t}</span><span>{t}Invoices{/t}</span></div>
+
+
+       <div  id="block_po" class="data_table" style="margin:5px 0px 25px 0;{if $orders_view!=dn}display:none{/if}">
 	 <span class="clean_table_title">{t}Purchase Orders{/t}</span>
 	 <div  class="clean_table_caption"  style="clear:both;">
-	   <div style="float:left;"><div id="table_info1" class="clean_table_info"><span id="rtext1"></span> <span class="filter_msg"  id="filter_msg1"></span></div></div>
+	   <div style="float:left;"><div id="table_info1" class="clean_table_info"><span id="rtext1"></span> <span class="rtext_rpp" id="rtext_rpp1"></span> <span class="filter_msg"  id="filter_msg1"></span></div></div>
 	   <div class="clean_table_filter"><div class="clean_table_info"><span id="filter_name1">{$filter_name}</span>: <input style="border-bottom:none" id='f_input1' value="{$filter_value}" size=10/><div id='f_container1'></div></div></div>
 	   <div class="clean_table_controls" style="" ><div><span  style="margin:0 5px" id="paginator1"></span></div></div>
 	 </div>
 	 <div  id="table1"   class="data_table_container dtable btable "> </div>
        </div>
+
+       <div  id="block_dn" class="data_table" style="margin:5px 0px 25px 0;{if $orders_view!='invoices'}display:none{/if}">
+	 <span class="clean_table_title">{t}Supplier Deliver Notes{/t}</span>
+	 <div  class="clean_table_caption"  style="clear:both;">
+	   <div style="float:left;"><div id="table_info3" class="clean_table_info"><span id="rtext3"></span> <span class="rtext_rpp" id="rtext_rpp3"></span> <span class="filter_msg"  id="filter_msg3"></span></div></div>
+	   <div class="clean_table_filter"><div class="clean_table_info"><span id="filter_name3">{$filter_name}</span>: <input style="border-bottom:none" id='f_input3' value="{$filter_value}" size=10/><div id='f_container3'></div></div></div>
+	   <div class="clean_table_controls" style="" ><div><span  style="margin:0 5px" id="paginator3"></span></div></div>
+	 </div>
+	 <div  id="table3"   class="data_table_container dtable btable "> </div>
+       </div>
+
+     <div  id="block_invoices" class="data_table" style="margin:5px 0px 25px 0;{if $orders_view!='invoices'}display:none{/if}">
+	 <span class="clean_table_title">{t}Supplier Invoices{/t}</span>
+	 <div  class="clean_table_caption"  style="clear:both;">
+	   <div style="float:left;"><div id="table_info4" class="clean_table_info"><span id="rtext4"></span> <span class="rtext_rpp" id="rtext_rpp4"></span> <span class="filter_msg"  id="filter_msg4"></span></div></div>
+	   <div class="clean_table_filter"><div class="clean_table_info"><span id="filter_name4">{$filter_name}</span>: <input style="border-bottom:none" id='f_input4' value="{$filter_value}" size=10/><div id='f_container4'></div></div></div>
+	   <div class="clean_table_controls" style="" ><div><span  style="margin:0 5px" id="paginator4"></span></div></div>
+	 </div>
+	 <div  id="table4"   class="data_table_container dtable btable "> </div>
+       </div>
+
 
 <div  id="block_history" class="data_table" style="{if $display.history==0}display:none;{/if}margin:25px 0px;">
   <span class="clean_table_title">{t}History{/t}</span>

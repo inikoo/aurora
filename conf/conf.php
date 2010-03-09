@@ -112,7 +112,9 @@ $default_state=array(
 				  ), 
 		     'supplier_dn'=>array(
                                'id'=>''
-			       ,'show_all'=>false ,'supplier_key'=>0
+			       ,'show_all'=>false 
+			       ,'supplier_key'=>0
+			       ,'pos'=>''
 			       ,'view'=>'used_in'
 			       ,'products'=>array(
 						      'order'=>'code',
