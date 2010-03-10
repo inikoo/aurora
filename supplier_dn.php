@@ -8,7 +8,7 @@ include_once('class.SupplierDeliveryNote.php');
 
 ///print_r($_REQUEST);
 
-
+$po_keys=array();
 if(isset($_REQUEST['id'])){
 
   $supplier_delivery_note=new SupplierDeliveryNote($_REQUEST['id']);
@@ -58,7 +58,7 @@ $supplier_dn_public_id=$_REQUEST['number'];
   }
 }
 
-
+$_SESSION['state']['supplier_dn']['pos']=join(',',$po_keys);
 $supplier=new Supplier($supplier_key);
 if(!$supplier->id){
   exit("error supplier not found/supplier incorrect");

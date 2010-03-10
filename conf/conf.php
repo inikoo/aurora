@@ -128,6 +128,24 @@ $default_state=array(
 						      'to'=>''
 						      )
 				  ), 
+				    'supplier_invoice'=>array(
+                               'id'=>''
+			       ,'show_all'=>false 
+			       ,'supplier_key'=>0
+			       ,'pos'=>''
+			       ,'view'=>'used_in'
+			       ,'products'=>array(
+						      'order'=>'code',
+						      'order_dir'=>'',
+						      'sf'=>0,
+						      'nr'=>25,
+						      'where'=>'where true',
+						      'f_field'=>'code',
+						      'f_value'=>'',
+						      'from'=>'',
+						      'to'=>''
+						      )
+				  ), 
 		     'porders'=>array(
                                'id'=>''
 			       ,'show_all'=>false 
@@ -146,6 +164,43 @@ $default_state=array(
 						      'to'=>''
 						      )
 				  ), 
+   'supplier_invoices'=>array(
+                               'id'=>''
+			       ,'show_all'=>false 
+			       ,'parent'=>'supplier'
+			       ,'parent_key'=>0
+			       ,'table'=>array(
+						      'order'=>'date',
+						      'view'=>'general',
+						      'order_dir'=>'',
+						      'sf'=>0,
+						      'nr'=>25,
+						      'where'=>'where true',
+						      'f_field'=>'public_id',
+						      'f_value'=>'',
+						      'from'=>'',
+						      'to'=>''
+						      )
+				  ), 
+				     'supplier_dns'=>array(
+                               'id'=>''
+			       ,'show_all'=>false 
+			       ,'parent'=>'supplier'
+			       ,'parent_key'=>0
+			       ,'table'=>array(
+						      'order'=>'date',
+						      'view'=>'general',
+						      'order_dir'=>'',
+						      'sf'=>0,
+						      'nr'=>25,
+						      'where'=>'where true',
+						      'f_field'=>'public_id',
+						      'f_value'=>'',
+						      'from'=>'',
+						      'to'=>''
+						      )
+				  ), 
+
 
                    'order'=>array(
                                'id'=>''
@@ -1422,6 +1477,7 @@ $default_state=array(
                                   'edit'=>'details',
                                   'action_after_create'=>'continue',
                                   'plot'=>'sales_month',
+                                  'orders_view'=>'pos',
                                   'id'=>1,
                                   'display'=>array('details'=>0,'history'=>0,'products'=>1,'po'=>0),
                                   'plot_options'=>array('weeks'=>'','from'=>'','to'=>'','months'=>''),

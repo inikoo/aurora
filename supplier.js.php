@@ -98,7 +98,6 @@ YAHOO.util.Event.addListener(window, "load", function() {
 					   {key:"id", label:"<?php echo _('Id')?>",  width:100,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 					   ,{key:"date", label:"<?php echo _('Date')?>", width:200,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 					   ,{key:"status", label:"<?php echo _('Type')?>",width:300, sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-
 					   ,{key:"items", label:"<?php echo _('Items')?>", width:90,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 					   ,{key:"total", label:"<?php echo _('Total')?>", width:90,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 				       ];
@@ -153,17 +152,106 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    this.table1.doBeforeSortColumn = mydoBeforeSortColumn;
 	    this.table1.doBeforePaginatorChange = mydoBeforePaginatorChange;
 	    this.table1.filter={key:'<?php echo$_SESSION['state']['porders']['table']['f_field']?>',value:'<?php echo$_SESSION['state']['porders']['table']['f_value']?>'};
+	
+	
+	var tableid=3; // Change if you have more the 1 table
+		var tableDivEL="table"+tableid;
+		var SuppliersColumnDefs = [
+					   {key:"id", label:"<?php echo _('Id')?>",  width:100,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+					   ,{key:"date", label:"<?php echo _('Date')?>", width:200,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+					   ,{key:"status", label:"<?php echo _('Type')?>",width:300, sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+					   ,{key:"items", label:"<?php echo _('Items')?>", width:90,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+					   //,{key:"total", label:"<?php echo _('Total')?>", width:90,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				       ];
+		
+		this.dataSource3 = new YAHOO.util.DataSource("ar_porders.php?tipo=delivery_notes&parent=supplier&parent_key="+supplier_key+"&tableid=3");
+	this.dataSource3.responseType = YAHOO.util.DataSource.TYPE_JSON;
+		this.dataSource3.connXhrMode = "queueRequests";
+		this.dataSource3.responseSchema = {
+		    resultsList: "resultset.data", 
+		metaFields: {
+		    rtext:"resultset.rtext",
+		    rowsPerPage:"resultset.records_perpage",
+		    sort_key:"resultset.sort_key",
+		    sort_dir:"resultset.sort_dir",
+		    tableid:"resultset.tableid",
+		    filter_msg:"resultset.filter_msg",
+		    totalRecords: "resultset.total_records"
+		},
+		
+		fields: [
+			 "id"
+			 ,"status"
+			 ,"date"
+			 ,"items"
+
+	 ]};
+
+	    this.table3 = new YAHOO.widget.DataTable(tableDivEL, SuppliersColumnDefs,
+						     this.dataSource3, {draggableColumns:true,
+							   renderLoopSize: 50,generateRequest : myRequestBuilder
+								       ,paginator : new YAHOO.widget.Paginator({
+									       rowsPerPage    : <?php echo$_SESSION['state']['supplier_dns']['table']['nr']?>,containers : 'paginator1', 
+ 									      pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',
+									      previousPageLinkLabel : "<",
+ 									      nextPageLinkLabel : ">",
+ 									      firstPageLinkLabel :"<<",
+ 									      lastPageLinkLabel :">>"
+									      ,template : "{FirstPageLink}{PreviousPageLink}<strong id='paginator_info0'>{CurrentPageReport}</strong>{NextPageLink}{LastPageLink}"
+									  })
+								     
+								     ,sortedBy : {
+									 key: "<?php echo$_SESSION['state']['supplier_dns']['table']['order']?>",
+									 dir: "<?php echo$_SESSION['state']['supplier_dns']['table']['order_dir']?>"
+								     }
+							   ,dynamicData : true
+
+						     }
+						     );
+	    this.table3.handleDataReturnPayload =myhandleDataReturnPayload;
+	    this.table3.doBeforeSortColumn = mydoBeforeSortColumn;
+	    this.table3.doBeforePaginatorChange = mydoBeforePaginatorChange;
+	    this.table3.filter={key:'<?php echo$_SESSION['state']['supplier_dns']['table']['f_field']?>',value:'<?php echo$_SESSION['state']['supplier_dns']['table']['f_value']?>'};
 
 
 
-	    }
-	    }
 
+	    }});
+  var orders_change_view=function(e){
+	
+	var tipo=this.id;
+switch(tipo){
+case('dns'):
+Dom.get('block_pos').style.display='none';
+Dom.get('block_invoices').style.display='none';
+Dom.get('block_dns').style.display='';
+	    Dom.removeClass('pos',"selected");
+	    Dom.removeClass('invoices',"selected");
+	    Dom.addClass('dns',"selected");
+break;
+case('pos'):
+Dom.get('block_pos').style.display='';
+Dom.get('block_invoices').style.display='none';
+Dom.get('block_dns').style.display='none';
+	    Dom.removeClass('dns',"selected");
+	    Dom.removeClass('invoices',"selected");
+	    Dom.addClass('pos',"selected");
+break;
+case('invoices'):
+Dom.get('block_pos').style.display='none';
+Dom.get('block_invoices').style.display='';
+Dom.get('block_dns').style.display='none';
+	    Dom.removeClass('pos',"selected");
+	    Dom.removeClass('dns',"selected");
+	    Dom.addClass('invoices',"selected");
+break;
+}
+	
 
-
-
-    );
-
+	    YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=supplier-orders_view&value=' + escape(tipo),{},null );
+	    
+	
+ }
 
   var product_change_view=function(e){
 	
@@ -219,10 +307,14 @@ function init(){
     var oAutoComp = new YAHOO.widget.AutoComplete("f_input0","f_container0", oACDS);
     oAutoComp.minQueryLength = 0; 
 YAHOO.util.Event.addListener('details', "click",change_details,'supplier');
-
+ 
+ ids=['pos','dns','invoices'];
+    YAHOO.util.Event.addListener(ids, "click",orders_change_view)
 
     ids=['product_general','product_sales','product_stock','product_forecast'];
     YAHOO.util.Event.addListener(ids, "click",product_change_view)
+    
+    
 
   var change_view2 = function (e){
 

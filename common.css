@@ -458,9 +458,9 @@ color: #316D89;
 .no_top_nav{position:relative;bottom:10px}
 
 .search_msg,.state_details,search_sugestion{font-size:85%; font-weight:200}
-.state_details,search_sugestion{color:#777;cursor:pointer;} 
-.state_details:hover ,search_sugestion:hover{color:#555;text-decoration:underline}
-.state_details_selected{color:#444;text-decoration:underline} 
+span.state_details,search_sugestion{color:#777;cursor:pointer;} 
+span.state_details:hover ,search_sugestion:hover{color:#555;text-decoration:underline}
+span.selected{color:#444;text-decoration:underline} 
 
 
 
@@ -512,8 +512,8 @@ table.submit_order td.but{ background:#238546;color:#fff;cursor:pointer;padding:
 
 span.but{ xbackground:#238546;color:#bbb;cursor:pointer;padding:2px 3px;text-align:center ;border:1px solid #ccc}
 
-span.selected { background:#7296e1;color:#fff ;border:1px solid navy}
-span.selected:hover { background:#7296e1;color:#fff ;border:1px solid navy}
+span.xxxselected { background:#7296e1;color:#fff ;border:1px solid navy}
+span.xxxselected:hover { background:#7296e1;color:#fff ;border:1px solid navy}
 span.but:hover {border:1px solid #aaa; color:#999;}
 
 

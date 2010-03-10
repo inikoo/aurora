@@ -49,7 +49,7 @@
 <div id="the_table" class="data_table" style="margin:20px 0px;clear:both">
   <span class="clean_table_title">{t}Supplier Products{/t}</span>
   	<div id="table_type">
-	  <span id="table_type_list" style="float:right;color:brown" class="table_type state_details {if $table_type=='list'}state_details_selected{/if}">{t}Recomended Order{/t}</span>
+	  <span id="table_type_list" style="float:right;color:brown" class="table_type state_details">{t}Take values from Purchase Order{/t}</span>
 	  
 	</div>
 

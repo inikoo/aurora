@@ -34,8 +34,9 @@ else
   $supplier_id=$_SESSION['state']['supplier']['id'];
 
 $_SESSION['state']['supplier']['id']=$supplier_id;
-
 $smarty->assign('supplier_id',$supplier_id);
+
+$smarty->assign('orders_view',$_SESSION['state']['supplier']['orders_view']);
 
 $supplier=new Supplier($supplier_id);
 if(!$supplier->id){
@@ -84,6 +85,7 @@ $css_files=array(
 $js_files=array(
 
 		$yui_path.'utilities/utilities.js',
+		$yui_path.'connection/connection-debug.js',
 		$yui_path.'json/json-min.js',
 		$yui_path.'paginator/paginator-min.js',
 		$yui_path.'animation/animation-min.js',
