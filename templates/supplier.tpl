@@ -158,10 +158,14 @@
 	 </div>
        </div>
        
-<div style="border-bottom:0px solid #ccc;width:100%;text-align:right"><span class="state_details{if $orders_view=='po'}_selected{/if}" style="margin-right:25px">{t}Purchase Orders{/t}</span><span style="margin-right:25px">{t}Delivery Notes{/t}</span><span>{t}Invoices{/t}</span></div>
+<div style="border-bottom:0px solid #ccc;width:100%;text-align:right">
+<span id="pos" class="state_details {if $orders_view=='pos'}selected{/if}" style="margin-right:25px">{t}Purchase Orders{/t}</span>
+<span id="dns" class="state_details {if $orders_view=='dns'}selected{/if}"style="margin-right:25px">{t}Delivery Notes{/t}</span>
+<span id="invoices" class="state_details {if $orders_view=='invoices'}selected{/if}"> {t}Invoices{/t}</span>
+</div>
 
 
-       <div  id="block_po" class="data_table" style="margin:5px 0px 25px 0;{if $orders_view!=dn}display:none{/if}">
+       <div  id="block_pos" class="data_table" style="margin:5px 0px 25px 0;{if $orders_view!='pos'}display:none{/if}">
 	 <span class="clean_table_title">{t}Purchase Orders{/t}</span>
 	 <div  class="clean_table_caption"  style="clear:both;">
 	   <div style="float:left;"><div id="table_info1" class="clean_table_info"><span id="rtext1"></span> <span class="rtext_rpp" id="rtext_rpp1"></span> <span class="filter_msg"  id="filter_msg1"></span></div></div>
@@ -171,8 +175,8 @@
 	 <div  id="table1"   class="data_table_container dtable btable "> </div>
        </div>
 
-       <div  id="block_dn" class="data_table" style="margin:5px 0px 25px 0;{if $orders_view!='invoices'}display:none{/if}">
-	 <span class="clean_table_title">{t}Supplier Deliver Notes{/t}</span>
+       <div  id="block_dns" class="data_table" style="margin:5px 0px 25px 0;{if $orders_view!='dns'}display:none{/if}">
+	 <span class="clean_table_title">{t}Supplier Delivery Notes{/t}</span>
 	 <div  class="clean_table_caption"  style="clear:both;">
 	   <div style="float:left;"><div id="table_info3" class="clean_table_info"><span id="rtext3"></span> <span class="rtext_rpp" id="rtext_rpp3"></span> <span class="filter_msg"  id="filter_msg3"></span></div></div>
 	   <div class="clean_table_filter"><div class="clean_table_info"><span id="filter_name3">{$filter_name}</span>: <input style="border-bottom:none" id='f_input3' value="{$filter_value}" size=10/><div id='f_container3'></div></div></div>

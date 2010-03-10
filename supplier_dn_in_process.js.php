@@ -308,11 +308,17 @@ YAHOO.util.Event.addListener(window, "load", function() {
 				  // ,{key:"stock_time", label:"<?php echo _('Stock Time')?>",width:75,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 				  // ,{key:"expected_qty_edit", label:"<?php echo _('Qty O[U]')?>",width:70,className:"aright"}
 				  // ,{key:"expected_qty", label:"<?php echo _('Qty O[U]')?>",width:100,className:"aright"}
-				  ,{key:"add",label:"", width:3,sortable:false,action:'add_object',object:'new_order'}
+								  ,{key:"unit_type", label:"<?php echo _('PO U')?>",width:30,className:"aleft"}
+
+			
+				 				  ,{key:"dn_quantity",label:"<?php echo _('DN Qty')?>", width:40,sortable:false,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC},  editor: new YAHOO.widget.TextboxCellEditor({asyncSubmitter: myCellEdit}),object:'new_porder','action':'change_qty'}
+								  ,{key:"dn_unit_type", label:"<?php echo _('DN U')?>",width:30,className:"aleft"}
+
+	,{key:"add",label:"", width:3,sortable:false,action:'add_object',object:'new_order'}
 				  ,{key:"remove",label:"", width:3,sortable:false,action:'remove_object',object:'new_order'}
 
-				  ,{key:"unit_type", label:"<?php echo _('Unit')?>",width:30,className:"aleft"}
-				  ,{key:"amount", label:"<?php echo _('Net Cost')?>",width:50,className:"aright"}
+				 
+				 // ,{key:"amount", label:"<?php echo _('Net Cost')?>",width:50,className:"aright"}
 				  // ,{key:"qty_edit", label:"<?php echo _('Qty [U]')?>",width:50,className:"aright",hidden:true}
 				  // ,{key:"diff", label:"<?php echo _('&Delta;U')?>",width:40,className:"aright",hidden:true}
 				  //,{key:"damaged_edit", label:"<?php echo _('Damaged')?>",width:60,className:"aright",hidden:true}

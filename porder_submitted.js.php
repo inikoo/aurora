@@ -445,7 +445,7 @@ function submit_date_manually(){
 function dn_order_save(){
     var number=Dom.get('dn_number').value;
     if(number==''){
-	Dom.get('dn_dialog_msg').innerHTML='<? echo _('Supplier Delivery Note number is required')?>';
+	Dom.get('dn_dialog_msg').innerHTML='<?php echo _('Supplier Delivery Note number is required')?>';
 	return;
     }else{
 	Dom.get('dn_dialog_msg').innerHTML='';

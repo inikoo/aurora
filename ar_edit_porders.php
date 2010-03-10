@@ -54,12 +54,12 @@ default:
 
 function delete_purchase_order(){
   if(isset( $_REQUEST['id']) and is_numeric( $_REQUEST['id'])){
-     $order_id=$_REQUEST['id'];
-     $_SESSION['state']['porder']['id']=$order_id;
+     $purchase_order_key=$_REQUEST['id'];
+     $_SESSION['state']['porder']['id']=$purchase_order_key;
   }else
-     $order_id=$_SESSION['state']['porder']['id'];
+     $purchase_order_key=$_SESSION['state']['porder']['id'];
 
-  $po=new PurchaseOrder($order_id);
+  $po=new PurchaseOrder($purchase_order_key);
   $supplier_key=$po->data['Purchase Order Supplier Key'];
   $po->delete();
   if(!$po->error){
@@ -74,12 +74,12 @@ function delete_purchase_order(){
 function submit_purchase_order() {
     global $user;
     if (isset( $_REQUEST['id']) and is_numeric( $_REQUEST['id'])) {
-        $order_id=$_REQUEST['id'];
-        $_SESSION['state']['porder']['id']=$order_id;
+        $purchase_order_key=$_REQUEST['id'];
+        $_SESSION['state']['porder']['id']=$purchase_order_key;
     } else
-        $order_id=$_SESSION['state']['porder']['id'];
+        $purchase_order_key=$_SESSION['state']['porder']['id'];
 
-    $po=new PurchaseOrder($order_id);
+    $po=new PurchaseOrder($purchase_order_key);
 
     $data=array(
               'Purchase Order Submitted Date'=>date('Y-m-d H:i:s'),
@@ -141,12 +141,12 @@ function submit_purchase_order() {
 function cancel_purchase_order() {
     global $user;
     if (isset( $_REQUEST['id']) and is_numeric( $_REQUEST['id'])) {
-        $order_id=$_REQUEST['id'];
-        $_SESSION['state']['porder']['id']=$order_id;
+        $purchase_order_key=$_REQUEST['id'];
+        $_SESSION['state']['porder']['id']=$purchase_order_key;
     } else
-        $order_id=$_SESSION['state']['porder']['id'];
+        $purchase_order_key=$_SESSION['state']['porder']['id'];
 
-    $po=new PurchaseOrder($order_id);
+    $po=new PurchaseOrder($purchase_order_key);
 
 
     $data=array(
@@ -182,11 +182,6 @@ $data['Purchase Order Cancel Notes']=$_REQUEST['note'];
 }
 
 function dn_transactions_to_process(){
- if(isset( $_REQUEST['id']) and is_numeric( $_REQUEST['id'])){
-     $order_id=$_REQUEST['id'];
-     $_SESSION['state']['supplier_dn']['id']=$order_id;
-  }else
-     $order_id=$_SESSION['state']['supplier_dn']['id'];
 
  if(isset( $_REQUEST['supplier_key']) and is_numeric( $_REQUEST['supplier_key'])){
    $supplier_key=$_REQUEST['supplier_key'];
@@ -297,7 +292,7 @@ if(!$show_all){
    if($show_all){
       $table=' `Supplier Product Dimension` PD ';
      $where=sprintf('where `Supplier Key`=%d   ',$supplier_key);
-     $sql_qty=sprintf(',IFNULL((select sum(`Purchase Order Quantity`) from `Purchase Order Transaction Fact` where `Supplier Product Key`=`Supplier Product Current Key` and `Purchase Order Key`=%d),0) as `Purchase Order Quantity`, IFNULL((select sum(`Purchase Order Net Amount`) from `Purchase Order Transaction Fact` where `Supplier Product Key`=`Supplier Product Current Key` and `Purchase Order Key`=%d),0) as `Purchase Order Net Amount` ',$order_id,$order_id); 
+     $sql_qty=sprintf(',IFNULL((select sum(`Purchase Order Quantity`) from `Purchase Order Transaction Fact` where `Supplier Product Key`=`Supplier Product Current Key` and `Purchase Order Key`in (%s)),0) as `Purchase Order Quantity`, IFNULL((select sum(`Purchase Order Net Amount`) from `Purchase Order Transaction Fact` where `Supplier Product Key`=`Supplier Product Current Key` and `Purchase Order Key` in (%s)),0) as `Purchase Order Net Amount` ',$pos,$pos); 
 
 
 
@@ -305,7 +300,7 @@ if(!$show_all){
 
    }else{
      $table='  `Purchase Order Transaction Fact` OTF  left join `Supplier Product History Dimension` PHD on (`SPH Key`=`Supplier Product Key`) left join `Supplier Product Dimension` PD on (PD.`Supplier Product Code`=PHD.`Supplier Product Code` and PD.`Supplier Key`=PHD.`Supplier Key`) ';
-     $where=sprintf(' where  `Purchase Order Key`=%d',$order_id);
+     $where=sprintf(' where  `Purchase Order Key` in (%s)',$pos);
      $sql_qty=', `Purchase Order Quantity`,`Purchase Order Net Amount`';
 
   
@@ -327,7 +322,7 @@ if(!$show_all){
       $sql="select count(*) as total from $table   $where $wheref   ";
  
     // print_r($conf);exit;
-      //    print $sql;
+     //    print $sql;
     $res=mysql_query($sql);
     if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
         $total=$row['total'];
@@ -454,10 +449,10 @@ $unit_type='piece';
 
 function po_transactions_to_process(){
  if(isset( $_REQUEST['id']) and is_numeric( $_REQUEST['id'])){
-     $order_id=$_REQUEST['id'];
-     $_SESSION['state']['porder']['id']=$order_id;
+     $purchase_order_key=$_REQUEST['id'];
+     $_SESSION['state']['porder']['id']=$purchase_order_key;
   }else
-     $order_id=$_SESSION['state']['porder']['id'];
+     $purchase_order_key=$_SESSION['state']['porder']['id'];
 
  if(isset( $_REQUEST['supplier_key']) and is_numeric( $_REQUEST['supplier_key'])){
    $supplier_key=$_REQUEST['supplier_key'];
@@ -558,7 +553,7 @@ if(!$show_all){
    if($show_all){
       $table=' `Supplier Product Dimension` PD ';
      $where=sprintf('where `Supplier Key`=%d   ',$supplier_key);
-     $sql_qty=sprintf(',IFNULL((select sum(`Purchase Order Quantity`) from `Purchase Order Transaction Fact` where `Supplier Product Key`=`Supplier Product Current Key` and `Purchase Order Key`=%d),0) as `Purchase Order Quantity`, IFNULL((select sum(`Purchase Order Net Amount`) from `Purchase Order Transaction Fact` where `Supplier Product Key`=`Supplier Product Current Key` and `Purchase Order Key`=%d),0) as `Purchase Order Net Amount` ',$order_id,$order_id); 
+     $sql_qty=sprintf(',IFNULL((select sum(`Purchase Order Quantity`) from `Purchase Order Transaction Fact` where `Supplier Product Key`=`Supplier Product Current Key` and `Purchase Order Key`=%d),0) as `Purchase Order Quantity`, IFNULL((select sum(`Purchase Order Net Amount`) from `Purchase Order Transaction Fact` where `Supplier Product Key`=`Supplier Product Current Key` and `Purchase Order Key`=%d),0) as `Purchase Order Net Amount` ',$purchase_order_key,$purchase_order_key); 
 
 
 
@@ -566,7 +561,7 @@ if(!$show_all){
 
    }else{
      $table='  `Purchase Order Transaction Fact` OTF  left join `Supplier Product History Dimension` PHD on (`SPH Key`=`Supplier Product Key`) left join `Supplier Product Dimension` PD on (PD.`Supplier Product Code`=PHD.`Supplier Product Code` and PD.`Supplier Key`=PHD.`Supplier Key`) ';
-     $where=sprintf(' where  `Purchase Order Key`=%d',$order_id);
+     $where=sprintf(' where  `Purchase Order Key`=%d',$purchase_order_key);
      $sql_qty=', `Purchase Order Quantity`,`Purchase Order Net Amount`';
 
   
