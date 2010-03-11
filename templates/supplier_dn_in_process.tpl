@@ -6,7 +6,7 @@
     <span class="state_details" onClick="location.href='supplier.php?id={$supplier->get('Supplier Key')}'" style="float:left;margin-top:2px" >{t}Supplier Page{/t}</span>
 
   <span class="state_details" id="delete_po">{t}Delete{/t}</span>
-  <span class="state_details" id="submit_po" style="margin-left:20px">{t}Submit{/t}</span>
+  <span class="state_details" id="submit_dn" style="margin-left:20px">{t}Sent to Goods In{/t}</span>
 </div>
 
 
@@ -49,21 +49,15 @@
 <div id="the_table" class="data_table" style="margin:20px 0px;clear:both">
   <span class="clean_table_title">{t}Supplier Products{/t}</span>
   	<div id="table_type">
-	  <span id="table_type_list" style="float:right;color:brown" class="table_type state_details">{t}Take values from Purchase Order{/t}</span>
+	  <span id="take_values_from_pos" style="float:right;color:brown" class="table_type state_details">{t}Take values from Purchase Order{/t}</span>
 	  
 	</div>
 
-<div id="todelete" style="display:none">
-  <span onClick="swap_show_items(this)"  status="{$status}"  id="show_items" class="but {if !$show_all}selected{/if}  ">Items</span>
-  <span onClick="swap_show_all_products(this)" status="{$status}" {if $status!=0}style="display:none"{/if} id="show_all_products"  class="but {if $show_all}selected{/if}">Show all supplier products</span>
-  <span onClick="swap_show_all_products(this,1)" style="display:none" id="show_amend"  class="but">Amend order</span>
-  <span onClick="swap_item_found(this)" style="display:none" id="show_found"  class="but">Add Product Found in Delivery</span>
-  <span onClick="swap_new_item_found(this)" style="display:none" id="show_new_found"  class="but">Undentificated Product Found in Delivery</span>
-  </div>
+
 
   <div id="list_options0"> 
       <div style="clear:both;margin:0 0px;padding:0 20px ;border-bottom:1px solid #999"></div>
-      <span   style="float:right;margin-left:20px" class="state_details" state="{$show_all}"  id="show_all"  atitle="{if !$show_all}{t}Show only ordered{/t}{else}{t}Show all products available{/t}{/if}"  >{if $show_all}{t}Show only ordered{/t}{else}{t}Show all products available{/t}{/if}</span>     
+      <span   style="float:right;margin-left:20px" class="state_details" state="{$show_all}"  id="show_all"  atitle="{if !$show_all}{t}Show only Purcase Order products + Additions{/t}{else}{t}Show all products available{/t}{/if}"  >{if $show_all}{t}Show only Purcase Order products + Additions{/t}{else}{t}Show all products available{/t}{/if}</span>     
       
 
       

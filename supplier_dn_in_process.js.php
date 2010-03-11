@@ -421,8 +421,49 @@ function submit_date_manually(){
 }
 
 
+function take_values_from_pos(){
+
+	var ar_file='ar_edit_porders.php';
+	request='tipo=take_values_from_pos&dn_key='+dn_key;
+	//alert(ar_file+'?'+request)
+	YAHOO.util.Connect.asyncRequest(
+					'POST',
+					ar_file, {
+					    success:function(o) {
+						//  alert(o.responseText);
+						var r = YAHOO.lang.JSON.parse(o.responseText);
+						if (r.state == 200) {
+						    var tableid=0;
+						    var table=tables['table'+tableid];
+						    
+						    var datasource=tables['dataSource'+tableid];
+						    table.filter.value=Dom.get('f_input'+tableid).value;
+						    var request='&show_all=no';
+						    datasource.sendRequest(request,table.onDataReturnInitializeTable, table);       
+
+						    //	callback(true, r.newvalue);
+						} else {
+						    alert(r.msg);
+						    //	callback();
+						}
+					    },
+						failure:function(o) {
+						alert(o.statusText);
+						// callback();
+					    },
+						scope:this
+						},
+					request
+				    
+					);  
+	
+
+}
 
 function init(){
+
+    Event.addListener("take_values_from_pos", "click", take_values_from_pos);
+
 
     YAHOO.util.Event.addListener('show_all', "click",change_show_all);
 
