@@ -13,6 +13,7 @@
 */
 require_once 'common.php';
 require_once 'class.PurchaseOrder.php';
+include_once('class.SupplierDeliveryNote.php');
 
 if(!isset($_REQUEST['tipo']))
   {
@@ -37,6 +38,9 @@ case('delete'):
 
   submit_purchase_order();
   break;
+case('take_values_from_pos'):
+  take_values_from_pos();
+  break;
 case('po_transactions_to_process'):
  po_transactions_to_process();
    break;
@@ -50,6 +54,28 @@ case('edit_new_porder'):
 default:
   $response=array('state'=>404,'resp'=>_('Operation not found'));
   echo json_encode($response);
+}
+
+function take_values_from_pos(){
+ 
+
+ if(isset( $_REQUEST['id']) and is_numeric( $_REQUEST['id'])){
+   $supplier_dn_key=$_REQUEST['supplier_dn_key'];
+   $_SESSION['state']['supplier_dn']['id']=$supplier_dn_key;
+ }else
+   $supplier_dn_key=$_SESSION['state']['supplier_dn']['id'];
+ 
+
+ $supplier_dn=New SupplierDeleveryNote($supplier_dn_key);
+ $supplier_dn->take_values_from_pos();
+ 
+ 
+
+
+
+
+
+  
 }
 
 function delete_purchase_order(){
@@ -183,12 +209,20 @@ $data['Purchase Order Cancel Notes']=$_REQUEST['note'];
 
 function dn_transactions_to_process(){
 
- if(isset( $_REQUEST['supplier_key']) and is_numeric( $_REQUEST['supplier_key'])){
-   $supplier_key=$_REQUEST['supplier_key'];
-   $_SESSION['state']['supplier_dn']['supplier_key']=$supplier_key;
+ if(isset( $_REQUEST['id']) and is_numeric( $_REQUEST['id'])){
+   $supplier_dn_key=$_REQUEST['supplier_dn_key'];
+   $_SESSION['state']['supplier_dn']['id']=$supplier_dn_key;
  }else
-   $supplier_key=$_SESSION['state']['supplier_dn']['supplier_key'];
+   $supplier_dn_key=$_SESSION['state']['supplier_dn']['id'];
  
+
+ $supplier_dn=New SupplierDeliveryNote($supplier_dn_key);
+ $supplier_key=$supplier_dn->data['Supplier Delivery Note Supplier Key'];
+ 
+
+
+
+
  $pos='';
  if(isset( $_REQUEST['pos'])){
    $pos=preg_replace('/[^\d\,]/','',$_REQUEST['pos']);
@@ -322,7 +356,7 @@ if(!$show_all){
       $sql="select count(*) as total from $table   $where $wheref   ";
  
     // print_r($conf);exit;
-     //    print $sql;
+         print $sql;
     $res=mysql_query($sql);
     if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
         $total=$row['total'];

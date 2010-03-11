@@ -37,6 +37,7 @@ $supplier_dn_public_id=$_REQUEST['number'];
 
   $po_keys=preg_split('/,/',$_REQUEST['po']);
   $po_objects=array();
+  $po_array=array();
   $supplier_key=false;
   foreach($po_keys as $po_key){
     if(!is_numeric($po_key))
@@ -52,10 +53,14 @@ $supplier_dn_public_id=$_REQUEST['number'];
     }
     
     if($po->data['Purchase Order Current Dispatch State']=='Submitted' or $po->data['Purchase Order Current Dispatch State']=='In Process' ){
-      $po_objects[]=array('object'=>$po);
+      $po_objects[$po->id]=array('object'=>$po);
+      $po_array[$po->id]=$po->id;
     }
     
   }
+
+
+
 }
 
 $_SESSION['state']['supplier_dn']['pos']=join(',',$po_keys);
@@ -82,6 +87,7 @@ if(!$supplier->id){
 	      );
 
   $supplier_delivery_note=new SupplierDeliveryNote('find',$data,'create');
+  $supplier_delivery_note->update_pos($po_array);
   if($supplier_delivery_note->error or !$supplier_delivery_note->id){
     print_r($supplier_delivery_note);
     exit('error when creating the supplier deliver note');
