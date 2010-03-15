@@ -323,6 +323,7 @@ function edit_product(){
 		     'unit_price'=>'Product Unit Price',
 		     'margin'=>'Product Margin',
 		     'unit_rrp'=>'Product RRP Per Unit',
+		     'sales_type'=>'Product Sales Type'
 		     );
     
     if(array_key_exists($_REQUEST['key'],$translator))
@@ -592,17 +593,17 @@ function list_products_for_edition(){
 //      }
 //    
      switch($restrictions){
-     case('forsale'):
-       $where.=sprintf(" and `Product Sales State`='For Sale'  ");
+     case('for_public_sale'):
+       $where.=sprintf(" and `Product Sales Type`='Public Sale'  ");
        break;
-     case('editable'):
-       $where.=sprintf(" and `Product Sales State` in ('For Sale','In process','Unknown')  ");
+     case('for_private_sale'):
+       $where.=sprintf(" and  `Product Sales Type`='Private Sale' ");
        break;
-     case('notforsale'):
-       $where.=sprintf(" and `Product Sales State` in ('Not For Sale')  ");
+     case('not_for_sale'):
+       $where.=sprintf(" and `Product Sales Type` in ('Not For Sale')  ");
        break;
      case('discontinued'):
-       $where.=sprintf(" and `Product Sales State` in ('Discontinued')  ");
+       $where.=sprintf(" and `Product Sales Type` in ('Discontinued')  ");
        break;
      case('all'):
 
@@ -632,7 +633,7 @@ function list_products_for_edition(){
     $wheref.=" and  ".$f_field." like '".addslashes($f_value)."%'";
   
     $sql="select count(*) as total from `Product Dimension`   P   $where $wheref";
-
+//print $sql;
    $result=mysql_query($sql);
    if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
      $total=$row['total'];
@@ -642,7 +643,6 @@ function list_products_for_edition(){
        $filtered=0; $total_records=$total;
    }else{
      $sql="select count(*) as total  from `Product Dimension`  P  $where ";
-
      $result=mysql_query($sql);
      if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
        $filtered=$row['total']-$total; $total_records=$row['total'];
@@ -650,7 +650,9 @@ function list_products_for_edition(){
      mysql_free_result($result);
 
    }
+   
    $rtext=$total_records." ".ngettext('product','products',$total_records);
+   
    if($total_records>$number_results)
      $rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
    else
@@ -770,22 +772,23 @@ function list_products_for_edition(){
     if($row['Product Record Type']=='New')
       $processing=_('Editing');
 
-    switch($row['Product Sales State']){
-    case('For Sale'):
-      case('Out of Stock'):
-	$sales_state=_('For Sale');
+    switch($row['Product Sales Type']){
+    case('Public Sale'):
+	$sales_type=_('Public Sale');
 	break;
-    case('Discontinued'):
-      $sales_state=_('Discontinue');
-      break;
-    case('Unknown'):
-      $sales_state=_('Unknown');
-      break;
-    case('No Applicable'):
+   case('Private Sale'):
+	$sales_type=_('Private Sale');
+	break;
     case('Not for Sale'):
-      $sales_state=_('Not For Sale');	
+      $sales_type=_('Not For Sale');	
       break;
+      default:
+         $sales_type=$row['Product Sales Type'];
+ 
     }
+    
+    
+    
     switch($row['Product Web State']){
     case('Online Force Out of Stock'):
       $web_state=_('Out of Stock');
@@ -807,10 +810,8 @@ function list_products_for_edition(){
 
     }
 
-
     
 
-    $state_info='';
 
 $adata[]=array(
 	       'id'=>$row['Product ID'],
@@ -820,7 +821,9 @@ $adata[]=array(
 
 	       'name'=>$row['Product Name'],
 	       'processing'=>$processing,
-	       'sales_state'=>$sales_state,
+	       'sales_type'=>$sales_type,
+	       'record_type'=>$record_type,
+
 	       'web_state'=>$web_state,
 	       'state_info'=>$state_info,
 	       'sdescription'=>$sdescription,
@@ -844,7 +847,10 @@ $adata[]=array(
 	       
 	       );
   }
+ // print $rtext;
 mysql_free_result($res);
+
+//  $rtext='21 records';
   $response=array('resultset'=>
 		  array('state'=>200,
 			'data'=>$adata,

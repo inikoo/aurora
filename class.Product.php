@@ -2039,6 +2039,9 @@ $number_images=$row['num'];
 
 
     switch ($key) {
+    case('Product Sales Type'):
+      $this->update_sales_type($a1);
+      break;
     case('Remove Categories'):
       $this->remove_categories($a1);
       break;
@@ -4801,7 +4804,7 @@ function update_sales_state($value){
 	  $sales_state='Discontinued';
 	  break;
 	case(_('Not For Sale')):
-	  $sales_state=_('Not for Sale');
+	  $sales_state='Not for Sale';
 	  break;
 	}
 
@@ -4823,6 +4826,51 @@ function update_sales_state($value){
 	}
       } else
 	$this->msg=_("Error: wrong value")." [Sales State] ($value)";
+      $this->updated=false;
+}
+
+
+function update_sales_type($value){
+      if (
+	  $value==_('Public Sale') or $value==_('Private Sale')
+	  or $value==_('Discontinue')
+	  or $value==_('Not For Sale')
+	  ) {
+
+
+	switch ($value) {
+	case(_('Public Sale')):
+	  $sales_state='Public Sale';
+	  break;
+	  	case(_('Private Sale')):
+	  $sales_state='Private Sale';
+	  break;
+	case(_('Discontinue')):
+	  $sales_state='Discontinued';
+	  break;
+	case(_('Not For Sale')):
+	  $sales_state='Not for Sale';
+	  break;
+	}
+
+	$sql=sprintf("update `Product Dimension` set `Product Sales Type`=%s  where  `Product ID`=%d "
+		     ,prepare_mysql($sales_state)
+		     ,$this->pid
+		     );
+	//print $sql;	     
+	if (mysql_query($sql)) {
+	  $this->msg=_('Product Sales Type updated');
+	  $this->updated=true;
+
+	  $this->new_value=$value;
+	  return;
+	} else {
+	  $this->msg=_("Error: Product sales type could not be updated ");
+	  $this->updated=false;
+	  return;
+	}
+      } else
+	$this->msg=_("Error: wrong value")." [Sales Type] ($value)";
       $this->updated=false;
 }
 

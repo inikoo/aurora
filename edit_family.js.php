@@ -120,7 +120,8 @@ function change_block(e){
 	 Dom.get('d_'+this.id).style.display='';
 	 Dom.removeClass(editing,'selected');
 	 Dom.addClass(this, 'selected');
-	 YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=family-edit&value='+this.id );
+	 //alert('ar_sessions.php?tipo=update&keys=family-edit&value='+this.id );
+	 YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=family-edit&value='+this.id ,{});
 	editing=this.id;
     }
 }
@@ -402,6 +403,7 @@ var description_errors= new Object();
 	    table.hideColumn('sales_state');
 	    table.hideColumn('web_state');
 	    table.hideColumn('state_info');
+		table.hideColumn('smallname');
 
 
 	    if(tipo=='view_name'){
@@ -421,8 +423,9 @@ var description_errors= new Object();
 		 table.showColumn('code');
 		table.showColumn('processing');
 		table.showColumn('sales_state');
-		table.showColumn('web state');
+		table.showColumn('web_state');
 		table.showColumn('state_info');
+		table.showColumn('smallname');
 
 
 	    }
@@ -447,7 +450,7 @@ var description_errors= new Object();
 	Dom.get(table.view).className="";
 	Dom.get(tipo).className="selected";
 	table.view=tipo
-	YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=family-edit_view&value=' + escape(tipo) );
+	YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=family-edit_view&value=' + escape(tipo),{} );
 	}
   }
 
@@ -717,9 +720,9 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    var tableDivEL="table"+tableid;
 	    var OrdersColumnDefs = [ 
 				    {key:"id", label:"", hidden:true,action:"none",isPrimaryKey:true}
-				    ,{key:"go", label:"", width:20,action:"none"}
-				    ,{key:"code",<?php echo($_SESSION['state']['family']['edit_view']!='view_price'?'':'hidden:true,')?>  label:"<?php echo _('Code')?>", width:70,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				    ,{key:"code_price",<?php echo($_SESSION['state']['family']['edit_view']=='view_price'?'':'hidden:true,')?>  label:"<?php echo _('Code')?>", width:70,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				    ,{key:"go", label:"", width:20,action:"none",'hidden':true}
+				    ,{key:"code",<?php echo($_SESSION['state']['family']['edit_view']!='view_price'?'':'hidden:true,')?>  label:"<?php echo _('Code')?>", width:100,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				    ,{key:"code_price",<?php echo($_SESSION['state']['family']['edit_view']=='view_price'?'':'hidden:true,')?>  label:"<?php echo _('Code')?>", width:105,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 
 				    ,{key:"units_info",<?php echo($_SESSION['state']['family']['edit_view']=='view_price'?'':'hidden:true,')?> label:"<?php echo _('Units')?>", width:30,className:"aleft"}
 				    
@@ -727,7 +730,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 				    ,{key:"smallname", label:"<?php echo _('Name')?>",width:300, sortable:true,className:"aleft",<?php echo($_SESSION['state']['family']['edit_view']=='view_state'?'':'hidden:true,')?>className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 
 				 //  ,{key:"processing", label:"<?php echo _('Editing State')?>",<?php echo($_SESSION['state']['family']['edit_view']=='view_state'?'':'hidden:true,')?>width:220, sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC},object:'product',editor: new YAHOO.widget.RadioCellEditor({asyncSubmitter: CellEdit,radioOptions:["<?php echo _('Editing')?>","<?php echo _('Live')?>"],disableBtns:true})}
-				    ,{key:"sales_state", label:"<?php echo _('Sale State')?>",<?php echo($_SESSION['state']['family']['edit_view']=='view_state'?'':'hidden:true,')?>width:100, sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC},object:'product',editor: new YAHOO.widget.RadioCellEditor({asyncSubmitter: CellEdit,radioOptions:["<?php echo _('For Sale')?>","<?php echo _('Discontinue')?>","<?php echo _('Not For Sale')?>"],disableBtns:true})}
+				    ,{key:"sales_type", label:"<?php echo _('Sale Type')?>",<?php echo($_SESSION['state']['family']['edit_view']=='view_state'?'':'hidden:true,')?>width:100, sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC},object:'product',editor: new YAHOO.widget.RadioCellEditor({asyncSubmitter: CellEdit,radioOptions:["<?php echo _('Public Sale')?>","<?php echo _('Private Sale')?>","<?php echo _('Discontinue')?>","<?php echo _('Not For Sale')?>"],disableBtns:true})}
 				    ,{key:"web_state", label:"<?php echo _('Web State')?>",<?php echo($_SESSION['state']['family']['edit_view']=='view_state'?'':'hidden:true,')?>width:100, sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC},object:'product',editor: new YAHOO.widget.RadioCellEditor({asyncSubmitter: CellEdit,radioOptions:["<?php echo _('Auto')?>","<?php echo _('Sale')?>","<?php echo _('Out of Stock')?>","<?php echo _('Hide')?>","<?php echo _('Offline')?>"],disableBtns:true})}
 
 
@@ -765,7 +768,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 		},
 		
 		fields: [
-			 "code","units_info","code_price",'go','smallname',
+			 "code","units_info","code_price",'go','smallname','sales_type',
 			 "name",
 			 'delete','delete_type','id','sdescription','price','unit_rrp','units','unit_type','rrp_info','price_info','unit_price','margin','processing','sales_state','sales_state','web_state'
 			 ]};

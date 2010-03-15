@@ -1479,6 +1479,60 @@ function update_sales_state(){
 
 }
 
+function get_number_products(){
+$number_products=0;
+$sql=sprintf("select count(*) as num from `Product Dimension` where `Product Family Key`=%d "
+    ,$this->id
+     );
+ $res=mysql_query($sql);
+ if($row=mysql_fetch_array($res)){
+ $number_products=$row['num'];
+ 
+ }
+ return $number_products;
+}
+
+function get_number_products_by_sales_state($tipo=false){
+$number_products=array('For Sale'=>0,'Out of Stock'=>0,'Not for Sale'=>0,'Discontinued'=>0,'Unknown'=>0,'No Applicable'=>0);
+
+$sql=sprintf("select count(*) as num, `Product Sales State` from `Product Dimension` where `Product Family Key`=%d group by `Product Sales State`"
+    ,$this->id
+     );
+ $res=mysql_query($sql);
+ while($row=mysql_fetch_array($res)){
+ $number_products[$row['Product Sales State']]=$row['num'];
+ 
+ }
+ if(!$tipo)
+ return $number_products;
+ else if($tipo=='Other'){
+ return $number_products['Unknown']+$number_products['No Applicable'];
+ }else if(array_key_exists($tipo,$number_products))
+ return $number_products[$tipo];
+ else
+ return 0;
+ 
+}
+
+function get_number_products_by_sales_type($tipo=false){
+$number_products=array('Public Sale'=>0,'Private Sale'=>0,'Not for Sale'=>0,'Discontinued'=>0);
+
+$sql=sprintf("select count(*) as num, `Product Sales Type` from `Product Dimension` where `Product Family Key`=%d group by `Product Sales Type`"
+    ,$this->id
+     );
+ $res=mysql_query($sql);
+ while($row=mysql_fetch_array($res)){
+ $number_products[$row['Product Sales Type']]=$row['num'];
+ 
+ }
+ if(!$tipo)
+ return $number_products;
+ else if(array_key_exists($tipo,$number_products))
+ return $number_products[$tipo];
+ else
+ return 0;
+ 
+}
 
 }
 
