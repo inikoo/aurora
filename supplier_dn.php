@@ -15,6 +15,9 @@ if(isset($_REQUEST['id'])){
   if(!$supplier_delivery_note->id)
     exit("Error supplier deliver note can no be found");
   $supplier=new Supplier('id',$supplier_delivery_note->data['Supplier Delivery Note Supplier Key']);
+  $_SESSION['state']['supplier_dn']['pos']=$supplier_delivery_note->data['Supplier Delivery Note POs'];
+
+
 }else if(isset($_REQUEST['new']) ){
 
   $supplier_key=false;
@@ -25,49 +28,49 @@ if(isset($_REQUEST['id'])){
   }
 
 
-if(isset($_REQUEST['po'])){
+  if(isset($_REQUEST['po'])){
 
 
-if(!isset($_REQUEST['number']) or $_REQUEST['number']==''){
-  exit('No Supplier Delivery Note Public ID');
-  }
+    if(!isset($_REQUEST['number']) or $_REQUEST['number']==''){
+      exit('No Supplier Delivery Note Public ID');
+    }
 
 
-$supplier_dn_public_id=$_REQUEST['number'];
+    $supplier_dn_public_id=$_REQUEST['number'];
 
-  $po_keys=preg_split('/,/',$_REQUEST['po']);
-  $po_objects=array();
-  $po_array=array();
-  $supplier_key=false;
-  foreach($po_keys as $po_key){
-    if(!is_numeric($po_key))
-      continue;
-    $po=new PurchaseOrder($po_key);
-    if(!$po->id)
-      continue;
-    if(!$supplier_key)
-      $supplier_key=$po->data['Purchase Order Supplier Key'];
-    else{
-      if($supplier_key!=$po->data['Purchase Order Supplier Key'])
+    $po_keys=preg_split('/,/',$_REQUEST['po']);
+    $po_objects=array();
+    $po_array=array();
+    $supplier_key=false;
+    foreach($po_keys as $po_key){
+      if(!is_numeric($po_key))
 	continue;
-    }
+      $po=new PurchaseOrder($po_key);
+      if(!$po->id)
+	continue;
+      if(!$supplier_key)
+	$supplier_key=$po->data['Purchase Order Supplier Key'];
+      else{
+	if($supplier_key!=$po->data['Purchase Order Supplier Key'])
+	  continue;
+      }
     
-    if($po->data['Purchase Order Current Dispatch State']=='Submitted' or $po->data['Purchase Order Current Dispatch State']=='In Process' ){
-      $po_objects[$po->id]=array('object'=>$po);
-      $po_array[$po->id]=$po->id;
-    }
+      if($po->data['Purchase Order Current Dispatch State']=='Submitted' or $po->data['Purchase Order Current Dispatch State']=='In Process' ){
+	$po_objects[$po->id]=array('object'=>$po);
+	$po_array[$po->id]=$po->id;
+      }
     
+    }
+
+
+
   }
 
-
-
-}
-
-$_SESSION['state']['supplier_dn']['pos']=join(',',$po_keys);
-$supplier=new Supplier($supplier_key);
-if(!$supplier->id){
-  exit("error supplier not found/supplier incorrect");
-}
+  $_SESSION['state']['supplier_dn']['pos']=join(',',$po_keys);
+  $supplier=new Supplier($supplier_key);
+  if(!$supplier->id){
+    exit("error supplier not found/supplier incorrect");
+  }
 
 
 
@@ -164,57 +167,57 @@ case('In Process'):
 
 
 
-if($_SESSION['state']['supplier_dn']['show_all'])
-  $smarty->assign('show_all',1);
-else
-  $smarty->assign('show_all',0);
+  if($_SESSION['state']['supplier_dn']['show_all'])
+    $smarty->assign('show_all',1);
+  else
+    $smarty->assign('show_all',0);
 
 
-//create user list
-$sql=sprintf("select `Staff Key`id,`Staff Alias` as alias ,`Staff Position Key` as position_id from `Staff Dimension` where `Staff Currently Working`='Yes' order by alias ");
-$res = mysql_query($sql);
-$num_cols=5;
-$staff=array();
-while($row=mysql_fetch_array($res, MYSQL_ASSOC)){
-  $staff[]=array('alias'=>$row['alias'],'id'=>$row['id'],'position_id'=>$row['position_id']);
-}
+  //create user list
+  $sql=sprintf("select `Staff Key`id,`Staff Alias` as alias ,`Staff Position Key` as position_id from `Staff Dimension` where `Staff Currently Working`='Yes' order by alias ");
+  $res = mysql_query($sql);
+  $num_cols=5;
+  $staff=array();
+  while($row=mysql_fetch_array($res, MYSQL_ASSOC)){
+    $staff[]=array('alias'=>$row['alias'],'id'=>$row['id'],'position_id'=>$row['position_id']);
+  }
 
-//$staff= array_transverse($staff,$num_cols);
-//print_r($staff);
-foreach($staff as $key=>$_staff){
-  $staff[$key]['mod']=fmod($key,$num_cols);
-}
-$smarty->assign('staff',$staff);
-$smarty->assign('staff_cols',$num_cols);
+  //$staff= array_transverse($staff,$num_cols);
+  //print_r($staff);
+  foreach($staff as $key=>$_staff){
+    $staff[$key]['mod']=fmod($key,$num_cols);
+  }
+  $smarty->assign('staff',$staff);
+  $smarty->assign('staff_cols',$num_cols);
 
 
 
-$submit_method=array(
-		     'Internet'=>array('fname'=>_('Internet'))
-		     ,'Telephone'=>array('fname'=>_('Telephone'))
-		     ,'Fax'=>array('fname'=>_('Fax'))
-		     ,'In Person'=>array('fname'=>_('In Person'))
-		     ,'Email'=>array('fname'=>_('Email'))
-		     ,'Post'=>array('fname'=>_('Post'))
-		     ,'Other'=>array('fname'=>_('Other'),'selected'=>true)
+  $submit_method=array(
+		       'Internet'=>array('fname'=>_('Internet'))
+		       ,'Telephone'=>array('fname'=>_('Telephone'))
+		       ,'Fax'=>array('fname'=>_('Fax'))
+		       ,'In Person'=>array('fname'=>_('In Person'))
+		       ,'Email'=>array('fname'=>_('Email'))
+		       ,'Post'=>array('fname'=>_('Post'))
+		       ,'Other'=>array('fname'=>_('Other'),'selected'=>true)
 	
-		     );
-$smarty->assign('default_submit_method','Other');
-$smarty->assign('submit_method',$submit_method);
+		       );
+  $smarty->assign('default_submit_method','Other');
+  $smarty->assign('submit_method',$submit_method);
 
-$smarty->assign('user',$user->data['User Alias']);
-$smarty->assign('user_staff_key',$user->data['User Parent Key']);
-
-
+  $smarty->assign('user',$user->data['User Alias']);
+  $smarty->assign('user_staff_key',$user->data['User Parent Key']);
 
 
 
-$js_files[]='supplier_dn_in_process.js.php';
-$js_files[]='js/edit_common.js';
-$smarty->assign('css_files',$css_files);
-$smarty->assign('js_files',$js_files);
-$smarty->display('supplier_dn_in_process.tpl');
-break;
+
+  $js_files[]='js/edit_common.js';
+  $js_files[]='supplier_dn_in_process.js.php';
+
+  $smarty->assign('css_files',$css_files);
+  $smarty->assign('js_files',$js_files);
+  $smarty->display('supplier_dn_in_process.tpl');
+  break;
 case('Submitted'):
 
   
@@ -226,7 +229,7 @@ case('Submitted'):
 
 
   break;
-break;
+  break;
 case('Cancelled'):
   $js_files[]='supplier_dn_cancelled.js.php';
   $smarty->assign('css_files',$css_files);

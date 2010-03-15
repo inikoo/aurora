@@ -50,7 +50,9 @@ case('dn_transactions_to_process'):
 case('edit_new_porder'):
   edit_new_porder();
   break;
-
+case('edit_new_supplier_dn'):
+  edit_new_supplier_dn();
+  break;
 default:
   $response=array('state'=>404,'resp'=>_('Operation not found'));
   echo json_encode($response);
@@ -66,11 +68,18 @@ function take_values_from_pos(){
    $supplier_dn_key=$_SESSION['state']['supplier_dn']['id'];
  
 
- $supplier_dn=New SupplierDeleveryNote($supplier_dn_key);
+ $supplier_dn=New SupplierDeliveryNote($supplier_dn_key);
  $supplier_dn->take_values_from_pos();
  
  
+ if (!$supplier_dn->error) {
+        $response= array('state'=>200);
 
+    } else {
+        $response= array('state'=>400,'msg'=>$supplier_dn->msg);
+
+    }
+    echo json_encode($response);
 
 
 
@@ -218,10 +227,6 @@ function dn_transactions_to_process(){
 
  $supplier_dn=New SupplierDeliveryNote($supplier_dn_key);
  $supplier_key=$supplier_dn->data['Supplier Delivery Note Supplier Key'];
- 
-
-
-
 
  $pos='';
  if(isset( $_REQUEST['pos'])){
@@ -230,9 +235,6 @@ function dn_transactions_to_process(){
    $_SESSION['state']['supplier_dn']['pos']=$pos;
  }else
    $pos=$_SESSION['state']['supplier_dn']['pos'];
-
- 
-
 
  $conf=$_SESSION['state']['supplier_dn']['products'];
  if (isset( $_REQUEST['sf']))
@@ -326,7 +328,15 @@ if(!$show_all){
    if($show_all){
       $table=' `Supplier Product Dimension` PD ';
      $where=sprintf('where `Supplier Key`=%d   ',$supplier_key);
-     $sql_qty=sprintf(',IFNULL((select sum(`Purchase Order Quantity`) from `Purchase Order Transaction Fact` where `Supplier Product Key`=`Supplier Product Current Key` and `Purchase Order Key`in (%s)),0) as `Purchase Order Quantity`, IFNULL((select sum(`Purchase Order Net Amount`) from `Purchase Order Transaction Fact` where `Supplier Product Key`=`Supplier Product Current Key` and `Purchase Order Key` in (%s)),0) as `Purchase Order Net Amount` ',$pos,$pos); 
+     $sql_qty=sprintf(
+		      'IFNULL( select `Purchase Order Normalized Quantity Type`   from `Purchase Order Transaction Fact` where `Supplier Product Key`=`Supplier Product Current Key` and `Supplier Delivery `Purchase Order Key` in (%s)),"") as `Supplier Delivery Note Quantity Type`   
+,IFNULL((select `Supplier Delivery Note Quantity Type` from `Purchase Order Transaction Fact` where `Supplier Product Key`=`Supplier Product Current Key` and `Supplier Delivery Note Key Key`=%d),"") as `Supplier Delivery Note Quantity Type`    ,IFNULL((select sum(`Supplier Delivery Note Quantity`) from `Purchase Order Transaction Fact` where `Supplier Product Key`=`Supplier Product Current Key` and `Supplier Delivery Note Key Key`=%d),0) as `Supplier Delivery Note Quantity`   ,IFNULL((select sum(`Purchase Order Normalized Quantity`) from `Purchase Order Transaction Fact` where `Supplier Product Key`=`Supplier Product Current Key` and `Purchase Order Key`in (%s)),0) as `Purchase Order Normalized Quantity`, IFNULL((select sum(`Purchase Order Net Amount`) from `Purchase Order Transaction Fact` where `Supplier Product Key`=`Supplier Product Current Key` and `Purchase Order Key` in (%s)),0) as `Purchase Order Net Amount` '
+		      ,$pos
+		      ,$supplier_dn_key
+		      ,$supplier_dn_key
+		      ,$pos
+		      ,$pos
+		      ); 
 
 
 
@@ -335,15 +345,8 @@ if(!$show_all){
    }else{
      $table='  `Purchase Order Transaction Fact` OTF  left join `Supplier Product History Dimension` PHD on (`SPH Key`=`Supplier Product Key`) left join `Supplier Product Dimension` PD on (PD.`Supplier Product Code`=PHD.`Supplier Product Code` and PD.`Supplier Key`=PHD.`Supplier Key`) ';
      $where=sprintf(' where  `Purchase Order Key` in (%s)',$pos);
-     $sql_qty=', `Purchase Order Quantity`,`Purchase Order Net Amount`';
-
-  
-     
+     $sql_qty=', `Purchase Order Normalized Quantity` ,`Purchase Order Normalized Quantity Type` ,`Purchase Order Net Amount`,`Supplier Delivery Note Quantity`,`Supplier Delivery Note Quantity Type`';     
    }
-
-
-  
-
      $_order=$order;
     $_dir=$order_direction;
     $filter_msg='';
@@ -356,7 +359,7 @@ if(!$show_all){
       $sql="select count(*) as total from $table   $where $wheref   ";
  
     // print_r($conf);exit;
-         print $sql;
+      //         print $sql;
     $res=mysql_query($sql);
     if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
         $total=$row['total'];
@@ -428,28 +431,36 @@ if(!$show_all){
     $res = mysql_query($sql);
 
     $adata=array();
-    // print $sql;
+    //  print $sql;
  while ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
-if($row['Purchase Order Quantity']==0)
+if($row['Purchase Order Normalized Quantity']==0)
   $amount='';
 else
 $amount=money($row['Purchase Order Net Amount']);
 
-$unit_type=$row['Supplier Product Unit Type'];
+$unit_type=$row['Purchase Order Normalized Quantity Type'];
 if($unit_type=='ea'){
 $unit_type='piece';
 }
+
+$dn_unit_type=$row['Supplier Delivery Note Quantity Type'];
+if($dn_unit_type=='ea'){
+$dn_unit_type='piece';
+}
+
+
    $adata[]=array(
 		  'id'=>$row['Supplier Product Current Key'],
 		  'code'=>$row['Supplier Product Code'],
 		  'description'=>'<span style="font-size:95%">'.number($row['Supplier Product Units Per Case']).'x '.$row['Supplier Product Name'].' @'.money($row['Supplier Product Cost']/$row['Supplier Product Units Per Case']).' '.$row['Supplier Product Unit Type'].'</span>',
 		'used_in'=>$row['Supplier Product XHTML Used In'],
-		  'quantity'=>$row['Purchase Order Quantity'],
-		  'quantity_static'=>number($row['Purchase Order Quantity']),
+		  'quantity'=>$row['Purchase Order Normalized Quantity'],
+		  'quantity_static'=>number($row['Purchase Order Normalized Quantity']),
+		  'dn_quantity'=>$row['Supplier Delivery Note Quantity'],
 		  'amount'=>$amount,
 		  'unit_type'=>$unit_type,
-
+		  'dn_unit_type'=>$dn_unit_type,
 		  'tax_code'=>$row['Supplier Product Tax Code'],
 		  'add'=>'+',
 		  'remove'=>'-',
@@ -749,9 +760,9 @@ function edit_new_porder(){
   $quantity=$_REQUEST['newvalue'];
 
   if(!isset($_REQUEST['qty_type']))
-    $quantity_type='Piece';
+    $quantity_type='ea';
   else
-  $quantity_type=$_REQUEST['qty_type'];
+    $quantity_type=$_REQUEST['qty_type'];
   if(is_numeric($quantity) and $quantity>=0){
 
   $order=new PurchaseOrder($purchase_order_key);
@@ -811,6 +822,82 @@ function edit_new_porder(){
 
 
   $response= array('state'=>200,'quantity'=>$transaction_data['qty'],'key'=>$_REQUEST['key'],'data'=>$updated_data,'to_charge'=>$transaction_data['to_charge']);
+  }else
+    $response= array('state'=>200,'quantity'=>$_REQUEST['oldvalue'],'key'=>$_REQUEST['key']);
+ echo json_encode($response);  
+  
+}
+
+
+function edit_new_supplier_dn(){
+  
+  $supplier_delivery_note_key=$_SESSION['state']['supplier_dn']['id'];
+  $supplier_product_key=$_REQUEST['id'];
+  $quantity=$_REQUEST['newvalue'];
+
+  if(!isset($_REQUEST['qty_type']))
+    $quantity_type='ea';
+  else
+    $quantity_type=$_REQUEST['qty_type'];
+  if(is_numeric($quantity) and $quantity>=0){
+
+  $order=new SupplierDeliveryNote($supplier_delivery_note_key);
+  
+
+    $product=new SupplierProduct('key',$supplier_product_key);
+
+  // $gross=$quantity*$product->data['Supplier Product Cost'];
+
+
+  $data=array(
+	    
+	      'date'=>date('Y-m-d H:i:s')
+	      ,'Supplier Product Key'=>$product->data['Supplier Product Current Key']
+	      //      ,'line_number'=>$order->get_next_line_number()
+	      // ,'amount'=>$gross
+	      ,'qty'=>$quantity
+	      ,'qty_type'=>$quantity_type
+	      // ,'tax_code'=>$product->data['Supplier Product Tax Code']
+	      // ,'Current Dispatching State'=>'In Process'
+	      //,'Current Payment State'=>'Waiting Payment'
+	     
+	      );
+  
+
+  $transaction_data=$order->add_order_transaction($data);
+ 
+
+  $adata=array();
+  
+  // $order->update_item_totals_from_order_transactions();
+  // $order->update_totals_from_order_transactions();
+ 
+  //$order->update_charges();
+  //$order->get_original_totals();
+  // $order->update_totals();
+  //$order->update_totals_from_order_transactions();
+  
+
+  
+
+  $updated_data=array(
+		      //	      'goods'=>$order->get('Items Net Amount')
+		      //,'order_net'=>$order->get('Total Net Amount')
+		      //,'vat'=>$order->get('Total Tax Amount')
+		      //,'order_charges'=>$order->get('Charges Net Amount')
+		      // ,'order_credits'=>$order->get('Net Credited Amount')
+		      // ,'shipping'=>$order->get('Shipping Net Amount')
+		      // ,'total'=>$order->get('Total Amount')
+		      'distinct_products'=>$order->get('Number Items')
+		      );
+  
+
+
+
+
+
+
+  $response= array('state'=>200,'quantity'=>$transaction_data['qty'],'key'=>$_REQUEST['key'],'data'=>$updated_data);
   }else
     $response= array('state'=>200,'quantity'=>$_REQUEST['oldvalue'],'key'=>$_REQUEST['key']);
  echo json_encode($response);  

@@ -2,7 +2,7 @@
     include_once('common.php');
 ?>
     var Dom   = YAHOO.util.Dom;var Event = YAHOO.util.Event;
-var po_id='<?php echo$_SESSION['state']['porder']['id']?>';
+var dn_key='<?php echo $_SESSION['state']['supplier_dn']['id'] ?>'
 var supplier_id='<?php echo$_SESSION['state']['supplier']['id']?>';
 var show_all='<?php echo $_SESSION['state']['porder']['show_all']?>';
 
@@ -106,8 +106,8 @@ var myonCellClick = function(oArgs) {
 	    var new_qty=parseFloat(data['quantity'])-1;
 
 	var ar_file='ar_edit_porders.php';
-	request='tipo=edit_new_porder&key=quantity&newvalue='+new_qty+'&oldvalue='+data['quantity']+'&id='+ data['id'];
-	//alert(ar_file+'?'+request)
+	request='tipo=edit_new_supplier_dn&key=quantity&newvalue='+new_qty+'&oldvalue='+data['quantity']+'&id='+ data['id'];
+	alert(ar_file+'?'+request)
 	YAHOO.util.Connect.asyncRequest(
 					'POST',
 					ar_file, {
@@ -311,10 +311,10 @@ YAHOO.util.Event.addListener(window, "load", function() {
 								  ,{key:"unit_type", label:"<?php echo _('PO U')?>",width:30,className:"aleft"}
 
 			
-				 				  ,{key:"dn_quantity",label:"<?php echo _('DN Qty')?>", width:40,sortable:false,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC},  editor: new YAHOO.widget.TextboxCellEditor({asyncSubmitter: myCellEdit}),object:'new_porder','action':'change_qty'}
-								  ,{key:"dn_unit_type", label:"<?php echo _('DN U')?>",width:30,className:"aleft"}
+				  ,{key:"dn_quantity",label:"<?php echo _('DN Qty')?>", width:40,sortable:false,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC},  editor: new YAHOO.widget.TextboxCellEditor({asyncSubmitter: myCellEdit}),object:'new_porder','action':'change_qty'}
+				  ,{key:"dn_unit_type", label:"<?php echo _('DN U')?>",width:30,className:"aleft"}
 
-	,{key:"add",label:"", width:3,sortable:false,action:'add_object',object:'new_order'}
+				  ,{key:"add",label:"", width:3,sortable:false,action:'add_object',object:'new_order'}
 				  ,{key:"remove",label:"", width:3,sortable:false,action:'remove_object',object:'new_order'}
 
 				 
@@ -346,7 +346,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 		    },
 			
 		    fields: [
-			     "id","code","description","quantity","amount","unit_type","add","remove","used_in"
+			     "id","code","description","quantity","amount","unit_type","add","remove","used_in","dn_quantity","dn_unit_type"
 			     ]};
 	    
 		this.table0 = new YAHOO.widget.DataTable(tableDivEL, ColumnDefs,
@@ -420,17 +420,17 @@ function submit_date_manually(){
     Dom.get('date_type').value='manual';
 }
 
-
+         
 function take_values_from_pos(){
 
 	var ar_file='ar_edit_porders.php';
 	request='tipo=take_values_from_pos&dn_key='+dn_key;
-	//alert(ar_file+'?'+request)
+	//	alert(ar_file+'?'+request)
 	YAHOO.util.Connect.asyncRequest(
 					'POST',
 					ar_file, {
 					    success:function(o) {
-						//  alert(o.responseText);
+						  alert(o.responseText);
 						var r = YAHOO.lang.JSON.parse(o.responseText);
 						if (r.state == 200) {
 						    var tableid=0;
