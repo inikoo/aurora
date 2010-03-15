@@ -122,7 +122,7 @@ class SupplierDeliveryNote extends DB_Table{
     foreach($base_data as $key=>$value){
       $keys.="`$key`,";
 
-      if(preg_match('/XHTML/',$key))
+      if(preg_match('/XHTML|Supplier Delivery Note POs/',$key))
 	$values.="'".addslashes($value)."',";
       else
       $values.=prepare_mysql($value).",";
@@ -137,7 +137,7 @@ class SupplierDeliveryNote extends DB_Table{
       $this->id = mysql_insert_id();
       $this->get_data('id',$this->id);
     }else
-      exit(" error can no create supplider delivery note");
+      exit(" error can no create supplier delivery note");
 
 
   }
@@ -185,69 +185,61 @@ function get($key=''){
 
 
   function add_order_transaction($data) {
-  
-    include_once('class.TaxCategory.php');
-    $tax_category=new TaxCategory($data['tax_code']);
-    $tax_amount=$tax_category->calculate_tax($data ['amount']);
-
-
-    if($this->data['Supplier Delivery Note Current Dispatch State']=='In Process'){
-
-      if($data ['qty']==0){
-	 $sql=sprintf("delete from `Purchase Order Transaction Fact` where `Supplier Delivery Note Key`=%d and `Supplier Product Key`=%d ",$this->id,$data ['Supplier Product Key']);
-	  mysql_query($sql);
-      }else{
-
-
+    
+    if($this->data['Supplier Delivery Note Current State']=='In Process'){
       $sql=sprintf("select `Supplier Delivery Note Line` from `Purchase Order Transaction Fact` where `Supplier Delivery Note Key`=%d and `Supplier Product Key`=%d ",$this->id,$data ['Supplier Product Key']);
       $res=mysql_query($sql);
+      // print $sql;
       if($row=mysql_fetch_array($res)){
-	 $sql = sprintf ( "update`Purchase Order Transaction Fact` set  `Supplier Delivery Note Quantity`=%f,`Supplier Delivery Note Last Updated Date`=%s,`Supplier Delivery Note Net Amount`=%f ,`Supplier Delivery Note Tax Amount`=%f   where `Supplier Delivery Note Key`=%d and `Supplier Delivery Note Line`=%d "
+	$sql = sprintf ( "update`Purchase Order Transaction Fact` set  `Supplier Delivery Note Quantity`=%f, `Supplier Delivery Note Quantity Type`=%s,`Supplier Delivery Note Last Updated Date`=%s  where `Supplier Delivery Note Key`=%d and `Supplier Delivery Note Line`=%d "
 			  ,$data ['qty']
-			  ,prepare_mysql ( $data ['date'] )
-			  , $data ['amount']
-			  , $tax_amount
-			  ,$this->id
+			 ,prepare_mysql ($data ['qty_type'])
+			 ,prepare_mysql ( $data ['date'] )
+			 
+			 ,$this->id
 			  ,$row['Supplier Delivery Note Line']
-			  );
-	 //	print "$sql";
+			 );
+	//	print "$sql";
 	 mysql_query($sql);
 	 
       }else{
-	$sql = sprintf ( "insert into `Purchase Order Transaction Fact` (`Supplier Delivery Note Tax Code`,`Currency Code`,`Supplier Delivery Note Last Updated Date`,`Supplier Product Key`,`Supplier Delivery Note Current Dispatching State`,`Supplier Key`,`Supplier Delivery Note Key`,`Supplier Delivery Note Line`,`Supplier Delivery Note Quantity`,`Supplier Delivery Note Quantity Type`,`Supplier Delivery Note Net Amount`,`Supplier Delivery Note Tax Amount`) values (%s,%s,%s,%d,  %s    ,%d,%d,%d, %.6f,%s,%.2f,%.2f)   "
-			 , prepare_mysql ( $data['tax_code'] )
-			 , prepare_mysql ( $this->data ['Supplier Delivery Note Currency Code'] )
+	$sql = sprintf ( "insert into `Purchase Order Transaction Fact` (`Supplier Delivery Note Last Updated Date`,`Supplier Product Key`,`Supplier Delivery Note Current State`,`Supplier Key`,`Supplier Delivery Note Key`,`Supplier Delivery Note Line`,`Supplier Delivery Note Quantity`,`Supplier Delivery Note Quantity Type`) values (%s,%d,  %s    ,%d,%d,%d, %.6f,%s)   "
 			 , prepare_mysql ( $data ['date'] )
 			 , $data ['Supplier Product Key']
-
-			 , prepare_mysql ( $data ['Current Dispatching State'] )
-
+			 , prepare_mysql ($this->data['Supplier Delivery Note Current State']  )
 			 , $this->data['Supplier Delivery Note Supplier Key' ] 
 			 , $this->data ['Supplier Delivery Note Key']
 			 , $data ['line_number']
-
 			 , $data ['qty']
 			 , prepare_mysql ( $data ['qty_type'] )
-			 , $data ['amount']
-			 , $tax_amount
-			 
 		  );
 	//	print "$sql";
 	mysql_query($sql);
       }
+      
+      if($data ['qty']==0){
+	$sql=sprintf("select `Supplier Delivery Note Key` ,`Supplier Invoice Key`  from `Purchase Order Transaction Fact` where `Supplier Delivery Note Key`=%d and `Supplier Product Key`=%d ",$this->id,$data ['Supplier Product Key']);
+	$res=mysql_query($sql);
+	if($row=mysql_fetch_array($res)){
+
+	  if(!$row['Supplier Delivery Note Key'] and !$row['Supplier Invoice Key'])
+	    $sql=sprintf("delete from `Purchase Order Transaction Fact` where `Supplier Delivery Note Key`=%d and `Supplier Product Key`=%d ",$this->id,$data ['Supplier Product Key']);
+	mysql_query($sql);
+	
+	}
+      }
+      }else{// Supplier Delivery Note Current Stat not In Process
+
+	
+	
+		
       }
 
-    }else{
-
-
-   
-		
-    }
-
+    
   
 
 
-    return array('to_charge'=>money($data ['amount'],$this->data['Supplier Delivery Note Currency Code']),'qty'=>$data ['qty']);
+    return array('qty'=>$data ['qty']);
 		
     //  print "$sql\n";
 
@@ -434,16 +426,89 @@ function receive($data){
 
 }
 
-
-
-
-
-
-
-
-
-
-
+function update_pos($raw_po_keys){
+  $po_keys=array();
+  foreach($raw_po_keys as $po_key){
+    if(!is_numeric($po_key))
+      continue;
+    $po=new PurchaseOrder($po_key);
+    if(!$po->id)
+      continue;
+    if($this->data['Supplier Delivery Note Supplier Key']!=$po->data['Purchase Order Supplier Key'])
+      continue;
+    $po_keys[$po->id]=$po->id;
+  }
+  $pos=join(',',$po_keys);
+  $sql=sprintf("update `Supplier Delivery Note Dimension` set `Supplier Delivery Note POs`=%s where `Supplier Delivery Note Key`=%d "
+	       ,prepare_mysql($pos)
+	       ,$this->id
+	       );
+  mysql_query($sql);
 
 }
+
+
+function take_values_from_pos(){
+  $items=array();
+  $supplier_product_keys=array();
+  //print_r(preg_split('/\,/',$this->data['Supplier Delivery Note POs'] )) ;
+  foreach(preg_split('/\,/',$this->data['Supplier Delivery Note POs']) as $po_key){
+    $sql=sprintf("select `Purchase Order Line`,`Supplier Product Key`,`Purchase Order Quantity`,`Purchase Order Quantity Type` from `Purchase Order Transaction Fact` where `Purchase Order Key`=%d  ",$po_key);
+
+    $res=mysql_query($sql);
+    while($row=mysql_fetch_array($res)){
+
+      if(array_key_exists($row['Supplier Product Key'],$supplier_product_keys)){
+	$line= $supplier_product_keys[$row['Supplier Product Key']];
+	
+	if($items[$line]['Purchase Order Quantity Type']!=$row['Purchase Order Quantity Type']){
+	  $supplier_product=new SupplierProduct($row['Supplier Product Key']);
+	  $row['Purchase Order Quantity']=$row['Purchase Order Quantity'] *$supplier_product->units_convertion_factor($row['Purchase Order Quantity Type'],$items[$line]['Purchase Order Quantity Type']);
+	  $row['Purchase Order Quantity Type']=$items[$line]['Purchase Order Quantity Type'];
+	}	
+
+	
+      }
+
+
+      $supplier_product_keys[$row['Supplier Product Key']]=$row['Purchase Order Line'];
+      $items[$row['Purchase Order Line']]=array(
+						'Supplier Product Key'=>$row['Supplier Product Key']
+						,'Purchase Order Quantity'=>$row['Purchase Order Quantity']
+						,'Purchase Order Quantity Type'=>$row['Purchase Order Quantity Type']
+						,'Purchase Order Line'=>$row['Purchase Order Line']
+						,'Purchase Order Key'=>$po_key
+						);
+	  
+    }
+    
+  }
+
+  foreach($items as $item){
+    $line=$this->get_next_line_number();
+  $sql=sprintf("select `Supplier Delivery Note Line` from `Purchase Order Transaction Fact` where `Supplier Delivery Note Key`=%d and `Supplier Product Key`=%d ",$this->id,$item['Supplier Product Key']);
+      $res=mysql_query($sql);
+      // print $sql;
+      if($row=mysql_fetch_array($res)){
+	if($row['Supplier Delivery Note Line'])
+	  $line=$row['Supplier Delivery Note Line'];
+      }
+
+    $sql=sprintf("update  `Purchase Order Transaction Fact` set `Supplier Delivery Note Line`=%d,`Supplier Delivery Note Key`=%d,`Supplier Delivery Note Quantity`=%f ,`Supplier Delivery Note Quantity Type`=%s where  `Purchase Order Key`=%d and `Purchase Order Line`=%d"
+		 ,$line
+		 ,$this->id
+		 ,$item['Purchase Order Quantity']
+		 ,prepare_mysql($item['Purchase Order Quantity Type'])
+		 ,$item['Purchase Order Key']
+		 ,$item['Purchase Order Line']
+		 );
+    mysql_query($sql);
+    //  print $sql;
+  }
+  
+}
+}
+    
+
+
 ?>

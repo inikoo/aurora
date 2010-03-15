@@ -1302,4 +1302,10 @@ default:
   }
 
 
+
+  function units_convertion_factor($unit_from,$unit_to){
+    return 1;
+  }
+
+
 }
