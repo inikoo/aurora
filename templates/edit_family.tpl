@@ -37,7 +37,7 @@
 	  </tr>
 	</table>
       </div>
-    <div  class="edit_block" style="{if $edit!="details"}display:none{/if}"  id="d_details">
+    <div  id="d_details" class="edit_block" style="{if $edit!='details'}display:none{/if}"  >
       
     
       <div class="general_options" style="float:right">
@@ -134,8 +134,7 @@
 
     </table>
     </div>
-    
-    <div class="edit_block" {if $edit!="pictures"}style="display:none"{/if}  id="d_pictures">
+     <div  id="d_pictures" class="edit_block" style="{if $edit!='pictures'}display:none{/if}" >
 
   {include file='new_image_splinter.tpl'}
   
@@ -174,9 +173,6 @@
 
 
 </div>
-    
-    
-     
       <div  class="edit_block" style="margin:0;padding:0 0px;{if $edit!="discounts"}display:none{/if}"  id="d_discounts">
 		<div  class="new_item_dialog"  id="new_deal_dialog" style="display:none">
 	   <div id="new_deal_messages" class="messages_block"></div>
@@ -204,17 +200,16 @@
 	  <div  id="table4"   class="data_table_container dtable btable "> </div>
 	 </div>
       </div>
-      
       <div  class="edit_block" style="margin:0;padding:0 0px;{if $edit!="web"}display:none{/if}"  id="d_web">
       </div>
-      
       <div  class="edit_block" style="margin:0;padding:0 0px;{if $edit!="products"}display:none{/if}"  id="d_products">
 	<div   style="margin:0 0 10px 0;padding:10px;border:1px solid #ccc;display:none"  id="new_product_dialog" >
 	  <div id="new_product_messages" class="messages_block"></div>
+
 	  <table class="edit" >
 	    <tr><td class="label" style="width:7em">{t}Code{/t}:</td><td>
 		<input name="code" id="new_code"  onKeyUp="new_product_changed(this)"    onMouseUp="new_product_changed(this)"  onChange="new_product_changed(this)"  name="code" changed=0 type='text' class='text' SIZE="16"  MAXLENGTH="16" value="{$family->get_next_product_code()}"/>  <span style="margin-left:20px;">{t}Family Char{/t}: {$family->get('Family Special Characeristic')}</span>	</td></tr>
-    	    <tr><td class="label" >{t}Name{/t}:</td><td><input name="name"  id="new_name"  onKeyUp="new_product_changed(this)"    onMouseUp="new_product_changed(this)"  onChange="new_product_changed(this)"  name="code" changed=0  type='text'  SIZE="35" MAXLENGTH="80" class='text' value=""   /></td></tr>
+    	<tr><td class="label" >{t}Name{/t}:</td><td><input name="name"  id="new_name"  onKeyUp="new_product_changed(this)"    onMouseUp="new_product_changed(this)"  onChange="new_product_changed(this)"  name="code" changed=0  type='text'  SIZE="35" MAXLENGTH="80" class='text' value=""   /></td></tr>
 	    <tr><td class="label">{t}Special Char{/t}:</td><td><input name="sdescription"  id="new_sdescription"  onKeyUp="new_product_changed(this)"    onMouseUp="new_product_changed(this)"  onChange="new_product_changed(this)"  name="code" changed=0  type='text'  SIZE="35" MAXLENGTH="32" class='text' /></td></tr>
 	    <tr><td class="label">{t}Units/Case{/t}:</td><td><input name="units" id="new_units"  onKeyUp="new_product_changed(this)"    onMouseUp="new_product_changed(this)"  onChange="new_product_changed(this)" SIZE="4" type='text'  MAXLENGTH="20" class='text' /><span style="margin-left:20px;">{t}Type of Unit{/t}:</span>	
 		
@@ -334,8 +329,15 @@
 	    </tr>
 	  </table>
 	  <div style="clear:both;margin:0 0px;padding:0 20px ;border-bottom:1px solid #999"></div>
-	  <span style="float:right;margin-left:80px" class="state_details"  id="restrictions" value="for_sale" on click="change_multiple(this)"  >{t}products for sale{/t}</span>
 	  
+     <span style="float:right;margin-left:10px" class="state_details"  id="restrictions_discontinued"   click="change_multiple(this)"  >{t}discontinued{/t} ({$family->get_number_products_by_sales_type('Discontinued')})</span>
+	 <span style="float:right;margin-left:10px" class="state_details"  id="restrictions_not_for_sale"   click="change_multiple(this)"  >{t}not for sale{/t} ({$family->get_number_products_by_sales_type('Not for Sale')})</span>
+	 <span style="float:right;margin-left:10px" class="state_details"  id="restrictions_private"   click="change_multiple(this)"  >{t}private sale{/t} ({$family->get_number_products_by_sales_type('Private Sale')})</span>
+
+	 <span style="float:right;margin-left:10px" class="state_details"  id="restrictions_public"   click="change_multiple(this)"  >{t}public sale{/t} ({$family->get_number_products_by_sales_type('Public Sale')})</span>
+     <span style="float:right;margin-left:10px" class="state_details"  id="restrictions_none"   click="change_multiple(this)"  >{t}all{/t} ({$family->get_number_products()})</span>
+
+
 	  <table style="float:left;margin:0 0 0 0px ;padding:0"  class="options" >
 	    <tr><td  {if $view=='view_state'}class="selected"{/if} id="view_state" >{t}State{/t}</td>
 	      {if $view_stock}<td {if $view=='view_name'}class="selected"{/if}  id="view_name"  >{t}Name{/t}</td>{/if}
