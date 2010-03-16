@@ -30,13 +30,13 @@ var myCellEdit = function (callback, newValue) {
     ar_file='ar_edit_porders.php';
     
     var request='tipo=edit_'+column.object+'&key=' + column.key + '&newvalue=' + encodeURIComponent(newValue) + '&oldvalue=' + encodeURIComponent(oldValue)+ myBuildUrl(datatable,record);
-    //alert(ar_file+'?'+request);
+    alert(ar_file+'?'+request);
 
     YAHOO.util.Connect.asyncRequest(
 				    'POST',
 				    ar_file, {
 					success:function(o) {
-					    // alert(o.responseText);
+					     alert(o.responseText);
 					    var r = YAHOO.lang.JSON.parse(o.responseText);
 					    if (r.state == 200) {
 						
@@ -45,11 +45,11 @@ var myCellEdit = function (callback, newValue) {
 						    Dom.get(x).innerHTML=r.data[x];
 						}
 						
-						datatable.updateCell(record,'amount',r.to_charge);
+
 					
-						if(r.quantity==0 && !show_all){
-						    datatable.deleteRow(record);
-						}
+						//if(r.quantity==0 && !show_all){
+						//    datatable.deleteRow(record);
+						//}
 						
 						callback(true, r.quantity);
 					    } else {
@@ -101,18 +101,18 @@ var myonCellClick = function(oArgs) {
 	var data = record.getData();
 
 	if(column.action=='add_object')
-	    var new_qty=parseFloat(data['quantity'])+1;
+	    var new_qty=parseFloat(data['dn_quantity'])+1;
 	else
-	    var new_qty=parseFloat(data['quantity'])-1;
+	    var new_qty=parseFloat(data['dn_quantity'])-1;
 
 	var ar_file='ar_edit_porders.php';
 	request='tipo=edit_new_supplier_dn&key=quantity&newvalue='+new_qty+'&oldvalue='+data['quantity']+'&id='+ data['id'];
-	alert(ar_file+'?'+request)
+	//	alert(ar_file+'?'+request)
 	YAHOO.util.Connect.asyncRequest(
 					'POST',
 					ar_file, {
 					    success:function(o) {
-						//  alert(o.responseText);
+						  alert(o.responseText);
 						var r = YAHOO.lang.JSON.parse(o.responseText);
 						if (r.state == 200) {
 						    for(x in r.data){
@@ -122,14 +122,12 @@ var myonCellClick = function(oArgs) {
 
 					
 
-						    datatable.updateCell(record,'quantity',r.quantity);
-						    if(r.quantity==0)
-							r.to_charge='';
-						    datatable.updateCell(record,'amount',r.to_charge);
+						    datatable.updateCell(record,'dn_quantity',r.quantity);
+						  
 					
-						    if(r.quantity==0 && !show_all){
-							this.deleteRow(target);
-						    }
+						    //if(r.quantity==0 && !show_all){
+						    //	this.deleteRow(target);
+						    // }
 						
 
 						    //	callback(true, r.newvalue);
@@ -185,7 +183,7 @@ case('delete'):
 
 
 function delete_order() {
-    var request='ar_edit_porders.php?tipo=delete&id='+po_id;
+    var request='ar_edit_porders.php?tipo=delete_dn&id='+dn_key;
     // alert(request);
     YAHOO.util.Connect.asyncRequest('POST',request ,{
 	      
@@ -303,7 +301,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 				  ,{key:"description", label:"<?php echo _('Description')?>",width:300, sortable:false,className:"aleft"}
 				  ,{key:"used_in", label:"<?php echo _('Used In')?>",width:200, sortable:false,className:"aleft"}
 
-				  ,{key:"quantity",label:"<?php echo _('PO Qty')?>", width:40,sortable:false,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC},  editor: new YAHOO.widget.TextboxCellEditor({asyncSubmitter: myCellEdit}),object:'new_porder','action':'change_qty'}
+				  ,{key:"quantity",label:"<?php echo _('PO Qty')?>", width:40,sortable:false,className:"aright"}
 				  // ,{key:"stock", label:"<?php echo _('Stock O(U)')?>",width:90,className:"aright"}
 				  // ,{key:"stock_time", label:"<?php echo _('Stock Time')?>",width:75,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 				  // ,{key:"expected_qty_edit", label:"<?php echo _('Qty O[U]')?>",width:70,className:"aright"}
@@ -311,7 +309,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 								  ,{key:"unit_type", label:"<?php echo _('PO U')?>",width:30,className:"aleft"}
 
 			
-				  ,{key:"dn_quantity",label:"<?php echo _('DN Qty')?>", width:40,sortable:false,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC},  editor: new YAHOO.widget.TextboxCellEditor({asyncSubmitter: myCellEdit}),object:'new_porder','action':'change_qty'}
+				  ,{key:"dn_quantity",label:"<?php echo _('DN Qty')?>", width:40,sortable:false,className:"aright",  editor: new YAHOO.widget.TextboxCellEditor({asyncSubmitter: myCellEdit}),object:'new_supplier_dn','action':'change_qty'}
 				  ,{key:"dn_unit_type", label:"<?php echo _('DN U')?>",width:30,className:"aleft"}
 
 				  ,{key:"add",label:"", width:3,sortable:false,action:'add_object',object:'new_order'}
@@ -471,11 +469,11 @@ function init(){
     submit_dialog.render();
     staff_dialog = new YAHOO.widget.Dialog("staff_dialog", {context:["get_submiter","tr","tl"]  ,visible : false,close:false,underlay: "none",draggable:false});
     staff_dialog.render();
- delete_dialog = new YAHOO.widget.Dialog("delete_dialog", {context:["delete_po","tr","tl"]  ,visible : false,close:false,underlay: "none",draggable:false});
+ delete_dialog = new YAHOO.widget.Dialog("delete_dialog", {context:["delete_dn","tr","tl"]  ,visible : false,close:false,underlay: "none",draggable:false});
     delete_dialog.render();
     Event.addListener("submit_po", "click", submit_dialog.show,submit_dialog , true);
     Event.addListener("get_submiter", "click", staff_dialog.show,staff_dialog , true);
-    Event.addListener("delete_po", "click", delete_dialog.show,delete_dialog , true);
+    Event.addListener("delete_dn", "click", delete_dialog.show,delete_dialog , true);
 
     var ids=Dom.getElementsByClassName('radio', 'span', 'submit_method_container');
     YAHOO.util.Event.addListener(ids, "click", swap_radio,'submit_method');
