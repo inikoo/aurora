@@ -187,33 +187,51 @@ function get($key=''){
   function add_order_transaction($data) {
     
     if($this->data['Supplier Delivery Note Current State']=='In Process'){
-      $sql=sprintf("select `Supplier Delivery Note Line` from `Purchase Order Transaction Fact` where `Supplier Delivery Note Key`=%d and `Supplier Product Key`=%d ",$this->id,$data ['Supplier Product Key']);
+      $sql=sprintf("select `Purchase Order Key`,`Purchase Order Line`,  `Supplier Delivery Note Line` from `Purchase Order Transaction Fact` where (`Supplier Delivery Note Key`=%d or `Purchase Order Key` in (%s)) and `Supplier Product Key`=%d ",$this->id,$this->data['Supplier Delivery Note POs'],$data ['Supplier Product Key']);
       $res=mysql_query($sql);
       // print $sql;
       if($row=mysql_fetch_array($res)){
+	
+	if(!$row['Supplier Delivery Note Line']){
+	
+	 
+	$sql = sprintf ( "update`Purchase Order Transaction Fact` set  `Supplier Delivery Note Quantity`=%f, `Supplier Delivery Note Quantity Type`=%s,`Supplier Delivery Note Last Updated Date`=%s,`Supplier Delivery Note Line`=%d  where `Purchase Order Key`=%d and `Purchase Order Line`=%d "
+			  ,$data ['qty']
+			 ,prepare_mysql ($data ['qty_type'])
+			 ,prepare_mysql ( $data ['date'] )
+			 ,$this->get_next_line_number()
+			 ,$row['Purchase Order Key']
+			 ,$row['Purchase Order Line']
+			 );
+	//	print "$sql";
+	 mysql_query($sql);
+	}else{
 	$sql = sprintf ( "update`Purchase Order Transaction Fact` set  `Supplier Delivery Note Quantity`=%f, `Supplier Delivery Note Quantity Type`=%s,`Supplier Delivery Note Last Updated Date`=%s  where `Supplier Delivery Note Key`=%d and `Supplier Delivery Note Line`=%d "
 			  ,$data ['qty']
 			 ,prepare_mysql ($data ['qty_type'])
 			 ,prepare_mysql ( $data ['date'] )
 			 
 			 ,$this->id
-			  ,$row['Supplier Delivery Note Line']
+			 ,$row['Supplier Delivery Note Line']
 			 );
 	//	print "$sql";
 	 mysql_query($sql);
+	  
+	}
+
 	 
       }else{
-	$sql = sprintf ( "insert into `Purchase Order Transaction Fact` (`Supplier Delivery Note Last Updated Date`,`Supplier Product Key`,`Supplier Delivery Note Current State`,`Supplier Key`,`Supplier Delivery Note Key`,`Supplier Delivery Note Line`,`Supplier Delivery Note Quantity`,`Supplier Delivery Note Quantity Type`) values (%s,%d,  %s    ,%d,%d,%d, %.6f,%s)   "
+	$sql = sprintf ( "insert into `Purchase Order Transaction Fact` (`Supplier Delivery Note Last Updated Date`,`Supplier Product Key`,`Purchase Order Current Dispatching State`,`Supplier Key`,`Supplier Delivery Note Key`,`Supplier Delivery Note Line`,`Supplier Delivery Note Quantity`,`Supplier Delivery Note Quantity Type`) values (%s,%d,  %s    ,%d,%d,%d, %.6f,%s)   "
 			 , prepare_mysql ( $data ['date'] )
 			 , $data ['Supplier Product Key']
-			 , prepare_mysql ($this->data['Supplier Delivery Note Current State']  )
+			 , prepare_mysql ( 'Found in Delivery Note' )
 			 , $this->data['Supplier Delivery Note Supplier Key' ] 
 			 , $this->data ['Supplier Delivery Note Key']
 			 , $data ['line_number']
 			 , $data ['qty']
 			 , prepare_mysql ( $data ['qty_type'] )
 		  );
-	//	print "$sql";
+       	print "$sql";
 	mysql_query($sql);
       }
       
@@ -374,14 +392,18 @@ function get($key=''){
 
  function delete(){
 
-   if($this->data['Supplier Delivery Note Current Dispatch State']=='In Process'){
+   if($this->data['Supplier Delivery Note Current State']=='In Process'){
      $sql=sprintf("delete from `Supplier Delivery Note Dimension` where `Supplier Delivery Note Key`=%d",$this->id);
      mysql_query($sql);
-     $sql=sprintf("delete from `Purchase Order Transaction Fact` where `Supplier Delivery Note Key`=%d",$this->id);
+     $sql=sprintf("delete from `Purchase Order Transaction Fact` where `Supplier Delivery Note Key`=%d and `Purchase Order Key` is NULL and `Supplier Invoice Key` IS NULL ",$this->id);
      mysql_query($sql);
+     $sql=sprintf("update `Purchase Order Transaction Fact` set `Supplier Delivery Note Key`=NULL ,`Supplier Delivery Note Line`=NULL,`Supplier Delivery Note Quantity`=0 , `Supplier Delivery Note Quantity Type`=NULL,`Supplier Delivery Note Last Updated Date`=NULL  where `Supplier Delivery Note Key`=%d  ",$this->id);
+     mysql_query($sql);
+     
+     
    }else{
      $this->error=true;
-     $this->msg='Can not deleted submitted supplier delivery notes';
+     $this->msg='Can not deleted submitted supplier delivery note';
    }
  }
 

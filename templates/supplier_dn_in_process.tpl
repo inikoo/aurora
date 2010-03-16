@@ -5,18 +5,12 @@
 <div class="order_actions" >
     <span class="state_details" onClick="location.href='supplier.php?id={$supplier->get('Supplier Key')}'" style="float:left;margin-top:2px" >{t}Supplier Page{/t}</span>
 
-  <span class="state_details" id="delete_po">{t}Delete{/t}</span>
+  <span class="state_details" id="delete_dn">{t}Delete{/t}</span>
   <span class="state_details" id="submit_dn" style="margin-left:20px">{t}Sent to Goods In{/t}</span>
 </div>
 
 
 <div class="prodinfo" style="margin-top:2px;font-size:85%;border:1px solid #ddd;padding:10px">
-    
-    
-
-
-    
-    
     <div style="border:0px solid red;width:290px;float:right">
     <table  border=0  class="order_header"  style="margin-right:30px;float:right">
       <tr><td class="aright" style="padding-right:40px">{t}Created{/t}:</td><td>{$supplier_dn->get('Creation Date')}</td></tr>
@@ -127,7 +121,7 @@
    
     <tr><td style="border-top:1px solid #ddd;text-align:center;padding:10px 0 0 0">
 	<span class="state_details" onClick="close_dialog('delete')"  >{t}Cancel{/t}</span>
-	<span style="margin-left:50px" class="state_details" onClick="delete_order()"  >{t}Delete Purchase Order{/t}</span>
+	<span style="margin-left:50px" class="state_details" onClick="delete_order()"  >{t}Delete Supplier Delivery Note{/t}</span>
     
     </td>
 </tr>

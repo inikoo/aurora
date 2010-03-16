@@ -27,8 +27,11 @@ $tipo=$_REQUEST['tipo'];
 
 
 switch($tipo){
-case('delete'):
+case('delete_po'):
   delete_purchase_order();
+  break;
+case('delete_dn'):
+  delete_supplier_delivery_note();
   break;
   case('cancel'):
   cancel_purchase_order();
@@ -106,6 +109,28 @@ function delete_purchase_order(){
   }
    echo json_encode($response);  
 }
+
+function delete_supplier_delivery_note(){
+  if(isset( $_REQUEST['id']) and is_numeric( $_REQUEST['id'])){
+     $supplier_delivery_note_key=$_REQUEST['id'];
+     $_SESSION['state']['supplier_dn']['id']=$supplier_delivery_note_key;
+  }else
+     $supplier_delivery_note_key=$_SESSION['state']['porder']['id'];
+
+  $supplier_dn=new SupplierDeliveryNote($supplier_delivery_note_key);
+  $supplier_key=$supplier_dn->data['Supplier Delivery Note Supplier Key'];
+  $supplier_dn->delete();
+  if(!$supplier_dn->error){
+    $response= array('state'=>200,'supplier_key'=>$supplier_key);
+
+  }else{
+    $response= array('state'=>400,'msg'=>$supplier_dn->msg);
+
+  }
+   echo json_encode($response);  
+}
+
+
 function submit_purchase_order() {
     global $user;
     if (isset( $_REQUEST['id']) and is_numeric( $_REQUEST['id'])) {
@@ -329,8 +354,8 @@ if(!$show_all){
       $table=' `Supplier Product Dimension` PD ';
      $where=sprintf('where `Supplier Key`=%d   ',$supplier_key);
      $sql_qty=sprintf(
-		      'IFNULL( select `Purchase Order Normalized Quantity Type`   from `Purchase Order Transaction Fact` where `Supplier Product Key`=`Supplier Product Current Key` and `Supplier Delivery `Purchase Order Key` in (%s)),"") as `Supplier Delivery Note Quantity Type`   
-,IFNULL((select `Supplier Delivery Note Quantity Type` from `Purchase Order Transaction Fact` where `Supplier Product Key`=`Supplier Product Current Key` and `Supplier Delivery Note Key Key`=%d),"") as `Supplier Delivery Note Quantity Type`    ,IFNULL((select sum(`Supplier Delivery Note Quantity`) from `Purchase Order Transaction Fact` where `Supplier Product Key`=`Supplier Product Current Key` and `Supplier Delivery Note Key Key`=%d),0) as `Supplier Delivery Note Quantity`   ,IFNULL((select sum(`Purchase Order Normalized Quantity`) from `Purchase Order Transaction Fact` where `Supplier Product Key`=`Supplier Product Current Key` and `Purchase Order Key`in (%s)),0) as `Purchase Order Normalized Quantity`, IFNULL((select sum(`Purchase Order Net Amount`) from `Purchase Order Transaction Fact` where `Supplier Product Key`=`Supplier Product Current Key` and `Purchase Order Key` in (%s)),0) as `Purchase Order Net Amount` '
+		      ',IFNULL( (select `Purchase Order Normalized Quantity Type`   from `Purchase Order Transaction Fact` where `Supplier Product Key`=`Supplier Product Current Key` and `Purchase Order Key` in (%s) limit 1),"") as `Purchase Order Normalized Quantity Type`   
+,IFNULL((select `Supplier Delivery Note Quantity Type` from `Purchase Order Transaction Fact` where `Supplier Product Key`=`Supplier Product Current Key` and `Supplier Delivery Note Key`=%d limit 1),"") as `Supplier Delivery Note Quantity Type`    ,IFNULL((select sum(`Supplier Delivery Note Quantity`) from `Purchase Order Transaction Fact` where `Supplier Product Key`=`Supplier Product Current Key` and `Supplier Delivery Note Key`=%d),0) as `Supplier Delivery Note Quantity`   ,IFNULL((select sum(`Purchase Order Normalized Quantity`) from `Purchase Order Transaction Fact` where `Supplier Product Key`=`Supplier Product Current Key` and `Purchase Order Key`in (%s)),"") as `Purchase Order Normalized Quantity` '
 		      ,$pos
 		      ,$supplier_dn_key
 		      ,$supplier_dn_key
@@ -344,7 +369,7 @@ if(!$show_all){
 
    }else{
      $table='  `Purchase Order Transaction Fact` OTF  left join `Supplier Product History Dimension` PHD on (`SPH Key`=`Supplier Product Key`) left join `Supplier Product Dimension` PD on (PD.`Supplier Product Code`=PHD.`Supplier Product Code` and PD.`Supplier Key`=PHD.`Supplier Key`) ';
-     $where=sprintf(' where  `Purchase Order Key` in (%s)',$pos);
+     $where=sprintf(' where  (`Purchase Order Key` in (%s) or `Supplier Delivery Note Key`=%d)',$pos,$supplier_dn_key);
      $sql_qty=', `Purchase Order Normalized Quantity` ,`Purchase Order Normalized Quantity Type` ,`Purchase Order Net Amount`,`Supplier Delivery Note Quantity`,`Supplier Delivery Note Quantity Type`';     
    }
      $_order=$order;
@@ -431,13 +456,10 @@ if(!$show_all){
     $res = mysql_query($sql);
 
     $adata=array();
-    //  print $sql;
+    //print $sql;
  while ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
-if($row['Purchase Order Normalized Quantity']==0)
-  $amount='';
-else
-$amount=money($row['Purchase Order Net Amount']);
+
 
 $unit_type=$row['Purchase Order Normalized Quantity Type'];
 if($unit_type=='ea'){
@@ -450,6 +472,11 @@ $dn_unit_type='piece';
 }
 
 
+if(!$row['Purchase Order Normalized Quantity']){
+$unit_type='';
+}
+
+
    $adata[]=array(
 		  'id'=>$row['Supplier Product Current Key'],
 		  'code'=>$row['Supplier Product Code'],
@@ -458,7 +485,7 @@ $dn_unit_type='piece';
 		  'quantity'=>$row['Purchase Order Normalized Quantity'],
 		  'quantity_static'=>number($row['Purchase Order Normalized Quantity']),
 		  'dn_quantity'=>$row['Supplier Delivery Note Quantity'],
-		  'amount'=>$amount,
+
 		  'unit_type'=>$unit_type,
 		  'dn_unit_type'=>$dn_unit_type,
 		  'tax_code'=>$row['Supplier Product Tax Code'],
@@ -853,7 +880,7 @@ function edit_new_supplier_dn(){
 	    
 	      'date'=>date('Y-m-d H:i:s')
 	      ,'Supplier Product Key'=>$product->data['Supplier Product Current Key']
-	      //      ,'line_number'=>$order->get_next_line_number()
+	      ,'line_number'=>$order->get_next_line_number()
 	      // ,'amount'=>$gross
 	      ,'qty'=>$quantity
 	      ,'qty_type'=>$quantity_type

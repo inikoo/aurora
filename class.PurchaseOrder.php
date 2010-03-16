@@ -342,7 +342,7 @@ function submit($data){
   
   mysql_query($sql);
 
-  $sql=sprintf("update `Purchase Order Transaction Fact` set  `Purchase Order Last Updated Date`=%s `Purchase Order Current Dispatching State`='Submitted'  where `Purchase Order Key`=%d",prepare_mysql($data['Purchase Order Submitted Date']),$this->id);
+  $sql=sprintf("update `Purchase Order Transaction Fact` set  `Purchase Order Last Updated Date`=%s ,`Purchase Order Current Dispatching State`='Submitted'  where `Purchase Order Key`=%d",prepare_mysql($data['Purchase Order Submitted Date']),$this->id);
    mysql_query($sql);
 
 

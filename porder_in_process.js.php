@@ -185,7 +185,7 @@ case('delete'):
 
 
 function delete_order() {
-    var request='ar_edit_porders.php?tipo=delete&id='+po_id;
+    var request='ar_edit_porders.php?tipo=delete_po='+po_id;
     // alert(request);
     YAHOO.util.Connect.asyncRequest('POST',request ,{
 	      
