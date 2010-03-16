@@ -218,14 +218,14 @@ case('In Process'):
   $smarty->assign('js_files',$js_files);
   $smarty->display('supplier_dn_in_process.tpl');
   break;
-case('Submitted'):
+case('Inputted'):
 
-  
-  $js_files[]='supplier_dn_submitted.js.php';
+  $_SESSION['state']['supplier_dn']['show_all']=false;
+  $js_files[]='supplier_dn_inputted.js.php';
   $js_files[]='js/edit_common.js';
   $smarty->assign('css_files',$css_files);
   $smarty->assign('js_files',$js_files);
-  $smarty->display('supplier_dn_submitted.tpl');
+  $smarty->display('supplier_dn_inputted.tpl');
 
 
   break;
