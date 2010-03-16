@@ -47,6 +47,9 @@ case('input_dn'):
 case('take_values_from_pos'):
   take_values_from_pos();
   break;
+case('take_values_from_dn'):
+  take_values_from_dn();
+  break;
 case('po_transactions_to_process'):
   po_transactions_to_process();
   break;
@@ -62,40 +65,49 @@ case('edit_new_porder'):
 case('edit_new_supplier_dn'):
   edit_new_supplier_dn();
   break;
-  
+  case('edit_inputted_supplier_dn'):
+  edit_inputted_supplier_dn();
+  break;
 default:
   $response=array('state'=>404,'resp'=>_('Operation not found'));
   echo json_encode($response);
 }
 
 function take_values_from_pos(){
- 
-
  if(isset( $_REQUEST['id']) and is_numeric( $_REQUEST['id'])){
    $supplier_dn_key=$_REQUEST['supplier_dn_key'];
    $_SESSION['state']['supplier_dn']['id']=$supplier_dn_key;
  }else
    $supplier_dn_key=$_SESSION['state']['supplier_dn']['id'];
- 
 
  $supplier_dn=New SupplierDeliveryNote($supplier_dn_key);
- $supplier_dn->take_values_from_pos();
- 
+ $supplier_dn->creating_take_values_from_pos();
  
  if (!$supplier_dn->error) {
         $response= array('state'=>200);
-
     } else {
         $response= array('state'=>400,'msg'=>$supplier_dn->msg);
-
     }
     echo json_encode($response);
-
-
-
-
-  
 }
+function take_values_from_dn(){
+ if(isset( $_REQUEST['id']) and is_numeric( $_REQUEST['id'])){
+   $supplier_dn_key=$_REQUEST['supplier_dn_key'];
+   $_SESSION['state']['supplier_dn']['id']=$supplier_dn_key;
+ }else
+   $supplier_dn_key=$_SESSION['state']['supplier_dn']['id'];
+
+ $supplier_dn=New SupplierDeliveryNote($supplier_dn_key);
+ $supplier_dn->counting_take_values_from_dn();
+ 
+ if (!$supplier_dn->error) {
+        $response= array('state'=>200);
+    } else {
+        $response= array('state'=>400,'msg'=>$supplier_dn->msg);
+    }
+    echo json_encode($response);
+}
+
 
 function delete_purchase_order(){
   if(isset( $_REQUEST['id']) and is_numeric( $_REQUEST['id'])){
@@ -941,7 +953,80 @@ function edit_new_supplier_dn(){
   
 }
 
+function edit_inputted_supplier_dn(){
+  
+  $supplier_delivery_note_key=$_SESSION['state']['supplier_dn']['id'];
+  $supplier_product_key=$_REQUEST['id'];
+  $quantity=$_REQUEST['newvalue'];
 
+  if(!isset($_REQUEST['qty_type']))
+    $quantity_type='ea';
+  else
+    $quantity_type=$_REQUEST['qty_type'];
+  if(is_numeric($quantity) and $quantity>=0){
+
+  $order=new SupplierDeliveryNote($supplier_delivery_note_key);
+  
+
+    $product=new SupplierProduct('key',$supplier_product_key);
+
+  // $gross=$quantity*$product->data['Supplier Product Cost'];
+
+
+  $data=array(
+	    
+	      'date'=>date('Y-m-d H:i:s')
+	      ,'Supplier Product Key'=>$product->data['Supplier Product Current Key']
+	      ,'line_number'=>$order->get_next_line_number()
+	      // ,'amount'=>$gross
+	      ,'qty'=>$quantity
+	      ,'qty_type'=>$quantity_type
+	      // ,'tax_code'=>$product->data['Supplier Product Tax Code']
+	      // ,'Current Dispatching State'=>'In Process'
+	      //,'Current Payment State'=>'Waiting Payment'
+	     
+	      );
+  
+
+  $transaction_data=$order->add_order_transaction($data);
+ 
+
+  $adata=array();
+  
+  // $order->update_item_totals_from_order_transactions();
+  // $order->update_totals_from_order_transactions();
+ 
+  //$order->update_charges();
+  //$order->get_original_totals();
+  // $order->update_totals();
+  //$order->update_totals_from_order_transactions();
+  
+
+  
+
+  $updated_data=array(
+		      //	      'goods'=>$order->get('Items Net Amount')
+		      //,'order_net'=>$order->get('Total Net Amount')
+		      //,'vat'=>$order->get('Total Tax Amount')
+		      //,'order_charges'=>$order->get('Charges Net Amount')
+		      // ,'order_credits'=>$order->get('Net Credited Amount')
+		      // ,'shipping'=>$order->get('Shipping Net Amount')
+		      // ,'total'=>$order->get('Total Amount')
+		      'distinct_products'=>$order->get('Number Items')
+		      );
+  
+
+
+
+
+
+
+  $response= array('state'=>200,'quantity'=>$transaction_data['qty'],'key'=>$_REQUEST['key'],'data'=>$updated_data);
+  }else
+    $response= array('state'=>200,'quantity'=>$_REQUEST['oldvalue'],'key'=>$_REQUEST['key']);
+ echo json_encode($response);  
+  
+}
 
 
 function input_supplier_delivery_note() {

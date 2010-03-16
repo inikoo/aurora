@@ -31,7 +31,7 @@ var myCellEdit = function (callback, newValue) {
     
     var request='tipo=edit_'+column.object+'&key=' + column.key + '&newvalue=' + encodeURIComponent(newValue) + '&oldvalue=' + encodeURIComponent(oldValue)+ myBuildUrl(datatable,record);
     alert(ar_file+'?'+request);
-
+    return;
     YAHOO.util.Connect.asyncRequest(
 				    'POST',
 				    ar_file, {
@@ -288,27 +288,19 @@ YAHOO.util.Event.addListener(window, "load", function() {
 				     
 				  ,{key:"code", label:"<?php echo _('Code')?>", width:60,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				 
-				  ,{key:"description", label:"<?php echo _('Description')?>",width:300, sortable:false,className:"aleft"}
-				  ,{key:"used_in", label:"<?php echo _('Used In')?>",width:200, sortable:false,className:"aleft"}
+				  ,{key:"description", label:"<?php echo _('Description')?>",width:320, sortable:false,className:"aleft"}
+				  ,{key:"used_in", label:"<?php echo _('Used In')?>",width:160, sortable:false,className:"aleft"}
 
 				  ,{key:"dn_quantity",label:"<?php echo _('DN Qty')?>", width:40,sortable:false,className:"aright"}
 				  ,{key:"dn_unit_type", label:"<?php echo _('DN U')?>",width:30,className:"aleft"}
 
 			
-				  ,{key:"recived_quantity",label:"<?php echo _('Rcvd Qty')?>", width:60,sortable:false,className:"aright",  editor: new YAHOO.widget.TextboxCellEditor({asyncSubmitter: myCellEdit}),object:'new_supplier_dn','action':'change_qty'}
-				  //				  ,{key:"dn_unit_type", label:"<?php echo _('DN U')?>",width:30,className:"aleft"}
+				  ,{key:"received_quantity",label:"<?php echo _('Rcvd Qty')?>", width:60,sortable:false,className:"aright",  editor: new YAHOO.widget.TextboxCellEditor({asyncSubmitter: myCellEdit}),object:'inputted_supplier_dn','action':'change_received_qty'}
+				  
+				  ,{key:"add",label:"", width:3,sortable:false,action:'add_received_object',object:'inputted_supplier_dn'}
+				  ,{key:"remove",label:"", width:3,sortable:false,action:'remove_received_object',object:'inputted_supplier_dn'}
+				  ,{key:"counted",label:"<?php echo _('Checked')?>", width:50,sortable:false,class:'aleft', action:'counted',object:'inputted_supplier_dn'}
 
-				  ,{key:"add",label:"", width:3,sortable:false,action:'add_object',object:'supplier_dn'}
-				  ,{key:"remove",label:"", width:3,sortable:false,action:'remove_object',object:'supplier_dn'}
-				  ,{key:"counted",label:"", width:3,sortable:false,action:'counted',object:'supplier_dn'}
-
-				 
-				 // ,{key:"amount", label:"<?php echo _('Net Cost')?>",width:50,className:"aright"}
-				  // ,{key:"qty_edit", label:"<?php echo _('Qty [U]')?>",width:50,className:"aright",hidden:true}
-				  // ,{key:"diff", label:"<?php echo _('&Delta;U')?>",width:40,className:"aright",hidden:true}
-				  //,{key:"damaged_edit", label:"<?php echo _('Damaged')?>",width:60,className:"aright",hidden:true}
-				  //,{key:"damaged", label:"<?php echo _('Damaged')?>",width:60,className:"aright"}
-				  //,{key:"usable", label:"<?php echo _('In O[U]')?>",width:55,className:"aright"}
 
 
 				  ];
@@ -331,7 +323,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 		    },
 			
 		    fields: [
-			     "id","code","description","quantity","amount","unit_type","add","remove","used_in","dn_quantity","dn_unit_type"
+			     "id","code","description","quantity","amount","unit_type","add","remove","used_in","dn_quantity","dn_unit_type","received_quantity","damaged_quantity","counted","add_damaged"
 			     ]};
 	    
 		this.table0 = new YAHOO.widget.DataTable(tableDivEL, ColumnDefs,
@@ -406,10 +398,10 @@ function submit_date_manually(){
 }
 
          
-function take_values_from_pos(){
+function take_values_from_dn(){
 
 	var ar_file='ar_edit_porders.php';
-	request='tipo=take_values_from_pos&dn_key='+dn_key;
+	request='tipo=take_values_from_dn&dn_key='+dn_key;
 	//	alert(ar_file+'?'+request)
 	YAHOO.util.Connect.asyncRequest(
 					'POST',
@@ -447,7 +439,7 @@ function take_values_from_pos(){
 
 function init(){
 
-    Event.addListener("take_values_from_pos", "click", take_values_from_pos);
+    Event.addListener("take_values_from_dn", "click", take_values_from_dn);
 
 
     YAHOO.util.Event.addListener('show_all', "click",change_show_all);

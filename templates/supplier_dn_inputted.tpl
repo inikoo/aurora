@@ -48,8 +48,8 @@
 <div id="the_table" class="data_table" style="margin:20px 0px;clear:both">
   <span class="clean_table_title">{t}Supplier Products{/t}</span>
   	<div id="table_type">
-	  <span id="take_values_from_pos" style="margin-left:20px;float:right;color:brown" class="table_type state_details">{t}Copy values from DN{/t}</span>
-	  <span id="take_values_from_pos" style="float:right;color:brown" class="table_type state_details">{t}Edit DN{/t}</span>
+	  <span id="take_values_from_dn" style="margin-left:20px;float:right;color:brown" class="table_type state_details">{t}Copy values from DN{/t}</span>
+	  <span id="edit_dn" style="float:right;color:brown" class="table_type state_details">{t}Edit DN{/t}</span>
 
 	</div>
 

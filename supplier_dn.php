@@ -220,7 +220,7 @@ case('In Process'):
   break;
 case('Inputted'):
 
-  $_SESSION['state']['supplier_dn']['show_all']=false;
+ 
   $js_files[]='supplier_dn_inputted.js.php';
   $js_files[]='js/edit_common.js';
   $smarty->assign('css_files',$css_files);
