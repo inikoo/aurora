@@ -511,7 +511,7 @@ function update_pos($raw_po_keys){
 }
 
 
-function take_values_from_pos(){
+function creating_take_values_from_pos(){
   $items=array();
   $supplier_product_keys=array();
   //print_r(preg_split('/\,/',$this->data['Supplier Delivery Note POs'] )) ;
@@ -570,6 +570,33 @@ function take_values_from_pos(){
   }
   
 }
+
+function counting_take_values_from_dn(){
+ 
+
+  $sql=sprintf("update  `Purchase Order Transaction Fact` set `Supplier Delivery Note Counted`='No',`Supplier Delivery Note Received Quantity`=`Supplier Delivery Note Quantity` where  `Supplier Delivery Note Key`=%d and `Supplier Delivery Note Counted`!='Yes' "
+		 ,$this->id
+		 );
+  //PRINT $sql;
+  mysql_query($sql);
+
+
+
+  
+}
+
+function update_transaction_counted($product_key,$value){
+
+  $sql=sprintf("update  `Purchase Order Transaction Fact` set  `Supplier Delivery Note Counted`=%s where `Supplier Delivery Note Key`=%d and `Supplier Product Key`=%d  "
+	       ,prepare_mysql($value)
+	       ,$this->id
+	       ,$product_key
+	       ); 
+  mysql_query($sql);
+  
+}
+
+
 }
     
 
