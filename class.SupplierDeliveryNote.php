@@ -407,6 +407,47 @@ function get($key=''){
    }
  }
 
+function input($data){
+
+
+  foreach($data as $key=>$value){
+    if(array_key_exists($key,$this->data)){
+      $this->data[$key]=$value;
+    }
+
+  }
+
+  $sql=sprintf("update `Supplier Delivery Note Dimension` set `Supplier Delivery Note Input Date`=%s,`Supplier Delivery Note Main Inputter Key`=%s,`Supplier Delivery Note Current State`='Inputted'   where `Supplier Delivery Note Key`=%d"
+	       ,prepare_mysql($data['Supplier Delivery Note Input Date'])
+	       ,prepare_mysql($data['Supplier Delivery Note Main Inputter Key'])
+	       ,$this->id);
+  
+  //print $sql;
+  mysql_query($sql);
+
+  $sql=sprintf("update `Purchase Order Transaction Fact` set  `Supplier Delivery Note Last Updated Date`=%s, `Supplier Delivery Note State`='Inputted'  where `Supplier Delivery Note Key`=%d"
+	       ,prepare_mysql($data['Supplier Delivery Note Input Date'])
+	       ,$this->id
+	       );
+   mysql_query($sql);
+   //print $sql;
+
+   $sql=sprintf("select `Supplier Product Key`,`Supplier Delivery Note Quantity` from `Purchase Order Transaction Fact` where `Supplier Delivery Note Key`=%d",$this->id);
+   $res=mysql_query($sql);
+   while($row=mysql_fetch_array($res)){
+     $supplier_product=new SupplierProduct('key',$row['Supplier Product Key']);
+     $products=$supplier_product->get_products();
+     foreach($products as $product){
+       $product=new Product('pid',$product['Product ID']);
+       $product->update_next_supplier_shippment();
+       
+     }
+     
+   }
+
+}
+
+
 
 function receive($data){
 

@@ -291,19 +291,16 @@ YAHOO.util.Event.addListener(window, "load", function() {
 				  ,{key:"description", label:"<?php echo _('Description')?>",width:300, sortable:false,className:"aleft"}
 				  ,{key:"used_in", label:"<?php echo _('Used In')?>",width:200, sortable:false,className:"aleft"}
 
-				  ,{key:"quantity",label:"<?php echo _('PO Qty')?>", width:40,sortable:false,className:"aright"}
-				  // ,{key:"stock", label:"<?php echo _('Stock O(U)')?>",width:90,className:"aright"}
-				  // ,{key:"stock_time", label:"<?php echo _('Stock Time')?>",width:75,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-				  // ,{key:"expected_qty_edit", label:"<?php echo _('Qty O[U]')?>",width:70,className:"aright"}
-				  // ,{key:"expected_qty", label:"<?php echo _('Qty O[U]')?>",width:100,className:"aright"}
-								  ,{key:"unit_type", label:"<?php echo _('PO U')?>",width:30,className:"aleft"}
-
-			
-				  ,{key:"dn_quantity",label:"<?php echo _('DN Qty')?>", width:40,sortable:false,className:"aright",  editor: new YAHOO.widget.TextboxCellEditor({asyncSubmitter: myCellEdit}),object:'new_supplier_dn','action':'change_qty'}
+				  ,{key:"dn_quantity",label:"<?php echo _('DN Qty')?>", width:40,sortable:false,className:"aright"}
 				  ,{key:"dn_unit_type", label:"<?php echo _('DN U')?>",width:30,className:"aleft"}
 
-				  ,{key:"add",label:"", width:3,sortable:false,action:'add_object',object:'new_order'}
-				  ,{key:"remove",label:"", width:3,sortable:false,action:'remove_object',object:'new_order'}
+			
+				  ,{key:"recived_quantity",label:"<?php echo _('Rcvd Qty')?>", width:60,sortable:false,className:"aright",  editor: new YAHOO.widget.TextboxCellEditor({asyncSubmitter: myCellEdit}),object:'new_supplier_dn','action':'change_qty'}
+				  //				  ,{key:"dn_unit_type", label:"<?php echo _('DN U')?>",width:30,className:"aleft"}
+
+				  ,{key:"add",label:"", width:3,sortable:false,action:'add_object',object:'supplier_dn'}
+				  ,{key:"remove",label:"", width:3,sortable:false,action:'remove_object',object:'supplier_dn'}
+				  ,{key:"counted",label:"", width:3,sortable:false,action:'counted',object:'supplier_dn'}
 
 				 
 				 // ,{key:"amount", label:"<?php echo _('Net Cost')?>",width:50,className:"aright"}
@@ -316,7 +313,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 				  ];
 		
-		this.dataSource0 = new YAHOO.util.DataSource("ar_edit_porders.php?tipo=dn_transactions_to_process&tableid="+tableid);
+		this.dataSource0 = new YAHOO.util.DataSource("ar_edit_porders.php?tipo=dn_transactions_to_count&tableid="+tableid);
 		
 		this.dataSource0.responseType = YAHOO.util.DataSource.TYPE_JSON;
 		this.dataSource0.connXhrMode = "queueRequests";
