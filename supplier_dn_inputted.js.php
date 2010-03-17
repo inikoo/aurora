@@ -30,13 +30,12 @@ var myCellEdit = function (callback, newValue) {
     ar_file='ar_edit_porders.php';
     
     var request='tipo=edit_'+column.object+'&key=' + column.key + '&newvalue=' + encodeURIComponent(newValue) + '&oldvalue=' + encodeURIComponent(oldValue)+ myBuildUrl(datatable,record);
-    alert(ar_file+'?'+request);
-    return;
+//    alert(ar_file+'?'+request);
     YAHOO.util.Connect.asyncRequest(
 				    'POST',
 				    ar_file, {
 					success:function(o) {
-					     alert(o.responseText);
+					     //alert(o.responseText);
 					    var r = YAHOO.lang.JSON.parse(o.responseText);
 					    if (r.state == 200) {
 						
@@ -87,7 +86,7 @@ var myonCellClick = function(oArgs) {
     var records=this.getRecordSet();
     //alert(records.getLength())
    
-    // alert(column.action);
+    //alert(column.action);
     //return;
 
     //alert(datatable)
@@ -96,23 +95,34 @@ var myonCellClick = function(oArgs) {
 		
     switch (column.action) {
    
+   break;
+   case('edit_object'):
     case('add_object'):
     case('remove_object'):
 	var data = record.getData();
 
 	if(column.action=='add_object')
-	    var new_qty=parseFloat(data['dn_quantity'])+1;
-	else
-	    var new_qty=parseFloat(data['dn_quantity'])-1;
+	    var new_qty=parseFloat(data['received_quantity'])+1;
+	    key='quantity';
+	else if(column.action=='remove_object')
+	    var new_qty=parseFloat(data['received_quantity'])-1;
+	    	    key='quantity';
+
+	else{
+		    key='counted';
+	var new_qty='Yes';
+	if(data['counted']=='<?php echo _('Yes')?>')
+	new_qty='No';
+	}
 
 	var ar_file='ar_edit_porders.php';
-	request='tipo=edit_new_supplier_dn&key=quantity&newvalue='+new_qty+'&oldvalue='+data['quantity']+'&id='+ data['id'];
+	request='tipo=edit_'+column.object+'&key='+key+'&newvalue='+new_qty+'&id='+ data['id'];
 	//	alert(ar_file+'?'+request)
 	YAHOO.util.Connect.asyncRequest(
 					'POST',
 					ar_file, {
 					    success:function(o) {
-						  alert(o.responseText);
+						//  alert(o.responseText);
 						var r = YAHOO.lang.JSON.parse(o.responseText);
 						if (r.state == 200) {
 						    for(x in r.data){
@@ -121,9 +131,9 @@ var myonCellClick = function(oArgs) {
 						    }
 
 					
+						    datatable.updateCell(record,'received_quantity',r.quantity);
+							datatable.updateCell(record,'counted',r.counted);
 
-						    datatable.updateCell(record,'dn_quantity',r.quantity);
-						  
 					
 						    //if(r.quantity==0 && !show_all){
 						    //	this.deleteRow(target);
@@ -297,9 +307,9 @@ YAHOO.util.Event.addListener(window, "load", function() {
 			
 				  ,{key:"received_quantity",label:"<?php echo _('Rcvd Qty')?>", width:60,sortable:false,className:"aright",  editor: new YAHOO.widget.TextboxCellEditor({asyncSubmitter: myCellEdit}),object:'inputted_supplier_dn','action':'change_received_qty'}
 				  
-				  ,{key:"add",label:"", width:3,sortable:false,action:'add_received_object',object:'inputted_supplier_dn'}
-				  ,{key:"remove",label:"", width:3,sortable:false,action:'remove_received_object',object:'inputted_supplier_dn'}
-				  ,{key:"counted",label:"<?php echo _('Checked')?>", width:50,sortable:false,class:'aleft', action:'counted',object:'inputted_supplier_dn'}
+				  ,{key:"add",label:"", width:3,sortable:false,action:'add_object',object:'inputted_supplier_dn'}
+				  ,{key:"remove",label:"", width:3,sortable:false,action:'remove_object',object:'inputted_supplier_dn'}
+				  ,{key:"counted",label:"<?php echo _('Checked')?>", width:50,sortable:false,class:'aleft', action:'edit_object',object:'inputted_supplier_dn'}
 
 
 

@@ -264,7 +264,24 @@ function get($key=''){
 
   }
 	
+function update_delivered_transaction($data){
 
+
+if($data ['Supplier Delivery Note Received Quantity']<0)
+    $data ['Supplier Delivery Note Received Quantity']=0;
+
+	$sql = sprintf ( "update`Purchase Order Transaction Fact` set  `Supplier Delivery Note Received Quantity`=%f,`Supplier Delivery Note Last Updated Date`=%s  where `Supplier Delivery Note Key`=%d and `Supplier Product Key`=%d "
+			  ,$data ['Supplier Delivery Note Received Quantity']
+			 ,prepare_mysql ( $data ['Supplier Delivery Note Last Updated Date'] )
+			 ,$this->id
+			 ,$data['Supplier Product Key']
+			 );
+		//print "$sql";
+	 mysql_query($sql);
+	 
+	     return array('qty'=>$data ['Supplier Delivery Note Received Quantity']);
+
+}
 	
  function get_next_line_number(){
     
@@ -586,6 +603,10 @@ function counting_take_values_from_dn(){
 }
 
 function update_transaction_counted($product_key,$value){
+
+$product_key=$data['Supplier Product Key'];
+$value=$data['Supplier Delivery Note Counted'];
+
 
   $sql=sprintf("update  `Purchase Order Transaction Fact` set  `Supplier Delivery Note Counted`=%s where `Supplier Delivery Note Key`=%d and `Supplier Product Key`=%d  "
 	       ,prepare_mysql($value)
