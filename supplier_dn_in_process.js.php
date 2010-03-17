@@ -12,7 +12,7 @@ var checkers= new Object;
 var active_editor='';
 var receiver_list;
 var checker_list;
-var submit_dialog;
+var received_dialog;
 var staff_dialog;
 var delete_dialog;
 
@@ -160,17 +160,7 @@ var myonCellClick = function(oArgs) {
 
 function close_dialog(tipo){
     switch(tipo){
-    case('submit'):
-	submit_dialog.hide();
-	Dom.get('tr_manual_submit_date').style.display="";
-	Dom.get('tbody_manual_submit_date').style.display="none";
-	Dom.get('date_type').value='auto';
-
-	break;
-    case('staff'):
-	staff_dialog.hide();
-
-	break;
+   
 case('delete'):
 	delete_dialog.hide();
 
@@ -205,52 +195,29 @@ function delete_order() {
 
 
 
-var select_staff=function(o,e){
 
-    var staff_id=o.getAttribute('staff_id');
-    var staff_name=o.innerHTML;
-    o.className='selected';
-	
-    Dom.get('submitted_by').value=staff_id;
-    Dom.get('submited_by_alias').innerHTML=staff_name;
-	
-    close_dialog('staff');
-
-	  
-	
-
-
-
-
-
-};
-
-var submit_order_save=function(o){
-    
-    
-
-
-	var request='ar_edit_porders.php?tipo=input_dn&id='+escape(dn_key);
-	alert(request)
-	YAHOO.util.Connect.asyncRequest('POST',request ,{
+var input_order_save=function(o){
+    var request='ar_edit_porders.php?tipo=input_dn&id='+escape(dn_key);
+    alert(request)
+    YAHOO.util.Connect.asyncRequest('POST',request ,{
 	    
-		success:function(o) {
+	    success:function(o) {
 		    alert(o.responseText);
 		    return;
 		    var r =  YAHOO.lang.JSON.parse(o.responseText);
 		    if (r.state == 200) {
-		    
+			
 			location.href='supplier_dn.php?id='+po_id;
 
-
+			
 
 		    }else
 			alert(r.msg);
-		}
+	    }
 	    });    
-    }
-
-
+};
+    
+    
 
 
 
@@ -402,11 +369,6 @@ function change_show_all(){
     datasource.sendRequest(request,table.onDataReturnInitializeTable, table); 
 }
 
-function submit_date_manually(){
-    Dom.get('tr_manual_submit_date').style.display="none";
-    Dom.get('tbody_manual_submit_date').style.display="";
-    Dom.get('date_type').value='manual';
-}
 
          
 function take_values_from_pos(){
@@ -452,40 +414,25 @@ function init(){
 
     Event.addListener("take_values_from_pos", "click", take_values_from_pos);
 
+ Event.addListener("save_inputted_dn", "click", input_order_save);
+
 
     YAHOO.util.Event.addListener('show_all', "click",change_show_all);
-
-    //    submit_dialog = new YAHOO.widget.Dialog("submit_dialog", {context:["submit_dn","tr","tl"]  ,visible : false,close:false,underlay: "none",draggable:false});
-    //submit_dialog.render();
-    staff_dialog = new YAHOO.widget.Dialog("staff_dialog", {context:["get_submiter","tr","tl"]  ,visible : false,close:false,underlay: "none",draggable:false});
-    staff_dialog.render();
- delete_dialog = new YAHOO.widget.Dialog("delete_dialog", {context:["delete_dn","tr","tl"]  ,visible : false,close:false,underlay: "none",draggable:false});
+    
+  
+    delete_dialog = new YAHOO.widget.Dialog("delete_dialog", {context:["delete_dn","tr","tl"]  ,visible : false,close:false,underlay: "none",draggable:false});
     delete_dialog.render();
-    Event.addListener("submit_dn", "click", submit_order_save);
-    //    Event.addListener("get_submiter", "click", staff_dialog.show,staff_dialog , true);
+   
     Event.addListener("delete_dn", "click", delete_dialog.show,delete_dialog , true);
 
-    var ids=Dom.getElementsByClassName('radio', 'span', 'submit_method_container');
-    YAHOO.util.Event.addListener(ids, "click", swap_radio,'submit_method');
-
+  
     var oACDS = new YAHOO.util.FunctionDataSource(mygetTerms);
     oACDS.queryMatchContains = true;
     var oAutoComp = new YAHOO.widget.AutoComplete("f_input0","f_container", oACDS);
     oAutoComp.minQueryLength = 0; 
 
   
-    cal1 = new YAHOO.widget.Calendar("cal1","cal1Container", { title:"<?php echo _('Choose a date')?>:", close:true } );
-    cal1.update=updateCal;
-    cal1.id='1';
-    cal1.render();
-    cal1.update();
-    cal1.selectEvent.subscribe(handleSelect, cal1, true); 
    
-
-
-    YAHOO.util.Event.addListener("calpop1", "click", cal1.show, cal1, true);
-   
-
 
 
 }

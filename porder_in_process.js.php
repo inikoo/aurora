@@ -230,29 +230,22 @@ var select_staff=function(o,e){
 
 
     var submit_order_save=function(o){
-    
 
 	var submit_date=Dom.get('v_calpop1').value;
 	var submit_time=Dom.get('v_time').value;
 	var estimated_date=Dom.get('v_calpop2').value;
 	var date_type=Dom.get('date_type').value;
 	var submit_method=Dom.get('submit_method').value;
-    
 	var staff_key=Dom.get('submitted_by').value;
-
-    
-
-
+	
 	var request='ar_edit_porders.php?tipo=submit&submit_method='+escape(submit_method)+'&date_type='+escape(date_type)+'&staff_key='+escape(staff_key)+'&submit_date='+escape(submit_date)+'&submit_time='+escape(submit_time)+'&estimated_date='+escape(estimated_date)+'&id='+escape(po_id);
 	alert(request)
 	YAHOO.util.Connect.asyncRequest('POST',request ,{
-	    
+		
 		success:function(o) {
 		    alert(o.responseText);
 		    var r =  YAHOO.lang.JSON.parse(o.responseText);
 		    if (r.state == 200) {
-		    
-		    			location.href='porder.php?id='+po_id;
 
 
 

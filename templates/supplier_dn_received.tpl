@@ -4,23 +4,26 @@
 
 <div class="order_actions" >
     <span class="state_details" onClick="location.href='supplier.php?id={$supplier->get('Supplier Key')}'" style="float:left;margin-top:2px" >{t}Supplier Page{/t}</span>
+      <span class="state_details" id="edit_dn" style="margin-left:20px">{t}Edit Delivery Note{/t}</span>
 
-  <span class="state_details" id="delete_po">{t}Delete{/t}</span>
-  <span class="state_details" id="submit_po" style="margin-left:20px">{t}Submit{/t}</span>
+      <span class="state_details" id="make_dn_as_checked" style="margin-left:20px">{t}Mark Delivery Note as Checked{/t}</span>
+
+
+ <DIV style="display:none">
+  <span class="state_details" id="set_damages_top" style="margin-left:20px">{t}Set Damages{/t}</span>
+  <span class="state_details" id="set_skus_top" style="margin-left:20px">{t}Set SKUs{/t}</span>
+  <span class="state_details" id="set_locations_top" style="margin-left:20px">{t}Set Locations{/t}</span>
+</DIV>
+
 </div>
 
 
 <div class="prodinfo" style="margin-top:2px;font-size:85%;border:1px solid #ddd;padding:10px">
-    
-    
-
-
-    
-    
     <div style="border:0px solid red;width:290px;float:right">
     <table  border=0  class="order_header"  style="margin-right:30px;float:right">
       <tr><td class="aright" style="padding-right:40px">{t}Created{/t}:</td><td>{$supplier_dn->get('Creation Date')}</td></tr>
-    
+      <tr><td class="aright" style="padding-right:40px">{t}Captured{/t}:</td><td>{$supplier_dn->get('Input Date')}</td></tr>
+
     </table>
     </div>
     
@@ -43,54 +46,34 @@
 </div>
 
 
-
+ <table style="float:left;margin:0 0 5px 0px ;padding:0"  class="options" >
+	<tr>
+	  <td  {if $view=='counting'}class="selected"{/if} id="counting" >{t}Check Delivery{/t}</td><td style="border:none;color:#000">&rarr;</td>
+	  <td {if $view=='set_damages'}class="selected"{/if}  id="set_damages"  >{t}Set Damages{/t}</td><td style="border:none;color:#000">&rarr;</td>
+	  <td {if $view=='set_skus'}class="selected"{/if}  id="set_skus"  >{t}Assing SKUs{/t}</td><td style="border:none;color:#000">&rarr;</td>
+	  <td {if $view=='set_locations'}class="selected"{/if}  id="set_locations"  >{t}Assing Locations{/t}</td>
+	</tr>
+      </table>
 
 
 <div id="the_table" class="data_table" style="margin:20px 0px;clear:both">
   <span class="clean_table_title">{t}Supplier Products{/t}</span>
   	<div id="table_type">
-	  <span id="table_type_list" style="float:right;color:brown" class="table_type state_details {if $table_type=='list'}state_details_selected{/if}">{t}Recomended Order{/t}</span>
-	  
+	  <span id="take_values_from_dn" style="margin-left:20px;float:right;color:brown" class="table_type state_details">{t}Copy values from DN{/t}</span>
+	  <span id="set_damages_bis" style="float:right;color:brown" class="table_type state_details">{t}Set Damaged{/t}</span>
+	  <span id="set_received" style="display:none;float:right;color:brown" class="table_type state_details">{t}Set Received{/t}</span>
 	</div>
 
-<div id="todelete" style="display:none">
-  <span onClick="swap_show_items(this)"  status="{$status}"  id="show_items" class="but {if !$show_all}selected{/if}  ">Items</span>
-  <span onClick="swap_show_all_products(this)" status="{$status}" {if $status!=0}style="display:none"{/if} id="show_all_products"  class="but {if $show_all}selected{/if}">Show all supplier products</span>
-  <span onClick="swap_show_all_products(this,1)" style="display:none" id="show_amend"  class="but">Amend order</span>
-  <span onClick="swap_item_found(this)" style="display:none" id="show_found"  class="but">Add Product Found in Delivery</span>
-  <span onClick="swap_new_item_found(this)" style="display:none" id="show_new_found"  class="but">Undentificated Product Found in Delivery</span>
-  </div>
+
 
   <div id="list_options0"> 
       <div style="clear:both;margin:0 0px;padding:0 20px ;border-bottom:1px solid #999"></div>
-      <span   style="float:right;margin-left:20px" class="state_details" state="{$show_all}"  id="show_all"  atitle="{if !$show_all}{t}Show only ordered{/t}{else}{t}Show all products available{/t}{/if}"  >{if $show_all}{t}Show only ordered{/t}{else}{t}Show all products available{/t}{/if}</span>     
+      
       
 
       
-      <table style="float:left;margin:0 0 5px 0px ;padding:0"  class="options" >
-	<tr><td  {if $view=='used_in'}class="selected"{/if} id="general" >{t}Used In{/t}</td>
-	  <td {if $view=='stock'}class="selected"{/if}  id="stock"  >{t}Stock{/t}</td>
-	  <td  {if $view=='sales'}class="selected"{/if}  id="sales"  >{t}Sales{/t}</td>
-	</tr>
-      </table>
-      <table id="period_options" style="float:left;margin:0 0 0 20px ;padding:0{if $view!='sales' };display:none{/if}"  class="options_mini" >
-	<tr>
-	  <td  {if $period=='all'}class="selected"{/if} period="all"  id="period_all" >{t}All{/t}</td>
-	  <td {if $period=='year'}class="selected"{/if}  period="year"  id="period_year"  >{t}1Yr{/t}</td>
-	  <td  {if $period=='quarter'}class="selected"{/if}  period="quarter"  id="period_quarter"  >{t}1Qtr{/t}</td>
-	  <td {if $period=='month'}class="selected"{/if}  period="month"  id="period_month"  >{t}1M{/t}</td>
-	  <td  {if $period=='week'}class="selected"{/if} period="week"  id="period_week"  >{t}1W{/t}</td>
-	</tr>
-      </table>
-      <table  id="avg_options" style="float:left;margin:0 0 0 20px ;padding:0{if $view!='sales' };display:none{/if}"  class="options_mini" >
-	<tr>
-	  <td {if $avg=='totals'}class="selected"{/if} avg="totals"  id="avg_totals" >{t}Totals{/t}</td>
-	  <td {if $avg=='month'}class="selected"{/if}  avg="month"  id="avg_month"  >{t}M AVG{/t}</td>
-	  <td {if $avg=='week'}class="selected"{/if}  avg="week"  id="avg_week"  >{t}W AVG{/t}</td>
-	  <td {if $avg=='month_eff'}class="selected"{/if} style="display:none" avg="month_eff"  id="avg_month_eff"  >{t}M EAVG{/t}</td>
-	  <td {if $avg=='week_eff'}class="selected"{/if} style="display:none"  avg="week_eff"  id="avg_week_eff"  >{t}W EAVG{/t}</td>
-	</tr>
-      </table>
+     
+     
     </div>
 
   
@@ -127,70 +110,49 @@
 </div>
 
 
-<div id="delete_dialog" style="padding:10px 15px">
-  <div id="delete_dialog_msg" class="dialog_msg" style="padding:0 0 10px 0 ">{t}Note: this action can not be undone{/t}.</div>
-  <table style="width:250px">
-   
-    <tr><td style="border-top:1px solid #ddd;text-align:center;padding:10px 0 0 0">
-	<span class="state_details" onClick="close_dialog('delete')"  >{t}Cancel{/t}</span>
-	<span style="margin-left:50px" class="state_details" onClick="delete_order()"  >{t}Delete Purchase Order{/t}</span>
-    
-    </td>
-</tr>
-  </table>
-</div>
 
 
-<div id="submit_dialog" style="padding:10px 15px">
-  <div id="submit_dialog_msg"></div>
+
+<div id="checked_dialog" style="padding:10px 15px">
+  <div id="checked_dialog_msg"></div>
   <table>
     <tr>
-      <td class="aright" style="width:100px">{t}Submit Method{/t}:</td><td>
-	<div class="options" style="margin:0px 0;width:200px" id="submit_method_container">
-	  <input type="hidden" value="{$submit_method_default}" ovalue="{$submit_method_default}" id="submit_method"  >
-	  {foreach from=$submit_method item=unit_tipo key=name} <span style="float:left;margin-bottom:5px;margin-right:5px" class="radio{if $unit_tipo.selected} selected{/if}"  id="radio_shelf_type_{$name}" radio_value="{$name}">{$unit_tipo.fname}</span> {/foreach}
-	</div>
+      <td class="aright" style="width:100px"></td><td>
+	<div class="options" style="margin:0px 0;width:200px" id="checked_method_container">
       </td>
     </tr>
     <input type="hidden" id="date_type" value="now"/>
-    <tr id="tr_manual_submit_date">
-      <td class="aright">{t}Submit Date{/t}:</td><td style="position:relative"><span style="position:absolute;left:200px" class="state_details" onClick="submit_date_manually()">{t}Modify{/t}</span>{t}Now{/t} </td>
-    </tr>
-    <tbody style="display:none" id="tbody_manual_submit_date">
-      <tr>
-	<td class="aright">{t}Submitted Date{/t}:</td><td><input id="v_calpop1" style="text-align:right;"  class="text" name="submites_date" type="text"  size="10" maxlength="10"  value="{$date}"    /><img   id="calpop1" style="cursor:pointer" src="art/icons/calendar_view_month.png" align="top" alt=""   />  <div id="cal1Container" style="position:absolute;display:none; z-index:2">	</td></tr>
-      <tr><td class="aright">{t}Time{/t}:</td><td ><input id="v_time"   style="text-align:right;" class="text" name="expected_date" type="text"  size="5" maxlength="5"  value="{$time}"   /><img   id="calpop1" style="cursor:pointer" src="art/icons/time.png" align="top" alt=""   /> 	</td></tr>
-      <tr><td>{t}Expected Date{/t}:</td><td><input id="v_calpop2" style="text-align:right;"  class="text" name="expected_date" type="text"  size="10" maxlength="10"     /><img   id="calpop2" style="cursor:pointer" src="art/icons/calendar_view_month.png" align="top" alt=""   /> <div id="cal2Container" style="display:none; z-index:2;position:absolute"></div>	</td></tr>
-    </tbody>
-    
-    <tr >
-        <input type="hidden" id="submitted_by" value="{$user_staff_key}"/>
+   
+        <input type="hidden" id="checked_by" value="{$user_staff_key}"/>
 
-      <td class="aright">{t}Submit By{/t}:</td><td style="position:relative"> <span id="get_submiter" class="state_details" style="position:absolute;left:200px">{t}Modify{/t}</span><span id="submited_by_alias">{$user}</span></td>
+      <td class="aright">{t}Checked By{/t}:</td><td style="position:relative"> <span id="get_checker" class="state_details" style="position:absolute;left:200px">{t}Modify{/t}</span><span id="checked_by_alias">{$user}</span></td>
     </tr>
 
     <tr><td colspan=2 style="border-top:1px solid #ddd;text-align:center;padding:10px 0 0 0">
-	<span class="state_details" onClick="close_dialog('submit')"  >Cancel</span>
-	<span style="margin-left:50px" class="state_details" onClick="submit_order_save(this)"  >Save</span>
+	<span class="state_details" onClick="close_dialog('checked')"  >Cancel</span>
+	<span style="margin-left:50px" class="state_details" onClick="checked_order_save(this)"  >Save</span>
     
     </td>
 </tr>
   </table>
 </div>
-
 
 <div id="staff_dialog" class="yuimenu staff_list"  >
   <div class="bd">
     <table border=1>
       {foreach from=$staff item=_staff name=foo}
       {if $_staff.mod==0}<tr>{/if}
-	<td staff_id="{$_staff.id}" id="receivers{$_staff.id}" onClick="select_staff(this,event)" >{$_staff.alias}</td>
+	<td staff_id="{$_staff.id}" id="chekers{$_staff.id}" onClick="select_staff(this,event)" >{$_staff.alias}</td>
 	{if $_staff.mod==$staff_cols}</tr>{/if}
       {/foreach}
     </table>
 <span class="state_details" style="float:right" onClick="close_dialog('staff')" >{t}Close{/t}</span>
   </div>
 </div>
+
+
+
+
 
 {include file='footer.tpl'}
 

@@ -266,23 +266,192 @@ function get($key=''){
 	
 function update_delivered_transaction($data){
 
-
-if($data ['Supplier Delivery Note Received Quantity']<0)
+  
+  if($data ['Supplier Delivery Note Received Quantity']<0)
     $data ['Supplier Delivery Note Received Quantity']=0;
 
-	$sql = sprintf ( "update`Purchase Order Transaction Fact` set  `Supplier Delivery Note Received Quantity`=%f,`Supplier Delivery Note Last Updated Date`=%s  where `Supplier Delivery Note Key`=%d and `Supplier Product Key`=%d "
-			  ,$data ['Supplier Delivery Note Received Quantity']
-			 ,prepare_mysql ( $data ['Supplier Delivery Note Last Updated Date'] )
-			 ,$this->id
-			 ,$data['Supplier Product Key']
-			 );
-		//print "$sql";
-	 mysql_query($sql);
-	 
-	     return array('qty'=>$data ['Supplier Delivery Note Received Quantity']);
+  $sql=sprintf("select `Supplier Delivery Note Quantity`,`Supplier Delivery Note Line` from `Purchase Order Transaction Fact` where `Supplier Delivery Note Key`=%d and `Supplier Product Key`=%d order by `Purchase Order Last Updated Date` desc "
+	       ,$this->id
+	       ,$data['Supplier Product Key']
+	       );
+  $res=mysql_query($sql);
+  $sum_quantity=0;
+  $sum_damaged_quantity=0;
 
+  $quantity_data=array();
+  
+  while($row=mysql_fetch_array($res)){
+    $quantity_data[$row['Supplier Delivery Note Line']]=$row['Supplier Delivery Note Quantity'];
+    $sum_quantity+=$row['Supplier Delivery Note Quantity'];
+    $sum_damaged_quantity+=$row['Supplier Delivery Note Damaged Quantity'];
+
+  }
+ 
+
+  if(count($quantity_data)==0){
+    $this->error=true;
+    $this->msg="Item do not found $sql";
+
+    return;
+  }else if(count($quantity_data)==1){
+    foreach($quantity_data as $key=>$value){
+      $quantity_data[$key]=$data ['Supplier Delivery Note Received Quantity'];
+    }
+  }else{
+    $resolved=false;
+    $difference=$data ['Supplier Delivery Note Received Quantity']-$sum_quantity;
+    
+    if($data ['Supplier Delivery Note Received Quantity']==0){
+      foreach($quantity_data as $key=>$value){
+	$quantity_data[$key]=0;
+      }
+      
+
+    }else if($difference==0){
+      $resolved=true;
+
+    }else if($difference<0){
+      
+      foreach($quantity_data as $key=>$value){
+	if($resolved)
+	  break;
+	if($value==$difference){
+	  $quantity_data[$key]=0;
+	  $resolved=true;
+	}
+      }
+      
+      foreach($quantity_data as $key=>$value){
+	if($resolved)
+	  break;
+	
+	if($value<$difference){
+	  $quantity_data[$key]=0;
+	  $difference=$value-$difference;
+	}else{
+	  $quantity_data[$key]=$value-$difference;
+	  $difference=0;
+	}
+	if($difference==0)
+	  $resolved=true;
+	
+      }
+      
+
+
+
+    }
+    
+    
+
+  }
+  
+  foreach($quantity_data as $line=>$received_quantity){
+    $sql = sprintf ("update`Purchase Order Transaction Fact` set  `Supplier Delivery Note Received Quantity`=%f,`Supplier Delivery Note Last Updated Date`=%s  where `Supplier Delivery Note Key`=%d and `Supplier Delivery Note Line`=%d"
+		    ,$received_quantity
+		    ,prepare_mysql ( $data ['Supplier Delivery Note Last Updated Date'] )
+		    ,$this->id
+		    ,$line
+		    );
+    //print "$sql"; 
+    mysql_query($sql);
+  }  
+  
+  $data=array(
+	      'Supplier Delivery Note Last Updated Date'=>$data ['Supplier Delivery Note Last Updated Date']
+	      ,'Supplier Product Key'=>$data['Supplier Product Key']
+	      ,'Supplier Delivery Note Damaged Quantity'=>$sum_damaged_quantity
+	      );
+  $damaged_data=$this->update_damaged_transaction($data);
+
+
+  return array('qty'=>$data ['Supplier Delivery Note Received Quantity'],'damaged_qty'=>$damaged_data['damaged_qty']);
+  
 }
 	
+
+function update_damaged_transaction($data){
+
+  
+  if($data ['Supplier Delivery Note Damaged Quantity']<0)
+    $data ['Supplier Delivery Note Damaged Quantity']=0;
+  
+  $sql=sprintf("select `Supplier Delivery Note Received Quantity`,`Supplier Delivery Note Line` from `Purchase Order Transaction Fact` where `Supplier Delivery Note Key`=%d and `Supplier Product Key`=%d order by `Purchase Order Last Updated Date` desc "
+	       ,$this->id
+	       ,$data['Supplier Product Key']
+	       );
+  $res=mysql_query($sql);
+  $sum_quantity=0;
+  $sum_damaged_quantity=0;
+
+  $quantity_data=array();
+  $damaged_quantity_data=array();
+
+  while($row=mysql_fetch_array($res)){
+    $quantity_data[$row['Supplier Delivery Note Line']]=$row['Supplier Delivery Note Received Quantity'];
+    $damaged_quantity_data[$row['Supplier Delivery Note Line']]=0;
+
+    $sum_quantity+=$row['Supplier Delivery Note Received Quantity'];
+  }
+ 
+
+  if($sum_quantity<$data ['Supplier Delivery Note Damaged Quantity'])
+    $data ['Supplier Delivery Note Damaged Quantity']=$sum_quantity;
+
+
+
+
+  if(count($quantity_data)==0){
+    $this->error=true;
+    $this->msg="Item do not found $sql";
+
+    return;
+  }else if(count($quantity_data)==1){
+    foreach($quantity_data as $key=>$value){
+      $damaged_quantity_data[$key]=$data ['Supplier Delivery Note Damaged Quantity'];
+    }
+  }else{
+    $damaged=$data ['Supplier Delivery Note Damaged Quantity'];
+    
+    foreach($quantity_data as $key=>$value){
+      
+      
+      if($value>=$damaged){
+	$damaged_quantity_data[$key]=$damaged;
+	$damaged=0;
+      }else{
+	$damaged_quantity_data[$key]=$value;
+	$damaged=$damaged-$value;
+      }
+	
+    }
+      
+
+
+
+  }
+    
+    
+
+
+  
+  foreach($damaged_quantity_data as $line=>$damaged_quantity){
+    $sql = sprintf ("update`Purchase Order Transaction Fact` set  `Supplier Delivery Note Damaged Quantity`=%f,`Supplier Delivery Note Last Updated Date`=%s  where `Supplier Delivery Note Key`=%d and `Supplier Delivery Note Line`=%d"
+		    ,$damaged_quantity
+		    ,prepare_mysql ( $data ['Supplier Delivery Note Last Updated Date'] )
+		    ,$this->id
+		    ,$line
+		    );
+    //print "$sql"; 
+    mysql_query($sql);
+  }  
+  
+
+  return array('qty'=>$sum_quantity,'damaged_qty'=>$data ['Supplier Delivery Note Damaged Quantity']);
+  
+}
+	
+
  function get_next_line_number(){
     
     $sql=sprintf("select MAX(`Supplier Delivery Note Line`) as max_line from `Purchase Order Transaction Fact` where `Supplier Delivery Note Key`=%d ",$this->id);
@@ -464,6 +633,128 @@ function input($data){
 
 }
 
+function mark_as_received($data){
+
+
+  foreach($data as $key=>$value){
+    if(array_key_exists($key,$this->data)){
+      $this->data[$key]=$value;
+    }
+
+  }
+
+  $sql=sprintf("update `Supplier Delivery Note Dimension` set `Supplier Delivery Note Received Date`=%s,`Supplier Delivery Note Main Receiver Key`=%s,`Supplier Delivery Note Current State`='Received'   where `Supplier Delivery Note Key`=%d"
+	       ,prepare_mysql($data['Supplier Delivery Note Received Date'])
+	       ,prepare_mysql($data['Supplier Delivery Note Main Receiver Key'])
+	       ,$this->id);
+  
+  print $sql;
+  mysql_query($sql);
+
+  $sql=sprintf("update `Purchase Order Transaction Fact` set  `Supplier Delivery Note Last Updated Date`=%s, `Supplier Delivery Note State`='Received'  where `Supplier Delivery Note Key`=%d"
+	       ,prepare_mysql($data['Supplier Delivery Note Received Date'])
+	       ,$this->id
+	       );
+   mysql_query($sql);
+   //print $sql;
+
+   $sql=sprintf("select `Supplier Product Key`,`Supplier Delivery Note Quantity` from `Purchase Order Transaction Fact` where `Supplier Delivery Note Key`=%d",$this->id);
+   $res=mysql_query($sql);
+   while($row=mysql_fetch_array($res)){
+     $supplier_product=new SupplierProduct('key',$row['Supplier Product Key']);
+     $products=$supplier_product->get_products();
+     foreach($products as $product){
+       $product=new Product('pid',$product['Product ID']);
+       $product->update_next_supplier_shippment();
+       
+     }
+     
+   }
+
+}
+
+
+
+function mark_as_checked($data){
+
+
+  foreach($data as $key=>$value){
+    if(array_key_exists($key,$this->data)){
+      $this->data[$key]=$value;
+    }
+
+  }
+
+  $sql=sprintf("update `Supplier Delivery Note Dimension` set `Supplier Delivery Note Input Date`=%s,`Supplier Delivery Note Main Checker Key`=%s,`Supplier Delivery Note Current State`='Checked'   where `Supplier Delivery Note Key`=%d"
+	       ,prepare_mysql($data['Supplier Delivery Note Checked Date'])
+	       ,prepare_mysql($data['Supplier Delivery Note Main Checker Key'])
+	       ,$this->id);
+  
+  //print $sql;
+  mysql_query($sql);
+
+  $sql=sprintf("update `Purchase Order Transaction Fact` set  `Supplier Delivery Note Last Updated Date`=%s, `Supplier Delivery Note State`='Checked'  where `Supplier Delivery Note Key`=%d"
+	       ,prepare_mysql($data['Supplier Delivery Note Checked Date'])
+	       ,$this->id
+	       );
+   mysql_query($sql);
+   //print $sql;
+
+   $sql=sprintf("select `Supplier Product Key`,`Supplier Delivery Note Quantity` from `Purchase Order Transaction Fact` where `Supplier Delivery Note Key`=%d",$this->id);
+   $res=mysql_query($sql);
+   while($row=mysql_fetch_array($res)){
+     $supplier_product=new SupplierProduct('key',$row['Supplier Product Key']);
+     $products=$supplier_product->get_products();
+     foreach($products as $product){
+       $product=new Product('pid',$product['Product ID']);
+       $product->update_next_supplier_shippment();
+       
+     }
+     
+   }
+
+}
+
+
+function mark_as_damages_checked($data){
+
+
+  foreach($data as $key=>$value){
+    if(array_key_exists($key,$this->data)){
+      $this->data[$key]=$value;
+    }
+
+  }
+
+  $sql=sprintf("update `Supplier Delivery Note Dimension` set `Supplier Delivery Note Input Date`=%s,`Supplier Delivery Note Main Inputter Key`=%s,`Supplier Delivery Note Current State`='Damages Checked'   where `Supplier Delivery Note Key`=%d"
+	       ,prepare_mysql($data['Supplier Delivery Note Damages Checked Date'])
+	       ,prepare_mysql($data['Supplier Delivery Note Main Damages Checker Key'])
+	       ,$this->id);
+  
+  //print $sql;
+  mysql_query($sql);
+
+  $sql=sprintf("update `Purchase Order Transaction Fact` set  `Supplier Delivery Note Last Updated Date`=%s, `Supplier Delivery Note State`='Damages Checked'  where `Supplier Delivery Note Key`=%d"
+	       ,prepare_mysql($data['Supplier Delivery Note Received Date'])
+	       ,$this->id
+	       );
+   mysql_query($sql);
+   //print $sql;
+
+   $sql=sprintf("select `Supplier Product Key`,`Supplier Delivery Note Quantity` from `Purchase Order Transaction Fact` where `Supplier Delivery Note Key`=%d",$this->id);
+   $res=mysql_query($sql);
+   while($row=mysql_fetch_array($res)){
+     $supplier_product=new SupplierProduct('key',$row['Supplier Product Key']);
+     $products=$supplier_product->get_products();
+     foreach($products as $product){
+       $product=new Product('pid',$product['Product ID']);
+       $product->update_next_supplier_shippment();
+       
+     }
+     
+   }
+
+}
 
 
 function receive($data){
@@ -602,19 +893,42 @@ function counting_take_values_from_dn(){
   
 }
 
-function update_transaction_counted($product_key,$value){
+function update_transaction_counted($data){
 
 $product_key=$data['Supplier Product Key'];
 $value=$data['Supplier Delivery Note Counted'];
+$date=$data['Supplier Delivery Note Counted'];
 
 
-  $sql=sprintf("update  `Purchase Order Transaction Fact` set  `Supplier Delivery Note Counted`=%s where `Supplier Delivery Note Key`=%d and `Supplier Product Key`=%d  "
-	       ,prepare_mysql($value)
+$sql=sprintf("select `Supplier Delivery Note Damaged Quantity`,`Supplier Delivery Note Received Quantity` from `Purchase Order Transaction Fact` where `Supplier Delivery Note Key`=%d and `Supplier Product Key`=%d  "
+	     ,$this->id
+	     ,$product_key
+	     );
+$res=mysql_query($sql);
+$total_quantity=0;
+$damaged_total_quantity=0;
+//print $sql;
+while($row=mysql_fetch_array($res)){
+  //  print $total_quantity.' '.$row['Supplier Delivery Note Received Quantity'];
+  $total_quantity+=$row['Supplier Delivery Note Received Quantity'];
+  $damaged_total_quantity+=$row['Supplier Delivery Note Damaged Quantity'];
+}
+
+if($damaged_total_quantity>0)
+  $value='Yes';
+
+$sql=sprintf("update  `Purchase Order Transaction Fact` set  `Supplier Delivery Note Counted`=%s ,`Supplier Delivery Note Last Updated Date`=%s where `Supplier Delivery Note Key`=%d and `Supplier Product Key`=%d  "
+	     ,prepare_mysql($value)
+	     ,prepare_mysql($date)
+
 	       ,$this->id
 	       ,$product_key
 	       ); 
   mysql_query($sql);
-  
+  // print $sql;
+
+  return array('qty'=>$total_quantity,'counted'=>$value,'damaged_qty'=>$damaged_total_quantity);
+
 }
 
 
