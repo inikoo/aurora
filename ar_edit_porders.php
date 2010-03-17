@@ -966,29 +966,16 @@ function edit_inputted_supplier_dn(){
   if(is_numeric($quantity) and $quantity>=0){
 
   $order=new SupplierDeliveryNote($supplier_delivery_note_key);
-  
-
-    $product=new SupplierProduct('key',$supplier_product_key);
-
-  // $gross=$quantity*$product->data['Supplier Product Cost'];
-
-
+   $product=new SupplierProduct('key',$supplier_product_key);
   $data=array(
 	    
-	      'date'=>date('Y-m-d H:i:s')
+	      'Supplier Delivery Note Last Updated Date'=>date('Y-m-d H:i:s')
 	      ,'Supplier Product Key'=>$product->data['Supplier Product Current Key']
-	      ,'line_number'=>$order->get_next_line_number()
-	      // ,'amount'=>$gross
-	      ,'qty'=>$quantity
-	      ,'qty_type'=>$quantity_type
-	      // ,'tax_code'=>$product->data['Supplier Product Tax Code']
-	      // ,'Current Dispatching State'=>'In Process'
-	      //,'Current Payment State'=>'Waiting Payment'
-	     
+	      ,'Supplier Delivery Note Received Quantity'=>$quantity
 	      );
-  
-
-  $transaction_data=$order->add_order_transaction($data);
+  	 
+//print_r( $data);
+  $transaction_data=$order->update_delivered_transaction($data);
  
 
   $adata=array();
@@ -1021,7 +1008,7 @@ function edit_inputted_supplier_dn(){
 
 
 
-  $response= array('state'=>200,'quantity'=>$transaction_data['qty'],'key'=>$_REQUEST['key'],'data'=>$updated_data);
+  $response= array('state'=>200,'quantity'=>$transaction_data['qty'],'counted'=>$transaction_data['counted'],'key'=>$_REQUEST['key'],'data'=>$updated_data);
   }else
     $response= array('state'=>200,'quantity'=>$_REQUEST['oldvalue'],'key'=>$_REQUEST['key']);
  echo json_encode($response);  

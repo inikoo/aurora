@@ -164,6 +164,8 @@ var highlightEditableCell = function(oArgs) {
 	break;
     case('add_object'):
     case('remove_object'):
+        case('edit_object'):
+
 	this.highlightCell(target);
 	break;
     default:
@@ -183,6 +185,7 @@ var unhighlightEditableCell = function(oArgs) {
 	this.unhighlightRow(target);
     case('add_object'):
     case('remove_object'):
+    case('edit_object'):
 	this.unhighlightCell(target);
 	break;
     default:
