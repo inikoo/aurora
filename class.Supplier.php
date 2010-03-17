@@ -1213,35 +1213,33 @@ class supplier extends DB_Table{
 
   function normalize_purchase_orders($po_keys=false){
   
-    if(!is_array($po_keys))
-  
+    if(!is_array($po_keys)){
       $sql=sprintf("select `Purchase Order Key` from `Purchase Order Dimension` where `Purchase Order Supplier Key`=%d and `Purchase Order Current Dispatch State` in ('In Process','Submitted')  ",$this->id);
-    $res=mysql_query($sql);
-    $po_keys=array();
-    while($row=mysql_fetch_array($res)){
-      $po_keys[$row['Purchase Order Key']]=$row['Purchase Order Key'];
-
-      
-
+      $res=mysql_query($sql);
+      $po_keys=array();
+      while($row=mysql_fetch_array($res)){
+	$po_keys[$row['Purchase Order Key']]=$row['Purchase Order Key'];
+      }
     }
+
 
     if(count($po_keys)==1){
       $sql=sprintf("update  `Purchase Order Transaction Fact` set `Purchase Order Normalized Quantity`=`Purchase Order Quantity` ,`Purchase Order Normalized Quantity Type`=`Purchase Order Quantity Type` where  `Purchase Order Key`=%d",
 		   join('',$po_keys)
 		   
-		 );
+		   );
       mysql_query($sql);
       //print $sql;
       return;
     }
-
+    $supplier_product_keys=array();
     foreach($po_keys as $po_key){
       $sql=sprintf("select `Purchase Order Line`,`Supplier Product Key`,`Purchase Order Quantity`,`Purchase Order Quantity Type` from `Purchase Order Transaction Fact` where `Purchase Order Key`=%d and `Supplier Key`=%d "
-		 
+		   
 		   ,$po_key
 		   ,$this->id
 		   );
-
+      
       $res=mysql_query($sql);
       while($row=mysql_fetch_array($res)){
 

@@ -6,13 +6,15 @@ var dn_key='<?php echo $_SESSION['state']['supplier_dn']['id'] ?>'
 var supplier_id='<?php echo$_SESSION['state']['supplier']['id']?>';
 var show_all='<?php echo $_SESSION['state']['porder']['show_all']?>';
 
+var receivers = new Object;
+var checkers= new Object;
 
 var active_editor='';
 var receiver_list;
 var checker_list;
-var received_dialog;
+var submit_dialog;
 var staff_dialog;
-
+var delete_dialog;
 
 
 
@@ -169,10 +171,10 @@ var myonCellClick = function(oArgs) {
 
 function close_dialog(tipo){
     switch(tipo){
- case('received'):
-	received_dialog.hide();
-	Dom.get('tr_manual_received_date').style.display="";
-	Dom.get('tbody_manual_received_date').style.display="none";
+    case('submit'):
+	submit_dialog.hide();
+	Dom.get('tr_manual_submit_date').style.display="";
+	Dom.get('tbody_manual_submit_date').style.display="none";
 	Dom.get('date_type').value='auto';
 
 	break;
@@ -214,6 +216,25 @@ function delete_order() {
 
 
 
+var select_staff=function(o,e){
+
+    var staff_id=o.getAttribute('staff_id');
+    var staff_name=o.innerHTML;
+    o.className='selected';
+	
+    Dom.get('submitted_by').value=staff_id;
+    Dom.get('submited_by_alias').innerHTML=staff_name;
+	
+    close_dialog('staff');
+
+	  
+	
+
+
+
+
+
+};
 
 var submit_order_save=function(o){
     
@@ -285,10 +306,11 @@ YAHOO.util.Event.addListener(window, "load", function() {
 				  ,{key:"dn_unit_type", label:"<?php echo _('DN U')?>",width:30,className:"aleft"}
 
 			
+				  ,{key:"received_quantity",label:"<?php echo _('Rcvd Qty')?>", width:60,sortable:false,className:"aright",  editor: new YAHOO.widget.TextboxCellEditor({asyncSubmitter: myCellEdit}),object:'inputted_supplier_dn','action':'change_received_qty'}
 				  
-				  ,{key:"add",label:"", width:3,hidden:true,sortable:false,action:'add_object',object:'new_supplier_dn'}
-				  ,{key:"remove",label:"", width:3,hidden:true,sortable:false,action:'remove_object',object:'new_supplier_dn'}
-
+				  ,{key:"add",label:"", width:3,sortable:false,action:'add_object',object:'inputted_supplier_dn'}
+				  ,{key:"remove",label:"", width:3,sortable:false,action:'remove_object',object:'inputted_supplier_dn'}
+				  ,{key:"counted",label:"<?php echo _('Checked')?>", width:50,sortable:false,class:'aleft', action:'edit_object',object:'inputted_supplier_dn'}
 
 
 
@@ -380,56 +402,13 @@ function change_show_all(){
     datasource.sendRequest(request,table.onDataReturnInitializeTable, table); 
 }
 
-
 function submit_date_manually(){
-    Dom.get('tr_manual_received_date').style.display="none";
-    Dom.get('tbody_manual_received_date').style.display="";
+    Dom.get('tr_manual_submit_date').style.display="none";
+    Dom.get('tbody_manual_submit_date').style.display="";
     Dom.get('date_type').value='manual';
 }
 
-var select_staff=function(o,e){
-
-    var staff_id=o.getAttribute('staff_id');
-    var staff_name=o.innerHTML;
-    o.className='selected';
-	
-    Dom.get('received_by').value=staff_id;
-    Dom.get('received_by_alias').innerHTML=staff_name;
-	
-    close_dialog('staff');
-};
-
-  
-var received_order_save=function(o){
-
-    var received_date=Dom.get('v_calpop1').value;
-    var received_time=Dom.get('v_time').value;
-    var staff_key=Dom.get('received_by').value;
-    var date_type=Dom.get('date_type').value;
-
-
-    var request='ar_edit_porders.php?tipo=receive_dn&id='+escape(dn_key)+'&date_type='+escape(date_type)+'&staff_key='+escape(staff_key)+'&received_date='+escape(received_date)+'&receivedpur_time='+escape(received_time);
-    // alert(request)
-    //return;
-    YAHOO.util.Connect.asyncRequest('POST',request ,{
-	    
-	    success:function(o) {
-		    alert(o.responseText);
-		    //	    return;
-		    var r =  YAHOO.lang.JSON.parse(o.responseText);
-		    if (r.state == 200) {
-			
-			location.href='supplier_dn.php?id='+dn_key;
-
-			
-
-		    }else
-			alert(r.msg);
-	    }
-	    });    
-};    
-
-     
+         
 function take_values_from_dn(){
 
 	var ar_file='ar_edit_porders.php';
@@ -469,42 +448,44 @@ function take_values_from_dn(){
 
 }
 
-
-
-function set_damages(){
-  var request='ar_edit_porders.php?tipo=mark_dn_as_received&id='+dn_key;
-  YAHOO.util.Connect.asyncRequest('POST',request ,{
-	  success:function(o) {
-	      var r =  YAHOO.lang.JSON.parse(o.responseText);
-	      if (r.state == 200) {
-		  location.href='supplier.php?id='+supplier_id;
-	      }else{
-		  Dom.get('delete_dialog_msg').innerHTNML=r.msg;
-	      }
-	  }
-      });    
-}
-
 function init(){
-    
- 
-  
 
-  received_dialog = new YAHOO.widget.Dialog("received_dialog", {context:["receive_dn","tr","tl"]  ,visible : false,close:false,underlay: "none",draggable:false});
-    received_dialog.render();
+    Event.addListener("take_values_from_dn", "click", take_values_from_dn);
 
-    
-    staff_dialog = new YAHOO.widget.Dialog("staff_dialog", {context:["get_receiver","tr","tl"]  ,visible : false,close:false,underlay: "none",draggable:false});
+
+    YAHOO.util.Event.addListener('show_all', "click",change_show_all);
+
+    //    submit_dialog = new YAHOO.widget.Dialog("submit_dialog", {context:["submit_dn","tr","tl"]  ,visible : false,close:false,underlay: "none",draggable:false});
+    //submit_dialog.render();
+    staff_dialog = new YAHOO.widget.Dialog("staff_dialog", {context:["get_submiter","tr","tl"]  ,visible : false,close:false,underlay: "none",draggable:false});
     staff_dialog.render();
-    
-    Event.addListener("receive_dn", "click", received_dialog.show,received_dialog , true);
-    Event.addListener("get_receiver", "click", staff_dialog.show,staff_dialog , true);
+ delete_dialog = new YAHOO.widget.Dialog("delete_dialog", {context:["delete_dn","tr","tl"]  ,visible : false,close:false,underlay: "none",draggable:false});
+    delete_dialog.render();
+    Event.addListener("submit_dn", "click", submit_order_save);
+    //    Event.addListener("get_submiter", "click", staff_dialog.show,staff_dialog , true);
+    Event.addListener("delete_dn", "click", delete_dialog.show,delete_dialog , true);
 
-    ids=['set_damages','set_damages_top'];
-    YAHOO.util.Event.addListener(ids, "click",set_damages)
+    var ids=Dom.getElementsByClassName('radio', 'span', 'submit_method_container');
+    YAHOO.util.Event.addListener(ids, "click", swap_radio,'submit_method');
 
-    
- 
+    var oACDS = new YAHOO.util.FunctionDataSource(mygetTerms);
+    oACDS.queryMatchContains = true;
+    var oAutoComp = new YAHOO.widget.AutoComplete("f_input0","f_container", oACDS);
+    oAutoComp.minQueryLength = 0; 
+
+  
+    cal1 = new YAHOO.widget.Calendar("cal1","cal1Container", { title:"<?php echo _('Choose a date')?>:", close:true } );
+    cal1.update=updateCal;
+    cal1.id='1';
+    cal1.render();
+    cal1.update();
+    cal1.selectEvent.subscribe(handleSelect, cal1, true); 
+   
+
+
+    YAHOO.util.Event.addListener("calpop1", "click", cal1.show, cal1, true);
+   
+
 
 
 }

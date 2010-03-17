@@ -40,6 +40,10 @@ case('submit'):
   require_once 'class.Staff.php';
   submit_purchase_order();
   break;
+case('receive_dn'):
+  require_once 'class.Staff.php';
+  receive_supplier_delivery_note();
+  break;
 case('input_dn'):
   require_once 'class.Staff.php';
   input_supplier_delivery_note();
@@ -47,9 +51,13 @@ case('input_dn'):
 case('take_values_from_pos'):
   take_values_from_pos();
   break;
+case('set_dn_as_checked'):
+   set_supplier_delivery_note_as_checked();
+  break;
 case('take_values_from_dn'):
   take_values_from_dn();
   break;
+
 case('po_transactions_to_process'):
   po_transactions_to_process();
   break;
@@ -957,62 +965,119 @@ function edit_inputted_supplier_dn(){
   
   $supplier_delivery_note_key=$_SESSION['state']['supplier_dn']['id'];
   $supplier_product_key=$_REQUEST['id'];
-  $quantity=$_REQUEST['newvalue'];
-
-  if(!isset($_REQUEST['qty_type']))
-    $quantity_type='ea';
-  else
-    $quantity_type=$_REQUEST['qty_type'];
-  if(is_numeric($quantity) and $quantity>=0){
-
   $order=new SupplierDeliveryNote($supplier_delivery_note_key);
-   $product=new SupplierProduct('key',$supplier_product_key);
-  $data=array(
-	    
+  $product=new SupplierProduct('key',$supplier_product_key);
+  if($_REQUEST['key']=='quantity' or $_REQUEST['key']=='received_quantity'){
+  
+  $quantity=$_REQUEST['newvalue'];
+  
+  if(is_numeric($quantity) and $quantity>=0){
+    
+  
+    $data=array(
+		
 	      'Supplier Delivery Note Last Updated Date'=>date('Y-m-d H:i:s')
 	      ,'Supplier Product Key'=>$product->data['Supplier Product Current Key']
 	      ,'Supplier Delivery Note Received Quantity'=>$quantity
 	      );
-  	 
-//print_r( $data);
-  $transaction_data=$order->update_delivered_transaction($data);
- 
+    
+    //print_r( $data);
+    $transaction_data=$order->update_delivered_transaction($data);
+    $transaction_data['counted']='Yes';
+    $updated_data=array(
+			'distinct_products'=>$order->get('Number Items')
+			);
 
-  $adata=array();
+
+     $data=array(
+	    
+		'Supplier Delivery Note Last Updated Date'=>date('Y-m-d H:i:s')
+		,'Supplier Product Key'=>$product->data['Supplier Product Current Key']
+		,'Supplier Delivery Note Counted'=>$transaction_data['counted']
+		);
+    
+    $order->update_transaction_counted($data);
+
+
+    if($order->error){
+      $response= array('state'=>400,'msg'=>$order->msg);
+
+    }else{
+      $response= array('state'=>200,'quantity'=>$transaction_data['qty'],'counted'=>$transaction_data['counted'],'key'=>$_REQUEST['key'],'data'=>$updated_data);
+    }   
+    echo json_encode($response);  
+
+  }else{
+    $response= array('state'=>200,'quantity'=>$_REQUEST['old_quantity'],'counted'=>$_REQUEST['old_counted'],'key'=>$_REQUEST['key']);
+    echo json_encode($response);  
+  }
+
+
+
+  }else if($_REQUEST['key']=='counted'){
+    $data=array(
+	    
+		'Supplier Delivery Note Last Updated Date'=>date('Y-m-d H:i:s')
+		,'Supplier Product Key'=>$product->data['Supplier Product Current Key']
+		,'Supplier Delivery Note Counted'=>$_REQUEST['newvalue']
+		);
+    
+    $transaction_data=$order->update_transaction_counted($data);
+    
+    $updated_data=array();
+    // print_r($transaction_data);
+    $response= array('state'=>200,'quantity'=>$transaction_data['qty'],'damaged_quantity'=>$transaction_data['damaged_qty'],'counted'=>$transaction_data['counted'],'key'=>$_REQUEST['key'],'data'=>$updated_data);
+    echo json_encode($response);  
+  }if( $_REQUEST['key']=='damaged_quantity'){
   
-  // $order->update_item_totals_from_order_transactions();
-  // $order->update_totals_from_order_transactions();
- 
-  //$order->update_charges();
-  //$order->get_original_totals();
-  // $order->update_totals();
-  //$order->update_totals_from_order_transactions();
+  $quantity=$_REQUEST['newvalue'];
   
-
+  if(is_numeric($quantity) and $quantity>=0){
+    
   
-
-  $updated_data=array(
-		      //	      'goods'=>$order->get('Items Net Amount')
-		      //,'order_net'=>$order->get('Total Net Amount')
-		      //,'vat'=>$order->get('Total Tax Amount')
-		      //,'order_charges'=>$order->get('Charges Net Amount')
-		      // ,'order_credits'=>$order->get('Net Credited Amount')
-		      // ,'shipping'=>$order->get('Shipping Net Amount')
-		      // ,'total'=>$order->get('Total Amount')
-		      'distinct_products'=>$order->get('Number Items')
-		      );
-  
-
-
-
+    $data=array(
+		
+	      'Supplier Delivery Note Last Updated Date'=>date('Y-m-d H:i:s')
+	      ,'Supplier Product Key'=>$product->data['Supplier Product Current Key']
+	      ,'Supplier Delivery Note Damaged Quantity'=>$quantity
+	      );
+    
+    //print_r( $data);
+    $transaction_data=$order->update_damaged_transaction($data);
+    $transaction_data['counted']='Yes';
+    $updated_data=array(
+			'distinct_products'=>$order->get('Number Items')
+			);
 
 
+     $data=array(
+	    
+		'Supplier Delivery Note Last Updated Date'=>date('Y-m-d H:i:s')
+		,'Supplier Product Key'=>$product->data['Supplier Product Current Key']
+		,'Supplier Delivery Note Counted'=>'Yes'
+		);
+    
+    $order->update_transaction_counted($data);
 
-  $response= array('state'=>200,'quantity'=>$transaction_data['qty'],'counted'=>$transaction_data['counted'],'key'=>$_REQUEST['key'],'data'=>$updated_data);
-  }else
-    $response= array('state'=>200,'quantity'=>$_REQUEST['oldvalue'],'key'=>$_REQUEST['key']);
- echo json_encode($response);  
-  
+
+    if($order->error){
+      $response= array('state'=>400,'msg'=>$order->msg);
+
+    }else{
+      $response= array('state'=>200,'quantity'=>$transaction_data['qty'],'damaged_quantity'=>$transaction_data['damaged_qty'],'counted'=>$transaction_data['counted'],'key'=>$_REQUEST['key'],'data'=>$updated_data);
+    }   
+    echo json_encode($response);  
+
+  }else{
+    $response= array('state'=>200,'quantity'=>$_REQUEST['old_quantity'],'counted'=>$_REQUEST['old_counted'],'damaged_quantity'=>$_REQUEST['old_damaged_quantity'],'key'=>$_REQUEST['key']);
+    echo json_encode($response);  
+  }
+
+
+
+  }
+
+
 }
 
 
@@ -1260,9 +1325,10 @@ if($dn_unit_type=='ea'){
 $dn_unit_type='piece';
 }
 
-
-
-
+if($row['Supplier Delivery Note Damaged Quantity']!=0)
+  $notes='('.-1.*$row['Supplier Delivery Note Damaged Quantity'].')';
+  else
+    $notes='';
    $adata[]=array(
 		  'id'=>$row['Supplier Product Current Key'],
 		  'code'=>$row['Supplier Product Code'],
@@ -1270,6 +1336,7 @@ $dn_unit_type='piece';
 		'used_in'=>$row['Supplier Product XHTML Used In'],
 		  'received_quantity'=>$row['Supplier Delivery Note Received Quantity'],
 		  'damaged_quantity'=>$row['Supplier Delivery Note Damaged Quantity'],
+		  'notes_damaged'=>$notes,
 
 		  'counted'=>$row['Supplier Delivery Note Counted'],
 
@@ -1278,6 +1345,7 @@ $dn_unit_type='piece';
 		  
 		  'dn_unit_type'=>$dn_unit_type,
 		  'add_damaged'=>'+',
+		  'remove_damaged'=>'-',
 
 		  'add'=>'+',
 		  'remove'=>'-',
@@ -1304,7 +1372,110 @@ $dn_unit_type='piece';
                    );
     echo json_encode($response);
 
+}
 
+    function receive_supplier_delivery_note() {
+    global $user;
+    if (isset( $_REQUEST['id']) and is_numeric( $_REQUEST['id'])) {
+        $supplier_dn_key=$_REQUEST['id'];
+        $_SESSION['state']['supplier_dn']['id']=$supplier_dn_key;
+    } else
+        $supplier_dn_key=$_SESSION['state']['supplier_dn']['id'];
+
+    $supplier_dn=new SupplierDeliveryNote($supplier_dn_key);
+
+    $data=array(
+              'Supplier Delivery Note Received Date'=>date('Y-m-d H:i:s'),
+              'Supplier Delivery Note Main Receiver Key'=>$user->data['User Parent Key'],
+		);
+    
+    if (isset($_REQUEST['date_type']) and $_REQUEST['date_type']=='manual' ) {
+        if (isset($_REQUEST['received_date']) and  isset($_REQUEST['received_time']) ) {
+            $_date=$_REQUEST['received_date'].' '.$_REQUEST['received_time'];
+            $date_data=prepare_mysql_datetime($_date);
+            if (!$date_data['ok']) {
+                $response= array('state'=>400,'msg'=>_('Wrong date/time'));
+                echo json_encode($response);
+                return;
+            }
+            $data['Supplier Delivery Note Received Date']=$date_data['mysql_date'];
+        }
+    }
+
+
+    
+    if (isset($_REQUEST['staff_key'])  ) {
+      
+      $staff=new Staff($_REQUEST['staff_key']);
+      if(!$staff->id){
+	$response= array('state'=>400,'msg'=>'Wrong receiver');
+	echo json_encode($response);
+	return;
+      }
+      
+      $data['Supplier Delivery Note Main Receiver Key']=$staff->id;
+      
+    
+    
+    }
+    
+    
+    $supplier_dn->mark_as_received($data);
+    if (!$supplier_dn->error) {
+        $response= array('state'=>200);
+
+    } else {
+        $response= array('state'=>400,'msg'=>$supplier_dn->msg);
+
+    }
+    echo json_encode($response);
+}
+
+
+
+function set_supplier_delivery_note_as_checked() {
+    global $user;
+    if (isset( $_REQUEST['id']) and is_numeric( $_REQUEST['id'])) {
+        $supplier_dn_key=$_REQUEST['id'];
+        $_SESSION['state']['supplier_dn']['id']=$supplier_dn_key;
+    } else
+        $supplier_dn_key=$_SESSION['state']['supplier_dn']['id'];
+
+    $supplier_dn=new SupplierDeliveryNote($supplier_dn_key);
+
+    $data=array(
+              'Supplier Delivery Note Checked Date'=>date('Y-m-d H:i:s'),
+              'Supplier Delivery Note Main Checker Key'=>$user->data['User Parent Key'],
+		);
+    
+   
+
+    
+    if (isset($_REQUEST['staff_key'])  ) {
+      
+      $staff=new Staff($_REQUEST['staff_key']);
+      if(!$staff->id){
+	$response= array('state'=>400,'msg'=>'Wrong checker');
+	echo json_encode($response);
+	return;
+      }
+      
+      $data['Supplier Delivery Note Main Checker Key']=$staff->id;
+      
+    
+    
+    }
+    
+    
+    $supplier_dn->mark_as_checked($data);
+    if (!$supplier_dn->error) {
+        $response= array('state'=>200);
+
+    } else {
+        $response= array('state'=>400,'msg'=>$supplier_dn->msg);
+
+    }
+    echo json_encode($response);
 }
 
 

@@ -7,7 +7,7 @@
 
   <span class="state_details" id="cancel_po">{t}Cancel{/t}</span>
   <span class="state_details" id="invoice_po" style="margin-left:20px">{t}Match to Invoice{/t}</span>
-  <span class="state_details" id="dn_po" style="margin-left:20px">{t}Match to Deliver Note{/t}</span>
+  <span class="state_details" id="dn_po" style="margin-left:20px">{t}Match to Delivery Note{/t}</span>
 
 </div>
 

@@ -4,12 +4,16 @@
 
 <div class="order_actions" >
     <span class="state_details" onClick="location.href='supplier.php?id={$supplier->get('Supplier Key')}'" style="float:left;margin-top:2px" >{t}Supplier Page{/t}</span>
+  <span class="state_details" id="edit_dn_top" style="margin-left:20px">{t}Edit Delivery Note{/t}</span>
 
-  <span class="state_details" id="edit_dn_top">{t}Edit Delivery Note{/t}</span>
+      <span class="state_details" id="receive_dn" style="margin-left:20px">{t}Receive Delivery Note{/t}</span>
+
+
+ <DIV style="display:none">
   <span class="state_details" id="set_damages_top" style="margin-left:20px">{t}Set Damages{/t}</span>
   <span class="state_details" id="set_skus_top" style="margin-left:20px">{t}Set SKUs{/t}</span>
   <span class="state_details" id="set_locations_top" style="margin-left:20px">{t}Set Locations{/t}</span>
-
+</DIV>
 
 </div>
 
@@ -48,8 +52,7 @@
 <div id="the_table" class="data_table" style="margin:20px 0px;clear:both">
   <span class="clean_table_title">{t}Supplier Products{/t}</span>
   	<div id="table_type">
-	  <span id="take_values_from_dn" style="margin-left:20px;float:right;color:brown" class="table_type state_details">{t}Copy values from DN{/t}</span>
-	  <span id="edit_dn" style="float:right;color:brown" class="table_type state_details">{t}Edit DN{/t}</span>
+
 
 	</div>
 
@@ -63,10 +66,8 @@
       
       <table style="float:left;margin:0 0 5px 0px ;padding:0"  class="options" >
 	<tr>
-	  <td  {if $view=='counting'}class="selected"{/if} id="counting" >{t}Check Delivery{/t}</td><td style="border:none;color:#000">&rarr;</td>
-	  <td {if $view=='set_damages'}class="selected"{/if}  id="set_damages"  >{t}Set Damages{/t}</td><td style="border:none;color:#000">&rarr;</td>
-	  <td {if $view=='set_skus'}class="selected"{/if}  id="set_skus"  >{t}Assing SKUs{/t}</td><td style="border:none;color:#000">&rarr;</td>
-	  <td {if $view=='set_locations'}class="selected"{/if}  id="set_locations"  >{t}Assing Locations{/t}</td>
+	  <td  {if $view=='genereal'}class="selected"{/if} id="general" >{t}General{/t}</td>
+
 	</tr>
       </table>
      
@@ -106,20 +107,54 @@
 </div>
 
 
-<div id="delete_dialog" style="padding:10px 15px">
-  <div id="delete_dialog_msg" class="dialog_msg" style="padding:0 0 10px 0 ">{t}Note: this action can not be undone{/t}.</div>
-  <table style="width:250px">
-   
-    <tr><td style="border-top:1px solid #ddd;text-align:center;padding:10px 0 0 0">
-	<span class="state_details" onClick="close_dialog('delete')"  >{t}Cancel{/t}</span>
-	<span style="margin-left:50px" class="state_details" onClick="delete_order()"  >{t}Delete Supplier Delivery Note{/t}</span>
+
+
+<div id="received_dialog" style="padding:10px 15px">
+  <div id="received_dialog_msg"></div>
+  <table>
+    <tr>
+      <td class="aright" style="width:100px"></td><td>
+	<div class="options" style="margin:0px 0;width:200px" id="received_method_container">
+      </td>
+    </tr>
+    <input type="hidden" id="date_type" value="now"/>
+    <tr id="tr_manual_received_date">
+      <td class="aright">{t}Received Date{/t}:</td><td style="position:relative"><span style="position:absolute;left:200px" class="state_details" onClick="submit_date_manually()">{t}Modify{/t}</span>{t}Now{/t} </td>
+    </tr>
+    <tbody style="display:none" id="tbody_manual_received_date">
+      <tr>
+	<td class="aright">{t}Received Date{/t}:</td><td><input id="v_calpop1" style="text-align:right;"  class="text" name="submites_date" type="text"  size="10" maxlength="10"  value="{$date}"    /><img   id="calpop1" style="cursor:pointer" src="art/icons/calendar_view_month.png" align="top" alt=""   />  <div id="cal1Container" style="position:absolute;display:none; z-index:2">	</td></tr>
+      <tr><td class="aright">{t}Time{/t}:</td><td ><input id="v_time"   style="text-align:right;" class="text" name="expected_date" type="text"  size="5" maxlength="5"  value="{$time}"   /><img   id="calpop1" style="cursor:pointer" src="art/icons/time.png" align="top" alt=""   /> 	</td></tr>
+     
+    </tbody>
+    
+    <tr >
+        <input type="hidden" id="received_by" value="{$user_staff_key}"/>
+
+      <td class="aright">{t}Received By{/t}:</td><td style="position:relative"> <span id="get_receiver" class="state_details" style="position:absolute;left:200px">{t}Modify{/t}</span><span id="received_by_alias">{$user}</span></td>
+    </tr>
+
+    <tr><td colspan=2 style="border-top:1px solid #ddd;text-align:center;padding:10px 0 0 0">
+	<span class="state_details" onClick="close_dialog('received')"  >Cancel</span>
+	<span style="margin-left:50px" class="state_details" onClick="received_order_save(this)"  >Save</span>
     
     </td>
 </tr>
   </table>
 </div>
 
-
+<div id="staff_dialog" class="yuimenu staff_list"  >
+  <div class="bd">
+    <table border=1>
+      {foreach from=$staff item=_staff name=foo}
+      {if $_staff.mod==0}<tr>{/if}
+	<td staff_id="{$_staff.id}" id="receivers{$_staff.id}" onClick="select_staff(this,event)" >{$_staff.alias}</td>
+	{if $_staff.mod==$staff_cols}</tr>{/if}
+      {/foreach}
+    </table>
+<span class="state_details" style="float:right" onClick="close_dialog('staff')" >{t}Close{/t}</span>
+  </div>
+</div>
 
 
 

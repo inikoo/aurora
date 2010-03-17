@@ -167,6 +167,7 @@ $smarty->assign('js_files',$js_files);
 $smarty->display('porder_in_process.tpl');
 break;
 case('Submitted'):
+  $_SESSION['state']['porder']['show_all']=false;
 
   
   $js_files[]='porder_submitted.js.php';
