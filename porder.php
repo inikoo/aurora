@@ -9,6 +9,8 @@ include_once('class.PurchaseOrder.php');
 
 if(isset($_REQUEST['id'])){
 
+
+
   $po=new PurchaseOrder($_REQUEST['id']);
   if(!$po->id)
     exit("Error po can no be found");
@@ -35,6 +37,9 @@ if(isset($_REQUEST['id'])){
   $po=new PurchaseOrder('new',$data);
   if($po->error)
     exit('error');
+  
+ 
+ 
 
   $_SESSION['state']['porder']['show_all']=true;
   //  $_SESSION['state']['porder']['supplier_key']=$supplier->id;

@@ -30,11 +30,21 @@ class PurchaseOrder extends DB_Table{
   function create_order($data){
     
     //print_r($data);
+
+
     $data['Purchase Order Creation Date']=date('Y-m-d H:i:s');
     $data['Purchase Order Last Updated Date']=date('Y-m-d H:i:s');
     $data['Purchase Order Public ID']=$this->get_next_public_id($data['Purchase Order Supplier Key']);
     $data['Purchase Order File As']=$this->get_file_as($data['Purchase Order Public ID']);
     $base_data=$this->base_data();
+    
+
+    $supplier=new Supplier($data['Purchase Order Supplier Key']);
+    if(!$supplier->id){
+      $this->error=true;
+      $this->msg='Error supplier not found';
+      return;
+    }
 
     foreach($data as $key=>$value){
       if(array_key_exists($key,$base_data))
@@ -61,6 +71,7 @@ class PurchaseOrder extends DB_Table{
     if(mysql_query($sql)){
       $this->id = mysql_insert_id();
       $this->get_data('id',$this->id);
+      $supplier->update_orders();
     }else
       exit(" error can no create purchse order");
 

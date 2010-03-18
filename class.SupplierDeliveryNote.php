@@ -136,6 +136,8 @@ class SupplierDeliveryNote extends DB_Table{
     if(mysql_query($sql)){
       $this->id = mysql_insert_id();
       $this->get_data('id',$this->id);
+      $supplier->update_orders();
+
     }else
       exit(" error can no create supplier delivery note");
 
@@ -635,6 +637,8 @@ function input($data){
 
 function mark_as_received($data){
 
+ 
+    
 
   foreach($data as $key=>$value){
     if(array_key_exists($key,$this->data)){
@@ -648,28 +652,19 @@ function mark_as_received($data){
 	       ,prepare_mysql($data['Supplier Delivery Note Main Receiver Key'])
 	       ,$this->id);
   
-  print $sql;
+  //print $sql;
   mysql_query($sql);
 
-  $sql=sprintf("update `Purchase Order Transaction Fact` set  `Supplier Delivery Note Last Updated Date`=%s, `Supplier Delivery Note State`='Received'  where `Supplier Delivery Note Key`=%d"
+  $sql=sprintf("update `Purchase Order Transaction Fact` set `Supplier Delivery Note Received Location Key`=%d , `Supplier Delivery Note Last Updated Date`=%s, `Supplier Delivery Note State`='Received'  where `Supplier Delivery Note Key`=%d"
+	       ,$data['Supplier Delivery Note Received Location Key']
 	       ,prepare_mysql($data['Supplier Delivery Note Received Date'])
 	       ,$this->id
 	       );
-   mysql_query($sql);
-   //print $sql;
+  mysql_query($sql);
+  // print $sql;
 
-   $sql=sprintf("select `Supplier Product Key`,`Supplier Delivery Note Quantity` from `Purchase Order Transaction Fact` where `Supplier Delivery Note Key`=%d",$this->id);
-   $res=mysql_query($sql);
-   while($row=mysql_fetch_array($res)){
-     $supplier_product=new SupplierProduct('key',$row['Supplier Product Key']);
-     $products=$supplier_product->get_products();
-     foreach($products as $product){
-       $product=new Product('pid',$product['Product ID']);
-       $product->update_next_supplier_shippment();
-       
-     }
-     
-   }
+   $this->update_store_products();
+   
 
 }
 
@@ -700,18 +695,20 @@ function mark_as_checked($data){
    mysql_query($sql);
    //print $sql;
 
-   $sql=sprintf("select `Supplier Product Key`,`Supplier Delivery Note Quantity` from `Purchase Order Transaction Fact` where `Supplier Delivery Note Key`=%d",$this->id);
-   $res=mysql_query($sql);
-   while($row=mysql_fetch_array($res)){
-     $supplier_product=new SupplierProduct('key',$row['Supplier Product Key']);
-     $products=$supplier_product->get_products();
-     foreach($products as $product){
-       $product=new Product('pid',$product['Product ID']);
-       $product->update_next_supplier_shippment();
-       
-     }
-     
-   }
+   
+   //$unknown_convertions=$this->check_for_unknown_sku_conversions();
+   //if(count($unknown_convertions))
+
+   $this->convert_to_parts();
+
+
+
+   $this->update_store_products();
+
+
+
+
+   
 
 }
 
@@ -931,6 +928,109 @@ $sql=sprintf("update  `Purchase Order Transaction Fact` set  `Supplier Delivery 
 
 }
 
+
+
+
+
+function update_store_products(){
+
+   $sql=sprintf("select `Supplier Product Key`,`Supplier Delivery Note Quantity` from `Purchase Order Transaction Fact` where `Supplier Delivery Note Key`=%d",$this->id);
+   $res=mysql_query($sql);
+   while($row=mysql_fetch_array($res)){
+     $supplier_product=new SupplierProduct('key',$row['Supplier Product Key']);
+     $products=$supplier_product->get_products();
+     foreach($products as $product){
+       $product=new Product('pid',$product['Product ID']);
+       $product->update_next_supplier_shippment();
+       
+     }
+     
+   }
+}
+
+
+function convert_to_parts(){
+
+  include_once('class.PartLocation.php');
+
+  $parts=array();
+
+  $sql=sprintf("select `Supplier Delivery Note Received Location Key`,`Supplier Delivery Note Line`, `Supplier Product Key`,`Supplier Delivery Note Received Quantity`-`Supplier Delivery Note Damaged Quantity` as quantity from `Purchase Order Transaction Fact` where `Supplier Delivery Note Key`=%d ",$this->id);
+  $res=mysql_query($sql);
+  // print $sql;
+  while($row=mysql_fetch_array($res)){
+    $quantity=$row['quantity'];
+    
+
+    if($quantity>0){
+      $supplier_product=new SupplierProduct($row['Supplier Product Key']);
+      if($supplier_product->data['Supplier Product Part Convertion']=='1:1'){
+	$parts_data=$supplier_product->get_parts();
+	$part_data=array_shift($parts_data);
+	$supplier_part_units_convertion=$supplier_product->units_convertion_factor($part_data['Supplier Product Unit']);
+	if(!$supplier_part_units_convertion)
+	  continue;
+	
+	$quantity=$quantity*$supplier_part_units_convertion;
+	$parts_quantity=$quantity/$part_data['Supplier Product Units Per Part'];
+
+	if(array_key_exists($part_data['Part SKU'].'_'.$row['Supplier Delivery Note Received Location Key'],$parts)){
+	  
+	  
+	  $parts[$part_data['Part SKU'].'_'.$row['Supplier Delivery Note Received Location Key']]['Quantity']+=$parts_quantity;
+
+
+	}else{
+	  
+	  $parts[$part_data['Part SKU'].'_'.$row['Supplier Delivery Note Received Location Key']]=array(
+					       'Part SKU'=>$part_data['Part SKU'],
+					       'Quantity'=>$parts_quantity,
+					       'Location Key'=>$row['Supplier Delivery Note Received Location Key']
+													);
+	}
+	
+	
+	$sql=sprintf("update `Purchase Order Transaction Fact` set `Supplier Deliver Note Part Assigned`='Yes' where  Supplier Delivery Note Key`=%d  and `Supplier Delivery Note Line`=%d  ",$this->id,$row['Supplier Delivery Note Line']);
+	mysql_query($sql);
+
+	$sql=sprintf('insert into `Supplier Delivery Note Item Part Bridge` values (%d,%d,%d,%f) '
+		     ,$this->id
+		     ,$row['Supplier Delivery Note Line']
+		     ,$part_data['Part SKU']
+		     ,$parts_quantity
+		     );
+	mysql_query($sql);
+
+
+	
+      }
+	
+      
+
+    }
+
+    
+    
+  }
+  
+  foreach($parts as $data){
+    print_r($this->get_editor_data());
+    $part_location_data=array('Part SKU'=>$data['Part SKU'],'Location Key'=>$data['Location Key'],'editor'=>$this->editor);
+    // print_r($part_location_data);
+    $part_location=new PartLocation('find',$part_location_data,'create');
+    $part_location->add_stock(
+			      array(
+				    'Quantity'=>$data['Quantity']
+				    ,'Origin'=>_('Supplier Delivery Note').' '.$this->data['Supplier Delivery Note Public ID']
+				    )
+			      );
+  }
+
+
+
+  
+
+}
 
 }
     

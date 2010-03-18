@@ -56,31 +56,28 @@
   <span class="clean_table_title">{t}Supplier Products{/t}</span>
   	<div id="table_type">
 	  <span id="table_type_list" style="float:right;color:brown" class="table_type state_details {if $table_type=='list'}state_details_selected{/if}">{t}Recomended Order{/t}</span>
-	  
+	</div>
+	
+	<div id="todelete" style="display:none">
+	  <span onClick="swap_show_items(this)"  status="{$status}"  id="show_items" class="but {if !$show_all}selected{/if}  ">Items</span>
+	  <span onClick="swap_show_all_products(this)" status="{$status}" {if $status!=0}style="display:none"{/if} id="show_all_products"  class="but {if $show_all}selected{/if}">Show all supplier products</span>
+	  <span onClick="swap_show_all_products(this,1)" style="display:none" id="show_amend"  class="but">Amend order</span>
+	  <span onClick="swap_item_found(this)" style="display:none" id="show_found"  class="but">Add Product Found in Delivery</span>
+	  <span onClick="swap_new_item_found(this)" style="display:none" id="show_new_found"  class="but">Undentificated Product Found in Delivery</span>
 	</div>
 
-<div id="todelete" style="display:none">
-  <span onClick="swap_show_items(this)"  status="{$status}"  id="show_items" class="but {if !$show_all}selected{/if}  ">Items</span>
-  <span onClick="swap_show_all_products(this)" status="{$status}" {if $status!=0}style="display:none"{/if} id="show_all_products"  class="but {if $show_all}selected{/if}">Show all supplier products</span>
-  <span onClick="swap_show_all_products(this,1)" style="display:none" id="show_amend"  class="but">Amend order</span>
-  <span onClick="swap_item_found(this)" style="display:none" id="show_found"  class="but">Add Product Found in Delivery</span>
-  <span onClick="swap_new_item_found(this)" style="display:none" id="show_new_found"  class="but">Undentificated Product Found in Delivery</span>
-  </div>
-
-  <div id="list_options0"> 
-      <div style="clear:both;margin:0 0px;padding:0 20px ;border-bottom:1px solid #999"></div>
-      <span   style="float:right;margin-left:20px" class="state_details" state="{$show_all}"  id="show_all"  atitle="{if !$show_all}{t}Show only ordered{/t}{else}{t}Show all products available{/t}{/if}"  >{if $show_all}{t}Show only ordered{/t}{else}{t}Show all products available{/t}{/if}</span>     
-      
-
-      
-      <table style="float:left;margin:0 0 5px 0px ;padding:0"  class="options" >
-	<tr><td  {if $view=='used_in'}class="selected"{/if} id="general" >{t}Used In{/t}</td>
-	  <td {if $view=='stock'}class="selected"{/if}  id="stock"  >{t}Stock{/t}</td>
+	<div id="list_options0"> 
+	  <div style="clear:both;margin:0 0px;padding:0 20px ;border-bottom:1px solid #999"></div>
+	  <span   style="float:right;margin-left:20px" class="state_details" state="{$show_all}"  id="show_all"  atitle="{if !$show_all}{t}Show only ordered{/t}{else}{t}Show all products available{/t}{/if}"  >{if $show_all}{t}Show only ordered{/t}{else}{t}Show all products available{/t}{/if}</span>     
+	  
+	  <table style="float:left;margin:0 0 5px 0px ;padding:0"  class="options" >
+	    <tr><td  {if $view=='used_in'}class="selected"{/if} id="general" >{t}Used In{/t}</td>
+	      <td {if $view=='stock'}class="selected"{/if}  id="stock"  >{t}Stock{/t}</td>
 	  <td  {if $view=='sales'}class="selected"{/if}  id="sales"  >{t}Sales{/t}</td>
-	</tr>
-      </table>
-      <table id="period_options" style="float:left;margin:0 0 0 20px ;padding:0{if $view!='sales' };display:none{/if}"  class="options_mini" >
-	<tr>
+	    </tr>
+	  </table>
+	  <table id="period_options" style="float:left;margin:0 0 0 20px ;padding:0{if $view!='sales' };display:none{/if}"  class="options_mini" >
+	    <tr>
 	  <td  {if $period=='all'}class="selected"{/if} period="all"  id="period_all" >{t}All{/t}</td>
 	  <td {if $period=='year'}class="selected"{/if}  period="year"  id="period_year"  >{t}1Yr{/t}</td>
 	  <td  {if $period=='quarter'}class="selected"{/if}  period="quarter"  id="period_quarter"  >{t}1Qtr{/t}</td>

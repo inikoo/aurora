@@ -3,14 +3,12 @@
 ?>
     var Dom   = YAHOO.util.Dom;var Event = YAHOO.util.Event;
 var dn_key='<?php echo $_SESSION['state']['supplier_dn']['id'] ?>'
-var supplier_id='<?php echo$_SESSION['state']['supplier']['id']?>';
-var show_all='<?php echo $_SESSION['state']['porder']['show_all']?>';
 
 
-var active_editor='';
-var receiver_list;
+
+
 var checker_list;
-var received_dialog;
+var checked_dialog;
 var staff_dialog;
 
 
@@ -27,14 +25,15 @@ var myCellEdit = function (callback, newValue) {
     var data= record.getData();
     var oldCounted=data['counted'];
     ar_file='ar_edit_porders.php';
-    
-    var request='tipo=edit_'+column.object+'&key=' + column.key + '&newvalue=' + encodeURIComponent(newValue) + '&old_counted=' + encodeURIComponent(oldCounted)  + '&old_quantity=' + encodeURIComponent(oldValue)+ myBuildUrl(datatable,record);
-   alert(ar_file+'?'+request);
+    oldDamaged=data['damaged_quantity'];
+    oldCounted =data['counted'];
+    var request='tipo=edit_'+column.object+'&key=' + column.key + '&newvalue=' + encodeURIComponent(newValue) + '&old_counted=' + encodeURIComponent(oldCounted) + '&old_damaged_quantity=' + encodeURIComponent(oldDamaged) + '&old_quantity=' + encodeURIComponent(oldValue)+ myBuildUrl(datatable,record);
+    //  alert(ar_file+'?'+request);
     YAHOO.util.Connect.asyncRequest(
 				    'POST',
 				    ar_file, {
 					success:function(o) {
-					     alert(o.responseText);
+					    // alert(o.responseText);
 					    var r = YAHOO.lang.JSON.parse(o.responseText);
 					    if (r.state == 200) {
 						
@@ -44,6 +43,14 @@ var myCellEdit = function (callback, newValue) {
 						}
 						
 						datatable.updateCell(record,'counted',r.counted);
+						datatable.updateCell(record,'damaged_quantity',r.damaged_quantity);
+						
+						if(r.damaged_quantity!=0){
+						    datatable.updateCell(record,'notes_damaged','(-'+r.damaged_quantity+')');
+
+						}else{
+						     datatable.updateCell(record,'notes_damaged','');
+						}
 						
 						//if(r.quantity==0 && !show_all){
 						//    datatable.deleteRow(record);
@@ -85,8 +92,7 @@ var myonCellClick = function(oArgs) {
     var records=this.getRecordSet();
     //alert(records.getLength())
    
-    //alert(column.action);
-    //return;
+   
 
     //alert(datatable)
     var recordIndex = this.getRecordIndex(record);
@@ -99,12 +105,23 @@ var myonCellClick = function(oArgs) {
     case('remove_object'):
 	var data = record.getData();
 	
-	if(column.action=='add_object'){
+	if(column.action=='add_object' && column.key=='add'){
 	    var new_qty=parseFloat(data['received_quantity'])+1;
 	    key='quantity';
-	}else if(column.action=='remove_object'){
+	}if(column.action=='add_object' && column.key=='add_damaged'){
+	    var new_qty=parseFloat(data['damaged_quantity'])+1;
+	    if(new_qty>data['received_quantity'])
+		new_qty=data['received_quantity']
+	    key='damaged_quantity';
+	}else if(column.action=='remove_object'  && column.key=='remove'){
 	    var new_qty=parseFloat(data['received_quantity'])-1;
 	    key='quantity';
+	    
+	}else if(column.action=='remove_object' && column.key=='remove_damaged' ){
+	    var new_qty=parseFloat(data['damaged_quantity'])-1;
+	    if(new_qty<0)
+		new_qty=0;
+	    key='damaged_quantity';
 	    
 	}else{
 	    key='counted';
@@ -114,14 +131,16 @@ var myonCellClick = function(oArgs) {
 	}
 	oldValue=data['received_quantity'];
 	oldCounted =data['counted'];
+	oldDamaged=data['damaged_quantity'];
+
 	var ar_file='ar_edit_porders.php';
-	request='tipo=edit_'+column.object+'&key='+key+'&newvalue='+new_qty+ '&old_counted=' + encodeURIComponent(oldCounted)  + '&old_quantity=' + encodeURIComponent(oldValue)+'&id='+ data['id'];
-	//	alert(ar_file+'?'+request)
+	request='tipo=edit_'+column.object+'&key='+key+'&newvalue='+new_qty+ '&old_counted=' + encodeURIComponent(oldCounted)  + '&old_quantity=' + encodeURIComponent(oldValue)+ '&old_damaged_quantity=' + encodeURIComponent(oldDamaged)+'&id='+ data['id'];
+	//		alert(ar_file+'?'+request)
 	YAHOO.util.Connect.asyncRequest(
 					'POST',
 					ar_file, {
 					    success:function(o) {
-						 alert(o.responseText);
+						//alert(o.responseText);
 						var r = YAHOO.lang.JSON.parse(o.responseText);
 						if (r.state == 200) {
 						    for(x in r.data){
@@ -129,17 +148,16 @@ var myonCellClick = function(oArgs) {
 							Dom.get(x).innerHTML=r.data[x];
 						    }
 
-					
+						    datatable.updateCell(record,'damaged_quantity',r.damaged_quantity);
 						    datatable.updateCell(record,'received_quantity',r.quantity);
-							datatable.updateCell(record,'counted',r.counted);
-
-					
-						    //if(r.quantity==0 && !show_all){
-						    //	this.deleteRow(target);
-						    // }
-						
-
-						    //	callback(true, r.newvalue);
+						    datatable.updateCell(record,'counted',r.counted);
+						    if(r.damaged_quantity!=0){
+							datatable.updateCell(record,'notes_damaged','(-'+r.damaged_quantity+')');
+							
+						    }else{
+							datatable.updateCell(record,'notes_damaged','');
+						    }
+						    
 						} else {
 						    alert(r.msg);
 						    //	callback();
@@ -167,57 +185,24 @@ var myonCellClick = function(oArgs) {
 
 
 
+function close_dialog(tipo){
+    switch(tipo){
+    case('checked'):
+	checked_dialog.hide();
+
+	break;
+    case('staff'):
+	staff_dialog.hide();
+
+	break;
+
+    }
+  
+} 
 
 
 
 
-
-function delete_order() {
-    var request='ar_edit_porders.php?tipo=delete_dn&id='+dn_key;
-    // alert(request);
-    YAHOO.util.Connect.asyncRequest('POST',request ,{
-	      
-	    success:function(o) {
-		//	  alert(o.responseText)
-		var r =  YAHOO.lang.JSON.parse(o.responseText);
-		if (r.state == 200) {
-		    location.href='supplier.php?id='+supplier_id;
-		}else{
-		    Dom.get('delete_dialog_msg').innerHTNML=r.msg;
-		}
-	    }
-	});    
-
-}
-
-
-
-
-
-
-
-
-	    var swap_show_all_products=function(o){
-
-		var status=o.getAttribute('status');
-		//alert(status)
-
-		if(status==0){
-		    o.className='selected but';
-		    Dom.get('show_items').className='but';
-		    var table=tables['table0'];
-		    var datasource=tables['dataSource0'];
-		    var request='&all_products=0&all_products_supplier=1';
-	
-		    Dom.get("clean_table_controls0").style.visibility='visible';
-		    Dom.get("clean_table_filter0").style.visibility='visible';
-		    datasource.sendRequest(request,table.onDataReturnInitializeTable, table);    
-		}
-
-
-    
-	    };
-    
 
 
 YAHOO.util.Event.addListener(window, "load", function() {
@@ -230,17 +215,24 @@ YAHOO.util.Event.addListener(window, "load", function() {
 				     
 				  ,{key:"code", label:"<?php echo _('Code')?>", width:60,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				 
-				  ,{key:"description", label:"<?php echo _('Description')?>",width:320, sortable:false,className:"aleft"}
-				  ,{key:"used_in", label:"<?php echo _('Used In')?>",width:160, sortable:false,className:"aleft"}
+				  ,{key:"description", label:"<?php echo _('Description')?>",width:310, sortable:false,className:"aleft"}
+				  ,{key:"used_in", label:"<?php echo _('Used In')?>",width:150, sortable:false,className:"aleft"}
 
 				  ,{key:"dn_quantity",label:"<?php echo _('DN Qty')?>", width:40,sortable:false,className:"aright"}
 				  ,{key:"dn_unit_type", label:"<?php echo _('DN U')?>",width:30,className:"aleft"}
 
 			
+				  ,{key:"received_quantity",label:"<?php echo _('Rcvd Qty')?>", width:60,sortable:false,className:"aright",  editor: new YAHOO.widget.TextboxCellEditor({asyncSubmitter: myCellEdit}),object:'inputted_supplier_dn','action':'change_received_qty'}
+				  ,{key:"damaged_quantity",label:"<?php echo _('Dmgd Qty')?>", width:60,sortable:false,className:"aright",  editor: new YAHOO.widget.TextboxCellEditor({asyncSubmitter: myCellEdit}),object:'inputted_supplier_dn','action':'change_received_qty',hidden:true}
 				  
-				  ,{key:"add",label:"", width:3,hidden:true,sortable:false,action:'add_object',object:'new_supplier_dn'}
-				  ,{key:"remove",label:"", width:3,hidden:true,sortable:false,action:'remove_object',object:'new_supplier_dn'}
-
+				  ,{key:"add",label:"", width:3,sortable:false,action:'add_object',object:'inputted_supplier_dn'}
+				  ,{key:"remove",label:"", width:3,sortable:false,action:'remove_object',object:'inputted_supplier_dn'}
+				  ,{key:"add_damaged",label:"", width:3,sortable:false,action:'add_object',object:'inputted_supplier_dn',hidden:true}
+				  ,{key:"remove_damaged",label:"", width:3,sortable:false,action:'remove_object',object:'inputted_supplier_dn',hidden:true}
+				  
+				  ,{key:"counted",label:"<?php echo _('Ckd')?>", width:20,sortable:false,class:'aleft', action:'edit_object',object:'inputted_supplier_dn'}
+				  ,{key:"notes_damaged",label:"", width:15,sortable:false}
+				  ,{key:"notes_received",label:"", width:15,sortable:false,hidden:true}
 
 
 
@@ -264,7 +256,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 		    },
 			
 		    fields: [
-			     "id","code","description","quantity","amount","unit_type","add","remove","used_in","dn_quantity","dn_unit_type","received_quantity","damaged_quantity","counted","add_damaged"
+			     "id","code","description","quantity","amount","unit_type","add","remove","used_in","dn_quantity","dn_unit_type","received_quantity","damaged_quantity","counted","add_damaged",'notes_damaged','remove_damaged'
 			     ]};
 	    
 		this.table0 = new YAHOO.widget.DataTable(tableDivEL, ColumnDefs,
@@ -302,88 +294,28 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    }
     );
 
-function change_show_all(){
-
-    var state=this.getAttribute('state');
-    var alter=Dom.get('show_all').getAttribute('atitle');
-
-    var current=Dom.get('show_all').innerHTML;
-    Dom.get('show_all').innerHTML=alter;
-    Dom.get('show_all').setAttribute('atitle',current);
-
-
-    if(state==1){
-	show_all=0;
-	tag='no'
-	    Dom.get('show_all').setAttribute('state',0);
-    }else{
-	show_all=1;
-	tag='yes'
-	    Dom.get('show_all').setAttribute('state',1);
-
-      
-    }
-  
-    
-    var table=tables['table0'];
-    var datasource=tables['dataSource0'];
-    var request='&show_all='+tag;
-    // alert(request);
-    datasource.sendRequest(request,table.onDataReturnInitializeTable, table); 
-}
-
-
-function submit_date_manually(){
-    Dom.get('tr_manual_received_date').style.display="none";
-    Dom.get('tbody_manual_received_date').style.display="";
-    Dom.get('date_type').value='manual';
-}
 
 var select_staff=function(o,e){
-
     var staff_id=o.getAttribute('staff_id');
     var staff_name=o.innerHTML;
     o.className='selected';
 	
-    Dom.get('received_by').value=staff_id;
-    Dom.get('received_by_alias').innerHTML=staff_name;
-	
+    Dom.get('checked_by').value=staff_id;
+    Dom.get('checked_by_alias').innerHTML=staff_name;
     close_dialog('staff');
 };
 
-var select_location=function(o,e){
-
-    var location_key=o.getAttribute('location_key');
-    var location_code=o.innerHTML;
-    o.className='selected';
-	
-    Dom.get('location_key').value=location_key;
-    Dom.get('location_code').innerHTML=location_code;
-	
-    close_dialog('location');
-};
-
-
-
 
   
-var received_order_save=function(o){
-
-    var received_date=Dom.get('v_calpop1').value;
-    var received_time=Dom.get('v_time').value;
-    var staff_key=Dom.get('received_by').value;
-    var date_type=Dom.get('date_type').value;
-    var location_key=Dom.get('location_key').value;
-
-
-    var request='ar_edit_porders.php?tipo=receive_dn&id='+escape(dn_key)+'&date_type='+escape(date_type)+'&staff_key='+escape(staff_key)+'&received_date='+escape(received_date)+'&received_time='+escape(received_time)+'&location_key='+escape(location_key);
-    //  alert(request)
-    //return;
+var checked_order_save=function(o){
+ var staff_key=Dom.get('checked_by').value;
+    var request='ar_edit_porders.php?tipo=set_dn_as_checked&id='+escape(dn_key)+'&staff_key='+escape(staff_key);
+    alert(request)
     YAHOO.util.Connect.asyncRequest('POST',request ,{
 	    
 	    success:function(o) {
 		    alert(o.responseText);
-		    return;
+		    
 		    var r =  YAHOO.lang.JSON.parse(o.responseText);
 		    if (r.state == 200) {
 			
@@ -437,56 +369,63 @@ function take_values_from_dn(){
 
 }
 
+function set_received(){
+    Dom.get('take_values_from_dn').style.visibility='visible';
+    Dom.get('set_damages_bis').style.display='';
+    Dom.get('set_received').style.display='none';
+    var table=tables['table0'];
 
+ table.showColumn('add');
+ table.showColumn('remove');
+ table.showColumn('dn_quantity');
+ table.hideColumn('add_damaged'); table.hideColumn('damaged_quantity');
+ table.hideColumn('remove_damaged');
+ table.showColumn('notes_damaged');
+ table.hideColumn('notes_received');
+
+}
 
 function set_damages(){
-  var request='ar_edit_porders.php?tipo=mark_dn_as_received&id='+dn_key;
-  YAHOO.util.Connect.asyncRequest('POST',request ,{
-	  success:function(o) {
-	      var r =  YAHOO.lang.JSON.parse(o.responseText);
-	      if (r.state == 200) {
-		  location.href='supplier.php?id='+supplier_id;
-	      }else{
-		  Dom.get('delete_dialog_msg').innerHTNML=r.msg;
-	      }
-	  }
-      });    
+    Dom.get('take_values_from_dn').style.visibility='hidden';
+    Dom.get('set_damages_bis').style.display='none';
+    Dom.get('set_received').style.display='';
+
+
+ var table=tables['table0'];
+    table.hideColumn('add');
+    table.hideColumn('remove');
+    table.hideColumn('dn_quantity');
+
+    table.showColumn('remove_damaged');
+
+    table.showColumn('add_damaged');
+    table.showColumn('damaged_quantity');
+    table.hideColumn('notes_damaged');
+    table.showColumn('notes_received');
 }
 
 function init(){
     
- 
-  
-
-  received_dialog = new YAHOO.widget.Dialog("received_dialog", {context:["receive_dn","tr","tl"]  ,visible : false,close:false,underlay: "none",draggable:false});
-    received_dialog.render();
-
+    Event.addListener("take_values_from_dn", "click", take_values_from_dn);
     
-    staff_dialog = new YAHOO.widget.Dialog("staff_dialog", {context:["get_receiver","tr","tl"]  ,visible : false,close:false,underlay: "none",draggable:false});
+    checked_dialog = new YAHOO.widget.Dialog("checked_dialog", {context:["make_dn_as_checked","tr","tl"]  ,visible : false,close:false,underlay: "none",draggable:false});
+    checked_dialog.render();
+
+    staff_dialog = new YAHOO.widget.Dialog("staff_dialog", {context:["get_checker","tr","tl"]  ,visible : false,close:false,underlay: "none",draggable:false});
     staff_dialog.render();
-
-    location_dialog = new YAHOO.widget.Dialog("location_dialog", {context:["get_location","tr","tl"]  ,visible : false,close:false,underlay: "none",draggable:false});
-    location_dialog.render();
-
     
-    Event.addListener("receive_dn", "click", received_dialog.show,received_dialog , true);
-    Event.addListener("get_receiver", "click", staff_dialog.show,staff_dialog , true);
-    Event.addListener("get_location", "click", location_dialog.show,location_dialog , true);
-
-
-
-    ids=['set_damages','set_damages_top'];
-    YAHOO.util.Event.addListener(ids, "click",set_damages)
-
+    Event.addListener("make_dn_as_checked", "click", checked_dialog.show,checked_dialog , true);
+    Event.addListener("get_checker", "click", staff_dialog.show,staff_dialog , true);
     
- 
-
-
+    ids=['set_damages','set_damages_bis'];
+    YAHOO.util.Event.addListener(ids, "click",set_damages);
+    YAHOO.util.Event.addListener('set_received', "click",set_received);
 }
 
 
 
 YAHOO.util.Event.onDOMReady(init);
+
 YAHOO.util.Event.onContentReady("filtermenu", function () {
 	var oMenu = new YAHOO.widget.Menu("filtermenu", { context:["filter_name0","tr", "br"]  });
 	oMenu.render();

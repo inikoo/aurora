@@ -796,7 +796,7 @@ class Order extends DB_Table{
     }else{
 
       if(!$date)
-	$date=date('Y-d-m H:i:s');
+	$date=date('Y-m-d H:i:s');
       $this->data ['Order Cancelled Date'] = $date;
 
       $this->data ['Order Cancel Note'] = $note;

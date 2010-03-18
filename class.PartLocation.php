@@ -80,7 +80,7 @@ class PartLocation extends DB_Table{
       }
     }
    
-
+    
     $this->found=false;
     $create='';
     $update='';
@@ -1056,6 +1056,16 @@ function get_unit_value(){
 }
 
 
+function add_stock($data){
+   $this->stock_transfer(array(
+			       'Quantity'=>$data['Quantity']
+			       ,'Transaction Type'=>'Supplier Delivery'
+			       ,'Destination'=>$this->location_key
+			       ,'Origin'=>$data['Origin']
+			       ));
+
+}
+
 function move_stock($data){
 
   if($this->error){
@@ -1145,15 +1155,17 @@ if(!is_numeric($this->data['Quantity On Hand'])){
 
 function stock_transfer($data){
   
+ 
+
     $qty=$data['Quantity'];
     $transaction_type=$data['Transaction Type'];
   
     if(is_numeric($this->data['Quantity On Hand'])){
-    $old_qty=$this->data['Quantity On Hand'];
-    $old_value=$this->data['Stock Value'];
+      $old_qty=$this->data['Quantity On Hand'];
+      $old_value=$this->data['Stock Value'];
     }else{
-    $old_qty=$this->data['Negative Discrepancy'];
-    $old_value=$this->data['Negative Discrepancy Value'];
+      $old_qty=$this->data['Negative Discrepancy'];
+      $old_value=$this->data['Negative Discrepancy Value'];
     
     }
     $unit_value=$this->get_unit_value();
@@ -1190,33 +1202,54 @@ function stock_transfer($data){
     $value_change=$qty_change*$unit_value;
     
     $details='';
-    if($transaction_type=='Lost'){
+    
+    switch($transaction_type){
+    
+    
+    case('Lost'):
       $tmp=$data['Reason'].', '.$data['Action'];
       $tmp=preg_replace('/, $/','',$tmp);
       if(preg_match('/^\s*,\s*$/',$tmp))
 	$tmp='';
       else
 	$tmp=' '.$tmp;
-
+      
         $details=number(-$qty).'x '.sprintf("SKU%04d",$this->part_sku).' '._('lost from').' '.$this->location->data['Location Code'].$tmp.': '.($qty_change>0?'+':'').number($qty_change).' ('.($value_change>0?'+':'').money($value_change).')';
-    }elseif($transaction_type=='Move Out'){
+	break;   
+    case('Move Out'):
       $details=number(-$qty).'x '.sprintf("SKU%04d",$this->part_sku).' '._('move out from').' '.$this->location->data['Location Code'].' '._('to').' '.$data['Destination'].': '.($qty_change>0?'+':'').number($qty_change).' ('.($value_change>0?'+':'').money($value_change).')';
-    }elseif($transaction_type=='Move In'){
+      break;
+    case('Move In'):
       $details=number($qty).'x '.sprintf("SKU%04d",$this->part_sku).' '._('move in to').' '.$this->location->data['Location Code'].' '._('from').' '.$data['Origin'].': '.($qty_change>0?'+':'').number($qty_change).' ('.($value_change>0?'+':'').money($value_change).')';
+      
+      break;
+    case('Supplier Delivery'):
+
+      
+
+      $details=number($qty).'x '.sprintf("SKU%04d",$this->part_sku).' '._('received in').' '.$this->location->data['Location Code'].' '._('from').' '.$data['Origin'].': '.($qty_change>0?'+':'').number($qty_change).' ('.($value_change>0?'+':'').money($value_change).')';
     }
+
+    
+    $editor=$this->get_editor_data();
+
     $this->event_order++;
-      $sql=sprintf("insert into `Inventory Transaction Fact` (`Part SKU`,`Location Key`,`Inventory Transaction Type`,`Inventory Transaction Quantity`,`Inventory Transaction Amount`,`User Key`,`Note`,`Date`,`Event Order`) values (%d,%d,%s,%f,%.2f,%s,%s,%s,%d)"
-		   ,$this->part_sku
-		   ,$this->location_key
-		   ,prepare_mysql($transaction_type)
-		   ,$qty_change
+    $sql=sprintf("insert into `Inventory Transaction Fact` (`Part SKU`,`Location Key`,`Inventory Transaction Type`,`Inventory Transaction Quantity`,`Inventory Transaction Amount`,`User Key`,`Note`,`Date`,`Event Order`) values (%d,%d,%s,%f,%.2f,%s,%s,%s,%d)"
+		 ,$this->part_sku
+		 ,$this->location_key
+		 ,prepare_mysql($transaction_type)
+		 ,$qty_change
 		   ,$value_change
-		   ,$this->editor['Author Key']
-		   ,prepare_mysql($details,false)
-		   ,prepare_mysql($this->editor['Date'])
-		   ,$this->event_order
-		   );
+		 ,$this->editor['Author Key']
+		 ,prepare_mysql($details,false)
+		 ,prepare_mysql($editor['Date'])
+		 ,$this->event_order
+		 );
+    
+    //print_r($this->editor);
       mysql_query($sql);
+      
+
 
 //     $move_to=$data['move_to'];
 //     $user_id=$data['user key'];

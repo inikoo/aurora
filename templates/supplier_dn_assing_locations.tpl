@@ -4,21 +4,11 @@
 
 <div class="order_actions" >
     <span class="state_details" onClick="location.href='supplier.php?id={$supplier->get('Supplier Key')}'" style="float:left;margin-top:2px" >{t}Supplier Page{/t}</span>
-      <span class="state_details" id="edit_dn" style="margin-left:20px">{t}Edit Delivery Note{/t}</span>
-
-      <span class="state_details" id="make_dn_as_checked" style="margin-left:20px">{t}Mark Delivery Note as Checked{/t}</span>
 
 
- <DIV style="display:none">
-  <span class="state_details" id="set_damages_top" style="margin-left:20px">{t}Set Damages{/t}</span>
-  <span class="state_details" id="set_skus_top" style="margin-left:20px">{t}Set SKUs{/t}</span>
-  <span class="state_details" id="set_locations_top" style="margin-left:20px">{t}Set Locations{/t}</span>
-</DIV>
-
-</div>
 
 
-<div class="prodinfo" style="margin-top:2px;font-size:85%;border:1px solid #ddd;padding:10px">
+<div class="prodinfo" style="clear:both;margin-top:2px;font-size:85%;border:1px solid #ddd;padding:10px">
     <div style="border:0px solid red;width:290px;float:right">
     <table  border=0  class="order_header"  style="margin-right:30px;float:right">
       <tr><td class="aright" style="padding-right:40px">{t}Created{/t}:</td><td>{$supplier_dn->get('Creation Date')}</td></tr>
@@ -60,17 +50,17 @@
 
 
 <div id="the_table" class="data_table" style="margin:20px 0px;clear:both">
-  <span class="clean_table_title">{t}Supplier Products{/t}</span>
-  	<div id="table_type">
-	  <span id="take_values_from_dn" style="margin-left:20px;float:right;color:brown" class="table_type state_details">{t}Copy values from DN{/t}</span>
-	  <span id="set_damages_bis" style="float:right;color:brown" class="table_type state_details">{t}Set Damaged{/t}</span>
-	  <span id="set_received" style="display:none;float:right;color:brown" class="table_type state_details">{t}Set Received{/t}</span>
-	</div>
-
-
-
+  <span class="clean_table_title">{t}Parts{/t}</span>
+  <div id="table_type">
+    <span id="take_values_from_dn" style="margin-left:20px;float:right;color:brown" class="table_type state_details">{t}Copy values from DN{/t}</span>
+    <span id="set_damages_bis" style="float:right;color:brown" class="table_type state_details">{t}Set Damaged{/t}</span>
+    <span id="set_received" style="display:none;float:right;color:brown" class="table_type state_details">{t}Set Received{/t}</span>
+  </div>
+  
+  
+  
   <div id="list_options0"> 
-      <div style="clear:both;margin:0 0px;padding:0 20px ;border-bottom:1px solid #999"></div>
+    <div style="clear:both;margin:0 0px;padding:0 20px ;border-bottom:1px solid #999"></div>
       
       
 

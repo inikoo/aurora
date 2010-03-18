@@ -22,6 +22,10 @@ if(!isset($_REQUEST['tipo']))
     exit;
   }
 
+$editor=array(
+	      'User Key'=>$user->id,
+	      'Date'=>date('Y-m-d H:i:s')
+	      );
 
 $tipo=$_REQUEST['tipo'];
 
@@ -1375,7 +1379,7 @@ if($row['Supplier Delivery Note Damaged Quantity']!=0)
 }
 
     function receive_supplier_delivery_note() {
-    global $user;
+      global $user,$editor;
     if (isset( $_REQUEST['id']) and is_numeric( $_REQUEST['id'])) {
         $supplier_dn_key=$_REQUEST['id'];
         $_SESSION['state']['supplier_dn']['id']=$supplier_dn_key;
@@ -1383,10 +1387,12 @@ if($row['Supplier Delivery Note Damaged Quantity']!=0)
         $supplier_dn_key=$_SESSION['state']['supplier_dn']['id'];
 
     $supplier_dn=new SupplierDeliveryNote($supplier_dn_key);
-
+    $supplier_dn->editor=$editor;
     $data=array(
               'Supplier Delivery Note Received Date'=>date('Y-m-d H:i:s'),
               'Supplier Delivery Note Main Receiver Key'=>$user->data['User Parent Key'],
+	      'Supplier Delivery Note Received Location Key'=>1,
+
 		);
     
     if (isset($_REQUEST['date_type']) and $_REQUEST['date_type']=='manual' ) {
@@ -1402,7 +1408,20 @@ if($row['Supplier Delivery Note Damaged Quantity']!=0)
         }
     }
 
-
+    if (isset($_REQUEST['location_key'])  ) {
+      
+      $location=new Location($_REQUEST['location_key']);
+      if(!$location->id){
+	$response= array('state'=>400,'msg'=>'Wrong location');
+	echo json_encode($response);
+	return;
+      }
+      
+      $data['Supplier Delivery Note Received Location Key']=$location->id;
+      
+    
+    
+    }
     
     if (isset($_REQUEST['staff_key'])  ) {
       
