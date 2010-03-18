@@ -127,7 +127,7 @@ public $new_value=false;
       if ( $row=mysql_fetch_array($result, MYSQL_ASSOC)) {
 	$this->locale=$row['Product Locale'];
 	$this->code=$row['Product Code'];
-	$items_from_parent=array('Product Family Code','Product Current Key','Product Gross Weight','Product Units Per Case','Product Code','Product Type','Product Record Type','Product Sales State','Product To Be Discontinued','Product Family Key','Product Main Department Key','Product Store Key');
+	$items_from_parent=array('Product Family Code','Product Current Key','Product Gross Weight','Product Units Per Case','Product Code','Product Type','Product Record Type','Product Sales Type','Product To Be Discontinued','Product Family Key','Product Main Department Key','Product Store Key');
 	foreach($items_from_parent as $item)
 	  $this->data[$item]=$row[$item];
 	
@@ -999,7 +999,7 @@ public $new_value=false;
   function get_base_data() {
     global $myconf;
     $base_data=array(
-		     'product sales state'=>'For Sale',
+		     'product sales type'=>'Public Sale',
 		     'product type'=>'Normal',
 		     'product record type'=>'In process',
 		     'product web state'=>'Offline',
@@ -1206,23 +1206,12 @@ public $new_value=false;
 
       $editor_data=$this->get_editor_data();
 
-      $sql=sprintf("insert into `History Dimension`  (`Subject`,`Subject Key`,`Action`,`Direct Object`,`Direct Object Key`,`Preposition`,`Indirect Object`,`Indirect Object Key`,`History Abstract`,`History Details`,`History Date`,`Author Name`,`Author Key`) values (%s,%d,%s,%s,%d,%s,%s,%d,%s,%s,%s,%s,%s)   ",
-
-		   prepare_mysql($editor_data['subject']),
-		   $editor_data['subject_key'],
-		   prepare_mysql('created'),
-		   prepare_mysql('Product'),
-		   $this->pid,
-		   "''",
-		   "''",
-		   0,
-		   prepare_mysql(_('Product Created')),
-		   prepare_mysql(_('Product')." ".$this->code." (ID:".$this->get('ID').") "._('Created')),
-		   prepare_mysql($editor_data['date']),
-		   prepare_mysql($editor_data['author']),
-		   $editor_data['author_key']
-		   );
-      mysql_query($sql);
+      $data_for_history=array('Action'=>'created'
+			      ,'History Abstract'=>_('Product Created')
+			      ,'History Details'=>_('Product')." ".$this->code." (ID:".$this->get('ID').") "._('Created')
+			      );
+      $this->add_history($data_for_history);
+	
       //print "$sql\n";
       $family->update_product_data();
       $department->update_product_data();
@@ -1748,13 +1737,13 @@ public $new_value=false;
 
       //   print "State ".$this->data['Product Sales State']."\n";
 
-      if ($this->data['Product Sales State']=='Discontinued') {
+      if ($this->data['Product Record Type']=='Discontinued') {
 	$stock=0;
 	$tipo='No applicable';
 
 
 
-      } else if ($this->data['Product Sales State']=='For Sale') {
+      } else if ($this->data['Product Sales Type']=='Public Sale' or $this->data['Product Sales Type']=='Private Sale'  ) {
 	if (!is_numeric($stock)) {
 	  $tipo='Unknown';
 	}
@@ -2477,23 +2466,15 @@ $this->update_sales_state($a1);
 	mysql_query($sql);
       } else {
 	$this->data['Product For Sale Since Date']=$date;
-	$sql=sprintf("insert into `History Dimension`  (`Subject`,`Subject Key`,`Action`,`Direct Object`,`Direct Object Key`,`Preposition`,`Indirect Object`,`Indirect Object Key`,`History Abstract`,`History Details`,`History Date`,`Author Name`,`Author Key`) values (%s,%d,%s,%s,%d,%s,%s,%d,%s,%s,%s,%s,%s)   ",
-
-		     prepare_mysql('User'),
-		     0,
-		     prepare_mysql('sold_since'),
-		     prepare_mysql('Product'),
-		     $this->pid,
-		     "''",
-		     "''",
-		     0,
-		     prepare_mysql(_('Product Set for Sale')),
-		     prepare_mysql(_('Product')." ".$this->code." (ID:".$this->get('ID').") "._('set for sale')),
-		     prepare_mysql($date),
-		     prepare_mysql(_('System')),
-		     0
-		     );
-	mysql_query($sql);
+	
+	$this->add_history(array(
+				 'Date'=>$date
+				 ,'Action'=>'sold_since'
+				 ,'History Abstract'=>_('Product Set for Sale')
+				 ,'History Details'=>_('Product')." ".$this->code." (ID:".$this->get('ID').") "._('set for sale')
+				 ));
+	
+	
       }
     }
 
@@ -2525,23 +2506,15 @@ $this->update_sales_state($a1);
 
 
 	$this->data['Product Last Sold Date']=$date;
-	$sql=sprintf("insert into `History Dimension`  (`Subject`,`Subject Key`,`Action`,`Direct Object`,`Direct Object Key`,`Preposition`,`Indirect Object`,`Indirect Object Key`,`History Abstract`,`History Details`,`History Date`,`Author Name`,`Author Key`) values (%s,%d,%s,%s,%d,%s,%s,%d,%s,%s,%s,%s,%s)   ",
 
-		     prepare_mysql('User'),
-		     0,
-		     prepare_mysql('last_sold'),
-		     prepare_mysql('Product'),
-		     $this->pid,
-		     "''",
-		     "''",
-		     0,
-		     prepare_mysql(_('Product Last Sold')),
-		     prepare_mysql(_('Product')." ".$this->code." (ID:".$this->get('ID').") "._('last sold date')),
-		     prepare_mysql($date),
-		     prepare_mysql(_('System')),
-		     0
-		     );
-	mysql_query($sql);
+	$this->add_history(array(
+				 'Date'=>$date
+				 ,'Action'=>'last_sold'
+				 ,'History Abstract'=>_('Product Last Sold')
+				 ,'History Details'=>_('Product')." ".$this->code." (ID:".$this->get('ID').") "._('last sold date')
+				 ));
+	
+	
 
       }
 
@@ -2576,24 +2549,15 @@ $this->update_sales_state($a1);
 
 
 	$this->data['Product First Sold Date']=$date;
-	$sql=sprintf("insert into `History Dimension`  (`Subject`,`Subject Key`,`Action`,`Direct Object`,`Direct Object Key`,`Preposition`,`Indirect Object`,`Indirect Object Key`,`History Abstract`,`History Details`,`History Date`,`Author Name`,`Author Key`) values (%s,%d,%s,%s,%d,%s,%s,%d,%s,%s,%s,%s,%s)   ",
+	$this->add_history(array(
+				 'Date'=>$date
+				 ,'Action'=>'first_sold'
+				 ,'History Abstract'=>_('Product First Sold')
+				 ,'History Details'=>_('Product')." ".$this->code." (ID:".$this->get('ID').") "._('first sold date')
+				 ));
+	
 
-		     prepare_mysql('User'),
-		     0,
-		     prepare_mysql('first_sold'),
-		     prepare_mysql('Product'),
-		     $this->pid,
-		     "''",
-		     "''",
-		     0,
-		     prepare_mysql(_('Product First Sold')),
-		     prepare_mysql(_('Product')." ".$this->code." (ID:".$this->get('ID').") "._('first sold date')),
-		     prepare_mysql($date),
-		     prepare_mysql(_('System')),
-		     0
-		     );
-	mysql_query($sql);
-	//print "$sql\n";
+
       }
 
     }
@@ -3520,26 +3484,14 @@ $this->update_sales_state($a1);
 						     'Price'=>$this->get('Price')
 						     );
 
+	$this->add_history(array(
+				 ,'Indirect Object'=>'Product Price'
+				 ,'History Abstract'=>_('Product Price Changed').' ('.$this->get('Price').')'
+				 ,'History Details'=>_('Product')." ".$this->code." (ID:".$this->get('ID').") "._('price changed').' '._('from')." ".$old_formated_price."  "._('to').' '. $this->get('Formated Price')
+				 ));
 
-	$editor_data=$this->get_editor_data();
-	$sql=sprintf("insert into `History Dimension`  (`Subject`,`Subject Key`,`Action`,`Direct Object`,`Direct Object Key`,`Preposition`,`Indirect Object`,`Indirect Object Key`,`History Abstract`,`History Details`,`History Date`,`Author Name`,`Author Key`) values (%s,%d,%s,%s,%d,%s,%s,%d,%s,%s,%s,%s,%s)   ",
-
-		     prepare_mysql($editor_data['subject']),
-		     $editor_data['subject_key'],
-		     prepare_mysql('edited'),
-		     prepare_mysql('Product'),
-		     $this->pid,
-		     "''",
-		     "''",
-		     0,
-		     prepare_mysql(_('Product Price Changed').' ('.$this->get('Price').')'),
-		     prepare_mysql(_('Product')." ".$this->code." (ID:".$this->get('ID').") "._('price changed').' '._('from')." ".$old_formated_price."  "._('to').' '. $this->get('Formated Price')  ),
-		     prepare_mysql($editor_data['date']),
-		     prepare_mysql($editor_data['author']),
-		     $editor_data['author_key']
-		     );
-	mysql_query($sql);
-
+	
+	
       }
 
 
@@ -3613,25 +3565,13 @@ $this->update_sales_state($a1);
 						 'Product RRP'=>$this->get('Product RRP')
 						 );
 
+      	$this->add_history(array(
+				 ,'Indirect Object'=>'Product RRP'
+				 ,'History Abstract'=>_('Product RRP Changed').' ('.$this->get('RRP Per Unit').')'
+				 ,'History Details'=>_('Product')." ".$this->code." (ID:".$this->get('ID').") "._('RRP changed').' '._('from')." ".$old_rrp_per_unit." "._('per unit')." "._('to').' '. $this->get('RRP Per Unit').' '._('per unit')
+				 ));
 
-      $editor_data=$this->get_editor_data();
-      $sql=sprintf("insert into `History Dimension`  (`Subject`,`Subject Key`,`Action`,`Direct Object`,`Direct Object Key`,`Preposition`,`Indirect Object`,`Indirect Object Key`,`History Abstract`,`History Details`,`History Date`,`Author Name`,`Author Key`) values (%s,%d,%s,%s,%d,%s,%s,%d,%s,%s,%s,%s,%s)   ",
-
-		   prepare_mysql($editor_data['subject']),
-		   $editor_data['subject_key'],
-		   prepare_mysql('edited'),
-		   prepare_mysql('Product'),
-		   $this->pid,
-		   "''",
-		   "''",
-		   0,
-		   prepare_mysql(_('Product RRP Changed').' ('.$this->get('RRP Per Unit').')' ),
-		   prepare_mysql(_('Product')." ".$this->code." (ID:".$this->get('ID').") "._('RRP changed').' '._('from')." ".$old_rrp_per_unit." "._('per unit')." "._('to').' '. $this->get('RRP Per Unit').' '._('per unit')  ),
-		   prepare_mysql($editor_data['date']),
-		   prepare_mysql($editor_data['author']),
-		   $editor_data['author_key']
-		   );
-      mysql_query($sql);
+	
 
 
 
@@ -3698,31 +3638,20 @@ $this->update_sales_state($a1);
 						      'Product Name'=>$this->data['Product Name'] 
 						 );
 
+	$this->add_history(array(
+				 ,'Indirect Object'=>'Product Name'
+				 ,'History Abstract'=>_('Product Name Changed').' ('.$this->get('Product Name').')'
+				 ,'History Details'=>_('Product')." ".$this->code." (ID:".$this->get('ID').") "._('Name').' '._('from')." ".$old_name." "._('to').' '. $this->get('Product Name')
+				 ));
 
-	$editor_data=$this->get_editor_data();
-	$sql=sprintf("insert into `History Dimension`  (`Subject`,`Subject Key`,`Action`,`Direct Object`,`Direct Object Key`,`Preposition`,`Indirect Object`,`Indirect Object Key`,`History Abstract`,`History Details`,`History Date`,`Author Name`,`Author Key`) values (%s,%d,%s,%s,%d,%s,%s,%d,%s,%s,%s,%s,%s)   ",
 
-		     prepare_mysql($editor_data['subject']),
-		     $editor_data['subject_key'],
-		     prepare_mysql('edited'),
-		     prepare_mysql('Product'),
-		     $this->pid,
-		     "''",
-		     "''",
-		     0,
-		     prepare_mysql(_('Product Name Changed').' ('.$this->get('Product Name').')' ),
-		     prepare_mysql(_('Product')." ".$this->code." (ID:".$this->get('ID').") "._('Name').' '._('from')." ".$old_name." "._('to').' '. $this->get('Product Name')  ),
-		     prepare_mysql($editor_data['date']),
-		     prepare_mysql($editor_data['author']),
-		     $editor_data['author_key']
-		     );
-	mysql_query($sql);
+
       }
     } else {
       $this->msg=_("Error: Product name could not be updated");
 
       $this->updated=false;
-
+      
     }
   }
   function update_special_characteristic($value){
@@ -3790,27 +3719,14 @@ $this->update_sales_state($a1);
 						      'Product Special Characteristic'=>$this->data['Product Special Characteristic'] 
 						 );
 
+	$this->add_history(array(
+				 ,'Indirect Object'=>'Product Special Characteristic'
+				 ,'History Abstract'=>_('Product Special Characteristic Changed').' ('.$this->get('Product Special Characteristic').')'
+				 ,'History Details'=>_('Product')." ".$this->code." (ID:".$this->get('ID').") "._('Special Characteristic').' '._('from')." ".$old_special_characteristic." "._('to').' '. $this->get('Product Special Characteristic')
+				 ));
 
 
-
-      $editor_data=$this->get_editor_data();
-      $sql=sprintf("insert into `History Dimension`  (`Subject`,`Subject Key`,`Action`,`Direct Object`,`Direct Object Key`,`Preposition`,`Indirect Object`,`Indirect Object Key`,`History Abstract`,`History Details`,`History Date`,`Author Name`,`Author Key`) values (%s,%d,%s,%s,%d,%s,%s,%d,%s,%s,%s,%s,%s)   ",
-
-		   prepare_mysql($editor_data['subject']),
-		   $editor_data['subject_key'],
-		   prepare_mysql('edited'),
-		   prepare_mysql('Product'),
-		   $this->pid,
-		   "''",
-		   "''",
-		   0,
-		   prepare_mysql(_('Product Special Characteristic Changed').' ('.$this->get('Product Special Characteristic').')' ),
-		   prepare_mysql(_('Product')." ".$this->code." (ID:".$this->get('ID').") "._('Special Characteristic').' '._('from')." ".$old_special_characteristic." "._('to').' '. $this->get('Product Special Characteristic')  ),
-		   prepare_mysql($editor_data['date']),
-		   prepare_mysql($editor_data['author']),
-		   $editor_data['author_key']
-		   );
-      mysql_query($sql);
+    
                 
     } else {
       $this->error=true;
@@ -3853,23 +3769,14 @@ function update_description($description){
 							 );
       
       
-      $sql=sprintf("insert into `History Dimension`  (`Subject`,`Subject Key`,`Action`,`Direct Object`,`Direct Object Key`,`Preposition`,`Indirect Object`,`Indirect Object Key`,`History Abstract`,`History Details`,`History Date`,`Author Name`,`Author Key`) values (%s,%d,%s,%s,%d,%s,%s,%d,%s,%s,%s,%s,%s)   ",
-		   
-		   prepare_mysql($editor_data['subject']),
-		   $editor_data['subject_key'],
-		   prepare_mysql('edited'),
-		   prepare_mysql('Product'),
-		   $this->pid,
-		   "''",
-		   "''",
-		   0,
-		   prepare_mysql($abstract),
-		   prepare_mysql($details),
-		   prepare_mysql($editor_data['date']),
-		   prepare_mysql($editor_data['author']),
-		   $editor_data['author_key']
-		   );
-      mysql_query($sql);
+	$this->add_history(array(
+				 ,'Indirect Object'=>'Product Description'
+				 ,'History Abstract'=>$abstract
+				 ,'History Details'=>$details
+				 ));
+
+      
+    
                 
     } else {
       $this->error=true;
@@ -3959,23 +3866,16 @@ if($this->images[$image_key]['caption']==$value){
       $abstract=_('Product remove from Category')." ($cat_removed)";
       $details=_('Product remove from Category');
       $this->msg=$abstract;
-      $sql=sprintf("insert into `History Dimension`  (`Subject`,`Subject Key`,`Action`,`Direct Object`,`Direct Object Key`,`Preposition`,`Indirect Object`,`Indirect Object Key`,`History Abstract`,`History Details`,`History Date`,`Author Name`,`Author Key`) values (%s,%d,%s,%s,%d,%s,%s,%d,%s,%s,%s,%s,%s)   ",
-
-		   prepare_mysql($editor_data['subject']),
-		   $editor_data['subject_key'],
-		   prepare_mysql('disassociate'),
-		   prepare_mysql('Product'),
-		   $this->pid,
-		   "'from'",
-		   "'Category'",
-		   $category_key,
-		   prepare_mysql($abstract),
-		   prepare_mysql($details),
-		   prepare_mysql($editor_data['date']),
-		   prepare_mysql($editor_data['author']),
-		   $editor_data['author_key']
-		   );
-      mysql_query($sql);
+      
+      	$this->add_history(array(
+				 'Action'=>'disassociate'
+				 ,'Preposition'=>'from'
+				 ,'Indirect Object'=>'Category'
+				 ,'History Abstract'=>$abstract
+				 ,'History Details'=>$details
+				 ));
+      
+     
       
 
 
@@ -4085,23 +3985,15 @@ if($this->images[$image_key]['caption']==$value){
 	$abstract=_('Product added to Category')." ($cat_added)";
 	    $details=_('Product added to Category');
 	    $this->msg=$abstract;
-	    $sql=sprintf("insert into `History Dimension`  (`Subject`,`Subject Key`,`Action`,`Direct Object`,`Direct Object Key`,`Preposition`,`Indirect Object`,`Indirect Object Key`,`History Abstract`,`History Details`,`History Date`,`Author Name`,`Author Key`) values (%s,%d,%s,%s,%d,%s,%s,%d,%s,%s,%s,%s,%s)   ",
-			 
-			 prepare_mysql($editor_data['subject']),
-			 $editor_data['subject_key'],
-			 prepare_mysql('associate'),
-			 prepare_mysql('Product'),
-			 $this->pid,
-			 "'to'",
-			 "'Category'",
-			 $category_key,
-			 prepare_mysql($abstract),
-			 prepare_mysql($details),
-		   prepare_mysql($editor_data['date']),
-			 prepare_mysql($editor_data['author']),
-			 $editor_data['author_key']
-			 );
-	    mysql_query($sql);
+	    	$this->add_history(array(
+				 'Action'=>'associate'
+				 ,'Preposition'=>'to'
+				 ,'Indirect Object'=>'Category'
+				 ,'History Abstract'=>$abstract
+				 ,'History Details'=>$details
+				 ));
+
+	   
       }
 
 

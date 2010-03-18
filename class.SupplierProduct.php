@@ -353,16 +353,13 @@ class supplierproduct extends DB_Table {
             break;
         case('parts'):
 
-	  $sql=sprintf("select `Part SKU` as sku from `Supplier Product Part List` where `Supplier Product Code`=%s and `Supplier Key`=%d and `Supplier Product Part Most Recent`='Yes' group by  `Part SKU`;"
-		       ,prepare_mysql($this->data['Supplier Product Code'])
-		       ,$this->data['Supplier Key']
-                        );
-            $result=mysql_query($sql);
-            $num_parts=0;
-            $this->parts_sku=array();
-            while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
-                $this->parts_sku[]=$row['sku'];
-            }
+	  $parts=$this->get_parts();
+	  
+	  $this->parts_sku=array();
+	  foreach($parts as $key=>$value){
+	    $this->parts_sku[]=$key;
+	  }
+
 
             break;
         case('sales'):
@@ -376,6 +373,27 @@ class supplierproduct extends DB_Table {
 
         }
     }
+
+    function get_parts(){
+      $parts=array();
+      $sql=sprintf("select `Supplier Product Unit`,`Supplier Product Unit`,`Supplier Product Units Per Part`,`Part SKU`  from `Supplier Product Part List` where `Supplier Product Code`=%s and `Supplier Key`=%d and `Supplier Product Part Most Recent`='Yes' group by  `Part SKU`;"
+		   ,prepare_mysql($this->data['Supplier Product Code'])
+		   ,$this->data['Supplier Key']
+		   );
+      $result=mysql_query($sql);
+      while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
+	$parts[$row['Part SKU']]=array(
+				  'Part SKU'=>$row['Part SKU']
+				  ,'Supplier Product Units Per Part'=>$row['Supplier Product Units Per Part']
+				  ,'Supplier Product Unit'=>$row['Supplier Product Unit']
+				  );
+      }
+	    
+      return $parts;
+    }
+
+
+
     function get($key='') {
 
         if (array_key_exists($key,$this->data))
@@ -385,19 +403,19 @@ class supplierproduct extends DB_Table {
         if (isset($this->data[$_key]))
             return $this->data[$key];
 
-
+	
         switch ($key) {
-case('Formated Cost'):
-//print_r($this->data);
-//return $this->data['Supplier Product Cost'];
-return money($this->data['Supplier Product Cost'],$this->data['Supplier Product Currency']);
+	case('Formated Cost'):
+	  //print_r($this->data);
+	  //return $this->data['Supplier Product Cost'];
+	  return money($this->data['Supplier Product Cost'],$this->data['Supplier Product Currency']);
 
         }
-
+	
         return false;
     }
     function valid_id($id) {
-        if (is_numeric($id) and $id>0 and $id<9223372036854775807)
+      if (is_numeric($id) and $id>0 and $id<9223372036854775807)
             return true;
         else
             return false;
@@ -1303,7 +1321,7 @@ default:
 
 
 
-  function units_convertion_factor($unit_from,$unit_to){
+  function units_convertion_factor($unit_from,$unit_to=false){
     return 1;
   }
 

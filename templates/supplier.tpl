@@ -119,28 +119,37 @@
 
 
 
-  <div  id="block_pending" class="data_table" style="margin:25px 0px;">
-	 <span class="clean_table_title">{t}Pending Orders{/t}</span>
-	 <div  class="clean_table_caption"  style="clear:both;">
-	   <div style="float:left;"><div id="table_info4" class="clean_table_info"><span id="rtext4"></span> <span  id="rtext_rpp4" class="rtext_rpp"></span> <span class="filter_msg"  id="filter_msg4"></span></div></div>
-	   <div class="clean_table_filter"><div class="clean_table_info"><span id="filter_name4">{$filter_name4}</span>: <input style="border-bottom:none" id='f_input4' value="{$filter_value}" size=10/><div id='f_container4'></div></div></div>
-	   <div class="clean_table_controls" style="" ><div><span  style="margin:0 5px" id="paginator4"></span></div></div>
-	 </div>
-	 <div  id="table4"   class="data_table_container dtable btable "> </div>
-       </div>
-      
-       <div  id="block_products" class="data_table" style="{if $display.products==0}display:none;{/if}margin:25px 0px;clear:both">
-	 <div class="data_table" >
-	   <span class="clean_table_title">{t}Supplier Products{/t}</span>
-	   <table style="position:relative;bottom:4px;float:left;margin:0 0 0px 20px ;padding:0;"  class="options" {if $products==0 }style="display:none"{/if}>
-	     <tr>
-	       <td {if $products_view=='product_general'}class="selected"{/if} id="product_general" >{t}General{/t}</td>
-	       <td {if $products_view=='product_stock'}class="selected"{/if}  id="product_stock"  >{t}Stock{/t}</td>
-	       <td {if $products_view=='product_sales'}class="selected"{/if}  id="product_sales"  >{t}Sales{/t}</td>
+  <div  id="block_pending" class="data_table" style="margin:25px 0px;{if $supplier->get('Supplier Open Purchase Orders')==0}display:none{/if}"    >
+    <span class="clean_table_title">{t}Pending Orders{/t}</span>
+    <div id="list_options4"> 
+        <div style="clear:both;margin:0 0px;padding:0 20px ;border-bottom:1px solid #999"></div>
+    </div>
+
+
+
+    <div  class="clean_table_caption"  style="clear:both;">
+      <div style="float:left;"><div id="table_info4" class="clean_table_info"><span id="rtext4"></span> <span  id="rtext_rpp4" class="rtext_rpp"></span> <span class="filter_msg"  id="filter_msg4"></span></div></div>
+      <div class="clean_table_filter"><div class="clean_table_info"><span id="filter_name4">{$filter_name4}</span>: <input style="border-bottom:none" id='f_input4' value="{$filter_value}" size=10/><div id='f_container4'></div></div></div>
+      <div class="clean_table_controls" style="" ><div><span  style="margin:0 5px" id="paginator4"></span></div></div>
+    </div>
+    <div  id="table4"   class="data_table_container dtable btable "> </div>
+  </div>
+  
+  <div  id="block_products" class="data_table" style="margin:25px 0px;clear:both">
+    <div class="data_table" >
+      <span class="clean_table_title">{t}Supplier Products{/t}</span>
+      <div id="list_options0"> 
+        <div style="clear:both;margin:0 0px;padding:0 20px ;border-bottom:1px solid #999"></div>
+
+	  <table style="float:left;margin:0 0 5px 0px ;padding:0"  class="options" >
+	    <tr>
+	      <td {if $products_view=='product_general'}class="selected"{/if} id="product_general" >{t}General{/t}</td>
+	      <td {if $products_view=='product_stock'}class="selected"{/if}  id="product_stock"  >{t}Stock{/t}</td>
+	      <td {if $products_view=='product_sales'}class="selected"{/if}  id="product_sales"  >{t}Sales{/t}</td>
 	       <td {if $products_view=='product_forecast'}class="selected"{/if}  id="product_forecasr"  >{t}Forecast{/t}</td>
-	     </tr>
-	   </table>
-	   <table style="position:relative;bottom:4px;clear:none;float:left;margin:0 0 0 20px ;padding:0"  class="options_mini" {if $parts==0 }style="display:none"{/if}>
+	    </tr>
+	  </table>
+	   <table style="float:left;margin:0 0 5px 0px ;padding:0"  class="options_mini" {if $parts==0 }style="display:none"{/if}>
 	     <tr>
 	       <td {if $products_period=='all'}class="selected"{/if} id="product_period_all" >{t}All{/t}</td>
 	       <td {if $products_period=='year'}class="selected"{/if}  id="product_period_year"  >{t}1Yr{/t}</td>
@@ -149,6 +158,10 @@
 	       <td {if $products_period=='week'}class="selected"{/if}  id="product_period_week"  >{t}1W{/t}</td>
 	     </tr>
 	   </table>
+
+      </div>
+
+    
 	   <div  class="clean_table_caption"  style="clear:both;">
 	     <div style="float:left;"><div id="table_info0" class="clean_table_info"><span id="rtext0"></span> <span  id="rtext_rpp0" class="rtext_rpp"></span> <span class="filter_msg"  id="filter_msg0"></span></div></div>
 	     <div class="clean_table_filter"  id="clean_table_filter0"><div class="clean_table_info"><span id="filter_name0">{$filter_name0}</span>: <input style="border-bottom:none" id='f_input0' value="{$filter_value0}" size=10/><div id='f_container0'></div></div></div>
@@ -158,10 +171,11 @@
 	 </div>
        </div>
        
-<div style="border-bottom:0px solid #ccc;width:100%;text-align:right">
-<span id="pos" class="state_details {if $orders_view=='pos'}selected{/if}" style="margin-right:25px">{t}Purchase Orders{/t}</span>
-<span id="dns" class="state_details {if $orders_view=='dns'}selected{/if}"style="margin-right:25px">{t}Delivery Notes{/t}</span>
-<span id="invoices" class="state_details {if $orders_view=='invoices'}selected{/if}"> {t}Invoices{/t}</span>
+
+       <div style="border-bottom:0px solid #ccc;width:100%;text-align:right">
+<span id="pos" class="state_details {if $orders_view=='pos'}selected{/if}" style="margin-right:25px">{t}Purchase Orders{/t} ({$supplier->get('Purchase Orders')})</span>
+<span id="dns" class="state_details {if $orders_view=='dns'}selected{/if}"style="margin-right:25px">{t}Delivery Notes{/t} ({$supplier->get('Delivery Notes')})</span>
+<span id="invoices" class="state_details {if $orders_view=='invoices'}selected{/if}"> {t}Invoices{/t} ({$supplier->get('Invoices')})</span>
 </div>
 
 

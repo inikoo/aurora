@@ -131,6 +131,7 @@ $js_files=array(
 		$yui_path.'calendar/calendar-min.js',
 		'common.js.php',
 		'table_common.js.php',
+		'supplier_dn_common.js.php',
 		);
 
 
@@ -218,6 +219,26 @@ case('Inputted'):
   $smarty->assign('staff',$staff);
   $smarty->assign('staff_cols',$num_cols);
  
+
+  
+
+$sql=sprintf("select `Location Key` ,`Location Code`    from `Location Dimension` where `Location Mainly Used For`='Loading'   order by `Location Code` ");
+  $res = mysql_query($sql);
+  $num_cols=5;
+  $location=array();
+  while($row=mysql_fetch_array($res, MYSQL_ASSOC)){
+    $location[]=array('code'=>$row['Location Code'],'key'=>$row['Location Key']);
+  }
+  foreach($location as $key=>$_location){
+    $location[$key]['mod']=fmod($key,$num_cols);
+  }
+  $smarty->assign('location',$location);
+  $smarty->assign('location_cols',$num_cols);
+ 
+  $smarty->assign('location_key',1);
+  $smarty->assign('location_code',_('Unknown'));
+
+
   $js_files[]='supplier_dn_inputted.js.php';
   $js_files[]='js/edit_common.js';
   $smarty->assign('css_files',$css_files);
@@ -248,6 +269,38 @@ case('Received'):
   $smarty->assign('js_files',$js_files);
   $smarty->display('supplier_dn_received.tpl');
   break;
+
+case('Checked'):
+
+
+  
+
+  $sql=sprintf("select `Staff Key`id,`Staff Alias` as alias ,`Staff Position Key` as position_id from `Staff Dimension` where `Staff Currently Working`='Yes' order by alias ");
+  $res = mysql_query($sql);
+  $num_cols=5;
+  $staff=array();
+  while($row=mysql_fetch_array($res, MYSQL_ASSOC)){
+    $staff[]=array('alias'=>$row['alias'],'id'=>$row['id'],'position_id'=>$row['position_id']);
+  }
+  foreach($staff as $key=>$_staff){
+    $staff[$key]['mod']=fmod($key,$num_cols);
+  }
+  $smarty->assign('staff',$staff);
+  $smarty->assign('staff_cols',$num_cols);
+  $js_files[]='js/edit_common.js';
+  
+
+ 
+    $js_files[]='supplier_dn_assing_locations.js.php';
+    $smarty->assign('css_files',$css_files);
+    $smarty->assign('js_files',$js_files);
+    $smarty->display('supplier_dn_assing_locations.tpl');
+    
+ 
+
+
+  break;
+
 case('Cancelled'):
   $js_files[]='supplier_dn_cancelled.js.php';
   $smarty->assign('css_files',$css_files);

@@ -16,22 +16,18 @@ var submit_dialog;
 var staff_dialog;
 var delete_dialog;
 
-
-
-
-
 var myCellEdit = function (callback, newValue) {
     var record = this.getRecord(),
     column = this.getColumn(),
     oldValue = this.value,
     datatable = this.getDataTable();
     recordIndex = datatable.getRecordIndex(record);
-   
+    
     ar_file='ar_edit_porders.php';
     
     var request='tipo=edit_'+column.object+'&key=' + column.key + '&newvalue=' + encodeURIComponent(newValue) + '&oldvalue=' + encodeURIComponent(oldValue)+ myBuildUrl(datatable,record);
     //alert(ar_file+'?'+request);
-
+    
     YAHOO.util.Connect.asyncRequest(
 				    'POST',
 				    ar_file, {
@@ -217,16 +213,7 @@ var select_staff=function(o,e){
     Dom.get('submited_by_alias').innerHTML=staff_name;
 	
     close_dialog('staff');
-
-	  
-	
-
-
-
-
-
 }
-
 
 
     var submit_order_save=function(o){
@@ -239,15 +226,15 @@ var select_staff=function(o,e){
 	var staff_key=Dom.get('submitted_by').value;
 	
 	var request='ar_edit_porders.php?tipo=submit&submit_method='+escape(submit_method)+'&date_type='+escape(date_type)+'&staff_key='+escape(staff_key)+'&submit_date='+escape(submit_date)+'&submit_time='+escape(submit_time)+'&estimated_date='+escape(estimated_date)+'&id='+escape(po_id);
-	alert(request)
+
 	YAHOO.util.Connect.asyncRequest('POST',request ,{
 		
 		success:function(o) {
-		    alert(o.responseText);
+		  
 		    var r =  YAHOO.lang.JSON.parse(o.responseText);
 		    if (r.state == 200) {
 
-
+			location.href='porder.php?id='+po_id;
 
 		    }else
 			alert(r.msg);

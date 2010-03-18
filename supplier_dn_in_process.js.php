@@ -198,16 +198,15 @@ function delete_order() {
 
 var input_order_save=function(o){
     var request='ar_edit_porders.php?tipo=input_dn&id='+escape(dn_key);
-    alert(request)
+
     YAHOO.util.Connect.asyncRequest('POST',request ,{
 	    
 	    success:function(o) {
-		    alert(o.responseText);
-		    return;
+		    
 		    var r =  YAHOO.lang.JSON.parse(o.responseText);
 		    if (r.state == 200) {
 			
-			location.href='supplier_dn.php?id='+po_id;
+			location.href='supplier_dn.php?id='+dn_key;
 
 			
 
@@ -380,7 +379,6 @@ function take_values_from_pos(){
 					'POST',
 					ar_file, {
 					    success:function(o) {
-						  alert(o.responseText);
 						var r = YAHOO.lang.JSON.parse(o.responseText);
 						if (r.state == 200) {
 						    var tableid=0;

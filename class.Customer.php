@@ -705,9 +705,9 @@ class Customer extends DB_Table {
       $this->get_data('id',$this->id);
 
       $history_data=array(
-			  'note'=>_('Customer Created')
-			  ,'details'=>_trim(_('New customer')." \"".$this->data['Customer Name']."\"  "._('added'))
-			  ,'action'=>'created'
+			  'History Abstract'=>_('Customer Created')
+			  ,'History Details'=>_trim(_('New customer')." ".$this->data['Customer Name']." "._('added'))
+			  ,'Action'=>'created'
                           );
       $this->add_history($history_data);
       $this->new=true;
@@ -844,9 +844,9 @@ class Customer extends DB_Table {
       $this->get_data('id',$this->id);
       $this->fuzzy=true;
       $history_data=array(
-			  'note'=>_('Anonymous Customer Created')
-			  ,'details'=>_trim(_('New anonymous customer added').' ('.$this->get_formated_id_link().')' )
-			  ,'action'=>'created'
+			  'History Abstract'=>_('Anonymous Customer Created')
+			  ,'History Details'=>_trim(_('New anonymous customer added').' ('.$this->get_formated_id_link().')' )
+			  ,'Action'=>'created'
 
                           );
       $this->add_history($history_data);
@@ -1334,9 +1334,9 @@ class Customer extends DB_Table {
       $this->msg=$details;
       $this->msg_updated=$details;
       $history_data=array(
-			  'indirect_object'=>$field
-			  ,'details'=>$details
-			  ,'note'=>$note
+			  'Indirect Object'=>$field
+			  ,'History Details'=>$details
+			  ,'History Abstract'=>$note
                           );
       $this->add_history($history_data);
     }
@@ -1395,10 +1395,10 @@ class Customer extends DB_Table {
 	}
 
 	$history_data=array(
-			    'indirect_object'=>'Email'
-			    ,'indirect_object'=>$email->id
-			    ,'details'=>$details
-			    ,'note'=>$note
+			    'Indirect Object'=>'Email'
+			    ,'Indirect Object Key'=>$email->id
+			    ,'History Details'=>$details
+			    ,'History Abstract'=>$note
 			    );
 	$this->add_history($history_data);
       }
@@ -2043,22 +2043,18 @@ class Customer extends DB_Table {
       $details='';
 
 
-      $sql=sprintf("insert into `History Dimension` (`History Date`,`Subject`,`Subject Key`,`Action`,`Direct Object`,`Preposition`,`Indirect Object`,`Indirect Object Key`,`History Abstract`,`History Details`,`Author Name`,`Author Key`) values (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
-		   ,$date
-		   ,prepare_mysql('User')
-		   ,prepare_mysql($data['user_id'])
-		   ,prepare_mysql('wrote')
-		   ,prepare_mysql('Note')
-		   ,prepare_mysql('about')
-		   ,prepare_mysql('Customer')
-		   ,prepare_mysql($this->id)
-		   ,prepare_mysql($note)
-		   ,prepare_mysql($details)
-		   ,prepare_mysql($data['author'])
-		   ,prepare_mysql($data['author_key'])
-		   );
-      //   print $sql;
-      mysql_query($sql);
+      	$this->add_history(array(
+				 'Date'=>$date
+				 ,'Action'=>'wrote'
+				 ,'Direct Object'=>'Note'
+				 ,'Preposition'=>'about'
+				 ,'Indirect Object'=>'Customer'
+				 ,'Indirect Object Key'=>$this->id
+				 ,'History Abstract'=>$note
+				 ,'History Details'=>$details
+				 ));
+
+     
       $this->msg=_('Note Added');
       return true;
       break;

@@ -134,6 +134,15 @@
       <td class="aright">{t}Received By{/t}:</td><td style="position:relative"> <span id="get_receiver" class="state_details" style="position:absolute;left:200px">{t}Modify{/t}</span><span id="received_by_alias">{$user}</span></td>
     </tr>
 
+    <input type="hidden" id="location_key" value="{$location_key}"/>
+
+<tr>
+  <td class="aright">{t}Receiving Location{/t}</td>
+  <td style="position:relative">
+    <span id="get_location" class="state_details" style="position:absolute;left:200px">{t}Modify{/t}</span><span id="location_code">{$location_code}</span>
+  </td>
+</tr>
+
     <tr><td colspan=2 style="border-top:1px solid #ddd;text-align:center;padding:10px 0 0 0">
 	<span class="state_details" onClick="close_dialog('received')"  >Cancel</span>
 	<span style="margin-left:50px" class="state_details" onClick="received_order_save(this)"  >Save</span>
@@ -157,7 +166,18 @@
 </div>
 
 
-
+<div id="location_dialog" class="yuimenu location_list"  >
+  <div class="bd">
+    <table border=1>
+      {foreach from=$location item=_location name=foo}
+      {if $_location.mod==0}<tr>{/if}
+	<td location_key="{$_location.key}" id="receivers{$_location.key}" onClick="select_location(this,event)" >{$_location.code}</td>
+	{if $_location.mod==$location_cols}</tr>{/if}
+      {/foreach}
+    </table>
+<span class="state_details" style="float:right" onClick="close_dialog('location')" >{t}Close{/t}</span>
+  </div>
+</div>
 
 
 {include file='footer.tpl'}

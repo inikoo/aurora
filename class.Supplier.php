@@ -228,12 +228,19 @@ class supplier extends DB_Table{
   */
   function get($key){
 
-
+   
 
     if(array_key_exists($key,$this->data))
       return $this->data[$key];
      
     switch($key){
+    case('Purchase Orders'):
+    case('Open Purchase Orders'):
+    case('Delivery Notes'):
+    case('Invoices'):
+      return number($this->data['Supplier '.$key]);
+      break;
+
     case('Formated ID'):
     case("ID"):
       return $this->get_formated_id();
@@ -1284,6 +1291,50 @@ class supplier extends DB_Table{
 
 
   }
+
+
+  function update_orders(){
+    $number_purchase_orders=0;
+    $number_open_purchase_orders=0;
+    $number_delivery_notes=0;
+    $number_invoices=0;
+    
+    $sql=sprintf("select count(*) as num from `Purchase Order Dimension` where `Purchase Order Supplier Key`=%d",$this->id);
+    $res=mysql_query($sql);
+
+    if($row=mysql_fetch_array($res)){
+      $number_purchase_orders=$row['num'];
+    }
+    
+    $sql=sprintf("select count(*) as num from `Purchase Order Dimension` where `Purchase Order Supplier Key`=%d and `Purchase Order Current Dispatch State` not in ('Done','Cancelled')",$this->id);
+    $res=mysql_query($sql);
+    if($row=mysql_fetch_array($res)){
+      $number_open_purchase_orders=$row['num'];
+    }
+    
+    $sql=sprintf("select count(*) as num from `Supplier Delivery Note Dimension` where `Supplier Delivery Note Supplier Key`=%d",$this->id);
+    $res=mysql_query($sql);
+    if($row=mysql_fetch_array($res)){
+      $number_delivery_notes=$row['num'];
+    }
+
+    $sql=sprintf("select count(*) as num from `Supplier Invoice Dimension` where `Supplier Invoice Supplier Key`=%d",$this->id);
+    $res=mysql_query($sql);
+    if($row=mysql_fetch_array($res)){
+      $number_invoices=$row['num'];
+    }
+
+    
+  $sql=sprintf("update `Supplier Dimension` set `Supplier Purchase Orders`=%d,`Supplier Open Purchase Orders`=%d ,`Supplier Delivery Notes`=%d ,`Supplier Invoices`=%d where `Supplier Key`=%d"
+	       ,$number_purchase_orders
+	       ,$number_open_purchase_orders
+	       ,$number_delivery_notes
+	       ,$number_invoices
+	       ,$this->id);
+  mysql_query($sql);
+
+  }
+
 
 }
 

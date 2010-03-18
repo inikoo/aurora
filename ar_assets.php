@@ -3809,7 +3809,7 @@ function list_products() {
     $wheref.=" and  `Product Name` like '%".addslashes($f_value)."%'";
 
     $sql="select count(*) as total from $db_table  $where $wheref   ";
-
+    //print $sql;
     $res=mysql_query($sql);
     if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
         $total=$row['total'];

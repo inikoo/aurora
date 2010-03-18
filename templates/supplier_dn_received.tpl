@@ -22,7 +22,8 @@
     <div style="border:0px solid red;width:290px;float:right">
     <table  border=0  class="order_header"  style="margin-right:30px;float:right">
       <tr><td class="aright" style="padding-right:40px">{t}Created{/t}:</td><td>{$supplier_dn->get('Creation Date')}</td></tr>
-      <tr><td class="aright" style="padding-right:40px">{t}Captured{/t}:</td><td>{$supplier_dn->get('Input Date')}</td></tr>
+      <tr><td class="aright" style="padding-right:40px">{t}Inputted{/t}:</td><td>{$supplier_dn->get('Input Date')}</td></tr>
+      <tr><td class="aright" style="padding-right:40px">{t}Received{/t}:</td><td>{$supplier_dn->get('Received Date')}</td></tr>
 
     </table>
     </div>
