@@ -3485,7 +3485,7 @@ $this->update_sales_state($a1);
 						     );
 
 	$this->add_history(array(
-				 ,'Indirect Object'=>'Product Price'
+				 'Indirect Object'=>'Product Price'
 				 ,'History Abstract'=>_('Product Price Changed').' ('.$this->get('Price').')'
 				 ,'History Details'=>_('Product')." ".$this->code." (ID:".$this->get('ID').") "._('price changed').' '._('from')." ".$old_formated_price."  "._('to').' '. $this->get('Formated Price')
 				 ));
@@ -3566,7 +3566,7 @@ $this->update_sales_state($a1);
 						 );
 
       	$this->add_history(array(
-				 ,'Indirect Object'=>'Product RRP'
+				 'Indirect Object'=>'Product RRP'
 				 ,'History Abstract'=>_('Product RRP Changed').' ('.$this->get('RRP Per Unit').')'
 				 ,'History Details'=>_('Product')." ".$this->code." (ID:".$this->get('ID').") "._('RRP changed').' '._('from')." ".$old_rrp_per_unit." "._('per unit')." "._('to').' '. $this->get('RRP Per Unit').' '._('per unit')
 				 ));
@@ -3639,7 +3639,7 @@ $this->update_sales_state($a1);
 						 );
 
 	$this->add_history(array(
-				 ,'Indirect Object'=>'Product Name'
+				 'Indirect Object'=>'Product Name'
 				 ,'History Abstract'=>_('Product Name Changed').' ('.$this->get('Product Name').')'
 				 ,'History Details'=>_('Product')." ".$this->code." (ID:".$this->get('ID').") "._('Name').' '._('from')." ".$old_name." "._('to').' '. $this->get('Product Name')
 				 ));
@@ -3720,7 +3720,7 @@ $this->update_sales_state($a1);
 						 );
 
 	$this->add_history(array(
-				 ,'Indirect Object'=>'Product Special Characteristic'
+				 'Indirect Object'=>'Product Special Characteristic'
 				 ,'History Abstract'=>_('Product Special Characteristic Changed').' ('.$this->get('Product Special Characteristic').')'
 				 ,'History Details'=>_('Product')." ".$this->code." (ID:".$this->get('ID').") "._('Special Characteristic').' '._('from')." ".$old_special_characteristic." "._('to').' '. $this->get('Product Special Characteristic')
 				 ));
@@ -3770,7 +3770,7 @@ function update_description($description){
       
       
 	$this->add_history(array(
-				 ,'Indirect Object'=>'Product Description'
+				 'Indirect Object'=>'Product Description'
 				 ,'History Abstract'=>$abstract
 				 ,'History Details'=>$details
 				 ));
