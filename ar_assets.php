@@ -2955,7 +2955,7 @@ function list_departments() {
     elseif($_order=='code')
     $order='`Product Department Code`';
     elseif($_order=='active')
-    $order='`Product Department For Sale Products`';
+    $order='`Product Department For Public Sale Products`';
     elseif($_order=='outofstock')
     $order='`Product Department Out Of Stock Products`';
     elseif($_order=='stock_error')
@@ -2973,7 +2973,7 @@ function list_departments() {
     $sum_families=0;
     $sum_active=0;
     $sum_discontinued=0;
-    $sql="select sum(`Product Department For Sale Products`) as sum_active, sum(`Product Department Discontinued Products`) as sum_discontinued,sum(`Product Department Families`) as sum_families  from `Product Department Dimension` $where   ";
+    $sql="select sum(`Product Department For Public Sale Products`) as sum_active, sum(`Product Department Discontinued Products`) as sum_discontinued,sum(`Product Department Families`) as sum_families  from `Product Department Dimension` $where   ";
     $result=mysql_query($sql);
     if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
         $sum_families=$row['sum_families'];
@@ -3036,7 +3036,7 @@ function list_departments() {
       //$awp_p=money($data['Product Department 1 Year Acc Avg Week Profit Per Product']);
         $sum_total_sales=0;
         $sum_month_sales=0;
-        $sql="select max(`Product Department 1 Year Acc Days Available`) as 'Product Department 1 Year Acc Days Available',max(`Product Department 1 Year Acc Days On Sale`) as 'Product Department 1 Year Acc Days On Sale', sum(if(`Product Department 1 Year Acc Profit`<0,`Product Department 1 Year Acc Profit`,0)) as total_profit_minus,sum(if(`Product Department 1 Year Acc Profit`>=0,`Product Department 1 Year Acc Profit`,0)) as total_profit_plus,sum(`Product Department For Sale Products`) as sum_active,sum(`Product Department 1 Year Acc Invoiced Amount`) as sum_total_sales  from `Product Department Dimension`  $where  ";
+        $sql="select max(`Product Department 1 Year Acc Days Available`) as 'Product Department 1 Year Acc Days Available',max(`Product Department 1 Year Acc Days On Sale`) as 'Product Department 1 Year Acc Days On Sale', sum(if(`Product Department 1 Year Acc Profit`<0,`Product Department 1 Year Acc Profit`,0)) as total_profit_minus,sum(if(`Product Department 1 Year Acc Profit`>=0,`Product Department 1 Year Acc Profit`,0)) as total_profit_plus,sum(`Product Department For Public Sale Products`) as sum_active,sum(`Product Department 1 Year Acc Invoiced Amount`) as sum_total_sales  from `Product Department Dimension`  $where  ";
 
         $result=mysql_query($sql);
         if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
@@ -3101,7 +3101,7 @@ function list_departments() {
       //$awp_p=money($row['Product Department 1 Quarter Acc Avg Week Profit Per Product']);
         $sum_total_sales=0;
         $sum_month_sales=0;
-        $sql="select max(`Product Department 1 Quarter Acc Days Available`) as 'Product Department 1 Quarter Acc Days Available',max(`Product Department 1 Quarter Acc Days On Sale`) as 'Product Department 1 Quarter Acc Days On Sale',sum(if(`Product Department 1 Quarter Acc Profit`<0,`Product Department 1 Quarter Acc Profit`,0)) as total_profit_minus,sum(if(`Product Department 1 Quarter Acc Profit`>=0,`Product Department 1 Quarter Acc Profit`,0)) as total_profit_plus,sum(`Product Department For Sale Products`) as sum_active,sum(`Product Department 1 Quarter Acc Invoiced Amount`) as sum_total_sales   from `Product Department Dimension`  $where  ";
+        $sql="select max(`Product Department 1 Quarter Acc Days Available`) as 'Product Department 1 Quarter Acc Days Available',max(`Product Department 1 Quarter Acc Days On Sale`) as 'Product Department 1 Quarter Acc Days On Sale',sum(if(`Product Department 1 Quarter Acc Profit`<0,`Product Department 1 Quarter Acc Profit`,0)) as total_profit_minus,sum(if(`Product Department 1 Quarter Acc Profit`>=0,`Product Department 1 Quarter Acc Profit`,0)) as total_profit_plus,sum(`Product Department For Public Sale Products`) as sum_active,sum(`Product Department 1 Quarter Acc Invoiced Amount`) as sum_total_sales   from `Product Department Dimension`  $where  ";
 
         $result=mysql_query($sql);
         if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
@@ -3155,7 +3155,7 @@ function list_departments() {
       
         $sum_total_sales=0;
         $sum_month_sales=0;
-        $sql="select max(`Product Department 1 Month Acc Days Available`) as 'Product Department 1 Month Acc Days Available',max(`Product Department 1 Month Acc Days On Sale`) as 'Product Department 1 Month Acc Days On Sale',sum(if(`Product Department 1 Month Acc Profit`<0,`Product Department 1 Month Acc Profit`,0)) as total_profit_minus,sum(if(`Product Department 1 Month Acc Profit`>=0,`Product Department 1 Month Acc Profit`,0)) as total_profit_plus,sum(`Product Department For Sale Products`) as sum_active,sum(`Product Department 1 Month Acc Invoiced Amount`) as sum_total_sales   from `Product Department Dimension`   $where ";
+        $sql="select max(`Product Department 1 Month Acc Days Available`) as 'Product Department 1 Month Acc Days Available',max(`Product Department 1 Month Acc Days On Sale`) as 'Product Department 1 Month Acc Days On Sale',sum(if(`Product Department 1 Month Acc Profit`<0,`Product Department 1 Month Acc Profit`,0)) as total_profit_minus,sum(if(`Product Department 1 Month Acc Profit`>=0,`Product Department 1 Month Acc Profit`,0)) as total_profit_plus,sum(`Product Department For Public Sale Products`) as sum_active,sum(`Product Department 1 Month Acc Invoiced Amount`) as sum_total_sales   from `Product Department Dimension`   $where ";
 
         $result=mysql_query($sql);
         if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
@@ -3207,7 +3207,7 @@ function list_departments() {
       //$awp_p=money($row['Product Department 1 Week Acc Avg Week Profit Per Product']);
         $sum_total_sales=0;
         $sum_month_sales=0;
-        $sql="select max(`Product Department 1 Week Acc Days Available`) as 'Product Department 1 Week Acc Days Available',max(`Product Department 1 Week Acc Days On Sale`) as 'Product Department 1 Week Acc Days On Sale',sum(if(`Product Department 1 Week Acc Profit`<0,`Product Department 1 Week Acc Profit`,0)) as total_profit_minus,sum(if(`Product Department 1 Week Acc Profit`>=0,`Product Department 1 Week Acc Profit`,0)) as total_profit_plus,sum(`Product Department For Sale Products`) as sum_active,sum(`Product Department 1 Week Acc Invoiced Amount`) as sum_total_sales   from `Product Department Dimension`  $where  ";
+        $sql="select max(`Product Department 1 Week Acc Days Available`) as 'Product Department 1 Week Acc Days Available',max(`Product Department 1 Week Acc Days On Sale`) as 'Product Department 1 Week Acc Days On Sale',sum(if(`Product Department 1 Week Acc Profit`<0,`Product Department 1 Week Acc Profit`,0)) as total_profit_minus,sum(if(`Product Department 1 Week Acc Profit`>=0,`Product Department 1 Week Acc Profit`,0)) as total_profit_plus,sum(`Product Department For Public Sale Products`) as sum_active,sum(`Product Department 1 Week Acc Invoiced Amount`) as sum_total_sales   from `Product Department Dimension`  $where  ";
 
         $result=mysql_query($sql);
         if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
@@ -3539,7 +3539,7 @@ function list_departments() {
 
 
         }
-        $sum_active+=$row['Product Department For Sale Products'];
+        $sum_active+=$row['Product Department For Public Sale Products'];
 	if(!$percentages){
 	$tsall=money($tsall,$row['Product Department Currency Code']);
 	$tprofit=money($tprofit,$row['Product Department Currency Code']);
@@ -3548,7 +3548,7 @@ function list_departments() {
                      'code'=>$code,
                      'name'=>$name,
                      'families'=>number($row['Product Department Families']),
-                     'active'=>number($row['Product Department For Sale Products']),
+                     'active'=>number($row['Product Department For Public Sale Products']),
                      'todo'=>number($row['Product Department In Process Products']),
 		     'discontinued'=>number($row['Product Department Discontinued Products']),
 
@@ -5498,7 +5498,7 @@ function list_families() {
     elseif($order=='name')
     $order='`Product Family Name`';
     elseif($order=='active')
-    $order='`Product Family For Sale Products`';
+    $order='`Product Family For Public Sale Products`';
     elseif($order=='discontinued')
     $order='`Product Family Discontinued Products`';
     elseif($order=='todo')
@@ -5525,7 +5525,7 @@ function list_families() {
 
     $sum_active=0;
 
-    $sql="select sum(`Product Family For Sale Products`) as sum_active  from `Product Family Dimension`  $where  ";
+    $sql="select sum(`Product Family For Public Sale Products`) as sum_active  from `Product Family Dimension`  $where  ";
     $result=mysql_query($sql);
     if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
 
@@ -5877,7 +5877,7 @@ function list_families() {
 
                      'code'=>$code,
                      'name'=>$row['Product Family Name'],
-                     'active'=>number($row['Product Family For Sale Products']),
+                     'active'=>number($row['Product Family For Public Sale Products']),
                      'todo'=>number($row['Product Family In Process Products']),
                      'discontinued'=>number($row['Product Family Discontinued Products']),
                      'notforsale'=>number($row['Product Family Not For Sale Products']),
@@ -6142,7 +6142,7 @@ function list_stores() {
     elseif($order=='name')
       $order='`Store Name`';
     elseif($order=='active')
-      $order='`Store For Sale Products`';
+      $order='`Store For Public Sale Products`';
     elseif($order=='outofstock')
       $order='`Store Out Of Stock Products`';
     elseif($order=='stock_error')
@@ -6158,7 +6158,7 @@ function list_stores() {
     
 
 
-    $sql="select sum(`Store For Sale Products`) as sum_active,sum(`Store Families`) as sum_families  from `Store Dimension` $where $wheref   ";
+    $sql="select sum(`Store For Public Sale Products`) as sum_active,sum(`Store Families`) as sum_families  from `Store Dimension` $where $wheref   ";
     $result=mysql_query($sql);
     if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
         $sum_families=$row['sum_families'];
@@ -6256,7 +6256,7 @@ function list_stores() {
 
         $sum_total_sales=0;
         $sum_month_sales=0;
-        $sql="select sum(if(`Store 1 Quarter Acc Profit`<0,`Store 1 Quarter Acc Profit`,0)) as total_profit_minus,sum(if(`Store 1 Quarter Acc Profit`>=0,`Store 1 Quarter Acc Profit`,0)) as total_profit_plus,sum(`Store For Sale Products`) as sum_active,sum(`Store 1 Quarter Acc Invoiced Amount`) as sum_total_sales   from `Store Dimension`  $where $wheref   ";
+        $sql="select sum(if(`Store 1 Quarter Acc Profit`<0,`Store 1 Quarter Acc Profit`,0)) as total_profit_minus,sum(if(`Store 1 Quarter Acc Profit`>=0,`Store 1 Quarter Acc Profit`,0)) as total_profit_plus,sum(`Store For Public Sale Products`) as sum_active,sum(`Store 1 Quarter Acc Invoiced Amount`) as sum_total_sales   from `Store Dimension`  $where $wheref   ";
 
         $result=mysql_query($sql);
         if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
@@ -6274,7 +6274,7 @@ function list_stores() {
 
         $sum_total_sales=0;
         $sum_month_sales=0;
-        $sql="select sum(if(`Store 1 Month Acc Profit`<0,`Store 1 Month Acc Profit`,0)) as total_profit_minus,sum(if(`Store 1 Month Acc Profit`>=0,`Store 1 Month Acc Profit`,0)) as total_profit_plus,sum(`Store For Sale Products`) as sum_active,sum(`Store 1 Month Acc Invoiced Amount`) as sum_total_sales   from `Store Dimension`  $where $wheref   ";
+        $sql="select sum(if(`Store 1 Month Acc Profit`<0,`Store 1 Month Acc Profit`,0)) as total_profit_minus,sum(if(`Store 1 Month Acc Profit`>=0,`Store 1 Month Acc Profit`,0)) as total_profit_plus,sum(`Store For Public Sale Products`) as sum_active,sum(`Store 1 Month Acc Invoiced Amount`) as sum_total_sales   from `Store Dimension`  $where $wheref   ";
 
         $result=mysql_query($sql);
         if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
@@ -6292,7 +6292,7 @@ function list_stores() {
 
         $sum_total_sales=0;
         $sum_month_sales=0;
-        $sql="select sum(if(`Store 1 Week Acc Profit`<0,`Store 1 Week Acc Profit`,0)) as total_profit_minus,sum(if(`Store 1 Week Acc Profit`>=0,`Store 1 Week Acc Profit`,0)) as total_profit_plus,sum(`Store For Sale Products`) as sum_active,sum(`Store 1 Week Acc Invoiced Amount`) as sum_total_sales   from `Store Dimension`   $where $wheref  ";
+        $sql="select sum(if(`Store 1 Week Acc Profit`<0,`Store 1 Week Acc Profit`,0)) as total_profit_minus,sum(if(`Store 1 Week Acc Profit`>=0,`Store 1 Week Acc Profit`,0)) as total_profit_plus,sum(`Store For Public Sale Products`) as sum_active,sum(`Store 1 Week Acc Invoiced Amount`) as sum_total_sales   from `Store Dimension`   $where $wheref  ";
 
         $result=mysql_query($sql);
         if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
@@ -6623,7 +6623,7 @@ function list_stores() {
                      'name'=>$name,
                      'departments'=>number($row['Store Departments']),
                      'families'=>number($row['Store Families']),
-                     'active'=>number($row['Store For Sale Products']),
+                     'active'=>number($row['Store For Public Sale Products']),
                      'todo'=>number($row['Store In Process Products']),
                      'discontinued'=>number($row['Store Discontinued Products']),
                      'outofstock'=>number($row['Store Out Of Stock Products']),
@@ -8206,7 +8206,7 @@ function list_product_subcategories(){
     elseif($order=='name')
     $order='`Category Name`';
     elseif($order=='active')
-    $order='`Product Category For Sale Products`';
+    $order='`Product Category For Public Sale Products`';
     elseif($order=='outofstock')
     $order='`Product Category Out Of Stock Products`';
     elseif($order=='stock_error')
@@ -8541,7 +8541,7 @@ function list_product_subcategories(){
 		       'name'=>$name,
 		       'departments'=>number($row['Product Category Departments']),
 		       'families'=>number($row['Product Category Families']),
-		       'active'=>number($row['Product Category For Sale Products']),
+		       'active'=>number($row['Product Category For Public Sale Products']),
 		       'todo'=>number($row['Product Category In Process Products']),
 		       'discontinued'=>number($row['Product Category Discontinued Products']),
 		       'outofstock'=>number($row['Product Category Out Of Stock Products']),
