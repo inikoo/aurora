@@ -135,6 +135,17 @@ class Category extends DB_Table {
         if (mysql_query($sql)) {
             $this->id = mysql_insert_id();
             $this->get_data('id',$this->id);
+            
+            
+             $history_data=array(
+			  'History Abstract'=>_('Category Created')
+			  ,'History Details'=>_trim(_('New Category')." \"".$this->data['Category Name']."\"  "._('added'))
+			  ,'Action'=>'created'
+			  );
+      $this->add_history($history_data);
+      $this->new=true;
+            
+            
         } else {
             print "Error can not create category  $sql\n";
             exit;

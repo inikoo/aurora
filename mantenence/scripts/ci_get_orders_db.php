@@ -665,7 +665,7 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
       $code=_trim($transaction['code']);
 
       $product_data=array(
-			  'product sales state'=>'For Sale',
+			  'product sales type'=>'Public Sale',
 			  'product type'=>'Normal',
 			  'Product Locale'=>'es_ES',
 			  'Product Currency'=>'EUR',

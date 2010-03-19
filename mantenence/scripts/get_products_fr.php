@@ -573,7 +573,7 @@ foreach($__cols as $cols){
 		'product locale'=>'de_DE',
 		'product currency'=>'EUR',
 
-		'product sales state'=>'For Sale',
+		'product sales type'=>'Public Sale',
 		'product type'=>'Normal',
 		'product record type'=>'New',
 		'product web state'=>'Online Auto',
