@@ -120,7 +120,7 @@ public $new_value=false;
       } else
 	return;
       mysql_free_result($result);
-      $sql=sprintf("select `Product Family Code`,`Product Family Key`,`Product Main Department Key`,`Product Store Key`,`Product Locale`,`Product Code`,`Product Current Key`,`Product Gross Weight`,`Product Units Per Case`,`Product Code`,`Product Type`,`Product Record Type`,`Product Sales State`,`Product To Be Discontinued` from `Product Dimension` where `Product ID`=%d ",$this->pid);
+      $sql=sprintf("select `Product Family Code`,`Product Family Key`,`Product Main Department Key`,`Product Store Key`,`Product Locale`,`Product Code`,`Product Current Key`,`Product Gross Weight`,`Product Units Per Case`,`Product Code`,`Product Type`,`Product Record Type`,`Product Sales Type`,`Product To Be Discontinued` from `Product Dimension` where `Product ID`=%d ",$this->pid);
       //  print $sql;
       $result=mysql_query($sql);
       //print "hols";
@@ -1735,7 +1735,7 @@ public $new_value=false;
       }
 
 
-      //   print "State ".$this->data['Product Sales State']."\n";
+
 
       if ($this->data['Product Record Type']=='Discontinued') {
 	$stock=0;
@@ -1773,12 +1773,7 @@ public $new_value=false;
       } else {
 	$tipo='No applicable';
       }
-      // and strtoupper($this->data['Product Code'])=='HMS-01'
-      /*  if( preg_match('/hms-31/i',$this->data['Product Code'])){ */
-      //print $this->data['Product Code']." ".$this->data['Product Sales State']." $tipo $stock $days_available\n";
-      /*        //       print_r($this->data); */
-      /*          exit; */
-      /*         } */
+
       $sql=sprintf("update `Product Dimension` set `Product Availability State`=%s,`Product Available Days Forecast`=%s where `Product ID`=%d",prepare_mysql($tipo),$days_available,$this->pid);
       if (!mysql_query($sql))
 	exit("$sql can no update stock prod product.php l 1311\n");
@@ -2093,10 +2088,10 @@ $number_images=$row['num'];
 	$this->msg=_("Error: wrong value")." [Web State] ($a1)";
       $this->updated=false;
       break;
-
+    case('sales_type'):
     case('sales_state'):
-$this->update_sales_state($a1);
-
+      $this->update_sales_type($a1);
+      
       break;
     case('processing'):
 
@@ -4037,7 +4032,7 @@ if($this->images[$image_key]['caption']==$value){
 
    while($row=mysql_fetch_array($res)){
     $data=array(
-		'product sales state'=>'For Sale',
+		'product sales type'=>'Public Sale',
 		'product type'=>'Mix',
 		'product record type'=>'Normal',
 		'product web state'=>'Offline',
@@ -4352,7 +4347,7 @@ return $part_list;
    // print $sql;
    if ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
      
-     if($this->data['Product Sales State']=='For Sale' and $this->id==$this->data['Product Current Key'])
+     if($this->data['Product Sales Type']!='Not For Sale' and $this->id==$this->data['Product Current Key'])
        $row['Product History Last Sold Date']=date('Y-m-d H:i:s');
        
    $tdays = (strtotime($row['Product History Last Sold Date']) - strtotime($row['Product History For Sale Since Date'])) / (60 * 60 * 24);
@@ -4435,7 +4430,7 @@ return $part_list;
 
 
 
-      $sql=sprintf("select min(`Product For Sale Since Date`) as `Product History For Sale Since Date` ,max(`Product Last Sold Date`) as `Product History Last Sold Date` ,sum(IF(`Product Sales State`='For Sale',1,0)) state from `Product Dimension` where `Product Code`=%s",prepare_mysql($this->data['Product Code']));
+      $sql=sprintf("select min(`Product For Sale Since Date`) as `Product History For Sale Since Date` ,max(`Product Last Sold Date`) as `Product History Last Sold Date` ,sum(IF(`Product Sales Type`!='Not for Sale',1,0)) state from `Product Dimension` where `Product Code`=%s",prepare_mysql($this->data['Product Code']));
       $result=mysql_query($sql);
       // print $sql;
       if ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
@@ -4588,12 +4583,12 @@ return $part_list;
 
 
 
-      $sql=sprintf("select `Product For Sale Since Date`,`Product Last Sold Date`,`Product Sales State` from `Product Dimension` where `Product ID`=%s",prepare_mysql($this->data['Product ID']));
+      $sql=sprintf("select `Product For Sale Since Date`,`Product Last Sold Date`,`Product Sales Type` from `Product Dimension` where `Product ID`=%s",prepare_mysql($this->data['Product ID']));
       $result=mysql_query($sql);
       // print "$sql\n";
       if ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 	
-	if ($row['Product Sales State']=='For Sale')
+	if ($row['Product Sales Type']!='Not for Sale')
 	  $row['Product Last Sold Date']=date("Y-m-d H:i:s");
 	
 
@@ -4680,46 +4675,6 @@ return $part_list;
       return;
  }
 
-function update_sales_state($value){
-      if (
-	  $value==_('For Sale')
-	  or $value==_('Discontinue')
-	  or $value==_('Not For Sale')
-	  ) {
-
-
-	switch ($value) {
-	case(_('For Sale')):
-	  $sales_state='For Sale';
-	  break;
-	case(_('Discontinue')):
-	  $sales_state='Discontinued';
-	  break;
-	case(_('Not For Sale')):
-	  $sales_state='Not for Sale';
-	  break;
-	}
-
-	$sql=sprintf("update `Product Dimension` set `Product Sales State`=%s  where  `Product ID`=%d "
-		     ,prepare_mysql($sales_state)
-		     ,$this->pid
-		     );
-	//print $sql;	     
-	if (mysql_query($sql)) {
-	  $this->msg=_('Product Sales State updated');
-	  $this->updated=true;
-
-	  $this->new_value=$value;
-	  return;
-	} else {
-	  $this->msg=_("Error: Product sales state could not be updated ");
-	  $this->updated=false;
-	  return;
-	}
-      } else
-	$this->msg=_("Error: wrong value")." [Sales State] ($value)";
-      $this->updated=false;
-}
 
 
 function update_sales_type($value){

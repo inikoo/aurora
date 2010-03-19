@@ -1441,7 +1441,7 @@ if(isset( $_REQUEST['where']))
 		   ,'profit'=>$profit		 
 		   ,'profit_after_storing'=>$profit_after_storing
 		   ,'cost'=>$cost
-		   
+		   ,'pending_pos'=>number($row['Supplier Open Purchase Orders'])
 		   );
    }
    

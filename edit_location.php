@@ -14,6 +14,11 @@
 include_once('common.php');
 include_once('class.Location.php');
 
+if(!$user->can_view('warehouses') or !$user->can_edit('warehouses')  ){
+  header('Location: index.php');
+  exit;
+}
+
 
 
 if(!isset($_REQUEST['id']) and is_numeric($_REQUEST['id']))
@@ -26,42 +31,27 @@ $_SESSION['state']['location']['id']=$location_id;
 $location= new location($location_id);
 
 
+if( !$location->id or   !in_array($location->data['Location Warehouse Key'],$user->warehouses   ) ){
+  header('Location: index.php');
+  exit;
+}
 
-$view_sales=$user->can_view('product sales');
-$view_stock=$user->can_view('product stock');
-$view_orders=$user->can_view('orders');
 
+if(!$user->can_edit('warehouses')  ){
+  header('Location: location.php?id='.$location->id);
+  exit;
+}
 
-$create=$user->can_create('products');
-$modify=$user->can_edit('products');
+$smarty->assign('edit',$_SESSION['state']['location']['edit']);
+
 $modify_stock=$user->can_edit('product stock');
-
-
-
 $smarty->assign('modify_stock',$modify_stock);
 
-$view_suppliers=$user->can_view('suppliers');
-$view_cust=$user->can_view('customers');
-
-$show_details=$_SESSION['state']['location']['details'];
-$smarty->assign('show_details',$show_details);
 $general_options_list=array();
-if($modify)
-  $general_options_list[]=array('tipo'=>'url','url'=>'edit_location.php?id='.$location_id,'label'=>_('Edit Location'));
-$general_options_list[]=array('tipo'=>'js','state'=>$show_details,'id'=>'details','label'=>($show_details?_('Hide Details'):_('Show Details')));
-
+$general_options_list[]=array('tipo'=>'url','url'=>'location.php?id='.$location->id,'label'=>_('Exit Edit'));
 $smarty->assign('general_options_list',$general_options_list);
 
 
-
-
-$smarty->assign('view_suppliers',$view_suppliers);
-$smarty->assign('view_sales',$view_sales);
-$smarty->assign('view_stock',$view_stock);
-$smarty->assign('create',$create);
-$smarty->assign('modify',$modify);
-$smarty->assign('view_orders',$view_orders);
-$smarty->assign('view_customers',$view_cust);
 
 $css_files=array(
 		 $yui_path.'reset-fonts-grids/reset-fonts-grids.css',
@@ -89,9 +79,11 @@ $js_files=array(
 		'common.js.php',
 		'js/search.js',
 		'table_common.js.php',
-				'js/dropdown.js',
-
+		'js/dropdown.js',
+		'js/edit_common.js',
+		'edit_location.js.php'
 		);
+
 
 
 
@@ -126,34 +118,11 @@ mysql_free_result($result);
 
 $smarty->assign('prev',$prev);
 $smarty->assign('next',$next);
-
-
 $location->load('product');
-
-//print_r($locations);
-
-
 $smarty->assign('parent','warehouses');
-$smarty->assign('title',_('Location ').$location->data['Location Code']);
-
-$smarty->assign('has_stock',$location->get('Location Has Stock'));
-
-$smarty->assign('parts',$location->parts);
-$smarty->assign('num_parts',count($location->parts));
-
-$js_files[]='js/edit_common.js';
-
-$js_files[]='location.js.php';
-
+$smarty->assign('title',_('Editing Location ').$location->data['Location Code']);
 $smarty->assign('location',$location);
-
-
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
-
-
-
-
-
-$smarty->display('location.tpl');
+$smarty->display('edit_location.tpl');
 ?>
