@@ -770,9 +770,9 @@ class Company extends DB_Table {
 
       //      print_r($this->data);
       $history_data=array(
-			  'note'=>_('Company Created')
-			  ,'details'=>_trim(_('Company')." \"".$this->data['Company Name']."\"  "._('created'))
-			  ,'action'=>'created'
+			  'History Abstract'=>_('Company Created')
+			  ,'History Details'=>_trim(_('Company')." \"".$this->data['Company Name']."\"  "._('created'))
+			  ,'Action'=>'created'
                           );
       $this->add_history($history_data);
       $this->new=true;
@@ -1147,9 +1147,9 @@ class Company extends DB_Table {
 
 
       $history_data=array(
-			  'note'=>_('Company Name Changed')
-			  ,'details'=>_trim(_('Company name chaged').": ".$old_value." -> ".$this->data['Company Name'])
-			  ,'indirect_object'=>'Name'
+			  'History Abstract'=>_('Company Name Changed')
+			  ,'History Details'=>_trim(_('Company name chaged').": ".$old_value." -> ".$this->data['Company Name'])
+			  ,'Indirect Object'=>'Name'
 			  );
 	    
       $this->add_history($history_data);
@@ -1288,13 +1288,13 @@ class Company extends DB_Table {
     // print $sql;
 
     $history_data=array(
-			'note'=>$field." "._('Changed')
-			,'details'=>$field." "._('changed')." "
+			'History Abstract'=>$field." "._('Changed')
+			,'History Details'=>$field." "._('changed')." "
 			.$old_value." -> ".$telecom->display('html')
 			." (Id:"
 			.$telecom->id
 			.")"
-			,'action'=>''
+			,'Indorect Object'=>$field
 			);
     $this->add_history($history_data);
 
@@ -1332,9 +1332,9 @@ class Company extends DB_Table {
 	}
 
 	$history_data=array(
-			    'indirect_object'=>'Email'
-			    ,'details'=>$details
-			    ,'note'=>$note
+			    'Indirect Object'=>'Email'
+			    ,'History Details'=>$details
+			    ,'History Abstract'=>$note
 			    );
 	$this->add_history($history_data);
 
@@ -1368,9 +1368,9 @@ class Company extends DB_Table {
 	$details=$field.' '._('changed from')." \"".$old_value."\" "._('to')." \"".$this->data['Company Main Plain Email']."\"";
 
 	$history_data=array(
-			    'indirect_object'=>'Email'
-			    ,'details'=>$details
-			    ,'note'=>$note
+			    'Indirect Object'=>'Email'
+			    ,'History Details'=>$details
+			    ,'History Abstract'=>$note
 			    );
 	$this->add_history($history_data);
 
@@ -1432,9 +1432,9 @@ class Company extends DB_Table {
 	}
 
 	$history_data=array(
-			    'indirect_object'=>'Address'
-			    ,'details'=>$details
-			    ,'note'=>$note
+			    'Indirect Object'=>'Address'
+			    ,'History Details'=>$details
+			    ,'History Abstract'=>$note
 			    );
 	$this->add_history($history_data);
 
@@ -1483,9 +1483,9 @@ class Company extends DB_Table {
 	$details=$field.' '._('changed from')." \"".$old_value."\" "._('to')." \"".$this->data['Company Main XHTML Address']."\"";
 
 	$history_data=array(
-			    'indirect_object'=>'Address'
-			    ,'details'=>$details
-			    ,'note'=>$note
+			    'Indirect Object'=>'Address'
+			    ,'History Details'=>$details
+			    ,'History Abstract'=>$note
 			    );
 	$this->add_history($history_data);
 
@@ -2062,46 +2062,37 @@ class Company extends DB_Table {
 
       if ($principal) {
 
-	$sql=sprintf("insert into `History Dimension`  (`Subject`,`Subject Key`,`Action`,`Direct Object`,`Direct Object Key`,`Preposition`,`Indirect Object`,`Indirect Object Key`,`History Abstract`,`History Details`,`History Date`,`Author Name`,`Author Key`) values (%s,%d,%s,%s,%d,%s,%s,%d,%s,%s,%s,%s,%s)   ",
+	 $history_data=array(
+			'History Abstract'=>_('Contact associated with Company as Main Contact').' ('.$contact->display('Short Name').'/'.$this->data['Company Name'].')'
+			,'Direct Object'=>'Contact'
+			,'Direct Object Key'=>$contact->id
+			,'Indirect Object'=>'Company'
+			,'Indirect Object Key'=>$this->id
+			,'History Details'=>_('Contact associated with Company as Main Contact').' ('.$contact->display('Name').'/'.$this->data['Company Name'].')'
+			,'Action'=>'associated'
+			,'Deep'=>2
+			,'Preposition'=>'to'
+			);
+    $this->add_history($history_data,$force_history);
 
-		     prepare_mysql($editor_data['subject']),
-		     $editor_data['subject_key'],
-		     prepare_mysql('associated'),
-		     prepare_mysql('Contact'),
-		     $contact->id,
-		     "'to'",
-		     "'Company'",
-		     $this->id,
-		     prepare_mysql(_('Contact associated with Company as Main Contact').' ('.$contact->display('Short Name').'/'.$this->data['Company Name'].')'),
-		     prepare_mysql(_('Contact associated with Company as Main Contact').' ('.$contact->display('Name').'/'.$this->data['Company Name'].')'),
 
-		     prepare_mysql($editor_data['date']),
-		     prepare_mysql($editor_data['author']),
-		     $editor_data['author_key']
-		     );
-	mysql_query($sql);
+
 
       } else {
+	 $history_data=array(
+			'History Abstract'=>_('Contact associated with Company').' ('.$contact->display('Short Name').'/'.$this->data['Company Name'].')'
+			,'Direct Object'=>'Contact'
+			,'Direct Object Key'=>$contact->id
+			,'Indirect Object'=>'Company'
+			,'Indirect Object Key'=>$this->id
+			,'History Details'=>_('Contact associated with Company').' ('.$contact->display('Name').'/'.$this->data['Company Name'].')'
+			,'Action'=>'associated'
+			,'Deep'=>2
+			,'Preposition'=>'to'
+			);
+    $this->add_history($history_data,$force_history);
 
 
-	$sql=sprintf("insert into `History Dimension`  (`Subject`,`Subject Key`,`Action`,`Direct Object`,`Direct Object Key`,`Preposition`,`Indirect Object`,`Indirect Object Key`,`History Abstract`,`History Details`,`History Date`,`Author Name`,`Author Key`) values (%s,%d,%s,%s,%d,%s,%s,%d,%s,%s,%s,%s,%s)   ",
-
-		     prepare_mysql($editor_data['subject']),
-		     $editor_data['subject_key'],
-		     prepare_mysql('associated'),
-		     prepare_mysql('Contact'),
-		     $contact->id,
-		     "'to'",
-		     "'Company'",
-		     $this->id,
-		     prepare_mysql(_('Contact associated with Company').' ('.$contact->display('Short Name').'/'.$this->data['Company Name'].')'),
-		     prepare_mysql(_('Contact associated with Company').' ('.$contact->display('Name').'/'.$this->data['Company Name'].')'),
-
-		     prepare_mysql($editor_data['date']),
-		     prepare_mysql($editor_data['author']),
-		     $editor_data['author_key']
-		     );
-	mysql_query($sql);
 
 
       }
@@ -2196,9 +2187,9 @@ class Company extends DB_Table {
       mysql_query($sql);
 
       $history_data=array(
-			  'note'=>_('Company-Contact Relation deleted permanently')
-			  ,'details'=>_trim(_('Company')." ".$this->data['Company Name'].' ('.$this->get_formated_id().') '._('relation with contact')." ".$contact->display('name')." (".$contact->get_formated_id().") "._('has been deleted permenentely') )
-			  ,'action'=>'deleted'
+			  'History Abstract'=>_('Company-Contact Relation deleted permanently')
+			  ,'History Details'=>_trim(_('Company')." ".$this->data['Company Name'].' ('.$this->get_formated_id().') '._('relation with contact')." ".$contact->display('name')." (".$contact->get_formated_id().") "._('has been deleted permenentely') )
+			  ,'Action'=>'deleted'
                           );
       $this->add_history($history_data);
 
@@ -2211,9 +2202,9 @@ class Company extends DB_Table {
 
       mysql_query($sql);
       $history_data=array(
-			  'note'=>_('Company-Contact Relation disassociated')
-			  ,'details'=>_trim(_('Company')." ".$this->data['Company Name'].' ('.$this->get_formated_id().') '._('relation with contact')." ".$contact->display('name')." (".$contact->get_formated_id().") "._('has been disassociate') )
-			  ,'action'=>'disassociate'
+			  'History Abstract'=>_('Company-Contact Relation disassociated')
+			  ,'History Details'=>_trim(_('Company')." ".$this->data['Company Name'].' ('.$this->get_formated_id().') '._('relation with contact')." ".$contact->display('name')." (".$contact->get_formated_id().") "._('has been disassociate') )
+			  ,'Action'=>'disassociate'
                           );
       $this->add_history($history_data);
     }
@@ -2713,11 +2704,11 @@ class Company extends DB_Table {
       }
 
       $history_data=array(
-			  'indirect_object'=>'Company Main Contact Name'
+			  'Indirect Object'=>'Company Main Contact Name'
 
-			  ,'details'=>$details
-			  ,'note'=>$note
-			  ,'action'=>'edited'
+			  ,'History Details'=>$details
+			  ,'History Abstract'=>$note
+			  ,'Action'=>'edited'
                           );
       $this->add_history($history_data);
 
@@ -2728,11 +2719,11 @@ class Company extends DB_Table {
       $note=_('Contact name changed');
       $details=_('Contact')." ".$contact->display('name')." (".$contact->get_formated_id_link().") "._('associated with Company:')." ".$this->data['Company Name']." (".$this->get_formated_id_link().")";
       $history_data=array(
-			  'indirect_object'=>'Company Name'
-			  ,'details'=>$details
-			  ,'note'=>$note
-			  ,'action'=>'edited',
-			  'deep'=>2
+			  'Indirect Object'=>'Company Name'
+			  ,'History Details'=>$details
+			  ,'History Abstract'=>$note
+			  ,'Action'=>'edited',
+			  'Deep'=>2
                           );
       $this->add_history($history_data,true);
     }
@@ -2763,9 +2754,10 @@ class Company extends DB_Table {
       $this->updated;
       if ($old_value!=$telecom->display('xhtml'))
 	$history_data=array(
-			    'indirect_object'=>'Company Main Telephone'
-			    ,'old_value'=>$old_value
-			    ,'new_value'=>$telecom->display('xhtml')
+			    'Indirect Object'=>'Company Main Telephone'
+			    ,'History Abstract'=>_('Company Main Telephone Changed')
+			    ,'History Details'=>_('Company Main Telephone changed from')." ".$old_value." "._('to').' '.$telecom->display('xhtml')
+			 
 			    );
       $this->add_history($history_data);
     }
@@ -2796,9 +2788,11 @@ class Company extends DB_Table {
       $this->updated;
       if ($old_value!=$telecom->display('xhtml'))
 	$history_data=array(
-			    'indirect_object'=>'Company Main FAX'
-			    ,'old_value'=>$old_value
-			    ,'new_value'=>$telecom->display('xhtml')
+			    'Indirect Object'=>'Company Main FAX'
+			    ,'History Abstract'=>_('Company Main Fax Changed')
+			    ,'History Details'=>_('Company Main Fax changed from')." ".$old_value." "._('to').' '.$telecom->display('xhtml')
+			    
+			 
 			    );
       $this->add_history($history_data);
     }

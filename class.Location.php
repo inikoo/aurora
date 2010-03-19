@@ -201,9 +201,9 @@ class Location extends DB_Table {
             $note=_('Location Created');
             $details=_('Location')." ".$this->data['Location Code']." "._('created');
             $history_data=array(
-                              'note'=>$note
-                                     ,'details'=>$details
-                                                ,'action'=>'created'
+				'History Abstract'=>$note
+				,'History Details'=>$details
+				,'Action'=>'created'
                           );
             $this->add_history($history_data);
             $this->new=true;

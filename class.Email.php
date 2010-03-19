@@ -450,9 +450,9 @@ protected function create($data,$options=''){
     $this->msg=_('New Email');
     
      $history_data=array(
-			 'note'=>_('Email Created')
-			 ,'details'=>_trim(_('Email')." \"".$this->display('plain')."\"  "._('created'))
-			 ,'action'=>'created'
+			 'History Abstract'=>_('Email Created')
+			 ,'History Details'=>_trim(_('Email')." \"".$this->display('plain')."\"  "._('created'))
+			 ,'Action'=>'created'
 			 );
       $this->add_history($history_data);
     
@@ -603,12 +603,12 @@ function update_Email($data,$options=''){
 					 ,'New Value'=>$this->data['Email']
 					 );
     
-    $history_data['action']='Email Address Changed';
-    $history_data['details']=_('Email address changed')." ".$old_value." -> ".$this->data['Email'];
-    $history_data['direct_object']='Email';
-    $history_data['direct_object_key']=$this->id;
-    $history_data['indirect_object']='Email Address';
-    $history_data['indirect_object_key']=0;
+    $history_data['History Abstract']='Email Address Changed';
+    $history_data['History Details']=_('Email address changed')." ".$old_value." -> ".$this->data['Email'];
+    $history_data['Direct Object']='Email';
+    $history_data['Direct Object Key']=$this->id;
+    $history_data['Indirect Object']='Email Address';
+    $history_data['Indirect Object Key']=0;
     $this->add_history($history_data);
 
     $sql=sprintf("select `Contact Key` from  `Contact Dimension` where `Contact Main Email Key`=%d group by `Contact Key`",$this->id);

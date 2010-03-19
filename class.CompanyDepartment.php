@@ -159,12 +159,12 @@ class CompanyDepartment extends DB_Table{
 
 
  $history_data=array(
-				'note'=>$note
-				,'details'=>$details
-				,'action'=>'associated'
-				,'preposition'=>'to'
-				,'indirect_object'=>'Company'
-				,'indirect_object_key'=>$Company->id
+				'History Abstract'=>$note
+				,''History Details=>$details
+				,'Action'=>'associated'
+				,'Preposition'=>'to'
+				,'Indirect Object'=>'Company'
+				,'Indirect Object Key'=>$Company->id
 
 				);
             $this->add_history($history_data);
@@ -266,9 +266,9 @@ $sql=sprintf('delete from `Company Department Dimension` where `Company Departme
 mysql_query($sql);
 
 $history_data=array(
-                    'note'=>_('Company Department deleted').' ('.$this->data['Company Department Name'].')'
-                    ,'details'=>_trim(_('Company Department')." ".$this->data['Company Department Name'].' ('.$this->data['Company Department Code'].') '._('has been permenentely') )
-                     ,'action'=>'deleted'
+                    'History Abstract'=>_('Company Department deleted').' ('.$this->data['Company Department Name'].')'
+                    ,'History Details'=>_trim(_('Company Department')." ".$this->data['Company Department Name'].' ('.$this->data['Company Department Code'].') '._('has been permenentely') )
+                     ,'Action'=>'deleted'
                           );
  $this->add_history($history_data);
 $this->deleted=true;

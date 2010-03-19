@@ -160,13 +160,13 @@ class CompanyArea extends DB_Table {
 
 
             $history_data=array(
-                              'note'=>$note
-                                     ,'details'=>$details
-                                                ,'action'=>'associated'
-                                                          ,'preposition'=>'to'
-                                                                         ,'indirect_object'=>'Company'
-                                                                                            ,'indirect_object_key'=>$Company->id
-
+				'History Abstract'=>$note
+				,'History Details'=>$details
+				,'Action'=>'associated'
+				,'Preposition'=>'to'
+				,'Indirect Object'=>'Company'
+				,'Indirect Object Key'=>$Company->id
+				
                           );
             $this->add_history($history_data);
             $this->new=true;
@@ -345,10 +345,10 @@ $sql=sprintf('delete from `Company Area Dimension` where `Company Area Key`=%d',
 mysql_query($sql);
 
 $history_data=array(
-                    'note'=>_('Company Area deleted').' ('.$this->data['Company Area Name'].')'
-                    ,'details'=>_trim(_('Company Area')." ".$this->data['Company Area Name'].' ('.$this->data['Company Area Code'].') '._('has been permanently') )
-                     ,'action'=>'deleted'
-                          );
+                    'History Abstract'=>_('Company Area deleted').' ('.$this->data['Company Area Name'].')'
+                    ,'History Details'=>_trim(_('Company Area')." ".$this->data['Company Area Name'].' ('.$this->data['Company Area Code'].') '._('has been permanently') )
+		    ,'Action'=>'deleted'
+		    );
  $this->add_history($history_data);
 $this->deleted=true;
 

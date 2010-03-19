@@ -17,9 +17,6 @@ require_once 'class.User.php';
 require_once 'class.Staff.php';
 
 $editor=array(
-	      'Author Name'=>$user->data['User Alias'],
-	      'Author Type'=>$user->data['User Type'],
-	      'Author Key'=>$user->data['User Parent Key'],
 	      'User Key'=>$user->id
 	      );
 

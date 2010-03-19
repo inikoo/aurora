@@ -94,8 +94,14 @@ class part extends DB_Table{
     if(mysql_query($sql)){
       $this->id = mysql_insert_id();
       $this->sku =$this->id ;
-
+      $this->new=true;
       $this->get_data('id',$this->id);
+      $data_for_history=array('Action'=>'created'
+			      ,'History Abstract'=>_('Part Created')
+			      ,'History Details'=>_('Part')." ".get_sku()." (".$this->data['Part XHTML Description'].")"._('Created')
+			      );
+
+      
     }else{
       print "Error Part can not be created\n";exit;
     }

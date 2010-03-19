@@ -238,25 +238,13 @@ $this->get_data('id',$this->found_key);
      //     $sql=sprintf("insert into `Product Family Department Bridge` values (%d,%d)",$this->id,$department->id);
      //mysql_query($sql);
 
-  $editor_data=$this->get_editor_data();
-   $sql=sprintf("insert into `History Dimension`  (`Subject`,`Subject Key`,`Action`,`Direct Object`,`Direct Object Key`,`Preposition`,`Indirect Object`,`Indirect Object Key`,`History Abstract`,`History Details`,`History Date`,`Author Name`,`Author Key`) values (%s,%d,%s,%s,%d,%s,%s,%d,%s,%s,%s,%s,%s)   ",
+       $data_for_history=array('Action'=>'created'
+			      ,'History Abstract'=>_('Family Created')
+			      ,'History Details'=>_('Family')." ".$this->data['Product Family Name']." (".$this->get('Product Family Code').") "._('Created')
+			      );
+      $this->add_history($data_for_history);
 
-		   prepare_mysql($editor_data['subject']),
-		   $editor_data['subject_key'],
-		   prepare_mysql('created'),
-		   prepare_mysql('Family'),
-		   $this->id,
-		   "''",
-		   "''",
-		   0,
-		   prepare_mysql(_('Family Created')),
-		   prepare_mysql(_('Family')." ".$this->data['Product Family Name']." (".$this->get('Product Family Code').") "._('Created')),
-		   prepare_mysql($editor_data['date']),
-		   prepare_mysql($editor_data['author']),
-		   $editor_data['author_key']
-		   );
-      mysql_query($sql);
-
+ 
 
      $department->update_families();
      $store->update_families();
@@ -341,26 +329,15 @@ function update($key,$a1=false,$a2=false){
 	$this->msg=_('Family code updated');
 	$this->updated=true;$this->new_value=$a1;
 	
-		$this->data['Product Family Code']=$a1;
-	$editor_data=$this->get_editor_data();
-	$sql=sprintf("insert into `History Dimension`  (`Subject`,`Subject Key`,`Action`,`Direct Object`,`Direct Object Key`,`Preposition`,`Indirect Object`,`Indirect Object Key`,`History Abstract`,`History Details`,`History Date`,`Author Name`,`Author Key`) values (%s,%d,%s,%s,%d,%s,%s,%d,%s,%s,%s,%s,%s)   ",
+	$this->data['Product Family Code']=$a1;
 
-		     prepare_mysql($editor_data['subject']),
-		     $editor_data['subject_key'],
-		     prepare_mysql('edited'),
-		     prepare_mysql('Family'),
-		     $this->id,
-		     "''",
-		     "''",
-		     0,
-		     prepare_mysql(_('Product family Code changed').' ('.$this->get('Product Family Code').')' ),
-		     prepare_mysql(_('Family')." ".$this->data['Product Family Name']." "._('changed code from').' '.$old_value." "._('to').' '. $this->get('Product Family Code')  ),
-		     prepare_mysql($editor_data['date']),
-		     prepare_mysql($editor_data['author']),
-		     $editor_data['author_key']
-		     );
-	mysql_query($sql);
 
+	 $data_for_history=array(
+				 'Indirect Object'=>'Product Family Code'
+				 ,'History Abstract'=>_('Product family Code changed').' ('.$this->get('Product Family Code').')'
+				 ,'History Details'=>_('Family')." ".$this->data['Product Family Name']." "._('changed code from').' '.$old_value." "._('to').' '. $this->get('Product Family Code') 
+				 );
+	 $this->add_history($data_for_history);
 	
       }else{
 	$this->msg=_("Error: Family code could not be updated");
@@ -405,24 +382,14 @@ function update($key,$a1=false,$a2=false){
 	$this->updated=true;$this->new_value=$a1;
 	
 	$this->data['Product Family Name']=$a1;
-	$editor_data=$this->get_editor_data();
-	$sql=sprintf("insert into `History Dimension`  (`Subject`,`Subject Key`,`Action`,`Direct Object`,`Direct Object Key`,`Preposition`,`Indirect Object`,`Indirect Object Key`,`History Abstract`,`History Details`,`History Date`,`Author Name`,`Author Key`) values (%s,%d,%s,%s,%d,%s,%s,%d,%s,%s,%s,%s,%s)   ",
 
-		     prepare_mysql($editor_data['subject']),
-		     $editor_data['subject_key'],
-		     prepare_mysql('edited'),
-		     prepare_mysql('Family'),
-		     $this->id,
-		     "''",
-		     "''",
-		     0,
-		     prepare_mysql(_('Product Family Name Changed').' ('.$this->get('Product Family Name').')' ),
-		     prepare_mysql(_('Product Family')." ("._('Code').":".$this->data['Product Family Code'].") "._('name changed from').' '.$old_value." "._('to').' '. $this->get('Product Family Name')  ),
-		     prepare_mysql($editor_data['date']),
-		     prepare_mysql($editor_data['author']),
-		     $editor_data['author_key']
-		     );
-	mysql_query($sql);
+	$this->add_history(array(
+				 'Indirect Object'=>'Product Family Name'
+				 ,'History Abstract'=>('Product Family Name Changed').' ('.$this->get('Product Family Name').')'
+				 ,'History Details'=>_('Product Family')." ("._('Code').":".$this->data['Product Family Code'].") "._('name changed from').' '.$old_value." "._('to').' '. $this->get('Product Family Name')
+				 ));
+
+
 
       }else{
 	$this->msg=_("Error: Family name could not be updated");
@@ -468,10 +435,10 @@ function update_description($description){
 
     
     $history_data=array(
-			'note'=>_('Product Family Description Changed')
-			,'details'=>$rendered_difference
-			,'action'=>'edited'
-			,'indirect_object'=>'Product Family Description'
+			'History Abstract'=>_('Product Family Description Changed')
+			,'History Details'=>$rendered_difference
+		
+			,'Indirect Object'=>'Product Family Description'
 			);
     // print_r($history_data);
     $this->add_history($history_data);

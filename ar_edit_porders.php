@@ -24,7 +24,6 @@ if(!isset($_REQUEST['tipo']))
 
 $editor=array(
 	      'User Key'=>$user->id,
-	      'Date'=>date('Y-m-d H:i:s')
 	      );
 
 $tipo=$_REQUEST['tipo'];

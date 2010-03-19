@@ -165,16 +165,16 @@ class User extends DB_Table{
        $this->new_value=$value;
        if($value=='Yes'){
 	 $history_data=array(
-			     'note'=>_('User Activated')
-			     ,'details'=>_trim(_('User')." ".$this->data['User Alias']." (".$this->data['User Type'].")  "._('activated'))
-			     ,'action'=>'edited'
+			     'History Abstract'=>_('User Activated')
+			     ,'History Details'=>_trim(_('User')." ".$this->data['User Alias']." (".$this->data['User Type'].")  "._('activated'))
+			     ,'Action'=>'edited'
 			     
 			     );
        }else{
 	 $history_data=array(
-			     'note'=>_('User Desactivated')
-			    ,'details'=>_trim(_('User')." ".$this->data['User Alias']." (".$this->data['User Type'].")  "._('deactivated'))
-			     ,'action'=>'edited'
+			     'History Abstract'=>_('User Desactivated')
+			    ,'History Details'=>_trim(_('User')." ".$this->data['User Alias']." (".$this->data['User Type'].")  "._('deactivated'))
+			     ,'Action'=>'edited'
 			  );
 	 
        }
@@ -405,11 +405,11 @@ function xupdate($tipo,$data){
       if (mysql_affected_rows()>0) {
       $changed++;
      $history_data=array(
-			 'note'=>_('User added to Group')
-			 ,'details'=>_trim(_('User')." ".$this->data['User Alias']." "._('added to')." ".$group_name)
-			 ,'action'=>'associate'
-			 ,'indirect_object'=>'Group'
-			 ,'indirect_object_key'=>$group_id
+			 'History Abstract'=>_('User added to Group')
+			 ,'History Details'=>_trim(_('User')." ".$this->data['User Alias']." "._('added to')." ".$group_name)
+			 ,'Action'=>'associate'
+			 ,'Indirect Object'=>'Group'
+			 ,'Indirect Object Key'=>$group_id
 			 );
      $this->add_history($history_data);
       }
@@ -430,11 +430,11 @@ return $changed;
      if (mysql_affected_rows()>0) {
        $changed++;
        $history_data=array(
-			   'note'=>_('User deleted from Group')
-			   ,'details'=>_trim(_('User')." ".$this->data['User Alias']." "._('removed from')." ".$this->groups[$group_id]['User Group Name'])
-			 ,'action'=>'disassociate'
-			   ,'indirect_object'=>'Group'
-			 ,'indirect_object_key'=>$group_id
+			   'History Abstract'=>_('User deleted from Group')
+			   ,'History Details'=>_trim(_('User')." ".$this->data['User Alias']." "._('removed from')." ".$this->groups[$group_id]['User Group Name'])
+			 ,'Action'=>'disassociate'
+			   ,'Indirect Object'=>'Group'
+			 ,'Indirect Object Key'=>$group_id
 			   );
        $this->add_history($history_data);
      }  
@@ -455,11 +455,11 @@ function add_store($to_add,$history=true){
       if (mysql_affected_rows()>0) {
      $changed++;
      $history_data=array(
-			 'note'=>_('User Rights Associated with Store')
-			 ,'details'=>_trim(_('User')." ".$this->data['User Alias']." "._('rights associated with')." ".$store->data['Store Name'])
-			 ,'action'=>'associate'
-			 ,'indirect_object'=>'Store'
-			 ,'indirect_object_key'=>$store->id
+			 'History Abstract'=>_('User Rights Associated with Store')
+			 ,'History Details'=>_trim(_('User')." ".$this->data['User Alias']." "._('rights associated with')." ".$store->data['Store Name'])
+			 ,'Action'=>'associate'
+			 ,'Indirect Object'=>'Store'
+			 ,'Indirect Object Key'=>$store->id
 			 );
      $this->add_history($history_data);
    }
@@ -481,11 +481,11 @@ function add_store($to_add,$history=true){
    if (mysql_affected_rows()>0) {
      $changed++;
      $history_data=array(
-			 'note'=>_('User Rights Disassociated with Store')
-			 ,'details'=>_trim(_('User')." ".$this->data['User Alias']." "._('rights disassociated with')." ".$store->data['Store Name'])
-			 ,'action'=>'disassociate'
-			 ,'indirect_object'=>'Store'
-			 ,'indirect_object_key'=>$store->id
+			 'History Abstract'=>_('User Rights Disassociated with Store')
+			 ,'History Details'=>_trim(_('User')." ".$this->data['User Alias']." "._('rights disassociated with')." ".$store->data['Store Name'])
+			 ,'Action'=>'disassociate'
+			 ,'Indirect Object'=>'Store'
+			 ,'Indirect Object Key'=>$store->id
 			 );
      $this->add_history($history_data);
      
@@ -507,11 +507,11 @@ function add_warehouse($to_add,$history=true){
       if (mysql_affected_rows()>0) {
      $changed++;
      $history_data=array(
-			 'note'=>_('User Rights Associated with Warehouse')
-			 ,'details'=>_trim(_('User')." ".$this->data['User Alias']." "._('rights associated with')." ".$warehouse->data['Warehouse Name'])
-			 ,'action'=>'associate'
-			 ,'indirect_object'=>'Warehouse'
-			 ,'indirect_object_key'=>$warehouse->id
+			 'History Abstract'=>_('User Rights Associated with Warehouse')
+			 ,'History Details'=>_trim(_('User')." ".$this->data['User Alias']." "._('rights associated with')." ".$warehouse->data['Warehouse Name'])
+			 ,'Action'=>'associate'
+			 ,'Indirect Object'=>'Warehouse'
+			 ,'Indirect Object Key'=>$warehouse->id
 			 );
      $this->add_history($history_data);
    }
@@ -533,11 +533,11 @@ function add_warehouse($to_add,$history=true){
    if (mysql_affected_rows()>0) {
      $changed++;
      $history_data=array(
-			 'note'=>_('User Rights Disassociated with Warehouse')
-			 ,'details'=>_trim(_('User')." ".$this->data['User Alias']." "._('rights disassociated with')." ".$warehouse->data['Warehouse Name'])
-			 ,'action'=>'disassociate'
-			 ,'indirect_object'=>'Warehouse'
-			 ,'indirect_object_key'=>$warehouse->id
+			 'History Abstract'=>_('User Rights Disassociated with Warehouse')
+			 ,'History Details'=>_trim(_('User')." ".$this->data['User Alias']." "._('rights disassociated with')." ".$warehouse->data['Warehouse Name'])
+			 ,'Action'=>'disassociate'
+			 ,'Indirect Object'=>'Warehouse'
+			 ,'Indirect Object Key'=>$warehouse->id
 			 );
      $this->add_history($history_data);
      

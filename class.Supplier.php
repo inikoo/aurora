@@ -372,9 +372,9 @@ class supplier extends DB_Table{
       
       $this->update_company($company->id,true);
       $history_data=array(
-			  'note'=>_('Supplier Created')
-			  ,'details'=>_trim(_('New supplier')." \"".$this->data['Supplier Name']."\"  "._('added'))
-			  ,'action'=>'created'
+			  'History Abstract'=>_('Supplier Created')
+			  ,'History Details'=>_trim(_('New supplier')." \"".$this->data['Supplier Name']."\"  "._('added'))
+			  ,'Action'=>'created'
 			  );
       $this->add_history($history_data);
       $this->new=true;
@@ -716,10 +716,10 @@ class supplier extends DB_Table{
 	}
 
 	$history_data=array(
-			    'indirect_object'=>'Email'
-			    ,'indirect_object'=>$email->id
-			    ,'details'=>$details
-			    ,'note'=>$note
+			    'Indirect Object'=>'Email'
+			    ,'Indirect Object Key'=>$email->id
+			    ,'History Details'=>$details
+			    ,'History Abstract'=>$note
 			    );
 	$this->add_history($history_data);
       }
@@ -830,10 +830,10 @@ class supplier extends DB_Table{
 	$note=_('Company name changed');
 	$details=_('Supplier Name changed from')." \"".$old_supplier_name."\" "._('to')." \"".$this->data['Supplier Name']."\"";
 	$history_data=array(
-			    'indirect_object'=>'Supplier Name'
-			    ,'details'=>$details
-			    ,'note'=>$note
-			    ,'action'=>'edited'
+			    'Indirect Object'=>'Supplier Name'
+			    ,'History Details'=>$details
+			    ,'History Abstract'=>$note
+			    ,'Action'=>'edited'
 			    );
 	$this->add_history($history_data);
 
@@ -866,11 +866,11 @@ class supplier extends DB_Table{
       }
 
       $history_data=array(
-                          'indirect_object'=>'Supplier Company Name'
+                          'Indirect Object'=>'Supplier Company Name'
 
-			  ,'details'=>$details
-			  ,'note'=>$note
-			  ,'action'=>'edited'
+			  ,'History Details'=>$details
+			  ,'History Abstract'=>$note
+			  ,'Action'=>'edited'
 			  );
       $this->add_history($history_data);
 
@@ -881,10 +881,10 @@ class supplier extends DB_Table{
       $note=_('Company name changed');
       $details=_('Company')." ".$company->data['Company Name']." (".$company->get_formated_id_link().") "._('associated with Supplier:')." ".$this->data['Supplier Name']." (".$this->get_formated_id_link().")";
       $history_data=array(
-			  'indirect_object'=>'Supplier Name'
-			  ,'details'=>$details
-			  ,'note'=>$note
-			  ,'action'=>'edited',
+			  'Indirect Object'=>'Supplier Name'
+			  ,'History Details'=>$details
+			  ,'History Abstract'=>$note
+			  ,'Action'=>'edited',
 			  'deep'=>2
                           );
       $this->add_history($history_data,true);
@@ -968,13 +968,13 @@ class supplier extends DB_Table{
 		     );
 	mysql_query($sql);
 	$history_data=array(
-			    'note'=>$field." "._('Changed')
-			    ,'details'=>$field." "._('changed')." "
+			    'History Abstract'=>$field." "._('Changed')
+			    ,'History Details'=>$field." "._('changed')." "
 			    .$old_value." -> ".$telecom->display('html')
 			    ." (Id:"
 			    .$telecom->id
 			    .")"
-			    ,'action'=>'created'
+			    ,'Action'=>'created'
 			    );
 	if(!$this->new)
 	  $this->add_history($history_data);
@@ -1071,11 +1071,11 @@ class supplier extends DB_Table{
       }
 
       $history_data=array(
-                          'indirect_object'=>'Supplier Main Contact Name'
+                          'Indirect Object'=>'Supplier Main Contact Name'
 
-			  ,'details'=>$details
-			  ,'note'=>$note
-			  ,'action'=>'edited'
+			  ,'History Details'=>$details
+			  ,'History Abstract'=>$note
+			  ,'Action'=>'edited'
 			  );
       $this->add_history($history_data);
 
@@ -1086,11 +1086,11 @@ class supplier extends DB_Table{
       $note=_('Contact name changed');
       $details=_('Contact')." ".$contact->display('name')." (".$contact->get_formated_id_link().") "._('associated with Supplier:')." ".$this->data['Supplier Name']." (".$this->get_formated_id_link().")";
       $history_data=array(
-			  'indirect_object'=>'Supplier Name'
-			  ,'details'=>$details
-			  ,'note'=>$note
-			  ,'action'=>'edited',
-			  'deep'=>2
+			  'Indirect Object'=>'Supplier Name'
+			  ,'History Details'=>$details
+			  ,'History Abstract'=>$note
+			  ,'Action'=>'edited',
+			  'Deep'=>2
                           );
       $this->add_history($history_data,true);
     }
@@ -1170,9 +1170,9 @@ class supplier extends DB_Table{
       $this->updated;
       if ($old_value!=$telecom->display('xhtml'))
 	$history_data=array(
-			    'indirect_object'=>'Supplier Main Telephone'
-			    ,'old_value'=>$old_value
-			    ,'new_value'=>$telecom->display('xhtml')
+			    'Indirect Object'=>'Supplier Main Telephone'
+			    ,'History Abstract'=>_('Supplier Main Telephone Changed')
+			    ,'History Details'=>_('Supplier Main Telephone changed from')." ".$old_value." "._('to').' '.$telecom->display('xhtml')
 			    );
       $this->add_history($history_data);
     }
@@ -1203,9 +1203,10 @@ class supplier extends DB_Table{
       $this->updated;
       if ($old_value!=$telecom->display('xhtml'))
 	$history_data=array(
-			    'indirect_object'=>'Supplier Main FAX'
-			    ,'old_value'=>$old_value
-			    ,'new_value'=>$telecom->display('xhtml')
+			    'Indirect Object'=>'Supplier Main FAX'
+			    ,'History Abstract'=>_('Supplier Main Fax Changed')
+			    ,'History Details'=>_('Supplier Main Fax changed from')." ".$old_value." "._('to').' '.$telecom->display('xhtml')
+			    
 			    );
       $this->add_history($history_data);
     }
