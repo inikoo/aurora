@@ -196,7 +196,7 @@ class Category extends DB_Table {
       
   $on_sale_days=0;
      
-  $sql=sprintf("select count(*) as prods,min(`Product For Sale Since Date`) as ffrom ,max(`Product Last Sold Date`) as tto, sum(if(`Product Sales State`='For Sale',1,0)) as for_sale   from `Product Dimension` as P left join `Category Bridge` as B on (B.`Subject Key`=P.`Product ID`)  where `Subject`='Product' and `Category Key`=%d and `Product Store Key`=%d",$this->id,$store_key);
+  $sql=sprintf("select count(*) as prods,min(`Product For Sale Since Date`) as ffrom ,max(`Product Last Sold Date`) as tto, sum(if(`Product Sales Type`!='Not for Sale',1,0)) as for_sale   from `Product Dimension` as P left join `Category Bridge` as B on (B.`Subject Key`=P.`Product ID`)  where `Subject`='Product' and `Category Key`=%d and `Product Store Key`=%d",$this->id,$store_key);
   //print "$sql\n";
     $result=mysql_query($sql);
     if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
@@ -277,7 +277,7 @@ class Category extends DB_Table {
 
 
 
-    $sql="select count(*) as prods,min(`Product For Sale Since Date`) as ffrom ,max(`Product Last Sold Date`) as `to`, sum(if(`Product Sales State`='For Sale',1,0)) as for_sale   from  `Product Dimension` as P left join `Product Category Bridge` as B on (B.`Product Key`=P.`Product Key`)  where `Category Key`=".$this->id;
+    $sql="select count(*) as prods,min(`Product For Sale Since Date`) as ffrom ,max(`Product Last Sold Date`) as `to`, sum(if(`Product Sales Type`!='Not for Sale',1,0)) as for_sale   from  `Product Dimension` as P left join `Product Category Bridge` as B on (B.`Product Key`=P.`Product Key`)  where `Category Key`=".$this->id;
     // print "$sql\n\n";
     $result=mysql_query($sql);
     if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
@@ -363,7 +363,7 @@ class Category extends DB_Table {
     $on_sale_days=0;
       
 
-    $sql="select count(*) as prods,min(`Product For Sale Since Date`) as ffrom ,max(`Product Last Sold Date`) as `to`, sum(if(`Product Sales State`='For Sale',1,0)) as for_sale   from `Product Dimension` as P  where `Product Store Key`=".$this->id;
+    $sql="select count(*) as prods,min(`Product For Sale Since Date`) as ffrom ,max(`Product Last Sold Date`) as `to`, sum(if(`Product Sales Type`='Not for Sale',1,0)) as for_sale   from `Product Dimension` as P  where `Product Store Key`=".$this->id;
 
     $result=mysql_query($sql);
     if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
@@ -442,7 +442,7 @@ class Category extends DB_Table {
 
     $on_sale_days=0;
 
-    $sql="select count(*) as prods,min(`Product For Sale Since Date`) as ffrom ,max(`Product Last Sold Date`) as `to`, sum(if(`Product Sales State`='For Sale',1,0)) as for_sale   from `Product Dimension` as P  where `Product Store Key`=".$this->id;
+    $sql="select count(*) as prods,min(`Product For Sale Since Date`) as ffrom ,max(`Product Last Sold Date`) as `to`, sum(if(`Product Sales Type`='Not for Sale',1,0)) as for_sale   from `Product Dimension` as P  where `Product Store Key`=".$this->id;
     $result=mysql_query($sql);
     if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
       if($row['prods']==0)
@@ -518,7 +518,7 @@ class Category extends DB_Table {
     }
 
     $on_sale_days=0;
-    $sql="select count(*) as prods,min(`Product For Sale Since Date`) as ffrom ,max(`Product Last Sold Date`) as `to`, sum(if(`Product Sales State`='For Sale',1,0)) as for_sale   from `Product Dimension` as P where `Product Store Key`=".$this->id;
+    $sql="select count(*) as prods,min(`Product For Sale Since Date`) as ffrom ,max(`Product Last Sold Date`) as `to`, sum(if(`Product Sales Type`!='Not for Sale',1,0)) as for_sale   from `Product Dimension` as P where `Product Store Key`=".$this->id;
     $result=mysql_query($sql);
     if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
       if($row['prods']==0)
@@ -597,39 +597,64 @@ class Category extends DB_Table {
  
    
  function update_store_product_data($store_key){
-
+ $in_process=0;
+ $public_sale=0;
+ $private_sale=0;
+ $discontinued=0;
+ $not_for_sale=0;
+ $sale_unknown=0;
+ $availability_optimal=0;
+ $availability_low=0;
+ $availability_critical=0;
+ $availability_outofstock=0;
+ $availability_unknown=0;
+ $availability_surplus=0;
       if($this->data['Category Subject']!='Product')
 	return;
 
-
-   $sql=sprintf("select sum(if(`Product Record Type`='In process',1,0)) as in_process,sum(if(`Product Sales State`='Unknown',1,0)) as sale_unknown, sum(if(`Product Sales State`='Discontinued',1,0)) as discontinued,sum(if(`Product Sales State`='Not for sale',1,0)) as not_for_sale,sum(if(`Product Sales State`='For Sale',1,0)) as for_sale,sum(if(`Product Availability State`='Unknown',1,0)) as availability_unknown,sum(if(`Product Availability State`='Optimal',1,0)) as availability_optimal,sum(if(`Product Availability State`='Low',1,0)) as availability_low,sum(if(`Product Availability State`='Critical',1,0)) as availability_critical,sum(if(`Product Availability State`='Surplus',1,0)) as availability_surplus,sum(if(`Product Availability State`='Out Of Stock',1,0)) as availability_outofstock from `Product Dimension`  left join `Category Bridge` on (`Subject Key`=`Product ID`)  where `Subject`='Product' and   `Product Store Key`=%d and `Category Key`=%d",$store_key,$this->id);
-   // print "$sql\n\n\n";
+$sql=sprintf("select sum(if(`Product Record Type`='In process',1,0)) as in_process,sum(if(`Product Sales Type`='Unknown',1,0)) as sale_unknown, sum(if(`Product Record Type`='Discontinued',1,0)) as discontinued,sum(if(`Product Sales Type`='Not for sale',1,0)) as not_for_sale,sum(if(`Product Sales Type`='Public Sale',1,0)) as public_sale,sum(if(`Product Sales Type`='Private Sale',1,0)) as private_sale,sum(if(`Product Availability State`='Unknown',1,0)) as availability_unknown,sum(if(`Product Availability State`='Optimal',1,0)) as availability_optimal,sum(if(`Product Availability State`='Low',1,0)) as availability_low,sum(if(`Product Availability State`='Surplus',1,0)) as availability_surplus,sum(if(`Product Availability State`='Critical',1,0)) as availability_critical,sum(if(`Product Availability State`='Out Of Stock',1,0)) as availability_outofstock from `Product Dimension`left join `Category Bridge` on (`Subject Key`=`Product ID`)  where `Subject`='Product' and   `Product Store Key`=%d and `Category Key`=%d",$store_key,$this->id);
+ 
    
     $result=mysql_query($sql);
     if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
+ $in_process=$row['in_process'];
+    $public_sale=$row['public_sale'];
+    $private_sale=$row['private_sale'];
+    $discontinued=$row['discontinued'];
+    $not_for_sale=$row['not_for_sale'];
+    $sale_unknown=$row['sale_unknown'];
+    $availability_optimal=$row['availability_optimal'];
+    $availability_low=$row['availability_low'];
+    $availability_critical=$row['availability_critical'];
+    $availability_outofstock=$row['availability_outofstock'];
+    $availability_unknown=$row['availability_unknown'];
+    $availability_surplus=$row['availability_surplus'];
+    
+     
+    
+    }
 
-      $sql=sprintf("update `Product Category Dimension` set `Product Category In Process Products`=%d,`Product Category For Sale Products`=%d ,`Product Category Discontinued Products`=%d ,`Product Category Not For Sale Products`=%d ,`Product Category Unknown Sales State Products`=%d, `Product Category Optimal Availability Products`=%d , `Product Category Low Availability Products`=%d ,`Product Category Critical Availability Products`=%d ,`Product Category Out Of Stock Products`=%d,`Product Category Unknown Stock Products`=%d ,`Product Category Surplus Availability Products`=%d where `Product Category Store Key`=%d and `Product Category Key`=%d  ",
-		   $row['in_process'],
-		   $row['for_sale'],
-		   $row['discontinued'],
-		   $row['not_for_sale'],
-		   $row['sale_unknown'],
-		   $row['availability_optimal'],
-		   $row['availability_low'],
-		   $row['availability_critical'],
-		   $row['availability_outofstock'],
-		   $row['availability_unknown'],
-		   $row['availability_surplus'],
+  $sql=sprintf("update `Product Category Dimension` set `Product Category In Process Products`=%d,`Product Category For Sale Products`=%d ,`Product Category Discontinued Products`=%d ,`Product Category Not For Sale Products`=%d ,`Product Category Unknown Sales State Products`=%d, `Product Category Optimal Availability Products`=%d , `Product Category Low Availability Products`=%d ,`Product Category Critical Availability Products`=%d ,`Product Category Out Of Stock Products`=%d,`Product Category Unknown Stock Products`=%d ,`Product Category Surplus Availability Products`=%d where `Product Category Store Key`=%d and `Product Category Key`=%d  ",
+		 $in_process,
+	       $public_sale,
+	       $private_sale,
+	       $discontinued,
+	       $not_for_sale,
+	       $sale_unknown,
+	       $availability_optimal,
+	       $availability_low,
+	       $availability_critical,
+	       $availability_outofstock,
+	       $availability_unknown,
+	       $availability_surplus,
 		   $store_key,
 		   $this->id
 		   );
       //print "$sql\n";exit;
       mysql_query($sql);
-      $this->get_data('id',$this->id);
-    
-    }
-
  
+       $this->get_data('id',$this->id);
+
   }
 
 }
