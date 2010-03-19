@@ -16,11 +16,9 @@ if(!isset($_REQUEST['tipo']))
     exit;
   }
 $editor=array(
-	      'Author Name'=>$user->data['User Alias'],
-	      'Author Type'=>$user->data['User Type'],
-	      'Author Key'=>$user->data['User Parent Key'],
+
 	      'User Key'=>$user->id
-	      ,'Date'=>date('Y-m-d H:i:s')
+
 	      );
 
 

@@ -401,24 +401,16 @@ class Store extends DB_Table{
 	$this->msg=_('Store code updated');
 	$this->updated=true;$this->new_value=$a1;
 	$this->data['Store Code']=$a1;
-	$editor_data=$this->get_editor_data();
-	$sql=sprintf("insert into `History Dimension`  (`Subject`,`Subject Key`,`Action`,`Direct Object`,`Direct Object Key`,`Preposition`,`Indirect Object`,`Indirect Object Key`,`History Abstract`,`History Details`,`History Date`,`Author Name`,`Author Key`) values (%s,%d,%s,%s,%d,%s,%s,%d,%s,%s,%s,%s,%s)   ",
 
-		     prepare_mysql($editor_data['subject']),
-		     $editor_data['subject_key'],
-		     prepare_mysql('edited'),
-		     prepare_mysql('Store'),
-		     $this->id,
-		     "''",
-		     "''",
-		     0,
-		     prepare_mysql(_('Store Code Changed').' ('.$this->get('Store Code').')' ),
-		     prepare_mysql(_('Store')." ".$this->data['Store Name']." "._('changed code from').' '.$old_value." "._('to').' '. $this->get('Store Code')  ),
-		     prepare_mysql($editor_data['date']),
-		     prepare_mysql($editor_data['author']),
-		     $editor_data['author_key']
-		     );
-	mysql_query($sql);
+	
+
+	$this->add_history(array(
+				 'Indirect Object'=>'Store Code'
+				 ,'History Abstract'=>_('Store Code Changed').' ('.$this->get('Store Code').')'
+				 ,'History Details'=>_('Store')." ".$this->data['Store Name']." "._('changed code from').' '.$old_value." "._('to').' '. $this->get('Store Code')
+				 ));
+	
+
 	
 	
 	
@@ -466,24 +458,15 @@ class Store extends DB_Table{
 	$this->msg=_('Store name updated');
 	$this->updated=true;$this->new_value=$a1;
 	$this->data['Store Name']=$a1;
-	$editor_data=$this->get_editor_data();
-	$sql=sprintf("insert into `History Dimension`  (`Subject`,`Subject Key`,`Action`,`Direct Object`,`Direct Object Key`,`Preposition`,`Indirect Object`,`Indirect Object Key`,`History Abstract`,`History Details`,`History Date`,`Author Name`,`Author Key`) values (%s,%d,%s,%s,%d,%s,%s,%d,%s,%s,%s,%s,%s)   ",
 
-		     prepare_mysql($editor_data['subject']),
-		     $editor_data['subject_key'],
-		     prepare_mysql('edited'),
-		     prepare_mysql('Store'),
-		     $this->id,
-		     "''",
-		     "''",
-		     0,
-		     prepare_mysql(_('Store Name Changed').' ('.$this->get('Store Name').')' ),
-		     prepare_mysql(_('Store')." ("._('Code').":".$this->get('Store Code').") "._('name changed from').' '.$old_value." "._('to').' '. $this->get('Store Name')  ),
-		     prepare_mysql($editor_data['date']),
-		     prepare_mysql($editor_data['author']),
-		     $editor_data['author_key']
-		     );
-	mysql_query($sql);
+	$this->add_history(array(
+				 'Indirect Object'=>'Store Name'
+				 ,'History Abstract'=>_('Store Name Changed').' ('.$this->get('Store Name').')' 
+				 ,'History Details'=>_('Store')." ("._('Code').":".$this->get('Store Code').") "._('name changed from').' '.$old_value." "._('to').' '. $this->get('Store Name')
+				 ));
+
+
+
 	
 	
       }else{
@@ -582,30 +565,12 @@ class Store extends DB_Table{
       $sql="insert into `Store Default Currency` (`Store Key`) values(".$this->id.");";
       mysql_query($sql);
 
+	$this->add_history(array(
+				 'Action'=>'created'
+				 ,'History Abstract'=>_('Store Created')
+				 ,'History Details'=>_('Store')." ".$this->data['Store Name']." (".$this->get('Store Code').") "._('Created')
+				 ));
 
-
-   
-      $editor_data=$this->get_editor_data();
-
-      $sql=sprintf("insert into `History Dimension`  (`Subject`,`Subject Key`,`Action`,`Direct Object`,`Direct Object Key`,`Preposition`,`Indirect Object`,`Indirect Object Key`,`History Abstract`,`History Details`,`History Date`,`Author Name`,`Author Key`) values (%s,%d,%s,%s,%d,%s,%s,%d,%s,%s,%s,%s,%s)   ",
-
-		   prepare_mysql($editor_data['subject']),
-		   $editor_data['subject_key'],
-		   prepare_mysql('created'),
-		   prepare_mysql('Store'),
-		   $this->id,
-		   "''",
-		   "''",
-		   0,
-		   prepare_mysql(_('Store Created')),
-		   prepare_mysql(_('Store')." ".$this->data['Store Name']." (".$this->get('Store Code').") "._('Created')),
-		   prepare_mysql($editor_data['date']),
-		   prepare_mysql($editor_data['author']),
-		   $editor_data['author_key']
-		   );
-      mysql_query($sql);
-   
-   
       return;
     }else{
       $this->msg=_(" Error can not create store");

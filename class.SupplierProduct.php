@@ -753,15 +753,18 @@ default:
        and $save_history
        ){
       $history_data=array(
-			  'indirect_object'=>$field
-			  ,'old_value'=>$old_value
-			  ,'new_value'=>$value
-			  
+			  'Indirect Object'=>$field
+			  ,'History Abstract'=>$field.' ' ._('Changed')
+			  ,'History Details'=>$field.' '._('changed from').' '.$old_value.' to '.$this->new_value
 			  );
+
+      
+
+
       if($this->table_name=='Product Family')
-      	$history_data['direct_object']='Family';
+      	$history_data['Direct Object']='Family';
       if($this->table_name=='Product Department')
-      	$history_data['direct_object']='Department';
+      	$history_data['Direct Object']='Department';
       	
 
       $this->add_history($history_data);

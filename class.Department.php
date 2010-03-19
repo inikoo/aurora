@@ -238,28 +238,14 @@ class Department extends DB_Table {
             $this->msg=_("Department Added");
             $this->get_data('id',$this->id,false);
             $this->new=true;
+	    
+	    $this->add_history(array(
+				     'Action'=>'created'
+				     ,'History Abstract'=>_('Department Created')
+				     ,'History Details'=>_('Department')." ".$this->data['Product Department Name']." (".$this->get('Product Department Code').") "._('Created')
+				     ));
 
-            $editor_data=$this->get_editor_data();
-            $sql=sprintf("insert into `History Dimension`  (`Subject`,`Subject Key`,`Action`,`Direct Object`,`Direct Object Key`,`Preposition`,`Indirect Object`,`Indirect Object Key`,`History Abstract`,`History Details`,`History Date`,`Author Name`,`Author Key`) values (%s,%d,%s,%s,%d,%s,%s,%d,%s,%s,%s,%s,%s)   ",
-
-                         prepare_mysql($editor_data['subject']),
-                         $editor_data['subject_key'],
-                         prepare_mysql('created'),
-                         prepare_mysql('Department'),
-                         $this->id,
-                         "''",
-                         "''",
-                         0,
-                         prepare_mysql(_('Department Created')),
-                         prepare_mysql(_('Department')." ".$this->data['Product Department Name']." (".$this->get('Product Department Code').") "._('Created')),
-                         prepare_mysql($editor_data['date']),
-                         prepare_mysql($editor_data['author']),
-                         $editor_data['author_key']
-                        );
-            mysql_query($sql);
-
-
-
+          
             $store->update_departments();
             return;
         } else {
@@ -348,23 +334,14 @@ class Department extends DB_Table {
 
                 $this->data['Product Department Code']=$a1;
                 $editor_data=$this->get_editor_data();
-                $sql=sprintf("insert into `History Dimension`  (`Subject`,`Subject Key`,`Action`,`Direct Object`,`Direct Object Key`,`Preposition`,`Indirect Object`,`Indirect Object Key`,`History Abstract`,`History Details`,`History Date`,`Author Name`,`Author Key`) values (%s,%d,%s,%s,%d,%s,%s,%d,%s,%s,%s,%s,%s)   ",
 
-                             prepare_mysql($editor_data['subject']),
-                             $editor_data['subject_key'],
-                             prepare_mysql('edited'),
-                             prepare_mysql('Department'),
-                             $this->id,
-                             "''",
-                             "''",
-                             0,
-                             prepare_mysql(_('Product Department Changed').' ('.$this->get('Product Department Name').')' ),
-                             prepare_mysql(_('Store')." ".$this->data['Product Department Name']." "._('code changed from').' '.$old_value." "._('to').' '. $this->get('Product Department Code')  ),
-                             prepare_mysql($editor_data['date']),
-                             prepare_mysql($editor_data['author']),
-                             $editor_data['author_key']
-                            );
-                mysql_query($sql);
+		
+		$this->add_history(array(
+				 'Indirect Object'=>'Product Department Code'
+				 ,'History Abstract'=>_('Product Department Changed').' ('.$this->get('Product Department Name').')'
+				 ,'History Details'=>_('Store')." ".$this->data['Product Department Name']." "._('code changed from').' '.$old_value." "._('to').' '. $this->get('Product Department Code')
+				 ));
+
 
 
 
@@ -409,24 +386,15 @@ class Department extends DB_Table {
                 $this->updated=true;
                 $this->new_value=$a1;
                 $this->data['Product Department Name']=$a1;
-                $editor_data=$this->get_editor_data();
-                $sql=sprintf("insert into `History Dimension`  (`Subject`,`Subject Key`,`Action`,`Direct Object`,`Direct Object Key`,`Preposition`,`Indirect Object`,`Indirect Object Key`,`History Abstract`,`History Details`,`History Date`,`Author Name`,`Author Key`) values (%s,%d,%s,%s,%d,%s,%s,%d,%s,%s,%s,%s,%s)   ",
 
-                             prepare_mysql($editor_data['subject']),
-                             $editor_data['subject_key'],
-                             prepare_mysql('edited'),
-                             prepare_mysql('Department'),
-                             $this->id,
-                             "''",
-                             "''",
-                             0,
-                             prepare_mysql(_('Product Department Name Changed').' ('.$this->get('Product Department Name').')' ),
-                             prepare_mysql(_('Product Department')." ("._('Code').":".$this->data['Product Department Code'].") "._('name changed from').' '.$old_value." "._('to').' '. $this->get('Product Department Name')  ),
-                             prepare_mysql($editor_data['date']),
-                             prepare_mysql($editor_data['author']),
-                             $editor_data['author_key']
-                            );
-                mysql_query($sql);
+
+		$this->add_history(array(
+					 'Indirect Object'=>'Product Department Name'
+					 ,'History Abstract'=>_('Product Department Name Changed').' ('.$this->get('Product Department Name').')'
+					 ,'History Details'=>_('Product Department')." ("._('Code').":".$this->data['Product Department Code'].") "._('name changed from').' '.$old_value." "._('to').' '. $this->get('Product Department Name')
+					 ));
+
+             
 
             } else {
                 $this->msg=_("Error: Department name could not be updated");

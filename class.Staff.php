@@ -236,9 +236,9 @@ class Staff extends DB_Table{
 	
      
        $history_data=array(
-			  'note'=>_('Staff Created')
-			  ,'details'=>_trim(_('New staff')." \"".$this->data['Staff Name']."\"  "._('added'))
-			  ,'action'=>'created'
+			  'History Abstract'=>_('Staff Created')
+			  ,'History Details'=>_trim(_('New staff')." \"".$this->data['Staff Name']."\"  "._('added'))
+			  ,'Action'=>'created'
 			  );
       $this->add_history($history_data);
       $this->new=true;
