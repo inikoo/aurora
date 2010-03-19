@@ -158,7 +158,13 @@ var $warehouse=false;
       $this->get_data('id',$this->id);
       $note=_('Warehouse Area Created');
       $details=_('Warehouse Area')." ".$this->data['Warehouse Area Code']." "._('created in')." ".$warehouse->data['Warehouse Name'];
-
+ $history_data=array(
+			  'History Abstract'=>$note
+			  ,'History Details'=>$details
+			  
+			  ,'Action'=>'created'
+			  );
+      $this->add_history($history_data);
 
     }else{
       exit($sql);

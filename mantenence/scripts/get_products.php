@@ -800,7 +800,7 @@ $price=$cols[7];
 
 
        $data=array(
-		  'product sales state'=>'For Sale',
+		  'product sales type'=>'Public Sale',
 		  'product type'=>'Normal',
 		  'product record type'=>'Normal',
 		  'product web state'=>'Online Auto',
@@ -1631,9 +1631,16 @@ if($department_code=='Candle Dept'){
    if($department_code=='Relaxing Music Collection'){
 	$department_code='Music';
       }
- if($department_code=='BagsBags.Biz'){
+ if($department_code=='BagsBags.biz ECO Bags Dept'){
 	$department_code='Bags';
+	$department_name='Eco Bags Dept';
       }
+       if($department_code=='RibbonsRibbons.biz Ribbons Dept'){
+	$department_code='Ribbons';
+	$department_name='Ribbons Department';
+      }
+      
+      
  if($department_code=='Christmas Time'){
 	$department_code='Xmas';
       }
@@ -1653,7 +1660,11 @@ if($department_code=='Woodware Dept'){
 
       }
 
+if($department_code=='PouchesPouches.biz Pouches Dept'){
+  $department_code='Pouches';
+  $department_name='Pouches Dept';
 
+      }
 
 
     }
