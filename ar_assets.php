@@ -3772,16 +3772,16 @@ function list_products() {
 
     switch ($restrictions) {
     case('forsale'):
-        $where.=sprintf(" and `Product Sales State`='For Sale'  ");
+        $where.=sprintf(" and `Product Sales Type`!='Not For Sale'  ");
         break;
     case('editable'):
-        $where.=sprintf(" and `Product Sales State` in ('For Sale','In Process','Unknown')  ");
+        $where.=sprintf(" and `Product Record Type`!='Discontinued'  ");
         break;
     case('notforsale'):
-        $where.=sprintf(" and `Product Sales State` in ('Not For Sale')  ");
+        $where.=sprintf(" and `Product Sales Type` in ('Not For Sale')  ");
         break;
     case('discontinued'):
-        $where.=sprintf(" and `Product Sales State` in ('Discontinued')  ");
+        $where.=sprintf(" and `Product Record Type` in ('Discontinued')  ");
         break;
     case('all'):
 
@@ -3941,7 +3941,7 @@ function list_products() {
         $order='`Product GMROI`';
     }
     elseif($order=='state') {
-        $order='`Product Sales State`';
+        $order='`Product Sales Type`';
     }
     elseif($order=='web') {
         $order='`Product Web State`';
@@ -4393,7 +4393,7 @@ function list_products() {
             $margin=number($margin,1)."%";
         }
 
-        $type=$row['Product Sales State'];
+        $type=$row['Product Sales Type'];
         if ($row['Product Record Type']=='In Process')
             $type.='<span style="color:red">*</span>';
 

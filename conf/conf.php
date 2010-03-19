@@ -1331,10 +1331,11 @@ $default_state=array(
                                     ),
                         ),
                    'location'=>array(
-                                  'location'=>false,
-                                  'id'=>1,
-                                  'details'=>false,
-                                  'parts'=>array(
+				     'location'=>false,
+				     'edit'=>'description',
+				     'id'=>1,
+				     'details'=>false,
+				     'parts'=>array(
                                               'order'=>'sku',
                                               'order_dir'=>'',
                                               'sf'=>0,

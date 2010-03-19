@@ -573,7 +573,7 @@ function update_description($description){
        
 
    case('products_store'):
-     $sql=sprintf("select * from `Product Dimension` where `Product Sales State`='For Sale' and `Product Most Recent`='Yes' and `Product Family Key`=%d and `Product Store Key`=%d",$this->id,$args);
+     $sql=sprintf("select * from `Product Dimension` where `Product Sales Type`!='Not for Sale' and `Product Most Recent`='Yes' and `Product Family Key`=%d and `Product Store Key`=%d",$this->id,$args);
      //  print $sql;
      
      $this->products=array();
@@ -1258,33 +1258,91 @@ $sql=sprintf("select count(Distinct `Order Key`) as pending_orders   from `Order
  }
 
 function update_product_data(){
- $sql=sprintf("select sum(if(`Product Record Type`='In process',1,0)) as in_process,sum(if(`Product Sales State`='Unknown',1,0)) as sale_unknown, sum(if(`Product Sales State`='Discontinued',1,0)) as discontinued,sum(if(`Product Sales State`='Not for sale',1,0)) as not_for_sale,sum(if(`Product Sales State`='For Sale',1,0)) as for_sale,sum(if(`Product Availability State`='Unknown',1,0)) as availability_unknown,sum(if(`Product Availability State`='Optimal',1,0)) as availability_optimal
+ $sql=sprintf("select sum(if(`Product Record Type`='In process',1,0)) as in_process,sum(if(`Product Sales Type`='Unknown',1,0)) as sale_unknown, sum(if(`Product Record Type`='Discontinued',1,0)) as discontinued,sum(if(`Product Sales Type`='Not for sale',1,0)) as not_for_sale,sum(if(`Product Sales Type`='Public Sale',1,0)) as public_sale,sum(if(`Product Sales Type`='Private Sale',1,0)) as private_sale,sum(if(`Product Availability State`='Unknown',1,0)) as availability_unknown,sum(if(`Product Availability State`='Optimal',1,0)) as availability_optimal
 ,sum(if(`Product Availability State`='Low',1,0)) as availability_low
 ,sum(if(`Product Availability State`='Surplus',1,0)) as availability_surplus
 
 ,sum(if(`Product Availability State`='Critical',1,0)) as availability_critical,sum(if(`Product Availability State`='Out Of Stock',1,0)) as availability_outofstock from `Product Dimension` where `Product Family Key`=%d",$this->id);
      //  print $sql;
+
+
+ $availability='No Applicable';
+ $sales_type='No Applicable';
+ $in_process=0;
+ $public_sale=0;
+ $private_sale=0;
+ $discontinued=0;
+ $not_for_sale=0;
+ $sale_unknown=0;
+ $availability_optimal=0;
+ $availability_low=0;
+ $availability_critical=0;
+ $availability_outofstock=0;
+ $availability_unknown=0;
+ $availability_surplus=0;
+ 
+
   $result=mysql_query($sql);
   if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
-       $sql=sprintf("update `Product Family Dimension` set `Product Family In Process Products`=%d,`Product Family For Sale Products`=%d ,`Product Family Discontinued Products`=%d ,`Product Family Not For Sale Products`=%d ,`Product Family Unknown Sales State Products`=%d, `Product Family Optimal Availability Products`=%d , `Product Family Low Availability Products`=%d ,`Product Family Critical Availability Products`=%d ,`Product Family Out Of Stock Products`=%d,`Product Family Unknown Stock Products`=%d ,`Product Family Surplus Availability Products`=%d where `Product Family Key`=%d  ",
-		    $row['in_process'],
-		    $row['for_sale'],
-		    $row['discontinued'],
-		    $row['not_for_sale'],
-		    $row['sale_unknown'],
-		    $row['availability_optimal'],
-		    $row['availability_low'],
-		    $row['availability_critical'],
-		    $row['availability_outofstock'],
-		    $row['availability_unknown'],
-		    $row['availability_surplus'],
-		    $this->id
-	    );
-       //  print "$sql\n";exit;
-       mysql_query($sql);
-
+     
+    $in_process=$row['in_process'];
+    $public_sale=$row['public_sale'];
+    $private_sale=$row['private_sale'];
+    $discontinued=$row['discontinued'];
+    $not_for_sale=$row['not_for_sale'];
+    $sale_unknown=$row['sale_unknown'];
+    $availability_optimal=$row['availability_optimal'];
+    $availability_low=$row['availability_low'];
+    $availability_critical=$row['availability_critical'];
+    $availability_outofstock=$row['availability_outofstock'];
+    $availability_unknown=$row['availability_unknown'];
+    $availability_surplus=$row['availability_surplus'];
     
-     }
+    
+
+    if($public_sale==0 and $private_sale==0 and $not_for_sale>0){
+      $sales_type='Not for Sale';
+    }elseif($public_sale==0 and $private_sale>0){
+      $sales_type='Private Sale Only';
+    }elseif($public_sale>0 ){
+      $sales_type='Public Sale';
+    }else
+       $sales_type='Unknown';
+    
+    $avalilable_products=$availability_optimal+$availability_low+$availability_critical+$availability_surplus+$availability_unknown;
+    if( $avalilable_products>0 and $availability_outofstock>0  ){
+      $availability='Some Out of Stock';
+    }else if($avalilable_products>0){
+      $availability='Normal';
+    }else if($avalilable_products==0 and $availability_outofstock>0){
+      $availability='All Out of Stock';
+    }
+
+
+  }
+
+  $sql=sprintf("update `Product Family Dimension` set `Product Family In Process Products`=%d,`Product Family For Public Sale Products`=%d ,`Product Family For Private Sale Products`=%d,`Product Family Discontinued Products`=%d ,`Product Family Not For Sale Products`=%d ,`Product Family Unknown Sales State Products`=%d, `Product Family Optimal Availability Products`=%d , `Product Family Low Availability Products`=%d ,`Product Family Critical Availability Products`=%d ,`Product Family Out Of Stock Products`=%d,`Product Family Unknown Stock Products`=%d ,`Product Family Surplus Availability Products`=%d ,`Product Family Sales Type`=%s,`Product Family Availability`=%s where `Product Family Key`=%d  ",
+	       $in_process,
+	       $public_sale,
+	       $private_sale,
+	       $discontinued,
+	       $not_for_sale,
+	       $sale_unknown,
+	       $availability_optimal,
+	       $availability_low,
+	       $availability_critical,
+	       $availability_outofstock,
+	       $availability_unknown,
+	       $availability_surplus,
+	       prepare_mysql($sales_type),
+	       prepare_mysql($availability),
+	       $this->id
+	    );
+  
+  
+
+
+
 
   $this->get_data('id',$this->id);
 }
@@ -1297,7 +1355,7 @@ function product_timeline($extra_where=''){
   $min_date=date('Y-m-d H:i:s');
   $max_date=date('Y-m-d H:i:s');
   
-  $sql=sprintf("select `Product Code`,`Product ID`,`Product Sales State`,`Product Valid From`,`Product Valid To` from `Product Dimension`  where `Product Family Key`=%d  %s  ",$this->id,$extra_where);
+  $sql=sprintf("select `Product Code`,`Product ID`,`Product Sales Type`,`Product Record Type`,`Product Valid From`,`Product Valid To` from `Product Dimension`  where `Product Family Key`=%d  %s  ",$this->id,$extra_where);
   $res=mysql_query($sql);
   $products=array();
   $skus=array();
@@ -1313,7 +1371,7 @@ function product_timeline($extra_where=''){
 
     
     $products[]=array(
-		      'code'=>$row['Product Code'],'units_per_case'=>$units_per_case,'sku'=>$sku[0],'id'=>$row['Product ID'],'from'=>$row['Product Valid From'],'to'=>($row['Product Sales State']=='Normal'?date('Y-m-d H:i:s'):$row['Product Valid To']));
+		      'code'=>$row['Product Code'],'units_per_case'=>$units_per_case,'sku'=>$sku[0],'id'=>$row['Product ID'],'from'=>$row['Product Valid From'],'to'=>($row['Product Record Type']!='Discontinued'?date('Y-m-d H:i:s'):$row['Product Valid To']));
   }
   //print "$min_date $max_date\n";
   //print_r($products);
@@ -1404,45 +1462,7 @@ function get_next_product_code(){
 
 function update_sales_state(){
   
-  $products_data=array(
-		       'For Sale'=>0
-		       ,'Discontinued'=>0
-		       ,'Not for Sale'=>0
-		       ,'Discontinued'=>0
-		       ,'Unknown'=>0
-		       ,'Out of Stock'=>0
-		       ,'No Applicable'=>0
-
-		       );
-  $sql=sprintf("select `Product Sales State`,count(*) as Number   from `Product Dimension` where `Product Family Key`=%d group by `Product Sales State`",$this->id);
- 
-  $res=mysql_query($sql);
- 
-   while($row=mysql_fetch_array($res)){
-     $products_data[$row['Product Sales State']]=$row['Number'];
-
-    }
-
-  if($products_data['For Sale']==0){
-    if($products_data['Discontinued']>0)
-      $this->data['Product Family Sales State']='Discontinued';
-    elseif($products_data['Out of Stock']>0)
-      $this->data['Product Family Sales State']='Out of Stock';
-    elseif($products_data['Not for Sale']>0)
-      $this->data['Product Family Sales State']='Not for Sale';
-    elseif($products_data['No Applicable']>0)
-      $this->data['Product Family Sales State']='No Applicable';
-    else
-      $this->data['Product Family Sales State']='Unknown';
-  }else
-    $this->data['Product Family Sales State']='For Sale';
-  
-  $sql=sprintf("update `Product Family Dimension`  set `Product Family Sales State`=%s  where `Product Family Key`=%d "
-	       ,prepare_mysql($this->data['Product Family Sales State'])
-	       ,$this->id
-	       );
-  mysql_query($sql);
-  //print $sql;
+  $this->update_product_data();
 
 }
 
@@ -1459,27 +1479,7 @@ $sql=sprintf("select count(*) as num from `Product Dimension` where `Product Fam
  return $number_products;
 }
 
-function get_number_products_by_sales_state($tipo=false){
-$number_products=array('For Sale'=>0,'Out of Stock'=>0,'Not for Sale'=>0,'Discontinued'=>0,'Unknown'=>0,'No Applicable'=>0);
 
-$sql=sprintf("select count(*) as num, `Product Sales State` from `Product Dimension` where `Product Family Key`=%d group by `Product Sales State`"
-    ,$this->id
-     );
- $res=mysql_query($sql);
- while($row=mysql_fetch_array($res)){
- $number_products[$row['Product Sales State']]=$row['num'];
- 
- }
- if(!$tipo)
- return $number_products;
- else if($tipo=='Other'){
- return $number_products['Unknown']+$number_products['No Applicable'];
- }else if(array_key_exists($tipo,$number_products))
- return $number_products[$tipo];
- else
- return 0;
- 
-}
 
 function get_number_products_by_sales_type($tipo=false){
 $number_products=array('Public Sale'=>0,'Private Sale'=>0,'Not for Sale'=>0,'Discontinued'=>0);
