@@ -98,7 +98,7 @@ class part extends DB_Table{
       $this->get_data('id',$this->id);
       $data_for_history=array('Action'=>'created'
 			      ,'History Abstract'=>_('Part Created')
-			      ,'History Details'=>_('Part')." ".get_sku()." (".$this->data['Part XHTML Description'].")"._('Created')
+			      ,'History Details'=>_('Part')." ".$this->get_sku()." (".$this->data['Part XHTML Description'].")"._('Created')
 			      );
 
       
