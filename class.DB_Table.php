@@ -251,7 +251,7 @@ protected function get_editor_data(){
  
 
   return array(
-	       'User Key'=>$author_key
+	       'User Key'=>$user_key
 	       ,'Date'=>$date
 	       );
 }
@@ -261,7 +261,7 @@ protected function get_editor_data(){
 protected function add_history($raw_data,$force=false){
 
 
-  $editor_data=get_editor_data();
+  $editor_data=$this->get_editor_data();
 
  
   if($this->no_history)
