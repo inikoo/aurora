@@ -168,7 +168,7 @@ if(isset( $_REQUEST['where']))
 
 
    if( $f_field=='notes' and $f_value!='' )
-     $wheref.=" and   note like '%".addslashes($f_value)."%'   ";
+     $wheref.=" and   `History Abstract` like '%".addslashes($f_value)."%'   ";
    if($f_field=='upto' and is_numeric($f_value) )
      $wheref.=" and  (TO_DAYS(NOW())-TO_DAYS(date))<=".$f_value."    ";
    else if($f_field=='older' and is_numeric($f_value))
@@ -263,8 +263,8 @@ if(isset( $_REQUEST['where']))
    if($order=='objeto')
      $order='Direct Object';
 
-   $sql="select * from `History Dimension`   $where $wheref  order by `$order` $order_direction limit $start_from,$number_results ";
-   //  print $sql;
+   $sql="select * from `History Dimension` H left join `User Dimension` U on (H.`User Key`=U.`User Key`)  $where $wheref  order by `$order` $order_direction limit $start_from,$number_results ";
+  //  print $sql;
    $result=mysql_query($sql);
    $data=array();
    while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
@@ -281,7 +281,7 @@ if(isset( $_REQUEST['where']))
 		   'time'=>strftime("%H:%M", strtotime($row['History Date'])),
 		   'objeto'=>$row['Direct Object'],
 		   'note'=>$note,
-		   'handle'=>$row['Author Name']
+		   'handle'=>$row['User Alias']
 		   );
    }
    mysql_free_result($result);
