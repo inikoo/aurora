@@ -621,7 +621,7 @@ $sql=sprintf("select sum(if(`Product Record Type`='In process',1,0)) as in_proce
       $availability_surplus=$row['availability_surplus'];
     }
 
-  $sql=sprintf("update `Store Dimension` set `Store In Process Products`=%d,`Store For Sale Public Products`=%d, `Store For Sale Private Products`=%d ,`Store Discontinued Products`=%d ,`Store Not For Sale Products`=%d ,`Store Unknown Sales State Products`=%d, `Store Optimal Availability Products`=%d , `Store Low Availability Products`=%d ,`Store Critical Availability Products`=%d ,`Store Out Of Stock Products`=%d,`Store Unknown Stock Products`=%d ,`Store Surplus Availability Products`=%d where `Store Key`=%d  ",
+  $sql=sprintf("update `Store Dimension` set `Store In Process Products`=%d,`Store For Public Sale Products`=%d, `Store For Private Sale Products`=%d ,`Store Discontinued Products`=%d ,`Store Not For Sale Products`=%d ,`Store Unknown Sales State Products`=%d, `Store Optimal Availability Products`=%d , `Store Low Availability Products`=%d ,`Store Critical Availability Products`=%d ,`Store Out Of Stock Products`=%d,`Store Unknown Stock Products`=%d ,`Store Surplus Availability Products`=%d where `Store Key`=%d  ",
 	      $in_process,
 	       $public_sale,
 	       $private_sale,
@@ -636,7 +636,7 @@ $sql=sprintf("select sum(if(`Product Record Type`='In process',1,0)) as in_proce
 	       $availability_surplus,
 		   $this->id
 		   );
-     
+  //print "$sql\n";
       mysql_query($sql);
   }
  
@@ -679,7 +679,7 @@ $sql=sprintf("select sum(if(`Product Record Type`='In process',1,0)) as in_proce
   function update_store_sales(){
     $on_sale_days=0;
      
-    $sql="select count(*) as prods,min(`Product For Sale Since Date`) as ffrom ,max(`Product Last Sold Date`) as tto, sum(if(`Product Sales State`='For Sale',1,0)) as for_sale   from `Product Dimension` as P   where `Product Store Key`=".$this->id;
+    $sql="select count(*) as prods,min(`Product For Sale Since Date`) as ffrom ,max(`Product Last Sold Date`) as tto, sum(if(`Product Sales Type`='Public Sale',1,0)) as for_sale   from `Product Dimension` as P   where `Product Store Key`=".$this->id;
 
     $result=mysql_query($sql);
     if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
@@ -756,7 +756,7 @@ $sql=sprintf("select sum(if(`Product Record Type`='In process',1,0)) as in_proce
 
 
 
-    $sql="select count(*) as prods,min(`Product For Sale Since Date`) as ffrom ,max(`Product Last Sold Date`) as `to`, sum(if(`Product Sales State`='For Sale',1,0)) as for_sale   from `Product Dimension` as P   where `Product Store Key`=".$this->id;
+    $sql="select count(*) as prods,min(`Product For Sale Since Date`) as ffrom ,max(`Product Last Sold Date`) as `to`, sum(if(`Product Sales Type`='Public Sale',1,0)) as for_sale   from `Product Dimension` as P   where `Product Store Key`=".$this->id;
     // print "$sql\n\n";
     $result=mysql_query($sql);
     if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
@@ -842,7 +842,7 @@ $sql=sprintf("select sum(if(`Product Record Type`='In process',1,0)) as in_proce
     $on_sale_days=0;
       
 
-    $sql="select count(*) as prods,min(`Product For Sale Since Date`) as ffrom ,max(`Product Last Sold Date`) as `to`, sum(if(`Product Sales State`='For Sale',1,0)) as for_sale   from `Product Dimension` as P  where `Product Store Key`=".$this->id;
+    $sql="select count(*) as prods,min(`Product For Sale Since Date`) as ffrom ,max(`Product Last Sold Date`) as `to`, sum(if(`Product Sales Type`='Public Sale',1,0)) as for_sale   from `Product Dimension` as P  where `Product Store Key`=".$this->id;
 
     $result=mysql_query($sql);
     if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
@@ -921,7 +921,7 @@ $sql=sprintf("select sum(if(`Product Record Type`='In process',1,0)) as in_proce
 
     $on_sale_days=0;
 
-    $sql="select count(*) as prods,min(`Product For Sale Since Date`) as ffrom ,max(`Product Last Sold Date`) as `to`, sum(if(`Product Sales State`='For Sale',1,0)) as for_sale   from `Product Dimension` as P  where `Product Store Key`=".$this->id;
+    $sql="select count(*) as prods,min(`Product For Sale Since Date`) as ffrom ,max(`Product Last Sold Date`) as `to`, sum(if(`Product Sales Type`='Public Sale',1,0)) as for_sale   from `Product Dimension` as P  where `Product Store Key`=".$this->id;
     $result=mysql_query($sql);
     if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
       if($row['prods']==0)
@@ -997,7 +997,7 @@ $sql=sprintf("select sum(if(`Product Record Type`='In process',1,0)) as in_proce
     }
 
     $on_sale_days=0;
-    $sql="select count(*) as prods,min(`Product For Sale Since Date`) as ffrom ,max(`Product Last Sold Date`) as `to`, sum(if(`Product Sales State`='For Sale',1,0)) as for_sale   from `Product Dimension` as P where `Product Store Key`=".$this->id;
+    $sql="select count(*) as prods,min(`Product For Sale Since Date`) as ffrom ,max(`Product Last Sold Date`) as `to`, sum(if(`Product Sales Type`='Public Sale',1,0)) as for_sale   from `Product Dimension` as P where `Product Store Key`=".$this->id;
     $result=mysql_query($sql);
     if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
       if($row['prods']==0)

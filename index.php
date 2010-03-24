@@ -24,6 +24,7 @@ $smarty->assign('general_options_list',$general_options_list);
 
 
 
+
 // $sql=sprintf("select id,public_id from orden where pick_factor is null or weight is null order by public_id desc limit 10000");
 //   $result=mysql_query($sql);
 // print "<table border=1>";

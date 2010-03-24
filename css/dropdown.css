@@ -1,9 +1,6 @@
-
-
 .dropdown {float:left; padding-right:5px;font-size:85%;position:relative;bottom:6px;;color:#fff}
 .dropdown dt {  padding:0 10px; cursor:pointer; background:#6d84b4;}
 .dropdown span:hover { text-decoration:underline}
-
 .dropdown dd {position:absolute; overflow:hidden;; display:none; z-index:200; opacity:0}
 .dropdown ul { list-style:none; border-top:none;background:#6d84b4}
 .dropdown li {display:inline}
