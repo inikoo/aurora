@@ -292,7 +292,7 @@ class User extends DB_Table{
   }
 
 
-function update($tipo,$data){
+public function update($tipo,$data=''){
  switch($tipo){
   case('isactive'):
     $this->update_active($data['value']);

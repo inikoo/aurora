@@ -25,13 +25,24 @@ while($row=mysql_fetch_array($res)){
 
 $smarty->assign('departments',$departments);
 
+$sql=sprintf("select `Page Store Slogan`,`Page Store Title`,`Page Code`,`Page Title`,`Page Short Title`,`Page Store Subtitle`,`Page Store Abstract`,`Page Source Template` from `Page Store Dimension` PS left join `Page Dimension` P  on (P.`Page Key`=PS.`Page Key`) where `Page Code`='home' ");
+
+$res=mysql_query($sql);
+if(!$page_data=mysql_fetch_array($res)){
+  header('Location: index.php');
+  exit;
+}
+
+//print_r($page_data);
+
 
 $smarty->assign('title',$page_data['Page Title']);
-$smarty->assign('subtitle',$page_data['Page Store Subtitle']);
+$smarty->assign('header_title',$page_data['Page Store Title']);
+$smarty->assign('header_subtitle',$page_data['Page Store Subtitle']);
+$smarty->assign('slogan',$page_data['Page Store Slogan']);
+
 $smarty->assign('comentary',$page_data['Page Store Abstract']);
 $smarty->assign('contents',$page_data['Page Source Template']);
-
-
 
 $smarty->display('home.tpl');
 
