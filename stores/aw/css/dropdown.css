@@ -1,0 +1,10 @@
+.dropdown {float:left; padding-right:1px;font-size:10px} 
+.dropdown dt {color:#fff;border:2px solid #990000;; padding:2px 6px; ; cursor:pointer; background:#cc3232 url(images/header.gif)}
+.dropdown dt:hover {}
+.dropdown dd {position:absolute; overflow:hidden; ; display:none; background:#fff; z-index:200; opacity:0}
+.dropdown ul { border:2px solid #990000; list-style:none; border-top:none;background-color:#cc3232;color:#fff}
+.dropdown li {display:inline}
+.dropdown a, .dropdown a:active, .dropdown a:visited {display:block; padding:1px 5px; color:#fff; text-decoration:none; background:#cc3232;}
+.dropdown a:hover {background:#d9e1e4; color:#000}
+.dropdown .underline {border-bottom:1px solid #990000}
+

@@ -62,8 +62,8 @@ class Page extends DB_Table{
       $this->id=$this->data['Page Key'];
       $this->type=$this->data['Page Type'];
 
-      if($this->type=='Shop'){
-	$sql=sprintf("select * from `Page Shop Dimension` where  `Page Key`=%d",$this->id);
+      if($this->type=='Store'){
+	$sql=sprintf("select * from `Page Store Dimension` where  `Page Key`=%d",$this->id);
 	 $result2 =mysql_query($sql);
 	 if($row=mysql_fetch_array($result2, MYSQL_ASSOC)){
 	   foreach($row as $key=>$value){
@@ -118,8 +118,8 @@ function find($raw_data,$options){
 	  $extra_data[$key]=_trim($value);
 	   }
       
-    }elseif($data['Page Type']=='Shop'){
-      $extra_data=$this->shop_base_data();
+    }elseif($data['Page Type']=='Store'){
+      $extra_data=$this->store_base_data();
       foreach($raw_data as $key=>$value){
 	if(array_key_exists($key,$extra_data))
 	  $extra_data[$key]=_trim($value);
@@ -188,42 +188,73 @@ function create_internal($data){
 }
 
 
-  function create($data,$extra_data=false){
-
-     $keys='(';
-      $values='values(';
-      foreach($data as $key=>$value) {
-	$keys.="`$key`,";
-	if (preg_match('/Page Title|Page Description/i',$key))
+function create($data,$extra_data=false){
+  
+  $keys='(';
+  $values='values(';
+  foreach($data as $key=>$value) {
+    $keys.="`$key`,";
+    if (preg_match('/Page Title|Page Description/i',$key))
 	  $values.="'".addslashes($value)."',";
-	else
-	  $values.=prepare_mysql($value).",";
-      }
-      $keys=preg_replace('/,$/',')',$keys);
-      $values=preg_replace('/,$/',')',$values);
-      $sql=sprintf("insert into `Page Dimension` %s %s",$keys,$values);
-
+    else
+      $values.=prepare_mysql($value).",";
+  }
+  $keys=preg_replace('/,$/',')',$keys);
+  $values=preg_replace('/,$/',')',$values);
+  $sql=sprintf("insert into `Page Dimension` %s %s",$keys,$values);
+  //print $sql;
       if (mysql_query($sql)) {
 	$this->id=mysql_insert_id();
 	$this->get_data('id',$this->id);
-		
+	
 	$this->update_valid_url();
 	$this->update_working_url();
 	
 	if($this->data['Page Type']=='Internal'){
 	  $this->create_internal($extra_data);
 	}elseif($this->data['Page Type']=='Store'){
-	  $this->create_store($extra_data);
+	  $this->create_store_page($extra_data);
 	}
-
-
-
+	
+	
+	
       }else{
 	$this->error=true;
       }
      
      
   }
+
+
+
+function create_store_page($data){
+  
+  $data['Page Key']=$this->id;
+  
+  $keys='(';
+  $values='values(';
+  foreach($data as $key=>$value) {
+    $keys.="`$key`,";
+    if (preg_match('/Subtitle|Title|Abstract/i',$key))
+	  $values.="'".addslashes($value)."',";
+    else
+      $values.=prepare_mysql($value).",";
+  }
+  $keys=preg_replace('/,$/',')',$keys);
+  $values=preg_replace('/,$/',')',$values);
+  $sql=sprintf("insert into `Page Store Dimension` %s %s",$keys,$values);
+   print "$sql\n";
+  
+      if (mysql_query($sql)) {
+
+	$this->get_data('id',$this->id);
+	
+      }else{
+	$this->error=true;
+      }
+     
+}
+
 
 
 function update_working_url(){
@@ -327,9 +358,9 @@ function update_working_url(){
     Function: base_data
     Initialize data  array with the default field values
    */
-  function shop_base_data(){
+  function store_base_data(){
     $data=array();
-    $result = mysql_query("SHOW COLUMNS FROM `Page Shop Dimension`");
+    $result = mysql_query("SHOW COLUMNS FROM `Page Store Dimension`");
     if (!$result) {
       echo 'Could not run query: ' . mysql_error();
      exit;

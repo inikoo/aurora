@@ -11,6 +11,7 @@ if(isset($_REQUEST['id']) and is_numeric($_REQUEST['id']) ){
 }else{
   $warehouse_id=$_SESSION['state']['warehouse']['id'];
 }
+
 $warehouse=new warehouse($warehouse_id);
 if(!($user->can_view('warehouses') and in_array($warehouse_id,$user->warehouses)   ) ){
   header('Location: index.php');
