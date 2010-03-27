@@ -12,6 +12,7 @@
  Version 2.0
 */
 include_once('class.Family.php');
+include_once('class.Page.php');
 
 /* class: Department
    Class to manage the *Product Department Dimension* table
@@ -1202,26 +1203,30 @@ class Department extends DB_Table {
 
   }
 
-  $sql=sprintf("update `Product Family Dimension` set `Product Family In Process Products`=%d,`Product Family For Public Sale Products`=%d ,`Product Family For Private Sale Products`=%d,`Product Family Discontinued Products`=%d ,`Product Family Not For Sale Products`=%d ,`Product Family Unknown Sales State Products`=%d, `Product Family Optimal Availability Products`=%d , `Product Family Low Availability Products`=%d ,`Product Family Critical Availability Products`=%d ,`Product Family Out Of Stock Products`=%d,`Product Family Unknown Stock Products`=%d ,`Product Family Surplus Availability Products`=%d  where `Product Family Key`=%d  ",
+  $sql=sprintf("update `Product Department Dimension` set `Product Department In Process Products`=%d,`Product Department For Public Sale Products`=%d ,`Product Department For Private Sale Products`=%d,`Product Department Discontinued Products`=%d ,`Product Department Not For Sale Products`=%d ,`Product Department Unknown Sales State Products`=%d, `Product Department Optimal Availability Products`=%d , `Product Department Low Availability Products`=%d ,`Product Department Critical Availability Products`=%d ,`Product Department Out Of Stock Products`=%d,`Product Department Unknown Stock Products`=%d ,`Product Department Surplus Availability Products`=%d  where `Product Department Key`=%d  ",
 	       $in_process,
 	       $public_sale,
 	       $private_sale,
+
 	       $discontinued,
 	       $not_for_sale,
 	       $sale_unknown,
+
 	       $availability_optimal,
 	       $availability_low,
 	       $availability_critical,
+
 	       $availability_outofstock,
 	       $availability_unknown,
 	       $availability_surplus,
-	       prepare_mysql($sales_type),
-	       prepare_mysql($availability),
+
+	       // prepare_mysql($sales_type),
+	       // prepare_mysql($availability),
 	       $this->id
 	    );
   
-  
-
+  mysql_query($sql);
+  // print "$sql\n";
 
 
 
@@ -1230,7 +1235,6 @@ class Department extends DB_Table {
 
     function update_families() {
         $sql=sprintf("select count(*) as num from `Product Family Dimension`  where `Product Family Main Department Key`=%d",$this->id);
-        //print $sql;
         $result=mysql_query($sql);
         if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
             $this->data['Product Department Families']=$row['num'];
@@ -1238,10 +1242,62 @@ class Department extends DB_Table {
                          $this->data['Product Department Families'],
                          $this->id
                         );
-            //  print "$sql\n";
             mysql_query($sql);
         }
+
+  $sql=sprintf("select count(*) as num from `Product Family Dimension`  where `Product Family Main Department Key`=%d and `Product Family Sales Type`='Public Sale' and `Product Family Record Type` in ('New','Normal','Discontinuing')  ",$this->id);
+        $result=mysql_query($sql);
+        if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+            $this->data['Product Department For Public For Sale Families']=$row['num'];
+            $sql=sprintf("update `Product Department Dimension` set `Product Department For Public For Sale Families`=%d  where `Product Department Key`=%d  ",
+                         $this->data['Product Department For Public For Sale Families'],
+                         $this->id
+                        );
+            mysql_query($sql);
+        }
+
+  $sql=sprintf("select count(*) as num from `Product Family Dimension`  where `Product Family Main Department Key`=%d  and `Product Family Sales Type`='Public Sale' and `Product Family Record Type`='Discontinued'    "   ,$this->id);
+        $result=mysql_query($sql);
+        if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+            $this->data['Product Department For Public Discontinued Families']=$row['num'];
+            $sql=sprintf("update `Product Department Dimension` set `Product Department For Public Discontinued Families`=%d  where `Product Department Key`=%d  ",
+                         $this->data['Product Department For Public Discontinued Families'],
+                         $this->id
+                        );
+	    print "$sql\n";
+            mysql_query($sql);
+        }
+
+
     }
+
+
+    function create_page(){
+      
+      $page_data=array(
+		       'Page Code'=>'PD_'.$this->data['Product Dimension Code']
+		       ,'Page Source Template'=>''
+		       ,'Page URL'=>'department.php?code='.$this->data['Product Dimension Code']
+		       ,'Page Description'=>'Department Showcase Page'
+		       ,'Page Title'=>$this->data['Product Department Name']
+		       ,'Page Short Title'=>$this->data['Product Department Name']
+		       ,'Page Store Title'=>$this->data['Product Department Name']
+		       ,'Page Store Subtitle'=>''
+		       ,'Page Store Slogan'=>$this->data['Product Department Slogan']
+		       ,'Page Store Abstract'=>$this->data['Product Department Marketing Description']
+		       );
+      
+      $page_data['Page Store Function']='Department Catalogue';
+      $page_data['Page Store Creation Date']=date('Y-m-d H:i:s');
+      $page_data['Page Store Last Update Date']=date('Y-m-d H:i:s');
+      $page_data['Page Store Last Structural Change Date']=date('Y-m-d H:i:s');
+      $page_data['Page Type']='Store';
+      $page_data['Page Store Source Type'] ='Dynamic';
+
+      $page=new Page('find',$page_data,'create');
+
+    }
+
 
 }
 

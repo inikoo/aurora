@@ -34,7 +34,7 @@ while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
   $department=new Department($row['Product Department Key']);
   $department->load('sales');
   $department->load('products_info');
-
+  $department->update_families();
   
   print $department->data['Product Department Code']."\n";
  }

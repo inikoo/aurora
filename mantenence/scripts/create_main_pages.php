@@ -61,6 +61,21 @@ $data=array(
 
 		  
 		  )
+	     ,array(
+		  'Page Code'=>'register'
+		  ,'Page Source Template'=>'register.tpl'
+		  ,'Page URL'=>'register.php'
+		  ,'Page Description'=>'Registration Page'
+
+		  ,'Page Title'=>'Registration'
+		  ,'Page Short Title'=>'Registration'
+		  ,'Page Store Title'=>'Register to Ancient Wisdom'
+		  ,'Page Store Subtitle'=>''
+		  ,'Page Store Slogan'=>'Hello stranger'
+		  ,'Page Store Abstract'=>'Please note this is a wholesale site we supply wholesale to the trade.'
+
+		  
+		  )
 
 
 	     ,array(
@@ -129,7 +144,7 @@ foreach($data as $page_data){
   $page_data['Page Store Last Update Date']=date('Y-m-d H:i:s');
   $page_data['Page Store Last Structural Change Date']=date('Y-m-d H:i:s');
   $page_data['Page Type']='Store';
-  $page_data['Page Store Source Type'] ='static';
+  $page_data['Page Store Source Type'] ='Static';
   $page=new Page('find',$page_data,'create');
   //print_r($page);
   

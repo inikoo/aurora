@@ -83,17 +83,17 @@ while($row=mysql_fetch_array($result)   ){
     $state='Not for sale';
     $web_state='Offline';
   }elseif($state=='Discontinued'){
-    $record_state='Normal';
-    $state='Discontinued';
+    $record_state='Discontinued';
+    $state='Public Sale';
     $web_state='Online';
   }elseif($state=='For Sale'){
     $record_state='Normal';
-    $state='For Sale';
+    $state='Public Sale';
     $web_state='Online';
  }
   
 
-   $sql=sprintf("update `Product Dimension` set  `Product Sales State`=%s,`Product Record Type`=%s,`Product Web State`=%s ,`Product To Be Discontinued`=%s where `Product Key`=%s"
+   $sql=sprintf("update `Product Dimension` set  `Product Sales Type`=%s,`Product Record Type`=%s,`Product Web State`=%s ,`Product To Be Discontinued`=%s where `Product Key`=%s"
 		,prepare_mysql($state)
 		,prepare_mysql($record_state)
 		,prepare_mysql($web_state)

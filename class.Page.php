@@ -194,7 +194,7 @@ function create($data,$extra_data=false){
   $values='values(';
   foreach($data as $key=>$value) {
     $keys.="`$key`,";
-    if (preg_match('/Page Title|Page Description/i',$key))
+    if (preg_match('/Page Title|Page Description|Javascript|CSS/i',$key))
 	  $values.="'".addslashes($value)."',";
     else
       $values.=prepare_mysql($value).",";

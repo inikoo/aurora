@@ -1,16 +1,24 @@
 * {padding:0; margin:0}
-input {border:1px solid #ccc}
+
+
 body{color:#333;margin:0px;padding:0px;font-size:10px;font-family:"Lucida Grande", "Lucida Sans Unicode", Verdana, Arial, sans-serif;}
-img{border:none}
+
+
 #container{width:876px;margin:0 auto}
 
 
 #footer{clear:both;background-color:#fff;background-image:url('../art/footer/footer_background.jpg');background-repeat:no-repeat;width:875px;height:154px;color:#fff;font-size:8px}
-#company_info,#company_contact{padding:5px 10px}
-
-#page_content{xmin-height:400px;}
+#footer #company_info,#footer #company_contact{padding:5px 10px}
 
 #search{margin-left:180px;margin-top:5px;padding:2px 20px;color:#990000;font-style: italic; font-size:12px}
 #search input{border:1px solid #ccc;width:400px}
-#main_showcase{}
-#second_showcase{}
+
+a{text-decoration:none}
+a:hover{text-decoration:underline}
+
+input {border:1px solid #ccc}
+img{border:none}
+p{margin-bottom:7px}
+
+span.button{border:1px solid #ccc;padding:2px 4px;cursor:pointer}
+span.enabled{border:1px solid #aaa;}

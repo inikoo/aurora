@@ -167,9 +167,16 @@ ALTER TABLE `Order Dimension` CHANGE `Orders Items Tax Amount` `Order Items Tax 
 ALTER TABLE `Purchase Order Dimension` ADD `Purchase Order Cancelled Date` DATETIME NULL DEFAULT NULL AFTER `Purchase Order Consolidated Date` ;
 ALTER TABLE `Purchase Order Transaction Fact` CHANGE `Purchase Order Current Dispatching State` `Purchase Order Current Dispatching State` ENUM( 'In Process', 'Submitted', 'Cancelled' ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'In Process';
 ALTER TABLE `Purchase Order Dimension` ADD `Purchase Order Cancelled Date` DATETIME NULL DEFAULT NULL ,ADD `Purchase Order Cancel Note` VARCHAR( 1024 ) NOT NULL DEFAULT ''
- */
+ 
 
 
 
+ALTER TABLE `Product Dimension` ADD `Product Slogan` VARCHAR( 256 ) NOT NULL AFTER `Product Description` ,
+ADD `Product Marketing Description` VARCHAR( 1024 ) NOT NULL AFTER `Product Slogan` ;
+ALTER TABLE `Product Dimension` CHANGE `Product Slogan` `Product Slogan` VARCHAR( 256 ) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL ,
+CHANGE `Product Marketing Description` `Product Marketing Description` VARCHAR( 1024 ) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL ;
 
+
+
+*/
 ?>
