@@ -55,6 +55,19 @@ $smarty->assign('modify',$modify);
 get_header_info($user,$smarty);
 $show_details=$_SESSION['state']['family']['details'];
 $smarty->assign('table_type',$_SESSION['state']['department']['table_type']);
+
+
+$restrictions=$_SESSION['state']['department']['restrictions'];
+switch($restrictions){
+case('Public Sale'):
+  $restrictions_label=_('For Sale');
+}
+
+$smarty->assign('restrictions',$restrictions);
+$smarty->assign('restrictions_label',$restrictions_label);
+
+
+
 $general_options_list=array();
 
 if($edit){

@@ -509,7 +509,7 @@ class supplierproduct extends DB_Table {
         $affected=0;
         $sql=sprintf("update `Supplier Product History Dimension`  set `SPH Valid From`=%s where  `SPH Key`=%d and `SPH Valid From`>%s   "
                      ,prepare_mysql($date)
-                     ,prepare_mysql($this->id)
+                     ,$this->id
                      ,prepare_mysql($date)
 
                     );
@@ -517,7 +517,7 @@ class supplierproduct extends DB_Table {
         $affected+=mysql_affected_rows();
         $sql=sprintf("update `Supplier Product History Dimension`  set `SPH Valid To`=%s where  `SPH Key`=%d and `SPH Valid To`<%s   "
                      ,prepare_mysql($date)
-                     ,prepare_mysql($this->id)
+                     ,$this->id
                      ,prepare_mysql($date)
 
                     );

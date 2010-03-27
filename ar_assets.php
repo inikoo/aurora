@@ -5401,8 +5401,25 @@ function list_families() {
 
     }
 
+  switch ($restrictions) {
+  case('for_sale'):
+    $where.=sprintf(' and `Product Family Sales Type`="Public Sale" and `Product Family Record Type` in ("New","Normal","Discontinuing") ');
+    break;
+  case('for_sale_and_discontinued'):
+    $where.=sprintf(' and `Product Family Sales Type`="Public Sale" and `Product Family Record Type`!="In Process" ');
+    break;
+  case('discontinued'):
+    $where.=sprintf(' and `Product Family Sales Type`="Public Sale" and `Product Family Record Type`="Discontinued"  ');
+    break; 
+  default:
+  }
+  
+  
+  
+  
 
-    $filter_msg='';
+
+  $filter_msg='';
     $wheref='';
     if ($f_field=='code' and $f_value!='')
         $wheref.=" and `Product Family Code`  like '".addslashes($f_value)."%'";

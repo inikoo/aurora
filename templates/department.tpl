@@ -207,8 +207,12 @@
   
   <div style="clear:both;margin:0 0px;padding:0 20px ;border-bottom:1px solid #999"></div>
   
-  <span   style="float:right;margin-left:80px" class="state_details" state="{$show_percentages}"  id="show_percentages"  atitle="{if $show_percentages}{t}Normal Mode{/t}{else}{t}Comparison Mode{/t}{/if}"  >{if $show_percentages}{t}Comparison Mode{/t}{else}{t}Normal Mode{/t}{/if}</span>
-  
+  <span   style="float:right;margin-left:40px" class="state_details" state="{$show_percentages}"  id="show_percentages"  atitle="{if $show_percentages}{t}Normal Mode{/t}{else}{t}Comparison Mode{/t}{/if}"  >{if $show_percentages}{t}Comparison Mode{/t}{else}{t}Normal Mode{/t}{/if}</span>
+  <span   style="float:right;margin-left:20px" class="state_details"  id="restrictions_show_for_sale"   >{t}For Sale{/t} ({$department->get('For Public For Sale Families')})</span>
+  <span   style="float:right;margin-left:20px" class="state_details"  id="restrictions_show_discontinued"   >{t}Discontinued{/t} ({$department->get('For Public Discontinued Families')})</span>
+  <span   style="float:right;margin-left:20px" class="state_details"  id="restrictions_show_all"   >{t}All{/t} ({$department->get('Families')})</span>
+
+
   <table style="float:left;margin:0 0 5px 0px ;padding:0"  class="options" >
     <tr><td  {if $view=='general'}class="selected"{/if} id="general" >{t}General{/t}</td>
       {if $view_stock}<td {if $view=='stock'}class="selected"{/if}  id="stock"  >{t}Stock{/t}</td>{/if}

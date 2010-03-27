@@ -16,14 +16,7 @@ $smarty->assign('main_showcase',$showcases['main']['template']);
 $smarty->assign('second_showcase',$showcases['second']['template']);
 
 
-$sql=sprintf("select `Product Department Code`,`Product Department Name` from `Product Department Dimension` where `Product Department Store Key`=%d",$store_key);
-$res=mysql_query($sql);
-$departments=array();
-while($row=mysql_fetch_array($res)){
-  $departments[]=array('code'=>$row['Product Department Code'],'name'=>$row['Product Department Name']);
-}
 
-$smarty->assign('departments',$departments);
 
 $sql=sprintf("select `Page Store Slogan`,`Page Store Title`,`Page Code`,`Page Title`,`Page Short Title`,`Page Store Subtitle`,`Page Store Abstract`,`Page Source Template` from `Page Store Dimension` PS left join `Page Dimension` P  on (P.`Page Key`=PS.`Page Key`) where `Page Code`='home' ");
 

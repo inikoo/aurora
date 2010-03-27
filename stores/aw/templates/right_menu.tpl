@@ -10,7 +10,8 @@
     
   </div>
   <div id="register">
-    <h3 style="text-align:center;border:3px solid #990000;padding:2px 3px;margin-bottom:5px">Register Here</h3>
+    <p>New Customer?</p>
+    <h3 style="text-align:center;border:3px solid #990000;padding:2px 3px;margin-bottom:5px"><a href="register.php" >Register Here</a></h3>
     <p>Please note that these site is Trade Only we supply wholesale to the gift trade</p>
   </div>
 </div>

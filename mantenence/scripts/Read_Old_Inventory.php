@@ -52,6 +52,9 @@ VALUES (
 );";
 
 
+
+
+
 $loc= new Location(1);
 if(!$loc->id)
   mysql_query($sql);

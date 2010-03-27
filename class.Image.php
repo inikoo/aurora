@@ -216,7 +216,7 @@ $this->format='';
 $this->saveImage($this->im,$name);
 
       
-      $image_data['Image Data']=$news_imgfile;
+      $image_blob=$news_imgfile;
 
       $keys='(';
       $values='values(';
@@ -230,12 +230,14 @@ $this->saveImage($this->im,$name);
       $keys=preg_replace('/,$/',')',$keys);
       $values=preg_replace('/,$/',')',$values);
       $sql=sprintf("insert into `Image Dimension` %s %s",$keys,$values);
-
+      // print "$sql\n";
       if (mysql_query($sql)) {
 	$this->id=mysql_insert_id();
 	$this->new=true;
 	$this->get_data('id',$this->id);
-      }else{
+	$sql=sprintf("insert into images.`Image Data Dimension` values ('dw',%d,%s)",$this->id,prepare_mysql($image_blob));
+	mysql_query($sql);    
+  }else{
 	$this->error=true;
 	$this->msg='Can not insert the image '.mysql_error();
       }
