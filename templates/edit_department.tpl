@@ -117,7 +117,26 @@
 <tr><td class="label">{t}Slogan{/t}:</td><td><input  id="web_store_slogan"  style="width:30em" MAXLENGTH="64" value="{$department->get('Page Store Slogan')}" ovalue="{$department->get('Page Store Slogan')}"  /></td></tr>
 <tr><td class="label">{t}Short Introduction{/t}:</td><td><input  id="web_store_abstract"  style="width:30em" MAXLENGTH="64" value="{$department->get('Page Store Abstract')}" ovalue="{$department->get('Page Store Abstract')}"  /></td></tr>
 <tr><td>Layout</td></tr>
-    <tr><td colspan=2><div style="border:1px solid red;width:100px;HEIGHT:120px">x </td></tr>
+    <tr><td colspan=2>
+	<div style="float:left;width:125px;text-align:center;margin-left:50px">
+	<img style="border:1px solid #ccc" src="art/page_layout_thumbnails.png"/>
+	{t}Thumbnails{/t}
+	</div>
+	<div  style="float:left;width:125px;text-align:center">
+	<img style="border:1px solid #ccc" src="art/page_layout_list.png"/>
+	{t}List{/t}
+	</div>
+	<div  style="float:left;width:125px;text-align:center">
+	<img style="border:1px solid #ccc" src="art/page_layout_slideshow.png"/>
+	{t}Slideshow{/t}
+	</div>
+	<div  style="float:left;width:125px;text-align:center">
+	<img style="border:1px solid #ccc" src="art/page_layout_manual.png"/>
+	{t}Manual{/t}
+	</div>
+	
+
+    </td></tr>
 
 
       </tr>
