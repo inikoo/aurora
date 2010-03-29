@@ -54,13 +54,13 @@ foreach($img_array_full_path as $pic_path){
    $_pic_path=preg_replace('/.*\//','',$pic_path);
   if(preg_match('/[a-z0-9\-]+(|_l|_bis|_tris|_quad|_display|_displ|dpl|_box)+.jpg/',$_pic_path)){
     // print "$pic_path\n";
-    if(preg_match('/^[a-z]+\-\d+[a-z]{0,3}/',$_pic_path,$match)){
-      $root=$match[0];
+   
+      $root=preg_replace('/(_.*)?\..*$/','',$_pic_path);
       if(array_key_exists($root,$pics))
     	$pics[$root][]=$pic_path;
          else
 	   $pics[$root]=array($pic_path);
-    }
+ 
     
     
     
@@ -70,14 +70,17 @@ foreach($img_array_full_path as $pic_path){
 
 chdir('../../');
 foreach($pics as $key=>$value){
-  $sql=sprintf("select `Product ID`,`Product Code` from `Product Dimension` where `Product Code`=%s ",prepare_mysql($key));
-  //print "$sql\n";
+
+
+$sql=sprintf("select `Product Family Key`,`Product Family Code` from `Product Family Dimension` where `Product Family Code`=%s ",prepare_mysql($key));
   $res=mysql_query($sql);
+  //print "$sql\n";
   while($row=mysql_fetch_array($res)){
-    $product=new Product('pid',$row['Product ID']);
+  // print "$sql\n";
+  $family=new Family($row['Product Family Key']);
     foreach($value as $img_filename){
      
-     // print "----".getcwd()."------ ".$img_filename."   \n";
+      print "F----".getcwd()."------ ".$img_filename."   \n";
       $rand=rand().rand();
       $tmp_file='app_files/pics/tmp/tmp.jpg';
       copy('mantenence/scripts/'.$img_filename,$tmp_file );
@@ -86,21 +89,25 @@ foreach($pics as $key=>$value){
      $data=array(
 	    'file'=>'tmp.jpg'
 	    ,'path'=>'assets/'
-	    ,'name'=>$row['Product Code']
+	    ,'name'=>$row['Product Family Code']
 	    ,'caption'=>''
 	    );
 
      //print_r($data);
 $image=new Image('find',$data,'create');
-      $product->add_image($image->id,'principal');
-      //print_r($product);
-      // print $product->msg."\n";
-      $product->update_main_image();
+      $family->add_image($image->id,'principal');
+      //print_r($family);
+      // print $family->msg."\n";
+      $family->update_main_image();
       // unlink($tmp_file);
     }
 
   }
   mysql_free_result($res);
+
+
+
+ 
 
 
 

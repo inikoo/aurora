@@ -447,6 +447,7 @@
 
 
 
+
 </div>
 
 <div  class="edit_block" style="margin:0;padding:0;{if $edit!="description"}display:none{/if}"  id="d_description">

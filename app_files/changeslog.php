@@ -176,7 +176,7 @@ ADD `Product Marketing Description` VARCHAR( 1024 ) NOT NULL AFTER `Product Slog
 ALTER TABLE `Product Dimension` CHANGE `Product Slogan` `Product Slogan` VARCHAR( 256 ) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL ,
 CHANGE `Product Marketing Description` `Product Marketing Description` VARCHAR( 1024 ) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL ;
 
-
+ALTER TABLE `Product Family Dimension` ADD `Product Family Main Image`  VARCHAR( 256 ) NOT NULL DEFAULT 'art/nopic.png' AFTER `Product Family Special Characteristic` 
 
 */
 ?>

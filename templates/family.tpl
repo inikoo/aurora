@@ -1,6 +1,7 @@
 {include file='header.tpl'}
 <div id="bd" >
  {include file='assets_navigation.tpl'}
+ 
  <div style="clear:left;"> 
  <span class="branch" ><a  href="store.php?id={$store->id}">{$store->get('Store Name')}</a> &rarr; <a  href="department.php?id={$department->id}">{$department->get('Product Department Name')}</a> &rarr; {$family->get('Product Family Name')}  ({$family->get('Product Family Code')})</span>
  </div>
@@ -202,8 +203,8 @@
      <span id="table_title" class="clean_table_title">{t}Products{/t}</span>
 
      <div id="table_type">
-     <span id="table_type_list" style="float:right" class="table_type state_details {if $table_type=='list'}state_details_selected{/if}">{t}List{/t}</span>
-     <span id="table_type_thumbnail" style="float:right;margin-right:10px" class="table_type state_details {if $table_type=='thumbnails'}state_details_selected{/if}">{t}Thumbnails{/t}</span>
+     <span id="table_type_list" style="float:right" class="table_type state_details {if $table_type=='list'}selected{/if}">{t}List{/t}</span>
+     <span id="table_type_thumbnail" style="float:right;margin-right:10px" class="table_type state_details {if $table_type=='thumbnails'}selected{/if}">{t}Thumbnails{/t}</span>
      </div>
      
      
@@ -249,8 +250,8 @@
       <div class="clean_table_filter" id="clean_table_filter0"><div class="clean_table_info"><span id="filter_name0">{$filter_name}</span>: <input style="border-bottom:none" id='f_input0' value="{$filter_value}" size=10/><div id='f_container0'></div></div></div>
       <div class="clean_table_controls" style="" ><div><span  style="margin:0 5px" id="paginator0"></span></div></div>
     </div>
-    <div id="thumbnails0" class="thumbnails" style="border-top:1px solid SteelBlue;clear:both;display:none"></div>
-    <div  id="table0"   class="data_table_container dtable btable with_total"> </div>
+    <div id="thumbnails0" class="thumbnails" style="border-top:1px solid SteelBlue;clear:both;{if $table_type!='thumbnails'}display:none{/if}"></div>
+    <div  id="table0"   class="data_table_container dtable btable with_total"  style="{if $table_type=='thumbnails'}display:none{/if}"   > </div>
   
 </div>
 

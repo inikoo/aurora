@@ -4,11 +4,6 @@
   </form>
 
   <div  id="images" class="edit_images" principal="{$data.principal_image}" >
-    
-    
-
-
-
     {foreach from=$images item=image  name=foo}
     <div id="image_container{$image.id}" class="image"  image_id="{$image.id}" is_principal="{$image.is_principal}" >
       <div class="image_name" id="image_name{$image.id}">{$image.name}</div>

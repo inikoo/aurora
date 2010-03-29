@@ -120,6 +120,8 @@ $product= new product($mode,$tag);
 $store= new store($product->data['Product Store Key']);
 
 
+$smarty->assign('search_label',_('Products'));
+$smarty->assign('search_scope','products');
 
 
 

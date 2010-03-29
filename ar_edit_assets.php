@@ -55,7 +55,7 @@ case('delete_image'):
 
   break;
 case('upload_product_image'):
-upload_image('product');
+upload_image();
 break;
  case('delete_family'):
 delete_family();
@@ -375,66 +375,51 @@ function edit_deal(){
 
 
 function upload_image($subject='product'){
-  
-// print_r($_FILES);
- //return;
- $target_path = "app_files/pics/tmp/";
- $filename='pimg_'.date('U');
-  if(move_uploaded_file($_FILES['testFile']['tmp_name'],$target_path.$filename )) {
-   include_once('class.Image.php');
-   
-   $name=preg_replace('/\.[a-z]+$/i','',$_FILES['testFile']['name']);
-
-   $name=preg_replace('/[^a-z^\.^0-9]/i','_',$name);
-   $data=array(
-	    'file'=>$filename
-	    ,'path'=>'assets/'
-	    ,'name'=>$name
-	    ,'original_name'=>$_FILES['testFile']['name']
-	    ,'type'=>$_FILES['testFile']['type']
-	    ,'caption'=>''
-	    );
-//print_r($data);
-$image=new Image('find',$data,'create');
- 
-  
-   if(!$image->error){
-   
-   if($image->new){
-   $image->create_thumbnail();  
-      $image->create_small();  
-   $image->create_large();  
-}
-   
-  if($subject=='product')
-      $subject=new product('pid',$_REQUEST['id']);
-  $subject->add_image($image->id);
-  
-  
-  
-  
-
-  $msg=array(
-	     'set_main'=>_('Set Main')
-	     ,'main'=>_('Main Image')
-	     ,'caption'=>_('Caption')
-	     ,'save_caption'=>_('Save caption')
-	     ,'delete'=>_('Delete')
-	     );
-  
-
-
-
-  $response= array('state'=>200,'msg'=>$msg,'image_key'=>$image->id,'data'=>$subject->new_value);
-  echo json_encode($response); 
-  return;
-   }else{
-     $response= array('state'=>400,'msg'=>$image->msg);
- echo json_encode($response); 
- return;
-}
-
-  }
+	$target_path = "app_files/pics/tmp/";
+ 	$filename='pimg_'.date('U');
+  	if(move_uploaded_file($_FILES['testFile']['tmp_name'],$target_path.$filename )) {
+   		include_once('class.Image.php');
+   		$name=preg_replace('/\.[a-z]+$/i','',$_FILES['testFile']['name']);
+	   	$name=preg_replace('/[^a-z^\.^0-9]/i','_',$name);
+   		$data=array(
+	    	'file'=>$filename
+	   		,'path'=>'assets/'
+	    	,'name'=>$name
+	    	,'original_name'=>$_FILES['testFile']['name']
+	    	,'type'=>$_FILES['testFile']['type']
+	    	,'caption'=>''
+	    	);
+		$image=new Image('find',$data,'create');
+	   	if(!$image->error){
+	   		$subject=$_REQUEST['subject'];
+		  	if($subject=='product')
+      			$subject=new product('pid',$_REQUEST['subject_key']);
+		  	if($subject=='family')
+      			$subject=new Family('id',$_REQUEST['subject_key']);
+  		 	if($subject=='department')
+      			$subject=new Department('id',$_REQUEST['subject_key']);
+  			$subject->add_image($image->id);
+  			$subject->update_main_image();
+  			$msg=array(
+	     		'set_main'=>_('Set Main')
+	     		,'main'=>_('Main Image')
+	     		,'caption'=>_('Caption')
+	     		,'save_caption'=>_('Save caption')
+	     		,'delete'=>_('Delete')
+	     		);
+  			$response= array('state'=>200,'msg'=>$msg,'image_key'=>$image->id,'data'=>$subject->new_value);
+  			echo json_encode($response); 
+           	return;
+   		}else{
+     		$response= array('state'=>400,'msg'=>$image->msg);
+ 			echo json_encode($response); 
+ 			return;
+		}
+  	}else{
+  		$response= array('state'=>400,'msg'=>'no image');
+ 			echo json_encode($response); 
+ 			return;
+  	}
   }
 
 

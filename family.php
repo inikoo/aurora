@@ -62,7 +62,13 @@ $smarty->assign('modify',$modify);
 
 get_header_info($user,$smarty);
 
+
+$smarty->assign('search_label',_('Products'));
+$smarty->assign('search_scope','products');
+
+
 $show_details=$_SESSION['state']['family']['details'];
+
 $smarty->assign('table_type',$_SESSION['state']['family']['table_type']);
 $general_options_list=array();
 

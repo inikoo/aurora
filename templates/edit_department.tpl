@@ -58,6 +58,9 @@
    <div  class="edit_block" style="{if $edit!="discounts"}display:none{/if}"  id="d_discounts">
    </div>   
    <div  class="edit_block" style="{if $edit!="pictures"}display:none{/if}"  id="d_pictures">
+   {include file='edit_images_splinter.tpl'}
+
+   
    </div>   
    <div  class="edit_block" style="{if $edit!="families"}display:none{/if}"  id="d_families">
      

@@ -107,10 +107,6 @@ function undo(tipo){
 
 
 // }
-
-
-
-
 function checkbox_changed(o){
     parent_id='cat_'+o.getAttribute('parent')+'>';
     default_cat='cat'+Dom.get(parent_id).getAttribute('default_cat');
