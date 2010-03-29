@@ -57,15 +57,12 @@ $show_details=$_SESSION['state']['family']['details'];
 $smarty->assign('table_type',$_SESSION['state']['department']['table_type']);
 
 
-$restrictions=$_SESSION['state']['department']['restrictions'];
-switch($restrictions){
-case('Public Sale'):
-  $restrictions_label=_('For Sale');
-}
+$smarty->assign('restrictions',$_SESSION['state']['department']['restrictions']);
 
-$smarty->assign('restrictions',$restrictions);
-$smarty->assign('restrictions_label',$restrictions_label);
 
+
+$smarty->assign('search_label',_('Products'));
+$smarty->assign('search_scope','products');
 
 
 $general_options_list=array();
@@ -111,13 +108,21 @@ $js_files=array(
 
 		);
 
+$department->load_images_slidesshow();
+$images=$department->images_slideshow;
+$smarty->assign('images',$images);
+
 if($edit){
 
 $smarty->assign('edit',$_SESSION['state']['department']['edit']);
   $css_files[]='css/edit.css';
   
   $js_files[]='js/edit_common.js';
+  $js_files[]='js/upload_image.js';
   $js_files[]='edit_department.js.php';
+  
+  
+  
  }else{
      $js_files[]='js/search.js';
      $js_files[]='department.js.php';

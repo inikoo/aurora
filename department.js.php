@@ -356,8 +356,15 @@ function change_plot(o){
 
 
  function init(){
- var Dom   = YAHOO.util.Dom;
+ 
 
+
+  search_scope='products';
+     var store_name_oACDS = new YAHOO.util.FunctionDataSource(search_products_in_store);
+     store_name_oACDS.queryMatchContains = true;
+     var store_name_oAutoComp = new YAHOO.widget.AutoComplete(search_scope+"_search",search_scope+"_search_Container", store_name_oACDS);
+     store_name_oAutoComp.minQueryLength = 0; 
+     store_name_oAutoComp.queryDelay = 0.15;
 
  ids=['general','sales','stock'];
  YAHOO.util.Event.addListener(ids, "click",change_view)

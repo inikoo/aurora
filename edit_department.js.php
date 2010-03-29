@@ -7,6 +7,8 @@ var department_id=<?php echo$_SESSION['state']['department']['id']?>;
 var editing='<?php echo $_SESSION['state']['department']['edit']?>';
 var can_add_family=false;
 
+var scope_key=<?php echo$_SESSION['state']['department']['id']?>;
+var scope='department';
 
 function change_block(e){
      if(editing!=this.id){
@@ -25,7 +27,7 @@ function change_block(e){
 	 Dom.get('d_'+this.id).style.display='';
 	 Dom.removeClass(editing,'selected');
 	 Dom.addClass(this, 'selected');
-	 YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=department-edit&value='+this.id );
+	 YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=department-edit&value='+this.id ,{});
 	editing=this.id;
     }
 }
@@ -415,7 +417,11 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 
 
+
+
 function init(){
+ 	YAHOO.util.Event.on('uploadButton', 'click', onUploadButtonClick);
+
  
     function mygetTerms(query) {multireload();};
     var oACDS = new YAHOO.widget.DS_JSFunction(mygetTerms);

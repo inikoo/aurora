@@ -51,7 +51,9 @@ var $deleted=false;
     $this->found=false;
 $this->error=false;
 $this->format='';
-
+$this->thumbnail_size=array(25,20);
+$this->small_size=array(320,280);
+$this->large_size=array(800,600);
     if (is_numeric($a1) and !$a2) {
 
       $this->get_data('id',$a1);
@@ -73,11 +75,24 @@ $this->format='';
    $result=mysql_query($sql);
    if($this->data=mysql_fetch_array($result, MYSQL_ASSOC)   )
      $this->id=$this->data['Image Key'];
-    
- 
+     $this->checksum=$this->data['Image File Checksum'];
  }
 
+  function get_image_data(){
+   $sql=sprintf("select `Image Data` from images.`Image Data Dimension` where `Image Key`=%d and  `Database Name`='dw'",$this->id);
 
+   $result=mysql_query($sql);
+   if($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
+     $this->im= imagecreatefromstring(base64_decode($row['Image Data']));
+      $this->im_x     = imagesx($this->im);
+        $this->im_y     = imagesy($this->im);
+     }
+     
+ }
+ 
+ 
+ 
+ 
  function find($raw_data,$options){
    if(!isset($raw_data['file'])){
      $this->error=true;
@@ -195,8 +210,8 @@ $this->format='';
       else
 	$this->name.='.'.$this->format;
 	  
-	  $news_imgfile = addslashes(fread(fopen($filename, "r"), filesize($filename)));
-	  
+	  $news_imgfile = fread(fopen($filename, "r"), filesize($filename));
+	  $image_blob=$news_imgfile;
 	 
 	  $image_data=array(
 			    'Image Width' => $this->im_x,
@@ -216,7 +231,7 @@ $this->format='';
 $this->saveImage($this->im,$name);
 
       
-      $image_blob=$news_imgfile;
+      
 
       $keys='(';
       $values='values(';
@@ -235,7 +250,10 @@ $this->saveImage($this->im,$name);
 	$this->id=mysql_insert_id();
 	$this->new=true;
 	$this->get_data('id',$this->id);
-	$sql=sprintf("insert into images.`Image Data Dimension` values ('dw',%d,%s)",$this->id,prepare_mysql($image_blob));
+	
+	
+	
+	$sql=sprintf("insert into images.`Image Data Dimension` values ('dw',%d,'%s')",$this->id,base64_encode($image_blob));
 	mysql_query($sql);    
   }else{
 	$this->error=true;
@@ -247,7 +265,7 @@ $this->saveImage($this->im,$name);
     unlink($filename);
 
     $this->create_thumbnail();
-        $this->create_small();
+    $this->create_small();
     $this->create_large();
 
 
@@ -258,7 +276,7 @@ $this->saveImage($this->im,$name);
  
 
 
-   $this->transformToFit(25,20);
+   $this->transformToFit($this->thumbnail_size[0],$this->thumbnail_size[1]);
    if($this->error){
      $this->msg=_('Can not resize image');
      return;
@@ -428,7 +446,32 @@ function setCompression($val=70){
       
     }
     
- 
+    function save_to_disk(){
+    $this->create_original();
+    $this->create_thumbnail();
+    $this->create_small();
+    $this->create_large();
+    }
+    
+   function create_original(){
+     
+        
+       if (!file_exists($this->path.'original'))
+     mkdir($this->path.'original', 0700);
+   
+
+   $name=$this->path.'original/'.$this->checksum.'.'.$this->format;
+   $this->saveImage($this->resized_im,$name);
+
+       $this->saveImage($this->resized_im,$name);
+       $sql=sprintf("update `Image Dimension` set `Image URL`=%s where `Image Key`=%d"
+            ,prepare_mysql($name)
+            ,$this->id
+        );
+        mysql_query($sql);
+        $this->data['Image Large URL']=$name;
+      
+    }
     function create_large(){
       $this->transformToFit(800,600);
       if($this->error){

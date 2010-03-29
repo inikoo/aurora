@@ -134,11 +134,13 @@ function delete_image(o){
 var onUploadButtonClick = function(e){
     //the second argument of setForm is crucial,
     //which tells Connection Manager this is a file upload form
+    
+    
     YAHOO.util.Connect.setForm('testForm', true);
-    var request='ar_edit_assets.php?tipo=upload_product_image&scope='+scope+'&id='+scope_key;
+    var request='ar_edit_assets.php?tipo=upload_product_image&subject='+scope+'&subject_key='+scope_key;
     var uploadHandler = {
       upload: function(o) {
-	   // alert(o.responseText)
+	   alert(o.responseText)
 	    var r =  YAHOO.lang.JSON.parse(o.responseText);
 	   
 	    if(r.state==200){

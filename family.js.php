@@ -45,7 +45,8 @@ var addtotals =function (){
 			if(r.resultset.data[x].type=='item'){
 			var img = new YAHOO.util.Element(document.createElement('img')); 
 			img.set('src', r.resultset.data[x].image); 
-			
+			img.set('alt', r.resultset.data[x].image); 
+			//alert(r.resultset.data[x].image);
 			var internal_span = new YAHOO.util.Element(document.createElement('span')); 
 			internal_span.set('innerHTML', r.resultset.data[x].code); 
 		 
@@ -309,28 +310,39 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 
 function change_table_type(e,table_id){
-if(Dom.hasClass(this, 'state_details_selected'))
+if(Dom.hasClass(this, 'selected'))
  return;
- var elements=Dom.getElementsByClassName('state_details_selected', 'span', 'table_type');
- Dom.removeClass(elements, 'state_details_selected');
- Dom.addClass(this, 'state_details_selected');
+ var elements=Dom.getElementsByClassName('selected', 'span', 'table_type');
+ Dom.removeClass(elements, 'selected');
+ Dom.addClass(this, 'selected');
  if(this.id=='table_type_list'){
+ tipo='list';
  Dom.get('thumbnails'+table_id).style.display='none'
   Dom.get('table'+table_id).style.display=''
 Dom.get('list_options'+table_id).style.display=''
  
  }else{
+ tipo='thumbnails';
   Dom.get('thumbnails'+table_id).style.display=''
  Dom.get('table'+table_id).style.display='none'
 Dom.get('list_options'+table_id).style.display='none'
  
  }
  
+ YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=family-table_type&value='+escape(tipo),{});
 }
 
  function init(){
  
-
+ 
+  search_scope='products';
+    var store_name_oACDS = new YAHOO.util.FunctionDataSource(search_products_in_store);
+    store_name_oACDS.queryMatchContains = true;
+   var store_name_oAutoComp = new YAHOO.widget.AutoComplete(search_scope+"_search",search_scope+"_search_Container", store_name_oACDS);
+     store_name_oAutoComp.minQueryLength = 0; 
+    store_name_oAutoComp.queryDelay = 0.15;
+ 
+ 
  get_thumbnails();
 
 ids=['general','sales','stock','parts','cats'];
