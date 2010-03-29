@@ -697,6 +697,21 @@ $default_state=array(
                                   'action_after_create'=>'continue',
                                   'edit'=>'details',
                                   'details'=>false,
+
+				   'assets'=>array(
+                                              'order'=>'subject',
+                                              'order_dir'=>'',
+                                              'sf'=>0,
+                                              'nr'=>25,
+                                              'where'=>'where true',
+                                              'f_field'=>'code',
+                                              'f_value'=>'',
+                                              'from'=>'',
+                                              'to'=>'',
+                                              'type'=>'Family'
+
+						   ),
+
                                   'table'=>array(
                                               'order'=>'date',
                                               'order_dir'=>'desc',

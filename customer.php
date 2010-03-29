@@ -302,9 +302,23 @@ $filter_menu=array(
 		   );
 $tipo_filter=$_SESSION['state']['customer']['table']['f_field'];
 $filter_value=$_SESSION['state']['customer']['table']['f_value'];
-$smarty->assign('filter_value',$filter_value);
-$smarty->assign('filter_menu',$filter_menu);
-$smarty->assign('filter_name',$filter_menu[$tipo_filter]['label']);
+
+$smarty->assign('filter_value0',$filter_value);
+$smarty->assign('filter_menu0',$filter_menu);
+$smarty->assign('filter_name0',$filter_menu[$tipo_filter]['label']);
+
+$filter_menu=array(
+		   'code'=>array('db_key'=>'code','menu_label'=>'Code like','label'=>_('Code')),
+		   );
+$tipo_filter=$_SESSION['state']['customer']['assets']['f_field'];
+$filter_value=$_SESSION['state']['customer']['assets']['f_value'];
+
+$smarty->assign('filter_value1',$filter_value);
+$smarty->assign('filter_menu1',$filter_menu);
+$smarty->assign('filter_name1',$filter_menu[$tipo_filter]['label']);
+
+
+
 $paginator_menu=array(10,25,50,100,500);
 $smarty->assign('paginator_menu',$paginator_menu);
 $smarty->display('customer.tpl');

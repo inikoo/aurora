@@ -1,5 +1,7 @@
 <?php
 include_once('common.php');
+include_once('class.Department.php');
+
 $css_files=array(
 		 'css/common.css',
 		 'css/home.css',
@@ -11,14 +13,16 @@ $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
 
 if(isset($_REQUEST['code'])){
-  $department=new Department('code',$_REQUEST['code']);
+  
+  $department=new Department('code',$_REQUEST['code'],$store_key);
   if(!$department->id){
-    header('Location: cataloge.php');
+   
+    header('Location: cataloge.php?wdc');
     exit;
   }
 
 }else{
-  header('Location: cataloge.php');
+  header('Location: cataloge.php?ndc');
   exit;
 }
 

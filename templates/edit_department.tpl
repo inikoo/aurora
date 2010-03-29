@@ -50,6 +50,8 @@
 
      <table class="edit">
       <tr><td class="label">{t}Code{/t}:</td><td><input  id="code" onKeyUp="edit_dept_changed(this)"    onMouseUp="edit_dept_changed(this)"  onChange="edit_dept_changed(this)"  name="code" changed=0 type='text' class='text' style="width:15em" MAXLENGTH="16" value="{$department->get('Product Department Code')}" ovalue="{$department->get('Product Department Code')}"  /></td></tr>
+      
+      
       <tr><td class="label">{t}Name{/t}:</td><td><input   id="name" onKeyUp="edit_dept_changed(this)"    onMouseUp="edit_dept_changed(this)"  onChange="edit_dept_changed(this)"  name="name" changed=0 type='text'  MAXLENGTH="255" style="width:30em"  class='text' value="{$department->get('Product Department Name')}"  ovalue="{$department->get('Product Department Name')}"  /></td>
       </tr>
     </table>
@@ -98,6 +100,31 @@
   
     </div>
    <div  class="edit_block" style="{if $edit!="web"}display:none{/if}"  id="d_web">
+
+     <div class="general_options" style="float:right">
+       <span style="margin-right:10px;"  onclick="" id="web_create" class="state_details">{t}Create Page{/t}</span>
+       <span style="margin-right:10px;"  onclick="save('web')" id="web_save" class="state_details">{t}Save Changes{/t}</span>
+       <span style="margin-right:10px;;" id="web_reset" onclick="reset('web')" i class="state_details">{t}Reset{/t}</span>
+     </div>
+       <table class="edit">
+<tr><td>Page Properties</td></tr>
+      <tr><td class="label">{t}Page Title{/t}:</td><td><input  id="web_title"  style="width:30em" MAXLENGTH="64" value="{$department->get('Page Title')}" ovalue="{$department->get('Page Title')}"  /></td></tr>
+      <tr><td class="label">{t}Page Short Title{/t}:</td><td><input  id="web_short_title"  style="width:30em" MAXLENGTH="24" value="{$department->get('Page Short Title')}" ovalue="{$department->get('Page Short Title')}"  /></td></tr>
+      <tr><td class="label">{t}Page Description{/t}:</td><td><textarea  id="web_short_title"  style="width:30em" MAXLENGTH="24" value="{$department->get('Page Short Title')}" ovalue="{$department->get('Page Short Title')}"  /></textarea></td></tr>
+<tr><td>Content</td></tr>
+<tr><td class="label">{t}Title{/t}:</td><td><input  id="web_store_title"  style="width:30em" MAXLENGTH="64" value="{$department->get('Page Store Title')}" ovalue="{$department->get('Page Store Title')}"  /></td></tr>
+<tr><td class="label">{t}Subtitle{/t}:</td><td><input  id="web_store_subtitle"  style="width:30em" MAXLENGTH="64" value="{$department->get('Page Store Subtitle')}" ovalue="{$department->get('Page Store Subtitle')}"  /></td></tr>
+<tr><td class="label">{t}Slogan{/t}:</td><td><input  id="web_store_slogan"  style="width:30em" MAXLENGTH="64" value="{$department->get('Page Store Slogan')}" ovalue="{$department->get('Page Store Slogan')}"  /></td></tr>
+<tr><td class="label">{t}Short Introduction{/t}:</td><td><input  id="web_store_abstract"  style="width:30em" MAXLENGTH="64" value="{$department->get('Page Store Abstract')}" ovalue="{$department->get('Page Store Abstract')}"  /></td></tr>
+<tr><td>Layout</td></tr>
+    <tr><td colspan=2><div style="border:1px solid red;width:100px;HEIGHT:120px">x </td></tr>
+
+
+      </tr>
+      
+
+    </table>
+
    </div>   
     
    
