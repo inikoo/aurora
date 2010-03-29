@@ -89,7 +89,10 @@ case('company_areas'):
 
   list_company_areas();
    break;
+case('assets_dispached_to_customer'):
 
+  list_assets_dispached_to_customer();
+   break;
 case('company_departments'):
 
   list_company_departments();
@@ -131,6 +134,213 @@ case('plot_order_interval'):
    echo json_encode($response);
    
  }
+
+function list_assets_dispached_to_customer(){
+ $conf=$_SESSION['state']['customer']['assets'];
+ if(isset( $_REQUEST['id']))
+      $customer_id=$_REQUEST['id'];
+    else
+      $customer_id=$_SESSION['state']['customer']['id'];
+ if(isset( $_REQUEST['sf']))
+      $start_from=$_REQUEST['sf'];
+    else
+      $start_from=$conf['sf'];
+    
+    if(isset( $_REQUEST['nr']))
+      $number_results=$_REQUEST['nr'];
+    else
+      $number_results=$conf['nr'];
+    if(isset( $_REQUEST['o']))
+      $order=$_REQUEST['o'];
+    else
+      $order=$conf['order'];
+    if(isset( $_REQUEST['od']))
+    $order_dir=$_REQUEST['od'];
+  else
+    $order_dir=$conf['order_dir'];
+
+ if(isset( $_REQUEST['f_field']))
+     $f_field=$_REQUEST['f_field'];
+   else
+     $f_field=$conf['f_field'];
+
+  if(isset( $_REQUEST['f_value']))
+     $f_value=$_REQUEST['f_value'];
+   else
+     $f_value=$conf['f_value'];
+
+if(isset( $_REQUEST['from']))
+    $from=$_REQUEST['from'];
+  else
+    $from=$conf['from'];
+  if(isset( $_REQUEST['to']))
+    $to=$_REQUEST['to'];
+  else
+    $to=$conf['to'];
+
+
+
+  if(isset( $_REQUEST['type']))
+     $type=$_REQUEST['type'];
+   else
+     $type=$conf['type'];
+
+  if(isset( $_REQUEST['tid']))
+    $tableid=$_REQUEST['tid'];
+  else
+    $tableid=0;
+  
+
+$order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
+   $_SESSION['state']['customer']['id']=$customer_id;
+   $_SESSION['state']['customer']['assets']=array('type'=>$type,'order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'f_field'=>$f_field,'f_value'=>$f_value);
+   $date_interval=prepare_mysql_dates($from,$to,'date_index','only_dates');
+   if($date_interval['error']){
+      $date_interval=prepare_mysql_dates($_SESSION['state']['customer']['table']['from'],$_SESSION['state']['customer']['table']['to']);
+   }else{
+     $_SESSION['state']['customer']['assets']['from']=$date_interval['from'];
+     $_SESSION['state']['customer']['assets']['to']=$date_interval['to'];
+   }
+
+  switch($type){
+ case('Family'):
+   $group_by='Product Family Key';
+   $subject='Product Family Code';
+   $subject_label='family';
+   $subject_label_plural='families';
+   break;
+  case('Department'):
+   $group_by='Product Department Key'; 
+   $subject='Product Department Code';
+    $subject_label='department';
+    $subject_label_plural='departments';
+   break;
+ default:
+   $group_by='Product Code';
+   $subject='Product Code';
+     $subject_label='product';
+    $subject_label_plural='products';
+ }
+ 
+
+   
+   $where=sprintf("    where `Current Dispatching State` not in ('Cancelled') and `Customer Key`=%d  ",$customer_id);
+
+   $wheref='';
+    if ($f_field=='description' and $f_value!='')
+        $wheref.=" and ( `Deal Terms Description` like '".addslashes($f_value)."%' or `Deal Allowance Description` like '".addslashes($f_value)."%'  )   ";
+    elseif($f_field=='name' and $f_value!='')
+    $wheref.=" and  `Deal Name` like '".addslashes($f_value)."%'";
+
+$sql=sprintf("select count(distinct `%s`)  as total  from `Order Transaction Fact` OTF left join `Product History Dimension` PHD on (OTF.`Product Key`=PHD.`Product Key`) left join `Product Dimension` PD on (PD.`Product ID`=PHD.`Product ID`)  $where  ",$group_by);
+//print $sql;
+$total=0;
+ $result=mysql_query($sql);
+    if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+        $total=$row['total'];
+    }
+    mysql_free_result($result);
+
+    if ($wheref=='') {
+        $filtered=0;
+        $total_records=$total;
+    } else {
+       $sql=sprintf("select count(distinct `%s`)  as total   from `Order Transaction Fact` OTF left join `Product History Dimension` PHD on (OTF.`Product Key`=PHD.`Product Key`) left join `Product Dimension` PD on (PD.`Product ID`=PHD.`Product ID`)  $where  $wheref ",$group_by);
+
+        $result=mysql_query($sql);
+        if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+            $total_records=$row['total'];
+            $filtered=$total_records-$total;
+        }
+        mysql_free_result($result);
+
+    }
+
+
+    $rtext=$total_records." ".ngettext($subject_label,$subject_label_plural,$total_records);
+    if ($total_records>$number_results)
+        $rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
+    else
+        $rtext_rpp=' ('._('Showing all').')';
+
+    if ($total==0 and $filtered>0) {
+        switch ($f_field) {
+        case('name'):
+            $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any deal with this name ")." <b>".$f_value."*</b> ";
+            break;
+        case('description'):
+            $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any deal with description like ")." <b>".$f_value."*</b> ";
+            break;
+        }
+    }
+    elseif($filtered>0) {
+        switch ($f_field) {
+        case('name'):
+            $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total "._('deals with name like')." <b>".$f_value."*</b> <span onclick=\"remove_filter($tableid)\" id='remove_filter$tableid' class='remove_filter'>"._('Show All')."</span>";
+            break;
+        case('description'):
+            $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total "._('deals with description like')." <b>".$f_value."*</b> <span onclick=\"remove_filter($tableid)\" id='remove_filter$tableid' class='remove_filter'>"._('Show All')."</span>";
+            break;
+        }
+    }
+    else
+        $filter_msg='';
+
+    $_dir=$order_direction;
+    $_order=$order;
+
+    if($order=='subject'){
+        switch($type){
+	case('Family'):
+	  $order='`Product Family Code`';
+	  break;
+	case('Department'):
+	  $order='`Product Department Code`'; 
+	  break;
+	default:
+	  $order='`Product Code`';
+	}
+	
+    }
+
+
+ $sql=sprintf("select  count(distinct `Order Key`) as `Number of Orders`,sum(`Order Quantity`) as `Order Quantity`,sum(`Delivery Note Quantity`) as `Delivery Note Quantity` ,`Product Code`,`Product Family Code`,PD.`Product Family Key`,PD.`Product Main Department Key`,D.`Product Department Code` from `Order Transaction Fact` OTF left join `Product History Dimension` PHD on (OTF.`Product Key`=PHD.`Product Key`) left join `Product Dimension` PD on (PD.`Product ID`=PHD.`Product ID`) left join `Product Department Dimension` D on (D.`Product Department Key`=`Product Main Department Key`)    where `Current Dispatching State` not in ('Cancelled') and `Customer Key`=%d   group by `%s`   order by $order $order_direction limit $start_from,$number_results   ",$customer_id,$group_by);
+ 
+ $res = mysql_query($sql);
+
+    $total=mysql_num_rows($res);
+
+    while ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+
+
+        $adata[]=array(
+		       'subject'=>$row[$subject],
+		       'ordered'=>number($row['Order Quantity']),
+		       'dispached'=>$row['Delivery Note Quantity'],
+		       'orders'=>number($row['Number of Orders']),
+
+
+                 );
+    }
+    mysql_free_result($res);
+ $response=array('resultset'=>
+                                array('state'=>200,
+                                      'data'=>$adata,
+                                      'sort_key'=>$_order,
+                                      'sort_dir'=>$_dir,
+                                      'tableid'=>$tableid,
+                                      'filter_msg'=>$filter_msg,
+                                      'rtext'=>$rtext,
+                                      'rtext_rpp'=>$rtext_rpp,
+                                      'total_records'=>$total_records,
+                                      'records_offset'=>$start_from,
+                                      'records_perpage'=>$number_results,
+                                     )
+                   );
+    echo json_encode($response);
+
+}
+
 
 function list_companies(){
 $conf=$_SESSION['state']['companies']['table'];

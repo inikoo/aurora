@@ -278,7 +278,7 @@ public $new_value=false;
         default:
             $sql=sprintf("select * from `Product Department Dimension` where `Product Department Type`='Unknown' ");
         }
-        //  print "$sql\n";
+        
 
         $result=mysql_query($sql);
         if ($this->data=mysql_fetch_array($result, MYSQL_ASSOC)   )
@@ -1397,6 +1397,19 @@ function update_main_image(){
     // print "$sql\n";
     mysql_query($sql);
   }
+
+function get_page_data(){
+  
+  $sql=sprintf("select * from `Page Store Dimension` PSD left join `Page Dimenion` PD on (PSD.`Page Key`=PD.`Page Key`) where PSD.`Page Key`=%d",$this->data['Product Department Page Key']);
+  $res=mysql_query($sql);
+  if($row=mysql_fetch_array($res)){
+    $data=$row;
+  }
+  
+  return $data;
+
+}
+
 }
 
 ?>

@@ -85,8 +85,8 @@
     <div style="float:left;"><div id="table_info0" class="clean_table_info"><span id="rtext0"></span> <span  id="rtext_rpp0" class="rtext_rpp"></span> <span class="filter_msg"  id="filter_msg0"></span></div></div>
       <div class="clean_table_filter" id="filter_div0"  >
 	<div class="clean_table_info" >
-	  <span id="filter_name0">{$filter_name}</span>: 
-	  <input style="border-bottom:none;width:10em" id='f_input0' value="{$filter_value}" size="10" />
+	  <span id="filter_name0">{$filter_name0}</span>: 
+	  <input style="border-bottom:none;width:10em" id='f_input0' value="{$filter_value0}" size="10" />
 	  <div id='f_container'></div></div></div>
       <div class="clean_table_controls" style="" ><div><span  style="margin:0 5px" id="paginator"></span></div></div>
     </div>
@@ -94,10 +94,28 @@
   </div>
 
 
+<div class="data_table" style="margin:25px 0">
+  <span class="clean_table_title">{t}Products Ordered{/t}</span>
+  <div  class="clean_table_caption"  style="clear:both;">
+    <div style="float:left;"><div id="table_info1" class="clean_table_info"><span id="rtext1">z</span> <span  id="rtext_rpp1" class="rtext_rpp">y</span> <span class="filter_msg"  id="filter_msg1"></span></div></div>
+      <div class="clean_table_filter" id="filter_div1">
+	<div class="clean_table_info" >
+	  <span id="filter_name1">{$filter_name1}</span>: 
+	  <input style="border-bottom:none;width:10em" id='f_input1' value="{$filter_value1}" size="10" />
+	  <div id='f_container'></div></div></div>
+      <div class="clean_table_controls" style="" ><div><span  style="margin:0 5px" id="paginator"></span></div></div>
+    </div>
+    <div  id="table1"   class="data_table_container dtable btable "> </div>
+  </div>
+
+
     </div>
   </div>
     <div class="yui-b">
     </div>
+
+
+
 
 </div> 
 
@@ -184,18 +202,32 @@
 
 <div>
 
-<div id="filtermenu" class="yuimenu">
+<div id="filtermenu0" class="yuimenu">
   <div class="bd">
     <ul class="first-of-type">
        <li style="text-align:left;margin-left:10px;border-bottom:1px solid #ddd">{t}Filter options{/t}:</li>
-      {foreach from=$filter_menu item=menu }
+      {foreach from=$filter_menu0 item=menu }
       <li class="yuimenuitem"><a class="yuimenuitemlabel" onClick="change_filter('{$menu.db_key}','{$menu.label}',0)"> {$menu.menu_label}</a></li>
       {/foreach}
     </ul>
   </div>
 </div>
 
-<div id="rppmenu" class="yuimenu">
+<div id="filtermenu1" class="yuimenu">
+  <div class="bd">
+    <ul class="first-of-type">
+       <li style="text-align:left;margin-left:10px;border-bottom:1px solid #ddd">{t}Filter options{/t}:</li>
+      {foreach from=$filter_menu1 item=menu }
+      <li class="yuimenuitem"><a class="yuimenuitemlabel" onClick="change_filter('{$menu.db_key}','{$menu.label}',0)"> {$menu.menu_label}</a></li>
+      {/foreach}
+    </ul>
+  </div>
+</div>
+
+
+
+
+<div id="rppmenu0" class="yuimenu">
   <div class="bd">
     <ul class="first-of-type">
        <li style="text-align:left;margin-left:10px;border-bottom:1px solid #ddd">{t}Rows per Page{/t}:</li>
@@ -205,6 +237,18 @@
     </ul>
   </div>
 </div>
+
+<div id="rppmenu1" class="yuimenu">
+  <div class="bd">
+    <ul class="first-of-type">
+       <li style="text-align:left;margin-left:10px;border-bottom:1px solid #ddd">{t}Rows per Page{/t}:</li>
+      {foreach from=$paginator_menu item=menu }
+      <li class="yuimenuitem"><a class="yuimenuitemlabel" onClick="change_rpp({$menu},0)"> {$menu}</a></li>
+      {/foreach}
+    </ul>
+  </div>
+</div>
+
 
 {include file='footer.tpl'}
 
