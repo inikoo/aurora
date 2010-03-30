@@ -223,7 +223,7 @@ public $new_value=false;
         $values='values(';
         foreach($data as $key=>$value) {
 	  $keys.="`$key`,";
-	  if($key=='Product Department Description')
+	  if(preg_match('/Product Department Description|Marketing|Slogan/i',$key))
 	    $values.=prepare_mysql($value,false).",";
 
 	  else
@@ -1272,8 +1272,65 @@ public $new_value=false;
     }
 
 
-    function create_page(){
+    function create_page($data){
       
+      
+      $store=new Store($this->data['Product Department Store Key']);
+      $store_page_data=$store->get_page_data();
+	
+
+      if(!array_key_exists('Showcases',$data)){
+
+	$showcases=array();
+
+      if($store_page_data['Display Presentation']='Yes' and $data['Product Presentation']!=''){
+	$showcases['Presentation']=array('Display'=>true,'Type'=>'Template','Contents'=>$this->data['Product Department Name']);
+      }
+       if($store_page_data['Display Offers']='Yes' ){
+	$showcases['Offers']=array('Display'=>true,'Type'=>'Auto');
+      }
+       if($store_page_data['Display New Products']='Yes' ){
+	$showcases['Offers']=array('Display'=>true,'Type'=>'Auto');
+      }
+      }else
+	$showcases=$data['Showcases'];
+       
+
+      if(!array_key_exists('Product Layouts',$data)){
+
+       $product_layouts=array();
+
+       if($store_page_data['Product Thumbnails Layout']='Yes' ){
+	 $product_layouts['Thumbnails']=array('Display'=>true,'Type'=>'Auto');
+       }
+       
+       if($store_page_data['Product List Layout ']='Yes' ){
+	 $product_layouts['List']=array('Display'=>true,'Type'=>'Auto');
+       }
+       
+       if($store_page_data['Product Slideshow Layout']='Yes' ){
+	 $product_layouts['Slideshow']=array('Display'=>true,'Type'=>'Auto');
+       }
+       if($store_page_data['Product Manual Layout']='Yes' ){
+	 $product_layouts['Manual']=array('Display'=>true,'Type'=>$store_page_data['Product Manual Layout Type'],'Data'=>$store_page_data['Product Manual Layout Data']);
+       }
+       
+       if(count($product_layouts==0)){
+	 $product_layouts['Thumbnails']=array('Display'=>true,'Type'=>'Auto');
+       }
+       }else
+	$product_layouts=$data['Product Layouts'];
+
+      if(!array_key_exists('Showcases Layout',$data))
+	$showcases_layout=$store_page_data['Showcases Layout'];
+      else
+	$showcases_layout=$data['Showcases Layout'];
+
+      
+      
+      
+
+
       $page_data=array(
 		       'Page Code'=>'PD_'.$this->data['Product Dimension Code']
 		       ,'Page Source Template'=>''
@@ -1283,8 +1340,11 @@ public $new_value=false;
 		       ,'Page Short Title'=>$this->data['Product Department Name']
 		       ,'Page Store Title'=>$this->data['Product Department Name']
 		       ,'Page Store Subtitle'=>''
-		       ,'Page Store Slogan'=>$this->data['Product Department Slogan']
-		       ,'Page Store Abstract'=>$this->data['Product Department Marketing Description']
+		       ,'Page Store Slogan'=>$data['Page Store Slogan']
+		       ,'Page Store Abstract'=>$data['Product Department Resume']
+		       ,'Page Store Showcases'=>$showcases
+		       ,'Page Store Showcases Layout'=>$showcases_layout
+		       ,'Page Store Product Layouts'=>$product_layouts
 		       );
       
       $page_data['Page Store Function']='Department Catalogue';
@@ -1296,7 +1356,10 @@ public $new_value=false;
 
       $page=new Page('find',$page_data,'create');
 
-    }
+      $sql=sprintf("update `Product Department Dimension` set `Product Department Page Key`=%d ");
+
+
+	}
 
 function add_image($image_key,$args='') {
  
