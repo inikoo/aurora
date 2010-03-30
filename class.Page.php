@@ -110,19 +110,25 @@ function find($raw_data,$options){
       
     }
 
+
+
     $extra_data=array();
     if($data['Page Type']=='Internal'){
       $extra_data=$this->internal_base_data();
       foreach($raw_data as $key=>$value){
 	if(array_key_exists($key,$extra_data))
 	  $extra_data[$key]=_trim($value);
+	   
 	   }
       
     }elseif($data['Page Type']=='Store'){
       $extra_data=$this->store_base_data();
       foreach($raw_data as $key=>$value){
-	if(array_key_exists($key,$extra_data))
-	  $extra_data[$key]=_trim($value);
+	if(array_key_exists($key,$extra_data)){
+	  $extra_data[$key]=$value;
+      if(is_string($value))
+      $extra_data[$key]=_trim($value);
+      }
       }
       
     }
@@ -230,12 +236,48 @@ function create($data,$extra_data=false){
 function create_store_page($data){
   
   $data['Page Key']=$this->id;
+
+   if(!is_array($data['Page Store Showcases'])){
+  $data['Page Store Showcases']=array();
+  }
+
+  if(array_key_exists('Presentation',$data['Page Store Showcases'])){
+    $data['Presentation Showcase']='Yes';
+  }
+  if(array_key_exists('Offers',$data['Page Store Showcases'])){
+    $data['Offers Showcase']='Yes';
+  }
+  if(array_key_exists('New',$data['Page Store Showcases'])){
+    $data['New Showcase']='Yes';
+  }
+  $data['Page Store Showcases']=serialize($data['Page Store Showcases']);
+ // print "-------\n";
+  
+  if(!is_array($data['Page Store Product Layouts'])){
+  $data['Page Store Product Layouts']=array();
+  }
+  
+  if(array_key_exists('List',$data['Page Store Product Layouts'])){
+    $data['Product List Layout']='Yes';
+  }
+  if(array_key_exists('Slideshow',$data['Page Store Product Layouts'])){
+    $data['Product Slideshow Layout']='Yes';
+  }
+  if(array_key_exists('Thumbnails',$data['Page Store Product Layouts'])){
+    $data['Product Thumbnails Layout']='Yes';
+  }
+    if(array_key_exists('Manual',$data['Page Store Product Layouts'])){
+    $data['Product Manual Layout']='Yes';
+  }
+  
+  
+  $data['Page Store Product Layouts']=serialize($data['Page Store Product Layouts']);
   
   $keys='(';
   $values='values(';
   foreach($data as $key=>$value) {
     $keys.="`$key`,";
-    if (preg_match('/Subtitle|Title|Resume|Presentation|Slogan|Manual Layout Data/i',$key))
+    if (preg_match('/Subtitle|Title|Resume|Presentation|Slogan|Manual Layout Data|Page Store Showcases|Page Store Showcases/i',$key))
 	  $values.="'".addslashes($value)."',";
     else
       $values.=prepare_mysql($value).",";
@@ -243,7 +285,7 @@ function create_store_page($data){
   $keys=preg_replace('/,$/',')',$keys);
   $values=preg_replace('/,$/',')',$values);
   $sql=sprintf("insert into `Page Store Dimension` %s %s",$keys,$values);
-   print "$sql\n\n";
+   //print "$sql\n\n";
   
       if (mysql_query($sql)) {
 

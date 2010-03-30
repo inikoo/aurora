@@ -57,7 +57,7 @@ $data=array(
 		  ,'Page Store Title'=>'Welcome to Ancient Wisdom'
 		  ,'Page Store Subtitle'=>'Europe\'s Biggest Online Giftware Wholesaler'
 		  ,'Page Store Slogan'=>'Exotic & Esoteric'
-		  ,'Page Store Abstract'=>'Currently we have over 10000 exotic, interesting & unique wholesale product lines spread over approaching 1000 web pages all available to order on-line for delivery next day in the UK (well we do our best)'
+		  ,'Page Store Resume'=>'Currently we have over 10000 exotic, interesting & unique wholesale product lines spread over approaching 1000 web pages all available to order on-line for delivery next day in the UK (well we do our best)'
 
 		  
 		  )
@@ -72,7 +72,7 @@ $data=array(
 		  ,'Page Store Title'=>'Register to Ancient Wisdom'
 		  ,'Page Store Subtitle'=>''
 		  ,'Page Store Slogan'=>'Hello stranger'
-		  ,'Page Store Abstract'=>'Please note this is a wholesale site we supply wholesale to the trade.'
+		  ,'Page Store Resume'=>'Please note this is a wholesale site we supply wholesale to the trade.'
 
 		  
 		  )
@@ -89,7 +89,7 @@ $data=array(
 		  ,'Page Store Title'=>'Contact Page'
 		  ,'Page Store Subtitle'=>''
 		  ,'Page Store Slogan'=>'You know where we are'
-		  ,'Page Store Abstract'=>'Please don\'t hesitate to contact us if you need more information<br>In May 2008 we moved to brand new premises, you can visit us and have a look at our showroom, to make an appoiment please click <a href="info.php?page=showroom">here</a>'
+		  ,'Page Store Resume'=>'Please don\'t hesitate to contact us if you need more information<br>In May 2008 we moved to brand new premises, you can visit us and have a look at our showroom, to make an appoiment please click <a href="info.php?page=showroom">here</a>'
 		  )
 
 	     ,array(
@@ -103,7 +103,7 @@ $data=array(
 		  ,'Page Store Title'=>'Showroom'
 		  ,'Page Store Subtitle'=>''
 		  ,'Page Store Slogan'=>'You can visit us!'
-		  ,'Page Store Abstract'=>'Why not visit us... we are always delighted to see our customers.'
+		  ,'Page Store Resume'=>'Why not visit us... we are always delighted to see our customers.'
 		  )	     
  ,array(
 		  'Page Code'=>'export_guide'
@@ -116,7 +116,7 @@ $data=array(
 		  ,'Page Store Title'=>'Export Guide'
 		  ,'Page Store Subtitle'=>''
 		  ,'Page Store Slogan'=>'Shipping Worldwide'
-		  ,'Page Store Abstract'=>'We have experience in shipping to many countries on all continents.<br/>Philippe our dedicated export customer service advisor is at your services, he  speak English & French well and will try his best in any European language'
+		  ,'Page Store Resume'=>'We have experience in shipping to many countries on all continents.<br/>Philippe our dedicated export customer service advisor is at your services, he  speak English & French well and will try his best in any European language'
 		  )
 
 	      ,array(
@@ -130,7 +130,7 @@ $data=array(
 		  ,'Page Store Title'=>'Terms & Conditions'
 		  ,'Page Store Subtitle'=>''
 		  ,'Page Store Slogan'=>'The small print'
-		  ,'Page Store Abstract'=>''
+		  ,'Page Store Resume'=>''
 		  )	     
 
 	     
@@ -150,13 +150,52 @@ foreach($data as $page_data){
   
 }
 
+$store_data=array(
+'UK'=>array(
+            'Slogan'=>'Britain Biggest Online Giftware Wholesaler'
+            ,'Resume'=>'Currently we have over 10000 exotic, interesting & unique wholesale product lines spread over approaching 1000 web pages all available to order on-line for delivery next day in the UK (well we do our best)'
+            
+           ),
+           'DE'=>array(
+            'Slogan'=>'Germany Biggest Online Giftware Wholesaler'
+            ,'Resume'=>'Currently we have over 10000 exotic, interesting & unique wholesale product lines spread over approaching 1000 web pages all available to order on-line for delivery next day in the UK (well we do our best)'
+            
+           ),
+           'FR'=>array(
+            'Slogan'=>'France Biggest Online Giftware Wholesaler'
+            ,'Resume'=>'Currently we have over 10000 exotic, interesting & unique wholesale product lines spread over approaching 1000 web pages all available to order on-line for delivery next day in the UK (well we do our best)'
+            
+           ),
+           'PL'=>array(
+            'Slogan'=>'Poland Biggest Online Giftware Wholesaler'
+            ,'Resume'=>'Currently we have over 10000 exotic, interesting & unique wholesale product lines spread over approaching 1000 web pages all available to order on-line for delivery next day in the UK (well we do our best)'
+            
+           )
+
+);
+
+$sql=sprintf("select * from `Store Dimension`  ");
+
+$res=mysql_query($sql);
+while($row=mysql_fetch_array($res)){
+$store=new Store($row['Store Key']);
+  $data=array();
+  $data['Page Store Slogan']=$store_data[$row['Store Code']]['Slogan'];
+    $data['Page Store Resume']=$store_data[$row['Store Code']]['Resume'];
+
+  $data['Showcases Layout']='Splited';
+// print_r($data); 
+  $store->create_page($data);
+  
+}
+
 
 $sql=sprintf("select * from `Product Department Dimension` left join  `Store Dimension` on (`Product Department Store Key`=`Store Key`)  where `Product Department Sales Type`='Public Sale'  ");
 
 $res=mysql_query($sql);
 while($row=mysql_fetch_array($res)){
-
-  
+$department=new Department($row['Product Department Key']);
+  $data=array();
   
   
 }
