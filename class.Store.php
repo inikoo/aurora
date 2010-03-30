@@ -1185,6 +1185,47 @@ $sql=sprintf("select sum(if(`Product Record Type`='In process',1,0)) as in_proce
 
   }
 
+  function create_page($data){
+    
+    if(array_key_exists('Showcases',$data))
+ 	    $showcases=$data['Showcases'];
+ 	else
+ 	    $showcases['Presentation']=array('Display'=>true,'Type'=>'Template','Contents'=>$this->data['Store Name']);
 
+ 	  if(array_key_exists('Showcases',$data))
+ 	$product_layouts=$data['Product Layouts'];
+ 	else
+ 	$product_layouts=array('List'=>array('Display'=>true,'Type'=>'Auto'));
+ 	
+	$showcases_layout=$data['Showcases Layout'];
+      $page_data=array(
+		       'Page Code'=>'SD_'.$this->data['Store Code']
+		       ,'Page Source Template'=>'pages/'.$this->data['Store Code'].'/catalogue'
+		       ,'Page URL'=>'catalogue.php?code='.$this->data['Store Code']
+		       ,'Page Description'=>'Store Catalogue'
+		       ,'Page Title'=>$this->data['Store Name']
+		       ,'Page Short Title'=>$this->data['Store Name']
+		       ,'Page Store Title'=>$this->data['Store Name']
+		       ,'Page Store Subtitle'=>''
+		       ,'Page Store Slogan'=>$data['Page Store Slogan']
+		       ,'Page Store Resume'=>$data['Page Store Resume']
+		       ,'Page Store Showcases'=>$showcases
+		       ,'Page Store Showcases Layout'=>$showcases_layout
+		       ,'Page Store Product Layouts'=>$product_layouts
+		       );
+      
+      $page_data['Page Store Function']='Store Catalogue';
+      $page_data['Page Store Creation Date']=date('Y-m-d H:i:s');
+      $page_data['Page Store Last Update Date']=date('Y-m-d H:i:s');
+      $page_data['Page Store Last Structural Change Date']=date('Y-m-d H:i:s');
+      $page_data['Page Type']='Store';
+      $page_data['Page Store Source Type'] ='Dynamic';
+//print_r($page_data);
+      $page=new Page('find',$page_data,'create');
+//print_r($page);
+      $sql=sprintf("update `Product Store Dimension` set `Product Department Page Key`=%d ",$page->id);
+      mysql_query($sql);  
+
+	}
  
 }
