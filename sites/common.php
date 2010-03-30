@@ -24,6 +24,17 @@ $smarty->cache_dir = $myconf['cache_dir'];
 $smarty->config_dir = $myconf['config_dir'];
 
 $store_key=1;
+
+$store=new Store($store_key);
+$store_code=$store->data['Store Code'];
+$smarty->assign('store_code',$store_code);
+
+$smarty->assign('head_template',"pages/$store_code/head.tpl");
+$smarty->assign('footer_template',"pages/$store_code/footer.tpl");
+$smarty->assign('main_menu_template',"pages/$store_code/main_menu.tpl");
+
+
+
 $sql=sprintf("select `Product Department Code`,`Product Department Name` from `Product Department Dimension` where `Product Department Store Key`=%d and `Product Department Sales Type`='Public Sale' ",$store_key);
 $res=mysql_query($sql);
 $departments=array();

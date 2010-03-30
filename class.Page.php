@@ -235,7 +235,7 @@ function create_store_page($data){
   $values='values(';
   foreach($data as $key=>$value) {
     $keys.="`$key`,";
-    if (preg_match('/Subtitle|Title|Abstract/i',$key))
+    if (preg_match('/Subtitle|Title|Resume|Presentation|Slogan|Manual Layout Data/i',$key))
 	  $values.="'".addslashes($value)."',";
     else
       $values.=prepare_mysql($value).",";
@@ -243,7 +243,7 @@ function create_store_page($data){
   $keys=preg_replace('/,$/',')',$keys);
   $values=preg_replace('/,$/',')',$values);
   $sql=sprintf("insert into `Page Store Dimension` %s %s",$keys,$values);
-   print "$sql\n";
+   print "$sql\n\n";
   
       if (mysql_query($sql)) {
 

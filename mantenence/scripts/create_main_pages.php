@@ -28,7 +28,7 @@ require_once '../../conf/conf.php';
 global $myconf;
 
 
-
+$store_code='UK';
 
 //$sql=sprintf("select P.`Page Key` from `Page Dimension` P  left join `Page Store Dimension` PS on (P.`Page Key`=PS.`Page Key`)  where `Page Type`='Store'  and `Page Store Function`='Information' ");
 $sql=sprintf("select P.`Page Key` from `Page Dimension` P  left join `Page Store Dimension` PS on (P.`Page Key`=PS.`Page Key`)  where `Page Type`='Store'  ");
@@ -48,7 +48,7 @@ while($row=mysql_fetch_array($res)){
 $data=array(
 	     array(
 		  'Page Code'=>'home'
-		  ,'Page Source Template'=>'splinters/info/contact.tpl'
+		  ,'Page Source Template'=>'pages/'.$store_code.'/home.tpl'
 		  ,'Page URL'=>'index.php'
 		  ,'Page Description'=>'Home Page'
 
@@ -63,7 +63,7 @@ $data=array(
 		  )
 	     ,array(
 		  'Page Code'=>'register'
-		  ,'Page Source Template'=>'register.tpl'
+		  ,'Page Source Template'=>'pages/'.$store_code.'/register.tpl'
 		  ,'Page URL'=>'register.php'
 		  ,'Page Description'=>'Registration Page'
 
@@ -80,7 +80,7 @@ $data=array(
 
 	     ,array(
 		  'Page Code'=>'contact'
-		  ,'Page Source Template'=>'splinters/info/contact.tpl'
+		  ,'Page Source Template'=>'splinters/info/'.$store_code.'/contact.tpl'
 		  ,'Page URL'=>'info.php?page=contact'
 		  ,'Page Description'=>'Contact information details (address, telephones, emails, and directions)'
 		  
@@ -94,7 +94,7 @@ $data=array(
 
 	     ,array(
 		  'Page Code'=>'showroom'
-		  ,'Page Source Template'=>'splinters/info/showroom.tpl'
+		  ,'Page Source Template'=>'splinters/info/'.$store_code.'/showroom.tpl'
 		  ,'Page URL'=>'info.php?page=showroom'
 		  ,'Page Description'=>'Information about our showroom'
 		  
@@ -107,7 +107,7 @@ $data=array(
 		  )	     
  ,array(
 		  'Page Code'=>'export_guide'
-		  ,'Page Source Template'=>'splinters/info/export_guide.tpl'
+		  ,'Page Source Template'=>'splinters/info/'.$store_code.'/export_guide.tpl'
 		  ,'Page URL'=>'info.php?page=overseas'
 		  ,'Page Description'=>'Information about overseas orders'
 		  
@@ -121,7 +121,7 @@ $data=array(
 
 	      ,array(
 		  'Page Code'=>'terms_and_conditions'
-		  ,'Page Source Template'=>'splinters/info/terms_and_conditions.tpl'
+		  ,'Page Source Template'=>'splinters/info/'.$store_code.'/terms_and_conditions.tpl'
 		  ,'Page URL'=>'info.php?page=terms_and_conditions'
 		  ,'Page Description'=>'Terms and Conditions'
 		  
@@ -147,6 +147,17 @@ foreach($data as $page_data){
   $page_data['Page Store Source Type'] ='Static';
   $page=new Page('find',$page_data,'create');
   //print_r($page);
+  
+}
+
+
+$sql=sprintf("select * from `Product Department Dimension` left join  `Store Dimension` on (`Product Department Store Key`=`Store Key`)  where `Product Department Sales Type`='Public Sale'  ");
+
+$res=mysql_query($sql);
+while($row=mysql_fetch_array($res)){
+
+  
+  
   
 }
 

@@ -1420,7 +1420,7 @@ function load_images(){
 }
 function load_images_slidesshow(){
   $sql=sprintf("select `Image Thumbnail URL`,`Image Small URL`,`Is Principal`,ID.`Image Key`,`Image Caption`,`Image URL`,`Image Filename`,`Image File Size`,`Image File Checksum`,`Image Width`,`Image Height`,`Image File Format` from `Image Bridge` PIB left join `Image Dimension` ID on (PIB.`Image Key`=ID.`Image Key`) where `Subject Type`='Department' and   `Subject Key`=%d",$this->id);
-      //       print $sql;
+  //       print $sql;
       $res=mysql_query($sql);
       $this->images_slideshow=array();
 
@@ -1463,7 +1463,8 @@ function update_main_image(){
 
 function get_page_data(){
   
-  $sql=sprintf("select * from `Page Store Dimension` PSD left join `Page Dimenion` PD on (PSD.`Page Key`=PD.`Page Key`) where PSD.`Page Key`=%d",$this->data['Product Department Page Key']);
+  $sql=sprintf("select * from `Page Store Dimension` PSD left join `Page Dimension` PD on (PSD.`Page Key`=PD.`Page Key`) where PSD.`Page Key`=%d",$this->data['Product Department Page Key']);
+  // print $sql;
   $res=mysql_query($sql);
   if($row=mysql_fetch_array($res)){
     $data=$row;

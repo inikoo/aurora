@@ -22,7 +22,7 @@
 
 <a href="index.php" alt="home"><img src="art/header/aw_logo.png"/></a><br/>
      <div  id="slogan">{$slogan}</div>
-    {include file='main_menu.tpl'}
+    {include file="$main_menu_template"}
 
 
   </div>

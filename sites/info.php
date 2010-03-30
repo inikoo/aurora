@@ -17,7 +17,7 @@ if(isset($_REQUEST['page'])){
   exit;
 }
 
-$sql=sprintf("select `Page Store Slogan`,`Page Store Title`,`Page Code`,`Page Title`,`Page Short Title`,`Page Store Subtitle`,`Page Store Abstract`,`Page Source Template` from `Page Store Dimension` PS left join `Page Dimension` P  on (P.`Page Key`=PS.`Page Key`) where `Page Code`=%s ",prepare_mysql($page));
+$sql=sprintf("select `Page Store Slogan`,`Page Store Title`,`Page Code`,`Page Title`,`Page Short Title`,`Page Store Subtitle`,`Page Store Resume`,`Page Source Template` from `Page Store Dimension` PS left join `Page Dimension` P  on (P.`Page Key`=PS.`Page Key`) where `Page Code`=%s ",prepare_mysql($page));
 
 $res=mysql_query($sql);
 if(!$page_data=mysql_fetch_array($res)){
@@ -25,17 +25,22 @@ if(!$page_data=mysql_fetch_array($res)){
   exit;
 }
 
+$smarty->assign('home_header_template',"pages/$store_code/home_header.tpl");
+$smarty->assign('right_menu_template',"pages/$store_code/right_menu.tpl");
+$smarty->assign('left_menu_template',"pages/$store_code/left_menu.tpl");
+
+
 $smarty->assign('title',$page_data['Page Title']);
 $smarty->assign('header_title',$page_data['Page Store Title']);
 $smarty->assign('header_subtitle',$page_data['Page Store Subtitle']);
 $smarty->assign('slogan',$page_data['Page Store Slogan']);
 
-$smarty->assign('comentary',$page_data['Page Store Abstract']);
+$smarty->assign('comentary',$page_data['Page Store Resume']);
 $smarty->assign('contents',$page_data['Page Source Template']);
 
 
 $smarty->assign('js_files',$js_files);
-$smarty->display('info.tpl');
+$smarty->display('pages/'.$store_code.'/info.tpl');
 
 
 
