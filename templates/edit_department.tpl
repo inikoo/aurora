@@ -136,12 +136,12 @@
 	{t}Splited{/t}
 	</div>
 	<div  style="float:left;width:125px;text-align:center">
-	<img style="border:1px solid #ccc" src="art/page_layout_tabbed.png" alt="tabbed"/>
+	<img style="border:1px solid #ccc" src="art/header_block_tabbed.png" alt="tabbed"/>
 	{t}Tabbed{/t}
 	</div>
 	<div  style="float:left;width:125px;text-align:center">
-	<img style="border:1px solid #ccc" src="art/page_layout_block.png" alt="block"/>
-	{t}Block{/t}
+	<img style="border:1px solid #ccc" src="art/header_block_fluid_block.png" alt="fluid_block"/>
+	{t}Fluid Block{/t}
 	</div>
 	
   </td>
