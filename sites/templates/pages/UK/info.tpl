@@ -1,9 +1,9 @@
-{include file='head.tpl'}
+{include file="$head_template"}
  <body>
    <div id="container" >
-     {include file='home_header.tpl'}
+     {include file="$home_header_template"}
      <div id="page_content">
-       {include file='left_menu.tpl'}
+       {include file="$left_menu_template"}
      
        <div id="central_content">
 	 <div id="search" >
@@ -14,9 +14,9 @@
 	 
 
        </div>
-       {include file='right_menu.tpl'}
+       {include file="$right_menu_template"}
        
      </div>
 
-     {include file='footer.tpl'}
+     {include file="$footer_template"}
  </body>
