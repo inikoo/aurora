@@ -828,7 +828,8 @@ function plot_assets(){
     $item_key_array[]=$request_keys;
   }
   if(count($item_key_array)==0){
-    print "error";
+    print "error x";
+    print_r($_REQUEST);
     return;
   }
   

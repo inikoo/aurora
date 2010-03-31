@@ -28,13 +28,24 @@ mysql_query("SET NAMES 'utf8'");
 require_once '../../conf/conf.php';           
 date_default_timezone_set('Europe/London');
 
-$sql="select * from `Invoice Dimension`";
+$sql="select * from `Invoice Dimension` where `Invoice Store Key` in (2,3)";
 $result=mysql_query($sql);
 while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
 
 
   $invoice=new Invoice($row['Invoice Key']);
+  
   $invoice->categorize('save');
+
+  $force_values=array(
+		      'Invoice Items Net Amount'=>$invoice->data['Invoice Items Net Amount']
+		      ,'Invoice Total Net Amount'=>$invoice->data['Invoice Total Net Amount']
+		      ,'Invoice Total Tax Amount'=>$invoice->data['Invoice Total Tax Amount']
+		      ,'Invoice Total Amount'=>$invoice->data['Invoice Total Amount']
+		      );
+  // print_r($force_values);
+    $invoice->get_totals();
+  // $invoice->get_totals($force_values);
   print $invoice->id."\r";
  }
 

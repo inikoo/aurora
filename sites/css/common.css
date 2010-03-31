@@ -22,3 +22,10 @@ p{margin-bottom:7px}
 
 span.button{border:1px solid #ccc;padding:2px 4px;cursor:pointer}
 span.enabled{border:1px solid #aaa;}
+
+
+table.families{border-top:solid 1px #ccc;border-collapse: collapse;}
+table.families a{color:black}
+table.families tr{border-bottom:solid 1px #ccc;height:40px}
+table.families td {vertical-align:top;padding:0 20px}
+table.families td .family_image{height:50px}

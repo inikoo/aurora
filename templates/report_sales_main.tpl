@@ -9,12 +9,36 @@
 
 
 <h1 style="clear:left">{$title}</h1>
-<table class="report_sales1">
+
+
+<table class="report_sales1" id="report_sales_invoices">
+<tr style="border-bottom:1px solid #ccc;margin-bottom:5px"><td colspan=7>
+<div  style="margin-bottom:5px">
+<span class="state_details" style="margin-right:20px">{t}Profit{/t}</span>
+<span class="state_details selected">{t}Invoices{/t}</span>
+</div>
+</td></tr>
 <tr><td>{t}Store{/t}</td><td></td><td>{t}Invoices{/t}</td><td>{t}Net Sales{/t}</td><td></td><td></td><td>{t}Tax{/t}</td></tr>
 {foreach from=$store_data   item=data }
 <tr class="geo"><td class="label"> {$data.store}</td><td style="text-align:left">{$data.substore}</td><td>{$data.invoices}</td><td>{$data.net}</td><td>{$data.per_eq_net}</td><td>{$data.sub_per_eq_net}</td><td>{$data.tax}</td></tr>
 {/foreach}
 </table>
+
+
+<table class="report_sales1"id="report_sales_profit" >
+<tr style="border-bottom:1px solid #ccc;margin-bottom:5px"><td colspan=7>
+<div  style="margin-bottom:5px">
+<span class="state_details selected" style="margin-right:20px">{t}Profit{/t}</span>
+<span class="state_details ">{t}Invoices{/t}</span>
+</div>
+</td></tr>
+<tr><td>{t}Store{/t}</td><td></td><td>{t}Revenue{/t}</td><td>{t}Profit{/t}</td><td>{t}Margin{/t}</td><td></td><td></td></tr>
+{foreach from=$store_data_profit   item=data }
+<tr class="geo"><td class="label"> {$data.store}</td><td style="text-align:left">{$data.substore}</td><td>{$data.net}</td><td>{$data.profit}</td><td>{$data.margin}</td></tr>
+{/foreach}
+</table>
+
+
 
 <div id="plot" class="top_bar" style="position:relative;left:-20px;clear:both;padding:0;margin:0;{if !$display_plot}display:none{/if}">
 <div display="none" id="plot_info" keys="{$store_keys}"  invoice_category_keys="{$invoice_category_keys}"   ></div>

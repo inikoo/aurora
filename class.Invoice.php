@@ -906,9 +906,20 @@ global $myconf;
      $this->data ['Invoice Total Adjust Amount']=0;
 
 
+  $total_costs=0;
+  $sql=sprintf("select ifnull(sum(`Cost Supplier`/`Invoice Currency Exchange Rate`),0) as `Cost Supplier`  ,ifnull(sum(`Cost Manufacure`/`Invoice Currency Exchange Rate`),0) as `Cost Manufacure` ,ifnull(sum(`Cost Storing`/`Invoice Currency Exchange Rate`),0) as `Cost Storing`,ifnull(sum(`Cost Handing`/`Invoice Currency Exchange Rate`),0)  as  `Cost Handing`,ifnull(sum(`Cost Shipping`/`Invoice Currency Exchange Rate`),0) as `Cost Shipping` from `Order Transaction Fact` where `Invoice Key`=%d",$this->id);
+
+  $result = mysql_query ( $sql );
+   if ($row = mysql_fetch_array ( $result, MYSQL_ASSOC )) {
+     $total_costs=$row['Cost Supplier']+$row['Cost Manufacure']+$row['Cost Storing']+$row['Cost Handing']+$row['Cost Shipping'];
+ 
+   }
+   $this->data ['Invoice Total Profit']= $this->data ['Invoice Total Net Amount']- $this->data ['Invoice Refund Net Amount']-$total_costs;
+
+
 
    //print "$total_net ".$this->data ['Invoice Total Net Adjust Amount']."\n";
-   $sql = sprintf ( "update `Invoice Dimension` set `Invoice Items Net Amount`=%.2f ,`Invoice Items Net Adjust Amount`=%.2f ,`Invoice Total Net Adjust Amount`=%.2f , `Invoice Items Gross Amount`=%.2f ,`Invoice Items Discount Amount`=%.2f  ,`Invoice Total Net Amount`=%.2f,`Invoice Items Tax Amount`=%.2f,`Invoice Refund Net Amount`=%.2f,`Invoice Refund Tax Amount`=%.2f,`Invoice Total Tax Adjust Amount`=%.2f, `Invoice Total Tax Amount`=%.2f,`Invoice Total Amount`=%.2f,`Invoice Total Adjust Amount`=%.2f  where `Invoice Key`=%d"
+   $sql = sprintf ( "update `Invoice Dimension` set `Invoice Items Net Amount`=%.2f ,`Invoice Items Net Adjust Amount`=%.2f ,`Invoice Total Net Adjust Amount`=%.2f , `Invoice Items Gross Amount`=%.2f ,`Invoice Items Discount Amount`=%.2f  ,`Invoice Total Net Amount`=%.2f,`Invoice Items Tax Amount`=%.2f,`Invoice Refund Net Amount`=%.2f,`Invoice Refund Tax Amount`=%.2f,`Invoice Total Tax Adjust Amount`=%.2f, `Invoice Total Tax Amount`=%.2f,`Invoice Total Amount`=%.2f,`Invoice Total Adjust Amount`=%.2f,`Invoice Total Profit`=%.2f  where `Invoice Key`=%d"
 		    , $this->data ['Invoice Items Net Amount']
 		    , $this->data ['Invoice Items Net Adjust Amount']
 		    , $this->data ['Invoice Total Net Adjust Amount']
@@ -923,8 +934,11 @@ global $myconf;
 		    ,$this->data ['Invoice Total Tax Amount']
 		    ,$this->data ['Invoice Total Amount']
 		    ,$this->data ['Invoice Total Adjust Amount']
+		    ,$this->data ['Invoice Total Profit']
+
 		    , $this->data ['Invoice Key'] 
 		     );
+   // print "$sql\n";
    if (! mysql_query ( $sql ))
       exit ( "$sql\n xcan not update invoice dimension after invccc\n" );
 

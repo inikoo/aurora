@@ -6626,13 +6626,17 @@ function list_stores() {
 	    
 	    $sales='<span class="'.$class.'">'.money($tsall).'</span>';
 	    $profit='<span class="'.$class.'">'.money($tprofit).'</span>';
+	    $margin='<span class="'.$class.'">'.percentage($tprofit/$tsall).'</span>';
 	  }else{
 	    $sales=money($tsall,$row['Store Currency Code']);
 	    $profit=money($tprofit,$row['Store Currency Code']);
+	    
+	    $margin=percentage($tprofit,$tsall);
 	  }
 	}else{
 	  $sales=$tsall;
 	  $profit=$tprofit;
+	  $margin=percentage($profit,$sales);
 	}	  
 
         $adata[]=array(
@@ -6651,8 +6655,8 @@ function list_stores() {
                      'low'=>number($row['Store Low Availability Products']),
                      'critical'=>number($row['Store Critical Availability Products']),
                      'sales'=>$sales,
-                     'profit'=>$profit
-
+                     'profit'=>$profit,
+		     'margin'=>$margin
                  );
     }
     mysql_free_result($res);
@@ -6660,6 +6664,7 @@ function list_stores() {
     if ($percentages) {
         $sum_sales='100.00%';
         $sum_profit='100.00%';
+	$margin=percentage($sum_total_profit,$sum_total_sales);
 //       $sum_low=
 //   $sum_optimal=$row['Store Optimal Availability Products'];
 //   $sum_low=$row['Store Low Availability Products'];
@@ -6668,6 +6673,7 @@ function list_stores() {
     } else {
         $sum_sales=money($sum_total_sales);
         $sum_profit=money($sum_total_profit);
+	$margin=percentage($sum_total_profit,$sum_total_sales);
     }
 
     $sum_outofstock=number($sum_outofstock);
@@ -6686,6 +6692,7 @@ function list_stores() {
                  'active'=>number($sum_active),
                  'sales'=>$sum_sales,
                  'profit'=>$sum_profit,
+		 'margin'=>$margin,
                  'todo'=>$sum_todo,
                  'discontinued'=>$sum_discontinued,
                  'low'=>$sum_low,

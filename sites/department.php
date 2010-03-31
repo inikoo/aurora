@@ -37,10 +37,23 @@ $smarty->assign('slogan',$page_data['Page Store Slogan']);
 
 $smarty->assign('comentary',$page_data['Page Store Abstract']);
 $smarty->assign('contents',$page_data['Page Source Template']);
+$smarty->assign('home_header_template',"pages/$store_code/home_header.tpl");
+$smarty->assign('right_menu_template',"pages/$store_code/right_menu.tpl");
+$smarty->assign('left_menu_template',"pages/$store_code/left_menu.tpl");
+
+
+$sql=sprintf("select `Product Family Code`,`Product Family Name`,`Product Family Main Image` from `Product Family Dimension` where `Product Family Main Department Key`=%d and `Product Family Sales Type`='Public Sale' ",$department->id);
+$res=mysql_query($sql);
+$families=array();
+while($row=mysql_fetch_array($res)){
+  $families[]=array('key'=>$row['Product Family Key'],'code'=>$row['Product Family Code'],'name'=>$row['Product Family Name'],'image'=>$row['Product Family Main Image']);
+}
+
+$smarty->assign('families',$families);
 
 
 $smarty->assign('js_files',$js_files);
-$smarty->display('department.tpl');
+$smarty->display('pages/'.$store_code.'/department.tpl');
 
 
 

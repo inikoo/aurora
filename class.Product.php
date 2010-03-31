@@ -2684,7 +2684,7 @@ $number_images=$row['num'];
 
 
 
-    $sql=sprintf("select  count(Distinct `Customer Key`)as customers ,count(Distinct `Invoice Key`)as invoices , sum(`Cost Supplier`) as cost_sup,sum(`Invoice Transaction Gross Amount`) as gross ,sum(`Invoice Transaction Total Discount Amount`)as disc ,sum(`Shipped Quantity`) as delivered,sum(`Order Quantity`) as ordered,sum(`Invoice Quantity`) as invoiced  from `Order Transaction Fact` where `Consolidated`='Yes' and `Product Key` in (%s)",$keys);
+    $sql=sprintf("select  count(Distinct `Customer Key`)as customers ,count(Distinct `Invoice Key`)as invoices , sum(`Cost Supplier`/`Invoice Currency Exchange Rate`) as cost_sup,sum(`Invoice Transaction Gross Amount`) as gross ,sum(`Invoice Transaction Total Discount Amount`)as disc ,sum(`Shipped Quantity`) as delivered,sum(`Order Quantity`) as ordered,sum(`Invoice Quantity`) as invoiced  from `Order Transaction Fact` where `Consolidated`='Yes' and `Product Key` in (%s)",$keys);
     // print "$sql\n";
     $result=mysql_query($sql);
     if ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
@@ -2739,7 +2739,7 @@ $number_images=$row['num'];
     }
 
 
-    $sql=sprintf("select sum(`Cost Supplier`) as cost_sup,sum(`Invoice Transaction Gross Amount`) as gross ,sum(`Invoice Transaction Total Discount Amount`)as disc ,sum(`Shipped Quantity`) as delivered,sum(`Order Quantity`) as ordered,sum(`Invoice Quantity`) as invoiced  from `Order Transaction Fact` where `Product Key` in (%s) and `Invoice Date`>=%s ",$keys,prepare_mysql(date("Y-m-d",strtotime("- 1 year"))));
+    $sql=sprintf("select sum(`Cost Supplier`/`Invoice Currency Exchange Rate`) as cost_sup,sum(`Invoice Transaction Gross Amount`) as gross ,sum(`Invoice Transaction Total Discount Amount`)as disc ,sum(`Shipped Quantity`) as delivered,sum(`Order Quantity`) as ordered,sum(`Invoice Quantity`) as invoiced  from `Order Transaction Fact` where `Product Key` in (%s) and `Invoice Date`>=%s ",$keys,prepare_mysql(date("Y-m-d",strtotime("- 1 year"))));
 
     $result=mysql_query($sql);
     if ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
@@ -2777,7 +2777,7 @@ $number_images=$row['num'];
 
     }
 
-    $sql=sprintf("select sum(`Cost Supplier`) as cost_sup,sum(`Invoice Transaction Gross Amount`) as gross ,sum(`Invoice Transaction Total Discount Amount`)as disc ,sum(`Shipped Quantity`) as delivered,sum(`Order Quantity`) as ordered,sum(`Invoice Quantity`) as invoiced  from `Order Transaction Fact` where `Product Key` in (%s) and `Invoice Date`>=%s "
+    $sql=sprintf("select sum(`Cost Supplier`/`Invoice Currency Exchange Rate`) as cost_sup,sum(`Invoice Transaction Gross Amount`) as gross ,sum(`Invoice Transaction Total Discount Amount`)as disc ,sum(`Shipped Quantity`) as delivered,sum(`Order Quantity`) as ordered,sum(`Invoice Quantity`) as invoiced  from `Order Transaction Fact` where `Product Key` in (%s) and `Invoice Date`>=%s "
 		 ,$keys,
 		 prepare_mysql(date("Y-m-d",strtotime("- 3 month")))
 		 );
@@ -2815,7 +2815,7 @@ $number_images=$row['num'];
     if (!mysql_query($sql))
       exit("$sql\ncan not update product sales 1 qtr acc\n");
 
-    $sql=sprintf("select sum(`Cost Supplier`) as cost_sup,sum(`Invoice Transaction Gross Amount`) as gross ,sum(`Invoice Transaction Total Discount Amount`)as disc ,sum(`Shipped Quantity`) as delivered,sum(`Order Quantity`) as ordered,sum(`Invoice Quantity`) as invoiced  from `Order Transaction Fact` where `Product Key` in (%s) and `Invoice Date`>=%s ",
+    $sql=sprintf("select sum(`Cost Supplier`/`Invoice Currency Exchange Rate`) as cost_sup,sum(`Invoice Transaction Gross Amount`) as gross ,sum(`Invoice Transaction Total Discount Amount`)as disc ,sum(`Shipped Quantity`) as delivered,sum(`Order Quantity`) as ordered,sum(`Invoice Quantity`) as invoiced  from `Order Transaction Fact` where `Product Key` in (%s) and `Invoice Date`>=%s ",
 		 $keys,
 		 prepare_mysql(date("Y-m-d",strtotime("- 1 month")))
 		 );
@@ -2852,7 +2852,7 @@ $number_images=$row['num'];
       exit("$sql\ncan not update product sales 1 qtr acc\n");
 
 
-    $sql=sprintf("select sum(`Cost Supplier`) as cost_sup,sum(`Invoice Transaction Gross Amount`) as gross ,sum(`Invoice Transaction Total Discount Amount`)as disc ,sum(`Shipped Quantity`) as delivered,sum(`Order Quantity`) as ordered,sum(`Invoice Quantity`) as invoiced  from `Order Transaction Fact` where `Product Key` in (%s) and `Invoice Date`>=%s ",
+    $sql=sprintf("select sum(`Cost Supplier`/`Invoice Currency Exchange Rate`) as cost_sup,sum(`Invoice Transaction Gross Amount`) as gross ,sum(`Invoice Transaction Total Discount Amount`)as disc ,sum(`Shipped Quantity`) as delivered,sum(`Order Quantity`) as ordered,sum(`Invoice Quantity`) as invoiced  from `Order Transaction Fact` where `Product Key` in (%s) and `Invoice Date`>=%s ",
 		 $keys,
 		 prepare_mysql(date("Y-m-d",strtotime("- 1 week"))));
     //    print "$sql\n\n";
@@ -2894,7 +2894,7 @@ $number_images=$row['num'];
 
   function update_historic_sales_data() {
 
-    $sql=sprintf("select sum(`Cost Supplier`) as cost_sup,sum(`Invoice Transaction Gross Amount`) as gross ,sum(`Invoice Transaction Total Discount Amount`)as disc ,sum(`Shipped Quantity`) as delivered,sum(`Order Quantity`) as ordered,sum(`Invoice Quantity`) as invoiced  from `Order Transaction Fact` where `Consolidated`='Yes' and `Product Key`=%d"
+    $sql=sprintf("select sum(`Cost Supplier`/`Invoice Currency Exchange Rate`) as cost_sup,sum(`Invoice Transaction Gross Amount`) as gross ,sum(`Invoice Transaction Total Discount Amount`)as disc ,sum(`Shipped Quantity`) as delivered,sum(`Order Quantity`) as ordered,sum(`Invoice Quantity`) as invoiced  from `Order Transaction Fact` where `Consolidated`='Yes' and `Product Key`=%d"
 		 ,$this->id);
     // print "$sql\n";
     $result=mysql_query($sql);
@@ -2937,7 +2937,7 @@ $number_images=$row['num'];
     if (!mysql_query($sql))
       exit("$sql\ncan not update product historic sales\n");
 
-    $sql=sprintf("select sum(`Cost Supplier`) as cost_sup,sum(`Invoice Transaction Gross Amount`) as gross ,sum(`Invoice Transaction Total Discount Amount`)as disc ,sum(`Shipped Quantity`) as delivered,sum(`Order Quantity`) as ordered,sum(`Invoice Quantity`) as invoiced  from `Order Transaction Fact` where `Product Key`=%d and `Invoice Date`>=%s "
+    $sql=sprintf("select sum(`Cost Supplier`/`Invoice Currency Exchange Rate`) as cost_sup,sum(`Invoice Transaction Gross Amount`) as gross ,sum(`Invoice Transaction Total Discount Amount`)as disc ,sum(`Shipped Quantity`) as delivered,sum(`Order Quantity`) as ordered,sum(`Invoice Quantity`) as invoiced  from `Order Transaction Fact` where `Product Key`=%d and `Invoice Date`>=%s "
 		 ,$this->id,prepare_mysql(date("Y-m-d",strtotime("- 1 year"))));
 
     $result=mysql_query($sql);
@@ -2976,7 +2976,7 @@ $number_images=$row['num'];
 
     }
 
-    $sql=sprintf("select sum(`Cost Supplier`) as cost_sup,sum(`Invoice Transaction Gross Amount`) as gross ,sum(`Invoice Transaction Total Discount Amount`)as disc ,sum(`Shipped Quantity`) as delivered,sum(`Order Quantity`) as ordered,sum(`Invoice Quantity`) as invoiced  from `Order Transaction Fact` where `Product Key`=%d and `Invoice Date`>=%s "
+    $sql=sprintf("select sum(`Cost Supplier`/`Invoice Currency Exchange Rate`) as cost_sup,sum(`Invoice Transaction Gross Amount`) as gross ,sum(`Invoice Transaction Total Discount Amount`)as disc ,sum(`Shipped Quantity`) as delivered,sum(`Order Quantity`) as ordered,sum(`Invoice Quantity`) as invoiced  from `Order Transaction Fact` where `Product Key`=%d and `Invoice Date`>=%s "
 		 ,$this->id,
 		 prepare_mysql(date("Y-m-d",strtotime("- 3 month")))
 		 );
@@ -3014,7 +3014,7 @@ $number_images=$row['num'];
     if (!mysql_query($sql))
       exit("$sql\ncan not update product sales 1 qtr acc\n");
 
-    $sql=sprintf("select sum(`Cost Supplier`) as cost_sup,sum(`Invoice Transaction Gross Amount`) as gross ,sum(`Invoice Transaction Total Discount Amount`)as disc ,sum(`Shipped Quantity`) as delivered,sum(`Order Quantity`) as ordered,sum(`Invoice Quantity`) as invoiced  from `Order Transaction Fact` where `Product Key`=%d and `Invoice Date`>=%s ",
+    $sql=sprintf("select sum(`Cost Supplier`/`Invoice Currency Exchange Rate`) as cost_sup,sum(`Invoice Transaction Gross Amount`) as gross ,sum(`Invoice Transaction Total Discount Amount`)as disc ,sum(`Shipped Quantity`) as delivered,sum(`Order Quantity`) as ordered,sum(`Invoice Quantity`) as invoiced  from `Order Transaction Fact` where `Product Key`=%d and `Invoice Date`>=%s ",
 		 $this->id,
 		 prepare_mysql(date("Y-m-d",strtotime("- 1 month")))
 		 );
@@ -3051,7 +3051,7 @@ $number_images=$row['num'];
       exit("$sql\ncan not update product sales 1 qtr acc\n");
 
 
-    $sql=sprintf("select sum(`Cost Supplier`) as cost_sup,sum(`Invoice Transaction Gross Amount`) as gross ,sum(`Invoice Transaction Total Discount Amount`)as disc ,sum(`Shipped Quantity`) as delivered,sum(`Order Quantity`) as ordered,sum(`Invoice Quantity`) as invoiced  from `Order Transaction Fact` where `Product Key`=%d and `Invoice Date`>=%s ",
+    $sql=sprintf("select sum(`Cost Supplier`/`Invoice Currency Exchange Rate`) as cost_sup,sum(`Invoice Transaction Gross Amount`) as gross ,sum(`Invoice Transaction Total Discount Amount`)as disc ,sum(`Shipped Quantity`) as delivered,sum(`Order Quantity`) as ordered,sum(`Invoice Quantity`) as invoiced  from `Order Transaction Fact` where `Product Key`=%d and `Invoice Date`>=%s ",
 		 $this->id,
 		 prepare_mysql(date("Y-m-d",strtotime("- 1 week"))));
     //    print "$sql\n\n";
@@ -3106,7 +3106,7 @@ $number_images=$row['num'];
     $keys=preg_replace('/,$/','',$keys);
 
 
-    $sql=sprintf("select sum(`Cost Supplier`) as cost_sup,sum(`Invoice Transaction Gross Amount`) as gross ,sum(`Invoice Transaction Total Discount Amount`)as disc ,sum(`Shipped Quantity`) as delivered,sum(`Order Quantity`) as ordered,sum(`Invoice Quantity`) as invoiced  from `Order Transaction Fact` where `Consolidated`='Yes' and `Product Key` in (%s)"
+    $sql=sprintf("select sum(`Cost Supplier`/`Invoice Currency Exchange Rate`) as cost_sup,sum(`Invoice Transaction Gross Amount`) as gross ,sum(`Invoice Transaction Total Discount Amount`)as disc ,sum(`Shipped Quantity`) as delivered,sum(`Order Quantity`) as ordered,sum(`Invoice Quantity`) as invoiced  from `Order Transaction Fact` where `Consolidated`='Yes' and `Product Key` in (%s)"
 		 ,$keys);
     // print "$sql\n";
     $result=mysql_query($sql);
@@ -3149,7 +3149,7 @@ $number_images=$row['num'];
     if (!mysql_query($sql))
       exit("$sql\ncan not update product historic sales\n");
 
-    $sql=sprintf("select sum(`Cost Supplier`) as cost_sup,sum(`Invoice Transaction Gross Amount`) as gross ,sum(`Invoice Transaction Total Discount Amount`)as disc ,sum(`Shipped Quantity`) as delivered,sum(`Order Quantity`) as ordered,sum(`Invoice Quantity`) as invoiced  from `Order Transaction Fact` where `Product Key` in (%s) and `Invoice Date`>=%s "
+    $sql=sprintf("select sum(`Cost Supplier`/`Invoice Currency Exchange Rate`) as cost_sup,sum(`Invoice Transaction Gross Amount`) as gross ,sum(`Invoice Transaction Total Discount Amount`)as disc ,sum(`Shipped Quantity`) as delivered,sum(`Order Quantity`) as ordered,sum(`Invoice Quantity`) as invoiced  from `Order Transaction Fact` where `Product Key` in (%s) and `Invoice Date`>=%s "
 		 ,$keys
 		 ,prepare_mysql(date("Y-m-d",strtotime("- 1 year"))));
 
@@ -3189,7 +3189,7 @@ $number_images=$row['num'];
 
     }
 
-    $sql=sprintf("select sum(`Cost Supplier`) as cost_sup,sum(`Invoice Transaction Gross Amount`) as gross ,sum(`Invoice Transaction Total Discount Amount`)as disc ,sum(`Shipped Quantity`) as delivered,sum(`Order Quantity`) as ordered,sum(`Invoice Quantity`) as invoiced  from `Order Transaction Fact` where `Product Key` in (%s) and `Invoice Date`>=%s "
+    $sql=sprintf("select sum(`Cost Supplier`/`Invoice Currency Exchange Rate`) as cost_sup,sum(`Invoice Transaction Gross Amount`) as gross ,sum(`Invoice Transaction Total Discount Amount`)as disc ,sum(`Shipped Quantity`) as delivered,sum(`Order Quantity`) as ordered,sum(`Invoice Quantity`) as invoiced  from `Order Transaction Fact` where `Product Key` in (%s) and `Invoice Date`>=%s "
 		 ,$keys,
 		 prepare_mysql(date("Y-m-d",strtotime("- 3 month")))
 		 );
@@ -3227,7 +3227,7 @@ $number_images=$row['num'];
     if (!mysql_query($sql))
       exit("$sql\ncan not update product sales 1 qtr acc\n");
 
-    $sql=sprintf("select sum(`Cost Supplier`) as cost_sup,sum(`Invoice Transaction Gross Amount`) as gross ,sum(`Invoice Transaction Total Discount Amount`)as disc ,sum(`Shipped Quantity`) as delivered,sum(`Order Quantity`) as ordered,sum(`Invoice Quantity`) as invoiced  from `Order Transaction Fact` where `Product Key` in (%s) and `Invoice Date`>=%s ",
+    $sql=sprintf("select sum(`Cost Supplier`/`Invoice Currency Exchange Rate`) as cost_sup,sum(`Invoice Transaction Gross Amount`) as gross ,sum(`Invoice Transaction Total Discount Amount`)as disc ,sum(`Shipped Quantity`) as delivered,sum(`Order Quantity`) as ordered,sum(`Invoice Quantity`) as invoiced  from `Order Transaction Fact` where `Product Key` in (%s) and `Invoice Date`>=%s ",
 		 $keys,
 		 prepare_mysql(date("Y-m-d",strtotime("- 1 month")))
 		 );
@@ -3264,7 +3264,7 @@ $number_images=$row['num'];
       exit("$sql\ncan not update product sales 1 qtr acc\n");
 
 
-    $sql=sprintf("select sum(`Cost Supplier`) as cost_sup,sum(`Invoice Transaction Gross Amount`) as gross ,sum(`Invoice Transaction Total Discount Amount`)as disc ,sum(`Shipped Quantity`) as delivered,sum(`Order Quantity`) as ordered,sum(`Invoice Quantity`) as invoiced  from `Order Transaction Fact` where `Product Key` in (%s) and `Invoice Date`>=%s ",
+    $sql=sprintf("select sum(`Cost Supplier`/`Invoice Currency Exchange Rate`) as cost_sup,sum(`Invoice Transaction Gross Amount`) as gross ,sum(`Invoice Transaction Total Discount Amount`)as disc ,sum(`Shipped Quantity`) as delivered,sum(`Order Quantity`) as ordered,sum(`Invoice Quantity`) as invoiced  from `Order Transaction Fact` where `Product Key` in (%s) and `Invoice Date`>=%s ",
 		 $keys,
 		 prepare_mysql(date("Y-m-d",strtotime("- 1 week"))));
     //    print "$sql\n\n";
