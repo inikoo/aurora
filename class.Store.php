@@ -1223,9 +1223,23 @@ $sql=sprintf("select sum(if(`Product Record Type`='In process',1,0)) as in_proce
 //print_r($page_data);
       $page=new Page('find',$page_data,'create');
 //print_r($page);
-      $sql=sprintf("update `Product Store Dimension` set `Product Department Page Key`=%d ",$page->id);
-      mysql_query($sql);  
+      $sql=sprintf("update `Store Dimension` set `Store Page Key`=%d  where `Store Key`=%d",$page->id,$this->id);
+  //  print $sql;
+    mysql_query($sql);  
 
 	}
+ 
+ function get_page_data(){
+  $data=array();
+  $sql=sprintf("select * from `Page Store Dimension` PSD left join `Page Dimension` PD on (PSD.`Page Key`=PD.`Page Key`) where PSD.`Page Key`=%d",$this->data['Store Page Key']);
+  // print $sql;
+  $res=mysql_query($sql);
+  if($row=mysql_fetch_array($res)){
+    $data=$row;
+  }
+  
+  return $data;
+
+}
  
 }

@@ -24,6 +24,7 @@ class Page extends DB_Table{
 
   if(!$arg1 and !$arg2){
     $this->error=true;
+    $this->msg='No arguments';
   }
   if(is_numeric($arg1)){
     $this->get_data('id',$arg1);
@@ -187,7 +188,7 @@ function create_internal($data){
     
 	
       }else{
-	$this->error=true;
+	$this->error=true;$this->msg='Can not insert Page Internal Dimension';
       }
      
   
@@ -225,7 +226,7 @@ function create($data,$extra_data=false){
 	
 	
       }else{
-	$this->error=true;
+	$this->error=true;$this->msg='Can not insert Page Dimension';
       }
      
      
@@ -285,14 +286,14 @@ function create_store_page($data){
   $keys=preg_replace('/,$/',')',$keys);
   $values=preg_replace('/,$/',')',$values);
   $sql=sprintf("insert into `Page Store Dimension` %s %s",$keys,$values);
-   //print "$sql\n\n";
+   print "$sql\n\n";
   
       if (mysql_query($sql)) {
 
 	$this->get_data('id',$this->id);
 	
       }else{
-	$this->error=true;
+	$this->error=true;$this->msg='Can not insert Page Store Dimension';
       }
      
 }

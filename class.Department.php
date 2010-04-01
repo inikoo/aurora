@@ -664,7 +664,7 @@ public $new_value=false;
         if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
             $pending_orders=$row['pending_orders'];
         }
-        $sql="select    count(Distinct `Customer Key`)as customers ,count(Distinct `Invoice Key`)as invoices ,  sum(`Cost Supplier`/`Invoice Currency Exchange Rate`) as cost_sup,sum(`Invoice Transaction Gross Amount`) as gross ,sum(`Invoice Transaction Total Discount Amount`)as disc ,sum(`Shipped Quantity`) as delivered,sum(`Order Quantity`) as ordered,sum(`Invoice Quantity`) as invoiced  from `Order Transaction Fact`  OTF left join    `Product History Dimension` as PH  on (OTF.`Product Key`=PH.`Product Key`) left join `Product Dimension` P on (PH.`Product ID`=P.`Product ID`)   where `Product Main Department Key`=".$this->id;
+        $sql="select    count(Distinct `Customer Key`)as customers ,count(Distinct `Invoice Key`)as invoices ,  sum(`Cost Supplier`) as cost_sup,sum(`Invoice Transaction Gross Amount`) as gross ,sum(`Invoice Transaction Total Discount Amount`)as disc ,sum(`Shipped Quantity`) as delivered,sum(`Order Quantity`) as ordered,sum(`Invoice Quantity`) as invoiced  from `Order Transaction Fact`  OTF left join    `Product History Dimension` as PH  on (OTF.`Product Key`=PH.`Product Key`) left join `Product Dimension` P on (PH.`Product ID`=P.`Product ID`)   where `Product Main Department Key`=".$this->id;
 
 
 
@@ -757,7 +757,7 @@ public $new_value=false;
         if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
             $pending_orders=$row['pending_orders'];
         }
-        $sql=sprintf("select    count(Distinct `Customer Key`)as customers ,count(Distinct `Invoice Key`)as invoices ,  sum(`Cost Supplier`/`Invoice Currency Exchange Rate`) as cost_sup,sum(`Invoice Transaction Gross Amount`) as gross ,sum(`Invoice Transaction Total Discount Amount`)as disc ,sum(`Shipped Quantity`) as delivered,sum(`Order Quantity`) as ordered,sum(`Invoice Quantity`) as invoiced  from `Order Transaction Fact`  OTF left join    `Product History Dimension` as PH  on (OTF.`Product Key`=PH.`Product Key`) left join `Product Dimension` P on (PH.`Product ID`=P.`Product ID`)   where `Product Main Department Key`=%d and  `Invoice Date`>=%s",$this->id,prepare_mysql(date("Y-m-d",strtotime("- 1 year"))));
+        $sql=sprintf("select    count(Distinct `Customer Key`)as customers ,count(Distinct `Invoice Key`)as invoices ,  sum(`Cost Supplier`) as cost_sup,sum(`Invoice Transaction Gross Amount`) as gross ,sum(`Invoice Transaction Total Discount Amount`)as disc ,sum(`Shipped Quantity`) as delivered,sum(`Order Quantity`) as ordered,sum(`Invoice Quantity`) as invoiced  from `Order Transaction Fact`  OTF left join    `Product History Dimension` as PH  on (OTF.`Product Key`=PH.`Product Key`) left join `Product Dimension` P on (PH.`Product ID`=P.`Product ID`)   where `Product Main Department Key`=%d and  `Invoice Date`>=%s",$this->id,prepare_mysql(date("Y-m-d",strtotime("- 1 year"))));
 
 	//	print "$sql\n";
 
@@ -834,7 +834,7 @@ public $new_value=false;
         if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
             $pending_orders=$row['pending_orders'];
         }
-        $sql=sprintf("select    count(Distinct `Customer Key`)as customers ,count(Distinct `Invoice Key`)as invoices ,  sum(`Cost Supplier`/`Invoice Currency Exchange Rate`) as cost_sup,sum(`Invoice Transaction Gross Amount`) as gross 
+        $sql=sprintf("select    count(Distinct `Customer Key`)as customers ,count(Distinct `Invoice Key`)as invoices ,  sum(`Cost Supplier`) as cost_sup,sum(`Invoice Transaction Gross Amount`) as gross 
         ,sum(`Invoice Transaction Total Discount Amount`)as disc ,sum(`Shipped Quantity`) as delivered,sum(`Order Quantity`) as ordered,sum(`Invoice Quantity`) as invoiced  
         from `Order Transaction Fact`  OTF left join    `Product History Dimension` as PH  on (OTF.`Product Key`=PH.`Product Key`) 
         left join `Product Dimension` P on (PH.`Product ID`=P.`Product ID`)   where `Product Main Department Key`=%d and  `Invoice Date`>=%s",$this->id,prepare_mysql(date("Y-m-d",strtotime("- 3 month"))));
@@ -910,7 +910,7 @@ public $new_value=false;
         if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
             $pending_orders=$row['pending_orders'];
         }
-        $sql=sprintf("select    count(Distinct `Customer Key`)as customers ,count(Distinct `Invoice Key`)as invoices ,  sum(`Cost Supplier`/`Invoice Currency Exchange Rate`) as cost_sup,sum(`Invoice Transaction Gross Amount`) as gross 
+        $sql=sprintf("select    count(Distinct `Customer Key`)as customers ,count(Distinct `Invoice Key`)as invoices ,  sum(`Cost Supplier`) as cost_sup,sum(`Invoice Transaction Gross Amount`) as gross 
         ,sum(`Invoice Transaction Total Discount Amount`)as disc ,sum(`Shipped Quantity`) as delivered,sum(`Order Quantity`) as ordered,sum(`Invoice Quantity`) as invoiced  
         from `Order Transaction Fact`  OTF left join    `Product History Dimension` as PH  on (OTF.`Product Key`=PH.`Product Key`) 
         left join `Product Dimension` P on (PH.`Product ID`=P.`Product ID`)   where `Product Main Department Key`=%d and  `Invoice Date`>=%s",$this->id,prepare_mysql(date("Y-m-d",strtotime("- 1 month"))));
@@ -988,7 +988,7 @@ public $new_value=false;
         if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
             $pending_orders=$row['pending_orders'];
         }
-        $sql=sprintf("select    count(Distinct `Customer Key`)as customers ,count(Distinct `Invoice Key`)as invoices ,  sum(`Cost Supplier`/`Invoice Currency Exchange Rate`) as cost_sup,sum(`Invoice Transaction Gross Amount`) as gross 
+        $sql=sprintf("select    count(Distinct `Customer Key`)as customers ,count(Distinct `Invoice Key`)as invoices ,  sum(`Cost Supplier`) as cost_sup,sum(`Invoice Transaction Gross Amount`) as gross 
         ,sum(`Invoice Transaction Total Discount Amount`)as disc ,sum(`Shipped Quantity`) as delivered,sum(`Order Quantity`) as ordered,sum(`Invoice Quantity`) as invoiced  
         from `Order Transaction Fact`  OTF left join    `Product History Dimension` as PH  on (OTF.`Product Key`=PH.`Product Key`) 
         left join `Product Dimension` P on (PH.`Product ID`=P.`Product ID`)   where `Product Main Department Key`=%d and  `Invoice Date`>=%s",$this->id,prepare_mysql(date("Y-m-d",strtotime("- 1 week"))));
@@ -1278,19 +1278,20 @@ public $new_value=false;
       $store=new Store($this->data['Product Department Store Key']);
       $store_page_data=$store->get_page_data();
 	
-
+print_r($store_page_data);
+//exit;
       if(!array_key_exists('Showcases',$data)){
 
 	$showcases=array();
 
-      if($store_page_data['Display Presentation']='Yes' and $data['Product Presentation']!=''){
+      if($store_page_data['Display Presentation']='Yes'  ){
 	$showcases['Presentation']=array('Display'=>true,'Type'=>'Template','Contents'=>$this->data['Product Department Name']);
       }
        if($store_page_data['Display Offers']='Yes' ){
 	$showcases['Offers']=array('Display'=>true,'Type'=>'Auto');
       }
        if($store_page_data['Display New Products']='Yes' ){
-	$showcases['Offers']=array('Display'=>true,'Type'=>'Auto');
+	$showcases['New']=array('Display'=>true,'Type'=>'Auto');
       }
       }else
 	$showcases=$data['Showcases'];
@@ -1332,16 +1333,17 @@ public $new_value=false;
 
 
       $page_data=array(
-		       'Page Code'=>'PD_'.$this->data['Product Dimension Code']
+		       'Page Code'=>'PD_'.$store->data['Store Code'].'_'.$this->data['Product Department Code']
 		       ,'Page Source Template'=>''
-		       ,'Page URL'=>'department.php?code='.$this->data['Product Dimension Code']
+		       ,'Page URL'=>'department.php?code='.$this->data['Product Department Code']
+		        ,'Page Source Template'=>'pages/'.$store->data['Store Code'].'/department.tpl'
 		       ,'Page Description'=>'Department Showcase Page'
 		       ,'Page Title'=>$this->data['Product Department Name']
 		       ,'Page Short Title'=>$this->data['Product Department Name']
 		       ,'Page Store Title'=>$this->data['Product Department Name']
 		       ,'Page Store Subtitle'=>''
 		       ,'Page Store Slogan'=>$data['Page Store Slogan']
-		       ,'Page Store Abstract'=>$data['Product Department Resume']
+		       ,'Page Store Abstract'=>$data['Page Store Resume']
 		       ,'Page Store Showcases'=>$showcases
 		       ,'Page Store Showcases Layout'=>$showcases_layout
 		       ,'Page Store Product Layouts'=>$product_layouts
@@ -1355,9 +1357,10 @@ public $new_value=false;
       $page_data['Page Store Source Type'] ='Dynamic';
 
       $page=new Page('find',$page_data,'create');
-
-      $sql=sprintf("update `Product Department Dimension` set `Product Department Page Key`=%d ");
-
+//print_r($page);
+//exit;
+      $sql=sprintf("update `Product Department Dimension` set `Product Department Page Key`=%d  where `Product Department Key`=%d",$page->id,$this->id);
+mysql_query($sql);
 
 	}
 
@@ -1462,7 +1465,7 @@ function update_main_image(){
   }
 
 function get_page_data(){
-  
+  $data=array();
   $sql=sprintf("select * from `Page Store Dimension` PSD left join `Page Dimension` PD on (PSD.`Page Key`=PD.`Page Key`) where PSD.`Page Key`=%d",$this->data['Product Department Page Key']);
   // print $sql;
   $res=mysql_query($sql);

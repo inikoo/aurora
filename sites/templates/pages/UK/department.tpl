@@ -15,7 +15,7 @@
            <div class="block" id="product_list_layout">
 	     <table class="families">
 	      {foreach from=$families item=family}
-	      <tr><td><a href="family.php?id={$family.key}">{$family.code}</a></td><td><a href="family.php?id={$family.key}"   >{$family.name}</a></td><td><img class="family_image" src="{$family.image}"/></td></tr>
+	      <tr><td><a href="family.php?id={$family.key}">{$family.code}</a></td><td><a href="family.php?id={$family.key}"   >{$family.name}</a></td></tr>
 	      {/foreach}
 	     </table>
 	   </div>
@@ -23,7 +23,6 @@
 	 
 
        </div>
-       {include file="$right_menu_template"}
        
      </div>
 
