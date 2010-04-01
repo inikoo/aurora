@@ -132,8 +132,12 @@ if(isset($_REQUEST['pick_aid'])){
 
 
    break;
+  case('Ready to Pick'):
+    $js_files[]='order_in_warehouse.js.php?order_key='.$order_id;
+    $template='order_in_warehouse.tpl';
+    break;
   case('Dispached'):
-
+    
     
     $js_files[]='order_dispached.js.php';
     $template='order_dispached.tpl';

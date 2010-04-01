@@ -419,8 +419,9 @@ if(!$show_all){
 
     
 
- $sql="select  `Product Availability`,`Product Sales State`,P.`Product ID`,`Product Code`,`Product XHTML Short Description`,`Product Price`,`Product Units Per Case`,`Product Record Type`,`Product Web State`,`Product Family Name`,`Product Main Department Name`,`Product Tariff Code`,`Product XHTML Parts`,`Product GMROI`,`Product XHTML Parts`,`Product XHTML Supplied By`,`Product Stock Value`  $sql_qty from $table   $where $wheref order by $order $order_direction limit $start_from,$number_results    ";
+ $sql="select  `Product Availability`,`Product Record Type`,P.`Product ID`,`Product Code`,`Product XHTML Short Description`,`Product Price`,`Product Units Per Case`,`Product Record Type`,`Product Web State`,`Product Family Name`,`Product Main Department Name`,`Product Tariff Code`,`Product XHTML Parts`,`Product GMROI`,`Product XHTML Parts`,`Product XHTML Supplied By`,`Product Stock Value`  $sql_qty from $table   $where $wheref order by $order $order_direction limit $start_from,$number_results    ";
  
+
     $res = mysql_query($sql);
 
     $adata=array();
@@ -431,7 +432,7 @@ if(!$show_all){
      $stock=number($row['Product Availability']);
    else
      $stock='?';
-   $type=$row['Product Sales State'];
+   $type=$row['Product Record Type'];
    if ($row['Product Record Type']=='In Process')
             $type.='<span style="color:red">*</span>';
    switch ($row['Product Web State']) {
