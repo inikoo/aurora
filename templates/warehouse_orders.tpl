@@ -9,11 +9,11 @@
      <tr  id="orders_show_only"  style="display:{if $view!='orders'}none{/if}"  >
        <td  style="margin-right:20px; ;"  >{t}All{/t}</td>
        <td style="width:10px;border:none;cursor:default"></td>
-       <td  style="" {if $dispatch=='in_process'}class="selected"{/if}  id="in_process"  >{t}Waiting to be Picked{/t}</td>
-       <td  style="" {if $dispatch=='dispached'}class="selected"{/if}  id="dispached"  >{t}Picking in Progress{/t}</td>
-       <td  style="" {if $dispatch=='cancelled'}class="selected"{/if}  id="cancelled"  >{t}Picked, ready to Pack{/t}</td>
-       <td  style="" {if $dispatch=='cancelled'}class="selected"{/if}  id="cancelled"  >{t}Packed, waiting Approbal{/t}</td>
-       <td  style="" {if $dispatch=='cancelled'}class="selected"{/if}  id="cancelled"  >{t}Ready to Dispach{/t}</td>
+       <td  style="" {if $dispatch=='ready_to_pick'}class="selected"{/if}  id="ready_to_pick"  >{t}Ready to Pick{/t}</td>
+       <td  style="" {if $dispatch=='picking'}class="selected"{/if}  id="picking"  >{t}Picking in Progress{/t}</td>
+       <td  style="" {if $dispatch=='picked'}class="selected"{/if}  id="cancelled"  >{t}Picked, ready to Pack{/t}</td>
+       <td  style="" {if $dispatch=='packed'}class="selected"{/if}  id="cancelled"  >{t}Packed, waiting Approval{/t}</td>
+       <td  style="" {if $dispatch=='ready_to_dispatch'}class="selected"{/if}  id="cancelled"  >{t}Ready to Dispach{/t}</td>
        
 
      </tr>
@@ -26,8 +26,8 @@
 
   
 
-  <div  id="orders_table" class="data_table" style="{if $view!='orders'}display:none{/if};clear:left">
-    <span class="clean_table_title">{t}Orders to be Picked{/t}</span>
+  <div  id="orders_table" class="data_table" style="{$dispatch!='ready_to_pick'}display:none{/if};clear:left">
+    <span class="clean_table_title">{t}Ready to Pick{/t}</span>
     <div  class="clean_table_caption"  style="clear:both;">
       <div style="float:left;"><div id="table_info0" class="clean_table_info"><span id="rtext0"></span> <span class="rtext_rpp" id="rtext_rpp0"></span> <span class="filter_msg"  id="filter_msg0"></span></div></div>
       <div class="clean_table_filter"  id="clean_table_filter0"><div class="clean_table_info"><span id="filter_name0"  class="filter_name">{$filter_name0}</span>: <input style="border-bottom:none" id='f_input0' value="{$filter_value0}" size=10/><div id='f_container0'></div></div></div>

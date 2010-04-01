@@ -750,6 +750,13 @@ class Order extends DB_Table{
   
   function send_to_warehouse(){
    
+
+    if($this->data['Order Current Dispatch State']!='In Process'){
+      $this->error=true;
+      $this->msg='Order is not in process';
+      return;
+
+	}
     
     $sql=sprintf("select sum(`Order Quantity`*`Parts Per Product`) as qty, PA.`Part SKU` as sku,`Part XHTML Picking Location` as location,`Part XHTML Description` as description,`Part XHTML Currently Used In` as notes from `Order Transaction Fact` OTF left join `Product Dimension` P  on (OTF.`Product Key`=P.`Product Current Key`) left join `Product Part Dimension` PPD on (PPD.`Product ID`=P.`Product ID`) left join `Product Part List` PPL on (PPL.`Product Part Key`=PPD.`Product Part Key`) left join `Part Dimension` PA on (PA.`Part SKU`=PPL.`Part SKU`)   where OTF.`Order Key`=%d  and  PPD.`Product Part Most Recent`='Yes'   group by PA.`Part SKU`  " 
 		 ,$this->id);
@@ -767,12 +774,15 @@ class Order extends DB_Table{
 		   ,prepare_mysql($row['notes'],false)
 		   );
 
-      //  print "$sql\n";
+      //       print "$sql\n";
       mysql_query($sql);
 
     }
-
-
+    $this->data['Order Current Dispatch State']='Ready to Pick';
+    $sql=sprintf("update `Order Dimension` set `Order Current Dispatch State`=%s where `Order Key`=%d",prepare_mysql($this->data['Order Current Dispatch State']),$this->id);
+    //print $sql;
+    mysql_query($sql);
+    
 
   }
 

@@ -91,13 +91,12 @@ $js_files=array(
 
 
 $smarty->assign('parent','orders');
-$smarty->assign('title', _('Orders'));
+$smarty->assign('title', _('Warehouse Orders'));
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
 
-$smarty->assign('dispatch',$_SESSION['state']['orders']['table']['dispatch']);
-$smarty->assign('paid',$_SESSION['state']['orders']['table']['paid']);
-$smarty->assign('order_type',$_SESSION['state']['orders']['table']['order_type']);
+$smarty->assign('view',$_SESSION['state']['warehouse_orders']['view']);
+
 
 
 
