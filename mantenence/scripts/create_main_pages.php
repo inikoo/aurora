@@ -181,11 +181,13 @@ while($row=mysql_fetch_array($res)){
 $store=new Store($row['Store Key']);
   $data=array();
   $data['Page Store Slogan']=$store_data[$row['Store Code']]['Slogan'];
-    $data['Page Store Resume']=$store_data[$row['Store Code']]['Resume'];
-
+  $data['Page Store Resume']=$store_data[$row['Store Code']]['Resume'];
   $data['Showcases Layout']='Splited';
+  $data['Page Store Function']='Store Catalogue';
+
 // print_r($data); 
   $store->create_page($data);
+  
   
 }
 
@@ -196,8 +198,11 @@ $res=mysql_query($sql);
 while($row=mysql_fetch_array($res)){
 $department=new Department($row['Product Department Key']);
   $data=array();
-  
-  
+  $data['Page Store Slogan']=(isset($department_data[$row['Store Code'].'_'.$row['Product Department Code']]['Slogan'])?$department_data[$row['Store Code'].'_'.$row['Product Department Code']]['Slogan']:'');
+  $data['Page Store Resume']=(isset($department_data[$row['Store Code'].'_'.$row['Product Department Code']]['Resume'])?$department_data[$row['Store Code'].'_'.$row['Product Department Code']]['Resume']:'');
+$data['Page Store Function']='Department Catalogue';
+  $data['Showcases Layout']='Splited';
+  $department->create_page($data);
 }
 
 ?>
