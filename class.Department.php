@@ -1233,6 +1233,32 @@ public $new_value=false;
   $this->get_data('id',$this->id);
     }
 
+    function update_customers(){
+      $number_active_customers=0;
+      $number_active_customers_more_than_50=0;
+
+      $sql=sprintf(" select    (select sum(`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`)  from  `Order Transaction Fact`  where  `Order Transaction Fact`.`Customer Key`=OTF.`Customer Key` ) as total_amount  , sum(`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`) as amount,OTF.`Customer Key` from `Order Transaction Fact`  OTF left join    `Product History Dimension` as PH  on (OTF.`Product Key`=PH.`Product Key`) left join `Product Dimension` P on (PH.`Product ID`=P.`Product ID`) left join `Customer Dimension` C on (C.`Customer Key`=OTF.`Customer Key`)where `Product Main Department Key`=%d and `Customer Type by Activity` in ('New','Active') and `Invoice Transaction Gross Amount`>0  group by  OTF.`Customer Key`",$this->id);
+      print "$sql\n";
+      $result=mysql_query($sql);
+      while($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+	$number_active_customers++;
+	if($row['total_amount']!=0 and ($row['amount']/$row['total_amount'])>0.5 )
+	  $number_active_customers_more_than_50++;
+      }
+      
+      $this->data['Product Department Active Customers']=$number_active_customers;
+      $this->data['Product Department Active Customers More 0.5 Share']=$number_active_customers_more_than_50;
+	    
+ $sql=sprintf("update `Product Department Dimension` set `Product Department Active Customers`=%d ,`Product Department Active Customers More 0.5 Share`=%d where `Product Department Key`=%d  ",
+	      $this->data['Product Department Active Customers'],
+	      $this->data['Product Department Active Customers More 0.5 Share'],
+	      $this->id
+                        );
+ print "$sql\n";
+ mysql_query($sql);
+ 
+    }
+
     function update_families() {
         $sql=sprintf("select count(*) as num from `Product Family Dimension`  where `Product Family Main Department Key`=%d",$this->id);
         $result=mysql_query($sql);
@@ -1264,7 +1290,7 @@ public $new_value=false;
                          $this->data['Product Department For Public Discontinued Families'],
                          $this->id
                         );
-	    print "$sql\n";
+	    //  print "$sql\n";
             mysql_query($sql);
         }
 
@@ -1360,7 +1386,7 @@ print_r($store_page_data);
 //print_r($page);
 //exit;
       $sql=sprintf("update `Product Department Dimension` set `Product Department Page Key`=%d  where `Product Department Key`=%d",$page->id,$this->id);
-mysql_query($sql);
+      mysql_query($sql);
 
 	}
 

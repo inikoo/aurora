@@ -16,7 +16,7 @@ $smarty->assign('plot_category',$plot_category);
 $smarty->assign('plot_interval',$plot_interval);
 $smarty->assign('plot_forecast',$plot_forecast);
 
-$plot_args='tipo=store&category='.$plot_category.'&period='.$plot_period.'&keys='.$store_id.'&currency='.$store->data['Store Currency Code'].'&from='.$plot_interval.'&to='.$plot_forecast;
+$plot_args='tipo='.$page.'&category='.$plot_category.'&period='.$plot_period.'&keys='.$subject_id.'&currency='.$store->data['Store Currency Code'].'&from='.$plot_interval.'&to='.$plot_forecast;
 
 if($plot_tipo=='top_departments'){
   $number_children=3;

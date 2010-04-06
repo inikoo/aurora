@@ -30,6 +30,7 @@ if(!($user->can_view('stores') and in_array($store_id,$user->stores)   ) ){
 }
 
 $page='store';
+$smarty->assign('page',$page);
 
 $store=new Store($store_id);
 $_SESSION['state'][$page]['id']=$store->id;
@@ -128,7 +129,7 @@ if($edit){
   $js_files[]='edit_store.js.php';
  }else{
    $js_files[]='js/search.js';
-      $js_files[]='common_plot.js.php';
+      $js_files[]='common_plot.js.php?page='.$page;
 
    $js_files[]='store.js.php';
  }
@@ -163,7 +164,7 @@ $info_period_menu=array(
 $smarty->assign('info_period_menu',$info_period_menu);
 
 
-
+$subject_id=$store_id;
 include_once('plot.inc.php');
 
 $smarty->assign($page,$store);

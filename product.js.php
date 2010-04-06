@@ -29,7 +29,7 @@ function change_info_period(period){
 	current_store_period=period;
 
 	Dom.get('info_title').innerHTML=info_period_title[period];
-	YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=family-period&value='+period);
+	YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=family-period&value='+period,{});
 
     }
 
@@ -62,18 +62,8 @@ function previous_info_period(){
 }
 
 
-var change_plot_sigma=function(o){
 
-    max_sigma=o.value;
-      Dom.get("the_plot").src='plot.php?tipo='+plot+'&max_sigma='+escape(max_sigma);
-      YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=product-plot_data-max_sigma&value='+escape(max_sigma) );
-}
-  var change_plot_months=function(o){
-	 
-      months=Dom.get('plot_months').value;
-      Dom.get("the_plot").src='plot.php?tipo='+plot+'&months='+escape(months);
-      YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=product-plot_data-months&value='+escape(months) );
-     }
+ 
 
       YAHOO.util.Event.addListener(window, "load", function() {
 	      tables = new function() {
@@ -369,12 +359,12 @@ YAHOO.util.Event.addListener("info_previous", "click",previous_info_period,0);
 	     Dom.get('block_'+block).style.display='none';
 	     this.setAttribute('state',0);
 	     YAHOO.util.Dom.setStyle('but_logo_'+block, 'opacity', .2);
-	     YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=product-display-'+block+'&value=0');
+	     YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=product-display-'+block+'&value=0',{});
 	 }else{
 	     Dom.get('block_'+block).style.display='';
 	     this.setAttribute('state',1);
 	     YAHOO.util.Dom.setStyle('but_logo_'+block, 'opacity', 1);
-	     YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=product-display-'+block+'&value=1');
+	     YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=product-display-'+block+'&value=1',{});
 	     
 	 }
 

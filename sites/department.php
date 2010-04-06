@@ -41,8 +41,9 @@ $smarty->assign('home_header_template',"pages/$store_code/home_header.tpl");
 $smarty->assign('right_menu_template',"pages/$store_code/right_menu.tpl");
 $smarty->assign('left_menu_template',"pages/$store_code/left_menu.tpl");
 
+$order_by='`Product Family Code';
 
-$sql=sprintf("select `Product Family Code`,`Product Family Name`,`Product Family Main Image` from `Product Family Dimension` where `Product Family Main Department Key`=%d and `Product Family Sales Type`='Public Sale' ",$department->id);
+$sql=sprintf("select `Product Family Code`,`Product Family Name`,`Product Family Main Image`,`` from `Product Family Dimension` where `Product Family Main Department Key`=%d and `Product Family Sales Type`='Public Sale' order by %s ",$department->id,$order_by);
 $res=mysql_query($sql);
 $families=array();
 while($row=mysql_fetch_array($res)){

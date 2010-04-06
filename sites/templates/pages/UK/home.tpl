@@ -2,7 +2,7 @@
  <body>
    <div id="container" >
      {include file="$home_header_template"}
-     <div id="page_content">
+     <div id="page_content" >
        {include file="$left_menu_template"}
      
        <div id="central_content">
@@ -15,16 +15,17 @@
 	 <div id="banner_top" class="banner"  >
 	   <a href="{$banners.top.url}"><img src="{$banners.top.src}"/></a>
 	 </div>
+	 {if $second_showcase}	 
 	 <div id="second_showcase" >
 	   {include file="$second_showcase"}
 	 </div>
+	 {/if}
 	 <div id="banner_bottom" class="banner" >
 	   <a href="{$banners.bottom.url}"><img src="{$banners.bottom.src}"/></a>
 	 </div>
        </div>
        {include file="$right_menu_template"}
-       
+        <div style="clear:both"></div>
      </div>
-
      {include file="$footer_template"}
  </body>

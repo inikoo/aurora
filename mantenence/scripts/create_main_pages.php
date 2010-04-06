@@ -205,4 +205,18 @@ $data['Page Store Function']='Department Catalogue';
   $department->create_page($data);
 }
 
+
+$sql=sprintf("select * from `Product Family Dimension` left join  `Store Dimension` on (`Product Family Store Key`=`Store Key`)  where `Product Family Sales Type`='Public Sale'  ");
+
+$res=mysql_query($sql);
+while($row=mysql_fetch_array($res)){
+$family=new Family($row['Product Family Key']);
+  $data=array();
+  $data['Page Store Slogan']=(isset($family_data[$row['Store Code'].'_'.$row['Product Family Code']]['Slogan'])?$family_data[$row['Store Code'].'_'.$row['Product Family Code']]['Slogan']:'');
+  $data['Page Store Resume']=(isset($family_data[$row['Store Code'].'_'.$row['Product Family Code']]['Resume'])?$family_data[$row['Store Code'].'_'.$row['Product Family Code']]['Resume']:'');
+$data['Page Store Function']='Family Catalogue';
+  $data['Showcases Layout']='Splited';
+  $family->create_page($data);
+}
+
 ?>

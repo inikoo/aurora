@@ -1,8 +1,17 @@
 <?php
 include_once('common.php');
 
-$page='store';
+
+$page=$_REQUEST['page'];
 ?>
+
+var category_labels={'sales':'<?php echo _('Net Item Sales')?>','profit':'<?php echo _('Profits')?>'};
+var period_labels={'m':'<?php echo _('Montly')?>','y':'<?php echo _('Yearly')?>','w':'<?php echo _('Weekly')?>','q':'<?php echo _('Quarterly')?>'};
+var pie_period_labels={'m':'<?php echo _('Month')?>','y':'<?php echo _('Year')?>','w':'<?php echo _('Week')?>','q':'<?php echo _('Quarter')?>'};
+
+var plot='<?php echo$_SESSION['state'][$page]['plot']?>';
+
+
 var plot_interval_data={
     'y':{'bins':<?php echo $_SESSION['state'][$page]['plot_interval']['y']['plot_bins']?>,'forecast_bins':<?php echo $_SESSION['state'][$page]['plot_interval']['y']['plot_forecast_bins']?>},
     'q':{'bins':<?php echo $_SESSION['state'][$page]['plot_interval']['q']['plot_bins']?>,'forecast_bins':<?php echo $_SESSION['state'][$page]['plot_interval']['q']['plot_forecast_bins']?>},
@@ -14,7 +23,7 @@ var plot_interval_data={
 function change_plot_category(category){
     o=Dom.get('plot_'+plot);
     Dom.get('plot_info').setAttribute("category",category);
-
+yes
     change_plot(o);
 }
 
@@ -52,14 +61,10 @@ plot_interval_data[ Dom.get('plot_info').getAttribute("period")].forecast_bins=t
 
 function change_plot_period(period){
     o=Dom.get('plot_'+plot);
-    
+    alert('plot_'+plot)
     Dom.get('plot_info').setAttribute("period",period);
-
-Dom.get('plot_info').setAttribute("from",plot_interval_data[period].bins);
-Dom.get('plot_info').setAttribute("to",plot_interval_data[period].forecast_bins);
-
-
-
+    Dom.get('plot_info').setAttribute("from",plot_interval_data[period].bins);
+    Dom.get('plot_info').setAttribute("to",plot_interval_data[period].forecast_bins);
     change_plot(o);
 }
 function change_plot(o){
@@ -141,14 +146,32 @@ function change_plot(o){
 	    Dom.removeClass(old_selected[i],'selected');
 	}
 	Dom.addClass(o,'selected');
-	//	alert('ar_sessions.php?tipo=update&keys=store-plot_data-'+tipo+'-category&value='+category)
-	
-	//YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=store-plot&value='+tipo);
-	
-	//YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=store-plot_data-'+tipo+'-period&value='+period);
-	//YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=store-plot_data-'+tipo+'-category&value='+category);
 
-	    
-	    //  }
     
 }
+
+
+YAHOO.util.Event.onContentReady("plot_period_menu", function () {
+	 var oMenu = new YAHOO.widget.Menu("plot_period_menu", { context:["plot_period","br", "tr"]  });
+	 oMenu.render();
+	 oMenu.subscribe("show", oMenu.focus);
+	 YAHOO.util.Event.addListener("plot_period", "click", oMenu.show, null, oMenu);
+    });
+YAHOO.util.Event.onContentReady("plot_category_menu", function () {
+	 var oMenu = new YAHOO.widget.Menu("plot_category_menu", { context:["plot_category","br", "tr"]  });
+	 oMenu.render();
+	 oMenu.subscribe("show", oMenu.focus);
+	 YAHOO.util.Event.addListener("plot_category", "click", oMenu.show, null, oMenu);
+    });
+YAHOO.util.Event.onContentReady("plot_interval_menu", function () {
+	 var oMenu = new YAHOO.widget.Menu("plot_interval_menu", { context:["plot_interval","br", "tr"]  });
+	 oMenu.render();
+	 oMenu.subscribe("show", oMenu.focus);
+	 YAHOO.util.Event.addListener("plot_interval", "click", oMenu.show, null, oMenu);
+    });
+YAHOO.util.Event.onContentReady("pie_interval_menu", function () {
+	 var oMenu = new YAHOO.widget.Menu("pie_interval_menu", { context:["pie_interval","br", "tr"]  });
+	 oMenu.render();
+	 oMenu.subscribe("show", oMenu.focus);
+	 YAHOO.util.Event.addListener("pie_interval", "click", oMenu.show, null, oMenu);
+    });

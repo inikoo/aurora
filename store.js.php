@@ -14,11 +14,7 @@ $title=preg_replace('/^,/','',$title);
  var info_period_title={<?php echo $title ?>};
   var current_store_period='<?php echo$_SESSION['state']['stores']['period']?>';
 
-var category_labels={'sales':'<?php echo _('Net Item Sales')?>','profit':'<?php echo _('Profits')?>'};
-var period_labels={'m':'<?php echo _('Montly')?>','y':'<?php echo _('Yearly')?>','w':'<?php echo _('Weekly')?>','q':'<?php echo _('Quarterly')?>'};
-var pie_period_labels={'m':'<?php echo _('Month')?>','y':'<?php echo _('Year')?>','w':'<?php echo _('Week')?>','q':'<?php echo _('Quarter')?>'};
 
-var plot='<?php echo$_SESSION['state']['store']['plot']?>';
 var Dom = YAHOO.util.Dom;
 
 var period='period_<?php echo$_SESSION['state']['store']['period']?>';
@@ -330,30 +326,7 @@ YAHOO.util.Event.onContentReady("filtermenu", function () {
 	 YAHOO.util.Event.addListener("filter_name0", "click", oMenu.show, null, oMenu);
     });
 
-YAHOO.util.Event.onContentReady("plot_period_menu", function () {
-	 var oMenu = new YAHOO.widget.Menu("plot_period_menu", { context:["plot_period","br", "tr"]  });
-	 oMenu.render();
-	 oMenu.subscribe("show", oMenu.focus);
-	 YAHOO.util.Event.addListener("plot_period", "click", oMenu.show, null, oMenu);
-    });
-YAHOO.util.Event.onContentReady("plot_category_menu", function () {
-	 var oMenu = new YAHOO.widget.Menu("plot_category_menu", { context:["plot_category","br", "tr"]  });
-	 oMenu.render();
-	 oMenu.subscribe("show", oMenu.focus);
-	 YAHOO.util.Event.addListener("plot_category", "click", oMenu.show, null, oMenu);
-    });
-YAHOO.util.Event.onContentReady("plot_interval_menu", function () {
-	 var oMenu = new YAHOO.widget.Menu("plot_interval_menu", { context:["plot_interval","br", "tr"]  });
-	 oMenu.render();
-	 oMenu.subscribe("show", oMenu.focus);
-	 YAHOO.util.Event.addListener("plot_interval", "click", oMenu.show, null, oMenu);
-    });
-YAHOO.util.Event.onContentReady("pie_interval_menu", function () {
-	 var oMenu = new YAHOO.widget.Menu("pie_interval_menu", { context:["pie_interval","br", "tr"]  });
-	 oMenu.render();
-	 oMenu.subscribe("show", oMenu.focus);
-	 YAHOO.util.Event.addListener("pie_interval", "click", oMenu.show, null, oMenu);
-    });
+
 
 YAHOO.util.Event.onContentReady("info_period_menu", function () {
 	 var oMenu = new YAHOO.widget.Menu("info_period_menu", { context:["info_period","tr", "br"]  });

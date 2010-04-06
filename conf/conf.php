@@ -105,7 +105,7 @@ $default_state=array(
 						      'nr'=>25,
 						      'where'=>'where true',
 						      'f_field'=>'code',
-						      'f_value'=>'','f_show'=>false,
+						      'f_value'=>'',2,'f_show'=>false,
 						      'from'=>'',
 						      'to'=>''
 						      )
@@ -885,24 +885,24 @@ $default_state=array(
                                'editing'=>false,
                                'id'=>1,
                                'plot'=>'store',
-                                'plot_period'=>'m',
-                                'plot_category'=>'sales',
+			       'plot_period'=>'m',
+			       'plot_category'=>'sales',
                                'plot_data'=>array('store'=>array(
-                                                        
-                                                              'page'=>'plot.php'
-                                                          )
-                                                          ,'top_departments'=>array(
-                                                                                 
-                                                                                 'page'=>'plot.php'
-                                                                             )
-                                                                             ,'pie'=>array(
-                                                                             'period'=>'m',
-                                                                                        'interval'=>'1y',
-                                                                                        
-                                                                                        'page'=>'pie.php',
-                                                                                        'forecast'=>'no',
-                                                                                        'from'=>'',
-                                                                                        'to'=>''
+								 
+								 'page'=>'plot.php'
+								 )
+						  ,'top_departments'=>array(
+									    
+									    'page'=>'plot.php'
+									    )
+						  ,'pie'=>array(
+								'period'=>'m',
+								'interval'=>'1y',
+                                                                
+								'page'=>'pie.php',
+								'forecast'=>'no',
+								'from'=>'',
+								'to'=>''
                                                                                     )
                                                  ),
 
@@ -1191,13 +1191,30 @@ $default_state=array(
                    'product'=>array(
                                  'details'=>false,
                                  'plot'=>'product',
-                                 'plot_data'=>array('product'=>array(
-                                                                  'period'=>'m'
-                                                                           ,'category'=>'sales'
-                                                                                       ,'page'=>'plot.php'
-                                                              )
+				 'plot_interval'=>array(
+							'y'=>array('plot_bins'=>5,
+								   'plot_forecast_bins'=>3),
+							'q'=>array('plot_bins'=>12,
+								   'plot_forecast_bins'=>3),
+							'm'=>array('plot_bins'=>18,
+								   'plot_forecast_bins'=>3),
+							'w'=>array('plot_bins'=>26,
+								   'plot_forecast_bins'=>3),          
+							),
+				 'plot_period'=>'m',
+				 'plot_category'=>'sales',
+				 
 
-                                                   ),
+                                 'plot_data'=>array('product'=>array(
+								     'label'=>_('Product Sales')
+								     ,'page'=>'plot.php'
+								     ),
+						    
+						    'parts'=>array(
+								   'label'=>_('Stock History')
+								   ,'parts'=>'plot.php'
+								   )
+						    ),
 
 
 

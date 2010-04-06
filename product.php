@@ -14,7 +14,8 @@
 include_once('common.php');
 include_once('class.Product.php');
 include_once('assets_header_functions.php');
-
+$page='product';
+$smarty->assign('page',$page);
 
 
 $css_files=array(
@@ -36,8 +37,10 @@ $js_files=array(
 		$yui_path.'datatable/datatable-debug.js',
 		$yui_path.'container/container_core-min.js',
 		$yui_path.'menu/menu-min.js',
+		'js/php.default.min.js',
 		'common.js.php',
 		'table_common.js.php',
+
 		'js/dropdown.js'
 		);
 
@@ -263,52 +266,8 @@ $smarty->assign('images',$images);
 
 $smarty->assign('num_images',count($images));
 
-$plot_tipo=$_SESSION['state']['product']['plot'];
-$plot_data=$_SESSION['state']['product']['plot_data'][$plot_tipo];
-$plot_period=$plot_data['period'];
-$plot_category=$plot_data['category'];
-$plot_args='tipo=product&category='.$plot_category.'&period='.$plot_period.'&keys='.$product->pid;
-
-$smarty->assign('plot_tipo',$plot_tipo);
-$smarty->assign('plot_args',$plot_args);
-$smarty->assign('plot_page',$plot_data['page']);
-$smarty->assign('plot_period',$plot_period);
-$smarty->assign('plot_category',$plot_period);
-$smarty->assign('plot_data',$_SESSION['state']['store']['plot_data']);
-
-if($plot_category=='profit')
-  $plot_formated_category=_('Profits');
-else
-  $plot_formated_category=_('Net Sales');
- 
-if($plot_period=='m')
-  $plot_formated_period='Monthly';
-elseif($plot_period=='y')
-      $plot_formated_period='Yearly';
-elseif($plot_period=='q')
-  $plot_formated_period='Quarterly';
-elseif($plot_period=='w')
-      $plot_formated_period='Weekly';
-
-$smarty->assign('plot_formated_category',$plot_formated_category);
-$smarty->assign('plot_formated_period',$plot_formated_period);
-
-
-/* if(preg_match('/week/',$plot_tipo)) */
-/*   $plot_interval='week'; */
-/* if(preg_match('/month/',$plot_tipo)) */
-/*   $plot_interval='month'; */
-/* if(preg_match('/quarter/',$plot_tipo)) */
-/*   $plot_interval='quarter'; */
-/* if(preg_match('/year/',$plot_tipo)) */
-/*   $plot_interval='year'; */
-
-/* $plot_data=$_SESSION['state']['product']['plot_data'][$plot_interval]; */
-
-/* //print print_r($_SESSION['state']['product']); */
-/* $smarty->assign('plot_tipo',$plot_tipo); */
-/* $smarty->assign('plot_data',$plot_data); */
-
+$subject_id=$product->id;
+include_once('plot.inc.php');
 
 
 
@@ -325,6 +284,8 @@ $smarty->assign('key_filter_dimension',$regex['key_filter_dimension']);
 
 
 $js_files[]= 'js/search.js';
+$js_files[]= 'common_plot.js.php?page='.$page;
+
 $js_files[]='product.js.php';
 
 

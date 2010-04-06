@@ -1,7 +1,8 @@
-<div id="plot" class="top_bar" style="position:relative;left:-20px;clear:both;padding:0;margin:0;{if !$show_details}display:none;{/if}">
+
 
       <div display="none" id="plot_info" keys="{$store->id}"    from="{$plot_interval}" to="{$plot_forecast}"   category="{$plot_category}" period="{$plot_period}"    ></div>
-      <ul id="plot_chooser" class="tabs" style="margin:0 20px;padding:0 20px "  >
+      <ul id="plot_chooser" class="tabs" style="margin-left:20px;padding:0 0px "  >
+	{if $page=='store'}
 	<li>
 	  <span class="item {if $plot_tipo=='store'}selected{/if}" onClick="change_plot(this)" id="plot_store" tipo="store"    >
 	    <span>{$store->get('Store Code')} {t}Store{/t}</span>
@@ -17,17 +18,34 @@
 	    <span>{t}Department's Pie{/t}</span>
 	  </span>
 	</li>
-      </ul> 
-      
+     
+      {/if}
+      {if $page=='product'}
+
+	<li>
+	  <span class="item {if $plot_tipo=='product'}selected{/if}" onClick="change_plot(this)" id="plot_product" tipo="product"    >
+	    <span>{$product->get('Product Code')} {t}Sales{/t}</span>
+	  </span>
+	</li>
+      	<li>
+	  <span class="item {if $plot_tipo=='parts'}selected{/if}" onClick="change_plot(this)" id="plot_parts" tipo="parts"    >
+	    <span>{t}Stock History{/t}</span>
+	  </span>
+	</li>
+
+      {/if}
+       </ul> 
+
+
       <ul id="plot_options" class="tabs" style="position:relative;top:.6em;float:right;margin:0 20px;padding:0 20px;font-size:90% "  >
 	<li><span class="item"> <span id="plot_category"  category="{$plot_category}" >{$plot_formated_category}</span></span></li>
 	<li {if $plot_tipo=='pie'}style="display:none"{/if}><span class="item"> <span id="plot_period"   period="{$plot_period}" >{$plot_formated_period}</span></span></li>
-    <li {if $plot_tipo=='pie'}style="display:none"{/if}><span class="item"> <span id="plot_interval">{$plot_interval_label}</span> <span></li>
-    <li {if $plot_tipo!='pie'}style="display:none"{/if}><span class="item"> <span id="pie_interval">{$pie_interval_label}</span> </span></li>
+	<li {if $plot_tipo=='pie'}style="display:none"{/if}><span class="item"> <span id="plot_interval">{$plot_interval_label}</span> <span></li>
+	<li {if $plot_tipo!='pie'}style="display:none"{/if}><span class="item"> <span id="pie_interval">{$pie_interval_label}</span> </span></li>
+	
+      </ul> 
 
-  </ul> 
-
-      <div style="clear:both;margin:0 20px;padding:0 20px ;border-bottom:1px solid #999">
+      <div style="clear:both;border-bottom:1px solid #999">
       </div>
 
       <div id="pie_options"  style="display:none;{if $plot_tipo!='pie'}display:none;{/if}border:1px solid #ddd;float:right;margin:20px 0px;margin-right:40px;width:300px;padding:10px">
@@ -51,9 +69,58 @@
 	</div>
       </div>
       
-      <div  id="plot_div" class="product_plot"  style="width:865px;xheight:325px;">
+      <div  id="plot_div" class="product_plot"  style="width:940px;xheight:325px;position:relative;left:-10px">
 	<iframe id="the_plot" src ="{$plot_page}?{$plot_args}" frameborder=0 height="325" scrolling="no" width="100%"></iframe>
 	
       </div>
      
-     </div>
+<div style="position:relative;left:-10000px">
+
+   <div id="plot_period_menu" class="yuimenu">
+  <div class="bd">
+  <h3>{t}Plot frequency{/t}:</h3>
+    <ul class="first-of-type">
+      {foreach from=$plot_period_menu item=menu }
+      <li class="yuimenuitem"><a class="yuimenuitemlabel" onClick="change_plot_period('{$menu.period}')"> {$menu.label}</a></li>
+      {/foreach}
+    </ul>
+  </div>
+</div>
+<div id="plot_category_menu" class="yuimenu" >
+  <div class="bd">
+  <h3>Plot Type</h3>
+    <ul class="first-of-type">
+      {foreach from=$plot_category_menu item=menu }
+      <li class="yuimenuitem"><a class="yuimenuitemlabel" onClick="change_plot_category('{$menu.category}')"> {$menu.label}</a></li>
+      {/foreach}
+    </ul>
+  </div>
+</div>
+<div id="plot_interval_menu" class="yuimenu">
+  <div class="bd">
+  <h3>{t}Plot Interval{/t}:</h3>
+    <ul class="first-of-type">
+      {foreach from=$plot_interval_menu item=menu }
+      <li class="yuimenuitem"><a class="yuimenuitemlabel" onClick="change_plot_interval({$menu.value})"> {$menu.label}</a></li>
+      {/foreach}
+       <h3>{t}Plot Forecast{/t}:</h3>
+      {foreach from=$plot_forecast_interval_menu item=menu }
+      <li class="yuimenuitem"><a class="yuimenuitemlabel" onClick="change_plot_forecast_interval({$menu.value})"> {$menu.label}</a></li>
+      {/foreach}
+      
+    </ul>
+  </div>
+</div>
+<div id="pie_interval_menu" class="yuimenu" >
+  <div class="bd">
+  <h3>{t}Pie Interval{/t}:</h3>
+    <ul class="first-of-type">
+      {foreach from=$pie_interval_menu key=menu_key item=menu }
+      <li class="yuimenuitem"><a class="yuimenuitemlabel" onClick="change_pie_interval('{$menu_key}')"> {$menu.label}</a></li>
+      {/foreach}
+       
+      
+    </ul>
+  </div>
+</div>
+</div>

@@ -1,24 +1,33 @@
-{include file='head.tpl'}
+{include  file="$head_template"}
  <body>
    <div id="container" >
-     {include file='home_header.tpl'}
-     {include file='left_menu.tpl'}
+     {include file="$home_header_template"}
+<div id="page_content" >
+
+     {include file="$left_menu_template"}
      <div id="central_content">
        
        <div style="border:1px solid #ccc;margin:20px 40px;padding:20px;" > 
-	 <p>Please write your email address.</p>
+
+	 
+
+	 <p id="email_instructions">Please write your email address.</p>
+	 <p id="email_error_msg_1" style="display:none">Hey, you forgot to write the email, <b>please write your email address</b>.</p>
+	 <p id="email_not_valid_msg_1" style="display:none">The email seems incorrect, <b>please double check your email address</b>.</p>
+	 <p id="email_not_valid_msg_2" style="display:none">That is not a email address, <b>please double check your email address</b>.</p>
+
 	 <table>
 	   <tr id="email_tr"><td>Email:</td><td><input id="email" type="text"></td></tr>
 	 
 	   
 	   
 	 </table>
-	 <div class="continue"><span class="button disabled">Continue</span></div>
+	 <div class="continue"><span id="submit_email" class="button disabled">Continue</span></div>
 	 
        </div>
 
 
-       <div style="border:1px solid #ccc;margin:20px 40px;padding:20px;" > 
+       <div style="border:1px solid #ccc;margin:20px 40px;padding:20px;display:none" > 
 	 <p>Please tell us what type of trader you are.</p>
 	 <input type="radio" name="customer_type" value="wholesaler" />Wholesaler
 	 <br />
@@ -43,7 +52,7 @@
 	</div>
        </div>
 
-        <div style="border:1px solid #ccc;margin:20px 40px;padding:20px;" > 
+        <div style="border:1px solid #ccc;margin:20px 40px;padding:20px;;display:none" > 
 	 <p>Are you part of a company or a private person?</p>
 	 <input type="radio" name="radiogroup" id="radio-company">
 	 <label for="radio-company">Company</label><br/>
@@ -78,7 +87,7 @@
 	</div>
 
 
-  <div style="border:1px solid #ccc;margin:20px 40px;padding:20px;" > 
+  <div style="border:1px solid #ccc;margin:20px 40px;padding:20px;;display:none" > 
 	 <p>Give us you contact details</p>
 	 
 	  <table>
@@ -160,7 +169,7 @@
 
 
 
-	  <div style="border:1px solid #ccc;margin:20px 40px;padding:20px;" > 
+	  <div style="border:1px solid #ccc;margin:20px 40px;padding:20px;;display:none" > 
 	 <p>Nearly done. Please choose if you want some of the something</p>
 
 
@@ -184,11 +193,11 @@
 
      </div>
     
-     
-     
+       <div style="clear:both"></div>
+      </div>
      
    
-     {include file='footer.tpl'}
+     {include file="$footer_template"}
      
    </div>
  </body>
