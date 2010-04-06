@@ -246,7 +246,7 @@ class Store extends DB_Table{
     
 
   
-    
+
 
     if (preg_match('/^(Total|1).*(Amount|Profit)$/',$key)) {
 
@@ -273,6 +273,9 @@ class Store extends DB_Table{
       break;
     case('For Sale Products'):
       return number($this->data['Store For Sale Products']);
+      break;
+    case('For Public Sale Products'):
+      return number($this->data['Store For Public Sale Products']);
       break;
     case('Families'):
       return number($this->data['Store Families']);

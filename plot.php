@@ -787,17 +787,18 @@ function plot_assets(){
    switch($period){
 
    case('y'):
-   $from=date('Y-m-d',strtotime("now - $from years"));
+   $from=date('Y-m-01',strtotime("now - $from years"));
    break;
    case('q'):
-   $from=date('Y-m-d',strtotime("now - $from quarters"));
+     $_from=$from*3;
+   $from=date('Y-m-01',strtotime("now - $_from months"));
    break;
    case('m'):
-   $from=date('Y-m-d',strtotime("now - $from months"));
+   $from=date('Y-m-01',strtotime("now - $from months"));
    break;
    case('w'):
    $_from=$from+3;
-   $from=date('Y-m-d',strtotime("now - $_from weeks"));
+   $from=date('Y-m-01',strtotime("now - $_from weeks"));
    break;
    }
 
@@ -818,7 +819,8 @@ function plot_assets(){
    $to=date('Y-m-d',strtotime("now + $to years"));
    break;
    case('q'):
-   $to=date('Y-m-d',strtotime("now + $to quarters"));
+     $_to=$to*3;
+   $to=date('Y-m-d',strtotime("now + $_to months"));
    break;
    case('m'):
    $to=date('Y-m-d',strtotime("now + $to months"));
@@ -946,7 +948,7 @@ function plot_assets(){
 		      );
   
   
-  print $ar_address;
+  //  print $ar_address;
 
 
   $fields='"date"';

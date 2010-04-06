@@ -31,7 +31,7 @@
 	    <td>{t}Families{/t}:</td><td class="number"><div >{$store->get('Families')}</div></td>
 	  </tr>
 	  <tr>
-	    <td>{t}Products{/t}:</td><td class="number"><div>{$store->get('For Sale Products')}</div></td>
+	    <td>{t}Products{/t}:</td><td class="number"><div>{$store->get('For Public Sale Products')}</div></td>
 	  </tr>
  
     
@@ -141,9 +141,9 @@
 </div>
 
 </div>
-
+<div id="plot" class="top_bar" style="clear:both;padding:0;margin:0;{if !$show_details}display:none;{/if}">
 {include file='plot_splinter.tpl'}
-     
+</div>     
      
 <div class="data_table" style="clear:both;">
     <span   class="clean_table_title">{t}Departments{/t}</span>
@@ -199,7 +199,7 @@
   </div>
 </div> 
 
-<div id="rppmenu" class="yuimenu">
+<div id="rppmenu" class="yuimenu" >
   <div class="bd">
     <ul class="first-of-type">
        <li style="text-align:left;margin-left:10px;border-bottom:1px solid #ddd">{t}Rows per Page{/t}:</li>
@@ -209,7 +209,7 @@
     </ul>
   </div>
 </div>
-<div id="filtermenu" class="yuimenu">
+<div id="filtermenu" class="yuimenu" >
   <div class="bd">
     <ul class="first-of-type">
       <li style="text-align:left;margin-left:10px;border-bottom:1px solid #ddd">{t}Filter options{/t}:</li>
@@ -219,27 +219,8 @@
     </ul>
   </div>
 </div>
-<div id="plot_period_menu" class="yuimenu">
-  <div class="bd">
-  <h3>{t}Plot frequency{/t}:</h3>
-    <ul class="first-of-type">
-      {foreach from=$plot_period_menu item=menu }
-      <li class="yuimenuitem"><a class="yuimenuitemlabel" onClick="change_plot_period('{$menu.period}')"> {$menu.label}</a></li>
-      {/foreach}
-    </ul>
-  </div>
-</div>
-<div id="plot_category_menu" class="yuimenu">
-  <div class="bd">
-  <h3>Plot Type</h3>
-    <ul class="first-of-type">
-      {foreach from=$plot_category_menu item=menu }
-      <li class="yuimenuitem"><a class="yuimenuitemlabel" onClick="change_plot_category('{$menu.category}')"> {$menu.label}</a></li>
-      {/foreach}
-    </ul>
-  </div>
-</div>
-<div id="info_period_menu" class="yuimenu">
+
+<div id="info_period_menu" class="yuimenu" >
   <div class="bd">
     <ul class="first-of-type">
       <li style="text-align:left;margin-left:10px;border-bottom:1px solid #ddd">{t}Period{/t}:</li>
@@ -250,31 +231,5 @@
   </div>
 </div>
 
-<div id="plot_interval_menu" class="yuimenu">
-  <div class="bd">
-  <h3>{t}Plot Interval{/t}:</h3>
-    <ul class="first-of-type">
-      {foreach from=$plot_interval_menu item=menu }
-      <li class="yuimenuitem"><a class="yuimenuitemlabel" onClick="change_plot_interval({$menu.value})"> {$menu.label}</a></li>
-      {/foreach}
-       <h3>{t}Plot Forecast{/t}:</h3>
-      {foreach from=$plot_forecast_interval_menu item=menu }
-      <li class="yuimenuitem"><a class="yuimenuitemlabel" onClick="change_plot_forecast_interval({$menu.value})"> {$menu.label}</a></li>
-      {/foreach}
-      
-    </ul>
-  </div>
-</div>
-<div id="pie_interval_menu" class="yuimenu">
-  <div class="bd">
-  <h3>{t}Pie Interval{/t}:</h3>
-    <ul class="first-of-type">
-      {foreach from=$pie_interval_menu key=menu_key item=menu }
-      <li class="yuimenuitem"><a class="yuimenuitemlabel" onClick="change_pie_interval('{$menu_key}')"> {$menu.label}</a></li>
-      {/foreach}
-       
-      
-    </ul>
-  </div>
-</div>
+
 {include file='footer.tpl'}

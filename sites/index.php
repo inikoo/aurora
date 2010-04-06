@@ -13,7 +13,7 @@ $banners=get_banners($store_code);
 $smarty->assign('banners',$banners);
 $showcases=get_showcases($store_code);
 $smarty->assign('main_showcase',$showcases['main']['template']);
-$smarty->assign('second_showcase',$showcases['second']['template']);
+//$smarty->assign('second_showcase',$showcases['second']['template']);
 
 
 $smarty->assign('home_header_template',"pages/$store_code/home_header.tpl");
@@ -62,7 +62,7 @@ return $banners;
 function get_showcases($store_code){
 $showcases=array(
 	       'main'=>array('template'=>'splinters/showcases/'.$store_code.'/presentation.tpl')
-	       ,'second'=>array('template'=>'splinters/showcases/'.$store_code.'/feedback.tpl')
+	       //	       ,'second'=>array('template'=>'splinters/showcases/'.$store_code.'/feedback.tpl')
 
 	       );
 

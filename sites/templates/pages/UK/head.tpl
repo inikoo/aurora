@@ -12,4 +12,6 @@
     {/foreach}
     <script type="text/javascript">{$script}</script>
     
+
+
   </head>

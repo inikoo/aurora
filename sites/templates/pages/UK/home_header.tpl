@@ -8,7 +8,8 @@
   </div>
   <div id="header_title" >
     <div id="header_login" >
-      <a>login</a>
+      <a href="register.php">register</a>
+   <a href="login.php" style="margin-left:20px">login</a>
     </div>
 <div id="header_info" >
 <h1>{$header_title}</h1>

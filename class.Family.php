@@ -267,7 +267,6 @@ $this->get_data('id',$this->found_key);
      $sql=sprintf("select *  from `Product Family Dimension` where `Product Family Key`=%d ",$tag);
      break;
    case('code'):
-     $sql=sprintf("select *  from `Product Family Dimension` where `Product Family Code`=%s and `Product Family Most Recent`='Yes'",prepare_mysql($tag));
    case('code_store'):
      $sql=sprintf("select *  from `Product Family Dimension` where `Product Family Code`=%s and `Product Family Store Key`=%d ",prepare_mysql($tag),$tag2);
 
@@ -1596,5 +1595,117 @@ function update_main_image(){
     // print "$sql\n";
     mysql_query($sql);
   }
+
+
+function get_page_data(){
+  $data=array();
+  $sql=sprintf("select * from `Page Store Dimension` PSD left join `Page Dimension` PD on (PSD.`Page Key`=PD.`Page Key`) where PSD.`Page Key`=%d",$this->data['Product Family Page Key']);
+  // print $sql;
+  $res=mysql_query($sql);
+  if($row=mysql_fetch_array($res)){
+    $data=$row;
+  }
+  
+  return $data;
+
+
+
+}
+
+
+    function create_page($data){
+      
+      
+      $store=new Store($this->data['Product Family Store Key']);
+      $store_page_data=$store->get_page_data();
+	
+      print_r($store_page_data);
+
+      if(!array_key_exists('Showcases',$data)){
+
+	$showcases=array();
+
+      if($store_page_data['Display Presentation']='Yes'  ){
+	$showcases['Presentation']=array('Display'=>true,'Type'=>'Template','Contents'=>$this->data['Product Family Name']);
+      }
+       if($store_page_data['Display Offers']='Yes' ){
+	$showcases['Offers']=array('Display'=>true,'Type'=>'Auto');
+      }
+       if($store_page_data['Display New Products']='Yes' ){
+	$showcases['New']=array('Display'=>true,'Type'=>'Auto');
+      }
+      }else
+	$showcases=$data['Showcases'];
+       
+
+      if(!array_key_exists('Product Layouts',$data)){
+
+       $product_layouts=array();
+
+       if($store_page_data['Product Thumbnails Layout']='Yes' ){
+	 $product_layouts['Thumbnails']=array('Display'=>true,'Type'=>'Auto');
+       }
+       
+       if($store_page_data['Product List Layout ']='Yes' ){
+	 $product_layouts['List']=array('Display'=>true,'Type'=>'Auto');
+       }
+       
+       if($store_page_data['Product Slideshow Layout']='Yes' ){
+	 $product_layouts['Slideshow']=array('Display'=>true,'Type'=>'Auto');
+       }
+       if($store_page_data['Product Manual Layout']='Yes' ){
+	 $product_layouts['Manual']=array('Display'=>true,'Type'=>$store_page_data['Product Manual Layout Type'],'Data'=>$store_page_data['Product Manual Layout Data']);
+       }
+       
+       if(count($product_layouts==0)){
+	 $product_layouts['Thumbnails']=array('Display'=>true,'Type'=>'Auto');
+       }
+       }else
+	$product_layouts=$data['Product Layouts'];
+
+      if(!array_key_exists('Showcases Layout',$data))
+	$showcases_layout=$store_page_data['Showcases Layout'];
+      else
+	$showcases_layout=$data['Showcases Layout'];
+
+      
+      
+      
+
+
+      $page_data=array(
+		       'Page Code'=>'PD_'.$store->data['Store Code'].'_'.$this->data['Product Family Code']
+		       ,'Page Source Template'=>''
+		       ,'Page URL'=>'department.php?code='.$this->data['Product Family Code']
+		       ,'Page Source Template'=>'pages/'.$store->data['Store Code'].'/department.tpl'
+		       ,'Page Description'=>'Department Showcase Page'
+		       ,'Page Title'=>$this->data['Product Family Name']
+		       ,'Page Short Title'=>$this->data['Product Family Name']
+		       ,'Page Store Title'=>$this->data['Product Family Name']
+		       ,'Page Store Subtitle'=>''
+		       ,'Page Store Slogan'=>$data['Page Store Slogan']
+		       ,'Page Store Abstract'=>$data['Page Store Resume']
+		       ,'Page Store Showcases'=>$showcases
+		       ,'Page Store Showcases Layout'=>$showcases_layout
+		       ,'Page Store Product Layouts'=>$product_layouts
+		       );
+      
+      $page_data['Page Store Function']='Department Catalogue';
+      $page_data['Page Store Creation Date']=date('Y-m-d H:i:s');
+      $page_data['Page Store Last Update Date']=date('Y-m-d H:i:s');
+      $page_data['Page Store Last Structural Change Date']=date('Y-m-d H:i:s');
+      $page_data['Page Type']='Store';
+      $page_data['Page Store Source Type'] ='Dynamic';
+
+      $page=new Page('find',$page_data,'create');
+//print_r($page);
+//exit;
+      $sql=sprintf("update `Product Family Dimension` set `Product Family Page Key`=%d  where `Product Family Key`=%d",$page->id,$this->id);
+      mysql_query($sql);
+
+	}
+
+
+
 }
 ?>

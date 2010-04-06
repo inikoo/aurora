@@ -11,7 +11,8 @@
     {include file='main_menu.tpl'}
   </div>
   <div id="header_info" >
-    <a>login</a>
+    <a>register</a>
+<a>logins</a>
   </div>
 </div> 
   

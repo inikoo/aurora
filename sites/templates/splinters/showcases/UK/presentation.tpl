@@ -1,10 +1,7 @@
 
-
-
-
 <div style="padding:15px 20px;font-size:10px;border:1px solid #ccc;margin:5px 20px;background-image:url('art/mass-11.png');background-repeat:no-repeat;;background-position:100% 80px;padding-right:60px;">
 <div style="width:300px">
-<p>Our Mission is to provide the independent giftware trader (or florist etc) with an ever expanding range of wholesale giftware and wholesale packaging at the keenest wholesale prices and as fast as possible.</p>
+<p>Our Mission is to provide the <b>independent giftware trader</b> (or florist etc) with an ever expanding range of wholesale giftware and wholesale packaging at the keenest wholesale prices and as fast as possible.</p>
 <p>There is a low minimum order, low delivery charges (free over £375+vat) and the minimum of terms & conditions.</p>
 <p>If you are outside the UK we have a dedicated export department to care for you.  Exporting world-wide everyday.</p>
 <p>Regular customers are generously rewarded with our Gold Reward Scheme. New customers can get a 1st Order Bonus.
@@ -19,7 +16,7 @@
 
 <div id="submenu" >
   <dl class="dropup">
-	      <dt id="home-ddheader" onmouseover="ddMenu('home',1)" onmouseout="ddMenu('home',-1)">Departmets</dt>
+	      <dt id="home-ddheader" onmouseover="ddMenu('home',1)" onmouseout="ddMenu('home',-1)">Departments</dt>
 	      
 	      <dd id="home-home-ddcontent" onmouseover="cancelHide('home')" onmouseout="ddMenu('home',-1)">
 		<ul>
@@ -29,8 +26,8 @@
 
 	    
 	    <dl class="dropup">
-	      <dt id="main_pages-ddheader" onmouseover="ddMenu('main_pages',1)" onmouseout="ddMenu('main_pages',-1)">Themes</dt>
-	      <dd id="main_pages-ddcontent" onmouseover="cancelHide('main_pages')" onmouseout="ddMenu('main_pages',-1)">
+	      <dt id="themes-ddheader" onmouseover="ddMenu('themes',1)" onmouseout="ddMenu('themes',-1)">Themes</dt>
+	      <dd id="themes-ddcontent" onmouseover="cancelHide('themes')" onmouseout="ddMenu('themes',-1)">
 		<ul>
 		  <li><a href="#" class="underline">Contactxxxx</a></li>
 		  <li><a href="#" class="underline">Terms & Conditions</a></li>
@@ -45,8 +42,8 @@
 	   
  
 	    <dl class="dropup">
-	      <dt id="two-ddheader" onmouseover="ddMenu('two',1)" onmouseout="ddMenu('two',-1)">Seasons</dt>
-	      <dd id="two-ddcontent" onmouseover="cancelHide('two')" onmouseout="ddMenu('two',-1)">
+	      <dt id="seasons-ddheader" onmouseover="ddMenu('seasons',1)" onmouseout="ddMenu('seasons',-1)">Seasons</dt>
+	      <dd id="seasons-ddcontent" onmouseover="cancelHide('seasons')" onmouseout="ddMenu('seasons',-1)">
 		<ul>
 		  <li><a href="#" class="underline">Navigation Item 1</a></li>
 		  
@@ -59,8 +56,8 @@
 	    </dl>
 	    
  <dl class="dropup">
-	      <dt id="two-ddheader" onmouseover="ddMenu('two',1)" onmouseout="ddMenu('two',-1)">Trades</dt>
-	      <dd id="two-ddcontent" onmouseover="cancelHide('two')" onmouseout="ddMenu('two',-1)">
+	      <dt id="trades-ddheader" onmouseover="ddMenu('trades',1)" onmouseout="ddMenu('trades',-1)">Trades</dt>
+	      <dd id="trades-ddcontent" onmouseover="cancelHide('trades')" onmouseout="ddMenu('trades',-1)">
 		<ul>
 		  <li><a href="#" class="underline">Navigation Item 1</a></li>
 		  
@@ -74,8 +71,8 @@
 
 
 	    <dl class="dropup">
-	      <dt id="two-ddheader" onmouseover="ddMenu('two',1)" onmouseout="ddMenu('two',-1)">Offers</dt>
-	      <dd id="two-ddcontent" onmouseover="cancelHide('two')" onmouseout="ddMenu('two',-1)">
+	      <dt id="offers_bis-ddheader" onmouseover="ddMenu('offers_bis',1)" onmouseout="ddMenu('offers_bis',-1)">Offers</dt>
+	      <dd id="offers_bis-ddcontent" onmouseover="cancelHide('offers_bis')" onmouseout="ddMenu('offers_bis',-1)">
 		<ul>
 		  <li><a href="#" class="underline">Navigation Item 1</a></li>
 		  

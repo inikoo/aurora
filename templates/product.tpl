@@ -314,35 +314,8 @@
 
 
   <div   id="block_plot" style="clear:both;{if $display.plot==0}display:none{/if};margin-top:20px"  >
-    <div style="clear:both"   id="plot_info" keys="{$product->pid}"   ></div>
-    <ul id="plot_chooser" class="tabs" style="margin:0 20px;padding:0 20px "  >
-      <li>
-	<span class="item {if $plot_tipo=='product'}selected{/if}" onClick="change_plot(this)" id="plot_store" tipo="store" category="{$plot_data.store.category}" period="{$plot_data.store.period}" >
-	  <span>{$product->get('Product Code')} {t}Product{/t}</span>
-	  </span>
-      </li>
-      <li>
-	<span class="item {if $plot_tipo=='part'}selected{/if}"  id="plot_top_departments" onClick="change_plot(this)" tipo="top_departments" category="{$plot_data.top_departments.category}" period="{$plot_data.top_departments.period}" name=""  >
-	  <span>{t}Parts{/t}</span>
-	  </span>
-	</li>
-
-      </ul> 
-      
-      <ul id="plot_options" class="tabs" style="{if $plot_tipo=='pie'}display:none{/if};position:relative;top:.6em;float:right;margin:0 20px;padding:0 20px;font-size:90% "  >
-	<li><span class="item"> <span id="plot_category"  category="{$plot_category}" style="xborder:1px solid black;display:inline-block; vertical-align:middle">{$plot_formated_category}</span></span></li>
-	<li><span class="item"> <span id="plot_period"   period="{$plot_period}" style="xborder:1px solid black;display:inline-block; vertical-align:middle">{$plot_formated_period}</span></span></li>
-      </ul> 
-
-      <div style="clear:both;margin:0 20px;padding:0 20px ;border-bottom:1px solid #999">
-      </div>
-
-     
-      
-      <div  id="plot_div" class="product_plot"  style="width:865px;xheight:325px;">
-	<iframe id="the_plot" src ="{$plot_page}?{$plot_args}" frameborder=0 height="325" scrolling="no" width="{if $plot_tipo=='pie'}500px{else}100%{/if}"></iframe>
-	
-      </div>
+{include file='plot_splinter.tpl'}
+    
      
 </div>
 
@@ -350,60 +323,7 @@
 
 
 
-  <div id="block_plot2" style="display:none;clear:both;{if $display.plot==0}display:none{/if}">
-    <div id="plot_options" class="plot_options" xstyle="float:right;width:130px">
-      <table border=0 class="plot_menu" style="margin-top:30px">
-	<tr class="top">
-	  <td class="left"></td>
-	  <td ><img src="art/icons/calendar_view_week.png" title="{t}Weekly{/t}"/></td>
-	  <td><img src="art/icons/calendar_view_month.png" title="{t}Monthy{/t}"/></td>
-	  <td><img src="art/icons/calendar_view_quarter.png" title="{t}Quarterly{/t}"/></td>
-	  <td><img src="art/icons/calendar_view_year.png" title="{t}Yearly{/t}"/></td>
-	    <tr>
-	      <td class="left"><img src="art/icons/money.png" title="{t}Net Sales{/t}"/></td>
-	      <td><img id="product_week_sales"   class="{if $plot_tipo=='product_week_sales'}selected{else}opaque{/if}" src="art/icons/chart_line.png" title="{t}Sales per week{/t}"/></td>
-	      <td><img id="product_month_sales" class="{if $plot_tipo=='product_month_sales'}selected{else}opaque{/if}" src="art/icons/chart_line.png" title="{t}Sales per month{/t}"/></td>
-	      <td><img id="product_quarter_sales"   class="{if $plot_tipo=='product_quarter_sales'}selected{else}opaque{/if}" src="art/icons/chart_line.png" title="{t}Sales per quarter{/t}"/></td>
-	      <td><img id="product_year_sales"   class="{if $plot_tipo=='product_year_sales'}selected{else}opaque{/if}" src="art/icons/chart_line.png" title="{t}Sales per year{/t}"/></td>
-	      
-	      <td></td>
-	    </tr>
-	<tr>
-	  <td class="left"><img src="art/icons/basket.png" title="{t}Outers Sold{/t}"/></td>
-	  <td><img  id="product_week_outers"  class="{if $plot_tipo=='product_week_outers'}selected{else}opaque{/if}"  src="art/icons/chart_line.png" title="{t}Outers sold per month{/t}"/></td>
-	  <td><img  id="product_month_outers"  class="{if $plot_tipo=='product_month_outers'}selected{else}opaque{/if}"  src="art/icons/chart_line.png" title="{t}Outers sold per month{/t}"/></td>
-	  <td><img  id="product_quarter_outers"  class="{if $plot_tipo=='product_quarter_outers'}selected{else}opaque{/if}"  src="art/icons/chart_line.png" title="{t}Outers sold  per quarter{/t}"/></td>
-	  <td><img   id="product_year_outers" class="{if $plot_tipo=='product_year_outers'}selected{else}opaque{/if}"  src="art/icons/chart_line.png" title="{t}Outers sold  per year{/t}"/></td>
-	  <td></td>
-	</tr>
-	    <tr style="display:none">
-	      <td class="left"><img src="art/icons/package.png" title="{t}Stock{/t}"/></td>
-	      <td><img id="product_stock_history"  class="{if $plot_tipo=='product_stock_history'}selected{else}opaque{/if}"      src="art/icons/chart_line.png" title="{t}Stock History{/t}"/></td>
-	      <td></td>
-	      <td></td>
-	      <td></td>
-	    </tr>
-      </table>
-      <div class="other_options">
-	<table >
-	  <tr class="title"><td>Dates</td><tr> 
-	  <tr><td >Show last</td><tr> 
-	  <tr><td>  <input type="text" size="2" style="vertical-align:bottom;text-align:right" id="plot_months" value="{$plot_data.months}"/> <span style="cursor:pointer" onclick="change_plot_months(this)">months</span></td><tr> 
-	  <tr class="title"><td>Y-Axis Range</td><tr> 
-	  <tr><td>All <input id="plot_radio_1"  type="radio" onchange="change_plot_sigma(this)" name="y_range" {if !$plot_data.max_sigma}checked="cheked"{/if} value="0"></td><tr> 
-	  <tr><td>&sigma; <input id="plot_radio_2" type="radio" name="y_range"  onchange="change_plot_sigma(this)"  {if $plot_data.max_sigma}checked="cheked"{/if} value="1"></td><tr> 
-
-	</table>
-      </div>
-      
-    </div>
-    <div id="xplot0" class="product_plot"  style="height:300px;{if $view_plot!=0};display:none{/if}" >
-	   <iframe id="the_plot" src ="plot.php?tipo={$plot_tipo}" frameborder=0 height="100%" scrolling="no" width="100%"></iframe>
-	 </div>
-	 
-
-
-      </div>
+ 
       
 
   {if $view_orders} 
