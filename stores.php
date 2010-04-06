@@ -56,7 +56,7 @@ $css_files=array(
 		 $yui_path.'reset-fonts-grids/reset-fonts-grids.css',
 		 $yui_path.'menu/assets/skins/sam/menu.css',
 		 $yui_path.'button/assets/skins/sam/button.css',
-		 $yui_path.'assets/skins/sam/autocomplete.css',
+		 //$yui_path.'assets/skins/sam/autocomplete.css',
 		 'common.css',
 		 'container.css',
 		 'button.css',
@@ -151,20 +151,21 @@ $smarty->assign('display_mode',$display_mode);
 $smarty->assign('display_mode_label',$display_mode_label);
 
 
+$smarty->assign('search_label',_('Products'));
+$smarty->assign('search_scope','products');
 
 
 $q='';
 $tipo_filter=($q==''?$_SESSION['state']['stores']['table']['f_field']:'code');
-
-$smarty->assign('filter',$tipo_filter);
-$smarty->assign('filter_value',($q==''?$_SESSION['state']['stores']['table']['f_value']:addslashes($q)));
+$smarty->assign('filter_show0',$_SESSION['state']['stores']['table']['f_show']);
+$smarty->assign('filter0',$tipo_filter);
+$smarty->assign('filter_value0',($q==''?$_SESSION['state']['stores']['table']['f_value']:addslashes($q)));
 $filter_menu=array(
 		   'code'=>array('db_key'=>'code','menu_label'=>_('Store Code'),'label'=>_('Code')),
 		   'name'=>array('db_key'=>'name','menu_label'=>_('Store Name'),'label'=>_('Name')),
 		   );
-$smarty->assign('filter_menu',$filter_menu);
-
-$smarty->assign('filter_name',$filter_menu[$tipo_filter]['label']);
+$smarty->assign('filter_menu0',$filter_menu);
+$smarty->assign('filter_name0',$filter_menu[$tipo_filter]['label']);
 
 $paginator_menu=array(10,25,50,100,500);
 $smarty->assign('paginator_menu',$paginator_menu);

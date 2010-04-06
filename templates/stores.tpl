@@ -5,6 +5,8 @@
   <h1>{t}Corporate Overview{/t}</h1>
 </div>
 
+
+
 <div class="data_table" style="clear:both">
     <span class="clean_table_title">{t}Stores{/t}</span>
  <div class="table_top_bar" ></div>
@@ -37,13 +39,20 @@
       </table>
        
     <div  class="clean_table_caption"  style="clear:both;">
-	 <div style="float:left;"><div id="table_info0" class="clean_table_info"><span id="rtext0"></span> <span class="rtext_rpp" id="rtext_rpp0"></span> <span class="filter_msg"  id="filter_msg0"></span></div></div>
-	 <div class="clean_table_filter" id="clean_table_filter0">
-	 <div class="clean_table_info" style="width:8.2em;padding-bottom:1px; ">
-	 <span id="filter_name0" style="margin-right:5px">{$filter_name}:</span>
-	 <input style="border-bottom:none;width:6em;" id='f_input0' value="{$filter_value}" size=10/>
+	 <div style="float:left;">
+	 <div id="table_info0" class="clean_table_info"><span id="rtext0"></span> <span class="rtext_rpp" id="rtext_rpp0"></span> <span class="filter_msg"  id="filter_msg0"></span></div>
+	 </div>
+	 <div class="clean_table_filter clean_table_filter_show" id="clean_table_filter_show0" {if $filter_show0}style="display:none"{/if}>{t}filter results{/t}</div>
+	 <div class="clean_table_filter" id="clean_table_filter0" {if !$filter_show0}style="display:none"{/if}>
+	 	 
+
+	 <div class="clean_table_info" style="padding-bottom:1px; ">
+	
+	 <span id="filter_name0" style="margin-right:5px">{$filter_name0}:</span>
+	 <input style="border-bottom:none;width:6em;" id='f_input0' value="{$filter_value0}" size=10/> <span class="clean_table_filter_show" id="clean_table_filter_hide0" style="margin-left:8px">{t}Hide filter{/t}</span>
 	 <div id='f_container0'></div>
 	 </div>
+	 
 	 </div>
 	 <div class="clean_table_controls" style="" ><div><span  style="margin:0 5px" id="paginator0"></span></div></div>
        </div>
@@ -55,18 +64,18 @@
 
 
 
-<div id="rppmenu" class="yuimenu">
+<div id="rppmenu0" class="yuimenu">
   <div class="bd">
     <ul class="first-of-type">
        <li style="text-align:left;margin-left:10px;border-bottom:1px solid #ddd">{t}Rows per Page{/t}:</li>
       {foreach from=$paginator_menu item=menu }
-      <li class="yuimenuitem"><a class="yuimenuitemlabel" onClick="change_rpp({$menu},0)"> {$menu}</a></li>
+      <li class="yuimenuitem"><a class="yuimenuitemlabel" onClick="change_rpp_with_totals({$menu},0)"> {$menu}</a></li>
       {/foreach}
     </ul>
   </div>
 </div>
 
-<div id="filtermenu" class="yuimenu">
+<div id="filtermenu0" class="yuimenu">
   <div class="bd">
     <ul class="first-of-type">
       <li style="text-align:left;margin-left:10px;border-bottom:1px solid #ddd">{t}Filter options{/t}:</li>

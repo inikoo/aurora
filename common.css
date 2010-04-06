@@ -702,9 +702,19 @@ position:relative;top:1px;
 
 .search_result{color:#777;width:98%;float:right}
 .search_result tr{cursor:pointer}
+.search_result tr:hover{background:#d2dffc}
+
 .search_result td{padding:2px 10px;border-top:1px solid #ccc;border-bottom:1px solid #aaa}
-.search_result td.naked {cursor:default;border:none}
+.search_result td.naked {display:none}
+.search_result tr.selected {color:#fff;background:#7296e1;}
 
 
 .order_header{border-top:1px solid #777;border-bottom:1px solid #ccc;width:100%,padding:0;margin:0;float:right;margin-left:0px}
 .order_actions{text-align:right;margin-top:3px;}
+
+#yui-history-iframe {
+  position:absolute;
+  top:0; left:0;
+  width:1px; height:1px; /* avoid scrollbars */
+  visibility:hidden;
+}

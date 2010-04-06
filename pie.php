@@ -46,8 +46,8 @@ $staked=false;
 switch($tipo){
  case('children_share'):
 
-   if(!isset($_REQUEST['item'])  or !isset($_REQUEST['category']) )
-     return;
+   if(!isset($_REQUEST['item'])  or !isset($_REQUEST['category']) or !isset($_REQUEST['interval']))
+     exit('E1');
    $parent_key_array=array();
    $parent_keys='';
    if(isset($_REQUEST['keys'])){
@@ -74,53 +74,27 @@ switch($tipo){
 
    $value_tipo='value';
  
-   $date=date("Y-m-d");
    $ts_name='PDS';
    $tipo='children_share';
 
+$from='';
+$to='';
 
-   if(isset($_REQUEST['period'])){
-     $period=$_REQUEST['period'];
-     if(preg_match('/^(m|month|monthly)$/i',$period)){
-       $freq='Monthly';
-       
-     }
-     elseif(preg_match('/^(y|year|yearly)$/i',$period)){
-       $freq='Yearly';
-       
-     }elseif(preg_match('/^(w|week|weekly)$/i',$period)){
-       $freq='Weekly';
-       
-     }elseif(preg_match('/^(q|quarter|quarterly)$/i',$period)){
-       $freq='Quarterly';
-     }elseif(preg_match('/^(all)$/i',$period)){
-       $freq='All';
-     }else
-	return;
-   }
-   if(isset($_REQUEST['date'])){
-     $time=strtotime($_REQUEST['date']);
-     
-     if($freq=='Monthly')
-       $date=date("Y-m-01",$time);
-     elseif($freq=='Yearly')
-       $date=date("Y-01-01",$time);
-     elseif($freq=='Quarter'){
-       $month=date('m',$date);
-       if($month<=3)
-	 $m=1;
-       elseif($month<=6)
-	 $m=4;
-       elseif($month<=9)
-	 $m=7;
-       else
-	 $m=10;
-       
-       $date=date("Y-$m-01",$time);
-     }else
-	$date='0000-00-00';
 
-   }
+$interval=$_REQUEST['interval'];
+switch($interval){
+case('1y'):
+$freq='Monthly';
+$from=date('Y-m-01',strtotime('now -12 months'));
+break;
+default:
+$freq='Yearly';
+break;
+
+}
+
+
+   
 
    $item=$_REQUEST['item'];
    $category=$_REQUEST['category'];
@@ -146,10 +120,8 @@ switch($tipo){
 
 
 
-
-
-   $ar_address='ar_pie.php?tipo=children_share&parent_keys='.$parent_keys.'&ts_name='.$ts_name.'&date='.$date.'&freq='.$freq.'&value_tipo='.$value_tipo;
-   //print $ar_address;
+   $ar_address='ar_pie.php?tipo=children_share&parent_keys='.$parent_keys.'&ts_name='.$ts_name.'&from='.$from.'&to='.$to.'&freq='.$freq.'&value_tipo='.$value_tipo;
+  print $ar_address;
    $fields='"value","label"';
 
 
@@ -173,13 +145,11 @@ $out='<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN""http://www.
   <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 
-
-
-
  <script type="text/javascript" src="'.$yui_path.'utilities/utilities.js"></script>
-       <script type="text/javascript" src="'.$yui_path.'json/json-min.js"></script>
-       <script type="text/javascript" src="'.$yui_path.'datasource/datasource-min.js"></script>
-       <script type="text/javascript" src="'.$yui_path.'charts/charts-min.js"></script>
+ <script type="text/javascript" src="'.$yui_path.'json/json-min.js"></script>
+ <script type="text/javascript" src="'.$yui_path.'datasource/datasource-min.js"></script>
+ <script type="text/javascript" src="'.$yui_path.'swf/swf-min.js"></script>
+ <script type="text/javascript" src="'.$yui_path.'charts/charts-min.js"></script>
 
 </head> <body><div style="font-size:8pt;height:320px" id=plot>'.$alt.'</div></body>
  <script type="text/javascript">

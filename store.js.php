@@ -9,6 +9,8 @@ $title.=sprintf(',%s:"%s"',$key,$value);
 $title=preg_replace('/^,/','',$title);
 
 ?>
+ var Dom   = YAHOO.util.Dom;
+ var Event  =YAHOO.util.Event;
  var info_period_title={<?php echo $title ?>};
   var current_store_period='<?php echo$_SESSION['state']['stores']['period']?>';
 
@@ -133,13 +135,17 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    this.dataSource0.responseSchema = {
 		resultsList: "resultset.data", 
 		metaFields: {
-		    rowsPerPage:"resultset.records_per_page",
-		    rtext:"resultset.rtext",
+		 rowsPerPage:"resultset.records_perpage",
+		    RecordOffset : "resultset.records_offset", 
+		       rtext:"resultset.rtext",
+		    rtext_rpp:"resultset.rtext_rpp",
 		    sort_key:"resultset.sort_key",
 		    sort_dir:"resultset.sort_dir",
 		    tableid:"resultset.tableid",
 		    filter_msg:"resultset.filter_msg",
 		    totalRecords: "resultset.total_records"
+		    
+		  
 		},
 		
 		fields: [
@@ -155,7 +161,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 							 //draggableColumns:true,
 							   renderLoopSize: 50,generateRequest : myRequestBuilderwithTotals
 								       ,paginator : new YAHOO.widget.Paginator({
-									      rowsPerPage:<?php echo $_SESSION['state']['store']['table']['nr']+1?>,containers : 'paginator', 
+									      rowsPerPage:<?php echo $_SESSION['state']['store']['table']['nr']+1?>,containers : 'paginator0', 
  									      pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',
 									      previousPageLinkLabel : "<",
  									      nextPageLinkLabel : ">",
@@ -175,6 +181,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    this.table0.handleDataReturnPayload =myhandleDataReturnPayload;
 	    this.table0.doBeforeSortColumn = mydoBeforeSortColumn;
 	    this.table0.doBeforePaginatorChange = mydoBeforePaginatorChange;
+       this.table0.doBeforeLoadData=mydoBeforeLoadData;
 
 
 	    
@@ -237,100 +244,7 @@ function previous_info_period(){
 }
 
 
-function change_plot_category(category){
-    o=Dom.get('plot_'+plot);
-    o.setAttribute("category",category);
 
-    change_plot(o);
-}
-function change_plot_period(period){
-    o=Dom.get('plot_'+plot);
-    
-    o.setAttribute("period",period);
-
-    change_plot(o);
-}
-function change_plot(o){
-    //  if(!Dom.hasClass(o,'selected')){
-
-	var keys=Dom.get("plot_info").getAttribute("keys");
-	
-
-	
-	var tipo=o.getAttribute("tipo");
-	var category=o.getAttribute("category");
-	var period=o.getAttribute("period");
-
-
-	if(tipo=='pie'){
-	    plot='pie';
-	
-	    var forecast=o.getAttribute("forecast");
-	    var date=o.getAttribute("date");
-
-	    
-
-	    Dom.get("the_plot").width="500px";
-	    var plot_url='pie.php?tipo=children_share&item=store&period='+period+'&category='+category+'&forecast='+forecast+'&date='+date+'&keys='+keys;
-	    //alert(plot_url)
-	    plot_code=tipo;
-	    Dom.get("pie_options").style.display='';
-	    Dom.get("plot_options").style.display='none';
-
-	    old_selected=Dom.getElementsByClassName('selected', 'td', 'pie_period_options');
-	    for( var i in old_selected )
-		Dom.removeClass(old_selected[i],'selected');
-	    Dom.addClass("pie_period_"+period,'selected');
-	    old_selected=Dom.getElementsByClassName('selected', 'td', 'pie_category_options');
-	    for( var i in old_selected )
-		Dom.removeClass(old_selected[i],'selected');
-	    Dom.addClass("pie_category_"+category,'selected');
-	    
-	}else if(tipo=='top_departments'){
-	    plot='top_departments';
-	    top_children=3;
-	    Dom.get("pie_options").style.display='none';
-	    var plot_url='plot.php?tipo=store&top_children='+top_children+'&category='+category+'&period='+period+'&keys='+keys;
-	    Dom.get("the_plot").width="100%";
-	    plot_code=tipo+'_'+category+'_'+period;
-
-
-	    Dom.get("plot_category").innerHTML=category_labels[category];
-	    Dom.get("plot_period").innerHTML=period_labels[period];
-	    Dom.get("plot_options").style.display='';
-
-	}else{
-	     plot='store';
-	    Dom.get("pie_options").style.display='none';
-	    var plot_url='plot.php?tipo='+tipo+'&category='+category+'&period='+period+'&keys='+keys;
-	    Dom.get("the_plot").width="100%";
-	    plot_code=tipo+'_'+category+'_'+period;
-
-
-	    Dom.get("plot_category").innerHTML=category_labels[category];
-	    Dom.get("plot_period").innerHTML=period_labels[period];
-	    Dom.get("plot_options").style.display='';
-	}
-
-
-	
-        Dom.get("the_plot").src=plot_url; 
-	old_selected=Dom.getElementsByClassName('selected', 'span', 'plot_chooser');
-	for( var i in old_selected ){
-	    Dom.removeClass(old_selected[i],'selected');
-	}
-	Dom.addClass(o,'selected');
-	//	alert('ar_sessions.php?tipo=update&keys=store-plot_data-'+tipo+'-category&value='+category)
-	
-	//YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=store-plot&value='+tipo);
-	
-	//YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=store-plot_data-'+tipo+'-period&value='+period);
-	//YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=store-plot_data-'+tipo+'-category&value='+category);
-
-	    
-	    //  }
-    
-}
 
 
 function change_period(e,table_id){
@@ -369,8 +283,9 @@ function change_avg(e,table_id){
      var store_name_oAutoComp = new YAHOO.widget.AutoComplete(search_scope+"_search",search_scope+"_search_Container", store_name_oACDS);
      store_name_oAutoComp.minQueryLength = 0; 
      store_name_oAutoComp.queryDelay = 0.15;
+     Event.addListener(search_scope+"_search", "keyup",search_events,search_scope)
+      Event.addListener(search_scope+"_clean_search", "click",clear_search,search_scope);
 
- var Dom   = YAHOO.util.Dom;
  var oACDS = new YAHOO.util.FunctionDataSource(mygetTerms);
  oACDS.queryMatchContains = true;
  var oAutoComp = new YAHOO.widget.AutoComplete("f_input0","f_container0", oACDS);
@@ -427,9 +342,23 @@ YAHOO.util.Event.onContentReady("plot_category_menu", function () {
 	 oMenu.subscribe("show", oMenu.focus);
 	 YAHOO.util.Event.addListener("plot_category", "click", oMenu.show, null, oMenu);
     });
+YAHOO.util.Event.onContentReady("plot_interval_menu", function () {
+	 var oMenu = new YAHOO.widget.Menu("plot_interval_menu", { context:["plot_interval","br", "tr"]  });
+	 oMenu.render();
+	 oMenu.subscribe("show", oMenu.focus);
+	 YAHOO.util.Event.addListener("plot_interval", "click", oMenu.show, null, oMenu);
+    });
+YAHOO.util.Event.onContentReady("pie_interval_menu", function () {
+	 var oMenu = new YAHOO.widget.Menu("pie_interval_menu", { context:["pie_interval","br", "tr"]  });
+	 oMenu.render();
+	 oMenu.subscribe("show", oMenu.focus);
+	 YAHOO.util.Event.addListener("pie_interval", "click", oMenu.show, null, oMenu);
+    });
+
 YAHOO.util.Event.onContentReady("info_period_menu", function () {
 	 var oMenu = new YAHOO.widget.Menu("info_period_menu", { context:["info_period","tr", "br"]  });
 	 oMenu.render();
 	 oMenu.subscribe("show", oMenu.focus);
 	 YAHOO.util.Event.addListener("info_period", "click", oMenu.show, null, oMenu);
     });
+    

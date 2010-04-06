@@ -14,6 +14,7 @@ $title=preg_replace('/^,/','',$title);
 ?>
 var info_period_title={<?php echo $title ?>};
 var Dom   = YAHOO.util.Dom;
+var Event   = YAHOO.util.Event;
 
 var current_store_period='<?php echo$_SESSION['state']['store']['period']?>';
 
@@ -130,6 +131,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 		resultsList: "resultset.data", 
 		metaFields: {
 		    rowsPerPage:"resultset.records_perpage",
+		    RecordOffset : "resultset.records_offset", 
 		       rtext:"resultset.rtext",
 		    rtext_rpp:"resultset.rtext_rpp",
 		    sort_key:"resultset.sort_key",
@@ -150,7 +152,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 							 //draggableColumns:true,
 							   renderLoopSize: 50,generateRequest : myRequestBuilderwithTotals
 								       ,paginator : new YAHOO.widget.Paginator({
-									       rowsPerPage:<?php echo$_SESSION['state']['department']['table']['nr']+1?>,containers : 'paginator', 
+									       rowsPerPage:<?php echo$_SESSION['state']['department']['table']['nr']+1?>,containers : 'paginator0', 
  									      pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',
 									      previousPageLinkLabel : "<",
  									      nextPageLinkLabel : ">",
@@ -170,12 +172,14 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    this.table0.handleDataReturnPayload =myhandleDataReturnPayload;
 	    this.table0.doBeforeSortColumn = mydoBeforeSortColumn;
 	    this.table0.doBeforePaginatorChange = mydoBeforePaginatorChange;
-
+       this.table0.doBeforeLoadData=mydoBeforeLoadData;
+   this.table0.filter={key:'<?php echo$_SESSION['state']['department']['table']['f_field']?>',value:'<?php echo$_SESSION['state']['department']['table']['f_value']?>'};
 
 	    
 	    this.table0.view='<?php echo$_SESSION['state']['department']['view']?>';
 
 		
+
 
 
 
@@ -357,14 +361,21 @@ function change_plot(o){
 
  function init(){
  
-
-
-  search_scope='products';
+ search_scope='products';
      var store_name_oACDS = new YAHOO.util.FunctionDataSource(search_products_in_store);
      store_name_oACDS.queryMatchContains = true;
      var store_name_oAutoComp = new YAHOO.widget.AutoComplete(search_scope+"_search",search_scope+"_search_Container", store_name_oACDS);
      store_name_oAutoComp.minQueryLength = 0; 
      store_name_oAutoComp.queryDelay = 0.15;
+     Event.addListener(search_scope+"_search", "keyup",search_events,search_scope)
+  Event.addListener(search_scope+"_clean_search", "click",clear_search,search_scope);   
+     
+
+  var oACDS = new YAHOO.util.FunctionDataSource(mygetTerms);
+ oACDS.queryMatchContains = true;
+ var oAutoComp = new YAHOO.widget.AutoComplete("f_input0","f_container0", oACDS);
+ oAutoComp.minQueryLength = 0; 
+
 
  ids=['general','sales','stock'];
  YAHOO.util.Event.addListener(ids, "click",change_view)

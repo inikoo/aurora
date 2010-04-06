@@ -105,7 +105,7 @@ $default_state=array(
 						      'nr'=>25,
 						      'where'=>'where true',
 						      'f_field'=>'code',
-						      'f_value'=>'',
+						      'f_value'=>'','f_show'=>false,
 						      'from'=>'',
 						      'to'=>''
 						      )
@@ -123,7 +123,7 @@ $default_state=array(
 						      'nr'=>25,
 						      'where'=>'where true',
 						      'f_field'=>'code',
-						      'f_value'=>'',
+						      'f_value'=>'','f_show'=>false,
 						      'from'=>'',
 						      'to'=>''
 						      )
@@ -141,7 +141,7 @@ $default_state=array(
 						      'nr'=>25,
 						      'where'=>'where true',
 						      'f_field'=>'code',
-						      'f_value'=>'',
+						      'f_value'=>'','f_show'=>false,
 						      'from'=>'',
 						      'to'=>''
 						      )
@@ -159,7 +159,7 @@ $default_state=array(
 						      'nr'=>25,
 						      'where'=>'where true',
 						      'f_field'=>'public_id',
-						      'f_value'=>'',
+						      'f_value'=>'','f_show'=>false,
 						      'from'=>'',
 						      'to'=>''
 						      )
@@ -177,7 +177,7 @@ $default_state=array(
 						      'nr'=>25,
 						      'where'=>'where true',
 						      'f_field'=>'public_id',
-						      'f_value'=>'',
+						      'f_value'=>'','f_show'=>false,
 						      'from'=>'',
 						      'to'=>''
 						      )
@@ -195,7 +195,7 @@ $default_state=array(
 						      'nr'=>25,
 						      'where'=>'where true',
 						      'f_field'=>'public_id',
-						      'f_value'=>'',
+						      'f_value'=>'','f_show'=>false,
 						      'from'=>'',
 						      'to'=>''
 						      )
@@ -213,7 +213,7 @@ $default_state=array(
 						      'nr'=>25,
 						      'where'=>'where true',
 						      'f_field'=>'code',
-						      'f_value'=>'',
+						      'f_value'=>'','f_show'=>false,
 						      'from'=>'',
 						      'to'=>''
 						      )
@@ -228,7 +228,7 @@ $default_state=array(
                                                'nr'=>25,
                                                'where'=>'where true',
                                                'f_field'=>'subject',
-                                               'f_value'=>'',
+                                               'f_value'=>'','f_show'=>false,
                                                'from'=>'',
                                                'to'=>''
                                            )
@@ -261,7 +261,7 @@ $default_state=array(
 										     'nr'=>25,
 										     'where'=>'where true',
 										     'f_field'=>'country',
-										     'f_value'=>'',
+										     'f_value'=>'','f_show'=>false,
 										     'from'=>'',
 										     'to'=>''
 										     
@@ -285,7 +285,7 @@ $default_state=array(
                                             'nr'=>25,
                                             'where'=>'where true',
                                             'f_field'=>'customer_name',
-                                            'f_value'=>'',
+                                            'f_value'=>'','f_show'=>false,
                                             'from'=>'',
                                             'to'=>'',
                                             'elements'=>array(),
@@ -300,7 +300,7 @@ $default_state=array(
                                                'nr'=>25,
                                                'where'=>'where true',
                                                'f_field'=>'public_id',
-                                               'f_value'=>'',
+                                               'f_value'=>'','f_show'=>false,
                                                'from'=>'',
                                                'to'=>'',
                                                'elements'=>array()
@@ -312,7 +312,7 @@ $default_state=array(
                                          'nr'=>25,
                                          'where'=>'where true',
                                          'f_field'=>'public_id',
-                                         'f_value'=>'',
+                                         'f_value'=>'','f_show'=>false,
                                          'from'=>'',
                                          'to'=>'',
                                          'elements'=>array()
@@ -324,7 +324,7 @@ $default_state=array(
                                                              'nr'=>25,
                                                              'where'=>'where true',
                                                              'f_field'=>'public_id',
-                                                             'f_value'=>'',
+                                                             'f_value'=>'','f_show'=>false,
                                                              'from'=>'',
                                                              'to'=>'',
                                                              'elements'=>array()
@@ -357,7 +357,7 @@ $default_state=array(
                                                                 'nr'=>1000,
                                                                 'where'=>'where true',
                                                                 'f_field'=>'name',
-                                                                'f_value'=>'',
+                                                                'f_value'=>'','f_show'=>false,
 
                                                             ),
                                             'products'=>array(
@@ -368,7 +368,7 @@ $default_state=array(
                                                            'nr'=>25,
                                                            'where'=>'where true',
                                                            'f_field'=>'code',
-                                                           'f_value'=>'',
+                                                           'f_value'=>'','f_show'=>false,
 
                                                        ),
                                         ),
@@ -392,7 +392,7 @@ $default_state=array(
                                               'nr'=>25,
                                               'where'=>'where true',
                                               'f_field'=>'code',
-                                              'f_value'=>'',
+                                              'f_value'=>'','f_show'=>false,
                                               'from'=>'',
                                               'to'=>'',
                                               'elements'=>array(),
@@ -418,7 +418,7 @@ $default_state=array(
                                                        'nr'=>25,
                                                        'where'=>'where true',
                                                        'f_field'=>'sup_code',
-                                                       'f_value'=>'',
+                                                       'f_value'=>'','f_show'=>false,
                                                        'from'=>'',
                                                        'to'=>'',
                                                        'elements'=>array()
@@ -436,7 +436,7 @@ $default_state=array(
                                                        'nr'=>25,
                                                        'where'=>'where true',
                                                        'f_field'=>'code',
-                                                       'f_value'=>'',
+                                                       'f_value'=>'','f_show'=>false,
                                                        'elements'=>array()
                                                    )
                                        ),
@@ -454,7 +454,7 @@ $default_state=array(
                                                'nr'=>25,
                                                'where'=>'where true',
                                                'f_field'=>'code',
-                                               'f_value'=>'',
+                                               'f_value'=>'','f_show'=>false,
                                                'elements'=>array()
                                            )
 
@@ -468,7 +468,7 @@ $default_state=array(
                                             'nr'=>25,
                                             'where'=>'where true',
                                             'f_field'=>'code',
-                                            'f_value'=>'',
+                                            'f_value'=>'','f_show'=>false,
                                             'elements'=>array()
                                         )
 
@@ -482,7 +482,7 @@ $default_state=array(
                                                 'nr'=>50,
                                                 'where'=>'where true',
                                                 'f_field'=>'code',
-                                                'f_value'=>'',
+                                                'f_value'=>'','f_show'=>false,
                                                 'elements'=>array()
                                             )
 
@@ -497,7 +497,7 @@ $default_state=array(
                                                      'nr'=>50,
                                                      'where'=>'where true',
                                                      'f_field'=>'code',
-                                                     'f_value'=>'',
+                                                     'f_value'=>'','f_show'=>false,
                                                      'elements'=>array()
                                                  )
 
@@ -516,7 +516,7 @@ $default_state=array(
                                                  'nr'=>25,
                                                  'where'=>'where true',
                                                  'f_field'=>'name',
-                                                 'f_value'=>'',
+                                                 'f_value'=>'','f_show'=>false,
                                                  'elements'=>array()
                                              )
                                  ),
@@ -529,7 +529,7 @@ $default_state=array(
                                                           'nr'=>25,
                                                           'where'=>'where true',
                                                           'f_field'=>'name',
-                                                          'f_value'=>'',
+                                                          'f_value'=>'','f_show'=>false,
                                                           'elements'=>array()
                                                       )
                                           ),
@@ -542,7 +542,7 @@ $default_state=array(
                                             'nr'=>25,
                                             'where'=>'where true',
                                             'f_field'=>'code',
-                                            'f_value'=>'',
+                                            'f_value'=>'','f_show'=>false,
                                             'elements'=>array()
                                         )
                             ),
@@ -596,7 +596,7 @@ $default_state=array(
                                               'nr'=>25,
                                               'where'=>'where true',
                                               'f_field'=>'contact name',
-                                              'f_value'=>'',
+                                              'f_value'=>'','f_show'=>false,
                                               'mode'=>'',
                                               'restrictions'=>'none',
                                               'parent'=>''
@@ -624,7 +624,7 @@ $default_state=array(
                                                'nr'=>25,
                                                'where'=>'where true',
                                                'f_field'=>'name',
-                                               'f_value'=>'',
+                                               'f_value'=>'','f_show'=>false,
                                                'mode'=>'',
                                                'restrictions'=>'none',
                                                'parent'=>''
@@ -641,7 +641,7 @@ $default_state=array(
                                                          'nr'=>25,
                                                          'where'=>'where true',
                                                          'f_field'=>'company name',
-                                                         'f_value'=>'',
+                                                         'f_value'=>'','f_show'=>false,
                                                          'mode'=>'',
                                                          'restrictions'=>'none',
                                                          'parent'=>''
@@ -658,7 +658,7 @@ $default_state=array(
                                                    'nr'=>25,
                                                    'where'=>'where true',
                                                    'f_field'=>'company name',
-                                                   'f_value'=>'',
+                                                   'f_value'=>'','f_show'=>false,
                                                    'mode'=>'',
                                                    'restrictions'=>'none',
                                                    'parent'=>''
@@ -674,7 +674,7 @@ $default_state=array(
                                                'nr'=>25,
                                                'where'=>'where true',
                                                'f_field'=>'company name',
-                                               'f_value'=>'',
+                                               'f_value'=>'','f_show'=>false,
                                                'mode'=>'',
                                                'restrictions'=>'none',
                                                'parent'=>''
@@ -705,7 +705,7 @@ $default_state=array(
                                               'nr'=>25,
                                               'where'=>'where true',
                                               'f_field'=>'code',
-                                              'f_value'=>'',
+                                              'f_value'=>'','f_show'=>false,
                                               'from'=>'',
                                               'to'=>'',
                                               'type'=>'Family'
@@ -719,7 +719,7 @@ $default_state=array(
                                               'nr'=>10,
                                               'where'=>'where true',
                                               'f_field'=>'notes',
-                                              'f_value'=>'',
+                                              'f_value'=>'','f_show'=>false,
                                               'from'=>'',
                                               'to'=>'',
                                               'details'=>0,
@@ -736,7 +736,7 @@ $default_state=array(
                                              'nr'=>10,
                                              'where'=>'where true',
                                              'f_field'=>'notes',
-                                             'f_value'=>'',
+                                             'f_value'=>'','f_show'=>false,
                                              'from'=>'',
                                              'to'=>'',
                                              'details'=>0,
@@ -745,7 +745,7 @@ $default_state=array(
                                  'history'=>array(
                                                'where'=>'where true',
                                                'f_field'=>'abstract',
-                                               'f_value'=>'',
+                                               'f_value'=>'','f_show'=>false,
                                                'order'=>'date',
                                                'order_dir'=>'desc',
                                                'sf'=>0,
@@ -767,7 +767,7 @@ $default_state=array(
                                              'nr'=>10,
                                              'where'=>'where true',
                                              'f_field'=>'notes',
-                                             'f_value'=>'',
+                                             'f_value'=>'','f_show'=>false,
                                              'from'=>'',
                                              'to'=>'',
                                              'details'=>0,
@@ -776,7 +776,7 @@ $default_state=array(
                                  'history'=>array(
                                                'where'=>'where true',
                                                'f_field'=>'abstract',
-                                               'f_value'=>'',
+                                               'f_value'=>'','f_show'=>false,
                                                'order'=>'date',
                                                'order_dir'=>'desc',
                                                'sf'=>0,
@@ -870,34 +870,46 @@ $default_state=array(
                                'percentage'=>0,
                                'mode'=>'all',
                                'avg'=>'totals',
-
+                               
+                               'plot_interval'=>array(
+                               'y'=>array('plot_bins'=>5,
+                                          'plot_forecast_bins'=>3),
+                               'q'=>array('plot_bins'=>12,
+                                          'plot_forecast_bins'=>3),
+                               'm'=>array('plot_bins'=>18,
+                                          'plot_forecast_bins'=>3),
+                                 'w'=>array('plot_bins'=>26,
+                                          'plot_forecast_bins'=>3),          
+                               ),
                                'edit'=>'description',
                                'editing'=>false,
                                'id'=>1,
                                'plot'=>'store',
+                                'plot_period'=>'m',
+                                'plot_category'=>'sales',
                                'plot_data'=>array('store'=>array(
-                                                              'period'=>'m',
-                                                              'category'=>'sales',
+                                                        
                                                               'page'=>'plot.php'
                                                           )
                                                           ,'top_departments'=>array(
-                                                                                 'period'=>'m',
-                                                                                 'category'=>'sales',
+                                                                                 
                                                                                  'page'=>'plot.php'
                                                                              )
                                                                              ,'pie'=>array(
-                                                                                        'period'=>'m',
-                                                                                        'category'=>'sales',
+                                                                             'period'=>'m',
+                                                                                        'interval'=>'1y',
+                                                                                        
                                                                                         'page'=>'pie.php',
                                                                                         'forecast'=>'no',
-                                                                                        'date'=>'today'
+                                                                                        'from'=>'',
+                                                                                        'to'=>''
                                                                                     )
                                                  ),
 
                                'table'=>array(
                                            'where'=>'where true',
                                            'f_field'=>'code',
-                                           'f_value'=>'',
+                                           'f_value'=>'','f_show'=>false,
                                            'order'=>'name',
                                            'order_dir'=>'',
                                            'sf'=>0,
@@ -906,7 +918,7 @@ $default_state=array(
                                'history'=>array(
                                              'where'=>'where true',
                                              'f_field'=>'abstract',
-                                             'f_value'=>'',
+                                             'f_value'=>'','f_show'=>false,
                                              'order'=>'date',
                                              'order_dir'=>'desc',
                                              'sf'=>0,
@@ -918,7 +930,7 @@ $default_state=array(
                                'charges'=>array(
                                              'where'=>'where true',
                                              'f_field'=>'description',
-                                             'f_value'=>'',
+                                             'f_value'=>'','f_show'=>false,
                                              'order'=>'description',
                                              'order_dir'=>'',
                                              'sf'=>0,
@@ -927,7 +939,7 @@ $default_state=array(
                                'shipping_country'=>array(
                                                       'where'=>'where true',
                                                       'f_field'=>'name',
-                                                      'f_value'=>'',
+                                                      'f_value'=>'','f_show'=>false,
                                                       'order'=>'name',
                                                       'order_dir'=>'',
                                                       'sf'=>0,
@@ -936,7 +948,7 @@ $default_state=array(
                                'shipping_world_region'=>array(
                                                            'where'=>'where true',
                                                            'f_field'=>'name',
-                                                           'f_value'=>'',
+                                                           'f_value'=>'','f_show'=>false,
                                                            'order'=>'name',
                                                            'order_dir'=>'',
                                                            'sf'=>0,
@@ -945,7 +957,7 @@ $default_state=array(
                                'campaigns'=>array(
                                                'where'=>'where true',
                                                'f_field'=>'name',
-                                               'f_value'=>'',
+                                               'f_value'=>'','f_show'=>false,
                                                'order'=>'name',
                                                'order_dir'=>'',
                                                'sf'=>0,
@@ -954,7 +966,7 @@ $default_state=array(
                                'deals'=>array(
                                            'where'=>'where true',
                                            'f_field'=>'name',
-                                           'f_value'=>'',
+                                           'f_value'=>'','f_show'=>false,
                                            'order'=>'name',
                                            'order_dir'=>'',
                                            'sf'=>0,
@@ -976,7 +988,7 @@ $default_state=array(
                                      'table'=>array(
                                                  'where'=>'where true',
                                                  'f_field'=>'code',
-                                                 'f_value'=>'',
+                                                 'f_value'=>'','f_show'=>false,
                                                  'order'=>'name',
                                                  'order_dir'=>'',
                                                  'sf'=>0,
@@ -1040,7 +1052,7 @@ $default_state=array(
                                     'history'=>array(
                                                   'where'=>'where true',
                                                   'f_field'=>'abstract',
-                                                  'f_value'=>'',
+                                                  'f_value'=>'','f_show'=>false,
                                                   'order'=>'date',
                                                   'order_dir'=>'desc',
                                                   'sf'=>0,
@@ -1052,7 +1064,7 @@ $default_state=array(
                                     'deals'=>array(
                                                 'where'=>'where true',
                                                 'f_field'=>'name',
-                                                'f_value'=>'',
+                                                'f_value'=>'','f_show'=>false,
                                                 'order'=>'name',
                                                 'order_dir'=>'',
                                                 'sf'=>0,
@@ -1112,7 +1124,7 @@ $default_state=array(
                                 'history'=>array(
                                               'where'=>'where true',
                                               'f_field'=>'abstract',
-                                              'f_value'=>'',
+                                              'f_value'=>'','f_show'=>false,
                                               'order'=>'date',
                                               'order_dir'=>'desc',
                                               'sf'=>0,
@@ -1124,7 +1136,7 @@ $default_state=array(
                                 'deals'=>array(
                                             'where'=>'where true',
                                             'f_field'=>'name',
-                                            'f_value'=>'',
+                                            'f_value'=>'','f_show'=>false,
                                             'order'=>'name',
                                             'order_dir'=>'',
                                             'sf'=>0,
@@ -1169,7 +1181,7 @@ $default_state=array(
                                               'nr'=>20,
                                               'where'=>'where true',
                                               'f_field'=>'code',
-                                              'f_value'=>'',
+                                              'f_value'=>'','f_show'=>false,
                                               'mode'=>'same_code',//same_code,same_id,all
                                               'parent'=>'none',//store,department,family,none
                                               'restrictions'=>'forsale',
@@ -1201,7 +1213,7 @@ $default_state=array(
                                               'nr'=>15,
                                               'where'=>'where true',
                                               'f_field'=>'id',
-                                              'f_value'=>'',
+                                              'f_value'=>'','f_show'=>false,
                                               'from'=>'',
                                               'to'=>''
                                           ),
@@ -1212,7 +1224,7 @@ $default_state=array(
                                               'nr'=>15,
                                               'where'=>'where true',
                                               'f_field'=>'id',
-                                              'f_value'=>'',
+                                              'f_value'=>'','f_show'=>false,
                                               'from'=>'',
                                               'to'=>''
                                           ),
@@ -1224,7 +1236,7 @@ $default_state=array(
                                                      'nr'=>15,
                                                      'where'=>'where true',
                                                      'f_field'=>'pid',
-                                                     'f_value'=>'',
+                                                     'f_value'=>'','f_show'=>false,
                                                      'from'=>'',
                                                      'to'=>''
                                                  ),
@@ -1253,7 +1265,7 @@ $default_state=array(
                                                'nr'=>15,
                                                'where'=>'where true',
                                                'f_field'=>'id',
-                                               'f_value'=>'',
+                                               'f_value'=>'','f_show'=>false,
                                                'from'=>'',
                                                'to'=>'',
                                                'elements'=>array()
@@ -1265,7 +1277,7 @@ $default_state=array(
                                                      'nr'=>15,
                                                      'where'=>'where true',
                                                      'f_field'=>'id',
-                                                     'f_value'=>'',
+                                                     'f_value'=>'','f_show'=>false,
                                                      'from'=>'',
                                                      'to'=>'',
                                                      'elements'=>array()
@@ -1274,7 +1286,7 @@ $default_state=array(
                    'deals'=>array(
                                'where'=>'where true',
                                'f_field'=>'name',
-                               'f_value'=>'',
+                               'f_value'=>'','f_show'=>false,
                                'order'=>'name',
                                'order_dir'=>'',
                                'sf'=>0,
@@ -1306,7 +1318,7 @@ $default_state=array(
                                                   'nr'=>15,
                                                   'where'=>'where true',
                                                   'f_field'=>'id',
-                                                  'f_value'=>'',
+                                                  'f_value'=>'','f_show'=>false,
                                                   'from'=>'',
                                                   'to'=>'',
                                                   'elements'=>array()
@@ -1318,7 +1330,7 @@ $default_state=array(
                                                       'nr'=>15,
                                                       'where'=>'where true',
                                                       'f_field'=>'id',
-                                                      'f_value'=>'',
+                                                      'f_value'=>'','f_show'=>false,
                                                       'from'=>'',
                                                       'to'=>'',
                                                       'elements'=>array()
@@ -1340,7 +1352,7 @@ $default_state=array(
                                         'nr'=>25,
                                         'where'=>'where true',
                                         'f_field'=>'p.code',
-                                        'f_value'=>'',
+                                        'f_value'=>'','f_show'=>false,
                                         'all_products'=>false,
                                         'all_products_supplier'=>false
                                     ),
@@ -1357,7 +1369,7 @@ $default_state=array(
                                               'nr'=>25,
                                               'where'=>'where true',
                                               'f_field'=>'sku',
-                                              'f_value'=>'',
+                                              'f_value'=>'','f_show'=>false,
                                               'elements'=>array()
                                           ),
                                   'stock_history'=>array(
@@ -1369,7 +1381,7 @@ $default_state=array(
                                                       'to'=>'',
                                                       'where'=>'where true',
                                                       'f_field'=>'author',
-                                                      'f_value'=>'',
+                                                      'f_value'=>'','f_show'=>false,
                                                       'elements'=>array()
                                                   )
                               ),
@@ -1413,7 +1425,7 @@ $default_state=array(
                                               'to'=>'',
                                               'where'=>'where true',
                                               'f_field'=>'',
-                                              'f_value'=>'',
+                                              'f_value'=>'','f_show'=>false,
                                               'elements'=>array()
 
 						 ),
@@ -1426,11 +1438,11 @@ $default_state=array(
 						    'to'=>'',
 						    'where'=>'where true',
 						    'f_field'=>'',
-                                              'f_value'=>'',
+                                              'f_value'=>'','f_show'=>false,
 						    'elements'=>array()
 						    
 						    ),
-				   'customers'=>array('store_keys'=>'all','top'=>100,'criteria'=>'net_balance','f_value'=>'','f_field'=>'customer_name','from'=>'','to'=>'')
+				   'customers'=>array('store_keys'=>'all','top'=>100,'criteria'=>'net_balance','f_value'=>'','f_show'=>false,'f_field'=>'customer_name','from'=>'','to'=>'')
 		   
 
 		   
@@ -1450,7 +1462,7 @@ $default_state=array(
                                             'show_default_currency'=>false,
                                             'where'=>'where true',
                                             'f_field'=>'code',
-                                            'f_value'=>'',
+                                            'f_value'=>'','f_show'=>false,
                                             'order'=>'name',
                                             'order_dir'=>'',
                                             'sf'=>0,
@@ -1464,7 +1476,7 @@ $default_state=array(
                                              'avg'=>'totals',
                                              'where'=>'where true',
                                              'f_field'=>'code',
-                                             'f_value'=>'',
+                                             'f_value'=>'','f_show'=>false,
                                              'order'=>'name',
                                              'order_dir'=>'',
                                              'sf'=>0,
@@ -1478,7 +1490,7 @@ $default_state=array(
                                                 'avg'=>'totals',
                                                 'where'=>'where true',
                                                 'f_field'=>'code',
-                                                'f_value'=>'',
+                                                'f_value'=>'','f_show'=>false,
                                                 'order'=>'name',
                                                 'order_dir'=>'',
                                                 'sf'=>0,
@@ -1507,7 +1519,7 @@ $default_state=array(
                                                  'nr'=>15,
                                                  'where'=>'where true',
                                                  'f_field'=>'p.code',
-                                                 'f_value'=>'',
+                                                 'f_value'=>'','f_show'=>false,
                                                  'from'=>'',
                                                  'to'=>'',
                                              ),
@@ -1518,7 +1530,7 @@ $default_state=array(
                                            'nr'=>15,
                                            'where'=>'where true',
                                            'f_field'=>'max',
-                                           'f_value'=>'',
+                                           'f_value'=>'','f_show'=>false,
                                            'to'=>'',
                                            'from'=>'',
                                            'view'=>'all'
@@ -1531,7 +1543,7 @@ $default_state=array(
                                                 'nr'=>15,
                                                 'where'=>'where true',
                                                 'f_field'=>'id',
-                                                'f_value'=>'',
+                                                'f_value'=>'','f_show'=>false,
                                                 'from'=>'',
                                                 'to'=>'',
                                                 'elements'=>array()
@@ -1548,7 +1560,7 @@ $default_state=array(
                                                         'nr'=>10,
                                                         'where'=>'where true',
                                                         'f_field'=>'name',
-                                                        'f_value'=>'',
+                                                        'f_value'=>'','f_show'=>false,
                                                         'from'=>'',
                                                         'to'=>'',
                                                         'details'=>0,
@@ -1557,7 +1569,7 @@ $default_state=array(
                                       'history'=>array(
                                                     'where'=>'where true',
                                                     'f_field'=>'abstract',
-                                                    'f_value'=>'',
+                                                    'f_value'=>'','f_show'=>false,
                                                     'order'=>'date',
                                                     'order_dir'=>'desc',
                                                     'sf'=>0,
@@ -1580,7 +1592,7 @@ $default_state=array(
                                                         'nr'=>10,
                                                         'where'=>'where true',
                                                         'f_field'=>'name',
-                                                        'f_value'=>'',
+                                                        'f_value'=>'','f_show'=>false,
                                                         'from'=>'',
                                                         'to'=>'',
                                                         'details'=>0,
@@ -1589,7 +1601,7 @@ $default_state=array(
                                             'history'=>array(
                                                           'where'=>'where true',
                                                           'f_field'=>'abstract',
-                                                          'f_value'=>'',
+                                                          'f_value'=>'','f_show'=>false,
                                                           'order'=>'date',
                                                           'order_dir'=>'desc',
                                                           'sf'=>0,
@@ -1604,7 +1616,7 @@ $default_state=array(
                                         'deals'=>array('table'=>array(
                                            'where'=>'where true',
                                            'f_field'=>'name',
-                                           'f_value'=>'',
+                                           'f_value'=>'','f_show'=>false,
                                            'order'=>'name',
                                            'order_dir'=>'',
                                            'sf'=>0,
@@ -1621,7 +1633,7 @@ $default_state=array(
                                                   'nr'=>10,
                                                   'where'=>'where true',
                                                   'f_field'=>'name',
-                                                  'f_value'=>'',
+                                                  'f_value'=>'','f_show'=>false,
                                                   'from'=>'',
                                                   'to'=>'',
                                                   'details'=>0,
@@ -1630,7 +1642,7 @@ $default_state=array(
                                   'history'=>array(
                                                 'where'=>'where true',
                                                 'f_field'=>'abstract',
-                                                'f_value'=>'',
+                                                'f_value'=>'','f_show'=>false,
                                                 'order'=>'date',
                                                 'order_dir'=>'desc',
                                                 'sf'=>0,

@@ -34,6 +34,8 @@ $smarty->assign('create',$create);
 $smarty->assign('modify',$modify);
 
 get_header_info($user,$smarty);
+$smarty->assign('search_label',_('Products'));
+$smarty->assign('search_scope','products');
 
 
 $q='';
