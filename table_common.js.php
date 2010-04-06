@@ -6,6 +6,19 @@ include_once('set_locales.php');
 //Copyright (c) 2009 LW
 
 
+function show_filter(e,table_id){
+Dom.get('clean_table_filter_show'+table_id).style.display='none';
+Dom.get('clean_table_filter'+table_id).style.display='';
+YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=stores-table-f_show&value=1',{} );
+}
+
+function hide_filter(e,table_id){
+Dom.get('clean_table_filter_show'+table_id).style.display='';
+Dom.get('clean_table_filter'+table_id).style.display='none';
+YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=stores-table-f_show&value=0',{} );
+remove_filter(table_id)
+}
+
 var remove_filter= function (tableid){
     var Dom   = YAHOO.util.Dom;
     Dom.get('f_input'+tableid).value='';
@@ -17,14 +30,35 @@ var remove_filter= function (tableid){
     datasource.sendRequest(request,table.onDataReturnInitializeTable, table);       
 }
 
+
+
+
 var myRowsPerPageDropdown = function(){return true};
 var mydoBeforeSortColumn = function(){return true};
 var mydoBeforePaginatorChange = function(e){return true};
+
+
+var mydoBeforeLoadData = function(oRequest, oResponse, oPayload) {
+     //  alert(oResponse.meta.RecordOffset)
+     if(oPayload!=undefined){
+        oPayload.pagination = {
+            rowsPerPage: parseInt(oResponse.meta.rowsPerPage)||5,
+            recordOffset: parseInt(oResponse.meta.RecordOffset)||0
+        };
+       }
+        return true;
+    };
+
+
+
+
 var myhandleDataReturnPayload= function(oRequest, oResponse, oPayload) {
     oPayload = oPayload ||  {
 	totalRecords:0,
 	pagination:{
-	    rowsPerPage:parseInt(oResponse.meta.rowsPerPage)
+	    //rowsPerPage:3
+	    //rowsPerPage:parseInt(oResponse.meta.rowsPerPage),
+	    //recordOffset: 12
 	},
 	sortedBy:
 	{key:oResponse.meta.sort_key,
@@ -33,8 +67,9 @@ var myhandleDataReturnPayload= function(oRequest, oResponse, oPayload) {
 	SelectedCells:null} ;
 
     oPayload.filter_msg=oResponse.meta.filter_msg;
-    //alert( oResponse.meta.tableid +' '+oResponse.meta.rtext)
-    // alert( oResponse.meta.tableid +' '+oResponse.meta.rtext)
+  // oPayload.pagination = {  rowsPerPage:parseInt(oResponse.meta.rowsPerPage),recordOffset:0 }
+   
+   //alert(oResponse.meta.RecordOffset)
     if(oResponse.meta.rtext != undefined)
 
       YAHOO.util.Dom.get('rtext'+oResponse.meta.tableid).innerHTML=oResponse.meta.rtext;
@@ -50,22 +85,22 @@ var myhandleDataReturnPayload= function(oRequest, oResponse, oPayload) {
     oPayload.totalRecords = parseInt(oResponse.meta.totalRecords);
     
     if(oPayload.totalRecords==0){
-
-	
-	var table=YAHOO.util.Dom.get('table'+oResponse.meta.tableid).getElementsByTagName("table")[0];
-	table.tHead.style.display='none';
-	table.tBodies[0].getElementsByTagName("tr")[0].getElementsByTagName("td")[0].innerHTML='';
-	if(YAHOO.util.Dom.get('filter_div'+oResponse.meta.tableid)!=null){
-	  YAHOO.util.Dom.get('filter_div'+oResponse.meta.tableid).style.visibility='hidden';
-	}
+	    var table=YAHOO.util.Dom.get('table'+oResponse.meta.tableid).getElementsByTagName("table")[0];
+	    table.tHead.style.display='none';
+	    table.tBodies[0].getElementsByTagName("tr")[0].getElementsByTagName("td")[0].innerHTML='';
+	    if(YAHOO.util.Dom.get('filter_div'+oResponse.meta.tableid)!=null){
+	        YAHOO.util.Dom.get('filter_div'+oResponse.meta.tableid).style.visibility='hidden';
+	    }
     }else{
-	var table=YAHOO.util.Dom.get('table'+oResponse.meta.tableid).getElementsByTagName("table")[0];
-	table.tHead.style.display='';
-	if(YAHOO.util.Dom.get('filter_div'+oResponse.meta.tableid)!=null)
-	    YAHOO.util.Dom.get('filter_div'+oResponse.meta.tableid).style.visibility='visible';
-
+	    var table=YAHOO.util.Dom.get('table'+oResponse.meta.tableid).getElementsByTagName("table")[0];
+	    table.tHead.style.display='';
+	    if(YAHOO.util.Dom.get('filter_div'+oResponse.meta.tableid)!=null)
+	        YAHOO.util.Dom.get('filter_div'+oResponse.meta.tableid).style.visibility='visible';
+       if(oPayload.totalRecords<=oResponse.meta.rowsPerPage)
+       Dom.get('paginator'+oResponse.meta.tableid).style.display='none';
+      //Dom.get('yui-rec10').style.display='none';
+       
     }
-	
     //var data={code:'<?php echo _('Totals')?>'};
     //tables.table0.addRow(data);
     return oPayload;
@@ -113,14 +148,14 @@ var myRequestBuilderwithTotals = function(oState, oSelf) {
     var dir = (oState.sortedBy && oState.sortedBy.dir === YAHOO.widget.DataTable.CLASS_ASC) ? "" : "desc";
 
    var startIndex = (oState.pagination) ? oState.pagination.recordOffset : 0;
-    var results = (oState.pagination) ? oState.pagination.rowsPerPage-1 : 5;
+    var results = (oState.pagination) ? oState.pagination.rowsPerPage : 5;
 
     // Build custom request
     var request= "&o=" + sort +
     "&od=" + dir +
     "&sf=" + startIndex +
     "&nr=" + results;
-
+//alert(request)
 
     return request;
 };
@@ -129,7 +164,6 @@ var myRequestBuilderwithTotals = function(oState, oSelf) {
 
 
 var mygetTerms =function (query) {
-
 
     if(this.table_ids==undefined)
 	var table_id=0;
@@ -164,33 +198,14 @@ var change_filter=function (key,label,tableid){
 var change_rpp=function (rpp,tableid){
     var Dom   = YAHOO.util.Dom;
     var table=tables['table'+tableid];
-
     table.get('paginator').setRowsPerPage(rpp)
 
 }
 
 
-    
+var change_rpp_with_totals=function (rpp,tableid){
+    var Dom   = YAHOO.util.Dom;
+    var table=tables['table'+tableid];
+    table.get('paginator').setRowsPerPage(rpp+1)
 
-
-
-// var myFilterChangeValue = function(e,o){
-    
-//     if(o.table.filter.value!=this.value ){
-// 	var current_time=new Date().getTime();
-// 	if(current_time-o.table.filter.lastRequest>200){
-	    
-// 	    o.table.filter.value=this.value;
-// 	    var oCallback = {
-// 		success : o.table.onDataReturnInitializeTable,
-// 		failure : o.table.onDataReturnInitializeTable,
-// 		scope : o.table
-// 	    };
-// 	    var request="&f_field="+o.table.filter.key+"&f_value="+o.table.filter.value
-// 		o.datasource.sendRequest(request, oCallback);
-// 	    o.table.filter.lastRequest=current_time;
-// 	}
-
-//     }
-//     return true
-// }
+}

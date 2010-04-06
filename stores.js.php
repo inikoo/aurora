@@ -138,7 +138,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 				    ,{key:"families", label:"<?php echo _('Families')?>", width:90,sortable:true,className:"aright",<?php echo($_SESSION['state']['stores']['view']=='general'?'':'hidden:true,')?>sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 				    ,{key:"active", label:"<?php echo _('Products')?>",  width:90,sortable:true,className:"aright",<?php echo($_SESSION['state']['stores']['view']=='general'?'':'hidden:true,')?>sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 				    ,{key:"discontinued", label:"<?php echo _('Discontinued')?>",  width:90,sortable:true,className:"aright",<?php echo($_SESSION['state']['stores']['view']=='general'?'':'hidden:true,')?>sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-				    ,{key:"todo", label:"<?php echo _('To do')?>",  width:90,sortable:true,className:"aright",<?php echo($_SESSION['state']['stores']['view']=='general'?'':'hidden:true,')?>sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				    ,{key:"new", label:"<?php echo _('New')?>",  width:90,sortable:true,className:"aright",<?php echo($_SESSION['state']['stores']['view']=='general'?'':'hidden:true,')?>sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 				    
 				    ,{key:"sales", label:"<?php echo _('Sales')?>", width:120,sortable:true,className:"aright",<?php echo($_SESSION['state']['stores']['view']=='sales'?'':'hidden:true,')?>sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 				    ,{key:"profit", label:"<?php echo _('Profit')?>", width:120,sortable:true,className:"aright",<?php echo($_SESSION['state']['stores']['view']=='sales'?'':'hidden:true,')?>sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
@@ -183,13 +183,13 @@ YAHOO.util.Event.addListener(window, "load", function() {
 			 'id',
 			 "name",
 			 'families','departments',
-			 'active',"sales","stock_error","stock_value","outofstock","profit","surplus","optimal","low","critical","code","todo","discontinued","margin"
+			 'active',"sales","stock_error","stock_value","outofstock","profit","surplus","optimal","low","critical","code","new","discontinued","margin"
 			 ]};
 	    
 	    this.table0 = new YAHOO.widget.DataTable(tableDivEL, OrdersColumnDefs,
 						     this.dataSource0, {
 							 //draggableColumns:true,
-							   renderLoopSize: 50,generateRequest : myRequestBuilder
+							   renderLoopSize: 50,generateRequest : myRequestBuilderwithTotals
 								       ,paginator : new YAHOO.widget.Paginator({
 									      rowsPerPage:<?php echo$_SESSION['state']['stores']['table']['nr']?>,containers : 'paginator0', 
  									      pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',
@@ -211,6 +211,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    this.table0.handleDataReturnPayload =myhandleDataReturnPayload;
 	    this.table0.doBeforeSortColumn = mydoBeforeSortColumn;
 	    this.table0.doBeforePaginatorChange = mydoBeforePaginatorChange;
+       this.table0.doBeforeLoadData=mydoBeforeLoadData;
 
 
 	    
@@ -273,12 +274,26 @@ function change_display_mode(name,label){
 
 
  function init(){
- var Dom   = YAHOO.util.Dom;
+ 
+ 
+    search_scope='products';
+     var store_name_oACDS = new YAHOO.util.FunctionDataSource(search_products);
+     store_name_oACDS.queryMatchContains = true;
+     var store_name_oAutoComp = new YAHOO.widget.AutoComplete(search_scope+"_search",search_scope+"_search_Container", store_name_oACDS);
+     store_name_oAutoComp.minQueryLength = 0; 
+     store_name_oAutoComp.queryDelay = 0.15;
+     
+  
+
+     
  
 var oACDS = new YAHOO.util.FunctionDataSource(mygetTerms);
  oACDS.queryMatchContains = true;
  var oAutoComp = new YAHOO.widget.AutoComplete("f_input0","f_container0", oACDS);
  oAutoComp.minQueryLength = 0; 
+
+ YAHOO.util.Event.addListener('clean_table_filter_show0', "click",show_filter,0);
+ YAHOO.util.Event.addListener('clean_table_filter_hide0', "click",hide_filter,0);
 
  ids=['general','sales','stock'];
  YAHOO.util.Event.addListener(ids, "click",change_view)
@@ -301,15 +316,15 @@ var oACDS = new YAHOO.util.FunctionDataSource(mygetTerms);
 
 YAHOO.util.Event.onDOMReady(init);
 
-YAHOO.util.Event.onContentReady("rppmenu", function () {
-	 var oMenu = new YAHOO.widget.Menu("rppmenu", { context:["rtext_rpp0","tl", "tr"]  });
+YAHOO.util.Event.onContentReady("rppmenu0", function () {
+	 var oMenu = new YAHOO.widget.Menu("rppmenu0", { context:["rtext_rpp0","tl", "tr"]  });
 	 oMenu.render();
 	 oMenu.subscribe("show", oMenu.focus);
 	 YAHOO.util.Event.addListener("rtext_rpp0", "click", oMenu.show, null, oMenu);
     });
 
-YAHOO.util.Event.onContentReady("filtermenu", function () {
-	 var oMenu = new YAHOO.widget.Menu("filtermenu", { context:["filter_name0","tr", "br"]  });
+YAHOO.util.Event.onContentReady("filtermenu0", function () {
+	 var oMenu = new YAHOO.widget.Menu("filtermenu0", { context:["filter_name0","tr", "br"]  });
 	 oMenu.render();
 	 oMenu.subscribe("show", oMenu.focus);
 	 YAHOO.util.Event.addListener("filter_name0", "click", oMenu.show, null, oMenu);

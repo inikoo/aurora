@@ -20,7 +20,7 @@ include_once('class.Store.php');
 /* class: product
    Class to manage the *Product Family Dimension* table
 */
-// JFA
+
 
 
 class product extends DB_Table {
@@ -4656,6 +4656,19 @@ return $part_list;
  }
 
 
+function update_if_still_new(){
+$one_week=604800;
+if($this->data['Product Record Type']=='New' and date('U')-strtotime($this->data['Product For Sale Since Date'])>$one_week ){
+$this->data['Product Record Type']='Normal';
+$sql=sprintf("update `Product Dimension` set `Product recorf Type`=%s  where  `Product ID`=%d "
+		     ,prepare_mysql($this->data['Product Record Type'])
+		     ,$this->pid
+		     );
+mysql_query($sql);
+}
+
+
+}
 
 function update_sales_type($value){
       if (

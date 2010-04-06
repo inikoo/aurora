@@ -20,6 +20,11 @@ $smarty->assign('modify',$modify);
 
 get_header_info($user,$smarty);
 
+$smarty->assign('search_label',_('Products'));
+$smarty->assign('search_scope','products');
+
+
+
 $css_files=array(
 		 $yui_path.'reset-fonts-grids/reset-fonts-grids.css',
 		 $yui_path.'menu/assets/skins/sam/menu.css',
