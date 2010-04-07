@@ -8,7 +8,7 @@ if(!isset($_REQUEST['tipo'])){
 
 switch($_REQUEST['tipo']){
 
-case('check_mail'):
+case('check_email'):
 if(!isset($_REQUEST['email'] )){
     $response=array('state'=>401);
     echo json_encode($response);
@@ -29,6 +29,10 @@ $response=array('state'=>200,'result'=>'new');
     echo json_encode($response);
     exit;
 break;
+default:
+$response=array('state'=>402);
+    echo json_encode($response);
+    exit;
 
 }
 ?>

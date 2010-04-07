@@ -8,12 +8,17 @@ $css_files=array(
 		 'css/dropdown.css'
 		 );
 $js_files=array(
-		'http://yui.yahooapis.com/combo?2.8.0r4/build/utilities/utilities.js&2.8.0r4/build/connection/connection_core-min.js'
+		'http://yui.yahooapis.com/combo?2.8.0r4/build/utilities/utilities.js&2.8.0r4/build/json/json-min.js'
 		,'js/register.js.php'
 		,'js/dropdown.js'
 );
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
+
+if(isset($_REQUEST['we'])){
+  $smarty->assign('error',true);
+
+}
 
 
 $sql=sprintf("select `Page Store Slogan`,`Page Store Title`,`Page Code`,`Page Title`,`Page Short Title`,`Page Store Subtitle`,`Page Store Resume`,`Page Source Template` from `Page Store Dimension` PS left join `Page Dimension` P  on (P.`Page Key`=PS.`Page Key`) where `Page Code`='register' ");
