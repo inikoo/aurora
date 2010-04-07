@@ -34,7 +34,7 @@ $smarty->assign('header_title',$page_data['Page Store Title']);
 $smarty->assign('header_subtitle',$page_data['Page Store Subtitle']);
 $smarty->assign('slogan',$page_data['Page Store Slogan']);
 
-$smarty->assign('comentary',$page_data['Page Store Abstract']);
+$smarty->assign('comentary',$page_data['Page Store Resume']);
 
 
 
