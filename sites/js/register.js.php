@@ -309,14 +309,14 @@ function company_choosen(){
 
 
 function submit_details(){
- error=false;
- no_company_name=false;
+ var error_tag=false;
+ var no_company_name=false;
 
     if(Dom.get('person').checked){
 	if(Dom.get('person_contact').value==''){
 	    
 	    Dom.addClass(['person_contact_label','person_contact'],'error');
-	    error=true;
+	    error_tag=true;
 	    Dom.get('customer_details_instructions').innerHTML=Dom.get('customer_details_msg2').innerHTML;
 
 	}
@@ -328,7 +328,7 @@ function submit_details(){
     }else{
 	if(Dom.get('company_name').value==''){
 	    Dom.addClass(['company_name_label','company_name'],'error');
-	    error=true;
+	    error_tag=true;
 	    no_company_name=true;
 	    Dom.get('customer_details_instructions').innerHTML=Dom.get('customer_details_msg1').innerHTML;
 		
@@ -336,7 +336,7 @@ function submit_details(){
 	}
 	if(Dom.get('company_contact').value==''){
 	     Dom.addClass(['company_contact_label','company_contact'],'error');
-	     error=true;
+	     error_tag=true;
 	     
 	     if(no_company_name){
 		 Dom.get('customer_details_instructions').innerHTML=Dom.get('customer_details_msg3').innerHTML;
@@ -354,7 +354,7 @@ function submit_details(){
 
     }
     
-    if(!error){
+    if(!error_tag){
 	Dom.get('customer_details_instructions').innerHTML='';
 	Dom.setStyle('submit_details','display','none');
 	Dom.setStyle('get_optional_details','display','');
