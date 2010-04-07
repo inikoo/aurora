@@ -1,8 +1,7 @@
 	  <div id="main_menu" >
 	    <dl class="dropdown">
 	      <dt id="home-ddheader" onmouseover="ddMenu('home',1)" onmouseout="ddMenu('home',-1)">Home</dt>
-	      
-	      <dd id="home-home-ddcontent" onmouseover="cancelHide('home')" onmouseout="ddMenu('home',-1)">
+	      <dd id="home-ddcontent" onmouseover="cancelHide('home')" onmouseout="ddMenu('home',-1)">
 		<ul>
 		</ul>
 	      </dd>
