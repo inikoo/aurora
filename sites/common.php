@@ -33,6 +33,9 @@ $smarty->assign('head_template',"pages/$store_code/head.tpl");
 $smarty->assign('footer_template',"pages/$store_code/footer.tpl");
 $smarty->assign('main_menu_template',"pages/$store_code/main_menu.tpl");
 
+$smarty->assign('email',$myconf['email']);
+$smarty->assign('tel',$myconf['tel']);
+$smarty->assign('fax',$myconf['fax']);
 
 
 $sql=sprintf("select `Product Department Code`,`Product Department Name` from `Product Department Dimension` where `Product Department Store Key`=%d and `Product Department Sales Type`='Public Sale' ",$store_key);

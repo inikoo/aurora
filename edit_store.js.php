@@ -200,8 +200,6 @@ function save_new_department(){
 // 	}
 //     } 
     
-ALTER TABLE `Product Department Dimension` ADD `Product Department Active Customers` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0' ,
-ADD `Product Department Active Customers More 0.5 Share` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0' 
 
 
     var request='ar_edit_assets.php?tipo=new_department&code='+encodeURIComponent(code)+'&name='+encodeURIComponent(name);
