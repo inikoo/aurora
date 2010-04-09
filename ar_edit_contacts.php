@@ -575,10 +575,10 @@ if( !isset($_REQUEST['value']) ){
  $translator=array(
 		     'country_code'=>'Address Country Code'
 		     ,'country_d1'=>'Address Country First Division'
-		     ,'country_d2'=>'Address Country Secondary Division'
+		     ,'country_d2'=>'Address Country Second Division'
 		     ,'town'=>'Address Town'
 		     ,'town_d1'=>'Address Town First Division'
-		     ,'town_d2'=>'Address Town Secondary Division'
+		     ,'town_d2'=>'Address Town Second Division'
 		     ,'postal_code'=>'Address Postal Code'
 		     ,'street'=>'Street Data'
 		     ,'internal'=>'Address Internal'

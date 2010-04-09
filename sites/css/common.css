@@ -1,7 +1,7 @@
 * {padding:0; margin:0}
 
 
-body{color:#333;margin:0px;padding:0px;font-size:14px;font-family:"Calibry" "Arial" "Lucida Grande", "Lucida Sans Unicode", Verdana, Arial, sans-serif;}
+body{color:#333;margin:0px;padding:0px;font-size:14px;font-family: "Arial" "Calibry"  "Lucida Grande", "Lucida Sans Unicode", Verdana, Arial, sans-serif;}
 
 
 #container{width:876px;margin:0 auto}
@@ -13,8 +13,10 @@ body{color:#333;margin:0px;padding:0px;font-size:14px;font-family:"Calibry" "Ari
 #search{margin-left:180px;margin-top:5px;padding:2px 20px;color:#990000;font-style: italic; font-size:12px}
 #search input{border:1px solid #ccc;width:400px}
 
-a{text-decoration:none}
-a:hover{text-decoration:underline}
+a,span.link{text-decoration:none;cursor:pointer}
+a:hover,span.link{text-decoration:underline}
+
+.strong{font-weight:800}
 
 input {border:1px solid #ccc}
 input.radio{border:none}

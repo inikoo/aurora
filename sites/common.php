@@ -4,6 +4,9 @@ require_once 'common_functions.php';
 require_once "class.Session.php";
 require_once "class.Auth.php";
 require_once "class.User.php";
+
+$secret_key='FDK/S5GRkZFXi47zvs4pTezyfEr5nWFthsFbG6j1CzCPYPX5';
+
 $default_DB_link=mysql_connect($dns_host,$dns_user,$dns_pwd );
 if(!$default_DB_link){print "Error can not connect with database server\n";}
 $db_selected=mysql_select_db($dns_db, $default_DB_link);
@@ -24,6 +27,20 @@ $smarty->cache_dir = $myconf['cache_dir'];
 $smarty->config_dir = $myconf['config_dir'];
 
 $store_key=1;
+
+
+$logged_in=(isset($_SESSION['logged_in']) and $_SESSION['logged_in']? true : false);
+if($logged_in){
+  $user=new User($_SESSION['user_key']);
+}
+
+
+
+
+
+
+
+
 
 $store=new Store($store_key);
 $store_code=$store->data['Store Code'];

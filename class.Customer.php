@@ -587,6 +587,7 @@ class Customer extends DB_Table {
       $this->data['Customer Main FAX']='';
       $this->data['Customer Main Plain FAX']='';
 
+
       if (!$this->data['Customer Main Contact Key']){
 	     
 	$contact=new contact('find in customer create update',$raw_data);
@@ -698,7 +699,7 @@ class Customer extends DB_Table {
     $keys=preg_replace('/^,/','',$keys);
 
     $sql="insert into `Customer Dimension` ($keys) values ($values)";
-
+    //print $sql;
     if (mysql_query($sql)) {
 
       $this->id=mysql_insert_id();
@@ -723,6 +724,8 @@ class Customer extends DB_Table {
 
       }
 
+
+
       if ($main_email_key) {
 	$this->update_email($main_email_key);
       }
@@ -745,7 +748,7 @@ class Customer extends DB_Table {
 
 
     } else {
-      // print "Error can not create supplier $sql\n";
+      print "Error can not create customer $sql\n";
     }
 
 
@@ -770,8 +773,8 @@ class Customer extends DB_Table {
 			'Customer Address Postal Code'=>'',
 			'Customer Address Country Code'=>'',
 			'Customer Address Country Name'=>'',
-			'Customer Address Country Primary Division'=>'',
-			'Customer Address Country Secondary Division'=>''
+			'Customer Address Country First Division'=>'',
+			'Customer Address Country Second Division'=>''
 			);
 
 
@@ -2892,8 +2895,8 @@ class Customer extends DB_Table {
     $shipping_addresses['Address Town']=$address->data['Address Town'];
     $shipping_addresses['Address Postal Code']=$address->data['Address Postal Code'];
     $shipping_addresses['Address Country Name']=$address->data['Address Country Name'];
-    $shipping_addresses['Address Country Primary Division']=$address->data['Address Country First Division'];
-    $shipping_addresses['Address Country Secondary Division']=$address->data['Address Country Second Division'];
+    $shipping_addresses['Address Country First Division']=$address->data['Address Country First Division'];
+    $shipping_addresses['Address Country Second Division']=$address->data['Address Country Second Division'];
     $ship_to= new Ship_To('find create',$shipping_addresses);
 
 

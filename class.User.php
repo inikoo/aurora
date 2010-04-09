@@ -21,9 +21,14 @@ class User extends DB_Table{
   private $groups_read=false;
   private $rights_read=false;
   
-  function User($a1='id',$a2=false) {
+  function User($a1='id',$a2=false,$a3=false) {
 
- $this->table_name='User';
+    $this->table_name='User';
+    $this->ignore_fields=array(
+			       'User Key',
+			       'User Last Login'
+			       );
+
     if($a1=='new' and is_array($a2)){
       $this->create($a2);
       return;
@@ -37,7 +42,7 @@ class User extends DB_Table{
       $key=$a1;
     }
 
-    $this->get_data($key,$_data);
+    $this->get_data($key,$_data,$a3);
     return;
   }
    
@@ -47,10 +52,12 @@ class User extends DB_Table{
     $base_data=$this->base_data();
     
     foreach($data as $key=>$value){
-      if(isset($base_data[strtolower($key)]))
-	$base_data[strtolower($key)]=_trim($value);
+      if(array_key_exists($key,$base_data))
+	$base_data[$key]=_trim($value);
     }
   
+    if($base_data['User Created']=='')
+      $base_data['User Created']=date("Y-m-d H:i:s");
     
     if($base_data['User Handle']=='')
       {
@@ -62,8 +69,9 @@ class User extends DB_Table{
 	$this->msg=_('Handle to short');
 	return;
       }
-    $sql="select count(*) as numh  from `User Dimenson` where handle=".prepare_mysql($base_data['handle']);
-    $result = mysql_query($sql) or die('Query failed: ' . mysql_error());
+    $sql="select count(*) as numh  from `User Dimension` where `User Type`=".prepare_mysql($base_data['User Type'])." and `User Handle`=".prepare_mysql($base_data['User Handle']);
+    // print $sql;
+ $result = mysql_query($sql) or die('Query failed:x ' . mysql_error());
     if ($row = mysql_fetch_array($result, MYSQL_ASSOC)) {
       if($row['numh']>0){
 	$this->msg= _('The user')." ".$base_data['User Handle']." "._("is already in the database!");return;
@@ -92,29 +100,30 @@ class User extends DB_Table{
       $values.=prepare_mysql($value).",";
     }
     $keys=preg_replace('/,$/',')',$keys);
-    $values=preg_replace('/,$/',')',$values);
+    $values=preg_replace('/,$/',')',$values); 
     $sql=sprintf("insert into `User Dimension` %s %s",$keys,$values);
-   
-      
+  
+       
     if(mysql_query($sql)){
       
       $user_id=mysql_insert_id();
      
     
-    if(isset($data['group'])){
-      $groups=split(',',$data['group']);
-      foreach($data['group'] as $group_id){
-	while(is_numeric($group_id)){
-	  $sql=sprintf("insert into liveuser_groupusers (perm_user_id,group_id) values (%d,%d)",$puser_id,$group_id);
-	  mysql_query($sql);
-	}
-      }
-    }
+      //   if(isset($data['group'])){
+      //$groups=split(',',$data['group']);
+      //foreach($data['group'] as $group_id){
+      //while(is_numeric($group_id)){
+      //	  $sql=sprintf("insert into `User Gr` (perm_user_id,group_id) values (%d,%d)",$puser_id,$group_id);
+      //	  mysql_query($sql);
+      //	}
+      // }
+      // }
     $this->new=true;
     $this->msg= _('User added susesfully');
     $this->get_data('id',$user_id);
     return;
     }else{
+      $this->error=true;
       $this->msg= _('Unknown error(2)');return;
     }
     
@@ -123,11 +132,14 @@ class User extends DB_Table{
   }
 
 
-  function get_data($key,$data){
+  function get_data($key,$data,$data2=''){
     global $_group;
     //    print "acac---- $key ----  $data ---asasqqqqqqqqq";
     if($key=='handle')
-      $sql=sprintf("select * from  `User Dimension` where `User Handle`=%s",prepare_mysql($data));
+      $sql=sprintf("select * from  `User Dimension` where `User Handle`=%s and `User Type`=%s"
+		   ,prepare_mysql($data)
+		   ,prepare_mysql($data2)
+		   );
  
     else
       $sql=sprintf("select * from `User Dimension` where `User Key`=%d",$data);

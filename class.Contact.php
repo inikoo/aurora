@@ -171,8 +171,8 @@ class Contact extends DB_Table {
 			     'Contact Home Address Postal Code'=>'',
 			     'Contact Home Address Country Code'=>'',
 			     'Contact Home Address Country Name'=>'',
-			     'Contact Home Address Country Primary Division'=>'',
-			     'Contact Home Address Country Secondary Division'=>''
+			     'Contact Home Address Country First Division'=>'',
+			     'Contact Home Address Country Second Division'=>''
 			     );
     $address_work_data=array(
 			     'Contact Work Address Line 1'=>'',
@@ -182,8 +182,8 @@ class Contact extends DB_Table {
 			     'Contact Work Address Postal Code'=>'',
 			     'Contact Work Address Country Code'=>'',
 			     'Contact Work Address Country Name'=>'',
-			     'Contact Work Address Country Primary Division'=>'',
-			     'Contact Work Address Country Secondary Division'=>''
+			     'Contact Work Address Country First Division'=>'',
+			     'Contact Work Address Country Second Division'=>''
 			     );
 
     if (array_key_exists('Contact Name Components',$raw_data) and is_array($raw_data['Contact Name Components'])) {
@@ -3111,8 +3111,8 @@ class Contact extends DB_Table {
 			'Address World Region'=>'',
 			'Address Continent'=>'',
 			'Postal Code'=>'',
-			'Primary Postal Code'=>'',
-			'Secondary Postal Code'=>'',
+			'First Postal Code'=>'',
+			'Second Postal Code'=>'',
 			'Postal Code Separator'=>'',
 			'Fuzzy Address'=>''
 			);
@@ -3858,7 +3858,7 @@ class Contact extends DB_Table {
     Array with the data components of the main address
   */
   function get_main_address_data() {
-    $address_data=array('Country Name'=>'','Town'=>'','Internal'=>'','Bulding'=>'','Street'=>'','Country First Division'=>'','Country Secondary Division'=>'');
+    $address_data=array('Country Name'=>'','Town'=>'','Internal'=>'','Bulding'=>'','Street'=>'','Country First Division'=>'','Country Second Division'=>'');
     if ($this->data['Contact Main Address Key']) {
       $address=new Address($this->data['Contact Main Address Key']);
       $address_data['Town']=$address->data['Address Town'];

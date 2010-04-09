@@ -76,7 +76,21 @@ $data=array(
 
 		  
 		  )
+  ,array(
+		  'Page Code'=>'reset'
+		  ,'Page Source Template'=>'pages/'.$store_code.'/reset.tpl'
+		  ,'Page URL'=>'reset.php'
+		  ,'Page Description'=>'Reset Password Page'
 
+		  ,'Page Title'=>'Reset Password'
+		  ,'Page Short Title'=>'Reset Pasword'
+		  ,'Page Store Title'=>'Reset Pasword'
+		  ,'Page Store Subtitle'=>''
+		  ,'Page Store Slogan'=>'Set your password'
+		  ,'Page Store Resume'=>'Please note this is a wholesale site we supply wholesale to the trade.'
+
+		  
+		  )
 
 	     ,array(
 		  'Page Code'=>'contact'
