@@ -178,5 +178,10 @@ CHANGE `Product Marketing Description` `Product Marketing Description` VARCHAR( 
 
 ALTER TABLE `Product Family Dimension` ADD `Product Family Main Image`  VARCHAR( 256 ) NOT NULL DEFAULT 'art/nopic.png' AFTER `Product Family Special Characteristic` 
 ALTER TABLE `Store Dimension` ADD `Store Page Key` MEDIUMINT NULL DEFAULT NULL AFTER `Store Name` ;
+
+ALTER TABLE `Store Dimension` ADD `Store Email` VARCHAR( 256 ) NOT NULL AFTER `Store Name` ,
+ADD `Store Telephone` VARCHAR( 256 ) NOT NULL AFTER `Store Email` ,
+ADD `Store Fax` VARCHAR( 256 ) NOT NULL AFTER `Store Telephone` 
+
 */
 ?>

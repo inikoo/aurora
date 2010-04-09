@@ -552,7 +552,10 @@ class Store extends DB_Table{
     $keys='(';$values='values(';
     foreach($basedata as $key=>$value){
       $keys.="`$key`,";
-      $values.=prepare_mysql($value).",";
+      if(preg_match('/Store Email|Store Telephone|Store Telephone/',$key))
+	$values.=prepare_mysql($value).",";
+      else
+	$values.=prepare_mysql($value).",";
     }
     $keys=preg_replace('/,$/',')',$keys);
     $values=preg_replace('/,$/',')',$values);

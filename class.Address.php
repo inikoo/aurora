@@ -961,8 +961,8 @@ class Address extends DB_Table{
   function update_field_switcher($field,$value,$options=''){
   //print "$field\n"; 
     switch($field){
-    case('Address Primary Postal Code'):
-    case('Address Secondary Postal Code'):
+    case('Address First Postal Code'):
+    case('Address Second Postal Code'):
     case('Address Location'):
     case('Address Plain'):
     case('Address Input Format'):
@@ -1663,8 +1663,8 @@ class Address extends DB_Table{
 		}
 		$postcode=_trim($postcode);
 		$data['Address Postal Code']=$postcode;
-		$data['Address Primary Postal Code']='';
-		$data['Address Secondary Postal Code']='';
+		$data['Address First Postal Code']='';
+		$data['Address Second Postal Code']='';
 		$data['Address Postal Code Separator']='';
 
 		$country_code=strtoupper($country_code);
@@ -1675,14 +1675,14 @@ class Address extends DB_Table{
 				$data['Address Postal Code']=preg_replace('/\s/','',$data['Address Postal Code']);
 				if(preg_match('/^bfpo\s*\d/i',$data['Address Postal Code']) ){
 					$data['Address Postal Code']=preg_replace('/bfpo/i','BFPO ',$data['Address Postal Code']);
-					$data['Address Primary Postal Code']='BFPO';
-					$data['Address Secondary Postal Code']=preg_replace('/bfpo /i','',$data['Address Postal Code']);
+					$data['Address First Postal Code']='BFPO';
+					$data['Address Second Postal Code']=preg_replace('/bfpo /i','',$data['Address Postal Code']);
 				}
 				else{
 					$data['Address Postal Code']=substr($data['Address Postal Code'],0,strlen($data['Address Postal Code'])-3).' '.substr($data['Address Postal Code'],-3,3);
 					$postcode_parts=preg_split('/ /',$data['Address Postal Code']);
-					$data['Address Primary Postal Code']=$postcode_parts[0];
-					$data['Address Secondary Postal Code']=$postcode_parts[1];
+					$data['Address First Postal Code']=$postcode_parts[0];
+					$data['Address Second Postal Code']=$postcode_parts[1];
 				}
 
 				break;

@@ -294,8 +294,8 @@ if(isset($_customer_data['address_data'])){
   $customer_data['Customer Address Town']=$_customer_data['address_data']['town'];
   $customer_data['Customer Address Postal Code']=$_customer_data['address_data']['postcode'];
   $customer_data['Customer Address Country Name']=$_customer_data['address_data']['country'];
-  $customer_data['Customer Address Country Primary Division']=$_customer_data['address_data']['country_d1'];
-  $customer_data['Customer Address Country Secondary Division']=$_customer_data['address_data']['country_d2'];
+  $customer_data['Customer Address Country First Division']=$_customer_data['address_data']['country_d1'];
+  $customer_data['Customer Address Country Second Division']=$_customer_data['address_data']['country_d2'];
   unset($customer_data['address_data']);
 }
 $shipping_addresses=array();

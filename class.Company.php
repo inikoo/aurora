@@ -119,7 +119,7 @@ class Company extends DB_Table {
       $update='update';
     }
 
-    $address_data=array('Company Address Line 1'=>'','Company Address Town'=>'','Company Address Line 2'=>'','Company Address Line 3'=>'','Company Address Postal Code'=>'','Company Address Country Name'=>'','Company Address Country Code'=>'','Company Address Country Primary Division'=>'','Company Address Country Secondary Division'=>'');
+    $address_data=array('Company Address Line 1'=>'','Company Address Town'=>'','Company Address Line 2'=>'','Company Address Line 3'=>'','Company Address Postal Code'=>'','Company Address Country Name'=>'','Company Address Country Code'=>'','Company Address Country First Division'=>'','Company Address Country Second Division'=>'');
 
 
 
@@ -614,7 +614,7 @@ class Company extends DB_Table {
     $this->data['Company Main Contact Name']=$contact->display('name');
     $this->data['Company Main Contact Key']=$contact->id;
     //===delete down
-    $address_data=array('Company Address Line 1'=>'','Company Address Town'=>'','Company Address Line 2'=>'','Company Address Line 3'=>'','Company Address Postal Code'=>'','Company Address Country Name'=>'','Company Address Country Code'=>'','Company Address Country Primary Division'=>'','Company Address Country Secondary Division'=>'');
+    $address_data=array('Company Address Line 1'=>'','Company Address Town'=>'','Company Address Line 2'=>'','Company Address Line 3'=>'','Company Address Postal Code'=>'','Company Address Country Name'=>'','Company Address Country Code'=>'','Company Address Country First Division'=>'','Company Address Country Second Division'=>'');
     foreach($raw_address_data as $key=>$value) {
       if (array_key_exists($key,$address_data))
 	$address_data[$key]=$value;

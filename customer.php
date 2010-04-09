@@ -192,7 +192,7 @@ $smarty->assign('search_scope','customers');
    elseif($order=='postcode')
      $order='`Customer Main Address Postal Code`';
    elseif($order=='region')
-     $order='`Customer Main Address Country Primary Division`';
+     $order='`Customer Main Address Country First Division`';
    elseif($order=='country')
      $order='`Customer Main Address Country`';
    //  elseif($order=='ship_address')

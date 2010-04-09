@@ -33,7 +33,7 @@ while (($csv_data = fgetcsv($handle, 1000, "\t")) !== FALSE) {
     $address_data[$row]['Address Line 2']=$csv_data[1];
     $address_data[$row]['Address Line 3']=$csv_data[2];
     $address_data[$row]['Address Town']=$csv_data[3];
-    $address_data[$row]['Address Country Primary Division']=$csv_data[4];
+    $address_data[$row]['Address Country First Division']=$csv_data[4];
     $address_data[$row]['Address Postal Code']=$csv_data[5];
     $address_data[$row]['Address Country']=$csv_data[6];
     $row++;

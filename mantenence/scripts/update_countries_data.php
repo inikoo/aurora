@@ -76,21 +76,21 @@ while (($data = fgetcsv($handle, 1000, "\t")) !== FALSE) {
 }
 fclose($handle);
 
-$sql=sprintf("select `Country Key` ,GROUP_CONCAT(Distinct `Country Primary Division Type`) as type  from `Country Primary Division Dimension` group by `Country Key` ",prepare_mysql($code));
+$sql=sprintf("select `Country Key` ,GROUP_CONCAT(Distinct `Country First Division Type`) as type  from `Country First Division Dimension` group by `Country Key` ",prepare_mysql($code));
   $res=mysql_query($sql);
   while($row=mysql_fetch_array($res)){
-    $sql=sprintf("update `Country Dimension` set `Country Primary Division Label`=%s where `Country Key`=%d",
+    $sql=sprintf("update `Country Dimension` set `Country First Division Label`=%s where `Country Key`=%d",
 		 prepare_mysql($row['type'])
 		 ,$row['Country Key']
 		 );
     if(!mysql_query($sql))
       print "$sql\n";
   }
-$sql=sprintf("select `Country Key` ,GROUP_CONCAT(Distinct `Country Secondary Division Type`) as type  from `Country Secondary Division Dimension` group by `Country Key` ",prepare_mysql($code));
+$sql=sprintf("select `Country Key` ,GROUP_CONCAT(Distinct `Country Second Division Type`) as type  from `Country Second Division Dimension` group by `Country Key` ",prepare_mysql($code));
   $res=mysql_query($sql);
   while($row=mysql_fetch_array($res)){
     if($row['type']!=''){
-    $sql=sprintf("update `Country Dimension` set `Country Secondary Division Label`=%s where `Country Key`=%d",
+    $sql=sprintf("update `Country Dimension` set `Country Second Division Label`=%s where `Country Key`=%d",
 		 prepare_mysql($row['type'])
 		 ,$row['Country Key']
 		 );
