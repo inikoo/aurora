@@ -401,6 +401,14 @@ $default_state=array(
                                               'restrictions'=>'forsale'
                                           )
                               ),
+                              
+                              'supplier_product'=>array(
+                              'display'=>''
+                              
+                              ),
+                              
+                              
+                              
                    'supplier_products'=>array(
                                            'details'=>false,
                                            'percentages'=>false,
@@ -1334,24 +1342,26 @@ $default_state=array(
                                                   'sf'=>0,
                                                   'nr'=>15,
                                                   'where'=>'where true',
-                                                  'f_field'=>'id',
-                                                  'f_value'=>'','f_show'=>false,
+                                                  'f_field'=>'note',
+                                                  'f_value'=>'',
+                                                  'f_show'=>false,
                                                   'from'=>'',
                                                   'to'=>'',
                                                   'elements'=>array()
                                               ),
-                              'stock_transaction'=>array(
-                                                      'order'=>'date',
-                                                      'order_dir'=>'desc',
-                                                      'sf'=>0,
-                                                      'nr'=>15,
-                                                      'where'=>'where true',
-                                                      'f_field'=>'id',
-                                                      'f_value'=>'','f_show'=>false,
-                                                      'from'=>'',
-                                                      'to'=>'',
-                                                      'elements'=>array()
-                                                  )
+                              'transactions'=>array(
+                                                  'order'=>'date',
+                                                  'order_dir'=>'desc',
+                                                  'sf'=>0,
+                                                  'nr'=>15,
+                                                  'where'=>'where true',
+                                                  'f_field'=>'note',
+                                                  'f_value'=>'',
+                                                  'f_show'=>false,
+                                                  'from'=>'',
+                                                  'to'=>'',
+                                                  'elements'=>array()
+                                              ),
 
                           ),
 

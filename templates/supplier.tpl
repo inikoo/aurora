@@ -88,16 +88,8 @@
 </table>
  
 </div>
-	<div style="width:320px;margin-left:10px;float:left">
-	 	<table    class="show_info_product"     >
-		  <tr>
-		    <td>{t}Items availeable{/t}:</td><td class="aright">{$supplier->get('Supplier Active Supplier Products')} </td>
-		  </tr>
-		  <tr>
-		    <td>{t}Items no longer availeable{/t}:</td><td class="aright">{$supplier->get('Supplier Discontinued Supplier Products')} </td>
-
-		  </tr>
-		</table>
+	<div style="width:300px;margin-left:10px;float:left">
+	 	
 
 		<table    class="show_info_product"  >
 		  <tr>
@@ -111,7 +103,36 @@
 		  </tr>
 		  
 		</table>
+		
 </div>
+
+	<div style="width:280px;margin-left:10px;float:left">
+	 	<table    class="show_info_product"     >
+		  <tr>
+		    <td>{t}Items availeable{/t}:</td><td class="aright">{$supplier->get('Supplier Active Supplier Products')} </td>
+		  </tr>
+		  <tr>
+		    <td>{t}Items no longer availeable{/t}:</td><td class="aright">{$supplier->get('Supplier Discontinued Supplier Products')} </td>
+
+		  </tr>
+		</table>
+
+	
+		
+</div>
+{$supplier->get_contacts()}
+	{foreach from=$supplier->get_contacts() item=contact key=key }
+	<div class="contact_container"  id="contact_container{$contact->id}">
+	  
+	  <div class="contact_display"  id="contact_display{$contact->id}">{$contact->display('card')}</div>
+	  <div class="contact_buttons" id="contact_buttons{$contact->id}">
+	    <input type="checkbox" id="is_main_contact{$contact->id}" {if $contact->is_main() }value="Yes" ovalue="Yes" checked="checked" {else}value="No" ovalue="No"{/if} /> {t}Main{/t}
+	    <span class="small_button small_button_edit" id="delete_contact_button{$contact->id}" contact_id="{$contact->id}" onclick="delete_contact(event,this)" >{t}Delete{/t}</span>
+	    <span class="small_button small_button_edit" id="edit_contact_button{$contact->id}" contact_id="{$contact->id}" onclick="edit_contact(event,this)" >{t}Edit{/t}</span>
+	  </div>
+	</div>
+	{/foreach}
+
 <div style="{if !$show_details}display:none;{/if};clear:both"  id="plot"></div>
 </div>
        </div>
@@ -146,10 +167,10 @@
 	      <td {if $products_view=='product_general'}class="selected"{/if} id="product_general" >{t}General{/t}</td>
 	      <td {if $products_view=='product_stock'}class="selected"{/if}  id="product_stock"  >{t}Stock{/t}</td>
 	      <td {if $products_view=='product_sales'}class="selected"{/if}  id="product_sales"  >{t}Sales{/t}</td>
-	       <td {if $products_view=='product_forecast'}class="selected"{/if}  id="product_forecasr"  >{t}Forecast{/t}</td>
+	       <td {if $products_view=='product_forecast'}class="selected"{/if}  id="product_forecast"  >{t}Forecast{/t}</td>
 	    </tr>
 	  </table>
-	   <table style="float:left;margin:0 0 5px 0px ;padding:0"  class="options_mini" {if $parts==0 }style="display:none"{/if}>
+	   <table style="float:left;margin:0 0 5px 0px ;padding:0;{if $products_view!='sales' }display:none;{/if}"  class="options_mini" >
 	     <tr>
 	       <td {if $products_period=='all'}class="selected"{/if} id="product_period_all" >{t}All{/t}</td>
 	       <td {if $products_period=='year'}class="selected"{/if}  id="product_period_year"  >{t}1Yr{/t}</td>

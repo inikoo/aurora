@@ -767,7 +767,13 @@ function create($data){
 
       //$date=date("Y-m-d H:i:s");
       $this->event_order++;
-
+//print_r($this->editor);
+if(array_key_exists('Date',$data))
+$date=$data['Date'];
+else if(!$this->editor['Date'])
+$date=date("Y-m-d H:i:s");
+else
+$date=$this->editor['Date'];
        $sql=sprintf("insert into `Inventory Transaction Fact` (`Part SKU`,`Location Key`,`Inventory Transaction Type`,`Inventory Transaction Quantity`,`Inventory Transaction Amount`,`User Key`,`Note`,`Date`,`Event Order`) values (%d,%d,%s,%f,%.2f,%s,%s,%s,%s)"
 		    ,$this->part_sku
 		    ,$this->location_key
@@ -776,7 +782,7 @@ function create($data){
 		    ,0
 		    ,$this->editor['Author Key']
 		    ,prepare_mysql($details)
-		    ,prepare_mysql($this->editor['Date'])
+		    ,prepare_mysql($date)
 		    ,$this->event_order
 		    );
        mysql_query($sql);
@@ -1090,6 +1096,14 @@ function move_stock($data){
         return;    
     }
    
+     if($this->data['Quantity On Hand']==0){
+        $this->error=true;
+        $this->msg=_('No stock on the location');
+        return;    
+    }
+   
+   
+   
    if($data['Destination Key']==$this->location_key){
      $this->error=true;
      $this->msg=_('Destination location is the same as this one');
@@ -1105,11 +1119,13 @@ function move_stock($data){
      return;    
    }
 
+    
    $this->stock_transfer(array(
 			       'Quantity'=>-$data['Quantity To Move']
 			       ,'Transaction Type'=>'Move Out'
 			       ,'Destination'=>$destination->location->data['Location Code']
-			       ));
+			    ,'Event Order'=>2
+			    ));
    if($this->error){
      return;  
   }
@@ -1118,7 +1134,17 @@ function move_stock($data){
 				      'Quantity'=>$data['Quantity To Move']
 				      ,'Transaction Type'=>'Move In'
 				      ,'Origin'=>$this->location->data['Location Code']
+				      ,'Event Order'=>4
 				      ));
+  if($this->location_key==1){
+        $data_disasociate=array(
+        'Note'=>_('Location now known'),
+        'Event Order'=>3
+        
+        );
+        $this->disassociate($data_disasociate);
+  }
+  
   
    $this->location->load('parts');
    $destination->location->load('parts');
@@ -1232,9 +1258,14 @@ function stock_transfer($data){
 
     
     $editor=$this->get_editor_data();
-
+    
+    if(array_key_exists('Event Order',$data))
+        $event_order=$data['Event Order'];
+    else{
     $this->event_order++;
-    $sql=sprintf("insert into `Inventory Transaction Fact` (`Part SKU`,`Location Key`,`Inventory Transaction Type`,`Inventory Transaction Quantity`,`Inventory Transaction Amount`,`User Key`,`Note`,`Date`,`Event Order`) values (%d,%d,%s,%f,%.2f,%s,%s,%s,%d)"
+    $event_order=$this->event_order;
+   }
+   $sql=sprintf("insert into `Inventory Transaction Fact` (`Part SKU`,`Location Key`,`Inventory Transaction Type`,`Inventory Transaction Quantity`,`Inventory Transaction Amount`,`User Key`,`Note`,`Date`,`Event Order`) values (%d,%d,%s,%f,%.2f,%s,%s,%s,%d)"
 		 ,$this->part_sku
 		 ,$this->location_key
 		 ,prepare_mysql($transaction_type)
@@ -1243,11 +1274,11 @@ function stock_transfer($data){
 		 ,$this->editor['Author Key']
 		 ,prepare_mysql($details,false)
 		 ,prepare_mysql($editor['Date'])
-		 ,$this->event_order
+		 ,$event_order
 		 );
     
-    //print_r($this->editor);
-      mysql_query($sql);
+  
+   mysql_query($sql);
       
 
 
@@ -1396,6 +1427,41 @@ function stock_transfer($data){
  
   }
 
+function disassociate($data){
+
+$date=$this->editor['Date'];
+if(!$this->editor['Date'])
+    $date=date("Y-m-d H:i:s");
+$event_order=$this->event_order++;
+ $base_data=array('Date'=>$date,'Note'=>'','Metadata'=>'','History Type'=>'Admin','Event Order'=>$event_order);
+    if(is_array($data)){
+      foreach($data as $key=>$val){
+	     if(array_key_exists($key,$base_data))
+	     $base_data[$key]=$val;
+      }
+    }
+
+
+$sql=sprintf("delete from `Part Location Dimension` where `Part SKU`=%d and `Location Key`=%d",$this->part_sku,$this->location_key);
+mysql_query($sql);
+//print $sql;
+
+ $sql=sprintf("insert into `Inventory Transaction Fact` (`Date`,`Part SKU`,`Location Key`,`Inventory Transaction Type`,`Inventory Transaction Quantity`,`Inventory Transaction Amount`,`Note`,`Metadata`,`History Type`,`Event Order`) values (%s,%d,%d,'Disassociate',0,0,%s,%s,%s,%d)"
+	 ,prepare_mysql($base_data['Date'])
+		 ,$this->part_sku
+		 ,$this->location_key
+		 ,prepare_mysql($base_data['Note'],false)
+		 ,prepare_mysql($base_data['Metadata'],false)	
+		 ,prepare_mysql($base_data['History Type'],false)	
+         , $base_data['Event Order']  
+		 );
+    //print_r($base_data);
+    // print "$sql\n";
+    // exit;
+    if(!mysql_query($sql)){
+    $this->error=true;
+    }
+}
 
   function associate($data=false){
     
@@ -1435,5 +1501,86 @@ function update_field_switcher($field,$value,$options=''){
  }
 
 
+function set_audits(){
+
+ $sql="delete from  `Inventory Transaction Fact` where `Inventory Transaction Type` in ('Audit') ";
+ mysql_query($sql);
+ 
+$sql=sprintf('select `Inventory Audit Key` from `Inventory Audit Dimension` where `Inventory Audit Part SKU`=%d and `Inventory Audit Location Key`=%d order by `Inventory Audit Date`'
+,$this->part_sku
+,$this->location_key
+);
+$res=mysql_query($sql);
+while($row=mysql_fetch_array($res)){
+$this->set_audit($row['Inventory Audit Key']);
+
+}
+$this->get_stock();
+}
+function get_stock($date=''){
+if(!$date)
+    $date=date('Y-m-d  H:i:s');
+  
+ $sql=sprintf("select ifnull(sum(`Inventory Transaction Quantity`),0) as stock ,ifnull(sum(`Inventory Transaction Amount`),0) as value from `Inventory Transaction Fact` where  `Date`<%s and `Part SKU`=%d and `Location Key`=%d"
+,prepare_mysql($date)
+,$this->part_sku
+,$this->location_key
+);
+$res=mysql_query($sql);
+//print $sql;
+$stock=0;$value=0;
+if($row=mysql_fetch_array($res)){
+$stock=$row['stock'];
+$value=$row['value'];
+}
+
+$sql=sprintf("update `Part Location Dimension` set `Quantity On Hand`=%f ,`Stock Value`=%f where `Part SKU`=%d and `Location Key`=%d"
+,$stock
+,$value
+,$this->part_sku
+,$this->location_key
+); 
+  mysql_query($sql);
+//print $sql;
+  $this->part->update_stock();
+  
+}
+
+function set_audit($audit_key){
+
+include_once('class.InventoryAudit.php');
+$audit=new InventoryAudit($audit_key);
+//print_r($audit);
+$sql=sprintf("select ifnull(sum(`Inventory Transaction Quantity`),0) as stock from `Inventory Transaction Fact` where  `Date`<%s and `Part SKU`=%d and `Location Key`=%d"
+,prepare_mysql($audit->data['Inventory Audit Date'])
+,$this->part_sku
+,$this->location_key
+);
+$res=mysql_query($sql);
+//print $sql;
+$stock=0;
+if($row=mysql_fetch_array($res)){
+$stock=$row['stock'];
+}
+
+$diff=$audit->data['Inventory Audit Quantity']-$stock;
+$cost_per_part=$this->part->get_unit_cost($audit->data['Inventory Audit Date']);
+$cost=$diff*$cost_per_part;
+//print "S: $stock ".$audit->data['Inventory Audit Quantity']."\n";
+$notes=_('Change due Audit').' ('.$audit->data['Inventory Audit Note'].')';
+$sql=sprintf("insert into `Inventory Transaction Fact` (`Date`,`Part SKU`,`Location Key`,`Inventory Transaction Type`,`Inventory Transaction Quantity`,`Inventory Transaction Amount`,`Note`,`Metadata`) values (%s,%d,%d,'Audit',%f,%f,%s,'')"
+      ,prepare_mysql($audit->data['Inventory Audit Date'])
+      ,$this->part_sku
+        ,$this->location_key
+      ,$diff
+      ,$cost
+      ,prepare_mysql($notes)
+      );
+   //    print "$sql\n";
+      mysql_query($sql);
+
+}
+
+  
   }
   ?>

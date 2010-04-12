@@ -1596,70 +1596,7 @@ public $new_value=false;
       }
       break;
     case('parts'):
-      $parts='';
-      $mysql_where='';
-      $sql=sprintf("select `Part SKU` from  `Product Part Dimension` PPD left join  `Product Part List`       PPL   on (PPL.`Product Part Key`=PPD.`Product Part Key`) where PPL.`Product ID`=%d and `Product Part Most Recent`='Yes';",$this->data['Product ID']);
-      $result=mysql_query($sql);
-      while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
-	$parts.=sprintf(', <a href="part.php?sku=%d">SKU%005d</a>',$row['Part SKU'],$row['Part SKU']);
-	$mysql_where.=', '.$row['Part SKU'];
-      }
-      $parts=preg_replace('/^, /','',$parts);
-      $mysql_where=preg_replace('/^, /','',$mysql_where);
-
-      if ($mysql_where=='')
-	$mysql_where=0;
-      $supplied_by='';
-
-      if($this->data['Product Type']=='Normal'){
-
-      $sql=sprintf("select  `Supplier Product Part Key`, `Supplier Product Code` ,  SD.`Supplier Key`,`Supplier Code` from `Supplier Product Part List` SPPL   left join `Supplier Dimension` SD on (SD.`Supplier Key`=SPPL.`Supplier Key`)   where `Part SKU` in (%s) and `Supplier Product Part Most Recent`='Yes' order by `Supplier Key`;"
-		   ,$mysql_where);
-      $result=mysql_query($sql);
-
-      $supplier=array();
-      $current_supplier='_';
-
-      while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
-	$_current_supplier=$row['Supplier Key'];
-	
-
-	if ($_current_supplier!=$current_supplier) {
-	  $supplied_by.=sprintf(', <a href="supplier.php?id=%d">%s</a>(<a href="supplier_product.php?code=%s&supplier_key=%d">%s</a>'
-				,$row['Supplier Key']
-				,$row['Supplier Code']
-				,$row['Supplier Product Code']
-				,$row['Supplier Key']
-				,$row['Supplier Product Code']);
-	  $current_supplier=$_current_supplier;
-	} else {
-	  $supplied_by.=sprintf(', <a href="supplier_product.php?code=%s">%s</a>',$row['Supplier Product Code'],$row['Supplier Product Code']);
-
-	}
-	
-
-      }
-    
-      $supplied_by.=")";
-
-      $supplied_by=_trim(preg_replace('/^, /','',$supplied_by));
-    
-      }else{
-	$supplied_by='Mix';
-
-      }
-      
-
-      if ($supplied_by=='')
-	$supplied_by=_('Unknown');
-
-
-
-      $sql=sprintf("update `Product Dimension` set `Product XHTML Parts`=%s  , `Product XHTML Supplied By`=%s where `Product ID`=%d",prepare_mysql(_trim($parts)),prepare_mysql(_trim($supplied_by)),$this->pid);
-      //print "$sql\n";
-      if (!mysql_query($sql))
-	exit("$sql  eerror can not updat eparts pf product 1234234\n");
-
+$this->update_parts();
 
 
 
@@ -4778,6 +4715,72 @@ function update_next_supplier_shippment_simple($part_list){
   mysql_query($sql);
 
     }
+function update_parts(){
+      $parts='';
+      $mysql_where='';
+      $sql=sprintf("select `Part SKU` from  `Product Part Dimension` PPD left join  `Product Part List`       PPL   on (PPL.`Product Part Key`=PPD.`Product Part Key`) where PPL.`Product ID`=%d and `Product Part Most Recent`='Yes';",$this->data['Product ID']);
+      $result=mysql_query($sql);
+      while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
+	$parts.=sprintf(', <a href="part.php?sku=%d">SKU%005d</a>',$row['Part SKU'],$row['Part SKU']);
+	$mysql_where.=', '.$row['Part SKU'];
+      }
+      $parts=preg_replace('/^, /','',$parts);
+      $mysql_where=preg_replace('/^, /','',$mysql_where);
 
+      if ($mysql_where=='')
+	$mysql_where=0;
+      $supplied_by='';
+
+      if($this->data['Product Type']=='Normal'){
+
+      $sql=sprintf("select  `Supplier Product Part Key`, `Supplier Product Code` ,  SD.`Supplier Key`,`Supplier Code` from `Supplier Product Part List` SPPL   left join `Supplier Dimension` SD on (SD.`Supplier Key`=SPPL.`Supplier Key`)   where `Part SKU` in (%s) and `Supplier Product Part Most Recent`='Yes' order by `Supplier Key`;"
+		   ,$mysql_where);
+      $result=mysql_query($sql);
+
+      $supplier=array();
+      $current_supplier='_';
+
+      while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
+	$_current_supplier=$row['Supplier Key'];
+	
+
+	if ($_current_supplier!=$current_supplier) {
+	  $supplied_by.=sprintf(', <a href="supplier.php?id=%d">%s</a>(<a href="supplier_product.php?code=%s&supplier_key=%d">%s</a>'
+				,$row['Supplier Key']
+				,$row['Supplier Code']
+				,$row['Supplier Product Code']
+				,$row['Supplier Key']
+				,$row['Supplier Product Code']);
+	  $current_supplier=$_current_supplier;
+	} else {
+	  $supplied_by.=sprintf(', <a href="supplier_product.php?code=%s">%s</a>',$row['Supplier Product Code'],$row['Supplier Product Code']);
+
+	}
+	
+
+      }
+    
+      $supplied_by.=")";
+
+      $supplied_by=_trim(preg_replace('/^, /','',$supplied_by));
+    
+      }else{
+	$supplied_by='Mix';
+
+      }
+      
+
+      if ($supplied_by=='')
+	$supplied_by=_('Unknown');
+
+
+
+      $sql=sprintf("update `Product Dimension` set `Product XHTML Parts`=%s  , `Product XHTML Supplied By`=%s where `Product ID`=%d",prepare_mysql(_trim($parts)),prepare_mysql(_trim($supplied_by)),$this->pid);
+      //print "$sql\n";
+      if (!mysql_query($sql))
+	exit("$sql  eerror can not updat eparts pf product 1234234\n");
+
+
+}
 }
 ?>

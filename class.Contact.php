@@ -1249,6 +1249,9 @@ class Contact extends DB_Table {
 
 
 	  }
+	  
+	  
+	  
 	}
 	if ($data['Contact Main FAX']!='') {
 	  //print "addin fax\n";
@@ -1564,7 +1567,7 @@ class Contact extends DB_Table {
      Todo: use base_data for defaults/missing parameters
   */
 
-  function add_email($data,$args='principal') {
+function add_email($data,$args='principal') {
 
 
     global $myconf;
@@ -1574,20 +1577,20 @@ class Contact extends DB_Table {
     $principal=false;
     $this->inserted_email=0;
     if (preg_match('/not? principal/i',$args) ) {
-      $principal=false;
+        $principal=false;
 
     }
     elseif( preg_match('/principal/i',$args)) {
 
 
-      $principal=true;
+        $principal=true;
     }
 
     if (isset($data['Email Is Main'])) {
-      if ($data['Email Is Main']=='Yes')
-	$principal=true;
-      else
-	$principal=false;
+        if ($data['Email Is Main']=='Yes')
+            $principal=true;
+        else
+            $principal=false;
     }
 
 
@@ -1595,205 +1598,213 @@ class Contact extends DB_Table {
 
     if ( array_key_exists('Email Key',$data) ) {
 
-      $email=new Email('id',$data['Email Key']);
-      if(!$email->id){
-	print_r($data);
-	exit('fatal error when adding email to contact class.Contact.php');
-            
-      }
-            
-            
-      $email->set_scope('Contact',$this->id);
-      if ( $email->associated_with_scope) {
-	$email_not_associated=false;
-	if (!isset($data['Email Description']) or $data['Email Description']=='')
-	  $data['Email Description']=$email->data['Email Description'];
-	if (!isset($data['Email Contact Name']))
-	  $data['Email Contact Name']=$email->data['Email Contact Name'];
+        $email=new Email('id',$data['Email Key']);
+        if (!$email->id) {
+            print_r($data);
+            exit('fatal error when adding email to contact class.Contact.php');
+
+        }
 
 
-      } else
-	$email_not_associated=true;
+        $email->set_scope('Contact',$this->id);
+        if ( $email->associated_with_scope) {
+            $email_not_associated=false;
+            if (!isset($data['Email Description']) or $data['Email Description']=='')
+                $data['Email Description']=$email->data['Email Description'];
+            if (!isset($data['Email Contact Name']))
+                $data['Email Contact Name']=$email->data['Email Contact Name'];
+
+
+        } else
+            $email_not_associated=true;
 
 
     } else {
 
-      if(!isset($data['Email'])){
-               
-	print_r($data);
-	print_r($this);
-	exit("Strange error class.Contact.php");
-            
-      }
+        if (!isset($data['Email'])) {
 
-      $email=$data['Email'];
-      if (isset($data['Email Description']))
-	$email_description=$data['Email Description'];
-      else
-	$email_description='';
-      $email_data=array(
+            print_r($data);
+            print_r($this);
+            exit("Strange error class.Contact.php");
 
-			'Email'=>$email,
-			'Email Description'=>'Unknown',
-			'Email Contact Name'=>'',
-			'Email Validated'=>'No',
-			'Email Verified'=>'No',
-                        );
+        }
 
+        $email=$data['Email'];
+        if (isset($data['Email Description']))
+            $email_description=$data['Email Description'];
+        else
+            $email_description='';
+        $email_data=array(
 
-      if ($this->data['Contact Name']!=$myconf['unknown_contact'])
-	$email_data['Email Contact Name']=$this->data['Contact Name'];
+                        'Email'=>$email,
+                        'Email Description'=>'Unknown',
+                        'Email Contact Name'=>'',
+                        'Email Validated'=>'No',
+                        'Email Verified'=>'No',
+                    );
 
 
-      $email_data['editor']=$this->editor;
-      $email=new email('find in contact '.$this->id.' create',$email_data);
-
-      if (preg_match('/if found error/i',$args) and $email->found) {
-
-	if ($email->found_in) {
-	  $this->warning=true;
-	  $this->msg_updated.=_('Contact has already this email');
-
-	} else {
-
-	  $this->error=true;
-	  $this->msg_updated.=_('Email found in another contact');
-	}
-
-	return;
-      }
+        if ($this->data['Contact Name']!=$myconf['unknown_contact'])
+            $email_data['Email Contact Name']=$this->data['Contact Name'];
 
 
-      $this->msg.=' '.$email->msg;
+        $email_data['editor']=$this->editor;
+        $email=new email('find in contact '.$this->id.' create',$email_data);
+
+        if (preg_match('/if found error/i',$args) and $email->found) {
+
+            if ($email->found_in) {
+                $this->warning=true;
+                $this->msg_updated.=_('Contact has already this email');
+
+            } else {
+
+                $this->error=true;
+                $this->msg_updated.=_('Email found in another contact');
+            }
+
+            return;
+        }
+
+
+        $this->msg.=' '.$email->msg;
 
     }
 
-	
+
 
 
 
 
     if ($email->id) {
 
-      if ($email->updated or $email->new or preg_match('/update/',$args))
-	$this->updated=true;
+        if ($email->updated or $email->new or preg_match('/update/',$args))
+            $this->updated=true;
 
 
 
-      if (isset($data['Email Description']))
-	$email_description=$data['Email Description'];
-      else
-	$email_description='';
-
-
-
-
-      if (preg_match('/work/i',$email_description))
-	$email_data['Email Description']='Work';
-      elseif(preg_match('/personal/i',$email_description))
-	$email_data['Email Description']='Personal';
-      elseif(preg_match('/other/i',$email_description))
-	$email_data['Email Description']='Other';
-      else
-	$email_data['Email Description']='Unknown';
-
-
-      $sql=sprintf("select `Subject Key` from `Email Bridge` where `Subject Type`='Contact' and `Subject Key`!=%d  and `Email Key`=%d group by `Subject Key`",$this->id,$email->id);
-      $res=mysql_query($sql);
-      while ($row=mysql_fetch_array($res)) {
-	$contact=new Contact($row['Subject Key']);
-	$contact->remove_email($email->id);
-      }
-      mysql_free_result($res);
-
-      $sql=sprintf("insert into  `Email Bridge` (`Email Key`,`Subject Type`, `Subject Key`,`Is Main`,`Email Description`) values (%d,'Contact',%d,%s,%s) ON DUPLICATE KEY UPDATE `Email Description`=%s   "
-		   ,$email->id
-		   ,$this->id
-		   ,prepare_mysql($principal?'Yes':'No')
-		   ,prepare_mysql($email_data['Email Description'])
-		   ,prepare_mysql($email_data['Email Description'])
-		   );
-      mysql_query($sql);
-
-      if ($mysql_affected_rows_code=mysql_affected_rows() ) {
-	$updated=true;
-	$this->updated=true;
-
-	if ($mysql_affected_rows_code==1)
-	  $this->inserted_email=$email->id;
-
-      }
-
-
-	   
-      if ($principal) {
-
-	$sql=sprintf("update `Email Bridge`  set `Is Main`='No' where `Subject Type`='Contact' and  `Subject Key`=%d  and `Email Key`!=%d",
-		     $this->id
-		     ,$email->id
-		     );
-	mysql_query($sql);
-	$sql=sprintf("update `Email Bridge`  set `Is Main`='Yes' where `Subject Type`='Contact' and  `Subject Key`=%d  and `Email Key`=%d",
-		     $this->id
-		     ,$email->id
-		     );
-	mysql_query($sql);
-
-	$this->update_email($email->id);
+        if (isset($data['Email Description']))
+            $email_description=$data['Email Description'];
+        else
+            $email_description='';
 
 
 
 
+        if (preg_match('/work/i',$email_description))
+            $email_data['Email Description']='Work';
+        elseif(preg_match('/personal/i',$email_description))
+        $email_data['Email Description']='Personal';
+        elseif(preg_match('/other/i',$email_description))
+        $email_data['Email Description']='Other';
+        else
+            $email_data['Email Description']='Unknown';
 
 
-	$history_data['History Abstract']=_('Email Associated (Main)');
-	$history_data['History Details']=_($email->display('plain')." "._('set as the principal email for')." ".$this->display("name")." "._('contact'));
-      } else {
+        $sql=sprintf("select `Subject Key` from `Email Bridge` where `Subject Type`='Contact' and `Subject Key`!=%d  and `Email Key`=%d group by `Subject Key`",$this->id,$email->id);
+        $res=mysql_query($sql);
+        while ($row=mysql_fetch_array($res)) {
+            $contact=new Contact($row['Subject Key']);
+            $contact->remove_email($email->id);
+        }
+        mysql_free_result($res);
 
-	$history_data['History Abstract']='Email Associated';
-	$history_data['History Details']=_($email->display('plain')." "._('associated with')." ".$this->display("name")." "._('contact'));
-      }
+        $sql=sprintf("insert into  `Email Bridge` (`Email Key`,`Subject Type`, `Subject Key`,`Is Main`,`Email Description`) values (%d,'Contact',%d,%s,%s) ON DUPLICATE KEY UPDATE `Email Description`=%s   "
+                     ,$email->id
+                     ,$this->id
+                     ,prepare_mysql($principal?'Yes':'No')
+                     ,prepare_mysql($email_data['Email Description'])
+                     ,prepare_mysql($email_data['Email Description'])
+                    );
+        mysql_query($sql);
+
+        if ($mysql_affected_rows_code=mysql_affected_rows() ) {
+            $updated=true;
+            $this->updated=true;
+
+            if ($mysql_affected_rows_code==1)
+                $this->inserted_email=$email->id;
+
+        }
 
 
-      if ($updated) {
 
-	$history_data['Action']='associated';
-	$history_data['Direct Object']='Email';
-	$history_data['Direct Object Key']=$email->id;
-	$history_data['Indirect Object']='Contact';
-	$history_data['Indirect Object Key']=$this->id;
-	$this->add_history($history_data);
-	$this->email_added=$email->id;
-	$this->msg_updated.=', '.$history_data['History Details'];
-      }
+        if ($principal) {
+
+            $sql=sprintf("update `Email Bridge`  set `Is Main`='No' where `Subject Type`='Contact' and  `Subject Key`=%d  and `Email Key`!=%d",
+                         $this->id
+                         ,$email->id
+                        );
+            mysql_query($sql);
+            $sql=sprintf("update `Email Bridge`  set `Is Main`='Yes' where `Subject Type`='Contact' and  `Subject Key`=%d  and `Email Key`=%d",
+                         $this->id
+                         ,$email->id
+                        );
+            mysql_query($sql);
+
+            $this->update_email($email->id);
 
 
 
-      if ($principal and  (isset($updated_fields['Contact Main Plain Email'])  or isset($updated_fields['Contact Main Email Key'])   )     ) {
-	if ($company_key=$this->company_key('principal')) {
-	  $company=new Company('id',$company_key);
-	  $company->editor=$this->editor;
-	  $company->update_email($email->id);
 
-	  $customer_found_keys=$company->get_customer_keys();
-	  foreach($customer_found_keys as $customer_found_key) {
-	    $customer=new Customer($customer_found_key);
-	    $customer->editor=$this->editor;
-	    $customer->update_email($email->id);
-	  }
-	}
 
-	$customer_found_keys=$this->get_customer_keys();
-	foreach($customer_found_keys as $customer_found_key) {
-	  $customer=new Customer($customer_found_key);
-	  $customer->editor=$this->editor;
-	  $customer->update_email($email->id);
-	}
-      }
+
+            $history_data['History Abstract']=_('Email Associated (Main)');
+            $history_data['History Details']=_($email->display('plain')." "._('set as the principal email for')." ".$this->display("name")." "._('contact'));
+        } else {
+
+            $history_data['History Abstract']='Email Associated';
+            $history_data['History Details']=_($email->display('plain')." "._('associated with')." ".$this->display("name")." "._('contact'));
+        }
+
+
+        if ($updated) {
+
+            $history_data['Action']='associated';
+            $history_data['Direct Object']='Email';
+            $history_data['Direct Object Key']=$email->id;
+            $history_data['Indirect Object']='Contact';
+            $history_data['Indirect Object Key']=$this->id;
+            $this->add_history($history_data);
+            $this->email_added=$email->id;
+            $this->msg_updated.=', '.$history_data['History Details'];
+        }
+
+
+
+        if ($principal and  (isset($updated_fields['Contact Main Plain Email'])  or isset($updated_fields['Contact Main Email Key'])   )     ) {
+            if ($company_key=$this->company_key('principal')) {
+                $company=new Company('id',$company_key);
+                $company->editor=$this->editor;
+                $company->update_email($email->id);
+
+                $customer_found_keys=$company->get_customer_keys();
+                foreach($customer_found_keys as $customer_found_key) {
+                    $customer=new Customer($customer_found_key);
+                    $customer->editor=$this->editor;
+                    $customer->update_email($email->id);
+                }
+                $supplier_found_keys=$company->get_supplier_keys();
+                foreach($supplier_found_keys as $supplier_found_key) {
+                    $supplier=new supplier($supplier_found_key);
+                    $supplier->editor=$this->editor;
+                    $supplier->update_email($email->id);
+                }                
+                
+                
+            }
+
+            $customer_found_keys=$this->get_customer_keys();
+            foreach($customer_found_keys as $customer_found_key) {
+                $customer=new Customer($customer_found_key);
+                $customer->editor=$this->editor;
+                $customer->update_email($email->id);
+            }
+        }
 
     }
 
-  }
+}
 
 
 
@@ -2401,132 +2412,150 @@ class Contact extends DB_Table {
      Return:
      integer telecom key of the added/updated telecom
   */
-  function add_tel($data,$args='principal') {
+function add_tel($data,$args='principal') {
     $this->add_telecom=0;
     $principal=false;
     if (preg_match('/not? principal/',$args) ) {
-      $principal=false;
+        $principal=false;
     }
     elseif( preg_match('/principal/',$args)) {
-      $principal=true;
+        $principal=true;
     }
 
     if (is_string($data)) {
-      $telecom_data=array();
-      $telecom_data['editor']=$this->editor;
-      $telecom_data['Telecom Raw Number']=$data;
+        $telecom_data=array();
+        $telecom_data['editor']=$this->editor;
+        $telecom_data['Telecom Raw Number']=$data;
 
 
-      $telecom=new telecom("find in contact create   country code ".$this->data['Contact Main Country Code'],$telecom_data);
+        $telecom=new telecom("find in contact create   country code ".$this->data['Contact Main Country Code'],$telecom_data);
 
     }
     elseif(isset($data['Telecom Key'])) {
-      $telecom=new Telecom('id',$data['Telecom Key']);
+        $telecom=new Telecom('id',$data['Telecom Key']);
     }
     else {
 
 
 
-      if (!isset($data['Telecom Original Country Key']) or !$data['Telecom Original Country Key'])
-	$data['Telecom Original Country Key']=$this->data['Contact Main Country Key'];
-      $data['editor']=$this->editor;
+        if (!isset($data['Telecom Original Country Key']) or !$data['Telecom Original Country Key'])
+            $data['Telecom Original Country Key']=$this->data['Contact Main Country Key'];
+        $data['editor']=$this->editor;
 
-      $telecom=new telecom("find in contact create  country code ".$this->data['Contact Main Country Code'],$data);
+        $telecom=new telecom("find in contact create  country code ".$this->data['Contact Main Country Code'],$data);
 
     }
 
     if ($telecom->id) {
 
-      if (!isset($data['Telecom Type']) or $data['Telecom Type']=='') {
-	if ($telecom->data['Telecom Technology Type']=='Mobile' )
-	  $data['Telecom Type']='Mobile';
-	else
-	  $data['Telecom Type']='Home Telephone';
+        if (!isset($data['Telecom Type']) or $data['Telecom Type']=='') {
+            if ($telecom->data['Telecom Technology Type']=='Mobile' )
+                $data['Telecom Type']='Mobile';
+            else
+                $data['Telecom Type']='Home Telephone';
 
-      }
+        }
 
-      if ($data['Telecom Type']=='Mobile' or  $data['Telecom Type']=='Work Mobile'  ) {
-	$field='Contact Main Mobile';
-	$field_key='Contact Main Mobile Key';
-	$field_plain='Contact Main Plain Mobile';
+        if ($data['Telecom Type']=='Mobile' or  $data['Telecom Type']=='Work Mobile'  ) {
+            $field='Contact Main Mobile';
+            $field_key='Contact Main Mobile Key';
+            $field_plain='Contact Main Plain Mobile';
 
-      }
-      elseif(preg_match('/fax/i',$data['Telecom Type'])) {
-	$field='Contact Main FAX';
-	$field_key='Contact Main FAX Key';
-	$field_plain='Contact Main Plain FAX';
-
-
-      }
-      else {
-	$field='Contact Main Telephone';
-	$field_key='Contact Main Telephone Key';
-	$field_plain='Contact Main Plain Telephone';
+        }
+        elseif(preg_match('/fax/i',$data['Telecom Type'])) {
+            $field='Contact Main FAX';
+            $field_key='Contact Main FAX Key';
+            $field_plain='Contact Main Plain FAX';
 
 
-      }
+        }
+        else {
+            $field='Contact Main Telephone';
+            $field_key='Contact Main Telephone Key';
+            $field_plain='Contact Main Plain Telephone';
 
 
-      $old_principal_key=$this->data[$field_key];
-      $old_value=$this->data[$field]." (Id:".$this->data[$field_key].")";
+        }
+
+
+        $old_principal_key=$this->data[$field_key];
+        $old_value=$this->data[$field]." (Id:".$this->data[$field_key].")";
 
 
 
-      if ($principal and $old_principal_key!=$telecom->id) {
-
-	$sql=sprintf("update `Telecom Bridge`  set `Is Main`='No' where `Subject Type`='Contact' and  `Subject Key`=%d and `Telecom Type`=%s ",
-		     $this->id
-		     ,$telecom->id
-		     ,prepare_mysql($data['Telecom Type'])
-		     );
-	mysql_query($sql);
-	$sql=sprintf("update `Contact Dimension` set `%s`=%s , `%s`=%d  , `%s`=%s  where `Contact Key`=%d"
-		     ,$field
-		     ,prepare_mysql($telecom->display('html'))
-		     ,$field_key
-		     ,$telecom->id
-		     ,$field_plain
-		     ,prepare_mysql($telecom->display('plain'))
-		     ,$this->id
-		     );
-	mysql_query($sql);
-	$note=$data['Telecom Type']." "._('Associated (Main)');
-	$description=_('Main').' '.$data['Telecom Type'].' '._('set to')." ".$telecom->display('xhtml');
-	$history_data=array(
-			    'History Abstract'=>$note
-			    ,'History Details'=>$description
-			    ,'Action'=>'associated'
-			    ,'Direct Object'=>$data['Telecom Type']
-			    ,'Direct Object Key'=>$telecom->id
-			    ,'Indirect Object'=>'Contact'
-			    ,'Indirect Object Key'=>$this->id
-			    );
-	if (!$this->new)
-	  $this->add_history($history_data);
-
-	$this->get_data('id',$this->id);
+        if ($principal and $old_principal_key!=$telecom->id) {
 
 
-      }
+            $sql=sprintf("update `Telecom Bridge`  set `Is Main`='No' where `Subject Type`='Contact' and  `Subject Key`=%d  and `Telecom Key`!=%d and `Telecom Type`=%s ",
+                         $this->id
+                         ,$telecom->id
+                         ,prepare_mysql($data['Telecom Type'])
+                        );
+            mysql_query($sql);
+            $sql=sprintf("update `Telecom Bridge`  set `Is Main`='Yes' where `Subject Type`='Contact' and  `Subject Key`=%d  and `Telecom Key`=%d and `Telecom Type`=%s ",
+                         $this->id
+                         ,$telecom->id
+                         ,prepare_mysql($data['Telecom Type'])
+                        );
+            mysql_query($sql);
 
-      $sql=sprintf("insert into  `Telecom Bridge` (`Telecom Key`, `Subject Key`,`Subject Type`,`Telecom Type`,`Is Main`) values (%d,%d,'Contact',%s,%s)   ON DUPLICATE KEY UPDATE `Telecom Type`=%s ,`Is Main`=%s "
-		   ,$telecom->id
-		   ,$this->id
-		   ,prepare_mysql($data['Telecom Type'])
-		   ,prepare_mysql($principal?'Yes':'No')
-		   ,prepare_mysql($data['Telecom Type'])
-		   ,prepare_mysql($principal?'Yes':'No')
-		   );
-      //	print "$sql\n";
-      mysql_query($sql);
-      if (mysql_affected_rows()==1 ) {
-	$this->add_telecom=$telecom->id;
 
-      }
+
+			if(preg_match('/telephone/i',$data['Telecom Type'])){
+            $this->update_telephone($telecom->id);
+			}else if(preg_match('/mobile/i',$data['Telecom Type'])){
+            $this->update_mobile($telecom->id);
+			}else if(preg_match('/fax/i',$data['Telecom Type'])){
+            $this->update_fax($telecom->id);
+			}
+
+            $sql=sprintf("update `Contact Dimension` set `%s`=%s , `%s`=%d  , `%s`=%s  where `Contact Key`=%d"
+                         ,$field
+                         ,prepare_mysql($telecom->display('html'))
+                         ,$field_key
+                         ,$telecom->id
+                         ,$field_plain
+                         ,prepare_mysql($telecom->display('plain'))
+                         ,$this->id
+                        );
+            mysql_query($sql);
+            $note=$data['Telecom Type']." "._('Associated (Main)');
+            $description=_('Main').' '.$data['Telecom Type'].' '._('set to')." ".$telecom->display('xhtml');
+            $history_data=array(
+                              'History Abstract'=>$note
+                                                 ,'History Details'=>$description
+                                                                    ,'Action'=>'associated'
+                                                                              ,'Direct Object'=>$data['Telecom Type']
+                                                                                               ,'Direct Object Key'=>$telecom->id
+                                                                                                                    ,'Indirect Object'=>'Contact'
+                                                                                                                                       ,'Indirect Object Key'=>$this->id
+                          );
+            if (!$this->new)
+                $this->add_history($history_data);
+
+            $this->get_data('id',$this->id);
+
+
+        }
+
+        $sql=sprintf("insert into  `Telecom Bridge` (`Telecom Key`, `Subject Key`,`Subject Type`,`Telecom Type`,`Is Main`) values (%d,%d,'Contact',%s,%s)   ON DUPLICATE KEY UPDATE `Telecom Type`=%s ,`Is Main`=%s "
+                     ,$telecom->id
+                     ,$this->id
+                     ,prepare_mysql($data['Telecom Type'])
+                     ,prepare_mysql($principal?'Yes':'No')
+                     ,prepare_mysql($data['Telecom Type'])
+                     ,prepare_mysql($principal?'Yes':'No')
+                    );
+        //	print "$sql\n";
+        mysql_query($sql);
+        if (mysql_affected_rows()==1 ) {
+            $this->add_telecom=$telecom->id;
+
+        }
 
 
     }
-  }
+}
 
 
   function delete() {

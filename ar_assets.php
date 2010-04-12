@@ -73,7 +73,9 @@ case('product_code_timeline'):
 case('product_subcategories'):
   list_product_subcategories();
   break;
-
+case('part_transactions'):
+part_transactions();
+break;
 case('order_received'):
 case('order_expected'):
 case('order_checked'):
@@ -2563,167 +2565,11 @@ case('plot_weeksalesperorder'):
 
     echo json_encode($response);
     break;
-
+case('part_stock_history'):
 case('stock_history'):
-    $conf=$_SESSION['state']['product']['stock_history'];
-    $product_id=$_SESSION['state']['product']['id'];
-    if (isset( $_REQUEST['elements']))
-        $elements=$_REQUEST['elements'];
-    else
-        $elements=$conf['elements'];
+   part_stock_history();
 
-    if (isset( $_REQUEST['from']))
-        $from=$_REQUEST['from'];
-    else
-        $from=$conf['from'];
-    if (isset( $_REQUEST['to']))
-        $to=$_REQUEST['to'];
-    else
-        $to=$conf['to'];
-    if (isset( $_REQUEST['sf']))
-        $start_from=$_REQUEST['sf'];
-    else
-        $start_from=$conf['sf'];
-    if (isset( $_REQUEST['nr']))
-        $number_results=$_REQUEST['nr'];
-    else
-        $number_results=$conf['nr'];
-    if (isset( $_REQUEST['o']))
-        $order=$_REQUEST['o'];
-    else
-        $order=$conf['order'];
-    if (isset( $_REQUEST['od']))
-        $order_dir=$_REQUEST['od'];
-    else
-        $order_dir=$conf['order_dir'];
-    $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
-    if (isset( $_REQUEST['where']))
-        $where=addslashes($_REQUEST['where']);
-    else
-        $where=$conf['where'];
-
-    if (isset( $_REQUEST['f_field']))
-        $f_field=$_REQUEST['f_field'];
-    else
-        $f_field=$conf['f_field'];
-
-    if (isset( $_REQUEST['f_value']))
-        $f_value=$_REQUEST['f_value'];
-    else
-        $f_value=$conf['f_value'];
-    if (isset( $_REQUEST['tableid']))
-        $tableid=$_REQUEST['tableid'];
-    else
-        $tableid=0;
-
-
-    list($date_interval,$error)=prepare_mysql_dates($from,$to);
-    if ($error) {
-        list($date_interval,$error)=prepare_mysql_dates($conf['from'],$conf['to']);
-    } else {
-        $_SESSION['state']['product']['stock_history']['from']=$from;
-        $_SESSION['state']['product']['stock_history']['to']=$to;
-    }
-
-    $_SESSION['state']['product']['stock_history']=
-        array(
-            'order'=>$order,
-            'order_dir'=>$order_direction,
-            'nr'=>$number_results,
-            'sf'=>$start_from,
-            'where'=>$where,
-            'f_field'=>$f_field,
-            'f_value'=>$f_value,
-            'from'=>$from,
-            'to'=>$to,
-            'elements'=>$elements
-        );
-    $_order=$order;
-    $_dir=$order_direction;
-    $filter_msg='';
-
-
-
-
-//  $view='';
-//  foreach($elements as $key=>$val){
-//    if(!$val)
-//      $view.=' and op_tipo!='.$key;
-//  }
-
-
-    $wheref='';
-//   if($f_field=='name' and $f_value!='')
-//     $wheref.=" and  ".$f_field." like '".addslashes($f_value)."%'";
-
-
-
-
-    $where=$where.sprintf(" and sujeto='PROD' and sujeto_id=%d and objeto='LOC'",$product_id);
-
-
-    //   $where =$where.$view.sprintf(' and product_id=%d  %s',$product_id,$date_interval);
-
-    $sql="select count(*) as total from history    $where $wheref";
-    //   print "$sql";
-    $result=mysql_query($sql);
-    if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-        $total=$row['total'];
-    }
-    if ($wheref=='')
-        $filtered=0;
-    else {
-        $sql="select count(*) as total from history  $where ";
-
-        $result=mysql_query($sql);
-        if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-            $filtered=$row['total']-$total;
-        }
-
-    }
-
-
-    if ($total==0)
-        $rtext=_('No stock movements');
-    else
-        $rtext=$total.' '.ngettext('stock operetion','stock operations',$total);
-
-
-
-
-    $sql=sprintf("select  UNIX_TIMESTAMP(date) as date,handle as author ,history.note,history.staff_id  from history left join liveuser_users  on (authuserid=history.staff_id) $where $wheref order by $order $order_direction limit $start_from,$number_results ");
-    // print $sql;
-    $result=mysql_query($sql);
-    $adata=array();
-    while ($data=mysql_fetch_array($result, MYSQL_ASSOC)) {
-
-
-        $adata[]=array(
-
-                     'author'=>$data['author']
-                              ,'note'=>$data['note']
-                                      ,'date'=>strftime("%a %e %b %Y %T", strtotime('@'.$data['date'])),
-                 );
-    }
-    $response=array('resultset'=>
-                                array('state'=>200,
-                                      'data'=>$adata,
-                                      'sort_key'=>$_order,
-                                      'sort_dir'=>$_dir,
-                                      'rtext'=>$rtext,
-                                      'tableid'=>$tableid,
-                                      'filter_msg'=>$filter_msg,
-                                      'total_records'=>$total,
-                                      'records_offset'=>$start_from,
-                                      'records_returned'=>$start_from+$res->numRows(),
-                                      'records_perpage'=>$number_results,
-                                      'records_text'=>$rtext,
-                                      'records_order'=>$order,
-                                      'records_order_dir'=>$order_dir,
-                                      'filtered'=>$filtered
-                                     )
-                   );
-    echo json_encode($response);
+ 
     break;
 
 
@@ -8977,6 +8823,318 @@ $res=mysql_query($sql);
 
 }
 
+function part_transactions(){
+   $conf=$_SESSION['state']['part']['transactions'];
+    $part_sku=$_SESSION['state']['part']['id'];
+    if (isset( $_REQUEST['elements']))
+        $elements=$_REQUEST['elements'];
+    else
+        $elements=$conf['elements'];
+
+    if (isset( $_REQUEST['from']))
+        $from=$_REQUEST['from'];
+    else
+        $from=$conf['from'];
+    if (isset( $_REQUEST['to']))
+        $to=$_REQUEST['to'];
+    else
+        $to=$conf['to'];
+    if (isset( $_REQUEST['sf']))
+        $start_from=$_REQUEST['sf'];
+    else
+        $start_from=$conf['sf'];
+    if (isset( $_REQUEST['nr']))
+        $number_results=$_REQUEST['nr'];
+    else
+        $number_results=$conf['nr'];
+    if (isset( $_REQUEST['o']))
+        $order=$_REQUEST['o'];
+    else
+        $order=$conf['order'];
+    if (isset( $_REQUEST['od']))
+        $order_dir=$_REQUEST['od'];
+    else
+        $order_dir=$conf['order_dir'];
+    $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
+    if (isset( $_REQUEST['where']))
+        $where=addslashes($_REQUEST['where']);
+    else
+        $where=$conf['where'];
+
+    if (isset( $_REQUEST['f_field']))
+        $f_field=$_REQUEST['f_field'];
+    else
+        $f_field=$conf['f_field'];
+
+    if (isset( $_REQUEST['f_value']))
+        $f_value=$_REQUEST['f_value'];
+    else
+        $f_value=$conf['f_value'];
+    if (isset( $_REQUEST['tableid']))
+        $tableid=$_REQUEST['tableid'];
+    else
+        $tableid=0;
 
 
+    list($date_interval,$error)=prepare_mysql_dates($from,$to);
+    if ($error) {
+        list($date_interval,$error)=prepare_mysql_dates($conf['from'],$conf['to']);
+    } else {
+        $_SESSION['state']['part']['transactions']['from']=$from;
+        $_SESSION['state']['part']['transactions']['to']=$to;
+    }
+
+    $_SESSION['state']['part']['transactions']=
+        array(
+            'order'=>$order,
+            'order_dir'=>$order_direction,
+            'nr'=>$number_results,
+            'sf'=>$start_from,
+            'where'=>$where,
+            'f_field'=>$f_field,
+            'f_value'=>$f_value,
+            'from'=>$from,
+            'to'=>$to,
+            'elements'=>$elements,
+            'f_show'=>$_SESSION['state']['part']['transactions']['f_show']
+        );
+    $_order=$order;
+    $_dir=$order_direction;
+    $filter_msg='';
+
+$wheref='';
+
+
+    $where=$where.sprintf(" and `Part SKU`=%d ",$part_sku);
+    $sql="select count(*) as total from `Inventory Spanshot Fact`     $where $wheref";
+    $result=mysql_query($sql);
+    if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+        $total=$row['total'];
+    }
+    if ($wheref==''){
+        $filtered=0;
+        $total_records=$total;
+    }else {
+        $sql="select count(*) as total from `Inventory Spanshot Fact`   $where ";
+        $result=mysql_query($sql);
+        if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+           $total_records=$row['total'];
+           $filtered=$row['total']-$total;
+        }
+
+    }
+
+
+
+    $rtext=$total_records.' '.ngettext('stock operetion','stock operations',$total);
+    if ($total_records>$number_results)
+        $rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
+    else
+        $rtext_rpp=' ('._('Showing all').')';
+        
+        
+
+    if ($total_records==0){
+        $rtext=_('No stock movements');
+        $rtext_rpp='';
+      }
+
+$order=' `Date` desc , `Event Order` desc ';
+$order_direction=' ';
+
+    $sql=sprintf("select  `Event Order`,`Note`,`Inventory Transaction Type`,`Inventory Transaction Quantity`,`Date`,ITF.`Location Key`,`Location Code`  from `Inventory Transaction Fact` ITF left join `Location Dimension` L on (ITF.`Location key`=L.`Location key`)  $where $wheref order by $order $order_direction limit $start_from,$number_results ");
+
+
+     //print $sql;
+    $result=mysql_query($sql);
+    $adata=array();
+    while ($data=mysql_fetch_array($result, MYSQL_ASSOC)) {
+
+$qty=$data['Inventory Transaction Quantity'];
+if($qty>0){
+$qty='+'.$qty;
+}elseif($qty==0){
+$qty='';
+}
+$location=sprintf('<a href="location.php?id=%d">%s</a>',$data['Location Key'],$data{'Location Code'});
+        $adata[]=array(
+
+                     'type'=>$data['Inventory Transaction Type'].' '.$data['Event Order']
+                              ,'change'=>$qty
+                                      ,'date'=>strftime("%a %e %b %Y %T", strtotime($data['Date']))
+                                                                    ,'note'=>$data['Note']
+                                                                    ,'location'=>$location
+
+                 );
+    }
+  
+     $response=array('resultset'=>
+                                array('state'=>200,
+                                      'data'=>$adata,
+                                      'sort_key'=>$_order,
+                                      'sort_dir'=>$_dir,
+                                      'tableid'=>$tableid,
+                                      'filter_msg'=>$filter_msg,
+                                      'rtext'=>$rtext,
+                                      'rtext_rpp'=>$rtext_rpp,
+                                      'total_records'=>$total_records,
+                                      'records_offset'=>$start_from,
+                                      'records_perpage'=>$number_results,
+                                     )
+                   );
+    echo json_encode($response);
+    }
+function part_stock_history(){
+   $conf=$_SESSION['state']['part']['stock_history'];
+    $part_sku=$_SESSION['state']['part']['id'];
+    if (isset( $_REQUEST['elements']))
+        $elements=$_REQUEST['elements'];
+    else
+        $elements=$conf['elements'];
+
+    if (isset( $_REQUEST['from']))
+        $from=$_REQUEST['from'];
+    else
+        $from=$conf['from'];
+    if (isset( $_REQUEST['to']))
+        $to=$_REQUEST['to'];
+    else
+        $to=$conf['to'];
+    if (isset( $_REQUEST['sf']))
+        $start_from=$_REQUEST['sf'];
+    else
+        $start_from=$conf['sf'];
+    if (isset( $_REQUEST['nr']))
+        $number_results=$_REQUEST['nr'];
+    else
+        $number_results=$conf['nr'];
+    if (isset( $_REQUEST['o']))
+        $order=$_REQUEST['o'];
+    else
+        $order=$conf['order'];
+    if (isset( $_REQUEST['od']))
+        $order_dir=$_REQUEST['od'];
+    else
+        $order_dir=$conf['order_dir'];
+    $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
+    if (isset( $_REQUEST['where']))
+        $where=addslashes($_REQUEST['where']);
+    else
+        $where=$conf['where'];
+
+    if (isset( $_REQUEST['f_field']))
+        $f_field=$_REQUEST['f_field'];
+    else
+        $f_field=$conf['f_field'];
+
+    if (isset( $_REQUEST['f_value']))
+        $f_value=$_REQUEST['f_value'];
+    else
+        $f_value=$conf['f_value'];
+    if (isset( $_REQUEST['tableid']))
+        $tableid=$_REQUEST['tableid'];
+    else
+        $tableid=0;
+
+
+    list($date_interval,$error)=prepare_mysql_dates($from,$to);
+    if ($error) {
+        list($date_interval,$error)=prepare_mysql_dates($conf['from'],$conf['to']);
+    } else {
+        $_SESSION['state']['part']['stock_history']['from']=$from;
+        $_SESSION['state']['part']['stock_history']['to']=$to;
+    }
+
+    $_SESSION['state']['part']['stock_history']=
+        array(
+            'order'=>$order,
+            'order_dir'=>$order_direction,
+            'nr'=>$number_results,
+            'sf'=>$start_from,
+            'where'=>$where,
+            'f_field'=>$f_field,
+            'f_value'=>$f_value,
+            'from'=>$from,
+            'to'=>$to,
+            'elements'=>$elements,
+            'f_show'=>$_SESSION['state']['part']['stock_history']['f_show']
+        );
+    $_order=$order;
+    $_dir=$order_direction;
+    $filter_msg='';
+
+$wheref='';
+
+
+    $where=$where.sprintf(" and `Part SKU`=%d ",$part_sku);
+    $sql="select count(*) as total from `Inventory Transaction Fact`     $where $wheref";
+    $result=mysql_query($sql);
+    if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+        $total=$row['total'];
+    }
+    if ($wheref==''){
+        $filtered=0;
+        $total_records=$total;
+    }else {
+        $sql="select count(*) as total from `Inventory Transaction Fact`   $where ";
+        $result=mysql_query($sql);
+        if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+           $total_records=$row['total'];
+           $filtered=$row['total']-$total;
+        }
+
+    }
+
+
+
+    $rtext=$total_records.' '.ngettext('stock operetion','stock operations',$total);
+    if ($total_records>$number_results)
+        $rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
+    else
+        $rtext_rpp=' ('._('Showing all').')';
+        
+        
+
+    if ($total_records==0){
+        $rtext=_('No stock movements');
+        $rtext_rpp='';
+      }
+
+
+   $sql=sprintf("select  `Quantity Sold`,`Storing Cost`,`Value At Latest Selling Price`,`Sold Amount`,`Value At Cost`,`Inventory Spanshot Fact`,`Date`,ISF.`Location Key`,`Location Code`  from `Inventory Spanshot Fact` ISF left join `Location Dimension` L on (ITF.`Location key`=L.`Location key`)  $where $wheref order by $order $order_direction limit $start_from,$number_results ");
+ 
+
+     //print $sql;
+    $result=mysql_query($sql);
+    $adata=array();
+    while ($data=mysql_fetch_array($result, MYSQL_ASSOC)) {
+
+$location=sprintf('<a href="location.php?id=%d">%s</a>',$data['Location Key'],$data{'Location Code'});
+        $adata[]=array(
+
+                     'type'=>$data['Inventory Transaction Type']
+                              ,'change'=>$data['Inventory Transaction Quantity']
+                                      ,'date'=>strftime("%a %e %b %Y %T", strtotime($data['Date']))
+                                                                    ,'note'=>$data['Note']
+                                                                    ,'location'=>$location
+
+                 );
+    }
+  
+     $response=array('resultset'=>
+                                array('state'=>200,
+                                      'data'=>$adata,
+                                      'sort_key'=>$_order,
+                                      'sort_dir'=>$_dir,
+                                      'tableid'=>$tableid,
+                                      'filter_msg'=>$filter_msg,
+                                      'rtext'=>$rtext,
+                                      'rtext_rpp'=>$rtext_rpp,
+                                      'total_records'=>$total_records,
+                                      'records_offset'=>$start_from,
+                                      'records_perpage'=>$number_results,
+                                     )
+                   );
+    echo json_encode($response);
+}
 ?>

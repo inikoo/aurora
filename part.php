@@ -114,5 +114,30 @@ $js_files[]='part.js.php';
 
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
+
+
+
+
+
+$q='';
+$tipo_filter=($q==''?$_SESSION['state']['part']['transactions']['f_field']:'note');
+$smarty->assign('filter_show1',$_SESSION['state']['part']['transactions']['f_show']);
+$smarty->assign('filter1',$tipo_filter);
+$smarty->assign('filter_value1',($q==''?$_SESSION['state']['part']['transactions']['f_value']:addslashes($q)));
+$filter_menu=array(
+		   'note'=>array('db_key'=>'note','menu_label'=>_('Note'),'label'=>_('Note')),
+		   'location'=>array('db_key'=>'location','menu_label'=>_('Location'),'label'=>_('Location')),
+		   );
+$smarty->assign('filter_menu1',$filter_menu);
+$smarty->assign('filter_name1',$filter_menu[$tipo_filter]['label']);
+
+$paginator_menu=array(10,25,50,100,500);
+$smarty->assign('paginator_menu1',$paginator_menu);
+
+
+
+
+
+
 $smarty->display('part.tpl');
 ?>

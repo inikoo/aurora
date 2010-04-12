@@ -65,7 +65,7 @@ $wa=new WarehouseArea('find',$wa_data,'create');
 
 
 
-$sql=sprintf("select * from aw_old.product   order by code   ");
+$sql=sprintf("select * from aw_old.product where code='xob-21'  order by code   ");
 $result=mysql_query($sql);
 while($row2=mysql_fetch_array($result, MYSQL_ASSOC)   ){
   $product_code=$row2['code'];
@@ -79,7 +79,6 @@ while($row2=mysql_fetch_array($result, MYSQL_ASSOC)   ){
 
 
   while($row=mysql_fetch_array($result2xxx, MYSQL_ASSOC)   ){
-
      $location_code=$row['code'];
      //  print "$product_code $location_code\n";
 
@@ -88,12 +87,13 @@ while($row2=mysql_fetch_array($result, MYSQL_ASSOC)   ){
        $used_for='Storing';
     // $location=new Location('code',$location_code);
    //  if(!$location->id){
-       $location=new Location('find',array(
+        $location_data=array(
 					     'Location Warehouse Key'=>1
 					     ,'Location Warehouse Area Key'=>1
 					     ,'Location Code'=>$location_code
 					     ,'Location Mainly Used For'=>$used_for
-					     ),'create');
+					     );
+       $location=new Location('find',$location_data,'create');
      
     
      //}
@@ -115,15 +115,15 @@ while($row2=mysql_fetch_array($result, MYSQL_ASSOC)   ){
        $sku=$part_skus[0];
 
     print "P: $product_code $location_code $used_for Stock: $stock_old_db\n";
-    
+  
        
-       if($used_for=='Picking'){
+  if($used_for=='Picking'){
 	 print "PRIMARY Loc Name:".$row['code']." $product_code  LOC: ".$location->id." SKU: $sku \n";
 	
 	 //wrap it again
 	 
-	 print "wraping sku $sku\n";
-	 wrap_it($sku);
+	// print "wraping sku $sku\n";
+	// wrap_it($sku);
 
 	 
 
@@ -138,8 +138,26 @@ while($row2=mysql_fetch_array($result, MYSQL_ASSOC)   ){
 	 print "Num associated $num_associated\n";
 	 
 
-	 // exit;
+	  $part_location=new PartLocation('find',array('Part SKU'=>$sku,'Location Key'=>$location->id),'create');
+	  $part_location->update_can_pick('Yes');
+	 $note='xxx';
+	 foreach($associated as  $key=>$location_key){
+	    $part_location=new PartLocation($sku.'_'.$location_key);
+	     $data=array(
+			  'user key'=>0
+			  ,'note_out'=>''
+			  ,'note_associate'=>''
+			  ,'note_in'=>$note
 
+			  ,'Destination Key'=>$location->id
+			  ,'Quantity To Move'=>'all'
+			  );
+	    $part_location->move_stock($data);
+	 
+	 }
+	 
+	 
+if(false){
 	 switch($num_associated){
 	 case 1:
 	   if($associated[0]==1){
@@ -197,13 +215,15 @@ while($row2=mysql_fetch_array($result, MYSQL_ASSOC)   ){
 	     //exit;
 	  break;
 	   }else{
+	   
+	   
 	     $part_location=new PartLocation('find',array('Part SKU'=>$sku,'Location Key'=>$location->id),'create');
-	     $part_location->associate();
+	    // $part_location->associate();
 	       $part->load('calculate_stock_history','last');
 	       
 	       
 	       //  if($stock_old_db!=0)
-	       // exit;
+	      
 	       
 	       break;
 	       
@@ -212,7 +232,7 @@ while($row2=mysql_fetch_array($result, MYSQL_ASSOC)   ){
 	   break;
 	 case 0:
 	   $part_location=new PartLocation('find',array('Part SKU'=>$sku,'Location Key'=>$location->id),'create');
-	   $part_location->associate();
+	  // $part_location->associate();
 	   $part->load('calculate_stock_history','last');
 	  
 	   break;
@@ -220,7 +240,7 @@ while($row2=mysql_fetch_array($result, MYSQL_ASSOC)   ){
 	   //	   print_r($associated);
 	  
 	      $part_location=new PartLocation('find',array('Part SKU'=>$sku,'Location Key'=>$location->id),'create');
-	   $part_location->associate();
+	  // $part_location->associate();
 	   $part->load('calculate_stock_history','last');
 	   // exit;
 	   break;
@@ -228,10 +248,13 @@ while($row2=mysql_fetch_array($result, MYSQL_ASSOC)   ){
 	   // exit("todo b");
 	 }
 	 
+	 }
+	 
        }else{
 	 print "STORING ".$row['code']." $product_code  LOC: ".$location->id." SKU: $sku \n";
 	  $part_location=new PartLocation('find',array('Part SKU'=>$sku,'Location Key'=>$location->id),'create');
-	  $part_location->associate();
+	  
+	  //$part_location->associate();
 
 
  // $location->load('parts_data');

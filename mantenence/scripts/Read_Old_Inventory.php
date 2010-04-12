@@ -7,6 +7,8 @@ include_once('../../class.Supplier.php');
 include_once('../../class.Part.php');
 include_once('../../class.SupplierProduct.php');
 include_once('../../class.PartLocation.php');
+include_once('../../class.User.php');
+include_once('../../class.InventoryAudit.php');
 
 error_reporting(E_ALL);
 error_reporting(E_ALL);
@@ -32,7 +34,23 @@ date_default_timezone_set('Europe/London');
 $not_found=00;
 
 
-$sql=
+print "Setting auditions\n";
+$sql=sprintf('select *  from `Part Location Dimension` ');
+$res=mysql_query($sql);
+while($row=mysql_fetch_array($res)){
+ print $row['Part SKU'].'_'.$row['Location Key']."\r";
+ $part_location=new PartLocation($row['Part SKU'].'_'.$row['Location Key']);
+ $part_location->set_audits();
+}
+
+exit;
+
+
+
+
+$sql="delete  from `Location Dimension`  ";
+mysql_query($sql);
+$sql1=
 "INSERT INTO `dw`.`Location Dimension` (
 `Location Key` ,
 `Location Warehouse Key` ,
@@ -50,15 +68,31 @@ $sql=
 VALUES (
 '1', '1', '1','Unknown', 'Picking', NULL , NULL , NULL , '0', 'Unknown', '0.00'
 );";
+  mysql_query($sql1);
+
+$sql2=
+"INSERT INTO `dw`.`Location Dimension` (
+`Location Key` ,
+`Location Warehouse Key` ,
+`Location Warehouse Area Key` ,
+
+`Location Code` ,
+`Location Mainly Used For` ,
+`Location Max Weight` ,
+`Location Max Volume` ,
+`Location Max Slots` ,
+`Location Distinct Parts` ,
+`Location Has Stock` ,
+`Location Stock Value`
+)
+VALUES (
+'2', '1', '1','LoadBay', 'Loading', NULL , NULL , NULL , '0', 'Unknown', '0.00'
+);";
 
 
 
 
-
-$loc= new Location(1);
-if(!$loc->id)
-  mysql_query($sql);
-
+  mysql_query($sql2);
 
 $wa_data=array(
 'Warehouse Area Name'=>'Unknown'
@@ -73,15 +107,23 @@ $sql="delete from  `Inventory Transaction Fact` where `Inventory Transaction Typ
 mysql_query($sql);
 $sql="delete  from `Part Location Dimension`  ";
 mysql_query($sql);
-$sql="delete  from `Location Dimension` where `Location Key`>1 ";
+
+$sql="delete  from `Inventory Audit Dimension`  ";
 mysql_query($sql);
 
 print "Getting data from the oold database\n";
 
-$sql="select code,product_id,aw_old.in_out.date,aw_old.in_out.tipo,aw_old.in_out.quantity ,aw_old.in_out.notes from aw_old.in_out left join aw_old.product on (product.id=product_id) where product.code is not null and (aw_old.in_out.tipo=2 or aw_old.in_out.tipo=1)   order by product.id,date ";
+$sql="select (select handle from aw_old.liveuser_users where authuserid=aw_old.in_out.author) as user, code,product_id,aw_old.in_out.date,aw_old.in_out.tipo,aw_old.in_out.quantity ,aw_old.in_out.notes from aw_old.in_out left join aw_old.product on (product.id=product_id) where   product.code is not null and (aw_old.in_out.tipo=2 or aw_old.in_out.tipo=1)   order by product.id,date ";
+
 $result=mysql_query($sql);
 
 while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
+  
+  
+  //print $row['user']."\n";
+  $user=new User('handle',$row['user'],'Staff');
+  $user_key=$user->id;
+  
   
   $date=$row['date'];
   $code=$row['code'];
@@ -118,10 +160,23 @@ while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
     
     if($tipo==2){
 
-      $sql=sprintf("insert into `Inventory Transaction Fact` (`Date`,`Part SKU`,`Inventory Transaction Type`,`Inventory Transaction Quantity`,`Inventory Transaction Amount`,`Note`,`Metadata`,`History Type`) values (%s,%s,'Audit',%s,%s,%s,'','Normal')",prepare_mysql($date),prepare_mysql($part_sku),prepare_mysql($qty*$parts_per_product),prepare_mysql($cost_per_part*$qty*$parts_per_product),prepare_mysql($notes));
-      //       print "A: $sql\n";
-      if(!mysql_query($sql))
-	exit("$sql can into insert Inventory Transaction Fact ");
+      
+	//print "Adding Audit\n";
+		
+	$data_inventory_audit=array(
+	 'Inventory Audit Date'=>$date
+	,'Inventory Audit Part SKU'=>$part_sku
+	,'Inventory Audit Location Key'=>1
+	,'Inventory Audit Note'=>$notes
+	,'Inventory Audit User Key'=>$user_key
+	,'Inventory Audit Quantity'=>$qty*$parts_per_product
+	);
+	$audit=new InventoryAudit('find',$data_inventory_audit,'create');
+	
+	
+	
+	
+	
     }else{
       
       
@@ -167,12 +222,20 @@ while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
    
 
     if($tipo==2){
+//print "Adding Audit 2 \n";
+$data_inventory_audit=array(
+	 'Inventory Audit Date'=>$date
+	,'Inventory Audit Part SKU'=>$part_sku
+	,'Inventory Audit Location Key'=>1
+	,'Inventory Audit Note'=>$notes
+	,'Inventory Audit User Key'=>$user_key
+	,'Inventory Audit Quantity'=>$qty*$parts_per_product
+	);
+	$audit=new InventoryAudit('find',$data_inventory_audit,'create');
+	
+	
 
-      $sql=sprintf("insert into `Inventory Transaction Fact` (`Date`,`Part SKU`,`Inventory Transaction Type`,`Inventory Transaction Quantity`,`Inventory Transaction Amount`,`Note`,`Metadata`) values (%s,%s,'Audit',%s,%s,%s,'')",prepare_mysql($date),prepare_mysql($part_sku),prepare_mysql($qty*$parts_per_product),prepare_mysql($cost_per_part*$qty*$parts_per_product),prepare_mysql($notes));
-      // print "$sql\n";
-      //print "B: $sql\n";
-      if(!mysql_query($sql))
-	exit("$sql can into insert Inventory Transaction Fact ");
+	
     }else{
       
       
@@ -217,8 +280,24 @@ while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
       prepare_mysql($notes,false));
       // print "$sql\n";
        //print "B: $sql\n";
-      if(!mysql_query($sql))
-	exit("$sql can into insert Inventory Transaction Fact ");
+//      if(!mysql_query($sql))
+//	exit("$sql can into insert Inventory Transaction Fact ");
+	
+//	print "Adding Audit 3 \n";
+	
+	$data_inventory_audit=array(
+	 'Inventory Audit Date'=>$date
+	,'Inventory Audit Part SKU'=>$part_sku
+	,'Inventory Audit Location Key'=>1
+	,'Inventory Audit Note'=>$notes
+	,'Inventory Audit User Key'=>$user_key
+	,'Inventory Audit Quantity'=>$qty*$parts_per_product
+	);
+	$audit=new InventoryAudit('find',$data_inventory_audit,'create');
+	
+
+	
+	
     }else{
       
       $sql=sprintf("insert into `Inventory Transaction Fact` (`Date`,`Part SKU`,`Inventory Transaction Type`,`Inventory Transaction Quantity`,`Inventory Transaction Amount`,`note`,`Metadata`) values (%s,%s,'In',%s,%s,%s,'')",
@@ -277,35 +356,56 @@ mysql_query($sql);
 
 //  }
 
-print "Wrpaping\n";
+print "Wrpaping + Addng Part Locations\n";
 // Wrap the transactions
  $sql="delete from  `Inventory Transaction Fact` where `Inventory Transaction Type` in ('Associate','Disassociate') ";
  mysql_query($sql);
 
 
 
-$sql=sprintf("select `Part SKU` from `Inventory Transaction Fact` group by `Part SKU` ");
+
+
+$sql=sprintf("select `Part SKU` from `Inventory Transaction Fact`   group by `Part SKU` ");
 $result=mysql_query($sql);
 //print $sql;
 while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
   $sku=$row['Part SKU'];
   print "$sku       \r";
   
-  $sql=sprintf("select `Date` from `Inventory Transaction Fact` where  `Part SKU`=%d  and `Inventory Transaction Type` in ('Audit','Not Found','Sale') order by `Date`  ",$sku);
+  $sql=sprintf('select `Inventory Audit Date` from `Inventory Audit Dimension` where `Inventory Audit Part SKU`=%d  order by `Inventory Audit Date`'
+,$sku
+
+);
+$_date='';
+$resxxx=mysql_query($sql);
+if($rowxxx=mysql_fetch_array($resxxx)){
+$_date=($rowxxx['Inventory Audit Date']);
+}
+  
+  
+  
+  
+  $sql=sprintf("select `Location Key`,`Date` from `Inventory Transaction Fact` where  `Part SKU`=%d  and `Inventory Transaction Type` in ('Audit','Not Found','Sale') order by `Date`  ",$sku);
   $result2=mysql_query($sql);
   // print "$sql\n";
   if($row2=mysql_fetch_array($result2, MYSQL_ASSOC)   ){
-    
-    $date=date("Y-m-d H:i:s",strtotime($row2['Date']." -1 second"));
-    $sql=sprintf("insert into `Inventory Transaction Fact` (`Date`,`Part SKU`,`Inventory Transaction Type`,`Inventory Transaction Quantity`,`Inventory Transaction Amount`,`Note`,`Metadata`,`History Type`) values (%s,%d,'Associate',%s,%s,%s,'','Admin')"
-		 ,prepare_mysql($date)
-		  ,$sku
-		 ,0
-		 ,0
-		 ,"''");
-    // print "$sql\n";
-    if(!mysql_query($sql))
-      exit("$sql can into insert Inventory Transaction Fact star");
+   
+   if($_date and strtotime($_date)<strtotime($row2['Date'])  )
+   $date=$_date;
+   else
+   $date=$row2['Date'];
+   
+    $date=date("Y-m-d H:i:s",strtotime("$date -1 second"));
+   
+   
+   
+       $part_location=new PartLocation('find',array(
+        'Part SKU'=>$sku,
+        'Location Key'=>$row2['Location Key'],
+        'Date'=>$date)
+        ,'create');
+
+ 
   }
 
 
@@ -330,54 +430,14 @@ while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
   }
 }
 
-
-print "creating part-locations\n";
-
-$sql=sprintf("select * from `Inventory Transaction Fact` where `Inventory Transaction Type`='Associate'   ");
-//print $sql;
+print "Setting auditions\n";
+$sql=sprintf('select *  from `Part Location Dimension`');
 $res=mysql_query($sql);
 while($row=mysql_fetch_array($res)){
-  $date=$row['Date'];
-  $sku=$row['Part SKU'];
-  $location_key=$row['Location Key'];
-  
-  $sql=sprintf("select * from `Inventory Transaction Fact` where `Inventory Transaction Type`='Disassociate'  and `Date`>%s  and `Part SKU`=%d and `Location Key`=%d "
-	       ,prepare_mysql($date)
-	       ,$sku
-	       ,$location_key
-	       );
-  //print "$sql\n";
-  $res2=mysql_query($sql);
-  $do_it=true;
-  if($row2=mysql_fetch_array($res2)){
-    $do_it=false;
-
-  }
-  if($do_it){
-    //print "adding $sku $location_key\n";
-    $part_location=new PartLocation('find',array('Part SKU'=>$sku,'Location Key'=>$location_key),'create');
-  }
-
+ print $row['Part SKU'].'_'.$row['Location Key']."\n";
+ $part_location=new PartLocation($row['Part SKU'].'_'.$row['Location Key']);
+ $part_location->set_audits();
 }
-mysql_free_result($res);
-
-/*   print "creation locations"; */
-  
-/*   $sql="select * from `Inventory Transaction Fact` where `Inventory Transaction Type` in ('Associate') order by Date "; */
-/* $result=mysql_query($sql); */
-/* while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){ */
-
-  
-  
-/*     $pl=new PartLocation('find', */
-/* 			 array('Location Key'=>$row['Location Key'],'Part SKU'=>$row['Part SKU']),'create'); */
-
-
-
-
-/*  } */
-
-
   
 
   

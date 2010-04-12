@@ -95,16 +95,17 @@ while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
   //if(!mysql_query($sql))
   //  exit("ERROR $sql\n");
   }
-  $part->load('sales');
+  
   $part->load('used in');
   $part->load('supplied by');
+  //s$part->load('sales');
   
-  if(!isset($argv[1])){
+ // if(!isset($argv[1])){
     
     $part->load('stock');
     $part->load('forecast');
 
-  }
+ // }
 
   //   $part->load('stock_history');
   //   $part->load('future costs');

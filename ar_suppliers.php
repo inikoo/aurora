@@ -1544,9 +1544,11 @@ function list_supplier_products() {
 
     $wheref='';
 
+//print "$f_field -> $f_value";
 
-    if (($f_field=='code' ) and $f_value!='')
-        $wheref.=" and  `Supplier Product XHTML Used In` like '".addslashes($f_value)."%'";
+
+    if (($f_field=='p.code' ) and $f_value!='')
+        $wheref.=" and  `Supplier Product XHTML Used In` like '%".addslashes($f_value)."%'";
     if ($f_field=='sup_code' and $f_value!='')
         $wheref.=" and  `Supplier Product Code` like '".addslashes($f_value)."%'";
 
@@ -1559,7 +1561,7 @@ function list_supplier_products() {
 
     $sql="select count(*) as total from `Supplier Product Dimension`  $where $wheref ";
 
-
+//print $sql;
     $result=mysql_query($sql);
     if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
         $total=$row['total'];
@@ -1569,8 +1571,9 @@ function list_supplier_products() {
         $total_records=$total;
     } else {
 
-        $sql="select count(*) as total `Supplier Product Dimension`  $where  ";
-        $result=mysql_query($sql);
+        $sql="select count(*) as total from `Supplier Product Dimension`  $where  ";
+      // print $sql;
+       $result=mysql_query($sql);
         if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
             $total_records=$row['total'];
             $filtered=$row['total']-$total;
