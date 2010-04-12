@@ -51,6 +51,8 @@ Number_New_Telecoms['fax']=0;
 var Number_New_Contact_Address=0;
 
 var save_contact=function(){
+
+
     var table='contact';
     if(Dom.get('Contact_Key').value==0){
 	var contact_key=0;
@@ -61,8 +63,7 @@ var save_contact=function(){
    }
     save_contact_elements=0;
 
-    
-
+   
     if(Contact_Name_Changes>0 || Contact_Details_Changes>0){
 	var name_value=new Object();
 	var items=Contact_Name_Keys;
@@ -70,12 +71,12 @@ var save_contact=function(){
 	    name_value[items[i]]=Dom.get(items[i]).value;
 	}
 	var value=new Object();
+	    
 	var items=Contact_Details_Keys;
 	for(i in items){
 	    value[items[i]]=Dom.get(items[i]).value;
-	}
+	}    
 	value['Contact_Name_Components']=name_value;
-	
 	var json_value = YAHOO.lang.JSON.stringify(value); 
 	var request='ar_edit_contacts.php?tipo='+action+'_'+escape(table)+ '&value=' + json_value+'&id='+contact_key+'&subject='+Subject+'&subject_key='+Subject_Key; 
 	alert(request);
@@ -98,6 +99,7 @@ var save_contact=function(){
 		}
 	    });
     }
+
 
      if(Contact_Emails_to_edit>0 || Contact_Emails_to_add>0){
 	  var elements_array=Dom.getElementsByClassName('Email', 'input');
@@ -204,12 +206,12 @@ var save_contact=function(){
 		    var json_value = YAHOO.lang.JSON.stringify(value); 
 		    
 		    var request='ar_edit_contacts.php?tipo=edit_telecom&value=' + json_value+'&id='+contact_key+'&subject=contact&subject_key='+contact_key; 
-		 //alert(request);
+		 alert(request);
 		  
 		    YAHOO.util.Connect.asyncRequest('POST',request ,{
 			    success:function(o) {
-			//	alert(o.responseText);
-			//	return;
+			alert(o.responseText);
+			return;
 				var r =  YAHOO.lang.JSON.parse(o.responseText);
 				if(r.action=='updated' || r.action=='created'){
 				    

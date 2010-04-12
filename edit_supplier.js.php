@@ -185,7 +185,7 @@ var change_view=function(e){
     Dom.get(table.view).className="";
     Dom.get(tipo).className="selected";
     table.view=tipo
-    YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=suppliers-view&value=' + escape(tipo) );
+    YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=suppliers-view&value=' + escape(tipo),{} );
 };
 function change_block(e){
      if(editing!=this.id){
@@ -203,7 +203,7 @@ function change_block(e){
 	Dom.removeClass(editing,'selected');
 	Dom.addClass(this, 'selected');
 	
-	YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=supplier-edit&value='+this.id );
+	YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=supplier-edit&value='+this.id ,{});
 	
 	editing=this.id;
     }

@@ -1337,6 +1337,39 @@ class supplier extends DB_Table{
   }
 
 
+ function get_contacts($args='only active') {
+
+    $extra_args='';
+    if (preg_match('/only active|active only/i',$args))
+      $extra_args=" and `Is Active`='Yes'";
+    if (preg_match('/only main|main only/i',$args))
+      $extra_args=" and `Is Main`='Yes'";
+    if (preg_match('/only not? active/i',$args))
+      $extra_args=" and `Is Active`='No'";
+    if (preg_match('/only not? main/i',$args))
+      $extra_args=" and `Is Main`='No'";
+
+
+
+
+
+    $sql=sprintf("select CB.`Contact Key` from `Contact Bridge` CB left join `Contact Dimension` C on (CB.`Contact Key`=C.`Contact Key`)
+                     where  `Subject Type`='Supplier' and `Subject Key`=%d %s order by `Is Main`, `Contact File As`  ",$this->id,$extra_args);
+
+//print $sql;
+    $contacts=array();
+    $result=mysql_query($sql);
+    while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+      $contact=new Contact($row['Contact Key']);
+      $contact->set_scope('Supplier',$this->id);
+      $contacts[]=$contact;
+
+    }
+    return $contacts;
+  }
+
+
+
 }
 
 

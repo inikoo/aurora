@@ -132,7 +132,7 @@ class User extends DB_Table{
   }
 
 
-  function get_data($key,$data,$data2=''){
+  function get_data($key,$data,$data2='Staff'){
     global $_group;
     //    print "acac---- $key ----  $data ---asasqqqqqqqqq";
     if($key=='handle')

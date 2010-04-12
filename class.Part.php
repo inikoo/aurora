@@ -108,6 +108,9 @@ class part extends DB_Table{
 
  }
 
+
+
+
   function load($data_to_be_read,$args=''){
     switch($data_to_be_read){
     case('stock_history'):
@@ -537,19 +540,8 @@ class part extends DB_Table{
     //   print_r($this->used_in_list);
       break;
     case("used in"):
-      $used_in_products='';
-      $raw_used_in_products='';
-      $sql=sprintf("select PD.`Product ID`,`Product Code` from `Product Part List` PPL left join `Product Dimension` PD on (PD.`Product ID`=PPL.`Product ID`)  where `Part SKU`=%d group by `Product Code` order by `product Code`",$this->data['Part SKU']);
-      $result=mysql_query($sql);
-      //      print "$sql\n";
-      while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
-	$used_in_products.=sprintf(', <a href="product.php?pid=%d">%s</a>',$row['Product ID'],$row['Product Code']);
-	$raw_used_in_products=' '.$row['Product Code'];
-      }
-      $used_in_products=preg_replace('/^, /','',$used_in_products);
-      $sql=sprintf("update `Part Dimension` set `Part XHTML Currently Used In`=%s ,`Part Currently Used In`=%s  where `Part SKU`=%d",prepare_mysql(_trim($used_in_products)),prepare_mysql(_trim($raw_used_in_products)),$this->id);
-      //print "$sql\n";
-      mysql_query($sql);
+    $this->update_used_in();
+      
       break;
     case("supplied by"):
        $supplied_by='';
@@ -834,6 +826,11 @@ function get_supplier_products(){
     
   }
 
+function get_location_keys(){
+$this->load_current_locations();
+return $this->current_associated_locations;
+}
+
   function load_current_locations(){
  $this->current_associated_locations=array();
       $sql=sprintf("select `Location Key` from `Part Location Dimension` where   `Part SKU`=%d    group by `Location Key`  ",$this->data['Part SKU']);
@@ -866,6 +863,25 @@ function get_supplier_products(){
 
 
   }
+
+function update_stock(){
+$stock=0;$value=0;
+
+$sql=sprintf("select sum(`Quantity On Hand`) as stock, sum(`Stock Value`) as value from `Part Location Dimension` where `Part SKU`=%d ",$this->sku);
+ //print "$sql\n";
+ $result=mysql_query($sql);
+    if($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
+    $stock=$row['stock'];
+$value=$row['value'];
+    }
+    $sql=sprintf("update `Part Dimension` set `Part Current Stock`=%f ,`Part Current Value`=%f where  `Part SKU`=%d"
+    ,$stock
+,$value
+    ,$this->sku);
+    mysql_query($sql);
+    
+}
+
 
 function update_sales(){
   // the product wich this one is 
@@ -1146,5 +1162,42 @@ function estimated_cost(){
       if(!mysql_query($sql))
 	exit(" $sql\n error con not uopdate part futire costss");
 }
+function update_used_in(){
+$used_in_products='';
+      $raw_used_in_products='';
+      $sql=sprintf("select `Store Code`,PD.`Product ID`,`Product Code` from `Product Part List` PPL left join `Product Dimension` PD on (PD.`Product ID`=PPL.`Product ID`) left join `Store Dimension`  on (PD.`Product Store Key`=`Store Key`)  where `Part SKU`=%d  order by `Product Code`,`Store Code`",$this->data['Part SKU']);
+      $result=mysql_query($sql);
+       //    print "$sql\n";
+      $used_in=array();
+      while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
+        if(!array_key_exists($row['Product Code'],$used_in))
+            $used_in[$row['Product Code']]=array();
+            if(!array_key_exists($row['Store Code'],$used_in[$row['Product Code']]))
+             $used_in[$row['Product Code']][$row['Store Code']]=array();
+        $used_in[$row['Product Code']][$row['Store Code']][$row['Product ID']]=1;
 
+      }
+     // print_r($used_in);
+      foreach($used_in as $code=>$store_data){
+      $raw_used_in_products.=' '.$code;
+            $used_in_products.=sprintf(', <a href="product.php?code=%s">%s</a>',$code,$code);
+            $used_in_products_2='';
+            foreach($store_data as $store_code=>$product_id_data){
+             foreach($product_id_data as $product_id=>$tmp){
+                $used_in_products_2.=sprintf(',<a href="product.php?pid=%d">%s</a>',$product_id,$store_code);
+            }
+            }
+            $used_in_products_2=preg_replace('/^,/','',$used_in_products_2);
+            $used_in_products.=" ($used_in_products_2)";
+            
+      }
+      
+      //$used_in_products.=sprintf(', <a href="product.php?code=%s">%s</a>',$row['Product Code'],$row['Product Code']);
+	//$raw_used_in_products=' '.$row['Product Code'];
+      
+      $used_in_products=preg_replace('/^, /','',$used_in_products);
+      $sql=sprintf("update `Part Dimension` set `Part XHTML Currently Used In`=%s ,`Part Currently Used In`=%s  where `Part SKU`=%d",prepare_mysql(_trim($used_in_products)),prepare_mysql(_trim($raw_used_in_products)),$this->id);
+    //  print "$sql\n";
+      mysql_query($sql);
+}
 }

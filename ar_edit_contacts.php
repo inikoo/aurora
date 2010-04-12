@@ -431,97 +431,130 @@ function edit_email($data){
    echo json_encode($response);
 
 }
-function edit_telecom($data){
-  global $editor;
-  
-  if(preg_match('/^company$/i',$data['subject']))
-    $subject=new Company($data['subject_key']);
-  else{
-    $subject=new Contact($data['subject_key']);
-   }
-  
-  if(!$subject->id){
-    $response=array('state'=>400,'msg'=>'Subject not found');
-    echo json_encode($response);
-    return;
-  }
-  
-  
+function edit_telecom($data) {
+    global $editor;
 
-   $editing=false;
-   $creating=false;
+    if (preg_match('/^company$/i',$data['subject']))
+        $subject=new Company($data['subject_key']);
+    $subject_type='Company';
+    else {
+        $subject=new Contact($data['subject_key']);
+        $subject_type='Contact';
 
-   $msg=_('No changes');
-  
-   if($data['value']['Telecom Key']>0){
-     $action='updated';
-     $telecom=new Telecom('id',$data['value']['Telecom Key']);
-     if(!$telecom->id){
-       $response=array('state'=>400,'msg'=>'Telecom not found');
-       echo json_encode($response);
-       return;
-     }
-     $telecom->set_editor($editor);
-     $telecom->update_number($data['value']['Telecom']);
-     if($telecom->error_updated){
-      $response=array('state'=>200,'action'=>'error','msg'=>$telecom->msg_updated);
-       echo json_encode($response);
-       return;
-     }
+    }
 
-     if($telecom->updated)
-       $msg=_('Telecom updated');
+    if (!$subject->id) {
+        $response=array('state'=>400,'msg'=>'Subject not found');
+        echo json_encode($response);
+        return;
+    }
 
-     $update_data=array(
-			'Telecom Key'=>$data['value']['Telecom Key']
-			,'Telecom Is Main'=>$data['value']['Telecom Is Main']
-			,'Telecom Type'=>$data['value']['Telecom Type']
-			);
-     $subject->add_tel($update_data);
-     if($subject->updated)
-       $msg=_('Telecom updated');
-     $telecom->set_scope($data['subject'],$data['subject_key']);
+    $address_key=0;
+    if (array_key_exists('Address Key',$data['value']) )) {
+        $address_key=$data['value']['Address Key'];
+    }
 
-   }else{
-     $action='created';
-       $update_data=array(
-			'Telecom'=>$data['value']['Telecom']
-			,'Telecom Is Main'=>$data['value']['Telecom Is Main']
-            ,'Telecom Type'=>$data['value']['Telecom Type']
-			);
-       $subject->add_telecom($update_data,'if found error');
-       if($subject->error){
-	 $response=array('state'=>200,'action'=>'error','msg'=>$subject->msg_updated);
-	 echo json_encode($response);
-	 return;
-       }
-       if($subject->inserted_telecom){
-	 $telecom=new Telecom ($subject->inserted_telecom);
-	 $telecom->set_scope($data['subject'],$data['subject_key']);
-	 $msg=_("Telecom created");
-       }else{
-	 $response=array('state'=>200,'action'=>'nochange','msg'=>$subject->msg_updated);
-	 echo json_encode($response);
-	 return;
-       }
-   }
-  $updated_telecom_data=array(
-			      'Telecom'=>$telecom->display()
-			      ,'Telecom_Is_Main'=> $telecom->data['Telecom Is Main']
-			      ,'Telecom Type'=>$data['value']['Telecom Type']
-			    );
-  $subject->reread();
-  $response=array(
-		  'state'=>200
-		  ,'action'=>$action
-		  ,'msg'=>$msg
-		  ,'telecom_key'=>$telecom->id
-		  ,'updated_data'=>$updated_telecom_data
-		  ,'xhtml_subject'=>$subject->display('card')
-		  ,'main_telecom_key'=>$subject->get_main_telecom_key()
-		  );
-    
-   echo json_encode($response);
+    $editing=false;
+    $creating=false;
+
+    $msg=_('No changes');
+
+    if ($data['value']['Telecom Key']>0) {
+        $action='updated';
+        $telecom=new Telecom('id',$data['value']['Telecom Key']);
+        if (!$telecom->id) {
+            $response=array('state'=>400,'msg'=>'Telecom not found');
+            echo json_encode($response);
+            return;
+        }
+        $telecom->set_editor($editor);
+        $telecom->update_number($data['value']['Telecom']);
+        if ($telecom->error_updated) {
+            $response=array('state'=>200,'action'=>'error','msg'=>$telecom->msg_updated);
+            echo json_encode($response);
+            return;
+        }
+
+        if ($telecom->updated)
+            $msg=_('Telecom updated');
+
+        $update_data=array(
+                         'Telecom Key'=>$data['value']['Telecom Key'],
+                         'Telecom Is Main'=>$data['value']['Telecom Is Main'],
+                         'Telecom Type'=>$data['value']['Telecom Type']
+                     );
+        $subject->add_tel($update_data);
+        if ($subject->updated)
+            $msg=_('Telecom updated');
+        $telecom->set_scope($data['subject'],$data['subject_key']);
+
+    } else {
+        $action='created';
+
+
+        $update_data=array(
+                         'Telecom'=>$data['value']['Telecom'],
+                         'Telecom Is Main'=>$data['value']['Telecom Is Main'],
+                         'Telecom Type'=>$data['value']['Telecom Type']
+                     );
+
+
+
+        $telephone_data=array('Telecom Raw Number'=>$data['value']['Telecom']);
+        $telephone_data['editor']=$editor;
+        $telephone=new Telecom("find in $subject_type ".$subject->id." create  country code ".$subject->data[$subject_type.' Main Country Code']."   ",$telephone_data);
+
+        if ($telephone->is_mobile()) {
+            $subject->add_tel(array(
+                                  'Telecom Key'=>$telephone->id,
+                                  'Telecom Type'=>'Mobile'
+                              ));
+
+        } else {
+            $subject->add_tel(array(
+                                  'Telecom Key'=>$telephone->id,
+                                  'Telecom Type'=>'Home Telephone'
+                              ));
+            //  $this->new_home_telephone_keys[$telephone->id]=1;
+            $address_key=$subject->data[$subject_type.' Main Address Key'];
+            if ($address_key) {
+                $sql=sprintf("insert into `Address Telecom Bridge` values (%d,%d)",$address_key,$telephone->id);
+                mysql_query($sql);
+            }
+        }
+
+
+    }
+
+    if ($subject->error) {
+    $response=array('state'=>200,'action'=>'error','msg'=>$subject->msg_updated);
+        echo json_encode($response);
+        return;
+    }
+
+    if ($subject->add_telecom) {
+    $updated_telecom_data=array();
+    $action='';
+    4msg='';
+    $response=array(
+                  'state'=>200,
+                  'action'=>$action,
+                  'msg'=>$msg,
+                  'telecom_key'=>$telecom->id,
+                  'updated_data'=>$updated_telecom_data,
+                  'xhtml_subject'=>$subject->display('card'),
+                  'main_telecom_key'=>$subject->get_main_telecom_key()
+              );
+
+        echo json_encode($response);
+        return;
+    } else {
+        $response=array('state'=>200,'action'=>'nochange','msg'=>$subject->msg_updated);
+        echo json_encode($response);
+        return;
+
+    }
+
 
 }
 function new_address(){

@@ -1,7 +1,7 @@
 <?php
 include_once('common.php');
 //include_once('stock_functions.php');
-include_once('class.Product.php');
+include_once('class.SupplierProduct.php');
 
 
 
@@ -46,153 +46,48 @@ $js_files=array(
 // }
 // //print_r($hide);
 
-$smarty->assign('display',$_SESSION['state']['product']['display']);
+$smarty->assign('display',$_SESSION['state']['supplier_product']['display']);
 
 // $smarty->assign('view_plot',$_SESSION['views']['product_plot']);
 
-if(!isset($_REQUEST['id']) and is_numeric($_REQUEST['id']))
-  $product_id=1;
-else
-  $product_id=$_REQUEST['id'];
-$_SESSION['state']['product']['id']=$product_id;
+if(!isset($_REQUEST['code']) 
+or !isset($_REQUEST['supplier_key'])  
+or !is_numeric($_REQUEST['supplier_key'])
+){
+//header('Location: suppliers.php?e');
+   exit('x');
+}
+
+$supplier_product= new SupplierProduct('code',$_REQUEST['code'],$_REQUEST['supplier_key']);
+if(!$supplier_product->id){
+header('Location: supplier.php?id='.$_REQUEST['supplier_key']);
+   exit;
+
+}
 
 
-$product= new product($product_id);
-$product->group_by('code');
-$product->load(array(
-		     'suppliers'
-		     ,'product_tree'
-		     ,'images'
-		     ,'locations'
-		     ,'weblinks'
-		     )
-	       );
-
-$smarty->assign('product',$product);
-$num_links=$product->get('num_links');
-$smarty->assign('num_links',$num_links);
-$smarty->assign('fnum_links',number($num_links).' '.ngettext($num_links,'link','links'));
-//print_r($product->data);
-$smarty->assign('data',$product->data);
-
-//$smarty->assign('web_status',$_web_status[$product->get('web_status')]);
-
-$web_status_error=false;
-$web_status_error_title='';
- if($product->get('Product Web State')=='Online For Sale'){
-   if(!($product->get('Product Availability')>0)){
-     $web_status_error=true;
-     $web_status_error_title=_('This product is out of stock');
-   }
-  }else{
-   if($product->get('Product Availability')>0){
-       $web_status_error=true;
-       $web_status_error_title=_('This product is not for sale on the webpage');
-   }
- }
-
-$smarty->assign('web_status_error',$web_status_error);
-$smarty->assign('web_status_error_title',$web_status_error_title);
-
-
-// $fam_order=$_SESSION['state']['family']['table']['order'];
-// $sql=sprintf("select id,code from product where  %s<'%s' and  group_id=%d order by %s desc  ",$fam_order,$product->get($fam_order),$product->get('group_id'),$fam_order);
-// $result=mysql_query($sql);
-// if(!$prev=mysql_fetch_array($result, MYSQL_ASSOC))
-//   $prev=array('id'=>0,'code'=>'');
-// $sql=sprintf("select id,code from product where  %s>'%s' and group_id=%d order by %s   ",$fam_order,$product->get($fam_order),$product->get('group_id'),$fam_order);
-// $result=mysql_query($sql);
-// if(!$next=mysql_fetch_array($result, MYSQL_ASSOC))
-//   $next=array('id'=>0,'code'=>'');
-
-// $smarty->assign('prev',$prev);
-// $smarty->assign('next',$next);
-
-
-//$locations=($product->get('locations'));
-
-//$smarty->assign('locations',$locations['data']);
-//$smarty->assign('num_suppliers',$product->get('number_of_suppliers'));
-//$smarty->assign('suppliers',$product->supplier);
-
-
-
-$smarty->assign('parent','products');
-$smarty->assign('title',$product->get('Product Code'));
-
-
-$product_home="Products Home";
-$smarty->assign('home',$product_home);
-$smarty->assign('department',$product->get('Product Main Department Name'));
-$smarty->assign('department_id',$product->get('Product Main Department Key'));
-$smarty->assign('family',$product->get('Product Family Code'));
-$smarty->assign('family_id',$product->get('Product Family Key'));
-//$smarty->assign('images',$product->get('images'));
-//$smarty->assign('image_dir',$myconf['images_dir']);
-//$smarty->assign('num_images',$product->get('num_images'));
-
-
-
-//$weeks=$product->get('weeks_since');
-
-
-// assign plot tipo depending of the age of the product
-
-// $tipo_plot='sales';
-// if(preg_match('/outers/',$_SESSION['state']['product']['plot']))
-//   $tipo_plot='outers';
-
-
-// if($weeks>500){
-//   $time_plot='month';
-//  }elseif($weeks>52){
-//    $time_plot='month';
-//  }else{
-//    $time_plot='week';
-//  }
-
-//$plot_tipo='product_'.$time_plot.'_'.$tipo_plot;
-$plot_tipo=$_SESSION['state']['product']['plot'];
-$plot_data=$_SESSION['state']['product']['plot_data'];
-
-//print print_r($_SESSION['state']['product']);
-$smarty->assign('plot_tipo',$plot_tipo);
-$smarty->assign('plot_data',$plot_data);
+$_SESSION['state']['supplier_product']['code']=$supplier_product->data['Supplier Product Code'];
+$_SESSION['state']['supplier_product']['code']=$supplier_product->data['Supplier Key'];
 
 
 
 
-$smarty->assign('stock_table_options',array(_('Inv'),_('Pur'),_('Adj'),_('Sal'),_('P Sal')) );
-$smarty->assign('stock_table_options_tipo', $_SESSION['views']['stockh_table_options'] );
-$smarty->assign('table_title_orders',_('Orders'));
-$smarty->assign('table_title_customers',_('Customers'));
-$smarty->assign('table_title_stock',_('Stock History'));
+$smarty->assign('supplier_product',$supplier_product);
 
+$smarty->assign('parent','suppliers');
+$smarty->assign('title',$supplier_product->get('Supplier Product Code'));
 
-
-$smarty->assign('key_filter_number',$regex['key_filter_number']);
-$smarty->assign('key_filter_dimension',$regex['key_filter_dimension']);
 
 
 $js_files[]= 'js/search.js';
-$js_files[]='js/product.js.php';
+$js_files[]='js/supplier_product.js.php';
 
-// $smarty->assign('tsoall',number($product->get('tsoall')));
-// $smarty->assign('awtsoall',number($product->get('awtsoall')));
-// $smarty->assign('awtsoq',number($product->get('awtsoq')));
-// $smarty->assign('units',number($product->gr['units']));
-// $smarty->assign('price',money($product->data['price']));
-// $smarty->assign('rrp',money($product->data['rrp']));
-// $smarty->assign('weeks_since',number($product->get('weeks')));
-
-// $smarty->assign('unit_price',money($product->data['price']/$product->data['units']));
 
 
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
 
-$smarty->assign('web_status_menu',$_web_status);
 
 
-$smarty->display('product.tpl');
+$smarty->display('supplier_product.tpl');
 ?>
