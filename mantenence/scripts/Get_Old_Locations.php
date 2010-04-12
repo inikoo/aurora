@@ -128,7 +128,7 @@ while($row2=mysql_fetch_array($result, MYSQL_ASSOC)   ){
 	 
 
 	 $part= new Part($sku);
-	 $part->load('calculate_stock_history','last');
+	 //	 $part->load('calculate_stock_history','last');
 
 
 	 print "--------------\n";

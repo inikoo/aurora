@@ -697,7 +697,14 @@ break;
   }
   
 
- 
+  function update_part_status($value){
+     $sql=sprintf("update `Part Dimension`  set `Part Status`=%s where  `Part SKU`=%d   "
+		 ,prepare_mysql($value)
+		 ,$this->id
+		 );
+    mysql_query($sql);
+
+  }
 
   function update_valid_dates($date){
     $affected_from=0;
@@ -863,6 +870,22 @@ return $this->current_associated_locations;
 
 
   }
+
+  function get_comercial_value($date=''){
+
+    return 0;
+  }
+
+
+  function update_stock_history(){
+$sql=sprintf("select `Location Key`  from `Part Location Dimension` where `Part SKU`=%d ",$this->sku);
+ //print "$sql\n";
+ $result=mysql_query($sql);
+    while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
+      $part_location=new PartLocation($this->sku.'_'.$row['Location Key']);
+      $part_location->update_stock_history();
+    }
+ }
 
 function update_stock(){
 $stock=0;$value=0;

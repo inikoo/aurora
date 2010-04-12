@@ -157,17 +157,6 @@ $store=new Store($customer->data['Customer Store Key']);
 
 
 
-
-
-
-
-
-
-
-
-
-
-
 $from_name=$store->data['Store Name'];
 $from_address=$store->data['Store Email'];
 $reply_name=$from_name;
@@ -183,11 +172,11 @@ $subject=$store->data['Store Name']." Password Reset Request";
 
 
 $secret_data=json_encode(array('D'=>generatePassword(2,10).date('U') ,'C'=>$customer->id ));
-$encripted_secret_data=base64_encode(AESEncryptCtr($secret_data,$secret_key.$store->key,256));
+$encrypted_secret_data=base64_encode(AESEncryptCtr($secret_data,$secret_key.$store->key,256));
 
 //print"$secret_data  <br>";
 
-//print "$encripted_secret_data<br>";
+//print "$encrypted_secret_data<br>";
 
 //exit('');
 	$email_message=new email_message_class;
@@ -225,7 +214,7 @@ We received request to reset the password associated with this email account.<br
 If you did not request to have your password reset, you can safely ignore this email. We assure that yor customer account is safe.<br><br>
 <b>Click the link below to reset your password</b>
 <br><br>
-<a href=\"http://".$store->data['Store URL']."/reset.php?p=".$encripted_secret_data."\">".$store->data['Store URL']."/reset.php?p=".$encripted_secret_data."</a>
+<a href=\"http://".$store->data['Store URL']."/reset.php?p=".$encrypted_secret_data."\">".$store->data['Store URL']."/reset.php?p=".$encrypted_secret_data."</a>
 <br></br>
 If clicking the link doesn't work you can copy and paste it into your browser's address window. Once you have returned to ".$store->data['Store Name'].", we will give you instructions for reseting your password.
 <br><br>

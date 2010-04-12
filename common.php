@@ -36,6 +36,8 @@ $smarty->template_dir = $myconf['template_dir'];
 $smarty->compile_dir = $myconf['compile_dir'];
 $smarty->cache_dir = $myconf['cache_dir'];
 $smarty->config_dir = $myconf['config_dir'];
+
+
 $logout = (array_key_exists('logout', $_REQUEST)) ? $_REQUEST['logout'] : false;
 if ($logout){
   $sql=sprintf("update session_history set end=NOW()  where session_id=%s  ",prepare_mysql(session_id()));
