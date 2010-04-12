@@ -34,16 +34,11 @@ date_default_timezone_set('Europe/London');
 $not_found=00;
 
 
-print "Setting auditions\n";
-$sql=sprintf('select *  from `Part Location Dimension` ');
-$res=mysql_query($sql);
-while($row=mysql_fetch_array($res)){
- print $row['Part SKU'].'_'.$row['Location Key']."\r";
- $part_location=new PartLocation($row['Part SKU'].'_'.$row['Location Key']);
- $part_location->set_audits();
-}
 
-exit;
+
+
+
+
 
 
 
@@ -154,9 +149,6 @@ while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
     
     $part=new Part($part_sku);
     $cost_per_part=$part->get_unit_cost($date);
-    //$sp_id=get_sp_id($part_sku,$date);
-    //$sp=new SupplierProduct('')
-    //print "$code $date $part_sku\n "; 
     
     if($tipo==2){
 
@@ -399,65 +391,111 @@ $_date=($rowxxx['Inventory Audit Date']);
    
    
    
-       $part_location=new PartLocation('find',array(
-        'Part SKU'=>$sku,
-        'Location Key'=>$row2['Location Key'],
-        'Date'=>$date)
-        ,'create');
+    $part_location=new PartLocation('find',array(
+						 'Part SKU'=>$sku,
+						 'Location Key'=>$row2['Location Key'],
+						 'Date'=>$date)
+				    ,'create');
+   
 
- 
   }
 
 
-  $part=new Part('sku',$sku);
-  if($part->data['Part Status']=='Not In Use'){
-    
-    
-    $sql=sprintf("select `Date` from `Inventory Transaction Fact` where  `Part Sku`=%d  and `Inventory Transaction Type` in ('Audit','Not Found')  order by `Date` desc  ",$sku);
-    $result2=mysql_query($sql);
-    if($row2=mysql_fetch_array($result2, MYSQL_ASSOC)   ){
-      $date=date("Y-m-d H:i:s",strtotime($row2['Date']." +1 second"));
-      $sql=sprintf("insert into `Inventory Transaction Fact` (`Date`,`Part SKU`,`Inventory Transaction Type`,`Inventory Transaction Quantity`,`Inventory Transaction Amount`,`Note`,`Metadata`) values (%s,%d,'Disassociate',%s,%s,%s,'')"
-		   ,prepare_mysql($date)
-		  ,$sku
-		   ,0
-		   ,0
-		   ,"''");
-    // print "$sql\n";
-      if(!mysql_query($sql))
-	exit("$sql can into insert Inventory Transaction Fact star");
-    }
-  }
+
 }
+
+ $sql="delete from  `Inventory Transaction Fact` where `Inventory Transaction Type` in ('Disassociate') ";
+ mysql_query($sql);
+
+ print "Clouseing the siconti nued parts";
+
+$sql=sprintf("select `Inventory Transaction Fact`.`Part SKU` from `Inventory Transaction Fact` left join `Part Dimension` on (`Inventory Transaction Fact`.`Part SKU`=`Part Dimension`.`Part SKU`)  where `Part Status`='Discontinued'  group by `Inventory Transaction Fact`.`Part SKU` ");
+$result=mysql_query($sql);
+
+while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
+  $sku=$row['Part SKU'];
+  // print "$sku       \n";
+  
+  $sql=sprintf('select `Inventory Audit Date` from `Inventory Audit Dimension` where `Inventory Audit Part SKU`=%d  order by `Inventory Audit Date` desc' 
+,$sku
+
+);
+$_date='';
+$resxxx=mysql_query($sql);
+if($rowxxx=mysql_fetch_array($resxxx)){
+$_date=($rowxxx['Inventory Audit Date']);
+}
+  
+
+
+
+$sql=sprintf("select `Location Key`,`Date` from `Inventory Transaction Fact` where  `Part SKU`=%d  and `Inventory Transaction Type` in ('Audit','Not Found','Sale') order by `Date` desc  ",$sku);
+  $result2=mysql_query($sql);
+  // print "$sql\n";
+  if($row2=mysql_fetch_array($result2, MYSQL_ASSOC)   ){
+    
+   if($_date and strtotime($_date)<strtotime($row2['Date'])  )
+     $date=$_date;
+   else
+     $date=$row2['Date'];
+   
+   $date=date("Y-m-d H:i:s",strtotime("$date +1 second"));
+   
+   $part_location=new PartLocation($sku.'_'.$row2['Location Key']);
+   
+
+
+   $data=array('Date'=>$date,'Note'=>_('Discontinued'),'Event Order'=>1);
+     
+     $part_location->disassociate($data);
+  } 
+
+
+}
+
+
+
+
+exit;
+
+
+
+
 
 print "Setting auditions\n";
-$sql=sprintf('select *  from `Part Location Dimension`');
+$sql=sprintf('select *  from `Part Location Dimension`where `Part SKU`=905 ');
 $res=mysql_query($sql);
 while($row=mysql_fetch_array($res)){
- print $row['Part SKU'].'_'.$row['Location Key']."\n";
+ print $row['Part SKU'].'_'.$row['Location Key']."\r";
  $part_location=new PartLocation($row['Part SKU'].'_'.$row['Location Key']);
  $part_location->set_audits();
+ 
 }
-  
-
-  
-function get_sp_id($part_sku,$date){
-  $sql=sprintf(" select `Supplier Product ID` from  `Supplier Product Part List`   where `Part SKU`=%s  and `Supplier Product Part Valid To`>=%s and  `Supplier Product Part Valid From`<=%s    ",prepare_mysql($part_sku),prepare_mysql($date),prepare_mysql($date));
-   // print "\n\n\n\n$sql\n";
-  $result=mysql_query($sql);
-  $num_rows = mysql_num_rows($result);
-  if($num_rows!=1)
-    exit("$num rows $sql more than one/zero  sp per part");
-  if($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
-    return $row['Supplier Product ID'];
-  }
-
+$sql=sprintf('select `Part SKU`  from `Part Dimension` where `Part SKU`=905 ');
+$res=mysql_query($sql);
+while($row=mysql_fetch_array($res)){
+  print $row['Part SKU']."\n";
+  $part=new Part($row['Part SKU']);
+  $part->update_stock_history();
+    
 }
 
 
+exit;
 
 
 
+
+
+
+
+
+
+
+
+
+
+  
 
 
 

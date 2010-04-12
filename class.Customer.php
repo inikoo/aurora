@@ -986,7 +986,6 @@ class Customer extends DB_Table {
       $this->update_child_email($value);
       break;
     case('Customer First Contacted Date'):
-  
       break; 
 
     case('Customer Main Telephone'):

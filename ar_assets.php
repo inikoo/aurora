@@ -9067,7 +9067,7 @@ $wheref='';
 
 
     $where=$where.sprintf(" and `Part SKU`=%d ",$part_sku);
-    $sql="select count(*) as total from `Inventory Transaction Fact`     $where $wheref";
+    $sql="select count(*) as total from `Inventory Spanshot Fact`     $where $wheref";
     $result=mysql_query($sql);
     if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
         $total=$row['total'];
@@ -9076,7 +9076,7 @@ $wheref='';
         $filtered=0;
         $total_records=$total;
     }else {
-        $sql="select count(*) as total from `Inventory Transaction Fact`   $where ";
+        $sql="select count(*) as total from `Inventory Spanshot Fact`   $where ";
         $result=mysql_query($sql);
         if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
            $total_records=$row['total'];
@@ -9101,23 +9101,24 @@ $wheref='';
       }
 
 
-   $sql=sprintf("select  `Quantity Sold`,`Storing Cost`,`Value At Latest Selling Price`,`Sold Amount`,`Value At Cost`,`Inventory Spanshot Fact`,`Date`,ISF.`Location Key`,`Location Code`  from `Inventory Spanshot Fact` ISF left join `Location Dimension` L on (ITF.`Location key`=L.`Location key`)  $where $wheref order by $order $order_direction limit $start_from,$number_results ");
+   $sql=sprintf("select  GROUP_CONCAT(ISF.`Location Key`) as locations,`Date`,sum(`Quantity On Hand`) as `Quantity On Hand`,sum(`Value At Cost`) as `Value At Cost`,sum(`Sold Amount`) as `Sold Amount`,sum(`Value Comercial`) as `Value Comercial`,sum(`Storing Cost`) as `Storing Cost`,sum(`Quantity Sold`) as `Quantity Sold`,sum(`Quantity In`) as `Quantity In`,sum(`Quantity Lost`) as `Quantity Lost`  from `Inventory Spanshot Fact` ISF left join `Location Dimension` L on (ISF.`Location key`=L.`Location key`)  $where $wheref  group by `Date` order by $order $order_direction  limit $start_from,$number_results ");
  
 
-     //print $sql;
+   // print $sql;
     $result=mysql_query($sql);
     $adata=array();
     while ($data=mysql_fetch_array($result, MYSQL_ASSOC)) {
 
-$location=sprintf('<a href="location.php?id=%d">%s</a>',$data['Location Key'],$data{'Location Code'});
+
         $adata[]=array(
 
-                     'type'=>$data['Inventory Transaction Type']
-                              ,'change'=>$data['Inventory Transaction Quantity']
-                                      ,'date'=>strftime("%a %e %b %Y %T", strtotime($data['Date']))
-                                                                    ,'note'=>$data['Note']
-                                                                    ,'location'=>$location
-
+		       'date'=>strftime("%a %e %b %Y", strtotime($data['Date']))
+		       ,'locations'=>$data['locations']
+		       ,'quantity'=>number($data['Quantity On Hand'])
+		       ,'value'=>money($data['Value At Cost'])
+		       ,'sold_qty'=>number($data['Quantity Sold'])
+		       ,'in_qty'=>number($data['Quantity In']) 
+		        ,'lost_qty'=>number($data['Quantity Lost'])
                  );
     }
   

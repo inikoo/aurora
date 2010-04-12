@@ -39,61 +39,29 @@ while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
   //Get  status
   if(isset($argv[1]) and $argv[1]=='first'){
   $part_valid_from=$part->data['Part Valid From'];
-  $part_valid_to=$part->data['Part Valid To'];
-  $in_use='Discontinued';
-  $last_stock='Yes';
-  $sql=sprintf(" select `Product To Be Discontinued`,`Product Sales State`,`Product Record Type`,`Product Code` from `Product Dimension` PD left join `Product Part List` PPL on (PD.`Product ID`=PPL.`Product ID`)  where `Part SKU`=%d   ",$part->data['Part SKU']);
-  // print "$sql\n";
+ 
+  $sql=sprintf(" select `Product Record Type` from  `Product Part Dimension` PPD  left join    `Product Dimension` P  on (PPD.`Product ID`=P.`Product ID`)    left join `Product Part List` PPL on (PPD.`Product Part Key`=PPL.`Product Part Key`)  where `Part SKU`=%d  and `Product Part Most Recent`='Yes'  ",$part->data['Part SKU']);
+  //  print "$sql\n";
   $result2=mysql_query($sql);
-  if($row2=mysql_fetch_array($result2, MYSQL_ASSOC)   ){
-
-    
-    if(preg_match('/^For Sale|Not for sale|Unknown/i',$row2['Product Sales State'])){
-      $in_use='In Use';
-      $part_valid_to= date("Y-m-d H:i:s");
-
-      if($row2['Product To Be Discontinued']!='Yes')
-	$last_stock='No';
-
-    }else{
-      
-      $sql=sprintf("select `Date` from `Inventory Transaction Fact` where  `Part SKU`=%d and `Inventory Transaction Type`='Sale' and `Inventory Transaction Quantity`!=0    order by `Date` desc limit 1 ",$part->data['Part SKU']);
-      $resultxx=mysql_query($sql);
-      
-      //   print "$sql\n";
-      if($rowxx=mysql_fetch_array($resultxx, MYSQL_ASSOC)   ){
-
-	if(strtotime($rowxx['Date'])< strtotime( $part->data['Part Valid From'])){
-	  $part_valid_from=$rowxx['Date'];
-	  //	  	print "$sql\n".$rowxx['Date']." ".$part->data['Part Valid From']." ".$part->data['Part Valid To']."\n";
-	}
-	$part_valid_to= $rowxx['Date'];
-      }else{
-	$part_valid_to=$part->data['Part Valid From'];
-      }
-    
-      
-    }
-
+  $discontinued=true;
+  while($row2=mysql_fetch_array($result2, MYSQL_ASSOC)   ){
+    if(!($row2['Product Record Type']=='Historic' or $row2['Product Record Type']=='Discontinued')){
+      $discontinued=false;
   }
-
-
-    $sql=sprintf("update `Part Dimension` set `Part Last Stock`=%s ,`Part Status`=%s ,`Part Valid From`=%s ,`Part Valid To`=%s where `Part SKU`=%d   "
-		 ,prepare_mysql($last_stock)
-		 ,prepare_mysql($in_use)
-		 ,prepare_mysql($part_valid_from)
-		 ,prepare_mysql($part_valid_to),$part->data['Part SKU']);
-
-    //print "$sql\n";
-  if(!mysql_query($sql))
-    exit("ERROR $sql\n");
   
+    if($discontinued){
+     
+      $part->update_part_status('Discontinued');
+    
+    }else
+      $part->update_part_status('In Use');
+    
 
-    $part->load('sales');
-
-  // print "$sql\n";
-  //if(!mysql_query($sql))
-  //  exit("ERROR $sql\n");
+    
+    
+  
+  
+  }
   }
   
   $part->load('used in');
@@ -102,8 +70,8 @@ while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
   
  // if(!isset($argv[1])){
     
-    $part->load('stock');
-    $part->load('forecast');
+  //  $part->load('stock');
+  //  $part->load('forecast');
 
  // }
 
@@ -111,8 +79,8 @@ while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
   //   $part->load('future costs');
   print $row['Part SKU']."\r";
   
- }
-
+  
+}
 
 
 ?>

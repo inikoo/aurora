@@ -1446,6 +1446,20 @@ $sql=sprintf("delete from `Part Location Dimension` where `Part SKU`=%d and `Loc
 mysql_query($sql);
 //print $sql;
 
+
+	$data_inventory_audit=array(
+				    'Inventory Audit Date'=>$base_data['Date']
+				    ,'Inventory Audit Part SKU'=>$this->part_sku
+				    ,'Inventory Audit Location Key'=>$this->location_key
+				    ,'Inventory Audit Note'=>''
+				    ,'Inventory Audit Type'=>'Discontinued'
+				    ,'Inventory Audit User Key'=>0
+				    ,'Inventory Audit Quantity'=>0
+				    );
+	$audit=new InventoryAudit('find',$data_inventory_audit,'create');
+
+
+	$base_data['Date']=date("Y-m-d H:i:s",strtotime($base_data['Date'].' + 1 second'));
  $sql=sprintf("insert into `Inventory Transaction Fact` (`Date`,`Part SKU`,`Location Key`,`Inventory Transaction Type`,`Inventory Transaction Quantity`,`Inventory Transaction Amount`,`Note`,`Metadata`,`History Type`,`Event Order`) values (%s,%d,%d,'Disassociate',0,0,%s,%s,%s,%d)"
 	 ,prepare_mysql($base_data['Date'])
 		 ,$this->part_sku
@@ -1515,12 +1529,14 @@ while($row=mysql_fetch_array($res)){
 $this->set_audit($row['Inventory Audit Key']);
 
 }
-$this->get_stock();
+$this->update_stock();
 }
 function get_stock($date=''){
 if(!$date)
     $date=date('Y-m-d  H:i:s');
   
+
+
  $sql=sprintf("select ifnull(sum(`Inventory Transaction Quantity`),0) as stock ,ifnull(sum(`Inventory Transaction Amount`),0) as value from `Inventory Transaction Fact` where  `Date`<%s and `Part SKU`=%d and `Location Key`=%d"
 ,prepare_mysql($date)
 ,$this->part_sku
@@ -1534,6 +1550,80 @@ $stock=$row['stock'];
 $value=$row['value'];
 }
 
+return array($stock,$value);
+  
+}
+
+function get_sales($date=''){
+if(!$date)
+    $date=date('Y-m-d');
+  
+ $sql=sprintf("select ifnull(sum(`Inventory Transaction Quantity`),0) as stock ,ifnull(sum(`Inventory Transaction Amount`),0) as value from `Inventory Transaction Fact` where  Date(`Date`)=%s and `Part SKU`=%d and `Location Key`=%d and `Inventory Transaction Type`='Sale'"
+	      ,prepare_mysql(date('Y-m-d',strtotime($date)))
+			     ,$this->part_sku
+			     ,$this->location_key
+);
+$res=mysql_query($sql);
+//print "$sql\n";
+$stock=0;$value=0;
+if($row=mysql_fetch_array($res)){
+$stock=-$row['stock'];
+$value=-$row['value'];
+}
+//print "$stock,$value\n";
+return array($stock,$value);
+  
+}
+
+function get_in($date=''){
+if(!$date)
+    $date=date('Y-m-d');
+  
+ $sql=sprintf("select ifnull(sum(`Inventory Transaction Quantity`),0) as stock ,ifnull(sum(`Inventory Transaction Amount`),0) as value from `Inventory Transaction Fact` where  Date(`Date`)=%s and `Part SKU`=%d and `Location Key`=%d and ( `Inventory Transaction Type` in ('In','Move In','Move Out') or  (`Inventory Transaction Type`='Audit' and `Inventory Transaction Quantity`>0 ) )   "
+,prepare_mysql(date('Y-m-d',strtotime($date)))
+,$this->part_sku
+,$this->location_key
+);
+$res=mysql_query($sql);
+//print $sql;
+$stock=0;$value=0;
+if($row=mysql_fetch_array($res)){
+$stock=$row['stock'];
+$value=$row['value'];
+}
+
+return array($stock,$value);
+  
+}
+
+function get_lost($date=''){
+if(!$date)
+    $date=date('Y-m-d');
+  
+ $sql=sprintf("select ifnull(sum(`Inventory Transaction Quantity`),0) as stock ,ifnull(sum(`Inventory Transaction Amount`),0) as value from `Inventory Transaction Fact` where  Date(`Date`)=%s and `Part SKU`=%d and `Location Key`=%d and ( `Inventory Transaction Type` in ('Broken','Lost') or  (`Inventory Transaction Type`='Audit' and `Inventory Transaction Quantity`<0 ))    "
+,prepare_mysql(date('Y-m-d',strtotime($date)))
+,$this->part_sku
+,$this->location_key
+);
+$res=mysql_query($sql);
+//print $sql;
+$stock=0;$value=0;
+if($row=mysql_fetch_array($res)){
+$stock=$row['stock'];
+$value=$row['value'];
+}
+
+return array($stock,$value);
+  
+}
+
+
+
+
+function update_stock(){
+
+  list($stock,$value)=$this->get_stock();
+
 $sql=sprintf("update `Part Location Dimension` set `Quantity On Hand`=%f ,`Stock Value`=%f where `Part SKU`=%d and `Location Key`=%d"
 ,$stock
 ,$value
@@ -1541,10 +1631,85 @@ $sql=sprintf("update `Part Location Dimension` set `Quantity On Hand`=%f ,`Stock
 ,$this->location_key
 ); 
   mysql_query($sql);
-//print $sql;
   $this->part->update_stock();
+}
+
+
+function get_history_intervals(){
+    $sql=sprintf("select  `Inventory Transaction Type`,Date(`Date`) as Date from `Inventory Transaction Fact` where  `Part Sku`=%d and `Inventory Transaction Type` in ('Associate','Disassociate')  order by `Date` desc,`Event Order` ",$this->part_sku);
+    //  print "$sql\n";
+    $dates=array();
+    $result=mysql_query($sql);
+    while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
+      $dates[$row['Date']]= $row['Inventory Transaction Type'];
+    }
+
+    $intervals=array();
+    foreach($dates as $date=>$type){
+      if($type=='Associate')
+	$intervals[]=array('From'=>$date,'To'=>false);
+      if($type=='Disassociate')
+	$intervals[count($interval)-1]['To']=$date;
+    }
+    
+    return $intervals;
+
+}
+
+function update_stock_history(){
+  $sql=sprintf("delete from `Inventory Spanshot Fact` where `Part SKU`=%d and `Location Key`=%d",$this->part_sku,$this->location_key);
+  mysql_query($sql);
+  
+  $intervals=$this-> get_history_intervals();
+  print_r($intervals);
+
+  foreach($intervals as $interval){
+    $this->update_stock_history_interval($interval['From'],($interval['To']?$interval['To']:date('Y-m-d',strtotime('now -1 day'))));
+  }
   
 }
+
+function update_stock_history_interval($from,$to){
+
+
+
+
+  $sql=sprintf("select `Date` from kbase.`Date Dimension` where `Date`>=%s and `Date`<=%s order by `Date`"
+	       ,prepare_mysql($from)
+	       ,prepare_mysql($to)
+	       );
+  $result=mysql_query($sql);
+  while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
+     list($stock,$value)=$this->get_stock($row['Date'].' 23:59:59');
+     list($sold,$sales_value)=$this->get_sales($row['Date'].' 23:59:59');
+     list($in,$in_value)=$this->get_in($row['Date'].' 23:59:59');
+     list($lost,$lost_value)=$this->get_lost($row['Date'].' 23:59:59');
+     $storing_cost=0;
+     $comercial_value=$this->part->get_comercial_value($row['Date'].' 23:59:59');
+
+     $sql=sprintf("insert into `Inventory Spanshot Fact` values (%s,%d,%d,%f,%.2f ,%.2f,%.2f ,%.f,%f,%f,%f) "
+		  ,prepare_mysql($row['Date'])
+		  ,$this->part_sku
+		  ,$this->location_key
+		 
+		  ,$stock
+		  ,$value
+		  
+		  ,$sales_value
+		  ,$comercial_value
+
+		  ,$storing_cost
+
+		  ,$sold
+		  ,$in
+		  ,$lost
+		  );
+     mysql_query($sql);
+     //print "$sql\n";
+    }
+
+}
+
 
 function set_audit($audit_key){
 
@@ -1567,7 +1732,19 @@ $diff=$audit->data['Inventory Audit Quantity']-$stock;
 $cost_per_part=$this->part->get_unit_cost($audit->data['Inventory Audit Date']);
 $cost=$diff*$cost_per_part;
 //print "S: $stock ".$audit->data['Inventory Audit Quantity']."\n";
-$notes=_('Change due Audit').' ('.$audit->data['Inventory Audit Note'].')';
+$notes='';
+if($audit->data['Inventory Audit Type']=='Audit')
+  $notes=_('Change due Audit');
+else if($audit->data['Inventory Audit Type']=='Discontinued')
+  $notes=_('Change due Discontinuetion');
+else if($audit->data['Inventory Audit Type']=='Out of Stock')
+  $notes=_('Change due Out of Stock');
+
+if($audit->data['Inventory Audit Note']){
+  $notes.=' ('.$audit->data['Inventory Audit Note'].')';
+}
+
+
 $sql=sprintf("insert into `Inventory Transaction Fact` (`Date`,`Part SKU`,`Location Key`,`Inventory Transaction Type`,`Inventory Transaction Quantity`,`Inventory Transaction Amount`,`Note`,`Metadata`) values (%s,%d,%d,'Audit',%f,%f,%s,'')"
       ,prepare_mysql($audit->data['Inventory Audit Date'])
       ,$this->part_sku

@@ -110,7 +110,7 @@ $this->found=false;
   $values='values(';
   foreach($data as $key=>$value) {
     $keys.="`$key`,";
-    if (preg_match('/Note/i',$key))
+    if (preg_match('/Note|User Key|Quantity/i',$key))
 	  $values.="'".addslashes($value)."',";
     else
       $values.=prepare_mysql($value).",";
