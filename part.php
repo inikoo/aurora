@@ -33,7 +33,7 @@ $smarty->assign('modify',$modify);
 $smarty->assign('view_orders',$view_orders);
 $smarty->assign('view_customers',$view_cust);
 
-
+$page='part';
 
 $parts_period=$_SESSION['state']['parts']['period'];
 $parts_period_title=array('year'=>_('Last Year'),'quarter'=>_('Last Quarter'),'month'=>_('Last Month'),'week'=>_('Last Week'),'all'=>_('All'));
@@ -63,6 +63,7 @@ $js_files=array(
 		$yui_path.'menu/menu-min.js',
 		'common.js.php',
 		'table_common.js.php',
+		'common_plot.js.php?page='.$page
 		);
 
 
@@ -74,6 +75,9 @@ $js_files=array(
 //   $hide[$key]=($value==1?0:1);
 // }
 // //print_r($hide);
+
+
+
 
 $smarty->assign('display',$_SESSION['state']['part']['display']);
 
@@ -98,6 +102,10 @@ if(isset($_REQUEST['id']) and is_numeric($_REQUEST['id'])){
  }
 
 
+
+
+$subject_id=$part->id;
+include_once('plot.inc.php');
 
 $smarty->assign('part',$part);
 $smarty->assign('parent','products');

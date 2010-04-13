@@ -47,6 +47,7 @@
 
       <div style="clear:both;border-bottom:1px solid #999">
       </div>
+       {if $page=='product' or $page=='store' or $page=='department' or $page=='family' }
 
       <div id="pie_options"  style="display:none;{if $plot_tipo!='pie'}display:none;{/if}border:1px solid #ddd;float:right;margin:20px 0px;margin-right:40px;width:300px;padding:10px">
 	<table id="pie_category_options" style="float:none;margin-bottom:10px;margin-left:30px"  class="options_mini" >
@@ -68,9 +69,10 @@
 	  <span>{$plot_formated_period}</span>: <input class="text" type="text" value="{$plot_formated_date}" style="width:6em"/> <img style="display:none" src="art/icons/chart_pie.png" alt="{t}update{/t}"/>
 	</div>
       </div>
-      
-      <div  id="plot_div" class="product_plot"  style="width:940px;xheight:325px;position:relative;left:-10px">
-	<iframe id="the_plot" src ="{$plot_page}?{$plot_args}" frameborder=0 height="325" scrolling="no" width="100%"></iframe>
+{/if}      
+
+      <div  id="plot_div" class="product_plot"  style="width:940px;height:425px;position:relative;left:-10px">
+	<iframe id="the_plot" src ="{$plot_page}?{$plot_args}" frameborder="0" height="425" scrolling="no" width="100%"></iframe>
 	
       </div>
      
