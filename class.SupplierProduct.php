@@ -549,6 +549,17 @@ class supplierproduct extends DB_Table {
     }
 
 
+function update_stock(){
+$parts=$this->get_parts();
+if(count($parts)==1){
+ $part_data=array_pop($parts);
+$part=new Part($part_data['Part SKU']);
+$stock=$part->data['Part Current Stock']*$part_data['Supplier Product Units Per Part'];
+}
+
+}
+
+
     function update_cost($value) {
         $change_at='now';
 

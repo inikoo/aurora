@@ -315,6 +315,7 @@ public function update($tipo,$data=''){
  case('stores'):
    $this->update_stores($data['value']);
     break;
+    
  case('warehouses'):
    $this->update_warehouses($data['value']);
     break;
@@ -724,7 +725,28 @@ function  read_stores() {
     }
 }
 
+function  read_suppliers() {
 
+    $this->suppliers=array();
+    $sql=sprintf("select * from `User Right Scope Bridge` where `User Key`=%d and `Scope`='Supplier' "
+                 , $this->id);
+    $res=mysql_query($sql);
+    while ($row=mysql_fetch_array($res)) {
+        $this->suppliers[]=$row['Scope Key'];
+    }
+    $this->supplier_righs='none';
+    if ($this->data['User Type']=='Supplier') {
+        $sql="select count(*) as num_suppliers from `Supplier Dimension`";
+        $res=mysql_query($sql);
+        $row=mysql_fetch_array($res);
+        $num_suppliers=$row['num_suppliers'];
+        $num_suppliers=count($this->suppliers);
+        if ($num_suppliers==$num_suppliers)
+            $this->supplier_rights='all';
+        else
+            $this->supplier_righs='some';
+    }
+}
 
 
 function read_rights(){

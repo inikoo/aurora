@@ -1517,7 +1517,7 @@ function update_field_switcher($field,$value,$options=''){
 
 function set_audits(){
 
- $sql="delete from  `Inventory Transaction Fact` where `Inventory Transaction Type` in ('Audit') ";
+ $sql=sprintf("delete from  `Inventory Transaction Fact` where `Inventory Transaction Type` in ('Audit') and `Part SKU`=%d",$this->part_sku);
  mysql_query($sql);
  
 $sql=sprintf('select `Inventory Audit Key` from `Inventory Audit Dimension` where `Inventory Audit Part SKU`=%d and `Inventory Audit Location Key`=%d order by `Inventory Audit Date`'

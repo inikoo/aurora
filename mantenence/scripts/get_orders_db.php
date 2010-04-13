@@ -1081,119 +1081,119 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
       
       //here add the supplier product key
       
-      
-      if($transaction['order']!=0){
-	$products_data[]=array(
-			       'Product Key'=>$product->id
-			       ,'Estimated Weight'=>$product->data['Product Gross Weight']*$transaction['order']
-			       ,'qty'=>$transaction['order']
-			       ,'gross_amount'=>$transaction['order']*$transaction['price']
-			       ,'discount_amount'=>$transaction['order']*$transaction['price']*$transaction['discount']
-			       ,'units_per_case'=>$product->data['Product Units Per Case']
-			       );
 
-	//      print_r($transaction);
+if ($transaction['order']!=0) {
+    $products_data[]=array(
+                         'Product Key'=>$product->id,
+                         'Estimated Weight'=>$product->data['Product Gross Weight']*$transaction['order'],
+                         'qty'=>$transaction['order'],
+                         'gross_amount'=>$transaction['order']*$transaction['price'],
+                         'discount_amount'=>$transaction['order']*$transaction['price']*$transaction['discount'],
+                         'units_per_case'=>$product->data['Product Units Per Case']
+                     );
 
-	$net_amount=round(($transaction['order']-$transaction['reorder'])*$transaction['price']*(1-$transaction['discount']),2 );
-	$gross_amount=round(($transaction['order']-$transaction['reorder'])*$transaction['price'],2);
-	$net_discount=-$net_amount+$gross_amount;
+    //      print_r($transaction);
 
-	if($net_amount>0 ){
-	  $product->update_last_sold_date($date_order);
-	  $product->update_first_sold_date($date_order);
-	  $product->update_for_sale_since(date("Y-m-d H:i:s",strtotime("$date_order -1 second")));
+    $net_amount=round(($transaction['order']-$transaction['reorder'])*$transaction['price']*(1-$transaction['discount']),2 );
+    $gross_amount=round(($transaction['order']-$transaction['reorder'])*$transaction['price'],2);
+    $net_discount=-$net_amount+$gross_amount;
 
-
-	  if($product->updated_field['Product For Sale Since Date']){
-	    $_date_order=date("Y-m-d H:i:s",strtotime("$date_order -2 second"));
-	    $sql=sprintf("update `History Dimension` set `History Date`=%s  where `Action`='created' and `Direct Object`='Product' and `Direct Object Key`=%d  ",prepare_mysql($_date_order),$product->pid);
-	    mysql_query($sql);
-	  
-	    
-	  }
-	  
-	}
+    if ($net_amount>0 ) {
+        $product->update_last_sold_date($date_order);
+        $product->update_first_sold_date($date_order);
+        $product->update_for_sale_since(date("Y-m-d H:i:s",strtotime("$date_order -1 second")));
 
 
-	$data_invoice_transactions[]=array(
-					   'Product Key'=>$product->id
-					   ,'invoice qty'=>$transaction['order']-$transaction['reorder']
-					   ,'gross amount'=>$gross_amount
-					   ,'discount amount'=>$net_discount
-					   ,'current payment state'=>'Paid'
+        if ($product->updated_field['Product For Sale Since Date']) {
+            $_date_order=date("Y-m-d H:i:s",strtotime("$date_order -2 second"));
+            $sql=sprintf("update `History Dimension` set `History Date`=%s  where `Action`='created' and `Direct Object`='Product' and `Direct Object Key`=%d  ",prepare_mysql($_date_order),$product->pid);
+            mysql_query($sql);
 
 
-
-					   );		   
-	// print_r($data_invoice_transactions);
-	$estimated_w+=$product->data['Product Gross Weight']*($transaction['order']-$transaction['reorder']);
-	//print "$estimated_w ".$product->data['Product Gross Weight']." ".($transaction['order']-$transaction['reorder'])."\n";
-	$data_dn_transactions[]=array(
-				      'Product Key'=>$product->id
-				      ,'Estimated Weight'=>$product->data['Product Gross Weight']*($transaction['order']-$transaction['reorder'])
-				      ,'Product ID'=>$product->data['Product ID']
-				      ,'Delivery Note Quantity'=>$transaction['order']-$transaction['reorder']
-				      ,'Current Autorized to Sell Quantity'=>$transaction['order']
-				      ,'Shipped Quantity'=>$transaction['order']-$transaction['reorder']
-				      ,'No Shipped Due Out of Stock'=>$transaction['reorder']
-				      ,'No Shipped Due No Authorized'=>0
-				      ,'No Shipped Due Not Found'=>0
-				      ,'No Shipped Due Other'=>0
-				      ,'amount in'=>(($transaction['order']-$transaction['reorder'])*$transaction['price'])*(1-$transaction['discount'])
-				      ,'given'=>0
-				      ,'required'=>$transaction['order']
-				      ,'pick_method'=>'historic'
-				      ,'pick_method_data'=>array(
-									'parts_sku'=>$used_parts_sku
-									)
-				      );		   
-
-      }
-      if($transaction['bonus']>0){
-	$products_data[]=array(
-			       'Product Key'=>$product->id
-			       ,'qty'=>0
-			       ,'gross_amount'=>0
-			       ,'discount_amount'=>0
-			       ,'Estimated Weight'=>0
-			       ,'units_per_case'=>$product->data['Product Units Per Case']
-			       );
-	$data_invoice_transactions[]=array(
-					   'Product Key'=>$product->id
-					   ,'invoice qty'=>$transaction['bonus']
-					   ,'gross amount'=>($transaction['bonus'])*$transaction['price']
-					   ,'discount amount'=>($transaction['bonus'])*$transaction['price']
-					   ,'current payment state'=>'No Applicable'
-					   );		   
-    
-	$estimated_w+=$product->data['Product Gross Weight']*$transaction['bonus'];
-	$data_dn_transactions[]=array(
-				      'Product Key'=>$product->id
-				      ,'Product ID'=>$product->data['Product ID']
-				      ,'Delivery Note Quantity'=>$transaction['bonus']
-				      ,'Current Autorized to Sell Quantity'=>$transaction['bonus']
-				      ,'Shipped Quantity'=>$transaction['bonus']
-				      ,'No Shipped Due Out of Stock'=>0
-				      ,'No Shipped Due No Authorized'=>0
-				      ,'No Shipped Due Not Found'=>0
-				      ,'No Shipped Due Other'=>0
-				      ,'Estimated Weight'=>$product->data['Product Gross Weight']*($transaction['bonus'])
-				      ,'amount in'=>0
-				      ,'given'=>$transaction['bonus']
-				      ,'required'=>0
-				      ,'pick_method'=>'historic'
-				      ,'pick_method_data'=>array(
-								'parts_sku'=>$used_parts_sku
-								 )
-				  
-				      );		   
-
-
-      
-
-      }
+        }
 
     }
+
+
+    $data_invoice_transactions[]=array(
+                                     'Product Key'=>$product->id,
+                                     'invoice qty'=>$transaction['order']-$transaction['reorder'],
+                                     'gross amount'=>$gross_amount,
+                                     'discount amount'=>$net_discount,
+                                     'current payment state'=>'Paid'
+
+
+
+                                 );
+    // print_r($data_invoice_transactions);
+    $estimated_w+=$product->data['Product Gross Weight']*($transaction['order']-$transaction['reorder']);
+    //print "$estimated_w ".$product->data['Product Gross Weight']." ".($transaction['order']-$transaction['reorder'])."\n";
+    $data_dn_transactions[]=array(
+                                'Product Key'=>$product->id,
+                                'Estimated Weight'=>$product->data['Product Gross Weight']*($transaction['order']-$transaction['reorder']),
+                                'Product ID'=>$product->data['Product ID'],
+                                'Delivery Note Quantity'=>$transaction['order']-$transaction['reorder'],
+                                'Current Autorized to Sell Quantity'=>$transaction['order'],
+                                'Shipped Quantity'=>$transaction['order']-$transaction['reorder'],
+                                'No Shipped Due Out of Stock'=>$transaction['reorder'],
+                                'No Shipped Due No Authorized'=>0,
+                                'No Shipped Due Not Found'=>0,
+                                'No Shipped Due Other'=>0,
+                                'amount in'=>(($transaction['order']-$transaction['reorder'])*$transaction['price'])*(1-$transaction['discount']),
+                                'given'=>0,
+                                'required'=>$transaction['order'],
+                                'pick_method'=>'historic',
+                                'pick_method_data'=>array(
+                                                       'parts_sku'=>$used_parts_sku
+                                                   )
+                            );
+
+}
+if ($transaction['bonus']>0) {
+    $products_data[]=array(
+                         'Product Key'=>$product->id
+                                       ,'qty'=>0
+                                              ,'gross_amount'=>0
+                                                              ,'discount_amount'=>0
+                                                                                 ,'Estimated Weight'=>0
+                                                                                                     ,'units_per_case'=>$product->data['Product Units Per Case']
+                     );
+    $data_invoice_transactions[]=array(
+                                     'Product Key'=>$product->id
+                                                   ,'invoice qty'=>$transaction['bonus']
+                                                                  ,'gross amount'=>($transaction['bonus'])*$transaction['price']
+                                                                                  ,'discount amount'=>($transaction['bonus'])*$transaction['price']
+                                                                                                     ,'current payment state'=>'No Applicable'
+                                 );
+
+    $estimated_w+=$product->data['Product Gross Weight']*$transaction['bonus'];
+    $data_dn_transactions[]=array(
+                                'Product Key'=>$product->id
+                                              ,'Product ID'=>$product->data['Product ID']
+                                                            ,'Delivery Note Quantity'=>$transaction['bonus']
+                                                                                      ,'Current Autorized to Sell Quantity'=>$transaction['bonus']
+                                                                                                                            ,'Shipped Quantity'=>$transaction['bonus']
+                                                                                                                                                ,'No Shipped Due Out of Stock'=>0
+                                                                                                                                                                               ,'No Shipped Due No Authorized'=>0
+                                                                                                                                                                                                               ,'No Shipped Due Not Found'=>0
+                                                                                                                                                                                                                                           ,'No Shipped Due Other'=>0
+                                                                                                                                                                                                                                                                   ,'Estimated Weight'=>$product->data['Product Gross Weight']*($transaction['bonus'])
+                                                                                                                                                                                                                                                                                       ,'amount in'=>0
+                                                                                                                                                                                                                                                                                                    ,'given'=>$transaction['bonus']
+                                                                                                                                                                                                                                                                                                             ,'required'=>0
+                                                                                                                                                                                                                                                                                                                         ,'pick_method'=>'historic'
+                                                                                                                                                                                                                                                                                                                                        ,'pick_method_data'=>array(
+                                                                                                                                                                                                                                                                                                                                                                'parts_sku'=>$used_parts_sku
+                                                                                                                                                                                                                                                                                                                                                            )
+
+                            );
+
+
+
+
+}
+
+}
 
 
      //echo "Memory: ".memory_get_usage(true) . "\n";

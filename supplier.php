@@ -14,8 +14,13 @@
 include_once('common.php');
 include_once('class.Supplier.php');
 
-if(!$user->can_view('suppliers'))
+if($user->data['User Type']!='Supplier' and !$user->can_view('suppliers')){
+
   exit();
+}
+
+
+
 $modify=$user->can_edit('suppliers');
 
 
@@ -32,6 +37,11 @@ if(isset($_REQUEST['id']) and is_numeric($_REQUEST['id']))
   $supplier_id=$_REQUEST['id'];
 else
   $supplier_id=$_SESSION['state']['supplier']['id'];
+
+
+if($user->data['User Type']=='Supplier' and !in_array($supplier_id,$user->suppliers)){
+exit('forbidden');
+}
 
 $_SESSION['state']['supplier']['id']=$supplier_id;
 $smarty->assign('supplier_id',$supplier_id);
