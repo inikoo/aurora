@@ -14,16 +14,25 @@ if(!isset($_REQUEST['tipo']))
 
 $plot_type=$_REQUEST['tipo'];
 switch($plot_type){
+case('part_stock_history'):
+  list_part_stock_history();
+  break;
 case('invoiced_month_sales'):
 list_invoices_per_month();
 break;
 case("general");
+
+
 if(!isset($_REQUEST['period']) or !isset($_REQUEST['item'])  or !isset($_REQUEST['category']) or !isset($_REQUEST['item_keys']) )
   return;
+
 $period=$_REQUEST['period'];
 $tipo=$_REQUEST['item'];
 if($tipo=='product')
   $tipo='product id';
+if($tipo=='part')
+  $tipo='part sku';
+
 
 $from=false;
 if(isset($_REQUEST['from']))
@@ -32,7 +41,6 @@ if(isset($_REQUEST['from']))
 $to=false;
 if(isset($_REQUEST['to']))
    $to=$_REQUEST['to'];
-
 
 $category=$_REQUEST['category'];
 $split=(isset($_REQUEST['split']) and preg_match('/yes/i',$_REQUEST['split']) ?true:false);
@@ -522,17 +530,22 @@ function list_stack_item($tipo,$category,$period,$item_keys,$split=true,$from=fa
 function list_item($tipo,$category,$period,$item_keys,$split=false,$from=false,$to=false){
   $_data=array();
 
-  
+
   if($split){
 
     $item_keys=preg_replace('/\(|\)/','',$item_keys);
     foreach(preg_split('/\s*,\s*/',$item_keys) as $key){
+	    
       if(!is_numeric($key))
 	continue;
       //print "$tipo ($key) $category $from $to";
+      
       $tm=new TimeSeries(array($period,"$tipo ($key) $category"));
-      // print_r($tm);
+      //print_r($tm);
+      //exit;
       $tmp_data=$tm->plot_data($from,$to);
+      // print_r($tmp_data);
+
       unset($tm);
       foreach($tmp_data as $key=>$values){
 	if(isset($_data[$key])){
@@ -1468,4 +1481,41 @@ mysql_free_result($res);
 
       echo json_encode($response);
 }
+
+
+function list_part_stock_history(){
+  
+  $sku=$_REQUEST['keys'];
+  $from=$_REQUEST['from'];
+  $to=$_REQUEST['to'];
+  
+  $period=$_REQUEST['period'];
+  $period_group='';
+  if($period=='w')
+    $period_group='YearWeek';
+  $sql=sprintf("select  (`Date`) as `Date`,`Quantity On Hand`,sum(`Value At Cost`) as `Value At Cost`,sum(`Sold Amount`) as `Sold Amount`,sum(`Value Comercial`) as `Value Comercial`,sum(`Storing Cost`) as `Storing Cost`,sum(`Quantity Sold`) as `Quantity Sold`,sum(`Quantity In`) as `Quantity In`,sum(`Quantity Lost`) as `Quantity Lost`  from `Inventory Spanshot Fact` ISF left join `Location Dimension` L on (ISF.`Location key`=L.`Location key`) where `Part SKU`=%d   group by %s(`Date`) order by `Date` ",$sku,$period_group);
+    $res=mysql_query($sql);
+    $data=array();
+    //print $sql;
+    while($row=mysql_fetch_array($res)){
+      $data[]=array(
+		    'Date'=>$row['Date']
+		    ,'Stock'=>$row['Quantity On Hand']
+		    ,'In'=>$row['Quantity In']
+		    ,'Sales'=>-$row['Quantity Sold']
+		    );
+    }
+     $response=array('resultset'=>
+		   array('state'=>200,
+			 'data'=>$data,
+			 )
+		   );
+
+      echo json_encode($response);
+  
+
+}
+
+
+
 ?>

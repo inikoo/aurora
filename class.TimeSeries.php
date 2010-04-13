@@ -532,12 +532,12 @@ Class TimeSeries  {
             $this->prepare_part_requiered_provided($match[0]);
 
 
-        }    elseif(preg_match('/^part sku \d+$/i',$this->name,$match)) {
+        }    elseif(preg_match('/^part sku \(?\d+\)?/i',$this->name,$match)) {
 
 
 
 
-            $this->prepare_part(preg_replace('/part sku /i','',$match[0]));
+            $this->prepare_part(preg_replace('/[^\d]/i','',$match[0]));
 
 
         }
@@ -1856,11 +1856,18 @@ $number_period_for_forecasting=26;
             $tipo='SI';
             $suffix='';
 
+        }elseif ($this->name=='SkuS') {
+
+            $tipo='PartOut';
+             $suffix=preg_replace('/.*\(/','',$this->name_key);
+            $suffix=preg_replace('/\)/','',$suffix);
+            $suffix=preg_replace('/,/','_',$suffix);
+
         }
         elseif ($this->name=='invoice cat') {
 
             $tipo='PI';
-            $suffix='';
+           
 
         }
         elseif(preg_match('/^(PDS|SS|PFS|PidS|PcodeS)/',$this->name)) {
@@ -1897,6 +1904,10 @@ $number_period_for_forecasting=26;
     function set_labels() {
         $tipo='';
         $suffix='';
+
+
+
+
         if ($this->name=='profit') {
 
             $tipo='PI';
@@ -1909,6 +1920,8 @@ $number_period_for_forecasting=26;
             $suffix='';
 
         }
+
+
         elseif(preg_match('/^(PDS|SS|PFS|PidS|PcodeS)/',$this->name)) {
             $tipo='PI';
             $suffix=preg_replace('/.*\(/','',$this->name_key);
@@ -1923,6 +1936,11 @@ $number_period_for_forecasting=26;
         }
         elseif(preg_match('/^(PDP|SP|PFP|PidP|PcodeP)/',$this->name)) {
             $tipo='PP';
+            $suffix=preg_replace('/.*\(/','',$this->name_key);
+            $suffix=preg_replace('/\)/','',$suffix);
+            $suffix=preg_replace('/,/','_',$suffix);
+        }elseif(preg_match('/^(SkuS)/',$this->name)) {
+            $tipo='Part';
             $suffix=preg_replace('/.*\(/','',$this->name_key);
             $suffix=preg_replace('/\)/','',$suffix);
             $suffix=preg_replace('/,/','_',$suffix);
@@ -1970,7 +1988,7 @@ $number_period_for_forecasting=26;
                      ,$where_from
                      ,$where_to
                     );
-        //print "$sql<br>";
+	// print "$sql<br>";
 
         $prev_month='';
         $prev_year=array();
@@ -1998,8 +2016,8 @@ $number_period_for_forecasting=26;
             } else {
                 $diff_prev_year='';
             }
-
-
+	    
+	 
             if ($tipo=='SI' or $tipo=='PI') {
                 $tip=$row['Time Series Label'].' '._('Sales')
                      ." ".strftime("%B %Y", strtotime('@'.$row['date']))."\n".money($row['value'],$currency).($row['Time Series Type']=='Forecast'?" ("._('Forecast').")":"")."\n".$diff_prev_month.$diff_prev_year."(".$row['count']." "._('Invoices').")";
@@ -2014,6 +2032,9 @@ $number_period_for_forecasting=26;
             elseif($tipo=='PI' or $tipo=='PP') {
                 $tip=$row['Time Series Label'].' '._('Profit')." ".strftime("%B %Y", strtotime('@'.$row['date']))."\n".money($row['value'],$currency)."\n".$diff_prev_month.$diff_prev_year."(".$row['count']." "._('Invoices').")";
 
+            }elseif($tipo=='PartOut') {
+	      $tip=_('Part').' '.$row['Time Series Label'].' '._('Out')." ".strftime("%B %Y", strtotime('@'.$row['date']))."\n".number($row['value'])."\n".$diff_prev_month.$diff_prev_year;
+
             }
 
 
@@ -2027,7 +2048,7 @@ $number_period_for_forecasting=26;
 
             // print $row['dd']."<br>\n";
             if ($row['Time Series Type']=='First') {
-                $first_value=array($row['dd'],$row['value'],$tip) ;
+	      $first_value=array($row['dd'],$row['value'],$tip) ;
 
             }
             elseif ($row['Time Series Type']=='Current') {
@@ -2349,7 +2370,7 @@ $number_period_for_forecasting=26;
                      ,$where_from
                      ,$where_to
                     );
-        //p print "$sql<br>";
+        //print "$sql<br>";
 
         $prev_yearweek=array();
         $forecast_region=false;
@@ -2378,6 +2399,9 @@ $number_period_for_forecasting=26;
             }
             elseif($tipo=='PI' or $tipo=='PP') {
                 $tip=$row['Time Series Label']." ".$row['quarter']." "._('week')." ".$row['year']."\n".money($row['value'])."\n".$diff_prev_yearweek."(".$row['count']." "._('Invoices').")";
+
+            }elseif($tipo=='PartOut') {
+	      $tip=_('Part').' '.$row['Time Series Label'].' '._('Out')." ".strftime("%B %Y", strtotime('@'.$row['date']))."\n".number($row['value'])."\n".$diff_prev_yearweek;
 
             }
 

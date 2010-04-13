@@ -64,6 +64,11 @@ case('invoice_categories'):
    $tipo_chart='ColumnChart';
 render_flash_plot();
   break;
+case('part_out'):
+  plot_part_out();
+render_flash_plot();
+
+  break;
 case('sales_by_store');
 case('sales_share_by_store');
 plot_sales_by_store($tipo);
@@ -307,13 +312,29 @@ break;
    $style='size:10,lineSize:1';
  $tipo_chart='LineChart';
     break;
- case('product_stock_history'):
-   $ar_address='ar_assets.php?tipo=plot_daystock';
-   $fields='"stock","day","tip"';
-		  $yfields=array(array('label'=>_('Outers'),'name'=>'stock','style'=>''));
-   $xfield=array('label'=>_('Date'),'name'=>'day');
+ case('part_stock_history'):
+    $sku=$_REQUEST['keys'];
+  $from=$_REQUEST['from'];
+  $to=$_REQUEST['to'];
+  $period=$_REQUEST['period'];
+
+   $ar_address="ar_plot.php?tipo=part_stock_history&keys=$sku&period=$period&from=$from&to=$to";
+
+   $fields='"Date","Stock","Sales","In"';
+   
+   $yfields=array(
+		
+		  array('label'=>_('Sales'),'name'=>'Sales','style'=>'color:0x7076f4,alpha:0.2')
+		  ,array('label'=>_('In'),'name'=>'In','style'=>'color:0x7076f4,alpha:0.2')
+		  ,array('type'=>"line", 'label'=>_('Parts'),'name'=>'Stock','style'=>'color:0x3390e7')
+		  );
+   
+   $xfield=array('label'=>_('Date'),'name'=>'Date','tipo_axis'=>'Category',);
    $style='size:5,lineSize:1';
- $tipo_chart='CartesianChart';
+   $tipo_chart='ColumnChart';
+   $x_axis='';
+   
+   render_flash_plot();
     break;
 
 case('top_departments_sales_month'):
@@ -678,6 +699,179 @@ style:{'.$style.'}          ,
  print $out;
 }
 
+function plot_part_out(){
+  
+global $color_palette,$yfields,$fields,$yfield_label_type,$tipo_chart,$xfield,$ar_address;
+ 
+ if(isset($_REQUEST['period']))
+    $period=$_REQUEST['period'];
+  else
+    $period='m';
+ 
+
+
+ $tipo='part';
+$plot_name='part_out';
+    $plot_page='part';
+
+
+
+  if(isset($_REQUEST['from']))
+    $from=$_REQUEST['from'];
+  else
+    $from=false;
+    
+   if(is_numeric($from)){
+           $_SESSION['state'][$plot_page]['plot_interval'][$period]['plot_bins']=$from;
+
+   switch($period){
+
+   case('y'):
+   $from=date('Y-m-01',strtotime("now - $from years"));
+   break;
+   case('q'):
+     $_from=$from*3;
+   $from=date('Y-m-01',strtotime("now - $_from months"));
+   break;
+   case('m'):
+   $from=date('Y-m-01',strtotime("now - $from months"));
+   break;
+   case('w'):
+   $_from=$from+3;
+   $from=date('Y-m-01',strtotime("now - $_from weeks"));
+   break;
+   }
+
+   }
+  // print_r($_REQUEST);
+   
+  if(isset($_REQUEST['to']))
+    $to=$_REQUEST['to'];
+  else
+    $to=false;
+
+ if(is_numeric($to)){
+         $_SESSION['state'][$plot_page]['plot_forecast'][$period]['plot_forecast_bins']=$to;
+
+   switch($period){
+
+   case('y'):
+   $to=date('Y-m-d',strtotime("now + $to years"));
+   break;
+   case('q'):
+     $_to=$to*3;
+   $to=date('Y-m-d',strtotime("now + $_to months"));
+   break;
+   case('m'):
+   $to=date('Y-m-d',strtotime("now + $to months"));
+   break;
+   case('w'):
+   $to=date('Y-m-d',strtotime("now + $to weeks"));
+   break;
+   }
+
+   }
+
+
+
+ if(isset($_REQUEST['category']))
+    $category=$_REQUEST['category'];
+  else
+    $category='sales';
+ 
+ 
+
+ $request_keys=$_REQUEST['keys'];
+ 
+ 
+
+  $item_keys='';
+  $item_key_array=array();
+ if(preg_match('/\(.+\)/',$request_keys,$keys)){
+    $keys=preg_replace('/\(|\)/','',$keys[0]);
+    $keys=preg_split('/\s*,\s*/',$keys);
+    $item_keys='(';
+    foreach($keys as $key){
+      if(is_numeric($key)){
+	$item_keys.=sprintf("%d,",$key);
+	$item_key_array[]=$key;
+      }
+    }
+    $item_keys=preg_replace('/,$/',')',$item_keys);
+  }elseif(preg_match('/^\d+$/',$request_keys)){
+    $item_keys="(".$request_keys.")";
+    $item_key_array[]=$request_keys;
+  }
+  if(count($item_key_array)==0){
+    print "error x";
+    print_r($_REQUEST);
+    return;
+  }
+  
+
+ 
+
+  $_SESSION['state'][$plot_page]['plot']=$plot_name;
+  $_SESSION['state'][$plot_page]['plot_period']=$period;
+  $_SESSION['state'][$plot_page]['plot_category']=$category;
+
+  //print "$plot_page $plot_name $category";
+
+
+
+
+
+
+  $title='';
+  $ar_address=sprintf('ar_plot.php?tipo=general&item=%s&category=%s&period=%s&split=yes&item_keys=%s&from=%s&to=%s'
+		      ,$tipo
+		      ,$category
+		      ,$period
+		      ,$item_keys
+		      ,$from
+		      ,$to
+		      );
+  
+  print " $ar_address";
+
+
+
+
+  $fields='"date"';
+    foreach($item_key_array as $key){
+      $fields.=',"value'.$key.'","tip_value'.$key.'","forecast'.$key.'","tip_forecast'.$key.'","tails'.$key.'","tip_tails'.$key.'"';
+    }
+    $yfields=array();
+    $count=0;
+    foreach($item_key_array as $key){
+      $forecast_color=$color_palette[$count]['forecast'];
+    $value_color=$color_palette[$count]['value'];
+      $yfields[]=array('label'=>_('Forecast')." ($key)",'name'=>'forecast'.$key,'style'=>'color:'.$forecast_color.',alpha:.7');
+      $yfields[]=array('label'=>_('Tails')." ($key)",'name'=>'tails'.$key,'style'=>'color:'.$value_color.',fillColor:0xffffff,alpha:.7');
+      $yfields[]=array('label'=>_('Month Net Sales')." ($key)",'name'=>'value'.$key,'style'=>'color:'.$value_color.',alpha:.7');
+       $count++;
+    }		 
+    
+    //  $yfield_label_type='formatCurrencyAxisLabel';
+    
+    
+    $x_axis='';
+    // if($period=='q'){
+    //$x_axis='qua';
+    //}if($period=='m'){
+    //$x_axis='justyears';
+    //}
+    //print $period;
+    $xfield=array('label'=>_('Date'),'name'=>'date','tipo_axis'=>'Category','axis'=>$x_axis);
+    $style='';
+    $tipo_chart='LineChart';
+
+
+
+
+
+
+}
 
 function plot_sales_by_store($tipo){
 

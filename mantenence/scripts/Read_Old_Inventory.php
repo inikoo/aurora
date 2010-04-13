@@ -51,7 +51,7 @@ $supplier_skus.=",".$row['skus']."";
 $supplier_skus=preg_replace('/^,/','',$supplier_skus);$supplier_skus="($supplier_skus)";
 //print " $supplier_skus";
 //exit;
-$supplier_skus='(905)';
+//$supplier_skus='(905)';
 $sql="select * from `Part Dimension`  where `Part SKU` in $supplier_skus ";
 $result=mysql_query($sql);
 while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
