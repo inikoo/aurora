@@ -14,7 +14,6 @@
 
 include_once('common.php');
 
-print $user->data['User Type'];
 
 include_once('class.Product.php');
 include_once('class.Order.php');
