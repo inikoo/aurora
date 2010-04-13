@@ -34,6 +34,7 @@ $smarty->assign('view_orders',$view_orders);
 $smarty->assign('view_customers',$view_cust);
 
 $page='part';
+$smarty->assign('page',$page);
 
 $parts_period=$_SESSION['state']['parts']['period'];
 $parts_period_title=array('year'=>_('Last Year'),'quarter'=>_('Last Quarter'),'month'=>_('Last Month'),'week'=>_('Last Week'),'all'=>_('All'));

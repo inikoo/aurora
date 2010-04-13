@@ -51,9 +51,13 @@ if($plot_tipo=='top_departments'){
     elseif($plot_period=='w')
       $plot_formated_period='Weekly';
   
+if($page=='part' and $plot_category=='stock_history'){
+  $plot_formated_category=_('Stock Keeping Units');
   
-if($plot_category=='profit')
-  $plot_formated_category=_('Profits');
+}elseif($page=='part'){
+  $plot_formated_category=_('Stock Value');
+}else if($plot_category=='profit')
+   $plot_formated_category=_('Profits');
 else
   $plot_formated_category=_('Net Item Sales');
 
@@ -71,11 +75,19 @@ $plot_period_menu=array(
 		     );
 $smarty->assign('plot_period_menu',$plot_period_menu);
 
+if($page=='part'){
+  $plot_category_menu=array(
+			    array("category"=>'stock','label'=>_('Stock Keeping Units'))
+			    ,array("category"=>'value','label'=>_('Stock Value'))
+			    );
+  $smarty->assign('plot_category_menu',$plot_category_menu);
+}else{
 $plot_category_menu=array(
 		     array("category"=>'sales','label'=>_('Net Item Sales'))
 		     ,array("category"=>'profit','label'=>_('Profit'))
-		     );
-		     $smarty->assign('plot_category_menu',$plot_category_menu);
+			  );
+$smarty->assign('plot_category_menu',$plot_category_menu);
+}
 
 $plot_interval_menu=array(
             'y'=>array(

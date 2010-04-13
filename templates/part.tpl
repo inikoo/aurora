@@ -1,56 +1,38 @@
-
 {include file='header.tpl'}
-<div style="display:none; position:absolute; left:10px; top:200px; z-index:2" id="cal1Container"></div>
-
-
 <div id="bd" >
   
-<div id="sub_header">
 
-
+<div>
+  <h1 style="padding:10px 0 0 0 ;font-size:140%"><span style="font-weight:800">{t}Part SKU{/t} {$part->get('Part SKU')}</span> {$part->get('Part XHTML Description')}</h1>
+  <h2 style="padding:0">{t}Sold as{/t}: {$part->get('Part XHTML Currently Used In')}</h2>
 </div>
 
-<div  id="doc3" style="clear:both;" class="yui-g yui-t4" >
-  <div id="yui-main"> 
-    <div class="yui-b">
-      <div  class="yui-gd" style="clear:both;padding:0;width:100%">
-	<div class="yui-u first" >
-	  <div id="photo_container" style="margin-top:10px">
-	    <div style="border:1px solid #ddd;padding-top:0;width:220px;xheight:230px;text-align:center;margin:0 10px 0 0px">
-	      <span style="font-size:150%;font-weight:800">{t}Part SKU{/t} {$part->get('Part SKU')}</span>
-	      <div id="imagediv"   style="border:1px solid #ddd;width:200px;height:140px;padding:0px 0;xborder:none;cursor:pointer;xbackground:red;margin: 0 0 10px 9px">
-		<img src="{ if $num_images>0}{$images[$data.principal_image].med}{else}art/nopic.png{/if}"     id="image"   alt="{t}Image{/t}"/>
-	      </div>
-	    </div>
-	    <div style="width:160px;margin:auto;padding-top:5px"  >
-	      {foreach from=$images item=image  name=foo}
-	      {if $image.principal==0} <img  style="float:left;border:1px solid#ccc;padding:2px;margin:2px" src="{$image.tb}"  /></td>{/if}
-              {/foreach}
-</div>
-	  
-            
-	    
-	  </div>
-	  
-	  
-	</div>
+<div class="" id="block_info"  style="margin-top:10px;width:790px">
 
+  <div id="photo_container" style="float:left;margin-top:0px">
+    <div style="border:1px solid #ddd;padding-top:10;width:220px;text-align:center;margin:0 10px 0 0px">
+      <div id="imagediv"   style="border:1px solid #ddd;width:200px;height:140px;padding:0px 0;xborder:none;cursor:pointer;;margin: 10px 0 10px 9px">
+	<img src="{ if $num_images>0}{$images[$data.principal_image].med}{else}art/nopic.png{/if}"     id="image"   alt="{t}Image{/t}"/>
+      </div>
+    </div>
+    <div style="width:160px;margin:auto;padding-top:5px"  >
+      {foreach from=$images item=image  name=foo}
+      {if $image.principal==0} <img  style="float:left;border:1px solid#ccc;padding:2px;margin:2px" src="{$image.tb}"  />{/if}
+      {/foreach}
+    </div>
+  </div>
+
+  <div style="width:250px;float:left;margin-left:10px">
+  
+    <table    class="show_info_product" >
+      <td class="aright">
 	
-	<div class="yui-u">
-	  <h2>{$part->get('Part XHTML Description')}</h2>
-	  <h2>{t}Sold as{/t}: {$part->get('Part XHTML Currently Used In')}</h2>
-	  <div class="yui-b"  style="width:100%;">
-	    <div class="yui-g" style="width:100%;font-size:90%"   >
-              <div class="yui-u first">
-		<table    class="show_info_product">
-		  <td class="aright">
-		    
-		     <tr><td>{t}Status{/t}:</td><td>{$part->get('Part Status')}</td></tr>
-		      <tr><td>{t}Keeping since{/t}:</td><td>{$part->get('Valid From')}</td></tr>
-		     <tr><td>{t}Supplied by{/t}:</td><td>{$part->get('Part XHTML Currently Supplied By')}</td></tr>
-		     <tr><td>{t}Cost{/t}:</td><td>{$part->get('Cost')}</td></tr>
-		</table>
-		 <table    class="show_info_product">
+	<tr><td>{t}Status{/t}:</td><td>{$part->get('Part Status')}</td></tr>
+      <tr><td>{t}Keeping since{/t}:</td><td>{$part->get('Valid From')}</td></tr>
+	<tr><td>{t}Supplied by{/t}:</td><td>{$part->get('Part XHTML Currently Supplied By')}</td></tr>
+	<tr><td>{t}Cost{/t}:</td><td>{$part->get('Cost')}</td></tr>
+    </table>
+    <table    class="show_info_product">
       <tr >
       <td colspan="2" class="aright" style="padding-right:10px"> <span class="product_info_sales_options" id="info_period"><span id="info_title">{$parts_period_title}</span></span>
       <img id="info_previous" class="previous_button" style="cursor:pointer" src="art/icons/previous.png" alt="<"  title="previous" /> <img id="info_next" class="next_button" style="cursor:pointer"  src="art/icons/next.png" alt=">" tite="next"/></td>
@@ -99,19 +81,10 @@
 	  
       </tbody>
  </table>
-		
-		
-		<table    class="show_info_product">
+</div>
 
-		</table>
-		<table    class="show_info_product" >
-		  
-		</table>
-	      </div>
-              <div class="yui-u">
-
-		
-		<table   class="show_info_product" >
+ <div style="width:250px;float:left;margin-left:20px">
+	<table   class="show_info_product" >
 		  <tr>
 		    <td>{t}Stock{/t}:<br>{$stock_units}</td><td class="stock aright" id="stock">{$part->get('Part Current Stock')}</td>
 		  </tr>
@@ -184,31 +157,14 @@
       <tr><td>{t}Lost{/t}:</td><td class="aright">{$part->get('1 Year Lost')}</td></tr>
 	  
       </tbody>
- </table>
-		  <table  class="show_info_product">
+</table>
+</div>
 
 
-		  </table>
-		
-		
-              </div>
-	    </div>
-	  </div>
-	</div>
-      </div>
-      
-      
-      
+</div>
 
+	
 
-
-    </div> 
-  </div>
-
-
-  
- 
-  
   
  <div style="clear:both"></div>
  <div   id="block_plot" style="clear:both;{if $display.plot==0}display:none{/if};margin-top:20px"  >

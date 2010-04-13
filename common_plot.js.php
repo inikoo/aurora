@@ -119,11 +119,11 @@ function change_plot(o){
         from='∀';
 	    Dom.get("plot_interval").innerHTML=from+':'+to;
 
-	}else{
-	     plot='store';
+	}else if(tipo=='store' || tipo=='department' || tipo=='family' || tipo=='product'  ){
+	    plot='store';
 	    Dom.get("pie_options").style.display='none';
 	    var plot_url='plot.php?tipo='+tipo+'&category='+category+'&period='+period+'&keys='+keys+'&from='+from+'&to='+to;
-		   alert(plot_url);
+	    alert(plot_url);
 
 
 	    //Dom.get("the_plot").width="100%";
