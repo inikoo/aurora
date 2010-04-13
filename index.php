@@ -14,15 +14,24 @@
 
 include_once('common.php');
 
+print $user->data['User Type'];
+
 include_once('class.Product.php');
 include_once('class.Order.php');
 
-$general_options_list=array();
+//$general_options_list=array();
 $general_options_list[]=array('tipo'=>'js','state'=>'','id'=>'edit_widgets','label'=>_('Customize Page'));
 $smarty->assign('general_options_list',$general_options_list);
 
+if($user->data['User Type']=='Supplier'){
+$num_suppliers=count($user->suppliers);
 
-
+if($num_suppliers==1){
+header('Location: supplier.php?id='.$user->suppliers[0]);
+   exit;
+ 
+}
+}
 
 
 // $sql=sprintf("select id,public_id from orden where pick_factor is null or weight is null order by public_id desc limit 10000");

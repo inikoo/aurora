@@ -107,6 +107,11 @@ $user->read_groups();
 $user->read_rights();
 $user->read_stores();
 $user->read_warehouses();
+if($user->data['User Type']=='Supplier'){
+$user->read_suppliers();
+
+}
+
 
 //print_r($user);
 //exit;
@@ -119,8 +124,8 @@ if($user->can_view('staff'))
   $nav_menu[] = array(_('Staff'), 'hr.php','staff');
 if($user->can_view('suppliers'))
   $nav_menu[] = array(_('Suppliers'), 'suppliers.php','suppliers');
-if($user->is('Supplier'))
-  $nav_menu[] = array(_('My Products'), 'myproducts.php','myproducts');
+//if($user->is('Supplier'))
+//  $nav_menu[] = array(_('My Products'), 'myproducts.php','myproducts');
 
 if($user->can_view('reports')){
   // if(count($user->stores)==1){

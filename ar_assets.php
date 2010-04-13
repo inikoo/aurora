@@ -9087,7 +9087,7 @@ $wheref='';
 
 
 
-    $rtext=$total_records.' '.ngettext('stock operetion','stock operations',$total);
+    $rtext=$total_records.' '.ngettext('days','days',$total);
     if ($total_records>$number_results)
         $rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
     else
@@ -9096,7 +9096,7 @@ $wheref='';
         
 
     if ($total_records==0){
-        $rtext=_('No stock movements');
+        $rtext=_('No stock history');
         $rtext_rpp='';
       }
 

@@ -33,12 +33,51 @@ require_once '../../conf/conf.php';
 date_default_timezone_set('Europe/London');
 $not_found=00;
 
+$codes='';
+$sql=sprintf("select `Product Code` as codes from `Product Dimension` where `Product XHTML Supplied By` like '%%AWChina%%' ");
+$result=mysql_query($sql);
+while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
+$codes.=",'".$row['codes']."'";
+}
+$codes=preg_replace('/^,/','',$codes);$codes="($codes)";
+
+//print $codes;exit;
+$supplier_skus='';
+$sql=sprintf("select `Part SKU` as skus from `Part Dimension` where `Part XHTML Currently Supplied By` like '%%AWChina%%' ");
+$result=mysql_query($sql);
+while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
+$supplier_skus.=",".$row['skus']."";
+}
+$supplier_skus=preg_replace('/^,/','',$supplier_skus);$supplier_skus="($supplier_skus)";
+//print " $supplier_skus";
+//exit;
+$supplier_skus='(905)';
+$sql="select * from `Part Dimension`  where `Part SKU` in $supplier_skus ";
+$result=mysql_query($sql);
+while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
+  $part=new Part('sku',$row['Part SKU']);
+  print $part->sku."\r"  ;
+  $part->update_stock();
+  $part->load('sales');
+  $part->forecast();
+  //$part->update_days_until_out_of_stock();
+}
+
+
+$sql="select * from `Supplier Product Dimension` where `Supplier Key`=21  ";
+$result=mysql_query($sql);
+while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
+  $sp=new SupplierProduct('id',$row['Supplier Product Current Key']);
+  $sp->load('used in');
+  $sp->load('current_key_sales');
+  $sp->load('sales');
+$sp->update_stock();
+  print 'Sup Prod '.$row['Supplier Product Current Key']."\r";
+ }
 
 
 
-
-
-
+exit;
 
 
 
@@ -108,8 +147,8 @@ mysql_query($sql);
 
 print "Getting data from the oold database\n";
 
-$sql="select (select handle from aw_old.liveuser_users where authuserid=aw_old.in_out.author) as user, code,product_id,aw_old.in_out.date,aw_old.in_out.tipo,aw_old.in_out.quantity ,aw_old.in_out.notes from aw_old.in_out left join aw_old.product on (product.id=product_id) where   product.code is not null and (aw_old.in_out.tipo=2 or aw_old.in_out.tipo=1)   order by product.id,date ";
-
+$sql="select (select handle from aw_old.liveuser_users where authuserid=aw_old.in_out.author) as user, code,product_id,aw_old.in_out.date,aw_old.in_out.tipo,aw_old.in_out.quantity ,aw_old.in_out.notes from aw_old.in_out left join aw_old.product on (product.id=product_id) where   product.code is not null and (aw_old.in_out.tipo=2 or aw_old.in_out.tipo=1) and product.code in $codes order by product.id,date ";
+//print $sql;
 $result=mysql_query($sql);
 
 while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
@@ -357,7 +396,7 @@ print "Wrpaping + Addng Part Locations\n";
 
 
 
-$sql=sprintf("select `Part SKU` from `Inventory Transaction Fact`   group by `Part SKU` ");
+$sql=sprintf("select `Part SKU` from `Inventory Transaction Fact` where `Part SKU` in ".$supplier_skus." group by `Part SKU` ");
 $result=mysql_query($sql);
 //print $sql;
 while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
@@ -391,6 +430,78 @@ $_date=($rowxxx['Inventory Audit Date']);
    
    
    
+<<<<<<< TREE
+    $part_location=new PartLocation('find',array(
+						 'Part SKU'=>$sku,
+						 'Location Key'=>$row2['Location Key'],
+						 'Date'=>$date)
+				    ,'create');
+   
+
+  }
+
+
+
+}
+
+ $sql="delete from  `Inventory Transaction Fact` where `Inventory Transaction Type` in ('Disassociate') ";
+ mysql_query($sql);
+
+ print "Clouseing the siconti nued parts";
+
+$sql=sprintf("select `Inventory Transaction Fact`.`Part SKU` from `Inventory Transaction Fact` left join `Part Dimension` on (`Inventory Transaction Fact`.`Part SKU`=`Part Dimension`.`Part SKU`)  where `Part Status`='Discontinued'  and `Inventory Transaction Fact`.`Part SKU` in ".$supplier_skus."  group by `Inventory Transaction Fact`.`Part SKU` ");
+$result=mysql_query($sql);
+
+while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
+  $sku=$row['Part SKU'];
+  // print "$sku       \n";
+  
+  $sql=sprintf('select `Inventory Audit Date` from `Inventory Audit Dimension` where `Inventory Audit Part SKU`=%d  order by `Inventory Audit Date` desc' 
+,$sku
+
+);
+$_date='';
+$resxxx=mysql_query($sql);
+if($rowxxx=mysql_fetch_array($resxxx)){
+$_date=($rowxxx['Inventory Audit Date']);
+}
+  
+
+
+
+$sql=sprintf("select `Location Key`,`Date` from `Inventory Transaction Fact` where  `Part SKU`=%d  and `Inventory Transaction Type` in ('Audit','Not Found','Sale') order by `Date` desc  ",$sku);
+  $result2=mysql_query($sql);
+  // print "$sql\n";
+  if($row2=mysql_fetch_array($result2, MYSQL_ASSOC)   ){
+    
+   if($_date and strtotime($_date)<strtotime($row2['Date'])  )
+     $date=$_date;
+   else
+     $date=$row2['Date'];
+   
+   $date=date("Y-m-d H:i:s",strtotime("$date +1 second"));
+   
+   $part_location=new PartLocation($sku.'_'.$row2['Location Key']);
+   
+
+
+   $data=array('Date'=>$date,'Note'=>_('Discontinued'),'Event Order'=>1);
+     
+     $part_location->disassociate($data);
+  } 
+
+
+}
+
+
+
+
+
+
+
+
+
+=======
     $part_location=new PartLocation('find',array(
 						 'Part SKU'=>$sku,
 						 'Location Key'=>$row2['Location Key'],
@@ -462,13 +573,47 @@ exit;
 
 
 
+
 print "Setting auditions\n";
-$sql=sprintf('select *  from `Part Location Dimension`where `Part SKU`=905 ');
+$sql=sprintf('select *  from `Part Location Dimension` where `Part SKU` in  '.$supplier_skus);
+
 $res=mysql_query($sql);
 while($row=mysql_fetch_array($res)){
  print $row['Part SKU'].'_'.$row['Location Key']."\r";
  $part_location=new PartLocation($row['Part SKU'].'_'.$row['Location Key']);
  $part_location->set_audits();
+
+ 
+}
+
+
+
+$sql=sprintf('select `Part SKU`  from `Part Dimension`  where `Part SKU` in  '.$supplier_skus);
+$res=mysql_query($sql);
+while($row=mysql_fetch_array($res)){
+  print $row['Part SKU']."\n";
+  $part=new Part($row['Part SKU']);
+  $part->update_stock_history();
+    
+}
+
+
+exit;
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+=======
  
 }
 $sql=sprintf('select `Part SKU`  from `Part Dimension` where `Part SKU`=905 ');
@@ -496,6 +641,7 @@ exit;
 
 
   
+>>>>>>> MERGE-SOURCE
 
 
 

@@ -122,7 +122,9 @@
 		  <tr>
 		    <td>{t}Stock{/t}:<br>{$stock_units}</td><td class="stock aright" id="stock">{$part->get('Part Current Stock')}</td>
 		  </tr>
-
+<tr>
+		    <td>{t}Available for{/t}:</td><td class="stock aright">{$part->get('Part XHTML Available For Forecast')}</td>
+		  </tr>
 		    {if $locations}
 		    <tr><td>{t}Location{/t}:</td><td class="aright">
 			<table class="locations " style="float:right"  >

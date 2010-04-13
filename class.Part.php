@@ -697,6 +697,115 @@ break;
   }
   
 
+<<<<<<< TREE
+
+function get_current_stock(){
+$stock=0;     $value=0;    
+$sql=sprintf("select sum(`Quantity On Hand`) as stock ,sum(`Stock Value`) as value from `Part Location Dimension` where `Part SKU`=%d ",$this->id);
+$res=mysql_query($sql);
+
+if($row=mysql_fetch_array($res)){
+$stock=$row['stock'];
+$value=$row['value'];
+}
+return array($stock,$value);
+
+}
+
+function get_stock($date){
+$stock=0;    $value=0;    
+$sql=sprintf("select ifnull(sum(`Quantity On Hand`),0) as stock,ifnull(sum(`Value At Cost`),0) as value from `Inventory Spanshot Fact` where `Part SKU`=%d and `Date`=%s"
+,$this->id,prepare_mysql($date));
+$res=mysql_query($sql);
+
+if($row=mysql_fetch_array($res)){
+$stock=$row['stock'];
+$value=$row['value'];
+
+}
+return array($stock,$value);
+}
+
+function update_days_until_out_of_stock(){
+$this->get_days_until_out_of_stock();
+}
+
+function get_days_until_out_of_stock(){
+
+if($this->data['Part Current Stock']==0){
+    $days=0;
+    $days_formated='0';
+    return array($days,$days_formated);
+}
+
+
+$sql=sprintf("select `Date` from `Inventory Transaction Fact` where `Part SKU`=%d and `Inventory Transaction Type`='Associate' order by `Date` desc"
+,$this->id);
+$res=mysql_query($sql);
+
+if($row=mysql_fetch_array($res)){
+$date=$row['Date'];
+$interval=(date('U')-strtotime($date))/3600/24;
+if($interval<21){
+    $qty=$this->data['Part Total Provided']+$this->data['Part Total Lost'];
+    $qty_per_day=$qty/$interval;
+    $days=$this->data['Part Current Stock']/$qty_per_day;
+    $days_formated=$days.' '._('days');
+    return array($days,$days_formated);
+
+}
+
+
+}else{
+ $days=0;
+    $days_formated='ND';
+return array($days,$days_formated);
+}
+
+//include_once('class.TimeSeries.php');
+
+
+$sql=sprintf("select `First Day` from kbase.`Week Dimension` where `Year Week`=%s",date("YW"));
+$res=mysql_query($sql);
+$no_data=true;
+if($row=mysql_fetch_array($res)){
+ $date=date("Y-m-d",strtotime($row['First Day'].' -1 day'));
+}
+list($stock,$value)=$this->get_stock($date);
+print "$stock,$value\n";
+
+
+
+// $tm=new TimeSeries(array('m','part sku '.$row['Part SKU']));
+//  $tm->get_values();$tm->save_values();
+//  $tm->forecast();
+
+$sql=sprintf("select `Time Series Value` from `Time Series Dimension` where `Time Series Frequency`='Weekly' and `Times Series Name`='SkuS' and `Time Series Name Key`=%d  and `Time Series Type`='Forecast' order by `Time Series Date`",$this->id);
+
+
+$resmysql_query($sql);
+$future_stock='';
+while($row=mysql_fetch_array($res)){
+
+}
+
+
+
+
+}
+  function update_stock(){
+  //print_r($this->get_current_stock());
+     list($stock,$value)=$this->get_current_stock();
+     $sql=sprintf("update `Part Dimension`  set `Part Current Stock`=%f ,`Part Current Value`=%f where  `Part SKU`=%d   "
+		 ,$stock
+		 ,$value
+		 ,$this->id
+		 );
+    mysql_query($sql);
+//print "$sql\n";
+  }
+
+
   function update_part_status($value){
      $sql=sprintf("update `Part Dimension`  set `Part Status`=%s where  `Part SKU`=%d   "
 		 ,prepare_mysql($value)
@@ -705,6 +814,16 @@ break;
     mysql_query($sql);
 
   }
+=======
+  function update_part_status($value){
+     $sql=sprintf("update `Part Dimension`  set `Part Status`=%s where  `Part SKU`=%d   "
+		 ,prepare_mysql($value)
+		 ,$this->id
+		 );
+    mysql_query($sql);
+
+  }
+>>>>>>> MERGE-SOURCE
 
   function update_valid_dates($date){
     $affected_from=0;
@@ -871,6 +990,25 @@ return $this->current_associated_locations;
 
   }
 
+<<<<<<< TREE
+  function get_comercial_value($date=''){
+
+    return 0;
+  }
+
+
+  function update_stock_history(){
+$sql=sprintf("select `Location Key`  from `Part Location Dimension` where `Part SKU`=%d ",$this->sku);
+ //print "$sql\n";
+ $result=mysql_query($sql);
+    while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
+      $part_location=new PartLocation($this->sku.'_'.$row['Location Key']);
+      $part_location->update_stock_history();
+    }
+ }
+
+function update_stock_delete_me(){
+=======
   function get_comercial_value($date=''){
 
     return 0;
@@ -888,6 +1026,7 @@ $sql=sprintf("select `Location Key`  from `Part Location Dimension` where `Part 
  }
 
 function update_stock(){
+>>>>>>> MERGE-SOURCE
 $stock=0;$value=0;
 
 $sql=sprintf("select sum(`Quantity On Hand`) as stock, sum(`Stock Value`) as value from `Part Location Dimension` where `Part SKU`=%d ",$this->sku);
@@ -1033,7 +1172,7 @@ function update_sales(){
 		   ,$abs_profit
 		   ,$profit_sold,$sold,$margin
 		   ,$this->id);
-      //            print "$sql\n";
+              //   print "$sql\n";
       if(!mysql_query($sql))
 	exit("error con not uopdate product part when loading sales");
       
@@ -1127,6 +1266,16 @@ function forecast(){
 
       // -------------- simple forecast -------------------------
     
+        $sql=sprintf("select `Date` from `Inventory Transaction Fact` where `Part SKU`=%d and `Inventory Transaction Type`='Associate' order by `Date` desc"
+,$this->id);
+$res=mysql_query($sql);
+
+if($row=mysql_fetch_array($res)){
+$date=$row['Date'];
+$interval=(date('U')-strtotime($date))/3600/24;
+  }else
+  $interval=0;
+    
       if($this->data['Part Current Stock']=='' or $this->data['Part Current Stock']<0){
 	$this->data['Part Days Available Forecast']='NULL';
 	$this->data['Part XHTML Available For Forecast']=_('Unknown Stock');
@@ -1136,10 +1285,24 @@ function forecast(){
       }else{
       
       if($this->data['Part 1 Quarter Acc Required']>0){
-	$this->data['Part Days Available Forecast']=365/4*$this->data['Part Current Stock']/$this->data['Part 1 Quarter Acc Required'];
+      
+  
+      
+     // print $this->data['Part 1 Quarter Acc Required']."xxxx\n";
+      if($interval>(365/4)){
+        $interval=365/4;
+      }
+          print $this->data['Part 1 Quarter Acc Required']/$interval;
+
+      
+	$this->data['Part Days Available Forecast']=$interval*$this->data['Part Current Stock']/$this->data['Part 1 Quarter Acc Required'];
 	$this->data['Part XHTML Available For Forecast']=number($this->data['Part Days Available Forecast']).' '._('days');
       }elseif($this->data['Part 1 Year Acc Required']>0){
-	$this->data['Part Days Available Forecast']=365*$this->data['Part Current Stock']/$this->data['Part 1 Year Acc Required'];
+       if($interval>(365)){
+        $interval=365;
+      }
+      
+	$this->data['Part Days Available Forecast']=$interval*$this->data['Part Current Stock']/$this->data['Part 1 Year Acc Required'];
 	$this->data['Part XHTML Available For Forecast']=number($this->data['Part Days Available Forecast']).' '._('days');
       }else{
 	$this->data['Part Days Available Forecast']='NULL';
@@ -1149,9 +1312,9 @@ function forecast(){
       
 
       $sql=sprintf("update `Part Dimension` set `Part Days Available Forecast`=%s,`Part XHTML Available For Forecast`=%s where `Part SKU`=%d",$this->data['Part Days Available Forecast'],prepare_mysql($this->data['Part XHTML Available For Forecast']),$this->id );
-    
+    //print $sql;
       if(!mysql_query($sql))
-	print "$sql\n";
+	  print "$sql\n";
    
     
 

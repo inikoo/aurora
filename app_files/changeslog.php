@@ -183,5 +183,7 @@ ALTER TABLE `Store Dimension` ADD `Store Email` VARCHAR( 256 ) NOT NULL AFTER `S
 ADD `Store Telephone` VARCHAR( 256 ) NOT NULL AFTER `Store Email` ,
 ADD `Store Fax` VARCHAR( 256 ) NOT NULL AFTER `Store Telephone` 
 
+ALTER TABLE `Part Dimension` ADD `Part Days Until Out of Stock` SMALLINT  UNSIGNED NULL DEFAULT NULL ,ADD `Part Interval Until Out of Stock` VARCHAR( 64 ) NULL DEFAULT NULL;
+
 */
 ?>
