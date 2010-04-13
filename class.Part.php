@@ -697,7 +697,7 @@ break;
   }
   
 
-<<<<<<< TREE
+
 
 function get_current_stock(){
 $stock=0;     $value=0;    
@@ -806,6 +806,7 @@ while($row=mysql_fetch_array($res)){
   }
 
 
+
   function update_part_status($value){
      $sql=sprintf("update `Part Dimension`  set `Part Status`=%s where  `Part SKU`=%d   "
 		 ,prepare_mysql($value)
@@ -814,16 +815,6 @@ while($row=mysql_fetch_array($res)){
     mysql_query($sql);
 
   }
-=======
-  function update_part_status($value){
-     $sql=sprintf("update `Part Dimension`  set `Part Status`=%s where  `Part SKU`=%d   "
-		 ,prepare_mysql($value)
-		 ,$this->id
-		 );
-    mysql_query($sql);
-
-  }
->>>>>>> MERGE-SOURCE
 
   function update_valid_dates($date){
     $affected_from=0;
@@ -990,7 +981,7 @@ return $this->current_associated_locations;
 
   }
 
-<<<<<<< TREE
+
   function get_comercial_value($date=''){
 
     return 0;
@@ -1007,42 +998,7 @@ $sql=sprintf("select `Location Key`  from `Part Location Dimension` where `Part 
     }
  }
 
-function update_stock_delete_me(){
-=======
-  function get_comercial_value($date=''){
 
-    return 0;
-  }
-
-
-  function update_stock_history(){
-$sql=sprintf("select `Location Key`  from `Part Location Dimension` where `Part SKU`=%d ",$this->sku);
- //print "$sql\n";
- $result=mysql_query($sql);
-    while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
-      $part_location=new PartLocation($this->sku.'_'.$row['Location Key']);
-      $part_location->update_stock_history();
-    }
- }
-
-function update_stock(){
->>>>>>> MERGE-SOURCE
-$stock=0;$value=0;
-
-$sql=sprintf("select sum(`Quantity On Hand`) as stock, sum(`Stock Value`) as value from `Part Location Dimension` where `Part SKU`=%d ",$this->sku);
- //print "$sql\n";
- $result=mysql_query($sql);
-    if($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
-    $stock=$row['stock'];
-$value=$row['value'];
-    }
-    $sql=sprintf("update `Part Dimension` set `Part Current Stock`=%f ,`Part Current Value`=%f where  `Part SKU`=%d"
-    ,$stock
-,$value
-    ,$this->sku);
-    mysql_query($sql);
-    
-}
 
 
 function update_sales(){

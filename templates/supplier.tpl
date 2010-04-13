@@ -1,7 +1,9 @@
 {include file='header.tpl'}
 <div id="bd" >
+<div style="display:none">
  {include file='suppliers_navigation.tpl'}
-  <div id="no_details_title" style="clear:left;{if $show_details}display:none;{/if}">
+ </div>
+ <div id="no_details_title" style="clear:left;{if $show_details}display:none;{/if}">
   <h1>{t}Supplier{/t}: {$supplier->get('Supplier Name')} <span style="color:SteelBlue">({$supplier->get('Supplier Code')})</span></h1>
    <table style="width:500px" >
 	
@@ -170,7 +172,7 @@
 	       <td {if $products_view=='product_forecast'}class="selected"{/if}  id="product_forecast"  >{t}Forecast{/t}</td>
 	    </tr>
 	  </table>
-	   <table style="float:left;margin:0 0 5px 0px ;padding:0;{if $products_view!='sales' }display:none;{/if}"  class="options_mini" >
+	   <table style="float:left;margin:0 0 5px 0px ;padding:0"  class="options_mini" >
 	     <tr>
 	       <td {if $products_period=='all'}class="selected"{/if} id="product_period_all" >{t}All{/t}</td>
 	       <td {if $products_period=='year'}class="selected"{/if}  id="product_period_year"  >{t}1Yr{/t}</td>
