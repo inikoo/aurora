@@ -2,6 +2,20 @@
 
       <div display="none" id="plot_info" keys="{$store->id}"    from="{$plot_interval}" to="{$plot_forecast}"   category="{$plot_category}" period="{$plot_period}"    ></div>
       <ul id="plot_chooser" class="tabs" style="margin-left:20px;padding:0 0px "  >
+
+	{if $page=='part'}
+		<li>
+		  <span class="item {if $plot_tipo=='part_stock_history'}selected{/if}" onClick="change_plot(this)" id="plot_part_stock_history" tipo="part_stock_history"    >
+		    <span>{$part->get_sku()} {t}Stock History{/t}</span>
+		  </span>
+		</li>
+	<li>
+	  <span class="item {if $plot_tipo=='part_outs'}selected{/if}"  id="plot_part_outs" onClick="change_plot(this)" tipo="part_outs"  >
+	    <span>{t}Stock Outs{/t}</span>
+	  </span>
+	</li>
+	<li>
+	{/if}
 	{if $page=='store'}
 	<li>
 	  <span class="item {if $plot_tipo=='store'}selected{/if}" onClick="change_plot(this)" id="plot_store" tipo="store"    >
