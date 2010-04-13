@@ -32,7 +32,7 @@ $tipo='';
 if(isset($_REQUEST['tipo']))
   $tipo=$_REQUEST['tipo'];
 $title='';
-
+$y_axis_options='';
 $options='';
 $staked=false;
 
@@ -312,15 +312,17 @@ break;
    $style='size:10,lineSize:1';
  $tipo_chart='LineChart';
     break;
- case('part_stock_history'):
-    $sku=$_REQUEST['keys'];
-  $from=$_REQUEST['from'];
-  $to=$_REQUEST['to'];
-  $period=$_REQUEST['period'];
+case('part'):
 
-   $ar_address="ar_plot.php?tipo=part_stock_history&keys=$sku&period=$period&from=$from&to=$to";
+  $category=$_REQUEST['category'];
+   $sku=$_REQUEST['keys'];
+   $from=$_REQUEST['from'];
+   $to=$_REQUEST['to'];
+   $period=$_REQUEST['period'];
 
-   $fields='"Date","Stock","Sales","In"';
+   $ar_address="ar_plot.php?tipo=part_$category&keys=$sku&period=$period&from=$from&to=$to";
+   //print $ar_address;
+   $fields='"Date","Stock","Sales","In","tip_Stock","tip_Sales","tip_In"';
    
    $yfields=array(
 		
@@ -333,6 +335,8 @@ break;
    $style='size:5,lineSize:1';
    $tipo_chart='ColumnChart';
    $x_axis='';
+
+   $y_axis_options='zeroGridLine:{size:1,color:0x000000}';
    
    render_flash_plot();
     break;
@@ -557,7 +561,7 @@ $options='yAxis.minimum = 0;';
    
 
 function render_flash_plot(){
-  global $yui_path,$currency_symbol,$title,$fields,$yfields,$xfield,$ar_address,$options,$staked,$tipo_chart,$style,$yfield_label_type;
+  global $yui_path,$currency_symbol,$title,$fields,$yfields,$xfield,$ar_address,$options,$staked,$tipo_chart,$style,$yfield_label_type,$y_axis_options;
 
 $alt=_('Unable to load Flash content. The YUI Charts Control requires Flash Player 9.0.45 or higher. You can download the latest version of Flash Player from the ').'<a href="http://www.adobe.com/go/getflashplayer">Adobe Flash Player Download Center</a>.';
 $out='<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN""http://www.w3c.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -571,7 +575,7 @@ $out='<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN""http://www.
  <script type="text/javascript" src="'.$yui_path.'swf/swf-min.js"></script>
  <script type="text/javascript" src="'.$yui_path.'charts/charts-min.js"></script>
 
-</head> <body><div style="font-size:8pt;height:300px" id=plot>'.$alt.'</div><div style="font-family:Verdana, Arial, sans-serif;text-align:center;font-size:10pt;position:relative;bottom:300px;">'.$title.'</div></body>
+</head> <body><div style="font-size:8pt;height:400px" id=plot>'.$alt.'</div><div style="font-family:Verdana, Arial, sans-serif;text-align:center;font-size:10pt;position:relative;bottom:300px;">'.$title.'</div></body>
  <script type="text/javascript">
 
 
@@ -673,7 +677,7 @@ var xAxis = new YAHOO.widget.'.$xfield['tipo_axis'].'Axis();
 '.$options.'
 
 
-var styleDef={xAxis:{labelRotation:-90,labelSpacing:0 }};
+var styleDef={xAxis:{labelRotation:-90,labelSpacing:0 } ,yAxis:{'.$y_axis_options.'} };
 
 '.($staked?'yAxis.stackingEnabled = true':'').'
 

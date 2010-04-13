@@ -1,5 +1,8 @@
 <?php
+
+
 $plot_tipo=$_SESSION['state'][$page]['plot'];
+
 $plot_data=$_SESSION['state'][$page]['plot_data'][$plot_tipo];
 
 $plot_period=$_SESSION['state'][$page]['plot_period'];
@@ -16,7 +19,19 @@ $smarty->assign('plot_category',$plot_category);
 $smarty->assign('plot_interval',$plot_interval);
 $smarty->assign('plot_forecast',$plot_forecast);
 
-$plot_args='tipo='.$page.'&category='.$plot_category.'&period='.$plot_period.'&keys='.$subject_id.'&currency='.$store->data['Store Currency Code'].'&from='.$plot_interval.'&to='.$plot_forecast;
+if($page=='part'){
+  $currency='GBP';
+  $sql=sprintf("select `Corporation Currency` from `Corporation Dimension` ");
+   $res=mysql_query($sql);
+   if($row=mysql_fetch_array($res)){
+     $currency=$row['Corporation Currency'];
+   }
+
+}
+else
+  $currency=$store->data['Store Currency Code'];
+
+$plot_args='tipo='.$page.'&category='.$plot_category.'&period='.$plot_period.'&keys='.$subject_id.'&currency='.$currency.'&from='.$plot_interval.'&to='.$plot_forecast;
 
 if($plot_tipo=='top_departments'){
   $number_children=3;

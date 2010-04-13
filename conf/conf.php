@@ -1319,19 +1319,37 @@ $default_state=array(
                            ),
                    'part'=>array(
                               'details'=>false,
-                              'plot'=>'part_stock_history',
-                              'plot_data'=>array(
-                                              'week'=>array(
-                                                         'months'=>12,
-                                                         'max_sigma'=>false,
-                                                         'first_day'=>date("Y-m-d H:i:s",strtotime("today - 1 year"))
-                                                     ),
-                                              'month'=>array(
-                                                          'months'=>24,
-                                                          'max_sigma'=>false,
-                                                          'first_day'=>date("Y-m-d H:i:s",strtotime("today - 2 year"))
-                                                      )
-                                          ),
+
+
+			      'plot'=>'part_stock_history',
+			      'plot_interval'=>array(
+							'y'=>array('plot_bins'=>5,
+								   'plot_forecast_bins'=>3),
+							'q'=>array('plot_bins'=>12,
+								   'plot_forecast_bins'=>3),
+							'm'=>array('plot_bins'=>18,
+								   'plot_forecast_bins'=>3),
+							'w'=>array('plot_bins'=>26,
+								   'plot_forecast_bins'=>3),          
+							),
+			      'plot_period'=>'m',
+			      'plot_category'=>'stock_history',
+			      
+			      
+			      'plot_data'=>array('part_stock_history'=>array(
+								     'label'=>_('Product Sales')
+								     ,'page'=>'plot.php'
+								     ),
+						    
+						    'part_out'=>array(
+								   'label'=>_('Stock History')
+								   ,'parts'=>'plot.php'
+								   )
+						    ),
+
+
+
+                             
                               'id'=>1,
                               'edit'=>'description',
                               'display'=>array('details'=>0,'plot'=>1,'orders'=>0,'customers'=>0,'stock_history'=>0),

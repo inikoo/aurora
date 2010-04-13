@@ -1490,19 +1490,41 @@ function list_part_stock_history(){
   $to=$_REQUEST['to'];
   
   $period=$_REQUEST['period'];
-  $period_group='';
+  $period_group='';$period_group_args='';
   if($period=='w')
     $period_group='YearWeek';
-  $sql=sprintf("select  (`Date`) as `Date`,`Quantity On Hand`,sum(`Value At Cost`) as `Value At Cost`,sum(`Sold Amount`) as `Sold Amount`,sum(`Value Comercial`) as `Value Comercial`,sum(`Storing Cost`) as `Storing Cost`,sum(`Quantity Sold`) as `Quantity Sold`,sum(`Quantity In`) as `Quantity In`,sum(`Quantity Lost`) as `Quantity Lost`  from `Inventory Spanshot Fact` ISF left join `Location Dimension` L on (ISF.`Location key`=L.`Location key`) where `Part SKU`=%d   group by %s(`Date`) order by `Date` ",$sku,$period_group);
+  if($period=='m'){
+    $period_group='Date_Format';
+    $period_group_args="'%Y %m'";
+  }
+
+  $part=new Part($sku);
+  $part_units=$part->data['Part Unit'];
+  if($part_units=='ea'){
+    $part_units='psc';
+  }
+
+  $from= date('Y-m-d',strtotime($part->data['Part Valid From'].' -1 month'));
+  $to=date('Y-m-d');
+  $sql=sprintf("select  (`Date`) as `Date`,`Quantity On Hand` ,(select sum(`Quantity In`) from `Inventory Spanshot Fact`  where `Part SKU`=%s and Date_Format(`Date`,'%%Y %%m')=Date_Format(ISF.`Date`,'%%Y %%m')  ) as `Quantity In` ,(select sum(`Quantity Sold`) from `Inventory Spanshot Fact`  where `Part SKU`=%s and Date_Format(`Date`,'%%Y %%m')=Date_Format(ISF.`Date`,'%%Y %%m')  ) as `Quantity Sold` from  kbase.`Month Dimension` left join  `Inventory Spanshot Fact` ISF on (`Last Day`=`Date`)  where `Part SKU`=%d  and `First Day`>Date(%s) and  `Last Day`<%s order by `Date` ",$sku,$sku,$sku,prepare_mysql($from),prepare_mysql($to));
+// $res=mysql_query($sql);
+
+    
+
+
+    // $sql=sprintf("select  (`Date`) as `Date`,`Quantity On Hand`,sum(`Value At Cost`) as `Value At Cost`,sum(`Sold Amount`) as `Sold Amount`,sum(`Value Comercial`) as `Value Comercial`,sum(`Storing Cost`) as `Storing Cost`,sum(`Quantity Sold`) as `Quantity Sold`,sum(`Quantity In`) as `Quantity In`,sum(`Quantity Lost`) as `Quantity Lost`  from `Inventory Spanshot Fact` ISF  where `Part SKU`=%d   group by %s(`Date`,%s) order by `Date` ",$sku,$period_group,$period_group_args);
     $res=mysql_query($sql);
     $data=array();
-    //print $sql;
+    //  print $sql;
     while($row=mysql_fetch_array($res)){
       $data[]=array(
 		    'Date'=>$row['Date']
 		    ,'Stock'=>$row['Quantity On Hand']
+		    ,'tip_Stock'=>strftime("%B %Y",strtotime($row['Date']))."\n"._('Stock end of month').":\n".number($row['Quantity On Hand']).$part_units
 		    ,'In'=>$row['Quantity In']
+		    ,'tip_In'=>strftime("%B %Y",strtotime($row['Date']))."\n"._('Stock in').":\n".number($row['Quantity In']).$part_units
 		    ,'Sales'=>-$row['Quantity Sold']
+		    ,'tip_Sales'=>strftime("%B %Y",strtotime($row['Date']))."\n"._('Stock Out (Sales)').":\n".number($row['Quantity Sold']).$part_units
 		    );
     }
      $response=array('resultset'=>
