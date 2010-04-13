@@ -6,14 +6,7 @@
 <div id="bd" >
   
 <div id="sub_header">
-{if $next.id>0}<span class="nav2 onright"><a href="part.php?id={$next.id}">{$next.code} &rarr; </a></span>{/if}
-{if $prev.id>0}<span class="nav2 onright" ><a href="part.php?id={$prev.id}">&larr; {$prev.code}</a></span>{/if}
 
- <span class="nav2 onleft"><a  href="departments.php">{t}Departments{/t}</a></span>
-  <span class="nav2 onleft"><a href="families.php">{t}Families{/t}</a></span>
-  <span class="nav2 onleft"><a href="products.php">{t}Products{/t}</a></span>
-  <span class="nav2 onleft"><a href="categories.php">{t}Categories{/t}</a></span>
-  <span class="nav2 onleft"><a  href="parts.php">{t}Parts{/t}</a></span>
 
 </div>
 
@@ -217,9 +210,7 @@
   <div class="yui-b">
 
      <div class="search_box" >
-       <span class="search_title" style="padding-right:15px">{t}Product Code{/t}:</span> <br><input size="8" class="text search" id="product_search" value="" name="search"/><img align="absbottom" id="product_submit_search" class="submitsearch" src="art/icons/zoom.png" alt="Submit search"><br/>
-       <span  class="product_search_msg"   id="product_search_msg"    ></span> <span  class="search_sugestion"   id="product_search_sugestion"    ></span>
-       <br/>
+    
      </div>
 
     <table border=0 cellpadding="2" style="float:right;margin-top:20px;" class="view_options">

@@ -1676,19 +1676,26 @@ function list_supplier_products() {
         }
 
 
+$code=$row['Supplier Product Code'];
+if($row['Supplier Product Days Available']=='')
+$weeks_until='ND';
+else
+$weeks_until=round($row['Supplier Product Days Available']/7).' w';
 
         $data[]=array(
-		      'code'=>sprintf('<a href="supplier_product.php?code=%s&supplier_key=%d">%s</a> '
-				      ,$row['Supplier Product Code'],$row['Supplier Key'],$row['Supplier Product Code'])
-		      
-                      
+		      //'code'=>sprintf('<a href="supplier_product.php?code=%s&supplier_key=%d">%s</a> '
+				//      ,$row['Supplier Product Code'],$row['Supplier Key'],$row['Supplier Product Code'])
+		      'code'=>$code
+                     ,'stock'=>number($row['Supplier Product Stock']) 
+                                          ,'tuos'=>$weeks_until
+
 		      ,'name'=>$row['Supplier Product Name']
 		      ,'cost'=>money($row['Supplier Product Cost'])
 		      ,'usedin'=>$row['Supplier Product XHTML Used In']
 		      ,'profit'=>$profit
 		      ,'allcost'=>$allcost
 		      ,'used'=>$used
-                                                                                        ,'required'=>$required
+                                                                                           ,'required'=>$required
 		      ,'provided'=>$provided
 		      ,'lost'=>$lost
 		      ,'broken'=>$broken

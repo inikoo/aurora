@@ -551,13 +551,47 @@ class supplierproduct extends DB_Table {
 
 function update_stock(){
 $parts=$this->get_parts();
+$stock=0;
 if(count($parts)==1){
  $part_data=array_pop($parts);
 $part=new Part($part_data['Part SKU']);
 $stock=$part->data['Part Current Stock']*$part_data['Supplier Product Units Per Part'];
-}
+
 
 }
+
+$sql=sprintf("update `Supplier Product Dimension` set `Supplier Product Stock`=%f  where `Supplier Product Code`=%s and `Supplier Key`=%d "
+,$stock
+,prepare_mysql($this->data['Supplier Product Code'])
+,$this->data['Supplier Key']
+);
+mysql_query($sql);
+//print "$sql\n";
+
+}
+
+function update_days_availeable(){
+$parts=$this->get_parts();
+$days_until=0;
+if(count($parts)==1){
+ $part_data=array_pop($parts);
+$part=new Part($part_data['Part SKU']);
+$days_until=$part->data['Part Days Available Forecast'];
+
+
+
+}
+
+$sql=sprintf("update `Supplier Product Dimension` set `Supplier Product Days Available`=%f  where `Supplier Product Code`=%s and `Supplier Key`=%d "
+,$days_until
+,prepare_mysql($this->data['Supplier Product Code'])
+,$this->data['Supplier Key']
+);
+mysql_query($sql);
+print "$sql\n";
+
+}
+
 
 
     function update_cost($value) {

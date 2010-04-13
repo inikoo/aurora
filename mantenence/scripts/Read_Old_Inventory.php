@@ -71,8 +71,10 @@ while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
   $sp->load('used in');
   $sp->load('current_key_sales');
   $sp->load('sales');
+  
 $sp->update_stock();
-  print 'Sup Prod '.$row['Supplier Product Current Key']."\r";
+ $sp->update_days_availeable();
+ print 'Sup Prod '.$row['Supplier Product Current Key']."\r";
  }
 
 
@@ -430,7 +432,6 @@ $_date=($rowxxx['Inventory Audit Date']);
    
    
    
-<<<<<<< TREE
     $part_location=new PartLocation('find',array(
 						 'Part SKU'=>$sku,
 						 'Location Key'=>$row2['Location Key'],
@@ -501,73 +502,6 @@ $sql=sprintf("select `Location Key`,`Date` from `Inventory Transaction Fact` whe
 
 
 
-=======
-    $part_location=new PartLocation('find',array(
-						 'Part SKU'=>$sku,
-						 'Location Key'=>$row2['Location Key'],
-						 'Date'=>$date)
-				    ,'create');
-   
-
-  }
-
-
-
-}
-
- $sql="delete from  `Inventory Transaction Fact` where `Inventory Transaction Type` in ('Disassociate') ";
- mysql_query($sql);
-
- print "Clouseing the siconti nued parts";
-
-$sql=sprintf("select `Inventory Transaction Fact`.`Part SKU` from `Inventory Transaction Fact` left join `Part Dimension` on (`Inventory Transaction Fact`.`Part SKU`=`Part Dimension`.`Part SKU`)  where `Part Status`='Discontinued'  group by `Inventory Transaction Fact`.`Part SKU` ");
-$result=mysql_query($sql);
-
-while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
-  $sku=$row['Part SKU'];
-  // print "$sku       \n";
-  
-  $sql=sprintf('select `Inventory Audit Date` from `Inventory Audit Dimension` where `Inventory Audit Part SKU`=%d  order by `Inventory Audit Date` desc' 
-,$sku
-
-);
-$_date='';
-$resxxx=mysql_query($sql);
-if($rowxxx=mysql_fetch_array($resxxx)){
-$_date=($rowxxx['Inventory Audit Date']);
-}
-  
-
-
-
-$sql=sprintf("select `Location Key`,`Date` from `Inventory Transaction Fact` where  `Part SKU`=%d  and `Inventory Transaction Type` in ('Audit','Not Found','Sale') order by `Date` desc  ",$sku);
-  $result2=mysql_query($sql);
-  // print "$sql\n";
-  if($row2=mysql_fetch_array($result2, MYSQL_ASSOC)   ){
-    
-   if($_date and strtotime($_date)<strtotime($row2['Date'])  )
-     $date=$_date;
-   else
-     $date=$row2['Date'];
-   
-   $date=date("Y-m-d H:i:s",strtotime("$date +1 second"));
-   
-   $part_location=new PartLocation($sku.'_'.$row2['Location Key']);
-   
-
-
-   $data=array('Date'=>$date,'Note'=>_('Discontinued'),'Event Order'=>1);
-     
-     $part_location->disassociate($data);
-  } 
-
-
-}
-
-
-
-
-exit;
 
 
 
@@ -613,35 +547,7 @@ exit;
 
 
   
-=======
- 
-}
-$sql=sprintf('select `Part SKU`  from `Part Dimension` where `Part SKU`=905 ');
-$res=mysql_query($sql);
-while($row=mysql_fetch_array($res)){
-  print $row['Part SKU']."\n";
-  $part=new Part($row['Part SKU']);
-  $part->update_stock_history();
-    
-}
 
-
-exit;
-
-
-
-
-
-
-
-
-
-
-
-
-
-  
->>>>>>> MERGE-SOURCE
 
 
 
