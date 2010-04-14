@@ -561,7 +561,7 @@ if(isset( $_REQUEST['where']))
 				 'in_process'=>",'In Process','Ready to Pick','Picking','Ready to Pack','Ready to Ship','Packing'"
 				 ,'cancelled'=>",'Cancelled'"
 				 ,'dispached'=>",'Dispached'"
-				 ,'unknown'=>"',Unknown'"
+				 ,'unknown'=>"'Unknown'"
 				 );
      $_where='';
      foreach($dipatch_types as $dipatch_type){

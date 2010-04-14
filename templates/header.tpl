@@ -26,7 +26,7 @@
 	            <span>{t}Hello{/t} {$user}</span>
 	            <span><a style="margin-left:20px;" href="index.php?logout=1">{t}Logout{/t}</a></span>
 	        </div>
-	        <h1>{$my_name}</h1>
+	        <h1>{$my_name}<span style="font-size:70%;color:#f7fd98">@</span><span style="position:relative;bottom:3px;font-size:60%;color:#d7e12a">kaktus</span></h1>
 	        <div id="navsite" style="clear:right">
         	  <ul>
 	            {foreach from=$nav_menu item=menu }
