@@ -14,12 +14,13 @@
 include_once('common.php');
 
 
-if($user->data['User Type']!='Supplier'){
+if($user->data['User Type']=='Supplier'){
   
-
-  if($num_suppliers==1){
+  
+  if(count($user->suppliers)==1){
     header('Location: supplier.php?id='.$user->suppliers[0]);
     exit;
+  }
 }
 
 

@@ -816,6 +816,17 @@ while($row=mysql_fetch_array($res)){
 
   }
 
+  function update_valid_to($date){
+    $this->data['Part Valid To']=$date;
+    $sql=sprintf("update `Part Dimension`  set `Part Valid To`=%s where  `Part SKU`=%d    "
+		 ,prepare_mysql($date)
+		 ,$this->id
+		 );
+    mysql_query($sql);
+    //print "$sql\n";
+
+  }
+
   function update_valid_dates($date){
     $affected_from=0;
     $affected_to=0;
@@ -1342,4 +1353,131 @@ $used_in_products='';
     //  print "$sql\n";
       mysql_query($sql);
 }
+
+
+function wrap_transactions(){
+
+ $sql=sprintf("select `Location Key` from `Inventory Transaction Fact` where  `Part SKU`=%d  group by `Location Key`  ",$this->sku);
+ $res2=mysql_query($sql);
+  while($row2=mysql_fetch_array($res2)){
+    $location_key=$row2['Location Key'];
+    //  print "Location $location_key\n";
+    
+    
+    
+
+    
+    
+    $sql=sprintf('select `Inventory Audit Date` from `Inventory Audit Dimension` where `Inventory Audit Part SKU`=%d and `Inventory Audit Location Key`=%d  order by `Inventory Audit Date`' ,$this->sku,$location_key);
+    $first_audit_date='none';
+    $res3=mysql_query($sql);
+    if($row3=mysql_fetch_array($res3)){
+      $first_audit_date=($row3['Inventory Audit Date']);
+    }
+    //    print "\n$sql\n";
+    $sql=sprintf("select `Date` from `Inventory Transaction Fact` where  `Part SKU`=%d and `Location Key`=%d  order by `Date`  ",$this->sku,$location_key);
+    $first_itf_date='none';
+    $res3=mysql_query($sql);
+    if($row3=mysql_fetch_array($res3)){
+      $first_itf_date=($row3['Date']);
+    }
+    //print "$sql\n";
+    //print "R: $first_audit_date $first_itf_date \n ";
+    if($first_audit_date=='none' and $first_itf_date=='none'){
+      print "\nError1 : Part ".$this->sku." ".$this->data['Part XHTML Currently Used In']."  \n";
+      return;
+    }elseif(!$first_audit_date){
+      $first_date=$first_itf_date;
+    }elseif(!$first_itf_date){
+      $first_date=$first_audit_date;
+    }else{
+      if(strtotime($first_itf_date)<strtotime($first_audit_date) )
+	$first_date=$first_itf_date;
+      else
+	$first_date=$first_audit_date;
+      
+    }
+    
+    //print "caca";
+    
+    $part_location=new PartLocation('find',array(
+						 'Part SKU'=>$this->sku,
+						 'Location Key'=>$location_key,
+						 'Date'=>$first_date)
+				    ,'create');
+   
+    if($part_location->found){
+        $sql="delete from  `Inventory Transaction Fact` where `Inventory Transaction Type` in ('Associate') limit 1 ";
+	mysql_query($sql);
+	$location=new Location($location_key);
+	$details=_('Part')." SKU".sprintf("%05d",$this->sku)." "._('associated with location').": ".$location->data['Location Code'];
+	 $sql=sprintf("insert into `Inventory Transaction Fact` (`Part SKU`,`Location Key`,`Inventory Transaction Type`,`Inventory Transaction Quantity`,`Inventory Transaction Amount`,`User Key`,`Note`,`Date`,`Event Order`) values (%d,%d,%s,%f,%.2f,%s,%s,%s,%s)"
+		    ,$this->sku
+		    ,$location_key
+		    ,"'Associate'"
+		    ,0
+		    ,0
+		    ,0
+		    ,prepare_mysql($details)
+		    ,prepare_mysql($first_date)
+		    ,-1
+		    );
+       mysql_query($sql);
+     }
+
+
+
+
+    if($this->data['Part Status']=='Discontinued'){
+      
+      $sql=sprintf('select `Inventory Audit Date` from `Inventory Audit Dimension` where `Inventory Audit Part SKU`=%d and `Inventory Audit Location Key`=%d  order by `Inventory Audit Date` desc' ,$this->sku,$location_key);
+      $last_audit_date='none';
+      $res3=mysql_query($sql);
+      if($row3=mysql_fetch_array($res3)){
+	$last_audit_date=($row3['Inventory Audit Date']);
+      }
+      
+    $sql=sprintf("select `Date` from `Inventory Transaction Fact` where  `Part SKU`=%d and `Location Key`=%d  order by `Date` desc  ",$this->sku,$location_key);
+    $last_itf_date='none';
+    $res3=mysql_query($sql);
+    if($row3=mysql_fetch_array($res3)){
+      $last_itf_date=($row3['Date']);
+    }
+    
+    if($last_audit_date=='none' and $last_itf_date=='none'){
+      print "\nError2: Part ".$this->sku." ".$this->data['Part XHTML Currently Used In']."  \n";
+      return;
+    }elseif(!$last_audit_date){
+      $last_date=$last_itf_date;
+    }elseif(!$last_itf_date){
+      $last_date=$last_audit_date;
+    }else{
+      if(strtotime($last_itf_date)>strtotime($last_audit_date) )
+	$last_date=$last_itf_date;
+      else
+	$last_date=$last_audit_date;
+      
+    }
+    
+    
+     $data=array('Date'=>$last_date,'Note'=>_('Discontinued'),'Event Order'=>1);
+     
+     $part_location->disassociate($data);
+     $this->update_valid_to($last_date);
+     
+
+    }
+
+
+
+  }
+
+
+
+  //Todo wrap by valid_dates
+
+
+}
+
+
 }

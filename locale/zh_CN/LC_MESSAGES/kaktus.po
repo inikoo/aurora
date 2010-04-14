@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: kaktus 1.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2009-08-21 14:10+0100\n"
-"PO-Revision-Date: 2010-04-14 09:31+0100\n"
+"PO-Revision-Date: 2010-04-14 12:10+0100\n"
 "Last-Translator: Raul Perusquia <raul@gmail.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -1878,7 +1878,7 @@ msgstr ""
 #: warehouse.js.php:13
 #: families.js.php:75
 msgid "Code"
-msgstr "码"
+msgstr "代码"
 
 #: mantenence/smarty.c:998
 #: mantenence/smarty.c:1487
@@ -2175,7 +2175,7 @@ msgstr ""
 #: mantenence/smarty.c:1280
 #: mantenence/smarty.c:2282
 msgid "Interval"
-msgstr ""
+msgstr "在 ... 之间"
 
 #: mantenence/smarty.c:1283
 #: mantenence/smarty.c:2285
@@ -2206,7 +2206,7 @@ msgstr ""
 #: ar_plot.php:461
 #: ar_plot.php:513
 msgid "Invoices"
-msgstr ""
+msgstr "单据"
 
 #: mantenence/smarty.c:1295
 #: mantenence/smarty.c:1403
@@ -2214,12 +2214,12 @@ msgstr ""
 #: mantenence/smarty.c:3401
 #: mantenence/smarty.c:4781
 msgid "Delivery Notes"
-msgstr ""
+msgstr "送货单"
 
 #: mantenence/smarty.c:1298
 #: mantenence/smarty.c:2297
 msgid "show only"
-msgstr ""
+msgstr "只显示"
 
 #: mantenence/smarty.c:1301
 #: mantenence/smarty.c:2300
@@ -2239,7 +2239,7 @@ msgstr ""
 #: locale2.php:431
 #: locale.php:138
 msgid "Cancelled"
-msgstr ""
+msgstr "取消"
 
 #: mantenence/smarty.c:1310
 #: porders.php:73
@@ -2249,11 +2249,11 @@ msgstr "单据"
 
 #: mantenence/smarty.c:1313
 msgid "Invoice List"
-msgstr ""
+msgstr "发票名单"
 
 #: mantenence/smarty.c:1316
 msgid "Delivery Note List"
-msgstr ""
+msgstr "送货单名单"
 
 #: mantenence/smarty.c:1328
 #: locale2.php:11
@@ -2293,7 +2293,7 @@ msgstr "登入"
 #: hr.php:30
 #: common.php:100
 msgid "Staff"
-msgstr ""
+msgstr "员工"
 
 #: mantenence/smarty.c:1343
 msgid "Ex-staff"
@@ -3446,7 +3446,7 @@ msgstr ""
 #: locale.php:148
 #: common.php:113
 msgid "Warehouse"
-msgstr "厂庫"
+msgstr "仓库"
 
 #: mantenence/smarty.c:2861
 msgid "Add Location"
@@ -7839,7 +7839,7 @@ msgstr ""
 #: reports.php:84
 #: common.php:107
 msgid "Reports"
-msgstr ""
+msgstr "报告"
 
 #: order.php:18
 msgid "Error, order not found"
