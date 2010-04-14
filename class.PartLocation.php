@@ -114,7 +114,6 @@ class PartLocation extends DB_Table{
 		 ,$this->location_key
 		 );
     $res=mysql_query($sql);
-    //print $sql;
    
     if($row=mysql_fetch_array($res)){
       $this->found=true;
@@ -766,14 +765,14 @@ function create($data){
      
 
       //$date=date("Y-m-d H:i:s");
-      $this->event_order++;
+      
 //print_r($this->editor);
-if(array_key_exists('Date',$data))
-$date=$data['Date'];
-else if(!$this->editor['Date'])
-$date=date("Y-m-d H:i:s");
-else
-$date=$this->editor['Date'];
+      if(array_key_exists('Date',$data))
+	$date=$data['Date'];
+      else if(!$this->editor['Date'])
+	$date=date("Y-m-d H:i:s");
+      else
+	$date=$this->editor['Date'];
        $sql=sprintf("insert into `Inventory Transaction Fact` (`Part SKU`,`Location Key`,`Inventory Transaction Type`,`Inventory Transaction Quantity`,`Inventory Transaction Amount`,`User Key`,`Note`,`Date`,`Event Order`) values (%d,%d,%s,%f,%.2f,%s,%s,%s,%s)"
 		    ,$this->part_sku
 		    ,$this->location_key
@@ -783,10 +782,10 @@ $date=$this->editor['Date'];
 		    ,$this->editor['Author Key']
 		    ,prepare_mysql($details)
 		    ,prepare_mysql($date)
-		    ,$this->event_order
+		    ,$this->event_order-1
 		    );
        mysql_query($sql);
-      
+       
        
        $part=new Part($this->part_sku);
        $part->load('locations');

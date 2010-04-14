@@ -166,8 +166,8 @@ if($user->can_view('stores')){
 if($user->data['User Type']=='Supplier'){
 
 
-$nav_menu[] = array(_('Orders'), 'suppliers.php?orders'  ,'home');
-$nav_menu[] = array(_('Products'), 'suppliers.php?products'  ,'home');
+$nav_menu[] = array(_('Orders'), 'suppliers.php?orders'  ,'orders');
+$nav_menu[] = array(_('Products'), 'suppliers.php?products'  ,'products');
 $nav_menu[] = array(_('Home'), 'suppliers_index.php','home');
 }
 
