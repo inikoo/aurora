@@ -163,7 +163,17 @@ if($user->can_view('stores')){
     $nav_menu[] = array(_('Products'), 'stores.php','products');
 }
 
-$nav_menu[] = array(_('Home'), 'index.php','home');
+if($user->data['User Type']=='Supplier'){
+
+
+$nav_menu[] = array(_('Orders'), 'suppliers.php?orders'  ,'home');
+$nav_menu[] = array(_('Products'), 'suppliers.php?products'  ,'home');
+$nav_menu[] = array(_('Home'), 'suppliers_index.php','home');
+}
+
+
+else
+  $nav_menu[] = array(_('Home'), 'index.php','home');
 
 $smarty->assign('nav_menu',$nav_menu);
 $smarty->assign('theme',$myconf['theme']);

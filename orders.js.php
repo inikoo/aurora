@@ -375,30 +375,31 @@ var clear_interval = function(e,suffix){
      var datasource=tables.dataSource2;
      var request='&sf=0&from=' +from+'&to='+to;
  datasource.sendRequest(request,table.onDataReturnInitializeTable, table);  
- 
+    
      
  }
  
  var change_dispatch_type=function(e){
+     
      var new_dispatch=this.id;
- var table=tables.table0;
-	 var datasource=tables.dataSource0;
+     var table=tables.table0;
+     var datasource=tables.dataSource0;
      if(new_dispatch!=dispatch){
-
-if(dispatch)
-	 Dom.removeClass(dispatch,'selected');
+	 
+	 if(dispatch)
+	     Dom.removeClass(dispatch,'selected');
 	 Dom.addClass(new_dispatch,'selected');
-
+	 
 	 dispatch=new_dispatch;
-	
+	 
 	 var request='&dispatch='+dispatch;
      }else{
-     Dom.removeClass(dispatch,'selected');
+	 Dom.removeClass(dispatch,'selected');
 	 var request='&dispatch=';
-
+	 
      }
- 	 datasource.sendRequest(request,table.onDataReturnInitializeTable, table);       
-
+     datasource.sendRequest(request,table.onDataReturnInitializeTable, table);       
+     
  }
 
 
@@ -408,8 +409,8 @@ if(dispatch)
  YAHOO.util.Event.addListener("clear_intervali", "click", clear_interval,'i');
 YAHOO.util.Event.addListener("submit_intervaldn", "click", change_interval,'dn');
  YAHOO.util.Event.addListener("clear_intervaldn", "click", clear_interval,'dn'); 
- 
- var ids =Array("in_process","dispached","cancelled") ;
+
+ var ids =Array("in_process","dispached","cancelled","unknown") ;
 YAHOO.util.Event.addListener(ids, "click", change_dispatch_type);
 
 

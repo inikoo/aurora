@@ -3,19 +3,18 @@
 <div id="bd" >
 {include file='assets_navigation.tpl'}
 
-
 <div style="clear:left;"> 
- <span class="branch" ><a  href="store.php?id={$store->id}">{$store->get('Store Name')}</a> &rarr; <a  href="department.php?id={$product->get('Product Main Department Key')}">{$product->get('Product Main Department Name')}</a> &rarr; <a  href="family.php?id={$product->get('Product Family Key')}">{$product->get('Product Family Name')}</a></span>
+  <span class="branch" ><a  href="store.php?id={$store->id}">{$store->get('Store Name')}</a> &rarr; <a  href="department.php?id={$product->get('Product Main Department Key')}">{$product->get('Product Main Department Name')}</a> &rarr; <a  href="family.php?id={$product->get('Product Family Key')}">{$product->get('Product Family Name')}</a></span>
 </div>
 
- <div class="search_box" >
-     
+<div class="search_box" >
+  
   <table border=0 cellpadding="2" style="float:right;margin-top:20px;" class="view_options">
-      <tr style="border-bottom:1px solid #ddd">
-	
-	<th><img src="art/icons/information.png" title="{t}Product Details{/t}"/></th>
+    <tr style="border-bottom:1px solid #ddd">
+      
+      <th><img src="art/icons/information.png" title="{t}Product Details{/t}"/></th>
 	{if $view_orders}
-	<th><img src="art/icons/chart_line.png" title="{t}Charts{/t}"/></th>
+      <th><img src="art/icons/chart_line.png" title="{t}Charts{/t}"/></th>
 	<th><img  src="art/icons/cart.png" title="{t}Orders{/t}"/></th>
 	{/if}
 	<th><img src="art/icons/user_green.png" title="{t}Customers{/t}"/></th>
@@ -38,13 +37,13 @@
 	<td   state="{$display.stock_history}" block="stock_history"  id="change_view_stock_history" {if $display.stock_history==0}title="{t}Show Stock History{/t}" atitle="{t}Hide Stock History{/t}"{else}atitle="{t}Show Stock History{/t}" title="{t}Hide Stock History{/t}"{/if} ><img {if $display.stock_history==0}style="opacity:0.2"{/if} src="art/icons/tick.png"    id="but_logo_stock_history"   /></td>
 	
       </tr>
-      <tr><td  colspan="5" style="text-align:center"><a href="edit_product.php?pid={$product->pid}">Edit Product</a></td></tr>
-    </table>
-
-
-    </div>
+    <tr><td  colspan="5" style="text-align:center"><a href="edit_product.php?pid={$product->pid}">Edit Product</a></td></tr>
+  </table>
   
-    <div class="" id="block_info"  style="width:790px">
+  
+    </div>
+
+<div class="" id="block_info"  style="width:790px">
       
 
       

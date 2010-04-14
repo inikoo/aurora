@@ -7,9 +7,19 @@ $default_locale_data=array(
 	,'thosusand_sep'=>','
 	);
 $avialable_locales=array(
-	array('Locale'=>'en_GB.UTF-08'
-	,'Flag'=>'gb'
-	,'Language Code'=>'en'
-	)
-	);	
+			 array('Locale'=>'en_GB.UTF-8'
+			       ,'Flag'=>'gb'
+			       ,'Language Code'=>'en'
+			       )
+			 ,array('Locale'=>'zh_CN.UTF-8'
+			       ,'Flag'=>'cn'
+			       ,'Language Code'=>'zh'
+			       )
+			 ,array('Locale'=>'es_ES.UTF-8'
+			       ,'Flag'=>'es'
+			       ,'Language Code'=>'es'
+			       )
+			 
+
+			 );	
 ?>
