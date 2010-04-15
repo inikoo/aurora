@@ -1630,13 +1630,14 @@ $sql=sprintf("update `Part Location Dimension` set `Quantity On Hand`=%f ,`Stock
 ,$this->location_key
 ); 
   mysql_query($sql);
+  //  print "$sql\n";
   $this->part->update_stock();
 }
 
 
 function get_history_intervals(){
-    $sql=sprintf("select  `Inventory Transaction Type`,Date(`Date`) as Date from `Inventory Transaction Fact` where  `Part Sku`=%d and `Inventory Transaction Type` in ('Associate','Disassociate')  order by `Date` desc,`Event Order` ",$this->part_sku);
-    //  print "$sql\n";
+   $sql=sprintf("select  `Inventory Transaction Type`,(`Date`) as Date from `Inventory Transaction Fact` where  `Part Sku`=%d and `Inventory Transaction Type` in ('Associate','Disassociate')  order by `Date` ,`Event Order` ",$this->part_sku);
+    // print "$sql\n";
     $dates=array();
     $result=mysql_query($sql);
     while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
@@ -1644,12 +1645,15 @@ function get_history_intervals(){
     }
 
     $intervals=array();
+    // print_r($dates);
+
     foreach($dates as $date=>$type){
       if($type=='Associate')
-	$intervals[]=array('From'=>$date,'To'=>false);
+	$intervals[]=array('From'=>date("Y-m-d",strtotime($date)),'To'=>false);
       if($type=='Disassociate')
-	$intervals[count($interval)-1]['To']=$date;
+      	$intervals[count($intervals)-1]['To']=date("Y-m-d",strtotime($date));
     }
+
     
     return $intervals;
 
@@ -1660,8 +1664,10 @@ function update_stock_history(){
   mysql_query($sql);
   
   $intervals=$this-> get_history_intervals();
-  print_r($intervals);
+  
 
+  // print_r($intervals);
+  
   foreach($intervals as $interval){
     $this->update_stock_history_interval($interval['From'],($interval['To']?$interval['To']:date('Y-m-d',strtotime('now -1 day'))));
   }

@@ -588,7 +588,7 @@ $sql=sprintf("update `Supplier Product Dimension` set `Supplier Product Days Ava
 ,$this->data['Supplier Key']
 );
 mysql_query($sql);
-print "$sql\n";
+//print "$sql\n";
 
 }
 
