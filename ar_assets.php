@@ -3836,7 +3836,10 @@ function list_products() {
         $order='`Product Availability State`';
     }elseif($order=='stock_forecast') {
         $order='`Product Available Days Forecast`';
+    }elseif($order=='formated_record_type') {
+        $order='`Product Record Type`';
     }
+    
     
     
  
@@ -4305,15 +4308,23 @@ function list_products() {
         default:
             $web_state=$row['Product Web State'];
         }
+	include_once('locale.php');
+	global $locale_product_record_type;
 
-$stock_state=$row['Product Availability State'];
+	$stock_state=$row['Product Availability State'];
         $stock_forecast=interval($row['Product Available Days Forecast']);
+	
+	
+	//	print_r($locale_product_record_type);
+	$record_type=$locale_product_record_type[$row['Product Record Type']];
+
         $adata[]=array(
 
                      'code'=>$code,
                      'name'=>$row['Product XHTML Short Description'],
                      'smallname'=>'<span style="font-size:70%;">'.$row['Product XHTML Short Description'].'</span>',
-                     
+                     'formated_record_type'=>$record_type,
+		     'record_type'=>$row['Product Record Type'],
 		     'stock_state'=>$stock_state,
                      'stock_forecast'=>$stock_forecast,
                      'family'=>$row['Product Family Name'],
@@ -4979,7 +4990,7 @@ function list_parts() {
 		       ,'given'=>$given
 		       ,'money_in'=>$sold_amount
 		       ,'profit'=>$abs_profit
-                                                                                                                                                    ,'profit_sold'=>$profit_sold
+		       ,'profit_sold'=>$profit_sold
 		       ,'margin'=>$margin
 		       ,'avg_stock'=>$avg_stock
 		       ,'avg_stockvalue'=>$avg_stockvalue
@@ -5058,14 +5069,14 @@ function list_products_with_same_code() {
 
     $adata=array();
     while ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
-        $id=sprintf("<a href='product.php?pid=%d'>%05d</a>",$row['Product ID'],$row['Product ID']);
-        $adata[]=array(
+      $id=sprintf("<a href='product.php?pid=%d'>%05d</a>",$row['Product ID'],$row['Product ID']);
+      $adata[]=array(
                      'id'=>$id
-                          ,'description'=>$row['Product XHTML Short Description']
-                                         ,'store'=>$row['Store Name']
-                                                  ,'parts'=>$row['Product XHTML Parts']
+		     ,'description'=>$row['Product XHTML Short Description']
+		     ,'store'=>$row['Store Name']
+		     ,'parts'=>$row['Product XHTML Parts']
                  );
-
+      
     }
     mysql_free_result($res);
     $rtext=number($number_results).' '._('products with the same code');
@@ -5124,18 +5135,18 @@ function find_part() {
 
 
         $_data[]= array(
-        
-                      'info'=>sprintf("%s:%05d - %s",_('SKU'),$data['Part SKU'],$data['Part XHTML Description'])
-                              ,'info_plain'=>sprintf("%s:%05d - %s",_('SKU'),$data['Part SKU'],strip_tags($data['Part XHTML Description']))
-
-                 ,'sku'=>$data['Part SKU']
-                             ,'description'=>$data['Part XHTML Description']
-                                                   ,'usedin'=>$data['Part Currently Used In']
-
-                                                             //	 'sku'=>sprintf('<a href="part.php?sku=%d">%s</a>',$data['Part SKU'],$data['Part SKU'])
-                                                             // ,'description'=>$data['Part XHTML Description']
-                                                             //  ,'current_qty'=>sprintf('<span  used="0"  value="%s" id="s%s"  onclick="fill_value(%s,%d,%d)">%s</span>',$qty_on_hand,$loc_sku,$qty_on_hand,$location_key,$data['Part SKU'],number($qty_on_hand))
-// 			 ,'changed_qty'=>sprintf('<span   used="0" id="cs%s"  onclick="change_reset(\'%s\',%d)"   ">0</span>',$loc_sku,$loc_sku,$data['Part SKU'])
+			
+			'info'=>sprintf("%s:%05d - %s",_('SKU'),$data['Part SKU'],$data['Part XHTML Description'])
+			,'info_plain'=>sprintf("%s:%05d - %s",_('SKU'),$data['Part SKU'],strip_tags($data['Part XHTML Description']))
+			
+			,'sku'=>$data['Part SKU']
+			,'description'=>$data['Part XHTML Description']
+			,'usedin'=>$data['Part Currently Used In']
+			
+			//	 'sku'=>sprintf('<a href="part.php?sku=%d">%s</a>',$data['Part SKU'],$data['Part SKU'])
+			// ,'description'=>$data['Part XHTML Description']
+			//  ,'current_qty'=>sprintf('<span  used="0"  value="%s" id="s%s"  onclick="fill_value(%s,%d,%d)">%s</span>',$qty_on_hand,$loc_sku,$qty_on_hand,$location_key,$data['Part SKU'],number($qty_on_hand))
+			// 			 ,'changed_qty'=>sprintf('<span   used="0" id="cs%s"  onclick="change_reset(\'%s\',%d)"   ">0</span>',$loc_sku,$loc_sku,$data['Part SKU'])
 // 			 ,'new_qty'=>sprintf('<span  used="0"  value="%s" id="ns%s"  onclick="fill_value(%s,%d,%d)">%s</span>',$qty_on_hand,$loc_sku,$qty_on_hand,$location_key,$data['Part SKU'],number($qty_on_hand))
 // 			 ,'_qty_move'=>'<input id="qm'.$loc_sku.'" onchange="qty_changed(\''.$loc_sku.'\','.$data['Part SKU'].')" type="text" value="" size=3>'
 // 			 ,'_qty_change'=>'<input id="qc'.$loc_sku.'" onchange="qty_changed(\''.$loc_sku.'\','.$data['Part SKU'].')" type="text" value="" size=3>'

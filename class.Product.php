@@ -1603,121 +1603,8 @@ $this->update_parts();
       break;
     case('avalilability'):
     case('stock'):
-
-      $stock_forecast_method='basic1';
-      $stock_tipo_method='basic1';
-
-      // get parts;
-      $sql=sprintf(" select `Part Current Stock`,`Parts Per Product` from `Part Dimension` PD       left join `Product Part List` PPL on (PD.`Part SKU`=PPL.`Part SKU`)       left join `Product Part Dimension` PPD on (PPD.`Product Part Key`=PPL.`Product Part Key`)        where PPL.`Product ID`=%d  and `Product Part Most Recent`='Yes' group by PD.`Part SKU`  ",$this->data['Product ID']);
-
-     // print $sql;
-      $result=mysql_query($sql);
-      $stock=99999999999;
-      $change=false;
-      $stock_error=false;
-      if ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
-	if (is_numeric($row['Part Current Stock']) and is_numeric($row['Parts Per Product'])  and $row['Parts Per Product']>0 ) {
-	  $_stock=$row['Part Current Stock']/$row['Parts Per Product'];
-	  if ($stock>$_stock) {
-	    $stock=$_stock;
-	    $change=true;
-	  }
-	} else {
-	  $stock=0;
-	  $stock_error=true;
-	}
-
-      }
-
-      // print "Stock: $stock\n";
-      if (!$change or $stock_error)
-	$stock='NULL';
-      //print "Stock: $stock\n";
-      if (is_numeric($stock) and $stock<0)
-	$stock='NULL';
-      //print "Stock: $stock\n";
-      $sql=sprintf("update `Product Dimension` set `Product Availability`=%s where `Product ID`=%d",$stock,$this->pid);
-      //print $sql;
-
-      mysql_query($sql);
-      $days_available='NULL';
-      $avg_day_sales=0;
-
-
-
-      switch ($stock_forecast_method) {
-      case('basic1'):
-
-
-	$this->load('part_list');
-	$unk=false;
-	$min_days=-1;
-	foreach($this->parts as $part) {
-	  if (!is_numeric($part['days_available']))
-	    $unk=true;
-	  else {
-	    if ($min_days<$part['days_available'])
-	      $min_days=$part['days_available'];
-	  }
-
-	}
-	if ($unk or count($this->parts)==0 or $min_days<0)
-	  $days_available='NULL';
-	else
-	  $days_available=$min_days;
-	//print_r($this->parts);
-	//exit;
-
-	break;
-      }
-
-
-
-
-      if ($this->data['Product Record Type']=='Discontinued') {
-	$stock=0;
-	$tipo='No applicable';
-
-
-
-      } else if ($this->data['Product Sales Type']=='Public Sale' or $this->data['Product Sales Type']=='Private Sale'  ) {
-	if (!is_numeric($stock)) {
-	  $tipo='Unknown';
-	}
-	elseif($stock<0) {
-	  $tipo='Unknown';
-	}
-	else if ($stock==0) {
-	  $tipo='Out of Stock';
-	} else {
-	  if (is_numeric($days_available)) {
-
-	    switch ($stock_tipo_method) {
-	    case('basic1'):
-	      if ($days_available<7)
-		$tipo='Critical';
-	      elseif($days_available>182.50)
-		$tipo='Surplus';
-	      elseif($days_available<21)
-		$tipo='Low';
-	      else
-		$tipo='Optimal';
-	      break;
-	    }
-	  } else
-	    $tipo='Unknown';
-	}
-      } else {
-	$tipo='No applicable';
-      }
-
-      $sql=sprintf("update `Product Dimension` set `Product Availability State`=%s,`Product Available Days Forecast`=%s where `Product ID`=%d",prepare_mysql($tipo),$days_available,$this->pid);
-      if (!mysql_query($sql))
-	exit("$sql can no update stock prod product.php l 1311\n");
-      break;
-
-
-
+      $this->update_availability();
+   
       break;
     case('days'):
       $this->update_days();
@@ -4782,5 +4669,120 @@ function update_parts(){
 
 
 }
+
+function update_availability(){
+      $stock_forecast_method='basic1';
+      $stock_tipo_method='basic1';
+
+      // get parts;
+      $sql=sprintf(" select `Part Current Stock`,`Parts Per Product` from `Part Dimension` PD       left join `Product Part List` PPL on (PD.`Part SKU`=PPL.`Part SKU`)       left join `Product Part Dimension` PPD on (PPD.`Product Part Key`=PPL.`Product Part Key`)        where PPL.`Product ID`=%d  and `Product Part Most Recent`='Yes' group by PD.`Part SKU`  ",$this->data['Product ID']);
+
+    
+      $result=mysql_query($sql);
+      $stock=99999999999;
+      $change=false;
+      $stock_error=false;
+      if ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
+	if (is_numeric($row['Part Current Stock']) and is_numeric($row['Parts Per Product'])  and $row['Parts Per Product']>0 ) {
+	  $_stock=$row['Part Current Stock']/$row['Parts Per Product'];
+	  if ($stock>$_stock) {
+	    $stock=$_stock;
+	    $change=true;
+	  }
+	} else {
+	  $stock=0;
+	  $stock_error=true;
+	}
+
+      }
+
+      // print "Stock: $stock\n";
+      if (!$change or $stock_error)
+	$stock='NULL';
+      //print "Stock: $stock\n";
+      if (is_numeric($stock) and $stock<0)
+	$stock='NULL';
+      //print "Stock: $stock\n";
+      $sql=sprintf("update `Product Dimension` set `Product Availability`=%s where `Product ID`=%d",$stock,$this->pid);
+      //print $sql;
+
+      mysql_query($sql);
+      $days_available='NULL';
+      $avg_day_sales=0;
+
+
+
+      switch ($stock_forecast_method) {
+      case('basic1'):
+
+
+	$this->load('part_list');
+	$unk=false;
+	$min_days=-1;
+	foreach($this->parts as $part) {
+	  if (!is_numeric($part['days_available']))
+	    $unk=true;
+	  else {
+	    if ($min_days<$part['days_available'])
+	      $min_days=$part['days_available'];
+	  }
+
+	}
+	if ($unk or count($this->parts)==0 or $min_days<0)
+	  $days_available='NULL';
+	else
+	  $days_available=$min_days;
+	//print_r($this->parts);
+	//exit;
+
+	break;
+      }
+
+
+
+
+      if ($this->data['Product Record Type']=='Discontinued') {
+	$stock=0;
+	$tipo='No applicable';
+
+
+
+      } else if ($this->data['Product Sales Type']=='Public Sale' or $this->data['Product Sales Type']=='Private Sale'  ) {
+	if (!is_numeric($stock)) {
+	  $tipo='Unknown';
+	}
+	elseif($stock<0) {
+	  $tipo='Unknown';
+	}
+	else if ($stock==0) {
+	  $tipo='Out of Stock';
+	} else {
+	  if (is_numeric($days_available)) {
+
+	    switch ($stock_tipo_method) {
+	    case('basic1'):
+	      if ($days_available<7)
+		$tipo='Critical';
+	      elseif($days_available>182.50)
+		$tipo='Surplus';
+	      elseif($days_available<21)
+		$tipo='Low';
+	      else
+		$tipo='Optimal';
+	      break;
+	    }
+	  } else
+	    $tipo='Unknown';
+	}
+      } else {
+	$tipo='No applicable';
+      }
+
+      $sql=sprintf("update `Product Dimension` set `Product Availability State`=%s,`Product Available Days Forecast`=%s where `Product ID`=%d",prepare_mysql($tipo),$days_available,$this->pid);
+      if (!mysql_query($sql))
+	exit("$sql can no update stock prod product.php l 1311\n");
+    
+}
+
 }
 ?>

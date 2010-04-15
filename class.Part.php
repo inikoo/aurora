@@ -700,13 +700,13 @@ break;
 
 
 function get_current_stock(){
-$stock=0;     $value=0;    
-$sql=sprintf("select sum(`Quantity On Hand`) as stock ,sum(`Stock Value`) as value from `Part Location Dimension` where `Part SKU`=%d ",$this->id);
-$res=mysql_query($sql);
-
+  $stock=0;     $value=0;    
+  $sql=sprintf("select sum(`Quantity On Hand`) as stock ,sum(`Stock Value`) as value from `Part Location Dimension` where `Part SKU`=%d ",$this->id);
+  $res=mysql_query($sql);
+  
 if($row=mysql_fetch_array($res)){
-$stock=$row['stock'];
-$value=$row['value'];
+  $stock=$row['stock'];
+  $value=$row['value'];
 }
 return array($stock,$value);
 
@@ -793,16 +793,38 @@ while($row=mysql_fetch_array($res)){
 
 
 }
-  function update_stock(){
+
+function get_current_product_ids(){
+  $sql=sprintf("select `Product Part Dimension`.`Product ID` from `Product Part List` left join `Product Part Dimension` on (`Product Part List`.`Product Part Key`=`Product Part Dimension`.`Product Part Key`)   where `Part SKU`=%d and `Product Part Most Recent`='Yes' group by `Product Part Dimension`.`Product ID`",$this->data['Part SKU']);
+  // print $sql;
+  $result=mysql_query($sql);
+  $products=array();
+  while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
+    $products[$row['Product ID']]=array('Product ID'=>$row['Product ID']);
+  }
+  return $products;
+}
+
+function update_stock(){
   //print_r($this->get_current_stock());
      list($stock,$value)=$this->get_current_stock();
      $sql=sprintf("update `Part Dimension`  set `Part Current Stock`=%f ,`Part Current Value`=%f where  `Part SKU`=%d   "
-		 ,$stock
+		  ,$stock
 		 ,$value
-		 ,$this->id
-		 );
+		  ,$this->id
+		  );
     mysql_query($sql);
-//print "$sql\n";
+    
+    $products=$this->get_current_product_ids();
+   
+    foreach($products as  $product_id=>$values){
+      $product=new Product('pid',$product_id);
+      
+      $product->update_availability();
+    }
+    
+
+    //print "$sql\n";
   }
 
 
@@ -1365,10 +1387,42 @@ function wrap_transactions(){
     
     
     
+    $sql=sprintf("select `Date`,`Inventory Transaction Type` from `Inventory Transaction Fact` where  `Part SKU`=%d and `Location Key`=%d  order by `Date`,`Event Order`   ",$this->sku,$location_key);
+    //print "$sql\n";
+    $res3=mysql_query($sql);
+      if($row3=mysql_fetch_array($res3)){
+	if($row3['Inventory Transaction Type']=='Associate'){
+	  $sql=sprintf("delete from  `Inventory Transaction Fact` where `Part SKU`=%d  and `Inventory Transaction Type` in ('Associate') and `Date`=%s and `Location Key`=%d  "
+		       ,$this->sku
+		       ,prepare_mysql($row3['Date'])
+		       ,$location_key
+		       );
+	  // print "$sql\n";
+	mysql_query($sql);
+	}
+      }
+      
+      $sql=sprintf("select `Date`,`Inventory Transaction Type` from `Inventory Transaction Fact` where  `Part SKU`=%d and `Location Key`=%d  order by `Date` desc ,`Event Order` desc ",$this->sku,$location_key);
+      $last_itf_date='none';
+      $res3=mysql_query($sql);
+      //print "$sql\n";
+      if($row3=mysql_fetch_array($res3)){
+	if($row3['Inventory Transaction Type']=='Disassociate'){
+	  $sql=sprintf("delete from  `Inventory Transaction Fact` where `Part SKU`=%d  and `Inventory Transaction Type` in ('Disassociate') and `Date`=%s and `Location Key`=%d  "
+		       ,$this->sku
+		       ,prepare_mysql($row3['Date'])
+		       ,$location_key
+		       );
+	  //print "$sql\n";
+	  mysql_query($sql);
+	}
+      }
+      
+
 
     
-    
-    $sql=sprintf('select `Inventory Audit Date` from `Inventory Audit Dimension` where `Inventory Audit Part SKU`=%d and `Inventory Audit Location Key`=%d  order by `Inventory Audit Date`' ,$this->sku,$location_key);
+      
+      $sql=sprintf('select `Inventory Audit Date` from `Inventory Audit Dimension` where `Inventory Audit Part SKU`=%d and `Inventory Audit Location Key`=%d  order by `Inventory Audit Date`' ,$this->sku,$location_key);
     $first_audit_date='none';
     $res3=mysql_query($sql);
     if($row3=mysql_fetch_array($res3)){
@@ -1407,7 +1461,10 @@ function wrap_transactions(){
 				    ,'create');
    
     if($part_location->found){
+      
         $sql="delete from  `Inventory Transaction Fact` where `Inventory Transaction Type` in ('Associate') limit 1 ";
+
+
 	mysql_query($sql);
 	$location=new Location($location_key);
 	$details=_('Part')." SKU".sprintf("%05d",$this->sku)." "._('associated with location').": ".$location->data['Location Code'];
@@ -1420,7 +1477,7 @@ function wrap_transactions(){
 		    ,0
 		    ,prepare_mysql($details)
 		    ,prepare_mysql($first_date)
-		    ,-1
+		    ,-2
 		    );
        mysql_query($sql);
      }
@@ -1443,7 +1500,7 @@ function wrap_transactions(){
     if($row3=mysql_fetch_array($res3)){
       $last_itf_date=($row3['Date']);
     }
-    
+    // print $sql;
     if($last_audit_date=='none' and $last_itf_date=='none'){
       print "\nError2: Part ".$this->sku." ".$this->data['Part XHTML Currently Used In']."  \n";
       return;
