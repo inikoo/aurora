@@ -4315,9 +4315,9 @@ function list_products() {
         $stock_forecast=interval($row['Product Available Days Forecast']);
 	
 	
-	//	print_r($locale_product_record_type);
+	//		print_r($locale_product_record_type);
 	$record_type=$locale_product_record_type[$row['Product Record Type']];
-
+	//print $record_type;
         $adata[]=array(
 
                      'code'=>$code,
