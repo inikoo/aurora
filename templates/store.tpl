@@ -154,7 +154,7 @@
     
     
     <table style="float:left;margin:0 0 5px 0px ;padding:0"  class="options" >
-      <tr><td  {if $view=='general'}class="selected"{/if} id="general" >{t}General{/t}</td>
+      <tr><td  {if $view=='general'}class="selected"{/if} id="general" >{t}Summary{/t}</td>
 	{if $view_stock}<td {if $view=='stock'}class="selected"{/if}  id="stock"  >{t}Stock{/t} {$view}</td>{/if}
 	{if $view_sales}<td  {if $view=='sales'}class="selected"{/if}  id="sales"  >{t}Sales{/t}</td>{/if}
       </tr>

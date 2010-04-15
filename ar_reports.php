@@ -17,6 +17,20 @@ if (!isset($_REQUEST['tipo'])) {
 
 $tipo=$_REQUEST['tipo'];
 switch ($tipo) {
+case('invoices_with_no_tax'):
+   if(!$user->can_view('orders'))
+  exit();
+    
+    list_invoices_with_no_tax();
+   
+   break;
+case('customers_with_no_tax'):
+   if(!$user->can_view('orders'))
+  exit("E");
+
+    list_customers_with_no_tax();
+   
+   break;
 case('pickers_report'):
   pickers_report();
   break;
@@ -705,5 +719,565 @@ mysql_free_result($result);
   }
 
 }
+function list_invoices_with_no_tax(){
+ 
+    
+  $conf=$_SESSION['state']['report_sales_with_no_tax']['invoices'];
+   
+  
+    if (isset( $_REQUEST['sf']))
+      $start_from=$_REQUEST['sf'];
+    else
+      $start_from=$conf['sf'];
+    
+    if (isset( $_REQUEST['nr'])) {
+        $number_results=$_REQUEST['nr']-1;
+	
+        if ($start_from>0) {
+            $page=floor($start_from/$number_results);
+            $start_from=$start_from-$page;
+        }
+    } else
+        $number_results=$conf['nr'];
+
+
+  if(isset( $_REQUEST['o']))
+    $order=$_REQUEST['o'];
+  else
+    $order=$conf['order'];
+  if(isset( $_REQUEST['od']))
+    $order_dir=$_REQUEST['od'];
+  else
+    $order_dir=$conf['order_dir'];
+    if(isset( $_REQUEST['f_field']))
+     $f_field=$_REQUEST['f_field'];
+   else
+     $f_field=$conf['f_field'];
+
+  if(isset( $_REQUEST['f_value']))
+     $f_value=$_REQUEST['f_value'];
+   else
+     $f_value=$conf['f_value'];
+if(isset( $_REQUEST['where']))
+  $where=stripslashes($_REQUEST['where']);
+   else
+     $where=$conf['where'];
+  
+ if(isset( $_REQUEST['from']))
+    $from=$_REQUEST['from'];
+ else{
+  
+     $from=$conf['from'];
+  
+ }
+
+  if(isset( $_REQUEST['to']))
+    $to=$_REQUEST['to'];
+  else{
+   
+      $to=$conf['to'];
+  
+  }
+
+
+   if(isset( $_REQUEST['tableid']))
+    $tableid=$_REQUEST['tableid'];
+  else
+    $tableid=0;
+//print $where;
+
+   $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
+
+        
+  
+   $stores=$_SESSION['state']['report_sales_with_no_tax']['stores'];
+   
+   
+   
+
+   $_SESSION['state']['report_sales_with_no_tax']['invoices']=array('f_show'=>$_SESSION['state']['report_sales_with_no_tax']['invoices']['f_show']   ,'order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value);
+
+   $date_interval=prepare_mysql_dates($from,$to,'`Invoice Date`','only_dates');
+   if($date_interval['error']){
+       $date_interval=prepare_mysql_dates($_SESSION['state']['orders']['from'],$_SESSION['state']['orders']['to']);
+   }else{
+     $_SESSION['state']['report_sales_with_no_tax']['invoices']['from']=$date_interval['from'];
+     $_SESSION['state']['report_sales_with_no_tax']['invoices']['to']=$date_interval['to'];
+   }
+   
+
+   
+
+   $where=sprintf(' where `Invoice Total Tax Amount`=0 and `Invoice Total Amount`!=0  and `Invoice Store Key` in (%s) ',$stores);
+
+
+
+   $where.=$date_interval['mysql'];
+   
+   $wheref='';
+
+  if($f_field=='max' and is_numeric($f_value) )
+    $wheref.=" and  (TO_DAYS(NOW())-TO_DAYS(`Invoice Date`))<=".$f_value."    ";
+  else if($f_field=='min' and is_numeric($f_value) )
+    $wheref.=" and  (TO_DAYS(NOW())-TO_DAYS(`Invoice Date`))>=".$f_value."    ";
+   elseif($f_field=='customer_name' and $f_value!='')
+    $wheref.=" and  `Invoice Customer Name` like   '".addslashes($f_value)."%'";
+  elseif( $f_field=='public_id' and $f_value!='')
+    $wheref.=" and  `Invoice Public ID` like '".addslashes($f_value)."%'";
+   
+else if($f_field=='maxvalue' and is_numeric($f_value) )
+    $wheref.=" and  `Invoice Total Amount`<=".$f_value."    ";
+  else if($f_field=='minvalue' and is_numeric($f_value) )
+    $wheref.=" and  `Invoice Total Amount`>=".$f_value."    ";
+   
+
+
+   
+
+   
+  $sql="select count(*) as total from `Invoice Dimension` left join `Customer Dimension` on (`Invoice Customer Key`=`Customer Key`)  $where $wheref ";
+  // print $sql ;
+  $res=mysql_query($sql);
+  if($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+    $total=$row['total'];
+  }
+  mysql_free_result($res);
+  if($where==''){
+    $filtered=0;
+     $total_records=$total;
+  }else{
+    
+      $sql="select count(*) as total from `Invoice Dimension`  $where";
+       $res=mysql_query($sql);
+  if($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+	$total_records=$row['total'];
+	$filtered=$total_records-$total;
+      }
+      mysql_free_result($res);
+  }
+  $rtext=$total_records." ".ngettext('invoice','invoices',$total_records);
+  if($total_records>$number_results)
+    $rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
+   else
+    $rtext_rpp=sprintf("Showing all invoices");
+
+  $filter_msg='';
+
+     switch($f_field){
+     case('public_id'):
+       if($total==0 and $filtered>0)
+	 $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any order with number")." <b>".$f_value."*</b> ";
+       elseif($filtered>0)
+	 $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ("._('orders starting with')." <b>$f_value</b>) <span onclick=\"remove_filter($tableid)\" id='remove_filter$tableid' class='remove_filter'>"._('Show All')."</span>";
+       break;
+     case('customer_name'):
+       if($total==0 and $filtered>0)
+	 $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any order with customer")." <b>".$f_value."*</b> ";
+       elseif($filtered>0)
+	 $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ("._('orders with customer')." <b>".$f_value."*</b>) <span onclick=\"remove_filter($tableid)\" id='remove_filter$tableid' class='remove_filter'>"._('Show All')."</span>";
+       break;  
+     case('minvalue'):
+       if($total==0 and $filtered>0)
+	 $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any order minimum value of")." <b>".money($f_value)."</b> ";
+       elseif($filtered>0)
+	 $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ("._('orders with min value of')." <b>".money($f_value)."*</b>) <span onclick=\"remove_filter($tableid)\" id='remove_filter$tableid' class='remove_filter'>"._('Show All')."</span>";
+       break;  
+   case('maxvalue'):
+       if($total==0 and $filtered>0)
+	 $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any order maximum value of")." <b>".money($f_value)."</b> ";
+       elseif($filtered>0)
+	 $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ("._('orders with max value of')." <b>".money($f_value)."*</b>) <span onclick=\"remove_filter($tableid)\" id='remove_filter$tableid' class='remove_filter'>"._('Show All')."</span>";
+       break;  
+ case('max'):
+       if($total==0 and $filtered>0)
+	 $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any order older than")." <b>".number($f_value)."</b> "._('days');
+       elseif($filtered>0)
+	 $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ("._('last')." <b>".number($f_value)."</b> "._('days orders').") <span onclick=\"remove_filter($tableid)\" id='remove_filter$tableid' class='remove_filter'>"._('Show All')."</span>";
+       break;  
+     }
+
+
+
+   
+   $_order=$order;
+   $_dir=$order_direction;
+
+   
+   if($order=='date')
+     $order='`Invoice Date`';
+   else if($order=='last_date')
+     $order='`Invoice Last Updated Date`';
+   else if($order=='id')
+     $order='`Invoice File As`';
+   else if($order=='state')
+     $order='`Invoice Current Dispatch State`,`Invoice Current Payment State`';
+   else if($order=='total_amount')
+     $order='`Invoice Total Amount`';
+else if($order=='customer')
+     $order='`Invoice Customer Name`';
+ else if($order=='state')
+   $order='`Invoice Has Been Paid In Full`';
+else if($order=='net')
+     $order='`Invoice Total Net Amount`';
+  $sql="select `Customer Tax Number`,`European Union`,`Invoice Delivery Country 2 Alpha Code`,`Country Name`,`Country Code`, `Invoice Total Net Amount`,`Invoice Has Been Paid In Full`,`Invoice Key`,`Invoice XHTML Orders`,`Invoice XHTML Delivery Notes`,`Invoice Public ID`,`Invoice Customer Key`,`Invoice Customer Name`,`Invoice Date`,`Invoice Total Amount`  from `Invoice Dimension` left join kbase.`Country Dimension` on (`Invoice Delivery Country 2 Alpha Code`=`Country 2 Alpha Code`) left join `Customer Dimension` on (`Invoice Customer Key`=`Customer Key`) $where $wheref  order by $order $order_direction limit $start_from,$number_results ";
+  //print $sql;
+
+   $data=array();
+
+   
+   $res=mysql_query($sql);
+   while($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+
+     $order_id=sprintf('<a href="invoice.php?id=%d">%s</a>',$row['Invoice Key'],$row['Invoice Public ID']);
+     $customer=sprintf('<a href="customer.php?id=%d">%s</a>',$row['Invoice Customer Key'],$row['Invoice Customer Name']);
+     //   if($row['Customer Tax Number']!='')
+     //  $customer.='<br/>'.$row['Customer Tax Number'];
+     if($row['Invoice Has Been Paid In Full'])
+       $state=_('Paid');
+     else
+       $state=_('No Paid');
+
+     $send_to=sprintf('<span style="font-family:courier">%s</span> <img src="art/flags/%s.gif" alt="(%s)" title="%s" />',$row['Country Code'],strtolower($row['Invoice Delivery Country 2 Alpha Code']),$row['Country Code'],$row['Country Name']);
+     if($row['European Union']=='Yes'){
+       $send_to.=' <img src="art/flags/eu.gif" title="'._('European Union Member').'" >';
+     }
+
+     $data[]=array(
+		   'id'=>$order_id
+		   ,'customer'=>$customer
+		   ,'tax_number'=>$row['Customer Tax Number']
+		   ,'date'=>strftime("%e %b %y", strtotime($row['Invoice Date']))
+		   ,'total_amount'=>money($row['Invoice Total Amount'])
+		   ,'net'=>money($row['Invoice Total Net Amount'])
+		   ,'send_to'=>$send_to
+		   ,'state'=>$state
+		   ,'orders'=>$row['Invoice XHTML Orders']
+		   ,'dns'=>$row['Invoice XHTML Delivery Notes']
+		   );
+   }
+mysql_free_result($res);
+
+
+
+
+ if ($total<=$number_results  and $total>1){
+$data[]=array(
+		   'id'=>''
+		   ,'customer'=>''
+		   ,'date'=>''
+		   ,'total_amount'=>''
+		   ,'net'=>''
+		   ,'state'=>''
+		   ,'orders'=>''
+		   ,'dns'=>''
+		   );
+ 
+
+ }else{
+   $data[]=array();
+ }
+
+ $total_records=ceil($total/$number_results)+$total;
+ $number_results++;
+
+   $response=array('resultset'=>
+		   array('state'=>200,
+			 'data'=>$data,
+			  'sort_key'=>$_order,
+			 'sort_dir'=>$_dir,
+			 'tableid'=>$tableid,
+			 'filter_msg'=>$filter_msg,
+			 'rtext'=>$rtext,
+			 'rtext_rpp'=>$rtext_rpp,
+			 'total_records'=>$total_records,
+			 'records_offset'=>$start_from+1,
+			 'records_perpage'=>$number_results,
+			 )
+		   );
+   echo json_encode($response);
+}
+
+
+
+function list_customers_with_no_tax(){
+ 
+    
+  $conf=$_SESSION['state']['report_sales_with_no_tax']['customers'];
+   
+  
+    if (isset( $_REQUEST['sf']))
+      $start_from=$_REQUEST['sf'];
+    else
+      $start_from=$conf['sf'];
+    
+    if (isset( $_REQUEST['nr'])) {
+        $number_results=$_REQUEST['nr']-1;
+	
+        if ($start_from>0) {
+            $page=floor($start_from/$number_results);
+            $start_from=$start_from-$page;
+        }
+    } else
+        $number_results=$conf['nr'];
+
+
+  if(isset( $_REQUEST['o']))
+    $order=$_REQUEST['o'];
+  else
+    $order=$conf['order'];
+  if(isset( $_REQUEST['od']))
+    $order_dir=$_REQUEST['od'];
+  else
+    $order_dir=$conf['order_dir'];
+    if(isset( $_REQUEST['f_field']))
+     $f_field=$_REQUEST['f_field'];
+   else
+     $f_field=$conf['f_field'];
+
+  if(isset( $_REQUEST['f_value']))
+     $f_value=$_REQUEST['f_value'];
+   else
+     $f_value=$conf['f_value'];
+if(isset( $_REQUEST['where']))
+  $where=stripslashes($_REQUEST['where']);
+   else
+     $where=$conf['where'];
+  
+ if(isset( $_REQUEST['from']))
+    $from=$_REQUEST['from'];
+ else{
+  
+     $from=$conf['from'];
+  
+ }
+
+  if(isset( $_REQUEST['to']))
+    $to=$_REQUEST['to'];
+  else{
+   
+      $to=$conf['to'];
+  
+  }
+
+
+   if(isset( $_REQUEST['tableid']))
+    $tableid=$_REQUEST['tableid'];
+  else
+    $tableid=0;
+//print $where;
+
+   $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
+
+        
+  
+   $stores=$_SESSION['state']['report_sales_with_no_tax']['stores'];
+   
+   
+   
+
+   $_SESSION['state']['report_sales_with_no_tax']['customers']=array('f_show'=>$_SESSION['state']['report_sales_with_no_tax']['customers']['f_show']   ,'order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value);
+
+   $date_interval=prepare_mysql_dates($from,$to,'`Invoice Date`','only_dates');
+   if($date_interval['error']){
+       $date_interval=prepare_mysql_dates($_SESSION['state']['orders']['from'],$_SESSION['state']['orders']['to']);
+   }else{
+     $_SESSION['state']['report_sales_with_no_tax']['customers']['from']=$date_interval['from'];
+     $_SESSION['state']['report_sales_with_no_tax']['customers']['to']=$date_interval['to'];
+   }
+   
+
+   
+
+   $where=sprintf(' where `Invoice Total Tax Amount`=0 and `Invoice Total Amount`!=0  and `Invoice Store Key` in (%s) ',$stores);
+
+
+
+   $where.=$date_interval['mysql'];
+   
+   $wheref='';
+
+  if($f_field=='max' and is_numeric($f_value) )
+    $wheref.=" and  (TO_DAYS(NOW())-TO_DAYS(`Invoice Date`))<=".$f_value."    ";
+  else if($f_field=='min' and is_numeric($f_value) )
+    $wheref.=" and  (TO_DAYS(NOW())-TO_DAYS(`Invoice Date`))>=".$f_value."    ";
+   elseif($f_field=='customer_name' and $f_value!='')
+    $wheref.=" and  `Invoice Customer Name` like   '".addslashes($f_value)."%'";
+  elseif( $f_field=='public_id' and $f_value!='')
+    $wheref.=" and  `Invoice Public ID` like '".addslashes($f_value)."%'";
+   
+else if($f_field=='maxvalue' and is_numeric($f_value) )
+    $wheref.=" and  `Invoice Total Amount`<=".$f_value."    ";
+  else if($f_field=='minvalue' and is_numeric($f_value) )
+    $wheref.=" and  `Invoice Total Amount`>=".$f_value."    ";
+   
+
+
+   
+
+   
+  $sql="select count(*) as total from `Invoice Dimension` left join `Customer Dimension` on (`Invoice Customer Key`=`Customer Key`)  $where $wheref  group by `Invoice Customer Key`";
+  //  print $sql ;
+  $res=mysql_query($sql);
+  if($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+    $total=$row['total'];
+  }
+  mysql_free_result($res);
+  if($where==''){
+    $filtered=0;
+     $total_records=$total;
+  }else{
+    
+      $sql="select count(*) as total from `Invoice Dimension`  $where  group by `Invoice Customer Key` ";
+       $res=mysql_query($sql);
+  if($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+	$total_records=$row['total'];
+	$filtered=$total_records-$total;
+      }
+      mysql_free_result($res);
+  }
+  $rtext=$total_records." ".ngettext('customer','customers',$total_records);
+  if($total_records>$number_results)
+    $rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
+   else
+    $rtext_rpp=sprintf("Showing all customers");
+
+  $filter_msg='';
+
+     switch($f_field){
+     case('public_id'):
+       if($total==0 and $filtered>0)
+	 $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any order with number")." <b>".$f_value."*</b> ";
+       elseif($filtered>0)
+	 $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ("._('orders starting with')." <b>$f_value</b>) <span onclick=\"remove_filter($tableid)\" id='remove_filter$tableid' class='remove_filter'>"._('Show All')."</span>";
+       break;
+     case('customer_name'):
+       if($total==0 and $filtered>0)
+	 $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any order with customer")." <b>".$f_value."*</b> ";
+       elseif($filtered>0)
+	 $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ("._('orders with customer')." <b>".$f_value."*</b>) <span onclick=\"remove_filter($tableid)\" id='remove_filter$tableid' class='remove_filter'>"._('Show All')."</span>";
+       break;  
+     case('minvalue'):
+       if($total==0 and $filtered>0)
+	 $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any order minimum value of")." <b>".money($f_value)."</b> ";
+       elseif($filtered>0)
+	 $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ("._('orders with min value of')." <b>".money($f_value)."*</b>) <span onclick=\"remove_filter($tableid)\" id='remove_filter$tableid' class='remove_filter'>"._('Show All')."</span>";
+       break;  
+   case('maxvalue'):
+       if($total==0 and $filtered>0)
+	 $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any order maximum value of")." <b>".money($f_value)."</b> ";
+       elseif($filtered>0)
+	 $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ("._('orders with max value of')." <b>".money($f_value)."*</b>) <span onclick=\"remove_filter($tableid)\" id='remove_filter$tableid' class='remove_filter'>"._('Show All')."</span>";
+       break;  
+ case('max'):
+       if($total==0 and $filtered>0)
+	 $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any order older than")." <b>".number($f_value)."</b> "._('days');
+       elseif($filtered>0)
+	 $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ("._('last')." <b>".number($f_value)."</b> "._('days orders').") <span onclick=\"remove_filter($tableid)\" id='remove_filter$tableid' class='remove_filter'>"._('Show All')."</span>";
+       break;  
+     }
+
+
+
+   
+   $_order=$order;
+   $_dir=$order_direction;
+
+    if($order=='name')
+     $order='`Customer Name`';
+   if($order=='date')
+     $order='`Invoice Date`';
+   else if($order=='last_date')
+     $order='`Invoice Last Updated Date`';
+   else if($order=='id')
+     $order='`Invoice File As`';
+   else if($order=='state')
+     $order='`Invoice Current Dispatch State`,`Invoice Current Payment State`';
+   else if($order=='total_amount')
+     $order='`Invoice Total Amount`';
+else if($order=='customer')
+     $order='`Invoice Customer Name`';
+ else if($order=='state')
+   $order='`Invoice Has Been Paid In Full`';
+else if($order=='net')
+     $order='`Invoice Total Net Amount`';
+  $sql="select `Customer Tax Number`,`European Union`,`Invoice Delivery Country 2 Alpha Code`,count(distinct `Invoice Key`) as `Invoices` ,`Country Name`,`Country Code`, sum(`Invoice Total Net Amount`)as `Invoice Total Net Amount`,`Invoice Has Been Paid In Full`,`Invoice Key`,`Invoice XHTML Orders`,`Invoice XHTML Delivery Notes`,`Invoice Public ID`,`Invoice Customer Key`,`Invoice Customer Name`,`Invoice Date`,sum(`Invoice Total Amount`) as `Invoice Total Amount`  from `Invoice Dimension` left join kbase.`Country Dimension` on (`Invoice Delivery Country 2 Alpha Code`=`Country 2 Alpha Code`) left join `Customer Dimension` on (`Invoice Customer Key`=`Customer Key`) $where $wheref  group by `Invoice Customer Key` order by $order $order_direction limit $start_from,$number_results ";
+  // print $sql;
+
+   $data=array();
+
+   
+   $res=mysql_query($sql);
+   while($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+
+     $order_id=sprintf('<a href="invoice.php?id=%d">%s</a>',$row['Invoice Key'],$row['Invoice Public ID']);
+     $customer=sprintf('<a href="customer.php?id=%d">%s</a>',$row['Invoice Customer Key'],$row['Invoice Customer Name']);
+     //   if($row['Customer Tax Number']!='')
+     //  $customer.='<br/>'.$row['Customer Tax Number'];
+     if($row['Invoice Has Been Paid In Full'])
+       $state=_('Paid');
+     else
+       $state=_('No Paid');
+
+     $send_to=sprintf('<span style="font-family:courier">%s</span> <img src="art/flags/%s.gif" alt="(%s)" title="%s" />',$row['Country Code'],strtolower($row['Invoice Delivery Country 2 Alpha Code']),$row['Country Code'],$row['Country Name']);
+     if($row['European Union']=='Yes'){
+       $send_to.=' <img src="art/flags/eu.gif" title="'._('European Union Member').'" >';
+     }
+
+     $data[]=array(
+		   'id'=>$order_id
+		   ,'name'=>$customer.'ss'
+		   ,'tax_number'=>$row['Customer Tax Number']
+		   ,'date'=>strftime("%e %b %y", strtotime($row['Invoice Date']))
+		   ,'total_amount'=>money($row['Invoice Total Amount'])
+		   ,'net'=>money($row['Invoice Total Net Amount'])
+		   ,'send_to'=>$send_to
+		   ,'num_invoices'=>number($row['Invoices'])
+		 
+		   );
+   }
+mysql_free_result($res);
+
+
+
+
+ if ($total<=$number_results  and $total>1){
+$data[]=array(
+		   'id'=>''
+		   ,'customer'=>''
+		   ,'date'=>''
+		   ,'total_amount'=>''
+		   ,'net'=>''
+		   ,'state'=>''
+		   ,'orders'=>''
+		   ,'dns'=>''
+		   );
+ 
+
+ }else{
+   $data[]=array();
+ }
+
+ $total_records=ceil($total/$number_results)+$total;
+ $number_results++;
+
+   $response=array('resultset'=>
+		   array('state'=>200,
+			 'data'=>$data,
+			  'sort_key'=>$_order,
+			 'sort_dir'=>$_dir,
+			 'tableid'=>$tableid,
+			 'filter_msg'=>$filter_msg,
+			 'rtext'=>$rtext,
+			 'rtext_rpp'=>$rtext_rpp,
+			 'total_records'=>$total_records,
+			 'records_offset'=>$start_from+1,
+			 'records_perpage'=>$number_results,
+			 )
+		   );
+   echo json_encode($response);
+}
+
+
+
 
 ?>

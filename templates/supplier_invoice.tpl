@@ -4,7 +4,6 @@
 
   
 
-
 <span class="nav2"><a href="suppliers.php">{t}Suppliers Index{/t}</a></span>
 <span class="nav2"><a href="porders.php">{t}Orders Index{/t}</a></span>
 
@@ -73,7 +72,7 @@
 	   <tr><td colspan=2 style="text-align:right" id="checkers_name"></td></tr>
 	  <tr><td colspan=2 style="text-align:right">{t}at{/t}: <input id="v_calpop4" style="text-align:right;"  class="text" name="submites_date" type="text"  size="10" maxlength="10"  value="{$date}"    /><img   id="calpop4" style="cursor:pointer" src="art/icons/calendar_view_month.png" align="top" alt=""   /> <input id="v_time4"   style="text-align:right;" class="text" name="expected_date" type="text"  size="5" maxlength="5"  value="{$time}"   /><img   id="calpop1" style="cursor:pointer" src="art/icons/time.png" align="top" alt=""   />  <div id="cal4Container" style="position:absolute;display:none; z-index:2"></div>	</td></tr>
 
-	    <tr><td class="aleft"><span onClick="fill_check(this,'check')" id="check_fill">{t}{/t}</span></td><td class="aright"><span style="cursor:pointer;margin-right:2px"  onClick="check_order_save(this)"  >Save <img   src="art/icons/disk.png" align="top" alt=""   /></span></td></tr>
+	    <tr><td class="aleft"><span onClick="fill_check(this,'check')" id="check_fill">{t}Fill Check{/t}</span></td><td class="aright"><span style="cursor:pointer;margin-right:2px"  onClick="check_order_save(this)"  >Save <img   src="art/icons/disk.png" align="top" alt=""   /></span></td></tr>
 	</table>
     </td></tr>
 

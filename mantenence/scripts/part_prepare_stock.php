@@ -74,8 +74,16 @@ while($row=mysql_fetch_array($res)){
   }
 }
 
+$count=0;
+$sql=sprintf('select `Part SKU`,`Part XHTML Currently Used In`  from `Part Dimension` where `Part Status`!="In Use"   %s ',$where);
+$res=mysql_query($sql);
+$count=0;
+while($row=mysql_fetch_array($res)){
+   $part=new Part($row['Part SKU']);
+  print percentage($count,$total)."  ".$part->data['Part Status']."\r";
+  
 
-
+}
 
 
 

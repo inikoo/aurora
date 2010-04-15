@@ -2941,7 +2941,6 @@ gettext("History");
 /* ../templates/edit_product.tpl */
 gettext("Product Shape");
 
-
 /* ../templates/edit_product.tpl */
 gettext("Other");
 
@@ -3333,7 +3332,7 @@ gettext("Comparison Mode");
 gettext("Normal Mode");
 
 /* ../templates/families.tpl */
-gettext("General");
+gettext("Summary");
 
 /* ../templates/families.tpl */
 gettext("Stock");
@@ -4929,6 +4928,9 @@ gettext("Dispached");
 gettext("Cancelled");
 
 /* ../templates/orders.tpl */
+gettext("Unknown");
+
+/* ../templates/orders.tpl */
 gettext("clear");
 
 /* ../templates/orders.tpl */
@@ -5877,7 +5879,7 @@ gettext("Operations");
 gettext("Fix Errors");
 
 /* ../templates/product_manage_stock.tpl */
-
+gettext("Close");
 
 /* ../templates/product_manage_stock.tpl */
 gettext("Location");
@@ -6819,7 +6821,7 @@ gettext("Corporate Overview");
 gettext("Stores");
 
 /* ../templates/stores.tpl */
-gettext("General");
+gettext("Summary");
 
 /* ../templates/stores.tpl */
 gettext("Stock");
@@ -6978,7 +6980,7 @@ gettext("Comparison Mode");
 gettext("Normal Mode");
 
 /* ../templates/store.tpl */
-gettext("General");
+gettext("Summary");
 
 /* ../templates/store.tpl */
 gettext("Stock");
@@ -7089,7 +7091,7 @@ gettext("Choose name");
 gettext("at");
 
 /* ../templates/supplier_delivery.tpl */
-
+gettext("Fill Check");
 
 /* ../templates/supplier_delivery.tpl */
 gettext("Consolidated");
@@ -7941,7 +7943,7 @@ gettext("Choose name");
 gettext("at");
 
 /* ../templates/supplier_invoice.tpl */
-
+gettext("Fill Check");
 
 /* ../templates/supplier_invoice.tpl */
 gettext("Consolidated");
@@ -8450,6 +8452,12 @@ gettext("Showing all customers");
 /* ../templates/supplier_product.tpl */
 gettext("Showing all records");
 
+/* ../templates/suppliers_index.tpl */
+gettext("Wellcome to");
+
+/* ../templates/suppliers_index.tpl */
+gettext("supplier's page");
+
 /* ../templates/suppliers_navigation.tpl */
 gettext("Suppliers");
 
@@ -8604,7 +8612,7 @@ gettext("Pending Orders");
 gettext("Supplier Products");
 
 /* ../templates/supplier.tpl */
-gettext("General");
+gettext("Summary");
 
 /* ../templates/supplier.tpl */
 gettext("Stock");

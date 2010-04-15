@@ -31,6 +31,11 @@ mysql_query("SET NAMES 'utf8'");
 require_once '../../conf/conf.php';           
 date_default_timezone_set('Europe/London');
 
+
+
+
+
+
 print "Getting data from the old database\n";
 
 $sql="INSERT INTO `dw`.`Location Dimension` (`Location Key` ,`Location Warehouse Key` ,`Location Warehouse Area Key` ,`Location Code` ,`Location Mainly Used For` ,`Location Max Weight` ,`Location Max Volume` ,`Location Max Slots` ,`Location Distinct Parts` ,`Location Has Stock` ,`Location Stock Value`)VALUES ('1', '1', '1','Unknown', 'Picking', NULL , NULL , NULL , '0', 'Unknown', '0.00');";
@@ -265,51 +270,28 @@ $data_inventory_audit=array(
 }
 mysql_free_result($result);
 
-print "Wrap part transactions";
-$sql=sprintf('select `Part SKU`,`Part XHTML Currently Used In`  from `Part Dimension`');
+$where='';
+$sql=sprintf('select count(*) as num  from `Part Dimension` where `Part Status`="In Use" %s ',$where);
 $res=mysql_query($sql);
 while($row=mysql_fetch_array($res)){
-  wrap_sku($row['Part SKU']);
+  $total=$row['num'];
+}
+print "Wrap part transactions";
+$sql=sprintf('select `Part SKU`,`Part XHTML Currently Used In`  from `Part Dimension` where `Part Status` ="In Use"');
+$res=mysql_query($sql);$count=0;
+while($row=mysql_fetch_array($res)){
+  $count++;
+
+
+  $part=new Part($row['Part SKU']);
+  print percentage($count,$total)."  ".$part->data['Part Status']."\r";
+
+  $part->wrap_transactions();
 
 }
 
 
 
-function wrap_sku($sku){
- $sql=sprintf("select `Location Key` from `Inventory Transaction Fact` where  `Part SKU`=%d  group by `Location Key`  ",$sku);
-  $res2=mysql_query($sql);
-  while($row2=mysql_fetch_array($res2)){
-    $location_key=$row2['Location Key'];
-    
-    $sql=sprintf('select `Inventory Audit Date` from `Inventory Audit Dimension` where `Inventory Audit Part SKU`=%d and `Inventory Audit Location Key`=%d  order by `Inventory Audit Date` desc' ,$sku,$location_key);
-    $first_audit_date='';
-    $res3=mysql_query($sql);
-    if($row3=mysql_fetch_array($res3)){
-      $first_audit_date==($row3['Inventory Audit Date']);
-    }
 
-  $sql=sprintf("select `Date` from `Inventory Transaction Fact` where  `Part SKU`=%d   order by `Date`  ",$sku);
-  $first_itf_date='';
-    $res3=mysql_query($sql);
-    if($row3=mysql_fetch_array($res3)){
-      $first_itf_date==($row3['Date']);
-    }
-    
-    if(!$first_audit_date and !$first_itf_date){
-      print "\nError: Part ".$sku."  \n";
-    }elseif(!$first_audit_date){
-      $first_date=$first_itf_date;
-    }elseif(!$first_itf_date){
-      $first_date=$first_audit_date;
-    }else{
-      
-    }
-
-
-
-  }
-
-
-}
 
 ?>

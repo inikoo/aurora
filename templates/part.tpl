@@ -167,7 +167,7 @@
 
   
  <div style="clear:both"></div>
- <div   id="block_plot" style="clear:both;{if $display.plot==0}display:none{/if};margin-top:20px"  >
+ <div   id="block_plot" style="clear:both;{if $display.plot==0}display:none{/if};margin-top:20px;min-height:420px"  >
    {include file='plot_splinter.tpl'}
  </div>
  
