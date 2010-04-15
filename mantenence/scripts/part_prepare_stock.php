@@ -57,30 +57,21 @@ while($row=mysql_fetch_array($res)){
   if($part->data['Part Status']=='In Use'){
    
     $sql=sprintf('select *  from `Part Location Dimension` where `Part SKU` = '.$part->sku);
-  
-  $res2=mysql_query($sql);
-  while($row2=mysql_fetch_array($res2)){
-   //  print $row['Part SKU'].'_'.$row2['Location Key']."\r";
+    
+    $res2=mysql_query($sql);
+    while($row2=mysql_fetch_array($res2)){
+      //  print $row['Part SKU'].'_'.$row2['Location Key']."\r";
     $part_location=new PartLocation($row2['Part SKU'].'_'.$row2['Location Key']);
     $part_location->set_audits();
     $part_location->update_stock();
     
     }
   
- // $part->update_stock_history();
-  
-
-  
-  
-  
-  
-  
- 
-  
-
-
- 
-}
+    // $part->update_stock_history();
+  }else{
+    $part->update_stock();
+    
+  }
 }
 
 

@@ -1610,12 +1610,42 @@ function list_supplier_products() {
 
     }
     if ($order=='id')
-        $order='`Supplier Product ID`';
+      $order='`Supplier Product ID`';
     elseif($order=='code')
-    $order='`Supplier Product Code`';
-    elseif($order='usedin')
-    $order='`Supplier Product XHTML Used In`';
-
+      $order='`Supplier Product Code`';
+    elseif($order=='usedin')
+      $order='`Supplier Product XHTML Used In`';
+    elseif($order=='tuos')
+      $order='`Supplier Product Days Available`';
+    elseif($order=='stock')
+      $order='`Supplier Product Stock`';
+    elseif($order=='name')
+      $order='`Supplier Product Name`';
+    elseif($order=='required'){
+      if ($product_period=='all')
+	$order='`Supplier Product Total Parts Required`';
+      elseif ($product_period=='year')
+	$order='`Supplier Product 1 Year Acc Parts Required`';
+      elseif ($product_period=='quarter')
+	$order='`Supplier Product 1 Quarter Acc Parts Required`';
+      elseif ($product_period=='month')
+	$order='`Supplier Product 1 Month Acc Parts Required`';
+      elseif ($product_period=='week')
+	$order='`Supplier Product 1 Week Acc Parts Required`';
+    }elseif($order=='provided'){
+      if ($product_period=='all')
+	$order='`Supplier Product Total Parts Provided`';
+      elseif ($product_period=='year')
+	$order='`Supplier Product 1 Year Acc Parts Provided`';
+      elseif ($product_period=='quarter')
+	$order='`Supplier Product 1 Quarter Acc Parts Provided`';
+      elseif ($product_period=='month')
+	$order='`Supplier Product 1 Month Acc Parts Provided`';
+      elseif ($product_period=='week')
+	$order='`Supplier Product 1 Week Acc Parts Provided`';
+    }else
+      $order='`Supplier Product Code`';
+    
     $sql="select * from `Supplier Product Dimension`  $where $wheref  order by $order $order_direction limit $start_from,$number_results ";
     $data=array();
 
@@ -1687,7 +1717,7 @@ $weeks_until=round($row['Supplier Product Days Available']/7).' w';
 				//      ,$row['Supplier Product Code'],$row['Supplier Key'],$row['Supplier Product Code'])
 		      'code'=>$code
                      ,'stock'=>number($row['Supplier Product Stock']) 
-                                          ,'tuos'=>$weeks_until
+		      ,'tuos'=>$weeks_until
 
 		      ,'name'=>$row['Supplier Product Name']
 		      ,'cost'=>money($row['Supplier Product Cost'])
