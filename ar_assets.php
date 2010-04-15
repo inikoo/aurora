@@ -8972,7 +8972,7 @@ $location=sprintf('<a href="location.php?id=%d">%s</a>',$data['Location Key'],$d
 
                      'type'=>$data['Inventory Transaction Type'].' '.$data['Event Order']
                               ,'change'=>$qty
-                                      ,'date'=>strftime("%a %e %b %Y %T", strtotime($data['Date']))
+                                      ,'date'=>strftime("%c", strtotime($data['Date']))
                                                                     ,'note'=>$data['Note']
                                                                     ,'location'=>$location
 
@@ -9123,7 +9123,7 @@ $wheref='';
 
         $adata[]=array(
 
-		       'date'=>strftime("%a %e %b %Y", strtotime($data['Date']))
+		       'date'=>strftime("%A %D", strtotime($data['Date']))
 		       ,'locations'=>$data['locations']
 		       ,'quantity'=>number($data['Quantity On Hand'])
 		       ,'value'=>money($data['Value At Cost'])
