@@ -914,7 +914,7 @@ function get_supplier_products(){
 
     if($date){
       // print "from date";
-        $sql=sprintf("select AVG(`Supplier Product Cost`) as cost from `Supplier Product Dimension` SP left join `Supplier Product Part List` B  on (SP.`Supplier Product Code`=B.`Supplier Product Code` and SP.`Supplier Key`=B.`Supplier Key`) where `Part SKU`=%d and ( (`Supplier Product Part Valid From`<=%s and `Supplier Product Part Valid To`>=%s and `Supplier Product Part Most Recent`='No') or (`Supplier Product Part Most Recent`='Yes' and `Supplier Product Part Valid From`<=%s )  )  "
+        $sql=sprintf("select AVG(`Supplier Product Cost`*`Supplier Product Units Per Part`) as cost from `Supplier Product Dimension` SP left join `Supplier Product Part List` B  on (SP.`Supplier Product Code`=B.`Supplier Product Code` and SP.`Supplier Key`=B.`Supplier Key`) where `Part SKU`=%d and ( (`Supplier Product Part Valid From`<=%s and `Supplier Product Part Valid To`>=%s and `Supplier Product Part Most Recent`='No') or (`Supplier Product Part Most Recent`='Yes' and `Supplier Product Part Valid From`<=%s )  )  "
 		     ,$this->sku
 		     ,prepare_mysql($date)
 		     ,prepare_mysql($date)
@@ -929,7 +929,7 @@ function get_supplier_products(){
     }
     // print "not found in date";
     
-    $sql=sprintf("select AVG(`Supplier Product Cost`) as cost from `Supplier Product Dimension` SP left join `Supplier Product Part List` B  on (SP.`Supplier Product Code`=B.`Supplier Product Code` and SP.`Supplier Key`=B.`Supplier Key` ) where `Part SKU`=%d and `Supplier Product Part Most Recent`='Yes' ",$this->sku);
+    $sql=sprintf("select AVG(`Supplier Product Cost`*`Supplier Product Units Per Part`) as cost from `Supplier Product Dimension` SP left join `Supplier Product Part List` B  on (SP.`Supplier Product Code`=B.`Supplier Product Code` and SP.`Supplier Key`=B.`Supplier Key` ) where `Part SKU`=%d and `Supplier Product Part Most Recent`='Yes' ",$this->sku);
     // print $sql;
     $res=mysql_query($sql);
     if($row=mysql_fetch_array($res)){
@@ -1500,7 +1500,8 @@ function wrap_transactions(){
     if($row3=mysql_fetch_array($res3)){
       $last_itf_date=($row3['Date']);
     }
-    // print $sql;
+    //print "$sql\n";
+  
     if($last_audit_date=='none' and $last_itf_date=='none'){
       print "\nError2: Part ".$this->sku." ".$this->data['Part XHTML Currently Used In']."  \n";
       return;

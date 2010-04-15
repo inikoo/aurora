@@ -166,7 +166,7 @@
 
 	  <table style="float:left;margin:0 0 5px 0px ;padding:0"  class="options" >
 	    <tr>
-	      <td {if $products_view=='product_general'}class="selected"{/if} id="product_general" >{t}General{/t}</td>
+	      <td {if $products_view=='product_general'}class="selected"{/if} id="product_general" >{t}Summary{/t}</td>
 	      <td {if $products_view=='product_stock'}class="selected"{/if}  id="product_stock"  >{t}Stock{/t}</td>
 	      <td {if $products_view=='product_sales'}class="selected"{/if}  id="product_sales"  >{t}Sales{/t}</td>
 	       <td {if $products_view=='product_forecast'}class="selected"{/if}  id="product_forecast"  >{t}Forecast{/t}</td>

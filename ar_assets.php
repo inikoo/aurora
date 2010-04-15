@@ -2613,14 +2613,14 @@ function list_departments() {
 
 
 
- if (isset( $_REQUEST['sf']))
-        $start_from=$_REQUEST['sf'];
+    if (isset( $_REQUEST['sf']))
+      $start_from=$_REQUEST['sf'];
     else
-        $start_from=$conf['sf'];
-
+      $start_from=$conf['sf'];
+    
     if (isset( $_REQUEST['nr'])) {
         $number_results=$_REQUEST['nr']-1;
-
+	
         if ($start_from>0) {
             $page=floor($start_from/$number_results);
             $start_from=$start_from-$page;
@@ -6643,15 +6643,20 @@ $_SESSION['state']['stores']['table']['f_value']=$f_value;
     $response=array('resultset'=>
                                 array('state'=>200,
                                       'data'=>$adata,
-                                      'sort_key'=>$_order,
-                                      'sort_dir'=>$_dir,
-                                      'tableid'=>$tableid,
-                                      'filter_msg'=>$filter_msg,
-                                      'rtext'=>$rtext,
-                                      'rtext_rpp'=>$rtext_rpp,
-                                      'total_records'=>$total_records,
-                                      'records_offset'=>$start_from,
-                                      'records_perpage'=>$number_results,
+                                     'rtext'=>$rtext,
+			 'rtext_rpp'=>$rtext_rpp,
+			 'sort_key'=>$_order,
+			 'sort_dir'=>$_dir,
+			 'tableid'=>$tableid,
+			 'filter_msg'=>$filter_msg,
+			 'total_records'=>$total,
+			 'records_offset'=>$start_from,
+			 'records_returned'=>$start_from+$total,
+			 'records_perpage'=>$number_results,
+			 'records_text'=>$rtext,
+			 'records_order'=>$order,
+			 'records_order_dir'=>$order_dir,
+			 'filtered'=>$filtered
                                      )
                    );
     echo json_encode($response);
@@ -8917,7 +8922,7 @@ $wheref='';
 
 
     $where=$where.sprintf(" and `Part SKU`=%d ",$part_sku);
-    $sql="select count(*) as total from `Inventory Spanshot Fact`     $where $wheref";
+    $sql="select count(*) as total from `Inventory Transaction Fact`     $where $wheref";
     $result=mysql_query($sql);
     if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
         $total=$row['total'];
@@ -8926,7 +8931,7 @@ $wheref='';
         $filtered=0;
         $total_records=$total;
     }else {
-        $sql="select count(*) as total from `Inventory Spanshot Fact`   $where ";
+        $sql="select count(*) as total from `Inventory Transaction Fact`   $where ";
         $result=mysql_query($sql);
         if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
            $total_records=$row['total'];

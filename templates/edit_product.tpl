@@ -558,8 +558,8 @@
 </div>
 <div id="catlist" class="yuimenu staff_list"  >
   <div class="bd">
-    <span>{t}{/t}</span>
-    <span>Pyhical State</span>
+
+    <span>Physical State</span>
     <table border=1>
       {foreach from=$state_cat item=_cat name=foo}
       {if $_cat.mod==0}<tr>{/if}

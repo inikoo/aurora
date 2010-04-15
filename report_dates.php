@@ -2,7 +2,7 @@
 
 
 
-if($tipo=='all'){
+if($tipo=='all_invoices'){
   $tipo='f';
   
   $sql=sprintf("select DATE(min(`Invoice Date`)) as date  from `Invoice Dimension` where `Invoice Store Key` in (%s)",$store_keys);;
@@ -14,7 +14,7 @@ if($tipo=='all'){
   }
   $to=date("d-m-Y");
   $title=$root_title;
-  $period='';
+  $period=_('All Invoices');
   $link="&tipo=f&from=".$from."&to=".$to;
   //print $link;
 }elseif($tipo=='f'){

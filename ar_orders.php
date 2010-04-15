@@ -268,6 +268,7 @@ case('report_invoices'):
     list_invoices();
    
    break;
+ 
  case('dn'):
 if(!$user->can_view('orders'))
   exit();

@@ -433,6 +433,39 @@ $default_state=array(
                                                    )
                                        ),
 
+		     'report_sales_with_no_tax'=>array(
+						       'tipo'=>'y'
+						       ,'y'=>date('Y')
+						       ,'m'=>date('m')
+						       ,'d'=>date('d')
+						       ,'w'=>date('W')
+						       ,'stores'=>false
+						       ,'invoices'=>array(
+									 'order'=>'date',
+									 'order_dir'=>'',
+									 'sf'=>0,
+									 'nr'=>25,
+									 'where'=>'where true',
+									 'f_field'=>'public_id',
+									 'f_value'=>'','f_show'=>false,
+									 'from'=>'',
+									 'to'=>'',
+									 'elements'=>array()
+									 )
+						       ,'customers'=>array(
+									 'order'=>'name',
+									 'order_dir'=>'',
+									 'sf'=>0,
+									 'nr'=>25,
+									 'where'=>'where true',
+									 'f_field'=>'customer',
+									 'f_value'=>'','f_show'=>false,
+									 'from'=>'',
+									 'to'=>'',
+									 'elements'=>array()
+									 )
+						       
+						       ),
 
                    'report_outofstock'=>array(
                                            'from'=>'',

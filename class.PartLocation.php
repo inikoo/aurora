@@ -1532,7 +1532,7 @@ $this->update_stock();
 }
 function get_stock($date=''){
 if(!$date)
-    $date=date('Y-m-d  H:i:s');
+    $date=date('Y-m-d H:i:s');
   
 
 

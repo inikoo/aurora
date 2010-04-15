@@ -58,7 +58,7 @@
       </tr>
     </table>
     <div id="manage_stock_desktop" style="display:none;width:450px" >
-      <div id="manage_stock_close"><img src="art/close.png" style="opacity:.5;position:relative;bottom:5px;left:10px;float:right;cursor:pointer" title="{t}{/t}" onclick="clear_actions();"/></div>
+      <div id="manage_stock_close"><img src="art/close.png" style="opacity:.5;position:relative;bottom:5px;left:10px;float:right;cursor:pointer" title="{t}Close{/t}" onclick="clear_actions();"/></div>
       <div id="manage_stock_messages"></div>
       <div id="manage_stock_products" style="margin:0 0 20px 0;width:100px;display:none"><input id="new_product_input" type="text"><div id="new_product_container"></div></div>
       <div id="manage_stock_locations" style="margin:0 0 20px 0;width:100px;display:none"><input id="new_location_input" type="text"><div id="new_location_container"></div></div>

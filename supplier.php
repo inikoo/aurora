@@ -14,6 +14,11 @@
 include_once('common.php');
 include_once('class.Supplier.php');
 
+
+
+
+
+
 if($user->data['User Type']!='Supplier' and !$user->can_view('suppliers')){
 
   exit();
