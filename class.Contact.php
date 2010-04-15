@@ -1552,6 +1552,42 @@ class Contact extends DB_Table {
   }
 
 
+  function add_email($email_data,$options=''){
+    $email=new Email($email_data);
+    if($email->found){
+      $email_contact_key=$email->get_contact_key();
+      if($email_contact_key==$this->id)
+	$this->update_email($email->id,$email_data);
+      else{
+	if(preg_match('/steal/',$options)){
+	  $other_contact=new Contact($email_contact_key);
+	  $other_contact->remove_email($email->id);
+	  $this->add_email($email_data);
+	}
+      }
+
+    }
+
+
+  }
+
+  function create_email_bridge($email_key,$principal=false){
+
+    $principal_email=$this->get_principal_email();
+    $sql=sprintf("insert into  `Email Bridge` (`Email Key`,`Subject Type`, `Subject Key`,`Is Main`,`Email Description`) values (%d,'Contact',%d,%s,'')  "
+		 ,$email_key
+		 ,$this->id
+		 ,prepare_mysql($principal?'Yes':'No')
+		 );
+    mysql_query($sql);
+
+  }
+  function delete_email_bridge($email_key){
+    
+
+  }
+
+
   /* Method: add_email
      Add/Update an email to the Contact
 
@@ -1567,7 +1603,7 @@ class Contact extends DB_Table {
      Todo: use base_data for defaults/missing parameters
   */
 
-function add_email($data,$args='principal') {
+function add_emailx($data,$args='principal') {
 
 
     global $myconf;

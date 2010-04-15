@@ -135,7 +135,8 @@ function previous_info_period(){
 	table.hideColumn('parts');
 	table.hideColumn('supplied');
 	table.hideColumn('gmroi');
-	
+		table.hideColumn('formated_record_type');  
+
 	table.hideColumn('family');
 	//table.hideColumn('dept');
 	table.hideColumn('expcode');  
@@ -157,10 +158,11 @@ table.hideColumn('stock_state');
 	    Dom.get('period_options').style.display='none';
 	    Dom.get('avg_options').style.display='none';
 	    table.showColumn('name');
-	    table.showColumn('state');
+	    //table.showColumn('state');
 	    table.showColumn('web');
 	    table.showColumn('stock');
-	    
+	    table.showColumn('formated_record_type');  
+
 	}else if(tipo=='stock'){
 	    table.showColumn('stock');
 	    table.showColumn('stock_value');
