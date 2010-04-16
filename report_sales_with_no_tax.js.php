@@ -23,9 +23,9 @@ YAHOO.util.Event.addListener(window, "load", function() {
 				    
 				    ,{key:"orders",label:"<?php echo _('Order')?>", width:100,sortable:false,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC},'hidden':true}
 				    ,{key:"dns",label:"<?php echo _('Delivery Note')?>", width:100,sortable:false,className:"aleft",'hidden':true}
-				    ,{key:"send_to",label:"<?php echo _('Send to')?>", width:80,sortable:false,className:"aleft"}
+				    ,{key:"send_to",label:"<?php echo _('Send to')?>", width:80,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				    
-				    ,{key:"total_amount", label:"<?php echo _('Total')?>", width:60,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				    ,{key:"total_amount", label:"<?php echo _('Total')?>", width:80,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 				    //  ,{key:"state", label:"<?php echo _('Status')?>", width:33,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				    
 				    
@@ -99,8 +99,8 @@ YAHOO.util.Event.addListener(window, "load", function() {
 				    {key:"name",label:"<?php echo _('Customer')?>", width:160,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				    ,{key:"tax_number",label:"<?php echo _('Tax Number')?>", width:100,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				    
-				    ,{key:"send_to",label:"<?php echo _('Send to')?>", width:80,sortable:false,className:"aleft"}
-				    ,{key:"num_invoices",label:"<?php echo _('Invoices')?>", width:50,sortable:false,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				    ,{key:"send_to",label:"<?php echo _('Send to')?>", width:80,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				    ,{key:"num_invoices",label:"<?php echo _('Invoices')?>", width:50,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 
 				    ,{key:"total_amount", label:"<?php echo _('Total')?>", width:80,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 				    //  ,{key:"state", label:"<?php echo _('Status')?>", width:33,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
@@ -169,11 +169,16 @@ YAHOO.util.Event.addListener(window, "load", function() {
     });
 
 
+function change_currency_type() {
 
+    var sURL = unescape(window.location.pathname);
+    location.href=sURL+'?currency_type='+this.id;
+}
 
  function init(){
  
- 
+     var ids=['original','corparate_currency','hm_revenue_and_customs'];
+     YAHOO.util.Event.addListener(ids, "click", change_currency_type);
 
  YAHOO.util.Event.addListener('clean_table_filter_show0', "click",show_filter,0);
  YAHOO.util.Event.addListener('clean_table_filter_hide0', "click",hide_filter,0);
@@ -227,3 +232,9 @@ YAHOO.util.Event.onContentReady("filtermenu1", function () {
 	 oMenu.subscribe("show", oMenu.focus);
 	 YAHOO.util.Event.addListener("filter_name1", "click", oMenu.show, null, oMenu);
     });
+
+
+
+
+
+

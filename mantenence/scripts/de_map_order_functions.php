@@ -3911,6 +3911,8 @@ function set_transactions($transactions,$order_id,$tipo_order,$parent_order_id,$
 function setup_contact($act_data,$header_data,$date_index){
 
 
+
+
   $co='';
   $header_data['country_d2']='';
   $header_data['country']='';
@@ -4207,6 +4209,10 @@ if(!isset($act_data['town_d2']))
 
     $customer_data['shipping_data']['name']=$header_data['customer_contact'];
     $customer_data['shipping_data']['company']=$header_data['trade_name'];
+    
+    if($customer_data['shipping_data']['country']=='')
+      $customer_data['shipping_data']['country']='Germany';
+    //    print "->".$customer_data['shipping_data']['country'];
 
 
     $_tel=preg_split('/ /',$header_data['phone']);
@@ -4242,7 +4248,8 @@ if(!isset($act_data['town_d2']))
   else
     $customer_data['Customer Old ID']='';
       
-  
+    // print_r($customer_data);
+    // exit;
 
   return $customer_data;
 
@@ -4280,8 +4287,7 @@ function read_header($raw_header_data,$map_act,$y_map,$map,$convert_encoding=tru
 	$cols[$key]=$col;
     }
  
-    //     print_r($cols);
-    //exit;
+    
     $act_data['name']=mb_ucwords($cols[$map_act['name']]);
     $act_data['contact']=mb_ucwords($cols[$map_act['contact']]);
     if($act_data['name']=='' and $act_data['contact']!='') // Fix only contact
@@ -4295,6 +4301,13 @@ function read_header($raw_header_data,$map_act,$y_map,$map,$convert_encoding=tru
     $act_data['postcode']=$cols[$map_act['postcode']];
    
     $act_data['country']=mb_ucwords($cols[$map_act['country']]);
+    
+    //print mb_ucwords($cols[$map_act['country']]);
+    
+    // print_r($act_data);
+
+    //exit("fixinf bug in sa_map");
+
     $act_data['tel']=$cols[$map_act['tel']];
     $act_data['fax']=$cols[$map_act['fax']];
     $act_data['mob']=$cols[$map_act['mob']];

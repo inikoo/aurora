@@ -58,17 +58,24 @@
 
 {/if}
 <div class="custom_dates" >
-<span id="show_custom_dates" class="state_details">{t}Custom Dates{/t}</span>
-<div id="custom_dates_form" style="margin-top:5px;{if $tipo!='f'}display:none{/if}">
-{t}From{/t}:<span style="position:relative;left:0px;"><input id="v_calpop1" type="text" class="text" size="11" maxlength="10" name="from" value="{$from}"/>
- <img   id="calpop1" class="calpop" src="art/icons/calendar_view_month.png" align="absbottom" alt=""   /><br/>
- <span >{t}To:{/t}</span> <input   id="v_calpop2" size="11" maxlength="10"   type="text" class="text" size="8" name="to" value="{$to}"/>
- <img   id="calpop2" class="calpop" src="art/icons/calendar_view_month.png" align="absbottom" alt=""   /><br/>
- 
- <span  class="state_details" id="go_free_report" style="margin-right:16px;position:relative;top:2px"/>Get Report</span>
-	</span>
-	<div id="cal1Container" style="position:absolute;display:none; z-index:2"></div>
-	<div style="position:relative;right:-120px"><div id="cal2Container" style="display:none; z-index:2;position:absolute"></div></div>
+<span id="show_custom_dates" class="state_details">{t}Choose custom dates{/t}</span>
+<div id="custom_dates_form" style="margin-top:5px;{if $tipo!='f'}ddisplay:none{/if}">
+  
+  <span >{t}From{/t}:</span>
+  <input id="input_custom_date_from" type="text" class="text" size="11" maxlength="10" name="from" value="{$from}"/>
+  <img   id="custom_date_from_pop" class="calpop" src="art/icons/calendar_view_month.png" align="absbottom" alt="choose"   />
+  <br/>
+  
+  <span >{t}To:{/t}</span> 
+  <input   id="input_custom_date_to" size="11" maxlength="10"   type="text" class="text" size="8" name="to" value="{$to}"/>
+  <img   id="custom_date_to_pop" class="calpop" src="art/icons/calendar_view_month.png" align="absbottom" alt="choose"   /><br/>
+  
+  <span  class="state_details" id="go_free_report" style="margin-right:16px;position:relative;top:2px"/>Get Report</span>
+</span>
+<div id="custom_date_from_Container" style="position:absolute;display:none; z-index:2"></div>
+<div style="position:relative;right:-120px">
+  <div id="custom_date_to_Container" style="display:none; z-index:2;position:absolute"></div>
+</div>
 
 </div>
 </div>

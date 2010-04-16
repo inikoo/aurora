@@ -55,7 +55,7 @@ $url='http://'.$root_url.'/'.$row['Page URL'];
 
 
 $url_args='?mk='.$handle.'h_Adkiseqto'.$pwd;
-print "$url$url_args\n";
+//print "$url$url_args\n";
 
 $command='export LD_LIBRARY_PATH=./;./html2image '.$url.$url_args." ../../$img_name_tmp -d 750 ;rm core.*; convert -resize 120 ../../$img_name_tmp ../../$img_name;rm ../../$img_name_tmp    ";
 //print $command."\n";
@@ -64,20 +64,26 @@ chdir('../../');
 
 $data=array(
 	    'file'=>$filename
-	    ,'path'=>'thumbnails/'
+	    ,'path'=>'pages/'
 	    ,'name'=>preg_replace('/[^a-z]/i','',$row['Page Title'])
 	    ,'caption'=>$row['Page Title']
 	    );
 
 //print_r($data);
 $image=new Image('find',$data,'create');
+if($image->found_key){
+  $image->delete();
+  $image=new Image('find',$data,'create');
+  
+}
+  
 $page=new Page($row['Page Key']);
 //print_r($image);
 if($image->error){
   print $image->msg."\n";
 }else{
-
-$page->update_thumbnail_key($image->id);
+  print print "updating " .$image->id."\n";
+  $page->update_thumbnail_key($image->id);
 }
 chdir('mantenence/scripts/');
 

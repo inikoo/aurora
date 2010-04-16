@@ -885,16 +885,16 @@ function _trim($string){
 
 function mb_ucwords($str) {
   $str=_trim($str);
-
+  
   if(strlen($str==1)){
     return strtoupper($str);
 
   }
-
-
+  
+  
   if(preg_match('/^PO BOX\s+/i',$str))
-     return strtoupper($str);
-
+    return strtoupper($str);
+  
   $exceptions = array();
   $exceptions['Uk'] = 'UK';
   $exceptions['Usa'] = 'USA';
@@ -934,29 +934,29 @@ function mb_ucwords($str) {
     return $str;
   //  print "$str\n";
 
-  
-
+  //print "=========================\n";
 
   $separator = array("-","+",","," ");
    
   $str = mb_strtolower(trim($str),"UTF-8");
   foreach($separator as $s){
     $word = explode($s, $str);
-
+   
     $return = "";
     foreach ($word as $val){
-      //print "* $val\n";
+      // print "* $val\n";
+      
       if(preg_match('/^www\.[^\s]+/i',$val)){
 	$return .= $s .mb_strtolower($val,"UTF-8");
       }elseif(preg_match('/^[a-z]{2,}\.$/i',$val)){
 	$return .= $s .mb_strtolower($val,"UTF-8");
       }elseif(preg_match('/^(st|Mr|Mrs|Miss|Dr|Ltd)$/i',$val)){
 		$return .= $s 
-	  . mb_strtoupper($val{0},"UTF-8") 
-	  . mb_substr($val,1,mb_strlen($val,"UTF-8")-1,"UTF-8");
+		  . mb_strtoupper($val{0},"UTF-8") 
+		  . mb_substr($val,1,mb_strlen($val,"UTF-8")-1,"UTF-8");
       }
-
-elseif(preg_match('/^[^\s]+\.(com|uk|info|biz|org)$/i',$val)){
+      
+      elseif(preg_match('/^[^\s]+\.(com|uk|info|biz|org)$/i',$val)){
 	$return .= $s .mb_strtolower($val,"UTF-8");
       }
       elseif(preg_match('/^(aa|ee|ii|oo|uu)$/i',$val)){
@@ -966,30 +966,42 @@ elseif(preg_match('/^[^\s]+\.(com|uk|info|biz|org)$/i',$val)){
       }elseif(preg_match('/^c\/o$/i',$val)){
 	$return .= $s .'C/O';
      
-       }elseif(preg_match('/^t\/a$/i',$val)){
+      }elseif(preg_match('/^t\/a$/i',$val)){
 	$return .= $s .'T/A';
-     
+	
       }elseif(preg_match('/^([^(aeoiu)]{2,3})$/i',$val)){
+	
 	$return .= $s .mb_strtoupper($val,"UTF-8");
       }elseif(preg_match('/^\(.+\)$/i',$val)){
 	$text=preg_replace('/^\(|\)$/i','',$val);
 	//print "*** $text\n";
 	$return .= $s.'('.mb_ucwords($text).')';
       }
-
+      
       elseif(mb_strlen($val,"UTF-8")>0){
-	$return .= $s 
-	  . mb_strtoupper($val{0},"UTF-8") 
-	  . mb_substr($val,1,mb_strlen($val,"UTF-8")-1,"UTF-8");
+	$return=$s.capitalize($val);
+	//	$return .= $s 
+	//	  . mb_strtoupper($val{0},"UTF-8") 
+	//	  . mb_substr($val,1,mb_strlen($val,"UTF-8")-1,"UTF-8");
+	//	print "return: $s ->  ".$val{0}." -> $mp_a $return \n";
       }
 
     }
+    
     $str = mb_substr($return, 1);
-  }
-  
-  $return{1}=mb_strtoupper($return{1},"UTF-8");
-  $return=mb_substr($return, 1);
 
+
+  }
+
+
+  
+  
+    $return=capitalize($return);
+
+  
+    // $return{1}=mb_strtoupper($return{1},"UTF-8");
+    //$return=mb_substr($return, 1);
+  
   foreach($exceptions as $find=>$replace){
     $return = preg_replace('/\s+'.$find.'\s+|\s+'.$find.'$/', ' '.$replace.' ', $return);
     
@@ -1000,6 +1012,12 @@ elseif(preg_match('/^[^\s]+\.(com|uk|info|biz|org)$/i',$val)){
   // print $return."\n";
   return $return;
 }
+function capitalize($str, $encoding = 'UTF-8') {
+  $str=trim($str);
+    return mb_strtoupper(mb_substr($str, 0, 1, $encoding), $encoding) . mb_strtolower(mb_substr($str, 1, mb_strlen($str), $encoding), $encoding);
+
+}
+
 
 /*
  Function: prepare_mysql

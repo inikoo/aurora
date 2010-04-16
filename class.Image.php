@@ -30,7 +30,7 @@ var $resized_im = "";
     var $msg='';
 var $new=false;
 var $deleted=false;
-
+var $found_key=0;
  /*
     Constructor: Product
     Initializes the object.
@@ -557,22 +557,23 @@ $res=mysql_query($sql);
 
 
 function delete($force=false){
-$this->load_subjects();
-    $num_subjects=count($this->subjects);
-    
- if($num_subjects==0 or $force){
- unlink($this->data['Image URL']);
-     if($this->data['Image Thumbnail URL']!='')   
-     unlink($this->data['Image Thumbnail URL']);
-      if($this->data['Image Small URL']!='')   
+  $this->load_subjects();
+  $num_subjects=count($this->subjects);
+  
+  if($num_subjects==0 or $force){
+    unlink($this->data['Image URL']);
+    if($this->data['Image Thumbnail URL']!='')   
+      unlink($this->data['Image Thumbnail URL']);
+    if($this->data['Image Small URL']!='')   
      unlink($this->data['Image Small URL']);
-  if($this->data['Image Large URL']!='')   
-     unlink($this->data['Image Large URL']);
-     
-   $sql=sprintf("delete from `Image Dimension` where `Image Key`=%d",$this->id);
-   mysql_query($sql);
-      $sql=sprintf("delete from `Image Bridge` where `Image Key`=%d",$this->id);
-   mysql_query($sql);
+    if($this->data['Image Large URL']!='')   
+      unlink($this->data['Image Large URL']);
+    
+    $sql=sprintf("delete from `Image Dimension` where `Image Key`=%d",$this->id);
+    //print $sql;
+    mysql_query($sql);
+    $sql=sprintf("delete from `Image Bridge` where `Image Key`=%d",$this->id);
+    mysql_query($sql);
     $this->deleted=true; 
  }
     

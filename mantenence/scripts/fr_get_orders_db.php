@@ -123,6 +123,57 @@ $fam_promo=new Family('find',$fam_data);
 $fam_no_fam_key=$fam_no_fam->id;
 $fam_promo_key=$fam_promo->id;
 
+$sql="select * from  fr_orders_data.orders  where deleted='Yes'  order by filename  ";
+$res=mysql_query($sql);
+
+while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
+  $order_data_id=$row2['id'];
+  //print "deleting\n ";
+
+      $sql=sprintf("select `Order Key`  from `Order Dimension`  where `Order Original Metadata`=%s  ",prepare_mysql($store_code.$order_data_id));
+	 
+      $result_test=mysql_query($sql);
+      while($row_test=mysql_fetch_array($result_test, MYSQL_ASSOC)){
+	   
+	$sql=sprintf("delete from `History Dimension` where `Direct Object Key`=%d and `Direct Object`='Sale'   ",$row_test['Order Key']);
+	if(!mysql_query($sql))
+	  print "$sql Warning can no delete oldhidtfgf";
+	   
+      };
+
+	 
+	 
+      $sql=sprintf("delete from `Order No Product Transaction Fact` where `Metadata`=%s",prepare_mysql($store_code.$order_data_id));
+      if(!mysql_query($sql))
+	print "$sql Warning can no delete old order";
+
+      //delete things
+      $sql=sprintf("delete from `Order Dimension` where `Order Original Metadata`=%s",prepare_mysql($store_code.$order_data_id));
+      //	 print $sql;
+
+      if(!mysql_query($sql))
+	print "$sql Warning can no delete old order";
+      $sql=sprintf("delete from `Invoice Dimension` where `Invoice Metadata`=%s",prepare_mysql($store_code.$order_data_id));
+      if(!mysql_query($sql))
+	print "$sql Warning can no delete old inv";
+      $sql=sprintf("delete from `Delivery Note Dimension` where `Delivery Note Metadata`=%s",prepare_mysql($store_code.$order_data_id));
+      if(!mysql_query($sql))
+	print "$sql Warning can no delete old dn";
+      $sql=sprintf("delete from `Order Transaction Fact` where `Metadata`=%s",prepare_mysql($store_code.$order_data_id));
+      if(!mysql_query($sql))
+	print "$sql Warning can no delete tf";
+      $sql=sprintf("delete from `Inventory Transaction Fact` where `Metadata`=%s and `Inventory Transaction Type`='Sale'   ",prepare_mysql($store_code.$order_data_id));
+      if(!mysql_query($sql))
+	print "$sql Warning can no delete old inv";
+	 
+
+
+	 
+      $sql=sprintf("delete from `Order No Product Transaction Fact` where `Metadata`=%s ",prepare_mysql($store_code.$order_data_id));
+      if(!mysql_query($sql))
+	print "$sql Warning can no delete oldhidt nio prod";
+	
+}
 
 
 

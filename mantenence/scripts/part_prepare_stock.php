@@ -80,8 +80,8 @@ $res=mysql_query($sql);
 $count=0;
 while($row=mysql_fetch_array($res)){
    $part=new Part($row['Part SKU']);
-  print percentage($count,$total)."  ".$part->data['Part Status']."\r";
-  
+   print percentage($count,$total)."  ".$part->data['Part Status']."\r";
+   $part->update_stock();
 
 }
 
