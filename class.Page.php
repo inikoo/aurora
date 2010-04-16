@@ -418,10 +418,7 @@ function update_working_url(){
   }
 
   function update_thumbnail_key($image_key){
-
     
-
-
     $old_value=$this->data['Page Thumbnail Image Key'];
     if($old_value!=$image_key){
       $this->updated;
@@ -432,7 +429,7 @@ function update_working_url(){
 		   ,$this->id
 		   );
       mysql_query($sql);
-
+      
       $sql=sprintf("delete from  `Image Bridge` where `Subject Type`='Website' and `Subject Key`=%d "
 		   ,$this->id
 		   
@@ -444,7 +441,7 @@ function update_working_url(){
 		   ,$this->id
 		   ,$image_key
 		   );
-      //print $sql;
+      print $sql;
       mysql_query($sql);
       }
       

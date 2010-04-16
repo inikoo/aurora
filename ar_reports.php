@@ -779,6 +779,17 @@ if(isset( $_REQUEST['where']))
   
   }
 
+ if(isset( $_REQUEST['currency_type'])){
+    $currency_type=$_REQUEST['currency_type'];
+    $_SESSION['state']['report_sales_with_no_tax']['currency_type']=$currency_type;
+  }else{
+  
+    $currency_type=$_SESSION['state']['report_sales_with_no_tax']['currency_type'];
+  
+  }
+
+
+
 
    if(isset( $_REQUEST['tableid']))
     $tableid=$_REQUEST['tableid'];
@@ -911,15 +922,39 @@ else if($f_field=='maxvalue' and is_numeric($f_value) )
      $order='`Invoice File As`';
    else if($order=='state')
      $order='`Invoice Current Dispatch State`,`Invoice Current Payment State`';
-   else if($order=='total_amount')
-     $order='`Invoice Total Amount`';
+  
 else if($order=='customer')
      $order='`Invoice Customer Name`';
- else if($order=='state')
-   $order='`Invoice Has Been Paid In Full`';
+
 else if($order=='net')
      $order='`Invoice Total Net Amount`';
-  $sql="select `Customer Tax Number`,`European Union`,`Invoice Delivery Country 2 Alpha Code`,`Country Name`,`Country Code`, `Invoice Total Net Amount`,`Invoice Has Been Paid In Full`,`Invoice Key`,`Invoice XHTML Orders`,`Invoice XHTML Delivery Notes`,`Invoice Public ID`,`Invoice Customer Key`,`Invoice Customer Name`,`Invoice Date`,`Invoice Total Amount`  from `Invoice Dimension` left join kbase.`Country Dimension` on (`Invoice Delivery Country 2 Alpha Code`=`Country 2 Alpha Code`) left join `Customer Dimension` on (`Invoice Customer Key`=`Customer Key`) $where $wheref  order by $order $order_direction limit $start_from,$number_results ";
+ else if($order=='total_amount'){
+     if($currency_type=='hm_revenue_and_customs')
+       $order='`Invoice Total Amount Corporate HM Revenue and Customs`';
+     elseif($currency_type=='hm_revenue_and_customs')
+       $order='`Invoice Total Amount Corporate`';
+     else
+       $order='`Invoice Total Amount`';
+     
+     
+   }else if($order=='tax_number')
+     $order='`Customer Tax Number`';
+ else if($order=='send_to'){
+   
+   $order="`Country Code`$order_direction ,`Invoice Customer Name` $order_direction";
+   $order_direction='';
+ }
+
+
+
+  $corporate_currency='GBP';
+   $sql=sprintf("select `Corporation Currency` from `Corporation Dimension` ");
+   $res=mysql_query($sql);
+   if($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+     $corporate_currency=$row['Corporation Currency'];
+   }   
+
+  $sql="select `Invoice Currency`,`Invoice Total Amount`*`Invoice Currency Exchange` as `Invoice Total Amount Corporate` ,   (select `Exchange` from kbase.`HM Revenue and Customs Currency Exchange Dimension` `HM E` where DATE_FORMAT(`HM E`.`Date`,'%%m%%Y')  =DATE_FORMAT(`Invoice Date`,'%%m%%Y') and `Currency Pair`=Concat(`Invoice Currency`,'GBP') limit 1  )*`Invoice Total Amount` as `Invoice Total Amount Corporate HM Revenue and Customs` ,              `Customer Tax Number`,`European Union`,`Invoice Delivery Country 2 Alpha Code`,`Country Name`,`Country Code`, `Invoice Total Net Amount`,`Invoice Has Been Paid In Full`,`Invoice Key`,`Invoice XHTML Orders`,`Invoice XHTML Delivery Notes`,`Invoice Public ID`,`Invoice Customer Key`,`Invoice Customer Name`,`Invoice Date`,`Invoice Total Amount`  from `Invoice Dimension` left join kbase.`Country Dimension` on (`Invoice Delivery Country 2 Alpha Code`=`Country 2 Alpha Code`) left join `Customer Dimension` on (`Invoice Customer Key`=`Customer Key`) $where $wheref  order by $order $order_direction limit $start_from,$number_results ";
   //print $sql;
 
    $data=array();
@@ -927,6 +962,20 @@ else if($order=='net')
    
    $res=mysql_query($sql);
    while($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+
+
+ if($currency_type=='original'){
+       $total_amount=money($row['Invoice Total Amount'],$row['Invoice Currency']);
+     }elseif($currency_type=='corparate_currency'){
+       $total_amount=money($row['Invoice Total Amount Corporate'],$corporate_currency);
+
+     }elseif($currency_type=='hm_revenue_and_customs'){
+       if($row['Invoice Total Amount Corporate HM Revenue and Customs']=='')
+	 $total_amount=_('No FX Data');
+       else
+	 $total_amount=money($row['Invoice Total Amount Corporate HM Revenue and Customs'],'GBP');
+     }
+
 
      $order_id=sprintf('<a href="invoice.php?id=%d">%s</a>',$row['Invoice Key'],$row['Invoice Public ID']);
      $customer=sprintf('<a href="customer.php?id=%d">%s</a>',$row['Invoice Customer Key'],$row['Invoice Customer Name']);
@@ -947,8 +996,8 @@ else if($order=='net')
 		   ,'customer'=>$customer
 		   ,'tax_number'=>$row['Customer Tax Number']
 		   ,'date'=>strftime("%e %b %y", strtotime($row['Invoice Date']))
-		   ,'total_amount'=>money($row['Invoice Total Amount'])
-		   ,'net'=>money($row['Invoice Total Net Amount'])
+		   ,'total_amount'=>$total_amount
+		   
 		   ,'send_to'=>$send_to
 		   ,'state'=>$state
 		   ,'orders'=>$row['Invoice XHTML Orders']
@@ -1060,6 +1109,17 @@ if(isset( $_REQUEST['where']))
   }
 
 
+  if(isset( $_REQUEST['currency_type'])){
+    $currency_type=$_REQUEST['currency_type'];
+    $_SESSION['state']['report_sales_with_no_tax']['currency_type']=$currency_type;
+  }else{
+  
+    $currency_type=$_SESSION['state']['report_sales_with_no_tax']['currency_type'];
+  
+  }
+
+
+
    if(isset( $_REQUEST['tableid']))
     $tableid=$_REQUEST['tableid'];
   else
@@ -1115,8 +1175,8 @@ else if($f_field=='maxvalue' and is_numeric($f_value) )
    
 
    
-  $sql="select count(*) as total from `Invoice Dimension` left join `Customer Dimension` on (`Invoice Customer Key`=`Customer Key`)  $where $wheref  group by `Invoice Customer Key`";
-  //  print $sql ;
+  $sql="select  count(Distinct `Invoice Customer Key`) as total from `Invoice Dimension` left join `Customer Dimension` on (`Invoice Customer Key`=`Customer Key`)  $where $wheref  ";
+  // print $sql ;
   $res=mysql_query($sql);
   if($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
     $total=$row['total'];
@@ -1127,7 +1187,7 @@ else if($f_field=='maxvalue' and is_numeric($f_value) )
      $total_records=$total;
   }else{
     
-      $sql="select count(*) as total from `Invoice Dimension`  $where  group by `Invoice Customer Key` ";
+      $sql="select count(Distinct `Invoice Customer Key`) as total  from `Invoice Dimension`  $where  ";
        $res=mysql_query($sql);
   if($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
 	$total_records=$row['total'];
@@ -1182,26 +1242,39 @@ else if($f_field=='maxvalue' and is_numeric($f_value) )
    $_order=$order;
    $_dir=$order_direction;
 
-    if($order=='name')
+   if($order=='name')
      $order='`Customer Name`';
-   if($order=='date')
-     $order='`Invoice Date`';
-   else if($order=='last_date')
-     $order='`Invoice Last Updated Date`';
-   else if($order=='id')
-     $order='`Invoice File As`';
-   else if($order=='state')
-     $order='`Invoice Current Dispatch State`,`Invoice Current Payment State`';
-   else if($order=='total_amount')
-     $order='`Invoice Total Amount`';
-else if($order=='customer')
+   else if($order=='total_amount'){
+     if($currency_type=='hm_revenue_and_customs')
+       $order='`Invoice Total Amount Corporate HM Revenue and Customs`';
+     elseif($currency_type=='hm_revenue_and_customs')
+       $order='`Invoice Total Amount Corporate`';
+     else
+       $order='`Invoice Total Amount`';
+     
+     
+   }else if($order=='customer')
      $order='`Invoice Customer Name`';
- else if($order=='state')
-   $order='`Invoice Has Been Paid In Full`';
-else if($order=='net')
-     $order='`Invoice Total Net Amount`';
-  $sql="select `Customer Tax Number`,`European Union`,`Invoice Delivery Country 2 Alpha Code`,count(distinct `Invoice Key`) as `Invoices` ,`Country Name`,`Country Code`, sum(`Invoice Total Net Amount`)as `Invoice Total Net Amount`,`Invoice Has Been Paid In Full`,`Invoice Key`,`Invoice XHTML Orders`,`Invoice XHTML Delivery Notes`,`Invoice Public ID`,`Invoice Customer Key`,`Invoice Customer Name`,`Invoice Date`,sum(`Invoice Total Amount`) as `Invoice Total Amount`  from `Invoice Dimension` left join kbase.`Country Dimension` on (`Invoice Delivery Country 2 Alpha Code`=`Country 2 Alpha Code`) left join `Customer Dimension` on (`Invoice Customer Key`=`Customer Key`) $where $wheref  group by `Invoice Customer Key` order by $order $order_direction limit $start_from,$number_results ";
-  // print $sql;
+   else if($order=='tax_number')
+     $order='`Customer Tax Number`';
+   else if($order=='send_to')
+     $order='`Country Code`';
+   else if($order=='num_invoices')
+     $order='`Invoices`';
+   
+   
+   $corporate_currency='GBP';
+   $sql=sprintf("select `Corporation Currency` from `Corporation Dimension` ");
+   $res=mysql_query($sql);
+   if($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+     $corporate_currency=$row['Corporation Currency'];
+   }   
+     
+
+
+
+ $sql="select  sum( (select `Exchange` from kbase.`HM Revenue and Customs Currency Exchange Dimension` `HM E` where DATE_FORMAT(`HM E`.`Date`,'%%m%%Y')  =DATE_FORMAT(`Invoice Date`,'%%m%%Y') and `Currency Pair`=Concat(`Invoice Currency`,'GBP') limit 1  )*`Invoice Total Amount`) as `Invoice Total Amount Corporate HM Revenue and Customs`  ,  `Invoice Currency`,`Customer Tax Number`,`European Union`,`Invoice Delivery Country 2 Alpha Code`,count(distinct `Invoice Key`) as `Invoices` ,`Country Name`,`Country Code`,`Invoice Customer Key`,`Invoice Customer Name`,`Invoice Date`,sum(`Invoice Total Amount`) as `Invoice Total Amount`,sum(`Invoice Total Amount`*`Invoice Currency Exchange`) as `Invoice Total Amount Corporate`  from `Invoice Dimension` left join kbase.`Country Dimension` on (`Invoice Delivery Country 2 Alpha Code`=`Country 2 Alpha Code`) left join `Customer Dimension` on (`Invoice Customer Key`=`Customer Key`) $where $wheref  group by `Invoice Customer Key` order by $order $order_direction limit $start_from,$number_results ";
+ //print $sql;
 
    $data=array();
 
@@ -1209,27 +1282,41 @@ else if($order=='net')
    $res=mysql_query($sql);
    while($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
-     $order_id=sprintf('<a href="invoice.php?id=%d">%s</a>',$row['Invoice Key'],$row['Invoice Public ID']);
+     
+
+   
      $customer=sprintf('<a href="customer.php?id=%d">%s</a>',$row['Invoice Customer Key'],$row['Invoice Customer Name']);
      //   if($row['Customer Tax Number']!='')
      //  $customer.='<br/>'.$row['Customer Tax Number'];
-     if($row['Invoice Has Been Paid In Full'])
-       $state=_('Paid');
-     else
-       $state=_('No Paid');
+   
+
+    
+     
 
      $send_to=sprintf('<span style="font-family:courier">%s</span> <img src="art/flags/%s.gif" alt="(%s)" title="%s" />',$row['Country Code'],strtolower($row['Invoice Delivery Country 2 Alpha Code']),$row['Country Code'],$row['Country Name']);
      if($row['European Union']=='Yes'){
        $send_to.=' <img src="art/flags/eu.gif" title="'._('European Union Member').'" >';
      }
 
+     if($currency_type=='original'){
+       $total_amount=money($row['Invoice Total Amount'],$row['Invoice Currency']);
+     }elseif($currency_type=='corparate_currency'){
+       $total_amount=money($row['Invoice Total Amount Corporate'],$corporate_currency);
+
+     }elseif($currency_type=='hm_revenue_and_customs'){
+       if($row['Invoice Total Amount Corporate HM Revenue and Customs']=='')
+	 $total_amount=_('No FX Data');
+       else
+	 $total_amount=money($row['Invoice Total Amount Corporate HM Revenue and Customs'],'GBP');
+     }
+     
      $data[]=array(
-		   'id'=>$order_id
-		   ,'name'=>$customer.'ss'
+
+		   'name'=>$customer
 		   ,'tax_number'=>$row['Customer Tax Number']
 		   ,'date'=>strftime("%e %b %y", strtotime($row['Invoice Date']))
-		   ,'total_amount'=>money($row['Invoice Total Amount'])
-		   ,'net'=>money($row['Invoice Total Net Amount'])
+		   ,'total_amount'=>$total_amount
+		  
 		   ,'send_to'=>$send_to
 		   ,'num_invoices'=>number($row['Invoices'])
 		 
@@ -1256,6 +1343,8 @@ $data[]=array(
  }else{
    $data[]=array();
  }
+
+
 
  $total_records=ceil($total/$number_results)+$total;
  $number_results++;

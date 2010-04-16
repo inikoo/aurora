@@ -4183,11 +4183,6 @@ if(!isset($act_data['town_d2']))
 
 
 
-
-
-
-
-
     if(count($a_diff)==1){
     
       if(array_key_exists('postcode',$a_diff) 
@@ -4259,12 +4254,32 @@ if(!isset($act_data['town_d2']))
   $customer_data['address_data']['company']=$act_data['name'];
   $customer_data['address_data']['telephone']=_trim($act_data['tel']);
 
+
+
+    if($customer_data['address_data']['country']=='Reunion'){
+      $customer_data['address_data']['country']='France';
+      $customer_data['address_data']['country_d1']='Reunion';
+
+    }
+
+
+
+
+
   $customer_data['has_shipping']=true;
   if($customer_data['has_shipping']){
     $del_address_data['default_country_id']=30;
     $customer_data['shipping_data']=$del_address_data;
     $customer_data['shipping_data']['name']=$header_data['customer_contact'];
     $customer_data['shipping_data']['company']=$header_data['trade_name'];
+    
+    if($customer_data['shipping_data']['country']=='Reunion'){
+      $customer_data['shipping_data']['country']='France';
+      $customer_data['shipping_data']['country_d1']='Reunion';
+
+    }
+    
+
     $_tel=preg_split('/ /',$header_data['phone']);
     $email=$_tel[count($_tel)-1];
     if(preg_match('/@/i',$email)){
@@ -4299,8 +4314,9 @@ if(!isset($act_data['town_d2']))
     $customer_data['Customer Old ID']='';
       
   
-
-  return $customer_data;
+    // print_r($customer_data);
+    //exit;
+return $customer_data;
 
 
 

@@ -7353,6 +7353,23 @@ if(preg_match('/Mrs Roberta Vianello/i',$header_data['address1'])){
 
     
 
+    if($del_address_data['country']=='' and preg_match('/^je/i',$del_address_data['postcode'])  ){
+      $del_address_data['country']='Jersey';
+    }
+    if($shop_address_data['country']=='' and preg_match('/^je/i',$shop_address_data['postcode'])  ){
+      $shop_address_data['country']='Jersey';
+    }
+    
+    if($shop_address_data['country']=='' and preg_match('/^china$/i',$shop_address_data['postcode'])  ){
+      $shop_address_data['country']='China';
+      $shop_address_data['postcode']='';
+
+    }
+if($del_address_data['country']=='' and preg_match('/^china$/i',$del_address_data['postcode'])  ){
+      $del_address_data['country']='China';
+      $del_address_data['postcode']='';
+
+    }
 
     $a_diff=array_diff_assoc($del_address_data,$shop_address_data);
 
@@ -7498,6 +7515,9 @@ if(preg_match('/Mrs Roberta Vianello/i',$header_data['address1'])){
     $customer_data['shipping_data']['company']=$header_data['trade_name'];
 
 
+  
+
+
     $_tel=preg_split('/ /',$header_data['phone']);
     $email=$_tel[count($_tel)-1];
     if(preg_match('/@/i',$email)){
@@ -7532,7 +7552,7 @@ if(preg_match('/Mrs Roberta Vianello/i',$header_data['address1'])){
     $customer_data['Customer Old ID']='';
       
   
-//print_r($header_data);print_r($act_data);exit;
+    //print_r($header_data);print_r($act_data);exit;
   return $customer_data;
 
 

@@ -2,9 +2,6 @@
 var category_labels={'sales':'<?php echo _('Net Sales')?>','profit':'<?php echo _('Profits')?>'};
 var period_labels={'m':'<?php echo _('Montly')?>','y':'<?php echo _('Yearly')?>','w':'<?php echo _('Weekly')?>','q':'<?php echo _('Quarterly')?>'};
 
-function quick_link(e,tipo){
-    location.href='report_sales_main.php?tipo='+tipo;
-};
 
 function change_plot(o){
     //  if(!Dom.hasClass(o,'selected')){
@@ -89,13 +86,7 @@ function change_plot(o){
     
 }
 
-function go_free() {
 
-	    var from=Dom.get('v_calpop1').value;
-	    var to=Dom.get('v_calpop2').value;
-	    location.href='report_sales_main.php?tipo=f&from='+from+'&to='+to; 
-	}
-	
 
 
 	

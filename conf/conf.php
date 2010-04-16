@@ -440,6 +440,7 @@ $default_state=array(
 						       ,'d'=>date('d')
 						       ,'w'=>date('W')
 						       ,'stores'=>false
+						       ,'currency_type'=>'original'
 						       ,'invoices'=>array(
 									 'order'=>'date',
 									 'order_dir'=>'',

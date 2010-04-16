@@ -179,8 +179,8 @@ class Order extends DB_Table{
 		      $this->data ['Order Main Country 2 Alpha Code']=$customer -> data['Customer Main Address Country 2 Alpha Code'];
 
       }else{
-	// print "Cust data\n";
-	//	  	print_r($data['Customer Data']);
+	//print "Cust data\n";
+       //print_r($data['Customer Data']);
 	
 	//-------------------------
       
@@ -376,6 +376,9 @@ class Order extends DB_Table{
      
       
       $this->update_totals('save');
+
+    
+      
 
       break;
     case ('imap_email_mals-e') :

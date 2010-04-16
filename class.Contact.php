@@ -1552,7 +1552,7 @@ class Contact extends DB_Table {
   }
 
 
-  function add_email($email_data,$options=''){
+  function add_email_old($email_data,$options=''){
     $email=new Email($email_data);
     if($email->found){
       $email_contact_key=$email->get_contact_key();
@@ -1603,7 +1603,7 @@ class Contact extends DB_Table {
      Todo: use base_data for defaults/missing parameters
   */
 
-function add_emailx($data,$args='principal') {
+function add_email($data,$args='principal') {
 
 
     global $myconf;

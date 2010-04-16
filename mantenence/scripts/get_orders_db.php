@@ -119,7 +119,7 @@ $fam_promo_key=$fam_promo->id;
 
 $sql="select *,replace(   replace(replace(replace(replace(replace(replace(replace(replace(filename,'r/Orders/','r/Orders/00'),'s/Orders/','s/Orders/0'),'y/Orders/','y/Orders/0'),'z/Orders/9','z/Orders/09'),'x/Orders/','x/Orders/0'),'t/Orders/','t/Orders/0'),'u/Orders/','u/Orders/0'),'z/Orders/8','z/Orders/08')     ,directory,'') as name from  orders_data.orders  where   (last_transcribed is NULL  or last_read>last_transcribed) and deleted='No'   order by name ";
 
-//$sql="select * from  orders_data.orders  where    deleted='No' and filename like '/mnt/%/Orders/105%.xls'  order by filename ";
+//$sql="select * from  orders_data.orders  where    deleted='No' and filename like '/mnt/%/Orders/105112.xls'  order by filename ";
 
 //$sql="select * from  orders_data.orders where filename like '%refund.xls'   order by filename";
 //$sql="select * from  orders_data.orders  where filename like '/mnt/%/Orders/45240.xls' order by filename";

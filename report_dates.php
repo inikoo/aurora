@@ -2,6 +2,34 @@
 
 
 
+if($tipo=='quick_this_month'){
+  $tipo='m';
+  $_SESSION['state'][$report_name]['y']=date('Y');
+  $_SESSION['state'][$report_name]['m']=date('m');
+}elseif($tipo=='quick_this_year'){
+  $tipo='y';
+  $_SESSION['state'][$report_name]['y']=date('Y');
+}elseif($tipo=='quick_this_week'){
+  $tipo='w';
+  $_SESSION['state'][$report_name]['y']=date('Y');
+  $_SESSION['state'][$report_name]['w']=date('W');
+}elseif($tipo=='quick_yesterday'){
+  $tipo='d';
+  $_SESSION['state'][$report_name]['y']=date('Y',strtotime('yesterday'));
+  $_SESSION['state'][$report_name]['m']=date('m',strtotime('yesterday'));
+  $_SESSION['state'][$report_name]['d']=date('d',strtotime('yesterday'));
+      
+
+}elseif($tipo=='quick_today'){
+  $tipo='d';
+  $_SESSION['state'][$report_name]['y']=date('Y');
+  $_SESSION['state'][$report_name]['m']=date('m');
+  $_SESSION['state'][$report_name]['d']=date('d');
+
+}
+
+
+
 if($tipo=='all_invoices'){
   $tipo='f';
   
@@ -25,8 +53,19 @@ if($tipo=='all_invoices'){
   $period='';
   $link=$link="&tipo=f&from=".$from."&to=".$to;
  }elseif($tipo=='w'){
-   $year=$_REQUEST['y'];
-   $week=$_REQUEST['w'];
+  
+  if(isset($_REQUEST['y'])){
+    $year=$_REQUEST['y'];
+    $_SESSION['state'][$report_name]['y']=$year;
+  }else 
+    $year=$_SESSION['state'][$report_name]['y'];
+  
+  if(isset($_REQUEST['w'])){
+    $week=$_REQUEST['w'];
+    $_SESSION['state'][$report_name]['w']=$week;
+  }
+  else 
+    $week=$_SESSION['state'][$report_name]['w'];
    
    $sql=sprintf("select UNIX_TIMESTAMP(`First Day`) as date ,`First Day` from kbase.`Week Dimension`  where `Year Week`='%04d%02d'",$year,$week);
 
@@ -104,18 +143,18 @@ mysql_free_result($result);
  if(isset($_REQUEST['y'])){
  
    $year=$_REQUEST['y'];
-   $_SESSION['state']['report']['y']=$year;
+   $_SESSION['state'][$report_name]['y']=$year;
    
    }else
-   $year=$_SESSION['state']['report']['y'];
+   $year=$_SESSION['state'][$report_name]['y'];
    
     if(isset($_REQUEST['m'])){
 
     $month=$_REQUEST['m'];
-   $_SESSION['state']['report']['m']=$month;
+   $_SESSION['state'][$report_name]['m']=$month;
    
    }else
-   $month=$_SESSION['state']['report']['m'];
+   $month=$_SESSION['state'][$report_name]['m'];
    
  
    
@@ -222,10 +261,34 @@ mysql_free_result($result);
 
 
 }elseif($tipo=='d'){
-   $year=$_REQUEST['y'];
-   $month=$_REQUEST['m'];
-   $day=$_REQUEST['d'];
+  
+  
+  if(isset($_REQUEST['y'])){
+    
+    $year=$_REQUEST['y'];
+    $_SESSION['state'][$report_name]['y']=$year;
+    
+  }else
+    $year=$_SESSION['state'][$report_name]['y'];
+  
+  if(isset($_REQUEST['m'])){
+    
+    $month=$_REQUEST['m'];
+    $_SESSION['state'][$report_name]['m']=$month;
+    
+  }else
+    $month=$_SESSION['state'][$report_name]['m'];
+  
+  if(isset($_REQUEST['d'])){
+    $day=$_REQUEST['d'];
+    $_SESSION['state'][$report_name]['d']=$day;
+    
+  }else
+    $day=$_SESSION['state'][$report_name]['d'];
+  
 
+
+ 
    $_time=mktime(0, 0, 0,$month ,$day , $year);
    $_time_n=mktime(0, 0, 0,$month ,$day+1 , $year);
    $_time_p=mktime(0, 0, 0,$month ,$day-1 , $year);
