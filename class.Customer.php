@@ -359,6 +359,9 @@ class Customer extends DB_Table {
 
   }
 
+function get_name(){
+    return $this->data['Customer Name'];
+}
 
   function get_data($tag,$id) {
     if ($tag=='id')
@@ -961,6 +964,11 @@ class Customer extends DB_Table {
 
   /*Function: update_field_switcher
    */
+   
+   
+   
+   
+   
   function update_field_switcher($field,$value,$options='') {
     if (is_string($value))
       $value=_trim($value);
@@ -983,6 +991,7 @@ class Customer extends DB_Table {
       $this->update_child_telephone($value);
       break;
     case('Customer Main Plain Email'):
+    
       $this->update_child_email($value);
       break;
     case('Customer First Contacted Date'):
@@ -1176,96 +1185,6 @@ class Customer extends DB_Table {
   }
 
 
-  function add_child_email($value) {
-    $value=_trim($value);
-    if ($value=='') {
-      return;
-    }
-
-
-    if ($this->data['Customer Type']=='Company') {
-      $company=new Company($this->data['Customer Company Key']);
-      $company->editor=$this->editor;
-
-      $email_data['Email']=$value;
-      $email_data['Email Contact Name']=$company->data['Company Main Contact Name'];
-      $email_data['editor']=$this->editor;
-      $email=new Email("find in company create",$email_data);
-
-      if (!$email->error) {
-
-	$email_data['Email Key']=$email->id;
-
-
-
-	$email_data['Email Contact Name']=$company->data['Company Main Contact Name'];
-	$email_data['editor']=$this->editor;
-	$company->add_email($email_data);
-
-
-
-	$this->updated=true;
-	$this->update_email($email->id);
-	$this->new_value=$email->display('plain');
-
-
-      }
-
-    } else {
-      $contact=new Contact($this->data['Customer Main Contact Key']);
-      $contact->editor=$this->editor;
-
-
-
-
-      $email_data['Email']=$value;
-      $email_data['Email Contact Name']=$contact->display('name');
-      $email_data['editor']=$this->editor;
-      $email=new Email("find in contact ".$contact->id." create",$email_data);
-      if (!$email->error) {
-
-	$contact->add_email(array(
-				  'Email Key'=>$email->id
-				  ,'Email Description'=>'Personal'
-				  ),'principal');
-
-
-
-	$this->update_email($email->id);
-
-
-
-
-	$this->updated=true;
-	$this->new_value=$email->display('plain');
-      }
-
-    }
-
-  }
-
-
-  function update_child_email($value) {
-
-
-    $email_key=$this->data['Customer Main Email Key'];
-    if (!$email_key) {
-      $this->add_child_email($value);
-    }
-    $email=new Email($email_key);
-    if ($email->id) {
-      $email->update_Email($value);
-      if ($email->updated) {
-	$this->updated=true;
-	$this->new_value=$email->display('plain');
-      }
-      $this->msg=$email->msg;
-    }
-
-  }
-
-
-
 
 
   /*
@@ -1351,69 +1270,7 @@ class Customer extends DB_Table {
   /*
     function:update_email
   */
-  function update_email($email_key=false) {
-    if (!$email_key)
-      return;
-    $email=new Email($email_key);
-    if (!$email->id) {
-      $this->msg='Email not found';
-      return;
-
-    }
-
-
-    $old_value=$this->data['Customer Main Email Key'];
-    if ($old_value  and $old_value!=$email_key   ) {
-      $this->remove_email();
-    }
-
-    $sql=sprintf("insert into `Email Bridge` values (%d,'Customer',%d,%s,'Yes','Yes') on duplicate key update `Is Active`='Yes'",
-		 $email->id,
-		 $this->id,
-		 prepare_mysql(_('Customer Main Email'))
-		 );
-    mysql_query($sql);
-
-    $old_plain_email=$this->data['Customer Main Plain Email'];
-    $this->data['Customer Main Email Key']=$email->id;
-    $this->data['Customer Main Plain Email']=$email->display('plain');
-    $this->data['Customer Main XHTML Email']=$email->display('xhtml');
-    $sql=sprintf("update `Customer Dimension` set `Customer Main Email Key`=%d,`Customer Main Plain Email`=%s,`Customer Main XHTML Email`=%s where `Customer Key`=%d"
-
-		 ,$this->data['Customer Main Email Key']
-		 ,prepare_mysql($this->data['Customer Main Plain Email'])
-		 ,prepare_mysql($this->data['Customer Main XHTML Email'])
-		 ,$this->id
-		 );
-    if (mysql_query($sql)) {
-      if ($old_plain_email!=$this->data['Customer Main Plain Email']) {
-	$this->updated=true;
-	$note=_('Email changed');
-	if ($old_value) {
-
-	  $details=_('Customer email changed from')." \"".$old_plain_email."\" "._('to')." \"".$this->data['Customer Main Plain Email']."\"";
-	} else {
-	  $details=_('Customer email set to')." \"".$this->data['Customer Main Plain Email']."\"";
-	}
-
-	$history_data=array(
-			    'Indirect Object'=>'Email'
-			    ,'Indirect Object Key'=>$email->id
-			    ,'History Details'=>$details
-			    ,'History Abstract'=>$note
-			    );
-	$this->add_history($history_data);
-      }
-
-
-
-    } else {
-      $this->error=true;
-
-    }
-
-
-  }
+  
 
 
 
@@ -2581,53 +2438,7 @@ class Customer extends DB_Table {
      Parameter:
      $args -     string  options
   */
-  function remove_email($email_key=false) {
-
-
-    if (!$email_key) {
-      $email_key=$this->data['Customer Main Email Key'];
-    }
-
-
-    $email=new email($email_key);
-    if (!$email->id) {
-      $this->error=true;
-      $this->msg='Wrong email key when trying to remove it';
-      $this->msg_updated='Wrong email key when trying to remove it';
-    }
-
-    $email->set_scope('Customer',$this->id);
-    if ( $email->associated_with_scope) {
-
-      $sql=sprintf("delete from `Email Bridge`  where `Subject Type`='Customer' and  `Subject Key`=%d  and `Email Key`=%d",
-		   $this->id
-
-		   ,$this->data['Customer Main Email Key']
-		   );
-      mysql_query($sql);
-
-      if ($email->id==$this->data['Customer Main Email Key']) {
-	$sql=sprintf("update `Customer Dimension` set `Customer Main XHTML Email`='', `Customer Main Plain Email`='' , `Customer Main Email Key`=''  where `Customer Key`=%d"
-		     ,$this->id
-		     );
-
-	mysql_query($sql);
-      }
-
-      $history_data=array(
-			  'History Abstract'=>_('Customer Email Deteted')
-			  ,'Indirect Object'=>'Email'
-			  ,'History Details'=>_trim(_('Email').": \"".$email->data['Email']."\"  "._('disassociated from customer').' '.$this->data['Customer Name'])
-			  ,'Action'=>'disassociate'
-                          );
-      $this->add_history($history_data);
-
-    }
-
-
-
-
-  }
+  
 
 
 
@@ -2724,10 +2535,7 @@ class Customer extends DB_Table {
   }
 
 
-  function get_main_email_key() {
-    return $this->data['Customer Main Email Key'];
-  }
-
+  
 
   function get_last_order() {
     $order_key=0;
@@ -3061,6 +2869,20 @@ class Customer extends DB_Table {
     }
     return $rate;
   }
+
+
+function get_emails_keys(){
+         $sql=sprintf("select `Email Key` from `Email Bridge` where  `Subject Type`='Customer' and `Subject Key`=%d "
+        ,$this->id );
+        
+ $emails=array();
+    $result=mysql_query($sql);
+    while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+      $emails[$row['Email Key']]= $row['Email Key'];
+    }
+    return $emails;
+
+}
 
 
 }

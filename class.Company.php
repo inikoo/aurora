@@ -88,24 +88,23 @@ class Company extends DB_Table {
     Returns:
     Key of the Compnay found, if create is found in the options string  returns the new key
   */
-  function find($raw_data,$options) {
+function find($raw_data,$options) {
     $find_fuzzy=false;
 
     if (preg_match('/fuzzy/i',$options)) {
-      $find_fuzzy='fuzzy';
+        $find_fuzzy='fuzzy';
     }
 
     //Timer::timing_milestone('start find');
 
     if (isset($raw_data['editor'])) {
-      foreach($raw_data['editor'] as $key=>$value) {
+        foreach($raw_data['editor'] as $key=>$value) {
 
-	if (array_key_exists($key,$this->editor))
-	  $this->editor[$key]=$value;
+            if (array_key_exists($key,$this->editor))
+                $this->editor[$key]=$value;
 
-      }
+        }
     }
-
 
     $this->candidate=array();
     $this->found=false;
@@ -113,10 +112,10 @@ class Company extends DB_Table {
     $create='';
     $update='';
     if (preg_match('/create/i',$options)) {
-      $create='create';
+        $create='create';
     }
     if (preg_match('/update/i',$options)) {
-      $update='update';
+        $update='update';
     }
 
     $address_data=array('Company Address Line 1'=>'','Company Address Town'=>'','Company Address Line 2'=>'','Company Address Line 3'=>'','Company Address Postal Code'=>'','Company Address Country Name'=>'','Company Address Country Code'=>'','Company Address Country First Division'=>'','Company Address Country Second Division'=>'');
@@ -124,25 +123,25 @@ class Company extends DB_Table {
 
 
     if (preg_match('/(from|on|in|at) supplier/',$options)) {
-      foreach($raw_data as $key=>$val) {
-	$_key=preg_replace('/Supplier /','Company ',$key);
-	$raw_data[$_key]=$val;
-      }
-      $parent='supplier';
+        foreach($raw_data as $key=>$val) {
+            $_key=preg_replace('/Supplier /','Company ',$key);
+            $raw_data[$_key]=$val;
+        }
+        $parent='supplier';
     }
 
     elseif(preg_match('/(from|on|in|at) customer/',$options)) {
-      foreach($raw_data as $key=>$val) {
-	if ($key!='Customer Type') {
-	  $_key=preg_replace('/Customer /','Company ',$key);
-	  $raw_data[$_key]=$val;
-	}
-      }
-      $parent='customer';
+        foreach($raw_data as $key=>$val) {
+            if ($key!='Customer Type') {
+                $_key=preg_replace('/Customer /','Company ',$key);
+                $raw_data[$_key]=$val;
+            }
+        }
+        $parent='customer';
     }
     else {
 
-      $parent='none';
+        $parent='none';
     }
 
 
@@ -151,17 +150,17 @@ class Company extends DB_Table {
 
     foreach($raw_data as $key=>$value) {
 
-      if (array_key_exists($key,$address_data))
-	$address_data[$key]=$value;
+        if (array_key_exists($key,$address_data))
+            $address_data[$key]=$value;
     }
 
     //print_r($address_data);
 
     if (!isset($raw_data['Company Name']) or $raw_data['Company Name']=='') {
-      $raw_data['Company Name']='';
+        $raw_data['Company Name']='';
     }
     if (!isset($raw_data['Company Main Contact Name'])) {
-      $raw_data['Company Main Contact Name']='';
+        $raw_data['Company Main Contact Name']='';
     }
 
 
@@ -169,10 +168,10 @@ class Company extends DB_Table {
     $contact=new Contact("find in company $find_fuzzy ",$raw_data);
     //Timer::timing_milestone('end find contact');
     foreach($contact->candidate as $key=>$val) {
-      if (isset($this->candidate[$key]))
-	$this->candidate[$key]+=$val;
-      else
-	$this->candidate[$key]=$val;
+        if (isset($this->candidate[$key]))
+            $this->candidate[$key]+=$val;
+        else
+            $this->candidate[$key]=$val;
     }
 
 
@@ -183,318 +182,340 @@ class Company extends DB_Table {
     $this->candidate_companies=array();
     $this->number_candidate_companies=0;
     foreach($this->candidate as $contact_key=>$score) {
-      $_contact=new Contact($contact_key);
+        $_contact=new Contact($contact_key);
 
-      $company_key=$_contact->data['Contact Company Key'];
-      if ($company_key) {
-	// print "---- $company_key\n";
-	if (isset($this->candidate_companies[$company_key]))
-	  $this->candidate_companies[$company_key]+=$score;
-	else
-	  $this->candidate_companies[$company_key]=$score;
-      }
+        $company_key=$_contact->data['Contact Company Key'];
+        if ($company_key) {
+            // print "---- $company_key\n";
+            if (isset($this->candidate_companies[$company_key]))
+                $this->candidate_companies[$company_key]+=$score;
+            else
+                $this->candidate_companies[$company_key]=$score;
+        }
     }
-
-    /*     $sql=sprintf("select `Company Key` from `Company Dimension` where `Company Name`=%s",prepare_mysql($raw_data['Company Name'])); */
-    /*     $res=mysql_query($sql); */
-    /*     while($row=mysql_fetch_array($res)){ */
-    /*       $score=80; */
-    /*       $company_key=$row['Company Key']; */
-    /*       if(isset($this->candidate_companies[$company_key])) */
-    /* 	$this->candidate_companies[$company_key]+=$score; */
-    /*       else */
-    /* 	$this->candidate_companies[$company_key]=$score; */
-    /*     } */
-
-    //  print "Company candidates berfore name\n";
-    //  print_r($this->candidate_companies);
 
 
     if ($raw_data['Company Name']!='') {
 
-      $max_score=80;
-      $score_plus_for_match=40;
+        $max_score=80;
+        $score_plus_for_match=40;
 
 
-      if($find_fuzzy){
+        if ($find_fuzzy) {
 
-      
-	$sql=sprintf("select `Company Key`,damlevlim256(UPPER(%s),UPPER(`Company Name`),8)/LENGTH(`Company Name`) as dist1 from `Company Dimension`   order by dist1  limit 10"
-		     ,prepare_mysql($raw_data['Company Name'])
-		     
-		     );
-	$result=mysql_query($sql);
-	//   print "$sql\n";
-	while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-	  if ($row['dist1']>=1)
-	    break;
-	  $score=$max_score*pow(1-  $row['dist1'] ,3  );
-	  $extra_score=0;
-	  $company_key=$row['Company Key'];
-	  
-	  foreach($this->candidate as $candidate_key=>$candidate_score) {
-	    $sql=sprintf("select count(*) matched from `Contact Bridge` where `Contact Key`=%d and `Subject Key`=%d  and `Subject Type`='Company' and `Is Active`='Yes'  "
-			 ,$candidate_key
-			 ,$company_key
-			 );
-	    $res=mysql_query($sql);
-	    //  print "$sql\n";
-	  $match_data=mysql_fetch_array($res);
-	  if ($match_data['matched']>0) {
-	    //		      print "matched $score $score_plus_for_match \n";
-	    $this->candidate[$candidate_key]+=$score_plus_for_match;
-	    $extra_score=$score_plus_for_match;
-	  }
-	  
-	  }
-	  
-		
-	  if (isset($this->candidate_companies[$company_key]))
-	    $this->candidate_companies[$company_key]+=$score+$extra_score;
-	  else
-	    $this->candidate_companies[$company_key]=$score+$extra_score;
-	}
-      }else{
-	  
-	$sql=sprintf("select `Company Key` from `Company Dimension` where `Company Name`=%s   limit 10"
-		     ,prepare_mysql($raw_data['Company Name'])
-		     );
 
-	$result=mysql_query($sql);
-	//   print "$sql\n";
-	while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+            $sql=sprintf("select `Company Key`,damlevlim256(UPPER(%s),UPPER(`Company Name`),8)/LENGTH(`Company Name`) as dist1 from `Company Dimension`   order by dist1  limit 10"
+                         ,prepare_mysql($raw_data['Company Name'])
 
-	  $score=$max_score;
-	  $extra_score=0;
-	  $company_key=$row['Company Key'];
-	  
-	  foreach($this->candidate as $candidate_key=>$candidate_score) {
-	    $sql=sprintf("select count(*) matched from `Contact Bridge` where `Contact Key`=%d and `Subject Key`=%d  and `Subject Type`='Company' and `Is Active`='Yes'  "
-			 ,$candidate_key
-			 ,$company_key
-			 );
-	    $res=mysql_query($sql);
-	    //  print "$sql\n";
-	  $match_data=mysql_fetch_array($res);
-	  if ($match_data['matched']>0) {
-	    //		      print "matched $score $score_plus_for_match \n";
-	    $this->candidate[$candidate_key]+=$score_plus_for_match;
-	    $extra_score=$score_plus_for_match;
-	  }
-	  
-	  }
-	  
-		
-	  if (isset($this->candidate_companies[$company_key]))
-	    $this->candidate_companies[$company_key]+=$score+$extra_score;
-	  else
-	    $this->candidate_companies[$company_key]=$score+$extra_score;
-	}
-	
-	
-      }
+                        );
+            $result=mysql_query($sql);
+            //   print "$sql\n";
+            while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+                if ($row['dist1']>=1)
+                    break;
+                $score=$max_score*pow(1-  $row['dist1'] ,3  );
+                $extra_score=0;
+                $company_key=$row['Company Key'];
+
+                foreach($this->candidate as $candidate_key=>$candidate_score) {
+                    $sql=sprintf("select count(*) matched from `Contact Bridge` where `Contact Key`=%d and `Subject Key`=%d  and `Subject Type`='Company' and `Is Active`='Yes'  "
+                                 ,$candidate_key
+                                 ,$company_key
+                                );
+                    $res=mysql_query($sql);
+                    //  print "$sql\n";
+                    $match_data=mysql_fetch_array($res);
+                    if ($match_data['matched']>0) {
+                        //		      print "matched $score $score_plus_for_match \n";
+                        $this->candidate[$candidate_key]+=$score_plus_for_match;
+                        $extra_score=$score_plus_for_match;
+                    }
+
+                }
+
+
+                if (isset($this->candidate_companies[$company_key]))
+                    $this->candidate_companies[$company_key]+=$score+$extra_score;
+                else
+                    $this->candidate_companies[$company_key]=$score+$extra_score;
+            }
+        } else {
+
+            $sql=sprintf("select `Company Key` from `Company Dimension` where `Company Name`=%s   limit 10"
+                         ,prepare_mysql($raw_data['Company Name'])
+                        );
+
+            $result=mysql_query($sql);
+            //   print "$sql\n";
+            while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+
+                $score=$max_score;
+                $extra_score=0;
+                $company_key=$row['Company Key'];
+
+                foreach($this->candidate as $candidate_key=>$candidate_score) {
+                    $sql=sprintf("select count(*) matched from `Contact Bridge` where `Contact Key`=%d and `Subject Key`=%d  and `Subject Type`='Company' and `Is Active`='Yes'  "
+                                 ,$candidate_key
+                                 ,$company_key
+                                );
+                    $res=mysql_query($sql);
+                    //  print "$sql\n";
+                    $match_data=mysql_fetch_array($res);
+                    if ($match_data['matched']>0) {
+                        //		      print "matched $score $score_plus_for_match \n";
+                        $this->candidate[$candidate_key]+=$score_plus_for_match;
+                        $extra_score=$score_plus_for_match;
+                    }
+
+                }
+
+
+                if (isset($this->candidate_companies[$company_key]))
+                    $this->candidate_companies[$company_key]+=$score+$extra_score;
+                else
+                    $this->candidate_companies[$company_key]=$score+$extra_score;
+            }
+
+
+        }
 
     }
 
-	
 
     if (!empty($this->candidate_companies)) {
-      arsort($this->candidate_companies);
-      foreach($this->candidate_companies as $key=>$val) {
-	//print "*$key $val\n";
-	if ($val>=200) {
-	  $this->found=true;
-	  $this->found_key=$key;
-	  break;
-	}
-      }
+        arsort($this->candidate_companies);
+        foreach($this->candidate_companies as $key=>$val) {
+            //print "*$key $val\n";
+            if ($val>=200) {
+                $this->found=true;
+                $this->found_key=$key;
+                break;
+            }
+        }
 
     }
-	
+
     $this->number_candidate_companies=count($this->candidate_companies);
 
-  /*   	if(count($this->candidate)>0){ */
-/*     	  print "Contact candidates\n"; */
-/*     	  print_r($this->candidate); */
-/*     	} */
-/*     	if(count($this->candidate_companies)>0){ */
-/*     	  print "Company candidates\n"; */
-/*     	  print_r($this->candidate_companies); */
-/*     	} */
-	
+    /*   	if(count($this->candidate)>0){ */
+    /*     	  print "Contact candidates\n"; */
+    /*     	  print_r($this->candidate); */
+    /*     	} */
+    /*     	if(count($this->candidate_companies)>0){ */
+    /*     	  print "Company candidates\n"; */
+    /*     	  print_r($this->candidate_companies); */
+    /*     	} */
+
 
     if ($this->found )
-      $this->get_data('id',$this->found_key);
+        $this->get_data('id',$this->found_key);
 
 
 
 
     if ($create or $update) {
 
-      if ($raw_data['Company Main Contact Name']=='' and $this->found and !$contact->found) {
-	//	print "Fuzzy cpontact try to get the name of the most likile cadidate";
-	foreach($contact->candidate as $key=>$value) {
-	  if ($value>100) {
-	    //print "value $value ".$this->found_key."\n";
-	    $contact=new Contact($key);
-	    $contact->set_scope('Company',$this->found_key);
-	    //print_r($contact);
-	    if ($contact->associated_with_scope) {
-	      //	print "--------------------------\n";
-	      $raw_data['Company Main Contact Name']=$contact->display('name');
-	      $contact->found=true;;
-	      $contact->found_key=$contact->id;
-	      break;
-	    }
-	  }
+        if ($raw_data['Company Main Contact Name']=='' and $this->found and !$contact->found) {
+            //	print "Fuzzy cpontact try to get the name of the most likile cadidate";
+            foreach($contact->candidate as $key=>$value) {
+                if ($value>100) {
+                    //print "value $value ".$this->found_key."\n";
+                    $contact=new Contact($key);
+                    $contact->set_scope('Company',$this->found_key);
+                    //print_r($contact);
+                    if ($contact->associated_with_scope) {
+                        //	print "--------------------------\n";
+                        $raw_data['Company Main Contact Name']=$contact->display('name');
+                        $contact->found=true;;
+                        $contact->found_key=$contact->id;
+                        break;
+                    }
+                }
 
-	}
-      }
-
-
-
-      //
-      //    print "$create $update   Company Found:".$this->found." ".$this->found_key."   \nContact Found:".$contact->found." ".$contact->found_key."  \n";
-
-      // exit;
+            }
+        }
 
 
-      if (!$contact->found and $this->found) {
 
-	// try to find again the contact now that we now the company
-	$contact=new Contact("find in company ".$this->found_key,$raw_data);
+        //
+        //    print "$create $update   Company Found:".$this->found." ".$this->found_key."   \nContact Found:".$contact->found." ".$contact->found_key."  \n";
 
-	$this->candidate=array();
-	foreach($contact->candidate as $key=>$val) {
-	  if (isset($this->candidate[$key]))
-	    $this->candidate[$key]+=$val;
-	  else
-	    $this->candidate[$key]=$val;
-	}
+        // exit;
 
 
-      }
+        if (!$contact->found and $this->found) {
 
-      // if($this->found)a
-      //   print "Company founded ".$this->found_key."  \n";
+            // try to find again the contact now that we now the company
+            $contact=new Contact("find in company ".$this->found_key,$raw_data);
 
-      //      print "Company founded ".$this->found_key."  \n";
-
-      if ($create and !$this->found) {
-
-	if ($contact->found) {
-
-	  if ($contact->data['Contact Company Key']) {
-	    $this->get_data('id',$contact->data['Contact Company Key']);
-	    // print_r($this->card());
-	    $this->update_address($this->data['Company Main Address Key'],$address_data);
-	    $this->update($raw_data);
-	  } else {
-
-	    $this->create($raw_data,$address_data,'use contact '.$contact->id);
-
-	  }
-
-	} else {
-	  $this->new_contact=true;
-
-	  $this->create($raw_data,$address_data);
-
-	}
-
-      }
+            $this->candidate=array();
+            foreach($contact->candidate as $key=>$val) {
+                if (isset($this->candidate[$key]))
+                    $this->candidate[$key]+=$val;
+                else
+                    $this->candidate[$key]=$val;
+            }
 
 
-      if ($update and $this->found) {
+        }
 
-	     
+        // if($this->found)a
+        //   print "Company founded ".$this->found_key."  \n";
 
-	if ($contact->found) {
-		   
-	  $contact->set_scope('Company',$this->id);
-	  // print_r($contact);
+        //      print "Company founded ".$this->found_key."  \n";
 
-	  $update_data=array(
-			     'Contact Name'=>$raw_data['Company Main Contact Name'],
+        if ($create and !$this->found) {
 
-			     'Contact Main Telephone'=>$raw_data['Company Main Telephone']
-			     );
-	  if (isset($raw_data['Company Main FAX']))
-	    $update_data['Contact Main FAX']=$raw_data['Company Main FAX'];
-	  if (isset($raw_data['Company Mobil']))
-	    $update_data['Contact Main Mobile']=$raw_data['Company Mobile'];
+            if ($contact->found) {
 
+                if ($contact->data['Contact Company Key']) {
+                    $this->get_data('id',$contact->data['Contact Company Key']);
+                    // print_r($this->card());
+                    $this->update_address($this->data['Company Main Address Key'],$address_data);
+                    $this->update($raw_data);
+                } else {
 
-	  $contact->update($update_data);
-	  $this->add_contact($contact->id,'principal');
+                    $this->create($raw_data,$address_data,'use contact '.$contact->id);
 
-	  $this->get_data('id',$this->found_key);
-	  //print_r($this->card());
-	  //print_r($address_data);
+                }
 
-	  //$this->update_address($this->data['Company Main Address Key'],$address_data);//Change in contact normal data shold be here
-                   
+            } else {
+                $this->new_contact=true;
 
-	  $address_data['editor']=$this->editor;
-	  $address=new Address("find in company ".$this->id." create",$address_data);
-	  $contact->associate_address(array(
-					    'Address Key'=>$address->id
-					    ,'Address Type'=>array('Work')
-					    ,'Address Function'=>array('Contact')
-							
-					    ),'principal');
-	  $this->associate_address(array(
-					 'Address Key'=>$address->id
-					 ,'Address Type'=>array('Office')
-					 ,'Address Function'=>array('Contact')
+                $this->create($raw_data,$address_data);
 
-					 ),'principal');
+            }
 
-		    
-		
-
-	  $this->update($raw_data);
-	  //		    print "shoooooooooooolddd be updated\n\n\n\n\n";
-
-	} else {
-		 
-	  $this->get_data('id',$this->found_key);
-	  //print_r($this->card());
-	  // Create contact
-	  $contact=new Contact("find in company create",$raw_data);
-	  $contact->editor=$this->editor;
-	  $this->data['Company Main Contact Name']=$contact->display('name');
-	  $this->data['Company Main Contact Key']=$contact->id;
-	  $contact->add_company(array(
-				      'Company Key'=>$this->id
-				      ));
+        }
 
 
-	  //$this->update_address($this->data['Company Main Address Key'],$address_data);
+        if ($update and $this->found) {
+
+
+
+            if ($contact->found) {
+
+//first check if the contact belongs to this company
+$contact_keys=$this->get_contact_keys();
+if (array_key_exists($contact->id,$contact_keys)) {
+    $this->update_principal_contact($contact->id);
+    $update_data=array(
+                     'Contact Name'=>$raw_data['Company Main Contact Name'],
+
+                     'Contact Main Telephone'=>$raw_data['Company Main Telephone']
+                 );
+    if (isset($raw_data['Company Main FAX']))
+        $update_data['Contact Main FAX']=$raw_data['Company Main FAX'];
+    if (isset($raw_data['Company Mobil']))
+        $update_data['Contact Main Mobile']=$raw_data['Company Mobile'];
+
+    //if(preg_match('/remove emails if empty/i',$options)){
+    //   if(preg_match('/remove emails if empty/i',$options)
+    //       and isset($raw_data['Company Main Plain Email'])
+    //       and  $raw_data['Company Main Plain Email']==''){
+    //       $contact->remove_email($contact->get_principal_email_key);
+    //   }
+    //}
+
+    if (isset($raw_data['Company Main Plain Email'])) {
+        $update_data['Contact Main Plain Email']=$raw_data['Company Main Plain Email'];
+         unset($raw_data['Company Main Plain Email']);
+    }
+
+    $contact->update($update_data);
+                
+                }else{
+                    // contact not associated with Company
+                    if(preg_match('/steal contacts/i',$options)){
+                        $contact_companies=$contact->get_companies_keys();
+                        if(count($contact_companies)==0){
+                            
+                            $this->associate_contact($contact->id);
+                        
+                        }
                     
+                    }else{
+                        $this->error=true;
+                        $this->msg='Contact found not associated with company';
+                    
+                    
+                    }
+                
+                
+                }
 
-	  $address_data['editor']=$this->editor;
-	  $address=new Address("find in company ".$this->id." create",$address_data);
-	  $contact->associate_address(array(
-					    'Address Key'=>$address->id
-					    ,'Address Type'=>array('Work')
-					    ,'Address Function'=>array('Contact')
-							
-					    ),'principal');
-	  $this->associate_address(array(
-					 'Address Key'=>$address->id
-					 ,'Address Type'=>array('Office')
-					 ,'Address Function'=>array('Contact')
+                $contact->set_scope('Company',$this->id);
+                // print_r($contact);
+                $this->update_principal_contact($contact->id);
+               
 
-					 ),'principal');
+                $this->get_data('id',$this->found_key);
+                //print_r($this->card());
+                //print_r($address_data);
+
+                //$this->update_address($this->data['Company Main Address Key'],$address_data);//Change in contact normal data shold be here
 
 
+                $address_data['editor']=$this->editor;
+                $address=new Address("find in company ".$this->id." create",$address_data);
+                $contact->associate_address(array(
+                                                'Address Key'=>$address->id
+                                                              ,'Address Type'=>array('Work')
+                                                                              ,'Address Function'=>array('Contact')
 
-	  $this->update($raw_data);
+                                            ),'principal');
+                $this->associate_address(array(
+                                             'Address Key'=>$address->id
+                                                           ,'Address Type'=>array('Office')
+                                                                           ,'Address Function'=>array('Contact')
 
-	}
+                                         ),'principal');
 
-      }
+
+
+
+                $this->update($raw_data);
+                //		    print "shoooooooooooolddd be updated\n\n\n\n\n";
+
+            } else {
+
+                $this->get_data('id',$this->found_key);
+                //print_r($this->card());
+                // Create contact
+                $contact=new Contact("find in company create",$raw_data);
+                $contact->editor=$this->editor;
+                $this->data['Company Main Contact Name']=$contact->display('name');
+                $this->data['Company Main Contact Key']=$contact->id;
+                $contact->add_company(array(
+                                          'Company Key'=>$this->id
+                                      ));
+
+
+                //$this->update_address($this->data['Company Main Address Key'],$address_data);
+
+
+                $address_data['editor']=$this->editor;
+                $address=new Address("find in company ".$this->id." create",$address_data);
+                $contact->associate_address(array(
+                                                'Address Key'=>$address->id
+                                                              ,'Address Type'=>array('Work')
+                                                                              ,'Address Function'=>array('Contact')
+
+                                            ),'principal');
+                $this->associate_address(array(
+                                             'Address Key'=>$address->id
+                                                           ,'Address Type'=>array('Office')
+                                                                           ,'Address Function'=>array('Contact')
+
+                                         ),'principal');
+
+
+
+                $this->update($raw_data);
+
+            }
+
+        }
 
 
 
@@ -505,7 +526,7 @@ class Company extends DB_Table {
 
 
 
-  }
+}
 
   function get($key,$arg1=false) {
     //  print $key."xxxxxxxx";
@@ -580,39 +601,19 @@ class Company extends DB_Table {
     $this->data=$this->base_data();
     foreach($raw_data as $key=>$value) {
       if (array_key_exists($key,$this->data)) {
-	$this->data[$key]=_trim($value);
+      if(preg_match('/email/i',$key))
+        $value='';
+	        $this->data[$key]=_trim($value);
       }
     }
 
-
+$this->data['Company Main Contact Name' ]='';
 
     $extra_mobile_key=false;
 
     $this->data['Company File As']=$this->file_as($this->data['Company Name']);
 
 
-    $use_contact=0;
-    if (preg_match('/use contact \d+/',$options)) {
-      $use_contact=preg_replace('/use contact /','',$options);
-    }
-
-    if ($use_contact) {
-      $contact=new contact($use_contact);
-      $contact->editor=$this->editor;
-      $contact->update(array('Contact Name'=>$this->data['Company Main Contact Name']));
-    } else {
-
-      $contact=new Contact("find in company create",$raw_data);
-      if (!$contact->new) {
-	print_r($contact);
-	print_r($contact->get_company_key());
-
-	exit("can not add contant to company\n");
-      }
-    }
-
-    $this->data['Company Main Contact Name']=$contact->display('name');
-    $this->data['Company Main Contact Key']=$contact->id;
     //===delete down
     $address_data=array('Company Address Line 1'=>'','Company Address Town'=>'','Company Address Line 2'=>'','Company Address Line 3'=>'','Company Address Postal Code'=>'','Company Address Country Name'=>'','Company Address Country Code'=>'','Company Address Country First Division'=>'','Company Address Country Second Division'=>'');
     foreach($raw_address_data as $key=>$value) {
@@ -622,61 +623,24 @@ class Company extends DB_Table {
 
 
 
-
     $address_data['editor']=$this->editor;
 	
     $address=new Address("find in company create",$address_data);
 
     //== delete up
 
-    if (email::wrong_email($this->data['Company Main Plain Email']))
-      $this->data['Company Main Plain Email']='';
-
-
-    if ($this->data['Company Main Plain Email']!='') {
-
-      $email_data['Email']=$this->data['Company Main Plain Email'];
-      $email_data['Email Contact Name']=$this->data['Company Main Contact Name'];
-      $email_data['editor']=$this->editor;
-      $email=new Email("find in company create",$email_data);
-      //exit;
-      if (!$email->error) {
-	$this->data['Company Main Plain Email']=$email->display('plain');
-	$this->data['Company Main XHTML Email']=$email->display('xhtml');
-	$this->data['Company Main Email Key']=$email->id;
-      } else {
-	$this->data['Company Main Plain Email']='';
-	$this->data['Company Main XHTML Email']='';
-	$this->data['Company Main Email Key']='';
-      }
-    } else {
-      $this->data['Company Main Plain Email']='';
-      $this->data['Company Main XHTML Email']='';
-      $this->data['Company Main Email Key']='';
-
-    }
-
    
-    if ($use_contact) {
-      if ($address->found) {
-	$contact->move_home_to_work_address($address->found_key);
-      }
+   
+    
       //print_r($address);
 
 
 
 
-    } else if (!$address->new) {
-      //print_r($address);
-      print ("Duplicate address: ".$address->display('plain')."\n");
-            
+         
 	  
 
-      $address_data['editor']=$this->editor;
-      $address=new Address("find in company create force",$address_data);
-
-
-    }
+    
     // print_r($address->data);
     $this->data['Company Main Address Key']=$address->id;
     $this->data['Company Main XHTML Address']=$address->display('xhtml');
@@ -785,11 +749,42 @@ class Company extends DB_Table {
 
       //   print "00000000000000000000000000000\n";
       //print_r($this->data);
-      $contact->add_company(array(
-				  'Company Key'=>$this->id
-                                  ),'principal',true);
+      
+      
+      
+      
+    $use_contact=0;
+    if (preg_match('/use contact \d+/',$options)) {
+      $use_contact=preg_replace('/use contact /','',$options);
+    }
+
+    if ($use_contact) {
+      $contact=new contact($use_contact);
+      
+      $this->create_contact_bridge($contact->id);
+      
+    } else {
+
+         $this->add_contact($raw_data);
+ 
+    }
+  
+$contact=new Contact($this->data['Company Main Contact Key']);
+
+      
+     // if ($use_contact) {
+      //if ($address->found) {
+	//$contact->move_home_to_work_address($address->found_key);
+     // }
+    //   } else if (!$address->new) {
+     // //print_r($address);
+     // print ("Duplicate address: ".$address->display('plain')."\n");
+    //    $address_data['editor']=$this->editor;
+     // $address=new Address("find in company create force",$address_data);
 
 
+    //}
+   
 
       $contact->associate_address(array(
 					'Address Key'=>$this->data['Company Main Address Key']
@@ -807,14 +802,6 @@ class Company extends DB_Table {
 
 
 
-
-
-      if ($this->data['Company Main Email Key']) {
-               
-
-	$this->add_email($this->data['Company Main Email Key']);
-
-      }
 
 
 
@@ -1301,92 +1288,7 @@ class Company extends DB_Table {
 
   }
 
-  function update_email($email_key=false) {
-
-    if (!$email_key)
-      return;
-    $email=new Email($email_key);
-    if (!$email->id)
-      return;
-
-    if ($email->id!=$this->data['Company Main Email Key']) {
-      $old_value=$this->data['Company Main Email Key'];
-      $this->data['Company Main Email Key']=$email->id;
-      $this->data['Company Main Plain Email']=$email->display('plain');
-      $this->data['Company Main XHTML Email']=$email->display('xhtml');
-      $sql=sprintf("update `Company Dimension` set `Company Main Email Key`=%d,`Company Main Plain Email`=%s,`Company Main XHTML Email`=%s where `Company Key`=%d"
-
-		   ,$this->data['Company Main Email Key']
-		   ,prepare_mysql($this->data['Company Main Plain Email'])
-		   ,prepare_mysql($this->data['Company Main XHTML Email'])
-		   ,$this->id
-		   );
-      if (mysql_query($sql)) {
-
-	$note=_('Email Changed');
-	if ($old_value) {
-	  $old_email=new Email($old_value);
-	  $details=_('Company email changed from')." \"".$old_email->display('plain')."\" "._('to')." \"".$this->data['Company Main Plain Email']."\"";
-	} else {
-	  $details=_('Company email set to')." \"".$this->data['Company Main Plain Email']."\"";
-	}
-
-	$history_data=array(
-			    'Indirect Object'=>'Email'
-			    ,'History Details'=>$details
-			    ,'History Abstract'=>$note
-			    );
-	$this->add_history($history_data);
-
-
-
-
-
-      } else {
-	$this->error=true;
-
-      }
-
-
-
-    }
-    elseif($email->display('plain')!=$this->data['Company Main Plain Email']) {
-      $old_value=$this->data['Company Main Plain Email'];
-
-      $this->data['Company Main Plain Email']=$email->display('plain');
-      $this->data['Company Main XHTML Email']=$email->display('xhtml');
-      $sql=sprintf("update `Company Dimension` set `Company Main Plain Email`=%s,`Company Main XHTML Email`=%s where `Company Key`=%d"
-
-
-		   ,prepare_mysql($this->data['Company Main Plain Email'])
-		   ,prepare_mysql($this->data['Company Main XHTML Email'])
-		   ,$this->id
-		   );
-      if (mysql_query($sql)) {
-	$field='Company Email';
-	$note=$field.' '._('Changed');
-	$details=$field.' '._('changed from')." \"".$old_value."\" "._('to')." \"".$this->data['Company Main Plain Email']."\"";
-
-	$history_data=array(
-			    'Indirect Object'=>'Email'
-			    ,'History Details'=>$details
-			    ,'History Abstract'=>$note
-			    );
-	$this->add_history($history_data);
-
-
-
-
-      } else {
-	$this->error=true;
-
-      }
-
-
-    }
-
-  }
-
+ 
 
 
   function update_address_data($address_key=false) {
@@ -1541,97 +1443,7 @@ class Company extends DB_Table {
 
   }
 
-  function add_email($email_data,$args='principal') {
-    $this->updated=false;
-    $this->new_email=0;
-    if (is_numeric($email_data)) {
-      $tmp=$email_data;
-      unset($email_data);
-      $email_data['Email Key']=$tmp;
-    }
-
-
-    if (preg_match('/from main contact/',$args)) {
-      $contact=new contact($this->data['Company Main Contact Key']);
-      $email=new Email($contact->data['Contact Main Email Key']);
-    }
-    elseif(isset($email_data['Email Key'])) {
-      $email=new Email($email_data['Email Key']);
-    }
-    elseif(is_array($email_data)) {
-      $email_data['Editor']=$this->editor;
-      $email=new Email('find in company create',$email_data['Email Key']);
-            
-      // pass this email to the contact
-            
-            
-
-    }
-    else
-      return 0;
-
-
-
-    $this->new_email=$email->id;
-    if ($email->id) {
-
-      $contact=new Contact($this->data['Company Main Contact Key']);
-      if($contact->id){
-	$contact_email_data=array(
-				  'Email Key'=>$email->id
-				  ,'Email Description'=>'Work'
-				  );
-	//      print_r($email_data);
-	$contact->add_email($contact_email_data);
-      }
-
-      $sql=sprintf("insert into `Email Bridge` (`Email Key`,`Subject Type`,`Subject Key`,`Email Description`,`Is Main`,`Is Active`) values (%d,'Company',%d,%s,'Yes','Yes')  ON DUPLICATE KEY UPDATE `Email Description`=%s   "
-		   ,$email->id
-		   ,$this->id
-		   ,prepare_mysql('Company Email')
-		   ,prepare_mysql('Company Email')
-		   );
-      mysql_query($sql);
-
-
-      if (preg_match('/principal/i',$args)) {
-
-	$sql=sprintf("update `Email Bridge`  set `Is Main`='No' where `Subject Type`='Company' and  `Subject Key`=%d  and `Email Key`!=%d",
-		     $this->id
-		     ,$email->id
-		     );
-	mysql_query($sql);
-	$sql=sprintf("update `Email Bridge`  set `Is Main`='Yes' where `Subject Type`='Company' and  `Subject Key`=%d  and `Email Key`=%d",
-		     $this->id
-		     ,$email->id
-		     );
-	mysql_query($sql);
-
-	//  $sql=sprintf("update `Company Dimension` set `Company Main XHTML Email`=%s ,`Company Main Plain Email`=%s,`Company Main Email Key`=%d where `Company Key`=%d"
-	//               ,prepare_mysql($email->display('html'))
-	//               ,prepare_mysql($email->display('plain'))
-	//               ,$email->id
-	//               ,$this->id
-	//              );
-	//  mysql_query($sql);
-                
-                
-                
-                
-                
-                
-      }
-
-
-
-    }
-
-    
-
-
-
-
-  }
+ 
 
   /* Method: remove_address
      Delete the address from Company
@@ -1692,52 +1504,7 @@ class Company extends DB_Table {
      Parameter:
      $args -     string  options
   */
-  function remove_email($email_key) {
-
-    if (!$email_key) {
-      $email_key=$this->data['Company Main Email Key'];
-    }
-
-
-    $email=new email($email_key);
-    if (!$email->id) {
-      $this->error=true;
-      $this->msg='Wrong email key when trying to remove it';
-      $this->msg_updated='Wrong email key when trying to remove it';
-    }
-
-    $email->set_scope('Company',$this->id);
-    //	print_r($email);
-    if ( $email->associated_with_scope) {
-
-      $sql=sprintf("delete from  `Email Bridge`  where `Subject Type`='Company' and  `Subject Key`=%d  and `Email Key`=%d",
-		   $this->id
-
-		   ,$this->data['Company Main Email Key']
-		   );
-      mysql_query($sql);
-	    
-      $customer_found_keys=$this->get_customer_keys();
-      foreach($customer_found_keys as $customer_found_key) {
-	$customer=new Customer($customer_found_key);
-	$customer->editor=$this->editor;
-	$customer->remove_email($email->id);
-      }
-
-	   
-      if ($email->id==$this->data['Company Main Email Key']) {
-	$sql=sprintf("update `Company Dimension` set `Company Main XHTML Email`='' , `Company Main Plain Email`='' , `Company Main Email Key`=''  where `Company Key`=%d"
-		     ,$this->id
-		     );
-
-	mysql_query($sql);
-      }
-    }
-
-
-
-
-  }
+ 
   /* Method: add_tel
      Add/Update an telecom to the Company
 
@@ -1979,40 +1746,144 @@ class Company extends DB_Table {
   }
 
 
-  function add_contact($data,$args='principal') {
-    //  print "addcontact contact  to ".$this->id."  ($args)\n";
-    // print_r($data);
+function add_contact($data) {
 
-    if (is_numeric($data))
-      $contact=new Contact('id',$data);
-    else
-      $contact=new Contact('find in company create',$data);
-
-    if (!$contact->id) {
-      $this->error=true;
-      $this->msg="can not find/create contact";
-
+    $contact=new Contact("find in company create",$data);
+    if ($contact->found) {
+        $this->error=true;
+        $this->msg='contact already in system';
+        return;
     }
-
-    $principal=false;
-    if (preg_match('/not? principal|no_principal/',$args) ) {
-      $principal=false;
+    elseif($contact->id) {
+        $this->create_contact_bridge($contact->id);
     }
-    elseif( preg_match('/principal/',$args)) {
-      $principal=true;
     }
+    
+  
+     function get_principal_contact_key() {
 
+        $sql=sprintf("select `Contact Key` from `Contact Bridge` where `Subject Type`='Company' and `Subject Key`=%d and `Is Main`='Yes'",$this->id );
+        $res=mysql_query($sql);
+        if ($row=mysql_fetch_array($res)) {
+            $main_contact_key=$row['Contact Key'];
+        } else {
+            $main_contact_key=0;
+        }
 
+        return $main_contact_key;
+    }
+function create_contact_bridge($contact_key) {
 
-    $sql=sprintf("insert into  `Contact Bridge` (`Contact Key`, `Subject Type`,`Subject Key`,`Is Main`) values (%d,%s,%d,%s) on duplicate key update `Is Main`=%s "
-		 ,$contact->id
-		 ,prepare_mysql('Company')
-		 ,$this->id
-		 ,prepare_mysql($principal?'Yes':'No')
-		 ,prepare_mysql($principal?'Yes':'No')
-		 );
+    $sql=sprintf("insert into  `Contact Bridge` (`Contact Key`, `Subject Type`,`Subject Key`,`Is Main`) values (%d,%s,%d,'No')  "
+                 ,$contact_key
+                 ,prepare_mysql('Company')
+                 ,$this->id
+
+                );
     mysql_query($sql);
-    $affected=mysql_affected_rows();
+    if (!$this->get_principal_contact_key()) {
+        $this->update_principal_contact($contact_key);
+    }
+    
+    $sql=sprintf("insert into  `Company Bridge` (`Company Key`, `Subject Type`,`Subject Key`,`Is Main`) values (%d,%s,%d,'No')  "
+                 ,$this->id
+                 ,prepare_mysql('Contact')
+                 ,$contact_key
+
+                );
+      mysql_query($sql);
+    $contact=new Contact($contact_key);
+    if (!$contact->get_principal_company_key()) {
+        $contact->update_principal_company($this->id);
+    }
+
+}
+
+    function update_principal_contact($contact_key) {
+   
+        $main_contact_key=$this->get_principal_contact_key();
+
+        if ($main_contact_key!=$contact_key) {
+			$contact=new Contact($contact_key);
+            $sql=sprintf("update `Contact Bridge`  set `Is Main`='No' where `Subject Type`='Company' and  `Subject Key`=%d  and `Contact Key`=%d",
+                         $this->id
+                         ,$contact_key
+                        );
+            mysql_query($sql);
+            $sql=sprintf("update `Contact Bridge`  set `Is Main`='Yes' where `Subject Type`='Company' and  `Subject Key`=%d  and `Contact Key`=%d",
+                         $this->id
+                         ,$contact_key
+                        );
+            mysql_query($sql);
+            
+            $sql=sprintf("update `Company Dimension` set  `Company Main Contact Key`=%d where `Company Key`=%d",$contact->id,$this->id);
+            mysql_query($sql);
+           
+
+            $this->data['Company Main Contact Key']=$contact->id;
+            $this->update_parents_principal_contact_keys($contact_key);
+            $contact->update_parents();
+           
+        }
+
+    }
+
+
+function update_parents_principal_contact_keys($contact_key) {
+    $parents=array('Customer','Supplier');
+    foreach($parents as $parent) {
+        $sql=sprintf("select `$parent Key` as `Parent Key`   from  `$parent Dimension` where `$parent Main Contact Key`=%d group by `$parent Key`",$this->id);
+
+        $res=mysql_query($sql);
+        while ($row=mysql_fetch_array($res)) {
+
+
+            if ($parent=='Customer') {
+                $parent_object=new Customer($row['Parent Key']);
+                $parent_label=_('Customer');
+            }
+            elseif($parent=='Supplier') {
+                $parent_object=new Supplier($row['Parent Key']);
+                $parent_label=_('Supplier');
+            }
+           
+            $old_principal_contact_key=$parent_object->data[$parent.' Main Contact Key'];
+            if ($old_principal_contact_key!=$contact_key) {
+
+                $sql=sprintf("update `Contact Bridge`  set `Is Main`='No' where `Subject Type`='$parent' and  `Subject Key`=%d  and `Contact Key`=%d",
+                             $parent_object->id
+                             ,$contact_key
+                            );
+                mysql_query($sql);
+                $sql=sprintf("update `Contact Bridge`  set `Is Main`='Yes' where `Subject Type`='$parent' and  `Subject Key`=%d  and `Contact Key`=%d",
+                             $parent_object->id
+                             ,$contact_key
+                            );
+                mysql_query($sql);
+                $sql=sprintf("update `$parent Dimension` set `$parent Main Contact Key`=%d where `$parent Key`=%d"
+                             ,$contact_key
+                             ,$parent_object->id
+                            );
+                mysql_query($sql);
+
+
+
+
+            }
+        }
+    }
+}
+
+
+
+
+
+
+
+
+  function delete_me(){
+  
+  $affected=mysql_affected_rows();
 
 
 
@@ -2288,6 +2159,21 @@ class Company extends DB_Table {
     return $customer_keys;
   }
 
+
+
+function get_emails_keys(){
+        $sql=sprintf("select `Email Key` from `Email Bridge` where  `Subject Type`='Company' and `Subject Key`=%d "
+        ,$this->id );
+        
+ $emails=array();
+    $result=mysql_query($sql);
+    while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+      $emails[$row['Email Key']]= $row['Email Key'];
+    }
+    return $emails;
+
+}
+
   /*
     function: get_contact_keys
     Returns the Contact Key if the company is one
@@ -2408,6 +2294,11 @@ class Company extends DB_Table {
     return sprintf("%s%0".$min_number_zeros."d",$myconf['company_id_prefix'], $this->id);
 
   }
+  
+  function get_name(){
+    return $this->data['Company Name'];
+  }
+  
   function get_main_email_key() {
     return $this->data['Company Main Email Key'];
   }
@@ -2799,7 +2690,65 @@ class Company extends DB_Table {
 
   }
 
+function update_children() {
 
+    $children=array('Contact');
+    foreach($children as $child) {
+        $sql=sprintf("select `$child Key` as `Parent Key`   from  `$child Dimension` where `$child Company Key`=%d group by `$child Key`",$this->id);
+//print $sql."\n";
+        $res=mysql_query($sql);
+        while ($row=mysql_fetch_array($res)) {
+            $principal_contact_changed=false;
+
+        if($child=='Contact') {
+                $child_object=new Contact($row['Parent Key']);
+                $child_label=_('Contact');
+            }
+            $old_principal_company=$child_object->data[$child.' Company Name'];
+            $child_object->data[$child.' Company Name']=$this->get_name();
+            $sql=sprintf("update `$child Dimension` set `$child Company Name`=%s where `$child Key`=%d"
+                         ,prepare_mysql($child_object->data[$child.' Company Name'])
+                         ,$child_object->id
+                        );
+            mysql_query($sql);
+
+
+
+            if ($old_principal_company!=$child_object->data[$child.' Company Name'])
+                $principal_contact_changed=true;
+
+            if ($principal_contact_changed) {
+                
+                if($old_principal_company==''){
+            
+                $history_data['History Abstract']='Company Associated';
+                $history_data['History Details']=_('Company').' '.$this->get_name()." "._('associated with')." ".$child_object->get_name()." ".$child_label;
+                $history_data['Action']='associated';
+                $history_data['Direct Object']='Company';
+                $history_data['Direct Object Key']=$this->id;
+                $history_data['Indirect Object']=$child;
+                $history_data['Indirect Object Key']=$child_object->id;
+                $this->add_history($history_data);
+                }else{
+                $history_data['History Abstract']='Company Changed';
+                $history_data['History Details']=$child_label.' '.$child_object->get_name().' '._('main company changed from').' '.$old_principal_company.' '._('to').' '.$this->get_name();
+                $history_data['Action']='changed';
+                $history_data['Direct Object']='Company';
+                $history_data['Direct Object Key']=$this->id;
+                $history_data['Indirect Object']=$child;
+                $history_data['Indirect Object Key']=$child_object->id;
+                $this->add_history($history_data);
+                
+                }
+            
+            }
+            
+           
+            
+
+        }
+    }
+}
 
 }
 
