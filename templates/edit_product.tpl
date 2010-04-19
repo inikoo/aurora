@@ -317,6 +317,11 @@
   </table>
 </div>
 <div class="edit_block" {if $edit!="dimat"}style="display:none"{/if}  id="d_dimat">
+
+<div style="{if $product->get_part_type()!='Simple Pick'}display:none;{/if}">
+{t}This product has a simple link to a part{/t}
+</div>
+
 <table class="edit" >
   <tr class="title"><td colspan=6>{t}Weight{/t}</td></tr>
   <tr>

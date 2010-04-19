@@ -14,8 +14,7 @@ if(isset($_REQUEST['cats'])){
 var Event = YAHOO.util.Event;
 var Dom   = YAHOO.util.Dom;
 var scope='product';
-var scope_key='<?php echo $_SESSION['state']['product']['tag']?>';
-
+var scope_key='<?php echo $_REQUEST['product_id']?>';
 
 var current_form = 'description';
 var num_changed = 0;
@@ -605,7 +604,7 @@ function validate_dim(value,tipo){
 	
     }
 
-    alert(value+" "+tipo);
+    //alert(value+" "+tipo);
     return true;
 
 }
@@ -1021,7 +1020,7 @@ function save_image(key,image_id){
     var request='ar_assets.php?tipo=ep_update&key='+escape(key)+'&value='+escape(new_value)+'&image_id='+image_id;
 	YAHOO.util.Connect.asyncRequest('POST',request ,{
 		success:function(o) {
-		    alert(o.responseText);
+		    //alert(o.responseText);
 		    var r =  YAHOO.lang.JSON.parse(o.responseText);
 		    //for(x in r['res'])
 		    //	alert(x+' '+r[x])
@@ -1064,7 +1063,7 @@ function change_block(e){
 	
 	Dom.addClass(this, 'selected');
 	
-	YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=product-edit&value='+this.id );
+	YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=product-edit&value='+this.id,{} );
 	
 	editing=this.id;
 
@@ -1257,7 +1256,7 @@ function save_description(key){
     YAHOO.util.Connect.asyncRequest('POST',request ,{
 	    success:function(o) {
 		
-			alert(o.responseText);
+		//	alert(o.responseText);
 		var r =  YAHOO.lang.JSON.parse(o.responseText);
 		    
 		    
@@ -1267,6 +1266,7 @@ function save_description(key){
 			for (t_key in r.updated_fields){
 			    if(t_key=='Product Name'){
 				Dom.get('name').setAttribute('ovalue',r.updated_fields[t_key][t_key]);
+				Dom.get("title_name").innerHTML=r.updated_fields[t_key][t_key];
 				Dom.removeClass('msg_name','error');
 			    }else if(t_key=='Product Special Characteristic'){
 				Dom.get('special_char').setAttribute('ovalue',r.updated_fields[t_key][t_key]);

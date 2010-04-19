@@ -15,7 +15,8 @@ include_once('common.php');
 include_once('class.Store.php');
 include_once('assets_header_functions.php');
 
-
+$page='store';
+$smarty->assign('page',$page);
 if(isset($_REQUEST['id']) and is_numeric($_REQUEST['id']) ){
   $store_id=$_REQUEST['id'];
 
@@ -29,8 +30,7 @@ if(!($user->can_view('stores') and in_array($store_id,$user->stores)   ) ){
    exit;
 }
 
-$page='store';
-$smarty->assign('page',$page);
+
 
 $store=new Store($store_id);
 $_SESSION['state'][$page]['id']=$store->id;

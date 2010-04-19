@@ -41,7 +41,7 @@ $Data_Audit_ETL_Software="$software $version";
 $file_name='/data/plaza/AWorder2002.xls';
 $csv_file='tmp.csv';
 exec('/usr/local/bin/xls2csv    -s cp1252   -d 8859-1   '.$file_name.' > '.$csv_file);
-
+exit;
 $handle_csv = fopen($csv_file, "r");
 $column=0;
 $products=false;
