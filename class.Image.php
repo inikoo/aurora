@@ -557,9 +557,10 @@ $res=mysql_query($sql);
 
 
 function delete($force=false){
+ 
   $this->load_subjects();
   $num_subjects=count($this->subjects);
-  
+
   if($num_subjects==0 or $force){
     unlink($this->data['Image URL']);
     if($this->data['Image Thumbnail URL']!='')   
@@ -570,7 +571,7 @@ function delete($force=false){
       unlink($this->data['Image Large URL']);
     
     $sql=sprintf("delete from `Image Dimension` where `Image Key`=%d",$this->id);
-    //print $sql;
+    // print $sql;
     mysql_query($sql);
     $sql=sprintf("delete from `Image Bridge` where `Image Key`=%d",$this->id);
     mysql_query($sql);

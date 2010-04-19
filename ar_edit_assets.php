@@ -766,7 +766,13 @@ function list_products_for_edition(){
          $sales_type=$row['Product Sales Type'];
  
     }
-    
+
+
+       switch($row['Product Record Type']){
+      default:
+         $record_type=$row['Product Record Type'];
+ 
+    }
     
     
     switch($row['Product Web State']){
@@ -805,7 +811,7 @@ $adata[]=array(
 	       'record_type'=>$record_type,
 
 	       'web_state'=>$web_state,
-	       'state_info'=>$state_info,
+	       'state_info'=>$sales_type,
 	       'sdescription'=>$sdescription,
 
 	       'units'=>$units,

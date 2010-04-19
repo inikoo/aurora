@@ -136,7 +136,8 @@
     </div>
      <div  id="d_pictures" class="edit_block" style="{if $edit!='pictures'}display:none{/if}" >
 
-  {include file='new_image_splinter.tpl'}
+{include file='edit_images_splinter.tpl'}
+
   
   <div  id="images" class="edit_images" principal="{$data.principal_image}" >
     {foreach from=$images item=image  name=foo}
@@ -201,6 +202,84 @@
 	 </div>
       </div>
       <div  class="edit_block" style="margin:0;padding:0 0px;{if $edit!="web"}display:none{/if}"  id="d_web">
+
+	   <div class="general_options" style="float:right">
+       <span style="margin-right:10px;"  onclick="" id="web_create" class="state_details">{t}Create Page{/t}</span>
+       <span style="margin-right:10px;"  onclick="save('web')" id="web_save" class="state_details">{t}Save Changes{/t}</span>
+       <span style="margin-right:10px;;" id="web_reset" onclick="reset('web')" i class="state_details">{t}Reset{/t}</span>
+     </div>
+       <table class="edit">
+<tr><td>Page Properties</td></tr>
+      <tr><td class="label">{t}Page Title{/t}:</td><td><input  id="web_title"  style="width:30em" MAXLENGTH="64" value="{$family->get('Page Title')}" ovalue="{$family->get('Page Title')}"  /></td></tr>
+      <tr><td class="label">{t}Page Short Title{/t}:</td><td><input  id="web_short_title"  style="width:30em" MAXLENGTH="24" value="{$family->get('Page Short Title')}" ovalue="{$family->get('Page Short Title')}"  /></td></tr>
+      <tr><td class="label">{t}Page Description{/t}:</td><td><textarea  id="web_short_title"  style="width:30em" MAXLENGTH="24" value="{$family->get('Page Short Title')}" ovalue="{$family->get('Page Short Title')}"  /></textarea></td></tr>
+<tr><td class="label">{t}Page Keyworlds{/t}:</td><td><textarea  id="web_keywords"  style="width:30em" MAXLENGTH="24" value="{$family->get('Page Keywords')}" ovalue="{$family->get('Page Keywords')}"  /></textarea></td></tr>
+
+
+<tr><td>Content</td></tr>
+<tr><td class="label">{t}Title{/t}:</td><td><input  id="web_store_title"  style="width:30em" MAXLENGTH="64" value="{$family->get('Page Store Title')}" ovalue="{$family->get('Page Store Title')}"  /></td></tr>
+<tr><td class="label">{t}Subtitle{/t}:</td><td><input  id="web_store_subtitle"  style="width:30em" MAXLENGTH="64" value="{$family->get('Page Store Subtitle')}" ovalue="{$family->get('Page Store Subtitle')}"  /></td></tr>
+<tr><td class="label">{t}Slogan{/t}:</td><td><input  id="web_store_slogan"  style="width:30em" MAXLENGTH="64" value="{$family->get('Page Store Slogan')}" ovalue="{$family->get('Page Store Slogan')}"  /></td></tr>
+<tr><td class="label">{t}Short Introduction{/t}:</td><td><input  id="web_store_abstract"  style="width:30em" MAXLENGTH="64" value="{$family->get('Page Store Abstract')}" ovalue="{$family->get('Page Store Abstract')}"  /></td></tr>
+<tr><td>Layout</td></tr>
+ <tr><td></td></tr>
+  <tr><td class="label">{t}Header Block{/t}:</td>
+  <td>
+  <table border=0>
+  <tr><td>{t}Description{/t}</td><td><img id="header_block_description" display="yes" src="art/icons/accept.png"></td></tr>
+  <tr><td colspan=3><textarea></textarea></td></tr>
+    <tr><td>{t}Offers{/t}</td><td><img id="header_block_offers" display="yes" src="art/icons/accept.png"></td></tr>
+  <tr><td>{t}New Products{/t}</td><td><img id="header_block_new" display="yes" src="art/icons/accept.png"><td></td></tr>
+
+  </table>
+  </td>
+  </tr>
+   <tr><td class="label">{t}Header Block Layout{/t}:</td>
+  <td>
+	<div style="float:left;width:125px;text-align:center;">
+	<img style="border:1px solid #ccc" src="art/header_block_splited.png" alt="splited"/>
+	{t}Splited{/t}
+	</div>
+	<div  style="float:left;width:125px;text-align:center">
+	<img style="border:1px solid #ccc" src="art/header_block_tabbed.png" alt="tabbed"/>
+	{t}Tabbed{/t}
+	</div>
+	<div  style="float:left;width:125px;text-align:center">
+	<img style="border:1px solid #ccc" src="art/header_block_fluid_block.png" alt="fluid_block"/>
+	{t}Fluid Block{/t}
+	</div>
+	
+  </td>
+  </tr>
+  
+  
+ <tr><td class="label">{t}Products Layout{/t}:</td><td>
+	<div style="float:left;width:125px;text-align:center;">
+	<img style="border:1px solid #ccc" src="art/page_layout_product_thumbnails.png"/>
+	{t}Thumbnails{/t}
+	</div>
+	<div  style="float:left;width:125px;text-align:center">
+	<img style="border:1px solid #ccc" src="art/page_layout_product_list.png"/>
+	{t}List{/t}
+	</div>
+	<div  style="float:left;width:125px;text-align:center;display:none">
+	<img style="border:1px solid #ccc" src="art/page_layout_slideshow.png"/>
+	{t}Slideshow{/t}
+	</div>
+	<div  style="float:left;width:125px;text-align:center">
+	<img style="border:1px solid #ccc" src="art/page_layout_manual.png"/>
+	{t}Manual{/t}
+	</div>
+	
+
+    </td></tr>
+
+
+      </tr>
+      
+
+    </table>
+
       </div>
       <div  class="edit_block" style="margin:0;padding:0 0px;{if $edit!="products"}display:none{/if}"  id="d_products">
 	<div   style="margin:0 0 10px 0;padding:10px;border:1px solid #ccc;display:none"  id="new_product_dialog" >

@@ -3594,7 +3594,8 @@ function remove_image($image_key){
 $this->load_images();
 
 if(array_key_exists($image_key,$this->images)){
-$sql=sprintf("delete from `Image Bridge` where `Subject Type`='Product' and `Subject Key`=%d  and `Image Key`=%d",$this->id,$image_key);
+$sql=sprintf("delete from `Image Bridge` where `Subject Type`='Product' and `Subject Key`=%d  and `Image Key`=%d",$this->pid,$image_key);
+//print $sql;
 mysql_query($sql);
 
 $this->updated=true;
@@ -4071,6 +4072,16 @@ if($this->images[$image_key]['caption']==$value){
      $rnd_product->load('sales');
      
 
+
+ }
+
+ function get_part_type(){
+   $sql=sprintf("select `Product Part Type` from `Product Part Dimension` where `Product ID`=%d and `Product Part Most Recent`='Yes'",$this->pid);
+   $res=mysql_query($sql);
+   if($row=mysql_fetch_array($res)){
+     return $row['Product Part Type'];
+   }else
+     return false;
 
  }
 

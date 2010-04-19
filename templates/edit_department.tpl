@@ -111,6 +111,8 @@
       <tr><td class="label">{t}Page Title{/t}:</td><td><input  id="web_title"  style="width:30em" MAXLENGTH="64" value="{$department->get('Page Title')}" ovalue="{$department->get('Page Title')}"  /></td></tr>
       <tr><td class="label">{t}Page Short Title{/t}:</td><td><input  id="web_short_title"  style="width:30em" MAXLENGTH="24" value="{$department->get('Page Short Title')}" ovalue="{$department->get('Page Short Title')}"  /></td></tr>
       <tr><td class="label">{t}Page Description{/t}:</td><td><textarea  id="web_short_title"  style="width:30em" MAXLENGTH="24" value="{$department->get('Page Short Title')}" ovalue="{$department->get('Page Short Title')}"  /></textarea></td></tr>
+      <tr><td class="label">{t}Page Keyworlds{/t}:</td><td><textarea  id="web_keywords"  style="width:30em" MAXLENGTH="24" value="{$department->get('Page Keywords')}" ovalue="{$department->get('Page Keywords')}"  /></textarea></td></tr>
+
 <tr><td>Content</td></tr>
 <tr><td class="label">{t}Title{/t}:</td><td><input  id="web_store_title"  style="width:30em" MAXLENGTH="64" value="{$department->get('Page Store Title')}" ovalue="{$department->get('Page Store Title')}"  /></td></tr>
 <tr><td class="label">{t}Subtitle{/t}:</td><td><input  id="web_store_subtitle"  style="width:30em" MAXLENGTH="64" value="{$department->get('Page Store Subtitle')}" ovalue="{$department->get('Page Store Subtitle')}"  /></td></tr>
