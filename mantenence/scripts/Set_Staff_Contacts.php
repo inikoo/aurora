@@ -67,8 +67,8 @@ $data=array(
 
 
 $company=new Company('find create auto',$data);
-
-$sql=sprintf("insert into `Corporation Dimension` values (%s,%d) ",$company->data['Company Name'],$company->id );
+exit;
+$sql=sprintf("insert into `Corporation Dimension` values (%s,%d,'GBP') ",$company->data['Company Name'],$company->id );
 mysql_query($sql);
 
 

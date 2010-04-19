@@ -221,6 +221,9 @@ class supplier extends DB_Table{
 
     
   }
+function get_name(){
+    return $this->data['Supplier Name'];
+}
 
   /*
     Function: get
@@ -670,117 +673,7 @@ class supplier extends DB_Table{
   /*
     function:update_email
   */
-  function update_email($email_key=false){
-    if(!$email_key)
-      return;
-    $email=new Email($email_key);
-    if(!$email->id){
-      $this->msg='Email not found';
-      return;
 
-    }
-
-
-    $old_value=$this->data['Supplier Main Email Key'];
-    if($old_value  and $old_value!=$email_key   ){
-      $this->remove_email();
-    }
-
-    $sql=sprintf("insert into `Email Bridge` values (%d,'Supplier',%d,%s,'Yes','Yes')",
-		 $email->id,
-		 $this->id,
-		 prepare_mysql(_('Supplier Main Email'))
-		 );
-    mysql_query($sql);
-
-    $old_plain_email=$this->data['Supplier Main Plain Email'];
-    $this->data['Supplier Main Email Key']=$email->id;
-    $this->data['Supplier Main Plain Email']=$email->display('plain');
-    $this->data['Supplier Main XHTML Email']=$email->display('xhtml');
-    $sql=sprintf("update `Supplier Dimension` set `Supplier Main Email Key`=%d,`Supplier Main Plain Email`=%s,`Supplier Main XHTML Email`=%s where `Supplier Key`=%d"
-
-		 ,$this->data['Supplier Main Email Key']
-		 ,prepare_mysql($this->data['Supplier Main Plain Email'])
-		 ,prepare_mysql($this->data['Supplier Main XHTML Email'])
-		 ,$this->id
-		 );
-    if(mysql_query($sql)){
-      if($old_plain_email!=$this->data['Supplier Main Plain Email']){
-	$this->updated=true;
-	$note=_('Email changed');
-	if($old_value){
-        
-	  $details=_('Supplier email changed from')." \"".$old_plain_email."\" "._('to')." \"".$this->data['Supplier Main Plain Email']."\"";
-	}else{
-	  $details=_('Supplier email set to')." \"".$this->data['Supplier Main Plain Email']."\"";
-	}
-
-	$history_data=array(
-			    'Indirect Object'=>'Email'
-			    ,'Indirect Object Key'=>$email->id
-			    ,'History Details'=>$details
-			    ,'History Abstract'=>$note
-			    );
-	$this->add_history($history_data);
-      }
-
-
-
-    }else{
-      $this->error=true;
-
-    }
-
-
-  }
-
-  /* Method: remove_email
-     Delete the email from Supplier
-  
-     Delete telecom record  this record to the Supplier
-
-
-     Parameter:
-     $args -     string  options
-  */
-  function remove_email($email_key=false){
-
-   
-    if(!$email_key){
-      $email_key=$this->data['Supplier Main Email Key'];
-    }
-   
-   
-    $email=new email($email_key);
-    if(!$email->id){
-      $this->error=true;
-      $this->msg='Wrong email key when trying to remove it';
-      $this->msg_updated='Wrong email key when trying to remove it';
-    }
-
-    $email->set_scope('Supplier',$this->id);
-    if( $email->associated_with_scope){
-     
-      $sql=sprintf("delete `Email Bridge`  where `Subject Type`='Supplier' and  `Subject Key`=%d  and `Email Key`=%d",
-		   $this->id
-		  
-		   ,$this->data['Supplier Main Email Key']
-		   );
-      mysql_query($sql);
-     
-      if($email->id==$this->data['Supplier Main Email Key']){
-	$sql=sprintf("update `Supplier Dimension` set `Supplier Main XHTML Email`='', `Supplier Main Plain Email`='' , `Supplier Main Email Key`=''  where `Supplier Key`=%d"
-		     ,$this->id
-		     );
-       
-	mysql_query($sql);
-      }
-    }
-   
-
-       
-
-  }
 
 
   function update_company($company_key=false) {
@@ -1335,6 +1228,20 @@ class supplier extends DB_Table{
   mysql_query($sql);
 
   }
+
+function get_emails_keys(){
+          $sql=sprintf("select `Email Key` from `Email Bridge` where  `Subject Type`='Supplier' and `Subject Key`=%d "
+        ,$this->id );
+        
+ $emails=array();
+    $result=mysql_query($sql);
+    while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+      $emails[$row['Email Key']]= $row['Email Key'];
+    }
+    return $emails;
+
+}
+
 
 
  function get_contacts($args='only active') {
