@@ -1602,7 +1602,7 @@ function get_page_data(){
   $sql=sprintf("select * from `Page Store Dimension` PSD left join `Page Dimension` PD on (PSD.`Page Key`=PD.`Page Key`) where PSD.`Page Key`=%d",$this->data['Product Family Page Key']);
   // print $sql;
   $res=mysql_query($sql);
-  if($row=mysql_fetch_array($res)){
+  if($row=mysql_fetch_array($res,MYSQL_ASSOC)){
     $data=$row;
   }
   

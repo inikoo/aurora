@@ -27,6 +27,13 @@ if(!isset($_REQUEST['id']) or !is_numeric($_REQUEST['id']))
 $_SESSION['state']['family']['id']=$family_id;
 
 $family=new Family($family_id);
+$tmp_page_data=$family->get_page_data();
+foreach($tmp_page_data as $key=>$value){
+  $page_data[preg_replace('/\s/','',$key)]=$value;
+}
+$smarty->assign('page_data',$page_data);
+//print_r($page_data);
+
 $_SESSION['state']['department']['id']=$family->data['Product Family Main Department Key'];
 $_SESSION['state']['store']['id']=$family->data['Product Family Store Key'];
 
@@ -128,7 +135,7 @@ if($edit){
   $js_files[]='edit_family.js.php';
  }else{
  $js_files[]='js/search.js';
-  $js_files[]='family.js.php';
+ $js_files[]='family.js.php';
   
 
  }

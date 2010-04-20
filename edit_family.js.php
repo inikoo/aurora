@@ -33,34 +33,64 @@ var scope_key_name='id';
 var store_key=<?php echo$_SESSION['state']['store']['id']?>;
 
 
+var validate_scope_metadata={
+    'family':{'type':'edit','ar_file':'ar_edit_assets.php','key_name':'id','key':<?php echo$_SESSION['state']['family']['id']?>}
+    ,'family_page_html_head':{'type':'edit','ar_file':'ar_edit_assets.php','key_name':'id','key':<?php echo$_SESSION['state']['family']['id']?>}
+    ,'family_page_header':{'type':'edit','ar_file':'ar_edit_assets.php','key_name':'id','key':<?php echo$_SESSION['state']['family']['id']?>}
 
+};
 
 var validate_scope_data={
-'family':{
-    'name':{'changed':false,'validated':true,'required':true,'group':1,'type':'item'
-	    ,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Family Name')?>'}],'name':'name'
-	    ,'ar':'find','ar_request':'ar_assets.php?tipo=is_family_name&store_key='+store_key+'&query='}
-    ,'code':{'changed':false,'validated':true,'required':false,'group':1,'type':'item'
-	     ,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Family Code')?>'}]
-	     ,'name':'code','ar':'find','ar_request':'ar_assets.php?tipo=is_family_code&store_key='+store_key+'&query='}
-    ,'special_char':{'changed':false,'validated':true,'required':false,'group':1,'type':'item'
-		     ,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Family Special Characteristic')?>'}]
-		     ,'name':'special_char','ar':'find','ar_request':'ar_assets.php?tipo=is_family_special_char&store_key='+store_key+'&query='}
-    ,'description':{'changed':false,'validated':true,'required':false,'group':1,'type':'item'
-		,'validation':[]
-		,'name':'description','ar':false}
-   }
+    'family':{
+	'name':{'changed':false,'validated':true,'required':true,'group':1,'type':'item'
+		,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Family Name')?>'}],'name':'name'
+		,'ar':'find','ar_request':'ar_assets.php?tipo=is_family_name&store_key='+store_key+'&query='}
+	,'code':{'changed':false,'validated':true,'required':false,'group':1,'type':'item'
+		 ,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Family Code')?>'}]
+		 ,'name':'code','ar':'find','ar_request':'ar_assets.php?tipo=is_family_code&store_key='+store_key+'&query='}
+	,'special_char':{'changed':false,'validated':true,'required':false,'group':1,'type':'item'
+			 ,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Family Special Characteristic')?>'}]
+			 ,'name':'special_char','ar':'find','ar_request':'ar_assets.php?tipo=is_family_special_char&store_key='+store_key+'&query='}
+	,'description':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','validation':[],'name':'description','ar':false}
+    }
+    ,'family_page_html_head':{
+	'title':{'changed':false,'validated':true,'required':false,'group':1,'type':'item'
+		 ,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Title')?>'}]
+		 ,'name':'family_page_html_head_title','ar':false
+		 
+	}
+	,'keywords':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','validation':[],'name':'family_page_html_head_keywords','ar':false}
+    }
+,'family_page_header':{
+	'store_title':{'changed':false,'validated':true,'required':false,'group':1,'type':'item'
+		 ,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Title')?>'}]
+		 ,'name':'family_page_header_store_title','ar':false
+		 
+	}
+	,'subtitle':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','validation':[],'name':'family_page_header_subtitle','ar':false}
+	,'slogan':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','validation':[],'name':'family_page_header_slogan','ar':false}
+	,'resume':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','validation':[],'name':'family_page_header_resume','ar':false}
+	
+    }
+
+
+
 };
 
 
+function validate_family_page_header_store_title(query){validate_general('family_page_header','store_title',unescape(query));}
+function validate_family_page_header_subtitle(query){validate_general('family_page_header','subtitle',unescape(query));}
+function validate_family_page_header_slogan(query){validate_general('family_page_header','slogan',unescape(query));}
+function validate_family_page_header_resume(query){validate_general('family_page_header','resume',unescape(query));}
 
 
 
-
+function validate_family_page_html_head_title(query){validate_general('family_page_html_head','title',unescape(query));}
+function validate_family_page_html_head_keywords(query){validate_general('family_page_html_head','keywords',unescape(query));}
 
 
 function validate_code(query){
-
+   
  validate_general('family','code',unescape(query));
 }
 function validate_name(query){
@@ -82,7 +112,10 @@ function reset_edit_family(){
 function save_edit_family(){
  save_edit_general('family');
 }
-
+function reset_edit_family_page_header(){ reset_edit_general('family_page_header');}
+function save_edit_family_page_header(){save_edit_general('family_page_header');}
+function reset_edit_family_page_html_head(){ reset_edit_general('family_page_html_head');}
+function save_edit_family_page_html_head(){save_edit_general('family_page_html_head');}
 
 function post_item_updated_actions(branch,key,newvalue){
 
@@ -1194,8 +1227,10 @@ YAHOO.util.Event.addListener(ids, "click",change_view)
 
  YAHOO.util.Event.addListener('reset_edit_family', "click", reset_edit_family);
     YAHOO.util.Event.addListener('save_edit_family', "click", save_edit_family);
-
-
+ YAHOO.util.Event.addListener('reset_edit_family_page_html_head', "click", reset_edit_family_page_html_head);
+    YAHOO.util.Event.addListener('save_edit_family_page_html_head', "click", save_edit_family_page_html_head);
+ YAHOO.util.Event.addListener('reset_edit_family_page_header', "click", reset_edit_family_page_header);
+    YAHOO.util.Event.addListener('save_edit_family_page_header', "click", save_edit_family_page_header);
 var family_code_oACDS = new YAHOO.util.FunctionDataSource(validate_code);
     family_code_oACDS.queryMatchContains = true;
     var family_code_oAutoComp = new YAHOO.widget.AutoComplete("code","code_Container", family_code_oACDS);
@@ -1220,6 +1255,41 @@ var family_code_oACDS = new YAHOO.util.FunctionDataSource(validate_code);
     family_description_oAutoComp.minQueryLength = 0; 
     family_description_oAutoComp.queryDelay = 0.1;
 
+
+    var family_page_html_head_title_oACDS = new YAHOO.util.FunctionDataSource(validate_family_page_html_head_title);
+    family_page_html_head_title_oACDS.queryMatchContains = true;
+    var family_page_html_head_title_oAutoComp = new YAHOO.widget.AutoComplete("family_page_html_head_title","family_page_html_head_title_Container", family_page_html_head_title_oACDS);
+    family_page_html_head_title_oAutoComp.minQueryLength = 0; 
+    family_page_html_head_title_oAutoComp.queryDelay = 0.1;
+
+    var family_page_html_head_keywords_oACDS = new YAHOO.util.FunctionDataSource(validate_family_page_html_head_keywords);
+    family_page_html_head_keywords_oACDS.queryMatchContains = true;
+    var family_page_html_head_keywords_oAutoComp = new YAHOO.widget.AutoComplete("family_page_html_head_keywords","family_page_html_head_keywords_Container", family_page_html_head_keywords_oACDS);
+    family_page_html_head_keywords_oAutoComp.minQueryLength = 0; 
+    family_page_html_head_keywords_oAutoComp.queryDelay = 0.1;
+
+
+ var family_page_header_store_title_oACDS = new YAHOO.util.FunctionDataSource(validate_family_page_header_store_title);
+    family_page_header_store_title_oACDS.queryMatchContains = true;
+    var family_page_header_store_title_oAutoComp = new YAHOO.widget.AutoComplete("family_page_header_store_title","family_page_header_store_title_Container", family_page_header_store_title_oACDS);
+    family_page_header_store_title_oAutoComp.minQueryLength = 0; 
+    family_page_header_store_title_oAutoComp.queryDelay = 0.1;
+    
+ var family_page_header_subtitle_oACDS = new YAHOO.util.FunctionDataSource(validate_family_page_header_subtitle);
+    family_page_header_subtitle_oACDS.queryMatchContains = true;
+    var family_page_header_subtitle_oAutoComp = new YAHOO.widget.AutoComplete("family_page_header_subtitle","family_page_header_subtitle_Container", family_page_header_subtitle_oACDS);
+    family_page_header_subtitle_oAutoComp.minQueryLength = 0; 
+    family_page_header_subtitle_oAutoComp.queryDelay = 0.1;
+var family_page_header_slogan_oACDS = new YAHOO.util.FunctionDataSource(validate_family_page_header_slogan);
+    family_page_header_slogan_oACDS.queryMatchContains = true;
+    var family_page_header_slogan_oAutoComp = new YAHOO.widget.AutoComplete("family_page_header_slogan","family_page_header_slogan_Container", family_page_header_slogan_oACDS);
+    family_page_header_slogan_oAutoComp.minQueryLength = 0; 
+    family_page_header_slogan_oAutoComp.queryDelay = 0.1;
+ var family_page_header_resume_oACDS = new YAHOO.util.FunctionDataSource(validate_family_page_header_resume);
+    family_page_header_resume_oACDS.queryMatchContains = true;
+    var family_page_header_resume_oAutoComp = new YAHOO.widget.AutoComplete("family_page_header_resume","family_page_header_resume_Container", family_page_header_resume_oACDS);
+    family_page_header_resume_oAutoComp.minQueryLength = 0; 
+    family_page_header_resume_oAutoComp.queryDelay = 0.1;
 
 }
 

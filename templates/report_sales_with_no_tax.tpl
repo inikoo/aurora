@@ -24,8 +24,12 @@
 
 <div class="data_table" style="clear:both;">
     <span   class="clean_table_title">{t}Customers{/t}</span>
-   
-    <div style="clear:both;margin:0 0px;padding:0 20px ;border-bottom:0px solid #999"></div>
+      <div id="table_type">
+         <a  style="float:right"  class="table_type state_details"  href="report_sales_with_no_tax_customers_csv.php" >{t}Export (CSV){/t}</a>
+
+     </div>
+
+    <div style="clear:both;margin:0 0 10px 0;padding:0 20px ;border-bottom:1px solid #999"></div>
     
     <div  class="clean_table_caption"  style="clear:both;">
       <div style="float:left;"><div id="table_info1" class="clean_table_info"><span id="rtext1"></span> <span class="rtext_rpp" id="rtext_rpp1"></span> <span class="filter_msg"  id="filter_msg1"></span></div></div>
