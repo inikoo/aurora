@@ -311,15 +311,8 @@
   </table>
 
 </td></tr>
-
-	     <tr><td class="label">{t}Family Description{/t}:<br/>HTML/Smarty</td><td>
-		 <div  style="width:15em" >
-		 <textarea  id="family_page_content_presentation_data"  style="width:30em" MAXLENGTH="24" value="{$page_data.ProductPresentationData}" ovalue="{$page_data.ProductPresentationData}"  >{$page_data.ProductPresentationData}</textarea>
-		 <div id="family_page_content_presentation_data_msg"></div>
-		 <div id="family_page_content_presentation_data_Container" style="" ></div>
-		 </div>
-	       </td>
- <td>
+<tr><td></td><td></td>
+<td>
 		 <div class="general_options" style="float:right">
 		   
 		   <span  style="margin-right:10px;visibility:hidden"  id="save_edit_family_page_content" class="state_details">{t}Save{/t}</span>
@@ -328,6 +321,16 @@
 		 </div>
 		 
 	       </td>
+</tr>
+
+	     <tr><td spancols=2 class="label">{t}Family Description{/t}:<br/>HTML/Smarty</td><td>
+		 <div  style="width:15em" >
+		 <textarea  id="family_page_content_presentation_template_data"  style="width:650px" rows="10"  value="{$page_data.ProductPresentationTemplateData}" ovalue="{$page_data.ProductPresentationTemplateData}"  >{$page_data.ProductPresentationTemplateData}</textarea>
+		 <div id="family_page_content_presentation_template_data_msg"></div>
+		 <div id="family_page_content_presentation_template_data_Container" style="" ></div>
+		 </div>
+	       </td>
+ 
 
 </tr>
 

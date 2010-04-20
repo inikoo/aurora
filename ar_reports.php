@@ -1149,9 +1149,6 @@ if(isset( $_REQUEST['where']))
    
 
    $where=sprintf(' where `Invoice Total Tax Amount`=0 and `Invoice Total Amount`!=0  and `Invoice Store Key` in (%s) ',$stores);
-
-
-
    $where.=$date_interval['mysql'];
    
    $wheref='';

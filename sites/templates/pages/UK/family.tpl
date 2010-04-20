@@ -10,8 +10,9 @@
 	   Search: <input type="text"/>
 	 </div>
 
-<div style="border:1px solid #ccc;margin-top:10px;padding:10px">
-ss
+<div style="font-size:10px;;margin-top:10px;padding:10px">
+{include file="splinters/presentation/136.tpl"}
+<div style="clear:both"></div>
 </div>	 
 
 
