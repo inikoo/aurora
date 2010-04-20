@@ -286,7 +286,7 @@ function create_store_page($data){
   $keys=preg_replace('/,$/',')',$keys);
   $values=preg_replace('/,$/',')',$values);
   $sql=sprintf("insert into `Page Store Dimension` %s %s",$keys,$values);
-   print "$sql\n\n";
+  //   print "$sql\n\n";
   
       if (mysql_query($sql)) {
 
@@ -449,6 +449,23 @@ function update_working_url(){
 
   }
 
+
+  function update_presentation_template_data($value,$options){
+    
+    
+    
+
+    $myFile = "sites/templates/splinters/presentation/".$this->id.'.tpl';
+    $fh = fopen($myFile, 'w');
+    fwrite($fh,$value );
+    fclose($fh);
+    $this->update_field('Product Presentation Template Data',$value,$options);
+    
+
+
+  }
+
+
  function update_field_switcher($field,$value,$options=''){
 
 
@@ -469,6 +486,9 @@ function update_working_url(){
      break; 
  case('resume'):
      $this->update_field('Page Store Resume',$value,$options);
+     break; 
+ case('presentation_template_data'):
+   $this->update_presentation_template_data($value,$options);
      break; 
    default:
    $base_data=$this->base_data();

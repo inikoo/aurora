@@ -1237,6 +1237,8 @@ $sql=sprintf("select sum(if(`Product Record Type`='New',1,0)) as new,sum(if(`Pro
       $page_data['Page Store Last Structural Change Date']=date('Y-m-d H:i:s');
       $page_data['Page Type']='Store';
       $page_data['Page Store Source Type'] ='Dynamic';
+      $page_data['Page Store Code']=$this->data['Store Code'];
+      $page_data['Page Parent Key']=$this->data['Store Key'];
 //print_r($page_data);
       $page=new Page('find',$page_data,'create');
 //print_r($page);

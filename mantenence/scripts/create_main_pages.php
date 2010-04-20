@@ -29,6 +29,11 @@ global $myconf;
 
 
 $store_code='UK';
+$store_key=1;
+
+
+
+
 
 //$sql=sprintf("select P.`Page Key` from `Page Dimension` P  left join `Page Store Dimension` PS on (P.`Page Key`=PS.`Page Key`)  where `Page Type`='Store'  and `Page Store Function`='Information' ");
 $sql=sprintf("select P.`Page Key` from `Page Dimension` P  left join `Page Store Dimension` PS on (P.`Page Key`=PS.`Page Key`)  where `Page Type`='Store'  ");
@@ -159,6 +164,9 @@ foreach($data as $page_data){
   $page_data['Page Store Last Structural Change Date']=date('Y-m-d H:i:s');
   $page_data['Page Type']='Store';
   $page_data['Page Store Source Type'] ='Static';
+  $page_data['Page Store Code']=$store_code;
+  $page_data['Page Parent Key']=$store_key;
+
   $page=new Page('find',$page_data,'create');
   //print_r($page);
   
