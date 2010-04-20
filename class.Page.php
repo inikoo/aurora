@@ -201,7 +201,7 @@ function create($data,$extra_data=false){
   $values='values(';
   foreach($data as $key=>$value) {
     $keys.="`$key`,";
-    if (preg_match('/Page Title|Page Description|Javascript|CSS/i',$key))
+    if (preg_match('/Page Title|Page Description|Javascript|CSS|Page Keywords/i',$key))
 	  $values.="'".addslashes($value)."',";
     else
       $values.=prepare_mysql($value).",";
@@ -448,6 +448,130 @@ function update_working_url(){
     }
 
   }
+
+ function update_field_switcher($field,$value,$options=''){
+
+
+   switch($field){
+   case('title'):
+     $this->update_field('Page Title',$value,$options);
+   case('keywords'):
+     $this->update_field('Page Keywords',$value,$options);
+     break;
+   case('store_title'):
+     $this->update_field('Page Store Title',$value,$options);
+     break; 
+   case('subtitle'):
+     $this->update_field('Page Store Subtitle',$value,$options);
+     break; 
+ case('slogan'):
+     $this->update_field('Page Store Slogan',$value,$options);
+     break; 
+ case('resume'):
+     $this->update_field('Page Store Resume',$value,$options);
+     break; 
+   default:
+   $base_data=$this->base_data();
+   if(array_key_exists($field,$base_data)) {
+     
+     if ($value!=$this->data[$field]) {
+       
+       $this->update_field($field,$value,$options);
+     }
+   }
+   
+   }
+
+   
+   
+ }
+
+
+
+function update_field($field,$value,$options=''){
+  
+
+
+
+  if(is_array($value))
+    return;
+  $value=_trim($value);
+  
+  //print "** Update Field $field $value\n";
+  
+  $old_value=_('Unknown');
+  
+  $key_field=$this->table_name." Key";
+ 
+  $table_name=$this->table_name;
+ 
+  if($this->type=='Store'){
+    $extra_data=$this->store_base_data();
+    if(array_key_exists($field,$extra_data))
+      $table_name='Page Store';
+  }
+
+  
+  $sql="select `".$field."` as value from  `".$table_name." Dimension`  where `$key_field`=".$this->id;
+  //print "$sql\n";
+  $result=mysql_query($sql);
+  if($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
+    $old_value=$row['value'];
+  }
+   
+
+
+
+   
+  $sql="update `".$table_name." Dimension` set `".$field."`=".prepare_mysql($value)." where `$key_field`=".$this->id;
+  // print $sql;
+  
+  
+  mysql_query($sql);
+  $affected=mysql_affected_rows();
+  if($affected==-1){
+    $this->msg.=' '._('Record can not be updated')."\n";
+    $this->error_updated=true;
+    $this->error=true;
+    
+    return;
+  }elseif($affected==0){
+    //$this->msg.=' '._('Same value as the old record');
+    
+  }else{
+    $this->data[$field]=$value;
+    $this->msg.=" $field "._('Record updated').", \n";
+    $this->msg_updated.=" $field "._('Record updated').", \n";
+    $this->updated=true;
+    $this->new_value=$value;
+    
+    $save_history=true;
+    if(preg_match('/no( |\_)history|nohistory/i',$options))
+      $save_history=false;
+    if(
+       !$this->new 
+       and $save_history
+       ){
+      $history_data=array(
+			  'indirect_object'=>$field
+			  ,'old_value'=>$old_value
+			  ,'new_value'=>$value
+			  
+			  );
+   
+      	
+
+      $this->add_history($history_data);
+      
+    }
+
+  }
+
+}
+
+
+
+
 
 }
 ?>

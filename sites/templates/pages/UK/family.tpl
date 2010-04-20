@@ -1,7 +1,7 @@
 {include file="$head_template"}
  <body>
    <div id="container" >
-     {include file="$home_header_template"}
+     {include file="$header_template"}
      <div id="page_content">
        
      
@@ -10,7 +10,10 @@
 	   Search: <input type="text"/>
 	 </div>
 
-	 
+<div style="border:1px solid #ccc;margin-top:10px;padding:10px">
+ss
+</div>	 
+
 
            <div class="block" id="product_list_layout">
 	     <table class="products">

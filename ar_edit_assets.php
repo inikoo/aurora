@@ -29,6 +29,11 @@ case('delete_part_new_product'):
    if(isset($_REQUEST['part_sku']))
      delete_part_new_product($_REQUEST['part_sku']);
  break;
+case('edit_family_page_html_head'):
+case('edit_family_page_header'):
+case('edit_family_page_content'):
+ edit_page('family');
+  break;
 case('add_part_new_product'):
 
   if(isset($_REQUEST['sku']))
@@ -340,7 +345,8 @@ function edit_product(){
 
 
 function edit_family(){
- $family=new family($_REQUEST['id']);
+  //print_r($_REQUEST);
+  $family=new family($_REQUEST['id']);
  global $editor;
  $family->editor=$editor;
  $family->update($_REQUEST['key'],stripslashes(urldecode($_REQUEST['newvalue'])),stripslashes(urldecode($_REQUEST['oldvalue'])));
@@ -2368,5 +2374,27 @@ function edit_part_new_product($sku){
      echo json_encode($response);
   }
 
+  
+
 }
+
+function  edit_page($subject){
+$family=new family($_REQUEST['id']);
+ global $editor;
+ $family->editor=$editor;
+ $page=new Page($family->data['Product Family Page Key']);
+ $page->update_field_switcher($_REQUEST['key'],stripslashes(urldecode($_REQUEST['newvalue'])));
+ 
+
+   if($page->updated){
+     $response= array('state'=>200,'newvalue'=>$page->new_value,'key'=>$_REQUEST['key']);
+	  
+   }else{
+     $response= array('state'=>400,'msg'=>$page->msg,'key'=>$_REQUEST['key']);
+   }
+   echo json_encode($response); 
+
+  }
+
+
 ?>

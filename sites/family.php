@@ -4,8 +4,7 @@ include_once('class.Department.php');
 
 $css_files=array(
 		 'css/common.css',
-		 'css/home.css',
-		 'css/info.css',
+		 'css/family.css',
 		 'css/dropdown.css'
 		 );
 $js_files=array('js/dropdown.js');
@@ -37,7 +36,7 @@ $smarty->assign('slogan',$page_data['Page Store Slogan']);
 
 $smarty->assign('comentary',$page_data['Page Store Abstract']);
 $smarty->assign('contents',$page_data['Page Source Template']);
-$smarty->assign('home_header_template',"pages/$store_code/home_header.tpl");
+$smarty->assign('header_template',"pages/$store_code/family_header.tpl");
 $smarty->assign('right_menu_template',"pages/$store_code/right_menu.tpl");
 $smarty->assign('left_menu_template',"pages/$store_code/left_menu.tpl");
 

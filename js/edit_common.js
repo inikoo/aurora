@@ -348,6 +348,7 @@ function validate_general(branch,item,query){
 function reset_edit_general(branch){
     for(item in validate_scope_data[branch]){
 	var item_input=Dom.get(validate_scope_data[branch][item].name);
+
 	item_input.value=item_input.getAttribute('ovalue');
 	validate_scope_data[branch][item].changed=false;
 	validate_scope_data[branch][item].validated=true;
@@ -383,11 +384,11 @@ function save_edit_general(branch){
 		encodeURIComponent(item_input.value) +  '&oldvalue=' + 
 		encodeURIComponent(item_input.getAttribute('ovalue')) + 
 		'&'+branch_key_name+'='+branch_key;
-	    //  alert(request);
+	    // alert(request);
 
 	    YAHOO.util.Connect.asyncRequest('POST',request ,{
 		    success:function(o) {
-			alert(o.responseText)
+			//alert(o.responseText)
 			    var r =  YAHOO.lang.JSON.parse(o.responseText);
 			if(r.state==200){
 			

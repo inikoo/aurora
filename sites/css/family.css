@@ -3,11 +3,13 @@ body{color:#333;margin:0px;padding:0px;font-family:"Lucida Grande", "Lucida Sans
 
 img{border:none}
 #container{width:876px;margin:0 auto}
-#header{background-color:#f29416;background-image:url('../art/header/header_background.jpg');background-repeat:no-repeat;height:100px;border-bottom:2px solid black}
-#header_home{float:left;width:215px;border:0px solid #fff}
+#header{background-color:#f29416;background-image:url('../art/header/header_background.jpg');background-repeat:no-repeat;;border-bottom:2px solid black}
+#header_family{float:left;width:215px;border:0px solid #fff}
 #header_title{float:left;margin-left:5px;width:490px;color:#7d0101;}
-#header_title h1{padding:20px 20px 10px; 0px;font-weight:800;font-size:30px;font-style: italic;font-family:"Palatino Linotype","Book Antiqua","New York"}
-#header_home div{;margin-left:15px}
+#header_title h1{padding:10px 20px 0px; 0px;font-weight:800;font-size:24px;font-style: italic;font-family:"Palatino Linotype","Book Antiqua","New York"}
+#header_title h2{padding:0px 20px 10px; 0px;font-weight:100;font-size:14px;font-style: italic;font-family:"Palatino Linotype","Book Antiqua","New York"}
+
+#header_family div{;margin-left:15px}
 
 #category{color:#000;font-size:14px;font-style: italic; ;font-weight:800;;font-family:"Palatino Linotype"}
 #slogan{font-size:9px;color:#7d0101;position:relative;top:-2px}
