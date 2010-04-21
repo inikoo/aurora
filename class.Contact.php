@@ -1113,7 +1113,26 @@ class Contact extends DB_Table {
                     $email_data['Email']=$email;
                     $email_data['Email Contact Name']=$this->display('name');
                     $email_data['editor']=$this->editor;
-                    $this->add_email($email_data);
+                    
+                     $this->email_added=false;
+        
+        $email=new Email('find create',$email_data);
+        if ($email->found) {
+            $this->error=true;
+            $this->msg='Email already in system';
+            return;
+        }
+        elseif($email->id) {
+            $this->create_email_bridge($email->id);
+
+           $this->update_parents_principal_email_keys();
+
+
+        }
+                    
+                    
+                    
+                   // $this->add_email($email_data);
 
 
                 }
@@ -1548,26 +1567,7 @@ class Contact extends DB_Table {
 
 
 
-    function add_email($email_data) {
-        $this->email_added=false;
-        
-        $email=new Email('find create',$email_data);
-        if ($email->found) {
-            $this->error=true;
-            $this->msg='Email already in system';
-            return;
-        }
-        elseif($email->id) {
-            $this->create_email_bridge($email->id);
-
-           
-
-
-        }
-
-
-    }
-
+   
 
 
     function create_email_bridge($email_key) {
@@ -1623,7 +1623,7 @@ class Contact extends DB_Table {
             $this->data['Contact Main Email Key']=$email->id;
             mysql_query($sql);
             
-            $this->update_parents_principal_email_keys();
+            //$this->update_parents_principal_email_keys();
             $email->update_parents();
            
         }
@@ -2631,6 +2631,74 @@ print "shit\n";
     }
 
 
+ function associate_address($address_key) {
+
+        $address_keys=$this->get_address_keys();
+        
+if(!array_key_exists($address_key,$address_keys)) {      
+            $this->create_address_bridge($address_key);
+
+           
+
+
+        }
+
+
+    }
+    
+      function get_principal_address_key() {
+
+        $sql=sprintf("select `Address Key` from `Address Bridge` where `Subject Type`='Contact' and `Subject Key`=%d and `Is Main`='Yes'",$this->id );
+        $res=mysql_query($sql);
+        if ($row=mysql_fetch_array($res)) {
+            $main_address_key=$row['Address Key'];
+        } else {
+            $main_address_key=0;
+        }
+
+        return $main_address_key;
+    } 
+  function create_address_bridge($address_key) {
+$sql=sprintf("insert into `Address Bridge` (`Subject Type`,`Subject Key`,`Address Key`) values ('Contact',%d,%d)  ",
+		     $this->id,
+		     $address_key
+		    
+		     );
+  mysql_query($sql);
+        if (!$this->get_principal_address_key()) {
+            $this->update_principal_address($address_key);
+        }
+
+}
+
+  function update_principal_address($address_key) {
+        $main_address_key=$this->get_principal_address_key();
+
+        if ($main_address_key!=$address_key) {
+			$address=new Address($address_key);
+            $sql=sprintf("update `Address Bridge`  set `Is Main`='No' where `Subject Type`='Contact' and  `Subject Key`=%d  and `Address Key`=%d",
+                         $this->id
+                         ,$main_address_key
+                        );
+            mysql_query($sql);
+            $sql=sprintf("update `Address Bridge`  set `Is Main`='Yes' where `Subject Type`='Contact' and  `Subject Key`=%d  and `Address Key`=%d",
+                         $this->id
+                         ,$address->id
+                        );
+            mysql_query($sql);
+            
+            $sql=sprintf("update `Contact Dimension` set  `Contact Main Address Key`=%s where `Contact Key`=%d",$address->id,$this->id);
+            $this->data['Contact Main Address Key']=$address->id;
+            mysql_query($sql);
+            
+            //$this->update_parents_principal_address_keys();
+            $address->update_parents();
+           
+        }
+
+    }
+
+
     /* Method: add_address
        Add/Update an address to the Contact
 
@@ -2644,7 +2712,7 @@ print "shit\n";
        integer address key of the added/updated address
     */
 
-    function associate_address($data,$args='') {
+    function old_associate_address($data,$args='') {
 
         // print_r($data);
 

@@ -883,7 +883,38 @@ function _trim($string){
   return $string;
 }
 
+
 function mb_ucwords($str) {
+
+    if(preg_match('/^PO BOX\s+/i',$str))
+     return strtoupper($str);
+
+    $result='';
+    $str=_trim($str);
+    
+    $words=preg_split('/ /',$str);
+    $first=true;
+    foreach($words as $word){
+        
+        if(!$first and preg_match('/^(UK|USA|HP|IBM|GB|MB|CD|DVD|USB)$/i',$word)){
+             $result.=' '.strtoupper($word);
+            continue;
+        }
+        if(!$first and preg_match('/^(and|y|o|or|of|at|des|les|las|le)$/i',$word)){
+             $result.=' '.strtoupper($word);
+            continue;
+        }
+        $result.=' '.capitalize($word);
+        $first=false;
+    }
+        
+    return $result;
+}
+
+
+
+
+function mb_ucwordsols($str) {
   $str=_trim($str);
   
   if(strlen($str==1)){
@@ -944,10 +975,10 @@ function mb_ucwords($str) {
    
     $return = "";
     foreach ($word as $val){
-      // print "* $val\n";
+      
       
       if(preg_match('/^www\.[^\s]+/i',$val)){
-	$return .= $s .mb_strtolower($val,"UTF-8");
+	    $return .= $s .mb_strtolower($val,"UTF-8");
       }elseif(preg_match('/^[a-z]{2,}\.$/i',$val)){
 	$return .= $s .mb_strtolower($val,"UTF-8");
       }elseif(preg_match('/^(st|Mr|Mrs|Miss|Dr|Ltd)$/i',$val)){
@@ -979,7 +1010,7 @@ function mb_ucwords($str) {
       }
       
       elseif(mb_strlen($val,"UTF-8")>0){
-	$return=$s.capitalize($val);
+	$return.=$s.capitalize($val);
 	//	$return .= $s 
 	//	  . mb_strtoupper($val{0},"UTF-8") 
 	//	  . mb_substr($val,1,mb_strlen($val,"UTF-8")-1,"UTF-8");
