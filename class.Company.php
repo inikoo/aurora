@@ -458,18 +458,9 @@ if (array_key_exists($contact->id,$contact_keys)) {
 
                 $address_data['editor']=$this->editor;
                 $address=new Address("find in company ".$this->id." create",$address_data);
-                $contact->associate_address(array(
-                                                'Address Key'=>$address->id
-                                                              ,'Address Type'=>array('Work')
-                                                                              ,'Address Function'=>array('Contact')
-
-                                            ),'principal');
-                $this->associate_address(array(
-                                             'Address Key'=>$address->id
-                                                           ,'Address Type'=>array('Office')
-                                                                           ,'Address Function'=>array('Contact')
-
-                                         ),'principal');
+                $contact->associate_address($address->id);
+                $this->associate_address($address->id);
+            
 
 
 
@@ -496,18 +487,10 @@ if (array_key_exists($contact->id,$contact_keys)) {
 
                 $address_data['editor']=$this->editor;
                 $address=new Address("find in company ".$this->id." create",$address_data);
-                $contact->associate_address(array(
-                                                'Address Key'=>$address->id
-                                                              ,'Address Type'=>array('Work')
-                                                                              ,'Address Function'=>array('Contact')
-
-                                            ),'principal');
-                $this->associate_address(array(
-                                             'Address Key'=>$address->id
-                                                           ,'Address Type'=>array('Office')
-                                                                           ,'Address Function'=>array('Contact')
-
-                                         ),'principal');
+                $contact->associate_address($address->id);
+                 $this->associate_address($address->id);
+               
+              
 
 
 
@@ -615,17 +598,7 @@ $this->data['Company Main Contact Name' ]='';
 
 
     //===delete down
-    $address_data=array('Company Address Line 1'=>'','Company Address Town'=>'','Company Address Line 2'=>'','Company Address Line 3'=>'','Company Address Postal Code'=>'','Company Address Country Name'=>'','Company Address Country Code'=>'','Company Address Country First Division'=>'','Company Address Country Second Division'=>'');
-    foreach($raw_address_data as $key=>$value) {
-      if (array_key_exists($key,$address_data))
-	$address_data[$key]=$value;
-    }
-
-
-
-    $address_data['editor']=$this->editor;
-	
-    $address=new Address("find in company create",$address_data);
+  
 
     //== delete up
 
@@ -642,14 +615,105 @@ $this->data['Company Main Contact Name' ]='';
 
     
     // print_r($address->data);
-    $this->data['Company Main Address Key']=$address->id;
-    $this->data['Company Main XHTML Address']=$address->display('xhtml');
-    $this->data['Company Main Plain Address']=$address->display('plain');
-    $this->data['Company Main Country Key']=$address->data['Address Country Key'];
-    $this->data['Company Main Country']=$address->data['Address Country Name'];
-    $this->data['Company Main Country Code']=$address->data['Address Country Code'];
-    $this->data['Company Main Location']=$address->display('location');
 
+
+
+
+
+    $keys='';
+    $values='';
+    foreach($this->data as $key=>$value) {
+      $keys.=",`".$key."`";
+      if (preg_match('/plain|old id/i',$key))
+	$print_null=false;
+      else
+	$print_null=true;
+      $values.=','.prepare_mysql($value,$print_null);
+
+    }
+    $values=preg_replace('/^,/','',$values);
+    $keys=preg_replace('/^,/','',$keys);
+
+    $sql="insert into `Company Dimension` ($keys) values ($values)";
+    // print "$sql\n";
+
+    if (mysql_query($sql)) {
+      $this->id = mysql_insert_id();
+      $this->get_data('id',$this->id);
+
+      //      print_r($this->data);
+      $history_data=array(
+			  'History Abstract'=>_('Company Created')
+			  ,'History Details'=>_trim(_('Company')." \"".$this->data['Company Name']."\"  "._('created'))
+			  ,'Action'=>'created'
+                          );
+      $this->add_history($history_data);
+      $this->new=true;
+
+
+      if (_trim($this->data['Company Old ID'])) {
+	$sql=sprintf("insert into `Company Old ID Bridge` values (%d,%s)",$this->id,prepare_mysql(_trim($this->data['Company Old ID'])));
+	mysql_query($sql);
+      }
+
+      //   print "00000000000000000000000000000\n";
+      //print_r($this->data);
+      
+      
+      
+      
+      
+        $address_data=array('Company Address Line 1'=>'','Company Address Town'=>'','Company Address Line 2'=>'','Company Address Line 3'=>'','Company Address Postal Code'=>'','Company Address Country Name'=>'','Company Address Country Code'=>'','Company Address Country First Division'=>'','Company Address Country Second Division'=>'');
+    foreach($raw_address_data as $key=>$value) {
+      if (array_key_exists($key,$address_data))
+	$address_data[$key]=$value;
+    }
+
+
+
+    $address_data['editor']=$this->editor;
+	
+    $address=new Address("find in company create",$address_data);
+    
+    $this->associate_address($address->id);
+      
+      
+    $use_contact=0;
+    if (preg_match('/use contact \d+/',$options)) {
+      $use_contact=preg_replace('/use contact /','',$options);
+    }
+
+    if ($use_contact) {
+      $contact=new contact($use_contact);
+      
+      $this->create_contact_bridge($contact->id);
+      
+    } else {
+
+         $this->add_contact($raw_data);
+ 
+    }
+  
+$contact=new Contact($this->data['Company Main Contact Key']);
+
+      
+     // if ($use_contact) {
+      //if ($address->found) {
+	//$contact->move_home_to_work_address($address->found_key);
+     // }
+    //   } else if (!$address->new) {
+     // //print_r($address);
+     // print ("Duplicate address: ".$address->display('plain')."\n");
+    //    $address_data['editor']=$this->editor;
+     // $address=new Address("find in company create force",$address_data);
+
+
+    //}
+   
+
+      $contact->associate_address($this->data['Company Main Address Key']);
+       $this->associate_address($this->data['Company Main Address Key']);
+    
 
 
 
@@ -710,99 +774,6 @@ $this->data['Company Main Contact Name' ]='';
 
       }
     }
-
-    $keys='';
-    $values='';
-    foreach($this->data as $key=>$value) {
-      $keys.=",`".$key."`";
-      if (preg_match('/plain|old id/i',$key))
-	$print_null=false;
-      else
-	$print_null=true;
-      $values.=','.prepare_mysql($value,$print_null);
-
-    }
-    $values=preg_replace('/^,/','',$values);
-    $keys=preg_replace('/^,/','',$keys);
-
-    $sql="insert into `Company Dimension` ($keys) values ($values)";
-    // print "$sql\n";
-
-    if (mysql_query($sql)) {
-      $this->id = mysql_insert_id();
-      $this->get_data('id',$this->id);
-
-      //      print_r($this->data);
-      $history_data=array(
-			  'History Abstract'=>_('Company Created')
-			  ,'History Details'=>_trim(_('Company')." \"".$this->data['Company Name']."\"  "._('created'))
-			  ,'Action'=>'created'
-                          );
-      $this->add_history($history_data);
-      $this->new=true;
-
-
-      if (_trim($this->data['Company Old ID'])) {
-	$sql=sprintf("insert into `Company Old ID Bridge` values (%d,%s)",$this->id,prepare_mysql(_trim($this->data['Company Old ID'])));
-	mysql_query($sql);
-      }
-
-      //   print "00000000000000000000000000000\n";
-      //print_r($this->data);
-      
-      
-      
-      
-    $use_contact=0;
-    if (preg_match('/use contact \d+/',$options)) {
-      $use_contact=preg_replace('/use contact /','',$options);
-    }
-
-    if ($use_contact) {
-      $contact=new contact($use_contact);
-      
-      $this->create_contact_bridge($contact->id);
-      
-    } else {
-
-         $this->add_contact($raw_data);
- 
-    }
-  
-$contact=new Contact($this->data['Company Main Contact Key']);
-
-      
-     // if ($use_contact) {
-      //if ($address->found) {
-	//$contact->move_home_to_work_address($address->found_key);
-     // }
-    //   } else if (!$address->new) {
-     // //print_r($address);
-     // print ("Duplicate address: ".$address->display('plain')."\n");
-    //    $address_data['editor']=$this->editor;
-     // $address=new Address("find in company create force",$address_data);
-
-
-    //}
-   
-
-      $contact->associate_address(array(
-					'Address Key'=>$this->data['Company Main Address Key']
-					,'Address Type'=>array('Work')
-					,'Address Function'=>array('Contact')
-
-					));
-      $this->associate_address(array(
-				     'Address Key'=>$this->data['Company Main Address Key']
-				     ,'Address Type'=>array('Office')
-				     ,'Address Function'=>array('Contact')
-
-				     ));
-
-
-
-
-
 
 
 
@@ -1074,13 +1045,7 @@ $contact=new Contact($this->data['Company Main Contact Key']);
       $this->error=true;
       $this->msg='Address not associated with company';
       return;
-      //    $this->associate_address(array(
-      //                              'Address Key'=>$address->id
-      //                               ,'Address Type'=>array('Office')
-      //                              ,'Address Function'=>array('Contact')
-
-      //         ));
-         
+     
         
     }
         
@@ -1655,41 +1620,74 @@ $contact=new Contact($this->data['Company Main Contact Key']);
     
   */
 
-  function associate_address($data,$args='') {
+  function associate_address($address_key) {
 
-    //      if (!$data)
-    //         $address=new address('fuzzy all');
-    //    elseif(is_numeric($data) )
-    //     $address=new address('fuzzy country',$data);
-    //      elseif(is_array($data)) {
-    //          $data['editor']=$this->editor;
-    //          if (isset($data['Address Key'])) {
-    //
-    //                $address=new address('id',$data['Address Key']);
-    //            }    else {
-    //
-    //                $address=new address('find in company '.$this->id.' create',$data);
-    //
-    //            }
-    //        }
-    //       else
-    //           $address=new address('fuzzy all');
-    //
-    //       if (!$address->id) {
-    //
-    //            return;
-    //
-    //        }
+        $address_keys=$this->get_address_keys();
+        
+if(!array_key_exists($address_key,$address_keys)) {      
+            $this->create_address_bridge($address_key);
+
+           
 
 
+        }
 
-    //     if ($address->new)
-    //         $this->added_address_key=$address->id;
-    //     else
-    //         $this->added_address_key=false;
-    //
-    //       if ($address->updated or $address->new)
-    //           $this->updated=true;
+
+    }
+    
+      function get_principal_address_key() {
+
+        $sql=sprintf("select `Address Key` from `Address Bridge` where `Subject Type`='Company' and `Subject Key`=%d and `Is Main`='Yes'",$this->id );
+        $res=mysql_query($sql);
+        if ($row=mysql_fetch_array($res)) {
+            $main_address_key=$row['Address Key'];
+        } else {
+            $main_address_key=0;
+        }
+
+        return $main_address_key;
+    } 
+  function create_address_bridge($address_key) {
+$sql=sprintf("insert into `Address Bridge` (`Subject Type`,`Subject Key`,`Address Key`) values ('Company',%d,%d)  ",
+		     $this->id,
+		     $address_key
+		    
+		     );
+  mysql_query($sql);
+        if (!$this->get_principal_address_key()) {
+            $this->update_principal_address($address_key);
+        }
+
+}
+
+  function update_principal_address($address_key) {
+        $main_address_key=$this->get_principal_address_key();
+
+        if ($main_address_key!=$address_key) {
+			$address=new Address($address_key);
+            $sql=sprintf("update `Address Bridge`  set `Is Main`='No' where `Subject Type`='Company' and  `Subject Key`=%d  and `Address Key`=%d",
+                         $this->id
+                         ,$main_address_key
+                        );
+            mysql_query($sql);
+            $sql=sprintf("update `Address Bridge`  set `Is Main`='Yes' where `Subject Type`='Company' and  `Subject Key`=%d  and `Address Key`=%d",
+                         $this->id
+                         ,$address->id
+                        );
+            mysql_query($sql);
+            
+            $sql=sprintf("update `Company Dimension` set  `Company Main Address Key`=%s where `Company Key`=%d",$address->id,$this->id);
+            $this->data['Company Main Address Key']=$address->id;
+            mysql_query($sql);
+            
+            //$this->update_parents_principal_address_keys();
+            $address->update_parents();
+           
+        }
+
+    }
+
+function borrar(){
 
     $principal=preg_match('/principal/i',$args);
     if(count($this->get_address_keys())==0)

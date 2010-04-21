@@ -242,7 +242,7 @@ class Address extends DB_Table{
       break;
     }
     $this->raw_data=$data;
-
+//print_r($data);exit;
     $subject_key=0;
     $subject_type='Contact';
     if(preg_match('/in contact \d+/i',$options,$match)){
@@ -854,7 +854,6 @@ class Address extends DB_Table{
     case('3 Line'):
     
       $this->data=$this->prepare_3line($data,'untrusted',$this->get_default('Country 2 Alpha Code'));
-
       break;
     case('DB Fields'):
       $this->data=$this->prepare_DBfields($data);
@@ -2095,6 +2094,7 @@ $data['Address Country Key']='';
 
 		$data=Address::prepare_country_data($data,$default_2alpha_code);
 		
+		//print_r($data);
 		// foreach($country as $key=>$value){
 		//  if(array_key_exists($key,$data)){
 		//	$data[$key]=_trim($value);
@@ -4031,7 +4031,6 @@ $data['Address Country Key']='';
 		$data['Address Town Second Division']=preg_replace('/\s{2,}/',' ',$data['Address Town Second Division']);
 		$data['Address Town']=preg_replace('/(\,|\-)$\s*/','',$data['Address Town']);
 
-
 		foreach($data as $key=>$val){
 			if($key=='Address Postal Code' or $key=='Address Country Code' or $key=='Address Country 2 Alpha Code')
 			$data[$key]=_trim($val);
@@ -4317,7 +4316,116 @@ $data['Address Country Key']='';
       return $this->default_country->get($key);
 
     }
+
+
+function update_parents() {
+
+    $parents=array('Contact','Company','Customer','Supplier');
+    foreach($parents as $parent) {
+        $sql=sprintf("select `$parent Key` as `Parent Key`   from  `$parent Dimension` where `$parent Main Address Key`=%d group by `$parent Key`",$this->id);
+//print "$sql\n";
+        $res=mysql_query($sql);
+        while ($row=mysql_fetch_array($res)) {
+            $principal_address_changed=false;
+
+            if ($parent=='Contact') {
+                $parent_object=new Contact($row['Parent Key']);
+                $parent_label=_('Contact');
+            }
+            elseif($parent=='Customer') {
+                $parent_object=new Customer($row['Parent Key']);
+                $parent_label=_('Customer');
+            }
+            elseif($parent=='Supplier') {
+                $parent_object=new Supplier($row['Parent Key']);
+                $parent_label=_('Supplier');
+            }
+            elseif($parent=='Company') {
+                $parent_object=new Company($row['Parent Key']);
+                $parent_label=_('Company');
+            }
+            $old_princial_address=$parent_object->data[$parent.' Main XHTML Address'];
+            $parent_object->data[$parent.' Main Plain Address']=$this->display('plain');
+            $parent_object->data[$parent.' Main XHTML Address']=$this->display('xhtml');
+            $parent_object->data[$parent.' Main Country Key']=$this->data['Address Country Key'];
+            $parent_object->data[$parent.' Main Country']=$this->data['Address Country Name'];
+            $parent_object->data[$parent.' Main Country Code']=$this->data['Address Country Code'];
+            $parent_object->data[$parent.' Main Location']=$this->location($this->data);
+
+
+            $sql=sprintf("update `$parent Dimension` set
+                         `$parent Main Plain Address`=%s,
+                         `$parent Main XHTML Address`=%s,
+                         `$parent Main Country Key` =%d,
+                         `$parent Main Country` =%s,
+
+                         `$parent Main Country Code` =%s,
+                         `$parent Main Location` =%s,
+                         where `$parent Key`=%d"
+                         ,prepare_mysql($parent_object->data[$parent.' Main Plain Address'])
+                         ,prepare_mysql($parent_object->data[$parent.' Main XHTML Address'])
+                         ,$parent_object->data[$parent.' Main Country Key']
+                         ,prepare_mysql($parent_object->data[$parent.' Main Country'])
+                         ,prepare_mysql($parent_object->data[$parent.' Main Country Code'])
+                         ,prepare_mysql($parent_object->data[$parent.' Main Location'])
+                         ,$parent_object->id
+                        );
+            mysql_query($sql);
+
+
+
+            if ($old_princial_address!=$parent_object->data[$parent.' Main XHTML Address'])
+                $principal_address_changed=true;
+
+            if ($principal_address_changed) {
+
+                if ($old_princial_address=='') {
+
+                    $history_data['History Abstract']='Address Associated';
+                    $history_data['History Details']=$this->display('xhtml')." "._('associated with')." ".$parent_object->get_name()." ".$parent_label;
+                    $history_data['Action']='associated';
+                    $history_data['Direct Object']=$parent;
+                    $history_data['Direct Object Key']=$parent_object->id;
+                    $history_data['Indirect Object']='Address';
+                    $history_data['Indirect Object Key']='';
+                    $this->add_history($history_data);
+                } else {
+                    $history_data['History Abstract']='Address Changed';
+                    $history_data['History Details']=_('Address changed from').' '.$old_princial_address.' '._('to').' '.$this->display('xhtml')." "._('in')." ".$parent_object->get_name()." ".$parent_label;
+                    $history_data['Action']='changed';
+                    $history_data['Direct Object']=$parent;
+                    $history_data['Direct Object Key']=$parent_object->id;
+                    $history_data['Indirect Object']='Address';
+                    $history_data['Indirect Object Key']='';
+
+                    $this->add_history($history_data);
+
+                }
+
+            }
+
+        }
+    }
 }
+    
+    function xupdate_parents(){
+ //       $this->data['Company Main Address Key']=$address->id;
+  //  $this->data['Company Main XHTML Address']=$address->display('xhtml');
+  //  $this->data['Company Main Plain Address']=$address->display('plain');
+  //  $this->data['Company Main Country Key']=$address->data['Address Country Key'];
+  //  $this->data['Company Main Country']=$address->data['Address Country Name'];
+  //  $this->data['Company Main Country Code']=$address->data['Address Country Code'];
+  //  $this->data['Company Main Location']=$address->display('location');
+
+
+    
+    }
+    
+}
+
+
+
+
 
 
 ?>
