@@ -51,24 +51,23 @@ while($row=mysql_fetch_array($res)){
 
 
 $data=array(
-	     array(
+	    array(
 		  'Page Code'=>'home'
-		  ,'Page Source Template'=>'pages/'.$store_code.'/home.tpl'
+		  ,'Page Source Template'=>'home.tpl'
 		  ,'Page URL'=>'index.php'
 		  ,'Page Description'=>'Home Page'
-
 		  ,'Page Title'=>'Ancient Wisdom Home'
 		  ,'Page Short Title'=>'Home'
 		  ,'Page Store Title'=>'Welcome to Ancient Wisdom'
 		  ,'Page Store Subtitle'=>'Europe\'s Biggest Online Giftware Wholesaler'
 		  ,'Page Store Slogan'=>'Exotic & Esoteric'
 		  ,'Page Store Resume'=>'Currently we have over 10000 exotic, interesting & unique wholesale product lines spread over approaching 1000 web pages all available to order on-line for delivery next day in the UK (well we do our best)'
-
+		  
 		  
 		  )
 	     ,array(
 		  'Page Code'=>'register'
-		  ,'Page Source Template'=>'pages/'.$store_code.'/register.tpl'
+		  ,'Page Source Template'=>'register.tpl'
 		  ,'Page URL'=>'register.php'
 		  ,'Page Description'=>'Registration Page'
 
@@ -83,7 +82,7 @@ $data=array(
 		  )
   ,array(
 		  'Page Code'=>'reset'
-		  ,'Page Source Template'=>'pages/'.$store_code.'/reset.tpl'
+		  ,'Page Source Template'=>'reset.tpl'
 		  ,'Page URL'=>'reset.php'
 		  ,'Page Description'=>'Reset Password Page'
 
@@ -99,7 +98,7 @@ $data=array(
 
 	     ,array(
 		  'Page Code'=>'contact'
-		  ,'Page Source Template'=>'splinters/info/'.$store_code.'/contact.tpl'
+		  ,'Page Source Template'=>'contact.tpl'
 		  ,'Page URL'=>'info.php?page=contact'
 		  ,'Page Description'=>'Contact information details (address, telephones, emails, and directions)'
 		  
@@ -113,7 +112,7 @@ $data=array(
 
 	     ,array(
 		  'Page Code'=>'showroom'
-		  ,'Page Source Template'=>'splinters/info/'.$store_code.'/showroom.tpl'
+		  ,'Page Source Template'=>'showroom.tpl'
 		  ,'Page URL'=>'info.php?page=showroom'
 		  ,'Page Description'=>'Information about our showroom'
 		  
@@ -126,7 +125,7 @@ $data=array(
 		  )	     
  ,array(
 		  'Page Code'=>'export_guide'
-		  ,'Page Source Template'=>'splinters/info/'.$store_code.'/export_guide.tpl'
+		  ,'Page Source Template'=>'export_guide.tpl'
 		  ,'Page URL'=>'info.php?page=overseas'
 		  ,'Page Description'=>'Information about overseas orders'
 		  
@@ -140,7 +139,7 @@ $data=array(
 
 	      ,array(
 		  'Page Code'=>'terms_and_conditions'
-		  ,'Page Source Template'=>'splinters/info/'.$store_code.'/terms_and_conditions.tpl'
+		  ,'Page Source Template'=>'terms_and_conditions.tpl'
 		  ,'Page URL'=>'info.php?page=terms_and_conditions'
 		  ,'Page Description'=>'Terms and Conditions'
 		  
@@ -150,7 +149,35 @@ $data=array(
 		  ,'Page Store Subtitle'=>''
 		  ,'Page Store Slogan'=>'The small print'
 		  ,'Page Store Resume'=>''
-		  )	     
+		     ),
+	       array(
+		  'Page Code'=>'company_ethics'
+		  ,'Page Source Template'=>'ethics.tpl'
+		  ,'Page URL'=>'info.php?page=company_ethics'
+		  ,'Page Description'=>'Company Ethics'
+		  
+		  ,'Page Title'=>'Company Ethics'
+		  ,'Page Short Title'=>'Company Ethics'
+		  ,'Page Store Title'=>'Company Ethics'
+		  ,'Page Store Subtitle'=>''
+		  ,'Page Store Slogan'=>'Not is everything about money'
+		  ,'Page Store Resume'=>'These are tricky subjects, but not one we choose to ignore as a company. On fact we take this very seriously'
+		     ),
+ array(
+		  'Page Code'=>'faq'
+		  ,'Page Source Template'=>'faq.tpl'
+		  ,'Page URL'=>'info.php?page=faq'
+		  ,'Page Description'=>'FAQ'
+		  
+		  ,'Page Title'=>'FAQ'
+		  ,'Page Short Title'=>'FAQ'
+		  ,'Page Store Title'=>'Frequantly Asked Questons'
+		  ,'Page Store Subtitle'=>'(with answers)'
+		  ,'Page Store Slogan'=>'You ask we aswer'
+		  ,'Page Store Resume'=>'Here we recopilate the most common queries'
+		     ),
+
+
 
 	     
 	    );
