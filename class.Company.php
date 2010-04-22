@@ -24,6 +24,7 @@ class Company extends DB_Table {
 
   var $candidate_companies=array();
   var $number_candidate_companies=0;
+  var $last_associated_contact_key=0;
   /*
     Constructor: Company
 
@@ -635,7 +636,6 @@ $this->data['Company Main Contact Name' ]='';
     $keys=preg_replace('/^,/','',$keys);
 
     $sql="insert into `Company Dimension` ($keys) values ($values)";
-    // print "$sql\n";
 
     if (mysql_query($sql)) {
       $this->id = mysql_insert_id();
@@ -656,7 +656,6 @@ $this->data['Company Main Contact Name' ]='';
 	mysql_query($sql);
       }
 
-      //   print "00000000000000000000000000000\n";
       //print_r($this->data);
       
       
@@ -679,6 +678,8 @@ $this->data['Company Main Contact Name' ]='';
       
       
     $use_contact=0;
+    //print "$options\n";
+    
     if (preg_match('/use contact \d+/',$options)) {
       $use_contact=preg_replace('/use contact /','',$options);
     }
@@ -690,13 +691,25 @@ $this->data['Company Main Contact Name' ]='';
       
     } else {
 
-         $this->add_contact($raw_data);
+$contact=new Contact("find in company create",$raw_data);
+    if ($contact->found) {
+        $this->error=true;
+        $this->msg='contact already in system';
+        exit("error contact already in system\n");
+        return;
+    }
+    elseif($contact->id) {
+    
+        $this->create_contact_bridge($contact->id);
+    }
+
+        
  
     }
-  
-$contact=new Contact($this->data['Company Main Contact Key']);
 
-      
+$this->last_associated_contact_key=$contact->id;
+
+
      // if ($use_contact) {
       //if ($address->found) {
 	//$contact->move_home_to_work_address($address->found_key);
@@ -865,8 +878,7 @@ $contact=new Contact($this->data['Company Main Contact Key']);
 
       $this->get_data('id',$this->id);
     } else {
-      print "Error, company can not be created $sql";
-      exit;
+      exit("Error, company can not be created $sql\n");
     }
 
   }
@@ -1744,7 +1756,7 @@ function borrar(){
   }
 
 
-function add_contact($data) {
+function old_add_contact($data) {
 
     $contact=new Contact("find in company create",$data);
     if ($contact->found) {
@@ -1771,7 +1783,6 @@ function add_contact($data) {
         return $main_contact_key;
     }
 function create_contact_bridge($contact_key) {
-
     $sql=sprintf("insert into  `Contact Bridge` (`Contact Key`, `Subject Type`,`Subject Key`,`Is Main`) values (%d,%s,%d,'No')  "
                  ,$contact_key
                  ,prepare_mysql('Company')
@@ -1798,7 +1809,6 @@ function create_contact_bridge($contact_key) {
 }
 
     function update_principal_contact($contact_key) {
-   
         $main_contact_key=$this->get_principal_contact_key();
 
         if ($main_contact_key!=$contact_key) {
@@ -1821,6 +1831,7 @@ function create_contact_bridge($contact_key) {
             $this->data['Company Main Contact Key']=$contact->id;
             $this->update_parents_principal_contact_keys($contact_key);
             $contact->update_parents();
+            $this->last_associated_contact_key=$contact_key;
            
         }
 
@@ -1830,7 +1841,7 @@ function create_contact_bridge($contact_key) {
 function update_parents_principal_contact_keys($contact_key) {
     $parents=array('Customer','Supplier');
     foreach($parents as $parent) {
-        $sql=sprintf("select `$parent Key` as `Parent Key`   from  `$parent Dimension` where `$parent Main Contact Key`=%d group by `$parent Key`",$this->id);
+        $sql=sprintf("select `$parent Key` as `Parent Key`   from  `$parent Dimension` where `$parent Company Key`=%d group by `$parent Key`",$this->id);
 
         $res=mysql_query($sql);
         while ($row=mysql_fetch_array($res)) {
@@ -1845,8 +1856,8 @@ function update_parents_principal_contact_keys($contact_key) {
                 $parent_label=_('Supplier');
             }
            
-            $old_principal_contact_key=$parent_object->data[$parent.' Main Contact Key'];
-            if ($old_principal_contact_key!=$contact_key) {
+            $old_principal_name_key=$parent_object->data[$parent.' Main Contact Key'];
+            if ($old_principal_name_key!=$contact_key) {
 
                 $sql=sprintf("update `Contact Bridge`  set `Is Main`='No' where `Subject Type`='$parent' and  `Subject Key`=%d  and `Contact Key`=%d",
                              $parent_object->id
@@ -2743,6 +2754,72 @@ function update_children() {
             
            
             
+
+        }
+    }
+}
+
+function update_parents(){
+
+    $parents=array('Customer','Supplier');
+    foreach($parents as $parent) {
+        $sql=sprintf("select `$parent Key` as `Parent Key` from  `$parent Dimension` where `$parent Company Key`=%d group by `$parent Key`",$this->id);
+//print $sql."\n";
+        $res=mysql_query($sql);
+        while ($row=mysql_fetch_array($res)) {
+            $principal_contact_changed=false;
+
+           if($parent=='Customer') {
+                $parent_object=new Customer($row['Parent Key']);
+                $parent_label=_('Customer');
+            }
+            elseif($parent=='Supplier') {
+                $parent_object=new Supplier($row['Parent Key']);
+                $parent_label=_('Supplier');
+            }
+           
+            $old_principal_name=$parent_object->data[$parent.' Name'];
+            $parent_object->data[$parent.' Name']=$this->data['Company Name'];
+            $sql=sprintf("update `$parent Dimension` set `$parent Name`=%s where `$parent Key`=%d"
+                         ,prepare_mysql($parent_object->data[$parent.' Name'])
+                         ,$parent_object->id
+                        );
+            mysql_query($sql);
+
+
+
+            if ($old_principal_name!=$parent_object->data[$parent.' Name'])
+                $principal_contact_changed=true;
+
+            if ($principal_contact_changed) {
+                
+                if($old_principal_name==''){
+            
+                $history_data['History Abstract']='Company Associated';
+                $history_data['History Details']=$this->data['Company Name']." "._('associated with')." ".$parent_object->get_name()." ".$parent_label;
+                $history_data['Action']='associated';
+                $history_data['Direct Object']='Company';
+                $history_data['Direct Object Key']=$this->id;
+                $history_data['Indirect Object']=$parent;
+                $history_data['Indirect Object Key']=$parent_object->id;
+                $this->add_history($history_data);
+                }else{
+                $history_data['History Abstract']='Name Changed';
+                $history_data['History Details']=_('Name changed from').' '.$old_principal_name.' '._('to').' '.$this->data['Company Name']." "._('in')." ".$parent_object->get_name()." ".$parent_label;
+                $history_data['Action']='changed';
+                $history_data['Direct Object']=$parent;
+                $history_data['Direct Object Key']=$parent_object->id;
+                $history_data['Indirect Object']=$parent.' Name';
+                $history_data['Indirect Object Key']='';
+                
+                $this->add_history($history_data);
+                
+                }
+            
+            }
+            
+           
+           
 
         }
     }

@@ -147,8 +147,8 @@ $history_data=get_history_data($act_data['history']);
     
     // if($act_data['tax_number']!='')
     //  print ($act_data['tax_number']."\n");
-    //      if($row>4000)
-    //  break;
+          if($row>1000)
+      break;
     //      print "$row\r";
 
        // print_r($cols);
@@ -311,12 +311,11 @@ foreach($contacts as $act_data){
     }
     $shipping_addresses=array();
     $customer_data['Customer Delivery Address Link']='Contact';
-    // print_r($_customer_data);
+    //print_r($_customer_data);
     // print_r($act_data);
     
-
     $customer = new Customer ( 'find create',  $customer_data);
-    
+
     //   if(count($act_data['history'])>0){
     //  print "Customer ".$customer->id." with History\n\n\n\n\n\n";
     //  print_r($act_data['history']);
