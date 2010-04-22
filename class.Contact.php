@@ -29,6 +29,10 @@ class Contact extends DB_Table {
     public $scope=false;
     public $scope_key=false;
     private  $new_home_telephone_keys=array();
+    
+    
+    
+    
     /*
       Constructor: Contact
 
@@ -63,7 +67,9 @@ class Contact extends DB_Table {
         $this->table_name='Contact';
         $this->ignore_fields=array('Contact Key');
 
-
+$this->unknown_contact_name='?';
+  $this->unknown_informal_greting='Hello';
+$this->unknown_formal_greting='Dear Sir Madam';
 
 
         if (preg_match('/create anonymous|create anonimous$/i',$arg1)) {
@@ -231,12 +237,7 @@ class Contact extends DB_Table {
 
             }
             $parent='customer';
-            //  print "xxxsssx\n";
-            //  print_r($data);
-            //  print_r($address_work_data);
-            //  exit;
-
-
+            
 
         }
         elseif(preg_match('/from staff|in staff/i',$options)) {
@@ -998,6 +999,8 @@ class Contact extends DB_Table {
 			$email=$this->data['Contact Main Plain Email'];
 			$this->data['Contact Main Plain Email']='';
         }
+        
+        
         if (!preg_match('/components/i',$options)) {
 
 
@@ -1033,9 +1036,9 @@ class Contact extends DB_Table {
 
 
         if ($this->data['Contact Name']=='') {
-            $this->data['Contact Name']='! '.$myconf['unknown_contact'];
-            $this->data['Contact Informal Greeting']=$myconf['unknown_informal_greting'];
-            $this->data['Contact Formal Greeting']=$myconf['unknown_formal_greting'];
+            $this->data['Contact Name']='! '.$this->unknown_contact_name;
+            $this->data['Contact Informal Greeting']=$this->unknown_informal_greting;
+            $this->data['Contact Formal Greeting']=$this->unknown_formal_greting;
         }
 
 
@@ -1044,7 +1047,7 @@ class Contact extends DB_Table {
         //        $this->data['Contact ID']=0;
 
 
-        if ($this->data['Contact Name']==$myconf['unknown_contact']) {
+        if ($this->data['Contact Name']==$this->unknown_contact_name) {
             $this->data['Contact Fuzzy']='Yes';
         } else
             $this->data['Contact Fuzzy']='No';
@@ -1072,11 +1075,9 @@ class Contact extends DB_Table {
         $values=preg_replace('/,$/',')',$values);
 
         $sql=sprintf("insert into `Contact Dimension` %s %s",$keys,$values);
-         //print "creating contact\n $sql\n";
-        //exit;
+         
         if (mysql_query($sql)) {
             $this->id= mysql_insert_id();
-
 
             if (_trim($this->data['Contact Old ID'])) {
                 $sql=sprintf("insert into `Contact Old ID Bridge` values (%d,%s)",$this->id,prepare_mysql(_trim($this->data['Contact Old ID'])));
@@ -1106,16 +1107,14 @@ class Contact extends DB_Table {
 
 
 
-
                 // Has no parent add emails,tels ect to the contact
-                if ($email!='') {
+                if ($email) {
 
                     $email_data['Email']=$email;
                     $email_data['Email Contact Name']=$this->display('name');
                     $email_data['editor']=$this->editor;
                     
                      $this->email_added=false;
-        
         $email=new Email('find create',$email_data);
         if ($email->found) {
             $this->error=true;
@@ -1125,17 +1124,16 @@ class Contact extends DB_Table {
         elseif($email->id) {
             $this->create_email_bridge($email->id);
 
-           $this->update_parents_principal_email_keys();
+           //$this->update_parents_principal_email_keys();
 
 
         }
-                    
-                    
-                    
-                   // $this->add_email($email_data);
-
-
+        
+          
                 }
+                
+
+                
                 $home_address_key=0;
                 if (is_array($address_home_data) and !array_empty($address_home_data)) {
                     $address_home_data['editor']=$this->editor;
@@ -1146,13 +1144,8 @@ class Contact extends DB_Table {
                     }
                     //print_r($address_home_data);
                     //print_r($home_address);
-
-                    $this->associate_address(array(
-                                                 'Address Key'=>$home_address->id
-                                                               ,'Address Type'=>array('Home')
-                                                                               ,'Address Function'=>array('Contact')
-
-                                             ));
+$this->associate_address($home_address->id);
+                   
                     $home_address_key=$home_address->id;
 
                 }
@@ -1637,7 +1630,8 @@ return;
     $parents=array('Company','Customer','Supplier');
     foreach($parents as $parent) {
         $sql=sprintf("select `$parent Key` as `Parent Key`   from  `$parent Dimension` where `$parent Main Contact Key`=%d group by `$parent Key`",$this->id);
-       
+             //      print "$sql\n";
+
        $res=mysql_query($sql);
         while ($row=mysql_fetch_array($res)) {
 
@@ -1663,7 +1657,8 @@ return;
                     ); 
                      mysql_query($sql);
             }
-            
+                      //  print "$sql\n";
+
             $old_principal_email_key=$parent_object->data[$parent.' Main Email Key'];
             if ($old_principal_email_key!=$email_key) {
 
@@ -1769,7 +1764,6 @@ function get_emails_keys(){
             
             $sql=sprintf("update `Contact Dimension` set  `Contact Company Key`=%d where `Contact Key`=%d",$company->id,$this->id);
             mysql_query($sql);
-          // print $sql;
 
             $this->data['Contact Company Key']=$company->id;
             $company->update_children();
@@ -1803,7 +1797,7 @@ function update_parents() {
                 $parent_object=new Company($row['Parent Key']);
                 $parent_label=_('Company');
             }
-            $old_princial_contact=$parent_object->data[$parent.' Main Contact Name'];
+            $old_principal_contact=$parent_object->data[$parent.' Main Contact Name'];
             $parent_object->data[$parent.' Main Contact Name']=$this->display('name');
             $sql=sprintf("update `$parent Dimension` set `$parent Main Contact Name`=%s where `$parent Key`=%d"
                          ,prepare_mysql($parent_object->data[$parent.' Main Contact Name'])
@@ -1813,12 +1807,12 @@ function update_parents() {
 
 
 
-            if ($old_princial_contact!=$parent_object->data[$parent.' Main Contact Name'])
+            if ($old_principal_contact!=$parent_object->data[$parent.' Main Contact Name'])
                 $principal_contact_changed=true;
 
             if ($principal_contact_changed) {
                 
-                if($old_princial_contact==''){
+                if($old_principal_contact==''){
             
                 $history_data['History Abstract']='Contact Associated';
                 $history_data['History Details']=$this->display('plain')." "._('associated with')." ".$parent_object->get_name()." ".$parent_label;
@@ -1830,7 +1824,7 @@ function update_parents() {
                 $this->add_history($history_data);
                 }else{
                 $history_data['History Abstract']='Main Contact Changed';
-                $history_data['History Details']=_('Contact changed from').' '.$old_princial_contact.' '._('to').' '.$this->display('name')." "._('in')." ".$parent_object->get_name()." ".$parent_label;
+                $history_data['History Details']=_('Contact changed from').' '.$old_principal_contact.' '._('to').' '.$this->display('name')." "._('in')." ".$parent_object->get_name()." ".$parent_label;
                 $history_data['Action']='changed';
                 $history_data['Direct Object']=$parent;
                 $history_data['Direct Object Key']=$parent_object->id;
@@ -1846,6 +1840,7 @@ function update_parents() {
            
             $this->update_parents_principal_email_keys();
             $email=new Email($this->get_principal_email_key());
+            if($email->id)
             $email->update_parents();
 
         }
@@ -1952,7 +1947,7 @@ $this->data['Company Main Plain Email']=$email->display('plain');
                         );
 
 
-            if ($this->data['Contact Name']!=$myconf['unknown_contact'])
+            if ($this->data['Contact Name']!=$this->unknown_contact_name)
                 $email_data['Email Contact Name']=$this->data['Contact Name'];
 
 
@@ -2527,11 +2522,7 @@ $this->data['Company Main Plain Email']=$email->display('plain');
               ) {
             $old_value=$this->data['Contact Main XHTML Address'];
 
-            // print_r($this->data);
-            // print_r($address->data);
-            //print $address->display('location');
-            //  exit;
-
+          
             $this->data['Contact Main Plain Address']=$address->display('plain');
             $this->data['Contact Main XHTML Address']=$address->display('xhtml');
             $this->data['Contact Main Country Key']=$address->data['Address Country Key'];
@@ -2603,9 +2594,9 @@ print "shit\n";
 
 
         $this->data['Contact Fuzzy']='Yes';
-        $this->data['Contact Name']=$myconf['unknown_contact'];
-        $this->data['Contact Informal Greeting']=$myconf['unknown_informal_greting'];
-        $this->data['Contact Formal Greeting']=$myconf['unknown_formal_greting'];
+        $this->data['Contact Name']=$this->unknown_contact_name;
+        $this->data['Contact Informal Greeting']=$this->unknown_informal_greting;
+        $this->data['Contact Formal Greeting']=$this->unknown_formal_greting;
         $this->data['Contact File As']=$this->display('file_as');
         // $this->data['Contact ID']=0;//$this->get_new_id();
 
@@ -3019,7 +3010,7 @@ $sql=sprintf("insert into `Address Bridge` (`Subject Type`,`Subject Key`,`Addres
             mysql_query($sql);
 
 
-            if ($company_key=$this->company_key('princial')) {
+            if ($company_key=$this->company_key('principal')) {
 
                 $company_telecom_tipo_key=preg_match('/Contact/','Company',$telecom_tipo_key);
 
@@ -3110,9 +3101,9 @@ $sql=sprintf("insert into `Address Bridge` (`Subject Type`,`Subject Key`,`Addres
         if ($value=='') {
         $this->msg.=_('Warning, contact name should not be blank')."\n";
         $this->warning=true;
-        $this->data['Contact Name']='! '.$myconf['unknown_contact'];
-        $this->data['Contact Informal Greeting']=$myconf['unknown_informal_greting'];
-        $this->data['Contact Formal Greeting']=$myconf['unknown_formal_greting'];
+        $this->data['Contact Name']='! '.$this->unknown_contact_name;
+        $this->data['Contact Informal Greeting']=$this->unknown_informal_greting;
+        $this->data['Contact Formal Greeting']=$this->unknown_formal_greting;
         }
         
         
@@ -3333,9 +3324,9 @@ function old_parse_update_Contact_Name($data,$options='') {
     if ($data=='') {
         $this->msg.=_('Warning, contact name should not be blank')."\n";
         $this->warning=true;
-        $this->data['Contact Name']=$myconf['unknown_contact'];
-        $this->data['Contact Informal Greeting']=$myconf['unknown_informal_greting'];
-        $this->data['Contact Formal Greeting']=$myconf['unknown_formal_greting'];
+        $this->data['Contact Name']=$this->unknown_contact_name;
+        $this->data['Contact Informal Greeting']=$this->unknown_informal_greting;
+        $this->data['Contact Formal Greeting']=$this->unknown_formal_greting;
         //    $this->data['Contact Gender']=$this->gender($this->data);
     } else {
 
@@ -3849,7 +3840,7 @@ public function display($tipo='name') {
             return $gretting.$name;
         }
 
-        return $myconf['unknown_informal_greting'];
+        return $this->unknown_informal_greting;
 
 
     case('formal gretting'):
@@ -3865,7 +3856,7 @@ public function display($tipo='name') {
                 return $gretting.$name;
             }
         }
-        return $myconf['unknown_formal_greting'];
+        return $this->unknown_formal_greting;
 
     }
 
@@ -3878,12 +3869,11 @@ public function display($tipo='name') {
 public static function name($data) {
     global $myconf;
     // if (array_empty($data))
-    //  $name=$myconf['unknown_contact'];
+    //  $name=$this->unknown_contact_name;
     //else
     $name=_trim($data['Contact Salutation'].' '.$data['Contact First Name'].' '.$data['Contact Surname'].' '.$data['Contact Suffix']);
 
-    if ($name=='')
-        $name= $myconf['unknown_contact'];
+    
 
     if ($name=='')
         $name='?';
@@ -4026,11 +4016,7 @@ public  function company_key($options='') {
 
         }
     } else {
-        //     if(!isset($this->data['Contact Company Key'])){
-        //	 print_r($this);
-        //	 exit;
-        // }
-
+       
         return $this->data['Contact Company Key'];
 
     }
@@ -4565,7 +4551,7 @@ public function is_main() {
 
 function update_mobile($telecom_key) {
 
-
+return;
 
     if ($telecom_key==$this->data['Contact Main Mobile Key']) {
         $telecom=new Telecom($telecom_key);

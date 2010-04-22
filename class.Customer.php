@@ -576,7 +576,7 @@ function get_name(){
       }
 
 
-
+$contact=new Contact($company->last_associated_contact_key);
 
     }
     elseif($this->data['Customer Type']=='Person') {
@@ -597,7 +597,9 @@ function get_name(){
       }else
 	$contact=new contact('id',$this->data['Customer Main Contact Key']);
 
-      $contact_key=$contact->id;
+
+
+
 
 
       //address!!!!!!!!!!!!!
@@ -609,9 +611,9 @@ function get_name(){
 
 
 
-      if ($contact->data['Contact Main Email Key']) {
-	$main_email_key=$contact->data['Contact Main Email Key'];
-      }
+    //  if ($contact->data['Contact Main Email Key']) {
+//	$main_email_key=$contact->data['Contact Main Email Key'];
+  //    }
       if ($contact->data['Contact Main Telephone Key']) {
 	$main_telephone_key=$contact->data['Contact Main Telephone Key'];
 
@@ -720,18 +722,23 @@ function get_name(){
 
       if ($this->data['Customer Type']=='Company') {
 
-	$this->update_company($company_key,true);
+//	$this->update_company($company_key,true);
+
+$this->associate_company($company->id);
+$this->associate_contact($contact->id);
+
 
       } else {
-	$this->update_contact($contact_key,true);
+//	$this->update_contact($contact_key,true);
+$this->associate_contact($contact->id);
 
       }
 
 
 
-      if ($main_email_key) {
-	$this->update_email($main_email_key);
-      }
+ //     if ($main_email_key) {
+//	$this->update_email($main_email_key);
+ //     }
 
       if ($main_telephone_key) {
 
@@ -2111,7 +2118,7 @@ function get_name(){
 	print_r($this->data);
 	print "\n*** Warning no ship to key un customer.php\n";
 	sdsd();
-	exit;
+	exit("error in class customer\n");
 	return false;
 
       }
@@ -2883,6 +2890,171 @@ function get_emails_keys(){
     return $emails;
 
 }
+
+
+function associate_contact($contact_key) {
+    $contact_keys=$this->get_contact_keys();
+    if (!array_key_exists($contact_key,$contact_keys)) {
+        $this->create_contact_bridge($contact_key);
+
+    }
+}
+
+function associate_company($company_key) {
+    $company_keys=$this->get_company_keys();
+    if (!array_key_exists($company_key,$company_keys)) {
+        $this->create_company_bridge($company_key);
+
+    }
+}
+
+function create_contact_bridge($contact_key) {
+    $sql=sprintf("insert into  `Contact Bridge` (`Contact Key`, `Subject Type`,`Subject Key`,`Is Main`) values (%d,%s,%d,'No')  "
+                 ,$contact_key
+                 ,prepare_mysql('Customer')
+                 ,$this->id
+
+                );
+    mysql_query($sql);
+    if (!$this->get_principal_contact_key()) {
+        $this->update_principal_contact($contact_key);
+    }
+    
+   
+
+}
+
+function create_company_bridge($company_key) {
+    $sql=sprintf("insert into  `Company Bridge` (`Company Key`, `Subject Type`,`Subject Key`,`Is Main`) values (%d,%s,%d,'No')  "
+                 ,$company_key
+                 ,prepare_mysql('Customer')
+                 ,$this->id
+
+                );
+    mysql_query($sql);
+    if (!$this->get_principal_company_key()) {
+        $this->update_principal_company($company_key);
+    }
+    
+   
+
+}
+    function update_principal_company($company_key) {
+        $main_company_key=$this->get_principal_company_key();
+
+        if ($main_company_key!=$company_key) {
+			$company=new Company($company_key);
+            $sql=sprintf("update `Company Bridge`  set `Is Main`='No' where `Subject Type`='Customer' and  `Subject Key`=%d  and `Company Key`=%d",
+                         $this->id
+                         ,$company_key
+                        );
+            mysql_query($sql);
+            $sql=sprintf("update `Company Bridge`  set `Is Main`='Yes' where `Subject Type`='Customer' and  `Subject Key`=%d  and `Company Key`=%d",
+                         $this->id
+                         ,$company_key
+                        );
+            mysql_query($sql);
+            
+            $sql=sprintf("update `Customer Dimension` set  `Customer Company Key`=%d where `Customer Key`=%d",$company->id,$this->id);
+            mysql_query($sql);
+           
+
+            $this->data['Customer Company Key']=$company->id;
+            $company->update_parents();
+           
+        }
+
+    }
+    
+    
+        function update_principal_contact($contact_key) {
+        $main_contact_key=$this->get_principal_contact_key();
+
+        if ($main_contact_key!=$contact_key) {
+			$contact=new Contact($contact_key);
+            $sql=sprintf("update `Contact Bridge`  set `Is Main`='No' where `Subject Type`='Customer' and  `Subject Key`=%d  and `Contact Key`=%d",
+                         $this->id
+                         ,$contact_key
+                        );
+            mysql_query($sql);
+            $sql=sprintf("update `Contact Bridge`  set `Is Main`='Yes' where `Subject Type`='Customer' and  `Subject Key`=%d  and `Contact Key`=%d",
+                         $this->id
+                         ,$contact_key
+                        );
+            mysql_query($sql);
+            
+            $sql=sprintf("update `Customer Dimension` set  `Customer Main Contact Key`=%d where `Customer Key`=%d",$contact->id,$this->id);
+            mysql_query($sql);
+           
+
+            $this->data['Customer Main Contact Key']=$contact->id;
+            $contact->update_parents();
+           
+        }
+
+    }
+    
+    
+    
+    
+    
+    
+    
+    function get_principal_contact_key() {
+
+        $sql=sprintf("select `Contact Key` from `Contact Bridge` where `Subject Type`='Customer' and `Subject Key`=%d and `Is Main`='Yes'",$this->id );
+        $res=mysql_query($sql);
+        if ($row=mysql_fetch_array($res)) {
+            $main_contact_key=$row['Contact Key'];
+        } else {
+            $main_contact_key=0;
+        }
+
+        return $main_contact_key;
+    }
+    
+    
+    function get_principal_company_key(){
+    $sql=sprintf("select `Company Key` from `Company Bridge` where `Subject Type`='Customer' and `Subject Key`=%d and `Is Main`='Yes'",$this->id );
+        $res=mysql_query($sql);
+        if ($row=mysql_fetch_array($res)) {
+            $main_company_key=$row['Company Key'];
+        } else {
+            $main_company_key=0;
+        }
+
+        return $main_company_key;
+    }
+
+
+
+ function get_contact_keys() {
+   
+    $sql=sprintf("select `Contact Key` from `Contact Bridge` where  `Subject Type`='Customer' and `Subject Key`=%d   "
+		 ,$this->id
+		 );
+    $contacts=array();
+    $result=mysql_query($sql);
+    while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+      $contacts[$row['Contact Key']]= $row['Contact Key'];
+    }
+    return $contacts;
+  }
+
+
+function get_company_keys() {
+   
+    $sql=sprintf("select `Company Key` from `Company Bridge` where  `Subject Type`='Customer' and `Subject Key`=%d   "
+		 ,$this->id
+		 );
+    $companies=array();
+    $result=mysql_query($sql);
+    while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+      $companies[$row['Company Key']]= $row['Company Key'];
+    }
+    return $companies;
+  }
+
 
 
 }

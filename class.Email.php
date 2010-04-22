@@ -312,9 +312,8 @@ protected function create($data,$options=''){
 	       );
   $res=mysql_query($sql);
   if($row=mysql_fetch_array($res)){
-    print "Error trying to add a duplicate email:\n";
     print_r($data);
-    exit;
+    exit("Error trying to add a duplicate email:\n");
   }
 
     
@@ -514,7 +513,7 @@ function update_parents() {
     $parents=array('Contact','Company','Customer','Supplier');
     foreach($parents as $parent) {
         $sql=sprintf("select `$parent Key` as `Parent Key`   from  `$parent Dimension` where `$parent Main Email Key`=%d group by `$parent Key`",$this->id);
-
+//print "$sql\n";
         $res=mysql_query($sql);
         while ($row=mysql_fetch_array($res)) {
             $principal_email_changed=false;
@@ -544,7 +543,6 @@ function update_parents() {
                          ,$parent_object->id
                         );
             mysql_query($sql);
-
 
 
             if ($old_princial_email!=$parent_object->data[$parent.' Main Plain Email'])
@@ -696,7 +694,7 @@ function display($tipo='link'){
 
   if(!isset($this->data['Email'])){
     print_r($this);
-    exit;
+    exit("error no email data\n");
   }
 
   switch($tipo){
