@@ -189,7 +189,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 									  })
 								     
 							   ,sortedBy : {
-							     key: "<?php echo$_SESSION['state']['hr']['positions']['order']?>",
+							    Key: "<?php echo$_SESSION['state']['hr']['positions']['order']?>",
 							     dir: "<?php echo$_SESSION['state']['hr']['positions']['order_dir']?>"
 								     }
 							   ,dynamicData : true
@@ -258,7 +258,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 							     })
 							 
 							 ,sortedBy : {
-							     key: "<?php echo$_SESSION['state']['company']['history']['order']?>",
+							    Key: "<?php echo$_SESSION['state']['company']['history']['order']?>",
 							     dir: "<?php echo$_SESSION['state']['company']['history']['order_dir']?>"
 							 },
 							 dynamicData : true

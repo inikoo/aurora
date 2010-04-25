@@ -354,7 +354,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 							     })
 							 
 							 ,sortedBy : {
-							     key: "<?php echo$_SESSION['state']['product']['stock_history']['order']?>",
+							    Key: "<?php echo$_SESSION['state']['product']['stock_history']['order']?>",
 							     dir: "<?php echo$_SESSION['state']['product']['stock_history']['order_dir']?>"
 							 },
 							 dynamicData : true
@@ -464,7 +464,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 							 renderLoopSize: 50,generateRequest : myRequestBuilder
 							 
 							 ,sortedBy : {
-							     key: "<?php echo$_SESSION['state']['location']['parts']['order']?>",
+							    Key: "<?php echo$_SESSION['state']['location']['parts']['order']?>",
 							     dir: "<?php echo$_SESSION['state']['location']['parts']['order_dir']?>"
 							 },
 							 dynamicData : true

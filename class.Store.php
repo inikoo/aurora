@@ -552,8 +552,8 @@ class Store extends DB_Table{
     $keys='(';$values='values(';
     foreach($basedata as $key=>$value){
       $keys.="`$key`,";
-      if(preg_match('/Store Email|Store Telephone|Store Telephone|Slogan/',$key))
-	$values.=prepare_mysql($value).",";
+      if(preg_match('/Store Email|Store Telephone|Store Telephone|Slogan|URL|Fax/i',$key))
+	$values.=prepare_mysql($value,false).",";
       else
 	$values.=prepare_mysql($value).",";
     }
@@ -579,6 +579,7 @@ class Store extends DB_Table{
 
       return;
     }else{
+   // print $sql;
       $this->msg=_(" Error can not create store");
 
     }

@@ -117,7 +117,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 								     })
 								 
 								 ,sortedBy : {
-								     key: "<?php echo$_SESSION['state']['supplier']['products']['order']?>",
+								    Key: "<?php echo$_SESSION['state']['supplier']['products']['order']?>",
 								     dir: "<?php echo$_SESSION['state']['supplier']['products']['order_dir']?>"
 								 }
 								 ,dynamicData : true

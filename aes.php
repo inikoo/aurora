@@ -9,7 +9,7 @@
  * AES Cipher function: encrypt 'input' with Rijndael algorithm
  *
  * @param input message as byte-array (16 bytes)
- * @param w     key schedule as 2D byte-array (Nr+1 x Nb bytes) - 
+ * @param w    Key schedule as 2D byte-array (Nr+1 x Nb bytes) - 
  *              generated from the cipher key by KeyExpansion()
  * @return      ciphertext as byte-array (16 bytes)
  */
@@ -85,7 +85,7 @@ function MixColumns($s, $Nb) {   // combine bytes of each col of state S [§5.1.
  * to generate a key schedule
  *
  * @param key cipher key byte-array (16 bytes)
- * @return    key schedule as 2D byte-array (Nr+1 x Nb bytes)
+ * @return   Key schedule as 2D byte-array (Nr+1 x Nb bytes)
  */
 function KeyExpansion($key) {  // generate Key Schedule from Cipher Key [§5.2]
   global $Rcon;  // PHP needs explicit declaration to access global variables!

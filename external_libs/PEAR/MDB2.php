@@ -2756,7 +2756,7 @@ class MDB2_Driver_Common extends PEAR
      *
      *           Default: 0
      *
-     *       key
+     *      Key
      *           bool    property that indicates that this field should be
      *           handled as a primary key or at least as part of the compound
      *           unique index of the table that will determine the row that will
@@ -2859,7 +2859,7 @@ class MDB2_Driver_Common extends PEAR
      * @param   mixed   array that contains the types of the columns in
      *                        the result set or MDB2_PREPARE_RESULT, if set to
      *                        MDB2_PREPARE_MANIP the query is handled as a manipulation query
-     * @param   mixed   key (field) value (parameter) pair for all lob placeholders
+     * @param   mixed  Key (field) value (parameter) pair for all lob placeholders
      *
      * @return  mixed   resource handle for the prepared query on success, 
      *                  a MDB2 error on failure

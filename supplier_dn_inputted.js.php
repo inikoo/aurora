@@ -101,13 +101,13 @@ var myonCellClick = function(oArgs) {
 	
 	if(column.action=='add_object'){
 	    var new_qty=parseFloat(data['received_quantity'])+1;
-	    key='quantity';
+	   Key='quantity';
 	}else if(column.action=='remove_object'){
 	    var new_qty=parseFloat(data['received_quantity'])-1;
-	    key='quantity';
+	   Key='quantity';
 	    
 	}else{
-	    key='counted';
+	   Key='counted';
 	    var new_qty='Yes';
 	    if(data['counted']=='<?php echo _('Yes')?>')
 		new_qty='No';

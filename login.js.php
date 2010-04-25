@@ -21,9 +21,9 @@
 var submit_form_on_enter=function(e){
      var key;     
      if(window.event)
-          key = window.event.keyCode; //IE
+         Key = window.event.keyCode; //IE
      else
-          key = e.which; //firefox     
+         Key = e.which; //firefox     
 
      if (key == 13)
 	 onmySubmit()

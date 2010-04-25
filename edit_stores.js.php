@@ -122,7 +122,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 									  })
 								     
 							   ,sortedBy : {
-							     key: "<?php echo$_SESSION['state']['store']['table']['order']?>",
+							    Key: "<?php echo$_SESSION['state']['store']['table']['order']?>",
 							     dir: "<?php echo$_SESSION['state']['store']['table']['order_dir']?>"
 								     }
 							   ,dynamicData : true

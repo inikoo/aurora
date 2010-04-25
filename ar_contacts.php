@@ -564,8 +564,8 @@ mysql_free_result($res);
 		   ,'name'=>$row['Company Name']
 		   ,'location'=>$row['Company Main Location']
 		   ,'email'=>$row['Company Main XHTML Email']
-		   ,'telephone'=>$row['Company Main Telephone']
-		   ,'fax'=>$row['Company Main FAX']
+		   ,'telephone'=>$row['Company Main XHTML Telephone']
+		   ,'fax'=>$row['Company Main XHTML FAX']
 		   ,'contact'=>$contact
 		   ,'town'=>$row['Address Town']
 		   ,'postcode'=>$row['Address Postal Code']
@@ -1079,9 +1079,9 @@ $conf=$_SESSION['state']['contacts']['table'];
 		   ,'name'=>$row['Contact Name']
 		   ,'location'=>$row['Contact Main Location']
 		   ,'email'=>$row['Contact Main XHTML Email']
-		   ,'telephone'=>$row['Contact Main Telephone']
-		   ,'mobile'=>$row['Contact Main Mobile']
-		   ,'fax'=>$row['Contact Main FAX']
+		   ,'telephone'=>$row['Contact Main XHTML Telephone']
+		   ,'mobile'=>$row['Contact Main XHTML Mobile']
+		   ,'fax'=>$row['Contact Main XHTML FAX']
 		   ,'company'=>$company
 		   ,'town'=>$row['Address Town']
 		   ,'postcode'=>$row['Address Postal Code']
@@ -1400,7 +1400,7 @@ if(isset( $_REQUEST['where']))
 		   'orders'=>number($data['Customer Orders']),
 		   'invoices'=>$data['Customer Orders Invoiced'],
 		   'email'=>$data['Customer Main XHTML Email'],
-		   'telephone'=>$data['Customer Main Telephone'],
+		   'telephone'=>$data['Customer Main XHTML Telephone'],
 		   'last_order'=>$last_order_date,
 		   
 		   'total_payments'=>money($data['Customer Net Payments']),

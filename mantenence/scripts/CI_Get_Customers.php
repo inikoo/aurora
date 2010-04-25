@@ -82,8 +82,8 @@ while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
 		'Customer Name'=>$row['name']
 		,'Customer Type'=>$tipo
 	
-		,'Customer Main Telephone'=>$tel
-		,'Customer Main FAX'=>$fax
+		,'Customer Main XHTML Telephone'=>$tel
+		,'Customer Main XHTML FAX'=>$fax
 		,'Customer Main Plain Email'=>$email
 	
 		,'Customer Main Contact Name'=>$contact_name
