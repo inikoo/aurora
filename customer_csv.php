@@ -51,8 +51,8 @@ $export_data=array(
 		   ,$customer->data['Customer Main Address Postal Code']
 		   ,$customer->data['Customer Main Address Country']
 		   ,"Staff"
-		   ,$customer->data['Customer Main Telephone']
-		   ,$customer->data['Customer Main FAX']
+		   ,$customer->data['Customer Main XHTML Telephone']
+		   ,$customer->data['Customer Main XHTML FAX']
 		   ,"a"
 		   ,"mobile"
 		   ,"26/09/2002"

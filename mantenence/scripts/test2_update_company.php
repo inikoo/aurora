@@ -54,8 +54,8 @@ $data=array(
 	    ,'Company Fiscal Name'=>'Ancient Wisdom Marketing Ltd'
 	    ,'Company Tax Number'=>'764298589'
 	    ,'Company Registration Number'=>'4108870'
-	    ,'Company Main Telephone'=>'+44 1142729165'
-	    ,'Company Main FAX'=>'+44 (0) 114 2706571'
+	    ,'Company Main XHTML Telephone'=>'+44 1142729165'
+	    ,'Company Main XHTML FAX'=>'+44 (0) 114 2706571'
 	    ,'Company Main Plain Email'=>'mail@ancientwisdom.biz'
 	    ,'Company Address Line 1'=>'BLOCK B, Parkwood Business Park, Parkwood Road'
 	    ,'Company Address Town'=>'Sheffield'
@@ -67,18 +67,17 @@ $data=array(
 
 $company=new Company('find create',$data);
 
-
 $data=array(
 	    'Company Name'=>'Ancient Wisdom'
 	    ,'Company Fiscal Name'=>'Ancient Wisdom Marketing Ltd'
 	    ,'Company Tax Number'=>'764298589'
 	    ,'Company Registration Number'=>'4108870'
-	    ,'Company Main Telephone'=>'+44 1142729165'
-	    ,'Company Main FAX'=>'+44 (0) 114 2706571'
+	    ,'Company Main XHTML Telephone'=>'+44 1142729165'
+	    ,'Company Main XHTML FAX'=>'+44 (0) 114 2706577'
 	    ,'Company Main Plain Email'=>'mail@ancientwisdom.biz'
 	    ,'Company Address Line 1'=>'BLOCK B, Parkwood Business Park, Parkwood Road'
 	    ,'Company Address Town'=>'Sheffield'
-	    ,'Company Address Postal Code'=>'S3 8AL '
+	    ,'Company Address Postal Code'=>'S4 8AL '
 	    ,'Company Address Country Name'=>'UK'
 	    ,'Company Main Contact Name'=>'Mr David L Hardy'
 );
@@ -87,23 +86,6 @@ $data=array(
 $company=new Company('find create update',$data);
 
 
-$data=array(
-	    'Company Name'=>'Ancient Wisdom'
-	    ,'Company Fiscal Name'=>'Ancient Wisdom Marketing Ltd'
-	    ,'Company Tax Number'=>'764298589'
-	    ,'Company Registration Number'=>'4108870'
-	    ,'Company Main Telephone'=>'+44 1142729165'
-	    ,'Company Main FAX'=>'+44 (0) 114 2706571'
-	    ,'Company Main Plain Email'=>'mails@ancientwisdom.biz'
-	    ,'Company Address Line 1'=>'BLOCK B, Parkwood Business Park, Parkwood Road'
-	    ,'Company Address Town'=>'Sheffield'
-	    ,'Company Address Postal Code'=>'S3 8AL '
-	    ,'Company Address Country Name'=>'UK'
-	    ,'Company Main Contact Name'=>'Mr David L Hardy'
-);
-
-
-$company=new Company('find create update remove emails if empty',$data,'remove emails if empty');
 
 
 

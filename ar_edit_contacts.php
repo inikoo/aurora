@@ -1512,7 +1512,7 @@ if(isset( $_REQUEST['where']))
 		  
 		   
 		   'email'=>$data['Customer Main Plain Email'],
-		   'telephone'=>$data['Customer Main Telephone'],
+		   'telephone'=>$data['Customer Main XHTML Telephone'],
 		   
 		   'contact_name'=>$data['Customer Main Contact Name'],
 		   'address'=>$data['Customer Main Location'],

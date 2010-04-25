@@ -635,7 +635,7 @@ function list_customers(){
      $order='`Balance`';
 
   
-   $sql="select  `Store Code`,`Customer Type by Activity`,`Customer Last Order Date`,`Customer Main Telephone`,`Customer Key`,`Customer Name`,`Customer Main Location`,`Customer Main XHTML Email`,`Customer Main Address Town`,`Customer Main Address Country First Division`,`Customer Main Ship To Postal Code`,count(DISTINCT `Invoice Key`) as Invoices , sum(`Invoice Total Net Amount`) as Balance  from `Customer Dimension` C left join `Invoice Dimension` I on (`Customer Key`=`Invoice Customer Key`) left join `Store Dimension` SD on (C.`Customer Store Key`=SD.`Store Key`)  $where $wheref  group by `Invoice Customer Key` order by $order $order_direction limit $start_from,$number_results";
+   $sql="select  `Store Code`,`Customer Type by Activity`,`Customer Last Order Date`,`Customer Main XHTML Telephone`,`Customer Key`,`Customer Name`,`Customer Main Location`,`Customer Main XHTML Email`,`Customer Main Address Town`,`Customer Main Address Country First Division`,`Customer Main Ship To Postal Code`,count(DISTINCT `Invoice Key`) as Invoices , sum(`Invoice Total Net Amount`) as Balance  from `Customer Dimension` C left join `Invoice Dimension` I on (`Customer Key`=`Invoice Customer Key`) left join `Store Dimension` SD on (C.`Customer Store Key`=SD.`Store Key`)  $where $wheref  group by `Invoice Customer Key` order by $order $order_direction limit $start_from,$number_results";
    // print $sql;
    $adata=array();
   
@@ -661,7 +661,7 @@ function list_customers(){
 		   //  'orders'=>number($data['Customer Orders']),
 		   'invoices'=>$data['Invoices'],
 		   'email'=>$data['Customer Main XHTML Email'],
-		   'telephone'=>$data['Customer Main Telephone'],
+		   'telephone'=>$data['Customer Main XHTML Telephone'],
 		   'last_order'=>strftime("%e %b %Y", strtotime($data['Customer Last Order Date'])),
 		   // 'total_payments'=>money($data['Customer Net Payments']),
 		   'net_balance'=>money($data['Balance']),

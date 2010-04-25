@@ -116,7 +116,7 @@ function previous_info_period(){
 								       })
 								   
 								   ,sortedBy : {
-								       key: "<?php echo $_SESSION['state']['product']['orders']['order']?>",
+								      Key: "<?php echo $_SESSION['state']['product']['orders']['order']?>",
 								       dir: "<?php echo $_SESSION['state']['product']['orders']['order_dir']?>"
 								   }
 								   ,dynamicData : true
@@ -178,7 +178,7 @@ function previous_info_period(){
 								     })
 								   
 								   ,sortedBy : {
-								       key: "<?php echo $_SESSION['state']['product']['customers']['order']?>",
+								      Key: "<?php echo $_SESSION['state']['product']['customers']['order']?>",
 								       dir: "<?php echo $_SESSION['state']['product']['customers']['order_dir']?>"
 								   }
 								   ,dynamicData : true
@@ -240,7 +240,7 @@ function previous_info_period(){
 								     })
 								   
 								   ,sortedBy : {
-								       key: "<?php echo $_SESSION['state']['product']['code_timeline']['order']?>",
+								      Key: "<?php echo $_SESSION['state']['product']['code_timeline']['order']?>",
 								       dir: "<?php echo $_SESSION['state']['product']['code_timeline']['order_dir']?>"
 								   }
 								   ,dynamicData : true

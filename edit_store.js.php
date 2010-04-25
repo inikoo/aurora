@@ -275,7 +275,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 									  })
 								     
 							   ,sortedBy : {
-							     key: "<?php echo$_SESSION['state']['store']['table']['order']?>",
+							    Key: "<?php echo$_SESSION['state']['store']['table']['order']?>",
 							     dir: "<?php echo$_SESSION['state']['store']['table']['order_dir']?>"
 								     }
 							   ,dynamicData : true
@@ -343,7 +343,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 							     })
 							 
 							 ,sortedBy : {
-							     key: "<?php echo$_SESSION['state']['store']['history']['order']?>",
+							    Key: "<?php echo$_SESSION['state']['store']['history']['order']?>",
 							     dir: "<?php echo$_SESSION['state']['store']['history']['order_dir']?>"
 							 },
 							 dynamicData : true
@@ -409,7 +409,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 							     })
 							 
 							 ,sortedBy : {
-							     key: "<?php echo$_SESSION['state']['store']['charges']['order']?>",
+							    Key: "<?php echo$_SESSION['state']['store']['charges']['order']?>",
 							     dir: "<?php echo$_SESSION['state']['store']['charges']['order_dir']?>"
 							 },
 							 dynamicData : true
@@ -476,7 +476,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 							     })
 							 
 							 ,sortedBy : {
-							     key: "<?php echo$_SESSION['state']['store']['campaigns']['order']?>",
+							    Key: "<?php echo$_SESSION['state']['store']['campaigns']['order']?>",
 							     dir: "<?php echo$_SESSION['state']['store']['campaigns']['order_dir']?>"
 							 },
 							 dynamicData : true
@@ -543,7 +543,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 							     })
 							 
 							 ,sortedBy : {
-							     key: "<?php echo$_SESSION['state']['store']['deals']['order']?>",
+							    Key: "<?php echo$_SESSION['state']['store']['deals']['order']?>",
 							     dir: "<?php echo$_SESSION['state']['store']['deals']['order_dir']?>"
 							 },
 							 dynamicData : true

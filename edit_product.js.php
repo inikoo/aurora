@@ -297,9 +297,9 @@ function select_cat(o,e){
 function to_save_on_enter(e,o){
      var key;     
      if(window.event)
-          key = window.event.keyCode; //IE
+         Key = window.event.keyCode; //IE
      else
-          key = e.which; //firefox     
+         Key = e.which; //firefox     
 
      //     alert(key);
      if (key == 13){
@@ -1511,7 +1511,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 							     })
 							 
 							 ,sortedBy : {
-							     key: "<?php echo$_SESSION['state']['product']['stock_history']['order']?>",
+							    Key: "<?php echo$_SESSION['state']['product']['stock_history']['order']?>",
 							     dir: "<?php echo$_SESSION['state']['product']['stock_history']['order_dir']?>"
 							 },
 							 dynamicData : true

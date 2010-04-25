@@ -472,7 +472,7 @@ var on_address_item_change_when_creating=function(){
      var items=Address_Keys;
      for ( var i in items )
 	 {
-	     key=items[i];
+	    Key=items[i];
 	     //   alert(key +' : '+address_prefix+'address_'+key)
 	     // alert(key +' '+Dom.get(address_prefix+'address_'+key).value);
 	     if(Dom.get(address_prefix+'address_'+key).value!=Dom.get(address_prefix+'address_'+key).getAttribute('ovalue')){

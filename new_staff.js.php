@@ -41,7 +41,7 @@ var postal_regex=new RegExp('.?');
 var contact_data={
     "Contact Name":"" 
     ,"Contact Main Plain Email":""
-    ,"Contact Main Telephone":""
+    ,"Contact Main XHTML Telephone":""
     ,"Contact Address Line 1":""
     ,"Contact Address Line 2":""
     ,"Contact Address Line 3":""
@@ -151,7 +151,7 @@ function print_data(){
 
 function get_contact_data(){
         contact_data['Contact Name']=Dom.get('Contact_Name').value;
-	contact_data['Contact Main Telephone']=Dom.get('Telephone').value;
+	contact_data['Contact Main XHTML Telephone']=Dom.get('Telephone').value;
 	contact_data['Contact Mobile']=Dom.get('Mobile').value;
 
 

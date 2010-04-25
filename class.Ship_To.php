@@ -82,7 +82,7 @@ class Ship_To extends DB_Table {
     Find Company with similar data
    
     Returns:
-    Key of the Shipping Addreses found, if create is found in the options string  returns the new key
+  Key of the Shipping Addreses found, if create is found in the options string  returns the new key
    */  
  function find($raw_data,$options){
    

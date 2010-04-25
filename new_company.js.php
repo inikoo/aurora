@@ -47,7 +47,7 @@ var company_data={
     "Company Name":""
     ,"Company Main Contact Name":""
     ,"Company Main Plain Email":""
-    ,"Company Main Telephone":""
+    ,"Company Main XHTML Telephone":""
     ,"Company Address Line 1":""
     ,"Company Address Line 2":""
     ,"Company Address Line 3":""
@@ -162,7 +162,7 @@ function get_company_data(){
 }
 function get_contact_data(){
         company_data['Company Main Contact Name']=Dom.get('Contact_Name').value;
-	company_data['Company Main Telephone']=Dom.get('Telephone').value;
+	company_data['Company Main XHTML Telephone']=Dom.get('Telephone').value;
 
 
 //	if(validate_data.email.validated==true)

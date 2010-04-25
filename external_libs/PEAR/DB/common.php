@@ -1511,7 +1511,7 @@ class DB_common extends PEAR
      * @param int   $fetchmode     the fetch mode to use
      * @param bool  $group         if true, the values of the returned array
      *                              is wrapped in another array.  If the same
-     *                              key value (in the first column) repeats
+     *                             Key value (in the first column) repeats
      *                              itself, the values will be appended to
      *                              this array instead of overwriting the
      *                              existing values.

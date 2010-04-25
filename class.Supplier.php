@@ -335,13 +335,13 @@ function get_name(){
     if($company->data['Company Main Telephone Key']){
       $main_telephone_key=$company->data['Company Main Telephone Key'];
       //$this->data['Supplier Main Telephone Key']=$company->data['Company Main Telephone Key'];
-      //$this->data['Supplier Main XHTML Telephone']=$company->data['Company Main Telephone'];
+      //$this->data['Supplier Main XHTML Telephone']=$company->data['Company Main XHTML Telephone'];
       //$this->data['Supplier Main Plain Telephone']=$company->data['Company Main Plain Telephone'];
     }
     if($company->data['Company Main FAX Key']){
       $main_fax_key=$company->data['Company Main FAX Key'];
       //$this->data['Supplier Main FAX Key']=$company->data['Company Main FAX Key'];
-      //$this->data['Supplier Main XHTML FAX']=$company->data['Company Main FAX'];
+      //$this->data['Supplier Main XHTML FAX']=$company->data['Company Main XHTML FAX'];
       //$this->data['Supplier Main Plain FAX']=$company->data['Company Main Plain FAX'];
     }
     if($company->data['Company Main Web Site']){
@@ -383,25 +383,7 @@ function get_name(){
       $this->new=true;
 
       
-      if($main_email_key){
-	$this->update_email($main_email_key);
-      }
-
-      if($main_telephone_key){
-
-	$this->add_tel(array(
-			     'Telecom Key'=>$main_telephone_key
-			     ,'Telecom Type'=>'Contact Telephone'
-			     ));
-	
-      }
-      if($main_fax_key){
-	$this->add_tel(array(
-			     'Telecom Key'=>$main_fax_key
-			     ,'Telecom Type'=>'Contact Fax'
-			     ));
-      }
-
+    
 
 
 
@@ -822,18 +804,18 @@ function get_name(){
   
 
     if($data['Telecom Type']=='Contact Telephone'){
-      $field='Supplier Main Telephone';
+      $field='Supplier Main XHTML Telephone';
       $field_key='Supplier Main Telephone Key';
       $field_plain='Supplier Main Plain Telephone';
       $old_principal_key=$this->data['Supplier Main Telephone Key'];
-      $old_value=$this->data['Supplier Main Telephone']." (Id:".$this->data['Supplier Main Telephone Key'].")";
+      $old_value=$this->data['Supplier Main XHTML Telephone']." (Id:".$this->data['Supplier Main Telephone Key'].")";
     }
     else{
-      $field='Supplier Main FAX';
+      $field='Supplier Main XHTML FAX';
       $field_key='Supplier Main FAX Key';
       $field_plain='Supplier Main Plain FAX';
       $old_principal_key=$this->data['Supplier Main FAX Key'];
-      $old_value=$this->data['Supplier Main FAX']." (Id:".$this->data['Supplier Main FAX Key'].")";
+      $old_value=$this->data['Supplier Main XHTML FAX']." (Id:".$this->data['Supplier Main FAX Key'].")";
     }
 
   
@@ -1050,8 +1032,8 @@ function get_name(){
       $this->msg_updated.=',Telecom not found';
       return;
     }
-    $old_value=$this->data['Supplier Main Telephone'];
-    $sql=sprintf("update `Supplier Dimension` set `Supplier Main Telephone`=%s ,`Supplier Main Plain Telephone`=%s  ,`Supplier Main Telephone Key`=%d where `Supplier Key`=%d "
+    $old_value=$this->data['Supplier Main XHTML Telephone'];
+    $sql=sprintf("update `Supplier Dimension` set `Supplier Main XHTML Telephone`=%s ,`Supplier Main Plain Telephone`=%s  ,`Supplier Main Telephone Key`=%d where `Supplier Key`=%d "
 		 ,prepare_mysql($telecom->display('xhtml'))
 		 ,prepare_mysql($telecom->display('plain'))
 		 ,$telecom->id
@@ -1063,9 +1045,9 @@ function get_name(){
       $this->updated;
       if ($old_value!=$telecom->display('xhtml'))
 	$history_data=array(
-			    'Indirect Object'=>'Supplier Main Telephone'
-			    ,'History Abstract'=>_('Supplier Main Telephone Changed')
-			    ,'History Details'=>_('Supplier Main Telephone changed from')." ".$old_value." "._('to').' '.$telecom->display('xhtml')
+			    'Indirect Object'=>'Supplier Main XHTML Telephone'
+			    ,'History Abstract'=>_('Supplier Main XHTML Telephone Changed')
+			    ,'History Details'=>_('Supplier Main XHTML Telephone changed from')." ".$old_value." "._('to').' '.$telecom->display('xhtml')
 			    );
       $this->add_history($history_data);
     }
@@ -1084,8 +1066,8 @@ function get_name(){
       $this->msg_updated.=',Telecom not found';
       return;
     }
-    $old_value=$this->data['Supplier Main FAX'];
-    $sql=sprintf("update `Supplier Dimension` set `Supplier Main FAX`=%s ,`Supplier Main Plain FAX`=%s  ,`Supplier Main Plain FAX`=%d where `Supplier Key`=%d "
+    $old_value=$this->data['Supplier Main XHTML FAX'];
+    $sql=sprintf("update `Supplier Dimension` set `Supplier Main XHTML FAX`=%s ,`Supplier Main Plain FAX`=%s  ,`Supplier Main Plain FAX`=%d where `Supplier Key`=%d "
 		 ,prepare_mysql($telecom->display('xhtml'))
 		 ,prepare_mysql($telecom->display('plain'))
 		 ,$telecom->id
@@ -1096,9 +1078,9 @@ function get_name(){
       $this->updated;
       if ($old_value!=$telecom->display('xhtml'))
 	$history_data=array(
-			    'Indirect Object'=>'Supplier Main FAX'
-			    ,'History Abstract'=>_('Supplier Main Fax Changed')
-			    ,'History Details'=>_('Supplier Main Fax changed from')." ".$old_value." "._('to').' '.$telecom->display('xhtml')
+			    'Indirect Object'=>'Supplier Main XHTML FAX'
+			    ,'History Abstract'=>_('Supplier Main XHTML FAX Changed')
+			    ,'History Details'=>_('Supplier Main XHTML FAX changed from')." ".$old_value." "._('to').' '.$telecom->display('xhtml')
 			    
 			    );
       $this->add_history($history_data);
@@ -1242,7 +1224,22 @@ function get_emails_keys(){
 
 }
 
+   function get_telecom_keys($type) {
 
+
+        $sql=sprintf("select TB.`Telecom Key` from `Telecom Bridge` TB   left join `Telecom Dimension` T on (T.`Telecom Key`=TB.`Telecom Key`)  where  `Telecom Type`=%s and     `Subject Type`='Supplier' and `Subject Key`=%d  group by `Telecom Key` order by `Is Main` desc  "
+                             ,prepare_mysql($type)
+        ,$this->id);
+        $address_keys=array();
+        $result=mysql_query($sql);
+
+        while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+
+            $address_keys[$row['Telecom Key']]= $row['Telecom Key'];
+        }
+        return $address_keys;
+
+    }
 
  function get_contacts($args='only active') {
 

@@ -107,24 +107,24 @@ var myonCellClick = function(oArgs) {
 	
 	if(column.action=='add_object' && column.key=='add'){
 	    var new_qty=parseFloat(data['received_quantity'])+1;
-	    key='quantity';
+	   Key='quantity';
 	}if(column.action=='add_object' && column.key=='add_damaged'){
 	    var new_qty=parseFloat(data['damaged_quantity'])+1;
 	    if(new_qty>data['received_quantity'])
 		new_qty=data['received_quantity']
-	    key='damaged_quantity';
+	   Key='damaged_quantity';
 	}else if(column.action=='remove_object'  && column.key=='remove'){
 	    var new_qty=parseFloat(data['received_quantity'])-1;
-	    key='quantity';
+	   Key='quantity';
 	    
 	}else if(column.action=='remove_object' && column.key=='remove_damaged' ){
 	    var new_qty=parseFloat(data['damaged_quantity'])-1;
 	    if(new_qty<0)
 		new_qty=0;
-	    key='damaged_quantity';
+	   Key='damaged_quantity';
 	    
 	}else{
-	    key='counted';
+	   Key='counted';
 	    var new_qty='Yes';
 	    if(data['counted']=='<?php echo _('Yes')?>')
 		new_qty='No';

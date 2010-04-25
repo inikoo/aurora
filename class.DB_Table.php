@@ -173,7 +173,7 @@ protected function update_field($field,$value,$options=''){
     $key_field='Supplier Product Current Key';
   
   $sql="select `".$field."` as value from  `".$this->table_name." Dimension`  where `$key_field`=".$this->id;
-  //print "$sql\n";
+ // print "$sql\n";
   $result=mysql_query($sql);
   if($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
     $old_value=$row['value'];

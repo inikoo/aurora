@@ -46,7 +46,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 							 // sortedBy: {key:"<?php echo$_SESSION['tables']['customers_list'][0]?>", dir:"<?php echo$_SESSION['tables']['customers_list'][1]?>"},
 							 renderLoopSize: 50,generateRequest : myRequestBuilder
 							 ,sortedBy : {
-							     key: "<?php echo$_SESSION['state']['report']['pickers']['order']?>",
+							    Key: "<?php echo$_SESSION['state']['report']['pickers']['order']?>",
 							     dir: "<?php echo$_SESSION['state']['report']['pickers']['order_dir']?>"
 							 },
 							 dynamicData : true
@@ -105,7 +105,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 							 // sortedBy: {key:"<?php echo$_SESSION['tables']['customers_list'][1]?>", dir:"<?php echo$_SESSION['tables']['customers_list'][1]?>"},
 							 renderLoopSize: 50,generateRequest : myRequestBuilder
 							 ,sortedBy : {
-							     key: "<?php echo$_SESSION['state']['report']['packers']['order']?>",
+							    Key: "<?php echo$_SESSION['state']['report']['packers']['order']?>",
 							     dir: "<?php echo$_SESSION['state']['report']['packers']['order_dir']?>"
 							 },
 							 dynamicData : true

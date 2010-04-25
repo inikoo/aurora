@@ -75,9 +75,9 @@ while (($data = fgetcsv($handle, 2000, "\t")) !== FALSE) {
       $x__data['Contact Work Address Country Primary Division']=$data[8];
       $x__data['Contact Work Address Postal Code']=$data[9];
       $x__data['Contact Work Address Country Name']=$data[10];
-      $x__data['Contact Main Telephone']=$data[12];
-      $x__data['Contact Main FAX']=$data[13];
-      $x__data['Contact Main Mobile']=$data[15];
+      $x__data['Contact Main XHTML Telephone']=$data[12];
+      $x__data['Contact Main XHTML FAX']=$data[13];
+      $x__data['Contact Main XHTML Mobile']=$data[15];
       $x__data['Contact Main Plain Email']=$data[92];
       
 
@@ -99,8 +99,8 @@ while (($data = fgetcsv($handle, 2000, "\t")) !== FALSE) {
       $x__data['Company Address Country Primary Division']=$data[8];
       $x__data['Company Address Postal Code']=$data[9];
       $x__data['Company Address Country Name']=$data[10];
-      $x__data['Company Main Telephone']=$data[12];
-      $x__data['Company Main FAX']=$data[13];
+      $x__data['Company Main XHTML Telephone']=$data[12];
+      $x__data['Company Main XHTML FAX']=$data[13];
       $x__data['Company Main Mobile']=$data[15];
       $x__data['Company Main Plain Email']=$data[92];
       $x__data['Company Main Contact Name']=$data[3];

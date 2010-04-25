@@ -7,7 +7,6 @@ TRUNCATE `Purchase Order Dimension`;
 TRUNCATE `Location Dimension`;
 TRUNCATE `Part Location Dimension`;truncate `Customer Ship To Bridge`;
 TRUNCATE `Contact Bridge`;TRUNCATE `Telecom Bridge`;TRUNCATE `Telecom Dimension`;
-TRUNCATE `Address Telecom Bridge`;
 TRUNCATE `Product History Dimension`;
 TRUNCATE `Product Same Code Dimension`;
 TRUNCATE `Product Same Code Dimension`;
@@ -34,4 +33,4 @@ truncate `Warehouse Area Dimension`;TRUNCATE `Part Picking Fact` ;truncate `Mast
 truncate `Company Bridge`;
 truncate `Category Bridge`;truncate `History Dimension`;truncate `Invoice Tax Bridge`;
 ;truncate `Company Area Dimension`;truncate `Corporation Dimension`;truncate `Company Old ID Bridge`;truncate `Contact Old ID Bridge`;
-truncate `Supplier Delivery Note Dimension`;truncate `Supplier Delivery Note Item Part Bridge`;truncate `Purchase Order Transaction Fact`
+truncate `Supplier Delivery Note Dimension`;truncate `Supplier Delivery Note Item Part Bridge`;truncate `Purchase Order Transaction Fact`;

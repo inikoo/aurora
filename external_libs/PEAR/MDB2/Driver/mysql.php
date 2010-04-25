@@ -825,7 +825,7 @@ class MDB2_Driver_mysql extends MDB2_Driver_Common
      * @param mixed   $result_types  array that contains the types of the columns in
      *                        the result set or MDB2_PREPARE_RESULT, if set to
      *                        MDB2_PREPARE_MANIP the query is handled as a manipulation query
-     * @param mixed   $lobs   key (field) value (parameter) pair for all lob placeholders
+     * @param mixed   $lobs  Key (field) value (parameter) pair for all lob placeholders
      * @return mixed resource handle for the prepared query on success, a MDB2
      *        error on failure
      * @access public
@@ -979,7 +979,7 @@ class MDB2_Driver_mysql extends MDB2_Driver_Common
      *
      *    Default: 0
      *
-     *    key
+     *   Key
      *          Boolean property that indicates that this field should be
      *          handled as a primary key or at least as part of the compound
      *          unique index of the table that will determine the row that will
