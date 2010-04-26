@@ -1,0 +1,360 @@
+<?php
+/*
+ File: Warehouse.php 
+
+ This file contains the Warehouse Class
+
+ About: 
+ Autor: Raul Perusquia <rulovico@gmail.com>
+ 
+ Copyright (c) 2009, Kaktus 
+ 
+ Version 2.0
+*/
+include_once('class.DB_Table.php');
+include_once('class.Email.php');
+include_once('class.Customer.php');
+require("external_libs/mail/email_message.php");
+class EmailSend extends DB_Table{
+
+  var $areas=false;
+  var $locations=false;
+  
+  function EmailSend() {
+
+    $this->secret="A390%4m*eodO)PIPOldyhs.dpdbwid";
+    $this->table_name='Email Send';
+    $this->ignore_fields=array('Email Send Key','Email Send First Read Date','Email Send Last Read Date','Email Send Number Reads','Email Send Date');
+
+  }
+
+
+  function get_data($key,$tag){
+    
+    if($key=='id')
+      $sql=sprintf("select *  from `Email Send Dimension` where `Email Send Key`=%d",$tag);
+    
+    else
+      return;
+    $result=mysql_query($sql);
+    if($this->data=mysql_fetch_array($result, MYSQL_ASSOC)){
+      $this->id=$this->data['Email Send Key'];
+    }
+      
+
+
+
+  }
+ 
+
+
+function create($data){
+
+  
+
+
+
+   $this->new=false;
+   $base_data=$this->base_data();
+  
+    foreach($data as $key=>$value){
+      if(array_key_exists($key,$base_data))
+	$base_data[$key]=_trim($value);
+    }
+
+      $keys='(';$values='values(';
+    foreach($base_data as $key=>$value){
+      $keys.="`$key`,";
+      $values.=prepare_mysql($value).",";
+    }
+    $keys=preg_replace('/,$/',')',$keys);
+    $values=preg_replace('/,$/',')',$values);
+    $sql=sprintf("insert into `Email Send Dimension` %s %s",$keys,$values);
+    //  print $sql;
+    if(mysql_query($sql)){
+      $this->id = mysql_insert_id();
+      $this->msg=_("Email to be Send Created");
+      $this->get_data('id',$this->id);
+   $this->new=true;
+   return;
+ }else{
+   $this->msg=_(" Error can not create email to be send");
+ }
+}
+ 
+
+  function get($key,$data=false){
+    switch($key){
+    case('Number Reads'):
+      if($this->data['Email Send Number Reads']=='')
+	return _('ND');
+      else
+	return number($this->data['Email Send Number Reads']);
+      break;
+    default:
+      if(array_key_exits($key,$this->data))
+	return $this->data[$key];
+      else
+	return '';
+    }
+  
+  } 
+   
+
+  function prepare_email_variables(){
+    $this->email_data['Images Server']='http://213.123.184.178';
+    $this->email_data['Tracker Server']='http://213.123.184.178';
+    $this->email_data['Content Server']='http://213.123.184.178';
+    
+    $this->email_data['Images Path']='/app_files/email/art/';
+    $this->email_data['Tracker Path']='/app_files/email/';
+    $this->email_data['Content Path']='/app_files/email/content';
+
+    
+  
+
+  }
+
+  function compose_registration_email($user_key){
+
+    $this->prepare_email_variables();
+
+
+    $this->email_data['Template']='emails/html_email_basic_template.html';
+
+    $user=new User($user_key);
+    if(!$user->id){
+      $this->error=true;
+      $this->msg='User not found';
+      return;
+    }
+    
+
+
+
+    if(preg_match('/^Customer/',$user->data['User Type'])){
+     
+      $subject=new Customer($user->data['User Parent Key']);
+      $store=new Store($subject->data['Customer Store Key']);
+
+      $this->email_data['Image Server Logo Filename']='email_header_'.$store->data['Store Code'].'.png';
+
+
+      $this->email_data['Our Name']=$store->data['Store Name'];
+      $this->email_data['Our Telephone']=$store->data['Store Telephone'];
+      $this->email_data['Our Email']=$store->data['Store Email'];
+      $this->email_data['Our URL']=$store->data['Store URL'];
+
+      $this->email_data['From Name']=$store->data['Store Contact Name'];
+      $this->email_data['From Email Address']=$store->data['Store Email'];
+
+      $this->email_data['To Name']=$subject->data['Customer Name'];
+      //$this->email_data['To Email']=$user->['User Handle'];
+      $this->email_data['To Email Address']='rulovico@gmail.com';
+      $this->email_data['To Email Address']='raul@ancientwisdom.biz';
+
+      switch($store->data['Store Locale']){
+      default:
+	$this->email_data['Subject']="Thank you for your registration with ".$this->email_data['Our Name'];
+	$this->email_data['Content'][]=array(
+				     'title'=>"Thank you for your registration with ".$this->email_data['Our Name']."!"
+				     ,'content'=>"You will now be able to see our prices and order from our big range of products.<br/><br/>"
+				     );
+      }
+      $this->email_data['Content Text Only']="Thank you for your registration with ".$this->email_data['Our Name']."!\n\nYou will now be able to see our prices and order from our big range of products\n\nRemenber that your username is ".$user->data['User Handle']."\n\n".$this->email_data['From Name']."\n".$this->email_data['Our Name'];
+
+       $recipient_type='Customer';
+       $recipient_key=$subject->id;
+       
+    }elseif($user->data['User Type']=='Supplier'){
+      $subject=new Supplier($user->data['User Parent Key']);
+
+    }else{
+      $this->error=true;
+      $this->msg='registration email no applicable';
+      return;
+      
+    }
+
+    $email=new Email('email',$user->data['User Handle']);
+
+     $data=array(
+		'Email Send Type'=>'Registration',
+		'Email Send Type Key'=>0,
+		'Email Send Recipient Type'=>$recipient_type,
+		'Email Send Recipient Key'=>$recipient_key,
+		'Email Key'=>$email->id
+		);
+    
+    $this->create($data);
+    $this->email_data['Tracker Key']=$this->id.'_'.md5($this->secret.$this->id);
+    
+    
+    
+  }
+
+
+  function send(){
+
+    global $smarty;
+
+
+/*
+ *  Trying to guess your e-mail address.
+ *  It is better that you change this line to your address explicitly.
+ *  $from_address="me@mydomain.com";
+ *  $from_name="My Name";
+ */
+	$from_address=$this->email_data['From Email Address'];
+	
+	$from_name=$this->email_data['From Name'];
+
+	$reply_name=$from_name;
+	$reply_address=$from_address;
+	$reply_address=$from_address;
+	$error_delivery_name=$from_name;
+	$error_delivery_address=$from_address;
+
+/*
+ *  Change these lines or else you will be mailing the class author.
+ */
+	$to_name=$this->email_data['To Name'];
+	$to_address=$this->email_data['To Email Address'];
+
+	$subject=$this->email_data['Subject'];
+	$email_message=new email_message_class;
+	$email_message->SetEncodedEmailHeader("To",$to_address,$to_name);
+	$email_message->SetEncodedEmailHeader("From",$from_address,$from_name);
+	$email_message->SetEncodedEmailHeader("Reply-To",$reply_address,$reply_name);
+	$email_message->SetHeader("Sender",$from_address);
+
+/*
+ *  Set the Return-Path header to define the envelope sender address to which bounced messages are delivered.
+ *  If you are using Windows, you need to use the smtp_message_class to set the return-path address.
+ */
+	if(defined("PHP_OS")
+	&& strcmp(substr(PHP_OS,0,3),"WIN"))
+		$email_message->SetHeader("Return-Path",$error_delivery_address);
+
+	$email_message->SetEncodedHeader("Subject",$subject);
+
+/*
+ *  An HTML message that requires any dependent files to be sent,
+ *  like image files, style sheet files, HTML frame files, etc..,
+ *  needs to be composed as a multipart/related message part.
+ *  Different parts need to be created before they can be added
+ *  later to the message.
+ *
+ *  Parts can be created from files that can be opened and read.
+ *  The data content type needs to be specified. The can try to guess
+ *  the content type automatically from the file name.
+ */
+	$image=array(
+		"FileName"=>$this->email_data['Images Server'].$this->email_data['Images Path'].$this->email_data['Image Server Logo Filename'],
+		"Content-Type"=>"automatic/name",
+		"Disposition"=>"inline",
+/*
+ *  You can set the Cache option if you are going to send the same message
+ *  to multiple users but this file part does not change.
+ *
+		"Cache"=>1
+ */
+
+		
+	
+
+	);
+	//	$email_message->CreateFilePart($image,$image_header);
+
+/*
+ *  Parts that need to be referenced from other parts,
+ *  like images that have to be hyperlinked from the HTML,
+ *  are referenced with a special Content-ID string that
+ *  the class creates when needed.
+ */
+//	$image_header_id=$email_message->GetPartContentID($image_header);
+
+/*
+ *  Many related file parts may be embedded in the message.
+ */
+	$image=array(
+		     "FileName"=>$this->email_data['Tracker Server'].$this->email_data['Tracker Path'].'tracker.php?key='.$this->email_data['Tracker Key'],
+		     "Content-Type"=>"image/png",
+		     "Disposition"=>"inline",
+		     );
+	//	$email_message->CreateFilePart($image,$tracker);
+	//	$tracker_image_id="cid:".$email_message->GetPartContentID($tracker);
+	
+	
+	
+	//$html_smarty->assign("$email_url",$this->email_data['Content Server'].$this->email_data['Content Path'].'mail_send.php?key='.$this->email_data['Email Send Encrypted Key']);
+	$smarty->assign("our_name",$this->email_data['Our Name']);
+	$smarty->assign("our_url",$this->email_data['Our URL']);
+	$smarty->assign("our_telephone",$this->email_data['Our Telephone']);
+	
+	$smarty->assign("header_image",$this->email_data['Images Server'].$this->email_data['Images Path'].$this->email_data['Image Server Logo Filename']);
+	$smarty->assign("tracker_image_id",$this->email_data['Tracker Server'].$this->email_data['Tracker Path'].'tracker.php?key='.$this->email_data['Tracker Key']);
+	$smarty->assign("paragraphs",$this->email_data['Content']);
+
+
+
+	$html_message=$smarty->fetch($this->email_data['Template']);
+
+	$email_message->CreateQuotedPrintableHTMLPart($html_message,"",$html_part);
+
+
+
+
+/*
+ *  It is strongly recommended that when you send HTML messages,
+ *  also provide an alternative text version of HTML page,
+ *  even if it is just to say that the message is in HTML,
+ *  because more and more people tend to delete HTML only
+ *  messages assuming that HTML messages are spam.
+ */
+	$text_message=$this->email_data['Content Text Only'];
+	$email_message->CreateQuotedPrintableTextPart($email_message->WrapText($text_message),"",$text_part);
+
+/*
+ *  Multiple alternative parts are gathered in multipart/alternative parts.
+ *  It is important that the fanciest part, in this case the HTML part,
+ *  is specified as the last part because that is the way that HTML capable
+ *  mail programs will show that part and not the text version part.
+ */
+	$alternative_parts=array(
+		$text_part,
+		$html_part
+	);
+	$email_message->CreateAlternativeMultipart($alternative_parts,$alternative_part);
+
+/*
+ *  All related parts are gathered in a single multipart/related part.
+ */
+	$related_parts=array(
+		$alternative_part,
+		//	$image_header,
+		//	$tracker
+	);
+	$email_message->AddRelatedMultipart($related_parts);
+
+
+/*
+ *  The message is now ready to be assembled and sent.
+ *  Notice that most of the functions used before this point may fail due to
+ *  programming errors in your script. You may safely ignore any errors until
+ *  the message is sent to not bloat your scripts with too much error checking.
+ */
+	$error=$email_message->Send();
+	if(strcmp($error,""))
+	  return 0;
+	else
+	  return 1;
+	//	var_dump($email_message->parts);
+
+  }
+
+} 
+
+ 
+
+?>
