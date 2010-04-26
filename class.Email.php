@@ -858,7 +858,7 @@ class Email extends DB_Table {
         $history_data['History Details']=_('Email').' '.$this->display('plain')." "._('has been deleted');
         $history_data['Action']='deleted';
         $history_data['Direct Object']='Email';
-        $history_data['Direct Object Key']=$this->i;
+        $history_data['Direct Object Key']=$this->id;
         $history_data['Indirect Object']='';
         $history_data['Indirect Object Key']='';
         $this->add_history($history_data);

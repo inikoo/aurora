@@ -73,7 +73,7 @@ class Telecom extends DB_Table {
     function display($tipo='') {
 
         if (!$this->id) {
-            exit("fatal error, fix it\n");
+            print("telecom with out nothing, fatal error, fix it\n");
         }
 
         switch ($tipo) {
@@ -1093,7 +1093,7 @@ class Telecom extends DB_Table {
 
         $base_data=$this->base_data();
         foreach($data as $key=>$value) {
-            if ($value!=$this->data[$key]) {
+            if ( array_key_exists($key,$this->data) and   $value!=$this->data[$key]) {
                 $this->update_field_switcher($key,$value,$options);
             }
 

@@ -476,7 +476,7 @@ class Company extends DB_Table {
                     unset($raw_data['Company Main XHTML Telephone']);
                 }
 
-               
+
                 if (isset($raw_data['Company Main Plain Telephone'])) {
                     if (!$address->get_principal_telecom_key('Telephone')) {
                         $telephone_data=array();
@@ -500,7 +500,7 @@ class Company extends DB_Table {
                 }
 
 
-              if (isset($raw_data['Company Main XHTML FAX'])) {
+                if (isset($raw_data['Company Main XHTML FAX'])) {
                     if (!$address->get_principal_telecom_key('FAX')) {
                         $telephone_data=array();
                         $telephone_data['editor']=$this->editor;
@@ -522,7 +522,7 @@ class Company extends DB_Table {
                     unset($raw_data['Company Main XHTML FAX']);
                 }
 
-               
+
                 if (isset($raw_data['Company Main Plain FAX'])) {
                     if (!$address->get_principal_telecom_key('FAX')) {
                         $telephone_data=array();
@@ -703,7 +703,7 @@ class Company extends DB_Table {
 
 
             $address_data['editor']=$this->editor;
-
+           
             $address=new Address("find in company create",$address_data);
 
             $this->associate_address($address->id);

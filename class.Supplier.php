@@ -319,6 +319,7 @@ function get_name(){
 
     if(!$this->data['Supplier Company Key']){
       $raw_data['editor']=$this->editor;
+      //print_r($raw_data);
       $company=new company('find in supplier create',$raw_data);
     
       $this->data['Supplier Company Key']=$company->id;

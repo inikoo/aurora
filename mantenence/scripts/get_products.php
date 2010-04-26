@@ -40,8 +40,8 @@ $Data_Audit_ETL_Software="$software $version";
 
 $file_name='/data/plaza/AWorder2002.xls';
 $csv_file='tmp.csv';
-exec('/usr/local/bin/xls2csv    -s cp1252   -d 8859-1   '.$file_name.' > '.$csv_file);
-exit;
+//exec('/usr/local/bin/xls2csv    -s cp1252   -d 8859-1   '.$file_name.' > '.$csv_file);
+
 $handle_csv = fopen($csv_file, "r");
 $column=0;
 $products=false;
@@ -106,7 +106,6 @@ $nodes->add_new(3 , $data);
 $data=array('`Category Name`'=>'Fantasy');
 $nodes->add_new(3 , $data);
 
-
 $store_data=array('Store Code'=>'UK',
 		  'Store Name'=>'Ancient Wisdom',
 		  'Store Locale'=>'en_GB',
@@ -135,12 +134,12 @@ $store_data=array('Store Code'=>'FR',
 		  'Store Home Country Short Name'=>'FR', 
 		  );
 $store=new Store('find',$store_data,'create');
+
 $warehouse=new Warehouse('find',array('Warehouse Code'=>'W','Warehouse Name'=>'Parkwood'),'create');
 
 $unk_location=new Location('find',array('Location Code'=>'UNK','Location Name'=>'Unknown'),'create');
 
 $unk_supplier=new Supplier('find',array('Supplier Code'=>'UNK','Supplier Name'=>'Unknown'),'create');
-
 $charge_data=array(
 		     'Charge Description'=>'£7.50 small order'
 		      ,'Store Key'=>$store_key
@@ -153,7 +152,6 @@ $charge_data=array(
 		     ,'Charge Expiration Date'=>''
 		     );
 $small_order_charge=new Charge('find create',$charge_data);
-
 
 
 $dept_data=array(
