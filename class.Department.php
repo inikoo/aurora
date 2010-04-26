@@ -1379,6 +1379,7 @@ public $new_value=false;
       $page_data['Page Store Creation Date']=date('Y-m-d H:i:s');
       $page_data['Page Store Last Update Date']=date('Y-m-d H:i:s');
       $page_data['Page Store Last Structural Change Date']=date('Y-m-d H:i:s');
+      $page_data['Page Section']='catalogue';
       $page_data['Page Type']='Store';
       $page_data['Page Store Source Type'] ='Dynamic';
       $page_data['Page Store Code']=$store->data['Store Code'];

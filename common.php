@@ -9,6 +9,9 @@ require_once "class.Session.php";
 require_once "class.Auth.php";
 require_once "class.User.php";
 
+
+
+
 $default_DB_link=mysql_connect($dns_host,$dns_user,$dns_pwd );
 if(!$default_DB_link){print "Error can not connect with database server\n";}
 $db_selected=mysql_select_db($dns_db, $default_DB_link);
@@ -21,6 +24,9 @@ date_default_timezone_set(TIMEZONE) ;
 //mysql_query(sprintf("SET time_zone =%s",prepare_mysql(TIMEZONE)));
 mysql_query("SET time_zone='+0:00'");
 require_once 'conf/conf.php';   
+
+
+
 
 $session = new Session($myconf['max_session_time'],1,100);
 //print_r($_SESSION);

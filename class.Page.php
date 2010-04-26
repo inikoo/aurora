@@ -146,17 +146,20 @@ function find($raw_data,$options){
       $update='update';
     }
 
+    
+    
 
-    $sql=sprintf("select `Page Key` from `Page Dimension` where `Page URL`=%s"
-		 ,prepare_mysql($data['Page URL'])
+
+    //   $sql=sprintf("select `Page Key` from `Page Dimension` P left join `Page Store Dimension` PS on (P.`Page Key`=PS.`Page Key`)   where `Page URL`=%s "
+    //		 ,prepare_mysql($data['Page URL'])
 		 
-		 );
-    $res=mysql_query($sql);
-    if($row=mysql_fetch_array($res)){
-      $this->found=true;
-      $this->found_key=$row['Page Key'];
-      $this->get_data('id',$this->found_key);
-    }
+    //		 );
+    //$res=mysql_query($sql);
+    //if($row=mysql_fetch_array($res)){
+    //  $this->found=true;
+    //  $this->found_key=$row['Page Key'];
+    //  $this->get_data('id',$this->found_key);
+    // }
 
 
     if(!$this->found and $create){

@@ -75,12 +75,44 @@ class Customer extends DB_Table {
         elseif(preg_match('/^find/',$arg1)) {
             $this->find($arg2,$arg1);
             return;
+        }elseif(preg_match('/^force_create/',$arg1)) {
+            $this->prepare_force_create($arg2,$arg1);
+            return;
         }
 
         $this->get_data($arg1,$arg2);
 
 
     }
+
+
+    function prepare_force_create($data){
+      
+      if(array_key_exists('Customer Main Plain Email',$data)){
+	$sql=sprintf("select `Customer Key` from `Customer Dimension` left join `Email Bridge` EB on (`Subject Key`=`Customer Key`) left join `Email Dimension` E on (E.`Email Key`=EB.`Email Key`)  where `Subject Type`='Customer'  and `Email`=%s  ", $data['Customer Main Plain Email']);
+	$result=mysql_query($sql);
+	if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+	  $this->error=true;
+	  $this->msg='Email already in';
+	  return;
+	  
+	}
+      }
+
+
+      if (isset($raw_data['editor'])) {
+            foreach($raw_data['editor'] as $key=>$value) {
+
+                if (array_key_exists($key,$this->editor))
+                    $this->editor[$key]=$value;
+
+            }
+        }
+      
+      $this->create($data);
+
+    }
+
 
     /*
       Method: find_staff
@@ -138,6 +170,11 @@ class Customer extends DB_Table {
 
 
     */
+
+
+
+
+
     function find($raw_data,$options='') {
 
         $this->found_child=false;
@@ -684,7 +721,8 @@ class Customer extends DB_Table {
 
         // print_r($raw_data);
 
-        // print_r($this->data);
+
+	//   print_r($this->data);
         //  print "in class cust xxxxxxxxxxxxxxxxxxxxxxxxxxxx\n";
         //  exit;
         $keys='';
