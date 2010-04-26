@@ -17,6 +17,13 @@ include_once('../../class.CurrencyExchange.php');
 //include_once('map_order_functions.php');
 include_once('common_read_orders_functions.php');
 
+function microtime_float() {
+    list($utime, $time) = explode(" ", microtime());
+    return ((float)$utime + (float)$time);
+  }
+
+
+
 $con=@mysql_connect($dns_host,$dns_user,$dns_pwd );
 if (!$con) {
     print "Error can not connect with database server\n";
@@ -671,10 +678,6 @@ function is_company($name) {
 }
 
 
-function microtime_float() {
-    list($utime, $time) = explode(" ", microtime());
-    return ((float)$utime + (float)$time);
-  }
 
 
 ?>

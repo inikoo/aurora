@@ -180,7 +180,7 @@ class Order extends DB_Table{
 
       }else{
 	//print "Cust data\n";
-       //print_r($data['Customer Data']);
+     //  print_r($data['Customer Data']);
 	
 	//-------------------------
       
@@ -1143,7 +1143,7 @@ class Order extends DB_Table{
 		     , prepare_mysql ( $this->data ['Order Store Code'] )
 		     
 		     ,prepare_mysql ( $this->data ['Order Main Source Type'] )
-		     , prepare_mysql ( $this->data ['Order Customer Key'] ), prepare_mysql ( $this->data ['Order Customer Name'] ), prepare_mysql ( $this->data ['Order Current Dispatch State'] ), prepare_mysql ( $this->data ['Order Current Payment State'] ), prepare_mysql ( $this->data ['Order Current XHTML State'] )
+		     , prepare_mysql ( $this->data ['Order Customer Key'] ), prepare_mysql ( $this->data ['Order Customer Name'] ,false), prepare_mysql ( $this->data ['Order Current Dispatch State'] ), prepare_mysql ( $this->data ['Order Current Payment State'] ), prepare_mysql ( $this->data ['Order Current XHTML State'] )
 		     , prepare_mysql ( $this->data ['Order Customer Message'] )
 		     , prepare_mysql ( $this->data ['Order Original Data MIME Type'] ), prepare_mysql ( $this->data ['Order XHTML Ship Tos'] ), 
 			   

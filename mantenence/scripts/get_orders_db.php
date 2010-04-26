@@ -14,6 +14,17 @@ include_once('../../class.TimeSeries.php');
 include_once('../../class.CurrencyExchange.php');
 include_once('common_read_orders_functions.php');
 
+
+function microtime_float() {
+    list($utime, $time) = explode(" ", microtime());
+    return ((float)$utime + (float)$time);
+  }
+
+
+$myFile = "orders_time.txt";
+$fh = fopen($myFile, 'w') or die("can't open file");
+$time_data=array();
+$orders_done=0;
 $store_code='U';
 $__currency_code='GBP';
 
@@ -117,9 +128,9 @@ $fam_promo_key=$fam_promo->id;
 
 
 
-$sql="select *,replace(   replace(replace(replace(replace(replace(replace(replace(replace(filename,'r/Orders/','r/Orders/00'),'s/Orders/','s/Orders/0'),'y/Orders/','y/Orders/0'),'z/Orders/9','z/Orders/09'),'x/Orders/','x/Orders/0'),'t/Orders/','t/Orders/0'),'u/Orders/','u/Orders/0'),'z/Orders/8','z/Orders/08')     ,directory,'') as name from  orders_data.orders  where   (last_transcribed is NULL  or last_read>last_transcribed) and deleted='No'   order by name ";
+//$sql="select *,replace(   replace(replace(replace(replace(replace(replace(replace(replace(filename,'r/Orders/','r/Orders/00'),'s/Orders/','s/Orders/0'),'y/Orders/','y/Orders/0'),'z/Orders/9','z/Orders/09'),'x/Orders/','x/Orders/0'),'t/Orders/','t/Orders/0'),'u/Orders/','u/Orders/0'),'z/Orders/8','z/Orders/08')     ,directory,'') as name from  orders_data.orders  where   (last_transcribed is NULL  or last_read>last_transcribed) and deleted='No'   order by name ";
 
-//$sql="select * from  orders_data.orders  where    deleted='No' and filename like '/mnt/%/Orders/105112.xls'  order by filename ";
+$sql="select * from  orders_data.orders  where    (last_transcribed is NULL  or last_read>last_transcribed) and deleted='No'  order by filename ";
 
 //$sql="select * from  orders_data.orders where filename like '%refund.xls'   order by filename";
 //$sql="select * from  orders_data.orders  where filename like '/mnt/%/Orders/45240.xls' order by filename";
@@ -388,7 +399,8 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
       print "ERROR (Fecha sospechosamente muy  antigua) $filename $date_order \n";
       continue;
     }
-   
+    $base_time=microtime_float();
+   $orders_done++;
 
     $extra_shipping=0;
   
@@ -2183,7 +2195,15 @@ if ($transaction['bonus']>0) {
 
 
 
+$time_data[]=microtime_float()-$base_time;
+   if(fmod($contador,50)==0){
+    list($min,$avg,$max)=get_time_averages($time_data);
+     $stringData="$contador $min $avg $max\n";
+    
+    fwrite($fh, $stringData);
 
+    $time_data=array();
+    }
 
 
 
@@ -2389,6 +2409,23 @@ function is_same_address($data) {
 
 
 
+fclose($fh);
+
+function get_time_averages($data){
+$bins=count($data);
+$min=9999999999;
+$max=-9999999999;
+$sum=0;
+foreach($data as $value){
+    if($value<$min)
+        $min=$value;
+    if($value>$max)
+        $max=$value;
+    $sum+=$value;    
+}
+return array($min,$sum/$bins,$max);
+
+}
 
 
 

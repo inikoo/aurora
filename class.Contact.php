@@ -2436,10 +2436,21 @@ class Contact extends DB_Table {
 
         case('Contact Main XHTML Mobile'):
             $main_mobile_key=$this->get_principal_mobile_key();
+            if($main_mobile_key){
             $mobile=new Telecom($main_mobile_key);
             $mobile->editor=$this->editor;
             $mobile->update_number($value,$this->data['Contact Main Country Code']);
-
+           }else{
+            $telephone_data=array();
+                $telephone_data['editor']=$this->editor;
+                $telephone_data['Telecom Raw Number']=$value;
+                $telephone_data['Telecom Type']='Telephone';
+                $telephone=new Telecom("find in company create country code ".$this->data['Contact Main Country Code'],$telephone_data);
+                if($telephone->id){
+                  $this->associate_mobile($telephone->id);
+                }
+           
+           }
             break;
         case('Home Address'):
 
@@ -3832,78 +3843,7 @@ class Contact extends DB_Table {
 
 
 
-
-    function update_telephone($telecom_key) {
-
-        $old_telecom_key=$this->data['Contact Main Telephone Key'];
-
-        $telecom=new Telecom($telecom_key);
-        if (!$telecom->id) {
-            $this->error=true;
-            $this->msg='Telecom not found';
-            $this->msg_updated.=',Telecom not found';
-            return;
-        }
-        $old_value=$this->data['Contact Main XHTML Telephone'];
-        $sql=sprintf("update `Contact Dimension` set `Contact Main XHTML Telephone `=%s ,`Contact Main Plain Telephone`=%s  ,`Contact Main Telephone Key`=%d where `Contact Key`=%d "
-                     ,prepare_mysql($telecom->display('xhtml'))
-                     ,prepare_mysql($telecom->display('plain'))
-                     ,$telecom->id
-                     ,$this->id
-                    );
-        mysql_query($sql);
-        if (mysql_affected_rows()) {
-
-            $this->updated;
-            if ($old_value!=$telecom->display('xhtml')) {
-                $history_data=array(
-                                  'Indirect Object'=>'Contact Main XHTML Telephone'
-                                                    ,'History Abstract'=>_('Contact Main XHTML Telephone  Changed')
-                                                                        ,'History Details'=>_('Contact Main XHTML Telephone  changed from')." ".$old_value." "._('to').' '.$telecom->display('xhtml')
-
-
-                              );
-                $this->add_history($history_data);
-            }
-        }
-
-    }
-
-    function update_fax($telecom_key) {
-
-
-        $old_telecom_key=$this->data['Contact Main FAX Key'];
-
-        $telecom=new Telecom($telecom_key);
-        if (!$telecom->id) {
-            $this->error=true;
-            $this->msg='Telecom not found';
-            $this->msg_updated.=',Telecom not found';
-            return;
-        }
-        $old_value=$this->data['Contact Main XHTML FAX'];
-        $sql=sprintf("update `Contact Dimension` set `Contact Main XHTML FAX `=%s ,`Contact Main Plain FAX`=%s  ,`Contact Main Plain FAX`=%d where `Contact Key`=%d "
-                     ,prepare_mysql($telecom->display('xhtml'))
-                     ,prepare_mysql($telecom->display('plain'))
-                     ,$telecom->id
-                     ,$this->id
-                    );
-        mysql_query($sql);
-        if (mysql_affected_rows()) {
-            $this->updated;
-            if ($old_value!=$telecom->display('xhtml')) {
-                $history_data=array(
-                                  'Indirect Object'=>'Contact Main XHTML FAX'
-                                                    ,'History Abstract'=>_('Contact Main XHTML FAX  Changed')
-                                                                        ,'History Details'=>_('Contact Main XHTML FAX  changed from')." ".$old_value." "._('to').' '.$telecom->display('xhtml')
-                              );
-                $this->add_history($history_data);
-            }
-        }
-
-    }
-
-
+ 
 
     function associate_mobile($mobile_key) {
 
