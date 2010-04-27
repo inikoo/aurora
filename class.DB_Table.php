@@ -210,7 +210,7 @@ protected function update_field($field,$value,$options=''){
        and $save_history
        ){
       $history_data=array(
-			  'indirect_object'=>$field
+			  'Indirect Object'=>$field
 			  ,'old_value'=>$old_value
 			  ,'new_value'=>$value
 			  
@@ -260,7 +260,7 @@ protected function get_editor_data(){
 
 protected function add_history($raw_data,$force=false){
 
-
+//print_r($raw_data);
   $editor_data=$this->get_editor_data();
 
  

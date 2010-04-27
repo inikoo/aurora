@@ -554,14 +554,13 @@ class Email extends DB_Table {
                 if ($principal_email_changed) {
 
                     if ($old_princial_email=='') {
-
                         $history_data['History Abstract']='Email Associated';
                         $history_data['History Details']=$this->display('plain')." "._('associated with')." ".$parent_object->get_name()." ".$parent_label;
                         $history_data['Action']='associated';
                         $history_data['Direct Object']=$parent;
                         $history_data['Direct Object Key']=$parent_object->id;
                         $history_data['Indirect Object']='Email';
-                        $history_data['Indirect Object Key']='';
+                        $history_data['Indirect Object Key']=$this->id;
                         $this->add_history($history_data);
                     } else {
                         $history_data['History Abstract']='Email Changed';
@@ -570,7 +569,7 @@ class Email extends DB_Table {
                         $history_data['Direct Object']=$parent;
                         $history_data['Direct Object Key']=$parent_object->id;
                         $history_data['Indirect Object']='Email';
-                        $history_data['Indirect Object Key']='';
+                        $history_data['Indirect Object Key']=$this->id;
 
                         $this->add_history($history_data);
 

@@ -4415,7 +4415,7 @@ $data=$this->prepare_data($data,$options);
                              ,$parent_object->id
                             );
                 mysql_query($sql);
-                
+               // print "$sql\n";
                 if($parent=='Customer'){
                  $sql=sprintf("update `$parent Dimension` set `$parent Main Town` =%s,`$parent Main Postal Code` =%s,`$parent Main Country First Division` =%s ,`Customer Main Country 2 Alpha Code`=%s where `$parent Key`=%d"
                              ,prepare_mysql($this->data['Address Town'])
@@ -4444,7 +4444,7 @@ $data=$this->prepare_data($data,$options);
                         $history_data['Direct Object']=$parent;
                         $history_data['Direct Object Key']=$parent_object->id;
                         $history_data['Indirect Object']='Address';
-                        $history_data['Indirect Object Key']='';
+                        $history_data['Indirect Object Key']=$this->id;
                         $this->add_history($history_data);
                     } else {
                         $history_data['History Abstract']='Address Changed';
@@ -4453,7 +4453,7 @@ $data=$this->prepare_data($data,$options);
                         $history_data['Direct Object']=$parent;
                         $history_data['Direct Object Key']=$parent_object->id;
                         $history_data['Indirect Object']='Address';
-                        $history_data['Indirect Object Key']='';
+                        $history_data['Indirect Object Key']=$this->id;
 
                         $this->add_history($history_data);
 
@@ -4557,6 +4557,7 @@ $data=$this->prepare_data($data,$options);
 
         if ($main_telecom_key!=$telecom_key) {
             $telecom=new Telecom($telecom_key);
+            $telecom->editor=$this->editor;
             $sql=sprintf("update `Telecom Bridge`  set `Is Main`='No' where `Subject Type`='Address'   and `Subject Key`=%d  and `Telecom Key`=%d"
                          ,$this->id
                          ,$main_telecom_key

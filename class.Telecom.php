@@ -1182,7 +1182,10 @@ class Telecom extends DB_Table {
                              ,prepare_mysql($parent_object->data[$parent." Main XHTML $type"])
                              ,$parent_object->id
                             );
+                          //  print "$sql\n";
                 mysql_query($sql);
+
+//print "$old_princial_telecom -> ".$parent_object->data[$parent." Main Plain $type"]."\n";
 
                 if ($old_princial_telecom!=$parent_object->data[$parent." Main Plain $type"])
                     $principal_telecom_changed=true;

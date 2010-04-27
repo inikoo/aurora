@@ -13,8 +13,8 @@
 	    <table border=0 style="padding:0">
 	      <tr><td colspan=2>{$company->get('Company Main Contact Name')}</td ></tr>
 	      <tr><td colspan=2>{$company->get('Company Main XHTML Email')}</td ></tr>
-	      <tr><td colspan=2>{$company->get('Company Main Telephone')}</td ></tr>
-	      <tr><td colspan=2>{$company->get('Company Main FAX')}</td ></tr>
+	      <tr><td colspan=2>{$company->get('Company Main XHTML Telephone')}</td ></tr>
+	      <tr><td colspan=2>{$company->get('Company Main XHTML FAX')}</td ></tr>
 
 	      
 	      

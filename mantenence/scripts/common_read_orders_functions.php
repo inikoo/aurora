@@ -1,7 +1,9 @@
 <?php 
 
-function get_user_id($oname,$return_xhtml=false,$tag='',$order=''){
-
+function get_user_id($oname,$return_xhtml=false,$tag='',$order='',$editor=false){
+if(!$editor){
+$editor=array();
+}
 
   
   $ids=array();
@@ -46,7 +48,7 @@ function get_user_id($oname,$return_xhtml=false,$tag='',$order=''){
       $_name='philippe';
     else if(preg_match('/amanada|amand\s*$/i',$_name))
       $_name='amanda';
-    else if(preg_match('/janette/i',$_name) or $_name=='jqnet' or $_name==': janet'  )
+    else if(preg_match('/janette/i',$_name) or $_name=='jqnet' or $_name==': janet' or $_name=='jw'  )
       $_name='janet';
     else if(preg_match('/pete/i',$_name))
       $_name='peter';
@@ -63,7 +65,7 @@ function get_user_id($oname,$return_xhtml=false,$tag='',$order=''){
 	return array(0);
 
     }
-    else if($_name=='thomas' or $_name=='tb' or preg_match('/^\s*tomas\s*$/i',$_name) or $_name=='tom' )
+    else if($_name=='thomas' or $_name=='tomas belan' or $_name=='tb' or preg_match('/^\s*tomas\s*$/i',$_name) or $_name=='tom' )
       $_name='tomas';
     else if($_name=='alam' or $_name=='aw' or   $_name=='al' or   $_name=='al.'  or  $_name=='ala' )
       $_name='alan';
@@ -108,7 +110,7 @@ function get_user_id($oname,$return_xhtml=false,$tag='',$order=''){
       $_name='zoe';
     else if($_name=='cph')
       $_name='caleb';
-    else if($_name=='jenka' or  $_name=='len' or  $_name=='le'  )
+    else if($_name=='jenka' or  $_name=='len' or  $_name=='le'  or $_name=='lo' or  $_name=='lenka ondrisova'  )
       $_name='lenka';
     else if($_name=='jjanka' or $_name=='jan')
       $_name='janka';
@@ -118,14 +120,27 @@ function get_user_id($oname,$return_xhtml=false,$tag='',$order=''){
       $_name='agmet';
   else if($_name=='steffanie')
       $_name='stefanie';
- else if($_name=='kerrry')
+       else if($_name=='urszula baka')
+      $_name='urszula';
+        else if($_name=='ula')
+      $_name='urszula';
+       else if($_name=='kerrry' or $_name=='kerrys' or $_name=='kerru' )
       $_name='kerry';
+         else if($_name=='kez')
+      $_name='eric';
+ else if($_name=='steff' or $_name=='sc')
+      $_name='stephanie';
     else if($_name=='anthony' or $_name=='antony')
       $_name='anthony';
     else if(preg_match('/martina otte/i',$_name))
       $_name='martina';
-    
-
+     else if(preg_match('/staff? daniela/i',$_name))
+      $_name='daniela';
+   else if(preg_match('/^lucy|lucy a$/i',$_name))
+      $_name='daniela';
+      else if(preg_match('/^david hardy$/i',$_name))
+      $_name='david';
+      
     $sql=sprintf("select `Staff Key`,`Staff Alias` from `Staff Dimension` where `Staff Alias`=%s",prepare_mysql($_name));
     // print "$sql\n";
     $result = mysql_query($sql) or die('Query failed: ' . mysql_error());
@@ -138,7 +153,7 @@ function get_user_id($oname,$return_xhtml=false,$tag='',$order=''){
     }else{
       
       // print "$original_name\n";
-      $valid_names=array('darna','jarina','mini','andrea','scott','mark','janka','peter','lyndsey','rebecca','micheal','samantha','richard','albert','debbie','chris','barry','donna','malcolm','michelle','adriana','daniela'
+      $valid_names=array('david','keleb','lucy','sharka','stephanie','urszula','darna','jarina','mini','andrea','scott','mark','janka','peter','lyndsey','rebecca','micheal','samantha','richard','albert','debbie','chris','barry','donna','malcolm','michelle','adriana','daniela'
 			 ,'stacey','matus','lucie','caleb','olga','bev','jim','eliska','carole','zoe','katka','urszula','dana','craig','tomas','eric','neil','slavka','anthony','anita','annetta','simon','stefanie','steve','agmet','nabil','brett','jirina');
       
       $contact_name=$_name;
@@ -153,6 +168,7 @@ function get_user_id($oname,$return_xhtml=false,$tag='',$order=''){
 	$staff_data=array(
 			  'Staff Alias'=>ucwords($_name)
 			  ,'Staff Name'=>ucwords($contact_name)
+			  ,'editor'=>$editor
 			  );
 	$staff=new Staff('find',$staff_data,'create');
 	//	print_r($staff);

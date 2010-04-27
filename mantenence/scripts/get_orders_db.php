@@ -133,8 +133,8 @@ $sql="select *,replace(   replace(replace(replace(replace(replace(replace(replac
 //$sql="select * from  orders_data.orders  where    (last_transcribed is NULL  or last_read>last_transcribed) and deleted='No'  order by filename ";
 
 //$sql="select * from  orders_data.orders where filename like '%refund.xls'   order by filename";
-//$sql="select * from  orders_data.orders  where filename like '/mnt/%/Orders/15373.xls' order by filename";
-//$sql="select * from  orders_data.orders  where filename like '/mnt/%/Orders/12456.xls' order by filename";
+//$sql="select * from  orders_data.orders  where filename like '/mnt/%/Orders/7530.xls' order by filename";
+//$sql="select * from  orders_data.orders  where (filename like '/mnt/%/Orders/7318.xls' )or(filename like '/mnt/%/Orders/7530.xls' )order by filename";
 
 //$sql="select * from  orders_data.orders  where filename like '/mnt/%/Orders/15720.xls' or filename like '/mnt/%/Orders/60000.xls' or  filename like '/mnt/%/Orders/15sdfsd593.xls' order by filename";
 
@@ -221,7 +221,7 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 
     list($date_index,$date_order,$date_inv)=get_dates($row2['timestamp'],$header_data,$tipo_order,true);
   
-  
+  $editor=array("Date"=>$date_order);
 
     
     if($tipo_order==9){
@@ -273,7 +273,7 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
     $header_data=is_to_be_collected($header_data);
   
     $header_data=is_shipping_supplier($header_data,$date_order);
-    $header_data=is_staff_sale($header_data);
+    $header_data=is_staff_sale($header_data,array('Date'=>$date_order));
     
     $header_data=is_showroom($header_data);
      
@@ -315,8 +315,7 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 
     $transactions=read_products($products,$prod_map);
     unset($products);
-    $_customer_data=setup_contact($act_data,$header_data,$date_index2);
-   
+    $_customer_data=setup_contact($act_data,$header_data,$date_index2,$editor);
     $customer_data=array();
     
     if(isset($header_data['tax_number']) and $header_data['tax_number']!=''){
@@ -336,11 +335,11 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
       if($_key=='email')
 	$key=preg_replace('/^email$/','Customer Main Plain Email',$_key);
       if($_key=='telephone')
-	$key=preg_replace('/^telephone$/','Customer Main XHTML Telephone',$_key);
+	$key=preg_replace('/^telephone$/','Customer Main Plain Telephone',$_key);
       if($_key=='fax')
-	$key=preg_replace('/^fax$/','Customer Main XHTML FAX',$_key);
+	$key=preg_replace('/^fax$/','Customer Main Plain FAX',$_key);
       if($_key=='mobile')
-	$key=preg_replace('/^mobile$/','Customer Mobile',$_key);
+	$key=preg_replace('/^mobile$/','Customer Main Plain Mobile',$_key);
 
       $customer_data[$key]=$value;
 
@@ -383,7 +382,6 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
       unset($customer_data['shipping_data']);
     }
 
-     
     if(strtotime($date_order)>strtotime($date2)){
       print "Warning (Fecha Factura anterior Fecha Orden) $filename $date_order  $date2 \n";
       $date2=date("Y-m-d H:i:s",strtotime($date_order.' +8 hour'));
@@ -406,7 +404,7 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
     $extra_shipping=0;
   
     $data=array();
-    $data['editor']=array('Date'=>$date_order);
+    $editor=array('Date'=>$date_order);
   
     $data['order date']=$date_order;
     $data['order id']=$header_data['order_num'];
@@ -1354,18 +1352,18 @@ if ($transaction['bonus']>0) {
 	print "$sql Warning can no delete old inv";
 	 
 
-
 	 
       $sql=sprintf("delete from `Order No Product Transaction Fact` where `Metadata`=%s ",prepare_mysql($store_code.$order_data_id));
       if(!mysql_query($sql))
 	print "$sql Warning can no delete oldhidt nio prod";
 	
     }
-       
+       $data['editor']=$editor;
+
     //print "$tipo_order \n";
     $data['Order Currency']=$currency;
     $data['Order Currency Exchange']=$exchange;
-    $sales_rep_data=get_user_id($header_data['takenby'],true,'&view=processed',$header_data['order_num']);
+    $sales_rep_data=get_user_id($header_data['takenby'],true,'&view=processed',$header_data['order_num'],$editor);
     $data['Order XHTML Sale Reps']=$sales_rep_data['xhtml'];
     $data['Order Customer Contact Name']=$customer_data['Customer Main Contact Name'];
     $data['Order Sale Reps IDs']=$sales_rep_data['id'];
@@ -1474,8 +1472,8 @@ if ($transaction['bonus']>0) {
 	  $weight=$header_data['weight'];
 
 
-	$picker_data=get_user_id($header_data['pickedby'],true,'&view=picks',$header_data['order_num']);
-	$packer_data=get_user_id($header_data['packedby'],true,'&view=packs',$header_data['order_num']);
+	$picker_data=get_user_id($header_data['pickedby'],true,'&view=picks',$header_data['order_num'],$editor);
+	$packer_data=get_user_id($header_data['packedby'],true,'&view=packs',$header_data['order_num'],$editor);
 	$order_type=$data['Order Type'];
 
 	// TODO in the Ci, DE
@@ -1608,8 +1606,8 @@ if ($transaction['bonus']>0) {
 	  $weight=$header_data['weight'];
 
 
-	$picker_data=get_user_id($header_data['pickedby'],true,'&view=picks',$header_data['order_num']);
-	$packer_data=get_user_id($header_data['packedby'],true,'&view=packs',$header_data['order_num']);
+	$picker_data=get_user_id($header_data['pickedby'],true,'&view=picks',$header_data['order_num'],$editor);
+	$packer_data=get_user_id($header_data['packedby'],true,'&view=packs',$header_data['order_num'],$editor);
 	$order_type='Follow on';  ;
 	$data_dn=array(
 		       'Delivery Note Date'=>$date_inv
@@ -1719,8 +1717,8 @@ if ($transaction['bonus']>0) {
 	  $weight=$header_data['weight'];
 
 
-	$picker_data=get_user_id($header_data['pickedby'],true,'&view=picks',$header_data['order_num']);
-	$packer_data=get_user_id($header_data['packedby'],true,'&view=packs',$header_data['order_num']);
+	$picker_data=get_user_id($header_data['pickedby'],true,'&view=picks',$header_data['order_num'],$editor);
+	$packer_data=get_user_id($header_data['packedby'],true,'&view=packs',$header_data['order_num'],$editor);
 
 	$order_type=$data['Order Type'];
 
@@ -2132,8 +2130,8 @@ if ($transaction['bonus']>0) {
 	$weight=$header_data['weight'];
 
 
-      $picker_data=get_user_id($header_data['pickedby'],true,'&view=picks',$header_data['order_num']);
-      $packer_data=get_user_id($header_data['packedby'],true,'&view=packs',$header_data['order_num']);
+      $picker_data=get_user_id($header_data['pickedby'],true,'&view=picks',$header_data['order_num'],$editor);
+      $packer_data=get_user_id($header_data['packedby'],true,'&view=packs',$header_data['order_num'],$editor);
 
       // 	print_r($picker_data);
 
