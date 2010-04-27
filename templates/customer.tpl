@@ -87,8 +87,8 @@
 	<div class="clean_table_info" >
 	  <span id="filter_name0">{$filter_name0}</span>: 
 	  <input style="border-bottom:none;width:10em" id='f_input0' value="{$filter_value0}" size="10" />
-	  <div id='f_container'></div></div></div>
-      <div class="clean_table_controls" style="" ><div><span  style="margin:0 5px" id="paginator"></span></div></div>
+	  <div id='f_container0'></div></div></div>
+      <div class="clean_table_controls" style="" ><div><span  style="margin:0 5px" id="paginator0"></span></div></div>
     </div>
     <div  id="table0"   class="data_table_container dtable btable "> </div>
   </div>
@@ -102,8 +102,8 @@
 	<div class="clean_table_info" >
 	  <span id="filter_name1">{$filter_name1}</span>: 
 	  <input style="border-bottom:none;width:10em" id='f_input1' value="{$filter_value1}" size="10" />
-	  <div id='f_container'></div></div></div>
-      <div class="clean_table_controls" style="" ><div><span  style="margin:0 5px" id="paginator"></span></div></div>
+	  <div id='f_container0'></div></div></div>
+      <div class="clean_table_controls" style="" ><div><span  style="margin:0 5px" id="paginator1"></span></div></div>
     </div>
     <div  id="table1"   class="data_table_container dtable btable "> </div>
   </div>

@@ -130,6 +130,7 @@ class Email extends DB_Table {
 
         if (preg_match('/fuzzy/i',$options)) {
             $find_fuzzy=true;
+            
         }
 
         $this->found=false;
@@ -228,7 +229,7 @@ class Email extends DB_Table {
                 $sql=sprintf("select `Subject Key`,T.`Email Key`,damlev(UPPER(%s),UPPER(`Email`))/LENGTH(`Email`) as dist1 from   `Email Dimension` T left join `Email Bridge` TB  on (TB.`Email Key`=T.`Email Key`)   where  `Subject Type`='Contact'  order by dist1  limit 80"
                              ,prepare_mysql($raw_data['Email'])
                             );
-                //print $sql;
+               
                 $result=mysql_query($sql);
                 while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
                     if ($row['dist1']>=1)
@@ -237,7 +238,7 @@ class Email extends DB_Table {
 
 
                     $contact_key=$row['Subject Key'];
-                    if (array_key_exists($contact_key.$this->candidate))
+                    if (array_key_exists($contact_key,$this->candidate))
                         $this->candidate[$contact_key]+=$score;
                     else
                         $this->candidate[$contact_key]=$score;

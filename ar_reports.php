@@ -371,7 +371,7 @@ if(isset( $_REQUEST['umbral']))
      $where.=sprintf(' and `Customer Store Key`=%d ',$store);
    }
    
-$where.=sprintf(' and `Customer Main Address Country Code`="ESP"   and Year(`Invoice Date`)=%d',$year );
+$where.=sprintf(' and `Customer Main Country Code`="ESP"   and Year(`Invoice Date`)=%d',$year );
    
 
 $rtext='';
@@ -544,7 +544,7 @@ function list_customers(){
 /*   if(($f_field=='customer name'     )  and $f_value!=''){ */
 /*     $wheref="  and  `Customer Name` like '%".addslashes($f_value)."%'"; */
 /*   }elseif(($f_field=='postcode'     )  and $f_value!=''){ */
-/*     $wheref="  and  `Customer Main Address Postal Code` like '%".addslashes($f_value)."%'"; */
+/*     $wheref="  and  `Customer Main Postal Code` like '%".addslashes($f_value)."%'"; */
     
     
     
@@ -635,7 +635,7 @@ function list_customers(){
      $order='`Balance`';
 
   
-   $sql="select  `Store Code`,`Customer Type by Activity`,`Customer Last Order Date`,`Customer Main XHTML Telephone`,`Customer Key`,`Customer Name`,`Customer Main Location`,`Customer Main XHTML Email`,`Customer Main Address Town`,`Customer Main Address Country First Division`,`Customer Main Ship To Postal Code`,count(DISTINCT `Invoice Key`) as Invoices , sum(`Invoice Total Net Amount`) as Balance  from `Customer Dimension` C left join `Invoice Dimension` I on (`Customer Key`=`Invoice Customer Key`) left join `Store Dimension` SD on (C.`Customer Store Key`=SD.`Store Key`)  $where $wheref  group by `Invoice Customer Key` order by $order $order_direction limit $start_from,$number_results";
+   $sql="select  `Store Code`,`Customer Type by Activity`,`Customer Last Order Date`,`Customer Main XHTML Telephone`,`Customer Key`,`Customer Name`,`Customer Main Location`,`Customer Main XHTML Email`,`Customer Main Town`,`Customer Main Country First Division`,`Customer Main Ship To Postal Code`,count(DISTINCT `Invoice Key`) as Invoices , sum(`Invoice Total Net Amount`) as Balance  from `Customer Dimension` C left join `Invoice Dimension` I on (`Customer Key`=`Invoice Customer Key`) left join `Store Dimension` SD on (C.`Customer Store Key`=SD.`Store Key`)  $where $wheref  group by `Invoice Customer Key` order by $order $order_direction limit $start_from,$number_results";
    // print $sql;
    $adata=array();
   
@@ -676,10 +676,10 @@ function list_customers(){
 		   //'top_profits'=>number($data['Customer Profits Top Percentage']).'%',
 		   //'contact_name'=>$data['Customer Main Contact Name'],
 		   //'address'=>$data['Customer Main Location'],
-		   //'town'=>$data['Customer Main Address Town'],
-		   //'postcode'=>$data['Customer Main Address Postal Code'],
-		   //'region'=>$data['Customer Main Address Country First Division'],
-		   //'country'=>$data['Customer Main Address Country'],
+		   //'town'=>$data['Customer Main Town'],
+		   //'postcode'=>$data['Customer Main Postal Code'],
+		   //'region'=>$data['Customer Main Country First Division'],
+		   //'country'=>$data['Customer Main Country'],
 		   //		   'ship_address'=>$data['customer main ship to header'],
 		   //'ship_town'=>$data['Customer Main Ship To Town'],
 		   //'ship_postcode'>$data['Customer Main Ship To Postal Code'],

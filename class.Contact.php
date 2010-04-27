@@ -1555,12 +1555,13 @@ class Contact extends DB_Table {
 
     function update_parents_principal_email_keys() {
         $email_key=$this->data['Contact Main Email Key'];
+        //print $this->data['Contact Main Email Key']."<-----\n";
         if (!$email_key)
             return;
         $parents=array('Company','Customer','Supplier');
         foreach($parents as $parent) {
             $sql=sprintf("select `$parent Key` as `Parent Key`   from  `$parent Dimension` where `$parent Main Contact Key`=%d group by `$parent Key`",$this->id);
-            //      print "$sql\n";
+             //   print "$sql\n";
 
             $res=mysql_query($sql);
             while ($row=mysql_fetch_array($res)) {
@@ -1587,7 +1588,7 @@ class Contact extends DB_Table {
                                 );
                     mysql_query($sql);
                 }
-                //  print "$sql\n";
+                  //print "$sql\n";
 
                 $old_principal_email_key=$parent_object->data[$parent.' Main Email Key'];
                 if ($old_principal_email_key!=$email_key) {
@@ -3948,6 +3949,47 @@ class Contact extends DB_Table {
 
         }
 
+    }
+
+
+ function update_parents_principal_address_keys($address_key) {
+        $parents=array('Customer');
+        foreach($parents as $parent) {
+            $sql=sprintf("select `$parent Key` as `Parent Key`   from  `$parent Dimension` where `$parent Main Contact Key`=%d group by `$parent Key`",$this->id);
+            $res=mysql_query($sql);
+            while ($row=mysql_fetch_array($res)) {
+
+
+                if ($parent=='Customer') {
+                    $parent_object=new Customer($row['Parent Key']);
+                    $parent_label=_('Customer');
+                }
+               
+                $old_principal_name_key=$parent_object->data[$parent.' Main Address Key'];
+                if ($old_principal_name_key!=$address_key) {
+
+                    $sql=sprintf("update `Address Bridge`  set `Is Main`='No' where `Subject Type`='$parent' and  `Subject Key`=%d  and `Address Key`=%d",
+                                 $parent_object->id
+                                 ,$address_key
+                                );
+                    mysql_query($sql);
+                    $sql=sprintf("update `Address Bridge`  set `Is Main`='Yes' where `Subject Type`='$parent' and  `Subject Key`=%d  and `Address Key`=%d",
+                                 $parent_object->id
+                                 ,$address_key
+                                );
+                    mysql_query($sql);
+                    $sql=sprintf("update `$parent Dimension` set `$parent Main Address Key`=%d where `$parent Key`=%d"
+                                 ,$address_key
+                                 ,$parent_object->id
+                                );
+                    mysql_query($sql);
+
+
+
+
+                }
+            }
+        }
     }
 
 

@@ -1181,7 +1181,7 @@ if(isset( $_REQUEST['where']))
   if(($f_field=='customer name'     )  and $f_value!=''){
     $wheref="  and  `Customer Name` like '%".addslashes($f_value)."%'";
   }elseif(($f_field=='postcode'     )  and $f_value!=''){
-    $wheref="  and  `Customer Main Address Postal Code` like '%".addslashes($f_value)."%'";
+    $wheref="  and  `Customer Main Postal Code` like '%".addslashes($f_value)."%'";
     
     
     
@@ -1294,13 +1294,13 @@ if(isset( $_REQUEST['where']))
    elseif($order=='address')
      $order='`Customer Main Location`';
    elseif($order=='town')
-     $order='`Customer Main Address Town`';
+     $order='`Customer Main Town`';
    elseif($order=='postcode')
-     $order='`Customer Main Address Postal Code`';
+     $order='`Customer Main Postal Code`';
    elseif($order=='region')
-     $order='`Customer Main Address Country First Division`';
+     $order='`Customer Main Country First Division`';
    elseif($order=='country')
-     $order='`Customer Main Address Country`';
+     $order='`Customer Main Country`';
    //  elseif($order=='ship_address')
    //  $order='`customer main ship to header`';
    elseif($order=='ship_town')
@@ -1416,10 +1416,10 @@ if(isset( $_REQUEST['where']))
 		   'top_profits'=>number($data['Customer Profits Top Percentage']).'%',
 		   'contact_name'=>$data['Customer Main Contact Name'],
 		   'address'=>$data['Customer Main Location'],
-		   'town'=>$data['Customer Main Address Town'],
-		   'postcode'=>$data['Customer Main Address Postal Code'],
-		   'region'=>$data['Customer Main Address Country First Division'],
-		   'country'=>$data['Customer Main Address Country'],
+		   'town'=>$data['Customer Main Town'],
+		   'postcode'=>$data['Customer Main Postal Code'],
+		   'region'=>$data['Customer Main Country First Division'],
+		   'country'=>$data['Customer Main Country'],
 		   //		   'ship_address'=>$data['customer main ship to header'],
 		   'ship_town'=>$data['Customer Main Ship To Town'],
 		   'ship_postcode'>$data['Customer Main Ship To Postal Code'],

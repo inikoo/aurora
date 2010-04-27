@@ -45,29 +45,6 @@ $js_files=array(
 
 
 
-
-
-/* $sql="select `Country Key` id from `Country Dimension` order by `Country Code`"; */
-/* $result=mysql_query($sql); */
-/* while($row=mysql_fetch_array($result, MYSQL_ASSOC)){ */
-/*   $country[$row['id']]=$_country[$row['id']]; */
-/*  } */
-
-
-
-
-//$smarty->assign('default_country',$default_country);
-//$smarty->assign('default_country_encoded',urlencode($default_country));
-
-
-//$smarty->assign('default_country_id',$default_country_id);
-$smarty->assign('email_tipo',$_tipo_email);
-$smarty->assign('address_tipo',$_tipo_address);
-$smarty->assign('tel_tipo',$_tipo_tel);
-$smarty->assign('prefix',$_prefix);
-
-//$smarty->assign('country',$country);
-
 $smarty->assign('parent','customers');
 $smarty->assign('title', _('Contacts'));
 $smarty->assign('css_files',$css_files);

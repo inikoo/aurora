@@ -46,10 +46,10 @@ $export_data=array(
 		   ,$address_lines[1]
 		   ,$address_lines[3]
 		   ,$address_lines[2]
-		   ,$customer->data['Customer Main Address Town']
+		   ,$customer->data['Customer Main Town']
 		   ,$address->display('Country Divisions')
-		   ,$customer->data['Customer Main Address Postal Code']
-		   ,$customer->data['Customer Main Address Country']
+		   ,$customer->data['Customer Main Postal Code']
+		   ,$customer->data['Customer Main Country']
 		   ,"Staff"
 		   ,$customer->data['Customer Main XHTML Telephone']
 		   ,$customer->data['Customer Main XHTML FAX']

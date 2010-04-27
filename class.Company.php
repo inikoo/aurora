@@ -470,7 +470,7 @@ class Company extends DB_Table {
                         $address->update_principal_telephone($raw_data['Company Main XHTML Telephone']);
                         if ($address->error) {
                             print_r($address);
-                            exit("fix me!1 company class updating tel");
+                            exit("fix me!xxxx company class updating tel 1");
                         }
                     }
                     unset($raw_data['Company Main XHTML Telephone']);
@@ -493,7 +493,7 @@ class Company extends DB_Table {
                         $address->update_principal_telephone($raw_data['Company Main Plain Telephone']);
                         if ($address->error) {
                             print_r($address);
-                            exit("fix me!1 company class updating tel");
+                            exit("fix me!1 company class updating tel 2");
                         }
                     }
                     unset($raw_data['Company Main Plain Telephone']);
@@ -513,10 +513,10 @@ class Company extends DB_Table {
 
                     } else {
 
-                        $address->update_principal_telephone($raw_data['Company Main XHTML FAX']);
+                        $address->update_principal_fax($raw_data['Company Main XHTML FAX']);
                         if ($address->error) {
                             print_r($address);
-                            exit("fix me!1 company class updating tel");
+                            exit("fix me!1 company class updating fax 1");
                         }
                     }
                     unset($raw_data['Company Main XHTML FAX']);
@@ -536,10 +536,10 @@ class Company extends DB_Table {
 
                     } else {
 
-                        $address->update_principal_telephone($raw_data['Company Main Plain FAX']);
+                        $address->update_principal_fax($raw_data['Company Main Plain FAX']);
                         if ($address->error) {
                             print_r($address);
-                            exit("fix me!1 company class updating tel");
+                            exit("fix me!1 company class updating fax 2");
                         }
                     }
                     unset($raw_data['Company Main Plain FAX']);
@@ -1430,7 +1430,8 @@ class Company extends DB_Table {
     */
 
     function associate_address($address_key) {
-
+if(!$address_key)
+return;
         $address_keys=$this->get_address_keys();
 
         if (!array_key_exists($address_key,$address_keys)) {
@@ -1491,77 +1492,6 @@ class Company extends DB_Table {
         }
 
     }
-
-    function borrar() {
-
-        $principal=preg_match('/principal/i',$args);
-        if (count($this->get_address_keys())==0)
-            $principal=true;
-
-
-        $address_key=$data['Address Key'];
-
-
-
-
-        foreach($data['Address Type'] as $type) {
-            foreach($data['Address Function'] as $function) {
-                $sql=sprintf("insert into `Address Bridge` (`Subject Type`,`Subject Key`,`Address Key`,`Address Type`,`Address Function`) values ('Company',%d,%d,%s,%s)  ON DUPLICATE KEY UPDATE `Is Active`='Yes'",
-                             $this->id,
-                             $address_key
-                             ,prepare_mysql($type)
-                             ,prepare_mysql($function)
-                             ,prepare_mysql($type)
-                             ,prepare_mysql($function)
-                            );
-
-                //	      print $sql;
-
-                if (!mysql_query($sql))
-                    print("$sql\n error can no create company address bridge");
-
-                if (mysql_affected_rows() )
-                    $this->updated=true;
-
-            }
-        }
-
-
-        if ($principal) {
-
-
-            $sql=sprintf("update `Address Bridge`  set `Is Main`='No' where `Subject Type`='Company' and  `Subject Key`=%d  and `Address Key`!=%d",
-                         $this->id
-                         ,$address_key
-                        );
-            mysql_query($sql);
-            $sql=sprintf("update `Address Bridge`  set `Is Main`='Yes' where `Subject Type`='Company' and  `Subject Key`=%d  and `Address Key`=%d",
-                         $this->id
-                         ,$address_key
-                        );
-            mysql_query($sql);
-
-
-            $this->update_address_data($address_key);
-
-        }
-
-    }
-
-
-    function old_add_contact($data) {
-
-        $contact=new Contact("find in company create",$data);
-        if ($contact->found) {
-            $this->error=true;
-            $this->msg='contact already in system';
-            return;
-        }
-        elseif($contact->id) {
-            $this->create_contact_bridge($contact->id);
-        }
-    }
-
 
     function get_principal_contact_key() {
 
@@ -1677,7 +1607,49 @@ class Company extends DB_Table {
     }
 
 
+ function update_parents_principal_address_keys($address_key) {
+        $parents=array('Customer','Supplier');
+        foreach($parents as $parent) {
+            $sql=sprintf("select `$parent Key` as `Parent Key`   from  `$parent Dimension` where `$parent Company Key`=%d group by `$parent Key`",$this->id);
+            $res=mysql_query($sql);
+            while ($row=mysql_fetch_array($res)) {
 
+
+                if ($parent=='Customer') {
+                    $parent_object=new Customer($row['Parent Key']);
+                    $parent_label=_('Customer');
+                }
+                elseif($parent=='Supplier') {
+                    $parent_object=new Supplier($row['Parent Key']);
+                    $parent_label=_('Supplier');
+                }
+
+                $old_principal_name_key=$parent_object->data[$parent.' Main Address Key'];
+                if ($old_principal_name_key!=$address_key) {
+
+                    $sql=sprintf("update `Address Bridge`  set `Is Main`='No' where `Subject Type`='$parent' and  `Subject Key`=%d  and `Address Key`=%d",
+                                 $parent_object->id
+                                 ,$address_key
+                                );
+                    mysql_query($sql);
+                    $sql=sprintf("update `Address Bridge`  set `Is Main`='Yes' where `Subject Type`='$parent' and  `Subject Key`=%d  and `Address Key`=%d",
+                                 $parent_object->id
+                                 ,$address_key
+                                );
+                    mysql_query($sql);
+                    $sql=sprintf("update `$parent Dimension` set `$parent Main Address Key`=%d where `$parent Key`=%d"
+                                 ,$address_key
+                                 ,$parent_object->id
+                                );
+                    mysql_query($sql);
+
+
+
+
+                }
+            }
+        }
+    }
 
 
 
@@ -2591,11 +2563,23 @@ class Company extends DB_Table {
 
                 $old_principal_name=$parent_object->data[$parent.' Name'];
                 $parent_object->data[$parent.' Name']=$this->data['Company Name'];
-                $sql=sprintf("update `$parent Dimension` set `$parent Name`=%s where `$parent Key`=%d"
+                $sql=sprintf("update `$parent Dimension` set  `$parent Company Name`=%s  where `$parent Key`=%d"
                              ,prepare_mysql($parent_object->data[$parent.' Name'])
                              ,$parent_object->id
                             );
                 mysql_query($sql);
+
+                if($parent=='Supplier' or ( $parent=='Customer' and $parent_object->data[$parent.' Type']=='Company')){
+                          $sql=sprintf("update `$parent Dimension` set `$parent Name`=%s  , `$parent File As`=%s   where `$parent Key`=%d"
+                             ,prepare_mysql($parent_object->data[$parent.' Name'])
+                             ,prepare_mysql($parent_object->data[$parent.' Name'])
+                             
+                             ,$parent_object->id
+                            );
+                mysql_query($sql); 
+                
+                }
+
 
 
 
