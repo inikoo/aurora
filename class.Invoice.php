@@ -202,7 +202,7 @@ $this->data['Invoice Currency Exchange']=$exchange;
       }
 
       $this->data ['Invoice XHTML Address'] = $customer -> data['Customer Main XHTML Address'];
-      $this->data ['Invoice Billing Country 2 Alpha Code']=$customer -> data['Customer Main Address Country 2 Alpha Code'];
+      $this->data ['Invoice Billing Country 2 Alpha Code']=$customer -> data['Customer Main Country 2 Alpha Code'];
       
     }
 
@@ -373,9 +373,9 @@ $this->data['Invoice Currency Exchange']=$exchange;
 
       }
       //print_r($customer);
-      //print "zzzz".$customer -> data['Customer Main Address Country 2 Alpha Code']."zzzzzz";
+      //print "zzzz".$customer -> data['Customer Main Country 2 Alpha Code']."zzzzzz";
       $this->data ['Invoice XHTML Address'] = $customer -> data['Customer Main XHTML Address'];
-      $this->data ['Invoice Billing Country 2 Alpha Code']=$customer -> data['Customer Main Address Country 2 Alpha Code'];
+      $this->data ['Invoice Billing Country 2 Alpha Code']=$customer -> data['Customer Main Country 2 Alpha Code'];
       
     }
 

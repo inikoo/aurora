@@ -305,8 +305,7 @@ function get_name(){
   
 
     if($this->data['Supplier Name']==''){
-      $this->data['Supplier Name']=_('Unknown Supplier');
-      $this->data['Supplier Code']=$this->create_code(_('Unknown Supplier'));
+      $this->data['Supplier Code']=$this->create_code('UNK');
     }
     if($this->data['Supplier Code']==''){
       $this->data['Supplier Code']=$this->create_code($this->data['Supplier Code']);
@@ -317,46 +316,7 @@ function get_name(){
     $this->data['Supplier Code']=$this->check_repair_code($this->data['Supplier Code']);
 
 
-    if(!$this->data['Supplier Company Key']){
-      $raw_data['editor']=$this->editor;
-      //print_r($raw_data);
-      $company=new company('find in supplier create',$raw_data);
-    
-      $this->data['Supplier Company Key']=$company->id;
-
-    }
-    
-
-    if($company->data['Company Main Email Key']){
-      $main_email_key=$company->data['Company Main Email Key'];
-      //$this->data['Supplier Main Email Key']=$company->data['Company Main Email Key'];
-      //$this->data['Supplier Main XHTML Email']=$company->data['Company Main XHTML Email'];
-      //$this->data['Supplier Main Plain Email']=$company->data['Company Main Plain Email'];
-    }
-    if($company->data['Company Main Telephone Key']){
-      $main_telephone_key=$company->data['Company Main Telephone Key'];
-      //$this->data['Supplier Main Telephone Key']=$company->data['Company Main Telephone Key'];
-      //$this->data['Supplier Main XHTML Telephone']=$company->data['Company Main XHTML Telephone'];
-      //$this->data['Supplier Main Plain Telephone']=$company->data['Company Main Plain Telephone'];
-    }
-    if($company->data['Company Main FAX Key']){
-      $main_fax_key=$company->data['Company Main FAX Key'];
-      //$this->data['Supplier Main FAX Key']=$company->data['Company Main FAX Key'];
-      //$this->data['Supplier Main XHTML FAX']=$company->data['Company Main XHTML FAX'];
-      //$this->data['Supplier Main Plain FAX']=$company->data['Company Main Plain FAX'];
-    }
-    if($company->data['Company Main Web Site']){
-      $this->data['Company Main Web Site']=$company->data['Company Main Web Site'];
-	     
-    }
-    
-    $this->data['Supplier Main Contact Key']=$company->data['Company Main Contact Key'];
-    //$this->data['Supplier Main Contact Name']=$company->data['Company Main Contact Name'];
-    //$this->data['Supplier Fiscal Name']=$company->data['Company Fiscal Name'];
-    
-    
-    //    print_r( $this->data);
-
+ 
     $keys='';
     $values='';
     foreach($this->data as $key=>$value){
@@ -372,6 +332,35 @@ function get_name(){
     if(mysql_query($sql)){
 
       $this->id=mysql_insert_id();
+      
+      if (!$this->data['Supplier Company Key']) {
+            
+                $company=new company('find in customer create update',$raw_data);
+            } else {
+                $company=new company('id',$this->data['Supplier Company Key']);
+            }
+            
+            $company_key=$company->id;
+            $this->data['Supplier File As']=$company->data['Company File As'];
+            $this->data['Supplier Name']=$company->data['Company Name'];
+           
+            $contact=new Contact($company->last_associated_contact_key);
+    $company->update_parents_principal_address_keys($company->data['Company Main Address Key']);
+$address=new Address($company->data['Company Main Address Key']);
+$address->update_parents();
+$address->update_parents_principal_telecom_keys('Telephone');
+$address->update_parents_principal_telecom_keys('FAX');
+$tel=new Telecom($address->get_principal_telecom_key('Telephone'));
+if($tel->id)
+$tel->update_parents();
+$fax=new Telecom($address->get_principal_telecom_key('FAX'));
+if($fax->id)
+$fax->update_parents();
+    
+      $contact->update_parents_principal_email_keys();
+                $email=new Email($contact->get_principal_email_key());
+                if ($email->id)
+                    $email->update_parents();
       $this->get_data('id',$this->id);
       
       $this->update_company($company->id,true);

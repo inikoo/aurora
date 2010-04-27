@@ -63,7 +63,7 @@
 	    <span class="filter_msg"  id="filter_msg0"></span></div></div>
 	<div class="clean_table_filter" id="clean_table_filter0"><div class="clean_table_info"><span id="filter_name0">{$filter_name}</span>: <input style="border-bottom:none" id='f_input0' value="{$filter_value}" size=10/><div id='f_container'></div></div></div>
 
-	<div class="clean_table_controls" style="" ><div><span  style="margin:0 5px" id="paginator"></span></div></div>
+	<div class="clean_table_controls" style="" ><div><span  style="margin:0 5px" id="paginator0"></span></div></div>
 
       </div>
       <div  id="table0"   class="data_table_container dtable btable "> </div>

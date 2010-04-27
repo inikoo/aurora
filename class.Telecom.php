@@ -1150,7 +1150,6 @@ class Telecom extends DB_Table {
         if($type=="Mobile" and $parent!="Contact")
         continue;
             $sql=sprintf("select `$parent Key` as `Parent Key`   from  `$parent Dimension` where `$parent Main $type Key`=%d group by `$parent Key`",$this->id);
-         // print "$sql\n";
           $res=mysql_query($sql);
             while ($row=mysql_fetch_array($res)) {
                 $principal_telecom_changed=false;
@@ -1184,7 +1183,6 @@ class Telecom extends DB_Table {
                              ,$parent_object->id
                             );
                 mysql_query($sql);
-//print("S: $sql\n");
 
                 if ($old_princial_telecom!=$parent_object->data[$parent." Main Plain $type"])
                     $principal_telecom_changed=true;

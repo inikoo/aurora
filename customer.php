@@ -188,13 +188,13 @@ $smarty->assign('search_scope','customers');
    elseif($order=='address')
      $order='`Customer Main Location`';
    elseif($order=='town')
-     $order='`Customer Main Address Town`';
+     $order='`Customer Main Town`';
    elseif($order=='postcode')
-     $order='`Customer Main Address Postal Code`';
+     $order='`Customer Main Postal Code`';
    elseif($order=='region')
-     $order='`Customer Main Address Country First Division`';
+     $order='`Customer Main Country First Division`';
    elseif($order=='country')
-     $order='`Customer Main Address Country`';
+     $order='`Customer Main Country`';
    //  elseif($order=='ship_address')
    //  $order='`customer main ship to header`';
    elseif($order=='ship_town')

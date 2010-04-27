@@ -908,7 +908,7 @@ function mb_ucwords($str) {
         $first=false;
     }
         
-    return $result;
+    return _trim($result);
 }
 
 

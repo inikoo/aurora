@@ -182,7 +182,7 @@ protected function update_field($field,$value,$options=''){
 
   $sql="update `".$this->table_name." Dimension` set `".$field."`=".prepare_mysql($value)." where `$key_field`=".$this->id;
  
-
+//print $sql;
    mysql_query($sql);
   $affected=mysql_affected_rows();
   if($affected==-1){

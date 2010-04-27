@@ -466,7 +466,6 @@ $data=$this->prepare_data($raw_data,$options);
                 $max_score=-1;
                 unset($country_multiplicity_data);
 
-                Timer::timing_milestone('end   multiplicity ');
 
                 //		print_r($data);
                 //if(  ($data['Address Street Name']!=''  and $data['Address Street Number']!=''  ) or $data['Address Building']!=''   ){
@@ -522,7 +521,6 @@ $data=$this->prepare_data($raw_data,$options);
                     //print "$sql<br>";
 
                     $result=mysql_query($sql);
-                    Timer::timing_milestone('similar inner address ');
                     $max_score=-1;
                     while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
 
@@ -582,7 +580,6 @@ $data=$this->prepare_data($raw_data,$options);
 
                 }
 
-                Timer::timing_milestone('similar inner address x');
                 //	print_r($this->candidate);
                 //print "$max_score\n";
                 //exit;
@@ -691,7 +688,6 @@ $data=$this->prepare_data($raw_data,$options);
                         }
                     }
                     //	}
-                    Timer::timing_milestone('similar inner address xx');
                     //print_r($data);
                     if ($data['Address Street Name']!='' ) {
                         $sql=sprintf("select   `Address Country Code`,`Address Town`, A.`Address Key` ,damlev(UPPER(`Address Street Name`),%s) as dist1,`Subject Key` from `Address Dimension` A left join `Address Bridge` AB  on (AB.`Address Key`=A.`Address Key`)  where  `Subject Type`='Contact'     order by dist1  limit 50 "
@@ -731,7 +727,6 @@ $data=$this->prepare_data($raw_data,$options);
 
 
 
-                Timer::timing_milestone('similar inner address xxx');
 
 
 
@@ -739,7 +734,6 @@ $data=$this->prepare_data($raw_data,$options);
 
 
 
-            Timer::timing_milestone('similar inner address xxxx7');
             if (!$this->found and count($this->candidate)==0) {
                 // foound 1 additions
                 if ($data['Address Fuzzy']=='No') {
@@ -4084,12 +4078,12 @@ $data=$this->prepare_data($data,$options);
         $raw_data['Address Line 3']=  preg_replace('/^p o box\s+/i','PO BOX ',$raw_data['Address Line 3']);
         $raw_data['Address Line 3']=  preg_replace('/^NULL$/i','',$raw_data['Address Line 3']);
 
-        $raw_data['Address Line 1']=preg_replace('/\s{2,}/',' ',$raw_data['Address Line 1']);
-        $raw_data['Address Line 2']=preg_replace('/\s{2,}/',' ',$raw_data['Address Line 2']);
-        $raw_data['Address Line 3']=preg_replace('/\s{2,}/',' ',$raw_data['Address Line 3']);
-        $data['Address Town']=preg_replace('/\s{2,}/',' ',$data['Address Town']);
-        $data['Address Town First Division']=preg_replace('/\s{2,}/',' ',$data['Address Town First Division']);
-        $data['Address Town Second Division']=preg_replace('/\s{2,}/',' ',$data['Address Town Second Division']);
+        $raw_data['Address Line 1']=_trim($raw_data['Address Line 1']);
+        $raw_data['Address Line 2']=_trim($raw_data['Address Line 2']);
+        $raw_data['Address Line 3']=_trim($raw_data['Address Line 3']);
+        $data['Address Town']=_trim($data['Address Town']);
+        $data['Address Town First Division']=_trim($data['Address Town First Division']);
+        $data['Address Town Second Division']=_trim($data['Address Town Second Division']);
         $data['Address Town']=preg_replace('/(\,|\-)$\s*/','',$data['Address Town']);
 
         foreach($data as $key=>$val) {
@@ -4098,7 +4092,6 @@ $data=$this->prepare_data($data,$options);
             else
                 $data[$key]=mb_ucwords(_trim($val));
         }
-
 
         $street_data=Address::parse_street(mb_ucwords(_trim($raw_data['Address Line 3'])));
 
@@ -4120,7 +4113,6 @@ $data=$this->prepare_data($data,$options);
                 $data[$key]=_trim($value);
             }
         }
-
 
 
 
@@ -4157,9 +4149,7 @@ $data=$this->prepare_data($data,$options);
 
         $data['Address Location']=Address::location($data);
         //  print_r($data['Address Country 2 Alpha Code']);
-
         //	print_r($data);
-        //exit;
         return $data;
     }
 
@@ -4385,6 +4375,7 @@ $data=$this->prepare_data($data,$options);
         $parents=array('Contact','Company','Customer','Supplier');
         foreach($parents as $parent) {
             $sql=sprintf("select `$parent Key` as `Parent Key`   from  `$parent Dimension` where `$parent Main Address Key`=%d group by `$parent Key`",$this->id);
+            
             $res=mysql_query($sql);
             while ($row=mysql_fetch_array($res)) {
                 $principal_address_changed=false;
@@ -4424,6 +4415,20 @@ $data=$this->prepare_data($data,$options);
                              ,$parent_object->id
                             );
                 mysql_query($sql);
+                
+                if($parent=='Customer'){
+                 $sql=sprintf("update `$parent Dimension` set `$parent Main Town` =%s,`$parent Main Postal Code` =%s,`$parent Main Country First Division` =%s ,`Customer Main Country 2 Alpha Code`=%s where `$parent Key`=%d"
+                             ,prepare_mysql($this->data['Address Town'])
+                             ,prepare_mysql($this->data['Address Postal Code'])
+                             ,prepare_mysql($this->data['Address Country First Division'])
+                        ,prepare_mysql($this->data['Address Country 2 Alpha Code'])
+
+                             ,$parent_object->id
+                            );
+                mysql_query($sql);
+                
+                }
+                
 
 
                 if ($old_princial_address!=$parent_object->data[$parent.' Main XHTML Address'])

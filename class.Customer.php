@@ -192,6 +192,10 @@ class Customer extends DB_Table {
             }
         }
         // print_r($this->editor);exit;
+$find_fuzzy='';
+ if (preg_match('/fuzzy/i',$options)) {
+            $find_fuzzy='fuzzy';
+        }
 
         $create='';
         $update='';
@@ -228,9 +232,9 @@ class Customer extends DB_Table {
         $raw_data['Customer Type']=ucwords($raw_data['Customer Type']);
         //print $raw_data['Customer Type']."\n";
         if ($raw_data['Customer Type']=='Person') {
-            $child=new Contact ('find in customer use old_id',$raw_data);
+            $child=new Contact ('find in customer $find_fuzzy use old_id',$raw_data);
         } else {
-            $child=new Company ('find in customer use old_id',$raw_data);
+            $child=new Company ('find in customer $find_fuzzy use old_id',$raw_data);
         }
 
 
@@ -304,7 +308,7 @@ class Customer extends DB_Table {
                         $email=new Email($child->data['Contact Main Email Key']);
                        $email->delete();
 
-                        $_customer = new Customer ( 'find create', $raw_data );
+                        $_customer = new Customer ( 'find create  $find_fuzzy', $raw_data );
 
                         $this->get_data('id',$_customer->id);
 
@@ -324,7 +328,7 @@ class Customer extends DB_Table {
 
 
 
-                    $child=new Company ('find in customer create update',$raw_data);
+                    $child=new Company ('find in customer $find_fuzzy create update',$raw_data);
 
 
                     $raw_data_to_update=array();
@@ -359,7 +363,7 @@ class Customer extends DB_Table {
                             $email->delete();
                             //  print_r($child);
                             //exit;
-                            $_customer = new Customer ( 'find create', $raw_data );
+                            $_customer = new Customer ( 'find create $find_fuzzy', $raw_data );
 
                             $this->get_data('id',$_customer->id);
                             return;
@@ -371,13 +375,13 @@ class Customer extends DB_Table {
                         // print_r($contact->data);
                         // print_r($raw_data);
                         // print "lets update the contact\n";
-                        $contact=new contact('find in customer create update',$raw_data);
+                        $contact=new contact('find in customer $find_fuzzy create update',$raw_data);
                         //print "updated contact\n";
                         //print_r($contact->data);
                         $raw_data['Customer Main Contact Key']=$contact->id;
 
                     } else {
-                        $company=new company('find in customer create update',$raw_data);
+                        $company=new company('find in customer $find_fuzzy create update',$raw_data);
                         $raw_data['Customer Company Key']=$company->id;
                     }
 
@@ -576,95 +580,7 @@ class Customer extends DB_Table {
                 $this->data[$key]=_trim($value);
             }
         }
-        //  print_r($this->data);
-        // exit;
-
-
-        if ($this->data['Customer Type']=='Company') {
-            $this->data['Customer Main Email Key']=0;
-            $this->data['Customer Main XHTML Email']='';
-            $this->data['Customer Main Plain Email']='';
-            $this->data['Customer Main Telephone Key']=0;
-            $this->data['Customer Main XHTML Telephone']='';
-            $this->data['Customer Main Plain Telephone']='';
-            $this->data['Customer Main FAX Key']=0;
-            $this->data['Customer Main XHTML FAX']='';
-            $this->data['Customer Main Plain FAX']='';
-
-            if (!$this->data['Customer Company Key']) {
-                $company=new company('find in customer create update',$raw_data);
-            } else {
-                $company=new company('id',$this->data['Customer Company Key']);
-            }
-            $company_key=$company->id;
-            $this->data['Customer File As']=$company->data['Company File As'];
-            $this->data['Customer Name']=$company->data['Company Name'];
-            if ($company->data['Company Main Email Key']) {
-                $main_email_key=$company->data['Company Main Email Key'];
-            }
-            if ($company->data['Company Main Telephone Key']) {
-                $main_telephone_key=$company->data['Company Main Telephone Key'];
-            }
-            if ($company->data['Company Main FAX Key']) {
-                $main_fax_key=$company->data['Company Main FAX Key'];
-            }
-
-
-            $contact=new Contact($company->last_associated_contact_key);
-
-        }
-        elseif($this->data['Customer Type']=='Person') {
-            $this->data['Customer Main Email Key']=0;
-            $this->data['Customer Main XHTML Email']='';
-            $this->data['Customer Main Plain Email']='';
-            $this->data['Customer Main Telephone Key']=0;
-            $this->data['Customer Main XHTML Telephone']='';
-            $this->data['Customer Main Plain Telephone']='';
-            $this->data['Customer Main FAX Key']=0;
-            $this->data['Customer Main XHTML FAX']='';
-            $this->data['Customer Main Plain FAX']='';
-
-
-            if (!$this->data['Customer Main Contact Key']) {
-
-                $contact=new contact('find in customer create update',$raw_data);
-            } else
-                $contact=new contact('id',$this->data['Customer Main Contact Key']);
-
-
-
-
-
-
-            //address!!!!!!!!!!!!!
-
-            $this->data['Customer Name']=$contact->display('name');
-
-            $this->data['Customer File As']=$contact->data['Contact File As'];
-
-
-
-
-            //  if ($contact->data['Contact Main Email Key']) {
-//	$main_email_key=$contact->data['Contact Main Email Key'];
-            //    }
-            if ($contact->data['Contact Main Telephone Key']) {
-                $main_telephone_key=$contact->data['Contact Main Telephone Key'];
-
-            }
-            if ($contact->data['Contact Main FAX Key']) {
-                $main_fax_key=$contact->data['Contact Main FAX Key'];
-
-            }
-            $this->data['Customer Company Key']=0;
-
-
-        }
-        else {
-            $this->error=true;
-            $this->msg.=' Error, Wrong Customer Type ->'.$this->data['Customer Type'];
-        }
-
+ 
         if ($this->data['Customer First Contacted Date']=='') {
             $this->data['Customer First Contacted Date']=date('Y-m-d H:i:s');
         }
@@ -675,56 +591,17 @@ class Customer extends DB_Table {
 
         // Ok see if we have a billing address!!!
 
-        if (isset($raw_data['Customer Billing Address'])) {
-            $billing_address=new address('find create update',$raw_data['Customer Billing Address']);
-            $this->data['Customer Main Address Key']=$billing_address->id;
-            $this->data['Customer Billing Address Key']=$billing_address->id;
+        $this->data['Customer Main Email Key']=0;
+            $this->data['Customer Main XHTML Email']='';
+            $this->data['Customer Main Plain Email']='';
+            $this->data['Customer Main Telephone Key']=0;
+            $this->data['Customer Main XHTML Telephone']='';
+            $this->data['Customer Main Plain Telephone']='';
+            $this->data['Customer Main FAX Key']=0;
+            $this->data['Customer Main XHTML FAX']='';
+            $this->data['Customer Main Plain FAX']='';
 
-            $this->data['Customer Main Address Country Code']=$billing_address->data['Address Country Code'];
-            $this->data['Customer Main Address 2 Alpha Country Code']=$billing_address->data['Address Country 2 Alpha Code'];
-
-            $this->data['Customer Main Location']=$billing_address->data['Address Location'];
-            $this->data['Customer Main Address Town']=$billing_address->data['Address Town'];
-            $this->data['Customer Main Address Postal Code']=$billing_address->data['Address'];
-            $this->data['Customer Main Address Country First Division']=$billing_address->data['Address Country First Division'];
-            $this->data['Customer Main XHTML Address']=$billing_address->display('html');
-            $this->data['Customer Main Plain Address']=$billing_address->display('plain');
-
-
-        } else {
-            if ($this->data['Customer Type']=='Company') {
-
-                $billing_address_key=$company->data['Company Main Address Key'];
-            } else {
-                $billing_address_key=$contact->data['Contact Main Address Key'];
-            }
-
-            if ($billing_address_key) {
-                $billing_address=new address($billing_address_key);
-                $this->data['Customer Main Address Key']=$billing_address->id;
-                $this->data['Customer Billing Address Key']=$billing_address->id;
-
-                $this->data['Customer Main Address Country Code']=$billing_address->data['Address Country Code'];
-                $this->data['Customer Main Address Country 2 Alpha Code']=$billing_address->data['Address Country 2 Alpha Code'];
-                $this->data['Customer Main Location']=$billing_address->data['Address Location'];
-                $this->data['Customer Main Address Town']=$billing_address->data['Address Town'];
-                $this->data['Customer Main Address Postal Code']=$billing_address->data['Address Postal Code'];
-                $this->data['Customer Main Address Country First Division']=$billing_address->data['Address Country First Division'];
-                $this->data['Customer Main XHTML Address']=$billing_address->display('html');
-                $this->data['Customer Main Plain Address']=$billing_address->display('plain');
-
-            }
-
-        }
-
-
-
-        // print_r($raw_data);
-
-
-	//   print_r($this->data);
-        //  print "in class cust xxxxxxxxxxxxxxxxxxxxxxxxxxxx\n";
-        //  exit;
+        
         $keys='';
         $values='';
         foreach($this->data as $key=>$value) {
@@ -743,7 +620,7 @@ class Customer extends DB_Table {
         if (mysql_query($sql)) {
 
             $this->id=mysql_insert_id();
-            $this->get_data('id',$this->id);
+            
 
             $history_data=array(
                               'History Abstract'=>_('Customer Created')
@@ -755,22 +632,90 @@ class Customer extends DB_Table {
 
 
 
+
+        if ($this->data['Customer Type']=='Company') {
+           
+            if (!$this->data['Customer Company Key']) {
+            
+                $company=new company('find in customer create update',$raw_data);
+            } else {
+                $company=new company('id',$this->data['Customer Company Key']);
+            }
+            $company_key=$company->id;
+            $this->data['Customer File As']=$company->data['Company File As'];
+            $this->data['Customer Name']=$company->data['Company Name'];
+           
+            $contact=new Contact($company->last_associated_contact_key);
+
+        }
+        elseif($this->data['Customer Type']=='Person') {
+            
+
+            if (!$this->data['Customer Main Contact Key']) {
+
+                $contact=new contact('find in customer create update',$raw_data);
+            } else
+                $contact=new contact('id',$this->data['Customer Main Contact Key']);
+
+
+            $this->data['Customer Name']=$contact->display('name');
+
+            $this->data['Customer File As']=$contact->data['Contact File As'];
+
+            $this->data['Customer Company Key']=0;
+
+
+        }
+        else {
+            $this->error=true;
+            $this->msg.=' Error, Wrong Customer Type ->'.$this->data['Customer Type'];
+        }
+
+
+
             if ($this->data['Customer Type']=='Company') {
-
-//	$this->update_company($company_key,true);
-
                 $this->associate_company($company->id);
                 $this->associate_contact($contact->id);
-
-
+$company->update_parents_principal_address_keys($company->data['Company Main Address Key']);
+$address=new Address($company->data['Company Main Address Key']);
+$address->update_parents();
+$address->update_parents_principal_telecom_keys('Telephone');
+$address->update_parents_principal_telecom_keys('FAX');
+$tel=new Telecom($address->get_principal_telecom_key('Telephone'));
+if($tel->id)
+$tel->update_parents();
+$fax=new Telecom($address->get_principal_telecom_key('FAX'));
+if($fax->id)
+$fax->update_parents();
             } else {
-//	$this->update_contact($contact_key,true);
                 $this->associate_contact($contact->id);
+$contact->update_parents_principal_address_keys($contact->data['Contact Main Address Key']);
+$address=new Address($contact->data['Contact Main Address Key']);
+$address->update_parents();
+$tel=new Telecom($address->get_principal_telecom_key('Telephone'));
+if($tel->id)
 
+$tel->update_parents();
+$fax=new Telecom($address->get_principal_telecom_key('FAX'));
+if($fax->id)
+
+$fax->update_parents();
             }
 
+$contact->update_parents_principal_email_keys();
+                $email=new Email($contact->get_principal_email_key());
+                if ($email->id)
+                    $email->update_parents();
 
+$this->get_data('id',$this->id);
 
+if($this->data['Customer Billing Address Link']=='Contact'){
+//$this->data['Customer Billing Address Key']=$this->data['Customer Main Address Key'];
+$this->update_field('Customer Billing Address Key',$address->id);
+}
+if($this->data['Customer Billing Address Link']=='Contact'){
+
+}
 
 
         } else {
@@ -781,8 +726,10 @@ class Customer extends DB_Table {
 
 
 
-
     }
+
+
+
 
 
     private function create_anonymous($raw_data) {
@@ -827,12 +774,12 @@ class Customer extends DB_Table {
             $data['Customer First Contacted Date']=$raw_data['Customer First Contacted Date'];
         else
             $data['Customer First Contacted Date']=date("Y-m-d H:i:s");
-        $data['Customer Main Address Country Code']=$anon_address->data['Address Country Code'];
-        $data['Customer Main Address Country 2 Alpha Code']=$anon_address->data['Address Country 2 Alpha Code'];
+        $data['Customer Main Country Code']=$anon_address->data['Address Country Code'];
+        $data['Customer Main Country 2 Alpha Code']=$anon_address->data['Address Country 2 Alpha Code'];
         $data['Customer Main Location']=$anon_address->data['Address Location'];
-        $data['Customer Main Address Town']=$anon_address->data['Address Town'];
-        $data['Customer Main Address Postal Code']=$anon_address->data['Address Postal Code'];
-        $data['Customer Main Address Country First Division']=$anon_address->data['Address Country First Division'];
+        $data['Customer Main Town']=$anon_address->data['Address Town'];
+        $data['Customer Main Postal Code']=$anon_address->data['Address Postal Code'];
+        $data['Customer Main Country First Division']=$anon_address->data['Address Country First Division'];
         $data['Customer Main XHTML Address']=$anon_address->display('html');
         $data['Customer Main Plain Address']=$anon_address->display('plain');
 
@@ -2152,30 +2099,30 @@ class Customer extends DB_Table {
             $old_value=$this->data['Customer Main XHTML Address'];
             $this->data['Customer Main Address Key']=$address->id;
             $this->data['Customer Main XHTML Address']=$address->display('xhtml');
-            $this->data['Customer Main Address Country Code']=$address->data['Address Country Code'];
-            $this->data['Customer Main Address Country 2 Alpha Code']=$address->data['Address Country 2 Alpha Code'];
+            $this->data['Customer Main Country Code']=$address->data['Address Country Code'];
+            $this->data['Customer Main Country 2 Alpha Code']=$address->data['Address Country 2 Alpha Code'];
 
 
 
-            $this->data['Customer Main Address Country']=$address->data['Address Country Name'];
+            $this->data['Customer Main Country']=$address->data['Address Country Name'];
             $this->data['Customer Main Location']=$address->display('location');
-            $this->data['Customer Main Address Town']=$address->data['Address Town'];
-            $this->data['Customer Main Address Postal Code']=$address->data['Address Postal Code'];
-            $this->data['Customer Main Address Country First Division']=$address->data['Address Country First Division'];
+            $this->data['Customer Main Town']=$address->data['Address Town'];
+            $this->data['Customer Main Postal Code']=$address->data['Address Postal Code'];
+            $this->data['Customer Main Country First Division']=$address->data['Address Country First Division'];
 
 
-            $sql=sprintf("update `Customer Dimension` set `Customer Main Address Key`=%d,`Customer Main Plain Address`=%s,`Customer Main XHTML Address`=%s,`Customer Main Address Country`=%s,`Customer Main Location`=%s,`Customer Main Address Country Code`=%s,`Customer Main Address Country 2 Alpha Code`=%s,`Customer Main Address Town`=%s,`Customer Main Address Postal Code`=%s ,`Customer Main Address Country First Division`=%s    where `Customer Key`=%d"
+            $sql=sprintf("update `Customer Dimension` set `Customer Main Address Key`=%d,`Customer Main Plain Address`=%s,`Customer Main XHTML Address`=%s,`Customer Main Country`=%s,`Customer Main Location`=%s,`Customer Main Country Code`=%s,`Customer Main Country 2 Alpha Code`=%s,`Customer Main Town`=%s,`Customer Main Postal Code`=%s ,`Customer Main Country First Division`=%s    where `Customer Key`=%d"
 
                          ,$this->data['Customer Main Address Key']
                          ,prepare_mysql($this->data['Customer Main Plain Address'],false)
                          ,prepare_mysql($this->data['Customer Main XHTML Address'])
-                         ,prepare_mysql($this->data['Customer Main Address Country'])
+                         ,prepare_mysql($this->data['Customer Main Country'])
                          ,prepare_mysql($this->data['Customer Main Location'])
-                         ,prepare_mysql($this->data['Customer Main Address Country Code'])
-                         ,prepare_mysql($this->data['Customer Main Address Country 2 Alpha Code'])
-                         ,prepare_mysql($this->data['Customer Main Address Town'])
-                         ,prepare_mysql($this->data['Customer Main Address Postal Code'])
-                         ,prepare_mysql($this->data['Customer Main Address Country First Division'])
+                         ,prepare_mysql($this->data['Customer Main Country Code'])
+                         ,prepare_mysql($this->data['Customer Main Country 2 Alpha Code'])
+                         ,prepare_mysql($this->data['Customer Main Town'])
+                         ,prepare_mysql($this->data['Customer Main Postal Code'])
+                         ,prepare_mysql($this->data['Customer Main Country First Division'])
 
 
                          ,$this->id
@@ -2511,7 +2458,6 @@ class Customer extends DB_Table {
         else
             $address=new Address($this->data['Customer Main Address Key']);
 
-        //print_r($this);
 
         $line=$address->display('3lines');
 
@@ -2620,10 +2566,10 @@ class Customer extends DB_Table {
                          ,$address_lines[1]
                          ,$address_lines[3]
                          ,$address_lines[2]
-                         ,$this->data['Customer Main Address Town']
+                         ,$this->data['Customer Main Town']
                          ,$address->display('Country Divisions')
-                         ,$this->data['Customer Main Address Postal Code']
-                         ,$this->data['Customer Main Address Country']
+                         ,$this->data['Customer Main Postal Code']
+                         ,$this->data['Customer Main Country']
                          ,"Staff"
                          ,$this->data['Customer Main XHTML Telephone']
                          ,$this->data['Customer Main XHTML FAX']
@@ -2646,10 +2592,10 @@ class Customer extends DB_Table {
                          ,$address_lines[1]
                          ,$address_lines[3]
                          ,$address_lines[2]
-                         ,$this->data['Customer Main Address Town']
+                         ,$this->data['Customer Main Town']
                          ,$address->display('Country Divisions')
-                         ,$this->data['Customer Main Address Postal Code']
-                         ,$this->data['Customer Main Address Country']
+                         ,$this->data['Customer Main Postal Code']
+                         ,$this->data['Customer Main Country']
                          ,"Staff"
                          ,$this->data['Customer Main XHTML Telephone']
                          ,$this->data['Customer Main XHTML FAX']

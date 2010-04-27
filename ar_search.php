@@ -180,14 +180,14 @@ function search_customer_by_parts($data){
  $locations_results='<table>';
  // Email serach
  if(strlen($q)>1){
-   $sql=sprintf('select `Customer Key`,`Customer Name`,`Customer Main Address Postal Code`,`Customer Main Location` from `Customer Dimension` where `Customer Store Key` in (%s) and  `Customer Main Address Postal Code` like "%s%%"  limit 5'
+   $sql=sprintf('select `Customer Key`,`Customer Name`,`Customer Main Postal Code`,`Customer Main Location` from `Customer Dimension` where `Customer Store Key` in (%s) and  `Customer Main Postal Code` like "%s%%"  limit 5'
 		   ,$stores
 		,addslashes($q)
 		);
    // print $sql;
       $res=mysql_query($sql);
       while($row=mysql_fetch_array($res)){
-	$result=sprintf('<tr><td class="aright"><a href="customer.php?id=%d">%s</a> %s <b>%s</b></td></tr>',$row['Customer Key'],$row['Customer Name'],$row['Customer Main Location'],$row['Customer Main Address Postal Code']);
+	$result=sprintf('<tr><td class="aright"><a href="customer.php?id=%d">%s</a> %s <b>%s</b></td></tr>',$row['Customer Key'],$row['Customer Name'],$row['Customer Main Location'],$row['Customer Main Postal Code']);
 	$locations_found++;
 	$locations_results.=$result;
 	$total_found++;
@@ -275,7 +275,7 @@ function search_customer($data){
   //print_r($candidates);
 
   
- $sql=sprintf('select `Customer Key`,`Customer Main Address Postal Code` from `Customer Dimension` where `Customer Store Key` in (%s) and  `Customer Main Address Postal Code` like "%s%%"  limit 150'
+ $sql=sprintf('select `Customer Key`,`Customer Main Postal Code` from `Customer Dimension` where `Customer Store Key` in (%s) and  `Customer Main Postal Code` like "%s%%"  limit 150'
 		   ,$stores
 		,addslashes($q)
 		);
@@ -283,12 +283,12 @@ function search_customer($data){
       $res=mysql_query($sql);
       while($row=mysql_fetch_array($res)){
   
-	if($row['Customer Main Address Postal Code']==$q){
+	if($row['Customer Main Postal Code']==$q){
       
 	  $candidates[$row['Customer Key']]=50;
     }else{
 
-      $len_name=$row['Customer Main Address Postal Code'];
+      $len_name=$row['Customer Main Postal Code'];
       $len_q=strlen($q);
       $factor=$len_name/$len_q;
       $candidates[$row['Customer Key']]=20*$factor;
