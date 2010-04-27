@@ -683,44 +683,44 @@ $find_fuzzy='';
             if ($this->data['Customer Type']=='Company') {
                 $this->associate_company($company->id);
                 $this->associate_contact($contact->id);
-$company->update_parents_principal_address_keys($company->data['Company Main Address Key']);
-$address=new Address($company->data['Company Main Address Key']);
-$address->update_parents();
-$address->update_parents_principal_telecom_keys('Telephone');
-$address->update_parents_principal_telecom_keys('FAX');
-$tel=new Telecom($address->get_principal_telecom_key('Telephone'));
-if($tel->id)
-$tel->update_parents();
-$fax=new Telecom($address->get_principal_telecom_key('FAX'));
-if($fax->id)
-$fax->update_parents();
+		$company->update_parents_principal_address_keys($company->data['Company Main Address Key']);
+		$address=new Address($company->data['Company Main Address Key']);
+		$address->update_parents();
+		$address->update_parents_principal_telecom_keys('Telephone');
+		$address->update_parents_principal_telecom_keys('FAX');
+		$tel=new Telecom($address->get_principal_telecom_key('Telephone'));
+		if($tel->id)
+		  $tel->update_parents();
+		$fax=new Telecom($address->get_principal_telecom_key('FAX'));
+		if($fax->id)
+		  $fax->update_parents();
             } else {
-                $this->associate_contact($contact->id);
-$contact->update_parents_principal_address_keys($contact->data['Contact Main Address Key']);
-$address=new Address($contact->data['Contact Main Address Key']);
-$address->update_parents();
-$tel=new Telecom($address->get_principal_telecom_key('Telephone'));
-if($tel->id)
+	      $this->associate_contact($contact->id);
+	      $contact->update_parents_principal_address_keys($contact->data['Contact Main Address Key']);
+	      $address=new Address($contact->data['Contact Main Address Key']);
+	      $address->update_parents();
+	      $tel=new Telecom($address->get_principal_telecom_key('Telephone'));
+	      if($tel->id)
 
-$tel->update_parents();
-$fax=new Telecom($address->get_principal_telecom_key('FAX'));
-if($fax->id)
-
-$fax->update_parents();
+		$tel->update_parents();
+	      $fax=new Telecom($address->get_principal_telecom_key('FAX'));
+	      if($fax->id)
+		
+		$fax->update_parents();
             }
-
-$contact->update_parents_principal_email_keys();
-                $email=new Email($contact->get_principal_email_key());
-                if ($email->id)
-                    $email->update_parents();
-
-$this->get_data('id',$this->id);
-
-if($this->data['Customer Billing Address Link']=='Contact'){
-//$this->data['Customer Billing Address Key']=$this->data['Customer Main Address Key'];
-$this->update_field('Customer Billing Address Key',$address->id);
-}
-if($this->data['Customer Billing Address Link']=='Contact'){
+	    
+	    $contact->update_parents_principal_email_keys();
+	    $email=new Email($contact->get_principal_email_key());
+	    if ($email->id)
+	      $email->update_parents();
+	    
+	    $this->get_data('id',$this->id);
+	    
+	    if($this->data['Customer Billing Address Link']=='Contact'){
+	      //$this->data['Customer Billing Address Key']=$this->data['Customer Main Address Key'];
+	      $this->update_field('Customer Billing Address Key',$address->id);
+	    }
+	    if($this->data['Customer Billing Address Link']=='Contact'){
 
 }
 
