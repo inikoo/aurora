@@ -75,7 +75,8 @@ class Customer extends DB_Table {
         elseif(preg_match('/^find/',$arg1)) {
             $this->find($arg2,$arg1);
             return;
-        }elseif(preg_match('/^force_create/',$arg1)) {
+        }
+        elseif(preg_match('/^force_create/',$arg1)) {
             $this->prepare_force_create($arg2,$arg1);
             return;
         }
@@ -86,21 +87,21 @@ class Customer extends DB_Table {
     }
 
 
-    function prepare_force_create($data){
-      
-      if(array_key_exists('Customer Main Plain Email',$data)){
-	$sql=sprintf("select `Customer Key` from `Customer Dimension` left join `Email Bridge` EB on (`Subject Key`=`Customer Key`) left join `Email Dimension` E on (E.`Email Key`=EB.`Email Key`)  where `Subject Type`='Customer'  and `Email`=%s  ", $data['Customer Main Plain Email']);
-	$result=mysql_query($sql);
-	if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-	  $this->error=true;
-	  $this->msg='Email already in';
-	  return;
-	  
-	}
-      }
+    function prepare_force_create($data) {
+
+        if (array_key_exists('Customer Main Plain Email',$data)) {
+            $sql=sprintf("select `Customer Key` from `Customer Dimension` left join `Email Bridge` EB on (`Subject Key`=`Customer Key`) left join `Email Dimension` E on (E.`Email Key`=EB.`Email Key`)  where `Subject Type`='Customer'  and `Email`=%s  ", $data['Customer Main Plain Email']);
+            $result=mysql_query($sql);
+            if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+                $this->error=true;
+                $this->msg='Email already in';
+                return;
+
+            }
+        }
 
 
-      if (isset($raw_data['editor'])) {
+        if (isset($raw_data['editor'])) {
             foreach($raw_data['editor'] as $key=>$value) {
 
                 if (array_key_exists($key,$this->editor))
@@ -108,8 +109,8 @@ class Customer extends DB_Table {
 
             }
         }
-      
-      $this->create($data);
+
+        $this->create($data);
 
     }
 
@@ -154,7 +155,7 @@ class Customer extends DB_Table {
                 }
                 $raw_data['Customer Staff Key']=0;
                 $raw_data['Customer Main Contact Key']=$contact->id;
-                $raw_data['Customer Name']=_('Unknown Staff');
+                $raw_data['Customer Name']='';
             }
 
 
@@ -191,9 +192,8 @@ class Customer extends DB_Table {
 
             }
         }
-        // print_r($this->editor);exit;
-$find_fuzzy='';
- if (preg_match('/fuzzy/i',$options)) {
+        $find_fuzzy='';
+        if (preg_match('/fuzzy/i',$options)) {
             $find_fuzzy='fuzzy';
         }
 
@@ -245,7 +245,7 @@ $find_fuzzy='';
             $this->found_child=true;
             $this->found_child_key=$child->found_key;
             $customer_found_keys=$child->get_customer_keys();
-     
+
             if (count($customer_found_keys)>0) {
                 foreach($customer_found_keys as $customer_found_key) {
                     $tmp_customer=new Customer($customer_found_key);
@@ -306,7 +306,8 @@ $find_fuzzy='';
                         print "super change!!\n";
                         // exit;
                         $email=new Email($child->data['Contact Main Email Key']);
-                       $email->delete();
+                        $email->editor=$this->editor;
+                        $email->delete();
 
                         $_customer = new Customer ( 'find create  $find_fuzzy', $raw_data );
 
@@ -332,8 +333,8 @@ $find_fuzzy='';
 
 
                     $raw_data_to_update=array();
-                    if(isset($raw_data['Customer Old ID']))
-		      $raw_data_to_update['Customer Old ID']=$raw_data['Customer Old ID'];
+                    if (isset($raw_data['Customer Old ID']))
+                        $raw_data_to_update['Customer Old ID']=$raw_data['Customer Old ID'];
 
 
                     $this->update($raw_data_to_update);
@@ -361,6 +362,7 @@ $find_fuzzy='';
                             //print "super change2!\n";
                             // $child->remove_email($child->data['Contact Main Email Key']);
                             $email=new Email($child->data['Contact Main Email Key']);
+                            $email->editor=$this->editor;
                             $email->delete();
                             //  print_r($child);
                             //exit;
@@ -581,7 +583,7 @@ $find_fuzzy='';
                 $this->data[$key]=_trim($value);
             }
         }
- 
+
         if ($this->data['Customer First Contacted Date']=='') {
             $this->data['Customer First Contacted Date']=date('Y-m-d H:i:s');
         }
@@ -593,16 +595,16 @@ $find_fuzzy='';
         // Ok see if we have a billing address!!!
 
         $this->data['Customer Main Email Key']=0;
-            $this->data['Customer Main XHTML Email']='';
-            $this->data['Customer Main Plain Email']='';
-            $this->data['Customer Main Telephone Key']=0;
-            $this->data['Customer Main XHTML Telephone']='';
-            $this->data['Customer Main Plain Telephone']='';
-            $this->data['Customer Main FAX Key']=0;
-            $this->data['Customer Main XHTML FAX']='';
-            $this->data['Customer Main Plain FAX']='';
+        $this->data['Customer Main XHTML Email']='';
+        $this->data['Customer Main Plain Email']='';
+        $this->data['Customer Main Telephone Key']=0;
+        $this->data['Customer Main XHTML Telephone']='';
+        $this->data['Customer Main Plain Telephone']='';
+        $this->data['Customer Main FAX Key']=0;
+        $this->data['Customer Main XHTML FAX']='';
+        $this->data['Customer Main Plain FAX']='';
 
-        
+
         $keys='';
         $values='';
         foreach($this->data as $key=>$value) {
@@ -621,7 +623,7 @@ $find_fuzzy='';
         if (mysql_query($sql)) {
 
             $this->id=mysql_insert_id();
-            
+
 
             $history_data=array(
                               'History Abstract'=>_('Customer Created')
@@ -634,95 +636,107 @@ $find_fuzzy='';
 
 
 
-        if ($this->data['Customer Type']=='Company') {
-           
-            if (!$this->data['Customer Company Key']) {
-            
-                $company=new company('find in customer create update',$raw_data);
-            } else {
-                $company=new company('id',$this->data['Customer Company Key']);
+            if ($this->data['Customer Type']=='Company') {
+
+                if (!$this->data['Customer Company Key']) {
+
+                    $company=new company('find in customer create update',$raw_data);
+                } else {
+                    $company=new company('id',$this->data['Customer Company Key']);
+                }
+                // print_r($company);
+                $company_key=$company->id;
+                $this->data['Customer File As']=$company->data['Company File As'];
+                $this->data['Customer Name']=$company->data['Company Name'];
+
+                if ($company->last_associated_contact_key)
+                    $contact=new Contact($company->last_associated_contact_key);
+                else
+                    $contact=new Contact($company->data['Company Main Contact Key']);
+
+
+
             }
-	    // print_r($company);
-	    $company_key=$company->id;
-            $this->data['Customer File As']=$company->data['Company File As'];
-            $this->data['Customer Name']=$company->data['Company Name'];
-           
-	    if($company->last_associated_contact_key)
-	      $contact=new Contact($company->last_associated_contact_key);
-	    else
-	      $contact=new Contact($company->data['Company Main Contact Key']);
+            elseif($this->data['Customer Type']=='Person') {
 
 
+                if (!$this->data['Customer Main Contact Key']) {
 
-        }
-        elseif($this->data['Customer Type']=='Person') {
-            
+                    $contact=new contact('find in customer create update',$raw_data);
+                } else{
+                    $contact=new contact('id',$this->data['Customer Main Contact Key']);
+                    $contact->editor=$this->editor;
+                }
+                $this->data['Customer Name']=$contact->display('name');
 
-            if (!$this->data['Customer Main Contact Key']) {
+                $this->data['Customer File As']=$contact->data['Contact File As'];
 
-                $contact=new contact('find in customer create update',$raw_data);
-            } else
-                $contact=new contact('id',$this->data['Customer Main Contact Key']);
-
-
-            $this->data['Customer Name']=$contact->display('name');
-
-            $this->data['Customer File As']=$contact->data['Contact File As'];
-
-            $this->data['Customer Company Key']=0;
+                $this->data['Customer Company Key']=0;
 
 
-        }
-        else {
-            $this->error=true;
-            $this->msg.=' Error, Wrong Customer Type ->'.$this->data['Customer Type'];
-        }
+            }
+            else {
+                $this->error=true;
+                $this->msg.=' Error, Wrong Customer Type ->'.$this->data['Customer Type'];
+            }
 
 
 
             if ($this->data['Customer Type']=='Company') {
                 $this->associate_company($company->id);
                 $this->associate_contact($contact->id);
-		$company->update_parents_principal_address_keys($company->data['Company Main Address Key']);
-		$address=new Address($company->data['Company Main Address Key']);
-		$address->update_parents();
-		$address->update_parents_principal_telecom_keys('Telephone');
-		$address->update_parents_principal_telecom_keys('FAX');
-		$tel=new Telecom($address->get_principal_telecom_key('Telephone'));
-		if($tel->id)
-		  $tel->update_parents();
-		$fax=new Telecom($address->get_principal_telecom_key('FAX'));
-		if($fax->id)
-		  $fax->update_parents();
+                $company->update_parents_principal_address_keys($company->data['Company Main Address Key']);
+                $address=new Address($company->data['Company Main Address Key']);
+                $address->editor=$this->editor;
+                $address->update_parents();
+                $address->update_parents_principal_telecom_keys('Telephone');
+                $address->update_parents_principal_telecom_keys('FAX');
+                $tel=new Telecom($address->get_principal_telecom_key('Telephone'));
+                $tel->editor=$this->editor;
+
+                if ($tel->id)
+                    $tel->update_parents();
+                $fax=new Telecom($address->get_principal_telecom_key('FAX'));
+                $fax->editor=$this->editor;
+                if ($fax->id)
+                    $fax->update_parents();
+
             } else {
-	      $this->associate_contact($contact->id);
-	      $contact->update_parents_principal_address_keys($contact->data['Contact Main Address Key']);
-	      $address=new Address($contact->data['Contact Main Address Key']);
-	      $address->update_parents();
-	      $tel=new Telecom($address->get_principal_telecom_key('Telephone'));
-	      if($tel->id)
+                $this->associate_contact($contact->id);
+                $contact->update_parents_principal_address_keys($contact->data['Contact Main Address Key']);
+                $address=new Address($contact->data['Contact Main Address Key']);
+                $address->editor=$this->editor;
+                $address->update_parents();
+                $tel=new Telecom($address->get_principal_telecom_key('Telephone'));
+                $tel->editor=$this->editor;
 
-		$tel->update_parents();
-	      $fax=new Telecom($address->get_principal_telecom_key('FAX'));
-	      if($fax->id)
-		
-		$fax->update_parents();
+                if ($tel->id)
+
+                    $tel->update_parents();
+                $fax=new Telecom($address->get_principal_telecom_key('FAX'));
+                $fax->editor=$this->editor;
+                if ($fax->id)
+
+                    $fax->update_parents();
             }
-	    
-	    $contact->update_parents_principal_email_keys();
-	    $email=new Email($contact->get_principal_email_key());
-	    if ($email->id)
-	      $email->update_parents();
-	    
-	    $this->get_data('id',$this->id);
-	    
-	    if($this->data['Customer Billing Address Link']=='Contact'){
-	      //$this->data['Customer Billing Address Key']=$this->data['Customer Main Address Key'];
-	      $this->update_field('Customer Billing Address Key',$address->id);
-	    }
-	    if($this->data['Customer Billing Address Link']=='Contact'){
+            $contact->update_parents_principal_email_keys();
+            $email=new Email($contact->get_principal_email_key());
+            $email->editor=$this->editor;
+            if ($email->id){
+                $email->update_parents();
 
-}
+            }
+
+            $this->get_data('id',$this->id);
+
+            if ($this->data['Customer Billing Address Link']=='Contact') {
+//$this->data['Customer Billing Address Key']=$this->data['Customer Main Address Key'];
+                $this->update_field('Customer Billing Address Key',$address->id);
+            }
+            if ($this->data['Customer Billing Address Link']=='Contact') {
+
+
+            }
 
 
         } else {
@@ -795,7 +809,7 @@ $find_fuzzy='';
 
         $data['Customer Staff Key']=0;
         $data['Customer Main Contact Key']=$contact->id;
-        $data['Customer Name']=_('Unknown Customer');
+        $data['Customer Name']='';
         $data['Customer File As']='';
         $data['Customer Store Key']=$store_key;
 
@@ -2224,6 +2238,7 @@ $find_fuzzy='';
 
 
         $company=new company($company_key);
+        $company->editor=$this->editor;
         if (!$company->id) {
             $this->error=true;
             $this->msg='Wrong company key when trying to remove it';
@@ -2278,6 +2293,7 @@ $find_fuzzy='';
         }
 
         $contact->set_scope('Customer',$this->id);
+        $contact->editor=$this->editor;
         if ( $contact->associated_with_scope) {
 
             $sql=sprintf("delete `Contact Bridge`  where `Subject Type`='Customer' and  `Subject Key`=%d  and `Contact Key`=%d",
@@ -2727,6 +2743,7 @@ $find_fuzzy='';
 
         if ($main_company_key!=$company_key) {
             $company=new Company($company_key);
+            $company->editor=$this->editor;
             $sql=sprintf("update `Company Bridge`  set `Is Main`='No' where `Subject Type`='Customer' and  `Subject Key`=%d  and `Company Key`=%d",
                          $this->id
                          ,$company_key
@@ -2755,6 +2772,7 @@ $find_fuzzy='';
 
         if ($main_contact_key!=$contact_key) {
             $contact=new Contact($contact_key);
+            $contact->editor=$this->editor;
             $sql=sprintf("update `Contact Bridge`  set `Is Main`='No' where `Subject Type`='Customer' and  `Subject Key`=%d  and `Contact Key`=%d",
                          $this->id
                          ,$contact_key

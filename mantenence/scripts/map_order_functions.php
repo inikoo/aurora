@@ -2755,369 +2755,7 @@ function update_orden_files($order_id,$filename,$checksum,$checksum_header,$chec
 }
 
 
-function xcreate_orden($customer_id,
-		      $header,
-		      $act,
-		      $date_index,
-		      $date_order,
-		      $date_inv,
-		      $tipo,
-		      $address_del_id='',
-		      $address_bill_id='',
-		      $new_customer,
-		      $is_island,$parent_order_id
-		      ,$partner=0
-		      ,$co=''
-		      ){
-  
 
-
-
-  $db =& MDB2::singleton();
-  global $tax_rate,$home_country_id;
-  $tax_factor=$tax_rate;
-  $total_tax=$header['tax1']+$header['tax2'];
-  $total_net=$header['total_net'];
-  $total=$header['total_topay'];
-  if($total!=0 and $total_tax==0){
-    $tax_factor=0;
-  }
-
-  $ajuste_in_net=$total_net-$header['total_items_charge_value']-$header['charges']-$header['shipping'];
-  $ajuste_in_tax=$total_tax-($total_net*$tax_factor);
-  $ajuste_in_total=$total-$total_net-$total_tax;
-
-  //  $balance=$total-(($total_net+$balance_net)*(1+$tax_factor));
-  
-  //   $balance_total=number_format($balance_net*(1+$tax_factor)+$balance,2);
-  //   $balance_net=number_format($balance_net,2);
-  //   $balance=number_format($balance,2);
-			 
-  
-
-
-
-
-
-  if($new_customer){
-    
-
-    
-    
-
-    if($is_island){
-      $sql="insert into nodata_island (customer_id,history,history2) values ($customer_id,".$header['history'].",".$header['history'].")";
-      // print "$sql\n";
-      mysql_query($sql);
-    }
-      
-
-    $number_of_orders_old=$header['history'];
-    if(!is_numeric($number_of_orders_old))
-      $number_of_orders_old=0;
-
-    if($number_of_orders_old>1){
-      $number_orders_no_data=$number_of_orders_old-1;
-      $sql="update customer set num_orders_nd=$number_orders_no_data where id=$customer_id";
-      mysql_query($sql);
-      //      $_date_index=date('Y-m-d H:i:s',  strtotime(date('U',strtotime($date_index))-1)  );
-      $_date_index=date('Y-m-d H:i:s',    strtotime(str_replace("'",'',$date_index))-1);
-      
-      if($number_orders_no_data==1)
-	$sql="insert into note (texto,op,op_id,date_index,code) values ('There is one previous order for which no details are available','Customer',$customer_id,'$_date_index',1)";
-      else
-	$sql="insert into note (texto,op,op_id,date_index,code) values ('There are $number_orders_no_data previous orders for which no details are available','Customer',$customer_id,'$_date_index',1)";
-      mysql_query($sql);
-      $sql="insert into history (tipo,sujeto,sujeto_id,objeto,objeto_id,date) values ('ISL','Customer',$customer_id,'End',NULL,$date_index)";
-      mysql_query($sql);
-      $history_id=mysql_insert_id();
-      //print "$sql\n";      
-      $sql="insert into history_item (history_id,columna,old_value,new_value) values ($history_id,'Orders',0,$number_orders_no_data)";
-      mysql_query($sql);
-
-      //    print "$sql\n";
-      //exit;
-    }
-
-
-  }else{
-    
-
-
-    if($is_island){
-      $sql="update nodata_island set history=".$header['history']."  where customer_id=$customer_id";
-      //	print "$sql\n";
-      mysql_query($sql);
-    }else{
-      // find is the customer was in a island
-      $sql=sprintf("select history,id  from nodata_island  where done=0 and customer_id=%d",$customer_id);
-
-      $result = mysql_query($sql) or die('Query failed: ' . mysql_error());
-      if($row = mysql_fetch_array($result, MYSQL_ASSOC)) {
-	if(($diff_history=$header['history']-$row['history']-1)>0){
-	  // update nodata orders and set a note ---------------------
-	  $customer_data=get_customer_data($customer_id);
-	    
-	  $number_orders_no_data=$diff_history+$customer_data['num_orders_nd'];
-	  $sql="update customer set num_orders_nd=$number_orders_no_data where id=$customer_id";
-	  //  print "$diff_history $number_orders_no_data     $sql";
-	  mysql_query($sql);
-	  $sql="update nodata_island set history='".$header['history']."',done=1  where customer_id=$customer_id";
-	  //	print "$sql\n";
-	  mysql_query($sql);
-
-	  //      $_date_index=date('Y-m-d H:i:s',  strtotime(date('U',strtotime($date_index))-1)  );
-	  $_date_index=date('Y-m-d H:i:s',    strtotime(str_replace("'",'',$date_index))-1);
-	    
-	  if($diff_history==1)
-	    $sql="insert into note (texto,op,op_id,date_index,code) values ('It\'s one order for which no details are available in this period','Customer',$customer_id,'$_date_index',2)";
-	  else
-	    $sql="insert into note (texto,op,op_id,date_index,code) values ('There are $diff_history orders for which no details are available in this period','Customer',$customer_id,'$_date_index',2)";
-	  mysql_query($sql);
-	  // print "$sql\n";
-	  $sql="insert into history (tipo,sujeto,sujeto_id,objeto,objeto_id,date) values ('ISL','Customer',$customer_id,'End',NULL,$date_index)";
-	  mysql_query($sql);
-	  $history_id=mysql_insert_id();
-
-	  $sql="insert into history_item (history_id,columna,old_value,new_value) values ($history_id,'Orders',0,$diff_history)";
-	  mysql_query($sql);
-
-	  //---------------------------------------------------------
-
-
-	}
-      }      
-
-    }
-
-
-    $customer_data=get_customer_data($customer_id);
-
-    $number_of_orders_old=$customer_data['num_invoices']+ $customer_data['num_pro_invoices']+ $customer_data['num_cancels']+$customer_data['num_orders_nd'];
-    if($number_of_orders_old==0){
-      $number_of_orders_old=$header['history'];
-      
-      $number_of_orders_old=$number_of_orders_old-$customer_data['num_orders'];
-      if($number_of_orders_old<0)
-	$number_of_orders_old=0;
-      
-    }
-
-
-  }
-
-  if($tipo==1 or $tipo==2 or $tipo==3)
-    $number_of_orders=$number_of_orders_old+1;
-  else
-    $number_of_orders=$number_of_orders_old;
-
-
-
-  //  print_r($header);
-  //source tipo - can be i(internet),t(telephone),f(fax),p(post),s(showroom),a(staffsales),u(unknown)
-  if($header['source_tipo']=='')$header['source_tipo']='u';
-  $_gold=($header['gold']=='Gold Reward'?'1':'0');
-
-
-
-
-
-  if($header['customer_contact']=='')
-    $header['customer_contact']=$header['trade_name'];
-
-  if($header['trade_name']=='')
-    $header['trade_name']=$header['customer_contact'];
-
-  // print_r($header);
-
-  $payment_method=get_payment_method($header['pay_method']);
-  //print "$payment_method\n";
-  //exit;
-
-  $del_country_id=country_id($address_del_id,$home_country_id);
-
-
-  $sql=sprintf("insert into orden (fao,feedback_id,source_tipo,customer_name,contact_name,customer_id2,customer_id3,tel,public_id,parcels,weight,order_hist,gold,taken_by,net
-				       ,tax
-				       ,total
-				       ,balance_net
-				       ,balance_tax
-				       ,balance_total
-				       ,payment_method,date_creation,date_processed,date_invoiced,titulo,customer_id,address_del,address_bill,tipo,date_index,parent_id,partner,del_country_id) values
-				       (%s,%d,'%s',%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s
-				       ,%.2f
-				       ,%.2f
-				       ,%.2f
-				       ,%.2f
-				       ,%.2f
-				       ,%.2f
-				       ,%s,%s,%s,%s,%s,%d,%s,%s,%s,%s,%s,%d,%d)
-				       ",prepare_mysql($co),
-	       $header['feedback'],
-	       $header['source_tipo'],
-	       prepare_mysql($header['trade_name']),
-	       prepare_mysql($header['customer_contact']),
-	       prepare_mysql($header['extra_id1']),
-	       prepare_mysql($header['extra_id2']),
-	       prepare_mysql($header['phone']),
-	       prepare_mysql($header['order_num']),
-	       prepare_mysql($header['parcels']),
-	       prepare_mysql($header['weight']),
-	       $number_of_orders,
-	       $_gold,
-	       'null',
-	       $total_net,
-	       $total_tax,
-	       $total,
-	       $ajuste_in_net,
-	       $ajuste_in_tax,
-	       $ajuste_in_total,
-	       prepare_mysql($payment_method),
-	       $date_order,
-	       $date_order,
-	       $date_inv,
-	       prepare_mysql(mb_ucwords($header['ltipo'])),
-	       $customer_id,
-	       prepare_mysql(display_full_address($address_del_id)),
-	       prepare_mysql(display_full_address($address_bill_id)),
-	       $tipo,
-	       $date_index,
-	       prepare_mysql($parent_order_id),$partner,$del_country_id
-	       );
-  
-  $sql=preg_replace('/\n/','',$sql);
-  $sql=preg_replace('/\s{2,}/',' ',$sql);
-    
-  mysql_query($sql);
-  //  exit("$sql\n");
-  // $order_id = $db->lastInsertID();
-  $order_id=mysql_insert_id();
-
-
-
-  $a_taken=get_user_id($header['takenby'],$order_id,'taken');
-  if(count($a_taken)==1)
-    $_taken=$a_taken[0];
-  else
-    $_taken='null';
-
-  $sql=sprintf("update orden set taken_by=%s where id=%d",$_taken,$order_id);
-  mysql_query($sql);
-
-
-  if($order_id<1 or !is_numeric($order_id))
-    exit("$order_id ->   $sql\n");
-  //   if($balance!=0){
-  //    $sql=sprintf("insert into balance (order_id,tax_code,value) values (%d,NULL,%.2f)",$order_id,$balance);
-  //    print "$sql\n";
-  //   mysql_query($sql);
-  //   }
-  //   if($balance_net!=0){
-  //    $sql=sprintf("insert into balance (order_id,tax_code,value) values (%d,'S',%.2f)",$order_id,$balance_net);
-  //    print "$sql\n";
-  //  mysql_query($sql);
-  //  }
-
-  if($tax_factor==0){
-    $tax_id=1;
-    $tax_code='NULL';
-  }else{
-    $tax_id=2;
-    $tax_code='S';
-    $sql=sprintf("insert into tax (order_id,code,value) values (%d,'S',%.2f)",$order_id,$total_tax);
-    //print "$sql\n";
-    mysql_query($sql);
-
-
-  }
-  if($header['charges']!=0){
-   
-    $sql=sprintf("insert into charge (tipo,order_id,tax_code,value) values (1,%d,%s,%.2f)",$order_id,prepare_mysql($tax_code),$header['charges']);
-    // print $header['charges']." $sql\n";
-    mysql_query($sql);
-  }
-
-
-  $notes=$header['notes'];
-
-  if($notes=='0')
-    $notes='';
-
-
-  $notes2=$header['notes2'];
-  
-  if(isset($act['tax_number'])){
-    $tax_number_act=get_tax_number($act['tax_number']);
-  }else
-    $tax_number_act=false;
-
-  $tax_number=false;
-  $country_id= get_customer_country_id($customer_id);
-  // print "$country_id\n";
-  if(is_numeric($country_id) and $country_id>0 and $country_id!=$home_country_id){
-
-    $tax_number=get_tax_number($notes2);
-  }
-
-  if($tax_number){
-    change_tax_number($customer_id,$tax_number,$date_index,($new_customer?false:true));
-    $notes2='';
-  }elseif($tax_number_act){
-    change_tax_number($customer_id,$tax_number_act,$date_index,($new_customer?false:true));
-    
-  }
-
-
-
-
-  //exit;
-
-  if(preg_match('/showroom|staff|local|colle/i',$notes) and $header['shipping']==0){// Collected
-    $tipo_deliver=1;
-  }else{
-    $tipo_deliver=2;
-
-    // Try to get the delevery comapny
-
-    $shipping_supplier_id=get_shipping_supplier($notes,$order_id);
-    //print "$shipping_supplier_id\n";
-    
-    if(is_numeric($shipping_supplier_id) and $shipping_supplier_id>0){
-      $notes='';
-    }else
-      $shipping_supplier_id='';
-    $sql=sprintf("insert into shipping (supplier_id,order_id,value,tax_code) values (%s,%d,%.2f,%s)",prepare_mysql($shipping_supplier_id),$order_id,$header['shipping'],prepare_mysql($tax_code));
-    // print "$sql\n";
-    mysql_query($sql);
-  }
-  
-  $sql=sprintf("update orden set note=%s,note2=%s,tax_code=%s where id=%d",prepare_mysql($notes),
-	       prepare_mysql($notes2),prepare_mysql($tax_code),$order_id);
-  mysql_query($sql);
-
-  if($date_order!='null' or $date_order!=''){
-    $tipo=2;
-    $sql=sprintf("insert into orden_history (tipo,order_id,fecha) values (%d,%d,%s)",$tipo,$order_id,$date_order);
-    mysql_query($sql);
-  }
-  if($date_inv!='null' or $date_inv!=''){
-    $tipo=5;
-    $sql=sprintf("insert into orden_history (tipo,order_id,fecha) values (%d,%d,%s)",$tipo,$order_id,$date_inv);
-    mysql_query($sql);
-  }
-
-
-  if($header['tax1']>0 or $header['tax1']<0)
-    $tax_code='S';
-  else
-    $tax_code='';
-
-
-
-
-  return array($order_id,$tax_code);
-
-}
 
 function get_payment_method($method){
   
@@ -3282,243 +2920,6 @@ function get_tax_number($data){
 
 }
 
-
-
-function update_orden($order_id,
-		      $customer_id,
-		      $header,
-		      $act,
-		      $date_index,
-		      $date_order,
-		      $date_inv,
-		      $tipo,
-		      $address_del_id='',
-		      $address_bill_id='',
-		      $new_customer,
-		      $is_island,$parent_order_id,$partner=0,$co=''
-		      ){
-
-
-
-  $db =& MDB2::singleton();
-  global $tax_rate;
-  global $home_country_id;
-  // first delete all the related sub tables
-  $sql="delete from tax where order_id=$order_id";mysql_query($sql);
-  $sql="delete from charge where order_id=$order_id";mysql_query($sql);
-  $sql="delete from shipping where order_id=$order_id";mysql_query($sql);
-  $sql="delete from balance where order_id=$order_id";mysql_query($sql);
-  $sql="delete from todo_users where order_id=$order_id";mysql_query($sql);
-  $sql="delete from todo_shipping_supplier where order_id=$order_id";mysql_query($sql);
-  
- $sql="delete from pick where order_id=$order_id";mysql_query($sql);
-      $sql="delete from pack where order_id=$order_id";mysql_query($sql);
-
-  $tax_factor=$tax_rate;
-  $total_tax=$header['tax1']+$header['tax2'];
-  $total_net=$header['total_net'];
-  $total=$header['total_topay'];
-  if($total!=0 and $total_tax==0){
-    $tax_factor=0;
-  }
-
-  $ajuste_in_net=$total_net-$header['total_items_charge_value']-$header['charges']-$header['shipping'];
-  $ajuste_in_tax=$total_tax-($total_net*$tax_factor);
-  $ajuste_in_total=$total-$total_net-$total_tax;
-
-
-
-  //  print_r($header);
-  //source tipo - can be i(internet),t(telephone),f(fax),p(post),s(showroom),a(staffsales),u(unknown)
-  if($header['source_tipo']=='')$header['source_tipo']='u';
-  $_gold=($header['gold']=='Gold Reward'?'1':'0');
-
-  $a_taken=get_user_id($header['takenby'],addslashes($order_id),'taken');
-  //print "---------  ".$header['takenby']."  ------\n";
-  // print_r($a_taken);
- 
-  if(count($a_taken)==1)
-    $_taken=$a_taken[0];
-  else
-    $_taken='null';
-  $payment_method=get_payment_method($header['pay_method']);
-  $del_country_id=country_id($address_del_id,$home_country_id);
-
-  $sql=sprintf("update orden set fao=%s,feedback_id=%d,source_tipo='%s',customer_name='%s',contact_name='%s',customer_id2=%s,customer_id3=%s,tel='%s',public_id='%s',parcels=%s,weight=%s,gold='%s',taken_by=%s
-				       ,net=%.2f
-				       ,tax=%.2f
-				       ,total=%.2f
-				       ,balance_net=%.2f
- ,balance_tax=%.2f ,balance_total=%.2f
-				       ,payment_method='%s',date_creation=%s,date_processed=%s,date_invoiced=%s,titulo='%s',customer_id=%d,address_del=%s,address_bill=%s,tipo=%s,date_index=%s,parent_id=%s,partner='%s',del_country_id=%d where id=%d", prepare_mysql($co),
-	       $header['feedback'],
-	       $header['source_tipo'],
-	       addslashes($header['trade_name']),
-	       addslashes($header['customer_contact']),
-	       prepare_mysql($header['extra_id1']),
-	       prepare_mysql($header['extra_id2']),
-	       addslashes($header['phone']),
-	       addslashes($header['order_num']),
-	       prepare_mysql($header['parcels']),
-	       prepare_mysql($header['weight']),
-	       $_gold,
-	       $_taken,
-	       $total_net,
-	       $total_tax,
-	       $total,
-	       $ajuste_in_net,
-	       $ajuste_in_tax,
-	       $ajuste_in_total,
-	       addslashes($payment_method),
-	       $date_order,
-	       $date_order,
-	       $date_inv,
-	       addslashes(mb_ucwords($header['ltipo'])),
-	       $customer_id,
-	       prepare_mysql(display_full_address($address_del_id)),
-	       prepare_mysql(display_full_address($address_bill_id)),
-	       $tipo,
-	       $date_index,prepare_mysql($parent_order_id),$partner,$del_country_id,
-	       $order_id
-	       );
-  
-  mysql_query($sql);
-
-      print "$sql";
-
-
-
-
-
-
-
-  if($tax_factor==0){
-    $tax_id=1;
-    $tax_code='NULL';
-  }else{
-    $tax_id=2;
-    $tax_code='S';
-    $sql=sprintf("insert into tax (order_id,code,value) values (%d,'S',%.2f)",$order_id,$total_tax);
-    //print "$sql\n";
-    mysql_query($sql);
-
-
-  }
-  if($header['charges']!=0){
-   
-    $sql=sprintf("insert into charge (tipo,order_id,tax_code,value) values (1,%d,%s,%.2f)",$order_id,prepare_mysql($tax_code),$header['charges']);
-    // print $header['charges']." $sql\n";
-    mysql_query($sql);
-  }
-
-
-  $notes2=$header['notes2'];
-  
-  if(isset($act['tax_number'])){
-    $tax_number_act=get_tax_number($act['tax_number']);
-  }else
-    $tax_number_act=false;
-
-  $tax_number=false;
-  $country_id= get_customer_country_id($customer_id);
-  //print "$country_id\n";
-  if(is_numeric($country_id) and $country_id>0 and $country_id!=$home_country_id){
-
-    $tax_number=get_tax_number($notes2);
-  }
-
-  if($tax_number){
-    change_tax_number($customer_id,$tax_number,$date_index,($new_customer?false:true));
-    $notes2='';
-  }elseif($tax_number_act){
-    change_tax_number($customer_id,$tax_number_act,$date_index,($new_customer?false:true));
-    
-  }
-
-
-
-
-
-
-
-
-
-
-  $notes=$header['notes'];
-
-  if($notes=='0')
-    $notes='';
-
-  if(preg_match('/showroom|staff|local|colle/i',$notes) and $header['shipping']==0){// Collected
-    $tipo_deliver=1;
-  }else{
-    $tipo_deliver=2;
-
-    // Try to get the delevery comapny
-
-    $shipping_supplier_id=get_shipping_supplier($notes,$order_id);
-    //print "$shipping_supplier_id\n";
-    
-    if(is_numeric($shipping_supplier_id) and $shipping_supplier_id>0){
-      $notes='';
-    }else
-      $shipping_supplier_id='';
-    $sql=sprintf("insert into shipping (supplier_id,order_id,value,tax_code) values (%s,%d,%.2f,%s)",prepare_mysql($shipping_supplier_id),$order_id,$header['shipping'],prepare_mysql($tax_code));
-    // print "$sql\n";
-    mysql_query($sql);
-  }
-  
-  $sql=sprintf("update orden set note=%s,note2=%s,tax_code=%s where id=%d",prepare_mysql($notes),
-	       prepare_mysql($notes2),prepare_mysql($tax_code),$order_id);
-  mysql_query($sql);
-
-  if($date_order!='null' or $date_order!=''){
-    $tipo=2;
-    $sql=sprintf("insert into orden_history (tipo,order_id,fecha) values (%d,%d,%s)",$tipo,$order_id,$date_order);
-    mysql_query($sql);
-  }
-  if($date_inv!='null' or $date_inv!=''){
-    $tipo=5;
-    $sql=sprintf("insert into orden_history (tipo,order_id,fecha) values (%d,%d,%s)",$tipo,$order_id,$date_inv);
-    mysql_query($sql);
-  }
-
-
-  if($header['tax1']>0 or $header['tax1']<0)
-    $tax_code='S';
-  else
-    $tax_code='';
-
-
-
-  //   if($date_order!='null' or $date_order!=''){
-  //     $tipo=2;
-  //     $sql=sprintf("update orden_history set fecha=%s where tipo=%d and order_id=%d",$date_order,$tipo,$order_id);
-  //     mysql_query($sql);
-  //   }else{
-  //     $sql=sprintf("delete orden_history where tipo=%d and order_id=%d",$tipo,$order_id);
-  //     mysql_query($sql);
-
-  //   }
-
-  //   if($date_inv!='null' or $date_inv!=''){
-  //     $tipo=2;
-  //     $sql=sprintf("update orden_history set fecha=%s where tipo=%d and order_id=%d",$date_inv,$tipo,$order_id);
-  //     mysql_query($sql);
-  //   }else{
-  //     $sql=sprintf("delete orden_history where tipo=%d and order_id=%d",$tipo,$order_id);
-  //     mysql_query($sql);
-
-  //   }
-
-
-  return $tax_code;
-
-  //   print "$sql\n";
-  // exit;
-
-
-}
 
 
 
@@ -3872,7 +3273,7 @@ function set_transactions($transactions,$order_id,$tipo_order,$parent_order_id,$
 
 
 
-function setup_contact($act_data,$header_data,$date_index){
+function setup_contact($act_data,$header_data,$date_index,$editor){
   $co='';
   $header_data['country_d2']='';
   $header_data['country']='';
@@ -3903,7 +3304,7 @@ function setup_contact($act_data,$header_data,$date_index){
 
       //$staff=new Staff('alias',$staff_name);
       //$staff_id=$staff->id;
-      $staff_id=get_user_id($staff_name,'' , '',false);
+      $staff_id=get_user_id($staff_name,'' , '',false,$editor);
       if(count($staff_id)==1 and $staff_id[0]!=0 ){
 	print "Staff $staff_name  sale\n";
 	$header_data['address1']=$act_data['contact'];
@@ -3914,7 +3315,7 @@ function setup_contact($act_data,$header_data,$date_index){
     
 
     $staff_name=$header_data['address1'];
-    $staff_id=get_user_id($staff_name);
+    $staff_id=get_user_id($staff_name,false,'','',$editor);
     
     //    $staff=new Staff('alias',$staff_name);
     //$staff_id=$staff->id;
@@ -4021,7 +3422,7 @@ function setup_contact($act_data,$header_data,$date_index){
       if($header_data['address1']!=''){
 	$staff_name=$header_data['address1'];
 
-	$staff_id=get_user_id($staff_name);
+	$staff_id=get_user_id($staff_name,false,'','',$editor);
 	
 	//	$staff=new Staff('alias',$staff_name);
 
@@ -7770,37 +7171,6 @@ function read_records($handle_csv,$y_map,$number_header_rows){
 
 }
 
-// function set_pickers_and_packers($order_id,$header_data){
-//   $db =& MDB2::singleton();
-//   $picker_ids=get_user_id($header_data['pickedby'],$order_id,'picked');
-//   $packer_ids=get_user_id($header_data['packedby'],$order_id,'packed');
-
-//   if(count($picker_ids)==0){
-//     $sql=sprintf('insert into pick (order_id,picker_id,share) values (%d,0,1.00)',$order_id);
-//     //mysql_query($sql);
-//     mysql_query($sql);
-//   }
-//   if(count($packer_ids)==0){
-//     $sql=sprintf('insert into pack (order_id,packer_id,share) values (%d,0,1.00)',$order_id);
-//     //mysql_query($sql);
-//     mysql_query($sql);
-//   } 
-
-//   foreach($picker_ids as $picker_id){
-//     $share=1/count($picker_ids);
-//     $sql=sprintf('insert into pick (order_id,picker_id,share) values (%d,%d,%.2f)',$order_id,$picker_id,$share);
-//     // mysql_query($sql);
-//     mysql_query($sql);
-//   }
-//   foreach($packer_ids as $packer_id){
-//     $share=1/count($packer_ids);
-//     $sql=sprintf('insert into pack (order_id,packer_id,share) values (%d,%d,%.2f)',$order_id,$packer_id,$share);
-//     //mysql_query($sql);
-//     mysql_query($sql);
-//   }
-  
-
-// }
 
 
 
@@ -8030,7 +7400,7 @@ function is_showroom($data){
   return $data;
 }
 
-function is_staff_sale($data){
+function is_staff_sale($data,$editor){
   $data['staff sale key']=0;
 
 if(preg_match('/cash sale/i',$data['trade_name'])  or preg_match('/cash sale/i',$data['notes'])){
@@ -8043,7 +7413,11 @@ if(preg_match('/cash sale/i',$data['trade_name'])  or preg_match('/cash sale/i',
 
   $tmp=preg_replace('/^Staff Sales?\s*\-?\s*/i','',$data['customer_contact']);
   // exit("x:".$tmp."\n");
-  $staff_id=get_user_id($tmp);
+  $staff_id=get_user_id($tmp,false,'','',$editor);
+  
+  
+  
+  
   if(count($staff_id)==1 and $staff_id[0]!=0 ){
     $data['staff sale key']=$staff_id[0];
     $data['shipper_code']='NA';
@@ -8065,7 +7439,7 @@ if(preg_match('/cash sale/i',$data['trade_name'])  or preg_match('/cash sale/i',
 
   if($data['staff sale key']==0){
     $tmp=preg_replace('/Staff Sales?\s*\-?\s*/i','',$data['notes']);
-    $staff_id=get_user_id($tmp);
+    $staff_id=get_user_id($tmp,false,'','',$editor);
     if(count($staff_id)==1 and $staff_id[0]!=0 ){
       $data['staff sale key']=$staff_id[0];
     $data['shipper_code']='NA';
@@ -8084,7 +7458,7 @@ if(preg_match('/^cash sale$/i',$data['notes2']))
 
   if($data['staff sale key']==0){
     $tmp=preg_replace('/Staff Sales?\s*\-?\s*/i','',$data['notes2']);
-    $staff_id=get_user_id($tmp);
+    $staff_id=get_user_id($tmp,false,'','',$editor);
     if(count($staff_id)==1 and $staff_id[0]!=0 ){
       $data['staff sale key']=$staff_id[0];
       $data['shipper_code']='NA';
@@ -8107,7 +7481,7 @@ if(preg_match('/^cash sale$/',$data['notes2']))
    
    $data['staff sale']='Yes';
    $data['staff sale name']=preg_replace('/^staff sales?\-?\s+\-?\s*/i','',$data['trade_name']);
-   $staff_id=get_user_id($data['staff sale name']);
+   $staff_id=get_user_id($data['staff sale name'],false,'','',$editor);
    $data['staff sale key']=$staff_id[0];
    
    $data['shipper_code']='NA';
@@ -8121,7 +7495,7 @@ if(preg_match('/^cash sale$/',$data['notes2']))
 
     $data['staff sale']='Yes';
     $data['staff sale name']=preg_replace('/^staff sales?\-?\s+\-?\s*/i','',$data['notes']);
-    $staff_id=get_user_id($data['staff sale name']);
+    $staff_id=get_user_id($data['staff sale name'],false,'','',$editor);
     $data['staff sale key']=$staff_id[0];
     $data['notes']='';
     $data['shipper_code']='NA';
@@ -8132,7 +7506,7 @@ if(preg_match('/^staff sales?\-?\s+\-?\s*[a-z]*/i',_trim($data['notes2']))){
 
     $data['staff sale']='Yes';
     $data['staff sale name']=preg_replace('/^staff sales?\-?\s+\-?\s*/i','',$data['notes2']);
-    $staff_id=get_user_id($data['staff sale name']);
+    $staff_id=get_user_id($data['staff sale name'],false,'','',$editor);
     $data['staff sale key']=$staff_id[0];
     $data['notes2']='';
     $data['shipper_code']='NA';
@@ -8146,7 +7520,7 @@ if(preg_match('/^staff sales?\-?\s+\-?\s*[a-z]*/i',_trim($data['notes2']))){
      $data['collection']='Yes';
 
 
-       $staff_id=get_user_id($data['customer_contact']);
+       $staff_id=get_user_id($data['customer_contact'],false,'','',$editor);
     if(count($staff_id)==1 and $staff_id[0]!=0 ){
        $data['staff sale key']=$staff_id[0];
     }
@@ -8158,7 +7532,7 @@ if(preg_match('/^staff sales?\-?\s+\-?\s*[a-z]*/i',_trim($data['postcode']))){
 
     $data['staff sale']='Yes';
     $data['staff sale name']=preg_replace('/^staff sales?\-?\s+\-?\s*/i','',$data['postcode']);
-    $staff_id=get_user_id($data['staff sale name']);
+    $staff_id=get_user_id($data['staff sale name'],false,'','',$editor);
     $data['staff sale key']=$staff_id[0];
 
     $data['shipper_code']='NA';
@@ -8179,15 +7553,15 @@ if(preg_match('/^staff sales?\-?\s+\-?\s*[a-z]*/i',_trim($data['postcode']))){
      $data['collection']='Yes';
       $data['staff sale key']=0;
 
-        $staff_id=get_user_id($data['customer_contact']);
+        $staff_id=get_user_id($data['customer_contact'],false,'','',$editor);
     if(count($staff_id)==1 and $staff_id[0]!=0 ){
        $data['staff sale key']=$staff_id[0];
     }
-     $staff_id=get_user_id($data['address1']);
+     $staff_id=get_user_id($data['address1'],false,'','',$editor);
     if(count($staff_id)==1 and $staff_id[0]!=0 ){
        $data['staff sale key']=$staff_id[0];
     }
-    $staff_id=get_user_id($data['address2']);
+    $staff_id=get_user_id($data['address2'],false,'','',$editor);
     if(count($staff_id)==1 and $staff_id[0]!=0 ){
        $data['staff sale key']=$staff_id[0];
     }
@@ -8201,15 +7575,15 @@ if(preg_match('/^staff sales?\-?\s+\-?\s*[a-z]*/i',_trim($data['postcode']))){
     $data['collection']='Yes';
 
     
-   $staff_id=get_user_id($data['address1']);
+   $staff_id=get_user_id($data['address1'],false,'','',$editor);
     if(count($staff_id)==1 and $staff_id[0]!=0 ){
        $data['staff sale key']=$staff_id[0];
     }
-    $staff_id=get_user_id($data['address2']);
+    $staff_id=get_user_id($data['address2'],false,'','',$editor);
     if(count($staff_id)==1 and $staff_id[0]!=0 ){
        $data['staff sale key']=$staff_id[0];
     }
-    $staff_id=get_user_id($data['customer_contact']);
+    $staff_id=get_user_id($data['customer_contact'],false,'','',$editor);
     if(count($staff_id)==1 and $staff_id[0]!=0 ){
        $data['staff sale key']=$staff_id[0];
     }
@@ -8224,15 +7598,15 @@ if(preg_match('/^staff sales?\-?\s+\-?\s*[a-z]*/i',_trim($data['postcode']))){
     $data['staff sale']='Yes';
     $data['shipper_code']='NA';
     $data['collection']='Yes';
-   $staff_id=get_user_id($data['address1']);
+   $staff_id=get_user_id($data['address1'],false,'','',$editor);
     if(count($staff_id)==1 and $staff_id[0]!=0 ){
        $data['staff sale key']=$staff_id[0];
     }
-     $staff_id=get_user_id($data['address2']);
+     $staff_id=get_user_id($data['address2'],false,'','',$editor);
     if(count($staff_id)==1 and $staff_id[0]!=0 ){
        $data['staff sale key']=$staff_id[0];
     }
-    $staff_id=get_user_id($data['customer_contact']);
+    $staff_id=get_user_id($data['customer_contact'],false,'','',$editor);
     if(count($staff_id)==1 and $staff_id[0]!=0 ){
        $data['staff sale key']=$staff_id[0];
     }
@@ -8244,15 +7618,15 @@ if(preg_match('/^staff sales?|Ancient Winsdom Staff$/i',_trim($data['postcode'])
     $data['staff sale']='Yes';
     $data['shipper_code']='NA';
     $data['collection']='Yes';
-   $staff_id=get_user_id($data['address1']);
+   $staff_id=get_user_id($data['address1'],false,'','',$editor);
     if(count($staff_id)==1 and $staff_id[0]!=0 ){
        $data['staff sale key']=$staff_id[0];
     }
-      $staff_id=get_user_id($data['address2']);
+      $staff_id=get_user_id($data['address2'],false,'','',$editor);
     if(count($staff_id)==1 and $staff_id[0]!=0 ){
        $data['staff sale key']=$staff_id[0];
     }
-    $staff_id=get_user_id($data['customer_contact']);
+    $staff_id=get_user_id($data['customer_contact'],false,'','',$editor);
     if(count($staff_id)==1 and $staff_id[0]!=0 ){
        $data['staff sale key']=$staff_id[0];
     }

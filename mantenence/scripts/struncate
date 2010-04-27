@@ -22,7 +22,7 @@ TRUNCATE `Campaign Dimension`;
 TRUNCATE `Campaign Deal Schema`;
 TRUNCATE `Charge Dimension`;
 TRUNCATE `Attachment Dimension`;
-
+truncate `Inventory Audit Dimension`;
 TRUNCATE `Image Bridge`;
 TRUNCATE `Order Public ID 1`;
 truncate `Product Part Dimension`;

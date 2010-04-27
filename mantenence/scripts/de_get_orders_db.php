@@ -331,11 +331,11 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
       if($_key=='email')
 	$key=preg_replace('/^email$/','Customer Main Plain Email',$_key);
       if($_key=='telephone')
-	$key=preg_replace('/^telephone$/','Customer Main XHTML Telephone',$_key);
+	$key=preg_replace('/^telephone$/','Customer Main Plain Telephone',$_key);
       if($_key=='fax')
-	$key=preg_replace('/^fax$/','Customer Main XHTML FAX',$_key);
+	$key=preg_replace('/^fax$/','Customer Main Plain FAX',$_key);
       if($_key=='mobile')
-	$key=preg_replace('/^mobile$/','Customer Mobile',$_key);
+	$key=preg_replace('/^mobile$/','Customer Main Plain Mobile',$_key);
       // if($_key=='tax_number')
       //	$key=preg_replace('/^tax_number$/','Customer Tax Number',$_key);
       $customer_data[$key]=$value;

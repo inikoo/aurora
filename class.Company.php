@@ -527,7 +527,7 @@ class Company extends DB_Table {
                     if (!$address->get_principal_telecom_key('FAX')) {
                         $telephone_data=array();
                         $telephone_data['editor']=$this->editor;
-                        $telephone_data['Telecom Raw Number']=$raw_data['Company Main Plain Fax'];
+                        $telephone_data['Telecom Raw Number']=$raw_data['Company Main Plain FAX'];
                         $telephone_data['Telecom Type']='FAX';
 
                         $telephone=new Telecom("find in company create country code ".$address->data['Address Country Code'],$telephone_data);
@@ -649,12 +649,13 @@ class Company extends DB_Table {
         $extra_mobile_key=false;
 
         $this->data['Company File As']=$this->file_as($this->data['Company Name']);
-        $telephone=$this->data['Company Main XHTML Telephone'];
-        $fax=$this->data['Company Main XHTML FAX'];
+        $telephone=$this->data['Company Main Plain Telephone'];
+        $fax=$this->data['Company Main Plain FAX'];
 
         $this->data['Company Main XHTML FAX']='';
         $this->data['Company Main XHTML Telephone']='';
-
+ $this->data['Company Main Plain FAX']='';
+        $this->data['Company Main Plain Telephone']='';
 
         $keys='';
         $values='';
@@ -703,9 +704,8 @@ class Company extends DB_Table {
 
 
             $address_data['editor']=$this->editor;
-           
             $address=new Address("find in company create",$address_data);
-
+            $address->editor=$this->editor;
             $this->associate_address($address->id);
 
 
@@ -718,7 +718,7 @@ class Company extends DB_Table {
 
             if ($use_contact) {
                 $contact=new contact($use_contact);
-
+                $contact->editor=$this->editor;
                 $this->create_contact_bridge($contact->id);
 
             } else {
@@ -747,19 +747,6 @@ class Company extends DB_Table {
 
             $this->last_associated_contact_key=$contact->id;
 
-
-            // if ($use_contact) {
-            //if ($address->found) {
-            //$contact->move_home_to_work_address($address->found_key);
-            // }
-            //   } else if (!$address->new) {
-            // //print_r($address);
-            // print ("Duplicate address: ".$address->display('plain')."\n");
-            //    $address_data['editor']=$this->editor;
-            // $address=new Address("find in company create force",$address_data);
-
-
-            //}
 
 
             $contact->associate_address($address->id);
@@ -915,6 +902,7 @@ class Company extends DB_Table {
 
             if ($value=='') {
                 $contact=new Contact($this->data['Company Main Contact Key']);
+                $contact->editor=$this->editor;
                 $contact->remove_email('principal');
 
             }
@@ -1475,6 +1463,7 @@ return;
 
         if ($main_address_key!=$address_key) {
             $address=new Address($address_key);
+            $address->editor=$this->editor;
             $sql=sprintf("update `Address Bridge`  set `Is Main`='No' where `Subject Type`='Company' and  `Subject Key`=%d  and `Address Key`=%d",
                          $this->id
                          ,$main_address_key
@@ -1525,6 +1514,7 @@ return;
                     );
         mysql_query($sql);
         $contact=new Contact($contact_key);
+        $contact->editor=$this->editor;
         if (!$contact->get_principal_company_key()) {
             $contact->update_principal_company($this->id);
         }
@@ -1536,6 +1526,7 @@ return;
 
         if ($main_contact_key!=$contact_key) {
             $contact=new Contact($contact_key);
+            $contact->editor=$this->editor;
             $sql=sprintf("update `Contact Bridge`  set `Is Main`='No' where `Subject Type`='Company' and  `Subject Key`=%d  and `Contact Key`=%d",
                          $this->id
                          ,$contact_key
@@ -1653,104 +1644,6 @@ return;
 
 
 
-
-
-    function delete_me() {
-
-        $affected=mysql_affected_rows();
-
-
-
-
-        //	print "----------------> $principal <-----\n";
-
-
-        if ($principal) {
-
-            $sql=sprintf("update `Contact Bridge`  set `Is Main`='No' where `Subject Type`='Company' and  `Subject Key`=%d  and `Contact Key`!=%d",
-                         $this->id
-                         ,$contact->id
-                        );
-            mysql_query($sql);
-            $sql=sprintf("update `Contact Bridge`  set `Is Main`='Yes' where `Subject Type`='Company' and  `Subject Key`=%d  and `Contact Key`=%d",
-                         $this->id
-                         ,$contact->id
-                        );
-            mysql_query($sql);
-
-
-            $sql=sprintf("update `Contact Dimension` set  `Contact Company Name`=%s,`Contact Company Key`=%s where `Contact Key`=%d"
-                         ,prepare_mysql($this->data['Company Name'])
-                         ,$this->id
-                         ,$contact->id
-                        );
-            if (!mysql_query($sql))
-                exit("$sql\n");
-
-            $sql=sprintf("update `Company Dimension` set  `Company Main Contact Name`=%s,`Company Main Contact Key`=%s where `Company Key`=%d"
-                         ,prepare_mysql($contact->display('name'))
-
-                         ,$contact->id
-                         ,$this->id
-                        );
-            if (!mysql_query($sql))
-                exit("$sql\n");
-
-
-
-        }
-
-
-        $editor_data=$this->get_editor_data();
-        if ($affected==1 and  !$this->new) {
-
-
-            if ($principal) {
-
-                $history_data=array(
-                                  'History Abstract'=>_('Contact associated with Company as Main Contact').' ('.$contact->display('Short Name').'/'.$this->data['Company Name'].')'
-                                                     ,'Direct Object'=>'Contact'
-                                                                      ,'Direct Object Key'=>$contact->id
-                                                                                           ,'Indirect Object'=>'Company'
-                                                                                                              ,'Indirect Object Key'=>$this->id
-                                                                                                                                     ,'History Details'=>_('Contact associated with Company as Main Contact').' ('.$contact->display('Name').'/'.$this->data['Company Name'].')'
-                                                                                                                                                        ,'Action'=>'associated'
-                                                                                                                                                                  ,'Deep'=>2
-                                                                                                                                                                          ,'Preposition'=>'to'
-                              );
-                $this->add_history($history_data,$force_history);
-
-
-
-
-            } else {
-                $history_data=array(
-                                  'History Abstract'=>_('Contact associated with Company').' ('.$contact->display('Short Name').'/'.$this->data['Company Name'].')'
-                                                     ,'Direct Object'=>'Contact'
-                                                                      ,'Direct Object Key'=>$contact->id
-                                                                                           ,'Indirect Object'=>'Company'
-                                                                                                              ,'Indirect Object Key'=>$this->id
-                                                                                                                                     ,'History Details'=>_('Contact associated with Company').' ('.$contact->display('Name').'/'.$this->data['Company Name'].')'
-                                                                                                                                                        ,'Action'=>'associated'
-                                                                                                                                                                  ,'Deep'=>2
-                                                                                                                                                                          ,'Preposition'=>'to'
-                              );
-                $this->add_history($history_data,$force_history);
-
-
-
-
-            }
-        }
-
-
-
-
-
-
-
-
-    }
 
 
     function remove_contact($data,$args='') {
@@ -2494,6 +2387,7 @@ return;
 
                 if ($child=='Contact') {
                     $child_object=new Contact($row['Parent Key']);
+                    $child_object->editor=$this->editor;
                     $child_label=_('Contact');
                 }
                 $old_principal_company=$child_object->data[$child.' Company Name'];
@@ -2568,7 +2462,7 @@ return;
                              ,$parent_object->id
                             );
                 mysql_query($sql);
-
+//print "$sql\n";
                 if($parent=='Supplier' or ( $parent=='Customer' and $parent_object->data[$parent.' Type']=='Company')){
                           $sql=sprintf("update `$parent Dimension` set `$parent Name`=%s  , `$parent File As`=%s   where `$parent Key`=%d"
                              ,prepare_mysql($parent_object->data[$parent.' Name'])
@@ -2577,7 +2471,7 @@ return;
                              ,$parent_object->id
                             );
                 mysql_query($sql); 
-                
+             //   print "$sql\n";
                 }
 
 

@@ -1409,7 +1409,7 @@ if(isset( $_REQUEST['where']))
      elseif($order=='id')
        $order='`Supplier Key`';
       elseif($order=='location')
-       $order='`Supplier Location`';
+       $order='`Supplier Main Location`';
       elseif($order=='email')
        $order='`Supplier Main XHTML Email`';
 
@@ -1436,7 +1436,7 @@ if(isset( $_REQUEST['where']))
 		   ,'for_sale'=>number($row['Supplier For Sale Products'])
 		   ,'low'=>number($row['Supplier Low Availability Products'])
 		   ,'outofstock'=>number($row['Supplier Out Of Stock Products'])
-		   ,'location'=>$row['Supplier Location']
+		   ,'location'=>$row['Supplier Main Location']
 		   ,'email'=>$row['Supplier Main XHTML Email']
 		   ,'profit'=>$profit		 
 		   ,'profit_after_storing'=>$profit_after_storing
