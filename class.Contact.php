@@ -14,6 +14,7 @@
 include_once('class.DB_Table.php');
 
 
+
 include_once('class.Telecom.php');
 include_once('class.Email.php');
 include_once('class.Address.php');
@@ -131,7 +132,7 @@ class Contact extends DB_Table {
         //    print $options."\n";
         // print_r($raw_data);
 
-        $find_fuzzy=false;
+        $find_fuzzy='';
 
         if (preg_match('/fuzzy/i',$options)) {
             $find_fuzzy='fuzzy';

@@ -332,7 +332,8 @@ $find_fuzzy='';
 
 
                     $raw_data_to_update=array();
-                    $raw_data_to_update['Customer Old ID']=$raw_data['Customer Old ID'];
+                    if(isset($raw_data['Customer Old ID']))
+		      $raw_data_to_update['Customer Old ID']=$raw_data['Customer Old ID'];
 
 
                     $this->update($raw_data_to_update);
@@ -641,11 +642,17 @@ $find_fuzzy='';
             } else {
                 $company=new company('id',$this->data['Customer Company Key']);
             }
-            $company_key=$company->id;
+	    // print_r($company);
+	    $company_key=$company->id;
             $this->data['Customer File As']=$company->data['Company File As'];
             $this->data['Customer Name']=$company->data['Company Name'];
            
-            $contact=new Contact($company->last_associated_contact_key);
+	    if($company->last_associated_contact_key)
+	      $contact=new Contact($company->last_associated_contact_key);
+	    else
+	      $contact=new Contact($company->data['Company Main Contact Key']);
+
+
 
         }
         elseif($this->data['Customer Type']=='Person') {
