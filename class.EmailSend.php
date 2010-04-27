@@ -115,6 +115,108 @@ function create($data){
 
   }
 
+
+
+  function compose_gold_reminder_email($customer_key,$data=false){
+  
+    if(!is_array($data))
+      $data=array();
+
+     $subject=new Customer($customer_key);
+     if($subject->data['Customer Main Plain Email']==''){
+       $this->error=true;
+       $this->msg='Customer with no email';
+       return;
+     }
+
+     
+     $this->prepare_email_variables();
+     $this->email_data['Template']='emails/html_email_basic_template.html';
+    
+      $store=new Store($subject->data['Customer Store Key']);
+
+      $this->email_data['Image Server Logo Filename']='email_header_'.$store->data['Store Code'].'.png';
+   
+
+
+      $this->email_data['Our Name']=$store->data['Store Contact Name'];
+      $this->email_data['Our Company']=$store->data['Store Name'];
+
+      $this->email_data['Our Telephone']=$store->data['Store Telephone'];
+      $this->email_data['Our Email']=$store->data['Store Email'];
+      $this->email_data['Our URL']=$store->data['Store URL'];
+
+
+ 
+      $this->email_data['Our Position']='';
+
+      
+      if($subject->data['Customer Type']=='Company'){
+	$this->email_data['To Company']=$subject->data['Customer Name'];
+      }
+      $this->email_data['To Name']=$subject->data['Customer Main Contact Name'];
+      if($this->email_data['To Name']=='')
+	$this->email_data['To Name']=$subject->data['Customer Name'];
+      
+      if($this->email_data['To Name']==$this->email_data['To Company'])
+	$this->email_data['To Company']='';
+
+
+      
+      
+      $this->email_data['From Email Address']=$store->data['Store Email'];
+
+
+
+
+     
+
+
+      $this->email_data['To Email Address']=$subject->data['Customer Main Plain Email'];
+
+      $this->email_data['To Email Address']='rulovico@gmail.com';
+            $this->email_data['To Email Address']='katka@aw-geschenke.com';
+
+      foreach($data as $key=>$values){
+	if(array_key_exists($key,$this->email_data))
+	  $this->email_data[$key]=$values;
+      }
+      
+
+
+       switch($store->data['Store Locale']){
+      default:
+	if($this->email_data['To Name']=='')
+	  $this->email_data['To Name']='Sir/Madam';
+	
+
+	$this->email_data['Subject']="Gold Reward Reminder";
+	$this->email_data['Content'][]=array(
+				     'title'=>"Gold Reward Reminder"
+				     ,'content'=>"We would like to take this opportinity to remind you about your Gold Reward. As you know provided that you order within 30 days of your last order, you maintain your Gold Reward status.<br><br>Your last order was on ".strftime("%x",strtotime($subject->data['Customer Last Order Date']))." so you need to re-order before ".strftime("%x",strtotime($subject->data['Customer Last Order Date'].' +30 day'))." to maintain your status.<br><br>If you have any questions or requests please don't hesitate to contact me."
+				     );
+      }
+       $this->email_data['Content Text Only']= "Dear ".$this->email_data['To Name'].",\n\We would like to take this opportinity to remind about your Gold Reward. As you know provided that you order within 30 days of your last order, you maintain your Gold Reward status.\n\nYour last order was on ".strftime("%x",strtotime($subject->data['Customer Last Order Date']))." so you need to re-order before ".strftime("%x",strtotime($subject->data['Customer Last Order Date'].' +30 day'))." to maintain your status.\n\nIf you have any questions or requests please don't hesitate to contact me.\nKind Regards\n\n".$this->email_data['Our Name']."\n".$this->email_data['Our Position']."\n".$this->email_data['Our Company']."\n\n".$this->email_data['Our Telephone']."\n\nIf you don't want to receive this kind of email please let us know.";
+
+       $recipient_type='Customer';
+       $recipient_key=$subject->id;
+ $email=new Email('email',$this->email_data['To Email Address']);
+
+     $data=array(
+		'Email Send Type'=>'Registration',
+		'Email Send Type Key'=>0,
+		'Email Send Recipient Type'=>$recipient_type,
+		'Email Send Recipient Key'=>$recipient_key,
+		'Email Key'=>$email->id
+		);
+    
+    $this->create($data);
+    $this->email_data['Tracker Key']=$this->id.'_'.md5($this->secret.$this->id);
+
+
+   }
+
+
   function compose_registration_email($user_key){
 
     $this->prepare_email_variables();
@@ -140,28 +242,47 @@ function create($data){
       $this->email_data['Image Server Logo Filename']='email_header_'.$store->data['Store Code'].'.png';
 
 
-      $this->email_data['Our Name']=$store->data['Store Name'];
+      $this->email_data['Our Name']=$store->data['Store Contact Name'];
+      $this->email_data['Our Company']=$store->data['Store Name'];
+
       $this->email_data['Our Telephone']=$store->data['Store Telephone'];
       $this->email_data['Our Email']=$store->data['Store Email'];
       $this->email_data['Our URL']=$store->data['Store URL'];
 
-      $this->email_data['From Name']=$store->data['Store Contact Name'];
+    
       $this->email_data['From Email Address']=$store->data['Store Email'];
 
-      $this->email_data['To Name']=$subject->data['Customer Name'];
+     
       //$this->email_data['To Email']=$user->['User Handle'];
       $this->email_data['To Email Address']='rulovico@gmail.com';
-      $this->email_data['To Email Address']='raul@ancientwisdom.biz';
+      //   $this->email_data['To Email Address']='raul@ancientwisdom.biz';
+      
+      
+      $this->email_data['Our Position']='';
+
+      
+      if($subject->data['Customer Type']=='Company'){
+	$this->email_data['To Company']=$subject->data['Customer Name'];
+      }
+      $this->email_data['To Name']=$subject->data['Customer Main Contact Name'];
+      if($this->email_data['To Name']=='')
+	$this->email_data['To Name']=$subject->data['Customer Name'];
+      
+      if($this->email_data['To Name']==$this->email_data['To Company'])
+	$this->email_data['To Company']='';
 
       switch($store->data['Store Locale']){
       default:
+		if($this->email_data['To Name']=='')
+		  $this->email_data['To Name']='Sir/Madam';
+	
 	$this->email_data['Subject']="Thank you for your registration with ".$this->email_data['Our Name'];
 	$this->email_data['Content'][]=array(
 				     'title'=>"Thank you for your registration with ".$this->email_data['Our Name']."!"
 				     ,'content'=>"You will now be able to see our prices and order from our big range of products.<br/><br/>"
 				     );
       }
-      $this->email_data['Content Text Only']="Thank you for your registration with ".$this->email_data['Our Name']."!\n\nYou will now be able to see our prices and order from our big range of products\n\nRemenber that your username is ".$user->data['User Handle']."\n\n".$this->email_data['From Name']."\n".$this->email_data['Our Name'];
+      $this->email_data['Content Text Only']="Thank you for your registration with ".$this->email_data['Our Name']."!\n\nYou will now be able to see our prices and order from our big range of products\n\nRemenber that your username is ".$user->data['User Handle']."\n\n".$this->email_data['Our Name']."\n".$this->email_data['Our Company'];
 
        $recipient_type='Customer';
        $recipient_key=$subject->id;
@@ -207,7 +328,7 @@ function create($data){
  */
 	$from_address=$this->email_data['From Email Address'];
 	
-	$from_name=$this->email_data['From Name'];
+	$from_name=$this->email_data['Our Name'];
 
 	$reply_name=$from_name;
 	$reply_address=$from_address;
@@ -288,10 +409,19 @@ function create($data){
 	
 	
 	//$html_smarty->assign("$email_url",$this->email_data['Content Server'].$this->email_data['Content Path'].'mail_send.php?key='.$this->email_data['Email Send Encrypted Key']);
+	
+	$smarty->assign("our_company",$this->email_data['Our Company']);
+
 	$smarty->assign("our_name",$this->email_data['Our Name']);
+	$smarty->assign("our_position",$this->email_data['Our Position']);
+	
 	$smarty->assign("our_url",$this->email_data['Our URL']);
 	$smarty->assign("our_telephone",$this->email_data['Our Telephone']);
+	$smarty->assign("to_name",$this->email_data['To Name']);
+	$smarty->assign("to_company",$this->email_data['To Company']);
 	
+
+
 	$smarty->assign("header_image",$this->email_data['Images Server'].$this->email_data['Images Path'].$this->email_data['Image Server Logo Filename']);
 	$smarty->assign("tracker_image_id",$this->email_data['Tracker Server'].$this->email_data['Tracker Path'].'tracker.php?key='.$this->email_data['Tracker Key']);
 	$smarty->assign("paragraphs",$this->email_data['Content']);
@@ -344,12 +474,13 @@ function create($data){
  *  programming errors in your script. You may safely ignore any errors until
  *  the message is sent to not bloat your scripts with too much error checking.
  */
+	
+var_dump($email_message->parts);
 	$error=$email_message->Send();
 	if(strcmp($error,""))
 	  return 0;
 	else
 	  return 1;
-	//	var_dump($email_message->parts);
 
   }
 
