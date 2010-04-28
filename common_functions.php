@@ -16,6 +16,48 @@
 //   return array($mysql_date,0);
 // }
 
+
+
+
+function money($amount,$currency=''){
+  return money_locale($amount,'',$currency);
+}
+
+
+function money_locale($amount,$locale='',$currency_code=''){
+  if(!is_numeric($amount))
+    $amount=0;
+  global $_client_locale;
+  $format="%n";
+  if($locale){
+    $locale.='.UTF-8';
+    setlocale(LC_MONETARY, ($locale));
+  }
+  if($currency_code){
+    $locale_info = localeconv();
+    $client_currency=$locale_info['int_curr_symbol'];
+    $format="%i";
+  }
+  $money=money_format($format,$amount);
+  if($currency_code){
+    $money=preg_replace('/[A-Z]{3}/',currency_symbol($currency_code),$money);
+  }
+
+  setlocale(LC_MONETARY, ($_client_locale));
+  return $money;
+}
+
+
+function get_currency_symbol_from_locale($locale){
+  global $_client_locale;
+  setlocale(LC_MONETARY, $locale);
+  $locale_info = localeconv();
+  $currency_code=$locale_info['currency_symbol'];
+  setlocale(LC_MONETARY, $_client_locale);
+  return $currency_code;
+}
+
+
 /* Function: clean_accents
  
 Replace Non-English characters to its ANSI equivalent.
@@ -31,9 +73,6 @@ Replace Non-English characters to its ANSI equivalent.
  >   Hola Raul
 
  */
-
-
-
 
 
 function clean_accents($str){
@@ -317,7 +356,7 @@ function parse_money($amount,$currency=false){
     $currency=$myconf['currency_code'];
   else
     $currency=$currency;
-  if(preg_match('/$|£|¥|€/i',$amount,$match)){
+  if(preg_match('/$|£|¥|€|zł/i',$amount,$match)){
     if($match[0]=='$')
       $currency='USD';
     elseif($match[0]=='€')
@@ -326,7 +365,11 @@ function parse_money($amount,$currency=false){
       $currency='GBP';
     elseif($match[0]=='¥')
       $currency='JPY';
-    
+    elseif($match[0]=='¥')
+      $currency='JPY';
+ elseif($match[0]=='zł')
+      $currency='PLN';
+
   }elseif(preg_match('/[a-z]{3}/i',$amount,$match)){
     //todo integrate do country db
     if(preg_match('/usd|eur|gbp|jpy|cad|aud|inr|pkr|mxn|nok/i',$match[0])){
@@ -370,6 +413,10 @@ function currency_symbol($currency){
    case('USD'):
       return '$';
       break;
+ case('PLN'):
+      return 'zł';
+      break;
+
    default:
      return '¤';
    }
@@ -377,40 +424,7 @@ function currency_symbol($currency){
 }
 
 
-function money($amount,$locale=false){
-  global $myconf;
-  if($amount<0)
-    $neg=true;
-  else
-    $neg=false;
-  $amount=abs($amount);
-  
-  if(!$locale){
-    $amount=number_format($amount,2,$_SESSION['locale_info']['decimal_point'],$_SESSION['locale_info']['thousands_sep']);
-    $symbol= $_SESSION['locale_info']['currency_symbol'];
-    $amount=($neg?'-':'').$symbol.$amount;
-    return $amount;
-  }else{
-    switch($locale){
-    case('EUR'):
-      $amount=number_format($amount,2,$_SESSION['locale_info']['decimal_point'],$_SESSION['locale_info']['thousands_sep']);
-      $symbol='€';
-      $amount=($neg?'-':'').$symbol.$amount;
-      return $amount;
-      break;
-    case('GBP'):
-      $amount=number_format($amount,2,$_SESSION['locale_info']['decimal_point'],$_SESSION['locale_info']['thousands_sep']);
-      $symbol='£';
-      $amount=($neg?'-':'').$symbol.$amount;
-      return $amount;
-      break;
 
-
-    }
-
-  }
-
-}
 
 function money_cents($amount){
   $amount=sprintf("%02d",100*($amount-floor($amount)));

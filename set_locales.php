@@ -19,6 +19,7 @@ function ngettext($str){
 }
 
 $default_locale=$default_locale_data['lang'].'_'.$default_locale_data['country'].($default_locale_data['encoding']!=''?'.'.$default_locale_data['encoding']:'');
+$_client_locale=$default_locale;
 setlocale(LC_ALL,$default_locale );
 $_SESSION['locale']=$default_locale;
 //if(isset($_REQUEST['_locale']) and preg_match('/[a-z]{2}\_[A-Z]{2}\.UTF-8/i',$_REQUEST['_locale']) ){
