@@ -87,6 +87,7 @@ if(!$is_already_logged_in){
 	$user=new User($_SESSION['user_key']);
 }
 
+$_client_locale='en_GB.UTF-8';
 include_once('set_locales.php');
 require('locale.php');
 $_SESSION['locale_info'] = localeconv();

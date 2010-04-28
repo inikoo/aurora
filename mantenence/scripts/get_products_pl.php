@@ -41,17 +41,30 @@ $version='V 1.0';
 
 $Data_Audit_ETL_Software="$software $version";
 
-$file_name='AWorder2009France.xls';
-$csv_file='fr_tmp.csv';
-exec('/usr/local/bin/xls2csv    -s cp1252   -d 8859-1   '.$file_name.' > '.$csv_file);
+$file_name='/data/plaza/AWorder2009Poland.xls';
+$csv_file='/data/plaza/AWorder2009Poland.csv';
+//exec('/usr/local/bin/xls2csv    -s cp1252   -d 8859-1   '.$file_name.' > '.$csv_file);
 
 $handle_csv = fopen($csv_file, "r");
 $column=0;
 $products=false;
 $count=0;
 
-$store_key=3;
 
+
+$store_data=array('Store Code'=>'PL',
+		  'Store Name'=>'AW Podarki',
+		  'Store Locale'=>'pl_PL',
+		  'Store Home Country Code 2 Alpha'=>'PL',
+		  'Store Currency Code'=>'PLN',
+		  'Store Home Country Name'=>'Poland', 
+		  'Store Home Country Short Name'=>'PL', 
+		  'Store URL'=>'www.aw-podarki.com',
+		  'Store Telephone'=>'+48 1142 677 736',
+		  'Store Email'=>'urszula@aw-podarki.com',
+		  );
+$store=new Store('find',$store_data,'create');
+$store_key=$store->id;
 
 $dept_data=array(
 		 'Product Department Code'=>'ND',
@@ -71,7 +84,7 @@ $dept_promo=new Department('find',$dept_data,'create');
 $dept_promo_key=$dept_promo->id;
 
 $fam_data=array(
-		'Product Family Code'=>'PND_FR',
+		'Product Family Code'=>'PND_GB',
 		'Product Family Name'=>'Products Without Family',
 		'Product Family Main Department Key'=>$dept_no_dept_key,
 		'Product Family Store Key'=>$store_key,
@@ -84,7 +97,7 @@ $fam_no_fam_key=$fam_no_fam->id;
 //print_r($fam_no_fam);
 
 $fam_data=array(
-		'Product Family Code'=>'Promo_FR',
+		'Product Family Code'=>'Promo_GB',
 		'Product Family Name'=>'Promotional Items',
 		'Product Family Main Department Key'=>$dept_promo_key,
 		'Product Family Store Key'=>$store_key,
@@ -101,7 +114,7 @@ $fam_no_fam_key=$fam_no_fam->id;
 $fam_promo_key=$fam_promo->id;
 
 $campaign=array(
-		'Campaign Name'=>'Statut Gold'
+		'Campaign Name'=>'Goldprämie'
 		,'Campaign Description'=>'Small order charge waive & discounts on seleted items if last order within 1 calendar month'
 		,'Campaign Begin Date'=>''
 		,'Campaign Expiration Date'=>''
@@ -115,7 +128,7 @@ $gold_camp=new Campaign('find create',$campaign);
 //exit;
 
 $data=array(
-	    'Deal Name'=>'[Product Family Code] Statut Gold'
+	    'Deal Name'=>'[Product Family Code] Goldprämie'
 	    ,'Deal Trigger'=>'Family'
 	    ,'Deal Allowance Type'=>'Percentage Off'
 	    ,'Deal Allowance Description'=>'[Percentage Off] off'
@@ -325,18 +338,23 @@ $promotion='';
 foreach($__cols as $cols){
   $is_product=true;
   $code=_trim($cols[3]);
-  $price=$cols[9];
-  $supplier_code=_trim($cols[23]);
-  $part_code=_trim($cols[24]);
-  $supplier_cost=$cols[27];
+  $price=$cols[7];
+  $supplier_code=_trim($cols[21]);
+  $part_code=_trim($cols[22]);
+  $supplier_cost=$cols[25];
   $units=$cols[5];
-  $rrp=$cols[18];
-  $supplier_code=_trim($cols[23]);
-  $w=$cols[31];
-  $description=_trim( mb_convert_encoding($cols[6], "UTF-8", "ISO-8859-1,UTF-8"));
-  $fam_special_char=_trim( mb_convert_encoding($cols[7], "UTF-8", "ISO-8859-1,UTF-8"));
-  $special_char=_trim( mb_convert_encoding($cols[8], "UTF-8", "ISO-8859-1,UTF-8"));
+  $rrp=$cols[16];
+  $supplier_code=_trim($cols[21]);
+  $w=$cols[28];
+  //  $description=_trim( mb_convert_encoding($cols[6], "UTF-8", "ISO-8859-1,UTF-8"));
+  $description=_trim($cols[6]);
+  $fam_special_char='';
+  $special_char='';
   
+  
+
+  //  print_r($cols);
+
   if(!preg_match('/^DONE$/i',$cols[0]))
     $is_product=false;
   $code=_trim($code);
@@ -381,47 +399,66 @@ foreach($__cols as $cols){
     }
 
 
-
+  
 
     
     $deals=array();
-    if(preg_match('/a partir de\s*\d+.*\d+\%/i',_trim($current_promotion))){
-      if(preg_match('/\d+\%/i',$current_promotion,$match))
+    if(preg_match('/oder mehr/i',_trim($current_promotion))){
+      if(preg_match('/^\d+\%/i',$current_promotion,$match))
 	$allowance=$match[0];
-      if(preg_match('/a partir de \d+/i',$current_promotion,$match))
-	$terms=preg_replace('/[^\d]/','',$match[0]);
+      if(preg_match('/\d+ oder mehr/i',$current_promotion,$match))
+	$terms=$match[0];
       
+      //	print "************".$current_promotion."\n";
       $deals[]=array(
 		     'Deal Name'=>'Gold Reward'
 		     ,'Deal Allowance Description'=>$allowance
+		     
 		     );
       
       $deals[]=array(
 		     'Deal Name'=>'Family Volume Discount'
+		     
 		     ,'Deal Allowance Description'=>$allowance
-		     ,'Deal Terms Description'=>'A partir de '.$terms
+		     
+		     ,'Deal Terms Description'=>'beim kauf von '.$terms
+		   
 		     );	
+
+      
+      
     }else
       $deals=array();
+    
   
-    if($units=='' OR $units<=0)
-      $units=1;
+  if($units=='' OR $units<=0)
+    $units=1;
   
 
-    $description=_trim( mb_convert_encoding($cols[6], "UTF-8", "ISO-8859-1,UTF-8"));
-    
-    $rrp=$cols[16];
-    $supplier_code=_trim($cols[21]);
-    
-    $w=$cols[28];
-    
-    if($code=='EO-ST' or $code=='MOL-ST' or  $code=='JBB-st' or $code=='LWHEAT-ST' or  $code=='JBB-St' 
-       or $code=='Scrub-St' or $code=='Eye-st' or $code=='Tbm-ST' or $code=='Tbc-ST' or $code=='Tbs-ST'
-       or $code=='GemD-ST' or $code=='CryC-ST' or $code=='GP-ST'  or $code=='DC-ST'
-       ){
-      print "Skipping $code\n";
-      continue;
-    }
+  $description=_trim( mb_convert_encoding($cols[6], "UTF-8", "ISO-8859-1,UTF-8"));
+  $description=_trim($cols[6]);
+
+  //    if(preg_match('/wsl-535/i',$code)){
+  //       print_r($cols);
+  //       exit;
+
+  //     }
+
+  $rrp=$cols[16];
+  $supplier_code=_trim($cols[21]);
+
+  $w=$cols[28];
+
+  if($code=='EO-ST' or $code=='MOL-ST' or  $code=='JBB-st' or $code=='LWHEAT-ST' or  $code=='JBB-St' 
+     or $code=='Scrub-St' or $code=='Eye-st' or $code=='Tbm-ST' or $code=='Tbc-ST' or $code=='Tbs-ST'
+     or $code=='GemD-ST' or $code=='CryC-ST' or $code=='GP-ST'  or $code=='DC-ST'
+     ){
+    print "Skipping $code\n";
+    continue;
+  }
+
+
+  $price=preg_replace('/[^0-9^\.]/','',$price);
 
       
   if(!is_numeric($price) or $price<=0){
@@ -487,14 +524,14 @@ foreach($__cols as $cols){
     
     if($department_name=='Gegenstände für Sammler')
         $department_code='Collect';
-        if($department_name=='Ökotaschen')
-        $department_code='EcoBag';
-        
-      $dep_data=array(
-		      'Product Department Code'=>$department_code,
-		      'Product Department Name'=>$department_name,
-		      'Product Department Store Key'=>$store_key
-		      );
+    if($department_name=='Ökotaschen')
+      $department_code='EcoBag';
+    
+    $dep_data=array(
+		    'Product Department Code'=>$department_code,
+		    'Product Department Name'=>$department_name,
+		    'Product Department Store Key'=>$store_key
+		    );
       $department=new Department('find',$dep_data,'create');
 
       if($department->error){
@@ -567,15 +604,20 @@ foreach($__cols as $cols){
 	$bogof_camp->create_deal('[Product Family Code] BOGOF',$data);
       }
     }  
+
+ 
+
+
+
     $data=array(
 		'product code'=>$code,
 		'product store key'=>$store_key,
-		'product locale'=>'de_DE',
-		'product currency'=>'EUR',
+		'product locale'=>'pl_PL',
+		'product currency'=>'PLN',
 
 		'product sales type'=>'Public Sale',
 		'product type'=>'Normal',
-		'product record type'=>'New',
+		'product record type'=>'Normal',
 		'product web state'=>'Online Auto',
 
 		  
@@ -585,11 +627,11 @@ foreach($__cols as $cols){
 		'product name'=>$description,
 		'product family key'=>$family->id,
 		'product special characteristic'=>$special_char,
-		'product family special characteristic'=>$fam_special_char,
+		//		'product family special characteristic'=>$fam_special_char,
 		'product net weight'=>$_w,
 		'product gross weight'=>$_w,
-		 'product valid from'=>date('Y-m-d H:i:s'),
-		  'product valid to'=>date('Y-m-d H:i:s'),
+		'product valid from'=>date('Y-m-d H:i:s'),
+		'product valid to'=>date('Y-m-d H:i:s'),
 		//'deals'=>$deals
 		);
     //     print_r($cols);
@@ -627,12 +669,14 @@ foreach($__cols as $cols){
     if(  preg_match('/donef/i',$cols[0])       ){
       $fam_code=$cols[3];
       $fam_name=_trim( mb_convert_encoding($cols[6], "UTF-8", "ISO-8859-1,UTF-8"));
+      $fam_name=_trim($cols[6]);
+
       $fam_position=$column;
 
       
     }
     
-    if(preg_match('/a partir de\s*\d+.*\d+\%/i',_trim($cols[6]))){
+    if(preg_match('/oder mehr/i',_trim($cols[6]))){
       
 
       $promotion=$cols[6];
@@ -652,6 +696,10 @@ foreach($__cols as $cols){
     if(preg_match('/doned/i',$cols[0])){
       $department_name=_trim( mb_convert_encoding($cols[6], "UTF-8", "ISO-8859-1,UTF-8"));
       $department_code=_trim( mb_convert_encoding($cols[3], "UTF-8", "ISO-8859-1,UTF-8"));
+      $department_name=_trim($cols[6]);
+      $department_code=_trim($cols[3]);
+      
+
       $department_position=$column;
     }
     

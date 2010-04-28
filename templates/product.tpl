@@ -92,7 +92,7 @@
 		</table>
 		<table    class="show_info_product">
 		    <tr>
-		      <td>{t}Sell Price{/t}:</td><td  class="price aright">{$product->get('Formated Price')}</td>
+		      <td>{t}Sell Price{/t}:</td><td  class="price aright">{$product->get_formated_price()}</td>
 		    </tr>
 		    <tr {if $product->get('Product RRP')==''}style="display:none"{/if} >
 		      <td>{t}RRP{/t}:</td><td  class="aright">{$product->get('RRP Per Unit')} {t}each{/t}</td>
