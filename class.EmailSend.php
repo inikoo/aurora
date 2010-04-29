@@ -154,11 +154,11 @@ function create($data){
       if($subject->data['Customer Type']=='Company'){
 	$this->email_data['To Company']=$subject->data['Customer Name'];
       }
-      $this->email_data['To Name']=$subject->data['Customer Main Contact Name'];
-      if($this->email_data['To Name']=='')
-	$this->email_data['To Name']=$subject->data['Customer Name'];
+      $this->email_data['To Greatings']=$subject->data['Customer Main Contact Name'];
+      if($this->email_data['To Greatings']=='')
+	$this->email_data['To Greatings']=$subject->data['Customer Name'];
       
-      if($this->email_data['To Name']==$this->email_data['To Company'])
+      if($this->email_data['To Greatings']==$this->email_data['To Company'])
 	$this->email_data['To Company']='';
 
 
@@ -186,8 +186,10 @@ function create($data){
 
        switch($store->data['Store Locale']){
       default:
-	if($this->email_data['To Name']=='')
-	  $this->email_data['To Name']='Sir/Madam';
+	if($this->email_data['To Greatings']=='')
+	  $this->email_data['To Greatings']='Sehr geehrte Damen und Herren';
+	else
+	  $this->email_data['To Greatings']='Sehr geehrte Damen und Herren';
 	
 
 	$this->email_data['Subject']="Gold Reward Reminder";
@@ -196,7 +198,7 @@ function create($data){
 				     ,'content'=>"We would like to take this opportinity to remind you about your Gold Reward. As you know provided that you order within 30 days of your last order, you maintain your Gold Reward status.<br><br>Your last order was on ".strftime("%x",strtotime($subject->data['Customer Last Order Date']))." so you need to re-order before ".strftime("%x",strtotime($subject->data['Customer Last Order Date'].' +30 day'))." to maintain your status.<br><br>If you have any questions or requests please don't hesitate to contact me."
 				     );
       }
-       $this->email_data['Content Text Only']= "Dear ".$this->email_data['To Name'].",\n\We would like to take this opportinity to remind about your Gold Reward. As you know provided that you order within 30 days of your last order, you maintain your Gold Reward status.\n\nYour last order was on ".strftime("%x",strtotime($subject->data['Customer Last Order Date']))." so you need to re-order before ".strftime("%x",strtotime($subject->data['Customer Last Order Date'].' +30 day'))." to maintain your status.\n\nIf you have any questions or requests please don't hesitate to contact me.\nKind Regards\n\n".$this->email_data['Our Name']."\n".$this->email_data['Our Position']."\n".$this->email_data['Our Company']."\n\n".$this->email_data['Our Telephone']."\n\nIf you don't want to receive this kind of email please let us know.";
+       $this->email_data['Content Text Only']= "Dear ".$this->email_data['To Greatings'].",\n\We would like to take this opportinity to remind about your Gold Reward. As you know provided that you order within 30 days of your last order, you maintain your Gold Reward status.\n\nYour last order was on ".strftime("%x",strtotime($subject->data['Customer Last Order Date']))." so you need to re-order before ".strftime("%x",strtotime($subject->data['Customer Last Order Date'].' +30 day'))." to maintain your status.\n\nIf you have any questions or requests please don't hesitate to contact me.\nKind Regards\n\n".$this->email_data['Our Name']."\n".$this->email_data['Our Position']."\n".$this->email_data['Our Company']."\n\n".$this->email_data['Our Telephone']."\n\nIf you don't want to receive this kind of email please let us know.";
 
        $recipient_type='Customer';
        $recipient_key=$subject->id;
@@ -217,7 +219,10 @@ function create($data){
    }
 
 
-  function compose_registration_email($user_key){
+  function compose_registration_email($user_key,$data=false){
+    if(!is_array($data))
+      $data=array();
+
 
     $this->prepare_email_variables();
 
@@ -264,25 +269,44 @@ function create($data){
       if($subject->data['Customer Type']=='Company'){
 	$this->email_data['To Company']=$subject->data['Customer Name'];
       }
-      $this->email_data['To Name']=$subject->data['Customer Main Contact Name'];
-      if($this->email_data['To Name']=='')
-	$this->email_data['To Name']=$subject->data['Customer Name'];
       
-      if($this->email_data['To Name']==$this->email_data['To Company'])
+      $this->email_data['To Name']=$subject->data['Customer Main Contact Name'];
+
+      $this->email_data['To Greatings']=$subject->data['Customer Main Contact Name'];
+      if($this->email_data['To Greatings']=='')
+	$this->email_data['To Greatings']=$subject->data['Customer Name'];
+      
+      if($this->email_data['To Greatings']==$this->email_data['To Company'])
 	$this->email_data['To Company']='';
 
       switch($store->data['Store Locale']){
-      default:
-		if($this->email_data['To Name']=='')
-		  $this->email_data['To Name']='Sir/Madam';
-	
-	$this->email_data['Subject']="Thank you for your registration with ".$this->email_data['Our Name'];
+      case('de_DE'):
+	if($this->email_data['To Greatings']=='')
+	  $this->email_data['To Greatings']='Sehr geehrte Damen und Herren';
+	else
+	  $this->email_data['To Greatings']='Sehr geehrte/r '.$this->email_data['To Greatings'];
+
+	$this->email_data['Subject']="Vielen Dank für Ihre Registrierung bei ".$this->email_data['Our Company'];
 	$this->email_data['Content'][]=array(
-				     'title'=>"Thank you for your registration with ".$this->email_data['Our Name']."!"
+				     'title'=>"Vielen Dank für Ihre Registrierung bei ".$this->email_data['Our Company']."!"
+				     ,'content'=>"Sehen Sie nun unsere Preise und bestellen Sie aus einer Vielzahl toller Produkte.<br/><br/>"
+				     );
+	
+	break;
+      default:
+	if($this->email_data['To Greatings']=='')
+	  $this->email_data['To Greatings']='Dear Sir/Madam';
+	else
+	  $this->email_data['To Greatings']='Dear '.$this->email_data['To Greatings'];
+	
+
+	$this->email_data['Subject']="Thank you for your registration with ".$this->email_data['Our Company'];
+	$this->email_data['Content'][]=array(
+				     'title'=>"Thank you for your registration with ".$this->email_data['Our Company']."!"
 				     ,'content'=>"You will now be able to see our prices and order from our big range of products.<br/><br/>"
 				     );
       }
-      $this->email_data['Content Text Only']="Thank you for your registration with ".$this->email_data['Our Name']."!\n\nYou will now be able to see our prices and order from our big range of products\n\nRemenber that your username is ".$user->data['User Handle']."\n\n".$this->email_data['Our Name']."\n".$this->email_data['Our Company'];
+      $this->email_data['Content Text Only']=$this->email_data['To Greatings']."\n\nThank you for your registration with ".$this->email_data['Our Company']."!\n\nYou will now be able to see our prices and order from our big range of products\n\nRemenber that your username is ".$user->data['User Handle']."\n\n".$this->email_data['Our Name']."\n".$this->email_data['Our Company'];
 
        $recipient_type='Customer';
        $recipient_key=$subject->id;
@@ -296,6 +320,14 @@ function create($data){
       return;
       
     }
+
+  foreach($data as $key=>$values){
+	if(array_key_exists($key,$this->email_data))
+	  $this->email_data[$key]=$values;
+      }
+
+
+
 
     $email=new Email('email',$user->data['User Handle']);
 
@@ -318,7 +350,7 @@ function create($data){
   function send(){
 
     global $smarty;
-
+    
 
 /*
  *  Trying to guess your e-mail address.
@@ -341,13 +373,15 @@ function create($data){
  */
 	$to_name=$this->email_data['To Name'];
 	$to_address=$this->email_data['To Email Address'];
-
+	
 	$subject=$this->email_data['Subject'];
 	$email_message=new email_message_class;
 	$email_message->SetEncodedEmailHeader("To",$to_address,$to_name);
 	$email_message->SetEncodedEmailHeader("From",$from_address,$from_name);
 	$email_message->SetEncodedEmailHeader("Reply-To",$reply_address,$reply_name);
 	$email_message->SetHeader("Sender",$from_address);
+	
+	//	print_r($this->email_data);
 
 /*
  *  Set the Return-Path header to define the envelope sender address to which bounced messages are delivered.
@@ -356,8 +390,11 @@ function create($data){
 	if(defined("PHP_OS")
 	&& strcmp(substr(PHP_OS,0,3),"WIN"))
 		$email_message->SetHeader("Return-Path",$error_delivery_address);
+	//print $subject;
+	//	$subject=mb_convert_encoding($subject, 'ISO-8859-1', 'UTF-8');
+	//print $subject;exit("caca");
 
-	$email_message->SetEncodedHeader("Subject",$subject);
+	$email_message->SetEncodedHeader("Subject",mb_convert_encoding($subject, 'ISO-8859-1', 'UTF-8'));
 
 /*
  *  An HTML message that requires any dependent files to be sent,
@@ -417,7 +454,7 @@ function create($data){
 	
 	$smarty->assign("our_url",$this->email_data['Our URL']);
 	$smarty->assign("our_telephone",$this->email_data['Our Telephone']);
-	$smarty->assign("to_name",$this->email_data['To Name']);
+	$smarty->assign("to_greatings",$this->email_data['To Greatings']);
 	$smarty->assign("to_company",$this->email_data['To Company']);
 	
 
@@ -429,6 +466,9 @@ function create($data){
 
 
 	$html_message=$smarty->fetch($this->email_data['Template']);
+
+	$html_message=mb_convert_encoding($html_message, 'ISO-8859-1', 'UTF-8');
+	
 
 	$email_message->CreateQuotedPrintableHTMLPart($html_message,"",$html_part);
 
@@ -475,14 +515,29 @@ function create($data){
  *  the message is sent to not bloat your scripts with too much error checking.
  */
 	
-var_dump($email_message->parts);
+
 	$error=$email_message->Send();
-	if(strcmp($error,""))
+	if(strcmp($error,"")){
+	  var_dump($email_message->parts);
+	  print "$error\n";
 	  return 0;
-	else
+	}else
 	  return 1;
 
   }
+
+ 
+
+  function safe_utf8($string){
+    $string=htmlentities($string,ENT_QUOTES,'UTF-8');
+    $string = str_replace("&lt;","<",$string);
+    $string = str_replace("&gt;",">",$string);
+    $string = str_replace("&quot;",'"',$string);
+    $string = str_replace("&amp;",'&',$string);
+    
+    return $string;
+}
+
 
 } 
 

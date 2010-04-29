@@ -21,7 +21,7 @@ $_SESSION['locale_info'] = localeconv();
 $con=@mysql_connect($dns_host,$dns_user,$dns_pwd );
 
 if(!$con){print "Error can not connect with database server\n";exit;}
-$dns_db='dw_avant';
+$dns_db='dw_avant2';
 $db=@mysql_select_db($dns_db, $con);
 if (!$db){print "Error can not access the database\n";exit;}
 
@@ -113,6 +113,11 @@ $store_data=array('Store Code'=>'UK',
 		  'Store Currency Code'=>'GBP',
 		  'Store Home Country Name'=>'United Kingdom', 
 		  'Store Home Country Short Name'=>'UK', 
+		  'Store URL'=>'ancietwisdom.biz',
+		  'Store Email'=>'mail@ancientwisdom.biz',
+		  'Store Telephone'=>'+44 (0) 114 272 9165',
+		  'Store FAX'=>'+44 (0) 114 270 6571',
+		  'Store Slogan'=>'giftware sourced worldwide'
 		  );
 $store=new Store('find',$store_data,'create');
 
@@ -123,6 +128,11 @@ $store_data=array('Store Code'=>'DE',
 		  'Store Currency Code'=>'EUR',
 		  'Store Home Country Name'=>'Germany', 
 		  'Store Home Country Short Name'=>'DE', 
+		  'Store URL'=>'aw-geschenke.com',
+		  'Store Email'=>'martina@aw-geschenke.com',
+		  'Store Telephone'=>'+49 (0)831 2531 986',
+		  'Store FAX'=>'',
+		  'Store Slogan'=>'Geschenkwaren'
 		  );
 $store=new Store('find',$store_data,'create');
 $store_data=array('Store Code'=>'FR',
@@ -132,6 +142,12 @@ $store_data=array('Store Code'=>'FR',
 		  'Store Currency Code'=>'EUR',
 		  'Store Home Country Name'=>'France', 
 		  'Store Home Country Short Name'=>'FR', 
+		  'Store URL'=>'aw-cadeux.com',
+		  'Store Email'=>'nassim@aw-cadeux.com',
+		  'Store Telephone'=>'',
+		  'Store FAX'=>'',
+		  'Store Slogan'=>''
+		  
 		  );
 $store=new Store('find',$store_data,'create');
 

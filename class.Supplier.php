@@ -180,11 +180,7 @@ class supplier extends DB_Table {
             }
             elseif(preg_match('/^Supplier Address/',$key)) {
                 $data[$key]=_trim($value);
-
             }
-
-
-
         }
 
 

@@ -305,6 +305,9 @@ function getmicrotime(){
 
 
 function percentage($a,$b,$fixed=1,$error_txt='NA',$psign='%',$plus_sing=false){
+
+  $locale_info = localeconv();
+
   $per='';
   $error_txt=_($error_txt);
   if($b>0){
@@ -313,7 +316,7 @@ function percentage($a,$b,$fixed=1,$error_txt='NA',$psign='%',$plus_sing=false){
     else
       $sing='';
     // PRINT "** $a $b ".$sing.number_format(100*($a/$b),1,$_SESSION['locale_info']['decimal_point'],$_SESSION['locale_info']['thousands_sep']).$psign." <br>";
-    $per=$sing.number_format((100*($a/$b)),$fixed,$_SESSION['locale_info']['decimal_point'],$_SESSION['locale_info']['thousands_sep']).$psign;
+    $per=$sing.number_format((100*($a/$b)),$fixed,$locale_info['decimal_point'],$locale_info['thousands_sep']).$psign;
     //    $per=$sing.number_format(100*($a/$b),$fixed,$_SESSION['locale_info']['decimal_point'],$_SESSION['locale_info']['thousands_sep']).$psign;
     // print $per."  $fixed $psign $sing ".$_SESSION['locale_info']['decimal_point']." ".$_SESSION['locale_info']['thousands_sep']." <br>";
   }

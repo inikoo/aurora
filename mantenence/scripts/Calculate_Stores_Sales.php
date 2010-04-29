@@ -16,6 +16,7 @@ date_default_timezone_set('Europe/London');
 $con=@mysql_connect($dns_host,$dns_user,$dns_pwd );
 
 if(!$con){print "Error can not connect with database server\n";exit;}
+$dns_db='dw_avant2';
 $db=@mysql_select_db($dns_db, $con);
 if (!$db){print "Error can not access the database\n";exit;}
   
@@ -24,6 +25,7 @@ require_once '../../common_functions.php';
 mysql_query("SET time_zone ='+0:00'");
 mysql_query("SET NAMES 'utf8'");
 require_once '../../conf/conf.php';           
+setlocale(LC_MONETARY, 'en_GB.UTF-8');
 
 global $myconf;
 $sql="select * from `Store Dimension`";
@@ -37,7 +39,7 @@ while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
 
 
   $store->load('products_info');
-  print $store->id."\r";
+  print $store->id."\n";
  }
 mysql_free_result($result);
 
