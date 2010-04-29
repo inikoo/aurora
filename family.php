@@ -32,6 +32,9 @@ foreach($tmp_page_data as $key=>$value){
   $page_data[preg_replace('/\s/','',$key)]=$value;
 }
 $smarty->assign('page_data',$page_data);
+
+
+
 //print_r($page_data);
 
 $_SESSION['state']['department']['id']=$family->data['Product Family Main Department Key'];

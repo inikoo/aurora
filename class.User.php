@@ -29,11 +29,17 @@ class User extends DB_Table{
 			       'User Last Login'
 			       );
 
-    if($a1=='new' and is_array($a2)){
-      $this->create($a2);
+    if(($a1=='new'  )and is_array($a2)){
+      $this->find($a2,'create');
       return;
     }
      
+    if(($a1=='find'  )and is_array($a2)){
+      $this->find($a2,$a3);
+      return;
+    }
+    
+
     if(is_numeric($a1) and !$a2){
       $_data= $a1;
       $key='id';
@@ -46,7 +52,54 @@ class User extends DB_Table{
     return;
   }
    
-  function create($data){
+
+  function find($raw_data,$options=''){
+    if (isset($raw_data['editor'])) {
+      foreach($raw_data['editor'] as $key=>$value) {
+	
+	if (array_key_exists($key,$this->editor))
+	  $this->editor[$key]=$value;
+
+      }
+    }
+    $base_data=$this->base_data();
+    if (preg_match('/create/i',$options)) {
+      $create='create';
+        }
+        if (preg_match('/update/i',$options)) {
+            $update='update';
+        }
+
+
+
+        $data=$this->base_data();
+        foreach($raw_data as $key=>$value) {
+	  if (array_key_exists($key,$data)) {
+	    $data[$key]=_trim($value);
+	  }
+	}
+	
+ $sql="select `User Key`  from `User Dimension` where `User Type`=".prepare_mysql($data['User Type'])." and `User Handle`=".prepare_mysql($data['User Handle']);
+ 
+ $result = mysql_query($sql) or die('Query failed:x ' . mysql_error());
+ if ($row = mysql_fetch_array($result, MYSQL_ASSOC)) {
+   $this->found=true;
+   $this->found_key=$row['User Key'];
+   
+ }
+
+ if($this->found){
+   $this->get_data('id',$this->found_key);
+
+ }
+
+ if(!$this->found and $create){
+   $this->create($raw_data);
+ }
+ 
+
+  }
+function create($data){
     $this->new=false;
     $this->msg=_('Unknown Error(0)');
     $base_data=$this->base_data();

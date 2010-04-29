@@ -1050,7 +1050,6 @@ class Contact extends DB_Table {
 
 
         if ($this->data['Contact Name']=='') {
-            $this->data['Contact Name']='! '.$this->unknown_contact_name;
             $this->data['Contact Informal Greeting']=$this->unknown_informal_greting;
             $this->data['Contact Formal Greeting']=$this->unknown_formal_greting;
         }
@@ -1949,7 +1948,7 @@ $country_code='UNK';
         }
 
 
-
+	
 
 
 
@@ -2248,7 +2247,6 @@ $country_code='UNK';
             if ($value=='') {
                 $this->msg.=_('Warning, contact name should not be blank')."\n";
                 $this->warning=true;
-                $this->data['Contact Name']='! '.$this->unknown_contact_name;
                 $this->data['Contact Informal Greeting']=$this->unknown_informal_greting;
                 $this->data['Contact Formal Greeting']=$this->unknown_formal_greting;
             }

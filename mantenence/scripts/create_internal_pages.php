@@ -95,7 +95,7 @@ $data=array(
 foreach($data as $page_data){
   
   $page=new Page('find',$page_data,'create');
-  //print_r($page);
+  print_r($page);
   
 }
 
