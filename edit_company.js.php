@@ -88,8 +88,8 @@ foreach($contacts as $contact){
 			 ,$email->id
 			 ,$email->data['Email']
 			 ,addslashes($email->data['Email Contact Name'])
-			 ,addslashes($email->data['Email Description'])
-			 ,$email->data['Email Is Main']
+			 ,addslashes('')
+			 ,''
 			 );
   }
   $email_data=preg_replace('/^,/','',$email_data);

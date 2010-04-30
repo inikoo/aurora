@@ -7456,8 +7456,8 @@ function list_customers_per_store() {
 
 
 
-    $sql="select `Store Name`,`Store Code`,`Store Key`, count(*) as total,sum(IF(`New Customer`='Yes',1,0)) as new,sum(IF(`Active Customer`='Yes',1,0)) as active   from `Customer Dimension` S left join `Store Dimension` on `Store Key`=`Customer Store Key`  $where $wheref group by `Customer Store Key`  order by $order $order_direction limit $start_from,$number_results    ";
-    //print $sql;
+    $sql="select `Store Name`,`Store Code`,`Store Key`, count(*) as total,sum(IF(`New Customer`='Yes',1,0)) as new,sum(IF(`Active Customer`='Yes',1,0)) as active   from `Store Dimension` S left join  `Customer Dimension` on `Store Key`=`Customer Store Key`  $where $wheref group by `Store Key`  order by $order $order_direction limit $start_from,$number_results    ";
+   // print $sql;
     $res = mysql_query($sql);
 
     $total=mysql_num_rows($res);

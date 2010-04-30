@@ -73,7 +73,7 @@ function change_block(e){
 	Dom.removeClass(editing,'selected');
 	Dom.addClass(this, 'selected');
 	
-	YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=customer-edit&value='+this.id );
+	YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=customer-edit&value='+this.id ,{});
 	
 	editing=this.id;
     }

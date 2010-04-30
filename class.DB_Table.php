@@ -26,6 +26,7 @@ abstract class DB_Table
  // Boolean: updated
   // True if company has been updated
   public $updated=false;
+  public $new_value=false;
   public $error_updated=false;
   public $msg_updated='';
  // Boolean: found

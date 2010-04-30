@@ -100,7 +100,7 @@
  <tr class=""><td style="" class="label">{t}Contact Telephone{/t}:</td>
    <td  style="text-align:left">
      <div  style="width:15em;position:relative;top:00px" >
-       <input style="text-align:left;width:18em" id="Customer_Main_Telephone" value="{$customer->get('Customer Main Plain Telephone')}" ovalue="{$customer->get('Customer Main Plain Telephone')}" valid="0">
+       <input style="text-align:left;width:18em" id="Customer_Main_Telephone" value="{$customer->get('Customer Main XHTML Telephone')}" ovalue="{$customer->get('Customer Main XHTML Telephone')}" valid="0">
        <div id="Customer_Main_Telephone_Container" style="" ></div>
      </div>
    </td>
@@ -123,7 +123,7 @@
    
      </div>
        <table>
-       {include file='edit_address_splinter.tpl' address_identifier='contact_'}
+       {include file='edit_address_splinter.tpl' address_identifier='contact_' hide_type=true hide_description=true  }
 
      </table>
    </div>
