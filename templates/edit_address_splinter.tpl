@@ -1,5 +1,6 @@
 <tbody id="{$address_identifier}address_form" style="display:none"   >
-  <tr id="{$address_identifier}tr_address_type">
+ 
+ <tr id="{$address_identifier}tr_address_type" {if $hide_type}style="display:none"{/if}>
     <td class="label">
       <span id="{$address_identifier}show_description" onclick="show_description()" class="small_button" style="padding:0 1px;font-size:50%;position:relative;top:-2px;">+</span> {t}Address Type{/t}:</td><td  style="text-align:left"   id="{$address_identifier}address_type" value="" ovalue=""  >
       <span id="{$address_identifier}address_type_Office" label="Office" onclick="toggle_address_type(this)" class="small_button address_type" style="margin:0">Office</span>
@@ -9,7 +10,7 @@
     </td>
 	    </tr>
   
-  <tr id="{$address_identifier}tr_address_function" style="{if $scope=='Company'}display:none;{/if}">
+  <tr id="{$address_identifier}tr_address_function" style="{if  $hide_description}display:none;{/if}" >
     <td class="label">{t}Address Function{/t}:</td><td  style="text-align:left"   id="{$address_identifier}address_function" value="" ovalue=""  >
       <span id="{$address_identifier}address_function_Contact" label="Contact" onclick="toggle_address_function(this)" class="small_button address_function" style="margin:0">Contact</span>
       <span id="{$address_identifier}address_function_Billing" label="Billing" onclick="toggle_address_function(this)" class="small_button address_function" style="margin-left:3px">Billing</span>
@@ -24,7 +25,7 @@
     <td class="label"><span id="{$address_identifier}hide_description" onclick="hide_description()" class="small_button" style="padding:0 1px;font-size:50%;position:relative;top:-2px;">x</span> {t}Description{/t}:</td><td  style="text-align:left"    ><input style="text-align:left" id="{$address_identifier}address_description" value="" ovalue=""   ></td>
   </tr>
   
-  <tr >
+  <tr {if $hide_type and  $hide_description}style="display:none"{/if}  >
     <td ></td><td style="text-align:left"><div  style="text-align:left;float:left;height:10px;width:210px;border-top:1px solid #ddd"></div></td>
   </tr>
   
@@ -38,7 +39,7 @@
       <span id="{$address_identifier}show_country_d1" onclick="toggle_country_d1()" class="small_button" style="padding:0 1px;font-size:50%;position:relative;top:-2px;display:none">+</span>
       Country:</td>
     <td  style="text-align:left">
-      <div id="{$address_identifier}myAutoComplete" style="width:15em;position:relative;top:-10px" >
+      <div id="{$address_identifier}myAutoComplete" style="width:15em;position:relative;top:0px" >
 	<input id="{$address_identifier}address_country" style="text-align:left;width:18em" type="text">
 	<div id="{$address_identifier}address_country_container" style="position:relative;top:18px" ></div>
 	

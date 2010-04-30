@@ -1334,7 +1334,7 @@ if(isset( $_REQUEST['where']))
      $order='`Customer Type by Activity`';
   else
   $order='`Customer File As`';
-   $sql="select   *,`Customer Net Refunds`+`Customer Tax Refunds` as `Customer Total Refunds`  from `Customer Dimension`  $where $wheref  order by $order $order_direction limit $start_from,$number_results";
+   $sql="select   *,`Customer Net Refunds`+`Customer Tax Refunds` as `Customer Total Refunds`  from `Store Dimension` S left join `Customer Dimension` C  on (`Store Key`=`Customer Store Key`) $where $wheref  order by $order $order_direction limit $start_from,$number_results";
    //print $sql;
    $adata=array();
   
@@ -1342,47 +1342,6 @@ if(isset( $_REQUEST['where']))
   
   $result=mysql_query($sql);
   while($data=mysql_fetch_array($result, MYSQL_ASSOC)){
-
-
-
-  
-    
-  
-   //  if($data['factor_num_orders_nd']>.60)
-//       $color='bbb';
-//     elseif($data['factor_num_orders_nd']>.40)
-//       $color='888';
-//     elseif($data['factor_num_orders_nd']>.20)
-//       $color='444';
-//     else
-//       $color='000';
-
-//     if($data['factor_num_orders_nd']<.05)
-//       $old_orders='';
-//     else{
-//       $orders_with_no_data=number($data['num_orders_nd']);
-//       $old_orders='<span title="'.$orders_with_no_data.' '.ngettext('order','orders',$orders_with_no_data).' '._('with no data available.').'" style="cuersor:pointer;position: relative;top: -0.3em;color:#'.$color.';font-size: 0.8em;">*</span>';
-//     }
-
-//     if($data['num_invoices']==0){
-//       $color='bbb';
-//       $super_total='<i  style="color:#'.$color.'">'._('ND').'</i>';
-//       $orders_with_no_data=number($data['num_orders_nd']);
-//       $old_orders='<span title="'.$orders_with_no_data.' '.ngettext('order','orders',$orders_with_no_data).' '._('with no data available.').'" style="cuersor:pointer;position: relative;top: -0.3em;color:#'.$color.';font-size: 0.8em;">*</span>';
-//     }else
-//       $super_total='<i  style="color:#'.$color.'">'.money($data['super_total']).'</i>';
-//     $orders=$old_orders.'<i  style="color:#'.$color.'">'.number($data['orders']).'</i>';
-//     if($data['is_staff']>0)
-//       $location='<span style="color:#999">('._('ex').')</span>'._('Staff');
-//     else
-//       $location='<img title="'.$data['country_name'].'"  src="art/flags/'.strtolower($data['country_code2']).'.gif" alt="'.$data['country_code'].'"> '.$data['town'].' '.preg_replace('/\s/','',$data['postcode']);
-
-//      $email='';
-//      if($data['email']!='')
-//        $email='<a href="emailto:'.$data['email'].'"  >'.$data['email'].'</a>';
-//      $tel='';
-//      if($data['number']!='')
-//        $tel=($data['icode']!=''?'+'.$data['icode'].' ':'').$data['number'];
 
 
     $id="<a href='customer.php?id=".$data['Customer Key']."'>".$myconf['customer_id_prefix'].sprintf("%05d",$data['Customer Key']).'</a>'; 

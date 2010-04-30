@@ -27,6 +27,9 @@ include_once('class.Company.php');
 */
 
 class Contact extends DB_Table {
+
+    public $new_value=false;
+
     public $scope=false;
     public $scope_key=false;
     private  $new_home_telephone_keys=array();
@@ -1516,6 +1519,19 @@ $country_code='UNK';
 
     }
 
+ function get_emails() {
+        $sql=sprintf("select `Email Key` from `Email Bridge` where  `Subject Type`='Contact' and `Subject Key`=%d "
+                     ,$this->id );
+
+        $emails=array();
+        $result=mysql_query($sql);
+        while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+        	$email=new Email($row['Email Key']);
+            $emails[$row['Email Key']]= $email;
+        }
+        return $emails;
+
+    }
 
 
     function get_principal_email_key() {
@@ -2413,7 +2429,7 @@ $country_code='UNK';
 
             $this->msg=_('Contact name updated');
             $this->updated=true;
-
+			$this->new_value=$this->data['Contact Name'];
             $history_data=array(
                               'History Abstract'=>_('Contact Name Changed'),
                               'History Details'=>_trim(_('Contact name changed from').' '.$old_value." "._('to')." ".$this->data['Contact Name']),
@@ -3463,10 +3479,10 @@ $country_code='UNK';
     function get_mobiles() {
 
 
-        $sql=sprintf("select * from `Telecom Bridge` CB where   `Telecom Type` in ('Mobile','Work Mobile')    and `Subject Type`='Contact' and `Subject Key`=%d  group by `Telecom Key` order by `Is Main` desc  ",$this->id);
+        $sql=sprintf("select TB.`Telecom Key` from `Telecom Bridge` TB   left join `Telecom Dimension` T on (T.`Telecom Key`=TB.`Telecom Key`) where `Telecom Type`='Mobile'    and `Subject Type`='Contact' and `Subject Key`=%d  group by TB.`Telecom Key` order by `Is Main` desc  ",$this->id);
         $mobiles=array();
         $result=mysql_query($sql);
-
+//print $sql;
         while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
             $mobile= new Telecom($row['Telecom Key']);
             $mobile->set_scope('Contact',$this->id);

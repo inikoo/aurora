@@ -18,7 +18,7 @@ include_once('class.Country.php');
    Class to manage the *Address Dimension* table
 */
 class Address extends DB_Table {
-
+public $updated=false;
     private $scope=false;
     private $scope_key=false;
     public $default_country_code=false;
@@ -4667,6 +4667,8 @@ if(!$telephone_key){
 $telephone=new Telecom($telephone_key);
 
 $telephone->update_number($value,$this->data['Address Country Code']);
+$this->updated=$telephone->updated;
+
 }
 }
 
@@ -4679,6 +4681,8 @@ if(!$fax_key){
 
 $fax=new Telecom($fax_key);
 $fax->update_number($value,$this->data['Address Country Code']);
+$this->updated=$fax->updated;
+
 }
 }
 
@@ -4686,7 +4690,7 @@ $fax->update_number($value,$this->data['Address Country Code']);
 function update_telecom($telecom_key,$value){
 $telecom=new Telecom($telecom_key);
 $telecom->update_number($value,$this->data['Address Country Code']);
-
+$this->updated=$telecom->updated;
 }
 
 function get_name(){

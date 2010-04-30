@@ -983,7 +983,11 @@ class Customer extends DB_Table {
             $address=new Address($this->data['Customer Main Address Key']);
             $address->editor=$this->editor;
             $address->update_principal_telephone($value);
-
+            $this->updated=$address->updated;  
+            if($this->updated){
+                    $this->get_data('id',$this->id);
+                    $this->new_value=$this->data['Customer Main XHTML Telephone'];
+            }
             break;
 
         case('Customer Main XHTML FAX'):
@@ -992,7 +996,11 @@ class Customer extends DB_Table {
             $address=new Address($this->data['Customer Main Address Key']);
             $address->editor=$this->editor;
             $address->update_principal_fax($value);
-
+$this->updated=$address->updated;
+ if($this->updated){
+ $this->get_data('id',$this->id);
+                $this->new_value=$this->data['Customer Main XHTML FAX'];
+            }
             break;
 
 
@@ -2509,72 +2517,6 @@ class Customer extends DB_Table {
 
     }
 
-
-    function update_telephone($telecom_key) {
-
-        $old_telecom_key=$this->data['Customer Main Telephone Key'];
-
-        $telecom=new Telecom($telecom_key);
-        if (!$telecom->id) {
-            $this->error=true;
-            $this->msg='Telecom not found';
-            $this->msg_updated.=',Telecom not found';
-            return;
-        }
-        $old_value=$this->data['Customer Main XHTML Telephone'];
-        $sql=sprintf("update `Customer Dimension` set `Customer Main XHTML Telephone`=%s ,`Customer Main Plain Telephone`=%s  ,`Customer Main Telephone Key`=%d where `Customer Key`=%d "
-                     ,prepare_mysql($telecom->display('xhtml'))
-                     ,prepare_mysql($telecom->display('plain'))
-                     ,$telecom->id
-                     ,$this->id
-                    );
-        mysql_query($sql);
-        if (mysql_affected_rows()) {
-
-            $this->updated;
-            if ($old_value!=$telecom->display('xhtml'))
-                $history_data=array(
-                                  'Indirect Object'=>'Customer Main XHTML Telephone'
-                                                    ,'History Abstract'=>_('Customer Main XHTML Telephone Changed')
-                                                                        ,'History Details'=>_('Customer Main XHTML Telephone changed from')." ".$old_value." "._('to').' '.$telecom->display('xhtml')
-                              );
-            $this->add_history($history_data);
-        }
-
-    }
-
-    function update_fax($telecom_key) {
-
-
-        $old_telecom_key=$this->data['Customer Main FAX Key'];
-
-        $telecom=new Telecom($telecom_key);
-        if (!$telecom->id) {
-            $this->error=true;
-            $this->msg='Telecom not found';
-            $this->msg_updated.=',Telecom not found';
-            return;
-        }
-        $old_value=$this->data['Customer Main XHTML FAX'];
-        $sql=sprintf("update `Customer Dimension` set `Customer Main XHTML FAX`=%s ,`Customer Main Plain FAX`=%s  ,`Customer Main Plain FAX`=%d where `Customer Key`=%d "
-                     ,prepare_mysql($telecom->display('xhtml'))
-                     ,prepare_mysql($telecom->display('plain'))
-                     ,$telecom->id
-                     ,$this->id
-                    );
-        mysql_query($sql);
-        if (mysql_affected_rows()) {
-            $this->updated;
-            if ($old_value!=$telecom->display('xhtml'))
-                $history_data=array(
-                                  'Indirect Object'=>'Customer Main XHTML FAX'
-                                                    ,'History Abstract'=>_('Customer Main XHTML FAX Changed')
-                                                                        ,'History Details'=>_('Customer Main XHTML FAX changed from')." ".$old_value." "._('to').' '.$telecom->display('xhtml')
-                              );
-            $this->add_history($history_data);
-        }
-
-    }
 
 
     function export_data() {

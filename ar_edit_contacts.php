@@ -434,10 +434,10 @@ function edit_email($data){
 function edit_telecom($data) {
     global $editor;
 
-    if (preg_match('/^company$/i',$data['subject']))
+    if (preg_match('/^company$/i',$data['subject'])){
         $subject=new Company($data['subject_key']);
     $subject_type='Company';
-    else {
+    }else {
         $subject=new Contact($data['subject_key']);
         $subject_type='Contact';
 
@@ -450,7 +450,7 @@ function edit_telecom($data) {
     }
 
     $address_key=0;
-    if (array_key_exists('Address Key',$data['value']) )) {
+    if (array_key_exists('Address Key',$data['value'])){
         $address_key=$data['value']['Address Key'];
     }
 
@@ -535,7 +535,7 @@ function edit_telecom($data) {
     if ($subject->add_telecom) {
     $updated_telecom_data=array();
     $action='';
-    4msg='';
+    $msg='';
     $response=array(
                   'state'=>200,
                   'action'=>$action,
