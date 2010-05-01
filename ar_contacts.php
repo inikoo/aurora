@@ -1334,7 +1334,7 @@ if(isset( $_REQUEST['where']))
      $order='`Customer Type by Activity`';
   else
   $order='`Customer File As`';
-   $sql="select   *,`Customer Net Refunds`+`Customer Tax Refunds` as `Customer Total Refunds`  from `Store Dimension` S left join `Customer Dimension` C  on (`Store Key`=`Customer Store Key`) $where $wheref  order by $order $order_direction limit $start_from,$number_results";
+   $sql="select   *,`Customer Net Refunds`+`Customer Tax Refunds` as `Customer Total Refunds` from  `Customer Dimension` $where $wheref  order by $order $order_direction limit $start_from,$number_results";
    //print $sql;
    $adata=array();
   

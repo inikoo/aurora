@@ -737,7 +737,7 @@ class Customer extends DB_Table {
 
 
             }
-
+	    
 
         } else {
             print "Error can not create customer $sql\n";

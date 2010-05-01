@@ -21,8 +21,7 @@ class Auth {
   function Auth($ikey,$skey,$options=''){
     if(preg_match('/use( |\_)cookies?/i',$options))
       $this->use_cookies=true;
-    
-
+    $this->user_type='Administrator,Staff';
     $this->ikey=$ikey;
     $this->skey=$skey;
 
@@ -105,18 +104,23 @@ class Auth {
 		      ,'ikey'=>'No'
 		      );
     
-    $sql=sprintf("select `User Key`,`User Password` from `User Dimension` where `User Handle`=%s and `User Active`='Yes' "
+    $sql=sprintf("select `User Key`,`User Password` from `User Dimension` where `User Handle`=%s and `User Active`='Yes' and `User Type` in (%s)  "
 		 ,prepare_mysql($this->handle)
-		 
+		 ,prepare_mysql($this->user_type)
+	
 		 );
+    
+
     $res=mysql_query($sql);
     if($row=mysql_fetch_array($res)){
        	$st=AESDecryptCtr(AESDecryptCtr($this->sk,$row['User Password'],256),$this->skey,256);
-	//print $row['User Password'];
-	//exit;
+
+       
 	$this->pass['handle']='Yes';
 	$this->pass['handle_in_use']='Yes';
 	
+	//	print $st;
+
 	if(preg_match('/^skstart\|\d+\|[abcdef0-9\.\:]+\|.+\|/',$st)){
 	  $this->pass['password']='Yes';
 
@@ -131,10 +135,10 @@ class Auth {
 	  if($time<time(date('U'))  ){
 	    $pass_tests=false;
 	    //print date("d-m-Y H:i:s",$time).' '.date("d-m-Y H:i:s",date('U')+300);
-
+	    
 	  }else
 	    $this->pass['time']='Yes';
-
+	  
 	  if(ip()!=$ip){
 	    $pass_tests=false;
 	  }
@@ -144,8 +148,9 @@ class Auth {
 	    $pass_tests=false;
 	  }
 	  $this->pass['ikey']='Yes';
-
-
+	  
+	  
+	  //print_r($this->pass);
  	  if($pass_tests ){
 
 	    $this->status=true;
