@@ -33,7 +33,7 @@ class Order extends DB_Table {
     //	Public $staus = 'new';
     var $ghost_order=false;
     Public $skip_update_product_sales=false;
-
+var $skip_update_after_individual_transaction=true;
     function __construct($arg1 = false, $arg2 = false) {
 
         $this->table_name='Order';
@@ -87,7 +87,7 @@ class Order extends DB_Table {
             global $myconf;
             // print_r($data);
             $this->data ['Order Type'] = $data ['Order Type'];
-            $this->get_data_from_customer($data['Customer Key']);
+            $this->set_data_from_customer($data['Customer Key']);
             $this->data ['Order Current Dispatch State'] = 'In Process';
             $this->data ['Order Current Payment State'] = 'Waiting Payment';
             $this->data ['Order Current XHTML State'] = 'In Process';
@@ -120,7 +120,12 @@ class Order extends DB_Table {
             foreach ( $this->data ['Order Sale Reps IDs'] as $sale_rep_id ) {
                 $sql = sprintf ( "insert into `Order Sales Rep Bridge`  (%d,%d)", $this->id, $sale_rep_id );
             }
+$this->get_data('id',$this->id);
+$this->update_charges();
+            if($this->data['Order Shipping Method']=='Calculated'){
+                $this->update_shipping();
 
+                }
 
             break;
         case ('direct_data_injection') :
@@ -172,17 +177,19 @@ class Order extends DB_Table {
                 $this->data ['Order XHTML Ship Tos']=_('Collection');
                 $this->data ['Order Ship To Keys']=0;
                 $this->data ['Order Main Country 2 Alpha Code']=$store_country_code;
+                $this->data ['Order Ship To Country Code']='';
+
             }
             elseif(!isset($data['Shipping Address']) or !is_array($data['Shipping Address']) or array_empty($data['Shipping Address']) or $data['Delivery Note Dispatch Method']=='Collected') {
                 $customer = new Customer ( 'find create', $data['Customer Data'] );
                 $data['Delivery Note Dispatch Method']='Collected';
                 $this->data ['Order Ship To Keys']=0;
                 $this->data ['Order Main Country 2 Alpha Code']=$customer -> data['Customer Main Country 2 Alpha Code'];
-
+$this->data ['Order Ship To Country Code']='';
             }
             else {
                 //print "Cust data\n";
-               //print_r($data['Customer Data']);
+                //print_r($data['Customer Data']);
 
                 //-------------------------
 
@@ -216,13 +223,15 @@ class Order extends DB_Table {
                 $this->data ['Order XHTML Ship Tos']=$ship_to->data['Ship To XHTML Address'];
                 $this->data ['Order Ship To Keys']=$ship_to->id;
                 $customer->add_ship_to($ship_to->id,'Yes');
-               
+
                 //print "a3\n";
                 //print_r($customer);
                 if (false and isset($data['Shipping Address']) and is_array($data['Shipping Address']) and !array_empty($data['Shipping Address'])) {
                     $ship_to= new Ship_To('find create',$data['Shipping Address']);
                     $this->data ['Order XHTML Ship Tos']=$ship_to->data['Ship To XHTML Address'];
                     $this->data ['Order Ship To Keys']=$ship_to->id;
+                    $this->data ['Order Ship To Country Code']=$ship_to->data['Ship To Country Code'];
+
                     $customer->add_ship_to($ship_to->id,'Yes');
                 }
             }
@@ -758,7 +767,7 @@ class Order extends DB_Table {
     function send_to_warehouse() {
 
 
-        if ($this->data['Order Current Dispatch State']!='In Process') {
+        if (!($this->data['Order Current Dispatch State']=='In Process' or $this->data['Order Current Dispatch State']=='Submited')) {
             $this->error=true;
             $this->msg='Order is not in process';
             return;
@@ -781,13 +790,15 @@ class Order extends DB_Table {
                          ,prepare_mysql($row['notes'],false)
                         );
 
-            //       print "$sql\n";
+                   print "$sql\n";
             mysql_query($sql);
 
         }
         $this->data['Order Current Dispatch State']='Ready to Pick';
-        $sql=sprintf("update `Order Dimension` set `Order Current Dispatch State`=%s where `Order Key`=%d",prepare_mysql($this->data['Order Current Dispatch State']),$this->id);
-        //print $sql;
+                $this->data['Order Current XHTML State']='Ready to Pick';
+
+        $sql=sprintf("update `Order Dimension` set `Order Current Dispatch State`=%s, `Order Current XHTML State`=%s  where `Order Key`=%d",prepare_mysql($this->data['Order Current Dispatch State']),$this->id);
+        print $sql;
         mysql_query($sql);
 
 
@@ -973,6 +984,22 @@ class Order extends DB_Table {
             exit ( "$sql can not update order trwansiocion facrt after invoice 1223" );
 
 
+if(!$this->skip_update_after_individual_transaction){
+  $this->update_discounts();
+  
+$this->update_item_totals_from_order_transactions();
+  $this->update_shipping();
+
+  $this->update_charges();
+  $this->get_original_totals();
+  $this->update_item_totals_from_order_transactions();
+  $this->update_totals('save');
+
+  $this->update_totals_from_order_transactions();
+}
+
+
+
         return array('to_charge'=>money($data ['gross_amount']-$data ['discount_amount'],$this->data['Order Currency']),'qty'=>$data ['qty']);
 
         //  print "$sql\n";
@@ -1125,13 +1152,14 @@ class Order extends DB_Table {
 
     function create_order_header() {
 
+
         //calculate the order total
         $this->data ['Order Items Gross Amount'] = 0;
         $this->data ['Order Items Discount Amount'] = 0;
         //     $sql="select sum(`Order Transaction Gross Amount`) as gross,sum(`Order Transaction Total Discount Amount`) from `Order Transaction Fact` where "
 
 
-        $sql = sprintf ( "insert into `Order Dimension` (`Order Tax Code`,`Order Tax Rate`,`Order Main Country 2 Alpha Code`,`Order Customer Contact Name`,`Order For`,`Order File As`,`Order Date`,`Order Last Updated Date`,`Order Public ID`,`Order Store Key`,`Order Store Code`,`Order Main Source Type`,`Order Customer Key`,`Order Customer Name`,`Order Current Dispatch State`,`Order Current Payment State`,`Order Current XHTML State`,`Order Customer Message`,`Order Original Data MIME Type`,`Order XHTML Ship Tos`,`Order Items Gross Amount`,`Order Items Discount Amount`,`Order Original Metadata`,`Order XHTML Store`,`Order Type`,`Order Currency`,`Order Currency Exchange`,`Order Original Data Filename`) values (%s,%f,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%.2f,%.2f,%s,%s,%s,%s,%f,%s)"
+        $sql = sprintf ( "insert into `Order Dimension` (`Order Tax Code`,`Order Tax Rate`,`Order Main Country 2 Alpha Code`,`Order Customer Contact Name`,`Order For`,`Order File As`,`Order Date`,`Order Last Updated Date`,`Order Public ID`,`Order Store Key`,`Order Store Code`,`Order Main Source Type`,`Order Customer Key`,`Order Customer Name`,`Order Current Dispatch State`,`Order Current Payment State`,`Order Current XHTML State`,`Order Customer Message`,`Order Original Data MIME Type`,`Order XHTML Ship Tos`,`Order Ship To Keys`,`Order Ship To Country Code`,`Order Items Gross Amount`,`Order Items Discount Amount`,`Order Original Metadata`,`Order XHTML Store`,`Order Type`,`Order Currency`,`Order Currency Exchange`,`Order Original Data Filename`) values (%s,%f,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%.2f,%.2f,%s,%s,%s,%s,%f,%s)"
                          ,prepare_mysql ($this->data ['Order Tax Code'] )
                          ,$this->data ['Order Tax Rate']
 
@@ -1149,7 +1177,11 @@ class Order extends DB_Table {
                          ,prepare_mysql ( $this->data ['Order Main Source Type'] )
                          , prepare_mysql ( $this->data ['Order Customer Key'] ), prepare_mysql ( $this->data ['Order Customer Name'] ,false), prepare_mysql ( $this->data ['Order Current Dispatch State'] ), prepare_mysql ( $this->data ['Order Current Payment State'] ), prepare_mysql ( $this->data ['Order Current XHTML State'] )
                          , prepare_mysql ( $this->data ['Order Customer Message'] )
-                         , prepare_mysql ( $this->data ['Order Original Data MIME Type'] ), prepare_mysql ( $this->data ['Order XHTML Ship Tos'] ),
+                         , prepare_mysql ( $this->data ['Order Original Data MIME Type'] )
+                         , prepare_mysql ( $this->data ['Order XHTML Ship Tos'] ,false)
+                                                  , prepare_mysql ( $this->data ['Order Ship To Keys'],false)
+
+                         , prepare_mysql ( $this->data ['Order Ship To Country Code'],false ),
 
                          $this->data ['Order Items Gross Amount'], $this->data ['Order Items Discount Amount'], prepare_mysql ( $this->data ['Order Original Metadata'] ), prepare_mysql ( $this->data ['Order XHTML Store'] )
                          , prepare_mysql ( $this->data ['Order Type'] )
@@ -1159,7 +1191,7 @@ class Order extends DB_Table {
                        )
 
                ;
-        //  print "Aqui $sql \n";exit;
+         //print "Aqui $sql \n";exit;
         If (mysql_query ( $sql )) {
             $this->id = mysql_insert_id ();
             $this->data ['Order Key'] = $this->id;
@@ -2252,7 +2284,7 @@ class Order extends DB_Table {
 
 
         $this->data ['Order Total Tax Amount'] = $this->data ['Order Items Tax Amount'] + $this->data ['Order Shipping Tax Amount']+  $this->data ['Order Charges Tax Amount'];
-        $this->data ['Order Total Net Amount']=$this->data ['Order Items Net Amount']+  $this->data ['Order Shipping Net Amount']+  $this->data ['Order Charges Net Amount'];
+        $this->data ['Order Total Net Amount']=$this->data ['Order Items Net Amount']+  ($this->data ['Order Shipping Net Amount']==''?0:$this->data ['Order Shipping Net Amount'])+  $this->data ['Order Charges Net Amount'];
 
         $this->data ['Order Total Amount'] = $this->data ['Order Total Tax Amount'] + $this->data ['Order Total Net Amount'];
         $this->data ['Order Total To Pay Amount'] = $this->data ['Order Total Amount'];
@@ -2264,11 +2296,11 @@ class Order extends DB_Table {
 
         $sql = sprintf ( "update `Order Dimension` set
                          `Order Total Net Amount`=%.2f
-                         ,`Order Total Tax Amount`=%.2f ,`Order Shipping Net Amount`=%.2f ,`Order Shipping Tax Amount`=%.2f ,`Order Charges Net Amount`=%.2f ,`Order Charges Tax Amount`=%.2f ,`Order Total Amount`=%.2f
+                         ,`Order Total Tax Amount`=%.2f ,`Order Shipping Net Amount`=%s ,`Order Shipping Tax Amount`=%.2f ,`Order Charges Net Amount`=%.2f ,`Order Charges Tax Amount`=%.2f ,`Order Total Amount`=%.2f
                          , `Order Balance Total Amount`=%.2f  where  `Order Key`=%d "
                          , $this->data ['Order Total Net Amount']
                          , $this->data ['Order Total Tax Amount']
-                         , $this->data ['Order Shipping Net Amount']
+                         , (is_numeric($this->data ['Order Shipping Net Amount'])?$this->data ['Order Shipping Net Amount']:'NULL')
                          , $this->data ['Order Shipping Tax Amount']
 
                          , $this->data ['Order Charges Net Amount']
@@ -2400,6 +2432,47 @@ class Order extends DB_Table {
         $this->load('totals');
     }
 
+
+
+
+
+function update_shipping_amount($value){
+$value=sprintf("%.2f",$value);;
+
+if($value!=$this->data['Order Items Net Amount']){
+
+    $this->data['Order Shipping Net Amount']=$value;
+        $sql=sprintf("update `Order Dimension` set `Order Items Net Amount`=%s  where `Order Key`=%d"
+                     ,$value
+                     ,$this->id
+                    );
+        //print "$sql\n";
+        mysql_query($sql);
+        $this->updated=true;
+        $this->new_value=
+        $this->data['Order Items Net Amount']=$value;
+  $this->update_shipping();
+$this->update_item_totals_from_order_transactions();
+  $this->get_original_totals();
+  $this->update_totals('save');
+
+  $this->update_totals_from_order_transactions();
+
+        }
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
     function set_charges($charges,$tax_rate=0) {
 
 
@@ -2414,18 +2487,18 @@ class Order extends DB_Table {
         $this->load('totals');
     }
 
-    function get_data_from_customer($customer_key,$store_key=false) {
+
+
+
+
+    function set_data_from_customer($customer_key,$store_key=false) {
         $customer=new Customer($customer_key);
         if (!$customer->id) {
             $customer= new Customer('create anonymous');
         } else
             $store_key=$customer->data['Customer Store Key'];
 
-
-        $this->get_data_from_store($store_key);
-        if ($this->error)
-            return;
-
+       
 
         if ($customer->data['Customer Active Ship To Records']==0) {
             $ship_to= $customer->set_current_ship_to('return object');
@@ -2441,6 +2514,7 @@ class Order extends DB_Table {
 //   print_r($customer);
         $this->data ['Order XHTML Ship Tos']=$ship_to->data['Ship To XHTML Address'];
         $this->data ['Order Ship To Keys']=$ship_to->id;
+        $this->data ['Order Ship To Country Code']=$ship_to->data['Ship To Country Code'];
 
         $this->billing_address=new Address($customer->data['Customer Main Address Key']);
         $this->data ['Order Customer Key'] = $customer->id;
@@ -2449,17 +2523,22 @@ class Order extends DB_Table {
         $this->data ['Order Main Country 2 Alpha Code'] = $customer->data ['Customer Main Country 2 Alpha Code'];
 
 
+ $this->set_data_from_store($store_key);
+      
 
 
-        $this->data ['Order Tax Rate'] = $customer->get('Tax Rate');
-        $this->data ['Order Tax Code'] = $customer->get('Tax Code');
+       // $this->data ['Order Tax Rate'] = $customer->get('Tax Rate');
+       // $this->data ['Order Tax Code'] = $customer->get('Tax Code');
 
 
 
     }
 
 
-    function get_data_from_store($store_key) {
+
+
+
+    function set_data_from_store($store_key) {
         $store=new Store($store_key);
         if (!$store->id) {
             $this->error=true;
@@ -2472,8 +2551,60 @@ class Order extends DB_Table {
         $this->data ['Order XHTML Store'] = sprintf ( '<a href="store.php?id=%d">%s</a>', $store->id, $store->data[ 'Store Code' ] );
         $this->data ['Order Currency']=$store->data[ 'Store Currency Code' ];
         $this->public_id_format=$store->data[ 'Store Order Public ID Format' ];
+        
+        $this->set_taxes($store->data['Store Tax Country Code']);        
+        
 
     }
+
+function set_taxes($country){
+  switch($country){
+  case('GBR'):
+    if($this->data['Order Ship To Country Code']=='GBR' or $this->data['Order Ship To Country Code']=='UNK'){
+        $tax_rate=0.175;
+        $tax_code='GBR.S';
+    
+    }else{
+        $sql=sprintf("select `European Union` from kbase.`Country Dimension` where `Country Code`=%s      ",$country);
+        $res=mysql_query($sql);
+        if($row=mysql_fetch_array($res)){
+            if($row['European Union']=="Yes"){
+                $customer=new Customer($this->data['Order Customer Key']);
+                
+                if($customer->is_tax_number_valid()){
+                    $tax_rate=0;
+                    $tax_code='GBR.EuroFree';
+                }else{
+                 $tax_rate=0.175;
+                  $tax_code='GBR.S';
+                
+                }
+            }else{
+                 $tax_rate=0;
+                 $tax_code='GBR.OffEuroFree';
+            
+            }
+        
+        
+        }else{
+         $tax_rate=0.175;
+        $tax_code='GBR.S';
+        }
+    
+    
+    
+    }
+  
+  }
+
+
+  $this->data['Order Tax Rate']=$tax_rate;
+  $this->data['Order Tax Code']=$tax_code;
+  
+  
+
+}
+
 
 
 
@@ -2551,11 +2682,41 @@ class Order extends DB_Table {
 
 
 
+function update_tax(){
+
+
+}
+
+
+
+function update_shipping(){
+
+$shipping=$this->get_shipping();
+
+if(!is_numeric($shipping)){
+
+   $this->data['Order Shipping Net Amount']='NULL';
+        $this->data['Order Shipping Tax Amount']=0;
+}else{
+
+   $this->data['Order Shipping Net Amount']=$shipping;
+        $this->data['Order Shipping Tax Amount']=$shipping*$this->data['Order Tax Rate'];
+}
 
 
 
 
+        $sql=sprintf("update `Order Dimension` set `Order Shipping Net Amount`=%s ,`Order Shipping Tax Amount`=%.2f where `Order Key`=%d"
+                     ,$this->data['Order Shipping Net Amount']
+                     ,$this->data['Order Shipping Tax Amount']
+                     ,$this->id
+                    );
+mysql_query($sql);
+  $this->update_totals('save');
 
+  $this->update_totals_from_order_transactions();
+
+}
 
 
 
@@ -2566,7 +2727,6 @@ class Order extends DB_Table {
                     );
         $res=mysql_query($sql);
         $charges=0;
-        //print $sql;
         while ($row=mysql_fetch_array($res)) {
             $apply_charge=false;
             if ($row['Charge Type']=='Amount') {
@@ -2574,11 +2734,14 @@ class Order extends DB_Table {
                 $operator=$terms_components[0];
                 $currency_code=$terms_components[1];
                 $amount=$terms_components[2];
-
+                
+                if ($this->data[$row['Charge Terms Type']]!=0){
+                    
+                
                 switch ($operator) {
                 case('<'):
 
-                    //print "$amount\n";
+                    //print $this->data[$row['Charge Terms Type']]." $amount\n";
 
                     if ($this->data[$row['Charge Terms Type']]<$amount)
                         $apply_charge=true;
@@ -2598,7 +2761,7 @@ class Order extends DB_Table {
 
 
                 }
-
+}
 
             }
 
@@ -2606,15 +2769,104 @@ class Order extends DB_Table {
                 $charges+=$row['Charge Metadata'];
         }
 
-        // print $this->data["Order Items Gross Amount"]."--------------\n";
 
         $this->data['Order Charges Net Amount']=$charges;
         $this->data['Order Charges Tax Amount']=$charges*$this->data['Order Tax Rate'];
 
 
+  $sql=sprintf("update `Order Dimension` set `Order Charges Net Amount`=%s ,`Order Charges Tax Amount`=%.2f where `Order Key`=%d"
+                     ,$this->data['Order Charges Net Amount']
+                     ,$this->data['Order Charges Tax Amount']
+                     ,$this->id
+                    );
+mysql_query($sql);
+ 
+
 
     }
 
+function get_shipping(){
+
+
+
+
+if($this->data['Order For Collection']=='Yes')
+    return 0;
+    
+if($this->data['Order Shipping Method']=='On Demand'){
+if($this->data['Order Shipping Net Amount']=='')
+   return 'no_data';
+   else
+   return $this->data['Order Shipping Net Amount'];
+   }
+
+
+        $sql=sprintf("select `Shipping Allowance Metadata`,`Shipping Price Method` from `Shipping Dimension` where  `Shipping Destination Type`='Country' and `Shipping Destination Metadata`=%s    "
+        ,prepare_mysql($this->data['Order Ship To Country Code'])
+        ,$this->id);
+       // print $sql;
+       $res=mysql_query($sql);
+        if($row=mysql_fetch_array($res)) {
+           $shipping=$this->get_shipping_from_method($row['Shipping Price Method'],$row['Shipping Allowance Metadata']);
+          
+           if(is_numeric($shipping)){
+                     
+
+            return $shipping;
+            
+            }
+        }
+
+
+return 'no_data';
+
+
+}
+
+
+
+
+
+function get_shipping_from_method($type,$metadata){
+switch($type){
+case('Step Order Items Gross Amount'):
+    return $this->get_shipping_Step_Order_Items_Gross_Amount($metadata);
+    break;
+}
+
+}
+
+
+function get_shipping_Step_Order_Items_Gross_Amount($metadata){
+  
+  
+  $amount=$this->data['Order Items Gross Amount'];
+  if($amount==0){
+   
+    return 0;
+    
+    }
+  $data=preg_split('/\;/',$metadata);
+   
+  foreach ($data as $item) {
+  
+       list($min,$max,$value)=preg_split('/\,/',$item);
+        if($min==''){
+            if($amount<$max)
+                return $value;
+        }elseif($max==''){
+            if($amount>=$min)
+                return $value;
+        }elseif($amount<$max and $amount>=$min){
+         return $value;
+        
+        }
+        
+        
+    }
+return 'no_data';
+
+}
 
 
     function update_discounts() {
@@ -2759,6 +3011,69 @@ class Order extends DB_Table {
 
 
         }
+
+    }
+
+
+function update_shipping_method($value){
+
+ $sql=sprintf("update `Order Dimension` set `Order Shipping Method`=%s where `Order Key`=%d"
+                        ,prepare_mysql($value)
+                        ,$this->id
+                        );
+                        mysql_query($sql);
+mysql_query($sql);
+$this->data['Order Shipping Method']=$value;
+
+}
+
+
+    function update_shipping_type($value) {
+      
+      if ($value!='Yes')
+            $value='No';
+
+        $old_value=$this->data['Order For Collection'];
+        if ($old_value!=$value) {
+
+            if($value=='Yes'){
+            $store=new Store($this->data['Order Store Key']);
+                $store_country_code=$store->data['Store Home Country Code 2 Alpha'];
+
+             $sql=sprintf("update `Order Dimension` set `Order For Collection`='Yes' ,`Order Ship To Country Code`='', `Order Main Country 2 Alpha Code`=%s, `Order XHTML Ship Tos`='',`Order Ship To Keys`='' where `Order Key`=%d"
+                        ,prepare_mysql($store_country_code)
+                        ,$this->id
+                        );
+                        mysql_query($sql);
+
+            }else{
+                                   $customer=new Customer($this->data['Order Customer Key']);
+
+                                $ship_to= $customer->set_current_ship_to('return object');
+
+
+
+
+
+            $sql=sprintf("update `Order Dimension` set `Order For Collection`='No' ,`Order Ship To Country Code`=%s,`Order XHTML Ship Tos`=%s,`Order Ship To Keys`=%s  where `Order Key`=%d"
+                                          ,prepare_mysql($ship_to->data['Ship To Country Code'])
+
+                  ,prepare_mysql($ship_to->data['Ship To XHTML Address'])
+                                                ,prepare_mysql($ship_to->id)
+
+                        ,$this->id
+                        );
+                        mysql_query($sql);
+            }
+            $this->get_data('id',$this->id);
+            $this->new_value=$value;
+            $this->updated=true;
+
+        }else{
+            $this->msg=_('Nothing to change');
+        
+        }
+
 
     }
 

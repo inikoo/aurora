@@ -76,6 +76,9 @@ $smarty->assign('search_label',_('Customers'));
 $smarty->assign('search_scope','customers');
 
 
+
+
+
 $tipo_filter=$_SESSION['state']['customers']['table']['f_field'];
 $smarty->assign('filter',$tipo_filter);
 $smarty->assign('filter_value',$_SESSION['state']['customers']['table']['f_value']);

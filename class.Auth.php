@@ -21,7 +21,7 @@ class Auth {
   function Auth($ikey,$skey,$options=''){
     if(preg_match('/use( |\_)cookies?/i',$options))
       $this->use_cookies=true;
-    $this->user_type='Administrator,Staff';
+    $this->user_type="'Administrator','Staff'";
     $this->ikey=$ikey;
     $this->skey=$skey;
 
@@ -106,11 +106,10 @@ class Auth {
     
     $sql=sprintf("select `User Key`,`User Password` from `User Dimension` where `User Handle`=%s and `User Active`='Yes' and `User Type` in (%s)  "
 		 ,prepare_mysql($this->handle)
-		 ,prepare_mysql($this->user_type)
+		 ,$this->user_type
 	
 		 );
     
-
     $res=mysql_query($sql);
     if($row=mysql_fetch_array($res)){
        	$st=AESDecryptCtr(AESDecryptCtr($this->sk,$row['User Password'],256),$this->skey,256);

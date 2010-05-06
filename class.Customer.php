@@ -2798,7 +2798,14 @@ $this->updated=$address->updated;
         return $companies;
     }
 
+function is_tax_number_valid(){
+if($this->data['Customer Tax Number']=='')
+return false;
+else{
+return true;
+}
 
+}
 
 }
 ?>

@@ -654,9 +654,47 @@ $sql=sprintf("select sum(if(`Product Record Type`='New',1,0)) as new,sum(if(`Pro
       
   }
  
+ function update_customers_data(){
+ 
+
+ 
+     $sql=sprintf("select count(*) as num ,sum(IF(`Customer Orders`>0,1,0)) as customers,sum(IF(`New Served Customer`='Yes',1,0)) as new_served,sum(IF(`New Customer`='Yes',1,0)) as new_contact,sum(IF(`Active Customer`='Yes',1,0)) as active, sum(IF(`Customer Type by Activity`='Inactive',1,0)) as lost  from   `Customer Dimension` where `Customer Store Key`=%d",$this->id);
+     $result=mysql_query($sql);
+     if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
+      $this->data['Store Total Customer Contacts']=$row['num'];
+      $this->data['Store New Customer Contacts']=$row['new_contact'];
+      $this->data['Store Total Customers']=$row['customers'];
+      $this->data['Store Active Customers']=$row['active'];
+      $this->data['Store New Customers']=$row['new_served'];
+      $this->data['Store Lost Customers']=$row['num'];
+     }else{
+         $this->data['Store Total Customer Contacts']=0;
+      $this->data['Store New Customer Contacts']=0;
+      $this->data['Store Total Customers']=0;
+      $this->data['Store Active Customers']=0;
+      $this->data['Store New Customers']=0;
+      $this->data['Store Lost Customers']=0;
+     
+     }
+ 
+  $sql=sprintf("update `Store Dimension` set `Store Total Customer Contacts`=%d , `Store New Customer Contacts`=%d ,`Store Total Customers`=%d,`Store Active Customers`=%d,`Store New Customers`=%d , `Store Lost Customers`=%d where `Store Key`=%d  ",
+		  $this->data['Store Total Customer Contacts'],
+      $this->data['Store New Customer Contacts'],
+      $this->data['Store Total Customers'],
+      $this->data['Store Active Customers'],
+      $this->data['Store New Customers'],
+      $this->data['Store Lost Customers']
+	   
+		 ,$this->id
+		 );
+    mysql_query($sql);
+ 
+ 
+ }
+ 
+ 
   function update_families(){
     $sql=sprintf("select count(*) as num from `Product Family Dimension`  where  `Product Family Store Key`=%d",$this->id);
-    //print $sql;
     $result=mysql_query($sql);
     if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
       $this->data['Store Families']=$row['num'];

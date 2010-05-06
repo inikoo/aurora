@@ -559,7 +559,7 @@ if(isset( $_REQUEST['where']))
    if($dispatch!=''){
      $dipatch_types=preg_split('/,/',$dispatch);
      $valid_dispatch_types=array(
-				 'in_process'=>",'In Process','Ready to Pick','Picking','Ready to Pack','Ready to Ship','Packing'"
+				 'in_process'=>",'Submited','In Process','Ready to Pick','Picking','Ready to Pack','Ready to Ship','Packing'"
 				 ,'cancelled'=>",'Cancelled'"
 				 ,'dispached'=>",'Dispached'"
 				 ,'unknown'=>"'Unknown'"
