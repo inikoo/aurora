@@ -7,8 +7,59 @@ print "var order_key=$order_key;";
 ?>
 var Dom   = YAHOO.util.Dom;
 var Event = YAHOO.util.Event;
-var dialog_cancel;
+var dialog_cancel,dialog_edit_shipping;
 YAHOO.namespace ("invoice"); 
+
+
+function change_shipping_type(){
+
+
+new_value=this.getAttribute('value');
+var ar_file='ar_edit_orders.php';
+	request='tipo=edit_new_order_shipping_type&id='+order_key+'&key=collection&newvalue='+new_value;
+	//alert(request);return;
+	YAHOO.util.Connect.asyncRequest(
+				    'POST',
+				    ar_file, {
+					success:function(o) {
+					    //alert(o.responseText);
+					    var r = YAHOO.lang.JSON.parse(o.responseText);
+					    if (r.state == 200) {
+						if(r.result=='updated'){
+						    if(r.new_value=='Yes'){
+						    Dom.setStyle('tr_order_shipping','display','none');
+						    Dom.setStyle('shipping_address','display','none');
+						    Dom.setStyle('for_collection','display','');
+
+						    
+						    }else{
+						     Dom.setStyle('tr_order_shipping','display','');
+						    Dom.setStyle('shipping_address','display','');
+						    Dom.setStyle('for_collection','display','none');
+						    
+						    }
+						    
+						
+						}
+						    
+						
+					    } else {
+						alert(r.msg);
+						//	callback();
+					    }
+					},
+					    failure:function(o) {
+					    alert(o.statusText);
+					    // callback();
+					},
+					    scope:this
+					    },
+				    request
+				    
+				    );  
+	
+
+}
 
 
 var myonCellClick = function(oArgs) {
@@ -42,12 +93,12 @@ var myonCellClick = function(oArgs) {
 	    var new_qty=parseFloat(data['quantity'])-1;
 
  var ar_file='ar_edit_orders.php';
-	request='tipo=edit_new_order&key=quantity&newvalue='+new_qty+'&oldvalue='+data['quantity']+'&pid='+ data['pid'];
+	request='tipo=edit_new_order&id='+order_key+'&key=quantity&newvalue='+new_qty+'&oldvalue='+data['quantity']+'&pid='+ data['pid'];
 	YAHOO.util.Connect.asyncRequest(
 				    'POST',
 				    ar_file, {
 					success:function(o) {
-					    //  alert(o.responseText);
+					    // alert(o.responseText);
 					    var r = YAHOO.lang.JSON.parse(o.responseText);
 					    if (r.state == 200) {
 						for(x in r.data){
@@ -57,10 +108,22 @@ var myonCellClick = function(oArgs) {
 
 						if(r.discounts){
 						    Dom.get('tr_order_items_gross').style.display='';
+						    Dom.get('tr_order_items_discounts').style.display='';
+
 						}else{
 						    Dom.get('tr_order_items_gross').style.display='none';
+						    Dom.get('tr_order_items_discounts').style.display='none';
 
 						}
+						
+							if(r.charges){
+						    Dom.get('tr_order_items_charges').style.display='';
+
+						}else{
+						    Dom.get('tr_order_items_charges').style.display='none';
+
+						}
+						
 
 						datatable.updateCell(record,'quantity',r.quantity);
 						datatable.updateCell(record,'to_charge',r.to_charge);
@@ -174,14 +237,14 @@ function close_dialog(tipo){
     var records=datatable.getRecordSet();
     var ar_file='ar_edit_orders.php';
     
-    var request='tipo=edit_'+column.object+'&key=' + column.key + '&newvalue=' + encodeURIComponent(newValue) + '&oldvalue=' + encodeURIComponent(oldValue)+ myBuildUrl(datatable,record);
+    var request='tipo=edit_'+column.object+'&id='+order_key+'&key=' + column.key + '&newvalue=' + encodeURIComponent(newValue) + '&oldvalue=' + encodeURIComponent(oldValue)+ myBuildUrl(datatable,record);
     //alert('R:'+request);
 
     YAHOO.util.Connect.asyncRequest(
 				    'POST',
 				    ar_file, {
 					success:function(o) {
-					    // alert(o.responseText);
+					    //alert(o.responseText);
 					    var r = YAHOO.lang.JSON.parse(o.responseText);
 					    if (r.state == 200) {
 						for(x in r.data){
@@ -195,6 +258,15 @@ if(r.discounts){
 						    Dom.get('tr_order_items_gross').style.display='none';
 
 						}
+
+		if(r.charges){
+						    Dom.get('tr_order_items_charges').style.display='';
+
+						}else{
+						    Dom.get('tr_order_items_charges').style.display='none';
+
+						}
+						
 
 						datatable.updateCell(record,'quantity',r.quantity);
 						datatable.updateCell(record,'to_charge',r.to_charge);
@@ -348,19 +420,19 @@ function change_show_all(){
 }
 
 function save(tipo){
-    alert(tipo)
+    //alert(tipo)
     switch(tipo){
     case('cancel'):
 	var value=encodeURIComponent(Dom.get(tipo+"_input").value);
 	var ar_file='ar_edit_orders.php'; 
 	var request='tipo=cancel&note='+value;
-	alert('R:'+request);
+	//alert('R:'+request);
 	
 	YAHOO.util.Connect.asyncRequest(
 					'POST',
 					ar_file, {
 					    success:function(o) {
-						alert(o.responseText);
+						//alert(o.responseText);
 						var r = YAHOO.lang.JSON.parse(o.responseText);
 						if (r.state == 200) {
 						window.location.reload();
@@ -391,7 +463,8 @@ function create_delivery_note(){
 					'POST',
 					ar_file, {
 					    success:function(o) {
-						alert(o.responseText);
+					    					alert(o.responseText);
+
 						return;
 						var r = YAHOO.lang.JSON.parse(o.responseText);
 						if (r.state == 200) {
@@ -417,6 +490,47 @@ function open_cancel_dialog(){
     Dom.get('cancel_input').focus();
 }
 
+
+function save_set_shipping(){
+value=Dom.get("shipping_amount").value;
+var ar_file='ar_edit_orders.php'; 
+    	var request='tipo=set_order_shipping&value='+value+'&order_key='+order_key;
+
+//alert(request);
+	YAHOO.util.Connect.asyncRequest(
+					'POST',
+					ar_file, {
+					    success:function(o) {
+						//alert(o.responseText);
+						var r = YAHOO.lang.JSON.parse(o.responseText);
+						if (r.state == 200) {
+					
+					for(x in r.data){
+
+						    Dom.get(x).innerHTML=r.data[x];
+						}
+					Dom.get('given_shipping').innerHTML=r.shipping;
+					
+						}
+						reset_set_shipping()
+					    },
+					failure:function(o) {
+					    alert(o.statusText);
+					    
+					},
+					scope:this
+				    },
+				    request
+				    
+				    );  
+
+}
+
+function reset_set_shipping(){
+Dom.get("shipping_amount").value='';
+dialog_edit_shipping.hide();
+}
+
 function init(){
     var oACDS = new YAHOO.util.FunctionDataSource(mygetTerms);
     
@@ -425,6 +539,8 @@ function init(){
     oAutoComp.minQueryLength = 0; 
 
     YAHOO.util.Event.addListener('show_all', "click",change_show_all);
+        YAHOO.util.Event.addListener(["set_for_collection","set_for_shipping"], "click",change_shipping_type);
+
     // YAHOO.util.Event.addListener('done', "click",create_delivery_note);
 
 var myDialog = new YAHOO.widget.Dialog("myDialog"); 
@@ -438,6 +554,13 @@ var myDialog = new YAHOO.widget.Dialog("myDialog");
 dialog_cancel.render();
   YAHOO.util.Event.addListener("cancel", "click",open_cancel_dialog );
    YAHOO.util.Event.addListener("done", "click",create_delivery_note );
+
+dialog_edit_shipping = new YAHOO.widget.Dialog("dialog_edit_shipping", {context:["tr_order_shipping_on_demand","tr","tl"]  ,visible : false,close:false,underlay: "none",draggable:false});
+dialog_edit_shipping.render();
+Event.addListener("set_shipping", "click", dialog_edit_shipping.show,dialog_edit_shipping , true);
+
+Event.addListener("save_set_shipping", "click", save_set_shipping);
+Event.addListener("reset_set_shipping", "click", reset_set_shipping);
 
 
 

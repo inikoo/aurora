@@ -78,7 +78,7 @@ class CompanyDepartment extends DB_Table{
     
     
     //look for areas with the same code in the same Company
-    $sql=sprintf("select `Company Department Key` from `Company Department Dimension` where `Company Key`=%d and `Company Department Code`=%s"
+    $sql=sprintf("select `Company Department Key` from `Company Department Dimension` left join `Company Area Department Bridge` on (`Department Key`=`Company Department Key`)  left join `Company Area Dimension` on (`Area Key`=`Company Area Key`)  where `Company Key`=%d and `Company Department Code`=%s"
 		,$data['Company Key']
 		 ,prepare_mysql($data['Company Department Code']));
     
@@ -123,14 +123,7 @@ class CompanyDepartment extends DB_Table{
 	$this->error=true;
 	return;
       }
-      $Company=new Company('id',$this->data['Company Key']);
-      if(!$Company->id){
-	$this->msg=('Wrong Company key');
-	$this->new=false;
-	$this->error=true;
-	return;
-
-      }
+    
       if($this->data['Company Department Name']==''){
 	$this->data['Company Department Name']=$this->data['Company Department Code'];
       }
@@ -154,20 +147,7 @@ class CompanyDepartment extends DB_Table{
     if(mysql_query($sql)){
       $this->id= mysql_insert_id();
       $this->get_data('id',$this->id);
-      $note=_('Company Department Created');
-      $details=_('Company Department')." ".$this->data['Company Department Code']." "._('created in')." ".$Company->data['Company Name'];
-
-
- $history_data=array(
-				'History Abstract'=>$note
-				,''History Details=>$details
-				,'Action'=>'associated'
-				,'Preposition'=>'to'
-				,'Indirect Object'=>'Company'
-				,'Indirect Object Key'=>$Company->id
-
-				);
-            $this->add_history($history_data);
+     
 	    $this->new=true;
 
 
@@ -188,7 +168,6 @@ class CompanyDepartment extends DB_Table{
       $sql=sprintf("select  *  from `Company Department Dimension` where `Company Department Code`=%s ",prepare_mysql($tag));
     else
       return;
-
     $result=mysql_query($sql);
     if($this->data=mysql_fetch_array($result, MYSQL_ASSOC)){
       $this->id=$this->data['Company Department Key'];
@@ -301,6 +280,61 @@ $this->deleted=true;
         $this->get_data('id',$this->id);
     }
  
+  
+  
+  
+  
+     function add_position($data) {
+        $this->new_area=false;
+        //$data['Company Key']=$this->data['Company Key'];
+        //$data['Company Area Key']=$this->id;
+        $position= new CompanyPosition('find',$data,'create');
+        if($position->id){
+        $this->new_position_msg=$position->msg;
+        
+        if ($position->new){
+            $this->new_position=true;
+         
+        }else {
+            if ($position->found)
+                $this->new_position_msg=_('position Code already in the Company');
+        }
+        $this->associate_position($position->id);
+        }
+        
+    }
+
+function get_position_keys(){
+    $position_keys=array();
+    $sql=sprintf("select `Position Key` from `Company Department Position Bridge` where `Department Key`=%d",$this->id);
+    //print $sql;
+    $res=mysql_query($sql);
+    while($row=mysql_fetch_array($res)){
+        $position_keys[$row['Position Key']]=$row['Position Key'];
+    }
+    return $position_keys;
+}
+
+function associate_position($position_key){
+    if(!array_key_exists($position_key,$this->get_position_keys())){
+        $sql=sprintf("insert into `Company Department Position Bridge` values (%d,%d) ",$this->id,$position_key);
+        mysql_query($sql);
+        
+       
+        
+        
+    }
+
+}
+  
+  
+  
+  
+  
+  
+  
+  
+  
   
      
 }

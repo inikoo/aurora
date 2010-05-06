@@ -37,8 +37,12 @@ case('edit_new_order'):
   break;
  case('transactions_to_process'):
     transactions_to_process();
-  
-  
+  break;
+  case('edit_new_order_shipping_type'):
+  edit_new_order_shipping_type();
+   break;
+   case('set_order_shipping'):
+  set_order_shipping();
    break;
 default:
   $response=array('state'=>404,'resp'=>_('Operation not found'));
@@ -85,7 +89,7 @@ function send_to_warehouse($order_key){
     $response=array('state'=>200,'order_key'=>$order->id);
     echo json_encode($response);
   }else{
-    $response=array('state'=>400,'msg'=>$this->msg);
+    $response=array('state'=>400,'msg'=>$order->msg);
     echo json_encode($response);
 
   }
@@ -93,9 +97,84 @@ function send_to_warehouse($order_key){
 }
 
 
+function edit_new_order_shipping_type(){
+
+  $order_key=$_REQUEST['id'];
+  
+  $value=$_REQUEST['newvalue'];
+
+  $order=new Order($order_key);
+  if($order->id){
+    $order->update_shipping_type($value);
+    if($order->updated){
+              $response=array('state'=>200,'result'=>'updated','new_value'=>$order->new_value);
+
+    }else{
+          $response=array('state'=>200,'result'=>'no_change');
+
+    }
+
+  }else{
+      $response=array('state'=>400,'msg'=>$order->msg);
+
+  }
+      echo json_encode($response);
+
+  
+  
+}
+
+function set_order_shipping(){
+
+ $order_key=$_REQUEST['order_key'];
+  
+  $value=$_REQUEST['value'];
+
+  $order=new Order($order_key);
+  if($order->id){
+    $order->update_shipping_amount($value);
+    if($order->updated){
+    
+    
+    $updated_data=array(
+		      'order_items_gross'=>$order->get('Items Gross Amount')
+		      ,'order_items_discount'=>$order->get('Items Discount Amount')
+		      ,'order_items_net'=>$order->get('Items Net Amount')
+		      ,'order_net'=>$order->get('Total Net Amount')
+		      ,'order_tax'=>$order->get('Total Tax Amount')
+		      ,'order_charges'=>$order->get('Charges Net Amount')
+		      ,'order_credits'=>$order->get('Net Credited Amount')
+		      ,'order_shipping'=>$order->get('Shipping Net Amount')
+		      ,'order_total'=>$order->get('Total Amount')
+		      
+		      );
+  
+
+    
+              $response=array('state'=>200,'result'=>'updated','new_value'=>$order->new_value,'data'=>$updated_data,'shipping'=>money($order->new_value));
+              
+              
+              
+              
+              
+
+    }else{
+          $response=array('state'=>200,'result'=>'no_change');
+
+    }
+
+  }else{
+      $response=array('state'=>400,'msg'=>$order->msg);
+
+  }
+      echo json_encode($response);
+
+}
+
 function edit_new_order(){
   
-  $order_key=$_SESSION['state']['order']['id'];
+  $order_key=$_REQUEST['id'];
+  
   $product_pid=$_REQUEST['pid'];
   $quantity=$_REQUEST['newvalue'];
   
@@ -125,9 +204,10 @@ function edit_new_order(){
 	      );
   
   $disconted_products=$order->get_discounted_products();
-
+$order->skip_update_after_individual_transaction=false;
   $transaction_data=$order->add_order_transaction($data);
-  $order->update_discounts();
+
+
 
   $new_disconted_products=$order->get_discounted_products();
   foreach($new_disconted_products as $key=>$value){
@@ -161,12 +241,7 @@ function edit_new_order(){
       };
   }
 
-  $order->update_item_totals_from_order_transactions();
-  $order->update_charges();
-  $order->get_original_totals();
-  $order->update_totals('save');
-
-  $order->update_totals_from_order_transactions();
+  
   
 
   
@@ -186,7 +261,14 @@ function edit_new_order(){
   
 
 
-  $response= array('state'=>200,'quantity'=>$transaction_data['qty'],'key'=>$_REQUEST['key'],'data'=>$updated_data,'to_charge'=>$transaction_data['to_charge'],'discount_data'=>$adata,'discounts'=>($order->data['Order Items Discount Amount']!=0?true:false));
+  $response= array(
+    'state'=>200
+    ,'quantity'=>$transaction_data['qty']
+    ,'key'=>$_REQUEST['key'],'data'=>$updated_data
+    ,'to_charge'=>$transaction_data['to_charge'],'discount_data'=>$adata
+    ,'discounts'=>($order->data['Order Items Discount Amount']!=0?true:false)
+    ,'charges'=>($order->data['Order Charges Net Amount']!=0?true:false)
+  );
   }else
     $response= array('state'=>200,'newvalue'=>$_REQUEST['oldvalue'],'key'=>$_REQUEST['key']);
  echo json_encode($response);  
@@ -308,11 +390,11 @@ if(!$show_all){
      
      $table='  `Order Transaction Fact` OTF  left join `Product History Dimension` PHD on (PHD.`Product Key`=OTF.`Product Key`) left join `Product Dimension` P on (PHD.`Product ID`=P.`Product ID`)  ';
      $where=sprintf(' where `Order Quantity`>0 and `Order Key`=%d',$order_id);
-     $sql_qty=', `Order Quantity`,`Order Transaction Gross Amount`,`Order Transaction Total Discount Amount`,(select `Deal Info` from `Order Transaction Deal Bridge` OTDB where OTDB.`Order Key`=OTF.`Order Key` and OTDB.`Order Line`=OTF.`Order Line`) as `Deal Info`';
+     $sql_qty=', `Order Quantity`,`Order Transaction Gross Amount`,`Order Transaction Total Discount Amount`,(select GROUP_CONCAT(`Deal Info`) from `Order Transaction Deal Bridge` OTDB where OTDB.`Order Key`=OTF.`Order Key` and OTDB.`Order Line`=OTF.`Order Line`) as `Deal Info`';
    }else{
     $table=' `Product Dimension` P ';
      $where=sprintf('where `Product Store Key`=%d   ',$store_key);
-     $sql_qty=sprintf(',IFNULL((select sum(`Order Quantity`) from `Order Transaction Fact` where `Product Key`=`Product Current Key` and `Order Key`=%d),0) as `Order Quantity`, IFNULL((select sum(`Order Transaction Total Discount Amount`) from `Order Transaction Fact` where `Product Key`=`Product Current Key` and `Order Key`=%d),0) as `Order Transaction Total Discount Amount`, IFNULL((select sum(`Order Transaction Gross Amount`) from `Order Transaction Fact` where `Product Key`=`Product Current Key` and `Order Key`=%d),0) as `Order Transaction Gross Amount` ,(  select `Deal Info` from `Order Transaction Fact` OTF left join `Order Transaction Deal Bridge` OTDB  on (OTDB.`Order Line`=OTF.`Order Line`) where OTF.`Product Key`=`Product Current Key` and OTDB.`Order Key`=%d )  as `Deal Info` ',$order_id,$order_id,$order_id,$order_id); 
+     $sql_qty=sprintf(',IFNULL((select sum(`Order Quantity`) from `Order Transaction Fact` where `Product Key`=`Product Current Key` and `Order Key`=%d),0) as `Order Quantity`, IFNULL((select sum(`Order Transaction Total Discount Amount`) from `Order Transaction Fact` where `Product Key`=`Product Current Key` and `Order Key`=%d),0) as `Order Transaction Total Discount Amount`, IFNULL((select sum(`Order Transaction Gross Amount`) from `Order Transaction Fact` where `Product Key`=`Product Current Key` and `Order Key`=%d),0) as `Order Transaction Gross Amount` ,(  select GROUP_CONCAT(`Deal Info`) from  `Order Transaction Deal Bridge` OTDB  where OTDB.`Product Key`=`Product Current Key` and OTDB.`Order Key`=%d )  as `Deal Info` ',$order_id,$order_id,$order_id,$order_id); 
 
      
    }
@@ -418,10 +500,8 @@ if(!$show_all){
 
 
     
-
  $sql="select  `Product Availability`,`Product Record Type`,P.`Product ID`,`Product Code`,`Product XHTML Short Description`,`Product Price`,`Product Units Per Case`,`Product Record Type`,`Product Web State`,`Product Family Name`,`Product Main Department Name`,`Product Tariff Code`,`Product XHTML Parts`,`Product GMROI`,`Product XHTML Parts`,`Product XHTML Supplied By`,`Product Stock Value`  $sql_qty from $table   $where $wheref order by $order $order_direction limit $start_from,$number_results    ";
  
-
     $res = mysql_query($sql);
 
     $adata=array();
@@ -577,19 +657,19 @@ function ready_to_pick_orders(){
    
 
   
-   $where.=' and `Delivery Note State`="Ready to be Picked" ';
+   $where.=' and `Order Current Dispatch State`="Ready to Pick" ';
    
 
    $wheref='';
 
   if($f_field=='max' and is_numeric($f_value) )
-    $wheref.=" and  (TO_DAYS(NOW())-TO_DAYS(`Delivery Note Last Updated Date`))<=".$f_value."    ";
+    $wheref.=" and  (TO_DAYS(NOW())-TO_DAYS(`Order Last Updated Date`))<=".$f_value."    ";
   else if($f_field=='min' and is_numeric($f_value) )
-    $wheref.=" and  (TO_DAYS(NOW())-TO_DAYS(`Delivery Note Last Updated Date`))>=".$f_value."    ";
+    $wheref.=" and  (TO_DAYS(NOW())-TO_DAYS(`Order Last Updated Date`))>=".$f_value."    ";
    elseif($f_field=='customer_name' and $f_value!='')
-    $wheref.=" and  `Delivery Note Customer Name` like '".addslashes($f_value)."%'";
+    $wheref.=" and  `Order Customer Name` like '".addslashes($f_value)."%'";
    elseif($f_field=='public_id' and $f_value!='')
-    $wheref.=" and  `Delivery Note Public ID` like '".addslashes($f_value)."%'";
+    $wheref.=" and  `Order Public ID` like '".addslashes($f_value)."%'";
 
 
    
@@ -598,8 +678,8 @@ function ready_to_pick_orders(){
    
 
    
-  $sql="select count(*) as total from `Delivery Note Dimension`   $where $wheref ";
-  // print $sql ;
+  $sql="select count(*) as total from `Order Dimension`   $where $wheref ";
+  //print $sql ;
    $result=mysql_query($sql);
   if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
     $total=$row['total'];
@@ -609,7 +689,7 @@ function ready_to_pick_orders(){
      $total_records=$total;
   }else{
     
-      $sql="select count(*) as total from `Delivery Note Dimension`  $where";
+      $sql="select count(*) as total from `Order Dimension`  $where";
       $result=mysql_query($sql);
       if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
 	$total_records=$row['total'];
@@ -662,17 +742,17 @@ function ready_to_pick_orders(){
    $_order=$order;
    $_dir=$order_direction;
    
-   $order='`Delivery Note Date Created`';
+   $order='`Order Last Updated Date`';
    if($order=='id')
-     $order='`Delivery Note File As`';
+     $order='`Order Public ID`';
    else if($order=='customer')
-     $order='`Delivery Note Customer Name`';
+     $order='`Order Customer Name`';
    
    
    
 
-  $sql="select `Delivery Note Key`,`Delivery Note ID`,`Delivery Note Customer Key`,`Delivery Note Customer Name`,`Delivery Note Date Created`,`Delivery Note Estimated Weight` from `Delivery Note Dimension`  $where $wheref  order by $order $order_direction limit $start_from,$number_results ";
-  // print $sql;
+  $sql="select `Order Key`,`Order Public ID`,`Order Customer Key`,`Order Customer Name`,`Order Last Updated Date`,`Order Estimated Weight` from `Order Dimension`  $where $wheref  order by $order $order_direction limit $start_from,$number_results ";
+ // print $sql;
   global $myconf;
 
    $data=array();
@@ -680,42 +760,41 @@ function ready_to_pick_orders(){
    $res = mysql_query($sql);
    while($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
     
-     if($row['Delivery Note Date Created']=='')
+     if($row['Order Last Updated Date']=='')
        $lap='';
      else
-       $lap=RelativeTime(date('U',strtotime($row['Delivery Note Date Created'])));
+       $lap=RelativeTime(date('U',strtotime($row['Order Last Updated Date'])));
     
-     $w=weight($row['Delivery Note Estimated Weight']);
+     $w=weight($row['Order Estimated Weight']);
 
      $data[]=array(
-		   'id'=>$row['Delivery Note ID']
-		   ,'public_id'=>sprintf("%d05",$row['Delivery Note ID'])
-		   ,'customer'=>$row['Delivery Note Customer Name']
+		   'id'=>$row['Order Key']
+		   ,'public_id'=>sprintf("%d05",$row['Order Public ID'])
+		   ,'customer'=>$row['Order Customer Name']
 		   ,'wating_lap'=>$lap
 		   ,'e_weight'=>$w
-		   ,'date'=>$row['Delivery Note Date Created']
+		   ,'date'=>$row['Order Last Updated Date']
 		   ,'pick_it'=>_('Pick it')
 		   );
    }
 mysql_free_result($res);
-   $response=array('resultset'=>
-		   array('state'=>200,
-			 'data'=>$data,
-			 'rtext'=>$rtext,
-			 'rtext_rpp'=>$rtext_rpp,
-			 'sort_key'=>$_order,
-			 'sort_dir'=>$_dir,
-			 'tableid'=>$tableid,
-			 'filter_msg'=>$filter_msg,
-			 'total_records'=>$total,
-			 'records_offset'=>$start_from,
-			 'records_returned'=>$start_from+$total,
-			 'records_perpage'=>$number_results,
 
-			 'records_order'=>$order,
-			 'records_order_dir'=>$order_dir,
-			 'filtered'=>$filtered
-			 )
-		   );
-   echo json_encode($response);
+ $response=array('resultset'=>
+                                array('state'=>200,
+                                      'data'=>$data,
+                                      'sort_key'=>$_order,
+                                      'sort_dir'=>$_dir,
+                                      'tableid'=>$tableid,
+                                      'filter_msg'=>$filter_msg,
+                                      'rtext'=>$rtext,
+                                      'rtext_rpp'=>$rtext_rpp,
+                                      'total_records'=>$total_records-$filtered,
+                                      'records_offset'=>$start_from,
+                                      'records_perpage'=>$number_results,
+                                     )
+                   );
+    echo json_encode($response);
+
+
+ 
 }

@@ -13,6 +13,7 @@
 */
 include_once('class.DB_Table.php');
 include_once('class.Company.php');
+include_once('class.CompanyDepartment.php');
 
 
 class CompanyArea extends DB_Table {
@@ -247,18 +248,65 @@ class CompanyArea extends DB_Table {
 
     function add_department($data) {
         $this->new_area=false;
-        $data['Department Company Key']=$this->data['Company Key'];
-        $data['Department Company Area Key']=$this->id;
-
-        $department= new department('find',$data,'create');
+        $data['Company Key']=$this->data['Company Key'];
+        //$data['Company Area Key']=$this->id;
+        $department= new CompanyDepartment('find',$data,'create');
+        if($department->id){
         $this->new_department_msg=$department->msg;
-        if ($department->new)
+        
+        if ($department->new){
             $this->new_department=true;
-        else {
+         
+        }else {
             if ($department->found)
                 $this->new_department_msg=_('department Code already in the Company');
         }
+        $this->associate_department($department->id);
+        }
+        
     }
+
+function get_department_keys(){
+    $department_keys=array();
+    $sql=sprintf("select `Department Key` from `Company Area Department Bridge` where `Area Key`=%d",$this->id);
+    //print $sql;
+    $res=mysql_query($sql);
+    while($row=mysql_fetch_array($res)){
+        $department_keys[$row['Department Key']]=$row['Department Key'];
+    }
+    return $department_keys;
+}
+
+function associate_department($department_key){
+    if(!array_key_exists($department_key,$this->get_department_keys())){
+        $sql=sprintf("insert into `Company Area Department Bridge` values (%d,%d) ",$this->id,$department_key);
+        mysql_query($sql);
+        
+        $company=new Company($this->data['Company Key']);
+                $department=new CompanyDepartment($department_key);
+
+         $note=_('Company Department Created');
+      $details=_('Company Department')." ".$department->data['Company Department Code']." "._('created in')." ".$company->data['Company Name'];
+
+
+ $history_data=array(
+				'History Abstract'=>$note
+				,'History Details'=>$details
+				,'Action'=>'associated'
+				,'Preposition'=>'to'
+				,'Direct Object'=>'Company Department'
+				,'Direct Object Key'=>$department_key
+
+				,'Indirect Object'=>'Company'
+				,'Indirect Object Key'=>$company->id
+
+				);
+            $this->add_history($history_data);
+        
+        
+    }
+
+}
 
     function load_children() {
 

@@ -97,6 +97,11 @@ case('company_departments'):
 
   list_company_departments();
    break;
+   case('company_positions'):
+   case('positions'):
+
+  list_company_positions();
+   break;
 case('plot_order_interval'):
 
   $now="'2008-04-18 08:30:00'";
@@ -303,7 +308,7 @@ $total=0;
 	
     }
 
-
+ $adata=array();
  $sql=sprintf("select  count(distinct `Order Key`) as `Number of Orders`,sum(`Order Quantity`) as `Order Quantity`,sum(`Delivery Note Quantity`) as `Delivery Note Quantity` ,`Product Code`,`Product Family Code`,PD.`Product Family Key`,PD.`Product Main Department Key`,D.`Product Department Code` from `Order Transaction Fact` OTF left join `Product History Dimension` PHD on (OTF.`Product Key`=PHD.`Product Key`) left join `Product Dimension` PD on (PD.`Product ID`=PHD.`Product ID`) left join `Product Department Dimension` D on (D.`Product Department Key`=`Product Main Department Key`)    where `Current Dispatching State` not in ('Cancelled') and `Customer Key`=%d   group by `%s`   order by $order $order_direction limit $start_from,$number_results   ",$customer_id,$group_by);
  
  $res = mysql_query($sql);
@@ -2472,7 +2477,7 @@ $conf_table='company_departments';
      
     
     if($parent=='area'){
-    $where.=sprintf(' and P.`Company Area Key`=%d',$_SESSION['state']['company_area']['id']);
+    $where.=sprintf(' and A.`Company Area Key`=%d',$_SESSION['state']['company_area']['id']);
     }
     
   
@@ -2558,12 +2563,12 @@ mysql_free_result($res);
   
 
 
-   $sql="select  * from `Company Department Dimension` P left join `Company Area Dimension` A on (P.`Company Area Key`=A.`Company Area Key`)  $where $wheref $group order by $order $order_direction limit $start_from,$number_results    ";
+   $sql="select  * from `Company Department Dimension` D left join `Company Area Department Bridge` on (`Department Key`=`Company Department Key`)     left join `Company Area Dimension` A on (`Area Key`=A.`Company Area Key`)  $where $wheref $group order by $order $order_direction limit $start_from,$number_results    ";
   
    $res = mysql_query($sql);
    $adata=array();
 
-   // print "$sql";
+  // print "$sql";
    while($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
     
      
@@ -2606,6 +2611,237 @@ mysql_free_result($res);
 
 }
 
+function list_company_positions(){
 
+$conf=$_SESSION['state']['positions']['table'];
+  if(isset( $_REQUEST['parent'])){
+     $parent=$_REQUEST['parent'];
+   $_SESSION['state']['positions']['parent']=$parent;
+   }else
+     $parent= $_SESSION['state']['positions']['parent'];
+
+if($parent=='area'){
+$conf_table='company_area';
+
+   $conf=$_SESSION['state']['company_area']['positions'];
+
+}else{
+$conf_table='positions';
+   $conf=$_SESSION['state'][$conf_table]['table'];
+
+}
+
+   if(isset( $_REQUEST['view']))
+     $view=$_REQUEST['view'];
+   else
+     $view=$_SESSION['state']['positions']['view'];
+     
+   if(isset( $_REQUEST['sf']))
+     $start_from=$_REQUEST['sf'];
+   else
+     $start_from=$conf['sf'];
+   if(!is_numeric($start_from))
+     $start_from=0;
+
+   if(isset( $_REQUEST['nr'])){
+     $number_results=$_REQUEST['nr'];
+   }else
+     $number_results=$conf['nr'];
+
+      
+   if(isset( $_REQUEST['o']))
+     $order=$_REQUEST['o'];
+   else
+     $order=$conf['order'];
+      
+   if(isset( $_REQUEST['od']))
+     $order_dir=$_REQUEST['od'];
+   else
+     $order_dir=$conf['order_dir'];
+   $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
+      
+      
+  
+   if(isset( $_REQUEST['where']))
+     $where=addslashes($_REQUEST['where']);
+   else
+     $where=$conf['where'];
+      
+      
+   if(isset( $_REQUEST['f_field']))
+     $f_field=$_REQUEST['f_field'];
+   else
+     $f_field=$conf['f_field'];
+      
+   if(isset( $_REQUEST['f_value']))
+     $f_value=$_REQUEST['f_value'];
+   else
+     $f_value=$conf['f_value'];
+      
+      
+   if(isset( $_REQUEST['tableid']))
+     $tableid=$_REQUEST['tableid'];
+   else
+     $tableid=0;
+
+
+
+
+ 
+   
+   if(isset( $_REQUEST['restrictions']))
+     $restrictions=$_REQUEST['restrictions'];
+   else
+     $restrictions=$conf['restrictions'];
+
+    
+       if($parent=='area'){
+   $_SESSION['state']['company_area']['positions']=array('order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value
+						 ,'restrictions'=>'','parent'=>$parent
+						 );
+      }else{
+      $_SESSION['state']['positions']['table']=array('order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value
+						 ,'restrictions'=>'','parent'=>$parent
+						 );
+      }
+     
+ 
+     
+    
+    if($parent=='area'){
+    $where.=sprintf(' and A.`Company Area Key`=%d',$_SESSION['state']['company_area']['id']);
+    }
+    
+  
+   $group='';
+
+   
+
+
+      
+   $filter_msg='';
+     
+   $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
+     
+   //  if(!is_numeric($start_from))
+   //        $start_from=0;
+   //      if(!is_numeric($number_results))
+   //        $number_results=25;
+     
+
+   $_order=$order;
+   $_dir=$order_direction;
+   $filter_msg='';
+   $wheref='';
+   if($f_field=='company name' and $f_value!='')
+     $wheref.=" and  `Company Name` like '%".addslashes($f_value)."%'";
+   elseif($f_field=='email' and $f_value!='')
+     $wheref.=" and  `Company Main Plain Email` like '".addslashes($f_value)."%'";
+     
+   $sql="select count(*) as total from `Company Position Dimension`  $where $wheref   ";
+//print $sql;
+   $res=mysql_query($sql);
+   if($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+     $total=$row['total'];
+   }
+   if($wheref==''){
+     $filtered=0;
+     $total_records=$total;
+   } else{
+     $sql="select count(*) as total from `Company Position Dimension`  $where   ";
+     $res=mysql_query($sql);
+     if($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+       $total_records=$row['total'];
+       $filtered=$total_records-$total;
+     }
+
+   }
+mysql_free_result($res);
+     
+   $rtext=$total_records." ".ngettext('position','positions',$total_records);
+   if($total_records>$number_results)
+     $rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
+   else
+     $rtext_rpp=' '._('(Showing all)');
+     
+   if($total==0 and $filtered>0){
+     switch($f_field){
+     case('name'):
+       $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any contact with name like ")." <b>".$f_value."*</b> ";
+       break;
+     case('email'):
+       $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any contact with email like ")." <b>".$f_value."*</b> ";
+       break;
+     }
+   }
+   elseif($filtered>0){
+     switch($f_field){
+     case('name'):
+       $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total "._('companies with name like')." <b>".$f_value."*</b> <span onclick=\"remove_filter($tableid)\" id='remove_filter$tableid' class='remove_filter'>"._('Show All')."</span>";
+       break;
+     case('email'):
+       $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total "._('companies with email like')." <b>".$f_value."*</b> <span onclick=\"remove_filter($tableid)\" id='remove_filter$tableid' class='remove_filter'>"._('Show All')."</span>";
+       break; 
+     }
+   }else
+      $filter_msg='';
+       
+   $_order=$order;
+   $_order_dir=$order_dir;
+          $order='`Company Position Title`';
+
+   if($order=='code')
+     $order='`Company Position Code`';
+  elseif($order=='title')
+     $order='`Company Position Title`';
+
+
+   $sql="select  * from `Company Position Dimension` P left join `Company Department Position Bridge` on (`Position Key`=`Company Position Key`)     left join `Company Department Dimension` D on (`Department Key`=`Company Department Key`)  $where $wheref $group order by $order $order_direction limit $start_from,$number_results    ";
+  
+   $res = mysql_query($sql);
+   $adata=array();
+
+  // print "$sql";
+   while($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+    
+     
+   
+    $adata[]=array(
+		  
+		   
+		    
+		    'department'=>sprintf('<a href="company_department.php?id=%d">%s</a>',$row['Company Department Key'],$row['Company Department Code'])
+
+		    ,'code'=>sprintf('<a href="company_department.php?id=%d">%s</a>',$row['Company Position Key'],$row['Company Position Code'])
+		   		    ,'title'=>sprintf('<a href="company_department.php?id=%d">%s</a>',$row['Company Position Key'],$row['Company Position Title'])
+
+		   );
+  }
+mysql_free_result($res);
+
+
+   // $total_records=ceil($total_records/$number_results)+$total_records;
+
+  $response=array('resultset'=>
+		  array('state'=>200,
+			'data'=>$adata,
+			'sort_key'=>$_order,
+			'sort_dir'=>$_dir,
+			'tableid'=>$tableid,
+			'filter_msg'=>$filter_msg,
+			'rtext'=>$rtext,
+			'rtext_rpp'=>$rtext_rpp,
+			'total_records'=>$total_records,
+			'records_offset'=>$start_from,
+			'records_perpage'=>$number_results,
+			)
+		  );
+
+       
+
+
+   echo json_encode($response);
+
+}
 
 ?>

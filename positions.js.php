@@ -1,6 +1,5 @@
 <?php
 include_once('common.php')?>
-var view='<?php echo$_SESSION['state']['hr']['view']?>'
 
 YAHOO.util.Event.addListener(window, "load", function() {
     tables = new function() {
@@ -14,15 +13,14 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    var tableid=0; // Change if you have more the 1 table
 	    var tableDivEL="table"+tableid;
 	    var CustomersColumnDefs = [
-				       {key:"id", label:"<?php echo _('Id')?>",  width:60,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				       // ,{key:"alias", label:"<?php echo _('Nickname')?>", width:190,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				       ,{key:"name", label:"<?php echo _('Name')?>", width:190,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				       ,{key:"position", label:"<?php echo _('Position')?>", width:190,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				       ,{key:"area", label:"<?php echo _('Area')?>", width:190,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				       ,{key:"department", label:"<?php echo _('Department')?>", width:190,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				      // {key:"id", label:"<?php echo _('Id')?>",  width:60,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				       {key:"code", label:"<?php echo _('Code')?>", width:60,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				       ,{key:"title", label:"<?php echo _('Position')?>", width:120,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				       //,{key:"area", label:"<?php echo _('Area')?>", width:190,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				       ,{key:"department", label:"<?php echo _('Departments')?>", width:190,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				       ];
 	    //?tipo=customers&tid=0"
-	    this.dataSource0 = new YAHOO.util.DataSource("ar_contacts.php?tipo=staff");
+	    this.dataSource0 = new YAHOO.util.DataSource("ar_contacts.php?tipo=positions");
 	    this.dataSource0.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource0.connXhrMode = "queueRequests";
 	    this.dataSource0.responseSchema = {
@@ -38,8 +36,8 @@ YAHOO.util.Event.addListener(window, "load", function() {
 		
 		
 		fields: [
-			 "id"
-			 ,"alias","name","area","department","position"
+			 "department","code","title"
+			 
 
 			 ]};
 	    //__You shouls not change anything from here
@@ -54,7 +52,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 								     // sortedBy: {key:"<?php echo$_SESSION['tables']['customers_list'][0]?>", dir:"<?php echo$_SESSION['tables']['customers_list'][1]?>"},
 								     renderLoopSize: 50,generateRequest : myRequestBuilder
 								       ,paginator : new YAHOO.widget.Paginator({
-									      rowsPerPage    : <?php echo$_SESSION['state']['hr']['staff']['nr']?>,containers : 'paginator0', 
+									      rowsPerPage    : <?php echo$_SESSION['state']['positions']['table']['nr']?>,containers : 'paginator0', 
  									      pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',
 									      previousPageLinkLabel : "<",
  									      nextPageLinkLabel : ">",
@@ -64,8 +62,8 @@ YAHOO.util.Event.addListener(window, "load", function() {
 									  })
 								     
 								     ,sortedBy : {
-									 key: "<?php echo$_SESSION['state']['hr']['staff']['order']?>",
-									 dir: "<?php echo$_SESSION['state']['hr']['staff']['order_dir']?>"
+									 key: "<?php echo$_SESSION['state']['positions']['table']['order']?>",
+									 dir: "<?php echo$_SESSION['state']['positions']['table']['order_dir']?>"
 								     },
 								     dynamicData : true
 
@@ -76,7 +74,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    this.table0.handleDataReturnPayload =myhandleDataReturnPayload;
 	    this.table0.doBeforeSortColumn = mydoBeforeSortColumn;
 	    this.table0.doBeforePaginatorChange = mydoBeforePaginatorChange;
-	    this.table0.filter={key:'<?php echo$_SESSION['state']['hr']['staff']['f_field']?>',value:'<?php echo$_SESSION['state']['hr']['staff']['f_value']?>'};
+	    this.table0.filter={key:'<?php echo$_SESSION['state']['positions']['table']['f_field']?>',value:'<?php echo$_SESSION['state']['positions']['table']['f_value']?>'};
 
 
 	    //YAHOO.util.Event.addListener('yui-pg0-0-page-report', "click",myRowsPerPageDropdown)

@@ -185,5 +185,34 @@ ADD `Store Fax` VARCHAR( 256 ) NOT NULL AFTER `Store Telephone`
 
 ALTER TABLE `Part Dimension` ADD `Part Days Until Out of Stock` SMALLINT  UNSIGNED NULL DEFAULT NULL ,ADD `Part Interval Until Out of Stock` VARCHAR( 64 ) NULL DEFAULT NULL;
 
+ALTER TABLE `Order Dimension` ADD `Order For Collection`  ENUM( 'Yes', 'No' ) NOT NULL DEFAULT 'No' AFTER `Order Margin` ;
+ALTER TABLE `Shipping Dimension` CHANGE `Shipping Destination Type`  `Shipping Destination Type` ENUM( 'Default', 'Country', 'Country Primary Division', 'World Region' ) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL ;
+ALTER TABLE `Order Dimension` CHANGE `Order Current Dispatch State` `Order Current Dispatch State` ENUM( 'In Process', 'Submited', 'Ready to Pick', 'Picking', 'Ready to Pack', 'Ready to Ship', 'Dispached', 'Unknown', 'Packing', 'Cancelled' ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'Unknown';
+ALTER TABLE `Shipping Dimension` CHANGE `Shipping Destination Key`  `Shipping Destination Code` VARCHAR( 8 ) NULL DEFAULT NULL 
+ALTER TABLE `Shipping Dimension` CHANGE `Shipping Allowance Metadata`  `Shipping Metadata`  VARCHAR( 4096 ) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL 
+ALTER TABLE `Order Dimension` ADD `Order Ship To Country Code`  VARCHAR( 3 ) NOT NULL DEFAULT 'UNK' AFTER `Order Ship To Keys` ;
+ALTER TABLE `Store Dimension` ADD `Store Tax Country Code`  VARCHAR( 3 ) NOT NULL DEFAULT 'GBR' AFTER `Store Currency Code` ;
+ALTER TABLE `Order Dimension` CHANGE `Order Shipping Method`  `Order Shipping Method` ENUM( 'No Applicable', 'On Demand', 'Calculated' ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'Calculated';
+ALTER TABLE `Order Dimension` ADD `Order Estimated Weight`  FLOAT NOT NULL DEFAULT '0';
+CREATE TABLE `dw`.`Company Area Department Bridge` (
+`Company Area Key` SMALLINT UNSIGNED NOT NULL ,
+`Company Department Key` SMALLINT UNSIGNED NOT NULL ,
+PRIMARY KEY ( `Company Area Key` , `Company Department Key` )
+) ENGINE = MYISAM ;
+
+CREATE TABLE `dw`.`Company Department Position Bridge` (
+`Company Department Key` SMALLINT UNSIGNED NOT NULL ,
+`Company Position Key` SMALLINT UNSIGNED NOT NULL
+) ENGINE = MYISAM ;
+
+
+ALTER TABLE `Company Area Department Bridge` CHANGE `Company Area Key` `Area Key` SMALLINT( 5 ) UNSIGNED NOT NULL ,CHANGE `Company Department Key` `Department Key` SMALLINT( 5 ) UNSIGNED NOT NULL ;
+ALTER TABLE `Company Position Dimension`
+  DROP `Company Area Key`,
+  DROP `Company Department Key`;
+  
+ALTER TABLE `Company Department Position Bridge` CHANGE `Company Department Key`  `Department Key`  SMALLINT( 5 ) UNSIGNED NOT NULL ,
+CHANGE `Company Position Key` `Position Key` SMALLINT( 5 ) UNSIGNED NOT NULL   
+  
 */
 ?>

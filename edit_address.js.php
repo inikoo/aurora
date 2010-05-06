@@ -230,24 +230,21 @@ var update_address_buttons=function(){
 };
 
 
-function cancel_edit_address(){
+function reset_address(e,prefix){
     changes_address=0;
-    index=Dom.get("cancel_edit_address").getAttribute('address_key');
+    index=Dom.get(prefix+"reset_address_button").getAttribute('address_key');
     Dom.setStyle(['address_showcase','move_address_button','add_address_button'], 'display', ''); 
     Dom.setStyle(['address_form','cancel_edit_address','save_address_button'], 'display', 'none'); 
-    Dom.get("cancel_edit_address").setAttribute('address_key','');
     //    Dom.get("address_messages").innerHTML='';
-
     data=Address_Data[index];
     for (key in data){
 	
-	item=Dom.get('address_'+key);
-	item.value='';
-	item.setAttribute('ovalue','');
+	item=Dom.get(prefix+'address_'+key);
+	item.value=item.getAttribute('ovalue')
+	//item.setAttribute('ovalue','');
 
-	//alert(key);
 	
-	var elements_array=Dom.getElementsByClassName('address_function', 'span');
+	var elements_array=Dom.getElementsByClassName(prefix+'address_function', 'span');
 	for( var i in elements_array ){
 	    Dom.removeClass(elements_array[i],'selected');
 	}
@@ -255,10 +252,10 @@ function cancel_edit_address(){
 	if(key=='function'){
 	    var address_function=data[key];
 	    for (address_function_key in address_function){
-		Dom.addClass('address_function_'+address_function[address_function_key],'selected')
+		Dom.addClass(prefix+'address_function_'+address_function[address_function_key],'selected')
 	    }
 	}
-	var elements_array=Dom.getElementsByClassName('address_type', 'span');
+	var elements_array=Dom.getElementsByClassName(prefix+'address_type', 'span');
 	for( var i in elements_array ){
 	    Dom.removeClass(elements_array[i],'selected');
 	}
@@ -266,13 +263,16 @@ function cancel_edit_address(){
 	    var address_type=data[key];
 	    for (address_type_key in address_type){
 
-		Dom.addClass('address_type_'+address_type[address_type_key],'selected')
+		Dom.addClass(prefix+'address_type_'+address_type[address_type_key],'selected')
 	    }
 	}
 
 	
     }
-
+    Address_Type_Changes=0;
+    Address_Items_Changes=0;
+    Address_Function_Changes=0;
+     render_after_address_item_change(prefix);
 
 };
 
@@ -315,20 +315,20 @@ function edit_address(index,address_identifier){
 
 
     }
-    
+    Dom.setStyle([address_identifier+'address_form'], 'display', ''); 
 
+    Dom.setStyle([address_identifier+'reset_address_button'], 'visibility', 'hidden'); 
 
-    Dom.setStyle([address_identifier+'address_form',address_identifier+'cancel_edit_address'], 'display', ''); 
-    Dom.get(address_identifier+"cancel_edit_address").setAttribute('address_key',index);
-    data=Address_Data[index];
+    Dom.get(address_identifier+"reset_address_button").setAttribute('address_key',index);
 
+  data=Address_Data[index];
     for (key in data){
 	item=Dom.get(address_identifier+'address_'+key);
 	item.value=data[key];
 	item.setAttribute('ovalue',data[key]);
 	
 	if(key=='country_code')
-	    update_address_labels(data[key]);
+	    update_address_labels(data[key],address_identifier);
 	
 	if(key=='function'){
 	    var address_function=data[key];
@@ -344,10 +344,9 @@ function edit_address(index,address_identifier){
 	}
     }
 
-
 };
 
-var update_address_labels=function(country_code){
+var update_address_labels=function(country_code,suffix){
     var labels=new Object();
     
     if(Country_Address_Labels[country_code]== undefined){
@@ -355,33 +354,34 @@ var update_address_labels=function(country_code){
 	    }else
 	labels=Country_Address_Labels[country_code];
     
-    
+    if(suffix==undefined)
+    suffix='';
     for (index in Address_Keys){
 	key=Address_Keys[index];
 	if(labels[key]!=undefined){
-	    
 	    if(labels[key].name!=undefined){
-		Dom.get('label_address_'+key).innerHTML=labels[key].name;
+
+		Dom.get(suffix+'label_address_'+key).innerHTML=labels[key].name;
 	    }
 	    
 	    if(labels[key].in_use!=undefined && !labels[key].in_use){
 		
-		Dom.setStyle('tr_address_'+key,'display','none');
+		Dom.setStyle(suffix+'tr_address_'+key,'display','none');
 	    }else{
-		Dom.setStyle('tr_address_'+key,'display','');
+		Dom.setStyle(suffix+'tr_address_'+key,'display','');
 		
 		
 		if(labels[key].hide!=undefined && labels[key].hide){
-		    Dom.setStyle('tr_address_'+key,'display','none');
+		    Dom.setStyle(suffix+'tr_address_'+key,'display','none');
 		    
 		    if(key=='country_d1'){
-			Dom.setStyle('show_'+key,'display','');
+			Dom.setStyle(suffix+'show_'+key,'display','');
 		    }
 		    
 		}else{
-		    Dom.setStyle('tr_address_'+key,'display','');
+		    Dom.setStyle(suffix+'tr_address_'+key,'display','');
 		    if(key=='country_d1'){
-			Dom.setStyle('show_'+key,'display','none');
+			Dom.setStyle(suffix+'show_'+key,'display','none');
 		    }
 		    
 		}
@@ -389,7 +389,6 @@ var update_address_labels=function(country_code){
 	    
 	}
     }
-    
 };
 
 
@@ -472,8 +471,9 @@ var on_address_item_change_when_creating=function(){
      var items=Address_Keys;
      for ( var i in items )
 	 {
-	    Key=items[i];
-	     //   alert(key +' : '+address_prefix+'address_'+key)
+	    key=items[i];
+	     // alert(key);
+	      // alert(key +' : '+address_prefix+'address_'+key)
 	     // alert(key +' '+Dom.get(address_prefix+'address_'+key).value);
 	     if(Dom.get(address_prefix+'address_'+key).value!=Dom.get(address_prefix+'address_'+key).getAttribute('ovalue')){
 		 Address_Items_Changes++; 
@@ -494,18 +494,13 @@ var on_address_item_change_when_creating=function(){
     }	
   
     Address_Changes=Address_Items_Changes+Address_Function_Changes+Address_Type_Changes;
+   if(Address_Changes==0){
+	Dom.setStyle([address_prefix+'save_address_button', address_prefix+'reset_address_button'], 'visibility', 'hidden'); 
 
-    if(Address_Changes==0){
-	//	Dom.get(address_prefix+'address_messages').innerHTML='';
-	Dom.setStyle([address_prefix+'save_address_button', address_prefix+'cancel_edit_address_button'], 'display', 'none'); 
-    }else if (Address_Changes==1){
 
-	//Dom.get(address_prefix+'address_messages').innerHTML=Address_Changes+'<?php echo' '._('change')?>';
-	Dom.setStyle([address_prefix+'save_address_button', address_prefix+'cancel_edit_address_button'], 'display', ''); 
-
-    }else{
-	//Dom.get(address_prefix+'address_messages').innerHTML=Address_Changes+'<?php echo' '._('changes')?>';
-	Dom.setStyle([address_prefix+'save_address_button', address_prefix+'cancel_edit_address_button'], 'display', ''); 
+    }else {
+    //alert("caca")
+	Dom.setStyle([address_prefix+'save_address_button', address_prefix+'reset_address_button'], 'visibility', 'visible'); 
     }
 
 
@@ -590,3 +585,64 @@ var match_country = function(sQuery) {
 
         return matches;
     };
+    
+    
+    
+      
+	var onCountrySelected = function(sType, aArgs) {
+	    var myAC = aArgs[0]; // reference back to the AC instance
+	    var elLI = aArgs[1]; // reference to the selected LI element
+	    var oData = aArgs[2]; // object literal of selected item's result data
+        
+        if(this.suffix==undefined)
+            this.suffix='';
+        
+	    // update hidden form field with the selected item's ID
+	    Dom.get(this.suffix+"address_country_code").value = oData.code;
+	    Dom.get(this.suffix+"address_country_2acode").value = oData.code2a;
+
+	    postal_regex=new RegExp(oData.postal_regex,"i");
+
+	    myAC.getInputEl().value = oData.name + " (" + oData.code + ") ";
+	    update_address_labels(oData.code,this.suffix);
+
+	};
+    
+
+    function countries_format_results(oResultData, sQuery, sResultMatch){
+
+
+  var query = sQuery.toLowerCase(),
+	    name = oResultData.name,
+	    code = oResultData.code,
+	    query = sQuery.toLowerCase(),
+	    nameMatchIndex = name.toLowerCase().indexOf(query),
+	    codeMatchIndex = code.toLowerCase().indexOf(query),
+	    displayname, displaycode;
+	    
+	    
+	    if(nameMatchIndex > -1) {
+		displayname = countries_highlightMatch(name, query, nameMatchIndex);
+	    }
+	    else {
+		displayname = name;
+	    }
+
+	    if(codeMatchIndex > -1) {
+		displaycode = countries_highlightMatch(code, query, codeMatchIndex);
+	    }
+	    else {
+		displaycode = code;
+	    }
+	    return displayname + " (" + displaycode + ")";
+}
+
+var countries_highlightMatch = function(full, snippet, matchindex) {
+	    return full.substring(0, matchindex) + 
+	    "<span class='match'>" + 
+	    full.substr(matchindex, snippet.length) + 
+	    "</span>" +
+	    full.substring(matchindex + snippet.length);
+	};
+	
+    

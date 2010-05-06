@@ -78,8 +78,7 @@ class CompanyPosition extends DB_Table{
     
     
     //look for areas with the same code in the same company
-    $sql=sprintf("select `Company Position Key` from `Company Position Dimension` where `Company Key`=%d and `Company Position Code`=%s"
-		,$data['Company Key']
+    $sql=sprintf("select `Company Position Key` from `Company Position Dimension` where  `Company Position Code`=%s"
 		 ,prepare_mysql($data['Company Position Code']));
     
     // print $sql;
@@ -123,16 +122,9 @@ class CompanyPosition extends DB_Table{
 	$this->error=true;
 	return;
       }
-      $company=new Company('id',$this->data['Company Key']);
-      if(!$company->id){
-	$this->msg=('Wrong company key');
-	$this->new=false;
-	$this->error=true;
-	return;
-
-      }
-      if($this->data['Company Position Name']==''){
-	$this->data['Company Position Name']=$this->data['Company Position Code'];
+    
+      if($this->data['Company Position Title']==''){
+	$this->data['Company Position Title']=$this->data['Company Position Code'];
       }
 
       $keys='(';$values='values(';
@@ -155,10 +147,7 @@ class CompanyPosition extends DB_Table{
       $this->id= mysql_insert_id();
       $this->new=true;
       $this->get_data('id',$this->id);
-      $note=_('Company Position Created');
-      $details=_('Company Position')." ".$this->data['Company Position Code']." "._('created in')." ".$company->data['Company Name'];
-
-
+      
     }else{
       exit($sql);
     }

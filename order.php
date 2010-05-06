@@ -56,11 +56,9 @@ if(isset($_REQUEST['new']) ){
 		    ,'editor'=>$editor
 		    
 		    );
-
   $order=new Order('new',$order_data);
-
-
-  if($order->error)
+//exit;
+ if($order->error)
     exit('error');
  
   $_SESSION['state']['order']['show_all']=true;

@@ -113,10 +113,7 @@
      </table>
 
    <div id="customer_contact_address" style="float:left;xborder:1px solid #ddd;width:400px;margin-right:40px">
-     <div >
-     <span class="state_details" style="float:right;display:none" address_key="" id="contact_cancel_edit_address">{t}Cancel{/t}</span>
-     <span class="state_details" style="float:right;display:none;margin-right:10px" address_key="" id="contact_save_address_button">{t}Save{/t}</span>
-     </div>
+     
   <div style="border-bottom:1px solid #777;margin-bottom:5px">
        
        {t}Contact Address{/t}:

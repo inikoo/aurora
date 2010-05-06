@@ -149,7 +149,7 @@ function init(){
     customer_main_contact_name_oAutoComp.minQueryLength = 0; 
     customer_main_contact_name_oAutoComp.queryDelay = 0.1;
 
-   
+
 
 
 	<?php
@@ -167,7 +167,33 @@ function init(){
 	     var ids = ["contact_address_description","contact_address_country_d1","contact_address_country_d2","contact_address_town","contact_address_town_d2","contact_address_town_d1","contact_address_postal_code","contact_address_street","contact_address_internal","contact_address_building"]; 
 	     YAHOO.util.Event.addListener(ids, "keyup", on_address_item_change,'contact_');
 	     YAHOO.util.Event.addListener(ids, "change",on_address_item_change,'contact_');
-	     YAHOO.util.Event.addListener('contact_save_address_button', "click",save_address,'contact_');
+	 
+	 YAHOO.util.Event.addListener('contact_save_address_button', "click",save_address,'contact_');
+	 YAHOO.util.Event.addListener('contact_reset_address_button', "click",reset_address,'contact_');
+
+
+
+
+
+
+	
+	var Countries_DS = new YAHOO.util.FunctionDataSource(match_country);
+	Countries_DS.responseSchema = {fields: ["id", "name", "code","code2a","postal_regex"]}
+	var Countries_AC = new YAHOO.widget.AutoComplete("contact_address_country", "contact_address_country_container", Countries_DS);
+	Countries_AC.forceSelection = true; 
+	Countries_AC.useShadow = true;
+Countries_AC.suffix='contact_';
+	Countries_AC.resultTypeList = false;
+
+	Countries_AC.formatResult = countries_format_results;
+
+	Countries_AC.itemSelectEvent.subscribe(onCountrySelected);
+	
+
+
+
+
+
 
 
 
