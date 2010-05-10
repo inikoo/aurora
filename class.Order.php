@@ -1249,6 +1249,9 @@ $this->update_item_totals_from_order_transactions();
 
 
         switch ($key) {
+        case('Shipping And Handing Net Amount'):
+        return money($this->data['Order Shipping Net Amount']+$this->data['Order Charges Net Amount']);
+        break;
         case('Date'):
             return strftime('%D',strtotime($this->data['Order Date']));
             break;

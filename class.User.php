@@ -437,12 +437,13 @@ function xupdate($tipo,$data){
 
  
  function change_password($data){
+ 
    if(strlen($data)!=64){
      $this->error=true;
      $this->error_updated=true;
      $this->msg.=', Wrong password format ('.strlen($data).')';
      $this->msg_updated.=', Wrong password format';
-
+return;
    }
 
    $sql=sprintf("update `User Dimension` set `User Password`=%s where `User Key`=%d",prepare_mysql($data),$this->id);
