@@ -110,7 +110,8 @@ class Auth {
 		 ,$this->user_type
 	
 		 );
-    
+   
+
     $res=mysql_query($sql);
     if($row=mysql_fetch_array($res)){
        	$st=AESDecryptCtr(AESDecryptCtr($this->sk,$row['User Password'],256),$this->skey,256);

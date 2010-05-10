@@ -205,7 +205,7 @@ function get_tipo_order($ltipo,$header){
     $tipo=4;
     }elseif(preg_match('/donation/i',$ltipo)){
     $tipo=5; 
-  }elseif(preg_match('/^\s*REPLACEMENT|Replcement|Replacenment|^reemplazo por roturas|^replacement|Damaged item|REPLACMENT|DELIVERY COLLECTION|repplacements|Remplacement|repalcements|Repalcement|Replaceement/i',$ltipo)){
+  }elseif(preg_match('/^\s*REPLACEMENT|Replcement|^replace|Replacenment|^reemplazo por roturas|^replacement|Damaged item|REPLACMENT|DELIVERY COLLECTION|repplacements|Remplacement|repalcements|Repalcement|Replaceement/i',$ltipo)){
     $tipo=6;
   $header['notes']=preg_replace('/^(Replacement|Remplacement)$/i','',$header['notes']);
   $header['notes2']=preg_replace('/^(Replacement|Remplacement)$/i','',$header['notes2']);

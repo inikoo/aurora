@@ -83,10 +83,12 @@ class Shipping extends DB_Table {
 
 	      $date=prepare_mysql(date("Y-m-d H:i:s"));
 	      
-	      $sql=sprintf("select `Shipping Key`  from `Shipping Dimension` where `Shipping Destination Type`='Country' and `Shipping Destination Key`=%d and (`Shipping Begin Date` is null or `Shipping Begin Date`<=%s )  and (`Shipping Expiration Date` is null or `Shipping Expiration Date`>=%s )  "
-			   ,$country->id,$date,$date);
+	      $sql=sprintf("select `Shipping Key`  from `Shipping Dimension` where `Shipping Destination Type`='Country' and `Shipping Destination Code`=%s and (`Shipping Begin Date` is null or `Shipping Begin Date`<=%s )  and (`Shipping Expiration Date` is null or `Shipping Expiration Date`>=%s )  "
+			   ,prepare_mysql($country->data['Country Code']),$date,$date);
 	      $res=mysql_query($sql);
 	 
+
+
 	      if($row=mysql_fetch_array($res)){
 		$this->found=true;
 		$this->found_key=$row['Shipping Key'];
@@ -182,7 +184,7 @@ class Shipping extends DB_Table {
         switch ($key) {
 	case('Country Name'):
 	  if($this->data['Shipping Destination Type']=='Country'){
-	    $country=new Country ('id',$this->data['Shipping Destination Key']);
+	    $country=new Country ('code',$this->data['Shipping Destination Code']);
 
 	    return $country->data['Country Name'];
 	  }

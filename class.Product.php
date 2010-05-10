@@ -147,6 +147,7 @@ public $new_value=false;
 	$this->pid=$this->data['Product ID'];
 	$this->code=$this->data['Product Code'];
       }
+     
       mysql_free_result($result);
 
 
@@ -1529,7 +1530,7 @@ public $new_value=false;
       }
       break;
     case('parts'):
-$this->update_parts();
+      $this->update_parts();
 
 
 
@@ -4041,7 +4042,7 @@ if($this->images[$image_key]['caption']==$value){
      $sql=sprintf("select *  from `Product Part List` where `Product Part Key`=%d "
 		   ,$product_part_key);
        $res2=mysql_query($sql);
-       print "$sql\n";
+       //print "$sql\n";
        while($row2=mysql_fetch_array($res2,MYSQL_ASSOC)){
 	 $part_list[$row2['Part SKU']]=$row2;
        }
