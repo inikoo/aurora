@@ -13,6 +13,7 @@
 
 include_once('aes.php');
 class Auth {
+  private $user_parent_key=false;
 
   private $user_key=false;
   private $status=false;
@@ -104,7 +105,7 @@ class Auth {
 		      ,'ikey'=>'No'
 		      );
     
-    $sql=sprintf("select `User Key`,`User Password` from `User Dimension` where `User Handle`=%s and `User Active`='Yes' and `User Type` in (%s)  "
+    $sql=sprintf("select `User Key`,`User Password`,`User Parent Key` from `User Dimension` where `User Handle`=%s and `User Active`='Yes' and `User Type` in (%s)  "
 		 ,prepare_mysql($this->handle)
 		 ,$this->user_type
 	
@@ -154,6 +155,8 @@ class Auth {
 
 	    $this->status=true;
 	    $this->user_key=$row['User Key'];
+	    $this->user_parent_key=$row['User Parent Key'];
+
 	  }
 	  
 	}
@@ -172,6 +175,9 @@ class Auth {
 
   public function get_user_key(){
     return $this->user_key;
+  }
+   public function get_user_parent_key(){
+    return $this->user_parent_key;
   }
   
 

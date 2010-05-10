@@ -135,11 +135,22 @@ if($edit){
   $css_files[]='css/edit.css';
   $js_files[]='js/edit_common.js';
   $js_files[]='country_select.js.php';
+   $js_files[]='js/upload_image.js';
   $js_files[]='edit_family.js.php';
+  
+  
+  
+$family->load_images_slidesshow();
+$images=$family->images_slideshow;
+$smarty->assign('images',$images);
+$smarty->assign('num_images',count($images));
+
+
  }else{
  $js_files[]='js/search.js';
  $js_files[]='family.js.php';
   
+
 
  }
 

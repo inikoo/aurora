@@ -33,42 +33,7 @@ var addtotals =function (){
 }
 
 
-    function get_thumbnails(){
-	var table_id=0;
-	var request='ar_assets.php?tipo=products&parent=family';
-	YAHOO.util.Connect.asyncRequest('POST',request ,{
-	    success:function(o) {
-
-		var r =  YAHOO.lang.JSON.parse(o.responseText);
-		if(r.resultset.state==200){
-		    var container=Dom.get('thumbnails'+table_id);
-		    for(x in r.resultset.data){
-			if(r.resultset.data[x].type=='item'){
-			var img = new YAHOO.util.Element(document.createElement('img')); 
-			img.set('src', r.resultset.data[x].image); 
-			img.set('alt', r.resultset.data[x].image); 
-			//alert(r.resultset.data[x].image);
-			var internal_span = new YAHOO.util.Element(document.createElement('span')); 
-			internal_span.set('innerHTML', r.resultset.data[x].code); 
-		 
-			var div = new YAHOO.util.Element(document.createElement('div')); 
-		
-
-			img.appendTo(div); 
-			internal_span.appendTo(div); 
-		
-		
-
-			div.appendTo(container); 
-			}
-		    }
-		      
-		}
-		
-	    }
-	    
-	    });
-    }
+   
 
 
 function change_info_period(period){
@@ -326,28 +291,6 @@ YAHOO.util.Event.addListener(window, "load", function() {
     });
 
 
-function change_table_type(e,table_id){
-if(Dom.hasClass(this, 'selected'))
- return;
- var elements=Dom.getElementsByClassName('selected', 'span', 'table_type');
- Dom.removeClass(elements, 'selected');
- Dom.addClass(this, 'selected');
- if(this.id=='table_type_list'){
- tipo='list';
- Dom.get('thumbnails'+table_id).style.display='none'
-  Dom.get('table'+table_id).style.display=''
-Dom.get('list_options'+table_id).style.display=''
- 
- }else{
- tipo='thumbnails';
-  Dom.get('thumbnails'+table_id).style.display=''
- Dom.get('table'+table_id).style.display='none'
-Dom.get('list_options'+table_id).style.display='none'
- 
- }
- 
- YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=family-table_type&value='+escape(tipo),{});
-}
 
  function init(){
  
@@ -362,7 +305,7 @@ Dom.get('list_options'+table_id).style.display='none'
  
  
  
- get_thumbnails();
+ get_thumbnails({tipo:'products',parent:'family'});
 
 ids=['general','sales','stock','parts','cats'];
  YAHOO.util.Event.addListener(ids, "click",change_view);
@@ -371,7 +314,7 @@ ids=['general','sales','stock','parts','cats'];
  ids=['avg_totals','avg_month','avg_week',"avg_month_eff","avg_week_eff"];
  YAHOO.util.Event.addListener(ids, "click",change_avg,0);
  ids=['table_type_thumbnail','table_type_list'];
- YAHOO.util.Event.addListener(ids, "click",change_table_type,0);
+ YAHOO.util.Event.addListener(ids, "click",change_table_type,{table_id:0,parent:'family'});
  
      
 YAHOO.util.Event.addListener("info_next", "click",next_info_period,0);

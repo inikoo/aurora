@@ -217,8 +217,6 @@ function create($data){
 
 
    }
-
-
   function compose_registration_email($user_key,$data=false){
     if(!is_array($data))
       $data=array();
@@ -308,6 +306,152 @@ function create($data){
       }
       $this->email_data['Content Text Only']=$this->email_data['To Greatings']."\n\nThank you for your registration with ".$this->email_data['Our Company']."!\n\nYou will now be able to see our prices and order from our big range of products\n\nRemenber that your username is ".$user->data['User Handle']."\n\n".$this->email_data['Our Name']."\n".$this->email_data['Our Company'];
 
+       $recipient_type='Customer';
+       $recipient_key=$subject->id;
+       
+    }elseif($user->data['User Type']=='Supplier'){
+      $subject=new Supplier($user->data['User Parent Key']);
+
+    }else{
+      $this->error=true;
+      $this->msg='registration email no applicable';
+      return;
+      
+    }
+
+  foreach($data as $key=>$values){
+	if(array_key_exists($key,$this->email_data))
+	  $this->email_data[$key]=$values;
+      }
+
+
+
+
+    $email=new Email('email',$user->data['User Handle']);
+
+     $data=array(
+		'Email Send Type'=>'Registration',
+		'Email Send Type Key'=>0,
+		'Email Send Recipient Type'=>$recipient_type,
+		'Email Send Recipient Key'=>$recipient_key,
+		'Email Key'=>$email->id
+		);
+    
+    $this->create($data);
+    $this->email_data['Tracker Key']=$this->id.'_'.md5($this->secret.$this->id);
+    
+    
+    
+  }
+
+function compose_lost_password_email($user_key,$data=false){
+    if(!is_array($data))
+      $data=array();
+
+
+    $this->prepare_email_variables();
+
+
+    $this->email_data['Template']='emails/html_email_basic_template.html';
+
+
+
+
+
+
+
+
+    $user=new User($user_key);
+    if(!$user->id){
+      $this->error=true;
+      $this->msg='User not found';
+      return;
+    }
+    
+    
+$secret_key=$data['secret_key'];
+
+$secret_data=json_encode(array('D'=>generatePassword(2,10).date('U') ,'C'=>$user_key ));
+$encrypted_secret_data=base64_encode(AESEncryptCtr($secret_data,$secret_key,256));
+
+    if(preg_match('/^Customer/',$user->data['User Type'])){
+     
+      $subject=new Customer($user->data['User Parent Key']);
+      $store=new Store($subject->data['Customer Store Key']);
+
+      $this->email_data['Image Server Logo Filename']='email_header_'.$store->data['Store Code'].'.png';
+
+
+      $this->email_data['Our Name']=$store->data['Store Contact Name'];
+      $this->email_data['Our Company']=$store->data['Store Name'];
+
+      $this->email_data['Our Telephone']=$store->data['Store Telephone'];
+      $this->email_data['Our Email']=$store->data['Store Email'];
+      $this->email_data['Our URL']=$store->data['Store URL'];
+
+    
+      $this->email_data['From Email Address']=$store->data['Store Email'];
+
+     
+      //$this->email_data['To Email']=$user->['User Handle'];
+      $this->email_data['To Email Address']='rulovico@gmail.com';
+      //   $this->email_data['To Email Address']='raul@ancientwisdom.biz';
+      
+      
+      $this->email_data['Our Position']='';
+
+      
+      if($subject->data['Customer Type']=='Company'){
+	$this->email_data['To Company']=$subject->data['Customer Name'];
+      }
+      
+      $this->email_data['To Name']=$subject->data['Customer Main Contact Name'];
+
+      $this->email_data['To Greatings']=$subject->data['Customer Main Contact Name'];
+      if($this->email_data['To Greatings']=='')
+	$this->email_data['To Greatings']=$subject->data['Customer Name'];
+      
+      if($this->email_data['To Greatings']==$this->email_data['To Company'])
+	$this->email_data['To Company']='';
+
+      switch($store->data['Store Locale']){
+      case('de_DE'):
+	if($this->email_data['To Greatings']=='')
+	  $this->email_data['To Greatings']='Sehr geehrte Damen und Herren';
+	else
+	  $this->email_data['To Greatings']='Sehr geehrte/r '.$this->email_data['To Greatings'];
+
+	$this->email_data['Subject']="Vielen Dank für Ihre Registrierung bei ".$this->email_data['Our Company'];
+	$this->email_data['Content'][]=array(
+				     'title'=>"Vielen Dank für Ihre Registrierung bei ".$this->email_data['Our Company']."!"
+				     ,'content'=>"Sehen Sie nun unsere Preise und bestellen Sie aus einer Vielzahl toller Produkte.<br/><br/>"
+				     );
+	
+	break;
+      default:
+	if($this->email_data['To Greatings']=='')
+	  $this->email_data['To Greatings']='Dear Sir/Madam';
+	else
+	  $this->email_data['To Greatings']='Dear '.$this->email_data['To Greatings'];
+	
+
+	$this->email_data['Subject']=$this->email_data['Our Company']." Password Reset Request";
+	$this->email_data['Content'][]=array(
+				     'title'=>$this->email_data['Our Company']." Password Reset Request"
+				     ,'content'=>"We received request to reset the password associated with this email account.<br><br>
+If you did not request to have your password reset, you can safely ignore this email. We assure that yor customer account is safe.<br><br>
+<b>Click the link below to reset your password</b>
+<br><br>
+<a href=\"http://".$this->email_data['Our URL']."/bd.php?p=".$encrypted_secret_data."\">".$this->email_data['Our URL']."/reset.php?p=".$encrypted_secret_data."</a>
+<br></br>
+If clicking the link doesn't work you can copy and paste it into your browser's address window. Once you have returned to ".$this->email_data['Our Company'].", you will be asked to choose a new password.
+<br><br>
+Thank you"
+				     );
+      }
+      $this->email_data['Content Text Only']=$this->email_data['To Greatings']."\n\nWe received request to reset the password associated with this email account.\n\nIf you did not request to have your password reset, you can safely ignore this email. We assure that yor customer account is safe.\n\nCopy and paste the following link to your browser's address window.\n\n http://".$this->email_data['Our URL']."/bd.php?p=".$encrypted_secret_data."\n\n Once you hace returned to ".$this->email_data['Our Company'].", you will be asked to choose a new password\n\nThank you \n\n".$this->email_data['Our Name']."\n".$this->email_data['Our Company'];
+      print $this->email_data['Content Text Only'];
+     
        $recipient_type='Customer';
        $recipient_key=$subject->id;
        
@@ -515,7 +659,6 @@ function create($data){
  *  the message is sent to not bloat your scripts with too much error checking.
  */
 	
-
 	$error=$email_message->Send();
 	if(strcmp($error,"")){
 	  var_dump($email_message->parts);

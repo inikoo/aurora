@@ -100,8 +100,11 @@ function clean_accents($str){
 }
 
 function unformat_money($number){
-  $number=preg_replace('/\\'.$_SESSION['locale_info']['thousand_sep'].'/','',$number);
-  $number=preg_replace('/\\'.$_SESSION['locale_info']['decimal_point'].'/','.',$number);
+$locale_info = localeconv();
+
+
+  $number=preg_replace('/\\'.$locale_info['thousand_sep'].'/','',$number);
+  $number=preg_replace('/\\'.$locale_info['decimal_point'].'/','.',$number);
   return $number;
 }
 
@@ -315,11 +318,8 @@ function percentage($a,$b,$fixed=1,$error_txt='NA',$psign='%',$plus_sing=false){
       $sing='+';
     else
       $sing='';
-    // PRINT "** $a $b ".$sing.number_format(100*($a/$b),1,$_SESSION['locale_info']['decimal_point'],$_SESSION['locale_info']['thousands_sep']).$psign." <br>";
     $per=$sing.number_format((100*($a/$b)),$fixed,$locale_info['decimal_point'],$locale_info['thousands_sep']).$psign;
-    //    $per=$sing.number_format(100*($a/$b),$fixed,$_SESSION['locale_info']['decimal_point'],$_SESSION['locale_info']['thousands_sep']).$psign;
-    // print $per."  $fixed $psign $sing ".$_SESSION['locale_info']['decimal_point']." ".$_SESSION['locale_info']['thousands_sep']." <br>";
-  }
+    }
   else
     $per=$error_txt;
   return $per;
@@ -353,7 +353,7 @@ function parse_money($amount,$currency=false){
   global $myconf;
   //	preg_match('/(\$|\£|\€|EUR|GBP|USD)[0-9]{1,3}(?:,?[0-9]{3})*(?:\.[0-9]{2})?/',$term_description , $match){
 
-
+$locale_info = localeconv();
 
   if(!$currency)
     $currency=$myconf['currency_code'];
@@ -386,7 +386,7 @@ function parse_money($amount,$currency=false){
   if($qty_parts==1)
     $number=floatval(preg_replace("/[^-0-9\.]/","",$qty[0]));
   if($qty_parts==2){
-    $number=floatval(preg_replace("/[^-0-9\.]/","",$qty[0])).$_SESSION['locale_info']['decimal_point'].floatval(preg_replace("/[^-0-9\.]/","",$qty[1]));
+    $number=floatval(preg_replace("/[^-0-9\.]/","",$qty[0])).$locale_info['decimal_point'].floatval(preg_replace("/[^-0-9\.]/","",$qty[1]));
   }else{
     $i=0;
     $number='0';
@@ -461,12 +461,12 @@ function RelativeTime($timestamp){
 
 function number($a,$fixed=1,$force_fix=false){
 
-
+$locale_info = localeconv();
   $floored=floor($a);
   if($floored==$a and !$force_fix)
     $fixed=0;
 
-  $a=number_format($a,$fixed,$_SESSION['locale_info']['decimal_point'],$_SESSION['locale_info']['thousands_sep']);
+  $a=number_format($a,$fixed,$locale_info['decimal_point'],$locale_info['thousands_sep']);
   
   return $a;
 }
@@ -1717,5 +1717,37 @@ function number2alpha($number){
   
 
 }
+
+
+function generatePassword($length=9, $strength=0) {
+	$vowels = 'aeuy'.md5(mt_rand());
+	$consonants = 'bdghjmnpqrstvz'.md5(mt_rand());
+	if ($strength & 1) {
+		$consonants .= 'BDGHJLMNPQRSTVWXZlkjhgfduytrdqwertyuiopasdfghjklzxcvbnm';
+	}
+	if ($strength & 2) {
+		$vowels .= "AEUY4,cmoewmpaeoi8m5390m4pomeotixcmpodim";
+	}
+	if ($strength & 4) {
+		$consonants .= '2345678906789$%^&*(';
+	}
+	if ($strength & 8) {
+		$consonants .= '!=/[]{}~|\<>$%^&*()_+@#.,)(*%%';
+	}
+ 
+	$password = '';
+	$alt = time() % 2;
+	for ($i = 0; $i < $length; $i++) {
+		if ($alt == 1) {
+			$password .= $consonants[(mt_rand() % strlen($consonants))];
+			$alt = 0;
+		} else {
+			$password .= $vowels[(mt_rand() % strlen($vowels))];
+			$alt = 1;
+		}
+	}
+	return $password;
+}
+
 
 ?>

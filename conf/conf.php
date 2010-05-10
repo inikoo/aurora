@@ -1804,7 +1804,6 @@ $default_state=array(
                );
 
 
-
 $yui_path="external_libs/yui/".$myconf['yui_version']."/build/";
 $tmp_images_dir='app_files/pics/';
 

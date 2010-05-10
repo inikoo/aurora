@@ -79,12 +79,13 @@ foreach($pics as $key=>$value){
      
      // print "----".getcwd()."------ ".$img_filename."   \n";
       $rand=rand().rand();
-      $tmp_file='app_files/pics/tmp/tmp.jpg';
+      
+      $tmp_file='app_files/pics/tmp/tmp'.$rand.'.jpg';
       copy('mantenence/scripts/'.$img_filename,$tmp_file );
      // exit;
      
      $data=array(
-	    'file'=>'tmp.jpg'
+	    'file'=>'tmp'.$rand.'.jpg'
 	    ,'path'=>'assets/'
 	    ,'name'=>$row['Product Code']
 	    ,'caption'=>''
