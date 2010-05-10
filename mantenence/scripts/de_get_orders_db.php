@@ -33,6 +33,8 @@ if (!$con) {
     print "Error can not connect with database server\n";
     exit;
 }
+
+$dns_db='dw_avant';
 $db=@mysql_select_db($dns_db, $con);
 if (!$db) {
     print "Error can not access the database\n";
@@ -91,7 +93,7 @@ $dept_promo=new Department('find',$dept_data,'create');
 $dept_promo_key=$dept_promo->id;
 
 $fam_data=array(
-		'Product Family Code'=>'PND_GB',
+		'Product Family Code'=>'PND_DE',
 		'Product Family Name'=>'Products Without Family',
 		'Product Family Main Department Key'=>$dept_no_dept_key,
 		'Product Family Store Key'=>$store_key,
@@ -104,7 +106,7 @@ $fam_no_fam_key=$fam_no_fam->id;
 //print_r($fam_no_fam);
 
 $fam_data=array(
-		'Product Family Code'=>'Promo_GB',
+		'Product Family Code'=>'Promo_DE',
 		'Product Family Name'=>'Promotional Items',
 		'Product Family Main Department Key'=>$dept_promo_key,
 		'Product Family Store Key'=>$store_key,
@@ -123,9 +125,11 @@ $fam_promo_key=$fam_promo->id;
 
 
 
+
+
 $sql="select * from  de_orders_data.orders  where   (last_transcribed is NULL  or last_read>last_transcribed) and deleted='No'  order by filename  ";
 //$sql="select * from  de_orders_data.orders where filename like '%refund.xls'   order by filename";
-$sql="select * from  de_orders_data.orders  where filename like '/mnt/%DE0279.xls'  order by filename";
+//$sql="select * from  de_orders_data.orders  where filename like '/mnt/%DE0279.xls'  order by filename";
 
 
 $contador=0;
@@ -214,7 +218,7 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 
     list($date_index,$date_order,$date_inv)=get_dates($row2['timestamp'],$header_data,$tipo_order,true);
   
-
+$editor=array("Date"=>$date_order);
     
     if($tipo_order==9){
       if( $date_inv=='NULL' or  strtotime($date_order)>strtotime($date_inv)){
@@ -1308,8 +1312,8 @@ list($parcels,$parcel_type)=parse_parcels($header_data['parcels']);
   
 
     if($update){
-      print "Updated ";
-
+      print "Updatedx ";
+      
       $sql=sprintf("select `Order Key`  from `Order Dimension`  where `Order Original Metadata`=%s  ",prepare_mysql($store_code.$order_data_id));
 	 
       $result_test=mysql_query($sql);
@@ -1353,6 +1357,9 @@ list($parcels,$parcel_type)=parse_parcels($header_data['parcels']);
       if(!mysql_query($sql))
 	print "$sql Warning can no delete oldhidt nio prod";
 	
+
+
+
     }
 
 
@@ -1370,7 +1377,7 @@ list($parcels,$parcel_type)=parse_parcels($header_data['parcels']);
     //print "$tipo_order \n";
     $data['Order Currency']=$currency;
     $data['Order Currency Exchange']=$exchange;
-    $sales_rep_data=get_user_id($header_data['takenby'],true,'&view=processed',$header_data['order_num']);
+    $sales_rep_data=get_user_id($header_data['takenby'],true,'&view=processed',$header_data['order_num'],$editor);
     $data['Order XHTML Sale Reps']=$sales_rep_data['xhtml'];
     $data['Order Customer Contact Name']=$customer_data['Customer Main Contact Name'];
     $data['Order Sale Reps IDs']=$sales_rep_data['id'];
@@ -1480,8 +1487,8 @@ list($parcels,$parcel_type)=parse_parcels($header_data['parcels']);
 	  $weight=$header_data['weight'];
 
 
-	$picker_data=get_user_id($header_data['pickedby'],true,'&view=picks',$header_data['order_num']);
-	$packer_data=get_user_id($header_data['packedby'],true,'&view=packs',$header_data['order_num']);
+	$picker_data=get_user_id($header_data['pickedby'],true,'&view=picks',$header_data['order_num'],$editor);
+	$packer_data=get_user_id($header_data['packedby'],true,'&view=packs',$header_data['order_num'],$editor);
 	$order_type=$data['Order Type'];
 
 
@@ -1617,8 +1624,8 @@ list($parcels,$parcel_type)=parse_parcels($header_data['parcels']);
 
 
 
-	$picker_data=get_user_id($header_data['pickedby'],true,'&view=picks',$header_data['order_num']);
-	$packer_data=get_user_id($header_data['packedby'],true,'&view=packs',$header_data['order_num']);
+	$picker_data=get_user_id($header_data['pickedby'],true,'&view=picks',$header_data['order_num'],$editor);
+	$packer_data=get_user_id($header_data['packedby'],true,'&view=packs',$header_data['order_num'],$editor);
 
 
 
@@ -1731,8 +1738,8 @@ list($parcels,$parcel_type)=parse_parcels($header_data['parcels']);
 	  $weight=$header_data['weight'];
 
 
-	$picker_data=get_user_id($header_data['pickedby'],true,'&view=picks',$header_data['order_num']);
-	$packer_data=get_user_id($header_data['packedby'],true,'&view=packs',$header_data['order_num']);
+	$picker_data=get_user_id($header_data['pickedby'],true,'&view=picks',$header_data['order_num'],$editor);
+	$packer_data=get_user_id($header_data['packedby'],true,'&view=packs',$header_data['order_num'],$editor);
 
 	$order_type=$data['Order Type'];
 
@@ -1952,7 +1959,7 @@ list($parcels,$parcel_type)=parse_parcels($header_data['parcels']);
 	//$invoice=new Invoice ('create',$data_invoice,$data_invoice_transactions,false);
 
 	// create new invoice (negative)(no deliver note changes noting)
-	//	exit;
+	       
 	$data['ghost_order']=true;
 	$data['Order Type']='Order';
 	$data['store_id']=$store_key;
@@ -2144,8 +2151,8 @@ list($parcels,$parcel_type)=parse_parcels($header_data['parcels']);
 	$weight=$header_data['weight'];
 
 
-      $picker_data=get_user_id($header_data['pickedby'],true,'&view=picks',$header_data['order_num']);
-      $packer_data=get_user_id($header_data['packedby'],true,'&view=packs',$header_data['order_num']);
+      $picker_data=get_user_id($header_data['pickedby'],true,'&view=picks',$header_data['order_num'],$editor);
+      $packer_data=get_user_id($header_data['packedby'],true,'&view=packs',$header_data['order_num'],$editor);
 
       // 	print_r($picker_data);
 

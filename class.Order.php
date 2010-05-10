@@ -23,7 +23,6 @@ include_once('class.DeliveryNote.php');
 
 
 
-
 class Order extends DB_Table {
     //Public $data = array ();
     //	Public $items = array ();
@@ -31,6 +30,8 @@ class Order extends DB_Table {
     //	Public $id = false;
     //	Public $tipo;
     //	Public $staus = 'new';
+
+
     var $ghost_order=false;
     Public $skip_update_product_sales=false;
 var $skip_update_after_individual_transaction=true;
@@ -65,6 +66,9 @@ var $skip_update_after_individual_transaction=true;
 
 
     function create_order($data) {
+
+      
+
         global $myconf;
         if (! isset ( $data ['type'] ))
             return;
@@ -81,7 +85,6 @@ var $skip_update_after_individual_transaction=true;
         $type = $data ['type'];
         
         switch ($type) {
-
 
         case('system'):
             global $myconf;
@@ -152,7 +155,6 @@ $this->update_charges();
                 $this->ghost_order = false;
 
 
-
             if (! isset ( $data ['store_id'] ))
                 $data ['store_id'] = 0;
 
@@ -172,14 +174,14 @@ $this->update_charges();
                 $store_country_code='XX';
 
             }
-
+	   
 
             $data['Customer Data']['editor']=$this->editor;
             $data['Customer Data']['editor']['Date']=date("Y-m-d H:i:s",strtotime($data['Customer Data']['editor']['Date']." -1 second"));
             $this->data ['Order XHTML Ship Tos']='';
 
             if ($data['staff sale']=='Yes') {
-
+ 
                 $staff=new Staff('id',$data['staff sale key']);
                 $customer = new Customer ( 'find staff create', $staff );
                 $this->data ['Order Main Country 2 Alpha Code']=$store_country_code;
@@ -191,15 +193,15 @@ $this->update_charges();
 
             }
             elseif(!isset($data['Shipping Address']) or !is_array($data['Shipping Address']) or array_empty($data['Shipping Address']) or $data['Delivery Note Dispatch Method']=='Collected') {
-                $customer = new Customer ( 'find create', $data['Customer Data'] );
+   $customer = new Customer ( 'find create', $data['Customer Data'] );
                 $data['Delivery Note Dispatch Method']='Collected';
                 $this->data ['Order Ship To Keys']=0;
                 $this->data ['Order Main Country 2 Alpha Code']=$customer -> data['Customer Main Country 2 Alpha Code'];
 $this->data ['Order Ship To Country Code']='';
             }
             else {
-                //print "Cust data\n";
-                //print_r($data['Customer Data']);
+	      //                print "Cust data\n";
+	      // print_r($data['Customer Data']);
 
                 //-------------------------
 
@@ -232,7 +234,8 @@ $this->data ['Order Ship To Country Code']='';
                 //print "a2\n";
                 $this->data ['Order XHTML Ship Tos']=$ship_to->data['Ship To XHTML Address'];
                 $this->data ['Order Ship To Keys']=$ship_to->id;
-                $customer->add_ship_to($ship_to->id,'Yes');
+$this->data ['Order Ship To Country Code']=$ship_to->data['Ship To Country Code'];               
+ $customer->add_ship_to($ship_to->id,'Yes');
 
                 //print "a3\n";
                 //print_r($customer);
@@ -258,7 +261,6 @@ $this->data ['Order Ship To Country Code']='';
                 print_r($customer);
                 exit;
             }
-
 
 
 

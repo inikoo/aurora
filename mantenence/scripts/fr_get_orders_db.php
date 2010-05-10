@@ -29,11 +29,13 @@ $to_update=array(
 		 'parts'=>array()
 		 );
 
+
 $con=@mysql_connect($dns_host,$dns_user,$dns_pwd );
 if (!$con) {
   print "Error can not connect with database server\n";
   exit;
 }
+$dns_db='dw_avant';
 $db=@mysql_select_db($dns_db, $con);
 if (!$db) {
   print "Error can not access the database\n";
@@ -280,7 +282,7 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
     list($date_index,$date_order,$date_inv)=get_dates($row2['timestamp'],$header_data,$tipo_order,true);
   
   
-
+    $editor=array("Date"=>$date_order);
     
     if($tipo_order==9){
       if( $date_inv=='NULL' or  strtotime($date_order)>strtotime($date_inv)){
@@ -1399,7 +1401,7 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
     //print "$tipo_order \n";
     $data['Order Currency']=$currency;
     $data['Order Currency Exchange']=$exchange;
-    $sales_rep_data=get_user_id($header_data['takenby'],true,'&view=processed');
+    $sales_rep_data=get_user_id($header_data['takenby'],true,'&view=processed',$header_data['order_num'],$editor);
     $data['Order XHTML Sale Reps']=$sales_rep_data['xhtml'];
     $data['Order Customer Contact Name']=$customer_data['Customer Main Contact Name'];
     $data['Order Sale Reps IDs']=$sales_rep_data['id'];
@@ -1509,8 +1511,8 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 	  $weight=$header_data['weight'];
 
 
-	$picker_data=get_user_id($header_data['pickedby'],true,'&view=picks',$header_data['order_num']);
-	$packer_data=get_user_id($header_data['packedby'],true,'&view=packs',$header_data['order_num']);
+	$picker_data=get_user_id($header_data['pickedby'],true,'&view=picks',$header_data['order_num'],$editor);
+	$packer_data=get_user_id($header_data['packedby'],true,'&view=packs',$header_data['order_num'],$editor);
 	$order_type=$data['Order Type'];
 
 	// TODO in the Ci, DE
@@ -1642,8 +1644,8 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 	  $weight=$header_data['weight'];
 
 
-	$picker_data=get_user_id($header_data['pickedby'],true,'&view=picks');
-	$packer_data=get_user_id($header_data['packedby'],true,'&view=packs');
+	$picker_data=get_user_id($header_data['pickedby'],true,'&view=picks',$header_data['order_num'],$editor);
+	$packer_data=get_user_id($header_data['packedby'],true,'&view=packs',$header_data['order_num'],$editor);
 	$order_type='Follow on';  ;
 	$data_dn=array(
 		       'Delivery Note Date'=>$date_inv
@@ -1753,8 +1755,8 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 	  $weight=$header_data['weight'];
 
 
-	$picker_data=get_user_id($header_data['pickedby'],true,'&view=picks');
-	$packer_data=get_user_id($header_data['packedby'],true,'&view=packs');
+	$picker_data=get_user_id($header_data['pickedby'],true,'&view=picks',$header_data['order_num'],$editor);
+	$packer_data=get_user_id($header_data['packedby'],true,'&view=packs',$header_data['order_num'],$editor);
 
 	$order_type=$data['Order Type'];
 
@@ -2166,8 +2168,8 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 	$weight=$header_data['weight'];
 
 
-      $picker_data=get_user_id($header_data['pickedby'],true,'&view=picks');
-      $packer_data=get_user_id($header_data['packedby'],true,'&view=packs');
+      $picker_data=get_user_id($header_data['pickedby'],true,'&view=picks',$header_data['order_num'],$editor);
+      $packer_data=get_user_id($header_data['packedby'],true,'&view=packs',$header_data['order_num'],$editor);
 
       // 	print_r($picker_data);
 

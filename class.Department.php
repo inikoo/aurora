@@ -1260,7 +1260,7 @@ public $new_value=false;
     }
 
     function update_families() {
-        $sql=sprintf("select count(*) as num from `Product Family Dimension`  where `Product Family Main Department Key`=%d",$this->id);
+        $sql=sprintf("select count(*) as num from `Product Family Dimension`  where `Product Family Record Type` in ('New','Normal','Discontinuing') and `Product Family Main Department Key`=%d",$this->id);
         $result=mysql_query($sql);
         if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
             $this->data['Product Department Families']=$row['num'];

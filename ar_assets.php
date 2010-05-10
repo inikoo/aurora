@@ -7486,7 +7486,7 @@ function list_customers_per_store() {
 
     $total_customers=0;
     $sql="select  sum(`Store Total Customer Contacts`) as total_contacts,sum(`Store New Customer Contacts`) new_contacts,sum(`Store Total Customers`) as customers,sum(`Store Active Customers`) as active,sum(`Store New Customers`) as new, sum(`Store Lost Customers`) as lost from `Store Dimension` $where     ";
-   //print $sql;
+    // print $sql;
     $res = mysql_query($sql);
     if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
         $total_customers=$row['customers'];

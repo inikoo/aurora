@@ -213,6 +213,20 @@ ALTER TABLE `Company Position Dimension`
   
 ALTER TABLE `Company Department Position Bridge` CHANGE `Company Department Key`  `Department Key`  SMALLINT( 5 ) UNSIGNED NOT NULL ,
 CHANGE `Company Position Key` `Position Key` SMALLINT( 5 ) UNSIGNED NOT NULL   
+
+
   ALTER TABLE `Order Dimension` ADD `Order Payment Method`  ENUM( 'Credit/Debit Card', 'Pay Pal', 'Bank Transfer' ) NULL DEFAULT NULL ;
+
+ALTER TABLE `Store Dimension` ADD `Store Total Customer Contacts` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0' AFTER `Store Total Customers` ,
+ADD `Store New Customer Contacts` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0' AFTER `Store Total Customer Contacts` ,
+ADD `Store Active Customers` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0' AFTER `Store New Customer Contacts` ,
+ADD `Store New Customers` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0' AFTER `Store Active Customers` ,
+ADD `Store Lost Customers` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0' AFTER `Store New Customers` ;
+
+
+
+
+
+
 */
 ?>
