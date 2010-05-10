@@ -213,6 +213,6 @@ ALTER TABLE `Company Position Dimension`
   
 ALTER TABLE `Company Department Position Bridge` CHANGE `Company Department Key`  `Department Key`  SMALLINT( 5 ) UNSIGNED NOT NULL ,
 CHANGE `Company Position Key` `Position Key` SMALLINT( 5 ) UNSIGNED NOT NULL   
-  
+  ALTER TABLE `Order Dimension` ADD `Order Payment Method`  ENUM( 'Credit/Debit Card', 'Pay Pal', 'Bank Transfer' ) NULL DEFAULT NULL ;
 */
 ?>
