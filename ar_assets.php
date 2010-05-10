@@ -3526,6 +3526,9 @@ function list_departments() {
     echo json_encode($response);
 }
 function list_products() {
+
+
+
     $conf=$_SESSION['state']['products']['table'];
     if (isset( $_REQUEST['view']))
         $view=$_REQUEST['view'];
@@ -3650,13 +3653,20 @@ function list_products() {
 
     switch ($parent) {
     case('store'):
+    
+    
         $where=sprintf(' where `Product Store Key`=%d',$_SESSION['state']['store']['id']);
         break;
     case('department'):
         $where=sprintf(' left join `Product Department Bridge` B on (P.`Product Key`=B.`Product Key`) where `Product Department Key`=%d',$_SESSION['state']['department']['id']);
         break;
     case('family'):
-        $where=sprintf(' where `Product Family Key`=%d',$_SESSION['state']['family']['id']);
+        if(isset($_REQUEST['parent_key']))
+        $parent_key=$_REQUEST['parent_key'];
+        else
+        $parent_key=$_SESSION['state']['family']['id'];
+
+        $where=sprintf(' where `Product Family Key`=%d',$parent_key);
         break;
     default:
         $where=sprintf(' where true ');
@@ -4363,7 +4373,9 @@ function list_products() {
                      'state'=>$type,
                      'web'=>$web_state,
                      'image'=>$row['Product Main Image'],
-                     'type'=>'item'
+                     'type'=>'item',
+                     'name_only'=>$row['Product Name'],
+                     'units'=>$row['Product Units Per Case']."x"
 
                  );
     }
@@ -5833,7 +5845,10 @@ function list_families() {
                      'surplus'=>number($row['Product Family Surplus Availability Products']),
                      'optimal'=>number($row['Product Family Optimal Availability Products']),
                      'low'=>number($row['Product Family Low Availability Products']),
-                     'critical'=>number($row['Product Family Critical Availability Products'])
+                     'critical'=>number($row['Product Family Critical Availability Products']),
+                                          'image'=>$row['Product Family Main Image'],
+                     'type'=>'item'
+
                  );
     }
 

@@ -440,7 +440,7 @@ function xupdate($tipo,$data){
    if(strlen($data)!=64){
      $this->error=true;
      $this->error_updated=true;
-     $this->msg.=', Wrong password format';
+     $this->msg.=', Wrong password format ('.strlen($data).')';
      $this->msg_updated.=', Wrong password format';
 
    }

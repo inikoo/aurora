@@ -370,6 +370,7 @@ function change_plot(o){
      Event.addListener(search_scope+"_search", "keyup",search_events,search_scope)
   Event.addListener(search_scope+"_clean_search", "click",clear_search,search_scope);   
      
+ get_thumbnails({tipo:'families',parent:'department'});
 
   var oACDS = new YAHOO.util.FunctionDataSource(mygetTerms);
  oACDS.queryMatchContains = true;
@@ -396,7 +397,9 @@ YAHOO.util.Event.addListener('details', "click",change_details,'store');
  YAHOO.util.Event.addListener('show_percentages', "click",show_percentages,'department');
 
 
-
+ ids=['table_type_thumbnail','table_type_list'];
+ YAHOO.util.Event.addListener(ids, "click",change_table_type,{table_id:0,parent:'department'});
+ 
  }
 
 YAHOO.util.Event.onDOMReady(init);

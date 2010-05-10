@@ -1142,7 +1142,8 @@ function show_add_product_dialog(){
 
 
 function init(){
- 
+ 	YAHOO.util.Event.on('uploadButton', 'click', onUploadButtonClick);
+
  
     part_selected= function(sType, aArgs) {
 	var myAC = aArgs[0]; var elLI = aArgs[1]; var oData = aArgs[2]; 

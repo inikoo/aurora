@@ -78,14 +78,13 @@ var $skip_update_after_individual_transaction=true;
         }
 
 
-
         $type = $data ['type'];
+        
         switch ($type) {
 
 
         case('system'):
             global $myconf;
-            // print_r($data);
             $this->data ['Order Type'] = $data ['Order Type'];
             $this->set_data_from_customer($data['Customer Key']);
             $this->data ['Order Current Dispatch State'] = 'In Process';
@@ -101,7 +100,18 @@ var $skip_update_after_individual_transaction=true;
 
             $this->data ['Order Original Metadata']='';
             $this->data ['Order Currency Exchange']=1;
-            if ($this->data ['Order Currency']!=$myconf['currency_code']) {
+            
+            
+            $sql=sprintf("select `Corporation Currency` from `Corporation Dimension`");
+$res=mysql_query($sql);
+if($row=mysql_fetch_array($res)){
+   $corporation_currency_code=$row['Corporation Currency'];
+}else
+
+    $corporation_currency_code='GBP';
+
+
+            if ($this->data ['Order Currency']!=$corporation_currency_code) {
 
 
                 $currency_exchange = new CurrencyExchange('get',$this->data ['Order Currency'].$this->data ['Order Currency'],'now');
@@ -2492,6 +2502,8 @@ $this->update_item_totals_from_order_transactions();
 
 
     function set_data_from_customer($customer_key,$store_key=false) {
+    
+    
         $customer=new Customer($customer_key);
         if (!$customer->id) {
             $customer= new Customer('create anonymous');
@@ -2558,6 +2570,7 @@ $this->update_item_totals_from_order_transactions();
     }
 
 function set_taxes($country){
+
   switch($country){
   case('GBR'):
     if($this->data['Order Ship To Country Code']=='GBR' or $this->data['Order Ship To Country Code']=='UNK'){

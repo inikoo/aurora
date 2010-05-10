@@ -53,6 +53,8 @@ $img_array_full_path = glob($path."*.jpg");
 foreach($img_array_full_path as $pic_path){
    $_pic_path=preg_replace('/.*\//','',$pic_path);
   if(preg_match('/[a-z0-9\-]+(|_l|_bis|_tris|_quad|_display|_displ|dpl|_box)+.jpg/',$_pic_path)){
+ // if(preg_match('/avalo[a-z0-9\-]+(|_l|_bis|_tris|_quad|_display|_displ|dpl|_box)+.jpg/',$_pic_path)){
+
     // print "$pic_path\n";
    
       $root=preg_replace('/(_.*)?\..*$/','',$_pic_path);
@@ -68,6 +70,7 @@ foreach($img_array_full_path as $pic_path){
 } 
 //print_r($pics);
 
+
 chdir('../../');
 foreach($pics as $key=>$value){
 
@@ -80,22 +83,24 @@ $sql=sprintf("select `Product Family Key`,`Product Family Code` from `Product Fa
   $family=new Family($row['Product Family Key']);
     foreach($value as $img_filename){
      
-      print "F----".getcwd()."------ ".$img_filename."   \n";
+      print "F-- $key --".getcwd()."------ ".$img_filename."   \n";
       $rand=rand().rand();
-      $tmp_file='app_files/pics/tmp/tmp.jpg';
+      $tmp_file='app_files/pics/tmp/tmp2.jpg';
       copy('mantenence/scripts/'.$img_filename,$tmp_file );
      // exit;
      
      $data=array(
-	    'file'=>'tmp.jpg'
+	    'file'=>'tmp2.jpg'
 	    ,'path'=>'assets/'
 	    ,'name'=>$row['Product Family Code']
 	    ,'caption'=>''
 	    );
 
-     //print_r($data);
+//     print_r($data);
+     
 $image=new Image('find',$data,'create');
-      $family->add_image($image->id,'principal');
+   print $image->id."\n";
+   $family->add_image($image->id,'principal');
       //print_r($family);
       // print $family->msg."\n";
       $family->update_main_image();

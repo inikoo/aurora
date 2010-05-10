@@ -209,3 +209,70 @@ var change_rpp_with_totals=function (rpp,tableid){
     table.get('paginator').setRowsPerPage(rpp+1)
 
 }
+
+
+function change_table_type(e,data){
+
+table_id=data.table_id;
+parent=data.parent;
+if(Dom.hasClass(this, 'selected'))
+ return;
+ var elements=Dom.getElementsByClassName('selected', 'span', 'table_type');
+ Dom.removeClass(elements, 'selected');
+ Dom.addClass(this, 'selected');
+
+ if(this.id=='table_type_list'){
+ tipo='list';
+ Dom.get('thumbnails'+table_id).style.display='none'
+  Dom.get('table'+table_id).style.display=''
+Dom.get('list_options'+table_id).style.display=''
+ 
+ }else{
+ tipo='thumbnails';
+  Dom.get('thumbnails'+table_id).style.display=''
+ Dom.get('table'+table_id).style.display='none'
+Dom.get('list_options'+table_id).style.display='none'
+ 
+ }
+ YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys='+parent+'-table_type&value='+escape(tipo),{});
+}
+
+
+ function get_thumbnails(data){
+ parent=data.parent;
+ tipo=data.tipo;
+	var table_id=0;
+	var request='ar_assets.php?tipo='+tipo+'&parent='+parent;
+	YAHOO.util.Connect.asyncRequest('POST',request ,{
+	    success:function(o) {
+
+		var r =  YAHOO.lang.JSON.parse(o.responseText);
+		if(r.resultset.state==200){
+		    var container=Dom.get('thumbnails'+table_id);
+		    for(x in r.resultset.data){
+    if(r.resultset.data[x].type=='item'){
+			var img = new YAHOO.util.Element(document.createElement('img')); 
+			img.set('src', r.resultset.data[x].image); 
+			img.set('alt', r.resultset.data[x].image); 
+			var internal_span = new YAHOO.util.Element(document.createElement('span')); 
+			internal_span.set('innerHTML', r.resultset.data[x].code); 
+		 
+			var div = new YAHOO.util.Element(document.createElement('div')); 
+		
+
+			img.appendTo(div); 
+			internal_span.appendTo(div); 
+		
+		
+
+			div.appendTo(container); 
+			}
+		    
+		    }
+		      
+		}
+		
+	    }
+	    
+	    });
+    }

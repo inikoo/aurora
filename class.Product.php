@@ -16,6 +16,7 @@ include_once('class.Deal.php');
 include_once('class.SupplierProduct.php');
 include_once('class.Part.php');
 include_once('class.Store.php');
+include_once('common_store_functions.php');
 
 /* class: product
    Class to manage the *Product Family Dimension* table
@@ -4728,96 +4729,33 @@ function update_availability(){
 }
 
 function get_formated_rrp($locale=''){
-  $rrp=money($this->data['Product RRP']/$this->data['Product Units Per Case'],$locale,$this->get('Product Currency'));
-  if ($this->locale=="de_DE"){
-    return "UVP: $rrp pro Stück";
-  }elseif ($this->locale=="pl_PL"){
-    return "SCD:$rrp za sztukę";
-  }elseif($this->locale=="fr_FR") {
-    return "PVC:$rrp  /unité PVC";
-  }
-  else
-    return _("RRP").": $rrp "._("each");
-  
+
+$data=array(
+'Product RRP'=>$this->data['Product RRP'],
+'Product Units Per Case'=>$this->data['Product Units Per Case'],
+'Product Currency'=>$this->get('Product Currency'),
+'Product Unit Type'=>$this->data['Product Unit Type'],
+'locale'=>$locale);
+
+return formated_rrp($data);
 }
+
+ 
 
 
 function get_formated_price($locale=''){
 
+  $data=array(
+'Product Price'=>$this->data['Product Price'],
+'Product Units Per Case'=>$this->data['Product Units Per Case'],
+'Product Currency'=>$this->get('Product Currency'),
+'Product Unit Type'=>$this->data['Product Unit Type'],
+
+'locale'=>$locale);
+
+return formated_price($data);
   
-  
-  $price=money_locale($this->data['Product Price'],$locale,$this->data['Product Currency']);
-  $price_per_unit=money_locale($this->data['Product Price']/$this->data['Product Units Per Case'],$locale,$this->data['Product Currency']);
-  
-  if ($locale=='de_DE') {
-    if (isset($data['price per unit text'])) {
-      $str=$data['price per unit text']." $price";
-    } else {
-      if ($this->data['Product Units Per Case']>1)
-	$str="$price/".$this->data['Product Units Per Case']." ($price_per_unit pro Stück)";
-      else
-	$str="$price pro Stück";
-    }  
-    
-    if ($data=='from')
-      return 'Preis ab '.$str;
-    else
-      return 'Preis: '.$str;
-  
-	
-  }elseif ($locale=='pl_PL') {
-	if (isset($data['price per unit text'])) {
-	  $str=$data['price per unit text']." $price";
-	} else {
-	  if ($this->data['Product Units Per Case']>1)
-	$str="$price/".$this->data['Product Units Per Case']." ($price_per_unit za sztukę)";
-      else
-	$str="$price za sztukę";
-
-	}
-	if ($data=='from')
-	  return 'Cena od '.$str;
-	else
-	  return 'Cena: '.$str;
-
-
-      }
-      elseif($locale=='fr_FR') {
-
-	if ( is_array($data) and isset($data['price per unit text'])  ) {
-	  $str=$data['price per unit text']." $price";
-	} else {
-	  if ($this->data['Product Units Per Case']>1)
-	    $str="$price/".$this->data['Product Units Per Case']." ($price_per_unit par unité)";
-	  else
-	    $str="$price par unité";
-
-	}
-	if ($data=='from')
-	  return 'Prix à partir de '.$str;
-	else
-	  return 'Prix: '.$str;
-
-      }
-      else {
-
-	if ( is_array($data) and isset($data['price per unit text'])  ) {
-	  $str=$data['price per unit text']." $price";
-	} else {
-	  if ($this->data['Product Units Per Case']>1)
-	    $str="$price/".$this->data['Product Units Per Case']." ($price_per_unit per unit)";
-	  else
-	$str="$price per unit";
-
-	}
-	if ($data=='from')
-	  return 'Price from '.$str;
-	else
-	  return 'Price: '.$str;
-	
-
-
-      }
+ 
 
 
 
