@@ -31,7 +31,8 @@ mysql_query("SET NAMES 'utf8'");
 require_once '../../conf/conf.php';           
 date_default_timezone_set('Europe/London');
 
-$where='where  `Part XHTML Currently Used In` like "%lebt%"';
+$where='and  `Part XHTML Currently Used In` like "%avalon-01%"';
+$where='and `Part SKU`=1414';
 $where='';
 $sql=sprintf('select count(*) as num  from `Part Dimension` where `Part Status`="in Use" %s ',$where);
 $res=mysql_query($sql);
@@ -41,19 +42,20 @@ while($row=mysql_fetch_array($res)){
 
 
 //print "Wrap part transactions\n";
-$sql=sprintf('select `Part SKU`,`Part XHTML Currently Used In`  from `Part Dimension` where `Part Status`="in Use"   %s  order by `Part Valid From` desc',$where);
+$sql=sprintf('select `Part SKU`,`Part XHTML Currently Used In`  from `Part Dimension` where `Part Status`="in Use"   %s  order by `Part Valid From`  desc',$where);
+//print $sql;
 $res=mysql_query($sql);
 $count=0;
 while($row=mysql_fetch_array($res)){
   $count++;
 
-
   $part=new Part($row['Part SKU']);
-  print percentage($count,$total,5)."  ".$part->data['Part Status']."\r";
+  print percentage($count,$total,5)."  ".$part->data['Part XHTML Currently Used In']."\r";
   
   
 
-  
+   $part->wrap_transactions();
+
 
   
  $part->update_stock_history();
