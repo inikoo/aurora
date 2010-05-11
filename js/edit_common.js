@@ -239,6 +239,7 @@ function validate_scope_new(branch){
 
 
 function validate_scope_edit(branch){
+
     var changed=false;
     var errors=false;
 
@@ -271,12 +272,12 @@ function validate_scope_edit(branch){
 
 function validate_general(branch,item,query){
     var data= validate_scope_data[branch][item];
-
-    var old_code=Dom.get(data.name).getAttribute('ovalue');
-    if(old_code!=trim(query)){  
+    // alert(branch+' '+item+' '+data.name)
+    var old_value=Dom.get(data.name).getAttribute('ovalue');
+    if(old_value!=trim(query)){  
  
  
-	if(old_code.toLowerCase()!=trim(query.toLowerCase())){  
+	if(old_value.toLowerCase()!=trim(query.toLowerCase())){  
 	    validate_scope_data[branch][item].changed=true;
 
 	    if(data.ar=='find'){
@@ -316,9 +317,9 @@ function validate_general(branch,item,query){
 		for(validator_index in data.validation){
 		    validator_data=data.validation[validator_index];
 		    var validator=new RegExp(validator_data.regexp,"i");
- 
+		    //  alert(validator_data.regexp)
 		    if(!validator.test(query)){
-	
+
 	                validate_scope_data[branch][item].validated=false;
 			Dom.get(data.name+'_msg').innerHTML=validator_data.invalid_msg;
 			break;
@@ -371,6 +372,9 @@ function save_edit_general(branch){
     scope_edit_ar_file=validate_scope_metadata[branch]['ar_file'];
     branch_key=validate_scope_metadata[branch]['key'];
     branch_key_name=validate_scope_metadata[branch]['key_name'];
+
+    
+
     for(item in validate_scope_data[branch]){
 
 	if(validate_scope_data[branch][item].changed){
@@ -386,7 +390,7 @@ function save_edit_general(branch){
 		encodeURIComponent(item_input.value) +  '&oldvalue=' + 
 		encodeURIComponent(item_input.getAttribute('ovalue')) + 
 		'&'+branch_key_name+'='+branch_key;
-	    // alert(request);
+	    	    alert(request);
 
 	    YAHOO.util.Connect.asyncRequest('POST',request ,{
 		    success:function(o) {

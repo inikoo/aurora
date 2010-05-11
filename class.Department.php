@@ -549,7 +549,13 @@ public $new_value=false;
         }
 
         switch ($key) {
-        case('For Sale Products'):
+	case('For Public For Sale Families'):
+	  return number($this->data['Product Department For Public For Sale Families']);
+	  break;
+	case('For Public Discontinued Families'):
+	  return number($this->data['Product Department For Public Discontinued Families']);
+	  break;
+	case('For Sale Products'):
 	  return number($this->data['Product Department For Sale Products']);
             break;
         case('Families'):
@@ -1238,7 +1244,7 @@ public $new_value=false;
       $number_active_customers_more_than_50=0;
 
       $sql=sprintf(" select    (select sum(`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`)  from  `Order Transaction Fact`  where  `Order Transaction Fact`.`Customer Key`=OTF.`Customer Key` ) as total_amount  , sum(`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`) as amount,OTF.`Customer Key` from `Order Transaction Fact`  OTF left join    `Product History Dimension` as PH  on (OTF.`Product Key`=PH.`Product Key`) left join `Product Dimension` P on (PH.`Product ID`=P.`Product ID`) left join `Customer Dimension` C on (C.`Customer Key`=OTF.`Customer Key`)where `Product Main Department Key`=%d and `Customer Type by Activity` in ('New','Active') and `Invoice Transaction Gross Amount`>0  group by  OTF.`Customer Key`",$this->id);
-      print "$sql\n";
+      //      print "$sql\n";
       $result=mysql_query($sql);
       while($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
 	$number_active_customers++;
@@ -1254,13 +1260,13 @@ public $new_value=false;
 	      $this->data['Product Department Active Customers More 0.5 Share'],
 	      $this->id
                         );
- print "$sql\n";
+ // print "$sql\n";
  mysql_query($sql);
  
     }
 
     function update_families() {
-        $sql=sprintf("select count(*) as num from `Product Family Dimension`  where `Product Family Record Type` in ('New','Normal','Discontinuing') and `Product Family Main Department Key`=%d",$this->id);
+        $sql=sprintf("select count(*) as num from `Product Family Dimension`  where`Product Family Main Department Key`=%d",$this->id);
         $result=mysql_query($sql);
         if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
             $this->data['Product Department Families']=$row['num'];
@@ -1268,7 +1274,7 @@ public $new_value=false;
                          $this->data['Product Department Families'],
                          $this->id
                         );
-            mysql_query($sql);
+            mysql_query($sql); //print "$sql\n";
         }
 
   $sql=sprintf("select count(*) as num from `Product Family Dimension`  where `Product Family Main Department Key`=%d and `Product Family Sales Type`='Public Sale' and `Product Family Record Type` in ('New','Normal','Discontinuing')  ",$this->id);
@@ -1279,7 +1285,7 @@ public $new_value=false;
                          $this->data['Product Department For Public For Sale Families'],
                          $this->id
                         );
-            mysql_query($sql);
+            mysql_query($sql); //print "$sql\n";
         }
 
   $sql=sprintf("select count(*) as num from `Product Family Dimension`  where `Product Family Main Department Key`=%d  and `Product Family Sales Type`='Public Sale' and `Product Family Record Type`='Discontinued'    "   ,$this->id);
@@ -1290,7 +1296,7 @@ public $new_value=false;
                          $this->data['Product Department For Public Discontinued Families'],
                          $this->id
                         );
-	    //  print "$sql\n";
+	    //   print "$sql\n";
             mysql_query($sql);
         }
 

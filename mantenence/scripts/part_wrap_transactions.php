@@ -22,7 +22,7 @@ $con=@mysql_connect($dns_host,$dns_user,$dns_pwd );
 
 
 if(!$con){print "Error can not connect with database server\n";exit;}
-//$dns_db='dw';
+$dns_db='dw_avant';
 $db=@mysql_select_db($dns_db, $con);
 if (!$db){print "Error can not access the database\n";exit;}
 require_once '../../common_functions.php';
@@ -36,7 +36,8 @@ $res=mysql_query($sql);
 while($row=mysql_fetch_array($res)){
   $total=$row['num'];
 }
-
+$sql=sprintf('delete from `Part Location Dimension`');
+mysql_query($sql);
 
 print "Wrap part transactions\n";
 $sql=sprintf('select `Part SKU`,`Part XHTML Currently Used In`  from `Part Dimension`  where `Part SKU`=1414   ');

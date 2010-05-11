@@ -78,6 +78,10 @@ delete_department();
 case('edit_product_advanced'):
   edit_product_multi();
    break;
+case('edit_product_price'):
+case('edit_product_weight'):
+
+case('edit_product_description'):
 case('edit_product'):
   edit_product();
    break;
@@ -313,17 +317,25 @@ function edit_department(){
 
 }
 function edit_product(){
-  $product=new product('pid',$_REQUEST['id']);
+  $product=new product('pid',$_REQUEST['pid']);
   global $editor;
  $product->editor=$editor;
    $translator=array(
 		     'name'=>'Product Name',
 		     'sdescription'=>'Product Special Characteristic',
+		     'special_characteristic'=>'Product Special Characteristic',
+		     'description'=>'Product Description',
+
 		     'price'=>'Product Price',
 		     'unit_price'=>'Product Unit Price',
 		     'margin'=>'Product Margin',
 		     'unit_rrp'=>'Product RRP Per Unit',
-		     'sales_type'=>'Product Sales Type'
+		     'rrp'=>'Product RRP Per Unit',
+
+		     'sales_type'=>'Product Sales Type',
+		     'unit_weight'=>'Product Net Weight Per Unit',
+		     'outer_weight'=>'Product Gross Weight',
+
 		     );
     
     if(array_key_exists($_REQUEST['key'],$translator))
