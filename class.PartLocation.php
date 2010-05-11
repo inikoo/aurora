@@ -1637,7 +1637,7 @@ $sql=sprintf("update `Part Location Dimension` set `Quantity On Hand`=%f ,`Stock
 
 function get_history_intervals(){
    $sql=sprintf("select  `Inventory Transaction Type`,(`Date`) as Date from `Inventory Transaction Fact` where  `Part Sku`=%d and `Inventory Transaction Type` in ('Associate','Disassociate')  order by `Date` ,`Event Order` ",$this->part_sku);
-    // print "$sql\n";
+   // print "$sql\n";
     $dates=array();
     $result=mysql_query($sql);
     while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){

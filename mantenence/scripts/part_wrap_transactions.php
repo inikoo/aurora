@@ -39,7 +39,7 @@ while($row=mysql_fetch_array($res)){
 
 
 print "Wrap part transactions\n";
-$sql=sprintf('select `Part SKU`,`Part XHTML Currently Used In`  from `Part Dimension`');
+$sql=sprintf('select `Part SKU`,`Part XHTML Currently Used In`  from `Part Dimension`  where `Part SKU`=1414   ');
 $res=mysql_query($sql);
 $count=0;
 while($row=mysql_fetch_array($res)){
