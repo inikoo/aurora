@@ -25,7 +25,7 @@ if (!$con) {
     print "Error can not connect with database server\n";
     exit;
 }
-$dns_db='dw';
+$dns_db='dw_avant';
 $db=@mysql_select_db($dns_db, $con);
 if (!$db) {
     print "Error can not access the database\n";

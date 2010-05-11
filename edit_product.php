@@ -145,7 +145,8 @@ $js_files=array(
 		'common.js.php',
 		'js/search.js',
 		'table_common.js.php',
-		'js/upload_image.js'
+		'js/upload_image.js',
+		'js/edit_common.js'
 		);
 
 
@@ -217,6 +218,16 @@ $js_files[]=sprintf('edit_product.js.php?symbol=%s&product_id=%d&cats=%s',$produ
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
 
+$units_types=getEnumValues("Product Dimension","Product Unit Type" );
+//print_r($units_types);
+$unit_type_options=array();
+foreach($units_types as $units_type ){
+  $unit_type_options[$units_type]=$units_type;
+}
+
+$smarty->assign('unit_type_options',$unit_type_options
+                                );
+$smarty->assign('unit_type',$product->data['Product Unit Type']);
 
 
 //while($row=mysql_fetch_array($res)){
@@ -231,4 +242,8 @@ $smarty->assign('js_files',$js_files);
 //$smarty->assign('cat_material',$cat_material);
 //$smarty->assign('cat_theme',$cat_theme);
 $smarty->display('edit_product.tpl');
+
+
+
+
 ?>

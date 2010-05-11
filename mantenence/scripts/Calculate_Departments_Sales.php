@@ -27,7 +27,8 @@ require_once '../../conf/conf.php';
 
 
 
-$sql="select * from `Product Department Dimension`";
+
+$sql="select * from `Product Department Dimension`  ";
 $result=mysql_query($sql);
 while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
   

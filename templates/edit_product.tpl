@@ -35,7 +35,7 @@
       
       <div style="clear:both;height:.1em;padding:0px 20px;;margin:20px auto;xborder-top: 1px solid #cbb;;xborder-bottom: 1px solid #caa;width:770px;" id="description_messages">
 	
-	<div id="info_name" style="float:left;width:260px;{if !($edit=='prices' or $edit=='pictures') }display:none{/if}">
+	<div id="info_name" style="float:left;width:260px;{if !( $edit=='pictures') }display:none{/if}">
 	  
 	  <table    class="show_info_product">
 	    <tr>
@@ -54,8 +54,8 @@
 	    
 	  </table>
 	</div>
-	<div  id="info_price"  style="float:left;width:260px;margin-left:20px;{if $edit!='prices'}display:none{/if}">
-	  
+	<div  id="info_price"  style="float:left;width:260px;margin-left:20px;display:none">
+  
 	  <table    class="show_info_product">
 	    <tr style="{if $product->get('Product Units Per Case')==1}display:none{/if}">
 	      <td>{t}Unit per Case{/t}:</td><td  class="aright">{$product->get('Units')}</td>
@@ -212,40 +212,40 @@
 
 	    <tr style="display:none" id="change_units_oweight">
 	      <td class="label">{t}Outers Weight{/t}:</td>
-	<td >{t}Kg{/t} <input 
-			  style="text-align:right;width:5em"  
-			  onkeydown="to_save_on_enter(event,this)" 
-			  id="v_oweight_fcu"  
-			  tipo="number" 
-			  value="{$data.oweight}"  
-			  name="oweight"  
-			  ovalue="{$data.oweight}" 
-			  onblur="this.value=FormatNumber(this.value,'{$decimal_point}','{$thousand_sep}',3);oweight_fcu_changed(this)"  >
-	</td>
-	<td ><span id="change_units_oweight_diff"></span></td>
-      </tr>
-    
-      <tr style="display:none" id="change_units_odim">
-	<td class="label">{t}Outers Dimensions{/t}:</td>
-	<td ><span style="cursor:pointer">{$data.odim_tipo_name}</span> 
-	  <input 
-	     style="text-align:right;width:6em" 
-	     onkeydown="to_save_on_enter(event,this)"   
-	     onblur="odim_fcu_changed(this)" 
-	     tipo="shape1"  
-	     name="odim"   
-	     id="v_odim_fcu" 
-	     value="{$data.odim}"   
+	      <td >{t}Kg{/t} <input 
+				style="text-align:right;width:5em"  
+				onkeydown="to_save_on_enter(event,this)" 
+				id="v_oweight_fcu"  
+				tipo="number" 
+				value="{$data.oweight}"  
+				name="oweight"  
+				ovalue="{$data.oweight}" 
+				onblur="this.value=FormatNumber(this.value,'{$decimal_point}','{$thousand_sep}',3);oweight_fcu_changed(this)"  >
+	      </td>
+	      <td ><span id="change_units_oweight_diff"></span></td>
+	    </tr>
+	    
+	    <tr style="display:none" id="change_units_odim">
+	      <td class="label">{t}Outers Dimensions{/t}:</td>
+	      <td ><span style="cursor:pointer">{$data.odim_tipo_name}</span> 
+		<input 
+		   style="text-align:right;width:6em" 
+		   onkeydown="to_save_on_enter(event,this)"   
+		   onblur="odim_fcu_changed(this)" 
+		   tipo="shape1"  
+		   name="odim"   
+		   id="v_odim_fcu" 
+		   value="{$data.odim}"   
 	     ovalue="{$data.odim}">
-	</td>
-	<td ><span id="change_units_odim_diff"></span></td>
+	      </td>
+	      <td ><span id="change_units_odim_diff"></span></td>
+	      
+	    </tr>
+	    <tr style="display:none" id="change_units_odim_example">
 	
-      </tr>
-      <tr style="display:none" id="change_units_odim_example">
-	
-	<td style="font-size:90%;color:#777" colspan=2><img id="odim_alert_fcu" src="art/icons/exclamation.png" title="{t}Wrong Format{/t}"  style="cursor:pointer;;visibility:hidden;float:left" /> {$shape_example[$data.odim_tipo]}</td>
-	<td></td>
-      <tr>
+	      <td style="font-size:90%;color:#777" colspan=2><img id="odim_alert_fcu" src="art/icons/exclamation.png" title="{t}Wrong Format{/t}"  style="cursor:pointer;;visibility:hidden;float:left" /> {$shape_example[$data.odim_tipo]}</td>
+	      <td></td>
+	    <tr>
 	
     </table>
   </div>
@@ -263,131 +263,87 @@
 </div>
 <input id="v_cost" value="{$product->get('Product Cost')}" type="hidden"/>
 <div class="edit_block" {if $edit!="prices"}style="display:none"{/if}  id="d_prices">
-  <table class="edit" border=0>
-    <tr class="title">
-      <td style=";width:7em"></td>
-      <td style="text-align:right;width:10em">{t}Price per Outer{/t}</td>
-      <td style="text-align:right;width:10em">{t}Price per{/t} {$product->get('Unit Type')}</td>
-      <td style="text-align:right;width:5em">{t}Margin{/t}</td>
-      <td style="text-align:right;width:10em"></td>
-    </tr>
-    
-    <tr>
-      <td class="label">{t}Sale Price{/t}:</td>
-      <td style="text-align:right"><input  onkeydown="to_save_on_enter(event,this)"  
-			     onblur="price_changed(this)" style="text-align:right;width:5em"  
-			     factor="{$factor_inv_units}" 
-			     name="price" 
-			     id="v_price" 
-			     value="{$product->get('Price')}"  
-			     ovalue="{$product->get('Price')}">
-      </td>
-      <td id="price_ou" style="text-align:right">{$product->get('Price Per Unit')}</td>
-      <td id="price_margin" style="text-align:right">{$product->get('Margin')}</td>
-      
-      <td id="price_change"></td>
-      <td>
-	<span onClick="save_price('price')" name="price" style="cursor:pointer;visibility:hidden" id="price_save"><img src="art/icons/disk.png"/></span>
-	<span onClick="undo_price('price')"  style="cursor:pointer;visibility:hidden" id="price_undo"><img src="art/icons/arrow_undo.png"/></span>
 
-      </td>
-    </tr>
-    <tr>
-      <td class="label">{t}RRP{/t}:</td>
-      <td id="rrp_ou" style="text-align:right">{$product->get('RRP')}</td>
-      <td  style="text-align:right">
-	<input onkeydown="to_save_on_enter(event,this)"
-               onblur="price_changed(this)" style="text-align:right;width:5em"
-               factor="{$factor_units}"   
-               name="rrp" id="v_rrp" 
-               ovalue="{$product->get('RRP Per Unit')}" 
-               value="{$product->get('RRP Per Unit')}" ></td> 
-      <td id="rrp_margin" style="text-align:right">{$product->get('RRP Margin')}</td>
+<div class="general_options" style="float:right">
+	
+	<span  style="margin-right:10px;visibility:hidden"  id="save_edit_product_price" class="state_details">{t}Save{/t}</span>
+	<span style="margin-right:10px;visibility:hidden" id="reset_edit_product_price" class="state_details">{t}Reset{/t}</span>
+	
+      </div>
 
-      <td id="rrp_change" >{if $product->get('Product RRP Per Unit')==''}{t}RRP not set{/t}{/if}</td>
-      
-      <td>
-	<span onClick="save_price('rrp')" name="rrp" style="cursor:pointer;visibility:hidden" id="rrp_save"><img src="art/icons/disk.png"/></span>
-	<span onClick="undo_price('rrp')"  style="cursor:pointer;visibility:hidden" id="rrp_undo"><img src="art/icons/arrow_undo.png"/></span>
 
-      </td>
-    </tr>
-      
-    
-  </table>
+<table class="edit" border=0>
+ <tr class="title"><td colspan=5>{t}Price{/t}</td></tr>
+
+<tr class="first"><td style="" class="label">{t}Price per Outer{/t}:</td>
+   <td  style="text-align:left">
+     <div  style="width:7em;position:relative;top:00px" >
+       <input style="text-align:left;width:8em" id="Product_Price" value="{$product->get('Price')}" ovalue="{$product->get('Price')}" valid="0">
+       <div id="Product_Price_Container" style="" ></div>
+     </div>
+   </td>
+<td id="price_per_unit" cost="{$product->get('Product Cost')}"  old_price="{$product->get('Product Price')}"  units="{$product->get('Product Units Per Case')}">{$product->get_formated_price_per_unit()}</td>
+<td id="price_margin">{t}Margin{/t}: {$product->get('Margin')}</td>
+
+   <td style="width:200px" id="Product_Price_msg" class="edit_td_alert"></td>
+ </tr>
+
+<tr class="first"><td style="" class="label">{t}RRP per Unit{/t}:</td>
+   <td  style="text-align:left">
+     <div  style="width:7em;position:relative;top:00px" >
+       <input style="text-align:left;width:8em" id="Product_RRP" value="{$product->get('RRP')}" ovalue="{$product->get('RRP')}" valid="0">
+       <div id="Product_RRP_Container" style="" ></div>
+     </div>
+   </td>
+<td ></td>
+<td id="rrp_margin">{t}Margin{/t}: {$product->get('RRP Margin')}</td>
+   <td style="width:200px" id="Product_RRP_msg" class="edit_td_alert"></td>
+ </tr>
+
+
+</table>
+
+
+  
 </div>
 <div class="edit_block" {if $edit!="dimat"}style="display:none"{/if}  id="d_dimat">
 
-<div style="{if $product->get_part_type()!='Simple Pick'}display:none;{/if}">
-{t}This product has a simple link to a part{/t}
-</div>
+
+<div class="general_options" style="float:right">
+	
+	<span  style="margin-right:10px;visibility:hidden"  id="save_edit_product_weight" class="state_details">{t}Save{/t}</span>
+	<span style="margin-right:10px;visibility:hidden" id="reset_edit_product_weight" class="state_details">{t}Reset{/t}</span>
+	
+      </div>
 
 <table class="edit" >
-  <tr class="title"><td colspan=6>{t}Weight{/t}</td></tr>
-  <tr>
-    <td class="label" style="width:12em">{t}Per{/t} {$product->get('Product Unit Type')}:</td>
-    <td>
-        <input style="text-align:right;width:5em"  
-            onkeydown="to_save_on_enter(event,this)" 
-            name="weight"   
-            id="v_weight" 
-            tipo="number" 
-            value="{$product->get('Net Weight Per Unit')}"   
-            onblur="this.value=FormatNumber(this.value,'{$decimal_point}','{$thousand_sep}',3);weight_changed(this)"
-            ovalue="{$product->get('Product Net Weight Per Unit')}"><span id="weight_units">{t}Kg{/t}</span>
-    </td>
-    <td class="icon" style="width:20px"><img id="weight_save" style="cursor:pointer;visibility:hidden" onClick="simple_save('weight')" src="art/icons/disk.png"></td>
-  </tr>
-  <tr>
-    <td class="label">{t}Per outer{/t}:<br>{t}including packing{/t}</td>
-    <td>{t}Kg{/t}</td>
-    <td><input style="text-align:right;width:5em"  onkeydown="to_save_on_enter(event,this)" id="v_oweight"  tipo="number" value="{$product->get('Product Gross Weight')}"  name="oweight"  ovalue="{$product->get('Product Gross Weight')}"  onblur="this.value=FormatNumber(this.value,'{$decimal_point}','{$thousand_sep}',3);weight_changed(this)"  ></td>
-    <td class="icon"><img id="oweight_save" style="cursor:pointer;visibility:hidden" onClick="simple_save('oweight')" src="art/icons/disk.png"></td>
-  </tr>
-</table>
-<table class="edit" >
-    <tr class="title"><td colspan=5>{t}Dimensions{/t}</td></tr>
- <tr>
-   <td class="label" style="width:12em">{t}Product gross volume{/t}:<br>{t}including packing{/t}</td><td>{t}Liters{/t}<br>1000{t}cc{/t}</td>
-<td><input style="text-align:right;width:5em"  onkeydown="to_save_on_enter(event,this)"  onblur="vol_changed(this)" name="vol" id="v_vol" value="{$product->get('Product Gross Volume')}" ovalue="$product->get('Product Gross Volume')"   ></td>
-<td><span>{t}Calculate{/t}</span></td>
-</tr>
-<tr>
-   <td class="label" style="width:12em">{t}Product MOV{/t}:<br>{t}including packing{/t}</td><td>{t}Liters{/t}<br>1000{t}cc{/t}</td>
-<td><input style="text-align:right;width:5em"  onkeydown="to_save_on_enter(event,this)"  onblur="movol_changed(this)" name="movol" id="v_movol" value="{$product->get('Product Minimun Orthogonal Gross Volume')}" ovalue="$product->get('Product Minimun Orthogonal Gross Volume')"   ></td>
-<td></td>
-</tr>
-
-
-</table>
-<div style="display:none">
-<table class="edit" border=0>
-    <tr class="title"><td colspan=5>{t}Dimensions{/t}</td></tr>
-    <tr>
-   <td class="label" style="width:12em">{t}Product gross volume{/t}:<br>{t}including packing{/t}</td><td>{t}Liters{/t}<br>1000{t}cc{/t}</td>
-   <td style="width:4em"><span  style="cursor:pointer" id="dim_shape">{$data.dim_tipo_name}</span></td>
-   <td>
-        <input 
-            style="text-align:right;width:10em"  
-            onkeydown="to_save_on_enter(event,this)"  onblur="dim_changed(this)" 
-            tipo="shape{$data.dim_tipo}" name="dim" id="v_dim" value="{$data.dim}" 
-            ovalue="{$data.dim}"
-        >
-   </td>
-   <td style="width:24em" style="font-size:90%;color:#777" >
-   <img id="dim_alert" src="art/icons/exclamation.png" title="{t}Wrong Format{/t}"  style="cursor:pointer;;visibility:hidden;float:left" /> 
-   <span id="dim_shape_example">{$shape_example[$data.dim_tipo]}</span>
-   </td>
-   <td  style="width:20px"><img id="dim_save" style="cursor:pointer;visibility:hidden" onClick="simple_save('dim')" src="art/icons/disk.png"></td>
+ <tr class="title"><td colspan=3>{t}Weight{/t}</td></tr>
+<tr class="first"><td style="" class="label">{t}Unit Weight{/t}:</td>
+   <td  style="text-align:left;width:4em;">
+     <div  style="width:4em;position:relative;top:00px" >
+       <input style="text-align:left;width:4em" id="Product_Unit_Weight" value="{$product->get('Net Weight Per Unit')}" ovalue="{$product->get('Net Weight Per Unit')}" valid="0"> 
+       <div id="Product_Unit_Weight_Container" style="" ></div>
+     </div>
+    
+   </td><td>Kg</td>
+   <td style="width:450px" id="Product_Unit_Weight_msg" class="edit_td_alert"></td>
  </tr>
-    <tr>
-      <td class="label">{t}Outer{/t}:<br>{t}including packing{/t}</td>
-      <td ><span style="cursor:pointer">{$data.odim_tipo_name}</span></td>
-      <td><input style="text-align:right;width:10em" onkeydown="to_save_on_enter(event,this)"   onblur="dim_changed(this)" tipo="shape1"  name="odim"   id="v_odim" value="{$data.odim}"   ovalue="{$data.odim}"      ></td>
-      <td style="font-size:90%;color:#777"><img id="odim_alert" src="art/icons/exclamation.png" title="{t}Wrong Format{/t}"  style="cursor:pointer;;visibility:hidden;float:left" /> {$shape_example[$data.odim_tipo]}</td>
-      <td><img id="odim_save" style="cursor:pointer;visibility:hidden" onClick="simple_save('odim')" src="art/icons/disk.png"></td></tr>
+<tr><td style="" class="label">{t}Outer Weight{/t}:<br/><small>with packing<small/></td>
+   <td  style="text-align:left">
+     <div  style="width:4em;position:relative;top:00px" >
+       <input style="text-align:left;width:4em" id="Product_Outer_Weight" value="{$product->get('Product Gross Weight')}" ovalue="{$product->get('Product Gross Weight')}" valid="0">
+       <div id="Product_Outer_Weight_Container" style="" ></div>
+     </div>
+   </td><td>Kg</td>
+   <td id="Product_Outer_Weight_msg" class="edit_td_alert"></td>
+ </tr>
+
+
 </table>
-</div>
+
+
+
+
 
 </div>
 <div class="edit_block" {if $edit!="parts"}style="display:none"{/if}  id="d_parts">
@@ -456,79 +412,111 @@
 </div>
 
 <div  class="edit_block" style="margin:0;padding:0;{if $edit!="description"}display:none{/if}"  id="d_description">
-    <table style="margin:0;" class="edit" border=0>
-        <tr id="tr_name">
-            <td rowspan=2  class="margin_note" >{t}Product Info{/t}:</td>
-	        <td class="label">{t}Name{/t}:</td>
-	        <td class="left">
-	  <input 
-	        class='left' 
-	        ovalue="{$product->get('Product Name')}"  
-	        onMouseUp="description_changed(this)"  
-	        onChange="description_changed(this)"   
-	        name="description" 
-	        changed=0  
-	        onKeyUp="description_changed(this)" 
-	        value="{$product->get('Product Name')}"  
-	        id="name" 
-	        size="40"  
-	        MAXLENGTH="75" />
-	  <span id="msg_name"></span>   
-		</td>
-        </tr>
-        <tr id="tr_special_char">
-	<td class="label">{t}Special Characteristic{/t}:</td>
-	<td class="left" >
-	    <input   
-	        onKeyUp="description_changed(this)"    
-	        onMouseUp="description_changed(this)"  
-	        onChange="description_changed(this)"    
-	        class='left'  
-	        changed=0 
-	        ovalue="{$product->get('Product Special Characteristic')}"  
-	        name="sdescription"  value="{$product->get('Product Special Characteristic')}" 
-	        id="special_char"  
-	        size="40"  
-	        MAXLENGTH="40" />
-	<span onClick="save_description('sdescription')"  name="sdescription" style="cursor:pointer;visibility:hidden" id="sdescription_save">
-	<img src="art/icons/disk.png" title="{t}Save short description{/t}"/></span>
 
-<div  class="input_msg" id="msg_special_char"></div>   
-    </td>
-    </tr>
-       <tr>
-
-    {foreach from=$categories item=cat key=cat_key name=foo  }
-    
-    {if $smarty.foreach.foo.first}
-    <td rowspan="{$number_categories}" class="margin_note">{t}Categories{/t}:</td>
-    {/if}
-    <td class="label">{t}{$cat.name}{/t}:</td>
-    <td>
-      {foreach from=$cat.teeth item=cat2 key=cat2_id name=foo2}
-      <div id="cat_{$cat2_id}" default_cat="{$cat2.default_id}"   class="options" style="margin:5px 0">
-	{foreach from=$cat2.elements item=cat3 key=cat3_id name=foo3}
-	<span  class="catbox {if $cat3.selected}selected{/if}" value="{$cat3.selected}" ovalue="{$cat3.selected}" onclick="checkbox_changed(this)" cat_id="{$cat3_id}" id="cat{$cat3_id}" parent="{$cat3.parent}" position="{$cat3.position}" default="{$cat3.default}"  >{$cat3.name}</span>
-	{/foreach}
+<div class="general_options" style="float:right">
+	
+	<span  style="margin-right:10px;visibility:hidden"  id="save_edit_product_description" class="state_details">{t}Save{/t}</span>
+	<span style="margin-right:10px;visibility:hidden" id="reset_edit_product_description" class="state_details">{t}Reset{/t}</span>
+	
       </div>
-	    {/foreach}
-    </td>   
-       </tr>
-       {/foreach}
-        <tr id="tr_details">
-	  <td class="margin_note">{t}Detailed Description{/t}:</td>
-	  <td colspan="2"><textarea id="details" name="v_details" changed=0 olength="{$product->get('Product Description Length')}"  ovalue="{$product->get('Product Description')}"  ohash="{$product->get('Product Description MD5 Hash')}" rows="20" cols="100">{$product->get('Product Description')}</textarea>
-	  </td>
-	</tr>
-    </table>
+
+<table class="edit">
+ <tr class="title"><td colspan=5>{t}Units{/t}</td></tr>
+<tr class="first"><td style="" class="label">{t}Units Per Outer{/t}:</td>
+   <td  style="text-align:left">
+     <div  style="width:15em;position:relative;top:00px" >
+       <input style="text-align:left;width:18em" id="Product_Units_Per_Case" value="{$product->get('Product Units Per Case')}" ovalue="{$product->get('Product Units Per Case')}" valid="0">
+       <div id="Product_Units_Per_Case_Container" style="" ></div>
+     </div>
+   </td>
+   <td style="width:200px" id="Product_Units_Per_Case_msg" class="edit_td_alert"></td>
+ </tr>
+<tr><td style="" class="label">{t}Units Type{/t}:</td>
+<td  style="text-align:left">
+
+<select>
+{foreach from=$unit_type_options key=value item=label}
+   <option label="{$label}" value="{$value}" {if $value==$unit_type}selected="selected"{/if}  >{$label}</option>
+
+{/foreach}
+</select>
+
+
+   </td>
+   <td id="Product_Units_Type_msg" class="edit_td_alert"></td>
+ </tr>
+
+
+</table>
+
+
+
+<div class="general_options" style="float:right">
+	
+	<span  style="margin-right:10px;visibility:hidden"  id="save_edit_product_description" class="state_details">{t}Save{/t}</span>
+	<span style="margin-right:10px;visibility:hidden" id="reset_edit_product_description" class="state_details">{t}Reset{/t}</span>
+	
+      </div>
+
+<table class="edit">
+ <tr class="title"><td colspan=5>{t}Name / Description{/t}</td></tr>
+<tr class="first"><td style="" class="label">{t}Product Name{/t}:</td>
+   <td  style="text-align:left">
+     <div  style="width:15em;position:relative;top:00px" >
+       <input style="text-align:left;width:18em" id="Product_Name" value="{$product->get('Product Name')}" ovalue="{$product->get('Product Name')}" valid="0">
+       <div id="Product_Name_Container" style="" ></div>
+     </div>
+   </td>
+   <td style="width:200px" id="Product_Name_msg" class="edit_td_alert"></td>
+ </tr>
+<tr><td style="" class="label">{t}Special Characteristic{/t}:</td>
+   <td  style="text-align:left">
+     <div  style="width:15em;position:relative;top:00px" >
+       <input style="text-align:left;width:18em" id="Product_Special_Characteristic" value="{$product->get('Product Special Characteristic')}" ovalue="{$product->get('Product Special Characteristic')}" valid="0">
+       <div id="Product_Special_Characteristic_Container" style="" ></div>
+     </div>
+   </td>
+   <td id="Product_Special_Characteristic_msg" class="edit_td_alert"></td>
+ </tr>
+<tr><td style="" class="label">{t}Product Description{/t}:</td>
+   <td  style="text-align:left">
+     <div  style="height:100px;width:25em;position:relative;top:00px" >
+
+<textarea id="Product_Description"  olength="{$product->get('Product Description Length')}"  value="{$product->get('Product Description')}"  ovalue="{$product->get('Product Description')}"  ohash="{$product->get('Product Description MD5 Hash')}" rows="6" cols="42">{$product->get('Product Description')}</textarea>
+       
+       <div id="Product_Description_Container" style="" ></div>
+     </div>
+   </td>
+   <td id="Product_Description_msg" class="edit_td_alert"></td>
+ </tr>
+
+</table>
+
+<table class="edit">
+ <tr class="title"><td colspan=5>{t}Categories{/t}</td></tr>
+ {foreach from=$categories item=cat key=cat_key name=foo  }
+ <tr>
+ 
+ <td class="label">{t}{$cat.name}{/t}:</td>
+ <td>
+   {foreach from=$cat.teeth item=cat2 key=cat2_id name=foo2}
+   <div id="cat_{$cat2_id}" default_cat="{$cat2.default_id}"   class="options" style="margin:5px 0">
+     {foreach from=$cat2.elements item=cat3 key=cat3_id name=foo3}
+     <span  class="catbox {if $cat3.selected}selected{/if}" value="{$cat3.selected}" ovalue="{$cat3.selected}" onclick="checkbox_changed(this)" cat_id="{$cat3_id}" id="cat{$cat3_id}" parent="{$cat3.parent}" position="{$cat3.position}" default="{$cat3.default}"  >{$cat3.name}</span>
+     {/foreach}
+    </div>
+   {/foreach}
+ </td>   
+</tr>
+{/foreach}
+
+
+</table>
+
+ 
+</div>
 </div>
 
-
-
-
-
-
-</div>
 
 <div id="the_table0" class="data_table" style="margin:20px 20px 0px 20px; clear:both;padding-top:10px">
   <span class="clean_table_title">{t}History{/t}</span>
@@ -549,67 +537,9 @@
 
 </div>
 
-<div id="shapes" class="yuimenu">
-  <div class="bd">
-    <ul class="first-of-type">
-       <li style="text-align:left;margin-left:10px;border-bottom:1px solid #ddd"> {t}Product Shape{/t}: </li>
-      {foreach from=$shapes item=shape key=shape_id name=foo}
-       {if !$smarty.foreach.foo.first}
-      <li class="yuimenuitem"><a class="yuimenuitemlabel" onClick="change_dim_tipo({$shape_id},0)"> {$shape}</a></li>
-      {/if}
-      {/foreach}
-    </ul>
-  </div>
-</div>
-<div id="catlist" class="yuimenu staff_list"  >
-  <div class="bd">
 
-    <span>Physical State</span>
-    <table border=1>
-      {foreach from=$state_cat item=_cat name=foo}
-      {if $_cat.mod==0}<tr>{/if}
-	<td title="{$_cat.name}" cat_id="{$_cat.id}" id="cat_state{$_cat.id}" cat="state" onClick="select_cat(this,event)" >{$_cat.sname}</td>
-	{if $_cat.mod==$cat_cols}</tr>{/if}
-      {/foreach}
-    </table>
 
-    <span>Material</span>
-    <table border=1>
-      {foreach from=$material_cat item=_cat name=foo}
-      {if $_cat.mod==0}<tr>{/if}
-	<td title="{$_cat.name}" cat_id="{$_cat.id}" id="checkers{$_cat.id}" onClick="select_cat(this,event)" >{$_cat.sname}</td>
-	{if $_cat.mod==$cat_cols}</tr>{/if}
-      {/foreach}
-    </table>
-     <span>Use</span>
-     <table border=1>
-       {foreach from=$use_cat item=_cat name=foo}
-       {if $_cat.mod==0}<tr>{/if}
-	 <td title="{$_cat.name}" cat_id="{$_cat.id}" id="checkers{$_cat.id}" onClick="select_cat(this,event)" >{$_cat.sname}</td>
-	 {if $_cat.mod==$cat_cols}</tr>{/if}
-      {/foreach}
-    </table>
-  <span>{t}Other{/t}</span>
-     <table border=1>
-       {foreach from=$mods_cat item=_cat name=foo}
-       {if $_cat.mod==0}<tr>{/if}
-	 <td title="{$_cat.name}" cat_id="{$_cat.id}" id="checkers{$_cat.id}" onClick="select_cat(this,event)" >{$_cat.sname}</td>
-	 {if $_cat.mod==$cat_cols}</tr>{/if}
-      {/foreach}
-     </table>
-     
 
-  </div>
-</div>
-<div id="units_tipo_list" class="yuimenu">
-  <div class="bd">
-    <ul class="first-of-type">
-      {foreach from=$units_tipo_list item=menu }
-       <li class="yuimenuitem"><a class="yuimenuitemlabel" onClick="change_units_tipo({$menu.id},'{$menu.name}','{$menu.sname}')"> {$menu.name}</a></li>
-      {/foreach}
-    </ul>
-  </div>
-</div>
 {include file='footer.tpl'}
 
 

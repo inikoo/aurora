@@ -41,7 +41,7 @@ while($row=mysql_fetch_array($res)){
 
 
 //print "Wrap part transactions\n";
-$sql=sprintf('select `Part SKU`,`Part XHTML Currently Used In`  from `Part Dimension` where `Part Status`="in Use"   %s ',$where);
+$sql=sprintf('select `Part SKU`,`Part XHTML Currently Used In`  from `Part Dimension` where `Part Status`="In Use"   %s ',$where);
 $res=mysql_query($sql);
 $count=0;
 while($row=mysql_fetch_array($res)){
@@ -51,10 +51,10 @@ while($row=mysql_fetch_array($res)){
   $part=new Part($row['Part SKU']);
   print percentage($count,$total)."  ".$part->data['Part Status']."\r";
   
-  
+  $part->wrap_transactions();
 
   
-  if($part->data['Part Status']=='In Use'){
+ 
    
     $sql=sprintf('select *  from `Part Location Dimension` where `Part SKU` = '.$part->sku);
     
@@ -68,10 +68,7 @@ while($row=mysql_fetch_array($res)){
     }
   
     // $part->update_stock_history();
-  }else{
-    $part->update_stock();
-    
-  }
+ 
 }
 
 $count=0;

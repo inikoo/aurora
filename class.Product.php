@@ -7,7 +7,7 @@
   About:
   Autor: Raul Perusquia <rulovico@gmail.com>
 
-  Copyright (c) 2009, Kaktus
+  Copyright (c) on009, Kaktus
 
   Version 2.0
 */
@@ -603,7 +603,7 @@ public $new_value=false;
       if (preg_match('/system/i',$data))
 	return number($this->data['Product Net Weight']/$this->data['Product Units Per Case']);
       else
-	return $this->number($this->data['Product Net Weight']/$this->data['Product Units Per Case']);
+	return $this->number($this->data['Product Net Weight']/$this->data['Product Units Per Case'],3);
       break;
       case('Product Description Length'):
       return strlen($this->data['Product Description']);
@@ -1776,6 +1776,15 @@ $number_images=$row['num'];
     case('Add Category'):
       $this->add_category($a1);
       break;
+    case('Product Gross Weight'):
+      $this->update_gross_weight($a1);
+      break;
+ case('Product Net Weight'):
+      $this->update_net_weight($a1);
+      break;
+ case('Product Net Weight Per Unit'):
+      $this->update_net_weight_per_unit($a1);
+      break;
     case('web_state'):
 
       if (
@@ -1831,6 +1840,9 @@ $number_images=$row['num'];
       $this->update_sales_type($a1);
       
       break;
+
+
+
     case('processing'):
 
       if ( $this->data['Product Record Type']=='Historic'  ) {
@@ -1963,6 +1975,12 @@ $number_images=$row['num'];
 
 
 
+      break;
+    case('Product Units Per Case'):
+      $this->update_units_per_case($a1);
+      break;
+    case('Product Unit Type'):
+      $this->update_units_type($a1);
       break;
     case('Product Price'):
     case('Product Price Per Unit'):
@@ -3119,8 +3137,8 @@ $number_images=$row['num'];
 	  $margin=number(100*($this->data['Product Editing Price']-$this->data['Product Cost'])/$this->data['Product Editing Price'],1).'%';
 	else
 	  $margin=_('ND');
-
-	$this->new_value=array(
+	$this->new_value=money($amount,$this->data['Product Currency']);
+	$this->new_data=array(
 			       'Product Price'=>money($amount,$this->data['Product Currency']),
 			       'Product Price Per Unit'=>money($amount/$this->data['Product Editing Units Per Case'],$this->data['Product Currency']),
 			       'Product Margin'=>$margin
@@ -3199,8 +3217,8 @@ $number_images=$row['num'];
 	else
 	  $customer_margin=_('Not for resale');
 
-
-	$this->new_value=array(
+	$this->new_value=$this->get('Price');
+	$this->new_data=array(
 			       'Price'=>$this->get('Price'),
 			       'Unit Price'=>$this->get('Price Per Unit'),
 			       'Margin'=>$this->get('Margin'),
@@ -3288,8 +3306,8 @@ $number_images=$row['num'];
 	  $customer_margin=_('CM').' '.$this->get('RRP Margin');
 	else
 	  $customer_margin=_('Not for resale');
-  
-	$this->new_value=array('Customer Margin'=>$customer_margin,'RRP Per Unit'=>$this->get('RRP Per Unit'));
+	$this->new_value=$this->get('RRP Per Unit');
+	//$this->new_value=array('Customer Margin'=>$customer_margin,'RRP Per Unit'=>$this->get('RRP Per Unit'));
 
       $this->updated_fields[$key]=array(
 						 'RRP'=>$this->get('RRP'),
@@ -3314,6 +3332,59 @@ $number_images=$row['num'];
     }
 
   }
+
+
+
+
+  function update_net_weight_per_unit($weight){
+
+    if(!is_numeric($weight)){
+      $this->error=true;
+      $this->msg='Weight is not a number';
+      return;
+    }
+    
+    $weight=$weight*$this->data['Product Units Per Case'];
+    $this-> update_net_weight($weight);
+    if($this->updated)
+      $this->new_value=$this->data['Product Net Weight']/$this->data['Product Units Per Case'];
+  }
+
+
+  function update_net_weight($weight){
+
+    if(!is_numeric($weight)){
+      $this->error=true;
+      $this->msg='Weight is not a number';
+      return;
+    }
+
+    $sql=sprintf("update `Product Dimension` set `Product Net Weight`=%f where `Product ID`=%d",$weight,$this->pid);
+    mysql_query($sql);
+    $this->data['Product Net Weight']=$weight;
+    $this->new_value=$weight;
+    $this->updated=true;
+
+  }
+
+ function update_gross_weight($weight){
+
+    if(!is_numeric($weight)){
+      $this->error=true;
+      $this->msg='Weight is not a number';
+      return;
+    }
+
+    $sql=sprintf("update `Product Dimension` set `Product Gross Weight`=%f where `Product ID`=%d",$weight,$this->pid);
+    mysql_query($sql);
+    $this->data['Product Gross Weight']=$weight;
+    $this->new_value=$weight;
+    $this->updated=true;
+
+  }
+
+
+
 
   function update_name($value) {
 
@@ -4752,15 +4823,41 @@ function get_formated_price($locale=''){
 'Product Currency'=>$this->get('Product Currency'),
 'Product Unit Type'=>$this->data['Product Unit Type'],
 
+
 'locale'=>$locale);
 
 return formated_price($data);
-  
- 
+}
 
+function get_formated_price_per_unit($locale=''){
+
+  $data=array(
+'Product Price'=>$this->data['Product Price'],
+'Product Units Per Case'=>$this->data['Product Units Per Case'],
+'Product Currency'=>$this->get('Product Currency'),
+'Product Unit Type'=>$this->data['Product Unit Type'],
+'Label'=>'',
+
+
+'locale'=>$locale);
+
+return formated_price_per_unit($data);
+}
+
+function update_units_per_case($value){
 
 
 }
+      
+
+function update_units_type($value){
+
+
+}
+
+
+
+
 
 }
 ?>

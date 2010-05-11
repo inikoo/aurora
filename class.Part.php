@@ -1391,7 +1391,9 @@ class part extends DB_Table {
     function wrap_transactions() {
 
         $sql=sprintf("select `Location Key` from `Inventory Transaction Fact` where  `Part SKU`=%d  group by `Location Key`  ",$this->sku);
-        $res2=mysql_query($sql);
+        
+	print "$sql\n";
+	$res2=mysql_query($sql);
         while ($row2=mysql_fetch_array($res2)) {
             $location_key=$row2['Location Key'];
             //  print "Location $location_key\n";
