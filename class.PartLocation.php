@@ -103,6 +103,9 @@ class PartLocation extends DB_Table {
         if (!$this->location->id)
             $this->location=New Location(1);
         $this->location_key=$this->location->id;
+	print_r($data['Location Key']);
+	exit;
+
 
         $this->part=New Part($data['Part SKU']);
         if (!$this->part->id) {
@@ -116,6 +119,8 @@ class PartLocation extends DB_Table {
                      ,$this->location_key
                     );
         $res=mysql_query($sql);
+	
+
 
         if ($row=mysql_fetch_array($res)) {
             $this->found=true;
@@ -745,7 +750,7 @@ class PartLocation extends DB_Table {
     }
     function create($data) {
 
-        // print_r($data);
+      // print_r($data);
 
         $this->data=$this->base_data();
         foreach($data as $key=>$value) {
@@ -769,7 +774,10 @@ class PartLocation extends DB_Table {
         if (mysql_query($sql)) {
             $this->id= mysql_insert_id();
             $this->new=true;
-            $this->get_data('id',$this->id);
+
+	    $this->part_sku=$this->data['Part SKU'];
+	    $this->location_key=$this->data['Location Key'];
+            $this->get_data();
             $note=_('Part added to location');
             $details=_('Part')." SKU".sprintf("%05d",$this->part->sku)." "._('associated with location').": ".$this->location->data['Location Code'];
 
@@ -795,7 +803,7 @@ class PartLocation extends DB_Table {
                          ,$this->event_order-1
                         );
             mysql_query($sql);
-
+	    // print "$sql\n";
 
             $part=new Part($this->part_sku);
             $part->load('locations');

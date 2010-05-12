@@ -46,7 +46,7 @@ while($row=mysql_fetch_array($res)){
     insert_other_inventary($product_parts_to_delete,$product_parts_to_keep,$factor);
 
 
-    exit;
+    
   
     continue;
    
