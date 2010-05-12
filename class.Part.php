@@ -1391,14 +1391,10 @@ class part extends DB_Table {
     function wrap_transactions() {
 
         $sql=sprintf("select `Location Key` from `Inventory Transaction Fact` where  `Part SKU`=%d  group by `Location Key`  ",$this->sku);
-        
-	print "$sql\n";
-	$res2=mysql_query($sql);
+
+        $res2=mysql_query($sql);
         while ($row2=mysql_fetch_array($res2)) {
             $location_key=$row2['Location Key'];
-            //  print "Location $location_key\n";
-
-
 
             $sql=sprintf("select `Date`,`Inventory Transaction Type` from `Inventory Transaction Fact` where  `Part SKU`=%d and `Location Key`=%d  order by `Date`,`Event Order`   ",$this->sku,$location_key);
             //print "$sql\n";
@@ -1454,10 +1450,10 @@ class part extends DB_Table {
                 print "\nError1 : Part ".$this->sku." ".$this->data['Part XHTML Currently Used In']."  \n";
                 return;
             }
-            elseif(!$first_audit_date) {
+            elseif($first_audit_date=='none') {
                 $first_date=$first_itf_date;
             }
-            elseif(!$first_itf_date) {
+            elseif($first_itf_date=='none') {
                 $first_date=$first_audit_date;
             }
             else {
@@ -1469,16 +1465,20 @@ class part extends DB_Table {
             }
 
             //print "caca";
-
-            $part_location=new PartLocation('find',array(
+$pl_data=array(
                                                 'Part SKU'=>$this->sku,
                                                 'Location Key'=>$location_key,
-                                                'Date'=>$first_date)
+                                                'Date'=>$first_date);
+                                           //     print_r($pl_data);
+            $part_location=new PartLocation('find',$pl_data
                                             ,'create');
 
             if ($part_location->found) {
 
-                $sql="delete from  `Inventory Transaction Fact` where `Inventory Transaction Type` in ('Associate') limit 1 ";
+                $sql=sprintf("delete from  `Inventory Transaction Fact` where `Inventory Transaction Type` in ('Associate') where `Part SKU`=%d and `Location Key`=%d  limit 1 "
+                ,$this->sku
+                ,$location_key
+                );
 
 
                 mysql_query($sql);
@@ -1541,7 +1541,7 @@ class part extends DB_Table {
 
                 $part_location->disassociate($data);
                 $this->update_valid_to($last_date);
-
+                $this->update_stock();
 
             }
 
