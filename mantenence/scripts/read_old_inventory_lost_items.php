@@ -25,7 +25,7 @@ if (!$con) {
     print "Error can not connect with database server\n";
     exit;
 }
-//$dns_db='dw_avant';
+$dns_db='dw';
 $db=@mysql_select_db($dns_db, $con);
 if (!$db) {
     print "Error can not access the database\n";
@@ -42,31 +42,12 @@ date_default_timezone_set('Europe/London');
 
 
 
-print "Getting data from the old database\n";
 
-$sql="INSERT INTO `dw`.`Location Dimension` (`Location Key` ,`Location Warehouse Key` ,`Location Warehouse Area Key` ,`Location Code` ,`Location Mainly Used For` ,`Location Max Weight` ,`Location Max Volume` ,`Location Max Slots` ,`Location Distinct Parts` ,`Location Has Stock` ,`Location Stock Value`)VALUES ('1', '1', '1','Unknown', 'Picking', NULL , NULL , NULL , '0', 'Unknown', '0.00');";
-$loc= new Location(1);
-if (!$loc->id)
-    mysql_query($sql);
-$sql2="INSERT INTO `dw`.`Location Dimension` (`Location Key` ,`Location Warehouse Key` ,`Location Warehouse Area Key` ,`Location Code` ,`Location Mainly Used For` ,`Location Max Weight` ,`Location Max Volume` ,`Location Max Slots` ,`Location Distinct Parts` ,`Location Has Stock` ,`Location Stock Value`)VALUES ('2', '1', '1','LoadBay', 'Loading', NULL , NULL , NULL , '0', 'Unknown', '0.00');";
-$loc= new Location(2);
-if (!$loc->id)
-    mysql_query($sql2);
-
-$wa_data=array(	'Warehouse Area Name'=>'Unknown'
-                                      ,'Warehouse Area Code'=>'Unk'
-                                                             ,'Warehouse Key'=>1
-              );
-
-$wa=new WarehouseArea('find',$wa_data,'create');
-
-
-$sql="delete  from `Inventory Transaction Fact`  where `Inventory Transaction Type` in ('In','Lost') ";
-mysql_query($sql);
-$sql="truncate `Inventory Audit Dimension`  ";
+$sql="delete  from `Inventory Transaction Fact`  where `Inventory Transaction Type`='Lost' ";
 mysql_query($sql);
 
-$sql="select (select handle from aw_old.liveuser_users where authuserid=aw_old.in_out.author) as user, code,product_id,aw_old.in_out.date,aw_old.in_out.tipo,aw_old.in_out.quantity ,aw_old.in_out.notes from aw_old.in_out left join aw_old.product on (product.id=product_id) where  in_out.date!='0000-00-00 00:00:00' and product.code is not null and (aw_old.in_out.tipo=2 or aw_old.in_out.tipo=1  or aw_old.in_out.tipo=3)  order by product.id,date ";
+
+$sql="select (select handle from aw_old.liveuser_users where authuserid=aw_old.in_out.author) as user, code,product_id,aw_old.in_out.date,aw_old.in_out.tipo,aw_old.in_out.quantity ,aw_old.in_out.notes from aw_old.in_out left join aw_old.product on (product.id=product_id) where  aw_old.in_out.tipo=3 and  product.code is not null and (aw_old.in_out.tipo=2 or aw_old.in_out.tipo=1)  order by product.id,date ";
 //print "$sql\n";
 $result=mysql_query($sql);
 
@@ -127,19 +108,10 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 
 
 
-        } elseif($tipo==1) {
+        } else {
 
 
             $sql=sprintf("insert into `Inventory Transaction Fact` (`Date`,`Part SKU`,`Inventory Transaction Type`,`Inventory Transaction Quantity`,`Inventory Transaction Amount`,`Note`,`Metadata`,`History Type`) values (%s,%s,'In',%s,%s,%s,'','Normal')",prepare_mysql($date),prepare_mysql($part_sku),prepare_mysql($qty*$parts_per_product),prepare_mysql($cost_per_part*$qty*$parts_per_product),prepare_mysql($notes));
-            // print "$sql\n";
-            if (!mysql_query($sql))
-                exit("$sql can into insert Inventory Transaction Fact ");
-
-
-        }elseif($tipo==3) {
-
-
-            $sql=sprintf("insert into `Inventory Transaction Fact` (`Date`,`Part SKU`,`Inventory Transaction Type`,`Inventory Transaction Quantity`,`Inventory Transaction Amount`,`Note`,`Metadata`,`History Type`) values (%s,%s,'Lost',%s,%s,%s,'','Normal')",prepare_mysql($date),prepare_mysql($part_sku),prepare_mysql($qty*$parts_per_product),prepare_mysql($cost_per_part*$qty*$parts_per_product),prepare_mysql($notes));
             // print "$sql\n";
             if (!mysql_query($sql))
                 exit("$sql can into insert Inventory Transaction Fact ");
@@ -195,19 +167,10 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 
 
 
-        } elseif($tipo==1) {
+        } else {
 
 
             $sql=sprintf("insert into `Inventory Transaction Fact` (`Date`,`Part SKU`,`Inventory Transaction Type`,`Inventory Transaction Quantity`,`Inventory Transaction Amount`,`note`,`Metadata`) values (%s,%s,'In',%s,%s,%s,'')",prepare_mysql($date),prepare_mysql($part_sku),prepare_mysql($qty*$parts_per_product),prepare_mysql($cost_per_part*$qty*$parts_per_product),prepare_mysql($notes));
-            // print "$sql\n";
-            if (!mysql_query($sql))
-                exit("$sql can into insert Inventory Transaction Fact ");
-
-
-        }elseif($tipo==3) {
-
-
-            $sql=sprintf("insert into `Inventory Transaction Fact` (`Date`,`Part SKU`,`Inventory Transaction Type`,`Inventory Transaction Quantity`,`Inventory Transaction Amount`,`Note`,`Metadata`,`History Type`) values (%s,%s,'Lost',%s,%s,%s,'','Normal')",prepare_mysql($date),prepare_mysql($part_sku),prepare_mysql($qty*$parts_per_product),prepare_mysql($cost_per_part*$qty*$parts_per_product),prepare_mysql($notes));
             // print "$sql\n";
             if (!mysql_query($sql))
                 exit("$sql can into insert Inventory Transaction Fact ");
@@ -267,7 +230,7 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 
 
 
-                } elseif($tipo==1) {
+                } else {
 
                     $sql=sprintf("insert into `Inventory Transaction Fact` (`Date`,`Part SKU`,`Inventory Transaction Type`,`Inventory Transaction Quantity`,`Inventory Transaction Amount`,`note`,`Metadata`) values (%s,%s,'In',%s,%s,%s,'')",
                                  prepare_mysql($date),
@@ -280,16 +243,7 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
                         exit("$sql can into insert Inventory Transaction Fact ");
 
 
-                }elseif($tipo==3) {
-
-
-            $sql=sprintf("insert into `Inventory Transaction Fact` (`Date`,`Part SKU`,`Inventory Transaction Type`,`Inventory Transaction Quantity`,`Inventory Transaction Amount`,`Note`,`Metadata`,`History Type`) values (%s,%s,'Lost',%s,%s,%s,'','Normal')",prepare_mysql($date),prepare_mysql($part_sku),prepare_mysql($qty*$parts_per_product),prepare_mysql($cost_per_part*$qty*$parts_per_product),prepare_mysql($notes));
-            // print "$sql\n";
-            if (!mysql_query($sql))
-                exit("$sql can into insert Inventory Transaction Fact ");
-
-
-        }
+                }
 
                 continue;
             }

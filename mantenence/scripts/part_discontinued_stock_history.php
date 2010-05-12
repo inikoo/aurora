@@ -145,8 +145,10 @@ while($row=mysql_fetch_array($res)){
    
     if($part_location->found){
       
-        $sql="delete from  `Inventory Transaction Fact` where `Inventory Transaction Type` in ('Associate') limit 1 ";
-
+$sql=sprintf("delete from  `Inventory Transaction Fact` where `Inventory Transaction Type` in ('Associate') where `Part SKU`=%d and `Location Key`=%d  limit 1 "
+                ,$this->sku
+                ,$location_key
+                );
 
 	mysql_query($sql);
 	$location=new Location($location_key);

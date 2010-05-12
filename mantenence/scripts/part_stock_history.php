@@ -50,27 +50,9 @@ while($row=mysql_fetch_array($res)){
   $count++;
 
   $part=new Part($row['Part SKU']);
-  print percentage($count,$total,5)."  ".$part->data['Part XHTML Currently Used In']."\r";
-  
-  
-
-   $part->wrap_transactions();
-
-
-  
+  print percentage($count,$total,5)."  ".$part->data['Part SKU']."\r";
  $part->update_stock_history();
-  
 
-  
-  
-  
-  
-  
- 
-  
-
-
- 
 
 }
 

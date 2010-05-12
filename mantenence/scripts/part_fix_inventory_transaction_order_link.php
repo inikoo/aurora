@@ -31,23 +31,36 @@ mysql_query("SET NAMES 'utf8'");
 require_once '../../conf/conf.php';           
 date_default_timezone_set('Europe/London');
 
-$sql=sprintf('select count(*) as num  from `Part Dimension`');
+$sql=sprintf('select count(*) as num  from `Inventory Transaction Fact` where `Inventory Transaction Type`="Sale"');
 $res=mysql_query($sql);
 while($row=mysql_fetch_array($res)){
   $total=$row['num'];
 }
-$sql=sprintf('delete from `Part Location Dimension`');
-mysql_query($sql);
 
-print "Wrap part transactions\n";
-$sql=sprintf('select `Part SKU`,`Part XHTML Currently Used In`  from `Part Dimension`    ');
+$sql=sprintf('select I.`Note`,`Order Key`,`Order Public ID`,`Metadata`,`Part SKU`,`Location Key` from `Inventory Transaction Fact` I  left join `Order Dimension` O on (I.`Metadata`=O.`Order Original Metadata`) where `Inventory Transaction Type`="Sale"');
+print "$sql\n";
 $res=mysql_query($sql);
 $count=0;
 while($row=mysql_fetch_array($res)){
-  $part=new Part($row['Part SKU']);
-  $part->wrap_transactions();
+ 
+ 
+ $note=$row['Note'];
+ $old_note=$note;
+ $note=preg_replace('/\(.*\)/','',$note);;
+ $note.=sprintf(" (Order:<a href=\"order.php?id=%d\">%s</a>)",$row['Order Key'],$row['Order Public ID']);
+ 
+ $sql=sprintf("update `Inventory Transaction Fact` set `Note`=%s where `Metadata`=%s and `Part SKU`=%d and `Location Key`=%d and `Note`=%s"
+ ,prepare_mysql($note)
+ ,prepare_mysql($row['Metadata'])
+ ,$row['Part SKU']
+ ,$row['Location Key']
+ ,prepare_mysql($old_note)
+ );
+ if(!mysql_query($sql)){
+ exit("$sql\n");
+ }
   $count++;
-  print percentage($count,$total)."\r";
+  print percentage($count,$total)."  \r";
 }
 
 
