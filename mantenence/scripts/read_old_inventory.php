@@ -25,7 +25,7 @@ if (!$con) {
     print "Error can not connect with database server\n";
     exit;
 }
-//$dns_db='dw_avant';
+$dns_db='dw_avant';
 $db=@mysql_select_db($dns_db, $con);
 if (!$db) {
     print "Error can not access the database\n";
@@ -84,6 +84,7 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 
     $tipo=$row['tipo'];
     print $row['product_id']." $code     $tipo           \r";
+    
     $qty=$row['quantity'];
     $notes=$row['notes'];
     $sql=sprintf("select `Product ID` from `Product Dimension` P where   `Product Code`=%s and `Product Valid From`<=%s and `Product Valid To`>=%s order by `Product Valid To` desc ",prepare_mysql($code),prepare_mysql($date),prepare_mysql($date));

@@ -226,7 +226,8 @@ ADD `Store Lost Customers` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0' AFTER `Store 
 
 
 
-
+ALTER TABLE `Product Part Dimension` ADD `Product Part Status` ENUM( 'In Use', 'Not In Use' ) NOT NULL DEFAULT 'In Use';
+ALTER TABLE `dw_avant`.`Product Part Dimension` ADD INDEX ( `Product Part Status` ) ;
 
 */
 ?>

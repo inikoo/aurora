@@ -141,6 +141,7 @@ public $new_value=false;
       $sql=sprintf("select * from `Product Dimension` where `Product ID`=%d    ",$tag);
       $this->mode='pid';
       $result=mysql_query($sql);
+    
       if ( ($this->data=mysql_fetch_array($result, MYSQL_ASSOC))) {
 	$this->locale=$this->data['Product Locale'];
 	$this->id=$this->data['Product Current Key'];
@@ -4096,7 +4097,7 @@ if($this->images[$image_key]['caption']==$value){
    $part_list=array();
    $this->product_part_key=0;
    $this->product_part_type='';
-   $sql=sprintf("select `Product Part Key`,`Product Part Type` from `Product Part Dimension` where `Product ID`=%d and  ((  `Product Part Valid From`<=%s and `Product Part Valid To`>=%s) or (`Product Part Most Recent`='Yes' or  `Product Part Valid From`<=%s )  )   limit 1 "
+   $sql=sprintf("select `Product Part Key`,`Product Part Type` from `Product Part Dimension` where `Product ID`=%d and  ((  `Product Part Valid From`<=%s and `Product Part Valid To`>=%s and `Product Part Status`='Not In Use') or ( `Product Part Status`='In Use' and `Product Part Valid From`<=%s )  )   limit 1 "
 		,$this->pid
 		,prepare_mysql($datetime)
 		,prepare_mysql($datetime)

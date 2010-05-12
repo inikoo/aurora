@@ -1390,26 +1390,28 @@ class part extends DB_Table {
 
     function wrap_transactions() {
 
-        $sql=sprintf("select `Location Key` from `Inventory Transaction Fact` where  `Part SKU`=%d  group by `Location Key`  ",$this->sku);
+      $sql=sprintf("select `Location Key` from `Inventory Transaction Fact` where  `Part SKU`=%d  group by `Location Key`  ",$this->sku);
+      
+      $res2=mysql_query($sql);
+      while ($row2=mysql_fetch_array($res2)) {
+	$location_key=$row2['Location Key'];
+	print "---> Location $location_key \n";
 
-        $res2=mysql_query($sql);
-        while ($row2=mysql_fetch_array($res2)) {
-            $location_key=$row2['Location Key'];
 
-            $sql=sprintf("select `Date`,`Inventory Transaction Type` from `Inventory Transaction Fact` where  `Part SKU`=%d and `Location Key`=%d  order by `Date`,`Event Order`   ",$this->sku,$location_key);
-            //print "$sql\n";
-            $res3=mysql_query($sql);
-            if ($row3=mysql_fetch_array($res3)) {
+	$sql=sprintf("select `Date`,`Inventory Transaction Type` from `Inventory Transaction Fact` where  `Part SKU`=%d and `Location Key`=%d  order by `Date`,`Event Order`   ",$this->sku,$location_key);
+	//print "$sql\n";
+	$res3=mysql_query($sql);
+	if ($row3=mysql_fetch_array($res3)) {
                 if ($row3['Inventory Transaction Type']=='Associate') {
-                    $sql=sprintf("delete from  `Inventory Transaction Fact` where `Part SKU`=%d  and `Inventory Transaction Type` in ('Associate') and `Date`=%s and `Location Key`=%d  "
-                                 ,$this->sku
-                                 ,prepare_mysql($row3['Date'])
-                                 ,$location_key
+		  $sql=sprintf("delete from  `Inventory Transaction Fact` where `Part SKU`=%d  and `Inventory Transaction Type` in ('Associate') and `Date`=%s and `Location Key`=%d  "
+			       ,$this->sku
+			       ,prepare_mysql($row3['Date'])
+			       ,$location_key
                                 );
-                    // print "$sql\n";
-                    mysql_query($sql);
+		  // print "$sql\n";
+		  mysql_query($sql);
                 }
-            }
+	}
 
             $sql=sprintf("select `Date`,`Inventory Transaction Type` from `Inventory Transaction Fact` where  `Part SKU`=%d and `Location Key`=%d  order by `Date` desc ,`Event Order` desc ",$this->sku,$location_key);
             $last_itf_date='none';
@@ -1444,7 +1446,7 @@ class part extends DB_Table {
             if ($row3=mysql_fetch_array($res3)) {
                 $first_itf_date=($row3['Date']);
             }
-            //print "$sql\n";
+	    // print "$sql\n";
             //print "R: $first_audit_date $first_itf_date \n ";
             if ($first_audit_date=='none' and $first_itf_date=='none') {
                 print "\nError1 : Part ".$this->sku." ".$this->data['Part XHTML Currently Used In']."  \n";
@@ -1457,7 +1459,7 @@ class part extends DB_Table {
                 $first_date=$first_audit_date;
             }
             else {
-                if (strtotime($first_itf_date)<strtotime($first_audit_date) )
+                if (strtotime($first_itf_date)< strtotime($first_audit_date) )
                     $first_date=$first_itf_date;
                 else
                     $first_date=$first_audit_date;
@@ -1469,17 +1471,17 @@ $pl_data=array(
                                                 'Part SKU'=>$this->sku,
                                                 'Location Key'=>$location_key,
                                                 'Date'=>$first_date);
-                                           //     print_r($pl_data);
+  print_r($pl_data);
             $part_location=new PartLocation('find',$pl_data
                                             ,'create');
-
+	    print_r($part_location);
             if ($part_location->found) {
 
                 $sql=sprintf("delete from  `Inventory Transaction Fact` where `Inventory Transaction Type` in ('Associate') where `Part SKU`=%d and `Location Key`=%d  limit 1 "
                 ,$this->sku
                 ,$location_key
                 );
-
+		print "$sql\n";
 
                 mysql_query($sql);
                 $location=new Location($location_key);
@@ -1495,7 +1497,7 @@ $pl_data=array(
                              ,prepare_mysql($first_date)
                              ,-2
                             );
-                mysql_query($sql);
+                mysql_query($sql);print "$sql\n";
             }
 
 
@@ -1522,10 +1524,10 @@ $pl_data=array(
                     print "\nError2: Part ".$this->sku." ".$this->data['Part XHTML Currently Used In']."  \n";
                     return;
                 }
-                elseif(!$last_audit_date) {
+                elseif($last_audit_date=='none') {
                     $last_date=$last_itf_date;
                 }
-                elseif(!$last_itf_date) {
+                elseif($last_itf_date=='none') {
                     $last_date=$last_audit_date;
                 }
                 else {
@@ -1547,7 +1549,7 @@ $pl_data=array(
 
 
 
-        }
+      }
 
 
 
