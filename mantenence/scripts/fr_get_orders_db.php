@@ -577,7 +577,7 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
     
       $__code=strtolower($transaction['code']);
 
-      if($__code=='eo-st' or $__code=='mol-st' or  $__code=='jbb-st' or $__code=='lwheat-st' or  $__code=='jbb-st' 
+      if(  preg_match('/FishP-Mix|IncIn-ST|IncB-St|LLP-ST|L\&P-ST|EO-XST|AWRP-ST/i',$__code) or    $__code=='eo-st' or $__code=='mol-st' or  $__code=='jbb-st' or $__code=='lwheat-st' or  $__code=='jbb-st' 
 	 or $__code=='scrub-st' or $__code=='eye-st' or $__code=='tbm-st' or $__code=='tbc-st' or $__code=='tbs-st'
 	 or $__code=='gemd-st' or $__code=='cryc-st' or $__code=='gp-st'  or $__code=='dc-st'
 	 ){
@@ -998,16 +998,19 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 	  $parts_per_product=1;
 	  $part_list[]=array(
 			     'Product ID'=>$product->get('Product ID'),
+			     'Product Part Status'=>'Not In Use',
 			     'Part SKU'=>$parts[0],
 			     'Product Part Id'=>1,
 			     'requiered'=>'Yes',
 			     'Parts Per Product'=>1,
 			     'Product Part Type'=>'Simple Pick'
 			     );
+	  $parts_per_product=1;
 	}else{
 	  //  print "new\n";
 	  $part_data=array(
-			   'Part Most Recent'=>'Yes',
+			   'Part Status'=>'Not In Use',
+			   
 			   'Part XHTML Currently Supplied By'=>sprintf('<a href="supplier.php?id=%d">%s</a>',$supplier->id,$supplier->get('Supplier Code')),
 			   'Part XHTML Currently Used In'=>sprintf('<a href="product.php?id=%d">%s</a>',$product->id,$product->get('Product Code')),
 			   'Part XHTML Description'=>preg_replace('/\(.*\)\s*$/i','',$product->get('Product XHTML Short Description')),
@@ -1021,6 +1024,7 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 	  $part_list=array();
 	  $part_list[]=array(
 			     'Product ID'=>$product->pid,
+			     'Product Part Status'=>'Not In Use',
 			     'Part SKU'=>$part->get('Part SKU'),
 			     'Product Part Id'=>1,
 			     'requiered'=>'Yes',
@@ -1092,6 +1096,7 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
       
       $sp_data=array(
 		     'Supplier Key'=>$supplier->id,
+		     'Supplier Product Status'=>'Not In Use',
 		     'Supplier Product Code'=>$scode,
 		     'Supplier Product Cost'=>sprintf("%.4f",$supplier_product_cost),
 		     'Supplier Product Name'=>$description,

@@ -21,7 +21,7 @@ $_SESSION['locale_info'] = localeconv();
 $con=@mysql_connect($dns_host,$dns_user,$dns_pwd );
 
 if(!$con){print "Error can not connect with database server\n";exit;}
-$dns_db='dw_avant2';
+$dns_db='dw_avant';
 $db=@mysql_select_db($dns_db, $con);
 if (!$db){print "Error can not access the database\n";exit;}
 
@@ -39,7 +39,7 @@ $version='V 1.0';
 $Data_Audit_ETL_Software="$software $version";
 
 $file_name='/data/plaza/AWorder2002.xls';
-$csv_file='tmp.csv';
+$csv_file='order_uk_tmp.csv';
 exec('/usr/local/bin/xls2csv    -s cp1252   -d 8859-1   '.$file_name.' > '.$csv_file);
 
 $handle_csv = fopen($csv_file, "r");
@@ -397,7 +397,7 @@ $camp->add_deal_schema($data);
 /* $deal=new Deal('find create',$deal_data); */
 
 
- 
+
 $__cols=array();
 $inicio=false;
 while(($_cols = fgetcsv($handle_csv))!== false){
@@ -613,6 +613,11 @@ foreach($__cols as $cols){
 
     $description=_trim( mb_convert_encoding($cols[6], "UTF-8", "ISO-8859-1,UTF-8"));
     
+    
+    if($description=='' and  $cols[7]==''){
+      continue;
+    }
+    
 
  //    if(preg_match('/wsl-535/i',$code)){
 //       print_r($cols);
@@ -624,12 +629,17 @@ foreach($__cols as $cols){
     $supplier_code=_trim($cols[21]);
 
     $w=$cols[28];
-$price=$cols[7];
+    $price=$cols[7];
 
 
-    if($code=='EO-ST' or $code=='MOL-ST' or  $code=='JBB-st' or $code=='LWHEAT-ST' or  $code=='JBB-St' 
+    //print "-> $description <-  -> $price <- \n";
+
+    if(     preg_match('/Bag-02Mx|Bag-04mx|Bag-05mx|Bag-06mix|Bag-07MX|Bag-12MX|Bag-13MX/i',$code) or      $code=='FishP-Mix' or  $code=='IncB-St' or $code=='IncIn-ST' or $code=='LLP-ST' or   $code=='LLP-ST' or  $code=='EO-XST' or $code=='AWRP-ST' or $code=='EO-ST' or $code=='MOL-ST' or  $code=='JBB-st' or $code=='LWHEAT-ST' or  $code=='JBB-St' 
        or $code=='Scrub-St' or $code=='Eye-st' or $code=='Tbm-ST' or $code=='Tbc-ST' or $code=='Tbs-ST'
-       or $code=='GemD-ST' or $code=='CryC-ST' or $code=='GP-ST'  or $code=='DC-ST'
+       or $code=='GemD-ST' or $code=='CryC-ST' or $code=='GP-ST'  or $code=='DC-ST' 
+       or ($description=='' and ( $price=='' or $price==0 ))
+
+
        ){
       print "Skipping $code\n";
       
@@ -639,16 +649,15 @@ $price=$cols[7];
       if(!is_numeric($price) or $price<=0){
 	print "Price Zero  $code \n";
 	$price=0;
+	//if(!preg_match('/db/i',$code))
+	//  exit;
       }
 
 
       if($code=='Tib-20')
 	$supplier_cost=0.2;
 
-      if($code=='L&P-ST'){
-	$supplier_cost=36.30;
-	$price=86.40;
-      }
+    
 
     if(!is_numeric($supplier_cost)  or $supplier_cost<=0 ){
       //   print_r($cols);
@@ -1474,15 +1483,16 @@ if(preg_match('/^Wenzels$/i',$supplier_code)){
 				   ,'Supplier Code'=>$supplier_code
 				   );
 	}
-
+	
 	$supplier=new Supplier('code',$supplier_code);
+
 	if(!$supplier->id){
 	  //print "neew: $supplier_code\n";
 	  //print_r($the_supplier_data);
 	  $supplier=new Supplier('new',$the_supplier_data);
 	}
 
-
+	//exit;
 
 
 	$scode=_trim($scode);
@@ -1668,11 +1678,21 @@ if($department_code=='Florist-Supplies.biz'){
 if($department_code=='Soft Furnishings & Textiles'){
 	$department_code='Textil';
       }
+
+if(preg_match('/Packaging Dept/i',$department_code)){
+	$department_code='Pack';
+      }
+if(preg_match('/Fashion/i',$department_code)){
+	$department_code='Scarv';
+      }
+
 if($department_code=='Woodware Dept'){
   $department_code='Wood';
   $department_name='Woodware Department';
 
       }
+
+
 
 if($department_code=='PouchesPouches.biz Pouches Dept'){
   $department_code='Pouches';

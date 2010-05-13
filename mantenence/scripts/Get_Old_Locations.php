@@ -256,37 +256,5 @@ if(false){
 
 
 
-function wrap_it($sku){
-
-
-  $sql=sprintf("select * from `Inventory Transaction Fact` where `Inventory Transaction Type`='Associate' and `Part SKU`=%d  ",$sku);
-//print $sql;
-$res=mysql_query($sql);
-while($row=mysql_fetch_array($res)){
-  $date=$row['Date'];
-  $sku=$row['Part SKU'];
-  $location_key=$row['Location Key'];
-  
-  $sql=sprintf("select * from `Inventory Transaction Fact` where `Inventory Transaction Type`='Disassociate'  and `Date`>%s  and `Part SKU`=%d and `Location Key`=%d "
-	       ,prepare_mysql($date)
-	       ,$sku
-	       ,$location_key
-	       );
-  //print "$sql\n";
-  $res2=mysql_query($sql);
-  $do_it=true;
-  if($row2=mysql_fetch_array($res2)){
-    $do_it=false;
-
-  }
-  if($do_it){
-    //print "adding $sku $location_key\n";
-    $part_location=new PartLocation('find',array('Part SKU'=>$sku,'Location Key'=>$location_key),'create');
-  }
-
-}
-mysql_free_result($res);
-
-}
 
 ?>

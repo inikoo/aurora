@@ -365,7 +365,7 @@ foreach($__cols as $cols){
     
   
     // if(preg_match('/po/',$code))
-    print "$code\n";
+    //print "$code\n";
     $part_list=array();
     $rules=array();
     
@@ -415,9 +415,12 @@ foreach($__cols as $cols){
     
     $w=$cols[28];
     
-    if($code=='EO-ST' or $code=='MOL-ST' or  $code=='JBB-st' or $code=='LWHEAT-ST' or  $code=='JBB-St' 
+    if(    preg_match('/Bag-02Mx|Bag-04mx|Bag-05mx|Bag-06mix|Bag-07MX|Bag-12MX|Bag-13MX|FishP-Mix|IncIn-ST|IncB-St|LLP-ST|L\&P-ST|EO-XST|AWRP-ST/i',$code) or      $code=='EO-ST' or $code=='MOL-ST' or  $code=='JBB-st' or $code=='LWHEAT-ST' or  $code=='JBB-St' 
        or $code=='Scrub-St' or $code=='Eye-st' or $code=='Tbm-ST' or $code=='Tbc-ST' or $code=='Tbs-ST'
        or $code=='GemD-ST' or $code=='CryC-ST' or $code=='GP-ST'  or $code=='DC-ST'
+	   or ($description=='' and ( $price=='' or $price==0 ))
+
+
        ){
       print "Skipping $code\n";
       continue;
@@ -575,7 +578,7 @@ foreach($__cols as $cols){
 
 		'product sales type'=>'Public Sale',
 		'product type'=>'Normal',
-		'product record type'=>'New',
+		'product record type'=>'Normal',
 		'product web state'=>'Online Auto',
 
 		  

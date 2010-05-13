@@ -33,7 +33,7 @@ date_default_timezone_set('Europe/London');
 
 $where='and   `Part XHTML Currently Used In` like "%lebt%"';
 $where='';
-$sql=sprintf('select count(*) as num  from `Part Dimension`  where `Part Status`="Discontinued" %s ',$where);
+$sql=sprintf('select count(*) as num  from `Part Dimension`  where `Part Status`="Not In Use" %s ',$where);
 $res=mysql_query($sql);
 while($row=mysql_fetch_array($res)){
   $total=$row['num'];
@@ -41,7 +41,7 @@ while($row=mysql_fetch_array($res)){
 
 
 //print "Wrap part transactions\n";
-$sql=sprintf('select `Part SKU`,`Part XHTML Currently Used In`  from `Part Dimension`  where `Part Status`="Discontinued" %s ',$where);
+$sql=sprintf('select `Part SKU`,`Part XHTML Currently Used In`  from `Part Dimension`  where `Part Status`="Not In Use" %s ',$where);
 $res=mysql_query($sql);
 $count=0;
 while($row=mysql_fetch_array($res)){
@@ -170,7 +170,9 @@ $sql=sprintf("delete from  `Inventory Transaction Fact` where `Inventory Transac
 
 
 
-    if($part->data['Part Status']=='Discontinued'){
+
+
+    if($part->data['Part Status']=='Not In Use'){
       
       $sql=sprintf('select `Inventory Audit Date` from `Inventory Audit Dimension` where `Inventory Audit Part SKU`=%d and `Inventory Audit Location Key`=%d  order by `Inventory Audit Date` desc' ,$part->sku,$location_key);
       $last_audit_date='none';

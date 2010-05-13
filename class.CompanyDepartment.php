@@ -78,11 +78,11 @@ class CompanyDepartment extends DB_Table{
     
     
     //look for areas with the same code in the same Company
-    $sql=sprintf("select `Company Department Key` from `Company Department Dimension` left join `Company Area Department Bridge` on (`Department Key`=`Company Department Key`)  left join `Company Area Dimension` on (`Area Key`=`Company Area Key`)  where `Company Key`=%d and `Company Department Code`=%s"
+    $sql=sprintf("select `Company Department Key` from `Company Department Dimension`  where `Company Department Dimension`.`Company Key`=%d and `Company Department Code`=%s"
 		,$data['Company Key']
 		 ,prepare_mysql($data['Company Department Code']));
     
-    // print $sql;
+    //print $sql;
     $res=mysql_query($sql);
     if($row=mysql_fetch_array($res)){
       $this->found=true;
@@ -155,7 +155,7 @@ class CompanyDepartment extends DB_Table{
 
 
     }else{
-      exit($sql);
+      exit("Error:$sql\n");
     }
 
     }

@@ -739,7 +739,8 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
       if ($product->new_id ) {
 	//creamos una parte nueva
 	$part_data=array(
-			 'Part Most Recent'=>'Yes',
+			 'Part Status'=>'',
+			 
 			 'Part XHTML Currently Supplied By'=>sprintf('<a href="supplier.php?id=%d">%s</a>',$supplier->id,$supplier->get('Supplier Code')),
 			 'Part XHTML Currently Used In'=>sprintf('<a href="product.php?id=%d">%s</a>',$product->id,$product->get('Product Code')),
 			 'Part XHTML Description'=>preg_replace('/\(.*\)\s*$/i','',$product->get('Product XHTML Short Description')),
@@ -821,6 +822,7 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
       $sp_data=array(
 		     'Supplier Key'=>$supplier->id,
+		     'Supplier Product Status'=>'Not In Use',
 		     'Supplier Product Code'=>$scode,
 		     'Supplier Product Cost'=>sprintf("%.4f",$supplier_product_cost),
 		     'Supplier Product Name'=>$description,

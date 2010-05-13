@@ -219,6 +219,8 @@ public $updated=false;
         if (preg_match('/fuzzy/i',$options)) {
             $find_fuzzy='fuzzy';
         }
+	//forcing fuzzy
+	$find_fuzzy=false;
 
         //print_r($raw_data);
 
@@ -943,7 +945,7 @@ $data=$this->prepare_data($raw_data,$options);
        // print "XXXXXXXXXXX\n";
        // print_r($data);
        // print"+++++++++++++\n";
-$data=$this->prepare_data($data,$options);
+	$data=$this->prepare_data($data,$options);
 
         // if($this->table_name=='Telecom'){
         // print_r($data);exit;
@@ -951,24 +953,60 @@ $data=$this->prepare_data($data,$options);
         $base_data=$this->base_data();
 
         foreach($data as $key=>$value) {
-            //print "$key $value  \n";
-            if (array_key_exists($key,$base_data)) {
+	  
+	  if($key=='Address Country Code' or  $key==' Address Country 2 Alpha Code' or $key=='Address Country Name' ){
+	    if($key=='Address Country Code')
+	      $code=$value;
+	    elseif($key=='Address Country Name'){
+	      $code=$this->parse_country($value);
+	    }elseif( $key==' Address Country 2 Alpha Code' ){
+	      $country=new Country('2alpha',$value);
+	      $code=$country->data['Country Code'];
+	    }
+		
+	   
+	    $this->update_country_code($code);
+	  }elseif (array_key_exists($key,$base_data)) {
+	    
+	    if ($value!=$this->data[$key]) {
+	      $this->update_field_switcher($key,$value,$options);
+	    }
 
-                if ($value!=$this->data[$key]) {
-//print "xxx $key $value \n";
+	  }
+	  elseif(preg_match('/^Street Data$/',$key)) {
+	    $this->update_field_switcher($key,$value,$options);
+	  }
 
-                    $this->update_field_switcher($key,$value,$options);
-                }
 
-            }
-            elseif(preg_match('/^Street Data$/',$key)) {
-                $this->update_field_switcher($key,$value,$options);
-            }
+
         }
         if (!$this->updated)
             $this->msg.=' '._('Nothing to be updated')."\n";
         else {
+	  $this->get_data('id',$this->id);
 
+	  list($fuzzy,$fuzzy_type)=$this->get_fuzzines($this->data);
+	  $this->data['Address Fuzzy']=$fuzzy;
+	  $this->data['Address Fuzzy Type']=$fuzzy_type;
+
+
+	  $location=$this->display('location');
+	  $plain=$this->display('plain');
+	  
+
+	  
+
+	  $sql=sprintf("update `Address Dimension` set `Address Fuzzy`=%s, `Address Fuzzy Type`=%s, `Address Location`=%s,`Address Plain`=%s  where `Address Key`=%d  "
+		       ,prepare_mysql($fuzzy)
+		       ,prepare_mysql($fuzzy_type,false)
+		       ,prepare_mysql($location)
+		       ,prepare_mysql($plain)
+		       ,$this->id
+
+
+		       );
+	  mysql_query($sql);
+	  $this->get_data('id',$this->id);
           $this->update_parents();
 
 
@@ -1761,6 +1799,9 @@ $data=$this->prepare_data($data,$options);
         if (mysql_affected_rows()) {
             $this->updated=true;
         }
+	$this->update=true;
+
+
     }
 
     /*
@@ -4161,7 +4202,7 @@ $data=$this->prepare_data($data,$options);
     function plain($data) {
 
 
-
+      
 
 
         $separator=' ';
@@ -4712,6 +4753,53 @@ $this->updated=$telecom->updated;
 
 function get_name(){
     return _('Address').' '.$this->id.', '.$this->data['Address Location'];
+}
+
+
+function get_fuzzines($data){
+  
+  $total_empty=true;
+  $street_empty=true;
+  $country_empty=true;
+  foreach($data as $key=>$value){
+    if(preg_match('/Address Internal|Address Building|Address Street Name/',$key) and $value!=''){
+      $street_empty=false;
+      $total_empty=false;
+    }
+
+    if(preg_match('/Address Town/',$key )and $value!=''){
+      
+      $total_empty=false;
+    }
+
+
+    
+    if ($data['Address Country Code']!='UNK') {
+      $country_empty=false;
+      $total_empty=false;
+    }
+  }
+
+
+  if($total_empty){
+    $type='All';
+  }elseif($country_empty){
+    $type='Country';
+  }elseif($street_empty){
+    $type='Steet';
+  }else
+     $type='';
+  
+  if($type=='')
+    $fuzzy='No';
+  else
+    $fuzzy='Yes';
+  
+  return array($fuzzy,$type);
+
+
+
+
 }
 
 

@@ -24,7 +24,13 @@ TRUNCATE `Charge Dimension`;
 TRUNCATE `Attachment Dimension`;
 truncate `Inventory Audit Dimension`;
 TRUNCATE `Image Bridge`;
-TRUNCATE `Order Public ID 1`;
+TRUNCATE `Order Public ID 1`;truncate`Company Area Department Bridge`;truncate `Company Department Position Bridge`;
+TRUNCATE `Company Area Department Bridge`;
+TRUNCATE `Company Department Position Bridge`;
+TRUNCATE `Company Position Dimension`;
+TRUNCATE `Company Position Staff Bridge`;
+
+
 truncate `Product Part Dimension`;
 truncate `Product Family Bridge`;
 truncate `Shipping Dimension`;

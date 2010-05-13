@@ -510,7 +510,7 @@ $editor=array("Date"=>$date_order);
     
       $__code=strtolower($transaction['code']);
 
-      if($__code=='eo-st' or $__code=='mol-st' or  $__code=='jbb-st' or $__code=='lwheat-st' or  $__code=='jbb-st' 
+      if(     preg_match('/FishP-Mix|IncIn-ST|IncB-St|LLP-ST|L\&P-ST|EO-XST|AWRP-ST/i',$__code) or       $__code=='eo-st' or $__code=='mol-st' or  $__code=='jbb-st' or $__code=='lwheat-st' or  $__code=='jbb-st' 
 	 or $__code=='scrub-st' or $__code=='eye-st' or $__code=='tbm-st' or $__code=='tbc-st' or $__code=='tbs-st'
 	 or $__code=='gemd-st' or $__code=='cryc-st' or $__code=='gp-st'  or $__code=='dc-st'
 	 ){
@@ -897,6 +897,19 @@ $editor=array("Date"=>$date_order);
 	exit;
       }
 
+      if(!$this->found_in_code or !$this->found_in_store){
+	$sql=sprintf("update `Product Dimension` set `Product Record Type`='Discontinued' , `Product Sales Type`='Not for Sale' where `Product ID`=%d ",$product->pid);
+      }elseif($this->found_in_id){
+	$sql=sprintf("update `Product Dimension` set `Product Record Type`='Historic' , `Product Sales Type`='Public Sale' where `Product ID`=%d ",$product->pid);
+
+      }elseif($this->found_in_key){
+
+      }else{
+	$sql=sprintf("update `Product Dimension` set `Product Record Type`='Discontinued' , `Product Sales Type`='Not for Sale' where `Product ID`=%d ",$product->pid);
+
+      }
+
+
       $supplier_code=_trim($transaction['supplier_code']);
       if ($supplier_code=='' or $supplier_code=='0' or  preg_match('/^costa$/i',$supplier_code))
 	$supplier_code='Unknown';
@@ -922,11 +935,7 @@ $editor=array("Date"=>$date_order);
 
       
       if ($product->new_id ) {
-	//	print "NEW Product ID $code \n";
-	
-	//	print_r($product);
-	//	exit;
-	// Take the part form the Uk equivalent
+
 	$uk_product=new Product('code_store',$code,1);
 	$parts=$uk_product->get('Parts SKU');
 	
@@ -936,6 +945,7 @@ $editor=array("Date"=>$date_order);
 	  $part=new Part('sku',$parts[0]);
 	  $part_list[]=array(
 			     'Product ID'=>$product->get('Product ID'),
+			     'Product Part Status'=>'Not In Use',
 			     'Part SKU'=>$parts[0],
 			     'Product Part Id'=>1,
 			     'requiered'=>'Yes',
@@ -948,7 +958,7 @@ $editor=array("Date"=>$date_order);
 	  
 	  //creamos una parte nueva
 	    $part_data=array(
-			     'Part Most Recent'=>'Yes',
+			     'Part Status'=>'Not In Use',
 			     'Part XHTML Currently Supplied By'=>sprintf('<a href="supplier.php?id=%d">%s</a>',$supplier->id,$supplier->get('Supplier Code')),
 			     'Part XHTML Currently Used In'=>sprintf('<a href="product.php?id=%d">%s</a>',$product->id,$product->get('Product Code')),
 			     'Part XHTML Description'=>preg_replace('/\(.*\)\s*$/i','',$product->get('Product XHTML Short Description')),
@@ -961,7 +971,8 @@ $editor=array("Date"=>$date_order);
 	    $part_list=array();
 	    $part_list[]=array(
 			       'Product ID'=>$product->pid,
-			       'Part SKU'=>$part->get('Part SKU'),
+			       'Part SKU'=>$part->get('Part SKU')
+			       , 'Product Part Status'=>'Not In Use',
 			       'Product Part Id'=>1,
 			       'requiered'=>'Yes',
 			       'Parts Per Product'=>$parts_per_product,
@@ -970,8 +981,7 @@ $editor=array("Date"=>$date_order);
 	  }
 	//	print_r($part_list);
 	$product->new_part_list(array(),$part_list);
-	
-	  $used_parts_sku=array($part->sku => array('parts_per_product'=>$parts_per_product,'unit_cost'=>$supplier_product_cost*$transaction['units']));
+	$used_parts_sku=array($part->sku => array('parts_per_product'=>$parts_per_product,'unit_cost'=>$supplier_product_cost*$transaction['units']));
 	
       } else {
 	
@@ -1043,6 +1053,7 @@ $editor=array("Date"=>$date_order);
       
 	$sp_data=array(
 		       'Supplier Key'=>$supplier->id,
+		       'Supplier Product Status'=>'Not In Use',
 		       'Supplier Product Code'=>$scode,
 		       'Supplier Product Cost'=>sprintf("%.4f",$supplier_product_cost),
 		       'Supplier Product Name'=>$description,

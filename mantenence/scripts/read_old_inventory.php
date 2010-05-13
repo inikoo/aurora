@@ -9,6 +9,7 @@ include_once('../../class.SupplierProduct.php');
 include_once('../../class.PartLocation.php');
 include_once('../../class.User.php');
 include_once('../../class.InventoryAudit.php');
+include_once('../../class.Location.php');
 
 error_reporting(E_ALL);
 error_reporting(E_ALL);
@@ -42,13 +43,15 @@ date_default_timezone_set('Europe/London');
 
 
 
+
+
 print "Getting data from the old database\n";
 
-$sql="INSERT INTO `dw`.`Location Dimension` (`Location Key` ,`Location Warehouse Key` ,`Location Warehouse Area Key` ,`Location Code` ,`Location Mainly Used For` ,`Location Max Weight` ,`Location Max Volume` ,`Location Max Slots` ,`Location Distinct Parts` ,`Location Has Stock` ,`Location Stock Value`)VALUES ('1', '1', '1','Unknown', 'Picking', NULL , NULL , NULL , '0', 'Unknown', '0.00');";
+$sql="INSERT INTO `Location Dimension` (`Location Key` ,`Location Warehouse Key` ,`Location Warehouse Area Key` ,`Location Code` ,`Location Mainly Used For` ,`Location Max Weight` ,`Location Max Volume` ,`Location Max Slots` ,`Location Distinct Parts` ,`Location Has Stock` ,`Location Stock Value`)VALUES ('1', '1', '1','Unknown', 'Picking', NULL , NULL , NULL , '0', 'Unknown', '0.00');";
 $loc= new Location(1);
 if (!$loc->id)
     mysql_query($sql);
-$sql2="INSERT INTO `dw`.`Location Dimension` (`Location Key` ,`Location Warehouse Key` ,`Location Warehouse Area Key` ,`Location Code` ,`Location Mainly Used For` ,`Location Max Weight` ,`Location Max Volume` ,`Location Max Slots` ,`Location Distinct Parts` ,`Location Has Stock` ,`Location Stock Value`)VALUES ('2', '1', '1','LoadBay', 'Loading', NULL , NULL , NULL , '0', 'Unknown', '0.00');";
+$sql2="INSERT INTO  `Location Dimension` (`Location Key` ,`Location Warehouse Key` ,`Location Warehouse Area Key` ,`Location Code` ,`Location Mainly Used For` ,`Location Max Weight` ,`Location Max Volume` ,`Location Max Slots` ,`Location Distinct Parts` ,`Location Has Stock` ,`Location Stock Value`)VALUES ('2', '1', '1','LoadBay', 'Loading', NULL , NULL , NULL , '0', 'Unknown', '0.00');";
 $loc= new Location(2);
 if (!$loc->id)
     mysql_query($sql2);
@@ -115,12 +118,12 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
           //  print "Adding Audit\n";
 
             $data_inventory_audit=array(
-                                      'Inventory Audit Date'=>$date
-                                                             ,'Inventory Audit Part SKU'=>$part_sku
-                                                                                         ,'Inventory Audit Location Key'=>1
-                                                                                                                         ,'Inventory Audit Note'=>$notes
-                                                                                                                                                 ,'Inventory Audit User Key'=>$user_key
-                                                                                                                                                                             ,'Inventory Audit Quantity'=>$qty*$parts_per_product
+					'Inventory Audit Date'=>$date
+					,'Inventory Audit Part SKU'=>$part_sku
+					,'Inventory Audit Location Key'=>1
+					,'Inventory Audit Note'=>$notes
+					,'Inventory Audit User Key'=>$user_key
+					,'Inventory Audit Quantity'=>$qty*$parts_per_product
                                   );
             $audit=new InventoryAudit('find',$data_inventory_audit,'create');
 

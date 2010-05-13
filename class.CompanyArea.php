@@ -83,7 +83,7 @@ class CompanyArea extends DB_Table {
                      ,$data['Company Key']
                      ,prepare_mysql($data['Company Area Code']));
 
-        // print $sql;
+
         $res=mysql_query($sql);
         if ($row=mysql_fetch_array($res)) {
             $this->found=true;
@@ -252,16 +252,16 @@ class CompanyArea extends DB_Table {
         //$data['Company Area Key']=$this->id;
         $department= new CompanyDepartment('find',$data,'create');
         if($department->id){
-        $this->new_department_msg=$department->msg;
-        
-        if ($department->new){
+	  $this->new_department_msg=$department->msg;
+	  
+	  if ($department->new){
             $this->new_department=true;
-         
-        }else {
+	    
+	  }else {
             if ($department->found)
-                $this->new_department_msg=_('department Code already in the Company');
-        }
-        $this->associate_department($department->id);
+	      $this->new_department_msg=_('department Code already in the Company');
+	  }
+	  $this->associate_department($department->id);
         }
         
     }
@@ -284,20 +284,20 @@ function associate_department($department_key){
         
         $company=new Company($this->data['Company Key']);
                 $department=new CompanyDepartment($department_key);
+		
+		$note=_('Company Department Created');
+		$details=_('Company Department')." ".$department->data['Company Department Code']." "._('created in')." ".$company->data['Company Name'];
 
-         $note=_('Company Department Created');
-      $details=_('Company Department')." ".$department->data['Company Department Code']." "._('created in')." ".$company->data['Company Name'];
-
-
- $history_data=array(
-				'History Abstract'=>$note
+		
+		$history_data=array(
+				    'History Abstract'=>$note
 				,'History Details'=>$details
-				,'Action'=>'associated'
-				,'Preposition'=>'to'
+				    ,'Action'=>'associated'
+				    ,'Preposition'=>'to'
 				,'Direct Object'=>'Company Department'
-				,'Direct Object Key'=>$department_key
-
-				,'Indirect Object'=>'Company'
+				    ,'Direct Object Key'=>$department_key
+				    
+				    ,'Indirect Object'=>'Company'
 				,'Indirect Object Key'=>$company->id
 
 				);

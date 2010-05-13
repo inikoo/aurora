@@ -173,14 +173,6 @@ class Staff extends DB_Table{
 
      if($create and !$this->found){
        
-        $child=new Contact ('find in staff create update',$raw_data);
-
-	if($child->error){
-	  $this->error=true;
-	  $this->error=$child->error;
-	  return;
-	}
-	$raw_data['Staff Contact Key']=$child->id;
 	$this->create($raw_data);
 	
      }
@@ -192,7 +184,18 @@ class Staff extends DB_Table{
 
    function create($data){
   
-   
+     
+     
+
+     $child=new Contact ('find in staff create update',$data);
+
+	if($child->error){
+	  $this->error=true;
+	  $this->error=$child->error;
+	  return;
+	}
+	$data['Staff Contact Key']=$child->id;
+
 
      $contact=new Contact($data['Staff Contact Key']);
      $data['Staff Name']=$contact->display('name');

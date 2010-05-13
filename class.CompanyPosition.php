@@ -250,9 +250,70 @@ class CompanyPosition extends DB_Table{
   } 
  
 
+
+  function add_staff($data) {
+        $this->new_position=false;
+
+
+        $staff= new Staff('find',$data,'create');
+        if($staff->id){
+	  $this->new_staff_msg=$staff->msg;
+	  
+	  if ($staff->new){
+            $this->new_staff=true;
+	    
+	  }else {
+            if ($staff->found)
+	      $this->new_staff_msg=_('staff Code already in the Company');
+	  }
+	  $this->associate_staff($staff->id);
+        }
+        
+    }
   
-  
+  function associate_staff($staff_key){
+    if(!array_key_exists($staff_key,$this->get_staff_keys())){
+        $sql=sprintf("insert into `Company Position Staff Bridge` values (%d,%d) ",$this->id,$staff_key);
+        mysql_query($sql);
+        
+        
+	$staff=new Staff($staff_key);
+	
+	$note=_('Staff associted with position');
+	$details=_('Company Staff')." ".$staff->data['Staff Name']." "._('associted with position')." (".$this->data['Company Position Code'].") ".$this->data['Company Position Title'];
+	
+	
+	$history_data=array(
+			    'History Abstract'=>$note
+			    ,'History Details'=>$details
+			    ,'Action'=>'associated'
+			    ,'Preposition'=>'to'
+				    ,'Direct Object'=>'Staff'
+			    ,'Direct Object Key'=>$staff_key
+			    ,'Indirect Object'=>'Position'
+				    ,'Indirect Object Key'=>$this->id
+			    
+			    );
+	$this->add_history($history_data);
+        
+        
+    }
+
+}
      
+function get_staff_keys(){
+    $staff_keys=array();
+    $sql=sprintf("select `Staff Key` from `Company Position Staff Bridge` where `Position Key`=%d",$this->id);
+    //print $sql;
+    $res=mysql_query($sql);
+    while($row=mysql_fetch_array($res)){
+        $staff_keys[$row['Staff Key']]=$row['Staff Key'];
+    }
+    return $staff_keys;
+}
+
+
+
 }
 
 ?>

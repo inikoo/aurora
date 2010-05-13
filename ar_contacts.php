@@ -1657,7 +1657,7 @@ $conf=$_SESSION['state']['hr']['staff'];
      $wheref.=" and  name like '%".addslashes($f_value)."%'    ";
    else if($f_field=='position_id' or $f_field=='area_id'   and is_numeric($f_value) )
      $wheref.=sprintf(" and  $f_field=%d ",$f_value);
-  
+
   
   switch($view){
    case('all'):
@@ -1716,12 +1716,17 @@ $conf=$_SESSION['state']['hr']['staff'];
        break;
 
     }
+   
 
 if($order=='name')
   $order='`Staff Name`';
+elseif($order=='position')
+  $order='position';
+else
+  $order='`Staff Name`';
 
-   $sql="select * from `Staff Dimension` SD left join `Contact Dimension` CD on (`Contact Key`=`Staff Contact Key`)  $where $wheref order by $order $order_direction limit $start_from,$number_results";
-
+   $sql="select (select GROUP_CONCAT(distinct `Company Position Title`) from `Company Position Staff Bridge` PSB  left join `Company Position Dimension` P on (`Company Position Key`=`Position Key`) where PSB.`Staff Key`= SD.`Staff Key`) as position, `Staff Alias`,`Staff Key`,`Staff Name` from `Staff Dimension` SD   $where $wheref order by $order $order_direction limit $start_from,$number_results";
+   // print $sql;
    $adata=array();
    $res=mysql_query($sql);
    while($data=mysql_fetch_array($res)){
@@ -1729,13 +1734,17 @@ if($order=='name')
 
      $_id=$myconf['staff_prefix'].sprintf('%03d',$data['Staff Key']);
      $id=sprintf('<a href="staff.php?id=%d">%s</a>',$data['Staff Key'],$_id);
+
+     $department='';
+     $area='';
+     $position=$data['position'];
      $adata[]=array(
 		    'id'=>$id,
 		    'alias'=>$data['Staff Alias'],
 		    'name'=>$data['Staff Name'],
-		    'department'=>$data['Staff Department Key'],
-		    'area'=>$data['Staff Area Key'],
-		    'position'=>$data['Staff Position Key']
+		    'department'=>$department,
+		    'area'=>$area,
+		    'position'=>$position
 		    
 		    );
   }
