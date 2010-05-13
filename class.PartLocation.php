@@ -103,8 +103,7 @@ class PartLocation extends DB_Table {
         if (!$this->location->id)
             $this->location=New Location(1);
         $this->location_key=$this->location->id;
-	print_r($data['Location Key']);
-	exit;
+	
 
 
         $this->part=New Part($data['Part SKU']);

@@ -238,7 +238,8 @@
 		    {if $product->get('Product Next Supplier Shipment')   }<tr><td rowspan="2" style="font-size:75%">{$product->get('Product Next Supplier Shipment')}</td></tr>{/if}
 		   
 		</table>
-		{if $product->get('Number of Parts')>0}
+		
+		
 		<table class="show_info_product" style="float:right;width:100%"  >
 		  <tr><td>{t}Parts{/t}:</td><td class="aright">{$product->get('Product XHTML Parts')}</td></tr>
 		  <tr>
@@ -247,7 +248,7 @@
 		      <tr><td>{t}SKU{/t} <a href="part.php?sku={$part.sku}">{$part.sku}</a></td><td style="padding-left:10px"> {$part.location_code}({$part.stock})</td></tr>
 		      {/foreach}
 		</table>
-		{/if}
+		
 
 		  
 		  <table  class="show_info_product">

@@ -4623,6 +4623,7 @@ function update_parts(){
       $parts='';
       $mysql_where='';
       $sql=sprintf("select `Part SKU` from  `Product Part Dimension` PPD left join  `Product Part List`       PPL   on (PPL.`Product Part Key`=PPD.`Product Part Key`) where PPL.`Product ID`=%d and `Product Part Most Recent`='Yes';",$this->data['Product ID']);
+     // print "$sql\n";
       $result=mysql_query($sql);
       while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 	$parts.=sprintf(', <a href="part.php?sku=%d">SKU%005d</a>',$row['Part SKU'],$row['Part SKU']);

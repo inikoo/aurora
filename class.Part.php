@@ -854,7 +854,16 @@ class part extends DB_Table {
         //print "$sql\n";
 
     }
+ function update_valid_from($date) {
+        $this->data['Part Valid To']=$date;
+        $sql=sprintf("update `Part Dimension`  set `Part Valid From`=%s where  `Part SKU`=%d    "
+                     ,prepare_mysql($date)
+                     ,$this->id
+                    );
+        mysql_query($sql);
+        //print "$sql\n";
 
+    }
     function update_valid_dates($date) {
         $affected_from=0;
         $affected_to=0;
@@ -1395,7 +1404,7 @@ class part extends DB_Table {
       $res2=mysql_query($sql);
       while ($row2=mysql_fetch_array($res2)) {
 	$location_key=$row2['Location Key'];
-	print "---> Location $location_key \n";
+	//print "---> Location $location_key \n";
 
 
 	$sql=sprintf("select `Date`,`Inventory Transaction Type` from `Inventory Transaction Fact` where  `Part SKU`=%d and `Location Key`=%d  order by `Date`,`Event Order`   ",$this->sku,$location_key);
@@ -1471,17 +1480,17 @@ $pl_data=array(
                                                 'Part SKU'=>$this->sku,
                                                 'Location Key'=>$location_key,
                                                 'Date'=>$first_date);
-  print_r($pl_data);
+  //print_r($pl_data);
             $part_location=new PartLocation('find',$pl_data
                                             ,'create');
-	    print_r($part_location);
+	    //print_r($part_location);
             if ($part_location->found) {
 
                 $sql=sprintf("delete from  `Inventory Transaction Fact` where `Inventory Transaction Type` in ('Associate') where `Part SKU`=%d and `Location Key`=%d  limit 1 "
                 ,$this->sku
                 ,$location_key
                 );
-		print "$sql\n";
+		//print "$sql\n";
 
                 mysql_query($sql);
                 $location=new Location($location_key);
@@ -1500,7 +1509,7 @@ $pl_data=array(
                 mysql_query($sql);print "$sql\n";
             }
 
-
+$this->update_valid_from($first_date);
 
 
             if ($this->data['Part Status']=='Discontinued') {
@@ -1527,7 +1536,10 @@ $pl_data=array(
                 elseif($last_audit_date=='none') {
                     $last_date=$last_itf_date;
                 }
+
+
                 elseif($last_itf_date=='none') {
+
                     $last_date=$last_audit_date;
                 }
                 else {
