@@ -83,8 +83,9 @@ class supplierproduct extends DB_Table {
             $this->found_in_code=true;
             $this->found_code=$row4['Supplier Product Code'];
             $this->get_data('code',$data['Supplier Product Code'],$data['Supplier Key']);
-            $sql=sprintf("select `SPH Key` from `Supplier Product History Dimension` where `Supplier Product Code`=%s and `SPH Cost`=%.4f "
+            $sql=sprintf("select `SPH Key` from `Supplier Product History Dimension` where `Supplier Product Code`=%s and  `Supplier Key`=%d and `SPH Cost`=%.4f "
                          ,prepare_mysql($data['Supplier Product Code'])
+			 ,$data['Supplier Key']
                          ,$data['Supplier Product Cost']
 
                         );
@@ -218,8 +219,17 @@ class supplierproduct extends DB_Table {
         $keys='(';
         $values='values(';
         foreach($base_data as $key=>$value) {
+
+	  if($key=='sph cost'){
+	    $keys.="`$key`,";
+            $values.=sprintf("%.4f",$value).",";
+
+	  }else{
+
             $keys.="`$key`,";
             $values.=prepare_mysql($value).",";
+
+	  }
         }
         $keys=preg_replace('/,$/',')',$keys);
         $values=preg_replace('/,$/',')',$values);
@@ -263,8 +273,22 @@ class supplierproduct extends DB_Table {
         $keys='(';
         $values='values(';
         foreach($base_data as $key=>$value) {
+
+
+	   if($key=='supplier product cost'){
+	    $keys.="`$key`,";
+            $values.=sprintf("%.4f",$value).",";
+
+	  }else{
+
             $keys.="`$key`,";
             $values.=prepare_mysql($value).",";
+
+	  }
+
+
+
+
         }
         $keys=preg_replace('/,$/',')',$keys);
         $values=preg_replace('/,$/',')',$values);

@@ -4846,14 +4846,46 @@ function get_formated_price_per_unit($locale=''){
 return formated_price_per_unit($data);
 }
 
-function update_units_per_case($value){
-
+function update_units_per_case($units){
+ 
+   if(!is_numeric($units)){
+      $this->error=true;
+      $this->msg='Units per case is not a number';
+      return;
+    }
+   
+  if($units<=0){
+      $this->error=true;
+      $this->msg='Units can not be zero or negative number';
+      return;
+    }
+   
+ 
+ 
+    $sql=sprintf("update `Product Dimension` set `Product Units Per Case`=%f where `Product ID`=%d",$units,$this->pid);
+    mysql_query($sql);
+    $this->data['Product Units Per Case']=$units;
+    $this->new_value=$units;
+    $this->updated=true;
 
 }
       
 
 function update_units_type($value){
 
+  $valid_values=getEnumValues('Product Dimension', 'Product Unit Type');
+
+  if(!in_array($value,$valid_values)){
+     $this->error=true;
+      $this->msg='Not valid value';
+      return;
+  }
+
+ $sql=sprintf("update `Product Dimension` set `Product Unit Type`=%s where `Product ID`=%d",$value,$this->pid);
+    mysql_query($sql);
+    $this->data['Product Unit Type']=$value;
+    $this->new_value=$value;
+    $this->updated=true;
 
 }
 

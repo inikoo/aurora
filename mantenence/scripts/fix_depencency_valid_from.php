@@ -18,7 +18,7 @@ if (!$con) {
     print "Error can not connect with database server\n";
     exit;
 }
-//$dns_db='dw';
+$dns_db='dw_avant';
 $db=@mysql_select_db($dns_db, $con);
 if (!$db) {
     print "Error can not access the database\n";
@@ -179,7 +179,7 @@ function get_units_from_sku($sku,$date) {
     if (!$date)
         $date=date('Y-m-d H:i:s');
 
-    $sql=sprintf("select  GROUP_CONCAT(distinct PPL.`Product ID`) ids from `Product Part List` PPL left join `Product Part Dimension` PPD  on (PPD.`Product Part Key`=PPL.`Product Part Key`) where `Part SKU` in ($sku)  and  ( (  `Product Part Valid From`<%s  and  `Product Part Valid From`>%s and `Product Part Status`='Not In Use')or (`Product Part Valid From`<%s and  `Product Part Status`='In Use') )  "
+    $sql=sprintf("select  GROUP_CONCAT(distinct PPL.`Product ID`) ids from `Product Part List` PPL left join `Product Part Dimension` PPD  on (PPD.`Product Part Key`=PPL.`Product Part Key`) where `Part SKU` in ($sku)  and  ( (  `Product Part Valid From`<%s  and  `Product Part Valid To`>%s and `Product Part Status`='Not In Use')or (`Product Part Valid From`<%s and  `Product Part Status`='In Use') )  "
                  ,prepare_mysql($date)
                  ,prepare_mysql($date)
                  ,prepare_mysql($date)

@@ -336,9 +336,10 @@ $this->data['Supplier Main XHTML Email']='';
             $this->id=mysql_insert_id();
 
             if (!$this->data['Supplier Company Key']) {
-                //print_r($raw_data);
+               
                 $company=new company('find in supplier create update',$raw_data);
                 //print_r($company->data);
+		
             } else {
                 $company=new company('id',$this->data['Supplier Company Key']);
                 $company->editor=$this->editor;
@@ -354,7 +355,10 @@ $this->data['Supplier Main XHTML Email']='';
             
               $this->associate_company($company->id);
                 $this->associate_contact($contact->id);
-            
+		//print_r($company->data);
+		//	print "=================\n";
+
+
             $company->update_parents_principal_address_keys($company->data['Company Main Address Key']);
             $address=new Address($company->data['Company Main Address Key']);
             $address->editor=$this->editor;

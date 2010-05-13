@@ -18,7 +18,7 @@ if (!$con) {
     print "Error can not connect with database server\n";
     exit;
 }
-//$dns_db='dw';
+$dns_db='dw_avant';
 $db=@mysql_select_db($dns_db, $con);
 if (!$db) {
     print "Error can not access the database\n";
@@ -40,6 +40,8 @@ while ($row=mysql_fetch_array($res)) {
 if(preg_match('/gpp?\-/i',$row['r1']))
 continue;
 if(preg_match('/spin-/i',$row['r1']))
+continue;
+if(preg_match('/wsl-1275/i',$row['r1']))
 continue;
         $product_parts_to_keep=$row['r1'];
         $product_parts_to_delete=$row['r2'];
@@ -85,8 +87,15 @@ continue;
             }
 
             if (count(preg_split('/\,/',$to_keep_skus))>1) {
-                exit("do not know where to choodre");
-            } else {
+
+         
+		if($to_keep_skus=='12771,16666')
+		  $to_keep_skus=12771;
+		else{
+		  exit("do not know where to choodre  $to_keep_skus   $product_parts_to_keep");
+		}
+
+	    } else {
                 $base_sku=$to_keep_skus;
 
             }
@@ -103,12 +112,12 @@ continue;
 
             if ($actual_factor!=$factor) {
             
-            if($units_to_delete and $units_to_keep)
+            if($units_to_delete and $units_to_keep and $product_parts_to_keep!='EO-01' )
             $factor=$actual_factor;
              //   print($row2['Part SKU']."  $product_parts_to_keep factors discrepancies print ($units_to_keep,$units_to_delete) $acutal_factor --> $factor \n");
             }
 
-            print "Date ".$row2['Date']." QTY ".$row2['Inventory Transaction Quantity']." Cost ".$row2['Inventory Transaction Amount']." Rep:$to_keep_skus F:  $factor, U:($units_to_delete;$units_to_keep ".($units_to_delete/$units_to_keep).")  \n";
+            print "$product_parts_to_keep <-($product_parts_to_delete) Date ".$row2['Date']." QTY ".$row2['Inventory Transaction Quantity']." Cost ".$row2['Inventory Transaction Amount']." Rep:$to_keep_skus F:  $factor, U:($units_to_delete;$units_to_keep ".($units_to_delete/$units_to_keep).")  \n";
 
         }
 

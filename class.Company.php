@@ -441,10 +441,10 @@ class Company extends DB_Table {
                     $key=preg_replace('/^Company /i','',$key);
                     $_address_data[$key]=$value;
                 }
-                //print_r($_address_data);
+		//  print_r($_address_data);
                 $address->update($_address_data);
-
-
+		//print_r($address->data);
+		//exit;
                 if ($contact->new) {
                     $contact->associate_address($address->id);
                 }
@@ -546,7 +546,17 @@ class Company extends DB_Table {
                 }
 
 
+		
 
+		foreach($raw_data as $key=>$value){
+		  if(preg_match('/Address|Customer|Supplier|Location|Country|FAX|Telephone|Email/',$key))
+		  unset($raw_data[$key]);
+		}
+		//	print_r($raw_data);
+	
+	
+
+	
                 $this->update($raw_data);
                 //		    print "shoooooooooooolddd be updated\n\n\n\n\n";
 
@@ -632,8 +642,8 @@ class Company extends DB_Table {
 
 
     function create($raw_data,$raw_address_data=array(),$options='') {
-        //print $options."\n";
-        //print_r($raw_data);
+      // print $options."\n";
+      // print_r($raw_data);
 
         $this->data=$this->base_data();
         foreach($raw_data as $key=>$value) {

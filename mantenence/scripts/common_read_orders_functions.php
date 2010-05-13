@@ -56,7 +56,7 @@ $editor=array();
       $_name='debbie';
     else if(preg_match('/sam/i',$_name))
       $_name='samantha';
-    else if($_name=='philip' or $_name=='ph' or $_name=='phi' )
+    else if($_name=='philip' or $_name=='ph' or $_name=='phi' or $_name=='philip'  )
       $_name='philippe';
     else if(  $_name=='aqb' or $_name=='kj' or  $_name=='act' or $_name=='tr'  or    $_name=='other' or $_name=='?' or $_name=='bb'){
       if($return_xhtml)
@@ -98,7 +98,7 @@ $editor=array();
       $_name='chris';
     else if($_name=='bret')
       $_name='brett';
-    else if($_name=='lucia' or $_name=='luc')
+    else if( $_name=='luc')
       $_name='lucie';
     else if($_name=='mat')
       $_name='matus';
@@ -118,8 +118,7 @@ $editor=array();
       $_name='jirina';
     else if($_name=='agh')
       $_name='agmet';
-  else if($_name=='steffanie')
-      $_name='stefanie';
+  
        else if($_name=='urszula baka')
       $_name='urszula';
         else if($_name=='ula')
@@ -128,7 +127,7 @@ $editor=array();
       $_name='kerry';
          else if($_name=='kez')
       $_name='eric';
- else if($_name=='steff' or $_name=='sc')
+ else if($_name=='steff' or $_name=='sc' or $_name=='steffanie')
       $_name='stephanie';
     else if($_name=='anthony' or $_name=='antony')
       $_name='anthony';
@@ -136,8 +135,8 @@ $editor=array();
       $_name='martina';
      else if(preg_match('/staff? daniela/i',$_name))
       $_name='daniela';
-   else if(preg_match('/^lucy|lucy a$/i',$_name))
-      $_name='daniela';
+     else if(preg_match('/^lucy|lucy a$/i',$_name))
+      $_name='lucy';
       else if(preg_match('/^david hardy$/i',$_name))
       $_name='david';
       
@@ -154,7 +153,7 @@ $editor=array();
       
       // print "$original_name\n";
       $valid_names=array('david','keleb','lucy','sharka','stephanie','urszula','darna','jarina','mini','andrea','scott','mark','janka','peter','lyndsey','rebecca','micheal','samantha','richard','albert','debbie','chris','barry','donna','malcolm','michelle','adriana','daniela'
-			 ,'stacey','matus','lucie','caleb','olga','bev','jim','eliska','carole','zoe','katka','urszula','dana','craig','tomas','eric','neil','slavka','anthony','anita','annetta','simon','stefanie','steve','agmet','nabil','brett','jirina');
+			 ,'stacey','matus','lucie','caleb','olga','bev','jim','eliska','carole','zoe','katka','urszula','dana','craig','tomas','eric','neil','slavka','anthony','anita','annetta','simon','stefanie','steve','agmet','nabil','brett','jirina','alan','janet','kerry','lenka','amanda','philippe','michael','martina','dusan','raul','craige','sarka','nassim');
       
       $contact_name=$_name;
       
@@ -169,6 +168,7 @@ $editor=array();
 			  'Staff Alias'=>ucwords($_name)
 			  ,'Staff Name'=>ucwords($contact_name)
 			  ,'editor'=>$editor
+			  ,'Staff Currently Working'=>'No'
 			  );
 	$staff=new Staff('find',$staff_data,'create');
 	//	print_r($staff);

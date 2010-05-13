@@ -228,6 +228,9 @@ ADD `Store Lost Customers` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0' AFTER `Store 
 
 ALTER TABLE `Product Part Dimension` ADD `Product Part Status` ENUM( 'In Use', 'Not In Use' ) NOT NULL DEFAULT 'In Use';
 ALTER TABLE `dw_avant`.`Product Part Dimension` ADD INDEX ( `Product Part Status` ) ;
+ALTER TABLE `Supplier Product History Dimension` CHANGE `SPH Cost` `SPH Cost` DECIMAL( 16, 4 ) NULL DEFAULT NULL ;
+ALTER TABLE `Supplier Product Dimension` ADD `Supplier Product Status` ENUM( 'In Use', 'Not In Use' ) NOT NULL DEFAULT 'In Use' AFTER `Supplier Product Code` ;
+ALTER TABLE `Supplier Product Part List` ADD `Supplier Product Part Status` ENUM( 'In Use', 'Not In Use' ) NOT NULL ;
 
 */
 ?>
