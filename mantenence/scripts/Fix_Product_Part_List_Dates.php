@@ -6,10 +6,12 @@ include_once('../../class.Product.php');
 include_once('../../class.Supplier.php');
 include_once('../../class.Part.php');
 include_once('../../class.SupplierProduct.php');
+date_default_timezone_set('Europe/London');
+
 error_reporting(E_ALL);
 $con=@mysql_connect($dns_host,$dns_user,$dns_pwd );
 if(!$con){print "Error can not connect with database server\n";exit;}
-$dns_db='dw_avant';
+//$dns_db='dw_avant';
 $db=@mysql_select_db($dns_db, $con);
 if (!$db){print "Error can not access the database\n";exit;}
 require_once '../../common_functions.php';
@@ -19,7 +21,7 @@ require_once '../../conf/conf.php';
 date_default_timezone_set('Europe/London');
 
 
-$sql=sprintf("select * from `Part Dimension`");
+$sql=sprintf("select * from `Part Dimension`  ");
 $res=mysql_query($sql);
 
 
@@ -54,7 +56,7 @@ while($row=mysql_fetch_array($res)){
 
 
   
-    //   print "diff $sku ".$row['Part Status']." $pid $part_from $product_from --> $from\n";
+     // print "diff $sku ".$row['Part Status']." $pid $part_from $product_from --> $from\n";
 
       if($store_key!=1){
 	$from=$product_from;
@@ -62,13 +64,13 @@ while($row=mysql_fetch_array($res)){
       }else{
 
 	$from=$part_from;
-	if(strtotime($from)<strtotime($product_from))
+	if(strtotime($from)>strtotime($product_from))
 	  $from=$product_from;
 	
       }
 
       
-      //print "diff $sku ".$row['Part Status']." $pid ($from  $to)\n";
+     // print "diff $sku ".$row['Part Status']." $pid ($from  $to)\n";
 
 
       

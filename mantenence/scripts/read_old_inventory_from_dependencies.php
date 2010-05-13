@@ -7,6 +7,7 @@ include_once('../../class.Supplier.php');
 include_once('../../class.Part.php');include_once('../../class.User.php');
 include_once('../../class.SupplierProduct.php');
 include_once('../../class.PartLocation.php');
+date_default_timezone_set('Europe/London');
 
 include_once('../../class.InventoryAudit.php');
 error_reporting(E_ALL);
@@ -46,7 +47,6 @@ while($row=mysql_fetch_array($res)){
     insert_other_inventary($product_parts_to_delete,$product_parts_to_keep,$factor);
 
 
-    
   
     continue;
    

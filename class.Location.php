@@ -235,7 +235,7 @@ class Location extends DB_Table {
             $sql.=sprintf("where  `Location Code`=%s ",prepare_mysql($tag));
         else
             return;
-              print $sql;
+             
 
         $result=mysql_query($sql);
         if ($this->data=mysql_fetch_array($result, MYSQL_ASSOC)   )
