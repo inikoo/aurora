@@ -138,7 +138,14 @@ class Ship_To extends DB_Table {
             $this->found_key=$row['Ship To Key'];
 
         } else {// Found in mora than one
-            exit("error to shipping addresses");
+            print("Warning to shipping addresses $sql\n");
+	    $row=mysql_fetch_array($result, MYSQL_ASSOC);
+
+            $this->get_data('id',$row['Ship To Key']);
+            $this->found=true;
+            $this->found_key=$row['Ship To Key'];
+	    
+
         }
 
         if (!$this->found and $create) {
