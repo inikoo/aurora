@@ -4413,15 +4413,18 @@ $data=$this->prepare_data($raw_data,$options);
 
     function update_parents() {
 
-       $sql=sprintf("select  `Customer Main Ship To Key`   from  `Customer Dimension` where  (`Customer Delivery Address Link`='Billing' and  `Customer Billing Address Key`=%d) or (`Customer Delivery Address Link`='Contact' and  `Customer Main Address Key`=%d)  ",$this->id,$this->id);
-      $res=mysql_query($sql);
-            while ($row=mysql_fetch_array($res)) {
-            include_once('class.Ship_To.php');
-            $ship_to=new Ship_To($row['Customer Main Ship To Key']);
-            if($ship_to->id){
-                $ship_to->update_from_address($this->id);
-            }
-            }
+
+
+
+      //$sql=sprintf("select  `Customer Main Ship To Key`   from  `Customer Dimension` where  (`Customer Delivery Address Link`='Billing' and  `Customer Billing Address Key`=%d) or (`Customer Delivery Address Link`='Contact' and  `Customer Main Address Key`=%d)  ",$this->id,$this->id);
+      //$res=mysql_query($sql);
+      //    while ($row=mysql_fetch_array($res)) {
+      //     include_once('class.Ship_To.php');
+      //     $ship_to=new Ship_To($row['Customer Main Ship To Key']);
+      //     if($ship_to->id){
+      //         $ship_to->update_from_address($this->id);
+      //     }
+      //     }
 
 
 

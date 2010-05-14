@@ -119,7 +119,7 @@ class Company extends DB_Table {
             $update='update';
         }
 
-        $address_data=array('Company Address Line 1'=>'','Company Address Town'=>'','Company Address Line 2'=>'','Company Address Line 3'=>'','Company Address Postal Code'=>'','Company Address Country Name'=>'','Company Address Country Code'=>'','Company Address Country First Division'=>'','Company Address Country Second Division'=>'');
+        $address_data=array('Company Address Line 1'=>'','Company Address Town'=>'','Company Address Line 2'=>'','Company Address Line 3'=>'','Company Address Postal Code'=>'','Company Address Country Name'=>'','Company Address Country First Division'=>'','Company Address Country Second Division'=>'');
 
 
 
@@ -441,7 +441,7 @@ class Company extends DB_Table {
                     $key=preg_replace('/^Company /i','',$key);
                     $_address_data[$key]=$value;
                 }
-		//  print_r($_address_data);
+		// print_r($_address_data);
                 $address->update($_address_data);
 		//print_r($address->data);
 		//exit;

@@ -179,7 +179,6 @@ class Contact extends DB_Table {
                                'Contact Home Address Line 2'=>'',
                                'Contact Home Address Line 3'=>'',
                                'Contact Home Address Postal Code'=>'',
-                               'Contact Home Address Country Code'=>'',
                                'Contact Home Address Country Name'=>'',
                                'Contact Home Address Country First Division'=>'',
                                'Contact Home Address Country Second Division'=>''
@@ -190,7 +189,6 @@ class Contact extends DB_Table {
                                'Contact Work Address Line 2'=>'',
                                'Contact Work Address Line 3'=>'',
                                'Contact Work Address Postal Code'=>'',
-                               'Contact Work Address Country Code'=>'',
                                'Contact Work Address Country Name'=>'',
                                'Contact Work Address Country First Division'=>'',
                                'Contact Work Address Country Second Division'=>''
@@ -817,14 +815,14 @@ class Contact extends DB_Table {
             //	  print "------> updating here ,----\n";
 
             $data_to_update=array(
-                                'Contact Name'=>$data['Contact Name']
-                                               ,'Contact Old ID'=>$data['Contact Old ID']
-                                                                 ,'Contact Main XHTML Telephone'=>$data['Contact Main XHTML Telephone']
-                                                                                                 ,'Contact Main XHTML FAX'=>$data['Contact Main XHTML FAX']
-                                                                                                                           ,'Contact Main XHTML Mobile'=>$data['Contact Main XHTML Mobile']
-                                                                                                                                                        ,'Contact Main Plain Email'=>$data['Contact Main Plain Email']
-                            );
-
+				  'Contact Name'=>$data['Contact Name']
+				  ,'Contact Old ID'=>$data['Contact Old ID']
+				  ,'Contact Main XHTML Telephone'=>$data['Contact Main XHTML Telephone']
+				  ,'Contact Main XHTML FAX'=>$data['Contact Main XHTML FAX']
+				  ,'Contact Main XHTML Mobile'=>$data['Contact Main XHTML Mobile']
+				  ,'Contact Main Plain Email'=>$data['Contact Main Plain Email']
+				  );
+	    
             $this->update($data_to_update,$options);
             if ($main_home_address_key=$this->get_main_home_address_key()) {
                 $this->update_address($main_home_address_key,$address_home_data);
@@ -1819,8 +1817,13 @@ $country_code='UNK';
             $this->msg='Address not associated with company';
         }
 
+ foreach($data as $key=>$value) {
+                    $key=preg_replace('/^Contact (Home|Work) /i','',$key);
+                    $_address_data[$key]=$value;
+                }
+
         $address->editor=$this->editor;
-        $address->update($data);// Address Object would update the address not normal data;
+        $address->update($_address_data);// Address Object would update the address not normal data;
 
 
     }

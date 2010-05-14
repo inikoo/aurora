@@ -6778,9 +6778,12 @@ if($del_address_data['country']=='' and preg_match('/^china$/i',$del_address_dat
       unset($a_diff['country_d1_id']);
     if(isset($a_diff['country_d2_id']))
       unset($a_diff['country_d2_id']);
-    //   print"***";
+    //  print"***";
 
 //print array_key_exists('postcode',$a_diff)."\n";
+
+  
+
 
        foreach($a_diff as $key=>$value){
 	 //print $del_address_data[$key]."** \n";
@@ -6889,7 +6892,13 @@ if($del_address_data['country']=='' and preg_match('/^china$/i',$del_address_dat
     $customer_data['Customer Old ID']=$act_data['act'];
   else
     $customer_data['Customer Old ID']='';
-      
+     
+  if($del_address_data['country']=='')
+      $del_address_data['country']='United Kingdom';
+    if($shop_address_data['country']=='')
+      $shop_address_data['country']='United Kingdom';
+
+ 
   
   $customer_data['type']=$tipo_customer;
   $customer_data['contact_name']=$act_data['contact'];
@@ -6953,7 +6962,7 @@ if($del_address_data['country']=='' and preg_match('/^china$/i',$del_address_dat
     $customer_data['Customer Old ID']='';
       
   
-    //print_r($header_data);print_r($act_data);exit;
+    //    print_r($customer_data);exit;
   return $customer_data;
 
 
