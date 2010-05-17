@@ -175,7 +175,7 @@ function quick_link(e,tipo){
 function init(){
 
 
-    Event.addListener('quick_all', "click", quick_link,'all');
+    Event.addListener(['quick_all','quick_this_month','quick_this_week','quick_yesterday','quick'], "click", quick_link,'all');
 
 
 

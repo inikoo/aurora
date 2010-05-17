@@ -87,7 +87,9 @@ function change_plot(o){
 }
 
 
-
+function quick_link(e,tipo){
+    location.href='report_sales_main.php?tipo='+tipo;
+};
 
 	
 

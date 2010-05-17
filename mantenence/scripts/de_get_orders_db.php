@@ -526,8 +526,9 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
             }
 
 
-
-
+	   $transaction['code']=preg_replace('/L\&P\-/','LLP-',$transaction['code']);
+  
+	    
 
             $transaction['description']=preg_replace('/\s*\(\s*replacements?\s*\)\s*$/i','',$transaction['description']);
             $transaction['description']=preg_replace('/\s*(\-|\/)\s*replacements?\s*$/i','',$transaction['description']);

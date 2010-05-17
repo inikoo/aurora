@@ -41,7 +41,7 @@ $version='V 1.0';
 
 $Data_Audit_ETL_Software="$software $version";
 
-$file_name='AWorder2009France.xls';
+$file_name='/data/plaza/AWorder2009France.xls';
 $csv_file='fr_tmp.csv';
 exec('/usr/local/bin/xls2csv    -s cp1252   -d 8859-1   '.$file_name.' > '.$csv_file);
 
@@ -414,7 +414,10 @@ foreach($__cols as $cols){
     $supplier_code=_trim($cols[21]);
     
     $w=$cols[28];
+      $code=preg_replace('/L\&P\-/','LLP-',$code);
+
     
+
     if(    preg_match('/Bag-02Mx|Bag-04mx|Bag-05mx|Bag-06mix|Bag-07MX|Bag-12MX|Bag-13MX|FishP-Mix|IncIn-ST|IncB-St|LLP-ST|L\&P-ST|EO-XST|AWRP-ST/i',$code) or      $code=='EO-ST' or $code=='MOL-ST' or  $code=='JBB-st' or $code=='LWHEAT-ST' or  $code=='JBB-St' 
        or $code=='Scrub-St' or $code=='Eye-st' or $code=='Tbm-ST' or $code=='Tbc-ST' or $code=='Tbs-ST'
        or $code=='GemD-ST' or $code=='CryC-ST' or $code=='GP-ST'  or $code=='DC-ST'
@@ -506,6 +509,9 @@ foreach($__cols as $cols){
 	exit;
       }
 	
+      $current_fam_code=preg_replace('/^L\&P$/i','LLP',$current_fam_code);
+
+
       $fam_data=array(
 		      'Product Family Code'=>$current_fam_code,
 		      'Product Family Name'=>$current_fam_name,
@@ -573,7 +579,7 @@ foreach($__cols as $cols){
     $data=array(
 		'product code'=>$code,
 		'product store key'=>$store_key,
-		'product locale'=>'de_DE',
+		'product locale'=>'fr_FR',
 		'product currency'=>'EUR',
 
 		'product sales type'=>'Public Sale',
@@ -597,7 +603,10 @@ foreach($__cols as $cols){
 		);
     //     print_r($cols);
 
+    if($uk_product->id)
     $parts=$uk_product->get('Parts SKU');
+    else
+      exit("product not found in uk ".$code);
     $product=new Product('find',$data,'create');
     if($product->new){
       $product->update_for_sale_since(date("Y-m-d H:i:s",strtotime("now +1 seconds")));
