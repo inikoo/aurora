@@ -100,21 +100,13 @@ class Ship_To extends DB_Table {
 
 
 
-        $_address=new Address();
-        $address_data=$_address->prepare_3line($raw_data);
-
-
-
-        foreach( $this->prepare_data($address_data) as $key=> $value) {
+        foreach( $raw_data as $key=> $value) {
+        if(array_key_exists($key,$data))
             $data[$key]=$value;
 
         }
 
-
-
-
-        // Look for duplicates
-        $fields=array('Ship To Country Code','Ship To Postal Code','Ship To Town','Ship To Line 1','Ship To Line 2','Ship To Line 3','Ship To Line 4');
+        $fields=array('Ship To Email','Ship To Telephone','Ship To Company Name','Ship To Contact Name','Ship To Country Code','Ship To Postal Code','Ship To Town','Ship To Line 1','Ship To Line 2','Ship To Line 3','Ship To Line 4');
 
         $sql=sprintf("select * from `Ship To Dimension` where true  ");
         foreach($fields as $field) {
@@ -122,7 +114,6 @@ class Ship_To extends DB_Table {
         }
 
 
-        //    print "FUZZY $sql\n";
         $result=mysql_query($sql);
         $num_results=mysql_num_rows($result);
         if ($num_results==0) {
@@ -184,123 +175,7 @@ class Ship_To extends DB_Table {
 
     }
 
-    /*
-        Function: delete
-        Elimina registros de la tabla Ship To Dimension en base al valor del campo store key, siempre y cuando no haya utilizado anteriormente
-    */
-// JFA
-
-    function delete() {
-        $this->deleted=false;
-        //TODO (actualize Ship To Times Used  )
-
-        if ($this->data['Ship To Times Used']==0) {
-            $sql=sprintf("delete from `Ship To Dimension` where `Ship To Key`=%d",$this->id);
-            if (mysql_query($sql)) {
-
-                $this->deleted=true;
-
-            } else {
-
-                $this->msg=_('Error: can not delete shipping address');
-                return;
-            }
-
-            $this->deleted=true;
-        } else {
-            $this->msg=_('Shipping address can not be deleted because it has some products');
-
-        }
-    }
-
-
-    /*
-        Method: load
-        Obtiene registros de las tablas Product Dimension, Product Family Dimension, Product Department Dimension, y actualiza datos de Store Dimension, de acuerdo a la categoria indicada.
-    */
-// JFA
-
-
-    function load($tipo,$args=false) {
-        switch ($tipo) {
-
-
-
-
-
-        }
-
-    }
-
-
-
-    function update_from_address($address_key) {
-        $address=new Address($address_key);
-        if ($address->id) {
-            $lines=$address->display('3lines');
-            $sql=sprintf("update `Ship To Dimension` set  `Ship To Line 1`=%s,`Ship To Line 2`=%s ,`Ship To Line 3`=%s , `Ship To Town`=%s,`Ship To Line 4`=%s  ,`Ship To Postal Code`=%s,`Ship To Country`=%s ,`Ship To XHTML Address`=%s  ,`Ship To Country Key`=%d,`Ship To Country Code`=%s,`Ship To Country 2 Alpha Code`=%s   where `Ship To Key`=%d"
-                         ,prepare_mysql($lines[1],false)
-                         ,prepare_mysql($lines[2],false)
-                         ,prepare_mysql($lines[3],false)
-                         ,prepare_mysql($address->data['Address Town'],false)
-                         ,prepare_mysql($address->data['Address Country First Division'],false)
-
-                         ,prepare_mysql($address->data['Address Postal Code'],false)
-                         ,prepare_mysql($address->data['Address Country Name'],false)
-                         ,prepare_mysql($address->display('xhtml'),false)
-                         ,$address->data['Address Country Key']
-                         ,prepare_mysql($address->data['Address Country Code'],false)
-                         ,prepare_mysql($address->data['Address Country 2 Alpha Code'],false)
-
-                         ,$this->id);
-
-            mysql_query($sql);
-            $this->get_data('id',$this->id);
-            $this->update_parents();
-        }
-
-
-
-    }
-
-
-    function update_parents() {
-        $sql=sprintf("select  `Customer Key`   from  `Customer Dimension` where `Customer Main Ship To Key`=%d  ",$this->id);
-        $res=mysql_query($sql);
-        while ($row=mysql_fetch_array($res)) {
-            $sql=sprintf("update `Customer Dimension` set `Customer Main Ship To Town`=%s ,`Customer Main Ship To Postal Code`=%s,`Customer Main Ship To Country Region`=%s,`Customer Main Ship To Country`=%s,`Customer Main Ship To Country Code`=%s ,`Customer Main Ship To Country 2 Alpha Code`=%s ,`Customer Main Ship To Country Key`=%d where `Customer Key`=%d "
-                         ,prepare_mysql($this->data['Ship To Town'],false)
-                         ,prepare_mysql($this->data['Ship To Postal Code'],false)
-                         ,prepare_mysql($this->data['Ship To Line 4'],false)
-                         ,prepare_mysql($this->data['Ship To Country'])
-                         ,prepare_mysql($this->data['Ship To Country Code'])
-                         ,prepare_mysql($this->data['Ship To Country 2 Alpha Code'])
-                         ,$this->data['Ship To Country Key']
-                         ,$row['Customer Key']
-
-
-                        );
-            mysql_query($sql);
-        }
-
-        $sql=sprintf("select  `Order Key`   from  `Order Dimension` where  `Order Current Dispatch State` in ('In Process','Submited') and  `Order Ship To Keys`=%d  ",$this->id);
-        $res=mysql_query($sql);
-        while ($row=mysql_fetch_array($res)) {
-            $sql=sprintf("update `Order Dimension` set `Order XHTML Ship Tos`=%s  where `Order Key`=%d "
-                        
-                         ,prepare_mysql($this->data['Ship To XHTML Address'])
-                         ,$row['Order Key']
-
-
-                        );
-            mysql_query($sql);
-        }
-
-
-
-    }
-
-
+   
 
     function create($data) {
 
@@ -329,6 +204,8 @@ class Ship_To extends DB_Table {
         if (mysql_query($sql)) {
             $this->id = mysql_insert_id();
             $this->data['Address Key']= $this->id;
+            $this->new=true;
+            $this->get_data('id',$this->id);
         } else {
             print "Error can not create address\n";
             exit;
@@ -336,13 +213,98 @@ class Ship_To extends DB_Table {
         }
     }
 
+function display($tipo){
+$separator='\n';
+switch ($tipo) {
+    case 'xhtml':
+   $separator='<br>';
+
+   default:
+             if ($this->data['Ship To Line 1']!='')
+                    $address=_trim($this->data['Ship To Line 1']).$separator;
+                if ($this->data['Ship To Line 2']!='')
+                    $address.=_trim($this->data['Ship To Line 2']).$separator;
+
+  if ($this->data['Ship To Line 3']!='')
+                    $address.=_trim($this->data['Ship To Line 3']).$separator;
+            $town_address=_trim($this->data['Ship To Town']);
+                 if ($town_address!='')
+                    $address.=$town_address.$separator;
+                    
+                    if ($this->data['Ship To Line 4']!='')
+                    $address.=_trim($this->data['Ship To Line 3']).$separator;
+                $ps_address=_trim($this->data['Ship To Postal Code']);
+                if ($ps_address!='')
+                    $address.=$ps_address.$separator;
+
+                $address.=$this->data['Ship To Country Name'];
+        
+    
+        
+        break;
+}
 
 
-    /*
-      Function: prepare_data
-      Transfrom Address Dimension data schema to Dhip To one
-    */
-    public static function prepare_data($raw_data) {
+}
+
+    function delete_old() {
+        $this->deleted=false;
+        //TODO (actualize Ship To Times Used  )
+
+        if ($this->data['Ship To Times Used']==0) {
+            $sql=sprintf("delete from `Ship To Dimension` where `Ship To Key`=%d",$this->id);
+            if (mysql_query($sql)) {
+
+                $this->deleted=true;
+
+            } else {
+
+                $this->msg=_('Error: can not delete shipping address');
+                return;
+            }
+
+            $this->deleted=true;
+        } else {
+            $this->msg=_('Shipping address can not be deleted because it has some products');
+
+        }
+    }
+    function update_parents_old() {
+        $sql=sprintf("select  `Customer Key`   from  `Customer Dimension` where `Customer Main Delivery Address Key`=%d  ",$this->id);
+        $res=mysql_query($sql);
+        while ($row=mysql_fetch_array($res)) {
+            $sql=sprintf("update `Customer Dimension` set `Customer Main Delivery Address Town`=%s ,`Customer Main Delivery Address Postal Code`=%s,`Customer Main Delivery Address Country Region`=%s,`Customer Main Delivery Address Country`=%s,`Customer Main Delivery Address Country Code`=%s ,`Customer Main Delivery Address Country 2 Alpha Code`=%s ,`Customer Main Delivery Address Country Key`=%d where `Customer Key`=%d "
+                         ,prepare_mysql($this->data['Ship To Town'],false)
+                         ,prepare_mysql($this->data['Ship To Postal Code'],false)
+                         ,prepare_mysql($this->data['Ship To Line 4'],false)
+                         ,prepare_mysql($this->data['Ship To Country Name'])
+                         ,prepare_mysql($this->data['Ship To Country Code'])
+                         ,prepare_mysql($this->data['Ship To Country 2 Alpha Code'])
+                         ,$this->data['Ship To Country Key']
+                         ,$row['Customer Key']
+
+
+                        );
+            mysql_query($sql);
+        }
+
+        $sql=sprintf("select  `Order Key`   from  `Order Dimension` where  `Order Current Dispatch State` in ('In Process','Submited') and  `Order Ship To Keys`=%d  ",$this->id);
+        $res=mysql_query($sql);
+        while ($row=mysql_fetch_array($res)) {
+            $sql=sprintf("update `Order Dimension` set `Order XHTML Ship Tos`=%s  where `Order Key`=%d "
+                        
+                         ,prepare_mysql($this->data['Ship To XHTML Address'])
+                         ,$row['Order Key']
+
+
+                        );
+            mysql_query($sql);
+        }
+
+
+
+    }
+    public static function prepare_data_old($raw_data) {
 
         if (preg_match('/ESP/i',$raw_data['Address Country Code']))
             $street=_trim($raw_data['Address Street Type'].' '.$raw_data['Address Street Name'].' '.$raw_data['Address Street Number']);
@@ -367,7 +329,7 @@ class Ship_To extends DB_Table {
         $data['Ship To Line 4']=$subcountry_address;
         $data['Ship To Town']=$raw_data['Address Town'];
         $data['Ship To Postal Code']=$raw_data['Address Postal Code'];
-        $data['Ship To Country']=$raw_data['Address Country Name'];
+        $data['Ship To Country Name']=$raw_data['Address Country Name'];
         $data['Ship To Country Code']=$raw_data['Address Country Code'];
         $data['Ship To Country Key']=$raw_data['Address Country Key'];
         $data['Ship To Country 2 Alpha Code']=$raw_data['Address Country 2 Alpha Code'];

@@ -1,12 +1,9 @@
 <?php
-include_once('common.php')?>
-//@author Raul Perusquia <rulovico@gmail.com>
-//Copyright (c) 2009 LW
+include_once('common.php');
 
+$_group=array();
 
-
-<?php
-include_once('common.php')?>
+?>
 var Dom   = YAHOO.util.Dom;
 var add_user_dialog_others;
 var add_user_dialog;
@@ -14,11 +11,17 @@ var add_user_dialog;
 var  group_name=new Object;
 
 <?php
-    $g='';
-foreach($_group as $key=>$value){
-    $g.="group_name[$key]='$value';";
+
+$s='';
+$sql="select * from `User Group Dimension`  ";
+$res=mysql_query($sql);
+while($row=mysql_fetch_array($res)){
+    $s.="group_name[".$row['User Group Key']."]='".$row['User Group Name']."';";
 }
-print $g;
+mysql_free_result($res);
+print $s;
+
+   
 ?>
 var  store_name=new Object;
 var  warehouse_name=new Object;
@@ -46,7 +49,15 @@ print $s;
 
 
 ?>
-    
+     var Dom   = YAHOO.util.Dom; 
+
+var id_in_table='';
+var  add_user_dialog_staff;
+var  add_user_dialog_other;
+
+var  change_staff_password;
+var to_save;
+
     
     var active=function(el, oRecord, oColumn, oData){                                                                                                                                                  
 	
@@ -63,17 +74,32 @@ var edit_active=function (callback, newValue) {
     oldValue = this.value,                                                                                                                                                                         
     datatable = this.getDataTable();                                                                                                                                                               
     //              for( x in record)                                                                                                                                                              
-    user_id=record.getData('id');                                                                                                                                                                  
-    var request='ar_edit_users.php?tipo=edit_user&user_id='+escape(user_id)+'&key=' + column.key + '&newvalue=' + escape(newValue) + '&oldvalue=' + escape(oldValue)                                    
-    //                alert(request);                                                                                                                                                                              
+    user_id=record.getData('id');  
+        staff_id=record.getData('staff_id');                                                                                                                                                                  
+
+    var request='ar_edit_users.php?tipo=edit_staff_user&staff_id='+escape(staff_id)+'&user_id='+escape(user_id)+'&key=' + column.key + '&newvalue=' + escape(newValue) + '&oldvalue=' + escape(oldValue)                                    
+             //alert(request);                                                                                                                                                                              
     YAHOO.util.Connect.asyncRequest(                                                                                                                                                               
 				    'POST',                                                                                                                                                        
 				    request, {                                                                                                                                                     
 					success:function(o) {                                                                                                                                      
-					    //      alert(o.responseText);                                                                                                                         
 					    var r = YAHOO.lang.JSON.parse(o.responseText);                                                                                                         
-					    if (r.state == 200) {                                                                                                                                  
-                                                            callback(true, r.data);                                                                                                                            
+					    if (r.state == 200) {  
+					    //alert(r.new);
+					     if(r.new=='Yes'){
+                                                            alert("New customer\nlogin: "+r.new_data.handle+"\npassword:"+r.new_data.password);
+                                                      
+                                      						datatable.updateCell(record,'password',r.new_data.td_password);
+                                                      						datatable.updateCell(record,'id',r.new_data.user_id);
+
+                                                      
+                                                      }
+					    
+					    
+                                                            callback(true, r.data);  
+                                                            
+                                                           
+                                                            
 					    } else {                                                                                                                                               
 						alert(r.msg);                                                                                                                                      
 						callback();                                                                                                                                        
@@ -88,9 +114,7 @@ var edit_active=function (callback, newValue) {
 				    
 																								   );                                                                                                                                                             
 }                                                                                                                                                                                                  
-    
-    		
-	  var edit_group=function (callback, newValue) {
+  var edit_group=function (callback, newValue) {
 		
 		var record = this.getRecord(),
 		column = this.getColumn(),
@@ -98,20 +122,15 @@ var edit_active=function (callback, newValue) {
 		datatable = this.getDataTable();
 		//		for( x in record)
 		user_id=record.getData('id');
-		var request='ar_edit_users.php?tipo=edit_user&user_id='+escape(user_id)+'&key=' + column.key + '&newvalue=' + escape(newValue) + '&oldvalue=' + escape(oldValue)
-		//	alert(request);
+		var request='ar_edit_users.php?tipo=edit_staff_user&user_id='+escape(user_id)+'&key=' + column.key + '&newvalue=' + escape(newValue) + '&oldvalue=' + escape(oldValue)
 		YAHOO.util.Connect.asyncRequest(
 						'POST',
 						request, {
 						    success:function(o) {
-							// alert(o.responseText);
 							var r = YAHOO.lang.JSON.parse(o.responseText);
 							if (r.state == 200) {
 							    callback(true, r.data);
-							    var table=tables['table1'];
-							    var datasource=tables['dataSource1'];
-							    var request='';
-							    datasource.sendRequest(request,table.onDataReturnInitializeTable, table); 
+							   
 							    
 							} else {
 							    alert(r.msg);
@@ -181,6 +200,7 @@ var edit_active=function (callback, newValue) {
 		      return;
 		}
 		var tmp=oData;
+		
 		var sstores='';
 		  for(x in tmp){
 		      if(sstores=='')
@@ -196,22 +216,27 @@ var edit_active=function (callback, newValue) {
 	   
 	    var ColumnDefs = [
 	     {key:"id", label:"", hidden:true,action:"none",isPrimaryKey:true}
+	     	     ,{key:"staff_id", label:"", hidden:true,action:"none"}
+
 			       ,{key:"password",label:"" ,width:16 }
-			      ,{key:"isactive",label:"<?php echo _('Active')?>" ,className:'aright',formatter:active,width:45 ,editor: new YAHOO.widget.RadioCellEditor({radioOptions:[{label:"Yes", value:"Yes"}, {label:"No", value:"No"}]
+			      ,{key:"isactive",label:"<?php echo _('State')?>" ,className:'aright',formatter:active,width:45 ,editor: new YAHOO.widget.RadioCellEditor({radioOptions:[{label:"Yes", value:"Yes"}, {label:"No", value:"No"}]
 			      ,defaultValue:"0",asyncSubmitter:edit_active }) }
-			      //  ,{key:"tipo", label:"<?php echo _('Type')?>",width:80,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-			      , {key:"handle", label:"<?php echo _('Login')?>",width:70,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC},editor: new YAHOO.widget.TextboxCellEditor({asyncSubmitter: CellEdit}),object:'user'}
-			      ,{key:"name", label:"<?php echo _('Name')?>",width:200,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC},editor: new YAHOO.widget.TextboxCellEditor({asyncSubmitter: CellEdit}),object:'user'}
-			      //	 {key:"email", label:"<?php echo _('Email')?>",sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}},
-			      ,{key:"lang", label:"<?php echo _('Language')?>",sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+			      , {key:"alias", label:"<?php echo _('Login')?>",width:70,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+			      ,{key:"name", label:"<?php echo _('Staff Name')?>",width:200,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 			      ,{key:"groups",formatter:group,label:"<?php echo _('Groups')?>",className:"aleft"
 				, editor: new YAHOO.widget.CheckboxCellEditor({
 					asyncSubmitter:edit_group,checkboxOptions:[
 										   <?php
 										   $g='';
-										   foreach($_group as $key=>$value){
-										       $g.="{label:'$value<br>', value:$key},";
+										   $sql="select * from `User Group Dimension`  ";
+										   $res=mysql_query($sql);
+										   while($row=mysql_fetch_array($res)){
+										       $key=$row['User Group Key'];
+										       $name=$row['User Group Name'];
+										       $g.="{label:'$name<br>', value:$key},";
 										   }
+										   
+										   
 										   preg_replace('/,$/','',$g);
 										   print $g;
 										   ?>
@@ -265,7 +290,7 @@ var edit_active=function (callback, newValue) {
 
 			      ];
 			       
-	    this.dataSource0 = new YAHOO.util.DataSource("ar_users.php?tipo=users&tableid=0");
+	    this.dataSource0 = new YAHOO.util.DataSource("ar_edit_users.php?tipo=staff_users&tableid=0");
 	    this.dataSource0.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource0.connXhrMode = "queueRequests";
 	    this.dataSource0.responseSchema = {
@@ -283,7 +308,7 @@ var edit_active=function (callback, newValue) {
 		
 		
 		fields: [
-			 "id","isactive","handle","name","email","lang","groups","tipo","active","password","stores","warehouses"
+			 "id","isactive","alias","name","email","lang","groups","tipo","active","password","stores","warehouses","staff_id"
 			 ]};
 
 	    this.table0 = new YAHOO.widget.DataTable(tableDivEL, ColumnDefs,
@@ -291,7 +316,7 @@ var edit_active=function (callback, newValue) {
 								 , {
 								     renderLoopSize: 50,generateRequest : myRequestBuilder
 								      ,paginator : new YAHOO.widget.Paginator({
-									      rowsPerPage:<?php echo$_SESSION['state']['users']['user_list']['nr']?>,containers : 'paginator0', 
+									      rowsPerPage:<?php echo$_SESSION['state']['users']['staff']['nr']?>,containers : 'paginator0', 
  									      pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',
 									      previousPageLinkLabel : "<",
  									      nextPageLinkLabel : ">",
@@ -301,8 +326,8 @@ var edit_active=function (callback, newValue) {
 									  })
 								     
 								     ,sortedBy : {
-									 key: "<?php echo$_SESSION['state']['users']['user_list']['order']?>",
-									 dir: "<?php echo$_SESSION['state']['users']['user_list']['order_dir']?>"
+									 key: "<?php echo$_SESSION['state']['users']['staff']['order']?>",
+									 dir: "<?php echo$_SESSION['state']['users']['staff']['order_dir']?>"
 								     },
 								     dynamicData : true
 
@@ -317,69 +342,10 @@ var edit_active=function (callback, newValue) {
 	    this.table0.subscribe("cellMouseoutEvent", this.table0.onEventUnhighlightCell);
 
 	    this.table0.doBeforePaginatorChange = mydoBeforePaginatorChange;
-	    this.table0.filter={key:'<?php echo$_SESSION['state']['users']['user_list']['f_field']?>',value:'<?php echo$_SESSION['state']['users']['user_list']['f_value']?>'};
+	    this.table0.filter={key:'<?php echo$_SESSION['state']['users']['staff']['f_field']?>',value:'<?php echo$_SESSION['state']['users']['staff']['f_value']?>'};
 	    //YAHOO.util.Event.addListener('yui-pg0-0-page-report', "click",myRowsPerPageDropdown);
 	
 
-	    
-
-	    var tableid=1; // Change if you have more the 1 table
-	    var tableDivEL="table"+tableid;
-	    var ColumnDefs = [
-			      {key:"id", label:"<?php echo _('Id')?>", width:40,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}},
-			      {key:"name", label:"<?php echo _('Group')?>", sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}},
-			      {key:"users", label:"<?php echo _('Users')?>", sortable:false,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-			      ];
-
-	    this.dataSource1 = new YAHOO.util.DataSource("ar_users.php?tipo=groups&tableid=1");
-	    this.dataSource1.responseType = YAHOO.util.DataSource.TYPE_JSON;
-	    this.dataSource1.connXhrMode = "queueRequests";
-	    this.dataSource1.responseSchema = {
-		resultsList: "resultset.data", 
-		metaFields: {
-		    rowsPerPage:"resultset.records_perpage",
-		    sort_key:"resultset.sort_key",
-		    sort_dir:"resultset.sort_dir",
-		    tableid:"resultset.tableid",
-		    filter_msg:"resultset.filter_msg",
-		    totalRecords: "resultset.total_records" // Access to value in the server response
-		},
-		
-		
-		fields: [
-		       "id","name","users"
-			 ]};
-
-	    this.table1 = new YAHOO.widget.DataTable(tableDivEL, ColumnDefs,
-								   this.dataSource1
-								 , {
-								     // sortedBy: {key:"<?php echo$_SESSION['tables']['customers_list'][0]?>", dir:"<?php echo$_SESSION['tables']['customers_list'][1]?>"},
-								     renderLoopSize: 50,generateRequest : myRequestBuilder
-								    //    ,paginator : new YAHOO.widget.Paginator({
-// 									      rowsPerPage    : <?php echo$_SESSION['state']['users']['groups']['nr']?>,containers : 'paginator', 
-//  									      pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',
-// 									      previousPageLinkLabel : "<",
-//  									      nextPageLinkLabel : ">",
-//  									      firstPageLinkLabel :"<<",
-//  									      lastPageLinkLabel :">>",rowsPerPageOptions : [10,25,50,100,250,500]
-// 									      ,template : "{FirstPageLink}{PreviousPageLink}<strong>{CurrentPageReport}</strong>{NextPageLink}{LastPageLink}"
-// 									  })
-								     
-								     ,sortedBy : {
-									 key: "<?php echo$_SESSION['state']['users']['groups']['order']?>",
-									 dir: "<?php echo$_SESSION['state']['users']['groups']['order_dir']?>"
-								     },
-								     dynamicData : true
-
-								  }
-								   
-								 );
-	    
-	    this.table1.handleDataReturnPayload =myhandleDataReturnPayload;
-	    this.table1.doBeforeSortColumn = mydoBeforeSortColumn;
-	    // this.table1.doBeforePaginatorChange = mydoBeforePaginatorChange;
-	    // this.table1.filter={key:'<?php echo$_SESSION['state']['users']['user_list']['f_field']?>',value:'<?php echo$_SESSION['state']['users']['user_list']['f_value']?>'};
-	    //YAHOO.util.Event.addListener('yui-pg0-0-page-report', "click",myRowsPerPageDropdown)
 
 
 
@@ -393,31 +359,12 @@ var edit_active=function (callback, newValue) {
 
 
 
-    var Dom   = YAHOO.util.Dom; 
-
-var id_in_table='';
-var  add_user_dialog_staff;
-var  add_user_dialog_other;
-
-var  change_staff_password;
-var to_save;
-
-
- function other_continue(){
-     Dom.get('other_data_form').style.display='none';
-     Dom.get('other_form').style.display='';
- }
-function other_back(){
-     Dom.get('other_data_form').style.display='';
-     Dom.get('other_form').style.display='none';
- }
+   
 
 
 
 
-
-function close_me(pre)
-{
+function close_me(pre){
 
    switch(pre){
     case('staff'):
@@ -440,8 +387,7 @@ function close_me(pre)
 
 }
 
-function randPassword()
-{
+function randPassword(){
     var numChars = 8;
     var strChars = "23456789ABCDEFGHIJKLMN%PQRSTUVWXYZ$23456789abcdefghijkmnopqrstuvwxyz_123456789";
     var strPass = '';
@@ -505,9 +451,7 @@ var change_passwd=function(o){
     change_staff_password.show();
     
 }
-
-
-    function close_change_password_dialog(){
+function close_change_password_dialog(){
 
 	Dom.get('change_staff_passwd1').value='';
 	Dom.get('change_staff_passwd2').value='';
@@ -520,23 +464,6 @@ var change_passwd=function(o){
 	change_staff_password.hide();
 
     }
-
-var select_staff=function(o){
-
-    var is_in=o.getAttribute('is_in');
-    id_in_table=o.getAttribute('staff_id');
-    //  o.className='selected';
-    Dom.get("staff_list").style.display='none';
-    Dom.get("staff_form").style.display='';
-
-    Dom.get("staff_handle").innerHTML=o.innerHTML;
-    handle=Dom.get("staff_v_handle").value=o.innerHTML;
-    Dom.get('staff_handle_container').style.display='';
-    Dom.get('staff_choose_method').style.display='';
-    //to_save=id_in_table;
-}
-
-
 var auto_pwd=function(prefix){
 
     Dom.get(prefix+"_user_defined_dialog").style.display='none';
@@ -563,8 +490,6 @@ var user_defined_pwd=function(prefix){
     Dom.get(prefix+"_user_defined_pwd_but").className='tab  selected unselectable_text';
     Dom.get(prefix+"_auto_pwd_but").className='tab unselectable_text';
 }
-
-
 var match_passwd=function(p2,p1,tipo){
     
     p1=Dom.get(p1).value;
@@ -575,7 +500,6 @@ var match_passwd=function(p2,p1,tipo){
     }
 
 };
-
 var change_staff_pwd=function(){
     
     passwd=sha256_digest(Dom.get('change_staff_passwd1').value);
@@ -597,100 +521,15 @@ var change_staff_pwd=function(){
 		    Dom.get('change_staff_password_alias').setAttribute('user_id','');
 		    Dom.get('change_staff_password_alias').innerHTML='';
 		    Dom.get('change_staff_save').style.visibility='hidden';
-		    Dom.get('staff_password_meter').style.visibility='hidden';
-		}else
-		    alert(r.msg);
-	    }
-	});    
-}
-
-var staff_new_user=function(){
-    var handle=Dom.get("staff_v_handle").value;
-    var passwd=Dom.get("staff_passwd1").value;
-    var passwd=sha256_digest(Dom.get("staff_passwd1").value);
-
-    var request='ar_users.php?tipo=add_user&tipo_user=1&handle='+escape(handle)+'&passwd='+escape(passwd)+'&id_in_table='+escape(id_in_table);
-    YAHOO.util.Connect.asyncRequest('POST',request ,{
-	    
-	    success:function(o) {
-		// alert(o.responseText)
-		var r =  YAHOO.lang.JSON.parse(o.responseText);
-		if (r.state == 200) {
-		    //alert('staff'+id_in_table);
-		    Dom.get('staff'+id_in_table).className='selected';
-		    Dom.get('staff_save').style.display='none';
-		    add_user_dialog_staff.cfg.setProperty("visible", false);
-
-
-		    var table=tables['table0'];
-		    var datasource=tables['dataSource0'];
-		    var request='';
-		    datasource.sendRequest(request,table.onDataReturnInitializeTable, table);    
-		    
+		    Dom.get('change_staff_password_meter_bar').style.visibility='hidden';
+		    Dom.get('change_staff_password_meter_str').innerHTML='';
 
 		}else
 		    alert(r.msg);
 	    }
 	});    
-    
-
 }
-
-var other_new_user=function(){
-    var handle=Dom.get("other_handle_show").innerHTML;
-    var passwd=sha256_digest(Dom.get("other_passwd1").value);
-    var name=Dom.get("other_name").value;
-    var surname=Dom.get("other_surname").value;
-    var email=Dom.get("other_email").value;
-    lang_list=document.getElementById("other_lang");
-    var lang=lang_list.options[lang_list.selectedIndex].value;
-    
-
-    group_input=document.getElementById("other_the_form").group;
-    group="";
-    for (i=0;i<group_input.length;++ i)
-	{
-	    if (group_input[i].checked)
-		{
-		    group=group + group_input[i].value + ",";
-		}
-	}
-
-    isactive_input=document.getElementById("other_the_form").isactive;
-    isactive="";
-    for (i=0;i<isactive_input.length;++ i)
-	{
-	    if (isactive_input[i].checked)
-		{
-		    isactive=isactive + isactive_input[i].value + ",";
-		}
-	}
-
-    var request='ar_users.php?tipo=add_user&tipo_user=4&handle='+encodeURIComponent(handle)+'&passwd='+encodeURIComponent(passwd)+'&name='+encodeURIComponent(name)+'&surname='+encodeURIComponent(surname)+'&email='+encodeURIComponent(email)+'&lang='+lang+'&groups='+group+'&isactive='+isactive;
-    alert(request);
-    return;
-    YAHOO.util.Connect.asyncRequest('POST',request ,{
-	    
-	    success:function(o) {
-		// alert(o.responseText)
-		var r =  YAHOO.lang.JSON.parse(o.responseText);
-		if (r.state == 200) {
-		    add_user_dialog_other2.cfg.setProperty("visible", false);
-		    var table=tables['table0'];
-		    var datasource=tables['dataSource0'];
-		    var request='';
-		    datasource.sendRequest(request,table.onDataReturnInitializeTable, table);    
-		    
-
-		}else
-		    alert(r.msg);
-	    }
-	});    
-    
-
-}
-
-    var change_meter=function(pwd,prefix){
+var change_meter=function(pwd,prefix){
     
 
     value=testPassword(pwd);
@@ -749,37 +588,47 @@ var other_new_user=function(){
     };
 
 
+
+function change_view(){
+
+
+ var new_display=this.id;
+     var table=tables.table0;
+     var datasource=tables.dataSource0;
+     if(Dom.hasClass(this,'selected')){
+	    Dom.removeClass(this,'selected');
+	 var request='&display=';
+	 }else{
+	 
+	 Dom.removeClass(['active','inactive_current','inactive_ex'],'selected')
+	 Dom.addClass(this,'selected');
+	 var request='&display='+this.id;
+	 
+	 }
+	 
+	 
+	// if(display)
+	//     Dom.removeClass(display,'selected');
+	 //Dom.addClass(new_display,'selected');
+	 
+	 //display=new_display;
+	 
+	 //var request='&display='+display;
+     //}else{
+	 //Dom.removeClass(display,'selected');
+	 //var request='&display=';
+	 
+     //}
+     datasource.sendRequest(request,table.onDataReturnInitializeTable, table);       
+
+
+}
+
   function init(){
 
 
-      
-
-       add_user_dialog = new YAHOO.widget.Menu("add_user_dialog", {context:["add_user","tr", "br","beforeShow"]  });
-       add_user_dialog.render();
-       add_user_dialog.subscribe("show", add_user_dialog.focus);
-       YAHOO.util.Event.addListener("add_user", "click", add_user_dialog.show, null, add_user_dialog); 
-
-       add_user_dialog_other = new YAHOO.widget.Menu("add_user_other", {context:["add_user","tr", "br","beforeShow"]  });
-       add_user_dialog_other.render();
-       add_user_dialog_other.subscribe("show", add_user_dialog_other.focus);
-      
-       add_user_dialog_other2 = new YAHOO.widget.Menu("add_user_other2", {context:["add_user","tr", "br","beforeShow"]  });
-       add_user_dialog_other2.render();
-       add_user_dialog_other2.subscribe("show", add_user_dialog_other2.focus);
-
-
-       add_user_dialog_staff = new YAHOO.widget.Dialog("add_user_staff", {
- 	      context:["add_user","tr","tr"]  ,
- 	      visible : false,close:false,underlay: "none",draggable:false
-	      
- 	  });
-        add_user_dialog_staff.render();
-
- 
-
-      // change_staff_password = new YAHOO.widget.Menu("change_staff_password",{x:100});
-       //change_staff_password.render();
-       //change_staff_password.subscribe("show", add_user_dialog_staff.focus);
+      var ids=['active','inactive_ex','inactive_current'];
+YAHOO.util.Event.addListener(ids, "click",change_view);
 
 
        change_staff_password = new YAHOO.widget.Dialog("change_staff_password", 
@@ -791,19 +640,7 @@ var other_new_user=function(){
        change_staff_password.render();
        //       change_staff_password.show();
 
-       // Dom.get("change_staff_cancel").onselectstart = function() { return(false); };
-      
-       
-       add_user_dialog_supplier = new YAHOO.widget.Dialog("add_user_supplier", {
-	       context:["add_user","tr","tr"]  ,
-	       visible : false,close:false,underlay: "none",draggable:false
-	       
-	   });
-       add_user_dialog_supplier.render();
-
-
-
-
+    
 
        
 
@@ -811,94 +648,4 @@ var other_new_user=function(){
 
  YAHOO.util.Event.onDOMReady(init);
 
-var update_form =function (key) {
 
-    switch(key){
-    case('other'):
-    if(Dom.get('other_handle').getAttribute('ok')==1 &&  Dom.get('other_email').getAttribute('ok')==1  && ( Dom.get('other_name').getAttribute('ok')==1  ||  Dom.get('other_surname').getAttribute('ok')==1   )  )
-	Dom.get('other_continue').style.visibility='visible';
-    else
-	Dom.get('other_continue').style.visibility='hidden';
-
-	
-	break;
-	}	Dom.get('other_continue').style.visibility='visible';
-};
-
-var validate_handle =function (query) {  query=unescape(query);
-    var request='ar_users.php?tipo=valid_handle&handle=' + encodeURIComponent(query);
-
-    YAHOO.util.Connect.asyncRequest('POST',request ,{
-	    success:function(o) {
-		var r =  YAHOO.lang.JSON.parse(o.responseText);
-		var element=Dom.get('other_handle');var label=Dom.get('other_handle_label');
-		if(r.state==200){
-		    element.setAttribute('ok',1);label.className='valid';Dom.get('other_handle_show').innerHTML=query;
-		}else{
-		    element.setAttribute('ok',0);label.className='no_valid';Dom.get('other_handle_show').innerHTML='';
-		}
-		update_form('other');	
-	    }
-	});
-};
-var validate_email =function (email) {
-    email=unescape(email);
-    var element=Dom.get('other_email');var label=Dom.get('other_email_label');
-
-    if(isValidEmail(email)){
-	element.setAttribute('ok',1);
-	label.className='valid';
-    }else{
-	element.setAttribute('ok',0);
-	label.className='no_valid';
-    }
-	update_form('other');	
-};
-
-var validate_name =function (name) {
-    var element=Dom.get('other_name');
-    var label=Dom.get('other_name_label');
-
-    if(name.length>0){
-	element.setAttribute('ok',1);
-	label.className='valid';
-
-    }else{
-	element.setAttribute('ok',0);
-	label.className='no_valid';
-
-    }
-update_form('other');	
-};
-var validate_surname =function (surname) {
-    var element=Dom.get('other_surname');var label=Dom.get('other_surname_label');
-    if(surname.length>0){
-	element.setAttribute('ok',1);label.className='valid';
-    }else{
-	element.setAttribute('ok',0);label.className='no_valid';
-    }update_form('other');	
-};
-
-
-
-YAHOO.util.Event.onContentReady("other_container", function () {
-
- var oACDS_handle = new YAHOO.util.FunctionDataSource(validate_handle);
- oACDS_handle .queryMatchContains = true;
- var oAutoComp_handle  = new YAHOO.widget.AutoComplete("other_handle","other_container", oACDS_handle );
- oAutoComp_handle .minQueryLength = 0; 
-
- var oACDS_email = new YAHOO.util.FunctionDataSource(validate_email);
- oACDS_email .queryMatchContains = true;
- var oAutoComp_email  = new YAHOO.widget.AutoComplete("other_email","other_container", oACDS_email );
- oAutoComp_email .minQueryLength = 0; 
-
-var oACDS_name = new YAHOO.util.FunctionDataSource(validate_name);
- oACDS_name .queryMatchContains = true;
- var oAutoComp_name  = new YAHOO.widget.AutoComplete("other_name","other_container", oACDS_name );
- oAutoComp_name .minQueryLength = 0; 
-var oACDS_surname = new YAHOO.util.FunctionDataSource(validate_surname);
- oACDS_surname .queryMatchContains = true;
- var oAutoComp_surname  = new YAHOO.widget.AutoComplete("other_surname","other_container", oACDS_surname );
- oAutoComp_surname .minQueryLength = 0; 
-    });

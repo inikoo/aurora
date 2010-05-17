@@ -500,6 +500,38 @@ $default_state=array(
                                                    )
                                        ),
 
+'report_sales'=>array(
+                                  'tipo'=>'m',
+                                       'y'=>date('Y'),
+                                            'm'=>date('m'),
+                                                 'd'=>date('d'),
+                                                      'w'=>1,
+                                                           'activity'=>array('compare'=>'last_year','period'=>'week'),        
+                                         
+                                         'store_keys'=>'all',
+                                            'from'=>'',
+                                            'to'=>'',
+                                            'period'=>'',
+                                            'order'=>'date',
+                                            'order_dir'=>'desc',
+                                            'sf'=>0,
+                                            'nr'=>25,
+                                            'plot'=>'per_store',
+                                            'plot_data'=>array('per_store'=>array(
+                                                                               'category'=>'sales',
+                                                                               'page'=>'plot.php',
+                                                                               'period'=>'m'
+
+                                                                           )
+                                                                           ,'per_category'=>array(
+                                                                                               'category'=>'sales',
+                                                                                               'page'=>'plot.php',
+                                                                                               'period'=>'m'
+                                                                                           )
+                                                              ),
+                                        ),
+
+
                    'report_sales_with_no_tax'=>array(
                                                   'tipo'=>'y'
                                                          ,'y'=>date('Y')
@@ -949,14 +981,14 @@ $default_state=array(
                                                         )
                         ),
                    'users'=>array(
-                               'user_list'=>array(
-                                               'type'=>'Staff',
-                                               'order'=>'handle',
+                               'staff'=>array(
+                                               'display'=>'all',
+                                               'order'=>'alias',
                                                'order_dir'=>'',
                                                'sf'=>0,
                                                'nr'=>50,
                                                'where'=>'where true',
-                                               'f_field'=>'name',
+                                               'f_field'=>'alias',
                                                'f_value'=>''
                                            ),
                                'groups'=>array(

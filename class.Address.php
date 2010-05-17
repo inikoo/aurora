@@ -4411,22 +4411,28 @@ $data=$this->prepare_data($raw_data,$options);
     }
 
 
+
+
+
     function update_parents() {
 
-
-
-
-      //$sql=sprintf("select  `Customer Main Ship To Key`   from  `Customer Dimension` where  (`Customer Delivery Address Link`='Billing' and  `Customer Billing Address Key`=%d) or (`Customer Delivery Address Link`='Contact' and  `Customer Main Address Key`=%d)  ",$this->id,$this->id);
-      //$res=mysql_query($sql);
-      //    while ($row=mysql_fetch_array($res)) {
-      //     include_once('class.Ship_To.php');
-      //     $ship_to=new Ship_To($row['Customer Main Ship To Key']);
-      //     if($ship_to->id){
-      //         $ship_to->update_from_address($this->id);
-      //     }
-      //     }
-
-
+  $sql=sprintf("select `Customer Key`  from  `Customer Dimension` where `Customer Main Delivery Address Key`=%d group by `Customer Key`",$this->id);
+  $res=mysql_query($sql);
+            while ($row=mysql_fetch_array($res)) {
+  
+                
+           $sql=sprintf('update `Customer Dimension` set `Customer Main Delivery Address Town`=%s,`Customer Main Delivery Address Country`=%s ,`Customer Main Delivery Address Postal Code`=%s,`Customer Main Delivery Address Country Code`=%s,`Customer Main Delivery Address Country 2 Alpha Code`=%s,`Customer Main Delivery Address Country Key`=%d  where `Customer Key`=%d '
+           , prepare_mysql($this->data['Address Town'])
+           ,prepare_mysql($this->data['Address Country Name'])
+           ,prepare_mysql($this->data['Address Postal Code'])
+           ,prepare_mysql($this->data['Address Country Code'])
+           ,prepare_mysql($this->data['Address Country 2 Alpha Code'])
+           ,$this->data['Address Country Key']
+           ,$row['Customer Key']
+           );     
+   mysql_query($sql);
+            }
+            
 
         $parents=array('Contact','Company','Customer','Supplier');
         foreach($parents as $parent) {
@@ -4471,8 +4477,9 @@ $data=$this->prepare_data($raw_data,$options);
                              ,$parent_object->id
                             );
                 mysql_query($sql);
-               // print "$sql\n";
                 if($parent=='Customer'){
+                
+                
                  $sql=sprintf("update `$parent Dimension` set `$parent Main Town` =%s,`$parent Main Postal Code` =%s,`$parent Main Country First Division` =%s ,`Customer Main Country 2 Alpha Code`=%s where `$parent Key`=%d"
                              ,prepare_mysql($this->data['Address Town'])
                              ,prepare_mysql($this->data['Address Postal Code'])
@@ -4481,7 +4488,7 @@ $data=$this->prepare_data($raw_data,$options);
 
                              ,$parent_object->id
                             );
-                mysql_query($sql);
+                     mysql_query($sql);
                 
                 }
                 
@@ -4568,6 +4575,20 @@ $data=$this->prepare_data($raw_data,$options);
 
     }
 
+ function get_number_of_associated_telecoms($type) {
+        $sql=sprintf("select  count(*) as num  from `Telecom Bridge` TB left join `Telecom Dimension` T on (T.`Telecom Key`=TB.`Telecom Key`)  where  `Subject Type`='Address' and `Telecom Type`=%s and  `Subject Key`=%d "
+                     ,prepare_mysql($type)
+                     ,$this->id );
+
+      $telecoms=0;
+        $result=mysql_query($sql);
+        while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+           $telecoms=$row['num'];
+        }
+        return $telecoms;
+
+    }
+
     function get_telecom_type_keys($type) {
         $sql=sprintf("select TB.`Telecom Key` from `Telecom Bridge` TB left join `Telecom Dimension` T on (T.`Telecom Key`=TB.`Telecom Key`)  where  `Subject Type`='Address' and `Telecom Type`=%s and  `Subject Key`=%d "
                      ,prepare_mysql($type)
@@ -4603,6 +4624,7 @@ $data=$this->prepare_data($raw_data,$options);
                      $telecom_key
                     );
         mysql_query($sql);
+        $this->updated=true;
         if (!$this->get_principal_telecom_key($type)) {
             $this->update_principal_telecom($telecom_key,$type);
         }
@@ -4715,8 +4737,17 @@ $data=$this->prepare_data($raw_data,$options);
             }
         }
     }
+    
+    
+    function update_principal_telecom_number($value,$type){
+if($type=='Telephone')
+ $this->update_principal_telephone_number($value);
+else
+ $this->update_principal_fax_number($value);
 
-function update_principal_telephone($value){
+}
+
+function update_principal_telephone_number($value){
 
 $telephone_key=$this->get_principal_telecom_key('Telephone');
 
@@ -4733,7 +4764,7 @@ $this->updated=$telephone->updated;
 }
 }
 
-function update_principal_fax($value){
+function update_principal_fax_number($value){
 $fax_key=$this->get_principal_telecom_key('FAX');
 if(!$fax_key){
     $this->error=true;
@@ -4803,6 +4834,29 @@ function get_fuzzines($data){
 
 
 
+}
+
+
+function get_data_for_ship_to(){
+$lines=$this->display('3lines');
+$data['Ship To Line 1']=$lines[1];
+$data['Ship To Line 2']=$lines[2];
+$data['Ship To Line 3']=$lines[3];
+$data['Ship To Town']=$this->data['Address Town'];
+$line4='';
+if($this->data['Address Country Second Division']!='')
+$line4=_trim($this->data['Address Country Second Division']);
+if($line4!='' and $this->data['Address Country First Division']!='')
+$line4.=', '.$this->data['Address Country First Division'];
+$data['Ship To Line 4']=$line4;
+$data['Ship To Postal Code']=$this->data['Address Postal Code'];
+$data['Ship To Country Name']=$this->data['Address Country Name'];
+$data['Ship To Country Key']=$this->data['Address Country Key'];
+$data['Ship To Country Code']=$this->data['Address Country Code'];
+$data['Ship To Country 2 Alpha Code']=$this->data['Address Country 2 Alpha Code'];
+
+$data['Ship To XHTML Address']=$this->display('xhtml');
+return $data;
 }
 
 

@@ -1333,8 +1333,7 @@ function currency_conversion ($currency_from, $currency_to) {
   $in_db=false;
   $exchange_rate=1;
   //get info from database;
-  $sql=sprintf("select * from `Currency Exchange Dimension` where `Currency Pair`=%s",prepare_mysql($currency_from.$currency_to));
-
+  $sql=sprintf("select * from kbase.`Currency Exchange Dimension` where `Currency Pair`=%s",prepare_mysql($currency_from.$currency_to));
   $res = mysql_query($sql);
   if($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
     if(strtotime($row['Currency Exchange Last Updated'])<date("Y-m-d H:i:s",strtotime('today -1 hour')))
@@ -1736,16 +1735,16 @@ function generatePassword($length=9, $strength=0) {
 	$vowels = 'aeuy'.md5(mt_rand());
 	$consonants = 'bdghjmnpqrstvz'.md5(mt_rand());
 	if ($strength & 1) {
-		$consonants .= 'BDGHJLMNPQRSTVWXZlkjhgfduytrdqwertyuiopasdfghjklzxcvbnm';
+		$consonants .= 'BDGHJLMNPQRSTVWXZlkjhgfduytrdqwertyuipasdfghjkzxcvbnm';
 	}
 	if ($strength & 2) {
-		$vowels .= "AEUY4,cmoewmpaeoi8m5390m4pomeotixcmpodim";
+		$vowels .= "AEUI";
 	}
 	if ($strength & 4) {
 		$consonants .= '2345678906789$%^&*(';
 	}
 	if ($strength & 8) {
-		$consonants .= '!=/[]{}~|\<>$%^&*()_+@#.,)(*%%';
+		$consonants .= '!=/[]{}~\<>$%^&*()_+@#.,)(*%%';
 	}
  
 	$password = '';

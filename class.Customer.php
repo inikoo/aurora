@@ -663,7 +663,7 @@ class Customer extends DB_Table {
                 if (!$this->data['Customer Main Contact Key']) {
 
                     $contact=new contact('find in customer create update',$raw_data);
-                } else{
+                } else {
                     $contact=new contact('id',$this->data['Customer Main Contact Key']);
                     $contact->editor=$this->editor;
                 }
@@ -722,7 +722,7 @@ class Customer extends DB_Table {
             $contact->update_parents_principal_email_keys();
             $email=new Email($contact->get_principal_email_key());
             $email->editor=$this->editor;
-            if ($email->id){
+            if ($email->id) {
                 $email->update_parents();
 
             }
@@ -737,7 +737,15 @@ class Customer extends DB_Table {
 
 
             }
-	    
+
+
+
+            if ($this->data['Customer Delivery Address Link']=='Contact') {
+                $this->associate_delivery_address($address->id);
+                $this->get_data('id',$this->id);
+
+            }
+           
 
         } else {
             print "Error can not create customer $sql\n";
@@ -870,7 +878,7 @@ class Customer extends DB_Table {
             $is_principal='No';
 
 
-        $sql=sprintf("insert into `Customer Ship To Bridge` values (%d,%d,'%s','Yes',0,NOW(),NOW()) on duplicate key update `Is Principal`='%s' ,`Is Active`='Yes'  "
+        $sql=sprintf("insert into `Customer Ship To Bridge` values (%d,%d,'%s','Normal',0,NOW(),NULL,NULL) on duplicate key update `Is Principal`='%s' ,`Is Active`='Yes'  "
                      ,$this->id
                      ,$ship_to_key
                      ,$is_principal
@@ -890,6 +898,7 @@ class Customer extends DB_Table {
 
 
     function update_ship_to_stats() {
+    return;
         $sql=sprintf("select count(*) as total,sum(if(`Is Active`='Yes',1,0)) as active from `Customer Ship To Bridge` where `Customer Key`=%d ",$this->id);
         // print $sql;
         $result=mysql_query($sql);
@@ -917,17 +926,17 @@ class Customer extends DB_Table {
             $ship_to=new Ship_To($ship_to_key);
 
         else
-            $ship_to=new Ship_To($this->data['Customer Main Ship To Key']);
+            $ship_to=new Ship_To($this->data['Customer Main Delivery Address Key']);
 
 
 
 
 
-        $sql=sprintf("update `Customer Dimension` set `Customer Main Ship To Key`=%d,`Customer Main Ship To Town`=%s,`Customer Main Ship To Postal Code`=%s,`Customer Main Ship To Country`=%s,`Customer Main Ship To Country Key`=%s,`Customer Main Ship To Country Code`=%s,`Customer Main Ship To Country 2 Alpha Code`=%s where `Customer Key`=%d"
+        $sql=sprintf("update `Customer Dimension` set `Customer Main Delivery Address Key`=%d,`Customer Main Delivery Address Town`=%s,`Customer Main Delivery Address Postal Code`=%s,`Customer Main Delivery Address Country`=%s,`Customer Main Delivery Address Country Key`=%s,`Customer Main Delivery Address Country Code`=%s,`Customer Main Delivery Address Country 2 Alpha Code`=%s where `Customer Key`=%d"
                      ,$ship_to->id
                      ,prepare_mysql($ship_to->data['Ship To Town'])
                      ,prepare_mysql($ship_to->data['Ship To Postal Code'])
-                     ,prepare_mysql($ship_to->data['Ship To Country'])
+                     ,prepare_mysql($ship_to->data['Ship To Country Name'])
                      ,prepare_mysql($ship_to->data['Ship To Country Key'])
                      ,prepare_mysql($ship_to->data['Ship To Country Code'])
                      ,prepare_mysql($ship_to->data['Ship To Country 2 Alpha Code'])
@@ -937,13 +946,13 @@ class Customer extends DB_Table {
         mysql_query($sql);
 
 
-        $this->data['Customer Main Ship To Key']=$ship_to->id;
-        $this->data['Customer Main Ship To Town']=$ship_to->data['Ship To Town'];
-        $this->data['Customer Main Ship To Country']=$ship_to->data['Ship To Country'];
-        $this->data['Customer Main Ship To Postal Code']=$ship_to->data['Ship To Postal Code'];
-        $this->data['Customer Main Ship To Country Key']=$ship_to->data['Ship To Country Key'];
-        $this->data['Customer Main Ship To Country Code']=$ship_to->data['Ship To Country Code'];
-        $this->data['Customer Main Ship To Country 2 Alpha Code']=$ship_to->data['Ship To Country 2 Alpha Code'];
+        $this->data['Customer Main Delivery Address Key']=$ship_to->id;
+        $this->data['Customer Main Delivery Address Town']=$ship_to->data['Ship To Town'];
+        $this->data['Customer Main Delivery Address Country']=$ship_to->data['Ship To Country Name'];
+        $this->data['Customer Main Delivery Address Postal Code']=$ship_to->data['Ship To Postal Code'];
+        $this->data['Customer Main Delivery Address Country Key']=$ship_to->data['Ship To Country Key'];
+        $this->data['Customer Main Delivery Address Country Code']=$ship_to->data['Ship To Country Code'];
+        $this->data['Customer Main Delivery Address Country 2 Alpha Code']=$ship_to->data['Ship To Country 2 Alpha Code'];
 
 
 
@@ -965,6 +974,15 @@ class Customer extends DB_Table {
             $value=_trim($value);
 
         switch ($field) {
+        case('Customer Main XHTML Telephone'):
+        case('Customer Main XHTML FAX'):
+        case('Customer First Contacted Date'):
+        case('Customer Main Telephone Key'):
+        case('Customer Main FAX Key'):
+        case('Customer Main XHTML Email'):
+        case('Customer Main Email Key'):
+            break;
+
         case('Note'):
             $this->add_note($value);
             break;
@@ -977,48 +995,38 @@ class Customer extends DB_Table {
         case('Customer Main Contact Name'):
             $this->update_child_main_contact_name($value);
             break;
-        case('Customer Main XHTML Telephone'):
         case('Customer Main Plain Telephone'):
-            //$this->update_child_telephone($value);
-            $address=new Address($this->data['Customer Main Address Key']);
-            $address->editor=$this->editor;
-            $address->update_principal_telephone($value);
-            $this->updated=$address->updated;  
-            if($this->updated){
-                    $this->get_data('id',$this->id);
-                    $this->new_value=$this->data['Customer Main XHTML Telephone'];
-            }
-            break;
-
-        case('Customer Main XHTML FAX'):
         case('Customer Main Plain FAX'):
-            //$this->update_child_telephone($value);
-            $address=new Address($this->data['Customer Main Address Key']);
-            $address->editor=$this->editor;
-            $address->update_principal_fax($value);
-$this->updated=$address->updated;
- if($this->updated){
- $this->get_data('id',$this->id);
-                $this->new_value=$this->data['Customer Main XHTML FAX'];
+
+            if ($field=='Customer Main Plain Telephone')
+                $type='Telephone';
+            else
+                $type='FAX';
+            if ($this->data['Customer Type']=='Person') {
+                $subject=new Contact($this->data['Customer Main Contact Key']);
+                $subject_type='Contact';
+            } else {
+                $subject=new Company($this->data['Customer Company Key']);
+                $subject_type='Company';
+
             }
+            $subject->update(array($subject_type.' Main Plain '.$type=>$value));
+            $this->updated=$subject->updated;
+            $this->msg=$subject->msg;
+            $this->new_value=$subject->new_value;
+
             break;
 
 
         case('Customer Main Plain Email'):
-
-            // $this->update_child_email($value);
+                $contact=new Contact($this->data['Customer Main Contact Key']);
+                $contact->update(array('Contact Main Plain Email'=>$value));
+                 $this->updated=$contact->updated;
+            $this->msg=$contact->msg;
+            $this->new_value=$contact->new_value;
+                
             break;
-        case('Customer First Contacted Date'):
-            break;
 
-
-        case('Customer Main Telephone Key'):
-
-        case('Customer Main FAX Key'):
-        case('Customer Main XHTML Email'):
-        case('Customer Main Email Key'):
-        case('Customer Main Plain Email'):
-            return;
             break;
         default:
             $base_data=$this->base_data();
@@ -1950,7 +1958,7 @@ $this->updated=$address->updated;
 
         if (preg_match('/^ship to /i',$key)) {
             if (!$arg1)
-                $ship_to_key=$this->data['Customer Main Ship To Key'];
+                $ship_to_key=$this->data['Customer Main Delivery Address Key'];
             else
                 $ship_to_key=$arg1;
             if (!$this->ship_to[$ship_to_key])
@@ -2017,7 +2025,7 @@ $this->updated=$address->updated;
 
 
             if (!$arg1)
-                $ship_to_key=$this->data['Customer Main Ship To Key'];
+                $ship_to_key=$this->data['Customer Main Delivery Address Key'];
             else
                 $ship_to_key=$arg1;
 
@@ -2455,7 +2463,7 @@ $this->updated=$address->updated;
 
     function delivery_address_xhtml() {
         if ($this->data['Customer Delivery Address Link']=='None') {
-            $deliver_address=new Ship_To($this->data['Customer Main Ship To Key']);
+            $deliver_address=new Ship_To($this->data['Customer Main Delivery Address Key']);
             return $deliver_address->data['Ship To XHTML Address'];
         }
 
@@ -2481,7 +2489,7 @@ $this->updated=$address->updated;
     function set_current_ship_to_get_key() {
 
         if ($this->data['Customer Delivery Address Link']=='None') {
-            return $this->data['Customer Main Ship To Key'];
+            return $this->data['Customer Main Delivery Address Key'];
         }
 
         if ($this->data['Customer Delivery Address Link']=='Billing')
@@ -2623,15 +2631,26 @@ $this->updated=$address->updated;
         $sql=sprintf("select `Email Key` from `Email Bridge` where  `Subject Type`='Customer' and `Subject Key`=%d "
                      ,$this->id );
 
-        $emails=array();
+        $ship_to=array();
         $result=mysql_query($sql);
         while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-            $emails[$row['Email Key']]= $row['Email Key'];
+            $ship_to[$row['Email Key']]= $row['Email Key'];
         }
-        return $emails;
+        return $ship_to;
 
     }
+    function get_ship_to_keys() {
+        $sql=sprintf("select `Ship To Key` from `Customer Ship To Bridge` where `Customer Key`=%d "
+                     ,$this->id );
 
+        $ship_to=array();
+        $result=mysql_query($sql);
+        while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+            $ship_to[$row['Ship To Key']]= $row['Ship To Key'];
+        }
+        return $ship_to;
+
+    }
 
     function associate_contact($contact_key) {
         $contact_keys=$this->get_contact_keys();
@@ -2798,38 +2817,158 @@ $this->updated=$address->updated;
         return $companies;
     }
 
-function is_tax_number_valid(){
-if($this->data['Customer Tax Number']=='')
-return false;
-else{
-return true;
-}
+    function is_tax_number_valid() {
+        if ($this->data['Customer Tax Number']=='')
+            return false;
+        else {
+            return true;
+        }
 
-}
+    }
 
-function create_user(){
-include_once('class.User.php');
-$data=array(
-              'User Handle'=>$this->data['Customer Main Plain Email']
-              ,'User Type'=>'Customer_'.$this->data['Customer Store Key']
-              ,'User Password'=>md5(generatePassword(21,10))
-              ,'User Active'=>'Yes'
-              ,'User Alias'=>$this->data['Customer Name']
-              ,'User Parent Key'=>$this->data['Customer Key']
+    function create_user() {
+        include_once('class.User.php');
+        $data=array(
+                  'User Handle'=>$this->data['Customer Main Plain Email']
+                                ,'User Type'=>'Customer_'.$this->data['Customer Store Key']
+                                             ,'User Password'=>md5(generatePassword(21,10))
+                                                              ,'User Active'=>'Yes'
+                                                                             ,'User Alias'=>$this->data['Customer Name']
+                                                                                           ,'User Parent Key'=>$this->data['Customer Key']
               );
-  // print_r($data);
-  $user=new user('new',$data);
-  if(!$user->id){
-    $this->error=true;
-    $this->msg=$user->msg;
-   $this->user_key=0;
+        // print_r($data);
+        $user=new user('new',$data);
+        if (!$user->id) {
+            $this->error=true;
+            $this->msg=$user->msg;
+            $this->user_key=0;
+
+        } else {
+            $this->user_key=$user->id;
+
+        }
+
+
+
+    }
     
-  }else{
-  $this->user_key=$user->id;
-  
-  }
+       function get_delivery_address_keys() {
 
 
+        $sql=sprintf("select * from `Address Bridge` CB where  `Address Function`='Shipping' and  `Subject Type`='Customer' and `Subject Key`=%d  group by `Address Key` order by `Is Main` desc  ",$this->id);
+        $address_keys=array();
+        $result=mysql_query($sql);
+
+        while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+
+            $address_keys[$row['Address Key']]= $row['Address Key'];
+        }
+        return $address_keys;
+
+    }
+
+    
+   function associate_delivery_address($address_key) {
+        if (!$address_key){
+            return;
+            
+         }   
+        $address_keys=$this->get_delivery_address_keys();
+
+        if (!array_key_exists($address_key,$address_keys)) {
+            $this->create_delivery_address_bridge($address_key);
+            $this->updated=true;
+            $this->new_data=$address_key;
+        }
+
+
+    }
+
+  function create_delivery_address_bridge($address_key) {
+        $sql=sprintf("insert into `Address Bridge` (`Subject Type`,`Address Function`,`Subject Key`,`Address Key`) values ('Customer','Shipping',%d,%d)  ",
+                     $this->id,
+                     $address_key
+
+                    );
+        mysql_query($sql);
+        if (!$this->get_principal_delivery_address_key()) {
+            $this->update_principal_delivery_address($address_key);
+        }
+
+    }
+    
+    
+     function update_principal_delivery_address($address_key) {
+        $main_address_key=$this->get_principal_delivery_address_key();
+        if ($main_address_key!=$address_key) {
+            $address=new Address($address_key);
+            $address->editor=$this->editor;
+            $sql=sprintf("update `Address Bridge`  set `Is Main`='No' where `Subject Type`='Customer' and `Address Function`='Shipping' and  `Subject Key`=%d  and `Address Key`=%d",
+                         $this->id
+                         ,$main_address_key
+                        );
+            mysql_query($sql);
+  $sql=sprintf("update `Address Bridge`  set `Is Main`='Yes' where `Subject Type`='Customer' and `Address Function`='Shipping' and  `Subject Key`=%d  and `Address Key`=%d",
+                         $this->id
+                         ,$address_key
+                        );
+            mysql_query($sql);
+            $sql=sprintf("update `Customer Dimension` set  `Customer Main Delivery Address Key`=%d where `Customer Key`=%d",$address->id,$this->id);
+            $this->data['Customer Main Delivery Address Key']=$address->id;
+            mysql_query($sql);
+
+            $address->update_parents();
+
+        }
+
+    }
+
+    
+    
+ function get_principal_delivery_address_key() {
+
+switch ($this->data['Customer Delivery Address Link']) {
+    case 'Contact':
+        return $this->data['Customer Main Address Key'];
+        break;
+    case 'Billing':
+     return $this->data['Customer Billing Address Key'];
+    default:
+          $sql=sprintf("select `Address Key` from `Address Bridge` where `Subject Type`='Customer' and `Address Function`='Shipping' and `Subject Key`=%d and `Is Main`='Yes'",$this->id );
+        $res=mysql_query($sql);
+        if ($row=mysql_fetch_array($res)) {
+            $main_address_key=$row['Address Key'];
+        } else {
+            $main_address_key=0;
+        }
+
+        return $main_address_key;
+        break;
+}
+
+
+    }
+
+function get_ship_to_data(){
+  $address=new address($this->data['Customer Main Delivery Address Key']);
+  if($address->id)
+     return $address->get_data_for_ship_to();
+  else
+       return array();
+}
+
+function display_delivery_address($tipo){
+switch ($tipo) {
+
+    case 'xhtml':
+        $address=new address($this->data['Customer Main Delivery Address Key']);
+        return $address->display('xhtml');
+        break;
+    default:
+     $address=new address($this->data['Customer Main Delivery Address Key']);
+        return $address->get($tipo);
+        break;
+}
 
 }
 

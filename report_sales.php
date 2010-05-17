@@ -43,22 +43,32 @@ $smarty->assign('js_files',$js_files);
 
 if(isset($_REQUEST['tipo']) and preg_match('/y|m|d|q|w|f|all/',$_REQUEST['tipo'])){
   $tipo=$_REQUEST['tipo'];
-  $_SESSION['state']['reports']['sales']['tipo']=$tipo;
+  $_SESSION['state']['reports_sales']['tipo']=$tipo;
 }else{
-  $tipo=$_SESSION['state']['reports']['sales']['tipo'];
+  $tipo=$_SESSION['state']['reports_sales']['tipo'];
 }
 
 
 $root_title=_('Sales Report');
 if(isset($_REQUEST['store_key']) and is_numeric($_REQUEST['store_key']))
-  $_SESSION['state']['report']['sales']['store_key']=$_REQUEST['store_key'];
-$store_key=$_SESSION['state']['report']['sales']['store_key'];
+  $store_keys=$_REQUEST['store_key'];
+else{
+if(is_numeric($_SESSION['state']['report_sales']['store_keys']))
+ $store_keys=$_SESSION['state']['report_sales']['store_keys'];
+else{
+ header('Location: report_sales_main.php?fe');
+  exit();
+}
+    
+}
+
+$report_name='report_sales';
 
 include_once('report_dates.php');
 
-$_SESSION['state']['report']['sales']['to']=$to;
-$_SESSION['state']['report']['sales']['from']=$from;
-$_SESSION['state']['report']['sales']['period']=$period;
+$_SESSION['state']['report_sales']['to']=$to;
+$_SESSION['state']['report_sales']['from']=$from;
+$_SESSION['state']['report_sales']['period']=$period;
 
   
 /* $valid_rates=array( */
@@ -69,14 +79,14 @@ $_SESSION['state']['report']['sales']['period']=$period;
 
 
 
-$store=new Store($store_key);
+$store=new Store($store_keys);
 
 $currency=$store->data['Store Currency Code']; 
 $home_name=$store->data['Store Home Country Name'];
 $home_short_name=$store->data['Store Home Country Short Name'];
 
 
-$interval_data=sales_in_interval($from,$to,$store_key);
+$interval_data=sales_in_interval($from,$to,$store_keys);
 //print_r($interval_data);
 $smarty->assign('novalue_invoices',$interval_data['errors']['novalue_invoices']);
 $smarty->assign('f_novalue_invoices',number($interval_data['errors']['novalue_invoices']));
@@ -113,7 +123,7 @@ $day_interval=(strtotime($to)-strtotime($from))/3600/24;
      $_to=preg_replace('/\d{4}$/',$last_year,$_to);
 
 
-     $interval_data_last_year=sales_in_interval($_from,$_to,$store_key);
+     $interval_data_last_year=sales_in_interval($_from,$_to,$store_keys);
 
     
 

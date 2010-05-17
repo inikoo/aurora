@@ -58,12 +58,12 @@ if($row=mysql_fetch_array($res)){
   exit("no stores");
 }
 
-if($_SESSION['state']['report']['sales']['store_keys']=='all'){
+if($_SESSION['state']['report_sales']['store_keys']=='all'){
   $store_keys='('.join(',',$user->stores).')';
   $formated_store_keys='all';
 }
 else{
-  $store_keys=$_SESSION['state']['report']['sales']['store_keys'];
+  $store_keys=$_SESSION['state']['report_sales']['store_keys'];
   $formated_store_keys=$store_keys;
 
 }
@@ -85,29 +85,17 @@ while($row=mysql_fetch_array($res)){
   $invoice_category_key[]=$row['Invoice Category Key'];
 }
 
-
-
-
-  
-
 $smarty->assign('store_keys',$formated_store_keys);
-
-
 $smarty->assign('invoice_category_keys','('.join(',',$invoice_category_key).')');
-
+$report_name='report_sales';
 
 include_once('report_dates.php');
 
-
-
-
 $smarty->assign('report_url','report_sales_main.php');
 
-
-
-$_SESSION['state']['report']['sales']['to']=$to;
-$_SESSION['state']['report']['sales']['from']=$from;
-$_SESSION['state']['report']['sales']['period']=$period;
+$_SESSION['state']['report_sales']['to']=$to;
+$_SESSION['state']['report_sales']['from']=$from;
+$_SESSION['state']['report_sales']['period']=$period;
 
 
 global $myconf;
@@ -276,7 +264,7 @@ if($mixed_currencies){
 $smarty->assign('store_data',$store_data);
 $smarty->assign('store_data_profit',$store_data_profit);
 
-$plot_tipo=$_SESSION['state']['report']['sales']['plot'];
+$plot_tipo=$_SESSION['state']['report_sales']['plot'];
 //print $plot_tipo.preg_replace('/tipo/i','dtipo',$link);
 $smarty->assign('plot_tipo',$plot_tipo.preg_replace('/tipo/i','dtipo',$link));
 
@@ -299,8 +287,8 @@ $smarty->assign('currency',$myconf['currency_symbol']);
 //if($period!=''){
   $smarty->assign('display_plot',true);
   
-  $plot_tipo=$_SESSION['state']['report']['sales']['plot'];
-  $plot_data=$_SESSION['state']['report']['sales']['plot_data'][$plot_tipo];
+  $plot_tipo=$_SESSION['state']['report_sales']['plot'];
+  $plot_data=$_SESSION['state']['report_sales']['plot_data'][$plot_tipo];
   $plot_category=$plot_data['category'];
   if($tipo=='y'){
     $plot_period='m';
@@ -327,8 +315,8 @@ $smarty->assign('currency',$myconf['currency_symbol']);
   $smarty->assign('plot_page',$plot_data['page']);
   $smarty->assign('plot_period',$plot_period);
   $smarty->assign('plot_category',$plot_period);
-  $smarty->assign('plot_data',$_SESSION['state']['report']['sales']['plot_data']);
-//print_r($_SESSION['state']['report']['sales']['plot_data']);
+  $smarty->assign('plot_data',$_SESSION['state']['report_sales']['plot_data']);
+//print_r($_SESSION['state']['report_sales']['plot_data']);
 
   if($plot_period=='m')
     $plot_formated_period='Monthly';

@@ -1309,13 +1309,13 @@ if(isset( $_REQUEST['where']))
    //  elseif($order=='ship_address')
    //  $order='`customer main ship to header`';
    elseif($order=='ship_town')
-     $order='`Customer Main Ship To Town`';
+     $order='`Customer Main Delivery Address Town`';
    elseif($order=='ship_postcode')
-     $order='`Customer Main Ship To Postal Code`';
+     $order='`Customer Main Delivery Address Postal Code`';
    elseif($order=='ship_region')
-     $order='`Customer Main Ship To Country Region`';
+     $order='`Customer Main Delivery Address Country Region`';
    elseif($order=='ship_country')
-     $order='`Customer Main Ship To Country`';
+     $order='`Customer Main Delivery Address Country`';
    elseif($order=='net_balance')
      $order='`Customer Net Balance`';
    elseif($order=='balance')
@@ -1385,10 +1385,10 @@ if(isset( $_REQUEST['where']))
 		   'region'=>$data['Customer Main Country First Division'],
 		   'country'=>$data['Customer Main Country'],
 		   //		   'ship_address'=>$data['customer main ship to header'],
-		   'ship_town'=>$data['Customer Main Ship To Town'],
-		   'ship_postcode'>$data['Customer Main Ship To Postal Code'],
-		   'ship_region'=>$data['Customer Main Ship To Country Region'],
-		   'ship_country'=>$data['Customer Main Ship To Country'],
+		   'ship_town'=>$data['Customer Main Delivery Address Town'],
+		   'ship_postcode'>$data['Customer Main Delivery Address Postal Code'],
+		   'ship_region'=>$data['Customer Main Delivery Address Region'],
+		   'ship_country'=>$data['Customer Main Delivery Address Country'],
 		   'activity'=>$data['Customer Type by Activity']
 
 		   );

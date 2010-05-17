@@ -139,35 +139,26 @@ class DeliveryNote extends DB_Table {
         //    $this->data ['Delivery Note Country 2 Alpha Code'] = 'XX';
         $this->data ['Delivery Note XHTML Ship To'] = '';
         $this->data ['Delivery Note Ship To Key'] = 0;
-        //    print_r($this->data);
-        if ($dn_data['Delivery Note Has Shipping']) {
+      //  $this->data ['Delivery Note Country 2 Alpha Code'] = 'XX';
+     // print_r($dn_data);
+     if($order->data ['Order Ship To Key To Deliver']){
+      
 
-            $customer=new Customer($this->data ['Delivery Note Customer Key']);
-            // print_r($customer->data);
-            $this->data ['Delivery Note Ship To Key'] =$customer->data['Customer Main Ship To Key'];
-
-            if ($this->data ['Delivery Note Ship To Key']) {
-                $ship_to=new Ship_To($this->data ['Delivery Note Ship To Key']);
-                $this->data ['Delivery Note XHTML Ship To'] = $ship_to->data['Ship To XHTML Address'];
-                $this->data ['Delivery Note Country 2 Alpha Code'] = $ship_to->data['Ship To Country 2 Alpha Code'];
-
-            }
+            
+            $ship_to=new Ship_To($order->data ['Order Ship To Key To Deliver']);
+            $this->data ['Delivery Note Ship To Key'] =$ship_to->id;
+            $this->data ['Delivery Note XHTML Ship To'] =$ship_to->data['Ship To XHTML Address'];
+            $this->data ['Delivery Note Country 2 Alpha Code'] = $ship_to->data['Ship To Country 2 Alpha Code'];
+            
         } else {
             $this->data ['Delivery Note XHTML Ship To'] = _('Collected');
-            $this->data ['Delivery Note Country 2 Alpha Code'] = $myconf['country_2acode'];
+            $store=new Store($this->data['Delivery Note Store Key']);
+            $this->data ['Delivery Note Country 2 Alpha Code'] = $store->data['Store Home Country Code 2 Alpha'];
             $this->data ['Delivery Note Ship To Key'] =0;
         }
 
         $this->create_header ();
-        $this->destination_country_key = '0';
-        if ($this->data ['Delivery Note Ship To Key']) {
-            $sql = sprintf ( "select `Ship To Country Key` from  `Ship To Dimension` where `Ship To Key`=%d", $this->data ['Delivery Note Ship To Key'] );
-            $res = mysql_query ( $sql );
-            if ($row2 = mysql_fetch_array ( $res, MYSQL_ASSOC )) {
-                $this->destination_country_key = $row2 ['Ship To Country Key'];
-            } else
-                $this->destination_country_key = '0';
-        }
+      
 
         $line_number = 0;
         $amount = 0;
@@ -203,6 +194,12 @@ class DeliveryNote extends DB_Table {
 	  mysql_query ( $sql );
 	  $order=new Order($key);
 	  $order->load('XHTML Delivery Notes');
+	  
+	  if( $this->data ['Delivery Note Ship To Key']){
+	  $order->add_ship_to( $this->data ['Delivery Note Ship To Key']);
+	  }
+	  
+	  
 	  // exit;
 	    //print "$sql\n";
 	}

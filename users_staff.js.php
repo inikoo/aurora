@@ -5,29 +5,50 @@ var add_user_dialog_others;
 var add_user_dialog;
 
 
-
 var  group_name=new Object;
 
 <?php
-    $g='';
-foreach($_group as $key=>$value){
-    $g.="group_name[$key]='$value';";
+
+$s='';
+$sql="select * from `User Group Dimension`  ";
+$res=mysql_query($sql);
+while($row=mysql_fetch_array($res)){
+    $s.="group_name[".$row['User Group Key']."]='".$row['User Group Name']."';";
 }
-print $g;
+mysql_free_result($res);
+print $s;
+
+   
 ?>
-    
-    
-    
-    YAHOO.util.Event.addListener(window, "load", function() {
-    tables = new function() {
 
-	    
-	    //START OF THE TABLE=========================================================================================================================
-	    
-	    var tableid=0; // Change if you have more the 1 table
-	    var tableDivEL="table"+tableid;
+var  store_name=new Object;
+var  warehouse_name=new Object;
 
-	    var group=function(el, oRecord, oColumn, oData){
+<?php
+  // todo: only list active stores
+    $s='';
+$sql="select `Warehouse Key`,`Warehouse Code` from `Warehouse Dimension`  ";
+$res=mysql_query($sql);
+while($row=mysql_fetch_array($res)){
+    $s.="warehouse_name[".$row['Warehouse Key']."]='".$row['Warehouse Code']."';";
+}
+mysql_free_result($res);
+print $s;
+
+    $s='';
+$sql="select `Store Key`,`Store Code` from `Store Dimension`  ";
+$res=mysql_query($sql);
+while($row=mysql_fetch_array($res)){
+    $s.="store_name[".$row['Store Key']."]='".$row['Store Code']."';";
+}
+mysql_free_result($res);
+print $s;
+
+
+
+?>
+
+   var group=function(el, oRecord, oColumn, oData){
 		//  var tmp = oData.split(',');
 		if(oData==''){
 		      el.innerHTML ='';
@@ -36,6 +57,7 @@ print $g;
 		var tmp=oData;
 		var sgroups='';
 		  for(x in tmp){
+		 
 		      if(sgroups=='')
 			  sgroups=group_name[tmp[x]];
 		      else
@@ -47,19 +69,90 @@ print $g;
 	    
 	    
 
+     var warehouses=function(el, oRecord, oColumn, oData){
+		//  var tmp = oData.split(',');
+		if(oData==''){
+		      el.innerHTML ='';
+		      return;
+		}
+		var tmp=oData;
+		var swarehouses='';
+		  for(x in tmp){
+		      if(swarehouses=='')
+			  swarehouses=warehouse_name[tmp[x]];
+		      else
+			  swarehouses=swarehouses+', '+warehouse_name[tmp[x]]
+			      }
+		el.innerHTML =swarehouses;
+		
+	       };
+
+
+
+var active=function(el, oRecord, oColumn, oData){                                                                                                                                                  
+	
+	if(oData=='No')                                                                                                                                                                                 
+	    el.innerHTML ='<img src="art/icons/status_offline.png" />';                                                                                                                                
+	else                                                                                                                                                                                           
+	    el.innerHTML = '<img src="art/icons/status_online.png" />';                                                                                                                                
+            };   
+            
+          var stores=function(el, oRecord, oColumn, oData){
+		//  var tmp = oData.split(',');
+		if(oData==''){
+		      el.innerHTML ='';
+		      return;
+		}
+		var tmp=oData;
+		
+		var sstores='';
+		  for(x in tmp){
+		      if(sstores=='')
+			  sstores=store_name[tmp[x]];
+		      else
+			  sstores=sstores+', '+store_name[tmp[x]]
+			      }
+		el.innerHTML =sstores;
+		
+	       };  
+            
+            
+            
+
+   
+    
+    
+    YAHOO.util.Event.addListener(window, "load", function() {
+    tables = new function() {
+
+	    
+	    //START OF THE TABLE=========================================================================================================================
+	    
+	    var tableid=0; // Change if you have more the 1 table
+	    var tableDivEL="table"+tableid;
+
+	 
 	   
 	    var ColumnDefs = [
+			
+			
+			      {key:"isactive",label:"<?php echo _('Active')?>" ,className:'aright',width:45  }
+			      , {key:"alias", label:"<?php echo _('Login')?>",width:70,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+			      ,{key:"name", label:"<?php echo _('Staff Name')?>",width:200,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+			      ,{key:"groups",formatter:group,label:"<?php echo _('Groups')?>",className:"aleft"}
+			       ,{key:"stores",formatter:stores, label:"<?php echo _('Stores')?>",sortable:true,className:"aleft"}
+			       ,{key:"warehouses",formatter:warehouses, label:"<?php echo _('Warehouses')?>",sortable:true,className:"aleft"
+				
+				 
 			      
-			      {key:"isactive",label:"" ,width:16 }
-			      ,{key:"tipo", label:"<?php echo _('Type')?>",width:80,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-			      , {key:"handle", label:"<?php echo _('Handle')?>",width:70,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-			      ,{key:"name", label:"<?php echo _('Name')?>",width:200,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-			      //	 {key:"email", label:"<?php echo _('Email')?>",sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}},
-			      ,{key:"lang", label:"<?php echo _('Language')?>",sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-			      ,{key:"groups",formatter:group,label:"<?php echo _('Groups')?>",className:"aleft"  }
-													   ];
+	     }
+
+
+			
+			
+			];
 			       
-	    this.dataSource0 = new YAHOO.util.DataSource("ar_users.php?tipo=users&tableid=0");
+	    this.dataSource0 = new YAHOO.util.DataSource("ar_users.php?tipo=staff_users&tableid=0");
 	    this.dataSource0.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource0.connXhrMode = "queueRequests";
 	    this.dataSource0.responseSchema = {
@@ -77,7 +170,7 @@ print $g;
 		
 		
 		fields: [
-			 "id","isactive","handle","name","email","lang","groups","tipo","active"
+			 "id","isactive","handle","name","email","lang","groups","tipo","active","alias","stores","warehouses"
 			 ]};
 
 	    this.table0 = new YAHOO.widget.DataTable(tableDivEL, ColumnDefs,
@@ -85,7 +178,7 @@ print $g;
 								 , {
 								     renderLoopSize: 50,generateRequest : myRequestBuilder
 								      ,paginator : new YAHOO.widget.Paginator({
-									      rowsPerPage:<?php echo$_SESSION['state']['users']['user_list']['nr']?>,containers : 'paginator0', 
+									      rowsPerPage:<?php echo$_SESSION['state']['users']['staff']['nr']?>,containers : 'paginator0', 
  									      pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',
 									      previousPageLinkLabel : "<",
  									      nextPageLinkLabel : ">",
@@ -95,8 +188,8 @@ print $g;
 									  })
 								     
 								     ,sortedBy : {
-									 key: "<?php echo$_SESSION['state']['users']['user_list']['order']?>",
-									 dir: "<?php echo$_SESSION['state']['users']['user_list']['order_dir']?>"
+									 key: "<?php echo$_SESSION['state']['users']['staff']['order']?>",
+									 dir: "<?php echo$_SESSION['state']['users']['staff']['order_dir']?>"
 								     },
 								     dynamicData : true
 
@@ -110,7 +203,7 @@ print $g;
 
 
 	    this.table0.doBeforePaginatorChange = mydoBeforePaginatorChange;
-	    this.table0.filter={key:'<?php echo$_SESSION['state']['users']['user_list']['f_field']?>',value:'<?php echo$_SESSION['state']['users']['user_list']['f_value']?>'};
+	    this.table0.filter={key:'<?php echo$_SESSION['state']['users']['staff']['f_field']?>',value:'<?php echo$_SESSION['state']['users']['staff']['f_value']?>'};
 	    //YAHOO.util.Event.addListener('yui-pg0-0-page-report', "click",myRowsPerPageDropdown);
 	
 
@@ -171,7 +264,7 @@ print $g;
 	    this.table1.handleDataReturnPayload =myhandleDataReturnPayload;
 	    this.table1.doBeforeSortColumn = mydoBeforeSortColumn;
 	    // this.table1.doBeforePaginatorChange = mydoBeforePaginatorChange;
-	    // this.table1.filter={key:'<?php echo$_SESSION['state']['users']['user_list']['f_field']?>',value:'<?php echo$_SESSION['state']['users']['user_list']['f_value']?>'};
+	    // this.table1.filter={key:'<?php echo$_SESSION['state']['users']['staff']['f_field']?>',value:'<?php echo$_SESSION['state']['users']['staff']['f_value']?>'};
 	    //YAHOO.util.Event.addListener('yui-pg0-0-page-report', "click",myRowsPerPageDropdown)
 
 

@@ -50,7 +50,7 @@ $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
 
 
-$_SESSION['state']['users']['user_list']['type']='Staff';
+$_SESSION['state']['users']['staff']['type']='Staff';
 
 $sql="select (select count(*) from `User Group Dimension`) as number_groups ,( select count(*) from `User Dimension`) as number_users ";
 $result = mysql_query($sql);
@@ -115,12 +115,12 @@ $smarty->assign('newuser_groups',$newuser_groups);
 
 
 
-$tipo_filter=$_SESSION['state']['users']['user_list']['f_field'];
+$tipo_filter=$_SESSION['state']['users']['staff']['f_field'];
 
 $smarty->assign('filter0',$tipo_filter);
-$smarty->assign('filter_value0',$_SESSION['state']['users']['user_list']['f_value']);
+$smarty->assign('filter_value0',$_SESSION['state']['users']['staff']['f_value']);
 $filter_menu=array(
-		   'handle'=>array('db_key'=>'handle','menu_label'=>'Handle like  <i>x</i>','label'=>'Handle'),
+		   'alias'=>array('db_key'=>'alias','menu_label'=>'Alias like  <i>x</i>','label'=>'Alias'),
 		   'name'=>array('db_key'=>'name','menu_label'=>'Name Like <i>x</i>','label'=>'Name'),
 		   );
 $smarty->assign('filter_menu0',$filter_menu);
