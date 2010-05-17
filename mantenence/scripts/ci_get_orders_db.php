@@ -1019,6 +1019,12 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
     }
 
 
+if ($customer_data['Customer Delivery Address Link']=='Contact') {
+            $_customer_data['has_shipping']=true;
+            $shipping_addresses=array();
+        }
+
+
 
     //    print_r($customer_data);
     //continue;

@@ -347,7 +347,7 @@ function edit_product(){
    
 
    if($product->updated){
-     $response= array('state'=>200,'newvalue'=>$product->new_value,'key'=>$_REQUEST['key']);
+     $response= array('state'=>200,'newvalue'=>$product->new_value,'newdata'=>$product->new_data,'key'=>$_REQUEST['key']);
 	  
    }else{
      $response= array('state'=>400,'msg'=>$product->msg,'key'=>$_REQUEST['key']);
@@ -683,12 +683,12 @@ function list_products_for_edition(){
     }
 
     if($row['Product RRP']!=0 and is_numeric($row['Product RRP']))
-      $customer_margin=_('CM').' '.number(100*($row['Product RRP']-$row['Product Price'])/$row['Product RRP'],1).'%';
+      $customer_margin=_('Margin').' '.percentage($row['Product RRP']-$row['Product Price'],$row['Product Price']);
     else
-      $customer_margin=_('Not for resale');
+      $customer_margin=_('ND');
     
     if($row['Product Price']!=0 and is_numeric($row['Product Cost']))
-      $margin=number(100*($row['Product Price']-$row['Product Cost'])/$row['Product Price'],1).'%';
+      $margin= percentage($row['Product Price']-$row['Product Cost'],$row['Product Cost']);     
     else
       $margin=_('ND');
     global $myconf;
@@ -818,10 +818,10 @@ function list_products_for_edition(){
 
 
 $adata[]=array(
-	       'id'=>$row['Product ID'],
+	       'pid'=>$row['Product ID'],
 	       'code'=>$row['Product Code'],
 	       'code_price'=>sprintf('%s <a href="edit_product.php?pid=%d&edit=prices"><img src="art/icons/external.png"/></a>',$row['Product Code'],$row['Product ID']),
-	       'smallname'=>'<span style="font-size:70%;">'.$row['Product XHTML Short Description'].'</span>',
+	       'smallname'=>$row['Product XHTML Short Description'],
 
 	       'name'=>$row['Product Name'],
 	       'processing'=>$processing,

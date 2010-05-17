@@ -1,12 +1,31 @@
 <?php
+include_once('common.php');
 include_once('set_locales.php');
-include_once('country_address_labels.js.php')
-?>
+include_once('country_address_labels.js.php');
+$sql="select `Country Key`,`Country Name`,`Country Code`,`Country 2 Alpha Code` from kbase.`Country Dimension`";
+$result=mysql_query($sql);
+$country_list='';
 
+while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
+    $country_list.=',{"id":"'.$row['Country Key'].'","name":"'.$row['Country Name'].'","code":"'.$row['Country Code'].'","code2a":"'.$row['Country 2 Alpha Code'].'"}  ';
+}
+mysql_free_result($result);
+$country_list=preg_replace('/^\,/','',$country_list);
+
+
+?>
+var Country_List=[<?php echo$country_list?>];
 var Address_Changes=0;
 var Address_Items_Changes=0;
 var Address_Type_Changes=0;
 var Address_Function_Changes=0;
+
+
+
+var Address_Keys=["key","country","country_code","country_d1","country_d2","town","postal_code","town_d1","town_d2","fuzzy","street","building","internal","description"];
+var Address_Meta_Keys=["type","function"];
+
+
 
 
 function change_main_address(o,address_key){
@@ -26,11 +45,13 @@ function change_main_address(o,address_key){
 }
 
 
-var save_address=function(e,prefix){
+var save_address=function(e,options){
+   
+   
    
       var address_prefix='';
-    if(prefix!= undefined){
-	address_prefix=prefix;
+    if(options.prefix!= undefined){
+	address_prefix=options.prefix;
     }
 
 
@@ -39,7 +60,7 @@ var save_address=function(e,prefix){
 
 
     if(Dom.get(address_prefix+'address_key').value==0){
-	create_address();
+	create_address(options);
 	return;
     }else
 	var address_key=Dom.get(address_prefix+'address_key').value;
@@ -55,7 +76,7 @@ var save_address=function(e,prefix){
 	    value[items[i]]=Dom.get(address_prefix+'address_'+items[i]).value;
     
 	var json_value = YAHOO.lang.JSON.stringify(value); 
-	var request='ar_edit_contacts.php?tipo=edit_'+escape(table)+ '&value=' + json_value+'&id='+address_key+'&subject='+Subject+'&subject_key='+Subject_Key; 
+	var request='ar_edit_contacts.php?tipo=edit_address&value=' + json_value+'&id='+address_key+'&subject='+optins.Subject+'&subject_key='+options.subject_key; 
 	alert(request);
 	//	return;
 	YAHOO.util.Connect.asyncRequest('POST',request ,{
@@ -92,7 +113,7 @@ var save_address=function(e,prefix){
 	}
 
 	var json_value = YAHOO.lang.JSON.stringify(address_type_values); 
-	var request='ar_edit_contacts.php?tipo=edit_'+escape(table)+ '_type&value=' + json_value+'&id='+address_key+'&subject='+Subject+'&subject_key='+Subject_Key; 
+	var request='ar_edit_contacts.php?tipo=edit_'+escape(options.tipo)+ '_type&value=' + json_value+'&id='+address_key+'&subject='+Subject+'&subject_key='+Subject_Key; 
 		
 	//alert(request);
 	//return;
@@ -125,17 +146,23 @@ var save_address=function(e,prefix){
 };
 
 
-var create_address=function(){
+var create_address=function(options){
+    
+      var address_prefix='';
+    if(options.prefix!= undefined){
+	address_prefix=options.prefix;
+    }
+
     
     
     var value=new Object();
     items=Address_Keys;
-    for(i in items)
-	value[items[i]]=Dom.get('address_'+items[i]).value;
-    
+    for(i in items){
+	value[items[i]]=Dom.get(address_prefix+'address_'+items[i]).value;
+    }
 
     var address_type_values=new Array();
-	var elements_array=Dom.getElementsByClassName('address_type', 'span');
+	var elements_array=Dom.getElementsByClassName(address_prefix+'address_type', 'span');
 	for( var i in elements_array ){
 	    var element=elements_array[i];
 	    var label=element.getAttribute('label');
@@ -147,7 +174,7 @@ var create_address=function(){
     value['type']=address_type_values;
     
      var address_function_values=new Array();
-	var elements_array=Dom.getElementsByClassName('address_function', 'span');
+	var elements_array=Dom.getElementsByClassName(address_prefix+'address_function', 'span');
 	for( var i in elements_array ){
 	    var element=elements_array[i];
 	    var label=element.getAttribute('label');
@@ -164,8 +191,8 @@ var create_address=function(){
     
 
     
-    var request='ar_edit_contacts.php?tipo=new_address&value=' + json_value+'&subject='+Subject+'&subject_key='+Subject_Key; 
-    
+    var request='ar_edit_contacts.php?tipo=new_'+options.tipo+'_address&value=' + json_value+'&subject='+options.subject+'&subject_key='+options.subject_key; 
+    alert(request)
     YAHOO.util.Connect.asyncRequest('POST',request ,{
 	    success:function(o) {
 	       	alert(o.responseText);
@@ -185,21 +212,21 @@ var create_address=function(){
 		    Address_Data[r.address_key]=new_address_data;
 		    cancel_edit_address();
 		    
-		    var new_address_container = Dom.get('address_container0').cloneNode(true);
-		    new_address_container.id = 'address_containe'+r.address_key;
+		    var new_address_container = Dom.get(address_prefix+'address_container0').cloneNode(true);
+		    new_address_container.id = address_prefix+'address_containe'+r.address_key;
 		    Dom.setStyle(new_address_container, 'display', ''); 
-		    display_element=Dom.getElementsByClassName('address_display' ,'div',  new_address_container);
+		    display_element=Dom.getElementsByClassName(address_prefix+'address_display' ,'div',  new_address_container);
 		    display_element[0].innerHTML=r.xhtml_address;
-		    display_element[0].id = 'address_display'+r.address_key;
+		    display_element[0].id = address_prefix+'address_display'+r.address_key;
 		    display_element=Dom.getElementsByClassName('address_buttons' ,'div',  new_address_container);
-		    display_element[0].id = 'address_buttons'+r.address_key;
+		    display_element[0].id = address_prefix+'address_buttons'+r.address_key;
 		    display_element=Dom.getElementsByClassName('small_button_edit' ,'span', display_element[0] );
-		    display_element[0].id = 'contacts_address_butto'+r.address_key;
-		    display_element[1].id = 'delete_address_button'+r.address_key;
-		    display_element[2].id = 'edit_address_butto'+r.address_key;
-		    display_element[0].setAttribute('address_id',r.address_key);
-		    display_element[1].setAttribute('address_id',r.address_key);
-		    display_element[2].setAttribute('address_id',r.address_key);
+		    display_element[0].id = address_prefix+'contacts_address_butto'+r.address_key;
+		    display_element[1].id = address_prefix+'delete_address_button'+r.address_key;
+		    display_element[2].id = address_prefix+'edit_address_butto'+r.address_key;
+		    display_element[0].setAttribute(address_prefix+'address_id',r.address_key);
+		    display_element[1].setAttribute(address_prefix+'address_id',r.address_key);
+		    display_element[2].setAttribute(address_prefix+'address_id',r.address_key);
 
 
 		    //new_address_container.children[1][0].id='delete_address_button'+r.address_key;
@@ -315,14 +342,17 @@ function edit_address(index,address_identifier){
 
 
     }
+    
+    
+    
     Dom.setStyle([address_identifier+'address_form'], 'display', ''); 
 
     Dom.setStyle([address_identifier+'reset_address_button'], 'visibility', 'hidden'); 
 
     Dom.get(address_identifier+"reset_address_button").setAttribute('address_key',index);
-
   data=Address_Data[index];
-    for (key in data){
+  
+  for (key in data){
 	item=Dom.get(address_identifier+'address_'+key);
 	item.value=data[key];
 	item.setAttribute('ovalue',data[key]);

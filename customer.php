@@ -123,6 +123,7 @@ $smarty->assign('general_options_list',$general_options_list);
     $contact=new Contact($customer->data['Customer Main Contact Key']);
     $smarty->assign('contact',$contact);
     
+    $js_files[]=sprintf('edit_contact.js.php?id=%d&scope=Customer&scope_key=%d',$contact->id,$customer->id);
 
 
   }    
@@ -198,13 +199,13 @@ $smarty->assign('search_scope','customers');
    //  elseif($order=='ship_address')
    //  $order='`customer main ship to header`';
    elseif($order=='ship_town')
-     $order='`Customer Main Ship To Town`';
+     $order='`Customer Main Delivery Address Town`';
    elseif($order=='ship_postcode')
-     $order='`Customer Main Ship To Postal Code`';
+     $order='`Customer Main Delivery Address Postal Code`';
    elseif($order=='ship_region')
-     $order='`Customer Main Ship To Country Region`';
+     $order='`Customer Main Delivery Address Country Region`';
    elseif($order=='ship_country')
-     $order='`Customer Main Ship To Country`';
+     $order='`Customer Main Delivery Address Country`';
    elseif($order=='net_balance')
      $order='`Customer Net Balance`';
    elseif($order=='balance')

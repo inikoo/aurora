@@ -45,6 +45,7 @@ class product extends DB_Table {
   public $new_key=false;
   public $new_code=false;
 public $new_value=false;
+public $new_data=array();
   // Variable: new
   // Indicate if a new product was created
   public $deleted=false;
@@ -3214,16 +3215,16 @@ $number_images=$row['num'];
       if ($this->updated) {
 
 	if($this->get('RRP Margin')!='')
-	  $customer_margin=_('CM').' '.$this->get('RRP Margin');
+	  $customer_margin=$this->get('RRP Margin');
 	else
-	  $customer_margin=_('Not for resale');
+	  $customer_margin=_('ND');
 
 	$this->new_value=$this->get('Price');
 	$this->new_data=array(
 			       'Price'=>$this->get('Price'),
 			       'Unit Price'=>$this->get('Price Per Unit'),
 			       'Margin'=>$this->get('Margin'),
-			       'Customer Margin'=>$customer_margin
+			       'RRP Margin'=>$customer_margin
 			       );
 	
 
@@ -3307,10 +3308,11 @@ $number_images=$row['num'];
 	  $customer_margin=_('CM').' '.$this->get('RRP Margin');
 	else
 	  $customer_margin=_('Not for resale');
+	  
 	$this->new_value=$this->get('RRP Per Unit');
-	//$this->new_value=array('Customer Margin'=>$customer_margin,'RRP Per Unit'=>$this->get('RRP Per Unit'));
+	//$this->new_value=array('RRP Margin'=>$customer_margin,'RRP Per Unit'=>$this->get('RRP Per Unit'));
 
-      $this->updated_fields[$key]=array(
+      $this->new_data=array(
 						 'RRP'=>$this->get('RRP'),
 						 'RRP Margin'=>$this->get('RRP Margin'),
 						 'RRP Per Unit'=>$this->get('RRP Per Unit'),

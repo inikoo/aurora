@@ -504,7 +504,7 @@ span.small{font-size:80%}
    user-select: none;
 }
 
-.inbox ,.inbox_form{padding:0;margin:0 auto}
+.inbox ,.inbox_form{padding:0;margin:0 auto;}
 .inbox tr {border-left:1px solid #777;border-right:1px solid #777; }
 .inbox tr.bottom {border-bottom:1px solid #777;height:40px;}
 .inbox tr.bottom  td { vertical-align:top; }
@@ -513,8 +513,8 @@ span.small{font-size:80%}
 .inbox_form tr.buttons,.inbox tr.buttons,.edit tr.buttons { border:none ;height:30px}
 .inbox_form tr.buttons,.inbox tr.buttons td, .edit tr.buttons td{ vertical-align:bottom }
 
-.inbox td span.tab     { border:1px solid #aaa;border-bottom:1px solid #777;color:#aaa ;vertical-align: bottom;;padding:4px 4px 0 4px;margin:0;cursor:pointer;position:relative;top:1px}
-.inbox td span.selected{ border:1px solid #777;color:#000;border-bottom:1px solid white;position:relative;top:1px}
+ span.tab     { border:1px solid #aaa;border-bottom:1px solid #777;color:#aaa ;vertical-align: bottom;;padding:4px 4px 0 4px;margin:0;cursor:pointer;position}
+span.tab.selected{ text-decoration:none;border:1px solid #777;color:#000;border-bottom:1px solid white}
 .inbox_form  span.button,.inbox span.button,.edit span.button{border:1px solid #777;padding:4px 4px;cursor:pointer; }
 
 

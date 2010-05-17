@@ -21,16 +21,6 @@ while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
     $salutation.=',"'.$row['Salutation'].'"';
 }
 mysql_free_result($result);
-$sql="select `Country Key`,`Country Name`,`Country Code`,`Country 2 Alpha Code` from kbase.`Country Dimension`";
-$result=mysql_query($sql);
-$country_list='';
-
-while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
-    $country_list.=',{"id":"'.$row['Country Key'].'","name":"'.$row['Country Name'].'","code":"'.$row['Country Code'].'","code2a":"'.$row['Country 2 Alpha Code'].'"}  ';
-}
-mysql_free_result($result);
-$country_list=preg_replace('/^\,/','',$country_list);
-
 
 
 
@@ -259,7 +249,7 @@ var Event = YAHOO.util.Event;
 
 var Contact_Data={<?php echo$contact_data?>};
 
-var Country_List=[<?php echo$country_list?>];
+
 var Address_Data={<?php echo$address_data?>};
 var Address_Keys=["key","country","country_code","country_d1","country_d2","town","postal_code","town_d1","town_d2","fuzzy","street","building","internal","description"];
 var Address_Meta_Keys=["type","function"];

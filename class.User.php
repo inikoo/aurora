@@ -80,7 +80,6 @@ class User extends DB_Table{
 	}
 	
  $sql="select `User Key`  from `User Dimension` where `User Type`=".prepare_mysql($data['User Type'])." and `User Handle`=".prepare_mysql($data['User Handle']);
- 
  $result = mysql_query($sql) or die('Query failed:x ' . mysql_error());
  if ($row = mysql_fetch_array($result, MYSQL_ASSOC)) {
    $this->found=true;
@@ -123,7 +122,6 @@ function create($data){
 	return;
       }
     $sql="select count(*) as numh  from `User Dimension` where `User Type`=".prepare_mysql($base_data['User Type'])." and `User Handle`=".prepare_mysql($base_data['User Handle']);
-    // print $sql;
  $result = mysql_query($sql) or die('Query failed:x ' . mysql_error());
     if ($row = mysql_fetch_array($result, MYSQL_ASSOC)) {
       if($row['numh']>0){
@@ -138,8 +136,9 @@ function create($data){
 
     if($base_data['User Type']=='Staff'){
       
-      $sql=sprintf("select `User Handle`  from `User Dimension` where `User Type`='Staff' and `User Parent Key`%d",$data['User Parent Key']);
-      $result = mysql_query($sql) or die('Query failed: ' . mysql_error());
+      $sql=sprintf("select `User Handle`  from `User Dimension` where `User Type`='Staff' and `User Parent Key`=%d",$data['User Parent Key']);
+     
+    $result = mysql_query($sql) or die('Query failed: ' . mysql_error());
       if ($row = mysql_fetch_array($result, MYSQL_ASSOC)) {
 	$this->msg=_('The staff member  with id ')." ".$data['User Parent Key']." "._("is already in the database as")." ".$row['User Handle'];
 	return;
@@ -155,7 +154,7 @@ function create($data){
     $keys=preg_replace('/,$/',')',$keys);
     $values=preg_replace('/,$/',')',$values); 
     $sql=sprintf("insert into `User Dimension` %s %s",$keys,$values);
-  
+ 
        
     if(mysql_query($sql)){
       
@@ -284,6 +283,9 @@ function create($data){
   function update_stores($value){
     $this->updated=false;
     
+   
+    
+    
     if($this->data['User Type']!='Staff')
       return;
     $stores=preg_split('/,/',$value);
@@ -296,6 +298,7 @@ function create($data){
     $to_delete = array_diff($old_stores, $stores);
     $to_add = array_diff($stores, $old_stores);
     $changed=0;
+   
     if(count($to_delete)>0){
       $changed+=$this->delete_store($to_delete);
     }
@@ -517,7 +520,6 @@ function add_store($to_add,$history=true){
     if(!$store->id)
     continue;
     $sql=sprintf("insert into `User Right Scope Bridge`values (%d,'Store',%d) ",$this->id,$scope_id);
-     //print $sql;
      mysql_query($sql);
       if (mysql_affected_rows()>0) {
      $changed++;

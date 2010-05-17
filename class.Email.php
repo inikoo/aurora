@@ -206,7 +206,6 @@ class Email extends DB_Table {
                          ,prepare_mysql($raw_data['Email'])
                         );
 
-
             $result=mysql_query($sql);
             $num_results=mysql_num_rows($result);
             if ($num_results==1) {
@@ -489,6 +488,7 @@ class Email extends DB_Table {
             $this->msg.=_('Email updated')."\n";
             $this->data['Email']=$data;
             $this->updated=true;
+            $this->new_value=$this->data['Email'];
             $this->update_EmailValidated($options);
             $this->updated_fields['Email']=array(
                                                'Old Value'=>$old_value
@@ -864,6 +864,10 @@ class Email extends DB_Table {
         $this->add_history($history_data);
 
 
+
+
+
+
         $parents=array('Contact','Company','Customer','Supplier');
         foreach($parents as $parent) {
             $sql=sprintf("select `$parent Key` as `Parent Key`   from  `$parent Dimension` where `$parent Main Email Key`=%d group by `$parent Key`",$this->id);
@@ -909,6 +913,21 @@ class Email extends DB_Table {
         }
     }
 
+function get_parent_keys($type){
+$keys=array();
+if(!preg_match('/^(Contact|Company|Supplier|User|Customer)$/',$type)){
+    return $keys;
+}
+ $sql=sprintf("select `Subject Key` from `Email Bridge` where `Subject Type`=%s and `Email Key`=%d  "
+ ,prepare_mysql($type)
+ ,$this->id);
+        $result=mysql_query($sql);
+        while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+            $keys[$row['Subject Key']]= $row['Subject Key'];
+
+        }
+        return $keys;
+}
 
 }
 

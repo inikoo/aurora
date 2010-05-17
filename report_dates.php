@@ -1,7 +1,6 @@
 <?php
 
 
-
 if($tipo=='quick_this_month'){
   $tipo='m';
   $_SESSION['state'][$report_name]['y']=date('Y');
@@ -30,7 +29,7 @@ if($tipo=='quick_this_month'){
 
 
 
-if($tipo=='all_invoices'){
+if($tipo=='all_invoices' or $tipo=='all'){
   $tipo='f';
   
   $sql=sprintf("select DATE(min(`Invoice Date`)) as date  from `Invoice Dimension` where `Invoice Store Key` in (%s)",$store_keys);;
@@ -140,8 +139,8 @@ mysql_free_result($result);
 
 
  }elseif($tipo=='m'){
+
  if(isset($_REQUEST['y'])){
- 
    $year=$_REQUEST['y'];
    $_SESSION['state'][$report_name]['y']=$year;
    
@@ -218,9 +217,9 @@ mysql_free_result($result);
  
  if(isset($_REQUEST['y']) and preg_match('/^\d{2,4}$/',$_REQUEST['y'])){
   $year=$_REQUEST['y'];
-  $_SESSION['state']['reports']['sales']['1']=$year;
+  $_SESSION['state']['reports_sales']['1']=$year;
 }else{
-  $year=$_SESSION['state']['reports']['sales']['y'];
+  $year=$_SESSION['state']['reports_sales']['y'];
   
 }
   

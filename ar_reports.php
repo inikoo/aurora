@@ -635,7 +635,7 @@ function list_customers(){
      $order='`Balance`';
 
   
-   $sql="select  `Store Code`,`Customer Type by Activity`,`Customer Last Order Date`,`Customer Main XHTML Telephone`,`Customer Key`,`Customer Name`,`Customer Main Location`,`Customer Main XHTML Email`,`Customer Main Town`,`Customer Main Country First Division`,`Customer Main Ship To Postal Code`,count(DISTINCT `Invoice Key`) as Invoices , sum(`Invoice Total Net Amount`) as Balance  from `Customer Dimension` C left join `Invoice Dimension` I on (`Customer Key`=`Invoice Customer Key`) left join `Store Dimension` SD on (C.`Customer Store Key`=SD.`Store Key`)  $where $wheref  group by `Invoice Customer Key` order by $order $order_direction limit $start_from,$number_results";
+   $sql="select  `Store Code`,`Customer Type by Activity`,`Customer Last Order Date`,`Customer Main XHTML Telephone`,`Customer Key`,`Customer Name`,`Customer Main Location`,`Customer Main XHTML Email`,`Customer Main Town`,`Customer Main Country First Division`,`Customer Main Delivery Address Postal Code`,count(DISTINCT `Invoice Key`) as Invoices , sum(`Invoice Total Net Amount`) as Balance  from `Customer Dimension` C left join `Invoice Dimension` I on (`Customer Key`=`Invoice Customer Key`) left join `Store Dimension` SD on (C.`Customer Store Key`=SD.`Store Key`)  $where $wheref  group by `Invoice Customer Key` order by $order $order_direction limit $start_from,$number_results";
    // print $sql;
    $adata=array();
   
@@ -681,10 +681,10 @@ function list_customers(){
 		   //'region'=>$data['Customer Main Country First Division'],
 		   //'country'=>$data['Customer Main Country'],
 		   //		   'ship_address'=>$data['customer main ship to header'],
-		   //'ship_town'=>$data['Customer Main Ship To Town'],
-		   //'ship_postcode'>$data['Customer Main Ship To Postal Code'],
-		   //'ship_region'=>$data['Customer Main Ship To Country Region'],
-		   //'ship_country'=>$data['Customer Main Ship To Country'],
+		   //'ship_town'=>$data['Customer Main Delivery Address Town'],
+		   //'ship_postcode'>$data['Customer Main Delivery Address Postal Code'],
+		   //'ship_region'=>$data['Customer Main Delivery Address Country Region'],
+		   //'ship_country'=>$data['Customer Main Delivery Address Country'],
 		   'activity'=>$data['Customer Type by Activity']
 
 		   );

@@ -1,4 +1,4 @@
-<tbody id="{$address_identifier}address_form" style="display:none"   >
+<tbody id="{$address_identifier}address_form" style="{if !$show_form}display:none{/if}"   >
  
  <tr id="{$address_identifier}tr_address_type" {if $hide_type}style="display:none"{/if}>
     <td class="label">
@@ -11,7 +11,7 @@
 	    </tr>
   
   <tr id="{$address_identifier}tr_address_function" style="{if  $hide_description}display:none;{/if}" >
-    <td class="label">{t}Address Function{/t}:</td><td  style="text-align:left"   id="{$address_identifier}address_function" value="" ovalue=""  >
+    <td class="label">{t}Address Function{/t}:</td><td  style="text-align:left"   id="{$address_identifier}address_function" value="{$function_value}" ovalue=""  >
       <span id="{$address_identifier}address_function_Contact" label="Contact" onclick="toggle_address_function(this)" class="small_button address_function" style="margin:0">Contact</span>
       <span id="{$address_identifier}address_function_Billing" label="Billing" onclick="toggle_address_function(this)" class="small_button address_function" style="margin-left:3px">Billing</span>
       <span id="{$address_identifier}address_function_Shipping" label="Shipping" onclick="toggle_address_function(this)" class="small_button address_function" style="margin-left:3px">Shipping</span>

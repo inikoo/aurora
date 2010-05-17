@@ -87,7 +87,16 @@ function change_block(e){
 
 
 function validate_customer_email(query){
+
  validate_general('customer','email',unescape(query));
+if(query==''){
+validate_scope_data.customer.email.validated=true;
+	validate_scope('customer'); 
+	
+Dom.get(validate_scope_data.customer.email.name+'_msg').innerHTML='<?php echo _('This operation will remove the email')?>';
+	
+}
+
 }
 function validate_customer_name(query){
  validate_general('customer','name',unescape(query));
@@ -163,12 +172,11 @@ function init(){
 
 	}
 	    ?>
-
 	     var ids = ["contact_address_description","contact_address_country_d1","contact_address_country_d2","contact_address_town","contact_address_town_d2","contact_address_town_d1","contact_address_postal_code","contact_address_street","contact_address_internal","contact_address_building"]; 
 	     YAHOO.util.Event.addListener(ids, "keyup", on_address_item_change,'contact_');
 	     YAHOO.util.Event.addListener(ids, "change",on_address_item_change,'contact_');
 	 
-	 YAHOO.util.Event.addListener('contact_save_address_button', "click",save_address,'contact_');
+	 YAHOO.util.Event.addListener('contact_save_address_button', "click",save_address,{prefix:'contact_',subject:Subject,subject_key:Subject_Key,tipo:'contact'});
 	 YAHOO.util.Event.addListener('contact_reset_address_button', "click",reset_address,'contact_');
 
 
@@ -182,17 +190,30 @@ function init(){
 	var Countries_AC = new YAHOO.widget.AutoComplete("contact_address_country", "contact_address_country_container", Countries_DS);
 	Countries_AC.forceSelection = true; 
 	Countries_AC.useShadow = true;
-Countries_AC.suffix='contact_';
+    Countries_AC.suffix='contact_';
 	Countries_AC.resultTypeList = false;
-
 	Countries_AC.formatResult = countries_format_results;
-
 	Countries_AC.itemSelectEvent.subscribe(onCountrySelected);
 	
 
+	var Countries_DS = new YAHOO.util.FunctionDataSource(match_country);
+	Countries_DS.responseSchema = {fields: ["id", "name", "code","code2a","postal_regex"]}
+	var Countries_AC = new YAHOO.widget.AutoComplete("new_delivery_address_country", "new_delivery_address_country_container", Countries_DS);
+	Countries_AC.forceSelection = true; 
+	Countries_AC.useShadow = true;
+    Countries_AC.suffix='new_delivery_';
+	Countries_AC.resultTypeList = false;
+	Countries_AC.formatResult = countries_format_results;
+	Countries_AC.itemSelectEvent.subscribe(onCountrySelected);
 
 
 
+     var ids = ["new_delivery_address_description","new_delivery_address_country_d1","new_delivery_address_country_d2","new_delivery_address_town","new_delivery_address_town_d2","new_delivery_address_town_d1","new_delivery_address_postal_code","new_delivery_address_street","new_delivery_address_internal","new_delivery_address_building"]; 
+	     YAHOO.util.Event.addListener(ids, "keyup", on_address_item_change,'new_delivery_');
+	     YAHOO.util.Event.addListener(ids, "change",on_address_item_change,'new_delivery_');
+	 
+	 YAHOO.util.Event.addListener('new_delivery_save_address_button', "click",save_address,{prefix:'new_delivery_',subject:'Customer',subject_key:customer_id,tipo:'delivery'});
+	 YAHOO.util.Event.addListener('new_delivery_reset_address_button', "click",reset_address,'new_delivery_');
 
 
 

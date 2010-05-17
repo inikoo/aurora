@@ -45,7 +45,7 @@ if (!$con) {
     print "Error can not connect with database server\n";
     exit;
 }
-$dns_db='dw_avant';
+//$dns_db='dw_avant';
 $db=@mysql_select_db($dns_db, $con);
 if (!$db) {
     print "Error can not access the database\n";
@@ -133,7 +133,7 @@ $sql="select *,replace(   replace(replace(replace(replace(replace(replace(replac
 //$sql="select * from  orders_data.orders  where    (last_transcribed is NULL  or last_read>last_transcribed) and deleted='No'  order by filename ";
 
 //$sql="select * from  orders_data.orders where filename like '%refund.xls'   order by filename";
-//$sql="select * from  orders_data.orders  where filename like '/mnt/%/Orders/22774.xls' order by filename";
+//$sql="select * from  orders_data.orders  where filename like '/mnt/%/Orders/6954.xls' order by filename";
 //$sql="select * from  orders_data.orders  where (filename like '/mnt/%/Orders/7318.xls' )or(filename like '/mnt/%/Orders/7530.xls' )order by filename";
 
 //$sql="select * from  orders_data.orders  where filename like '/mnt/%/Orders/15720.xls' or filename like '/mnt/%/Orders/60000.xls' or  filename like '/mnt/%/Orders/15sdfsd593.xls' order by filename";
@@ -1259,6 +1259,12 @@ if ($transaction['bonus']>0) {
     }
 
 
+if ($customer_data['Customer Delivery Address Link']=='Contact') {
+            $_customer_data['has_shipping']=true;
+            $shipping_addresses=array();
+        }
+
+
     //  print_r($data);
     $data['staff sale']=$header_data['staff sale'];
     $data['staff sale key']=$header_data['staff sale key'];
@@ -2176,12 +2182,23 @@ if ($transaction['bonus']>0) {
 
       $parent_order->load('items');
       $customer=new Customer($parent_order->data['Order Customer Key']);
-      if ($_customer_data['has_shipping']  and isset($data['Shipping Address']) and is_array($data['Shipping Address']) and !array_empty($data['Shipping Address'])) {
-	$ship_to= new Ship_To('find create',$data['Shipping Address']);
-	$parent_order->data ['Order XHTML Ship Tos'].='<br/>'.$ship_to->data['Ship To XHTML Address'];
-	$customer->add_ship_to($ship_to->id,'Yes');
-      }
+   
+     if ($_customer_data['has_shipping']  and isset($data['Shipping Address']) and is_array($data['Shipping Address']) and !array_empty($data['Shipping Address'])) {
+                
+                   $address=new Address('find create',$data['Shipping Address']);
+                    $customer->update(array('Customer Delivery Address Link','None'));
+                    $customer->associate_delivery_address($address->id);
+                     $ship_to_data=$customer->get_ship_to_data();
 
+                $ship_to=new Ship_To('find create',$ship_to_data);
+
+                     $parent_order->add_ship_to($ship_to->id);
+                $parent_order->data ['Order Ship To Key To Deliver']=$ship_to->id;
+                
+            }
+   
+   
+ 
 
       $parent_order->data['Backlog Date']=$date_inv;
       if ($tipo_order==6)

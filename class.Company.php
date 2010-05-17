@@ -348,9 +348,9 @@ class Company extends DB_Table {
 
             }
 
-            //print "Company founded ".$this->found_key."  \n";
+           // print "Company founded ".$this->found_key."  \n";
 
-            //print "Contact founded ".$contact->found."  \n";
+         //   print "Contact founded ".$contact->found."  \n";
 
             if ($create and !$this->found) {
 
@@ -425,11 +425,6 @@ class Company extends DB_Table {
                 }
 
                 unset($raw_data['Company Main Plain Email']);
-
-
-                //$contact->set_scope('Company',$this->id);
-                // print_r($contact);
-                ;
                 $this->update_principal_contact($contact->id);
 
                 $this->get_data('id',$this->found_key);
@@ -441,122 +436,24 @@ class Company extends DB_Table {
                     $key=preg_replace('/^Company /i','',$key);
                     $_address_data[$key]=$value;
                 }
-		// print_r($_address_data);
+                // print_r($_address_data);
                 $address->update($_address_data);
-		//print_r($address->data);
-		//exit;
+                //print_r($address->data);
+                //exit;
                 if ($contact->new) {
                     $contact->associate_address($address->id);
                 }
-                //print_r($address_data);
-                //$address=new Address("find in company ".$this->id." create",$address_data);
+               
 
-                //$contact->associate_address($address->id);
-                //$this->associate_address($address->id);
-
-                if (isset($raw_data['Company Main XHTML Telephone'])) {
-                    if (!$address->get_principal_telecom_key('Telephone')) {
-                        $telephone_data=array();
-                        $telephone_data['editor']=$this->editor;
-                        $telephone_data['Telecom Raw Number']=$raw_data['Company Main XHTML Telephone'];
-                        $telephone_data['Telecom Type']='Telephone';
-
-                        $telephone=new Telecom("find in company create country code ".$address->data['Address Country Code'],$telephone_data);
-                        if ($telephone->id)
-                            $address->associate_telecom($telephone->id,'Telephone');
-
-                    } else {
-
-                        $address->update_principal_telephone($raw_data['Company Main XHTML Telephone']);
-                        if ($address->error) {
-                            print_r($address);
-                            exit("fix me!xxxx company class updating tel 1");
-                        }
-                    }
-                    unset($raw_data['Company Main XHTML Telephone']);
+                foreach($raw_data as $key=>$value) {
+                    if (preg_match('/Address|Customer|Supplier|Location|Country|XHTML|Email/',$key))
+                        unset($raw_data[$key]);
                 }
+                //	print_r($raw_data);
 
 
-                if (isset($raw_data['Company Main Plain Telephone'])) {
-                    if (!$address->get_principal_telecom_key('Telephone')) {
-                        $telephone_data=array();
-                        $telephone_data['editor']=$this->editor;
-                        $telephone_data['Telecom Raw Number']=$raw_data['Company Main Plain Telephone'];
-                        $telephone_data['Telecom Type']='Telephone';
-
-                        $telephone=new Telecom("find in company create country code ".$address->data['Address Country Code'],$telephone_data);
-                        if ($telephone->id)
-                            $address->associate_telecom($telephone->id,'Telephone');
-
-                    } else {
-
-                        $address->update_principal_telephone($raw_data['Company Main Plain Telephone']);
-                        if ($address->error) {
-                            print_r($address);
-                            exit("fix me!1 company class updating tel 2");
-                        }
-                    }
-                    unset($raw_data['Company Main Plain Telephone']);
-                }
 
 
-                if (isset($raw_data['Company Main XHTML FAX'])) {
-                    if (!$address->get_principal_telecom_key('FAX')) {
-                        $telephone_data=array();
-                        $telephone_data['editor']=$this->editor;
-                        $telephone_data['Telecom Raw Number']=$raw_data['Company Main XHTML FAX'];
-                        $telephone_data['Telecom Type']='FAX';
-
-                        $telephone=new Telecom("find in company create country code ".$address->data['Address Country Code'],$telephone_data);
-                        if ($telephone->id)
-                            $address->associate_telecom($telephone->id,'FAX');
-
-                    } else {
-
-                        $address->update_principal_fax($raw_data['Company Main XHTML FAX']);
-                        if ($address->error) {
-                            print_r($address);
-                            exit("fix me!1 company class updating fax 1");
-                        }
-                    }
-                    unset($raw_data['Company Main XHTML FAX']);
-                }
-
-
-                if (isset($raw_data['Company Main Plain FAX'])) {
-                    if (!$address->get_principal_telecom_key('FAX')) {
-                        $telephone_data=array();
-                        $telephone_data['editor']=$this->editor;
-                        $telephone_data['Telecom Raw Number']=$raw_data['Company Main Plain FAX'];
-                        $telephone_data['Telecom Type']='FAX';
-
-                        $telephone=new Telecom("find in company create country code ".$address->data['Address Country Code'],$telephone_data);
-                        if ($telephone->id)
-                            $address->associate_telecom($telephone->id,'FAX');
-
-                    } else {
-
-                        $address->update_principal_fax($raw_data['Company Main Plain FAX']);
-                        if ($address->error) {
-                            print_r($address);
-                            exit("fix me!1 company class updating fax 2");
-                        }
-                    }
-                    unset($raw_data['Company Main Plain FAX']);
-                }
-
-
-		
-
-		foreach($raw_data as $key=>$value){
-		  if(preg_match('/Address|Customer|Supplier|Location|Country|FAX|Telephone|Email/',$key))
-		  unset($raw_data[$key]);
-		}
-		//	print_r($raw_data);
-	
-	
-
-	
                 $this->update($raw_data);
                 //		    print "shoooooooooooolddd be updated\n\n\n\n\n";
 
@@ -642,8 +539,8 @@ class Company extends DB_Table {
 
 
     function create($raw_data,$raw_address_data=array(),$options='') {
-      // print $options."\n";
-      // print_r($raw_data);
+        // print $options."\n";
+        // print_r($raw_data);
 
         $this->data=$this->base_data();
         foreach($raw_data as $key=>$value) {
@@ -664,7 +561,7 @@ class Company extends DB_Table {
 
         $this->data['Company Main XHTML FAX']='';
         $this->data['Company Main XHTML Telephone']='';
- $this->data['Company Main Plain FAX']='';
+        $this->data['Company Main Plain FAX']='';
         $this->data['Company Main Plain Telephone']='';
 
         $keys='';
@@ -893,7 +790,7 @@ class Company extends DB_Table {
     protected function update_field_switcher($field,$value,$options='') {
 
 
-        //      print "$field -> $value\n";
+            //  print "$field -> $value\n";
 
 
         switch ($field) {
@@ -901,6 +798,8 @@ class Company extends DB_Table {
             $this->update_main_contact_name($value);
             break;
         case('Company Main Contact Name'):
+case('Company Main XHTML FAX'):
+        case('Company Main XHTML Telephone'):
 
             break;
 
@@ -909,39 +808,59 @@ class Company extends DB_Table {
             $this->update_Company_Name($value,$options);
             break;
         case('Company Main Plain Email'):
+              $contact=new Contact($this->data['Company Main Contact Key']);
+              $contact->update(array('Contact Main Plain Email'),$value);  
+        
+      
+            break;
 
+
+        case('Company Main Plain FAX'):
+        case('Company Main Plain Telephone'):
+            if ($field=='Company Main Plain Telephone')
+                $type='Telephone';
+            else
+                $type='FAX';
+            $address=new Address($this->data['Company Main Address Key']);
+            
+            $address->editor=$this->editor;
             if ($value=='') {
-                $contact=new Contact($this->data['Company Main Contact Key']);
-                $contact->editor=$this->editor;
-                $contact->remove_email('principal');
+                if ($telecom_key=$address->get_principal_telecom_key($type)) {
+                    $telecom=new Telecom($telecom_key);
+                    $telecom->delete();
+                }
 
+            } else {
+
+
+                if ($address->get_number_of_associated_telecoms($type)>0) {
+                    $address->update_principal_telecom_number($value,$type);
+
+                } else {
+                    $telephone_data=array();
+                    $telephone_data['editor']=$this->editor;
+                    $telephone_data['Telecom Raw Number']=$value;
+                    $telephone_data['Telecom Type']=$type;
+
+                    $telephone=new Telecom("find in company create country code ".$address->data['Address Country Code'],$telephone_data);
+                    $address->associate_telecom($telephone->id,$type);
+
+
+                }
+                $this->updated=$address->updated;
+                if ($this->updated) {
+                    $this->get_data('id',$this->id);
+                    $this->new_value=$this->data['Company Main XHTML '.$type];
+                }
             }
-            elseif(!email::wrong_email($value)) {
-
-
-                $contact=new Contact($this->data['Company Main Contact Key']);
-                $contact->editor=$this->editor;
-                $email_data=array('Email'=>$value);
-
-                $contact->add_email($email_data);// <- will update company
-            }
-
             break;
-        case('Company Main XHTML Telephone'):
-
-            $address=new Address($this->data['Company Main Address Key']);
-            $address->editor=$this->editor;
-            $address->update_principal_telephone($value);
 
 
-            break;
-        case('Company Main XHTML FAX'):
-            $address=new Address($this->data['Company Main Address Key']);
-            $address->editor=$this->editor;
-            $address->update_principal_fax($value);
 
 
-            break;
+
+
+
         case('Company Old ID'):
             $this->update_Company_Old_ID($value,$options);
             break;
@@ -1428,13 +1347,14 @@ class Company extends DB_Table {
     */
 
     function associate_address($address_key) {
-if(!$address_key)
-return;
+        if (!$address_key)
+            return;
         $address_keys=$this->get_address_keys();
 
         if (!array_key_exists($address_key,$address_keys)) {
             $this->create_address_bridge($address_key);
-
+$this->updated=true;
+            $this->new_data=$address_key;
 
 
 
@@ -1474,18 +1394,22 @@ return;
         if ($main_address_key!=$address_key) {
             $address=new Address($address_key);
             $address->editor=$this->editor;
-            $sql=sprintf("update `Address Bridge`  set `Is Main`='No' where `Subject Type`='Company' and  `Subject Key`=%d  and `Address Key`=%d",
+            $sql=sprintf("update `Address Bridge`  set `Is Main`='No' where `Subject Type`='Company' and  `Subject Key`=%d  and `Address Key`!=%d",
                          $this->id
-                         ,$main_address_key
+                         ,$address_key
                         );
             mysql_query($sql);
-
+            $sql=sprintf("update `Address Bridge`  set `Is Main`='Yes' where `Subject Type`='Company' and  `Subject Key`=%d  and `Address Key`=%d",
+                         $this->id
+                         ,$address_key
+                        );
+            mysql_query($sql);
 
             $sql=sprintf("update `Company Dimension` set  `Company Main Address Key`=%s where `Company Key`=%d",$address->id,$this->id);
             $this->data['Company Main Address Key']=$address->id;
             mysql_query($sql);
 
-            //$this->update_parents_principal_address_keys();
+            $this->update_parents_principal_address_keys($address_key);
             $address->update_parents();
 
         }
@@ -1608,7 +1532,7 @@ return;
     }
 
 
- function update_parents_principal_address_keys($address_key) {
+    function update_parents_principal_address_keys($address_key) {
         $parents=array('Customer','Supplier');
         foreach($parents as $parent) {
             $sql=sprintf("select `$parent Key` as `Parent Key`   from  `$parent Dimension` where `$parent Company Key`=%d group by `$parent Key`",$this->id);
@@ -1644,10 +1568,21 @@ return;
                                 );
                     mysql_query($sql);
 
-
+                if($parent=='Customer'){
+                    if($parent_object->data['Customer Delivery Address Link']=='Contact'){
+                        $parent_object->update_principal_delivery_address($address_key);
+                    
+                    }
+                    
+                
+                }
 
 
                 }
+                
+                
+                
+                
             }
         }
     }
@@ -2473,15 +2408,15 @@ return;
                             );
                 mysql_query($sql);
 //print "$sql\n";
-                if($parent=='Supplier' or ( $parent=='Customer' and $parent_object->data[$parent.' Type']=='Company')){
-                          $sql=sprintf("update `$parent Dimension` set `$parent Name`=%s  , `$parent File As`=%s   where `$parent Key`=%d"
-                             ,prepare_mysql($parent_object->data[$parent.' Name'])
-                             ,prepare_mysql($parent_object->data[$parent.' Name'])
-                             
-                             ,$parent_object->id
-                            );
-                mysql_query($sql); 
-             //   print "$sql\n";
+                if ($parent=='Supplier' or ( $parent=='Customer' and $parent_object->data[$parent.' Type']=='Company')) {
+                    $sql=sprintf("update `$parent Dimension` set `$parent Name`=%s  , `$parent File As`=%s   where `$parent Key`=%d"
+                                 ,prepare_mysql($parent_object->data[$parent.' Name'])
+                                 ,prepare_mysql($parent_object->data[$parent.' Name'])
+
+                                 ,$parent_object->id
+                                );
+                    mysql_query($sql);
+                    //   print "$sql\n";
                 }
 
 

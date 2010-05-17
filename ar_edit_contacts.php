@@ -61,11 +61,18 @@ break;
 case('new_address'):
   new_address();
   break;
+  case('new_delivery_address'):
+  new_delivery_address();
+  break;
+  
 case('edit_address_type'):
   edit_address_type();
   break;
 case('edit_address'):
    edit_address();
+   break;
+   case('edit_delivery_address'):
+   edit_delivery_address();
    break;
 case('edit_company'):
   edit_company();
@@ -559,7 +566,7 @@ function edit_telecom($data) {
 }
 function new_address(){
 global $editor;
-
+$warning='';
 if( !isset($_REQUEST['value']) ){
     $response=array('state'=>400,'msg'=>'Error no value');
     echo json_encode($response);
@@ -581,7 +588,7 @@ if( !isset($_REQUEST['value']) ){
    if( !isset($_REQUEST['subject'])  
        or !is_numeric($_REQUEST['subject_key'])
        or $_REQUEST['subject_key']<=0
-       or !preg_match('/^company|contact$/i',$_REQUEST['subject'])
+       or !preg_match('/^(Company|Contact|Customer)$/',$_REQUEST['subject'])
        
        ){
      $response=array('state'=>400,'msg'=>'Error wrong subject/subject key');
@@ -593,9 +600,14 @@ if( !isset($_REQUEST['value']) ){
    $subject_key=$_REQUEST['subject_key'];
 
    switch($subject){
-   case('Company'):
+     case('Company'):
      $subject_object=new Company($subject_key);
-
+     break;
+       case('Contact'):
+     $subject_object=new Company($subject_key);
+     break;
+   case('Customer'):
+     $subject_object=new Company($subject_key);
      break;
    default:
        
@@ -631,22 +643,74 @@ if( !isset($_REQUEST['value']) ){
    }
    
 
+   $address=new Address('find create',$data);
+   if(!$address->id){
+       $response=array('state'=>400,'msg'=>'Error can not create address');echo json_encode($response);return;
+   }
+   if($address->found){
+      $address_parents=  $address->get_parents_keys($subject);
+      if(array_key_exists($subject_key,$address_parents)){
+        $response=array('state'=>200,'action'=>'nochange','msg'=>_('Address already in company'));
+     echo json_encode($response);
+     return;
+      
+      }else{
+        $warning=_('Warning, address found also associated with')." ";
+        switch ($subject) {
+            case 'Customer':
+                $parent_label='';
+                foreach($address_parents as $parent_key){
+                    $parent=new Customer($parent_key);
+                    $parent_label.=sprintf(', <a href="customer.php?id=%d">%s</a>',$parent->id,$parent->data['Customer Name'])
+                }
+                $parent_label=preg_replace('/^,/','',$parent_label);
+                $warning.=ngettext(count($address_parents),'Customer','Customers').' '.$parent_label;
+                break;
+            case 'Company':
+                $parent_label='';
+                foreach($address_parents as $parent_key){
+                    $parent=new Company($parent_key);
+                    $parent_label.=sprintf(', <a href="company.php?id=%d">%s</a>',$parent->id,$parent->data['Company Name'])
+                }
+                $parent_label=preg_replace('/^,/','',$parent_label);
+                $warning.=ngettext(count($address_parents),'Company','Companies').' '.$parent_label;
+                break;
+           case('Contact'):
+          
+           
+              $parent_label='';
+                foreach($address_parents as $parent_key){
+                    $parent=new Contact($parent_key);
+                    if($parent->data['Contact Company Key']!=$subject->data['Contact Company Key'] )
+                        $parent_label.=sprintf(', <a href="contact.php?id=%d">%s</a>',$parent->id,$parent->display('name'))
+                }
+                if($parent_label=='')
+                    $warning='';
+                else{    
+                $parent_label=preg_replace('/^,/','',$parent_label);
+                $warning.=ngettext(count($address_parents),'Contact','Contacts').' '.$parent_label;
+                }
+                break;
+            
+           
+            default:
+                break;
+        }
+        
+      
+      }
    
-   $subject_object->add_address($data);
-   if($subject_object->added_address_key){
-     $contact=new Contact('create anonymous');
-     $contact->add_address(array(
-				 'Address Key'=>$subject_object->added_address_key
-				 ,'Address Type'=>$data['Address Type']
-				 ,'Address Function'=>$data['Address Function']
-			       ));
-     
-     $address=new Address($subject_object->added_address_key);
-     
-     
-     $address->set_scope($subject,$subject_key);
-     
-     $updated_address_data=array(
+   }
+   
+   if($subject=='Customer')
+   $subject_object->associate_delivery_address($address->id);
+   else
+   $subject_object->associate_address($address->id);
+   
+   if($subject_key->updated){
+   
+   
+   $updated_address_data=array(
 				 'country'=>$address->data['Address Country Name']
 				 ,'country_code'=>$address->data['Address Country Code']
 				 ,'country_d1'=> $address->data['Address Country First Division']
@@ -663,11 +727,12 @@ if( !isset($_REQUEST['value']) ){
 				 ,'function'=>$address->data['Address Function']
 				 ,'description'=>$address->data['Address Description']
 				   );
+   
        
      $response=array(
 		     'state'=>200
 		     ,'action'=>'created'
-		     ,'msg'=>$subject_object->msg_updated
+		     ,'msg'=>$subject_object->msg
 		     ,'updated_data'=>$updated_address_data
 		     ,'xhtml_address'=>$address->display('xhtml')
 		     ,'address_key'=>$address->id
@@ -1463,13 +1528,13 @@ if(isset( $_REQUEST['where']))
    //  elseif($order=='ship_address')
    //  $order='`customer main ship to header`';
    elseif($order=='ship_town')
-     $order='`Customer Main Ship To Town`';
+     $order='`Customer Main Delivery Address Town`';
    elseif($order=='ship_postcode')
-     $order='`Customer Main Ship To Postal Code`';
+     $order='`Customer Main Delivery Address Postal Code`';
    elseif($order=='ship_region')
-     $order='`Customer Main Ship To Country Region`';
+     $order='`Customer Main Delivery Address Country Region`';
    elseif($order=='ship_country')
-     $order='`Customer Main Ship To Country`';
+     $order='`Customer Main Delivery Address Country`';
    elseif($order=='net_balance')
      $order='`Customer Net Balance`';
    elseif($order=='balance')
@@ -1521,10 +1586,10 @@ if(isset( $_REQUEST['where']))
 		   'region'=>$data['Customer Main Country First Division'],
 		   'country'=>$data['Customer Main Country'],
 		
-		   'ship_town'=>$data['Customer Main Ship To Town'],
-		   'ship_postcode'>$data['Customer Main Ship To Postal Code'],
-		   'ship_region'=>$data['Customer Main Ship To Country Region'],
-		   'ship_country'=>$data['Customer Main Ship To Country'],
+		   'ship_town'=>$data['Customer Main Delivery Address Town'],
+		   'ship_postcode'>$data['Customer Main Delivery Address Postal Code'],
+		   'ship_region'=>$data['Customer Main Delivery Address Country Region'],
+		   'ship_country'=>$data['Customer Main Delivery Address Country'],
 		 
 		   'go'=>sprintf("<a href='edit_customer.php?id=%d'><img src='art/icons/page_go.png' alt='go'></a>",$data['Customer Key'])
 
@@ -2140,5 +2205,114 @@ $contact->delete();
 	 exit;
 
 }
+
+function new_delivery_address(){
+global $editor;
+
+if( !isset($_REQUEST['value']) ){
+    $response=array('state'=>400,'msg'=>'Error no value');
+    echo json_encode($response);
+    return;
+   }
+   
+   $tmp=preg_replace('/\\\"/','"',$_REQUEST['value']);
+   $tmp=preg_replace('/\\\\\"/','"',$tmp);
+   
+   $raw_data=json_decode($tmp, true);
+
+   if(!is_array($raw_data)){
+     $response=array('state'=>400,'msg'=>'Wrong value');
+     echo json_encode($response);
+     return;
+   }
+
+
+   if( !isset($_REQUEST['subject'])  
+       or !is_numeric($_REQUEST['subject_key'])
+       or $_REQUEST['subject_key']<=0
+       or !preg_match('/^customer$/i',$_REQUEST['subject'])
+       
+       ){
+     $response=array('state'=>400,'msg'=>'Error wrong subject/subject key');
+      echo json_encode($response);
+    return;
+   }
+ 
+   $customer=$_REQUEST['subject'];
+   $customer_key=$_REQUEST['subject_key'];
+$customer=new Customer($customer_key);
+  
+   
+ $translator=array(
+		     'country_code'=>'Address Country Code'
+		     ,'country_d1'=>'Address Country First Division'
+		     ,'country_d2'=>'Address Country Second Division'
+		     ,'town'=>'Address Town'
+		     ,'town_d1'=>'Address Town First Division'
+		     ,'town_d2'=>'Address Town Second Division'
+		     ,'postal_code'=>'Address Postal Code'
+		     ,'street'=>'Street Data'
+		     ,'internal'=>'Address Internal'
+		     ,'building'=>'Address Building'
+		     ,'type'=>'Address Type'
+		     ,'function'=>'Address Function'
+		     ,'description'=>'Address Description'
+		     
+		   );
+ 
+ 
+   $data=array('editor'=>$editor);
+   foreach($raw_data as $key=>$value){
+     if (array_key_exists($key, $translator)) {
+       $data[$translator[$key]]=$value;
+     }
+   }
+   
+$ship_to= new Ship_To('find create',$data);
+   
+   $customer->add_ship_to($ship_to->id,'No');
+   
+   if($ship_to->new ){
+    
+     
+     $updated_address_data=array(
+				 'country'=>$ship_to->data['Ship To Country Name']
+				 ,'country_code'=>$ship_to->data['Ship To Country Code']
+				 ,'country_d1'=> $ship_to->data['Ship To Line 4']
+				 ,'country_d2'=> ''
+				 ,'town'=> $ship_to->data['Ship To Town']
+				 ,'postal_code'=> $ship_to->data['Ship To Postal Code']
+				 ,'town_d1'=> ''
+				 ,'town_d2'=> ''
+				 ,'fuzzy'=> ''
+				 ,'street'=> $ship_to->data['Ship To Line 1']
+				 ,'building'=>  $ship_to->data['Ship To Line 2']
+				 ,'internal'=> $ship_to->data['Ship To Line 3']
+				 ,'type'=>''
+				 ,'function'=>''
+				 ,'description'=>''
+				   );
+       
+     $response=array(
+		     'state'=>200
+		     ,'action'=>'created'
+		     ,'msg'=>$customer->msg_updated
+		     ,'updated_data'=>$updated_address_data
+		     ,'xhtml_address'=>$ship_to->display('xhtml')
+		     ,'address_key'=>$ship_to->id
+		     );
+  echo json_encode($response);
+     return;
+   
+   }else{
+     $response=array('state'=>200,'action'=>'nochange','msg'=>_('Address already in company'));
+     echo json_encode($response);
+     return;
+   }
+
+}
+
+
+
 
 ?>
