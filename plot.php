@@ -791,7 +791,8 @@ $plot_name='part_out';
 
   $item_keys='';
   $item_key_array=array();
- if(preg_match('/\(.+\)/',$request_keys,$keys)){
+
+ if(preg_match('/\d\,/',$request_keys,$keys)){
     $keys=preg_replace('/\(|\)/','',$keys[0]);
     $keys=preg_split('/\s*,\s*/',$keys);
     $item_keys='(';
@@ -807,7 +808,7 @@ $plot_name='part_out';
     $item_key_array[]=$request_keys;
   }
   if(count($item_key_array)==0){
-    print "error x";
+    print "error here";
     print_r($_REQUEST);
     return;
   }
@@ -1065,7 +1066,7 @@ function plot_assets(){
     mysql_free_result($res);
     
 
-  }elseif(preg_match('/\(.+\)/',$request_keys,$keys)){
+  }elseif(preg_match('/\,\d/',$request_keys,$keys)){
     $keys=preg_replace('/\(|\)/','',$keys[0]);
     $keys=preg_split('/\s*,\s*/',$keys);
     $item_keys='(';

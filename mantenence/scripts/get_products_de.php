@@ -430,6 +430,10 @@ foreach($__cols as $cols){
 
   $w=$cols[28];
 
+  $code=preg_replace('/L\&P\-/','LLP-',$code);
+
+
+
   if(   preg_match('/Bag-02Mx|Bag-04mx|Bag-05mx|Bag-06mix|Bag-07MX|Bag-12MX|Bag-13MX|sFishP-Mix|IncIn-ST|IncB-St|LLP-ST|L\&P-ST|EO-XST|AWRP-ST/i',$code) or       $code=='EO-ST' or $code=='MOL-ST' or  $code=='JBB-st' or $code=='LWHEAT-ST' or  $code=='JBB-St' 
      or $code=='Scrub-St' or $code=='Eye-st' or $code=='Tbm-ST' or $code=='Tbc-ST' or $code=='Tbs-ST'
      or $code=='GemD-ST' or $code=='CryC-ST' or $code=='GP-ST'  or $code=='DC-ST'
@@ -520,6 +524,10 @@ foreach($__cols as $cols){
 	exit;
       }
 	
+      $current_fam_code=preg_replace('/^L\&P$/i','LLP',$current_fam_code);
+
+
+
       $fam_data=array(
 		      'Product Family Code'=>$current_fam_code,
 		      'Product Family Name'=>$current_fam_name,
@@ -594,7 +602,6 @@ foreach($__cols as $cols){
 		'product store key'=>$store_key,
 		'product locale'=>'de_DE',
 		'product currency'=>'EUR',
-
 		'product sales type'=>'Public Sale',
 		'product type'=>'Normal',
 		'product record type'=>'Normal',
@@ -616,7 +623,11 @@ foreach($__cols as $cols){
 		);
     //     print_r($cols);
 
+    if($uk_product->id)
     $parts=$uk_product->get('Parts SKU');
+    else
+      exit("product not found in uk ".$code);
+
     $product=new Product('find',$data,'create');
     if($product->new){
       $product->update_for_sale_since(date("Y-m-d H:i:s",strtotime("now +1 seconds")));
