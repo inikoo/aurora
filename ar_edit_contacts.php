@@ -62,7 +62,7 @@ case('new_address'):
   new_address();
   break;
   case('new_delivery_address'):
-  new_delivery_address();
+  new_address();
   break;
   
 case('edit_address_type'):
@@ -604,10 +604,10 @@ if( !isset($_REQUEST['value']) ){
      $subject_object=new Company($subject_key);
      break;
        case('Contact'):
-     $subject_object=new Company($subject_key);
+     $subject_object=new Contact($subject_key);
      break;
    case('Customer'):
-     $subject_object=new Company($subject_key);
+     $subject_object=new Customer($subject_key);
      break;
    default:
        
@@ -641,7 +641,7 @@ if( !isset($_REQUEST['value']) ){
        $data[$translator[$key]]=$value;
      }
    }
-   
+   print $subject;
 
    $address=new Address('find create',$data);
    if(!$address->id){
@@ -661,7 +661,7 @@ if( !isset($_REQUEST['value']) ){
                 $parent_label='';
                 foreach($address_parents as $parent_key){
                     $parent=new Customer($parent_key);
-                    $parent_label.=sprintf(', <a href="customer.php?id=%d">%s</a>',$parent->id,$parent->data['Customer Name'])
+                    $parent_label.=sprintf(', <a href="customer.php?id=%d">%s</a>',$parent->id,$parent->data['Customer Name']);
                 }
                 $parent_label=preg_replace('/^,/','',$parent_label);
                 $warning.=ngettext(count($address_parents),'Customer','Customers').' '.$parent_label;
@@ -670,7 +670,7 @@ if( !isset($_REQUEST['value']) ){
                 $parent_label='';
                 foreach($address_parents as $parent_key){
                     $parent=new Company($parent_key);
-                    $parent_label.=sprintf(', <a href="company.php?id=%d">%s</a>',$parent->id,$parent->data['Company Name'])
+                    $parent_label.=sprintf(', <a href="company.php?id=%d">%s</a>',$parent->id,$parent->data['Company Name']);
                 }
                 $parent_label=preg_replace('/^,/','',$parent_label);
                 $warning.=ngettext(count($address_parents),'Company','Companies').' '.$parent_label;
@@ -682,7 +682,7 @@ if( !isset($_REQUEST['value']) ){
                 foreach($address_parents as $parent_key){
                     $parent=new Contact($parent_key);
                     if($parent->data['Contact Company Key']!=$subject->data['Contact Company Key'] )
-                        $parent_label.=sprintf(', <a href="contact.php?id=%d">%s</a>',$parent->id,$parent->display('name'))
+                        $parent_label.=sprintf(', <a href="contact.php?id=%d">%s</a>',$parent->id,$parent->display('name'));
                 }
                 if($parent_label=='')
                     $warning='';
@@ -702,13 +702,19 @@ if( !isset($_REQUEST['value']) ){
    
    }
    
-   if($subject=='Customer')
+   if($subject=='Customer'){
    $subject_object->associate_delivery_address($address->id);
-   else
+   }else
    $subject_object->associate_address($address->id);
    
-   if($subject_key->updated){
+   if($subject_object->updated){
    
+   $address_bridge_data=$subject_object->get_address_bridge_data($address->id);
+   if(!$address_bridge_data){
+     $response=array('state'=>400,'action'=>'error','msg'=>'Address Not bridged');
+     echo json_encode($response);
+     return;
+   }
    
    $updated_address_data=array(
 				 'country'=>$address->data['Address Country Name']
@@ -723,8 +729,8 @@ if( !isset($_REQUEST['value']) ){
 				 ,'street'=> $address->display('street')
 				 ,'building'=>  $address->data['Address Building']
 				 ,'internal'=> $address->data['Address Internal']
-				 ,'type'=>$address->data['Address Type']
-				 ,'function'=>$address->data['Address Function']
+				 ,'type'=>$address_bridge_data['Address Type']
+				 ,'function'=>$address_bridge_data['Address Function']
 				 ,'description'=>$address->data['Address Description']
 				   );
    

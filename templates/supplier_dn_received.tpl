@@ -49,10 +49,9 @@
 
  <table style="float:left;margin:0 0 5px 0px ;padding:0"  class="options" >
 	<tr>
-	  <td  {if $view=='counting'}class="selected"{/if} id="counting" >{t}Check Delivery{/t}</td><td style="border:none;color:#000">&rarr;</td>
-	  <td {if $view=='set_damages'}class="selected"{/if}  id="set_damages"  >{t}Set Damages{/t}</td><td style="border:none;color:#000">&rarr;</td>
-	  <td {if $view=='set_skus'}class="selected"{/if}  id="set_skus"  >{t}Assing SKUs{/t}</td><td style="border:none;color:#000">&rarr;</td>
-	  <td {if $view=='set_locations'}class="selected"{/if}  id="set_locations"  >{t}Assing Locations{/t}</td>
+	  <td  class="selected" id="counting" >{t}Check Delivery{/t}</td><td style="border:none;color:#000">&rarr;</td>
+	  <td  id="set_skus"  >{t}Assing SKUs{/t}</td><td style="border:none;color:#000">&rarr;</td>
+	  <td  id="set_locations"  >{t}Assing Locations{/t}</td>
 	</tr>
       </table>
 
@@ -80,8 +79,8 @@
   
   <div  class="clean_table_caption"  style="clear:both;">
     <div style="float:left;"><div id="table_info0" class="clean_table_info"><span id="rtext0"></span> <span class="rtext_rpp" id="rtext_rpp0"></span> <span class="filter_msg"  id="filter_msg0"></span></div></div>
-    <div class="clean_table_filter" {if !$show_all}style="visibility:hidden"{/if} id="clean_table_filter0"><div class="clean_table_info"><span id="filter_name0">{t}Product Code{/t}</span>: <input style="border-bottom:none" id='f_input0' value="{$filter_value}" size=10/><div id='f_container'></div></div></div>
-    <div class="clean_table_controls" {if !$show_all}style="visibility:hidden"{/if}  id="clean_table_controls0" ><div><span  style="margin:0 5px" id="paginator"></span></div></div>
+    <div class="clean_table_filter" {if !$show_all}style="visibility:hidden"{/if} id="clean_table_filter0"><div class="clean_table_info"><span id="filter_name0">{t}Product Code{/t}</span>: <input style="border-bottom:none" id='f_input0' value="{$filter_value}" size=10/><div id='f_container0'></div></div></div>
+    <div class="clean_table_controls" {if !$show_all}style="visibility:hidden"{/if}  id="clean_table_controls0" ><div><span  style="margin:0 5px" id="paginator0"></span></div></div>
   </div>
   <div  id="table0"  style="font-size:80%" class="data_table_container dtable btable "> </div>
 </div>
@@ -114,7 +113,8 @@
 
 
 
-<div id="checked_dialog" style="padding:10px 15px">
+<div id="checked_dialog" class="yuimoenu" style="border:none;padding:10px">
+<div class="db" style="border:1px solid #777" >
   <div id="checked_dialog_msg"></div>
   <table>
     <tr>
@@ -130,12 +130,12 @@
     </tr>
 
     <tr><td colspan=2 style="border-top:1px solid #ddd;text-align:center;padding:10px 0 0 0">
-	<span class="state_details" onClick="close_dialog('checked')"  >Cancel</span>
 	<span style="margin-left:50px" class="state_details" onClick="checked_order_save(this)"  >Save</span>
     
     </td>
 </tr>
   </table>
+  </div>
 </div>
 
 <div id="staff_dialog" class="yuimenu staff_list"  >

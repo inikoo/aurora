@@ -1027,9 +1027,9 @@ class Telecom extends DB_Table {
         $this->associated_with_scope=false;
         while ($row=mysql_fetch_array($res)) {
             $this->associated_with_scope=true;
-            $this->data['Telecom Type'][$row['Telecom Type']]=$row['Telecom Type'];
-            $this->data['Telecom Is Main'][$row['Telecom Type']]=$row['Is Main'];
-            $this->data['Telecom Is Active'][$row['Telecom Type']]=$row['Is Active'];
+            //$this->data['Telecom Type'][$this->data['Telecom Type']]=$this->data['Telecom Type'];
+            //$this->data['Telecom Is Main'][$this->data['Telecom Type']]=$row['Is Main'];
+            //$this->data['Telecom Is Active'][$this->data['Telecom Type']]=$row['Is Active'];
         }
 
 

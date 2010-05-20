@@ -473,12 +473,13 @@ function RelativeTime($timestamp){
 
 
 function number($a,$fixed=1,$force_fix=false){
+if(!$a)
+$a=0;
 
 $locale_info = localeconv();
   $floored=floor($a);
   if($floored==$a and !$force_fix)
     $fixed=0;
-
   $a=number_format($a,$fixed,$locale_info['decimal_point'],$locale_info['thousands_sep']);
   
   return $a;

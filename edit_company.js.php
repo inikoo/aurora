@@ -190,7 +190,7 @@ if(isset($contact_address->data['Address Type'][$scope_related_address_type]) ){
 $addresses=$company->get_addresses(1);
 $address_data="\n";
 $address_data.=sprintf('0:{"key":0,"country":"","country_code":"UNK","country_d1":"","country_d2":"","town":"","postal_code":"","town_d1":"","town_d2":"","fuzzy":"","street":"","building":"","internal":"","type":["Office"],"description":"","function":["Contact"] } ' );
- $address_data.="\n";
+$address_data.="\n";
 foreach($addresses as $index=>$address){
     $address->set_scope($scope,$scope_key);
     
@@ -237,6 +237,7 @@ foreach($addresses as $index=>$address){
   $address_data.="\n";
 
 } 
+
 
 ?>
 

@@ -65,8 +65,8 @@
       <div style="clear:both;margin:0 20px;padding:0 20px ;border-bottom:1px solid #999">
       </div>
       
-      <div  id="plot_div" class="product_plot"  style="width:865px;xheight:325px;">
-	<iframe id="the_plot" src ="{$plot_page}?{$plot_args}" frameborder=0 height="325" scrolling="no" width="{if $plot_tipo=='pie'}500px{else}100%{/if}"></iframe>
+      <div  id="plot_div" class="product_plot"  style="width:865px;height:425px;">
+	<iframe id="the_plot" src ="{$plot_page}?{$plot_args}" frameborder=0 height="425" scrolling="no" width="{if $plot_tipo=='pie'}500px{else}100%{/if}"></iframe>
       </div>
       
 

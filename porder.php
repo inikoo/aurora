@@ -1,10 +1,10 @@
 <?php
+
 include_once('common.php');
 include_once('class.Supplier.php');
 include_once('class.PurchaseOrder.php');
 
 
-///print_r($_REQUEST);
 
 
 if(isset($_REQUEST['id'])){
@@ -54,7 +54,6 @@ if(isset($_REQUEST['id'])){
 
 }
    
-
 $css_files=array(
 		 $yui_path.'reset-fonts-grids/reset-fonts-grids.css',
 		 $yui_path.'menu/assets/skins/sam/menu.css',
@@ -97,15 +96,13 @@ $tipo_filter=$_SESSION['state']['porder']['products']['f_field'];
 $smarty->assign('filter',$tipo_filter);
 $smarty->assign('filter_value0',$_SESSION['state']['porder']['products']['f_value']);
 $filter_menu=array( 
-		   'p.code'=>array('db_key'=>_('p.code'),'menu_label'=>'Our Product Code','label'=>'Code'),
-		   'code'=>array('db_key'=>_('code'),'menu_label'=>'Supplier Product Code','label'=>'Supplier Code'),
+		   'p.code'=>array('db_key'=>_('p.code'),'menu_label'=>'Our Product Code','label'=>'Our Product Code'),
+		   'code'=>array('db_key'=>_('code'),'menu_label'=>'Supplier Product Code','label'=>'Supplier Product Code'),
 		    );
 $smarty->assign('filter_menu0',$filter_menu);
 $smarty->assign('filter_name0',$filter_menu[$tipo_filter]['label']);
-
 $paginator_menu=array(10,25,50,100,500);
 $smarty->assign('paginator_menu',$paginator_menu);
-
 
 switch($po->data['Purchase Order Current Dispatch State']){
 case('In Process'):

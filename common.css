@@ -330,7 +330,7 @@ table.options{margin:0 ;float:right;border-collapse: separate;;border-spacing:3p
 
 .options td:hover,  .options span:hover{border:1px solid #777;color:#777}
 
-.options td.selected,.options span.selected{background:#7296e1;border:1px solid #466ab5;color:#f6f6f6}
+.options td.selected,.options span.selected{background:#7296e1;border:1px solid #466ab5;color:#f6f6f6;text-decoration:none}
 .options td.disabled{background:#fff;border:1px solid #eee;color:#ddd;cursor:default}
 .options tr.title{}
 .options tr.title td{background:#fff;border:none;cursor:default;color:#555;text-align:left}
@@ -693,3 +693,6 @@ position:relative;top:1px;
   width:1px; height:1px; /* avoid scrollbars */
   visibility:hidden;
 }
+
+
+.edit_mini_button{cursor:pointer}

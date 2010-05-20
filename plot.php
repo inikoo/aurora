@@ -1067,8 +1067,8 @@ function plot_assets(){
     
 
   }elseif(preg_match('/\,\d/',$request_keys,$keys)){
-    $keys=preg_replace('/\(|\)/','',$keys[0]);
-    $keys=preg_split('/\s*,\s*/',$keys);
+    //$keys=preg_replace('/\(|\)/','',$keys[0]);
+    $keys=preg_split('/\s*\,\s*/',$request_keys);
     $item_keys='(';
     foreach($keys as $key){
       if(is_numeric($key)){
@@ -1087,7 +1087,7 @@ function plot_assets(){
     return;
   }
   
-
+//print $item_keys;
   if(isset($_REQUEST['top_children']) and  is_numeric($_REQUEST['top_children'])){     
     if($tipo=='store'){
       $plot_name='top_departments';
@@ -1147,7 +1147,7 @@ function plot_assets(){
 		      );
   
   
-  //  print $ar_address;
+   //print $ar_address;
 
 
   $fields='"date"';

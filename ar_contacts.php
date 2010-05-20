@@ -1726,7 +1726,7 @@ else
   $order='`Staff Name`';
 
    $sql="select (select GROUP_CONCAT(distinct `Company Position Title`) from `Company Position Staff Bridge` PSB  left join `Company Position Dimension` P on (`Company Position Key`=`Position Key`) where PSB.`Staff Key`= SD.`Staff Key`) as position, `Staff Alias`,`Staff Key`,`Staff Name` from `Staff Dimension` SD   $where $wheref order by $order $order_direction limit $start_from,$number_results";
-   // print $sql;
+   //print $sql;
    $adata=array();
    $res=mysql_query($sql);
    while($data=mysql_fetch_array($res)){

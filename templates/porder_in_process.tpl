@@ -1,12 +1,15 @@
 {include file='header.tpl'}
 <div id="time2_picker" class="time_picker_div"></div>
+
 <div id="bd" >
+<div id="cal1Container" style="position:absolute;left:610px;top:120px;display:none;z-index:3"></div>
 
 <div class="order_actions" >
     <span class="state_details" onClick="location.href='supplier.php?id={$supplier->get('Supplier Key')}'" style="float:left;margin-top:2px" >{t}Supplier Page{/t}</span>
 
   <span class="state_details" id="delete_po">{t}Delete{/t}</span>
   <span class="state_details" id="submit_po" style="margin-left:20px">{t}Submit{/t}</span>
+   
 </div>
 
 
@@ -99,8 +102,8 @@
   
   <div  class="clean_table_caption"  style="clear:both;">
     <div style="float:left;"><div id="table_info0" class="clean_table_info"><span id="rtext0"></span> <span class="rtext_rpp" id="rtext_rpp0"></span> <span class="filter_msg"  id="filter_msg0"></span></div></div>
-    <div class="clean_table_filter" {if !$show_all}style="visibility:hidden"{/if} id="clean_table_filter0"><div class="clean_table_info"><span id="filter_name0">{t}Product Code{/t}</span>: <input style="border-bottom:none" id='f_input0' value="{$filter_value}" size=10/><div id='f_container'></div></div></div>
-    <div class="clean_table_controls" {if !$show_all}style="visibility:hidden"{/if}  id="clean_table_controls0" ><div><span  style="margin:0 5px" id="paginator"></span></div></div>
+    <div class="clean_table_filter" {if !$show_all}style="visibility:hidden"{/if} id="clean_table_filter0"><div class="clean_table_info"><span id="filter_name0">{$filter_name0}</span>: <input style="border-bottom:none" id='f_input0' value="{$filter_value0}" size=10/><div id='f_container0'></div></div></div>
+    <div class="clean_table_controls" {if !$show_all}style="visibility:hidden"{/if}  id="clean_table_controls0" ><div><span  style="margin:0 5px" id="paginator0"></span></div></div>
   </div>
   <div  id="table0"  style="font-size:80%" class="data_table_container dtable btable "> </div>
 </div>
@@ -130,25 +133,27 @@
 </div>
 
 
-<div id="delete_dialog" style="padding:10px 15px">
+<div id="delete_dialog" class="nicebox">
+<div class="bd" >
   <div id="delete_dialog_msg" class="dialog_msg" style="padding:0 0 10px 0 ">{t}Note: this action can not be undone{/t}.</div>
   <table style="width:250px">
    
     <tr><td style="border-top:1px solid #ddd;text-align:center;padding:10px 0 0 0">
-	<span class="state_details" onClick="close_dialog('delete')"  >{t}Cancel{/t}</span>
-	<span style="margin-left:50px" class="state_details" onClick="delete_order()"  >{t}Delete Purchase Order{/t}</span>
+	<button onClick="delete_order()"  >{t}Delete Purchase Order{/t}</button>
     
     </td>
 </tr>
   </table>
+  </div>
 </div>
 
 
-<div id="submit_dialog" style="padding:10px 15px">
+<div id="submit_dialog" class="nicebox">
+<div class="bd" >
   <div id="submit_dialog_msg"></div>
   <table>
     <tr>
-      <td class="aright" style="width:100px">{t}Submit Method{/t}:</td><td>
+      <td class="label">{t}Submit Method{/t}:</td><td>
 	<div class="options" style="margin:0px 0;width:200px" id="submit_method_container">
 	  <input type="hidden" value="{$submit_method_default}" ovalue="{$submit_method_default}" id="submit_method"  >
 	  {foreach from=$submit_method item=unit_tipo key=name} <span style="float:left;margin-bottom:5px;margin-right:5px" class="radio{if $unit_tipo.selected} selected{/if}"  id="radio_shelf_type_{$name}" radio_value="{$name}">{$unit_tipo.fname}</span> {/foreach}
@@ -157,28 +162,22 @@
     </tr>
     <input type="hidden" id="date_type" value="now"/>
     <tr id="tr_manual_submit_date">
-      <td class="aright">{t}Submit Date{/t}:</td><td style="position:relative"><span style="position:absolute;left:200px" class="state_details" onClick="submit_date_manually()">{t}Modify{/t}</span>{t}Now{/t} </td>
+      <td class="label" >{t}Submit Date{/t}:</td><td><input id="v_calpop1" style="text-align:right;"  class="text" name="submites_date" type="text"  size="10" maxlength="10"  value="{$date}"    /><img   id="calpop1" style="cursor:pointer" src="art/icons/calendar_view_month.png" align="top" alt=""   />  </td>
     </tr>
-    <tbody style="display:none" id="tbody_manual_submit_date">
-      <tr>
-	<td class="aright">{t}Submitted Date{/t}:</td><td><input id="v_calpop1" style="text-align:right;"  class="text" name="submites_date" type="text"  size="10" maxlength="10"  value="{$date}"    /><img   id="calpop1" style="cursor:pointer" src="art/icons/calendar_view_month.png" align="top" alt=""   />  <div id="cal1Container" style="position:absolute;display:none; z-index:2">	</td></tr>
-      <tr><td class="aright">{t}Time{/t}:</td><td ><input id="v_time"   style="text-align:right;" class="text" name="expected_date" type="text"  size="5" maxlength="5"  value="{$time}"   /><img   id="calpop1" style="cursor:pointer" src="art/icons/time.png" align="top" alt=""   /> 	</td></tr>
-      <tr><td>{t}Expected Date{/t}:</td><td><input id="v_calpop2" style="text-align:right;"  class="text" name="expected_date" type="text"  size="10" maxlength="10"     /><img   id="calpop2" style="cursor:pointer" src="art/icons/calendar_view_month.png" align="top" alt=""   /> <div id="cal2Container" style="display:none; z-index:2;position:absolute"></div>	</td></tr>
-    </tbody>
-    
+      
     <tr >
         <input type="hidden" id="submitted_by" value="{$user_staff_key}"/>
 
-      <td class="aright">{t}Submit By{/t}:</td><td style="position:relative"> <span id="get_submiter" class="state_details" style="position:absolute;left:200px">{t}Modify{/t}</span><span id="submited_by_alias">{$user}</span></td>
+      <td class="label" ><img class="edit_mini_button" id="get_submiter" src="art/icons/edit.gif" alt="({t}edit{/t})"/> {t}Submit By{/t}:</td><td   ><span id="submited_by_alias" class="value" style="">{$user}</span></td>
     </tr>
 
     <tr><td colspan=2 style="border-top:1px solid #ddd;text-align:center;padding:10px 0 0 0">
-	<span class="state_details" onClick="close_dialog('submit')"  >Cancel</span>
-	<span style="margin-left:50px" class="state_details" onClick="submit_order_save(this)"  >Save</span>
+	<button  onClick="submit_order_save(this)"  >{t}Save{/t}</button>
     
     </td>
 </tr>
   </table>
+  </div>
 </div>
 
 

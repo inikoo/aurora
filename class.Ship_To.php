@@ -220,6 +220,7 @@ switch ($tipo) {
    $separator='<br>';
 
    default:
+   $address='';
              if ($this->data['Ship To Line 1']!='')
                     $address=_trim($this->data['Ship To Line 1']).$separator;
                 if ($this->data['Ship To Line 2']!='')

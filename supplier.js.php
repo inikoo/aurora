@@ -34,7 +34,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 				  
 				  {key:"code", label:"<?php echo _('Code')?>",  width:120,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				  ,{key:"name", label:"<?php echo _('Name')?>",<?php echo(($_SESSION['state']['supplier']['products']['view']=='product_general' or $_SESSION['state']['supplier']['products']['view']=='product_stock')?'':'hidden:true,')?>width:300, sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				  ,{key:"usedin", label:"<?php echo _('Used In')?>", width:250,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				  ,{key:"used_in", label:"<?php echo _('Used In')?>", width:250,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 				  ,{key:"required", label:"<?php echo _('Required')?>",<?php echo($_SESSION['state']['supplier']['products']['view']=='product_sales'?'':'hidden:true,')?> width:55,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 				  ,{key:"provided", label:"<?php echo _('Used')?>",<?php echo($_SESSION['state']['supplier']['products']['view']=='product_sales'?'':'hidden:true,')?> width:55,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 				  ,{key:"sales", label:"<?php echo _('Sales')?>",<?php echo($_SESSION['state']['supplier']['products']['view']=='product_sales'?'':'hidden:true,')?> width:55,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
@@ -65,7 +65,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 		    },
 			
 		    fields: [
-			     "id","code","name","cost","usedin","profit","allcost","used","required","provided","lost","broken","allcost","sales","usld","tuos","stock"
+			     "id","code","name","cost","used_in","profit","allcost","used","required","provided","lost","broken","allcost","sales","usld","tuos","stock"
 			     ]};
 		
 		this.table0 = new YAHOO.widget.DataTable(tableDivEL, ColumnDefs,

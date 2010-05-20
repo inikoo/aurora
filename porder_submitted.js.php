@@ -164,6 +164,9 @@ var myonCellClick = function(oArgs) {
 
 function close_dialog(tipo){
     switch(tipo){
+    case('edit_estimated_delivery'):
+    estimated_delivery_dialog.hide();
+    
     case('submit'):
 	submit_dialog.hide();
 	Dom.get('tr_manual_submit_date').style.display="";
@@ -236,40 +239,6 @@ var select_staff=function(o,e){
 
 
 
-    var submit_order_save=function(o){
-    
-
-	var submit_date=Dom.get('v_calpop1').value;
-	var submit_time=Dom.get('v_time').value;
-	var estimated_date=Dom.get('v_calpop2').value;
-	var date_type=Dom.get('date_type').value;
-	var submit_method=Dom.get('submit_method').value;
-    
-	var staff_key=Dom.get('submitted_by').value;
-
-    
-
-
-	var request='ar_edit_porders.php?tipo=submit&submit_method='+escape(submit_method)+'&date_type='+escape(date_type)+'&staff_key='+escape(staff_key)+'&submit_date='+escape(submit_date)+'&submit_time='+escape(submit_time)+'&estimated_date='+escape(estimated_date)+'&id='+escape(po_id);
-	alert(request)
-	YAHOO.util.Connect.asyncRequest('POST',request ,{
-	    
-		success:function(o) {
-		    alert(o.responseText);
-		    var r =  YAHOO.lang.JSON.parse(o.responseText);
-		    if (r.state == 200) {
-		    
-		    
-
-
-		    }else
-			alert(r.msg);
-		}
-	    });    
-    }
-
-
-
 
 	var cancel_order_save=function(){
 	var note=Dom.get('cancel_note').value;
@@ -278,7 +247,7 @@ var select_staff=function(o,e){
 	    YAHOO.util.Connect.asyncRequest('POST',request ,{
 	    
 		    success:function(o) {
-alert(o.responseText)
+//alert(o.responseText)
 			var r =  YAHOO.lang.JSON.parse(o.responseText);
 			if (r.state == 200) {
 			location.href='porder.php?id='+po_id;
@@ -329,21 +298,12 @@ YAHOO.util.Event.addListener(window, "load", function() {
 				  ,{key:"used_in", label:"<?php echo _('Used In')?>",width:200, sortable:false,className:"aleft"}
 				  ,{key:"quantity_static",label:"<?php echo _('Qty')?>",width:40,sortable:false,className:"aright"}
 				  ,{key:"quantity",label:"<?php echo _('Qty')?>", hidden:true,width:40,sortable:false,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC},  editor: new YAHOO.widget.TextboxCellEditor({asyncSubmitter: myCellEdit}),object:'new_porder','action':'change_qty'}
-				  // ,{key:"stock", label:"<?php echo _('Stock O(U)')?>",width:90,className:"aright"}
-				  // ,{key:"stock_time", label:"<?php echo _('Stock Time')?>",width:75,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-				  // ,{key:"expected_qty_edit", label:"<?php echo _('Qty O[U]')?>",width:70,className:"aright"}
-				  // ,{key:"expected_qty", label:"<?php echo _('Qty O[U]')?>",width:100,className:"aright"}
 				  ,{key:"add",label:"", width:3,hidden:true,sortable:false,action:'add_object',object:'new_order'}
 				  ,{key:"remove",label:"", width:3,hidden:true,sortable:false,action:'remove_object',object:'new_order'}
 
 				  ,{key:"unit_type", label:"<?php echo _('Unit')?>",width:30,className:"aleft"}
 				  ,{key:"amount", label:"<?php echo _('Net Cost')?>",width:50,className:"aright"}
-				  // ,{key:"qty_edit", label:"<?php echo _('Qty [U]')?>",width:50,className:"aright",hidden:true}
-				  // ,{key:"diff", label:"<?php echo _('&Delta;U')?>",width:40,className:"aright",hidden:true}
-				  //,{key:"damaged_edit", label:"<?php echo _('Damaged')?>",width:60,className:"aright",hidden:true}
-				  //,{key:"damaged", label:"<?php echo _('Damaged')?>",width:60,className:"aright"}
-				  //,{key:"usable", label:"<?php echo _('In O[U]')?>",width:55,className:"aright"}
-
+				
 
 				  ];
 		
@@ -373,7 +333,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 							     //draggableColumns:true,
 							     renderLoopSize: 50,generateRequest : myRequestBuilder
 							     ,paginator : new YAHOO.widget.Paginator({
-								     rowsPerPage:<?php echo$_SESSION['state']['supplier']['products']['nr']?>,containers : 'paginator', 
+								     rowsPerPage:<?php echo$_SESSION['state']['supplier']['products']['nr']?>,containers : 'paginator0', 
 								     pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',
 								     previousPageLinkLabel : "<",
 								     nextPageLinkLabel : ">",
@@ -450,38 +410,108 @@ function dn_order_save(){
     }else{
 	Dom.get('dn_dialog_msg').innerHTML='';
     }
-    location.href='supplier_dn.php?new=1&po='+po_id+'&number='+escape(number);
+    
+   var dn_date=Dom.get('v_calpop1').value;
+
+    location.href='supplier_dn.php?new=1&po='+po_id+'&number='+encodeURIComponent(number)+'&date='+dn_date;
 }
 
+
+function submit_edit_estimated_delivery(){
+    var date=Dom.get('v_calpop_estimated_delivery').value;
+    
+    var ar_file='ar_edit_porders.php';
+	request='tipo=edit_porder&key=estimated_delivery&newvalue='+encodeURIComponent(date)+'&id='+po_id;
+	//alert(ar_file+'?'+request)
+	YAHOO.util.Connect.asyncRequest(
+					'POST',
+					ar_file, {
+					    success:function(o) {
+					 //alert(o.responseText);
+						var r = YAHOO.lang.JSON.parse(o.responseText);
+						if (r.state == 200) {
+						  Dom.get('estimated_delivery').innerHTML=r.newvalue;
+						    estimated_delivery_dialog.hide();
+
+
+						    //	callback(true, r.newvalue);
+						} else {
+						    alert(r.msg);
+						    //	callback();
+						}
+					    },
+						failure:function(o) {
+						alert(o.statusText);
+						// callback();
+					    },
+						scope:this
+						},
+					request
+				    
+					);  
+    
+    
+    
+    
+}
+
+
 function init(){
-//alert('x');
- cancel_dialog = new YAHOO.widget.Dialog("cancel_dialog", {context:["cancel_po","tr","tl"]  ,visible : false,close:false,underlay: "none",draggable:false});
+
+cal2 = new YAHOO.widget.Calendar("cal2","estimated_delivery_Container", { title:"<?php echo _('Choose a date')?>:", close:true } );
+ 
+ cal2.update=updateCal;
+ cal2.id='_estimated_delivery';
+ cal2.render();
+ cal2.update();
+ cal2.selectEvent.subscribe(handleSelect, cal2, true); 
+  YAHOO.util.Event.addListener("estimated_delivery_pop", "click", cal2.show, cal2, true);
+
+
+ estimated_delivery_dialog = new YAHOO.widget.Dialog("edit_estimated_delivery_dialog", {context:["edit_estimated_delivery","tr","tl"]  ,visible : false,close:true,underlay: "none",draggable:false});
+    estimated_delivery_dialog.render();
+     Event.addListener("edit_estimated_delivery", "click", estimated_delivery_dialog.show,estimated_delivery_dialog , true);
+
+
+ cancel_dialog = new YAHOO.widget.Dialog("cancel_dialog", {context:["cancel_po","tr","tl"]  ,visible : false,close:true,underlay: "none",draggable:false});
     cancel_dialog.render();
      Event.addListener("cancel_po", "click", cancel_dialog.show,cancel_dialog , true);
 //alert('x');
 
     //YAHOO.util.Event.addListener('show_all', "click",change_show_all);
 
-    submit_dialog = new YAHOO.widget.Dialog("submit_dialog", {context:["submit_po","tr","tl"]  ,visible : false,close:false,underlay: "none",draggable:false});
+    submit_dialog = new YAHOO.widget.Dialog("submit_dialog", {context:["submit_po","tr","tl"]  ,visible : false,close:true,underlay: "none",draggable:false});
     submit_dialog.render();
     staff_dialog = new YAHOO.widget.Dialog("staff_dialog", {context:["get_submiter","tr","tl"]  ,visible : false,close:false,underlay: "none",draggable:false});
     staff_dialog.render();
    
- dn_dialog = new YAHOO.widget.Dialog("dn_dialog", {context:["dn_po","tr","tl"]  ,visible : false,close:false,underlay: "none",draggable:false});
+ dn_dialog = new YAHOO.widget.Dialog("dn_dialog", {context:["dn_po","tr","tl"]  ,visible : false,close:true,underlay: "none",draggable:false});
     dn_dialog.render();
 
     Event.addListener("dn_po", "click", dn_dialog.show,dn_dialog , true);
 
-    Event.addListener("submit_po", "click", submit_dialog.show,submit_dialog , true);
  Event.addListener("get_canceller", "click", staff_dialog.show,staff_dialog , true);
  //  alert('x');
 
     var oACDS = new YAHOO.util.FunctionDataSource(mygetTerms);
     oACDS.queryMatchContains = true;
-    var oAutoComp = new YAHOO.widget.AutoComplete("f_input0","f_container", oACDS);
+    var oAutoComp = new YAHOO.widget.AutoComplete("f_input0","f_container0", oACDS);
     oAutoComp.minQueryLength = 0; 
 
- 
+  cal1 = new YAHOO.widget.Calendar("cal1","cal1Container", { title:"<?php echo _('Choose a date')?>:", close:true } );
+    cal1.update=updateCal;
+    cal1.id='1';
+    cal1.render();
+    cal1.update();
+    cal1.selectEvent.subscribe(handleSelect, cal1, true); 
+   
+
+
+    YAHOO.util.Event.addListener("calpop1", "click", cal1.show, cal1, true);
+   
+
+
+
 
 }
 

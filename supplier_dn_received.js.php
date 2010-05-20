@@ -33,7 +33,7 @@ var myCellEdit = function (callback, newValue) {
 				    'POST',
 				    ar_file, {
 					success:function(o) {
-					    // alert(o.responseText);
+					   // alert(o.responseText);
 					    var r = YAHOO.lang.JSON.parse(o.responseText);
 					    if (r.state == 200) {
 						
@@ -51,13 +51,14 @@ var myCellEdit = function (callback, newValue) {
 						}else{
 						     datatable.updateCell(record,'notes_damaged','');
 						}
-						
-						//if(r.quantity==0 && !show_all){
-						//    datatable.deleteRow(record);
-						//}
-						
+						if(column.key=='damaged_quantity')
+						callback(true, r.damaged_quantity);
+						else
 						callback(true, r.quantity);
+                        
+
 					    } else {
+
 						alert(r.msg);
 						callback();
 					    }
@@ -97,18 +98,17 @@ var myonCellClick = function(oArgs) {
     //alert(datatable)
     var recordIndex = this.getRecordIndex(record);
 
-		
     switch (column.action) {
    
    case('edit_object'):
     case('add_object'):
     case('remove_object'):
 	var data = record.getData();
-	
+
 	if(column.action=='add_object' && column.key=='add'){
 	    var new_qty=parseFloat(data['received_quantity'])+1;
 	   Key='quantity';
-	}if(column.action=='add_object' && column.key=='add_damaged'){
+	}else if(column.action=='add_object' && column.key=='add_damaged'){
 	    var new_qty=parseFloat(data['damaged_quantity'])+1;
 	    if(new_qty>data['received_quantity'])
 		new_qty=data['received_quantity']
@@ -134,13 +134,14 @@ var myonCellClick = function(oArgs) {
 	oldDamaged=data['damaged_quantity'];
 
 	var ar_file='ar_edit_porders.php';
-	request='tipo=edit_'+column.object+'&key='+key+'&newvalue='+new_qty+ '&old_counted=' + encodeURIComponent(oldCounted)  + '&old_quantity=' + encodeURIComponent(oldValue)+ '&old_damaged_quantity=' + encodeURIComponent(oldDamaged)+'&id='+ data['id'];
-	//		alert(ar_file+'?'+request)
+
+	request='tipo=edit_'+column.object+'&key='+Key+'&newvalue='+new_qty+ '&old_counted=' + encodeURIComponent(oldCounted)  + '&old_quantity=' + encodeURIComponent(oldValue)+ '&old_damaged_quantity=' + encodeURIComponent(oldDamaged)+'&id='+ data['id'];
+			alert(ar_file+'?'+request)
 	YAHOO.util.Connect.asyncRequest(
 					'POST',
 					ar_file, {
 					    success:function(o) {
-						//alert(o.responseText);
+						alert(o.responseText);
 						var r = YAHOO.lang.JSON.parse(o.responseText);
 						if (r.state == 200) {
 						    for(x in r.data){
@@ -296,11 +297,11 @@ var select_staff=function(o,e){
 var checked_order_save=function(o){
  var staff_key=Dom.get('checked_by').value;
     var request='ar_edit_porders.php?tipo=set_dn_as_checked&id='+escape(dn_key)+'&staff_key='+escape(staff_key);
-    alert(request)
+   // alert(request)
     YAHOO.util.Connect.asyncRequest('POST',request ,{
 	    
 	    success:function(o) {
-		    alert(o.responseText);
+		  //  alert(o.responseText);
 		    
 		    var r =  YAHOO.lang.JSON.parse(o.responseText);
 		    if (r.state == 200) {
@@ -394,7 +395,7 @@ function init(){
     
     Event.addListener("take_values_from_dn", "click", take_values_from_dn);
     
-    checked_dialog = new YAHOO.widget.Dialog("checked_dialog", {context:["make_dn_as_checked","tr","tl"]  ,visible : false,close:false,underlay: "none",draggable:false});
+    checked_dialog = new YAHOO.widget.Dialog("checked_dialog", {context:["make_dn_as_checked","tr","tl"]  ,visible : false,close:true,underlay: "none",draggable:false});
     checked_dialog.render();
 
     staff_dialog = new YAHOO.widget.Dialog("staff_dialog", {context:["get_checker","tr","tl"]  ,visible : false,close:false,underlay: "none",draggable:false});

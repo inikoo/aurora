@@ -97,26 +97,48 @@ class PurchaseOrder extends DB_Table{
 
 function get($key=''){
 
-   if (array_key_exists ( $key, $this->data ))
-      return $this->data [$key];
-	 
+
+    if(array_key_exists($key,$this->data))
+      return $this->data[$key];
+    
+
+
+ switch ($key) {
+ 
+     case 'Estimated Receiving Date For Edition':
+     if($this->data['Purchase Order Estimated Receiving Date']!='')
+         return strftime("%d-%m-%Y",strtotime($this->data['Purchase Order Estimated Receiving Date']));
+         else
+         return '';
+         
+         break;
+     default:
+      
+         break;
+ }
+ 
+ 
    if($key=='Number Items')
      return number($this->data ['Purchase Order Number Items']);
    if (preg_match('/^(Total|Items|(Shipping |Charges )?Net).*(Amount)$/',$key)) {
      $amount='Purchase Order '.$key;
      return money($this->data[$amount]);
    }	
+   
+   
    if (preg_match('/Date$/',$key)) {
      $date='Purchase Order '.$key;
+     if($key=='Estimated Receiving Date')
+          return strftime("%e-%b-%Y",strtotime($this->data[$date]));
+else
      return strftime("%e-%b-%Y %H:%M",strtotime($this->data[$date]));
    }	
    
       
 
 
-    if(array_key_exists($key,$this->data))
-      return $this->data[$key];
-    
+	
+
 }
 
 
@@ -334,7 +356,6 @@ function get($key=''){
 
 function submit($data){
 
-
   foreach($data as $key=>$value){
     if(array_key_exists($key,$this->data)){
       $this->data[$key]=$value;
@@ -357,8 +378,13 @@ function submit($data){
    mysql_query($sql);
 
 
-   $sql=sprintf("select `Supplier Product Key`,`Purchase Order Quantity` from `Purchase Order Transaction Fact` where `Purchase Order Key`=%d",$this->id);
-   $res=mysql_query($sql);
+  $this->update_affected_products();
+
+}
+
+function update_affected_products(){
+  $sql=sprintf("select `Supplier Product Key`,`Purchase Order Quantity` from `Purchase Order Transaction Fact` where `Purchase Order Key`=%d",$this->id);
+  $res=mysql_query($sql);
    while($row=mysql_fetch_array($res)){
      $supplier_product=new SupplierProduct('key',$row['Supplier Product Key']);
      $products=$supplier_product->get_products();
@@ -369,9 +395,108 @@ function submit($data){
      }
      
    }
-
 }
 
+
+function update_state(){
+
+$cancelled=0;
+$in_process=0;
+$submitted=0;
+$in_delivery_note=0;
+$items=0;
+$deliver_note_keys=array();
+$sql=sprintf("select `Supplier Delivery Note Key`,`Supplier Invoice Key`,`Purchase Order Current Dispatching State` from `Purchase Order Transaction Fact` where `Purchase Order Key`=%d   ",$this->id);
+ $res=mysql_query($sql);
+   while($row=mysql_fetch_array($res)){
+    if($row['Supplier Delivery Note Key']!=0  and $row['Purchase Order Current Dispatching State']=='Found in Delivery Note'){
+        $deliver_note_keys[$row['Supplier Delivery Note Key']]=1;
+    }
+    $items++;
+    if($row['Purchase Order Current Dispatching State']=='Cancelled')
+      $cancelled++;
+    if($row['Purchase Order Current Dispatching State']=='Submitted')
+      $submitted++;  
+        if($row['Purchase Order Current Dispatching State']=='In Process')
+      $in_process++;  
+    if($row['Purchase Order Current Dispatching State']=='Found in Delivery Note')
+      $in_delivery_note++;  
+
+   }
+//  print_r($deliver_note_keys);
+//   print "xx i:$items  c:$cancelled  d: $in_delivery_note kk: ".count($deliver_note_keys)." \n";
+
+   
+if($items==0 ){
+    $status='In Process';
+$xhtml_state='In Process';
+}if($items==$cancelled){
+    $status='Cancelled';
+    $xhtml_state=_('Cancelled');
+
+}elseif($in_delivery_note==0 and $submitted==0  ){
+    $status='In Process';
+$xhtml_state=_('In Process');
+
+}elseif($in_delivery_note==0  ){
+    $status='Submitted';
+$xhtml_state=_('Submitted');
+
+}else{
+//print "xxx  $in_delivery_note\n";
+
+if(count($deliver_note_keys)>0  and  $in_delivery_note>0){
+      if($in_delivery_note==($items-$cancelled)){
+      $status='Matched With DN';
+      $xhtml_state='';
+      foreach($deliver_note_keys as $dn_key){
+        $supplier_dn=new SupplierDeliveryNote($dn_key);
+        if($supplier_dn->id){
+        $xhtml_state.=sprintf(',<a href="supplier_dn.php?id=%d">%s</a>',$supplier_dn->id,$supplier_dn->data['Supplier Delivery Note Public ID']);
+        }
+        
+      }
+      $xhtml_state=preg_replace('/^\,/',_('Matched With DN')." ",$xhtml_state);
+      
+      }else{
+       $status='Partially Matched With DN';
+        $xhtml_state='';
+      foreach($deliver_note_keys as $dn_key){
+        $supplier_dn=new SupplierDeliveryNote($dn_key);
+        if($supplier_dn->id){
+        $xhtml_state.=sprintf(',<a href="supplier_dn.php?id=%d">%s</a>',$supplier_dn->id,$supplier_dn->data['Supplier Delivery Note Public ID']);
+        }
+        
+      }
+      $xhtml_state=preg_replace('/^\,/',_('Matched With DN')." ",$xhtml_state);
+       
+      }
+
+
+
+
+
+
+
+}else{
+    $status='Submitted';
+$xhtml_state=_('Submitted')." (*)";
+
+
+}
+  }
+//   print $status;
+ $this->update(
+    array(
+    'Purchase Order Current Dispatch State'=>$status,
+    'Purchase Order Current XHTML State'=>$xhtml_state
+    )
+    
+    );
+ 
+ 
+   
+}
 
 function cancel($data){
  foreach($data as $key=>$value){
@@ -393,26 +518,56 @@ function cancel($data){
   );
    mysql_query($sql);
 
+ $this->update_affected_products();
 
-   $sql=sprintf("select `Supplier Product Key`,`Purchase Order Quantity` from `Purchase Order Transaction Fact` where `Purchase Order Key`=%d",$this->id);
-   $res=mysql_query($sql);
-   while($row=mysql_fetch_array($res)){
-     $supplier_product=new SupplierProduct('key',$row['Supplier Product Key']);
-     $products=$supplier_product->get_products();
-     foreach($products as $product){
-       $product=new Product('pid',$product['Product ID']);
-       $product->update_next_supplier_shippment();
-       
-     }
-     
-   }
+  
 
 }
 
 
+function update_estimated_receiving_date($date){
+$date_data=prepare_mysql_datetime($date,'date');
+if($date_data['ok']){
+$this->update_field('Purchase Order Estimated Receiving Date',$date_data['mysql_date']);
+if($this->updated){
+$this->new_value=strftime("%e-%b-%Y",strtotime($this->new_value));
+ $this->update_affected_products();
+}
+}else{
+$error=true;
+   $this->msg=$date_data['status']; 
+
+}
 
 
+}
 
+ function update_field_switcher($field,$value,$options=''){
+switch ($field) {
+    case 'Purchase Order Estimated Receiving Date':
+        $this->update_estimated_receiving_date($value);
+        break;
+    default:
+    
+
+
+   $base_data=$this->base_data();
+
+   
+   
+   if(array_key_exists($field,$base_data)) {
+     if ($value!=$this->data[$field]) {
+       
+       $this->update_field($field,$value,$options);
+     }
+   }
+   
+   break;
+   }
+
+   
+   
+ }
 
 
 

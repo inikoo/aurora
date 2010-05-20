@@ -541,25 +541,12 @@ function update_code($value){
 
     }
 
-
-    function load($key='',$args=false) {
-        switch ($key) {
-        case('items'):
-        case('parts'):
-        case('part'):
-
-            if ($args)
-                $date=$args;
-
-
-
-
+function update_parts(){
             $sql=sprintf("select `Part SKU`,sum(`Quantity On Hand`) as qty from `Part Location Dimension`  where `Location Key`=%d  group by `Part SKU`"
                          ,$this->id
 
                         );
-            //  print $sql;
-
+           
             $this->parts=array();
             $result=mysql_query($sql);
             $has_stock='No';
@@ -582,6 +569,17 @@ function update_code($value){
                          ,$this->id
                         );
             mysql_query($sql);
+
+}
+
+
+    function load($key='',$args=false) {
+        switch ($key) {
+        case('items'):
+        case('parts'):
+        case('part'):
+$this->update_parts();
+           
             //  print "$sql\n";
             break;
         case('parts_data'):

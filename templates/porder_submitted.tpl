@@ -1,6 +1,7 @@
 {include file='header.tpl'}
 <div id="time2_picker" class="time_picker_div"></div>
 <div id="bd" >
+<div id="cal1Container" style="position:absolute;left:610px;top:120px;display:none;z-index:3"></div>
 
 <div class="order_actions" >
     <span class="state_details" onClick="location.href='supplier.php?id={$supplier->get('Supplier Key')}'" style="float:left;margin-top:2px" >{t}Return to Supplier Page{/t}</span>
@@ -30,7 +31,8 @@
       <tr><td class="aright" style="padding-right:40px">{t}Created{/t}:</td><td>{$po->get('Creation Date')}</td></tr>
       <tr><td class="aright" style="padding-right:40px">{t}Submitted{/t}:</td><td>{$po->get('Submitted Date')}</td></tr>
       <tr><td colspan="2" class="aright">{t}via{/t} {$po->get('Purchase Order Main Source Type')} {t}by{/t} {$po->get('Purchase Order Main Buyer Name')}</td></tr>
-      <tr><td class="aright" style="padding-right:40px">{t}Estimated Delivery{/t}:</td>{if $po->get('Purchase Order Estimated Receiving Date')==''}<td class="aright">{t}Unknown{/t}</td>{else}<td>{$po->get('Estimated Receiving Date')}</td>{/if}</tr>
+      <tr><td class="aright" style="padding-right:40px">    <div id="estimated_delivery_Container" style="position:absolute;display:none; z-index:2"></div>
+<img id="edit_estimated_delivery" src="art/icons/edit.gif" alt="({t}edit{/t})"> {t}Estimated Delivery{/t}:</td><td class="aright" id="estimated_delivery">{if $po->get('Purchase Order Estimated Receiving Date')==''}{t}Unknown{/t}{else}{$po->get('Estimated Receiving Date')}{/if}</td></tr>
 
     </table>
     </div>
@@ -60,19 +62,19 @@
 <div id="the_table" class="data_table" style="margin:20px 0px;clear:both">
   <span class="clean_table_title">{t}Supplier Products{/t}</span>
   	<div id="table_type">
-	  <span id="table_type_list" style="float:right;color:brown" class="table_type state_details {if $table_type=='list'}state_details_selected{/if}">{t}Amend Purchase Order{/t}</span>
+	  <span id="table_type_list" style="display:none;float:right;color:brown" class="table_type state_details {if $table_type=='list'}state_details_selected{/if}">{t}Amend Purchase Order{/t}</span>
 	  
 	</div>
 
 
 
   <div id="list_options0"> 
-      <div style="clear:both;margin:0 0px;padding:0 20px ;border-bottom:1px solid #999"></div>
+      <div style="clear:both;margin:0 0px;padding:0 20px ;border-bottom:1px solid #999;display:none"></div>
       <span   style="float:right;margin-left:20px;display:none" class="state_details" state="{$show_all}"  id="show_all"  atitle="{if !$show_all}{t}Show only ordered{/t}{else}{t}Show all products available{/t}{/if}"  >{if $show_all}{t}Show only ordered{/t}{else}{t}Show all products available{/t}{/if}</span>     
       
 
       
-      <table style="float:left;margin:0 0 5px 0px ;padding:0"  class="options" >
+      <table style="float:left;margin:0 0 5px 0px ;padding:0;display:none"  class="options" >
 	<tr><td  {if $view=='used_in'}class="selected"{/if} id="general" >{t}Used In{/t}</td>
 	  <td {if $view=='history'}class="selected"{/if}  id="stock"  >{t}History{/t}</td>
 
@@ -84,8 +86,8 @@
   
   <div  class="clean_table_caption"  style="clear:both;">
     <div style="float:left;"><div id="table_info0" class="clean_table_info"><span id="rtext0"></span> <span class="rtext_rpp" id="rtext_rpp0"></span> <span class="filter_msg"  id="filter_msg0"></span></div></div>
-    <div class="clean_table_filter" {if !$show_all}style="visibility:hidden"{/if} id="clean_table_filter0"><div class="clean_table_info"><span id="filter_name0">{t}Product Code{/t}</span>: <input style="border-bottom:none" id='f_input0' value="{$filter_value}" size=10/><div id='f_container'></div></div></div>
-    <div class="clean_table_controls" {if !$show_all}style="visibility:hidden"{/if}  id="clean_table_controls0" ><div><span  style="margin:0 5px" id="paginator"></span></div></div>
+    <div class="clean_table_filter" {if !$show_all}style="visibility:hidden"{/if} id="clean_table_filter0"><div class="clean_table_info"><span id="filter_name0">{t}Product Code{/t}</span>: <input style="border-bottom:none" id='f_input0' value="{$filter_value}" size=10/><div id='f_container0'></div></div></div>
+    <div class="clean_table_controls" {if !$show_all}style="visibility:hidden"{/if}  id="clean_table_controls0" ><div><span  style="margin:0 5px" id="paginator0"></span></div></div>
   </div>
   <div  id="table0"  style="font-size:80%" class="data_table_container dtable btable "> </div>
 </div>
@@ -116,7 +118,9 @@
 
 
 
-<div id="cancel_dialog" style="padding:10px 15px">
+<div id="cancel_dialog" class="yuimenu" style="border:none">
+  <div class="bd" style="padding-bottom:0px">
+
   <div id="cancel_dialog_msg"></div>
   <table>
     <tr><td style="width:100px">{t}Note{/t}:</td><td style="width:100px"></td></tr>
@@ -126,66 +130,50 @@
       </td>
     </tr>
     <tr><td colspan=2 style="border-top:1px solid #ddd;text-align:center;padding:10px 0 0 0">
-	<span class="state_details" onClick="close_dialog('cancel')"  >{t}Close{/t}</span>
-	<span style="margin-left:50px" class="state_details" onClick="cancel_order_save()"  >{t}Cancel Purchase Order{/t}</span>
+	<button style="margin-left:50px" class="state_details" onClick="cancel_order_save()"  >{t}Do it{/t}</button>
       </td>
     </tr>
   </table>
+  </div>
 </div>
 
-<div id="dn_dialog" style="padding:10px 15px">
+<div id="dn_dialog" class="nicebox">
+<div class="bd">
   <div id="dn_dialog_msg"></div>
   <table>
-    <tr><td style="width:150px">{t}Delivery Note Number{/t}:</td><td style="width:100px"><input id="dn_number" value=""></td></tr>
-    
+    <tr><td class="label">{t}Delivery Note Number{/t}:</td><td style="width:100px"><input id="dn_number" value=""></td></tr>
+        <tr><td class="label">{t}Delivery Note Date{/t}:</td><td style="width:100px"><input id="v_calpop1" style="text-align:right;"  class="text" name="submites_date" type="text"  size="10" maxlength="10"  value="{$date}"    /><img   id="calpop1" style="cursor:pointer" src="art/icons/calendar_view_month.png" align="top" alt=""   /> </tr>
+
     <tr><td colspan=2 style="border-top:1px solid #ddd;text-align:center;padding:10px 0 0 0">
-	<span class="state_details" onClick="close_dialog('dn')"  >{t}Close{/t}</span>
-	<span style="margin-left:50px" class="state_details" onClick="dn_order_save()"  >{t}Match to Delivery Note{/t}</span>
+	<button style="margin-left:50px" onClick="dn_order_save()"  >{t}Match to Delivery Note{/t}</button>
       </td>
     </tr>
   </table>
+  </div>
 </div>
 
 
 
 
-<div id="submit_dialog" style="padding:10px 15px">
-  <div id="submit_dialog_msg"></div>
-  <table>
+
+<div id="edit_estimated_delivery_dialog" class="yuimenu"  style="border:none;padding-bottom:0px">
+  <div class="bd" style="padding-bottom:0px">
+   <table>
+   <tr><td colspan=2> 
+   <span >{t}Estimated Delivery{/t}:</span>
+  <input id="v_calpop_estimated_delivery" type="text" class="text" size="11" maxlength="10" name="from" value="{$po->get('Estimated Receiving Date For Edition')}"/>
+  <img   id="estimated_delivery_pop" class="calpop" src="art/icons/calendar_view_month.png" align="absbottom" alt="choose"   />
+  <br/>
+  </td></tr>
     <tr>
-      <td class="aright" style="width:100px">{t}Submit Method{/t}:</td><td>
-	<div class="options" style="margin:0px 0;width:200px" id="submit_method_container">
-	  <input type="hidden" value="{$submit_method_default}" ovalue="{$submit_method_default}" id="submit_method"  >
-	  {foreach from=$submit_method item=unit_tipo key=name} <span style="float:left;margin-bottom:5px;margin-right:5px" class="radio{if $unit_tipo.selected} selected{/if}"  id="radio_shelf_type_{$name}" radio_value="{$name}">{$unit_tipo.fname}</span> {/foreach}
-	</div>
-      </td>
-    </tr>
-    <input type="hidden" id="date_type" value="now"/>
-    <tr id="tr_manual_submit_date">
-      <td class="aright">{t}Submit Date{/t}:</td><td style="position:relative"><span style="position:absolute;left:200px" class="state_details" onClick="submit_date_manually()">{t}Modify{/t}</span>{t}Now{/t} </td>
-    </tr>
-    <tbody style="display:none" id="tbody_manual_submit_date">
-      <tr>
-	<td class="aright">{t}Submitted Date{/t}:</td><td><input id="v_calpop1" style="text-align:right;"  class="text" name="submites_date" type="text"  size="10" maxlength="10"  value="{$date}"    /><img   id="calpop1" style="cursor:pointer" src="art/icons/calendar_view_month.png" align="top" alt=""   />  <div id="cal1Container" style="position:absolute;display:none; z-index:2">	</td></tr>
-      <tr><td class="aright">{t}Time{/t}:</td><td ><input id="v_time"   style="text-align:right;" class="text" name="expected_date" type="text"  size="5" maxlength="5"  value="{$time}"   /><img   id="calpop1" style="cursor:pointer" src="art/icons/time.png" align="top" alt=""   /> 	</td></tr>
-      <tr><td>{t}Expected Date{/t}:</td><td><input id="v_calpop2" style="text-align:right;"  class="text" name="expected_date" type="text"  size="10" maxlength="10"     /><img   id="calpop2" style="cursor:pointer" src="art/icons/calendar_view_month.png" align="top" alt=""   /> <div id="cal2Container" style="display:none; z-index:2;position:absolute"></div>	</td></tr>
-    </tbody>
-    
-    <tr >
-        <input type="hidden" id="submitted_by" value="{$user_staff_key}"/>
-
-      <td class="aright">{t}Submit By{/t}:</td><td style="position:relative"> <span id="get_submiter" class="state_details" style="position:absolute;left:200px">{t}Modify{/t}</span><span id="submited_by_alias">{$user}</span></td>
-    </tr>
-
-    <tr><td colspan=2 style="border-top:1px solid #ddd;text-align:center;padding:10px 0 0 0">
-	<span class="state_details" onClick="close_dialog('submit')"  >Cancel</span>
-	<span style="margin-left:50px" class="state_details" onClick="submit_order_save(this)"  >Save</span>
+        <td colspan=2 style="border-top:1px solid #ddd;text-align:center;padding:10px 0 0 0">
+	<button style="margin-left:50px" onClick="submit_edit_estimated_delivery(this)"  >Save</button>
     
     </td>
-</tr>
-  </table>
+    </tr>
+ </table>
+ </div>
 </div>
-
 
 <div id="staff_dialog" class="yuimenu staff_list"  >
   <div class="bd">

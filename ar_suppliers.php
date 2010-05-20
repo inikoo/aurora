@@ -1368,9 +1368,17 @@ if(isset( $_REQUEST['where']))
      }
      
    }
-   $rtext=$total_records." ".ngettext('supplier','suppliers',$total_records);
-  if($total_records>$number_results)
-    $rtext.=sprintf(" <span class='rtext_rpp'>(%d%s)</span>",$number_results,_('rpp'));
+  
+  $rtext=$total_records." ".ngettext('supplier','suppliers',$total_records);
+    if ($total_records>$number_results)
+        $rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
+    else
+        $rtext_rpp=' ('._('Showing all').')';
+
+
+
+
+
 
   $filter_msg='';
   
@@ -1412,6 +1420,10 @@ if(isset( $_REQUEST['where']))
        $order='`Supplier Main Location`';
       elseif($order=='email')
        $order='`Supplier Main XHTML Email`';
+        elseif($order=='pending_pos'){
+               $order='`Supplier Open Purchase Orders`';
+
+        }
 
  //    elseif($order='used_in')
 //        $order='Supplier Product XHTML Used In';
@@ -1450,7 +1462,8 @@ if(isset( $_REQUEST['where']))
 		   array('state'=>200,
 			 'data'=>$data,
 			 'sort_key'=>$_order,
-			 'rtext'=>$rtext,
+			  'rtext'=>$rtext,
+                                      'rtext_rpp'=>$rtext_rpp,
 			 'sort_dir'=>$_dir,
 			 'tableid'=>$tableid,
 			 'filter_msg'=>$filter_msg,
@@ -1531,7 +1544,7 @@ function list_supplier_products() {
     $_order=$order;
     $_dir=$order_direction;
 
-
+$parent='none';
     $_SESSION['state']['supplier']['products']=array('order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value
             ,'view'=>$product_view
                     ,'percentage'=>$product_percentage
@@ -1539,6 +1552,10 @@ function list_supplier_products() {
                                                     );
     $_SESSION['state']['supplier']['id']=$supplier_id;
 
+
+if($parent=='none')
+$where.='';
+else
     $where=$where.' and `supplier key`='.$supplier_id;
 
 
@@ -1611,9 +1628,11 @@ function list_supplier_products() {
     }
     if ($order=='id')
       $order='`Supplier Product ID`';
+      if ($order=='supplier')
+      $order='`Supplier Code`';
     elseif($order=='code')
       $order='`Supplier Product Code`';
-    elseif($order=='usedin')
+    elseif($order=='used_in')
       $order='`Supplier Product XHTML Used In`';
     elseif($order=='tuos')
       $order='`Supplier Product Days Available`';
@@ -1718,10 +1737,11 @@ $weeks_until=round($row['Supplier Product Days Available']/7).' w';
 		      'code'=>$code
                      ,'stock'=>number($row['Supplier Product Stock']) 
 		      ,'tuos'=>$weeks_until
-
+                ,'supplier'=>sprintf('<a href="supplier.php?id=%d">%s</a>',$row['Supplier Key'],$row['Supplier Code'])
 		      ,'name'=>$row['Supplier Product Name']
+		      ,'description'=>'<span style="font-size:95%">'.number($row['Supplier Product Units Per Case']).'x '.$row['Supplier Product Name'].' @'.money($row['Supplier Product Cost']/$row['Supplier Product Units Per Case']).' '.$row['Supplier Product Unit Type'].'</span>'
 		      ,'cost'=>money($row['Supplier Product Cost'])
-		      ,'usedin'=>$row['Supplier Product XHTML Used In']
+		      ,'used_in'=>$row['Supplier Product XHTML Used In']
 		      ,'profit'=>$profit
 		      ,'allcost'=>$allcost
 		      ,'used'=>$used

@@ -38,7 +38,7 @@ $forecast=true;
 //}
 // exit;
 
-
+/*
 $sql="select * from `Invoice Category Dimension`  ";
 $result=mysql_query($sql);
 while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
@@ -56,8 +56,8 @@ while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
   $tm->get_values();$tm->save_values();
   $tm->forecast();
 };
-
-if(true){
+*/
+if(false){
   print "inv\n";
 
   $tm=new TimeSeries(array('w','invoices'));
@@ -97,18 +97,20 @@ while( $row=mysql_fetch_array($res)){
 /*   if($forecast) */
 /*     $tm->forecast(); */
 
+
 $tm=new TimeSeries(array('w','store ('.$row['Store Key'].') sales'));
   $tm->get_values();
   $tm->save_values();
   if($forecast)
     $tm->forecast();
 
-
+/*
 $tm=new TimeSeries(array('m','store ('.$row['Store Key'].') sales'));
   $tm->get_values();
   $tm->save_values();
   if($forecast)
     $tm->forecast();
+   
   $tm=new TimeSeries(array('q','store ('.$row['Store Key'].') sales'));
   $tm->get_values();
   $tm->save_values();
@@ -133,11 +135,11 @@ if($myconf['currency_code']!=$store->data['Store Currency Code']){
 
 }
 
-
+*/
  
 }
  
-
+exit;
 
 $sql="select * from `Product Department Dimension`  where `Product Department Store Key` in (".join(',',$stores).")    ";
 $res=mysql_query($sql);

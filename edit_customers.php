@@ -100,5 +100,9 @@ $paginator_menu=array(10,25,50,100,500);
 $smarty->assign('paginator_menu',$paginator_menu);
 
  $smarty->assign('view',$_SESSION['state']['customers']['view']);
+ 
+ 
+
+
 $smarty->display('edit_customers.tpl');
 ?>
