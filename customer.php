@@ -303,7 +303,9 @@ $filter_menu=array(
 
 		   'uptu'=>array('db_key'=>'upto','menu_label'=>'Records up to <i>n</i> days','label'=>_('Up to (days)')),
 		   'older'=>array('db_key'=>'older','menu_label'=>'Records older than  <i>n</i> days','label'=>_('Older than (days)'))
-		   );
+		 
+
+  );
 $tipo_filter=$_SESSION['state']['customer']['table']['f_field'];
 $filter_value=$_SESSION['state']['customer']['table']['f_value'];
 

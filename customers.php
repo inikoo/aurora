@@ -33,6 +33,8 @@ if(!($user->can_view('stores') and in_array($store_id,$user->stores)   ) ){
 }
 
 $store=new Store($store_id);
+$currency=$store->data['Store Currency Code'];
+$currency_symbol=currency_symbol($currency);
 $smarty->assign('store',$store);
 
 $_SESSION['state']['customers']['store']=$store_id;
@@ -104,16 +106,19 @@ $smarty->assign('filter',$tipo_filter);
 $smarty->assign('filter_value',$_SESSION['state']['customers']['table']['f_value']);
 
 $filter_menu=array(
-		   'customer name'=>array('db_key'=>_('customer name'),'menu_label'=>'Customer Name','label'=>'Name'),
-		   'postcode'=>array('db_key'=>_('postcode'),'menu_label'=>'Customer Postcode','label'=>'Postcode'),
-		   'min'=>array('db_key'=>_('min'),'menu_label'=>'Mininum Number of Orders','label'=>'Min No Orders'),
-		   'max'=>array('db_key'=>_('min'),'menu_label'=>'Maximum Number of Orders','label'=>'Max No Orders'),
-
+		   'customer name'=>array('db_key'=>_('customer name'),'menu_label'=>_('Customer Name'),'label'=>_('Name')),
+		   'postcode'=>array('db_key'=>_('postcode'),'menu_label'=>_('Customer Postcode'),'label'=>_('Postcode')),
+		   'min'=>array('db_key'=>_('min'),'menu_label'=>_('Mininum Number of Orders'),'label'=>_('Min No Orders')),
+		   'max'=>array('db_key'=>_('min'),'menu_label'=>_('Maximum Number of Orders'),'label'=>_('Max No Orders')),
+		   'last_more'=>array('db_key'=>_('last_more'),'menu_label'=>_('Last order more than (days)'),'label'=>_('Last Order >(Days)')),
+		   'last_less'=>array('db_key'=>_('last_more'),'menu_label'=>_('Last order less than (days)'),'label'=>_('Last Order <(Days)')),
+		   'maxvalue'=>array('db_key'=>_('maxvalue'),'menu_label'=>_('Balance less than').' '.$currency_symbol  ,'label'=>_('Balance')." <($currency_symbol)"),
+		   'minvalue'=>array('db_key'=>_('minvalue'),'menu_label'=>_('Balance more than').' '.$currency_symbol  ,'label'=>_('Balance')." >($currency_symbol)"),
 		   );
-$smarty->assign('filter_menu',$filter_menu);
-$smarty->assign('filter_name',$filter_menu[$tipo_filter]['label']);
+$smarty->assign('filter_menu0',$filter_menu);
+$smarty->assign('filter_name0',$filter_menu[$tipo_filter]['label']);
 $paginator_menu=array(10,25,50,100,500);
-$smarty->assign('paginator_menu',$paginator_menu);
+$smarty->assign('paginator_menu0',$paginator_menu);
 
 $new_window=30;
 

@@ -1174,28 +1174,27 @@ if(isset( $_REQUEST['where']))
    $filter_msg='';
    $wheref='';
    
-   
+   $currency='';
    if(is_numeric($store)){
      $where.=sprintf(' and `Customer Store Key`=%d ',$store);
+     $store=new Store($store);
+     $currency=$store->data['Store Currency Code'];
    }
    
 
-
+   //  print $f_field;
    
    
   if(($f_field=='customer name'     )  and $f_value!=''){
     $wheref="  and  `Customer Name` like '%".addslashes($f_value)."%'";
   }elseif(($f_field=='postcode'     )  and $f_value!=''){
     $wheref="  and  `Customer Main Postal Code` like '%".addslashes($f_value)."%'";
-    
-    
-    
   }else if($f_field=='id'  )
      $wheref.=" and  `Customer Key` like '".addslashes(preg_replace('/\s*|\,|\./','',$f_value))."%' ";
-  else if($f_field=='maxdesde' and is_numeric($f_value) )
-    $wheref.=" and  (TO_DAYS(NOW())-TO_DAYS(`Customer Last Order Date`))<=".$f_value."    ";
-  else if($f_field=='mindesde' and is_numeric($f_value) )
+  else if($f_field=='last_more' and is_numeric($f_value) )
     $wheref.=" and  (TO_DAYS(NOW())-TO_DAYS(`Customer Last Order Date`))>=".$f_value."    ";
+  else if($f_field=='last_less' and is_numeric($f_value) )
+    $wheref.=" and  (TO_DAYS(NOW())-TO_DAYS(`Customer Last Order Date`))<=".$f_value."    ";
   else if($f_field=='max' and is_numeric($f_value) )
     $wheref.=" and  `Customer Orders`<=".$f_value."    ";
   else if($f_field=='min' and is_numeric($f_value) )
@@ -1250,12 +1249,52 @@ if(isset( $_REQUEST['where']))
      case('customer name'):
        $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any customer like")." <b>$f_value</b> ";
        break;
-     }
+     case('postcode'):
+       $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any customer with postcode like")." <b>$f_value</b> ";
+       break;
+     case('id'):
+       $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any customer with ID like")." <b>$f_value</b> ";
+       break;
+
+     case('last_more'):
+       $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("No customer with last order")."> <b>".number($f_value)."</b> ".ngettext('day','days',$f_value);
+       break;
+     case('last_more'):
+       $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("No customer with last order")."< <b>".number($f_value)."</b> ".ngettext('day','days',$f_value);
+       break;
+   case('maxvalue'):
+     $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("No customer with balance")."< <b>".money($f_value,$currency)."</b> ";
+       break;
+     case('minvalue'):
+       $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("No customer with balance")."> <b>".money($f_value,$currency)."</b> ";
+       break;
+
+
+   }
    }
    elseif($filtered>0){
      switch($f_field){
      case('customer name'):
-       $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total "._('customers with name like')." <b>".$f_value."*</b> <span onclick=\"remove_filter($tableid)\" id='remove_filter$tableid' class='remove_filter'>"._('Show All')."</span>";
+       $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ".ngettext('customer','customers',$total)." "._('with name like')." <b>*".$f_value."*</b> <span onclick=\"remove_filter($tableid)\" id='remove_filter$tableid' class='remove_filter'>"._('Show All')."</span>";
+       break;
+           case('id'):
+       $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ".ngettext('customer','customers',$total)." "._('with ID  like')." <b>".$f_value."*</b> <span onclick=\"remove_filter($tableid)\" id='remove_filter$tableid' class='remove_filter'>"._('Show All')."</span>";
+       break;
+    case('postcode'):
+       $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ".ngettext('customer','customers',$total)." "._('with postcode like')." <b>".$f_value."*</b> <span onclick=\"remove_filter($tableid)\" id='remove_filter$tableid' class='remove_filter'>"._('Show All')."</span>";
+       break;
+
+     case('last_more'):
+       $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ".ngettext('customer','customers',$total)." "._('which last order')."> ".number($f_value)."  ".ngettext('day','days',$f_value)." <span onclick=\"remove_filter($tableid)\" id='remove_filter$tableid' class='remove_filter'>"._('Show All')."</span>";
+       break;
+     case('last_less'):
+       $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ".ngettext('customer','customers',$total)." "._('which last order')."< ".number($f_value)."  ".ngettext('day','days',$f_value)." <span onclick=\"remove_filter($tableid)\" id='remove_filter$tableid' class='remove_filter'>"._('Show All')."</span>";
+       break;
+  case('maxvalue'):
+       $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ".ngettext('customer','customers',$total)." "._('which balance')."< ".money($f_value,$currency)." <span onclick=\"remove_filter($tableid)\" id='remove_filter$tableid' class='remove_filter'>"._('Show All')."</span>";
+       break;
+     case('minvalue'):
+       $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ".ngettext('customer','customers',$total)." "._('which balance')."> ".money($f_value,$currency)." <span onclick=\"remove_filter($tableid)\" id='remove_filter$tableid' class='remove_filter'>"._('Show All')."</span>";
        break;
      }
    }else
@@ -1350,7 +1389,16 @@ if(isset( $_REQUEST['where']))
 
 
     $id="<a href='customer.php?id=".$data['Customer Key']."'>".$myconf['customer_id_prefix'].sprintf("%05d",$data['Customer Key']).'</a>'; 
-    $name="<a href='customer.php?id=".$data['Customer Key']."'>".$data['Customer Name'].' ('.$data['Customer Type'].')</a>'; 
+    if($data['Customer Type']=='Person'){
+      $name='<img src="art/icons/user.png" alt="('._('Person').')">';
+    }else{
+      $name='<img src="art/icons/building.png" alt="('._('Company').')">';
+
+    }
+    
+    $name.=" <a href='customer.php?id=".$data['Customer Key']."'>".$data['Customer Name'].'</a>'; 
+
+    
 
     if($data['Customer Orders']==0)
       $last_order_date='';
@@ -1367,11 +1415,11 @@ if(isset( $_REQUEST['where']))
 		   'telephone'=>$data['Customer Main XHTML Telephone'],
 		   'last_order'=>$last_order_date,
 		   
-		   'total_payments'=>money($data['Customer Net Payments']),
-		   'net_balance'=>money($data['Customer Net Balance']),
-		   'total_refunds'=>money($data['Customer Net Refunds']),
-		   'total_profit'=>money($data['Customer Profit']),
-		   'balance'=>money($data['Customer Outstanding Net Balance']),
+		   'total_payments'=>money($data['Customer Net Payments'],$currency),
+		   'net_balance'=>money($data['Customer Net Balance'],$currency),
+		   'total_refunds'=>money($data['Customer Net Refunds'],$currency),
+		   'total_profit'=>money($data['Customer Profit'],$currency),
+		   'balance'=>money($data['Customer Outstanding Net Balance'],$currency),
 
 
 		   'top_orders'=>number($data['Customer Orders Top Percentage']).'%',
