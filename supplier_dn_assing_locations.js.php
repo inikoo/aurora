@@ -202,7 +202,22 @@ function close_dialog(tipo){
 
 
 
+function place(o){
 
+ var y=(Dom.getY(o))
+    var x=(Dom.getX(o))
+    x=x-440;
+    y=y-30
+    Dom.setX('place_sku', x)
+    Dom.setY('place_sku', y)
+  
+   // var user_id=o.getAttribute('user_id');
+   // var user_name=o.getAttribute('user_name');
+   // Dom.get("place_sku_alias").setAttribute('user_id',user_id);
+   // Dom.get("place_sku_alias").innerHTML=user_name;
+    place_sku.show();
+
+}
 
 
 YAHOO.util.Event.addListener(window, "load", function() {
@@ -211,34 +226,40 @@ YAHOO.util.Event.addListener(window, "load", function() {
 		var tableid=0;
 		var tableDivEL="table"+tableid;
 		var ColumnDefs = [
-				  {key:"id", label:"<?php echo _('SPK')?>", width:20,sortable:false,isPrimaryKey:true,hidden:true} 
+				  //{key:"id", label:"<?php echo _('SPK')?>", width:20,sortable:false,isPrimaryKey:true,hidden:true} 
 				     
-				  ,{key:"code", label:"<?php echo _('Code')?>", width:60,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				  //,{key:"code", label:"<?php echo _('Code')?>", width:60,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				 
-				  ,{key:"description", label:"<?php echo _('Description')?>",width:310, sortable:false,className:"aleft"}
-				  ,{key:"used_in", label:"<?php echo _('Used In')?>",width:150, sortable:false,className:"aleft"}
+				  //,{key:"description", label:"<?php echo _('Description')?>",width:310, sortable:false,className:"aleft"}
+				  //,{key:"used_in", label:"<?php echo _('Used In')?>",width:150, sortable:false,className:"aleft"}
 
-				  ,{key:"dn_quantity",label:"<?php echo _('DN Qty')?>", width:40,sortable:false,className:"aright"}
-				  ,{key:"dn_unit_type", label:"<?php echo _('DN U')?>",width:30,className:"aleft"}
+				  //,{key:"dn_quantity",label:"<?php echo _('DN Qty')?>", width:40,sortable:false,className:"aright"}
+				  //,{key:"dn_unit_type", label:"<?php echo _('DN U')?>",width:30,className:"aleft"}
 
 			
-				  ,{key:"received_quantity",label:"<?php echo _('Rcvd Qty')?>", width:60,sortable:false,className:"aright",  editor: new YAHOO.widget.TextboxCellEditor({asyncSubmitter: myCellEdit}),object:'inputted_supplier_dn','action':'change_received_qty'}
-				  ,{key:"damaged_quantity",label:"<?php echo _('Dmgd Qty')?>", width:60,sortable:false,className:"aright",  editor: new YAHOO.widget.TextboxCellEditor({asyncSubmitter: myCellEdit}),object:'inputted_supplier_dn','action':'change_received_qty',hidden:true}
+				  //,{key:"to_stock_quantity",label:"<?php echo _('SP Qty')?>", width:70,sortable:false,className:"aright",  editor: new YAHOO.widget.TextboxCellEditor({asyncSubmitter: myCellEdit}),object:'inputted_supplier_dn','action':'change_received_qty'}
+								  {key:"sku", label:"<?php echo _('SKU')?>", width:60,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+								  ,{key:"sku_name", label:"<?php echo _('SKU')?>", width:220,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+								  ,{key:"sp_data", label:"<?php echo _('Supplier Product')?>", width:220,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+								  ,{key:"notes", label:"<?php echo _('Notes')?>", width:220,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+
+				
+				//,{key:"damaged_quantity",label:"<?php echo _('Dmgd Qty')?>", width:60,sortable:false,className:"aright",  editor: new YAHOO.widget.TextboxCellEditor({asyncSubmitter: myCellEdit}),object:'inputted_supplier_dn','action':'change_received_qty',hidden:true}
 				  
-				  ,{key:"add",label:"", width:3,sortable:false,action:'add_object',object:'inputted_supplier_dn'}
-				  ,{key:"remove",label:"", width:3,sortable:false,action:'remove_object',object:'inputted_supplier_dn'}
-				  ,{key:"add_damaged",label:"", width:3,sortable:false,action:'add_object',object:'inputted_supplier_dn',hidden:true}
-				  ,{key:"remove_damaged",label:"", width:3,sortable:false,action:'remove_object',object:'inputted_supplier_dn',hidden:true}
+				  //,{key:"add",label:"", width:3,sortable:false,action:'add_object',object:'inputted_supplier_dn'}
+				 // ,{key:"remove",label:"", width:3,sortable:false,action:'remove_object',object:'inputted_supplier_dn'}
+				 // ,{key:"add_damaged",label:"", width:3,sortable:false,action:'add_object',object:'inputted_supplier_dn',hidden:true}
+				 // ,{key:"remove_damaged",label:"", width:3,sortable:false,action:'remove_object',object:'inputted_supplier_dn',hidden:true}
 				  
-				  ,{key:"counted",label:"<?php echo _('Ckd')?>", width:20,sortable:false,class:'aleft', action:'edit_object',object:'inputted_supplier_dn'}
-				  ,{key:"notes_damaged",label:"", width:15,sortable:false}
-				  ,{key:"notes_received",label:"", width:15,sortable:false,hidden:true}
+				 // ,{key:"counted",label:"<?php echo _('Ckd')?>", width:20,sortable:false,class:'aleft', action:'edit_object',object:'inputted_supplier_dn'}
+				 // ,{key:"notes_damaged",label:"", width:15,sortable:false}
+				 // ,{key:"notes_received",label:"", width:15,sortable:false,hidden:true}
 
 
 
 				  ];
 		
-		this.dataSource0 = new YAHOO.util.DataSource("ar_edit_porders.php?tipo=dn_transactions_to_count&tableid="+tableid);
+		this.dataSource0 = new YAHOO.util.DataSource("ar_edit_porders.php?tipo=dn_transactions_to_stock&tableid="+tableid);
 		
 		this.dataSource0.responseType = YAHOO.util.DataSource.TYPE_JSON;
 		this.dataSource0.connXhrMode = "queueRequests";
@@ -256,7 +277,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 		    },
 			
 		    fields: [
-			     "id","code","description","quantity","amount","unit_type","add","remove","used_in","dn_quantity","dn_unit_type","received_quantity","damaged_quantity","counted","add_damaged",'notes_damaged','remove_damaged'
+			    "notes","sp_data","sku_name","sku", "to_stock_quantity","id","code","description","quantity","amount","unit_type","add","remove","used_in","dn_quantity","dn_unit_type","received_quantity","damaged_quantity","counted","add_damaged",'notes_damaged','remove_damaged'
 			     ]};
 	    
 		this.table0 = new YAHOO.widget.DataTable(tableDivEL, ColumnDefs,
@@ -274,7 +295,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 								 })
 								 
 							     ,sortedBy : {
-								 key: "<?php echo$_SESSION['state']['supplier']['products']['order']?>",
+								 key: "sku",
 								 dir: "<?php echo$_SESSION['state']['supplier']['products']['order_dir']?>"
 							     }
 							     ,dynamicData : true
@@ -405,6 +426,16 @@ function set_damages(){
 }
 
 function init(){
+    
+    
+      place_sku = new YAHOO.widget.Dialog("place_sku", 
+			{ 
+			
+			    visible : false,close:true,
+			    underlay: "none",draggable:false
+			    
+			} );
+       place_sku.render();
     
     Event.addListener("take_values_from_dn", "click", take_values_from_dn);
     

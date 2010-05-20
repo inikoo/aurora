@@ -32,7 +32,7 @@ var myCellEdit = function (callback, newValue) {
 				    'POST',
 				    ar_file, {
 					success:function(o) {
-					     alert(o.responseText);
+					     //alert(o.responseText);
 					    var r = YAHOO.lang.JSON.parse(o.responseText);
 					    if (r.state == 200) {
 						
@@ -181,12 +181,12 @@ case('delete'):
 
 
 function delete_order() {
-    var request='ar_edit_porders.php?tipo=delete_po='+po_id;
-    // alert(request);
+    var request='ar_edit_porders.php?tipo=delete_po&id'+po_id;
+    alert(request);
     YAHOO.util.Connect.asyncRequest('POST',request ,{
 	      
 	    success:function(o) {
-		//	  alert(o.responseText)
+		  alert(o.responseText)
 		var r =  YAHOO.lang.JSON.parse(o.responseText);
 		if (r.state == 200) {
 		    location.href='supplier.php?id='+supplier_id;
@@ -219,18 +219,18 @@ var select_staff=function(o,e){
     var submit_order_save=function(o){
 
 	var submit_date=Dom.get('v_calpop1').value;
-	var submit_time=Dom.get('v_time').value;
-	var estimated_date=Dom.get('v_calpop2').value;
-	var date_type=Dom.get('date_type').value;
+//	var submit_time=Dom.get('v_time').value;
+	var estimated_date=''
+//	var date_type=Dom.get('date_type').value;
 	var submit_method=Dom.get('submit_method').value;
 	var staff_key=Dom.get('submitted_by').value;
 	
-	var request='ar_edit_porders.php?tipo=submit&submit_method='+escape(submit_method)+'&date_type='+escape(date_type)+'&staff_key='+escape(staff_key)+'&submit_date='+escape(submit_date)+'&submit_time='+escape(submit_time)+'&estimated_date='+escape(estimated_date)+'&id='+escape(po_id);
+	var request='ar_edit_porders.php?tipo=submit&submit_method='+escape(submit_method)+'&staff_key='+escape(staff_key)+'&submit_date='+escape(submit_date)+'&id='+escape(po_id);
 
 	YAHOO.util.Connect.asyncRequest('POST',request ,{
 		
 		success:function(o) {
-		  
+		 // alert(o.responseText)
 		    var r =  YAHOO.lang.JSON.parse(o.responseText);
 		    if (r.state == 200) {
 
@@ -388,11 +388,6 @@ function change_show_all(){
     datasource.sendRequest(request,table.onDataReturnInitializeTable, table); 
 }
 
-function submit_date_manually(){
-    Dom.get('tr_manual_submit_date').style.display="none";
-    Dom.get('tbody_manual_submit_date').style.display="";
-    Dom.get('date_type').value='manual';
-}
 
 
 
@@ -400,11 +395,11 @@ function init(){
 
     YAHOO.util.Event.addListener('show_all', "click",change_show_all);
 
-    submit_dialog = new YAHOO.widget.Dialog("submit_dialog", {context:["submit_po","tr","tl"]  ,visible : false,close:false,underlay: "none",draggable:false});
+    submit_dialog = new YAHOO.widget.Dialog("submit_dialog", {context:["submit_po","tr","tl"]  ,visible : false,close:true,underlay: "none",draggable:false});
     submit_dialog.render();
     staff_dialog = new YAHOO.widget.Dialog("staff_dialog", {context:["get_submiter","tr","tl"]  ,visible : false,close:false,underlay: "none",draggable:false});
     staff_dialog.render();
- delete_dialog = new YAHOO.widget.Dialog("delete_dialog", {context:["delete_po","tr","tl"]  ,visible : false,close:false,underlay: "none",draggable:false});
+ delete_dialog = new YAHOO.widget.Dialog("delete_dialog", {context:["delete_po","tr","tl"]  ,visible : false,close:true,underlay: "none",draggable:false});
     delete_dialog.render();
     Event.addListener("submit_po", "click", submit_dialog.show,submit_dialog , true);
     Event.addListener("get_submiter", "click", staff_dialog.show,staff_dialog , true);
@@ -415,7 +410,7 @@ function init(){
 
     var oACDS = new YAHOO.util.FunctionDataSource(mygetTerms);
     oACDS.queryMatchContains = true;
-    var oAutoComp = new YAHOO.widget.AutoComplete("f_input0","f_container", oACDS);
+    var oAutoComp = new YAHOO.widget.AutoComplete("f_input0","f_container0", oACDS);
     oAutoComp.minQueryLength = 0; 
 
   

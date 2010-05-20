@@ -1,4 +1,4 @@
-<?phpinclude_once('common.php');?>
+<?php include_once('common.php');?>
     
     var Event = YAHOO.util.Event;
 var Dom   = YAHOO.util.Dom;
@@ -11,21 +11,21 @@ YAHOO.util.Event.addListener(window, "load", function() {
 		var tableid=0;
 		var tableDivEL="table"+tableid;
 		var ColumnDefs = [
-				  {key:"id", label:"<?php echo _('Id')?>",width:45,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				  ,{key:"supplier", label:"<?php echo _('Supplier')?>",  width:60,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				//  {key:"id", label:"<?php echo _('Id')?>",width:45,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				  {key:"supplier", label:"<?php echo _('Supplier')?>",  width:60,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				  
-	  ,{key:"code", label:"<?php echo _('Code')?>",  width:120,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				  ,{key:"name", label:"<?php echo _('Name')?>",<?php echo($_SESSION['state']['supplier_products']['view']=='product_general'?'':'hidden:true,')?>width:300, sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				  ,{key:"usedin", label:"<?php echo _('Used In')?>", width:250,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+	  ,{key:"code", label:"<?php echo _('Code')?>",  width:100,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				  ,{key:"description", label:"<?php echo _('Description')?>",<?php echo($_SESSION['state']['supplier_products']['view']=='general'?'':'hidden:true,')?>width:380, sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				  ,{key:"used_in", label:"<?php echo _('Used In')?>", width:250,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 
-				  ,{key:"cost", label:"<?php echo _('Cost')?>",<?php echo($_SESSION['state']['supplier_products']['view']=='product_sales'?'':'hidden:true,')?> width:35,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				 // ,{key:"cost", label:"<?php echo _('Cost')?>",<?php echo($_SESSION['state']['supplier_products']['view']=='product_sales' or ($_SESSION['state']['supplier_products']['view']=='general')   ?'':'hidden:true,')?> width:35,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 				  ,{key:"required", label:"<?php echo _('Required')?>",<?php echo($_SESSION['state']['supplier_products']['view']=='product_sales'?'':'hidden:true,')?> width:55,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 				  ,{key:"provided", label:"<?php echo _('Used')?>",<?php echo($_SESSION['state']['supplier_products']['view']=='product_sales'?'':'hidden:true,')?> width:55,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 				  ,{key:"profit", label:"<?php echo _('Profit')?>",<?php echo($_SESSION['state']['supplier_products']['view']=='product_sales'?'':'hidden:true,')?> width:55,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 
 				  ];
 
-		this.dataSource0 = new YAHOO.util.DataSource("ar_assets.php?tipo=all_supplier_products&tableid="+tableid);
+		this.dataSource0 = new YAHOO.util.DataSource("ar_suppliers.php?tipo=supplier_products&tableid="+tableid);
 
    this.dataSource0.responseType = YAHOO.util.DataSource.TYPE_JSON;
 		    this.dataSource0.connXhrMode = "queueRequests";
@@ -42,7 +42,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 			},
 			
 			fields: [
-				 "id","code","name","cost","usedin","profit","allcost","used","required","provided","lost","broken","supplier"
+				 "description","id","code","name","cost","used_in","profit","allcost","used","required","provided","lost","broken","supplier"
 				 ]};
 	    
 		    this.table0 = new YAHOO.widget.DataTable(tableDivEL, ColumnDefs,

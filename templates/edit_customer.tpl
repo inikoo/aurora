@@ -29,7 +29,7 @@
  <div class="tabbed_container" > 
    <div  class="edit_block" style="{if $edit!="delivery"}display:none{/if};min-height:260px"  id="d_delivery">
      
-     <div style="width:400px;float:right;text-align:right">
+     <div style="width:540px;float:right;text-align:right">
      <div style="border-bottom:1px solid #777">
        {t}Delivery Address Library{/t}
        <span class="state_details" style="float:right;display:none" address_key="" id="delivery_cancel_edit_address">{t}Cancel{/t}</span>
@@ -39,7 +39,7 @@
        <span class="state_details">Add New Delivery Address</span>
        </div>
        <table>
-       {include file='edit_address_splinter.tpl' address_identifier='new_delivery_' address_function='Shipping'  hide_type=true hide_description=true show_form=true  }
+       {include file='edit_address_splinter.tpl' address_identifier='delivery_' address_function='Shipping'  hide_type=true hide_description=true show_form=false  }
 
      </table>
       <table>
@@ -57,20 +57,22 @@
 	      </div>
 	      
 	      {foreach from=$delivery_addresses item=address key=key }
+	      
 	      <div class="address_container"  id="address_container{$address->id}">
-		<div class="address_display"  id="address_display{$address->id}">{$address->display('xhtml')}</div>
+	<div class="address_display"  id="address_display{$address->id}">{$address->display('xhtml')}</div>
 		<div class="address_buttons" id="address_buttons{$address->id}">
 		  
 		  <span class="" style="float:left" id="contacts_address_button{$address->id}" address_id="{$address->id}" onclick="contacts_address(event,this)" >
-		  <img src="art/icons/user.png" alt="{t}Contacts{/t}"/></span>
+		  <img style="display:none" src="art/icons/user.png" alt="{t}Contacts{/t}"/></span>
 		  <span class="" style="float:left;margin-left:5px;cursor:pointer" id="contacts_address_button{$address->id}" address_id="{$address->id}" onclick="contacts_address(event,this)" >
-		  <img src="art/icons/telephone.png" alt="{t}Telephones{/t}"/></span>
-		  <div class="address_main_container"  style="display:inline;{if $number_of_addresses<2}display:none{/if}" >
-		  <input  onchange="change_main_address(this,{$address->id})" type="checkbox" class='Is_Main address_main' {if $address->is_main()}checked="checked" value="Yes" ovalue="Yes"{else}value="No" ovalue="No"{/if} /> {t}Main{/t}
+		  <img style="display:none" src="art/icons/telephone.png" alt="{t}Telephones{/t}"/></span>
+		  <div  class="address_main_container"  style="display:inline;" >
+		  <button onClick="change_main_address(this,{$address->id})" >{t}Set as Main{/t}</button>
 		  </div>
-		  <span class="small_button small_button_edit" id="delete_address_button{$address->id}" address_id="{$address->id}" onclick="delete_address(event,this)" >{t}Remove{/t}</span>
-		  <span class="small_button small_button_edit" id="edit_address_button{$address->id}" address_id="{$address->id}" onclick="edit_address({$address->id})" >{t}Edit{/t}</span>
-		</div>
+		  <span {if $key==$customer->get('Customer Main Delivery Address Key')}style="display:none"{/if} class="small_button small_button_edit" id="delete_address_button{$address->id}" address_id="{$address->id}" onclick="delete_address(event,this)" >{t}Remove{/t}</span>
+		  <span {if $key==$customer->get('Customer Main Delivery Address Key')}style="display:none"{/if} class="small_button small_button_edit" id="edit_address_button{$address->id}" address_id="{$address->id}" onclick="edit_address({$address->id},'delivery_')" >{t}Edit{/t}</span>
+	       {if $key==$customer->get('Customer Main Delivery Address Key')}<img src="art/icons/lock.png" alt="lock"> <span  class="state_details" > {t}Contact Address{/t}</span>{/if}
+	       </div>
 	      </div>
 	      {/foreach}
 	    </td>
@@ -79,19 +81,18 @@
       
       </div>
 
-     <div style="width:400px">
+     <div style="width:260px">
        <div style="border-bottom:1px solid #777">
        {t}Current Delivery Address{/t}:
        <span class="state_details" style="float:right;display:none" address_key="" id="delivery_cancel_edit_address">{t}Cancel{/t}</span>
        <span class="state_details" style="float:right;display:none" address_key="" id="delivery_save_edit_address">{t}Save{/t}</span>
        </div>
     
-     <div style="float:right;margin-top:2px"><img src="art/icons/lock.png" alt="lock"> <span  class="state_details" > {t}Same as Contact Address{/t}</span></div>
-     <div style="font-size:120%;margin-top:15px">
+   <div style="font-size:120%;margin-top:15px">
      {$customer->delivery_address_xhtml()}
      </div>
  </div>
-
+<div style="clear:both"></div>
    </div>
 
 

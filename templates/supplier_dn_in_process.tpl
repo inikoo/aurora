@@ -43,7 +43,7 @@
 <div id="the_table" class="data_table" style="margin:20px 0px;clear:both">
   <span class="clean_table_title">{t}Supplier Products{/t}</span>
   	<div id="table_type">
-	  <span id="take_values_from_pos" style="float:right;color:brown" class="table_type state_details">{t}Take values from Purchase Order{/t}</span>
+	  <span id="take_values_from_pos" style="float:right;color:brown;display:none" class="table_type state_details">{t}Take values from Purchase Order{/t}</span>
 	  
 	</div>
 
@@ -84,8 +84,8 @@
   
   <div  class="clean_table_caption"  style="clear:both;">
     <div style="float:left;"><div id="table_info0" class="clean_table_info"><span id="rtext0"></span> <span class="rtext_rpp" id="rtext_rpp0"></span> <span class="filter_msg"  id="filter_msg0"></span></div></div>
-    <div class="clean_table_filter" {if !$show_all}style="visibility:hidden"{/if} id="clean_table_filter0"><div class="clean_table_info"><span id="filter_name0">{t}Product Code{/t}</span>: <input style="border-bottom:none" id='f_input0' value="{$filter_value}" size=10/><div id='f_container'></div></div></div>
-    <div class="clean_table_controls" {if !$show_all}style="visibility:hidden"{/if}  id="clean_table_controls0" ><div><span  style="margin:0 5px" id="paginator"></span></div></div>
+    <div class="clean_table_filter" {if !$show_all}style="visibility:hidden"{/if} id="clean_table_filter0"><div class="clean_table_info"><span id="filter_name0">{t}Product Code{/t}</span>: <input style="border-bottom:none" id='f_input0' value="{$filter_value}" size=10/><div id='f_container0'></div></div></div>
+    <div class="clean_table_controls" {if !$show_all}style="visibility:hidden"{/if}  id="clean_table_controls0" ><div><span  style="margin:0 5px" id="paginator0"></span></div></div>
   </div>
   <div  id="table0"  style="font-size:80%" class="data_table_container dtable btable "> </div>
 </div>
@@ -115,7 +115,8 @@
 </div>
 
 
-<div id="delete_dialog" style="padding:10px 15px">
+<div id="delete_dialog" class="nicebox">
+<div class="db">
   <div id="delete_dialog_msg" class="dialog_msg" style="padding:0 0 10px 0 ">{t}Note: this action can not be undone{/t}.</div>
   <table style="width:250px">
    
@@ -126,6 +127,7 @@
     </td>
 </tr>
   </table>
+  </div>
 </div>
 
 

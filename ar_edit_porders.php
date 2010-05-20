@@ -30,6 +30,16 @@ $tipo=$_REQUEST['tipo'];
 
 
 switch($tipo){
+case('dn_transactions_to_stock'):
+  dn_transactions_to_stock();
+  break;case('dn_transactions_to_count'):
+  dn_transactions_to_count();
+  break;
+  
+case('edit_porder'):
+  edit_porder();
+  break;
+
 case('delete_po'):
   delete_purchase_order();
   break;
@@ -179,18 +189,28 @@ function submit_purchase_order() {
               'Purchase Order Estimated Receiving Date'=>''
 		);
     
-    if (isset($_REQUEST['date_type']) and $_REQUEST['date_type']=='manual' ) {
-        if (isset($_REQUEST['submit_date']) and  isset($_REQUEST['submit_time']) ) {
-            $_date=$_REQUEST['submit_date'].' '.$_REQUEST['submit_time'];
-            $date_data=prepare_mysql_datetime($_date);
+    
+    
+    
+   
+        if (isset($_REQUEST['submit_date'])  ) {
+            $_date=$_REQUEST['submit_date'];
+            
+            
+            
+            $date_data=prepare_mysql_datetime($_date,'date');
             if (!$date_data['ok']) {
                 $response= array('state'=>400,'msg'=>_('Wrong date/time'));
                 echo json_encode($response);
                 return;
             }
             $data['Purchase Order Submitted Date']=$date_data['mysql_date'];
+            if($data['Purchase Order Submitted Date']==date('Y-m-d'))
+                $data['Purchase Order Submitted Date'].=date(' H:i:s');
+             else
+                $data['Purchase Order Submitted Date'].' 12:00:00';
         }
-    }
+    
 
 
     if (isset($_REQUEST['estimated_date']) and $_REQUEST['estimated_date']==''    ) {
@@ -217,7 +237,6 @@ function submit_purchase_order() {
 
          }
 
-
     $po->submit($data);
     if (!$po->error) {
         $response= array('state'=>200);
@@ -228,6 +247,46 @@ function submit_purchase_order() {
     }
     echo json_encode($response);
 }
+
+
+function edit_porder() {
+    global $user;
+    if (isset( $_REQUEST['id']) and is_numeric( $_REQUEST['id'])) {
+        $purchase_order_key=$_REQUEST['id'];
+        $_SESSION['state']['porder']['id']=$purchase_order_key;
+    } else
+        $purchase_order_key=$_SESSION['state']['porder']['id'];
+
+    $po=new PurchaseOrder($purchase_order_key);
+
+
+  $key_dic=array(
+		   'estimated_delivery'=>'Purchase Order Estimated Receiving Date'
+		 
+		   
+    );
+    if(array_key_exists($_REQUEST['key'],$key_dic))
+       $key=$key_dic[$_REQUEST['key']];
+    
+    
+    $po->update(array($key=>stripslashes(urldecode($_REQUEST['newvalue']))));
+
+
+
+
+
+
+    if ($po->updated) {
+        $response= array('state'=>200,'newvalue'=>$po->new_value);
+
+    } else {
+        $response= array('state'=>400,'msg'=>$po->msg);
+
+    }
+    echo json_encode($response);
+}
+
+
 
 
 
@@ -361,7 +420,6 @@ if(isset( $_REQUEST['show_all']) and preg_match('/^(yes|no)$/',$_REQUEST['show_a
 
 
 
-
     //    print_r($_SESSION['state']['supplier_dn']);
 
 
@@ -409,10 +467,13 @@ if(!$show_all){
     $_dir=$order_direction;
     $filter_msg='';
     $wheref='';
-    if ($f_field=='code' and $f_value!='')
+   
+   if ($f_field=='code' and $f_value!='')
         $wheref.=" and  `Product Code` like '".addslashes($f_value)."%'";
     elseif($f_field=='name' and $f_value!='')
     $wheref.=" and  `Product Name` like '%".addslashes($f_value)."%'";
+   
+   
    
       $sql="select count(*) as total from $table   $where $wheref   ";
  
@@ -673,7 +734,6 @@ if(!$show_all){
      
    }
 
-
   
 
      $_order=$order;
@@ -681,9 +741,9 @@ if(!$show_all){
     $filter_msg='';
     $wheref='';
     if ($f_field=='code' and $f_value!='')
-        $wheref.=" and  `Product Code` like '".addslashes($f_value)."%'";
-    elseif($f_field=='name' and $f_value!='')
-    $wheref.=" and  `Product Name` like '%".addslashes($f_value)."%'";
+        $wheref.=" and  `Supplier Product Code` like '".addslashes($f_value)."%'";
+    elseif($f_field=='p.code' and $f_value!='')
+    $wheref.=" and  `Supplier Product XHTML Used In` like '%".addslashes($f_value)."%'";
    
       $sql="select count(*) as total from $table   $where $wheref   ";
  
@@ -708,28 +768,30 @@ if(!$show_all){
 
 
     $rtext=$total_records." ".ngettext('product','products',$total_records);
-    if ($total_records>$number_results)
+  
+  if ($total_records>$number_results)
         $rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
     else
         $rtext_rpp=' '._('(Showing all)');
 
+
     if ($total==0 and $filtered>0) {
         switch ($f_field) {
         case('code'):
-            $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any product with code like ")." <b>".$f_value."*</b> ";
+            $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any supplier product with code like ")." <b>".$f_value."*</b> ";
             break;
-        case('name'):
-            $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any product with name like ")." <b>".$f_value."*</b> ";
+        case('p.code'):
+            $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any supplier product used in")." <b>".$f_value."*</b> ";
             break;
         }
     }
     elseif($filtered>0) {
         switch ($f_field) {
         case('code'):
-            $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total "._('products with code like')." <b>".$f_value."*</b> <span onclick=\"remove_filter($tableid)\" id='remove_filter$tableid' class='remove_filter'>"._('Show All')."</span>";
+            $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total "._('supplier products with code like')." <b>".$f_value."*</b> <span onclick=\"remove_filter($tableid)\" id='remove_filter$tableid' class='remove_filter'>"._('Show All')."</span>";
             break;
-        case('name'):
-            $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total "._('products with name like')." <b>".$f_value."*</b> <span onclick=\"remove_filter($tableid)\" id='remove_filter$tableid' class='remove_filter'>"._('Show All')."</span>";
+        case('p.code'):
+            $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total "._('supplier products used in')." <b>".$f_value."*</b> <span onclick=\"remove_filter($tableid)\" id='remove_filter$tableid' class='remove_filter'>"._('Show All')."</span>";
             break;
         }
     }
@@ -760,7 +822,7 @@ if(!$show_all){
     $res = mysql_query($sql);
 
     $adata=array();
-    // print $sql;
+  //  print $sql;
  while ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
 if($row['Purchase Order Quantity']==0)
@@ -913,7 +975,7 @@ function edit_new_supplier_dn(){
 	    
 	      'date'=>date('Y-m-d H:i:s')
 	      ,'Supplier Product Key'=>$product->data['Supplier Product Current Key']
-	      ,'line_number'=>$order->get_next_line_number()
+	    //  ,'line_number'=>$order->get_next_line_number()
 	      // ,'amount'=>$gross
 	      ,'qty'=>$quantity
 	      ,'qty_type'=>$quantity_type
@@ -1006,7 +1068,7 @@ function edit_inputted_supplier_dn(){
       $response= array('state'=>400,'msg'=>$order->msg);
 
     }else{
-      $response= array('state'=>200,'quantity'=>$transaction_data['qty'],'counted'=>$transaction_data['counted'],'key'=>$_REQUEST['key'],'data'=>$updated_data);
+      $response= array('state'=>200,'damaged_quantity'=>$transaction_data['damaged_qty'],'quantity'=>$transaction_data['qty'],'counted'=>$transaction_data['counted'],'key'=>$_REQUEST['key'],'data'=>$updated_data);
     }   
     echo json_encode($response);  
 
@@ -1115,6 +1177,10 @@ function input_supplier_delivery_note() {
 
 
     $dn->input($data);
+    
+    
+    
+    
     if (!$dn->error) {
         $response= array('state'=>200);
 
@@ -1376,6 +1442,229 @@ if($row['Supplier Delivery Note Damaged Quantity']!=0)
     echo json_encode($response);
 
 }
+
+
+
+function dn_transactions_to_stock(){
+
+ if(isset( $_REQUEST['id']) and is_numeric( $_REQUEST['id'])){
+   $supplier_dn_key=$_REQUEST['supplier_dn_key'];
+   $_SESSION['state']['supplier_dn']['id']=$supplier_dn_key;
+ }else
+   $supplier_dn_key=$_SESSION['state']['supplier_dn']['id'];
+ 
+
+ $supplier_dn=New SupplierDeliveryNote($supplier_dn_key);
+ $supplier_key=$supplier_dn->data['Supplier Delivery Note Supplier Key'];
+
+
+
+ $conf=$_SESSION['state']['supplier_dn']['products'];
+ if (isset( $_REQUEST['sf']))
+        $start_from=$_REQUEST['sf'];
+    else
+        $start_from=$conf['sf'];
+    if (!is_numeric($start_from))
+        $start_from=0;
+
+   
+   $number_results=1000;
+   
+    if (isset( $_REQUEST['o']))
+        $order=$_REQUEST['o'];
+    else
+        $order=$conf['order'];
+
+    if (isset( $_REQUEST['od']))
+        $order_dir=$_REQUEST['od'];
+    else
+        $order_dir=$conf['order_dir'];
+    $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
+
+
+
+   /*  if (isset( $_REQUEST['where'])) */
+/*         $where=addslashes($_REQUEST['where']); */
+/*     else */
+/*         $where=$conf['where']; */
+
+
+    if (isset( $_REQUEST['f_field']))
+        $f_field=$_REQUEST['f_field'];
+    else
+        $f_field=$conf['f_field'];
+
+    if (isset( $_REQUEST['f_value']))
+        $f_value=$_REQUEST['f_value'];
+    else
+        $f_value=$conf['f_value'];
+
+
+    if (isset( $_REQUEST['tableid']))
+        $tableid=$_REQUEST['tableid'];
+    else
+        $tableid=0;
+
+
+    $show_all=false;
+
+
+    //    print_r($_SESSION['state']['supplier_dn']);
+
+
+    $_SESSION['state']['supplier_dn']['products']=array(
+					      'order'=>$order
+					      ,'order_dir'=>$order_direction
+					        ,'nr'=>$number_results
+					      ,'sf'=>$start_from
+					      //						 ,'where'=>$where
+					      ,'f_field'=>$f_field
+					      ,'f_value'=>$f_value
+					      );
+$table="`Supplier Delivery Note Item Part Bridge` P left join `Purchase Order Transaction Fact` F on (P.`Supplier Delivery Note Line`=F.`Supplier Delivery Note Line`) left join `Part Dimension` PA on (PA.`Part SKU`=P.`Part SKU`) left join `Supplier Product History Dimension` SHP on (SHP.`SPH Key`=F.`Supplier Product Key`) left join `Supplier Product Dimension` SP on (SHP.`Supplier Product Code`=SP.`Supplier Product Code` and SHP.`Supplier Key`=SP.`Supplier Key`)";
+$where=sprintf(' where F.`Supplier Delivery Note Key`=%d',$supplier_dn_key);
+     $_order=$order;
+    $_dir=$order_direction;
+    $filter_msg='';
+    $wheref='';
+    if ($f_field=='code' and $f_value!='')
+        $wheref.=" and  `Product Code` like '".addslashes($f_value)."%'";
+    elseif($f_field=='name' and $f_value!='')
+    $wheref.=" and  `Product Name` like '%".addslashes($f_value)."%'";
+   
+      $sql="select count(*) as total from $table     $where   ";
+ 
+    // print_r($conf);exit;
+         //    print $sql;
+    $res=mysql_query($sql);
+    if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+        $total=$row['total'];
+    }
+    if ($wheref=='') {
+        $filtered=0;
+        $total_records=$total;
+    } else {
+        $sql="select  count(*) as total from $table   $where $wheref   ";
+        $res=mysql_query($sql);
+        if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+            $total_records=$row['total'];
+            $filtered=$total_records-$total;
+        }
+
+    }
+
+
+    $rtext=$total_records." ".ngettext('part','parts',$total_records);
+    if ($total_records>$number_results)
+        $rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
+    else
+        $rtext_rpp=' '._('(Showing all)');
+
+    if ($total==0 and $filtered>0) {
+        switch ($f_field) {
+        case('code'):
+            $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any product with code like ")." <b>".$f_value."*</b> ";
+            break;
+        case('name'):
+            $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any product with name like ")." <b>".$f_value."*</b> ";
+            break;
+        }
+    }
+    elseif($filtered>0) {
+        switch ($f_field) {
+        case('code'):
+            $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total "._('products with code like')." <b>".$f_value."*</b> <span onclick=\"remove_filter($tableid)\" id='remove_filter$tableid' class='remove_filter'>"._('Show All')."</span>";
+            break;
+        case('name'):
+            $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total "._('products with name like')." <b>".$f_value."*</b> <span onclick=\"remove_filter($tableid)\" id='remove_filter$tableid' class='remove_filter'>"._('Show All')."</span>";
+            break;
+        }
+    }
+    else
+        $filter_msg='';
+
+    $_order=$order;
+    $_order_dir=$order_dir;
+$_order='sku';
+    $order='PA.`Part SKU`';
+ 
+   // if ($order=='code')
+   //   $order='SP.`Supplier Product Code`';
+   // else if ($order=='name')
+   //   $order='SP.`Supplier Product Name`';
+   
+  //  elseif($order=='parts') {
+   //   $order='`Supplier Product XHTML Parts`';
+   // }
+   // elseif($order=='supplied') {
+   //   $order='`Supplier Product XHTML Supplied By`';
+   // }
+ 
+
+    
+
+ $sql="select `Part XHTML Description`,`Supplier Delivery Note Damaged Quantity`,`Supplier Product XHTML Used In`,`Supplier Delivery Note Quantity Type`,`Part Quantity`,`Done`,PA.`Part SKU`,`Notes`, `Supplier Product Unit Type`,SP.`Supplier Product Code`,`Supplier Product Units Per Case`,`Supplier Product Name`,`Supplier Product Cost`,`Supplier Delivery Note Received Quantity` from $table  $where $wheref order by $order $order_direction limit $start_from,$number_results    ";
+ 
+    $res = mysql_query($sql);
+
+    $adata=array();
+   //    print $sql;
+ while ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+
+
+
+
+$dn_unit_type=$row['Supplier Delivery Note Quantity Type'];
+if($dn_unit_type=='ea'){
+$dn_unit_type='piece';
+}
+
+if($row['Supplier Delivery Note Damaged Quantity']!=0)
+  $notes='('.-1.*$row['Supplier Delivery Note Damaged Quantity'].')';
+  else
+    $notes='';
+   $adata[]=array(
+	//	  'id'=>$row['Supplier Product Current Key'],
+		  'code'=>$row['Supplier Product Code'],
+		  'description'=>'<span style="font-size:95%">'.number($row['Supplier Product Units Per Case']).'x '.$row['Supplier Product Name'].' @'.money($row['Supplier Product Cost']/$row['Supplier Product Units Per Case']).' '.$row['Supplier Product Unit Type'].'</span>',
+		'used_in'=>$row['Supplier Product XHTML Used In'],
+		  'to_stock_quantity'=>$row['Supplier Delivery Note Received Quantity']-$row['Supplier Delivery Note Damaged Quantity'],
+		 'sku'=>$row['Part SKU'],
+		  'sku_name'=>$row['Part XHTML Description'],
+		 	 'part_quantity'=>$row['Part Quantity'],
+		 	 'notes'=>$row['Notes'],
+		 	 'done'=>$row['Done'],
+		 	 'sp_data'=>'('.$row['Supplier Product Code'].') <span style="font-size:95%">'.number($row['Supplier Product Units Per Case']).'x '.$row['Supplier Product Name'].' @'.money($row['Supplier Product Cost']/$row['Supplier Product Units Per Case']).' '.$row['Supplier Product Unit Type'].'</span> <span style="font-size:110%;font-weight:800"> To Place: '.($row['Supplier Delivery Note Received Quantity']-$row['Supplier Delivery Note Damaged Quantity']).'</span>'
+
+		     
+                 );
+
+
+ }
+
+ $response=array('resultset'=>
+                                array('state'=>200,
+                                      'data'=>$adata,
+                                      'sort_key'=>$_order,
+                                      'sort_dir'=>$_dir,
+                                      'tableid'=>$tableid,
+                                      'filter_msg'=>$filter_msg,
+                                      'rtext'=>$rtext,
+                                      'rtext_rpp'=>$rtext_rpp,
+                                      'total_records'=>$total_records-$filtered,
+                                      'records_offset'=>$start_from,
+                                      'records_perpage'=>$number_results,
+                                     )
+                   );
+    echo json_encode($response);
+
+}
+
+
+
+
+
+
 
     function receive_supplier_delivery_note() {
       global $user,$editor;

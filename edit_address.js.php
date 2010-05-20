@@ -26,7 +26,10 @@ var Address_Keys=["key","country","country_code","country_d1","country_d2","town
 var Address_Meta_Keys=["type","function"];
 
 
+function cancel_edit_address(address_identifier){
+ Dom.setStyle([address_identifier+'address_form'], 'display', 'none'); 
 
+};
 
 function change_main_address(o,address_key){
     //    var checked=o.getAttribute('checked');
@@ -76,8 +79,8 @@ var save_address=function(e,options){
 	    value[items[i]]=Dom.get(address_prefix+'address_'+items[i]).value;
     
 	var json_value = YAHOO.lang.JSON.stringify(value); 
-	var request='ar_edit_contacts.php?tipo=edit_address&value=' + json_value+'&id='+address_key+'&subject='+optins.Subject+'&subject_key='+options.subject_key; 
-	alert(request);
+	var request='ar_edit_contacts.php?tipo=edit_address&value=' + json_value+'&id='+address_key+'&subject='+options.Subject+'&subject_key='+options.subject_key; 
+	//alert(request);
 	//	return;
 	YAHOO.util.Connect.asyncRequest('POST',request ,{
 		success:function(o) {
@@ -90,7 +93,7 @@ var save_address=function(e,options){
 			    if(address_item_value==null)address_item_value='';
 			    Address_Data[address_key][i]=address_item_value;
 			}
-			cancel_edit_address();
+			cancel_edit_address(address_prefix);
 			save_address_elements++;
 		    }else if(r.action=='error'){
 			alert(r.msg);
@@ -125,7 +128,7 @@ var save_address=function(e,options){
 			
 			
 			Address_Data[address_key]['type']=r.updated_data;
-			cancel_edit_address();
+			cancel_edit_address(address_prefix);
 			save_address_elements++;
 		    }else if(r.action=='error'){
 			alert(r.msg);
@@ -210,7 +213,7 @@ var create_address=function(options){
 
 		    Address_Data[r.address_key]=new Object;
 		    Address_Data[r.address_key]=new_address_data;
-		    cancel_edit_address();
+		    cancel_edit_address(address_prefix);
 		    
 		    var new_address_container = Dom.get(address_prefix+'address_container0').cloneNode(true);
 		    new_address_container.id = address_prefix+'address_containe'+r.address_key;
@@ -348,7 +351,6 @@ function edit_address(index,address_identifier){
     Dom.setStyle([address_identifier+'address_form'], 'display', ''); 
 
     Dom.setStyle([address_identifier+'reset_address_button'], 'visibility', 'hidden'); 
-
     Dom.get(address_identifier+"reset_address_button").setAttribute('address_key',index);
   data=Address_Data[index];
   
@@ -373,7 +375,6 @@ function edit_address(index,address_identifier){
 		    }
 	}
     }
-
 };
 
 var update_address_labels=function(country_code,suffix){

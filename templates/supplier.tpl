@@ -1,6 +1,7 @@
 {include file='header.tpl'}
 <div id="bd" >
-<div style="display:none">
+<div >
+
  {include file='suppliers_navigation.tpl'}
  </div>
  <div id="no_details_title" style="clear:left;{if $show_details}display:none;{/if}">

@@ -10,7 +10,7 @@
 
 <div class="prodinfo" style="clear:both;margin-top:2px;font-size:85%;border:1px solid #ddd;padding:10px">
     <div style="border:0px solid red;width:290px;float:right">
-    <table  border=0  class="order_header"  style="margin-right:30px;float:right">
+    <table  border=1  class="order_header"  style="display:none;margin-right:30px;float:right">
       <tr><td class="aright" style="padding-right:40px">{t}Created{/t}:</td><td>{$supplier_dn->get('Creation Date')}</td></tr>
       <tr><td class="aright" style="padding-right:40px">{t}Inputted{/t}:</td><td>{$supplier_dn->get('Input Date')}</td></tr>
       <tr><td class="aright" style="padding-right:40px">{t}Received{/t}:</td><td>{$supplier_dn->get('Received Date')}</td></tr>
@@ -39,12 +39,12 @@
 </div>
 
 
- <table style="float:left;margin:0 0 5px 0px ;padding:0"  class="options" >
+ <table style="float:left;margin:0 0 5px 0px ;padding:0;display:none"  class="options" >
 	<tr>
 	  <td  {if $view=='counting'}class="selected"{/if} id="counting" >{t}Check Delivery{/t}</td><td style="border:none;color:#000">&rarr;</td>
 	  <td {if $view=='set_damages'}class="selected"{/if}  id="set_damages"  >{t}Set Damages{/t}</td><td style="border:none;color:#000">&rarr;</td>
 	  <td {if $view=='set_skus'}class="selected"{/if}  id="set_skus"  >{t}Assing SKUs{/t}</td><td style="border:none;color:#000">&rarr;</td>
-	  <td {if $view=='set_locations'}class="selected"{/if}  id="set_locations"  >{t}Assing Locations{/t}</td>
+	  <td {if $view=='set_locations'}class="selected"{/if} class="selected"  id="set_locations"  >{t}Assing Locations{/t}</td>
 	</tr>
       </table>
 
@@ -52,9 +52,8 @@
 <div id="the_table" class="data_table" style="margin:20px 0px;clear:both">
   <span class="clean_table_title">{t}Parts{/t}</span>
   <div id="table_type">
-    <span id="take_values_from_dn" style="margin-left:20px;float:right;color:brown" class="table_type state_details">{t}Copy values from DN{/t}</span>
-    <span id="set_damages_bis" style="float:right;color:brown" class="table_type state_details">{t}Set Damaged{/t}</span>
-    <span id="set_received" style="display:none;float:right;color:brown" class="table_type state_details">{t}Set Received{/t}</span>
+    <span id="set_damages_bis" style="margin-left:20px;float:right;color:brown" class="table_type state_details">{t}Change Quantity Damaged{/t}</span>
+    <span id="set_received" style="float:right;color:brown" class="table_type state_details">{t}Change Quantity Received{/t}</span>
   </div>
   
   
@@ -72,8 +71,8 @@
   
   <div  class="clean_table_caption"  style="clear:both;">
     <div style="float:left;"><div id="table_info0" class="clean_table_info"><span id="rtext0"></span> <span class="rtext_rpp" id="rtext_rpp0"></span> <span class="filter_msg"  id="filter_msg0"></span></div></div>
-    <div class="clean_table_filter" {if !$show_all}style="visibility:hidden"{/if} id="clean_table_filter0"><div class="clean_table_info"><span id="filter_name0">{t}Product Code{/t}</span>: <input style="border-bottom:none" id='f_input0' value="{$filter_value}" size=10/><div id='f_container'></div></div></div>
-    <div class="clean_table_controls" {if !$show_all}style="visibility:hidden"{/if}  id="clean_table_controls0" ><div><span  style="margin:0 5px" id="paginator"></span></div></div>
+    <div class="clean_table_filter" {if !$show_all}style="visibility:hidden"{/if} id="clean_table_filter0"><div class="clean_table_info"><span id="filter_name0">{t}Product Code{/t}</span>: <input style="border-bottom:none" id='f_input0' value="{$filter_value}" size=10/><div id='f_container0'></div></div></div>
+    <div class="clean_table_controls" {if !$show_all}style="visibility:hidden"{/if}  id="clean_table_controls0" ><div><span  style="margin:0 5px" id="paginator0"></span></div></div>
   </div>
   <div  id="table0"  style="font-size:80%" class="data_table_container dtable btable "> </div>
 </div>
@@ -128,6 +127,19 @@
     </td>
 </tr>
   </table>
+</div>
+
+
+<div id="place_sku" class="nicebox">
+<div class="bd" style="width:400px">
+<h2>{t}Stock Placing for{/t} <span id="place_sku_label"></span></h2>
+<div id="place_sku_msg"></div>
+<table>
+<tr><td style="width:80px">{t}Quantity{/t}</td><td><input style="width:40px" id="place_sku_qty" value="" type="text"></td>
+<td class="label">{t}Location{/t}</td><td><input id="place_sku_location" /></td>
+</tr>
+</table>
+</div>
 </div>
 
 <div id="staff_dialog" class="yuimenu staff_list"  >

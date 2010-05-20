@@ -122,8 +122,8 @@ $filter_menu=array(
 		   'low'=>array('db_key'=>'low','menu_label'=>'Suppliers with more than <i>n</i> low stock products','label'=>'Low'),
 		   'outofstock'=>array('db_key'=>'outofstock','menu_label'=>'Suppliers with more than <i>n</i> products out of stock','label'=>'Out of Stock'),
 		   );
-$smarty->assign('filter_menu',$filter_menu);
-$smarty->assign('filter_name',$filter_menu[$tipo_filter]['label']);
+$smarty->assign('filter_menu0',$filter_menu);
+$smarty->assign('filter_name0',$filter_menu[$tipo_filter]['label']);
 
 //$smarty->assign('table_info',$orders.'  '.ngettext('Order','Orders',$orders));
 $paginator_menu=array(10,25,50,100,500);

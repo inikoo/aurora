@@ -85,7 +85,6 @@ var myonCellClick = function(oArgs) {
     var records=this.getRecordSet();
     //alert(records.getLength())
    
-    //alert(column.action);
     //return;
 
     //alert(datatable)
@@ -382,8 +381,8 @@ var received_order_save=function(o){
     YAHOO.util.Connect.asyncRequest('POST',request ,{
 	    
 	    success:function(o) {
-		    alert(o.responseText);
-		    return;
+		    //alert(o.responseText);
+		   
 		    var r =  YAHOO.lang.JSON.parse(o.responseText);
 		    if (r.state == 200) {
 			
@@ -398,60 +397,11 @@ var received_order_save=function(o){
 };    
 
      
-function take_values_from_dn(){
-
-	var ar_file='ar_edit_porders.php';
-	request='tipo=take_values_from_dn&dn_key='+dn_key;
-	//	alert(ar_file+'?'+request)
-	YAHOO.util.Connect.asyncRequest(
-					'POST',
-					ar_file, {
-					    success:function(o) {
-						  alert(o.responseText);
-						var r = YAHOO.lang.JSON.parse(o.responseText);
-						if (r.state == 200) {
-						    var tableid=0;
-						    var table=tables['table'+tableid];
-						    
-						    var datasource=tables['dataSource'+tableid];
-						    table.filter.value=Dom.get('f_input'+tableid).value;
-						    var request='&show_all=no';
-						    datasource.sendRequest(request,table.onDataReturnInitializeTable, table);       
-
-						    //	callback(true, r.newvalue);
-						} else {
-						    alert(r.msg);
-						    //	callback();
-						}
-					    },
-						failure:function(o) {
-						alert(o.statusText);
-						// callback();
-					    },
-						scope:this
-						},
-					request
-				    
-					);  
-	
-
-}
 
 
 
-function set_damages(){
-  var request='ar_edit_porders.php?tipo=mark_dn_as_received&id='+dn_key;
-  YAHOO.util.Connect.asyncRequest('POST',request ,{
-	  success:function(o) {
-	      var r =  YAHOO.lang.JSON.parse(o.responseText);
-	      if (r.state == 200) {
-		  location.href='supplier.php?id='+supplier_id;
-	      }else{
-		  Dom.get('delete_dialog_msg').innerHTNML=r.msg;
-	      }
-	  }
-      });    
-}
+
+
 
 function init(){
     

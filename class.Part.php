@@ -905,12 +905,13 @@ class part extends DB_Table {
 
     function get_supplier_products() {
         $supplier_products=array();
-        $sql=sprintf("select `Supplier Product Units Per Part`,`Supplier Product Code`,  SD.`Supplier Key`,`Supplier Code` from `Supplier Product Part List` SPPL   left join `Supplier Dimension` SD on (SD.`Supplier Key`=SPPL.`Supplier Key`)
+        $sql=sprintf("select (select GROUP_CONCAT(`SPH Key`) from `Supplier Product History Dimension` H where H.`Supplier Product Code`=SPPL.`Supplier Product Code` and H.`Supplier Key`=SPPL.`Supplier Key` ) as `Supplier Product Keys`,  `Supplier Product Units Per Part`,`Supplier Product Code`,  SD.`Supplier Key`,`Supplier Code` from `Supplier Product Part List` SPPL   left join `Supplier Dimension` SD on (SD.`Supplier Key`=SPPL.`Supplier Key`)
                      where `Part SKU`=%d ;",$this->data['Part SKU']);
         $result=mysql_query($sql);
         while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
             $supplier_products[$row['Supplier Key'].$row['Supplier Product Code']]=array(
                         'Supplier Key'=>$row['Supplier Key']
+                        ,'Supplier Product Keys'=>$row['Supplier Product Keys']
                                        ,'Supplier Product Code'=>$row['Supplier Product Code']
                                                                 ,'Supplier Product Units Per Part'=>$row['Supplier Product Units Per Part']
 

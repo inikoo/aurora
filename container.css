@@ -346,3 +346,8 @@ PLEASE NOTE:
 #newcontact_messages{border:1px solid #ccc;float:right;clear:right;padding:10px;margin:10px 10px 0 10px ;width:380p;display:none}
 
 #mapframe{border:none;float:left;width:350px;height:350px;padding:0}
+
+.nicebox{padding:10px;border:1px solid #eee}
+.nicebox div.bd{border:1px solid #777}
+.nicebox span.value{font-weight:800;font-size:110%}
+.nicebox td.label{width:200px;padding-right:20px;text-align:right}

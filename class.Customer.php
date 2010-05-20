@@ -2972,5 +2972,28 @@ switch ($tipo) {
 
 }
 
+function get_address_bridge_data($address_key){
+
+$sql=sprintf("select * from `Address Bridge` where `Subject Type`='Customer' and `Subject Key`=%d and `Address Key`=%d",$this->id,$address_key);
+$res=mysql_query($sql);
+if($row=mysql_fetch_array($res)){
+    return array('Address Type'=>$row['Address Type'],'Address Function'=>$row['Address Function']);
+}
+return false;
+}
+
+function get_delivery_address_objects(){
+
+        $sql=sprintf("select * from `Address Bridge` CB where  `Address Function`='Shipping' and  `Subject Type`='Customer' and `Subject Key`=%d  group by `Address Key` order by `Is Main` desc  ",$this->id);
+        $address_objects=array();
+        $result=mysql_query($sql);
+
+        while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+
+            $address_objects[$row['Address Key']]= new Address($row['Address Key']);
+        }
+        return $address_objects;
+}
+
 }
 ?>

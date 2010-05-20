@@ -36,7 +36,7 @@ var myCellEdit = function (callback, newValue) {
 				    'POST',
 				    ar_file, {
 					success:function(o) {
-					     alert(o.responseText);
+					 //   alert(o.responseText);
 					    var r = YAHOO.lang.JSON.parse(o.responseText);
 					    if (r.state == 200) {
 						
@@ -112,7 +112,7 @@ var myonCellClick = function(oArgs) {
 					'POST',
 					ar_file, {
 					    success:function(o) {
-						  alert(o.responseText);
+						//  alert(o.responseText);
 						var r = YAHOO.lang.JSON.parse(o.responseText);
 						if (r.state == 200) {
 						    for(x in r.data){
@@ -202,7 +202,7 @@ var input_order_save=function(o){
     YAHOO.util.Connect.asyncRequest('POST',request ,{
 	    
 	    success:function(o) {
-		    
+		    //alert(o.responseText)
 		    var r =  YAHOO.lang.JSON.parse(o.responseText);
 		    if (r.state == 200) {
 			
@@ -410,7 +410,8 @@ function take_values_from_pos(){
 
 function init(){
 
-    Event.addListener("take_values_from_pos", "click", take_values_from_pos);
+//take_values_from_pos();
+   // Event.addListener("take_values_from_pos", "click", take_values_from_pos);
 
  Event.addListener("save_inputted_dn", "click", input_order_save);
 

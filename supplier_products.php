@@ -2,15 +2,13 @@
 include_once('common.php');
 include_once('class.Supplier.php');
 
-if(!$LU->checkRight(SUP_VIEW))
-  exit;
-
-
 $css_files=array(
 		 $yui_path.'reset-fonts-grids/reset-fonts-grids.css',
 		 $yui_path.'menu/assets/skins/sam/menu.css',
 		 $yui_path.'calendar/assets/skins/sam/calendar.css',
 		 $yui_path.'button/assets/skins/sam/button.css',
+		 //$yui_path.'autocomplete/assets/skins/sam/autocomplete.css',
+
 		 'common.css',
 		 'button.css',
 		 'container.css',
@@ -19,23 +17,30 @@ $css_files=array(
 $js_files=array(
 
 		$yui_path.'utilities/utilities.js',
+		$yui_path.'connection/connection-debug.js',
 		$yui_path.'json/json-min.js',
 		$yui_path.'paginator/paginator-min.js',
+		$yui_path.'animation/animation-min.js',
+
 		$yui_path.'datasource/datasource-min.js',
 		$yui_path.'autocomplete/autocomplete-min.js',
 		$yui_path.'datatable/datatable.js',
 		$yui_path.'container/container_core-min.js',
 		$yui_path.'menu/menu-min.js',
 		$yui_path.'calendar/calendar-min.js',
-		'js/common.js.php',
-		'js/table_common.js.php',
-		'js/supplier_products.js.php'
+		'common.js.php',
+		'table_common.js.php',
+	    'supplier_products.js.php'
 		);
+
+
+
+
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
 
 
-$sql="select count(*) as total_products  from `Supplier Product Dimension` where `Supplier Product Most Recent`='Yes'";
+$sql="select count(*) as total_products  from `Supplier Product Dimension` ";
 $result =mysql_query($sql);
 if(!$products=mysql_fetch_array($result, MYSQL_ASSOC))
   exit("Internal Error DEPS");

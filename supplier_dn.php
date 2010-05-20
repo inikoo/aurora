@@ -36,7 +36,21 @@ if(isset($_REQUEST['id'])){
     }
 
 
-    $supplier_dn_public_id=$_REQUEST['number'];
+    $supplier_dn_public_id=stripslashes(urldecode($_REQUEST['number']));
+     $dn_date='';
+    if(isset($_REQUEST['date'])){
+         $_date=$_REQUEST['date'];
+            
+            
+            
+            $date_data=prepare_mysql_datetime($_date,'date');
+            if ($date_data['ok']) {
+             
+                $dn_date=$date_data['mysql_date'];
+            }
+    
+    }
+
 
     $po_keys=preg_split('/,/',$_REQUEST['po']);
     $po_objects=array();
@@ -56,7 +70,7 @@ if(isset($_REQUEST['id'])){
       }
     
       if($po->data['Purchase Order Current Dispatch State']=='Submitted' or $po->data['Purchase Order Current Dispatch State']=='In Process' ){
-	$po_objects[$po->id]=array('object'=>$po);
+	$po_objects[$po->id]=$po;
 	$po_array[$po->id]=$po->id;
       }
     
@@ -86,16 +100,18 @@ if(isset($_REQUEST['id'])){
   $data=array(
 	      'Supplier Delivery Note Supplier Key'=>$supplier->id
 	      ,'Supplier Delivery Note Public ID'=>$supplier_dn_public_id
+	     ,'Supplier Delivery Note Date'=>$dn_date
+
 	      ,'editor'=>$editor
 	      );
 
   $supplier_delivery_note=new SupplierDeliveryNote('find',$data,'create');
   $supplier_delivery_note->update_pos($po_array);
+  $supplier_delivery_note->creating_take_values_from_pos();
   if($supplier_delivery_note->error or !$supplier_delivery_note->id){
     print_r($supplier_delivery_note);
     exit('error when creating the supplier deliver note');
   }
-
 
 
 
@@ -161,7 +177,6 @@ $smarty->assign('filter_name0',$filter_menu[$tipo_filter]['label']);
 
 $paginator_menu=array(10,25,50,100,500);
 $smarty->assign('paginator_menu',$paginator_menu);
-
 
 switch($supplier_delivery_note->data['Supplier Delivery Note Current State']){
 case('In Process'):
@@ -243,6 +258,11 @@ $sql=sprintf("select `Location Key` ,`Location Code`    from `Location Dimension
   $js_files[]='js/edit_common.js';
   $smarty->assign('css_files',$css_files);
   $smarty->assign('js_files',$js_files);
+  
+  
+//$supplier_delivery_note->update_affected_products();
+ // exit;
+  
   $smarty->display('supplier_dn_inputted.tpl');
 
 
@@ -294,6 +314,7 @@ case('Checked'):
     $js_files[]='supplier_dn_assing_locations.js.php';
     $smarty->assign('css_files',$css_files);
     $smarty->assign('js_files',$js_files);
+
     $smarty->display('supplier_dn_assing_locations.tpl');
     
  
