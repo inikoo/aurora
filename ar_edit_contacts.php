@@ -1325,6 +1325,7 @@ function edit_customer() {
 		   ,'contact'=>'Customer Main Contact Name'
 		   ,"address"=>'Address'
 		   ,"town"=>'Main Address Town'
+		    ,"tax_number"=>'Customer Tax Number'
 		   ,"postcode"=>'Main Address Town'
 		   ,"region"=>'Main Address Town'
 		   ,"country"=>'Main Address Country'
@@ -1337,9 +1338,10 @@ function edit_customer() {
     );
     if(array_key_exists($_REQUEST['key'],$key_dic))
        $key=$key_dic[$_REQUEST['key']];
-    
-    
-    $customer->update(array($key=>stripslashes(urldecode($_REQUEST['newvalue']))));
+    if($key=='Customer Tax Number'){
+    $customer->update_tax_number(stripslashes(urldecode($_REQUEST['newvalue'])  ));
+    }else
+    $customer->update(array($key=>stripslashes(urldecode($_REQUEST['newvalue'])  )  ));
   }
 
 
@@ -1480,7 +1482,7 @@ if(isset( $_REQUEST['where']))
    elseif($filtered>0){
      switch($f_field){
      case('customer name'):
-       $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total "._('customers with name like')." <b>".$f_value."*</b> <span onclick=\"remove_filter($tableid)\" id='remove_filter$tableid' class='remove_filter'>"._('Show All')."</span>";
+       $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total "._('customers with name like')." <b>".$f_value."*</b>";
        break;
      }
    }else
@@ -1779,10 +1781,10 @@ mysql_free_result($res);
    elseif($filtered>0){
      switch($f_field){
      case('name'):
-       $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total "._('companies with name like')." <b>".$f_value."*</b> <span onclick=\"remove_filter($tableid)\" id='remove_filter$tableid' class='remove_filter'>"._('Show All')."</span>";
+       $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total "._('companies with name like')." <b>".$f_value."*</b>";
        break;
      case('email'):
-       $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total "._('companies with email like')." <b>".$f_value."*</b> <span onclick=\"remove_filter($tableid)\" id='remove_filter$tableid' class='remove_filter'>"._('Show All')."</span>";
+       $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total "._('companies with email like')." <b>".$f_value."*</b>";
        break; 
      }
    }else
@@ -2017,10 +2019,10 @@ mysql_free_result($res);
    elseif($filtered>0){
      switch($f_field){
      case('name'):
-       $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total "._('companies with name like')." <b>".$f_value."*</b> <span onclick=\"remove_filter($tableid)\" id='remove_filter$tableid' class='remove_filter'>"._('Show All')."</span>";
+       $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total "._('companies with name like')." <b>".$f_value."*</b>";
        break;
      case('email'):
-       $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total "._('companies with email like')." <b>".$f_value."*</b> <span onclick=\"remove_filter($tableid)\" id='remove_filter$tableid' class='remove_filter'>"._('Show All')."</span>";
+       $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total "._('companies with email like')." <b>".$f_value."*</b>";
        break; 
      }
    }else

@@ -7,7 +7,7 @@
 print "var customer_id='".$_SESSION['state']['customer']['id']."';";
 
 
-
+$tax_number_regex="^((AT)?U[0-9]{8}|(BE)?0?[0-9]{9}|(BG)?[0-9]{9,10}|(CY)?[0-9]{8}L|(CZ)?[0-9]{8,10}|(DE)?[0-9]{9}|(DK)?[0-9]{8}|(EE)?[0-9]{9}|(EL|GR)?[0-9]{9}|(ES)?[0-9A-Z][0-9]{7}[0-9A-Z]|(FI)?[0-9]{8}|(FR)?[0-9A-Z]{2}[0-9]{9}|(GB)?([0-9]{9}([0-9]{3})?|[A-Z]{2}[0-9]{3})|(HU)?[0-9]{8}|(IE)?[0-9]S[0-9]{5}L|(IT)?[0-9]{11}|(LT)?([0-9]{9}|[0-9]{12})|(LU)?[0-9]{8}|(LV)?[0-9]{11}|(MT)?[0-9]{8}|(NL)?[0-9]{9}B[0-9]{2}|(PL)?[0-9]{10}|(PT)?[0-9]{9}|(RO)?[0-9]{2,10}|(SE)?[0-9]{12}|(SI)?[0-9]{8}|(SK)?[0-9]{10})$";
 
 
 $addresses=$customer->get_delivery_address_objects();
@@ -82,7 +82,9 @@ var validate_scope_data=
 	,'contact':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'Customer_Main_Contact_Name','validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Contact Name')?>'}]}
 	,'email':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'Customer_Main_Email','validation':[{'regexp':regexp_valid_email,'invalid_msg':'<?php echo _('Invalid Email')?>'}]}
 	,'telephone':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'Customer_Main_Telephone','validation':[{'regexp':"[ext\\d\\(\\)\\[\\]\\-\\s]+",'invalid_msg':'<?php echo _('Invalid Telephone')?>'}]}
-    }
+  	,'tax_number':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'Customer_Tax_Number','validation':[{'regexp':"<?php echo $tax_number_regex?>",'invalid_msg':'<?php echo _('Invalid Tax Number')?>'}]}
+
+  }
 };
 
 //"[ext\d\(\)\[\]\-\s]+"
@@ -147,7 +149,11 @@ function change_block(e){
 }
 
 
-
+function validate_customer_tax_number(query){
+ query=query.replace(/[^A-Z0-9]/i, "");
+ //alert(query)
+ validate_general('customer','tax_number',unescape(query));
+}
 
 
 function validate_customer_email(query){
@@ -222,8 +228,11 @@ function init(){
     customer_main_contact_name_oAutoComp.minQueryLength = 0; 
     customer_main_contact_name_oAutoComp.queryDelay = 0.1;
 
-
-
+  var customer_Tax_Number_oACDS = new YAHOO.util.FunctionDataSource(validate_customer_tax_number);
+    customer_Tax_Number_oACDS.queryMatchContains = true;
+    var customer_Tax_Number_oAutoComp = new YAHOO.widget.AutoComplete("Customer_Tax_Number","Customer_Tax_Number_Container", customer_Tax_Number_oACDS);
+    customer_Tax_Number_oAutoComp.minQueryLength = 0; 
+    customer_Tax_Number_oAutoComp.queryDelay = 0.1;
 
 	<?php
 	      print sprintf("edit_address(%d,'contact_');",$customer->data['Customer Main Address Key']);

@@ -36,7 +36,7 @@
        <span class="state_details" style="float:right;display:none" address_key="" id="delivery_save_edit_address">{t}Save{/t}</span>
        </div>
        <div style="margin-top:5px">
-       <span class="state_details">Add New Delivery Address</span>
+       <span id="add_new_delivery_address" class="state_details">Add New Delivery Address</span>
        </div>
        <table>
        {include file='edit_address_splinter.tpl' address_identifier='delivery_' address_function='Shipping'  hide_type=true hide_description=true show_form=false  }
@@ -66,12 +66,14 @@
 		  <img style="display:none" src="art/icons/user.png" alt="{t}Contacts{/t}"/></span>
 		  <span class="" style="float:left;margin-left:5px;cursor:pointer" id="contacts_address_button{$address->id}" address_id="{$address->id}" onclick="contacts_address(event,this)" >
 		  <img style="display:none" src="art/icons/telephone.png" alt="{t}Telephones{/t}"/></span>
-		  <div  class="address_main_container"  style="display:inline;" >
+		  <div  class="address_main_container"  style="width:100px;float:left" >
+		  {if $key==$customer->get('Customers Main Delivery Key')}
 		  <button onClick="change_main_address(this,{$address->id})" >{t}Set as Main{/t}</button>
+		  {/if}
 		  </div>
 		  <span {if $key==$customer->get('Customer Main Delivery Address Key')}style="display:none"{/if} class="small_button small_button_edit" id="delete_address_button{$address->id}" address_id="{$address->id}" onclick="delete_address(event,this)" >{t}Remove{/t}</span>
 		  <span {if $key==$customer->get('Customer Main Delivery Address Key')}style="display:none"{/if} class="small_button small_button_edit" id="edit_address_button{$address->id}" address_id="{$address->id}" onclick="edit_address({$address->id},'delivery_')" >{t}Edit{/t}</span>
-	       {if $key==$customer->get('Customer Main Delivery Address Key')}<img src="art/icons/lock.png" alt="lock"> <span  class="state_details" > {t}Contact Address{/t}</span>{/if}
+	       {if $key==$customer->get('Customer Main Delivery Address Key')}<img src="art/icons/lock.png" alt="lock"> <span  class="state_details" > {t}Contact{/t}</span>{/if}
 	       </div>
 	      </div>
 	      {/foreach}
@@ -115,6 +117,16 @@
 		    <span class="radio{if $customer_type=='Person'} selected{/if}"  id="radio_shelf_type_{$customer_type}" radio_value="{$customer_type}">{t}Person{/t}</span> 
 
 		 </div>
+
+<tr class=""><td style="" class="label">{t}Tax Number{/t}:</td>
+   <td  style="text-align:left">
+     <div  style="width:15em;position:relative;top:00px" >
+       <input style="text-align:left;width:18em" id="Customer_Tax_Number" value="{$customer->get('Customer Tax Number')}" ovalue="{$customer->get('Customer Tax Number')}" valid="0">
+       <div id="Customer_Tax_Number_Container" style="" ></div>
+     </div>
+   </td>
+   <td id="Customer_Tax_Number_msg" class="edit_td_alert"></td>
+ </tr>
 
 		 {if $customer_type=='Company'}
  </td></tr>
@@ -175,13 +187,29 @@
    </div>
 
  <div id="customer_contact_address" style="float:left;xborder:1px solid #ddd;width:400px;">
-     <div style="border-bottom:1px solid #777;margin-bottom:5px">
-       {t}Billing Address{/t}:<span class="state_details" style="float:right;display:none" address_key="" id="billing_cancel_edit_address">{t}Cancel{/t}</span>
+     <div style="border-bottom:1px solid #777;margin-bottom:0px">
+     
+       {t}Billing Information{/t}:<span class="state_details" style="float:right;display:none" address_key="" id="billing_cancel_edit_address">{t}Cancel{/t}</span>
+     
      </div>
+     
+     
        <table>
+     <tr><td class="lavel">{t}Fiscal Name{/t}:</td>
+        <td  style="text-align:left;width:18em;">
+     <div  style="width:15em;position:relative;top:00px" >
+       <input style="text-align:left;width:18em" id="Customer_Fiscal_Name" value="{$customer->get('Customer Fiscal Name')}" ovalue="{$customer->get('Customer Fiscal Name')}" valid="0">
+       <div id="Customer_Fiscal_Container" style="" ></div>
+     </div>
+   </td>
+   <td id="Customer_Main_Contact_Name_msg" class="edit_td_alert"></td>
+     
+     </tr>
        {include file='edit_address_splinter.tpl' address_identifier='billing_'}
-       <span style="font-weight:600">Same as contact address</span> 
-       <br/><span class="state_details">Set up different address</span>
+       <tr><td><span style="font-weight:600">Billing Address Same as contact address</span> 
+       <br/><span class="state_details">Set up different address</span></td></tr>
+     </table>
+     
        
        </table>
    </div>

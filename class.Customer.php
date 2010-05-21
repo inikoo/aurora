@@ -25,6 +25,7 @@ class Customer extends DB_Table {
     var $contact_data=false;
     var $ship_to=array();
     var $fuzzy=false;
+    var $tax_number_read=false;
     function __construct($arg1=false,$arg2=false) {
 
         $this->table_name='Customer';
@@ -1940,8 +1941,12 @@ class Customer extends DB_Table {
 
     function get($key,$arg1=false) {
 
-
-
+if($key=='Customer Tax Number' or $key=='Tax Number'){
+    return $this->get_tax_number();
+}
+if($key=='Customer Fiscal Name' or $key=='Fiscal Name'){
+    return $this->get_fiscal_name();
+}
         if (array_key_exists($key,$this->data)) {
             return $this->data[$key];
         }
@@ -1970,7 +1975,6 @@ class Customer extends DB_Table {
 
 
         switch ($key) {
-
         case("ID"):
         case("Formated ID"):
             return $this->get_formated_id();
@@ -2245,12 +2249,104 @@ class Customer extends DB_Table {
 
 
 
+function update_fiscal_name($value){
+    if($this->data['Customer Type']=='Person'){
+return;
+}else{
+$subject=new Company($this->data['Customer Company Key']);
+$subject->editor=$this->editor;
+$subject->update(array('Company Fiscal Name'=>$value));
+
+}
+$this->updated=$subject->updated;
+$this->msg=$subject->msg;
+$this->error=$subject->error;
+$this->new_value=$subject->new_value;
+}
+
+function update_tax_number($value){
+    if($this->data['Customer Type']=='Person'){
+$subject=new Contact($this->data['Customer Main Contact Key']);
+$subject->editor=$this->editor;
+
+$subject->update(array('Contact Tax Number'=>$value));
+
+}else{
+$subject=new Company($this->data['Customer Company Key']);
+$subject->editor=$this->editor;
+
+$subject->update(array('Company Tax Number'=>$value));
+
+}
+$this->updated=$subject->updated;
+$this->msg=$subject->msg;
+$this->error=$subject->error;
+$this->new_value=$subject->new_value;
+}
+
+
+function get_fiscal_name(){
+if($this->data['Customer Type']=='Person'){
+$this->data['Customer Fiscal Name']=$this->data['Customer Name'];
+return $this->data['Customer Fiscal Name'];
+}else{
+$subject='Company';
+$subject_key=$this->data['Customer Company Key'];
+}
+
+    $sql=sprintf("select `$subject Fiscal Name` as fiscal_name from `$subject Dimension` where `$subject Key`=%d ",$subject_key);
+  $res=mysql_query($sql);
+
+        if ($row=mysql_fetch_assoc($res)) {
+        $this->data['Customer Fiscal Name']=$row['fiscal_name'];
+       
+       return $this->data['Customer Fiscal Name'];
+       }else{
+        $this->error;
+        return '';
+        }
+
+
+}
+
+function get_tax_number($reread=false){
+if($this->tax_number_read and $reread)
+return $this->data['Customer Tax Number'];
+
+if($this->data['Customer Type']=='Person'){
+$subject='Contact';
+$subject_key=$this->data['Customer Main Contact Key'];
+}else{
+$subject='Company';
+$subject_key=$this->data['Customer Company Key'];
+}
+
+    $sql=sprintf("select `$subject Tax Number` as tax_number from `$subject Dimension` where `$subject Key`=%d ",$subject_key);
+  $res=mysql_query($sql);
+
+        if ($row=mysql_fetch_assoc($res)) {
+        $this->data['Customer Tax Number']=$row['tax_number'];
+        $this->tax_number_read=true;
+       return $this->data['Customer Tax Number'];
+       }else{
+        $this->error;
+        return '';
+        }
+
+
+
+
+}
+
+
     function remove_company($company_key=false) {
 
 
         if (!$company_key) {
             $company_key=$this->data['Customer Main Company Key'];
         }
+
+
 
 
         $company=new company($company_key);
@@ -2787,7 +2883,6 @@ class Customer extends DB_Table {
 
         return $main_company_key;
     }
-
 
 
     function get_contact_keys() {

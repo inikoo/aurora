@@ -68,11 +68,11 @@
 	<div style="float:left;">
 	  <div id="table_info0" class="clean_table_info"><span id="rtext0"></span> <span class="rtext_rpp" id="rtext_rpp0"></span> <span class="filter_msg"  id="filter_msg0"></span></div>
 	</div>
-	<div class="clean_table_filter clean_table_filter_show" id="clean_table_filter_show0" {if $filter_show0}style="display:none"{/if}>{t}filter results{/t}</div>
-	<div class="clean_table_filter" id="clean_table_filter0" {if !$filter_show0}style="display:none"{/if}>
+	<div class="clean_table_filter clean_table_filter_show" id="clean_table_filter_show0" {if $filter_show0 or $filter_value0!=''}style="display:none"{/if}>{t}filter results{/t}</div>
+	<div class="clean_table_filter" id="clean_table_filter0" {if !$filter_show0 and $filter_value0==''}style="display:none"{/if}>
 	  <div class="clean_table_info" style="padding-bottom:1px; ">
 	    <span id="filter_name0" style="margin-right:5px">{$filter_name0}:</span>
-	    <input style="border-bottom:none;width:6em;" id='f_input0' value="{$filter_value0}" size=10/> <span class="clean_table_filter_show" id="clean_table_filter_hide0" style="margin-left:8px">{t}Hide filter{/t}</span>
+	    <input style="border-bottom:none;width:6em;" id='f_input0' value="{$filter_value0}" size=10/> <span class="clean_table_filter_show" id="clean_table_filter_hide0" style="margin-left:8px">{t}Close filter{/t}</span>
 	    <div id='f_container0'></div>
 	  </div>
 	</div>	
