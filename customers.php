@@ -102,8 +102,8 @@ $smarty->assign('table_title',_('Customers List'));
 
 
 $tipo_filter=$_SESSION['state']['customers']['table']['f_field'];
-$smarty->assign('filter',$tipo_filter);
-$smarty->assign('filter_value',$_SESSION['state']['customers']['table']['f_value']);
+$smarty->assign('filter0',$tipo_filter);
+$smarty->assign('filter_value0',$_SESSION['state']['customers']['table']['f_value']);
 
 $filter_menu=array(
 		   'customer name'=>array('db_key'=>_('customer name'),'menu_label'=>_('Customer Name'),'label'=>_('Name')),
@@ -115,6 +115,8 @@ $filter_menu=array(
 		   'maxvalue'=>array('db_key'=>_('maxvalue'),'menu_label'=>_('Balance less than').' '.$currency_symbol  ,'label'=>_('Balance')." <($currency_symbol)"),
 		   'minvalue'=>array('db_key'=>_('minvalue'),'menu_label'=>_('Balance more than').' '.$currency_symbol  ,'label'=>_('Balance')." >($currency_symbol)"),
 		   );
+		   
+
 $smarty->assign('filter_menu0',$filter_menu);
 $smarty->assign('filter_name0',$filter_menu[$tipo_filter]['label']);
 $paginator_menu=array(10,25,50,100,500);
