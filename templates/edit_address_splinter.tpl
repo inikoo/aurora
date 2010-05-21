@@ -61,10 +61,10 @@
   </tr>
   
   <tr id="{$address_identifier}tr_address_postal_code">
-    <td class="label" style="width:160px">{t}Postal Code{/t}:</td><td  style="text-align:left"><input style="text-align:left;width:18em" id="{$address_identifier}address_postal_code" value="" ovalue=""  ></td>
+    <td    id="{$address_identifier}label_address_postal_code"     class="label" style="width:160px">{t}Postal Code{/t}:</td><td  style="text-align:left"><input style="text-align:left;width:18em" id="{$address_identifier}address_postal_code" value="" ovalue=""  ></td>
   </tr>
   
-  <tr>
+  <tr   id="{$address_identifier}tr_address_town">
     <td class="label" style="width:160px">
       <span id="{$address_identifier}show_town_d1" onclick="toggle_town_d1()" class="small_button" style="padding:0 1px;font-size:50%;position:relative;top:-2px">+</span> {t}City{/t}:</td>
     <td  style="text-align:left"><input style="text-align:left;width:18em" id="{$address_identifier}address_town" value="" ovalue="" ></td>

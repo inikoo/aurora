@@ -26,6 +26,10 @@ $editor=array(
 
 $tipo=$_REQUEST['tipo'];
 switch($tipo){
+case('set_main_address'):
+
+  update_main_address();
+  break;
 case('new_company'):
  $data=prepare_values($_REQUEST,array(
 			     'values'=>array('type'=>'json array')
@@ -641,7 +645,7 @@ if( !isset($_REQUEST['value']) ){
        $data[$translator[$key]]=$value;
      }
    }
-   print $subject;
+   // print $subject;
 
    $address=new Address('find create',$data);
    if(!$address->id){
@@ -753,6 +757,88 @@ if( !isset($_REQUEST['value']) ){
    }
 
 }
+
+
+function update_main_address(){
+  
+  $address_key=$_REQUEST['value'];
+   if( !isset($_REQUEST['subject'])  
+       or !is_numeric($_REQUEST['subject_key'])
+       or $_REQUEST['subject_key']<=0
+       or !preg_match('/^(Company|Contact|Customer)$/',$_REQUEST['subject'])
+       
+       ){
+     $response=array('state'=>400,'msg'=>'Error wrong subject/subject key');
+      echo json_encode($response);
+    return;
+   }
+ 
+   $subject=$_REQUEST['subject'];
+   $subject_key=$_REQUEST['subject_key'];
+    switch($subject){
+     case('Company'):
+     $subject_object=new Company($subject_key);
+     break;
+       case('Contact'):
+     $subject_object=new Contact($subject_key);
+     break;
+   case('Customer'):
+     $subject_object=new Customer($subject_key);
+     break;
+   default:
+       
+     $response=array('state'=>400,'msg'=>'Error wrong subject/subject key (2)');
+     echo json_encode($response);
+     return;
+
+   }
+   
+    if($subject=='Customer'){
+      $type=$_REQUEST['key'];
+      
+      if($type=='Delivery'){
+	$subject_object->update_principal_delivery_address($address_key);
+	if($subject_object->error){
+	  $response=array('state'=>400,'msg'=>$subject_object->msg);
+	  
+	}elseif($subject_object->updated){
+
+	  if( ($subject_object->get('Customer Delivery Address Link')=='Contact') or ( $subject_object->get('Customer Delivery Address Link')=='Billing'  and  ($subject_object->get('Customer Main Address Key')==$subject_object->get('Customer Billing Address Key'))   ) ){
+	    $address_comment='<span style="font-weight:600">'._('Same as contact address').'</span>';
+	    
+	  }elseif($subject_object->get('Customer Delivery Address Link')=='Billing'){
+	    $address_comment='<span style="font-weight:600">'._('Same as billing address').'</span>';
+	  }else{
+	    $address_comment=$subject_object->delivery_address_xhtml();
+	  }
+
+	  $response=array(
+			  'state'=>200
+			  ,'action'=>'changed'
+			  ,'new_main_address'=>$subject_object->display_delivery_address('xhtml')
+			  ,'new_main_address_bis'=>$address_comment
+			  
+			  ,'new_main_delivery_address_key'=>$subject_object->data['Customer Main Delivery Address Key']
+			  
+			  );
+
+	}else{
+	  $response=array('state'=>200,'action'=>'no_change','msg'=>_('Nothing to change'));
+
+	  
+	}
+	 echo json_encode($response);
+	   return;
+	
+      }
+
+    }
+
+
+
+}
+
+
 function edit_address_type(){
 global $editor;
 

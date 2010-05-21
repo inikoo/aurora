@@ -31,20 +31,41 @@ function cancel_edit_address(address_identifier){
 
 };
 
-function change_main_address(o,address_key){
-    //    var checked=o.getAttribute('checked');
-    if(o.checked=='checked'){
-	return;
-	
-	
-    }else{
-	
-	var elements = YAHOO.util.Dom.getElementsByClassName('address_main', 'input'); 
-	for( var i in elements){
-	    elements[i].checked='';
-	}
-	o.checked='checked';
-    }
+function change_main_address(address_key,options){
+    
+  var request='ar_edit_contacts.php?tipo=set_main_address&value=' +address_key+'&key='+options.type+'&subject='+options.Subject+'&subject_key='+options.subject_key; 
+  	YAHOO.util.Connect.asyncRequest('POST',request ,{
+		success:function(o) {
+		    // alert(o.responseText);
+		    var r =  YAHOO.lang.JSON.parse(o.responseText);
+		    if(r.state==200){
+			if(r.action=='changed'){
+			    Dom.get(options.prefix+'current_address').innerHTML=r.new_main_address;
+			    buttons=Dom.getElementsByClassName(options.prefix+'set_main', 'span',options.prefix+'address_showcase' );
+			    for ( var i=buttons.length-1; i>=0; --i ){
+				Dom.removeClass(buttons[i], 'hide');
+			    }
+			    Dom.addClass(options.prefix+'set_main'+address_key, 'hide');
+
+			    if(options.type=='Delivery' && options.Subject=='Customer'){
+				
+				Dom.get(options.prefix+'current_address_bis').innerHTML=r.new_main_address_bis;
+
+			    }
+			    
+			  
+				
+				
+				
+			}
+
+		    }else{
+			alert(r.msg);
+		    }
+		}
+	    });
+
+
 }
 
 
@@ -218,28 +239,27 @@ var create_address=function(options){
 		    var new_address_container = Dom.get(address_prefix+'address_container0').cloneNode(true);
 		    new_address_container.id = address_prefix+'address_containe'+r.address_key;
 		    Dom.setStyle(new_address_container, 'display', ''); 
-		    display_element=Dom.getElementsByClassName(address_prefix+'address_display' ,'div',  new_address_container);
+		    display_element=Dom.getElementsByClassName('address_display' ,'div',  new_address_container);
 		    display_element[0].innerHTML=r.xhtml_address;
 		    display_element[0].id = address_prefix+'address_display'+r.address_key;
 		    display_element=Dom.getElementsByClassName('address_buttons' ,'div',  new_address_container);
 		    display_element[0].id = address_prefix+'address_buttons'+r.address_key;
+		    
 		    display_element=Dom.getElementsByClassName('small_button_edit' ,'span', display_element[0] );
-		    display_element[0].id = address_prefix+'contacts_address_butto'+r.address_key;
+		    
+		    display_element[0].id = address_prefix+'set_main'+r.address_key;
 		    display_element[1].id = address_prefix+'delete_address_button'+r.address_key;
-		    display_element[2].id = address_prefix+'edit_address_butto'+r.address_key;
+		    display_element[2].id = address_prefix+'edit_address_button'+r.address_key;
+		    
 		    display_element[0].setAttribute(address_prefix+'address_id',r.address_key);
 		    display_element[1].setAttribute(address_prefix+'address_id',r.address_key);
 		    display_element[2].setAttribute(address_prefix+'address_id',r.address_key);
 
 
-		    //new_address_container.children[1][0].id='delete_address_button'+r.address_key;
-		    //new_address_container.children[1][0].setAttribute('address_id',r.address_key);
-		    //new_address_container.children[1][1].id='edit_address_button'+r.address_key;
-		    //new_address_container.children[1][1].setAttribute('address_id',r.address_key);
-		    Dom.get('address_showcase').appendChild(new_address_container);
+		    Dom.get(address_prefix+'address_showcase').appendChild(new_address_container);
 
 		    //new_address_container.parent.appendChild(new_address_container);
-		    save_address_elements++;
+		    // save_address_elements++;
 		}else if(r.action=='error'){
 		    alert(r.msg);
 		}
@@ -355,7 +375,11 @@ function edit_address(index,address_identifier){
   data=Address_Data[index];
   
   for (key in data){
+
+
 	item=Dom.get(address_identifier+'address_'+key);
+	//	      alert(key+'-> '+data[key]+' '+item)
+
 	item.value=data[key];
 	item.setAttribute('ovalue',data[key]);
 	
@@ -389,14 +413,15 @@ var update_address_labels=function(country_code,suffix){
     suffix='';
     for (index in Address_Keys){
 	key=Address_Keys[index];
+	//	alert(Dom.get(suffix+'label_address_'+key)+' '+suffix+'label_address_'+key)
 	if(labels[key]!=undefined){
 	    if(labels[key].name!=undefined){
-
+		//alert(Dom.get(suffix+'label_address_'+key)+' '+suffix+'label_address_'+key)
 		Dom.get(suffix+'label_address_'+key).innerHTML=labels[key].name;
 	    }
 	    
 	    if(labels[key].in_use!=undefined && !labels[key].in_use){
-		
+		//	alert(Dom.get(suffix+'tr_address_'+key)+' '+suffix+'tr_address_'+key)
 		Dom.setStyle(suffix+'tr_address_'+key,'display','none');
 	    }else{
 		Dom.setStyle(suffix+'tr_address_'+key,'display','');

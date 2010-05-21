@@ -1203,9 +1203,21 @@ if(isset( $_REQUEST['where']))
     $wheref.=" and  `Customer Net Balance`<=".$f_value."    ";
   else if($f_field=='minvalue' and is_numeric($f_value) )
     $wheref.=" and  `Customer Net Balance`>=".$f_value."    ";
+  else if($f_field=='country' and  $f_value!=''){
+    if($f_value=='UNK'){
+      $wheref.=" and  `Customer Main Country Code`='".$f_value."'    ";
+      $find_data=' '._('a unknown country');
+    }else{
+      
+      $f_value=Address::parse_country($f_value);
+      if($f_value!='UNK'){
+	$wheref.=" and  `Customer Main Country Code`='".$f_value."'    ";
+	$country=new Country('code',$f_value);
+	$find_data=' '.$country->data['Country Name'].' <img src="art/flags/'.$country->data['Country 2 Alpha Code'].'.png" alt="'.$country->data['Country Code'].'"/>';
+      }
 
-
-
+    }
+  }
 
 
 
@@ -1239,7 +1251,7 @@ if(isset( $_REQUEST['where']))
     else
       $rtext_rpp=sprintf("Showing all customers");
 
-   
+
 
     //if($total_records>$number_results)
     // $rtext.=sprintf(" <span class='rtext_rpp'>(%d%s)</span>",$number_results,_('rpp'));
@@ -1252,6 +1264,10 @@ if(isset( $_REQUEST['where']))
      case('postcode'):
        $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any customer with postcode like")." <b>$f_value</b> ";
        break;
+  case('country'):
+       $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any customer based in").$find_data;
+       break;
+
      case('id'):
        $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any customer with ID like")." <b>$f_value</b> ";
        break;
@@ -1283,7 +1299,9 @@ if(isset( $_REQUEST['where']))
     case('postcode'):
        $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ".ngettext('customer','customers',$total)." "._('with postcode like')." <b>".$f_value."*</b>";
        break;
-
+case('country'):
+       $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ".ngettext('customer','customers',$total)." "._('based in').$find_data;
+       break;
      case('last_more'):
        $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ".ngettext('customer','customers',$total)." "._('which last order')."> ".number($f_value)."  ".ngettext('day','days',$f_value);
        break;

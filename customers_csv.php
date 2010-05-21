@@ -13,6 +13,8 @@
 */
 
 include_once('common.php');
+include_once('class.Address.php');
+
 if(!$user->can_view('customers')){
   exit();
 }
@@ -56,6 +58,24 @@ if(is_numeric($store)){
     $wheref.=" and  `Customer Net Balance`<=".$f_value."    ";
   else if($f_field=='minvalue' and is_numeric($f_value) )
     $wheref.=" and  `Customer Net Balance`>=".$f_value."    ";
+ else if($f_field=='country' and  $f_value!=''){
+    if($f_value=='UNK'){
+      $wheref.=" and  `Customer Main Country Code`='".$f_value."'    ";
+    }else{
+      
+      $f_value=Address::parse_country($f_value);
+      if($f_value!='UNK'){
+	$wheref.=" and  `Customer Main Country Code`='".$f_value."'    ";
+
+      }
+
+    }
+  }
+
+
+
+
+
 
 $sql="select   *,`Customer Net Refunds`+`Customer Tax Refunds` as `Customer Total Refunds` from  `Customer Dimension` $where $wheref";
   
@@ -65,6 +85,9 @@ $sql="select   *,`Customer Net Refunds`+`Customer Tax Refunds` as `Customer Tota
 	     ,'name'=>_('Name')
 	     ,'contact_name'=>_('Conatact')
 	     ,'email'=>_('Email')
+	     ,'telephone'=>_('Telephone')
+	     ,'address'=>_('Address')
+
 	     ,'orders'=>_('Orders')
 	     ,'last_order'=>_('Last Order')
 	       
@@ -89,6 +112,9 @@ $type=$data['Customer Type'];
 	       ,'name'=>$data['Customer Name']
 	       ,'contact_name'=>$data['Customer Main Contact Name']
 	       ,'email'=>$data['Customer Main Plain Email']
+	       ,'telephone'=>$data['Customer Main XHTML Telephone']
+	       ,'address'=>preg_replace('/\<br\/\>/',"\n",$data['Customer Main XHTML Address'])
+
 	       ,'orders'=>number($data['Customer Orders'])
 	       ,'last_order'=>$last_order_date
 	       

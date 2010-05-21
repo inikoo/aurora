@@ -2322,6 +2322,7 @@ $subject_key=$this->data['Customer Company Key'];
 }
 
     $sql=sprintf("select `$subject Tax Number` as tax_number from `$subject Dimension` where `$subject Key`=%d ",$subject_key);
+    //   print $sql;
   $res=mysql_query($sql);
 
         if ($row=mysql_fetch_assoc($res)) {
@@ -2558,12 +2559,14 @@ $subject_key=$this->data['Customer Company Key'];
 
 
     function delivery_address_xhtml() {
-        if ($this->data['Customer Delivery Address Link']=='None') {
-            $deliver_address=new Ship_To($this->data['Customer Main Delivery Address Key']);
-            return $deliver_address->data['Ship To XHTML Address'];
-        }
+      //  print_r($this->data);
 
-        if ($this->data['Customer Delivery Address Link']=='Billing')
+        if ($this->data['Customer Delivery Address Link']=='None') {
+	  //$delivery_address=new Ship_To($this->data['Customer Main Delivery Address Key']);
+	  // return $delivery_address->data['Ship To XHTML Address'];
+	  $address=new Address($this->data['Customer Main Delivery Address Key']);
+	  
+	}elseif ($this->data['Customer Delivery Address Link']=='Billing')
             $address=new Address($this->data['Customer Billing Address Key']);
         else
             $address=new Address($this->data['Customer Main Address Key']);
@@ -2950,7 +2953,7 @@ $subject_key=$this->data['Customer Company Key'];
        function get_delivery_address_keys() {
 
 
-        $sql=sprintf("select * from `Address Bridge` CB where  `Address Function`='Shipping' and  `Subject Type`='Customer' and `Subject Key`=%d  group by `Address Key` order by `Is Main` desc  ",$this->id);
+        $sql=sprintf("select * from `Address Bridge` CB where  `Address Function`='Shipping' and  `Subject Type`='Customer' and `Subject Key`=%d  group by `Address Key` ",$this->id);
         $address_keys=array();
         $result=mysql_query($sql);
 
@@ -2995,7 +2998,7 @@ $subject_key=$this->data['Customer Company Key'];
     
      function update_principal_delivery_address($address_key) {
         $main_address_key=$this->get_principal_delivery_address_key();
-        if ($main_address_key!=$address_key) {
+        if ($main_address_key!=$address_key ) {
             $address=new Address($address_key);
             $address->editor=$this->editor;
             $sql=sprintf("update `Address Bridge`  set `Is Main`='No' where `Subject Type`='Customer' and `Address Function`='Shipping' and  `Subject Key`=%d  and `Address Key`=%d",
@@ -3008,12 +3011,26 @@ $subject_key=$this->data['Customer Company Key'];
                          ,$address_key
                         );
             mysql_query($sql);
-            $sql=sprintf("update `Customer Dimension` set  `Customer Main Delivery Address Key`=%d where `Customer Key`=%d",$address->id,$this->id);
+            
+	    if($address->id==$this->data['Customer Main Address Key']){
+	      $this->data['Customer Delivery Address Link']='Contact';
+	    }elseif($address->id==$this->data['Customer Billing Address Key']){
+	      $this->data['Customer Delivery Address Link']='Billing';
+	    }else{
+	      $this->data['Customer Delivery Address Link']='None';
+	    }
+
+	    $sql=sprintf("update `Customer Dimension` set  `Customer Delivery Address Link`=%s,`Customer Main Delivery Address Key`=%d where `Customer Key`=%d"
+			 ,prepare_mysql($this->data['Customer Delivery Address Link'])
+			 ,$address->id
+			 ,$this->id);
             $this->data['Customer Main Delivery Address Key']=$address->id;
             mysql_query($sql);
 
             $address->update_parents();
-
+	    $this->get_data('id',$this->id);
+	    $this->updated=true;
+	    $this->new_value=$address->id;
         }
 
     }
@@ -3079,7 +3096,7 @@ return false;
 
 function get_delivery_address_objects(){
 
-        $sql=sprintf("select * from `Address Bridge` CB where  `Address Function`='Shipping' and  `Subject Type`='Customer' and `Subject Key`=%d  group by `Address Key` order by `Is Main` desc  ",$this->id);
+        $sql=sprintf("select * from `Address Bridge` CB where  `Address Function`='Shipping' and  `Subject Type`='Customer' and `Subject Key`=%d  group by `Address Key` ",$this->id);
         $address_objects=array();
         $result=mysql_query($sql);
 

@@ -21,7 +21,7 @@ var Country_Address_Labels=
     ,'USA':{
 	'country_d1':{'name':'State','oname':'State','hide':false,'in_use':true}
 	,'country_d2':{'name':'County','oname':'County','hide':true,'in_use':true}
-	,'postal_code':{'name':'Postal Code','oname':'Zip','hide':true,'in_use':true}
+	,'postal_code':{'name':'Postal Code','oname':'Zip','hide':false,'in_use':true}
     }
     ,'IRL':{
 	'country_d1':{'name':'County','oname':'Co','hide':false,'in_use':true}

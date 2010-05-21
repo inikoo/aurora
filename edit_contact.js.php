@@ -133,6 +133,9 @@ var Subject='Contact';
 var Subject_Key=contact_key;
 
 
+var Address_Data={<?php echo$address_data?>};
+
+
 
 
 function update_full_address(){
