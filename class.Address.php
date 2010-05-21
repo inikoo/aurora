@@ -1629,8 +1629,8 @@ $data=$this->prepare_data($raw_data,$options);
             return $row['Country Code'];
         }
 
-        $sql=sprintf("select `Country Alias Code` from kbase.`Country Alias Dimension` where `Country Name`=%s",prepare_mysql($country));
-        //print "$sql\n";
+        $sql=sprintf("select `Country Alias Code` from kbase.`Country Alias Dimension` where `Country Alias`=%s",prepare_mysql($country));
+	//  print "$sql\n";
         $result = mysql_query($sql) ;
         if ($row = mysql_fetch_array($result, MYSQL_ASSOC)) {
             return $row['Country Alias Code'];

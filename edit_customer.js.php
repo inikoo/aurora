@@ -123,7 +123,12 @@ function validate_scope_old(){
 
 
 function change_block(e){
-     if(editing!=this.id){
+    if(this.id=='delivery2')
+	id='delivery';
+    else
+	id=this.id;
+
+     if(editing!=id){
 	
 
 	
@@ -133,15 +138,15 @@ function change_block(e){
 	Dom.get('d_company').style.display='none';
 	Dom.get('d_delivery').style.display='none';
 
-	Dom.get('d_'+this.id).style.display='';
+	Dom.get('d_'+id).style.display='';
 
 	//	alert(this.id);
 	Dom.removeClass(editing,'selected');
 	Dom.addClass(this, 'selected');
 	
-	YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=customer-edit&value='+this.id ,{});
+	YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=customer-edit&value='+id ,{});
 	
-	editing=this.id;
+	editing=id;
     }
 
 
@@ -150,9 +155,17 @@ function change_block(e){
 
 
 function validate_customer_tax_number(query){
- query=query.replace(/[^A-Z0-9]/i, "");
+  original_query= query;
+query=query.replace(/[^A-Z0-9]/i, "");
  //alert(query)
  validate_general('customer','tax_number',unescape(query));
+
+ if(original_query==''){
+    
+     validate_scope_data.customer.tax_number.validated=true;
+     validate_scope('customer'); 
+ }
+
 }
 
 
@@ -189,6 +202,11 @@ function reset_edit_customer(){
 }
 
 
+function display_new_delivery_address(){
+  
+    edit_address(0,'delivery_');
+}
+
 function init(){
   
 
@@ -196,8 +214,12 @@ function init(){
     oACDS.queryMatchContains = true;
     var oAutoComp = new YAHOO.widget.AutoComplete("f_input0","f_container", oACDS);
     oAutoComp.minQueryLength = 0; 
-    var ids = ["details","company","delivery"]; 
+    var ids = ["details","company","delivery","delivery2"]; 
     YAHOO.util.Event.addListener(ids, "click", change_block);
+
+    
+    YAHOO.util.Event.addListener('add_new_delivery_address', "click",display_new_delivery_address );
+    
     
     YAHOO.util.Event.addListener('save_edit_customer', "click", save_edit_customer);
     YAHOO.util.Event.addListener('reset_edit_customer', "click", reset_edit_customer);

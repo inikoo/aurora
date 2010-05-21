@@ -2,6 +2,9 @@ html{background-color:#fff;background-image:url('art/bg/flowers.jpg');background
 body{color:#333;margin:0px;padding:0px;font-family:"Lucida Grande", "Lucida Sans Unicode", Verdana, Arial, sans-serif;}
 td {text-align:left}
 
+
+.hide{visibility:hidden}
+
 h1 {font-size:160%}
 th,td {padding:.2em;}
 th {font-weight:bold;text-align:center;}

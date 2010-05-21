@@ -1485,11 +1485,19 @@ if(preg_match('/^Wenzels$/i',$supplier_code)){
 	}
 	
 	$supplier=new Supplier('code',$supplier_code);
+	
+
 
 	if(!$supplier->id){
 	  //print "neew: $supplier_code\n";
 	  //print_r($the_supplier_data);
 	  $supplier=new Supplier('new',$the_supplier_data);
+	}
+
+	if(strlen($supplier->data['Supplier Name'])<=1){
+	  print "$code (supplier name -> ".$supplier->data['Supplier Name']." to short)\n";
+	}if($supplier->data['Supplier Code']=='UNK'){
+	  print "$code supplier unknown\n";
 	}
 
 	//exit;
@@ -1499,19 +1507,32 @@ if(preg_match('/^Wenzels$/i',$supplier_code)){
 	$scode=preg_replace('/^\"\s*/','',$scode);
 	$scode=preg_replace('/\s*\"$/','',$scode);
 	
-
-
-	if(preg_match('/\d+ or more|0.10000007|8.0600048828125|0.050000038|0.150000076|0.8000006103|1.100000610|1.16666666|1.650001220|1.80000122070/i',$scode))
+	if($scode=='' or $scode=='0'){
 	  $scode='';
-	if(preg_match('/^(\?|new|\d|0.25|0.5|0.8|0.8000006103|01 Glass Jewellery Box|1|0.1|0.05|1.5625|10|\d{1,2}\s?\+\s?\d{1,2}\%)$/i',$scode))
+	  print "$code wrong supplier code -> ($scode)\n";
+	}
+
+
+	if(preg_match('/\d+ or more|0.10000007|8.0600048828125|0.050000038|0.150000076|0.8000006103|1.100000610|1.16666666|1.650001220|1.80000122070/i',$scode)){
+	  print "$code wrong supplier code -> ($scode)\n";
+
 	  $scode='';
-
-	
-
-	if($scode=='same')
+	}if(preg_match('/^(\?|new|\d|0.25|0.5|0.8|0.8000006103|01 Glass Jewellery Box|1|0.1|0.05|1.5625|10|\d{1,2}\s?\+\s?\d{1,2}\%)$/i',$scode)){
+	  print "$code wrong supplier code -> ($scode)\n";
+		   
+	  $scode='';
+	}
+	if($scode=='same'){
 	  $scode=$code;
-	if($scode=='' or $scode=='0')
+	  print "$code strange supplier code -> (same)\n";
+	}
+
+
+	if($scode==''){
+	  //	  print "$code wrong supplier code using ?$code\n";
+
 	  $scode='?'.$code;
+	}
 	$sp_data=array(
 		       'Supplier Key'=>$supplier->id,
 		       'Supplier Product Code'=>$scode,
@@ -1522,7 +1543,13 @@ if(preg_match('/^Wenzels$/i',$supplier_code)){
 		       'Supplier Product Valid To'=>date('Y-m-d H:i:s')
 		       );
 	$supplier_product=new SupplierProduct('find',$sp_data,'create');
+	if($supplier_product->found_in_key){
+	  print "$code (duplicate supplier code)\n";
+	}elseif($supplier_product->found_in_code){
+	  print "$code (duplicate supplier code (diff cost))\n";
+	}
 	
+
 	$part_data=array(
 			 'Part Most Recent'=>'Yes',
 			 'Part XHTML Currently Supplied By'=>sprintf('<a href="supplier.php?id=%d">%s</a>',$supplier->id,$supplier->get('Supplier Code')),
