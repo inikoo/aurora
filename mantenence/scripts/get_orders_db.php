@@ -464,6 +464,7 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
 	$_parent_order_date='';
 	if($credit_parent_public_id!=''){
 	  $credit_parent=new Order('public id',$credit_parent_public_id);
+	  
 	  $credit_parent->skip_update_product_sales=true;
 	  if($credit_parent->id){
 	    $_parent_key=$credit_parent->id;
@@ -1429,6 +1430,7 @@ if ($customer_data['Customer Delivery Address Link']=='Contact') {
 
       if ( $tipo_order!=8 ) {
 	$order= new Order('new',$data);
+	$order->update_customer=false;
 	$order->categorize();
 	$order->set_shipping(round($header_data['shipping']+$extra_shipping,2),$tax_rate);
 	$order->set_charges(round($header_data['charges'],2),$tax_rate);
@@ -1529,6 +1531,7 @@ if ($customer_data['Customer Delivery Address Link']=='Contact') {
 	  //$order->create_invoice_simple($data_invoice,$data_invoice_transactions);
 
 	  $invoice=new Invoice ('create',$data_invoice,$data_invoice_transactions,$order->id);
+	  $invoice->update_customer=false;
 	  //to update otter scripts read TODO
 	  $invoice->add_tax_item('IVA',$header_data['tax1'],'Yes');
 	  $invoice->add_tax_item('I2',$header_data['tax2'],'Yes');
@@ -1591,17 +1594,21 @@ if ($customer_data['Customer Delivery Address Link']=='Contact') {
       elseif($tipo_order==8) {
 
 	$parent_order=new Order('public_id',$parent_order_id);
+		$parent_order->update_customer=false;
+
 	if (!$parent_order->id) {
 	  // try to get same customer last order
 	  $customer = new Customer ( 'find', $data['Customer Data'] );
 	  $order_id=$customer->get_last_order();
 	  if ($order_id) {
 	    $parent_order=new Order('id',$order_id);
+	    $parent_order->update_customer=false;
 	    print "found last order\n";
 	  } else {
 	    print "ast order not found created new one\n";
 	    $data['Order Type']='Order';
 	    $parent_order=new Order('new',$data);
+	    $parent_order->update_customer=false;
 	    $order->categorize();
 
 
@@ -1680,6 +1687,8 @@ if ($customer_data['Customer Delivery Address Link']=='Contact') {
 			      );
 
 	  $invoice=new Invoice ('create',$data_invoice,$data_invoice_transactions,$parent_order->id);
+	  	  $invoice->update_customer=false;
+
 	  $invoice->add_tax_item('IVA',$header_data['tax1'],'Yes');
 	  $invoice->add_tax_item('I2',$header_data['tax2'],'Yes');
 	} else {// no payment
@@ -1827,6 +1836,8 @@ if ($customer_data['Customer Delivery Address Link']=='Contact') {
 			      );
 	  // $order->create_invoice_simple($data_invoice,$data_invoice_transactions);
 	  $invoice=new Invoice ('create',$data_invoice,$data_invoice_transactions,$order->id);
+	  	  $invoice->update_customer=false;
+
 	  $invoice->add_tax_item('IVA',$header_data['tax1'],'Yes');
 	  $invoice->add_tax_item('I2',$header_data['tax2'],'Yes');
 	  $invoice->data['Invoice Paid Date']=$date_inv;
@@ -1927,6 +1938,7 @@ if ($customer_data['Customer Delivery Address Link']=='Contact') {
       }
 
       $order=new Order('public_id',$parent_order_id);
+	$order->update_customer=false;
 
       if (!$order->id) {// try to get last customer order
 	$customer = new Customer ( 'find', $data['Customer Data'] );
@@ -1952,6 +1964,8 @@ if ($customer_data['Customer Delivery Address Link']=='Contact') {
 	$data['Order Type']='Order';
 	$data['store_id']=$store_key;
 	$order= new Order('new',$data);
+		$order->update_customer=false;
+
 	$order->categorize();
 
 
@@ -2093,6 +2107,8 @@ if ($customer_data['Customer Delivery Address Link']=='Contact') {
       // print $order->id;
 
       $refund = new Invoice('create refund',$data_invoice,$data_refund_transactions,$order);
+      	  $refund->update_customer=false;
+
       $refund->add_tax_item('IVA',$header_data['tax1'],'Yes');
       $refund->add_tax_item('I2',$header_data['tax2'],'Yes');
       $refund->data['Invoice Paid Date']=$date_inv;
@@ -2171,6 +2187,7 @@ if ($customer_data['Customer Delivery Address Link']=='Contact') {
 	$order_id=$customer->get_last_order();
 	if ($order_id) {
 	  $parent_order=new Order('id',$order_id);
+	  $parent_order->update_customer=false;
 	  print "Parent Order not given, using customer last order\n";
 	} else {
 	  print "Parent order can not be found skipping (Rpl/Sht)\n";
