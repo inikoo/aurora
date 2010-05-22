@@ -177,7 +177,15 @@ class Company extends DB_Table {
 
 
 
+foreach($this->candidate as $key=>$score){
+if($score>5)
+continue;
+else
+unset($this->candidate[$key]);
+}
 
+//print_r($this->candidate);
+//exit;
 
         //addnow we have a list of  candidates, from this list make another list of companies
         $this->candidate_companies=array();
@@ -194,7 +202,7 @@ class Company extends DB_Table {
                     $this->candidate_companies[$company_key]=$score;
             }
         }
-
+//print_r($this->candidate_companies);
 
         if ($raw_data['Company Name']!='') {
 
@@ -204,15 +212,20 @@ class Company extends DB_Table {
 
             if ($find_fuzzy) {
 
+$len=strlen($raw_data['Company Name']);
+if($len<256){
 
-                $sql=sprintf("select `Company Key`,damlevlim256(UPPER(%s),UPPER(`Company Name`),8)/LENGTH(`Company Name`) as dist1 from `Company Dimension`   order by dist1  limit 10"
+                $sql=sprintf("select `Company Key`,damlevlim256(UPPER(%s),UPPER(`Company Name`),$len)/$len as dist1 from `Company Dimension`   order by dist1  limit 10"
                              ,prepare_mysql($raw_data['Company Name'])
 
                             );
+                           // print "$sql\n";
                 $result=mysql_query($sql);
                 while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
                     if ($row['dist1']>=1)
                         break;
+                        //print $row['dist1']." $max_score  po ".pow(1-  $row['dist1'] ,4  )."\n";
+                        
                     $score=$max_score*pow(1-  $row['dist1'] ,3  );
                     $extra_score=0;
                     $company_key=$row['Company Key'];
@@ -236,6 +249,7 @@ class Company extends DB_Table {
                         $this->candidate_companies[$company_key]+=$score+$extra_score;
                     else
                         $this->candidate_companies[$company_key]=$score+$extra_score;
+                }
                 }
             } else {
 
@@ -276,7 +290,6 @@ class Company extends DB_Table {
 
         }
 
-
         if (!empty($this->candidate_companies)) {
             arsort($this->candidate_companies);
             foreach($this->candidate_companies as $key=>$val) {
@@ -288,6 +301,8 @@ class Company extends DB_Table {
             }
 
         }
+
+//print_r($this->candidate_companies);
 
         $this->number_candidate_companies=count($this->candidate_companies);
 
@@ -1410,8 +1425,22 @@ $this->updated=true;
             mysql_query($sql);
 
             $this->update_parents_principal_address_keys($address_key);
+            
+            $contacts=$this->get_contact_keys();
+            foreach($contacts as $contact_key){
+                $contact=new Contact($contact_key);
+                    if($contact->data['Contact Main Address Key']==$main_address_key){
+                        $contact->update_principal_address($address_key);
+                    }
+                }
+            
+            
+            
+            
+            
             $address->update_parents();
-
+            $this->updated=true;
+			$this->new_value=$address_key;
         }
 
     }
@@ -1567,13 +1596,18 @@ $this->updated=true;
                                  ,$parent_object->id
                                 );
                     mysql_query($sql);
+                    
+                    $parent_object->get_data('id',$parent_object->id);
 
                 if($parent=='Customer'){
                     if($parent_object->data['Customer Delivery Address Link']=='Contact'){
                         $parent_object->update_principal_delivery_address($address_key);
                     
                     }
+                     if($parent_object->data['Customer Billing Address Link']=='Contact'){
+                        $parent_object->update_principal_billing_address($address_key);
                     
+                    }
                 
                 }
 
@@ -2458,6 +2492,26 @@ $this->updated=true;
             }
         }
     }
+
+
+function get_parent_keys($type){
+$keys=array();
+if(!preg_match('/^(Supplier|User|Customer)$/',$type)){
+    return $keys;
+}
+ $sql=sprintf("select `Subject Key` from `Company Bridge` where `Subject Type`=%s and `Company Key`=%d  "
+ ,prepare_mysql($type)
+ ,$this->id);
+// print "$sql\n";
+        $result=mysql_query($sql);
+        while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+            $keys[$row['Subject Key']]= $row['Subject Key'];
+
+        }
+        return $keys;
+}
+
+
 
 }
 

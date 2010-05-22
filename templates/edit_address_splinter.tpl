@@ -85,5 +85,5 @@
   <tr >
     <td class="label" style="width:160px">{t}Internal{/t}:</td><td  style="text-align:left"><input style="text-align:left;width:18em" id="{$address_identifier}address_internal" value="" ovalue="" ></td>
   </tr>
-  <tr><td colspan=2 style="text-align:right"><button address_key="" style="visibility:hidden" id="{$address_identifier}reset_address_button">{t}Reset{/t}</button><button address_key="" style="visibility:hidden;margin-left:10px"id="{$address_identifier}save_address_button">{t}Save{/t}</button></td></tr>
+  <tr><td colspan=2 style="text-align:right"><button close_if_reset="{if $close_if_reset}Yes{else}No{/if}" address_key="" style="{if !$close_if_reset}visibility:hidden{/if}" id="{$address_identifier}reset_address_button">{t}Cancel{/t}</button><button address_key="" style="visibility:hidden;margin-left:10px"id="{$address_identifier}save_address_button">{t}Save{/t}</button></td></tr>
 </tbody>

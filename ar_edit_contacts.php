@@ -65,6 +65,7 @@ break;
 case('new_address'):
   new_address();
   break;
+   case('new_Delivery_address'):
   case('new_delivery_address'):
   new_address();
   break;
@@ -647,12 +648,13 @@ if( !isset($_REQUEST['value']) ){
    }
    // print $subject;
 
-   $address=new Address('find create',$data);
+   $address=new Address("find in $subject $subject_key create",$data);
+  
    if(!$address->id){
        $response=array('state'=>400,'msg'=>'Error can not create address');echo json_encode($response);return;
    }
    if($address->found){
-      $address_parents=  $address->get_parents_keys($subject);
+      $address_parents=  $address->get_parent_keys($subject);
       if(array_key_exists($subject_key,$address_parents)){
         $response=array('state'=>200,'action'=>'nochange','msg'=>_('Address already in company'));
      echo json_encode($response);
@@ -922,7 +924,7 @@ global $editor;
 }
 function edit_address(){
 global $editor;
-
+$warning='';
   if( !isset($_REQUEST['value']) ){
     $response=array('state'=>400,'msg'=>'Error no value');
     echo json_encode($response);
@@ -948,19 +950,39 @@ global $editor;
    }
 
 
-
-/*    if( !isset($_REQUEST['subject'])   */
-/*        or !is_numeric($_REQUEST['subject_key']) */
-/*        or $_REQUEST['subject_key']<=0 */
-/*        or !preg_match('/^company|contact$/i',$_REQUEST['subject']) */
+  if( !isset($_REQUEST['subject'])  
+       or !is_numeric($_REQUEST['subject_key'])
+       or $_REQUEST['subject_key']<=0
+       or !preg_match('/^(Company|Contact|Customer)$/',$_REQUEST['subject'])
        
-/*        ){ */
-/*      $response=array('state'=>400,'msg'=>'Error wrong subject/subject key'); */
-/*       echo json_encode($response); */
-/*     return; */
-/*    } */
-/*    $subject=$_REQUEST['subject']; */
-/*    $subject_key=$_REQUEST['subject_key']; */
+       ){
+     $response=array('state'=>400,'msg'=>'Error wrong subject/subject key');
+      echo json_encode($response);
+    return;
+   }
+ 
+   $subject=$_REQUEST['subject'];
+   $subject_key=$_REQUEST['subject_key'];
+    switch($subject){
+     case('Company'):
+     $subject_object=new Company($subject_key);
+     break;
+       case('Contact'):
+     $subject_object=new Contact($subject_key);
+     break;
+   case('Customer'):
+     $subject_object=new Customer($subject_key);
+     break;
+   default:
+       
+     $response=array('state'=>400,'msg'=>'Error wrong subject/subject key (2)');
+     echo json_encode($response);
+     return;
+
+   }
+
+
+
 
 
    $address=new Address('id',$_REQUEST['id']);
@@ -988,19 +1010,95 @@ global $editor;
    
 
    $update_data=array('editor'=>$editor);
+ 
    foreach($raw_data as $key=>$value){
      if (array_key_exists($key, $translator)) {
        $update_data[$translator[$key]]=$value;
      }
    }
    
-/*    $address->find("in $subject $subject_key"); */
-/*    if($address->found_in){ */
-/*      $msg=_('Address already associated with contact'); */
-/*      $response=array('state'=>200,'action'=>'error','msg'=>$msg,'key'=>''); */
-/*      echo json_encode($response); */
-/*      return; */
-/*    } */
+ // print_r($update_data);
+  $proposed_address=new Address("find in $subject $subject_key",$update_data);
+
+   if($proposed_address->found){
+      $address_parents=  $proposed_address->get_parent_keys($subject);
+      if(array_key_exists($subject_key,$address_parents)){
+        if($subject=='Customer')
+       if(preg_match('/^contact$/i',$_REQUEST['key'])){
+        $subject_object->update_principal_address($proposed_address->id);
+        
+       // print "new Address address".$subject_object->data['Customer Main Address Key']."\n";
+        $address->delete();
+        
+        return;
+        }else{
+        $msg="This $subject has already another address with this data";
+        $response=array('state'=>200,'action'=>'nochange','msg'=>$msg );
+     echo json_encode($response);
+     return;
+      }
+      }else{
+        $warning=_('Warning, address found also associated with')." ";
+        switch ($subject) {
+            case 'Customer':
+                $parent_label='';
+                foreach($address_parents as $parent_key){
+                    $parent=new Customer($parent_key);
+                    $parent_label.=sprintf(', <a href="customer.php?id=%d">%s</a>',$parent->id,$parent->data['Customer Name']);
+                }
+                $parent_label=preg_replace('/^,/','',$parent_label);
+                $warning.=ngettext(count($address_parents),'Customer','Customers').' '.$parent_label;
+                break;
+            case 'Company':
+                $parent_label='';
+                foreach($address_parents as $parent_key){
+                    $parent=new Company($parent_key);
+                    $parent_label.=sprintf(', <a href="company.php?id=%d">%s</a>',$parent->id,$parent->data['Company Name']);
+                }
+                $parent_label=preg_replace('/^,/','',$parent_label);
+                $warning.=ngettext(count($address_parents),'Company','Companies').' '.$parent_label;
+                break;
+           case('Contact'):
+          
+           
+              $parent_label='';
+                foreach($address_parents as $parent_key){
+                    $parent=new Contact($parent_key);
+                    if($parent->data['Contact Company Key']!=$subject->data['Contact Company Key'] )
+                        $parent_label.=sprintf(', <a href="contact.php?id=%d">%s</a>',$parent->id,$parent->display('name'));
+                }
+                if($parent_label=='')
+                    $warning='';
+                else{    
+                $parent_label=preg_replace('/^,/','',$parent_label);
+                $warning.=ngettext(count($address_parents),'Contact','Contacts').' '.$parent_label;
+                }
+                break;
+            
+           
+            default:
+                break;
+        }
+        
+      
+      }
+   
+   }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
    
    $address->update($update_data,'cascade');
   
@@ -1022,7 +1120,33 @@ global $editor;
 				 ,'description'=>$address->data['Address Description']
 				 
 				 );
-     $response=array('state'=>200,'action'=>'updated','msg'=>$address->msg_updated,'key'=>'','updated_data'=>$updated_address_data,'xhtml_address'=>$address->display('xhtml'));
+		$is_main='No';
+		$is_main_delivery='No';
+	$address_comment='';
+	
+	if($subject_object->get_main_address_key()==$address->id){
+	    $is_main='Yes';
+	}
+	if($subject=='Customer' and $subject_object->data['Customer Main Delivery Address Key']==$address->id){
+	    $is_main_delivery='Yes';
+	    
+	     if( ($subject_object->get('Customer Delivery Address Link')=='Contact') or ( $subject_object->get('Customer Delivery Address Link')=='Billing'  and  ($subject_object->get('Customer Main Address Key')==$subject_object->get('Customer Billing Address Key'))   ) ){
+	    $address_comment='<span style="font-weight:600">'._('Same as contact address').'</span>';
+	    
+	  }elseif($subject_object->get('Customer Delivery Address Link')=='Billing'){
+	    $address_comment='<span style="font-weight:600">'._('Same as billing address').'</span>';
+	  }else{
+	    $address_comment=$subject_object->delivery_address_xhtml();
+	  }
+	    
+	    
+	    
+    	
+	}
+	
+	
+				 
+     $response=array('state'=>200,'action'=>'updated','warning'=>$warning,'is_main'=>$is_main,'is_main_delivery'=>$is_main_delivery,'msg'=>$address->msg_updated,'key'=>'','updated_data'=>$updated_address_data,'xhtml_address'=>$address->display('xhtml'),'xhtml_address_bis'=>$address_comment);
    }else{
      if($address->error_updated)
        $response=array('state'=>200,'action'=>'error','msg'=>$address->msg_updated,'key'=>$translator[$_REQUEST['key']]);
@@ -1122,59 +1246,103 @@ global $editor;
    }
    
  
-   if( !isset($_REQUEST['subject_key'])  or !is_numeric($_REQUEST['subject_key']) or $_REQUEST['subject_key']<=0  ){
-     $response=array('state'=>400,'msg'=>'Error wrong subject_key');
-     echo json_encode($response);
-    return;
-   }
+ 
 
-
-
-   if( !isset($_REQUEST['subject'])  
+  if( !isset($_REQUEST['subject'])  
        or !is_numeric($_REQUEST['subject_key'])
-       or $_REQUEST['subject_key']<=0       or !preg_match('/^company|contact$/i',$_REQUEST['subject'])
+       or $_REQUEST['subject_key']<=0
+       or !preg_match('/^(Company|Contact|Customer)$/',$_REQUEST['subject'])
        
        ){
      $response=array('state'=>400,'msg'=>'Error wrong subject/subject key');
       echo json_encode($response);
     return;
    }
-   $subject_type=$_REQUEST['subject'];
+ 
+   $subject=$_REQUEST['subject'];
    $subject_key=$_REQUEST['subject_key'];
-
-   if(preg_match('/^company$/i',$subject_type))
-     $subject=new Company($subject_key);
-   else{
-     $subject=new Contact($subject_key);
-   }
-   
-   
-   if(!$subject->id){
-     $response=array('state'=>400,'msg'=>'Subject not found');
+    switch($subject){
+     case('Company'):
+     $subject_object=new Company($subject_key);
+     break;
+       case('Contact'):
+     $subject_object=new Contact($subject_key);
+     break;
+   case('Customer'):
+     $subject_object=new Customer($subject_key);
+     break;
+   default:
+       
+     $response=array('state'=>400,'msg'=>'Error wrong subject/subject key (2)');
      echo json_encode($response);
      return;
+
    }
-   
-   
+
+
+
+
+ 
    
    $address_key=$_REQUEST['value'];
+$address=new Address($address_key);
+$address->delete();
 
-  
+$action='deleted';  
+$msg=_('Address Deleted');
+$subject_object->get_data('id',$subject_object->id);
+$main_address_key=$subject_object->get_main_address_key();
+$main_address=new Address($main_address_key);
+$main_address_data=array(
+				 'country'=>$main_address->data['Address Country Name']
+				 ,'country_code'=>$main_address->data['Address Country Code']
+				 ,'country_d1'=> $main_address->data['Address Country First Division']
+				 ,'country_d2'=> $main_address->data['Address Country Second Division']
+				 ,'town'=> $main_address->data['Address Town']
+				 ,'postal_code'=> $main_address->data['Address Postal Code']
+				 ,'town_d1'=> $main_address->data['Address Town First Division']
+				 ,'town_d2'=> $main_address->data['Address Town Second Division']
+				 ,'fuzzy'=> $main_address->data['Address Fuzzy']
+				 ,'street'=> $main_address->display('street')
+				 ,'building'=>  $main_address->data['Address Building']
+				 ,'internal'=> $main_address->data['Address Internal']
+				 ,'description'=>$main_address->data['Address Description']
+				 
+				 );
 
-   $subject->remove_address($address_key);
-   
-   if($subject->updated){
-     $action='deleted';
-     $msg=_('Address deleted');
-     $subject->reread();
-   }else{
-     $action='nochage';
-     $msg=_('Address could not be deleted');
-   }
-  
-   
 
-   $response=array('state'=>200,'action'=>$action,'msg'=>$msg,'address_key'=>$address_key,'xhtml_subject'=>$subject->display('card'),'main_address_key'=>$subject->get_main_address_key());
+	$address_comment='';
+	
+	
+	$address_main_delivery='';
+	
+
+	if($subject=='Customer' ){
+	   
+	    $address_main_delivery=$subject_object->delivery_address_xhtml();
+	    
+	     if( ($subject_object->get('Customer Delivery Address Link')=='Contact') or ( $subject_object->get('Customer Delivery Address Link')=='Billing'  and  ($subject_object->get('Customer Main Address Key')==$subject_object->get('Customer Billing Address Key'))   ) ){
+	    $address_comment='<span style="font-weight:600">'._('Same as contact address').'</span>';
+	    
+	  }elseif($subject_object->get('Customer Delivery Address Link')=='Billing'){
+	    $address_comment='<span style="font-weight:600">'._('Same as billing address').'</span>';
+	  }else{
+	    $address_comment=$subject_object->delivery_address_xhtml();
+	  }
+	    
+	    
+	    
+    	
+	}
+	
+
+
+
+     $response=array('state'=>200,'action'=>'deleted','key'=>'','main_address_data'=>$main_address_data,'xhtml_main_address'=>$main_address->display('xhtml'),'xhtml_delivery_address'=>$address_main_delivery,'xhtml_delivery_address_bis'=>$address_comment);
+
+
+
+ //  $response=array('state'=>200,'action'=>$action,'msg'=>$msg,'address_key'=>$address_key);
      
     
    echo json_encode($response);
