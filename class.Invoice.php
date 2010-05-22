@@ -56,7 +56,7 @@ class Invoice extends DB_Table {
     
     $this->table_name='Invoice';
     $this->ignore_fields=array('Invoice Key');
-
+$this->update_customer=true;
 
     if(!$arg1 and !$arg2){
       $this->error=true;
@@ -535,10 +535,14 @@ $this->data['Invoice Currency Exchange']=$exchange;
       $order->update_totals('save');
       $order->update_invoices('save');
       $customer=new Customer($order->data['Order Customer Key']);
+      
+      
+      if($this->update_customer){
       $customer->update_orders();
       
       $customer->update_no_normal_data();
       $customer->update_activity();
+      }
     }
     
     

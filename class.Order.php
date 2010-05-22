@@ -39,7 +39,7 @@ class Order extends DB_Table {
 
         $this->table_name='Order';
         $this->ignore_fields=array('Order Key');
-
+$this->update_customer=true;
 
         $this->status_names = array (0 => 'new' );
         if (preg_match ( '/new/i', $arg1 )) {
@@ -719,13 +719,11 @@ class Order extends DB_Table {
 
                     $customer = new Customer ( $customer_id );
 
+if($this->update_customer){
                     $customer->update_orders();
                     $customer->update_non_nomal_data();
-
-
-
-                    $customer->update_activity();
-
+                  $customer->update_activity();
+}
 
                     //$this->cutomer_rankings();
 
