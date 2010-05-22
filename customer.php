@@ -80,6 +80,13 @@ $_SESSION['state']['customer']['id']=$customer_id;
 $_SESSION['state']['customer']['table']['sf']=0;
 
 $customer=new customer($customer_id);
+
+if(!$customer->id){
+ header('Location: customers.php?error='._('Customer not exists'));
+  exit();
+
+}
+
 $customer->load('contacts');
 $smarty->assign('customer',$customer);
 

@@ -28,6 +28,10 @@ $scope='company';
 $action_after_create='continue';
 if(isset($_REQUEST['scope']) and preg_match('/supplier|customer|corporation/',$_REQUEST['scope']))
     $scope=$_REQUEST['scope'];
+$store_key=0;
+if($scope=='customer'){
+    $store_key=$_REQUEST['store_key'];
+}
 
 if($scope!='corporation')    
 $action_after_create=$_SESSION['state'][$scope]['action_after_create'];
@@ -35,6 +39,8 @@ $action_after_create=$_SESSION['state'][$scope]['action_after_create'];
 
 
 print "var scope='$scope';";
+print "var store_key='$store_key';";
+
 print "var action_after_create='$action_after_create';";
 
 ?>
@@ -196,7 +202,7 @@ function pick_it(key){
     get_data();
     var json_value = YAHOO.lang.JSON.stringify(company_data); 
     
-    window.location='edit_'+scope+'.php?id='+key+'&data=';
+    window.location=scope+'.php?edit='+key+'&data='+json_value;
 
 }
 
@@ -307,13 +313,14 @@ var find_company=function(){
    
 
     var json_value = YAHOO.lang.JSON.stringify(company_data); 
-	    
-    var request='ar_contacts.php?tipo=find_company&values=' + encodeURIComponent(json_value); 
-//     alert(request) ;
+var json_value_scope = YAHOO.lang.JSON.stringify({scope:scope,store_key:store_key}); 
+
+    var request='ar_contacts.php?tipo=find_company&values=' + encodeURIComponent(json_value)+'&scope=' + encodeURIComponent(json_value_scope); 
+    // alert(request) ;
 
     YAHOO.util.Connect.asyncRequest('POST',request ,{
 	    success:function(o) {
-		//	alert(o.responseText)
+		//alert(o.responseText)
 		var r =  YAHOO.lang.JSON.parse(o.responseText);
 		var old_company_found=company_found;
 		var old_company_found_email=company_found_email;
@@ -355,7 +362,7 @@ var find_company=function(){
 		
 		for(x in r.candidates_data){
 		    
-		    Dom.get("results").innerHTML+='<div style="width:100%;xborder:1px solid red;"><div style="xborder:1px solid blue;width:200px;margin:0px 0px 10px 0;float:left;margin-left:100px" class="contact_display">'+r.candidates_data[x]['card']+'</div> <div style="xborder:1px solid green;margin-left:350px;;margin-top:5px"><div id="score_'+r.candidates_data[x]['tipo']+r.candidates_data[x]['key']+'" >'+r.candidates_data[x]['score']+'</div> <span onclick="pick_it('+r.candidates_data[x]['key']+')"  class="state_details" style="margin:10px 0;float:left"><?php echo _('Choose This')?></span><div style="clear:both"></div><div style="clear:both"> </div>';
+		    Dom.get("results").innerHTML+='<div style="width:100%;xborder:1px solid red;"><div style="xborder:1px solid blue;width:200px;margin:0px 0px 10px 0;float:left;margin-left:100px" class="contact_display">'+r.candidates_data[x]['card']+'</div> <div style="xborder:1px solid green;margin-left:350px;;margin-top:5px"><div id="score_'+r.candidates_data[x]['tipo']+r.candidates_data[x]['key']+'" >'+r.candidates_data[x]['score']+'</div><div style="font-size:80%">'+r.candidates_data[x]['link']+'</div>  <div style="clear:both"></div><div style="clear:both"> </div>';
 		    
 		    var found_img='';
 		    // alert(r.candidates_data[x]['found']);return;
@@ -648,7 +655,6 @@ function validate_postal_code(){
     var tr=Dom.get('tr_address_postal_code');
     // alert(postal_regex+' '+postal_code)
     var item='postal_code';
-
     var valid=postal_regex.test(postal_code);
 
     if(postal_code!=''){

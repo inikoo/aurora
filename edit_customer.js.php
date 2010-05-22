@@ -271,7 +271,7 @@ function init(){
 	     YAHOO.util.Event.addListener(ids, "keyup", on_address_item_change,'contact_');
 	     YAHOO.util.Event.addListener(ids, "change",on_address_item_change,'contact_');
 	 
-	 YAHOO.util.Event.addListener('contact_save_address_button', "click",save_address,{prefix:'contact_',subject:Subject,subject_key:Subject_Key,tipo:'contact'});
+	 YAHOO.util.Event.addListener('contact_save_address_button', "click",save_address,{prefix:'contact_',subject:'Customer',subject_key:customer_id,type:'contact'});
 	 YAHOO.util.Event.addListener('contact_reset_address_button', "click",reset_address,'contact_');
 
 
@@ -307,7 +307,7 @@ function init(){
 	     YAHOO.util.Event.addListener(ids, "keyup", on_address_item_change,'delivery_');
 	     YAHOO.util.Event.addListener(ids, "change",on_address_item_change,'delivery_');
 	 
-	 YAHOO.util.Event.addListener('delivery_save_address_button', "click",save_address,{prefix:'delivery_',subject:'Customer',subject_key:customer_id,tipo:'delivery'});
+	 YAHOO.util.Event.addListener('delivery_save_address_button', "click",save_address,{prefix:'delivery_',subject:'Customer',subject_key:customer_id,type:'Delivery'});
 	 YAHOO.util.Event.addListener('delivery_reset_address_button', "click",reset_address,'delivery_');
 
 

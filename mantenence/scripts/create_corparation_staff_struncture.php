@@ -25,7 +25,7 @@ if (!$con) {
     exit;
 }
 
-$dns_db='dw_avant';
+//$dns_db='dw_avant';
 $db=@mysql_select_db($dns_db, $con);
 if (!$db) {
     print "Error can not access the database\n";
@@ -54,7 +54,7 @@ $data=array(
 $company=new Company('find create auto',$data);
 $sql=sprintf("delate from  `Corporation Dimension` " );
 mysql_query($sql);
-$sql=sprintf("insert into `Corporation Dimension` values (%s,%d,'GBP') ",$company->data['Company Name'],$company->id );
+$sql=sprintf("insert into `Corporation Dimension` values (%s,'GBP',%d) ",prepare_mysql($company->data['Company Name']),$company->id );
 mysql_query($sql);
 
 

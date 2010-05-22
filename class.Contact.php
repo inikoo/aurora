@@ -548,12 +548,14 @@ class Contact extends DB_Table {
 
 
             } else {
-                if ($name_data['Contact First Name']!='') {
-                    $sql=sprintf("select `Contact Salutation`,`Contact Key`,damlevlim256(UPPER(%s),UPPER(`Contact First Name`),3)/LENGTH(`Contact First Name`) as dist1 from `Contact Dimension` where  `Contact First Name` is not null  order by dist1  limit 80"
+         $len_name=strlen($name_data['Contact First Name']);
+         if ($name_data['Contact First Name']!=''  and $len_name<256 ) {
+                
+                    $sql=sprintf("select `Contact Salutation`,`Contact Key`,damlevlim256(UPPER(%s),UPPER(`Contact First Name`),$len_name)/$len_name as dist1 from `Contact Dimension` where  `Contact First Name` is not null  order by dist1  limit 80"
                                  ,prepare_mysql($name_data['Contact First Name'])
 
                                 );
-
+//print $sql;
                     $result=mysql_query($sql);
                     while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
                         if ($row['dist1']>=1)
@@ -573,13 +575,12 @@ class Contact extends DB_Table {
 
 
 
-
-                if ($name_data['Contact Surname']!='') {
-                    $sql=sprintf("select `Contact Salutation`,`Contact Key`,damlevlim256(UPPER(%s),UPPER(`Contact Surname`),4)/LENGTH(`Contact Surname`) as dist1 from `Contact Dimension`  where  `Contact Surname` is not null   order by dist1  limit 40"
+$len_name=strlen($name_data['Contact Surname']);
+                if ($name_data['Contact Surname']!=''and $len_name<256) {
+                    $sql=sprintf("select `Contact Salutation`,`Contact Key`,damlevlim256(UPPER(%s),UPPER(`Contact Surname`),$len_name)/$len_name as dist1 from `Contact Dimension`  where  `Contact Surname` is not null   order by dist1  limit 40"
                                  ,prepare_mysql($name_data['Contact Surname'])
 
                                 );
-
                     $result=mysql_query($sql);
                     while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
                         if ($row['dist1']>=1)
@@ -2067,7 +2068,8 @@ $this->updated=true;
 
             //$this->update_parents_principal_address_keys();
             $address->update_parents();
-
+			$this->updated=true;
+			$this->new_value=$address_key;
         }
 
     }
@@ -3974,6 +3976,25 @@ $this->updated=true;
         }
 
 
+function get_contact_keys(){
+return array($this>id=>$this->id);
+}
+
+function get_parent_keys($type){
+$keys=array();
+if(!preg_match('/^(Supplier|User|Customer|Company)$/',$type)){
+    return $keys;
+}
+ $sql=sprintf("select `Subject Key` from `Contact Bridge` where `Subject Type`=%s and `Contact Key`=%d  "
+ ,prepare_mysql($type)
+ ,$this->id);
+        $result=mysql_query($sql);
+        while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+            $keys[$row['Subject Key']]= $row['Subject Key'];
+
+        }
+        return $keys;
+}
 
 
     }

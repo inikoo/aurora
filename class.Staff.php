@@ -183,17 +183,23 @@ class Staff extends DB_Table{
 
 
    function create($data){
-  
-     
-     
-
-     $child=new Contact ('find in staff create update',$data);
+     $sql="select `Corporation Company Key` from `Corporation Dimension`";
+      $res=mysql_query($sql);
+    if($row=mysql_fetch_array($res)){
+    $company_key=$row['Corporation Company Key'];
+$company=new Company($company_key);
+    }else{
+    exit("Error no corporation\n");
+    }
+   $child=new Contact ('find in staff create update',$data);
 
 	if($child->error){
 	  $this->error=true;
 	  $this->error=$child->error;
 	  return;
 	}
+	
+	$company->create_contact_bridge($child->id);
 	$data['Staff Contact Key']=$child->id;
 
 

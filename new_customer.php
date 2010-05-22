@@ -90,7 +90,7 @@ if(isset($_REQUEST['tipo']) and $_REQUEST['tipo']=='person'){
 if($tipo=='company'){
 $js_files[]='company.js.php';
 $js_files[]='js/validate_telecom.js';
-$js_files[]='new_company.js.php?scope=customer';
+$js_files[]='new_company.js.php?scope=customer&store_key='.$store_key;
 $js_files[]='edit_address.js.php';
 $js_files[]='edit_contact_from_parent.js.php';
 $js_files[]='edit_contact_telecom.js.php';
@@ -106,7 +106,7 @@ $js_files[]='edit_contact_telecom.js.php';
 $js_files[]='edit_contact_name.js.php';
 $js_files[]='edit_contact_email.js.php';
 $js_files[]='edit_contact_email.js.php';
-$js_files[]='new_contact.js.php?scope=customer';
+$js_files[]='new_contact.js.php?scope=customer&store_key='.$store_key;
 
 $tpl_file='new_contact.tpl';
 }
