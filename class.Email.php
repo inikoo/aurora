@@ -225,14 +225,19 @@ class Email extends DB_Table {
                 $email_max_score=200;
                 $score_prize=800;
                 $this->found=false;
-                $sql=sprintf("select `Subject Key`,T.`Email Key`,damlev(UPPER(%s),UPPER(`Email`))/LENGTH(`Email`) as dist1 from   `Email Dimension` T left join `Email Bridge` TB  on (TB.`Email Key`=T.`Email Key`)   where  `Subject Type`='Contact'  order by dist1  limit 80"
+                
+                
+                
+                $sql=sprintf("select `Subject Key`,T.`Email Key`,damlevlim256(UPPER(%s),UPPER(`Email`),3) as dist1 from   `Email Dimension` T left join `Email Bridge` TB  on (TB.`Email Key`=T.`Email Key`)   where  `Subject Type`='Contact'  order by dist1  limit 80"
                              ,prepare_mysql($raw_data['Email'])
                             );
                
                 $result=mysql_query($sql);
                 while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-                    if ($row['dist1']>=1)
+                    if ($row['dist1']>=3)
                         break;
+                    $row['dist1']=    $row['dist1']/strlen($raw_data['Email']);
+                        
                     $score=$email_max_score*exp(-200*$row['dist1']*$row['dist1']);
 
 
