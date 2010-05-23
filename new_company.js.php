@@ -14,15 +14,7 @@ while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
     $salutation.=',"'.$row['Salutation'].'"';
 }
 mysql_free_result($result);
-$sql="select `Country Key`,`Country Name`,`Country Code`,`Country 2 Alpha Code`,`Country Postal Code Regex` from kbase.`Country Dimension`";
-$result=mysql_query($sql);
-$country_list='';
 
-while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
-    $country_list.=',{"id":"'.$row['Country Key'].'","name":"'.$row['Country Name'].'","code":"'.$row['Country Code'].'","code2a":"'.$row['Country 2 Alpha Code'].'","postal_regex":"'.addslashes($row['Country Postal Code Regex']).'"}  ';
-}
-mysql_free_result($result);
-$country_list=preg_replace('/^\,/','',$country_list);
 
 $scope='company';
 $action_after_create='continue';
@@ -47,7 +39,6 @@ print "var action_after_create='$action_after_create';";
 var Dom   = YAHOO.util.Dom;
 var Event = YAHOO.util.Event;
 var can_add_company=false;
-var postal_regex=new RegExp('.?');
 
 var company_data={
     "Company Name":""
@@ -103,8 +94,6 @@ var Subject_Key=0;
 
 
 
-
-var Country_List=[<?php echo$country_list?>];
 
 var Address_Keys=["key","country","country_code","country_d1","country_d2","town","postal_code","town_d1","town_d2","fuzzy","street","building","internal","description"];
 var Address_Meta_Keys=["type","function"];
@@ -424,7 +413,7 @@ var json_value_scope = YAHOO.lang.JSON.stringify({scope:scope,store_key:store_ke
 		
 	    }
 	    if(validate_data[item].inputed==true && validate_data[item].validated==false){
-		valid_form=false;
+	//	valid_form=false;
 	    }
 	}
 
@@ -664,17 +653,20 @@ function validate_postal_code(){
 		
     }
 
-
+Dom.get('address_postal_code_warning').setAttribute('title',postcode_help);
     if(validate_data.postal_code.inputed==true){
 	if(valid){
 	    Dom.removeClass(tr,'no_validated');
 	    Dom.addClass(tr,'validated');
 	    validate_data[item].validated=true;
+	    
+	    Dom.get('address_postal_code_warning').style.visibility='hidden';
 	}else{
 	    //alert('hard no valid');
 	    Dom.removeClass(tr,'validated');
 	    Dom.addClass(tr,'no_validated');
 	    validate_data[item].validated=false;
+	    	    Dom.get('address_postal_code_warning').style.visibility='visible';
 
 	}
 
@@ -684,10 +676,14 @@ function validate_postal_code(){
 	if(valid){
 	    Dom.addClass(tr,'validated');
 	    validate_data[item].validated=true;
+	    	    Dom.get('address_postal_code_warning').style.visibility='hidden';
+
 	}else{
 	    // alert('no valid');
 	    validate_data[item].validated=false;
 	    Dom.removeClass(tr,'validated');
+	    	    Dom.get('address_postal_code_warning').style.visibility='visible';
+
 	}
 
 
@@ -902,61 +898,13 @@ function  validate_email_address(email) {
 	if(suggest_country){
 	
 	var Countries_DS = new YAHOO.util.FunctionDataSource(match_country);
-	Countries_DS.responseSchema = {fields: ["id", "name", "code","code2a","postal_regex"]}
+	Countries_DS.responseSchema = {fields: ["id", "name", "code","code2a","postal_regex","postcode_help"]}
 	var Countries_AC = new YAHOO.widget.AutoComplete("address_country", "address_country_container", Countries_DS);
 	Countries_AC.forceSelection = true; 
 	Countries_AC.useShadow = true;
 	Countries_AC.resultTypeList = false;
-	Countries_AC.formatResult = function(oResultData, sQuery, sResultMatch) {
-	    var query = sQuery.toLowerCase(),
-	    name = oResultData.name,
-	    code = oResultData.code,
-	    query = sQuery.toLowerCase(),
-	    nameMatchIndex = name.toLowerCase().indexOf(query),
-	    codeMatchIndex = code.toLowerCase().indexOf(query),
-	    displayname, displaycode;
-	    if(nameMatchIndex > -1) {
-		displayname = highlightMatch(name, query, nameMatchIndex);
-	    }
-	    else {
-		displayname = name;
-	    }
-
-	    if(codeMatchIndex > -1) {
-		displaycode = highlightMatch(code, query, codeMatchIndex);
-	    }
-	    else {
-		displaycode = code;
-	    }
-	    return displayname + " (" + displaycode + ")";
-	};
-
-	// Helper function for the formatter
-	var highlightMatch = function(full, snippet, matchindex) {
-	    return full.substring(0, matchindex) + 
-	    "<span class='match'>" + 
-	    full.substr(matchindex, snippet.length) + 
-	    "</span>" +
-	    full.substring(matchindex + snippet.length);
-	};
-
-   
-	var onCountrySelected = function(sType, aArgs) {
-	    var myAC = aArgs[0]; // reference back to the AC instance
-	    var elLI = aArgs[1]; // reference to the selected LI element
-	    var oData = aArgs[2]; // object literal of selected item's result data
-        
-	    // update hidden form field with the selected item's ID
-	    Dom.get("address_country_code").value = oData.code;
-	    Dom.get("address_country_2acode").value = oData.code2a;
-
-	    postal_regex=new RegExp(oData.postal_regex,"i");
-
-	    myAC.getInputEl().value = oData.name + " (" + oData.code + ") ";
-
-	    update_address_labels(oData.code);
-
-	};
+	Countries_AC.formatResult = countries_format_results;
+    var highlightMatch = countries_highlightMatch;
 	Countries_AC.itemSelectEvent.subscribe(onCountrySelected);
 	}
  

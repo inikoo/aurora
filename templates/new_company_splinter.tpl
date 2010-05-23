@@ -193,8 +193,8 @@
 	
 	
 
-	<tr  id="tr_address_postal_code">
-	  <td class="label" style="width:160px">{t}Postal Code{/t}:</td>
+	<tr   id="tr_address_postal_code">
+	  <td class="label"  style="width:160px;background:none"><img  id="address_postal_code_warning" title=""  src="art/icons/exclamation.png" style="float:left;visibility:hidden" /> {t}Postal Code{/t}:</td>
 	  <td  style="text-align:left">
 	    <input style="text-align:left;width:18em" id="address_postal_code" value="" ovalue="" valid="0"  >
 	    <div id="address_postal_code_container" style="" ></div>

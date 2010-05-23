@@ -609,6 +609,8 @@ class Customer extends DB_Table {
         $keys='';
         $values='';
         foreach($this->data as $key=>$value) {
+        if(preg_match('/Customer Main|Customer Company/i',$key))
+        continue;
             $keys.=",`".$key."`";
 
             if (preg_match('/Key$/',$key))
@@ -636,7 +638,6 @@ class Customer extends DB_Table {
 
 
 
-
             if ($this->data['Customer Type']=='Company') {
 
                 if (!$this->data['Customer Company Key']) {
@@ -645,6 +646,7 @@ class Customer extends DB_Table {
                 } else {
                     $company=new company('id',$this->data['Customer Company Key']);
                 }
+                
                 // print_r($company);
                 $company_key=$company->id;
                 $this->data['Customer File As']=$company->data['Company File As'];
@@ -652,11 +654,11 @@ class Customer extends DB_Table {
 
                 if ($company->last_associated_contact_key)
                     $contact=new Contact($company->last_associated_contact_key);
-                else
+                else{
                     $contact=new Contact($company->data['Company Main Contact Key']);
 
-
-
+$contact->editor=$this->editor;
+}
             }
             elseif($this->data['Customer Type']=='Person') {
 
@@ -682,23 +684,35 @@ class Customer extends DB_Table {
             }
 
 
-
             if ($this->data['Customer Type']=='Company') {
+                //print "associate company: (acytaul contact name ".$this->data['Customer Main Contact Name'].") \n";
+
                 $this->associate_company($company->id);
+
+                
                 $this->associate_contact($contact->id);
+                
                 $company->update_parents_principal_address_keys($company->data['Company Main Address Key']);
+                
                 $address=new Address($company->data['Company Main Address Key']);
                 $address->editor=$this->editor;
+                 $address->new=true;
+               
                 $address->update_parents();
-                $address->update_parents_principal_telecom_keys('Telephone');
+                
+              
+              $address->update_parents_principal_telecom_keys('Telephone');
                 $address->update_parents_principal_telecom_keys('FAX');
-                $tel=new Telecom($address->get_principal_telecom_key('Telephone'));
+              
+              $tel=new Telecom($address->get_principal_telecom_key('Telephone'));
                 $tel->editor=$this->editor;
+$tel->new=true;
 
                 if ($tel->id)
                     $tel->update_parents();
                 $fax=new Telecom($address->get_principal_telecom_key('FAX'));
                 $fax->editor=$this->editor;
+                $fax->new=true;
                 if ($fax->id)
                     $fax->update_parents();
 
@@ -707,15 +721,17 @@ class Customer extends DB_Table {
                 $contact->update_parents_principal_address_keys($contact->data['Contact Main Address Key']);
                 $address=new Address($contact->data['Contact Main Address Key']);
                 $address->editor=$this->editor;
+                $address->new=true;
                 $address->update_parents();
                 $tel=new Telecom($address->get_principal_telecom_key('Telephone'));
                 $tel->editor=$this->editor;
-
+$tel->new=true;
                 if ($tel->id)
 
                     $tel->update_parents();
                 $fax=new Telecom($address->get_principal_telecom_key('FAX'));
                 $fax->editor=$this->editor;
+                 $fax->new=true;
                 if ($fax->id)
 
                     $fax->update_parents();
@@ -723,6 +739,7 @@ class Customer extends DB_Table {
             $contact->update_parents_principal_email_keys();
             $email=new Email($contact->get_principal_email_key());
             $email->editor=$this->editor;
+             $email->new=true;
             if ($email->id) {
                 $email->update_parents();
 
@@ -2823,6 +2840,8 @@ return $this->data['Customer Main Address Key'];
         if ($main_company_key!=$company_key) {
             $company=new Company($company_key);
             $company->editor=$this->editor;
+                        $company->new=$this->new;
+
             $sql=sprintf("update `Company Bridge`  set `Is Main`='No' where `Subject Type`='Customer' and  `Subject Key`=%d  and `Company Key`=%d",
                          $this->id
                          ,$company_key
@@ -2852,6 +2871,8 @@ return $this->data['Customer Main Address Key'];
         if ($main_contact_key!=$contact_key) {
             $contact=new Contact($contact_key);
             $contact->editor=$this->editor;
+                                    $contact->new=$this->new;
+
             $sql=sprintf("update `Contact Bridge`  set `Is Main`='No' where `Subject Type`='Customer' and  `Subject Key`=%d  and `Contact Key`=%d",
                          $this->id
                          ,$contact_key
@@ -2868,6 +2889,7 @@ return $this->data['Customer Main Address Key'];
 
 
             $this->data['Customer Main Contact Key']=$contact->id;
+            
             $contact->update_parents();
 
         }
@@ -3035,7 +3057,7 @@ return $this->data['Customer Main Address Key'];
     }
     
      function update_principal_delivery_address($address_key) {
-     
+
       //  $main_address_key=$this->get_principal_delivery_address_key();
         $main_address_key=$this->data['Customer Main Delivery Address Key'];
         
@@ -3045,6 +3067,8 @@ return $this->data['Customer Main Address Key'];
         if ($main_address_key!=$address_key ) {
             $address=new Address($address_key);
             $address->editor=$this->editor;
+                        $address->new=$this->new;
+
             $sql=sprintf("update `Address Bridge`  set `Is Main`='No' where `Subject Type`='Customer' and `Address Function`='Shipping' and  `Subject Key`=%d  and `Address Key`=%d",
                          $this->id
                          ,$main_address_key
@@ -3070,8 +3094,8 @@ return $this->data['Customer Main Address Key'];
 			 ,$this->id);
             $this->data['Customer Main Delivery Address Key']=$address->id;
             mysql_query($sql);
-//print $sql;
-            $address->update_parents();
+       
+        $address->update_parents();
 	    $this->get_data('id',$this->id);
 	    $this->updated=true;
 	    $this->new_value=$address->id;
@@ -3080,12 +3104,16 @@ return $this->data['Customer Main Address Key'];
     }
 
       function update_principal_billing_address($address_key) {
+      
+      
       //  $main_address_key=$this->get_principal_billing_address_key();
         $main_address_key=$this->data['Customer Billing Address Key'];
 
        if ($main_address_key!=$address_key or true) {
             $address=new Address($address_key);
             $address->editor=$this->editor;
+                        $address->new=$this->new;
+
             $sql=sprintf("update `Address Bridge`  set `Is Main`='No' where `Subject Type`='Customer' and `Address Function`='Billing' and  `Subject Key`=%d  and `Address Key`=%d",
                          $this->id
                          ,$main_address_key
@@ -3109,6 +3137,7 @@ return $this->data['Customer Main Address Key'];
 			 ,$this->id);
             $this->data['Customer Billing Address Key']=$address->id;
             mysql_query($sql);
+  
             $address->update_parents();
 	    $this->get_data('id',$this->id);
 	    $this->updated=true;

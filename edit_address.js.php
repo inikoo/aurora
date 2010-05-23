@@ -2,13 +2,26 @@
 include_once('common.php');
 include_once('set_locales.php');
 include_once('country_address_labels.js.php');
-$sql="select `Country Key`,`Country Name`,`Country Code`,`Country 2 Alpha Code` from kbase.`Country Dimension`";
+$sql="select `Country Key`,`Country Name`,`Country Code`,`Country 2 Alpha Code`,`Country Postal Code Regex`,`Country Postal Code Format` from kbase.`Country Dimension`";
 $result=mysql_query($sql);
 $country_list='';
 
+
+
 while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
-    $country_list.=',{"id":"'.$row['Country Key'].'","name":"'.$row['Country Name'].'","code":"'.$row['Country Code'].'","code2a":"'.$row['Country 2 Alpha Code'].'"}  ';
+if($row['Country Postal Code Format']==''){
+$postal_help=_('No postal code required in').' '.$row['Country Name'];
+}else{
+$postal_help=_('The valid postal code format is').': '.$row['Country Postal Code Format'];
+
 }
+
+    $country_list.=',{"id":"'.$row['Country Key'].'","name":"'.$row['Country Name'].'","code":"'.$row['Country Code'].'","code2a":"'.$row['Country 2 Alpha Code'].'","postal_regex":"'.addslashes($row['Country Postal Code Regex']).'",postcode_help:"'.$postal_help.'"}'."\n";
+}
+
+
+
+
 mysql_free_result($result);
 $country_list=preg_replace('/^\,/','',$country_list);
 
@@ -20,7 +33,8 @@ var Address_Items_Changes=0;
 var Address_Type_Changes=0;
 var Address_Function_Changes=0;
 
-
+var postcode_help='';
+var postal_regex=new RegExp('.?');
 
 var Address_Keys=["key","country","country_code","country_d1","country_d2","town","postal_code","town_d1","town_d2","fuzzy","street","building","internal","description"];
 var Address_Meta_Keys=["type","function"];
@@ -730,8 +744,10 @@ var match_country = function(sQuery) {
 	    Dom.get(this.suffix+"address_country_code").value = oData.code;
 	    Dom.get(this.suffix+"address_country_2acode").value = oData.code2a;
 
+//alert(oData.postal_regex)
 	    postal_regex=new RegExp(oData.postal_regex,"i");
-
+postcode_help=oData.postcode_help;
+//alert(postcode_help)
 	    myAC.getInputEl().value = oData.name + " (" + oData.code + ") ";
 	    update_address_labels(oData.code,this.suffix);
 
@@ -739,7 +755,6 @@ var match_country = function(sQuery) {
     
 
     function countries_format_results(oResultData, sQuery, sResultMatch){
-
 
   var query = sQuery.toLowerCase(),
 	    name = oResultData.name,
