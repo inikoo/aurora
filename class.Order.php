@@ -339,10 +339,10 @@ $this->update_customer=true;
 
 
                     $this->get_original_totals();
-
+if($this->update_customer){
                     $customer->update_orders();
                     $customer->update_no_normal_data();
-
+}
                     //       $this->cutomer_rankings();
 
 
