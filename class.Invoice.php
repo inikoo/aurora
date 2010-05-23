@@ -828,8 +828,10 @@ global $myconf;
       $order->update_product_sales();
       $order->update_totals('save');
       $customer=new Customer($order->data['Order Customer Key']);
+      if($this->update_customer){
       $customer->update_orders();
       $customer->update_no_normal_data();
+      }
    }
    //   exit;
  //  print $sql;
