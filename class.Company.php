@@ -177,12 +177,12 @@ class Company extends DB_Table {
 
 
 
-foreach($this->candidate as $key=>$score){
-if($score>5)
-continue;
-else
-unset($this->candidate[$key]);
-}
+        foreach($this->candidate as $key=>$score) {
+            if ($score>5)
+                continue;
+            else
+                unset($this->candidate[$key]);
+        }
 
 //print_r($this->candidate);
 //exit;
@@ -212,44 +212,44 @@ unset($this->candidate[$key]);
 
             if ($find_fuzzy) {
 
-$len=strlen($raw_data['Company Name']);
-if($len<256){
+                $len=strlen($raw_data['Company Name']);
+                if ($len<256) {
 
-                $sql=sprintf("select `Company Key`,damlevlim256(UPPER(%s),UPPER(`Company Name`),$len)/$len as dist1 from `Company Dimension`   order by dist1  limit 10"
-                             ,prepare_mysql($raw_data['Company Name'])
+                    $sql=sprintf("select `Company Key`,damlevlim256(UPPER(%s),UPPER(`Company Name`),$len)/$len as dist1 from `Company Dimension`   order by dist1  limit 10"
+                                 ,prepare_mysql($raw_data['Company Name'])
 
-                            );
-                           // print "$sql\n";
-                $result=mysql_query($sql);
-                while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-                    if ($row['dist1']>=1)
-                        break;
+                                );
+                    // print "$sql\n";
+                    $result=mysql_query($sql);
+                    while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+                        if ($row['dist1']>=1)
+                            break;
                         //print $row['dist1']." $max_score  po ".pow(1-  $row['dist1'] ,4  )."\n";
-                        
-                    $score=$max_score*pow(1-  $row['dist1'] ,3  );
-                    $extra_score=0;
-                    $company_key=$row['Company Key'];
 
-                    foreach($this->candidate as $candidate_key=>$candidate_score) {
-                        $sql=sprintf("select count(*) matched from `Contact Bridge` where `Contact Key`=%d and `Subject Key`=%d  and `Subject Type`='Company' and `Is Active`='Yes'  "
-                                     ,$candidate_key
-                                     ,$company_key
-                                    );
-                        $res=mysql_query($sql);
-                        $match_data=mysql_fetch_array($res);
-                        if ($match_data['matched']>0) {
-                            $this->candidate[$candidate_key]+=$score_plus_for_match;
-                            $extra_score=$score_plus_for_match;
+                        $score=$max_score*pow(1-  $row['dist1'] ,3  );
+                        $extra_score=0;
+                        $company_key=$row['Company Key'];
+
+                        foreach($this->candidate as $candidate_key=>$candidate_score) {
+                            $sql=sprintf("select count(*) matched from `Contact Bridge` where `Contact Key`=%d and `Subject Key`=%d  and `Subject Type`='Company' and `Is Active`='Yes'  "
+                                         ,$candidate_key
+                                         ,$company_key
+                                        );
+                            $res=mysql_query($sql);
+                            $match_data=mysql_fetch_array($res);
+                            if ($match_data['matched']>0) {
+                                $this->candidate[$candidate_key]+=$score_plus_for_match;
+                                $extra_score=$score_plus_for_match;
+                            }
+
                         }
 
+
+                        if (isset($this->candidate_companies[$company_key]))
+                            $this->candidate_companies[$company_key]+=$score+$extra_score;
+                        else
+                            $this->candidate_companies[$company_key]=$score+$extra_score;
                     }
-
-
-                    if (isset($this->candidate_companies[$company_key]))
-                        $this->candidate_companies[$company_key]+=$score+$extra_score;
-                    else
-                        $this->candidate_companies[$company_key]=$score+$extra_score;
-                }
                 }
             } else {
 
@@ -363,9 +363,9 @@ if($len<256){
 
             }
 
-           // print "Company founded ".$this->found_key."  \n";
+            // print "Company founded ".$this->found_key."  \n";
 
-         //   print "Contact founded ".$contact->found."  \n";
+            //   print "Contact founded ".$contact->found."  \n";
 
             if ($create and !$this->found) {
 
@@ -458,7 +458,7 @@ if($len<256){
                 if ($contact->new) {
                     $contact->associate_address($address->id);
                 }
-               
+
 
                 foreach($raw_data as $key=>$value) {
                     if (preg_match('/Address|Customer|Supplier|Location|Country|XHTML|Email/',$key))
@@ -805,7 +805,7 @@ if($len<256){
     protected function update_field_switcher($field,$value,$options='') {
 
 
-            //  print "$field -> $value\n";
+        //  print "$field -> $value\n";
 
 
         switch ($field) {
@@ -813,7 +813,7 @@ if($len<256){
             $this->update_main_contact_name($value);
             break;
         case('Company Main Contact Name'):
-case('Company Main XHTML FAX'):
+        case('Company Main XHTML FAX'):
         case('Company Main XHTML Telephone'):
 
             break;
@@ -823,10 +823,10 @@ case('Company Main XHTML FAX'):
             $this->update_Company_Name($value,$options);
             break;
         case('Company Main Plain Email'):
-              $contact=new Contact($this->data['Company Main Contact Key']);
-              $contact->update(array('Contact Main Plain Email'),$value);  
-        
-      
+            $contact=new Contact($this->data['Company Main Contact Key']);
+            $contact->update(array('Contact Main Plain Email'),$value);
+
+
             break;
 
 
@@ -837,7 +837,7 @@ case('Company Main XHTML FAX'):
             else
                 $type='FAX';
             $address=new Address($this->data['Company Main Address Key']);
-            
+
             $address->editor=$this->editor;
             if ($value=='') {
                 if ($telecom_key=$address->get_principal_telecom_key($type)) {
@@ -1368,7 +1368,7 @@ case('Company Main XHTML FAX'):
 
         if (!array_key_exists($address_key,$address_keys)) {
             $this->create_address_bridge($address_key);
-$this->updated=true;
+            $this->updated=true;
             $this->new_data=$address_key;
 
 
@@ -1409,6 +1409,8 @@ $this->updated=true;
         if ($main_address_key!=$address_key) {
             $address=new Address($address_key);
             $address->editor=$this->editor;
+            $address->new=$this->new;
+
             $sql=sprintf("update `Address Bridge`  set `Is Main`='No' where `Subject Type`='Company' and  `Subject Key`=%d  and `Address Key`!=%d",
                          $this->id
                          ,$address_key
@@ -1425,22 +1427,26 @@ $this->updated=true;
             mysql_query($sql);
 
             $this->update_parents_principal_address_keys($address_key);
-            
+
             $contacts=$this->get_contact_keys();
-            foreach($contacts as $contact_key){
+            foreach($contacts as $contact_key) {
                 $contact=new Contact($contact_key);
-                    if($contact->data['Contact Main Address Key']==$main_address_key){
-                        $contact->update_principal_address($address_key);
-                    }
+                $contact->editor=$this->editor;
+                $contact->new=$this->new;
+                if ($contact->data['Contact Main Address Key']==$main_address_key) {
+                    $contact->update_principal_address($address_key);
                 }
-            
-            
-            
-            
-            
+            }
+
+
+            //print "upa\n";
+            //print_r($this->editor);
+
+
             $address->update_parents();
+            //print "end upa\n";
             $this->updated=true;
-			$this->new_value=$address_key;
+            $this->new_value=$address_key;
         }
 
     }
@@ -1507,6 +1513,7 @@ $this->updated=true;
 
             $this->data['Company Main Contact Key']=$contact->id;
             $this->update_parents_principal_contact_keys($contact_key);
+            $contact->new=$contact->new;
             $contact->update_parents();
             $this->last_associated_contact_key=$contact_key;
 
@@ -1532,6 +1539,8 @@ $this->updated=true;
                     $parent_object=new Supplier($row['Parent Key']);
                     $parent_label=_('Supplier');
                 }
+                $parent_object->editor=$this->editor;
+                $parent_object->new=$this->new;
 
                 $old_principal_name_key=$parent_object->data[$parent.' Main Contact Key'];
                 if ($old_principal_name_key!=$contact_key) {
@@ -1577,7 +1586,8 @@ $this->updated=true;
                     $parent_object=new Supplier($row['Parent Key']);
                     $parent_label=_('Supplier');
                 }
-
+                $parent_object->editor=$this->editor;
+                $parent_object->new=$this->new;
                 $old_principal_name_key=$parent_object->data[$parent.' Main Address Key'];
                 if ($old_principal_name_key!=$address_key) {
 
@@ -1596,27 +1606,27 @@ $this->updated=true;
                                  ,$parent_object->id
                                 );
                     mysql_query($sql);
-                    
+
                     $parent_object->get_data('id',$parent_object->id);
 
-                if($parent=='Customer'){
-                    if($parent_object->data['Customer Delivery Address Link']=='Contact'){
-                        $parent_object->update_principal_delivery_address($address_key);
-                    
+                    if ($parent=='Customer') {
+                        if ($parent_object->data['Customer Delivery Address Link']=='Contact') {
+                            $parent_object->update_principal_delivery_address($address_key);
+
+                        }
+                        if ($parent_object->data['Customer Billing Address Link']=='Contact') {
+                            $parent_object->update_principal_billing_address($address_key);
+
+                        }
+
                     }
-                     if($parent_object->data['Customer Billing Address Link']=='Contact'){
-                        $parent_object->update_principal_billing_address($address_key);
-                    
-                    }
-                
-                }
 
 
                 }
-                
-                
-                
-                
+
+
+
+
             }
         }
     }
@@ -2494,14 +2504,14 @@ $this->updated=true;
     }
 
 
-function get_parent_keys($type){
-$keys=array();
-if(!preg_match('/^(Supplier|User|Customer)$/',$type)){
-    return $keys;
-}
- $sql=sprintf("select `Subject Key` from `Company Bridge` where `Subject Type`=%s and `Company Key`=%d  "
- ,prepare_mysql($type)
- ,$this->id);
+    function get_parent_keys($type) {
+        $keys=array();
+        if (!preg_match('/^(Supplier|User|Customer)$/',$type)) {
+            return $keys;
+        }
+        $sql=sprintf("select `Subject Key` from `Company Bridge` where `Subject Type`=%s and `Company Key`=%d  "
+                     ,prepare_mysql($type)
+                     ,$this->id);
 // print "$sql\n";
         $result=mysql_query($sql);
         while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
@@ -2509,7 +2519,7 @@ if(!preg_match('/^(Supplier|User|Customer)$/',$type)){
 
         }
         return $keys;
-}
+    }
 
 
 

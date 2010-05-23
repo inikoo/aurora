@@ -271,6 +271,8 @@ protected function add_history($raw_data,$force=false){
   if($this->new and !$force)
     return;
  
+ 
+ 
   if($this->table_name=='Product Department')
     $table='Department';
   elseif($this->table_name=='Product Family')

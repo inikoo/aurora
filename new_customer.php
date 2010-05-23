@@ -87,6 +87,7 @@ if(isset($_REQUEST['tipo']) and $_REQUEST['tipo']=='person'){
   $tipo='person';
 }
 
+
 if($tipo=='company'){
 $js_files[]='company.js.php';
 $js_files[]='js/validate_telecom.js';
@@ -96,7 +97,6 @@ $js_files[]='edit_contact_from_parent.js.php';
 $js_files[]='edit_contact_telecom.js.php';
 $js_files[]='edit_contact_name.js.php';
 $js_files[]='edit_contact_email.js.php';
-$tpl_file='new_company.tpl';
 }else{
 
 $js_files[]='js/validate_telecom.js';
@@ -108,16 +108,18 @@ $js_files[]='edit_contact_email.js.php';
 $js_files[]='edit_contact_email.js.php';
 $js_files[]='new_contact.js.php?scope=customer&store_key='.$store_key;
 
-$tpl_file='new_contact.tpl';
 }
+
 
 
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
 $smarty->assign('box_layout','yui-t0');
 $smarty->assign('parent','customers');
+$smarty->assign('tipo',$tipo);
+
 $smarty->assign('title','Creating New Customer');
-$smarty->display($tpl_file);
+$smarty->display('new_customer.tpl');
 
 
 

@@ -1423,6 +1423,7 @@ $len_name=strlen($name_data['Contact Surname']);
             $this->new_value=$email->display('plain');
 
             $this->update_parents_principal_email_keys();
+            $email->new=$this->new;
             $email->update_parents();
 
         }
@@ -1575,6 +1576,8 @@ $len_name=strlen($name_data['Contact Surname']);
         if ($main_company_key!=$company_key) {
             $company=new Company($company_key);
             $company->editor=$this->editor;
+                        $company->new=$this->new;
+
             $sql=sprintf("update `Company Bridge`  set `Is Main`='No' where `Subject Type`='Contact' and  `Subject Key`=%d  and `Company Key`=%d",
                          $this->id
                          ,$company->id
@@ -1632,6 +1635,7 @@ $len_name=strlen($name_data['Contact Surname']);
 
                 if ($old_principal_contact!=$parent_object->data[$parent.' Main Contact Name'])
                     $principal_contact_changed=true;
+                        
 
                 if ($principal_contact_changed) {
 
@@ -1644,6 +1648,7 @@ $len_name=strlen($name_data['Contact Surname']);
                         $history_data['Direct Object Key']=$this->id;
                         $history_data['Indirect Object']=$parent;
                         $history_data['Indirect Object Key']=$parent_object->id;
+                       
                         $this->add_history($history_data);
                     } else {
                         $history_data['History Abstract']='Main Contact Changed';
@@ -1653,7 +1658,6 @@ $len_name=strlen($name_data['Contact Surname']);
                         $history_data['Direct Object Key']=$parent_object->id;
                         $history_data['Indirect Object']='Contact Main Name';
                         $history_data['Indirect Object Key']='';
-
                         $this->add_history($history_data);
 
                     }
@@ -1664,7 +1668,7 @@ $len_name=strlen($name_data['Contact Surname']);
                 $this->update_parents_principal_email_keys();
                 $email=new Email($this->get_principal_email_key());
                 $email->editor=$this->editor;
-
+                $email->new=$this->new;
                 if ($email->id)
                     $email->update_parents();
 
@@ -2067,7 +2071,11 @@ $this->updated=true;
             mysql_query($sql);
 
             //$this->update_parents_principal_address_keys();
+                 
+           // print "upac\n";
+           // print_r($this->editor);
             $address->update_parents();
+			//print "end aa\n";
 			$this->updated=true;
 			$this->new_value=$address_key;
         }

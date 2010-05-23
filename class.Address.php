@@ -4461,7 +4461,7 @@ class Address extends DB_Table {
 
 
     function update_parents() {
-
+   
         $sql=sprintf("select `Customer Key`  from  `Customer Dimension` where `Customer Main Delivery Address Key`=%d group by `Customer Key`",$this->id);
         $res=mysql_query($sql);
         while ($row=mysql_fetch_array($res)) {
@@ -4548,12 +4548,13 @@ class Address extends DB_Table {
                     if ($old_princial_address=='') {
 
                         $history_data['History Abstract']='Address Associated';
-                        $history_data['History Details']=$this->display('xhtml')." "._('associated with')." ".$parent_object->get_name()." ".$parent_label;
+                        $history_data['History Details']=$this->display('xhtml')." "._('address associated with')." ".$parent_object->get_name()." ".$parent_label;
                         $history_data['Action']='associated';
                         $history_data['Direct Object']=$parent;
                         $history_data['Direct Object Key']=$parent_object->id;
                         $history_data['Indirect Object']='Address';
                         $history_data['Indirect Object Key']=$this->id;
+                     
                         $this->add_history($history_data);
                     } else {
                         $history_data['History Abstract']='Address Changed';
