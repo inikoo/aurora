@@ -4,9 +4,12 @@
 <span class="nav2"><a href="contacts.php">{$home}</a></span>
 <div id="yui-main" >
     
-    
+   { if $tipo=='company'}
     {include file='new_company_splinter.tpl'}
+{else}
+    {include file='new_contact_splinter.tpl'}
 
+{/if}
 
       
 

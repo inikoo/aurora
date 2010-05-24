@@ -85,11 +85,20 @@ var validate_scope_data=
 	,'telephone':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'Customer_Main_Telephone','validation':[{'regexp':"[ext\\d\\(\\)\\[\\]\\-\\s]+",'invalid_msg':'<?php echo _('Invalid Telephone')?>'}]}
   	,'tax_number':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'Customer_Tax_Number','validation':[{'regexp':"<?php echo $tax_number_regex?>",'invalid_msg':'<?php echo _('Invalid Tax Number')?>'}]}
 
+  },
+  'billing_data':{
+  	'fiscal_name':{'changed':false,'validated':true,'required':true,'group':1,'type':'item','name':'Customer_Fiscal_Name','ar':false,'validation':[{'regexp':"[a-zA-Z]+",'invalid_msg':'<?php echo _('Invalid Fiscal Name')?>'}]}
+
   }
+  
 };
 
 //"[ext\d\(\)\[\]\-\s]+"
-var validate_scope_metadata={'customer':{'type':'edit','ar_file':'ar_edit_contacts.php','key_name':'customer_key','key':<?php echo $_SESSION['state']['customer']['id']?>}};
+var validate_scope_metadata={
+'customer':{'type':'edit','ar_file':'ar_edit_contacts.php','key_name':'customer_key','key':<?php echo $_SESSION['state']['customer']['id']?>}
+,'billing_data':{'type':'edit','ar_file':'ar_edit_contacts.php','key_name':'customer_key','key':<?php echo $_SESSION['state']['customer']['id']?>}
+
+};
 
 function validate_scope_old(){
     var changed=false;
@@ -185,6 +194,10 @@ Dom.get(validate_scope_data.customer.email.name+'_msg').innerHTML='<?php echo _(
 function validate_customer_name(query){
  validate_general('customer','name',unescape(query));
 }
+function validate_customer_fiscal_name(query){
+ validate_general('billing_data','fiscal_name',unescape(query));
+}
+
 function validate_customer_telephone(query){
  validate_general('customer','telephone',unescape(query));
 }
@@ -192,6 +205,12 @@ function validate_customer_main_contact_name(query){
  validate_general('customer','contact',unescape(query));
 }
 
+function save_edit_billing_data(){
+    save_edit_general('billing_data');
+}
+function reset_edit_billing_data(){
+    reset_edit_general('billing_data')
+}
 
 
 
@@ -249,13 +268,23 @@ function init(){
     
     YAHOO.util.Event.addListener('save_edit_customer', "click", save_edit_customer);
     YAHOO.util.Event.addListener('reset_edit_customer', "click", reset_edit_customer);
+    
+     YAHOO.util.Event.addListener('save_edit_billing_data', "click", save_edit_billing_data);
+    YAHOO.util.Event.addListener('reset_edit_billing_data', "click", reset_edit_billing_data);
+    
 
-    var customer_name_oACDS = new YAHOO.util.FunctionDataSource(validate_customer_name);
+   var customer_name_oACDS = new YAHOO.util.FunctionDataSource(validate_customer_name);
     customer_name_oACDS.queryMatchContains = true;
     var customer_name_oAutoComp = new YAHOO.widget.AutoComplete("Customer_Name","Customer_Name_Container", customer_name_oACDS);
     customer_name_oAutoComp.minQueryLength = 0; 
     customer_name_oAutoComp.queryDelay = 0.1;
 
+     var customer_fiscal_name_oACDS = new YAHOO.util.FunctionDataSource(validate_customer_fiscal_name);
+    customer_fiscal_name_oACDS.queryMatchContains = true;
+    var customer_fiscal_name_oAutoComp = new YAHOO.widget.AutoComplete("Customer_Fiscal_Name","Customer_Fiscal_Name_Container", customer_fiscal_name_oACDS);
+    customer_fiscal_name_oAutoComp.minQueryLength = 0; 
+    customer_fiscal_name_oAutoComp.queryDelay = 0.1;
+    
     
     var customer_email_oACDS = new YAHOO.util.FunctionDataSource(validate_customer_email);
     customer_email_oACDS.queryMatchContains = true;
@@ -292,7 +321,6 @@ function init(){
 	 
 	 YAHOO.util.Event.addListener('contact_save_address_button', "click",save_address,{prefix:'contact_',subject:'Customer',subject_key:customer_id,type:'contact'});
 	 YAHOO.util.Event.addListener('contact_reset_address_button', "click",reset_address,'contact_');
-
 
 
 
@@ -347,8 +375,6 @@ var Countries_DS = new YAHOO.util.FunctionDataSource(match_country);
 	
 
 	 YAHOO.util.Event.addListener('billing_reset_address_button', "click",reset_billing_address);
-
-
 
 
 }

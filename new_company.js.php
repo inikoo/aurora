@@ -37,7 +37,7 @@ var subject_data={
     "Company Name":""
     ,"Company Main Contact Name":""
     ,"Company Main Plain Email":""
-    ,"Company Main XHTML Telephone":""
+    ,"Company Main Plain Telephone":""
     ,"Company Address Line 1":""
     ,"Company Address Line 2":""
     ,"Company Address Line 3":""
@@ -85,10 +85,6 @@ var changes_address=0;
 var saved_details=0;
 var error_details=0;
 var values=new Object;
-
-
-
-
 
 function save_new_company(e){
    
@@ -185,9 +181,33 @@ function name_inputed(){
     //validate_postal_code(postal_code);
     
 }    
+
+function cancel_new_company(){
+if(scope=='customer')
+window.location='customers.php'
+
+else
+window.location='companies.php?edit=1';
+}
+
+function get_subject_data(){
+    subject_data[Subject+' Name']=Dom.get('Company_Name').value;
+    
+}
+
+function get_contact_data(){
+    subject_data[Subject+' Main Contact Name']=Dom.get('Contact_Name').value;
+	subject_data[Subject+' Main Plain Telephone']=Dom.get('Telephone').value;
+subject_data[Subject+' Main Plain Email']=Dom.get('Email').value;
+
+}
+
+
 function init(){
     
 	YAHOO.util.Event.addListener(['save_new_'+Subject,'save_when_founded','force_new'], "click",save_new_company);
+      	YAHOO.util.Event.addListener(['cancel_add_'+Subject], "click",cancel_new_company);
+	YAHOO.util.Event.addListener('Company_Name', "blur",name_inputed);
 
 	var company_name_oACDS = new YAHOO.util.FunctionDataSource(validate_company_name);
 	company_name_oACDS.queryMatchContains = true;

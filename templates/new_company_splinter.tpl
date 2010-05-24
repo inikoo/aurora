@@ -14,6 +14,9 @@
       
       <div  style="float:left;width:370px" >
       <table class="edit" border=0 >
+      
+      	
+      
 	{if $scope=='customer'}
 <input type="hidden" value="{$store_key}" id="Store_Key"/>
 {/if}
@@ -240,7 +243,7 @@
       <table class="options" style="float:right;padding:0;margin:0">
 	<tr>
 	  <td  class="disabled" id="save_new_Company">{t}Save{/t}</td>
-	  <td  id="cancel_add_Company" onClick="window.location='companies.php?edit=1'">{t}Cancel{/t}</td>
+	  <td  id="cancel_add_Company" ">{t}Cancel{/t}</td>
 	</tr>
       </table>
       <div id="Company_found_dialog" style="display:none;float:right;border:1px solid #ccc;width:200px;padding:6px 10px;margin-top:3px;font-size:80%;color:#555">

@@ -24,7 +24,9 @@
 	    <div id="Contact_Name_Container" style="" ></div>
 	    
 	  </td>
-	  
+	  	{if $scope=='customer'}
+<input type="hidden" value="{$store_key}" id="Store_Key"/>
+{/if}
 	  
 	<tr id="tr_Contact_Gender" style="display:none">
 	  <td class="label">{t}Gender{/t}:</td>
@@ -214,14 +216,14 @@
 	
 	
 
-	<tr  id="tr_address_postal_code">
-	  <td class="label" style="width:160px">{t}Postal Code{/t}:</td>
+	
+	<tr   id="tr_address_postal_code">
+	  <td class="label"  style="width:160px;background:none"><img  id="address_postal_code_warning" title=""  src="art/icons/exclamation.png" style="float:left;visibility:hidden" /> {t}Postal Code{/t}:</td>
 	  <td  style="text-align:left">
 	    <input style="text-align:left;width:18em" id="address_postal_code" value="" ovalue="" valid="0"  >
 	    <div id="address_postal_code_container" style="" ></div>
 	  </td>
 	</tr>
-	
 	  <tr>
 	    <td class="label" style="width:160px">
 	      <span id="show_town_d1" onclick="toggle_town_d1()" class="small_button" style="padding:0 1px;font-size:50%;position:relative;top:-2px">+</span> {t}Town/City{/t}:</td>
@@ -260,22 +262,23 @@
 
       <table class="options" style="float:right;padding:0;margin:0">
 	<tr>
-	  <td  class="disabled" id="save_new_contact">{t}Save{/t}</td>
-	  <td  id="cancel_add_contact" onClick="window.location='companies.php?edit=1'">{t}Cancel{/t}</td>
+	  <td  class="disabled" id="save_new_Contact">{t}Save{/t}</td>
+	  <td  id="cancel_add_Contact" >{t}Cancel{/t}</td>
 	</tr>
       </table>
-      <div id="contact_found_dialog" style="display:none;float:right;border:1px solid #ccc;width:200px;padding:6px 10px;margin-top:3px;font-size:80%;color:#555">
+      <div id="Contact_found_dialog" style="display:none;float:right;border:1px solid #ccc;width:200px;padding:6px 10px;margin-top:3px;font-size:80%;color:#555">
 	{t}Another contact has been found with the similar details{/t}.
 	<table style="margin:10px 0">
-	  <tr><td><span td style="cursor:pointer;text-decoration:underline" id="pick_founded">{t}Pick contact founded{/t} (<span id="founded_name"></span>)</span></td></tr>
-	  <tr><td><span td style="cursor:pointer;text-decoration:underline" id="force_new">{t}Confirm is new contact and Save{/t}</span></td></tr>
+	  <tr><td><span  style="cursor:pointer;text-decoration:underline" onClick="edit_founded()"    id="pick_founded">{t}Edit contact founded{/t} (<span id="founded_name"></span>)</span></td></tr>
+	  <tr><td><span  style="cursor:pointer;text-decoration:underline"  id="save_when_founded" >{t}Confirm is new contact and Save{/t}</span></td></tr>
 	</table>
       </div>
       <div id="email_found_dialog" style="display:none;float:right;border:1px solid #ccc;width:200px;padding:6px 10px;margin-top:3px;font-size:80%;color:#555">
 	{t}Another contact has the same email{/t}.
+	
 	<table style="margin:10px 0">
-	  <tr><td style="cursor:pointer">{t}Edit contact founded{/t}</td></tr>
-	  <tr><td><span td style="cursor:pointer;text-decoration:underline" id="force_new">{t}Confirm is new contact and Save{/t}</span><br><span style="color:red">{t}Founded contact data will be deleted to avoid muliplicity{/t}</span></td></tr>
+	  <tr><td style="cursor:pointer;text-decoration:underline" onclick="edit_founded()">{t}Edit contact founded{/t}</td></tr>
+	  <tr><td><span  style="cursor:pointer;text-decoration:underline" id="force_new">{t}Confirm is new contact and Save{/t}</span><br><span style="color:red">{t}Founded contact data will be deleted to avoid muliplicity{/t}</span></td></tr>
 	</table>
       </div>
 

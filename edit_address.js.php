@@ -97,7 +97,6 @@ success:function(o) {
 var save_address=function(e,options) {
 
 
-
     var address_prefix='';
     if (options.prefix!= undefined) {
         address_prefix=options.prefix;
@@ -106,7 +105,7 @@ var save_address=function(e,options) {
 
 
     var table='address';
-
+//alert(Dom.get(address_prefix+'address_key').value)
 
     if (Dom.get(address_prefix+'address_key').value==0) {
         create_address(options);

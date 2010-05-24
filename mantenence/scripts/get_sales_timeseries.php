@@ -104,7 +104,7 @@ $tm=new TimeSeries(array('w','store ('.$row['Store Key'].') sales'));
   if($forecast)
     $tm->forecast();
 
-/*
+
 $tm=new TimeSeries(array('m','store ('.$row['Store Key'].') sales'));
   $tm->get_values();
   $tm->save_values();
@@ -135,7 +135,7 @@ if($myconf['currency_code']!=$store->data['Store Currency Code']){
 
 }
 
-*/
+
  
 }
  
