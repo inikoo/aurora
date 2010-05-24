@@ -167,7 +167,8 @@ $smarty->assign('general_options_list',$general_options_list);
 
   $smarty->assign('css_files',$css_files);
   $smarty->assign('js_files',$js_files);
-   $delivery_addresses=$customer->get_delivery_address_objects();
+   $delivery_addresses=$customer->get_address_objects();
+
 
  $smarty->assign('delivery_addresses',$delivery_addresses);
   $smarty->display('edit_customer.tpl');

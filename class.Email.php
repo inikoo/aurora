@@ -228,7 +228,7 @@ class Email extends DB_Table {
                 
                 
                 
-                $sql=sprintf("select `Subject Key`,T.`Email Key`,damlevlim256(UPPER(%s),UPPER(`Email`),3) as dist1 from   `Email Dimension` T left join `Email Bridge` TB  on (TB.`Email Key`=T.`Email Key`)   where  `Subject Type`='Contact'  order by dist1  limit 80"
+                $sql=sprintf("select `Subject Key`,T.`Email Key`,damlevlim256(UPPER(%s),UPPER(`Email`),3) as dist1 from   `Email Dimension` T left join `Email Bridge` TB  on (TB.`Email Key`=T.`Email Key`)   where  `Subject Type`='Contact'  order by dist1  limit 10"
                              ,prepare_mysql($raw_data['Email'])
                             );
                

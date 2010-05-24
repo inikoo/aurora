@@ -119,7 +119,7 @@ class Company extends DB_Table {
             $update='update';
         }
 
-        $address_data=array('Company Address Line 1'=>'','Company Address Town'=>'','Company Address Line 2'=>'','Company Address Line 3'=>'','Company Address Postal Code'=>'','Company Address Country Name'=>'','Company Address Country First Division'=>'','Company Address Country Second Division'=>'');
+        $address_data=array('Company Address Line 1'=>'','Company Address Town'=>'','Company Address Line 2'=>'','Company Address Line 3'=>'','Company Address Postal Code'=>'','Company Address Country Name'=>'','Company Address Country Code'=>'','Company Address Country First Division'=>'','Company Address Country Second Division'=>'');
 
 
 
@@ -557,6 +557,12 @@ class Company extends DB_Table {
         // print $options."\n";
         // print_r($raw_data);
 
+
+if(!isset($raw_data['Company Fiscal Name']) or $raw_data['Company Fiscal Name']=='' ){
+$raw_data['Company Fiscal Name']=$raw_data['Company Name'];
+}
+
+
         $this->data=$this->base_data();
         foreach($raw_data as $key=>$value) {
             if (array_key_exists($key,$this->data)) {
@@ -626,7 +632,8 @@ class Company extends DB_Table {
 
 
             $address_data['editor']=$this->editor;
-            $address=new Address("find in company create",$address_data);
+            //print_r($address_data);print "====";
+            $address=new Address("find in company ".$this->id." create",$address_data);
             $address->editor=$this->editor;
             $this->associate_address($address->id);
 
