@@ -180,6 +180,8 @@ class Contact extends DB_Table {
                                'Contact Home Address Line 3'=>'',
                                'Contact Home Address Postal Code'=>'',
                                'Contact Home Address Country Name'=>'',
+                                                              'Contact Home Address Country Code'=>'',
+
                                'Contact Home Address Country First Division'=>'',
                                'Contact Home Address Country Second Division'=>''
                            );
@@ -191,6 +193,8 @@ class Contact extends DB_Table {
                                'Contact Work Address Postal Code'=>'',
                                'Contact Work Address Country Name'=>'',
                                'Contact Work Address Country First Division'=>'',
+                               'Contact Work Address Country Code'=>'',
+
                                'Contact Work Address Country Second Division'=>''
                            );
 
@@ -221,6 +225,8 @@ class Contact extends DB_Table {
         }
         elseif(preg_match('/from customer|in customer/i',$options)) {
             foreach($raw_data as $key=>$val) {
+            
+            
                 if ($key=='Customer Main Contact Name') {
                     $_key='Contact Name';
                 } else if (preg_match('/Customer Address/i',$key)) {
@@ -230,6 +236,7 @@ class Contact extends DB_Table {
                 $data[$_key]=$val;
 
 
+           // print "$key $_key \n";
 
 
                 if (array_key_exists($_key,$address_home_data))
@@ -240,8 +247,11 @@ class Contact extends DB_Table {
             }
             $parent='customer';
 
-
+  
         }
+        
+     
+        
         elseif(preg_match('/from staff|in staff/i',$options)) {
             foreach($raw_data as $key=>$val) {
                 if (preg_match('/Staff Address/i',$key)) {
@@ -3020,11 +3030,13 @@ $this->updated=true;
                 $fax_label="F:";
                 $mobile_label="M:";
 
-                $email='';
+                $email='';$company='';
                 $tel='';
                 $fax='';
                 $mobile='';
                 $name=sprintf('<span class="name">%s</span>',$this->data['Contact Name']);
+                if ($this->data['Contact Company Key'])
+                    $company=sprintf('<span class="company">%s</span><br/>',$this->data['Contact Company Name']);
                 if ($this->data['Contact Main XHTML Email'])
                     $email=sprintf('<span class="email">%s</span><br/>',$this->data['Contact Main XHTML Email']);
                 if ($this->data['Contact Main XHTML Telephone'])
@@ -3035,8 +3047,9 @@ $this->updated=true;
                     $mobile=sprintf('<span class="mobile">%s %s</span>',$mobile_label,$this->data['Contact Main XHTML Mobile']);
 
                 $address=sprintf('<span class="mobile">%s</span>',$this->data['Contact Main XHTML Address']);
-                $card=sprintf('<div class="contact_card">%s <div  class="tels">%s %s %s %s</div><div  class="address">%s</div> </div>'
+                $card=sprintf('<div class="contact_card">%s <div  class="tels">%s %s %s %s %s</div><div  class="address">%s</div> </div>'
                               ,$name
+                              ,$company
                               ,$email
                               ,$tel
                               ,$fax
@@ -3279,6 +3292,7 @@ $this->updated=true;
 
             $card=array(
                       'Contact Name'=>$this->data['Contact Name']
+                      ,'Company Name'=>$this->data['Contact Company Name']
                                      ,'Emails'=>array()
                                                ,'Telephones'=>array()
                                                              ,'Addresses'=>array()

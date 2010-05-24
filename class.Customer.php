@@ -570,7 +570,7 @@ class Customer extends DB_Table {
 
 
     function create($raw_data,$args='') {
-
+//print_r($raw_data);
 
         $main_telephone_key=false;
         $main_fax_key=false;
@@ -670,6 +670,8 @@ $contact->editor=$this->editor;
                     $contact=new contact('id',$this->data['Customer Main Contact Key']);
                     $contact->editor=$this->editor;
                 }
+                
+             
                 $this->data['Customer Name']=$contact->display('name');
 
                 $this->data['Customer File As']=$contact->data['Contact File As'];
@@ -719,8 +721,14 @@ $tel->new=true;
             } else {
                 $this->associate_contact($contact->id);
                 $contact->update_parents_principal_address_keys($contact->data['Contact Main Address Key']);
-                $address=new Address($contact->data['Contact Main Address Key']);
-                $address->editor=$this->editor;
+               //print "addres key".$contact->data['Contact Main Address Key'];
+               
+           
+               
+               $address=new Address($contact->data['Contact Main Address Key']);
+               
+               
+               $address->editor=$this->editor;
                 $address->new=true;
                 $address->update_parents();
                 $tel=new Telecom($address->get_principal_telecom_key('Telephone'));
@@ -2273,6 +2281,8 @@ if($key=='Customer Fiscal Name' or $key=='Fiscal Name'){
 
 function update_fiscal_name($value){
     if($this->data['Customer Type']=='Person'){
+    $this->msg=_("Can't update fiscal name of a person");
+$this->error=true;
 return;
 }else{
 $subject=new Company($this->data['Customer Company Key']);
@@ -2344,7 +2354,7 @@ $subject_key=$this->data['Customer Company Key'];
 }
 
     $sql=sprintf("select `$subject Tax Number` as tax_number from `$subject Dimension` where `$subject Key`=%d ",$subject_key);
-    //   print $sql;
+    // print $sql;
   $res=mysql_query($sql);
 
         if ($row=mysql_fetch_assoc($res)) {

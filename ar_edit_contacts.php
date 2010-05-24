@@ -81,6 +81,8 @@ case('edit_delivery_address'):
 case('edit_company'):
     edit_company();
     break;
+    case('edit_billing_data'):
+
 case('edit_customer'):
     edit_customer();
     break;
@@ -1635,9 +1637,8 @@ function new_customer($data) {
         }
     }
 
+
 //print_r($data['values']);
-
-
 
 
 
@@ -1765,7 +1766,8 @@ function edit_customer() {
 
 
         $key_dic=array(
-                     'name'=>'Customer Name'
+        'fiscal_name'=>'Customer Fiscal Name'
+                     ,'name'=>'Customer Name'
                             ,'email'=>'Customer Main Plain Email'
                                      ,'telephone'=>'Customer Main Plain Telephone'
                                                   ,'contact'=>'Customer Main Contact Name'
@@ -1784,7 +1786,10 @@ function edit_customer() {
                  );
         if (array_key_exists($_REQUEST['key'],$key_dic))
             $key=$key_dic[$_REQUEST['key']];
-        if ($key=='Customer Tax Number') {
+            
+         if ($key=='Customer Fiscal Name') {
+            $customer->update_fiscal_name(stripslashes(urldecode($_REQUEST['newvalue'])  ));
+        }elseif ($key=='Customer Tax Number') {
             $customer->update_tax_number(stripslashes(urldecode($_REQUEST['newvalue'])  ));
         } else
             $customer->update(array($key=>stripslashes(urldecode($_REQUEST['newvalue'])  )  ));

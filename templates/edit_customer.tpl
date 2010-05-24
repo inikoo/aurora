@@ -223,12 +223,12 @@
         <td  style="text-align:left;width:18em;">
      <div  style="width:15em;position:relative;top:00px" >
        <input style="text-align:left;width:18em" id="Customer_Fiscal_Name" value="{$customer->get('Customer Fiscal Name')}" ovalue="{$customer->get('Customer Fiscal Name')}" valid="0">
-       <div id="Customer_Fiscal_Container" style="" ></div>
+       <div id="Customer_Fiscal_Name_Container" style="" ></div>
      </div>
    </td>
-   </tr><tr> <td id="Customer_Main_Contact_Name_msg" class="edit_td_alert"></td>
-   <td><span  style="margin-right:10px;svisibility:hidden"  id="save_edit_customer" class="state_details">{t}Save{/t}</span>
-	<span style="margin-right:10px;svisibility:hidden" id="reset_edit_customer" class="state_details">{t}Reset{/t}</span></td>
+   </tr><tr> <td id="Customer_Fiscal_Name_msg" class="edit_td_alert"></td>
+   <td><span  style="margin-right:10px;visibility:hidden"  id="save_edit_billing_data" class="state_details">{t}Save{/t}</span>
+	<span style="margin-right:10px;visibility:hidden" id="reset_edit_billing_data" class="state_details">{t}Reset{/t}</span></td>
    
    
   
