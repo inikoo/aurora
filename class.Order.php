@@ -39,7 +39,7 @@ class Order extends DB_Table {
 
         $this->table_name='Order';
         $this->ignore_fields=array('Order Key');
-$this->update_customer=true;
+$this->update_customer=false;
 
         $this->status_names = array (0 => 'new' );
         if (preg_match ( '/new/i', $arg1 )) {
