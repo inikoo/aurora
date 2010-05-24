@@ -194,8 +194,9 @@ protected function update_field($field,$value,$options=''){
     return;
   }elseif($affected==0){
     //$this->msg.=' '._('Same value as the old record');
-    
+    $this->data[$field]=$value;
   }else{
+  //print " updated ($field)->($value)\n";
     $this->data[$field]=$value;
     $this->msg.=" $field "._('Record updated').", \n";
     $this->msg_updated.=" $field "._('Record updated').", \n";

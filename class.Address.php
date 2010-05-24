@@ -272,7 +272,7 @@ class Address extends DB_Table {
         $subject_key=0;
         $subject_type='';
         $in_contact=array();
-
+//print_r($raw_data);
 
         if (preg_match('/in contact \d+/i',$options,$match)) {
             $subject_key=preg_replace('/[^\d]/','',$match[0]);

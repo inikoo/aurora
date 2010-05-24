@@ -84,9 +84,11 @@
 		    <img style="display:none" src="art/icons/telephone.png" alt="{t}Telephones{/t}"/>
 		  </span>
 		  <span id="delivery_set_main{$address->id}" style="float:left" class="{if $key==$customer->get('Customer Main Delivery Address Key')}hide{/if}  delivery_set_main small_button small_button_edit"  onClick="change_main_address({$address->id},{literal}{{/literal}type:'Delivery',prefix:'delivery_',Subject:'Customer',subject_key:{$customer->get('Customer Key')}{literal}}{/literal})" >{t}Set as Main{/t}</span>
-		  {if $key==$customer->get('Customer Main Address Key')}<img src="art/icons/lock.png" alt="lock"> <span  class="state_details" > {t}Contact{/t}</span>	  {/if}
-		  <span {if $key==$customer->get('Customer Main Address Key')}style="display:none"{/if} class="small_button small_button_edit" id="delete_address_button{$address->id}" address_id="{$address->id}" onClick="delete_address({$address->id},{literal}{{/literal}type:'Delivery',prefix:'delivery_',Subject:'Customer',subject_key:{$customer->get('Customer Key')}{literal}}{/literal})" >{t}Remove{/t}</span>
-		  <span {if $key==$customer->get('Customer Main Address Key')}style="display:none"{/if} class="small_button small_button_edit" id="edit_address_button{$address->id}" address_id="{$address->id}" onclick="edit_address({$address->id},'delivery_')" >{t}Edit{/t}</span>
+		  {if $key==$customer->get('Customer Main Address Key')}<img src="art/icons/lock.png" alt="lock"> <span  class="state_details" > {t}Contact{/t}</span>	  {else}
+		 		  {if $key==$customer->get('Customer Billing Address Key')}<img src="art/icons/lock.png" alt="lock"> <span  class="state_details" > {t}Billing{/t}</span>	  {/if}
+{/if}
+		 <span {if $key==$customer->get('Customer Main Address Key') or $key==$customer->get('Customer Billing Address Key')}style="display:none"{/if} class="small_button small_button_edit" id="delete_address_button{$address->id}" address_id="{$address->id}" onClick="delete_address({$address->id},{literal}{{/literal}type:'Delivery',prefix:'delivery_',Subject:'Customer',subject_key:{$customer->get('Customer Key')}{literal}}{/literal})" >{t}Remove{/t}</span>
+		  <span {if $key==$customer->get('Customer Main Address Key')or $key==$customer->get('Customer Billing Address Key')}style="display:none"{/if} class="small_button small_button_edit" id="edit_address_button{$address->id}" address_id="{$address->id}" onclick="edit_address({$address->id},'delivery_')" >{t}Edit{/t}</span>
 		  
 		</div>
 	
@@ -190,7 +192,7 @@
 
      </table>
 
-   <div id="customer_contact_address" style="float:left;xborder:1px solid #ddd;width:400px;margin-right:40px">
+   <div id="customer_contact_address" style="float:left;xborder:1px solid #ddd;width:400px;margin-right:40px;min-height:300px">
      
   <div style="border-bottom:1px solid #777;margin-bottom:5px">
        
@@ -207,15 +209,15 @@
      
    </div>
 
- <div id="customer_contact_address" style="float:left;xborder:1px solid #ddd;width:400px;">
-     <div style="border-bottom:1px solid #777;margin-bottom:0px">
+ <div id="customer_contact_address" style="float:left;xborder:1px solid #ddd;width:400px;margin-bottom:20px;">
+     <div style="border-bottom:1px solid #777;margin-bottom:7px">
      
        {t}Billing Information{/t}:<span class="state_details" style="float:right;display:none" address_key="" id="billing_cancel_edit_address">{t}Cancel{/t}</span>
      
      </div>
      
      
-       <table>
+       <table border=0>
 	 {if $customer->get('Customer Type')=='Company'}
      <tr><td class="lavel">{t}Fiscal Name{/t}:</td>
         <td  style="text-align:left;width:18em;">
@@ -224,18 +226,33 @@
        <div id="Customer_Fiscal_Container" style="" ></div>
      </div>
    </td>
-   <td id="Customer_Main_Contact_Name_msg" class="edit_td_alert"></td>
+   </tr><tr> <td id="Customer_Main_Contact_Name_msg" class="edit_td_alert"></td>
+   <td><span  style="margin-right:10px;svisibility:hidden"  id="save_edit_customer" class="state_details">{t}Save{/t}</span>
+	<span style="margin-right:10px;svisibility:hidden" id="reset_edit_customer" class="state_details">{t}Reset{/t}</span></td>
+   
+   
+  
      
      </tr>
 {/if}
 
-       {include file='edit_address_splinter.tpl' address_identifier='billing_'}
-       <tr><td><span style="font-weight:600">Billing Address Same as contact address</span> 
-       <br/><span class="state_details">Set up different address</span></td></tr>
+       {include file='edit_address_splinter.tpl' close_if_reset=true address_identifier='billing_'  hide_type=true hide_description=true address_function='Billing'  show_form=false  }
+      
      </table>
      
        
-       </table>
+       <div id="billing_address" style="margin-bottom:10px">
+            {if ($customer->get('Customer Billing Address Link')=='Contact')   }
+
+   <span style="font-weight:600">{t}Billing Address Same as contact address{/t}</span> 
+   {else}
+   {$customer->billing_address_xhtml()}
+   {/if}
+   
+</div>
+       <span id="show_edit_billing_address"  address_key="{$customer->get('Customer Billing Address Key')}" class="state_details">{t}Set up different address{/t}</span>
+       
+       
    </div>
  
  <div id="customer_delivery_address" style="float:left;xborder:1px solid #ddd;width:400px;">
@@ -259,6 +276,7 @@
     
      
      {/if}
+     <div id="billing_address_display{$customer->get('Customer Billing Address Key')}" style="display:none"></div>
       </div>
     <span id="delivery2" class="state_details">Set up different address</span>
 

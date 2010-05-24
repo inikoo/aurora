@@ -86,6 +86,7 @@ $tipo='company';
 if(isset($_REQUEST['tipo']) and $_REQUEST['tipo']=='person'){
   $tipo='person';
 }
+$js_files[]='new_subject.js.php';
 
 
 if($tipo=='company'){
