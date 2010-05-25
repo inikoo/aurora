@@ -102,7 +102,7 @@ $smarty->assign('paginator_menu0',$paginator_menu);
 
 //print_r($warehouse_area->get('areas'));
 
-$smarty->assign('paginator_menu',$paginator_menu);
+$smarty->assign('paginator_menu0',$paginator_menu);
 
 
 $smarty->display('warehouse_area.tpl');

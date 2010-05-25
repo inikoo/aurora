@@ -86,12 +86,12 @@ $filter_menu=array(
 		   'description'=>array('db_key'=>'description','menu_label'=>'Part Description like <i>x</i>','label'=>'Description'),
 
 		   );
-$smarty->assign('filter_menu',$filter_menu);
+$smarty->assign('filter_menu0',$filter_menu);
 
-$smarty->assign('filter_name',$filter_menu[$tipo_filter]['label']);
+$smarty->assign('filter_name0',$filter_menu[$tipo_filter]['label']);
 
 $paginator_menu=array(10,25,50,100,500);
-$smarty->assign('paginator_menu',$paginator_menu);
+$smarty->assign('paginator_menu0',$paginator_menu);
 $smarty->assign('view',$_SESSION['state']['parts']['view']);
 $smarty->assign('period',$_SESSION['state']['parts']['period']);
 $smarty->assign('avg',$_SESSION['state']['parts']['avg']);

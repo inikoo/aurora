@@ -67,9 +67,9 @@ $filter_menu=array(
 		   'code'=>array('db_key'=>_('code'),'menu_label'=>'Our Product Code','label'=>'Code'),
 		   'sup_code'=>array('db_key'=>_('sup_code'),'menu_label'=>'Supplier Product Code','label'=>'Supplier Code'),
 		   );
-$smarty->assign('filter_menu',$filter_menu);
-$smarty->assign('filter_name',$filter_menu[$tipo_filter]['label']);
+$smarty->assign('filter_menu0',$filter_menu);
+$smarty->assign('filter_name0',$filter_menu[$tipo_filter]['label']);
 $paginator_menu=array(10,25,50,100,500);
-$smarty->assign('paginator_menu',$paginator_menu);
+$smarty->assign('paginator_menu0',$paginator_menu);
 $smarty->display('supplier_products.tpl');
 ?>

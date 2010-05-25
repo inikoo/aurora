@@ -532,13 +532,12 @@ function list_item($tipo,$category,$period,$item_keys,$split=false,$from=false,$
 
 
   if($split){
-
     $item_keys=preg_replace('/\(|\)/','',$item_keys);
     foreach(preg_split('/\s*,\s*/',$item_keys) as $key){
 	    
       if(!is_numeric($key))
 	continue;
-      //print "$tipo ($key) $category $from $to";
+  //    print "$tipo ($key) $category $from $to";
       
       $tm=new TimeSeries(array($period,"$tipo ($key) $category"));
       //print_r($tm);
@@ -558,7 +557,7 @@ function list_item($tipo,$category,$period,$item_keys,$split=false,$from=false,$
     
 
   }else{
-    //  print "$period $tipo $item_keys sales";
+     //print "$period $tipo $item_keys $category";
 
 
     $tm=new TimeSeries(array($period,"$tipo $item_keys $category"));

@@ -61,11 +61,11 @@ $smarty->assign('js_files',$js_files);
   $filter_menu=array(
 		   'contact name'=>array('db_key'=>'name','menu_label'=>'Name starting with  <i>x</i>','label'=>'Name')
 		     );
-  $smarty->assign('filter_menu',$filter_menu);
+  $smarty->assign('filter_menu0',$filter_menu);
   
-  $smarty->assign('filter_name',$filter_menu[$tipo_filter]['label']);
+  $smarty->assign('filter_name0',$filter_menu[$tipo_filter]['label']);
   $paginator_menu=array(10,25,50,100,500);
-  $smarty->assign('paginator_menu',$paginator_menu);
+  $smarty->assign('paginator_menu0',$paginator_menu);
 
  $smarty->assign('view',$_SESSION['state']['contacts']['view']);
 

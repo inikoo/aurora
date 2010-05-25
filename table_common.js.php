@@ -9,13 +9,11 @@ include_once('set_locales.php');
 function show_filter(e,table_id){
 Dom.get('clean_table_filter_show'+table_id).style.display='none';
 Dom.get('clean_table_filter'+table_id).style.display='';
-YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=stores-table-f_show&value=1',{} );
 }
 
 function hide_filter(e,table_id){
 Dom.get('clean_table_filter_show'+table_id).style.display='';
 Dom.get('clean_table_filter'+table_id).style.display='none';
-YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=stores-table-f_show&value=0',{} );
 remove_filter(table_id)
 }
 
@@ -165,7 +163,7 @@ var myRequestBuilderwithTotals = function(oState, oSelf) {
 
 var mygetTerms =function (query) {
 
-    if(this.table_ids==undefined)
+    if(this.table_id==undefined)
 	var table_id=0;
     else
 	var table_id=this.table_id;
@@ -176,7 +174,6 @@ var mygetTerms =function (query) {
 
     table.filter.value=Dom.get('f_input'+table_id).value;
     var request='&sf=0&f_field=' +table.filter.key + '&f_value=' + table.filter.value;
-
     datasource.sendRequest(request,table.onDataReturnInitializeTable, table);       
 };
 

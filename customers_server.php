@@ -90,10 +90,10 @@ $smarty->assign('search_scope','customers');
 //		   'max'=>array('db_key'=>_('min'),'menu_label'=>'Maximum Number of Orders','label'=>'Max No Orders'),
 
 //		   );
-//$smarty->assign('filter_menu',$filter_menu);
-//$smarty->assign('filter_name',$filter_menu[$tipo_filter]['label']);
+//$smarty->assign('filter_menu0',$filter_menu);
+//$smarty->assign('filter_name0',$filter_menu[$tipo_filter]['label']);
 $paginator_menu=array(10,25,50,100,500);
-$smarty->assign('paginator_menu',$paginator_menu);
+$smarty->assign('paginator_menu0',$paginator_menu);
 
 
 

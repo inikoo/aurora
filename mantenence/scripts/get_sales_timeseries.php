@@ -60,6 +60,12 @@ while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
 if(false){
   print "inv\n";
 
+ $tm=new TimeSeries(array('d','invoices'));
+  $tm->get_values();
+  $tm->save_values();
+
+
+
   $tm=new TimeSeries(array('w','invoices'));
   $tm->get_values();
   $tm->save_values();
@@ -97,7 +103,9 @@ while( $row=mysql_fetch_array($res)){
 /*   if($forecast) */
 /*     $tm->forecast(); */
 
-
+$tm=new TimeSeries(array('d','store ('.$row['Store Key'].') sales'));
+  $tm->get_values();
+  $tm->save_values();
 $tm=new TimeSeries(array('w','store ('.$row['Store Key'].') sales'));
   $tm->get_values();
   $tm->save_values();
@@ -131,8 +139,29 @@ if($myconf['currency_code']!=$store->data['Store Currency Code']){
   if($forecast)
     $tm->forecast();
   
+ $tm=new TimeSeries(array('w','store ('.$row['Store Key'].') sales (DC)'));
+  $tm->get_values();
+  $tm->save_values();
+  if($forecast)
+    $tm->forecast();
+    
+     $tm=new TimeSeries(array('d','store ('.$row['Store Key'].') sales (DC)'));
+  $tm->get_values();
+  $tm->save_values();
+  if($forecast)
+    $tm->forecast();
 
 
+  $tm=new TimeSeries(array('q','store ('.$row['Store Key'].') sales (DC)'));
+  $tm->get_values();
+  $tm->save_values();
+  if($forecast)
+    $tm->forecast();
+  $tm=new TimeSeries(array('y','store ('.$row['Store Key'].') sales (DC)'));
+  $tm->get_values();
+  $tm->save_values();
+  if($forecast)
+    $tm->forecast();
 }
 
 

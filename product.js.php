@@ -324,6 +324,14 @@ var  change_web_status =function(tipo){
       }
 
 function init(){
+
+ YAHOO.util.Event.addListener('clean_table_filter_show0', "click",show_filter,0);
+ YAHOO.util.Event.addListener('clean_table_filter_hide0', "click",hide_filter,0);
+  YAHOO.util.Event.addListener('clean_table_filter_show1', "click",show_filter,1);
+ YAHOO.util.Event.addListener('clean_table_filter_hide1', "click",hide_filter,1);
+  YAHOO.util.Event.addListener('clean_table_filter_show2', "click",show_filter,2);
+ YAHOO.util.Event.addListener('clean_table_filter_hide2', "click",hide_filter,2);
+
 search_scope='products';
      var store_name_oACDS = new YAHOO.util.FunctionDataSource(search_products_in_store);
      store_name_oACDS.queryMatchContains = true;

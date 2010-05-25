@@ -109,11 +109,11 @@ $filter_menu=array(
 		   'family_code'=>array('db_key'=>'family_code','menu_label'=>'Family Code  starting with <i>x</i>','label'=>_('Family Code')),
 		   'picker'=>array('db_key'=>'picker','menu_label'=>'Picker name starting with <i>x</i>','label'=>_('Picker')),
 		   );
-$smarty->assign('filter_menu',$filter_menu);
-$smarty->assign('filter_name',$filter_menu[$tipo_filter]['label']);
+$smarty->assign('filter_menu0',$filter_menu);
+$smarty->assign('filter_name0',$filter_menu[$tipo_filter]['label']);
 
 
 $paginator_menu=array(10,25,50,100,500);
-$smarty->assign('paginator_menu',$paginator_menu);
+$smarty->assign('paginator_menu0',$paginator_menu);
 $smarty->display('report_outofstock.tpl');
 ?>

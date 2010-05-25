@@ -113,7 +113,7 @@ $smarty->assign('paginator_menu1',$paginator_menu);
 $smarty->assign('warehouse',$warehouse);
 //print_r($warehouse->get('areas'));
 
-$smarty->assign('paginator_menu',$paginator_menu);
+$smarty->assign('paginator_menu0',$paginator_menu);
 
 
 

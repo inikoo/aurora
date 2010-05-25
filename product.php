@@ -303,5 +303,26 @@ $smarty->assign('js_files',$js_files);
 $smarty->assign('web_status_menu',$_web_status);
 
 $smarty->assign('display',$display);
+
+
+$tipo_filter=$_SESSION['state']['product']['customers']['f_field'];
+$smarty->assign('filter0',$tipo_filter);
+$smarty->assign('filter_value0',$_SESSION['state']['product']['customers']['f_value']);
+
+$filter_menu=array(
+		   'customer name'=>array('db_key'=>_('customer name'),'menu_label'=>_('Customer Name'),'label'=>_('Name')),
+		   'postcode'=>array('db_key'=>_('postcode'),'menu_label'=>_('Customer Postcode'),'label'=>_('Postcode')),
+		   'country'=>array('db_key'=>_('country'),'menu_label'=>_('Customer Country'),'label'=>_('Country')),
+
+		   
+		   );
+		   
+
+$smarty->assign('filter_menu0',$filter_menu);
+$smarty->assign('filter_name0',$filter_menu[$tipo_filter]['label']);
+$paginator_menu=array(10,25,50,100,500);
+$smarty->assign('paginator_menu0',$paginator_menu);
+
+
 $smarty->display('product.tpl');
 ?>

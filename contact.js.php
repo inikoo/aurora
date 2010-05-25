@@ -233,19 +233,19 @@ Event.addListener("long_note", "click", dialog_long_note.show,dialog_long_note ,
 
 
 
-YAHOO.util.Event.onContentReady("filtermenu", function () {
-	 var oMenu = new YAHOO.widget.Menu("filtermenu", { context:["filter_name0","tr", "br"]  });
+YAHOO.util.Event.onContentReady("filtermenu0", function () {
+	 var oMenu = new YAHOO.widget.ContextMenu("filtermenu0", {trigger:"filter_name0"});
 	 oMenu.render();
 	 oMenu.subscribe("show", oMenu.focus);
-	 YAHOO.util.Event.addListener("filter_name0", "click", oMenu.show, null, oMenu);
+	 
     });
 
 
-YAHOO.util.Event.onContentReady("rppmenu", function () {
+YAHOO.util.Event.onContentReady("rppmenu0", function () {
 	 rppmenu = new YAHOO.widget.Menu("rppmenu", { context:["rtext_rpp0","bl", "bl"]  });
 	 rppmenu.render();
 	 rppmenu.subscribe("show", rppmenu.focus);
-	 YAHOO.util.Event.addListener("rtext_rpp0", "click", rppmenu.show, null, rppmenu);
+	 
 
 
     });
