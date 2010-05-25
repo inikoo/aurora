@@ -56,7 +56,7 @@ class Invoice extends DB_Table {
     
     $this->table_name='Invoice';
     $this->ignore_fields=array('Invoice Key');
-$this->update_customer=false;
+$this->update_customer=true;
 
     if(!$arg1 and !$arg2){
       $this->error=true;
