@@ -85,12 +85,12 @@ $filter_menu=array(
 		   'maxvalue'=>array('db_key'=>'maxvalue','menu_label'=>'Orders with a maximum value of <i>'.$myconf['currency_symbol'].'n</i>','label'=>'Max Value ('.$myconf['currency_symbol'].')'),
 		   'max'=>array('db_key'=>'max','menu_label'=>'Orders from the last <i>n</i> days','label'=>'Last (days)')
 		   );
-$smarty->assign('filter_menu',$filter_menu);
+$smarty->assign('filter_menu0',$filter_menu);
 
-$smarty->assign('filter_name',$filter_menu[$tipo_filter]['label']);
+$smarty->assign('filter_name0',$filter_menu[$tipo_filter]['label']);
 
 
 $paginator_menu=array(10,25,50,100,500);
-$smarty->assign('paginator_menu',$paginator_menu);
+$smarty->assign('paginator_menu0',$paginator_menu);
 $smarty->display('orders.tpl');
 ?>

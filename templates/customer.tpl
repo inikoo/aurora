@@ -79,43 +79,62 @@
 </div>
 
       
-<div class="data_table" style="margin:25px 0">
-  <span class="clean_table_title">{t}History/Notes{/t}</span>
-  <div  class="clean_table_caption"  style="clear:both;">
-    <div style="float:left;"><div id="table_info0" class="clean_table_info"><span id="rtext0"></span> <span  id="rtext_rpp0" class="rtext_rpp"></span> <span class="filter_msg"  id="filter_msg0"></span></div></div>
-      <div class="clean_table_filter" id="filter_div0"  >
-	<div class="clean_table_info" >
-	  <span id="filter_name0">{$filter_name0}</span>: 
-	  <input style="border-bottom:none;width:10em" id='f_input0' value="{$filter_value0}" size="10" />
-	  <div id='f_container0'></div></div></div>
-      <div class="clean_table_controls" style="" ><div><span  style="margin:0 5px" id="paginator0"></span></div></div>
-    </div>
-    <div  id="table0"   class="data_table_container dtable btable "> </div>
+
+
+ <div id="the_table" class="data_table" style="clear:both;margin-top:20px">
+      <span class="clean_table_title">{t}History/Notes{/t}</span>
+ 
+ 
+
+      <div  class="clean_table_caption"  style="clear:both;">
+	<div style="float:left;">
+	  <div id="table_info0" class="clean_table_info"><span id="rtext0"></span> <span class="rtext_rpp" id="rtext_rpp0"></span> <span class="filter_msg"  id="filter_msg0"></span></div>
+	</div>
+	<div class="clean_table_filter clean_table_filter_show" id="clean_table_filter_show0" {if $filter_show0 or $filter_value0!=''}style="display:none"{/if}>{t}filter results{/t}</div>
+	<div class="clean_table_filter" id="clean_table_filter0" {if !$filter_show0 and $filter_value0==''}style="display:none"{/if}>
+	  <div class="clean_table_info" style="padding-bottom:1px; ">
+	    <span id="filter_name0" style="margin-right:5px">{$filter_name0}:</span>
+	    <input style="border-bottom:none;width:6em;" id='f_input0' value="{$filter_value0}" size=10/> <span class="clean_table_filter_show" id="clean_table_filter_hide0" style="margin-left:8px">{t}Close filter{/t}</span>
+	    <div id='f_container0'></div>
+	  </div>
+	</div>	
+	<div class="clean_table_controls" style="" ><div><span  style="margin:0 5px" id="paginator0"></span></div></div>
+      </div>
+	
+
+      <div  id="table0"   class="data_table_container dtable btable "> </div>
+  
+  
+  
   </div>
 
 
-<div class="data_table" style="margin:25px 0">
-  <span class="clean_table_title">{t}Products Ordered{/t}</span>
-  <div  class="clean_table_caption"  style="clear:both;">
-    <div style="float:left;"><div id="table_info1" class="clean_table_info"><span id="rtext1">z</span> <span  id="rtext_rpp1" class="rtext_rpp">y</span> <span class="filter_msg"  id="filter_msg1"></span></div></div>
-      <div class="clean_table_filter" id="filter_div1">
-	<div class="clean_table_info" >
-	  <span id="filter_name1">{$filter_name1}</span>: 
-	  <input style="border-bottom:none;width:10em" id='f_input1' value="{$filter_value1}" size="10" />
-	  <div id='f_container0'></div></div></div>
-      <div class="clean_table_controls" style="" ><div><span  style="margin:0 5px" id="paginator1"></span></div></div>
-    </div>
-    <div  id="table1"   class="data_table_container dtable btable "> </div>
+<div id="the_table" class="data_table" style="clear:both;margin-top:21px">
+      <span class="clean_table_title">{t}Products Ordered{/t}</span>
+ 
+ 
+
+      <div  class="clean_table_caption"  style="clear:both;">
+	<div style="float:left;">
+	  <div id="table_info1" class="clean_table_info"><span id="rtext1"></span> <span class="rtext_rpp" id="rtext_rpp1"></span> <span class="filter_msg"  id="filter_msg1"></span></div>
+	</div>
+	<div class="clean_table_filter clean_table_filter_show" id="clean_table_filter_show1" {if $filter_show1 or $filter_value1!=''}style="display:none"{/if}>{t}filter results{/t}</div>
+	<div class="clean_table_filter" id="clean_table_filter1" {if !$filter_show1 and $filter_value1==''}style="display:none"{/if}>
+	  <div class="clean_table_info" style="padding-bottom:1px; ">
+	    <span id="filter_name1" class="filter_name"  style="margin-right:5px">{$filter_name1}:</span>
+	    <input style="border-bottom:none;width:6em;" id='f_input1' value="{$filter_value1}" size=10/> <span class="clean_table_filter_show" id="clean_table_filter_hide1" style="margin-left:8px">{t}Close filter{/t}</span>
+	    <div id='f_container1'></div>
+	  </div>
+	</div>	
+	<div class="clean_table_controls" style="" ><div><span  style="margin:0 5px" id="paginator1"></span></div></div>
+      </div>
+	
+
+      <div  id="table1"   class="data_table_container dtable btable "> </div>
+  
+  
+  
   </div>
-
-
-    </div>
-  </div>
-    <div class="yui-b">
-    </div>
-
-
-
 
 </div> 
 
@@ -231,7 +250,7 @@
   <div class="bd">
     <ul class="first-of-type">
        <li style="text-align:left;margin-left:10px;border-bottom:1px solid #ddd">{t}Rows per Page{/t}:</li>
-      {foreach from=$paginator_menu item=menu }
+      {foreach from=$paginator_menu0 item=menu }
       <li class="yuimenuitem"><a class="yuimenuitemlabel" onClick="change_rpp({$menu},0)"> {$menu}</a></li>
       {/foreach}
     </ul>
@@ -242,8 +261,8 @@
   <div class="bd">
     <ul class="first-of-type">
        <li style="text-align:left;margin-left:10px;border-bottom:1px solid #ddd">{t}Rows per Page{/t}:</li>
-      {foreach from=$paginator_menu item=menu }
-      <li class="yuimenuitem"><a class="yuimenuitemlabel" onClick="change_rpp({$menu},0)"> {$menu}</a></li>
+      {foreach from=$paginator_menu1 item=menu }
+      <li class="yuimenuitem"><a class="yuimenuitemlabel" onClick="change_rpp({$menu},1)"> {$menu}</a></li>
       {/foreach}
     </ul>
   </div>

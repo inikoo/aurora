@@ -217,11 +217,14 @@ function list_assets_dispached_to_customer() {
     case('Family'):
         $group_by='Product Family Key';
         $subject='Product Family Code';
+        $description='Product Family Name';
         $subject_label='family';
         $subject_label_plural='families';
         break;
     case('Department'):
         $group_by='Product Department Key';
+                $description='Product Department Name';
+
         $subject='Product Department Code';
         $subject_label='department';
         $subject_label_plural='departments';
@@ -229,6 +232,8 @@ function list_assets_dispached_to_customer() {
     default:
         $group_by='Product Code';
         $subject='Product Code';
+                $description='Product XHTML Short Description';
+
         $subject_label='product';
         $subject_label_plural='products';
     }
@@ -237,11 +242,28 @@ function list_assets_dispached_to_customer() {
 
     $where=sprintf("    where `Current Dispatching State` not in ('Cancelled') and `Customer Key`=%d  ",$customer_id);
 
+//print "$f_field $f_value  " ;
+
     $wheref='';
     if ($f_field=='description' and $f_value!='')
         $wheref.=" and ( `Deal Terms Description` like '".addslashes($f_value)."%' or `Deal Allowance Description` like '".addslashes($f_value)."%'  )   ";
-    elseif($f_field=='name' and $f_value!='')
-    $wheref.=" and  `Deal Name` like '".addslashes($f_value)."%'";
+    elseif($f_field=='code' and $f_value!=''){
+  switch ($type) {
+        case('Family'):
+            $wheref.=" and  `Product Family Code` like '".addslashes($f_value)."%'";
+            break;
+        case('Department'):
+                    $wheref.=" and  `Product Department Code` like '".addslashes($f_value)."%'";
+
+            break;
+        default:
+          $wheref.=" and  `Product Code` like '".addslashes($f_value)."%'";
+
+        }
+
+
+
+}
 
     $sql=sprintf("select count(distinct `%s`)  as total  from `Order Transaction Fact` OTF left join `Product History Dimension` PHD on (OTF.`Product Key`=PHD.`Product Key`) left join `Product Dimension` PD on (PD.`Product ID`=PHD.`Product ID`)  $where  ",$group_by);
 //print $sql;
@@ -256,8 +278,7 @@ function list_assets_dispached_to_customer() {
         $filtered=0;
         $total_records=$total;
     } else {
-        $sql=sprintf("select count(distinct `%s`)  as total   from `Order Transaction Fact` OTF left join `Product History Dimension` PHD on (OTF.`Product Key`=PHD.`Product Key`) left join `Product Dimension` PD on (PD.`Product ID`=PHD.`Product ID`)  $where  $wheref ",$group_by);
-
+        $sql="select count(distinct `$group_by`)  as total   from `Order Transaction Fact` OTF left join `Product History Dimension` PHD on (OTF.`Product Key`=PHD.`Product Key`) left join `Product Dimension` PD on (PD.`Product ID`=PHD.`Product ID`)  $where  $wheref ";
         $result=mysql_query($sql);
         if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
             $total_records=$row['total'];
@@ -312,10 +333,25 @@ function list_assets_dispached_to_customer() {
             $order='`Product Code`';
         }
 
+    }elseif($order=='description'){
+      switch ($type) {
+        case('Family'):
+            $order='`Product Family Name`';
+            break;
+        case('Department'):
+            $order='`Product Department Name`';
+            break;
+        default:
+            $order='`Product XHTML Short Description`';
+        }
+
+    
     }
 
     $adata=array();
-    $sql=sprintf("select  count(distinct `Order Key`) as `Number of Orders`,sum(`Order Quantity`) as `Order Quantity`,sum(`Delivery Note Quantity`) as `Delivery Note Quantity` ,`Product Code`,`Product Family Code`,PD.`Product Family Key`,PD.`Product Main Department Key`,D.`Product Department Code` from `Order Transaction Fact` OTF left join `Product History Dimension` PHD on (OTF.`Product Key`=PHD.`Product Key`) left join `Product Dimension` PD on (PD.`Product ID`=PHD.`Product ID`) left join `Product Department Dimension` D on (D.`Product Department Key`=`Product Main Department Key`)    where `Current Dispatching State` not in ('Cancelled') and `Customer Key`=%d   group by `%s`   order by $order $order_direction limit $start_from,$number_results   ",$customer_id,$group_by);
+    $sql=sprintf("select  count(distinct `Order Key`) as `Number of Orders`,sum(`Order Quantity`) as `Order Quantity`,sum(`Delivery Note Quantity`) as `Delivery Note Quantity` ,`Product Code`,`Product Family Code`,PD.`Product Family Key`,PD.`Product Main Department Key`,D.`Product Department Code` ,`Product Family Name` , `Product XHTML Short Description` ,`Product Department Name` from `Order Transaction Fact` OTF left join `Product History Dimension` PHD on (OTF.`Product Key`=PHD.`Product Key`) left join `Product Dimension` PD on (PD.`Product ID`=PHD.`Product ID`) left join `Product Department Dimension` D on (D.`Product Department Key`=`Product Main Department Key`)   $where " ,$customer_id);
+    $sql.=" $wheref ";
+    $sql.=sprintf("  group by `%s`   order by $order $order_direction limit $start_from,$number_results   ",$group_by);
 
     $res = mysql_query($sql);
 
@@ -326,8 +362,10 @@ function list_assets_dispached_to_customer() {
 
         $adata[]=array(
                      'subject'=>$row[$subject],
+                      'description'=>$row[$description],
+
                      'ordered'=>number($row['Order Quantity']),
-                     'dispached'=>$row['Delivery Note Quantity'],
+                     'dispached'=>number($row['Delivery Note Quantity']),
                      'orders'=>number($row['Number of Orders']),
 
 

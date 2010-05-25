@@ -196,10 +196,10 @@ $filter_menu=array(
 $tipo_filter=$_SESSION['state']['company']['table']['f_field'];
 $filter_value=$_SESSION['state']['company']['table']['f_value'];
 $smarty->assign('filter_value',$filter_value);
-$smarty->assign('filter_menu',$filter_menu);
-$smarty->assign('filter_name',$filter_menu[$tipo_filter]['label']);
+$smarty->assign('filter_menu0',$filter_menu);
+$smarty->assign('filter_name0',$filter_menu[$tipo_filter]['label']);
 $paginator_menu=array(10,25,50,100,500);
-$smarty->assign('paginator_menu',$paginator_menu);
+$smarty->assign('paginator_menu0',$paginator_menu);
 $smarty->display('company.tpl');
 }
 

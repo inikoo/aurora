@@ -336,19 +336,19 @@ $smarty->assign('plot_category_menu',$plot_category_menu);
 
 
 $paginator_menu=array(10,25,50,100,500);
-$smarty->assign('paginator_menu',$paginator_menu);
+$smarty->assign('paginator_menu0',$paginator_menu);
 
  $q='';
   $tipo_filter=($q==''?$_SESSION['state']['department']['table']['f_field']:'code');
-  $smarty->assign('filter',$tipo_filter);
-  $smarty->assign('filter_value',($q==''?$_SESSION['state']['department']['table']['f_value']:addslashes($q)));
+  $smarty->assign('filter_name0',$tipo_filter);
+  $smarty->assign('filter_value0',($q==''?$_SESSION['state']['department']['table']['f_value']:addslashes($q)));
   $filter_menu=array(
 		     'code'=>array('db_key'=>'code','menu_label'=>'Department code starting with','label'=>'Code')
 		     ,'name'=>array('db_key'=>'code','menu_label'=>'Department name containing ','label'=>'Code')
 		     ,'description'=>array('db_key'=>'code','menu_label'=>'Department descrioption containing','label'=>'Code')
 
 		     );
-  $smarty->assign('filter_menu',$filter_menu);
+  $smarty->assign('filter_menu0',$filter_menu);
 
 //$table_title=_('Family List');
 //$smarty->assign('table_title',$table_title);

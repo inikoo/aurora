@@ -38,7 +38,7 @@
       <div class="clean_table_filter" id="clean_table_filter1">
 	
 	<div class="clean_table_info" style="padding-bottom:1px;" >
-	  <span id="filter_name1" style="margin-right:5px">{$filter_name1}:</span>
+	  <span id="filter_name1" class="filter_name"  style="margin-right:5px">{$filter_name1}:</span>
 	  <input style="border-bottom:none;width:6em;border-bottom:none" id='f_input1' value="{$filter_value1}" size=10/>
 	  <div id='f_container1'></div>
 	</div>
@@ -61,7 +61,7 @@
       <div class="clean_table_filter" id="clean_table_filter0">
 	
 	<div class="clean_table_info" style="padding-bottom:1px;" >
-	  <span id="filter_name0" style="margin-right:5px">{$filter_name0}:</span>
+	  <span id="filter_name0" class="filter_name"  style="margin-right:5px">{$filter_name0}:</span>
 	  <input style="border-bottom:none;width:6em;border-bottom:none" id='f_input0' value="{$filter_value0}" size=10/>
 	  <div id='f_container0'></div>
 	</div>

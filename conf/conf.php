@@ -1258,7 +1258,7 @@ $default_state=array(
                                             'sf'=>0,
                                             'nr'=>20,
                                             'where'=>'where true',
-                                            'f_field'=>'id',
+                                            'f_field'=>'code',
                                             'f_value'=>''
 
                                         ),
@@ -1404,7 +1404,7 @@ $default_state=array(
                                                  'sf'=>0,
                                                  'nr'=>15,
                                                  'where'=>'where true',
-                                                 'f_field'=>'id',
+                                                 'f_field'=>'name',
                                                  'f_value'=>''
                                              ),
                                  'parts'=>array(

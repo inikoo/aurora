@@ -157,7 +157,7 @@ $smarty->assign('search_scope','products');
 
 $q='';
 $tipo_filter=($q==''?$_SESSION['state']['stores']['table']['f_field']:'code');
-$smarty->assign('filter_show0',$_SESSION['state']['stores']['table']['f_show']);
+//$smarty->assign('filter_show0',$_SESSION['state']['stores']['table']['f_show']);
 $smarty->assign('filter0',$tipo_filter);
 $smarty->assign('filter_value0',($q==''?$_SESSION['state']['stores']['table']['f_value']:addslashes($q)));
 $filter_menu=array(
@@ -168,7 +168,7 @@ $smarty->assign('filter_menu0',$filter_menu);
 $smarty->assign('filter_name0',$filter_menu[$tipo_filter]['label']);
 
 $paginator_menu=array(10,25,50,100,500);
-$smarty->assign('paginator_menu',$paginator_menu);
+$smarty->assign('paginator_menu0',$paginator_menu);
 $smarty->assign('mode_options_menu',$mode_options);
 
 if($edit){

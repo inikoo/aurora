@@ -29,7 +29,7 @@ if($tipo=='quick_this_month'){
 
 
 
-if($tipo=='all_invoices' or $tipo=='all'){
+if($tipo=='all_invoices' or $tipo=='all' or $tipo=='quick_all'){
   $tipo='f';
   
   $sql=sprintf("select DATE(min(`Invoice Date`)) as date  from `Invoice Dimension` where `Invoice Store Key` in (%s)",$store_keys);;
@@ -40,7 +40,7 @@ if($tipo=='all_invoices' or $tipo=='all'){
     $from=date("d-m-Y",strtotime($row['date']));
   }
   $to=date("d-m-Y");
-  $title=$root_title;
+  $title=$root_title.sprintf(" (%s-%s)",strftime('%x',strtotime($from)),strftime('%x'));
   $period=_('All Invoices');
   $link="&tipo=f&from=".$from."&to=".$to;
   //print $link;

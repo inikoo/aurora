@@ -136,12 +136,12 @@ $filter_menu=array(
 		   'code'=>array('db_key'=>'code','menu_label'=>'Product starting with  <i>x</i>','label'=>'Code'),
 		   'description'=>array('db_key'=>'description','menu_label'=>'Product Description with <i>x</i>','label'=>'Description'),
 		   );
-$smarty->assign('filter_menu',$filter_menu);
+$smarty->assign('filter_menu0',$filter_menu);
 
-$smarty->assign('filter_name',$filter_menu[$tipo_filter]['label']);
+$smarty->assign('filter_name0',$filter_menu[$tipo_filter]['label']);
 $smarty->assign('table_info',$number_products.'  '.ngettext('Product','Products',$number_products));
 $paginator_menu=array(10,25,50,100,500);
-$smarty->assign('paginator_menu',$paginator_menu);
+$smarty->assign('paginator_menu0',$paginator_menu);
 $smarty->assign('view',$_SESSION['state']['products']['view']);
 $smarty->assign('table_title',_('Product List'));
 

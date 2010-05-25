@@ -61,13 +61,13 @@ $filter_menu=array(
 		   'position_id'=>array('db_key'=>'position_id','menu_label'=>'Position Id','label'=>'Position Id'),
 		   'area_id'=>array('db_key'=>'area_id','menu_label'=>'Area Id','label'=>'Area Id'),
 		   );
-$smarty->assign('filter_menu',$filter_menu);
+$smarty->assign('filter_menu0',$filter_menu);
 
-$smarty->assign('filter_name',$filter_menu[$tipo_filter]['label']);
+$smarty->assign('filter_name0',$filter_menu[$tipo_filter]['label']);
 
 
 $paginator_menu=array(10,25,50,100,500);
-$smarty->assign('paginator_menu',$paginator_menu);
+$smarty->assign('paginator_menu0',$paginator_menu);
 
 $smarty->display('company_areas.tpl');
 ?>

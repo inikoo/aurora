@@ -330,12 +330,21 @@ $smarty->assign('home',$product_home);
  $smarty->assign('department',$department);
 
 
-$smarty->assign('filter','code');
-$smarty->assign('filter_name',_('Product code'));
-$smarty->assign('filter_value',$_SESSION['tables']['products_list'][7]);
+
+
+
+$q='';
+  $tipo_filter=($q==''?$_SESSION['state']['family']['table']['f_field']:'code');
+  $smarty->assign('filter_name0',$tipo_filter);
+  $smarty->assign('filter_value0',($q==''?$_SESSION['state']['family']['table']['f_value']:addslashes($q)));
+  $filter_menu=array(
+		    
+
+		     );
+  $smarty->assign('filter_menu0',$filter_menu);
 
 $paginator_menu=array(10,25,50,100,500);
-$smarty->assign('paginator_menu',$paginator_menu);
+$smarty->assign('paginator_menu0',$paginator_menu);
 
 $smarty->assign('view',$_SESSION['state']['products']['view']);
 $smarty->assign('show_details',$_SESSION['state']['family']['details']);

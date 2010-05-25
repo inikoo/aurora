@@ -49,7 +49,7 @@
 	 <div style="float:left;"><div id="table_info0" class="clean_table_info"><span id="rtext0"></span> <span class="rtext_rpp" id="rtext_rpp0"></span> <span class="filter_msg"  id="filter_msg0"></span></div></div>
 	 <div class="clean_table_filter" id="clean_table_filter0">
 	 <div class="clean_table_info" style="width:8.2em;padding-bottom:1px; ">
-	 <span id="filter_name0" style="margin-right:5px">{$filter_name}:</span>
+	 <span id="filter_name0" class="filter_name"  style="margin-right:5px">{$filter_name}:</span>
 	 <input style="border-bottom:none;width:6em;" id='f_input0' value="{$filter_value}" size=10/>
 	 <div id='f_container0'></div>
 	 </div>
@@ -95,7 +95,7 @@
 	 <div style="float:left;"><div id="table_info1" class="clean_table_info"><span id="rtext1"></span> <span class="rtext_rpp" id="rtext_rpp1"></span> <span class="filter_msg"  id="filter_msg1"></span></div></div>
 	 <div class="clean_table_filter" id="clean_table_filter1">
 	 <div class="clean_table_info" style="width:8.2em;padding-bottom:1px; ">
-	 <span id="filter_name1" style="margin-right:5px">{$filter_name}:</span>
+	 <span id="filter_name1" class="filter_name"  style="margin-right:5px">{$filter_name}:</span>
 	 <input style="border-bottom:none;width:6em;" id='f_input1' value="{$filter_value}" size=11/>
 	 <div id='f_container1'></div>
 	 </div>

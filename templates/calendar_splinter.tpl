@@ -6,7 +6,7 @@
       {if $next}<a class="next" href="{$report_url}?{$next.url}" ><img src="art/icons/next.png" alt=">" title="{$next.title}"  /></a>{/if}
 
 {if $tipo=='f'}
-<table>This year <a href="{$report_url}?tipo=y&y={$year}">{$year}</a></table>
+
 {/if}
 {if $tipo=='y'}
 <table  class="calendar_year">

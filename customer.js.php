@@ -201,7 +201,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 								 , {
 								     renderLoopSize: 5,generateRequest : myRequestBuilder
 								       ,paginator : new YAHOO.widget.Paginator({
-									      rowsPerPage    : <?php echo$_SESSION['state']['customer']['table']['nr']?>,containers : 'paginator', 
+									      rowsPerPage    : <?php echo$_SESSION['state']['customer']['table']['nr']?>,containers : 'paginator0', 
  									      pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',alwaysVisible:false,
 									      previousPageLinkLabel : "<",
  									      nextPageLinkLabel : ">",
@@ -247,17 +247,20 @@ YAHOO.util.Event.addListener(window, "load", function() {
 		    var tableDivEL="table"+tableid;  
 		    
 		    var ColumnDefs = [
-				      {key:"subject", label:"<?php echo _('Date')?>",className:"aleft",width:90,sortable:true,sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-				      ,{key:"orders", label:"<?php echo _('Orders')?>",className:"aright",width:70}
+				      {key:"subject", label:"<?php echo _('Family')?>",className:"aleft",width:60,sortable:true,sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				   				      ,{key:"description", label:"<?php echo _('Description')?>",className:"aleft",width:270,sortable:true,sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 
-				      ,{key:"ordered", label:"<?php echo _('Ordered')?>",className:"aright",width:70}
-				      ,{key:"dispached", label:"<?php echo _('Dispached')?>", className:"aright",width:70,sortable:true,sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				   ,{key:"orders", label:"<?php echo _('Orders')?>",className:"aright",width:60}
+
+				      ,{key:"ordered", label:"<?php echo _('Ordered')?>",className:"aright",width:60}
+				      ,{key:"dispached", label:"<?php echo _('Dispached')?>", className:"aright",width:60,sortable:true,sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 
 					   ];
 		
 		    this.dataSource1  = new YAHOO.util.DataSource("ar_contacts.php?tipo=assets_dispached_to_customer&tid="+tableid);
 		    this.dataSource1.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource1.connXhrMode = "queueRequests";
+	    this.dataSource1.table_id=tableid;
 	    this.dataSource1.responseSchema = {
 		resultsList: "resultset.data", 
 		metaFields: {
@@ -271,13 +274,13 @@ YAHOO.util.Event.addListener(window, "load", function() {
 		    filter_msg:"resultset.filter_msg",
 		    totalRecords: "resultset.total_records" // Access to value in the server response
 		},
-		fields: ["subject","ordered","dispached","orders" ]};
+		fields: ["subject","ordered","dispached","orders","description" ]};
 		    this.table1 = new YAHOO.widget.DataTable(tableDivEL, ColumnDefs,
 								   this.dataSource1
 								 , {
 								     renderLoopSize: 5,generateRequest : myRequestBuilder
 								       ,paginator : new YAHOO.widget.Paginator({
-									      rowsPerPage    : <?php echo$_SESSION['state']['customer']['assets']['nr']?>,containers : 'paginator', 
+									      rowsPerPage    : <?php echo$_SESSION['state']['customer']['assets']['nr']?>,containers : 'paginator1', 
  									      pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',alwaysVisible:false,
 									      previousPageLinkLabel : "<",
  									      nextPageLinkLabel : ">",
@@ -370,7 +373,11 @@ var upload_attach = function(e){
 
 var oMenu;
 function init(){
-
+YAHOO.util.Event.addListener('clean_table_filter_show0', "click",show_filter,0);
+ YAHOO.util.Event.addListener('clean_table_filter_hide0', "click",hide_filter,0);
+ YAHOO.util.Event.addListener('clean_table_filter_show1', "click",show_filter,1);
+ YAHOO.util.Event.addListener('clean_table_filter_hide1', "click",hide_filter,1);
+ 
 
 search_scope='customers';
 //Event.addListener(search_scope+'_submit_search', "click",submit_search,search_scope);
@@ -382,17 +389,6 @@ var store_name_oAutoComp = new YAHOO.widget.AutoComplete(search_scope+"_search",
 store_name_oAutoComp.minQueryLength = 0; 
 store_name_oAutoComp.queryDelay = 0.15;
 
-
-//     var shortcut_next = new YAHOO.util.KeyListener(document, {keys:89 },  { fn:key_press });
-//         alert("cac");
-//     shortcut_next.enable();
-//     var key_press=function(type, args, obj){
-// 	alert("caca");
-// 	//	window.location=Dom.get("next").href;
-//     }
-
-//     document.documentElement.focus();
-//     document.body.focus();
 
     var alt_shortcuts = function(type, args, obj) {
 	if(args[0]==78){
@@ -459,42 +455,15 @@ Event.addListener("long_note", "click", dialog_long_note.show,dialog_long_note ,
  oACDS.queryMatchContains = true;
  var oAutoComp = new YAHOO.widget.AutoComplete("f_input0","f_container0", oACDS);
  oAutoComp.minQueryLength = 0; 
-var oAutoComp = new YAHOO.widget.AutoComplete("f_input1","f_container1", oACDS);
- oAutoComp.minQueryLength = 0; 
+  var oACDS1 = new YAHOO.util.FunctionDataSource(mygetTerms);
+ oACDS1.queryMatchContains = true;
+ oACDS1.table_id=1;
+var oAutoComp1 = new YAHOO.widget.AutoComplete("f_input1","f_container1", oACDS1);
+ oAutoComp1.minQueryLength = 0; 
 
 
-YAHOO.util.Event.onContentReady("filtermenu0", function () {
-	 var oMenu = new YAHOO.widget.Menu("filtermenu0", { context:["filter_name0","tr", "br"]  });
-	 oMenu.render();
-	 oMenu.subscribe("show", oMenu.focus);
-	 YAHOO.util.Event.addListener("filter_name0", "click", oMenu.show, null, oMenu);
-    });
-
-YAHOO.util.Event.onContentReady("rppmenu0", function () {
-	 rppmenu = new YAHOO.widget.Menu("rppmenu0", { context:["rtext_rpp0","bl", "bl"]  });
-	 rppmenu.render();
-	 rppmenu.subscribe("show", rppmenu.focus);
-	 YAHOO.util.Event.addListener("rtext_rpp0", "click", rppmenu.show, null, rppmenu);
 
 
-    });
-
-
-YAHOO.util.Event.onContentReady("filtermenu1", function () {
-	 var oMenu = new YAHOO.widget.Menu("filtermenu1", { context:["filter_name1","tr", "br"]  });
-	 oMenu.render();
-	 oMenu.subscribe("show", oMenu.focus);
-	 YAHOO.util.Event.addListener("filter_name1", "click", oMenu.show, null, oMenu);
-    });
-
-YAHOO.util.Event.onContentReady("rppmenu1", function () {
-	 rppmenu = new YAHOO.widget.Menu("rppmenu1", { context:["rtext_rpp1","bl", "bl"]  });
-	 rppmenu.render();
-	 rppmenu.subscribe("show", rppmenu.focus);
-	 YAHOO.util.Event.addListener("rtext_rpp1", "click", rppmenu.show, null, rppmenu);
-
-
-    });
 
 
 
@@ -502,3 +471,31 @@ YAHOO.util.Event.onContentReady("rppmenu1", function () {
 }
 
 YAHOO.util.Event.onDOMReady(init);
+
+YAHOO.util.Event.onContentReady("filtermenu0", function () {
+	 var oMenu = new YAHOO.widget.ContextMenu("filtermenu0", {  trigger: "filter_name0"  });
+	 oMenu.render();
+	 oMenu.subscribe("show", oMenu.focus);
+    });
+
+YAHOO.util.Event.onContentReady("rppmenu0", function () {
+	 rppmenu = new YAHOO.widget.ContextMenu("rppmenu0", {trigger:"rtext_rpp0" });
+	 rppmenu.render();
+	 rppmenu.subscribe("show", rppmenu.focus);
+    });
+
+YAHOO.util.Event.onContentReady("filtermenu1", function () {
+	 var oMenu = new YAHOO.widget.ContextMenu("filtermenu1", {  trigger: "filter_name1"  });
+	 oMenu.render();
+	 oMenu.subscribe("show", oMenu.focus);
+	 YAHOO.util.Event.addListener("filter_name1", "click", oMenu.show, null, oMenu);
+    });
+
+YAHOO.util.Event.onContentReady("rppmenu1", function () {
+	 rppmenu = new YAHOO.widget.ContextMenu("rppmenu1", {trigger:"rtext_rpp1" });
+	 rppmenu.render();
+	 rppmenu.subscribe("show", rppmenu.focus);
+	 YAHOO.util.Event.addListener("rtext_rpp1", "click", rppmenu.show, null, rppmenu);
+
+
+    });
