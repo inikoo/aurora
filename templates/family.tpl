@@ -245,9 +245,7 @@
 	</tr>
       </table>
     </div>
-    <div  class="clean_table_caption"  style="clear:both;">
-    
-    
+   
      {include file='table_splinter.tpl' table_id=0 filter_name=$filter_name0 filter_value=$filter_value0  }
 
 	 <div class="clean_table_controls" style="" ><div><span  style="margin:0 5px" id="paginator0"></span></div></div>

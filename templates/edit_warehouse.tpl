@@ -95,11 +95,8 @@
     
      <div id="the_table1" class="data_table" style="margin:0px 0px;clear:left;">
        <span class="clean_table_title">{t}Warehouse Areas{/t}</span>
-       <div  class="clean_table_caption"  style="clear:both;">
-	 <div style="float:left;"><div id="table_info1" class="clean_table_info"><span id="rtext1"></span> <span class="filter_msg"  id="filter_msg1"></span></div></div>
-	 <div class="clean_table_filter" id="clean_table_filter1"><div class="clean_table_info"><span id="filter_name1" class="filter_name" >{$filter_name1}</span>: <input style="border-bottom:none" id='f_input1' value="{$filter_value1}" size=10/><div id='f_container1'></div></div></div>
-	 <div class="clean_table_controls" style="" ><div><span  style="margin:0 5px" id="paginator1"></span></div></div>
-       </div>
+                 {include file='table_splinter.tpl' table_id=1 filter_name=$filter_name1 filter_value=$filter_value1}
+
        <div  id="table1"   class="data_table_container dtable btable "> </div>
      </div>
    </div>
@@ -110,11 +107,7 @@
  
  <div id="the_table0" class="data_table" style="margin:20px 0px;clear:both">
        <span class="clean_table_title">{t}Locations{/t}</span>
-       <div  class="clean_table_caption"  style="clear:both;">
-	 <div style="float:left;"><div id="table_info0" class="clean_table_info"><span id="rtext0"></span> <span class="filter_msg"  id="filter_msg0"></span></div></div>
-	 <div class="clean_table_filter" id="clean_table_filter0"><div class="clean_table_info"><span style="" id="filter_name0" class="filter_name" >{$filter_name0}</span>: <input  id='f_input0' value="{$filter_value0}" size=10/><div  id='f_container0'></div></div></div>
-	 <div class="clean_table_controls" style="" ><div><span  style="margin:0 5px" id="paginator0"></span></div></div>
-       </div>
+       {include file='table_splinter.tpl' table_id=0 filter_name=$filter_name0 filter_value=$filter_value0}
        <div  id="table0"   class="data_table_container dtable btable "> </div>
      </div>
    </div>
@@ -139,11 +132,8 @@
     
      <div id="the_table2" class="data_table" style="margin:0px 0px;clear:left;">
        <span class="clean_table_title">{t}Warehouse Shelfs{/t}</span>
-       <div  class="clean_table_caption"  style="clear:both;">
-	 <div style="float:left;"><div id="table_info2" class="clean_table_info"><span id="rtext2"></span> <span class="filter_msg"  id="filter_msg2"></span></div></div>
-	 <div class="clean_table_filter" id="clean_table_filter2"><div class="clean_table_info"><span id="filter_name2">{$filter_name2}</span>: <input style="border-bottom:none" id='f_input0' value="{$filter_value2}" size=10/><div id='f_container0'></div></div></div>
-	 <div class="clean_table_controls" style="" ><div><span  style="margin:0 5px" id="paginator2"></span></div></div>
-       </div>
+              {include file='table_splinter.tpl' table_id=2 filter_name=$filter_name2 filter_value=$filter_value2}
+
        <div  id="table2"   class="data_table_container dtable btable "> </div>
      </div>
 
@@ -197,11 +187,8 @@
 
       </tr>
     </table>
-       <div  class="clean_table_caption"  style="clear:both;">
-	 <div style="float:left;"><div id="table_info3" class="clean_table_info"><span id="rtext3"></span> <span class="filter_msg"  id="filter_msg3"></span></div></div>
-	 <div class="clean_table_filter" id="clean_table_filter3"><div class="clean_table_info"><span id="filter_name3">{$filter_name3}</span>: <input style="border-bottom:none" id='f_input0' value="{$filter_value3}" size=10/><div id='f_container0'></div></div></div>
-	 <div class="clean_table_controls" style="" ><div><span  style="margin:0 5px" id="paginator3"></span></div></div>
-       </div>
+            {include file='table_splinter.tpl' table_id=3 filter_name=$filter_name3 filter_value=$filter_value3}
+
        <div  id="table3"   class="data_table_container dtable btable "> </div>
      </div>
    </div>

@@ -17,6 +17,7 @@ $css_files=array(
 		 'button.css',
 		 'container.css',
 		 'table.css',
+		 'css/calendar.css',
 		 'css/dropdown.css'
 		 );
 $js_files=array(
@@ -35,11 +36,13 @@ $js_files=array(
 		'calendar_common.js.php',
 
 		'report_customers.js.php',
+		'reports_calendar.js.php',
 		'js/dropdown.js',
 		'js/export.js'
 
 		);
-
+include_once('reports_list.php');
+$report_name=_('Top Customers');
 
 
 $smarty->assign('parent','reports');
@@ -99,9 +102,9 @@ $smarty->assign('month_name',date('M'));
 
 
 $smarty->assign('week',date('W'));
-$smarty->assign('from',date('d-m-Y'));
-$smarty->assign('to',date('d-m-Y'));
 
+$smarty->assign('from',$from);
+$smarty->assign('to',$to);
 $smarty->display('report_customers.tpl');
 
 

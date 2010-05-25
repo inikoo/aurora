@@ -6,7 +6,7 @@ include_once('common.php');
 var Dom   = YAHOO.util.Dom;
 
 
-
+var link='report_sales_with_no_tax.php';
   
 
 YAHOO.util.Event.addListener(window, "load", function() {

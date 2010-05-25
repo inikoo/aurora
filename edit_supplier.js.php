@@ -397,11 +397,11 @@ YAHOO.util.Event.onContentReady("filtermenu0", function () {
 
 
 YAHOO.util.Event.onContentReady("rppmenu0", function () {
-	var oMenu = new YAHOO.widget.Menu("rppmenu", { context:["filter_name0","tr", "bl"]  });
+	var oMenu = new YAHOO.widget.ContextMenu("rppmenu0", {trigger:"rtext_rpp0" });
 	oMenu.render();
 	oMenu.subscribe("show", oMenu.focus);
-	YAHOO.util.Event.addListener("paginator_info0", "click", oMenu.show, null, oMenu);
-    });
+	YAHOO.util.Event.addListener("rtext_rpp0", "click",oMenu.show , null, oMenu);
+});
 
 
 YAHOO.util.Event.onContentReady("filtermenu0", function () {
@@ -413,8 +413,8 @@ YAHOO.util.Event.onContentReady("filtermenu0", function () {
 
 
 YAHOO.util.Event.onContentReady("rppmenu0", function () {
-	var oMenu = new YAHOO.widget.Menu("rppmenu", { context:["filter_name0","tr", "bl"]  });
+	var oMenu = new YAHOO.widget.ContextMenu("rppmenu0", {trigger:"rtext_rpp0" });
 	oMenu.render();
 	oMenu.subscribe("show", oMenu.focus);
-	YAHOO.util.Event.addListener("paginator_info0", "click", oMenu.show, null, oMenu);
-    });
+	YAHOO.util.Event.addListener("rtext_rpp0", "click",oMenu.show , null, oMenu);
+});

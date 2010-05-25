@@ -22,8 +22,11 @@
   </ul>
 
  <div class="tabbed_container" > 
-   <div  class="edit_block" style="{if $edit!="new"}display:none{/if}"  id="d_new">
-      <div class="general_options" style="float:right">
+ 
+ <div  class="edit_block" style="{if $edit!="new"}display:none{/if}"  id="d_new">
+     
+     
+     <div class="general_options" style="float:right">
 	
 	<span  style="margin-right:10px;display:none"  id="save_new_supplier" class="state_details">{t}Save{/t}</span>
 	<span style="margin-right:10px;display:none" id="close_add_supplier" class="state_details">{t}Reset{/t}</span>
@@ -32,20 +35,20 @@
 
 
       <div id="new_supplier_messages" class="messages_block"></div>
-
-      
-
-
-     
-	  
-       {include file='new_company_splinter.tpl'}
+      {include file='new_company_splinter.tpl'}
 
 
      
    </div>
 
+
+
+
+
+
+
   <div  class="edit_block" style="{if $edit!="suppliers"}display:none{/if}"  id="d_suppliers">
-   
+  
   <div class="data_table" style="clear:both">
     <span class="clean_table_title">{t}Suppliers List{/t}</span>
     <div style="clear:both;margin:0 0px;padding:0 20px ;border-bottom:1px solid #999"></div>
@@ -57,13 +60,11 @@
       </tr>
       </table>
     
-    <div  class="clean_table_caption"  style="clear:both;">
-      <div style="float:left;"><div id="table_info0" class="clean_table_info"><span id="rtext0"></span> <span class="filter_msg"  id="filter_msg0"></span></div></div>
-      <div class="clean_table_filter" id="clean_table_filter0"><div class="clean_table_info"><span id="filter_name0" class="filter_name" >{$filter_name}</span>: <input style="border-bottom:none" id='f_input0' value="{$filter_value}" size=10/><div id='f_container'></div></div></div>
-      <div class="clean_table_controls" style="" ><div><span  style="margin:0 5px" id="paginator"></span></div></div>
-    </div>
+    {include file='table_splinter.tpl' table_id=0 filter_name=$filter_name0 filter_value=$filter_value0}
+
     <div  id="table0"   class="data_table_container dtable btable "> </div>
   </div>
+
 </div>
 
 </div>

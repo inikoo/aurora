@@ -1,15 +1,8 @@
 {include file='header.tpl'}
 <div id="bd" >
-<div id="sub_header">
-{if $next}<span class="nav2 onright"><a href="report_sales_main.php?{$next.url}">{$next.title}</a></span>{/if}
-{if $prev}<span class="nav2 onright" ><a href="report_sales_main.php?{$prev.url}">{$prev.title}</a></span>{/if}
-{if $up}<span class="nav2 onright" style="margin-left:20px"><a href="report_sales_main.php?{$up.url}">{$up.title}</a></span>{/if}
+{include file='reports_navigation.tpl'}
 
-<span class="nav2"><a href="reports.php">{t}Sales Reports{/t}</a></span>
-<span class="nav2"><a href="assets_department.php?id={$department_id}">{$department}</a></span>
-<span class="nav2"><a href="assets_family.php?id={$family_id}"></a></span>
-</div>
-     
+
 
 
 <h1 style="clear:left">{$title}</h1>

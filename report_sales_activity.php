@@ -35,6 +35,7 @@ $js_files=array(
 		);
 
 
+include_once('reports_list.php');
 
 $smarty->assign('parent','reports');
 $smarty->assign('css_files',$css_files);

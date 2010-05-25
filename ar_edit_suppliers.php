@@ -422,7 +422,7 @@ if(isset( $_REQUEST['where']))
 		   ,'code'=>$row['Supplier Code']
 		   ,'name'=>$row['Supplier Name']
 		  
-		   ,'location'=>$row['Supplier Location']
+		   ,'location'=>$row['Supplier Main Location']
 		   ,'email'=>$row['Supplier Main Plain Email']
 		   ,'go'=>sprintf("<a href='edit_supplier.php?id=%d'><img src='art/icons/page_go.png' alt='go'></a>",$row['Supplier Key'])
 		   

@@ -288,5 +288,5 @@
       </div>
       <div style="clear:both;height:40px"></div>
 	</div>
-      </div>
+    
 <div class="star_rating" id="star_rating_template" style="display:none"><img class="star" src="art/icons/star_dim.png" /><img class="star" src="art/icons/star_dim.png" /><img class="star" src="art/icons/star_dim.png" /><img class="star" src="art/icons/star_dim.png" /><img class="star" src="art/icons/star_dim.png" /></div>

@@ -134,7 +134,7 @@ var change_view=function(e){
     Dom.get(table.view).className="";
     Dom.get(tipo).className="selected";
     table.view=tipo
-    YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=suppliers-view&value=' + escape(tipo) );
+    YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=suppliers-view&value=' + escape(tipo),{} );
 };
 function change_block(e){
      if(editing!=this.id){
@@ -149,7 +149,7 @@ function change_block(e){
 	Dom.removeClass(editing,'selected');
 	Dom.addClass(this, 'selected');
 	
-	YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=suppliers-edit&value='+this.id );
+	YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=suppliers-edit&value='+this.id ,{});
 	
 	editing=this.id;
     }
@@ -210,24 +210,22 @@ YAHOO.util.Event.onContentReady("filtermenu0", function () {
 
 
 YAHOO.util.Event.onContentReady("rppmenu0", function () {
-	var oMenu = new YAHOO.widget.Menu("rppmenu", { context:["filter_name0","tr", "bl"]  });
+	var oMenu = new YAHOO.widget.ContextMenu("rppmenu0", {trigger:"rtext_rpp0" });
 	oMenu.render();
 	oMenu.subscribe("show", oMenu.focus);
-	YAHOO.util.Event.addListener("paginator_info0", "click", oMenu.show, null, oMenu);
-    });
+});
 
 
-YAHOO.util.Event.onContentReady("filtermenu0", function () {
-	var oMenu = new YAHOO.widget.ContextMenu("filtermenu0", {trigger:"filter_name0"});
+YAHOO.util.Event.onContentReady("filtermenu1", function () {
+	var oMenu = new YAHOO.widget.ContextMenu("filtermenu1", {trigger:"filter_name1"});
 	oMenu.render();
 	oMenu.subscribe("show", oMenu.focus);
 	
     });
 
 
-YAHOO.util.Event.onContentReady("rppmenu0", function () {
-	var oMenu = new YAHOO.widget.Menu("rppmenu", { context:["filter_name0","tr", "bl"]  });
+YAHOO.util.Event.onContentReady("rppmenu1", function () {
+	var oMenu = new YAHOO.widget.ContextMenu("rppmenu1", {trigger:"rtext_rpp1" });
 	oMenu.render();
 	oMenu.subscribe("show", oMenu.focus);
-	YAHOO.util.Event.addListener("paginator_info0", "click", oMenu.show, null, oMenu);
-    });
+});

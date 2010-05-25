@@ -31,20 +31,7 @@
 
     <div style="clear:both;margin:0 0 10px 0;padding:0 20px ;border-bottom:1px solid #999"></div>
     
-    <div  class="clean_table_caption"  style="clear:both;">
-      <div style="float:left;"><div id="table_info1" class="clean_table_info"><span id="rtext1"></span> <span class="rtext_rpp" id="rtext_rpp1"></span> <span class="filter_msg"  id="filter_msg1"></span></div></div>
-      
-
-      <div class="clean_table_filter" id="clean_table_filter1">
-	
-	<div class="clean_table_info" style="padding-bottom:1px;" >
-	  <span id="filter_name1" class="filter_name"  style="margin-right:5px">{$filter_name1}:</span>
-	  <input style="border-bottom:none;width:6em;border-bottom:none" id='f_input1' value="{$filter_value1}" size=10/>
-	  <div id='f_container1'></div>
-	</div>
-      </div>
-      <div class="clean_table_controls" style="" ><div><span  style="margin:0 5px" id="paginator1"></span></div></div>
-    </div>
+        {include file='table_splinter.tpl' table_id=1 filter_name=$filter_name1 filter_value=$filter_value1}
     <div  id="table1"   class="data_table_container dtable btable with_total"></div>
   </div>
 
@@ -54,20 +41,7 @@
    
     <div style="clear:both;margin:0 0px;padding:0 20px ;border-bottom:0px solid #999"></div>
     
-    <div  class="clean_table_caption"  style="clear:both;">
-      <div style="float:left;"><div id="table_info0" class="clean_table_info"><span id="rtext0"></span> <span class="rtext_rpp" id="rtext_rpp0"></span> <span class="filter_msg"  id="filter_msg0"></span></div></div>
-      
-
-      <div class="clean_table_filter" id="clean_table_filter0">
-	
-	<div class="clean_table_info" style="padding-bottom:1px;" >
-	  <span id="filter_name0" class="filter_name"  style="margin-right:5px">{$filter_name0}:</span>
-	  <input style="border-bottom:none;width:6em;border-bottom:none" id='f_input0' value="{$filter_value0}" size=10/>
-	  <div id='f_container0'></div>
-	</div>
-      </div>
-      <div class="clean_table_controls" style="" ><div><span  style="margin:0 5px" id="paginator0"></span></div></div>
-    </div>
+    {include file='table_splinter.tpl' table_id=0 filter_name=$filter_name0 filter_value=$filter_value0}
     <div  id="table0"   class="data_table_container dtable btable with_total"> </div>
   </div>
 
