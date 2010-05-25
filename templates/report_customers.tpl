@@ -34,13 +34,7 @@
 <div style="float:right"><span class="state_details" id="export" output="{$export.type}" >{$export.label}</span></div>
  
   
-  <div  class="clean_table_caption"  style="clear:both;display:none">
-    <div style="float:left;"><div id="table_info0" class="clean_table_info" style="display:none"><span id="rtext0"></span> <span class="filter_msg"  id="filter_msg0"></span></div></div>
-    <div class="clean_table_filter" id="clean_table_filter0"><div class="clean_table_info"><span id="filter_name0" class="filter_name" >{$filter_name}</span>: <input style="border-bottom:none" id='f_input0' value="{$filter_value}" size=10/><div id='f_container'></div></div></div>
-    
-	<div  style="display:none" class="clean_table_controls"  ><div><span  style="margin:0 5px" id="paginator"></span></div></div>
-
-      </div>
+  {include file='table_splinter.tpl' table_id=0 filter_name=$filter_name0 filter_value=$filter_value0}
       <div  id="table0"   class="data_table_container dtable btable "> </div>
     </div>
 </div>

@@ -32,7 +32,7 @@
 {if $tipo=='w' or $tipo=='m' or $tipo=='d'}
 <table  class="calendar_year">
 <tr class="top">
-<td>w</td>
+<td class="week">w</td>
 <td>M</td>
 <td>T</td>
 <td>W</td>
@@ -43,41 +43,47 @@
 </tr>
 {foreach from=$w item=week}
 <tr class="day">
-<td><a href="{$report_url}?tipo=w&y={$week.year}&w={$week.number}">{$week.number}</a></td>
-<td ><a href="{$report_url}?tipo=d&y={$week.year}&m={$week.m_mon}&d={$week.mon}">{$week.mon}</a></td>
-<td><a href="{$report_url}?tipo=d&y={$week.year}&m={$week.m_tue}&d={$week.tue}">{$week.tue}</a></td>
-<td><a href="{$report_url}?tipo=d&y={$week.year}&m={$week.m_wed}&d={$week.wed}">{$week.wed}</a></td>
-<td><a href="{$report_url}?tipo=d&y={$week.year}&m={$week.m_thu}&d={$week.thu}">{$week.thu}</a></td>
-<td><a href="{$report_url}?tipo=d&y={$week.year}&m={$week.m_fri}&d={$week.fri}">{$week.fri}</a></td>
-<td><a href="{$report_url}?tipo=d&y={$week.year}&m={$week.m_sat}&d={$week.sat}">{$week.sat}</a></td>
-<td><a href="{$report_url}?tipo=d&y={$week.year}&m={$week.m_sun}&d={$week.sun}">{$week.sun}</a></td>
+<td class="week"><a href="{$report_url}?tipo=w&y={$week.year}&w={$week.number}">{$week.number}</a></td>
+<td {if $week.mon_selected}class="selected"{/if}><a href="{$report_url}?tipo=d&y={$week.year}&m={$week.m_mon}&d={$week.mon}">{$week.mon}</a></td>
+<td {if $week.tue_selected}class="selected"{/if}><a href="{$report_url}?tipo=d&y={$week.year}&m={$week.m_tue}&d={$week.tue}">{$week.tue}</a></td>
+<td {if $week.wed_selected}class="selected"{/if}><a href="{$report_url}?tipo=d&y={$week.year}&m={$week.m_wed}&d={$week.wed}">{$week.wed}</a></td>
+<td {if $week.thu_selected}class="selected"{/if}><a href="{$report_url}?tipo=d&y={$week.year}&m={$week.m_thu}&d={$week.thu}">{$week.thu}</a></td>
+<td {if $week.fri_selected}class="selected"{/if}><a href="{$report_url}?tipo=d&y={$week.year}&m={$week.m_fri}&d={$week.fri}">{$week.fri}</a></td>
+<td {if $week.sat_selected}class="selected"{/if}><a href="{$report_url}?tipo=d&y={$week.year}&m={$week.m_sat}&d={$week.sat}">{$week.sat}</a></td>
+<td {if $week.sun_selected}class="selected"{/if}><a href="{$report_url}?tipo=d&y={$week.year}&m={$week.m_sun}&d={$week.sun}">{$week.sun}</a></td>
 </tr>
 {/foreach}
 </table>
 
 
 {/if}
-<div class="custom_dates" >
+<div class="custom_dates" style="width:100%;border:0px solid red;font-size:90%">
 <span id="show_custom_dates" class="state_details">{t}Choose custom dates{/t}</span>
-<div id="custom_dates_form" style="margin-top:5px;{if $tipo!='f'}ddisplay:none{/if}">
-  
-  <span >{t}From{/t}:</span>
-  <input id="input_custom_date_from" type="text" class="text" size="11" maxlength="10" name="from" value="{$from}"/>
-  <img   id="custom_date_from_pop" class="calpop" src="art/icons/calendar_view_month.png" align="absbottom" alt="choose"   />
-  <br/>
-  
-  <span >{t}To:{/t}</span> 
-  <input   id="input_custom_date_to" size="11" maxlength="10"   type="text" class="text" size="8" name="to" value="{$to}"/>
-  <img   id="custom_date_to_pop" class="calpop" src="art/icons/calendar_view_month.png" align="absbottom" alt="choose"   /><br/>
-  
-  <span  class="state_details" id="go_free_report" style="margin-right:16px;position:relative;top:2px"/>Get Report</span>
-</span>
-<div id="custom_date_from_Container" style="position:absolute;display:none; z-index:2"></div>
-<div style="position:relative;right:-120px">
-  <div id="custom_date_to_Container" style="display:none; z-index:2;position:absolute"></div>
-</div>
 
-</div>
+ 
+    <form action="orders.php?" method="GET" style="margin-top:10px">
+      <div style="position:relative;left:18px"><span id="clear_interval" style="font-size:80%;color:#777;cursor:pointer;display:none">{t}clear{/t}</span>
+      <input id="v_calpop1" type="text" class="text" size="11" maxlength="10" name="from" value="{$from}"/>
+      <img   id="calpop1" class="calpop" src="art/icons/calendar_view_month.png" align="absbottom" alt=""   />
+      <span class="calpop"></span>
+      <br/>
+      <input   style="left:0px;margin-top:5px" class="calpop" id="v_calpop2" size="11" maxlength="10"   type="text" class="text" size="8" name="to" value="{$to}"/>
+      <img   style="left:-18px" id="calpop2" class="calpop_to" src="art/icons/calendar_view_month.png" align="absbottom" alt=""   /> 
+	  <br/>
+	  <img style="position:relative;right:16px;cursor:pointer;height:15px;margin-top:5px" align="absbottom" src="art/icons/application_go.png" style="cursor:pointer" id="submit_interval"  xonclick="document.forms[1].submit()" alt="{t}Go{/t}" /> 
+      </div>
+    </form>
+    <div id="cal1Container" style="position:absolute;display:none; z-index:2"></div>
+    <div style="position:relative;right:-80px"><div id="cal2Container" style="display:none; z-index:2;position:absolute"></div></div>
+    
+
+
+
+
+
+
+
+
 </div>
 </div>
 

@@ -52,6 +52,7 @@ include_once('report_dates.php');
 
 $smarty->assign('report_url','report_pp.php');
 
+include_once('reports_list.php');
 
   
 $_SESSION['state']['report']['pickers']['from']=$from;

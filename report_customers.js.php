@@ -5,6 +5,7 @@ print "var criteria='".$_SESSION['state']['report']['customers']['criteria']."';
 
 
 ?>
+var link='report_customers.php';
 YAHOO.util.Event.addListener(window, "load", function() {
 
  var Dom   = YAHOO.util.Dom;

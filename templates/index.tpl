@@ -12,6 +12,7 @@
     </div>
 </div>
 
+<div style="display:none">
 <div id="message_list" style="width:700px;border:0px solid #777;margin-top:10px;padding:0 20px">
 <table style="width:100%">
 <tr><td style="width:100px">date</td><td>Abstract</td></tr>
@@ -35,6 +36,6 @@
 <caption>{t}Known Issues{/t}</caption>
 </table>
 </div>
-
+</div>
 </div>
 {include file='footer.tpl'}

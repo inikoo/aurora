@@ -475,8 +475,7 @@ YAHOO.util.Event.onContentReady("rppmenu0", function () {
 	oMenu.render();
 	oMenu.subscribe("show", oMenu.focus);
 	YAHOO.util.Event.addListener("rtext_rpp0", "click",oMenu.show , null, oMenu);
-
-    });
+});
 
 YAHOO.util.Event.onContentReady("filtermenu1", function () {
 	 var oMenu = new YAHOO.widget.ContextMenu("filtermenu1", {  trigger: "filter_name1"  });

@@ -13,6 +13,7 @@ $css_files=array(
 		 'button.css',
 		 'container.css',
 		 'table.css',
+		 'css/calendar.css',
 		 'css/dropdown.css'
 
 		 );
@@ -30,15 +31,17 @@ $js_files=array(
 		'common.js.php',
 		'table_common.js.php',
 		'calendar_common.js.php',
-		'reports_calendar.js.php',
+		
 		//		'report_sales.js.php',
 		'report_sales_main.js.php',
+		'reports_calendar.js.php',
 		'js/dropdown.js'
 
 		);
 
 $root_title=_('Sales Report');
 
+include_once('reports_list.php');
 
 $smarty->assign('parent','reports');
 $smarty->assign('css_files',$css_files);

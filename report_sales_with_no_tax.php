@@ -13,6 +13,7 @@ $css_files=array(
 		 'button.css',
 		 'container.css',
 		 'table.css',
+		 'css/calendar.css',
 		 'css/dropdown.css'
 
 		 );
@@ -31,9 +32,9 @@ $js_files=array(
 		'common.js.php',
 		'table_common.js.php',
 		'calendar_common.js.php',
-		'choose_dates.js.php',
+		
 		'report_sales_with_no_tax.js.php',
-
+        'reports_calendar.js.php',
 
 		'js/dropdown.js'
 
@@ -41,6 +42,7 @@ $js_files=array(
 
 $root_title=_('Sales Report');
 
+include_once('reports_list.php');
 
 
 

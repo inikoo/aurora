@@ -1,4 +1,4 @@
-
+var link="report_sales_main.php";
 var category_labels={'sales':'<?php echo _('Net Sales')?>','profit':'<?php echo _('Profits')?>'};
 var period_labels={'m':'<?php echo _('Montly')?>','y':'<?php echo _('Yearly')?>','w':'<?php echo _('Weekly')?>','q':'<?php echo _('Quarterly')?>'};
 
@@ -87,10 +87,7 @@ function change_plot(o){
 }
 
 
-function quick_link(){
-tipo=this.id;
-    location.href='report_sales_main.php?tipo='+tipo;
-};
+
 
 	
 

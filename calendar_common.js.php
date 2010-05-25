@@ -19,9 +19,9 @@ function updateCal() {
     
     var Dom   = YAHOO.util.Dom;
     
- 
+//alert('v_calpop'+this.id);
    
-    var txtDate1 = Dom.get('input_'+this.id);
+    var txtDate1 = Dom.get('v_calpop'+this.id);
    
 
     if(typeof(txtDate1.value)=='undefined')

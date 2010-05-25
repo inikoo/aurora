@@ -3,12 +3,13 @@
   <dd id="one-ddcontent" onmouseover="cancelHide('one')" onmouseout="ddMenu('one',-1)">
     <ul>
       
-      <li ><a href="report_sales_server.php" class="underline">{t}Sales{/t}</a></li>
-                  <li ><a href="report_sales_main.php" class="underline">{t}Sales Overview{/t}</a></li>
+   {foreach from=$report_index  item=data key=key}
+      {foreach from=$data.reports  item=report }
 
-            <li ><a href="report_sales.php" class="underline">{t}Sales Details{/t}</a></li>
+   <li><a href="{$report.url}">{$report.title}</a></li>
+      {/foreach}
 
-           <li ><a href="report_activity.php" class="underline">{t}Activity{/t}</a></li>
+   {/foreach}
 
     </ul>
   </dd>
