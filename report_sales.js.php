@@ -173,7 +173,7 @@ function quick_link(e,tipo){
 };
 
 function init(){
-
+  
 
     Event.addListener(['quick_all','quick_this_month','quick_this_week','quick_yesterday','quick_today'], "click", quick_link);
 
@@ -188,48 +188,20 @@ function init(){
     panel1 = new YAHOO.widget.Panel("orders1", { visible:false, constraintoviewport:true } );
     panel1.render();
 
+    
+
     YAHOO.util.Event.addListener("invoices", "click", show_invoices);
     YAHOO.util.Event.addListener("invoices_total", "click", show_invoices);
     YAHOO.util.Event.addListener("invoices_home", "click", show_invoices_home);
     YAHOO.util.Event.addListener("invoices_nohome", "click", show_invoices_nohome);
-        YAHOO.util.Event.addListener("invoices_unknown", "click", show_invoices_unknown);
-
+    YAHOO.util.Event.addListener("invoices_unknown", "click", show_invoices_unknown);
     YAHOO.util.Event.addListener("invoices_partner", "click", show_invoices_partner);
 
 
-
-    Event.addListener('go_free_report', "click", go_free);
     
-    cal2 = new YAHOO.widget.Calendar("cal2","cal2Container", { title:"<?php echo _('Choose a date')?>:", close:true } );
-    
-    cal2.update=updateCal;
-    
-    cal2.id=2;
-    cal2.render();
-
-	cal2.cfg.setProperty("iframe", true);
-	
-	cal2.cfg.setProperty("zIndex", 10);
-	//cal2.stackIframe();
-	//cal2..showIframe();
-	//alert(updateCal);
-
-	cal2.update();
-
-	cal2.selectEvent.subscribe(handleSelect, cal2, true);
-
  
-	cal1 = new YAHOO.widget.Calendar("cal1","cal1Container", { title:"<?php echo _('Choose a date')?>:", close:true } );
-	cal1.update=updateCal;cal1.id=1;cal1.render();
+	
 
-	cal1.cfg.setProperty("iframe", true);
-	
-	cal1.cfg.setProperty("zIndex", 10);
-	cal1.update();cal1.selectEvent.subscribe(handleSelect, cal1, true); 
-	YAHOO.util.Event.addListener("calpop1", "click", cal1.show, cal1, true);
-	YAHOO.util.Event.addListener("calpop2", "click", cal2.show, cal2, true);
-	
-alert('x');
 
 	
 	
