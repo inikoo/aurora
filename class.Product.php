@@ -667,8 +667,8 @@ public $new_data=array();
 	$currency=$this->get('Product Currency');
       }else{
 	$units=$this->get('Product Units Per Case');
-	$name=$this->get('Product Name');
-	$price=$this->get('Product Price');
+	$name=$this->data['Product Name'];
+	$price=$this->data['Product Price'];
 	$currency=$this->get('Product Currency');
       }
       $desc='';
