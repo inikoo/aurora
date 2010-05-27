@@ -365,6 +365,11 @@ public $new_data=array();
     }
 
     switch ($key) {
+    case('Product Currency'):
+    $store=new Store($this->data['Product Store Key']);
+    return $store->data['Store Currency Code'];
+    
+    
     case('ID'):
       return sprintf("%05d",$this->pid);
     case('Margin'):
@@ -829,7 +834,7 @@ public $new_data=array();
     if (isset($this->data[$_key]))
       return $this->data[$_key];
     print "Error $key not found in get from Product\n";
-
+exit;
     return false;
 
   }
@@ -1050,7 +1055,9 @@ public $new_data=array();
 
   function change_current_key($new_current_key) {
 
-    $sql=sprintf("select `Product History Price` from `Product History Dimension` where `Product ID`=%d and `Product Key`=%d "
+if($new_current_key!=$this->data['Product Current Key']){
+
+    $sql=sprintf("select `Product History Price`,`Product History Name` from `Product History Dimension` where `Product ID`=%d and `Product Key`=%d "
 		 ,$this->pid
 		 ,$new_current_key
 		 );
@@ -1065,20 +1072,27 @@ public $new_data=array();
     $row=mysql_fetch_array($res);
 
     $price=$row['Product History Price'];
+ $this->data['Product Price']=sprintf("%.2f",$price);
+ $this->data['Product Name']=$row['Product History Name'];
 
 
-    $sql=sprintf("update `Product Dimension` set `Product Price`=%.2f,`Product Current Key`=%d  where `Product ID`=%d "
+    $sql=sprintf("update `Product Dimension` set `Product Name`=%s,`Product Short Description`=%s ,`Product XHTML Short Description`=%s,`Product Price`=%.2f,`Product Current Key`=%d  where `Product ID`=%d "
+				 ,prepare_mysql($this->data['Product Name'])
+
+		,prepare_mysql($this->get('short description'))
+		 ,prepare_mysql($this->get('xhtml short description'))
 		 ,$price
 		 ,$new_current_key
 		 ,$this->pid
 		 );
+	
     mysql_query($sql);
-    $this->data['Product Price']=sprintf("%.2f",$price);
+   
     $this->data['Product Current Key']=$new_current_key;
-
+$this->updated=true;
     $this->id =$new_current_key;
     $this->key=$this->id;
-
+}
   }
 
 

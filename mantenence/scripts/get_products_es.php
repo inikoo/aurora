@@ -615,7 +615,7 @@ foreach($__cols as $cols){
 
       if(!is_numeric($supplier_cost)  or $supplier_cost<=0 ){
 	//   print_r($cols);
-	print "$code   assumind supplier cost of 40%  \n";
+	print "$code   guessing supplier cost of 40%  \n";
 	$supplier_cost=0.4*$price/$units;
       
       }
@@ -824,6 +824,9 @@ foreach($__cols as $cols){
 
        	$product=new Product('find',$data,'create');
 	if($product->new){
+	
+	
+	
 	 $product->update_for_sale_since(date("Y-m-d H:i:s",strtotime("now +1 seconds")));
 
 
@@ -931,9 +934,21 @@ foreach($__cols as $cols){
 	$part->load('used in');
 	$part->load('supplied by');
     	$product->load('cost');
-      }
+     
+     if($product->new_key){
+        $product->change_current_key($product->new_key_id);
+     }
+     
+     }
     
-    
+     $product->change_current_key($product->id);
+     $product->update(
+     array(
+     'Product RRP'=>$rrp
+     )
+     );
+     
+     
   }else{
 
 
