@@ -12,6 +12,12 @@
     </div>
 </div>
 
+{foreach from=$splinters key=key item=splinter}
+
+{include file=$splinter.tpl}
+{/foreach}
+
+
 <div style="display:none">
 <div id="message_list" style="width:700px;border:0px solid #777;margin-top:10px;padding:0 20px">
 <table style="width:100%">
