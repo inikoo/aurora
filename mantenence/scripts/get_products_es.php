@@ -942,11 +942,8 @@ foreach($__cols as $cols){
      }
     
      $product->change_current_key($product->id);
-     $product->update(
-     array(
-     'Product RRP'=>$rrp
-     )
-     );
+      $product->update_rrp('Product RRP',$rrp);
+     
      
      
   }else{
