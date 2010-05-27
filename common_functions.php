@@ -824,12 +824,12 @@ function get_time_interval($d1,$d2,$units='days'){
 }
 
 function extract_product_groups($str,
-				$q_prod_name='product.code like',
-				$q_prod_id='transaction.product_id like',
-				$q_group_name='product_group.name like',
-				$q_group_id='product_group.id like',
-				$q_department_name='product_department.name like',
-				$q_department_id='product_department.id like'
+				$q_prod_name='P.`Product Code` like',
+				$q_prod_id='P.`Product ID`',
+				$q_group_name='`Product Family Code` like',
+				$q_group_id='`Product Family Key` like',
+				$q_department_name='P.`Product Main Department Code` like',
+				$q_department_id='P.`Product Main Department Key` like'
 				){
   if($str=='')
     return '';
@@ -857,12 +857,12 @@ function extract_product_groups($str,
     $str=preg_replace('/d\([a-z0-9\-\,]*\)/i','',$str);
   }
 
-  if(preg_match_all('/g\([a-z0-9\-\,]*\)/i',$str,$matches)){
+  if(preg_match_all('/f\([a-z0-9\-\,]*\)/i',$str,$matches)){
     
 
     foreach($matches[0] as $match){
       
-      $_groups=preg_replace('/\)$/i','',preg_replace('/^g\(/i','',$match));
+      $_groups=preg_replace('/\)$/i','',preg_replace('/^f\(/i','',$match));
       $_groups=preg_split('/\s*,\s*/i',$_groups);
 
       foreach($_groups as $group){
@@ -873,7 +873,7 @@ function extract_product_groups($str,
 	  $where_g.=" or $q_group_name '$group_ordered'";
       }
     }
-    $str=preg_replace('/g\([a-z0-9\-\,]*\)/i','',$str);
+    $str=preg_replace('/f\([a-z0-9\-\,]*\)/i','',$str);
   }
   
 

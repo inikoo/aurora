@@ -2,6 +2,7 @@
 	<div style="float:left;">
 	  <div id="table_info{$table_id}" class="clean_table_info"><span id="rtext{$table_id}"></span> <span class="rtext_rpp" id="rtext_rpp{$table_id}"></span> <span class="filter_msg"  id="filter_msg{$table_id}"></span></div>
 	</div>
+	<div style="{if $no_filter==1}display:none{/if}">
 	<div class="clean_table_filter clean_table_filter_show" id="clean_table_filter_show{$table_id}" {if $filter_show or $filter_value!=''}style="display:none"{/if}>{t}filter results{/t}</div>
 	<div class="clean_table_filter" id="clean_table_filter{$table_id}" {if !$filter_show and $filter_value==''}style="display:none"{/if}>
 	  <div class="clean_table_info" style="padding-bottom:1px; ">
@@ -10,6 +11,7 @@
 	    <div id='f_container{$table_id}'></div>
 	  </div>
 	</div>	
+	</div>
 	<div class="clean_table_controls" style="" >
 	    <div><span  style="margin:0 5px" id="paginator{$table_id}"></span></div>
 	 </div>

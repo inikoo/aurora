@@ -14,7 +14,7 @@
 
 {foreach from=$splinters key=key item=splinter}
 
-{include file=$splinter.tpl}
+{include file=$splinter.tpl index=$splinter.index}
 {/foreach}
 
 
