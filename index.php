@@ -76,8 +76,10 @@ $js_files=array(
 
 $splinters=array(
 'top_customers'=>array(
-'php'=>'splinter_top_customers.php'
+'index'=>0
+,'php'=>'splinter_top_customers.php'
 ,'tpl'=>'splinter_top_customers.tpl'
+
 )
 
 );

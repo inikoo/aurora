@@ -1536,6 +1536,7 @@ function list_customers() {
 }
 
 function customer_advanced_search() {
+global $user;
     if (!$user->can_view('customers')) {
         exit();
     }
@@ -1606,7 +1607,7 @@ function customer_advanced_search() {
 
     if ($awhere['product_not_ordered1']!='') {
         if ($awhere['product_not_ordered1']!='ALL') {
-            $where_product_not_ordered1=extract_product_groups($awhere['product_ordered1'],'product.code not like','transaction.product_id not like','product_group.name not like','product_group.id like');
+            $where_product_not_ordered1=extract_product_groups($awhere['product_ordered1'],'P.`Product Code` not like','transaction.product_id not like','F.`Product Family Code` not like','P.`Product Family Key` like');
         } else
             $where_product_not_ordered1='false';
     } else
@@ -1633,10 +1634,12 @@ function customer_advanced_search() {
     $geo_base='and list_country.id!='.$myconf['country_id'];
     $with_mail='';
     if ($awhere['mail'])
-        $with_mail=' and main_email is not null ';
+        $with_mail=' and `Customer Main Email Key`!=0 ';
     $with_tel='';
     if ($awhere['tel'])
-        $with_tel=' and main_tel is not null ';
+        $with_tel=' and `Customer Main Telephone Key`!=0 ';
+
+
 
 
 
@@ -1651,63 +1654,124 @@ function customer_advanced_search() {
 
 
 
-    $sql="select count(distinct customer_id) as total  from customer left join orden on (customer_id=customer.id) left join transaction on (order_id=orden.id) left join product on (product_id=product.id) left join product_group on (group_id=product_group.id) left join product_department on (product_group.department_id=product_department.id)    left join address on (main_bill_address=address.id) left join list_country on (country=list_country.name)   $where ";
+    $sql="select count(distinct C.`Customer Key`) as total  from `Order Transaction Fact` OTF left join `Customer Dimension` C on (C.`Customer Key`=OTF.`Customer Key`) left join `Product History Dimension` PHD on (OTF.`Product Key`=PHD.`Product Key`) left join `Product Dimension` P on (P.`Product ID`=PHD.`Product ID`)   $where ";
 //print $sql;
 
     $res=mysql_query($sql);
-    if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-        $total=$row['total'];
+    if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+        $total_records=$row['total'];
     } else
-        $total=0;
+        $total_records=0;
+$total=$total_records;
 
 
-    $rtext=$total." ".ngettext($total,'results found','result found');
+  $rtext=$total_records." ".ngettext('customer found','customers found',$total_records);
+    if ($total_records>$number_results)
+        $rtext_rpp=sprintf(" (%d%s)",$number_results,_('rpp'));
+    else
+        $rtext_rpp=sprintf("Showing all customers");
 
-    $sql=" select telecom.number,telecom.icode,telecom.ncode,telecom.ext, postcode,town,list_country.code as country_code,code2 as country_code2,list_country.name as country_name, email ,email.contact as email_contact, UNIX_TIMESTAMP(max(date_index)) as last_order ,count(distinct orden.id) as orders, customer.id,customer.name from customer left join orden on (customer_id=customer.id) left join transaction on (order_id=orden.id) left join product on (product_id=product.id)  left join product_group on (group_id=product_group.id)  left join product_department on (product_group.department_id=product_department.id)      left join email on (main_email=email.id) left join telecom on (main_tel=telecom.id) left join address on (main_bill_address=address.id) left join list_country on (country=list_country.name) $where  group by customer_id order by $order $order_direction limit $start_from,$number_results";
-// print $sql;
+
+ if ($order=='name')
+        $order='`Customer File As`';
+    elseif($order=='id')
+    $order='`Customer Key`';
+    elseif($order=='location')
+    $order='`Customer Main Location`';
+    elseif($order=='orders')
+    $order='`Customer Orders`';
+    elseif($order=='email')
+    $order='`Customer Email`';
+    elseif($order=='telephone')
+    $order='`Customer Main Telehone`';
+    elseif($order=='last_order')
+    $order='`Customer Last Order Date`';
+    elseif($order=='contact_name')
+    $order='`Customer Main Contact Name`';
+    elseif($order=='address')
+    $order='`Customer Main Location`';
+    elseif($order=='town')
+    $order='`Customer Main Town`';
+    elseif($order=='postcode')
+    $order='`Customer Main Postal Code`';
+    elseif($order=='region')
+    $order='`Customer Main Country First Division`';
+    elseif($order=='country')
+    $order='`Customer Main Country`';
+    //  elseif($order=='ship_address')
+    //  $order='`customer main ship to header`';
+    elseif($order=='ship_town')
+    $order='`Customer Main Delivery Address Town`';
+    elseif($order=='ship_postcode')
+    $order='`Customer Main Delivery Address Postal Code`';
+    elseif($order=='ship_region')
+    $order='`Customer Main Delivery Address Country Region`';
+    elseif($order=='ship_country')
+    $order='`Customer Main Delivery Address Country`';
+    elseif($order=='net_balance')
+    $order='`Customer Net Balance`';
+    elseif($order=='balance')
+    $order='`Customer Outstanding Net Balance`';
+    elseif($order=='total_profit')
+    $order='`Customer Profit`';
+    elseif($order=='total_payments')
+    $order='`Customer Net Payments`';
+    elseif($order=='top_profits')
+    $order='`Customer Profits Top Percentage`';
+    elseif($order=='top_balance')
+    $order='`Customer Balance Top Percentage`';
+    elseif($order=='top_orders')
+    $order='``Customer Orders Top Percentage`';
+    elseif($order=='top_invoices')
+    $order='``Customer Invoices Top Percentage`';
+    elseif($order=='total_refunds')
+    $order='`Customer Total Refunds`';
+
+
+
+
+    $sql="select `Customer Last Order Date`,`Customer Name`,`Customer Orders`,C.`Customer Key`,`Customer Main Location`,`Customer Main XHTML Email`,`Customer Main XHTML Telephone` from `Order Transaction Fact` OTF left join `Customer Dimension` C on (C.`Customer Key`=OTF.`Customer Key`) left join `Product History Dimension` PHD on (OTF.`Product Key`=PHD.`Product Key`) left join `Product Dimension` P on (P.`Product ID`=PHD.`Product ID`)   $where  group by C.`Customer Key` order by $order $order_direction limit $start_from,$number_results    ";
+
+
+//print $sql;
     $res=mysql_query($sql);
     $adata=array();
-    while ($data=mysql_fetch_array($result, MYSQL_ASSOC)) {
-        $id="<a href='customer.php?id=".$data['id']."'>".$myconf['customer_id_prefix'].sprintf("%05d",$data['id']).'</a>';
-        $location='<img title="'.$data['country_name'].'"  src="art/flags/'.strtolower($data['country_code2']).'.gif" alt="'.$data['country_code'].'"> '.$data['town'].' '.preg_replace('/\s/','',$data['postcode']);
-        $email='';
-        if ($data['email']!='')
-            $email='<a href="emailto:'.$data['email'].'"  >'.$data['email'].'</a>';
-        $tel='';
-        if ($data['number']!='')
-            $tel=($data['icode']!=''?'+'.$data['icode'].' ':'').$data['number'];
+    while ($data=mysql_fetch_array($res, MYSQL_ASSOC)) {
+        $id="<a href='customer.php?id=".$data['Customer Key']."'>".sprintf("%05d",$data['Customer Key']).'</a>';
+       $name="<a href='customer.php?id=".$data['Customer Key']."'>".$data['Customer Name'].'</a>';
+      
 
 
         $adata[]=array(
-                     'id'=>$id,
-                     'name'=>$data['name'],
-                     'orders'=>$data['orders'],
-                     'last_order'=>strftime("%e %b %Y", strtotime('@'.$data['last_order'])),
-                     'location'=>$location,
-                     'email'=>$email,
-                     'tel'=>$tel,
+                     'id'=>$id
+                     ,'name'=>$name
+                     ,'orders'=>$data['Customer Orders']
+                     ,'last_order'=>strftime("%e %b %Y", strtotime($data['Customer Last Order Date']))
+                     ,'location'=>$data['Customer Main Location']
+                     ,'email'=>$data['Customer Main XHTML Email']
+                     ,'tel'=>$data['Customer Main XHTML Telephone']
                  );
 
     }
-
-    $response=array('resultset'=>
+ $response=array('resultset'=>
                                 array('state'=>200,
                                       'data'=>$adata,
+                                      'rtext'=>$rtext,
+                                      'rtext_rpp'=>$rtext_rpp,
                                       'sort_key'=>$_order,
                                       'sort_dir'=>$_dir,
                                       'tableid'=>$tableid,
-                                      'rtext'=>$rtext,
-                                      'rtext_rpp'=>$rtext_rpp,
                                       'filter_msg'=>$filter_msg,
                                       'total_records'=>$total,
                                       'records_offset'=>$start_from,
-                                      'records_returned'=>$start_from+$res->numRows(),
+
                                       'records_perpage'=>$number_results,
                                       'records_order'=>$order,
                                       'records_order_dir'=>$order_dir,
                                       'filtered'=>$filtered
                                      )
                    );
+  
     echo json_encode($response);
 }
 
