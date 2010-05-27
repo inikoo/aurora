@@ -103,7 +103,7 @@ class part extends DB_Table {
 
 
         } else {
-            print "Error Part can not be created\n";
+            print "Error Part can not be created $sql\n";
             exit;
         }
 
@@ -1570,6 +1570,8 @@ $this->update_valid_from($first_date);
 
 
     }
-
+function get_description(){
+return $this->data['Part XHTML Description'];
+}
 
 }

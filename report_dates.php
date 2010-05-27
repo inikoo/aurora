@@ -242,9 +242,9 @@ elseif($tipo=='y') {
 
     if (isset($_REQUEST['y']) and preg_match('/^\d{2,4}$/',$_REQUEST['y'])) {
         $year=$_REQUEST['y'];
-        $_SESSION['state']['reports_sales']['1']=$year;
+        $_SESSION['state'][$report_name]['1']=$year;
     } else {
-        $year=$_SESSION['state']['reports_sales']['y'];
+        $year=$_SESSION['state'][$report_name]['y'];
 
     }
 
@@ -387,6 +387,13 @@ elseif($tipo=='d') {
 
 
 }
+
+$to_data=prepare_mysql_datetime($to,'date');
+$mysql_to=$to_data['mysql_date'];
+$from_data=prepare_mysql_datetime($from,'date');
+$mysql_from=$from_data['mysql_date'];
+
+
 
 
 ?>

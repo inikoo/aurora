@@ -4,7 +4,7 @@ include_once('common.php');
 include_once('report_functions.php');
 include_once('class.Store.php');
 
-
+$report_name='report_sales';
 $css_files=array(
 		 $yui_path.'reset-fonts-grids/reset-fonts-grids.css',
 		 $yui_path.'menu/assets/skins/sam/menu.css',
@@ -14,6 +14,7 @@ $css_files=array(
 		 'common.css',
 		 'button.css',
 		 'container.css',
+		 'css/calendar.css',
 		 'table.css',
 		  'css/dropdown.css'
 		 );
@@ -31,15 +32,15 @@ $js_files=array(
 		'common.js.php',
 		'table_common.js.php',
 		'calendar_common.js.php',
-		'report_sales.js.php',
+
 		'js/dropdown.js'
 		);
 
+include_once('reports_list.php');
 
 $stores=join(',',$user->stores);
 $smarty->assign('parent','reports');
-$smarty->assign('css_files',$css_files);
-$smarty->assign('js_files',$js_files);
+
 
 if(isset($_REQUEST['tipo']) and preg_match('/y|m|d|q|w|f|all/',$_REQUEST['tipo'])){
   $tipo=$_REQUEST['tipo'];
@@ -69,8 +70,10 @@ include_once('report_dates.php');
 $_SESSION['state']['report_sales']['to']=$to;
 $_SESSION['state']['report_sales']['from']=$from;
 $_SESSION['state']['report_sales']['period']=$period;
-
-  
+		$js_files[]='report_sales.js.php?to='.$mysql_to.'&from='.$mysql_from."&store_key=".$store_keys;
+		$js_files[]='reports_calendar.js.php';
+  $smarty->assign('css_files',$css_files);
+$smarty->assign('js_files',$js_files);
 /* $valid_rates=array( */
 /* 		   array('date'=>'01-01-2000','rate'=>17.5), */
 /* 		   array('date'=>'01-12-2008','rate'=>15) */
@@ -126,7 +129,6 @@ $day_interval=(strtotime($to)-strtotime($from))/3600/24;
      $interval_data_last_year=sales_in_interval($_from,$_to,$store_keys);
 
     
-
 
      $invoices=$interval_data['invoices']['total_invoices'];
      $invoices_ly=$interval_data_last_year['invoices']['total_invoices'];
@@ -312,12 +314,14 @@ $smarty->assign('title',$title);
 $smarty->assign('year',date('Y'));
 $smarty->assign('month',date('m'));
 $smarty->assign('month_name',date('M'));
+$smarty->assign('from',$from);
+$smarty->assign('to',$to);
 
 
 $smarty->assign('week',date('W'));
-$smarty->assign('from',date('d-m-Y'));
-$smarty->assign('to',date('d-m-Y'));
+;
 $smarty->assign('currency',$myconf['currency_symbol']);
+$smarty->assign('invoices_data',$interval_data['invoices']);
 
 
 $smarty->display('report_sales.tpl');
