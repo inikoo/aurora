@@ -848,7 +848,7 @@ exit;
   function money($number) {
 
     if ($this->system_format) {
-      return money($number,$this->data['Product Currency']);
+      return money($number,$this->get('Product Currency'));
     }
 
 
@@ -1074,13 +1074,14 @@ if($new_current_key!=$this->data['Product Current Key']){
     $price=$row['Product History Price'];
  $this->data['Product Price']=sprintf("%.2f",$price);
  $this->data['Product Name']=$row['Product History Name'];
-
+$this->data['Product XHTML Short Description']=$this->get('xhtml short description');
+$this->data['Product Short Description']=$this->get('short description');
 
     $sql=sprintf("update `Product Dimension` set `Product Name`=%s,`Product Short Description`=%s ,`Product XHTML Short Description`=%s,`Product Price`=%.2f,`Product Current Key`=%d  where `Product ID`=%d "
 				 ,prepare_mysql($this->data['Product Name'])
 
-		,prepare_mysql($this->get('short description'))
-		 ,prepare_mysql($this->get('xhtml short description'))
+		,prepare_mysql($this->data['Product Short Description'])
+		 ,prepare_mysql($this->data['Product XHTML Short Description'])
 		 ,$price
 		 ,$new_current_key
 		 ,$this->pid
@@ -2005,6 +2006,8 @@ $number_images=$row['num'];
       break;
     case('Product RRP'):
     case('Product RRP Per Unit'):
+    
+    
       $this->update_rrp($key,$a1);
       break;
     case('code'):
@@ -2406,7 +2409,7 @@ $number_images=$row['num'];
   */
   function load_currency_data() {
     $sql=sprintf('select * from kbase.`Currency Dimension` where `Currency Code`=%s'
-		 ,prepare_mysql($this->data['Product Currency'])
+		 ,prepare_mysql($this->get('Product Currency'))
 		 );
     $res=mysql_query($sql);
     if ($row=mysql_fetch_array($res)) {
@@ -3126,7 +3129,7 @@ $number_images=$row['num'];
 	$this->msg=_("Error: Product price should be a numeric value");
 	$this->updated=false;
       }
-      if ($this->data['Product Currency']!=$currency) {
+      if ($this->get('Product Currency')!=$currency) {
 	$amount=$amount*currency_conversion($currency,$store->data['Store Currency Code']);
       }
     }
@@ -3153,10 +3156,10 @@ $number_images=$row['num'];
 	  $margin=number(100*($this->data['Product Editing Price']-$this->data['Product Cost'])/$this->data['Product Editing Price'],1).'%';
 	else
 	  $margin=_('ND');
-	$this->new_value=money($amount,$this->data['Product Currency']);
+	$this->new_value=money($amount,$this->get('Product Currency'));
 	$this->new_data=array(
-			       'Product Price'=>money($amount,$this->data['Product Currency']),
-			       'Product Price Per Unit'=>money($amount/$this->data['Product Editing Units Per Case'],$this->data['Product Currency']),
+			       'Product Price'=>money($amount,$this->get('Product Currency')),
+			       'Product Price Per Unit'=>money($amount/$this->data['Product Editing Units Per Case'],$this->get('Product Currency')),
 			       'Product Margin'=>$margin
 			       );
       } else {
@@ -3176,7 +3179,7 @@ $number_images=$row['num'];
 
       if ($amount==$this->data['Product Price']) {
 	$this->updated=false;
-	$this->new_value=money($amount,$this->data['Product Currency']);
+	$this->new_value=money($amount,$this->get('Product Currency'));
 	return;
 
       }
@@ -3269,7 +3272,7 @@ $number_images=$row['num'];
     if ($value=='' or preg_match('/^(no|none|na|no for|nada)$/',$value)) {
       $amount='NULL';
     } else {
-      list($currency,$amount)=parse_money($value,$this->data['Product Currency']);
+      list($currency,$amount)=parse_money($value,$this->get('Product Currency'));
 
       if (!is_numeric($amount)) {
 	$this->msg=_("Error: Product RRP should be a numeric value");
@@ -3283,9 +3286,9 @@ $number_images=$row['num'];
 
 
 
-      if ($this->data['Product Currency']!=$currency) {
+      if ($this->get('Product Currency')!=$currency) {
 
-	$amount=$amount*currency_conversion($currency,$this->data['Product Currency']);
+	$amount=$amount*currency_conversion($currency,$this->get('Product Currency'));
       }
 
     }
@@ -3294,7 +3297,7 @@ $number_images=$row['num'];
 
     if ($amount==$this->data['Product RRP']) {
       $this->updated=false;
-      $this->new_value=money($amount,$this->data['Product Currency']);
+      $this->new_value=money($amount,$this->get('Product Currency'));
       return;
 
     }
@@ -3864,7 +3867,7 @@ if($this->images[$image_key]['caption']==$value){
 		'product record type'=>'Normal',
 		'product web state'=>'Offline',
 		'product store key'=>$this->data['Product Store Key'],
-		'product currency'=>$this->data['Product Currency'],
+		'product currency'=>$this->get('Product Currency'),
 		'product locale'=>$this->data['Product Locale'],
 		'product code'=>$code,
 		'product price'=>$row['Product History Price'],
