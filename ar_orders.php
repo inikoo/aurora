@@ -1854,7 +1854,12 @@ if(isset( $_REQUEST['where']))
      $_SESSION['state']['report']['sales']['f_value']=$f_value;
      $_SESSION['state']['report']['sales']['to']=$to;
      $_SESSION['state']['report']['sales']['from']=$from;
-$store=$_SESSION['state']['report']['sales']['store_key'];
+if(isset($_REQUEST['store_key'])){
+$store=$_REQUEST['store_key'];
+$_SESSION['state']['report']['sales']['store']=$store;
+}else
+$store=$_SESSION['state']['report']['sales']['store'];
+
     $date_interval=prepare_mysql_dates($from,$to,'`Invoice Date`','only_dates');
     
    }else{

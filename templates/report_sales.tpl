@@ -19,7 +19,6 @@
 <tr><td></td><td>{t}Invoices{/t}</td><td>{t}Net Sales{/t}</td><td>{t}Tax{/t}</td></tr>
 <tr class="first">
 <td class="label">{$home}</td><td>{$invoices_home} <img id="invoices_home" style="vertical-align:middle;cursor:pointer" title="{t}Display home orders invoiced in this period{/t}"src="art/icons/magnify-clip.png" /></td>
-<td></td>
 <td>{$net_home}</td>
 <td>{$tax_home}</td>
 </tr>
@@ -426,7 +425,14 @@ The {$per_partner_sales} of the sales are due to our partners
 </table>
 
 <p style="width:350px">
-The export sales represent   {$per_export} ({$per_export_nop} without partners) of our sale s. Excluding our partners, the principal export destination  is {$export_country1} with a {$per_export_country1} share in the total export sales  follow by  {$export_country2} ({$per_export_country2}) and {$export_country3} ({$per_export_country3}).
+{if $invoices_data.invoices_p_nohome>0}
+{$invoices_data.invoices_p_nohome}
+
+The export sales represent   {$per_export} ({$per_export_nop} without partners) of our sales.Excluding our partners, the principal export destination  is {$export_country1} with a {$per_export_country1} share in the total export sales  follow by  {$export_country2} ({$per_export_country2}) and {$export_country3} ({$per_export_country3}).
+{else}
+The principal export destination  is {$export_country1} with a {$per_export_country1} share in the total export sales  follow by  {$export_country2} ({$per_export_country2}) and {$export_country3} ({$per_export_country3}).
+
+{/if}
 <table class="report_sales1" style="width:350px">
 <tr><td></td><td>Orders</td><td>Net Sales</td><td>Tax</td></tr>
 {if $invoices_extended_home_nohome!=0}

@@ -1,4 +1,5 @@
 <?php
+
 date_default_timezone_set('Europe/London');
 
 include_once('../../app_files/db/dns.php');
@@ -27,7 +28,6 @@ mysql_query("SET time_zone ='+0:00'");
 mysql_query("SET NAMES 'utf8'");
 require_once '../../conf/conf.php';           
 
-
 //$sql=sprintf("select `Product Family Key`,`Product Family Code` from `Product Family Dimension`");
 
  // $res=mysql_query($sql);
@@ -37,6 +37,7 @@ require_once '../../conf/conf.php';
 //  
  // }
 //exit;
+>>>>>>> MERGE-SOURCE
 
 /* $sql="select `Product Code` from `Product Dimension`  group by `Product Code` "; */
 

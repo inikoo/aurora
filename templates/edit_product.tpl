@@ -91,7 +91,7 @@
       <div class="edit_block" {if $edit!="config"}style="display:none"{/if}   id="d_config">
 	
 	
-	<table style="margin:0;width:500px"  class="edit">
+	<table style="margin:0;xwidth:500px"  class="edit">
 	  <tr>
 	    <td >{t}Type of Product{/t}:</td>
 	    
@@ -104,151 +104,49 @@
 	    </td>
 	    
 	  </tr>
-
+</table>
 	    {if $num_parts==0}
 	  {t}Choose the part{/t} 
-	    </table>
-	    <div id="adding_new_part" style="width:200px;margin-bottom:45px"><input id="new_part_input" type="text"><div id="new_part_container"></div></div>
+	   
+	    <div id="adding_new_part" style="width:400px;margin-bottom:45px"><input id="new_part_input" type="text"><div id="new_part_container"></div></div>
 	  
 	  {else}
 	 
-	    <tbody id="current_parts_form">
+	   <table class="edit" border=1>
 	      
-	      {foreach from=$parts item=part key=part_id }
+	      {foreach from=$parts item=part key=part_sku }
 	      
-	      <tr  id="sup_tr1_{$part_id}" class="top title">
-		<td class="label" style="font-weight:200">Part</td>
-		<td >
-		{$part.description} ({t}SKU{/t}{$part.sku})
+	      <tr  id="sup_tr1_{$part_sku}" class="top title">
+		<td class="label" style="width:200px;font-weight:200">{t}Part{/t}</td>
+		<td><img style="cursor:pointer" src="art/icons/edit.gif" alt="({t}Change{/t})"/> {$part.sku}</td>
+		<td style="widths:500px">
+		{$part.description}
+		</td>
+		
+		<td>
+		<span  style="margin-right:10px;vzisibility:hidden"  id="save_edit_product_price" class="state_details">{t}Save{/t}</span>
+	<span style="margin-right:10px;vizsibility:hidden" id="reset_edit_product_price" class="state_details">{t}Reset{/t}</span>
 		</td>
 	      </tr>
 	      <tr id="sup_tr2_{$part_id}">
 		<td class="label" style="width:15em">{t}Parts Per Product{/t}:</td>
-		<td style="text-align:left;">
+		<td style="text-align:left;" colspan=3>
 		  <input style="padding-left:2px;text-align:left;width:3em" value="{$part.parts_per_product}" name="parts_per_product"  changed=0           onkeyup="part_changed(this,{$part_id})" ovalue="{$part.parts_per_product}" id="v_part_code{$part_id}"></td>
 	      </tr>
 	      <tr id="sup_tr3_{$part_id}" class="last">
 		<td class="label">{t}Note For Pickers{/t}:</td>
-	<td style="text-align:left"><input id="v_part_cost{$part_id}" style="text-align:right;width:16em"  name="notes" onblur="part_changed(this,{$part_id})"  value="{$part.note}" ovalue="{$part.note}" ></td>
+	<td style="text-align:left" colspan=3><input id="v_part_cost{$part_id}" style=";width:400px"  name="notes" onblur="part_changed(this,{$part_id})"  value="{$part.note}" ovalue="{$part.note}" ></td>
 	      </tr>
 	      {/foreach}
-	    </tbody>
+	   
 	    
 	  </table>	  
-	  
-	  {t}Change Part{/t} 
-	  <div id="adding_new_part" style="width:200px;margin-bottom:45px"><input id="new_part_input" type="text"><div id="new_part_container"></div></div>
 	  
 	  
 	  {/if}
 	
 	
-	<div {if $data.product_tipo!='dependant'}display="none"{/if} >
-	  <table class="edit" border=0>
-	    <tr>
-	      
-	      <td  class="label" style="width:10em">{t}Units Definition{/t}:</td>
-	      
-	      <td colspan=2>
-		<div class="options" style="margin:5px 0">
-		  {foreach from=$units_tipo item=unit_tipo key=part_id }<span {if $unit_tipo.selected}class="selected"{/if} id="unit_tipo_{$unit_tipo.name}">{$unit_tipo.fname}</span>{/foreach}
-		</div>
-	      </td>
-	      
-	      
-	    </tr>
-	    
-	    <tr>
-	      <td class="label">{t}Units Per Outer{/t}:</td>
-	      <td><span id="units">{$units}</span>
-		<input 
-		   id="v_units" 
-		   ovalue="{$units}" 
-		   name="units" 
-		   value="{$product->get('Product Units Per Case')}"  
-		   style="display:none;text-align:right;width:5em"     
-		   onkeydown="to_save_on_enter(event,this)" 
-		   onblur="this.value=FormatNumber(this.value,'{$decimal_point}','{$thousand_sep}',3);units_changed(this)" />
-	</td>
-	      <td style="width:5em">
-		<span 
-		   onclick="change_units()" 
-		   id="change_units_but" 
-		   style="cursor:pointer;text-decoration:underline;color:#777">{t}Change{/t}</span>
-		<span id="change_units_diff" style="display:none"></span>
-	      </td>
-	      <td>
-		<span 
-		   id="units_cancel" 
-		   style="cursor:pointer;visibility:hidden;color:#777" 
-		   onclick="units_cancel()">
-		  {t}Cancel{/t}
-		</span>
-		<span 
-		   id="units_save"   
-		   style="margin-left:10px;cursor:pointer;visibility:hidden;color:#777" 
-	     onclick="units_save()">
-		  {t}Save{/t} <img src="art/icons/disk.png"/>
-		</span>
-		
-
-	      </td>
-	    </tr>
-	    <tr style="display:none" id="change_units_price">
-	      <td class="label">{t}Outers Sale Price{/t}:</td>
-	      <td>{$currency} <input  
-				 onkeydown="to_save_on_enter(event,this)"  
-				 onblur="this.value=FormatNumber(this.value,'{$decimal_point}','{$thousand_sep}',2);price_fcu_changed(this)" 
-				 style="text-align:right;width:6em"  
-				 factor="{$factor_inv_units}" 
-				 name="price_fcu" 
-				 id="v_price_fcu" 
-				 value="{$data.price}"  
-			   ovalue="{$data.price}" >
-	      </td>
-	      <td><span id="change_units_price_diff"></span></td>
-	    <tr>
-	      
-
-	    <tr style="display:none" id="change_units_oweight">
-	      <td class="label">{t}Outers Weight{/t}:</td>
-	      <td >{t}Kg{/t} <input 
-				style="text-align:right;width:5em"  
-				onkeydown="to_save_on_enter(event,this)" 
-				id="v_oweight_fcu"  
-				tipo="number" 
-				value="{$data.oweight}"  
-				name="oweight"  
-				ovalue="{$data.oweight}" 
-				onblur="this.value=FormatNumber(this.value,'{$decimal_point}','{$thousand_sep}',3);oweight_fcu_changed(this)"  >
-	      </td>
-	      <td ><span id="change_units_oweight_diff"></span></td>
-	    </tr>
-	    
-	    <tr style="display:none" id="change_units_odim">
-	      <td class="label">{t}Outers Dimensions{/t}:</td>
-	      <td ><span style="cursor:pointer">{$data.odim_tipo_name}</span> 
-		<input 
-		   style="text-align:right;width:6em" 
-		   onkeydown="to_save_on_enter(event,this)"   
-		   onblur="odim_fcu_changed(this)" 
-		   tipo="shape1"  
-		   name="odim"   
-		   id="v_odim_fcu" 
-		   value="{$data.odim}"   
-	     ovalue="{$data.odim}">
-	      </td>
-	      <td ><span id="change_units_odim_diff"></span></td>
-	      
-	    </tr>
-	    <tr style="display:none" id="change_units_odim_example">
 	
-	      <td style="font-size:90%;color:#777" colspan=2><img id="odim_alert_fcu" src="art/icons/exclamation.png" title="{t}Wrong Format{/t}"  style="cursor:pointer;;visibility:hidden;float:left" /> {$shape_example[$data.odim_tipo]}</td>
-	      <td></td>
-	    <tr>
-	
-    </table>
-  </div>
 
 </div>
 <div class="edit_block" {if $edit!="web"}style="display:none"{/if}  id="d_web">

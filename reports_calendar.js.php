@@ -15,7 +15,7 @@ location.href=link+"?tipo=f&from="+from+"&to="+to
 }
 
 function init(){
-Event.addListener(['quick_all','quick_this_month','quick_this_week','quick_yesterday','quick_today'], "click", quick_link);
+Event.addListener(['quick_all','quick_this_year','quick_this_month','quick_this_week','quick_yesterday','quick_today'], "click", quick_link);
 Event.addListener('submit_interval', "click", submit_interval);
 
  cal2 = new YAHOO.widget.Calendar("cal2","cal2Container", { title:"<?php echo _('Choose a date')?>:", close:true } );

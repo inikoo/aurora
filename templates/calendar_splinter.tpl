@@ -89,6 +89,8 @@
 
 <div style="float:right;position:relative;bottom:15px;margin-right:20px">
 <span id="quick_all" class="state_details" style="margin-left:12px" >{t}All{/t}</span>
+<span id="quick_this_year" class="state_details" style="margin-left:12px">{t}This Year{/t}</span>
+
 <span id="quick_this_month" class="state_details" style="margin-left:12px">{t}This Month{/t}</span>
 <span id="quick_this_week" class="state_details" style="margin-left:12px">{t}This Week{/t}</span>
 <span id="quick_yesterday" class="state_details" style="margin-left:12px">{t}Yesterday{/t}</span>

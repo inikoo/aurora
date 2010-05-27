@@ -179,10 +179,11 @@ function get_tipo_order($ltipo,$header){
 
   $parent_id='';
   $tipo=0;
-
-  if(preg_match('/^quote|Pro-forma/i',$ltipo)){
+if(preg_match('/^devoluci|^refund|VAT REFUND|abono/i',$ltipo)){
+    $tipo=9;
+ }elseif(preg_match('/^quote|Pro-forma/i',$ltipo)){
     $tipo=11;
-  }if(preg_match('/DELIVERY NOTE|nota de envio|proforma invoice/i',$ltipo)){
+  }elseif(preg_match('/DELIVERY NOTE|nota de envio|proforma invoice/i',$ltipo)){
     $tipo=1;
   }elseif(preg_match('/$INVOICE. sample order|invoice|facutura|factura$/i',_trim($ltipo))){
     $tipo=2;
@@ -200,9 +201,7 @@ function get_tipo_order($ltipo,$header){
     $tipo=8;
 
 
-  }elseif(preg_match('/^devoluci|^refund|VAT REFUND/i',$ltipo)){
-    $tipo=9;
- }elseif(preg_match('/credit|credit note/i',$ltipo)){
+  }elseif(preg_match('/credit|credit note/i',$ltipo)){
     $tipo=10;
   }elseif(preg_match('/^quote|Pro-forma/i',$ltipo)){
     $tipo=11;

@@ -59,8 +59,9 @@ $product->load_currency_data();
 $smarty->assign('images',$images);
 $smarty->assign('num_images',count($images));
 $product->load('part_list');
-$smarty->assign('parts',$product->parts);
-$smarty->assign('num_parts',count($product->parts));
+$parts_info=$product->get_parts_info();
+$smarty->assign('parts',$parts_info);
+$smarty->assign('num_parts',count($parts_info));
 $units_tipo=array(
 		  'Piece'=>array('fname'=>_('Piece'),'name'=>'Piece','selected'=>false),
 		  'Grams'=>array('fname'=>_('Grams'),'name'=>'Grams','selected'=>false),

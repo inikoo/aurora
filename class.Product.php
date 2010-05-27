@@ -4943,8 +4943,34 @@ function update_units_type($value){
 
 }
 
+function get_parts_info(){
+ $sql=sprintf("select IFNULL(`Part Days Available Forecast`,'UNK') as days,`Parts Per Product`,`Product Part Note`,PPL.`Part SKU`,`Part XHTML Description` from `Product Part Dimension` PPD left join  `Product Part List`       PPL   on (PPL.`Product Part Key`=PPD.`Product Part Key`)    left join `Part Dimension` PD on (PD.`Part SKU`=PPL.`Part SKU`) where PPL.`Product ID`=%d and `Product Part Most Recent`='Yes';",$this->data['Product ID']);
+      $result=mysql_query($sql);
+      $parts=array();
+      while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
+$part=new Part($row['Part SKU']);
+	$parts[$row['Part SKU']]=array(
+					     'sku'=>$part->get_sku()
+					     ,'description'=>$part->get_description()
+					     ,'note'=>$row['Product Part Note']
+					     ,'parts_per_product'=>$row['Parts Per Product']
+					     ,'days_available'=>$row['days']
+					     );
+      }
+      return $parts;
+
+}
 
 
+function get_parts_objects(){
+ $sql=sprintf("select `Part SKU` from `Product Part Dimension` PPD left join  `Product Part List`       PPL   on (PPL.`Product Part Key`=PPD.`Product Part Key`)     where PPL.`Product ID`=%d and `Product Part Most Recent`='Yes';",$this->data['Product ID']);
+      $result=mysql_query($sql);
+      $parts=array();
+      while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
+	$parts[$row['Part SKU']]=new Part($row['Part SKU']);
+      }
+   return $parts;
+}
 
 
 }
