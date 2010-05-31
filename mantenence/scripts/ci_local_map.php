@@ -214,17 +214,18 @@ if(preg_match('/^devoluci|^refund|VAT REFUND|abono/i',$ltipo)){
   }else{ 
     print "--->".$ltipo."<----\n";
     $tipo=0;
-    exit("tipo not found\n");
+    print("tipo not found\n");
   }
   
 
   
   $tmp='';
 
-  if(preg_match('/\d{5}/i',$ltipo,$tmp)){
+  if(preg_match('/\d{8}/i',$ltipo,$tmp)){
     $parent_id=$tmp[0];
-  }elseif(preg_match('/\d{4}/i',$ltipo[0]))
-     $parent_id=$tmp;
+  }
+  //elseif(preg_match('/\d{4}/i',$ltipo,$tmp))
+   //  $parent_id=$tmp[0];
   
   
   //print "****** $ltipo *** $tmp ***\n";

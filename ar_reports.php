@@ -1,7 +1,6 @@
 <?php
 require_once 'common.php';
 
-
 if(!isset($output_type))
   $output_type='ajax';
 
@@ -39,6 +38,9 @@ case('packers_report'):
    break;
 case('customers'):
   $results=list_customers();
+  break;
+  case('products'):
+  $results=list_products();
   break;
 case('ES_1'):
 es_1();
@@ -451,7 +453,152 @@ $rtext=number($total).' '._('Records found');
    echo json_encode($response);
 }
 
+function list_products(){
 
+
+  global $myconf,$output_type,$user;
+
+  $conf=$_SESSION['state']['report']['products'];
+
+  $start_from=0;
+  
+  if(isset( $_REQUEST['nr'])){
+     $number_results=$_REQUEST['nr'];
+     $_SESSION['state']['report']['products']['top']=$number_results;
+  }else
+     $number_results=$conf['top'];
+
+  if(isset( $_REQUEST['o'])){
+    $order=$_REQUEST['o'];
+    $_SESSION['state']['report']['products']['criteria']=$order;
+  }else
+    $order=$conf['criteria'];
+  $order_direction='desc';
+   $order_dir='desc';
+ 
+ if(isset( $_REQUEST['to'])){
+    $to=$_REQUEST['to'];
+    $_SESSION['state']['report']['products']['to']=$to;
+  }else
+    $to=$conf['to'];
+
+
+
+ if(isset( $_REQUEST['from'])){
+    $from=$_REQUEST['from'];
+    $_SESSION['state']['report']['products']['from']=$from;
+  }else
+    $from=$conf['from'];
+
+
+  
+   if(isset( $_REQUEST['tableid']))
+    $tableid=$_REQUEST['tableid'];
+  else
+    $tableid=0;
+
+   if(isset( $_REQUEST['store_keys'])    ){
+     $store=$_REQUEST['store_keys'];
+     $_SESSION['state']['report']['products']['store_keys']=$store;
+   }else
+     $store=$_SESSION['state']['report']['products']['store_keys'];
+
+   if($store=='all'){
+      $store=join(',',$user->stores);
+
+   }
+   
+  
+   $filter_msg='';
+   $wheref='';
+   $int=prepare_mysql_dates($from,$to,'`Invoice Date`','only dates');
+
+   $where=sprintf('where true  %s',$int['mysql']);
+
+   
+   if(is_numeric($store)){
+     $where.=sprintf(' and `Product Store Key`=%d ',$store);
+   }else{
+     
+     $where.=sprintf(' and `Product Store Key` in (%s) ',$store);
+
+   }
+   
+
+   $filtered=0;
+   $rtext='';
+   $total=$number_results;
+   
+
+
+   $_order=$order;
+   $_dir=$order_direction;
+  
+
+   if($order=='profits')
+     $order='`Product 1 Year Acc Profit`';
+
+   else   
+     $order='`Product 1 Year Acc Invoiced Amount`';
+
+  
+   $sql="select  * from `Product Dimension` P  left join `Store Dimension` S on (P.`Product Store Key`=S.`Store Key`)  $where $wheref   order by $order $order_direction limit $start_from,$number_results"; 
+   $adata=array();
+  
+  
+   $position=1;
+  $result=mysql_query($sql);
+  while($data=mysql_fetch_array($result, MYSQL_ASSOC)){
+
+
+
+  $sales=money($data['Product 1 Year Acc Invoiced Amount'],$data['Store Currency Code']);
+
+
+   
+    $code="<a href='product.php?pid=".$data['Product ID']."'>".$data['Product Code'].'</a>'; 
+    $family="<a href='family.php?id=".$data['Product Family Key']."'>".$data['Product Family Code'].'</a>'; 
+    $store="<a href='store.php?id=".$data['Product Store Key']."'>".$data['Store Code'].'</a>'; 
+
+    $adata[]=array(
+		   'position'=>'<b>'.$position++.'</b>'
+		   ,'code'=>$code
+		   ,'family'=>$family
+		   ,'store'=>$store
+		  ,'description'=>'<b>'.$code.'</b> '.$data['Product Short Description']
+,'net_sales'=>$sales
+		   );
+  }
+mysql_free_result($result);
+
+
+
+
+  $response=array('resultset'=>
+		   array('state'=>200,
+			 'data'=>$adata,
+			 'rtext'=>$rtext,
+			 'sort_key'=>$_order,
+			 'sort_dir'=>$_dir,
+			 'tableid'=>$tableid,
+			 'filter_msg'=>$filter_msg,
+			 'total_records'=>$total,
+			 'records_offset'=>$start_from,
+
+			 'records_perpage'=>$number_results,
+			 'records_order'=>$_order,
+			 'records_order_dir'=>$order_dir,
+			 'filtered'=>$filtered
+			 )
+		   );
+  if($output_type=='ajax'){
+    echo json_encode($response);
+    return;
+  }else{
+    return $response;
+  }
+
+}
 function list_customers(){
 
 
@@ -541,92 +688,11 @@ function list_customers(){
    $rtext='';
    $total=$number_results;
    
-/*   if(($f_field=='customer name'     )  and $f_value!=''){ */
-/*     $wheref="  and  `Customer Name` like '%".addslashes($f_value)."%'"; */
-/*   }elseif(($f_field=='postcode'     )  and $f_value!=''){ */
-/*     $wheref="  and  `Customer Main Postal Code` like '%".addslashes($f_value)."%'"; */
-    
-    
-    
-
-/*   else if($f_field=='maxdesde' and is_numeric($f_value) ) */
-/*     $wheref.=" and  (TO_DAYS(NOW())-TO_DAYS(`Customer Last Order Date`))<=".$f_value."    "; */
-/*   else if($f_field=='mindesde' and is_numeric($f_value) ) */
-/*     $wheref.=" and  (TO_DAYS(NOW())-TO_DAYS(`Customer Last Order Date`))>=".$f_value."    "; */
-/*   else if($f_field=='max' and is_numeric($f_value) ) */
-/*     $wheref.=" and  `Customer Orders`<=".$f_value."    "; */
-/*   else if($f_field=='min' and is_numeric($f_value) ) */
-/*     $wheref.=" and  `Customer Orders`>=".$f_value."    "; */
-/*   else if($f_field=='maxvalue' and is_numeric($f_value) ) */
-/*     $wheref.=" and  `Customer Net Balance`<=".$f_value."    "; */
-/*   else if($f_field=='minvalue' and is_numeric($f_value) ) */
-/*     $wheref.=" and  `Customer Net Balance`>=".$f_value."    "; */
-
-
-
-
-
-
-/*    $sql="select count(*) as total from `Customer Dimension`  $where $wheref"; */
-
-/*    $res=mysql_query($sql); */
-/*      if($row=mysql_fetch_array($res, MYSQL_ASSOC)) { */
-
-/*      $total=$row['total']; */
-/*    }if($wheref!=''){ */
-/*      $sql="select count(*) as total_without_filters from `Customer Dimension`  $where "; */
-/*      $res=mysql_query($sql); */
-/*      if($row=mysql_fetch_array($res, MYSQL_ASSOC)) { */
-    
-/*        $total_records=$row['total_without_filters']; */
-/*        $filtered=$row['total_without_filters']-$total; */
-/*      } */
-
-/*    }else{ */
-/*      $filtered=0; */
-/*      $filter_total=0; */
-/*      $total_records=$total; */
-/*    } */
-/*     mysql_free_result($res); */
-
-/*    $rtext=$total_records." ".ngettext('identified customers','identified customers',$total_records); */
-/*    if($total_records>$number_results) */
-/*      $rtext.=sprintf(" <span class='rtext_rpp'>(%d%s)</span>",$number_results,_('rpp')); */
-
-/*    if($total==0 and $filtered>0){ */
-/*      switch($f_field){ */
-/*      case('customer name'): */
-/*        $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any customer like")." <b>$f_value</b> "; */
-/*        break; */
-/*      } */
-/*    } */
-/*    elseif($filtered>0){ */
-/*      switch($f_field){ */
-/*      case('customer name'): */
-/*        $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total "._('customers with name like')." <b>".$f_value."*</b>"; */
-/*        break; */
-/*      } */
-/*    }else */
-/*       $filter_msg=''; */
-   
-
-
 
 
    $_order=$order;
    $_dir=$order_direction;
-   // if($order=='location'){
-//      if($order_direction=='desc')
-//        $order='country_code desc ,town desc';
-//      else
-//        $order='country_code,town';
-//      $order_direction='';
-//    }
-
-//     if($order=='total'){
-//       $order='supertotal';
-//    }
-    
+  
 
    if($order=='invoices')
      $order='`Invoices`';
@@ -635,8 +701,8 @@ function list_customers(){
      $order='`Balance`';
 
   
-   $sql="select  `Store Code`,`Customer Type by Activity`,`Customer Last Order Date`,`Customer Main XHTML Telephone`,`Customer Key`,`Customer Name`,`Customer Main Location`,`Customer Main XHTML Email`,`Customer Main Town`,`Customer Main Country First Division`,`Customer Main Delivery Address Postal Code`,count(DISTINCT `Invoice Key`) as Invoices , sum(`Invoice Total Net Amount`) as Balance  from `Customer Dimension` C left join `Invoice Dimension` I on (`Customer Key`=`Invoice Customer Key`) left join `Store Dimension` SD on (C.`Customer Store Key`=SD.`Store Key`)  $where $wheref  group by `Invoice Customer Key` order by $order $order_direction limit $start_from,$number_results";
-   // print $sql;
+   $sql="select  `Store Code`,`Customer Type by Activity`,`Customer Last Order Date`,`Customer Main XHTML Telephone`,`Customer Key`,`Customer Name`,`Customer Main Location`,`Customer Main XHTML Email`,`Customer Main Town`,`Customer Main Country First Division`,`Customer Main Delivery Address Postal Code`,`Customer Orders Invoiced` as Invoices , `Customer Net Balance` as Balance  from `Customer Dimension` C  left join `Store Dimension` SD on (C.`Customer Store Key`=SD.`Store Key`)  $where $wheref  group by `Customer Key` order by $order $order_direction limit $start_from,$number_results";
+// print $sql;
    $adata=array();
   
   
@@ -719,6 +785,7 @@ mysql_free_result($result);
   }
 
 }
+
 function list_invoices_with_no_tax(){
  
     

@@ -13,7 +13,6 @@
 */
 
 
-
 include_once('common.php');
 include_once('class.Family.php');
 include_once('class.Store.php');
@@ -28,9 +27,12 @@ $_SESSION['state']['family']['id']=$family_id;
 
 $family=new Family($family_id);
 $tmp_page_data=$family->get_page_data();
+$page_data=array();
 foreach($tmp_page_data as $key=>$value){
   $page_data[preg_replace('/\s/','',$key)]=$value;
+  
 }
+
 $smarty->assign('page_data',$page_data);
 
 

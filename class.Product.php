@@ -46,6 +46,7 @@ class product extends DB_Table {
   public $new_code=false;
 public $new_value=false;
 public $new_data=array();
+public $data=array();
   // Variable: new
   // Indicate if a new product was created
   public $deleted=false;
@@ -68,7 +69,8 @@ public $new_data=array();
     a1 - Tag or Product Key
   */
   function Product($a1,$a2=false,$a3=false) {
-
+global $external_DB_link;
+$this->external_DB_link=$external_DB_link;
     $this->table_name='Product';
     $this->ignore_fields=array(
 			       'Product Key'
@@ -113,17 +115,24 @@ public $new_data=array();
       $sql=sprintf("select * from `Product History Dimension` where `Product Key`=%d ",$tag);
 
       $result=mysql_query($sql);
-      if ( ($this->data=mysql_fetch_array($result, MYSQL_ASSOC))) {
-	    $this->id=$this->data['Product Key'];
+      if ( ($row=mysql_fetch_array($result, MYSQL_ASSOC))) {
+	  
+	  foreach($row as $key=>$value){
+	    $this->data[$key]=$value;
+	  }
+	  
+	  $this->id=$this->data['Product Key'];
 	    $this->pid=$this->data['Product ID'];
+	 
 	    //$this->get_data('pid',$this->pid);
 	
 	    
       } else
-	return;
-      mysql_free_result($result);
-      $sql=sprintf("select `Product Family Code`,`Product Family Key`,`Product Main Department Key`,`Product Store Key`,`Product Locale`,`Product Code`,`Product Current Key`,`Product Gross Weight`,`Product Units Per Case`,`Product Code`,`Product Type`,`Product Record Type`,`Product Sales Type`,`Product To Be Discontinued` from `Product Dimension` where `Product ID`=%d ",$this->pid);
-      //  print $sql;
+	    return;
+    mysql_free_result($result);
+   
+   $sql=sprintf("select `Product Family Code`,`Product Family Key`,`Product Main Department Key`,`Product Store Key`,`Product Locale`,`Product Code`,`Product Current Key`,`Product Gross Weight`,`Product Units Per Case`,`Product Code`,`Product Type`,`Product Record Type`,`Product Sales Type`,`Product To Be Discontinued` from `Product Dimension` where `Product ID`=%d ",$this->pid);
+     //  print "$sql\n";
       $result=mysql_query($sql);
       //print "hols";
       if ( $row=mysql_fetch_array($result, MYSQL_ASSOC)) {
@@ -169,7 +178,7 @@ public $new_data=array();
     if ($tipo=='code_store' or $tipo=='code-store') {
       $this->mode='pid';
       $sql=sprintf("select * from `Product Dimension` where  `Product Code`=%s and `Product Store Key`=%d",prepare_mysql($tag),$extra);
-      //      print $sql;
+        //   print $sql;
       $result=mysql_query($sql);
       if ($this->data=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 	$this->id=$this->data['Product Current Key'];
@@ -259,7 +268,7 @@ public $new_data=array();
 	if ($row2=mysql_fetch_array($result2)) {
 	  $this->found_in_id=true;
 	  $this->found_id=$row2['Product ID'];
-
+$this->get_data('pid',$this->found_id);
 	  $sql=sprintf("select `Product Key` from `Product History Dimension` where `Product ID`=%d and `Product History Price`=%.2f and `Product History Name`=%s  "
 		       ,$row2['Product ID']
 		       ,$data['product price']
@@ -270,7 +279,7 @@ public $new_data=array();
 	  if ($row3=mysql_fetch_array($result3)) {
 	    $this->found_in_key=true;
 	    $this->found_key=$row3['Product Key'];
-
+        $this->get_data('id',$this->found_key);
 
 	  }
 
@@ -307,7 +316,7 @@ public $new_data=array();
 		     ,$this->pid
 		     ,$this->id
 		     );
-	mysql_query($sql);
+	mysql_query($sql);if($this->external_DB_link)mysql_query($sql,$this->external_DB_link);
 
 
       }
@@ -433,7 +442,7 @@ public $new_data=array();
                           </div>'
 		    ,$this->data['Product Code']
 		    ,$this->data['Product Units Per Case']
-		    ,$this->data['Product Name'],$this->get('Price Formated'),$this->get('RRP Formated')
+		    ,$this->data['Product Name'],$this->get('Formated Price'),$this->get_formated_rrp()
 
 
 		    );
@@ -444,7 +453,7 @@ public $new_data=array();
 
 
       $info=sprintf('<div class="prod_info"><span >%s</span><br><span >%s</span></div>'
-		    ,$this->get('Price Formated',$data)
+		    ,$this->get('Formated Price',$data)
 		    ,$this->get('RRP Formated',$data)
 
 
@@ -455,13 +464,13 @@ public $new_data=array();
       if (isset($data['inside form']) and $data['inside form']) {
 	$info=sprintf('<tr class="prod_info"><td colspan=4><span >%s</span><br><span >%s</span><br><span >%s</span></td></tr>'
 		      ,$this->data['Product Family Special Characteristic']
-		      ,$this->get('Price Formated',$data)
+		      ,$this->get('Formated Price',$data)
 		      ,$this->get('RRP Formated',$data)
 		      );
       } else {
 	$info=sprintf('<div class="prod_info"><span >%s</span><br><span >%s</span><br><span >%s</span></div>'
 		      ,$this->data['Product Family Special Characteristic']
-		      ,$this->get('Price Formated',$data)
+		      ,$this->get('Formated Price',$data)
 		      ,$this->get('RRP Formated',$data)
 		      );
       }
@@ -470,111 +479,16 @@ public $new_data=array();
 
     case('Full Order Form'):
 
+return $this->get_full_order_form();
 
-      if ($this->locale=='de_DE') {
-	$out_of_stock='nicht vorrätig';
-	$discontinued='ausgelaufen';
-      }if ($this->locale=='de_DE') {
-	$out_of_stock='nicht vorrätig';
-	$discontinued='ausgelaufen';
-      }
-
-
-      elseif($this->locale=='fr_FR') {
-	$out_of_stock='Rupture de stock';
-	$discontinued='Rupture de stock';
-      }
-      else {
-	$out_of_stock='Out of Stock';
-	$discontinued='Discontinued';
-      }
-
-      if ($this->data['Product Web State']=='Online Force Out of Stock') {
-	$_form='<span style="color:red;font-weight:800">'.$out_of_stock.'</span>';
-      } else {
-	global $site_checkout_address_indv,$site_checkout_id,$site_url;
-	$_form=sprintf('<form action="%s" method="post">
-                               <input type="hidden" name="userid" value="%s">
-                               <input type="hidden" name="product" value="%s %sx %s">
-                               <input type="hidden" name="return" value="%s">
-                               <input type="hidden" name="price" value="%.2f">
-                               <input class="order" type="text" size="1" class="qty" name="qty" value="1">
-                               <input class="submit" type="Submit" value="%s" style="cursor:pointer; font-size:12px;font-family:arial;" ></form>',
-		       addslashes($site_checkout_address_indv)
-		       ,addslashes($site_checkout_id)
-		       ,addslashes($this->data['Product Code'])
-		       ,addslashes($this->data['Product Units Per Case'])
-		       ,clean_accents(addslashes($this->data['Product Name']))
-		       ,$site_url.$_SERVER['PHP_SELF']
-		       ,$this->data['Product Price']
-		       ,$this->get('Order Msg')
-		       );
-      }
-
-
-      $form=sprintf('<div style="font-size:11px;font-family:arial;" class="ind_form"><span class="code">%s</span><br/><span class="name">%sx %s</span><br/><span class="price">%s</span><br/><span class="rrp">%s</span><br/>%s</div>'
-		    ,$this->data['Product Code']
-		    ,$this->data['Product Units Per Case']
-		    ,$this->data['Product Name']
-		    ,$this->get('Price Formated'),$this->get('RRP Formated')
-		    ,$_form
-
-
-		    );
-
-
-      return $form;
+  
 
 
       break;
     case('Order List Form'):
-      if ($this->locale=='de_DE') {
-	$out_of_stock='nicht vorrätig';
-	$discontinued='ausgelaufen';
-      }
-      elseif($this->locale=='fr_FR') {
-	$out_of_stock='Rupture de stock';
-	$discontinued='Rupture de stock';
-      }elseif($this->locale=='pl_PL') {
-	$out_of_stock='Chwilowo Niedostępne';
-	$discontinued='Wyprzedane';
-      }
-      else {
-	$out_of_stock='Out of Stock';
-	$discontinued='Discontinued';
-      }
-
-      $counter=$data['counter'];
-      $options=$data['options'];
-      $rrp='';
-      if (isset($options['show individual rrp']) and $options['show individual rrp'] )
-	$rrp=" <span class='rrp_in_list'>(".$this->get('RRP Formated Locale').')</span>';
-
-
-      if ($this->data['Product Web State']=='Online Force Out of Stock') {
-	$form=sprintf('<tr><td class="first"><span class="price">%s</span>%s</td><td  colspan=2><span  style="color:red;font-weight:800">%s</span></td></tr>'
-		      ,$this->get('Price')
-		      ,$this->data['Product Code']
-		      ,$out_of_stock
-		      );
-      } else {
-	$form=sprintf('<tr><td class="first"><span class="price">%s</span>%s</td><td class="qty"><input type="text"  class="qty" name="qty%d"  id="qty%d"    /><td><span class="desc">%s</span></td></tr><input type="hidden"  name="price%d"  value="%.2f"  ><input type="hidden"  name="product%d"  value="%s %dx %s" >'
-		      ,$this->get('Price')
-		      ,$this->data['Product Code']
-		      ,$counter
-		      ,$counter
-		      ,$this->data['Product Special Characteristic'].$rrp
-		      ,$counter
-		      ,$this->data['Product Price']
-		      ,$counter
-		      ,$this->data['Product Code']
-		      ,$this->data['Product Units Per Case']
-		      ,clean_accents($this->data['Product Name'])
-		      );
-      }
-
-      return $form."\n";
-
+    $this->get_order_list_form();
+    
+ 
 
       break;
 
@@ -833,7 +747,9 @@ public $new_data=array();
     $_key=ucwords($key);
     if (isset($this->data[$_key]))
       return $this->data[$_key];
-    print "Error $key not found in get from Product\n";
+     // print_r($this);
+    print "Error -> $key <- not found in get from Product\n";
+
 exit;
     return false;
 
@@ -1028,13 +944,21 @@ exit;
     }
     $keys=preg_replace('/,$/',')',$keys);
     $values=preg_replace('/,$/',')',$values);
+    //print_r($data);
+ 
     $sql=sprintf("insert into `Product History Dimension` %s %s",$keys,$values);
-    if (mysql_query($sql)) {
+  // print "--------------------------------\n";
+  // print "$sql\n";
+    //exit;
+   if (mysql_query($sql)) {
+    if($this->external_DB_link)mysql_query($sql,$this->external_DB_link);
+   
       $this->new_key=true;
       $this->new_key_id=mysql_insert_id();
       if ($set_as_current) {
 	$this->id =$this->new_key_id;
 	$this->key=$this->id;
+
 
       }
      
@@ -1087,7 +1011,7 @@ $this->data['Product Short Description']=$this->get('short description');
 		 ,$this->pid
 		 );
 	
-    mysql_query($sql);
+    mysql_query($sql);if($this->external_DB_link)mysql_query($sql,$this->external_DB_link);
    
     $this->data['Product Current Key']=$new_current_key;
 $this->updated=true;
@@ -1148,8 +1072,9 @@ $this->updated=true;
     $keys=preg_replace('/,$/',')',$keys);
     $values=preg_replace('/,$/',')',$values);
     $sql=sprintf("insert into `Product Dimension` %s %s",$keys,$values);
-    //print "$sql\n";
+   // print "$sql\n";
     if (mysql_query($sql)) {
+    if($this->external_DB_link)mysql_query($sql,$this->external_DB_link);
       $this->pid = mysql_insert_id();
       $this->code =$base_data['product code'];
       $this->new_id=true;
@@ -1173,7 +1098,7 @@ $this->updated=true;
       //print "$sql\n";
       while($row=mysql_fetch_array($res_cat)){
 	$sql=sprintf("insert into `Category Bridge` values (%d,'Product',%d) ",$row['Category Key'],$this->pid  );
-	mysql_query($sql);
+	mysql_query($sql);if($this->external_DB_link)mysql_query($sql,$this->external_DB_link);
       }
 
     }
@@ -1184,7 +1109,7 @@ $this->updated=true;
 		 ,prepare_mysql($this->get('short description'))
 		 ,prepare_mysql($this->get('xhtml short description'))
 		 ,$this->pid);
-    mysql_query($sql);
+    mysql_query($sql);if($this->external_DB_link)mysql_query($sql,$this->external_DB_link);
    
        
     if($this->new_key){
@@ -1194,7 +1119,7 @@ $this->updated=true;
 		   ,$this->pid
 		   ,$this->id
 		   );
-      mysql_query($sql);
+      mysql_query($sql);if($this->external_DB_link)mysql_query($sql,$this->external_DB_link);
       
     }
 
@@ -1229,8 +1154,9 @@ $this->updated=true;
     $keys=preg_replace('/,$/',')',$keys);
     $values=preg_replace('/,$/',')',$values);
     $sql=sprintf("insert into `Product Same Code Dimension` %s %s",$keys,$values);
-
+//print "$sql\n";
     if (mysql_query($sql)) {
+    if($this->external_DB_link)mysql_query($sql,$this->external_DB_link);
       $this->new_code=true;
       $this->code = $base_data_same_code['product code'];
     }
@@ -1341,16 +1267,17 @@ $this->updated=true;
     $sql=sprintf("insert into `Product Part Dimension` %s %s",$keys,$values);
     // print "$sql\n";
     if (mysql_query($sql)) {
+    if($this->external_DB_link)mysql_query($sql,$this->external_DB_link);
       $product_part_key=mysql_insert_id(); 
 
       if ($base_data['product part most recent']=='Yes') {
 
 	  $sql=sprintf("update `Product Part Dimension` set `Product Part Most Recent`='No',`Product Part Most Recent Key`=%d where `Product ID`=%d  and `Product Part Key`!=%d      "
 	  ,$product_part_key,$base_data['product id'],$product_part_key);
-	  mysql_query($sql);
+	  mysql_query($sql);if($this->external_DB_link)mysql_query($sql,$this->external_DB_link);
 
 	  $sql=sprintf('update `Product Part Dimension` set `Product Part Most Recent Key`=%d where `Product Part Key`=%d',$product_part_key,$product_part_key);
-	  mysql_query($sql);
+	  mysql_query($sql);if($this->external_DB_link)mysql_query($sql,$this->external_DB_link);
 	}
 
 
@@ -1378,7 +1305,7 @@ $this->updated=true;
 	$keys=preg_replace('/,$/',')',$keys);
 	$values=preg_replace('/,$/',')',$values);
 	$sql=sprintf("insert into `Product Part List` %s %s",$keys,$values);
-	mysql_query($sql);
+	mysql_query($sql);if($this->external_DB_link)mysql_query($sql,$this->external_DB_link);
 	//print "$sql\n";
 
 
@@ -1477,7 +1404,7 @@ $this->updated=true;
     switch ($key) {
     case('redundant data'):
       $sql=sprintf("update  `Product Dimension` set `Product Short Description`=%s ,`Product XHTML Short Description`=%s where `Product Key`=%d",prepare_mysql($this->get('short description')),prepare_mysql($this->get('xhtml short description')),$this->id);
-      mysql_query($sql);
+      mysql_query($sql);if($this->external_DB_link)mysql_query($sql,$this->external_DB_link);
 
       break;
     case('same code data'):
@@ -1507,7 +1434,7 @@ $this->updated=true;
 	  exit("$sql can not update prioduct ame code data\n");
 
       }
-
+if($this->external_DB_link)mysql_query($sql,$this->external_DB_link);
       break;
 
     case('part_location_list'):
@@ -1619,7 +1546,7 @@ $this->updated=true;
       // print $sql;
       if (!mysql_query($sql))
 	exit("$sql\ncan not update product sales\n");
-
+if($this->external_DB_link)mysql_query($sql,$this->external_DB_link);
 
 
       break;
@@ -1692,7 +1619,7 @@ function load_images_slidesshow(){
 		 ,$this->data['Product ID']
 		 );
     // print "$sql\n";
-    mysql_query($sql);
+    mysql_query($sql);if($this->external_DB_link)mysql_query($sql,$this->external_DB_link);
   }
 
 function load_images(){
@@ -1739,7 +1666,7 @@ $number_images=$row['num'];
 	    	    ,prepare_mysql($principal)
 	    );
 	//	print "$sql\n";
-	mysql_query($sql);
+	mysql_query($sql);if($this->external_DB_link)mysql_query($sql,$this->external_DB_link);
        $sql=sprintf("select `Image Thumbnail URL`,`Image Small URL`,`Is Principal`,ID.`Image Key`,`Image Caption`,`Image URL`,`Image Filename`,`Image File Size`,`Image File Checksum`,`Image Width`,`Image Height`,`Image File Format` from `Image Bridge` PIB left join `Image Dimension` ID on (PIB.`Image Key`=ID.`Image Key`) where `Subject Type`='Product' and   `Subject Key`=%d and  PIB.`Image Key`=%d"
 		    ,$this->pid
 		    ,$image_key
@@ -1837,6 +1764,9 @@ $number_images=$row['num'];
 		     ,$this->pid
 		     );
 		     mysql_query($sql);
+	if($this->external_DB_link)mysql_query($sql,$this->external_DB_link);
+		     
+		     
 	if (mysql_affected_rows()>0) {
 	  $this->msg=_('Product Web State updated');
 	  $this->updated=true;
@@ -1897,6 +1827,7 @@ $number_images=$row['num'];
 		     ,$this->id
 		     );
 	if (mysql_query($sql)) {
+	if($this->external_DB_link)mysql_query($sql,$this->external_DB_link);
 	  $this->msg=_('Product Record Type updated');
 	  $this->updated=true;
 
@@ -1924,6 +1855,7 @@ $number_images=$row['num'];
 		       ,$this->id
 		       );
 	  if (mysql_query($sql)) {
+	  if($this->external_DB_link)mysql_query($sql,$this->external_DB_link);
 	    $this->msg=_('Product Record Type updated');
 	    $this->updated=true;
 
@@ -1952,6 +1884,7 @@ $number_images=$row['num'];
 		       );
 
 	  if (mysql_query($sql)) {
+	  if($this->external_DB_link)mysql_query($sql,$this->external_DB_link);
 	    $this->msg=_('Product Record Type updated');
 	    $this->updated=true;
 	    $this->new_value=_('Live');
@@ -1976,6 +1909,7 @@ $number_images=$row['num'];
 		       ,$this->id
 		       );
 	  if (mysql_query($sql)) {
+	  if($this->external_DB_link)mysql_query($sql,$this->external_DB_link);
 	    $this->msg=_('Product Record Type updated');
 	    $this->updated=true;
 	    $this->new_value=_('Live');
@@ -2044,6 +1978,7 @@ $number_images=$row['num'];
 		   ,$this->id
 		   );
       if (mysql_query($sql)) {
+      if($this->external_DB_link)mysql_query($sql,$this->external_DB_link);
 	$this->msg=_('Product code updated');
 	$this->updated=true;
 	$this->new_value=$a1;
@@ -2124,6 +2059,7 @@ $number_images=$row['num'];
 
 
       if (mysql_query($sql)) {
+      if($this->external_DB_link)mysql_query($sql,$this->external_DB_link);
 	$this->msg=_('Product Family Special Characteristic');
 	$this->updated=true;
 	$this->new_value=$a1;
@@ -2159,6 +2095,7 @@ $number_images=$row['num'];
     if (!mysql_query($sql)) {
       exit("error can not self save $sql\n");
     }
+    if($this->external_DB_link)mysql_query($sql,$this->external_DB_link);
   }
 
   /*
@@ -2188,7 +2125,7 @@ $number_images=$row['num'];
 
   function save_to_db($sql) {
 
-    mysql_query($sql);
+    mysql_query($sql);if($this->external_DB_link)mysql_query($sql,$this->external_DB_link);
 
   }
 
@@ -2223,6 +2160,7 @@ $number_images=$row['num'];
 		 );
     // print "$sql\n";
     mysql_query($sql);
+    if($this->external_DB_link)mysql_query($sql,$this->external_DB_link);
     if (mysql_affected_rows()>0) {
       $editor_data=$this->get_editor_data();
       $this->updated_field['Product For Sale Since Date']=true;
@@ -2259,7 +2197,7 @@ $number_images=$row['num'];
 		 ,prepare_mysql($date)
 
 		 );
-    mysql_query($sql);
+    mysql_query($sql);if($this->external_DB_link)mysql_query($sql,$this->external_DB_link);
     if (mysql_affected_rows()>0) {
       $this->updated_field['Product Last Sold Date']=true;
       $editor_data=$this->get_editor_data();
@@ -2301,6 +2239,7 @@ $number_images=$row['num'];
 
 		 );
     mysql_query($sql);
+    if($this->external_DB_link)mysql_query($sql,$this->external_DB_link);
     if (mysql_affected_rows()>0) {
       $this->updated_field['Product First Sold Date']=true;
       $editor_data=$this->get_editor_data();
@@ -2343,6 +2282,7 @@ $number_images=$row['num'];
 
 		 );
     mysql_query($sql);
+    if($this->external_DB_link)mysql_query($sql,$this->external_DB_link);
    // print "$sql\n";
     $affected+=mysql_affected_rows();
     $sql=sprintf("update `Product History Dimension`  set `Product History Valid To`=%s where  `Product Key`=%d and `Product History Valid To`<%s   "
@@ -2351,7 +2291,7 @@ $number_images=$row['num'];
 		 ,prepare_mysql($date)
 
 		 );
-    mysql_query($sql);
+    mysql_query($sql);if($this->external_DB_link)mysql_query($sql,$this->external_DB_link);
     //print "$sql\n";
     $affected+=mysql_affected_rows();
    // if($affected)
@@ -2368,7 +2308,7 @@ $number_images=$row['num'];
 		 ,prepare_mysql($date)
 
 		 );
-    mysql_query($sql);
+    mysql_query($sql);if($this->external_DB_link)mysql_query($sql,$this->external_DB_link);
     $affected+=mysql_affected_rows();
     $sql=sprintf("update `Product Dimension`  set `Product Valid To`=%s where  `Product ID`=%d and `Product Valid To`<%s   "
 		 ,prepare_mysql($date)
@@ -2376,7 +2316,7 @@ $number_images=$row['num'];
 		 ,prepare_mysql($date)
 
 		 );
-    mysql_query($sql);
+    mysql_query($sql);if($this->external_DB_link)mysql_query($sql,$this->external_DB_link);
     $affected+=mysql_affected_rows();
     return $affected;
   }
@@ -2389,7 +2329,7 @@ $number_images=$row['num'];
 		 ,prepare_mysql($date)
 
 		 );
-    mysql_query($sql);
+    mysql_query($sql);if($this->external_DB_link)mysql_query($sql,$this->external_DB_link);
     $affected+=mysql_affected_rows();
     $sql=sprintf("update `Product Same Code Dimension`  set `Product Same Code Valid To`=%s where  `Product Code`=%s and `Product Same Code Valid To`<%s   "
 		 ,prepare_mysql($date)
@@ -2397,7 +2337,7 @@ $number_images=$row['num'];
 		 ,prepare_mysql($date)
 
 		 );
-    mysql_query($sql);
+    mysql_query($sql);if($this->external_DB_link)mysql_query($sql,$this->external_DB_link);
     $affected+=mysql_affected_rows();
     return $affected;
   }
@@ -2532,7 +2472,7 @@ $number_images=$row['num'];
     if (!mysql_query($sql)) {
       exit("$sql\ncan not update product sales\n");
     }
-
+if($this->external_DB_link)mysql_query($sql,$this->external_DB_link);
 
     $sql=sprintf("select sum(`Cost Supplier`/`Invoice Currency Exchange Rate`) as cost_sup,sum(`Invoice Transaction Gross Amount`) as gross ,sum(`Invoice Transaction Total Discount Amount`)as disc ,sum(`Shipped Quantity`) as delivered,sum(`Order Quantity`) as ordered,sum(`Invoice Quantity`) as invoiced  from `Order Transaction Fact` where `Product Key` in (%s) and `Invoice Date`>=%s ",$keys,prepare_mysql(date("Y-m-d",strtotime("- 1 year"))));
 
@@ -2571,7 +2511,7 @@ $number_images=$row['num'];
       exit("$sql\ncan not update product sales 1 yr acc\n");
 
     }
-
+if($this->external_DB_link)mysql_query($sql,$this->external_DB_link);
     $sql=sprintf("select sum(`Cost Supplier`/`Invoice Currency Exchange Rate`) as cost_sup,sum(`Invoice Transaction Gross Amount`) as gross ,sum(`Invoice Transaction Total Discount Amount`)as disc ,sum(`Shipped Quantity`) as delivered,sum(`Order Quantity`) as ordered,sum(`Invoice Quantity`) as invoiced  from `Order Transaction Fact` where `Product Key` in (%s) and `Invoice Date`>=%s "
 		 ,$keys,
 		 prepare_mysql(date("Y-m-d",strtotime("- 3 month")))
@@ -2609,7 +2549,7 @@ $number_images=$row['num'];
 		 );
     if (!mysql_query($sql))
       exit("$sql\ncan not update product sales 1 qtr acc\n");
-
+if($this->external_DB_link)mysql_query($sql,$this->external_DB_link);
     $sql=sprintf("select sum(`Cost Supplier`/`Invoice Currency Exchange Rate`) as cost_sup,sum(`Invoice Transaction Gross Amount`) as gross ,sum(`Invoice Transaction Total Discount Amount`)as disc ,sum(`Shipped Quantity`) as delivered,sum(`Order Quantity`) as ordered,sum(`Invoice Quantity`) as invoiced  from `Order Transaction Fact` where `Product Key` in (%s) and `Invoice Date`>=%s ",
 		 $keys,
 		 prepare_mysql(date("Y-m-d",strtotime("- 1 month")))
@@ -2645,7 +2585,7 @@ $number_images=$row['num'];
 		 );
     if (!mysql_query($sql))
       exit("$sql\ncan not update product sales 1 qtr acc\n");
-
+if($this->external_DB_link)mysql_query($sql,$this->external_DB_link);
 
     $sql=sprintf("select sum(`Cost Supplier`/`Invoice Currency Exchange Rate`) as cost_sup,sum(`Invoice Transaction Gross Amount`) as gross ,sum(`Invoice Transaction Total Discount Amount`)as disc ,sum(`Shipped Quantity`) as delivered,sum(`Order Quantity`) as ordered,sum(`Invoice Quantity`) as invoiced  from `Order Transaction Fact` where `Product Key` in (%s) and `Invoice Date`>=%s ",
 		 $keys,
@@ -2682,7 +2622,7 @@ $number_images=$row['num'];
 		 );
     if (!mysql_query($sql))
       exit("$sql\ncan not update product sales 1 week accx\n");
-
+if($this->external_DB_link)mysql_query($sql,$this->external_DB_link);
 
 
   }
@@ -2731,7 +2671,7 @@ $number_images=$row['num'];
 		 );
     if (!mysql_query($sql))
       exit("$sql\ncan not update product historic sales\n");
-
+if($this->external_DB_link)mysql_query($sql,$this->external_DB_link);
     $sql=sprintf("select sum(`Cost Supplier`/`Invoice Currency Exchange Rate`) as cost_sup,sum(`Invoice Transaction Gross Amount`) as gross ,sum(`Invoice Transaction Total Discount Amount`)as disc ,sum(`Shipped Quantity`) as delivered,sum(`Order Quantity`) as ordered,sum(`Invoice Quantity`) as invoiced  from `Order Transaction Fact` where `Product Key`=%d and `Invoice Date`>=%s "
 		 ,$this->id,prepare_mysql(date("Y-m-d",strtotime("- 1 year"))));
 
@@ -2770,7 +2710,7 @@ $number_images=$row['num'];
       exit("$sql\ncan not update product historic  sales 1 yr accv\n");
 
     }
-
+if($this->external_DB_link)mysql_query($sql,$this->external_DB_link);
     $sql=sprintf("select sum(`Cost Supplier`/`Invoice Currency Exchange Rate`) as cost_sup,sum(`Invoice Transaction Gross Amount`) as gross ,sum(`Invoice Transaction Total Discount Amount`)as disc ,sum(`Shipped Quantity`) as delivered,sum(`Order Quantity`) as ordered,sum(`Invoice Quantity`) as invoiced  from `Order Transaction Fact` where `Product Key`=%d and `Invoice Date`>=%s "
 		 ,$this->id,
 		 prepare_mysql(date("Y-m-d",strtotime("- 3 month")))
@@ -2808,7 +2748,7 @@ $number_images=$row['num'];
 		 );
     if (!mysql_query($sql))
       exit("$sql\ncan not update product sales 1 qtr acc\n");
-
+if($this->external_DB_link)mysql_query($sql,$this->external_DB_link);
     $sql=sprintf("select sum(`Cost Supplier`/`Invoice Currency Exchange Rate`) as cost_sup,sum(`Invoice Transaction Gross Amount`) as gross ,sum(`Invoice Transaction Total Discount Amount`)as disc ,sum(`Shipped Quantity`) as delivered,sum(`Order Quantity`) as ordered,sum(`Invoice Quantity`) as invoiced  from `Order Transaction Fact` where `Product Key`=%d and `Invoice Date`>=%s ",
 		 $this->id,
 		 prepare_mysql(date("Y-m-d",strtotime("- 1 month")))
@@ -2844,7 +2784,7 @@ $number_images=$row['num'];
 		 );
     if (!mysql_query($sql))
       exit("$sql\ncan not update product sales 1 qtr acc\n");
-
+if($this->external_DB_link)mysql_query($sql,$this->external_DB_link);
 
     $sql=sprintf("select sum(`Cost Supplier`/`Invoice Currency Exchange Rate`) as cost_sup,sum(`Invoice Transaction Gross Amount`) as gross ,sum(`Invoice Transaction Total Discount Amount`)as disc ,sum(`Shipped Quantity`) as delivered,sum(`Order Quantity`) as ordered,sum(`Invoice Quantity`) as invoiced  from `Order Transaction Fact` where `Product Key`=%d and `Invoice Date`>=%s ",
 		 $this->id,
@@ -2882,7 +2822,7 @@ $number_images=$row['num'];
     if (!mysql_query($sql))
       exit("$sql\ncan not update product sales 1 week acc\n");
 
-
+if($this->external_DB_link)mysql_query($sql,$this->external_DB_link);
 
   }
 
@@ -2943,7 +2883,7 @@ $number_images=$row['num'];
 		 );
     if (!mysql_query($sql))
       exit("$sql\ncan not update product historic sales\n");
-
+if($this->external_DB_link)mysql_query($sql,$this->external_DB_link);
     $sql=sprintf("select sum(`Cost Supplier`/`Invoice Currency Exchange Rate`) as cost_sup,sum(`Invoice Transaction Gross Amount`) as gross ,sum(`Invoice Transaction Total Discount Amount`)as disc ,sum(`Shipped Quantity`) as delivered,sum(`Order Quantity`) as ordered,sum(`Invoice Quantity`) as invoiced  from `Order Transaction Fact` where `Product Key` in (%s) and `Invoice Date`>=%s "
 		 ,$keys
 		 ,prepare_mysql(date("Y-m-d",strtotime("- 1 year"))));
@@ -2983,7 +2923,7 @@ $number_images=$row['num'];
       exit("$sql\ncan not update product historic  sales 1 yr accv\n");
 
     }
-
+if($this->external_DB_link)mysql_query($sql,$this->external_DB_link);
     $sql=sprintf("select sum(`Cost Supplier`/`Invoice Currency Exchange Rate`) as cost_sup,sum(`Invoice Transaction Gross Amount`) as gross ,sum(`Invoice Transaction Total Discount Amount`)as disc ,sum(`Shipped Quantity`) as delivered,sum(`Order Quantity`) as ordered,sum(`Invoice Quantity`) as invoiced  from `Order Transaction Fact` where `Product Key` in (%s) and `Invoice Date`>=%s "
 		 ,$keys,
 		 prepare_mysql(date("Y-m-d",strtotime("- 3 month")))
@@ -3148,6 +3088,7 @@ $number_images=$row['num'];
 		   ,$this->id
 		   );
       if (mysql_query($sql)) {
+      if($this->external_DB_link)mysql_query($sql,$this->external_DB_link);
 	$this->msg=_('Product price updated');
 	$this->updated=true;
 	$this->data['Product Editing Price']=$amount;
@@ -3203,6 +3144,7 @@ $number_images=$row['num'];
 		     ,$this->new_key_id
 		     );
 	mysql_query($sql);
+	if($this->external_DB_link)mysql_query($sql,$this->external_DB_link);
 	//print "$sql\n";
 
 	if ($change_at=='now') {
@@ -3274,9 +3216,13 @@ $number_images=$row['num'];
     } else {
       list($currency,$amount)=parse_money($value,$this->get('Product Currency'));
 
+
+
       if (!is_numeric($amount)) {
 	$this->msg=_("Error: Product RRP should be a numeric value");
 	$this->updated=false;
+      
+      
       }
 
 
@@ -3295,8 +3241,11 @@ $number_images=$row['num'];
 
 
 
-    if ($amount==$this->data['Product RRP']) {
+    if ( ($amount=='NULL' and $this->data['Product RRP']=='') or ( is_numeric($amount) and  $amount==$this->data['Product RRP'])    )   {
       $this->updated=false;
+      if($amount=='NULL')
+      $this->new_value='';
+     else
       $this->new_value=money($amount,$this->get('Product Currency'));
       return;
 
@@ -3310,6 +3259,7 @@ $number_images=$row['num'];
 		 );
 
     if (mysql_query($sql)) {
+    if($this->external_DB_link)mysql_query($sql,$this->external_DB_link);
       $this->msg=_('Product RRP updated');
       $this->updated=true;
 
@@ -3380,7 +3330,7 @@ $number_images=$row['num'];
     }
 
     $sql=sprintf("update `Product Dimension` set `Product Net Weight`=%f where `Product ID`=%d",$weight,$this->pid);
-    mysql_query($sql);
+    mysql_query($sql);if($this->external_DB_link)mysql_query($sql,$this->external_DB_link);
     $this->data['Product Net Weight']=$weight;
     $this->new_value=$weight;
     $this->updated=true;
@@ -3396,7 +3346,7 @@ $number_images=$row['num'];
     }
 
     $sql=sprintf("update `Product Dimension` set `Product Gross Weight`=%f where `Product ID`=%d",$weight,$this->pid);
-    mysql_query($sql);
+    mysql_query($sql);if($this->external_DB_link)mysql_query($sql,$this->external_DB_link);
     $this->data['Product Gross Weight']=$weight;
     $this->new_value=$weight;
     $this->updated=true;
@@ -3444,12 +3394,19 @@ $number_images=$row['num'];
     else
       $edit_column='Product Name';
     $old_name=$this->get('Product Name');
-    $sql=sprintf("update `Product Dimension` set `%s`=%s where `Product ID`=%d "
+    $this->data[$edit_column]=$value;
+    $this->data['Product Short Description']=$this->get('short description');
+        $this->data['Product XHTML Short Description']=$this->get('xhtml short description');
+
+    $sql=sprintf("update `Product Dimension` set `%s`=%s ,`Product Short Description`=%s,`Product XHTML Short Description`=%s where `Product ID`=%d "
 		 ,$edit_column
 		 ,prepare_mysql($value)
+		 ,prepare_mysql($this->get('short description'))
+		 ,prepare_mysql($this->get('xhtml short description'))
 		 ,$this->pid
 		 );
     if (mysql_query($sql)) {
+    if($this->external_DB_link)mysql_query($sql,$this->external_DB_link);
       $this->msg=_('Product name updated');
       $this->updated=true;
       $this->new_value=$value;
@@ -3535,6 +3492,7 @@ $number_images=$row['num'];
 		 ,$this->pid
 		 );
     if (mysql_query($sql)) {
+    if($this->external_DB_link)mysql_query($sql,$this->external_DB_link);
       $this->data['Product Special Characteristic']=$value;
       $this->msg=_('Product Special Characteristic');
       $this->updated=true;
@@ -3571,8 +3529,8 @@ function update_description($description){
 		 ,$this->pid
 		 );
     if (mysql_query($sql)) {
-      
-      $this->data['Product Descriotion']=$description;
+      if($this->external_DB_link)mysql_query($sql,$this->external_DB_link);
+      $this->data['Product Description']=$description;
       $this->msg=_('Product Description changed');
       $this->updated=true;
       $this->new_value=$description;
@@ -3622,7 +3580,7 @@ if(array_key_exists($image_key,$this->images)){
 $sql=sprintf("delete from `Image Bridge` where `Subject Type`='Product' and `Subject Key`=%d  and `Image Key`=%d",$this->pid,$image_key);
 //print $sql;
 mysql_query($sql);
-
+if($this->external_DB_link)mysql_query($sql,$this->external_DB_link);
 $this->updated=true;
 $was_principal=($this->images[$image_key]['Is Principal']=='Yes'?true:false);
 unset($this->images[$image_key]);
@@ -3657,7 +3615,7 @@ if($this->images[$image_key]['caption']==$value){
    $sql=sprintf("update `Image Bridge` set `Image Caption`=%s where where `Subject Type`='Product' and `Subject Key`=%d  and `Image Key`=%d"
   ,prepare_mysql($value)
   ,$this->id,$image_key);
-   mysql_query($sql);
+   mysql_query($sql);if($this->external_DB_link)mysql_query($sql,$this->external_DB_link);
    $this->new_value=$value;
    $this->updated=true;
    $this->images[$image_key]['caption']=$value;
@@ -3677,7 +3635,7 @@ if($this->images[$image_key]['caption']==$value){
 	
 	$sql=sprintf("delete from `Category Bridge` where `Subject Key`=%d  and `Subject`='Product'  and `Category Key`=%d ",$this->pid,$category_location_key);
 	
-	mysql_query($sql);
+	mysql_query($sql);if($this->external_DB_link)mysql_query($sql,$this->external_DB_link);
 	if(mysql_affected_rows()>0){
 	  $this->updated_fields['Product Category'][$category_location_key]=0;
 	}
@@ -3771,6 +3729,7 @@ if($this->images[$image_key]['caption']==$value){
 	$sql=sprintf("insert into  `Category Bridge`   values (%d,'Product',%d) ",$category_location_key,$this->pid);
 	//print "$sql\n";
 	if(mysql_query($sql)){
+	if($this->external_DB_link)mysql_query($sql,$this->external_DB_link);
 	  if(mysql_affected_rows()>0){
 	    $num_inserted_categories++;
 	    $this->updated_fields['Product Category'][$category_location_key]=1;
@@ -3955,7 +3914,7 @@ if($this->images[$image_key]['caption']==$value){
 		  ,$transfer_data['old']
 		  );
      print "$sql\n";
-     mysql_query($sql);
+     mysql_query($sql);if($this->external_DB_link)mysql_query($sql,$this->external_DB_link);
 
    }
 
@@ -3966,7 +3925,7 @@ if($this->images[$image_key]['caption']==$value){
      $sql=sprintf('delete from `History Dimension` where `Direct Object`="Product" and `Direct Object Key`=%d ',$this->pid);
      if(!mysql_query($sql))
        print "error $sql\n";
-     
+     if($this->external_DB_link)mysql_query($sql,$this->external_DB_link);
 
 
 
@@ -4023,13 +3982,13 @@ if($this->images[$image_key]['caption']==$value){
 			    ,prepare_mysql($note)
 			    );
 	   print "$sql\n";
-	   mysql_query($sql);
+	   mysql_query($sql);if($this->external_DB_link)mysql_query($sql,$this->external_DB_link);
 	 }
        }
        $sql=sprintf('delete from `Inventory Transaction Fact` where  `Part SKU`=%d ',$sku);
        if(!mysql_query($sql))
 	 print "error $sql\n";
-
+if($this->external_DB_link)mysql_query($sql,$this->external_DB_link);
        //____________________________________|
 
      
@@ -4043,7 +4002,7 @@ if($this->images[$image_key]['caption']==$value){
           $sql=sprintf('delete from `Part Location Dimension` where  `Part SKU`=%d ',$sku);
          if(!mysql_query($sql))
 	 print "error $sql\n";
-
+if($this->external_DB_link)mysql_query($sql,$this->external_DB_link);
 
        $sql=sprintf('select * from `Supplier Product Part List` where  `Part SKU`=%d ',$sku);
        //print $sql;
@@ -4055,42 +4014,44 @@ if($this->images[$image_key]['caption']==$value){
 			 );
          if(!mysql_query($sql))
 	 print "error $sql\n";
+	 if($this->external_DB_link)mysql_query($sql,$this->external_DB_link);
 	   $sql=sprintf('delete from `Supplier Product History Dimension` where `Supplier Product Code`=%s and  `Supplier Key`=%d '
 			 ,prepare_mysql($row2['Supplier Product Code'])
 			 ,$row2['Supplier Key']
 			 );
          if(!mysql_query($sql))
 	 print "error $sql\n";
-
+if($this->external_DB_link)mysql_query($sql,$this->external_DB_link);
 
 	}
 
 	 $sql=sprintf('delete from `Supplier Product Part List` where  `Part SKU`=%d ',$sku);
 	 if(!mysql_query($sql))
 	   print "error $sql\n";
-
+if($this->external_DB_link)mysql_query($sql,$this->external_DB_link);
 	 $sql=sprintf('delete from `Part Dimension` where  `Part SKU`=%d ',$sku);
 	 if(!mysql_query($sql))
 	   print "error $sql\n";
-
+if($this->external_DB_link)mysql_query($sql,$this->external_DB_link);
 
      }
 
      $sql=sprintf('delete from `Product Dimension` where  `Product ID`=%d ',$this->pid);
      if(!mysql_query($sql))
        print "error $sql\n";
-     
+     if($this->external_DB_link)mysql_query($sql,$this->external_DB_link);
      $sql=sprintf('delete from `Product History Dimension` where  `Product ID`=%d ',$this->pid);
      if(!mysql_query($sql))
        print "error $sql\n";
-  
+  if($this->external_DB_link)mysql_query($sql,$this->external_DB_link);
      $sql=sprintf('delete from `Product Part Dimension` where  `Product ID`=%d ',$this->pid);
      if(!mysql_query($sql))
        print "error $sql\n";
+       if($this->external_DB_link)mysql_query($sql,$this->external_DB_link);
     $sql=sprintf('delete from `Product Part List` where  `Product ID`=%d ',$this->pid);
      if(!mysql_query($sql))
        print "error $sql\n";
-
+if($this->external_DB_link)mysql_query($sql,$this->external_DB_link);
 
      
      $rnd_product->load('parts');
@@ -4256,6 +4217,7 @@ return $part_list;
       // print "$sql\n";
       if (!mysql_query($sql))
 	exit("$sql\ncan not update product days\n");
+	if($this->external_DB_link)mysql_query($sql,$this->external_DB_link);
    }
    // return;
    mysql_free_result($result);
@@ -4413,6 +4375,9 @@ return $part_list;
 
       if (!mysql_query($sql))
 	exit("$sql\ncan not update product same code total days\n");
+	
+	if($this->external_DB_link)mysql_query($sql,$this->external_DB_link);
+	
       mysql_free_result($result);
      
       $total_days=array();
@@ -4510,6 +4475,8 @@ return $part_list;
       //  print $sql;
       if (!mysql_query($sql))
 	exit("$sql\ncan not update product same id total days\n");
+	if($this->external_DB_link)mysql_query($sql,$this->external_DB_link);
+	
       mysql_free_result($result);
  
       return;
@@ -4524,7 +4491,7 @@ $sql=sprintf("update `Product Dimension` set `Product recorf Type`=%s  where  `P
 		     ,prepare_mysql($this->data['Product Record Type'])
 		     ,$this->pid
 		     );
-mysql_query($sql);
+mysql_query($sql);if($this->external_DB_link)mysql_query($sql,$this->external_DB_link);
 }
 
 
@@ -4559,6 +4526,7 @@ function update_sales_type($value){
 		     );
 	//print $sql;	     
 	if (mysql_query($sql)) {
+	if($this->external_DB_link)mysql_query($sql,$this->external_DB_link);
 	  $this->msg=_('Product Sales Type updated');
 	  $this->updated=true;
 
@@ -4687,7 +4655,7 @@ function update_next_supplier_shippment_simple($part_list){
   
   $sql=sprintf("update `Product Dimension` set `Product Next Supplier Shipment`=%s where `Product ID`=%d",prepare_mysql($next_shippment,false),$this->data['Product ID']);
  // print "$sql\n";
-  mysql_query($sql);
+  mysql_query($sql);if($this->external_DB_link)mysql_query($sql,$this->external_DB_link);
 
     }
 function update_parts(){
@@ -4755,7 +4723,7 @@ function update_parts(){
       //print "$sql\n";
       if (!mysql_query($sql))
 	exit("$sql  eerror can not updat eparts pf product 1234234\n");
-
+if($this->external_DB_link)mysql_query($sql,$this->external_DB_link);
 
 }
 
@@ -4870,6 +4838,8 @@ function update_availability(){
       $sql=sprintf("update `Product Dimension` set `Product Availability State`=%s,`Product Available Days Forecast`=%s where `Product ID`=%d",prepare_mysql($tipo),$days_available,$this->pid);
       if (!mysql_query($sql))
 	exit("$sql can no update stock prod product.php l 1311\n");
+    if($this->external_DB_link)mysql_query($sql,$this->external_DB_link);
+    
     
 }
 
@@ -4934,7 +4904,7 @@ function update_units_per_case($units){
  
  
     $sql=sprintf("update `Product Dimension` set `Product Units Per Case`=%f where `Product ID`=%d",$units,$this->pid);
-    mysql_query($sql);
+    mysql_query($sql);if($this->external_DB_link)mysql_query($sql,$this->external_DB_link);
     $this->data['Product Units Per Case']=$units;
     $this->new_value=$units;
     $this->updated=true;
@@ -4953,7 +4923,7 @@ function update_units_type($value){
   }
 
  $sql=sprintf("update `Product Dimension` set `Product Unit Type`=%s where `Product ID`=%d",$value,$this->pid);
-    mysql_query($sql);
+    mysql_query($sql);if($this->external_DB_link)mysql_query($sql,$this->external_DB_link);
     $this->data['Product Unit Type']=$value;
     $this->new_value=$value;
     $this->updated=true;
@@ -4988,6 +4958,135 @@ function get_parts_objects(){
       }
    return $parts;
 }
+
+function get_full_order_form(){
+
+    if ($this->locale=='de_DE') {
+	$out_of_stock='nicht vorrätig';
+	$discontinued='ausgelaufen';
+      }if ($this->locale=='de_DE') {
+	$out_of_stock='nicht vorrätig';
+	$discontinued='ausgelaufen';
+      }
+elseif($this->locale=='es_ES') {
+	$out_of_stock='Fuera de Stock';
+	$discontinued='Fuera de Stock';
+      }
+
+      elseif($this->locale=='fr_FR') {
+	$out_of_stock='Rupture de stock';
+	$discontinued='Rupture de stock';
+      }
+      else {
+	$out_of_stock='Out of Stock';
+	$discontinued='Discontinued';
+      }
+
+      if ($this->data['Product Web State']=='Online Force Out of Stock') {
+	$_form='<span style="color:red;font-weight:800">'.$out_of_stock.'</span>';
+      } else {
+	global $site_checkout_address_indv,$site_checkout_id,$site_url;
+	$_form=sprintf('<form action="%s" method="post">
+                               <input type="hidden" name="userid" value="%s">
+                               <input type="hidden" name="product" value="%s %sx %s">
+                               <input type="hidden" name="return" value="%s">
+                               <input type="hidden" name="price" value="%.2f">
+                               <input class="order" type="text" size="1" class="qty" name="qty" value="1">
+                               <input class="submit" type="Submit" value="%s" style="cursor:pointer; font-size:12px;font-family:arial;" ></form>',
+		       addslashes($site_checkout_address_indv)
+		       ,addslashes($site_checkout_id)
+		       ,addslashes($this->data['Product Code'])
+		       ,addslashes($this->data['Product Units Per Case'])
+		       ,clean_accents(addslashes($this->data['Product Name']))
+		       ,$site_url.$_SERVER['PHP_SELF']
+		       ,$this->data['Product Price']
+		       ,$this->get('Order Msg')
+		       );
+      }
+
+
+      $form=sprintf('<div style="font-size:12px;font-family:arial;" class="ind_form"><span class="code">%s</span><br/><span class="name">%sx %s</span><br/><span class="price">%s</span><br/><span class="rrp">%s</span><br/>%s</div>'
+		    ,$this->data['Product Code']
+		    ,$this->data['Product Units Per Case']
+		    ,$this->data['Product Name']
+		    ,$this->get_formated_price($this->locale)
+		    ,$this->get_formated_rrp($this->locale)
+		    ,$_form
+
+
+		    );
+
+
+      return $form;
+
+
+}
+
+function get_order_list_form($data){
+   
+      if ($this->locale=='de_DE') {
+	$out_of_stock='nicht vorrätig';
+	$discontinued='ausgelaufen';
+      }
+      elseif($this->locale=='fr_FR') {
+	$out_of_stock='Rupture de stock';
+	$discontinued='Rupture de stock';
+      }elseif($this->locale=='pl_PL') {
+	$out_of_stock='Chwilowo Niedostępne';
+	$discontinued='Wyprzedane';
+      }elseif($this->locale=='es_ES') {
+	$out_of_stock='Fuera de Stock';
+	$discontinued='Agotado';
+      }
+      else {
+	$out_of_stock='Out of Stock';
+	$discontinued='Discontinued';
+      }
+
+      $counter=$data['counter'];
+      $options=$data['options'];
+      $currency=$data['currency'];
+      $rrp='';
+      if (isset($options['show individual rrp']) and $options['show individual rrp'] )
+	$rrp=" <span class='rrp_in_list'>(".$this->get_formated_rrp($this->locale).')</span>';
+
+//mb_convert_encoding($_header, "UTF-8", "ISO-8859-1,UTF-8");
+
+
+
+      if ($this->data['Product Web State']=='Online Force Out of Stock') {
+	$form=sprintf('<tr><td class="first">%s</td><td  colspan=2>%s<span  style="color:red;font-weight:800">%s</span></td></tr>'
+		     // ,$this->get_formated_price($this->locale)
+		      ,$this->data['Product Code']
+		      		      ,mb_convert_encoding($this->data['Product Special Characteristic'],"ISO-8859-1", "UTF-8").' ('.money_locale($this->data['Product Price'],$this->locale,$currency).')'.$rrp
+
+		      ,$out_of_stock
+		      );
+      } else {
+	$form=sprintf('<tr><td style="width:8em">%s</td><td class="qty"><input type="text"  size="3" class="qty" name="qty%d"  id="qty%d"    /><td><span class="desc">%s</span></td></tr><input type="hidden"  name="price%d"  value="%.2f"  ><input type="hidden"  name="product%d"  value="%s %dx %s" >'
+		      //,money_locale($this->data['Product Price'],$this->locale,$currency)
+		      ,$this->data['Product Code'].' '.money_locale($this->data['Product Price'],$this->locale,$currency).''
+		      ,$counter
+		      ,$counter
+		      ,mb_convert_encoding($this->data['Product Special Characteristic'],"ISO-8859-1", "UTF-8")
+		      ,$counter
+		      ,$this->data['Product Price']
+		      ,$counter
+		      ,$this->data['Product Code']
+		      ,$this->data['Product Units Per Case']
+		      ,clean_accents($this->data['Product Name'])
+		      );
+		
+		      
+		      
+		      
+      }
+
+      return $form."\n";
+
+
+}
+
 
 
 }

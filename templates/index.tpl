@@ -1,5 +1,5 @@
 {include file='header.tpl'}
-<div id="bd" >
+<div id="bd" style="padding:0px">
 <div class="search_box" style="margin-top:15px">
   <div class="general_options">
     {foreach from=$general_options_list item=options }
@@ -12,12 +12,14 @@
     </div>
 </div>
 
+<div style="clear:both">
+
 {foreach from=$splinters key=key item=splinter}
 
 {include file=$splinter.tpl index=$splinter.index}
 {/foreach}
 
-
+</div>
 <div style="display:none">
 <div id="message_list" style="width:700px;border:0px solid #777;margin-top:10px;padding:0 20px">
 <table style="width:100%">
