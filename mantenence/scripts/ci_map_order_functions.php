@@ -1705,7 +1705,8 @@ function read_header($raw_header_data,$map_act,$y_map,$map,$convert_encoding=tru
     //first read the act part
 
     $raw_act_data=array_shift($raw_header_data);
-    // print_r($raw_act_data);
+    //print "========\n";
+ // print_r($raw_header_data);
     if($raw_act_data){
 
       foreach($raw_act_data as $key=>$col){
@@ -1748,7 +1749,7 @@ function read_header($raw_header_data,$map_act,$y_map,$map,$convert_encoding=tru
     // print $raw_header_data[9][5]." $map\n";
     //  print_r($map);
   
-    //  print_r($raw_header_data);
+     //print_r($raw_header_data);
 
   
 
@@ -1757,9 +1758,12 @@ function read_header($raw_header_data,$map_act,$y_map,$map,$convert_encoding=tru
 
     foreach($map as $key=>$map_data){
       if($map_data){
-	////     print "$key  \n";
-	//      print_r($map_data);
-	//print "**** $key ".$map_data['row']." ".$map_data['col']."\n";
+    // print "$key  \n";
+//	     print_r($map_data);
+//	print "**** $key ".$map_data['row']." ".$map_data['col']."\n";
+	
+	
+	
 	$_data=$raw_header_data[$map_data['row']][$map_data['col']];
 	if($convert_encoding)
 	  $_data=mb_convert_encoding($_data, "UTF-8", "ISO-8859-1");

@@ -8,14 +8,27 @@ require_once 'common_functions.php';
 require_once "class.Session.php";
 require_once "class.Auth.php";
 require_once "class.User.php";
+$external_DB_link=false;
+if(isset($connect_to_external) and isset($external_dns_user)){
+$external_DB_link=mysql_connect($external_dns_host,$external_dns_user,$external_dns_pwd );
 
-
+if(!$external_DB_link){print "Error can not connect with external database server\n";}
+$external_db_selected=mysql_select_db($external_dns_db, $external_DB_link);
+if (!$external_db_selected){print "Error can not access the external database\n";}
+//print $external_DB_link;
+}
 
 
 $default_DB_link=mysql_connect($dns_host,$dns_user,$dns_pwd );
 if(!$default_DB_link){print "Error can not connect with database server\n";}
 $db_selected=mysql_select_db($dns_db, $default_DB_link);
 if (!$db_selected){print "Error can not access the database\n";exit;}
+
+
+
+
+
+
 
 mysql_query("SET NAMES 'utf8'");
 require_once 'conf/timezone.php';   

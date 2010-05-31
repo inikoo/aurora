@@ -26,6 +26,9 @@ $db=@mysql_select_db($dns_db, $con);
 if (!$db){print "Error can not access the database\n";exit;}
   
 
+$codigos=array();
+
+
 require_once '../../common_functions.php';
 mysql_query("SET time_zone ='+0:00'");
 mysql_query("SET NAMES 'utf8'");
@@ -48,7 +51,10 @@ $products=false;
 $count=0;
 
 $store_key=1;
+$create_cat=false;
 //----------------------------------OK
+
+if($create_cat){
 
 $nodes=new Nodes('`Category Dimension`');
 $data=array('`Category Name`'=>'Uso');
@@ -105,7 +111,7 @@ $data=array('`Category Name`'=>'Esoterico');
 $nodes->add_new(3 , $data);
 $data=array('`Category Name`'=>'Fantasia');
 $nodes->add_new(3 , $data);
-
+}
 $last_department_name='';
 
 
@@ -439,7 +445,8 @@ foreach($__cols as $cols){
   // if(preg_match('/Reed-13/i',$code)){
   // print_r($cols);
   // exit;   }
-  
+  $code=preg_replace('/\s.*$/','',$code);
+
   $code=_trim($code);
   if($code=='' or !preg_match('/\-/',$code) or preg_match('/total/i',$price)  or  preg_match('/^(pi\-|cxd\-|fw\-04)/i',$code))
     $is_product=false;
@@ -569,8 +576,35 @@ foreach($__cols as $cols){
     if($units=='' OR $units<=0)
       $units=1;
 
-    $description=_trim( mb_convert_encoding($cols[8], "UTF-8", "ISO-8859-1,UTF-8"));
+$cols[8]=preg_replace('/†/','',$cols[8]);
 
+
+$cols[8]=preg_replace('/Lavanda .{2}(Semillas de Lavanda)/','Lavanda (Semillas de Lavanda)',$cols[8]);
+$cols[8]=preg_replace('/^Rosa .{1,2}\(P/','^Rosa (P',$cols[8]);
+$cols[8]=preg_replace('/P.*talos de jazm.*n .{2}\(con brillo/i','PÈtalos de jazmÌn (con brillo',$cols[8]);
+$cols[8]=preg_replace('/Glitter Musk.*\(con brillo\)/','Glitter Musk (con brillo)',$cols[8]);
+$cols[8]=preg_replace('/Vaso Ba.*Modelo Rajasthan/','Vaso BaÒo Modelo Rajasthan',$cols[8]);
+
+$cols[8]=preg_replace('/Jabonero Modelo.{1,3}Rajasthan/i','Jabonero Modelo Rajasthan',$cols[8]);
+$cols[8]=preg_replace('/Vaso Ba.*o.{1,4}Modelo Marakesh/i','Vaso BaÒo Modelo Marakesh',$cols[8]);
+
+$cols[8]=preg_replace('/^.{1,2}Rose Garden/','Rose Garden',$cols[8]);
+$cols[8]=preg_replace('/Atrapasue.{1,3}o 3D .{1,2}-/','AtrapasueÒo 3D -',$cols[8]);
+$cols[8]=preg_replace('/Small Rough Turquoise Bracelet.{1,4}30g/','Small Rough Turquoise Bracelet 30g',$cols[8]);
+
+
+    $description=_trim( mb_convert_encoding($cols[8], "UTF-8", "ISO-8859-1,UTF-8"));
+    
+    $description=preg_replace('/Vaso Ba.*Modelo Rajasthan/','Vaso Baño Modelo Rajasthan',$description);
+
+$description=preg_replace('/Vaso Ba.*o.{1,4}Modelo Marakesh/i','Vaso Baño Modelo Marakesh',$description);
+    $description=preg_replace('/Atrapasue.{1,3}o 3D .{1,2}-/','Atrapasueño 3D -',$description);
+
+    
+if($code=='MFH-06')
+$description='Pétalos de jazmín (con brillo) rosa';
+if($code=='BLN-03')
+$description='Rose Garden (Red)';
 
     //    if(preg_match('/wsl-535/i',$code)){
     //       print_r($cols);
@@ -818,10 +852,16 @@ foreach($__cols as $cols){
 		    
 		    );
 	//	print_r($cols);
-	//print_r($data);
+//print_r($data);
 	//exit;
+      
+       	if(array_key_exists($code,$codigos)){
+       	print "Product: $code is duplicated\n";
+       	continue;
+       	}
 
 
+$codigos[$code]=1;
        	$product=new Product('find',$data,'create');
 	if($product->new){
 	
@@ -935,14 +975,17 @@ foreach($__cols as $cols){
 	$part->load('supplied by');
     	$product->load('cost');
      
-     if($product->new_key){
-        $product->change_current_key($product->new_key_id);
-     }
+   //  if($product->new_key){
+    //    $product->change_current_key($product->new_key_id);
+    // }
      
      }
-    
+   
+//   $product->get_data('pid',$product->pid);
+   //print_r($product);
      $product->change_current_key($product->id);
-      $product->update_rrp('Product RRP',$rrp);
+    
+     $product->update_rrp('Product RRP',$rrp);
      
      
      

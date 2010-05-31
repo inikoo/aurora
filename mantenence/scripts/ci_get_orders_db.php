@@ -189,10 +189,19 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
     $header_data=array();
     $data=array();
+    
+    
+    if(!isset($header[1][22])){
+    print "Error in Order $filename\n";
+    continue;
+    }
+    
+    
     list($act_data,$header_data)=read_header($header,$map_act,$y_map,$map,false);
     $header_data=filter_header($header_data);
     list($tipo_order,$parent_order_id)=get_tipo_order($header_data['ltipo'],$header_data);
-
+if($tipo_order==0)
+continue;
     //print_r($header_data);exit;
 
     if (preg_match('/^\d{5}sh$/i',$filename_number)) {
@@ -443,6 +452,9 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
     //echo "Memory: ".memory_get_usage(true) . "\n";
     foreach($transactions as $transaction) {
       //print_r($transaction);
+      
+      
+      
       $transaction['code']=_trim($transaction['code']);
       if (preg_match('/credit|refund/i',$transaction['code'])) {
 
@@ -675,7 +687,7 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
 			  'Product Locale'=>'es_ES',
 			  'Product Currency'=>'EUR',
 			  'product record type'=>'Normal',
-			  'product web state'=>'Online Auto',
+			  'product web state'=>'Offline',
 			  'product special characteristic'=>$special_char,
 
 			  'Product Store Key'=>$store_key,

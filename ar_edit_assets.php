@@ -1,4 +1,9 @@
 <?php
+
+
+$connect_to_external=true;
+
+
 require_once 'common.php';
 
 require_once 'class.Product.php';

@@ -37,7 +37,7 @@ $result=mysql_query($sql);
 while($row=mysql_fetch_array($result)   ){
   $product=new Product('id',$row['Product Key']);
  // if($product->data['Product Code']=='JuteS-01'){
-  //$product->load('sales');
+  $product->load('sales');
 $product->update_parts();
   print $row['Product Key']."\t\t ".$product->data['Product Code']." \r";
 

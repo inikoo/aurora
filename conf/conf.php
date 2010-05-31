@@ -1619,8 +1619,9 @@ $default_state=array(
                                               'f_value'=>'','f_show'=>false,
                                               'elements'=>array()
 
-                                          ),
-                                'customers'=>array('store_keys'=>'all','top'=>100,'criteria'=>'net_balance','f_value'=>'','f_show'=>false,'f_field'=>'customer_name','from'=>'','to'=>'')
+                                          )
+                                ,'customers'=>array('store_keys'=>'all','top'=>100,'criteria'=>'net_balance','f_value'=>'','f_show'=>false,'f_field'=>'customer_name','from'=>'','to'=>'')
+                                ,'products'=>array('store_keys'=>'all','top'=>100,'criteria'=>'net_sales','f_value'=>'','f_show'=>false,'f_field'=>'code','from'=>'','to'=>'')
 
 
 

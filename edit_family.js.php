@@ -1,7 +1,7 @@
 <?php
 //@author Raul Perusquia <rulovico@gmail.com>
 //Copyright (c) 2009 LW
-
+//$connect_to_external=true;
 include_once('common.php');
 $sql=sprintf("select * from `Deal Dimension`D where D.`Deal Trigger`='Family' and D.`Deal Trigger Key`= %d ",$_SESSION['state']['family']['id']);
 $res=mysql_query($sql);
@@ -178,8 +178,8 @@ function change_block(e){
 		datatable = this.getDataTable(),
 		recordIndex = datatable.getRecordIndex(record);
 
-		//alert(	'tipo=edit_'+column.object+'&key=' + column.key + '&newvalue=' + 
-	//					encodeURIComponent(newValue) + '&oldvalue=' + encodeURIComponent(oldValue)+ 
+	//	alert(	'tipo=edit_'+column.object+'&key=' + column.key + '&newvalue=' + 
+//						encodeURIComponent(newValue) + '&oldvalue=' + encodeURIComponent(oldValue)+ //
 //						myBuildUrl(datatable,record))
 
 
@@ -187,7 +187,7 @@ function change_block(e){
 						'POST',
 						'ar_edit_assets.php', {
 						    success:function(o) {
-								//alert(o.responseText);
+								alert(o.responseText);
 							var r = YAHOO.lang.JSON.parse(o.responseText);
 							if (r.state == 200) {
 
