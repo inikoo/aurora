@@ -1436,6 +1436,65 @@ $data[]=array(
 
 function orders_in_process(){
 
+  $conf=$_SESSION['state']['report']['products'];
+   if(isset( $_REQUEST['sf']))
+      $start_from=$_REQUEST['sf'];
+    else
+      $start_from=$conf['sf'];
+    if(isset( $_REQUEST['nr']))
+      $number_results=$_REQUEST['nr'];
+    else
+      $number_results=$conf['nr'];
+  if(isset( $_REQUEST['o']))
+    $order=$_REQUEST['o'];
+  else
+    $order=$conf['order'];
+  if(isset( $_REQUEST['od']))
+    $order_dir=$_REQUEST['od'];
+  else
+    $order_dir=$conf['order_dir'];
+     if(isset( $_REQUEST['f_field']))
+     $f_field=$_REQUEST['f_field'];
+    else
+      $f_field=$conf['f_field'];
+
+   if(isset( $_REQUEST['f_value']))
+     $f_value=$_REQUEST['f_value'];
+    else
+      $f_value=$conf['f_value'];
+ if(isset( $_REQUEST['where']))
+      $where=$_REQUEST['where'];
+    else
+      $where=$conf['where'];
+  
+ if(isset( $_REQUEST['from']))
+    $from=$_REQUEST['from'];
+  else
+    $from=$conf['from'];
+  if(isset( $_REQUEST['to']))
+    $to=$_REQUEST['to'];
+  else
+    $to=$conf['to'];
+
+
+   if(isset( $_REQUEST['tableid']))
+    $tableid=$_REQUEST['tableid'];
+  else
+    $tableid=0;
+
+
+   $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
+
+   $_SESSION['state']['report']['pickers']=array('order'=>$order,'order_dir'=>$order_direction);
+
+   $date_interval=prepare_mysql_dates($from,$to,'date_index','only_dates');
+   if($date_interval['error']){
+      $date_interval=prepare_mysql_dates($conf['from'],$conf['to']);
+   }else{
+     $_SESSION['state']['report']['pickers']['from']=$date_interval['from'];
+     $_SESSION['state']['report']['pickers']['to']=$date_interval['to'];
+   }
+
 
    $filtered=0;
    $rtext='';

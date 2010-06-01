@@ -21,9 +21,10 @@ $_SESSION['locale_info'] = localeconv();
 $con=@mysql_connect($dns_host,$dns_user,$dns_pwd );
 
 if(!$con){print "Error can not connect with database server\n";exit;}
-$dns_db='dw_avant2';
+//ns_db='dw_avant2';
 $db=@mysql_select_db($dns_db, $con);
 if (!$db){print "Error can not access the database\n";exit;}
+$codigos=array();
 
 
 require_once '../../common_functions.php';
@@ -48,8 +49,9 @@ $products=false;
 $count=0;
 
 $store_key=1;
+$create_cat=true;
 //----------------------------------OK
-
+if($create_cat){
 $nodes=new Nodes('`Category Dimension`');
 $data=array('`Category Name`'=>'Use');
 $nodes->add_new(0 , $data);
@@ -106,6 +108,7 @@ $nodes->add_new(3 , $data);
 $data=array('`Category Name`'=>'Fantasy');
 $nodes->add_new(3 , $data);
 
+}
 $store_data=array('Store Code'=>'UK',
 		  'Store Name'=>'Ancient Wisdom',
 		  'Store Locale'=>'en_GB',
@@ -847,6 +850,12 @@ foreach($__cols as $cols){
 
 
 
+	if(array_key_exists($code,$codigos)){
+       	print "Product: $code is duplicated\n";
+       	continue;
+       	}
+
+$codigos[$code]=1;
 
        $product=new Product('find',$data,'create');
        //  print_r($product);
@@ -1596,9 +1605,11 @@ if(preg_match('/^Wenzels$/i',$supplier_code)){
        
     
        }
-  //print_r($deals);
-
+  
+  $product->change_current_key($product->id);
     
+     $product->update_rrp('Product RRP',$rrp);
+       
 
    
     
