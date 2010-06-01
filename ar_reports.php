@@ -33,6 +33,9 @@ case('customers_with_no_tax'):
 case('pickers_report'):
   pickers_report();
   break;
+  case('orders_in_process'):
+  orders_in_process();
+  break;
 case('packers_report'):
    packers_report();
    break;
@@ -1431,6 +1434,109 @@ $data[]=array(
 }
 
 
+function orders_in_process(){
 
+
+   $filtered=0;
+   $rtext='';
+   $total=$number_results;
+   
+
+
+   $_order=$order;
+   $_dir=$order_direction;
+  
+
+   if($order=='invoices')
+     $order='`Invoices`';
+
+   else   
+     $order='`Balance`';
+
+  
+   $sql="select  *  from `Order Dimension`  $where $wheref  group by `Customer Key` order by ``";
+// print $sql;
+   $adata=array();
+  
+  
+   $position=1;
+  $result=mysql_query($sql);
+  while($data=mysql_fetch_array($result, MYSQL_ASSOC)){
+
+
+
+  
+
+
+    $id="<a href='customer.php?id=".$data['Customer Key']."'>".$myconf['customer_id_prefix'].sprintf("%05d",$data['Customer Key']).'</a>'; 
+    $name="<a href='customer.php?id=".$data['Customer Key']."'>".$data['Customer Name'].'</a>'; 
+
+    $adata[]=array(
+		   'position'=>'<b>'.$position++.'</b>',
+		   'id'=>$id,
+		   'name'=>$name,
+		   'store'=>$data['Store Code'],
+		   'location'=>$data['Customer Main Location'],
+		   //  'orders'=>number($data['Customer Orders']),
+		   'invoices'=>$data['Invoices'],
+		   'email'=>$data['Customer Main XHTML Email'],
+		   'telephone'=>$data['Customer Main XHTML Telephone'],
+		   'last_order'=>strftime("%e %b %Y", strtotime($data['Customer Last Order Date'])),
+		   // 'total_payments'=>money($data['Customer Net Payments']),
+		   'net_balance'=>money($data['Balance']),
+		   //'total_refunds'=>money($data['Customer Net Refunds']),
+		   //'total_profit'=>money($data['Customer Profit']),
+		   //'balance'=>money($data['Customer Outstanding Net Balance']),
+
+
+		   //'top_orders'=>number($data['Customer Orders Top Percentage']).'%',
+		   //'top_invoices'=>number($data['Customer Invoices Top Percentage']).'%',
+		   //'top_balance'=>number($data['Customer Balance Top Percentage']).'%',
+		   //'top_profits'=>number($data['Customer Profits Top Percentage']).'%',
+		   //'contact_name'=>$data['Customer Main Contact Name'],
+		   //'address'=>$data['Customer Main Location'],
+		   //'town'=>$data['Customer Main Town'],
+		   //'postcode'=>$data['Customer Main Postal Code'],
+		   //'region'=>$data['Customer Main Country First Division'],
+		   //'country'=>$data['Customer Main Country'],
+		   //		   'ship_address'=>$data['customer main ship to header'],
+		   //'ship_town'=>$data['Customer Main Delivery Address Town'],
+		   //'ship_postcode'>$data['Customer Main Delivery Address Postal Code'],
+		   //'ship_region'=>$data['Customer Main Delivery Address Country Region'],
+		   //'ship_country'=>$data['Customer Main Delivery Address Country'],
+		   'activity'=>$data['Customer Type by Activity']
+
+		   );
+  }
+mysql_free_result($result);
+
+
+
+
+  $response=array('resultset'=>
+		   array('state'=>200,
+			 'data'=>$adata,
+			 'rtext'=>$rtext,
+			 'sort_key'=>$_order,
+			 'sort_dir'=>$_dir,
+			 'tableid'=>$tableid,
+			 'filter_msg'=>$filter_msg,
+			 'total_records'=>$total,
+			 'records_offset'=>$start_from,
+
+			 'records_perpage'=>$number_results,
+			 'records_order'=>$order,
+			 'records_order_dir'=>$order_dir,
+			 'filtered'=>$filtered
+			 )
+		   );
+  if($output_type=='ajax'){
+    echo json_encode($response);
+    return;
+  }else{
+    return $response;
+  }
+
+}
 
 ?>

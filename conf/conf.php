@@ -715,14 +715,15 @@ $default_state=array(
                                                'f_field'=>'customer name',
                                                'f_value'=>''
                                            ),
-                                   'advanced_search'=>array(
+                                   'list'=>array(
                                                          'order'=>'name',
                                                          'order_dir'=>'',
                                                          'sf'=>0,
                                                          'nr'=>25,
                                                          'where'=>'',
                                                          'f_field'=>'',
-                                                         'f_value'=>''
+                                                         'f_value'=>'',
+                                                         'view'=>'general'
                                                      )
 
 
