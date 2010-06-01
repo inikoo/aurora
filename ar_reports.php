@@ -1436,7 +1436,7 @@ $data[]=array(
 
 function orders_in_process(){
 
-  $conf=$_SESSION['state']['report']['products'];
+  $conf=$_SESSION['state']['report']['orders_in_process'];
    if(isset( $_REQUEST['sf']))
       $start_from=$_REQUEST['sf'];
     else
@@ -1445,11 +1445,14 @@ function orders_in_process(){
       $number_results=$_REQUEST['nr'];
     else
       $number_results=$conf['nr'];
+      
+      
   if(isset( $_REQUEST['o']))
     $order=$_REQUEST['o'];
   else
     $order=$conf['order'];
-  if(isset( $_REQUEST['od']))
+ 
+ if(isset( $_REQUEST['od']))
     $order_dir=$_REQUEST['od'];
   else
     $order_dir=$conf['order_dir'];
@@ -1485,36 +1488,61 @@ function orders_in_process(){
 
    $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
 
-   $_SESSION['state']['report']['pickers']=array('order'=>$order,'order_dir'=>$order_direction);
+   $_SESSION['state']['report']['orders_in_progress']['order']=$order;
+      $_SESSION['state']['report']['orders_in_progress']['order_dir']=$order_direction;
+      $_SESSION['state']['report']['orders_in_progress']['sf']=$start_from;
+      $_SESSION['state']['report']['orders_in_progress']['nr']=$number_results;
+
+  
 
    $date_interval=prepare_mysql_dates($from,$to,'date_index','only_dates');
    if($date_interval['error']){
       $date_interval=prepare_mysql_dates($conf['from'],$conf['to']);
    }else{
-     $_SESSION['state']['report']['pickers']['from']=$date_interval['from'];
-     $_SESSION['state']['report']['pickers']['to']=$date_interval['to'];
+     $_SESSION['state']['report']['orders_in_progress']['from']=$date_interval['from'];
+     $_SESSION['state']['report']['orders_in_progress']['to']=$date_interval['to'];
    }
 
-
+$output_type='ajax';
    $filtered=0;
    $rtext='';
-   $total=$number_results;
-   
+ 
+   $wheref='';
+
+
+$where=' where `Order Current Dispatch State`="In Process"';
 
 
    $_order=$order;
    $_dir=$order_direction;
-  
+  $filter_msg='';
+
+   $sql="select count(*) as total from `Order Dimension` $where $wheref  ";
+$res=mysql_query($sql);
+if($row=mysql_fetch_assoc($res)){
+$total_records=$row['total'];
+
+}else
+$total_records=0;
+
+
+   $rtext=$total_records." ".ngettext('order','orders',$total_records);
+    if ($total_records>$number_results)
+        $rtext_rpp=sprintf(" (%d%s)",$number_results,_('rpp'));
+    else
+        $rtext_rpp=" ("._("showing all records").")";
+
+
 
    if($order=='invoices')
      $order='`Invoices`';
 
    else   
-     $order='`Balance`';
+     $order='`Order Date`';
 
   
-   $sql="select  *  from `Order Dimension`  $where $wheref  group by `Customer Key` order by ``";
-// print $sql;
+   $sql="select  `Order Date`,`Order Currency`,`Order Total Net Amount`+`Order Total Tax Amount` as `Order Total`,C.`Customer Key`, `Customer Name`,`Order Public ID`,`Order Key` from `Order Dimension` O left join `Customer Dimension` C on (O.`Order Customer Key`=C.`Customer Key`) $where $wheref  order by  $order $order_direction limit $start_from,$number_results";
+   //print $sql;
    $adata=array();
   
   
@@ -1527,44 +1555,15 @@ function orders_in_process(){
   
 
 
-    $id="<a href='customer.php?id=".$data['Customer Key']."'>".$myconf['customer_id_prefix'].sprintf("%05d",$data['Customer Key']).'</a>'; 
-    $name="<a href='customer.php?id=".$data['Customer Key']."'>".$data['Customer Name'].'</a>'; 
+  
+    $order="<a href='order.php?id=".$data['Order Key']."'>".$data['Order Public ID'].'</a>'; 
+    $customer="<a href='customer.php?id=".$data['Customer Key']."'>".$data['Customer Name'].'</a>'; 
 
     $adata[]=array(
-		   'position'=>'<b>'.$position++.'</b>',
-		   'id'=>$id,
-		   'name'=>$name,
-		   'store'=>$data['Store Code'],
-		   'location'=>$data['Customer Main Location'],
-		   //  'orders'=>number($data['Customer Orders']),
-		   'invoices'=>$data['Invoices'],
-		   'email'=>$data['Customer Main XHTML Email'],
-		   'telephone'=>$data['Customer Main XHTML Telephone'],
-		   'last_order'=>strftime("%e %b %Y", strtotime($data['Customer Last Order Date'])),
-		   // 'total_payments'=>money($data['Customer Net Payments']),
-		   'net_balance'=>money($data['Balance']),
-		   //'total_refunds'=>money($data['Customer Net Refunds']),
-		   //'total_profit'=>money($data['Customer Profit']),
-		   //'balance'=>money($data['Customer Outstanding Net Balance']),
-
-
-		   //'top_orders'=>number($data['Customer Orders Top Percentage']).'%',
-		   //'top_invoices'=>number($data['Customer Invoices Top Percentage']).'%',
-		   //'top_balance'=>number($data['Customer Balance Top Percentage']).'%',
-		   //'top_profits'=>number($data['Customer Profits Top Percentage']).'%',
-		   //'contact_name'=>$data['Customer Main Contact Name'],
-		   //'address'=>$data['Customer Main Location'],
-		   //'town'=>$data['Customer Main Town'],
-		   //'postcode'=>$data['Customer Main Postal Code'],
-		   //'region'=>$data['Customer Main Country First Division'],
-		   //'country'=>$data['Customer Main Country'],
-		   //		   'ship_address'=>$data['customer main ship to header'],
-		   //'ship_town'=>$data['Customer Main Delivery Address Town'],
-		   //'ship_postcode'>$data['Customer Main Delivery Address Postal Code'],
-		   //'ship_region'=>$data['Customer Main Delivery Address Country Region'],
-		   //'ship_country'=>$data['Customer Main Delivery Address Country'],
-		   'activity'=>$data['Customer Type by Activity']
-
+		   'order'=>$order
+	,'customer'=>$customer	  
+,'value'=>money($data['Order Total'],$data['Order Currency'])
+,'date'=>strftime("%x",strtotime($data['Order Date']))
 		   );
   }
 mysql_free_result($result);
@@ -1576,11 +1575,12 @@ mysql_free_result($result);
 		   array('state'=>200,
 			 'data'=>$adata,
 			 'rtext'=>$rtext,
+			 'rtext_rpp'=>$rtext_rpp,
 			 'sort_key'=>$_order,
 			 'sort_dir'=>$_dir,
 			 'tableid'=>$tableid,
 			 'filter_msg'=>$filter_msg,
-			 'total_records'=>$total,
+			 'total_records'=>$total_records,
 			 'records_offset'=>$start_from,
 
 			 'records_perpage'=>$number_results,

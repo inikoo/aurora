@@ -18,7 +18,7 @@ YAHOO.util.Event.onContentReady("table<?php print $_REQUEST['table_id']?>", func
 
 	    var CustomersColumnDefs = [
 	    
-				       {key:"public_id", label:"<?php echo _('Order')?>", width:185,sortable:false,className:"aleft"}
+				       {key:"order", label:"<?php echo _('Order')?>", width:80,sortable:false,className:"aleft"}
 	    
 				       ,{key:"customer", label:"<?php echo _('Customer Name')?>", width:185,sortable:false,className:"aleft"}
 
@@ -35,10 +35,10 @@ YAHOO.util.Event.onContentReady("table<?php print $_REQUEST['table_id']?>", func
 				       
 
 					 ];
-	    this.dataSourcetopcust = new YAHOO.util.DataSource("ar_reports.php?tipo=orders_in_process&tableid="+tableid);
-	    this.dataSourcetopcust.responseType = YAHOO.util.DataSource.TYPE_JSON;
-	    this.dataSourcetopcust.connXhrMode = "queueRequests";
-	    this.dataSourcetopcust.responseSchema = {
+	    this.dataSource0 = new YAHOO.util.DataSource("ar_reports.php?tipo=orders_in_process&tableid="+tableid);
+	    this.dataSource0.responseType = YAHOO.util.DataSource.TYPE_JSON;
+	    this.dataSource0.connXhrMode = "queueRequests";
+	    this.dataSource0.responseSchema = {
 		resultsList: "resultset.data", 
 		metaFields: {
 		    rowsPerPage:"resultset.records_perpage",
@@ -53,12 +53,12 @@ YAHOO.util.Event.onContentReady("table<?php print $_REQUEST['table_id']?>", func
 		
 		
 		fields: [
-			 "public_id","customer","date","value"
+			 "order","customer","date","value"
 			
 			 ]};
 	    
-	    this.table1 = new YAHOO.widget.DataTable(tableDivEL, CustomersColumnDefs,
-								   this.dataSourcetopcust
+	    this.table0 = new YAHOO.widget.DataTable(tableDivEL, CustomersColumnDefs,
+								   this.dataSource0
 								 , {
 								     renderLoopSize: 50,generateRequest : myRequestBuilder
 								       ,paginator : new YAHOO.widget.Paginator({
@@ -84,14 +84,14 @@ YAHOO.util.Event.onContentReady("table<?php print $_REQUEST['table_id']?>", func
 								   
 								 );
 	    
-	    this.table1.handleDataReturnPayload =myhandleDataReturnPayload;
-	    this.table1.doBeforeSortColumn = mydoBeforeSortColumn;
-	    this.table1.doBeforePaginatorChange = mydoBeforePaginatorChange;
+	    this.table0.handleDataReturnPayload =myhandleDataReturnPayload;
+	    this.table0.doBeforeSortColumn = mydoBeforeSortColumn;
+	    this.table0.doBeforePaginatorChange = mydoBeforePaginatorChange;
 
 		    
 		    
 
-	    this.table1.filter={key:'',value:''};
+	    this.table0.filter={key:'',value:''};
 
 	
 	});

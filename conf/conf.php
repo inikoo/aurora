@@ -715,7 +715,7 @@ $default_state=array(
                                                'f_field'=>'customer name',
                                                'f_value'=>''
                                            ),
-                                   'list'=>array(
+                                   'advanced_search'=>array(
                                                          'order'=>'name',
                                                          'order_dir'=>'',
                                                          'sf'=>0,
@@ -1623,6 +1623,7 @@ $default_state=array(
                                           )
                                 ,'customers'=>array('store_keys'=>'all','top'=>100,'criteria'=>'net_balance','f_value'=>'','f_show'=>false,'f_field'=>'customer_name','from'=>'','to'=>'')
                                 ,'products'=>array('store_keys'=>'all','top'=>100,'criteria'=>'net_sales','f_value'=>'','f_show'=>false,'f_field'=>'code','from'=>'','to'=>'')
+                                ,'orders_in_process'=>array('store_keys'=>'all','sf'=>0,'nr'=>50,'f_value'=>'','f_show'=>false,'f_field'=>'customer','from'=>'','to'=>'','order'=>'date','order_dir'=>'','where'=>'')
 
 
 
