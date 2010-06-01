@@ -1541,7 +1541,7 @@ global $user;
         exit();
     }
 
-    $conf=$_SESSION['state']['customers']['advanced_search'];
+    $conf=$_SESSION['state']['customers']['list'];
     if (isset( $_REQUEST['sf']))
         $start_from=$_REQUEST['sf'];
     else
@@ -1585,10 +1585,12 @@ global $user;
     $_dir=$order_direction;
 
     //print_r($_SESSION['state']['customers']['advanced_search']);
-    $_SESSION['state']['customers']['advanced_search']=array('order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from
-            ,'where'=>$awhere
-                     //,'f_field'=>$f_field,'f_value'=>$f_value
-                                                            );
+    $_SESSION['state']['customers']['list']['order']=$order;
+    $_SESSION['state']['customers']['list']['order_dir']=$order_direction;
+    $_SESSION['state']['customers']['list']['nr']=$number_results;
+    $_SESSION['state']['customers']['list']['sf']=$start_from;
+            $_SESSION['state']['customers']['list']['where']=$awhere;
+                    
     $filter_msg='';
     // $awhere='{"from1":"","from2":"","product_not_ordered1":"","product_not_ordered2":"","product_not_received1":"","product_not_received2":"","product_ordered1":"g(ob)","product_ordered2":"","to1":"","to2":""}';
     $awhere=preg_replace('/\\\"/','"',$awhere);
@@ -1624,7 +1626,7 @@ global $user;
 
 
 
-    $date_interval1=prepare_mysql_dates($awhere['from1'],$awhere['to1'],'date_index','only_dates');
+    $date_interval1=prepare_mysql_dates($awhere['from1'],$awhere['to1'],'`Invoice Date`','only_dates');
 
 
     $geo_base='';
@@ -1730,10 +1732,9 @@ $total=$total_records;
 
 
 
+
     $sql="select `Customer Last Order Date`,`Customer Name`,`Customer Orders`,C.`Customer Key`,`Customer Main Location`,`Customer Main XHTML Email`,`Customer Main XHTML Telephone` from `Order Transaction Fact` OTF left join `Customer Dimension` C on (C.`Customer Key`=OTF.`Customer Key`) left join `Product History Dimension` PHD on (OTF.`Product Key`=PHD.`Product Key`) left join `Product Dimension` P on (P.`Product ID`=PHD.`Product ID`)   $where  group by C.`Customer Key` order by $order $order_direction limit $start_from,$number_results    ";
 
-
-//print $sql;
     $res=mysql_query($sql);
     $adata=array();
     while ($data=mysql_fetch_array($res, MYSQL_ASSOC)) {
@@ -1930,23 +1931,27 @@ function list_staff() {
                  );
     }
     mysql_free_result($res);
-    $response=array('resultset'=>
+   
+                   
+       $response=array('resultset'=>
                                 array('state'=>200,
                                       'data'=>$adata,
+                                      'rtext'=>$rtext,
+                                      'rtext_rpp'=>$rtext_rpp,
                                       'sort_key'=>$_order,
                                       'sort_dir'=>$_dir,
                                       'tableid'=>$tableid,
                                       'filter_msg'=>$filter_msg,
                                       'total_records'=>$total,
                                       'records_offset'=>$start_from,
-                                      'records_returned'=>$start_from+$total,
+
                                       'records_perpage'=>$number_results,
-                                      'rtext'=>$rtext,
                                       'records_order'=>$order,
                                       'records_order_dir'=>$order_dir,
                                       'filtered'=>$filtered
                                      )
-                   );
+                   );             
+                   
     echo json_encode($response);
 }
 
