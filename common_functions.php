@@ -903,8 +903,8 @@ function extract_product_groups($str,
 function _trim($string){
  
 
-  $string=preg_replace('/\xC2\xA0\s*$/',' ',$string);
-  $string=preg_replace('/\xA0\s*/',' ',$string);
+  //$string=preg_replace('/\xC2\xA0\s*$/',' ',$string);
+  // $string=preg_replace('/\xA0\s*/',' ',$string);
   $string=preg_replace('/\s+/',' ',trim($string));
 
  //  $string=preg_replace('/^\s*/','',$string);

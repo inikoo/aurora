@@ -25,7 +25,7 @@ if (!$con) {
     exit;
 }
 
-$dns_db='dw_avant2';
+$dns_db='dw_avant';
 $db=@mysql_select_db($dns_db, $con);
 if (!$db) {
     print "Error can not access the database\n";
