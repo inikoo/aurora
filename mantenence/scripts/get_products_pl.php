@@ -28,7 +28,8 @@ if(!$con){print "Error can not connect with database server\n";exit;}
 $dns_db='dw_avant';
 $db=@mysql_select_db($dns_db, $con);
 if (!$db){print "Error can not access the database\n";exit;}
-  
+
+$codigos=array();  
 
 require_once '../../common_functions.php';
 mysql_query("SET time_zone ='+0:00'");
@@ -39,11 +40,20 @@ require_once '../../conf/conf.php';
 $software='Get_Products.php';
 $version='V 1.0';
 
+
+
 $Data_Audit_ETL_Software="$software $version";
 
-$file_name='/data/plaza/AWorder2009Poland.xls';
-$csv_file='/data/plaza/AWorder2009Poland.csv';
-//exec('/usr/local/bin/xls2csv    -s cp1252   -d 8859-1   '.$file_name.' > '.$csv_file);
+//$file_name='/data/plaza/AWorder2009Poland.xls';
+
+
+//$csv_file='/data/plaza/AWorder2009Poland2.csv';
+$csv_file='pl.csv';
+
+//exec('/usr/local/bin/xls2csv    -s cp1252   -d 8859-1   '.$file_name.' > '.$tcsv_file);
+//exec("iconv   -f  ISO8859-1  -t UTF-8  --output  $csv_file $tcsv_file");
+
+//exit;
 
 $handle_csv = fopen($csv_file, "r");
 $column=0;
@@ -336,8 +346,13 @@ $promotion='';
 
 
 foreach($__cols as $cols){
-  $is_product=true;
-  $code=_trim($cols[3]);
+ 
+ 
+
+  if(count($cols)<7)
+    continue;
+$is_product=true;
+ $code=_trim($cols[3]);
   $price=$cols[7];
   $supplier_code=_trim($cols[21]);
   $part_code=_trim($cols[22]);
@@ -346,13 +361,15 @@ foreach($__cols as $cols){
   $rrp=$cols[16];
   $supplier_code=_trim($cols[21]);
   $w=$cols[28];
+
+
   //  $description=_trim( mb_convert_encoding($cols[6], "UTF-8", "ISO-8859-1,UTF-8"));
   $description=_trim($cols[6]);
   $fam_special_char='';
   $special_char='';
   
-  
-
+  //if(preg_match('/fo-a3/i',$code))
+  //  exit($code);
   //  print_r($cols);
 
   if(!preg_match('/^DONE$/i',$cols[0]))
@@ -383,7 +400,7 @@ foreach($__cols as $cols){
     
   
     // if(preg_match('/po/',$code))
-    print "$code\n";
+    //print "$code\n";
     $part_list=array();
     $rules=array();
     
@@ -435,7 +452,7 @@ foreach($__cols as $cols){
     $units=1;
   
 
-  $description=_trim( mb_convert_encoding($cols[6], "UTF-8", "ISO-8859-1,UTF-8"));
+  // $description=_trim( mb_convert_encoding($cols[6], "UTF-8", "ISO-8859-1,UTF-8"));
   $description=_trim($cols[6]);
 
   //    if(preg_match('/wsl-535/i',$code)){
@@ -449,7 +466,7 @@ foreach($__cols as $cols){
 
   $w=$cols[28];
 
-  if(  preg_match('/FishP-Mix|IncIn-ST|IncB-St|LLP-ST|L\&P-ST|EO-XST|AWRP-ST/i',$code) or      $code=='EO-ST' or $code=='MOL-ST' or  $code=='JBB-st' or $code=='LWHEAT-ST' or  $code=='JBB-St' 
+  if(  preg_match('/Bag-02Mx|Bag-04mx|Bag-05mx|Bag-06mix|Bag-07MX|Bag-12MX|Bag-13MX|FishP-Mix|IncIn-ST|IncB-St|LLP-ST|L\&P-ST|EO-XST|AWRP-ST/i',$code) or      $code=='EO-ST' or $code=='MOL-ST' or  $code=='JBB-st' or $code=='LWHEAT-ST' or  $code=='JBB-St' 
      or $code=='Scrub-St' or $code=='Eye-st' or $code=='Tbm-ST' or $code=='Tbc-ST' or $code=='Tbs-ST'
      or $code=='GemD-ST' or $code=='CryC-ST' or $code=='GP-ST'  or $code=='DC-ST'
        or ($description=='' and ( $price=='' or $price==0 ))
@@ -478,6 +495,15 @@ foreach($__cols as $cols){
     
   }
 
+ if(array_key_exists($code,$codigos)){
+    print "Product: $code is duplicated\n";
+    continue;
+  }
+  
+  $codigos[$code]=1;
+
+
+
     
     $uk_product=new Product('code_store',$code,1);
 
@@ -491,20 +517,13 @@ foreach($__cols as $cols){
     else
       $rrp='';
       
-    
-    if($fam_special_char=='' or $special_char==''){
-      
-      $_f=preg_replace('/s$/i','',$current_fam_name);
-      $special_char=preg_replace('/'.str_replace('/','\/',$_f).'$/i','',$description);
-      $special_char=preg_replace('/'.str_replace('/','\/',$current_fam_name).'$/i','',$special_char);
-      $special_char=_trim($special_char);
-      if($special_char==$description){
-	$description=$current_fam_name.' '.$special_char;
-	$fam_special_char=$current_fam_name;
-      }else
-	$fam_special_char=preg_replace('/'.str_replace('/','\/',$special_char).'$/i','',$description);
+    if($fam_special_char==''){
+      $fam_special_char=$current_fam_name;
     }
-	    
+    if( $special_char==''){
+      $special_char=$description;
+    }
+    
 	
 
     if(is_numeric($w)){
@@ -635,9 +654,11 @@ foreach($__cols as $cols){
 		'product valid to'=>date('Y-m-d H:i:s'),
 		//'deals'=>$deals
 		);
-    //     print_r($cols);
-
+    // print_r($cols);
+    //  print_r($data);
     $parts=$uk_product->get('Parts SKU');
+
+
     $product=new Product('find',$data,'create');
     if($product->new){
       $product->update_for_sale_since(date("Y-m-d H:i:s",strtotime("now +1 seconds")));
@@ -657,9 +678,13 @@ foreach($__cols as $cols){
 	$part =new Part('sku',$parts[0]);
  	$part->load('used in');
       }
+
+
     }
   
 
+    $product->change_current_key($product->id);
+      $product->update_rrp('Product RRP',$rrp);
 
 }else{
 
@@ -669,7 +694,7 @@ foreach($__cols as $cols){
     //print_r($cols);
     if(  preg_match('/donef/i',$cols[0])       ){
       $fam_code=$cols[3];
-      $fam_name=_trim( mb_convert_encoding($cols[6], "UTF-8", "ISO-8859-1,UTF-8"));
+      //      $fam_name=_trim( mb_convert_encoding($cols[6], "UTF-8", "ISO-8859-1,UTF-8"));
       $fam_name=_trim($cols[6]);
 
       $fam_position=$column;
@@ -695,8 +720,8 @@ foreach($__cols as $cols){
     }
 
     if(preg_match('/doned/i',$cols[0])){
-      $department_name=_trim( mb_convert_encoding($cols[6], "UTF-8", "ISO-8859-1,UTF-8"));
-      $department_code=_trim( mb_convert_encoding($cols[3], "UTF-8", "ISO-8859-1,UTF-8"));
+      //      $department_name=_trim( mb_convert_encoding($cols[6], "UTF-8", "ISO-8859-1,UTF-8"));
+      // $department_code=_trim( mb_convert_encoding($cols[3], "UTF-8", "ISO-8859-1,UTF-8"));
       $department_name=_trim($cols[6]);
       $department_code=_trim($cols[3]);
       

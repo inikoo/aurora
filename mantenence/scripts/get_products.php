@@ -49,66 +49,8 @@ $products=false;
 $count=0;
 
 $store_key=1;
-$create_cat=true;
-//----------------------------------OK
-if($create_cat){
-$nodes=new Nodes('`Category Dimension`');
-$data=array('`Category Name`'=>'Use');
-$nodes->add_new(0 , $data);
+$create_cat=false;
 
-
-
-$data=array('`Category Name`'=>'Material');
-$nodes->add_new(0 , $data);
-$data=array('`Category Name`'=>'Theme');
-$nodes->add_new(0 , $data);
-
-$data=array('`Category Name`'=>'Other','`Category Default`'=>'Yes');
-$nodes->add_new(1 , $data);
-$data=array('`Category Name`'=>'Candles');
-$nodes->add_new(1 , $data);
-$data=array('`Category Name`'=>'Soap');
-$nodes->add_new(1 , $data);
-$data=array('`Category Name`'=>'Incense');
-$nodes->add_new(1 , $data);
-$data=array('`Category Name`'=>'Holistic Theraphies');
-$nodes->add_new(1 , $data);
-$data=array('`Category Name`'=>'Bathroom Product');
-$nodes->add_new(1 , $data);
-$data=array('`Category Name`'=>'Decoration');
-$nodes->add_new(1 , $data);
-
-$data=array('`Category Name`'=>'Other','`Category Default`'=>'Yes');
-$nodes->add_new(2 , $data);
-$data=array('`Category Name`'=>'Wood');
-$nodes->add_new(2 , $data);
-$data=array('`Category Name`'=>'Metal');
-$nodes->add_new(2 , $data);
-$data=array('`Category Name`'=>'Glass');
-$nodes->add_new(2 , $data);
-$data=array('`Category Name`'=>'Resin');
-$nodes->add_new(2 , $data);
-$data=array('`Category Name`'=>'Ceramic');
-$nodes->add_new(2 , $data);
-$data=array('`Category Name`'=>'Mineral');
-$nodes->add_new(2 , $data);
-
-$data=array('`Category Name`'=>'None','`Category Default`'=>'Yes');
-$nodes->add_new(3 , $data);
-$data=array('`Category Name`'=>'Christmas');
-$nodes->add_new(3 , $data);
-$data=array('`Category Name`'=>'Halloween');
-$nodes->add_new(3 , $data);
-$data=array('`Category Name`'=>'Love');
-$nodes->add_new(3 , $data);
-$data=array('`Category Name`'=>'Animals');
-$nodes->add_new(3 , $data);
-$data=array('`Category Name`'=>'Esoteric');
-$nodes->add_new(3 , $data);
-$data=array('`Category Name`'=>'Fantasy');
-$nodes->add_new(3 , $data);
-
-}
 $store_data=array('Store Code'=>'UK',
 		  'Store Name'=>'Ancient Wisdom',
 		  'Store Locale'=>'en_GB',
@@ -451,10 +393,21 @@ $promotion='';
 
 foreach($__cols as $cols){
   
+  if(preg_match('/First Order Bonus/i',$cols[6])){
+    break;
+  }
+
 
   $is_product=true;
   
   $code=_trim($cols[3]);
+
+
+  if(count($cols)<25){
+    continue;
+    //print_r($cols);
+    
+  }
 
 
   $price=$cols[7];
@@ -488,7 +441,7 @@ foreach($__cols as $cols){
   if(preg_match('/^credit|Freight|^frc\-|^cxd\-|^wsl$|^postage$/i',$code) )
     $is_product=false;
 
-
+  
   
   if($is_product){
     
@@ -850,12 +803,12 @@ foreach($__cols as $cols){
 
 
 
-	if(array_key_exists($code,$codigos)){
-       	print "Product: $code is duplicated\n";
-       	continue;
-       	}
-
-$codigos[$code]=1;
+       if(array_key_exists($code,$codigos)){
+	 print "Product: $code is duplicated\n";
+	 continue;
+       }
+       
+       $codigos[$code]=1;
 
        $product=new Product('find',$data,'create');
        //  print_r($product);
@@ -1601,20 +1554,12 @@ if(preg_match('/^Wenzels$/i',$supplier_code)){
 	$part->load('used in');
 	$part->load('supplied by');
 	$product->load('cost');
-
-       
-    
        }
-  
-  $product->change_current_key($product->id);
-    
-     $product->update_rrp('Product RRP',$rrp);
-       
-
-   
-    
-    
+     
     }
+  $product->change_current_key($product->id);
+       $product->update_rrp('Product RRP',$rrp);
+
   }else{
 
     $new_family=true;

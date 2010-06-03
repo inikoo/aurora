@@ -25,10 +25,11 @@ $_SESSION['locale_info'] = localeconv();
 $con=@mysql_connect($dns_host,$dns_user,$dns_pwd );
 
 if(!$con){print "Error can not connect with database server\n";exit;}
-$dns_db='dw_avant2';
+$dns_db='dw_avant';
 $db=@mysql_select_db($dns_db, $con);
 if (!$db){print "Error can not access the database\n";exit;}
-  
+  $codigos=array();
+
 
 require_once '../../common_functions.php';
 mysql_query("SET time_zone ='+0:00'");
@@ -330,7 +331,10 @@ foreach($__cols as $cols){
   $part_code=_trim($cols[24]);
   $supplier_cost=$cols[27];
   $units=$cols[5];
-  $rrp=$cols[18];
+  
+
+
+$rrp=$cols[18];
   $supplier_code=_trim($cols[23]);
   $w=$cols[31];
   $description=_trim( mb_convert_encoding($cols[6], "UTF-8", "ISO-8859-1,UTF-8"));
@@ -425,7 +429,7 @@ foreach($__cols as $cols){
 
   //     }
 
-  $rrp=$cols[16];
+  $rrp=$cols[18];
   $supplier_code=_trim($cols[21]);
 
   $w=$cols[28];
@@ -460,6 +464,13 @@ foreach($__cols as $cols){
     $supplier_cost=0.4*$price/$units;
     
   }
+
+	if(array_key_exists($code,$codigos)){
+       	print "Product: $code is duplicated\n";
+       	continue;
+       	}
+
+$codigos[$code]=1;
 
     
     $uk_product=new Product('code_store',$code,1);
@@ -506,11 +517,13 @@ foreach($__cols as $cols){
 	 
     }else{
     
-    if($department_name=='Gegenstände für Sammler')
+      if($department_name=='Gegenstände für Sammler')
         $department_code='Collect';
-        if($department_name=='Ökotaschen')
+      if($department_name=='Ökotaschen')
         $department_code='EcoBag';
-        
+       if($department_name=='Deko-Artikel')
+        $department_code='Deko';
+
       $dep_data=array(
 		      'Product Department Code'=>$department_code,
 		      'Product Department Name'=>$department_name,
@@ -642,14 +655,17 @@ foreach($__cols as $cols){
  			   );
 	
  	$product->new_part_list(array(),$part_list);
-	//	print_r($product->data);
  	$product->load('parts');
 	$part =new Part('sku',$parts[0]);
  	$part->load('used in');
       }
-    }
-  
 
+   
+      
+    }
+    //print "rrp: $rrp <-\n";
+   $product->change_current_key($product->id);
+      $product->update_rrp('Product RRP',$rrp);
 
 }else{
 

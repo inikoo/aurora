@@ -947,8 +947,8 @@ exit;
     //print_r($data);
  
     $sql=sprintf("insert into `Product History Dimension` %s %s",$keys,$values);
-   print "--------------------------------\n";
-   print "$sql\n";
+    // print "--------------------------------\n";
+       //      print "$sql\n";
     //exit;
    if (mysql_query($sql)) {
     if($this->external_DB_link)mysql_query($sql,$this->external_DB_link);
@@ -978,7 +978,7 @@ exit;
   }
 
   function change_current_key($new_current_key) {
-
+    // print "HOLA: $new_current_key\n";
 if($new_current_key!=$this->data['Product Current Key']){
 
     $sql=sprintf("select `Product History Price`,`Product History Name` from `Product History Dimension` where `Product ID`=%d and `Product Key`=%d "
@@ -1010,7 +1010,7 @@ $this->data['Product Short Description']=$this->get('short description');
 		 ,$new_current_key
 		 ,$this->pid
 		 );
-	
+    
     mysql_query($sql);if($this->external_DB_link)mysql_query($sql,$this->external_DB_link);
    
     $this->data['Product Current Key']=$new_current_key;
@@ -1072,7 +1072,7 @@ $this->updated=true;
     $keys=preg_replace('/,$/',')',$keys);
     $values=preg_replace('/,$/',')',$values);
     $sql=sprintf("insert into `Product Dimension` %s %s",$keys,$values);
-   // print "$sql\n";
+    //  print "$sql\n";
     if (mysql_query($sql)) {
     if($this->external_DB_link)mysql_query($sql,$this->external_DB_link);
       $this->pid = mysql_insert_id();
@@ -1154,7 +1154,7 @@ $this->updated=true;
     $keys=preg_replace('/,$/',')',$keys);
     $values=preg_replace('/,$/',')',$values);
     $sql=sprintf("insert into `Product Same Code Dimension` %s %s",$keys,$values);
-//print "$sql\n";
+    // print "$sql\n";
     if (mysql_query($sql)) {
     if($this->external_DB_link)mysql_query($sql,$this->external_DB_link);
       $this->new_code=true;
