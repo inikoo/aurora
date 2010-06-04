@@ -453,6 +453,49 @@ function update_working_url(){
   }
 
 
+function update_show_layout($layout,$value){
+switch ($layout) {
+    case 'thumbnails':
+        $field="Product Thumbnails Layout";
+        break;
+         case 'list':
+     case 'lists':
+        $field="Product List Layout";
+        break;   
+     case 'slideshow':
+        $field="Product Slideshow Layout";
+        break;
+     case 'manual':
+        $field="Product Manual Layout";
+        break;   
+    default:
+    $this->error=true;
+    $this->msg='Invalid field';
+        return;
+        break;
+}
+$value=($value=='true'?'Yes':'No');
+
+$sql=sprintf("update `Page Store Dimension` set `%s`=%s where `Page Key`=%d"
+,$field
+,prepare_mysql($value)
+,$this->id
+);
+mysql_query($sql);
+if(mysql_affected_rows()){
+$this->updated=true;
+$this->new_value=$value;
+
+}else{
+$this->msg=_('Nothing to change');
+
+}
+
+
+
+}
+
+
   function update_presentation_template_data($value,$options){
     
     
@@ -473,8 +516,12 @@ function update_working_url(){
 
 
    switch($field){
+     case('url'):
+     $this->update_field('Page URL',$value,$options);
+   break;
    case('title'):
      $this->update_field('Page Title',$value,$options);
+     break;
    case('keywords'):
      $this->update_field('Page Keywords',$value,$options);
      break;
