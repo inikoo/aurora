@@ -181,17 +181,17 @@
 	{if $family->get('Product Family Page Key')}
 
 	
-	   <table class="edit">
+	   <table class="edit"  id="edit_family_page"  page_key={$family->get('Product Family Page Key')}    >
 	     <tr class="title"><td colspan="2">{t}Page Properties{/t} [HTML HEAD]
 
 
 
 	     </td></tr>
-	     <tr><td class="label">{t}Title{/t}:</td><td>
+	     <tr><td class="label">{t}URL{/t}:</td><td>
 		 <div  style="width:15em" >
-		   <input  id="family_page_html_head_title"  style="width:30em" MAXLENGTH="64" value="{$page_data.PageTitle}" ovalue="{$page_data.PageTitle}"  />
-		   <div id="family_page_html_head_title_msg"></div>
-		   <div id="family_page_html_head_title_Container" style="" ></div>
+		   <input  id="family_page_html_head_url"  style="width:30em" MAXLENGTH="64" value="{$page_data.PageURL}" ovalue="{$page_data.PageURL}"  />
+		   <div id="family_page_html_head_url_msg"></div>
+		   <div id="family_page_html_head_url_Container" style="" ></div>
 		 </div>
 	       </td><td>
 		 <div class="general_options" style="float:right">
@@ -200,6 +200,16 @@
 		   <span style="margin-right:10px;visibility:hidden" id="reset_edit_family_page_html_head" class="state_details">{t}Reset{/t}</span>
 		   
       </div>
+
+      </td></tr>
+	     <tr><td class="label">{t}Title{/t}:</td><td>
+		 <div  style="width:15em" >
+		   <input  id="family_page_html_head_title"  style="width:30em" MAXLENGTH="64" value="{$page_data.PageTitle}" ovalue="{$page_data.PageTitle}"  />
+		   <div id="family_page_html_head_title_msg"></div>
+		   <div id="family_page_html_head_title_Container" style="" ></div>
+		 </div>
+	       </td><td>
+		
 
       </td></tr>
 	    
@@ -295,7 +305,7 @@
 
 	     <tr><td spancols=2 class="label">{t}Family Description{/t}:<br/>HTML/Smarty</td><td>
 		 <div  style="width:15em" >
-		 <textarea  id="family_page_content_presentation_template_data"  style="width:650px" rows="10"  value="{$page_data.ProductPresentationTemplateData}" ovalue="{$page_data.ProductPresentationTemplateData}"  >{$page_data.ProductPresentationTemplateData}</textarea>
+		 <textarea  id="family_page_content_presentation_template_data"  style="width:450px" rows="10"  value="{$page_data.ProductPresentationTemplateData}" ovalue="{$page_data.ProductPresentationTemplateData}"  >{$page_data.ProductPresentationTemplateData}</textarea>
 		 <div id="family_page_content_presentation_template_data_msg"></div>
 		 <div id="family_page_content_presentation_template_data_Container" style="" ></div>
 		 </div>
@@ -329,33 +339,244 @@
   </tr>
   
   
- <tr><td class="label">{t}Products Layout{/t}:</td><td>
-	<div style="float:left;width:125px;text-align:center;">
-	<img style="border:1px solid #ccc" src="art/page_layout_product_thumbnails.png"/>
-	{t}Thumbnails{/t}
-	</div>
-	<div  style="float:left;width:125px;text-align:center">
-	<img style="border:1px solid #ccc" src="art/page_layout_product_list.png"/>
-	{t}List{/t}
-	</div>
-	<div  style="float:left;width:125px;text-align:center;display:none">
-	<img style="border:1px solid #ccc" src="art/page_layout_slideshow.png"/>
-	{t}Slideshow{/t}
-	</div>
-	<div  style="float:left;width:125px;text-align:center">
-	<img style="border:1px solid #ccc" src="art/page_layout_manual.png"/>
-	{t}Manual{/t}
-	</div>
+ <tr><td class="label">{t}Products Layout{/t}:</td>
+ <td>
+ <table>
+ <tr><td class="label">{t}Thumbnails{/t}:</td><td><input layout="thumbnails" id="checkbox_thumbnails" type="checkbox"  {if $page_data.ProductThumbnailsLayout=="Yes"}checked="checked"{/if} ></td></tr>
+  <tr><td class="label">{t}List{/t}:</td><td><input layout="lists" id="checkbox_list" type="checkbox" {if $page_data.ProductListLayout=="Yes"}checked="checked"{/if}></td></tr>
+ <tr><td class="label">{t}Slideshow:{/t}</td><td><input layout="slideshow" id="checkbox_slideshow" type="checkbox" {if $page_data.ProductSlideshowLayout=="Yes"}checked="checked"{/if}></td></tr>
+ <tr><td class="label">{t}Handmade:{/t}</td><td><input layout="manual" id="checkbox_manual" type="checkbox" {if $page_data.ProductManualLayout=="Yes"}checked="checked"{/if} ></td></tr>
+
+ </table>
+ 
+	
 	
 
     </td></tr>
 
+  </tr>
+  <tbody id="layout_slideshow_options" style="{if $page_data.ProductSlideshowLayout=="No"}display:none{/if}">
+    <tr class="title"><td>{t}Slideshow Layout{/t}</td></tr>
+    <tr><td class="label">{t}Products{/t}:<div style="float:left"><img style="border:1px solid #ccc" src="art/page_layout_slideshow.png"/></div></td>
+    
+   </tr>    
+  </tbody>  
+    <tbody id="layout_thumbnails_options" style="{if $page_data.ProductThumbnailsLayout=="No"}display:none{/if}">
+    <tr class="title"><td>{t}Thumbnails Layout{/t}</td></tr>
+    <tr><td class="label">{t}Products{/t}:<div style="float:left"><img style="border:1px solid #ccc" src="art/page_layout_thumbnails.png"/></div></td>
+    
+   </tr>  
+     </tbody>  
+  <tbody id="layout_lists_options" style="{if $page_data.ProductListLayout=="No"}display:none{/if}">
+  <tr class="title"><td>{t}List Layout{/t}</td></tr>
+    <tr><td class="label">{t}Products{/t}:<div style="float:left"><img style="border:1px solid #ccc" src="art/page_layout_list.png"/></div></td>
+    
+   </tr> 
+     </tbody>  
+      <tbody id="layout_manual_options" style="{if $page_data.ProductManualLayout=="No"}display:none{/if}">
+    <tr class="title"><td>{t}Handmade Product Layout{/t}</td></tr>
+    
+    <tr><td class="label">{t}HTML files{/t}:<div style="float:left"><img style="border:1px solid #ccc" src="art/page_layout_manual.png"/></div></td><td>
+<div id="uiElements" style="display:inline;">
+		<div id="uploaderContainer">
+			<div id="uploaderOverlay"  style="position:absolute; z-index:2"></div>
+			<div id="selectFilesLink" style="z-index:1"><a id="selectLink" href="#">Select Files</a></div>
+		</div>
 
-      </tr>
-      
+		<div id="uploadFilesLink"><a id="uploadLink" onClick="upload(); return false;" href="#">Upload Files</a></div>
+</div>
 
-    </table>
+<div id="simUploads" style="display:none"> Number of simultaneous uploads:
+	<select id="simulUploads">
+		<option value="1">1</option>
+		<option value="2">2</option>
+		<option value="3">3</option>
 
+		<option value="4">4</option>
+	</select>
+</div>
+
+<div id="dataTableContainer"></div>
+
+{literal}
+<script type="text/javascript">
+
+YAHOO.util.Event.onDOMReady(function () { 
+var uiLayer = YAHOO.util.Dom.getRegion('selectLink');
+var overlay = YAHOO.util.Dom.get('uploaderOverlay');
+YAHOO.util.Dom.setStyle(overlay, 'width', uiLayer.right-uiLayer.left + "px");
+YAHOO.util.Dom.setStyle(overlay, 'height', uiLayer.bottom-uiLayer.top + "px");
+});
+
+	// Custom URL for the uploader swf file (same folder).
+	YAHOO.widget.Uploader.SWFURL = "assets/uploader.swf";
+
+    // Instantiate the uploader and write it to its placeholder div.
+	var uploader = new YAHOO.widget.Uploader( "uploaderOverlay" );
+	
+	// Add event listeners to various events on the uploader.
+	// Methods on the uploader should only be called once the 
+	// contentReady event has fired.
+	
+	uploader.addListener('contentReady', handleContentReady);
+	uploader.addListener('fileSelect', onFileSelect)
+	uploader.addListener('uploadStart', onUploadStart);
+	uploader.addListener('uploadProgress', onUploadProgress);
+	uploader.addListener('uploadCancel', onUploadCancel);
+	uploader.addListener('uploadComplete', onUploadComplete);
+	uploader.addListener('uploadCompleteData', onUploadResponse);
+	uploader.addListener('uploadError', onUploadError);
+    uploader.addListener('rollOver', handleRollOver);
+    uploader.addListener('rollOut', handleRollOut);
+    uploader.addListener('click', handleClick);
+    	
+    // Variable for holding the filelist.
+	var fileList;
+	
+	// When the mouse rolls over the uploader, this function
+	// is called in response to the rollOver event.
+	// It changes the appearance of the UI element below the Flash overlay.
+	function handleRollOver () {
+		YAHOO.util.Dom.setStyle(YAHOO.util.Dom.get('selectLink'), 'color', "#FFFFFF");
+		YAHOO.util.Dom.setStyle(YAHOO.util.Dom.get('selectLink'), 'background-color', "#000000");
+	}
+	
+	// On rollOut event, this function is called, which changes the appearance of the
+	// UI element below the Flash layer back to its original state.
+	function handleRollOut () {
+		YAHOO.util.Dom.setStyle(YAHOO.util.Dom.get('selectLink'), 'color', "#0000CC");
+		YAHOO.util.Dom.setStyle(YAHOO.util.Dom.get('selectLink'), 'background-color', "#FFFFFF");
+	}
+	
+	// When the Flash layer is clicked, the "Browse" dialog is invoked.
+	// The click event handler allows you to do something else if you need to.
+	function handleClick () {
+	}
+	
+	// When contentReady event is fired, you can call methods on the uploader.
+	function handleContentReady () {
+	    // Allows the uploader to send log messages to trace, as well as to YAHOO.log
+		uploader.setAllowLogging(true);
+		
+		// Allows multiple file selection in "Browse" dialog.
+		uploader.setAllowMultipleFiles(true);
+		
+		// New set of file filters.
+		var ff = new Array({description:"Images", extensions:"*.jpg;*.png;*.gif"},
+		                   {description:"Videos", extensions:"*.avi;*.mov;*.mpg"});
+		                   
+		// Apply new set of file filters to the uploader.
+		//uploader.setFileFilters(ff);
+	}
+
+	// Actually uploads the files. In this case,
+	// uploadAll() is used for automated queueing and upload 
+	// of all files on the list.
+	// You can manage the queue on your own and use "upload" instead,
+	// if you need to modify the properties of the request for each
+	// individual file.
+	function upload() {
+	if (fileList != null) {
+	
+		uploader.setSimUploadLimit(parseInt(document.getElementById("simulUploads").value));
+		uploader.uploadAll("http://localhost/dw/upload_files.php", "POST", {type:"Family Page",'id':{/literal}{$family->get('Product Family Page Key')}{literal}}, "Filedata");
+
+	
+	}	
+	}
+	
+	// Fired when the user selects files in the "Browse" dialog
+	// and clicks "Ok".
+	function onFileSelect(event) {
+		if('fileList' in event && event.fileList != null) {
+			fileList = event.fileList;
+			createDataTable(fileList);
+		}
+	}
+
+	function createDataTable(entries) {
+	  rowCounter = 0;
+	  this.fileIdHash = {};
+	  this.dataArr = [];
+	  for(var i in entries) {
+	     var entry = entries[i];
+		 entry["progress"] = "<div style='height:5px;width:100px;background-color:#CCC;'></div>";
+	     dataArr.unshift(entry);
+	  }
+	
+	  for (var j = 0; j < dataArr.length; j++) {
+	    this.fileIdHash[dataArr[j].id] = j;
+	  }
+	
+	    var myColumnDefs = [
+	        {key:"name", label: "File Name", sortable:false},
+	     	{key:"size", label: "Size", sortable:false},
+	     	{key:"progress", label: "Upload progress", sortable:false}
+	    ];
+
+	  this.myDataSource = new YAHOO.util.DataSource(dataArr);
+	  this.myDataSource.responseType = YAHOO.util.DataSource.TYPE_JSARRAY;
+      this.myDataSource.responseSchema = {
+          fields: ["id","name","created","modified","type", "size", "progress"]
+      };
+
+	  this.singleSelectDataTable = new YAHOO.widget.DataTable("dataTableContainer",
+	           myColumnDefs, this.myDataSource, {
+	               caption:"Files To Upload",
+	               selectionMode:"single"
+	           });
+	}
+
+    // Do something on each file's upload start.
+	function onUploadStart(event) {
+	
+	}
+	
+	// Do something on each file's upload progress event.
+	function onUploadProgress(event) {
+		rowNum = fileIdHash[event["id"]];
+		prog = Math.round(100*(event["bytesLoaded"]/event["bytesTotal"]));
+		progbar = "<div style='height:5px;width:100px;background-color:#CCC;'><div style='height:5px;background-color:#F00;width:" + prog + "px;'></div></div>";
+		singleSelectDataTable.updateRow(rowNum, {name: dataArr[rowNum]["name"], size: dataArr[rowNum]["size"], progress: progbar});	
+	}
+	
+	// Do something when each file's upload is complete.
+	function onUploadComplete(event) {
+		rowNum = fileIdHash[event["id"]];
+		prog = Math.round(100*(event["bytesLoaded"]/event["bytesTotal"]));
+		progbar = "<div style='height:5px;width:100px;background-color:#CCC;'><div style='height:5px;background-color:#F00;width:100px;'></div></div>";
+		singleSelectDataTable.updateRow(rowNum, {name: dataArr[rowNum]["name"], size: dataArr[rowNum]["size"], progress: progbar});
+
+	}
+	
+	// Do something if a file upload throws an error.
+	// (When uploadAll() is used, the Uploader will
+	// attempt to continue uploading.
+	function onUploadError(event) {
+
+	}
+	
+	// Do something if an upload is cancelled.
+	function onUploadCancel(event) {
+
+	}
+	
+	// Do something when data is received back from the server.
+	function onUploadResponse(event) {
+	
+
+	}
+</script>
+
+{/literal}
+
+   
+
+    
+    </td></tr>
+      </tbody>  
+    
+   </table>
 {/if}
 
       </div>

@@ -26,6 +26,9 @@ $editor=array( 'User Key'=>$user->id);
 
 $tipo=$_REQUEST['tipo'];
 switch($tipo){
+case('edit_page_layout'):
+edit_page_layout();
+break;
 case('edit_part_new_product'):
   if(isset($_REQUEST['part_sku']))
     edit_part_new_product($_REQUEST['part_sku']);
@@ -2413,5 +2416,23 @@ $family=new family($_REQUEST['id']);
 
   }
 
+function edit_page_layout(){
+$page_key=$_REQUEST['page_key'];
+$layout=$_REQUEST['layout'];
+$value=$_REQUEST['newvalue'];
+
+$page=new Page($page_key);
+$page->update_show_layout($layout,$value);
+
+ if($page->updated){
+     $response= array('state'=>200,'newvalue'=>$page->new_value);
+	  
+   }else{
+     $response= array('state'=>400,'msg'=>$page->msg);
+   }
+   echo json_encode($response); 
+
+
+}
 
 ?>

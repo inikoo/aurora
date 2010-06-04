@@ -119,6 +119,7 @@ $js_files=array(
 		$yui_path.'utilities/utilities.js',
 		$yui_path.'json/json-min.js',
 		$yui_path.'paginator/paginator-min.js',
+		$yui_path.'uploader/uploader.js',
 		$yui_path.'datasource/datasource-min.js',
 		$yui_path.'autocomplete/autocomplete-min.js',
 		$yui_path.'datatable/datatable-debug.js',
@@ -135,11 +136,16 @@ $js_files=array(
 if($edit){
   $smarty->assign('edit',$_SESSION['state']['family']['edit']);
   $css_files[]='css/edit.css';
+  $css_files[]='css/upload_files.css';
   $js_files[]='js/edit_common.js';
   $js_files[]='country_select.js.php';
    $js_files[]='js/upload_image.js';
+ 
+    // $js_files[]='upload_files.js.php';
+
   $js_files[]='edit_family.js.php';
-  
+  $smarty->assign('yui_path',$yui_path);
+
   
   
 $family->load_images_slidesshow();

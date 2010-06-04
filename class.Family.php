@@ -35,6 +35,7 @@ class Family extends DB_Table {
 
     function Family($a1=false,$a2=false,$a3=false) {
         $this->table_name='Product Family';
+        $this->page_data=false;
         $this->ignore_fields=array(
                                  'Product Family Key',
                                  'Product Family For Sale Products',
@@ -1629,15 +1630,18 @@ class Family extends DB_Table {
 
 
     function get_page_data() {
+    
         $data=array();
         $sql=sprintf("select * from `Page Store Dimension` PSD left join `Page Dimension` PD on (PSD.`Page Key`=PD.`Page Key`) where PSD.`Page Key`=%d",$this->data['Product Family Page Key']);
         // print $sql;
         $res=mysql_query($sql);
         if ($row=mysql_fetch_array($res,MYSQL_ASSOC)) {
             $data=$row;
-        }
+                return $data;
 
-        return $data;
+        }else
+        return false;
+
 
 
 
@@ -1741,6 +1745,43 @@ class Family extends DB_Table {
     }
 
 
+function has_layout($type){
+
+
+if(!$this->data['Family Page Key'])
+return false;
+if(!$this->page_data){
+    $this->page_data=$this->get_page_data();
+    if(!$this->page_data)
+        return false;
+}
+
+switch ($type) {
+    case "thumbnails":
+        if($this->page_data['Product Thumbnails Layout']=='Yes')
+            return true;
+        break;
+        case "list":
+        case "lists":
+        if($this->page_data['Product List Layout']=='Yes')
+            return true;
+        break;    
+         
+        case "slideshow":
+        if($this->page_data['Product Slideshow Layout']=='Yes')
+            return true;
+        break;    
+        case "manual":
+        if($this->page_data['Product Manual Layout']=='Yes')
+            return true;
+        break;    
+    default:
+        return false;
+        break;
+}
+
+return false;
+}
 
 }
 ?>

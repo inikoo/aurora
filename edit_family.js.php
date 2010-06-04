@@ -54,11 +54,17 @@ var validate_scope_data={
 	,'description':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','validation':[],'name':'description','ar':false}
     }
     ,'family_page_html_head':{
-	'title':{'changed':false,'validated':true,'required':false,'group':1,'type':'item'
+	'url':{'changed':false,'validated':true,'required':false,'group':1,'type':'item'
+		 ,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid URL')?>'}]
+		 ,'name':'family_page_html_head_url','ar':false
+		 
+	}
+	,'title':{'changed':false,'validated':true,'required':false,'group':1,'type':'item'
 		 ,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Title')?>'}]
 		 ,'name':'family_page_html_head_title','ar':false
 		 
 	}
+	
 	,'keywords':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','validation':[],'name':'family_page_html_head_keywords','ar':false}
     }
 ,'family_page_header':{
@@ -89,6 +95,7 @@ function validate_family_page_header_slogan(query){validate_general('family_page
 function validate_family_page_header_resume(query){validate_general('family_page_header','resume',unescape(query));}
 
 
+function validate_family_page_html_head_url(query){validate_general('family_page_html_head','url',unescape(query));}
 
 function validate_family_page_html_head_title(query){validate_general('family_page_html_head','title',unescape(query));}
 function validate_family_page_html_head_keywords(query){validate_general('family_page_html_head','keywords',unescape(query));}
@@ -262,9 +269,7 @@ function deal_save(deal_key,key){
 
 		var request='tipo=edit_deal&key=' + key + '&newvalue=' + 
 						encodeURIComponent(newValue) + '&oldvalue=' + encodeURIComponent(oldValue)+ '&deal_key='+deal_key
-			
-//alert(request);
-//return;
+
 		YAHOO.util.Connect.asyncRequest(
 						'POST',
 						'ar_edit_assets.php', {
@@ -1118,6 +1123,54 @@ function cancel_add_product(){
     hide_add_product_dialog(); 
 }
 
+function select_layout(e){
+
+layout=this.getAttribute("layout");
+page_key=Dom.get("edit_family_page").getAttribute("page_key");
+checked=this.checked;
+
+   
+
+		var request='tipo=edit_page_layout&layout=' + layout + '&newvalue=' + encodeURIComponent(checked) + '&page_key='+page_key
+
+		YAHOO.util.Connect.asyncRequest(
+						'POST',
+						'ar_edit_assets.php', {
+						    success:function(o) {
+							
+							var r = YAHOO.lang.JSON.parse(o.responseText);
+							if (r.state == 200) {
+
+                                    if(r.newvalue=='Yes'){
+                                   
+                                    Dom.setStyle("layout_"+layout+"_options","display","");
+                                    
+                                    
+                                    }else{
+                                    Dom.setStyle("layout_"+layout+"_options","display","none");
+                                    
+                                    }
+								
+							    }else{
+						
+								
+								
+							    }
+						
+						    },
+							failure:function(o) {
+							alert(o.statusText);
+							callback();
+						    },
+							scope:this
+							},
+						request
+						
+						);  
+
+}
+
+
 function hide_add_product_dialog(){
     Dom.get('new_product_dialog').style.display='none';
     Dom.get('add_product').style.display='';
@@ -1141,6 +1194,12 @@ function show_add_product_dialog(){
 
 
 function init(){
+
+   var ids = ["checkbox_thumbnails","checkbox_list","checkbox_slideshow","checkbox_manual"]; 
+    YAHOO.util.Event.addListener(ids, "click", select_layout);
+
+
+
  	YAHOO.util.Event.on('uploadButton', 'click', onUploadButtonClick);
 
  
@@ -1269,7 +1328,13 @@ var family_code_oACDS = new YAHOO.util.FunctionDataSource(validate_code);
     family_description_oAutoComp.minQueryLength = 0; 
     family_description_oAutoComp.queryDelay = 0.1;
 
-
+ var family_page_html_head_url_oACDS = new YAHOO.util.FunctionDataSource(validate_family_page_html_head_url);
+    family_page_html_head_url_oACDS.queryMatchContains = true;
+    var family_page_html_head_url_oAutoComp = new YAHOO.widget.AutoComplete("family_page_html_head_url","family_page_html_head_url_Container", family_page_html_head_url_oACDS);
+    family_page_html_head_url_oAutoComp.minQueryLength = 0; 
+    family_page_html_head_url_oAutoComp.queryDelay = 0.1;
+    
+    
     var family_page_html_head_title_oACDS = new YAHOO.util.FunctionDataSource(validate_family_page_html_head_title);
     family_page_html_head_title_oACDS.queryMatchContains = true;
     var family_page_html_head_title_oAutoComp = new YAHOO.widget.AutoComplete("family_page_html_head_title","family_page_html_head_title_Container", family_page_html_head_title_oACDS);
