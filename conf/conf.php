@@ -1114,6 +1114,17 @@ $default_state=array(
                                            'sf'=>0,
                                            'nr'=>25,
                                        ),
+                                       
+                                  'pages'=>array(
+                                           'where'=>'where true',
+                                           'f_field'=>'section',
+                                           'f_value'=>'',
+                                           'f_show'=>false,
+                                           'order'=>'section',
+                                           'order_dir'=>'',
+                                           'sf'=>0,
+                                           'nr'=>25,
+                                       ),      
 
                            ),
 

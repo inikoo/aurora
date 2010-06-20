@@ -1640,7 +1640,7 @@ class Family extends DB_Table {
                 return $data;
 
         }else
-        return false;
+        return array();
 
 
 

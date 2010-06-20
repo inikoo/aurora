@@ -37,6 +37,9 @@ var submit_search=function(e,data){
 	});
 }
 
+function search_part(query){
+    search(query,'part','');
+}
 
 function search_customers_in_store(query){
     search(query,'customers','store');
@@ -69,8 +72,7 @@ function search(query,subject,scope){
     var ar_file='ar_search.php';
 
     var request='tipo='+subject+'&q='+escape(query)+'&scope='+scope;
-   //  alert(request)
-    //	return;
+   
     
     
     YAHOO.util.Connect.asyncRequest(
@@ -129,6 +131,19 @@ function search(query,subject,scope){
 							    oTD.innerHTML=r.data[result_key ].name;
 							    var oTD= oTR.insertCell(3);
 							    oTD.innerHTML=r.data[result_key ].address;
+							}else if(subject=='part'){
+							    oTR.setAttribute('key',r.data[result_key ].sku);
+							    oTR.setAttribute('link',r.data[result_key ].link);
+							   	oTR.setAttribute('sku',r.data[result_key ].fsku);
+							    oTR.setAttribute('description',r.data[result_key ].description);
+
+
+							    var oTD= oTR.insertCell(1);
+							    oTD.innerHTML=r.data[result_key ].fsku;
+							    var oTD= oTR.insertCell(2);
+							    oTD.innerHTML=r.data[result_key ].description ;
+							  
+
 							}else if(subject=='products'){
 							    oTR.setAttribute('key',r.data[result_key ].key);
 							    oTR.setAttribute('link',r.data[result_key ].link);

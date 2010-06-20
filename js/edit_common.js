@@ -317,9 +317,7 @@ function validate_general(branch,item,query){
 		for(validator_index in data.validation){
 		    validator_data=data.validation[validator_index];
 		    var validator=new RegExp(validator_data.regexp,"i");
-		    //  alert(validator_data.regexp)
-		    if(!validator.test(query)){
-
+		    if(!validator.test(query) && query!=''){
 	                validate_scope_data[branch][item].validated=false;
 			Dom.get(data.name+'_msg').innerHTML=validator_data.invalid_msg;
 			break;

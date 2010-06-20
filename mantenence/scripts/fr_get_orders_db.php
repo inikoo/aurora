@@ -1341,7 +1341,7 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
         else
             $exchange_date=$date_order;
 
-        $currency_exchange = new CurrencyExchange('get',$__currency_code.'GBP',$exchange_date);
+        $currency_exchange = new CurrencyExchange($__currency_code.'GBP',$exchange_date);
         $exchange= $currency_exchange->get_exchange();
         chdir('mantenence/scripts/');
 

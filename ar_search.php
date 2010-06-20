@@ -34,6 +34,14 @@ case('products'):
     $data['user']=$user;
    search_products($data);
    break;
+case('part'):case('parts'):
+ 
+  $data=prepare_values($_REQUEST,array(
+			     'q'=>array('type'=>'string')
+			     ));
+    $data['user']=$user;
+   search_parts($data);
+   break;
 
 
     
@@ -1012,5 +1020,130 @@ function search_location_old($q,$tipo,$user){
   
      return false;   
     }
+    
+    
+    function search_parts($data){
+$the_results=array();
+
+$max_results=10;
+ $user=$data['user'];
+  $q=$data['q'];
+    // $q=_trim($_REQUEST['q']);
+    
+  if($q==''){
+    $response=array('state'=>200,'results'=>0,'data'=>'');
+    echo json_encode($response);
+    return;
+  }
+
+
+ 
+  
+
+  
+ $candidates=array();
+ 
+ 
+ if(is_numeric($q)  or preg_match('/^sku:\?\d+/i',$q)  ){
+ $_q=preg_replace('/[^\d]/','',$q);
+ $sql=sprintf('select `Part SKU`,`Part XHTML Description` from `Part Dimension` where `Part SKU`=%d ',$_q);
+ //print $sql;
+  $res=mysql_query($sql);
+  while($row=mysql_fetch_array($res)){
+    
+      $candidates[$row['Part SKU']]=210;
+      $part_data[$row['Part SKU']]=array('sku'=>$row['Part SKU'],'fsku'=>sprintf('SKU %05d',$row['Part SKU']),'description'=>$row['Part XHTML Description']);
+    
+  }
+  }
+ $sql=sprintf("select `Part XHTML Description`,`Part SKU`,`Part Unit Description`, match (`Part Unit Description`) AGAINST ('%s' IN NATURAL LANGUAGE MODE) as score   from `Part Dimension` where match (`Part Unit Description`) AGAINST ('%s' IN NATURAL LANGUAGE MODE) limit 20",addslashes($q),addslashes($q));;
+
+// print $sql;
+ $res=mysql_query($sql);
+  while($row=mysql_fetch_array($res)){
+    
+      $candidates[$row['Part SKU']]=$row['score'];
+      $part_data[$row['Part SKU']]=array('sku'=>$row['Part SKU'],'fsku'=>sprintf('SKU %05d',$row['Part SKU']),'description'=>$row['Part XHTML Description']);
+
+  }
+
+/*
+  $sql=sprintf('select `Part SKU`,`Part XHTML Description` from `Part Dimension` where `Part Unit Description` like "%%%s%%" limit 20',addslashes($q));
+ 
+ $res=mysql_query($sql);
+  while($row=mysql_fetch_array($res)){
+    
+      $candidates[$row['Part SKU']]=100;
+      $part_data[$row['Part SKU']]=array('sku'=>$row['Part SKU'],'description'=>$row['Part XHTML Description']);
+
+  }
+  
+  
+  $qs=preg_split('/\s+|\,/',$q);
+  if(count($sq>1)){
+    foreach($qs as $q){
+     $sql=sprintf('select `Part SKU`,`Part XHTML Description` from `Part Dimension` where `Part Unit Description` like "%%%s%%" limit 20',addslashes($q));
+ 
+ $res=mysql_query($sql);
+  while($row=mysql_fetch_array($res)){
+    
+      $candidates[$row['Part SKU']]=100;
+      $part_data[$row['Part SKU']]=array('sku'=>$row['Part SKU'],'description'=>$row['Part XHTML Description']);
+
+  }
+    
+    }
+  
+  }
+  
+  */
+ 
+
+ arsort($candidates);
+
+ $total_candidates=count($candidates);
+  
+  if($total_candidates==0){
+    $response=array('state'=>200,'results'=>0,'data'=>'');
+    echo json_encode($response);
+    return;
+  }
+  
+
+  $counter=0;
+  $customer_keys='';
+
+  $results=array();
+  $family_keys='';
+  $products_keys='';
+
+  foreach($candidates as $key=>$val){
+    if($counter>$max_results)
+      break;
+  $results[$key]=$part_data[$key];
+  
+    $counter++;
+  }
+  
+
+
+  
+ $response=array('state'=>200,'results'=>count($results),'data'=>$results,'link'=>'');
+  echo json_encode($response);
+
+
+
+
+
+
+
+
+
+
+
+
+
+}
+    
     
 ?>

@@ -40,7 +40,7 @@ $start_date='2003-01-01';
 
 $end_date=date('Y-m-d');
 chdir('../../');
-$ce=new CurrencyExchange('load','GBPEUR',$start_date,$end_date);
+$ce=new CurrencyExchange('GBPEUR',$start_date,$end_date);
 exit;
 
 

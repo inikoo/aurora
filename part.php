@@ -60,11 +60,12 @@ $js_files=array(
 		$yui_path.'datasource/datasource-min.js',
 		$yui_path.'autocomplete/autocomplete-min.js',
 		$yui_path.'datatable/datatable-debug.js',
-		$yui_path.'container/container_core-min.js',
+		$yui_path.'container/container-min.js',
 		$yui_path.'menu/menu-min.js',
 		'common.js.php',
 		'table_common.js.php',
-		'common_plot.js.php?page='.$page
+		'common_plot.js.php?page='.$page,
+		'edit_stock.js.php'
 		);
 
 

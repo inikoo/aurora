@@ -494,6 +494,9 @@ $this->data['Invoice Currency Exchange']=$exchange;
     
     $this->distribute_costs();
     
+    
+    
+    
     $this->load('dns');
     $this->load('orders');
     

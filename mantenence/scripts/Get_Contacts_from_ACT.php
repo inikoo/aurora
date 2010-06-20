@@ -29,14 +29,14 @@ if (!$con) {
     print "Error can not connect with database server\n";
     exit;
 }
-$dns_db='dw';
+//$dns_db='dw';
 $db=@mysql_select_db($dns_db, $con);
 if (!$db) {
     print "Error can not access the database\n";
     exit;
 }
 $tipo_his=array();
-$myFile = "timedata.txt";
+$myFile = "act_timedata.txt";
 $fh = fopen($myFile, 'w') or die("can't open file");
 
 
@@ -68,6 +68,8 @@ $store_data=array('Store Code'=>'UK',
                   'Store Home Country Short Name'=>'UK',
                  );
 $store=new Store('find',$store_data,'create');
+$store=new Store(1);
+
 if (!$store->id) {
 //print_r($store);
     exit("can not create store\n");

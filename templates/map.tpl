@@ -1,0 +1,34 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>ammap</title>
+<style>
+{literal}
+  body{
+    margin: 0px;
+  }
+  {/literal}
+</style>
+</head>
+
+<body onLoad="ammap.focus()">
+<!-- saved from url=(0013)about:internet -->
+<!-- ammap script-->
+  <script type="text/javascript" src="external_libs/ammap_2.5.4/ammap/swfobject.js"></script>
+	<div id="flashcontent">
+		<strong>You need to upgrade your Flash Player</strong>
+	</div>
+
+	<script type="text/javascript">
+		// <![CDATA[		
+		var so = new SWFObject("external_libs/ammap_2.5.4/ammap/ammap.swf", "ammap", "100%", "100%", "8", "#FFFFFF");
+    so.addVariable("path", "external_libs/ammap_2.5.4/ammap/");
+		so.addVariable("data_file", escape("map_data.xml.php{$data_args}"));
+    so.addVariable("settings_file", escape("conf/country_map_settings.xml"));		
+		so.addVariable("preloader_color", "#999999");
+		so.write("flashcontent");
+		// ]]>
+	</script>
+<!-- end of ammap script -->
+</body>
+</html>

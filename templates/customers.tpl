@@ -47,10 +47,7 @@
       <span class="clean_table_title">Customers List</span>
    <div id="table_type">
          <a  style="float:right"  class="table_type state_details"  href="customers_csv.php" >{t}Export (CSV){/t}</a>
-
      </div>
-
-
   <div style="clear:both;margin:0 0px;padding:0 20px ;border-bottom:1px solid #999"></div>
   <table style="float:left;margin:0 0 0 0px ;padding:0"  class="options" {if $customers==0 }style="display:none"{/if}>
 	<tr>
@@ -63,16 +60,13 @@
 
 	</tr>
       </table>
-
 {include file='table_splinter.tpl' table_id=0 filter_name=$filter_name0 filter_value=$filter_value0  }
-
-	
-
-      <div  id="table0"   class="data_table_container dtable btable "> </div>
-  
-  
-  
+ <div  id="table0"   class="data_table_container dtable btable "> </div>
   </div>
+  
+  
+  
+  
 </div>
 
 

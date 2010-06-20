@@ -1331,7 +1331,7 @@ if ($customer_data['Customer Delivery Address Link']=='Contact') {
         else
             $exchange_date=$date_order;
 
-        $currency_exchange = new CurrencyExchange('get',$__currency_code.'GBP',$exchange_date);
+        $currency_exchange = new CurrencyExchange($__currency_code.'GBP',$exchange_date);
         $exchange= $currency_exchange->get_exchange();
         chdir('mantenence/scripts/');
 

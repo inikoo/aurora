@@ -34,6 +34,7 @@
 
 */
 
+
 class Country {
 
     var $data=array();
@@ -171,9 +172,49 @@ class Country {
         if (isset($this->data[$key]))
             return $this->data[$key];
 
+if($key=='Population'){
+return number($this->data['Country Population']);
+}
+if($key=='GNP'){
+return money($this->data['Country GNP']);
+}
         return false;
 
     }
+
+
+function get_formated_exchange_reverse($currency_code,$date=false,$display=''){
+switch($display){
+case('tr'):
+
+    return '<tr><td>'.money(1,$currency_code).'</td><td>=</td><td>'.money($this->exchange($currency_code,$date),$this->data['Country Currency Code'])."</td></tr>";
+
+break;
+default:
+    return money(1,$currency_code).'='.money($this->exchange($currency_code,$date),$this->data['Country Currency Code']);
+}
+
+}
+function get_formated_exchange($currency_code,$date=false,$display=''){
+switch($display){
+case('tr'):
+
+    return '<tr><td>'.money(1,$this->data['Country Currency Code']).'</td><td>=</td><td>'.money(1/$this->exchange($currency_code,$date),$currency_code)."</td></tr>";
+
+break;
+default:
+
+return money(1,$this->data['Country Currency Code']).'='.money(1/$this->exchange($currency_code,$date),$currency_code);
+}
+}
+function exchange($currency_code,$date=false){
+include_once('class.CurrencyExchange.php');
+
+ $currency_exchange = new CurrencyExchange($currency_code.$this->data['Country Currency Code'],$date);
+      $exchange= $currency_exchange->get_current_exchange();
+      return $exchange;
+
+}
 
 
 }

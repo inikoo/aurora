@@ -58,9 +58,13 @@ $product->load_currency_data();
 
 $smarty->assign('images',$images);
 $smarty->assign('num_images',count($images));
-$product->load('part_list');
+
 $parts_info=$product->get_parts_info();
+
+//print_r($parts_info);
+
 $smarty->assign('parts',$parts_info);
+
 $smarty->assign('num_parts',count($parts_info));
 $units_tipo=array(
 		  'Piece'=>array('fname'=>_('Piece'),'name'=>'Piece','selected'=>false),
@@ -79,21 +83,7 @@ $smarty->assign('units_tipo',$units_tipo);
 $smarty->assign('box_layout','yui-t0');
 
 
-$css_files=array(
-		 $yui_path.'reset-fonts-grids/reset-fonts-grids.css',
-		 $yui_path.'menu/assets/skins/sam/menu.css',
-		  $yui_path.'calendar/assets/skins/sam/calendar.css',
-		 $yui_path.'button/assets/skins/sam/button.css',
-		 $yui_path.'autocomplete/assets/skins/sam/autocomplete.css',
-		 //		 $yui_path.'datatable/assets/skins/sam/datatable.css',
-		 $yui_path.'editor/assets/skins/sam/editor.css',
-		 'text_editor.css',
-		 'common.css',
-		 'button.css',
-		 'container.css',
-		 'table.css',
-		 'css/edit.css'
-		 );
+
 
 $css_files=array(
 		 $yui_path.'reset-fonts-grids/reset-fonts-grids.css',
@@ -108,27 +98,7 @@ $css_files=array(
 		 'table.css',
 		 'css/edit.css'
 		 );
-$js_files=array(
-		$yui_path.'utilities/utilities.js',
-		$yui_path.'calendar/calendar-min.js',
-		$yui_path.'container/container.js',
-		$yui_path.'menu/menu-min.js',
-		$yui_path.'button/button.js',
-		$yui_path.'datasource/datasource-min.js',
-		$yui_path.'autocomplete/autocomplete.js',
-		$yui_path.'charts/charts-experimental-min.js',
-		$yui_path.'datatable/datatable.js',
-		$yui_path.'editor/editor-min.js',
-		$yui_path.'json/json-min.js',
 
-		'calendar_common.js.php',
-		'js/php.default.min.js',
-		'common.js.php',
-		'table_common.js.php',
-		'js/edit_common.js',
-		'js/upload_image.js'
-		
-		);
 
 
 
@@ -212,10 +182,12 @@ mysql_free_result($res);
 
 $smarty->assign('categories',$comb);
 $smarty->assign('number_categories',count($comb));
+$_parts=array();
+foreach($parts_info as $key=>$value){
+$_parts[$key]=$key;
+}
 
-
-
-$js_files[]=sprintf('edit_product.js.php?symbol=%s&product_id=%d&cats=%s',$product->data['Currency Symbol'],$product->pid,join(',',$nodes->root));
+$js_files[]=sprintf('edit_product.js.php?symbol=%s&product_id=%d&cats=%s&parts=%s',$product->data['Currency Symbol'],$product->pid,join(',',$nodes->root),join(',',$_parts));
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
 

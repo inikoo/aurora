@@ -80,7 +80,7 @@
 		  <td class="aright">
 		    
 		     <tr >
-		      <td><span id="web_status"   style="cursor:pointer">{$web_status}</span> 
+		      <td><span id="web_status"   style="cursor:pointer">{$product->get('Product Web State')}</span> 
 			    <img id="web_status_error" onclick="sincronize_all()" style="{if !$web_status_error}visibility:hidden;{/if}vertical-align:top;position:relative;bottom:2px;cursor:pointer"src="art/icons/exclamation.png" title="{$web_status_error_title}"/></td><td  class="aright">
 			 <img id="no_sincro_pages" title="{$data.nosincro_pages_why}" onclick="manual_check()" style="{if $data.sincro_pages==1}visibility:hidden;{/if}vertical-align:top;position:relative;bottom:2px;cursor:pointer" src="art/icons/page_error.png"/> 
 			 <img id="no_sincro_db" title="{$data.nosincro_db_why}" onclick="sincronizar()" src="art/icons/database_error.png" style="{if $data.sincro_db==1}visibility:hidden;{/if}vertical-align:top;position:relative;bottom:2px;cursor:pointer"/>  
@@ -244,8 +244,8 @@
 		  <tr><td>{t}Parts{/t}:</td><td class="aright">{$product->get('Product XHTML Parts')}</td></tr>
 		  <tr>
 		    <td>{t}Locations{/t}:</td><td class="aleft">
-		      {foreach from=$product->parts_location item=part name=foo }
-		      <tr><td>{t}SKU{/t} <a href="part.php?sku={$part.sku}">{$part.sku}</a></td><td style="padding-left:10px"> {$part.location_code}({$part.stock})</td></tr>
+		      {foreach from=$product->get_part_locations(true) item=part_location name=foo }
+		      <tr><td><a href="part.php?sku={$part.sku}">{$part_location.PartFormatedSKU}</a></td><td style="padding-left:10px"> <a href="location.php?id={$part_location.LocationKey}"><b>{$part_location.LocationCode}</b></a> ({$part_location.QuantityOnHand})</td></tr>
 		      {/foreach}
 		</table>
 		

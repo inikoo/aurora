@@ -25,7 +25,7 @@ $_SESSION['locale_info'] = localeconv();
 $con=@mysql_connect($dns_host,$dns_user,$dns_pwd );
 
 if(!$con){print "Error can not connect with database server\n";exit;}
-$dns_db='dw_avant';
+//$dns_db='dw_avant';
 $db=@mysql_select_db($dns_db, $con);
 if (!$db){print "Error can not access the database\n";exit;}
 $codigos=array();
@@ -46,8 +46,10 @@ $file_name='/data/plaza/AWorder2009France.xls';
 $tcsv_file='fr_tmp.8859.csv';
 $csv_file='fr_tmp.utf.csv';
 
-exec('/usr/local/bin/xls2csv    -s cp1252   -d 8859-1   '.$file_name.' > '.$tcsv_file);
-exec("iconv   -f  ISO8859-1  -t UTF-8  --output  $csv_file $tcsv_file");
+//exec('/usr/local/bin/xls2csv    -s cp1252   -d 8859-1   '.$file_name.' > '.$tcsv_file);
+//exec("iconv   -f  ISO8859-1  -t UTF-8  --output  $csv_file $tcsv_file");
+
+$csv_file='fr_utf8.csv';
 
 $handle_csv = fopen($csv_file, "r");
 $column=0;
@@ -293,13 +295,14 @@ $inicio=false;
 while(($_cols = fgetcsv($handle_csv))!== false){
   
 
-  //foreach($_cols as $_key=>$_value){
-    //if(preg_match('/Diffuseurs /',$_value)){
-      // $_cols[$_key]=preg_replace("/\xC3\x20/","à ",$_value);
-      // print "$_key $_value\n";
-      // exit("caca");
-      // }
-    //  }
+//  foreach($_cols as $_key=>$_value){
+ //   if(preg_match('/Diffuseurs /',$_value)){
+ //      $_cols[$_key]=preg_replace("/\xC3\x20/","à ",$_value);
+ //      print "$_key $_value\n";
+ //    print_r($_cols);
+     //exit("caca");
+ //      }
+  //   }
 
 
   $code=$_cols[3];
@@ -319,7 +322,7 @@ while(($_cols = fgetcsv($handle_csv))!== false){
     $__cols[]=$b;
     $__cols[]=$c;
 
-  }elseif($code=='Credit'){
+  }elseif(preg_match('/Cadeau de Bienvenue/',$_cols[6])){
     break;
   }
   
@@ -629,7 +632,7 @@ foreach($__cols as $cols){
 		  'product valid to'=>date('Y-m-d H:i:s'),
 		//'deals'=>$deals
 		);
-    //     print_r($cols);
+      //   print_r($data);
 
     if($uk_product->id)
     $parts=$uk_product->get('Parts SKU');
@@ -649,7 +652,7 @@ foreach($__cols as $cols){
  			   'Product Part Type'=>'Simple Pick'
  			   );
 	
- 	$product->new_part_list(array(),$part_list);
+ 	$product->new_current_part_list(array(),$part_list);
 	//	print_r($product->data);
  	$product->load('parts');
 	$part =new Part('sku',$parts[0]);
@@ -672,9 +675,13 @@ foreach($__cols as $cols){
 
   $fam_name=_trim( $cols[6]);
 
-  //$fam_name=_trim( mb_convert_encoding($cols[6], "UTF-8", "ISO-8859-1"));
-      $fam_position=$column;
 
+//print "FAM ----- ".$cols[6]." $fam_name  ------\n";
+//print_r($cols);
+  //$fam_name=_trim( mb_convert_encoding($cols[6], "UTF-8", "ISO-8859-1"));
+  //   $fam_name=preg_replace("/\xC3\xA0/","à",$fam_name);
+     $fam_position=$column;
+//print "fam name $fam_name \n";
       
     }
     

@@ -91,18 +91,28 @@
 <tr>
 		    <td>{t}Available for{/t}:</td><td class="stock aright">{$part->get('Part XHTML Available For Forecast')}</td>
 		  </tr>
-		    {if $locations}
-		    <tr><td>{t}Location{/t}:</td><td class="aright">
-			<table class="locations " style="float:right"  >
-			{foreach from=$locations item=location name=foo }
-			<tr><td>{$location.icon} </td><td> {$location.name}</td><td style="padding-left:10px"> ({$location.stock})</td></tr>
-			{/foreach}
-			</table>
-		      <td>
-		    {/if}
+		   
+		  
+		   
 		    {if $nextbuy>0   }<tr><td rowspan="2">{t}Next shipment{/t}:</td><td>{$data.next_buy}</td></tr><tr><td class="noborder">{$data.nextbuy_when}</td>{/if}
 		    </tr>
 		  </table>
+		  {t}Locations{/t}:
+		  <table  id="part_locations" class="show_info_product"  >
+	
+			{foreach from=$part->get_locations(true) item=location name=foo }
+			<tr><td><a href="location.php?id={$location.LocationKey}">{$location.LocationCode}
+			</a></td>
+		     <td class="quantity"  id="part_location_quantity_{$location.PartSKU}_{$location.LocationKey}" quantity="{$location.QuantityOnHand}"  >{$location.FormatedQuantityOnHand}</td>
+		     <td class="button" id="part_location_audit_{$location.PartSKU}_{$location.LocationKey}"  onClick="audit({$location.PartSKU},{$location.LocationKey})" ><img src="art/icons/eye.png" alt="{t}audit{/t}"/></td>
+		     <td class="button" id="part_location_lost_items_{$location.PartSKU}_{$location.LocationKey}" onClick="lost({$location.PartSKU},{$location.LocationKey})"> <img src="art/icons/bin.png" alt="{t}lost{/t}"/></td>
+			 <td class="button" id="part_location_move_items_{$location.PartSKU}_{$location.LocationKey}" onClick="move({$location.PartSKU},{$location.LocationKey})"><img src="art/icons/arrow_out.png" alt="{t}move{/t}"/></td>
+			
+			</tr>
+			{/foreach}
+			
+		  </table>
+		  
 		   <table    class="show_info_product">
       <tr >
       <td colspan="2" class="aright" style="padding-right:10px"> <span class="product_info_sales_options" id="info_period"><span id="info_title">{$parts_period_title}</span></span>
@@ -205,6 +215,7 @@
 
 
 </div>{include file='footer.tpl'}
+{include file='stock_splinter.tpl'}
 
 <div id="rppmenu0" class="yuimenu" >
   <div class="bd">

@@ -14,7 +14,7 @@ require_once 'class.Order.php';
 require_once 'class.Location.php';
 require_once 'class.PartLocation.php';
 require_once 'class.Image.php';
-
+require_once 'ar_edit_common.php';
 if(!isset($_REQUEST['tipo']))
   {
     $response=array('state'=>405,'resp'=>_('Non acceptable request').' (t)');
@@ -26,6 +26,21 @@ $editor=array( 'User Key'=>$user->id);
 
 $tipo=$_REQUEST['tipo'];
 switch($tipo){
+case('edit_part_list'):
+$data=prepare_values($_REQUEST,array(
+                             'newvalue'=>array('type'=>'json array')
+                             ,'key'=>array('type'=>'key')
+                             ));
+                                                
+
+
+
+
+edit_part_list($data);
+break;
+case('store_pages'):
+list_pages_for_edition();
+break;
 case('edit_page_layout'):
 edit_page_layout();
 break;
@@ -1364,7 +1379,8 @@ function list_departments_for_edition(){
     $order='`Product Department Code`';
   
 
-    $sql="select D.`Product Department Key`,`Product Department Code`,`Product Department Name`,`Product Department For Sale Products`+`Product Department In Process Products`+`Product Department Not For Sale Products`+`Product Department Discontinued Products`+`Product Department Unknown Sales State Products` as Products  from `Product Department Dimension` D  $where $wheref  order by $order $order_direction limit $start_from,$number_results    ";
+    $sql="select D.`Product Department Key`,`Product Department Code`,`Product Department Name`,`Product Department For Public Sale Products`+`Product Department For Private Sale Products`+`Product Department In Process Products` as Products  from `Product Department Dimension` D  $where $wheref  order by $order $order_direction limit $start_from,$number_results    ";
+    
     $res = mysql_query($sql);
     $adata=array();
     //print "$sql";
@@ -1446,6 +1462,208 @@ if($subject->updated){
 }
 return;
 
+}
+
+
+
+function list_pages_for_edition(){
+
+
+  $parent='store';
+
+   if( isset($_REQUEST['parent']))
+     $parent= $_REQUEST['parent'];
+
+   if($parent=='store')
+     $parent_id=$_SESSION['state']['store']['id'];
+   else
+     return;
+
+   $conf=$_SESSION['state'][$parent]['pages'];
+
+   
+
+
+   if(isset( $_REQUEST['sf']))
+     $start_from=$_REQUEST['sf'];
+   else
+     $start_from=$conf['sf'];
+   
+
+   if(isset( $_REQUEST['nr'])){
+     $number_results=$_REQUEST['nr'];
+     if($start_from>0){
+       $page=floor($start_from/$number_results);
+       $start_from=$start_from-$page;
+     }
+   
+   }else
+     $number_results=$conf['nr'];
+
+
+ if(isset( $_REQUEST['o']))
+     $order=$_REQUEST['o'];
+   else
+    $order=$conf['order'];
+   if(isset( $_REQUEST['od']))
+     $order_dir=$_REQUEST['od'];
+   else
+     $order_dir=$conf['order_dir'];
+   $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
+   if(isset( $_REQUEST['where']))
+     $where=addslashes($_REQUEST['where']);
+   else
+     $where=$conf['where'];
+
+    
+   if(isset( $_REQUEST['f_field']))
+     $f_field=$_REQUEST['f_field'];
+   else
+     $f_field=$conf['f_field'];
+   
+   if(isset( $_REQUEST['f_value']))
+     $f_value=$_REQUEST['f_value'];
+   else
+     $f_value=$conf['f_value'];
+
+   
+   if(isset( $_REQUEST['tableid']))
+     $tableid=$_REQUEST['tableid'];
+   else
+    $tableid=0;
+   
+
+  
+
+   
+   $_SESSION['state'][$parent]['pages']=array('order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value);
+  // print_r($_SESSION['tables']['families_list']);
+
+  //  print_r($_SESSION['tables']['families_list']);
+ 
+ $where=' where `Page Type`="Store" ';
+ if($parent=='store')
+     $where=sprintf("and  `Page Parent Key`=%d ",$parent_id);
+   
+   
+ $filter_msg='';
+  $wheref='';
+  if($f_field=='description' and $f_value!='')
+    $wheref.=" and  CONCAT(`Charge Description`,' ',`Charge Terms Description`) like '".addslashes($f_value)."%'";
+  elseif($f_field=='name' and $f_value!='')
+    $wheref.=" and  `Charge Name` like '".addslashes($f_value)."%'";
+
+
+
+
+  
+ 
+
+
+   $sql="select count(*) as total from `Page Dimension` P left join `Page Store Dimension` PS on (P.`Page Key`=PS.`Page Key`)  $where $wheref";
+   // print $sql;
+   $result=mysql_query($sql);
+   if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
+     $total=$row['total'];
+   }
+mysql_free_result($result);
+     
+     if($wheref==''){
+       $filtered=0;$total_records=$total;
+   }else{
+     $sql="select count(*) as total `Page Dimension` P left join `Page Store Dimension` PS on (P.`Page Key`=PS.`Page Key`)   $where ";
+
+     $result=mysql_query($sql);
+     if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
+      $total_records=$row['total'];
+	 $filtered=$total_records-$total;
+     }
+mysql_free_result($result);
+
+   }
+
+  
+     $rtext=$total_records." ".ngettext('charge','charges',$total_records);
+     if($total_records>$number_results)
+       $rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
+     else
+       $rtext_rpp=' ('._('Showing all').')';
+
+  if($total==0 and $filtered>0){
+       switch($f_field){
+     case('name'):
+	 $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any charge with this name ")." <b>".$f_value."*</b> ";
+	 break;
+       case('description'):
+	 $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any charge with description like ")." <b>".$f_value."*</b> ";
+       break;
+     }
+   }
+   elseif($filtered>0){
+     switch($f_field){
+      case('name'):
+       $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total "._('charges with name like')." <b>".$f_value."*</b>";
+       break; 
+     case('description'):
+       $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total "._('charges with description like')." <b>".$f_value."*</b>";
+       break; 
+     }
+   }else
+      $filter_msg='';
+
+   $_dir=$order_direction;
+   $_order=$order;
+   
+  
+  if($order=='title')
+     $order='`Page Title`';
+   else
+         $order='`Page Section`';
+
+
+ 
+   $sql="select *  from `Page Dimension`  P left join `Page Store Dimension` PS on (P.`Page Key`=PS.`Page Key`) $where    order by $order $order_direction limit $start_from,$number_results    ";
+
+   $res = mysql_query($sql);
+   
+   $total=mysql_num_rows($res);
+   
+  while($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+    
+    
+    $adata[]=array(
+		  'section'=>$row['Page Section'],
+		  'title'=>$row['Page Title']
+		  
+		  
+		   );
+  }
+  mysql_free_result($res);
+
+  
+
+  // if($total<$number_results)
+  //  $rtext=$total.' '.ngettext('store','stores',$total);
+  //else
+  //  $rtext='';
+
+//   $total_records=ceil($total_records/$number_results)+$total_records;
+
+   $response=array('resultset'=>
+		   array('state'=>200,
+			 'data'=>$adata,
+			 'sort_key'=>$_order,
+			 'sort_dir'=>$_dir,
+			 'tableid'=>$tableid,
+			 'filter_msg'=>$filter_msg,
+			 'rtext'=>$rtext,
+			 'rtext_rpp'=>$rtext_rpp,
+			 'total_records'=>$total_records,
+			 'records_offset'=>$start_from,
+			 'records_perpage'=>$number_results,
+			 )
+		   );
+   echo json_encode($response);
 }
 
 function list_charges_for_edition(){
@@ -1914,7 +2132,7 @@ function list_deals_for_edition(){
    $_SESSION['state'][$parent]['deals']=array('order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value);
    
    if($parent=='store')
-     $where=sprintf("where  `Store Key`=%d and D.`Deal Trigger`='Order'    ",$parent_id);
+     $where=sprintf("where  D.`Store Key`=%d and D.`Deal Trigger`='Order'    ",$parent_id);
    elseif($parent=='department')
      $where=sprintf("where    D.`Deal Trigger`='Department' and  D.`Deal Trigger Key`=%d   ",$parent_id);
    elseif($parent=='family')
@@ -1998,7 +2216,7 @@ mysql_free_result($result);
 
  
    $sql="select D.`Deal Trigger`,`Deal Key`,D.`Deal Name`,`Campaign Deal Schema Key`,`Campaign Name`,`Campaign Deal Schema Key`  from `Deal Dimension` D left join `Campaign Deal Schema`CDS  on (CDS.`Deal Schema Key`=`Campaign Deal Schema Key`) left join `Campaign Dimension`C  on (CDS.`Campaign Key`=C.`Campaign Key`)  $where    order by $order $order_direction limit $start_from,$number_results    ";
-   //print $sql;
+  // print $sql;
    $res = mysql_query($sql);
    $total=mysql_num_rows($res);
    $adata=array();
@@ -2434,5 +2652,48 @@ $page->update_show_layout($layout,$value);
 
 
 }
+
+function edit_part_list($data){
+
+$product=new Product($_SESSION['state']['product']['mode'],$_SESSION['state']['product']['tag']);
+$product_part_key=$data['key'];
+$values=$data['newvalue'];
+
+
+
+$part_list_data=array();
+foreach($values as $key =>$value){
+	$part_list_data[$value['sku']]=array(
+ 			   'Product ID'=>$product->get('Product ID'),
+ 			   'Part SKU'=>$value['sku'],
+ 			   'Product Part Type'=>'Simple',
+ 			   'Parts Per Product'=>$value['ppp'],
+ 			   'Product Part List Note'=>$value['note']
+ 			   );
+
+}
+
+$header_data=array(
+'Product Part Valid From'=>date('Y-m-d H:i:s')
+,'Product Part Metadata'=>''
+
+);
+$product->new_current_part_list($header_data,$part_list_data);
+
+
+if($product->updated){
+  $response= array('state'=>200,'changed'=>true,'newvalue'=>$product->new_value);
+}elseif($product->error){
+ $response= array('state'=>400,'msg'=>$product->msg);
+}
+
+else{
+ $response= array('state'=>200,'changed'=>false);
+}
+ echo json_encode($response); 
+
+}
+
+
 
 ?>

@@ -20,7 +20,7 @@ $_SESSION['locale_info'] = localeconv();
 
 $con=@mysql_connect($dns_host,$dns_user,$dns_pwd );
 if(!$con){print "Error can not connect with database server\n";exit;}
-$dns_db='dw';
+//$dns_db='dw';
 $db=@mysql_select_db($dns_db, $con);
 if (!$db){print "Error can not access the database\n";exit;}
 require_once '../../common_functions.php';
@@ -48,8 +48,9 @@ $wa_data=array(	'Warehouse Area Name'=>'Unknown'
 $wa=new WarehouseArea('find',$wa_data,'create');
 
 
+$sql=sprintf("select * from aw_old.product where code='abp-21'   order by code   ");
 
-$sql=sprintf("select * from aw_old.product where code='xob-21'  order by code   ");
+$sql=sprintf("select * from aw_old.product where code not in ('pi-09')   order by code   ");
 $result=mysql_query($sql);
 while($row2=mysql_fetch_array($result, MYSQL_ASSOC)   ){
   $product_code=$row2['code'];
@@ -86,18 +87,26 @@ while($row2=mysql_fetch_array($result, MYSQL_ASSOC)   ){
 
 
      $product=new Product('code_store',$product_code,1);
-     if($product->id and $location->id){
+     if($product->data['Product Record Type']=='Discontinued')
+     continue;
+  //  print "Product  ".$product->data['Product Record Type']." \n";
+    
+    
+    if($product->id and $location->id){
 
-       $part_skus=$product->get('Parts SKU');
+       $part_skus=$product->get_current_part_list();
        if(count($part_skus)!=1){
-	 print_r($product->data);
-	 exit();
+print"Product has more than ne sku\n";
+print_r($part_skus);
+print $product->code."\n";exit('error');
+	
        }
 
-
+//print "parts\n";
+  //     print_r($part_skus);
        
-       $sku=$part_skus[0];
-
+       $tmp=array_pop($part_skus);
+$sku=$tmp['Part SKU'];
     print "P: $product_code $location_code $used_for Stock: $stock_old_db\n";
   
        

@@ -11,6 +11,7 @@ include_once('../../class.PartLocation.php');
 
 include_once('../../class.InventoryAudit.php');
 date_default_timezone_set('Europe/London');
+$sku_index_to_delete=array();
 
 error_reporting(E_ALL);
 $con=@mysql_connect($dns_host,$dns_user,$dns_pwd );
@@ -18,7 +19,7 @@ if (!$con) {
     print "Error can not connect with database server\n";
     exit;
 }
-$dns_db='dw_avant';
+//$dns_db='dw_avant';
 $db=@mysql_select_db($dns_db, $con);
 if (!$db) {
     print "Error can not access the database\n";
@@ -30,19 +31,24 @@ mysql_query("SET NAMES 'utf8'");
 require_once '../../conf/conf.php';
 date_default_timezone_set('Europe/London');
 
-$sql=sprintf("select  (select units from aw_old.product p where p.id=bulk_id) as r1_units,(select code from aw_old.product p where p.id=bulk_id) as r1 ,(select units from aw_old.product p where p.id=product_id) as r2_units ,(select code from aw_old.product p where p.id=product_id) as r2,(select count(*) from aw_old.product_relations as prtmp where prtmp.product_id=aw_old.product_relations.product_id) as multiplicity   from aw_old.product_relations;");
+$sql=sprintf("select  (select units from aw_old.product p where p.id=bulk_id) as r1_units,(select code from aw_old.product p where p.id=bulk_id) as r1 ,(select units from aw_old.product p where p.id=product_id) as r2_units ,(select code from aw_old.product p where p.id=product_id) as r2,(select count(*) from aw_old.product_relations as prtmp where prtmp.product_id=aw_old.product_relations.product_id) as multiplicity   from aw_old.product_relations ");
+//print "$sql\n";
+//exit;
 $res=mysql_query($sql);
 while ($row=mysql_fetch_array($res)) {
+
+    if ($row['r1']=='')
+        continue;
 
     if ($row['multiplicity']==1) {
 
 
-if(preg_match('/gpp?\-/i',$row['r1']))
-continue;
-if(preg_match('/spin-/i',$row['r1']))
-continue;
-if(preg_match('/wsl-1275/i',$row['r1']))
-continue;
+        if (preg_match('/gpp?\-/i',$row['r1']))
+            continue;
+        if (preg_match('/spin-/i',$row['r1']))
+            continue;
+        if (preg_match('/wsl-1275/i',$row['r1']))
+            continue;
         $product_parts_to_keep=$row['r1'];
         $product_parts_to_delete=$row['r2'];
         $factor=$row['r2_units']/$row['r1_units'];
@@ -54,7 +60,7 @@ continue;
         }
 
         //get_product_skus($row['r1']);
-        print "$product_parts_to_delete transfer parts to $product_parts_to_keep \n";
+        // print "++++++++++++++++++++++\n$product_parts_to_delete transfer parts to $product_parts_to_keep \n";
 
 
 
@@ -65,7 +71,93 @@ continue;
 
         //continue;
 
+
+        $sql=sprintf("select `Product Valid From`,`Product Valid To`,`Product ID` from `Product Dimension` where `Product Code`  in ('$product_parts_to_delete') order by `Product Valid From`");
+        // print $sql;
+        $resxx=mysql_query($sql);
+        if ($rowxx=mysql_fetch_array($resxx)) {
+            $date_1=$rowxx['Product Valid From'];
+        }
+        $sql=sprintf("select `Product Valid From`,`Product Valid To`,`Product ID` from `Product Dimension` where `Product Code`  in ('$product_parts_to_keep') order by `Product Valid From`");
+        $resxx=mysql_query($sql);
+        if ($rowxx=mysql_fetch_array($resxx)) {
+            $date_2=$rowxx['Product Valid From'];
+            $_id=$rowxx['Product ID'];
+        }
+
+        //print "$product_parts_to_delete $date_1\n$product_parts_to_keep $date_2\n";
+
+        if (strtotime($date_1)<strtotime($date_2)) {
+
+
+            $product=new Product('pid',$_id);
+//print "Product ".$product->code." $date_1 \n";
+            $product->update_valid_dates($date_1);
+        }
+
+
+        $sql=sprintf("select `Product Valid From`,`Product Valid To`,`Product ID` from `Product Dimension` where `Product Code`  in ('$product_parts_to_delete') order by `Product Valid To` desc");
+        // print $sql;
+        $resxx=mysql_query($sql);
+        if ($rowxx=mysql_fetch_array($resxx)) {
+            $date_1=$rowxx['Product Valid To'];
+        }
+        $sql=sprintf("select `Product Valid From`,`Product Valid To`,`Product ID` from `Product Dimension` where `Product Code`  in ('$product_parts_to_keep') order by `Product Valid To` desc");
+        $resxx=mysql_query($sql);
+        if ($rowxx=mysql_fetch_array($resxx)) {
+            $date_2=$rowxx['Product Valid To'];
+            $_id=$rowxx['Product ID'];
+        }
+
+        // print "$product_parts_to_delete $date_1\n$product_parts_to_keep $_id $date_2\n";
+
+        if (strtotime($date_1)>strtotime($date_2)) {
+
+
+            $product=new Product('pid',$_id);
+//print "Product $_id ".$product->code." $date_1 \n";
+            $product->update_valid_dates($date_1);
+        }
+
+
+
+
         $to_delete_skus=get_product_all_skus($product_parts_to_delete);
+
+        $to_delete_skus_array=preg_split('/\,/',$to_delete_skus);
+        $all_skus=preg_split('/\,/',get_product_all_skus($product_parts_to_keep));
+
+//print_r($all_skus);
+//print_r($to_delete_skus_array);
+
+        if (count($all_skus)==1  and count($to_delete_skus_array)==1) {
+            $part_to_delete=new Part(array_pop($to_delete_skus_array));
+
+            $part_to_keep=new Part(array_pop($all_skus));
+
+
+// print "Part ".$part_to_delete->sku.":   ".$part_to_delete->data['Part Unit Description']."   valid from ".$part_to_delete->data['Part Valid From']." to  ".$part_to_delete->data['Part Valid To']." \n";
+
+// print "Part ".$part_to_keep->sku.":   ".$part_to_keep->data['Part Unit Description']."   valid from ".$part_to_keep->data['Part Valid From']." to  ".$part_to_keep->data['Part Valid To']." \n";
+            if (strtotime($part_to_keep->data['Part Valid From'])>strtotime($part_to_delete->data['Part Valid From'])) {
+                $part_to_keep->update_valid_from($part_to_delete->data['Part Valid From']);
+            }
+//if(strtotime($part_to_keep->data['Part Valid To'])<strtotime($part_to_delete->data['Part Valid To'])){
+            $part_to_keep->update_valid_to($part_to_delete->data['Part Valid To']);
+//}
+
+        } else {
+        print "++++++++++++++++++++++\n$product_parts_to_delete transfer parts to $product_parts_to_keep \n";
+//print_r($all_skus);
+
+//print_r($to_delete_skus_array);
+//exit;
+            continue;
+
+        }
+
+
+
 
         $sql=sprintf("select * from `Inventory Transaction Fact` where `Part SKU` in ($to_delete_skus)  ");
         $res2=mysql_query($sql);
@@ -79,23 +171,27 @@ continue;
 
 
 
+                print "No parent!\nDate: ".$row2['Date']."\n";
+                print "Products to Keep: $product_parts_to_keep ($to_keep_skus)\n";
+                print "Products to Del : $product_parts_to_delete ($to_delete_skus)\n";
 
 
-                print($row2['Part SKU']."--------> no parent!!!!    $product_parts_to_keep ".$row2['Date']."  prod to de;ete  $product_parts_to_delete\n");
+
+
                 exit();
                 break;
             }
 
             if (count(preg_split('/\,/',$to_keep_skus))>1) {
 
-         
-		if($to_keep_skus=='12771,16666')
-		  $to_keep_skus=12771;
-		else{
-		  exit("do not know where to choodre  $to_keep_skus   $product_parts_to_keep");
-		}
 
-	    } else {
+                if ($to_keep_skus=='12771,16666')
+                    $to_keep_skus=12771;
+                else {
+                    exit("do not know where to choodre  $to_keep_skus   $product_parts_to_keep");
+                }
+
+            } else {
                 $base_sku=$to_keep_skus;
 
             }
@@ -105,19 +201,25 @@ continue;
 
 
 
-           $units_to_delete=get_units_from_sku($row2['Part SKU'],$row2['Date']);
+            $units_to_delete=get_units_from_sku($row2['Part SKU'],$row2['Date']);
 
             $actual_factor=$units_to_delete/$units_to_keep;
 
 
             if ($actual_factor!=$factor) {
-            
-            if($units_to_delete and $units_to_keep and $product_parts_to_keep!='EO-01' )
-            $factor=$actual_factor;
-             //   print($row2['Part SKU']."  $product_parts_to_keep factors discrepancies print ($units_to_keep,$units_to_delete) $acutal_factor --> $factor \n");
+
+                if ($units_to_delete and $units_to_keep and $product_parts_to_keep!='EO-01' )
+                    $factor=$actual_factor;
+                //   print($row2['Part SKU']."  $product_parts_to_keep factors discrepancies print ($units_to_keep,$units_to_delete) $acutal_factor --> $factor \n");
             }
 
-            print "$product_parts_to_keep <-($product_parts_to_delete) Date ".$row2['Date']." QTY ".$row2['Inventory Transaction Quantity']." Cost ".$row2['Inventory Transaction Amount']." Rep:$to_keep_skus F:  $factor, U:($units_to_delete;$units_to_keep ".($units_to_delete/$units_to_keep).")  \n";
+            // print "$product_parts_to_keep <-($product_parts_to_delete) Date ".$row2['Date']." QTY ".$row2['Inventory Transaction Quantity']." Cost ".$row2['Inventory Transaction Amount']." Rep:$to_keep_skus F:  $factor, U:($units_to_delete;$units_to_keep ".($units_to_delete/$units_to_keep).")  \n";
+            // print "$to_delete_skus => $to_keep_skus\n";
+            //print_r($to_delete_skus);
+            $_to_delete_skus_array=preg_split('/\,/',$to_delete_skus);
+            foreach($_to_delete_skus_array as $key=> $_sku) {
+                $sku_index_to_delete[$_sku]=1;
+            }
 
         }
 
@@ -125,10 +227,13 @@ continue;
 
 
     } else {
-        //print "Multiplicity:".$row['multiplicity']."\n";
+        // print_r($row);
+        //   print "Multiplicity:".$row['multiplicity']."  \n";
     }
 
 }
+
+//print_r($sku_index_to_delete);
 
 function merge_product($product1,$product2) {
     if ($p1->data['Product Units Per Case']==$p2->data['Product Units Per Case']) {
@@ -157,17 +262,19 @@ function get_product_skus($product_code,$date=false) {
         $ids= $row['ids'];
     }
 
-    $sql=sprintf("select  GROUP_CONCAT(distinct `Part SKU`) skus from `Product Part List` PPL left join `Product Part Dimension` PPD  on (PPD.`Product Part Key`=PPL.`Product Part Key`) where PPL.`Product ID` in ($ids)  and  ( (  `Product Part Valid From`<=%s  and  `Product Part Valid To`>=%s and `Product Part Status`='Not In Use')or (`Product Part Valid From`<=%s and  `Product Part Status`='In Use') )  "
+    $sql=sprintf("select  GROUP_CONCAT(distinct `Part SKU`) skus from `Product Part List` PPL left join `Product Part Dimension` PPD  on (PPD.`Product Part Key`=PPL.`Product Part Key`) where `Product ID` in ($ids)  and  ( (  `Product Part Valid From`<=%s  and  `Product Part Valid To`>=%s and PPD.`Product Part Most Recent`='No')or (`Product Part Valid From`<=%s and  PPD.`Product Part Most Recent`='Yes') )  "
                  ,prepare_mysql($date)
                  ,prepare_mysql($date)
                  ,prepare_mysql($date)
                 );
-    //print "$sql\n";
+    //  print "$sql\n";
     $res=mysql_query($sql);
     $skus='';
     if ($row=mysql_fetch_array($res)) {
         $skus= $row['skus'];
     }
+    //print "nothibg found\n$sql\n";
+
 
     return $skus;
 
@@ -189,7 +296,7 @@ function get_product_skus_first($product_code) {
         $ids= $row['ids'];
     }
 
-    $sql=sprintf("select  `Part SKU` skus from `Product Part List` PPL left join `Product Part Dimension` PPD  on (PPD.`Product Part Key`=PPL.`Product Part Key`) where PPL.`Product ID` in ($ids)  order by `Product Part Valid From` limit 1  "
+    $sql=sprintf("select  `Part SKU` skus from `Product Part List` PPL left join `Product Part Dimension` PPD  on (PPD.`Product Part Key`=PPL.`Product Part Key`) where `Product ID` in ($ids)  order by `Product Part Valid From` limit 1  "
 
                 );
 
@@ -218,8 +325,8 @@ function get_product_all_skus($product_code) {
         $ids= $row['ids'];
     }
 
-    $sql="select  GROUP_CONCAT(distinct `Part SKU`) skus from `Product Part List` where `Product ID` in ($ids)  ";
-   // print "====================\n$sql\n";
+    $sql="select  GROUP_CONCAT(distinct `Part SKU`) skus from `Product Part List` PPL left join `Product Part Dimension` PPD on (PPD.`Product Part Key`=PPL.`Product Part Key`)where `Product ID` in ($ids)  ";
+    // print "====================\n$sql\n";
     $res=mysql_query($sql);
     $skus='';
     if ($row=mysql_fetch_array($res)) {
@@ -236,7 +343,7 @@ function get_units_from_sku($sku,$date) {
     if (!$date)
         $date=date('Y-m-d H:i:s');
 
-    $sql=sprintf("select  GROUP_CONCAT(distinct PPL.`Product ID`) ids from `Product Part List` PPL left join `Product Part Dimension` PPD  on (PPD.`Product Part Key`=PPL.`Product Part Key`) where `Part SKU` in ($sku)  and  ( (  `Product Part Valid From`<=%s  and  `Product Part Valid To`>=%s and `Product Part Status`='Not In Use')or (`Product Part Valid From`<=%s and  `Product Part Status`='In Use') )  "
+    $sql=sprintf("select  GROUP_CONCAT(distinct `Product ID`) ids from `Product Part List` PPL left join `Product Part Dimension` PPD  on (PPD.`Product Part Key`=PPL.`Product Part Key`) where `Part SKU` in ($sku)  and  ( (  `Product Part Valid From`<=%s  and  `Product Part Valid To`>=%s and PPD.`Product Part Most Recent`='No')or (`Product Part Valid From`<=%s and  PPD.`Product Part Most Recent`='Yes') )  "
                  ,prepare_mysql($date)
                  ,prepare_mysql($date)
                  ,prepare_mysql($date)
@@ -258,7 +365,7 @@ function get_units_from_sku($sku,$date) {
             $unit_old=$unit;
 
         if ($unit_old!=$unit) {
-         //   print "error units discrepance\n";
+            //   print "error units discrepance\n";
         }
 
 

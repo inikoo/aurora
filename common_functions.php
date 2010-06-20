@@ -392,31 +392,20 @@ $locale_info = localeconv();
       $currency=strtoupper($match[0]);
     }
   }
- 
-  $qty=preg_split('/\\'.$_SESSION['locale_info']['decimal_point'].'/',$amount);
-  $qty_parts=count($qty);
-  //    print_r($qty);
-  if($qty_parts==1)
-    $number=floatval(preg_replace("/[^-0-9\.]/","",$qty[0]));
-  if($qty_parts==2){
-    $number=floatval(preg_replace("/[^-0-9\.]/","",$qty[0])).$locale_info['decimal_point'].floatval(preg_replace("/[^-0-9\.]/","",$qty[1]));
-  }else{
-    $i=0;
-    $number='0';
-    foreach($qty as $_qty){
-      if($i==$qty_parts)
-	$number.=$_SESSION['locale_info']['decimal_point'].floatval(preg_replace("/[^-0-9\.]/","",$qty[$i]));
-      else
-	$number.=floatval(preg_replace("/[^-0-9\.]/","",$qty[$i]));
-      $i++;
-    }
-    
-  }
-  $number=preg_replace('/^0*/','',$number);
   
-  return array($currency,$number);
+
+  
+  return array($currency,ParseFloat($amount));
 
 }
+
+function ParseFloat($floatString){
+    $LocaleInfo = localeconv();
+    $floatString = str_replace($LocaleInfo["mon_thousands_sep"] , "", $floatString);
+    $floatString = str_replace($LocaleInfo["mon_decimal_point"] , ".", $floatString);
+    return floatval($floatString);
+} 
+
 
 function currency_symbol($currency){
    switch($currency){
@@ -901,11 +890,11 @@ function extract_product_groups($str,
 //print _trim('        d ca        ca  caca    ');
 
 function _trim($string){
- 
+ $string=trim($string);
 
   //$string=preg_replace('/\xC2\xA0\s*$/',' ',$string);
   // $string=preg_replace('/\xA0\s*/',' ',$string);
-  $string=preg_replace('/\s+/',' ',trim($string));
+ // $string=preg_replace('/\s+/',' ',trim($string));
 
  //  $string=preg_replace('/^\s*/','',$string);
 //   $string=preg_replace('/\s*$/','',$string);
