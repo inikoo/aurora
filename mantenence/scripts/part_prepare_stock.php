@@ -33,6 +33,7 @@ date_default_timezone_set('Europe/London');
 
 $where='where  `Part XHTML Currently Used In` like "%lebt%"';
 $where='and `Part SKU`=12804';
+$where='';
 $sql=sprintf('select count(*) as num  from `Part Dimension` where `Part Status`="in Use" %s ',$where);
 $res=mysql_query($sql);
 while($row=mysql_fetch_array($res)){

@@ -117,7 +117,7 @@ $this->update_customer=true;
             if ($this->data ['Order Currency']!=$corporation_currency_code) {
 
 
-                $currency_exchange = new CurrencyExchange('get',$this->data ['Order Currency'].$this->data ['Order Currency'],'now');
+                $currency_exchange = new CurrencyExchange($this->data ['Order Currency'].$this->data ['Order Currency'],'now');
                 $exchange= $currency_exchange->get_exchange();
                 $this->data ['Order Currency Exchange']=$exchange;
             }
@@ -2802,13 +2802,13 @@ if($this->update_customer){
             }
 
 
-            $sql=sprintf("select `Shipping Allowance Metadata`,`Shipping Price Method` from `Shipping Dimension` where  `Shipping Destination Type`='Country' and `Shipping Destination Metadata`=%s    "
+            $sql=sprintf("select `Shipping Metadata`,`Shipping Price Method` from `Shipping Dimension` where  `Shipping Destination Type`='Country' and `Shipping Destination Code`=%s    "
                          ,prepare_mysql($this->data['Order Ship To Country Code'])
                          ,$this->id);
-            // print $sql;
+             //print $sql;
             $res=mysql_query($sql);
             if ($row=mysql_fetch_array($res)) {
-                $shipping=$this->get_shipping_from_method($row['Shipping Price Method'],$row['Shipping Allowance Metadata']);
+                $shipping=$this->get_shipping_from_method($row['Shipping Price Method'],$row['Shipping Metadata']);
 
                 if (is_numeric($shipping)) {
 

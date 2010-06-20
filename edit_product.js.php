@@ -4,6 +4,17 @@ $money_regex="^[^\\\\d\\\.\\\,]{0,3}(\\\\d{1,3}(\\\,\\\\d{3})*|(\\\\d+))(\\\.\\\
 print 'var money_regex="'.$money_regex.'";';
 $number_regex="^(\\\\d{1,3}(\\\,\\\\d{3})*|(\\\\d+))(\\\.\\\\d{1,})?$";
 print 'var number_regex="'.$number_regex.'";';
+
+$parts=preg_split('/\,/',$_REQUEST['parts']);
+
+$_parts='';
+foreach($parts as $part){
+    $_parts.="'sku$part':{sku : $part, new:false, deleted:false } ,";
+}
+$_parts=preg_replace("/\,$/","",$_parts);
+print "\nvar part_list={ $_parts };";
+
+
  ?>
 var Event = YAHOO.util.Event;
 var Dom   = YAHOO.util.Dom;
@@ -156,8 +167,248 @@ function reset_edit_weight(){
 }
 
 
+function reset_part(key){
+
+for(part_key in part_list){
+
+if(part_list[part_key].new  ){
+
+Dom.get('part_editor_table').removeChild(Dom.get('part_list'+part_list[part_key].sku));
+
+
+
+}else if (part_list[part_key].deleted){
+
+
+}else{
+
+
+key=part_list[part_key].sku;
+Dom.get('parts_per_product'+key).value=Dom.get('parts_per_product'+key).getAttribute('ovalue')
+Dom.get('pickers_note'+key).value=Dom.get('pickers_note'+key).getAttribute('ovalue');
+
+}
+
+}
+
+
+
+part_render_save_buttons();
+
+}
+
+function save_part(){
+
+
+key=Dom.get("product_part_items").getAttribute("product_part_key");
+
+for(part_key in part_list){
+    
+    part_list[part_key].ppp=Dom.get('parts_per_product'+part_list[part_key].sku).value;
+part_list[part_key].note=Dom.get('pickers_note'+part_list[part_key].sku).value;
+
+}
+
+json_value = YAHOO.lang.JSON.stringify(part_list);
+
+
+
+
+
+ var request='ar_edit_assets.php?tipo=edit_part_list&key=' + key+ '&newvalue=' + json_value
+		
+		  
+		    YAHOO.util.Connect.asyncRequest('POST',request ,{
+			    success:function(o) {
+				alert(o.responseText);
+				var r =  YAHOO.lang.JSON.parse(o.responseText);
+				if(r.state==200){
+				  if(r.changed){
+				  
+				  if(r.newvalue['Product Part Key']!= undefined){
+				  window.location.reload( true );
+				  return;
+				  }
+				  
+				    for (sku in  r.newvalue.items){
+				  
+				  if(r.newvalue.items[sku]['Product Part List Note']!= undefined)
+				  
+				   
+				        Dom.get('pickers_note'+sku).value=r.newvalue.items[sku]['Product Part List Note'];
+				         Dom.get('pickers_note'+sku).setAttribute('ovalue',r.newvalue.items[sku]['Product Part List Note']);
+			
+				    
+				    
+				    }
+				  
+				  }
+				    reset_part(key)
+
+
+				}else{
+				  
+				    
+				}
+				
+			    }
+			    
+			});
+
+
+
+}
+
+function part_render_save_buttons(){
+var validated=true;
+var changed=false;
+
+ Dom.setStyle('reset_edit_part','visibility','hidden');
+ Dom.setStyle('save_edit_part','visibility','hidden');
+
+for(part_key in part_list){
+
+if(part_list[part_key].new || ( !part_list[part_key].new && part_list[part_key].deleted  )  ){
+changed=true;
+}else{
+if(Dom.get('parts_per_product'+part_list[part_key].sku).value!=Dom.get('parts_per_product'+part_list[part_key].sku).getAttribute('ovalue'))changed=true;
+if(Dom.get('pickers_note'+part_list[part_key].sku).value!=Dom.get('pickers_note'+part_list[part_key].sku).getAttribute('ovalue'))changed=true;
+}
+
+if(!part_list[part_key].deleted ){
+  if(!validate_parts_per_product(part_list[part_key].sku))
+      validated=false;
+
+}
+
+}
+
+if( changed){
+    Dom.setStyle('reset_edit_part','visibility','visible');
+}
+if(validated && changed){
+      Dom.setStyle('save_edit_part','visibility','visible');
+}
+
+
+
+
+}
+
+
+function validate_parts_per_product(key){
+var value=Dom.get('parts_per_product'+key).value;
+var valid=true;
+var msg='';
+if(isNaN(parseFloat(value))){
+valid=false;
+msg='No numeric value';
+}
+var patt1=new RegExp("[a-zA-Z\.\?]");
+
+if( patt1.test(value)    ){
+msg='Invalid Value';
+valid=false;
+}
+
+if(valid && (value==0 || value<0  )  ){
+msg='Invalid Value';
+valid=false;
+}
+
+Dom.get("parts_per_product_msg"+key).innerHTML=msg;
+return valid;
+
+}
+
+function part_changed(o){
+
+
+
+part_render_save_buttons();
+
+
+
+}
+
+
+function goto_search_result(subject){
+elements_array=Dom.getElementsByClassName('selected', 'tr', subject+'_search_results_table');
+
+tr=elements_array[0];
+if(tr!= undefined)
+
+var data={
+sku:tr.getAttribute('key')
+,fsku:tr.getAttribute('sku')
+,description:tr.getAttribute('description')
+};
+
+select_part(data)
+
+}
+function go_to_result(){
+var data={
+sku:this.getAttribute('key')
+,fsku:this.getAttribute('sku')
+,description:this.getAttribute('description')
+};
+
+select_part(data)
+
+}
+
+function select_part(data){
+Dom.get('part_search').value='';
+
+Dom.get('part_search_results').style.display='none';
+Dom.get('the_part_dialog').setAttribute('sku',data.sku);
+Dom.get('part_sku0').innerHTML=data.fsku;
+Dom.get('part_description0').innerHTML=data.description;
+
+Dom.get('the_part_dialog').style.display='';
+
+
+var new_email_container = Dom.get('email_mould').cloneNode(true);
+
+
+}
+
+function cancel_new_part(){
+Dom.get('the_part_dialog').setAttribute('sku','');
+Dom.get('part_sku0').innerHTML='';
+Dom.get('part_description0').innerHTML='';
+Dom.get('pickers_note0').value='';
+Dom.get('parts_per_product0').value=1;
+
+
+Dom.get('the_part_dialog').style.display='none';
+}
+
 
 function init(){
+
+
+
+
+
+search_scope='part';
+     var store_name_oACDS = new YAHOO.util.FunctionDataSource(search_part);
+     store_name_oACDS.queryMatchContains = true;
+     var store_name_oAutoComp = new YAHOO.widget.AutoComplete(search_scope+"_search",search_scope+"_search_Container", store_name_oACDS);
+     store_name_oAutoComp.minQueryLength = 0; 
+     store_name_oAutoComp.queryDelay = 0.15;
+     Event.addListener(search_scope+"_search", "keyup",search_events,search_scope)
+     Event.addListener(search_scope+"_clean_search", "click",clear_search,search_scope);   
+
+
+
+
+
+
+
+
+
     var ids = ["description","pictures","prices","parts","dimat","config","web"]; 
     Event.addListener(ids, "click", change_block);
     

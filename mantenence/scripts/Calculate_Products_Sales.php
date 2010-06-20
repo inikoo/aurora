@@ -19,33 +19,37 @@ mysql_query("SET time_zone ='+0:00'");
 mysql_query("SET NAMES 'utf8'");
 require_once '../../conf/conf.php';           
 
-
+//  $this->update_historic_sales_data();
+ //     $this->update_sales_data();
+  //    $this->update_same_code_sales_data();
 
 
 //$sql="select * from `Product Dimension` where `Product Code`='FO-A1'";
 $stores=array(1,2,3);
 
 
-
-
-// $sql="select * from `Product History Dimension` PH  left join `Product Dimension` P on (P.`Product ID`=PH.`Product ID`)   where `Product Store Key` in (".join(',',$stores).")  order by `Product Key`  desc ";
-  $sql="select * from `Product History Dimension` PH  order by `Product Key` desc  ";
-
-
+ $sql="select `Product ID` from `Product Dimension` ";
 $result=mysql_query($sql);
-//print $sql;
+while($row=mysql_fetch_array($result)   ){
+  $product=new Product('pid',$row['Product ID']);
+ $product->update_sales_data();
+  print $row['Product ID']."\t\t ".$product->data['Product Code']." \r";
+
+}
+
+exit;
+ $sql="select * from `Product History Dimension` PH  order by `Product Key` desc  ";
+$result=mysql_query($sql);
 while($row=mysql_fetch_array($result)   ){
   $product=new Product('id',$row['Product Key']);
- // if($product->data['Product Code']=='JuteS-01'){
-  $product->load('sales');
-$product->update_parts();
-  print $row['Product Key']."\t\t ".$product->data['Product Code']." \r";
+ $product->update_historic_sales_data();
+  print "PH ".$row['Product Key']."\t\t ".$product->data['Product Code']." \r";
 
-//}
+}
 
 
  
-}
+
 
 
 ?>

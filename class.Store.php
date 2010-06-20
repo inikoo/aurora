@@ -425,6 +425,25 @@ class Store extends DB_Table{
       }
       break;	
       
+      case('slogan'):
+      $this->update_field('Store Slogan',$a1);
+      break;
+         case('url'):
+      $this->update_field('Store URL',$a1);
+      break;
+      
+       case('contact'):
+      $this->update_field('Store Contact',$a1);
+      break; 
+          case('email'):
+      $this->update_field('Store Email',$a1);
+      break; 
+          case('telephone'):
+      $this->update_field('Store Telephone',$a1);
+      break; 
+             case('fax'):
+      $this->update_field('Store Fax',$a1);
+      break; 
     case('name'):
      
       if(_trim($a1)==$this->data['Store Name']){

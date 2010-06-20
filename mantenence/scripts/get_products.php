@@ -41,7 +41,8 @@ $Data_Audit_ETL_Software="$software $version";
 
 $file_name='/data/plaza/AWorder2002.xls';
 $csv_file='order_uk_tmp.csv';
-exec('/usr/local/bin/xls2csv    -s cp1252   -d 8859-1   '.$file_name.' > '.$csv_file);
+$csv_file='gb.csv';
+//exec('/usr/local/bin/xls2csv    -s cp1252   -d 8859-1   '.$file_name.' > '.$csv_file);
 
 $handle_csv = fopen($csv_file, "r");
 $column=0;
@@ -367,7 +368,10 @@ while(($_cols = fgetcsv($handle_csv))!== false){
 
   }elseif($code=='Credit'){
     break;
+  }elseif(preg_match('/First Order Bonus - Welcome/',$_cols[6])){
+      break;
   }
+  
   $__cols[]=$_cols;
 }
 
@@ -389,6 +393,7 @@ $current_fam_code='';
 $fam_position=-10000;
 $promotion_position=100000;
 $promotion='';
+
 
 
 foreach($__cols as $cols){
@@ -414,7 +419,7 @@ foreach($__cols as $cols){
   $supplier_code=_trim($cols[21]);
   $part_code=_trim($cols[22]);
   $supplier_cost=$cols[25];
-  
+  $rrp=$cols[16];
 
 
   //    if(!preg_match('/bot-10/i',$code)){
@@ -441,13 +446,10 @@ foreach($__cols as $cols){
   if(preg_match('/^credit|Freight|^frc\-|^cxd\-|^wsl$|^postage$/i',$code) )
     $is_product=false;
 
-  
+
   
   if($is_product){
-    
-    //print "$code\n";
-
-    
+ 
     $part_list=array();
     $rules=array();
     
@@ -575,13 +577,10 @@ foreach($__cols as $cols){
     }
     
 
- //    if(preg_match('/wsl-535/i',$code)){
-//       print_r($cols);
-//       exit;
+  if($code=='Jhex-08')
+      $description='Musk';
 
-//     }
-
-    $rrp=$cols[16];
+    
     $supplier_code=_trim($cols[21]);
 
     $w=$cols[28];
@@ -802,7 +801,7 @@ foreach($__cols as $cols){
 		    );
 
 
-
+//print_r($data);
        if(array_key_exists($code,$codigos)){
 	 print "Product: $code is duplicated\n";
 	 continue;
@@ -811,14 +810,240 @@ foreach($__cols as $cols){
        $codigos[$code]=1;
 
        $product=new Product('find',$data,'create');
-       //  print_r($product);
-
-       if($product->new){
-	 $product->update_for_sale_since(date("Y-m-d H:i:s",strtotime("now +1 seconds")));
-
-	$scode=_trim($cols[20]);
-	$supplier_code=$cols[21];
        
+
+       if(!$product->found_in_code){
+	        $scode=_trim($cols[20]);
+	        $supplier_code=$cols[21];
+            update_supplier_part($code,$scode,$supplier_code,$units,$w,$product,$description,$supplier_cost);
+	   }
+       
+     $product->change_current_key($product->id);
+     //print_r($cols);
+     //print $product->data['Product Code'].": ".$product->data['Product RRP']." -> $rrp\n";
+     
+     $product->update_rrp('Product RRP',$rrp);
+
+     
+    }
+     
+  }else{
+
+    $new_family=true;
+    
+    // print "Col $column\n";
+    //print_r($cols);
+    if($cols[3]!='' and $cols[6]!=''  and $cols[3]!='SHOP-Fit' and $cols[3]!='RDS-47' and $cols[3]!='ISH-94' and $cols[3]!='OB-108' and !preg_match('/^DB-/',$cols[3])  and !preg_match('/^pack-/i',$cols[3])  ){
+      $fam_code=$cols[3];
+      $fam_name=_trim( mb_convert_encoding($cols[6], "UTF-8", "ISO-8859-1,UTF-8"));
+      $fam_position=$column;
+
+      
+    }
+    
+    if(preg_match('/off\s+\d+\s+or\s+more|\s*\d+\s*or more\s*\d+|buy \d+ get \d+ free/i',_trim($cols[6]))){
+      
+
+      $promotion=$cols[6];
+
+      $promotion=preg_replace('/^\s*order\s*/i','',$promotion);
+      $promotion=preg_replace('/discount\s*$/i','',$promotion);
+      $promotion=preg_replace('/\s*off\s*$/i','',$promotion);
+
+      $promotion=_trim($promotion);
+      $promotion_position=$column;
+      // print "*********** Promotion $promotion $promotion_position \n";
+    }
+    if($cols[3]=='' and $cols[6]==''){
+      $blank_position=$column;
+    }
+
+    if($cols[6]!='' and preg_match('/Sub Total/i',$cols[11])){
+      $department_name=$cols[6];
+      $department_position=$column;
+
+
+        $department_code=_trim($department_name);
+      if($department_code=='Ancient Wisdom Home Fragrance'){
+	$department_code='Home';
+	$department_name='AW Home Fragrance';
+      }
+      if($department_code=='Ancient Wisdom Aromatherapy Dept.'){
+	$department_code='Aroma';
+	$department_name='AW Aromatherapy Department';
+      }if($department_code=='Bathroom Heaven')
+	 $department_code='Bath';
+      if($department_code=='Exotic Incense Dept Order'){
+	$department_code='Incense';
+	$department_name='Exotic Incense Department';
+      }if($department_code=='While Stocks Last Order'){
+	$department_code='WSL';
+	$department_name='While Stocks Last';
+      }if($department_code=='Collectables Department'){
+	$department_code='Collec';
+      }
+      if($department_code=='Crystal Department'){
+	$department_code='Crystal';
+      }
+   if($department_code=='Cards, Posters & Gift Wrap'){
+	$department_code='Paper';
+      }
+   if($department_code=='Retail Display Stands'){
+	$department_code='RDS';
+      }
+if($department_code=='Candle Dept'){
+	$department_code='Candles';
+      }
+   if($department_code=='Stoneware'){
+	$department_code='Stone';
+	$department_name='Stoneware Department';
+
+      }
+   if($department_code=='Jewellery Quarter'){
+	$department_code='Jewells';
+      }
+   if($department_code=='Relaxing Music Collection'){
+	$department_code='Music';
+      }
+ if($department_code=='BagsBags.biz ECO Bags Dept'){
+	$department_code='Bags';
+	$department_name='Eco Bags Dept';
+      }
+       if($department_code=='RibbonsRibbons.biz Ribbons Dept'){
+	$department_code='Ribbons';
+	$department_name='Ribbons Department';
+      }
+      
+      
+ if($department_code=='Christmas Time'){
+	$department_code='Xmas';
+      }
+
+if($department_code=='CraftsCrafts.biz'){
+	$department_code='Crafts';
+      }
+if($department_code=='Florist-Supplies.biz'){
+	$department_code='Flor';
+      }
+if($department_code=='Soft Furnishings & Textiles'){
+	$department_code='Textil';
+      }
+
+if(preg_match('/Packaging Dept/i',$department_code)){
+	$department_code='Pack';
+      }
+if(preg_match('/Fashion/i',$department_code)){
+	$department_code='Scarv';
+      }
+
+if($department_code=='Woodware Dept'){
+  $department_code='Wood';
+  $department_name='Woodware Department';
+
+      }
+
+
+
+if($department_code=='PouchesPouches.biz Pouches Dept'){
+  $department_code='Pouches';
+  $department_name='Pouches Dept';
+
+      }
+
+
+    }
+    
+    $posible_fam_code=$cols[3];
+    $posible_fam_name=$cols[6];
+  }
+  
+
+  
+  $column++;
+  }
+
+
+
+function create_shipping(){
+  $max_cost=-1;
+  $sql="select `World Region`,GROUP_CONCAT(\"'\",`Country Name`,\"'\") as countries,`World Region Key`  from kbase.`Country Dimension` group by `World Region`  ";
+  $res=mysql_query($sql);
+  while($row=mysql_fetch_array($res)){
+    $world_region=$row['World Region'];
+    $countries=$row['countries'];
+    $wr_key=$row['World Region Key'];
+
+    //print "$world_region \n";
+    //$sql="insert into kbase.`World Region Dimension` (`World Region Name`) values ('$world_region')";
+    //mysql_query($sql);
+    //$wr_key=mysql_insert_id();
+    //mysql_query("update kbase.`Country Dimension` set `World Region Key`=$wr_key where `World Region`='$world_region'  ");
+
+   
+    $sql=sprintf("select AVG(carriage) as cost from aw_old.paso_ordersxls  left join aw_old.paso_customer as pc on (pc.id=paso_cust) where tipo=3 and  a38!=40849 and carriage>0  and a10 not like  'UK' and  a10 not like '' and a10 in (%s);"
+		 ,$countries
+		 );
+    $res2=mysql_query($sql);
+    if($row2=mysql_fetch_array($res2)){
+      $cost=(float) $row2['cost'];
+      if($max_cost<$cost)
+	$max_cost=$cost;
+    }else
+      $cost=0;
+    
+    $data=array('Shipping Type'=>'Normal','Shipping Destination Type'=>'World Region','Shipping Destination Key'=>$wr_key,'Shipping Price Method'=>'Flat','Shipping Allowance Metadata'=>sprintf("%.2f",$cost));
+    
+    $shipping=new Shipping('find create',$data);
+    
+    print "$world_region $cost $max_cost\n";
+  }
+
+  $sql=sprintf("update `Shipping Dimension` set `Shipping Allowance Metadata`=%.2f where  `Shipping Allowance Metadata`='0.00'",$max_cost);
+   $res=mysql_query($sql);
+
+
+
+$sql="select *  from kbase.`Country Dimension`   ";
+  $res=mysql_query($sql);
+  while($row=mysql_fetch_array($res)){
+    
+    $sql=sprintf("select AVG(carriage) as cost from aw_old.paso_ordersxls  left join aw_old.paso_customer as pc on (pc.id=paso_cust) where tipo=3 and  a38!=40849 and carriage>0  and a10 in ('%s');"
+		 ,$row['Country Name']
+		 );
+    $res2=mysql_query($sql);
+    if($row2=mysql_fetch_array($res2)){
+      $cost=(float) $row2['cost'];
+ 
+      
+    }else{
+      $cost=0;
+
+    }
+
+      
+
+    if($cost>0){
+      $cost=(float) $row2['cost'];
+ $data=array('Shipping Type'=>'Normal','Shipping Destination Type'=>'Country','Shipping Destination Key'=>$row['Country Key'],'Shipping Price Method'=>'Flat','Shipping Allowance Metadata'=>sprintf("%.2f",$cost));
+    
+    $shipping=new Shipping('find create',$data);
+      
+    }else{
+       $data=array('Shipping Type'=>'Normal','Shipping Destination Type'=>'Country','Shipping Destination Key'=>$wr_key,'Shipping Price Method'=>'Parent','Shipping Allowance Metadata'=>$row['World Region Key']);
+    
+       $shipping=new Shipping('find create',$data);
+
+    }
+    
+
+  }
+
+}
+
+
+function update_supplier_part($code,$scode,$supplier_code,$units,$w,$product,$description,$supplier_cost){
+global $myconf;
+ $product->update_for_sale_since(date("Y-m-d H:i:s",strtotime("now +1 seconds")));
 	if(preg_match('/^SG\-|^info\-/i',$code))
 	  $supplier_code='AW';
 	if($supplier_code=='AW')
@@ -1517,6 +1742,8 @@ if(preg_match('/^Wenzels$/i',$supplier_code)){
 			 'Part XHTML Currently Supplied By'=>sprintf('<a href="supplier.php?id=%d">%s</a>',$supplier->id,$supplier->get('Supplier Code')),
 			 'Part XHTML Currently Used In'=>sprintf('<a href="product.php?id=%d">%s</a>',$product->id,$product->get('Product Code')),
 			 'Part XHTML Description'=>preg_replace('/\(.*\)\s*$/i','',$product->get('Product XHTML Short Description')),
+		     'Part Unit Description'=>strip_tags(preg_replace('/\(.*\)\s*$/i','',$product->get('Product XHTML Short Description'))),
+
 			 'part valid from'=>date('Y-m-d H:i:s'),
 			 'part valid to'=>date('Y-m-d H:i:s'),
 			 'Part Gross Weight'=>$w
@@ -1541,238 +1768,22 @@ if(preg_match('/^Wenzels$/i',$supplier_code)){
 	$supplier_product->new_part_list('',$rules);
 	
 	$part_list[]=array(
-			   'Product ID'=>$product->get('Product ID'),
 			   'Part SKU'=>$part->get('Part SKU'),
-			   'Product Part Id'=>1,
-			   'requiered'=>'Yes',
 			   'Parts Per Product'=>1,
-			   'Product Part Type'=>'Simple Pick'
+			   'Product Part Type'=>'Simple'
 			   );
-	$product->new_part_list(array(),$part_list);
-	$supplier_product->load('used in');
+			   
+			
+			   
+			 $product->new_current_part_list(array(),$part_list)  ;
+	//$product->new_part_list(array(),$part_list);
+$supplier_product->load('used in');
 	$product->load('parts');
 	$part->load('used in');
 	$part->load('supplied by');
 	$product->load('cost');
-       }
-     
-    }
-  $product->change_current_key($product->id);
-       $product->update_rrp('Product RRP',$rrp);
-
-  }else{
-
-    $new_family=true;
-    
-    // print "Col $column\n";
-    //print_r($cols);
-    if($cols[3]!='' and $cols[6]!=''  and $cols[3]!='SHOP-Fit' and $cols[3]!='RDS-47' and $cols[3]!='ISH-94' and $cols[3]!='OB-108' and !preg_match('/^DB-/',$cols[3])  and !preg_match('/^pack-/i',$cols[3])  ){
-      $fam_code=$cols[3];
-      $fam_name=_trim( mb_convert_encoding($cols[6], "UTF-8", "ISO-8859-1,UTF-8"));
-      $fam_position=$column;
-
-      
-    }
-    
-    if(preg_match('/off\s+\d+\s+or\s+more|\s*\d+\s*or more\s*\d+|buy \d+ get \d+ free/i',_trim($cols[6]))){
-      
-
-      $promotion=$cols[6];
-
-      $promotion=preg_replace('/^\s*order\s*/i','',$promotion);
-      $promotion=preg_replace('/discount\s*$/i','',$promotion);
-      $promotion=preg_replace('/\s*off\s*$/i','',$promotion);
-
-      $promotion=_trim($promotion);
-      $promotion_position=$column;
-      // print "*********** Promotion $promotion $promotion_position \n";
-    }
-    if($cols[3]=='' and $cols[6]==''){
-      $blank_position=$column;
-    }
-
-    if($cols[6]!='' and preg_match('/Sub Total/i',$cols[11])){
-      $department_name=$cols[6];
-      $department_position=$column;
-
-
-        $department_code=_trim($department_name);
-      if($department_code=='Ancient Wisdom Home Fragrance'){
-	$department_code='Home';
-	$department_name='AW Home Fragrance';
-      }
-      if($department_code=='Ancient Wisdom Aromatherapy Dept.'){
-	$department_code='Aroma';
-	$department_name='AW Aromatherapy Department';
-      }if($department_code=='Bathroom Heaven')
-	 $department_code='Bath';
-      if($department_code=='Exotic Incense Dept Order'){
-	$department_code='Incense';
-	$department_name='Exotic Incense Department';
-      }if($department_code=='While Stocks Last Order'){
-	$department_code='WSL';
-	$department_name='While Stocks Last';
-      }if($department_code=='Collectables Department'){
-	$department_code='Collec';
-      }
-      if($department_code=='Crystal Department'){
-	$department_code='Crystal';
-      }
-   if($department_code=='Cards, Posters & Gift Wrap'){
-	$department_code='Paper';
-      }
-   if($department_code=='Retail Display Stands'){
-	$department_code='RDS';
-      }
-if($department_code=='Candle Dept'){
-	$department_code='Candles';
-      }
-   if($department_code=='Stoneware'){
-	$department_code='Stone';
-	$department_name='Stoneware Department';
-
-      }
-   if($department_code=='Jewellery Quarter'){
-	$department_code='Jewells';
-      }
-   if($department_code=='Relaxing Music Collection'){
-	$department_code='Music';
-      }
- if($department_code=='BagsBags.biz ECO Bags Dept'){
-	$department_code='Bags';
-	$department_name='Eco Bags Dept';
-      }
-       if($department_code=='RibbonsRibbons.biz Ribbons Dept'){
-	$department_code='Ribbons';
-	$department_name='Ribbons Department';
-      }
-      
-      
- if($department_code=='Christmas Time'){
-	$department_code='Xmas';
-      }
-
-if($department_code=='CraftsCrafts.biz'){
-	$department_code='Crafts';
-      }
-if($department_code=='Florist-Supplies.biz'){
-	$department_code='Flor';
-      }
-if($department_code=='Soft Furnishings & Textiles'){
-	$department_code='Textil';
-      }
-
-if(preg_match('/Packaging Dept/i',$department_code)){
-	$department_code='Pack';
-      }
-if(preg_match('/Fashion/i',$department_code)){
-	$department_code='Scarv';
-      }
-
-if($department_code=='Woodware Dept'){
-  $department_code='Wood';
-  $department_name='Woodware Department';
-
-      }
-
-
-
-if($department_code=='PouchesPouches.biz Pouches Dept'){
-  $department_code='Pouches';
-  $department_name='Pouches Dept';
-
-      }
-
-
-    }
-    
-    $posible_fam_code=$cols[3];
-    $posible_fam_name=$cols[6];
-  }
-  
-
-  
-  $column++;
-  }
-
-
-
-function create_shipping(){
-  $max_cost=-1;
-  $sql="select `World Region`,GROUP_CONCAT(\"'\",`Country Name`,\"'\") as countries,`World Region Key`  from kbase.`Country Dimension` group by `World Region`  ";
-  $res=mysql_query($sql);
-  while($row=mysql_fetch_array($res)){
-    $world_region=$row['World Region'];
-    $countries=$row['countries'];
-    $wr_key=$row['World Region Key'];
-
-    //print "$world_region \n";
-    //$sql="insert into kbase.`World Region Dimension` (`World Region Name`) values ('$world_region')";
-    //mysql_query($sql);
-    //$wr_key=mysql_insert_id();
-    //mysql_query("update kbase.`Country Dimension` set `World Region Key`=$wr_key where `World Region`='$world_region'  ");
-
-   
-    $sql=sprintf("select AVG(carriage) as cost from aw_old.paso_ordersxls  left join aw_old.paso_customer as pc on (pc.id=paso_cust) where tipo=3 and  a38!=40849 and carriage>0  and a10 not like  'UK' and  a10 not like '' and a10 in (%s);"
-		 ,$countries
-		 );
-    $res2=mysql_query($sql);
-    if($row2=mysql_fetch_array($res2)){
-      $cost=(float) $row2['cost'];
-      if($max_cost<$cost)
-	$max_cost=$cost;
-    }else
-      $cost=0;
-    
-    $data=array('Shipping Type'=>'Normal','Shipping Destination Type'=>'World Region','Shipping Destination Key'=>$wr_key,'Shipping Price Method'=>'Flat','Shipping Allowance Metadata'=>sprintf("%.2f",$cost));
-    
-    $shipping=new Shipping('find create',$data);
-    
-    print "$world_region $cost $max_cost\n";
-  }
-
-  $sql=sprintf("update `Shipping Dimension` set `Shipping Allowance Metadata`=%.2f where  `Shipping Allowance Metadata`='0.00'",$max_cost);
-   $res=mysql_query($sql);
-
-
-
-$sql="select *  from kbase.`Country Dimension`   ";
-  $res=mysql_query($sql);
-  while($row=mysql_fetch_array($res)){
-    
-    $sql=sprintf("select AVG(carriage) as cost from aw_old.paso_ordersxls  left join aw_old.paso_customer as pc on (pc.id=paso_cust) where tipo=3 and  a38!=40849 and carriage>0  and a10 in ('%s');"
-		 ,$row['Country Name']
-		 );
-    $res2=mysql_query($sql);
-    if($row2=mysql_fetch_array($res2)){
-      $cost=(float) $row2['cost'];
- 
-      
-    }else{
-      $cost=0;
-
-    }
-
-      
-
-    if($cost>0){
-      $cost=(float) $row2['cost'];
- $data=array('Shipping Type'=>'Normal','Shipping Destination Type'=>'Country','Shipping Destination Key'=>$row['Country Key'],'Shipping Price Method'=>'Flat','Shipping Allowance Metadata'=>sprintf("%.2f",$cost));
-    
-    $shipping=new Shipping('find create',$data);
-      
-    }else{
-       $data=array('Shipping Type'=>'Normal','Shipping Destination Type'=>'Country','Shipping Destination Key'=>$wr_key,'Shipping Price Method'=>'Parent','Shipping Allowance Metadata'=>$row['World Region Key']);
-    
-       $shipping=new Shipping('find create',$data);
-
-    }
-    
-
-  }
 
 }
-
 
 
 ?>

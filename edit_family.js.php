@@ -1056,13 +1056,15 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    this.dataSource5.responseSchema = {
 		resultsList: "resultset.data", 
 		metaFields: {
-		    rowsPerPage:"resultset.records_perpage",
+		 rowsPerPage:"resultset.records_perpage",
+		    rtext:"resultset.rtext",
+		    rtext_rpp:"resultset.rtext_rpp",
 		    sort_key:"resultset.sort_key",
 		    sort_dir:"resultset.sort_dir",
 		    tableid:"resultset.tableid",
 		    filter_msg:"resultset.filter_msg",
-		    rtext:"resultset.rtext",
-		    totalRecords: "resultset.total_records" // Access to value in the server response
+		    totalRecords: "resultset.total_records"
+	
 		},
 		
 		
@@ -1193,7 +1195,11 @@ function show_add_product_dialog(){
 
 
 
+
 function init(){
+
+
+
 
    var ids = ["checkbox_thumbnails","checkbox_list","checkbox_slideshow","checkbox_manual"]; 
     YAHOO.util.Event.addListener(ids, "click", select_layout);
@@ -1238,49 +1244,7 @@ function init(){
 	    
 	};
 
-     var partDS = new YAHOO.util.XHRDataSource("ar_assets.php");
-     partDS.responseType = YAHOO.util.XHRDataSource.TYPE_JSON;
- 	partDS.responseSchema = {
- 	    resultsList : "data",
- 	    fields : ["info_plain","sku","info"]
- 	};
-	var partAC = new YAHOO.widget.AutoComplete("part", "part_container", partDS);
-	partAC.generateRequest = function(sQuery) {
-
-	    return "?tipo=find_part&query=" + sQuery ;
-	};
-	partAC.forceSelection = true; 
-	
-	partAC.itemSelectEvent.subscribe(part_selected); 
-    partAC.resultTypeList = false;
-    partAC.formatResult = function(oResultData, sQuery, sResultMatch) {
-    return oResultData.info;
-};
-
-    	supplier_selected= function(sType, aArgs) {
-	    var myAC = aArgs[0]; var elLI = aArgs[1]; var oData = aArgs[2]; 
-	    Dom.get("supplier_key").value = oData[2];
-	    
-	};
-
-     var supplierDS = new YAHOO.util.XHRDataSource("ar_suppliers.php");
-     supplierDS.responseType = YAHOO.util.XHRDataSource.TYPE_JSON;
- 	supplierDS.responseSchema = {
- 	    resultsList : "data",
- 	    fields : ["name","code","key"]
- 	};
-	var supplierAC = new YAHOO.widget.AutoComplete("supplier", "supplier_container", supplierDS);
-	supplierAC.generateRequest = function(sQuery) {
-
-	    return "?tipo=find_supplier&query=" + sQuery ;
-	};
-	supplierAC.forceSelection = true; 
-	
-	supplierAC.itemSelectEvent.subscribe(supplier_selected); 
-    supplierAC.resultTypeList = false;
-    supplierAC.formatResult = function(oResultData, sQuery, sResultMatch) {
-    return '<b>'+oResultData.code+'</b> '+oResultData.name;
-};
+  
 
     
     var ids = ["details","products","discounts","pictures","web"]; 

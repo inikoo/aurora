@@ -97,7 +97,7 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
         $product_ID=$row2['Product ID'];
 
 
-        $sql=sprintf("select `Part SKU`,`Parts Per Product` from `Product Part List` where `Product ID`=%s  ",prepare_mysql($product_ID));
+        $sql=sprintf("select `Part SKU`,`Parts Per Product` from `Product Part Dimension` PPD left join `Product Part List` PPL on (PPD.`Product Part Key`=PPL.`Product Part Key`)where `Product ID`=%s  ",prepare_mysql($product_ID));
         // print "$sql\n";
         $result3=mysql_query($sql);
         $num = mysql_num_rows($result3);
@@ -166,7 +166,7 @@ while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 
         $product_ID=$row2['Product ID'];
 
-        $sql=sprintf("select `Part SKU`,`Parts Per Product` from `Product Part List` where `Product ID`=%s  ",prepare_mysql($product_ID));
+        $sql=sprintf("select `Part SKU`,`Parts Per Product` from `Product Part Dimension` PPD left join `Product Part List` PPL on (PPD.`Product Part Key`=PPL.`Product Part Key`) where `Product ID`=%s  ",prepare_mysql($product_ID));
         // print "$sql\n";
         $result3=mysql_query($sql);
         $num = mysql_num_rows($result3);

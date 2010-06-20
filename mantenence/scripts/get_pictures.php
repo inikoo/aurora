@@ -37,7 +37,6 @@ require_once '../../conf/conf.php';
 //  
  // }
 //exit;
->>>>>>> MERGE-SOURCE
 
 /* $sql="select `Product Code` from `Product Dimension`  group by `Product Code` "; */
 

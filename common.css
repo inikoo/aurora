@@ -696,3 +696,17 @@ position:relative;top:1px;
 
 .splinter_cell{float:left;width:450px;font-size:75%;margin-right:18px;border:1px solid #e7e7e7;padding:5px;position:relative;left:15px;margin-bottom:10px}
 .splinter_cell.double{width:930px}
+
+#part_locations .button {width:16px;filter:alpha(opacity=40);
+	-moz-opacity:0.4;
+	-khtml-opacity: 0.4;
+	opacity: 0.4;
+}
+#part_locations .button:hover {width:16px;filter:alpha(opacity=100);
+	-moz-opacity:1;
+	-khtml-opacity: 1;
+	opacity: 1;
+}
+
+
+#part_locations .quantity{padding-right:10px;text-align:right}

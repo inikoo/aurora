@@ -21,7 +21,7 @@ class Address extends DB_Table {
     public $updated=false;
     private $scope=false;
     private $scope_key=false;
-    public $default_country_code=false;
+    public $default_country_code='UNK';
     /*
       Constructor: Address
       Initializes the class, trigger  Search/Load/Create for the data set

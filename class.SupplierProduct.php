@@ -313,7 +313,7 @@ class supplierproduct extends DB_Table {
 
     function get_products(){
       $products=array();
-       $sql=sprintf("select PD.`Product ID`,`Product Code`,`Supplier Product Units Per Part`,`Parts Per Product` from `Supplier Product Part List` SPPL left join `Product Part List` PPL on (SPPL.`Part SKU`=PPL.`Part SKU`) left join `Product Dimension` PD on (PPL.`Product ID`=PD.`Product ID`) where `Supplier Product Code`=%s and `Supplier Key`=%d and `Supplier Product Part Most Recent`='Yes' group by `Product Code`;"
+       $sql=sprintf("select PD.`Product ID`,`Product Code`,`Supplier Product Units Per Part`,`Parts Per Product` from `Supplier Product Part List` SPPL left join `Product Part List` PPL on (SPPL.`Part SKU`=PPL.`Part SKU`) left join `Product Part Dimension` PPD on (PPD.`Product Part Key`=PPL.`Product Part Key`)   left join `Product Dimension` PD on (PPD.`Product ID`=PD.`Product ID`) where `Supplier Product Code`=%s and `Supplier Key`=%d and `Supplier Product Part Most Recent`='Yes' group by `Product Code`;"
                          ,prepare_mysql($this->code)
                          ,$this->supplier_key
                         );

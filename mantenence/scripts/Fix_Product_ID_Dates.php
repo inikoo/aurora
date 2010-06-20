@@ -6,6 +6,7 @@ include_once('../../class.Product.php');
 include_once('../../class.Supplier.php');
 include_once('../../class.Part.php');
 include_once('../../class.SupplierProduct.php');
+date_default_timezone_set('Europe/London');
 error_reporting(E_ALL);
 $con=@mysql_connect($dns_host,$dns_user,$dns_pwd );
 if(!$con){print "Error can not connect with database server\n";exit;}
@@ -53,6 +54,14 @@ while($row=mysql_fetch_array($res)){
        
      }
   }
+  
+  
+  
+  
+  
+  
+  
+  
       // }else{
       //print("no transactions\n");
       // $last_date='no data';

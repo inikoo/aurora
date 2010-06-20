@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map map_file="maps/united_kingdom_regions.swf" tl_long="-10.6557" tl_lat="60.8814469837442" br_long="1.7499" br_lat="49.1810510310069" zoom="95%" zoom_x="42.36%" zoom_y="1.8%">
+  <areas>
+    <area mc_name="GB_SCT" title="Scotland"></area>
+    <area mc_name="GB_WLS" title="Wales"></area>
+    <area mc_name="GB_NIR" title="Northern Ireland"></area>
+    <area mc_name="GB_CHA" title="Channel Islands"></area>
+    <area mc_name="IM" title="Isle of Man"></area>
+    <area mc_name="IE" title="Ireland"></area>
+    <area mc_name="GB_ENG_east_anglia" title="East Anglia"></area>
+    <area mc_name="GB_ENG_east_midlands" title="East Midlands region"></area>
+    <area mc_name="GB_ENG_london" title="Greater London"></area>
+    <area mc_name="GB_ENG_north" title="North region"></area>
+    <area mc_name="GB_ENG_north_west" title="North West region"></area>
+    <area mc_name="GB_ENG_south_east" title="South East region"></area>
+    <area mc_name="GB_ENG_south_west" title="South West region"></area>
+    <area mc_name="GB_ENG_west_midlands" title="West Midlands region"></area>
+    <area mc_name="GB_ENG_yorkshire_humberside" title="Yorkshire and Humberside region"></area>
+  </areas>
+
+  <movies>
+    <movie title="London. Click to zoom" file="target" color="#CC0000" long="-0.128056" lat="51.507778" width="15" height="15" zoom="564.2857%" zoom_x="-353.08%" zoom_y="-397.2%" fixed_size="true"></movie>
+  </movies>
+
+  <labels>
+    <label x="23%" y="9%" text_size="18" color="#FFFFFF" remain="false">
+      <text>UK - Regions of England</text>
+    </label>
+  </labels>
+</map>

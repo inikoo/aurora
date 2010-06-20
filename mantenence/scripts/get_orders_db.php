@@ -886,6 +886,12 @@ while($row2=mysql_fetch_array($res, MYSQL_ASSOC)){
        //print " ==> $special_char  \n";
      }
 
+
+
+ if($code=='Jhex-08')
+      $description='Musk';
+
+
       $product_data=array(
 			  'product sales type'=>'Not for Sale'
 			  ,'product type'=>'Normal'
@@ -1299,7 +1305,7 @@ if ($customer_data['Customer Delivery Address Link']=='Contact') {
 	$exchange_date=$date_order;
       
       
-      $currency_exchange = new CurrencyExchange('get',$__currency_code.'GBP',$exchange_date);
+      $currency_exchange = new CurrencyExchange($__currency_code.'GBP',$exchange_date);
       $exchange= $currency_exchange->get_exchange();
       chdir('mantenence/scripts/');
       

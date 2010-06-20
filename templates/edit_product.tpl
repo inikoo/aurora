@@ -91,12 +91,12 @@
       <div class="edit_block" {if $edit!="config"}style="display:none"{/if}   id="d_config">
 	
 	
-	<table style="margin:0;xwidth:500px"  class="edit">
+	<table style="margin:5px 0px ;xwidth:500px"  border=0 class="edit">
 	  <tr>
 	    <td >{t}Type of Product{/t}:</td>
 	    
 	    <td >
-	      <div class="options" style="margin:5px 0">
+	      <div class="options" style="margin:0px 0">
 		<span {if $product->get('Product Type')=="Normal"}class="selected"{/if} id="type_prod_normal">{t}Simple{/t}</span>
 		<span {if $product->get('Product Type')=="Shortcut"}class="selected"{/if} id="type_prod_shortcut">{t}Shortcut{/t}</span>
 		<span {if $product->get('Product Type')=="Mix"} class="selected"{/if} id="type_prod_mix">{t}Mixture{/t}</span>
@@ -105,37 +105,60 @@
 	    
 	  </tr>
 </table>
+
+<h2>{t}Part List{/t}</h2>
+
+
 	    {if $num_parts==0}
 	  {t}Choose the part{/t} 
 	   
 	    <div id="adding_new_part" style="width:400px;margin-bottom:45px"><input id="new_part_input" type="text"><div id="new_part_container"></div></div>
 	  
 	  {else}
-	 
-	   <table class="edit" border=1>
-	      
-	      {foreach from=$parts item=part key=part_sku }
-	      
-	      <tr  id="sup_tr1_{$part_sku}" class="top title">
-		<td class="label" style="width:200px;font-weight:200">{t}Part{/t}</td>
-		<td><img style="cursor:pointer" src="art/icons/edit.gif" alt="({t}Change{/t})"/> {$part.sku}</td>
-		<td style="widths:500px">
+	  <div style="text-align:right"  id="product_part_items" product_part_key="{$product->get_current_product_part_key()}"  >
+	  <span style="margin-right:10px;"  id="add_part" class="state_details">{t}Add Part to List{/t}</span>
+	  <span style="margin-right:10px;visibility:hidden" id="save_edit_part"   onclick="save_part()" class="state_details">{t}Save{/t}</span>
+	  <span style="margin-right:10px;visibility:hidden" id="reset_edit_part"  onclick="reset_part()" class="state_details">{t}Reset{/t}</span>
+	  </div>
+	  
+	  
+	  <div id="part_dialog" style=";border:1px solid #ddd">
+<div id="search" style="text-align:left;margin:5px 0px"  >
+    <span style="margin-left:10px">{t}Search Part{/t}:</span>
+     <input style="margin-left:5px;width:200px" type="text" id="part_search" value="" state="" name="search"/>
+    <img style="margin-left:205px;display:none" align="absbottom" id="part_clean_search"   src="art/icons/cross.png" >
+    <div id="part_search_Container" style="display:none"></div>
+    <div style="position:relative;font-size:80%">
+      <div id="part_search_results" style="display:none;background:#fff;border:1px solid #777;padding:10px;margin-top:0px;width:500px;position:absolute;z-index:20;left:0px">
+      
+	<table id="part_search_results_table"></table>
+      </div>
+    </div>
+  </div>
+  
+  
+</div>
+	 	  <table class="edit" border=0  id="part_editor_table"   >
+	 	  
+	    {foreach from=$parts item=part key=part_sku }
+	    <tr  id="part_list{$part_sku}" sku="{$part_sku}" class="top title">
+		<td class="label" style="width:150px;font-weight:200">{t}Part{/t}</span></td>
+		<td style="width:120px"><span>{$part.sku}</span></td>
+		<td style="width:350px">
 		{$part.description}
 		</td>
-		
-		<td>
-		<span  style="margin-right:10px;vzisibility:hidden"  id="save_edit_product_price" class="state_details">{t}Save{/t}</span>
-	<span style="margin-right:10px;vizsibility:hidden" id="reset_edit_product_price" class="state_details">{t}Reset{/t}</span>
-		</td>
-	      </tr>
-	      <tr id="sup_tr2_{$part_id}">
-		<td class="label" style="width:15em">{t}Parts Per Product{/t}:</td>
+		<td><span style="cursor:pointer"><img  onClick="remove_part()" src="art/icons/delete_bw.png""/> {t}Remove{/t}</span></td>
+	    </tr>
+	    <tr>
+		<td class="label" >{t}Parts Per Product{/t}:</td>
 		<td style="text-align:left;" colspan=3>
-		  <input style="padding-left:2px;text-align:left;width:3em" value="{$part.parts_per_product}" name="parts_per_product"  changed=0           onkeyup="part_changed(this,{$part_id})" ovalue="{$part.parts_per_product}" id="v_part_code{$part_id}"></td>
+		  <input style="padding-left:2px;text-align:left;width:3em" value="{$part.parts_per_product}"  
+		  onblur="part_changed(this)"  onkeyup="part_changed(this)"  
+		  ovalue="{$part.parts_per_product}" id="parts_per_product{$part_sku}"> <span  id="parts_per_product_msg{$part_sku}"></span></td>
 	      </tr>
 	      <tr id="sup_tr3_{$part_id}" class="last">
 		<td class="label">{t}Note For Pickers{/t}:</td>
-	<td style="text-align:left" colspan=3><input id="v_part_cost{$part_id}" style=";width:400px"  name="notes" onblur="part_changed(this,{$part_id})"  value="{$part.note}" ovalue="{$part.note}" ></td>
+	     <td style="text-align:left" colspan=3><input id="pickers_note{$part_sku}" style=";width:400px"   onblur="part_changed(this)"  onkeyup="part_changed(this)"     value="{$part.note}" ovalue="{$part.note}" ></td>
 	      </tr>
 	      {/foreach}
 	   
@@ -226,7 +249,7 @@
    </td><td>Kg</td>
    <td style="width:450px" id="Product_Unit_Weight_msg" class="edit_td_alert"></td>
  </tr>
-<tr><td style="" class="label">{t}Outer Weight{/t}:<br/><small>with packing<small/></td>
+<tr style="display:none"><td style="" class="label">{t}Outer Weight{/t}:<br/><small>with packing<small/></td>
    <td  style="text-align:left">
      <div  style="width:4em;position:relative;top:00px" >
        <input style="text-align:left;width:4em" id="Product_Outer_Weight" value="{$product->get('Product Gross Weight')}" ovalue="{$product->get('Product Gross Weight')}" valid="0">

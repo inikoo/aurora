@@ -2,15 +2,15 @@
 
 
 ?>
-    var Dom   = YAHOO.util.Dom;
-
+ var Dom   = YAHOO.util.Dom;
+ var Event = YAHOO.util.Event;
+ 
 
 var lost_label='<?php echo '<img src="art/icons/package_delete.png"  alt="'._('Lost').'" />' ?>';
 var delete_label='<?php echo '<img src="art/icons/cross.png"  alt="'._('Free location').'" />' ?>';
 var move_label='<?php echo '<img src="art/icons/package_go.png"  alt="'._('Move Stock').'" />' ?>';
 
 
-var Event = YAHOO.util.Event;
 
 var newProductData= new Object;
 var list = new Object;
@@ -309,11 +309,11 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    var tableid=0; // Change if you have more the 1 table
 	    var tableDivEL="table"+tableid;
 	    var CustomersColumnDefs = [
-				       {key:"date",label:"<?php echo _('Date')?>", width:200,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				       {key:"date",label:"<?php echo _('Date')?>", width:170,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				       ,{key:"author",label:"<?php echo _('Author')?>", width:70,sortable:true,formatter:this.customer_name,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				       ,{key:"tipo", label:"<?php echo _('Type')?>", width:90,sortable:true,formatter:this.customer_name,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				       //,{key:"diff_qty",label:"<?php echo _('Qty')?>", width:90,sortable:true,formatter:this.customer_name,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				       ,{key:"note", label:"<?php echo _('Description')?>", width:370,sortable:true,formatter:this.customer_name,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				       ,{key:"note", label:"<?php echo _('Description')?>", width:400,sortable:true,formatter:this.customer_name,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				       ];
 	   
 	    this.dataSource0 = new YAHOO.util.DataSource("ar_warehouse.php?tipo=location_stock_history");
@@ -415,23 +415,16 @@ YAHOO.util.Event.addListener(window, "load", function() {
 		var tableid=1; // Change if you have more the 1 table
 	    var tableDivEL="table"+tableid;
 	    var CustomersColumnDefs = [
-				       {key:"sku", label:"<?php echo _('SKU')?>", width:80,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				       {key:"sku", label:"<?php echo _('SKU')?>", width:70,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				       ,{key:"location_key", label:"", hidden:true,isPrimaryKey:true} 
 				       ,{key:"part_sku", label:"", hidden:true,isPrimaryKey:true} 
-				       ,{key:"description", label:"<?php echo _('Description')?>", width:350,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				       ,{key:"description", label:"<?php echo _('Description')?>", width:470,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				       ,{key:"can_pick", label:"<?php echo _('Can Pick')?>", width:80,className:"aright" ,editor: new YAHOO.widget.RadioCellEditor({radioOptions:["<?php echo _('Yes')?>","<?php echo _('No')?>"],disableBtns:true,asyncSubmitter: CellEdit}),object:'part_location'}
 				       ,{key:"qty", label:"<?php echo _('Qty')?>", width:50,className:"aright", editor: new YAHOO.widget.TextboxCellEditor({asyncSubmitter: CellEdit}),object:'part_location'}
-				       //,{key:"audit", label:"<?php echo _('Audit')?>", width:30,className:"aright", editor: new YAHOO.widget.TextboxCellEditor({asyncSubmitter: CellEdit}),object:'part_location',action:'part_location_audit'}
 				       ,{key:"move",label:"<?php echo _('Move')?>", width:30,className:"aright",action:'move'}
 				       ,{key:"lost", label:"<?php echo _('Lost')?>", width:30,className:"aright",action:'lost'}
 				       ,{key:"delete", label:"", width:30,className:"aright",object:'part_location',action:'delete'}
-				       // ,{key:"changed_qty", label:"<?php echo _('Change')?>", width:50,className:"aright",hidden:true}
-				       //,{key:"new_qty", label:"<?php echo _('New Qty')?>", width:70,className:"aright",hidden:true}
-				       // ,{key:"_qty_move", label:"<?php echo _('Moved')?>", width:70,hidden:true,className:"aright"}
-				       //,{key:"_qty_damaged", label:"<?php echo _('Damaged')?>", width:70,hidden:true,className:"aright"}
-				       //,{key:"_qty_change", label:"<?php echo _('Audit')?>", width:50,hidden:true,className:"aright inputs_yellow"}
-				       //,{key:"note", label:"<?php echo _('Note')?>", width:110,className:"aleft",hidden:true}
-				       //,{key:"delete", label:"", width:18,className:"aleft"}
+				     
 				       ];
 	    //?tipo=customers&tid=0"
 	    this.dataSource1 = new YAHOO.util.DataSource("ar_warehouse.php?tipo=parts_at_location&tableid="+tableid);
@@ -779,10 +772,6 @@ var change_stock_save= function(){
 
 
 
-function set_all_lost(){
-    Dom.get('qty_lost').value=Dom.get('lost_max_value').innerHTML;
-    Dom.get('lost_why').focus();
-}
 
 
 function save_move_items(){
@@ -852,67 +841,7 @@ function save_move_items(){
 	});    
 
 }
-function save_lost_items(){
-    var data=new Object();
-    data['qty']=Dom.get('qty_lost').value;
-    data['why']=Dom.get('lost_why').value;
-    data['action']=Dom.get('lost_action').value;
-    data['location_key']='<?php echo$_SESSION['state']['location']['id']?>';
-    data['part_sku']=Dom.get('lost_sku').value;
 
-    var json_value = YAHOO.lang.JSON.stringify(data);
-    var request='ar_edit_warehouse.php?tipo=lost_stock&values=' + encodeURIComponent(json_value); 
-
-    
-    YAHOO.util.Connect.asyncRequest('POST',request ,{
-	    success:function(o) {
-		//alert(o.responseText);
-		var r =  YAHOO.lang.JSON.parse(o.responseText);
-		if(r.action=='ok'){
-		    Dom.get('qty_lost').value='';
-		    Dom.get('lost_why').value='';
-		    Dom.get('lost_action').value='';
-
-		    Editor_lost_items.cfg.setProperty("visible",false);
-		    datatable=tables['table1'];
-
-
-		    record=datatable.getRecord(Dom.get("lost_record_index").value);
-		    datatable.updateCell(record,'qty',r.qty);
-		    
-
-		    if(r.qty==0){
-			 datatable.updateCell(record,'delete',delete_label);
-			 datatable.updateCell(record,'lost','');
-			 
-		     }else{
-			 datatable.updateCell(record,'delete','');
-			 datatable.updateCell(record,'lost',lost_label);
-
-		     }							  
-		     // alert(r.stock)
-		     if(r.stock==0){
-			 datatable.updateCell(record,'move','');
-			 
-		     }else{
-			 datatable.updateCell(record,'move',move_label);
-			 
-		     }	
-		    
-
-		    var table=tables['table0'];
-		    var datasource=tables['dataSource0'];
-		    datasource.sendRequest('',table.onDataReturnInitializeTable, table);      
-		}else if(r.action=='error'){
-		    alert(r.msg);
-		}
-			    
-
-			
-	    }
-	});
-
-}
 
 
 var move_stock=function(){
@@ -982,9 +911,7 @@ function add_product(){
 }
 
 function init(){
- var Dom   = YAHOO.util.Dom;
- var Event = YAHOO.util.Event;
- 
+
  Editor_lost_items = new YAHOO.widget.Panel("Editor_lost_items",{close:false,visible:false}); 
  Editor_lost_items.render();	
  Editor_move_items = new YAHOO.widget.Panel("Editor_move_items",{close:false,visible:false}); 

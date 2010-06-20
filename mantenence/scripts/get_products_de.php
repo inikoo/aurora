@@ -25,7 +25,7 @@ $_SESSION['locale_info'] = localeconv();
 $con=@mysql_connect($dns_host,$dns_user,$dns_pwd );
 
 if(!$con){print "Error can not connect with database server\n";exit;}
-$dns_db='dw_avant';
+//$dns_db='dw_avant';
 $db=@mysql_select_db($dns_db, $con);
 if (!$db){print "Error can not access the database\n";exit;}
   $codigos=array();
@@ -43,8 +43,8 @@ $version='V 1.0';
 $Data_Audit_ETL_Software="$software $version";
 
 $file_name='/data/plaza/AWorder2009Germany.xls';
-$csv_file='de_tmp.csv';
-exec('/usr/local/bin/xls2csv    -s cp1252   -d 8859-1   '.$file_name.' > '.$csv_file);
+$csv_file='de.csv';
+//exec('/usr/local/bin/xls2csv    -s cp1252   -d 8859-1   '.$file_name.' > '.$csv_file);
 
 $handle_csv = fopen($csv_file, "r");
 $column=0;
@@ -307,7 +307,7 @@ while(($_cols = fgetcsv($handle_csv))!== false){
     $__cols[]=$b;
     $__cols[]=$c;
 
-  }elseif($code=='Credit'){
+   }elseif(preg_match('/First Order Bonus/',$_cols[6])){
     break;
   }
   
@@ -654,7 +654,7 @@ $codigos[$code]=1;
  			   'Product Part Type'=>'Simple Pick'
  			   );
 	
- 	$product->new_part_list(array(),$part_list);
+ 	$product->new_current_part_list(array(),$part_list);
  	$product->load('parts');
 	$part =new Part('sku',$parts[0]);
  	$part->load('used in');

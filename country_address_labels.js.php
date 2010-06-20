@@ -11,6 +11,8 @@ var Country_Address_Labels=
     }
     ,'DEU':{
 	'country_d1':{'name':'State','oname':'Länder','hide':false,'in_use':true}
+		,'country_d2':{'hide':true,'in_use':true}
+
 				  
     }
      ,'MEX':{

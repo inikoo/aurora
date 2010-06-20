@@ -13,7 +13,7 @@ include_once('../../class.InventoryAudit.php');
 error_reporting(E_ALL);
 $con=@mysql_connect($dns_host,$dns_user,$dns_pwd );
 if(!$con){print "Error can not connect with database server\n";exit;}
-$dns_db='dw_avant';
+//$dns_db='dw_avant';
 $db=@mysql_select_db($dns_db, $con);
 if (!$db){print "Error can not access the database\n";exit;}
 require_once '../../common_functions.php';
@@ -22,12 +22,15 @@ mysql_query("SET NAMES 'utf8'");
 require_once '../../conf/conf.php';           
 date_default_timezone_set('Europe/London');
 
-$sql=sprintf("select  (select units from aw_old.product p where p.id=bulk_id) as r1_units,(select code from aw_old.product p where p.id=bulk_id) as r1 ,(select units from aw_old.product p where p.id=product_id) as r2_units ,(select code from aw_old.product p where p.id=product_id) as r2,(select count(*) from aw_old.product_relations as prtmp where prtmp.product_id=aw_old.product_relations.product_id) as multiplicity   from aw_old.product_relations;");
+$sql=sprintf("select  (select units from aw_old.product p where p.id=bulk_id) as r1_units,(select code from aw_old.product p where p.id=bulk_id) as r1 ,(select units from aw_old.product p where p.id=product_id) as r2_units ,(select code from aw_old.product p where p.id=product_id) as r2,(select count(*) from aw_old.product_relations as prtmp where prtmp.product_id=aw_old.product_relations.product_id) as multiplicity   from aw_old.product_relations ;");
+
 $res=mysql_query($sql);
 while($row=mysql_fetch_array($res)){
 
-  if($row['multiplicity']==1){
+if($row['r1']=='')
+continue;
 
+  if($row['multiplicity']==1){
 
     $product_parts_to_keep=$row['r1'];
     $product_parts_to_delete=$row['r2'];
@@ -47,7 +50,7 @@ while($row=mysql_fetch_array($res)){
     insert_other_inventary($product_parts_to_delete,$product_parts_to_keep,$factor);
 
 
-  
+ 
     continue;
    
     $to_delete_skus=get_product_all_skus($product_parts_to_delete);
@@ -128,12 +131,12 @@ function merge_product($product1,$product2){
       $ids= $row['ids'];
     }
     
-    $sql=sprintf("select  GROUP_CONCAT(distinct `Part SKU`) skus from `Product Part List` PPL left join `Product Part Dimension` PPD  on (PPD.`Product Part Key`=PPL.`Product Part Key`) where PPL.`Product ID` in ($ids)  and  ( (  `Product Part Valid From`<%s  and  `Product Part Valid From`>%s and `Product Part Status`='Not In Use')or (`Product Part Valid From`<%s and  `Product Part Status`='In Use') )  "
+    $sql=sprintf("select  GROUP_CONCAT(distinct `Part SKU`) skus from `Product Part List` PPL left join `Product Part Dimension` PPD  on (PPD.`Product Part Key`=PPL.`Product Part Key`) where `Product ID` in ($ids)  and  ( (  `Product Part Valid From`<%s  and  `Product Part Valid From`>%s and PPD.`Product Part Most Recent`='No')or (`Product Part Valid From`<%s and  PPD.`Product Part Most Recent`='Yes') )  "
 		 ,prepare_mysql($date)
 		 ,prepare_mysql($date)
 		 ,prepare_mysql($date)
 		 );
-    //  print "$sql\n";
+     // print "$sql\n";
     $res=mysql_query($sql);
     $skus='';
     if($row=mysql_fetch_array($res)){
@@ -160,7 +163,7 @@ function get_product_skus_first($product_code){
       $ids= $row['ids'];
     }
     
-    $sql=sprintf("select  `Part SKU` skus from `Product Part List` PPL left join `Product Part Dimension` PPD  on (PPD.`Product Part Key`=PPL.`Product Part Key`) where PPL.`Product ID` in ($ids)  order by `Product Part Valid From` limit 1  "
+    $sql=sprintf("select  `Part SKU` skus from `Product Part List` PPL left join `Product Part Dimension` PPD  on (PPD.`Product Part Key`=PPL.`Product Part Key`) where `Product ID` in ($ids)  order by `Product Part Valid From` limit 1  "
 	
 		 );
     
@@ -209,7 +212,7 @@ function get_units_from_sku($sku,$date){
     if(!$date)
       $date=date('Y-m-d H:i:s');
 
-   $sql=sprintf("select  GROUP_CONCAT(distinct PPL.`Product ID`) ids from `Product Part List` PPL left join `Product Part Dimension` PPD  on (PPD.`Product Part Key`=PPL.`Product Part Key`) where `Part SKU` in ($sku)  and  ( (  `Product Part Valid From`<%s  and  `Product Part Valid From`>%s and `Product Part Status`='Not In Use')or (`Product Part Valid From`<%s and  `Product Part Status`='In Use') )  "
+   $sql=sprintf("select  GROUP_CONCAT(distinct `Product ID`) ids from `Product Part List` PPL left join `Product Part Dimension` PPD  on (PPD.`Product Part Key`=PPL.`Product Part Key`) where `Part SKU` in ($sku)  and  ( (  `Product Part Valid From`<%s  and  `Product Part Valid From`>%s and `Product Part Status`='Not In Use')or (`Product Part Valid From`<%s and  `Product Part Status`='In Use') )  "
 		 ,prepare_mysql($date)
 		 ,prepare_mysql($date)
 		 ,prepare_mysql($date)

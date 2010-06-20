@@ -2372,6 +2372,10 @@ $subject_key=$this->data['Customer Company Key'];
 }
 
 
+
+
+
+
     function remove_company($company_key=false) {
 
 
@@ -3349,6 +3353,15 @@ function get_delivery_address_objects(){
         }
         return $address_objects;
 }
+
+function update_is_new(){
+if( (date('U')-strtotime($this->data['Customer First Contacted Date']))<2592000){
+
+
+}
+
+}
+
 
 }
 ?>

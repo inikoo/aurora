@@ -14,7 +14,7 @@
 
 include_once('class.Part.php');
 include_once('class.Location.php');
-
+include_once('class.InventoryAudit.php');
 class PartLocation extends DB_Table {
 
     var $ok=false;
@@ -100,11 +100,20 @@ class PartLocation extends DB_Table {
         }
 
         $this->location=New Location($data['Location Key']);
-        if (!$this->location->id)
-            $this->location=New Location(1);
+        if (!$this->location->id){
+        
+         $this->location=New Location(1);
+        if(!$this->location->id){
+        $sql="INSERT INTO `Location Dimension` (`Location Key` ,`Location Warehouse Key` ,`Location Warehouse Area Key` ,`Location Code` ,`Location Mainly Used For` ,`Location Max Weight` ,`Location Max Volume` ,`Location Max Slots` ,`Location Distinct Parts` ,`Location Has Stock` ,`Location Stock Value`)VALUES ('1', '1', '1','Unknown', 'Picking', NULL , NULL , NULL , '0', 'Unknown', '0.00');";
+       mysql_query($sql);
+       $this->location=New Location(1);
+
+        
+        }
+        
+        }
         $this->location_key=$this->location->id;
 	
-
 
         $this->part=New Part($data['Part SKU']);
         if (!$this->part->id) {

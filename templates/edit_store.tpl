@@ -79,26 +79,81 @@
 	     <td id="code_msg" class="edit_td_alert" style="width:300px"></td>
 
 	  </tr>
+
 	  <tr><td class="label">{t}Store Name{/t}:</td><td>
 	  <div  style="width:30em" >
-	      <input   
-		 id="name" 
-		 name="name" 
-		 changed=0 
-		 type='text'  
-		 MAXLENGTH="255" 
-		 style="width:30em"  
-		 class='text' 
-		 value="{$store->get('Store Name')}"  
-		  ovalue="{$store->get('Store Name')}"  
-		 />
-		 <div id="name_Container" style="" ></div>
-         </div>
-	    </td>
-	     <td id="name_msg" class="edit_td_alert" style="width:300px"></td>
-		 
-	    
+	   <input  id="name" name="name" changed=0 type='text' MAXLENGTH="255" style="width:30em"  class='text' value="{$store->get('Store Name')}" ovalue="{$store->get('Store Name')}" />
+	   <div id="name_Container" style="" ></div>
+       </div>
+	   </td>
+	   <td id="name_msg" class="edit_td_alert" style="width:300px"></td>
 	  </tr>
+	  
+	    <tr><td class="label">{t}Store Slogan{/t}:</td><td>
+	  <div  style="width:30em" >
+	   <input  id="slogan" changed=0 type='text' MAXLENGTH="255" style="width:30em"  class='text' 
+	   value="{$store->get('Store Slogan')}" ovalue="{$store->get('Store Slogan')}" />
+	   <div id="slogan_Container" style="" ></div>
+       </div>
+	   </td>
+	   <td id="slogan_msg" class="edit_td_alert" style="width:300px"></td>
+	  </tr>
+	  
+	  
+	  <tr><td class="label">{t}Store Contact{/t}:</td><td>
+	  <div  style="width:30em" >
+	   <input  id="contact" changed=0 type='text' MAXLENGTH="255" style="width:30em"  class='text' 
+	   value="{$store->get('Store Contact Name')}" ovalue="{$store->get('Store Contact Name')}" />
+	   <div id="contact_Container" style="" ></div>
+       </div>
+	   </td>
+	   <td id="contact_msg" class="edit_td_alert" style="width:300px"></td>
+	  </tr>
+	  
+	
+	 
+	  <tr><td class="label">{t}Store Email{/t}:</td><td>
+	  <div  style="width:30em" >
+	   <input  id="email" changed=0 type='text' MAXLENGTH="255" style="width:30em"  class='text' 
+	   value="{$store->get('Store Email')}" ovalue="{$store->get('Store Email')}" />
+	   <div id="email_Container" style="" ></div>
+       </div>
+	   </td>
+	   <td id="email_msg" class="edit_td_alert" style="width:300px"></td>
+	  </tr>
+	 
+	   <tr><td class="label">{t}Store Telephone{/t}:</td><td>
+	  <div  style="width:30em" >
+	   <input  id="telephone" changed=0 type='text' MAXLENGTH="255" style="width:30em"  class='text' 
+	   value="{$store->get('Store Telephone')}" ovalue="{$store->get('Store Telephone')}" />
+	   <div id="telephone_Container" style="" ></div>
+       </div>
+	   </td>
+	   <td id="telephone_msg" class="edit_td_alert" style="width:300px"></td>
+	  </tr>
+	 
+	  <tr><td class="label">{t}Store Fax{/t}:</td><td>
+	  <div  style="width:30em" >
+	   <input  id="fax" changed=0 type='text' MAXLENGTH="255" style="width:30em"  class='text' 
+	   value="{$store->get('Store Fax')}" ovalue="{$store->get('Store Fax')}" />
+	   <div id="fax_Container" style="" ></div>
+       </div>
+	   </td>
+	   <td id="fax_msg" class="edit_td_alert" style="width:300px"></td>
+	  </tr>
+	
+	 <tr><td class="label">{t}Store URL{/t}:</td><td>
+	  <div  style="width:30em" >
+	   <input  id="url" changed=0 type='text' MAXLENGTH="255" style="width:30em"  class='text' 
+	   value="{$store->get('Store URL')}" ovalue="{$store->get('Store URL')}" />
+	   <div id="url_Container" style="" ></div>
+       </div>
+	   </td>
+	   <td id="url_msg" class="edit_td_alert" style="width:300px"></td>
+	  </tr>
+	
+	
+	
 	</table>
       </div>
       <div  class="edit_block" style="margin:0;padding:0 0px;{if $edit!="pictures"}display:none{/if}"  id="d_pictures">
@@ -200,6 +255,18 @@
       
 
       <div  class="edit_block" style="margin:0;padding:0 0px;{if $edit!="web"}display:none{/if}"  id="d_web">
+      
+      <div  class="data_table" style="clear:both">
+      <span class="clean_table_title">{t}Store Pages{/t}</span>
+      {include file='table_splinter.tpl' table_id=5 filter_name=$filter_name5 filter_value=$filter_value5  }
+ <div  id="table5"   class="data_table_container dtable btable "> </div>
+ </div>
+ 
+ 
+ 
+ 
+ 
+ 
       </div>
       
       <div  class="edit_block" style="{if $edit!="departments"}display:none{/if}"  id="d_departments">

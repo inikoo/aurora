@@ -31,8 +31,8 @@ YAHOO.util.Event.addListener(window, "load", function() {
 				       ,{key:"new_contacts", label:"<?php echo _('New Contacts')?>",<?php echo($_SESSION['state']['customers']['view']=='general'?'':'hidden:true,')?> sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC},className:'aright'}
 				       ,{key:"customers", label:"<?php echo _('Customers')?>",<?php echo($_SESSION['state']['customers']['view']=='general'?'':'hidden:true,')?> sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC},className:'aright'}
 				       ,{key:"active", label:"<?php echo _('Active')?>",<?php echo($_SESSION['state']['customers']['view']=='general'?'':'hidden:true,')?> sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC},className:'aright'}
-				         ,{key:"new", label:"<?php echo _('New')?>",<?php echo($_SESSION['state']['customers']['view']=='general'?'':'hidden:true,')?> sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC},className:'aright'}
-				         ,{key:"lost", label:"<?php echo _('Lost')?>",<?php echo($_SESSION['state']['customers']['view']=='general'?'':'hidden:true,')?> sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC},className:'aright'}
+				       ,{key:"new", label:"<?php echo _('New')?>",<?php echo($_SESSION['state']['customers']['view']=='general'?'':'hidden:true,')?> sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC},className:'aright'}
+				       ,{key:"lost", label:"<?php echo _('Lost')?>",<?php echo($_SESSION['state']['customers']['view']=='general'?'':'hidden:true,')?> sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC},className:'aright'}
 
 					 ];
 	    //?tipo=customers&tid=0"

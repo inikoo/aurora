@@ -211,7 +211,7 @@ $this->large_size=array(800,600);
 	$this->name.='.'.$this->format;
 	  
 	  $news_imgfile = fread(fopen($filename, "r"), filesize($filename));
-	  $image_blob=$news_imgfile;
+	  $image_blob=addslashes($news_imgfile);
 	 
 	  $image_data=array(
 			    'Image Width' => $this->im_x,
@@ -251,9 +251,22 @@ $this->saveImage($this->im,$name);
 	$this->new=true;
 	$this->get_data('id',$this->id);
 	
+	global $dns_db;
 	
+	$sql=sprintf("insert into kimage.`Image Data Dimension` values ('%s',%d,%s,%d,%s,'%s') 
+	ON DUPLICATE KEY UPDATE `Image Name`=%s ,`Image Size`=%d,`Image Type`=%s,`Image Data`='%s'   "
+	,addslashes($dns_db)
+	,$this->id
+	,prepare_mysql($this->name)
+	,filesize($filename)
+	,prepare_mysql($this->format)
+	,$image_blob
+	,prepare_mysql($this->name)
+	,filesize($filename)
+	,prepare_mysql($this->format)
+	,$image_blob
 	
-	$sql=sprintf("insert into images.`Image Data Dimension` values ('dw',%d,'%s')",$this->id,base64_encode($image_blob));
+	);
 	mysql_query($sql);    
   }else{
 	$this->error=true;
