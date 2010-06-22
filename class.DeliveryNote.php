@@ -424,7 +424,12 @@ class DeliveryNote extends DB_Table {
                 $cost_supplier += $cost;
 		
                 $product = new product ($data ['Product Key'] );
-                $a = sprintf ( '<a href="product.php?id=%d">%s</a>', $product->id, $product->code );
+                $a = sprintf ( '<a href="product.php?id=%d">%s</a> <a href="deliverynote.php?id=%d">%s</a>'
+                , $product->id
+                , $product->code
+                , $this->id
+                , $this->data['Delivery Note ID']
+                );
                 unset ( $product );
                 //$note = $a . ', ' . $order->data ['Order Current XHTML State'];
                 $note = $a;

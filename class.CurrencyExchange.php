@@ -139,16 +139,16 @@ Class CurrencyExchange  {
     if(!$to)
       $to=date("Ymd",strtotime($this->to));
 
-   print sprintf("./mantenence/scripts/get_currency_exchange.py  %s %s %s=X > %s",$from,$to,$this->currency_pair,$tmp_file);
+//   print sprintf("./mantenence/scripts/get_currency_exchange.py  %s %s %s=X > %s",$from,$to,$this->currency_pair,$tmp_file);
    
     exec(sprintf("./mantenence/scripts/get_currency_exchange.py  %s %s %s=X > %s",$from,$to,$this->currency_pair,$tmp_file));
-   exit;
+  // exit;
     $rows = 0;
     $handle = fopen($tmp_file, "r");
-    print $handle;
+   // print $handle;
     while (($data = fgetcsv($handle, 1000, ",")) !== FALSE) {
-     print "cacaa";
-     print_r($data);
+     //print "cacaa";
+     //print_r($data);
       $num = count($data);
       $pair=preg_replace('/=X/','',$data[0]);
       $date=date("Y-m-d",strtotime($data[1]));
@@ -159,7 +159,7 @@ Class CurrencyExchange  {
       
       $sql=sprintf("insert into kbase.`History Currency Exchange Dimension` values (%s,%s,%f)  "
 		   ,prepare_mysql($date) ,prepare_mysql($pair),$exchange);
-      print "$sql\n";
+     // print "$sql\n";
       mysql_query($sql);
       $rows++;
     }

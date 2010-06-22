@@ -526,9 +526,9 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
             }
 
 
-	   $transaction['code']=preg_replace('/L\&P\-/','LLP-',$transaction['code']);
-  
-	    
+            $transaction['code']=preg_replace('/L\&P\-/','LLP-',$transaction['code']);
+
+
 
             $transaction['description']=preg_replace('/\s*\(\s*replacements?\s*\)\s*$/i','',$transaction['description']);
             $transaction['description']=preg_replace('/\s*(\-|\/)\s*replacements?\s*$/i','',$transaction['description']);
@@ -882,36 +882,37 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
             //      print_r($transaction);
 
 
-
+ 
+   
 
             $product_data=array(
-                              'Product Store Key'=>$store_key
-                                                  ,'Product Main Department Key'=>$dept_key
-                                                                                 ,'product sales type'=>'Public Sale'
-                                                                                                       ,'product locale'=>'de_DE'
-                                                                                                                         ,'Product Currency'=>'EUR'
-                                                                                                                                             ,'product type'=>'Normal'
-                                                                                                                                                             ,'product record type'=>'Normal'
-                                                                                                                                                                                    ,'product web state'=>'Online Auto'
-                                                                                                                                                                                                         ,'Product Family Key'=>$fam_key
-                                                                                                                                                                                                                               ,'product code'=>$code
-                                                                                                                                                                                                                                               ,'product name'=>$description
-                                                                                                                                                                                                                                                               ,'product unit type'=>$unit_type
-                                                                                                                                                                                                                                                                                    ,'product units per case'=>$transaction['units']
-                                                                                                                                                                                                                                                                                                              ,'product net weight'=>$w
-                                                                                                                                                                                                                                                                                                                                    ,'product gross weight'=>$w
-                                                                                                                                                                                                                                                                                                                                                            ,'part gross weight'=>$w
-                                                                                                                                                                                                                                                                                                                                                                                 ,'product rrp'=>sprintf("%.2f",$transaction['rrp']*$transaction['units'])
-                                                                                                                                                                                                                                                                                                                                                                                                ,'product price'=>sprintf("%.2f",$transaction['price'])
-                                                                                                                                                                                                                                                                                                                                                                                                                 ,'supplier code'=>_trim($transaction['supplier_code'])
-                                                                                                                                                                                                                                                                                                                                                                                                                                  ,'supplier name'=>_trim($transaction['supplier_code'])
-                                                                                                                                                                                                                                                                                                                                                                                                                                                   ,'supplier product cost'=>$supplier_product_cost
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                            ,'supplier product code'=>$sup_prod_code
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     ,'supplier product name'=>$description
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              ,'auto_add'=>true
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          ,'product valid from'=>$date_order
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                ,'product valid to'=>$date2
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    ,'editor'=>array('Date'=>$date_order)
+                              'Product Store Key'=>$store_key,
+                              'Product Main Department Key'=>$dept_key,
+                              'product sales type'=>'Not for Sale',
+                              'product locale'=>'de_DE',
+                              'Product Currency'=>'EUR',
+                              'product type'=>'Normal',
+                              'product record type'=>'Normal',
+                              'product web state'=>'Offline',
+                              'Product Family Key'=>$fam_key,
+                              'product code'=>$code,
+                              'product name'=>$description,
+                              'product unit type'=>$unit_type,
+                              'product units per case'=>$transaction['units'],
+                              'product net weight'=>$w,
+                              'product gross weight'=>$w,
+                              'part gross weight'=>$w,
+                              'product rrp'=>sprintf("%.2f",$transaction['rrp']*$transaction['units']),
+                              'product price'=>sprintf("%.2f",$transaction['price']),
+                              'supplier code'=>_trim($transaction['supplier_code']),
+                              'supplier name'=>_trim($transaction['supplier_code']),
+                              'supplier product cost'=>$supplier_product_cost,
+                              'supplier product code'=>$sup_prod_code,
+                              'supplier product name'=>$description,
+                              'auto_add'=>true,
+                              'product valid from'=>$date_order,
+                              'product valid to'=>$date2,
+                              'editor'=>array('Date'=>$date_order)
                           );
 
             // print "$code\n";
@@ -970,16 +971,27 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
                 if (isset($parts[0])) {
                     // print "found part \n";
                     $part=new Part('sku',$parts[0]);
+                    
+                    
                     $part_list[]=array(
-                                     'Product ID'=>$product->get('Product ID'),
-                                     'Product Part Status'=>'Not In Use',
-                                     'Part SKU'=>$parts[0],
-                                     'Product Part Id'=>1,
-                                     'requiered'=>'Yes',
-                                     'Parts Per Product'=>1,
-                                     'Product Part Type'=>'Simple Pick'
-                                 );
-                    $parts_per_product=1;
+
+                                 'Part SKU'=>$part->get('Part SKU'),
+
+                                 'Parts Per Product'=>$parts_per_product,
+                                 'Product Part Type'=>'Simple'
+
+                             );
+                $product_part_header=array(
+                                         'Product Part Valid From'=>$date_order,
+                                         'Product Part Valid To'=>$date2,
+                                         'Product Part Most Recent'=>'No',
+                                         'Product Part Type'=>'Simple'
+
+                                     );
+                    
+                    
+                    
+                    
 
                 } else {
 
@@ -996,68 +1008,66 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
                     $part=new Part('new',$part_data);
                     $parts_per_product=1;
                     $part_list=array();
-                    $part_list[]=array(
-                                     'Product ID'=>$product->pid,
-                                     'Part SKU'=>$part->get('Part SKU')
-                                                , 'Product Part Status'=>'Not In Use',
-                                     'Product Part Id'=>1,
-                                     'requiered'=>'Yes',
-                                     'Parts Per Product'=>$parts_per_product,
-                                     'Product Part Type'=>'Simple Pick'
-                                 );
+                    
+                            $part_list[]=array(
+
+                                 'Part SKU'=>$part->get('Part SKU'),
+
+                                 'Parts Per Product'=>$parts_per_product,
+                                 'Product Part Type'=>'Simple'
+
+                             );
+                $product_part_header=array(
+                                         'Product Part Valid From'=>$date_order,
+                                         'Product Part Valid To'=>$date2,
+                                         'Product Part Most Recent'=>'No',
+                                         'Product Part Type'=>'Simple'
+
+                                     );
+                    
+                    
                 }
                 //	print_r($part_list);
-                $product->new_part_list(array(),$part_list);
+                  $product->new_historic_part_list($product_part_header,$part_list);
                 $used_parts_sku=array($part->sku => array('parts_per_product'=>$parts_per_product,'unit_cost'=>$supplier_product_cost*$transaction['units']));
 
             } else {
 
 
-
-                $sql=sprintf("select `Part SKU` from `Product Part List` where  `Product ID`=%d ",$product->pid);
-                //	print "$code $sql\n";
+  $sql=sprintf("select `Part SKU` from `Product Part List` PPL left join `Product Part Dimension` PPD on (PPL.`Product Part Key`=PPD.`Product Part Key`)where  `Product ID`=%d  ",$product->pid);
                 $res_x=mysql_query($sql);
                 if ($row_x=mysql_fetch_array($res_x)) {
                     $part_sku=$row_x['Part SKU'];
-
-                    if (!$part_sku) {
-
-                        exit("$code $sql de_get_orders line 959\n");
-                    }
-
                 } else {
                     print_r($product);
                     exit("error: $sql");
                 }
                 mysql_free_result($res_x);
 
-                $used_parts_sku=$part_sku;
-
                 $part=new Part('sku',$part_sku);
-
-                //print_r($part);
-
                 $part->update_valid_dates($date_order);
                 $part->update_valid_dates($date2);
-
-                // TODO FIXME
-                $sql=sprintf("update `Product Part List` set `Product Part Valid From`=%s  where `Product Part Valid From`>%s and `Product ID`=%d and `Part SKU`=%d and  `Product Part Most Recent`='Yes'"
-                             ,prepare_mysql($date_order)
-                             ,prepare_mysql($date_order)
-                             ,$product->pid
-                             ,$part->sku
-                            );
-                //mysql_query($sql);
-                $sql=sprintf("update `Product Part List` set `Product Part Valid To`=%s   where `Product Part Valid To`<%s and `Product ID`=%d and `Part SKU`=%d and  `Product Part Most Recent`='Yes'"
-                             ,prepare_mysql($date2)
-                             ,prepare_mysql($date2)
-                             ,$product->pid
-                             ,$part->sku
-                            );
-                // mysql_query($sql);
                 $parts_per_product=1;
+                $part_list=array();
+                $part_list[]=array(
+
+                                 'Part SKU'=>$part->sku,
+
+                                 'Parts Per Product'=>$parts_per_product,
+                                 'Product Part Type'=>'Simple'
+
+                             );
+                //print_r($part_list);
+                $product_part_key=$product->find_product_part_list($part_list);
+                if (!$product_part_key) {
+                    exit("Error can not find product part list (get_orders_db)\n");
+                }
+
+                $product->update_product_part_list_historic_dates($product_part_key,$date_order,$date2);
+
                 $used_parts_sku=array($part->sku=>array('parts_per_product'=>$parts_per_product,'unit_cost'=>$supplier_product_cost*$transaction['units']));
 
+              
             }
 
 
@@ -1287,7 +1297,7 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
             $_customer_data['has_shipping']=false;
             $shipping_addresses=array();
         }
- 
+
         // print_r($_customer_data);
 
         if (array_empty($shipping_addresses)) {
@@ -1299,7 +1309,7 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
 
 
-if ($customer_data['Customer Delivery Address Link']=='Contact') {
+        if ($customer_data['Customer Delivery Address Link']=='Contact') {
             $_customer_data['has_shipping']=true;
             $shipping_addresses=array();
         }
@@ -1592,7 +1602,7 @@ if ($customer_data['Customer Delivery Address Link']=='Contact') {
                     foreach($credits as $credit) {
 
                         //	  print_r($header_2data);
-                        $sql=sprintf("insert into `Order No Product Transaction Fact` values  (%s,%s,%s,%s,'Credit',%s,%.2f,%.2f,%s,%f,%s)"
+                        $sql=sprintf("insert into `Order No Product Transaction Fact`  (`Order Date`,`Invoice Date`,`Order Key`,`Invoice Key`,`Transaction Type`,`Transaction Description`,`Transaction Net Amount`,`Transaction Tax Amount`,`Currency Code`,`Currency Exchange`,`Metadata`) values  (%s,%s,%s,%s,'Credit',%s,%.2f,%.2f,%s,%f,%s)"
                                      ,prepare_mysql($credit['parent_date'])
                                      ,prepare_mysql($invoice->data['Invoice Date'])
                                      ,$credit['parent_key']
@@ -2244,17 +2254,17 @@ if ($customer_data['Customer Delivery Address Link']=='Contact') {
             $parent_order->load('items');
             $customer=new Customer($parent_order->data['Order Customer Key']);
             if ($_customer_data['has_shipping']  and isset($data['Shipping Address']) and is_array($data['Shipping Address']) and !array_empty($data['Shipping Address'])) {
-                
-                   $address=new Address('find create',$data['Shipping Address']);
-                    $customer->update(array('Customer Delivery Address Link','None'));
-                    $customer->associate_delivery_address($address->id);
-                     $ship_to_data=$customer->get_ship_to_data();
+
+                $address=new Address('find create',$data['Shipping Address']);
+                $customer->update(array('Customer Delivery Address Link','None'));
+                $customer->associate_delivery_address($address->id);
+                $ship_to_data=$customer->get_ship_to_data();
 
                 $ship_to=new Ship_To('find create',$ship_to_data);
 
-                     $parent_order->add_ship_to($ship_to->id);
+                $parent_order->add_ship_to($ship_to->id);
                 $parent_order->data ['Order Ship To Key To Deliver']=$ship_to->id;
-                
+
             }
 
 

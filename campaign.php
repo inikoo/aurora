@@ -18,10 +18,8 @@ include_once('class.Product.php');
 include_once('class.Order.php');
 
 
-
 $general_options_list=array();
 $general_options_list[]=array('tipo'=>'url','url'=>'marketing_reports.php','label'=>_('Reports'));
-
 $general_options_list[]=array('tipo'=>'url','url'=>'campaign.php?new','label'=>_('Create Campaign'));
 $general_options_list[]=array('tipo'=>'url','url'=>'newsletter.php?new','label'=>_('Create Newsletter'));
 $smarty->assign('general_options_list',$general_options_list);

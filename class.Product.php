@@ -1262,10 +1262,18 @@ print_r($all_product_part_list_keys);
 }
 
 
-function new_historic_part_list(){
+function new_historic_part_list($header_data,$list){
 
+$product_part_key=$this->find_product_part_list($list);
+if($product_part_key){
+$this->update_product_part_list($product_part_key,$header_data,$list);
+$this->update_product_part_list_historic_dates($product_part_key,$header_data['Product Part Valid From'],$header_data['Product Part Valid To']);
 
+}else{
+$product_part_key=$this->create_product_part_list($header_data,$list);
 }
+}
+
 
 
 
@@ -1291,6 +1299,22 @@ $data[$row['Part SKU']]=$row;
     return $data;
 
 
+}
+
+
+function update_product_part_list_historic_dates($product_part_key,$date1,$date2){
+$sql=sprintf("update `Product Part Dimension` set `Product Part Valid From`=%s where `Product Part Key`=%d and (`Product Part Valid From` is null or `Product Part Valid From`>%s)"
+,prepare_mysql($date1)
+,$product_part_key
+,prepare_mysql($date1)
+);
+mysql_query($sql);
+$sql=sprintf("update `Product Part Dimension` set `Product Part Valid To`=%s where `Product Part Key`=%d and (`Product Part Valid To` is null or `Product Part Valid To`<%s)"
+,prepare_mysql($date2)
+,$product_part_key
+,prepare_mysql($date2)
+);
+mysql_query($sql);
 }
 
 
