@@ -273,7 +273,7 @@ $this->data['Invoice Currency Exchange']=$exchange;
 		    $order_date = 'NULL';
 		    $order_key=0;
 		  }
-		    $sql = sprintf ( "insert into `Order No Product Transaction Fact` values  (%s,%s,%s,%s,'Refund',%s,%.2f,%.2f,%s,%f,%s)"
+		    $sql = sprintf ( "insert into `Order No Product Transaction Fact` (`Order Date`,`Invoice Date`,`Order Key`,`Invoice Key`,`Transaction Type`,`Transaction Description`,`Transaction Net Amount`,`Transaction Tax Amount`,`Currency Code`,`Currency Exchange`,`Metadata`) values  (%s,%s,%s,%s,'Refund',%s,%.2f,%.2f,%s,%f,%s)"
 				     , $order_date
 				     , prepare_mysql ( $this->data ['Invoice Date'] )
 				     , $order_key
@@ -292,7 +292,7 @@ $this->data['Invoice Currency Exchange']=$exchange;
 		  $discounts += 0;
 			
 		  if (! mysql_query ( $sql ))
-			  exit ( "$sql can not update order trwansiocion facrt after invoice" );
+			  exit ( "Eerror $sql can not update order trwansiocion facrt after invoice" );
 		}
 	
 

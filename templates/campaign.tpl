@@ -12,7 +12,7 @@
     </div>
 </div>
 <div style="clear:left;margin:0 0px">
-    <h1>{t}Marketing{/t}</h1>
+    <h1>{t}Campaign{/t}</h1>
 </div>
 
 </div>

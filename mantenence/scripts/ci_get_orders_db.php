@@ -1328,7 +1328,7 @@ if ($customer_data['Customer Delivery Address Link']=='Contact') {
 	  foreach($credits as $credit) {
 
 	    //	  print_r($header_2data);
-	    $sql=sprintf("insert into `Order No Product Transaction Fact` values  (%s,%s,%s,%s,'Credit',%s,%.2f,%.2f,%s,%f,%s)"
+	    $sql=sprintf("insert into `Order No Product Transaction Fact`  (`Order Date`,`Invoice Date`,`Order Key`,`Invoice Key`,`Transaction Type`,`Transaction Description`,`Transaction Net Amount`,`Transaction Tax Amount`,`Currency Code`,`Currency Exchange`,`Metadata`)  values  (%s,%s,%s,%s,'Credit',%s,%.2f,%.2f,%s,%f,%s)"
 			 ,prepare_mysql($credit['parent_date'])
 			 ,prepare_mysql($invoice->data['Invoice Date'])
 			 ,$credit['parent_key']
