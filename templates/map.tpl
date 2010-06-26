@@ -21,10 +21,10 @@
 
 	<script type="text/javascript">
 		// <![CDATA[		
-		var so = new SWFObject("external_libs/ammap_2.5.4/ammap/ammap.swf", "ammap", "100%", "100%", "8", "#FFFFFF");
-    so.addVariable("path", "external_libs/ammap_2.5.4/ammap/");
-		so.addVariable("data_file", escape("map_data.xml.php{$data_args}"));
-    so.addVariable("settings_file", escape("conf/country_map_settings.xml"));		
+		var so = new SWFObject("{$path}/ammap/ammap.swf", "ammap", "100%", "100%", "8", "#FFFFFF");
+        so.addVariable("path", "{$path}/ammap/");
+		so.addVariable("data_file", escape("{$data_file}"));
+        so.addVariable("settings_file", escape("conf/country_map_settings.xml"));		
 		so.addVariable("preloader_color", "#999999");
 		so.write("flashcontent");
 		// ]]>

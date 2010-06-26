@@ -27,7 +27,7 @@ include_once('../../set_locales.php');
 
 require_once '../../conf/conf.php';   
 
-mysql_query("SET time_zone ='UTC'");
+mysql_query("SET time_zone ='+0:00'");
 mysql_query("SET NAMES 'utf8'");
 require_once '../../conf/conf.php';           
 date_default_timezone_set('Europe/Madrid');

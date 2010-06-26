@@ -784,7 +784,7 @@ $tel->new=true;
 
 
 
-
+$this->update_full_search();
 
     }
 
@@ -3362,6 +3362,23 @@ if( (date('U')-strtotime($this->data['Customer First Contacted Date']))<2592000)
 
 }
 
+
+function update_full_search(){
+$address=new Address($this->data['Customer Main Address Key']);
+$first_full_search=$this->data['Customer Name'].' '.$address->display('Plain').' '.$this->data['Customer Main Contact Name'].' '.$this->data['Customer Main Plain Email'];
+$second_full_search=$this->data['Customer Type'];
+
+
+$sql=sprintf("insert into `Search Full Text Dimension` values  (%s,'Customer',%d,%s,%s) on duplicate key update `First Search Full Text`=%s ,`Second Search Full Text`=%s "
+,$this->data['Customer Store Key']
+,$this->id
+,prepare_mysql($first_full_search)
+,prepare_mysql($second_full_search)
+,prepare_mysql($first_full_search)
+,prepare_mysql($second_full_search)
+);
+mysql_query($sql);
+}
 
 }
 ?>

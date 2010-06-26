@@ -205,7 +205,7 @@ $this->update_customer=true;
                 //print "Cust data\n";
                 
 
-                $customer = new Customer ( 'find create fuzzy', $data['Customer Data'] );
+                $customer = new Customer ( 'find create', $data['Customer Data'] );
                 //print_r($customer);
                 if ( date("Y-m-d",strtotime($customer->data['Customer First Contacted Date']))==date("Y-m-d",strtotime($data ['order date']))  ) {
                     $data ['order date']=date("Y-m-d H:i:s",strtotime($customer->data['Customer First Contacted Date'])+900  );
@@ -3095,7 +3095,23 @@ if($this->update_customer){
             }
         }
 
+function update_full_search(){
 
+$first_full_search=$this->data['Order Public ID'].' '.$this->data['Order Customer Name'].' '.strftime("%d %b %B %Y",strtotime($this->data['Order Date']));
+$second_full_search=strip_tags(preg_replace('/\<br\/\>/',' ',$this->data['Order XHTML Ship Tos'])).' '.$this->data['Order Customer Contact Name'];
+
+
+$sql=sprintf("insert into `Search Full Text Dimension` values  (%s,'Order',%d,%s,%s) on duplicate key update `First Search Full Text`=%s ,`Second Search Full Text`=%s "
+,$this->data['Order Store Key']
+,$this->id
+,prepare_mysql($first_full_search)
+,prepare_mysql($second_full_search)
+,prepare_mysql($first_full_search)
+,prepare_mysql($second_full_search)
+);
+mysql_query($sql);
+//exit($sql);
+}
 
     }
 

@@ -1106,13 +1106,17 @@ $this->updated=true;
     }
 
     $this->get_data('pid',$this->pid);
+ $this->data['Product Short Description']=$this->get('short description');
+  $this->data['Product XHTML Short Description']=$this->get('xhtml short description');
 
     $sql=sprintf("update  `Product Dimension` set `Product Short Description`=%s ,`Product XHTML Short Description`=%s where `Product ID`=%d"
-		 ,prepare_mysql($this->get('short description'))
-		 ,prepare_mysql($this->get('xhtml short description'))
+		 ,prepare_mysql($this->data['Product Short Description'])
+		 ,prepare_mysql($this->data['Product XHTML Short Description'])
 		 ,$this->pid);
     mysql_query($sql);if($this->external_DB_link)mysql_query($sql,$this->external_DB_link);
    
+       $this->update_full_search();
+       
        
     if($this->new_key){
        $sql=sprintf("update  `Product History Dimension` set `Product History Short Description`=%s ,`Product History XHTML Short Description`=%s ,`Product ID`=%d where `Product Key`=%d"
@@ -3717,7 +3721,7 @@ if($this->external_DB_link)mysql_query($sql,$this->external_DB_link);
 				 ,'History Details'=>_('Product')." ".$this->code." (ID:".$this->get('ID').") "._('Name').' '._('from')." ".$old_name." "._('to').' '. $this->get('Product Name')
 				 ));
 
-
+$this->update_full_search();
 
       }
     } else {
@@ -5442,8 +5446,23 @@ if(array_key_exists('Parts Per Product',$this->new_value)){
 
 }
 
-//array('Parts Per Product'=>$ppp,'Product Part List Note'=>$note)
 
+function update_full_search(){
+
+$first_full_search=$this->data['Product Code'].' '.$this->data['Product Short Description'];
+$second_full_search='';
+
+$sql=sprintf("insert into `Search Full Text Dimension` values  (%s,'Product',%d,%s,%s) on duplicate key update `First Search Full Text`=%s ,`Second Search Full Text`=%s "
+,$this->data['Product Store Key']
+,$this->pid
+,prepare_mysql($first_full_search)
+,prepare_mysql(false,$second_full_search)
+,prepare_mysql($first_full_search)
+,prepare_mysql(false,$second_full_search)
+);
+mysql_query($sql);
+//exit($sql);
+}
 
 
 }
