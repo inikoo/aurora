@@ -13,6 +13,7 @@ include_once('../../class.Customer.php');
 error_reporting(E_ALL);
 
 
+date_default_timezone_set('Europe/London');
 
 $con=@mysql_connect($dns_host,$dns_user,$dns_pwd );
 
@@ -22,21 +23,27 @@ if (!$db){print "Error can not access the database\n";exit;}
   
 
 require_once '../../common_functions.php';
-mysql_query("SET time_zone ='UTC'");
+mysql_query("SET time_zone ='+0:00'");
 mysql_query("SET NAMES 'utf8'");
 require_once '../../conf/conf.php';           
-date_default_timezone_set('Europe/London');
 
+$sql="select * from kbase.`Country Dimension`";
+$result=mysql_query($sql);
+while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
+print "cp ../../examples/_countries/".strtolower(preg_replace('/\s/','_',$row['Country Name']))."/ammap_data.xml ".$row['Country Code'].".xml\n";
+}
+exit;
 
 $sql="select * from `Customer Dimension`";
 $result=mysql_query($sql);
 while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
 
-  print $row['Customer Key']."\n";
+  //print $row['Customer Key']."\n";
   $customer=new Customer($row['Customer Key']);
   //$customer->update_orders();
   
   $customer->update_activity();
+  $customer->update_full_search();
   print $customer->id."\r";
  }
 

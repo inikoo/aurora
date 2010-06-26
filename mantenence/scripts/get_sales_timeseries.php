@@ -168,7 +168,6 @@ if($myconf['currency_code']!=$store->data['Store Currency Code']){
  
 }
  
-exit;
 
 $sql="select * from `Product Department Dimension`  where `Product Department Store Key` in (".join(',',$stores).")    ";
 $res=mysql_query($sql);
