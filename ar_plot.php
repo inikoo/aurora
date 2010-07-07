@@ -530,14 +530,13 @@ function list_stack_item($tipo,$category,$period,$item_keys,$split=true,$from=fa
 function list_item($tipo,$category,$period,$item_keys,$split=false,$from=false,$to=false){
   $_data=array();
 
-
   if($split){
     $item_keys=preg_replace('/\(|\)/','',$item_keys);
     foreach(preg_split('/\s*,\s*/',$item_keys) as $key){
 	    
       if(!is_numeric($key))
 	continue;
-  //    print "$tipo ($key) $category $from $to";
+  //print "$tipo ($key) $category $from $to $period";
       
       $tm=new TimeSeries(array($period,"$tipo ($key) $category"));
       //print_r($tm);

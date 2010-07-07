@@ -1966,12 +1966,17 @@ $number_period_for_forecasting=26;
     function plot_data_per_month($tipo,$suffix,$from='',$to='',$currency='') {
 
 
+$from=prepare_mysql_datetime($from,'date');
+$to=prepare_mysql_datetime($to,'date');
+
+
         $where_from='';
-        if ($from)
-            $where_from=sprintf('and `Time Series Date`>=%s ',prepare_mysql($from));
+        if ($from['ok'])
+            $where_from=sprintf('and `Time Series Date`>=%s ',prepare_mysql($from['mysql_date']));
         $where_to='';
-        if ($to)
-            $where_to=sprintf('and `Time Series Date`<=%s ',prepare_mysql($to));
+        if ($to['ok'])
+            $where_to=sprintf('and `Time Series Date`<=%s ',prepare_mysql($to['mysql_date']));
+
 
 
 
@@ -1988,8 +1993,8 @@ $number_period_for_forecasting=26;
                      ,$where_from
                      ,$where_to
                     );
-	// print "$sql<br>";
-
+//	 print "$sql<br>";
+//exit("caca\n");
         $prev_month='';
         $prev_year=array();
         $forecast_region=false;
@@ -2123,13 +2128,21 @@ $number_period_for_forecasting=26;
     function plot_data_per_year($tipo,$suffix,$from='',$to='') {
 
 
+$from=prepare_mysql_datetime($from,'date');
+$to=prepare_mysql_datetime($to,'date');
+
 
         $where_from='';
-        if ($from)
-            $where_from=sprintf('and `Time Series Date`>=%s ',prepare_mysql($from));
+        if ($from['ok'])
+            $where_from=sprintf('and `Time Series Date`>=%s ',prepare_mysql($from['mysql_date']));
         $where_to='';
-        if ($to)
-            $where_to=sprintf('and `Time Series Date`<=%s ',prepare_mysql($to));
+        if ($to['ok'])
+            $where_to=sprintf('and `Time Series Date`<=%s ',prepare_mysql($to['mysql_date']));
+
+
+
+
+     
 
         $data=array();
         $where_dates=prepare_mysql_dates($from,$to,"`Time Series Date`");
@@ -2237,19 +2250,31 @@ $number_period_for_forecasting=26;
 
     }
 
-    function plot_data_per_quarter($tipo,$suffix,$from,$to) {
+    function plot_data_per_quarter($tipo,$suffix,$from='',$to='') {
+
+$from=prepare_mysql_datetime($from,'date');
+$to=prepare_mysql_datetime($to,'date');
+
+
+        $where_from='';
+        if ($from['ok'])
+            $where_from=sprintf('and `Time Series Date`>=%s ',prepare_mysql($from['mysql_date']));
+        $where_to='';
+        if ($to['ok'])
+            $where_to=sprintf('and `Time Series Date`<=%s ',prepare_mysql($to['mysql_date']));
+
 
 
 
 
         $data=array();
         $where_dates=prepare_mysql_dates($from,$to,"`Time Series Date`");
-        $sql=sprintf("SELECT `Time Series Label`,`Time Series Type`,`Time Series Value` as value, CONCAT(YEAR(`Time Series Date`),QUARTER(`Time Series Date`))   yearquarter,QUARTER(`Time Series Date`) as quarter,YEAR(`Time Series Date`) as year,`Time Series Count` as count ,UNIX_TIMESTAMP(`Time Series Date`) as date from `Time Series Dimension` where  `Time Series Frequency`='Quarterly' and  `Time Series Name`=%s and `Time Series Name Key`=%d and `Time Series Name Second Key`=%d  and `Time Series Date`>=%s and `Time Series Date`<=%s  order by `Time Series Date`,`Time Series Type` desc"
+        $sql=sprintf("SELECT `Time Series Label`,`Time Series Type`,`Time Series Value` as value, CONCAT(YEAR(`Time Series Date`),QUARTER(`Time Series Date`))   yearquarter,QUARTER(`Time Series Date`) as quarter,YEAR(`Time Series Date`) as year,`Time Series Count` as count ,UNIX_TIMESTAMP(`Time Series Date`) as date from `Time Series Dimension` where  `Time Series Frequency`='Quarterly' and  `Time Series Name`=%s and `Time Series Name Key`=%d and `Time Series Name Second Key`=%d    order by `Time Series Date`,`Time Series Type` desc"
                      ,prepare_mysql($this->name)
                      ,$this->name_key
                      ,$this->name_key2
-                     ,$from
-                     ,$to
+                     ,$where_from
+                     ,$where_to
                     );
         print "$sql<br>";
 
