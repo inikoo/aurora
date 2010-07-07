@@ -1872,10 +1872,15 @@ function list_staff() {
     }
 
     mysql_free_result($res);
-    $rtext=$total_records." ".ngettext('record','records',$total_records);
-    if ($total_records>$number_results)
-        $rtext.=sprintf(" <span class='rtext_rpp'>(%d%s)</span>",$number_results,_('rpp'));
+    
     $filter_msg='';
+
+
+ $rtext=$total_records." ".ngettext('record','records',$total_records);
+    if ($total_records>$number_results)
+        $rtext_rpp=sprintf(" (%d%s)",$number_results,_('rpp'));
+    else
+        $rtext_rpp=sprintf("Showing all records");
 
     switch ($f_field) {
     case('name'):
