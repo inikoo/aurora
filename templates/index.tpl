@@ -1,16 +1,34 @@
 {include file='header.tpl'}
 <div id="bd" style="padding:0px">
-<div class="search_box" style="margin-top:15px">
+
+<div class="search_box">
   <div class="general_options">
     {foreach from=$general_options_list item=options }
-        {if $options.tipo=="url"}
-            <span onclick="window.location.href='{$options.url}'" >{$options.label}</span>
-        {else}
-            <span  id="{$options.id}" state="{$options.state}">{$options.label}</span>
-        {/if}
+    {if $options.tipo=="url"}
+    <span onclick="window.location.href='{$options.url}'" >{$options.label}</span>
+    {else}
+    <span  id="{$options.id}" state="{$options.state}">{$options.label}</span>
+    {/if}
     {/foreach}
+  </div>
+  
+  <div id="search" style="margin:20px 20px 0 0;text-align:right;{if !$search_scope}display:none{/if}">
+    <span class="search_title" >{t}{$search_label}{/t}:</span>
+    <input size="25" class="text search" id="{$search_scope}_search" value="" state="" name="search"/><img align="absbottom" id="{$search_scope}_clean_search"  class="submitsearch" src="art/icons/zoom.png" >
+    <div id="{$search_scope}_search_Container" style="display:none"></div>
+    <div style="position:relative;font-size:80%">
+      <div id="{$search_scope}_search_results" style="display:none;background:#fff;border:1px solid #777;padding:10px;margin-top:0px;width:500px;position:absolute;z-index:20;left:-520px">
+	<table id="{$search_scope}_search_results_table"></table>
+      </div>
     </div>
-</div>
+  </div>
+  
+</div>  
+
+
+
+
+
 
 <div style="clear:both">
 

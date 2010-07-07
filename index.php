@@ -33,8 +33,6 @@ if ($user->data['User Type']=='Supplier') {
 }
 
 
-
-
 $css_files=array(
                  $yui_path.'reset-fonts-grids/reset-fonts-grids.css',
                  $yui_path.'menu/assets/skins/sam/menu.css',
@@ -92,6 +90,10 @@ foreach($splinters as $splinter) {
         $js_files[]=$splinter['js']."?table_id=".$splinter['index'];
     include_once($splinter['php']);
 }
+
+$smarty->assign('search_scope','all');
+
+$smarty->assign('search_label',_('Search'));
 
 $smarty->assign('splinters',$splinters);
 $smarty->assign('parent','home');
