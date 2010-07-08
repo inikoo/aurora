@@ -73,7 +73,11 @@ $version='V 1.0';//75693
 $Data_Audit_ETL_Software="$software $version";
 srand(12111);
 
-$store_key=2;
+
+
+$store=new Store("code","DE");
+$store_key=$store->id;
+
 
 $dept_data=array(
                'Product Department Code'=>'ND',
@@ -886,34 +890,35 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
    
 
             $product_data=array(
-                              'Product Store Key'=>$store_key,
-                              'Product Main Department Key'=>$dept_key,
-                              'product sales type'=>'Not for Sale',
-                              'product locale'=>'de_DE',
-                              'Product Currency'=>'EUR',
-                              'product type'=>'Normal',
-                              'product record type'=>'Normal',
-                              'product web state'=>'Offline',
-                              'Product Family Key'=>$fam_key,
-                              'product code'=>$code,
-                              'product name'=>$description,
-                              'product unit type'=>$unit_type,
-                              'product units per case'=>$transaction['units'],
-                              'product net weight'=>$w,
-                              'product gross weight'=>$w,
-                              'part gross weight'=>$w,
-                              'product rrp'=>sprintf("%.2f",$transaction['rrp']*$transaction['units']),
-                              'product price'=>sprintf("%.2f",$transaction['price']),
-                              'supplier code'=>_trim($transaction['supplier_code']),
-                              'supplier name'=>_trim($transaction['supplier_code']),
-                              'supplier product cost'=>$supplier_product_cost,
-                              'supplier product code'=>$sup_prod_code,
-                              'supplier product name'=>$description,
-                              'auto_add'=>true,
-                              'product valid from'=>$date_order,
-                              'product valid to'=>$date2,
-                              'editor'=>array('Date'=>$date_order)
-                          );
+				'Product Store Key'=>$store_key
+				,'Product Main Department Key'=>$dept_key
+				,'product sales type'=>'Not for Sale'
+				,'product locale'=>'de_DE'
+				,'Product Currency'=>'EUR'
+				,'product type'=>'Normal'
+				,'product record type'=>'Normal'
+				,'product web state'=>'Offline'
+				,'Product Family Key'=>$fam_key
+				,'product code'=>$code
+				,'product name'=>$description
+				,'product unit type'=>$unit_type
+				,'product units per case'=>$transaction['units']
+				,'product net weight'=>$w
+				,'product gross weight'=>$w
+				,'part gross weight'=>$w
+				,'product rrp'=>sprintf("%.2f",$transaction['rrp']*$transaction['units'])
+				,'product price'=>sprintf("%.2f",$transaction['price'])
+				,'supplier code'=>_trim($transaction['supplier_code'])
+				,'supplier name'=>_trim($transaction['supplier_code'])
+				,'supplier product cost'=>$supplier_product_cost
+				,'supplier product code'=>$sup_prod_code
+				,'supplier product name'=>$description
+				,'auto_add'=>true
+				,'product valid from'=>$date_order
+				,'product valid to'=>$date2
+				,'editor'=>array('Date'=>$date_order)
+				);
+	    
 
             // print "$code\n";
             $product=new Product('find',$product_data,'create');
@@ -1371,7 +1376,7 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
 
         if ($update) {
-            print "Updatedx ";
+            print "Updated";
 
             $sql=sprintf("select `Order Key`  from `Order Dimension`  where `Order Original Metadata`=%s  ",prepare_mysql($store_code.$order_data_id));
 
