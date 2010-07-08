@@ -25,7 +25,7 @@ $_SESSION['locale_info'] = localeconv();
 $con=@mysql_connect($dns_host,$dns_user,$dns_pwd );
 
 if(!$con){print "Error can not connect with database server\n";exit;}
-//$dns_db='dw_avant';
+//$dns_db='fr_orders_data';
 $db=@mysql_select_db($dns_db, $con);
 if (!$db){print "Error can not access the database\n";exit;}
 $codigos=array();
@@ -46,17 +46,18 @@ $file_name='/data/plaza/AWorder2009France.xls';
 $tcsv_file='fr_tmp.8859.csv';
 $csv_file='fr_tmp.utf.csv';
 
-//exec('/usr/local/bin/xls2csv    -s cp1252   -d 8859-1   '.$file_name.' > '.$tcsv_file);
-//exec("iconv   -f  ISO8859-1  -t UTF-8  --output  $csv_file $tcsv_file");
+exec('/usr/local/bin/xls2csv    -s cp1252   -d 8859-1   '.$file_name.' > '.$tcsv_file);
+exec("iconv   -f  ISO8859-1  -t UTF-8  --output  $csv_file $tcsv_file");
 
-$csv_file='fr_utf8.csv';
+//$csv_file='fr_utf8.csv';
 
 $handle_csv = fopen($csv_file, "r");
 $column=0;
 $products=false;
 $count=0;
 
-$store_key=3;
+$store=new Store("code","FR");
+$store_key=$store->id;
 
 
 $dept_data=array(

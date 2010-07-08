@@ -213,7 +213,7 @@ public $new_value=false;
         $store=new Store($data['Product Department Store Key']);
         if (!$store->id) {
             $this->error=true;
-            exit("error");
+            exit("error store not ".$data['Product Department Store Key']." found\n");
         }
 
         $data['Product Department Store Code']=$store->data['Store Code'];

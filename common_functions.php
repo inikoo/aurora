@@ -1608,7 +1608,10 @@ return (float) $value;
 function parse_weight($value){
 $unit='Kg';
 $value=_trim($value);
-if(preg_match('/(lb?s|pounds?|libras?)$/i',$value)){
+if(preg_match('/(kg|kilo?|kilograms?)$/i',$value)){
+    $value=parse_number($value);
+    $unit='Kg';
+}elseif(preg_match('/(lb?s|pounds?|libras?)$/i',$value)){
     $value=parse_number($value)*.4545 ;
     $unit='Lb';
 }elseif(preg_match('/(g|grams?|gms)$/i',$value)){
@@ -1621,6 +1624,37 @@ if(preg_match('/(lb?s|pounds?|libras?)$/i',$value)){
 $value=parse_number($value);
 
 return array($value,$unit);
+}
+
+
+function convert_weigth($value,$from,$to){
+  $factors['KgKg']=1;
+  $factors['LbLb']=1;
+  $factors['gg']=1;
+  $factors['tt']=1;
+
+  $factors['KgLb']=2.2;
+  $factors['Kgg']=1000;
+  $factors['Kgt']=.001;
+
+  $factors['gLb']=.0022;
+  $factors['gKg']=.001;
+  $factors['gt']=.000001;
+
+  $factors['tLb']=2200;
+  $factors['tg']=1000000;
+  $factors['tKg']=1000;
+ 
+  $factors['LbKg']=0.4545;
+  $factors['Lbg']=454.5;
+  $factors['Lbt']=0.0004545;
+
+  if(array_key_exists($from.$to,$factors)){
+    return $factors[$from.$to]*$value;
+  }else
+    return $value;
+
+
 }
 
 function parse_volume($value){

@@ -13,12 +13,12 @@ include_once('../../class.Image.php');
 include_once('../../class.SupplierProduct.php');
 error_reporting(E_ALL);
 
-
+$to_stop=0;
 
 $con=@mysql_connect($dns_host,$dns_user,$dns_pwd );
 
 if(!$con){print "Error can not connect with database server\n";exit;}
-//$dns_db='dw';
+$dns_db='kaw';
 $db=@mysql_select_db($dns_db, $con);
 if (!$db){print "Error can not access the database\n";exit;}
 
@@ -37,6 +37,7 @@ require_once '../../conf/conf.php';
 //  
  // }
 //exit;
+
 
 /* $sql="select `Product Code` from `Product Dimension`  group by `Product Code` "; */
 
@@ -77,7 +78,7 @@ foreach($pics as $key=>$value){
     $product=new Product('pid',$row['Product ID']);
     foreach($value as $img_filename){
      
-     // print "----".getcwd()."------ ".$img_filename."   \n";
+      print "----".getcwd()."------ ".$img_filename."   \n";
       $rand=rand().rand();
       
       $tmp_file='app_files/pics/tmp/tmp'.$rand.'.jpg';
@@ -98,6 +99,11 @@ $image=new Image('find',$data,'create');
       // print $product->msg."\n";
       $product->update_main_image();
       // unlink($tmp_file);
+if($image->new)
+	sleep(2);
+	$to_stop++;
+//if($to_stop>10)	
+ //   exit;
     }
 
   }

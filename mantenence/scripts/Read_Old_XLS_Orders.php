@@ -29,7 +29,7 @@ require_once '../../common_functions.php';
 error_reporting(E_ALL);
 $con=@mysql_connect($dns_host,$dns_user,$dns_pwd );
 if(!$con){print "Error can not connect with database server\n";exit;}
-//$dns_db='dw';
+$dns_db='orders_data';
 $db=@mysql_select_db($dns_db, $con);
 if (!$db){print "Error can not access the database\n";exit;}
 require_once '../../common_functions.php';
@@ -197,12 +197,12 @@ foreach($good_files_number as $order_index=>$order){
 
 
     $cvs_filename=sprintf("%06d.csv",$id);
-    copy($csv_file,$cvs_repo.$cvs_filename );
+    // copy($csv_file,$cvs_repo.$cvs_filename );
     $handle_csv = fopen($csv_file, "r");
     unlink($csv_file);
     
-    $sql=sprintf("update orders_data.orders set filename_cvs=%s where id=%d",prepare_mysql($cvs_repo.$cvs_filename),$id);
-    mysql_query($sql);
+    //  $sql=sprintf("update orders_data.orders set filename_cvs=%s where id=%d",prepare_mysql($cvs_repo.$cvs_filename),$id);
+    //  mysql_query($sql);
     $updated=true;
     
   }

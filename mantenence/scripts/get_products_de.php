@@ -44,16 +44,17 @@ $Data_Audit_ETL_Software="$software $version";
 
 $file_name='/data/plaza/AWorder2009Germany.xls';
 $csv_file='de.csv';
-//exec('/usr/local/bin/xls2csv    -s cp1252   -d 8859-1   '.$file_name.' > '.$csv_file);
+exec('/usr/local/bin/xls2csv    -s cp1252   -d 8859-1   '.$file_name.' > '.$csv_file);
 
 $handle_csv = fopen($csv_file, "r");
 $column=0;
 $products=false;
 $count=0;
 
-$store_key=2;
 
-
+$store=new Store("code","DE");
+$store_key=$store->id;
+//exit($store_key);
 $dept_data=array(
 		 'Product Department Code'=>'ND',
 		 'Product Department Name'=>'Products Without Department',
@@ -283,7 +284,6 @@ $data=array(
 	    
 	    );
 $camp->add_deal_schema($data);
-
 
 $__cols=array();
 $inicio=false;

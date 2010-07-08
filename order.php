@@ -79,8 +79,8 @@ if(!isset($_REQUEST['id']) or !is_numeric($_REQUEST['id'])){
 
 $order_id=$_REQUEST['id'];
 $_SESSION['state']['order']['id']=$order_id;
-
-if(!$order=new Order($order_id)){
+$order=new Order($order_id);
+if(!$order->id){
    header('Location: orders_server.php?msg=order_not_found');
    exit;
 

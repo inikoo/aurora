@@ -1726,6 +1726,11 @@ if(isset( $_REQUEST['where']))
      $order='`Delivery Note Customer Name`';
    else if($order=='type')
      $order='`Delivery Note Type`';
+ else if($order=='weight')
+     $order='`Delivery Note Weight`';
+ else if($order=='parcels')
+     $order='`Delivery Note Parcel Type`,`Delivery Note Number Parcels`';
+
    
   $sql="select *  from `Delivery Note Dimension`  $where $wheref  order by $order $order_direction limit $start_from,$number_results ";
   // print $sql;
@@ -1740,14 +1745,38 @@ if(isset( $_REQUEST['where']))
 
      $type=$row['Delivery Note Type'];
 
+     switch($row['Delivery Note Parcel Type']){
+     case('Pallet'):
+       $parcel_type='P';
+       break;
+     case('Envelope'):
+       $parcel_type='e';
+       break;
+     default:     
+       $parcel_type='b';
+       
+     }
+
+     if($row['Delivery Note Number Parcels']==''){
+       $parcels='?';
+     }elseif($row['Delivery Note Parcel Type']=='Pallet' and $row['Delivery Note Number Boxes']){
+       $parcels=number($row['Delivery Note Number Parcels']).' '.$parcel_type.' ('.$row['Delivery Note Number Boxes'].' b)';
+     }else{
+       $parcels=number($row['Delivery Note Number Parcels']).' '.$parcel_type;
+     }
+
      $data[]=array(
 		   'id'=>$order_id
 		   ,'customer'=>$customer
 		   ,'date'=>strftime("%e %b %y", strtotime($row['Delivery Note Date']))
-		   ,'type'=>$type
+		   ,'type'=>$type.' ('.$row['Delivery Note XHTML Orders'].')'
 		   ,'orders'=>$row['Delivery Note XHTML Orders']
 		   ,'invoices'=>$row['Delivery Note XHTML Invoices']
-		   );
+		   ,'weight'=>number($row['Delivery Note Weight'],1,true).' Kg'
+		   ,'parcels'=>$parcels
+
+
+);
    }
    mysql_free_result($res);
 

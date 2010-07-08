@@ -41,7 +41,8 @@ $css_files=array(
                  'common.css',
                  'button.css',
                  'container.css',
-                 'table.css'
+                 'table.css',
+		 'css/index.css'
                 );
 $js_files=array(
 
@@ -57,7 +58,9 @@ $js_files=array(
               'common.js.php',
               'table_common.js.php',
               'js/search.js',
-              'index.js.php'
+              'js/index_tools.js',
+	      'js/index_sliding_tabs.js',
+	      'index.js.php'
           );
 
 

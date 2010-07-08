@@ -261,7 +261,10 @@ class DeliveryNote extends DB_Table {
     function get($key) {
 
         switch ($key) {
-        case('Items Gross Amount'):
+	case('Date'):
+	  return strftime('%D',strtotime($this->data['Delivery Note Date']));
+	  break;
+	case('Items Gross Amount'):
         case('Items Discount Amount'):
         case('Items Net Amount'):
         case('Items Tax Amount'):
