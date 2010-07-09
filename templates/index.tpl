@@ -4,11 +4,11 @@
 	<script src="js/index_sliding_tabs.js" type="text/javascript"></script>
  <div id="search" style="border:0px solid black;margin:auto;text-align:center;padding:10px;margin:10px">
     <span  >{t}Search{/t}:</span>
-    <input size="45" class="text" id="{$search_scope}_search" value="" state="" name="search"/>
+    <input size="45" class="text" id="{$search_scope}_search" value="" state="" name="search"/><img style="position:relative;left:-18px;display:none"align="absbottom" id="{$search_scope}_clean_search"  class="submitsearch" src="art/icons/cross_bw.png" >
    
     <div id="{$search_scope}_search_Container" style="display:none"></div>
     <div style="position:relative;font-size:80%">
-      <div id="{$search_scope}_search_results" style="display:none;background:#fff;border:1px solid #777;padding:10px;margin-top:0px;width:500px;position:absolute;z-index:20;left:-520px">
+      <div id="{$search_scope}_search_results" style="display:none;position:absolute;background:#fff;border:1px solid #777;padding:10px;margin-top:0px;width:520px;z-index:20;left:200px;">
 	<table id="{$search_scope}_search_results_table"></table>
       </div>
     </div>

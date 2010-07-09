@@ -3099,6 +3099,27 @@ function update_full_search(){
 
 $first_full_search=$this->data['Order Public ID'].' '.$this->data['Order Customer Name'].' '.strftime("%d %b %B %Y",strtotime($this->data['Order Date']));
 $second_full_search=strip_tags(preg_replace('/\<br\/\>/',' ',$this->data['Order XHTML Ship Tos'])).' '.$this->data['Order Customer Contact Name'];
+$img='';
+
+$sql=sprintf("insert into `Search Full Text Dimension` (`Store Key`,`Subject`,`Subject Key`,`First Search Full Text`,`Second Search Full Text`,`Search Result Name`,`Search Result Description`,`Search Result Image`) values  (%s,'Order',%d,%s,%s,%s,%s,%s) on duplicate key 
+update `First Search Full Text`=%s ,`Second Search Full Text`=%s ,`Search Result Name`=%s,`Search Result Description`=%s,`Search Result Image`=%s"
+,$this->data['Order Store Key']
+,$this->id
+,prepare_mysql($first_full_search)
+,prepare_mysql($second_full_search,false)
+,prepare_mysql($this->data['Order Public ID'],false)
+,prepare_mysql('['.$this->data['Order Store Code'].'] '.$this->data['Order Customer Name'].' ('.strftime("%e %b %Y", strtotime($this->data['Order Date'])).') '.$this->data['Order Current XHTML State'],false)
+,prepare_mysql($img,false)
+,prepare_mysql($first_full_search)
+,prepare_mysql($second_full_search,false)
+,prepare_mysql($this->data['Order Public ID'],false)
+,prepare_mysql('['.$this->data['Order Store Code'].'] '.$this->data['Order Customer Name'].' ('.strftime("%e %b %Y", strtotime($this->data['Order Date'])).') '.$this->data['Order Current XHTML State'],false)
+
+
+,prepare_mysql($img,false)
+);
+mysql_query($sql);
+
 
 
 $sql=sprintf("insert into `Search Full Text Dimension` values  (%s,'Order',%d,%s,%s) on duplicate key update `First Search Full Text`=%s ,`Second Search Full Text`=%s "
