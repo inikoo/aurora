@@ -50,7 +50,7 @@ $wa=new WarehouseArea('find',$wa_data,'create');
 
 $sql=sprintf("select * from aw_old.product where code='abp-21'   order by code   ");
 
-$sql=sprintf("select * from aw_old.product where code not in ('pi-09')   order by code   ");
+$sql=sprintf("select * from aw_old.product where code not in ('pi-09') or code like 'fw-%%'   order by code   ");
 $result=mysql_query($sql);
 while($row2=mysql_fetch_array($result, MYSQL_ASSOC)   ){
   $product_code=$row2['code'];
