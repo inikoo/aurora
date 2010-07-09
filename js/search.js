@@ -47,6 +47,11 @@ function search_customers_in_store(query){
 function search_products_in_store(query){
     search(query,'products','store');
 }
+
+function search_all(query){
+    search(query,'all','');
+}
+
 function search_products(query){
     search(query,'products','all_stores');
 }
@@ -79,7 +84,7 @@ function search(query,subject,scope){
 				    'POST',
 				    ar_file, {
 					success:function(o) {
-					    // alert(o.responseText);
+					   // alert(o.responseText);
 					    var r = YAHOO.lang.JSON.parse(o.responseText);
 					    if (r.state == 200) {
 					
@@ -143,6 +148,18 @@ function search(query,subject,scope){
 							    var oTD= oTR.insertCell(2);
 							    oTD.innerHTML=r.data[result_key ].description ;
 							  
+
+							}else if(subject=='all'){
+							    oTR.setAttribute('key',r.data[result_key ].key);
+							    oTR.setAttribute('link',r.data[result_key ].link);
+							   
+
+							    var oTD= oTR.insertCell(1);
+							    oTD.innerHTML=r.data[result_key ].image;
+							    var oTD= oTR.insertCell(2);
+							    oTD.innerHTML=r.data[result_key ].name;
+							    var oTD= oTR.insertCell(3);
+							    oTD.innerHTML=r.data[result_key ].description;
 
 							}else if(subject=='products'){
 							    oTR.setAttribute('key',r.data[result_key ].key);

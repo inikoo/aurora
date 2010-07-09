@@ -1,14 +1,19 @@
 <?php
 include_once('common.php');
 ?>
-
     var Dom   = YAHOO.util.Dom;
 var Event = YAHOO.util.Event;
-Event.addListener('product_submit_search', "click",submit_search,'product');
-Event.addListener('product_search', "keydown", submit_search_on_enter,'product');
+function init(){
+  search_scope='all';
+     var store_name_oACDS = new YAHOO.util.FunctionDataSource(search_all);
+     store_name_oACDS.queryMatchContains = true;
+     var store_name_oAutoComp = new YAHOO.widget.AutoComplete(search_scope+"_search",search_scope+"_search_Container", store_name_oACDS);
+     store_name_oAutoComp.minQueryLength = 0; 
+     store_name_oAutoComp.queryDelay = 0.15;
+   
+   Event.addListener(search_scope+"_search", "keyup",search_events,search_scope)
+      Event.addListener(search_scope+"_clean_search", "click",clear_search,search_scope);
+      
+}
 
-Event.addListener('order_submit_search', "click",submit_search,'order');
-Event.addListener('order_search', "keydown", submit_search_on_enter,'order');
-
-Event.addListener('customer_submit_search', "click",submit_search,'customer');
-Event.addListener('customer_search', "keydown", submit_search_on_enter,'customer');
+YAHOO.util.Event.onDOMReady(init);
