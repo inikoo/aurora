@@ -1710,12 +1710,8 @@ function new_contact($data) {
         $company=new Company($data['subject_key']);
 
         $contact=new Contact('find create',$contact_data);
-//print_r($contact_data);
-        $contact->add_company(array(
-                                  'Company Key'=>$company->id
-                              ),'',true);
 
-
+  $company->create_contact_bridge($contact->id);
         break;
     default:
         $contact=new Contact('find create',$contact_data);
