@@ -558,9 +558,9 @@ class Company extends DB_Table {
         // print_r($raw_data);
 
 
-if(!isset($raw_data['Company Fiscal Name']) or $raw_data['Company Fiscal Name']=='' ){
-$raw_data['Company Fiscal Name']=$raw_data['Company Name'];
-}
+        if (!isset($raw_data['Company Fiscal Name']) or $raw_data['Company Fiscal Name']=='' ) {
+            $raw_data['Company Fiscal Name']=$raw_data['Company Name'];
+        }
 
 
         $this->data=$this->base_data();

@@ -34,16 +34,16 @@ if ($user->data['User Type']=='Supplier') {
 
 
 $css_files=array(
-                 $yui_path.'reset-fonts-grids/reset-fonts-grids.css',
-                 $yui_path.'menu/assets/skins/sam/menu.css',
-                 $yui_path.'calendar/assets/skins/sam/calendar.css',
-                 $yui_path.'button/assets/skins/sam/button.css',
-                 'common.css',
-                 'button.css',
-                 'container.css',
-                 'table.css',
-		 'css/index.css'
-                );
+               $yui_path.'reset-fonts-grids/reset-fonts-grids.css',
+               $yui_path.'menu/assets/skins/sam/menu.css',
+               $yui_path.'calendar/assets/skins/sam/calendar.css',
+               $yui_path.'button/assets/skins/sam/button.css',
+               'common.css',
+               'button.css',
+               'container.css',
+               'table.css',
+               'css/index.css'
+           );
 $js_files=array(
 
               $yui_path.'utilities/utilities.js',
@@ -59,32 +59,35 @@ $js_files=array(
               'table_common.js.php',
               'js/search.js',
               'js/index_tools.js',
-	      'js/index_sliding_tabs.js',
-	      'index.js.php'
+              'js/index_sliding_tabs.js',
+              'index.js.php'
           );
 
 
 $splinters=array(
-              
-              'orders_in_process'=>array(
-                                                   'index'=>0
-                                                           ,'php'=>'splinter_orders_in_process.php'
-                                                                  ,'tpl'=>'splinter_orders_in_process.tpl'
-                                                                         ,'js'=>'splinter_orders_in_process.js.php'
-                                               )
-                                               
-              
-                              ,'top_products'=>array(
-                                                   'index'=>2
-                                                           ,'php'=>'splinter_top_products.php'
-                                                                  ,'tpl'=>'splinter_top_products.tpl'
-                                                                         ,'js'=>'splinter_top_products.js.php'
-                                               )
-                                              ,  'top_customers'=>array(
-                                   'index'=>1
-                                           ,'php'=>'splinter_top_customers.php'
-                                                  ,'tpl'=>'splinter_top_customers.tpl'
-                                                         ,'js'=>'splinter_top_customers.js.php'
+
+               'orders_in_process'=>array(
+                                       'title'=>_('Pending orders'),
+                                       'index'=>0,
+                                       'php'=>'splinter_orders_in_process.php',
+                                       'tpl'=>'splinter_orders_in_process.tpl',
+                                       'js'=>'splinter_orders_in_process.js.php'
+                                   ),
+
+
+               'top_products'=>array(
+                                    'title'=>_('Top Products'),
+                                  'index'=>2,
+                                  'php'=>'splinter_top_products.php',
+                                  'tpl'=>'splinter_top_products.tpl',
+                                  'js'=>'splinter_top_products.js.php'
+                              ),
+               'top_customers'=>array(
+                  'title'=>_('Top Customers'),
+                                   'index'=>1,
+                                   'php'=>'splinter_top_customers.php',
+                                   'tpl'=>'splinter_top_customers.tpl',
+                                   'js'=>'splinter_top_customers.js.php'
                                )
            );
 
