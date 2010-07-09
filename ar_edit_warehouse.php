@@ -15,11 +15,14 @@ if(!isset($_REQUEST['tipo']))
     echo json_encode($response);
     exit;
   }
+
 $editor=array(
-
-	      'User Key'=>$user->id
-
-	      );
+            'Author Name'=>$user->data['User Alias'],
+            'Author Type'=>$user->data['User Type'],
+            'Author Key'=>$user->data['User Parent Key'],
+            'User Key'=>$user->id,
+            'Date'=>date('Y-m-d H:i:s')
+        );
 
 
 $tipo=$_REQUEST['tipo'];
@@ -137,6 +140,9 @@ function update_part_location(){
 
 
   $part_location=new PartLocation($part_sku,$location_key);
+ print_r($editor);
+ exit;
+ $part_location->editor=$editor;
   if(!$part_location->ok){
     $response=array('state'=>400,'action'=>'error','msg'=>'');
     echo json_encode($response);
