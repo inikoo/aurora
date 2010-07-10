@@ -10,7 +10,7 @@ include_once('../../class.SupplierProduct.php');
 include_once('../../class.PartLocation.php');
 
 include_once('../../class.InventoryAudit.php');
-date_default_timezone_set('Europe/London');
+date_default_timezone_set('GMT');
 
 error_reporting(E_ALL);
 $con=@mysql_connect($dns_host,$dns_user,$dns_pwd );
@@ -28,7 +28,7 @@ require_once '../../common_functions.php';
 mysql_query("SET time_zone ='+0:00'");
 mysql_query("SET NAMES 'utf8'");
 require_once '../../conf/conf.php';
-date_default_timezone_set('Europe/London');
+date_default_timezone_set('GMT');
 
 $sql=sprintf("select  (select units from aw_old.product p where p.id=bulk_id) as r1_units,(select code from aw_old.product p where p.id=bulk_id) as r1 ,(select units from aw_old.product p where p.id=product_id) as r2_units ,(select code from aw_old.product p where p.id=product_id) as r2,(select count(*) from aw_old.product_relations as prtmp where prtmp.product_id=aw_old.product_relations.product_id) as multiplicity   from aw_old.product_relations;");
 $res=mysql_query($sql);

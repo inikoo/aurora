@@ -13,7 +13,7 @@ include_once('../../class.PartLocation.php');
 
 
 error_reporting(E_ALL);
-date_default_timezone_set('Europe/London');
+date_default_timezone_set('GMT');
 include_once('../../set_locales.php');
 require('../../locale.php');
 $_SESSION['locale_info'] = localeconv();
@@ -27,7 +27,7 @@ require_once '../../common_functions.php';
 mysql_query("SET time_zone ='+0:00'");
 mysql_query("SET NAMES 'utf8'");
 require_once '../../conf/conf.php';           
-date_default_timezone_set('Europe/London');
+date_default_timezone_set('GMT');
 
 
 $sql="INSERT INTO `dw`.`Location Dimension` (`Location Key` ,`Location Warehouse Key` ,`Location Warehouse Area Key` ,`Location Code` ,`Location Mainly Used For` ,`Location Max Weight` ,`Location Max Volume` ,`Location Max Slots` ,`Location Distinct Parts` ,`Location Has Stock` ,`Location Stock Value`)VALUES ('1', '1', '1','Unknown', 'Picking', NULL , NULL , NULL , '0', 'Unknown', '0.00');";
@@ -50,7 +50,7 @@ $wa=new WarehouseArea('find',$wa_data,'create');
 
 $sql=sprintf("select * from aw_old.product where code='abp-21'   order by code   ");
 
-$sql=sprintf("select * from aw_old.product where code not in ('pi-09') or code like 'fw-%%'   order by code   ");
+$sql=sprintf("select * from aw_old.product where code not in ('pi-09') or code not like 'fw-%%'   order by code desc  ");
 $result=mysql_query($sql);
 while($row2=mysql_fetch_array($result, MYSQL_ASSOC)   ){
   $product_code=$row2['code'];

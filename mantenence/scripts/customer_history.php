@@ -16,7 +16,7 @@ if(DEBUG)PEAR::setErrorHandling(PEAR_ERROR_RETURN);
   
 mysql_query("SET time_zone ='+0:00'");
 require_once '../../myconf/conf.php';           
-date_default_timezone_set('Europe/London');
+date_default_timezone_set('GMT');
 
 
 $sql="select date_index,tipo,customer_id,id,date_creation,date_processed,date_invoiced,date_dispached from orden ";

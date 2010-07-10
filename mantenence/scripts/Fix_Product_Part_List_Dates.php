@@ -6,7 +6,7 @@ include_once('../../class.Product.php');
 include_once('../../class.Supplier.php');
 include_once('../../class.Part.php');
 include_once('../../class.SupplierProduct.php');
-date_default_timezone_set('Europe/London');
+date_default_timezone_set('GMT');
 
 error_reporting(E_ALL);
 $con=@mysql_connect($dns_host,$dns_user,$dns_pwd );
@@ -24,7 +24,7 @@ require_once '../../common_functions.php';
 mysql_query("SET time_zone ='+0:00'");
 mysql_query("SET NAMES 'utf8'");
 require_once '../../conf/conf.php';
-date_default_timezone_set('Europe/London');
+date_default_timezone_set('GMT');
 
 
 $sql=sprintf("select * from `Part Dimension`  ");

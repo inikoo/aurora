@@ -9,7 +9,7 @@ include_once('../../class.SupplierProduct.php');
 include_once('../../class.Image.php');
 include_once('../../class.Page.php');
 
-date_default_timezone_set('Europe/London');
+date_default_timezone_set('GMT');
 
 error_reporting(E_ALL);
 $con=@mysql_connect($dns_host,$dns_user,$dns_pwd );

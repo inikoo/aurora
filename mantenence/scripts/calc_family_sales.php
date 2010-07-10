@@ -10,7 +10,7 @@ if(DEBUG)PEAR::setErrorHandling(PEAR_ERROR_RETURN);
   
 mysql_query("SET time_zone ='+0:00'");
 require_once '../../myconf/conf.php';           
-date_default_timezone_set('Europe/London');
+date_default_timezone_set('GMT');
 
 
 $sql="select id from product_group ";

@@ -14,7 +14,7 @@ if(DEBUG)PEAR::setErrorHandling(PEAR_ERROR_RETURN);
   
 require_once '../../myconf/conf.php';           
 mysql_query("SET time_zone ='+0:00'");
-date_default_timezone_set('Europe/London');
+date_default_timezone_set('GMT');
 // $product=new Product(1);
 // $product->load('first_date','save');
 // exit;
