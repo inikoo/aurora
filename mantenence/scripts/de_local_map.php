@@ -1,5 +1,5 @@
 <?php
-//date_default_timezone_set('GMT');
+//date_default_timezone_set('UTC');
 
 
 function make_seed()

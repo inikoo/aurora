@@ -8,7 +8,7 @@ include_once('../../class.Part.php');
 include_once('../../class.PartLocation.php');
 
 include_once('../../class.SupplierProduct.php');
-date_default_timezone_set('GMT');
+date_default_timezone_set('UTC');
 
 error_reporting(E_ALL);
 $con=@mysql_connect($dns_host,$dns_user,$dns_pwd );

@@ -51,7 +51,7 @@ require_once '../../conf/conf.php';
 require('../../locale.php');
 $_SESSION['locale_info'] = localeconv();
 
-date_default_timezone_set('GMT');
+date_default_timezone_set('UTC');
 $_SESSION['lang']=1;
 
 $currency='EUR';

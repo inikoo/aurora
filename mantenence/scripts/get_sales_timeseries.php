@@ -1,6 +1,6 @@
 <?php
 error_reporting(E_ALL);
-date_default_timezone_set('GMT');
+date_default_timezone_set('UTC');
 
 require_once '../../app_files/db/dns.php';
 require_once '../../class.TimeSeries.php';
