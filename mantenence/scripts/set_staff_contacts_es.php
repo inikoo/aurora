@@ -36,7 +36,7 @@ $smarty = new Smarty();
 
 require_once '../../conf/conf.php';           
 include_once('../../set_locales.php');
-date_default_timezone_set('GMT');
+date_default_timezone_set('UTC');
 $_SESSION['lang']=1;
 
 $software='Get_Orders_DB.php';

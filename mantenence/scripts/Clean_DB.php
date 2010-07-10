@@ -25,7 +25,7 @@ require_once '../../common_functions.php';
 mysql_query("SET time_zone ='+0:00'");
 mysql_query("SET NAMES 'utf8'");
 require_once '../../conf/conf.php';           
-date_default_timezone_set('GMT');
+date_default_timezone_set('UTC');
 
 
 $sql=' delete  from `Product Department Dimension` where `Product Department Store Key`=2;delete  from `Product Department Dimension` where `Product Department Store Key`=3;delete  from `Product Family Dimension` where `Product Family Store Key`=2;delete  from `Product Family Dimension` where `Product Family Store Key`=3;delete   from `Product Dimension` where `Product Store Key`=3;delete from `Product Dimension` where `Product Store Key`=2;delete  from `Product Department Bridge` where `Product Department Key`>21;';

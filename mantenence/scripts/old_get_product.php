@@ -33,7 +33,7 @@ require_once '../../common_functions.php';
 mysql_query("SET time_zone ='+0:00'");
 mysql_query("SET NAMES 'utf8'");
 require_once '../../conf/conf.php';           
-date_default_timezone_set('GMT');
+date_default_timezone_set('UTC');
 
 $software='Get_Products.php';
 $version='V 1.0';

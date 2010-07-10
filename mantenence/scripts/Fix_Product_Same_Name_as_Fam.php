@@ -9,7 +9,7 @@ include_once('../../class.Supplier.php');
 include_once('../../class.Part.php');
 include_once('../../class.Store.php');
 error_reporting(E_ALL);
-date_default_timezone_set('GMT');
+date_default_timezone_set('UTC');
 include_once('../../set_locales.php');
 require('../../locale.php');
 $_SESSION['locale_info'] = localeconv();

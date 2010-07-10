@@ -11,7 +11,7 @@ if(DEBUG)PEAR::setErrorHandling(PEAR_ERROR_RETURN);
   
 require_once '../../myconf/conf.php';           
 mysql_query("SET time_zone ='+0:00'");
-date_default_timezone_set('GMT');
+date_default_timezone_set('UTC');
 $sql="select * from orden order by date_index,public_id";
 $res=mysql_query($sql);if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
 while($row=mysql_fetch_array($result, MYSQL_ASSOC)){

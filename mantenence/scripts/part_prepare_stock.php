@@ -12,7 +12,7 @@ include_once('../../class.InventoryAudit.php');
 
 error_reporting(E_ALL);
 error_reporting(E_ALL);
-date_default_timezone_set('GMT');
+date_default_timezone_set('UTC');
 include_once('../../set_locales.php');
 require('../../locale.php');
 $_SESSION['locale_info'] = localeconv();
@@ -29,7 +29,7 @@ require_once '../../common_functions.php';
 mysql_query("SET time_zone ='+0:00'");
 mysql_query("SET NAMES 'utf8'");
 require_once '../../conf/conf.php';           
-date_default_timezone_set('GMT');
+date_default_timezone_set('UTC');
 
 $where='where  `Part XHTML Currently Used In` like "%lebt%"';
 $where='and `Part SKU`=12804';

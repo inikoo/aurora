@@ -13,7 +13,7 @@ if(DEBUG)PEAR::setErrorHandling(PEAR_ERROR_RETURN);
   
 mysql_query("SET time_zone ='+0:00'");
 require_once '../../myconf/conf.php';           
-date_default_timezone_set('GMT');
+date_default_timezone_set('UTC');
 
 $update_product_data=false;
 $update_old_locations=false;

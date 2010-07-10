@@ -1,5 +1,5 @@
 <?php
-date_default_timezone_set('GMT');
+date_default_timezone_set('UTC');
 
 include_once('../../app_files/db/dns.php');
 include_once('../../class.Department.php');
