@@ -1,6 +1,6 @@
 <?php
 
-date_default_timezone_set('Europe/London');
+date_default_timezone_set('GMT');
 
 include_once('../../app_files/db/dns.php');
 include_once('../../class.Department.php');

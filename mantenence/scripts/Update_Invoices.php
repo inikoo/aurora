@@ -26,7 +26,7 @@ require_once '../../common_functions.php';
 mysql_query("SET time_zone ='+0:00'");
 mysql_query("SET NAMES 'utf8'");
 require_once '../../conf/conf.php';           
-date_default_timezone_set('Europe/London');
+date_default_timezone_set('GMT');
 
 $sql="select * from `Invoice Dimension` where `Invoice Store Key` in (2,3)";
 $result=mysql_query($sql);

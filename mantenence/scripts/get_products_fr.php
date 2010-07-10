@@ -17,7 +17,7 @@ include_once('../../class.Shipping.php');
 include_once('../../class.SupplierProduct.php');
 error_reporting(E_ALL);
 
-date_default_timezone_set('Europe/London');
+date_default_timezone_set('GMT');
 
 include_once('../../set_locales.php');
 require('../../locale.php');

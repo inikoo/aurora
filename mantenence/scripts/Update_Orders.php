@@ -13,7 +13,7 @@ include_once('../../class.Invoice.php');
 
 error_reporting(E_ALL);
 
-date_default_timezone_set('Europe/London');
+date_default_timezone_set('GMT');
 
 
 $con=@mysql_connect($dns_host,$dns_user,$dns_pwd );

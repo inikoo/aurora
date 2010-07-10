@@ -26,7 +26,7 @@ require_once '../../common_functions.php';
 mysql_query("SET time_zone ='+0:00'");
 mysql_query("SET NAMES 'utf8'");
 require_once '../../conf/conf.php';           
-date_default_timezone_set('Europe/London');
+date_default_timezone_set('GMT');
 
 $sql="select condicion,code,stock,web_tipo,p2s.supplier_id from  aw_old.product left join aw_old.product2supplier as p2s on (product.id=p2s.product_id) ";
 $result=mysql_query($sql);

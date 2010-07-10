@@ -29,7 +29,7 @@ if (!$db) {
 $tipo_his=array();
 
 
-date_default_timezone_set('Europe/London');
+date_default_timezone_set('GMT');
 require_once '../../common_functions.php';
 mysql_query("SET time_zone ='+0:00'");
 mysql_query("SET NAMES 'utf8'");
