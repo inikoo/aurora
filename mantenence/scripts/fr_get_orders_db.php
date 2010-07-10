@@ -230,11 +230,6 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
         $header=mb_unserialize($row['header']);
         $products=mb_unserialize($row['products']);
 
-        //  print_r($products);
-
-        //    echo "Memory: ".memory_get_usage(true) . "\n";
-
-
 
 
 
@@ -243,7 +238,7 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
         $map=$_map;
         $y_map=$_y_map;
 
-        // tomando en coeuntas diferencias en la posicion de los elementos
+    
 
 
         $prod_map=$y_map;

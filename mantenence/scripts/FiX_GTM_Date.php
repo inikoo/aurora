@@ -27,7 +27,7 @@ require_once '../../conf/conf.php';
 
 
 print date("H:i \n");
-$table='orders_data.orders';
+$table='fr_orders_data.orders';
 $sql=sprintf("select * from ".$table);
 $res_code=mysql_query($sql);
 while ($row=mysql_fetch_array($res_code)) {

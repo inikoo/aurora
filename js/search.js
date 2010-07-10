@@ -77,14 +77,14 @@ function search(query,subject,scope){
     var ar_file='ar_search.php';
 
     var request='tipo='+subject+'&q='+escape(query)+'&scope='+scope;
-   
+
     
     
     YAHOO.util.Connect.asyncRequest(
 				    'POST',
 				    ar_file, {
 					success:function(o) {
-					   // alert(o.responseText);
+					    // alert(o.responseText);
 					    var r = YAHOO.lang.JSON.parse(o.responseText);
 					    if (r.state == 200) {
 					

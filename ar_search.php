@@ -57,7 +57,7 @@ case('parts'):
 case('locations'):
     $data=prepare_values($_REQUEST,array(
                              'q'=>array('type'=>'string')
-                                 ,'scope'=>array('type'=>'string')
+                                ,'scope'=>array('type'=>'string')
                          ));
     $data['user']=$user;
     search_locations($data);
@@ -1157,45 +1157,45 @@ function search_full_text($data) {
     $user=$data['user'];
     $q=$data['q'];
     // $q=_trim($_REQUEST['q']);
-
+    
     if ($q=='') {
         $response=array('state'=>200,'results'=>0,'data'=>'');
         echo json_encode($response);
         return;
     }
-
+    
     $candidates=array();
-
-$q_parts=preg_split('/\s+/',$q);
-foreach($q_parts as $q_part){
-    $sql=sprintf("select `Subject`,`Subject Key`,`Search Full Text Key`,`Search Result Name`,`Search Result Description`,`Search Result Image`   from `Search Full Text Dimension` where `Search Result Name`='%s' limit 20",addslashes($q_part));;
-
-    $res=mysql_query($sql);
+    
+    $q_parts=preg_split('/\s+/',$q);
+    foreach($q_parts as $q_part){
+      $sql=sprintf("select `Subject`,`Subject Key`,`Search Full Text Key`,`Search Result Name`,`Search Result Description`,`Search Result Image`   from `Search Full Text Dimension` where `Search Result Name`='%s' limit 20",addslashes($q_part));;
+      
+      $res=mysql_query($sql);
     while ($row=mysql_fetch_array($res)) {
-
-        $candidates[$row['Search Full Text Key']]=100;
-        $link='';
-        switch($row['Subject']){
-        case('Product'):
+      
+      $candidates[$row['Search Full Text Key']]=100;
+      $link='';
+      switch($row['Subject']){
+      case('Product'):
         $link='product.php?pid=';
         break;
-         case('Order'):
-        $link='order.php?id=';
-        break;
-         case('Part'):
+      case('Order'):
+	$link='order.php?id=';
+	break;
+      case('Part'):
         $link='part.php?id=';
         break;
-         case('Customer'):
-        $link='customer.php?id=';
-        break;
-         case('Family'):
+      case('Customer'):
+	$link='customer.php?id=';
+	break;
+      case('Family'):
         $link='family.php?id=';
         break;
-        }
+      }
         $image='';
         if($row['Search Result Image']!='')
         $image='<img src="'.$row['Search Result Image'].'">';
-        $part_data[$row['Search Full Text Key']]=array('link'=>$link,'key'=>$row['Search Full Text Key'],'name'=>$row['Search Result Name'],'description'=>$row['Search Result Description'],'image'=>$image);
+        $part_data[$row['Search Full Text Key']]=array('link'=>$link,'key'=>$row['Subject Key'],'name'=>$row['Search Result Name'],'description'=>$row['Search Result Description'],'image'=>$image);
 
     }
  } 
@@ -1210,16 +1210,31 @@ foreach($q_parts as $q_part){
          $candidates[$row['Search Full Text Key']]+=$row['score'];
          else
         $candidates[$row['Search Full Text Key']]=$row['score'];
-        $link='';
-        switch($row['Subject']){
-        case('Product'):
+      
+    $link='';
+      switch($row['Subject']){
+      case('Product'):
         $link='product.php?pid=';
         break;
-        }
+      case('Order'):
+	$link='order.php?id=';
+	break;
+      case('Part'):
+        $link='part.php?id=';
+        break;
+      case('Customer'):
+	$link='customer.php?id=';
+	break;
+      case('Family'):
+        $link='family.php?id=';
+        break;
+      }
         $image='';
         if($row['Search Result Image']!='')
         $image='<img src="'.$row['Search Result Image'].'">';
-        $part_data[$row['Search Full Text Key']]=array('link'=>$link,'key'=>$row['Search Full Text Key'],'name'=>$row['Search Result Name'],'description'=>$row['Search Result Description'],'image'=>$image);
+
+
+        $part_data[$row['Search Full Text Key']]=array('link'=>$link,'key'=>$row['Subject Key'],'name'=>$row['Search Result Name'],'description'=>$row['Search Result Description'],'image'=>$image);
 
     }
 
