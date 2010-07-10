@@ -905,10 +905,7 @@ if($department_code=='Candle Dept'){
    if($department_code=='Relaxing Music Collection'){
 	$department_code='Music';
       }
- if($department_code=='BagsBags.biz ECO Bags Dept'){
-	$department_code='Bags';
-	$department_name='Eco Bags Dept';
-      }
+
        if($department_code=='RibbonsRibbons.biz Ribbons Dept'){
 	$department_code='Ribbons';
 	$department_name='Ribbons Department';
@@ -929,8 +926,15 @@ if($department_code=='Soft Furnishings & Textiles'){
 	$department_code='Textil';
       }
 
+if(preg_match('/bagsbags/i',$department_code)){
+
+	$department_code='Bags';
+	$department_name='Eco Bags Dept';
+      }
+
 if(preg_match('/Packaging Dept/i',$department_code)){
 	$department_code='Pack';
+	$department_name='Packaging Dept';
       }
 if(preg_match('/Fashion/i',$department_code)){
 	$department_code='Scarv';
@@ -942,9 +946,8 @@ if($department_code=='Woodware Dept'){
 
       }
 
-
-
-if($department_code=='PouchesPouches.biz Pouches Dept'){
+if(preg_match('/pouches/i',$department_code)){
+                      
   $department_code='Pouches';
   $department_name='Pouches Dept';
 

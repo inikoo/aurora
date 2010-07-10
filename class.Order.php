@@ -194,7 +194,7 @@ $this->update_customer=true;
 
             }
             elseif($data['Delivery Note Dispatch Method']=='Collected') {
-                $customer = new Customer ( 'find create fuzzy', $data['Customer Data'] );
+                $customer = new Customer ( 'find create', $data['Customer Data'] );
                 $data['Delivery Note Dispatch Method']='Collected';
                 $this->data ['Order Ship To Key To Deliver']=0;
                 $this->data ['Order Ship To Keys']='';
