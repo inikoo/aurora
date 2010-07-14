@@ -2,10 +2,11 @@
 <div id="bd" >
  {include file='assets_navigation.tpl'}
  
- <div style="clear:left;"> 
- <span class="branch" ><a  href="store.php?id={$store->id}">{$store->get('Store Name')}</a> &rarr; <a  href="department.php?id={$department->id}">{$department->get('Product Department Name')}</a> &rarr; {$family->get('Product Family Name')}  ({$family->get('Product Family Code')})</span>
+ <div class="branch"> 
+ <span ><a  href="store.php?id={$store->id}">{$store->get('Store Name')}</a> &rarr; <a  href="department.php?id={$department->id}">{$department->get('Product Department Name')}</a> &rarr; {$family->get('Product Family Name')}  ({$family->get('Product Family Code')})</span>
  </div>
-  <div id="no_details_title" style="clear:left;{if $show_details}display:none;{/if}">
+
+  <div id="no_details_title" style="clear:right;{if $show_details}display:none;{/if}">
     <h1>{t}Family{/t}: {$family->get('Product Family Name')} ({$family->get('Product Family Code')})</h1>
   </div>
 

@@ -3,11 +3,18 @@
 <div id="bd" >
 {include file='assets_navigation.tpl'}
 
-<div style="clear:left;"> 
-  <span class="branch" ><a  href="store.php?id={$store->id}">{$store->get('Store Name')}</a> &rarr; <a  href="department.php?id={$product->get('Product Main Department Key')}">{$product->get('Product Main Department Name')}</a> &rarr; <a  href="family.php?id={$product->get('Product Family Key')}">{$product->get('Product Family Name')}</a></span>
+<div class="branch"> 
+  <span  ><a  href="store.php?id={$store->id}">{$store->get('Store Name')}</a> &rarr; <a  href="department.php?id={$product->get('Product Main Department Key')}">{$product->get('Product Main Department Name')}</a> &rarr; <a  href="family.php?id={$product->get('Product Family Key')}">{$product->get('Product Family Name')}</a></span>
 </div>
 
-<div class="search_box" >
+
+  <div id="no_details_title" style="clear:right;{if $show_details}display:none;{/if}">
+    <h1>{t}Product{/t}: [{$product->get('Product Code')}] {$product->get('Product Name')} ({$product->get('Product ID')})</h1>
+  </div>
+
+
+
+<div style="display:none" >
   
   <table border=0 cellpadding="2" style="float:right;margin-top:20px;" class="view_options">
     <tr style="border-bottom:1px solid #ddd">
@@ -43,16 +50,20 @@
   
     </div>
 
-<div class="" id="block_info"  style="width:790px">
+
+
+
+
+<div class="" id="block_info"  style="width:890px">
       
 
       
       <div   style="clear:left;padding:0;width:100%">
 
 	  <div id="photo_container" style="margin-top:10px;float:left">
-	    <div style="border:1px solid #ddd;padding-top:0;width:220px;xheight:230px;text-align:center;margin:0 10px 0 0px">
-	      <span style="font-size:150%;font-weight:800">{$product->get('Product Code')}</span>
-	      <div id="imagediv"   style="border:1px solid #ddd;width:{$div_img_width}px;height:{$div_img_height}px;padding:5px 5px;xborder:none;cursor:pointer;xbackground:red;margin: 0 0 10px 9px;vertical-align:middle">
+	    <div style="border:1px solid #ddd;padding-stop:0;width:220px;xheight:230px;text-align:center;margin:0 10px 0 0px">
+	     
+	      <div id="imagediv"   style="border:1px solid #ddd;width:{$div_img_width}px;height:{$div_img_height}px;padding:5px 5px;xborder:none;cursor:pointer;xbackground:red;margin: 10px 0 10px 9px;vertical-align:middle">
 		<img src="{ if $num_images>0}{$images[0].small_url}{else}art/nopic.png{/if}"  style="vertical-align:middle;display:block;" width="{$img_width}px" valign="center" border=1  id="image"   alt="{t}Image{/t}"/>
 	      </div>
 	    </div>
@@ -72,10 +83,10 @@
 	  
 
 	<div style="float:left;margin-left:20px">
-	  <h2>{$product->get('Product Name')} [{$product->get('Product ID')}]</h2>
+	
 	  <div class=""  style="width:100%;">
 	    <div class="" style="width:100%;font-size:90%"   >
-              <div class="" style="width:250px;float:left;margin-right:20px">
+              <div class="" style="width:350px;float:left;margin-right:20px">
 		<table    class="show_info_product">
 		  <td class="aright">
 		    

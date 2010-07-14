@@ -32,11 +32,11 @@ $js_files=array(
 
 $_SESSION['state']['customers']['list']['where']='';
 $smarty->assign('parent','customers');
-$smarty->assign('title', _('Advanced Search, Customers'));
+$smarty->assign('title', _('Customers Lists'));
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
 
-$smarty->assign('view',$_SESSION['state']['customers']['list']['view']);
+//$smarty->assign('view',$_SESSION['state']['customers']['list']['view']);
 $paginator_menu=array(10,25,50,100,500);
 $smarty->assign('paginator_menu0',$paginator_menu);
 

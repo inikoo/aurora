@@ -18,17 +18,21 @@
 <span class="nav2 onleft"><a  {if $nav_parent=='marketing'}class="selected"{/if}   href="marketing.php">{t}Marketing{/t}</a></span>
 
 
-<div class="search_box">
+
+<div class="right_box">
   <div class="general_options">
-{foreach from=$general_options_list item=options }
-{if $options.tipo=="url"}
- <span onclick="window.location.href='{$options.url}'" >{$options.label}</span>
-{else}
- <span  id="{$options.id}" state="{$options.state}">{$options.label}</span>
-{/if}
-{/foreach}
+    {foreach from=$general_options_list item=options }
+    {if $options.tipo=="url"}
+    <span onclick="window.location.href='{$options.url}'" >{$options.label}</span>
+    {else}
+    <span  id="{$options.id}" state="{$options.state}">{$options.label}</span>
+    {/if}
+    {/foreach}
+  </div>
 </div>
 
+<div class="search_box">
+ 
   <div id="search" style="text-align:right;{if !$search_scope}display:none{/if}">
     <span class="search_title" >{t}{$search_label}{/t}:</span>
     <input size="25" class="text search" id="{$search_scope}_search" value="" name="search"/><img align="absbottom" id="{$search_scope}_clean_search" class="submitsearch" src="art/icons/zoom.png" alt="Clear search">

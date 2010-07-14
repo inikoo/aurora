@@ -1,16 +1,16 @@
 <?php
 include_once('common.php');
 ?>
-var Dom   = YAHOO.util.Dom;
+    var Dom   = YAHOO.util.Dom;
 
 var searched=false;
 
 var data_returned=function(){
 	 if(searched){
-	 Dom.get('searching').style.display='none';
-	 Dom.get('the_table').style.display='';
-}
-
+	     Dom.get('searching').style.display='none';
+	     Dom.get('the_table').style.display='';
+	 }
+	 
     }
     
     
@@ -29,7 +29,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 
 	    var CustomersColumnDefs = [
-				       {key:"id", label:"<?php echo$customers_ids[0]?>",width:60,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				       {key:"id", label:"Id",width:60,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				       ,{key:"name", label:"<?php echo _('Name')?>", width:250,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				       ,{key:"location", label:"<?php echo _('Location')?>",<?php echo($_SESSION['state']['customers']['list']['view']=='general'?'':'hidden:true,')?> width:230,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				       ,{key:"last_order", label:"<?php echo _('Last Order')?>",<?php echo($_SESSION['state']['customers']['list']['view']=='general'?'':'hidden:true,')?>width:100,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
