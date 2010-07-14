@@ -413,7 +413,7 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
             $customer_data[$key]=$value;
 
         }
-        $customer_data['Customer Store Key']=3;
+        $customer_data['Customer Store Key']=$store_key;
         if ($customer_data['Customer Type']=='Company')
             $customer_data['Customer Name']=$customer_data['Customer Company Name'];
         else

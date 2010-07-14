@@ -725,6 +725,16 @@ $default_state=array(
                                                          'f_value'=>'',
                                                          'view'=>'general'
                                                      )
+				   ,'list'=>array(
+                                                         'order'=>'name',
+                                                         'order_dir'=>'',
+                                                         'sf'=>0,
+                                                         'nr'=>25,
+                                                         'where'=>'',
+                                                         'f_field'=>'',
+                                                         'f_value'=>'',
+                                                         'view'=>'general'
+                                                     )
 
 
                                ),

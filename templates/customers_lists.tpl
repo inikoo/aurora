@@ -30,7 +30,7 @@
     <div id="the_table" class="data_table" style="margin-top:20px;clear:both;display:none" >
     <span class="clean_table_title">Customers List</span>
  <div id="table_type">
-         <a  style="float:right"  class="table_type state_details"  href="customers_list_csv.php" >{t}Export (CSV){/t}</a>
+         <a  style="float:right"  class="table_type state_details"  href="customers_lists_csv.php" >{t}Export (CSV){/t}</a>
 
      </div>
 

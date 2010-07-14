@@ -4,7 +4,7 @@
  <div style="clear:left;"> 
  <span class="branch" ><a  href="store.php?id={$store->id}">{$store->get('Store Name')}</a> &rarr; {$department->get('Product Department Name')}</span>
  </div>
- <div id="no_details_title" style="clear:left;{if $show_details}display:none;{/if}">
+ <div id="no_details_title" style="clear:both;{if $show_details}display:none;{/if}">
     <h1>Department: {$department->get('Product Department Name')} ({$department->get('Product Department Code')})</h1>
   </div> 
 
