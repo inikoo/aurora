@@ -90,6 +90,7 @@ $js_files=array(
 		'js/search.js',
 		'table_common.js.php',
 				'js/dropdown.js',
+				'edit_stock.js.php'
 
 		);
 

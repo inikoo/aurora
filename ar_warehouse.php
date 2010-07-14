@@ -874,18 +874,22 @@ if(isset( $_REQUEST['tableid']))
 
 
 
-   $sql=sprintf("select  *,IFNULL(`User Key`,-1) as user from `Inventory Transaction Fact`  $where $wheref order by $order $order_direction limit $start_from,$number_results ");
-   // print $sql;
-  $result=mysql_query($sql);
+   $sql=sprintf("select  *,IFNULL(ITF.`User Key`,-1) as user from `Inventory Transaction Fact` ITF left join `User Dimension` UD on (ITF.`User Key`=UD.`User Key`)  $where $wheref order by $order $order_direction limit $start_from,$number_results ");
+ // print $sql;
+ 
+ $result=mysql_query($sql);
   $adata=array();
   while($data=mysql_fetch_array($result, MYSQL_ASSOC)){
     
-    if($data['user']=-1)
+    if($data['user']==-1)
       $author=_('Unknown');
-    elseif($data['user']=0)
+    elseif($data['user']==0)
       $author=_('System');
-    else
-      $author=$data['user'];
+    else{
+      $author=$data['User Alias'];
+    
+    }
+    
     $tipo=$data['Inventory Transaction Type'];
     
 
@@ -901,7 +905,7 @@ if(isset( $_REQUEST['tableid']))
 		   ,'diff_qty'=>$qty
 		   ,'diff_amount'=>money($data['Inventory Transaction Amount'])
 		   ,'note'=>$data['Note']
-		   ,'date'=>strftime("%a %e %b %Y %T", strtotime($data['Date'])),
+		   ,'date'=>strftime("%a %e %b %Y %T", strtotime($data['Date'].' UTC')),
 		   );
   }
   $response=array('resultset'=>
@@ -1176,12 +1180,12 @@ if(isset( $_REQUEST['tableid']))
   
   
 
-  $where=$where.sprintf(" and `Location Key`=%d ",$location_id);
+  $where=$where.sprintf(" and PLD.`Location Key`=%d ",$location_id);
 
    
   //   $where =$where.$view.sprintf(' and part_id=%d  %s',$part_id,$date_interval);
    
-   $sql="select count(*) as total from `Part Location Dimension`   $where $wheref";
+   $sql="select count(*) as total from `Part Location Dimension` PLD  $where $wheref";
    //   print "$sql";
    
    $res = mysql_query($sql);
@@ -1194,7 +1198,7 @@ if(isset( $_REQUEST['tableid']))
        $filtered=0;
        $total_records=$total;
    }else{
-     $sql="select  count(*) as total from `Part Location Dimension`  $where ";
+     $sql="select  count(*) as total from `Part Location Dimension` PLD $where ";
      $res = mysql_query($sql);
      if($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
@@ -1219,13 +1223,13 @@ if(isset( $_REQUEST['tableid']))
 
 
 
-   $sql=sprintf("select  * from `Part Location Dimension` PLD left join `Part Dimension` PD on (PD.`Part SKU`=PLD.`Part SKU`)    $where $wheref    order by $order $order_direction  ");
+   $sql=sprintf("select  * from `Part Location Dimension` PLD left join `Part Dimension` PD on (PD.`Part SKU`=PLD.`Part SKU`) left join `Location Dimension` LD on (LD.`Location Key`=PLD.`Location Key`)    $where $wheref    order by $order $order_direction  ");
 
 
   $adata=array();
   
   $res = mysql_query($sql);
-  // print $sql;
+ // print $sql;
   while($data=mysql_fetch_array($res, MYSQL_ASSOC)) {
     
     
@@ -1248,6 +1252,7 @@ if(isset( $_REQUEST['tableid']))
 		   'sku'=>sprintf('<a href="part.php?id=%d&edit_stock=1">SKU%05d</a>',$data['Part SKU'],$data['Part SKU'])
 		   ,'part_sku'=>$data['Part SKU']
 		   ,'location_key'=>$data['Location Key']
+		   ,'location'=>$data['Location Code']
 
 		   ,'description'=>$data['Part XHTML Description'].' ('.$data['Part XHTML Currently Used In'].')'
 		   ,'qty'=>number($data['Quantity On Hand'])

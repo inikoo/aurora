@@ -8,6 +8,7 @@ require_once 'class.ShelfType.php';
 
 require_once 'ar_edit_common.php';
 
+date_default_timezone_set('UTC');
 
 if(!isset($_REQUEST['tipo']))
   {
@@ -90,7 +91,11 @@ case('delete_warehouse'):
   delete_warehouse();
   break;
 case('lost_stock'):
-  lost_stock();
+$data=prepare_values($_REQUEST,array(
+			     'values'=>array('type'=>'json array')
+			   
+			     ));
+  lost_stock($data);
   break;
 case('move_stock'):
   move_stock();
@@ -120,7 +125,7 @@ function update_part_location(){
     echo json_encode($response);
      return;
   }
-  
+  //print_r($editor);
 
   $part_sku=$_REQUEST['part_sku'];
   $location_key=$_REQUEST['location_key'];
@@ -140,8 +145,7 @@ function update_part_location(){
 
 
   $part_location=new PartLocation($part_sku,$location_key);
- print_r($editor);
- exit;
+
  $part_location->editor=$editor;
   if(!$part_location->ok){
     $response=array('state'=>400,'action'=>'error','msg'=>'');
@@ -153,7 +157,12 @@ function update_part_location(){
   $part_location->update($data);
   
   if($part_location->updated){
-    $response=array('state'=>200,'action'=>'updates','msg'=>$part_location->msg,'newvalue'=>$part_location->data[$key],'stock'=>$part_location->part->get('Part Current Stock'));
+    $response=array('state'=>200,'action'=>'updates','msg'=>$part_location->msg
+    ,'qty'=>$part_location->data['Quantity On Hand']
+     ,'formated_qty'=>number($part_location->data['Quantity On Hand'])
+    ,'newvalue'=>$part_location->data[$key]
+    ,'stock'=>$part_location->part->get('Part Current Stock')
+    );
      echo json_encode($response);
      return;
   }else{
@@ -737,9 +746,52 @@ function add_part_to_location(){
 	      ,'editor'=>$editor
 	      );
   
+    // is logical to disassociate the part from an unknown location with no stock
+if($location_key!=1){
+$part=new Part($part_sku);
+$old_locations=$part->get_locations();
+ // print_r($old_locations);
+ if(count($old_locations)==1){
+ $old_pl=array_pop($old_locations);
+ if($old_pl['Quantity On Hand']<=0 and $old_pl['Location Key']==1){
+    $old_part_location=new PartLocation($part_sku.'_1');
+  $old_part_location->editor=$editor;
+  $old_part_location->identify_unknown($location_key);
+  
+  $part_location=new PartLocation($part_sku,$location_key);  
+  
+  
+  $response=array('state'=>200
+  ,'action'=>'added'
+  ,'msg'=>$old_part_location->msg
+  ,'sku'=>$part_location->part_sku
+  ,'formated_sku'=>$part_location->part->get_sku()
+  ,'location_key'=>$part_location->location_key
+  ,'location_code'=>$part_location->location->data['Location Code']
+  ,'qty'=>$part_location->data['Quantity On Hand']
+  ,'formated_qty'=>number($part_location->data['Quantity On Hand'])
+  );
+     echo json_encode($response);
+     return;
+  
+ }
+ }
+ }
+ 
+ 
   $part_location=new PartLocation('find',$data,'create');
   if($part_location->new){
-    $response=array('state'=>200,'action'=>'added','msg'=>$part_location->msg);
+  
+  
+    $response=array('state'=>200,'action'=>'added','msg'=>$part_location->msg
+    ,'sku'=>$part_location->part_sku
+  ,'formated_sku'=>$part_location->part->get_sku()
+  ,'location_key'=>$part_location->location_key
+  ,'location_code'=>$part_location->location->data['Location Code']
+  ,'qty'=>$part_location->data['Quantity On Hand']
+  ,'formated_qty'=>number($part_location->data['Quantity On Hand'])
+    
+    );
      echo json_encode($response);
      return;
   }else{
@@ -753,24 +805,10 @@ function add_part_to_location(){
 }
 
 
-function lost_stock(){
+function lost_stock($data){
   global $editor;
-  if( !isset($_REQUEST['values']) ){
-    $response=array('state'=>400,'msg'=>'Error no value');
-    echo json_encode($response);
-    return;
-   }
-  
-  $tmp=preg_replace('/\\\"/','"',$_REQUEST['values']);
-  $tmp=preg_replace('/\\\\\"/','"',$tmp);
-   
-   $raw_data=json_decode($tmp, true);
-   if(!is_array($raw_data)){
-     $response=array('state'=>400,'msg'=>'Wrong value');
-     echo json_encode($response);
-     return;
-   }
-
+ 
+  $raw_data=$data['values'];
 
   if(
      !isset($raw_data['location_key'])
@@ -812,7 +850,13 @@ function lost_stock(){
      return;
 
    }else{
-     $response=array('state'=>200,'action'=>'ok','msg'=>$part_location->msg,'qty'=>$part_location->data['Quantity On Hand'],'stock'=>$part_location->part->get('Part Current Stock'));
+   list($stock,$value)=$part_location->part->get_current_stock();
+   
+     $response=array('state'=>200,'action'=>'ok','msg'=>$part_location->msg
+     ,'qty'=>$part_location->data['Quantity On Hand']
+     ,'formated_qty'=>number($part_location->data['Quantity On Hand'])
+     ,'stock'=>$stock
+     );
      echo json_encode($response);
      return;
 
@@ -871,13 +915,30 @@ function move_stock(){
    $part_location->editor=$editor;
    //  print_r($data);
    $part_location->move_stock($data);
+   $to_part_location=new PartLocation($raw_data['part_sku'],$data['Destination Key']);
    if($part_location->error){
      $response=array('state'=>400,'action'=>'nochange','msg'=>$part_location->msg);
      echo json_encode($response);
      return;
 
    }else{
-     $response=array('state'=>200,'action'=>'ok','msg'=>$part_location->msg,'qty_from'=>$part_location->data['Quantity On Hand'],'stock'=>$part_location->part->get('Part Current Stock'));
+     $response=array('state'=>200,'action'=>'ok','msg'=>$part_location->msg
+     ,'formated_sku'=>$part_location->part->get_sku()
+      ,'sku'=>$part_location->part->sku
+     ,'qty_from'=>$part_location->data['Quantity On Hand']
+     ,'qty_to'=>$to_part_location->data['Quantity On Hand']
+     ,'location_key_from'=>$part_location->location_key
+     ,'location_key_to'=>$to_part_location->location_key
+       ,'location_code_from'=>$part_location->location->data['Location Code']
+     ,'location_code_to'=>$to_part_location->location->data['Location Code']
+     
+     ,'formated_qty_from'=>$part_location->data['Quantity On Hand']
+     ,'formated_qty_to'=>$to_part_location->data['Quantity On Hand']
+     
+     ,'stock'=>$part_location->part->get('Part Current Stock')
+     
+     
+     );
      echo json_encode($response);
      return;
 

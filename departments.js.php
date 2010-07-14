@@ -5,7 +5,7 @@
 include_once('common.php');
 ?>
 var Dom   = YAHOO.util.Dom;
-
+var Event  =YAHOO.util.Event;
  var period='period_<?php echo$_SESSION['state']['departments']['period']?>';
     var avg='avg_<?php echo$_SESSION['state']['departments']['avg']?>';
 
@@ -197,9 +197,12 @@ function change_avg(e,table_id){
 
 
  function init(){
- var Dom   = YAHOO.util.Dom;
- var Dom   = YAHOO.util.Dom;
-var Dom   = YAHOO.util.Dom;
+
+
+
+ init_search('products');
+
+
  var oACDS = new YAHOO.util.FunctionDataSource(mygetTerms);
  oACDS.queryMatchContains = true;
  var oAutoComp = new YAHOO.widget.AutoComplete("f_input0","f_container0", oACDS);
@@ -214,10 +217,6 @@ var Dom   = YAHOO.util.Dom;
 
  YAHOO.util.Event.addListener('show_details', "click",show_details,'departments');
  YAHOO.util.Event.addListener('show_percentages', "click",show_percentages,'departments');
-
-
- YAHOO.util.Event.addListener('product_submit_search', "click",submit_search,'product');
- YAHOO.util.Event.addListener('product_search', "keydown", submit_search_on_enter,'product');
 
 
 

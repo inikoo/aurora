@@ -3,14 +3,6 @@
  {include file='assets_navigation.tpl'}
 
   
-  <div class="search_box" >
-     <span class="search_title" style="padding-right:15px">{t}Part SKU{/t}:</span> <input size="8" class="text search" id="prod_search" value="" name="search"/><img align="absbottom" id="submit_search" class="submitsearch" src="art/icons/zoom.png" alt="Submit search"><br/>
-    <span  class="search_msg"   id="search_msg"    ></span> <span  class="search_sugestion"   id="search_sugestion"    ></span>
-   
-  </div>
-
-
-
 
 
 <div class="data_table" style="clear:both;">

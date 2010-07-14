@@ -1,8 +1,9 @@
 {include file='header.tpl'}
 <div id="bd" >
-  
+{include file='assets_navigation.tpl'}
 
-<div>
+
+<div style="clear:both">
   <h1 style="padding:10px 0 0 0 ;font-size:140%"><span style="font-weight:800">{t}Part SKU{/t} {$part->get('Part SKU')}</span> {$part->get('Part XHTML Description')}</h1>
   <h2 style="padding:0">{t}Sold as{/t}: {$part->get('Part XHTML Currently Used In')}</h2>
 </div>
@@ -22,7 +23,7 @@
     </div>
   </div>
 
-  <div style="width:250px;float:left;margin-left:10px">
+  <div style="width:240px;float:left;margin-left:10px">
   
     <table    class="show_info_product" >
       <td class="aright">
@@ -84,7 +85,7 @@
 </div>
 
  <div style="width:250px;float:left;margin-left:20px">
-	<table   class="show_info_product" >
+	<table   class="show_info_product" style="width:210px">
 		  <tr>
 		    <td>{t}Stock{/t}:<br>{$stock_units}</td><td class="stock aright" id="stock">{$part->get('Part Current Stock')}</td>
 		  </tr>
@@ -97,17 +98,19 @@
 		    {if $nextbuy>0   }<tr><td rowspan="2">{t}Next shipment{/t}:</td><td>{$data.next_buy}</td></tr><tr><td class="noborder">{$data.nextbuy_when}</td>{/if}
 		    </tr>
 		  </table>
-		  {t}Locations{/t}:
-		  <table  id="part_locations" class="show_info_product"  >
+		  {t}Locations{/t}:<div id="add_location_button" style="float:right;font-size:80%;color:#777;margin-right:40px;cursor:pointer"><span onClick="add_location({$part->sku})">{t}Add Location{/t}</span></div>
+		  <table  id="part_locations" class="show_info_product" style="width:210px" >
 	
 			{foreach from=$part->get_locations(true) item=location name=foo }
-			<tr><td><a href="location.php?id={$location.LocationKey}">{$location.LocationCode}
+			<tr id="part_location_tr_{$location.PartSKU}_{$location.LocationKey}">
+			<td><a href="location.php?id={$location.LocationKey}">{$location.LocationCode}
 			</a></td>
 		     <td class="quantity"  id="part_location_quantity_{$location.PartSKU}_{$location.LocationKey}" quantity="{$location.QuantityOnHand}"  >{$location.FormatedQuantityOnHand}</td>
-		     <td class="button" id="part_location_audit_{$location.PartSKU}_{$location.LocationKey}"  onClick="audit({$location.PartSKU},{$location.LocationKey})" ><img src="art/icons/eye.png" alt="{t}audit{/t}"/></td>
-		     <td class="button" id="part_location_lost_items_{$location.PartSKU}_{$location.LocationKey}" onClick="lost({$location.PartSKU},{$location.LocationKey})"> <img src="art/icons/bin.png" alt="{t}lost{/t}"/></td>
-			 <td class="button" id="part_location_move_items_{$location.PartSKU}_{$location.LocationKey}" onClick="move({$location.PartSKU},{$location.LocationKey})"><img src="art/icons/arrow_out.png" alt="{t}move{/t}"/></td>
+		     <td class="button"   ><img  id="part_location_audit_{$location.PartSKU}_{$location.LocationKey}" src="art/icons/eye.png" alt="{t}audit{/t}" onClick="audit({$location.PartSKU},{$location.LocationKey})" /></td>
+		     <td class="button"  > <img style="{if $location.QuantityOnHand!=0}display:none{/if}" sku_formated="{$part->get_sku()}" location="{$location.LocationCode}" id="part_location_delete_{$location.PartSKU}_{$location.LocationKey}"  src="art/icons/cross_bw.png" alt="{t}delete{/t}" onClick="delete_part_location({$location.PartSKU},{$location.LocationKey})" /><img style="{if $location.QuantityOnHand==0}display:none{/if}" id="part_location_lost_items_{$location.PartSKU}_{$location.LocationKey}" src="art/icons/bin.png" alt="{t}lost{/t}" onClick="lost({$location.PartSKU},{$location.LocationKey})" /></td>
+			 <td class="button"  ><img sku_formated="{$part->get_sku()}" location="{$location.LocationCode}" id="part_location_move_items_{$location.PartSKU}_{$location.LocationKey}"  src="art/icons/arrow_out.png" alt="{t}move{/t}" onClick="move({$location.PartSKU},{$location.LocationKey})" /></td>
 			
+
 			</tr>
 			{/foreach}
 			
@@ -195,14 +198,14 @@
 
 
 
- <div  id="block_stock_transactons" class="data_table" style="clear:both;margin:25px 0px">
+ <div  id="block_stock_transactons" class="data_table" style="clear:both;margin:25px 0px;">
    <span id="table_title" class="clean_table_title">{t}Part Stock Transactions{/t}</span>
    <div  class="clean_table_caption"  style="clear:both;">
      <div style="float:left;"><div id="table_info1" class="clean_table_info"> <span id="rtext1"></span> <span class="rtext_rpp" id="rtext_rpp1"></span> <span class="filter_msg"  id="filter_msg1"></span>  </div></div>
      <div class="clean_table_filter"  id="clean_table_filter1"><div class="clean_table_info"><span id="filter_name1" class="filter_name" >{$filter_name1}</span>: <input style="border-bottom:none" id='f_input1' value="{$filter_value1}" size=10/><div id='f_container1'></div></div></div>
      <div class="clean_table_controls" style="" ><div><span  style="margin:0 5px" id="paginator1"></span></div></div>
 	</div>
-   <div  id="table1"   class="data_table_container dtable btable "> </div>
+   <div  style="font-size:85%" id="table1"   class="data_table_container dtable btable "> </div>
  </div>
 
 

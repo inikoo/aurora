@@ -27,7 +27,7 @@ $js_files=array(
 		$yui_path.'calendar/calendar-min.js',
 		'common.js.php',
 		'table_common.js.php',
-		'js/search_product.js',
+		'js/search.js',
 		'parts.js.php',
 		 'js/dropdown.js'
 		);
@@ -44,6 +44,8 @@ if(!$user->can_view('parts')){
 
 }
 
+
+
 $view_sales=$user->can_view('product sales');
 $view_stock=$user->can_view('product stock');
 $create=$user->can_create('parts');
@@ -55,6 +57,12 @@ $smarty->assign('create',$create);
 $smarty->assign('modify',$modify);
 
 get_header_info($user,$smarty);
+
+$smarty->assign('search_label',_('Parts'));
+$smarty->assign('search_scope','part');
+
+
+
 
 $q='';
 

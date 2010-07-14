@@ -149,7 +149,6 @@ table.show_info_product td.number div{width:5em;text-align:right}
 .calpop {position:relative;right:18px;}
 img.calpop {position:relative;bottom:2px;cursor:pointer  }
 img.calpop_to {position:relative;bottom:2px;cursor:pointer;right:36px;  }
-.submitsearch {position:relative;bottom:1px;cursor:pointer;z-index:2;right:2px}
 
 input.search{height:17px;padding-right: 20px;position:relative;left:16px;z-index:1}
 
@@ -425,16 +424,23 @@ color: #316D89;
 
 /*Common search div*/
 
-.search_box{clear:both;float:right;border: 0px solid #ddd;text-align:right;padding:0;margin:0;position:relative;bottom:12px}
-.search_box form{ margin-bottom:5px }
-.search_box .search_title{ position:relative;left:16px}
-.search_box div{clear:right;float:right}
-.search_box div.general_options{padding:0 0 5px 0;color:#777}
-.search_box div.general_options span{float:right;margin-left:15px;font-size:85%; font-weight:200;cursor:pointer;}
-.search_box div.general_options span:hover{text-decoration:underline;color:#333}
+.right_box{clear:both;float:right;border: 0px solid #ddd;text-align:right;padding:0;margin:0;position:relative;bottom:12px}
+.right_box form{ margin-bottom:5px }
+.right_box .search_title{ position:relative;left:16px}
+.right_box div{clear:right;float:right}
+.right_box div.general_options{padding:0 0 5px 0;color:#777}
+.right_box div.general_options span{float:right;margin-left:15px;font-size:85%; font-weight:200;cursor:pointer;}
+.right_box div.general_options span:hover{text-decoration:underline;color:#333}
 .no_top_nav{position:relative;bottom:10px}
 
 .search_msg,.state_details,search_sugestion{font-size:85%; font-weight:200}
+
+.search_box{clear:right;float:right;font-size:14px;margin-top:5px}
+.search_box input{  height:16px;color:#555;font-style: italic;padding-left:2px}
+.search_box .search_container{;width:324px;float:right;margin-left:2px}
+.search_box .submitsearch {position:relative;bottom:-1px;cursor:pointer;z-index:2;right:2px}
+.search_box_resultss{display:none;background:#fff;border:1px solid #777;padding:10px;margin-top:0px;width:500px;position:absolute;z-index:20;left:-520px}
+
 span.state_details,search_sugestion{color:#777;cursor:pointer;} 
 span.state_details:hover ,search_sugestion:hover{color:#555;text-decoration:underline}
 span.selected{color:#444;text-decoration:underline} 
@@ -551,7 +557,6 @@ span.tab.selected{ text-decoration:none;border:1px solid #777;color:#000;border-
 span.link{cursor:pointer}
 .top_navigation span.selected{color:yellow;border:none;background:#6d84b4}
 
-/*Common search div*/
 
 .filter_name{cursor:pointer}
 .mix_currency{color:#777;font-style: italic;}
@@ -671,6 +676,8 @@ position:relative;top:1px;
 .quick_button td:hover{background:#131536;}
 
 .table_type {margin-top:.6em}
+
+
 
 .search_result{color:#777;width:98%;float:right}
 .search_result tr{cursor:pointer}

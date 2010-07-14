@@ -29,7 +29,7 @@
  <span class="nav2 onleft"><a href="categories.php">{t}Categories{/t}</a></span>
 {if $view_parts}<span class="nav2 onleft"><a href="parts.php">{t}Parts{/t}</a></span>{/if}
 
-<div class="search_box">
+<div class="right_box" style="display:none">
   <div class="general_options">
     {foreach from=$general_options_list item=options }
     {if $options.tipo=="url"}
@@ -39,18 +39,19 @@
     {/if}
     {/foreach}
   </div>
-  
-  <div id="search" style="text-align:right;{if !$search_scope}display:none{/if}">
-    <span class="search_title" >{t}{$search_label}{/t}:</span>
-    <input size="25" class="text search" id="{$search_scope}_search" value="" state="" name="search"/><img align="absbottom" id="{$search_scope}_clean_search"  class="submitsearch" src="art/icons/zoom.png" >
+</div>
+
+<div class="search_box" style="">
+<div id="search" class="search_container"  style="{if !$search_scope}display:none{/if}">
+    <input style="display:nonez;width:300px" class="stext" id="{$search_scope}_search" value="" state="" name="search"/>
     <div id="{$search_scope}_search_Container" style="display:none"></div>
-    <div style="position:relative;font-size:80%">
-      <div id="{$search_scope}_search_results" style="display:none;background:#fff;border:1px solid #777;padding:10px;margin-top:0px;width:500px;position:absolute;z-index:20;left:-520px">
-	<table id="{$search_scope}_search_results_table"></table>
-      </div>
-    </div>
+  <div style="float:right"><img style="" align="absbottom" id="{$search_scope}_clean_search" class="submitsearch" src="art/icons/zoom.png" ></div>
+
   </div>
-  
-</div>  
+<div style="float:right">{$search_label}:</div>
+</div>
 
 
+<div id="{$search_scope}_search_results" style="font-size:10px;float:right;background:#fff;border:1px solid #777;padding:10px;margin-top:0px;width:500px;position:absolute;z-index:20;top:-500px">
+<table id="{$search_scope}_search_results_table"></table>
+</div>

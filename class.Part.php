@@ -1091,7 +1091,9 @@ return $part_locations;
 
 
     function update_stock_history() {
-        $sql=sprintf("select `Location Key`  from `Part Location Dimension` where `Part SKU`=%d ",$this->sku);
+    
+    
+        $sql=sprintf("select `Location Key`  from `Inventory Transaction Fact` where `Part SKU`=%d ",$this->sku);
 //print "$sql\n";
         $result=mysql_query($sql);
         while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
@@ -1461,7 +1463,7 @@ return $part_locations;
             //print "---> Location $location_key \n";
 
 
-            $sql=sprintf("select `Date`,`Inventory Transaction Type` from `Inventory Transaction Fact` where  `Part SKU`=%d and `Location Key`=%d  order by `Date`,`Event Order`   ",$this->sku,$location_key);
+            $sql=sprintf("select `Date`,`Inventory Transaction Type` from `Inventory Transaction Fact` where  `Part SKU`=%d and `Location Key`=%d  order by `Date`,`Inventory Transaction Key`   ",$this->sku,$location_key);
             //print "$sql\n";
             $res3=mysql_query($sql);
             if ($row3=mysql_fetch_array($res3)) {
@@ -1476,7 +1478,7 @@ return $part_locations;
                 }
             }
 
-            $sql=sprintf("select `Date`,`Inventory Transaction Type` from `Inventory Transaction Fact` where  `Part SKU`=%d and `Location Key`=%d  order by `Date` desc ,`Event Order` desc ",$this->sku,$location_key);
+            $sql=sprintf("select `Date`,`Inventory Transaction Type` from `Inventory Transaction Fact` where  `Part SKU`=%d and `Location Key`=%d  order by `Date` desc ,`Inventory Transaction Key` desc ",$this->sku,$location_key);
             $last_itf_date='none';
             $res3=mysql_query($sql);
             //print "$sql\n";
@@ -1549,7 +1551,7 @@ return $part_locations;
                 mysql_query($sql);
                 $location=new Location($location_key);
                 $details=_('Part')." SKU".sprintf("%05d",$this->sku)." "._('associated with location').": ".$location->data['Location Code'];
-                $sql=sprintf("insert into `Inventory Transaction Fact` (`Part SKU`,`Location Key`,`Inventory Transaction Type`,`Inventory Transaction Quantity`,`Inventory Transaction Amount`,`User Key`,`Note`,`Date`,`Event Order`) values (%d,%d,%s,%f,%.2f,%s,%s,%s,%s)"
+                $sql=sprintf("insert into `Inventory Transaction Fact` (`Part SKU`,`Location Key`,`Inventory Transaction Type`,`Inventory Transaction Quantity`,`Inventory Transaction Amount`,`User Key`,`Note`,`Date`) values (%d,%d,%s,%f,%.2f,%s,%s,%s)"
                              ,$this->sku
                              ,$location_key
                              ,"'Associate'"
@@ -1558,7 +1560,7 @@ return $part_locations;
                              ,0
                              ,prepare_mysql($details)
                              ,prepare_mysql($first_date)
-                             ,-2
+                             
                             );
                 mysql_query($sql);
                 //print "$sql\n";
@@ -1605,7 +1607,7 @@ return $part_locations;
                 }
 
 
-                $data=array('Date'=>$last_date,'Note'=>_('Discontinued'),'Event Order'=>1);
+                $data=array('Date'=>$last_date,'Note'=>_('Discontinued'));
 
                 $part_location->disassociate($data);
                 $this->update_valid_to($last_date);

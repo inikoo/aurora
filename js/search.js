@@ -11,6 +11,61 @@ var submit_search_on_enter=function(e,tipo){
 };
 
 
+
+
+function init_search(type){
+
+switch(type)
+{
+case 'products':
+search_scope='products';
+    var store_name_oACDS = new YAHOO.util.FunctionDataSource(search_products);
+  var search_scope='products';
+  break;
+case 'products_store':
+ var store_name_oACDS = new YAHOO.util.FunctionDataSource(search_products_in_store);
+  var search_scope='products';
+  break;
+case 'part':
+search_scope='part';
+    var store_name_oACDS = new YAHOO.util.FunctionDataSource(search_part);
+  
+  break;  
+  
+default:
+ var store_name_oACDS = new YAHOO.util.FunctionDataSource(search_all);
+  var search_scope='all';
+
+}
+
+  
+     store_name_oACDS.queryMatchContains = true;
+     var store_name_oAutoComp = new YAHOO.widget.AutoComplete(search_scope+"_search",search_scope+"_search_Container", store_name_oACDS);
+     store_name_oAutoComp.minQueryLength = 0; 
+     store_name_oAutoComp.queryDelay = 0.15;
+     
+     
+     
+    
+
+     Event.addListener(search_scope+"_search", "keyup",search_events,search_scope)
+
+      Event.addListener(search_scope+"_clean_search", "click",clear_search,search_scope);
+      
+     
+      //  
+        
+         x= Dom.getX(search_scope+'_clean_search');
+    y= Dom.getY(search_scope+'_clean_search');
+  
+    Dom.setX(search_scope+"_search_results", x-500);
+    Dom.setY(search_scope+"_search_results", y+17);
+     Dom.get(search_scope+"_search_results").style.display='none';  
+  
+      
+}
+
+
 var submit_search=function(e,data){
 
     if(typeof( data ) == 'string')
@@ -40,6 +95,7 @@ var submit_search=function(e,data){
 function search_part(query){
     search(query,'part','');
 }
+
 
 function search_customers_in_store(query){
     search(query,'customers','store');
@@ -79,12 +135,11 @@ function search(query,subject,scope){
     var request='tipo='+subject+'&q='+escape(query)+'&scope='+scope;
 
     
-    
     YAHOO.util.Connect.asyncRequest(
 				    'POST',
 				    ar_file, {
 					success:function(o) {
-					    // alert(o.responseText);
+
 					    var r = YAHOO.lang.JSON.parse(o.responseText);
 					    if (r.state == 200) {
 					
@@ -99,10 +154,13 @@ function search(query,subject,scope){
                              Dom.get(subject+'_clean_search').src='art/icons/zoom.png';
 						}else{
 						    
+						    
+						    
+						    
+						    
 						     Dom.get(subject+'_clean_search').src='art/icons/cross_bw.png';
 			 			    Dom.get(subject+'_search_results').style.display='';
 						    
-
 
 						    oTbl=document.createElement("Table");
 						    Dom.addClass(oTbl,'search_result');
@@ -137,10 +195,10 @@ function search(query,subject,scope){
 							    var oTD= oTR.insertCell(3);
 							    oTD.innerHTML=r.data[result_key ].address;
 							}else if(subject=='part'){
-							    oTR.setAttribute('key',r.data[result_key ].sku);
-							    oTR.setAttribute('link',r.data[result_key ].link);
-							   	oTR.setAttribute('sku',r.data[result_key ].fsku);
-							    oTR.setAttribute('description',r.data[result_key ].description);
+							    oTR.setAttribute('key',r.data[result_key].sku);
+							    oTR.setAttribute('link',r.data[result_key].link);
+							   	oTR.setAttribute('sku',r.data[result_key].fsku);
+							    oTR.setAttribute('description',r.data[result_key].description);
 
 
 							    var oTD= oTR.insertCell(1);
