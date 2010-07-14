@@ -36,6 +36,7 @@ $result=mysql_query($sql);
 while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
   $part=new Part('sku',$row['Part SKU']);
 
+  /*
   //Get  status
   if(isset($argv[1]) and $argv[1]=='first'){
   $part_valid_from=$part->data['Part Valid From'];
@@ -63,10 +64,10 @@ while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
   
   }
   }
-  
+  */
   $part->load('used in');
   $part->load('supplied by');
-  //s$part->load('sales');
+  $part->load('sales');
   
  // if(!isset($argv[1])){
     
