@@ -118,7 +118,7 @@ foreach($avialable_locales as $row ){
 
 $smarty->assign('lang_menu',$lang_menu);
 $smarty->assign('page_layout','doc4');
-
+$smarty->assign('timezone',date("e P"));
 
 include_once('set_state.php');
 

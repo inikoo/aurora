@@ -9019,10 +9019,10 @@ function part_transactions() {
         $rtext_rpp='';
     }
 
-    $order=' `Date` desc , `Event Order` desc ';
+    $order=' `Date` desc , `Inventory Transaction Key` desc ';
     $order_direction=' ';
 
-    $sql=sprintf("select  `Event Order`,`Note`,`Inventory Transaction Type`,`Inventory Transaction Quantity`,`Date`,ITF.`Location Key`,`Location Code`  from `Inventory Transaction Fact` ITF left join `Location Dimension` L on (ITF.`Location key`=L.`Location key`)  $where $wheref order by $order $order_direction limit $start_from,$number_results ");
+    $sql=sprintf("select  `Note`,`Inventory Transaction Type`,`Inventory Transaction Quantity`,`Date`,ITF.`Location Key`,`Location Code`  from `Inventory Transaction Fact` ITF left join `Location Dimension` L on (ITF.`Location key`=L.`Location key`)  $where $wheref order by $order $order_direction limit $start_from,$number_results ");
 
 
     //print $sql;
@@ -9040,7 +9040,7 @@ function part_transactions() {
         $location=sprintf('<a href="location.php?id=%d">%s</a>',$data['Location Key'],$data {'Location Code'});
         $adata[]=array(
 
-                     'type'=>$data['Inventory Transaction Type'].' '.$data['Event Order']
+                     'type'=>$data['Inventory Transaction Type']
                             ,'change'=>$qty
                                       ,'date'=>strftime("%c", strtotime($data['Date']))
                                               ,'note'=>$data['Note']
@@ -9182,10 +9182,12 @@ function part_stock_history() {
     }
 
 
+$order='`Date`';
+
     $sql=sprintf("select  GROUP_CONCAT(ISF.`Location Key`) as locations,`Date`,sum(`Quantity On Hand`) as `Quantity On Hand`,sum(`Value At Cost`) as `Value At Cost`,sum(`Sold Amount`) as `Sold Amount`,sum(`Value Comercial`) as `Value Comercial`,sum(`Storing Cost`) as `Storing Cost`,sum(`Quantity Sold`) as `Quantity Sold`,sum(`Quantity In`) as `Quantity In`,sum(`Quantity Lost`) as `Quantity Lost`  from `Inventory Spanshot Fact` ISF left join `Location Dimension` L on (ISF.`Location key`=L.`Location key`)  $where $wheref  group by `Date` order by $order $order_direction  limit $start_from,$number_results ");
 
 
-    // print $sql;
+   
     $result=mysql_query($sql);
     $adata=array();
     while ($data=mysql_fetch_array($result, MYSQL_ASSOC)) {
@@ -9193,7 +9195,7 @@ function part_stock_history() {
 
         $adata[]=array(
 
-                     'date'=>strftime("%A %D", strtotime($data['Date']))
+                     'date'=>strftime("%A %d/%m/%Y", strtotime($data['Date']))
                             ,'locations'=>$data['locations']
                                          ,'quantity'=>number($data['Quantity On Hand'])
                                                      ,'value'=>money($data['Value At Cost'])

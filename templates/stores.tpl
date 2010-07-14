@@ -1,6 +1,8 @@
 {include file='header.tpl'}
 <div id="bd" >
 {include file='assets_navigation.tpl'}
+
+
 <div style="clear:left;">
   <h1>{t}Corporate Overview{/t}</h1>
 </div>

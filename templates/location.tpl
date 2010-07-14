@@ -100,4 +100,4 @@
 
 {include file='footer.tpl'}
 
-
+{include file='stock_splinter.tpl'}

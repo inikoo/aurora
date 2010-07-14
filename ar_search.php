@@ -1056,7 +1056,7 @@ function search_parts($data) {
         while ($row=mysql_fetch_array($res)) {
 
             $candidates[$row['Part SKU']]=210;
-            $part_data[$row['Part SKU']]=array('sku'=>$row['Part SKU'],'fsku'=>sprintf('SKU %05d',$row['Part SKU']),'description'=>$row['Part XHTML Description']);
+            $part_data[$row['Part SKU']]=array('link'=>'part.php?id=','sku'=>$row['Part SKU'],'fsku'=>sprintf('SKU %05d',$row['Part SKU']),'description'=>$row['Part XHTML Description']);
 
         }
     }
@@ -1067,7 +1067,7 @@ function search_parts($data) {
     while ($row=mysql_fetch_array($res)) {
 
         $candidates[$row['Part SKU']]=$row['score'];
-        $part_data[$row['Part SKU']]=array('sku'=>$row['Part SKU'],'fsku'=>sprintf('SKU %05d',$row['Part SKU']),'description'=>$row['Part XHTML Description']);
+        $part_data[$row['Part SKU']]=array('link'=>'part.php?id=','sku'=>$row['Part SKU'],'fsku'=>sprintf('SKU %05d',$row['Part SKU']),'description'=>$row['Part XHTML Description']);
 
     }
 
@@ -1132,7 +1132,7 @@ function search_parts($data) {
 
 
 
-    $response=array('state'=>200,'results'=>count($results),'data'=>$results,'link'=>'');
+    $response=array('state'=>200,'results'=>count($results),'data'=>$results,'link'=>'part.php?id=');
     echo json_encode($response);
 
 

@@ -1,3 +1,3 @@
 <?php
-define("TIMEZONE",'UTC');
+define("TIMEZONE",'Europe/London');
 ?>

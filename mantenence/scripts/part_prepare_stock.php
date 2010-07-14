@@ -32,8 +32,8 @@ require_once '../../conf/conf.php';
 date_default_timezone_set('UTC');
 
 $where='where  `Part XHTML Currently Used In` like "%lebt%"';
-$where='and `Part SKU`=12804';
-$where='';
+$where='and `Part SKU`=15587';
+//$where='';
 $sql=sprintf('select count(*) as num  from `Part Dimension` where `Part Status`="in Use" %s ',$where);
 $res=mysql_query($sql);
 while($row=mysql_fetch_array($res)){

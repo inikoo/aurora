@@ -18,7 +18,6 @@ include_once('class.InventoryAudit.php');
 class PartLocation extends DB_Table {
 
     var $ok=false;
-    var $event_order=0;
 
     function PartLocation($arg1=false,$arg2=false,$arg3=false) {
 
@@ -100,20 +99,20 @@ class PartLocation extends DB_Table {
         }
 
         $this->location=New Location($data['Location Key']);
-        if (!$this->location->id){
-        
-         $this->location=New Location(1);
-        if(!$this->location->id){
-        $sql="INSERT INTO `Location Dimension` (`Location Key` ,`Location Warehouse Key` ,`Location Warehouse Area Key` ,`Location Code` ,`Location Mainly Used For` ,`Location Max Weight` ,`Location Max Volume` ,`Location Max Slots` ,`Location Distinct Parts` ,`Location Has Stock` ,`Location Stock Value`)VALUES ('1', '1', '1','Unknown', 'Picking', NULL , NULL , NULL , '0', 'Unknown', '0.00');";
-       mysql_query($sql);
-       $this->location=New Location(1);
+        if (!$this->location->id) {
 
-        
-        }
-        
+            $this->location=New Location(1);
+            if (!$this->location->id) {
+                $sql="INSERT INTO `Location Dimension` (`Location Key` ,`Location Warehouse Key` ,`Location Warehouse Area Key` ,`Location Code` ,`Location Mainly Used For` ,`Location Max Weight` ,`Location Max Volume` ,`Location Max Slots` ,`Location Distinct Parts` ,`Location Has Stock` ,`Location Stock Value`)VALUES ('1', '1', '1','Unknown', 'Picking', NULL , NULL , NULL , '0', 'Unknown', '0.00');";
+                mysql_query($sql);
+                $this->location=New Location(1);
+
+
+            }
+
         }
         $this->location_key=$this->location->id;
-	
+
 
         $this->part=New Part($data['Part SKU']);
         if (!$this->part->id) {
@@ -127,7 +126,7 @@ class PartLocation extends DB_Table {
                      ,$this->location_key
                     );
         $res=mysql_query($sql);
-	
+
 
 
         if ($row=mysql_fetch_array($res)) {
@@ -262,35 +261,33 @@ class PartLocation extends DB_Table {
             $this->part->load('stock');
 
 
-            $details=sprintf("SKU%d4",$this->part_sku).' '._('adjust due to audit in').' '.$this->location->data['Location Code'].': '.($qty_change>0?'+':'').number($qty_change).' ('.($value_change>0?'+':'').money($value_change).')';
+            $details='<a href="part.php?id='.$this->part_sku.'">'.$this->part->get_sku().'</a>'.' '._('adjust due to audit in').' <a href="location.php?id='.$this->location->id.'">'.$this->location->data['Location Code'].'</a>: '.($qty_change>0?'+':'').number($qty_change).' ('.($value_change>0?'+':'').money($value_change).')';
 
-            $this->event_order++;
-            $sql=sprintf("insert into `Inventory Transaction Fact` (`Part SKU`,`Location Key`,`Inventory Transaction Type`,`Inventory Transaction Quantity`,`Inventory Transaction Amount`,`User Key`,`Note`,`Date`,`Event Order`) values (%d,%d,%s,%f,%.2f,%s,%s,%s,%d)"
+            $sql=sprintf("insert into `Inventory Transaction Fact` (`Part SKU`,`Location Key`,`Inventory Transaction Type`,`Inventory Transaction Quantity`,`Inventory Transaction Amount`,`User Key`,`Note`,`Date`) values (%d,%d,%s,%f,%.2f,%s,%s,%s)"
                          ,$this->part_sku
                          ,$this->location_key
                          ,"'Adjust'"
                          ,$qty_change
                          ,$value_change
-                         ,$this->editor['Author Key']
+                         ,$this->editor['User Key']
                          ,prepare_mysql($details,false)
                          ,prepare_mysql($this->editor['Date'])
-                         ,$this->event_order
+
                         );
             if (!mysql_query($sql))
-                print "Error can not audit liocation";
+                print "Error can not audit location";
 
-            $details=_('Audit').', '.sprintf("SKU%d4",$this->part_sku).' '._('stock in').' '.$this->location->data['Location Code'].' '._('set to').': '.number($qty);
-            $this->event_order++;
-            $sql=sprintf("insert into `Inventory Transaction Fact` (`Part SKU`,`Location Key`,`Inventory Transaction Type`,`Inventory Transaction Quantity`,`Inventory Transaction Amount`,`User Key`,`Note`,`Date`,`Event Order`) values (%d,%d,%s,%f,%.2f,%s,%s,%s,%d)"
+            $details=_('Audit').', '.'<a href="part.php?id='.$this->part_sku.'">'.$this->part->get_sku().'</a>'.' '._('stock in').' <a href="location.php?id='.$this->location->id.'">'.$this->location->data['Location Code'].'</a> '._('set to').': '.number($qty);
+            $sql=sprintf("insert into `Inventory Transaction Fact` (`Part SKU`,`Location Key`,`Inventory Transaction Type`,`Inventory Transaction Quantity`,`Inventory Transaction Amount`,`User Key`,`Note`,`Date`) values (%d,%d,%s,%f,%.2f,%s,%s,%s)"
                          ,$this->part_sku
                          ,$this->location_key
                          ,"'Audit'"
                          ,$qty
                          ,$value
-                         ,$this->editor['Author Key']
+                         ,$this->editor['User Key']
                          ,prepare_mysql($details,false)
                          ,prepare_mysql($this->editor['Date'])
-                         ,$this->event_order
+
                         );
             if (!mysql_query($sql))
                 print "Error can not audit liocation";
@@ -758,7 +755,7 @@ class PartLocation extends DB_Table {
     }
     function create($data) {
 
-      // print_r($data);
+        // print_r($data);
 
         $this->data=$this->base_data();
         foreach($data as $key=>$value) {
@@ -783,11 +780,11 @@ class PartLocation extends DB_Table {
             $this->id= mysql_insert_id();
             $this->new=true;
 
-	    $this->part_sku=$this->data['Part SKU'];
-	    $this->location_key=$this->data['Location Key'];
+            $this->part_sku=$this->data['Part SKU'];
+            $this->location_key=$this->data['Location Key'];
             $this->get_data();
             $note=_('Part added to location');
-            $details=_('Part')." SKU".sprintf("%05d",$this->part->sku)." "._('associated with location').": ".$this->location->data['Location Code'];
+            $details=_('Part')." ".'<a href="part.php?id='.$this->part_sku.'">'.$this->part->get_sku().'</a>'.' '._('associated with location').": <a href='location.php?id=".$this->location->id."'>".$this->location->data['Location Code'].'</a>';
 
 
             //$date=date("Y-m-d H:i:s");
@@ -799,19 +796,19 @@ class PartLocation extends DB_Table {
                 $date=date("Y-m-d H:i:s");
             else
                 $date=$this->editor['Date'];
-            $sql=sprintf("insert into `Inventory Transaction Fact` (`Part SKU`,`Location Key`,`Inventory Transaction Type`,`Inventory Transaction Quantity`,`Inventory Transaction Amount`,`User Key`,`Note`,`Date`,`Event Order`) values (%d,%d,%s,%f,%.2f,%s,%s,%s,%s)"
+            $sql=sprintf("insert into `Inventory Transaction Fact` (`Part SKU`,`Location Key`,`Inventory Transaction Type`,`Inventory Transaction Quantity`,`Inventory Transaction Amount`,`User Key`,`Note`,`Date`) values (%d,%d,%s,%f,%.2f,%s,%s,%s)"
                          ,$this->part_sku
                          ,$this->location_key
                          ,"'Associate'"
                          ,0
                          ,0
-                         ,$this->editor['Author Key']
+                         ,$this->editor['User Key']
                          ,prepare_mysql($details)
                          ,prepare_mysql($date)
-                         ,$this->event_order-1
+
                         );
             mysql_query($sql);
-	    // print "$sql\n";
+            // print "$sql\n";
 
             $part=new Part($this->part_sku);
             $part->load('locations');
@@ -879,7 +876,7 @@ class PartLocation extends DB_Table {
                              ,"'Audit'"
                              ,0
                              ,0
-                             ,$this->editor['Author Key']
+                             ,$this->editor['User Key']
                              ,addslashes($note)
                              ,prepare_mysql($date)
                             );
@@ -895,37 +892,7 @@ class PartLocation extends DB_Table {
         }
     }
     function delete() {
-        $this->deleted=false;
-        if ( is_numeric($this->data['Quantity On Hand']) and  $this->data['Quantity On Hand']>0) {
-            $this->deleted_msg=_('There is still stock in this location');
-            return;
-        }
-        $sql=sprintf("delete from `Part Location Dimension` where  `Part SKU`=%d and `Location Key`=%d"
-                     ,$this->part_sku
-                     ,$this->location_key
-                    );
-        if (mysql_query($sql)) {
-            $details=_('Part')." SKU".sprintf("%05d",$this->part->sku)." "._('disassociated from location').": ".$this->location->data['Location Code'];
-
-            $sql=sprintf("insert into `Inventory Transaction Fact` (`Part SKU`,`Location Key`,`Inventory Transaction Type`,`Inventory Transaction Quantity`,`Inventory Transaction Amount`,`User Key`,`Note`,`Date`) values (%d,%d,%s,%s,%s,%s,%s,%s)"
-                         ,$this->part_sku
-                         ,$this->location_key
-                         ,"'Disassociate'"
-                         ,0
-                         ,0
-                         ,$this->editor['Author Key']
-                         ,prepare_mysql($details)
-                         ,prepare_mysql($this->editor['Date'])
-                        );
-            mysql_query($sql);
-
-
-            $this->deleted=true;
-            $this->deleted_msg=_('Part no longer ssociated with location');
-
-
-        }
-
+        $this->disassociate();
     }
     function destroy($data) {
 
@@ -947,6 +914,12 @@ class PartLocation extends DB_Table {
             $date=date("Y-m-d H:i:s");
 
         $_date=date("Y-m-d",strtotime($date));
+
+
+
+
+
+
 
         $sql=sprintf("select * from `Inventory Spanshot Fact` where `Part SKU`=%d and `Location Key`=%d and `Date`=%s ",
                      $this->part_sku
@@ -1006,7 +979,7 @@ class PartLocation extends DB_Table {
                              ,0
                              ,$user_id
                              ,prepare_mysql($note)
-                             ,prepare_mysql($__date)
+                             ,prepare_mysql($date)
                             );
                 mysql_query($sql);
 
@@ -1089,6 +1062,47 @@ class PartLocation extends DB_Table {
     }
 
 
+
+    function identify_unknown($location_key) {
+        if ($this->location_key!=1) {
+            $this->error=true;
+            return;
+        }
+$old_qty=$this->data['Quantity On Hand'];
+$old_value=$this->data['Stock Value'];
+$this->disassociate();
+
+
+$data=array(
+	      'Location Key'=>$location_key
+	      ,'Part SKU'=>$this->part_sku
+	      ,'editor'=>$this->editor
+	      );
+  
+ 
+ 
+  $part_location=new PartLocation('find',$data,'create');
+
+
+
+
+ $data_inventory_audit=array(
+                                  'Inventory Audit Date'=>$this->editor['Date'],
+                                  'Inventory Audit Part SKU'=>$this->part_sku,
+                                  'Inventory Audit Location Key'=>$location_key,
+                                  'Inventory Audit Note'=>'',
+                                  'Inventory Audit Type'=>'Identify',
+                                  'Inventory Audit User Key'=>$this->editor['User Key'],
+                                  'Inventory Audit Quantity'=>$old_qty
+                              );
+        $audit=new InventoryAudit('find',$data_inventory_audit,'create');
+$part_location->set_audits();
+$part_location->update_stock();
+$part_location->part->update_stock();
+
+    }
+
+
     function add_stock($data) {
         $this->stock_transfer(array(
                                   'Quantity'=>$data['Quantity']
@@ -1151,7 +1165,7 @@ class PartLocation extends DB_Table {
                                   'Quantity'=>-$data['Quantity To Move']
                                              ,'Transaction Type'=>'Move Out'
                                                                  ,'Destination'=>$destination->location->data['Location Code']
-                                                                                ,'Event Order'=>2
+
                               ));
         if ($this->error) {
             return;
@@ -1161,12 +1175,12 @@ class PartLocation extends DB_Table {
                                          'Quantity'=>$data['Quantity To Move']
                                                     ,'Transaction Type'=>'Move In'
                                                                         ,'Origin'=>$this->location->data['Location Code']
-                                                                                  ,'Event Order'=>4
+
                                      ));
         if ($this->location_key==1) {
             $data_disasociate=array(
                                   'Note'=>_('Location now known'),
-                                  'Event Order'=>3
+
 
                               );
             $this->disassociate($data_disasociate);
@@ -1267,48 +1281,49 @@ class PartLocation extends DB_Table {
             else
                 $tmp=' '.$tmp;
 
-            $details=number(-$qty).'x '.sprintf("SKU%04d",$this->part_sku).' '._('lost from').' '.$this->location->data['Location Code'].$tmp.': '.($qty_change>0?'+':'').number($qty_change).' ('.($value_change>0?'+':'').money($value_change).')';
+            $details=number(-$qty).'x '.'<a href="part.php?id='.$this->part_sku.'">'.$this->part->get_sku().'</a>'.' '._('lost from').' <a href="location.php?id='.$this->location->id.'">'.$this->location->data['Location Code'].'</a>'.$tmp.': '.($qty_change>0?'+':'').number($qty_change).' ('.($value_change>0?'+':'').money($value_change).')';
             break;
         case('Move Out'):
-            $details=number(-$qty).'x '.sprintf("SKU%04d",$this->part_sku).' '._('move out from').' '.$this->location->data['Location Code'].' '._('to').' '.$data['Destination'].': '.($qty_change>0?'+':'').number($qty_change).' ('.($value_change>0?'+':'').money($value_change).')';
+            $destination_location=new Location('code',$data['Destination']);
+            if ($destination_location->id) {
+                $destination_link='<a href="location.php?id='.$destination_location->id.'">'.$destination_location->data['Location Code'].'</a>';
+            } else {
+                $destination_link=$data['Destination'];
+            }
+            $details=number(-$qty).'x '.'<a href="part.php?id='.$this->part_sku.'">'.$this->part->get_sku().'</a>'.' '._('move out from').' <a href="location.php?id='.$this->location->id.'">'.$this->location->data['Location Code'].'</a> '._('to').' '.$destination_link.': '.($qty_change>0?'+':'').number($qty_change).' ('.($value_change>0?'+':'').money($value_change).')';
             break;
         case('Move In'):
-            $details=number($qty).'x '.sprintf("SKU%04d",$this->part_sku).' '._('move in to').' '.$this->location->data['Location Code'].' '._('from').' '.$data['Origin'].': '.($qty_change>0?'+':'').number($qty_change).' ('.($value_change>0?'+':'').money($value_change).')';
+            $details=number($qty).'x '.'<a href="part.php?id='.$this->part_sku.'">'.$this->part->get_sku().'</a>'.' '._('move in to').' <a href="location.php?id='.$this->location->id.'">'.$this->location->data['Location Code'].'</a> '._('from').' '.$data['Origin'].': '.($qty_change>0?'+':'').number($qty_change).' ('.($value_change>0?'+':'').money($value_change).')';
 
             break;
         case('Supplier Delivery'):
 
 
 
-            $details=number($qty).'x '.sprintf("SKU%04d",$this->part_sku).' '._('received in').' '.$this->location->data['Location Code'].' '._('from').' '.$data['Origin'].': '.($qty_change>0?'+':'').number($qty_change).' ('.($value_change>0?'+':'').money($value_change).')';
+            $details=number($qty).'x '.'<a href="part.php?id='.$this->part_sku.'">'.$this->part->get_sku().'</a>'.' '._('received in').' <a href="location.php?id='.$this->location->id.'">'.$this->location->data['Location Code'].'</a> '._('from').' '.$data['Origin'].': '.($qty_change>0?'+':'').number($qty_change).' ('.($value_change>0?'+':'').money($value_change).')';
         }
 
 
         $editor=$this->get_editor_data();
 
-        if (array_key_exists('Event Order',$data))
-            $event_order=$data['Event Order'];
-        else {
-            $this->event_order++;
-            $event_order=$this->event_order;
-        }
-        $sql=sprintf("insert into `Inventory Transaction Fact` (`Part SKU`,`Location Key`,`Inventory Transaction Type`,`Inventory Transaction Quantity`,`Inventory Transaction Amount`,`User Key`,`Note`,`Date`,`Event Order`) values (%d,%d,%s,%f,%.2f,%s,%s,%s,%d)"
+
+        $sql=sprintf("insert into `Inventory Transaction Fact` (`Part SKU`,`Location Key`,`Inventory Transaction Type`,`Inventory Transaction Quantity`,`Inventory Transaction Amount`,`User Key`,`Note`,`Date`) values (%d,%d,%s,%f,%.2f,%s,%s,%s)"
                      ,$this->part_sku
                      ,$this->location_key
                      ,prepare_mysql($transaction_type)
                      ,$qty_change
                      ,$value_change
-                     ,$this->editor['Author Key']
+                     ,$this->editor['User Key']
                      ,prepare_mysql($details,false)
                      ,prepare_mysql($editor['Date'])
-                     ,$event_order
+
                     );
 
 
         mysql_query($sql);
 
-            $this->part->update_stock();
-            $this->location->update_parts();
+        $this->part->update_stock();
+        $this->location->update_parts();
 
 //     $part=new Part($this->part_sku);
 //     $part->load('calculate_stock_history','last');
@@ -1317,13 +1332,52 @@ class PartLocation extends DB_Table {
 
     }
 
-    function disassociate($data) {
-
+    function disassociate($data=false) {
         $date=$this->editor['Date'];
         if (!$this->editor['Date'])
             $date=date("Y-m-d H:i:s");
-        $event_order=$this->event_order++;
-        $base_data=array('Date'=>$date,'Note'=>'','Metadata'=>'','History Type'=>'Admin','Event Order'=>$event_order);
+
+        $this->deleted=false;
+        if ( is_numeric($this->data['Quantity On Hand']) and  $this->data['Quantity On Hand']>0) {
+            $this->deleted_msg=_('There is still stock in this location');
+            return;
+        }
+        /*
+               if($this->data['Quantity On Hand']<0){
+
+                   $qty_change=-$this->data['Quantity On Hand'];
+                   $value_change=-$this->data['Stock Value'];
+
+
+
+
+
+                 $details='<a href="part.php?id='.$this->part_sku.'">'.$this->part->get_sku().'</a>'.' '._('adjust due to disassociation with location').' <a href="location.php?id='.$this->location->id.'">'.$this->location->data['Location Code'].'</a>: '.($qty_change>0?'+':'').number($qty_change).' ('.($value_change>0?'+':'').money($value_change).')';
+
+                   $sql=sprintf("insert into `Inventory Transaction Fact` (`Part SKU`,`Location Key`,`Inventory Transaction Type`,`Inventory Transaction Quantity`,`Inventory Transaction Amount`,`User Key`,`Note`,`Date`) values (%d,%d,%s,%f,%.2f,%s,%s,%s)"
+                                ,$this->part_sku
+                                ,$this->location_key
+                                ,"'Adjust'"
+                                ,$qty_change
+                                ,$value_change
+                                ,$this->editor['User Key']
+                                ,prepare_mysql($details,false)
+                                ,prepare_mysql($this->editor['Date'])
+
+                               );
+               mysql_query($sql);
+
+               }
+
+         */
+
+
+
+
+
+
+
+        $base_data=array('Date'=>$date,'Note'=>'','Metadata'=>'','History Type'=>'Admin');
         if (is_array($data)) {
             foreach($data as $key=>$val) {
                 if (array_key_exists($key,$base_data))
@@ -1338,26 +1392,25 @@ class PartLocation extends DB_Table {
 
 
         $data_inventory_audit=array(
-                                  'Inventory Audit Date'=>$base_data['Date']
-                                                         ,'Inventory Audit Part SKU'=>$this->part_sku
-                                                                                     ,'Inventory Audit Location Key'=>$this->location_key
-                                                                                                                     ,'Inventory Audit Note'=>''
-                                                                                                                                             ,'Inventory Audit Type'=>'Discontinued'
-                                                                                                                                                                     ,'Inventory Audit User Key'=>0
-                                                                                                                                                                                                 ,'Inventory Audit Quantity'=>0
+                                  'Inventory Audit Date'=>$base_data['Date'],
+                                  'Inventory Audit Part SKU'=>$this->part_sku,
+                                  'Inventory Audit Location Key'=>$this->location_key,
+                                  'Inventory Audit Note'=>'',
+                                  'Inventory Audit Type'=>'Discontinued',
+                                  'Inventory Audit User Key'=>0,
+                                  'Inventory Audit Quantity'=>0
                               );
         $audit=new InventoryAudit('find',$data_inventory_audit,'create');
+$this->set_audits();
 
-
-        $base_data['Date']=date("Y-m-d H:i:s",strtotime($base_data['Date'].' + 1 second'));
-        $sql=sprintf("insert into `Inventory Transaction Fact` (`Date`,`Part SKU`,`Location Key`,`Inventory Transaction Type`,`Inventory Transaction Quantity`,`Inventory Transaction Amount`,`Note`,`Metadata`,`History Type`,`Event Order`) values (%s,%d,%d,'Disassociate',0,0,%s,%s,%s,%d)"
-                     ,prepare_mysql($base_data['Date'])
+        $sql=sprintf("insert into `Inventory Transaction Fact` (`Date`,`Part SKU`,`Location Key`,`Inventory Transaction Type`,`Inventory Transaction Quantity`,`Inventory Transaction Amount`,`Note`,`Metadata`,`History Type`) values (%s,%d,%d,'Disassociate',0,0,%s,%s,%s)"
+                     ,prepare_mysql($this->editor['Date'])
                      ,$this->part_sku
                      ,$this->location_key
                      ,prepare_mysql($base_data['Note'],false)
                      ,prepare_mysql($base_data['Metadata'],false)
                      ,prepare_mysql($base_data['History Type'],false)
-                     , $base_data['Event Order']
+
                     );
         //print_r($base_data);
         // print "$sql\n";
@@ -1365,6 +1418,22 @@ class PartLocation extends DB_Table {
         if (!mysql_query($sql)) {
             $this->error=true;
         }
+
+
+        $this->deleted=true;
+        $this->deleted_msg=_('Part no longer associated with location');
+
+
+
+
+
+
+
+
+
+
+
+
     }
 
     function associate($data=false) {
@@ -1405,24 +1474,8 @@ class PartLocation extends DB_Table {
     }
 
 
-    function set_audits() {
+   
 
-        $sql=sprintf("delete from  `Inventory Transaction Fact` where `Inventory Transaction Type` in ('Audit') and `Part SKU`=%d",$this->part_sku);
-        mysql_query($sql);
-
-        $sql=sprintf('select `Inventory Audit Key` from `Inventory Audit Dimension` where `Inventory Audit Part SKU`=%d and `Inventory Audit Location Key`=%d order by `Inventory Audit Date`'
-                     ,$this->part_sku
-                     ,$this->location_key
-                    );
-        $res=mysql_query($sql);
-        while ($row=mysql_fetch_array($res)) {
-            $this->set_audit($row['Inventory Audit Key']);
-
-        }
-        $this->update_stock();
-    }
-    
-    
     function get_stock($date='') {
         if (!$date)
             $date=date('Y-m-d H:i:s');
@@ -1533,7 +1586,7 @@ class PartLocation extends DB_Table {
 
 
     function get_history_intervals() {
-        $sql=sprintf("select  `Inventory Transaction Type`,(`Date`) as Date from `Inventory Transaction Fact` where  `Part Sku`=%d and `Inventory Transaction Type` in ('Associate','Disassociate')  order by `Date` ,`Event Order` ",$this->part_sku);
+        $sql=sprintf("select  `Inventory Transaction Type`,(`Date`) as Date from `Inventory Transaction Fact` where  `Part Sku`=%d and `Inventory Transaction Type` in ('Associate','Disassociate')  order by `Date` ,`Inventory Transaction Key` ",$this->part_sku);
         // print "$sql\n";
         $dates=array();
         $result=mysql_query($sql);
@@ -1611,6 +1664,26 @@ class PartLocation extends DB_Table {
         }
 
     }
+ function set_audits() {
+
+        $sql=sprintf("delete from  `Inventory Transaction Fact` where `Inventory Transaction Type` in ('Audit') and `Part SKU`=%d and `Location Key`=%d"
+        ,$this->part_sku
+        ,$this->location_key
+        );
+       // print "$sql\n";
+        mysql_query($sql);
+
+        $sql=sprintf('select `Inventory Audit Key` from `Inventory Audit Dimension` where `Inventory Audit Part SKU`=%d and `Inventory Audit Location Key`=%d order by `Inventory Audit Date`,`Inventory Audit Key`'
+                     ,$this->part_sku
+                     ,$this->location_key
+                    );
+        $res=mysql_query($sql);
+        while ($row=mysql_fetch_array($res)) {
+            $this->set_audit($row['Inventory Audit Key']);
+
+        }
+        $this->update_stock();
+    }
 
 
     function set_audit($audit_key) {
@@ -1633,12 +1706,14 @@ class PartLocation extends DB_Table {
         $diff=$audit->data['Inventory Audit Quantity']-$stock;
         $cost_per_part=$this->part->get_unit_cost($audit->data['Inventory Audit Date']);
         $cost=$diff*$cost_per_part;
-//print "S: $stock ".$audit->data['Inventory Audit Quantity']."\n";
+//print $audit->data['Inventory Audit Type']."S: $stock ".$audit->data['Inventory Audit Quantity']."\n";
         $notes='';
         if ($audit->data['Inventory Audit Type']=='Audit')
             $notes=_('Change due Audit');
         else if ($audit->data['Inventory Audit Type']=='Discontinued')
-            $notes=_('Change due Discontinuetion');
+            $notes=_('Change due Discontinuation');
+        else if ($audit->data['Inventory Audit Type']=='Identify')
+            $notes=_('Copying unknown location state');    
         else if ($audit->data['Inventory Audit Type']=='Out of Stock')
             $notes=_('Change due Out of Stock');
 
@@ -1655,7 +1730,7 @@ class PartLocation extends DB_Table {
                      ,$cost
                      ,prepare_mysql($notes)
                     );
-        //    print "$sql\n";
+           // print "$sql\n";
         mysql_query($sql);
 
     }

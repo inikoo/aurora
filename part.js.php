@@ -1,6 +1,8 @@
 <?php
 include_once('common.php');?>
- 
+  var Event = YAHOO.util.Event;
+     var Dom   = YAHOO.util.Dom;
+
 YAHOO.util.Event.addListener(window, "load", function() {
 	tables = new function() {
 		
@@ -90,11 +92,13 @@ YAHOO.util.Event.addListener(window, "load", function() {
 		    var tableDivEL="table"+tableid;
 
    var ColumnDefs = [
-				      {key:"date", label:"<?php echo _('Date')?>", width:200,sortable:false,className:"aright"}
-				      ,{key:"type", label:"<?php echo _('Type')?>", width:100,sortable:false,className:"aleft"}
+				      {key:"date", label:"<?php echo _('Date')?>", width:150,sortable:false,className:"aright"}
+				      
+				      ,{key:"type", label:"<?php echo _('Type')?>", width:50,sortable:false,className:"aleft"}
+				       ,{key:"user", label:"<?php echo _('User')?>", width:50,sortable:false,className:"aleft"}
 				     ,{key:"location", label:"<?php echo _('Location')?>", width:60,sortable:false,className:"aleft"}
 
-				      ,{key:"note", label:"<?php echo _('Note')?>", width:200,sortable:false,className:"aleft"}
+				      ,{key:"note", label:"<?php echo _('Note')?>", width:300,sortable:false,className:"aleft"}
 				      ,{key:"change", label:"<?php echo _('Change')?>", width:60,sortable:false,className:"aright"}
 
 				      ];
@@ -120,7 +124,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 			},
 			
 			fields: [
-				 "date","change","type","location","note"
+				 "date","change","type","location","note","user"
 
 				 ]};
 	    
@@ -229,9 +233,10 @@ var  change_web_status =function(tipo){
       }
 
 function init(){
-     var Event = YAHOO.util.Event;
-     var Dom   = YAHOO.util.Dom;
 
+init_search('part');
+
+    
 
 
 
