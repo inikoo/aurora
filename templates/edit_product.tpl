@@ -124,7 +124,7 @@
 	  
 	  <div id="part_dialog" style=";border:1px solid #ddd">
 <div id="search" style="text-align:left;margin:5px 0px"  >
-    <span style="margin-left:10px">{t}Search Part{/t}:</span>
+    <span style="margin-left:10px">{t}Search Part to Add{/t}:</span>
      <input style="margin-left:5px;width:200px" type="text" id="part_search" value="" state="" name="search"/>
     <img style="margin-left:205px;display:none" align="absbottom" id="part_clean_search"   src="art/icons/cross.png" >
     <div id="part_search_Container" style="display:none"></div>
@@ -147,7 +147,7 @@
 		<td style="width:350px">
 		{$part.description}
 		</td>
-		<td><span style="cursor:pointer"><img  onClick="remove_part()" src="art/icons/delete_bw.png""/> {t}Remove{/t}</span></td>
+		<td><span style="cursor:pointer"><img  onClick="remove_part({$part_sku})" src="art/icons/delete_bw.png""/> {t}Remove{/t}</span></td>
 	    </tr>
 	    <tr>
 		<td class="label" >{t}Parts Per Product{/t}:</td>

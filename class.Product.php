@@ -45,6 +45,9 @@ class product extends DB_Table {
   public $new_key=false;
   public $new_code=false;
 public $new_value=false;
+public $new_part_list=false;
+public $part_list_updated=false;
+
 public $new_data=array();
 public $data=array();
   // Variable: new
@@ -1339,6 +1342,8 @@ $this->new_value=array();
         );
         mysql_query($sql);
         $this->updated=true;
+         $this->part_list_updated=true;
+
         $this->new_value['Product Part Metadata']=$header_data['Product Part Metadata'];
     }
     
@@ -1461,6 +1466,8 @@ function create_product_part_list($header_data,$list){
 
 $this->new_value=array('Product Part Key'=>$product_part_key);
 $this->updated=true;
+$this->new_part_list=true;
+$this->new_part_list_key=$product_part_key;
 
      foreach($list as $data) {
 	$items_base_data=$_base_list_data;

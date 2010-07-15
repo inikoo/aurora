@@ -22,7 +22,6 @@ if(!isset($_REQUEST['tipo']))
     exit;
   }
 
-$editor=array( 'User Key'=>$user->id);
 
 $tipo=$_REQUEST['tipo'];
 switch($tipo){
@@ -2678,6 +2677,34 @@ $header_data=array(
 ,'Product Part Metadata'=>''
 
 );
+$product_part_key=$this->find_product_part_list($list);
+if(!$product_part_key=$this->find_product_part_list($list) and $value['confirm']){
+switch($value['confirm']){
+case('new'):
+//new Product id
+$product->new_current_part_list($header_data,$part_list_data);
+break;
+case('fix'):
+break;
+
+
+}
+}
+
+
+
+
+
+//$product_part_key=$this->find_product_part_list($list);
+//if($product_part_key){
+///$this->update_product_part_list($product_part_key,$header_data,$list);
+//}else{
+//$product_part_key=$this->create_product_part_list($header_data,$list);
+//}
+//$this->set_part_list_as_current($product_part_key);
+
+
+
 $product->new_current_part_list($header_data,$part_list_data);
 
 

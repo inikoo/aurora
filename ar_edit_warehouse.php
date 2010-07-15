@@ -8,7 +8,6 @@ require_once 'class.ShelfType.php';
 
 require_once 'ar_edit_common.php';
 
-date_default_timezone_set('UTC');
 
 if(!isset($_REQUEST['tipo']))
   {
@@ -17,13 +16,7 @@ if(!isset($_REQUEST['tipo']))
     exit;
   }
 
-$editor=array(
-            'Author Name'=>$user->data['User Alias'],
-            'Author Type'=>$user->data['User Type'],
-            'Author Key'=>$user->data['User Parent Key'],
-            'User Key'=>$user->id,
-            'Date'=>date('Y-m-d H:i:s')
-        );
+
 
 
 $tipo=$_REQUEST['tipo'];
