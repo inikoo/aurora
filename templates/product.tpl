@@ -10,6 +10,10 @@
 
   <div id="no_details_title" style="clear:right;{if $show_details}display:none;{/if}">
     <h1>{t}Product{/t}: [{$product->get('Product Code')}] {$product->get('Product Name')} ({$product->get('Product ID')})</h1>
+{if $product->get('Product Record Type')=='Historic'}
+{t}Historic Product{/t}
+{/if}
+
   </div>
 
 
@@ -241,7 +245,7 @@
 		</table>
 		{/if}
 
-		<table   class="show_info_product" >
+		<table   class="show_info_product" style="{if $product->get('Product Record Type')=='Historic'}display:none{/if}">
 		  <tr>
 		    <td>{t}Available{/t}:<td class="stock aright" id="stock">{$product->get('Product Availability')}</td>
 		  </tr>
@@ -251,7 +255,7 @@
 		</table>
 		
 		
-		<table class="show_info_product" style="float:right;width:100%"  >
+		<table class="show_info_product" style="{if $product->get('Product Record Type')=='Historic'}display:none{/if};float:right;width:100%"  >
 		  <tr><td>{t}Parts{/t}:</td><td class="aright">{$product->get('Product XHTML Parts')}</td></tr>
 		  <tr>
 		    <td>{t}Locations{/t}:</td><td class="aleft">

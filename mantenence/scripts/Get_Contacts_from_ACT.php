@@ -67,7 +67,7 @@ $store_data=array('Store Code'=>'UK',
                   'Store Home Country Name'=>'United Kingdom',
                   'Store Home Country Short Name'=>'UK',
                  );
-$store=new Store('find',$store_data,'create');
+//$store=new Store('find',$store_data,'create');
 $store=new Store(1);
 
 if (!$store->id) {
@@ -320,11 +320,14 @@ foreach($contacts as $act_data) {
 
 
     $customer_data['Customer Store Key']=1;
-    if (preg_match('/aw-geschenke/i',$act_data['source']))
-        $customer_data['Customer Store Key']=2;
-    if (preg_match('/nabil/i',$act_data['takenby']))
-        $customer_data['Customer Store Key']=3;
+    if (preg_match('/aw-geschenke/i',$act_data['source'])){
+ $store=new Store('code','DE');     
+   $customer_data['Customer Store Key']=$store->id;
 
+    }if (preg_match('/nabil/i',$act_data['takenby'])){
+      $store=new Store('code','FR');     
+   $customer_data['Customer Store Key']=$store->id;
+    }
 
 
 

@@ -812,11 +812,13 @@ foreach($__cols as $cols){
        $product=new Product('find',$data,'create');
        
 
-       if(!$product->found_in_code){
+       if($product->new_id){
 	        $scode=_trim($cols[20]);
 	        $supplier_code=$cols[21];
             update_supplier_part($code,$scode,$supplier_code,$units,$w,$product,$description,$supplier_cost);
-	   }
+	  
+	    $product->set_duplicates_as_historic();
+ }
        
      $product->change_current_key($product->id);
      //print_r($cols);

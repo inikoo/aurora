@@ -949,11 +949,11 @@ exit;
     }
     $keys=preg_replace('/,$/',')',$keys);
     $values=preg_replace('/,$/',')',$values);
-    //print_r($data);
+    // print_r($data);
  
     $sql=sprintf("insert into `Product History Dimension` %s %s",$keys,$values);
-   // print "--------------------------------\n";
-     //        print "$sql\n";
+    // print "creating parod key --------------------------------\n";
+    // print "$sql\n";
     //exit;
    if (mysql_query($sql)) {
     if($this->external_DB_link)mysql_query($sql,$this->external_DB_link);
@@ -1028,7 +1028,10 @@ $this->updated=true;
 
 
   function create_product_id($data) {
-    $base_data=$this->get_base_data();
+    
+    //print "ok create id \n";
+
+$base_data=$this->get_base_data();
     foreach($data as $key=>$value) {
       if (isset($base_data[strtolower($key)]))
 	$base_data[strtolower($key)]=_trim($value);
@@ -1077,13 +1080,19 @@ $this->updated=true;
     $keys=preg_replace('/,$/',')',$keys);
     $values=preg_replace('/,$/',')',$values);
     $sql=sprintf("insert into `Product Dimension` %s %s",$keys,$values);
-    //  print "$sql\n";
+    //print "Inserting Product ID\n";    
+// print "$sql\n";
     if (mysql_query($sql)) {
     if($this->external_DB_link)mysql_query($sql,$this->external_DB_link);
       $this->pid = mysql_insert_id();
       $this->code =$base_data['product code'];
       $this->new_id=true;
       $this->new=true;
+
+
+ 
+
+
 
       $editor_data=$this->get_editor_data();
 
@@ -1459,7 +1468,7 @@ function create_product_part_list($header_data,$list){
     $keys=preg_replace('/,$/',')',$keys);
     $values=preg_replace('/,$/',')',$values);
     $sql=sprintf("insert into `Product Part Dimension` %s %s",$keys,$values);
-    // print "$sql\n";
+    //print "$sql\n";
     if (mysql_query($sql)) {
      $product_part_key=mysql_insert_id(); 
     if($this->external_DB_link)mysql_query($sql,$this->external_DB_link);
@@ -1468,6 +1477,9 @@ $this->new_value=array('Product Part Key'=>$product_part_key);
 $this->updated=true;
 $this->new_part_list=true;
 $this->new_part_list_key=$product_part_key;
+
+//print "list\n";
+//print_r($list);
 
      foreach($list as $data) {
 	$items_base_data=$_base_list_data;
@@ -1696,6 +1708,7 @@ return $product_part_key;
 function get_part_locations($for_smarty=false){
 $skus=join(',',$this->get_current_part_skus());
 //print_r($this->get_current_part_list());
+
 $sql=sprintf("select * from `Part Location Dimension` where `Part SKU` in (%s)",$skus);
 
 $res=mysql_query($sql);
@@ -4433,6 +4446,9 @@ if($this->external_DB_link)mysql_query($sql,$this->external_DB_link);
    $sql=sprintf("select *  from `Product Part Dimension` PPD left join  `Product Part List`       PPL   on (PPL.`Product Part Key`=PPD.`Product Part Key`) where `Product ID`=%d and  `Product Part Most Recent`='Yes' "
 		,$this->pid
 		);
+
+   // print $sql;
+
    $res=mysql_query($sql);
    if($row=mysql_fetch_assoc($res)){
    
@@ -5483,5 +5499,55 @@ mysql_query($sql);
 }
 
 
+function set_duplicates_as_historic($date=false){
+$sql=sprintf("select `Product ID` from `Product Dimension` where `Product Store Key`=%d and `Product Code`=%s and `Product Record Type`!='Historic' and `Product ID`!=%d "
+	      ,$this->data['Product Store Key']
+	      ,prepare_mysql($this->code)
+	      ,$this->pid
+	      
+	      );
+$res_code=mysql_query($sql);
+while($row_c=mysql_fetch_array($res_code)){
+  $product_to_set_as_historic=new Product('pid',$row_c['Product ID']);
+  $product_to_set_as_historic->set_as_historic($date);
 }
-?>
+
+
+
+
+}
+
+
+function set_as_historic($date=false){
+  if(!$date){
+    $date=date("Y-m-d H:i:s");
+  }
+  
+  $sql=sprintf("update `Product Dimension` set `Product Valid To`=%s,`Product Record Type`='Historic',`Product Sales Type`='Not for Sale',`Product To Be Discontinued`='No Applicable',`Product Web State`='Offline' where `Product ID`=%d"
+   ,prepare_mysql($date)
+,$this->pid);
+  //exit($sql);
+  if(!mysql_query($sql))
+    exit($sql);
+  $sql=sprintf("update `Product History Dimension` set `Product History Valid To`=%s where `Product Key`=%d"
+	       ,prepare_mysql($date)
+	       ,$this->data['Product Current Key']
+	       );
+ 
+   if(!mysql_query($sql))
+    exit($sql);
+  $sql=sprintf("update `Product Part Dimension` set `Product Part Valid To`=%s ,`Product Part Most Recent`='No' where `Product ID`=%d and `Product Part Most Recent`='Yes' "
+,prepare_mysql($date)
+,$this->pid
+
+);
+ if(!mysql_query($sql))
+    exit($sql);
+
+
+}
+
+
+
+}
+
