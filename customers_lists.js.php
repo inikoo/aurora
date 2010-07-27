@@ -241,11 +241,10 @@ YAHOO.util.Event.addListener("calpop2", "click", cal2.show, cal2, true);
 YAHOO.util.Event.onDOMReady(init);
 
 
-YAHOO.util.Event.onContentReady("rppmenu0", function () {
-	 var oMenu = new YAHOO.widget.ContextMenu("rppmenu0", {trigger:"rtext_rpp0" });
+YAHOO.util.Event.onContentReady("rppmenu1", function () {
+	 var oMenu = new YAHOO.widget.ContextMenu("rppmenu1", {trigger:"rtext_rpp1" });
 	 oMenu.render();
 	 oMenu.subscribe("show", oMenu.focus);
-	 
     });
 
 

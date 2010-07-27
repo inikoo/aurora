@@ -19,7 +19,9 @@ $smarty->assign('plot_category',$plot_category);
 $smarty->assign('plot_interval',$plot_interval);
 $smarty->assign('plot_forecast',$plot_forecast);
 
-if($page=='part'){
+
+
+if($page=='part' or $page=='warehouse_stock_history' ){
   $currency='GBP';
   $sql=sprintf("select `Corporation Currency` from `Corporation Dimension` ");
    $res=mysql_query($sql);
@@ -27,11 +29,20 @@ if($page=='part'){
      $currency=$row['Corporation Currency'];
    }
 
+
+
 }
-else
+else{
   $currency=$store->data['Store Currency Code'];
 
+}
+
 $plot_args='tipo='.$page.'&category='.$plot_category.'&period='.$plot_period.'&keys='.$subject_id.'&currency='.$currency.'&from='.$plot_interval.'&to='.$plot_forecast;
+
+
+$smarty->assign('plot_keys',$subject_id);
+$smarty->assign('plot_currency',$subject_id);
+
 
 if($plot_tipo=='top_departments'){
   $number_children=3;

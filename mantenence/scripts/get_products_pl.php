@@ -25,7 +25,7 @@ $_SESSION['locale_info'] = localeconv();
 $con=@mysql_connect($dns_host,$dns_user,$dns_pwd );
 
 if(!$con){print "Error can not connect with database server\n";exit;}
-$dns_db='dw_avant';
+//$dns_db='dw_avant';
 $db=@mysql_select_db($dns_db, $con);
 if (!$db){print "Error can not access the database\n";exit;}
 
@@ -47,8 +47,8 @@ $Data_Audit_ETL_Software="$software $version";
 //$file_name='/data/plaza/AWorder2009Poland.xls';
 
 
-//$csv_file='/data/plaza/AWorder2009Poland2.csv';
-$csv_file='pl.csv';
+$csv_file='AWorder2009Poland.csv';
+//$csv_file='pl.csv';
 
 //exec('/usr/local/bin/xls2csv    -s cp1252   -d 8859-1   '.$file_name.' > '.$tcsv_file);
 //exec("iconv   -f  ISO8859-1  -t UTF-8  --output  $csv_file $tcsv_file");
@@ -672,7 +672,7 @@ $is_product=true;
  			   'Product Part Type'=>'Simple Pick'
  			   );
 	
- 	$product->new_part_list(array(),$part_list);
+ 	$product->new_current_part_list(array(),$part_list);
 	//	print_r($product->data);
  	$product->load('parts');
 	$part =new Part('sku',$parts[0]);

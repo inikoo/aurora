@@ -25,7 +25,10 @@ include_once('common_store_functions.php');
 
 
 class product extends DB_Table {
-
+ public $new_key=false;
+  public $new_code=false;
+   public $new_id=false;
+  
   public $product=array();
   public $categories=array();
   public $parents=array();
@@ -42,8 +45,7 @@ class product extends DB_Table {
   public $system_format=true;
   public $msg='';
  public $images_slideshow=array();
-  public $new_key=false;
-  public $new_code=false;
+ 
 public $new_value=false;
 public $new_part_list=false;
 public $part_list_updated=false;
@@ -54,7 +56,7 @@ public $data=array();
   // Indicate if a new product was created
   public $deleted=false;
 
-  public $new_id=false;
+ 
   public $location_to_update=false;
   // Variable: id
   // Reference tothe Product Key
@@ -180,7 +182,17 @@ $this->external_DB_link=$external_DB_link;
     }
     if ($tipo=='code_store' or $tipo=='code-store') {
       $this->mode='pid';
-      $sql=sprintf("select * from `Product Dimension` where  `Product Code`=%s and `Product Store Key`=%d",prepare_mysql($tag),$extra);
+      $sql=sprintf("select * from `Product Dimension` where  `Product Code`=%s and `Product Store Key`=%d    and `Product Code` order by 
+      `Product Record Type`='New' DESC
+      ,`Product Record Type`='Normal' DESC
+       ,`Product Record Type`='Discontinuing' DESC
+              ,`Product Record Type`='Discontinuing' DESC
+       ,`Product Record Type`='In Process' DESC
+       ,`Product Record Type`='Discontinued' DESC
+              ,`Product Record Type`='Historic' DESC
+
+
+      ",prepare_mysql($tag),$extra);
         //   print $sql;
       $result=mysql_query($sql);
       if ($this->data=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
@@ -325,8 +337,7 @@ $this->get_data('pid',$this->found_id);
       }
       elseif($this->found_in_store) {
 	//print "Creatinf new id\n";
-	$this->create_key($data);
-	$this->create_product_id($data);
+	  
 
       }
       elseif($this->found_in_code) {
@@ -868,7 +879,7 @@ exit;
 		     'product store key'=>1,
 		     'product locale'=>$myconf['lang'].'_'.$myconf['country'],
 		     'product currency'=>$myconf['currency_code'],
-		     'product id'=>'',
+		    
 		     'product code file as'=>'',
 		     'product code'=>'',
 		     'product price'=>'',
@@ -1080,7 +1091,7 @@ $base_data=$this->get_base_data();
     $keys=preg_replace('/,$/',')',$keys);
     $values=preg_replace('/,$/',')',$values);
     $sql=sprintf("insert into `Product Dimension` %s %s",$keys,$values);
-    //print "Inserting Product ID\n";    
+ //   print "Inserting Product ID\n";    
 // print "$sql\n";
     if (mysql_query($sql)) {
     if($this->external_DB_link)mysql_query($sql,$this->external_DB_link);
@@ -1115,6 +1126,9 @@ $base_data=$this->get_base_data();
 	mysql_query($sql);if($this->external_DB_link)mysql_query($sql,$this->external_DB_link);
       }
 
+    }else{
+    exit("Error can not insert if $sql\n");
+    
     }
 
     $this->get_data('pid',$this->pid);
@@ -1421,8 +1435,10 @@ function new_current_part_list($header_data,$list){
 
 $product_part_key=$this->find_product_part_list($list);
 if($product_part_key){
+//print "found\n";
 $this->update_product_part_list($product_part_key,$header_data,$list);
 }else{
+//print "create\n";
 $product_part_key=$this->create_product_part_list($header_data,$list);
 }
 $this->set_part_list_as_current($product_part_key);
@@ -1468,7 +1484,7 @@ function create_product_part_list($header_data,$list){
     $keys=preg_replace('/,$/',')',$keys);
     $values=preg_replace('/,$/',')',$values);
     $sql=sprintf("insert into `Product Part Dimension` %s %s",$keys,$values);
-    //print "$sql\n";
+ //  print "$sql\n";
     if (mysql_query($sql)) {
      $product_part_key=mysql_insert_id(); 
     if($this->external_DB_link)mysql_query($sql,$this->external_DB_link);
@@ -4469,6 +4485,7 @@ return $skus;
    $sql=sprintf("select *  from `Product Part Dimension` PPD left join  `Product Part List`       PPL   on (PPL.`Product Part Key`=PPD.`Product Part Key`) where `Product ID`=%d and  `Product Part Most Recent`='Yes' "
 		,$this->pid
 		);
+		//print $sql;
    $res=mysql_query($sql);
    if($row=mysql_fetch_assoc($res)){
    

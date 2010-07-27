@@ -252,7 +252,6 @@ function search_customer($data) {
 
     }
 
-
     if ($data['scope']=='store') {
         $stores=$_SESSION['state']['customers']['store'];
 

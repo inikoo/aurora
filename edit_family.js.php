@@ -1360,14 +1360,12 @@ YAHOO.util.Event.onContentReady("rppmenu0", function () {
 	 var oMenu = new YAHOO.widget.ContextMenu("rppmenu0", {trigger:"rtext_rpp0" });
 	 oMenu.render();
 	 oMenu.subscribe("show", oMenu.focus);
-	 
     });
 
 YAHOO.util.Event.onContentReady("filtermenu0", function () {
 	 var oMenu = new YAHOO.widget.ContextMenu("filtermenu0", {  trigger: "filter_name0"  });
 	 oMenu.render();
 	 oMenu.subscribe("show", oMenu.focus);
-	 
     });
 
 

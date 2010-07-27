@@ -7,6 +7,9 @@
 	<span class="state_details" id="done" style="margin-left:20px">Send to Warehouse</span>
 
       </div>
+      
+      
+      
       <div class="yui-b" style="border:1px solid #ccc;text-align:left;padding:10px;margin: 0px 0 10px 0;height:15em">
 
        <div style="xborder:1px solid #ddd;width:350px;float:left"> 
@@ -14,90 +17,38 @@
         <h2 style="padding:0"><a href="customer.php?id={$order->get('order customer key')}">{$order->get('Order Customer Name')} ({$customer->get_formated_id()})</a></h2>
         {$contact}<br/>
            {if $tel!=''}{t}Tel{/t}: {$tel}<br/>{/if}
-	<div style="float:left;line-height: 1.0em;margin:5px 20px 0 0;color:#444;font-size:80%;width:140px"><span style="font-weight:500;color:#000">{t}Contact Address{/t}</span>:<br/><b>{$customer->get('Customer Main Contact Name')}</b><br/>{$customer->get('Customer Main XHTML Address')}</div>
-	<div id="shipping_address" style="{if $order->get('Order For Collection')=='Yes'}display:none;{/if}float:left;line-height: 1.0em;margin:5px 0 0 0px;color:#444;font-size:80%;width:140px">
-	<span style="font-weight:500;color:#000">{t}Shipping Address{/t}</span>:<br/>{$order->get('Order XHTML Ship Tos')}
-    <span id="change_delivery_address" class="state_details" style="display:block;margin-top:10px">{t}Change Delivery Address{/t}</span>
-	<span id="set_for_collection" class="state_details" style="display:block;margin-top:4px" value="Yes">{t}Set this order is for collection{/t}</span>
-
-</div>
-<div id="for_collection"  style="{if $order->get('Order For Collection')=='No'}display:none;{/if}float:left;line-height: 1.0em;margin:5px 0 0 0px;color:#444;font-size:80%;width:140px">
-<span>{t}For collection{/t}</span>
-<span id="set_for_shipping" class="state_details" style="display:block;margin-top:4px" value="No">{t}Set for shipping{/t}</span>
-
-</div>
+	<div style="float:left;line-height: 1.0em;margin:5px 20px 0 0;color:#444;font-size:80%;width:140px">
+	<span style="font-weight:500;color:#000">{t}Contact Address{/t}</span>:<br/><b>{$customer->get('Customer Main Contact Name')}</b><br/>---> {$customer->get('Customer Main XHTML Address')}
+	</div>
 
 
-<div style="clear:both"></div>
+	
+
+
+
        </div>
 
-          <div style="border:0px solid #ddd;width:190px;float:right">
-	 <table border=0  style="width:100%;border-top:1px solid #333;border-bottom:1px solid #333;width:100%,padding:0;margin:0;float:right;margin-left:0px" >
-	   
-	   <tr  {if $order->get('Order Items Discount Amount')==0 }style="display:none"{/if} id="tr_order_items_gross"  ><td  class="aright" >{t}Items Gross{/t}</td><td width=100 class="aright" id="order_items_gross">{$order->get('Items Gross Amount')}</td></tr>
-	   <tr  {if $order->get('Order Items Discount Amount')==0 }style="display:none"{/if}   id="tr_order_items_discounts"  ><td  class="aright" >{t}Discounts{/t}</td><td width=100 class="aright"  id="order_items_discount">-{$order->get('Items Discount Amount')}</td></tr>
-	   
-	   
-	   <tr><td  class="aright" >{t}Items Net{/t}</td><td width=100 class="aright" id="order_items_net">{$order->get('Items Net Amount')}</td></tr>
-	 
-	   <tr  {if $order->get('Order Net Credited Amount')==0}style="display:none"{/if}><td  class="aright" >{t}Credits{/t}</td><td width=100 class="aright" id="order_credits"  >{$order->get('Net Credited Amount')}</td></tr>
-	   
-	   <tr {if  $order->get('Order Charges Net Amount')==0} style="display:none"{/if}  id="tr_order_items_charges"    ><td  class="aright" >{t}Charges{/t}</td><td id="order_charges"  width=100 class="aright">{$order->get('Charges Net Amount')}</td></tr>
-	   
-	   <tr id="tr_order_shipping" style="{if $order->get('Order Shipping Method')=='Calculated' and $order->get('Order Shipping Net Amount')!=''}{else}display:none;{/if}"><td  class="aright" >{t}Shipping{/t}</td>
-	   <td id="order_shipping" width=100 class="aright">{$order->get('Shipping Net Amount')}</td>
-	   
-	   
-	   </tr>
-	   
-	 <tr id="tr_order_shipping_on_demand" style="{if $order->get('Order Shipping Method')=='On Demand' or ( $order->get('Order Shipping Method')=='Calculated' and $order->get('Order Shipping Net Amount')=='')}{else}display:none;{/if}"><td  class="aright" >{t}Shipping{/t}</td>
-	   <td  width=100 class="aright"><span id="given_shipping"  >{if $order->get('Order Shipping Net Amount')!=''}{$order->get('Shipping Net Amount')}</span>{/if}
-	   
-	   <br/><span class="state_details" id="set_shipping">{t}Change Shipping{/t}</span>
-
-	   </td>
-	   
-	   
-	   </tr>
-	   
-	   
-	   <tr style="border-top:1px solid #777"><td  class="aright" >{t}Net{/t}</td><td id="order_net" width=100 class="aright">{$order->get('Total Net Amount')}</td></tr>
-	   
-	   
-	   <tr style="border-bottom:1px solid #777"><td  class="aright" >{t}VAT{/t}</td><td id="order_tax" width=100 class="aright">{$order->get('Total Tax Amount')}</td></tr>
-	   <tr><td  class="aright" >{t}Total{/t}</td><td id="order_total" width=100 class="aright"><b>{$order->get('Total Amount')}</b></td></tr>
-	   
-	 </table>
-       </div>
-
-       <div style="border:0px solid red;width:290px;float:right">
-	 {if $note}<div class="notes">{$note}</div>{/if}
-	 <table border=0  style="border-top:1px solid #333;border-bottom:1px solid #333;width:100%,padding-right:0px;margin-right:30px;float:right" >
-	   
-	   <tr><td>{t}Order Date{/t}:</td><td class="aright">{$order->get('Date')}</td></tr>
-	   
-	  
-	 </table>
-	 
-       </div>
        
        
-       <div style="clear:both"></div>
+       
+    
       </div>
 
       <div class="data_table"  style="clear:both">
-	<span id="table_title" class="clean_table_title">{t}Items{/t}</span>
+      
+	<span id="table_title" class="clean_table_title" style="xdisplay:none">{t}Items{/t}</span>
 
-	<div id="table_type">
-	  <span id="table_type_list" style="float:right;color:brown" class="table_type state_details {if $table_type=='list'}state_details_selected{/if}">{t}Recomendations{/t}</span>
-	  <span id="table_type_list" style="float:right;margin-right:10px" class="table_type state_details {if $table_type=='list'}state_details_selected{/if}">{t}List{/t}</span>
-	  <span id="table_type_thumbnail" style="float:right;margin-right:10px" class="table_type state_details {if $table_type=='thumbnails'}state_details_selected{/if}">{t}Thumbnails{/t}</span>
+	<div id="dtable_type" style="border:1px solid red">
+	 
+	  <span id="table_type_list" style="dfloat:right;color:brown" class="table_type state_details {if $table_type=='list'}state_details_selected{/if}">{t}Recomendations{/t}</span>
+	  <span id="table_type_list" style="dfloat:right;margin-right:10px" class="table_type state_details {if $table_type=='list'}state_details_selected{/if}">{t}List{/t}</span>
+	  <span id="table_type_thumbnail" style="dfloat:right;margin-right:10px" class="table_type state_details {if $table_type=='thumbnails'}state_details_selected{/if}">{t}Thumbnails{/t}</span>
 	</div>
 	
-     
+      <div style="clear:both;margin:0 0px;padding:0 20px ;border-bottom:1px solid #999"></div>
 
      
-    <div id="list_options0"> 
+    <div id="list_options0" style="display:none"> 
       <div style="clear:both;margin:0 0px;padding:0 20px ;border-bottom:1px solid #999"></div>
       <span   style="float:right;margin-left:20px" class="state_details" state="{$show_all}"  id="show_all"  atitle="{if !$show_all}{t}Show only ordered{/t}{else}{t}Show all products available{/t}{/if}"  >{if $show_all}{t}Show only ordered{/t}{else}{t}Show all products available{/t}{/if}</span>     
       
@@ -128,13 +79,9 @@
 	</tr>
       </table>
     </div>
+{include file='table_splinter.tpl' table_id=0 filter_name=$filter_name0 filter_value=$filter_value0  }
 
-
-    <div  class="clean_table_caption"  style="clear:both;">
-      <div style="float:left;"><div id="table_info0" class="clean_table_info"><span id="rtext0"></span> <span class="rtext_rpp" id="rtext_rpp0"></span> <span class="filter_msg"  id="filter_msg0"></span></div></div>
-      <div class="clean_table_filter" id="clean_table_filter0"><div class="clean_table_info"><span id="filter_name0" class="filter_name" >{$filter_name}</span>: <input style="border-bottom:none" id='f_input0' value="{$filter_value}" size=10/><div id='f_container0'></div></div></div>
-      <div class="clean_table_controls" style="" ><div><span  style="margin:0 5px" id="paginator0"></span></div></div>
-    </div>
+   
     <div id="thumbnails0" class="thumbnails" style="border-top:1px solid SteelBlue;clear:both;display:none"></div>
     <div  id="table0"   class="data_table_container dtable btable "> </div>
   

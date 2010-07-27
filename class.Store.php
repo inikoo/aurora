@@ -245,7 +245,6 @@ class Store extends DB_Table{
       return $this->data[$key];
     
 
-  
 
 
     if (preg_match('/^(Total|1).*(Amount|Profit)$/',$key)) {
@@ -254,7 +253,7 @@ class Store extends DB_Table{
 
       return money($this->data[$amount]);
     }
-    if (preg_match('/^(Total|1).*(Quantity (Ordered|Invoiced|Delivered|)|Invoices|Pending Orders|Customers)$/',$key)) {
+    if (preg_match('/^(Total|1).*(Quantity (Ordered|Invoiced|Delivered|)|Invoices|Pending Orders|Customers|Customer Contacts)$/',$key) or preg_match('/^(Active Customers)$/',$key)) {
 
       $amount='Store '.$key;
 

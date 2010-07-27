@@ -14,13 +14,19 @@ var submit_search_on_enter=function(e,tipo){
 
 
 function init_search(type){
-
 switch(type)
 {
 case 'products':
 search_scope='products';
     var store_name_oACDS = new YAHOO.util.FunctionDataSource(search_products);
-  var search_scope='products';
+  break;
+  case'customers':
+search_scope='customers';
+    var store_name_oACDS = new YAHOO.util.FunctionDataSource(search_customers);
+  break;  
+  case 'customers_store':
+ var store_name_oACDS = new YAHOO.util.FunctionDataSource(search_customers_in_store);
+  var search_scope='customers';
   break;
 case 'products_store':
  var store_name_oACDS = new YAHOO.util.FunctionDataSource(search_products_in_store);
@@ -52,16 +58,18 @@ default:
 
       Event.addListener(search_scope+"_clean_search", "click",clear_search,search_scope);
       
-     
       //  
         
          x= Dom.getX(search_scope+'_clean_search');
     y= Dom.getY(search_scope+'_clean_search');
-  
     Dom.setX(search_scope+"_search_results", x-500);
+
+
+
     Dom.setY(search_scope+"_search_results", y+17);
-     Dom.get(search_scope+"_search_results").style.display='none';  
-  
+
+ Dom.get(search_scope+"_search_results").style.display='none';  
+
       
 }
 
@@ -96,7 +104,9 @@ function search_part(query){
     search(query,'part','');
 }
 
-
+function search_customers(query){
+    search(query,'customers','');
+}
 function search_customers_in_store(query){
     search(query,'customers','store');
 }
@@ -134,12 +144,12 @@ function search(query,subject,scope){
 
     var request='tipo='+subject+'&q='+escape(query)+'&scope='+scope;
 
-    
+   // alert(request)
     YAHOO.util.Connect.asyncRequest(
 				    'POST',
 				    ar_file, {
 					success:function(o) {
-
+//alert(o.responseText)
 					    var r = YAHOO.lang.JSON.parse(o.responseText);
 					    if (r.state == 200) {
 					

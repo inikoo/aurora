@@ -49,7 +49,7 @@ $css_files=array(
 		 $yui_path.'menu/assets/skins/sam/menu.css',
 		 $yui_path.'button/assets/skins/sam/button.css',
 		 $yui_path.'autocomplete/assets/skins/sam/autocomplete.css',
-		 //$yui_path.'container/assets/skins/sam/container.css',
+		 $yui_path.'container/assets/skins/sam/container.css',
 
 		 'common.css',
 		
@@ -66,6 +66,7 @@ $js_files=array(
 		$yui_path.'autocomplete/autocomplete-min.js',
 		$yui_path.'datatable/datatable-debug.js',
 		$yui_path.'container/container-min.js',
+		
 		$yui_path.'menu/menu-min.js',
 		'common.js.php',
 		'table_common.js.php',
@@ -133,6 +134,7 @@ $js_files[]='part.js.php';
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
 
+$smarty->assign('stock_history_type',$_SESSION['state']['part']['stock_history']['type']);
 
 
 $q='';
@@ -151,7 +153,7 @@ $paginator_menu=array(10,25,50,100,500);
 $smarty->assign('paginator_menu1',$paginator_menu);
 
 
-
+/*
 $q='';
 $tipo_filter=($q==''?$_SESSION['state']['part']['stock_history']['f_field']:'note');
 $smarty->assign('filter_show0',$_SESSION['state']['part']['stock_history']['f_show']);
@@ -165,7 +167,7 @@ $smarty->assign('filter_name0',$filter_menu[$tipo_filter]['label']);
 
 $paginator_menu=array(10,25,50,100,500);
 $smarty->assign('paginator_menu0',$paginator_menu);
-
+*/
 
 $smarty->display('part.tpl');
 ?>

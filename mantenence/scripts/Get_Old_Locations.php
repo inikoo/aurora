@@ -19,249 +19,264 @@ require('../../locale.php');
 $_SESSION['locale_info'] = localeconv();
 
 $con=@mysql_connect($dns_host,$dns_user,$dns_pwd );
-if(!$con){print "Error can not connect with database server\n";exit;}
+if (!$con) {
+    print "Error can not connect with database server\n";
+    exit;
+}
 //$dns_db='dw';
 $db=@mysql_select_db($dns_db, $con);
-if (!$db){print "Error can not access the database\n";exit;}
+if (!$db) {
+    print "Error can not access the database\n";
+    exit;
+}
 require_once '../../common_functions.php';
 mysql_query("SET time_zone ='+0:00'");
 mysql_query("SET NAMES 'utf8'");
-require_once '../../conf/conf.php';           
+require_once '../../conf/conf.php';
 date_default_timezone_set('UTC');
 
 
 $sql="INSERT INTO `dw`.`Location Dimension` (`Location Key` ,`Location Warehouse Key` ,`Location Warehouse Area Key` ,`Location Code` ,`Location Mainly Used For` ,`Location Max Weight` ,`Location Max Volume` ,`Location Max Slots` ,`Location Distinct Parts` ,`Location Has Stock` ,`Location Stock Value`)VALUES ('1', '1', '1','Unknown', 'Picking', NULL , NULL , NULL , '0', 'Unknown', '0.00');";
 $loc= new Location(1);
-if(!$loc->id)
-  mysql_query($sql);
+if (!$loc->id)
+    mysql_query($sql);
 $sql2=
-"INSERT INTO `dw`.`Location Dimension` (`Location Key` ,`Location Warehouse Key` ,`Location Warehouse Area Key` ,`Location Code` ,`Location Mainly Used For` ,`Location Max Weight` ,`Location Max Volume` ,`Location Max Slots` ,`Location Distinct Parts` ,`Location Has Stock` ,`Location Stock Value`)VALUES ('2', '1', '1','LoadBay', 'Loading', NULL , NULL , NULL , '0', 'Unknown', '0.00');";
+    "INSERT INTO `dw`.`Location Dimension` (`Location Key` ,`Location Warehouse Key` ,`Location Warehouse Area Key` ,`Location Code` ,`Location Mainly Used For` ,`Location Max Weight` ,`Location Max Volume` ,`Location Max Slots` ,`Location Distinct Parts` ,`Location Has Stock` ,`Location Stock Value`)VALUES ('2', '1', '1','LoadBay', 'Loading', NULL , NULL , NULL , '0', 'Unknown', '0.00');";
 $loc= new Location(2);
-if(!$loc->id)
-  mysql_query($sql2);
+if (!$loc->id)
+    mysql_query($sql2);
 
 $wa_data=array(	'Warehouse Area Name'=>'Unknown'
-	       ,'Warehouse Area Code'=>'Unk'
-	       ,'Warehouse Key'=>1
-	       );
+                                      ,'Warehouse Area Code'=>'Unk'
+                                                             ,'Warehouse Key'=>1
+              );
 
 $wa=new WarehouseArea('find',$wa_data,'create');
 
 
 $sql=sprintf("select * from aw_old.product where code='abp-21'   order by code   ");
 
-$sql=sprintf("select * from aw_old.product where code not in ('pi-09') or code not like 'fw-%%'   order by code desc  ");
+$sql=sprintf("select * from aw_old.product  order by code desc  ");
 $result=mysql_query($sql);
-while($row2=mysql_fetch_array($result, MYSQL_ASSOC)   ){
-  $product_code=$row2['code'];
-  $stock_old_db=$row2['stock'];
-  print $row2['id']." $product_code \n";
-  $sql="select * from aw_old.location  where product_id=".$row2['id']."    " ;
-  $result2xxx=mysql_query($sql);
-  $primary=true;
-
-  
+while ($row2=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
+    $product_code=$row2['code'];
+    $stock_old_db=$row2['stock'];
+    print $row2['id']." $product_code \n";
+    $sql="select * from aw_old.location  where product_id=".$row2['id']."    " ;
+    $result2xxx=mysql_query($sql);
+    $primary=true;
 
 
-  while($row=mysql_fetch_array($result2xxx, MYSQL_ASSOC)   ){
-     $location_code=$row['code'];
-     //  print "$product_code $location_code\n";
 
-     $used_for='Picking';
-     if(preg_match('/\d\-\d+\-\d/',$location_code))
-       $used_for='Storing';
-    // $location=new Location('code',$location_code);
-   //  if(!$location->id){
+
+    while ($row=mysql_fetch_array($result2xxx, MYSQL_ASSOC)   ) {
+        $location_code=$row['code'];
+        //  print "$product_code $location_code\n";
+
+        $used_for='Picking';
+        if (preg_match('/\d\-\d+\-\d/',$location_code))
+            $used_for='Storing';
+        // $location=new Location('code',$location_code);
+        //  if(!$location->id){
         $location_data=array(
-					     'Location Warehouse Key'=>1
-					     ,'Location Warehouse Area Key'=>1
-					     ,'Location Code'=>$location_code
-					     ,'Location Mainly Used For'=>$used_for
-					     );
-       $location=new Location('find',$location_data,'create');
-     
-    
-     //}
-     //     // only work if is one to one relation
-     
+                           'Location Warehouse Key'=>1
+                                                    ,'Location Warehouse Area Key'=>1
+                                                                                   ,'Location Code'=>$location_code
+                                                                                                    ,'Location Mainly Used For'=>$used_for
+                       );
+        $location=new Location('find',$location_data,'create');
 
 
-     $product=new Product('code_store',$product_code,1);
-     if($product->data['Product Record Type']=='Discontinued')
-     continue;
-  //  print "Product  ".$product->data['Product Record Type']." \n";
-    
-    
-    if($product->id and $location->id){
-
-       $part_skus=$product->get_current_part_list();
-       if(count($part_skus)!=1){
-print"Product has more than ne sku\n";
-print_r($part_skus);
-print $product->code."\n";exit('error');
-	
-       }
-
-//print "parts\n";
-  //     print_r($part_skus);
-       
-       $tmp=array_pop($part_skus);
-$sku=$tmp['Part SKU'];
-    print "P: $product_code $location_code $used_for Stock: $stock_old_db\n";
-  
-       
-  if($used_for=='Picking'){
-	 print "PRIMARY Loc Name:".$row['code']." $product_code  LOC: ".$location->id." SKU: $sku \n";
-	
-	 //wrap it again
-	 
-	// print "wraping sku $sku\n";
-	// wrap_it($sku);
-
-	 
-
-	 $part= new Part($sku);
-	 //	 $part->load('calculate_stock_history','last');
+        //}
+        //     // only work if is one to one relation
 
 
-	 print "--------------\n";
-	 $associated=$part->get('Current Associated Locations');
-	 $num_associated=count($associated);
-	 print_r($associated);
-	 print "Num associated $num_associated\n";
-	 
 
-	  $part_location=new PartLocation('find',array('Part SKU'=>$sku,'Location Key'=>$location->id),'create');
-	  $part_location->update_can_pick('Yes');
-	 $note='xxx';
-	 foreach($associated as  $key=>$location_key){
-	    $part_location=new PartLocation($sku.'_'.$location_key);
-	     $data=array(
-			  'user key'=>0
-			  ,'note_out'=>''
-			  ,'note_associate'=>''
-			  ,'note_in'=>$note
-
-			  ,'Destination Key'=>$location->id
-			  ,'Quantity To Move'=>'all'
-			  );
-	    $part_location->move_stock($data);
-	 
-	 }
-	 
-	 
-if(false){
-	 switch($num_associated){
-	 case 1:
-	   if($associated[0]==1){
-	     //   print "+++++++++\n";
-	      $pl=new PartLocation($sku.'_1');
+        $product=new Product('code_store',$product_code,1);
+        if ($product->data['Product Record Type']=='Discontinued' or $product->data['Product Record Type']=='Historic')
+            continue;
+        //  print "Product  ".$product->data['Product Record Type']." \n";
 
 
-	      $note=_('Part')." SKU".$part->data['Part SKU']." "._('associated with')." ".$location->data['Location Code'];
-	      if($location->data['Location Distinct Parts']==0)
-		$note.=" ("._("First part-location record").")"." ("._("First record of location been used").")";
-	      else
-		$note.=" ("._("First part-location record").")";
-	      $data=array(
-			  'user key'=>0
-			  ,'note_out'=>''
-			  ,'note_associate'=>''
-			  ,'note_in'=>$note
+        if ($product->id and $location->id) {
 
-			  ,'Destination Key'=>$location->id
-			  ,'Quantity To Move'=>'all'
-			  
-			  );
-	      // EXIT;
-	      $pl->move_stock($data);
-	   
-	      
-	      $data=array(
-			  'user key'=>0
-			  ,'note'=>_('Location now known')
-			  );
-	      // print "Destroing \n";
-	      $pl->destroy($data);
-	      
-	      
-
-	      //$part->load('stock_history','last');
-	      //$part->load('stock');
-	      //$location->load('parts_data');
-	      //$unk=new Location(1);
-	      //$unk->load('parts_data');
-	 
-
-	    }elseif($associated[0]==$location->id){
-	     print "************  sku ".$sku."  loc ".$location->id."  :) \n";
-	  $part_location=new PartLocation('find',array('Part SKU'=>$sku,'Location Key'=>$location->id));
-
-	  //print_r($part_location);
-	  $part=new Part($sku);
-	  
-	  $part->load('calculate_stock_history','last');
-	  // print "caca\n";
-	  
-
-	    //  if($stock_old_db>0)
-	     //exit;
-	  break;
-	   }else{
-	   
-	   
-	     $part_location=new PartLocation('find',array('Part SKU'=>$sku,'Location Key'=>$location->id),'create');
-	    // $part_location->associate();
-	       $part->load('calculate_stock_history','last');
-	       
-	       
-	       //  if($stock_old_db!=0)
-	      
-	       
-	       break;
-	       
-	       
-	    }
-	   break;
-	 case 0:
-	   $part_location=new PartLocation('find',array('Part SKU'=>$sku,'Location Key'=>$location->id),'create');
-	  // $part_location->associate();
-	   $part->load('calculate_stock_history','last');
-	  
-	   break;
-	 default:
-	   //	   print_r($associated);
-	  
-	      $part_location=new PartLocation('find',array('Part SKU'=>$sku,'Location Key'=>$location->id),'create');
-	  // $part_location->associate();
-	   $part->load('calculate_stock_history','last');
-	   // exit;
-	   break;
-
-	   // exit("todo b");
-	 }
-	 
-	 }
-	 
-       }else{
-	 print "STORING ".$row['code']." $product_code  LOC: ".$location->id." SKU: $sku \n";
-	  $part_location=new PartLocation('find',array('Part SKU'=>$sku,'Location Key'=>$location->id),'create');
-	  
-	  //$part_location->associate();
+            $part_skus=$product->get_current_part_list();
+            if (count($part_skus)!=1) {
+            
+            
+            if($product->code=='SG-mix' or $product->code=='PI-09' ){
+                
+                continue;
+            }else{
+            
+                print"Product has more than ne sku\n";
+                print_r($part_skus);
+                print $product->code."\n";
+                exit('error');
+}
+            }
 
 
- // $location->load('parts_data');
-       }
-       $primary=false;
-       
-      
-     }
-     
-  }
-  mysql_free_result($result2xxx);
+continue;
+            $tmp=array_pop($part_skus);
+            $sku=$tmp['Part SKU'];
+            print "P: $product_code $location_code $used_for Stock: $stock_old_db\n";
 
- }
- mysql_free_result($result);
+
+            if ($used_for=='Picking') {
+                print "PRIMARY Loc Name:".$row['code']." $product_code  LOC: ".$location->id." SKU: $sku \n";
+
+                //wrap it again
+
+                // print "wraping sku $sku\n";
+                // wrap_it($sku);
+
+
+
+                $part= new Part($sku);
+                //	 $part->load('calculate_stock_history','last');
+
+
+                print "--------------\n";
+                $associated=$part->get('Current Associated Locations');
+                $num_associated=count($associated);
+                print_r($associated);
+                print "Num associated $num_associated\n";
+
+
+                $part_location=new PartLocation('find',array('Part SKU'=>$sku,'Location Key'=>$location->id),'create');
+                $part_location->update_can_pick('Yes');
+                $note='xxx';
+                foreach($associated as  $key=>$location_key) {
+                    $part_location=new PartLocation($sku.'_'.$location_key);
+                    $data=array(
+                              'user key'=>0
+                                         ,'note_out'=>''
+                                                     ,'note_associate'=>''
+                                                                       ,'note_in'=>$note
+
+                                                                                  ,'Destination Key'=>$location->id
+                                                                                                     ,'Quantity To Move'=>'all'
+                          );
+                    $part_location->move_stock($data);
+
+                }
+
+
+                if (false) {
+                    switch ($num_associated) {
+                    case 1:
+                        if ($associated[0]==1) {
+                            //   print "+++++++++\n";
+                            $pl=new PartLocation($sku.'_1');
+
+
+                            $note=_('Part')." SKU".$part->data['Part SKU']." "._('associated with')." ".$location->data['Location Code'];
+                            if ($location->data['Location Distinct Parts']==0)
+                                $note.=" ("._("First part-location record").")"." ("._("First record of location been used").")";
+                            else
+                                $note.=" ("._("First part-location record").")";
+                            $data=array(
+                                      'user key'=>0
+                                                 ,'note_out'=>''
+                                                             ,'note_associate'=>''
+                                                                               ,'note_in'=>$note
+
+                                                                                          ,'Destination Key'=>$location->id
+                                                                                                             ,'Quantity To Move'=>'all'
+
+                                  );
+                            // EXIT;
+                            $pl->move_stock($data);
+
+
+                            $data=array(
+                                      'user key'=>0
+                                                 ,'note'=>_('Location now known')
+                                  );
+                            // print "Destroing \n";
+                            $pl->destroy($data);
+
+
+
+                            //$part->load('stock_history','last');
+                            //$part->load('stock');
+                            //$location->load('parts_data');
+                            //$unk=new Location(1);
+                            //$unk->load('parts_data');
+
+
+                        }
+                        elseif($associated[0]==$location->id) {
+                            print "************  sku ".$sku."  loc ".$location->id."  :) \n";
+                            $part_location=new PartLocation('find',array('Part SKU'=>$sku,'Location Key'=>$location->id));
+
+                            //print_r($part_location);
+                            $part=new Part($sku);
+
+                            $part->load('calculate_stock_history','last');
+                            // print "caca\n";
+
+
+                            //  if($stock_old_db>0)
+                            //exit;
+                            break;
+                        }
+                        else {
+
+
+                            $part_location=new PartLocation('find',array('Part SKU'=>$sku,'Location Key'=>$location->id),'create');
+                            // $part_location->associate();
+                            $part->load('calculate_stock_history','last');
+
+
+                            //  if($stock_old_db!=0)
+
+
+                            break;
+
+
+                        }
+                        break;
+                    case 0:
+                        $part_location=new PartLocation('find',array('Part SKU'=>$sku,'Location Key'=>$location->id),'create');
+                        // $part_location->associate();
+                        $part->load('calculate_stock_history','last');
+
+                        break;
+                    default:
+                        //	   print_r($associated);
+
+                        $part_location=new PartLocation('find',array('Part SKU'=>$sku,'Location Key'=>$location->id),'create');
+                        // $part_location->associate();
+                        $part->load('calculate_stock_history','last');
+                        // exit;
+                        break;
+
+                        // exit("todo b");
+                    }
+
+                }
+
+            } else {
+                print "STORING ".$row['code']." $product_code  LOC: ".$location->id." SKU: $sku \n";
+                $part_location=new PartLocation('find',array('Part SKU'=>$sku,'Location Key'=>$location->id),'create');
+
+                //$part_location->associate();
+
+
+// $location->load('parts_data');
+            }
+            $primary=false;
+
+
+        }
+
+    }
+    mysql_free_result($result2xxx);
+
+}
+mysql_free_result($result);
 
 
 

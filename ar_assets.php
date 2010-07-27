@@ -5169,10 +5169,11 @@ function find_part() {
 
         $_data[]= array(
 
-                      'info'=>sprintf("%s:%05d - %s",_('SKU'),$data['Part SKU'],$data['Part XHTML Description'])
-                             ,'info_plain'=>sprintf("%s:%05d - %s",_('SKU'),$data['Part SKU'],strip_tags($data['Part XHTML Description']))
+                      'info'=>sprintf("%s%05d - %s",_('SKU'),$data['Part SKU'],$data['Part XHTML Description'])
+                             ,'info_plain'=>sprintf("%s%05d - %s",_('SKU'),$data['Part SKU'],strip_tags($data['Part XHTML Description']))
 
                                            ,'sku'=>$data['Part SKU']
+                                           ,'formated_sku'=>sprintf("%s%05d",_('SKU'),$data['Part SKU'])
                                                   ,'description'=>$data['Part XHTML Description']
                                                                  ,'usedin'=>$data['Part Currently Used In']
 
@@ -8984,6 +8985,11 @@ function part_transactions() {
 
     $wheref='';
 
+    if ($f_field=='note' and $f_value!=''){
+       // $wheref.=" and  `Note` like '%".addslashes($f_value)."%'  or  `Note` REGEXP '[[:<:]]".$f_value."'  ";
+           $wheref.=" and  `Note` like '".addslashes($f_value)."%'  ";
+
+}
 
     $where=$where.sprintf(" and `Part SKU`=%d ",$part_sku);
     $sql="select count(*) as total from `Inventory Transaction Fact`     $where $wheref";
@@ -9006,7 +9012,7 @@ function part_transactions() {
 
 
 
-    $rtext=$total_records.' '.ngettext('stock operetion','stock operations',$total);
+    $rtext=$total.' '.ngettext('stock operation','stock operations',$total_records);
     if ($total_records>$number_results)
         $rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
     else
@@ -9019,10 +9025,42 @@ function part_transactions() {
         $rtext_rpp='';
     }
 
+
+
+
+$rtext=$total_records." ".ngettext('stock operation','stock operations',$total_records);
+    if ($total_records>$number_results)
+        $rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
+    else
+        $rtext_rpp=' ('._('Showing all').')';
+
+
+
+    if ($total==0 and $filtered>0) {
+        switch ($f_field) {
+        case('note'):
+            $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/> '._("There isn't any note like")." <b>".$f_value."*</b> ";
+            break;
+       
+        }
+    }
+    elseif($filtered>0) {
+        switch ($f_field) {
+        case('note'):
+            $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/> '._('Showing')." $total "._('notes with')." <b>".$f_value."*</b>";
+            break;
+      
+        }
+    }
+    else
+        $filter_msg='';
+
+
+
     $order=' `Date` desc , `Inventory Transaction Key` desc ';
     $order_direction=' ';
 
-    $sql=sprintf("select  `Note`,`Inventory Transaction Type`,`Inventory Transaction Quantity`,`Date`,ITF.`Location Key`,`Location Code`  from `Inventory Transaction Fact` ITF left join `Location Dimension` L on (ITF.`Location key`=L.`Location key`)  $where $wheref order by $order $order_direction limit $start_from,$number_results ");
+    $sql="select  `Note`,`Inventory Transaction Type`,`Inventory Transaction Quantity`,`Date`,ITF.`Location Key`,`Location Code`  from `Inventory Transaction Fact` ITF left join `Location Dimension` L on (ITF.`Location key`=L.`Location key`)  $where $wheref order by $order $order_direction limit $start_from,$number_results ";
 
 
     //print $sql;
@@ -9058,7 +9096,7 @@ function part_transactions() {
                                       'filter_msg'=>$filter_msg,
                                       'rtext'=>$rtext,
                                       'rtext_rpp'=>$rtext_rpp,
-                                      'total_records'=>$total_records,
+                                      'total_records'=>$total_records-$filtered,
                                       'records_offset'=>$start_from,
                                       'records_perpage'=>$number_results,
                                      )
@@ -9118,6 +9156,14 @@ function part_stock_history() {
         $tableid=0;
 
 
+  if (isset( $_REQUEST['type']))
+        $type=$_REQUEST['type'];
+    else
+        $type=$conf['type'];
+
+
+
+
     list($date_interval,$error)=prepare_mysql_dates($from,$to);
     if ($error) {
         list($date_interval,$error)=prepare_mysql_dates($conf['from'],$conf['to']);
@@ -9129,6 +9175,7 @@ function part_stock_history() {
     $_SESSION['state']['part']['stock_history']=
         array(
             'order'=>$order,
+            'type'=>$type,
             'order_dir'=>$order_direction,
             'nr'=>$number_results,
             'sf'=>$start_from,
@@ -9147,28 +9194,63 @@ function part_stock_history() {
     $wheref='';
 
 
+
+
+   switch ($type) {
+        case 'month':
+           $group=' group by DATE_FORMAT(%Y%m)   ';
+            break;
+             case 'day':
+              $group=' group by `Date`   ';
+            break;
+        default:
+             $group=' group by YEARWEEK(`Date`)   ';
+            break;
+    }    
+
+
+
+
     $where=$where.sprintf(" and `Part SKU`=%d ",$part_sku);
-    $sql="select count(*) as total from `Inventory Spanshot Fact`     $where $wheref";
+    $sql="select count(*) as total from `Inventory Spanshot Fact`     $where $wheref $group";
+  
     $result=mysql_query($sql);
-    if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-        $total=$row['total'];
-    }
+    $total=mysql_num_rows($result);
+    
+    
+    
+    
+   
     if ($wheref=='') {
         $filtered=0;
         $total_records=$total;
     } else {
-        $sql="select count(*) as total from `Inventory Spanshot Fact`   $where ";
-        $result=mysql_query($sql);
-        if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-            $total_records=$row['total'];
-            $filtered=$row['total']-$total;
-        }
+        $sql="select count(*) as total from `Inventory Spanshot Fact`   $where  $group";
+        
+     
+
+$total_records=$result;
+$filtered=$total_records-$total;
 
     }
 
 
 
-    $rtext=$total_records.' '.ngettext('days','days',$total);
+
+    switch ($type) {
+        case 'month':
+               $rtext=$total_records.' '.ngettext('months','month',$total);
+            break;
+             case 'day':
+               $rtext=$total_records.' '.ngettext('days','days',$total);
+            break;
+        default:
+             $rtext=$total_records.' '.ngettext('week','weeks',$total);
+            break;
+    }    
+  
+    
+    
     if ($total_records>$number_results)
         $rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
     else
@@ -9184,7 +9266,10 @@ function part_stock_history() {
 
 $order='`Date`';
 
-    $sql=sprintf("select  GROUP_CONCAT(ISF.`Location Key`) as locations,`Date`,sum(`Quantity On Hand`) as `Quantity On Hand`,sum(`Value At Cost`) as `Value At Cost`,sum(`Sold Amount`) as `Sold Amount`,sum(`Value Comercial`) as `Value Comercial`,sum(`Storing Cost`) as `Storing Cost`,sum(`Quantity Sold`) as `Quantity Sold`,sum(`Quantity In`) as `Quantity In`,sum(`Quantity Lost`) as `Quantity Lost`  from `Inventory Spanshot Fact` ISF left join `Location Dimension` L on (ISF.`Location key`=L.`Location key`)  $where $wheref  group by `Date` order by $order $order_direction  limit $start_from,$number_results ");
+    $sql=sprintf("select  GROUP_CONCAT(distinct '<a href=\"location.php?id=',ISF.`Location Key`,'\">',`Location Code`,'<a/>') as locations,`Date`, ( select  sum(`Quantity On Hand`) from `Inventory Spanshot Fact` OISF where `Part SKU`=%d and OISF.`Date`=ISF.`Date`  )as `Quantity On Hand`, ( select  sum(`Value At Cost`) from `Inventory Spanshot Fact` OISF where `Part SKU`=%d and OISF.`Date`=ISF.`Date`  )as `Value At Cost`,sum(`Sold Amount`) as `Sold Amount`,sum(`Value Comercial`) as `Value Comercial`,sum(`Storing Cost`) as `Storing Cost`,sum(`Quantity Sold`) as `Quantity Sold`,sum(`Quantity In`) as `Quantity In`,sum(`Quantity Lost`) as `Quantity Lost`  from `Inventory Spanshot Fact` ISF left join `Location Dimension` L on (ISF.`Location key`=L.`Location key`)  $where $wheref   $group order by $order $order_direction  limit $start_from,$number_results "
+     ,$part_sku
+    ,$part_sku
+    );
 
 
    

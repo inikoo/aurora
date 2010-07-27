@@ -449,7 +449,7 @@ $default_state=array(
                                   'period'=>'year',
                                   'percentage'=>0,
                                   'mode'=>'same_code',//same_code,same_id,all
-                                  'parent'=>'none',//store,department,family,none
+                                  'parent'=>'none',//store,dement,family,none
                                   'restrictions'=>'forsale',
                                   'avg'=>'totals',
                                   'table'=>array(
@@ -581,9 +581,98 @@ $default_state=array(
                                                        'elements'=>array()
                                                    )
                                        ),
+                                       
+                                       
+                                       
                    'warehouse'=>array(
                                    'id'=>1,
-                                   'edit'=>'description'
+                                   'edit'=>'description',
+                                   
+                              
+
+                              
+                              'display'=>array('details'=>0,'plot'=>1,'orders'=>0,'customers'=>0,'stock_history'=>0),
+
+                              'stock_history'=>array(
+                                                  'order'=>'date',
+                                                  'order_dir'=>'desc',
+                                                  'sf'=>0,
+                                                  'nr'=>15,
+                                                  'type'=>'week',
+                                                  'where'=>'where true',
+                                                  'f_field'=>'location',
+                                                  'f_value'=>'',
+                                                  'f_show'=>false,
+                                                  'from'=>'',
+                                                  'to'=>'',
+                                                  'elements'=>array()
+                                              ),
+                              'transactions'=>array(
+                                                 'order'=>'date',
+                                                 'order_dir'=>'desc',
+                                                 'sf'=>0,
+                                                 'nr'=>15,
+                                                 'where'=>'where true',
+                                                 'f_field'=>'note',
+                                                 'f_value'=>'',
+                                                 'f_show'=>false,
+                                                 'from'=>'',
+                                                 'to'=>'',
+                                                 'elements'=>array()
+                                             ),
+                                   
+                                   
+                               ),
+'warehouse_stock_history'=>array(
+                                  
+
+                              'plot'=>'part_stock_history',
+                              'plot_interval'=>array(
+                                                  'y'=>array('plot_bins'=>5,
+                                                             'plot_forecast_bins'=>3),
+                                                  'q'=>array('plot_bins'=>12,
+                                                             'plot_forecast_bins'=>3),
+                                                  'm'=>array('plot_bins'=>18,
+                                                             'plot_forecast_bins'=>3),
+                                                  'w'=>array('plot_bins'=>26,
+                                                             'plot_forecast_bins'=>3),
+                                              ),
+                              'plot_period'=>'m',
+                              'plot_category'=>'stock_history',
+
+
+
+  'table'=>array(
+                                                  'order'=>'date',
+                                                  'order_dir'=>'desc',
+                                                  'sf'=>0,
+                                                  'nr'=>15,
+                                                  'type'=>'week',
+                                                  'where'=>'where true',
+                                                  'f_field'=>'author',
+                                                  'f_value'=>'',
+                                                  'f_show'=>false,
+                                                  'from'=>'',
+                                                  'to'=>'',
+                                                  'elements'=>array()
+                                              ),
+
+                              'plot_data'=>array('part_stock_history'=>array(
+                                                                          'label'=>_('Product Sales')
+                                                                                  ,'page'=>'plot.php'
+                                                                      ),
+
+                                                 'part_out'=>array(
+                                                                'label'=>_('Stock History')
+                                                                        ,'parts'=>'plot.php'
+                                                            )
+                                                ),
+
+
+
+
+                            
+                                   
                                ),
 
                    'locations'=>array(
@@ -711,6 +800,8 @@ $default_state=array(
                                                'order_dir'=>'',
                                                'sf'=>0,
                                                'nr'=>25,
+                                               'type'=>'all_contacts',
+
                                                'where'=>'where true',
                                                'f_field'=>'customer name',
                                                'f_value'=>''
@@ -1514,6 +1605,7 @@ $default_state=array(
                                                   'order_dir'=>'desc',
                                                   'sf'=>0,
                                                   'nr'=>15,
+                                                  'type'=>'week',
                                                   'where'=>'where true',
                                                   'f_field'=>'location',
                                                   'f_value'=>'',

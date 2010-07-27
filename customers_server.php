@@ -20,19 +20,13 @@ if(!$user->can_view('customers')){
 
 $smarty->assign('box_layout','yui-t0');
 
-
-
-
-
-
-
-
-
 $css_files=array(
 		 $yui_path.'reset-fonts-grids/reset-fonts-grids.css',
 		 $yui_path.'menu/assets/skins/sam/menu.css',
 		 //		 $yui_path.'datatable/assets/skins/sam/datatable.css',
 		 $yui_path.'build/assets/skins/sam/skin.css',
+		 		 $yui_path.'assets/skins/sam/autocomplete.css',
+
 		 'common.css',
 		 'container.css',
 		 'table.css'

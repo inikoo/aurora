@@ -79,6 +79,10 @@ function change_plot(o){
 	var from=Dom.get('plot_info').getAttribute("from");
 	var to=Dom.get('plot_info').getAttribute("to");
 
+
+
+
+alert(tipo)
 	if(tipo=='pie'){
 	    plot='pie';
 			var pie_interval=o.getAttribute("interval");
@@ -122,6 +126,26 @@ function change_plot(o){
 	}else if(tipo=='store' || tipo=='department' || tipo=='family' || tipo=='product'  ){
 	    plot='store';
 	    Dom.get("pie_options").style.display='none';
+	    var plot_url='plot.php?tipo='+tipo+'&category='+category+'&period='+period+'&keys='+keys+'&from='+from+'&to='+to;
+	    alert(plot_url);
+
+
+	    //Dom.get("the_plot").width="100%";
+	    plot_code=tipo+'_'+category+'_'+period;
+
+        if(from==100)
+        from='∀';
+	    Dom.get("plot_interval").innerHTML=from+':'+to;
+
+	    Dom.get("plot_category").innerHTML=category_labels[category];
+	    Dom.get("plot_period").innerHTML=period_labels[period];
+	    Dom.get("plot_options").style.display='';
+	}else if(tipo=='part_outs' || tipo=='part_stock_history' ){
+	    plot='part';
+	    
+	    //plot.php?tipo=part&category=stock_history&period=m&keys=16841&currency=GBP&from=18&to=3
+	    
+	   // Dom.get("pie_options").style.display='none';
 	    var plot_url='plot.php?tipo='+tipo+'&category='+category+'&period='+period+'&keys='+keys+'&from='+from+'&to='+to;
 	    alert(plot_url);
 

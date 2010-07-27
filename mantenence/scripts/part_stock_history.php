@@ -32,7 +32,7 @@ require_once '../../conf/conf.php';
 date_default_timezone_set('UTC');
 
 $where='and  `Part XHTML Currently Used In` like "%avalon-01%"';
-$where='and `Part SKU`=2146';
+//$where='and `Part SKU`=2146';
 $where='';
 $sql=sprintf('select count(*) as num  from `Part Dimension` where `Part Status`="in Use" %s ',$where);
 $res=mysql_query($sql);
@@ -42,7 +42,7 @@ while($row=mysql_fetch_array($res)){
 
 
 //print "Wrap part transactions\n";
-$sql=sprintf('select `Part SKU`,`Part XHTML Currently Used In`  from `Part Dimension` where `Part Status`="in Use"   %s  order by `Part Valid From`  desc',$where);
+$sql=sprintf('select `Part SKU`,`Part XHTML Currently Used In`  from `Part Dimension` where `Part Status`="in Use"   %s  order by `Part Total Sold Amount` desc ,`Part Valid From`  ',$where);
 //print $sql;
 $res=mysql_query($sql);
 $count=0;
@@ -55,6 +55,8 @@ while($row=mysql_fetch_array($res)){
 
 
 }
+
+
 
 
 
