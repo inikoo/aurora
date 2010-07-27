@@ -373,21 +373,15 @@ var upload_attach = function(e){
 
 var oMenu;
 function init(){
+
+  init_search('customers_store');
+
+
 YAHOO.util.Event.addListener('clean_table_filter_show0', "click",show_filter,0);
  YAHOO.util.Event.addListener('clean_table_filter_hide0', "click",hide_filter,0);
  YAHOO.util.Event.addListener('clean_table_filter_show1', "click",show_filter,1);
  YAHOO.util.Event.addListener('clean_table_filter_hide1', "click",hide_filter,1);
  
-
-search_scope='customers';
-//Event.addListener(search_scope+'_submit_search', "click",submit_search,search_scope);
-//Event.addListener(search_scope+'_search', "keydown", submit_search_on_enter,search_scope);
- 
-var store_name_oACDS = new YAHOO.util.FunctionDataSource(search_customers_in_store);
-store_name_oACDS.queryMatchContains = true;
-var store_name_oAutoComp = new YAHOO.widget.AutoComplete(search_scope+"_search",search_scope+"_search_Container", store_name_oACDS);
-store_name_oAutoComp.minQueryLength = 0; 
-store_name_oAutoComp.queryDelay = 0.15;
 
 
     var alt_shortcuts = function(type, args, obj) {

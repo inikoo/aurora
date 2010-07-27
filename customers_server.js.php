@@ -118,16 +118,8 @@ YAHOO.util.Event.addListener(window, "load", function() {
  YAHOO.util.Event.addListener('clean_table_filter_show0', "click",show_filter,0);
  YAHOO.util.Event.addListener('clean_table_filter_hide0', "click",hide_filter,0);
  
+  init_search('customers');
  
- 
-search_scope='customers';
-var store_name_oACDS = new YAHOO.util.FunctionDataSource(search_customers_in_store);
-store_name_oACDS.queryMatchContains = true;
-var store_name_oAutoComp = new YAHOO.widget.AutoComplete(search_scope+"_search",search_scope+"_search_Container", store_name_oACDS);
-store_name_oAutoComp.minQueryLength = 0; 
-store_name_oAutoComp.queryDelay = 0.15;
-
-
 
  var oACDS = new YAHOO.util.FunctionDataSource(mygetTerms);
  oACDS.queryMatchContains = true;
@@ -269,7 +261,6 @@ YAHOO.util.Event.onContentReady("rppmenu0", function () {
 	 var oMenu = new YAHOO.widget.ContextMenu("rppmenu0", {trigger:"rtext_rpp0" });
 	 oMenu.render();
 	 oMenu.subscribe("show", oMenu.focus);
-	 
     });
 
 YAHOO.util.Event.onContentReady("filtermenu0", function () {

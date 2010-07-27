@@ -223,7 +223,11 @@ json_value = YAHOO.lang.JSON.stringify(part_list);
 				alert(o.responseText);
 				var r =  YAHOO.lang.JSON.parse(o.responseText);
 				if(r.state==200){
-				  if(r.changed){
+				  
+				  if(r.new){
+				   window.location.reload( true );
+		location.href='edit_product.php?pid='+r.newvalue+'&new';		  
+				  }else if(r.changed){
 				  
 				  if(r.newvalue['Product Part Key']!= undefined){
 				  window.location.reload( true );
@@ -359,20 +363,35 @@ select_part(data)
 }
 
 function select_part(data){
-Dom.get('part_search').value='';
-
-Dom.get('part_search_results').style.display='none';
-Dom.get('the_part_dialog').setAttribute('sku',data.sku);
-Dom.get('part_sku0').innerHTML=data.fsku;
-Dom.get('part_description0').innerHTML=data.description;
-
-Dom.get('the_part_dialog').style.display='';
-
-
-var new_email_container = Dom.get('email_mould').cloneNode(true);
+//Dom.get('part_search').value='';
+//Dom.get('part_search_results').style.display='none';
+//Dom.get('the_part_dialog').setAttribute('sku',data.sku);
+//Dom.get('part_sku0').innerHTML=data.fsku;
+//Dom.get('part_description0').innerHTML=data.description;
+//Dom.get('the_part_dialog').style.display='';
+//var new_email_container = Dom.get('email_mould').cloneNode(true);
 
 
 }
+
+function close_add_part_dialog() {
+    
+    Editor_add_part.cfg.setProperty('visible',false);
+}
+
+var part_selected=function(){
+
+    var data = {
+	"info":newProductData[0]
+	,"sku":newProductData[1]
+	,"usedin":newProductData[2]
+    }; 
+    
+  
+   alert("xx")
+
+}
+
 
 function cancel_new_part(){
 Dom.get('the_part_dialog').setAttribute('sku','');
@@ -385,6 +404,125 @@ Dom.get('parts_per_product0').value=1;
 Dom.get('the_part_dialog').style.display='none';
 }
 
+function add_part(sku){
+  x= Dom.getX('add_part');
+   y= Dom.getY('add_part');
+   Dom.setX('Editor_add_part', x-80);
+   Dom.setY('Editor_add_part', y);
+   Dom.get('add_part_input').focus();
+   Editor_add_part.show();
+}
+YAHOO.util.Event.onContentReady("add_part_input", function () {
+  
+  var new_loc_oDS = new YAHOO.util.XHRDataSource("ar_assets.php");
+    new_loc_oDS.responseType = YAHOO.util.XHRDataSource.TYPE_JSON;
+    new_loc_oDS.responseSchema = {
+resultsList : "data"
+        ,
+ fields : ["info","sku","description","usedin","formated_sku"]
+    };
+    var new_loc_oAC = new YAHOO.widget.AutoComplete("add_part_input", "add_part_container", new_loc_oDS);
+  
+  
+  new_loc_oAC.generateRequest = function(sQuery) {
+
+     return "?tipo=find_part&query=" + sQuery ;
+
+    };
+    new_loc_oAC.forceSelection = true;
+    new_loc_oAC.itemSelectEvent.subscribe(add_part_selected);
+    
+});
+
+
+function add_part_selected(sType, aArgs) {
+
+    var part_data= aArgs[2];
+    var data = {
+
+"sku":
+        part_data[1]
+,"formated_sku":
+        part_data[4]
+,"description":
+        part_data[2]        
+    };
+   
+
+sku=data['sku'];
+formated_sku=data['formated_sku'];
+parts_per_product=1;
+note='';
+description=data['description'];
+
+
+part_list['sku'+sku]={'sku':sku,'new':true,'deleted':false};
+
+
+
+ oTbl=Dom.get('part_editor_table');
+         
+
+ 
+    oTR= oTbl.insertRow(-1);
+    
+               
+
+    
+    oTR.id='part_list'+sku;
+  
+    oTR.setAttribute('sku',sku);
+ 
+    Dom.addClass(oTR,'top'); Dom.addClass(oTR,'title');
+
+    var oTD= oTR.insertCell(0);
+    oTD.innerHTML=  '<?php echo _('Part')?>';
+    Dom.addClass(oTD,'label');
+ 
+    var oTD= oTR.insertCell(1);
+    Dom.addClass(oTD,'sku');
+    oTD.innerHTML='<span>'+formated_sku+'</span>';
+    Dom.setStyle(oTD, 'width', '120px');
+        
+    var oTD= oTR.insertCell(2);
+    Dom.addClass(oTD,'description');
+    Dom.setStyle(oTD, 'width', '350px');
+    oTD.innerHTML=description;
+  
+    var oTD= oTR.insertCell(3);
+    oTD.innerHTML='<span style="cursor:pointer"><img onClick="remove_part('+sku+')" src="art/icons/delete_bw.png"/> <?php echo _('Remove')?></span>';
+    oTR= oTbl.insertRow(-1);
+ 
+  var oTD= oTR.insertCell(0);
+    oTD.innerHTML=  '<?php echo _('Parts Per Product')?>:';
+    Dom.addClass(oTD,'label');
+    
+   var oTD= oTR.insertCell(1);
+   oTD.setAttribute('colspan',3);
+   oTD.innerHTML='<input style="padding-left:2px;text-align:left;width:3em" value="'+parts_per_product+'" onblur="part_changed(this)"  onkeyup="part_changed(this)" ovalue="'+parts_per_product+'" id="parts_per_product'+sku+'"> <span  id="parts_per_product_msg'+sku+'"></span>';
+   
+     oTR= oTbl.insertRow(-1);
+     oTR.id="sup_tr3_"+sku;
+         Dom.addClass(oTR,'last');
+
+
+  var oTD= oTR.insertCell(0);
+    oTD.innerHTML=  '<?php echo _('Notes For Pickers')?>:';
+    Dom.addClass(oTD,'label');
+    
+   var oTD= oTR.insertCell(1);
+   oTD.setAttribute('colspan',3);
+       Dom.setStyle(oTD, 'text-align', 'left');
+
+   oTD.innerHTML='<input id="pickers_note'+sku+'" style=";width:400px"   onblur="part_changed(this)"  onkeyup="part_changed(this)"     value="'+note+'" ovalue="'+note+'" >';
+
+part_render_save_buttons();
+Dom.get('add_part_input').value='';
+close_add_part_dialog();
+
+   
+};
+
 
 function init(){
 
@@ -392,19 +530,9 @@ function init(){
 
 
 
-search_scope='part';
-     var store_name_oACDS = new YAHOO.util.FunctionDataSource(search_part);
-     store_name_oACDS.queryMatchContains = true;
-     var store_name_oAutoComp = new YAHOO.widget.AutoComplete(search_scope+"_search",search_scope+"_search_Container", store_name_oACDS);
-     store_name_oAutoComp.minQueryLength = 0; 
-     store_name_oAutoComp.queryDelay = 0.15;
-     Event.addListener(search_scope+"_search", "keyup",search_events,search_scope)
-     Event.addListener(search_scope+"_clean_search", "click",clear_search,search_scope);   
 
-
-
-
-
+Editor_add_part = new YAHOO.widget.Dialog("Editor_add_part", {close:false,visible:false,underlay: "none",draggable:false});
+    Editor_add_part.render();
 
 
 
@@ -472,3 +600,6 @@ search_scope='part';
 
 
 YAHOO.util.Event.onDOMReady(init);
+
+
+

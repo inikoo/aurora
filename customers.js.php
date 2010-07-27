@@ -242,6 +242,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 
  function init(){
+  init_search('customers_store');
 
 YAHOO.util.Event.addListener('clean_table_filter_show0', "click",show_filter,0);
  YAHOO.util.Event.addListener('clean_table_filter_hide0', "click",hide_filter,0);
@@ -255,7 +256,23 @@ YAHOO.util.Event.addListener('clean_table_filter_show0', "click",show_filter,0);
 
 
 
+function change_table_type(){
 
+
+	var table_id=0;
+   
+    var table=tables['table'+table_id];
+    var datasource=tables['dataSource'+table_id];
+
+    var request='&sf=0&type=' +this.getAttribute('table_type');
+    Dom.removeClass('restrictions_all_contacts','selected');
+      Dom.removeClass('restrictions_all_customers','selected');
+    Dom.removeClass('restrictions_active_customers','selected');
+
+  Dom.addClass(this.id,'selected');
+    datasource.sendRequest(request,table.onDataReturnInitializeTable, table);      
+
+}
 
 
   var change_view=function(e){
@@ -358,19 +375,13 @@ YAHOO.util.Event.addListener('details', "click",change_details,'customers');
 
 var ids=['general','contact','address','ship_to_address','balance','rank'];
 YAHOO.util.Event.addListener(ids, "click",change_view);
+
+var ids=['restrictions_all_contacts','restrictions_all_customers','restrictions_active_customers'];
+YAHOO.util.Event.addListener(ids, "click",change_table_type);
+
 //YAHOO.util.Event.addListener('submit_advanced_search', "click",submit_advanced_search);
 
 //var search_data={tipo:'customer_name',container:'customer'};
-
-search_scope='customers';
-//Event.addListener(search_scope+'_submit_search', "click",submit_search,search_scope);
-//Event.addListener(search_scope+'_search', "keydown", submit_search_on_enter,search_scope);
- 
-var store_name_oACDS = new YAHOO.util.FunctionDataSource(search_customers_in_store);
-store_name_oACDS.queryMatchContains = true;
-var store_name_oAutoComp = new YAHOO.widget.AutoComplete(search_scope+"_search",search_scope+"_search_Container", store_name_oACDS);
-store_name_oAutoComp.minQueryLength = 0; 
-store_name_oAutoComp.queryDelay = 0.15;
 
 
 
@@ -414,6 +425,5 @@ YAHOO.util.Event.onContentReady("rppmenu0", function () {
 	 var oMenu = new YAHOO.widget.ContextMenu("rppmenu0", {trigger:"rtext_rpp0" });
 	 oMenu.render();
 	 oMenu.subscribe("show", oMenu.focus);
-	 
     });
 

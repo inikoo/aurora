@@ -27,6 +27,9 @@ switch($tipo){
 case('location_stock_history'):
   history_stock_location();
   break;
+  case('stock_history'):
+  warehouse_stock_history();
+  break;
 case('parts_at_location'):
   parts_at_location();
   break;
@@ -1366,7 +1369,6 @@ function list_warehouses(){
    
    
    $sql="select count(*) as total from `Warehouse Dimension`   $where $wheref";
-
    $res = mysql_query($sql); 
    if($row=mysql_fetch_array($res)) {
      $total=$row['total'];
@@ -1439,6 +1441,211 @@ function list_warehouses(){
 			)
 		   );
    echo json_encode($response);
+}
+
+function warehouse_stock_history() {
+    $conf=$_SESSION['state']['warehouse_stock_history']['table'];
+    $warehouse_key=$_SESSION['state']['warehouse']['id'];
+    if (isset( $_REQUEST['elements']))
+        $elements=$_REQUEST['elements'];
+    else
+        $elements=$conf['elements'];
+
+    if (isset( $_REQUEST['from']))
+        $from=$_REQUEST['from'];
+    else
+        $from=$conf['from'];
+    if (isset( $_REQUEST['to']))
+        $to=$_REQUEST['to'];
+    else
+        $to=$conf['to'];
+    if (isset( $_REQUEST['sf']))
+        $start_from=$_REQUEST['sf'];
+    else
+        $start_from=$conf['sf'];
+    if (isset( $_REQUEST['nr']))
+        $number_results=$_REQUEST['nr'];
+    else
+        $number_results=$conf['nr'];
+    if (isset( $_REQUEST['o']))
+        $order=$_REQUEST['o'];
+    else
+        $order=$conf['order'];
+    if (isset( $_REQUEST['od']))
+        $order_dir=$_REQUEST['od'];
+    else
+        $order_dir=$conf['order_dir'];
+    $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
+    if (isset( $_REQUEST['where']))
+        $where=addslashes($_REQUEST['where']);
+    else
+        $where=$conf['where'];
+
+    if (isset( $_REQUEST['f_field']))
+        $f_field=$_REQUEST['f_field'];
+    else
+        $f_field=$conf['f_field'];
+
+    if (isset( $_REQUEST['f_value']))
+        $f_value=$_REQUEST['f_value'];
+    else
+        $f_value=$conf['f_value'];
+    if (isset( $_REQUEST['tableid']))
+        $tableid=$_REQUEST['tableid'];
+    else
+        $tableid=0;
+
+
+  if (isset( $_REQUEST['type']))
+        $type=$_REQUEST['type'];
+    else
+        $type=$conf['type'];
+
+
+
+
+    list($date_interval,$error)=prepare_mysql_dates($from,$to);
+    if ($error) {
+        list($date_interval,$error)=prepare_mysql_dates($conf['from'],$conf['to']);
+    } else {
+        $_SESSION['state']['warehouse_stock_history']['table']['from']=$from;
+        $_SESSION['state']['warehouse_stock_history']['table']['to']=$to;
+    }
+
+    $_SESSION['state']['warehouse_stock_history']['table']=
+        array(
+            'order'=>$order,
+            'type'=>$type,
+            'order_dir'=>$order_direction,
+            'nr'=>$number_results,
+            'sf'=>$start_from,
+            'where'=>$where,
+            'f_field'=>$f_field,
+            'f_value'=>$f_value,
+            'from'=>$from,
+            'to'=>$to,
+            'elements'=>$elements,
+            'f_show'=>$_SESSION['state']['warehouse_stock_history']['table']['f_show']
+        );
+    $_order=$order;
+    $_dir=$order_direction;
+    $filter_msg='';
+
+    $wheref='';
+
+
+
+
+
+   switch ($type) {
+        case 'month':
+           $group=' group by DATE_FORMAT(%Y%m)   ';
+            break;
+             case 'day':
+              $group=' group by `Date`   ';
+            break;
+        default:
+             $group=' group by YEARWEEK(`Date`)   ';
+            break;
+    }    
+
+
+
+
+    $where=$where.sprintf(" and `Warehouse Key`=%d ",$warehouse_key);
+    $sql="select count(*) as total from `Inventory Spanshot Fact`     $where $wheref $group";
+ 
+    $result=mysql_query($sql);
+    $total=mysql_num_rows($result);
+    
+    
+    
+    
+   
+    if ($wheref=='') {
+        $filtered=0;
+        $total_records=$total;
+    } else {
+        $sql="select count(*) as total from `Inventory Spanshot Fact`   $where  $group";
+        
+     
+
+$total_records=$result;
+$filtered=$total_records-$total;
+
+    }
+
+
+
+
+    switch ($type) {
+        case 'month':
+               $rtext=$total_records.' '.ngettext('months','month',$total);
+            break;
+             case 'day':
+               $rtext=$total_records.' '.ngettext('days','days',$total);
+            break;
+        default:
+             $rtext=$total_records.' '.ngettext('week','weeks',$total);
+            break;
+    }    
+  
+    
+    
+    if ($total_records>$number_results)
+        $rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
+    else
+        $rtext_rpp=' ('._('Showing all').')';
+
+
+
+    if ($total_records==0) {
+        $rtext=_('No stock history');
+        $rtext_rpp='';
+    }
+
+
+$order='`Date`';
+
+    $sql=sprintf("select  GROUP_CONCAT(distinct '<a href=\"location.php?id=',ISF.`Location Key`,'\">',`Location Code`,'<a/>') as locations,`Date`, ( select  sum(`Quantity On Hand`) from `Inventory Spanshot Fact` OISF where `Part SKU`=%d and OISF.`Date`=ISF.`Date`  )as `Quantity On Hand`, ( select  sum(`Value At Cost`) from `Inventory Spanshot Fact` OISF where `Part SKU`=%d and OISF.`Date`=ISF.`Date`  )as `Value At Cost`,sum(`Sold Amount`) as `Sold Amount`,sum(`Value Comercial`) as `Value Comercial`,sum(`Storing Cost`) as `Storing Cost`,sum(`Quantity Sold`) as `Quantity Sold`,sum(`Quantity In`) as `Quantity In`,sum(`Quantity Lost`) as `Quantity Lost`  from `Inventory Spanshot Fact` ISF left join `Location Dimension` L on (ISF.`Location key`=L.`Location key`)  $where $wheref   $group order by $order $order_direction  limit $start_from,$number_results "
+     ,$warehouse_key
+    ,$warehouse_key
+    );
+
+
+   
+    $result=mysql_query($sql);
+    $adata=array();
+    while ($data=mysql_fetch_array($result, MYSQL_ASSOC)) {
+
+
+        $adata[]=array(
+
+                     'date'=>strftime("%A %d/%m/%Y", strtotime($data['Date']))
+                            ,'locations'=>$data['locations']
+                                         ,'quantity'=>number($data['Quantity On Hand'])
+                                                     ,'value'=>money($data['Value At Cost'])
+                                                              ,'sold_qty'=>number($data['Quantity Sold'])
+                                                                          ,'in_qty'=>number($data['Quantity In'])
+                                                                                    ,'lost_qty'=>number($data['Quantity Lost'])
+                 );
+    }
+
+    $response=array('resultset'=>
+                                array('state'=>200,
+                                      'data'=>$adata,
+                                      'sort_key'=>$_order,
+                                      'sort_dir'=>$_dir,
+                                      'tableid'=>$tableid,
+                                      'filter_msg'=>$filter_msg,
+                                      'rtext'=>$rtext,
+                                      'rtext_rpp'=>$rtext_rpp,
+                                      'total_records'=>$total_records,
+                                      'records_offset'=>$start_from,
+                                      'records_perpage'=>$number_results,
+                                     )
+                   );
+    echo json_encode($response);
 }
 
 ?>

@@ -1,6 +1,5 @@
 
-
-      <div display="none" id="plot_info" keys="{$store->id}"    from="{$plot_interval}" to="{$plot_forecast}"   category="{$plot_category}" period="{$plot_period}"    ></div>
+      <div display="none" id="plot_info" keys="{$plot_keys}" currency="{$plot_currency}"    from="{$plot_interval}" to="{$plot_forecast}"   category="{$plot_category}" period="{$plot_period}"    ></div>
       <ul id="plot_chooser" class="tabs" style="margin-left:20px;padding:0 0px "  >
 
 	{if $page=='part'}

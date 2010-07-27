@@ -208,11 +208,10 @@ ids=['period_all','period_year','period_quarter','period_month','period_week'];
 YAHOO.util.Event.onDOMReady(init);
 
 
-YAHOO.util.Event.onContentReady("rppmenu0", function () {
-	 var oMenu = new YAHOO.widget.ContextMenu("rppmenu0", {trigger:"rtext_rpp0" });
+YAHOO.util.Event.onContentReady("rppmenu1", function () {
+	 var oMenu = new YAHOO.widget.ContextMenu("rppmenu1", {trigger:"rtext_rpp1" });
 	 oMenu.render();
 	 oMenu.subscribe("show", oMenu.focus);
-	 
     });
 
 YAHOO.util.Event.onContentReady("filtermenu0", function () {

@@ -180,33 +180,59 @@
 
   
  <div style="clear:both"></div>
+ 
+ 
+ 
  <div   id="block_plot" style="clear:both;{if $display.plot==0}display:none{/if};margin-top:20px;min-height:420px"  >
    {include file='plot_splinter.tpl'}
  </div>
  
-<div  id="block_stock_transactons" class="data_table" style="clear:both;margin:25px 0px">
-   <span id="table_title" class="clean_table_title">{t}Part Stock History{/t}</span>
-   <div  class="clean_table_caption"  style="clear:both;">
-     <div style="float:left;"><div id="table_info0" class="clean_table_info"> <span id="rtext0"></span> <span class="rtext_rpp" id="rtext_rpp0"></span> <span class="filter_msg"  id="filter_msg0"></span>  </div></div>
-     <div class="clean_table_filter"  id="clean_table_filter0"><div class="clean_table_info"><span id="filter_name0" class="filter_name" >{$filter_name0}</span>: <input style="border-bottom:none" id='f_input0' value="{$filter_value0}" size=10/><div id='f_container0'></div></div></div>
-     <div class="clean_table_controls" style="" ><div><span  style="margin:0 5px" id="paginator0"></span></div></div>
-	</div>
-   <div  id="table0"   class="data_table_container dtable btable "> </div>
- </div>
+ 
+ 
+ 
+ <div id="block_stock_history" class="data_table" style="clear:both;">
+    <span   class="clean_table_title">{t}Part Stock History{/t}</span>
+     <div >
+          <span id="stock_history_type_day" style="float:right" class="table_type state_details {if $stock_history_type=='day'}selected{/if}">{t}Monthly{/t}</span>
 
-      
+     <span id="stock_history_type_week" style="float:right;margin-right:10px" class="table_type state_details {if $stock_history_type=='week'}selected{/if}">{t}Weekly{/t}</span>
+     <span id="stock_history_type_day" style="float:right;margin-right:10px" class="table_type state_details {if $stock_history_type=='day'}selected{/if}">{t}Daily{/t}</span>
+
+     </div>
+    
+    <div style="clear:both;margin:0 0px;padding:0 20px ;border-bottom:1px solid #999;margin-bottom:10px"></div>
+   
+ 
+    {include file='table_splinter.tpl' table_id=0 filter_name=$filter_name0 filter_value=$filter_value0   no_filter=1   }
+    <div class="clean_table_controls" style="" ><div><span  style="margin:0 5px" id="paginator0"></span></div></div>
+<div  id="table0"  style="font-size:85%"   class="data_table_container dtable btable "> </div>
+</div>
+ 
+ 
+ 
+ 
+  <div id="block_stock_transaction" class="data_table" style="clear:both;margin-top:20px">
+    <span   class="clean_table_title">{t}Part Stock Transactions{/t}</span>
+    
+    
+    <div style="clear:both;margin:0 0px;padding:0 20px ;border-bottom:1px solid #999;margin-bottom:10px"></div>
+   
+ 
+    {include file='table_splinter.tpl' table_id=1 filter_name=$filter_name1 filter_value=$filter_value1   }
+    <div class="clean_table_controls" style="" ><div><span  style="margin:0 5px" id="paginator1"></span></div></div>
+<div  style="font-size:85%"  id="table1"   class="data_table_container dtable btable "> </div>
+</div>
+ 
+ 
 
 
 
- <div  id="block_stock_transactons" class="data_table" style="clear:both;margin:25px 0px;">
-   <span id="table_title" class="clean_table_title">{t}Part Stock Transactions{/t}</span>
-   <div  class="clean_table_caption"  style="clear:both;">
-     <div style="float:left;"><div id="table_info1" class="clean_table_info"> <span id="rtext1"></span> <span class="rtext_rpp" id="rtext_rpp1"></span> <span class="filter_msg"  id="filter_msg1"></span>  </div></div>
-     <div class="clean_table_filter"  id="clean_table_filter1"><div class="clean_table_info"><span id="filter_name1" class="filter_name" >{$filter_name1}</span>: <input style="border-bottom:none" id='f_input1' value="{$filter_value1}" size=10/><div id='f_container1'></div></div></div>
-     <div class="clean_table_controls" style="" ><div><span  style="margin:0 5px" id="paginator1"></span></div></div>
-	</div>
-   <div  style="font-size:85%" id="table1"   class="data_table_container dtable btable "> </div>
- </div>
+
+
+
+
+
+
 
 
 

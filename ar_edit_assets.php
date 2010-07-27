@@ -2652,6 +2652,9 @@ $page->update_show_layout($layout,$value);
 
 }
 
+
+
+
 function edit_part_list($data){
 
 $product=new Product($_SESSION['state']['product']['mode'],$_SESSION['state']['product']['tag']);
@@ -2671,31 +2674,52 @@ foreach($values as $key =>$value){
  			   );
 
 }
-
+$date=date('Y-m-d H:i:s');
 $header_data=array(
-'Product Part Valid From'=>date('Y-m-d H:i:s')
+'Product Part Valid From'=>$date
 ,'Product Part Metadata'=>''
-
+      ,'Product Part Valid To'=>''
+		      ,'Product Part Most Recent'=>'Yes'
 );
-$product_part_key=$this->find_product_part_list($list);
-if(!$product_part_key=$this->find_product_part_list($list) and $value['confirm']){
-switch($value['confirm']){
-case('new'):
-//new Product id
+
+$value['confirm']='new';
+
+
+//print_r($part_list_data);
+$product_part_key=$product->find_product_part_list($part_list_data);
+
+
+
+
+
+if(!$product_part_key and $value['confirm']=='new'){
+
+foreach($product->data as $key=>$val){
+$data[strtolower($key)]=$val;
+}
+$data['product valid from']=$date;
+
+
+$product->create_key($data);
+$product->create_product_id($data);
+
+//print "--------\n";
+$product->new_current_part_list($header_data,$part_list_data)  ;
+//print "============\n";
+$product->set_duplicates_as_historic();
+
+
+
+
+}else{
 $product->new_current_part_list($header_data,$part_list_data);
-break;
-case('fix'):
-break;
-
-
-}
 }
 
 
 
 
 
-//$product_part_key=$this->find_product_part_list($list);
+//
 //if($product_part_key){
 ///$this->update_product_part_list($product_part_key,$header_data,$list);
 //}else{
@@ -2705,10 +2729,9 @@ break;
 
 
 
-$product->new_current_part_list($header_data,$part_list_data);
-
-
-if($product->updated){
+if($product->new_id){
+  $response= array('state'=>200,'new'=>true,'newvalue'=>$product->pid);
+}elseif($product->updated){
   $response= array('state'=>200,'changed'=>true,'newvalue'=>$product->new_value);
 }elseif($product->error){
  $response= array('state'=>400,'msg'=>$product->msg);

@@ -7,6 +7,7 @@ include_once('set_locales.php');
 
 
 function show_filter(e,table_id){
+
 Dom.get('clean_table_filter_show'+table_id).style.display='none';
 Dom.get('clean_table_filter'+table_id).style.display='';
 }
@@ -37,7 +38,7 @@ var mydoBeforePaginatorChange = function(e){return true};
 
 
 var mydoBeforeLoadData = function(oRequest, oResponse, oPayload) {
-     //  alert(oResponse.meta.RecordOffset)
+    // alert(oResponse.meta.RecordOffset)
      if(oPayload!=undefined){
         oPayload.pagination = {
             rowsPerPage: parseInt(oResponse.meta.rowsPerPage)||5,
@@ -54,6 +55,7 @@ var myhandleDataReturnPayload= function(oRequest, oResponse, oPayload) {
     oPayload = oPayload ||  {
 	totalRecords:0,
 	pagination:{
+	alwaysVisible:false
 	    //rowsPerPage:3
 	    //rowsPerPage:parseInt(oResponse.meta.rowsPerPage),
 	    //recordOffset: 12
@@ -94,8 +96,15 @@ var myhandleDataReturnPayload= function(oRequest, oResponse, oPayload) {
 	    table.tHead.style.display='';
 	    if(YAHOO.util.Dom.get('filter_div'+oResponse.meta.tableid)!=null)
 	        YAHOO.util.Dom.get('filter_div'+oResponse.meta.tableid).style.visibility='visible';
-       if(oPayload.totalRecords<=oResponse.meta.rowsPerPage)
-       Dom.get('paginator'+oResponse.meta.tableid).style.display='none';
+       
+      // alert(oPayload.totalRecords+' xx '+oResponse.meta.rowsPerPage+' d '+oPayload.totalRecords<=oResponse.meta.rowsPerPage)
+       //if(oPayload.totalRecords<=oResponse.meta.rowsPerPage){
+       
+       //Dom.get('paginator'+oResponse.meta.tableid).style.display='none';
+       
+       //alert("caca");
+       //}
+       
       //Dom.get('yui-rec10').style.display='none';
        
     }
@@ -162,7 +171,7 @@ var myRequestBuilderwithTotals = function(oState, oSelf) {
 
 
 var mygetTerms =function (query) {
-
+ 
     if(this.table_id==undefined)
 	var table_id=0;
     else
@@ -174,6 +183,7 @@ var mygetTerms =function (query) {
 
     table.filter.value=Dom.get('f_input'+table_id).value;
     var request='&sf=0&f_field=' +table.filter.key + '&f_value=' + table.filter.value;
+   
     datasource.sendRequest(request,table.onDataReturnInitializeTable, table);       
 };
 

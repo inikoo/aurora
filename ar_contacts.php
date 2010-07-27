@@ -1184,6 +1184,13 @@ function list_customers() {
         $order=$_REQUEST['o'];
     else
         $order=$conf['order'];
+        
+        if (isset( $_REQUEST['type']))
+        $type=$_REQUEST['type'];
+    else
+        $type=$conf['type'];
+        
+        
     if (isset( $_REQUEST['od']))
         $order_dir=$_REQUEST['od'];
     else
@@ -1216,7 +1223,17 @@ function list_customers() {
 
 
     $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
-    $_SESSION['state']['customers']['table']=array('order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value);
+    $_SESSION['state']['customers']['table']=array(
+    'order'=>$order,
+    'order_dir'=>$order_direction,
+    'nr'=>$number_results,
+    'sf'=>$start_from,
+    'where'=>$where,
+    'type'=>$type,
+
+    'f_field'=>$f_field,
+    'f_value'=>$f_value
+    );
     $filter_msg='';
     $wheref='';
 
@@ -1227,6 +1244,13 @@ function list_customers() {
         $currency=$store->data['Store Currency Code'];
     }
 
+
+
+if($type=='all_customers'){
+        $where.=sprintf(' and `Actual Customer`="Yes" ');
+}elseif($type=='active_customers'){
+        $where.=sprintf(' and `Active Customer`="Yes" ');
+}
 
     //  print $f_field;
 

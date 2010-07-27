@@ -33,9 +33,6 @@
 	  <tr>
 	    <td>{t}Products{/t}:</td><td class="number"><div>{$store->get('For Public Sale Products')}</div></td>
 	  </tr>
- 
-    
-
   </table>
 </div>
 <div style="width:15em;float:left;margin-left:20px">
@@ -148,19 +145,14 @@
 <div class="data_table" style="clear:both;">
     <span   class="clean_table_title">{t}Departments{/t}</span>
     <div style="clear:both;margin:0 0px;padding:0 20px ;border-bottom:1px solid #999"></div>
-    
     <span   style="float:right;margin-left:80px" class="state_details" state="{$show_percentages}"  id="show_percentages"  atitle="{if $show_percentages}{t}Normal Mode{/t}{else}{t}Comparison Mode{/t}{/if}"  >{if $show_percentages}{t}Comparison Mode{/t}{else}{t}Normal Mode{/t}{/if}</span>
-    
-    
-    
     <table style="float:left;margin:0 0 5px 0px ;padding:0"  class="options" >
       <tr><td  {if $view=='general'}class="selected"{/if} id="general" >{t}Summary{/t}</td>
 	{if $view_stock}<td {if $view=='stock'}class="selected"{/if}  id="stock"  >{t}Stock{/t} {$view}</td>{/if}
 	{if $view_sales}<td  {if $view=='sales'}class="selected"{/if}  id="sales"  >{t}Sales{/t}</td>{/if}
       </tr>
     </table>
-	
-	<table id="period_options" style="float:left;margin:0 0 0 20px ;padding:0{if $view!='sales' };display:none{/if}"  class="options_mini" >
+    <table id="period_options" style="float:left;margin:0 0 0 20px ;padding:0{if $view!='sales' };display:none{/if}"  class="options_mini" >
 	  <tr>
 	    
 	    <td  {if $period=='all'}class="selected"{/if} period="all"  id="period_all" >{t}All{/t}</td>
@@ -170,7 +162,6 @@
 	    <td  {if $period=='week'}class="selected"{/if} period="week"  id="period_week"  >{t}1W{/t}</td>
 	  </tr>
       </table>
-	
 	<table  id="avg_options" style="float:left;margin:0 0 0 25px ;padding:0 {if $view!='sales'};display:none{/if}"  class="options_mini" >
 	  <tr>
 	    <td {if $avg=='totals'}class="selected"{/if} avg="totals"  id="avg_totals" >{t}Totals{/t}</td>
@@ -179,17 +170,14 @@
 	    
 	  </tr>
        </table>
+    {include file='table_splinter.tpl' table_id=0 filter_name=$filter_name0 filter_value=$filter_value0  }
+    <div class="clean_table_controls" style="" ><div><span  style="margin:0 5px" id="paginator0"></span></div></div>
+<div  id="table0"   class="data_table_container dtable btable with_total"> </div>
+</div>
 
+ 
 
-{include file='table_splinter.tpl' table_id=0 filter_name=$filter_name0 filter_value=$filter_value0  }
-
-	 <div class="clean_table_controls" style="" ><div><span  style="margin:0 5px" id="paginator0"></span></div></div>
-       </div>
-  
-    <div  id="table0"   class="data_table_container dtable btable with_total"> </div>
-  </div>
-</div> 
-
+</div>
 <div id="rppmenu0" class="yuimenu" >
   <div class="bd">
     <ul class="first-of-type">

@@ -97,10 +97,10 @@ $smarty->assign('title', _('Customers'));
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
 
-$smarty->assign('table_title',_('Customers List'));
 
 
 
+$smarty->assign('table_type',$_SESSION['state']['customers']['table']['type']);
 
 $tipo_filter=$_SESSION['state']['customers']['table']['f_field'];
 $smarty->assign('filter0',$tipo_filter);
@@ -128,7 +128,9 @@ $smarty->assign('paginator_menu0',$paginator_menu);
 $new_window=30;
 
 $sigma_factor=3.2906;//99.9% value assuming normal distribution
-$sql="select sum(if(`Customer Type by Activity`='New',1,0)) as new from `Customer Dimension` where DATE_SUB(CURDATE(),INTERVAL 1 MONTH) <= `Customer First Order Date`";
+$sql=sprintf("select sum(if(`Customer Type by Activity`='New',1,0)) as new from `Customer Dimension` where DATE_SUB(CURDATE(),INTERVAL 1 MONTH) <= `Customer First Order Date` and `Customer Store Key`=%d"
+,$store_id
+);;
 $result = mysql_query($sql) or die('Query failed: ' . mysql_error());
  if($row = mysql_fetch_array($result, MYSQL_ASSOC)) {
    
@@ -136,7 +138,9 @@ $result = mysql_query($sql) or die('Query failed: ' . mysql_error());
  }
 mysql_free_result($result);
 
- $sql="select count(distinct `Customer Key`) as customers,sum(if(`Customer Type by Activity`='New',1,0)) as new,sum(if(`Customer Type by Activity`='Active',1,0)) as active ,sum(if(`Customer Type by Activity`='Inactive',1,0)) as inactive from `Customer Dimension` ";
+ $sql=sprintf("select count(distinct `Customer Key`) as customers,sum(if(`Customer Type by Activity`='New',1,0)) as new,sum(if(`Customer Type by Activity`='Active',1,0)) as active ,sum(if(`Customer Type by Activity`='Inactive',1,0)) as inactive from `Customer Dimension` where `Customer Store Key`=%d"
+ ,$store_id
+ );
  $result = mysql_query($sql) or die('Query failed: ' . mysql_error());
  if($row = mysql_fetch_array($result, MYSQL_ASSOC)) {
    $total_customers=$row['customers'];

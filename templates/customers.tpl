@@ -32,7 +32,7 @@
 	  
       </div>
       
-      <iframe id="the_plot" src ="{$plot_page}?{$plot_args}"  frameborder=0 height="325" scrolling="no" width="100%"></iframe>
+      <iframe id="the_plot" src ="{$plot_page}?{$plot_args}"  frameborder=0 height="400" scrolling="no" width="100%"></iframe>
       </div>
       <p style="width:475px">{$top_text}</p>
       <p style="width:475px">{$export_text}</p>
@@ -45,10 +45,18 @@
     
     <div id="the_table" class="data_table" style="clear:both">
       <span class="clean_table_title">Customers List</span>
-   <div id="table_type">
-         <a  style="float:right"  class="table_type state_details"  href="customers_csv.php" >{t}Export (CSV){/t}</a>
+   <div  style="font-size:90%">
+   
+         <a  style="float:right;margin-left:20px"  class="table_type state_details"  href="customers_csv.php" >{t}Export (CSV){/t}</a>
+          <span   style="float:right;margin-left:20px" class="table_type  state_details {if $table_type=='all_contacts'}selected{/if}"  id="restrictions_all_contacts" table_type="all_contacts"  >{t}All Contacts{/t} ({$store->get('Total Customer Contacts')})</span>
+  <span   style="float:right;margin-left:20px" class="table_type  state_details {if $table_type=='all_customers'}selected{/if}"  id="restrictions_all_customers" table_type="all_customers"   >{t}All Customers{/t} ({$store->get('Total Customers')})</span>
+  <span   style="float:right;margin-left:20px" class="table_type  state_details {if $table_type=='active_customers'}selected{/if}"  id="restrictions_active_customers"  table_type="active_customers"  >{t}Active Customers{/t} ({$store->get('Active Customers')})</span>
+
+         
+         
      </div>
   <div style="clear:both;margin:0 0px;padding:0 20px ;border-bottom:1px solid #999"></div>
+  
   <table style="float:left;margin:0 0 0 0px ;padding:0"  class="options" {if $customers==0 }style="display:none"{/if}>
 	<tr>
 	  <td  {if $view=='general'}class="selected"{/if} id="general" >{t}General{/t}</td>

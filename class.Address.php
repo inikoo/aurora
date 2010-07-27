@@ -1349,7 +1349,7 @@ class Address extends DB_Table {
                 if ($ps_address!='')
                     $address.=$ps_address.$separator;
 
-                $address.='<a class="ninja" href="region.php?country='.$this->data['Address Country Code'].' >'.$this->data['Address Country Name'].'</a>';
+                $address.='<a class="ninja" href="region.php?country='.$this->data['Address Country Code'].'" >'.$this->data['Address Country Name'].'</a>';
             }
             return _trim($address);
 

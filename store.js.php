@@ -278,14 +278,7 @@ function change_avg(e,table_id){
  
  YAHOO.util.Event.addListener('clean_table_filter_show0', "click",show_filter,0);
  YAHOO.util.Event.addListener('clean_table_filter_hide0', "click",hide_filter,0);
-     search_scope='products';
-     var store_name_oACDS = new YAHOO.util.FunctionDataSource(search_products_in_store);
-     store_name_oACDS.queryMatchContains = true;
-     var store_name_oAutoComp = new YAHOO.widget.AutoComplete(search_scope+"_search",search_scope+"_search_Container", store_name_oACDS);
-     store_name_oAutoComp.minQueryLength = 0; 
-     store_name_oAutoComp.queryDelay = 0.15;
-     Event.addListener(search_scope+"_search", "keyup",search_events,search_scope)
-      Event.addListener(search_scope+"_clean_search", "click",clear_search,search_scope);
+   
 
  var oACDS = new YAHOO.util.FunctionDataSource(mygetTerms);
  oACDS.queryMatchContains = true;
@@ -321,7 +314,6 @@ YAHOO.util.Event.onContentReady("rppmenu0", function () {
 	 var oMenu = new YAHOO.widget.ContextMenu("rppmenu0", {trigger:"rtext_rpp0" });
 	 oMenu.render();
 	 oMenu.subscribe("show", oMenu.focus);
-	 
     });
 YAHOO.util.Event.onContentReady("filtermenu0", function () {
 	 var oMenu = new YAHOO.widget.ContextMenu("filtermenu0", {trigger:"filter_name0"});

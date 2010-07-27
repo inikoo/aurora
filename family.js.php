@@ -336,11 +336,10 @@ YAHOO.util.Event.addListener('details', "click",change_details,'family');
 YAHOO.util.Event.onDOMReady(init);
 
 
-YAHOO.util.Event.onContentReady("rppmenu0", function () {
-	 var oMenu = new YAHOO.widget.ContextMenu("rppmenu0", {trigger:"rtext_rpp0" });
+YAHOO.util.Event.onContentReady("rppmenu1", function () {
+	 var oMenu = new YAHOO.widget.ContextMenu("rppmenu1", {trigger:"rtext_rpp1" });
 	 oMenu.render();
 	 oMenu.subscribe("show", oMenu.focus);
-	 
     });
 
 YAHOO.util.Event.onContentReady("filtermenu0", function () {
