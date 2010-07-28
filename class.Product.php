@@ -182,7 +182,7 @@ $this->external_DB_link=$external_DB_link;
     }
     if ($tipo=='code_store' or $tipo=='code-store') {
       $this->mode='pid';
-      $sql=sprintf("select * from `Product Dimension` where  `Product Code`=%s and `Product Store Key`=%d    and `Product Code` order by 
+      $sql=sprintf("select * from `Product Dimension` where  `Product Code`=%s and `Product Store Key`=%d    order by 
       `Product Record Type`='New' DESC
       ,`Product Record Type`='Normal' DESC
        ,`Product Record Type`='Discontinuing' DESC
@@ -193,7 +193,7 @@ $this->external_DB_link=$external_DB_link;
 
 
       ",prepare_mysql($tag),$extra);
-        //   print $sql;
+      //  print $sql;
       $result=mysql_query($sql);
       if ($this->data=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 	$this->id=$this->data['Product Current Key'];
@@ -304,9 +304,10 @@ $this->get_data('pid',$this->found_id);
 
     }
 
-    //  print "Found in key ".$this->found_in_key."\n";
+    //   print "Found in key ".$this->found_in_key."\n";
     // print "Found in id ".$this->found_in_id."\n";
-    // print "Found in store ".$this->found_in_store."\n";
+    /// print "Found in store ".$this->found_in_store."\n";
+    // print "Found in code ".$this->found_in_code."\n";
 
 
     if ($create) {
@@ -337,7 +338,9 @@ $this->get_data('pid',$this->found_id);
       }
       elseif($this->found_in_store) {
 	//print "Creatinf new id\n";
-	  
+	  	$this->create_key($data);
+	$this->create_product_id($data);
+
 
       }
       elseif($this->found_in_code) {
