@@ -115,8 +115,6 @@ $this->update_customer=true;
 
 
             if ($this->data ['Order Currency']!=$corporation_currency_code) {
-
-
                 $currency_exchange = new CurrencyExchange($this->data ['Order Currency'].$this->data ['Order Currency'],'now');
                 $exchange= $currency_exchange->get_exchange();
                 $this->data ['Order Currency Exchange']=$exchange;
@@ -266,7 +264,7 @@ $this->update_customer=true;
                 $this->data ['Backlog Date'] = $data ['order date'];
 
                 $this->data ['Order Public ID'] = $data ['order id'];
-                $this->data ['Order File As'] = $data ['order id'];
+                $this->data ['Order File As'] = $this->prepare_file_as($data ['order id']);
                 $this->data ['Order Type'] = $data ['Order Type'];
 
                 $this->data ['Order Customer Key'] = $customer->id;
@@ -2610,11 +2608,25 @@ if($this->update_customer){
 
 
         function next_public_id() {
-            $sql=sprintf("insert into `Order Public ID %d` value() ",$this->data['Order Store Key']);
-            mysql_query($sql);
+        
+        
+        
+         $sqla=sprintf("UPDATE `Store Dimension` SET `Store Order Last Order ID` = LAST_INSERT_ID(`Store Order Last Order ID` + 1) where `Store Key`=%d"
+         ,$this->data['Order Store Key']);
+        mysql_query($sqla);
+       // $sql="SELECT LAST_INSERT_ID() as last;";
+        //    mysql_query($sql);
+           
+        
+        
+        
+           
             $public_id=mysql_insert_id();
+            
+            //exit("$sqla  $public_id");
+            
             $this->data['Order Public ID']=sprintf($this->public_id_format,$public_id);
-            $this->data['Order File As']=$public_id;
+            $this->data['Order File As']=$this->prepare_file_as($this->data['Order Public ID']);
         }
 
         function get_next_line_number() {
@@ -3132,6 +3144,25 @@ $sql=sprintf("insert into `Search Full Text Dimension` values  (%s,'Order',%d,%s
 );
 mysql_query($sql);
 //exit($sql);
+}
+
+
+function prepare_file_as($number){
+
+$number=strtolower($number);
+if(preg_match("/^\d+/",$number,$match)){
+$part_number=$match[0];
+$file_as=preg_replace('/^\d+/',sprintf("%012d",$part_number),$number);
+
+}elseif(preg_match("/\d+$/",$number,$match)){
+$part_number=$match[0];
+$file_as=preg_replace('/\d+$/',sprintf("%012d",$part_number),$number);
+
+}else{
+$file_as=$number;
+}
+
+return $file_as;
 }
 
     }

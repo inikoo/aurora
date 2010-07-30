@@ -33,9 +33,16 @@ $result=mysql_query($sql);
 while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
 
 $order=new Order($row['Order Key']);
-$order->update_invoices();
- $order->update_delivery_notes();
-  print $order->id."\r";
+//$order->update_invoices();
+// $order->update_delivery_notes();
+
+$file_as=$order->prepare_file_as($order->data['Order Public ID']);
+ $sql=sprintf("update `Order Dimension` set `Order File As`=%s where `Order Key`=%d "
+ ,prepare_mysql($file_as)
+ ,$order->id
+ );
+ mysql_query($sql);
+ print $order->id."\r";
  }
 mysql_free_result($result);
 

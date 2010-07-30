@@ -584,7 +584,8 @@ class Store extends DB_Table{
       $this->msg=_("Store Added");
       $this->get_data('id',$this->id);
       $this->new=true;
-
+ $sql="insert into `User Right Scope Bridge` values(1,'Store',".$this->id.");";
+      mysql_query($sql);
 
       $sql="insert into `Store Default Currency` (`Store Key`) values(".$this->id.");";
       mysql_query($sql);
