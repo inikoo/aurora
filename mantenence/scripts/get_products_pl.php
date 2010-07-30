@@ -573,6 +573,7 @@ $is_product=true;
 
 
     if(!$family->id){
+      print_r($fam_data);
       print_r($family);
       exit;
    
