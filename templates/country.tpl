@@ -16,7 +16,7 @@ World>Reg
 
 	  <div id="photo_container" style="float:left;border:0px solid #777;width:510px;height:320px">
 
-	    <iframe id="the_map" src ="map.php?country={$country->get('Country Code')}" frameborder="0" scrolling="no" width="550"  height="320"></iframe>
+	    <iframe id="the_map" src ="map.php?country={$country->get('Country Code')}" frameborder="0" scrolling="no" width="550"  height="420"></iframe>
 	   
 	    
 	    

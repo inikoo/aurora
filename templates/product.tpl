@@ -92,10 +92,12 @@
 	    <div class="" style="width:100%;font-size:90%"   >
               <div class="" style="width:350px;float:left;margin-right:20px">
 		<table    class="show_info_product">
-		  <td class="aright">
+		<tr><td>{$product->get('Product Record Type')}</td></tr>
 		    
 		     <tr >
-		      <td><span id="web_status"   style="cursor:pointer">{$product->get('Product Web State')}</span> 
+		      <td>
+		      
+		      <span id="web_status"   style="cursor:pointer">{$product->get('Product Web State')}</span> 
 			    <img id="web_status_error" onclick="sincronize_all()" style="{if !$web_status_error}visibility:hidden;{/if}vertical-align:top;position:relative;bottom:2px;cursor:pointer"src="art/icons/exclamation.png" title="{$web_status_error_title}"/></td><td  class="aright">
 			 <img id="no_sincro_pages" title="{$data.nosincro_pages_why}" onclick="manual_check()" style="{if $data.sincro_pages==1}visibility:hidden;{/if}vertical-align:top;position:relative;bottom:2px;cursor:pointer" src="art/icons/page_error.png"/> 
 			 <img id="no_sincro_db" title="{$data.nosincro_db_why}" onclick="sincronizar()" src="art/icons/database_error.png" style="{if $data.sincro_db==1}visibility:hidden;{/if}vertical-align:top;position:relative;bottom:2px;cursor:pointer"/>  

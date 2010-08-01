@@ -393,7 +393,7 @@ if(!$show_all){
      $sql_qty=', `Order Quantity`,`Order Transaction Gross Amount`,`Order Transaction Total Discount Amount`,(select GROUP_CONCAT(`Deal Info`) from `Order Transaction Deal Bridge` OTDB where OTDB.`Order Key`=OTF.`Order Key` and OTDB.`Order Transaction Fact Key`=OTF.`Order Transaction Fact Key`) as `Deal Info`';
    }else{
     $table=' `Product Dimension` P ';
-     $where=sprintf('where `Product Store Key`=%d   ',$store_key);
+     $where=sprintf('where `Product Store Key`=%d  and `Product Record Type` not in ("Discontinued","In Process","Historic") ',$store_key);
      $sql_qty=sprintf(',IFNULL((select sum(`Order Quantity`) from `Order Transaction Fact` where `Product Key`=`Product Current Key` and `Order Key`=%d),0) as `Order Quantity`, IFNULL((select sum(`Order Transaction Total Discount Amount`) from `Order Transaction Fact` where `Product Key`=`Product Current Key` and `Order Key`=%d),0) as `Order Transaction Total Discount Amount`, IFNULL((select sum(`Order Transaction Gross Amount`) from `Order Transaction Fact` where `Product Key`=`Product Current Key` and `Order Key`=%d),0) as `Order Transaction Gross Amount` ,(  select GROUP_CONCAT(`Deal Info`) from  `Order Transaction Deal Bridge` OTDB  where OTDB.`Product Key`=`Product Current Key` and OTDB.`Order Key`=%d )  as `Deal Info` ',$order_id,$order_id,$order_id,$order_id); 
 
      
@@ -414,7 +414,7 @@ if(!$show_all){
       $sql="select count(*) as total from $table   $where $wheref   ";
  
     // print_r($conf);exit;
-      //    print $sql;
+    //     print $sql;
     $res=mysql_query($sql);
     if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
         $total=$row['total'];
@@ -545,9 +545,10 @@ if(!$show_all){
      $deal_info=' <span class="deal_info">'.$row['Deal Info'].'</span>';
    }
 
+$code=sprintf('<a href="product.php?pid=%d">%s</a>',$row['Product ID'],$row['Product Code']);
    $adata[]=array(
 		  'pid'=>$row['Product ID'],
-		  'code'=>$row['Product Code'],
+		  'code'=>$code,
 		'description'=>$row['Product XHTML Short Description'].$deal_info,
 		'shortname'=>number($row['Product Units Per Case']).'x @'.money($row['Product Price']/$row['Product Units Per Case']).' '._('ea'),
 		'family'=>$row['Product Family Name'],

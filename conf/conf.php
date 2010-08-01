@@ -1475,7 +1475,7 @@ $default_state=array(
                                  'mode'=>'pid',
                                  'tag'=>1,
                                  'edit'=>'description',
-                                 'display'=>array('details'=>0,'plot'=>1,'orders'=>0,'customers'=>0,'stock_history'=>0),
+                                 'display'=>array('details'=>0,'plot'=>1,'orders'=>1,'customers'=>1,'stock_history'=>0),
                                  'server'=>array(
                                               'tag'=>'',
                                               'order'=>'store',

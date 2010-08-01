@@ -1727,11 +1727,14 @@ return $product_part_key;
 function get_part_locations($for_smarty=false){
 $skus=join(',',$this->get_current_part_skus());
 //print_r($this->get_current_part_list());
+$part_locations=array();
+
+if($skus=='')
+return $part_locations;
 
 $sql=sprintf("select * from `Part Location Dimension` where `Part SKU` in (%s)",$skus);
 
 $res=mysql_query($sql);
-$part_locations=array();
 while($row=mysql_fetch_assoc($res)){
 
 $location=new Location($row['Location Key']);

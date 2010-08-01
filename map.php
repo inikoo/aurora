@@ -29,10 +29,6 @@ case('country'):
    $smarty->assign('data_file',$data_file);
 
  
-
-
-
-
  $smarty->display('map.tpl');
   
   
