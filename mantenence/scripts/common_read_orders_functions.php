@@ -139,7 +139,17 @@ $editor=array();
       $_name='lucy';
       else if(preg_match('/^david hardy$/i',$_name))
       $_name='david';
-      
+       else if(preg_match('/graige/i',$_name))
+      $_name='craige';
+
+    //
+
+
+
+
+
+
+
     $sql=sprintf("select `Staff Key`,`Staff Alias` from `Staff Dimension` where `Staff Alias`=%s",prepare_mysql($_name));
     // print "$sql\n";
     $result = mysql_query($sql) or die('Query failed: ' . mysql_error());

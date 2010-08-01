@@ -6695,10 +6695,24 @@ if(preg_match('/Mrs Roberta Vianello/i',$header_data['address1'])){
 
  
 
+
  
-   if(preg_match('/@/',$header_data['country']))
-    $header_data['country']='';
+  if(preg_match('/@/',$act_data['country'])){
+    $act_data['country']='';
+
+    if(preg_match('/london/i',$act_data['town']) or checkPostcode($act_data['postcode'])  )
+$act_data['country']='united kingdom';
+  }
   
+ if(preg_match('/@/',$header_data['country'])){
+    $header_data['country']='';
+
+    if(preg_match('/london/i',$header_data['town'])  or checkPostcode($header_data['postcode'])  )
+$header_data['country']='united kingdom';
+  }
+
+
+
   $address_raw_data=get_address_raw();
   $address_raw_data['address1']=$act_data['a1'];
   $address_raw_data['address2']=$act_data['a2'];
@@ -6962,7 +6976,7 @@ if($del_address_data['country']=='' and preg_match('/^china$/i',$del_address_dat
     $customer_data['Customer Old ID']='';
       
   
-    //    print_r($customer_data);exit;
+    //    print_r($customer_data);
   return $customer_data;
 
 
@@ -7681,6 +7695,64 @@ if(preg_match('/^staff sales?|Ancient Winsdom Staff$/i',_trim($data['postcode'])
 
 
 
+
+
+
+function checkPostcode (&$toCheck) {
+
+  // Permitted letters depend upon their position in the postcode.
+  $alpha1 = "[abcdefghijklmnoprstuwyz]";                          // Character 1
+  $alpha2 = "[abcdefghklmnopqrstuvwxy]";                          // Character 2
+  $alpha3 = "[abcdefghjkstuw]";                                   // Character 3
+  $alpha4 = "[abehmnprvwxy]";                                     // Character 4
+  $alpha5 = "[abdefghjlnpqrstuwxyz]";                             // Character 5
+  
+  // Expression for postcodes: AN NAA, ANN NAA, AAN NAA, and AANN NAA
+  $pcexp[0] = '^('.$alpha1.'{1}'.$alpha2.'{0,1}[0-9]{1,2})([0-9]{1}'.$alpha5.'{2})$';
+
+  // Expression for postcodes: ANA NAA
+  $pcexp[1] =  '^('.$alpha1.'{1}[0-9]{1}'.$alpha3.'{1})([0-9]{1}'.$alpha5.'{2})$';
+
+  // Expression for postcodes: AANA NAA
+  $pcexp[2] =  '^('.$alpha1.'{1}'.$alpha2.'[0-9]{1}'.$alpha4.')([0-9]{1}'.$alpha5.'{2})$';
+  
+  // Exception for the special postcode GIR 0AA
+  $pcexp[3] =  '^(gir)(0aa)$';
+  
+  // Standard BFPO numbers
+  $pcexp[4] = '^(bfpo)([0-9]{1,4})$';
+  
+  // c/o BFPO numbers
+  $pcexp[5] = '^(bfpo)(c\/o[0-9]{1,3})$';
+
+  // Load up the string to check, converting into lowercase and removing spaces
+  $postcode = strtolower($toCheck);
+  $postcode = str_replace (' ', '', $postcode);
+
+  // Assume we are not going to find a valid postcode
+  $valid = false;
+  
+  // Check the string against the six types of postcodes
+  foreach ($pcexp as $regexp) {
+  
+    if (ereg($regexp,$postcode, $matches)) {
+      
+      // Load new postcode back into the form element  
+      $toCheck = strtoupper ($matches[1] . ' ' . $matches [2]);
+      
+      // Take account of the special BFPO c/o format
+      $toCheck = ereg_replace ('C\/O', 'c/o ', $toCheck);
+      
+      // Remember that we have found that the code is valid and break from loop
+      $valid = true;
+      break;
+    }
+  }
+    
+  // Return with the reformatted valid postcode in uppercase if the postcode was 
+  // valid
+  if ($valid){return true;} else {return false;};
+}
 
 
 
