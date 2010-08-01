@@ -41,7 +41,7 @@
   </background>
   
   <zoom>                                                      <!-- zoom control -->
-    <enabled></enabled>                                       <!-- [true] (true / false) whether to display zoom control or not -->
+    <enabled>true</enabled>                                       <!-- [true] (true / false) whether to display zoom control or not -->
     <locked></locked>                                         <!-- [false] (true / false) whether it would be possible to drag zoom bar when dragging "home" icon -->
     <arrows_enabled></arrows_enabled>                         <!-- [true] (true / false) whether to display navigation arrows or not -->
     <mouse_wheel_enabled></mouse_wheel_enabled>               <!-- [true] (true / false) whether to enable zooming with mouse wheel. Mouse wheel work only after user clicks somewhere on a flash. To workaround this issue, you have to add: onLoad="ammap.focus()" to your html <body> -->    
@@ -53,7 +53,7 @@
     <outline_color>#cccccc</outline_color>                           <!-- [#FFFFFF] -->
     <outline_alpha>70</outline_alpha>                           <!-- [100] (0 - 100) -->
     <x></x>                                                   <!-- [15] (Number or Number%) x position of zoom control --> 
-    <y>260</y>                                                   <!-- [15] (Number or Number%) y position of zoom control -->
+    <y>20</y>                                                   <!-- [15] (Number or Number%) y position of zoom control -->
     <height></height>                                         <!-- [200] (Number or Number%) zoom control height -->
     <min>50</min>                                             <!-- [] (Number%) minimum zoom. if left empty, the minimum value will be calculated automaticaly (to fit all the map to the stage) -->
     <max></max>                                               <!-- [2000%] (Number%) maximum zoom -->

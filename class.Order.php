@@ -766,10 +766,11 @@ if($this->update_customer){
 
             }
 
-            $sql=sprintf("select sum(`Order Quantity`*`Parts Per Product`) as qty, PA.`Part SKU` as sku,`Part XHTML Picking Location` as location,`Part XHTML Description` as description,`Part XHTML Currently Used In` as notes from `Order Transaction Fact` OTF left join `Product Dimension` P  on (OTF.`Product Key`=P.`Product Current Key`) left join `Product Part Dimension` PPD on (PPD.`Product ID`=P.`Product ID`) left join `Product Part List` PPL on (PPL.`Product Part Key`=PPD.`Product Part Key`) left join `Part Dimension` PA on (PA.`Part SKU`=PPL.`Part SKU`)   where OTF.`Order Key`=%d  and  PPD.`Product Part Most Recent`='Yes'   group by PA.`Part SKU`  "
+            $sql=sprintf("select sum(`Order Quantity`*`Parts Per Product`) as qty, PA.`Part SKU` as sku,`Part XHTML Picking Location` as location,`Part XHTML Description` as description,`Part XHTML Currently Used In` as notes 
+            from `Order Transaction Fact` OTF left join `Product Dimension` P  on (OTF.`Product Key`=P.`Product Current Key`) left join `Product Part Dimension` PPD on (PPD.`Product ID`=P.`Product ID`) left join `Product Part List` PPL on (PPL.`Product Part Key`=PPD.`Product Part Key`) left join `Part Dimension` PA on (PA.`Part SKU`=PPL.`Part SKU`)   where OTF.`Order Key`=%d  and  PPD.`Product Part Most Recent`='Yes'   group by PA.`Part SKU`  "
                          ,$this->id);
             $res=mysql_query($sql);
-            //    print "$sql\n";
+             //  print "$sql\n";
             while ($row=mysql_fetch_array($res)) {
 
 
@@ -782,15 +783,18 @@ if($this->update_customer){
                              ,prepare_mysql($row['notes'],false)
                             );
 
-                print "$sql\n";
+                // print "$sql\n";
                 mysql_query($sql);
 
             }
             $this->data['Order Current Dispatch State']='Ready to Pick';
             $this->data['Order Current XHTML State']='Ready to Pick';
 
-            $sql=sprintf("update `Order Dimension` set `Order Current Dispatch State`=%s, `Order Current XHTML State`=%s  where `Order Key`=%d",prepare_mysql($this->data['Order Current Dispatch State']),$this->id);
-            print $sql;
+            $sql=sprintf("update `Order Dimension` set `Order Current Dispatch State`=%s, `Order Current XHTML State`=%s  where `Order Key`=%d"
+            ,prepare_mysql($this->data['Order Current Dispatch State'])
+            ,prepare_mysql($this->data['Order Current XHTML State'])
+            ,$this->id);
+            
             mysql_query($sql);
 
 
