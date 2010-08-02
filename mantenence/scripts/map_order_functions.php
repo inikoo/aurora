@@ -6712,6 +6712,12 @@ $header_data['country']='united kingdom';
   }
 
 
+  if(preg_match('/(.*\s+|^)ibiza\s*$/i',$act_data['town'])){
+    $act_data['country']='Spain';
+  }
+    if(preg_match('/(.*\s+|^)ibiza\s*$/i',$header_data['city'])){
+    $header_data['country']='Spain';
+  }
 
   $address_raw_data=get_address_raw();
   $address_raw_data['address1']=$act_data['a1'];

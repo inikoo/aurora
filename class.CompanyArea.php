@@ -246,7 +246,7 @@ class CompanyArea extends DB_Table {
     }
 
 
-    function add_department($data) {
+function add_department($data) {
         $this->new_area=false;
         $data['Company Key']=$this->data['Company Key'];
         //$data['Company Area Key']=$this->id;
@@ -265,7 +265,6 @@ class CompanyArea extends DB_Table {
         }
         
     }
-
 function get_department_keys(){
     $department_keys=array();
     $sql=sprintf("select `Department Key` from `Company Area Department Bridge` where `Area Key`=%d",$this->id);
@@ -276,7 +275,6 @@ function get_department_keys(){
     }
     return $department_keys;
 }
-
 function associate_department($department_key){
     if(!array_key_exists($department_key,$this->get_department_keys())){
         $sql=sprintf("insert into `Company Area Department Bridge` values (%d,%d) ",$this->id,$department_key);
@@ -307,14 +305,12 @@ function associate_department($department_key){
     }
 
 }
-
-    function load_children() {
+function load_children() {
 
 
 
     }
-
-    function update_children() {
+function update_children() {
 
         $sql=sprintf('select count(*) as number from `Company Department Dimension` where `Company Area Key`=%d',$this->id);
         $res-mysql_query($sql);
@@ -344,9 +340,6 @@ function associate_department($department_key){
         mysql_query($sql);
         $this->get_data('id',$this->id);
     }
-
-
-
 function load_positions(){
 $this->positions=array();
 $sql=sprintf('Select * from `Company Position Dimension` where `Company Area Key`=%d',$this->id);
@@ -355,6 +348,23 @@ while($row=mysql_fetch_array($res,MYSQL_ASSOC)){
     $this->positions[$row['Company Position Key']]=$row;
 }
 }
+
+function get_staff_with_position_code($position_code){
+$positions=array();
+$sql=sprintf('Select * from `Staff Dimension` SD  left join `Company Position Staff Bridge` B on (B.`Staff Key`=SD.`Staff Key`) left join  `Company Position Dimension` CPD on (CPD.`Company Position Key`=B.`Position Key`) where `Staff Area Key`=%d and `Company Position Code`=%s' 
+,$this->id
+,prepare_mysql($position_code)
+);
+print $sql;
+$res=mysql_query($sql);
+while($row=mysql_fetch_array($res,MYSQL_ASSOC)){
+    $positions[$row['Company Position Key']]=$row;
+}
+
+
+return $positions;
+}
+
 
 function load_departments(){
 $this->departments=array();

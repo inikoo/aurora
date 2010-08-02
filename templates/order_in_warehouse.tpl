@@ -5,7 +5,7 @@
        <div style="border:0px solid #ddd;width:400px;float:left"> 
          <h1 style="padding:0 0 10px 0">{t}Order{/t} {$order->get('Order Public ID')}</h1>
 
-         <h2 style="padding:0">{$order->get('Order Customer Name')} (<a href="customer.php?id={$order->get("Order Customer Key")}">{$customer->get('Customer ID')}</a>)</h2>
+         <h2 style="padding:0">{$order->get('Order Customer Name')} (<a href="customer.php?id={$order->get("Order Customer Key")}">{$customer->get_formated_id()}</a>)</h2>
          {$contact}<br/>
            {if $tel!=''}{t}Tel{/t}: {$tel}<br/>{/if}
 	 <div style="float:left;line-height: 1.0em;margin:5px 0px;color:#444"><span style="font-weight:500;color:#000"><b>{$order->get('Order Customer Contact Name')}</b><br/>{$customer->get('Customer Main XHTML Address')}</div>
@@ -52,10 +52,31 @@
        <div style="clear:both"></div>
      </div>
 
+   <div class="data_table"  style="clear:both">
+	<span id="table_title" class="clean_table_title">{t}Items{/t}</span>
+	<div id="table_type">
+	 
+	 
+	</div>
+<div style="clear:both;margin:0 0px;padding:0 20px ;border-bottom:1px solid #999"></div>
+    <div id="list_options0"> 
+      
+      
 
+      
+      <table style="float:left;margin:0 0 5px 0px ;padding:0"  class="options" >
+	<tr><td  {if $view=='general'}class="selected"{/if} id="general" >{t}Order{/t}</td>
+	  <td {if $view=='handing'}class="selected"{/if}  id="handing"  >{t}Handing{/t}</td>
+	 
+	</tr>
+      </table>
+    
+    
+    </div>
+{include file='table_splinter.tpl' table_id=0 filter_name=$filter_name0 filter_value=$filter_value0  }
+    <div  id="table0" style="font-size:90%"  class="data_table_container dtable btable "> </div>
+</div>
 
-<h2>{t}Items{/t}</h2>
-      <div  id="table0" class="dtable btable" style="margin-bottom:0"></div>
 
 	    
     </div>

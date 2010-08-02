@@ -754,7 +754,7 @@ function ready_to_pick_orders(){
    
    
 
-  $sql="select `Order Key`,`Order Public ID`,`Order Customer Key`,`Order Customer Name`,`Order Last Updated Date`,`Order Estimated Weight` from `Order Dimension`  $where $wheref  order by $order $order_direction limit $start_from,$number_results ";
+  $sql="select `Order Key`,`Order Public ID`,`Order Customer Key`,`Order Customer Name`,`Order Last Updated Date`,`Order Estimated Weight`,`Order Current Dispatch State` from `Order Dimension`  $where $wheref  order by $order $order_direction limit $start_from,$number_results ";
  // print $sql;
   global $myconf;
 
@@ -770,14 +770,19 @@ function ready_to_pick_orders(){
     
      $w=weight($row['Order Estimated Weight']);
 
+    $picker=_('Pick it');
+    $packer='';
+$status=$row['Order Current Dispatch State'];
      $data[]=array(
 		   'id'=>$row['Order Key']
-		   ,'public_id'=>sprintf("%d05",$row['Order Public ID'])
+		   ,'public_id'=>sprintf("%s",$row['Order Public ID'])
 		   ,'customer'=>$row['Order Customer Name']
 		   ,'wating_lap'=>$lap
 		   ,'e_weight'=>$w
 		   ,'date'=>$row['Order Last Updated Date']
-		   ,'pick_it'=>_('Pick it')
+		   ,'picker'=>$picker
+		   ,'packer'=>$packer
+		   ,'status'=>$status
 		   );
    }
 mysql_free_result($res);
