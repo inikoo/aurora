@@ -1,6 +1,8 @@
 <?php
 include_once('common.php');
 include_once('class.Store.php');
+include_once('class.CompanyArea.php');
+
 if(!$user->can_view('orders'))
   exit();
 
@@ -96,7 +98,10 @@ $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
 
 
-
+$warehouse_area=new CompanyArea('code','WAH');
+$pickers=$warehouse_area->get_staff_with_position_code('PICK');
+$smarty->assign('pickers',$pickers);
+print_r($pickers);
 
 $tipo_filter2=$_SESSION['state']['orders']['ready_to_pick_dn']['f_field'];
 $smarty->assign('filter2',$tipo_filter2);

@@ -150,6 +150,15 @@ $departments=array(
 
 foreach($departments as $area_code=>$departments_data) {
     $area=new CompanyArea('code',$area_code);
+    
+    if($area_code=='PRD')
+    $production_area_key=$area->id;
+       if($area_code=='WAH')
+    $warehouse_area_key=$area->id;
+       if($area_code=='OFC')
+    $office_area_key=$area->id;
+    
+    
     foreach($departments_data as $data) {
         $area->add_department($data);
     }
@@ -200,7 +209,14 @@ $positions=array(
                              'Company Position Code'=>'OFC.SK',
                              'Company Position Title'=>'Stock Controller',
                              'Company Position Description'=>'Stock Control'
-                         ),array(
+                         )
+                          
+                          
+                         
+                     )
+		  ,'SMA'=>array(
+			       
+                    array(
                              'Company Position Code'=>'BUY',
                              'Company Position Title'=>'Buyer',
                              'Company Position Description'=>'Buyer'
@@ -209,7 +225,6 @@ $positions=array(
                           
                          
                      )
-		 
                ,'OHA'=>array(
                          array(
                              'Company Position Code'=>'PICK',
@@ -256,11 +271,12 @@ $positions=array(
 						     )
 						     
 		 );
-
+$departments_keys=array();
 foreach($positions as $department_codes=>$positions_data) {
   foreach(preg_split('/,/',$department_codes) as $key =>$department_code ){
 
     $department=new CompanyDepartment('code',$department_code);
+    $departments_keys[$department_code]=$department->id;
     if(!$department->id){
       print_r($department);
     exit;
@@ -280,73 +296,75 @@ foreach($positions as $department_codes=>$positions_data) {
 $staff=array(
 	      'PROD.O'=>array(
 	     
-			      array('Staff Name'=>'Joanna Ciba','Staff Alias'=>'joana','Staff Type'=>'Temporal Worker')
-			      ,array('Staff Name'=>'Magdalena Dawiskiba','Staff Alias'=>'magda')
-			      ,array('Staff Name'=>'Dusan Belan','Staff Alias'=>'dusan')
-			      ,array('Staff Name'=>'Lucie Sicova','Staff Alias'=>'lucie')
-			      ,array('Staff Name'=>'Daniela Matovlava','Staff Alias'=>'daniela')
-			      ,array('Staff Name'=>'Olga Belanova','Staff Alias'=>'olga')
-			      ,array('Staff Name'=>'Dana Marsallova','Staff Alias'=>'dana')
-			      ,array('Staff Name'=>'Danielle Cox','Staff Alias'=>'danielle','Staff Type'=>'Temporal Worker')
+			      array('Staff Area Key'=>$production_area_key,'Staff Department Key'=>$departments_keys['GEN'],'Staff Name'=>'Joanna Ciba','Staff Alias'=>'joana','Staff Type'=>'Temporal Worker')
+			      ,array('Staff Area Key'=>$production_area_key,'Staff Department Key'=>$departments_keys['GEN'],'Staff Name'=>'Magdalena Dawiskiba','Staff Alias'=>'magda')
+			      ,array('Staff Area Key'=>$production_area_key,'Staff Department Key'=>$departments_keys['GEN'],'Staff Name'=>'Dusan Belan','Staff Alias'=>'dusan')
+			      ,array('Staff Area Key'=>$production_area_key,'Staff Department Key'=>$departments_keys['GEN'],'Staff Name'=>'Lucie Sicova','Staff Alias'=>'lucie')
+			      ,array('Staff Area Key'=>$production_area_key,'Staff Department Key'=>$departments_keys['GEN'],'Staff Name'=>'Daniela Matovlava','Staff Alias'=>'daniela')
+			      ,array('Staff Area Key'=>$production_area_key,'Staff Department Key'=>$departments_keys['GEN'],'Staff Name'=>'Olga Belanova','Staff Alias'=>'olga')
+			      ,array('Staff Area Key'=>$production_area_key,'Staff Department Key'=>$departments_keys['GEN'],'Staff Name'=>'Dana Marsallova','Staff Alias'=>'dana')
+			      ,array('Staff Area Key'=>$production_area_key,'Staff Department Key'=>$departments_keys['GEN'],'Staff Name'=>'Danielle Cox','Staff Alias'=>'danielle','Staff Type'=>'Temporal Worker')
 			      )
 	      ,'PROD.M'=>array(
 	     
-			      array('Staff Name'=>'Neal','Staff Alias'=>'neal')
+			      array('Staff Area Key'=>$production_area_key,'Staff Department Key'=>$departments_keys['GEN'],'Staff Name'=>'Neal','Staff Alias'=>'neal')
 			      )
 
 	      ,'PICK'=>array(
-			    array('Staff Name'=>'Steffanie Cox','Staff Alias'=>'stephanie','Staff Type'=>'Temporal Worker')
-			    ,array('Staff Name'=>'Adriana Bobokova','Staff Alias'=>'adriana')
-			    ,array('Staff Name'=>'Janet Walker','Staff Alias'=>'janet')
+			    array('Staff Area Key'=>$warehouse_area_key,'Staff Department Key'=>$departments_keys['OHA'],'Staff Name'=>'Steffanie Cox','Staff Alias'=>'stephanie','Staff Type'=>'Temporal Worker','Staff Currently Working'=>'No')
+			    ,array('Staff Area Key'=>$warehouse_area_key,'Staff Department Key'=>$departments_keys['OHA'],'Staff Name'=>'Adriana Bobokova','Staff Alias'=>'adriana')
+			    ,array('Staff Area Key'=>$warehouse_area_key,'Staff Department Key'=>$departments_keys['OHA'],'Staff Name'=>'Janet Walker','Staff Alias'=>'janet')
+			    , array('Staff Area Key'=>$warehouse_area_key,'Staff Department Key'=>$departments_keys['OHA'],'Staff Name'=>'Lenka Ondrisova','Staff Alias'=>'lenka','Staff Currently Working'=>'No')
 			    )
 	      ,'PACK'=>array(
-			     array('Staff Name'=>'Andrew Barry','Staff Alias'=>'andy')
-			     ,array('Staff Name'=>'Lucy Adams','Staff Alias'=>'lucy','Staff Type'=>'Temporal Worker')
+			     array('Staff Area Key'=>$warehouse_area_key,'Staff Department Key'=>$departments_keys['OHA'],'Staff Name'=>'Andrew Barry','Staff Alias'=>'andy')
+			     ,array('Staff Area Key'=>$warehouse_area_key,'Staff Department Key'=>$departments_keys['OHA'],'Staff Name'=>'Lucy Adams','Staff Alias'=>'lucy','Staff Type'=>'Temporal Worker')
+			     			     ,array('Staff Area Key'=>$warehouse_area_key,'Staff Department Key'=>$departments_keys['OHA'],'Staff Name'=>'Ben','Staff Alias'=>'ben','Staff Type'=>'Temporal Worker')
+
 			     )
 	       ,'WAH.SK'=>array(
-			     array('Staff Name'=>'Michael Wragg','Staff Alias'=>'michael')
-			     ,array('Staff Name'=>'Craige Blakemore','Staff Alias'=>'craige')
+			     array('Staff Area Key'=>$warehouse_area_key,'Staff Department Key'=>$departments_keys['STK'],'Staff Name'=>'Michael Wragg','Staff Alias'=>'michael')
+			     ,array('Staff Area Key'=>$warehouse_area_key,'Staff Department Key'=>$departments_keys['STK'],'Staff Name'=>'Brian','Staff Alias'=>'brian')
+
+			    
 			     )
 	       ,'OHA.M'=>array(
-			     array('Staff Name'=>'Tomas Belam','Staff Alias'=>'tomas')
-			   
+			     array('Staff Area Key'=>$warehouse_area_key,'Staff Department Key'=>$departments_keys['OHA'],'Staff Name'=>'Craige Blakemore','Staff Alias'=>'craige')
 			     )
-	       ,'OHA.DM'=>array(
-			     array('Staff Name'=>'Lenka Ondrisova','Staff Alias'=>'lenka')
-			     
-				)
+	  
 
 	      ,'BUY'=>array(
-			     array('Staff Name'=>'Alan W','Staff Alias'=>'alan')
+			     array('Staff Area Key'=>$office_area_key,'Staff Department Key'=>$departments_keys['SMA'],'Staff Name'=>'Alan W','Staff Alias'=>'alan')
 			     
 				)
 	      ,'OFC.SK'=>array(
-			     array('Staff Name'=>'Eric Zee','Staff Alias'=>'eric')
+			     array('Staff Area Key'=>$office_area_key,'Staff Department Key'=>$departments_keys['STK'],'Staff Name'=>'Eric Zee','Staff Alias'=>'eric')
 				)
 	      ,'WEB'=>array(
-			     array('Staff Name'=>'Raul Perusquia','Staff Alias'=>'raul')
+			     array('Staff Area Key'=>$office_area_key,'Staff Department Key'=>$departments_keys['CUS.UK'],'Staff Name'=>'Raul Perusquia','Staff Alias'=>'raul')
 				)
 	      ,'DIR'=>array(
-			     array('Staff Name'=>'David Hardy','Staff Alias'=>'david')
+			     array('Staff Area Key'=>$office_area_key,'Staff Department Key'=>$departments_keys['DIR'],'Staff Name'=>'David Hardy','Staff Alias'=>'david')
 				)
 	       ,'ACC'=>array(
-			     array('Staff Name'=>'Slavka Hardy','Staff Alias'=>'slavka')
+			     array('Staff Area Key'=>$office_area_key,'Staff Department Key'=>$departments_keys['ACC'],'Staff Name'=>'Slavka Hardy','Staff Alias'=>'slavka')
 			     )
 	       ,'MRK.O'=>array(
-			     array('Staff Name'=>'Katka Buchy','Staff Alias'=>'katka')
+			     array('Staff Area Key'=>$office_area_key,'Staff Department Key'=>$departments_keys['MRK'],'Staff Name'=>'Katka Buchy','Staff Alias'=>'katka','Staff Currently Working'=>'No')
+			     ,array('Staff Area Key'=>$office_area_key,'Staff Department Key'=>$departments_keys['MRK'],'Staff Name'=>'Tomas Belam','Staff Alias'=>'tomas')
 			     )
 
 
 	      ,'CUS'=>array(
-			    array('Staff Name'=>'Kerry Miskelly','Staff Alias'=>'kerry')
-			    ,array('Staff Name'=>'Sarka Doubravova','Staff Alias'=>'sarka')
-			    ,array('Staff Name'=>'Zoe','Staff Alias'=>'zoe','Staff Currently Working'=>'No')
-			    ,array('Staff Name'=>'Philippe Buchy','Staff Alias'=>'philippe')
-			    ,array('Staff Name'=>'Martina Otte','Staff Alias'=>'martina')
-			    ,array('Staff Name'=>'Nassim','Staff Alias'=>'nassim')
-			    ,array('Staff Name'=>'Nabil','Staff Alias'=>'nabil','Staff Currently Working'=>'No')
-			    ,array('Staff Name'=>'Amanda Fray','Staff Alias'=>'amanda')
-			    ,array('Staff Name'=>'Urszula Baka','Staff Alias'=>'urszula')
+			    array('Staff Area Key'=>$office_area_key,'Staff Department Key'=>$departments_keys['CUS.UK'],'Staff Name'=>'Kerry Miskelly','Staff Alias'=>'kerry')
+			    ,array('Staff Area Key'=>$office_area_key,'Staff Department Key'=>$departments_keys['CUS.UK'],'Staff Name'=>'Sarka Doubravova','Staff Alias'=>'sarka')
+			    ,array('Staff Area Key'=>$office_area_key,'Staff Department Key'=>$departments_keys['CUS.UK'],'Staff Name'=>'Zoe','Staff Alias'=>'zoe','Staff Currently Working'=>'No')
+			    ,array('Staff Area Key'=>$office_area_key,'Staff Department Key'=>$departments_keys['CUS.UK'],'Staff Name'=>'Philippe Buchy','Staff Alias'=>'philippe')
+			    ,array('Staff Area Key'=>$office_area_key,'Staff Department Key'=>$departments_keys['CUS.DE'],'Staff Name'=>'Martina Otte','Staff Alias'=>'martina')
+			    ,array('Staff Area Key'=>$office_area_key,'Staff Department Key'=>$departments_keys['CUS.FR'],'Staff Name'=>'Nassim','Staff Alias'=>'nassim','Staff Currently Working'=>'No')
+			    ,array('Staff Area Key'=>$office_area_key,'Staff Department Key'=>$departments_keys['CUS.FR'],'Staff Name'=>'Nabil','Staff Alias'=>'nabil','Staff Currently Working'=>'No')
+			    ,array('Staff Area Key'=>$office_area_key,'Staff Department Key'=>$departments_keys['CUS.UK'],'Staff Name'=>'Amanda Fray','Staff Alias'=>'amanda')
+			    ,array('Staff Area Key'=>$office_area_key,'Staff Department Key'=>$departments_keys['CUS.PL'],'Staff Name'=>'Urszula Baka','Staff Alias'=>'urszula')
 			    
 			    
 			    )

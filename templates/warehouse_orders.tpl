@@ -2,20 +2,32 @@
 <div id="bd" >
   <span class="nav2 onleft"><a class="selected" id="warehouse_operations" href="warehouse_orders.php">{t}Warehouse Operations{/t}</a></span>
 
+  <div  id="orders_table" class="data_table" style="clear:left;margin-top:23px">
+    <span class="clean_table_title">{t}Orders In Warehouse{/t}</span>
 
- 
+     
+   <div  style="font-size:90%">
+   
+       
+          <span   style="float:right;margin-left:20px" class="table_type  state_details {if $table_type=='all_contacts'}selected{/if}"  id="restrictions_all_contacts" table_type="all_contacts"  >{t}All Wanting Orders{/t} ({$store->get('Total Customer Contacts')})</span>
+  <span   style="float:right;margin-left:20px" class="table_type  state_details {if $table_type=='all_customers'}selected{/if}"  id="restrictions_all_customers" table_type="all_customers"   >{t}Ready to Pick{/t} ({$store->get('Total Customers')})</span>
+  <span   style="float:right;margin-left:20px" class="table_type  state_details {if $table_type=='active_customers'}selected{/if}"  id="restrictions_active_customers"  table_type="active_customers"  >{t}Ready to Pack{/t} ({$store->get('Active Customers')})</span>
+  <span   style="float:right;margin-left:20px" class="table_type  state_details {if $table_type=='active_customers'}selected{/if}"  id="restrictions_active_customers"  table_type="active_customers"  >{t}Ready to Ship{/t} ({$store->get('Active Customers')})</span>
 
-
+         
+         
+     </div>
+  <div style="clear:both;margin:0 0px;padding:0 20px ;border-bottom:1px solid #999"></div>
   
+  <table style="float:left;margin:0 0 0 0px ;padding:0;height:15px;"  class="options">
+	<tr>
+	 
 
-  <div  id="orders_table" class="data_table" style="clear:left">
-    <span class="clean_table_title">{t}Ready to Pick{/t}</span>
-    <div  class="clean_table_caption"  style="clear:both;">
-      <div style="float:left;"><div id="table_info0" class="clean_table_info"><span id="rtext0"></span> <span class="rtext_rpp" id="rtext_rpp0"></span> <span class="filter_msg"  id="filter_msg0"></span></div></div>
-      <div class="clean_table_filter"  id="clean_table_filter0"><div class="clean_table_info"><span id="filter_name0" class="filter_name"   class="filter_name">{$filter_name0}</span>: <input style="border-bottom:none" id='f_input0' value="{$filter_value0}" size=10/><div id='f_container0'></div></div></div>
-      <div class="clean_table_controls" style="" ><div><span  style="margin:0 5px" id="paginator0"></span></div></div>
-    </div>
-    <div  id="table0"   class="data_table_container dtable btable "> </div>
+	</tr>
+      </table>
+{include file='table_splinter.tpl' table_id=0 filter_name=$filter_name0 filter_value=$filter_value0  }
+
+    <div  id="table0" style="font-size:90%"  class="data_table_container dtable btable "> </div>
   </div>
   
   
@@ -48,7 +60,7 @@
 
 
 <div id="pick_it_dialog">
-{foreach from=$pickers_list item=picker}
+{foreach from=$pickers item=picker}
 <div></div>
 {/foreach}
 
