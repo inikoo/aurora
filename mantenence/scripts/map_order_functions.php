@@ -6700,14 +6700,14 @@ if(preg_match('/Mrs Roberta Vianello/i',$header_data['address1'])){
   if(preg_match('/@/',$act_data['country'])){
     $act_data['country']='';
 
-    if(preg_match('/london/i',$act_data['town']) or checkPostcode($act_data['postcode'])  )
+    if( checkPostcode($act_data['postcode'])  )
 $act_data['country']='united kingdom';
   }
   
  if(preg_match('/@/',$header_data['country'])){
     $header_data['country']='';
 
-    if(preg_match('/london/i',$header_data['town'])  or checkPostcode($header_data['postcode'])  )
+    if( checkPostcode($header_data['postcode'])  )
 $header_data['country']='united kingdom';
   }
 
