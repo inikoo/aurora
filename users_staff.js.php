@@ -276,7 +276,7 @@ var active=function(el, oRecord, oColumn, oData){
 
 
  function init(){
- var Dom   = YAHOO.util.Dom;
+ init_search('users');
  var oACDS = new YAHOO.util.FunctionDataSource(mygetTerms);
  oACDS.queryMatchContains = true;
  var oAutoComp = new YAHOO.widget.AutoComplete("f_input0","f_container0", oACDS);

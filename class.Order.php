@@ -2568,7 +2568,9 @@ if($this->update_customer){
                     $tax_code='GBR.S';
 
                 } else {
-                    $sql=sprintf("select `European Union` from kbase.`Country Dimension` where `Country Code`=%s      ",$country);
+                    $sql=sprintf("select `European Union` from kbase.`Country Dimension` where `Country Code`=%s      "
+                    ,prepare_mysql($country));
+                    //print $sql;
                     $res=mysql_query($sql);
                     if ($row=mysql_fetch_array($res)) {
                         if ($row['European Union']=="Yes") {

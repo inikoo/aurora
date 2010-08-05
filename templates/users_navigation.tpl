@@ -1,7 +1,7 @@
-<span class="nav2 onleft"><a href="suppliers.php">{t}Suppliers{/t}</a></span>
-<span class="nav2 onleft"><a href=porders.php">{t}Purchase Orders{/t}</a></span>
-<span class="nav2 onleft"><a href="supplier_products.php">{t}Suppliers Products{/t}</a></span>
 
+<span class="nav2 onleft"><a {if $users_type=='staff'}class="selected"{/if} href="users_staff.php">{t}Staff Users{/t}</a></span>
+<span class="nav2 onleft"><a {if $users_type=='staff'}class="selected"{/if} href="users_supplier.php">{t}Supplier Users{/t}</a></span>
+<span class="nav2 onleft"><a {if $users_type=='staff'}class="selected"{/if} href="users_customer.php">{t}Customer Users{/t}</a></span>
 
 
 <div class="right_box">
@@ -31,6 +31,7 @@
 <div id="{$search_scope}_search_results" style="font-size:10px;float:right;background:#fff;border:1px solid #777;padding:10px;margin-top:0px;width:500px;position:absolute;z-index:20;top:-500px">
 <table id="{$search_scope}_search_results_table"></table>
 </div>
+
 
 
 
