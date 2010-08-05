@@ -372,7 +372,7 @@ while(($_cols = fgetcsv($handle_csv))!== false){
   //print_r($_cols);
   
 
-  $code=$_cols[5];
+  $code=trim( mb_convert_encoding($cols[5], "UTF-8", "ISO-8859-1,UTF-8"));
 
  
   if($code=='FO-A1' and !$inicio){
@@ -434,7 +434,7 @@ foreach($__cols as $cols){
 
 
   $price=$cols[7+2];
-  $supplier_code=_trim($cols[23]);
+  $supplier_code=trim( mb_convert_encoding($cols[23], "UTF-8", "ISO-8859-1,UTF-8"));
   $part_code=_trim($cols[22]);
   $supplier_cost=$cols[26];
   
