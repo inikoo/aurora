@@ -14,18 +14,24 @@
 include_once('common.php');
 if(!$user->can_view('users'))
   exit();
+  
+  
+ 
 
+		 
 $css_files=array(
 		 $yui_path.'reset-fonts-grids/reset-fonts-grids.css',
 		 $yui_path.'menu/assets/skins/sam/menu.css',
-		 //		 $yui_path.'datatable/assets/skins/sam/datatable.css',
-		 // $yui_path.'container/assets/skins/sam/container.css',
 		 $yui_path.'button/assets/skins/sam/button.css',
-		 $yui_path.'build/assets/skins/sam/skin.css',
+		 $yui_path.'assets/skins/sam/autocomplete.css',
 		 'common.css',
-		 // 'container.css',
+		 'container.css',
+		 'button.css',
 		 'table.css'
-		 );
+		 
+		 );		 
+		 
+		 
 $js_files=array(
 		$yui_path.'utilities/utilities.js',
 		$yui_path.'json/json-min.js',
@@ -38,11 +44,29 @@ $js_files=array(
 		$yui_path.'menu/menu-min.js',
 		'common.js.php',
 		'table_common.js.php',
+		'js/search.js',
 		'users_staff.js.php',
 		
 		);
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
+
+
+$general_options_list=array();
+if($user->can_edit('users')){
+  $general_options_list[]=array('tipo'=>'url','url'=>'edit_users_staff.php','label'=>_('Edit Users'));
+  
+}
+
+$smarty->assign('general_options_list',$general_options_list);
+
+
+
+$smarty->assign('search_label',_('Users'));
+$smarty->assign('search_scope','users');
+
+
+
 
 
 

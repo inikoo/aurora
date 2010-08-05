@@ -84,6 +84,9 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 
 function init(){
+ init_search('orders');
+
+
     var oACDS = new YAHOO.util.FunctionDataSource(mygetTerms);
     oACDS.queryMatchContains = true;
     var oAutoComp = new YAHOO.widget.AutoComplete("f_input0","f_container0", oACDS);

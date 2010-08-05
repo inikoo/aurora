@@ -99,7 +99,7 @@ $smarty->assign('js_files',$js_files);
 
 
 $warehouse_area=new CompanyArea('code','WAH');
-$pickers=$warehouse_area->get_staff_with_position_code('PICK');
+$pickers=$warehouse_area->get_current_staff_with_position_code('PICK');
 $smarty->assign('pickers',$pickers);
 print_r($pickers);
 

@@ -1,18 +1,7 @@
 {include file='header.tpl'}
 <div id="bd" >
- <span class="nav2 onleft"><span   id="orders" {if $view=='orders'}class="selected"{/if} >{t}Orders{/t}</span></span>
-  <span class="nav2 onleft"><span id="invoices" {if $view=='invoices'}class="selected"{/if} >{t}Invoices{/t}</span></span>
-  <span class="nav2 onleft"><span  id="dn"  {if $view=='dn'}class="selected"{/if} >{t}Delivery Notes{/t}</span></span>
-  <span class="nav2 onleft"><a id="warehouse_operations" href="warehouse_orders.php">{t}Warehouse Operations{/t}</a></span>
+ {include file='orders_navigation.tpl'}
 
-
- <div style="float:right;border: 0px solid #ddd;text-align:right;padding:10px">
-    <form  id="prod_search_form" action="orders.php" method="GET" >
-      <label>{t}Order Search{/t}:</label><input size="12" class="text search" id="prod_search" value="" name="search"/><img onclick="document.getElementById('prod_search_form').submit()"align="absbottom" id="submit_search" class="submitsearch" src="art/icons/zoom.png" alt="Submit search">
-    </form>
- 
-
-  </div>
 
 
 

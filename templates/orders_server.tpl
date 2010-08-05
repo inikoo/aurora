@@ -1,17 +1,8 @@
 {include file='header.tpl'}
 <div id="bd" >
+ {include file='orders_navigation.tpl'}
+
  
-
-
- <div style="float:right;border: 0px solid #ddd;text-align:right;padding:10px">
-    <form  id="prod_search_form" action="orders.php" method="GET" >
-      <label>{t}Order Search{/t}:</label><input size="12" class="text search" id="prod_search" value="" name="search"/><img onclick="document.getElementById('prod_search_form').submit()"align="absbottom" id="submit_search" class="submitsearch" src="art/icons/zoom.png" alt="Submit search">
-    </form>
-  
-    <div id="cal1Container" style="position:absolute;display:none; z-index:2"></div>
-    <div style="position:relative;right:-80px"><div id="cal2Container" style="display:none; z-index:2;position:absolute"></div></div>
-
-  </div>
 
 <div style="clear:left;">
     <h1>{t}Orders Corporate Overview{/t}</h1>

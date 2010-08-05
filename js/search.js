@@ -16,6 +16,18 @@ var submit_search_on_enter=function(e,tipo){
 function init_search(type){
 switch(type)
 {
+case 'users':
+search_scope='users';
+    var store_name_oACDS = new YAHOO.util.FunctionDataSource(search_users);
+  break;
+case 'orders':
+search_scope='orders';
+    var store_name_oACDS = new YAHOO.util.FunctionDataSource(search_orders);
+  break;
+  case 'orders_store':
+search_scope='orders_store';
+    var store_name_oACDS = new YAHOO.util.FunctionDataSource(search_orders_in_store);
+  break;
 case 'products':
 search_scope='products';
     var store_name_oACDS = new YAHOO.util.FunctionDataSource(search_products);
@@ -121,6 +133,19 @@ function search_all(query){
 function search_products(query){
     search(query,'products','all_stores');
 }
+
+function search_orders(query){
+    search(query,'orders','all_stores');
+}
+
+function search_orders_in_store(query){
+    search(query,'orders','stores');
+}
+
+function search_users(query){
+    search(query,'users','');
+}
+
 
 function search_locations_in_warehouse(query){
     search(query,'locations','warehouse');

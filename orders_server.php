@@ -38,6 +38,23 @@ $css_files=array(
 		 'container.css',
 		 'table.css'
 		 );
+		 
+		 
+	$css_files=array(
+		 $yui_path.'reset-fonts-grids/reset-fonts-grids.css',
+		 $yui_path.'menu/assets/skins/sam/menu.css',
+		 $yui_path.'button/assets/skins/sam/button.css',
+		 $yui_path.'assets/skins/sam/autocomplete.css',
+
+		 //	 $yui_path.'assets/skins/sam/autocomplete.css',
+		 'common.css',
+		 'container.css',
+		 'button.css',
+		 'table.css',
+		 'css/dropdown.css'
+		 );	 
+		 
+	
 $js_files=array(
 
 		$yui_path.'utilities/utilities.js',
@@ -49,13 +66,27 @@ $js_files=array(
 		$yui_path.'container/container_core-min.js',
 		$yui_path.'menu/menu-min.js',
 		$yui_path.'calendar/calendar-min.js',
+				'js/php.default.min.js',
 		'common.js.php',
 		'table_common.js.php',
+		'js/search.js',
 		'orders_server.js.php'
 		);
 
 
 $q='';
+
+$general_options_list=array();
+
+
+
+$smarty->assign('general_options_list',$general_options_list);
+$smarty->assign('search_label',_('Orders'));
+$smarty->assign('search_scope','orders');
+
+
+
+
 
 $smarty->assign('parent','orders');
 $smarty->assign('title', _('Orders'));

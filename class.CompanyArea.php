@@ -349,22 +349,48 @@ while($row=mysql_fetch_array($res,MYSQL_ASSOC)){
 }
 }
 
-function get_staff_with_position_code($position_code){
+function get_staff_with_position_code($position_code,$options=false){
+$for_smarty=false;
+
 $positions=array();
 $sql=sprintf('Select * from `Staff Dimension` SD  left join `Company Position Staff Bridge` B on (B.`Staff Key`=SD.`Staff Key`) left join  `Company Position Dimension` CPD on (CPD.`Company Position Key`=B.`Position Key`) where `Staff Area Key`=%d and `Company Position Code`=%s' 
 ,$this->id
 ,prepare_mysql($position_code)
 );
-print $sql;
+//print $sql;
 $res=mysql_query($sql);
 while($row=mysql_fetch_array($res,MYSQL_ASSOC)){
-    $positions[$row['Company Position Key']]=$row;
+
+
+if($for_smarty){
+foreach($row as $key=>$value){
+$row_for_smarty[preg_replace('/\s/','',$key)]=$value;
+}
+    $positions[$row['Staff Key']]=$row_for_smarty;
+
+}else{
+
+
+    $positions[$row['Staff Key']]=$row;
 }
 
-
+}
 return $positions;
 }
 
+function get_current_staff_with_position_code($position_code,$options=''){
+$positions=array();
+$sql=sprintf('Select * from `Staff Dimension` SD  left join `Company Position Staff Bridge` B on (B.`Staff Key`=SD.`Staff Key`) left join  `Company Position Dimension` CPD on (CPD.`Company Position Key`=B.`Position Key`) where `Staff Area Key`=%d and `Company Position Code`=%s and `Staff Currently Working`="Yes"' 
+,$this->id
+,prepare_mysql($position_code)
+);
+//print $sql;
+$res=mysql_query($sql);
+while($row=mysql_fetch_array($res,MYSQL_ASSOC)){
+    $positions[$row['Staff Key']]=$row;
+}
+return $positions;
+}
 
 function load_departments(){
 $this->departments=array();

@@ -1,15 +1,12 @@
 {include file='header.tpl'}
+
 <div id="bd" >
-<span class="nav2 onleft"><a class="selected" href="users_staff.php">{t}Staff Users{/t}</a></span>
-<span class="nav2 onleft"><a href="users_supplier.php">{t}Supplier Users{/t}</a></span>
-<span class="nav2 onleft"><a href="users_customer.php">{t}Customer Users{/t}</a></span>
+{include file='users_navigation.tpl'}
+
 
 
   <div id="yui-main">
-    <div style="width:300px;float:right;padding:10px;text-align:right">
-    <span ><a class="state_details" href="edit_users_staff.php">{t}Edit/Add Users{/t}</a></span>
-      
-    </div>
+   
     <div class="data_table" style="margin-top:25px">
       <span class="clean_table_title">{t}Staff Users{/t}</span>
       <div  class="clean_table_caption"  style="clear:both;">
