@@ -27,8 +27,6 @@ if (!$db){print "Error can not access the database\n";exit;}
   
 
 $codigos=array();
-
-
 require_once '../../common_functions.php';
 mysql_query("SET time_zone ='+0:00'");
 mysql_query("SET NAMES 'utf8'");
@@ -717,9 +715,17 @@ $description='Rose Garden (Red)';
 	  $department_code='Aterp';
       	if(preg_match('/Woodware Dept|Departamento de Madera/i',$department_name) )
 	  $department_code='Wood';
+	if(preg_match('/Fragrancias de casa - AW -Regalos/i',$department_name) )
+	  $department_code='Casa';
+	if(preg_match('/Departamento de Aromaterapia/i',$department_name) )
+	  $department_code='Aroma';
+	  if(preg_match('/Paraiso del Ba/i',$department_name) )
+	  $department_code='Bath';
+	   if(preg_match('/Rincón Bisuteía/i',$department_name) )
+	  $department_code='Bisu';
 	if($department_code==''){
 	
-	  exit("Name: $department_name\n");
+	  exit("name: $department_name\n");
 	
 	}
 
@@ -863,130 +869,33 @@ $description='Rose Garden (Red)';
 
 $codigos[$code]=1;
        	$product=new Product('find',$data,'create');
-	if($product->new){
+       	
+       	
+       	
+       	
+	if($product->new_id){
 	
 	
 	
-	 $product->update_for_sale_since(date("Y-m-d H:i:s",strtotime("now +1 seconds")));
+	// $product->update_for_sale_since(date("Y-m-d H:i:s",strtotime("now +1 seconds")));
 
 
 
 	$scode=_trim($cols[22]);
 	$supplier_code=$cols[23];
+    update_supplier_part($code,$scode,$supplier_code,$units,$w,$product,$description,$supplier_cost);
+	  
+	    $product->set_duplicates_as_historic();
+ }
        
-	if(preg_match('/^SG\-|^info\-/i',$code))
-	  $supplier_code='AW';
-	if($supplier_code=='AW')
-	  $scode=$code;
-
-	$the_supplier_data=array(
-				 'Supplier Name'=>$supplier_code,
-				 'Supplier Code'=>$supplier_code,
-				 );
-
-	if($scode=='SSK-452A' and $supplier_code=='Smen')
-	  $scode='SSK-452A bis';
-
-
-
-
-	if($supplier_code=='' or $supplier_code=='0' or preg_match('/^costa$/i',$supplier_code)){
-	  $supplier_code='Unknown';
-	  $the_supplier_data=array(
-				   'Supplier Name'=>'Unknown Supplier'
-				   ,'Supplier Code'=>$supplier_code
-				   );
-	}
-	$supplier=new Supplier('code',$supplier_code);
-	if(!$supplier->id){
-	  //print "neew: $supplier_code";
-	  $supplier=new Supplier('new',$the_supplier_data);
-	}
-	//print "$supplier_code";
-
-
-
-	$scode=_trim($scode);
-	$scode=preg_replace('/^\"\s*/','',$scode);
-	$scode=preg_replace('/\s*\"$/','',$scode);
-	if(preg_match('/\d+ or more|0.10000007|8.0600048828125|0.050000038|0.150000076|0.8000006103|1.100000610|1.16666666|1.650001220|1.80000122070/i',$scode))
-	  $scode='';
-	if(preg_match('/^(\?|new|\d|0.25|0.5|0.8|0.8000006103|01 Glass Jewellery Box|1|0.1|0.05|1.5625|10|\d{1,2}\s?\+\s?\d{1,2}\%)$/i',$scode))
-	  $scode='';
-	if($scode=='same')
-	  $scode=$code;
-	if($scode=='' or $scode=='0')
-	  $scode='?'.$code;
-	  
-	  
-	  
-	  //$scode= preg_replace('/\?/','_unk',$scode);
-	  
-	$sp_data=array(
-		       'Supplier Key'=>$supplier->id,
-		       'Supplier Product Code'=>$scode,
-		       'Supplier Product Cost'=>sprintf("%.4f",$supplier_cost),
-		       'Supplier Product Name'=>$description,
-		       'Supplier Product Description'=>$description,
-		       'Supplier Product Valid From'=>date('Y-m-d H:i:s'),
-		       'Supplier Product Valid To'=>date('Y-m-d H:i:s')
-		       );
-	//print_r($sp_data);
-	$supplier_product=new SupplierProduct('find',$sp_data,'create');
-	$part_data=array(
-			 'Part Most Recent'=>'Yes',
-			 'Part XHTML Currently Supplied By'=>sprintf('<a href="supplier.php?id=%d">%s</a>',$supplier->id,$supplier->get('Supplier Code')),
-			 'Part XHTML Currently Used In'=>sprintf('<a href="product.php?id=%d">%s</a>',$product->id,$product->get('Product Code')),
-			 'Part XHTML Description'=>preg_replace('/\(.*\)\s*$/i','',$product->get('Product XHTML Short Description')),
-			 'part valid from'=>date('Y-m-d H:i:s'),
-			 'part valid to'=>date('Y-m-d H:i:s'),
-			 'Part Gross Weight'=>$w
-			 );
-	$part=new Part('new',$part_data);
-	//	print_r($part->data);
-	
-
-	$rules[]=array('Part Sku'=>$part->data['Part SKU'],
-		       'Supplier Product Units Per Part'=>$units
-		       ,'supplier product part most recent'=>'Yes'
-		       ,'supplier product part valid from'=>date('Y-m-d H:i:s')
-		       ,'supplier product part valid to'=>date('Y-m-d H:i:s')
-		       ,'factor supplier product'=>1
-		       );
-
-	
-
-	$supplier_product->new_part_list('',$rules);
-
-	
-	$pl_header=array();
-	$part_list[]=array(
-			   'Product ID'=>$product->get('Product ID'),
-			   'Part SKU'=>$part->get('Part SKU'),
-			   'Product Part Id'=>1,
-			   'requiered'=>'Yes',
-			   'Parts Per Product'=>1,
-			   'Product Part Type'=>'Simple Pick'
-			   );
-	$product->new_part_list($pl_header,$part_list);
-	$supplier_product->load('used in');
-	$product->load('parts');
-	$part->load('used in');
-	$part->load('supplied by');
-    	$product->load('cost');
-     
-   //  if($product->new_key){
-    //    $product->change_current_key($product->new_key_id);
-    // }
-     
-     }
-   
-//   $product->get_data('pid',$product->pid);
-   //print_r($product);
      $product->change_current_key($product->id);
-    
-     $product->update_rrp('Product RRP',$rrp);
+     //print_r($cols);
+     //print $product->data['Product Code'].": ".$product->data['Product RRP']." -> $rrp\n";
      
+     $product->update_rrp('Product RRP',$rrp);
+
+     
+   
      
      
   }else{
@@ -1060,7 +969,7 @@ $codigos[$code]=1;
     if( ($cols[8]!='' and preg_match('/Sub Total/i',$cols[13])) or preg_match('/Bathroom Heaven/',$cols[8]) or $cols[8]=='Paradise Accesories' or preg_match('/Departamento de Bolsas/',$cols[8]) ){
       
      
-      $department_name=$cols[8];
+      $department_name=trim( mb_convert_encoding($cols[8], "UTF-8", "ISO-8859-1,UTF-8"));
       $department_position=$column;
   
       //  print_r($cols);
@@ -1079,7 +988,749 @@ $codigos[$code]=1;
 }
 
 
+function update_supplier_part($code,$scode,$supplier_code,$units,$w,$product,$description,$supplier_cost){
+global $myconf;
+ $product->update_for_sale_since(date("Y-m-d H:i:s",strtotime("now +1 seconds")));
+	if(preg_match('/^SG\-|^info\-/i',$code))
+	  $supplier_code='AW';
+	if($supplier_code=='AW')
+	  $scode=$code;
 
+
+
+	if($scode=='SSK-452A' and $supplier_code=='Smen')
+	  $scode='SSK-452A bis';
+
+
+	if(preg_match('/^(StoneM|Smen)$/i',$supplier_code)){
+	  $supplier_code='StoneM';
+	}
+
+
+		$the_supplier_data=array(
+		      'name'=>$supplier_code,
+		      'code'=>$supplier_code,
+		      );
+
+	// Suppplier data
+	if(preg_match('/Ackerman|Ackerrman|Akerman/i',$supplier_code)){
+	  $supplier_code='Ackerman';
+	  $the_supplier_data=array(
+				   'Supplier Name'=>'Ackerman Group',
+				   'Supplier Code'=>$supplier_code
+				   
+				   ,'Supplier Address Line 1'=>'Unit 15/16'
+				   ,'Supplier Address Line 2'=>'Hickman Avenue'
+				   ,'Supplier Address Line 3'=>''
+				   ,'Supplier Address Town'=>'London'
+				   ,'town_d1'=>''
+				   ,'town_d2'=>'Chingford'
+				   ,'Supplier Address Country Name'=>'UK'
+				   ,'country_d1'=>''
+				   ,'country_d2'=>''
+				   ,'Supplier Address Postal Code'=>'E4 9JG'
+				   
+				   ,'Supplier Main Plain Email'=>'office@ackerman.co.uk'
+				   ,'Supplier Main Plain Telephone'=>'020 8527 6439'
+				   );
+	}
+if(preg_match('/^puck$/i',$supplier_code)){
+	  $supplier_code='Puck';
+	  $the_supplier_data=array(
+				   'Supplier Name'=>'Puckator',
+				   'Supplier Code'=>$supplier_code
+				   ,'Supplier Address Line 1'=>'Lowman Works'
+				   ,'Supplier Address Line 2'=>''
+				   ,'Supplier Address Line 3'=>''
+				   ,'Supplier Address Town'=>'East Taphouse'
+				   ,'town_d1'=>''
+				   ,'town_d2'=>'Near Liskeard'
+				   ,'Supplier Address Country Name'=>'UK'
+				   ,'country_d1'=>''
+				   ,'country_d2'=>''
+				   ,'default_country_id'=>$myconf['country_id']
+				   ,'Supplier Address Postal Code'=>'PL14 4NQ'
+
+				   ,'Supplier Main Plain Email'=>'accounts@puckator.co.uk'
+				   ,'Supplier Main Plain Telephone'=>'1579321550'
+				   ,'Supplier Main Plain FAX'=>'1579321520'
+				   );
+	}
+ 
+ if(preg_match('/^decent gem$/i',$supplier_code)){
+   $supplier_code='DecGem';
+   $the_supplier_data=array(
+			    'Supplier Name'=>'Decent Gemstone Exports',
+			    'Supplier Code'=>$supplier_code
+			  
+					
+			    ,'Supplier Address Line 1'=>"Besides Balaji's Mandir"
+			    ,'Supplier Address Line 2'=>'Near Rajputwad'
+			    ,'Supplier Address Line 3'=>''
+			    ,'Supplier Address Town'=>'Khambhat'
+			    ,'town_d1'=>''
+			    ,'town_d2'=>''
+			    ,'Supplier Address Country Name'=>'India'
+			    ,'country_d1'=>''
+			    ,'country_d2'=>''
+			    ,'default_country_id'=>$myconf['country_id']
+			    ,'Supplier Address Postal Code'=>'388620'
+					
+			    ,'Supplier Main Plain Email'=>'decentstone@sancharnet.in'
+			    ,'Supplier Main Plain Telephone'=>'00917926578604'
+			    ,'Supplier Main Plain FAX'=>'00917926584997'
+			    );
+ }
+  if(preg_match('/^kiran$/i',$supplier_code)){
+
+   $the_supplier_data=array(
+			    'Supplier Name'=>'Kiran Agencies',
+			    'Supplier Code'=>$supplier_code
+			   
+						  ,'Supplier Address Line 1'=>"4D Garstin Place"
+						  ,'Supplier Address Line 2'=>''
+						  ,'Supplier Address Line 3'=>''
+						  ,'Supplier Address Town'=>'Kolkata'
+						  ,'town_d1'=>''
+						  ,'town_d2'=>''
+						  ,'Supplier Address Country Name'=>'India'
+						  ,'country_d1'=>''
+						  ,'country_d2'=>''
+						  ,'default_country_id'=>$myconf['country_id']
+						  ,'Supplier Address Postal Code'=>'700001'
+						  
+			    ,'Supplier Main Plain Telephone'=>'919830020595'
+
+			    );
+ }
+ 
+
+if(preg_match('/^watkins$/i',$supplier_code)){
+
+   $the_supplier_data=array(
+			    'Supplier Name'=>'Watkins Soap Co Ltd',
+			    'Supplier Code'=>$supplier_code
+			  
+			    
+			    ,'Supplier Address Line 1'=>"Reed Willos Trading Est"
+			    ,'Supplier Address Line 2'=>'Finborough Rd'
+			    ,'Supplier Address Line 3'=>''
+			    ,'Supplier Address Town'=>'Stowmarket'
+			    ,'town_d1'=>''
+			    ,'town_d2'=>''
+			    ,'Supplier Address Country Name'=>'UK'
+			    ,'country_d1'=>''
+			    ,'country_d2'=>''
+			    ,'default_country_id'=>$myconf['country_id']
+			    ,'Supplier Address Postal Code'=>'IP14 3BU'
+			    
+
+			    ,'Supplier Main Plain Telephone'=>'01142501012'
+			    ,'Supplier Main Plain FAX'=>'01142501006'
+			    );
+ }
+
+
+
+if(preg_match('/^decree$/i',$supplier_code)){
+
+   $the_supplier_data=array(
+			    'Supplier Name'=>'Decree Thermo Limited',
+			    'Supplier Code'=>$supplier_code
+			    
+			    ,'Supplier Address Line 1'=>"300 Shalemoor"
+			    ,'Supplier Address Line 2'=>'Finborough Rd'
+			    ,'Supplier Address Line 3'=>''
+			    ,'Supplier Address Town'=>'Sheffield'
+			    ,'town_d1'=>''
+			    ,'town_d2'=>''
+			    ,'Supplier Address Country Name'=>'UK'
+			    ,'country_d1'=>''
+			    ,'country_d2'=>''
+			    ,'default_country_id'=>$myconf['country_id']
+			    ,'Supplier Address Postal Code'=>'S3 8AL'
+			    
+			    ,'Supplier Main Contact Name'=>'Zoie'
+			    ,'Supplier Main Plain Email'=>'Watkins@soapfactory.fsnet.co.uk'
+			    ,'Supplier Main Plain Telephone'=>'01449614445'
+			    ,'Supplier Main Plain FAX'=>'014497111643'
+			    );
+ }
+
+if(preg_match('/^cbs$/i',$supplier_code)){
+
+   $the_supplier_data=array(
+			    'Supplier Name'=>'Carrierbagshop',
+			    'Supplier Code'=>$supplier_code
+			    
+			    ,'Supplier Address Line 1'=>"Unit C18/21"
+			    ,'Supplier Address Line 2'=>'Hastingwood trading Estate'
+			    ,'Supplier Address Line 3'=>'35 Harbet Road'
+			    ,'Supplier Address Town'=>'London'
+			    ,'town_d1'=>''
+			    ,'town_d2'=>''
+			    ,'Supplier Address Country Name'=>'UK'
+			    ,'country_d1'=>''
+			    ,'country_d2'=>''
+			    ,'default_country_id'=>$myconf['country_id']
+			    ,'Supplier Address Postal Code'=>'N18 3HU'
+			    
+			    ,'Supplier Main Contact Name'=>'Neil'
+			    ,'Supplier Main Plain Email'=>'info@carrierbagshop.co.uk'
+			    ,'Supplier Main Plain Telephone'=>'08712300980'
+			    ,'Supplier Main Plain FAX'=>'08712300981'
+			    );
+ }
+
+
+if(preg_match('/^giftw$/i',$supplier_code)){
+
+   $the_supplier_data=array(
+			    'Supplier Name'=>'Giftworks Ltd',
+			    'Supplier Code'=>$supplier_code
+			  
+			    ,'Supplier Address Line 1'=>"Unit 14"
+			    ,'Supplier Address Line 2'=>'Cheddar Bussiness Park'
+			    ,'Supplier Address Line 3'=>'Wedmore Road'
+			    ,'Supplier Address Town'=>'Cheddar'
+			    ,'town_d1'=>''
+			    ,'town_d2'=>''
+			    ,'Supplier Address Country Name'=>'UK'
+			    ,'country_d1'=>''
+			    ,'country_d2'=>''
+			    ,'default_country_id'=>$myconf['country_id']
+			    ,'Supplier Address Postal Code'=>'BS27 3EB'
+						
+			    ,'Supplier Main Plain Email'=>'info@giftworks.tv'
+			    ,'Supplier Main Plain Telephone'=>'441934742777'
+			    ,'Supplier Main Plain FAX'=>'441934740033'
+			    ,'www.giftworks.tv'
+			    );
+ }
+
+
+ if(preg_match('/^Sheikh$/i',$supplier_code)){
+	  $supplier_code='Sheikh';
+	  $the_supplier_data=array(
+				   'Supplier Name'=>'Sheikh Enterprises',
+				   'Supplier Code'=>$supplier_code
+				
+							 ,'Supplier Address Line 1'=>"Eidgah Road"
+							 ,'Supplier Address Line 2'=>'Opp. Islamia Inter College'
+							 ,'Supplier Address Line 3'=>''
+							 ,'Supplier Address Town'=>'Saharanpur'
+							 ,'town_d1'=>''
+							 ,'town_d2'=>''
+							 ,'Supplier Address Country Name'=>'India'
+							 ,'country_d1'=>''
+							 ,'country_d2'=>''
+							 ,'default_country_id'=>$myconf['country_id']
+							 ,'Supplier Address Postal Code'=>'247001'
+						
+
+				   );
+	}
+if(preg_match('/^Gopal$/i',$supplier_code)){
+	  $supplier_code='Gopal';
+	  $the_supplier_data=array(
+				   'Supplier Name'=>'Gopal Corporation Limited',
+				   'Supplier Code'=>$supplier_code
+				  
+				   ,'Supplier Address Line 1'=>"240 Okhla Industrial Estate"
+				   ,'Supplier Address Line 2'=>'Phase III'
+				   ,'Supplier Address Line 3'=>''
+				   ,'Supplier Address Town'=>'New Delhi'
+				   ,'town_d1'=>''
+				   ,'town_d2'=>''
+				   ,'Supplier Address Country Name'=>'India'
+				   ,'country_d1'=>''
+				   ,'country_d2'=>''
+				   ,'default_country_id'=>$myconf['country_id']
+				   ,'Supplier Address Postal Code'=>'110020'
+
+				   ,'Supplier Main Plain Telephone'=>'00911126320185'
+				   );
+	}
+
+  if(preg_match('/^CraftS$/i',$supplier_code)){
+	  $supplier_code='CraftS';
+	  $the_supplier_data=array(
+				   'Supplier Name'=>'Craftstones Europe Ltd',
+				   'Supplier Code'=>$supplier_code
+				  
+							 ,'Supplier Address Line 1'=>"52/54 Homethorphe Avenue"
+							 ,'Supplier Address Line 2'=>'Homethorphe Ind. Estate'
+							 ,'Supplier Address Line 3'=>''
+							 ,'Supplier Address Town'=>'Redhill'
+							 ,'town_d1'=>''
+							 ,'town_d2'=>''
+							 ,'Supplier Address Country Name'=>'UK'
+							 ,'country_d1'=>''
+							 ,'country_d2'=>''
+							 ,'default_country_id'=>$myconf['country_id']
+							 ,'Supplier Address Postal Code'=>'RH1 2NL'
+						
+				   ,'Supplier Main Contact Name'=>'Jose'
+
+				   ,'Supplier Main Plain Telephone'=>'01737767363'
+				   ,'Supplier Main Plain FAX'=>'01737768627'
+				   );
+	}
+
+ if(preg_match('/^Simpson$/i',$supplier_code)){
+	  $supplier_code='CraftS';
+	  $the_supplier_data=array(
+				   'Supplier Name'=>'Simpson Packaging',
+				   'Supplier Code'=>$supplier_code
+				  
+							 ,'Supplier Address Line 1'=>"Unit 1"
+							 ,'Supplier Address Line 2'=>'Shaw Cross Business Park'
+							 ,'Supplier Address Line 3'=>''
+							 ,'Supplier Address Town'=>'Dewsbury'
+							 ,'town_d1'=>''
+							 ,'town_d2'=>''
+							 ,'Supplier Address Country Name'=>'UK'
+							 ,'country_d1'=>''
+							 ,'country_d2'=>''
+							 ,'default_country_id'=>$myconf['country_id']
+							 ,'Supplier Address Postal Code'=>'WF12 7RF'
+						
+
+				   ,'Supplier Main Plain Email'=>'sales@simpson-packaging.co.uk'
+				   ,'Supplier Main Plain Telephone'=>'01924869010'
+				   ,'Supplier Main Plain FAX'=>'01924439252'
+				   ,'Supplier Main Web Site'=>'wwww.simpson-packaging.co.uk'
+				   );
+	}
+
+
+
+ if(preg_match('/^amanis$/i',$supplier_code)){
+	  $supplier_code='AmAnis';
+	  $the_supplier_data=array(
+				   'Supplier Name'=>'Amanis',
+				   'Supplier Code'=>$supplier_code
+				   
+							 ,'Supplier Address Line 1'=>"Unit 6"
+							 ,'Supplier Address Line 2'=>'Bowlimng Court Industrial Estate'
+							 ,'Supplier Address Line 3'=>'Mary Street'
+							 ,'Supplier Address Town'=>'Bradford'
+							 ,'town_d1'=>''
+							 ,'town_d2'=>''
+							 ,'Supplier Address Country Name'=>'UK'
+							 ,'country_d1'=>''
+							 ,'country_d2'=>''
+							 ,'default_country_id'=>$myconf['country_id']
+							 ,'Supplier Address Postal Code'=>'BD4 8TT'
+						
+
+							 ,'Supplier Main Plain Email'=>'saltlamps@aol.com'
+				   ,'Supplier Main Plain Telephone'=>'4401274394100'
+				   ,'Supplier Main Plain FAX'=>'4401274743243'
+				   ,'Supplier Main Web Site'=>'www.saltlamps-r-us.com'
+				   );
+	}
+
+
+if(preg_match('/^amanis$/i',$supplier_code)){
+	  $supplier_code='AmAnis';
+	  $the_supplier_data=array(
+				   'Supplier Name'=>'Amanis',
+				   'Supplier Code'=>$supplier_code
+				  
+							 ,'Supplier Address Line 1'=>"Unit 6"
+							 ,'Supplier Address Line 2'=>'Bowlimng Court Industrial Estate'
+							 ,'Supplier Address Line 3'=>'Mary Street'
+							 ,'Supplier Address Town'=>'Bradford'
+							 ,'town_d1'=>''
+							 ,'town_d2'=>''
+							 ,'Supplier Address Country Name'=>'UK'
+							 ,'country_d1'=>''
+							 ,'country_d2'=>''
+							 ,'default_country_id'=>$myconf['country_id']
+							 ,'Supplier Address Postal Code'=>'BD4 8TT'
+					
+				   ,'Supplier Main Plain Email'=>'saltlamps@aol.com'
+				   ,'Supplier Main Plain Telephone'=>'4401274394100'
+				   ,'Supplier Main Plain FAX'=>'4401274743243'
+				   ,'Supplier Main Web Site'=>'www.saltlamps-r-us.com'
+				   );
+	}
+
+
+if(preg_match('/^Wenzels$/i',$supplier_code)){
+	  $supplier_code='Wenzels';
+	  $the_supplier_data=array(
+				   'Supplier Name'=>'Richard Wenzel GMBH & CO KG',
+				   'Supplier Code'=>$supplier_code
+				 
+							 ,'Supplier Address Line 1'=>"Benzstraße 5"
+							 ,'Supplier Address Line 2'=>''
+							 ,'Supplier Address Line 3'=>''
+							 ,'Supplier Address Town'=>'Aschaffenburg'
+							 ,'town_d1'=>''
+							 ,'town_d2'=>''
+							 ,'Supplier Address Country Name'=>'Germany'
+							 ,'country_d1'=>''
+							 ,'country_d2'=>''
+							 ,'default_country_id'=>$myconf['country_id']
+							 ,'Supplier Address Postal Code'=>'63741'
+						
+
+
+							 ,'Supplier Main Plain Telephone'=>'49602134690'
+				   ,'Supplier Main Plain FAX'=>'496021346940'
+
+				   );
+	}
+	
+
+	if(preg_match('/^AW$/i',$supplier_code)){
+	  $supplier_code='AW';
+	  $the_supplier_data=array(
+				   'Supplier Name'=>'Ancient Wisdom Marketing',
+				   'Supplier Code'=>$supplier_code
+				   
+							 ,'Supplier Address Line 1'=>'Block B'
+							 ,'Supplier Address Line 2'=>'Parkwood Business Park'
+							 ,'Supplier Address Line 3'=>'Parkwood Road'
+							 ,'Supplier Address Town'=>'Sheffield'
+							 ,'town_d1'=>''
+							 ,'town_d2'=>''
+							 ,'Supplier Address Country Name'=>'UK'
+							 ,'country_d1'=>''
+							 ,'country_d2'=>''
+							 ,'default_country_id'=>$myconf['country_id']
+							 ,'Supplier Address Postal Code'=>'S3 8AL'
+						
+							 ,'Supplier Main Plain Email'=>'mail@ancientwisdom.biz'
+				   ,'Supplier Main Plain Telephone'=>'44 (0)114 2729165'
+
+				   );
+	}
+
+
+	if(preg_match('/^EB$/i',$supplier_code)){
+	  $supplier_code='EB';
+	  $the_supplier_data=array(
+				   'Supplier Name'=>'Elements Bodycare Ltd'
+				   ,'Supplier Code'=>$supplier_code
+				 
+						
+							 ,'Supplier Address Line 1'=>'Unit 2'
+							 ,'Supplier Address Line 2'=>'Carbrook Bussiness Park'
+							 ,'Supplier Address Line 3'=>'Dunlop Street'
+							 ,'Supplier Address Town'=>'Sheffield'
+							 ,'town_d1'=>''
+							 ,'town_d2'=>''
+							 ,'Supplier Address Country Name'=>'UK'
+							 ,'country_d1'=>''
+							 ,'country_d2'=>''
+							 ,'default_country_id'=>$myconf['country_id']
+							 ,'Supplier Address Postal Code'=>'S9 2HR'
+						
+
+				   ,'Supplier Main Plain Telephone'=>'011422434000'
+				   ,'Supplier Main Web Site'=>'www.elements-bodycare.co.uk'
+				   ,'Supplier Main Plain Email'=>'info@elements-bodycare.co.uk'
+
+				   );
+	}
+
+	if(preg_match('/^Paradise$/i',$supplier_code)){
+	  $supplier_code='Paradise';
+	  $the_supplier_data=array(
+				   'Supplier Name'=>'Paradise Music Ltd'
+				   ,'Supplier Code'=>$supplier_code
+				  
+							 ,'Supplier Address Line 1'=>'PO BOX 998'
+							 ,'Supplier Address Line 2'=>'Carbrook Bussiness Park'
+							 ,'Supplier Address Line 3'=>'Dunlop Street'
+							 ,'Supplier Address Town'=>'Tring'
+							 ,'town_d1'=>''
+							 ,'town_d2'=>''
+							 ,'Supplier Address Country Name'=>'UK'
+							 ,'country_d1'=>''
+							 ,'country_d2'=>''
+							 ,'default_country_id'=>$myconf['country_id']
+							 ,'Supplier Address Postal Code'=>'HP23 4ZJ'
+						
+
+				   ,'Supplier Main Plain Telephone'=>'01296668193'
+
+
+				   );
+	}
+	if(preg_match('/^MCC$/i',$supplier_code)){
+	  $supplier_code='MCC';
+	  $the_supplier_data=array(
+				   'Supplier Name'=>'Manchester Candle Company'
+				   ,'Supplier Code'=>$supplier_code
+				   
+							 ,'Supplier Address Line 1'=>'The Manchester Group'
+							 ,'Supplier Address Line 2'=>'Kenwood Road'
+							 ,'Supplier Address Line 3'=>''
+							 ,'Supplier Address Town'=>'North Reddish'
+							 ,'town_d1'=>''
+							 ,'town_d2'=>''
+							 ,'Supplier Address Country Name'=>'UK'
+							 ,'country_d1'=>''
+							 ,'country_d2'=>''
+							 ,'default_country_id'=>$myconf['country_id']
+							 ,'Supplier Address Postal Code'=>'SK5 6PH'
+						
+				   ,'Supplier Main Contact Name'=>'Brian'
+				   ,'Supplier Main Plain Telephone'=>'01614320811'
+				   ,'Supplier Main Plain FAX'=>'01614310328'
+				   ,'Supplier Main Web Site'=>'manchestercandle.com'
+
+				   );
+	}
+	if(preg_match('/^Aquavision$/i',$supplier_code)){
+	  $supplier_code='Aquavision';
+	  $the_supplier_data=array(
+				   'Supplier Name'=>'Aquavision Music Ltd'
+				   ,'Supplier Code'=>$supplier_code
+				   
+							 ,'Supplier Address Line 1'=>'PO BOX 2796'
+							 ,'Supplier Address Line 2'=>''
+							 ,'Supplier Address Line 3'=>''
+							 ,'Supplier Address Town'=>'Iver'
+							 ,'town_d1'=>''
+							 ,'town_d2'=>''
+							 ,'Supplier Address Country Name'=>'UK'
+							 ,'country_d1'=>''
+							 ,'country_d2'=>''
+							 ,'default_country_id'=>$myconf['country_id']
+							 ,'Supplier Address Postal Code'=>'SL0 9ZR'
+						
+
+				   ,'Supplier Main Plain Telephone'=>'01753653188'
+				   ,'Supplier Main Plain FAX'=>'01753655059'
+				   ,'Supplier Main Web Site'=>'www.aquavisionwholesale.co.uk'
+				   ,'Supplier Main Plain Email'=>'info@aquavisionwholesale.co.uk'
+				   );
+	}
+
+	if(preg_match('/^CXD$/i',$supplier_code)){
+	  $supplier_code='CXD';
+	  $the_supplier_data=array(
+				   'Supplier Name'=>'CXD Designs Ltd'
+				   ,'Supplier Code'=>$supplier_code
+				   
+							 ,'Supplier Address Line 1'=>'Unit 2'
+							 ,'Supplier Address Line 2'=>'Imperial Park'
+							 ,'Supplier Address Line 3'=>'Towerfiald Road'
+							 ,'Supplier Address Town'=>'Shoeburyness'
+							 ,'town_d1'=>''
+							 ,'town_d2'=>''
+							 ,'Supplier Address Country Name'=>'UK'
+							 ,'country_d1'=>'Essex'
+							 ,'country_d2'=>''
+							 ,'default_country_id'=>$myconf['country_id']
+							 ,'Supplier Address Postal Code'=>'SS3 9QT'
+						
+				   ,'Supplier Main Plain Telephone'=>'01702292028'
+				   ,'Supplier Main Plain FAX'=>'01702298486'
+
+				   );
+	}
+	if(preg_match('/^(AWR|costa)$/i',$supplier_code)){
+	  $supplier_code='AWR';
+	  $the_supplier_data=array(
+				   'Supplier Name'=>'Costa Imports'
+				   ,'Supplier Code'=>$supplier_code
+				 
+							 ,'Supplier Address Line 1'=>'Nave 8'
+							 ,'Supplier Address Line 2'=>'Polígono Ind. Alhaurín de la Torre Fase 1'
+							 ,'Supplier Address Line 3'=>'Paseo de la Hispanidad'
+							 ,'Supplier Address Town'=>'Málaga'
+							 ,'town_d1'=>''
+							 ,'town_d2'=>''
+							 ,'Supplier Address Country Name'=>'Spain'
+							 ,'country_d1'=>''
+							 ,'country_d2'=>''
+							 ,'default_country_id'=>$myconf['country_id']
+							 ,'Supplier Address Postal Code'=>'29130'
+						
+				   ,'Supplier Main Contact Name'=>'Carlos'
+				   ,'Supplier Main Plain Email'=>'carlos@aw-regalos.com'
+				   ,'Supplier Main Plain Telephone'=>'(+34) 952 417 609'
+				   );
+	}
+
+	if(preg_match('/^(salco)$/i',$supplier_code)){
+	  $supplier_code='Salco';
+	  $the_supplier_data=array(
+				   'Supplier Name'=>'Salco Group'
+				   ,'Supplier Code'=>$supplier_code
+				   ,'Supplier Address Line 1'=>'Salco House'
+				   ,'Supplier Address Line 2'=>'5 Central Road'
+				   ,'Supplier Address Line 3'=>''
+				   ,'Supplier Address Town'=>'Harlow'
+				   ,'town_d1'=>''
+				   ,'town_d2'=>''
+				   ,'Supplier Address Country Name'=>'UK'
+				   ,'country_d1'=>'Essex'
+				   ,'country_d2'=>''
+				   ,'default_country_id'=>$myconf['country_id']
+				   ,'Supplier Address Postal Code'=>'CM20 2ST'
+				   ,'Supplier Main Plain Email'=>'alco@salcogroup.com'
+				   ,'Supplier Main Plain Telephone'=>'01279 439991'
+				   );
+	}
+	if(preg_match('/^(apac)$/i',$supplier_code)){
+	  $supplier_code='Salco';
+	  $the_supplier_data=array(
+				   'Supplier Name'=>'APAC Packaging Ltd'
+				   ,'Supplier Code'=>$supplier_code
+				   ,'Supplier Address Line 1'=>'Loughborough Road'
+				   ,'Supplier Address Line 2'=>''
+				   ,'Supplier Address Line 3'=>''
+				   ,'Supplier Address Town'=>'Leicester'
+				   ,'town_d1'=>'Rothley'
+				   ,'town_d2'=>''
+				   ,'Supplier Address Country Name'=>'UK'
+				   ,'country_d1'=>''
+				   ,'country_d2'=>''
+				   ,'default_country_id'=>$myconf['country_id']
+				   ,'Supplier Address Postal Code'=>'LE7 7NL'
+				   ,'Supplier Main Plain Email'=>''
+				   ,'Supplier Main Plain Telephone'=>'0116 230 2555'
+				   ,'Supplier Main Web Site'=>'www.apacpackaging.com'
+				   ,'Supplier Main Plain FAX'=>'0116 230 3555'
+				   );
+	}
+	if(preg_match('/^(andy.*?)$/i',$supplier_code)){
+	  $supplier_code='Andy';
+	  $the_supplier_data=array(
+				   'Supplier Name'=>'Andy'
+				   ,'Supplier Code'=>$supplier_code
+				   );
+	}
+
+
+	if($supplier_code=='' or $supplier_code=='0'   or preg_match('/^costa$/i',$supplier_code)  ){
+	  $supplier_code='Unknown';
+	  $the_supplier_data=array(
+				   'Supplier Name'=>'Proveedor Desconocido'
+				   ,'Supplier Code'=>$supplier_code
+				   );
+	}
+	
+	$supplier=new Supplier('code',$supplier_code);
+	
+
+
+	if(!$supplier->id){
+	  //print "neew: $supplier_code\n";
+	  //print_r($the_supplier_data);
+	  $supplier=new Supplier('new',$the_supplier_data);
+	}
+
+	if(strlen($supplier->data['Supplier Name'])<=1){
+	  print "$code (supplier name -> ".$supplier->data['Supplier Name']." to short)\n";
+	}if($supplier->data['Supplier Code']=='UNK'){
+	  print "$code supplier unknown\n";
+	}
+
+	//exit;
+
+
+	$scode=_trim($scode);
+	$scode=preg_replace('/^\"\s*/','',$scode);
+	$scode=preg_replace('/\s*\"$/','',$scode);
+	
+	if($scode=='' or $scode=='0'){
+	  $scode='';
+	  print "$code wrong supplier code -> ($scode)\n";
+	}
+
+
+	if(preg_match('/\d+ or more|0.10000007|8.0600048828125|0.050000038|0.150000076|0.8000006103|1.100000610|1.16666666|1.650001220|1.80000122070/i',$scode)){
+	  print "$code wrong supplier code -> ($scode)\n";
+
+	  $scode='';
+	}if(preg_match('/^(\?|new|\d|0.25|0.5|0.8|0.8000006103|01 Glass Jewellery Box|1|0.1|0.05|1.5625|10|\d{1,2}\s?\+\s?\d{1,2}\%)$/i',$scode)){
+	  print "$code wrong supplier code -> ($scode)\n";
+		   
+	  $scode='';
+	}
+	if($scode=='same'){
+	  $scode=$code;
+	  print "$code strange supplier code -> (same)\n";
+	}
+
+
+	if($scode==''){
+	  //	  print "$code wrong supplier code using ?$code\n";
+
+	  $scode='?'.$code;
+	}
+	$sp_data=array(
+		       'Supplier Key'=>$supplier->id,
+		       'Supplier Product Code'=>$scode,
+		       'Supplier Product Cost'=>sprintf("%.4f",$supplier_cost),
+		       'Supplier Product Name'=>$description,
+		       'Supplier Product Description'=>$description,
+		       'Supplier Product Valid From'=>date('Y-m-d H:i:s'),
+		       'Supplier Product Valid To'=>date('Y-m-d H:i:s')
+		       );
+	$supplier_product=new SupplierProduct('find',$sp_data,'create');
+	if($supplier_product->found_in_key){
+	  print "$code (duplicate supplier code)\n";
+	}elseif($supplier_product->found_in_code){
+	  print "$code (duplicate supplier code (diff cost))\n";
+	}
+	
+
+	$part_data=array(
+			 'Part Most Recent'=>'Yes',
+			 'Part XHTML Currently Supplied By'=>sprintf('<a href="supplier.php?id=%d">%s</a>',$supplier->id,$supplier->get('Supplier Code')),
+			 'Part XHTML Currently Used In'=>sprintf('<a href="product.php?id=%d">%s</a>',$product->id,$product->get('Product Code')),
+			 'Part XHTML Description'=>preg_replace('/\(.*\)\s*$/i','',$product->get('Product XHTML Short Description')),
+		     'Part Unit Description'=>strip_tags(preg_replace('/\(.*\)\s*$/i','',$product->get('Product XHTML Short Description'))),
+
+			 'part valid from'=>date('Y-m-d H:i:s'),
+			 'part valid to'=>date('Y-m-d H:i:s'),
+			 'Part Gross Weight'=>$w
+			 );
+	$part=new Part('new',$part_data);
+	//	print_r($part->data);
+	
+
+	
+
+	
+	$rules[]=array('Part Sku'=>$part->data['Part SKU'],
+		       'Supplier Product Units Per Part'=>$units
+		       ,'supplier product part most recent'=>'Yes'
+		       ,'supplier product part valid from'=>date('Y-m-d H:i:s')
+		       ,'supplier product part valid to'=>date('Y-m-d H:i:s')
+		       ,'factor supplier product'=>1
+		       );
+
+	
+
+	$supplier_product->new_part_list('',$rules);
+	
+	$part_list[]=array(
+			   'Part SKU'=>$part->get('Part SKU'),
+			   'Parts Per Product'=>1,
+			   'Product Part Type'=>'Simple'
+			   );
+			   
+			
+			   
+			 $product->new_current_part_list(array(),$part_list)  ;
+	//$product->new_part_list(array(),$part_list);
+$supplier_product->load('used in');
+	$product->load('parts');
+	$part->load('used in');
+	$part->load('supplied by');
+	$product->load('cost');
+
+}
 
 
 

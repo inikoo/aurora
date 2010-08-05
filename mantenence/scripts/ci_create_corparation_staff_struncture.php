@@ -52,7 +52,7 @@ $data=array(
 
 
 $company=new Company('find create auto',$data);
-$sql=sprintf("delate from  `Corporation Dimension` " );
+$sql=sprintf("delete * from  `Corporation Dimension` " );
 mysql_query($sql);
 $sql=sprintf("insert into `Corporation Dimension` values (%s,'EUR',%d) ",prepare_mysql($company->data['Company Name']),$company->id );
 mysql_query($sql);
@@ -119,6 +119,15 @@ $departments=array(
 
 foreach($departments as $area_code=>$departments_data) {
     $area=new CompanyArea('code',$area_code);
+    
+       
+    if($area_code=='PRD')
+    $production_area_key=$area->id;
+       if($area_code=='WAH')
+    $warehouse_area_key=$area->id;
+       if($area_code=='OFC')
+    $office_area_key=$area->id;
+    
     foreach($departments_data as $data) {
         $area->add_department($data);
     }
@@ -163,7 +172,7 @@ $positions=array(
                                    )
 
                                    ,'CUS'=>array(
-                                    array(
+                                              array(
                                                   'Company Position Code'=>'CUSM',
                                                   'Company Position Title'=>'Manager Customer Service',
                                                   'Company Position Description'=>'Manager Customer Service'
@@ -176,11 +185,12 @@ $positions=array(
                                           )
 
            );
-
+$departments_keys=array();
 foreach($positions as $department_codes=>$positions_data) {
     foreach(preg_split('/,/',$department_codes) as $key =>$department_code ) {
 
         $department=new CompanyDepartment('code',$department_code);
+           $departments_keys[$department_code]=$department->id;
         if (!$department->id) {
             print_r($department);
             exit;
@@ -200,32 +210,32 @@ foreach($positions as $department_codes=>$positions_data) {
 $staff=array(
 
            'PICK'=>array(
-                       array('Staff Name'=>'David','Staff Alias'=>'david')
-                         ,array('Staff Name'=>'Borja','Staff Alias'=>'borja')
-                         ,array('Staff Name'=>'Dany','Staff Alias'=>'dany')
-                                                
+                      array('Staff Area Key'=>$warehouse_area_key,'Staff Department Key'=>$departments_keys['OHA'],'Staff Name'=>'David','Staff Alias'=>'david')
+                      ,array('Staff Area Key'=>$warehouse_area_key,'Staff Department Key'=>$departments_keys['OHA'],'Staff Name'=>'Borja','Staff Alias'=>'borja')
+                      ,array('Staff Area Key'=>$warehouse_area_key,'Staff Department Key'=>$departments_keys['OHA'],'Staff Name'=>'Dany','Staff Alias'=>'dany')
 
-                    
-                   )
-                   
-                                                                         ,'WEB'=>array(
-                                                                                    array('Staff Name'=>'Helena','Staff Alias'=>'helena')
-                                                                                )
-                                                                                ,'DIR'=>array(
-                                                                                           array('Staff Name'=>'Carlos Lopez','Staff Alias'=>'carlos')
-                                                                                       )
-                                                                                      
-  ,'CUSM'=>array(
-                                                                                                                  array('Staff Name'=>'Lucia','Staff Alias'=>'lucia')
-                                                                                                              
 
-                                                                                                              )
 
-                                                                                                       ,'CUS'=>array(
-                                                                                                                  array('Staff Name'=>'Trini','Staff Alias'=>'trini')
-                                                                                                              
+                  )
 
-                                                                                                              )
+                  ,'WEB'=>array(
+                             array('Staff Area Key'=>$office_area_key,'Staff Department Key'=>$departments_keys['MRK'],'Staff Name'=>'Helena','Staff Alias'=>'helena')
+                         )
+                         ,'DIR'=>array(
+                                    array('Staff Area Key'=>$office_area_key,'Staff Department Key'=>$departments_keys['DIR'],'Staff Name'=>'Carlos Lopez','Staff Alias'=>'carlos')
+                                )
+
+                                ,'CUSM'=>array(
+                                            array('Staff Area Key'=>$office_area_key,'Staff Department Key'=>$departments_keys['CUS'],'Staff Name'=>'Lucia','Staff Alias'=>'lucia')
+
+
+                                        )
+
+                                        ,'CUS'=>array(
+                                                   array('Staff Area Key'=>$office_area_key,'Staff Department Key'=>$departments_keys['CUS'],'Staff Name'=>'Trini','Staff Alias'=>'trini')
+
+
+                                               )
 
 
        );

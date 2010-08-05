@@ -132,56 +132,46 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
  function init(){
 
-    search_scope='locations';
-     var store_name_oACDS = new YAHOO.util.FunctionDataSource(search_locations_in_warehouse);
-     store_name_oACDS.queryMatchContains = true;
-     var store_name_oAutoComp = new YAHOO.widget.AutoComplete(search_scope+"_search",search_scope+"_search_Container", store_name_oACDS);
-     store_name_oAutoComp.minQueryLength = 0; 
-     store_name_oAutoComp.queryDelay = 0.15;
+   YAHOO.util.Event.addListener('clean_table_filter_show0', "click",show_filter,0);
+ YAHOO.util.Event.addListener('clean_table_filter_hide0', "click",hide_filter,0);
+  YAHOO.util.Event.addListener('clean_table_filter_show1', "click",show_filter,1);
+ YAHOO.util.Event.addListener('clean_table_filter_hide1', "click",hide_filter,1);
 
  var oACDS0 = new YAHOO.util.FunctionDataSource(mygetTerms);
  oACDS0.queryMatchContains = true;
  var oAutoComp0 = new YAHOO.widget.AutoComplete("f_input0","f_container0", oACDS0);
  oAutoComp0.minQueryLength = 0; 
 
-YAHOO.util.Event.onContentReady("filtermenu0", function () {
-	 var oMenu = new YAHOO.widget.ContextMenu("filtermenu0", {  trigger: "filter_name0"  });
-	 oMenu.render();
-	 oMenu.subscribe("show", oMenu.focus);
-	 
-    });
-
-
-YAHOO.util.Event.onContentReady("rppmenu0", function () {
-	 var oMenu = new YAHOO.widget.Menu("rppmenu0", { context:["filter_name0","tr", "bl"]  });
-	 oMenu.render();
-	 oMenu.subscribe("show", oMenu.focus);
-	 YAHOO.util.Event.addListener("paginator_info0", "click", oMenu.show, null, oMenu);
-    });
 
  var oACDS1 = new YAHOO.util.FunctionDataSource(mygetTerms);
  oACDS1.queryMatchContains = true;
  var oAutoComp1 = new YAHOO.widget.AutoComplete("f_input1","f_container1", oACDS1);
  oAutoComp1.minQueryLength = 0; 
 
-YAHOO.util.Event.onContentReady("filtermenu1", function () {
-	 var oMenu = new YAHOO.widget.ContextMenu("filtermenu1", {  trigger: "filter_name1"  });
+
+
+YAHOO.util.Event.onContentReady("rppmenu0", function () {
+	 var oMenu = new YAHOO.widget.ContextMenu("rppmenu0", {trigger:"rtext_rpp0" });
 	 oMenu.render();
 	 oMenu.subscribe("show", oMenu.focus);
-	 YAHOO.util.Event.addListener("filter_name1", "click", oMenu.show, null, oMenu);
     });
 
-
+YAHOO.util.Event.onContentReady("filtermenu0", function () {
+	 var oMenu = new YAHOO.widget.ContextMenu("filtermenu0", {trigger:"filter_name0"});
+	 oMenu.render();
+	 oMenu.subscribe("show", oMenu.focus);
+    });
 YAHOO.util.Event.onContentReady("rppmenu1", function () {
-	 var oMenu = new YAHOO.widget.Menu("rppmenu1", { context:["filter_name1","tr", "bl"]  });
+	 var oMenu = new YAHOO.widget.ContextMenu("rppmenu1", {trigger:"rtext_rpp1" });
 	 oMenu.render();
 	 oMenu.subscribe("show", oMenu.focus);
-	 YAHOO.util.Event.addListener("paginator_info1", "click", oMenu.show, null, oMenu);
     });
 
-
-
-
+YAHOO.util.Event.onContentReady("filtermenu0", function () {
+	 var oMenu = new YAHOO.widget.ContextMenu("filtermenu1", {trigger:"filter_name1"});
+	 oMenu.render();
+	 oMenu.subscribe("show", oMenu.focus);
+    });
 
 
   var change_view=function(e){

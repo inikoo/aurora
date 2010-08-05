@@ -966,9 +966,9 @@ exit;
     // print_r($data);
  
     $sql=sprintf("insert into `Product History Dimension` %s %s",$keys,$values);
-    // print "creating parod key --------------------------------\n";
-    // print "$sql\n";
-    //exit;
+  //   print "creating parod key --------------------------------\n";
+   //  print "$sql\n";
+   // exit;
    if (mysql_query($sql)) {
     if($this->external_DB_link)mysql_query($sql,$this->external_DB_link);
    

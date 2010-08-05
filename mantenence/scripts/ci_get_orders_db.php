@@ -120,7 +120,7 @@ $fam_promo_key=$fam_promo->id;
 
 
 $sql="select * from  ci_orders_data.orders  where   (last_transcribed is NULL  or last_read>last_transcribed) and filename not like '%UK%'  and filename not like '%test%' and filename not like '%take%'  and filename!='/media/sda3/share/PEDIDOS 08/60005902.xls' and  filename!='/media/sda3/share/PEDIDOS 09/60008607.xls' and  filename!='/media/sda3/share/PEDIDOS 09/60009626.xls' and  filename!='/media/sda3/share/PEDIDOS 09/60011693.xls' and  filename!='/media/sda3/share/PEDIDOS 09/60011905.xls' and  filename!='/media/sda3/share/PEDIDOS 08/60007219.xls'     order by filename ";
-//$sql="select * from  ci_orders_data.orders where filename like '/media/sda3/share/%/60010130.xls'  order by filename";
+//$sql="select * from  ci_orders_data.orders where filename like '/media/sda3/share/%/60008089.xls'  order by filename";
 //7/60002384.xls
 //$sql="select * from  ci_orders_data.orders where filename like '/media/sda3/share/%/60000142.xls'  order by filename";
 //$sql="select * from  ci_orders_data.orders  where (filename like '%Orders2005%' or  filename like '%PEDIDOS%.xls') and (last_transcribed is NULL  or last_read>last_transcribed) and filename!='/media/sda3/share/PEDIDOS 08/60005902.xls' and  filename!='/media/sdas3/share/PEDIDOS 09/s60008607.xls' and  filename!='/media/sda3/share/PEDIsDOS 09/60009626.xls' or filename='%600s03600.xls'   order by date";
@@ -686,7 +686,7 @@ continue;
 			  'product type'=>'Normal',
 			  'Product Locale'=>'es_ES',
 			  'Product Currency'=>'EUR',
-			  'product record type'=>'Normal',
+			  'product record type'=>'Discontinued',
 			  'product web state'=>'Offline',
 			  'product special characteristic'=>$special_char,
 
@@ -714,8 +714,12 @@ continue;
 			  'product valid to'=>$date2,
 			  'editor'=>array('Date'=>$date_order)
                           );
+//print_r($product_data);
+
+
 
       $product=new Product('find',$product_data,'create');
+    //  print_r($product);
       if (!$product->id) {
 	print_r($product_data);
 	print "Error inserting a product\n";
@@ -770,52 +774,65 @@ continue;
 	
 	
 	$part=new Part('new',$part_data);
+	
+	
 	$parts_per_product=1;
-	$part_list=array();
-	$part_list[]=array(
-			   'Product ID'=>$product->pid,
-			   'Part SKU'=>$part->get('Part SKU'),
-			   'Product Part Id'=>1,
-			   'requiered'=>'Yes',
-			   'Parts Per Product'=>$parts_per_product,
-			   'Product Part Type'=>'Simple Pick'
-			   );
-	$product->new_part_list(array(),$part_list);
+                $part_list=array();
+                $part_list[]=array(
 
+                                 'Part SKU'=>$part->get('Part SKU'),
+
+                                 'Parts Per Product'=>$parts_per_product,
+                                 'Product Part Type'=>'Simple'
+
+                             );
+                $product_part_header=array(
+                                         'Product Part Valid From'=>$date_order,
+                                         'Product Part Valid To'=>$date2,
+                                         'Product Part Most Recent'=>'No',
+                                         'Product Part Type'=>'Simple'
+
+                                     );
+	
+	
+	
+     $product->new_historic_part_list($product_part_header,$part_list);
 	$used_parts_sku=array($part->sku => array('parts_per_product'=>$parts_per_product,'unit_cost'=>$supplier_product_cost*$transaction['units']));
 
       } else {
+               $sql=sprintf("select `Part SKU` from `Product Part List` PPL left join `Product Part Dimension` PPD on (PPL.`Product Part Key`=PPD.`Product Part Key`)where  `Product ID`=%d  ",$product->pid);
+                $res_x=mysql_query($sql);
+                if ($row_x=mysql_fetch_array($res_x)) {
+                    $part_sku=$row_x['Part SKU'];
+                } else {
+                    print_r($product);
+                    exit("error: $sql");
+                }
+                mysql_free_result($res_x);
 
-	$sql=sprintf("select `Part SKU` from `Product Part List` where  `Product ID`=%d ",$product->pid);
-	$res_x=mysql_query($sql);
-	if ($row_x=mysql_fetch_array($res_x)) {
-	  $part_sku=$row_x['Part SKU'];
-	} else {
-	  print_r($product);
-	  exit("error: $sql");
-	}
-	mysql_free_result($res_x);
-	$used_parts_sku=$part_sku;
-	$part=new Part('sku',$part_sku);
-	$part->update_valid_dates($date_order);
-	$part->update_valid_dates($date2);
+                $part=new Part('sku',$part_sku);
+                $part->update_valid_dates($date_order);
+                $part->update_valid_dates($date2);
+                $parts_per_product=1;
+                $part_list=array();
+                $part_list[]=array(
 
-	//$sql=sprintf("update `Product Part List` set `Product Part Valid From`=%s  where `Product Part Valid From`>%s and `Product ID`=%d and `Part SKU`=%d and  `Product Part Most Recent`='Yes'"
-	//	     ,prepare_mysql($date_order)
-	//	     ,prepare_mysql($date_order)
-	//		     ,$product->pid
-	//   ,$part->sku
-	//  );
-	//mysql_query($sql);
-	//$sql=sprintf("update `Product Part List` set `Product Part Valid To`=%s   where `Product Part Valid To`<%s and `Product ID`=%d and `Part SKU`=%d and  `Product Part Most Recent`='Yes'"
-	//	     ,prepare_mysql($date2)
-	//		     ,prepare_mysql($date2)
-	//		     ,$product->pid
-	//		     ,$part->sku
-	//		     );
-	//	mysql_query($sql);
-	$parts_per_product=1;
-	$used_parts_sku=array($part->sku=>array('parts_per_product'=>$parts_per_product,'unit_cost'=>$supplier_product_cost*$transaction['units']));
+                                 'Part SKU'=>$part->sku,
+
+                                 'Parts Per Product'=>$parts_per_product,
+                                 'Product Part Type'=>'Simple'
+
+                             );
+                //print_r($part_list);
+                $product_part_key=$product->find_product_part_list($part_list);
+                if (!$product_part_key) {
+                    exit("Error can not find product part list (get_orders_db)\n");
+                }
+
+                $product->update_product_part_list_historic_dates($product_part_key,$date_order,$date2);
+
+                $used_parts_sku=array($part->sku=>array('parts_per_product'=>$parts_per_product,'unit_cost'=>$supplier_product_cost*$transaction['units']));
+
 
       }
 
@@ -868,24 +885,23 @@ continue;
 	$supplier_product->new_part_list('',$rules);
       } else {
 	//Note assuming only one sppl
-	$sql=sprintf("update  `Supplier Product Part List` set `Supplier Product Part Valid From`=%s  where `Supplier Product Part Valid From`>%s and `Supplier Product Code`=%s and `Supplier Key`=%d and `Part SKU`=%d and  `Supplier Product Part Most Recent`='Yes'"
-
-		     ,prepare_mysql($date_order)
-		     ,prepare_mysql($date_order)
-		     ,prepare_mysql($supplier_product->code)
-		     ,$supplier_product->supplier_key
-		     ,$part->sku
-		     );
-	//print $sql;
-	mysql_query($sql);
-	$sql=sprintf("update  `Supplier Product Part List` set  `Supplier Product Part Valid To`=%s  where `Supplier Product Part Valid To`<%s and `Supplier Product Code`=%s and 	`Supplier Key`=%d and `Part SKU`=%d and  `Supplier Product Part Most Recent`='Yes'"
-		     ,prepare_mysql($date2)
-		     ,prepare_mysql($date2)
-		     ,prepare_mysql($supplier_product->code)
-		     ,$supplier_product->supplier_key
-		     ,$part->sku
-		     );
-	mysql_query($sql);
+	
+ $sql=sprintf("update `Supplier Product Part List`  set  `Supplier Product Part Valid From`=%s where `Supplier Product Part Valid From`>%s and `Supplier Product Code`=%s and `Supplier Key`=%d and `Part SKU`=%d and  `Supplier Product Part Most Recent`='Yes'"
+                             ,prepare_mysql($date_order)
+                             ,prepare_mysql($date_order)
+                             ,prepare_mysql($supplier_product->code)
+                             ,$supplier_product->supplier_key
+                             ,$part->sku
+                            );
+                mysql_query($sql);
+                $sql=sprintf("update  `Supplier Product Part List` set `Supplier Product Part Valid To`=%s where `Supplier Product Part Valid To`<%s and `Supplier Product Code`=%s  and `Supplier Key`=%d and `Part SKU`=%d and  `Supplier Product Part Most Recent`='Yes'"
+                             ,prepare_mysql($date2)
+                             ,prepare_mysql($date2)
+                             ,prepare_mysql($supplier_product->code)
+                             ,$supplier_product->supplier_key
+                             ,$part->sku
+                            );
+                mysql_query($sql);
 
       }
 
@@ -971,7 +987,7 @@ continue;
 	$estimated_w+=$product->data['Product Gross Weight']*$transaction['bonus'];
 	$data_dn_transactions[]=array(
 
-				      'Product Key'=>$product->data['Product Key']
+				      'Product Key'=>$product->id
 				      ,'Delivery Note Quantity'=>$transaction['bonus']
 				      ,'Current Autorized to Sell Quantity'=>$transaction['bonus']
 				      ,'Shipped Quantity'=>$transaction['bonus']

@@ -172,8 +172,9 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
  function init(){
  init_search('products');
- 
-
+  
+ YAHOO.util.Event.addListener('clean_table_filter_show0', "click",show_filter,0);
+ YAHOO.util.Event.addListener('clean_table_filter_hide0', "click",hide_filter,0);
  
  var oACDS = new YAHOO.util.FunctionDataSource(mygetTerms);
  oACDS.queryMatchContains = true;
@@ -218,5 +219,4 @@ YAHOO.util.Event.onContentReady("filtermenu0", function () {
 	 var oMenu = new YAHOO.widget.ContextMenu("filtermenu0", {trigger:"filter_name0"});
 	 oMenu.render();
 	 oMenu.subscribe("show", oMenu.focus);
-	 
     });

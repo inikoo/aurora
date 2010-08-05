@@ -6,9 +6,21 @@
 // Documentation: http://creativepony.com/journal/scripts/sliding-tabs/
 // version: 1.8
 
+<?php 
+
+$startingSlide='pane_messages';
+if(isset($_REQUEST['slide'])){
+$startingSlide=$_REQUEST['slide'];
+if(preg_match('/^(top_customers|top_products|messages|orders_in_process)$/',$startingSlide))
+$startingSlide='pane_'.$startingSlide;
+}
+
+
+?>
 var SlidingTabs = new Class({
   options: {
-    startingSlide: false, // sets the slide to start on, either an element or an id 
+  
+    startingSlide: '<?php echo $startingSlide ?>', // sets the slide to start on, either an element or an id 
     activeButtonClass: 'active', // class to add to selected button
     activationEvent: 'click', // you can set this to ‘mouseover’ or whatever you like
     wrap: true, // calls to previous() and next() should wrap around?
@@ -85,6 +97,8 @@ if ($type(element) == 'number') element = this.panes[element - 1];
     if (this.buttons) { this.buttons[this.current].removeClass(this.options.activeButtonClass); };
     this.current = this.panes.indexOf($(event.target));
     if (this.buttons) { this.buttons[this.current].addClass(this.options.activeButtonClass); };
+    
+    change_splinter(this.buttons[this.current].id);
     
     this.fx.stop();
     if (event.animateChange) {

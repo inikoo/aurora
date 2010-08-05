@@ -217,9 +217,10 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 
 function init(){
+
+
 init_search('orders_store');
-
-
+ 
 
     YAHOO.util.Event.addListener('clean_table_filter_show0', "click",show_filter,0);
  YAHOO.util.Event.addListener('clean_table_filter_hide0', "click",hide_filter,0);
@@ -227,10 +228,10 @@ YAHOO.util.Event.addListener('clean_table_filter_show1', "click",show_filter,1);
  YAHOO.util.Event.addListener('clean_table_filter_hide1', "click",hide_filter,1);
 YAHOO.util.Event.addListener('clean_table_filter_show2', "click",show_filter,2);
  YAHOO.util.Event.addListener('clean_table_filter_hide2', "click",hide_filter,2);
-//  var oACDS = new YAHOO.util.FunctionDataSource(mygetTerms);
-//  oACDS.queryMatchContains = true;
-//  var oAutoComp = new YAHOO.widget.AutoComplete("f_input0","f_container", oACDS);
-//  oAutoComp.minQueryLength = 0; 
+
+
+
+
 
  var oACDS = new YAHOO.util.FunctionDataSource(mygetTerms);
  oACDS.queryMatchContains = true;
