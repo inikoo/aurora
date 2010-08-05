@@ -52,7 +52,7 @@ $data=array(
 
 
 $company=new Company('find create auto',$data);
-$sql=sprintf("delate from  `Corporation Dimension` " );
+$sql=sprintf("delete * from  `Corporation Dimension` " );
 mysql_query($sql);
 $sql=sprintf("insert into `Corporation Dimension` values (%s,'GBP',%d) ",prepare_mysql($company->data['Company Name']),$company->id );
 mysql_query($sql);

@@ -59,16 +59,24 @@ $js_files=array(
               'table_common.js.php',
               'js/search.js',
               'js/index_tools.js',
-              'js/index_sliding_tabs.js',
-              'index.js.php'
+              'index.js.php',
+
+              'js/index_sliding_tabs.js.php?slide='.$_SESSION['state']['home']['display'],
           );
 
 
 $splinters=array(
 
+'messages'=>array(
+                                       'title'=>_('Display Board'),
+                                       'index'=>0,
+                                       'php'=>'splinter_messages.php',
+                                       'tpl'=>'splinter_messages.tpl',
+                                       'js'=>'splinter_messages.js.php'
+                                   ),
                'orders_in_process'=>array(
                                        'title'=>_('Pending orders'),
-                                       'index'=>0,
+                                       'index'=>1,
                                        'php'=>'splinter_orders_in_process.php',
                                        'tpl'=>'splinter_orders_in_process.tpl',
                                        'js'=>'splinter_orders_in_process.js.php'
@@ -77,14 +85,14 @@ $splinters=array(
 
                'top_products'=>array(
                                     'title'=>_('Top Products'),
-                                  'index'=>2,
+                                  'index'=>3,
                                   'php'=>'splinter_top_products.php',
                                   'tpl'=>'splinter_top_products.tpl',
                                   'js'=>'splinter_top_products.js.php'
                               ),
                'top_customers'=>array(
                   'title'=>_('Top Customers'),
-                                   'index'=>1,
+                                   'index'=>2,
                                    'php'=>'splinter_top_customers.php',
                                    'tpl'=>'splinter_top_customers.tpl',
                                    'js'=>'splinter_top_customers.js.php'

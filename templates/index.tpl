@@ -21,7 +21,7 @@
 			
 {foreach from=$splinters key=key item=splinter}
 
-<li>{$splinter.title}</li>
+<li id="splinter_but_{$key}" key="{$key}"  >{$splinter.title}</li>
 {/foreach}
 			</ul>
 			<img style="position:relative;top:3px" src="art/icons/next.png" alt="" id="next" />
@@ -33,7 +33,7 @@
 			<div id="content">
 			
 			{foreach from=$splinters key=key item=splinter}
-<div class="pane">
+<div class="pane"  id="pane_{$key}">
 {include file=$splinter.tpl index=$splinter.index}
 </div>
 {/foreach}
@@ -47,6 +47,9 @@
 	</div>
 	{literal}
 	<script type="text/javascript" charset="utf-8">
+	
+	
+	
 		window.addEvent('load', function () {
 			myTabs = new SlidingTabs('buttons', 'panes');
 			

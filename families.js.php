@@ -181,6 +181,8 @@ function change_avg(e,table_id){
  function init(){
   init_search('products');
  
+    YAHOO.util.Event.addListener('clean_table_filter_show0', "click",show_filter,0);
+ YAHOO.util.Event.addListener('clean_table_filter_hide0', "click",hide_filter,0);
     
 
  var oACDS = new YAHOO.util.FunctionDataSource(mygetTerms);

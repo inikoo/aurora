@@ -1785,5 +1785,12 @@ function generatePassword($length=9, $strength=0) {
 	return $password;
 }
 
+function get_corporation_data(){
+$sql=sprintf("select * from `Corporation Dimension`");
+$res=mysql_query($sql);
+$corporate_data=array('Corporation Currency'=>'GBP');
+if($corporate_data=mysql_fetch_assoc($res)){true;}
+return $corporate_data;
+}
 
 ?>

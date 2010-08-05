@@ -1,4 +1,5 @@
 var Dom   = YAHOO.util.Dom;
+var Event   = YAHOO.util.Event;
 var submit_search_on_enter=function(e,tipo){
      var key;     
      if(window.event)
@@ -14,6 +15,8 @@ var submit_search_on_enter=function(e,tipo){
 
 
 function init_search(type){
+
+
 switch(type)
 {
 case 'users':
@@ -63,11 +66,11 @@ default:
      store_name_oAutoComp.queryDelay = 0.15;
      
      
-     
+    
     
 
      Event.addListener(search_scope+"_search", "keyup",search_events,search_scope)
-
+ 
       Event.addListener(search_scope+"_clean_search", "click",clear_search,search_scope);
       
       //  
@@ -139,7 +142,7 @@ function search_orders(query){
 }
 
 function search_orders_in_store(query){
-    search(query,'orders','stores');
+    search(query,'orders_store','stores');
 }
 
 function search_users(query){
