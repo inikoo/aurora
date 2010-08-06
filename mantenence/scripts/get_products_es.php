@@ -372,7 +372,9 @@ while(($_cols = fgetcsv($handle_csv))!== false){
   //print_r($_cols);
   
 
-  $code=trim( mb_convert_encoding($cols[5], "UTF-8", "ISO-8859-1,UTF-8"));
+  $code=trim( mb_convert_encoding($_cols[5], "UTF-8", "ISO-8859-1,UTF-8"));
+
+
 
  
   if($code=='FO-A1' and !$inicio){
@@ -438,11 +440,34 @@ foreach($__cols as $cols){
   $part_code=_trim($cols[22]);
   $supplier_cost=$cols[26];
   
+ if(preg_match('/moonbr-\d+/i',$code,$match)){
+$code=$match[0];
+$cols[5]=$match[0];
+
+}
+if(preg_match('/aquabr-\d+/i',$code,$match)){
+$code=$match[0];
+$cols[5]=$match[0];
+}
+if(preg_match('/ametbr-\d+/i',$code,$match)){
+$code=$match[0];
+$cols[5]=$match[0];
+}
+
+if(preg_match('/miscbr-\d+/i',$code,$match)){
+$code=$match[0];
+$cols[5]=$match[0];
+
+}
  
+  // if(!preg_match('/moonbr-/i',$code)){
+
+//continue;
+//}
  
-  // if(preg_match('/Reed-13/i',$code)){
-  // print_r($cols);
-  // exit;   }
+
+ // print_r($cols);
+  // exit;   
   $code=preg_replace('/\s.*$/','',$code);
 
   $code=_trim($code);
