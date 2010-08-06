@@ -676,7 +676,25 @@ continue;
 
       $code=_trim($transaction['code']);
 
+if(preg_match('/moonbr-\d+/i',$code,$match)){
+$code=$match[0];
 
+
+}
+if(preg_match('/aquabr-\d+/i',$code,$match)){
+$code=$match[0];
+
+}
+if(preg_match('/ametbr-\d+/i',$code,$match)){
+$code=$match[0];
+
+}
+
+if(preg_match('/miscbr-\d+/i',$code,$match)){
+$code=$match[0];
+
+
+}
 
  
 
