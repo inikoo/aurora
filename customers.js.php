@@ -9,7 +9,9 @@ var period_labels={'m':'<?php echo _('Montly')?>','y':'<?php echo _('Yearly')?>'
 var pie_period_labels={'m':'<?php echo _('Month')?>','y':'<?php echo _('Year')?>','w':'<?php echo _('Week')?>','q':'<?php echo _('Quarter')?>'};
 
 var plot='<?php echo$_SESSION['state']['customers']['plot']?>';
- 
+function  new_customer_from_file(){
+location.href='import_data.php?tipo=customers_store';
+}
 
 function close_dialog(tipo){
 	dialog_new_customer.hide();

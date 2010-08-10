@@ -108,7 +108,7 @@ $_map['total_reorder']=array('row'=>14+1,'col'=>$_y_map['reorder']);
 $_map['total_bonus']=array('row'=>14+1,'col'=>$_y_map['bonus']);
 $_map['total_items_charge_value']=array('row'=>14+1,'col'=>14+2);
 $_map['total_rrp']=array('row'=>14+1,'col'=>16+2);
-$_map['feedback']=array('row'=>16+1,'col'=>20+2);
+$_map['feedback']=array('row'=>1,'col'=>20+2);
 $_map['source_tipo']=false;
 $_map['extra_id1']=false;
 $_map['extra_id2']=false;

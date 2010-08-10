@@ -135,6 +135,9 @@
  <td> <span  style="margin:0 10px" class="unselectable_text state_details" onClick="new_customer('company')" >{t}Company{/t}</span></td>
  <td> <span  style="margin:0 10px" class="unselectable_text state_details" onClick="new_customer('person')" >{t}Individual{/t}</span></td>
 </tr>
+<tr>
+ <td colspan=2 style="text-align:center"> <span class="unselectable_text state_details" onClick="new_customer_from_file()" >{t}Import from file{/t}</span></td>
+</tr>
   </table>
   <span  class="unselectable_text state_details" onClick="close_dialog('make_order')" >{t}Cancel{/t}</span>
 

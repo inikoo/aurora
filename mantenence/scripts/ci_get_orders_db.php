@@ -120,7 +120,7 @@ $fam_promo_key=$fam_promo->id;
 
 
 $sql="select * from  ci_orders_data.orders  where   (last_transcribed is NULL  or last_read>last_transcribed) and filename not like '%UK%'  and filename not like '%test%' and filename not like '%take%'  and filename!='/media/sda3/share/PEDIDOS 08/60005902.xls' and  filename!='/media/sda3/share/PEDIDOS 09/60008607.xls' and  filename!='/media/sda3/share/PEDIDOS 09/60009626.xls' and  filename!='/media/sda3/share/PEDIDOS 09/60011693.xls' and  filename!='/media/sda3/share/PEDIDOS 09/60011905.xls' and  filename!='/media/sda3/share/PEDIDOS 08/60007219.xls'     order by filename ";
-//$sql="select * from  ci_orders_data.orders where filename like '/media/sda3/share/%/60008089.xls'  order by filename";
+$sql="select * from  ci_orders_data.orders where filename like '/media/sda3/share/%/60015657.xls'  order by filename";
 //7/60002384.xls
 //$sql="select * from  ci_orders_data.orders where filename like '/media/sda3/share/%/60000142.xls'  order by filename";
 //$sql="select * from  ci_orders_data.orders  where (filename like '%Orders2005%' or  filename like '%PEDIDOS%.xls') and (last_transcribed is NULL  or last_read>last_transcribed) and filename!='/media/sda3/share/PEDIDOS 08/60005902.xls' and  filename!='/media/sdas3/share/PEDIDOS 09/s60008607.xls' and  filename!='/media/sda3/share/PEDIsDOS 09/60009626.xls' or filename='%600s03600.xls'   order by date";
@@ -174,8 +174,14 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
     }
     mysql_free_result($result_test);
 
-    $header=mb_unserialize($row['header']);
-    // print_r($header);exit;
+    $_header=mb_unserialize($row['header']);
+    $header=array();
+    foreach($_header as $header_col){
+    if(count($header_col)>2)
+    $header[]=$header_col;
+    }
+    
+     print_r($_header);exit;
     $products=mb_unserialize($row['products']);
 
 
@@ -192,13 +198,19 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
     
     
     if(!isset($header[1][22])){
+    print_r($header);
     print "Error in Order $filename\n";
+    
     continue;
     }
     
     
     list($act_data,$header_data)=read_header($header,$map_act,$y_map,$map,false);
     $header_data=filter_header($header_data);
+    
+    //print_r($header_data);
+   // exit;
+    
     list($tipo_order,$parent_order_id)=get_tipo_order($header_data['ltipo'],$header_data);
 if($tipo_order==0)
 continue;
@@ -2059,6 +2071,7 @@ update_data($to_update);
 //print "\n$tipo_order\n";
 
 function update_data($to_update) {
+print "Upadtiing Data\n";
 
   if(false){
     $tm=new TimeSeries(array('q','invoices'));
