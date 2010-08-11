@@ -11,6 +11,7 @@ $css_files=array(
 		 'common.css',
 		 'button.css',
 		 'container.css',
+		 'css/calendar.css',
 		 'table.css',
 		 'css/dropdown.css'
 		 );
@@ -33,7 +34,7 @@ $js_files=array(
 		'js/dropdown.js'
 		);
 
-
+$report_name='report_pp';
 
 $smarty->assign('parent','reports');
 $smarty->assign('css_files',$css_files);
@@ -48,6 +49,7 @@ $tipo=$_SESSION['state']['report']['tipo'];
 
 $root_title=_('Pickers & Packers Report');
 include_once('report_dates.php');
+
 
 
 $smarty->assign('report_url','report_pp.php');
@@ -69,8 +71,9 @@ $int=prepare_mysql_dates($from,$to,'`Invoice Date`','date start end');
 
 $smarty->assign('tipo',$tipo);
 $smarty->assign('period',$period);
+$smarty->assign('title',$root_title);
 
-$smarty->assign('title',$title);
+$smarty->assign('root_title',$root_title);
 $smarty->assign('year',date('Y'));
 $smarty->assign('month',date('m'));
 $smarty->assign('month_name',date('M'));

@@ -106,7 +106,7 @@ function pickers_report(){
 
    $_SESSION['state']['report']['pickers']=array('order'=>$order,'order_dir'=>$order_direction);
 
-   $date_interval=prepare_mysql_dates($from,$to,'date_index','only_dates');
+   $date_interval=prepare_mysql_dates($from,$to,'`Order Date`','only_dates');
    if($date_interval['error']){
       $date_interval=prepare_mysql_dates($conf['from'],$conf['to']);
    }else{
@@ -122,32 +122,42 @@ function pickers_report(){
    $_order=$order;
    $_dir=$order_direction;
 
+  if($order=='units'){
+     $order ='units';
+   }elseif($order=='weight'){
+     $order ='weight';
+   }elseif($order=='orders'){
+     $order ='orders';
+   }else
+      $order='`Staff Alias`';
 
    
-   $sql=sprintf("select picker_id,alias, sum(if(feedback_id=1 or feedback_id=3,1,0))/count(distinct orden.id) as epo , sum(weight) as weight,position_id ,sum(share*pick_factor) as units ,count(distinct orden.id) as orders, sum(if(feedback_id=1 or feedback_id=3,1,0)) as errors     from orden left join pick on (order_id=orden.id) left join staff on (picker_id=staff.id)where tipo=2 %s  group by picker_id   order by %s %s ",$date_interval['mysql'],addslashes($order),addslashes($order_direction));
-   $result=mysql_query($sql);
+ 
+ $sql=sprintf("select sum(`Product Gross Weight`*`Delivery Note Quantity`)as weight , count(distinct `Order Key`) as orders,count(distinct `Order Key`,OTF.`Product Key`) as units ,`Staff ID`,`Staff Alias` from `Staff Dimension` S left join `Company Position Staff Bridge` B on (B.`Staff Key`=S.`Staff Key`) left join `Company Position Dimension` P on (P.`Company Position Key`=B.`Position Key`) left join `Order Transaction Fact` OTF on (`Picker Key`=S.`Staff Key`) left join `Product History Dimension` PH on (OTF.`Product Key`=PH.`Product Key`) left join `Product Dimension` PD on (PD.`Product ID`=PH.`Product ID`) where `Current Dispatching State` in ('Ready to Ship','Dispached') %s group by `Picker Key` order by %s %s  ",$date_interval['mysql'],addslashes($order),addslashes($order_direction));
+ // print $sql;
+    $result=mysql_query($sql);
    $data=array();
    $hours=40;
-   $uph=$row['units']/$hours;
-   $total=0;
+  
+  $total=0;
    while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
+     //uph=$row['units']/$hours;
+       //if($row['position_id']==2){
+       //  $uph=number($row['units']/$hours);
+       //}else
+       // $uph='';
 
-     if($row['position_id']==1){
-       $uph=number($row['units']/$hours);
-     }else
-       $uph='';
-
-     $total++;
+      $total++;
      $data[]=array(
-		   'tipo'=>($row['position_id']==1?_('FT'):''),
-		   'alias'=>$row['alias'],
+		   //  'tipo'=>($row['position_id']==2?_('FT'):''),
+		   'alias'=>$row['Staff Alias'],
 		   'orders'=>number($row['orders']),
 		   'units'=>number($row['units'],0) ,
-		   'weight'=>number($row['weight'],1)." "._('Kg'),
-		   'errors'=>number($row['errors']),
-		   'epo'=>number(100*$row['epo']+0.00001,1)."%",
-		   'hours'=>$hours,
-		   'uph'=>$uph
+		   'weight'=>number($row['weight'],0)." "._('Kg'),
+		   //'errors'=>number($row['errors']),
+		   //'epo'=>number(100*$row['epo']+0.00001,1)."%",
+		   //'hours'=>$hours,
+		   //'uph'=>$uph
 		   );
    }
 
@@ -168,7 +178,7 @@ function pickers_report(){
 			 'filter_msg'=>$filter_msg,
 			 'total_records'=>$total,
 			 'records_offset'=>$start_from,
-			 'records_returned'=>$start_from+$res->numRows(),
+			 // 'records_returned'=>$start_from+$res->numRows(),
 			 'records_perpage'=>$number_results,
 			 'records_text'=>$rtext,
 			 'records_order'=>$order,
@@ -177,6 +187,7 @@ function pickers_report(){
 			 )
 		   );
    echo json_encode($response);
+
 }
 
 function packers_report(){
@@ -231,7 +242,7 @@ $conf=$_SESSION['state']['report']['packers'];
 
    $_SESSION['state']['report']['packers']=array('order'=>$order,'order_dir'=>$order_direction);
 
-   $date_interval=prepare_mysql_dates($from,$to,'date_index','only_dates');
+   $date_interval=prepare_mysql_dates($from,$to,'`Order Date`','only_dates');
    if($date_interval['error']){
       $date_interval=prepare_mysql_dates($conf['from'],$conf['to']);
    }else{
@@ -247,33 +258,43 @@ $conf=$_SESSION['state']['report']['packers'];
    $_order=$order;
    $_dir=$order_direction;
 
-
    
-   $sql=sprintf("select packer_id,alias, sum(if(feedback_id=2 or feedback_id=3,1,0))/count(distinct orden.id) as epo , sum(weight) as weight,position_id ,sum(share*pack_factor) as units ,count(distinct orden.id) as orders, sum(if(feedback_id=2 or feedback_id=3,1,0)) as errors     from orden left join pack on (order_id=orden.id) left join staff on (packer_id=staff.id)where tipo=2 %s  group by packer_id   order by %s %s ",$date_interval['mysql'],addslashes($order),addslashes($order_direction));
+   if($order=='units'){
+     $order ='units';
+   }elseif($order=='weight'){
+     $order ='weight';
+   }elseif($order=='orders'){
+     $order ='orders';
+   }else
+      $order='`Staff Alias`';
 
+
+
+   $sql=sprintf("select sum(`Product Gross Weight`*`Delivery Note Quantity`)as weight , count(distinct `Order Key`) as orders,count(distinct `Order Key`,OTF.`Product Key`) as units ,`Staff ID`,`Staff Alias` from `Staff Dimension` S left join `Company Position Staff Bridge` B on (B.`Staff Key`=S.`Staff Key`) left join `Company Position Dimension` P on (P.`Company Position Key`=B.`Position Key`) left join `Order Transaction Fact` OTF on (`Packer Key`=S.`Staff Key`) left join `Product History Dimension` PH on (OTF.`Product Key`=PH.`Product Key`) left join `Product Dimension` PD on (PD.`Product ID`=PH.`Product ID`) where `Current Dispatching State` in ('Ready to Ship','Dispached') %s group by `Packer Key` order by %s %s  ",$date_interval['mysql'],addslashes($order),addslashes($order_direction));
+   // print $sql;
    $result=mysql_query($sql);
    $data=array();
    $hours=40;
-   print_r($sql);
-   $total=0;
+  
+  $total=0;
    while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
-$uph=$row['units']/$hours;
-     if($row['position_id']==2){
-       $uph=number($row['units']/$hours);
-     }else
-       $uph='';
+     //uph=$row['units']/$hours;
+       //if($row['position_id']==2){
+       //  $uph=number($row['units']/$hours);
+       //}else
+       // $uph='';
 
-     $total++;
+      $total++;
      $data[]=array(
-		   'tipo'=>($row['position_id']==2?_('FT'):''),
-		   'alias'=>$row['alias'],
+		   //  'tipo'=>($row['position_id']==2?_('FT'):''),
+		   'alias'=>$row['Staff Alias'],
 		   'orders'=>number($row['orders']),
 		   'units'=>number($row['units'],0) ,
-		   'weight'=>number($row['weight'],1)." "._('Kg'),
-		   'errors'=>number($row['errors']),
-		   'epo'=>number(100*$row['epo']+0.00001,1)."%",
-		   'hours'=>$hours,
-		   'uph'=>$uph
+		   'weight'=>number($row['weight'],0)." "._('Kg'),
+		   //'errors'=>number($row['errors']),
+		   //'epo'=>number(100*$row['epo']+0.00001,1)."%",
+		   //'hours'=>$hours,
+		   //'uph'=>$uph
 		   );
    }
 
@@ -294,7 +315,7 @@ $uph=$row['units']/$hours;
 			 'filter_msg'=>$filter_msg,
 			 'total_records'=>$total,
 			 'records_offset'=>$start_from,
-			 'records_returned'=>$start_from+$res->numRows(),
+			 // 'records_returned'=>$start_from+$res->numRows(),
 			 'records_perpage'=>$number_results,
 			 'records_text'=>$rtext,
 			 'records_order'=>$order,

@@ -19,8 +19,7 @@ require_once 'class.Department.php';
 require_once 'class.Family.php';
 
 require_once 'class.Order.php';
-require_once 'class.Location.php'
-;
+require_once 'class.Location.php';
 require_once 'class.PartLocation.php';
 //require_once 'common_functions.php';
 //require_once 'ar_common.php';

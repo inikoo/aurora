@@ -60,6 +60,12 @@ $force_update=false;
 
 
 $orders_array_full_path = glob("/mnt/*/Orders/*.xls");
+//$orders_array_full_path1 = glob("/mnt/z/Orders_Aug10/*.xls");
+//$orders_array_full_path2 = glob("/mnt/z/Orders_Aug10/*.xls");
+//$orders_array_full_path =array_merge($orders_array_full_path1,$orders_array_full_path2);
+
+//print_r(array_merge($orders_array_full_path1,$orders_array_full_path2));exit;
+
 //$orders_array_full_path=array_reverse($orders_array_full_path);
 
 
