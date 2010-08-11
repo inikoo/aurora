@@ -3,7 +3,7 @@
 {include file='reports_navigation.tpl'}
 {include file='calendar_splinter.tpl'}
 
-<h1 style="clear:left">{$title}</h1>
+<h1 style="clear:left">{$root_title}</h1>
 
 
  <div class="data_table" style="clear:both;">
