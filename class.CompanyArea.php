@@ -384,9 +384,20 @@ $sql=sprintf('Select * from `Staff Dimension` SD  left join `Company Position St
 ,$this->id
 ,prepare_mysql($position_code)
 );
-//print $sql;
+;
+$smarty=false;
+if(preg_match('/smarty/i',$options))
+  $smarty=true;
 $res=mysql_query($sql);
 while($row=mysql_fetch_array($res,MYSQL_ASSOC)){
+  if($smarty){
+    $_row=array();
+    foreach($row as $key=>$value){
+      $_row[preg_replace('/\s/','',$key)]=$value;
+    }
+    
+    $positions[$row['Staff Key']]=$_row;
+  }else
     $positions[$row['Staff Key']]=$row;
 }
 return $positions;

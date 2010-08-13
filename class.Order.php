@@ -790,7 +790,11 @@ if($this->update_customer){
             $this->data['Order Current Dispatch State']='Ready to Pick';
             $this->data['Order Current XHTML State']='Ready to Pick';
 
-            $sql=sprintf("update `Order Dimension` set `Order Current Dispatch State`=%s, `Order Current XHTML State`=%s  where `Order Key`=%d"
+
+
+
+            $sql=sprintf("update `Order Dimension` set 
+                `Order Current Dispatch State`=%s, `Order Current XHTML State`=%s  where `Order Key`=%d"
             ,prepare_mysql($this->data['Order Current Dispatch State'])
             ,prepare_mysql($this->data['Order Current XHTML State'])
             ,$this->id);
