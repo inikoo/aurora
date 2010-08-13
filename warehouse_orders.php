@@ -99,9 +99,9 @@ $smarty->assign('js_files',$js_files);
 
 
 $warehouse_area=new CompanyArea('code','WAH');
-$pickers=$warehouse_area->get_current_staff_with_position_code('PICK');
+$pickers=$warehouse_area->get_current_staff_with_position_code('PICK','smarty');
 $smarty->assign('pickers',$pickers);
-print_r($pickers);
+//print_r($pickers);
 
 $tipo_filter2=$_SESSION['state']['orders']['ready_to_pick_dn']['f_field'];
 $smarty->assign('filter2',$tipo_filter2);

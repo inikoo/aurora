@@ -59,11 +59,12 @@
 {include file='footer.tpl'}
 
 
-<div id="pick_it_dialog">
+<div id="pick_it_dialog" style="width:300px;">
+<div class="options" style="width:300px;padding:20px" >
 {foreach from=$pickers item=picker}
-<div></div>
+		      <span class="selected">{$picker.StaffAlias}</span>
 {/foreach}
-
+</div>
 <table class="edit">
 <tr class="first"><td style="" class="label">{t}Staff Name{/t}:</td>
    <td  style="text-align:left">
@@ -74,10 +75,11 @@
    </td>
    <td id="Staff_Name_msg" class="edit_td_alert"></td>
  </tr>
+<tr><td>{t}PIN{/t}:</td><td><input /></td></tr>
 </table>
 
-<table class="edit">
-  <tr><td>{t}PIN{/t}:</td><td><input /></td></tr>
+	       <table class="edit" style="margin-top:10px;float:right">
+  
   <tr><td colspan="2"><span class="button">Cancel</span><span class="button">Go</span><td></tr>
 </table>
 

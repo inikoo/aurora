@@ -754,7 +754,7 @@ function ready_to_pick_orders(){
    
    
 
-  $sql="select `Order Key`,`Order Public ID`,`Order Customer Key`,`Order Customer Name`,`Order Last Updated Date`,`Order Estimated Weight`,`Order Current Dispatch State` from `Order Dimension`  $where $wheref  order by $order $order_direction limit $start_from,$number_results ";
+  $sql="select `Order Current Lines`,`Order Key`,`Order Public ID`,`Order Customer Key`,`Order Customer Name`,`Order Last Updated Date`,`Order Estimated Weight`,`Order Current Dispatch State` from `Order Dimension`  $where $wheref  order by $order $order_direction limit $start_from,$number_results ";
  // print $sql;
   global $myconf;
 
@@ -769,19 +769,24 @@ function ready_to_pick_orders(){
        $lap=RelativeTime(date('U',strtotime($row['Order Last Updated Date'])));
     
      $w=weight($row['Order Estimated Weight']);
+     $picks=number($row['Order Current Lines']);
 
-    $picker=_('Pick it');
-    $packer='';
+
+
+    $operations='<span style="cursor:pointer"  onClick="assign_picker(this)">'._('Assign Picker')."</span>";
+
+
+    //$packer='';
 $status=$row['Order Current Dispatch State'];
      $data[]=array(
 		   'id'=>$row['Order Key']
 		   ,'public_id'=>sprintf("%s",$row['Order Public ID'])
 		   ,'customer'=>$row['Order Customer Name']
 		   ,'wating_lap'=>$lap
-		   ,'e_weight'=>$w
+		   ,'weight'=>$w
+		   ,'picks'=>$picks
 		   ,'date'=>$row['Order Last Updated Date']
-		   ,'picker'=>$picker
-		   ,'packer'=>$packer
+		   ,'operations'=>$operations
 		   ,'status'=>$status
 		   );
    }
