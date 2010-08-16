@@ -39,8 +39,8 @@ YAHOO.util.Event.addListener(window, "load", function() {
 				      ,{key:"tipo", label:"<?php echo _('Type')?>",width:120, sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				      ,{key:"customer_name", label:"<?php echo _('Customer')?>", width:200,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				      ,{key:"date_index", label:"<?php echo _('Date')?>", width:200,formatter:this.date,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				      ,{key:"dispached", label:"<?php echo _('Dispached')?>",width:80, sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-				      ,{key:"undispached", label:"<?php echo'&Delta;'._('Ordered')?>", width:80, sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				      ,{key:"dispatched", label:"<?php echo _('Dispatched')?>",width:80, sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				      ,{key:"undispatched", label:"<?php echo'&Delta;'._('Ordered')?>", width:80, sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 				      ];
 		    
 		    
@@ -59,7 +59,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 			},
 			
 			fields: [
-				 "id","public_id","customer_name","tipo","date_index","date","dispached","undispached"
+				 "id","public_id","customer_name","tipo","date_index","date","dispatched","undispatched"
 				 ]};
 	    
 		    this.table0 = new YAHOO.widget.DataTable(tableDivEL, ColumnDefs,
@@ -98,9 +98,9 @@ YAHOO.util.Event.addListener(window, "load", function() {
 		    var ColumnDefs = [
 				      {key:"customer_name", label:"<?php echo _('Customer')?>",width:250, sortable:true,formatter:this.customerLink,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				      ,{key:"orders", label:"<?php echo _('Orders')?>",width:90, sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-				      ,{key:"dispached", label:"<?php echo _('Dispached')?>",width:90, sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				      ,{key:"dispatched", label:"<?php echo _('Dispatched')?>",width:90, sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 				      ,{key:"todispach", label:"<?php echo _('To Dispach')?>",width:90, sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-				      ,{key:"nodispached", label:"<?php echo _('Undispached')?>", width:90, sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				      ,{key:"nodispatched", label:"<?php echo _('Undispatched')?>", width:90, sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 				      ,{key:"charged", label:"<?php echo _('Charged')?>", width:90, sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 				      ];
 		    
@@ -120,7 +120,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 			},
 			
 			fields: [
-				  "customer_id","customer_name","dispached","nodispached","charged","todispach","orders"
+				  "customer_id","customer_name","dispatched","nodispatched","charged","todispach","orders"
 				 ]};
 	    
 		    this.table1 = new YAHOO.widget.DataTable(tableDivEL, ColumnDefs,

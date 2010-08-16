@@ -162,6 +162,7 @@ YAHOO.deconcept.SWFObject.prototype =
 		}
 		if(this.skipDetect || this.getAttribute('doExpressInstall') || this.installedVer.versionIsValid(this.getAttribute('version')))
 		{
+		
 			var n = (typeof elementId == 'string') ? document.getElementById(elementId) : elementId;
 			n.innerHTML = this.getSWFHTML();
 			return true;
@@ -514,8 +515,10 @@ YAHOO.extend(YAHOO.widget.FlashAdapter, YAHOO.util.AttributeProvider,
 		if (buttonSkin) {
 		swfObj.addVariable("buttonSkin", buttonSkin);
 		}
+	
 		var container = YAHOO.util.Dom.get(containerID);
 		var result = swfObj.write(container);
+		
 		if(result)
 		{
 			this._swf = YAHOO.util.Dom.get(swfID);

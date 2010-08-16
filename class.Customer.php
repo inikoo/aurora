@@ -1639,14 +1639,14 @@ $this->update_full_search();
         $this->data['Customer Tax Payments']=0;
         $this->data['Customer Profit']=0;
 
-        //print $sql;exit;
+       // print "$sql\n";
         $result=mysql_query($sql);
         if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
 
             $this->data['Customer Orders']=$row['orders'];
             $this->data['Customer Orders Cancelled']=$row['cancelled'];
             $this->data['Customer Orders Invoiced']=$row['invoiced'];
-
+//print_r($row);
             $this->data['Customer Net Balance']=$row['net_balance'];
             $this->data['Customer Net Refunds']=$row['net_refunds'];
             $this->data['Customer Net Payments']=$row['net_balance']-$row['net_outstanding'];
@@ -1748,7 +1748,7 @@ $this->update_full_search();
 
                          ,$this->id
                         );
-
+//print "$sql\n";
             if (!mysql_query($sql))
                 exit("$sql error");
         }

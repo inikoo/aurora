@@ -2739,7 +2739,7 @@ $number_images=$row['num'];
     }
     $keys=preg_replace('/,$/','',$keys);
 
-    $sql=sprintf("select count(Distinct `Order Key`) as pending_orders   from `Order Transaction Fact`   where  `Current Dispatching State` not in ('Unknown','Dispached','Cancelled')  and  `Product Key` in (%s)",$keys);
+    $sql=sprintf("select count(Distinct `Order Key`) as pending_orders   from `Order Transaction Fact`   where  `Current Dispatching State` not in ('Unknown','Dispatched','Cancelled')  and  `Product Key` in (%s)",$keys);
     $result=mysql_query($sql);
     $pending_orders=0;
     if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {

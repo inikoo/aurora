@@ -80,7 +80,7 @@ $js_files=array(
 		$yui_path.'datasource/datasource-min.js',
 		$yui_path.'autocomplete/autocomplete-min.js',
 		$yui_path.'datatable/datatable.js',
-		$yui_path.'container/container_core-min.js',
+		$yui_path.'container/container-min.js',
 		$yui_path.'menu/menu-min.js',
 		$yui_path.'calendar/calendar-min.js',
 		'common.js.php',
@@ -99,9 +99,25 @@ $smarty->assign('js_files',$js_files);
 
 
 $warehouse_area=new CompanyArea('code','WAH');
-$pickers=$warehouse_area->get_current_staff_with_position_code('PICK','smarty');
-$smarty->assign('pickers',$pickers);
-//print_r($pickers);
+$pickers=$warehouse_area->get_current_staff_with_position_code('PICK');
+
+$number_cols=5;
+$row=0;
+ $pickers_data=array();
+    $contador=0;
+    foreach($pickers as $picker){
+       if(fmod($contador,$number_cols)==0 and $contador>0)
+        $row++;
+        $tmp=array();
+     foreach($picker as $key=>$value){
+       $tmp[preg_replace('/\s/','',$key)]=$value;
+     }
+      $pickers_data[$row][]=$tmp;
+ $contador++;
+   }
+
+$smarty->assign('pickers',$pickers_data);
+//print_r($pickers_data);
 
 $tipo_filter2=$_SESSION['state']['orders']['ready_to_pick_dn']['f_field'];
 $smarty->assign('filter2',$tipo_filter2);

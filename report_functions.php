@@ -978,7 +978,7 @@ $sql=sprintf("select count(*) as num ,sum(`Delivery Note Weight`) as w  from `De
   $_int=preg_replace('/Invoice Store Key/','Order Store Key',$_int); 
   
   
-  $sql=sprintf("select count(*) as num ,sum(`Order Total Net Amount`) as net ,sum(IF(`Order Current Dispatch State`='Dispached',1,0)) as done  from `Order Dimension` where true %s ",$_int);
+  $sql=sprintf("select count(*) as num ,sum(`Order Total Net Amount`) as net ,sum(IF(`Order Current Dispatch State`='Dispatched',1,0)) as done  from `Order Dimension` where true %s ",$_int);
 
   $result=mysql_query($sql);
   if($row=mysql_fetch_array($result, MYSQL_ASSOC)){

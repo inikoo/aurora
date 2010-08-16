@@ -120,7 +120,7 @@ $fam_promo_key=$fam_promo->id;
 
 
 $sql="select * from  ci_orders_data.orders  where   (last_transcribed is NULL  or last_read>last_transcribed) and filename not like '%UK%'  and filename not like '%test%' and filename not like '%take%'  and filename!='/media/sda3/share/PEDIDOS 08/60005902.xls' and  filename!='/media/sda3/share/PEDIDOS 09/60008607.xls' and  filename!='/media/sda3/share/PEDIDOS 09/60009626.xls' and  filename!='/media/sda3/share/PEDIDOS 09/60011693.xls' and  filename!='/media/sda3/share/PEDIDOS 09/60011905.xls' and  filename!='/media/sda3/share/PEDIDOS 08/60007219.xls'     order by filename ";
-$sql="select * from  ci_orders_data.orders where filename like '/media/sda3/share/%/60015657.xls'  order by filename";
+//$sql="select * from  ci_orders_data.orders where filename like '/media/sda3/share/%/60000114.xls'  order by filename";
 //7/60002384.xls
 //$sql="select * from  ci_orders_data.orders where filename like '/media/sda3/share/%/60000142.xls'  order by filename";
 //$sql="select * from  ci_orders_data.orders  where (filename like '%Orders2005%' or  filename like '%PEDIDOS%.xls') and (last_transcribed is NULL  or last_read>last_transcribed) and filename!='/media/sda3/share/PEDIDOS 08/60005902.xls' and  filename!='/media/sdas3/share/PEDIDOS 09/s60008607.xls' and  filename!='/media/sda3/share/PEDIsDOS 09/60009626.xls' or filename='%600s03600.xls'   order by date";
@@ -181,7 +181,7 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
     $header[]=$header_col;
     }
     
-     print_r($_header);exit;
+     //print_r($_header);exit;
     $products=mb_unserialize($row['products']);
 
 
@@ -1234,7 +1234,7 @@ if ($customer_data['Customer Delivery Address Link']=='Contact') {
 
        $data['Order Tax Code']=$tax_code;
        $data['Order Tax Rate']=$tax_rate;
-
+//exit("--->".$tipo_order."\n");
     if ($tipo_order==1 or $tipo_order==2  or $tipo_order==3 or $tipo_order==4 or   $tipo_order==5 or   $tipo_order==8    )  {
 
 
@@ -1329,6 +1329,7 @@ if ($customer_data['Customer Delivery Address Link']=='Contact') {
 	
 	$data_dn=array(
 		       'Delivery Note Date'=>$date_inv
+		       ,'Delivery Note Date Created'=>$date_order
 		       ,'Delivery Note ID'=>$header_data['order_num']
 		       ,'Delivery Note File As'=>$header_data['order_num']
 		       ,'Delivery Note Weight'=>$weight
@@ -1343,12 +1344,16 @@ if ($customer_data['Customer Delivery Address Link']=='Contact') {
 		       ,'Delivery Note Has Shipping'=>$_customer_data['has_shipping']
 		       ,'Delivery Note Shipper Code'=>$header_data['shipper_code']
 		       ,'Delivery Note Dispatch Method'=>$data['Delivery Note Dispatch Method']
+		       ,'Delivery Note State'=>'Dispatched'
 		       );
-
+//print_r($data_dn);
 	//$order->create_dn_simple($data_dn,$data_dn_transactions);
 	$dn=new DeliveryNote('create',$data_dn,$data_dn_transactions,$order);
+		$order->update_dispatch_state('Dispatched');
+
 	$order->update_delivery_notes('save');
-	$order->update_dispatch_state('Ready to Pick');
+	
+	
 	$order->update_invoices('save');
 	if ($total_credit_value==0 and $header_data['total_topay']==0) {
 	  print "Zero value order ".$header_data['order_num']." \n";
@@ -1360,7 +1365,7 @@ if ($customer_data['Customer Delivery Address Link']=='Contact') {
 	  
 	  $order->update_dispatch_state('Ready to Ship');
 	  $order->load('totals');
-	  $order->update_dispatch_state('Dispached');
+	  $order->update_dispatch_state('Dispatched');
 	  $order-> update_payment_state('No Applicable');
 
 	} else {// paid for it
@@ -1416,12 +1421,16 @@ if ($customer_data['Customer Delivery Address Link']=='Contact') {
 			      ,'Invoice Total Amount'=>round($header_data['total_topay'],2)
 
                               ));
-	  $order-> update_payment_state('Paid');
+	  //$order-> update_payment_state('Paid');
 	  $dn->dispatch('all',$data_dn_transactions);
-	  $order->update_dispatch_state('Dispached');
+	  $order->update_dispatch_state('Dispatched');
 
 	  $order->load('totals');
 	  $invoice->categorize('save');
+	  
+	  
+	  
+	  
 	}
 
 
@@ -1458,6 +1467,7 @@ if ($customer_data['Customer Delivery Address Link']=='Contact') {
 	$order_type='Follow on';  ;
 	$data_dn=array(
 		       'Delivery Note Date'=>$date_inv
+		         ,'Delivery Note Date Created'=>$date_order
 		       ,'Delivery Note ID'=>$header_data['order_num']
 		       ,'Delivery Note File As'=>$header_data['order_num']
 		       ,'Delivery Note Weight'=>$weight
@@ -1472,6 +1482,7 @@ if ($customer_data['Customer Delivery Address Link']=='Contact') {
 		       ,'Delivery Note Has Shipping'=>$_customer_data['has_shipping']
 		       ,'Delivery Note Shipper Code'=>$header_data['shipper_code']
 		       ,'Delivery Note Dispatch Method'=>$data['Delivery Note Dispatch Method']
+		        ,'Delivery Note State'=>'Dispatched'
 		       );
 
 	//$order->create_dn_simple($data_dn,$data_dn_transactions);
@@ -1548,7 +1559,7 @@ if ($customer_data['Customer Delivery Address Link']=='Contact') {
 	}
 
 	$dn->dispatch('all',$data_dn_transactions);
-	$parent_order->update_dispatch_state('Dispached');
+	$parent_order->update_dispatch_state('Dispatched');
 	$parent_order->load('totals');
 
 
@@ -1569,9 +1580,10 @@ if ($customer_data['Customer Delivery Address Link']=='Contact') {
 	$packer_data=get_user_id($header_data['packedby'],true,'&view=packs');
 
 	$order_type=$data['Order Type'];
-
+list($parcels,$parcel_type)=parse_parcels($header_data['parcels']);
 	$data_dn=array(
 		       'Delivery Note Date'=>$date2
+		         ,'Delivery Note Date Created'=>$date_order
 		       ,'Delivery Note ID'=>$header_data['order_num']
 		       ,'Delivery Note File As'=>$header_data['order_num']
 		       ,'Delivery Note Weight'=>$weight
@@ -1586,7 +1598,7 @@ if ($customer_data['Customer Delivery Address Link']=='Contact') {
 		       ,'Invoice Items Net Amount'=>$header_data['total_items_charge_value']-$total_credit_value
 		       ,'Delivery Note Type'=>$order_type
 		       ,'Delivery Note Title'=>_('Delivery Note for').' '.$order_type.' '.$header_data['order_num']
-
+,'Delivery Note State'=>'Dispatched'
 		       ,'Delivery Note Has Shipping'=>$_customer_data['has_shipping']
 		       ,'Delivery Note Shipper Code'=>$header_data['shipper_code']
 		       ,'Delivery Note Dispatch Method'=>$data['Delivery Note Dispatch Method']
@@ -1688,7 +1700,7 @@ if ($customer_data['Customer Delivery Address Link']=='Contact') {
 	  $dn->set_parcels($parcels,$parcel_type);
 	  $order->update_dispatch_state('Ready to Ship');
 	  $dn->dispatch('all',$data_dn_transactions);
-	  $order->update_dispatch_state('Dispached');
+	  $order->update_dispatch_state('Dispatched');
 
 
 	  $order->load('totals');
@@ -1702,7 +1714,7 @@ if ($customer_data['Customer Delivery Address Link']=='Contact') {
 	  $dn->set_parcels($parcels,$parcel_type);
 	  $order->update_dispatch_state('Ready to Ship');
 	  $dn->dispatch('all',$data_dn_transactions);
-	  $order->update_dispatch_state('Dispached');
+	  $order->update_dispatch_state('Dispatched');
 
 
 	  $order->no_payment_applicable();
@@ -1721,8 +1733,47 @@ if ($customer_data['Customer Delivery Address Link']=='Contact') {
 
 
       } else if ($tipo_order==3) {
-	$order->cancel();
+	$order->cancel('',$date_inv);
+	
+	
+	if (!is_numeric($header_data['weight']))
+	  $weight=$estimated_w;
+	else
+	  $weight=$header_data['weight'];
 
+
+	$picker_data=get_user_id($header_data['pickedby'],true,'&view=picks');
+	$packer_data=get_user_id($header_data['packedby'],true,'&view=packs');
+	$order_type=$data['Order Type'];
+	list($parcels,$parcel_type)=parse_parcels($header_data['parcels']);
+	
+	$data_dn=array(
+		       'Delivery Note Date'=>$date_inv
+		       ,'Delivery Note Date Created'=>$date_order
+		       ,'Delivery Note ID'=>$header_data['order_num']
+		       ,'Delivery Note File As'=>$header_data['order_num']
+		       ,'Delivery Note Weight'=>$weight
+		       ,'Delivery Note XHTML Pickers'=>$picker_data['xhtml']
+		       ,'Delivery Note Number Pickers'=>count($picker_data['id'])
+		       ,'Delivery Note Pickers IDs'=>$picker_data['id']
+		       ,'Delivery Note XHTML Packers'=>$packer_data['xhtml']
+		       ,'Delivery Note Number Packers'=>count($packer_data['id'])
+		       ,'Delivery Note Packers IDs'=>$packer_data['id']
+		       ,'Delivery Note Type'=>$order_type
+		       ,'Delivery Note Title'=>_('Delivery Note for').' '.$order_type.' '.$header_data['order_num']
+		       ,'Delivery Note Has Shipping'=>$_customer_data['has_shipping']
+		       ,'Delivery Note Shipper Code'=>$header_data['shipper_code']
+		       ,'Delivery Note Dispatch Method'=>$data['Delivery Note Dispatch Method']
+		       ,'Delivery Note State'=>'Ready to be Picked'
+		       );
+//print_r($data_dn);
+	//$order->create_dn_simple($data_dn,$data_dn_transactions);
+	$dn=new DeliveryNote('create',$data_dn,$data_dn_transactions,$order);
+	
+	
+	
+	
+$dn->cancel();
       }else{
             
 	$order->load('totals');
@@ -1985,6 +2036,7 @@ if ($customer_data['Customer Delivery Address Link']=='Contact') {
 
       $data_dn=array(
 		     'Delivery Note Date'=>$date_inv
+		       ,'Delivery Note Date Created'=>$date_order
 		     ,'Delivery Note ID'=>$header_data['order_num']
 		     ,'Delivery Note Type'=>$order_type
 		     ,'Delivery Note Title'=>$order_type.' '.$header_data['order_num']
@@ -2000,6 +2052,7 @@ if ($customer_data['Customer Delivery Address Link']=='Contact') {
 		     ,'Delivery Note Has Shipping'=>$_customer_data['has_shipping']
 		     ,'Delivery Note Shipper Code'=>$header_data['shipper_code']
 		     ,'Delivery Note Dispatch Method'=>$data['Delivery Note Dispatch Method']
+		      ,'Delivery Note State'=>'Dispatched'
                      );
 
       $parent_order=new Order('public_id',$parent_order_id);

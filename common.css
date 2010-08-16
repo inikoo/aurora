@@ -719,3 +719,7 @@ position:relative;top:1px;
 
 
 #part_locations .quantity{padding-right:10px;text-align:right}
+
+.home_splinter_options span{color:#999;cursor:pointer}
+.home_splinter_options span:hover{color:#777}
+.home_splinter_options span.selected{color:#333;font-weight:100;text-decoration:none;}

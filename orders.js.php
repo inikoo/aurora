@@ -418,7 +418,7 @@ var clear_interval = function(e,suffix){
 YAHOO.util.Event.addListener("submit_intervaldn", "click", change_interval,'dn');
  YAHOO.util.Event.addListener("clear_intervaldn", "click", clear_interval,'dn'); 
 
- var ids =Array("in_process","dispached","cancelled","unknown") ;
+ var ids =Array("in_process","dispatched","cancelled","unknown") ;
 YAHOO.util.Event.addListener(ids, "click", change_dispatch_type);
 
 

@@ -24,6 +24,16 @@ $editor=array(
 
 $tipo=$_REQUEST['tipo'];
 switch ($tipo) {
+case('read_files'):
+case('read_file'):
+print_r($_REQUEST);
+ $data=prepare_values($_REQUEST,array(
+                             'files'=>array('type'=>'json array')
+                              ,'format'=>'string'
+                              ,'scope'=>'string'
+                         ));
+   read_data($data);                      
+break;
 case('new_customer'):
 
 
@@ -32,6 +42,12 @@ default:
     $response=array('state'=>404,'resp'=>_('Operation not found'));
     echo json_encode($response);
 }
+
+function read_data($data){
+
+print_r($data);
+}
+
 function edit_contact($data) {
     global $editor;
 

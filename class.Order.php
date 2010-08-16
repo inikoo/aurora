@@ -807,8 +807,8 @@ if($this->update_customer){
 
         function cancel($note='',$date=false) {
             $this->cancelled=false;
-            if (preg_match('/Dispached/',$this->data ['Order Current Dispatch State'])) {
-                $this->msg=_('Order can not be cancelled, because has already been dispached');
+            if (preg_match('/Dispatched/',$this->data ['Order Current Dispatch State'])) {
+                $this->msg=_('Order can not be cancelled, because has already been dispatched');
 
             }
             if (preg_match('/Cancelled/',$this->data ['Order Current Dispatch State'])) {
@@ -868,11 +868,11 @@ if($this->update_customer){
 
 
             $this->data ['Order Current Payment State'] = 'No Applicable';
-            $this->data ['Order Current Dispatch State'] = 'Dispached';
+            $this->data ['Order Current Dispatch State'] = 'Dispatched';
             //     $dn_txt = "No value order, Send";print $this->load('xhtml delivery notes',$dn_txt);
-            $dn_txt=_('Dispached');
+            $dn_txt=_('Dispatched');
             if ($this->data ['Order Type'] == 'Order') {
-                $dn_txt = "No value order, Dispached";
+                $dn_txt = "No value order, Dispatched";
             }
 
 
@@ -1262,7 +1262,7 @@ if($this->update_customer){
             case ('estimated_weight') :
                 if ($this->tipo == 'order') {
                     $w = 0;
-                    $sql = sprintf ( "select sum(dispached*units*weight)as w from transaction left join product on (product.id=product_id) where order_id=%d ", $this->id );
+                    $sql = sprintf ( "select sum(dispatched*units*weight)as w from transaction left join product on (product.id=product_id) where order_id=%d ", $this->id );
                     $result = & $this->db->query ( $sql );
                     if ($row = $result->fetchRow ()) {
                         $w = $row ['w'];
@@ -1288,13 +1288,13 @@ if($this->update_customer){
             case ('pack_factor') :
                 if ($this->tipo == 'order') {
                     $factor = 10;
-                    $sql = sprintf ( "select sum(dispached) as dispached ,count(distinct product_id) as products from transaction left join product on (product.id=product_id) where order_id=%d ", $this->id );
+                    $sql = sprintf ( "select sum(dispatched) as dispatched ,count(distinct product_id) as products from transaction left join product on (product.id=product_id) where order_id=%d ", $this->id );
                     $result = & $this->db->query ( $sql );
                     if ($row = $result->fetchRow ()) {
                         if ($row ['products'] == 0)
                             $factor = 0;
                         else
-                            $factor = 5 * $row ['products'] + ($row ['dispached'] / $row ['products']);
+                            $factor = 5 * $row ['products'] + ($row ['dispatched'] / $row ['products']);
                     }
                     return $this->get ( 'estimated_weight' ) / 2 + $factor;
 

@@ -162,7 +162,7 @@ function readorder($file,$ofile,$update,$checksum,$datetime_updated='',$time_upd
     $my_total_items_reorder=0;
     $my_total_items_bonus=0;
     $my_total_items_free=0;
-    $my_total_items_dispached=0;
+    $my_total_items_dispatched=0;
 
     $country='';
     $cust_date1='';
@@ -834,10 +834,10 @@ function readorder($file,$ofile,$update,$checksum,$datetime_updated='',$time_upd
 	  $my_total_items_order+=$col[$y_order];
 	  $my_total_items_reorder=$col[$y_reorder];
 	  $my_total_items_bonus+=$col[$y_bonus];
-	  $my_total_items_dispached+=$my_items_to_dispach;
+	  $my_total_items_dispatched+=$my_items_to_dispach;
 
 	  if($col[$y_discount]==1)
-	    $my_total_items_free+=$my_total_items_dispached;
+	    $my_total_items_free+=$my_total_items_dispatched;
 	  $tipo_t=1;
 	  if($col[$y_discount]==1)
 	    $tipo_t=2;
@@ -846,7 +846,7 @@ function readorder($file,$ofile,$update,$checksum,$datetime_updated='',$time_upd
 	  // print $col[$y_code];
 	  if($row = mysql_fetch_array($result, MYSQL_ASSOC)) {
 	    $product_id=$row['id'];
-	    $sql=sprintf("insert into transaction (tipo,order_id,product_id,ordered,dispached,discount,charge) value (%d,%d,%d,%.2f,%.2f,%.2f,%.2f)",$tipo_t,$order_id,$product_id,$col[$y_order],$my_items_to_dispach,$col[$y_discount],$my_items_to_charge_value);
+	    $sql=sprintf("insert into transaction (tipo,order_id,product_id,ordered,dispatched,discount,charge) value (%d,%d,%d,%.2f,%.2f,%.2f,%.2f)",$tipo_t,$order_id,$product_id,$col[$y_order],$my_items_to_dispach,$col[$y_discount],$my_items_to_charge_value);
 	    //if($debug)print"$sql\n";
 	    mysql_query($sql);
 	    if($col[$y_reorder]>0){

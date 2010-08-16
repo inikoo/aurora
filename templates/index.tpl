@@ -16,15 +16,13 @@
 
 	<div id="wrapper">
 		<div id="wid_menu" >
-			<img style="position:relative;top:3px" src="art/icons/previous.png" alt="" id="previous" />
+			<img style="position:relative;top:3px;display:none" src="art/icons/previous.png" alt="" id="previous" />
 			<ul id="buttons">
-			
-{foreach from=$splinters key=key item=splinter}
-
-<li id="splinter_but_{$key}" key="{$key}"  >{$splinter.title}</li>
-{/foreach}
-			</ul>
-			<img style="position:relative;top:3px" src="art/icons/next.png" alt="" id="next" />
+			{foreach from=$splinters key=key item=splinter}
+            <li id="splinter_but_{$key}" key="{$key}" class="splinter_buttons {if $display_block==$key}active{/if}" onClick="change_block(this)"  >{$splinter.title}</li>
+            {/foreach}
+            </ul>
+			<img style="position:relative;top:3px;display:none" src="art/icons/next.png" alt="" id="next" />
 		</div>
 
 		
@@ -33,15 +31,10 @@
 			<div id="content">
 			
 			{foreach from=$splinters key=key item=splinter}
-<div class="pane"  id="pane_{$key}">
+<div class="pane"  id="pane_{$key}" {if $display_block!=$key}style="display:none"{/if}>
 {include file=$splinter.tpl index=$splinter.index}
 </div>
 {/foreach}
-			
-			
-			
-			
-
 			</div>
 		</div>
 	</div>
@@ -50,16 +43,7 @@
 	
 	
 	
-		window.addEvent('load', function () {
-			myTabs = new SlidingTabs('buttons', 'panes');
-			
-			// this sets up the previous/next buttons, if you want them
-			$('previous').addEvent('click', myTabs.previous.bind(myTabs));
-			$('next').addEvent('click', myTabs.next.bind(myTabs));
-			
-			// this sets it up to work even if it's width isn't a set amount of pixels
-			window.addEvent('resize', myTabs.recalcWidths.bind(myTabs));
-		});
+	
 	</script>
 {/literal}
 

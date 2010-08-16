@@ -52,7 +52,7 @@ $js_files=array(
               $yui_path.'datasource/datasource-min.js',
               $yui_path.'autocomplete/autocomplete-min.js',
               $yui_path.'datatable/datatable.js',
-              $yui_path.'container/container_core-min.js',
+              $yui_path.'container/container-min.js',
               $yui_path.'menu/menu-min.js',
               $yui_path.'calendar/calendar-min.js',
               'common.js.php',
@@ -104,6 +104,11 @@ foreach($splinters as $splinter) {
         $js_files[]=$splinter['js']."?table_id=".$splinter['index'];
     include_once($splinter['php']);
 }
+
+
+//print_r($_SESSION['state']['home']['splinters']);
+$smarty->assign('conf_data',$_SESSION['state']['home']['splinters']);
+$smarty->assign('display_block',$_SESSION['state']['home']['display']);
 
 $smarty->assign('search_scope','all');
 

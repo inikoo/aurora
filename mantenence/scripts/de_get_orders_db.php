@@ -1561,7 +1561,7 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
 
                 $data_dn=array(
-                             'Delivery Note Date'=>$date_inv
+                             'Delivery Note Date'=>$date_inv  ,'Delivery Note Date Created'=>$date_order
                                                   ,'Delivery Note ID'=>$header_data['order_num']
                                                                       ,'Delivery Note File As'=>$header_data['order_num']
                                                                                                ,'Delivery Note Weight'=>$weight
@@ -1575,7 +1575,7 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
                                                                                                                                                                                                                                                                                                                                      ,'Delivery Note Title'=>_('Delivery Note for').' '.$order_type.' '.$header_data['order_num']
                                                                                                                                                                                                                                                                                                                                                             ,'Delivery Note Has Shipping'=>$_customer_data['has_shipping']
                                                                                                                                                                                                                                                                                                                                                                                           ,'Delivery Note Shipper Code'=>$header_data['shipper_code']
-                                                                                                                                                                                                                                                                                                                                                                                                                        ,'Delivery Note Dispatch Method'=>$data['Delivery Note Dispatch Method']
+                                                                                                                                                                                                                                                                                                                                                                                                                        ,'Delivery Note Dispatch Method'=>$data['Delivery Note Dispatch Method'],'Delivery Note State'=>'Dispatched'
 
                          );
 
@@ -1593,7 +1593,7 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
                     $dn->set_parcels($parcels,$parcel_type);
                     $order->update_dispatch_state('Ready to Ship');
                     $order->load('totals');
-                    $order->update_dispatch_state('Dispached');
+                    $order->update_dispatch_state('Dispatched');
                     $order-> update_payment_state('No Applicable');
 
                 } else {// paid for it
@@ -1651,7 +1651,7 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
                                   ));
                     $order-> update_payment_state('Paid');
                     $dn->dispatch('all',$data_dn_transactions);
-                    $order->update_dispatch_state('Dispached');
+                    $order->update_dispatch_state('Dispatched');
 
                     $order->load('totals');
                     $invoice->categorize('save');
@@ -1695,7 +1695,7 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
                 $order_type='Follow on';  ;
                 $data_dn=array(
-                             'Delivery Note Date'=>$date_inv
+                             'Delivery Note Date'=>$date_inv  ,'Delivery Note Date Created'=>$date_order
                                                   ,'Delivery Note ID'=>$header_data['order_num']
                                                                       ,'Delivery Note File As'=>$header_data['order_num']
                                                                                                ,'Delivery Note Weight'=>$weight
@@ -1785,7 +1785,7 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
                 }
 
                 $dn->dispatch('all',$data_dn_transactions);
-                $parent_order->update_dispatch_state('Dispached');
+                $parent_order->update_dispatch_state('Dispatched');
                 $parent_order->load('totals');
 
 
@@ -1808,7 +1808,7 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
                 $order_type=$data['Order Type'];
 
                 $data_dn=array(
-                             'Delivery Note Date'=>$date2
+                             'Delivery Note Date'=>$date2  ,'Delivery Note Date Created'=>$date_order
                                                   ,'Delivery Note ID'=>$header_data['order_num']
                                                                       ,'Delivery Note File As'=>$header_data['order_num']
                                                                                                ,'Delivery Note Weight'=>$weight
@@ -1925,7 +1925,7 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
                     $dn->set_parcels($parcels,$parcel_type);
                     $order->update_dispatch_state('Ready to Ship');
                     $dn->dispatch('all',$data_dn_transactions);
-                    $order->update_dispatch_state('Dispached');
+                    $order->update_dispatch_state('Dispatched');
 
 
                     $order->load('totals');
@@ -1939,7 +1939,7 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
                     $dn->set_parcels($parcels,$parcel_type);
                     $order->update_dispatch_state('Ready to Ship');
                     $dn->dispatch('all',$data_dn_transactions);
-                    $order->update_dispatch_state('Dispached');
+                    $order->update_dispatch_state('Dispatched');
 
 
                     $order->no_payment_applicable();
@@ -2221,7 +2221,7 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
             // 	print_r($picker_data);
 
             $data_dn=array(
-                         'Delivery Note Date'=>$date_inv
+                         'Delivery Note Date'=>$date_inv  ,'Delivery Note Date Created'=>$date_order
                                               ,'Delivery Note ID'=>$header_data['order_num']
                                                                   ,'Delivery Note Type'=>$order_type
                                                                                         ,'Delivery Note Title'=>$order_type.' '.$header_data['order_num']

@@ -134,11 +134,11 @@ if(isset($_REQUEST['pick_aid'])){
     $js_files[]='order_in_warehouse.js.php?order_key='.$order_id;
     $template='order_in_warehouse.tpl';
     break;
-  case('Dispached'):
+  case('Dispatched'):
     
     
-    $js_files[]='order_dispached.js.php';
-    $template='order_dispached.tpl';
+    $js_files[]='order_dispatched.js.php';
+    $template='order_dispatched.tpl';
   break; 
  case('Cancelled'):
 

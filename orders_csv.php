@@ -110,7 +110,7 @@ if(isset( $_REQUEST['where']))
      $valid_dispatch_types=array(
 				 'in_process'=>",'In Process','Ready to Pick','Picking','Ready to Pack','Ready to Ship','Packing'"
 				 ,'cancelled'=>",'Cancelled'"
-				 ,'dispached'=>",'Dispached'"
+				 ,'dispatched'=>",'Dispatched'"
 				 ,'unknown'=>"',Unknown'"
 				 );
      $_where='';
@@ -122,7 +122,7 @@ if(isset( $_REQUEST['where']))
      if($_where!=''){
        $where.=' and `Order Current Dispatch State` in ('.$_where.')';
      }else
-       $_SESSION['state']['orders']['table']['dispached']='';
+       $_SESSION['state']['orders']['table']['dispatched']='';
    }
 
 

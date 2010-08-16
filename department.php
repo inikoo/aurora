@@ -100,7 +100,7 @@ $js_files=array(
 		$yui_path.'autocomplete/autocomplete-min.js',
 		$yui_path.'history/history-min.js',
 		$yui_path.'datatable/datatable-debug.js',
-		$yui_path.'container/container_core-min.js',
+		$yui_path.'container/container-min.js',
 		$yui_path.'menu/menu-min.js',
 		'js/php.default.min.js',
 		'common.js.php',

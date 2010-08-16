@@ -290,7 +290,7 @@ break;
    $_SESSION['state']['product']['plot_data'][$interval]['first_day']=$first_day;
 
    
-   $title=_("Outers dispached per Week");
+   $title=_("Outers dispatched per Week");
    $ar_address='ar_plot.php?tipo='.$tipo;
    $fields='"tip_out","out","date","bonus","tip_bonus"';
    $yfields=array(

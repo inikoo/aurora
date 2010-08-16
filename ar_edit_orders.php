@@ -660,19 +660,19 @@ function ready_to_pick_orders(){
    
 
   
-   $where.=' and `Order Current Dispatch State`="Ready to Pick" ';
+   $where.=' and `Delivery Note State` not in ("Dispatched") ';
    
 
    $wheref='';
 
   if($f_field=='max' and is_numeric($f_value) )
-    $wheref.=" and  (TO_DAYS(NOW())-TO_DAYS(`Order Last Updated Date`))<=".$f_value."    ";
+    $wheref.=" and  (TO_DAYS(NOW())-TO_DAYS(`Delivery Note Date Created`))<=".$f_value."    ";
   else if($f_field=='min' and is_numeric($f_value) )
-    $wheref.=" and  (TO_DAYS(NOW())-TO_DAYS(`Order Last Updated Date`))>=".$f_value."    ";
+    $wheref.=" and  (TO_DAYS(NOW())-TO_DAYS(`Delivery Note Date Created`))>=".$f_value."    ";
    elseif($f_field=='customer_name' and $f_value!='')
-    $wheref.=" and  `Order Customer Name` like '".addslashes($f_value)."%'";
+    $wheref.=" and  `Delivery Note Customer Name` like '".addslashes($f_value)."%'";
    elseif($f_field=='public_id' and $f_value!='')
-    $wheref.=" and  `Order Public ID` like '".addslashes($f_value)."%'";
+    $wheref.=" and  `Delivery Note ID` like '".addslashes($f_value)."%'";
 
 
    
@@ -681,8 +681,8 @@ function ready_to_pick_orders(){
    
 
    
-  $sql="select count(*) as total from `Order Dimension`   $where $wheref ";
-  //print $sql ;
+  $sql="select count(*) as total from `Delivery Note Dimension`   $where $wheref ";
+ // print $sql ;
    $result=mysql_query($sql);
   if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
     $total=$row['total'];
@@ -692,7 +692,7 @@ function ready_to_pick_orders(){
      $total_records=$total;
   }else{
     
-      $sql="select count(*) as total from `Order Dimension`  $where";
+      $sql="select count(*) as total from `Delivery Note Dimension`  $where";
       $result=mysql_query($sql);
       if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
 	$total_records=$row['total'];
@@ -702,12 +702,12 @@ function ready_to_pick_orders(){
   }
   mysql_free_result($result);
 
-  $rtext=$total_records." ".ngettext('order','orders',$total_records);
+  $rtext=$total_records." ".ngettext('delivery note','delivery notes',$total_records);
 
   if($total_records>$number_results)
     $rtext_rpp=sprintf(" (%d%s)",$number_results,_('rpp'));
   else
-    $rtext_rpp=sprintf("Showing all orders");
+    $rtext_rpp=sprintf("Showing all delivery notes");
 
   $filter_msg='';
 
@@ -745,17 +745,18 @@ function ready_to_pick_orders(){
    $_order=$order;
    $_dir=$order_direction;
    
-   $order='`Order Last Updated Date`';
+ 
    if($order=='id')
-     $order='`Order Public ID`';
+     $order='`Delivery Note File As`';
    else if($order=='customer')
-     $order='`Order Customer Name`';
-   
+     $order='`Delivery Note Customer Name`';
+   else
+    $order='`Delivery Note Date Created`';
    
    
 
-  $sql="select `Order Current Lines`,`Order Key`,`Order Public ID`,`Order Customer Key`,`Order Customer Name`,`Order Last Updated Date`,`Order Estimated Weight`,`Order Current Dispatch State` from `Order Dimension`  $where $wheref  order by $order $order_direction limit $start_from,$number_results ";
- // print $sql;
+  $sql="select *  from `Delivery Note Dimension`  $where $wheref  order by $order $order_direction limit $start_from,$number_results ";
+ //print $sql;
   global $myconf;
 
    $data=array();
@@ -763,29 +764,29 @@ function ready_to_pick_orders(){
    $res = mysql_query($sql);
    while($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
     
-     if($row['Order Last Updated Date']=='')
-       $lap='';
-     else
-       $lap=RelativeTime(date('U',strtotime($row['Order Last Updated Date'])));
+   //  if($row['Order Last Updated Date']=='')
+    //   $lap='';
+    // else
+     //  $lap=RelativeTime(date('U',strtotime($row['Order Last Updated Date'])));
     
-     $w=weight($row['Order Estimated Weight']);
-     $picks=number($row['Order Current Lines']);
+     $w=weight($row['Delivery Note Estimated Weight']);
+     $picks=number($row['Delivery Note Distinct Items']);
 
 
 
     $operations='<span style="cursor:pointer"  onClick="assign_picker(this)">'._('Assign Picker')."</span>";
-
+    $operations.=' | <span style="cursor:pointer"  onClick="pick_it(this)">'._('Pick Order')."</span>";
 
     //$packer='';
-$status=$row['Order Current Dispatch State'];
+$status=$row['Delivery Note State'];
      $data[]=array(
-		   'id'=>$row['Order Key']
-		   ,'public_id'=>sprintf("%s",$row['Order Public ID'])
-		   ,'customer'=>$row['Order Customer Name']
-		   ,'wating_lap'=>$lap
+		   'id'=>$row['Delivery Note Key']
+		   ,'public_id'=>sprintf("<a href='dn.php?id=%d'>%s</a>",$row['Delivery Note Key'],$row['Delivery Note ID'])
+		   ,'customer'=>$row['Delivery Note Customer Name']
+		  // ,'wating_lap'=>$lap
 		   ,'weight'=>$w
 		   ,'picks'=>$picks
-		   ,'date'=>$row['Order Last Updated Date']
+		   ,'date'=>$row['Delivery Note Date Created']
 		   ,'operations'=>$operations
 		   ,'status'=>$status
 		   );

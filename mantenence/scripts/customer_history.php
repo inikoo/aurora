@@ -19,7 +19,7 @@ require_once '../../myconf/conf.php';
 date_default_timezone_set('UTC');
 
 
-$sql="select date_index,tipo,customer_id,id,date_creation,date_processed,date_invoiced,date_dispached from orden ";
+$sql="select date_index,tipo,customer_id,id,date_creation,date_processed,date_invoiced,date_dispatched from orden ";
 //print $sql;
 $res=mysql_query($sql);if (PEAR::isError($res) and DEBUG ){die($res->getMessage());}
 while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
@@ -29,7 +29,7 @@ while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
   $date_creation=$row['date_creation'];
   $date_processed=$row['date_processed'];
   $date_invoiced=$row['date_invoiced'];
-  $date_dispached=$row['date_dispached'];
+  $date_dispatched=$row['date_dispatched'];
   $date_index=$row['date_index'];
   $tipo=$row['tipo'];
 
