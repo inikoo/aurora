@@ -660,7 +660,7 @@ function ready_to_pick_orders(){
    
 
   
-   $where.=' and `Delivery Note State` not in ("Dispatched") ';
+   $where.=' and `Delivery Note State` not in ("Dispatched","Cancelled") ';
    
 
    $wheref='';

@@ -553,7 +553,14 @@ function list_staff_users() {
 
     $_SESSION['state']['users']['staff']=array(
                                              'display'=>$display,
-                                             'order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value);
+                                             'order'=>$order,
+                                             'order_dir'=>$order_direction,
+                                             'nr'=>$number_results,
+                                             'sf'=>$start_from,
+                                             'where'=>$where,
+                                             'f_field'=>$f_field,
+                                             'f_value'=>$f_value
+                                             );
 
 
 

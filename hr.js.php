@@ -128,7 +128,7 @@ var change_view = function (e){
     new_view=this.id
 
     if(new_view!=view){
-	YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=hr-view&value='+escape(new_view));
+	//YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=hr-view&value='+escape(new_view));
 	this.className='selected';
 	Dom.get(view).className='';
 	
