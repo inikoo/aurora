@@ -1275,6 +1275,24 @@ if ($customer_data['Customer Delivery Address Link']=='Contact') {
 	$order->set_charges(round($header_data['charges'],2),$tax_rate);
       }
 
+      
+      if($tipo==1){
+	$order_type='Order';
+	$data_dn=array(
+		       'Delivery Note Date Created'=>$date_order
+		       ,'Delivery Note ID'=>$header_data['order_num']
+		       ,'Delivery Note File As'=>$header_data['order_num']
+		       ,'Delivery Note Type'=>$order_type
+		       ,'Delivery Note Title'=>_('Delivery Note for').' '.$order_type.' '.$header_data['order_num']
+		       );
+	
+	$dn=new DeliveryNote('create',$data_dn,$data_dn_transactions,$parent_order);
+	$order->update_delivery_notes('save');
+	
+      }
+      
+
+
       if ($tipo_order==2) {
 
 
