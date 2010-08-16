@@ -589,6 +589,8 @@ class Store extends DB_Table{
 
       $sql="insert into `Store Default Currency` (`Store Key`) values(".$this->id.");";
       mysql_query($sql);
+      
+     
 
 	$this->add_history(array(
 				 'Action'=>'created'

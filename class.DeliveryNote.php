@@ -288,6 +288,9 @@ class DeliveryNote extends DB_Table {
 	  case('Estimated Weight'):
 	  return weight($this->data['Delivery Note Estimated Weight']);
 	  break;
+	   case('Weight'):
+	  return weight($this->data['Delivery Note Weight']);
+	  break;
 	case('Items Gross Amount'):
         case('Items Discount Amount'):
         case('Items Net Amount'):

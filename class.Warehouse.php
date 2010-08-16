@@ -143,6 +143,10 @@ function create($data){
       $this->msg=_("Warehouse Added");
       $this->get_data('id',$this->id);
    $this->new=true;
+   
+   $sql="insert into `User Right Scope Bridge` values(1,'Warehouse',".$this->id.");";
+      mysql_query($sql);
+   
    return;
  }else{
    $this->msg=_(" Error can not create warehouse");
