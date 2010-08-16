@@ -1485,7 +1485,7 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
             }
 
 
-	    if($tipo==1){
+	    if($tipo_order==1){
                 $order_type='Order';  ;
                 $data_dn=array(
 			       'Delivery Note Date Created'=>$date_order
@@ -1501,7 +1501,7 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
                 //$order->create_dn_simple($data_dn,$data_dn_transactions);
 		
-                $dn=new DeliveryNote('create',$data_dn,$data_dn_transactions,$parent_order);
+                $dn=new DeliveryNote('create',$data_dn,$data_dn_transactions,$order);
                 $order->update_delivery_notes('save');
 
 	    }
