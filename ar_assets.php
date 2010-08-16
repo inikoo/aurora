@@ -2134,7 +2134,7 @@ case('plot_product_week_sales'):
 
 
     $tipo_orders=' (orden.tipo!=0 or orden.tipo!=3 or  orden.tipo!=9 or orden.tipo!=10) ';
-    $sql=sprintf("select YEARWEEK(date_index) as yearweek,sum(charge)as asales,sum(profit)as profit,sum(dispached)as _out from transaction left join orden on (order_id=orden.id) where %s and product_id=%d  group by YEARWEEK(date_index)",$tipo_orders,$product_id);
+    $sql=sprintf("select YEARWEEK(date_index) as yearweek,sum(charge)as asales,sum(profit)as profit,sum(dispatched)as _out from transaction left join orden on (order_id=orden.id) where %s and product_id=%d  group by YEARWEEK(date_index)",$tipo_orders,$product_id);
 
     $result=mysql_query($sql);
 
@@ -2147,7 +2147,7 @@ case('plot_product_week_sales'):
 
             $data[$_index]['out']=(int)$row['_out'];
             $fday=strftime("%d %b", strtotime('@'.$data[$_index]['utime']));
-            $data[$_index]['tip_out']=_('Outer Dispached')."\n"._('Week').' '.$data[$_index]['week']."\n"._('Starting')." ".$fday."\n".number($row['_out']).' '._('Outers');
+            $data[$_index]['tip_out']=_('Outer Dispatched')."\n"._('Week').' '.$data[$_index]['week']."\n"._('Starting')." ".$fday."\n".number($row['_out']).' '._('Outers');
             $data[$_index]['tip_asales']=_('Sales')."\n"._('Week').' '.$data[$_index]['week']."\n"._('Starting')." ".$fday."\n".money($row['asales']);
             $data[$_index]['tip_profit']=_('Profit')."\n"._('Week').' '.$data[$_index]['week']."\n"._('Starting')." ".$fday."\n".money($row['profit']);
 
@@ -2219,7 +2219,7 @@ case('plot_department_monthsales'):
     //   print "$since $month $year";
     //  print_r($data);
     $tipo_orders=' (o.tipo!=0 or o.tipo!=3 or  o.tipo!=9 or o.tipo!=10) ';
-    $sql=sprintf("select   -period_diff( $first, concat(year(date_index),if(month(date_index)<10,concat('0',month(date_index)) ,month(date_index))   )  )   as since  ,  sum(charge) as asales ,sum(dispached)as _out ,year(date_index) as y,month(date_index) as m,  concat(year(date_index),100+month(date_index) )  as monthyear    from  transaction as t left join orden as o on (order_id=o.id) left join product on (product_id=product.id) left join product_group as pg on (group_id=pg.id)  where %s and department_id=%d  group by monthyear order by  monthyear ",$tipo_orders,$department_id);
+    $sql=sprintf("select   -period_diff( $first, concat(year(date_index),if(month(date_index)<10,concat('0',month(date_index)) ,month(date_index))   )  )   as since  ,  sum(charge) as asales ,sum(dispatched)as _out ,year(date_index) as y,month(date_index) as m,  concat(year(date_index),100+month(date_index) )  as monthyear    from  transaction as t left join orden as o on (order_id=o.id) left join product on (product_id=product.id) left join product_group as pg on (group_id=pg.id)  where %s and department_id=%d  group by monthyear order by  monthyear ",$tipo_orders,$department_id);
     //      print "$sql";
     $result=mysql_query($sql);
 
@@ -2227,7 +2227,7 @@ case('plot_department_monthsales'):
         $data[$row['since']]['out']=(int)$row['_out'];
         $data[$row['since']]['asales']=(float)$row['asales'];
         if ($tipo=='plot_monthout')
-            $data[$row['since']]['tip_out']=_('Outers Dispached')."\n".strftime("%B %Y", strtotime("today -".$row['since']." month"))."\n".number($row['_out']).' '._('Outers');
+            $data[$row['since']]['tip_out']=_('Outers Dispatched')."\n".strftime("%B %Y", strtotime("today -".$row['since']." month"))."\n".number($row['_out']).' '._('Outers');
         else
             $data[$row['since']]['tip_asales']=_('Sales')."\n".strftime("%B %Y", strtotime("today -".$row['since']." month"))."\n".money($row['asales'])."\n".number($row['_out']).' '._('Outers');
 
@@ -2285,7 +2285,7 @@ case('plot_monthsales'):
     //   print "$since $month $year";
     //  print_r($data);
     $tipo_orders=' (o.tipo!=0 or o.tipo!=3 or  o.tipo!=9 or o.tipo!=10) ';
-    $sql=sprintf("select   -period_diff( $first, concat(year(date_index),if(month(date_index)<10,concat('0',month(date_index)) ,month(date_index))   )  )   as since  ,  sum(charge) as asales ,sum(dispached)as _out ,year(date_index) as y,month(date_index) as m,  concat(year(date_index),100+month(date_index) )  as monthyear    from  transaction as t left join orden as o on (order_id=o.id) left join product on (product_id=product.id) where %s and product_id=%d  group by monthyear order by  monthyear ",$tipo_orders,$product_id);
+    $sql=sprintf("select   -period_diff( $first, concat(year(date_index),if(month(date_index)<10,concat('0',month(date_index)) ,month(date_index))   )  )   as since  ,  sum(charge) as asales ,sum(dispatched)as _out ,year(date_index) as y,month(date_index) as m,  concat(year(date_index),100+month(date_index) )  as monthyear    from  transaction as t left join orden as o on (order_id=o.id) left join product on (product_id=product.id) where %s and product_id=%d  group by monthyear order by  monthyear ",$tipo_orders,$product_id);
     //      print "$sql";
     $result=mysql_query($sql);
 
@@ -2293,7 +2293,7 @@ case('plot_monthsales'):
         $data[$row['since']]['out']=(int)$row['_out'];
         $data[$row['since']]['asales']=(float)$row['asales'];
         if ($tipo=='plot_monthout')
-            $data[$row['since']]['tip_out']=_('Outers Dispached')."\n".strftime("%B %Y", strtotime("today -".$row['since']." month"))."\n".number($row['_out']).' '._('Outers');
+            $data[$row['since']]['tip_out']=_('Outers Dispatched')."\n".strftime("%B %Y", strtotime("today -".$row['since']." month"))."\n".number($row['_out']).' '._('Outers');
         else
             $data[$row['since']]['tip_asales']=_('Sales')."\n".strftime("%B %Y", strtotime("today -".$row['since']." month"))."\n".money($row['asales'])."\n".number($row['_out']).' '._('Outers');
 
@@ -2344,7 +2344,7 @@ case('plot_quarterout'):
 
 
     $tipo_orders=' (o.tipo!=0 or o.tipo!=3 or  o.tipo!=9 or o.tipo!=10) ';
-    $sql=sprintf("select YEAR(date_index) as year,QUARTER(date_index) as quarter, concat(YEAR(date_index),QUARTER(date_index)) as qy,sum(charge)as asales,sum(dispached)as _out from transaction left join orden as o on (order_id=o.id) where %s  and product_id=%d  group by qy ",$tipo_orders,$product_id);
+    $sql=sprintf("select YEAR(date_index) as year,QUARTER(date_index) as quarter, concat(YEAR(date_index),QUARTER(date_index)) as qy,sum(charge)as asales,sum(dispatched)as _out from transaction left join orden as o on (order_id=o.id) where %s  and product_id=%d  group by qy ",$tipo_orders,$product_id);
     //      print "$sql";
     $result=mysql_query($sql);
 
@@ -2368,7 +2368,7 @@ case('plot_quarterout'):
             $_q=_('Error');
         }
         if ($tipo=='plot_quarterout')
-            $data[$index[$row['qy']]]['tip']=_('Outers Dispached')."\n$_q\n".number($row['asales']).' '._('outers');
+            $data[$index[$row['qy']]]['tip']=_('Outers Dispatched')."\n$_q\n".number($row['asales']).' '._('outers');
         else
             $data[$index[$row['qy']]]['tip']=_('Sales')."\n$_q\n".money($row['asales']);
     }
@@ -2409,7 +2409,7 @@ case('plot_yearsales'):
 
 
     $tipo_orders=' (o.tipo!=0 or o.tipo!=3 or  o.tipo!=9 or o.tipo!=10) ';
-    $sql=sprintf("select YEAR(date_index) as year ,sum(charge)as asales ,sum(dispached)as _out from transaction left join orden as o on (order_id=o.id) where %s  and product_id=%d  group by year ",$tipo_orders,$product_id);
+    $sql=sprintf("select YEAR(date_index) as year ,sum(charge)as asales ,sum(dispatched)as _out from transaction left join orden as o on (order_id=o.id) where %s  and product_id=%d  group by year ",$tipo_orders,$product_id);
     //      print "$sql";
     $result=mysql_query($sql);
 
@@ -2417,7 +2417,7 @@ case('plot_yearsales'):
         $data[$index[$row['year']]]['out']=$row['_out'];
         $data[$index[$row['year']]]['asales']=$row['asales'];
         if ($tipo=='plot_yearout')
-            $data[$index[$row['year']]]['tip']=_('Outers Dispached')." on ".$row['year']."\n".number($row['_out'])." "._('outers');
+            $data[$index[$row['year']]]['tip']=_('Outers Dispatched')." on ".$row['year']."\n".number($row['_out'])." "._('outers');
         else
             $data[$index[$row['year']]]['tip']=$row['year'].' '._('Sales')."\n".money($row['asales']);
     }
@@ -7781,20 +7781,20 @@ function list_orders_per_store() {
 
     $total_orders=0;
     $total_unknown=0;
-    $total_dispached=0;
+    $total_dispatched=0;
     $total_cancelled=0;
     $total_todo=0;
     $total_paid=0;
 
-    $sql="select  count(*) as orders,sum(IF(`Order Current Payment State`='Paid',1,0)) as paid,sum(IF(`Order Current Dispatch State`='Cancelled',1,0)) as cancelled ,sum(IF(`Order Current Dispatch State`='Unknown',1,0)) as unknown ,sum(IF(`Order Current Dispatch State`='Dispached',1,0)) as dispached   from `Order Dimension`  $where     ";
+    $sql="select  count(*) as orders,sum(IF(`Order Current Payment State`='Paid',1,0)) as paid,sum(IF(`Order Current Dispatch State`='Cancelled',1,0)) as cancelled ,sum(IF(`Order Current Dispatch State`='Unknown',1,0)) as unknown ,sum(IF(`Order Current Dispatch State`='Dispatched',1,0)) as dispatched   from `Order Dimension`  $where     ";
     //print $sql;
     $res = mysql_query($sql);
     if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
         $total_orders=$row['orders'];
         $total_unknown=$row['unknown'];
-        $total_dispached=$row['dispached'];
+        $total_dispatched=$row['dispatched'];
         $total_cancelled=$row['cancelled'];
-        $total_todo=$total_orders-$total_cancelled-$total_dispached-$total_unknown;
+        $total_todo=$total_orders-$total_cancelled-$total_dispatched-$total_unknown;
         $total_paid=$row['paid'];
 
     }
@@ -7803,7 +7803,7 @@ function list_orders_per_store() {
 
 
 
-    $sql="select `Store Name`,`Store Code`,`Store Key`, count(*) as orders  ,sum(IF(`Order Current Payment State`='Paid',1,0)) as paid,sum(IF(`Order Current Dispatch State`='Cancelled',1,0)) as cancelled ,sum(IF(`Order Current Dispatch State`='Unknown',1,0)) as unknown ,sum(IF(`Order Current Dispatch State`='Dispached',1,0)) as dispached   from `Order Dimension` S left join `Store Dimension` on `Store Key`=`Order Store Key`  $where $wheref group by `Order Store Key`  order by $order $order_direction limit $start_from,$number_results    ";
+    $sql="select `Store Name`,`Store Code`,`Store Key`, count(*) as orders  ,sum(IF(`Order Current Payment State`='Paid',1,0)) as paid,sum(IF(`Order Current Dispatch State`='Cancelled',1,0)) as cancelled ,sum(IF(`Order Current Dispatch State`='Unknown',1,0)) as unknown ,sum(IF(`Order Current Dispatch State`='Dispatched',1,0)) as dispatched   from `Order Dimension` S left join `Store Dimension` on `Store Key`=`Order Store Key`  $where $wheref group by `Order Store Key`  order by $order $order_direction limit $start_from,$number_results    ";
     //print $sql;
     $res = mysql_query($sql);
 
@@ -7815,14 +7815,14 @@ function list_orders_per_store() {
         $name=sprintf('<a href="orders.php?store=%d">%s</a>',$row['Store Key'],$row['Store Name']);
         $code=sprintf('<a href="orders.php?store=%d">%s</a>',$row['Store Key'],$row['Store Code']);
 
-        $todo=$row['orders']-$row['unknown']-$row['dispached']-$row['cancelled'];
+        $todo=$row['orders']-$row['unknown']-$row['dispatched']-$row['cancelled'];
         if ($percentages) {
             $orders=percentage($row['orders'],$total_orders);
             $cancelled=percentage($row['cancelled'],$total_cancelled);
             $paid=percentage($row['paid'],$total_paid);
             $unknown=percentage($row['unknown'],$total_unknown);
             $todo=percentage($todo,$total_todo);
-            $dispached=percentage($row['dispached'],$total_dispached);
+            $dispatched=percentage($row['dispatched'],$total_dispatched);
 
         } else {
             $orders=number($row['orders']);
@@ -7830,7 +7830,7 @@ function list_orders_per_store() {
             $paid=number($row['paid']);
             $unknown=number($row['unknown']);
             $todo=number($todo);
-            $dispached=number($row['dispached']);
+            $dispatched=number($row['dispatched']);
 
         }
 
@@ -7841,7 +7841,7 @@ function list_orders_per_store() {
                      'paid'=>$paid,
                      'unknown'=>$unknown,
                      'cancelled'=>$cancelled,
-                     'dispached'=>$dispached,
+                     'dispatched'=>$dispatched,
                      'pending'=>$todo,
 
                  );
@@ -7860,7 +7860,7 @@ function list_orders_per_store() {
         $sum_paid=number($total_paid);
         $sum_unknown=number($total_unknown);
         $sum_todo=number($total_todo);
-        $sum_dispached=number($total_dispached);
+        $sum_dispatched=number($total_dispatched);
 
     }
 
@@ -7872,7 +7872,7 @@ function list_orders_per_store() {
                  'unknown'=>$sum_unknown,
                  'paid'=>$sum_paid,
                  'cancelled'=>$sum_cancelled,
-                 'dispached'=>$sum_dispached,
+                 'dispatched'=>$sum_dispatched,
                  'pending'=>$sum_todo,
 
              );

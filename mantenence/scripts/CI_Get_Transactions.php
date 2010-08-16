@@ -83,7 +83,7 @@ $date_invoiced=$_order['date_invoiced'];
    exit;
  }
  
- $sql="select ordered,product_id,p.code,dispached,discount,charge from ci.transaction left join ci.product p on (p.id=product_id) where order_id=".$_order['id'];
+ $sql="select ordered,product_id,p.code,dispatched,discount,charge from ci.transaction left join ci.product p on (p.id=product_id) where order_id=".$_order['id'];
 
 
  $res2=mysql_query($sql);
@@ -99,7 +99,7 @@ $date_invoiced=$_order['date_invoiced'];
     $net=$row2['charge'];
     $f_disc=1-$row2['discount'];
     if($f_disc==0){
-      $gross=$product->data['Product Price']*$row2['dispached'];
+      $gross=$product->data['Product Price']*$row2['dispatched'];
     }else{
       $gross=$net/$f_disc;
     }
@@ -118,7 +118,7 @@ $date_invoiced=$_order['date_invoiced'];
   if(!is_numeric($supplier_cost) or $supplier_cost<=0)
     $cost=0.6*$product->data['Product Price'];
   else
-    $cost=$row2['dispached']*$product->data['Product Units Per Case']*$supplier_cost;
+    $cost=$row2['dispatched']*$product->data['Product Units Per Case']*$supplier_cost;
   
   $sql=sprintf("insert into `Order Transaction Fact` (`Order Key`,`Invoice Key`,`Order Public ID`,`Invoice Public ID`,`Product Key`,`Customer Key`,`Store Key`,`Order Quantity`,`Invoice Quantity`,`Invoice Transaction Gross Amount`,`Invoice Transaction Total Discount Amount`,`Cost Supplier`,`Consolidated`,`Invoice Date`,`Order Date`,`Shipped Quantity`,`Order Last Updated Date`) values (%d,%d,%s,%s,%d,%d,1,%f,%f,%.2f,%.2f,%.2f,'%s',%s,%s,%s,%s)"
 	       ,$order_key
@@ -128,14 +128,14 @@ $date_invoiced=$_order['date_invoiced'];
 	       ,$product->id
 	       ,$customer->id
 	       ,$row2['ordered']
-	       ,$row2['dispached']
+	       ,$row2['dispatched']
 	       ,$gross
 	       ,$discount
 	       ,$cost
 	       ,$consolidated
 	       ,prepare_mysql($date_invoiced)
 	       ,prepare_mysql($_order['date_creation'])
-	       ,$row2['dispached']
+	       ,$row2['dispatched']
 	       
 	       ,prepare_mysql($index_date)
 	       );

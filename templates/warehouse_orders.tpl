@@ -59,28 +59,41 @@
 {include file='footer.tpl'}
 
 
-<div id="pick_it_dialog" style="width:300px;">
-<div class="options" style="width:300px;padding:20px" >
-{foreach from=$pickers item=picker}
-		      <span class="selected">{$picker.StaffAlias}</span>
-{/foreach}
+<div id="assign_picker_dialog" style="width:300px;">
+<div class="options" style="width:300px;padding:10px;text-align:center" >
+
+   <table border=1 style="margin:auto">
+      {foreach from=$pickers item=picker_row name=foo}
+      <tr>
+	 {foreach from=$picker_row key=row_key item=picker }
+	
+	<td staff_id="{$picker.StaffKey}" id="picker{$picker.StaffKey}" onClick="select_staff(this,event)" >{$picker.StaffAlias}</td>
+	{/foreach}
+	</tr>
+      {/foreach}
+    </table>
+
+
 </div>
 <table class="edit">
+<input type="hidden" id="assign_picker_staff_key">
+<input type="hidden" id="assign_picker_order_key">
+
 <tr class="first"><td style="" class="label">{t}Staff Name{/t}:</td>
    <td  style="text-align:left">
-     <div  style="width:15em;position:relative;top:00px" >
-       <input style="text-align:left;width:18em" id="Staff_Name" value="" ovalue="" valid="0">
+     <div  style="width:190px;position:relative;top:00px" >
+       <input style="text-align:left;width:180px" id="Staff_Name" value="" ovalue="" valid="0">
        <div id="Staff_Name_Container" style="" ></div>
      </div>
    </td>
    <td id="Staff_Name_msg" class="edit_td_alert"></td>
  </tr>
-<tr><td>{t}PIN{/t}:</td><td><input /></td></tr>
+<tr><td>{t}Supervisor PIN{/t}:</td><td><input /></td></tr>
 </table>
 
 	       <table class="edit" style="margin-top:10px;float:right">
   
-  <tr><td colspan="2"><span class="button">Cancel</span><span class="button">Go</span><td></tr>
+  <tr><td colspan="2"><span class="button" onclick="close_dialog('assign_picker_dialog')">Cancel</span><span class="button">Go</span><td></tr>
 </table>
 
 <div>

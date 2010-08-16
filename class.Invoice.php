@@ -830,8 +830,16 @@ global $myconf;
    foreach($this->orders as $key=>$order){
       $order->update_product_sales();
       $order->update_totals('save');
+      if($tipo=='full')
+      $tipo_payment='Paid';
+      else
+      $tipo_payment='Parcially Paid';
+      $order-> update_payment_state($tipo_payment);
+      //print_r($order->data);
       $customer=new Customer($order->data['Order Customer Key']);
       if($this->update_customer){
+      //print "xxxxxxxxx";
+      
       $customer->update_orders();
       $customer->update_no_normal_data();
       }

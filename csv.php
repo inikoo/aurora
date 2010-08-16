@@ -44,9 +44,9 @@ switch($_REQUEST['tipo']){
 
  if($awhere['product_not_received1']!=''){
     if($awhere['product_not_received1']!='ANY'){
-      $where_product_not_received1=extract_product_groups($awhere['product_ordered1'],'(ordered-dispached)>0 and    product.code  like','(ordered-dispached)>0 and  transaction.product_id not like','(ordered-dispached)>0 and  product_group.name not like','(ordered-dispached)>0 and  product_group.id like');
+      $where_product_not_received1=extract_product_groups($awhere['product_ordered1'],'(ordered-dispatched)>0 and    product.code  like','(ordered-dispatched)>0 and  transaction.product_id not like','(ordered-dispatched)>0 and  product_group.name not like','(ordered-dispatched)>0 and  product_group.id like');
     }else
-      $where_product_not_received1=' ((ordered-dispached)>0)  ';
+      $where_product_not_received1=' ((ordered-dispatched)>0)  ';
   }else
     $where_product_not_received1='true';
 

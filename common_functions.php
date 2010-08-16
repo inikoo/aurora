@@ -1793,7 +1793,7 @@ if($corporate_data=mysql_fetch_assoc($res)){true;}
 return $corporate_data;
 }
 
-function xml2array($xml) {
+function xml2array_to_delete($xml) {
         $xmlary = array();
                
         $reels = '/<(\w+)\s*([^\/>]*)\s*(?:\/>|>(.*)<\/\s*\\1\s*>)/s';

@@ -29,6 +29,9 @@ if(!isset($_REQUEST['tipo']))
 
 $tipo=$_REQUEST['tipo'];
 switch($tipo){
+case('transactions_in_dn'):
+list_transactions_in_dn();
+break;
 case('transactions_to_pick'):
 list_transactions_to_pick();
 break;
@@ -63,11 +66,11 @@ break;
    $data=date_base($_from,$_to,'m','complete months');
    if($tipo=='plot_month_outofstock'){
 
-    $sql=sprintf("select count(DISTINCT  product_id) as products_total ,sum(dispached) as dispached, substring(date_index, 1,7) AS dd from transaction left join orden on (order_id=orden.id) where partner=0  %s group by dd;",$int[0]);
+    $sql=sprintf("select count(DISTINCT  product_id) as products_total ,sum(dispatched) as dispatched, substring(date_index, 1,7) AS dd from transaction left join orden on (order_id=orden.id) where partner=0  %s group by dd;",$int[0]);
 
     $result=mysql_query($sql);
     while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
-      $data_all[$row['dd']]=array('d_products'=>$row['products_total'],'picks'=>$row['dispached']);
+      $data_all[$row['dd']]=array('d_products'=>$row['products_total'],'picks'=>$row['dispatched']);
       
     }
    }
@@ -324,7 +327,7 @@ if(!$user->can_view('orders'))
    
    $sql="select * from outofstock left join product on (product.id=product_id)  $where order by code ";
    
-   //  $sql="select  p.id as id,p.code as code ,product_id,p.description,units,ordered,dispached,charge,discount,promotion_id    from transaction as t left join product as p on (p.id=product_id)  $where    ";
+   //  $sql="select  p.id as id,p.code as code ,product_id,p.description,units,ordered,dispatched,charge,discount,promotion_id    from transaction as t left join product as p on (p.id=product_id)  $where    ";
    //      print $sql;
    $result=mysql_query($sql);
    $data=array();
@@ -564,7 +567,7 @@ if(isset( $_REQUEST['where']))
      $valid_dispatch_types=array(
 				 'in_process'=>",'Submited','In Process','Ready to Pick','Picking','Ready to Pack','Ready to Ship','Packing'"
 				 ,'cancelled'=>",'Cancelled'"
-				 ,'dispached'=>",'Dispached'"
+				 ,'dispatched'=>",'Dispatched'"
 				 ,'unknown'=>"'Unknown'"
 				 );
      $_where='';
@@ -576,7 +579,7 @@ if(isset( $_REQUEST['where']))
      if($_where!=''){
        $where.=' and `Order Current Dispatch State` in ('.$_where.')';
      }else
-       $_SESSION['state']['orders']['table']['dispached']='';
+       $_SESSION['state']['orders']['table']['dispatched']='';
    }
 
 
@@ -762,9 +765,9 @@ function list_transactions(){
    $total_picks=0;
 
    
-   $sql="select weight, p.price as price,concat(100000+p.group_id,p.ncode) as display_order,p.id as id,p.code as code ,product_id,p.description,units,ordered,dispached,charge,discount,promotion_id    from transaction as t left join product as p on (p.id=product_id)  $where  and dispached> 0 and (charge!=0 or discount!=1)    ";
+   $sql="select weight, p.price as price,concat(100000+p.group_id,p.ncode) as display_order,p.id as id,p.code as code ,product_id,p.description,units,ordered,dispatched,charge,discount,promotion_id    from transaction as t left join product as p on (p.id=product_id)  $where  and dispatched> 0 and (charge!=0 or discount!=1)    ";
    
-   //  $sql="select  p.id as id,p.code as code ,product_id,p.description,units,ordered,dispached,charge,discount,promotion_id    from transaction as t left join product as p on (p.id=product_id)  $where    ";
+   //  $sql="select  p.id as id,p.code as code ,product_id,p.description,units,ordered,dispatched,charge,discount,promotion_id    from transaction as t left join product as p on (p.id=product_id)  $where    ";
    //     print $sql;
    $result=mysql_query($sql);
    $data=array();
@@ -776,9 +779,9 @@ function list_transactions(){
      if($row['charge']==0 or $row['discount']==1)
        $outer_price=$row['price'];
      else{
-       $outer_price=$row['charge']/((1-$row['discount'])*$row['dispached'] );
-       $ncost=$outer_price;///$row['dispached'];
-       //       $$row['dispached']/$row['o']
+       $outer_price=$row['charge']/((1-$row['discount'])*$row['dispatched'] );
+       $ncost=$outer_price;///$row['dispatched'];
+       //       $$row['dispatched']/$row['o']
 
        $cost= money($ncost);
        if($row['discount']>0){
@@ -794,7 +797,7 @@ function list_transactions(){
 
      $total_charged+=$row['charge'];
      $total_discounts+=$ndiscount;
-     $total_picks+=$row['dispached'];
+     $total_picks+=$row['dispatched'];
      $data[]=array(
 		   'id'=>$row['id']
 		   ,'product_id'=>$row['product_id']
@@ -802,7 +805,7 @@ function list_transactions(){
 		   ,'description'=>number($row['units']).'x '.$row['description'].' @ '.$cost
 		   ,  'cost'=>$cost
 		   //'ordered'=>$row['ordered'],
-		   ,'dispached'=>number($row['dispached'],2)
+		   ,'dispatched'=>number($row['dispatched'],2)
 		   ,'charge'=>money($row['charge'])
 		   ,'discount'=>$discount
 
@@ -816,7 +819,7 @@ function list_transactions(){
    // todo transactions
  $sql="select * from todo_transaction  $where and (bonus=0 and  discount!=1)";
 
-   //  $sql="select  p.id as id,p.code as code ,product_id,p.description,units,ordered,dispached,charge,discount,promotion_id    from transaction as t left join product as p on (p.id=product_id)  $where    ";
+   //  $sql="select  p.id as id,p.code as code ,product_id,p.description,units,ordered,dispatched,charge,discount,promotion_id    from transaction as t left join product as p on (p.id=product_id)  $where    ";
  // print $sql;
    $result=mysql_query($sql);
 
@@ -861,7 +864,7 @@ function list_transactions(){
 		   ,'description'=>$row['description'].' @ '.money($row['price'])
 		   ,  'cost'=>money($row['price'] )
 		   //'ordered'=>$row['ordered'],
-		   ,'dispached'=>number($pick)
+		   ,'dispatched'=>number($pick)
 		   ,'charge'=>money($charged)
 		   ,'discount'=>$discount
 		   //'promotion_id'=>$row['promotion_id']
@@ -874,7 +877,7 @@ function list_transactions(){
    // todo transactions
  $sql="select * from todo_transaction  $where and (bonus!=0 or  discount=1)";
 
-   //  $sql="select  p.id as id,p.code as code ,product_id,p.description,units,ordered,dispached,charge,discount,promotion_id    from transaction as t left join product as p on (p.id=product_id)  $where    ";
+   //  $sql="select  p.id as id,p.code as code ,product_id,p.description,units,ordered,dispatched,charge,discount,promotion_id    from transaction as t left join product as p on (p.id=product_id)  $where    ";
  //  print $sql;
    $result=mysql_query($sql);
 
@@ -889,7 +892,7 @@ function list_transactions(){
 		   ,'description'=>$row['description'].' ('._('Free Bonus').')'
 		   ,  'cost'=>''
 		   //'ordered'=>$row['ordered'],
-		   ,'dispached'=>number($pick)
+		   ,'dispatched'=>number($pick)
 		   ,'charge'=>''
 		   ,'discount'=>''
 		   //'promotion_id'=>$row['promotion_id']
@@ -908,7 +911,7 @@ function list_transactions(){
 
   $sql="select promotion,bonus.id as id,product_id,p.units as units,concat(100000+p.group_id,p.ncode) as display_order,p.code as code,p.description as description, qty from bonus   left join product as p on (product_id=p.id) $where";
 
-   //  $sql="select  p.id as id,p.code as code ,product_id,p.description,units,ordered,dispached,charge,discount,promotion_id    from transaction as t left join product as p on (p.id=product_id)  $where    ";
+   //  $sql="select  p.id as id,p.code as code ,product_id,p.description,units,ordered,dispatched,charge,discount,promotion_id    from transaction as t left join product as p on (p.id=product_id)  $where    ";
   //  print $sql;
    $result=mysql_query($sql);
 
@@ -924,7 +927,7 @@ function list_transactions(){
 		   ,'description'=>number($row['units']).'x '.$row['description'].' ('.$tipo_discount.')'
 		   ,  'cost'=>''
 		   //'ordered'=>$row['ordered'],
-		   ,'dispached'=>number($row['qty'])
+		   ,'dispatched'=>number($row['qty'])
 		   ,'charge'=>''
 		   ,'discount'=>''
 		   //'promotion_id'=>$row['promotion_id']
@@ -939,7 +942,7 @@ function list_transactions(){
 		 ,'description'=>''
 		 ,  'cost'=>''
 		 //'ordered'=>$row['ordered'],
-		 ,'dispached'=>number($total_picks)
+		 ,'dispatched'=>number($total_picks)
 		 ,'charge'=>money($total_charged)
 		 ,'discount'=>money($total_discounts)
 		 //'promotion_id'=>$row['promotion_id']
@@ -980,7 +983,7 @@ function list_transactions_in_invoice(){
    $data=array();
    $sql="select * from `Order Transaction Fact` O  left join `Product History Dimension` PH on (O.`Product Key`=PH.`Product Key`) left join  `Product Dimension` P on (PH.`Product ID`=P.`Product ID`) $where   ";
    
-   //  $sql="select  p.id as id,p.code as code ,product_id,p.description,units,ordered,dispached,charge,discount,promotion_id    from transaction as t left join product as p on (p.id=product_id)  $where    ";
+   //  $sql="select  p.id as id,p.code as code ,product_id,p.description,units,ordered,dispatched,charge,discount,promotion_id    from transaction as t left join product as p on (p.id=product_id)  $where    ";
    //   print $sql;
    $result=mysql_query($sql);
    $total_gross=0;
@@ -988,7 +991,7 @@ function list_transactions_in_invoice(){
    while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
    //   $total_charged+=$row['charge'];
 //      $total_discounts+=$ndiscount;
-//      $total_picks+=$row['dispached'];
+//      $total_picks+=$row['dispatched'];
      $total_discount+=$row['Invoice Transaction Total Discount Amount'];
      $total_gross+=$row['Invoice Transaction Gross Amount'];
      $code=sprintf('<a href="product.php?pid=%d">%s</a>',$row['Product ID'],$row['Product Code']);
@@ -1077,6 +1080,63 @@ function list_transactions_in_invoice(){
 		   );
    echo json_encode($response);
 }
+
+function list_transactions_in_dn(){
+   
+   if(isset( $_REQUEST['id']) and is_numeric( $_REQUEST['id']))
+     $order_id=$_REQUEST['id'];
+   else
+     $order_id=$_SESSION['state']['dn']['id'];
+   
+
+
+
+   $where=' where   `Delivery Note Key`='.$order_id;
+
+   $total_charged=0;
+   $total_discounts=0;
+   $total_picks=0;
+
+   $data=array();
+   $sql="select `Delivery Note Quantity`,`Product Tariff Code`,`Product Code`, PH.`Product ID` ,`Product XHTML Short Description` from `Order Transaction Fact` O  left join `Product History Dimension` PH on (O.`Product Key`=PH.`Product Key`) left join  `Product Dimension` P on (PH.`Product ID`=P.`Product ID`) $where   ";
+   
+   //  $sql="select  p.id as id,p.code as code ,product_id,p.description,units,ordered,dispatched,charge,discount,promotion_id    from transaction as t left join product as p on (p.id=product_id)  $where    ";
+   //   print $sql;
+   $result=mysql_query($sql);
+   $total_gross=0;
+   $total_discount=0;
+   while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
+ 
+    
+    $data[]=array(
+
+		   'code'=>sprintf('<a href="product.php?pid=%d">%s</a>',$row['Product ID'],$row['Product Code'])
+		   ,'description'=>$row['Product XHTML Short Description']
+		   ,'tariff_code'=>$row['Product Tariff Code']
+		   ,'quantity'=>number($row['Delivery Note Quantity'])
+		   
+		   );
+   }
+
+
+
+   $response=array('resultset'=>
+		   array('state'=>200,
+			 'data'=>$data
+// 			 'total_records'=>$total,
+// 			 'records_offset'=>$start_from,
+// 			 'records_returned'=>$start_from+$res->numRows(),
+// 			 'records_perpage'=>$number_results,
+// 			 'records_text'=>$rtext,
+// 			 'records_order'=>$order,
+// 			 'records_order_dir'=>$order_dir,
+// 			 'filtered'=>$filtered
+			 )
+		   );
+   echo json_encode($response);
+}
+
+
 function list_customers_who_order_product(){
  $conf=$_SESSION['state']['product']['customers'];
 
@@ -1206,7 +1266,7 @@ if(isset( $_REQUEST['tableid']))
      $order='`Customer Name`';
 
 
-   $sql=sprintf("select   CD.`Customer Key` as customer_id,`Customer Name`,`Customer Main Location`,sum(`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`-`Invoice Transaction Net Refund Amount`) as charged ,count(distinct `Order Key`) as orders ,sum(`Shipped Quantity`) as dispached,sum(`Current Manufacturing Quantity`+`Current On Shelf Quantity`+`Current On Box Quantity`) as todispach,sum(`No Shipped Due Out of Stock`+`No Shipped Due No Authorized`+`No Shipped Due Not Found`) as nodispached from     `Order Transaction Fact` OTF left join `Customer Dimension` CD on (OTF.`Customer Key`=CD.`Customer Key`)  left join `Product History Dimension` PD on (PD.`Product Key`=OTF.`Product Key`)       left join `Product Dimension` P  on (PD.`Product ID`=P.`Product ID`)     $where $wheref  group by CD.`Customer Key`    order by $order $order_direction  limit $start_from,$number_results "
+   $sql=sprintf("select   CD.`Customer Key` as customer_id,`Customer Name`,`Customer Main Location`,sum(`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`-`Invoice Transaction Net Refund Amount`) as charged ,count(distinct `Order Key`) as orders ,sum(`Shipped Quantity`) as dispatched,sum(`Current Manufacturing Quantity`+`Current On Shelf Quantity`+`Current On Box Quantity`) as todispach,sum(`No Shipped Due Out of Stock`+`No Shipped Due No Authorized`+`No Shipped Due Not Found`) as nodispatched from     `Order Transaction Fact` OTF left join `Customer Dimension` CD on (OTF.`Customer Key`=CD.`Customer Key`)  left join `Product History Dimension` PD on (PD.`Product Key`=OTF.`Product Key`)       left join `Product Dimension` P  on (PD.`Product ID`=P.`Product ID`)     $where $wheref  group by CD.`Customer Key`    order by $order $order_direction  limit $start_from,$number_results "
 		);
 
    // print "$sql\n";
@@ -1221,8 +1281,8 @@ if(isset( $_REQUEST['tableid']))
 		   'charged'=>money($row['charged']),
 		   'orders'=>number($row['orders']),
 		   'todispach'=>number($row['todispach']),
-		   'dispached'=>number($row['dispached']),
-		   'nodispached'=>number($row['nodispached'])
+		   'dispatched'=>number($row['dispatched']),
+		   'nodispatched'=>number($row['nodispatched'])
 
 		   );
    }
@@ -1326,7 +1386,7 @@ function list_orders_with_customer(){
 		   'date_index'=>$row['date_index'],
 		   'date'=> strftime("%A %e %B %Y %H:%I", strtotime('@'.$row['date_index'])),
 		   'total'=>money($row['total']),
-		   // 'undispached'=>number($row['undispached']),
+		   // 'undispatched'=>number($row['undispatched']),
 		   'tipo'=>$_order_tipo[$row['tipo']]
 		   );
    }
@@ -1466,7 +1526,7 @@ $res = mysql_query($sql);
   $filter_msg='';
 
 
-if($order=='dispached')
+if($order=='dispatched')
       $order='`Shipped Quantity`';
    elseif($order=='order'){
      $order='';
@@ -1478,7 +1538,7 @@ if($order=='dispached')
   }
   
   
-   $sql=sprintf("select `Delivery Note XHTML Orders`,`Customer Name`,CD.`Customer Key`,`Delivery Note Date`,sum(`Shipped Quantity`) as dispached,sum(`No Shipped Due Out of Stock`+`No Shipped Due No Authorized`+`No Shipped Due Not Found`+`No Shipped Due Other`) as undispached  from     `Order Transaction Fact` OTF  left join   `Delivery Note Dimension` DND on (OTF.`Delivery Note Key`=DND.`Delivery Note Key`) left join `Customer Dimension` CD on (OTF.`Customer Key`=CD.`Customer Key`)   left join `Product History Dimension` PD on (PD.`Product Key`=OTF.`Product Key`)    left join `Product Dimension` P  on (PD.`Product ID`=P.`Product ID`)    %s %s  and OTF.`Delivery Note Key`>0  group by OTF.`Delivery Note Key`  order by  $order $order_direction  limit $start_from,$number_results"
+   $sql=sprintf("select `Delivery Note XHTML Orders`,`Customer Name`,CD.`Customer Key`,`Delivery Note Date`,sum(`Shipped Quantity`) as dispatched,sum(`No Shipped Due Out of Stock`+`No Shipped Due No Authorized`+`No Shipped Due Not Found`+`No Shipped Due Other`) as undispatched  from     `Order Transaction Fact` OTF  left join   `Delivery Note Dimension` DND on (OTF.`Delivery Note Key`=DND.`Delivery Note Key`) left join `Customer Dimension` CD on (OTF.`Customer Key`=CD.`Customer Key`)   left join `Product History Dimension` PD on (PD.`Product Key`=OTF.`Product Key`)    left join `Product Dimension` P  on (PD.`Product ID`=P.`Product ID`)    %s %s  and OTF.`Delivery Note Key`>0  group by OTF.`Delivery Note Key`  order by  $order $order_direction  limit $start_from,$number_results"
 		,$where
 		,$wheref
 		);
@@ -1499,8 +1559,8 @@ if($order=='dispached')
 		   'order'=>$row['Delivery Note XHTML Orders'],
 		   'customer_name'=>$customer,
 		   'date'=> strftime("%e %b %y", strtotime($row['Delivery Note Date'])),
-		   'dispached'=>number($row['dispached']),
-		   'undispached'=>number($row['undispached'])
+		   'dispatched'=>number($row['dispatched']),
+		   'undispatched'=>number($row['undispatched'])
 
 		   );
    }
@@ -2102,7 +2162,7 @@ function transactions_to_process(){
    $data=array();
    $sql="select * from `Order Transaction Fact` O left join `Product History Dimension` PH on (O.`Product key`=PH.`Product Key`) left join `Product Dimension` P on (P.`Product ID`=PH.`Product ID`)  $where   ";
    
-   //  $sql="select  p.id as id,p.code as code ,product_id,p.description,units,ordered,dispached,charge,discount,promotion_id    from transaction as t left join product as p on (p.id=product_id)  $where    ";
+   //  $sql="select  p.id as id,p.code as code ,product_id,p.description,units,ordered,dispatched,charge,discount,promotion_id    from transaction as t left join product as p on (p.id=product_id)  $where    ";
    
    
    
@@ -2112,7 +2172,7 @@ function transactions_to_process(){
    while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
    //   $total_charged+=$row['charge'];
 //      $total_discounts+=$ndiscount;
-//      $total_picks+=$row['dispached'];
+//      $total_picks+=$row['dispatched'];
      $code=sprintf('<a href="product.php?pid=%s">%s</a>',$row['Product ID'],$row['Product Code']);
      $data[]=array(
 
@@ -2166,7 +2226,7 @@ function list_transactions_in_warehouse(){
    $data=array();
    $sql="select * from `Order Transaction Fact` O left join `Product History Dimension` PH on (O.`Product key`=PH.`Product Key`) left join `Product Dimension` P on (P.`Product ID`=PH.`Product ID`)  $where   ";
    
-   //  $sql="select  p.id as id,p.code as code ,product_id,p.description,units,ordered,dispached,charge,discount,promotion_id    from transaction as t left join product as p on (p.id=product_id)  $where    ";
+   //  $sql="select  p.id as id,p.code as code ,product_id,p.description,units,ordered,dispatched,charge,discount,promotion_id    from transaction as t left join product as p on (p.id=product_id)  $where    ";
    
    
    
@@ -2176,7 +2236,7 @@ function list_transactions_in_warehouse(){
    while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
    //   $total_charged+=$row['charge'];
 //      $total_discounts+=$ndiscount;
-//      $total_picks+=$row['dispached'];
+//      $total_picks+=$row['dispatched'];
      $code=sprintf('<a href="product.php?pid=%s">%s</a>',$row['Product ID'],$row['Product Code']);
      $data[]=array(
 

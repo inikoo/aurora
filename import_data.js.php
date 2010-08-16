@@ -273,40 +273,11 @@ function change_avg(e,table_id){
 
  function init(){
  
-  init_search('products_store');
  
- 
- YAHOO.util.Event.addListener('clean_table_filter_show0', "click",show_filter,0);
- YAHOO.util.Event.addListener('clean_table_filter_hide0', "click",hide_filter,0);
-   
-
- var oACDS = new YAHOO.util.FunctionDataSource(mygetTerms);
- oACDS.queryMatchContains = true;
- var oAutoComp = new YAHOO.widget.AutoComplete("f_input0","f_container0", oACDS);
- oAutoComp.minQueryLength = 0; 
-
- ids=['general','sales','stock'];
- YAHOO.util.Event.addListener(ids, "click",change_view)
- ids=['period_all','period_year','period_quarter','period_month','period_week'];
- YAHOO.util.Event.addListener(ids, "click",change_period,0);
- ids=['avg_totals','avg_month','avg_week',"avg_month_eff","avg_week_eff"];
- YAHOO.util.Event.addListener(ids, "click",change_avg,0);
-
-YAHOO.util.Event.addListener("info_next", "click",next_info_period,0);
-YAHOO.util.Event.addListener("info_previous", "click",previous_info_period,0);
-
- 
-YAHOO.util.Event.addListener('details', "click",change_details,'store');
-YAHOO.util.Event.addListener('show_percentages', "click",show_percentages,'departments');
-
-
- YAHOO.util.Event.addListener('product_submit_search', "click",submit_search,'product');
- YAHOO.util.Event.addListener('product_search', "keydown", submit_search_on_enter,'product');
-
-
-
 
  }
+
+
 
 YAHOO.util.Event.onDOMReady(init);
 
@@ -330,4 +301,9 @@ YAHOO.util.Event.onContentReady("info_period_menu", function () {
 	 oMenu.subscribe("show", oMenu.focus);
 	 YAHOO.util.Event.addListener("info_period", "click", oMenu.show, null, oMenu);
     });
+    
+    
+    
+    
+    
     

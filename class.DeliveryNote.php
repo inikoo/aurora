@@ -115,7 +115,17 @@ class DeliveryNote extends DB_Table {
         $this->data ['Delivery Note Metadata'] = $order->data ['Order Original Metadata'];
         $this->data ['Delivery Note Weight'] = $dn_data ['Delivery Note Weight'];
 	
-	
+	 if (isset($dn_data ['Delivery Note Date Created'])){
+	 $this->data ['Delivery Note Date Created'] = $dn_data ['Delivery Note Date Created'];
+	}else
+	 $this->data ['Delivery Note Date Created'] ='';
+
+ if (isset($dn_data ['Delivery Note State'])){
+	 $this->data ['Delivery Note State'] = $dn_data ['Delivery Note State'];
+	}else
+	 $this->data ['Delivery Note State'] ='Ready to be Picked';
+
+
 
         $this->data ['Delivery Note XHTML Pickers'] = $dn_data ['Delivery Note XHTML Pickers'];
         $this->data ['Delivery Note Number Pickers'] = $dn_data ['Delivery Note Number Pickers'];
@@ -163,8 +173,11 @@ class DeliveryNote extends DB_Table {
         $line_number = 0;
         $amount = 0;
         $discounts = 0;
-        foreach ( $transacions_data as $data ) {
+    
+    $total_estimated_weight=0;
+    foreach ( $transacions_data as $data ) {
             $line_number ++;
+            $total_estimated_weight+=$data ['Estimated Weight'];
 	    $sql = sprintf ( "update  `Order Transaction Fact` set `Estimated Weight`=%s,`Order Last Updated Date`=%s, `Delivery Note ID`=%s,`Delivery Note Line`=%d,`Current Autorized to Sell Quantity`=%.f ,`Delivery Note Key`=%d ,`Destination Country 2 Alpha Code`=%s where `Order Key`=%d and  `Order Line`=%d"
                              , prepare_mysql ( $data ['Estimated Weight'] )
                              , prepare_mysql ( $this->data ['Delivery Note Date'] )
@@ -182,6 +195,9 @@ class DeliveryNote extends DB_Table {
 	    
         }
 	
+	 $sql = sprintf ( "update   `Delivery Note Dimension` set `Delivery Note Estimated Weight`=%f where `Delivery Note Key`=%d",$total_estimated_weight,$this->id);
+        mysql_query ( $sql );
+	//print $sql;
         $this->load('orders');
         $sql = sprintf ( "delete from  `Order Delivery Note Bridge` where `Delivery Note Key`=%d",$this->id);
         mysql_query ( $sql );
@@ -220,8 +236,10 @@ class DeliveryNote extends DB_Table {
 
     function create_header() {
 
-        $sql = sprintf ( "insert into `Delivery Note Dimension` (`Delivery Note Dispatch Method`,`Delivery Note Store Key`,`Delivery Note XHTML Orders`,`Delivery Note XHTML Invoices`,`Delivery Note Date`,`Delivery Note ID`,`Delivery Note File As`,`Delivery Note Customer Key`,`Delivery Note Customer Name`,`Delivery Note XHTML Ship To`,`Delivery Note Ship To Key`,`Delivery Note Metadata`,`Delivery Note Weight`,`Delivery Note XHTML Pickers`,`Delivery Note Number Pickers`,`Delivery Note XHTML Packers`,`Delivery Note Number Packers`,`Delivery Note Type`,`Delivery Note Title`,`Delivery Note Country 2 Alpha Code`,`Delivery Note Shipper Code`) values (%s,%s,'','',%s,%s,%s,%s,%s,%s,%s,%s,%f,%s,%d,%s,%d,%s,%s,%s,%s)"
+        $sql = sprintf ( "insert into `Delivery Note Dimension` (`Delivery Note State`,`Delivery Note Date Created`,`Delivery Note Dispatch Method`,`Delivery Note Store Key`,`Delivery Note XHTML Orders`,`Delivery Note XHTML Invoices`,`Delivery Note Date`,`Delivery Note ID`,`Delivery Note File As`,`Delivery Note Customer Key`,`Delivery Note Customer Name`,`Delivery Note XHTML Ship To`,`Delivery Note Ship To Key`,`Delivery Note Metadata`,`Delivery Note Weight`,`Delivery Note XHTML Pickers`,`Delivery Note Number Pickers`,`Delivery Note XHTML Packers`,`Delivery Note Number Packers`,`Delivery Note Type`,`Delivery Note Title`,`Delivery Note Country 2 Alpha Code`,`Delivery Note Shipper Code`) values (%s,%s,%s,%s,'','',%s,%s,%s,%s,%s,%s,%s,%s,%f,%s,%d,%s,%d,%s,%s,%s,%s)"
+                               , prepare_mysql ( $this->data ['Delivery Note State'] )
 
+       , prepare_mysql ( $this->data ['Delivery Note Date Created'] )
                          , prepare_mysql ( $this->data ['Delivery Note Dispatch Method'] )
                          , prepare_mysql ( $this->data ['Delivery Note Store Key'] )
                          , prepare_mysql ( $this->data ['Delivery Note Date'] )
@@ -263,6 +281,12 @@ class DeliveryNote extends DB_Table {
         switch ($key) {
 	case('Date'):
 	  return strftime('%D',strtotime($this->data['Delivery Note Date']));
+	  break;
+		case('Date Created'):
+	  return strftime('%D',strtotime($this->data['Delivery Note Date Created']));
+	  break;  
+	  case('Estimated Weight'):
+	  return weight($this->data['Delivery Note Estimated Weight']);
 	  break;
 	case('Items Gross Amount'):
         case('Items Discount Amount'):
@@ -440,7 +464,7 @@ class DeliveryNote extends DB_Table {
                 $location_id = $part->get ( 'Picking Location Key' );
 
                 if ($data ['Shipped Quantity'] == 0)
-                    $_typo = "'No Dispached'";
+                    $_typo = "'No Dispatched'";
                 else
                     $_typo = "'Sale'";
                 $sql = sprintf ( "insert into `Inventory Transaction Fact`  (`Date`,`Part SKU`,`Location Key`,`Inventory Transaction Quantity`,`Inventory Transaction Type`,`Inventory Transaction Amount`,`Required`,`Given`,`Amount In`,`Metadata`,`Note`,`Supplier Product Key`) values (%s,%s,%d,%s,%s,%.2f,%f,%f,%f,%s,%s,%s) "
@@ -577,7 +601,7 @@ class DeliveryNote extends DB_Table {
                 $location_id = $part->get ( 'Picking Location Key' );
 
                 if ($data ['Shipped Quantity'] == 0)
-                    $_typo = "'No Dispached'";
+                    $_typo = "'No Dispatched'";
                 else
                     $_typo = "'Sale'";
                 $sql = sprintf ( "insert into `Inventory Transaction Fact`  (`Date`,`Part SKU`,`Location Key`,`Inventory Transaction Quantity`,`Inventory Transaction Type`,`Inventory Transaction Amount`,`Required`,`Given`,`Amount In`,`Metadata`,`Note`,`Supplier Product Key`) values (%s,%s,%d,%s,%s,%.2f,%f,%f,%f,%s,%s,%s) "
@@ -716,7 +740,7 @@ class DeliveryNote extends DB_Table {
 
                 $sql = sprintf ( "update  `Order Transaction Fact` set `Shipped Quantity`=%f,  `Current Dispatching State`=%s where  `Delivery Note Key`=%d and   `Order Line`=%d"
                                  ,$row['Delivery Note Quantity']
-                                 ,prepare_mysql('Dispached')
+                                 ,prepare_mysql('Dispatched')
                                  ,$this->id
                                  ,$row['Order Line']);
                 mysql_query ( $sql );
@@ -767,7 +791,52 @@ class DeliveryNote extends DB_Table {
 
     }
 
+   function cancel($note='',$date=false) {
+            $this->cancelled=false;
+            if (preg_match('/Dispatched/',$this->data ['Delivery Note State'])) {
+                $this->msg=_('Delivery Note can not be cancelled, because has already been dispatched');
 
+            }
+            if (preg_match('/Cancelled/',$this->data ['Delivery Note State'])) {
+                $this->_('Order is already cancelled');
+
+            } else {
+
+                if (!$date)
+                    $date=date('Y-m-d H:i:s');
+              
+              
+                if (preg_match('/Ready to be Picked/',$this->data ['Delivery Note State'])) {
+               $this->data ['Delivery Note State'] = 'Cancelled';
+            }else{
+                           $this->data ['Delivery Note State'] = 'Cancelled to Restock';
+
+            }
+
+               $this->data ['Delivery Note Dispatch Method'] ='NA';
+             
+
+
+
+                $sql = sprintf ( "update `Delivery Note Dimension` set `Delivery Note State`=%s , `Delivery Note Dispatch Method`=%s where `Delivery Note Key`=%d"
+                                 , prepare_mysql ( $this->data ['Delivery Note State'] )
+                                 , prepare_mysql ( $this->data ['Delivery Note Dispatch Method'] )
+                                
+
+                                 , $this->id );
+                if (! mysql_query ( $sql ))
+                    exit ( "$sql arror can not update cancel\n" );
+
+               
+
+
+                $this->cancelled=true;
+
+            }
+
+
+
+        }
 }
 
 ?>

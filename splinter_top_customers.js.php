@@ -1,10 +1,10 @@
 <?php include_once('common.php');
 
-print "var top=".$_SESSION['state']['report']['customers']['top'].";";
-print "var criteria='".$_SESSION['state']['report']['customers']['criteria']."';";
-
+print "var nr=parseInt(".$_SESSION['state']['home']['splinters']['top_customers']['nr'].");";
+print "var criteria='".$_SESSION['state']['home']['splinters']['top_customers']['order']."';";
 ?>
 
+top_customers_tables= new Object();
 
 YAHOO.util.Event.onContentReady("table<?php print $_REQUEST['table_id']?>", function () {
 
@@ -37,11 +37,11 @@ YAHOO.util.Event.onContentReady("table<?php print $_REQUEST['table_id']?>", func
 
 					 ];
 	    //?tipo=customers&tid=0"
-	    this.dataSourcetopcust = new YAHOO.util.DataSource("ar_reports.php?tipo=customers&nr=20&tableid="+tableid);
+	    top_customers_tables.dataSourcetopcust = new YAHOO.util.DataSource("ar_reports.php?tipo=customers&tableid="+tableid);
 	  //  alert("ar_reports.php?tipo=customers&nr=20&tableid="+tableid)
-	    this.dataSourcetopcust.responseType = YAHOO.util.DataSource.TYPE_JSON;
-	    this.dataSourcetopcust.connXhrMode = "queueRequests";
-	    this.dataSourcetopcust.responseSchema = {
+	    top_customers_tables.dataSourcetopcust.responseType = YAHOO.util.DataSource.TYPE_JSON;
+	    top_customers_tables.dataSourcetopcust.connXhrMode = "queueRequests";
+	    top_customers_tables.dataSourcetopcust.responseSchema = {
 		resultsList: "resultset.data", 
 		metaFields: {
 		    rowsPerPage:"resultset.records_perpage",
@@ -71,16 +71,16 @@ YAHOO.util.Event.onContentReady("table<?php print $_REQUEST['table_id']?>", func
 			 ]};
 	    //__You shouls not change anything from here
 
-	    //this.dataSource.doBeforeCallback = mydoBeforeCallback;
+	    //top_customers_tables.dataSource.doBeforeCallback = mydoBeforeCallback;
 
 
 
-	    this.table1 = new YAHOO.widget.DataTable(tableDivEL, CustomersColumnDefs,
-								   this.dataSourcetopcust
+	    top_customers_tables.table1 = new YAHOO.widget.DataTable(tableDivEL, CustomersColumnDefs,
+								   top_customers_tables.dataSourcetopcust
 								 , {
 								     renderLoopSize: 50,generateRequest : myRequestBuilder
 								       ,paginator : new YAHOO.widget.Paginator({
-									      rowsPerPage    : top,containers : 'paginator', 
+									      rowsPerPage    : nr,containers : 'paginator', 
  									      pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',
 									      previousPageLinkLabel : "<",
  									      nextPageLinkLabel : ">",
@@ -102,17 +102,17 @@ YAHOO.util.Event.onContentReady("table<?php print $_REQUEST['table_id']?>", func
 								   
 								 );
 	    
-	    this.table1.handleDataReturnPayload =myhandleDataReturnPayload;
-	    this.table1.doBeforeSortColumn = mydoBeforeSortColumn;
-	    this.table1.doBeforePaginatorChange = mydoBeforePaginatorChange;
+	    top_customers_tables.table1.handleDataReturnPayload =myhandleDataReturnPayload;
+	    top_customers_tables.table1.doBeforeSortColumn = mydoBeforeSortColumn;
+	    top_customers_tables.table1.doBeforePaginatorChange = mydoBeforePaginatorChange;
 
 		    
 		    
-	    this.table1.view='<?php echo$_SESSION['state']['customers']['view']?>';
+	    top_customers_tables.table1.view='<?php echo$_SESSION['state']['customers']['view']?>';
 
-	    this.table1.filter={key:'<?php echo$_SESSION['state']['customers']['table']['f_field']?>',value:'<?php echo$_SESSION['state']['customers']['table']['f_value']?>'};
+	    top_customers_tables.table1.filter={key:'<?php echo$_SESSION['state']['customers']['table']['f_field']?>',value:'<?php echo$_SESSION['state']['customers']['table']['f_value']?>'};
 
-	    //   YAHOO.util.Event.addListener('f_input', "keyup",myFilterChangeValue,{table:this.table1,datasource:this.dataSource})
+	    //   YAHOO.util.Event.addListener('f_input', "keyup",myFilterChangeValue,{table:top_customers_tables.table1,datasource:top_customers_tables.dataSource})
 			 
 	    
 	    //	    var Dom   = YAHOO.util.Dom;
@@ -122,57 +122,39 @@ YAHOO.util.Event.onContentReady("table<?php print $_REQUEST['table_id']?>", func
 	
 	});
 
-function change_criteria(){
- var table=tables['table1'];
-      var datasource=tables.dataSource0;
-      var request='&o='+this.id;
-      var ids=['net_balance','invoices'];
-        Dom.removeClass(ids,'selected');
-      Dom.addClass(this,'selected');
-      datasource.sendRequest(request,table.onDataReturnInitializeTable, table);   
+
+function change_period(){
+var period=this.getAttribute('period');
+var tableid=<?php print $_REQUEST['table_id']?>;
+
+var table=top_customers_tables.table1;
+    var datasource=top_customers_tables.dataSourcetopcust;
+    var request='&period=' + period;
+    datasource.sendRequest(request,table.onDataReturnInitializeTable, table);
+ids=['top_customers_all','top_customers_1y','top_customers_1m','top_customers_1q'];
+Dom.removeClass(ids,'selected');
+Dom.addClass(this,'selected');
 
 }
-function change_top(){
-var table=tables['table1'];
-      var datasource=tables.dataSource0;
-      var request='&nr='+this.getAttribute('top');
-      var ids=['top10','top25','top100'];
-       Dom.removeClass(ids,'selected');
-      Dom.addClass(this,'selected');
-      datasource.sendRequest(request,table.onDataReturnInitializeTable, table);   
+function change_number(){
+var nr=this.getAttribute('nr');
+var tableid=<?php print $_REQUEST['table_id']?>;
+
+var table=top_customers_tables.table1;
+    var datasource=top_customers_tables.dataSourcetopcust;
+    var request='&nr=' + nr;
+    datasource.sendRequest(request,table.onDataReturnInitializeTable, table);
+ids=['top_customers_50','top_customers_10','top_customers_20'];
+Dom.removeClass(ids,'selected');
+Dom.addClass(this,'selected');
+
 }
-
-function export_data(){
-    o=Dom.get('export');
-    output=o.getAttribute('output');
-    location.href='export.php?ar_file=ar_reports&tipo=customers&output='+output;
-    
-}
-
-
 function init(){
-  //  var ids=['net_balance','invoices'];
-   // YAHOO.util.Event.addListener(ids, "click", change_criteria);
-    //var ids=['top10','top25','top100','top200'];
+ ids=['top_customers_50','top_customers_10','top_customers_20'];
+ YAHOO.util.Event.addListener(ids, "click",change_number);
  
-   //YAHOO.util.Event.addListener(ids, "click", change_top);
-
-   //YAHOO.util.Event.addListener('export', "click", export_data);
-   //YAHOO.util.Event.addListener('export', "contextmenu", change_export_type,'export');
-
-
-
-  //var oContextMenu = new YAHOO.widget.ContextMenu("export_menu", {
-   //     trigger: 'export'
-   // });
- 
-  
-    //oContextMenu.render(document.body);
-
-
-
-
-
+ids=['top_customers_all','top_customers_1y','top_customers_1m','top_customers_1q'];
+ YAHOO.util.Event.addListener(ids, "click",change_period);
 }
-
 YAHOO.util.Event.onDOMReady(init);
+

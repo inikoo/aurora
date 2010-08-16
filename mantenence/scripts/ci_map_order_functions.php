@@ -768,7 +768,7 @@ function set_transactions($transactions,$order_id,$tipo_order,$parent_order_id,$
   $my_total_items_reorder=0;
   $my_total_items_bonus=0;
   $my_total_items_free=0;
-  $my_total_items_dispached=0;
+  $my_total_items_dispatched=0;
   $value_outstoke=0;
   $credit_value=0;
 
@@ -803,10 +803,10 @@ function set_transactions($transactions,$order_id,$tipo_order,$parent_order_id,$
     $my_total_items_order+=$transaction['order'];
     $my_total_items_reorder=$transaction['reorder'];
     $my_total_items_bonus+=$transaction['bonus'];
-    $my_total_items_dispached+=$my_items_to_dispach;
+    $my_total_items_dispatched+=$my_items_to_dispach;
 
     if($transaction['discount']==1)
-      $my_total_items_free+=$my_total_items_dispached;
+      $my_total_items_free+=$my_total_items_dispatched;
     $tipo_t=1;
     if($transaction['discount']==1)
       $tipo_t=2;
@@ -930,7 +930,7 @@ function set_transactions($transactions,$order_id,$tipo_order,$parent_order_id,$
       //	exit('Error order id can no be this');
 	
 
-      $sql=sprintf("insert into transaction (promotion_id,tipo,order_id,product_id,ordered,dispached,discount,charge,tax_code,original_order_id) value (%s,%d,%d,%d,%.2f,%.2f,%.3f,%.2f,%s,%s)",$promotion_id,$tipo_t,$order_id,$product_id,$transaction['order'],$my_items_to_dispach,$transaction['discount'],$my_items_to_charge_value,prepare_mysql($tax_code),$original_order);
+      $sql=sprintf("insert into transaction (promotion_id,tipo,order_id,product_id,ordered,dispatched,discount,charge,tax_code,original_order_id) value (%s,%d,%d,%d,%.2f,%.2f,%.3f,%.2f,%s,%s)",$promotion_id,$tipo_t,$order_id,$product_id,$transaction['order'],$my_items_to_dispach,$transaction['discount'],$my_items_to_charge_value,prepare_mysql($tax_code),$original_order);
       
       //print "x $sql\n";
       //exit;

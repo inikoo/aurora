@@ -1,3 +1,42 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 <?php
 include_once('common.php');
 include_once('class.CurrencyExchange.php');
@@ -58,10 +97,13 @@ if(!($user->can_view('stores') and in_array($dn->data['Delivery Note Store Key']
 
 $customer=new Customer($dn->get('Delivery Note Customer Key'));
 
-
+if($dn->data['Delivery Note State']=='Dispatched'){
 $js_files[]='dn.js.php';
 $template='dn.tpl';
-    
+}else{
+$js_files[]='dn_in_process.js.php';
+$template='dn_in_process.tpl';
+}
    
     $_SESSION['state']['dn']['store_key']=$dn->data['Delivery Note Store Key'];
 

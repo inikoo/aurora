@@ -23,7 +23,7 @@ $js_files=array(
 		$yui_path.'datasource/datasource-min.js',
 		$yui_path.'autocomplete/autocomplete-min.js',
 		$yui_path.'datatable/datatable.js',
-		$yui_path.'container/container_core-min.js',
+		$yui_path.'container/container-min.js',
 		$yui_path.'menu/menu-min.js',
 		$yui_path.'calendar/calendar-min.js',
 		'common.js.php',
@@ -293,7 +293,7 @@ function report_data($int){
 
 
 
-     $sql=sprintf("select `Order Category`,count(*) as received ,sum(IF(`Order Current Dispatch State`='Picking',1,0)) as picking, sum(IF(`Order Current Dispatch State`='Cancelled',1,0)) as cancelled ,sum(IF(`Order Current Dispatch State`='In Process',1,0)) as in_process, sum(IF(`Order Current Dispatch State`='Ready to Pick',1,0)) as ready_to_pick, sum(IF(`Order Current Dispatch State`='Picking',1,0)) as picking, sum(IF(`Order Current Dispatch State`='Ready to Pack',1,0)) as ready_to_pack , sum(IF(`Order Current Dispatch State`='Ready to Ship',1,0)) as ready_to_ship,  sum(IF(`Order Current Dispatch State`='Dispached',1,0)) as dispached from  `Order Dimension` I  where `Order Store Key`=%d %s group by  `Order Category`"
+     $sql=sprintf("select `Order Category`,count(*) as received ,sum(IF(`Order Current Dispatch State`='Picking',1,0)) as picking, sum(IF(`Order Current Dispatch State`='Cancelled',1,0)) as cancelled ,sum(IF(`Order Current Dispatch State`='In Process',1,0)) as in_process, sum(IF(`Order Current Dispatch State`='Ready to Pick',1,0)) as ready_to_pick, sum(IF(`Order Current Dispatch State`='Picking',1,0)) as picking, sum(IF(`Order Current Dispatch State`='Ready to Pack',1,0)) as ready_to_pack , sum(IF(`Order Current Dispatch State`='Ready to Ship',1,0)) as ready_to_ship,  sum(IF(`Order Current Dispatch State`='Dispatched',1,0)) as dispatched from  `Order Dimension` I  where `Order Store Key`=%d %s group by  `Order Category`"
 		  ,$row['Store Key'],preg_replace('/Invoice/','Order',$int[0]));
     $result2=mysql_query($sql);
     if(mysql_num_rows($result2) >1 ){
@@ -317,7 +317,7 @@ function report_data($int){
 									 ,'in_process'=>number($row2['in_process'])
 									 ,'cancelled'=>number($row2['cancelled'])
 									 ,'ready'=>number($row2['ready_to_ship'])
-									 ,'dispached'=>number($row2['dispached'])
+									 ,'dispatched'=>number($row2['dispatched'])
 									 ,'in_warehouse'=>number($row2['ready_to_pick']+$row2['picking']+$row2['ready_to_pack'])
 									 );
       }
@@ -362,7 +362,7 @@ $number_stores++;
 }
 mysql_free_result($result);
 
- $sql=sprintf("select `Order Store Key`,count(*) as received , sum(IF(`Order Current Dispatch State`='In Process',1,0)) as in_process, sum(IF(`Order Current Dispatch State`='Ready to Pick',1,0)) as ready_to_pick, sum(IF(`Order Current Dispatch State`='Picking',1,0)) as picking, sum(IF(`Order Current Dispatch State`='Ready to Pack',1,0)) as ready_to_pack , sum(IF(`Order Current Dispatch State`='Ready to Ship',1,0)) as ready_to_ship,  sum(IF(`Order Current Dispatch State`='Dispached',1,0)) as dispached, sum(IF(`Order Current Dispatch State`='Cancelled',1,0)) as cancelled  from  `Order Dimension` I  where  true %s group by  `Order Store Key`"
+ $sql=sprintf("select `Order Store Key`,count(*) as received , sum(IF(`Order Current Dispatch State`='In Process',1,0)) as in_process, sum(IF(`Order Current Dispatch State`='Ready to Pick',1,0)) as ready_to_pick, sum(IF(`Order Current Dispatch State`='Picking',1,0)) as picking, sum(IF(`Order Current Dispatch State`='Ready to Pack',1,0)) as ready_to_pack , sum(IF(`Order Current Dispatch State`='Ready to Ship',1,0)) as ready_to_ship,  sum(IF(`Order Current Dispatch State`='Dispatched',1,0)) as dispatched, sum(IF(`Order Current Dispatch State`='Cancelled',1,0)) as cancelled  from  `Order Dimension` I  where  true %s group by  `Order Store Key`"
 	      ,preg_replace('/Invoice/','Order',$int[0]));
 $result=mysql_query($sql);
 $sum_received=0;
@@ -376,13 +376,13 @@ while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
   $activity_data[$row['Order Store Key']]['in_process']='<b>'.number($row['in_process']).'</b>';
   $activity_data[$row['Order Store Key']]['in_warehouse']='<b>'.number($row['ready_to_pick']+$row['picking']+$row['ready_to_pack']).'</b>';
   $activity_data[$row['Order Store Key']]['ready']='<b>'.number($row['ready_to_ship']).'</b>';
-  $activity_data[$row['Order Store Key']]['dispached']='<b>'.number($row['dispached']).'</b>';
+  $activity_data[$row['Order Store Key']]['dispatched']='<b>'.number($row['dispatched']).'</b>';
   $activity_data[$row['Order Store Key']]['cancelled']='<b>'.number($row['cancelled']).'</b>';
 
 
 
 
-// $sql=sprintf("select `Order Store Key`,count(*) as received , sum(IF(`Order Current Dispatch State`='In Process',1,0)) as in_process, sum(IF(`Order Current Dispatch State`='Ready to Pick',1,0)) as ready_to_pick, sum(IF(`Order Current Dispatch State`='Picking',1,0)) as picking, sum(IF(`Order Current Dispatch State`='Ready to Pack',1,0)) as ready_to_pack , sum(IF(`Order Current Dispatch State`='Ready to Ship',1,0)) as ready_to_ship,  sum(IF(`Order Current Dispatch State`='Dispached',1,0)) as dispached, sum(IF(`Order Current Dispatch State`='Cancelled',1,0)) as cancelled  from  `Order Dimension` I  where  true %s group by  `Order Store Key`"
+// $sql=sprintf("select `Order Store Key`,count(*) as received , sum(IF(`Order Current Dispatch State`='In Process',1,0)) as in_process, sum(IF(`Order Current Dispatch State`='Ready to Pick',1,0)) as ready_to_pick, sum(IF(`Order Current Dispatch State`='Picking',1,0)) as picking, sum(IF(`Order Current Dispatch State`='Ready to Pack',1,0)) as ready_to_pack , sum(IF(`Order Current Dispatch State`='Ready to Ship',1,0)) as ready_to_ship,  sum(IF(`Order Current Dispatch State`='Dispatched',1,0)) as dispatched, sum(IF(`Order Current Dispatch State`='Cancelled',1,0)) as cancelled  from  `Order Dimension` I  where  true %s group by  `Order Store Key`"
 //	      ,preg_replace('/Invoice/','Order',$int[0]));
 //$result2=mysql_query($sql);
 
@@ -394,7 +394,7 @@ while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
   //$activity_data[$row['Order Store Key']]['in_process']='<b>'.number($row2['in_process']).'</b>';
   //$activity_data[$row['Order Store Key']]['in_warehouse']='<b>'.number($row2['ready_to_pick']+$row2['picking']+$row2['ready_to_pack']).'</b>';
   //$activity_data[$row['Order Store Key']]['ready']='<b>'.number($row2['ready_to_ship']).'</b>';
-  //$activity_data[$row['Order Store Key']]['dispached']='<b>'.number($row2['dispached']).'</b>';
+  //$activity_data[$row['Order Store Key']]['dispatched']='<b>'.number($row2['dispatched']).'</b>';
   //$activity_data[$row['Order Store Key']]['cancelled']='<b>'.number($row2['cancelled']).'</b>';
 
 

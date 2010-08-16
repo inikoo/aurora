@@ -197,7 +197,7 @@ mysql_free_result($res);
 
 	$data[$_index]['out']=(int)$row['_out'];
 	$fday=strftime("%d %b", strtotime('@'.$data[$_index]['utime']));
-	$data[$_index]['tip_out']=_('Outer Dispached')."\n"._('Week').' '.$data[$_index]['week']."\n"._('Starting')." ".$fday."\n".number($row['_out']).' '._('Outers');
+	$data[$_index]['tip_out']=_('Outer Dispatched')."\n"._('Week').' '.$data[$_index]['week']."\n"._('Starting')." ".$fday."\n".number($row['_out']).' '._('Outers');
 	$data[$_index]['tip_asales']=_('Sales')."\n"._('Week').' '.$data[$_index]['week']."\n"._('Starting')." ".$fday."\n".money($row['asales']);
 	$data[$_index]['tip_profit']=_('Profit')."\n"._('Week').' '.$data[$_index]['week']."\n"._('Starting')." ".$fday."\n".money($row['profit']);
 	$data[$_index]['bonus']=0;
@@ -270,7 +270,7 @@ mysql_free_result($res);
 	$data[$_index]['profit']=(float)$row['profit'];
 
 	$data[$_index]['out']=(int)$row['_out'];
-	$data[$_index]['tip_out']=_('Outers Dispached')."\n".strftime("%b %y",strtotime($data[$_index]['_date']))."\n".number($row['_out']).' '._('Outers');
+	$data[$_index]['tip_out']=_('Outers Dispatched')."\n".strftime("%b %y",strtotime($data[$_index]['_date']))."\n".number($row['_out']).' '._('Outers');
 	$data[$_index]['tip_asales']=_('Sales')."\n".strftime("%b %y",strtotime($data[$_index]['_date']))."\n".money($row['asales']);
 	$data[$_index]['tip_profit']=_('Profit')."\n".strftime("%b %y",strtotime($data[$_index]['_date']))."\n".money($row['profit']);
 	$data[$_index]['bonus']=0;
@@ -344,7 +344,7 @@ function list_product_sales_per_quarter(){
 	$data[$_index]['profit']=(float)$row['profit'];
 
 	$data[$_index]['out']=(int)$row['_out'];
-	$data[$_index]['tip_out']=_('Outers Dispached')."\n".strftime("%b %y",strtotime($data[$_index]['_date']))."\n".number($row['_out']).' '._('Outers');
+	$data[$_index]['tip_out']=_('Outers Dispatched')."\n".strftime("%b %y",strtotime($data[$_index]['_date']))."\n".number($row['_out']).' '._('Outers');
 	$data[$_index]['tip_asales']=_('Sales')."\n".strftime("%b %y",strtotime($data[$_index]['_date']))."\n".money($row['asales']);
 	$data[$_index]['tip_profit']=_('Profit')."\n".strftime("%b %y",strtotime($data[$_index]['_date']))."\n".money($row['profit']);
 	$data[$_index]['bonus']=0;
@@ -412,7 +412,7 @@ function list_product_sales_per_year(){
 	$data[$_index]['profit']=(float)$row['profit'];
 
 	$data[$_index]['out']=(int)$row['_out'];
-	$data[$_index]['tip_out']=$row['year'].' '._('Outers Dispached')."\n".number($row['_out']).' '._('Outers');
+	$data[$_index]['tip_out']=$row['year'].' '._('Outers Dispatched')."\n".number($row['_out']).' '._('Outers');
 	$data[$_index]['tip_asales']=$row['year'].' '._('Sales')."\n".money($row['asales']);
 	$data[$_index]['tip_profit']=$row['year'].' '._('Profits')."\n".money($row['profit']);
 	$data[$_index]['bonus']=0;

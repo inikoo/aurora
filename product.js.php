@@ -77,8 +77,8 @@ function previous_info_period(){
 					
 				      ,{key:"customer_name", label:"<?php echo _('Customer')?>", width:220,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 					,{key:"date", label:"<?php echo _('Date')?>", sortable:true, width:100,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-					,{key:"dispached", label:"<?php echo _('Dispached')?>",width:80,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-					,{key:"undispached", label:"<?php echo'&Delta;'._('Ordered')?>", width:80, sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+					,{key:"dispatched", label:"<?php echo _('Dispatched')?>",width:80,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+					,{key:"undispatched", label:"<?php echo'&Delta;'._('Ordered')?>", width:80, sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 					];
 		      
 		      
@@ -98,7 +98,7 @@ function previous_info_period(){
 			  },
 			
 			  fields: [
-				   "id","order","customer_name","date","dispached","undispached"
+				   "id","order","customer_name","date","dispatched","undispatched"
 				   ]};
 		      
 		      this.table0 = new YAHOO.widget.DataTable(tableDivEL, ColumnDefs,
@@ -137,9 +137,9 @@ function previous_info_period(){
 		      var ColumnDefs = [
 					{key:"customer", label:"<?php echo _('Customer')?>",width:320, sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 					,{key:"orders", label:"<?php echo _('Orders')?>",width:70, sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-				      ,{key:"dispached", label:"<?php echo _('Disp')?>",width:65, sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				      ,{key:"dispatched", label:"<?php echo _('Disp')?>",width:65, sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 					,{key:"todispach", label:"<?php echo _('To Disp')?>",width:65, sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-					,{key:"nodispached", label:"<?php echo _('No Disp')?>", width:65, sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+					,{key:"nodispatched", label:"<?php echo _('No Disp')?>", width:65, sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 					,{key:"charged", label:"<?php echo _('Charged')?>", width:80, sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 					];
 		    
@@ -160,7 +160,7 @@ function previous_info_period(){
 			  },
 			  
 			  fields: [
-				  "customer","dispached","nodispached","charged","todispach","orders"
+				  "customer","dispatched","nodispatched","charged","todispach","orders"
 				   ]};
 		      
 		      this.table1 = new YAHOO.widget.DataTable(tableDivEL, ColumnDefs,

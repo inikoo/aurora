@@ -17,7 +17,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 				       {key:"cancelled",label:"<?php echo _('Cancelled')?>", width:90,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}},
 				       {key:"unknown",label:"<?php echo _('Unknown')?>", width:90,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}},
 				       {key:"pending", label:"<?php echo _('Pending')?>", width:100,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}},
-				       {key:"dispached",label:"<?php echo _('Dispached')?>", width:100,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}},
+				       {key:"dispatched",label:"<?php echo _('Dispatched')?>", width:100,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}},
 				       {key:"paid", label:"<?php echo _('Paid')?>", width:100,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}},
 
 					 ];
@@ -45,7 +45,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 			 "orders",
 			 "cancelled",
 			 "unknown",
-			 "paid","pending","dispached"
+			 "paid","pending","dispatched"
 			 ]};
 
 	    this.table0 = new YAHOO.widget.DataTable(tableDivEL, OrdersColumnDefs,

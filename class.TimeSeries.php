@@ -105,7 +105,7 @@ Class TimeSeries  {
             $this->table='`Order Transaction Fact`';
             $this->value_field='`Invoice Currency Exchange`*(`Invoice Transaction Gross Amount`-IFNULL(`Invoice Transaction Total Discount Amount`,0)+IFNULL(`Invoice Transaction Shipping Amount`,0)+IFNULL(`Invoice Transaction Charges Amount`,0)-IFNULL(`Cost Supplier`,0)-IFNULL(`Cost Manufacure`,0)-IFNULL(`Cost Storing`,0)-IFNULL(`Cost Handing`,0)-IFNULL(`Cost Shipping`,0))';
             $this->max_forecast_bins=12;
-            $this->where='and `Current Dispatching State`="Dispached"';
+            $this->where='and `Current Dispatching State`="Dispatched"';
             $this->label=_('Profit');
         }
         elseif(preg_match('/^invoices?/i',$this->name)) {

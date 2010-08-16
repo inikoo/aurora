@@ -20,7 +20,7 @@ $js_files=array(
 		$yui_path.'paginator/paginator-min.js',
 		$yui_path.'datasource/datasource-min.js',	$yui_path.'datatable/datatable-debug.js',
 		$yui_path.'autocomplete/autocomplete-min.js',
-		$yui_path.'container/container_core-min.js',
+		$yui_path.'container/container-min.js',
 		$yui_path.'menu/menu-min.js',
 		'js/search.js',
 		'common.js.php',

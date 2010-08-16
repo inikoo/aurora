@@ -253,11 +253,11 @@ YAHOO.util.Event.addListener(window, "load", function() {
 				   ,{key:"orders", label:"<?php echo _('Orders')?>",className:"aright",width:60}
 
 				      ,{key:"ordered", label:"<?php echo _('Ordered')?>",className:"aright",width:60}
-				      ,{key:"dispached", label:"<?php echo _('Dispached')?>", className:"aright",width:60,sortable:true,sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				      ,{key:"dispatched", label:"<?php echo _('Dispatched')?>", className:"aright",width:60,sortable:true,sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 
 					   ];
 		
-		    this.dataSource1  = new YAHOO.util.DataSource("ar_contacts.php?tipo=assets_dispached_to_customer&tid="+tableid);
+		    this.dataSource1  = new YAHOO.util.DataSource("ar_contacts.php?tipo=assets_dispatched_to_customer&tid="+tableid);
 		    this.dataSource1.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource1.connXhrMode = "queueRequests";
 	    this.dataSource1.table_id=tableid;
@@ -274,7 +274,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 		    filter_msg:"resultset.filter_msg",
 		    totalRecords: "resultset.total_records" // Access to value in the server response
 		},
-		fields: ["subject","ordered","dispached","orders","description" ]};
+		fields: ["subject","ordered","dispatched","orders","description" ]};
 		    this.table1 = new YAHOO.widget.DataTable(tableDivEL, ColumnDefs,
 								   this.dataSource1
 								 , {
