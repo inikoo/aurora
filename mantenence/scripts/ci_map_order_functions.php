@@ -1360,9 +1360,14 @@ function setup_contact($act_data,$header_data,$date_index){
   }
 
  
-
+if($header_data['country']==''){
+$header_data['country']='España';
+}
  
-
+if($act_data['country']==''){
+$act_data['country']='España';
+}
+ 
 
   $header_data['postcode']=_trim( $header_data['postcode']);
   $header_data['trade_name']=preg_replace('/\\\"/i',' ',$header_data['trade_name']);
@@ -1669,7 +1674,7 @@ function setup_contact($act_data,$header_data,$date_index){
 
     //  $customer_data['other_id']=$act_data['act'];
 
-    //print_r($customer_data);
+   // print_r($customer_data);
     //exit;
     //print_r($act_data);
     //$customer_data['address_data']=

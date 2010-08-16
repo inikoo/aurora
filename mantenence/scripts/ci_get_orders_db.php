@@ -1276,7 +1276,7 @@ if ($customer_data['Customer Delivery Address Link']=='Contact') {
       }
 
       
-      if($tipo==1){
+      if($tipo_order==1){
 	$order_type='Order';
 	$data_dn=array(
 		       'Delivery Note Date Created'=>$date_order
@@ -1286,7 +1286,7 @@ if ($customer_data['Customer Delivery Address Link']=='Contact') {
 		       ,'Delivery Note Title'=>_('Delivery Note for').' '.$order_type.' '.$header_data['order_num']
 		       );
 	
-	$dn=new DeliveryNote('create',$data_dn,$data_dn_transactions,$parent_order);
+	$dn=new DeliveryNote('create',$data_dn,$data_dn_transactions,$order);
 	$order->update_delivery_notes('save');
 	
       }

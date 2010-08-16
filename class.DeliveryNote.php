@@ -104,7 +104,46 @@ class DeliveryNote extends DB_Table {
     protected function create($dn_data, $transacions_data,$order) {
         global $myconf;
        
+       if(isset($dn_data ['Delivery Note Date']))
         $this->data ['Delivery Note Date'] = $dn_data ['Delivery Note Date'];
+        else
+        $this->data ['Delivery Note Date'] ='';
+        
+      if(isset($dn_data ['Delivery Note Weight']))
+        $this->data ['Delivery Note Weight'] = $dn_data ['Delivery Note Weight'];
+        else
+        $this->data ['Delivery Note Weight'] ='';  
+        
+        if(isset($dn_data ['Delivery Note XHTML Pickers']))
+        $this->data ['Delivery Note XHTML Pickers'] = $dn_data ['Delivery Note XHTML Pickers'];
+        else
+        $this->data ['Delivery Note XHTML Pickers'] ='';  
+        
+        if(isset($dn_data ['Delivery Note Number Pickers']))
+        $this->data ['Delivery Note Number Pickers'] = $dn_data ['Delivery Note Number Pickers'];
+        else
+        $this->data ['Delivery Note Number Pickers'] ='';  
+        
+        if(isset($dn_data ['Delivery Note Pickers IDs']))
+        $this->data ['Delivery Note Pickers IDs'] = $dn_data ['Delivery Note Pickers IDs'];
+        else
+        $this->data ['Delivery Note Pickers IDs'] ='';  
+        
+        if(isset($dn_data ['Delivery Note XHTML Packers']))
+        $this->data ['Delivery Note XHTML Packers'] = $dn_data ['Delivery Note XHTML Packers'];
+        else
+        $this->data ['Delivery Note XHTML Packers'] ='';  
+        
+        if(isset($dn_data ['Delivery Note Number Packers']))
+        $this->data ['Delivery Note Number Packers'] = $dn_data ['Delivery Note Number Packers'];
+        else
+        $this->data ['Delivery Note Number Packers'] ='';  
+        
+        if(isset($dn_data ['Delivery Note Packers IDs']))
+        $this->data ['Delivery Note Packers IDs'] = $dn_data ['Delivery Note Packers IDs'];
+        else
+        $this->data ['Delivery Note Packers IDs'] ='';          
+        
         $this->data ['Delivery Note ID'] = $dn_data ['Delivery Note ID'];
         $this->data ['Delivery Note File As'] = $dn_data ['Delivery Note File As'];
         $this->data ['Delivery Note Customer Key'] = $order->data ['Order Customer Key'];
@@ -113,7 +152,8 @@ class DeliveryNote extends DB_Table {
         $this->data ['Delivery Note Store Key'] = $order->data ['Order Store Key'];
 
         $this->data ['Delivery Note Metadata'] = $order->data ['Order Original Metadata'];
-        $this->data ['Delivery Note Weight'] = $dn_data ['Delivery Note Weight'];
+        
+        
 	
 	 if (isset($dn_data ['Delivery Note Date Created'])){
 	 $this->data ['Delivery Note Date Created'] = $dn_data ['Delivery Note Date Created'];
@@ -127,12 +167,7 @@ class DeliveryNote extends DB_Table {
 
 
 
-        $this->data ['Delivery Note XHTML Pickers'] = $dn_data ['Delivery Note XHTML Pickers'];
-        $this->data ['Delivery Note Number Pickers'] = $dn_data ['Delivery Note Number Pickers'];
-        $this->data ['Delivery Note Pickers IDs'] = $dn_data ['Delivery Note Pickers IDs'];
-        $this->data ['Delivery Note XHTML Packers'] = $dn_data ['Delivery Note XHTML Packers'];
-        $this->data ['Delivery Note Number Packers'] = $dn_data ['Delivery Note Number Packers'];
-        $this->data ['Delivery Note Packers IDs'] = $dn_data ['Delivery Note Packers IDs'];
+      
         $this->data ['Delivery Note Type'] = $dn_data ['Delivery Note Type'];
         $this->data ['Delivery Note Title'] = $dn_data ['Delivery Note Title'];
         if (isset($dn_data ['Delivery Note Dispatch Method']))
