@@ -8,31 +8,131 @@ if(!$user->can_view('orders'))
 
 var Dom   = YAHOO.util.Dom;
 var assign_picker_dialog;
+var pick_it_dialog;
+var pick_assigned_dialog;
 
-function assign_picker(o){
+function close_dialog(dialog_name) {
 
+    switch ( dialog_name ) {
+    case 'assign_picker_dialog':
+        Dom.get('Assign_Picker_Staff_Name').value='';
+        Dom.get('assign_picker_staff_key').value='';
+        Dom.get('Assign_Picker_Staff_Name').focus();
+        Dom.get('assign_picker_sup_password').value='';
+        Dom.removeClass(Dom.getElementsByClassName('assign_picker_button', 'td', 'assign_picker_buttons'),'selected');
+        assign_picker_dialog.hide();
+        break;
+    case('pick_it_dialog'):
+    
+        Dom.get('pick_it_Staff_Name').value='';
+        Dom.get('pick_it_staff_key').value='';
+        Dom.setStyle('pick_it_pin_tr','visibility','hidden');
+        Dom.get("pick_it_pin_alias").innerHTML='';
+        Dom.removeClass(Dom.getElementsByClassName('pick_it_button', 'td', 'assign_picker_buttons'),'selected');
+        Dom.get('pick_it_password').value='';
+        pick_it_dialog.hide();
+        break;
+    default:
 
+    }
+}
+function select_staff(o){
+var staff_key=o.getAttribute('staff_id');
+var staff_alias=o.innerHTML;
+Dom.removeClass(Dom.getElementsByClassName('assign_picker_button', 'td', 'assign_picker_buttons'),'selected');
+Dom.addClass(o,'selected');
+Dom.get('Assign_Picker_Staff_Name').value=staff_alias;
+Dom.get('assign_picker_staff_key').value=staff_key;
+Dom.get('assign_picker_sup_password').focus();
+}
+function select_staff_pick_it(o){
+var staff_key=o.getAttribute('staff_id');
+var staff_alias=o.innerHTML;
+Dom.removeClass(Dom.getElementsByClassName('pick_it_button', 'td', 'pick_it_buttons'),'selected');
+Dom.addClass(o,'selected');
+Dom.get('pick_it_Staff_Name').value=staff_alias;
+Dom.get('pick_it_staff_key').value=staff_key;
+
+Dom.setStyle('pick_it_pin_tr','visibility','visible');
+Dom.get("pick_it_pin_alias").innerHTML=staff_alias;
+Dom.get('pick_it_password').focus();
+}
+function assign_picker_save(){
+
+var staff_key=Dom.get('assign_picker_staff_key').value;
+ var sup_pwd=   Dom.get('assign_picker_sup_password').value;
+var dn_key=Dom.get('assign_picker_dn_key').value;
+    var request='ar_edit_orders.php?tipo=assign_picker&dn_key='+escape(dn_key)+'&staff_key='+escape(staff_key)+'&pin='+escape(sup_pwd);
+     
+    YAHOO.util.Connect.asyncRequest('POST',request ,{
+	    
+	    success:function(o) {
+				//alert(o.responseText)
+		var r =  YAHOO.lang.JSON.parse(o.responseText);
+		if (r.state==200) {
+		    
+		    if(r.action='updated'){
+		    Dom.get('operations'+dn_key).innerHTML=r.operations;
+		    Dom.get('dn_state'+dn_key).innerHTML=r.dn_state;
+		    }
+		    close_dialog('assign_picker_dialog');
+
+		}else{
+		  //  alert(r.msg);
+	    }
+	    }
+	});    
+
+}
+
+function pick_it_save(){
+
+var staff_key=Dom.get('pick_it_staff_key').value;
+var sup_pwd=   Dom.get('pick_it_password').value;
+var dn_key=Dom.get('pick_it_dn_key').value;
+    var request='ar_edit_orders.php?tipo=pick_it&dn_key='+escape(dn_key)+'&staff_key='+escape(staff_key)+'&pin='+escape(sup_pwd);
+     
+    YAHOO.util.Connect.asyncRequest('POST',request ,{
+	    
+	    success:function(o) {
+				alert(o.responseText)
+		var r =  YAHOO.lang.JSON.parse(o.responseText);
+		if (r.state==200) {
+		    
+		    if(r.action='updated'){
+		    location.href='order_pick_aid.php?id='+dn_key;
+		    }
+		    close_dialog('pick_it_dialog');
+
+		}else{
+		  alert(r.msg);
+	    }
+	    }
+	});    
+
+}
+function assign_picker(o,dn_key){
     var y=(Dom.getY(o))
     var x=(Dom.getX(o))
     x=x-120;
     y=y+18;
-    //    alert(y);
     Dom.setX('assign_picker_dialog', x)
     Dom.setY('assign_picker_dialog', y)
-    //    add_user_dialog_staff.cfg.setProperty("x", "500");
-    //add_user_dialog_staff.cfg.setProperty("y", 500);
-
-   // var user_id=o.getAttribute('user_id');
-    //var user_name=o.getAttribute('user_name');
-    //Dom.get("change_staff_password_alias").setAttribute('user_id',user_id);
-    //Dom.get("change_staff_password_alias").innerHTML=user_name;
+   Dom.get('Assign_Picker_Staff_Name').focus();
+   Dom.get('assign_picker_dn_key').value=dn_key;
     assign_picker_dialog.show();
-    
-
-
 }
-
-
+function pick_it(o,dn_key){
+    var y=(Dom.getY(o))
+    var x=(Dom.getX(o))
+    x=x-120;
+    y=y+18;
+    Dom.setX('pick_it_dialog', x)
+    Dom.setY('pick_it_dialog', y)
+   Dom.get('pick_it_Staff_Name').focus();
+   Dom.get('pick_it_dn_key').value=dn_key;
+    pick_it_dialog.show();
+}
 YAHOO.util.Event.addListener(window, "load", function() {
     tables = new function() {
 	    var tableid=0; // Change if you have more the 1 table
@@ -103,13 +203,13 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 	};
     });
-
-
-
-
 function init(){
  assign_picker_dialog = new YAHOO.widget.Dialog("assign_picker_dialog", {visible : false,close:true,underlay: "none",draggable:false});
  assign_picker_dialog.render();
+ pick_assigned_dialog = new YAHOO.widget.Dialog("pick_assigned_dialog", {visible : false,close:true,underlay: "none",draggable:false});
+ pick_assigned_dialog.render();
+ pick_it_dialog = new YAHOO.widget.Dialog("pick_it_dialog", {visible : false,close:true,underlay: "none",draggable:false});
+ pick_it_dialog.render();
 
     
 
@@ -123,18 +223,13 @@ function init(){
  
 
 }
-
 YAHOO.util.Event.onDOMReady(init);
-
 YAHOO.util.Event.onContentReady("filtermenu0", function () {
 	 var oMenu = new YAHOO.widget.ContextMenu("filtermenu0", {  trigger: "filter_name0"  });
 	 oMenu.render();
 	 oMenu.subscribe("show", oMenu.focus);
 	 
     });
-
-
-
 YAHOO.util.Event.onContentReady("rppmenu0", function () {
 	var oMenu = new YAHOO.widget.ContextMenu("rppmenu0", {trigger:"rtext_rpp0" });
 	oMenu.render();

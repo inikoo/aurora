@@ -217,6 +217,114 @@ $editor=array();
       return $_ids;
   }
 
+function ci_get_user_id($oname,$return_xhtml=false,$tag='',$order='',$editor=false){
+if(!$editor){
+$editor=array();
+}
+
+  
+  $ids=array();
+  if($oname=='' or is_numeric($oname)){
+    if($return_xhtml)
+      return array('id'=>array(0),'xhtml'=>_('Unknown'));
+    else
+      return array(0);
+    
+  }
+
+
+  $_names=array();
+  
+  $_names=preg_split('/\s*(\+|\&|,+|\/| y |\-)\s*/',$oname);
+
+  $xhtml='';
+
+  foreach($_names as $_name){    
+    $original_part=$_name;
+    $_name=_trim(strtolower($_name));
+    if($_name=='')
+      continue;
+    $original_name=$_name;
+    
+    $_name=preg_replace('/^\s*/','',$_name);
+    $_name=preg_replace('/\s*$/','',$_name);
+    if(preg_match('/^(juani)$/i',$_name)   )
+      $_name='juan';
+    else if(preg_match('/^(helen)$/i',$_name)  )
+      $_name='helena';
+  else if(preg_match('/^(dani)$/i',$_name)  )
+      $_name='dany';
+else if(preg_match('/^(alex|ale)$/i',$_name)  )
+      $_name='alejandro';
+
+
+
+    $sql=sprintf("select `Staff Key`,`Staff Alias` from `Staff Dimension` where `Staff Alias`=%s",prepare_mysql($_name));
+    // print "$sql\n";
+    $result = mysql_query($sql) or die('Query failed: ' . mysql_error());
+    if ($row = mysql_fetch_array($result, MYSQL_ASSOC)) {
+      $id=$row['Staff Key'];
+      $ids[$id]=$id;
+      
+      $xhtml.=sprintf(', <a href="staff.php?id=%d%s">%s</a>',$id,$tag,mb_ucwords($row['Staff Alias']));
+
+    }else{
+      
+      // print "$original_name\n";
+      $valid_names=array();
+      
+      $contact_name=$_name;
+      
+      if($_name=='slavka'){
+	 $contact_name='Slavka Hardy';
+      }elseif($_name=='katka'){
+	 $contact_name='Katka Buchy';
+      }
+
+      if(in_array($_name,$valid_names)){
+	$staff_data=array(
+			  'Staff Alias'=>ucwords($_name)
+			  ,'Staff Name'=>ucwords($contact_name)
+			  ,'editor'=>$editor
+			  ,'Staff Currently Working'=>'No'
+			  );
+	$staff=new Staff('find',$staff_data,'create');
+	//	print_r($staff);
+	$id=$staff->id;
+	$ids[$id]=$id;
+
+	$xhtml.=sprintf(', <a href="staff.php?id=%d%s">%s</a>',$id,$tag,mb_ucwords($staff->data['Staff Alias']));
+	  
+
+      }else{
+
+
+	$sql=sprintf("insert into todo_users (name,order_name,tipo) values ('%s','%s','')",addslashes($original_name),$order);
+	//	print "$sql\n";
+	mysql_query($sql);
+	//print "Staff name not found $oname \n";
+	$id=0;
+	$ids[$id]=$id;
+	
+	$xhtml.=sprintf(', %s',$original_name);
+	
+	
+      }
+    }
+  }
+    $_ids=array();
+    foreach($ids as $values){
+      $_ids[]=$values;
+    }
+
+    $xhtml=preg_replace("/^\,\s*/","",$xhtml);
+
+    if($return_xhtml)
+      return array('id'=>$_ids,'xhtml'=>$xhtml);
+    else
+      return $_ids;
+  }
+
 
   function get_dates($filedate,$header_data,$tipo_order,$new_file=true){
 
