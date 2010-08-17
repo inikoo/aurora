@@ -94,6 +94,7 @@ class DeliveryNote extends DB_Table {
         $sql=sprintf("select * from `Delivery Note Dimension` where  `Delivery Note Public ID`=%s",prepare_mysql($tag));
         else
             return;
+          //  print $sql;
         $result=mysql_query($sql);
         if ($this->data=mysql_fetch_array($result, MYSQL_ASSOC)   )
             $this->id=$this->data['Delivery Note Key'];
@@ -229,6 +230,44 @@ class DeliveryNote extends DB_Table {
 	      exit ( "$sql\n can not update order transacrion aferter dn 313123" );
 	    
         }
+	
+	
+	            $sql=sprintf("select sum(`Current Autorized to Sell Quantity`*`Parts Per Product`) as qty, PA.`Part SKU` as sku,`Part XHTML Picking Location` as location,`Part XHTML Description` as description,`Part XHTML Currently Used In` as notes 
+            from `Order Transaction Fact` OTF left join `Product Dimension` P  on (OTF.`Product Key`=P.`Product Current Key`) left join `Product Part Dimension` PPD on (PPD.`Product ID`=P.`Product ID`) left join `Product Part List` PPL on (PPL.`Product Part Key`=PPD.`Product Part Key`) left join `Part Dimension` PA on (PA.`Part SKU`=PPL.`Part SKU`)   where OTF.`Delivery Note Key`=%d  and  PPD.`Product Part Most Recent`='Yes'   group by PA.`Part SKU`  "
+                         ,$this->id);
+            $res=mysql_query($sql);
+             //  print "$sql\n";
+            while ($row=mysql_fetch_array($res)) {
+
+
+                $sql=sprintf("insert into `Part Picking Fact` values (%d,%d,%f,0,%s,%s,%s,NULL)"
+                             ,$this->id
+                             ,$row['sku']
+                             ,$row['qty']
+                             ,prepare_mysql($row['location'],false)
+                             ,prepare_mysql($row['description'],false)
+                             ,prepare_mysql($row['notes'],false)
+                            );
+
+                // print "$sql\n";
+                mysql_query($sql);
+
+            }
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	
 	 $sql = sprintf ( "update   `Delivery Note Dimension` set `Delivery Note Estimated Weight`=%f where `Delivery Note Key`=%d",$total_estimated_weight,$this->id);
         mysql_query ( $sql );
@@ -833,11 +872,11 @@ class DeliveryNote extends DB_Table {
             $this->cancelled=false;
             if (preg_match('/Dispatched/',$this->data ['Delivery Note State'])) {
                 $this->msg=_('Delivery Note can not be cancelled, because has already been dispatched');
-
+return; 
             }
             if (preg_match('/Cancelled/',$this->data ['Delivery Note State'])) {
                 $this->_('Order is already cancelled');
-
+return;
             } else {
 
                 if (!$date)
@@ -875,6 +914,89 @@ class DeliveryNote extends DB_Table {
 
 
         }
+        
+        
+function assign_picker($staff_key) {
+    $this->assigned=false;
+ 
+    if (!preg_match('/^(Ready to be Picked|Picker Assigned)$/',$this->data ['Delivery Note State'])) {
+        $this->error=true;
+        $this->msg=$this->data ['Delivery Note State'].'<'._('Delivery Note can not be assigned to a picker, because has already been picked');
+        return;
+    }
+
+    $staff=new Staff($staff_key);
+
+    if (!$staff->id) {
+        $this->error=true;
+        $this->msg=_('Staff not found');
+        return;
+    }
+
+    if($this->data ['Delivery Note Assigned Picker Key']==$staff->id){
+        return;
+    }
+
+
+    $this->data ['Delivery Note State']='Picker Assigned';
+    $this->data ['Delivery Note Assigned Picker Key']=$staff->id;
+    $this->data ['Delivery Note Assigned Picker Alias']=$staff->data['Staff Alias'];
+    $sql = sprintf ( "update `Delivery Note Dimension` set `Delivery Note State`=%s , `Delivery Note Assigned Picker Key`=%d ,`Delivery Note Assigned Picker Alias`=%s where `Delivery Note Key`=%d"
+                     , prepare_mysql ( $this->data ['Delivery Note State'] )
+                     , $this->data ['Delivery Note Assigned Picker Key']
+                     , prepare_mysql ( $this->data ['Delivery Note Assigned Picker Alias'] )
+
+
+                     , $this->id );
+    mysql_query ( $sql );
+    $this->assigned=true;
+    $operations='<span style="cursor:pointer"  onClick="pick_it(this,'.$this->id.','.$staff->id.')"> <b>'.$staff->data['Staff Alias'].'</b> '._('pick order')."</span>";
+    $operations.=' <img src="art/icons/edit.gif" alt="'._('edit').'" style="cursor:pointer"  onClick="assign_picker(this,'.$this->id.')">';
+    $this->operations=$operations;
+$this->dn_state=_('Picker Assigned');
+
+}
+
+function start_picking($staff_key) {
+    $this->assigned=false;
+ 
+    if (!preg_match('/^(Ready to be Picked|Picker Assigned)$/',$this->data ['Delivery Note State'])) {
+        $this->error=true;
+        $this->msg=$this->data ['Delivery Note State'].'<'._('Delivery Note can not be assigned to a picker, because has already been picked');
+        return;
+    }
+
+    $staff=new Staff($staff_key);
+
+    if (!$staff->id) {
+        $this->error=true;
+        $this->msg=_('Staff not found');
+        return;
+    }
+
+    if($this->data ['Delivery Note Assigned Picker Key']==$staff->id){
+        return;
+    }
+
+
+    $this->data ['Delivery Note State']='Picking';
+    $this->data ['Delivery Note XHTML Pickers']=sprintf('<a href="staff.php?id=%d">%s</a>',$staff->id,$staff->data['Staff Alias']);
+    $this->data ['Delivery Note Number Pickers']=1;
+    $sql = sprintf ( "update `Delivery Note Dimension` set `Delivery Note State`=%s , `Delivery Note XHTML Pickers`=%s ,`Delivery Note Number Pickers`=%d where `Delivery Note Key`=%d"
+                     , prepare_mysql ( $this->data ['Delivery Note State'] )
+                     , prepare_mysql ( $this->data ['Delivery Note XHTML Pickers'] )
+                    , $this->data ['Delivery Note Number Pickers']
+
+                     , $this->id );
+    mysql_query ( $sql );
+    $this->assigned=true;
+    $operations='<a href="order_pick_aid.php?id='.$this->id.'" >'._('Picking')." (".$staff->data['Staff Alias'].")</a>";
+   // $operations.=' <img src="art/icons/edit.gif" alt="'._('edit').'" style="cursor:pointer"  onClick="assign_picker(this,'.$this->id.')">';
+    $this->operations=$operations;
+$this->dn_state=_('Picker Assigned');
+
+}
+
 }
 
 ?>
