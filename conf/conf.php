@@ -210,6 +210,8 @@ $default_state=array(
                                   ),
 
 
+                   'dn'=>array(
+                               'id'=>''),
                    'order'=>array(
                                'id'=>''
                                     ,'show_all'=>false
@@ -279,71 +281,6 @@ $default_state=array(
 				    ),
 		   
 		   
-                   'orders'=>array(
-                                'details'=>false,
-                                'store'=>'',
-                                'view'=>'orders',
-                                'only'=>'',
-                                'from'=>'',
-                                'to'=>'',
-
-                                'table'=>array(
-                                            'order'=>'last_date',
-                                            'order_dir'=>'desc',
-                                            'sf'=>0,
-                                            'nr'=>25,
-                                            'where'=>'where true',
-                                            'f_field'=>'customer_name',
-                                            'f_value'=>'','f_show'=>false,
-                                            'from'=>'',
-                                            'to'=>'',
-                                            'elements'=>array(),
-                                            'dispatch'=>'',
-                                            'paid'=>'',
-                                            'order_type'=>''
-                                        ),
-                                'invoices'=>array(
-                                               'order'=>'date',
-                                               'order_dir'=>'',
-                                               'sf'=>0,
-                                               'nr'=>25,
-                                               'where'=>'where true',
-                                               'f_field'=>'public_id',
-                                               'f_value'=>'','f_show'=>false,
-                                               'from'=>'',
-                                               'to'=>'',
-                                               'elements'=>array()
-                                           ),
-                                'dn'=>array(
-                                         'order'=>'date',
-                                         'order_dir'=>'',
-                                         'sf'=>0,
-                                         'nr'=>25,
-                                         'where'=>'where true',
-                                         'f_field'=>'public_id',
-                                         'f_value'=>'','f_show'=>false,
-                                         'from'=>'',
-                                         'to'=>'',
-                                         'elements'=>array()
-                                     )
-                                     ,'ready_to_pick_dn'=>array(
-                                                             'order'=>'date',
-                                                             'order_dir'=>'',
-                                                             'sf'=>0,
-                                                             'nr'=>25,
-                                                             'where'=>'where true',
-                                                             'f_field'=>'public_id',
-                                                             'f_value'=>'','f_show'=>false,
-                                                             'from'=>'',
-                                                             'to'=>'',
-                                                             'elements'=>array()
-                                                         )
-
-
-                            ),
-
-
-
 
                    'orders'=>array(
                                 'details'=>false,

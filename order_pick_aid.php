@@ -40,7 +40,7 @@ if(!isset($_REQUEST['id']) or !is_numeric($_REQUEST['id'])){
 
 
 $dn_id=$_REQUEST['id'];
-$_SESSION['state']['order_aid']['id']=$dn_id;
+$_SESSION['state']['dn']['id']=$dn_id;
 $dn=new DeliveryNote($dn_id);
 if(!$dn->id){
    header('Location: orders_server.php?msg=order_not_found');

@@ -921,25 +921,62 @@ class part extends DB_Table {
         return $suppliers;
     }
 
-    function get_supplier_products() {
-        $supplier_products=array();
-        $sql=sprintf("select (select GROUP_CONCAT(`SPH Key`) from `Supplier Product History Dimension` H where H.`Supplier Product Code`=SPPL.`Supplier Product Code` and H.`Supplier Key`=SPPL.`Supplier Key` ) as `Supplier Product Keys`,  `Supplier Product Units Per Part`,`Supplier Product Code`,  SD.`Supplier Key`,`Supplier Code` from `Supplier Product Part List` SPPL   left join `Supplier Dimension` SD on (SD.`Supplier Key`=SPPL.`Supplier Key`)
-                     where `Part SKU`=%d ;",$this->data['Part SKU']);
-        $result=mysql_query($sql);
-        while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
+function get_supplier_products($date=false) {
+
+if($date){
+return $this->get_supplier_products_historic($date);
+}
+
+    $supplier_products=array();
+    $sql=sprintf("select (select GROUP_CONCAT(`SPH Key`) from `Supplier Product History Dimension` H where H.`Supplier Product Code`=SPPL.`Supplier Product Code` and H.`Supplier Key`=SPPL.`Supplier Key` ) as `Supplier Product Keys`,  `Supplier Product Units Per Part`,SPPL.`Supplier Product Code`,  SD.`Supplier Key`,`Supplier Code` from `Supplier Product Part List` SPPL   left join `Supplier Dimension` SD on (SD.`Supplier Key`=SPPL.`Supplier Key`) where `Part SKU`=%d ;",$this->data['Part SKU']);
+    $result=mysql_query($sql);
+    while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
+        $supplier_products[$row['Supplier Key'].$row['Supplier Product Code']]=array(
+                    'Supplier Key'=>$row['Supplier Key'],
+                    'Supplier Product Keys'=>$row['Supplier Product Keys'],
+                    'Supplier Product Code'=>$row['Supplier Product Code'],
+                    'Supplier Product Units Per Part'=>$row['Supplier Product Units Per Part']
+
+                );
+    }
+    return $supplier_products;
+}
+
+
+function get_supplier_products_historic($date) {
+    $supplier_products=array();
+    $sql=sprintf("select `SPH Key`,  `Supplier Product Units Per Part`,SPPL.`Supplier Product Code`,  SD.`Supplier Key`,`Supplier Code` from `Supplier Product Part List` SPPL   left join `Supplier Dimension` SD on (SD.`Supplier Key`=SPPL.`Supplier Key`) left join `Supplier Product History Dimension` H on ( H.`Supplier Product Code`=SPPL.`Supplier Product Code` and H.`Supplier Key`=SPPL.`Supplier Key`)  where `Part SKU`=%d  and ( (`SPH Valid From`<=%s and `SPH Valid To`>=%s)  ) and ( (`Supplier Product Part Valid From`<=%s  and `Supplier Product Part Valid To`>%s ) or  (`Supplier Product Part Valid From`<=%s and `Supplier Product Part Most Recent`='Yes')  ) ;"
+                 ,$this->data['Part SKU'],
+                 prepare_mysql($date),
+                 prepare_mysql($date),
+                 prepare_mysql($date),
+                 prepare_mysql($date),
+                 prepare_mysql($date)
+                );
+    
+    $result=mysql_query($sql);
+    while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
+
+
+        if (isset($supplier_products[$row['Supplier Key'].$row['Supplier Product Code']])) {
+
+            $supplier_products[$row['Supplier Key'].$row['Supplier Product Code']]['Supplier Product Keys'].=','.$row['SPH Key'];
+
+
+        } else {
+
             $supplier_products[$row['Supplier Key'].$row['Supplier Product Code']]=array(
-                        'Supplier Key'=>$row['Supplier Key']
-                                       ,'Supplier Product Keys'=>$row['Supplier Product Keys']
-                                                                ,'Supplier Product Code'=>$row['Supplier Product Code']
-                                                                                         ,'Supplier Product Units Per Part'=>$row['Supplier Product Units Per Part']
+                        'Supplier Key'=>$row['Supplier Key'],
+                        'Supplier Product Keys'=>$row['SPH Key'],
+                        'Supplier Product Code'=>$row['Supplier Product Code'],
+                        'Supplier Product Units Per Part'=>$row['Supplier Product Units Per Part']
 
                     );
         }
-        return $supplier_products;
+
     }
-
-
-
+    return $supplier_products;
+}
 
 
     function get_unit_cost($date=false) {
@@ -1010,8 +1047,32 @@ class part extends DB_Table {
 
     }
 
+function get_picking_location_historic($date) {
+    $sql=sprintf("select `Location Key` from `Inventory Spanshot Fact` where `Part SKU` in (%s) and `Location Type`='Picking'",$this->sku);
+    $location_key=0;
+    $res=mysql_query($sql);
+
+    if ($row=mysql_fetch_assoc($res)) {
+        $location_key=$row['Location Key'];
+    }
+    return $location_key;
+
+}
+
   
-  
+function get_picking_location_key($date=false) {
+    if ($date) {
+        return $this->get_picking_location_historic($date);
+    }
+    $sql=sprintf("select `Location Key` from `Part Location Dimension` where `Part SKU` in (%s) and `Can Pick`='Yes'",$this->sku);
+    $location_key=0;
+    $res=mysql_query($sql);
+
+    if ($row=mysql_fetch_assoc($res)) {
+        $location_key=$row['Location Key'];
+    }
+  return $location_key;
+  }
   
   function get_locations($for_smarty=false){
 

@@ -120,7 +120,7 @@ $fam_promo_key=$fam_promo->id;
 
 
 $sql="select * from  ci_orders_data.orders  where   (last_transcribed is NULL  or last_read>last_transcribed) and filename not like '%UK%'  and filename not like '%test%' and filename not like '%take%'  and filename!='/media/sda3/share/PEDIDOS 08/60005902.xls' and  filename!='/media/sda3/share/PEDIDOS 09/60008607.xls' and  filename!='/media/sda3/share/PEDIDOS 09/60009626.xls' and  filename!='/media/sda3/share/PEDIDOS 09/60011693.xls' and  filename!='/media/sda3/share/PEDIDOS 09/60011905.xls' and  filename!='/media/sda3/share/PEDIDOS 08/60007219.xls'     order by filename ";
-//$sql="select * from  ci_orders_data.orders where filename like '/media/sda3/share/%/60000114.xls'  order by filename";
+$sql="select * from  ci_orders_data.orders where filename like '/media/sda3/share/%/60015801.xls'  order by filename";
 //7/60002384.xls
 //$sql="select * from  ci_orders_data.orders where filename like '/media/sda3/share/%/60000142.xls'  order by filename";
 //$sql="select * from  ci_orders_data.orders  where (filename like '%Orders2005%' or  filename like '%PEDIDOS%.xls') and (last_transcribed is NULL  or last_read>last_transcribed) and filename!='/media/sda3/share/PEDIDOS 08/60005902.xls' and  filename!='/media/sdas3/share/PEDIDOS 09/s60008607.xls' and  filename!='/media/sda3/share/PEDIsDOS 09/60009626.xls' or filename='%600s03600.xls'   order by date";
@@ -901,8 +901,11 @@ $code=$match[0];
       // print "-----$scode <-------------\n";
       //print_r($sp_data);
       $supplier_product=new SupplierProduct('find',$sp_data,'create');
+//if($supplier_product->found_in_key){
+//    $supplier_product->update_valid_dates($date_order);
 
-
+//}
+//print_r($supplier_product);
       if ($supplier_product->new or $part->new) {
 	$rules=array();
 	$rules[]=array('Part Sku'=>$part->data['Part SKU'],
@@ -924,6 +927,7 @@ $code=$match[0];
                              ,$part->sku
                             );
                 mysql_query($sql);
+                //print $sql;
                 $sql=sprintf("update  `Supplier Product Part List` set `Supplier Product Part Valid To`=%s where `Supplier Product Part Valid To`<%s and `Supplier Product Code`=%s  and `Supplier Key`=%d and `Part SKU`=%d and  `Supplier Product Part Most Recent`='Yes'"
                              ,prepare_mysql($date2)
                              ,prepare_mysql($date2)
@@ -1166,7 +1170,7 @@ if ($customer_data['Customer Delivery Address Link']=='Contact') {
       $sql=sprintf("delete from `Order Transaction Fact` where `Metadata`=%s", prepare_mysql($store_code.$order_data_id));
       if (!mysql_query($sql))
 	print "$sql Warning can no delete tf";
-      $sql=sprintf("delete from `Inventory Transaction Fact` where `Metadata`=%s and `Inventory Transaction Type`='Sale'   ", prepare_mysql($store_code.$order_data_id));
+      $sql=sprintf("delete from `Inventory Transaction Fact` where `Metadata`=%s   ", prepare_mysql($store_code.$order_data_id));
       if (!mysql_query($sql))
 	print "$sql Warning can no delete old inv";
 
@@ -1268,33 +1272,27 @@ if ($customer_data['Customer Delivery Address Link']=='Contact') {
       //  exit;
 
 
+ 
+
       if ( $tipo_order!=8 ) {
 	$order= new Order('new',$data);
 	$order->categorize();
 	$order->set_shipping(round($header_data['shipping']+$extra_shipping,2),$tax_rate);
 	$order->set_charges(round($header_data['charges'],2),$tax_rate);
+	$dn=$order->send_to_warehouse($date_order);
       }
 
       
       if($tipo_order==1){
-	$order_type='Order';
-	$data_dn=array(
-		       'Delivery Note Date Created'=>$date_order
-		       ,'Delivery Note ID'=>$header_data['order_num']
-		       ,'Delivery Note File As'=>$header_data['order_num']
-		       ,'Delivery Note Type'=>$order_type
-		       ,'Delivery Note Title'=>_('Delivery Note for').' '.$order_type.' '.$header_data['order_num']
-		       );
+      
+    
 	
-	$dn=new DeliveryNote('create',$data_dn,$data_dn_transactions,$order);
-	$order->update_delivery_notes('save');
 	
       }
       
 
 
       if ($tipo_order==2) {
-
 
 	foreach($data_invoice_transactions as $key=>$val) {
 	  $data_invoice_transactions[$key]['tax rate']=$tax_rate;
@@ -1345,6 +1343,13 @@ if ($customer_data['Customer Delivery Address Link']=='Contact') {
 	$order_type=$data['Order Type'];
 	list($parcels,$parcel_type)=parse_parcels($header_data['parcels']);
 	
+	if(count($picker_data['id'])==0)$staff_key=0;else{$staff_key=$picker_data['id'][0];}
+	
+	
+	$dn->start_picking($staff_key,$date_order);
+	
+	
+	
 	$data_dn=array(
 		       'Delivery Note Date'=>$date_inv
 		       ,'Delivery Note Date Created'=>$date_order
@@ -1366,7 +1371,31 @@ if ($customer_data['Customer Delivery Address Link']=='Contact') {
 		       );
 //print_r($data_dn);
 	//$order->create_dn_simple($data_dn,$data_dn_transactions);
-	$dn=new DeliveryNote('create',$data_dn,$data_dn_transactions,$order);
+	
+	//$dn=new DeliveryNote('create',$data_dn,$data_dn_transactions,$order);
+$skus_to_pick_data=array();
+foreach($data_dn_transactions as $key=>$value){
+
+//print_r($value);
+foreach($value['pick_method_data']['parts_sku'] as $parts_sku=>$parts_sku_data){
+if(isset($skus_to_pick_data[$parts_sku]))
+$skus_to_pick_data[$parts_sku]['picked']+=$value['Shipped Quantity']*$parts_sku_data['parts_per_product'];
+else
+$skus_to_pick_data[$parts_sku]=array('picked'=>$value['Shipped Quantity']*$parts_sku_data['parts_per_product']);
+}
+}
+
+
+
+foreach ($skus_to_pick_data as $sku=>$value) {
+    $dn->set_as_picked($sku,$value['picked'],$date_order);
+    
+}
+$dn->update_picking_percentage();
+
+if(count($packer_data['id'])==0)$staff_key=0;else{$staff_key=$packer_data['id'][0];}
+$dn->start_packing($staff_key,$date_order);
+exit("-----\n");
 		$order->update_dispatch_state('Dispatched');
 
 	$order->update_delivery_notes('save');
@@ -1423,7 +1452,10 @@ if ($customer_data['Customer Delivery Address Link']=='Contact') {
 	  }
 	  //print_r($data_dn_transactions);
 
-	  $dn->pick_simple($data_dn_transactions);
+
+exit('work in progress\n');
+
+	  //$dn->pick_simple($data_dn_transactions);
 	  $order->update_dispatch_state('Ready to Pack');
 	  // print"xxxxxxxxxxxxxxxxxxxxxxxxxxxxx\n";
 

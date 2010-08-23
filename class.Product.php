@@ -4415,13 +4415,13 @@ if($this->external_DB_link)mysql_query($sql,$this->external_DB_link);
    $part_list=array();
    $this->product_part_key=0;
    $this->product_part_type='';
-   $sql=sprintf("select `Product Part Key`,`Product Part Type` from `Product Part Dimension` where `Product ID`=%d and  ((  `Product Part Valid From`<=%s and `Product Part Valid To`>=%s and `Product Part Status`='Not In Use') or ( `Product Part Status`='In Use' and `Product Part Valid From`<=%s )  )   limit 1 "
+   $sql=sprintf("select `Product Part Key`,`Product Part Type` from `Product Part Dimension` where `Product ID`=%d and  ((  `Product Part Valid From`<=%s and `Product Part Valid To`>=%s and `Product Part Most Recent`='No') or ( `Product Part Most Recent`='Yes' and `Product Part Valid From`<=%s )  )   limit 1 "
 		,$this->pid
 		,prepare_mysql($datetime)
 		,prepare_mysql($datetime)
 		,prepare_mysql($datetime)
 		);
-   // print "$sql\n";
+  // print "$sql\n";
    $res=mysql_query($sql);
    if($row=mysql_fetch_array($res)){
      $product_part_key=$row['Product Part Key'];

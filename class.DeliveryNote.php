@@ -94,15 +94,18 @@ class DeliveryNote extends DB_Table {
         $sql=sprintf("select * from `Delivery Note Dimension` where  `Delivery Note Public ID`=%s",prepare_mysql($tag));
         else
             return;
-          //  print $sql;
+        //   print $sql;
         $result=mysql_query($sql);
-        if ($this->data=mysql_fetch_array($result, MYSQL_ASSOC)   )
+        if ($this->data=mysql_fetch_array($result, MYSQL_ASSOC)   ){
             $this->id=$this->data['Delivery Note Key'];
+           
+    }
+    
     }
 
 
 
-    protected function create($dn_data, $transacions_data,$order) {
+    protected function create($dn_data,$order) {
         global $myconf;
        
        if(isset($dn_data ['Delivery Note Date']))
@@ -211,67 +214,42 @@ class DeliveryNote extends DB_Table {
         $discounts = 0;
     
     $total_estimated_weight=0;
-    foreach ( $transacions_data as $data ) {
-            $line_number ++;
-            $total_estimated_weight+=$data ['Estimated Weight'];
-	    $sql = sprintf ( "update  `Order Transaction Fact` set `Estimated Weight`=%s,`Order Last Updated Date`=%s, `Delivery Note ID`=%s,`Delivery Note Line`=%d,`Current Autorized to Sell Quantity`=%.f ,`Delivery Note Key`=%d ,`Destination Country 2 Alpha Code`=%s where `Order Key`=%d and  `Order Line`=%d"
-                             , prepare_mysql ( $data ['Estimated Weight'] )
-                             , prepare_mysql ( $this->data ['Delivery Note Date'] )
+     $distinct_items=0;
+    $sql=sprintf('select `Product Gross Weight`,`Order Quantity`,`Order Transaction Fact Key` from `Order Transaction Fact` OTF left join `Product History Dimension` PH  on (OTF.`Product Key`=PH.`Product Key`)  left join `Product Dimension` P  on (PH.`Product ID`=P.`Product ID`)     where `Order Key`=%d ',$order->id);
+    $res=mysql_query($sql);
+    while($row=mysql_fetch_assoc($res)){
+    $estimated_weight=$row['Order Quantity']*$row['Product Gross Weight'];
+    $total_estimated_weight+=$estimated_weight;
+     $distinct_items++;
+        $sql = sprintf ( "update  `Order Transaction Fact` set `Estimated Weight`=%f,`Order Last Updated Date`=%s, `Delivery Note ID`=%s,`Current Autorized to Sell Quantity`=%.f ,`Delivery Note Key`=%d ,`Destination Country 2 Alpha Code`=%s where `Order Transaction Fact Key`=%d"
+                             , $estimated_weight
+                             , prepare_mysql ($this->data ['Delivery Note Date Created'])
                              , prepare_mysql ( $this->data ['Delivery Note ID'] )
-                             , $line_number
-                             , $data ['Current Autorized to Sell Quantity']
+                           
+                             , $row ['Order Quantity']
                              , $this->data ['Delivery Note Key']
                              , prepare_mysql($this->data ['Delivery Note Country 2 Alpha Code'])
-                             , $order->data ['Order Key']
-                             , $line_number
+                             , $row['Order Transaction Fact Key']
+                            
 			     );
             //    print $sql;exit;
-            if (! mysql_query ( $sql ))
-	      exit ( "$sql\n can not update order transacrion aferter dn 313123" );
+            mysql_query ( $sql );
+    }
+    
+    
+	
+	 
 	    
-        }
-	
-	
-	            $sql=sprintf("select sum(`Current Autorized to Sell Quantity`*`Parts Per Product`) as qty, PA.`Part SKU` as sku,`Part XHTML Picking Location` as location,`Part XHTML Description` as description,`Part XHTML Currently Used In` as notes 
-            from `Order Transaction Fact` OTF left join `Product Dimension` P  on (OTF.`Product Key`=P.`Product Current Key`) left join `Product Part Dimension` PPD on (PPD.`Product ID`=P.`Product ID`) left join `Product Part List` PPL on (PPL.`Product Part Key`=PPD.`Product Part Key`) left join `Part Dimension` PA on (PA.`Part SKU`=PPL.`Part SKU`)   where OTF.`Delivery Note Key`=%d  and  PPD.`Product Part Most Recent`='Yes'   group by PA.`Part SKU`  "
-                         ,$this->id);
-            $res=mysql_query($sql);
-             //  print "$sql\n";
-            while ($row=mysql_fetch_array($res)) {
-
-
-                $sql=sprintf("insert into `Part Picking Fact` values (%d,%d,%f,0,%s,%s,%s,NULL)"
-                             ,$this->id
-                             ,$row['sku']
-                             ,$row['qty']
-                             ,prepare_mysql($row['location'],false)
-                             ,prepare_mysql($row['description'],false)
-                             ,prepare_mysql($row['notes'],false)
-                            );
-
-                // print "$sql\n";
-                mysql_query($sql);
-
-            }
 	
 	
 	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	 $sql = sprintf ( "update   `Delivery Note Dimension` set `Delivery Note Estimated Weight`=%f where `Delivery Note Key`=%d",$total_estimated_weight,$this->id);
+	 $sql = sprintf ( "update   `Delivery Note Dimension` set `Delivery Note Distinct Items`=%d,`Delivery Note Estimated Weight`=%f where `Delivery Note Key`=%d"
+	    ,$distinct_items
+	,$total_estimated_weight
+	 ,$this->id);
         mysql_query ( $sql );
-	//print $sql;
+	
+	//exit;
         $this->load('orders');
         $sql = sprintf ( "delete from  `Order Delivery Note Bridge` where `Delivery Note Key`=%d",$this->id);
         mysql_query ( $sql );
@@ -289,8 +267,8 @@ class DeliveryNote extends DB_Table {
 	  $order->add_ship_to( $this->data ['Delivery Note Ship To Key']);
 	  }
 	  
-	  
-	  // exit;
+	 
+	 
 	    //print "$sql\n";
 	}
 
@@ -298,7 +276,7 @@ class DeliveryNote extends DB_Table {
 
 
 
-        $sql = sprintf ( "update `Delivery Note Dimension` set `Delivery Note XHTML Orders`=%s ,`Delivery Note Distinct Items`=%d    where `Delivery Note Key`=%d", prepare_mysql ( $this->data ['Delivery Note XHTML Orders'] ), $line_number, $this->data ['Delivery Note Key'] );
+        $sql = sprintf ( "update `Delivery Note Dimension` set `Delivery Note XHTML Orders`=%s     where `Delivery Note Key`=%d", prepare_mysql ( $this->data ['Delivery Note XHTML Orders'] ), $this->data ['Delivery Note Key'] );
         if (! mysql_query ( $sql ))
             exit ( "$sql\n can not update dn\n" );
 
@@ -339,8 +317,8 @@ class DeliveryNote extends DB_Table {
 
             $this->data ['Delivery Note Key'] = mysql_insert_id ();
             $this->id=$this->data ['Delivery Note Key'];
-
-	    
+            $this->get_data('id',$this->id);
+	            
 
         } else {
             print "$sql \n Error can not create dn header";
@@ -486,7 +464,7 @@ class DeliveryNote extends DB_Table {
       Mark as picked
     */
 
-    function pick_simple($transacions_data) {
+    function create_inventory_transaction_fact_bk($transacions_data) {
 
     
         $line_number = 0;
@@ -544,8 +522,9 @@ class DeliveryNote extends DB_Table {
                     $_typo = "'No Dispatched'";
                 else
                     $_typo = "'Sale'";
-                $sql = sprintf ( "insert into `Inventory Transaction Fact`  (`Date`,`Part SKU`,`Location Key`,`Inventory Transaction Quantity`,`Inventory Transaction Type`,`Inventory Transaction Amount`,`Required`,`Given`,`Amount In`,`Metadata`,`Note`,`Supplier Product Key`) values (%s,%s,%d,%s,%s,%.2f,%f,%f,%f,%s,%s,%s) "
+                $sql = sprintf ( "insert into `Inventory Transaction Fact`  (`Date`,`Delivery Note Key`,`Part SKU`,`Location Key`,`Inventory Transaction Quantity`,`Inventory Transaction Type`,`Inventory Transaction Amount`,`Required`,`Given`,`Amount In`,`Metadata`,`Note`,`Supplier Product Key`) values (%s,%d,%s,%d,%s,%s,%.2f,%f,%f,%f,%s,%s,%s) "
                                  ,prepare_mysql ( $this->data ['Delivery Note Date'] ),
+                                 $this->id,
                                  prepare_mysql ( $part_sku ),
                                  $location_id,
                                  prepare_mysql ( - $parts_per_product * $data ['Shipped Quantity'] ),
@@ -614,6 +593,75 @@ class DeliveryNote extends DB_Table {
 
 
     }
+
+
+function create_inventory_transaction_fact($order_key) {
+    $date=$this->data['Delivery Note Date Created'];
+    $skus_data=array();
+    $sql=sprintf('select OTF.`Product Key`,`Product Gross Weight`,`Order Quantity`,`Order Transaction Fact Key`,`Current Autorized to Sell Quantity` from `Order Transaction Fact` OTF left join `Product History Dimension` PH  on (OTF.`Product Key`=PH.`Product Key`)  left join `Product Dimension` P  on (PH.`Product ID`=P.`Product ID`)     where `Order Key`=%d '
+    ,$order_key);
+    $res=mysql_query($sql);
+   
+    while ($row=mysql_fetch_assoc($res)) {
+        $product=new Product('id',$row['Product Key']);
+        $part_list=$product->get_part_list($date);
+        foreach($part_list as $part_data) {
+
+            $part = new Part ( 'sku', $part_data['Part SKU'] );
+            $location_key = $part->get ( 'Picking Location Key' );
+            $location_key=$part->get_picking_location_key($date);
+            $supplier_products=$part->get_supplier_products($date);
+          
+            $supplier_product_key=0;
+            if(count($supplier_products)>0){
+             
+            $supplier_products_rnd_key=array_rand($supplier_products,1);
+            $supplier_products_keys=preg_split('/,/',$supplier_products[$supplier_products_rnd_key]['Supplier Product Keys']);
+         // print_r($supplier_products_keys);
+           $supplier_product_key=$supplier_products_keys[array_rand($supplier_products_keys)];
+    
+            }
+
+            $product = new product ($row ['Product Key'] );
+            $a = sprintf ( '<a href="product.php?id=%d">%s</a> <a href="deliverynote.php?id=%d">%s</a>'
+                           , $product->id
+                           , $product->code
+                           , $this->id
+                           , $this->data['Delivery Note ID']
+                         );
+            unset ( $product );
+            //$note = $a . ', ' . $order->data ['Order Current XHTML State'];
+            $note = $a;
+
+
+
+            $sql = sprintf ( "insert into `Inventory Transaction Fact`  (`Date Created`,`Date`,`Delivery Note Key`,`Part SKU`,`Location Key`,`Inventory Transaction Quantity`,`Inventory Transaction Type`,`Inventory Transaction Amount`,`Required`,`Given`,`Amount In`,`Metadata`,`Note`,`Supplier Product Key`) values (%s,%s,%d,%s,%d,%s,%s,%.2f,%f,%f,%f,%s,%s,%s) "
+                             ,prepare_mysql ($date),
+                             prepare_mysql ($date),
+                             $this->id,
+                             prepare_mysql ( $part_data['Part SKU'] ),
+                             $location_key,
+                             0,
+                             "'Order In Process'",
+                             0,
+                             $part_data['Parts Per Product'] * $row ['Current Autorized to Sell Quantity'],
+                             0,
+                             0,
+                             prepare_mysql ( $this->data ['Delivery Note Metadata'] ),
+                             prepare_mysql ( $note )
+                             ,$supplier_product_key
+                           );
+mysql_query($sql);
+//print "$sql\n";
+
+        }
+    }
+}
+    
+    
+    
+    
+    
 
     /*
       function: pick
@@ -956,15 +1004,28 @@ function assign_picker($staff_key) {
 $this->dn_state=_('Picker Assigned');
 
 }
-
-function start_picking($staff_key) {
+function assign_packer($staff_key) {
     $this->assigned=false;
  
-    if (!preg_match('/^(Ready to be Picked|Picker Assigned)$/',$this->data ['Delivery Note State'])) {
+ 
+ if(preg_match('/^(Picked|Packer Assigned|Picking & Packer Assigned)$/',$this->data ['Delivery Note State'])){
+ 
+    }else if (preg_match('/^(Ready to be Picked|Picker Assigned)$/',$this->data ['Delivery Note State'])) {
         $this->error=true;
-        $this->msg=$this->data ['Delivery Note State'].'<'._('Delivery Note can not be assigned to a picker, because has already been picked');
+        $this->msg=$this->data ['Delivery Note State'].''._('Delivery Note can not be assigned to a packer, because has not been picked');
         return;
+    }elseif (preg_match('/^(Packed|Packing|Picking \& Packing)$/',$this->data ['Delivery Note State'])) {
+        $this->error=true;
+        $this->msg=$this->data ['Delivery Note State'].''._('Packer has been already assigned');
+        return;
+    }else{
+    $this->error=true;
+        $this->msg=$this->data ['Delivery Note State'].''._('Delivery Note has been already packed');
+        return;
+    
     }
+    
+    
 
     $staff=new Staff($staff_key);
 
@@ -974,6 +1035,59 @@ function start_picking($staff_key) {
         return;
     }
 
+    if($this->data ['Delivery Note Assigned Packer Key']==$staff->id){
+        return;
+    }
+
+
+    $this->data ['Delivery Note State']='Packer Assigned';
+    $this->data ['Delivery Note Assigned Packer Key']=$staff->id;
+    $this->data ['Delivery Note Assigned Packer Alias']=$staff->data['Staff Alias'];
+    $sql = sprintf ( "update `Delivery Note Dimension` set `Delivery Note State`=%s , `Delivery Note Assigned Packer Key`=%d ,`Delivery Note Assigned Packer Alias`=%s where `Delivery Note Key`=%d"
+                     , prepare_mysql ( $this->data ['Delivery Note State'] )
+                     , $this->data ['Delivery Note Assigned Packer Key']
+                     , prepare_mysql ( $this->data ['Delivery Note Assigned Packer Alias'] )
+
+
+                     , $this->id );
+    mysql_query ( $sql );
+    $this->assigned=true;
+    $operations='<span style="cursor:pointer"  onClick="pick_it(this,'.$this->id.','.$staff->id.')"> <b>'.$staff->data['Staff Alias'].'</b> '._('pick order')."</span>";
+    $operations.=' <img src="art/icons/edit.gif" alt="'._('edit').'" style="cursor:pointer"  onClick="assign_packer(this,'.$this->id.')">';
+    $this->operations=$operations;
+$this->dn_state=_('Packer Assigned');
+
+}
+
+function start_picking($staff_key,$date=false) {
+   
+   if(!$date)
+    $date=date("Y-m-d H:i:s");
+   $this->assigned=false;
+ 
+    if (!preg_match('/^(Ready to be Picked|Picker Assigned)$/',$this->data ['Delivery Note State'])) {
+        $this->error=true;
+        $this->msg=$this->data ['Delivery Note State'].'<'._('Delivery Note can not be assigned to a picker, because has already been picked');
+        return;
+    }
+
+if(!$staff_key){
+$staff_key='';
+$staff_alias='';
+
+}else{
+
+    $staff=new Staff($staff_key);
+
+    if (!$staff->id) {
+        $this->error=true;
+        $this->msg=_('Staff not found');
+        return;
+    }
+    
+$staff_alias=$staff->data['Staff Alias'];
+}
+
     if($this->data ['Delivery Note Assigned Picker Key']==$staff->id){
         return;
     }
@@ -982,12 +1096,17 @@ function start_picking($staff_key) {
     $this->data ['Delivery Note State']='Picking';
     $this->data ['Delivery Note XHTML Pickers']=sprintf('<a href="staff.php?id=%d">%s</a>',$staff->id,$staff->data['Staff Alias']);
     $this->data ['Delivery Note Number Pickers']=1;
-    $sql = sprintf ( "update `Delivery Note Dimension` set `Delivery Note State`=%s , `Delivery Note XHTML Pickers`=%s ,`Delivery Note Number Pickers`=%d where `Delivery Note Key`=%d"
+        $this->data ['Delivery Note Assigned Picker Key']=$staff_key;
+    $this->data ['Delivery Note Assigned Picker Alias']=$staff_alias;
+
+    $sql = sprintf ( "update `Delivery Note Dimension` set `Delivery Note State`=%s , `Delivery Note XHTML Pickers`=%s ,`Delivery Note Number Pickers`=%d ,`Delivery Note Assigned Picker Key`=%s,`Delivery Note Assigned Picker Alias`=%s where `Delivery Note Key`=%d"
                      , prepare_mysql ( $this->data ['Delivery Note State'] )
                      , prepare_mysql ( $this->data ['Delivery Note XHTML Pickers'] )
                     , $this->data ['Delivery Note Number Pickers']
-
+                    ,prepare_mysql ($staff_key)
+                    ,prepare_mysql ($staff_alias,false)
                      , $this->id );
+                   //  print $sql;
     mysql_query ( $sql );
     $this->assigned=true;
     $operations='<a href="order_pick_aid.php?id='.$this->id.'" >'._('Picking')." (".$staff->data['Staff Alias'].")</a>";
@@ -996,6 +1115,221 @@ function start_picking($staff_key) {
 $this->dn_state=_('Picker Assigned');
 
 }
+function start_packing($staff_key,$date=false) {
+   
+   if(!$date)
+    $date=date("Y-m-d H:i:s");
+   $this->assigned=false;
+ 
+    if (!preg_match('/^(Picked|Packer Assigned|Picking & Packer Assigned)$/',$this->data ['Delivery Note State'])) {
+        $this->error=true;
+        $this->msg=$this->data ['Delivery Note State'].'<'._('Delivery Note can not be assigned to a packer, because is been packed');
+        return;
+    }
+
+if(!$staff_key){
+$staff_key='';
+$staff_alias='';
+
+}else{
+
+    $staff=new Staff($staff_key);
+
+    if (!$staff->id) {
+        $this->error=true;
+        $this->msg=_('Staff not found');
+        return;
+    }
+    
+$staff_alias=$staff->data['Staff Alias'];
+}
+
+    if($this->data ['Delivery Note Assigned Packer Key']==$staff->id){
+        return;
+    }
+
+
+    $this->data ['Delivery Note State']='Packing';
+    $this->data ['Delivery Note XHTML Packers']=sprintf('<a href="staff.php?id=%d">%s</a>',$staff->id,$staff->data['Staff Alias']);
+    $this->data ['Delivery Note Number Packers']=1;
+        $this->data ['Delivery Note Assigned Packer Key']=$staff_key;
+    $this->data ['Delivery Note Assigned Packer Alias']=$staff_alias;
+
+    $sql = sprintf ( "update `Delivery Note Dimension` set `Delivery Note State`=%s , `Delivery Note XHTML Packers`=%s ,`Delivery Note Number Packers`=%d ,`Delivery Note Assigned Packer Key`=%s,`Delivery Note Assigned Packer Alias`=%s where `Delivery Note Key`=%d"
+                     , prepare_mysql ( $this->data ['Delivery Note State'] )
+                     , prepare_mysql ( $this->data ['Delivery Note XHTML Packers'] )
+                    , $this->data ['Delivery Note Number Packers']
+                    ,prepare_mysql ($staff_key)
+                    ,prepare_mysql ($staff_alias,false)
+                     , $this->id );
+                   //  print $sql;
+    mysql_query ( $sql );
+    $this->assigned=true;
+    $operations='<a href="order_pack_aid.php?id='.$this->id.'" >'._('Packing')." (".$staff->data['Staff Alias'].")</a>";
+   // $operations.=' <img src="art/icons/edit.gif" alt="'._('edit').'" style="cursor:pointer"  onClick="assign_packer(this,'.$this->id.')">';
+    $this->operations=$operations;
+$this->dn_state=_('Packer Assigned');
+
+}
+
+function update_picking_percentage() {
+    $percentage_picked=$this->get_picking_percentage();
+    $sql=sprintf('update `Delivery Note Dimension` set `Delivery Note Faction Picked`=%f where `Delivery Note Key`=%d  '
+                 ,$percentage_picked
+                 ,$this->id
+                );
+                mysql_query($sql);
+//print $percentage_picked;
+    if ($percentage_picked==1) {
+
+        if ($this->data['Delivery Note State']=='Piking & Packing')
+            $state='Packing';
+        else if ($this->data['Delivery Note State']=='Picking & Packer Assigned')
+            $state='Packer Assigned';
+        else if ($this->data['Delivery Note State']=='Picking' or $this->data['Delivery Note State']=='Ready to be Picked')
+            $state='Picked';
+
+    } else {
+        if ($this->data['Delivery Note State']=='Packing')
+            $state='Piking & Packing';
+        else if ($this->data['Delivery Note State']=='Packer Assigned')
+            $state='Picking & Packer Assigned';
+        else if ($this->data['Delivery Note State']=='Picked')
+            $state='Picking';
+    else{
+    $this->error=true;
+    $this->msg="unknown error in update_picking_percentage\n";
+    //print  $this->msg;
+    return;
+    }
+    }
+    $this->update_state($state);
+
+}
+
+function get_picking_percentage() {
+    $sql=sprintf("select `Required`,`Out of Stock`,ifnull(`Part Gross Weight`,0) as `Part Gross Weight`,`Given` ,`Inventory Transaction Quantity` from   `Inventory Transaction Fact` ITF           left join `Part Dimension` P on (P.`Part SKU`=ITF.`Part SKU`) where `Delivery Note Key`=%d  "
+                 ,$this->id
+
+                );
+    $res=mysql_query ( $sql );
+    $required_weight=0;
+    $required_items=0;
+    $picked_weight=0;
+    $picked_items=0;
+
+    while ($row=mysql_fetch_assoc($res)) {
+       $to_be_picked=$row['Required']+$row['Given'];
+       
+
+        $qty=$row['Out of Stock']-$row['Inventory Transaction Quantity'];
+ //  print "-------> PBP $to_be_picked $qty\n";       
+        $required_weight.=$to_be_picked*$row['Part Gross Weight'];
+                          $required_items++;
+
+        if ($to_be_picked==0) {
+        } else if ($qty>=$to_be_picked) {
+            $picked_weight=$to_be_picked*$row['Part Gross Weight'];
+                           $picked_items++;
+
+        } else {
+            $picked_weight.=$qty*$row['Part Gross Weight'];
+
+
+                            $picked_items+=($qty/$to_be_picked);
+
+        }
+
+
+
+    }
+if($required_items==0){
+$percentage_picked=1;
+}elseif($picked_items<$required_items){
+    if($required_weight>0)
+    $percentage_picked=(($picked_items/$required_items)+($picked_weight/$required_weight))/2;
+    else
+      $percentage_picked=   ($picked_items/$required_items);
+}else{
+$percentage_picked=1;
+
+}
+
+
+return $percentage_picked;
+
+}
+
+function update_state($state){
+$this->data['Delivery Note State']=$state;
+$sql=sprintf('update `Delivery Note Dimension` set `Delivery Note State`=%s where `Delivery Note Key`=%d  '
+,prepare_mysql($state)
+,$this->id
+);
+mysql_query($sql);
+}
+
+
+
+function set_as_out_of_stock($sku,$qty){
+
+   $sql = sprintf ( "update `Inventory Transaction Fact` set `Out of Stock`=%f where `Delivery Note Key`=%d and `Part SKU`=%d  "
+                     ,$qty
+                     ,$this->id
+                     ,$sku
+                   );
+    mysql_query ( $sql );
+
+
+}
+
+
+function set_as_picked($sku,$qty,$date=false,$picker_key=false) {
+    if (!$date)
+        $date=date("Y-m-d H:i:s");
+    $this->updated=false;
+
+if(!$picker_key){
+$picker_key=$this->data['Delivery Note Assigned Picker Key'];
+
+}
+
+$part=new Part($sku);
+
+
+$sql=sprintf("select `required`  from   `Inventory Transaction Fact` where `Delivery Note Key`=%d and `Part SKU`=%d  "
+  ,$this->id
+                     ,$sku
+                   );
+    $res=mysql_query ( $sql );
+if($row=mysql_fetch_assoc($res)){
+$required=$row['required'];
+
+
+if($required>$qty){
+$qty_to_picked=$required-$qty;
+$this->set_as_out_of_stock($sku,$qty);
+
+}
+
+}
+
+
+    $sql = sprintf ( "update `Inventory Transaction Fact` set `Inventory Transaction Quantity`=%f,`Inventory Transaction Amount`=%f,`Date Picked`=%s,`Date`=%s ,`Picker Key`=%s where `Delivery Note Key`=%d and `Part SKU`=%d  "
+                     ,-1*$qty
+                     ,-1*$part->get_unit_cost()*$qty
+                     , prepare_mysql ( $date )
+                     , prepare_mysql ( $date )
+                      , prepare_mysql ($picker_key)
+                     ,$this->id
+                     ,$sku
+                   );
+    mysql_query ( $sql );
+//print "$sql\n";
+
+
+}
+
 
 }
 
