@@ -780,7 +780,7 @@ function ready_to_pick_orders() {
 
 
 
-    $sql="select  `Delivery Note Assigned Picker Key`,`Delivery Note Assigned Picker Alias`, `Delivery Note Date Created`,`Delivery Note Key`,`Delivery Note Customer Name`,`Delivery Note Estimated Weight`,`Delivery Note Distinct Items`,`Delivery Note State`,`Delivery Note ID`,`Delivery Note Estimated Weight`,`Delivery Note Distinct Items`  from `Delivery Note Dimension`   $where $wheref  order by $order $order_direction limit $start_from,$number_results ";
+    $sql="select  `Delivery Note Faction Picked`,`Delivery Note Assigned Picker Key`,`Delivery Note Assigned Picker Alias`, `Delivery Note Date Created`,`Delivery Note Key`,`Delivery Note Customer Name`,`Delivery Note Estimated Weight`,`Delivery Note Distinct Items`,`Delivery Note State`,`Delivery Note ID`,`Delivery Note Estimated Weight`,`Delivery Note Distinct Items`  from `Delivery Note Dimension`   $where $wheref  order by $order $order_direction limit $start_from,$number_results ";
 //print $sql;
     global $myconf;
 
@@ -807,6 +807,18 @@ function ready_to_pick_orders() {
             $status='<div id="dn_state'.$row['Delivery Note Key'].'">'._('Picker Assigned').'</div>';
             $operations.='<span style="cursor:pointer"  onClick="pick_it(this,'.$row['Delivery Note Key'].','.$row['Delivery Note Assigned Picker Key'].')"> <b>'.$row['Delivery Note Assigned Picker Alias'].'</b> '._('pick order')."</span>";
             $operations.=' <img src="art/icons/edit.gif" alt="'._('edit').'" style="cursor:pointer"  onClick="assign_picker(this,'.$row['Delivery Note Key'].')">';
+        }elseif($row['Delivery Note State']=='Packer Assigned') {
+            $status='<div id="dn_state'.$row['Delivery Note Key'].'">'._('(Picked) Packer Assigned').'</div>';
+            $operations.='<span style="cursor:pointer"  onClick="pack_it(this,'.$row['Delivery Note Key'].','.$row['Delivery Note Assigned Packer Key'].')"> <b>'.$row['Delivery Note Assigned Packer Alias'].'</b> '._('pack order')."</span>";
+            $operations.=' <img src="art/icons/edit.gif" alt="'._('edit').'" style="cursor:pointer"  onClick="assign_packer(this,'.$row['Delivery Note Key'].')">';
+        }elseif($row['Delivery Note State']=='Picking') {
+            $status='<div id="dn_state'.$row['Delivery Note Key'].'">'._('Picking').'('.percentage($row['Delivery Note Faction Picked'],1,0).') <b>'.$row['Delivery Note Assigned Picker Alias'].'</b> </div>';
+            $operations.='<span style="cursor:pointer"  onClick="assign_packer(this,'.$row['Delivery Note Key'].')">'._('Assign Packer')."</span>";;
+            $operations.=' | <span style="cursor:pointer"  onClick="pack_it(this,'.$row['Delivery Note Key'].')">'._('Start packing')."</span>";
+        }elseif($row['Delivery Note State']=='Picked') {
+            $status='<div id="dn_state'.$row['Delivery Note Key'].'">'._('Picked').'</div>';
+            $operations.='<span style="cursor:pointer"  onClick="assign_packer(this,'.$row['Delivery Note Key'].')">'._('Assign Packer')."</span>";;
+            $operations.=' | <span style="cursor:pointer"  onClick="pack_it(this,'.$row['Delivery Note Key'].')">'._('Start packing')."</span>";
         }
         else {
             $operations.='';
@@ -940,24 +952,24 @@ function start_picking($data) {
 
 }
 
-function picking_aid_sheet($data){
+function picking_aid_sheet(){
  if(isset( $_REQUEST['id']) and is_numeric( $_REQUEST['id']))
      $order_id=$_REQUEST['id'];
    else
-     $order_id=$_SESSION['state']['order']['id'];
+     $order_id=$_SESSION['state']['dn']['id'];
    
+//print_r($_SESSION['state']['dn']);
 
 
-
-   $where=' where `Order Key`='.$order_id;
+   $where=' where `Delivery Note Key`='.$order_id;
 
    $total_charged=0;
    $total_discounts=0;
    $total_picks=0;
 
    $data=array();
-   $sql="select `Part XHTML Currently Used In`,Part.`Part SKU`,`Part XHTML Description`,sum(`Order Quantity`*`Parts Per Product`) as qty ,`Part XHTML Picking Location` from `Order Transaction Fact` O left join `Product History Dimension` PH on (O.`Product key`=PH.`Product Key`) left join `Product Part List` PL on (PH.`Product ID`=PL.`Product ID`)  left join  `Part Dimension` Part on  (Part.`Part SKU`=PL.`Part SKU`)  $where  group by Part.`Part SKU` ";
-   
+   $sql="select `Part XHTML Currently Used In`,Part.`Part SKU`,`Part XHTML Description`,sum(`Required`) as qty ,`Part XHTML Picking Location` from `Inventory Transaction Fact` ITF  left join  `Part Dimension` Part on  (Part.`Part SKU`=ITF.`Part SKU`)  $where  group by Part.`Part SKU` ";
+  // print $sql;
    $result=mysql_query($sql);
    while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
   

@@ -234,12 +234,12 @@ $staff=array(
                                         )
 
                                         ,'CUS'=>array(
-                                                   array('Staff Area Key'=>$office_area_key,'Staff Department Key'=>$departments_keys['CUS'],'Staff Name'=>'Trini','Staff Alias'=>'trini')
-                                                   array('Staff Area Key'=>$office_area_key,'Staff Department Key'=>$departments_keys['CUS'],'Staff Name'=>'Lorena','Staff Alias'=>'lorena','Staff Currently Working'=>'No')
-                                                   array('Staff Area Key'=>$office_area_key,'Staff Department Key'=>$departments_keys['CUS'],'Staff Name'=>'Karolina','Staff Alias'=>'karolina','Staff Currently Working'=>'No')
-                                                   array('Staff Area Key'=>$office_area_key,'Staff Department Key'=>$departments_keys['CUS'],'Staff Name'=>'Noemi','Staff Alias'=>'noemi','Staff Currently Working'=>'No')
-                                                   array('Staff Area Key'=>$office_area_key,'Staff Department Key'=>$departments_keys['CUS'],'Staff Name'=>'Paula','Staff Alias'=>'paula','Staff Currently Working'=>'No')
-                                                   array('Staff Area Key'=>$office_area_key,'Staff Department Key'=>$departments_keys['CUS'],'Staff Name'=>'Anabel','Staff Alias'=>'anabel','Staff Currently Working'=>'No')
+                                                   array('Staff Area Key'=>$office_area_key,'Staff Department Key'=>$departments_keys['CUS'],'Staff Name'=>'Trini','Staff Alias'=>'trini'),
+                                                   array('Staff Area Key'=>$office_area_key,'Staff Department Key'=>$departments_keys['CUS'],'Staff Name'=>'Lorena','Staff Alias'=>'lorena','Staff Currently Working'=>'No'),
+                                                   array('Staff Area Key'=>$office_area_key,'Staff Department Key'=>$departments_keys['CUS'],'Staff Name'=>'Karolina','Staff Alias'=>'karolina','Staff Currently Working'=>'No'),
+                                                   array('Staff Area Key'=>$office_area_key,'Staff Department Key'=>$departments_keys['CUS'],'Staff Name'=>'Noemi','Staff Alias'=>'noemi','Staff Currently Working'=>'No'),
+                                                   array('Staff Area Key'=>$office_area_key,'Staff Department Key'=>$departments_keys['CUS'],'Staff Name'=>'Paula','Staff Alias'=>'paula','Staff Currently Working'=>'No'),
+                                                   array('Staff Area Key'=>$office_area_key,'Staff Department Key'=>$departments_keys['CUS'],'Staff Name'=>'Anabel','Staff Alias'=>'anabel','Staff Currently Working'=>'No'),
                                                    array('Staff Area Key'=>$office_area_key,'Staff Department Key'=>$departments_keys['CUS'],'Staff Name'=>'Penelope','Staff Alias'=>'penelope','Staff Currently Working'=>'No')
 
 

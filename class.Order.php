@@ -756,7 +756,7 @@ if($this->update_customer){
             }
         }
 
-        function send_to_warehouse() {
+        function send_to_warehouse($date) {
 
 
             if (!($this->data['Order Current Dispatch State']=='In Process' or $this->data['Order Current Dispatch State']=='Submited')) {
@@ -782,6 +782,19 @@ if($this->update_customer){
             mysql_query($sql);
 
 
+$data_dn=array(
+		       'Delivery Note Date Created'=>$date
+		       ,'Delivery Note ID'=>$this->data['Order Public ID']
+		       ,'Delivery Note File As'=>$this->data['Order File As']
+		       ,'Delivery Note Type'=>$this->data['Order Type']
+		       ,'Delivery Note Title'=>_('Delivery Note for').' '.$this->data['Order Type'].' <a href="order.php?id='.$this->id.'">'.$this->data['Order Public ID'].'</a>'
+		       );
+	
+	$dn=new DeliveryNote('create',$data_dn,$this);
+	$dn->create_inventory_transaction_fact($this->id);
+	$this->update_delivery_notes('save');
+	
+return $dn;
         }
 
 

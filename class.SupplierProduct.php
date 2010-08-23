@@ -93,6 +93,7 @@ class supplierproduct extends DB_Table {
             $result2=mysql_query($sql);
             if ($row2=mysql_fetch_array($result2)) {
                 $this->found_in_key=true;
+                $this->found=true;
                 $this->found_key=$row2['SPH Key'];
                 $this->get_data('key',$this->found_key);
 
