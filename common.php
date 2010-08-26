@@ -172,9 +172,13 @@ if($user->can_view('customers')){
   $nav_menu[] = array(_('Customers'), 'customers_server.php','customers');
 
 }
-if($user->can_view('warehouses'))
+if($user->can_view('warehouses')){
+if($user->warehouses==1)
 $nav_menu[] = array(_('Warehouse'), 'warehouse.php','warehouses');
 
+else
+$nav_menu[] = array(_('Warehouses'), 'warehouses.php','warehouses');
+}
 
 if($user->can_view('stores')){
     if(count($user->stores)==1){

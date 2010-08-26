@@ -77,7 +77,10 @@ function list_products(){
    $filter_msg='';
    $wheref='';
 
-     
+     if(!$store)
+          $where=sprintf(' and false ');
+
+     else
      $where=sprintf(' and `Product Store Key` in (%s) ',$store);
 
   
