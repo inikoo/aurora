@@ -88,9 +88,11 @@ var myhandleDataReturnPayload= function(oRequest, oResponse, oPayload) {
 	    var table=YAHOO.util.Dom.get('table'+oResponse.meta.tableid).getElementsByTagName("table")[0];
 	    table.tHead.style.display='none';
 	    table.tBodies[0].getElementsByTagName("tr")[0].getElementsByTagName("td")[0].innerHTML='';
+	    Dom.get(table).style.display='none';
 	    if(YAHOO.util.Dom.get('filter_div'+oResponse.meta.tableid)!=null){
 	        YAHOO.util.Dom.get('filter_div'+oResponse.meta.tableid).style.visibility='hidden';
 	    }
+	    
     }else{
 	    var table=YAHOO.util.Dom.get('table'+oResponse.meta.tableid).getElementsByTagName("table")[0];
 	    table.tHead.style.display='';
