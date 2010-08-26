@@ -542,6 +542,10 @@ function list_products(){
    
    if(is_numeric($store)){
      $where.=sprintf(' and `Product Store Key`=%d ',$store);
+   }elseif($store==''){
+     
+     $where.=sprintf(' and false ',$store);
+
    }else{
      
      $where.=sprintf(' and `Product Store Key` in (%s) ',$store);
@@ -701,6 +705,10 @@ function list_customers(){
    
    if(is_numeric($store)){
      $where.=sprintf(' and `Customer Store Key`=%d ',$store);
+   }elseif($store==''){
+     
+     $where.=sprintf(' and false ',$store);
+
    }else{
      
      $where.=sprintf(' and `Customer Store Key` in (%s) ',$store);
@@ -726,7 +734,7 @@ function list_customers(){
 
   
    $sql="select  `Store Code`,`Customer Type by Activity`,`Customer Last Order Date`,`Customer Main XHTML Telephone`,`Customer Key`,`Customer Name`,`Customer Main Location`,`Customer Main XHTML Email`,`Customer Main Town`,`Customer Main Country First Division`,`Customer Main Delivery Address Postal Code`,`Customer Orders Invoiced` as Invoices , `Customer Net Balance` as Balance  from `Customer Dimension` C  left join `Store Dimension` SD on (C.`Customer Store Key`=SD.`Store Key`)  $where $wheref  group by `Customer Key` order by $order $order_direction limit $start_from,$number_results";
-// print $sql;
+
    $adata=array();
   
   

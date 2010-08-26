@@ -3,10 +3,12 @@
 function get_header_info($user,$smarty){
    
   $warehouse_list=array();
+  if($user->warehouses){
   $sql=sprintf("select `Warehouse Key`,`Warehouse Code`,`Warehouse Name` from `Warehouse Dimension` where `Warehouse Key` in (%s) ",join(",",$user->warehouses));
   $res=mysql_query($sql);
   while($row=mysql_fetch_array($res)){
     $warehouse_list[]=array('id'=>$row['Warehouse Key'],'code'=>$row['Warehouse Code'],'name'=>$row['Warehouse Name']);
+  }
   }
   $warehouse_list_length=count($warehouse_list);
   $smarty->assign('warehouse_list_length',$warehouse_list_length);

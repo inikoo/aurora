@@ -39,9 +39,16 @@ $smarty->assign('view_stock',$view_stock);
 $smarty->assign('create',$create);
 $smarty->assign('modify',$modify);
 
+$number_of_stores=count($user->stores);
 
-if($modify)
+if($modify){
+if($number_of_stores>1)
   $general_options_list[]=array('tipo'=>'url','url'=>'stores.php?edit=1','label'=>_('Edit Stores'));
+elseif($number_of_stores==1)
+  $general_options_list[]=array('tipo'=>'url','url'=>'stores.php?edit=1','label'=>_('Edit Store'));
+
+  $general_options_list[]=array('tipo'=>'url','url'=>'stores.php?edit=1','label'=>_('Add Store'));
+}
 $smarty->assign('general_options_list',$general_options_list);
 
 
