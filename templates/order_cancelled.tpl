@@ -7,7 +7,7 @@
        <div style="border:0px solid #ddd;width:400px;float:left"> 
          <h1 style="padding:0 0 10px 0">{t}Order{/t} {$order->get('Order Public ID')}</h1>
 
-	 <h2 style="padding:0"><a style="position:relative;z-index:5" href="customer.php?id={$order->get('order customer key')}">{$order->get('order customer name')} (ID:{$customer->get('Customer ID')})</a></h2>
+	 <h2 style="padding:0"><a style="position:relative;z-index:5" href="customer.php?id={$order->get('order customer key')}">{$order->get('order customer name')} (ID:{$customer->get_formated_id()})</a></h2>
         {$contact}<br/>
            {if $tel!=''}{t}Tel{/t}: {$tel}<br/>{/if}
 	<div style="float:left;line-height: 1.0em;margin:5px 20px 0 0;color:#444;font-size:80%;width:140px"><span style="font-weight:500;color:#000">{t}Contact Address{/t}</span>:<br/><b>{$customer->get('Customer Main Contact Name')}</b><br/>{$customer->get('Customer Main XHTML Address')}</div>
