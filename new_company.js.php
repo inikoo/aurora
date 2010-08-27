@@ -5,8 +5,6 @@ include_once('common.php');
 include_once('class.Contact.php');
 include_once('class.Company.php');
 
-
-
 $scope='company';
 $action_after_create='continue';
 if(isset($_REQUEST['scope']) and preg_match('/supplier|customer|corporation/',$_REQUEST['scope']))
@@ -15,19 +13,11 @@ $store_key=0;
 if($scope=='customer'){
     $store_key=$_REQUEST['store_key'];
 }
-
 if($scope!='corporation')    
 $action_after_create=$_SESSION['state'][$scope]['action_after_create'];
-
-
-
 print "var scope='$scope';\n";
 print "var store_key='$store_key';\n";
-
 print "var action_after_create='$action_after_create';\n";
-
-
-
 ?>
 var Dom   = YAHOO.util.Dom;
 var Event = YAHOO.util.Event;
@@ -142,30 +132,20 @@ function save_new_company(e){
 	});
 
 }
-
 function validate_company_name (query) {
     
-
     var validator=new RegExp(validate_data.company_name.regexp,"i");
 
     if(validator.test(query)){
-	    
 	validate_data.company_name.validated=true;
-	
     }else{
-
 	validate_data.company_name.validated=false;
     }
     
-    
-    
-
     get_subject_data();
     find_subject();
     validate_form();
 
-
-			   //alert(query)
 };
 function name_inputed(){
     var item='company_name';
@@ -181,7 +161,6 @@ function name_inputed(){
     //validate_postal_code(postal_code);
     
 }    
-
 function cancel_new_company(){
 if(scope=='customer')
 window.location='customers.php'
@@ -189,20 +168,16 @@ window.location='customers.php'
 else
 window.location='companies.php?edit=1';
 }
-
 function get_subject_data(){
     subject_data[Subject+' Name']=Dom.get('Company_Name').value;
     
 }
-
 function get_contact_data(){
     subject_data[Subject+' Main Contact Name']=Dom.get('Contact_Name').value;
 	subject_data[Subject+' Main Plain Telephone']=Dom.get('Telephone').value;
 subject_data[Subject+' Main Plain Email']=Dom.get('Email').value;
 
 }
-
-
 function init(){
     
 	YAHOO.util.Event.addListener(['save_new_'+Subject,'save_when_founded','force_new'], "click",save_new_company);
