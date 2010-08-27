@@ -28,7 +28,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 				     ];
 
 
-	    this.InvoiceDataSource = new YAHOO.util.DataSource("ar_orders.php?tipo=transactions_to_process&tid=0");
+	    this.InvoiceDataSource = new YAHOO.util.DataSource("ar_orders.php?tipo=transactions_cancelled&tid=0");
 	    this.InvoiceDataSource.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.InvoiceDataSource.connXhrMode = "queueRequests";
 	    this.InvoiceDataSource.responseSchema = {
