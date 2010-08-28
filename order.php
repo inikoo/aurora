@@ -2,6 +2,8 @@
 include_once('common.php');
 include_once('class.CurrencyExchange.php');
 
+
+
 include_once('class.Order.php');
 if(!$user->can_view('orders')){
   header('Location: index.php');
@@ -36,7 +38,7 @@ $js_files=array(
 		);
 
 if(isset($_REQUEST['new']) ){
-  
+  date_default_timezone_set('UTC');
   if(isset($_REQUEST['customer_key']) and is_numeric($_REQUEST['customer_key']) ){
     $customer=new Customer($_REQUEST['customer_key']);
     if(!$customer->id)
@@ -52,6 +54,7 @@ if(isset($_REQUEST['new']) ){
   
   $order_data=array('type'=>'system'
 		    ,'Customer Key'=>$customer->id
+		    ,'Order Original Data MIME Type'=>'application/kaktus'
 		    ,'Order Type'=>'Order'
 		    ,'editor'=>$editor
 		    

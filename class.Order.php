@@ -88,6 +88,7 @@ $this->update_customer=true;
 
         case('system'):
             global $myconf;
+            $this->editor=$data ['editor'];
             $this->data ['Order Type'] = $data ['Order Type'];
             $this->set_data_from_customer($data['Customer Key']);
             $this->data ['Order Current Dispatch State'] = 'In Process';
@@ -103,7 +104,6 @@ $this->update_customer=true;
 
             $this->data ['Order Original Metadata']='';
             $this->data ['Order Currency Exchange']=1;
-
 
             $sql=sprintf("select `Corporation Currency` from `Corporation Dimension`");
             $res=mysql_query($sql);
@@ -126,7 +126,6 @@ $this->update_customer=true;
 
             $this->next_public_id();
 
-
             $this->create_order_header ();
             foreach ( $this->data ['Order Sale Reps IDs'] as $sale_rep_id ) {
                 $sql = sprintf ( "insert into `Order Sales Rep Bridge`  (%d,%d)", $this->id, $sale_rep_id );
@@ -137,6 +136,13 @@ $this->update_customer=true;
                 $this->update_shipping();
 
             }
+
+$customer=new Customer($data['Customer Key']);
+$customer->editor=$this->editor;
+ $customer->add_history_new_order($this);
+
+
+
 
             break;
         case ('direct_data_injection') :
@@ -340,37 +346,13 @@ $this->update_customer=true;
 if($this->update_customer){
                     $customer->update_orders();
                     $customer->update_no_normal_data();
+                    
 }
+ $customer->add_history_new_order($this);
+
                     //       $this->cutomer_rankings();
 
 
-                    switch ($_SESSION ['lang']) {
-                    default :
-                        $note = sprintf ( '%s <a href="order.php?id=%d">%s</a>', _('Order'),$this->data ['Order Key'], $this->data ['Order Public ID'] );
-                        $details = sprintf ( '%s (<a href="customer.php?id=%d">%s</a>) place an order on %s', $customer->get ( 'Customer Name' ), $customer->id,$customer->get('Formated ID'), strftime ( "%e %b %Y %H:%M", strtotime ( $this->data ['Order Date'] ) ) );
-                        if ($this->data['Order Original Data MIME Type']='application/vnd.ms-excel') {
-                            if ($this->data['Order Original Data Filename']!='') {
-
-                                $details .='<div >'._('Original Source').":<img src='art/icons/page_excel.png'> ".$this->data['Order Original Data MIME Type']."</div>";
-
-                                $details .='<div>'._('Original Source Filename').": ".$this->data['Order Original Data Filename']."</div>";
-
-
-
-                            }
-                        }
-
-                    }
-                    $history_data=array(
-                                      'Date'=>$this->data ['Order Date']
-                                             ,'Subject'=>'Customer'
-                                                        ,'Subject Key'=>$customer->id
-                                                                       ,'Direct Object'=>'Order'
-                                                                                        ,'Direct Object Key'=>$this->data ['Order Key']
-                                                                                                             ,'History Details'=>$details
-                                                                                                                                ,'History Abstract'=>$note
-                                  );
-                    $this->add_history($history_data);
 
 
 
@@ -799,13 +781,14 @@ return $dn;
 
 
         function cancel($note='',$date=false) {
+       
             $this->cancelled=false;
             if (preg_match('/Dispatched/',$this->data ['Order Current Dispatch State'])) {
                 $this->msg=_('Order can not be cancelled, because has already been dispatched');
 
             }
             if (preg_match('/Cancelled/',$this->data ['Order Current Dispatch State'])) {
-                $this->_('Order is already cancelled');
+                $this->msg=_('Order is already cancelled');
 
             } else {
 
@@ -846,7 +829,9 @@ return $dn;
                 if (! mysql_query ( $sql ))
                     exit ( "$sql error dfsdfs doerde.pgp" );
 
-
+$customer=new Customer($this->data['Order Customer Key']);
+ $customer->editor=$this->editor;
+$customer->add_history_order_cancelled($this);
                 $this->cancelled=true;
 
             }
@@ -2508,7 +2493,7 @@ return $dn;
 
             $ship_to= new Ship_To($customer->data['Customer Main Delivery Address Key']);
 
-
+$this->data ['Order Ship To Key To Deliver']=$ship_to->id;
 
 //   print_r($customer);
             $this->data ['Order XHTML Ship Tos']=$ship_to->data['Ship To XHTML Address'];
@@ -3007,7 +2992,7 @@ return $dn;
                             );
                 mysql_query($sql);
 
-                $sql=sprintf('select OTF.`Product Key`,`Order Line`,`Order Transaction Gross Amount` from  `Order Transaction Fact` OTF left join `Product History Dimension` PH on (OTF.`Product Key`=PH.`Product Key`)left join `Product Dimension` P on (P.`Product ID`=PH.`Product ID`) where `Order Key`=%d and `Product Family Key`=%d '
+                $sql=sprintf('select OTF.`Product Key`,`Order Transaction Fact Key`,`Order Transaction Gross Amount` from  `Order Transaction Fact` OTF left join `Product History Dimension` PH on (OTF.`Product Key`=PH.`Product Key`)left join `Product Dimension` P on (P.`Product ID`=PH.`Product ID`) where `Order Key`=%d and `Product Family Key`=%d '
                              ,$this->id
                              ,$allowance_data['Family Key']
                             );
@@ -3015,8 +3000,9 @@ return $dn;
                 $res=mysql_query($sql);
                 while ($row=mysql_fetch_array($res)) {
                     $sql=sprintf("insert into `Order Transaction Deal Bridge` values (%d,%d,%d,%d,%s,%f,0)"
+                                 ,$row['Order Transaction Fact Key']
                                  ,$this->id
-                                 ,$row['Order Line']
+                             
                                  ,$row['Product Key']
                                  ,$allowance_data['Deal Key']
                                  ,prepare_mysql($allowance_data['Deal Info'])

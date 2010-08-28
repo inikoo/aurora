@@ -297,7 +297,7 @@ protected function add_history($raw_data,$force=false){
   }
 
   $data['User Key']=$editor_data['User Key'];
-  
+  $data['Metadata']='';
   
   $data['Action']='edited';
   $data['Direct Object']=$table;
@@ -339,7 +339,7 @@ protected function add_history($raw_data,$force=false){
   }
  
   // print_r($data);
- $sql=sprintf("insert into `History Dimension` (`History Date`,`Subject`,`Subject Key`,`Action`,`Direct Object`,`Direct Object Key`,`Preposition`,`Indirect Object`,`Indirect Object Key`,`History Abstract`,`History Details`,`User Key`,`Deep`) values (%s,%s,%d,%s,%s,%d,%s,%s,%d,%s,%s,%d,%s)"
+ $sql=sprintf("insert into `History Dimension` (`History Date`,`Subject`,`Subject Key`,`Action`,`Direct Object`,`Direct Object Key`,`Preposition`,`Indirect Object`,`Indirect Object Key`,`History Abstract`,`History Details`,`User Key`,`Deep`,`Metadata`) values (%s,%s,%d,%s,%s,%d,%s,%s,%d,%s,%s,%d,%s,%s)"
 	      ,prepare_mysql($data['Date'])
 	      ,prepare_mysql($data['Subject'])
 	      , $data['Subject Key']
@@ -353,6 +353,7 @@ protected function add_history($raw_data,$force=false){
 	      ,prepare_mysql($data['History Details'])
 	      , $data['User Key']
 	      ,prepare_mysql($data['Deep'])
+	      ,prepare_mysql($data['Metadata'])
 		  );
 
    mysql_query($sql);

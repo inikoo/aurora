@@ -9,7 +9,7 @@ require_once 'class.Customer.php';
 
 require_once 'class.Timer.php';
 
-require_once 'ar_edit_common.php';
+//require_once 'ar_edit_common.php';
 
 
 
@@ -152,6 +152,11 @@ if(isset( $_REQUEST['where']))
      $_SESSION['state']['customer']['table']['to']=$date_interval['to'];
    }
 
+
+
+
+$where.=' and `Deep`=1 ';
+
    $where.=sprintf(' and (  (`Subject`="Customer" and  `Subject Key`=%d) or (`Direct Object`="Customer" and  `Direct Object key`=%d ) or (`Indirect Object`="Customer" and  `Indirect Object key`=%d )         ) ',$customer_id,$customer_id,$customer_id);
 //   if(!$details)
  //    $where.=" and display!='details'";
@@ -277,8 +282,8 @@ if(isset( $_REQUEST['where']))
 
      $data[]=array(
 		   'id'=>$row['History Key'],
-		   'date'=>strftime("%a %e %b %Y", strtotime($row['History Date'])),
-		   'time'=>strftime("%H:%M", strtotime($row['History Date'])),
+		   'date'=>strftime("%a %e %b %Y", strtotime($row['History Date']." +00:00")),
+		   'time'=>strftime("%H:%M", strtotime($row['History Date']." +00:00")),
 		   'objeto'=>$row['Direct Object'],
 		   'note'=>$note,
 		   'handle'=>$row['User Alias']
@@ -491,7 +496,7 @@ function list_history($asset_type) {
 		       'author'=>$author
 		       ,'tipo'=>$tipo
 		       ,'abstract'=>$note
-		       ,'date'=>strftime("%a %e %b %Y %T", strtotime($data['History Date'])),
+		       ,'date'=>strftime("%a %e %b %Y %T", strtotime($data['History Date']." +00:00")),
 		       );
     }
     $response=array('resultset'=>
@@ -695,7 +700,7 @@ $scope='Company Department';
 		       'author'=>$author
 		       ,'tipo'=>$tipo
 		       ,'abstract'=>$note
-		       ,'date'=>strftime("%a %e %b %Y %T", strtotime($data['History Date'])),
+		       ,'date'=>strftime("%a %e %b %Y %T", strtotime($data['History Date']." +00:00")),
 		       );
     }
     $response=array('resultset'=>

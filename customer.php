@@ -75,7 +75,7 @@ $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
 
 
-
+//echo 'date_default_timezone_set: ' . date_default_timezone_get() . strftime("%sH:s %z",strtotime('2010-07-11 09:00:00 +00:00')). '<br />';
 $_SESSION['state']['customer']['id']=$customer_id;
 $_SESSION['state']['customer']['table']['sf']=0;
 
