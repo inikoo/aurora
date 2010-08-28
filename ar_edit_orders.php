@@ -3,16 +3,15 @@ require_once 'common.php';
 require_once 'ar_edit_common.php';
 require_once 'class.Order.php';
 
+
+
+
 if (!isset($_REQUEST['tipo'])) {
     $response=array('state'=>407,'resp'=>_('Non acceptable request').' (t)');
     echo json_encode($response);
     exit;
 }
 
-
-$editor=array(
-            'User Key'=>$user->id
-        );
 
 $tipo=$_REQUEST['tipo'];
 
@@ -76,9 +75,11 @@ default:
 
 
 function cancel_order() {
+global $editor;
     $order_key=$_SESSION['state']['order']['id'];
 
     $order=new Order($order_key);
+    $order->editor=$editor;
     if (isset($_REQUEST['note']))
         $note=stripslashes(urldecode($_REQUEST['note']));
     else
@@ -89,7 +90,7 @@ function cancel_order() {
         $response=array('state'=>200,'order_key'=>$order->id);
         echo json_encode($response);
     } else {
-        $response=array('state'=>400,'msg'=>$this->msg);
+        $response=array('state'=>400,'msg'=>$order->msg);
         echo json_encode($response);
 
     }
@@ -243,10 +244,10 @@ function edit_new_order() {
         if (count($disconted_products)>0) {
 
             $product_keys=join(',',$disconted_products);
-            $sql=sprintf("select (select `Deal Info` from `Order Transaction Deal Bridge` OTDB where OTDB.`Order Key`=OTF.`Order Key` and OTDB.`Order Line`=OTF.`Order Line`) as `Deal Info`,P.`Product ID`,`Product XHTML Short Description`,`Order Transaction Gross Amount`,`Order Transaction Total Discount Amount` from `Order Transaction Fact` OTF  left join `Product History Dimension` PHD on (PHD.`Product Key`=OTF.`Product Key`) left join `Product Dimension` P on (PHD.`Product ID`=P.`Product ID`) where OTF.`Order Key`=%d and OTF.`Product Key` in (%s)",$order->id,$product_keys);
+            $sql=sprintf("select (select `Deal Info` from `Order Transaction Deal Bridge` OTDB where OTDB.`Order Key`=OTF.`Order Key` and OTDB.`Order Transaction Fact Key`=OTF.`Order Transaction Fact Key`) as `Deal Info`,P.`Product ID`,`Product XHTML Short Description`,`Order Transaction Gross Amount`,`Order Transaction Total Discount Amount` from `Order Transaction Fact` OTF  left join `Product History Dimension` PHD on (PHD.`Product Key`=OTF.`Product Key`) left join `Product Dimension` P on (PHD.`Product ID`=P.`Product ID`) where OTF.`Order Key`=%d and OTF.`Product Key` in (%s)",$order->id,$product_keys);
 
 
-            // print $sql;
+             //print $sql;
             $res = mysql_query($sql);
             $adata=array();
 
