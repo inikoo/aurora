@@ -738,8 +738,10 @@ if($this->update_customer){
             }
         }
 
-        function send_to_warehouse($date) {
+        function send_to_warehouse($date=false) {
 
+if(!date)
+$date=date('Y-m-d H:i:s');
 
             if (!($this->data['Order Current Dispatch State']=='In Process' or $this->data['Order Current Dispatch State']=='Submited')) {
                 $this->error=true;
@@ -2489,9 +2491,10 @@ $customer->add_history_order_cancelled($this);
                 // $this->data ['Order XHTML Ship Tos']=$ship_to->data['Ship To XHTML Address'];
                 //$this->data ['Order Ship To Keys']=$ship_to->id;
                 $customer->add_ship_to($ship_to->id,'Yes');
-            }
+            }else{
 
-            $ship_to= new Ship_To($customer->data['Customer Main Delivery Address Key']);
+            $ship_to= new Ship_To($customer->data['Customer Last Ship To Key']);
+            }
 
 $this->data ['Order Ship To Key To Deliver']=$ship_to->id;
 
