@@ -2683,15 +2683,45 @@ return $this->data['Customer Main Address Key'];
 
         $line=$address->display('3lines');
 
-        $shipping_addresses['Address Line 1']=$line[1];
-        $shipping_addresses['Address Line 2']=$line[2];
-        $shipping_addresses['Address Line 3']=$line[3];
-        $shipping_addresses['Address Town']=$address->data['Address Town'];
-        $shipping_addresses['Address Postal Code']=$address->data['Address Postal Code'];
-        $shipping_addresses['Address Country Name']=$address->data['Address Country Name'];
-        $shipping_addresses['Address Country First Division']=$address->data['Address Country First Division'];
-        $shipping_addresses['Address Country Second Division']=$address->data['Address Country Second Division'];
-        $ship_to= new Ship_To('find create',$shipping_addresses);
+/*
+Array
+(
+    [Ship To Contact Name] => 
+    [Ship To Company Name] => 
+    [Ship To Line 1] => 
+    [Ship To Line 2] => 
+    [Ship To Line 3] => 
+    [Ship To Town] => 
+    [Ship To Line 4] => 
+    [Ship To Postal Code] => 
+    [Ship To Country Name] => 
+    [Ship To XHTML Address] => 
+    [Ship To Telephone] => 
+    [Ship To Email] => 
+    [Ship To Country Key] => 
+    [Ship To Country Code] => UNK
+    [Ship To Country 2 Alpha Code] => XX
+)
+*/
+
+
+        $shipping_addresses['Ship To Line 1']=$line[1];
+        $shipping_addresses['Ship To Line 2']=$line[2];
+        $shipping_addresses['Ship To Line 3']=$line[3];
+        $shipping_addresses['Ship To Town']=$address->data['Address Town'];
+        $shipping_addresses['Ship To Postal Code']=$address->data['Address Postal Code'];
+        $shipping_addresses['Ship To Country Name']=$address->data['Address Country Name'];
+        $shipping_addresses['Ship To Country Key']=$address->data['Address Country Key'];
+        $shipping_addresses['Ship To Country Code']=$address->data['Address Country Code'];
+        $shipping_addresses['Ship To Country 2 Alpha Code']=$address->data['Address Country 2 Alpha Code'];
+        $shipping_addresses['Ship To XHTML Address']=$address->display('xhtml');
+
+        $shipping_addresses['Ship To Country First Division']=$address->data['Address Country First Division'];
+        $shipping_addresses['Ship To Country Second Division']=$address->data['Address Country Second Division'];
+        
+        
+        
+      $ship_to= new Ship_To('find create',$shipping_addresses);
 
 
 
