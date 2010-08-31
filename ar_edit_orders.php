@@ -797,33 +797,41 @@ function ready_to_pick_orders() {
 
         $w=weight($row['Delivery Note Estimated Weight']);
         $picks=number($row['Delivery Note Distinct Items']);
-
+       
         $operations='<div id="operations'.$row['Delivery Note Key'].'">';
         if ($row['Delivery Note State']=='Ready to be Picked') {
             $status='<div id="dn_state'.$row['Delivery Note Key'].'">'._('Ready to be Picked').'</div>';
             $operations.='<span style="cursor:pointer"  onClick="assign_picker(this,'.$row['Delivery Note Key'].')">'._('Assign Picker')."</span>";
             $operations.=' | <span style="cursor:pointer"  onClick="pick_it(this,'.$row['Delivery Note Key'].')">'._('Pick order')."</span>";
-        }
+            $public_id=$row['Delivery Note ID'];
+      }
         elseif($row['Delivery Note State']=='Picker Assigned') {
             $status='<div id="dn_state'.$row['Delivery Note Key'].'">'._('Picker Assigned').'</div>';
             $operations.='<span style="cursor:pointer"  onClick="pick_it(this,'.$row['Delivery Note Key'].','.$row['Delivery Note Assigned Picker Key'].')"> <b>'.$row['Delivery Note Assigned Picker Alias'].'</b> '._('pick order')."</span>";
             $operations.=' <img src="art/icons/edit.gif" alt="'._('edit').'" style="cursor:pointer"  onClick="assign_picker(this,'.$row['Delivery Note Key'].')">';
+            $public_id=sprintf("<a href='order_pick_aid.php?id=%d'>%s</a>",$row['Delivery Note Key'],$row['Delivery Note ID']);
         }elseif($row['Delivery Note State']=='Packer Assigned') {
             $status='<div id="dn_state'.$row['Delivery Note Key'].'">'._('(Picked) Packer Assigned').'</div>';
             $operations.='<span style="cursor:pointer"  onClick="pack_it(this,'.$row['Delivery Note Key'].','.$row['Delivery Note Assigned Packer Key'].')"> <b>'.$row['Delivery Note Assigned Packer Alias'].'</b> '._('pack order')."</span>";
             $operations.=' <img src="art/icons/edit.gif" alt="'._('edit').'" style="cursor:pointer"  onClick="assign_packer(this,'.$row['Delivery Note Key'].')">';
-        }elseif($row['Delivery Note State']=='Picking') {
+            $public_id=sprintf("<a href='order_pick_aid.php?id=%d'>%s</a>",$row['Delivery Note Key'],$row['Delivery Note ID']);
+    }elseif($row['Delivery Note State']=='Picking') {
             $status='<div id="dn_state'.$row['Delivery Note Key'].'">'._('Picking').'('.percentage($row['Delivery Note Faction Picked'],1,0).') <b>'.$row['Delivery Note Assigned Picker Alias'].'</b> </div>';
             $operations.='<span style="cursor:pointer"  onClick="assign_packer(this,'.$row['Delivery Note Key'].')">'._('Assign Packer')."</span>";;
             $operations.=' | <span style="cursor:pointer"  onClick="pack_it(this,'.$row['Delivery Note Key'].')">'._('Start packing')."</span>";
-        }elseif($row['Delivery Note State']=='Picked') {
+     $public_id=sprintf("<a href='order_pick_aid.php?id=%d'>%s</a>",$row['Delivery Note Key'],$row['Delivery Note ID']);
+     }elseif($row['Delivery Note State']=='Picked') {
             $status='<div id="dn_state'.$row['Delivery Note Key'].'">'._('Picked').'</div>';
             $operations.='<span style="cursor:pointer"  onClick="assign_packer(this,'.$row['Delivery Note Key'].')">'._('Assign Packer')."</span>";;
             $operations.=' | <span style="cursor:pointer"  onClick="pack_it(this,'.$row['Delivery Note Key'].')">'._('Start packing')."</span>";
-        }
+            $public_id=sprintf("<a href='order_pick_aid.php?id=%d'>%s</a>",$row['Delivery Note Key'],$row['Delivery Note ID']);
+    }
         else {
             $operations.='';
             $status=$row['Delivery Note State'];
+            $public_id=sprintf("<a href='dn.php?id=%d'>%s</a>",$row['Delivery Note Key'],$row['Delivery Note ID']);
+                        $public_id=$row['Delivery Note ID'];
+
         }
         $operations.='</div>';
 
@@ -831,7 +839,7 @@ function ready_to_pick_orders() {
 
         $data[]=array(
                     'id'=>$row['Delivery Note Key']
-                         ,'public_id'=>sprintf("<a href='dn.php?id=%d'>%s</a>",$row['Delivery Note Key'],$row['Delivery Note ID'])
+                         ,'public_id'=>$public_id
                                       ,'customer'=>$row['Delivery Note Customer Name']
                                                   // ,'wating_lap'=>$lap
                                                   ,'weight'=>$w
