@@ -3556,5 +3556,42 @@ $lang=$_SESSION ['lang'];
     mysql_query($sql);
 
 }
+
+
+function update_history_order_in_warehouse($order) {
+
+
+    date_default_timezone_set(TIMEZONE) ;
+    $tz_date=strftime ( "%e %b %Y %H:%M %Z", strtotime ( $order->data ['Order Cancelled Date']." +00:00" ) );
+    $tz_date_created=strftime ( "%e %b %Y %H:%M %Z", strtotime ( $order->data ['Order Date']." +00:00" ) );
+
+    date_default_timezone_set('GMT') ;
+
+    if (!isset($_SESSION ['lang']))
+        $lang=0;
+    else
+        $lang=$_SESSION ['lang'];
+
+    switch ($lang) {
+    default :
+        $note = sprintf ( 'Order <a href="order.php?id=%d">%s</a> (%s)',
+                          $order->data ['Order Key'],
+                          $order->data ['Order Public ID'],
+                          $order->data['Order Current XHTML State']
+                        );
+
+
+
+    }
+
+    $sql=sprintf("update `History Dimension` set `History Abstract`=%s where `Subject`='Customer' and `Subject Key`=%d  and `Direct Object`='Order' and `Direct Object Key`=%d and `Metadata`='Process'",
+                 prepare_mysql($note),
+                 $this->id,
+                 $order->id
+                );
+    mysql_query($sql);
+
+}
+
 }
 ?>

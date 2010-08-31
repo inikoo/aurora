@@ -738,48 +738,49 @@ if($this->update_customer){
             }
         }
 
-        function send_to_warehouse($date=false) {
+function send_to_warehouse($date=false) {
 
-if(!date)
-$date=date('Y-m-d H:i:s');
+    if (!$date)
+        $date=date('Y-m-d H:i:s');
 
-            if (!($this->data['Order Current Dispatch State']=='In Process' or $this->data['Order Current Dispatch State']=='Submited')) {
-                $this->error=true;
-                $this->msg='Order is not in process';
-                return;
+    if (!($this->data['Order Current Dispatch State']=='In Process' or $this->data['Order Current Dispatch State']=='Submited')) {
+        $this->error=true;
+        $this->msg='Order is not in process';
+        return;
 
-            }
-
-
-            $this->data['Order Current Dispatch State']='Ready to Pick';
-            $this->data['Order Current XHTML State']='Ready to Pick';
+    }
 
 
+    $this->data['Order Current Dispatch State']='Ready to Pick';
+    $this->data['Order Current XHTML State']='Ready to Pick';
 
 
-            $sql=sprintf("update `Order Dimension` set 
-                `Order Current Dispatch State`=%s, `Order Current XHTML State`=%s  where `Order Key`=%d"
-            ,prepare_mysql($this->data['Order Current Dispatch State'])
-            ,prepare_mysql($this->data['Order Current XHTML State'])
-            ,$this->id);
-            
-            mysql_query($sql);
 
 
-$data_dn=array(
-		       'Delivery Note Date Created'=>$date
-		       ,'Delivery Note ID'=>$this->data['Order Public ID']
-		       ,'Delivery Note File As'=>$this->data['Order File As']
-		       ,'Delivery Note Type'=>$this->data['Order Type']
-		       ,'Delivery Note Title'=>_('Delivery Note for').' '.$this->data['Order Type'].' <a href="order.php?id='.$this->id.'">'.$this->data['Order Public ID'].'</a>'
-		       );
-	
-	$dn=new DeliveryNote('create',$data_dn,$this);
-	$dn->create_inventory_transaction_fact($this->id);
-	$this->update_delivery_notes('save');
-	
-return $dn;
-        }
+    $sql=sprintf("update `Order Dimension` set
+                 `Order Current Dispatch State`=%s, `Order Current XHTML State`=%s  where `Order Key`=%d"
+                 ,prepare_mysql($this->data['Order Current Dispatch State'])
+                 ,prepare_mysql($this->data['Order Current XHTML State'])
+                 ,$this->id);
+
+    mysql_query($sql);
+
+
+    $data_dn=array(
+                 'Delivery Note Date Created'=>$date,
+                 'Delivery Note ID'=>$this->data['Order Public ID'],
+                 'Delivery Note File As'=>$this->data['Order File As'],
+                 'Delivery Note Type'=>$this->data['Order Type'],
+                 'Delivery Note Title'=>_('Delivery Note for').' '.$this->data['Order Type'].' <a href="order.php?id='.$this->id.'">'.$this->data['Order Public ID'].'</a>'
+             );
+
+    $dn=new DeliveryNote('create',$data_dn,$this);
+    $dn->create_inventory_transaction_fact($this->id);
+    $this->update_delivery_notes('save');
+    $customer=new Customer($this->data['Order Customer Key']);
+    $customer->update_history_order_in_warehouse($this);
+    return $dn;
+}
 
 
         function cancel($note='',$date=false) {
@@ -2497,6 +2498,9 @@ $customer->add_history_order_cancelled($this);
             }
 
 $this->data ['Order Ship To Key To Deliver']=$ship_to->id;
+
+
+
 
 //   print_r($customer);
             $this->data ['Order XHTML Ship Tos']=$ship_to->data['Ship To XHTML Address'];

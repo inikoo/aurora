@@ -209,7 +209,9 @@ function list_customers(){
     $order=$_REQUEST['o'];
     $_SESSION['state']['home']['splinters']['top_customers']['order']=$order;
   }else
-    $order=$conf['criteria'];
+    $order=$conf['order'];
+    
+    
   $order_direction='desc';
    $order_dir='desc';
  
@@ -225,7 +227,7 @@ function list_customers(){
     $tableid=$_REQUEST['tableid'];
   else
     $tableid=0;
-
+/*
    if(isset( $_REQUEST['store_keys'])    ){
      $store=$_REQUEST['store_keys'];
      $_SESSION['state']['home']['splinters']['top_customers']['store_keys']=$store;
@@ -236,7 +238,8 @@ function list_customers(){
       $store=join(',',$user->stores);
 
    }
-   
+   */
+   $store=$user->stores;
   
   
   
@@ -247,7 +250,7 @@ function list_customers(){
    $wheref='';
 
      
-     $where=sprintf(' and `Customer Store Key` in (%s) ',$store);
+     $where=sprintf(' where `Customer Store Key` in (%s) and `Customer Orders Invoiced`>0',$store);
 
   
 

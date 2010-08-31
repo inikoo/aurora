@@ -37,7 +37,7 @@ YAHOO.util.Event.onContentReady("table<?php print $_REQUEST['table_id']?>", func
 
 					 ];
 	    //?tipo=customers&tid=0"
-	    top_customers_tables.dataSourcetopcust = new YAHOO.util.DataSource("ar_reports.php?tipo=customers&tableid="+tableid);
+	    top_customers_tables.dataSourcetopcust = new YAHOO.util.DataSource("ar_splinters.php?tipo=customers&tableid="+tableid);
 	  //  alert("ar_reports.php?tipo=customers&nr=20&tableid="+tableid)
 	    top_customers_tables.dataSourcetopcust.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    top_customers_tables.dataSourcetopcust.connXhrMode = "queueRequests";
