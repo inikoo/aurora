@@ -20,6 +20,9 @@ case('picking_aid_sheet'):
 
 picking_aid_sheet();
 break;
+case('create_invoice'):
+create_invoice();
+break;
 case('assign_picker'):
 
     $data=prepare_values($_REQUEST,array(
@@ -213,17 +216,17 @@ function edit_new_order() {
         $estimated_weight=$quantity*$product->data['Product Gross Weight'];
 
         $data=array(
-                  'Estimated Weight'=>$estimated_weight
-                                     ,'date'=>date('Y-m-d H:i:s')
-                                             ,'Product Key'=>$product->data['Product Current Key']
-                                                            ,'line_number'=>$order->get_next_line_number()
-                                                                           ,'gross_amount'=>$gross
-                                                                                           ,'discount_amount'=>0
-                                                                                                              ,'metadata'=>''
-                                                                                                                          ,'qty'=>$quantity
-                                                                                                                                 ,'units_per_case'=>$product->data['Product Units Per Case']
-                                                                                                                                                   ,'Current Dispatching State'=>'In Process'
-                                                                                                                                                                                ,'Current Payment State'=>'Waiting Payment'
+                  'Estimated Weight'=>$estimated_weight,
+                  'date'=>date('Y-m-d H:i:s'),
+                  'Product Key'=>$product->data['Product Current Key'],
+                  'line_number'=>$order->get_next_line_number(),
+                  'gross_amount'=>$gross,
+                  'discount_amount'=>0,
+                  'metadata'=>'',
+                  'qty'=>$quantity,
+                  'units_per_case'=>$product->data['Product Units Per Case'],
+                  'Current Dispatching State'=>'In Process',
+                  'Current Payment State'=>'Waiting Payment',
 
               );
 
@@ -247,7 +250,7 @@ function edit_new_order() {
             $sql=sprintf("select (select `Deal Info` from `Order Transaction Deal Bridge` OTDB where OTDB.`Order Key`=OTF.`Order Key` and OTDB.`Order Transaction Fact Key`=OTF.`Order Transaction Fact Key`) as `Deal Info`,P.`Product ID`,`Product XHTML Short Description`,`Order Transaction Gross Amount`,`Order Transaction Total Discount Amount` from `Order Transaction Fact` OTF  left join `Product History Dimension` PHD on (PHD.`Product Key`=OTF.`Product Key`) left join `Product Dimension` P on (PHD.`Product ID`=P.`Product ID`) where OTF.`Order Key`=%d and OTF.`Product Key` in (%s)",$order->id,$product_keys);
 
 
-             //print $sql;
+            //print $sql;
             $res = mysql_query($sql);
             $adata=array();
 
@@ -271,27 +274,29 @@ function edit_new_order() {
 
 
         $updated_data=array(
-                          'order_items_gross'=>$order->get('Items Gross Amount')
-                                              ,'order_items_discount'=>$order->get('Items Discount Amount')
-                                                                      ,'order_items_net'=>$order->get('Items Net Amount')
-                                                                                         ,'order_net'=>$order->get('Total Net Amount')
-                                                                                                      ,'order_tax'=>$order->get('Total Tax Amount')
-                                                                                                                   ,'order_charges'=>$order->get('Charges Net Amount')
-                                                                                                                                    ,'order_credits'=>$order->get('Net Credited Amount')
-                                                                                                                                                     ,'order_shipping'=>$order->get('Shipping Net Amount')
-                                                                                                                                                                       ,'order_total'=>$order->get('Total Amount')
+                          'order_items_gross'=>$order->get('Items Gross Amount'),
+                          'order_items_discount'=>$order->get('Items Discount Amount'),
+                          'order_items_net'=>$order->get('Items Net Amount'),
+                          'order_net'=>$order->get('Total Net Amount'),
+                          'order_tax'=>$order->get('Total Tax Amount'),
+                          'order_charges'=>$order->get('Charges Net Amount'),
+                          'order_credits'=>$order->get('Net Credited Amount'),
+                          'order_shipping'=>$order->get('Shipping Net Amount'),
+                          'order_total'=>$order->get('Total Amount'),
 
                       );
 
 
 
         $response= array(
-                       'state'=>200
-                               ,'quantity'=>$transaction_data['qty']
-                                           ,'key'=>$_REQUEST['key'],'data'=>$updated_data
-                                                                           ,'to_charge'=>$transaction_data['to_charge'],'discount_data'=>$adata
-                                                                                   ,'discounts'=>($order->data['Order Items Discount Amount']!=0?true:false)
-                                                                                                ,'charges'=>($order->data['Order Charges Net Amount']!=0?true:false)
+                       'state'=>200,
+                       'quantity'=>$transaction_data['qty'],
+                       'key'=>$_REQUEST['key'],
+                       'data'=>$updated_data,
+                       'to_charge'=>$transaction_data['to_charge'],
+                       'discount_data'=>$adata,
+                       'discounts'=>($order->data['Order Items Discount Amount']!=0?true:false),
+                       'charges'=>($order->data['Order Charges Net Amount']!=0?true:false)
                    );
     } else
         $response= array('state'=>200,'newvalue'=>$_REQUEST['oldvalue'],'key'=>$_REQUEST['key']);
@@ -781,7 +786,7 @@ function ready_to_pick_orders() {
 
 
 
-    $sql="select  `Delivery Note Faction Picked`,`Delivery Note Assigned Picker Key`,`Delivery Note Assigned Picker Alias`, `Delivery Note Date Created`,`Delivery Note Key`,`Delivery Note Customer Name`,`Delivery Note Estimated Weight`,`Delivery Note Distinct Items`,`Delivery Note State`,`Delivery Note ID`,`Delivery Note Estimated Weight`,`Delivery Note Distinct Items`  from `Delivery Note Dimension`   $where $wheref  order by $order $order_direction limit $start_from,$number_results ";
+    $sql="select  `Delivery Note Assigned Packer Alias`,`Delivery Note Faction Packed`,`Delivery Note Faction Picked`,`Delivery Note Assigned Picker Key`,`Delivery Note Assigned Picker Alias`, `Delivery Note Date Created`,`Delivery Note Key`,`Delivery Note Customer Name`,`Delivery Note Estimated Weight`,`Delivery Note Distinct Items`,`Delivery Note State`,`Delivery Note ID`,`Delivery Note Estimated Weight`,`Delivery Note Distinct Items`  from `Delivery Note Dimension`   $where $wheref  order by $order $order_direction limit $start_from,$number_results ";
 //print $sql;
     global $myconf;
 
@@ -824,6 +829,14 @@ function ready_to_pick_orders() {
             $status='<div id="dn_state'.$row['Delivery Note Key'].'">'._('Picked').'</div>';
             $operations.='<span style="cursor:pointer"  onClick="assign_packer(this,'.$row['Delivery Note Key'].')">'._('Assign Packer')."</span>";;
             $operations.=' | <span style="cursor:pointer"  onClick="pack_it(this,'.$row['Delivery Note Key'].')">'._('Start packing')."</span>";
+            $public_id=sprintf("<a href='order_pick_aid.php?id=%d'>%s</a>",$row['Delivery Note Key'],$row['Delivery Note ID']);
+    }elseif($row['Delivery Note State']=='Packing') {
+             $status='<div id="dn_state'.$row['Delivery Note Key'].'">'._('Packing').'('.percentage($row['Delivery Note Faction Packed'],1,0).') <b>'.$row['Delivery Note Assigned Packer Alias'].'</b> </div>';
+           
+     $public_id=sprintf("<a href='order_pack_aid.php?id=%d'>%s</a>",$row['Delivery Note Key'],$row['Delivery Note ID']);
+    }elseif($row['Delivery Note State']=='Packed') {
+            $status='<div id="dn_state'.$row['Delivery Note Key'].'">'._('Packed').'</div>';
+            
             $public_id=sprintf("<a href='order_pick_aid.php?id=%d'>%s</a>",$row['Delivery Note Key'],$row['Delivery Note ID']);
     }
         else {
@@ -1012,4 +1025,16 @@ function picking_aid_sheet(){
 			 )
 		   );
    echo json_encode($response);
+}
+
+
+function create_invoice($dn_notes){
+$dn_notes=preg_split('/\,/',$dn_notes);
+foreach($dn_notes as $dn_key){
+$dn=new DeliveryNote($dn_key);
+$invoice=$dn->create_invoice();
+}
+
+
+
 }

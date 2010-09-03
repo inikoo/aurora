@@ -86,7 +86,7 @@ class Shipping extends DB_Table {
 	      $sql=sprintf("select `Shipping Key`  from `Shipping Dimension` where `Shipping Destination Type`='Country' and `Shipping Destination Code`=%s and (`Shipping Begin Date` is null or `Shipping Begin Date`<=%s )  and (`Shipping Expiration Date` is null or `Shipping Expiration Date`>=%s )  "
 			   ,prepare_mysql($country->data['Country Code']),$date,$date);
 	      $res=mysql_query($sql);
-	 
+	
 
 
 	      if($row=mysql_fetch_array($res)){
@@ -113,7 +113,7 @@ class Shipping extends DB_Table {
 	  }
 	  $fields=array();
 	  foreach($data as $key=>$value){
-	    if(!($key=='Shipping Begin Date' or  !$key=='Shipping Expiration Date'))
+	    if(!($key=='Shipping Begin Date' or  $key=='Shipping Expiration Date'))
 	      $fields[]=$key;
 	  }
 	  
@@ -122,7 +122,7 @@ class Shipping extends DB_Table {
 	  foreach($fields as $field) {
             $sql.=sprintf(' and `%s`=%s',$field,prepare_mysql($data[$field],false));
 	  }
-	  
+	  //print $sql;
 	  $result=mysql_query($sql);
 	  $num_results=mysql_num_rows($result);
 	  if ($num_results==1) {
@@ -165,7 +165,7 @@ class Shipping extends DB_Table {
         $keys=preg_replace('/,$/',')',$keys);
         $values=preg_replace('/,$/',')',$values);
         $sql=sprintf("insert into `Shipping Dimension` %s %s",$keys,$values);
-        // print "$sql\n";
+      //   print "$sql\n";
         if (mysql_query($sql)) {
             $this->id = mysql_insert_id();
             $this->get_data('id',$this->id);

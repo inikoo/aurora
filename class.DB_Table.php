@@ -43,6 +43,7 @@ abstract class DB_Table
 
   public $editor=array(
  		       'Author Name'=>false,
+ 		       'Author Alias'=>false,
  		       'Author Key'=>0,
  		       'User Key'=>0,
  		       'Date'=>false 
