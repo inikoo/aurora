@@ -1,5 +1,311 @@
 <?php 
 
+function get_data($header_data){
+  global $shipping_net,$charges_net,$extra_shipping,$payment_method,$picker_data,$packer_data,$parcels,$parcel_type;
+  $shipping_net=round($header_data['shipping']+$extra_shipping,2);
+  $charges_net=round($header_data['charges'],2);
+  $payment_method=parse_payment_method($header_data['pay_method']);
+$picker_data=get_user_id($header_data['pickedby'],true,'&view=picks');
+        $packer_data=get_user_id($header_data['packedby'],true,'&view=packs');
+        list($parcels,$parcel_type)=parse_parcels($header_data['parcels']);
+}
+
+function create_order($data){
+global $customer_key,$filename,$store_code,$order_data_id,$date_order,$shipping_net,$charges_net,$order,$dn;
+        $order_data=array(
+                        'type'=>'system',
+                        'Customer Key'=>$customer_key,
+                        'Order Original Data MIME Type'=>'application/vnd.ms-excel',
+                        'Order Original Data Source'=>'Excel File',
+                        'Order Original Data Filename'=>$filename,
+                        'Order Type'=>$data['Order Type'],
+                        'Order Original Metadata'=>$store_code.$order_data_id,
+                        'editor'=>$data['editor'],
+                        'Order Public ID'=>$data['order id']
+
+                    );
+
+
+        $order=new Order('new',$order_data);
+
+        $discounts_map=array();
+        foreach($data['products'] as $transaction) {
+
+            $product=new Product('id',$transaction['Product Key']);
+
+            $quantity=$transaction['qty'];
+            $gross=$quantity*$product->data['Product History Price'];
+            $estimated_weight=$quantity*$product->data['Product Gross Weight'];
+
+            $data=array(
+                      'Estimated Weight'=>$estimated_weight,
+                      'date'=>date_order,
+                      'Product Key'=>$product->data['Product Current Key'],
+
+                      'gross_amount'=>$gross,
+                      'discount_amount'=>0,
+
+                      'qty'=>$quantity,
+                      'units_per_case'=>$product->data['Product Units Per Case'],
+                      'Current Dispatching State'=>'In Process',
+                      'Current Payment State'=>'Waiting Payment',
+                      'Metadata'=>$store_code.$order_data_id,
+                  );
+
+
+            $order->skip_update_after_individual_transaction=false;
+            $transaction_data=$order->add_order_transaction($data);
+
+            $discounts_map[$transaction_data['otf_key']]=$transaction['discount_amount'];
+
+
+
+
+        }
+
+        foreach($discounts_map as $otf_key=>$discount) {
+            $order->update_transaction_discount_amount($otf_key,$discount);
+        }
+        $order->categorize();
+        $order->set_shipping($shipping_net);
+        $order->set_charges($charges_net);
+        $dn=$order->send_to_warehouse($date_order);
+
+}
+
+function send_order($data,$data_dn_transactions){
+ global $customer_key,$filename,$store_code,$order_data_id,$date_order,$shipping_net,$charges_net,$order,$dn,$invoice,$shipping_net;
+ global $charges_net,$order,$dn,$payment_method,$date_inv,$extra_shipping,$parcel_type;
+ global $packer_data,$picker_data,$parcels;
+        if (count($picker_data['id'])==0)$staff_key=0;
+        else {
+            $staff_key=$picker_data['id'][0];
+        }
+        $dn->start_picking($staff_key,$date_order);
+
+        $skus_to_pick_data=array();
+        foreach($data_dn_transactions as $key=>$value) {
+            foreach($value['pick_method_data']['parts_sku'] as $parts_sku=>$parts_sku_data) {
+                if (isset($skus_to_pick_data[$parts_sku]))
+                    $skus_to_pick_data[$parts_sku]['picked']+=$value['Shipped Quantity']*$parts_sku_data['parts_per_product'];
+                else
+                    $skus_to_pick_data[$parts_sku]=array('picked'=>$value['Shipped Quantity']*$parts_sku_data['parts_per_product']);
+            }
+        }
+        foreach ($skus_to_pick_data as $sku=>$value) {
+            $dn->set_as_picked($sku,$value['picked'],$date_order);
+
+        }
+        $dn->update_picking_percentage();
+
+        if (count($packer_data['id'])==0)$staff_key=0;
+        else {
+            $staff_key=$packer_data['id'][0];
+        }
+        $dn->start_packing($staff_key,$date_order);
+
+
+        foreach ($skus_to_pick_data as $sku=>$value) {
+            $dn->set_as_packed($sku,$value['picked'],$date_order);
+        }
+        $dn->update_packing_percentage();
+        $dn->set_parcels($parcels,$parcel_type);
+
+if($order->data['Order Type']=='Order' or ((  ($order->data['Order Type']=='Sample'  or $order->data['Order Type']=='Donation') and $order->data['Order Total Amount']!=0 ))){
+        $invoice=$dn->create_invoice($date_inv);
+        $invoice->update(array
+                         (
+                             'Invoice Metadata'=>$store_code.$order_data_id,
+                             'Invoice Shipping Net Amount'=>$shipping_net,
+                             'Invoice Charges Net Amount'=>$charges_net
+                         ));
+
+        $invoice->pay('full',array(
+                          'Invoice Paid Date'=>$date_inv,
+                          'Payment Method'=>$payment_method
+                      ));
+}
+
+
+        $dn->approved_for_shipping($date_inv);
+        $dn->dispatch(array('Delivery Note Date'=>$date_inv));
+}
+function create_post_order($data,$data_dn_transactions){
+global $customer_key,$filename,$store_code,$order_data_id,$date_order,$shipping_net,$charges_net,$order,$dn,$invoice,$shipping_net;
+ global $charges_net,$order,$dn,$payment_method,$date_inv,$extra_shipping,$parcel_type;
+ global $packer_data,$picker_data,$parcels,$tipo_order;
+ 
+ 
+ if($tipo_order==6)
+         $data['Order Type']='Replacement';
+         else
+          $data['Order Type']='Missing';
+        if($parent_order_id){
+            $parent_order=new Order('public_id',$parent_order_id);
+        }else{
+         $order_id=$customer->get_last_order();
+                if ($order_id) {
+                    $parent_order=new Order('id',$order_id);
+                    $parent_order->update_customer=false;
+                    print "Parent Order not given, using customer last order\n";
+                } else {
+                    print "Parent order can not be found skipping (Rpl/Sht)\n";
+                    continue;
+                }
+        }
+         
+       
+       $discounts_map=array();
+       
+       
+       $transaction_not_found=0
+       
+       $post_data=array();
+       foreach($data['products'] as $transaction) {
+
+            $product=new Product('id',$transaction['Product Key']);
+
+            $quantity=$transaction['qty'];
+           
+
+            $data=array(
+                     
+                      'Product Key'=>$product->data['Product Current Key'],
+
+                     
+
+                      'qty'=>$quantity,
+                      
+                  );
+
+            if($data['Order Type']=='Replacement')
+               $result=$order->set_transaction_as_shipped_damaged($data);
+                else
+             $result=$order->set_transaction_as_not_received($data);
+             
+             if($result['error'])
+                $transaction_not_found++;
+              if($result['updated']){
+               
+                $post_transactions=array(
+                
+                $quantity=$result['quantity'];
+                 $gross=$quantity*$product->data['Product History Price'];
+              $estimated_weight=$quantity*$product->data['Product Gross Weight'];
+                
+               $post_data[]=array(
+                      'Estimated Weight'=>$estimated_weight,
+                      'date'=>$date_order,
+                      'Product Key'=>$product->data['Product Current Key'],
+                       'Order Type'=> $data['Order Type'],
+                      'gross_amount'=>$gross,
+                      'discount_amount'=>0,
+
+                      'qty'=>$quantity,
+                      'units_per_case'=>$product->data['Product Units Per Case'],
+                      'Current Dispatching State'=>'In Process',
+                      'Current Payment State'=>'Waiting Payment',
+                      'Metadata'=>$store_code.$order_data_id,
+                  );
+               
+                );
+}
+
+        }
+
+     foreach($post_data as $post_transaction){
+     $parent_order->add_transaction($post_transaction);
+     }
+     
+       $dn=$order->send_to_warehouse($date_order);
+       
+        // $post_action_key=$parent_order->create_post_action($data['Order Type']);
+         
+         
+         
+}
+
+
+function get_tax_code($type,$header_data){
+switch ($type) {
+    case 'E':
+        $tax_cat_data=ci_get_tax_code($header_data);
+        break;
+    default:
+        $tax_cat_data=uk_get_tax_code($header_data);
+        break;
+}
+ $tax_category=new TaxCategory('find',$tax_cat_data,'create');
+ return $tax_category;
+}
+
+
+function ci_get_tax_code($header_data) {
+   $tax_rates=array("S1"=>.16,"S2"=>.20,"S3"=>.04);
+   $tax_names=array("S1"=>"IVA","S2"=>"IVA+I","S3"=>"I","EX0"=>"Ex0");
+
+    $tax_code='UNK';
+    $tax_description='No Tax';
+    $tax_rate=0;
+    if($header_data['total_net']==0){
+     $tax_code='EX';
+            $tax_description='';
+    }elseif ($header_data['total_net']!=0 and $header_data['tax1']+$header_data['tax2']==0 ) {
+   
+            $tax_code='EX';
+            $tax_description='';
+    }else{
+        $tax_rate=($header_data['tax1']+$header_data['tax2'])/$header_data['total_net'];
+        foreach($tax_rates as $_tax_code=>$_tax_rate) {
+            // print "$_tax_code => $_tax_rate $tax_rate\n ";
+            $upper=1.1*$_tax_rate;
+            $lower=0.9*$_tax_rate;
+            if ($tax_rate>=$lower and $tax_rate<=$upper) {
+                $tax_code=$_tax_code;
+                $tax_description=$tax_names[$tax_code];
+                $tax_rate=$tax_rates[$tax_code];
+                break;
+            }
+        }
+    } 
+    
+    $data= array(
+                 'Tax Category Code'=>$tax_code,
+                 'Tax Category Name'=>$tax_description,
+                 'Tax Category Rate'=>$tax_rate
+             );
+    
+   // print_r($data);
+    
+   
+    
+    return $data;
+    
+    
+
+}
+
+function uk_get_tax_code($header_data){
+ $tax_code='UNK';
+    if ($header_data['total_net']!=0) {
+      if ($header_data['tax1']+$header_data['tax2']==0) {
+	$tax_code='EX0';
+      }
+      $tax_rate=($header_data['tax1']+$header_data['tax2'])/$header_data['total_net'];
+      foreach($myconf['tax_rates'] as $_tax_code=>$_tax_rate) {
+	// print "$_tax_code => $_tax_rate $tax_rate\n ";
+	$upper=1.1*$_tax_rate;
+	$lower=0.9*$_tax_rate;
+	if ($tax_rate>=$lower and $tax_rate<=$upper) {
+	  $tax_code=$_tax_code;
+	  break;
+	}
+      }
+    } else {
+      $tax_code='ZV';
+    }
+}
+
 function get_user_id($oname,$return_xhtml=false,$tag='',$order='',$editor=false){
 if(!$editor){
 $editor=array();

@@ -967,110 +967,110 @@ function list_transactions(){
 		   );
    echo json_encode($response);
 }
-function list_transactions_in_invoice(){
-   
-   if(isset( $_REQUEST['id']) and is_numeric( $_REQUEST['id']))
-     $order_id=$_REQUEST['id'];
-   else
-     $order_id=$_SESSION['state']['invoice']['id'];
-   
+function list_transactions_in_invoice() {
+
+    if (isset( $_REQUEST['id']) and is_numeric( $_REQUEST['id']))
+        $order_id=$_REQUEST['id'];
+    else
+        $order_id=$_SESSION['state']['invoice']['id'];
 
 
 
-   $where=' where `Invoice Quantity`!=0 and  `Invoice Key`='.$order_id;
 
-   $total_charged=0;
-   $total_discounts=0;
-   $total_picks=0;
+    $where=' where `Invoice Quantity`!=0 and  `Invoice Key`='.$order_id;
 
-   $data=array();
-   $sql="select * from `Order Transaction Fact` O  left join `Product History Dimension` PH on (O.`Product Key`=PH.`Product Key`) left join  `Product Dimension` P on (PH.`Product ID`=P.`Product ID`) $where   ";
-   
-   //  $sql="select  p.id as id,p.code as code ,product_id,p.description,units,ordered,dispatched,charge,discount,promotion_id    from transaction as t left join product as p on (p.id=product_id)  $where    ";
-   //   print $sql;
-   $result=mysql_query($sql);
-   $total_gross=0;
-   $total_discount=0;
-   while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
-   //   $total_charged+=$row['charge'];
+    $total_charged=0;
+    $total_discounts=0;
+    $total_picks=0;
+
+    $data=array();
+    $sql="select * from `Order Transaction Fact` O  left join `Product History Dimension` PH on (O.`Product Key`=PH.`Product Key`) left join  `Product Dimension` P on (PH.`Product ID`=P.`Product ID`) $where   ";
+
+    //  $sql="select  p.id as id,p.code as code ,product_id,p.description,units,ordered,dispatched,charge,discount,promotion_id    from transaction as t left join product as p on (p.id=product_id)  $where    ";
+    //   print $sql;
+    $result=mysql_query($sql);
+    $total_gross=0;
+    $total_discount=0;
+    while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+        //   $total_charged+=$row['charge'];
 //      $total_discounts+=$ndiscount;
 //      $total_picks+=$row['dispatched'];
-     $total_discount+=$row['Invoice Transaction Total Discount Amount'];
-     $total_gross+=$row['Invoice Transaction Gross Amount'];
-     $code=sprintf('<a href="product.php?pid=%d">%s</a>',$row['Product ID'],$row['Product Code']);
-    
-    if($row['Invoice Transaction Total Discount Amount']==0)
-        $discount='';
-    else
-        $discount=money($row['Invoice Transaction Total Discount Amount']);
-    
-    $data[]=array(
+        $total_discount+=$row['Invoice Transaction Total Discount Amount'];
+        $total_gross+=$row['Invoice Transaction Gross Amount'];
+        $code=sprintf('<a href="product.php?pid=%d">%s</a>',$row['Product ID'],$row['Product Code']);
 
-		   'code'=>$code
-		   ,'description'=>$row['Product XHTML Short Description']
-		   ,'tariff_code'=>$row['Product Tariff Code']
-		   ,'quantity'=>number($row['Invoice Quantity'])
-		   ,'gross'=>money($row['Invoice Transaction Gross Amount'])
-		   ,'discount'=>$discount
-		   ,'to_charge'=>money($row['Invoice Transaction Gross Amount']-$row['Invoice Transaction Total Discount Amount'])
-		   );
-   }
+        if ($row['Invoice Transaction Total Discount Amount']==0)
+            $discount='';
+        else
+            $discount=money($row['Invoice Transaction Total Discount Amount'],$row['Invoice Currency Code']);
 
-   $invoice=new Invoice($order_id);
-   
-    if($invoice->data['Invoice Shipping Net Amount']!=0){
+        $data[]=array(
 
-   $data[]=array(
-		 
-		 'code'=>''
-		 ,'description'=>_('Shipping')
-		 ,'tariff_code'=>''
-		 ,'quantity'=>''
-		 ,'gross'=>money($invoice->data['Invoice Shipping Net Amount'])
-		 ,'discount'=>''
-		 ,'to_charge'=>money($invoice->data['Invoice Shipping Net Amount'])
-	      );
+                    'code'=>$code
+                           ,'description'=>$row['Product XHTML Short Description']
+                                          ,'tariff_code'=>$row['Product Tariff Code']
+                                                         ,'quantity'=>number($row['Invoice Quantity'])
+                                                                     ,'gross'=>money($row['Invoice Transaction Gross Amount'],$row['Invoice Currency Code'])
+                                                                              ,'discount'=>$discount
+                                                                                          ,'to_charge'=>money($row['Invoice Transaction Gross Amount']-$row['Invoice Transaction Total Discount Amount'],$row['Invoice Currency Code'])
+                );
+    }
+
+    $invoice=new Invoice($order_id);
+
+    if ($invoice->data['Invoice Shipping Net Amount']!=0) {
+
+        $data[]=array(
+
+                    'code'=>''
+                           ,'description'=>_('Shipping')
+                                          ,'tariff_code'=>''
+                                                         ,'quantity'=>''
+                                                                     ,'gross'=>money($invoice->data['Invoice Shipping Net Amount'],$invoice->data['Invoice Currency'])
+                                                                              ,'discount'=>''
+                                                                                          ,'to_charge'=>money($invoice->data['Invoice Shipping Net Amount'],$invoice->data['Invoice Currency'])
+                );
 
     }
-   if($invoice->data['Invoice Charges Net Amount']!=0){
- $data[]=array(
-		 
-		 'code'=>''
-		 ,'description'=>_('Charges')
-		 ,'tariff_code'=>''
-		 ,'quantity'=>''
-		 ,'gross'=>money($invoice->data['Invoice Charges Net Amount'])
-		 ,'discount'=>''
-		 ,'to_charge'=>money($invoice->data['Invoice Charges Net Amount'])
-	      );
-   }
- if($invoice->data['Invoice Total Tax Amount']!=0){
-   $data[]=array(
-		 
-		 'code'=>''
-		 ,'description'=>_('Tax')
-		 ,'tariff_code'=>''
-		 ,'quantity'=>''
-		 ,'gross'=>money($invoice->data['Invoice Total Tax Amount'])
-		 ,'discount'=>''
-		 ,'to_charge'=>money($invoice->data['Invoice Total Tax Amount'])
-	      );
-   }
-   
- $data[]=array(
-		 
-		 'code'=>''
-		 ,'description'=>_('Total')
-		 ,'tariff_code'=>''
-		 ,'quantity'=>''
-		 ,'gross'=>''
-		 ,'discount'=>''
-		 ,'to_charge'=>'<b>'.money($invoice->data['Invoice Total Amount']).'</b>'
-	      );
+    if ($invoice->data['Invoice Charges Net Amount']!=0) {
+        $data[]=array(
 
-   $response=array('resultset'=>
-		   array('state'=>200,
-			 'data'=>$data
+                    'code'=>''
+                           ,'description'=>_('Charges')
+                                          ,'tariff_code'=>''
+                                                         ,'quantity'=>''
+                                                                     ,'gross'=>money($invoice->data['Invoice Charges Net Amount'],$invoice->data['Invoice Currency'])
+                                                                              ,'discount'=>''
+                                                                                          ,'to_charge'=>money($invoice->data['Invoice Charges Net Amount'],$invoice->data['Invoice Currency'])
+                );
+    }
+    if ($invoice->data['Invoice Total Tax Amount']!=0) {
+        $data[]=array(
+
+                    'code'=>''
+                           ,'description'=>_('Tax')
+                                          ,'tariff_code'=>''
+                                                         ,'quantity'=>''
+                                                                     ,'gross'=>money($invoice->data['Invoice Total Tax Amount'],$invoice->data['Invoice Currency'])
+                                                                              ,'discount'=>''
+                                                                                          ,'to_charge'=>money($invoice->data['Invoice Total Tax Amount'],$invoice->data['Invoice Currency'])
+                );
+    }
+
+    $data[]=array(
+
+                'code'=>''
+                       ,'description'=>_('Total')
+                                      ,'tariff_code'=>''
+                                                     ,'quantity'=>''
+                                                                 ,'gross'=>''
+                                                                          ,'discount'=>''
+                                                                                      ,'to_charge'=>'<b>'.money($invoice->data['Invoice Total Amount'],$invoice->data['Invoice Currency']).'</b>'
+            );
+
+    $response=array('resultset'=>
+                                array('state'=>200,
+                                      'data'=>$data
 // 			 'total_records'=>$total,
 // 			 'records_offset'=>$start_from,
 // 			 'records_returned'=>$start_from+$res->numRows(),
@@ -1079,9 +1079,9 @@ function list_transactions_in_invoice(){
 // 			 'records_order'=>$order,
 // 			 'records_order_dir'=>$order_dir,
 // 			 'filtered'=>$filtered
-			 )
-		   );
-   echo json_encode($response);
+                                     )
+                   );
+    echo json_encode($response);
 }
 
 function list_transactions_in_dn(){
@@ -1830,11 +1830,14 @@ if(isset( $_REQUEST['where']))
      }else{
        $parcels=number($row['Delivery Note Number Parcels']).' '.$parcel_type;
      }
-
+if($row['Delivery Note State']=='Dispatched')
+$date=strftime("%e %b %y", strtotime($row['Delivery Note Date']));
+else
+$date=strftime("%e %b %y", strtotime($row['Delivery Note Date Created']));
      $data[]=array(
 		   'id'=>$order_id
 		   ,'customer'=>$customer
-		   ,'date'=>strftime("%e %b %y", strtotime($row['Delivery Note Date']))
+		   ,'date'=>$date
 		   ,'type'=>$type.' ('.$row['Delivery Note XHTML Orders'].')'
 		   ,'orders'=>$row['Delivery Note XHTML Orders']
 		   ,'invoices'=>$row['Delivery Note XHTML Invoices']
@@ -2102,7 +2105,7 @@ else if($order=='net')
 
      $order_id=sprintf('<a href="invoice.php?id=%d">%s</a>',$row['Invoice Key'],$row['Invoice Public ID']);
      $customer=sprintf('<a href="customer.php?id=%d">%s</a>',$row['Invoice Customer Key'],$row['Invoice Customer Name']);
-     if($row['Invoice Has Been Paid In Full'])
+     if($row['Invoice Has Been Paid In Full']=='Yes')
        $state=_('Paid');
      else
        $state=_('No Paid');

@@ -153,6 +153,10 @@ case('Unknown'):
  $js_files[]='order_unknown.js.php';
     $template='order_unknown.tpl';
 break;
+case('Ready to Ship'):
+ $js_files[]='order_ready_to_ship.js.php';
+    $template='order_ready_to_ship.tpl';
+break;
  default:
    exit('todo '.$order->get('Order Current Dispatch State'));
   break;

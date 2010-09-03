@@ -1,9 +1,5 @@
 <?php
 /*
- File: Warehouse.php 
-
- This file contains the Warehouse Class
-
  About: 
  Autor: Raul Perusquia <rulovico@gmail.com>
  
@@ -37,11 +33,14 @@ class TaxCategory extends DB_Table{
     
    if($key=='code')
       $sql=sprintf("select *   from `Tax Category Dimension` where `Tax Category Code`=%s ",prepare_mysql($tag));
+        elseif($key=='id')
+      $sql=sprintf("select *   from `Tax Category Dimension` where `Tax Category Key`=%d ",$tag);
     else
       return;
+     // print $sql;
     $result=mysql_query($sql);
     if($this->data=mysql_fetch_array($result, MYSQL_ASSOC)){
-      $this->id=$this->data['Tax Category Code'];
+      $this->id=$this->data['Tax Category Key'];
       $this->code=$this->data['Tax Category Code'];
 
     }
@@ -105,9 +104,10 @@ class TaxCategory extends DB_Table{
       $this->create($data);
       return;
     }
-    if($this->found)
-      $this->get_data('code',$this->found_key);
-    
+    if($this->found){
+     
+     $this->get_data('code',$this->found_key);
+    }
     if($update and $this->found){
 
     }
@@ -166,6 +166,58 @@ function create($data){
     return $amount*$this->data['Tax Category Rate'];
     
   }
+  
+         function set_taxes($country) {
+
+            switch ($country) {
+            case('GBR'):
+                if ($this->data['Order Ship To Country Code']=='GBR' or $this->data['Order Ship To Country Code']=='UNK') {
+                    $tax_rate=0.175;
+                    $tax_code='GBR.S';
+
+                } else {
+                    $sql=sprintf("select `European Union` from kbase.`Country Dimension` where `Country Code`=%s      "
+                    ,prepare_mysql($country));
+                    //print $sql;
+                    $res=mysql_query($sql);
+                    if ($row=mysql_fetch_array($res)) {
+                        if ($row['European Union']=="Yes") {
+                            $customer=new Customer($this->data['Order Customer Key']);
+
+                            if ($customer->is_tax_number_valid()) {
+                                $tax_rate=0;
+                                $tax_code='GBR.EuroFree';
+                            } else {
+                                $tax_rate=0.175;
+                                $tax_code='GBR.S';
+
+                            }
+                        } else {
+                            $tax_rate=0;
+                            $tax_code='GBR.OffEuroFree';
+
+                        }
+
+
+                    } else {
+                        $tax_rate=0.175;
+                        $tax_code='GBR.S';
+                    }
+
+
+
+                }
+
+            }
+
+
+            $this->data['Order Tax Rate']=$tax_rate;
+            $this->data['Order Tax Code']=$tax_code;
+
+
+
+        }
+  
   
 }
 

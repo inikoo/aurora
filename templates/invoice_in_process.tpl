@@ -3,8 +3,12 @@
 <div id="bd" >
   <div id="yui-main">
     <div class="yui-b">
+  <div style="text-align:right">
+	<span class="state_details" id="cancel">Cancel</span>
+	<span class="state_details" id="done" style="margin-left:40px"><span style="color:#000;font-size:150%">To pay: {$invoice->get('Total Amount')}</span> Charge</span>
 
-      <div class="yui-b" style="border:1px solid #ccc;text-align:left;padding:10px;margin: 30px 0 10px 0">
+      </div>
+      <div class="yui-b" style="border:1px solid #ccc;text-align:left;padding:10px;margin: 10px 0 10px 0">
 
        <div style="width:400px;float:left"> 
         <h1 style="padding:0 0 10px 0">{t}Invoice{/t} {$invoice->get('Invoice Public ID')}</h1>

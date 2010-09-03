@@ -22,9 +22,16 @@ $customer=new Customer($invoice->data['Invoice Customer Key']);
 
 //print_r($invoice->data);
 
+
+
+if($invoice->data['Invoice Paid']=='Yes'){
 $js_file='invoice.js.php';
 $template='invoice.tpl';
+}else{
+$js_file='invoice_in_process.js.php';
+$template='invoice_in_process.tpl';
 
+}
 
 $smarty->assign('invoice',$invoice);
 $smarty->assign('customer',$customer);

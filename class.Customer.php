@@ -2053,7 +2053,7 @@ if($key=='Customer Fiscal Name' or $key=='Fiscal Name'){
             return $this->get_tax_rate();
             break;
         case('Tax Code'):
-            return $this->data['Customer Tax Category'];
+            return $this->data['Customer Tax Category Code'];
             break;
         case('xhtml ship to'):
 
@@ -2813,7 +2813,7 @@ Array
     function get_tax_rate() {
         $rate=0;
         $sql=sprintf("select `Tax Category Rate` from `Tax Category Dimension` where `Tax Category Code`=%s",
-                     prepare_mysql($this->data['Customer Tax Category']));
+                     prepare_mysql($this->data['Customer Tax Category Code']));
         $res=mysql_query($sql);
         if ($row=mysql_fetch_array($res)) {
             $rate=$row['Tax Category Rate'];
