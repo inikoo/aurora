@@ -11,7 +11,11 @@ include_once('../../class.Store.php');
 include_once('../../class.CompanyArea.php');
 include_once('../../class.CompanyDepartment.php');
 include_once('../../class.CompanyPosition.php');
+include_once('../../class.TaxCategory.php');
+include_once('../../class.Charge.php');
 include_once('../../class.Staff.php');
+include_once('../../class.Campaign.php');
+include_once('../../class.Shipping.php');
 
 error_reporting(E_ALL);
 
@@ -393,5 +397,1037 @@ foreach($staff as $position_codes=>$staff_data) {
 }
 
 
+$data=array(
+	    'Tax Category Code'=>'S1',
+	    'Tax Category Name'=>'VAT 17.5%',
+'Tax Category Rate'=>0.175
+);
+$cat_tax=new TaxCategory('find',$data,'create');
+
+
+
+$data=array(
+	    'Tax Category Code'=>'S2',
+'Tax Category Name'=>'VAT 20%',
+'Tax Category Rate'=>0.2
+);
+$cat_tax=new TaxCategory('find',$data,'create');
+$data=array(
+	    'Tax Category Code'=>'S3',
+'Tax Category Name'=>'VAT 15%',
+'Tax Category Rate'=>0.15
+);
+$cat_tax=new TaxCategory('find',$data,'create');
+
+$store_data=array('Store Code'=>'UK',
+		  'Store Name'=>'Ancient Wisdom',
+		  'Store Locale'=>'en_GB',
+		  'Store Home Country Code 2 Alpha'=>'GB',
+		  'Store Currency Code'=>'GBP',
+		  'Store Home Country Name'=>'United Kingdom', 
+		  'Store Home Country Short Name'=>'UK', 
+		  'Store URL'=>'ancietwisdom.biz',
+		  'Store Email'=>'mail@ancientwisdom.biz',
+		  'Store Telephone'=>'+44 (0) 114 272 9165',
+		  'Store FAX'=>'+44 (0) 114 270 6571',
+		  'Store Slogan'=>'giftware sourced worldwide',
+		  'Store Tax Category Code'=>'S1'
+		  );
+$store=new Store('find',$store_data,'create');
+
+$store_data=array('Store Code'=>'DE',
+		  'Store Name'=>'AW-Geshenke',
+		  'Store Locale'=>'de_DE',
+		  'Store Home Country Code 2 Alpha'=>'DE',
+		  'Store Currency Code'=>'EUR',
+		  'Store Home Country Name'=>'Germany', 
+		  'Store Home Country Short Name'=>'DE', 
+		  'Store URL'=>'aw-geschenke.com',
+		  'Store Email'=>'martina@aw-geschenke.com',
+		  'Store Telephone'=>'+49 (0)831 2531 986',
+		  'Store FAX'=>'',
+		  'Store Slogan'=>'Geschenkwaren',
+'Store Tax Category Code'=>'S1'
+		  );
+$store=new Store('find',$store_data,'create');
+$store_data=array('Store Code'=>'FR',
+		  'Store Name'=>'AW-Cadeaux',
+		  'Store Locale'=>'fr_FR',
+		  'Store Home Country Code 2 Alpha'=>'FR',
+		  'Store Currency Code'=>'EUR',
+		  'Store Home Country Name'=>'France', 
+		  'Store Home Country Short Name'=>'FR', 
+		  'Store URL'=>'aw-cadeux.com',
+		  'Store Email'=>'nassim@aw-cadeux.com',
+		  'Store Telephone'=>'',
+		  'Store FAX'=>'',
+		  'Store Slogan'=>'',
+		  'Store Tax Category Code'=>'S1'
+		  );
+$store=new Store('find',$store_data,'create');
+
+$warehouse=new Warehouse('find',array('Warehouse Code'=>'W','Warehouse Name'=>'Parkwood'),'create');
+
+$unk_location=new Location('find',array('Location Code'=>'UNK','Location Name'=>'Unknown'),'create');
+
+$unk_supplier=new Supplier('find',array('Supplier Code'=>'UNK','Supplier Name'=>'Unknown'),'create');
+
+$store_key=1;
+$charge_data=array(
+		     'Charge Description'=>'£7.50 small order'
+		      ,'Store Key'=>$store_key
+		     ,'Charge Trigger'=>'Order'
+		     ,'Charge Type'=>'Amount'
+		     ,'Charge Name'=>'Small Order Charge'
+		     ,'Charge Terms Type'=>'Order Items Gross Amount'
+		     ,'Charge Terms Description'=>'when Order Items Gross Amount is less than £50.00'
+		     ,'Charge Begin Date'=>''
+		     ,'Charge Expiration Date'=>''
+		     );
+$small_order_charge=new Charge('find create',$charge_data);
+
+
+$dept_data=array(
+		   'Product Department Code'=>'ND',
+		   'Product Department Name'=>'Products Without Department',
+		   'Product Department Store Key'=>$store_key
+		   );
+
+$dept_no_dept=new Department('find',$dept_data,'create');
+$dept_no_dept_key=$dept_no_dept->id;
+
+$dept_data=array(
+		   'Product Department Code'=>'Promo',
+		   'Product Department Name'=>'Promotional Items',
+		   'Product Department Store Key'=>$store_key
+		   );
+$dept_promo=new Department('find',$dept_data,'create');
+
+$dept_promo_key=$dept_promo->id;
+
+$fam_data=array(
+		   'Product Family Code'=>'PND_GB',
+		   'Product Family Name'=>'Products Without Family',
+		   'Product Family Main Department Key'=>$dept_no_dept_key,
+		   'Product Family Store Key'=>$store_key,
+		   'Product Family Special Characteristic'=>'None'
+		   );
+
+$fam_no_fam=new Family('find',$fam_data,'create');
+$fam_no_fam_key=$fam_no_fam->id;
+
+//print_r($fam_no_fam);
+
+$fam_data=array(
+		   'Product Family Code'=>'Promo_GB',
+		   'Product Family Name'=>'Promotional Items',
+		   'Product Family Main Department Key'=>$dept_promo_key,
+		   'Product Family Store Key'=>$store_key,
+		   'Product Family Special Characteristic'=>'None'
+		   );
+
+
+
+$fam_promo=new Family('find',$fam_data,'create');
+
+
+
+$fam_no_fam_key=$fam_no_fam->id;
+$fam_promo_key=$fam_promo->id;
+
+
+ $campaign=array(
+		     'Campaign Name'=>'Gold Reward'
+		     ,'Campaign Code'=>'GB.GR'
+		     ,'Campaign Description'=>'Small order charge waive & discounts on seleted items if last order within 1 calendar month'
+		     ,'Campaign Begin Date'=>''
+		     ,'Campaign Expiration Date'=>''
+		     ,'Campaign Deal Terms Type'=>'Order Interval'
+		     ,'Campaign Deal Terms Description'=>'last order within 1 month'
+		     ,'Campaign Deal Terms Lock'=>'Yes'
+
+		     );
+$gold_camp=new Campaign('find create',$campaign);
+
+
+$data=array(
+	    'Deal Name'=>'[Product Family Code] Gold Reward'
+	    ,'Deal Trigger'=>'Family'
+	    ,'Deal Allowance Type'=>'Percentage Off'
+	    ,'Deal Allowance Description'=>'[Percentage Off] off'
+	    ,'Deal Allowance Target'=>'Family'
+	    ,'Deal Allowance Lock'=>'No'
+		     );
+$gold_camp->add_deal_schema($data);
+
+$data=array(
+	    'Deal Name'=>'Free [Charge Name]'
+	    ,'Deal Trigger'=>'Order'
+	    ,'Deal Allowance Type'=>'Percentage Off'
+	    ,'Deal Allowance Description'=>'Free [Charge Name]'
+	    ,'Deal Allowance Target'=>'Charge'
+	    ,'Deal Allowance Key'=>$small_order_charge->id
+        ,'Deal Allowance Lock'=>'Yes'
+
+		   
+		     );
+$gold_camp->add_deal_schema($data);
+
+$data=array('Deal Allowance Target Key'=>$small_order_charge->id);
+$gold_camp->create_deal('Free [Charge Name]',$data);
+
+$gold_reward_cam_id=$gold_camp->id;
+
+$campaign=array(
+		     'Campaign Name'=>'Volumen Discount'
+		      ,'Campaign Code'=>'GB.Vol'
+		     ,'Campaign Trigger'=>'Family'
+		     ,'Campaign Description'=>'Percentage off when order more than some quantity of products in the same family'
+		     ,'Campaign Begin Date'=>''
+		     ,'Campaign Expiration Date'=>''
+		      ,'Campaign Deal Terms Type'=>'Family Quantity Ordered'
+		     ,'Campaign Deal Terms Description'=>'order [Quantity] or more same family'
+		     ,'Campaign Deal Terms Lock'=>'No'
+		     );
+$vol_camp=new Campaign('find create',$campaign);
+
+
+$data=array(
+		     'Deal Name'=>'[Product Family Code] Volume Discount'
+		     ,'Deal Trigger'=>'Family'
+		     ,'Deal Allowance Type'=>'Percentage Off'
+		     ,'Deal Allowance Description'=>'[Percentage Off] off'
+		     ,'Deal Allowance Target'=>'Family'
+		   	 ,'Deal Allowance Lock'=>'No'
+
+		     );
+$vol_camp->add_deal_schema($data);
+
+$volume_cam_id=$vol_camp->id;
+
+
+$free_shipping_campaign_data=array(
+		     'Campaign Name'=>'Free Shipping'
+		      ,'Campaign Code'=>'GB.FShip'
+		     ,'Campaign Description'=>'Free shipping to selected destinations when order more than some amount'
+		     ,'Campaign Begin Date'=>''
+		     ,'Campaign Expiration Date'=>''
+		     ,'Campaign Deal Terms Type'=>'Order Items Net Amount AND Shipping Country'
+		     ,'Campaign Deal Terms Description'=>'Orders shipped to {Country Name} and Order Items Net Amount more than {Order Items Net Amount}'
+		     ,'Campaign Deal Terms Lock'=>'No'
+		     );
+$free_shipping_campaign=new Campaign('find create',$free_shipping_campaign_data);
+
+
+$data=array(
+		     'Deal Name'=>'[Country Name] Free Shipping'
+		     ,'Deal Trigger'=>'Order'
+		     ,'Deal Allowance Type'=>'Percentage Off'
+		     ,'Deal Allowance Description'=>'Free Shipping'
+		     ,'Deal Allowance Target'=>'Shipping'
+		     ,'Deal Allowance Lock'=>'Yes'
+
+		     );
+$free_shipping_campaign->add_deal_schema($data);
+
+$free_shipping_campaign_id=$free_shipping_campaign->id;
+
+$shipping_uk=new Shipping('find',array('Country Code'=>'GBR'));
+$terms_description=sprintf('Orders shipped to %s with Order Items Net Amount more than %s','GBR','£175');
+$data=array(
+	    'Deal Allowance Target Key'=>$shipping_uk->id
+	    ,'Deal Terms Description'=>$terms_description
+	    );
+$free_shipping_campaign->create_deal('[Country Name] Free Shipping',$data);
+
+
+
+$campaign=array(
+		     'Campaign Name'=>'BOGOF'
+		       ,'Campaign Code'=>'GB.BOGOF'
+		     ,'Campaign Description'=>'Buy one Get one Free'
+		     ,'Campaign Begin Date'=>''
+		     ,'Campaign Expiration Date'=>''
+		       ,'Campaign Deal Terms Type'=>'Product Quantity Ordered'
+		     ,'Campaign Deal Terms Description'=>'Buy 1'
+		     ,'Campaign Deal Terms Lock'=>'Yes'
+		     );
+$bogof_camp=new Campaign('find create',$campaign);
+$data=array(
+		     'Deal Name'=>'[Product Family Code] BOGOF'
+		     ,'Deal Trigger'=>'Family'
+		     ,'Deal Allowance Type'=>'Get Free'
+		     ,'Deal Allowance Description'=>'get 1 free'
+		     ,'Deal Allowance Target'=>'Product'
+		    ,'Deal Allowance Lock'=>'Yes'
+		     );
+$bogof_camp->add_deal_schema($data);
+
+$data=array(
+	    'Deal Name'=>'[Product Code] BOGOF'
+		     ,'Deal Trigger'=>'Product'
+		     ,'Deal Allowance Type'=>'Get Same Free'
+		     ,'Deal Allowance Description'=>'get 1 free'
+		     ,'Deal Allowance Target'=>'Product'
+		     ,'Deal Allowance Lock'=>'Yes'
+
+		     );
+$bogof_camp->add_deal_schema($data);
+
+
+$bogof_cam_id=$bogof_camp->id;
+$campaign=array(
+		     'Campaign Name'=>'First Order Bonus'
+		     ,'Campaign Trigger'=>'Order'
+		       ,'Campaign Code'=>'GB.FOB'
+		     ,'Campaign Description'=>'When you order over £100+vat for the first time we give you over a £100 of stock. (at retail value).'
+		     ,'Campaign Begin Date'=>''
+		     ,'Campaign Expiration Date'=>''
+		     ,'Campaign Deal Terms Type'=>'Order Total Net Amount AND Order Number'
+		     ,'Campaign Deal Terms Description'=>'order over £100+tax on the first order '
+		     ,'Campaign Deal Terms Lock'=>'Yes'
+		     );
+$camp=new Campaign('find create',$campaign);
+
+
+$data=array(
+	    'Deal Name'=>'First Order Bonus [Counter]'
+	    ,'Deal Trigger'=>'Order'
+            ,'Deal Description'=>'When you order over £100+vat for the first time we give you over a £100 of stock. (at retail value).'
+	    ,'Deal Allowance Type'=>'Get Free'
+	    ,'Deal Allowance Description'=>'Free Bonus Stock ([Product Code])'
+	    ,'Deal Allowance Target'=>'Product'
+	    ,'Deal Allowance Lock'=>'No'
+	    
+	    );
+$camp->add_deal_schema($data);
+
+
+//=============================================================
+// Germany
+$store=new Store("code","DE");
+$store_key=$store->id;
+
+//exit($store_key);
+$dept_data=array(
+		 'Product Department Code'=>'ND',
+		 'Product Department Name'=>'Products Without Department',
+		 'Product Department Store Key'=>$store_key
+		 );
+
+$dept_no_dept=new Department('find',$dept_data,'create');
+$dept_no_dept_key=$dept_no_dept->id;
+
+$dept_data=array(
+		 'Product Department Code'=>'Promo',
+		 'Product Department Name'=>'Promotional Items',
+		 'Product Department Store Key'=>$store_key
+		 );
+$dept_promo=new Department('find',$dept_data,'create');
+$dept_promo_key=$dept_promo->id;
+
+$fam_data=array(
+		'Product Family Code'=>'PND_DE',
+		'Product Family Name'=>'Products Without Family',
+		'Product Family Main Department Key'=>$dept_no_dept_key,
+		'Product Family Store Key'=>$store_key,
+		'Product Family Special Characteristic'=>'None'
+		);
+
+$fam_no_fam=new Family('find',$fam_data,'create');
+$fam_no_fam_key=$fam_no_fam->id;
+
+//print_r($fam_no_fam);
+
+$fam_data=array(
+		'Product Family Code'=>'Promo_DE',
+		'Product Family Name'=>'Promotional Items',
+		'Product Family Main Department Key'=>$dept_promo_key,
+		'Product Family Store Key'=>$store_key,
+		'Product Family Special Characteristic'=>'None'
+		);
+
+
+
+$fam_promo=new Family('find',$fam_data,'create');
+
+
+
+$fam_no_fam_key=$fam_no_fam->id;
+$fam_promo_key=$fam_promo->id;
+
+$campaign=array(
+		'Campaign Name'=>'Goldprämie'
+		 ,'Campaign Code'=>'DE.GR'
+		,'Campaign Description'=>'Small order charge waive & discounts on seleted items if last order within 1 calendar month'
+		,'Campaign Begin Date'=>''
+		,'Campaign Expiration Date'=>''
+		,'Campaign Deal Terms Type'=>'Order Interval'
+		,'Campaign Deal Terms Description'=>'last order within 1 month'
+		,'Campaign Deal Terms Lock'=>'Yes'
+        ,'Store Key'=>$store_key
+		);
+$gold_camp=new Campaign('find create',$campaign);
+//print_r($gold_camp);
+//exit;
+
+$data=array(
+	    'Deal Name'=>'[Product Family Code] Goldprämie'
+	    ,'Deal Trigger'=>'Family'
+	    ,'Deal Allowance Type'=>'Percentage Off'
+	    ,'Deal Allowance Description'=>'[Percentage Off] off'
+	    ,'Deal Allowance Target'=>'Family'
+	    ,'Deal Allowance Lock'=>'No'
+	    );
+$gold_camp->add_deal_schema($data);
+
+
+
+//$data=array('Deal Allowance Target Key'=>$small_order_charge->id);
+//$gold_camp->create_deal('Free [Charge Name]',$data);
+
+$gold_reward_cam_id=$gold_camp->id;
+
+$campaign=array(
+		'Campaign Name'=>'Volumen Discount'
+	 ,'Campaign Code'=>'DE.Vol'
+		,'Campaign Trigger'=>'Family'
+		,'Campaign Description'=>'Percentage off when order more than some quantity of products in the same family'
+		,'Campaign Begin Date'=>''
+		,'Campaign Expiration Date'=>''
+		,'Campaign Deal Terms Type'=>'Family Quantity Ordered'
+		,'Campaign Deal Terms Description'=>'order [Quantity] or more same family'
+		,'Campaign Deal Terms Lock'=>'No'
+		,'Store Key'=>$store_key
+		);
+$vol_camp=new Campaign('find create',$campaign);
+
+
+$data=array(
+	    'Deal Name'=>'[Product Family Code] Volume Discount'
+	    ,'Deal Trigger'=>'Family'
+	    ,'Deal Allowance Type'=>'Percentage Off'
+	    ,'Deal Allowance Description'=>'[Percentage Off] off'
+	    ,'Deal Allowance Target'=>'Family'
+	    ,'Deal Allowance Lock'=>'No'
+
+	    );
+$vol_camp->add_deal_schema($data);
+
+$volume_cam_id=$vol_camp->id;
+
+
+$free_shipping_campaign_data=array(
+				   'Campaign Name'=>'Free Shipping'
+		     	 ,'Campaign Code'=>'DE.FShip'
+				   ,'Campaign Description'=>'Free shipping to selected destinations when order more than some amount'
+				   ,'Campaign Begin Date'=>''
+				   ,'Campaign Expiration Date'=>''
+				   ,'Campaign Deal Terms Type'=>'Order Items Net Amount AND Shipping Country'
+				   ,'Campaign Deal Terms Description'=>'Orders shipped to {Country Name} and Order Items Net Amount more than {Order Items Net Amount}'
+				   ,'Campaign Deal Terms Lock'=>'No'
+				   ,'Store Key'=>$store_key
+				   );
+$free_shipping_campaign=new Campaign('find create',$free_shipping_campaign_data);
+
+
+$data=array(
+	    'Deal Name'=>'[Country Name] Free Shipping'
+	    ,'Deal Trigger'=>'Order'
+	    ,'Deal Allowance Type'=>'Percentage Off'
+	    ,'Deal Allowance Description'=>'Free Shipping'
+	    ,'Deal Allowance Target'=>'Shipping'
+	    ,'Deal Allowance Lock'=>'Yes'
+
+	    );
+$free_shipping_campaign->add_deal_schema($data);
+
+$free_shipping_campaign_id=$free_shipping_campaign->id;
+
+
+$shipping_uk=new Shipping('find',array('Country Code'=>'DEU'));
+$terms_description=sprintf('Orders shipped to %s with Order Items Net Amount more than %s','DEU','€500');
+$data=array(
+	    'Deal Allowance Target Key'=>$shipping_uk->id
+	    ,'Deal Terms Description'=>$terms_description
+	    );
+$free_shipping_campaign->create_deal('[Country Name] Free Shipping',$data);
+
+
+$shipping_uk=new Shipping('find',array('Country Code'=>'DNK'));
+$terms_description=sprintf('Orders shipped to %s with Order Items Net Amount more than %s','DNK','€500');
+$data=array(
+	    'Deal Allowance Target Key'=>$shipping_uk->id
+	    ,'Deal Terms Description'=>$terms_description
+	    );
+$free_shipping_campaign->create_deal('[Country Name] Free Shipping',$data);
+
+
+
+$shipping_uk=new Shipping('find',array('Country Code'=>'AUT'));
+$terms_description=sprintf('Orders shipped to %s with Order Items Net Amount more than %s','AUT','€500');
+$data=array(
+	    'Deal Allowance Target Key'=>$shipping_uk->id
+	    ,'Deal Terms Description'=>$terms_description
+	    );
+$free_shipping_campaign->create_deal('[Country Name] Free Shipping',$data);
+
+
+$shipping_uk=new Shipping('find',array('Country Code'=>'NOR'));
+$terms_description=sprintf('Orders shipped to %s with Order Items Net Amount more than %s','AUT','€795');
+$data=array(
+	    'Deal Allowance Target Key'=>$shipping_uk->id
+	    ,'Deal Terms Description'=>$terms_description
+	    );
+$free_shipping_campaign->create_deal('[Country Name] Free Shipping',$data);
+
+$campaign=array(
+		'Campaign Name'=>'BOGOF'
+	 ,'Campaign Code'=>'DE.BOGOF'
+		,'Campaign Description'=>'Buy one Get one Free'
+		,'Campaign Begin Date'=>''
+		,'Campaign Expiration Date'=>''
+		,'Campaign Deal Terms Type'=>'Product Quantity Ordered'
+		,'Campaign Deal Terms Description'=>'Buy 1'
+		,'Campaign Deal Terms Lock'=>'Yes'
+		,'Store Key'=>$store_key
+		);
+$bogof_camp=new Campaign('find create',$campaign);
+$data=array(
+	    'Deal Name'=>'[Product Family Code] BOGOF'
+	    ,'Deal Trigger'=>'Family'
+	    ,'Deal Allowance Type'=>'Get Free'
+	    ,'Deal Allowance Description'=>'get 1 free'
+	    ,'Deal Allowance Target'=>'Product'
+	    ,'Deal Allowance Lock'=>'Yes'
+	    );
+$bogof_camp->add_deal_schema($data);
+
+$data=array(
+	    'Deal Name'=>'[Product Code] BOGOF'
+	    ,'Deal Trigger'=>'Product'
+	    ,'Deal Allowance Type'=>'Get Same Free'
+	    ,'Deal Allowance Description'=>'get 1 free'
+	    ,'Deal Allowance Target'=>'Product'
+	    ,'Deal Allowance Lock'=>'Yes'
+
+	    );
+$bogof_camp->add_deal_schema($data);
+
+
+$bogof_cam_id=$bogof_camp->id;
+$campaign=array(
+		'Campaign Name'=>'First Order Bonus'
+	 ,'Campaign Code'=>'DE.FOB'
+		,'Campaign Trigger'=>'Order'
+		,'Campaign Description'=>'When you order over €100+vat for the first time we give you over a €100 of stock. (at retail value).'
+		,'Campaign Begin Date'=>''
+		,'Campaign Expiration Date'=>''
+		,'Campaign Deal Terms Type'=>'Order Total Net Amount AND Order Number'
+		,'Campaign Deal Terms Description'=>'order over £100+tax on the first order '
+		,'Campaign Deal Terms Lock'=>'Yes'
+		,'Store Key'=>$store_key
+		);
+$camp=new Campaign('find create',$campaign);
+
+
+$data=array(
+	    'Deal Name'=>'First Order Bonus [Counter]'
+	    ,'Deal Trigger'=>'Order'
+            ,'Deal Description'=>'When you order over €100+vat for the first time we give you over a €100 of stock. (at retail value).'
+	    ,'Deal Allowance Type'=>'Get Free'
+	    ,'Deal Allowance Description'=>'Free Bonus Stock ([Product Code])'
+	    ,'Deal Allowance Target'=>'Product'
+	    ,'Deal Allowance Lock'=>'No'
+	    
+	    );
+$camp->add_deal_schema($data);
+//============================================================
+// France
+
+$store=new Store("code","DE");
+$store_key=$store->id;
+
+$dept_data=array(
+		 'Product Department Code'=>'ND',
+		 'Product Department Name'=>'Products Without Department',
+		 'Product Department Store Key'=>$store_key
+		 );
+
+$dept_no_dept=new Department('find',$dept_data,'create');
+$dept_no_dept_key=$dept_no_dept->id;
+
+$dept_data=array(
+		 'Product Department Code'=>'Promo',
+		 'Product Department Name'=>'Promotional Items',
+		 'Product Department Store Key'=>$store_key
+		 );
+$dept_promo=new Department('find',$dept_data,'create');
+$dept_promo_key=$dept_promo->id;
+
+$fam_data=array(
+		'Product Family Code'=>'PND_FR',
+		'Product Family Name'=>'Products Without Family',
+		'Product Family Main Department Key'=>$dept_no_dept_key,
+		'Product Family Store Key'=>$store_key,
+		'Product Family Special Characteristic'=>'None'
+		);
+
+$fam_no_fam=new Family('find',$fam_data,'create');
+$fam_no_fam_key=$fam_no_fam->id;
+
+//print_r($fam_no_fam);
+
+$fam_data=array(
+		'Product Family Code'=>'Promo_FR',
+		'Product Family Name'=>'Promotional Items',
+		'Product Family Main Department Key'=>$dept_promo_key,
+		'Product Family Store Key'=>$store_key,
+		'Product Family Special Characteristic'=>'None'
+		);
+
+
+
+$fam_promo=new Family('find',$fam_data,'create');
+
+
+
+$fam_no_fam_key=$fam_no_fam->id;
+$fam_promo_key=$fam_promo->id;
+
+$campaign=array(
+		'Campaign Name'=>'Statut Gold'	
+ ,'Campaign Code'=>'FR.GR'
+		,'Campaign Description'=>'Small order charge waive & discounts on seleted items if last order within 1 calendar month'
+		,'Campaign Begin Date'=>''
+		,'Campaign Expiration Date'=>''
+		,'Campaign Deal Terms Type'=>'Order Interval'
+		,'Campaign Deal Terms Description'=>'last order within 1 month'
+		,'Campaign Deal Terms Lock'=>'Yes'
+        ,'Store Key'=>$store_key
+		);
+$gold_camp=new Campaign('find create',$campaign);
+//print_r($gold_camp);
+//exit;
+
+$data=array(
+	    'Deal Name'=>'[Product Family Code] Statut Gold'
+	    ,'Deal Trigger'=>'Family'
+	    ,'Deal Allowance Type'=>'Percentage Off'
+	    ,'Deal Allowance Description'=>'[Percentage Off] off'
+	    ,'Deal Allowance Target'=>'Family'
+	    ,'Deal Allowance Lock'=>'No'
+	    );
+$gold_camp->add_deal_schema($data);
+
+
+
+//$data=array('Deal Allowance Target Key'=>$small_order_charge->id);
+//$gold_camp->create_deal('Free [Charge Name]',$data);
+
+$gold_reward_cam_id=$gold_camp->id;
+
+$campaign=array(
+		'Campaign Name'=>'Volumen Discount' ,'Campaign Code'=>'FR.Vol'
+		,'Campaign Trigger'=>'Family'
+		,'Campaign Description'=>'Percentage off when order more than some quantity of products in the same family'
+		,'Campaign Begin Date'=>''
+		,'Campaign Expiration Date'=>''
+		,'Campaign Deal Terms Type'=>'Family Quantity Ordered'
+		,'Campaign Deal Terms Description'=>'order [Quantity] or more same family'
+		,'Campaign Deal Terms Lock'=>'No'
+		,'Store Key'=>$store_key
+		);
+$vol_camp=new Campaign('find create',$campaign);
+
+
+$data=array(
+	    'Deal Name'=>'[Product Family Code] Volume Discount'
+	    ,'Deal Trigger'=>'Family'
+	    ,'Deal Allowance Type'=>'Percentage Off'
+	    ,'Deal Allowance Description'=>'[Percentage Off] off'
+	    ,'Deal Allowance Target'=>'Family'
+	    ,'Deal Allowance Lock'=>'No'
+
+	    );
+$vol_camp->add_deal_schema($data);
+
+$volume_cam_id=$vol_camp->id;
+
+
+$free_shipping_campaign_data=array(
+				   'Campaign Name'=>'Free Shipping'
+		      ,'Campaign Code'=>'FR.FShip'
+				   ,'Campaign Description'=>'Free shipping to selected destinations when order more than some amount'
+				   ,'Campaign Begin Date'=>''
+				   ,'Campaign Expiration Date'=>''
+				   ,'Campaign Deal Terms Type'=>'Order Items Net Amount AND Shipping Country'
+				   ,'Campaign Deal Terms Description'=>'Orders shipped to {Country Name} and Order Items Net Amount more than {Order Items Net Amount}'
+				   ,'Campaign Deal Terms Lock'=>'No'
+				   ,'Store Key'=>$store_key
+				   );
+$free_shipping_campaign=new Campaign('find create',$free_shipping_campaign_data);
+
+
+$data=array(
+	    'Deal Name'=>'[Country Name] Free Shipping'
+	    ,'Deal Trigger'=>'Order'
+	    ,'Deal Allowance Type'=>'Percentage Off'
+	    ,'Deal Allowance Description'=>'Free Shipping'
+	    ,'Deal Allowance Target'=>'Shipping'
+	    ,'Deal Allowance Lock'=>'Yes'
+
+	    );
+$free_shipping_campaign->add_deal_schema($data);
+
+$free_shipping_campaign_id=$free_shipping_campaign->id;
+
+
+$shipping_uk=new Shipping('find',array('Country Code'=>'DEU'));
+$terms_description=sprintf('Orders shipped to %s with Order Items Net Amount more than %s','DEU','€500');
+$data=array(
+	    'Deal Allowance Target Key'=>$shipping_uk->id
+	    ,'Deal Terms Description'=>$terms_description
+	    );
+$free_shipping_campaign->create_deal('[Country Name] Free Shipping',$data);
+
+
+$shipping_uk=new Shipping('find',array('Country Code'=>'DNK'));
+$terms_description=sprintf('Orders shipped to %s with Order Items Net Amount more than %s','DNK','€500');
+$data=array(
+	    'Deal Allowance Target Key'=>$shipping_uk->id
+	    ,'Deal Terms Description'=>$terms_description
+	    );
+$free_shipping_campaign->create_deal('[Country Name] Free Shipping',$data);
+
+
+
+$shipping_uk=new Shipping('find',array('Country Code'=>'AUT'));
+$terms_description=sprintf('Orders shipped to %s with Order Items Net Amount more than %s','AUT','€500');
+$data=array(
+	    'Deal Allowance Target Key'=>$shipping_uk->id
+	    ,'Deal Terms Description'=>$terms_description
+	    );
+$free_shipping_campaign->create_deal('[Country Name] Free Shipping',$data);
+
+
+$shipping_uk=new Shipping('find',array('Country Code'=>'NOR'));
+$terms_description=sprintf('Orders shipped to %s with Order Items Net Amount more than %s','AUT','€795');
+$data=array(
+	    'Deal Allowance Target Key'=>$shipping_uk->id
+	    ,'Deal Terms Description'=>$terms_description
+	    );
+$free_shipping_campaign->create_deal('[Country Name] Free Shipping',$data);
+
+$campaign=array(
+		'Campaign Name'=>'BOGOF'
+ ,'Campaign Code'=>'FR.BOGOF'
+		,'Campaign Description'=>'Buy one Get one Free'
+		,'Campaign Begin Date'=>''
+		,'Campaign Expiration Date'=>''
+		,'Campaign Deal Terms Type'=>'Product Quantity Ordered'
+		,'Campaign Deal Terms Description'=>'Buy 1'
+		,'Campaign Deal Terms Lock'=>'Yes'
+		,'Store Key'=>$store_key
+		);
+$bogof_camp=new Campaign('find create',$campaign);
+$data=array(
+	    'Deal Name'=>'[Product Family Code] BOGOF'
+	    ,'Deal Trigger'=>'Family'
+	    ,'Deal Allowance Type'=>'Get Free'
+	    ,'Deal Allowance Description'=>'get 1 free'
+	    ,'Deal Allowance Target'=>'Product'
+	    ,'Deal Allowance Lock'=>'Yes'
+	    );
+$bogof_camp->add_deal_schema($data);
+
+$data=array(
+	    'Deal Name'=>'[Product Code] BOGOF'
+	    ,'Deal Trigger'=>'Product'
+	    ,'Deal Allowance Type'=>'Get Same Free'
+	    ,'Deal Allowance Description'=>'get 1 free'
+	    ,'Deal Allowance Target'=>'Product'
+	    ,'Deal Allowance Lock'=>'Yes'
+
+	    );
+$bogof_camp->add_deal_schema($data);
+
+
+$bogof_cam_id=$bogof_camp->id;
+$campaign=array(
+		'Campaign Name'=>'First Order Bonus' ,'Campaign Code'=>'FR.FOB'
+
+		,'Campaign Trigger'=>'Order'
+		,'Campaign Description'=>'When you order over €100+vat for the first time we give you over a €100 of stock. (at retail value).'
+		,'Campaign Begin Date'=>''
+		,'Campaign Expiration Date'=>''
+		,'Campaign Deal Terms Type'=>'Order Total Net Amount AND Order Number'
+		,'Campaign Deal Terms Description'=>'order over £100+tax on the first order '
+		,'Campaign Deal Terms Lock'=>'Yes'
+		,'Store Key'=>$store_key
+		);
+$camp=new Campaign('find create',$campaign);
+
+
+$data=array(
+	    'Deal Name'=>'First Order Bonus [Counter]'
+	    ,'Deal Trigger'=>'Order'
+            ,'Deal Description'=>'When you order over €100+vat for the first time we give you over a €100 of stock. (at retail value).'
+	    ,'Deal Allowance Type'=>'Get Free'
+	    ,'Deal Allowance Description'=>'Free Bonus Stock ([Product Code])'
+	    ,'Deal Allowance Target'=>'Product'
+	    ,'Deal Allowance Lock'=>'No'
+	    
+	    );
+$camp->add_deal_schema($data);
+
+//==================================================
+// Poland
+
+$store_data=array('Store Code'=>'PL',
+		  'Store Name'=>'AW Podarki',
+		  'Store Locale'=>'pl_PL',
+		  'Store Home Country Code 2 Alpha'=>'PL',
+		  'Store Currency Code'=>'PLN',
+		  'Store Home Country Name'=>'Poland', 
+		  'Store Home Country Short Name'=>'PL', 
+		  'Store URL'=>'www.aw-podarki.com',
+		  'Store Telephone'=>'+48 1142 677 736',
+		  'Store Email'=>'urszula@aw-podarki.com',
+		  );
+$store=new Store('find',$store_data,'create');
+$store_key=$store->id;
+
+$dept_data=array(
+		 'Product Department Code'=>'ND_PL',
+		 'Product Department Name'=>'Products Without Department',
+		 'Product Department Store Key'=>$store_key
+		 );
+
+$dept_no_dept=new Department('find',$dept_data,'create');
+$dept_no_dept_key=$dept_no_dept->id;
+
+$dept_data=array(
+		 'Product Department Code'=>'Promo_PL',
+		 'Product Department Name'=>'Promotional Items',
+		 'Product Department Store Key'=>$store_key
+		 );
+$dept_promo=new Department('find',$dept_data,'create');
+$dept_promo_key=$dept_promo->id;
+
+$fam_data=array(
+		'Product Family Code'=>'PND_PL',
+		'Product Family Name'=>'Products Without Family',
+		'Product Family Main Department Key'=>$dept_no_dept_key,
+		'Product Family Store Key'=>$store_key,
+		'Product Family Special Characteristic'=>'None'
+		);
+
+$fam_no_fam=new Family('find',$fam_data,'create');
+$fam_no_fam_key=$fam_no_fam->id;
+
+//print_r($fam_no_fam);
+
+$fam_data=array(
+		'Product Family Code'=>'Promo_GB',
+		'Product Family Name'=>'Promotional Items',
+		'Product Family Main Department Key'=>$dept_promo_key,
+		'Product Family Store Key'=>$store_key,
+		'Product Family Special Characteristic'=>'None'
+		);
+
+
+
+$fam_promo=new Family('find',$fam_data,'create');
+
+
+
+$fam_no_fam_key=$fam_no_fam->id;
+$fam_promo_key=$fam_promo->id;
+
+$campaign=array(
+		'Campaign Name'=>'Goldprämie'
+		,'Campaign Code'=>'PL.GR'
+
+		,'Campaign Description'=>'Small order charge waive & discounts on seleted items if last order within 1 calendar month'
+		,'Campaign Begin Date'=>''
+		,'Campaign Expiration Date'=>''
+		,'Campaign Deal Terms Type'=>'Order Interval'
+		,'Campaign Deal Terms Description'=>'last order within 1 month'
+		,'Campaign Deal Terms Lock'=>'Yes'
+        ,'Store Key'=>$store_key
+		);
+$gold_camp=new Campaign('find create',$campaign);
+//print_r($gold_camp);
+//exit;
+
+$data=array(
+	    'Deal Name'=>'[Product Family Code] Goldprämie'
+	    ,'Deal Trigger'=>'Family'
+	    ,'Deal Allowance Type'=>'Percentage Off'
+	    ,'Deal Allowance Description'=>'[Percentage Off] off'
+	    ,'Deal Allowance Target'=>'Family'
+	    ,'Deal Allowance Lock'=>'No'
+	    );
+$gold_camp->add_deal_schema($data);
+
+
+
+//$data=array('Deal Allowance Target Key'=>$small_order_charge->id);
+//$gold_camp->create_deal('Free [Charge Name]',$data);
+
+$gold_reward_cam_id=$gold_camp->id;
+
+$campaign=array(
+		'Campaign Name'=>'Volumen Discount'	,'Campaign Code'=>'PL.Vol'
+		,'Campaign Trigger'=>'Family'
+		,'Campaign Description'=>'Percentage off when order more than some quantity of products in the same family'
+		,'Campaign Begin Date'=>''
+		,'Campaign Expiration Date'=>''
+		,'Campaign Deal Terms Type'=>'Family Quantity Ordered'
+		,'Campaign Deal Terms Description'=>'order [Quantity] or more same family'
+		,'Campaign Deal Terms Lock'=>'No'
+		,'Store Key'=>$store_key
+		);
+$vol_camp=new Campaign('find create',$campaign);
+
+
+$data=array(
+	    'Deal Name'=>'[Product Family Code] Volume Discount'
+	    ,'Deal Trigger'=>'Family'
+	    ,'Deal Allowance Type'=>'Percentage Off'
+	    ,'Deal Allowance Description'=>'[Percentage Off] off'
+	    ,'Deal Allowance Target'=>'Family'
+	    ,'Deal Allowance Lock'=>'No'
+
+	    );
+$vol_camp->add_deal_schema($data);
+
+$volume_cam_id=$vol_camp->id;
+
+
+$free_shipping_campaign_data=array(
+				   'Campaign Name'=>'Free Shipping'	,'Campaign Code'=>'PL.FShip'
+		     
+				   ,'Campaign Description'=>'Free shipping to selected destinations when order more than some amount'
+				   ,'Campaign Begin Date'=>''
+				   ,'Campaign Expiration Date'=>''
+				   ,'Campaign Deal Terms Type'=>'Order Items Net Amount AND Shipping Country'
+				   ,'Campaign Deal Terms Description'=>'Orders shipped to {Country Name} and Order Items Net Amount more than {Order Items Net Amount}'
+				   ,'Campaign Deal Terms Lock'=>'No'
+				   ,'Store Key'=>$store_key
+				   );
+$free_shipping_campaign=new Campaign('find create',$free_shipping_campaign_data);
+
+
+$data=array(
+	    'Deal Name'=>'[Country Name] Free Shipping'
+	    ,'Deal Trigger'=>'Order'
+	    ,'Deal Allowance Type'=>'Percentage Off'
+	    ,'Deal Allowance Description'=>'Free Shipping'
+	    ,'Deal Allowance Target'=>'Shipping'
+	    ,'Deal Allowance Lock'=>'Yes'
+
+	    );
+$free_shipping_campaign->add_deal_schema($data);
+
+$free_shipping_campaign_id=$free_shipping_campaign->id;
+
+
+$shipping_uk=new Shipping('find',array('Country Code'=>'DEU'));
+$terms_description=sprintf('Orders shipped to %s with Order Items Net Amount more than %s','DEU','€500');
+$data=array(
+	    'Deal Allowance Target Key'=>$shipping_uk->id
+	    ,'Deal Terms Description'=>$terms_description
+	    );
+$free_shipping_campaign->create_deal('[Country Name] Free Shipping',$data);
+
+
+$shipping_uk=new Shipping('find',array('Country Code'=>'DNK'));
+$terms_description=sprintf('Orders shipped to %s with Order Items Net Amount more than %s','DNK','€500');
+$data=array(
+	    'Deal Allowance Target Key'=>$shipping_uk->id
+	    ,'Deal Terms Description'=>$terms_description
+	    );
+$free_shipping_campaign->create_deal('[Country Name] Free Shipping',$data);
+
+
+
+$shipping_uk=new Shipping('find',array('Country Code'=>'AUT'));
+$terms_description=sprintf('Orders shipped to %s with Order Items Net Amount more than %s','AUT','€500');
+$data=array(
+	    'Deal Allowance Target Key'=>$shipping_uk->id
+	    ,'Deal Terms Description'=>$terms_description
+	    );
+$free_shipping_campaign->create_deal('[Country Name] Free Shipping',$data);
+
+
+$shipping_uk=new Shipping('find',array('Country Code'=>'NOR'));
+$terms_description=sprintf('Orders shipped to %s with Order Items Net Amount more than %s','AUT','€795');
+$data=array(
+	    'Deal Allowance Target Key'=>$shipping_uk->id
+	    ,'Deal Terms Description'=>$terms_description
+	    );
+$free_shipping_campaign->create_deal('[Country Name] Free Shipping',$data);
+
+$campaign=array(
+		'Campaign Name'=>'BOGOF'	,'Campaign Code'=>'PL.BOGOF'
+		,'Campaign Description'=>'Buy one Get one Free'
+		,'Campaign Begin Date'=>''
+		,'Campaign Expiration Date'=>''
+		,'Campaign Deal Terms Type'=>'Product Quantity Ordered'
+		,'Campaign Deal Terms Description'=>'Buy 1'
+		,'Campaign Deal Terms Lock'=>'Yes'
+		,'Store Key'=>$store_key
+		);
+$bogof_camp=new Campaign('find create',$campaign);
+$data=array(
+	    'Deal Name'=>'[Product Family Code] BOGOF'
+	    ,'Deal Trigger'=>'Family'
+	    ,'Deal Allowance Type'=>'Get Free'
+	    ,'Deal Allowance Description'=>'get 1 free'
+	    ,'Deal Allowance Target'=>'Product'
+	    ,'Deal Allowance Lock'=>'Yes'
+	    );
+$bogof_camp->add_deal_schema($data);
+
+$data=array(
+	    'Deal Name'=>'[Product Code] BOGOF'
+	    ,'Deal Trigger'=>'Product'
+	    ,'Deal Allowance Type'=>'Get Same Free'
+	    ,'Deal Allowance Description'=>'get 1 free'
+	    ,'Deal Allowance Target'=>'Product'
+	    ,'Deal Allowance Lock'=>'Yes'
+
+	    );
+$bogof_camp->add_deal_schema($data);
+
+
+$bogof_cam_id=$bogof_camp->id;
+$campaign=array(
+		'Campaign Name'=>'First Order Bonus'	,'Campaign Code'=>'PL.FOB'
+		,'Campaign Trigger'=>'Order'
+		,'Campaign Description'=>'When you order over €100+vat for the first time we give you over a €100 of stock. (at retail value).'
+		,'Campaign Begin Date'=>''
+		,'Campaign Expiration Date'=>''
+		,'Campaign Deal Terms Type'=>'Order Total Net Amount AND Order Number'
+		,'Campaign Deal Terms Description'=>'order over £100+tax on the first order '
+		,'Campaign Deal Terms Lock'=>'Yes'
+		,'Store Key'=>$store_key
+		);
+$camp=new Campaign('find create',$campaign);
+
+
+$data=array(
+	    'Deal Name'=>'First Order Bonus [Counter]'
+	    ,'Deal Trigger'=>'Order'
+            ,'Deal Description'=>'When you order over €100+vat for the first time we give you over a €100 of stock. (at retail value).'
+	    ,'Deal Allowance Type'=>'Get Free'
+	    ,'Deal Allowance Description'=>'Free Bonus Stock ([Product Code])'
+	    ,'Deal Allowance Target'=>'Product'
+	    ,'Deal Allowance Lock'=>'No'
+	    
+	    );
+$camp->add_deal_schema($data);
 
 ?>

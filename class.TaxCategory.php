@@ -64,10 +64,11 @@ class TaxCategory extends DB_Table{
     $create='';
     $update='';
     if(preg_match('/create/i',$options)){
-      $create='create';
+      
+      $create=true;
     }
     if(preg_match('/update/i',$options)){
-      $update='update';
+      $update=true;
     }
 
     $data=$this->base_data();
@@ -77,7 +78,7 @@ class TaxCategory extends DB_Table{
     }
     
 
-    //    print_r($raw_data);
+    //  print_r($raw_data);
 
     if($data['Tax Category Code']=='' ){
       $this->error=true;
@@ -92,20 +93,18 @@ class TaxCategory extends DB_Table{
     $sql=sprintf("select * from `Tax Category Dimension` where `Tax Category Code`=%s  "
 		 ,prepare_mysql($data['Tax Category Code'])
 		 ); 
-
+    //   print $sql;
     $result=mysql_query($sql);
     if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
       $this->found=true;
       $this->found_key=$row['Tax Category Code'];
     }
-   
-   
+  
     if($create and !$this->found){
-      $this->create($data);
+    $this->create($data);
       return;
     }
     if($this->found){
-     
      $this->get_data('code',$this->found_key);
     }
     if($update and $this->found){
@@ -132,7 +131,6 @@ function create($data){
     $keys=preg_replace('/,$/',')',$keys);
     $values=preg_replace('/,$/',')',$values);
     $sql=sprintf("insert into `Tax Category Dimension` %s %s",$keys,$values);
-    
     if(mysql_query($sql)){
       $this->id = mysql_insert_id();
       $this->msg=_("Tax Category Added");

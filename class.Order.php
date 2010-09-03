@@ -3429,29 +3429,13 @@ $file_as=$number;
 return $file_as;
 }
 
-/*
- $data=array(
-                     
-                      'Product Key'=>$product->data['Product Current Key'],
 
-                     
-
-                      'qty'=>$quantity,
-                      
-                  );
-
-            if($data['Order Type']=='Replacement')
-               $result=$order->set_transaction_as_shipped_damaged($data);
-                else
-             $result=$order->set_transaction_as_not_received($data);
-
-*/
 function set_transaction_as_shipped_damaged($data){
-return $this->set_transaction_post_action('Damaged',$data)
+  return $this->set_transaction_post_action('Damaged',$data);
 }
 
 function set_transaction_as_not_received($data){
-return $this->set_transaction_post_action('Missing',$data)
+  return $this->set_transaction_post_action('Missing',$data);
 }
 
 function set_transaction_post_action($action,$data) {
