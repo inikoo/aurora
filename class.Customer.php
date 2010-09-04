@@ -3592,6 +3592,64 @@ function update_history_order_in_warehouse($order) {
     mysql_query($sql);
 
 }
+function add_history_new_post_order($order,$type) {
+
+date_default_timezone_set(TIMEZONE) ;
+$tz_date=strftime ( "%e %b %Y %H:%M %Z", strtotime ( $order->data ['Order Date']." +00:00" ) );
+
+date_default_timezone_set('GMT') ;
+
+
+    switch ($_SESSION ['lang']) {
+    default :
+        $note = sprintf ( '%s <a href="order.php?id=%d">%s</a> (In Process)', _('Order'),$order->data ['Order Key'], $order->data ['Order Public ID'] );
+        if ($order->data['Order Original Data MIME Type']='application/kaktus') {
+
+            if ($this->editor['Author Alias']!='' and $this->editor['Author Key'] ) {
+                $details = sprintf ( '<a href="staff.php?id=%d&took_order">%s</a> took an order for %s (<a href="customer.php?id=%d">%s</a>) on %s',$this->editor['Author Key'],$this->editor['Author Alias'] ,$this->get ( 'Customer Name' ), $this->id,$this->get('Formated ID'), strftime ( "%e %b %Y %H:%M", strtotime ( $order->data ['Order Date'] ) ) );
+            } else {
+                $details = sprintf ( 'Someone took an order for %s (<a href="customer.php?id=%d">%s</a>) on %s',
+                $this->get ( 'Customer Name' ), 
+                $this->id,$this->get('Formated ID'), 
+                $tz_date
+                );
+
+            }
+        } else {
+            $details = sprintf ( '%s (<a href="customer.php?id=%d">%s</a>) place an order on %s', 
+            $this->get ( 'Customer Name' ), $this->id,$this->get('Formated ID'),
+            $tz_date
+            );
+        }
+        if ($order->data['Order Original Data MIME Type']='application/vnd.ms-excel') {
+            if ($order->data['Order Original Data Filename']!='') {
+
+                $details .='<div >'._('Original Source').":<img src='art/icons/page_excel.png'> ".$order->data['Order Original Data MIME Type']."</div>";
+
+                $details .='<div>'._('Original Source Filename').": ".$order->data['Order Original Data Filename']."</div>";
+
+
+
+            }
+        }
+
+    }
+    $history_data=array(
+                      'Date'=>$order->data ['Order Date'],
+                      'Subject'=>'Customer',
+                      'Subject Key'=>$this->id,
+                      'Direct Object'=>'Order',
+                      'Direct Object Key'=>$order->data ['Order Key'],
+                      'History Details'=>$details,
+                      'History Abstract'=>$note,
+                      'Metadata'=>'Process'
+                  );
+    $order->add_history($history_data);
+
+}
+function update_history_post_order_in_warehouse($order,$type){
+
+}
 
 }
 ?>

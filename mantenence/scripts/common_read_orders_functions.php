@@ -39,7 +39,7 @@ global $customer_key,$filename,$store_code,$order_data_id,$date_order,$shipping_
 
             $data=array(
                       'Estimated Weight'=>$estimated_weight,
-                      'date'=>date_order,
+                      'date'=>$date_order,
                       'Product Key'=>$product->data['Product Current Key'],
 
                       'gross_amount'=>$gross,
@@ -133,13 +133,16 @@ if($order->data['Order Type']=='Order' or ((  ($order->data['Order Type']=='Samp
 function create_post_order($data,$data_dn_transactions){
 global $customer_key,$filename,$store_code,$order_data_id,$date_order,$shipping_net,$charges_net,$order,$dn,$invoice,$shipping_net;
  global $charges_net,$order,$dn,$payment_method,$date_inv,$extra_shipping,$parcel_type;
- global $packer_data,$picker_data,$parcels,$tipo_order;
+ global $packer_data,$picker_data,$parcels,$tipo_order,$parent_order_id,$customer;
  
  
  if($tipo_order==6)
          $data['Order Type']='Replacement';
          else
           $data['Order Type']='Missing';
+          
+          
+          
         if($parent_order_id){
             $parent_order=new Order('public_id',$parent_order_id);
         }else{
@@ -150,7 +153,7 @@ global $customer_key,$filename,$store_code,$order_data_id,$date_order,$shipping_
                     print "Parent Order not given, using customer last order\n";
                 } else {
                     print "Parent order can not be found skipping (Rpl/Sht)\n";
-                    continue;
+                    return;
                 }
         }
          
@@ -158,7 +161,7 @@ global $customer_key,$filename,$store_code,$order_data_id,$date_order,$shipping_
        $discounts_map=array();
        
        
-       $transaction_not_found=0
+       $transaction_not_found=0;
        
        $post_data=array();
        foreach($data['products'] as $transaction) {
@@ -168,7 +171,7 @@ global $customer_key,$filename,$store_code,$order_data_id,$date_order,$shipping_
             $quantity=$transaction['qty'];
            
 
-            $data=array(
+            $data_transaction=array(
                      
                       'Product Key'=>$product->data['Product Current Key'],
 
@@ -179,15 +182,15 @@ global $customer_key,$filename,$store_code,$order_data_id,$date_order,$shipping_
                   );
 
             if($data['Order Type']=='Replacement')
-               $result=$order->set_transaction_as_shipped_damaged($data);
+               $result=$parent_order->set_transaction_as_shipped_damaged($data_transaction);
                 else
-             $result=$order->set_transaction_as_not_received($data);
+             $result=$parent_order->set_transaction_as_not_received($data_transaction);
              
              if($result['error'])
                 $transaction_not_found++;
               if($result['updated']){
                
-                $post_transactions=array(
+              
                 
                 $quantity=$result['quantity'];
                  $gross=$quantity*$product->data['Product History Price'];
@@ -208,17 +211,19 @@ global $customer_key,$filename,$store_code,$order_data_id,$date_order,$shipping_
                       'Metadata'=>$store_code.$order_data_id,
                   );
                
-                );
+               
 }
 
         }
 
      foreach($post_data as $post_transaction){
-     $parent_order->add_transaction($post_transaction);
+     $parent_order->add_order_transaction($post_transaction);
      }
      
-       $dn=$order->send_to_warehouse($date_order);
+       $dn=$parent_order->send_post_action_to_warehouse($date_order,$data['Order Type']);
        
+               $dn->approved_for_shipping($date_inv);
+        $dn->dispatch(array('Delivery Note Date'=>$date_inv));
         // $post_action_key=$parent_order->create_post_action($data['Order Type']);
          
          
@@ -241,8 +246,8 @@ switch ($type) {
 
 
 function ci_get_tax_code($header_data) {
-   $tax_rates=array("S1"=>.16,"S2"=>.20,"S3"=>.04);
-   $tax_names=array("S1"=>"IVA","S2"=>"IVA+I","S3"=>"I","EX0"=>"Ex0");
+   $tax_rates=array("S1"=>.16,"S2"=>.20,"S3"=>.04,'EX'=>0);
+   $tax_names=array("S1"=>"IVA","S2"=>"IVA+I","S3"=>"I","EX"=>"Not Tax");
 
     $tax_code='UNK';
     $tax_description='No Tax';
@@ -286,24 +291,45 @@ function ci_get_tax_code($header_data) {
 }
 
 function uk_get_tax_code($header_data){
- $tax_code='UNK';
-    if ($header_data['total_net']!=0) {
-      if ($header_data['tax1']+$header_data['tax2']==0) {
-	$tax_code='EX0';
-      }
-      $tax_rate=($header_data['tax1']+$header_data['tax2'])/$header_data['total_net'];
-      foreach($myconf['tax_rates'] as $_tax_code=>$_tax_rate) {
-	// print "$_tax_code => $_tax_rate $tax_rate\n ";
-	$upper=1.1*$_tax_rate;
-	$lower=0.9*$_tax_rate;
-	if ($tax_rate>=$lower and $tax_rate<=$upper) {
-	  $tax_code=$_tax_code;
-	  break;
-	}
-      }
-    } else {
-      $tax_code='ZV';
-    }
+ $tax_rates=array("S1"=>.175,"S2"=>.20,"S3"=>.15,'EX'=>0);
+   $tax_names=array("S1"=>"VAT 17.5%","S2"=>"VAT 20%","S3"=>"VAT 15%","EX"=>"Not Tax");
+
+    $tax_code='UNK';
+    $tax_description='No Tax';
+    $tax_rate=0;
+    if($header_data['total_net']==0){
+     $tax_code='EX';
+            $tax_description='';
+    }elseif ($header_data['total_net']!=0 and $header_data['tax1']+$header_data['tax2']==0 ) {
+   
+            $tax_code='EX';
+            $tax_description='';
+    }else{
+        $tax_rate=($header_data['tax1']+$header_data['tax2'])/$header_data['total_net'];
+        foreach($tax_rates as $_tax_code=>$_tax_rate) {
+            // print "$_tax_code => $_tax_rate $tax_rate\n ";
+            $upper=1.1*$_tax_rate;
+            $lower=0.9*$_tax_rate;
+            if ($tax_rate>=$lower and $tax_rate<=$upper) {
+                $tax_code=$_tax_code;
+                $tax_description=$tax_names[$tax_code];
+                $tax_rate=$tax_rates[$tax_code];
+                break;
+            }
+        }
+    } 
+    
+    $data= array(
+                 'Tax Category Code'=>$tax_code,
+                 'Tax Category Name'=>$tax_description,
+                 'Tax Category Rate'=>$tax_rate
+             );
+    
+   // print_r($data);
+    
+   
+    
+    return $data;
 }
 
 function get_user_id($oname,$return_xhtml=false,$tag='',$order='',$editor=false){
