@@ -139,10 +139,10 @@ Class CurrencyExchange  {
     if(!$to)
       $to=date("Ymd",strtotime($this->to));
 
-//   print sprintf("./mantenence/scripts/get_currency_exchange.py  %s %s %s=X > %s",$from,$to,$this->currency_pair,$tmp_file);
+   print sprintf("./mantenence/scripts/get_currency_exchange.py  %s %s %s=X > %s",$from,$to,$this->currency_pair,$tmp_file);
    
     exec(sprintf("./mantenence/scripts/get_currency_exchange.py  %s %s %s=X > %s",$from,$to,$this->currency_pair,$tmp_file));
-  // exit;
+   exit;
     $rows = 0;
     $handle = fopen($tmp_file, "r");
    // print $handle;

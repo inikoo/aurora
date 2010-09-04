@@ -222,7 +222,7 @@ function edit_new_order() {
                   'line_number'=>$order->get_next_line_number(),
                   'gross_amount'=>$gross,
                   'discount_amount'=>0,
-                  'metadata'=>'',
+                  'Metadata'=>'',
                   'qty'=>$quantity,
                   'units_per_case'=>$product->data['Product Units Per Case'],
                   'Current Dispatching State'=>'In Process',
@@ -233,9 +233,6 @@ function edit_new_order() {
         $disconted_products=$order->get_discounted_products();
         $order->skip_update_after_individual_transaction=false;
         $transaction_data=$order->add_order_transaction($data);
-
-
-
         $new_disconted_products=$order->get_discounted_products();
         foreach($new_disconted_products as $key=>$value) {
             $disconted_products[$key]=$value;

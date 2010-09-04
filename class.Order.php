@@ -20,6 +20,7 @@ include_once('class.Store.php');
 include_once('class.Ship_To.php');
 include_once('class.Invoice.php');
 include_once('class.DeliveryNote.php');
+include_once('class.TaxCategory.php');
 
 
 
@@ -818,6 +819,39 @@ function send_to_warehouse($date=false) {
     return $dn;
 }
 
+function send_post_action_to_warehouse($date=false,$type) {
+
+    if (!$date)
+        $date=date('Y-m-d H:i:s');
+
+    if (!$this->data['Order Current Dispatch State']=='Dispatched') {
+        $this->error=true;
+        $this->msg='Order is not already dispatched';
+        return;
+
+    }
+
+
+  
+$type_formated=$type;
+$title="Delivery Note for $type of".$this->data['Order Type'].' <a href="order.php?id='.$this->id.'">'.$this->data['Order Public ID'].'</a>';
+
+
+    $data_dn=array(
+                 'Delivery Note Date Created'=>$date,
+                 'Delivery Note ID'=>$this->data['Order Public ID']." ($type_formated)",
+                 'Delivery Note File As'=>$this->data['Order File As']." ($type_formated)",
+                 'Delivery Note Type'=>$type,
+                 'Delivery Note Title'=>$title
+             );
+
+    $dn=new DeliveryNote('create',$data_dn,$this);
+    $dn->create_inventory_transaction_fact($this->id);
+    $this->update_delivery_notes('save');
+    $customer=new Customer($this->data['Order Customer Key']);
+    $customer->update_history_post_order_in_warehouse($this,$type);
+    return $dn;
+}
 
         function cancel($note='',$date=false) {
        
@@ -977,7 +1011,7 @@ $order_type=$this->data['Order Type'];
             } else {
 
 
-                $sql = sprintf ( "insert into `Order Transaction Fact` (`Transaction Tax Rate`,`Transaction Tax Code`,`Order Currency Code`,`Estimated Weight`,`Order Date`,`Backlog Date`,`Order Last Updated Date`,`Product Key`,`Current Dispatching State`,`Current Payment State`,`Customer Key`,`Order Key`,`Order Public ID`,`Order Line`,`Order Quantity`,`Ship To Key`,`Order Transaction Gross Amount`,`Order Transaction Total Discount Amount`,`Metadata`,`Store Key`,`Units Per Case`,`Customer Message`) values (%f,%s,%s,%s,%s,%s,%s,%d,%s,%s,%s,%s,%s,%d,%s,%s,%.2f,%.2f,%s,%s,%f,'') "
+                $sql = sprintf ( "insert into `Order Transaction Fact` (`Transaction Tax Rate`,`Transaction Tax Code`,`Order Currency Code`,`Estimated Weight`,`Order Date`,`Backlog Date`,`Order Last Updated Date`,`Product Key`,`Current Dispatching State`,`Current Payment State`,`Customer Key`,`Order Key`,`Order Public ID`,`Order Quantity`,`Ship To Key`,`Order Transaction Gross Amount`,`Order Transaction Total Discount Amount`,`Metadata`,`Store Key`,`Units Per Case`,`Customer Message`) values (%f,%s,%s,%s,%s,%s,%s,%d,%s,%s,%s,%s,%s,%s,%s,%.2f,%.2f,%s,%s,%f,'') "
                                  ,$tax_rate
                                  ,prepare_mysql ($tax_code)
                                  , prepare_mysql ( $this->data ['Order Currency'] )
@@ -991,12 +1025,11 @@ $order_type=$this->data['Order Type'];
                                  , prepare_mysql ( $this->data['Order Customer Key' ] )
                                  , prepare_mysql ( $this->data ['Order Key'] )
                                  , prepare_mysql ( $this->data ['Order Public ID'] )
-                                 , $data ['line_number']
                                  , prepare_mysql ( $data ['qty'] )
                                  , prepare_mysql ( $ship_to_key )
                                  , $data ['gross_amount']
                                  , $data ['discount_amount']
-                                 , prepare_mysql ( $data ['metadata'] ,false)
+                                 , prepare_mysql ( $data ['Metadata'] ,false)
                                  , prepare_mysql ( $this->data ['Order Store Key'] )
                                  , $data ['units_per_case']
 
@@ -3466,9 +3499,11 @@ function set_transaction_post_action($action,$data) {
             mysql_query($sql);
 
             $result_data['updated']=true;
-            $result['quantity']=$qty;
+            $result_data['quantity']=$qty;
         }
     }
+   
+    
     return $result_data;
 }
 
