@@ -47,6 +47,7 @@ if(isset($_REQUEST['new']) ){
     $customer=new Customer('create anonymous');
   $editor=array(
 		'Author Name'=>$user->data['User Alias'],
+		'Author Alias'=>$user->data['User Alias'],
 		'Author Type'=>$user->data['User Type'],
 		'Author Key'=>$user->data['User Parent Key'],
 		'User Key'=>$user->id

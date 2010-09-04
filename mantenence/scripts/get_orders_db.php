@@ -138,7 +138,7 @@ $sql="select *,replace(   replace(replace(replace(replace(replace(replace(replac
 //$sql="select * from  orders_data.orders  where    (last_transcribed is NULL  or last_read>last_transcribed) and deleted='No'  order by filename ";
 
 //$sql="select * from  orders_data.orders where filename like '%refund.xls'   order by filename";
-//$sql="select * from  orders_data.orders  where filename like '/mnt/r/Orders/7284.xls' order by filename";
+//$sql="select * from  orders_data.orders  where filename like '/mnt/%/Orders/93284.xls' order by filename";
 //$sql="select * from  orders_data.orders  where (filename like '/mnt/%/Orders/7318.xls' )or(filename like '/mnt/%/Orders/7530.xls' )order by filename";
 
 //$sql="select * from  orders_data.orders  where filename like '/mnt/%/Orders/15720.xls' or filename like '/mnt/%/Orders/60000.xls' or  filename like '/mnt/%/Orders/15sdfsd593.xls' order by filename";
@@ -162,10 +162,10 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
         $result_test=mysql_query($sql);
         if ($row_test=mysql_fetch_array($result_test, MYSQL_ASSOC)) {
             if ($row_test['num']==0) {
-                print "NEW $contador $order_data_id $filename \n";
+                print "NEW $contador $order_data_id $filename ";
             } else {
                 $update=true;
-                print "UPD $contador $order_data_id $filename \n";
+                print "UPD $contador $order_data_id $filename ";
             }
         }
         mysql_free_result($result_test);
@@ -1223,6 +1223,7 @@ $editor=array(
                 $products_data[]=array(
                                      'Product Key'=>$product->id
                                                    ,'qty'=>0
+                                                   ,'bonus qty'=>$transaction['bonus']
                                                           ,'gross_amount'=>0
                                                                           ,'discount_amount'=>0
                                                                                              ,'Estimated Weight'=>0
@@ -1414,7 +1415,7 @@ $editor=array(
             $sql=sprintf("delete from `Order Transaction Fact` where `Metadata`=%s",prepare_mysql($store_code.$order_data_id));
             if (!mysql_query($sql))
                 print "$sql Warning can no delete tf";
-            $sql=sprintf("delete from `Inventory Transaction Fact` where `Metadata`=%s and `Inventory Transaction Type`='Sale'   ",prepare_mysql($store_code.$order_data_id));
+            $sql=sprintf("delete from `Inventory Transaction Fact` where `Metadata`=%s   ",prepare_mysql($store_code.$order_data_id));
             if (!mysql_query($sql))
                 print "$sql Warning can no delete old inv";
 
@@ -1436,14 +1437,15 @@ get_data($header_data);
         $data['Order Customer Key']=$customer->id;
       $customer_key=$customer->id;
 
-
 switch ($tipo_order) {
     case 1://Delivery Note
+    print "DN";
     $data['Order Type']='Order';
         create_order($data);
         break;
      case 2://Invoice
      case 8: //follow
+      print "INV";
      $data['Order Type']='Order';
         create_order($data);
         send_order($data,$data_dn_transactions);
@@ -1454,18 +1456,22 @@ switch ($tipo_order) {
         $order->cancel('',$date_inv);
         break;
          case 4://Sample
+               print "Sample";
+
          $data['Order Type']='Sample';
         create_order($data);
         send_order($data,$data_dn_transactions);
         break;
          case 5://Donation
+                        print "Donation";
+
          $data['Order Type']='Donation';
         create_order($data);
         send_order($data,$data_dn_transactions);
         break;
         case(6)://REPLACEMENT
         case(7)://MISSING
-        
+        print "RPL/MISS ";
         create_post_order($data,$data_dn_transactions);
         
        
@@ -1476,7 +1482,7 @@ switch ($tipo_order) {
       
         break;
 }
- 
+ print "\n";
   $sql="update orders_data.orders set last_transcribed=NOW() where id=".$order_data_id;
             mysql_query($sql);
 
