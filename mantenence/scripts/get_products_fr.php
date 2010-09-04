@@ -174,7 +174,7 @@ foreach($__cols as $cols){
   
     //  if(!preg_match('/reed\-/i',$code))
     // continue;
-      print "$code  ---\n";
+    //print "$code  ---\n";
     $part_list=array();
     $rules=array();
     
