@@ -27,8 +27,9 @@ global $customer_key,$filename,$store_code,$order_data_id,$date_order,$shipping_
 
 
         $order=new Order('new',$order_data);
-
+        
         $discounts_map=array();
+      //  print_r($data['products']);
         foreach($data['products'] as $transaction) {
 
             $product=new Product('id',$transaction['Product Key']);
@@ -44,7 +45,6 @@ global $customer_key,$filename,$store_code,$order_data_id,$date_order,$shipping_
 
                       'gross_amount'=>$gross,
                       'discount_amount'=>0,
-
                       'qty'=>$quantity,
                       'units_per_case'=>$product->data['Product Units Per Case'],
                       'Current Dispatching State'=>'In Process',
@@ -54,11 +54,37 @@ global $customer_key,$filename,$store_code,$order_data_id,$date_order,$shipping_
 
 
             $order->skip_update_after_individual_transaction=false;
+         //   print_r($data);
             $transaction_data=$order->add_order_transaction($data);
-
+            if($transaction_data['updated'])
             $discounts_map[$transaction_data['otf_key']]=$transaction['discount_amount'];
 
+            if(array_key_exists('bonus qty',$transaction) and $transaction['bonus qty']>0){
+            
+            $quantity=$transaction['bonus qty'];
+            $gross=$quantity*$product->data['Product History Price'];
+            $estimated_weight=$quantity*$product->data['Product Gross Weight'];
+                 $data=array(
+                      'Estimated Weight'=>$estimated_weight,
+                      'date'=>$date_order,
+                      'Product Key'=>$product->data['Product Current Key'],
 
+                      'gross_amount'=>$gross,
+                      'discount_amount'=>0,
+                      'bonus qty'=>$quantity,
+                      'units_per_case'=>$product->data['Product Units Per Case'],
+                      'Current Dispatching State'=>'In Process',
+                      'Current Payment State'=>'Waiting Payment',
+                      'Metadata'=>$store_code.$order_data_id,
+                  );
+
+
+            $order->skip_update_after_individual_transaction=false;
+            $transaction_data=$order->add_order_transaction($data);
+                
+                
+            
+            }
 
 
         }
@@ -66,18 +92,25 @@ global $customer_key,$filename,$store_code,$order_data_id,$date_order,$shipping_
         foreach($discounts_map as $otf_key=>$discount) {
             $order->update_transaction_discount_amount($otf_key,$discount);
         }
+        
+        
+        
+        
+        
         $order->categorize();
         $order->set_shipping($shipping_net);
         $order->set_charges($charges_net);
         $dn=$order->send_to_warehouse($date_order);
-
+ 
 }
 
 function send_order($data,$data_dn_transactions){
  global $customer_key,$filename,$store_code,$order_data_id,$date_order,$shipping_net,$charges_net,$order,$dn,$invoice,$shipping_net;
  global $charges_net,$order,$dn,$payment_method,$date_inv,$extra_shipping,$parcel_type;
  global $packer_data,$picker_data,$parcels;
-        if (count($picker_data['id'])==0)$staff_key=0;
+ // print_r($data_dn_transactions);
+  
+  if (count($picker_data['id'])==0)$staff_key=0;
         else {
             $staff_key=$picker_data['id'][0];
         }
@@ -86,16 +119,32 @@ function send_order($data,$data_dn_transactions){
         $skus_to_pick_data=array();
         foreach($data_dn_transactions as $key=>$value) {
             foreach($value['pick_method_data']['parts_sku'] as $parts_sku=>$parts_sku_data) {
-                if (isset($skus_to_pick_data[$parts_sku]))
+                if (isset($skus_to_pick_data[$parts_sku])){
                     $skus_to_pick_data[$parts_sku]['picked']+=$value['Shipped Quantity']*$parts_sku_data['parts_per_product'];
-                else
-                    $skus_to_pick_data[$parts_sku]=array('picked'=>$value['Shipped Quantity']*$parts_sku_data['parts_per_product']);
+                    $skus_to_pick_data[$parts_sku]['out_of_stock']+=$value['No Shipped Due Out of Stock']*$parts_sku_data['parts_per_product'];
+
+             }else{
+                    $skus_to_pick_data[$parts_sku]['picked']=$value['Shipped Quantity']*$parts_sku_data['parts_per_product'];
+                    $skus_to_pick_data[$parts_sku]['out_of_stock']=$value['No Shipped Due Out of Stock']*$parts_sku_data['parts_per_product'];
+
+
+            }
             }
         }
+     
         foreach ($skus_to_pick_data as $sku=>$value) {
+            if(array_key_exists('picked',$value) and $value['picked']>0){
             $dn->set_as_picked($sku,$value['picked'],$date_order);
-
+            }
+                        if(array_key_exists('out_of_stock',$value) and $value['out_of_stock']>0){
+            
+            $dn->set_as_out_of_stock($sku,$value['out_of_stock'],$date_order);
+}
         }
+        
+        
+        
+           
         $dn->update_picking_percentage();
 
         if (count($packer_data['id'])==0)$staff_key=0;
@@ -106,9 +155,13 @@ function send_order($data,$data_dn_transactions){
 
 
         foreach ($skus_to_pick_data as $sku=>$value) {
+            //print "$sku ".$value['picked']."\n";
             $dn->set_as_packed($sku,$value['picked'],$date_order);
+     //        $dn->update_packing_percentage();
         }
+        
         $dn->update_packing_percentage();
+          
         $dn->set_parcels($parcels,$parcel_type);
 
 if($order->data['Order Type']=='Order' or ((  ($order->data['Order Type']=='Sample'  or $order->data['Order Type']=='Donation') and $order->data['Order Total Amount']!=0 ))){
@@ -128,7 +181,12 @@ if($order->data['Order Type']=='Order' or ((  ($order->data['Order Type']=='Samp
 
 
         $dn->approved_for_shipping($date_inv);
+      // print $dn->id."\n";
+        
         $dn->dispatch(array('Delivery Note Date'=>$date_inv));
+        
+        
+        
 }
 function create_post_order($data,$data_dn_transactions){
 global $customer_key,$filename,$store_code,$order_data_id,$date_order,$shipping_net,$charges_net,$order,$dn,$invoice,$shipping_net;
@@ -157,6 +215,8 @@ global $customer_key,$filename,$store_code,$order_data_id,$date_order,$shipping_
                 }
         }
          
+       if($parent_order->id){
+       
        
        $discounts_map=array();
        
@@ -221,11 +281,13 @@ global $customer_key,$filename,$store_code,$order_data_id,$date_order,$shipping_
      }
      
        $dn=$parent_order->send_post_action_to_warehouse($date_order,$data['Order Type']);
-       
-               $dn->approved_for_shipping($date_inv);
+        $dn->approved_for_shipping($date_inv);
         $dn->dispatch(array('Delivery Note Date'=>$date_inv));
-        // $post_action_key=$parent_order->create_post_action($data['Order Type']);
+         }else{
+          print "Parent order can not be found skipping (Rpl/Sht)\n";
+                    return;
          
+         }
          
          
 }

@@ -943,129 +943,211 @@ $customer->add_history_order_cancelled($this);
 
         }
 
+function delete_transaction($otf_key){
+$sql=sprintf("delete from `Order Transaction Fact` where `Order Transaction Fact Key`=%d",$otf_key);
+mysql_query($sql);
+}
 
-        function add_order_transaction($data) {
+function add_order_transaction($data) {
 
-            if (!isset($data ['ship to key'])) {
-                $ship_to_keys=preg_split('/,/',$this->data['Order Ship To Keys']);
-                $ship_to_key=$ship_to_keys[0];
+    if (!isset($data ['ship to key'])) {
+        $ship_to_keys=preg_split('/,/',$this->data['Order Ship To Keys']);
+        $ship_to_key=$ship_to_keys[0];
 
-            } else
-                $ship_to_key=$data ['ship to key'];
+    } else
+        $ship_to_key=$data ['ship to key'];
 
 
-            $tax_code=$this->data['Order Tax Code'];
-            $tax_rate=$this->data['Order Tax Rate'];
+    $tax_code=$this->data['Order Tax Code'];
+    $tax_rate=$this->data['Order Tax Rate'];
 
-            if (array_key_exists('tax_code',$data))
-                $tax_code=$data['tax_code'];
-            if (array_key_exists('tax_rate',$data))
-                $tax_rate=$data['tax_rate'];
+    if (array_key_exists('tax_code',$data))
+        $tax_code=$data['tax_code'];
+    if (array_key_exists('tax_rate',$data))
+        $tax_rate=$data['tax_rate'];
 
-if(isset($data['Order Type']))
-$order_type=$data['Order Type'];
-else
-$order_type=$this->data['Order Type'];
+    if (isset($data['Order Type']))
+        $order_type=$data['Order Type'];
+    else
+        $order_type=$this->data['Order Type'];
 
-            if ($this->data['Order Current Dispatch State']=='In Process') {
+    if (array_key_exists('qty',$data)) {
+        $quantity=$data ['qty'];
+        $quantity_set=true;
 
-                $sql=sprintf("select `Order Transaction Fact Key` from `Order Transaction Fact` where `Order Key`=%d and `Product Key`=%d ",$this->id,$data ['Product Key']);
-                $res=mysql_query($sql);
-                if ($row=mysql_fetch_array($res)) {
-                    $sql = sprintf ( "update`Order Transaction Fact` set  `Order Quantity`=%f,`Order Last Updated Date`=%s,`Order Transaction Gross Amount`=%f ,`Order Transaction Total Discount Amount`=%f  where `Order Transaction Fact Key`=%d ",
-                                     $data ['qty'],
-                                     prepare_mysql ( $data ['date'] ),
-                                      $data ['gross_amount'],
-                                      $data ['discount_amount'],
-                                      $row['Order Transaction Fact Key']
-                                     
-                                     );
-                    mysql_query($sql);
+    } else {
+        $quantity=0;
+        $quantity_set=false;
+    }
 
-                } else {
-                    $sql = sprintf ( "insert into `Order Transaction Fact` (`Order Transaction Type`,`Transaction Tax Rate`,`Transaction Tax Code`,`Order Currency Code`,`Estimated Weight`,`Order Date`,`Backlog Date`,`Order Last Updated Date`,`Product Key`,`Current Dispatching State`,`Current Payment State`,`Customer Key`,`Order Key`,`Order Public ID`,`Order Quantity`,`Ship To Key`,`Order Transaction Gross Amount`,`Order Transaction Total Discount Amount`,`Metadata`,`Store Key`,`Units Per Case`,`Customer Message`) 
-                                        values (%s,%f,%s,%s,%s,%s,%s,%s,%d,%s,%s,%s,%s,%s,%s,%s,%.2f,%.2f,%s,%s,%f,'')   "
-                                     ,prepare_mysql($order_type)
-                                     ,$tax_rate
-                                     ,prepare_mysql ($tax_code)
-                                     , prepare_mysql ( $this->data ['Order Currency'] )
-                                     , prepare_mysql ( $data ['Estimated Weight'] )
-                                     , prepare_mysql ( $data ['date'] )
-                                     , prepare_mysql ( $data ['date'] )
-                                     , prepare_mysql ( $data ['date'] )
-                                     , $data ['Product Key']
-                                     , prepare_mysql ( $data ['Current Dispatching State'] )
-                                     , prepare_mysql ( $data ['Current Payment State'] )
-                                     , prepare_mysql ( $this->data['Order Customer Key' ] )
-                                     , prepare_mysql ( $this->data ['Order Key'] )
-                                     , prepare_mysql ( $this->data ['Order Public ID'] )
-                                     , prepare_mysql ( $data ['qty'] )
-                                     , prepare_mysql ( $ship_to_key )
-                                     , $data ['gross_amount']
-                                     , $data ['discount_amount']
-                                     , prepare_mysql ( $data ['Metadata'] ,false)
-                                     , prepare_mysql ( $this->data ['Order Store Key'] )
-                                     , $data ['units_per_case']
-                                   );
-                }
+    if (array_key_exists('bonus qty',$data)) {
+        $bonus_quantity=$data ['bonus qty'];
+        $bonus_quantity_set=true;
+    } else {
+        $bonus_quantity=0;
+        $bonus_quantity_set=false;
+
+    }
+
+  
+
+    if ($this->data['Order Current Dispatch State']=='In Process') {
+
+        $sql=sprintf("select `Order Bonus Quantity`,`Order Quantity`,`Order Transaction Fact Key` from `Order Transaction Fact` where `Order Key`=%d and `Product Key`=%d ",
+                     $this->id,
+                     $data ['Product Key']);
+        $res=mysql_query($sql);
+        if ($row=mysql_fetch_array($res)) {
+
+            $old_quantity=$row['Order Quantity'];
+            $old_bonus_quantity=$row['Order Bonus Quantity'];
+
+            if (!$quantity_set) {
+                $quantity=$old_quantity;
+            }
+            if (!$bonus_quantity_set) {
+                $bonus_quantity=$old_bonus_quantity;
+            }
+            $total_quantity=$quantity+$bonus_quantity;
+            if ($total_quantity==0) {
+                $this->delete_transaction($row['Order Transaction Fact Key']);
             } else {
+                $product=new Product('id',$data['Product Key']);
+                $gross=$total_quantity*$product->data['Product History Price'];
+                $estimated_weight=$total_quantity*$product->data['Product Gross Weight'];
 
-
-                $sql = sprintf ( "insert into `Order Transaction Fact` (`Transaction Tax Rate`,`Transaction Tax Code`,`Order Currency Code`,`Estimated Weight`,`Order Date`,`Backlog Date`,`Order Last Updated Date`,`Product Key`,`Current Dispatching State`,`Current Payment State`,`Customer Key`,`Order Key`,`Order Public ID`,`Order Quantity`,`Ship To Key`,`Order Transaction Gross Amount`,`Order Transaction Total Discount Amount`,`Metadata`,`Store Key`,`Units Per Case`,`Customer Message`) values (%f,%s,%s,%s,%s,%s,%s,%d,%s,%s,%s,%s,%s,%s,%s,%.2f,%.2f,%s,%s,%f,'') "
-                                 ,$tax_rate
-                                 ,prepare_mysql ($tax_code)
-                                 , prepare_mysql ( $this->data ['Order Currency'] )
-                                 , prepare_mysql ( $data ['Estimated Weight'] )
-                                 , prepare_mysql ( $data ['date'] )
-                                 , prepare_mysql ( $data ['date'] )
-                                 , prepare_mysql ( $data ['date'] )
-                                 , $data ['Product Key']
-                                 , prepare_mysql ( $data ['Current Dispatching State'] )
-                                 , prepare_mysql ( $data ['Current Payment State'] )
-                                 , prepare_mysql ( $this->data['Order Customer Key' ] )
-                                 , prepare_mysql ( $this->data ['Order Key'] )
-                                 , prepare_mysql ( $this->data ['Order Public ID'] )
-                                 , prepare_mysql ( $data ['qty'] )
-                                 , prepare_mysql ( $ship_to_key )
-                                 , $data ['gross_amount']
-                                 , $data ['discount_amount']
-                                 , prepare_mysql ( $data ['Metadata'] ,false)
-                                 , prepare_mysql ( $this->data ['Order Store Key'] )
-                                 , $data ['units_per_case']
+                $sql = sprintf ( "update`Order Transaction Fact` set  `Estimated Weight`=%s,`Order Quantity`=%f,`Order Bonus Quantity`=%f,`Order Last Updated Date`=%s,`Order Transaction Gross Amount`=%f ,`Order Transaction Total Discount Amount`=%f  where `Order Transaction Fact Key`=%d ",
+                                 $estimated_weight ,
+                                 $quantity,
+                                 $bonus_quantity,
+                                 prepare_mysql ( $data ['date'] ),
+                                 $data ['gross_amount'],
+                                 0,
+                                 $row['Order Transaction Fact Key']
 
                                );
+                mysql_query($sql);
+            }
+
+        } else {
+
+            $total_quantity=$quantity+$bonus_quantity;
+
+            if ($total_quantity==0) {
+                return array(
+                           'updated'=>false
+                       );
 
             }
 
-            if (! mysql_query ( $sql ))
-                exit ( "$sql can not update order trwansiocion facrt after invoice 1223" );
-$otf_key=mysql_insert_id();
-
-            if (!$this->skip_update_after_individual_transaction) {
-                $this->update_discounts();
-
-                $this->update_item_totals_from_order_transactions();
-                $this->update_shipping();
-
-                $this->update_charges();
-                $this->get_original_totals();
-                $this->update_item_totals_from_order_transactions();
-                $this->update_totals('save');
-
-                $this->update_totals_from_order_transactions();
-            
-            
-          
-            }
+            $product=new Product('id',$data['Product Key']);
+            $gross=$total_quantity*$product->data['Product History Price'];
+            $estimated_weight=$total_quantity*$product->data['Product Gross Weight'];
 
 
 
-            return array('otf_key'=>$otf_key,'to_charge'=>money($data ['gross_amount']-$data ['discount_amount'],$this->data['Order Currency']),'qty'=>$data ['qty']);
-
-            //  print "$sql\n";
-
+            $sql = sprintf ( "insert into `Order Transaction Fact` (`Order Bonus Quantity`,`Order Transaction Type`,`Transaction Tax Rate`,`Transaction Tax Code`,`Order Currency Code`,`Estimated Weight`,`Order Date`,`Backlog Date`,`Order Last Updated Date`,`Product Key`,`Current Dispatching State`,`Current Payment State`,`Customer Key`,`Order Key`,`Order Public ID`,`Order Quantity`,`Ship To Key`,`Order Transaction Gross Amount`,`Order Transaction Total Discount Amount`,`Metadata`,`Store Key`,`Units Per Case`,`Customer Message`)
+                             values (%f,%s,%f,%s,%s,%s,%s,%s,%s,%d,%s,%s,%s,%s,%s,%s,%s,%.2f,%.2f,%s,%s,%f,'')   ",
+                             $bonus_quantity,
+                             prepare_mysql($order_type),
+                             $tax_rate,
+                             prepare_mysql ($tax_code),
+                             prepare_mysql ( $this->data ['Order Currency'] ),
+                             $estimated_weight ,
+                             prepare_mysql ( $data ['date'] ),
+                             prepare_mysql ( $data ['date'] ),
+                             prepare_mysql ( $data ['date'] ),
+                             $data ['Product Key'],
+                             prepare_mysql ( $data ['Current Dispatching State'] ),
+                             prepare_mysql ( $data ['Current Payment State'] ),
+                             prepare_mysql ( $this->data['Order Customer Key' ] ),
+                             prepare_mysql ( $this->data ['Order Key'] ),
+                             prepare_mysql ( $this->data ['Order Public ID'] ),
+                             $quantity,
+                             prepare_mysql ( $ship_to_key ),
+                             $gross,
+                             0,
+                             prepare_mysql ( $data ['Metadata'] ,false),
+                             prepare_mysql ( $this->data ['Order Store Key'] ),
+                             $data ['units_per_case']
+                           );
+        }
+    } else {
+        $total_quantity=$quantity+$bonus_quantity;
+        if ($total_quantity==0) {
+            return array(
+                       'updated'=>false
+                   );
 
         }
+
+        $product=new Product('id',$data['Product Key']);
+        $gross=$total_quantity*$product->data['Product History Price'];
+        $estimated_weight=$total_quantity*$product->data['Product Gross Weight'];
+
+        $sql = sprintf ( "insert into `Order Transaction Fact` (`Order Bonus Quantity`,`Transaction Tax Rate`,`Transaction Tax Code`,`Order Currency Code`,`Estimated Weight`,`Order Date`,`Backlog Date`,`Order Last Updated Date`,`Product Key`,`Current Dispatching State`,`Current Payment State`,`Customer Key`,`Order Key`,`Order Public ID`,`Order Quantity`,`Ship To Key`,`Order Transaction Gross Amount`,`Order Transaction Total Discount Amount`,`Metadata`,`Store Key`,`Units Per Case`,`Customer Message`) values (%f,%s,%s,%s,%s,%s,%s,%d,%s,%s,%s,%s,%s,%s,%s,%.2f,%.2f,%s,%s,%f,'') ",
+                         $bonus_quantity,
+                         $tax_rate,
+                         prepare_mysql ($tax_code),
+                         prepare_mysql ( $this->data ['Order Currency'] ),
+                         $estimated_weight,
+                         prepare_mysql ( $data ['date'] ),
+                         prepare_mysql ( $data ['date'] ),
+                         prepare_mysql ( $data ['date'] ),
+                         $data ['Product Key'],
+                         prepare_mysql ( $data ['Current Dispatching State'] ),
+                         prepare_mysql ( $data ['Current Payment State'] ),
+                         prepare_mysql ( $this->data['Order Customer Key' ] ),
+                         prepare_mysql ( $this->data ['Order Key'] ),
+                         prepare_mysql ( $this->data ['Order Public ID'] ),
+                         $quantity,
+                         prepare_mysql ( $ship_to_key ),
+                         $gross,
+                         0,
+                         prepare_mysql ( $data ['Metadata'] ,false),
+                         prepare_mysql ( $this->data ['Order Store Key'] ),
+                         $data ['units_per_case']
+
+                       );
+
+    }
+
+    if (! mysql_query ( $sql ))
+        exit ( "$sql can not update order trwansiocion facrt after invoice 1223" );
+    $otf_key=mysql_insert_id();
+
+    if (!$this->skip_update_after_individual_transaction) {
+        $this->update_discounts();
+
+        $this->update_item_totals_from_order_transactions();
+        $this->update_shipping();
+
+        $this->update_charges();
+        $this->get_original_totals();
+        $this->update_item_totals_from_order_transactions();
+        $this->update_totals('save');
+
+        $this->update_totals_from_order_transactions();
+
+
+
+    }
+
+
+
+    return array(
+               'updated'=>true,
+               'otf_key'=>$otf_key,
+               'to_charge'=>money($data ['gross_amount']-$data ['discount_amount'],
+                                  $this->data['Order Currency']),
+               'qty'=>$quantity,
+               'bonus qty'=>$bonus_quantity
+               );
+
+    //  print "$sql\n";
+
+
+}
 
 
 
@@ -2365,7 +2447,8 @@ $prefix='';
         }
 
     function translate_dispatch_state($array_dispatch_state){
-        //print_r($array_dispatch_state);
+       // print_r($array_dispatch_state);
+       
         $dispatch_state='Unknown';
         if(count($array_dispatch_state)==1)
         switch ($state=array_pop($array_dispatch_state)) {
@@ -2379,6 +2462,24 @@ $prefix='';
            
                 $dispatch_state=$state;
                 break;
+        }else{
+        
+       foreach(array('Ready to Ship','Ready to Pack','Dispatched') as $pivot){
+            if(array_key_exists($pivot,$array_dispatch_state)){
+                unset($array_dispatch_state[$pivot]);
+                if(array_key_exists('No Picked Due Out of Stock',$array_dispatch_state))unset($array_dispatch_state['No Picked Due Out of Stock']);
+                 if(array_key_exists('No Picked Due No Authorised',$array_dispatch_state))unset($array_dispatch_state['No Picked Due No Authorised']);
+                if(array_key_exists('No Picked due Not Found',$array_dispatch_state))unset($array_dispatch_state['No Picked due Not Found']);
+                if(array_key_exists('No Picked Due Other',$array_dispatch_state))unset($array_dispatch_state['No Picked Due Other']);
+
+                if(count($array_dispatch_state)==0){
+                return $pivot;
+                }
+            
+            }
+        }  
+        
+        
         }
         return $dispatch_state;
         }
