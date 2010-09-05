@@ -1085,8 +1085,10 @@ function add_order_transaction($data) {
         $gross=$total_quantity*$product->data['Product History Price'];
         $estimated_weight=$total_quantity*$product->data['Product Gross Weight'];
 
-        $sql = sprintf ( "insert into `Order Transaction Fact` (`Order Bonus Quantity`,`Transaction Tax Rate`,`Transaction Tax Code`,`Order Currency Code`,`Estimated Weight`,`Order Date`,`Backlog Date`,`Order Last Updated Date`,`Product Key`,`Current Dispatching State`,`Current Payment State`,`Customer Key`,`Order Key`,`Order Public ID`,`Order Quantity`,`Ship To Key`,`Order Transaction Gross Amount`,`Order Transaction Total Discount Amount`,`Metadata`,`Store Key`,`Units Per Case`,`Customer Message`) values (%f,%s,%s,%s,%s,%s,%s,%d,%s,%s,%s,%s,%s,%s,%s,%.2f,%.2f,%s,%s,%f,'') ",
+        $sql = sprintf ( "insert into `Order Transaction Fact` (`Order Bonus Quantity`,`Order Transaction Type`,`Transaction Tax Rate`,`Transaction Tax Code`,`Order Currency Code`,`Estimated Weight`,`Order Date`,`Backlog Date`,`Order Last Updated Date`,`Product Key`,`Current Dispatching State`,`Current Payment State`,`Customer Key`,`Order Key`,`Order Public ID`,`Order Quantity`,`Ship To Key`,`Order Transaction Gross Amount`,`Order Transaction Total Discount Amount`,`Metadata`,`Store Key`,`Units Per Case`,`Customer Message`) 
+        values (%f,%s,%f,%s,%s,%s,%s,%s,%s,%d,%s,%s,%s,%s,%s,%s,%s,%.2f,%.2f,%s,%s,%f,'') ",
                          $bonus_quantity,
+                           prepare_mysql($order_type),
                          $tax_rate,
                          prepare_mysql ($tax_code),
                          prepare_mysql ( $this->data ['Order Currency'] ),
