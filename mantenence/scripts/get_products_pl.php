@@ -64,7 +64,7 @@ $store=new Store('find','PL');
 $store_key=$store->id;
 
 
-
+$gold_camp=new Campaign('find create',$campaign);
 
 $__cols=array();
 $inicio=false;
