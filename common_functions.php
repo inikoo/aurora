@@ -392,9 +392,8 @@ $locale_info = localeconv();
       $currency=strtoupper($match[0]);
     }
   }
-  
-
-  
+  $locale_info = localeconv();
+  $amount=preg_replace("/[^\d\.".$locale_info['decimal_point']."\-]/i","",$amount);
   return array($currency,ParseFloat($amount));
 
 }
