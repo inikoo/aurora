@@ -622,7 +622,7 @@ class Customer extends DB_Table {
         $keys=preg_replace('/^,/','',$keys);
 
         $sql="insert into `Customer Dimension` ($keys) values ($values)";
-        //print $sql;
+     //   print $sql;
         if (mysql_query($sql)) {
 
             $this->id=mysql_insert_id();
@@ -719,11 +719,13 @@ $tel->new=true;
                     $fax->update_parents();
 
             } else {
-                $this->associate_contact($contact->id);
-                $contact->update_parents_principal_address_keys($contact->data['Contact Main Address Key']);
-               //print "addres key".$contact->data['Contact Main Address Key'];
+            
+              $this->associate_contact($contact->id);
                
-           
+              $contact->update_parents_principal_address_keys($contact->data['Contact Main Address Key']);
+              
+               
+            
                
                $address=new Address($contact->data['Contact Main Address Key']);
                
@@ -731,6 +733,11 @@ $tel->new=true;
                $address->editor=$this->editor;
                 $address->new=true;
                 $address->update_parents();
+                $this->get_data('id',$this->id);
+               
+               
+             //  exit;
+                
                 $tel=new Telecom($address->get_principal_telecom_key('Telephone'));
                 $tel->editor=$this->editor;
 $tel->new=true;
@@ -761,17 +768,20 @@ $tel->new=true;
 
 
             }
+            
+            
             if ($this->data['Customer Delivery Address Link']=='Billing') {
-            //print "delicr ass ".$this->data['Customer Billing Address Key']."\n";
+         
             
                  $this->associate_delivery_address($this->data['Customer Billing Address Key']);
                 $this->get_data('id',$this->id);
 
             }
 
-
+ 
 
             if ($this->data['Customer Delivery Address Link']=='Contact') {
+           
                 $this->associate_delivery_address($address->id);
                 $this->get_data('id',$this->id);
 
@@ -2672,13 +2682,14 @@ return $this->data['Customer Main Address Key'];
     function set_current_ship_to_get_key() {
 
         if ($this->data['Customer Delivery Address Link']=='None') {
-            return $this->data['Customer Main Delivery Address Key'];
-        }
-
-        if ($this->data['Customer Delivery Address Link']=='Billing')
+       
+            $address=new Address($this->data['Customer Main Delivery Address Key']);
+        }elseif ($this->data['Customer Delivery Address Link']=='Billing')
             $address=new Address($this->data['Customer Billing Address Key']);
         else
             $address=new Address($this->data['Customer Main Address Key']);
+
+
 
 
         $line=$address->display('3lines');
@@ -2719,7 +2730,7 @@ Array
         $shipping_addresses['Ship To Country First Division']=$address->data['Address Country First Division'];
         $shipping_addresses['Ship To Country Second Division']=$address->data['Address Country Second Division'];
         
-        
+      //  print_r($shipping_addresses);
         
       $ship_to= new Ship_To('find create',$shipping_addresses);
 
@@ -3230,7 +3241,6 @@ Array
 			 ,$this->id);
             $this->data['Customer Main Delivery Address Key']=$address->id;
             mysql_query($sql);
-     //  print $sql;
         $address->update_parents();
 	    $this->get_data('id',$this->id);
 	    $this->updated=true;

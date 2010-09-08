@@ -136,8 +136,9 @@ $fam_promo_key=$fam_promo->id;
 $sql="select *,replace(   replace(replace(replace(replace(replace(replace(replace(replace(filename,'r/Orders/','r/Orders/00'),'s/Orders/','s/Orders/0'),'y/Orders/','y/Orders/0'),'z/Orders/9','z/Orders/09'),'x/Orders/','x/Orders/0'),'t/Orders/','t/Orders/0'),'u/Orders/','u/Orders/0'),'z/Orders/8','z/Orders/08')     ,directory,'') as name from  orders_data.orders  where   (last_transcribed is NULL  or last_read>last_transcribed) and deleted='No'    order by name ";
 
 //$sql="select * from  orders_data.orders  where    (last_transcribed is NULL  or last_read>last_transcribed) and deleted='No'  order by filename ";
+//$sql="select * from  orders_data.orders where filename like '%/6914.xls'   order by filename";
 
-//$sql="select * from  orders_data.orders where filename like '%refund.xls'   order by filename";
+//$sql="select * from  orders_data.orders where filename like '%/%ref%.xls'   order by filename";
 //$sql="select * from  orders_data.orders  where filename like '/mnt/%/Orders/93284.xls' order by filename";
 //$sql="select * from  orders_data.orders  where (filename like '/mnt/%/Orders/7318.xls' )or(filename like '/mnt/%/Orders/7530.xls' )order by filename";
 
@@ -157,12 +158,43 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
         $total_credit_value=0;
         $update=false;
         $old_order_key=0;
-        $sql=sprintf("select count(*) as num  from `Order Dimension`  where `Order Original Metadata`=%s  "
+        $sql=sprintf("select count(*) as num  from `Order Dimension`  where `Order Original Metadata`=%s "
+             ,prepare_mysql($store_code.$order_data_id));
+$result_test=mysql_query($sql);
+if ($row_test=mysql_fetch_array($result_test, MYSQL_ASSOC)) {
+    if ($row_test['num']==0) {
+
+        $sql=sprintf("select count(*) as num  from `Invoice Dimension`  where `Invoice Metadata`=%s "
                      ,prepare_mysql($store_code.$order_data_id));
-        $result_test=mysql_query($sql);
-        if ($row_test=mysql_fetch_array($result_test, MYSQL_ASSOC)) {
-            if ($row_test['num']==0) {
-                print "NEW $contador $order_data_id $filename ";
+        $result_test2=mysql_query($sql);
+       // print $sql;
+        if ($row_test2=mysql_fetch_array($result_test2, MYSQL_ASSOC)) {
+            if ($row_test2['num']==0) {
+
+
+                $sql=sprintf("select count(*) as num  from `Delivery Note Dimension`  where `Delivery Note Metadata`=%s "
+                             ,prepare_mysql($store_code.$order_data_id));
+                $result_test3=mysql_query($sql);
+                if ($row_test3=mysql_fetch_array($result_test3, MYSQL_ASSOC)) {
+                    if ($row_test3['num']==0) {
+
+
+                        print "NEW $contador $order_data_id $filename ";
+                    } else {
+                        $update=true;
+                        print "UPD $contador $order_data_id $filename ";
+
+                    }
+}
+
+                } else {
+
+                    $update=true;
+                    print "UPD $contador $order_data_id $filename ";
+                }
+
+}
+
             } else {
                 $update=true;
                 print "UPD $contador $order_data_id $filename ";
@@ -332,9 +364,8 @@ $editor=array(
         }
 
 
-
-
         $transactions=read_products($products,$prod_map);
+        
         unset($products);
         $_customer_data=setup_contact($act_data,$header_data,$date_index2,$editor);
         $customer_data=array();
@@ -452,19 +483,23 @@ $editor=array(
         $data_bonus_transactions=array();
 
         $credits=array();
-
+        $shipping_transactions=array();
         $total_credit_value=0;
         $estimated_w=0;
         //echo "Memory: ".memory_get_usage(true) . "\n";
         foreach($transactions as $transaction) {
+      // print_r($transaction);
             $transaction['code']=_trim($transaction['code']);
 
             if (preg_match('/credit|refund/i',$transaction['code'])) {
 
-
                 if (preg_match('/^Credit owed for order no\.\:\d{4,5}$/',$transaction['description'])) {
-                    $credit_parent_public_id=preg_replace('/[^\d]/','',$transaction['description']);
-                    $credit_value=$transaction['credit'];
+                 
+                 
+                 $credit_parent_public_id=preg_replace('/[^\d]/','',$transaction['description']);
+              
+               
+               $credit_value=$transaction['credit'];
                     $credit_description=$transaction['description'];
                     $total_credit_value+=$credit_value;
                 }
@@ -494,7 +529,7 @@ $editor=array(
                         $_parent_order_date=$credit_parent->data['Order Date'];
                     }
                 }
-
+               
                 $credits[]=array(
                                'parent_key'=>$_parent_key
                                             ,'value'=>$credit_value
@@ -506,8 +541,8 @@ $editor=array(
                 continue;
             }
 
-            if (preg_match('/Freight|^frc-|Postage/i',$transaction['code'])) {
-
+            if (preg_match('/Freight|^frc-|Postage|shipping/i',$transaction['code'])) {
+$shipping_transactions[]=$transaction;
                 $extra_shipping+=$transaction['price'];
                 continue;
 
@@ -523,6 +558,7 @@ $editor=array(
                       or $__code=='scrub-st' or $__code=='eye-st' or $__code=='tbm-st' or $__code=='tbc-st' or $__code=='tbs-st'
                       or $__code=='gemd-st' or $__code=='cryc-st' or $__code=='gp-st'  or $__code=='dc-st'
                ) {
+               
                 continue;
 
             }
@@ -859,10 +895,11 @@ $editor=array(
 
             if ($transaction['units']=='' OR $transaction['units']<=0)
                 $transaction['units']=1;
-
+            $transaction['original_price']=$transaction['price'];
             if (!is_numeric($transaction['price']) or $transaction['price']<=0) {
                 //       print "Price Zero ".$transaction['code']."\n";
                 $transaction['price']=0;
+                
             }
 
             if (!is_numeric($supplier_product_cost)  or $supplier_product_cost<=0 ) {
@@ -1162,7 +1199,7 @@ $editor=array(
                                      'units_per_case'=>$product->data['Product Units Per Case']
                                  );
 
-                //      print_r($transaction);
+                      //print_r($transaction);
 
                 $net_amount=round(($transaction['order']-$transaction['reorder'])*$transaction['price']*(1-$transaction['discount']),2 );
                 $gross_amount=round(($transaction['order']-$transaction['reorder'])*$transaction['price'],2);
@@ -1186,12 +1223,16 @@ $editor=array(
 
 
                 $data_invoice_transactions[]=array(
+                'original_amount'=>round(($transaction['order']-$transaction['reorder'])*$transaction['original_price']*(1-$transaction['discount']),2 )
+               
+                ,
                                                  'Product Key'=>$product->id,
                                                  'invoice qty'=>$transaction['order']-$transaction['reorder'],
                                                  'gross amount'=>$gross_amount,
                                                  'discount amount'=>$net_discount,
-                                                 'current payment state'=>'Paid'
-
+                                                 'current payment state'=>'Paid',
+                                                 'description'=>$transaction['description'].($transaction['code']!=''?" (".$transaction['code'].")":''),
+                                                 'credit'=>$transaction['credit']   
 
 
                                              );
@@ -1230,11 +1271,14 @@ $editor=array(
                                                                                                                  ,'units_per_case'=>$product->data['Product Units Per Case']
                                  );
                 $data_invoice_transactions[]=array(
-                                                 'Product Key'=>$product->id
-                                                               ,'invoice qty'=>$transaction['bonus']
-                                                                              ,'gross amount'=>($transaction['bonus'])*$transaction['price']
-                                                                                              ,'discount amount'=>($transaction['bonus'])*$transaction['price']
-                                                                                                                 ,'current payment state'=>'No Applicable'
+                                                 'Product Key'=>$product->id,
+                                                 'credit'=>0,
+                                                 'original_amount'=>0,
+                                                 'description'=>$transaction['description'].($transaction['code']!=''?" (".$transaction['code'].")":''),
+                                                               'invoice qty'=>$transaction['bonus'],
+                                                                    'gross amount'=>($transaction['bonus'])*$transaction['price'],
+                                                                                              'discount amount'=>($transaction['bonus'])*$transaction['price'],
+                                               'current payment state'=>'No Applicable'
                                              );
 
                 $estimated_w+=$product->data['Product Gross Weight']*$transaction['bonus'];
@@ -1381,49 +1425,9 @@ $editor=array(
 
 
         if ($update) {
-            print "Updated ";
+           delete_old_data();
 
-            $sql=sprintf("select `Order Key`  from `Order Dimension`  where `Order Original Metadata`=%s  ",prepare_mysql($store_code.$order_data_id));
-
-            $result_test=mysql_query($sql);
-            while ($row_test=mysql_fetch_array($result_test, MYSQL_ASSOC)) {
-
-                $sql=sprintf("delete from `History Dimension` where `Direct Object Key`=%d and `Direct Object`='Sale'   ",$row_test['Order Key']);
-                if (!mysql_query($sql))
-                    print "$sql Warning can no delete oldhidtfgf";
-
-            };
-
-
-
-            $sql=sprintf("delete from `Order No Product Transaction Fact` where `Metadata`=%s",prepare_mysql($store_code.$order_data_id));
-            if (!mysql_query($sql))
-                print "$sql Warning can no delete old order";
-
-            //delete things
-            $sql=sprintf("delete from `Order Dimension` where `Order Original Metadata`=%s",prepare_mysql($store_code.$order_data_id));
-            //	 print $sql;
-
-            if (!mysql_query($sql))
-                print "$sql Warning can no delete old order";
-            $sql=sprintf("delete from `Invoice Dimension` where `Invoice Metadata`=%s",prepare_mysql($store_code.$order_data_id));
-            if (!mysql_query($sql))
-                print "$sql Warning can no delete old inv";
-            $sql=sprintf("delete from `Delivery Note Dimension` where `Delivery Note Metadata`=%s",prepare_mysql($store_code.$order_data_id));
-            if (!mysql_query($sql))
-                print "$sql Warning can no delete old dn";
-            $sql=sprintf("delete from `Order Transaction Fact` where `Metadata`=%s",prepare_mysql($store_code.$order_data_id));
-            if (!mysql_query($sql))
-                print "$sql Warning can no delete tf";
-            $sql=sprintf("delete from `Inventory Transaction Fact` where `Metadata`=%s   ",prepare_mysql($store_code.$order_data_id));
-            if (!mysql_query($sql))
-                print "$sql Warning can no delete old inv";
-
-
-
-            $sql=sprintf("delete from `Order No Product Transaction Fact` where `Metadata`=%s ",prepare_mysql($store_code.$order_data_id));
-            if (!mysql_query($sql))
-                print "$sql Warning can no delete oldhidt nio prod";
+           
 
         }
         $data['editor']=$editor;
@@ -1434,6 +1438,8 @@ get_data($header_data);
         $data['Customer Data']['editor']=$data['editor'];
         $data['Customer Data']['editor']['Date']=date("Y-m-d H:i:s",strtotime($data['Customer Data']['editor']['Date']." -1 second"));
         $customer = new Customer ( 'find create', $data['Customer Data'] );
+       
+        
         $data['Order Customer Key']=$customer->id;
       $customer_key=$customer->id;
 
@@ -1473,11 +1479,12 @@ switch ($tipo_order) {
         case(7)://MISSING
         print "RPL/MISS ";
         create_post_order($data,$data_dn_transactions);
-        
-       
-         
-         
         break; 
+        case(9)://Refund
+        print "Refund ";
+       
+        create_refund($data,$header_data, $data_dn_transactions);
+
     default:
       
         break;

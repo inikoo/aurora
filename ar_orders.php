@@ -383,6 +383,9 @@ if(!$user->can_view('orders'))
  case('transactions_invoice'):
    list_transactions_in_invoice();
    break;
+   case('transactions_refund'):
+   list_transactions_in_refund();
+   break;
  case('transactions'):
    list_transactions();
    break;
@@ -692,11 +695,11 @@ if(isset( $_REQUEST['where']))
 $order='`Order Current XHTML State`';
 }
    else if($order=='total_amount')
-     $order='`Order Total Amount`';
+     $order='`Order Balance Total Amount`';
 else if($order=='customer')
      $order='`Order Customer Name`';
 
-  $sql="select `Order Type`,`Order Currency Exchange`,`Order Currency`,`Order Key`,`Order Public ID`,`Order Customer Key`,`Order Customer Name`,`Order Last Updated Date`,`Order Date`,`Order Total Amount` ,`Order Current XHTML State` from `Order Dimension`  $where $wheref  order by $order $order_direction limit $start_from,$number_results ";
+  $sql="select `Order Balance Total Amount`,`Order Type`,`Order Currency Exchange`,`Order Currency`,`Order Key`,`Order Public ID`,`Order Customer Key`,`Order Customer Name`,`Order Last Updated Date`,`Order Date`,`Order Total Amount` ,`Order Current XHTML State` from `Order Dimension`  $where $wheref  order by $order $order_direction limit $start_from,$number_results ";
   //  print $sql;
   global $myconf;
 
@@ -709,12 +712,20 @@ else if($order=='customer')
      $state=$row['Order Current XHTML State'];
      if($row ['Order Type'] != 'Order')
        $state.=' ('.$row ['Order Type'].')';
+       
+       if($row['Order Balance Total Amount']!=$row['Order Total Amount']){
+       $mark='<span style="color:red">*</span>';
+       }else{
+       $mark='<span style="visibility:hidden">*</span>';
+       }
+       
+       
      $data[]=array(
 		   'id'=>$order_id,
 		   'customer'=>$customer,
 		   'date'=>strftime("%e %b %y %H:%M", strtotime($row['Order Date'])),
 		   'last_date'=>strftime("%e %b %y %H:%M", strtotime($row['Order Last Updated Date'])),
-		   'total_amount'=>money($row['Order Total Amount'],$row['Order Currency']),
+		   'total_amount'=>money($row['Order Balance Total Amount'],$row['Order Currency']).$mark,
 		   'state'=>$state
 		   );
    }
@@ -1079,6 +1090,79 @@ function list_transactions_in_invoice() {
 // 			 'records_order'=>$order,
 // 			 'records_order_dir'=>$order_dir,
 // 			 'filtered'=>$filtered
+                                     )
+                   );
+    echo json_encode($response);
+}
+function list_transactions_in_refund() {
+
+    if (isset( $_REQUEST['id']) and is_numeric( $_REQUEST['id'])) {
+        $order_id=$_REQUEST['id'];
+    } else {
+        $order_id=$_SESSION['state']['invoice']['id'];
+    }
+    $where=' where   `Refund Key`='.$order_id;
+    $total_charged=0;
+    $total_discounts=0;
+    $total_picks=0;
+
+    $data=array();
+    $sql="select `Invoice Transaction Gross Amount`,`Invoice Transaction Total Discount Amount`,`Invoice Transaction Item Tax Amount`,`Invoice Quantity`,`Invoice Transaction Tax Refund Amount`,`Invoice Currency Code`,`Invoice Transaction Net Refund Amount`,`Product XHTML Short Description`,P.`Product ID`,`Product Code` from `Order Transaction Fact` O  left join `Product History Dimension` PH on (O.`Product Key`=PH.`Product Key`) left join  `Product Dimension` P on (PH.`Product ID`=P.`Product ID`) $where   ";
+    $result=mysql_query($sql);
+   
+    while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+        $code=sprintf('<a href="product.php?pid=%d">%s</a>',$row['Product ID'],$row['Product Code']);
+        $data[]=array(
+                    'code'=>$code,
+                    'description'=>$row['Product XHTML Short Description'],
+                    'charged'=>$row['Invoice Quantity'].'/'.money($row['Invoice Transaction Gross Amount']-$row['Invoice Transaction Total Discount Amount'],$row['Invoice Currency Code']).'('.money($row['Invoice Transaction Item Tax Amount'],$row['Invoice Currency Code']).')',
+                    'refund_net'=>money($row['Invoice Transaction Net Refund Amount'],$row['Invoice Currency Code']),
+                    'refund_tax'=>money($row['Invoice Transaction Tax Refund Amount'],$row['Invoice Currency Code'])
+                );
+    }
+    $sql="select * from `Order No Product Transaction Fact`    $where   ";
+    $result=mysql_query($sql);
+    while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+        $data[]=array(
+                    'code'=>'',
+                    'description'=>$row['Transaction Description'],
+                    'refund_net'=>money($row['Transaction Invoice Net Amount'],$row['Currency Code']),
+                    'refund_tax'=>money($row['Transaction Invoice Tax Amount'],$row['Currency Code'])
+
+                );
+    }
+
+
+    $invoice=new Invoice($order_id);
+
+    if ($invoice->data['Invoice Shipping Net Amount']!=0) {
+
+        $data[]=array(
+                    'code'=>'',
+                    'description'=>_('Shipping'),
+                    'refund_net'=>money($invoice->data['Invoice Shipping Net Amount'],$invoice->data['Invoice Currency'])
+                );
+
+    }
+    if ($invoice->data['Invoice Charges Net Amount']!=0) {
+        $data[]=array(
+                    'code'=>'',
+                    'gross'=>money($invoice->data['Invoice Charges Net Amount'],$invoice->data['Invoice Currency']),
+                    'refund_net'=>money($invoice->data['Invoice Charges Net Amount'],$invoice->data['Invoice Currency'])
+                );
+    }
+
+    $data[]=array(
+                'code'=>'',
+                'description'=>_('Total'),
+                'refund_net'=>'<b>'.money($invoice->data['Invoice Total Net Amount'],$invoice->data['Invoice Currency']).'</b>',
+                'refund_tax'=>'<b>'.money($invoice->data['Invoice Total Tax Amount'],$invoice->data['Invoice Currency']).'</b>'
+
+           );
+
+    $response=array('resultset'=>
+                                array('state'=>200,
+                                      'data'=>$data
                                      )
                    );
     echo json_encode($response);
