@@ -3950,52 +3950,53 @@ $this->updated=true;
         }
 
 
-        function update_parents_principal_address_keys($address_key) {
-            $parents=array('Customer');
-            foreach($parents as $parent) {
-                $sql=sprintf("select `$parent Key` as `Parent Key`   from  `$parent Dimension` where `$parent Main Contact Key`=%d group by `$parent Key`",$this->id);
-                $res=mysql_query($sql);
-                while ($row=mysql_fetch_array($res)) {
+function update_parents_principal_address_keys($address_key) {
+    $parents=array('Customer');
+    foreach($parents as $parent) {
+        $sql=sprintf("select `$parent Key` as `Parent Key`   from  `$parent Dimension` where `$parent Main Contact Key`=%d group by `$parent Key`",$this->id);
+        $res=mysql_query($sql);
+        while ($row=mysql_fetch_array($res)) {
 
 
-                    if ($parent=='Customer') {
-                        $parent_object=new Customer($row['Parent Key']);
-                        $parent_label=_('Customer');
-                    }
+            if ($parent=='Customer') {
+                $parent_object=new Customer($row['Parent Key']);
+                $parent_label=_('Customer');
+            }
 
-                    $old_principal_name_key=$parent_object->data[$parent.' Main Address Key'];
-                    if ($old_principal_name_key!=$address_key) {
+            $old_principal_name_key=$parent_object->data[$parent.' Main Address Key'];
+            if ($old_principal_name_key!=$address_key) {
 
-                        $sql=sprintf("update `Address Bridge`  set `Is Main`='No' where `Subject Type`='$parent' and  `Subject Key`=%d  and `Address Key`=%d",
-                                     $parent_object->id
-                                     ,$address_key
-                                    );
-                        mysql_query($sql);
-                        $sql=sprintf("update `Address Bridge`  set `Is Main`='Yes' where `Subject Type`='$parent' and  `Subject Key`=%d  and `Address Key`=%d",
-                                     $parent_object->id
-                                     ,$address_key
-                                    );
-                        mysql_query($sql);
-                        $sql=sprintf("update `$parent Dimension` set `$parent Main Address Key`=%d where `$parent Key`=%d"
-                                     ,$address_key
-                                     ,$parent_object->id
-                                    );
-                        mysql_query($sql);
+                $sql=sprintf("update `Address Bridge`  set `Is Main`='No' where `Subject Type`='$parent' and  `Subject Key`=%d  and `Address Key`=%d",
+                             $parent_object->id
+                             ,$address_key
+                            );
+                mysql_query($sql);
+                $sql=sprintf("update `Address Bridge`  set `Is Main`='Yes' where `Subject Type`='$parent' and  `Subject Key`=%d  and `Address Key`=%d",
+                             $parent_object->id
+                             ,$address_key
+                            );
+                mysql_query($sql);
+                $sql=sprintf("update `$parent Dimension` set `$parent Main Address Key`=%d where `$parent Key`=%d"
+                             ,$address_key
+                             ,$parent_object->id
+                            );
+                mysql_query($sql);
 
- if($parent=='Customer'){
-                    if($parent_object->data['Customer Delivery Address Link']=='Contact'){
+                if ($parent=='Customer') {
+                $parent_object->get_data('id',$this->id);
+                    if ($parent_object->data['Customer Delivery Address Link']=='Contact') {
                         $parent_object->update_principal_delivery_address($address_key);
-                    
+
                     }
-                    
-                
+
+
                 }
 
 
-                    }
-                }
             }
         }
+    }
+}
 
 
 function get_contact_keys(){

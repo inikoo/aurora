@@ -227,6 +227,18 @@ class DeliveryNote extends DB_Table {
         }
 
 
+        $sql=sprintf('select `Order No Product Transaction Fact Key` from `Order No Product Transaction Fact` where `Order Key`=%d ',$order->id);
+        $res=mysql_query($sql);
+        while ($row=mysql_fetch_assoc($res)) {
+            $sql = sprintf ( "update  `Order No Product Transaction Fact` set `Delivery Note Date`=%s,`Delivery Note Key`=%d where `Order No Product Transaction Fact Key`=%d",
+                  prepare_mysql ($this->data ['Delivery Note Date Created']),
+                  $this->id,
+                  $row['Order No Product Transaction Fact Key']
+                  
+);
+            mysql_query ( $sql );
+           
+        }
 
 
 
@@ -371,15 +383,21 @@ class DeliveryNote extends DB_Table {
         return $orders;
     }
     function get_invoices_ids() {
+    $invoices=array();
         $sql=sprintf("select `Invoice Key` from `Order Transaction Fact` where `Delivery Note Key`=%d group by `Invoice Key`",$this->id);
 
         $res = mysql_query ( $sql );
-        $invoices=array();
         while ($row = mysql_fetch_array ( $res, MYSQL_ASSOC )) {
             if ($row['Invoice Key']) {
                 $invoices[$row['Invoice Key']]=$row['Invoice Key'];
             }
-
+        }
+        $sql=sprintf("select `Refund Key` from `Order Transaction Fact` where `Delivery Note Key`=%d group by `Refund Key`",$this->id);
+        $res = mysql_query ( $sql );
+        while ($row = mysql_fetch_array ( $res, MYSQL_ASSOC )) {
+            if ($row['Refund Key']) {
+                $invoices[$row['Refund Key']]=$row['Refund Key'];
+            }
         }
         return $invoices;
 
@@ -1297,6 +1315,13 @@ $this->id
         if (!$date)
             $date=date("Y-m-d H:i:s");
 
+$tax_code='UNK';
+        foreach($this->get_orders_objects() as $order){
+        
+        $tax_code=$order->data['Order Tax Code'];
+        }
+
+
         $data_invoice=array(
                           'Invoice Date'=>$date,
                           'Invoice Title'=>'Invoice',
@@ -1304,7 +1329,9 @@ $this->id
                           'Delivery Note Keys'=>$this->id,
                           'Invoice Store Key'=>$this->data['Delivery Note Store Key'],
                           'Invoice Customer Key'=>$this->data['Delivery Note Customer Key'],
-
+                          'Invoice Tax Code'=>$tax_code,
+                          'Invoice Tax Shipping Code'=>$tax_code,
+                          'Invoice Tax Charges Code'=>$tax_code
                       );
 
 
@@ -1313,11 +1340,11 @@ $this->id
 
         $invoice=new Invoice ('create',$data_invoice);
       
-$shipping_amount=$this->calculate_shipping();
+//$shipping_amount=$this->calculate_shipping();
 //print $shipping_amount;
-$charges_amount=$this->calculate_charges();
-$invoice->update_shipping($shipping_amount);
-$invoice->update_charges($shipping_amount);
+//$charges_amount=$this->calculate_charges();
+//$invoice->update_shipping($shipping_amount);
+//$invoice->update_charges($shipping_amount);
 
         return $invoice;
     }
@@ -1325,16 +1352,45 @@ $invoice->update_charges($shipping_amount);
  function calculate_shipping() {
     $shipping=0;
     foreach($this->get_orders_objects() as $order) {
-        $shipping+=$order->get_shipping($this->id);
+    list($_shipping,$tmp)=$order->get_shipping($this->id);
+        $shipping+=$_shipping;
     }
     return $shipping;
 }
 function calculate_charges() {
     $charges=0;
     foreach($this->get_orders_objects() as $order) {
-        $charges+=$order->get_charges($this->id);
+    $charges_data=$order->get_charges($this->id);
+    
+    foreach($charges_data as $charge_data){
+     $charges+=$charge_data['Charge Net Amount'];
+    }
+    
+   
     }
     return $charges;
+}
+
+function update_orders_shipping(){
+
+
+}
+
+
+function ready_to_ship(){
+
+foreach($this->get_orders_objects() as $order) {
+    $order->update_shipping($this->id);
+       $order->update_charges($this->id);
+ }
+
+
+
+//$shipping_amount=$this->calculate_shipping();
+//$charges_amount=$this->calculate_charges();
+
+
+
 }
 
 }
