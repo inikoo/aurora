@@ -72,8 +72,8 @@ $res=mysql_query($sql);
 while ($row=mysql_fetch_array($res)) {
 
 
-    if ($row['Country Code']=='ESP') {
-            $cost='0,250,10;250,,0';
+    if ($row['Country Code']=='GBR') {
+            $cost='0,175,7.5;175,,0';
         $data=array('Shipping Type'=>'Normal',
         'Shipping Destination Type'=>'Country',
         'Shipping Destination Code'=>$row['Country Code'],
