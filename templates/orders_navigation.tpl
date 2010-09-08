@@ -12,7 +12,7 @@
 {else}
 <span class="nav2 onleft"><a href="warehouse_orders.php">{t}Warehouse Operations{/t}</a></span>
 {/if}
-{if $search_scope=='orders_store'}
+{if $search_scope=='orders_store'  or  $search_scope=='orders'}
  <span class="nav2 onleft"><span   id="orders" {if $view=='orders'}class="selected"{/if} >{t}Orders{/t}</span></span>
   <span class="nav2 onleft"><span id="invoices" {if $view=='invoices'}class="selected"{/if} >{t}Invoices{/t}</span></span>
   <span class="nav2 onleft"><span  id="dn"  {if $view=='dn'}class="selected"{/if} >{t}Delivery Notes{/t}</span></span>

@@ -70,6 +70,9 @@ var myhandleDataReturnPayload= function(oRequest, oResponse, oPayload) {
   // oPayload.pagination = {  rowsPerPage:parseInt(oResponse.meta.rowsPerPage),recordOffset:0 }
    
    //alert(oResponse.meta.RecordOffset)
+   
+  // alert(oResponse.meta.rtext+' '+oResponse.meta.tableid)
+   
     if(oResponse.meta.rtext != undefined)
 
       YAHOO.util.Dom.get('rtext'+oResponse.meta.tableid).innerHTML=oResponse.meta.rtext;
