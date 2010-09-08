@@ -543,22 +543,6 @@ if(isset( $_REQUEST['where']))
        $_SESSION['state']['orders']['to']=$date_interval['to'];
      }
    }
- //   switch($view){
-//    case('all'):
-//      break;
-//    case('invoices'):
-//      $where.=' and orden.tipo=2 ';
-//      break;
-//    case('in_process'):
-//      $where.=' and orden.tipo=1 ';
-//      break;
-//    case('cancelled'):
-//      $where.=' and orden.tipo=3 ';
-//      break;
-//    default:
-     
-     
-//    }
 
 
  if(is_numeric($store)){
@@ -585,7 +569,7 @@ if(isset( $_REQUEST['where']))
      if($_where!=''){
        $where.=' and `Order Current Dispatch State` in ('.$_where.')';
      }else
-       $_SESSION['state']['orders']['table']['dispatched']='';
+       $_SESSION['state']['orders']['table']['dispatch']='';
    }
 
 

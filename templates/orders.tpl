@@ -9,8 +9,18 @@
     <span class="clean_table_title">{t}Order List{/t}</span>
     
     <div id="table_type" class="table_type">
-    <a  style="float:right"  class="table_type state_details"  href="orders_csv.php" >{t}Export (CSV){/t}</a>
-     </div>
+ <div  style="font-size:90%"    style="display:{if $view!='orders'}none{/if}">
+         <a  style="float:right;margin-left:20px"  class="table_type state_details"  href="orders_csv.php" >{t}Export (CSV){/t}</a>
+          <span style="float:right;margin-left:20px" class="table_type  state_details {if $dispatch=='all_contacts'}selected{/if}"  id="restrictions_all_orders" table_type="all"  >{t}All Orders{/t} ({$store->get('Total Orders')})</span>
+          <span style="float:right;margin-left:20px" class="table_type  state_details {if $dispatch=='all_customers'}selected{/if}"  id="restrictions_orders_in_process" table_type="in_process"   >{t}In Process{/t} ({$store->get('Total Orders in Process')})</span>
+          <span style="float:right;margin-left:20px" class="table_type  state_details {if $dispatch=='active_customers'}selected{/if}"  id="restrictions_orders_dispatched"  table_type="dispatched"  >{t}Dispatched{/t} ({$store->get('Total Orders Dispatched')})</span>
+          <span style="float:right;margin-left:20px" class="table_type  state_details {if $dispatch=='active_customers'}selected{/if}"  id="restrictions_orders_dispatched"  table_type="unknown"  >{t}Unknown{/t} ({$store->get('Total Orders Dispatched')})</span>
+          <span style="float:right;margin-left:20px" class="table_type  state_details {if $dispatch=='active_customers'}selected{/if}"  id="restrictions_orders_dispatched"  table_type="cancelled"  >{t}Cancel{/t} ({$store->get('Total Orders Cancelled')})</span>
+
+ </div>
+ 
+ 
+ </div>
      
     
      <div id="list_options0"> 
@@ -18,16 +28,9 @@
       
       <div style="">
    <table  style="float:left;margin:0 0 0 0px ;padding:0;clear:left"  class="options_mini" >
-     <tr  id="orders_show_only"  style="display:{if $view!='orders'}none{/if}"  >
-       <td  style="xmargin:5px 15px 0 0px ;padding:0;border:none;color:#555"  >{t}show only{/t}:</td>
-       
-       <td  style="" {if $dispatch=='in_process'}class="selected"{/if}  id="in_process"  >{t}In Process{/t}</td>
-       <td  style="" {if $dispatch=='dispached'}class="selected"{/if}  id="dispached"  >{t}Dispatched{/t}</td>
-       <td  style="" {if $dispatch=='cancelled'}class="selected"{/if}  id="cancelled"  >{t}Cancelled{/t}</td>
-       <td  style="" {if $dispatch=='unknown'}class="selected"{/if}  id="unknown"  >{t}Unknown{/t}</td>
-
-     </tr>
-   
+     
+     
+    
 
    </table>
 </div>

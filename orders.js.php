@@ -423,45 +423,18 @@ YAHOO.util.Event.addListener(ids, "click", change_dispatch_type);
 
 
  var change_view = function (e){
-
 	    new_view=this.id
-
 	    if(new_view!=view){
-		//alert('ar_sessions.php?tipo=update&keys=orders-view&value='+escape(new_view))
 		YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=orders-view&value='+escape(new_view),{});
 		this.className='selected';
 		Dom.get(view).className='';
-
-		//Dom.get('details_'+view).style.display='none';
-		//Dom.get('details_'+new_view).style.display='';
-	//	Dom.get(view+'_show_only').style.display='none';
-//		Dom.get(new_view+'_show_only').style.display='';
-		
-
-
 		Dom.get(view+'_table').style.display='none';
 		Dom.get(new_view+'_table').style.display='';
-
-
 		view=new_view;
-
-		
-
-		//var table=tables.table0;
-		//var datasource=tables.dataSource0;
-		//var request='&sf=0&view='+view;
-		//datasource.sendRequest(request,table.onDataReturnInitializeTable, table);       
 	    }
-	    
-
-	}
-
-
-
+	 }
 	var ids=['orders','invoices','dn'];
 	YAHOO.util.Event.addListener(ids, "click", change_view);
-
-
 }
 
 YAHOO.util.Event.onDOMReady(init);
