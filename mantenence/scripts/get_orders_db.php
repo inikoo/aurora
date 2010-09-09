@@ -896,7 +896,7 @@ $shipping_transactions[]=$transaction;
             if ($transaction['units']=='' OR $transaction['units']<=0)
                 $transaction['units']=1;
             $transaction['original_price']=$transaction['price'];
-            exit;exit;sssssssssss
+            
             if (!is_numeric($transaction['price']) or $transaction['price']<=0) {
                 //       print "Price Zero ".$transaction['code']."\n";
                 $transaction['price']=0;

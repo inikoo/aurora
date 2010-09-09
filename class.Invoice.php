@@ -307,6 +307,21 @@ protected function create($invoice_data) {
         }
     }
     $this->data['Invoice File As']=$this->prepare_file_as($this->data['Invoice Public ID']);
+    
+            $this->data ['Invoice Currency Exchange']=1;
+        $sql=sprintf("select `Corporation Currency` from `Corporation Dimension`");
+        $res=mysql_query($sql);
+        if ($row=mysql_fetch_array($res)) {
+            $corporation_currency_code=$row['Corporation Currency'];
+        } else
+            $corporation_currency_code='GBP';
+        if ($this->data ['Invoice Currency']!=$corporation_currency_code) {
+            $currency_exchange = new CurrencyExchange($this->data ['Invoice Currency'].$corporation_currency_code,$this->data['Invoice Date']);
+            $exchange= $currency_exchange->get_exchange();
+            $this->data ['Invoice Currency Exchange']=$exchange;
+        }
+    
+    
     $this->create_header ();
     $delivery_notes_ids=array();
     foreach(preg_split('/\,/',$invoice_data['Delivery Note Keys']) as $dn_key) {

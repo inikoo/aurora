@@ -57,7 +57,7 @@ while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
   $tm->forecast();
 };
 */
-if(false){
+if(true){
   print "inv\n";
 
  $tm=new TimeSeries(array('d','invoices'));
