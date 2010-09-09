@@ -99,6 +99,7 @@ var myhandleDataReturnPayload= function(oRequest, oResponse, oPayload) {
     }else{
 	    var table=YAHOO.util.Dom.get('table'+oResponse.meta.tableid).getElementsByTagName("table")[0];
 	    table.tHead.style.display='';
+	     Dom.get(table).style.display='';
 	    if(YAHOO.util.Dom.get('filter_div'+oResponse.meta.tableid)!=null)
 	        YAHOO.util.Dom.get('filter_div'+oResponse.meta.tableid).style.visibility='visible';
        
@@ -176,7 +177,7 @@ var myRequestBuilderwithTotals = function(oState, oSelf) {
 
 
 var mygetTerms =function (query) {
- 
+
     if(this.table_id==undefined)
 	var table_id=0;
     else
@@ -187,7 +188,7 @@ var mygetTerms =function (query) {
     var datasource=tables['dataSource'+table_id];
 
     table.filter.value=Dom.get('f_input'+table_id).value;
-    var request='&sf=0&f_field=' +table.filter.key + '&f_value=' + table.filter.value;
+    var request='&tableid='+table_id+'&sf=0&f_field=' +table.filter.key + '&f_value=' + table.filter.value;
    
     datasource.sendRequest(request,table.onDataReturnInitializeTable, table);       
 };
