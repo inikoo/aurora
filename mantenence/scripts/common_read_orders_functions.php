@@ -128,8 +128,8 @@ global $customer_key,$filename,$store_code,$order_data_id,$date_order,$shipping_
                         'Order Type'=>$data['Order Type'],
                         'Order Original Metadata'=>$store_code.$order_data_id,
                         'editor'=>$data['editor'],
-                        'Order Public ID'=>$data['order id']
-
+                        'Order Public ID'=>$data['order id'],
+                        'Order Date'=>$date_order
                     );
 
 

@@ -683,6 +683,9 @@ function create_order($data) {
         $this->data ['Order Current XHTML State'] = 'In Process';
         $this->data ['Order Sale Reps IDs'] =array($this->editor['User Key']);
         $this->data ['Order For'] = 'Customer';
+        if(isset($data['Order Date']))
+        $this->data ['Order Date'] =$data['Order Date'];
+        else
         $this->data ['Order Date'] = date('Y-m-d H:i:s');
         $this->data ['Order Customer Message']='';
        
@@ -726,7 +729,7 @@ function create_order($data) {
 
 
         if ($this->data ['Order Currency']!=$corporation_currency_code) {
-            $currency_exchange = new CurrencyExchange($this->data ['Order Currency'].$this->data ['Order Currency'],'now');
+            $currency_exchange = new CurrencyExchange($this->data ['Order Currency'].$corporation_currency_code,$this->data['Order Date']);
             $exchange= $currency_exchange->get_exchange();
             $this->data ['Order Currency Exchange']=$exchange;
         }
