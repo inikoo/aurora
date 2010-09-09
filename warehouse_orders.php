@@ -55,7 +55,7 @@ mysql_free_result($result);
 
 
 
-$smarty->assign('view',$_SESSION['state']['orders']['view']);
+$smarty->assign('view','warehouse_orders');
 $smarty->assign('from',$_SESSION['state']['orders']['from']);
 $smarty->assign('to',$_SESSION['state']['orders']['to']);
 

@@ -7985,15 +7985,16 @@ function list_invoices_per_store() {
         $avg=$_SESSION['state']['stores']['invoices']['avg'];
 
     $_SESSION['state']['stores']['invoices']=array(
-                                               'percentages'=>$percentages						    ,'period'=>$period
-                                                       ,'avg'=>$avg
-                                                              ,'order'=>$order
-                                                                       ,'order_dir'=>$order_direction
-                                                                                    ,'nr'=>$number_results
-                                                                                          ,'sf'=>$start_from
-                                                                                                ,'where'=>$where
-                                                                                                         ,'f_field'=>$f_field
-                                                                                                                    ,'f_value'=>$f_value
+                                               'percentages'=>$percentages,
+                                               'period'=>$period,
+                                                       'avg'=>$avg,
+                                                              'order'=>$order,
+                                                                       'order_dir'=>$order_direction,
+                                                                                    'nr'=>$number_results,
+                                                                                          'sf'=>$start_from,
+                                                                                                'where'=>$where,
+                                                                                                         'f_field'=>$f_field,
+                                                                                                                    'f_value'=>$f_value
                                            );
     // print_r($_SESSION['tables']['families_list']);
 

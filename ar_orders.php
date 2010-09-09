@@ -552,9 +552,10 @@ if(isset( $_REQUEST['where']))
    $where.=$date_interval['mysql'];
    
 
-   if($dispatch!=''){
+   
      $dipatch_types=preg_split('/,/',$dispatch);
-     $valid_dispatch_types=array(
+     if(!array_key_exists('all_orders',$dipatch_types)){
+      $valid_dispatch_types=array(
 				 'in_process'=>",'Submited','In Process','Ready to Pick','Picking','Ready to Pack','Ready to Ship','Packing'"
 				 ,'cancelled'=>",'Cancelled'"
 				 ,'dispatched'=>",'Dispatched'"
@@ -568,11 +569,12 @@ if(isset( $_REQUEST['where']))
      $_where=preg_replace('/^,/','',$_where);
      if($_where!=''){
        $where.=' and `Order Current Dispatch State` in ('.$_where.')';
-     }else
-       $_SESSION['state']['orders']['table']['dispatch']='';
-   }
-
-
+     }else{
+        $_SESSION['state']['orders']['table']['dispatch']='all_orders';
+     }
+  }
+  
+  
    $wheref='';
 
   if($f_field=='max' and is_numeric($f_value) )
@@ -1689,6 +1691,13 @@ if(isset( $_REQUEST['where']))
      $where=$_REQUEST['where'];
    else
      $where=$conf['where'];
+     
+     
+     if(isset( $_REQUEST['dn_state']))
+     $state=$_REQUEST['dn_state'];
+   else
+     $state=$conf['dn_state'];
+     
   
  if(isset( $_REQUEST['from']))
     $from=$_REQUEST['from'];
@@ -1746,7 +1755,7 @@ if(isset( $_REQUEST['where']))
    }else
      $store=$_SESSION['state']['orders']['store'];
 
-     $_SESSION['state']['orders']['dn']=array('order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value);
+     $_SESSION['state']['orders']['dn']=array('dn_state'=>$state,'order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value);
      $_SESSION['state']['orders']['view']=$view;
      $date_interval=prepare_mysql_dates($from,$to,'`Delivery Note Date`','only_dates');
      if($date_interval['error']){
@@ -1961,6 +1970,7 @@ function list_invoices(){
     $order_dir=$_REQUEST['od'];
   else
     $order_dir=$conf['order_dir'];
+    
     if(isset( $_REQUEST['f_field']))
      $f_field=$_REQUEST['f_field'];
    else
@@ -1970,10 +1980,17 @@ function list_invoices(){
      $f_value=$_REQUEST['f_value'];
    else
      $f_value=$conf['f_value'];
+
 if(isset( $_REQUEST['where']))
   $where=stripslashes($_REQUEST['where']);
    else
      $where=$conf['where'];
+  
+  if(isset( $_REQUEST['invoice_type']))
+  $type=stripslashes($_REQUEST['invoice_type']);
+   else
+     $type=$conf['invoice_type'];
+  
   
  if(isset( $_REQUEST['from']))
     $from=$_REQUEST['from'];
@@ -2022,6 +2039,7 @@ if(isset( $_REQUEST['where']))
      $_SESSION['state']['report']['sales']['f_value']=$f_value;
      $_SESSION['state']['report']['sales']['to']=$to;
      $_SESSION['state']['report']['sales']['from']=$from;
+
 if(isset($_REQUEST['store_key'])){
 $store=$_REQUEST['store_key'];
 $_SESSION['state']['report']['sales']['store']=$store;
@@ -2038,7 +2056,16 @@ $store=$_SESSION['state']['report']['sales']['store'];
      $store=$_SESSION['state']['orders']['store'];
 
 
-     $_SESSION['state']['orders']['invoices']=array('order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value);
+     $_SESSION['state']['orders']['invoices']=array(
+     'invoice_type'=>$type,
+     'order'=>$order,
+     'order_dir'=>$order_direction,
+     'nr'=>$number_results,
+     'sf'=>$start_from,
+     'where'=>$where,
+     'f_field'=>$f_field,
+     'f_value'=>$f_value
+     );
      $_SESSION['state']['orders']['view']=$view;
      $date_interval=prepare_mysql_dates($from,$to,'`Invoice Date`','only_dates');
      if($date_interval['error']){
@@ -2053,6 +2080,27 @@ $store=$_SESSION['state']['report']['sales']['store'];
  if(is_numeric($store)){
      $where.=sprintf(' and `Invoice Store Key`=%d ',$store);
    }
+
+
+switch ($type) {
+    case 'paid':
+        $where.=' and `Invoice Paid`="Yes"';
+        break;
+    case 'to_pay':
+        $where.=' and `Invoice Paid`!="Yes"';
+        break;
+    case 'invoices':
+        $where.=' and `Invoice Title`="Invoice"';
+        break;        
+    case 'refunds':
+        $where.=' and `Invoice Title`="Refund"';
+        break;
+    default:
+ if(!isset($_REQUEST['saveto']) or $_REQUEST['saveto']!='report_sales'){   
+    $_SESSION['state']['orders']['invoices']['invoice_type']='all';
+    }
+        break;
+}
 
 
    $where.=$date_interval['mysql'];

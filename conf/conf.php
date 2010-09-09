@@ -301,7 +301,7 @@ $default_state=array(
                                             'from'=>'',
                                             'to'=>'',
                                             'elements'=>array(),
-                                            'dispatch'=>'',
+                                            'dispatch'=>'all_orders',
                                             'paid'=>'',
                                             'order_type'=>''
                                         ),
@@ -310,6 +310,7 @@ $default_state=array(
                                                'order_dir'=>'',
                                                'sf'=>0,
                                                'nr'=>25,
+                                               'invoice_type'=>'all',
                                                'where'=>'where true',
                                                'f_field'=>'public_id',
                                                'f_value'=>'','f_show'=>false,
@@ -327,6 +328,7 @@ $default_state=array(
                                          'f_value'=>'','f_show'=>false,
                                          'from'=>'',
                                          'to'=>'',
+                                         'dn_state'=>'all',
                                          'elements'=>array()
                                      )
                                      ,'ready_to_pick_dn'=>array(
@@ -1648,6 +1650,8 @@ $default_state=array(
                                             'period'=>'',
                                             'order'=>'date',
                                             'order_dir'=>'desc',
+                                            'invoice_type'=>'all',
+                                            'dn_state'=>'all',
                                             'sf'=>0,
                                             'nr'=>25,
                                             'plot'=>'per_store',
@@ -1732,9 +1736,11 @@ $default_state=array(
                                              'order_dir'=>'',
                                              'sf'=>0,
                                              'nr'=>25,
-                                         ),'invoices'=>array(
+                                         ),
+                                         'invoices'=>array(
                                              'percentages'=>false,
                                              'view'=>'general',
+                                             'invoice_type'=>'all',
                                              'period'=>'year',
                                              'mode'=>'all',
                                              'avg'=>'totals',
@@ -1747,6 +1753,7 @@ $default_state=array(
                                              'nr'=>25,
                                          ),'delivery_notes'=>array(
                                              'percentages'=>false,
+                                             'dn_state'=>'all',
                                              'view'=>'general',
                                              'period'=>'year',
                                              'mode'=>'all',
