@@ -1,6 +1,7 @@
 {include file='header.tpl'}
 <div id="bd" >
-  <span class="nav2 onleft"><a class="selected" id="warehouse_operations" href="warehouse_orders.php">{t}Warehouse Operations{/t}</a></span>
+ {include file='orders_navigation.tpl'}
+
 
   <div  id="orders_table" class="data_table" style="clear:left;margin-top:23px">
     <span class="clean_table_title">{t}Orders In Warehouse{/t}</span>

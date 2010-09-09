@@ -84,6 +84,11 @@ $smarty->assign('general_options_list',$general_options_list);
 $smarty->assign('search_label',_('Orders'));
 $smarty->assign('search_scope','orders');
 
+
+if(isset($_REQUEST['view']) and preg_match('/^orders|invoices|dn$/',$_REQUEST['view'])){
+$_SESSION['state']['stores']['orders_view']=$_REQUEST['view'];
+}
+
 $smarty->assign('view',$_SESSION['state']['stores']['orders_view']);
 
 

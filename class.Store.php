@@ -247,20 +247,13 @@ class Store extends DB_Table{
 
 
 
-    if (preg_match('/^(Total|1).*(Amount|Profit)$/',$key)) {
 
-      $amount='Store '.$key;
-
-      return money($this->data[$amount]);
-    }
-    if (preg_match('/^(Total|1).*(Quantity (Ordered|Invoiced|Delivered|)|Invoices|Pending Orders|Customers|Customer Contacts)$/',$key) or preg_match('/^(Active Customers)$/',$key)) {
-
-      $amount='Store '.$key;
-
-      return number($this->data[$amount]);
-    }
-
+   
     switch($key){
+    case('All To Pay Invoices'):
+    return $this->data['Store Total Invoices']-$this->data['Store Paid Invoices']-$this->data['Store Paid Refunds'];
+    case('All Paid Invoices'):
+    return $this->data['Store Paid Invoices']-$this->data['Store Paid Refunds'];
     case('code'):
       return $this->data['Store Code'];
       break;
@@ -283,6 +276,26 @@ class Store extends DB_Table{
       return number($this->data['Store Departments']);
       break;
     }
+        if (preg_match('/^(Total|1).*(Amount|Profit)$/',$key)) {
+
+      $amount='Store '.$key;
+
+      return money($this->data[$amount]);
+    }
+    if (preg_match('/^(Total|1).*(Quantity (Ordered|Invoiced|Delivered|)|Customers|Customer Contacts)$/',$key) or preg_match('/^(Active Customers)$/',$key)) {
+
+      $amount='Store '.$key;
+
+      return number($this->data[$amount]);
+    }
+    
+     if (preg_match('/(Orders|Delivery Notes|Invoices|Refunds|Orders In Process)$/',$key)) {
+
+      $amount='Store '.$key;
+
+      return number($this->data[$amount]);
+    }
+    
     $_key=ucfirst($key);
     if(isset($this->data[$_key]))
       return $this->data[$_key];

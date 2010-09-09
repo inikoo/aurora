@@ -1,5 +1,7 @@
 {include file='header.tpl'}
 <div id="bd" >
+ {include file='orders_navigation.tpl'}
+
   <div id="yui-main">
     <div class="yui-b">
       <div style="text-align:right">
