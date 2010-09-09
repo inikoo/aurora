@@ -7,6 +7,7 @@ if(!$user->can_view('orders'))
 ?>
 
 var Dom   = YAHOO.util.Dom;
+var Event   = YAHOO.util.Event;
 var assign_picker_dialog;
 var pick_it_dialog;
 var pick_assigned_dialog;
@@ -219,7 +220,11 @@ function init(){
  oAutoComp.minQueryLength = 0; 
 
 
-
+var change_view = function (e){
+	   window.location = "orders_server.php?view="+this.id;
+	 }
+	var ids=['orders','invoices','dn'];
+	Event.addListener(ids, "click", change_view);
  
 
 }

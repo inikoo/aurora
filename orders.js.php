@@ -7,14 +7,14 @@ if(!$user->can_view('orders'))
 ?>
 
 var Dom   = YAHOO.util.Dom;
-
+var Event =YAHOO.util.Event;
 
 var view='<?php echo$_SESSION['state']['orders']['view']?>'
 var dispatch='<?php echo$_SESSION['state']['orders']['table']['dispatch']?>'
 var paid='<?php echo$_SESSION['state']['orders']['table']['paid']?>'
 var order_type='<?php echo$_SESSION['state']['orders']['table']['order_type']?>'
 
-YAHOO.util.Event.addListener(window, "load", function() {
+Event.addListener(window, "load", function() {
     tables = new function() {
 	    var tableid=0; // Change if you have more the 1 table
 	    var tableDivEL="table"+tableid;
@@ -222,12 +222,12 @@ function init(){
 init_search('orders_store');
  
 
-    YAHOO.util.Event.addListener('clean_table_filter_show0', "click",show_filter,0);
- YAHOO.util.Event.addListener('clean_table_filter_hide0', "click",hide_filter,0);
-YAHOO.util.Event.addListener('clean_table_filter_show1', "click",show_filter,1);
- YAHOO.util.Event.addListener('clean_table_filter_hide1', "click",hide_filter,1);
-YAHOO.util.Event.addListener('clean_table_filter_show2', "click",show_filter,2);
- YAHOO.util.Event.addListener('clean_table_filter_hide2', "click",hide_filter,2);
+    Event.addListener('clean_table_filter_show0', "click",show_filter,0);
+ Event.addListener('clean_table_filter_hide0', "click",hide_filter,0);
+Event.addListener('clean_table_filter_show1', "click",show_filter,1);
+ Event.addListener('clean_table_filter_hide1', "click",hide_filter,1);
+Event.addListener('clean_table_filter_show2', "click",show_filter,2);
+ Event.addListener('clean_table_filter_hide2', "click",hide_filter,2);
 
 
 
@@ -282,12 +282,12 @@ cal2dn = new YAHOO.widget.Calendar("cal2dn","cal2dnContainer", { title:"<?php ec
  
 
  
- YAHOO.util.Event.addListener("calpop1", "click", cal1.show, cal1, true);
- YAHOO.util.Event.addListener("calpop2", "click", cal2.show, cal2, true);
- YAHOO.util.Event.addListener("calpop1i", "click", cal1i.show, cal1i, true);
- YAHOO.util.Event.addListener("calpop2i", "click", cal2i.show, cal2i, true);
- YAHOO.util.Event.addListener("calpop1dn", "click", cal1dn.show, cal1dn, true);
- YAHOO.util.Event.addListener("calpop2dn", "click", cal2dn.show, cal2dn, true);
+ Event.addListener("calpop1", "click", cal1.show, cal1, true);
+ Event.addListener("calpop2", "click", cal2.show, cal2, true);
+ Event.addListener("calpop1i", "click", cal1i.show, cal1i, true);
+ Event.addListener("calpop2i", "click", cal2i.show, cal2i, true);
+ Event.addListener("calpop1dn", "click", cal1dn.show, cal1dn, true);
+ Event.addListener("calpop2dn", "click", cal2dn.show, cal2dn, true);
  
 
 var clear_interval = function(e,suffix){
@@ -387,86 +387,64 @@ var clear_interval = function(e,suffix){
      
  }
  
- var change_dispatch_type=function(e){
-     
-     var new_dispatch=this.id;
+ var change_order_dispatch_type=function(e){
+   
      var table=tables.table0;
      var datasource=tables.dataSource0;
-     if(new_dispatch!=dispatch){
-	 
-	 if(dispatch)
-	     Dom.removeClass(dispatch,'selected');
-	 Dom.addClass(new_dispatch,'selected');
-	 
-	 dispatch=new_dispatch;
-	 
-	 var request='&dispatch='+dispatch;
-     }else{
-	 Dom.removeClass(dispatch,'selected');
-	 var request='&dispatch=';
-	 
-     }
+     Dom.removeClass(Dom.getElementsByClassName('dispatch','span' , 'dispatch_chooser'),'selected');;
+     Dom.addClass(this,'selected');     
+     var request='&dispatch='+this.getAttribute('table_type');
      datasource.sendRequest(request,table.onDataReturnInitializeTable, table);       
-     
  }
+ var change_invoice_type=function(e){
+     var table=tables.table1;
+     var datasource=tables.dataSource1;
+     Dom.removeClass(Dom.getElementsByClassName('invoice_type','span' , 'invoice_chooser'),'selected');;
+     Dom.addClass(this,'selected');     
+     var request='&invoice_type='+this.getAttribute('table_type');
+     datasource.sendRequest(request,table.onDataReturnInitializeTable, table);       
+ }
+ var change_dn_status=function(e){
+     var new_dispatch=this.id;
+     var table=tables.table2;
+     var datasource=tables.dataSource2;
+     Dom.removeClass(Dom.getElementsByClassName('dn_state','span' , 'dn_chooser'),'selected');;
+     Dom.addClass(this,'selected');     
+     var request='&dn_state='+this.getAttribute('table_type');
+     datasource.sendRequest(request,table.onDataReturnInitializeTable, table);       
+ } 
+ 
 
+ Event.addListener("submit_interval", "click", change_interval,'');
+ Event.addListener("clear_interval", "click", clear_interval,'');
+ Event.addListener("submit_intervali", "click", change_interval,'i');
+ Event.addListener("clear_intervali", "click", clear_interval,'i');
+Event.addListener("submit_intervaldn", "click", change_interval,'dn');
+ Event.addListener("clear_intervaldn", "click", clear_interval,'dn'); 
 
- YAHOO.util.Event.addListener("submit_interval", "click", change_interval,'');
- YAHOO.util.Event.addListener("clear_interval", "click", clear_interval,'');
- YAHOO.util.Event.addListener("submit_intervali", "click", change_interval,'i');
- YAHOO.util.Event.addListener("clear_intervali", "click", clear_interval,'i');
-YAHOO.util.Event.addListener("submit_intervaldn", "click", change_interval,'dn');
- YAHOO.util.Event.addListener("clear_intervaldn", "click", clear_interval,'dn'); 
-
- var ids =Array("in_process","dispatched","cancelled","unknown") ;
-YAHOO.util.Event.addListener(ids, "click", change_dispatch_type);
-
+var ids =Array("restrictions_orders_cancelled","restrictions_orders_unknown","restrictions_orders_dispatched","restrictions_orders_in_process","restrictions_all_orders") ;
+Event.addListener(ids, "click", change_order_dispatch_type);
+var ids =Array("restrictions_paid","restrictions_to_pay","restrictions_refunds","restrictions_invoices","restrictions_all_invoices") ;
+Event.addListener(ids, "click", change_invoice_type);
 
  var change_view = function (e){
-
 	    new_view=this.id
-
 	    if(new_view!=view){
-		//alert('ar_sessions.php?tipo=update&keys=orders-view&value='+escape(new_view))
 		YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=orders-view&value='+escape(new_view),{});
 		this.className='selected';
 		Dom.get(view).className='';
-
-		//Dom.get('details_'+view).style.display='none';
-		//Dom.get('details_'+new_view).style.display='';
-	//	Dom.get(view+'_show_only').style.display='none';
-//		Dom.get(new_view+'_show_only').style.display='';
-		
-
-
 		Dom.get(view+'_table').style.display='none';
 		Dom.get(new_view+'_table').style.display='';
-
-
 		view=new_view;
-
-		
-
-		//var table=tables.table0;
-		//var datasource=tables.dataSource0;
-		//var request='&sf=0&view='+view;
-		//datasource.sendRequest(request,table.onDataReturnInitializeTable, table);       
 	    }
-	    
-
-	}
-
-
-
+	 }
 	var ids=['orders','invoices','dn'];
-	YAHOO.util.Event.addListener(ids, "click", change_view);
-
-
+	Event.addListener(ids, "click", change_view);
 }
 
-YAHOO.util.Event.onDOMReady(init);
+Event.onDOMReady(init);
 
-YAHOO.util.Event.onContentReady("filtermenu0", function () {
+Event.onContentReady("filtermenu0", function () {
 	 var oMenu = new YAHOO.widget.ContextMenu("filtermenu0", {  trigger: "filter_name0"  });
 	 oMenu.render();
 	 oMenu.subscribe("show", oMenu.focus);
@@ -475,44 +453,44 @@ YAHOO.util.Event.onContentReady("filtermenu0", function () {
 
 
 
-YAHOO.util.Event.onContentReady("rppmenu0", function () {
+Event.onContentReady("rppmenu0", function () {
 	var oMenu = new YAHOO.widget.ContextMenu("rppmenu0", {trigger:"rtext_rpp0" });
 	oMenu.render();
 	oMenu.subscribe("show", oMenu.focus);
-	YAHOO.util.Event.addListener("rtext_rpp0", "click",oMenu.show , null, oMenu);
+	Event.addListener("rtext_rpp0", "click",oMenu.show , null, oMenu);
 });
 
-YAHOO.util.Event.onContentReady("filtermenu1", function () {
+Event.onContentReady("filtermenu1", function () {
 	 var oMenu = new YAHOO.widget.ContextMenu("filtermenu1", {  trigger: "filter_name1"  });
 	 oMenu.render();
 	 oMenu.subscribe("show", oMenu.focus);
-	 YAHOO.util.Event.addListener("filter_name1", "click", oMenu.show, null, oMenu);
+	 Event.addListener("filter_name1", "click", oMenu.show, null, oMenu);
     });
 
 
 
-YAHOO.util.Event.onContentReady("rppmenu1", function () {
+Event.onContentReady("rppmenu1", function () {
 	var oMenu = new YAHOO.widget.ContextMenu("rppmenu1", {trigger:"rtext_rpp1" });
 	oMenu.render();
 	oMenu.subscribe("show", oMenu.focus);
-	YAHOO.util.Event.addListener("rtext_rpp1", "click",oMenu.show , null, oMenu);
+	Event.addListener("rtext_rpp1", "click",oMenu.show , null, oMenu);
 
     });
 
-YAHOO.util.Event.onContentReady("filtermenu2", function () {
+Event.onContentReady("filtermenu2", function () {
 	 var oMenu = new YAHOO.widget.ContextMenu("filtermenu2", {  trigger: "filter_name2"  });
 	 oMenu.render();
 	 oMenu.subscribe("show", oMenu.focus);
-	 YAHOO.util.Event.addListener("filter_name2", "click", oMenu.show, null, oMenu);
+	 Event.addListener("filter_name2", "click", oMenu.show, null, oMenu);
     });
 
 
 
-YAHOO.util.Event.onContentReady("rppmenu2", function () {
+Event.onContentReady("rppmenu2", function () {
 	var oMenu = new YAHOO.widget.ContextMenu("rppmenu2", {trigger:"rtext_rpp2" });
 	oMenu.render();
 	oMenu.subscribe("show", oMenu.focus);
-	YAHOO.util.Event.addListener("rtext_rpp2", "click",oMenu.show , null, oMenu);
+	Event.addListener("rtext_rpp2", "click",oMenu.show , null, oMenu);
 
     });
 

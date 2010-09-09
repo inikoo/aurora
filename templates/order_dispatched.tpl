@@ -1,5 +1,7 @@
 {include file='header.tpl'}
 <div id="bd" >
+ {include file='orders_navigation.tpl'}
+
      <div style="border:1px solid #ccc;text-align:left;padding:10px;margin: 30px 0 10px 0">
 
        <div style="border:0px solid #ddd;width:400px;float:left"> 

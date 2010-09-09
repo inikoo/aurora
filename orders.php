@@ -59,7 +59,9 @@ if($row=mysql_fetch_array($result, MYSQL_ASSOC))
 exit('Internal Error');
 mysql_free_result($result);
 
-
+if(isset($_REQUEST['view']) and preg_match('/^orders|invoices|dn$/',$_REQUEST['view'])){
+$_SESSION['state']['orders']['view']=$_REQUEST['view'];
+}
 
 $smarty->assign('view',$_SESSION['state']['orders']['view']);
 $smarty->assign('from',$_SESSION['state']['orders']['from']);
@@ -106,8 +108,8 @@ $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
 
 $smarty->assign('dispatch',$_SESSION['state']['orders']['table']['dispatch']);
-$smarty->assign('paid',$_SESSION['state']['orders']['table']['paid']);
-$smarty->assign('order_type',$_SESSION['state']['orders']['table']['order_type']);
+$smarty->assign('invoice_type',$_SESSION['state']['orders']['invoices']['invoice_type']);
+$smarty->assign('dn_state',$_SESSION['state']['orders']['dn']['dn_state']);
 
 
 

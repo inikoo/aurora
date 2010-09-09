@@ -247,20 +247,13 @@ class Store extends DB_Table{
 
 
 
-    if (preg_match('/^(Total|1).*(Amount|Profit)$/',$key)) {
 
-      $amount='Store '.$key;
-
-      return money($this->data[$amount]);
-    }
-    if (preg_match('/^(Total|1).*(Quantity (Ordered|Invoiced|Delivered|)|Invoices|Pending Orders|Customers|Customer Contacts)$/',$key) or preg_match('/^(Active Customers)$/',$key)) {
-
-      $amount='Store '.$key;
-
-      return number($this->data[$amount]);
-    }
-
+   
     switch($key){
+    case('All To Pay Invoices'):
+    return $this->data['Store Total Invoices']-$this->data['Store Paid Invoices']-$this->data['Store Paid Refunds'];
+    case('All Paid Invoices'):
+    return $this->data['Store Paid Invoices']-$this->data['Store Paid Refunds'];
     case('code'):
       return $this->data['Store Code'];
       break;
@@ -283,6 +276,26 @@ class Store extends DB_Table{
       return number($this->data['Store Departments']);
       break;
     }
+        if (preg_match('/^(Total|1).*(Amount|Profit)$/',$key)) {
+
+      $amount='Store '.$key;
+
+      return money($this->data[$amount]);
+    }
+    if (preg_match('/^(Total|1).*(Quantity (Ordered|Invoiced|Delivered|)|Customers|Customer Contacts)$/',$key) or preg_match('/^(Active Customers)$/',$key)) {
+
+      $amount='Store '.$key;
+
+      return number($this->data[$amount]);
+    }
+    
+     if (preg_match('/(Orders|Delivery Notes|Invoices|Refunds|Orders In Process)$/',$key)) {
+
+      $amount='Store '.$key;
+
+      return number($this->data[$amount]);
+    }
+    
     $_key=ucfirst($key);
     if(isset($this->data[$_key]))
       return $this->data[$_key];
@@ -750,6 +763,112 @@ $sql=sprintf("select sum(if(`Product Record Type`='New',1,0)) as new,sum(if(`Pro
     mysql_query($sql);
  
   }
+  
+function update_orders() {
+
+    $this->data['Store Total Orders']=0;
+    $this->data['Store Dispatched Orders']=0;
+    $this->data['Store Cancelled Orders']=0;
+    $this->data['Store Orders In Process']=0;
+    $this->data['Store Unknown Orders']=0;
+    
+    $this->data['Store Total Invoices']=0;
+    $this->data['Store Invoices']=0;
+    $this->data['Store Refunds']=0;
+    $this->data['Store Paid Invoices']=0;
+    $this->data['Store Paid Refunds']=0;
+    $this->data['Store Partially Paid Invoices']=0;
+    $this->data['Store Partially Paid Refunds']=0;
+    
+    $this->data['Store Total Delivery Notes']=0;
+    $this->data['Store Ready to Pick Delivery Notes']=0;
+    $this->data['Store Picking Delivery Notes']=0;
+    $this->data['Store Packing Delivery Notes']=0;
+    $this->data['Store Ready to Dispatch Delivery Notes']=0;
+    $this->data['Store Dispatched Delivery Notes']=0;
+    $this->data['Store Cancelled Delivery Notes']=0;
+       
+
+    
+    
+    $sql="select count(*) as `Store Total Orders`,sum(IF(`Order Current Dispatch State`='Dispatched',1,0 )) as `Store Dispatched Orders` ,sum(IF(`Order Current Dispatch State`='Cancelled',1,0 )) as `Store Cancelled Orders`,sum(IF(`Order Current Dispatch State`='Unknown',1,0 )) as `Store Unknown Orders` from `Order Dimension`   where `Order Store Key`=".$this->id;
+    $result=mysql_query($sql);
+    if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+        $this->data['Store Total Orders']=$row['Store Total Orders'];
+        $this->data['Store Dispatched Orders']=$row['Store Dispatched Orders'];
+        $this->data['Store Cancelled Orders']=$row['Store Cancelled Orders'];
+        $this->data['Store Unknown Orders']=$row['Store Unknown Orders'];
+        $this->data['Store Orders In Process']=  $this->data['Store Total Orders']- $this->data['Store Dispatched Orders']-$this->data['Store Cancelled Orders']-$this->data['Store Unknown Orders'];
+    }
+
+    $sql="select count(*) as `Store Total Invoices`,sum(IF(`Invoice Title`='Invoice',1,0 )) as `Store Invoices`,sum(IF(`Invoice Title`='Refund',1,0 )) as `Store Refunds` ,sum(IF(`Invoice Paid`='Yes' AND `Invoice Title`='Invoice',1,0 )) as `Store Paid Invoices`,sum(IF(`Invoice Paid`='Partially' AND `Invoice Title`='Invoice',1,0 )) as `Store Partially Paid Invoices`,sum(IF(`Invoice Paid`='Yes' AND `Invoice Title`='Refund',1,0 )) as `Store Paid Refunds`,sum(IF(`Invoice Paid`='Partially' AND `Invoice Title`='Refund',1,0 )) as `Store Partially Paid Refunds` from `Invoice Dimension`   where `Invoice Store Key`=".$this->id;
+    $result=mysql_query($sql);
+    if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+        $this->data['Store Total Invoices']=$row['Store Total Invoices'];
+        $this->data['Store Invoices']=$row['Store Invoices'];
+         $this->data['Store Paid Invoices']=$row['Store Paid Invoices'];
+        $this->data['Store Partially Paid Invoices']=$row['Store Partially Paid Invoices'];
+        $this->data['Store Refunds']=$row['Store Refunds'];
+         $this->data['Store Paid Refunds']=$row['Store Paid Refunds'];
+        $this->data['Store Partially Paid Refunds']=$row['Store Partially Paid Refunds'];
+ }
+    $sql="select count(*) as `Store Total Delivery Notes`,
+    sum(IF(`Delivery Note State`='Cancelled'  or `Delivery Note State`='Cancelled to Restock' ,1,0 )) as `Store Returned Delivery Notes`,
+    sum(IF(`Delivery Note State`='Ready to be Picked' ,1,0 )) as `Store Ready to Pick Delivery Notes`,
+    sum(IF(`Delivery Note State`='Picking & Packing' or `Delivery Note State`='Picking' or `Delivery Note State`='Picker Assigned' or `Delivery Note State`='' ,1,0 )) as `Store Picking Delivery Notes`,
+    sum(IF(`Delivery Note State`='Packing' or `Delivery Note State`='Packer Assigned' or `Delivery Note State`='Picked' ,1,0 )) as `Store Packing Delivery Notes`,
+    sum(IF(`Delivery Note State`='Approved' or `Delivery Note State`='Packed' ,1,0 )) as `Store Ready to Dispatch Delivery Notes`,
+    sum(IF(`Delivery Note State`='Dispatched' ,1,0 )) as `Store Dispatched Delivery Notes`
+
+    from `Delivery Note Dimension`   where `Delivery Note Store Key`=".$this->id;
+    $result=mysql_query($sql);
+    if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+        $this->data['Store Total Delivery Notes']=$row['Store Total Delivery Notes'];
+        $this->data['Store Ready to Pick Delivery Notes']=$row['Store Ready to Pick Delivery Notes'];
+        $this->data['Store Picking Delivery Notes']=$row['Store Picking Delivery Notes'];
+        $this->data['Store Packing Delivery Notes']=$row['Store Packing Delivery Notes'];
+
+        $this->data['Store Ready to Dispatch Delivery Notes']=$row['Store Ready to Dispatch Delivery Notes'];
+        $this->data['Store Dispatched Delivery Notes']=$row['Store Dispatched Delivery Notes'];
+               $this->data['Store Returned Delivery Notes']=$row['Store Returned Delivery Notes'];
+
+
+ }
+ 
+ //print "$sql\n";
+ 
+ $sql=sprintf("update `Store Dimension` set `Store Total Orders`=%d,`Store Dispatched Orders`=%d,`Store Cancelled Orders`=%d,`Store Orders In Process`=%d,`Store Unknown Orders`=%d
+ ,`Store Total Invoices`=%d ,`Store Invoices`=%d ,`Store Refunds`=%d ,`Store Paid Invoices`=%d ,`Store Paid Refunds`=%d ,`Store Partially Paid Invoices`=%d ,`Store Partially Paid Refunds`=%d
+,`Store Total Delivery Notes`=%d,`Store Ready to Pick Delivery Notes`=%d,`Store Picking Delivery Notes`=%d,`Store Packing Delivery Notes`=%d,`Store Ready to Dispatch Delivery Notes`=%d,`Store Dispatched Delivery Notes`=%d,`Store Returned Delivery Notes`=%d
+ where `Store Key`=%d",
+ $this->data['Store Total Orders'],
+  $this->data['Store Dispatched Orders'],
+   $this->data['Store Cancelled Orders'],
+    $this->data['Store Orders In Process'],
+     $this->data['Store Unknown Orders'],
+      $this->data['Store Total Invoices'],
+    $this->data['Store Invoices'],
+    $this->data['Store Refunds'],
+    $this->data['Store Paid Invoices'],
+    $this->data['Store Paid Refunds'],
+    $this->data['Store Partially Paid Invoices'],
+    $this->data['Store Partially Paid Refunds'],
+         $this->data['Store Total Delivery Notes'],
+             $this->data['Store Ready to Pick Delivery Notes'],
+    $this->data['Store Picking Delivery Notes'],
+    $this->data['Store Picking Delivery Notes'],
+    $this->data['Store Ready to Dispatch Delivery Notes'],
+    $this->data['Store Dispatched Delivery Notes'],
+    $this->data['Store Returned Delivery Notes'],
+
+ $this->id
+ );
+ //print $sql;
+ mysql_query($sql);
+
+}
+  
+  
   function update_store_sales(){
     $on_sale_days=0;
      
@@ -772,15 +891,8 @@ $sql=sprintf("select sum(if(`Product Record Type`='New',1,0)) as new,sum(if(`Pro
 	$on_sale_days=0;
 
     }
-    //$sql="select sum(`Product Total Invoiced Amount`) as net,sum(`Product Total Invoiced Gross Amount`) as gross,sum(`Product Total Invoiced Discount Amount`) as disc, sum(`Product Total Profit`)as profit ,sum(`Product Total Quantity Delivered`) as delivered,sum(`Product Total Quantity Ordered`) as ordered,sum(`Product Total Quantity Invoiced`) as invoiced  from `Product Dimension` as P where `Product Store Key`=".$this->id;
-
-    $sql="select count(Distinct `Order Key`) as pending_orders   from `Order Transaction Fact`   where  `Current Dispatching State` not in ('Unknown','Dispatched','Cancelled')  and  `Store Key`=".$this->id;
-    $result=mysql_query($sql);
-    $pending_orders=0;
-    if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-      $pending_orders=$row['pending_orders'];
-    }
-    $sql="select    count(Distinct `Customer Key`)as customers ,count(Distinct `Invoice Key`)as invoices ,  sum(`Cost Supplier`/`Invoice Currency Exchange Rate`) as cost_sup,sum(`Invoice Transaction Gross Amount`) as gross ,sum(`Invoice Transaction Total Discount Amount`)as disc ,sum(`Shipped Quantity`) as delivered,sum(`Order Quantity`) as ordered,sum(`Invoice Quantity`) as invoiced  from `Order Transaction Fact`  OTF   where `Store Key`=".$this->id;
+   
+    $sql="select    count(Distinct `Customer Key`)as customers , sum(`Cost Supplier`/`Invoice Currency Exchange Rate`) as cost_sup,sum(`Invoice Transaction Gross Amount`) as gross ,sum(`Invoice Transaction Total Discount Amount`)as disc ,sum(`Shipped Quantity`) as delivered,sum(`Order Quantity`) as ordered,sum(`Invoice Quantity`) as invoiced  from `Order Transaction Fact`  OTF   where `Store Key`=".$this->id;
 
 
     //print "$sql\n\n";
@@ -800,10 +912,8 @@ $sql=sprintf("select sum(if(`Product Record Type`='New',1,0)) as new,sum(if(`Pro
       $this->data['Store Valid From']=$_from;
       $this->data['Store Valid To']=$_to;
       $this->data['Store Total Customers']=$row['customers'];
-      $this->data['Store Total Invoices']=$row['invoices'];
-      $this->data['Store Total Pending Orders']=$pending_orders;
 
-      $sql=sprintf("update `Store Dimension` set `Store Total Invoiced Gross Amount`=%s,`Store Total Invoiced Discount Amount`=%s,`Store Total Invoiced Amount`=%s,`Store Total Profit`=%s, `Store Total Quantity Ordered`=%s , `Store Total Quantity Invoiced`=%s,`Store Total Quantity Delivered`=%s ,`Store Total Days On Sale`=%f ,`Store Valid From`=%s,`Store Valid To`=%s ,`Store Total Customers`=%d,`Store Total Invoices`=%d,`Store Total Pending Orders`=%d  where `Store Key`=%d "
+      $sql=sprintf("update `Store Dimension` set `Store Total Invoiced Gross Amount`=%s,`Store Total Invoiced Discount Amount`=%s,`Store Total Invoiced Amount`=%s,`Store Total Profit`=%s, `Store Total Quantity Ordered`=%s , `Store Total Quantity Invoiced`=%s,`Store Total Quantity Delivered`=%s ,`Store Total Days On Sale`=%f ,`Store Valid From`=%s,`Store Valid To`=%s ,`Store Total Customers`=%d where `Store Key`=%d "
 		   ,prepare_mysql($this->data['Store Total Invoiced Gross Amount'])
 		   ,prepare_mysql($this->data['Store Total Invoiced Discount Amount'])
 		   ,prepare_mysql($this->data['Store Total Invoiced Amount'])
@@ -816,8 +926,7 @@ $sql=sprintf("select sum(if(`Product Record Type`='New',1,0)) as new,sum(if(`Pro
 		   ,prepare_mysql($this->data['Store Valid From'])
 		   ,prepare_mysql($this->data['Store Valid To'])
 		   ,$this->data['Store Total Customers']
-		   ,$this->data['Store Total Invoices']
-		   ,$this->data['Store Total Pending Orders']
+		  
 		   ,$this->id
 		   );
      
