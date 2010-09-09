@@ -1517,7 +1517,7 @@ switch ($tipo_order) {
         break;
 }
  print "\n";
-  $sql="update orders_data.orders set last_transcribed=NOW() where id=".$order_data_id;
+  $sql="update fr_orders_data.orders set last_transcribed=NOW() where id=".$order_data_id;
             mysql_query($sql);
 
 

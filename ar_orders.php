@@ -1777,7 +1777,7 @@ if(isset( $_REQUEST['where']))
     $wheref.=" and  (TO_DAYS(NOW())-TO_DAYS(date_index))<=".$f_value."    ";
   else if($f_field=='min' and is_numeric($f_value) )
     $wheref.=" and  (TO_DAYS(NOW())-TO_DAYS(date_index))>=".$f_value."    ";
-  elseif($f_field=='id' and $f_value!='')
+  elseif($f_field=='public_id' and $f_value!='')
     $wheref.=" and  `Delivery Note ID` like '".addslashes($f_value)."%'";
   elseif($f_field=='invoice' and $f_value!='')
     $wheref.=" and  `Delivery Note Invoices` like '".addslashes($f_value)."%'";
