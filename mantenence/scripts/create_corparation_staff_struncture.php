@@ -710,7 +710,7 @@ $store_key=$store->id;
 
 //exit($store_key);
 $dept_data=array(
-		 'Product Department Code'=>'ND',
+		 'Product Department Code'=>'ND_DE',
 		 'Product Department Name'=>'Products Without Department',
 		 'Product Department Store Key'=>$store_key
 		 );
@@ -719,7 +719,7 @@ $dept_no_dept=new Department('find',$dept_data,'create');
 $dept_no_dept_key=$dept_no_dept->id;
 
 $dept_data=array(
-		 'Product Department Code'=>'Promo',
+		 'Product Department Code'=>'Promo_DE',
 		 'Product Department Name'=>'Promotional Items',
 		 'Product Department Store Key'=>$store_key
 		 );
@@ -945,11 +945,11 @@ $camp->add_deal_schema($data);
 //============================================================
 // France
 
-$store=new Store("code","DE");
+$store=new Store("code","FR");
 $store_key=$store->id;
 
 $dept_data=array(
-		 'Product Department Code'=>'ND',
+		 'Product Department Code'=>'ND_FR',
 		 'Product Department Name'=>'Products Without Department',
 		 'Product Department Store Key'=>$store_key
 		 );
@@ -958,7 +958,7 @@ $dept_no_dept=new Department('find',$dept_data,'create');
 $dept_no_dept_key=$dept_no_dept->id;
 
 $dept_data=array(
-		 'Product Department Code'=>'Promo',
+		 'Product Department Code'=>'Promo_FR',
 		 'Product Department Name'=>'Promotional Items',
 		 'Product Department Store Key'=>$store_key
 		 );
@@ -1229,7 +1229,7 @@ $fam_no_fam_key=$fam_no_fam->id;
 //print_r($fam_no_fam);
 
 $fam_data=array(
-		'Product Family Code'=>'Promo_GB',
+		'Product Family Code'=>'Promo_PL',
 		'Product Family Name'=>'Promotional Items',
 		'Product Family Main Department Key'=>$dept_promo_key,
 		'Product Family Store Key'=>$store_key,
