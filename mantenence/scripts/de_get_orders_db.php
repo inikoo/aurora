@@ -128,9 +128,6 @@ $fam_promo_key=$fam_promo->id;
 
 
 
-
-
-
 $sql="select * from  de_orders_data.orders  where   (last_transcribed is NULL  or last_read>last_transcribed) and deleted='No'  order by filename  ";
 //$sql="select * from  de_orders_data.orders where filename like '%refund.xls'   order by filename";
 //$sql="select * from  de_orders_data.orders  where (filename like '/mnt/%DE0284.xls' ) order by filename";
@@ -1340,7 +1337,7 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
 
 
-        $data['type']='direct_data_injection';
+       
         $data['products']=$products_data;
         $data['Customer Data']=$customer_data;
         $data['Shipping Address']=$shipping_addresses;
