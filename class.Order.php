@@ -718,16 +718,12 @@ function create_order($data) {
         
         
         $this->data ['Order Currency Exchange']=1;
-
         $sql=sprintf("select `Corporation Currency` from `Corporation Dimension`");
         $res=mysql_query($sql);
         if ($row=mysql_fetch_array($res)) {
             $corporation_currency_code=$row['Corporation Currency'];
         } else
-
             $corporation_currency_code='GBP';
-
-
         if ($this->data ['Order Currency']!=$corporation_currency_code) {
             $currency_exchange = new CurrencyExchange($this->data ['Order Currency'].$corporation_currency_code,$this->data['Order Date']);
             $exchange= $currency_exchange->get_exchange();

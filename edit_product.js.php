@@ -203,18 +203,11 @@ function save_part(){
 key=Dom.get("product_part_items").getAttribute("product_part_key");
 
 for(part_key in part_list){
-    
-    part_list[part_key].ppp=Dom.get('parts_per_product'+part_list[part_key].sku).value;
+part_list[part_key].ppp=Dom.get('parts_per_product'+part_list[part_key].sku).value;
 part_list[part_key].note=Dom.get('pickers_note'+part_list[part_key].sku).value;
 
 }
-
 json_value = YAHOO.lang.JSON.stringify(part_list);
-
-
-
-
-
  var request='ar_edit_assets.php?tipo=edit_part_list&key=' + key+ '&newvalue=' + json_value
 		
 		  
@@ -326,13 +319,7 @@ return valid;
 }
 
 function part_changed(o){
-
-
-
 part_render_save_buttons();
-
-
-
 }
 
 

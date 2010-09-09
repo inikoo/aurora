@@ -14,15 +14,6 @@ if (!isset($_REQUEST['tipo'])) {
     exit;
 }
 
-$editor=array(
-            'Author Name'=>$user->data['User Alias'],
-            'Author Type'=>$user->data['User Type'],
-            'Author Key'=>$user->data['User Parent Key'],
-            'User Key'=>$user->id
-        );
-
-
-
 $tipo=$_REQUEST['tipo'];
 switch ($tipo) {
 case('set_main_address'):
