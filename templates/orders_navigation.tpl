@@ -10,13 +10,11 @@
   </dd>
 </dl>
 {else}
-<span class="nav2 onleft"><a href="warehouse_orders.php">{t}Warehouse Operations{/t}</a></span>
+<span class="nav2 onleft"><a {if $view=='warehouse_orders'}class="selected"{/if} href="warehouse_orders.php">{t}Warehouse Operations{/t}</a></span>
 {/if}
-{if $search_scope=='orders_store'}
  <span class="nav2 onleft"><span   id="orders" {if $view=='orders'}class="selected"{/if} >{t}Orders{/t}</span></span>
   <span class="nav2 onleft"><span id="invoices" {if $view=='invoices'}class="selected"{/if} >{t}Invoices{/t}</span></span>
   <span class="nav2 onleft"><span  id="dn"  {if $view=='dn'}class="selected"{/if} >{t}Delivery Notes{/t}</span></span>
-{/if}
 
 
 
@@ -31,7 +29,8 @@
     {/foreach}
   </div>
 </div>
-<table class="search"  border=0>
+{if $search_scope}
+<table class="search"  border=0   >
 <tr>
 <td class="label" style="" >{$search_label}:</td>
 <td class="form" style="">
@@ -47,7 +46,7 @@
 <div id="{$search_scope}_search_results" style="font-size:10px;float:right;background:#fff;border:1px solid #777;padding:10px;margin-top:0px;width:500px;position:absolute;z-index:20;top:-500px">
 <table id="{$search_scope}_search_results_table"></table>
 </div>
-
+{/if}
 
 
 

@@ -85,6 +85,12 @@ $smarty->assign('search_label',_('Orders'));
 $smarty->assign('search_scope','orders');
 
 
+if(isset($_REQUEST['view']) and preg_match('/^orders|invoices|dn$/',$_REQUEST['view'])){
+$_SESSION['state']['stores']['orders_view']=$_REQUEST['view'];
+}
+
+$smarty->assign('view',$_SESSION['state']['stores']['orders_view']);
+
 
 
 
@@ -107,8 +113,8 @@ $smarty->assign('filter_menu0',$filter_menu0);
 $smarty->assign('filter_name0',$filter_menu0[$tipo_filter0]['label']);
 $paginator_menu0=array(10,25,50,100,500);
 $smarty->assign('paginator_menu0',$paginator_menu0);
-
-
+$smarty->assign('paginator_menu1',$paginator_menu0);
+$smarty->assign('paginator_menu2',$paginator_menu0);
 
 
 

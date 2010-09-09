@@ -896,6 +896,7 @@ $shipping_transactions[]=$transaction;
             if ($transaction['units']=='' OR $transaction['units']<=0)
                 $transaction['units']=1;
             $transaction['original_price']=$transaction['price'];
+            exit;exit;sssssssssss
             if (!is_numeric($transaction['price']) or $transaction['price']<=0) {
                 //       print "Price Zero ".$transaction['code']."\n";
                 $transaction['price']=0;
@@ -1408,7 +1409,7 @@ $shipping_transactions[]=$transaction;
             }
         }
         // print_r($products_data);
-        // exit;
+
 
         //Tipo order
         // 1 DELIVERY NOTE
@@ -1426,10 +1427,7 @@ $shipping_transactions[]=$transaction;
 
         if ($update) {
            delete_old_data();
-
-           
-
-        }
+      }
         $data['editor']=$editor;
 
 get_data($header_data);

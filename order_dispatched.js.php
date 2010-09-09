@@ -1,6 +1,7 @@
 <?php
 include_once('common.php');?>
-
+var Dom   = YAHOO.util.Dom;
+var Event =YAHOO.util.Event;
 YAHOO.namespace ("invoice"); 
 
 
@@ -61,7 +62,11 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 
 function init(){
-
+    var change_view = function (e) {
+        window.location = "orders.php?view="+this.id;
+    }
+    var ids=['orders','invoices','dn'];
+    Event.addListener(ids, "click", change_view);
 
 
 }
