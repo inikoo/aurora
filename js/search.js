@@ -16,7 +16,6 @@ var submit_search_on_enter=function(e,tipo){
 
 function init_search(type){
 
-
 switch(type)
 {
 case 'users':
@@ -64,33 +63,22 @@ default:
      var store_name_oAutoComp = new YAHOO.widget.AutoComplete(search_scope+"_search",search_scope+"_search_Container", store_name_oACDS);
      store_name_oAutoComp.minQueryLength = 0; 
      store_name_oAutoComp.queryDelay = 0.15;
-     
-     
-    
-    
-
      Event.addListener(search_scope+"_search", "keyup",search_events,search_scope)
- 
-      Event.addListener(search_scope+"_clean_search", "click",clear_search,search_scope);
-      
-      //  
-        
-         x= Dom.getX(search_scope+'_clean_search');
-    y= Dom.getY(search_scope+'_clean_search');
-    Dom.setX(search_scope+"_search_results", x-500);
+     Event.addListener(search_scope+"_clean_search", "click",clear_search,search_scope);
+     x= Dom.getX(search_scope+'_clean_search');
+     y= Dom.getY(search_scope+'_clean_search');
+     Dom.setX(search_scope+"_search_results", x-500);
 
 
 
     Dom.setY(search_scope+"_search_results", y+17);
 
  Dom.get(search_scope+"_search_results").style.display='none';  
-
       
 }
 
 
 var submit_search=function(e,data){
-
     if(typeof( data ) == 'string')
 	var data={tipo:data,container:data};
     
@@ -142,7 +130,7 @@ function search_orders(query){
 }
 
 function search_orders_in_store(query){
-    search(query,'orders_store','stores');
+    search(query,'orders_store','store');
 }
 
 function search_users(query){
@@ -172,12 +160,11 @@ function search(query,subject,scope){
 
     var request='tipo='+subject+'&q='+escape(query)+'&scope='+scope;
 
-   // alert(request)
+ //  alert(request)
     YAHOO.util.Connect.asyncRequest(
 				    'POST',
 				    ar_file, {
 					success:function(o) {
-//alert(o.responseText)
 					    var r = YAHOO.lang.JSON.parse(o.responseText);
 					    if (r.state == 200) {
 					
@@ -232,6 +219,17 @@ function search(query,subject,scope){
 							    oTD.innerHTML=r.data[result_key ].name;
 							    var oTD= oTR.insertCell(3);
 							    oTD.innerHTML=r.data[result_key ].address;
+							}else if(subject=='orders' || subject=='orders_store'){
+							    oTR.setAttribute('key',result_key);
+							    oTR.setAttribute('link',link);
+							    var oTD= oTR.insertCell(1);
+							    oTD.innerHTML=r.data[result_key ].public_id;
+							    var oTD= oTR.insertCell(2);
+							    oTD.innerHTML=r.data[result_key ].customer;
+							    var oTD= oTR.insertCell(3);
+							    oTD.innerHTML=r.data[result_key ].state;
+							    var oTD= oTR.insertCell(4);
+							    oTD.innerHTML=r.data[result_key ].balance;
 							}else if(subject=='part'){
 							    oTR.setAttribute('key',r.data[result_key].sku);
 							    oTR.setAttribute('link',r.data[result_key].link);
