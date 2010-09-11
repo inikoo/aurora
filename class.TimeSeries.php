@@ -696,7 +696,7 @@ Class TimeSeries  {
         } else {
             if (!$this->last_date=$this->last_date()) {
 
-                //  print "caca2";
+                 print "caca2";
                 return;
             }
         }

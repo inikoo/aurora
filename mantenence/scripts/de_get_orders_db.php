@@ -130,7 +130,7 @@ $fam_promo_key=$fam_promo->id;
 
 $sql="select * from  de_orders_data.orders  where   (last_transcribed is NULL  or last_read>last_transcribed) and deleted='No'  order by filename  ";
 //$sql="select * from  de_orders_data.orders where filename like '%refund.xls'   order by filename";
-//$sql="select * from  de_orders_data.orders  where (filename like '/mnt/%DE0284.xls' ) order by filename";
+//$sql="select * from  de_orders_data.orders  where (filename like '/mnt/%DE0614.xls' ) order by filename";
 
 
 $contador=0;
@@ -187,6 +187,7 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
         list($act_data,$header_data)=read_header($header,$map_act,$y_map,$map,false);
         $header_data=filter_header($header_data);
+       
         list($tipo_order,$parent_order_id,$header_data)=get_tipo_order($header_data['ltipo'],$header_data);
 
         //print_r($header_data);
@@ -1447,7 +1448,7 @@ switch ($tipo_order) {
          case 3://Cancel
          $data['Order Type']='Order';
         create_order($data);
-        $order->cancel('',$date_inv);
+        $order->cancel('',$date_order);
         break;
          case 4://Sample
                print "Sample";

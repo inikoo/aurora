@@ -3584,10 +3584,13 @@ function update_history_order_in_warehouse($order) {
 
     switch ($lang) {
     default :
-        $note = sprintf ( 'Order <a href="order.php?id=%d">%s</a> (%s)',
+        $note = sprintf ( 'Order <a href="order.php?id=%d">%s</a> (%s) %s %s' ,
                           $order->data ['Order Key'],
                           $order->data ['Order Public ID'],
-                          $order->data['Order Current XHTML State']
+                          $order->data['Order Current XHTML State'],
+                          $order->get('Weight'),
+                          money($order->data['Order Balance Total Amount'],$order->data['Order Currency'])
+                          
                         );
 
 
@@ -3600,6 +3603,7 @@ function update_history_order_in_warehouse($order) {
                  $order->id
                 );
     mysql_query($sql);
+    //print "$sql\n";
 
 }
 function add_history_new_post_order($order,$type) {

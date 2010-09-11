@@ -340,7 +340,8 @@ protected function create($invoice_data) {
         } else {
             $factor_actually_packed=0;
         }
-        $sql=sprintf("update `Order Transaction Fact` set `Invoice Currency Code`=%s,`Invoice Key`=%d,`Invoice Public ID`=%s,`Invoice Quantity`=%f,`Invoice Transaction Gross Amount`=%.2f,`Invoice Transaction Total Discount Amount`=%.2f,`Invoice Transaction Item Tax Amount`=%.2f where `Order Transaction Fact Key`=%d",
+        $sql=sprintf("update `Order Transaction Fact` set `Invoice Date`=%s,`Invoice Currency Code`=%s,`Invoice Key`=%d,`Invoice Public ID`=%s,`Invoice Quantity`=%f,`Invoice Transaction Gross Amount`=%.2f,`Invoice Transaction Total Discount Amount`=%.2f,`Invoice Transaction Item Tax Amount`=%.2f where `Order Transaction Fact Key`=%d",
+                     prepare_mysql($this->data['Invoice Date']),
                      prepare_mysql($this->data['Invoice Currency']),
                      $this->id,
                      prepare_mysql($this->data['Invoice Public ID']),

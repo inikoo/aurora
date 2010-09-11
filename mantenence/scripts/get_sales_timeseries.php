@@ -27,6 +27,10 @@ $_SESSION['lang']=1;
 $stores=array(1);
 $forecast=true;
 
+
+
+  
+
 //$sql="select * from `Part Dimension`  ";
 //$result=mysql_query($sql);
 //while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
@@ -96,7 +100,16 @@ $res=mysql_query($sql);
 
 while( $row=mysql_fetch_array($res)){
   $store=new Store($row['Store Key']);
-  print 'store ('.$row['Store Key'].') sales';
+  print 'store ('.$row['Store Key'].') sales'."\n";
+  
+  $tm=new TimeSeries(array('m','store ('.$row['Store Key'].') sales'));
+  $tm->get_values();
+  $tm->save_values();
+  if($forecast)
+    $tm->forecast();
+   
+  
+  
  /*  $tm=new TimeSeries(array('w','store ('.$row['Store Key'].') sales')); */
 /*   $tm->get_values(); */
 /*   $tm->save_values(); */
@@ -113,12 +126,7 @@ $tm=new TimeSeries(array('w','store ('.$row['Store Key'].') sales'));
     $tm->forecast();
 
 
-$tm=new TimeSeries(array('m','store ('.$row['Store Key'].') sales'));
-  $tm->get_values();
-  $tm->save_values();
-  if($forecast)
-    $tm->forecast();
-   
+
   $tm=new TimeSeries(array('q','store ('.$row['Store Key'].') sales'));
   $tm->get_values();
   $tm->save_values();
@@ -168,7 +176,7 @@ if($myconf['currency_code']!=$store->data['Store Currency Code']){
  
 }
  
-
+exit;
 $sql="select * from `Product Department Dimension`  where `Product Department Store Key` in (".join(',',$stores).")    ";
 $res=mysql_query($sql);
 while($row=mysql_fetch_array($res)){
