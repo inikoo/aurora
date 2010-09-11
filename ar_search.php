@@ -20,21 +20,7 @@ case('all'):
     search_full_text($data);
     break;
 
-case('x'):
-    $results=array('ResultSet'=>array(
-                                   'Result'=>array(
-                                                array("Title"=>'x'),array("Title"=>'x2')
-                                            ) ));
-
-
-
-    echo json_encode($results);
-    break;
 case('products'):
-    //case('product_manage_stock'):
-    //case('edit_product'):
-    //$q=$_REQUEST['q'];
-    //search_products($q,$tipo,$user);
     $data=prepare_values($_REQUEST,array(
                              'q'=>array('type'=>'string')
                                  ,'scope'=>array('type'=>'string')
@@ -65,6 +51,16 @@ case('locations'):
 
 
     break;
+case('orders'):
+case('orders_store'):
+
+ $data=prepare_values($_REQUEST,array(
+                             'q'=>array('type'=>'string')
+                                ,'scope'=>array('type'=>'string')
+                         ));
+    $data['user']=$user;
+    search_orders($data);
+break;
 case('customer_name'):
     search_customer_name($user);
     break;
@@ -84,11 +80,11 @@ default:
 }
 
 
+
 function search_customer_by_parts($data) {
 
     $user=$data['user'];
     $q=$data['q'];
-    // $q=_trim($_REQUEST['q']);
 
     if ($data['scope']=='store') {
         $stores=$_SESSION['state']['customers']['store'];
@@ -99,13 +95,11 @@ function search_customer_by_parts($data) {
     $total_found=0;
     $emails_found=0;
     $emails_results='<table>';
-    // Email serach
     if (strlen($q)>3 or preg_match('/@/',$q)) {
         $sql=sprintf('select `Customer Key`,`Customer Name`,`Customer Main Plain Email` from `Customer Dimension` where `Customer Store Key` in (%s) and  `Customer Main Plain Email` like "%s%%"  limit 5'
                      ,$stores
                      ,addslashes($q)
                     );
-        // print $sql;
         $res=mysql_query($sql);
         while ($row=mysql_fetch_array($res)) {
             $result=sprintf('<tr><td><a href="customer.php?id=%d">%s</a></td><td class="aright">%s</td></tr>',$row['Customer Key'],$row['Customer Name'],$row['Customer Main Plain Email']);
@@ -236,6 +230,76 @@ function search_customer_by_parts($data) {
     echo json_encode($response);
 }
 
+
+
+function search_orders($data){
+ $max_results=10;
+ $user=$data['user'];
+    $q=$data['q'];
+    
+      if ($q=='') {
+        $response=array('state'=>200,'results'=>0,'data'=>'');
+        echo json_encode($response);
+exit;
+    }
+    
+ $candidates=array();
+ 
+    if ($data['scope']=='store') {
+        $stores=$_SESSION['state']['orders']['store'];
+
+    } else
+        $stores=join(',',$user->stores);
+        
+    $sql=sprintf("select `Order Customer Name`,`Order Currency`,`Order Balance Total Amount`,`Order Key`,`Order Public ID`,`Order Current XHTML State` from `Order Dimension` where   `ORder Store Key` in (%s)  and `Order Public ID` like '%s%%' order by `Order Date` desc  limit 10",$stores,addslashes($q));    
+    $res=mysql_query($sql);
+        while ($row=mysql_fetch_array($res)) {
+          if($row['Order Public ID']==$q){
+          $candidates[$row['Order Key']]=110;
+          $candidates_data[$row['Order Key']]=array(
+          'public_id'=>$row['Order Public ID'],
+          'state'=>$row['Order Current XHTML State'],
+          'balance'=>money($row['Order Balance Total Amount'],$row['Order Currency']),
+          'customer'=>$row['Order Customer Name']
+          );
+          }else{
+             $candidates[$row['Order Key']]=100;
+             $candidates_data[$row['Order Key']]=array('public_id'=>$row['Order Public ID'],'state'=>$row['Order Current XHTML State'],
+             'balance'=>money($row['Order Balance Total Amount'],$row['Order Currency']),
+             'customer'=>$row['Order Customer Name']
+             );
+
+          }
+        
+        }
+        
+        arsort($candidates);
+    $total_candidates=count($candidates);
+
+    if ($total_candidates==0) {
+        $response=array('state'=>200,'results'=>0,'data'=>'');
+        echo json_encode($response);
+        return;
+    }
+
+
+    $counter=0;
+    $customer_keys='';
+
+    $results=array();
+
+
+    foreach($candidates as $key=>$val) {
+        $counter++;
+        $results[$key]=$candidates_data[$key];
+        if ($counter>$max_results)
+            break;
+    }
+        
+        
+$response=array('state'=>200,'results'=>count($results),'data'=>$results,'link'=>'order.php?id=');
+    echo json_encode($response);
+}
 
 
 function search_customer($data) {
@@ -385,55 +449,7 @@ function search_customer($data) {
 
 
 
-function search_customer_old($user) {
 
-    $q=_trim($_REQUEST['q']);
-    $stores=join(',',$user->stores);
-
-    if (is_numeric($q)) {
-        if ($found_key=search_customer_id($q,$stores)) {
-            $url='customer.php?id='. $found_key;
-            echo json_encode(array('state'=>200,'url'=>$url));
-            return;
-        }
-
-    }
-
-    $postal_code_search=false;
-    $search_data=array();
-    if (preg_match('/\s*(([A-Z]\d{2}[A-Z]{2})|([A-Z]\d{3}[A-Z]{2})|([A-Z]{2}\d{2}[A-Z]{2})|([A-Z]{2}\d{3}[A-Z]{2})|([A-Z]\d[A-Z]\d[A-Z]{2})|([A-Z]{2}\d[A-Z]\d[A-Z]{2})|(GIR0AA))\s*/i',$q,$match)) {
-        $search_data['Postal Code']=_trim($match[0]);
-        $q=preg_replace('/'.$match[0].'/','',$q);
-        $postal_code_search=true;
-    }
-    $tolkens=preg_split('/\s/',$q);
-    foreach($tolkens as $key=>$tolken) {
-        if (Email::is_valid($tolken)) {
-            $search_data['Customer Email']=$tolken;
-        }
-        elseif(!$postal_code_search and is_postal_code($tolken)) {
-            $tolken_meaning[$key]='postal_code';
-            $search_data['Postal Code']=$tolken;
-            $postal_code_search=true;
-        }
-        elseif($postal_code_search) {
-
-        } else if (isset($search_data['Customer Name']))
-            $search_data['Customer Name'].=' '.$tolken;
-        else
-            $search_data['Customer Name']=$tolken;
-    }
-
-
-
-    print_r($search_data);
-    $_SESSION['search']=array('Type'=>'Customer','Data'=>$search_data);
-    echo json_encode(array('state'=>200,'url'=>'customers_lookup.php?res=y'));
-    return;
-
-
-
-}
 
 function search_customer_id($id,$valid_stores=false) {
     if ($valid_stores) {
@@ -567,176 +583,6 @@ function search_locations($data) {
 
 }
 
-function search_productsz($data) {
-    $max_results=10;
-    $user=$data['user'];
-    $q=$data['q'];
-    // $q=_trim($_REQUEST['q']);
-
-    if ($q=='') {
-        $response=array('state'=>200,'results'=>0,'data'=>'');
-        echo json_encode($response);
-        return;
-    }
-
-
-    if ($data['scope']=='store') {
-        $stores=$_SESSION['state']['store']['id'];
-
-    } else
-        $stores=join(',',$user->stores);
-
-
-    if (!$stores) {
-        $response=array('state'=>200,'results'=>0,'data'=>'','mgs'=>'Store Error');
-        echo json_encode($response);
-        return;
-    }
-    $extra_q='';
-    $array_q=preg_split('/\s/',$q);
-    if (count($array_q>1)) {
-        $q=array_shift($array_q);
-        $extra_q=join(' ',$array_q);
-
-    }
-
-    $found_family=false;
-
-    $candidates=array();
-    $sql=sprintf('select `Product Family Key`,`Product Family Code` from `Product Family Dimension` where `Product Family Store Key` in (%s) and `Product Family Code` like "%s%%" limit 100 ',$stores,addslashes($q));
-//print $sql;
-    $res=mysql_query($sql);
-    while ($row=mysql_fetch_array($res)) {
-        if (strtolower($row['Product Family Code'])==strtolower($q)) {
-            $candidates['F '.$row['Product Family Key']]=210;
-            $found_family=$row['Product Family Key'];
-
-        } else {
-
-            $len_name=strlen($row['Product Family Code']);
-            $len_q=strlen($q);
-            $factor=$len_q/$len_name;
-            $candidates['F '.$row['Product Family Key']]=200*$factor;
-        }
-    }
-    //print $extra_q;
-    if ($found_family) {
-        if ($extra_q) {
-
-            $sql=sprintf("SELECT `Product ID`, MATCH(`Product Name`) AGAINST (%s) as Relevance FROM `Product Dimension` WHERE   `Product Family Key`=%d  and MATCH
-                         (`Product Name`) AGAINST(%s IN
-                         BOOLEAN MODE) HAVING Relevance > 0.2 ORDER
-                         BY Relevance DESC",prepare_mysql($extra_q),$found_family,prepare_mysql('+'.join(' +',$array_q)));
-
-            //$sql=sprintf('select damlevlim256(UPPER(%s),UPPER(`Product Name`),100) as dist , `Product ID`,`Product Name` from `Product Dimension` where `Product Family Key`=%d order by damlevlim256(UPPER(%s),UPPER(`Product Name`),100)  limit 6 ',prepare_mysql($extra_q),$found_family,prepare_mysql($extra_q));
-            //print $sql;
-            $res=mysql_query($sql);
-            while ($row=mysql_fetch_array($res)) {
-
-                $candidates['P '.$row['Product ID']]=$row['Relevance'];
-            }
-        }
-
-
-
-
-    } else {
-
-
-        $sql=sprintf('select `Product ID`,`Product Code` from `Product Dimension` where `Product Store Key` in (%s) and `Product Code` like "%s%%" limit 100 ',$stores,addslashes($q));
-        //print $sql;
-        $res=mysql_query($sql);
-        while ($row=mysql_fetch_array($res)) {
-            if ($row['Product Code']==$q)
-                $candidates['P '.$row['Product ID']]=110;
-            else {
-
-                $len_name=strlen($row['Product Code']);
-                $len_q=strlen($q);
-                $factor=$len_q/$len_name;
-                $candidates['P '.$row['Product ID']]=100*$factor;
-            }
-        }
-    }
-
-
-    arsort($candidates);
-// $candidates=array_reverse($candidates);
-//print_r($candidates);
-    $total_candidates=count($candidates);
-
-    if ($total_candidates==0) {
-        $response=array('state'=>200,'results'=>0,'data'=>'');
-        echo json_encode($response);
-        return;
-    }
-
-
-    $counter=0;
-    $customer_keys='';
-
-    $results=array();
-    $family_keys='';
-    $products_keys='';
-
-    foreach($candidates as $key=>$val) {
-        $_key=preg_split('/ /',$key);
-        if ($_key[0]=='F') {
-            $family_keys.=','.$_key[1];
-            $results[$key]='';
-        } else {
-            $products_keys.=','.$_key[1];
-            $results[$key]='';
-
-        }
-
-        $counter++;
-
-        if ($counter>$max_results)
-            break;
-    }
-    $family_keys=preg_replace('/^,/','',$family_keys);
-    $products_keys=preg_replace('/^,/','',$products_keys);
-
-    if ($family_keys) {
-        $sql=sprintf("select `Product Family Key`,`Product Family Name`,`Product Family Code`  from `Product Family Dimension` where `Product Family Key` in (%s)",$family_keys);
-        $res=mysql_query($sql);
-        while ($row=mysql_fetch_array($res)) {
-            $image='';
-            $results['F '.$row['Product Family Key']]=array('image'=>$image,'code'=>$row['Product Family Code'],'description'=>$row['Product Family Name'],'link'=>'family.php?id=','key'=>$row['Product Family Key']);
-        }
-    }
-
-    if ($products_keys) {
-        $sql=sprintf("select `Product ID`,`Product XHTML Short Description`,`Product Code`,`Product Main Image`  from `Product Dimension`   where `Product ID` in (%s)",$products_keys);
-        $res=mysql_query($sql);
-        while ($row=mysql_fetch_array($res)) {
-            $image='';
-            if ($row['Product Main Image']!='art/nopic.png')
-                $image=sprintf('<img src="%s"> ',preg_replace('/small/','thumbnails',$row['Product Main Image']));
-            $results['P '.$row['Product ID']]=array('image'=>$image,'code'=>$row['Product Code'],'description'=>$row['Product XHTML Short Description'],'link'=>'product.php?pid=','key'=>$row['Product ID']);
-        }
-    }
-
-
-
-
-    $response=array('state'=>200,'results'=>count($results),'data'=>$results,'link'=>'');
-    echo json_encode($response);
-
-
-
-
-
-
-
-
-
-
-
-
-
-}
 
 function search_products($data) {
     $the_results=array();
@@ -919,106 +765,6 @@ function search_products($data) {
 
 }
 
-function search_products_old($q,$tipo,$user) {
-    global $myconf;
-    if ($tipo=='product_manage_stock')
-        $target='product_manage_stock.php';
-    else
-        $target='product.php';
-
-    $q=$_REQUEST['q'];
-    $sql=sprintf("select `Product Code`  from `Product Dimension` where `Product Code`='%s'  and `Product Store Key` in (%s)     "
-                 ,addslashes($q)
-                 ,join(',',$user->stores)
-                );
-    $res = mysql_query($sql);
-    if ($found=mysql_fetch_array($res)) {
-        $url=$target.'?code='. $found['Product Code'];
-        echo json_encode(array('state'=>200,'url'=>$url));
-        mysql_free_result($res);
-        return;
-    }
-    mysql_free_result($res);
-
-    if ($tipo=='product') {
-        $sql=sprintf("select `Product Family Key` as id  from `Product Family Dimension` where `Product Family Code`='%s' and `Product Family Store Key` in (%s)   "
-                     ,addslashes($q)
-                     ,join(',',$user->stores)
-                    );
-        $result=mysql_query($sql);
-        if ($found=mysql_fetch_array($result, MYSQL_ASSOC)) {
-            $url='family.php?id='. $found['id'];
-            echo json_encode(array('state'=>200,'url'=>$url));
-            mysql_free_result($result);
-            return;
-        }
-        mysql_free_result($result);
-    }
-    // try to get similar results
-    //   if($myconf['product_code_separator']!=''){
-    if (  ($myconf['product_code_separator']!='' and   preg_match('/'.$myconf['product_code_separator'].'/',$q)) or  $myconf['product_code_separator']==''  ) {
-        $sql=sprintf("select damlev(UPPER(%s),UPPER(`Product Code`)) as dist1,    damlev(UPPER(SOUNDEX(%s)),UPPER(SOUNDEX(`Product Code`))) as dist2,        `Product Code` as code,`product id` as id from `Product Dimension`  where  `Product Store Key` in (%s)     order by dist1,dist2 limit 1;"
-                     ,prepare_mysql($q)
-                     ,prepare_mysql($q)
-                     ,join(',',$user->stores)
-                    );
-        $result=mysql_query($sql);
-        //	print $sql;
-        if ($found=mysql_fetch_array($result, MYSQL_ASSOC)) {
-            if ($found['dist1']<3) {
-                echo json_encode(array('state'=>400,'msg1'=>_('Did you mean'),'msg2'=>'<a href="'.$target.'?pid='.$found['id'].'">'.$found['code'].'</a>'));
-                mysql_free_result($result);
-                return;
-            }
-        }
-        mysql_free_result($result);
-
-
-    }
-    elseif($tipo=='product') {
-        // look on the family list
-        $sql=sprintf("select damlev(UPPER(%s),UPPER(`Product Family Code`)) as dist1, damlev(UPPER(SOUNDEX(%s)),UPPER(SOUNDEX(`Product Family Code`))) as dist2, `Product Family Code` as name ,`Product Family Key` id from `Product Family Dimension`  where  `Product Family Store Key` in (%s)     order by dist1,dist2 limit 1;",prepare_mysql($q),prepare_mysql($q),join(',',$user->stores));
-        $result=mysql_query($sql);
-        if ($found=mysql_fetch_array($result, MYSQL_ASSOC)) {
-            if ($found['dist1']<3) {
-                echo json_encode(array('state'=>400,'msg1'=>_('Did you mean'),'msg2'=>'<a href="family.php?id='.$found['id'].'">'.$found['name'].'</a> '._('family') ));
-
-
-                return;
-            }
-        }
-
-        mysql_free_result($result);
-    }
-
-    echo json_encode(array('state'=>500,'msg'=>_('Product not found')));
-}
-
-
-
-
-
-function search_location_old($q,$tipo,$user) {
-    $sql=sprintf("select id from location where name='%s' ",addslashes($q));
-    $result=mysql_query($sql);
-    if ($found=mysql_fetch_array($result, MYSQL_ASSOC)) {
-        $url='location.php?id='. $found['id'];
-        echo json_encode(array('state'=>200,'url'=>$url));
-        return;
-    }
-    mysql_free_result($result);
-    $sql=sprintf("select damlev(UPPER(%s),UPPER(name)) as dist1,    damlev(UPPER(SOUNDEX(%s)),UPPER(SOUNDEX(name))) as dist2,name,id from location  order by dist1,dist2 limit 1;",prepare_mysql($q),prepare_mysql($q));
-    $result=mysql_query($sql);
-    if ($found=mysql_fetch_array($result, MYSQL_ASSOC)) {
-        if ($found['dist1']<3) {
-            echo json_encode(array('state'=>400,'msg1'=>_('Did you mean'),'msg2'=>'<a href="location.php?id='.$found['id'].'">'.$found['name'].'</a>'));
-            return;
-        }
-    }
-    mysql_free_result($result);
-    echo json_encode(array('state'=>500,'msg'=>_('Location not found')));
-    return;
-}
 
 
 

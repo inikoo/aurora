@@ -111,6 +111,34 @@ mysql_query($sql);
         print "$sql Warning can no delete oldhidt nio prod";
 }
 
+
+function adjust_invoice($invoice){
+$adjust_transactions=array();
+
+
+
+
+foreach($adjust_transactions as $adjust_data){
+            $sql=sprintf("insert into `Order No Product Transaction Fact` (`Invoice Key`,`Invoice Date`,`Transaction Type`,`Transaction Description`,`Transaction Invoice Net Amount`,`Tax Category Code`,`Transaction Invoice Tax Amount`,`Transaction Outstandind Net Amount Balance`,`Transaction Outstandind Tax Amount Balance`,`Currency Code`,`Currency Exchange`,`Metadata`)  
+        values (%d,%s,%s,%s,%.2f,%s,%.2f,%.2f,%.2f,%s,%.2f,%s)  ",
+                     $invoice->id,
+                     prepare_mysql($invoice->data['Invoice Date']),
+                     prepare_mysql('Adjusts'),
+                
+                     prepare_mysql($adjust_data['Transaction Description']),
+                     $adjust_data['Net'],
+                     prepare_mysql($invoice->data['Invoice Tax adjusts Code']),
+                     $adjust_data['Tax'],
+                      $adjust_data['Net'],
+                       $adjust_data['Tax'],
+                     prepare_mysql($invoice->data['Invoice Currency']),
+                     $invoice->data['Invoice Currency Exchange'],
+                     prepare_mysql($invoice->data['Invoice Metadata'])
+                    );
+
+        mysql_query($sql);
+}
+}
 function get_data($header_data){
   global $shipping_net,$charges_net,$extra_shipping,$payment_method,$picker_data,$packer_data,$parcels,$parcel_type;
   $shipping_net=round($header_data['shipping']+$extra_shipping,2);
@@ -302,6 +330,10 @@ function send_order($data,$data_dn_transactions) {
 
 
                          ));
+        adjust_invoice($invoice);
+       
+        
+        
 
         $invoice->pay('full',array(
                           'Invoice Paid Date'=>$date_inv,
