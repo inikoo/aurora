@@ -1,5 +1,34 @@
 <?php 
 
+function round_header_data_totals(){
+global $header_data;
+//print_r($header_data);
+
+if(is_numeric($header_data['charges'])){
+$header_data['charges']=round($header_data['charges'],2);
+}else{
+$header_data['charges']=0.00;
+}
+
+if(is_numeric($header_data['shipping'])){
+$header_data['shipping']=round($header_data['shipping'],2);
+}else{
+$header_data['shipping']=0.00;
+}
+
+$header_data['total_topay']=round($header_data['total_topay'],2);
+$header_data['total_net']=round($header_data['total_net'],2);
+
+$header_data['tax1']=round($header_data['tax1'],2);
+if($header_data['tax2']==''){
+$header_data['tax2']=0.00;
+}else{
+round($header_data['tax2'],2);
+};
+//print_r($header_data);
+
+}
+
 function delete_old_data() {
     global $store_code,$order_data_id;
     $sql=sprintf("select `Order Key`  from `Order Dimension`  where `Order Original Metadata`=%s  ",prepare_mysql($store_code.$order_data_id));
@@ -112,22 +141,51 @@ mysql_query($sql);
 }
 
 
-function adjust_invoice($invoice){
+function adjust_invoice($invoice,$continue=true){
+global $header_data,$tax_category_object;
+
+//print_r($header_data);
 $adjust_transactions=array();
+
+if($header_data['tax2']==''){
+$header_data['tax2']=0;
+}
+$tax=$header_data['tax1']+$header_data['tax2'];
+//printf("\nInvoice Totals: %f + %f =%f\n",$invoice->data['Invoice Total Net Amount'],$invoice->data['Invoice Total Tax Amount'],$invoice->data['Invoice Total Amount']);
+//printf("Invoice Totals: %f + %f =%f\n",$header_data['total_net'],$tax,$header_data['total_topay']);
+$diff_net=round($header_data['total_net']-$invoice->data['Invoice Total Net Amount'],2);
+$diff_tax=round($tax-$invoice->data['Invoice Total Tax Amount'],2);
+$total_diff=round($header_data['total_topay']-$invoice->data['Invoice Total Amount'],2);
+//printf("Diff Net %s Tax %s Total %s \n",$diff_net,$diff_tax,$total_diff);
+if($diff_net==0 and  $diff_tax==0 and $total_diff==0){
+return;
+}
+
+if($diff_tax!=0){
+$adjust_transactions[]=array('Net'=>0,'Tax'=>$diff_tax,'Transaction Description'=>_('Tax Adjustment'),'Tax Code'=>'');
+}
+if($diff_net!=0){
+$adjust_transactions[]=array('Net'=>$diff_net,'Tax'=>0,'Transaction Description'=>_('Net Adjustment'),'Tax Code'=>'');
+}
+if($diff_tax==0 and $diff_net==0 and $total_diff!=0){
+$adjust_transactions[]=array('Net'=>$total_diff,'Tax'=>0,'Transaction Description'=>_('Wrong Net+Tax Addition Adjustment'),'Tax Code'=>'');
+
+}
+
+
 
 
 
 
 foreach($adjust_transactions as $adjust_data){
-            $sql=sprintf("insert into `Order No Product Transaction Fact` (`Invoice Key`,`Invoice Date`,`Transaction Type`,`Transaction Description`,`Transaction Invoice Net Amount`,`Tax Category Code`,`Transaction Invoice Tax Amount`,`Transaction Outstandind Net Amount Balance`,`Transaction Outstandind Tax Amount Balance`,`Currency Code`,`Currency Exchange`,`Metadata`)  
-        values (%d,%s,%s,%s,%.2f,%s,%.2f,%.2f,%.2f,%s,%.2f,%s)  ",
+            $sql=sprintf("insert into `Order No Product Transaction Fact` (`Invoice Key`,`Invoice Date`,`Transaction Type`,`Transaction Description`,`Transaction Invoice Net Amount`,`Tax Category Code`,`Transaction Invoice Tax Amount`,`Transaction Outstandind Net Amount Balance`,`Transaction Outstandind Tax Amount Balance`,`Currency Code`,`Currency Exchange`,`Metadata`)  values (%d,%s,%s,%s,%.2f,%s,%.2f,%.2f,%.2f,%s,%.2f,%s)  ",
                      $invoice->id,
                      prepare_mysql($invoice->data['Invoice Date']),
-                     prepare_mysql('Adjusts'),
+                     prepare_mysql('Adjust'),
                 
                      prepare_mysql($adjust_data['Transaction Description']),
                      $adjust_data['Net'],
-                     prepare_mysql($invoice->data['Invoice Tax adjusts Code']),
+                     prepare_mysql($adjust_data['Tax Code']),
                      $adjust_data['Tax'],
                       $adjust_data['Net'],
                        $adjust_data['Tax'],
@@ -137,7 +195,36 @@ foreach($adjust_transactions as $adjust_data){
                     );
 
         mysql_query($sql);
+       // print "$continue $sql\n";
 }
+$invoice->update_totals();
+
+
+$diff_net=round($header_data['total_net']-$invoice->data['Invoice Total Net Amount'],2);
+$diff_tax=round($tax-$invoice->data['Invoice Total Tax Amount'],2);
+$total_diff=round($header_data['total_topay']-$invoice->data['Invoice Total Amount'],2);
+
+if(!$continue and $total_diff==0){
+return true;
+}
+
+
+if($diff_net!=0 or  $diff_tax!=0 or $total_diff!=0 and $continue){
+if(adjust_invoice($invoice,false))
+return;
+$diff_net=round($header_data['total_net']-$invoice->data['Invoice Total Net Amount'],2);
+$diff_tax=round($tax-$invoice->data['Invoice Total Tax Amount'],2);
+$total_diff=round($header_data['total_topay']-$invoice->data['Invoice Total Amount'],2);
+}
+
+if($diff_net!=0 or  $diff_tax!=0 or $total_diff!=0){
+printf("\nAft Invoice Totals: %f + %f =%f\n",$invoice->data['Invoice Total Net Amount'],$invoice->data['Invoice Total Tax Amount'],$invoice->data['Invoice Total Amount']);
+printf("Aft  Invoice Totals: %f + %f =%f\n",$header_data['total_net'],$tax,$header_data['total_topay']);
+
+printf("Aft Diff Net %s Tax %s Total %s \n",$diff_net,$diff_tax,$total_diff);
+exit("Error in adjust\n");
+}
+
 }
 function get_data($header_data){
   global $shipping_net,$charges_net,$extra_shipping,$payment_method,$picker_data,$packer_data,$parcels,$parcel_type;

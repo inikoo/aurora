@@ -136,7 +136,7 @@ $fam_promo_key=$fam_promo->id;
 $sql="select *,replace(   replace(replace(replace(replace(replace(replace(replace(replace(filename,'r/Orders/','r/Orders/00'),'s/Orders/','s/Orders/0'),'y/Orders/','y/Orders/0'),'z/Orders/9','z/Orders/09'),'x/Orders/','x/Orders/0'),'t/Orders/','t/Orders/0'),'u/Orders/','u/Orders/0'),'z/Orders/8','z/Orders/08')     ,directory,'') as name from  orders_data.orders  where   (last_transcribed is NULL  or last_read>last_transcribed) and deleted='No'   order by name ";
 
 //$sql="select * from  orders_data.orders  where    (last_transcribed is NULL  or last_read>last_transcribed) and deleted='No'  order by filename ";
-//$sql="select * from  orders_data.orders where filename like '%/6914.xls'   order by filename";
+//$sql="select * from  orders_data.orders where filename like '%/5%.xls'   order by filename";
 
 //$sql="select * from  orders_data.orders where filename like '%/%ref%.xls'   order by filename";
 //$sql="select * from  orders_data.orders  where filename like '/mnt/%/Orders/93284.xls' order by filename";
@@ -241,6 +241,7 @@ if ($row_test=mysql_fetch_array($result_test, MYSQL_ASSOC)) {
         $data=array();
         list($act_data,$header_data)=read_header($header,$map_act,$y_map,$map);
         $header_data=filter_header($header_data);
+        round_header_data_totals();
         //print_r($header_data);
         list($tipo_order,$parent_order_id,$header_data)=get_tipo_order($header_data['ltipo'],$header_data);
 
