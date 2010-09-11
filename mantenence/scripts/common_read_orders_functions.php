@@ -6,6 +6,10 @@ function delete_old_data() {
     $result_test=mysql_query($sql);
     while ($row_test=mysql_fetch_array($result_test, MYSQL_ASSOC)) {
 
+$sql=sprintf("delete from `History Dimension`  where   `Direct Object`='Order' and `Direct Object Key`=%d",$row_test['Order Key']);
+mysql_query($sql);
+
+
         $sql=sprintf("delete from `History Dimension` where `Direct Object Key`=%d and `Direct Object`='Sale'   ",$row_test['Order Key']);
         if (!mysql_query($sql))
             print "$sql Warning can no delete oldhidtfgf";
@@ -136,7 +140,7 @@ global $customer_key,$filename,$store_code,$order_data_id,$date_order,$shipping_
         $order=new Order('new',$order_data);
         
         $discounts_map=array();
-      //  print_r($data['products']);
+      // print_r($data['products']);
         foreach($data['products'] as $transaction) {
 
             $product=new Product('id',$transaction['Product Key']);
@@ -195,14 +199,14 @@ global $customer_key,$filename,$store_code,$order_data_id,$date_order,$shipping_
 
 
         }
-
+//print_r($discounts_map);
         foreach($discounts_map as $otf_key=>$discount) {
             $order->update_transaction_discount_amount($otf_key,$discount);
         }
         
         
         
-        
+    
         
         $order->categorize();
         $order->update_shipping_amount($shipping_net);
@@ -216,98 +220,103 @@ global $customer_key,$filename,$store_code,$order_data_id,$date_order,$shipping_
         $order->update_charges_amount($charges_data);
         $dn=$order->send_to_warehouse($date_order);
  
+ 
+ 
+ 
 }
 
-function send_order($data,$data_dn_transactions){
- global $customer_key,$filename,$store_code,$order_data_id,$date_order,$shipping_net,$charges_net,$order,$dn,$invoice,$shipping_net;
- global $charges_net,$order,$dn,$payment_method,$date_inv,$extra_shipping,$parcel_type;
- global $packer_data,$picker_data,$parcels;
- // print_r($data_dn_transactions);
-  
-  if (count($picker_data['id'])==0)$staff_key=0;
-        else {
-            $staff_key=$picker_data['id'][0];
-        }
-        $dn->start_picking($staff_key,$date_order);
+function send_order($data,$data_dn_transactions) {
+    global $customer_key,$filename,$store_code,$order_data_id,$date_order,$shipping_net,$charges_net,$order,$dn,$invoice,$shipping_net;
+    global $charges_net,$order,$dn,$payment_method,$date_inv,$extra_shipping,$parcel_type;
+    global $packer_data,$picker_data,$parcels;
+//print_r($data_dn_transactions);
 
-        $skus_to_pick_data=array();
-        foreach($data_dn_transactions as $key=>$value) {
-            foreach($value['pick_method_data']['parts_sku'] as $parts_sku=>$parts_sku_data) {
-                if (isset($skus_to_pick_data[$parts_sku])){
-                    $skus_to_pick_data[$parts_sku]['picked']+=$value['Shipped Quantity']*$parts_sku_data['parts_per_product'];
-                    $skus_to_pick_data[$parts_sku]['out_of_stock']+=$value['No Shipped Due Out of Stock']*$parts_sku_data['parts_per_product'];
+    if (count($picker_data['id'])==0)$staff_key=0;
+    else {
+        $staff_key=$picker_data['id'][0];
+    }
+    $dn->start_picking($staff_key,$date_order);
 
-             }else{
-                    $skus_to_pick_data[$parts_sku]['picked']=$value['Shipped Quantity']*$parts_sku_data['parts_per_product'];
-                    $skus_to_pick_data[$parts_sku]['out_of_stock']=$value['No Shipped Due Out of Stock']*$parts_sku_data['parts_per_product'];
+    $skus_to_pick_data=array();
+    foreach($data_dn_transactions as $key=>$value) {
+        foreach($value['pick_method_data']['parts_sku'] as $parts_sku=>$parts_sku_data) {
+            if (isset($skus_to_pick_data[$parts_sku])) {
+                $skus_to_pick_data[$parts_sku]['picked']+=$value['Shipped Quantity']*$parts_sku_data['parts_per_product'];
+                $skus_to_pick_data[$parts_sku]['out_of_stock']+=$value['No Shipped Due Out of Stock']*$parts_sku_data['parts_per_product'];
+
+            } else {
+                $skus_to_pick_data[$parts_sku]['picked']=$value['Shipped Quantity']*$parts_sku_data['parts_per_product'];
+                $skus_to_pick_data[$parts_sku]['out_of_stock']=$value['No Shipped Due Out of Stock']*$parts_sku_data['parts_per_product'];
 
 
             }
-            }
         }
-     
-        foreach ($skus_to_pick_data as $sku=>$value) {
-            if(array_key_exists('picked',$value) and $value['picked']>0){
+    }
+
+    foreach ($skus_to_pick_data as $sku=>$value) {
+        if (array_key_exists('picked',$value) and $value['picked']>0) {
             $dn->set_as_picked($sku,$value['picked'],$date_order);
-            }
-                        if(array_key_exists('out_of_stock',$value) and $value['out_of_stock']>0){
-            
+        }
+        if (array_key_exists('out_of_stock',$value) and $value['out_of_stock']>0) {
+
             $dn->set_as_out_of_stock($sku,$value['out_of_stock'],$date_order);
-}
         }
-        
-        
-        
-           
-        $dn->update_picking_percentage();
-
-        if (count($packer_data['id'])==0)$staff_key=0;
-        else {
-            $staff_key=$packer_data['id'][0];
-        }
-        $dn->start_packing($staff_key,$date_order);
+    }
 
 
-        foreach ($skus_to_pick_data as $sku=>$value) {
-            //print "$sku ".$value['picked']."\n";
-            $dn->set_as_packed($sku,$value['picked'],$date_order);
-     //        $dn->update_packing_percentage();
-        }
-        
-        $dn->update_packing_percentage();
-          
-        $dn->set_parcels($parcels,$parcel_type);
-$dn->ready_to_ship();
 
-if($order->data['Order Type']=='Order' or ((  ($order->data['Order Type']=='Sample'  or $order->data['Order Type']=='Donation') and $order->data['Order Total Amount']!=0 ))){
+
+    $dn->update_picking_percentage();
+
+    if (count($packer_data['id'])==0)$staff_key=0;
+    else {
+        $staff_key=$packer_data['id'][0];
+    }
+    $dn->start_packing($staff_key,$date_order);
+
+
+    foreach ($skus_to_pick_data as $sku=>$value) {
+        //print "$sku ".$value['picked']."\n";
+        $dn->set_as_packed($sku,$value['picked'],$date_order);
+        //        $dn->update_packing_percentage();
+    }
+
+    $dn->update_packing_percentage();
+
+    $dn->set_parcels($parcels,$parcel_type);
+    $dn->ready_to_ship();
+
+    //print_r($order->data);
+
+    if ($order->data['Order Type']=='Order' or ((  ($order->data['Order Type']=='Sample'  or $order->data['Order Type']=='Donation') and $order->data['Order Total Amount']!=0 ))) {
         $invoice=$dn->create_invoice($date_inv);
-       
+
         $invoice->update(array
                          (
                              'Invoice Metadata'=>$store_code.$order_data_id,
                              'Invoice Shipping Net Amount'=>$shipping_net,
                              'Invoice Charges Net Amount'=>array(
-                             'Transaction Invoice Net Amount'=> $charges_net,
-                             'Transaction Description'=>_('Charges')
-                             )
-                             
-                            
+                                                              'Transaction Invoice Net Amount'=> $charges_net,
+                                                              'Transaction Description'=>_('Charges')
+                                                          )
+
+
                          ));
 
         $invoice->pay('full',array(
                           'Invoice Paid Date'=>$date_inv,
                           'Payment Method'=>$payment_method
                       ));
-}
+    }
 
 
-        $dn->approved_for_shipping($date_inv);
-      // print $dn->id."\n";
-        
-        $dn->dispatch(array('Delivery Note Date'=>$date_inv));
-        
-        
-        
+    $dn->approved_for_shipping($date_inv);
+    // print $dn->id."\n";
+
+    $dn->dispatch(array('Delivery Note Date'=>$date_inv));
+
+
+
 }
 function create_post_order($data,$data_dn_transactions){
 global $customer_key,$filename,$store_code,$order_data_id,$date_order,$shipping_net,$charges_net,$order,$dn,$invoice,$shipping_net;

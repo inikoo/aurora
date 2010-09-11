@@ -2210,7 +2210,7 @@ else if($order=='customer')
    $order='`Invoice Has Been Paid In Full`';
 else if($order=='net')
      $order='`Invoice Total Net Amount`';
-  $sql="select `Invoice Total Net Amount`,`Invoice Has Been Paid In Full`,`Invoice Key`,`Invoice XHTML Orders`,`Invoice XHTML Delivery Notes`,`Invoice Public ID`,`Invoice Customer Key`,`Invoice Customer Name`,`Invoice Date`,`Invoice Total Amount`  from `Invoice Dimension`  $where $wheref  order by $order $order_direction limit $start_from,$number_results ";
+  $sql="select `Invoice Currency`,`Invoice Total Net Amount`,`Invoice Has Been Paid In Full`,`Invoice Key`,`Invoice XHTML Orders`,`Invoice XHTML Delivery Notes`,`Invoice Public ID`,`Invoice Customer Key`,`Invoice Customer Name`,`Invoice Date`,`Invoice Total Amount`  from `Invoice Dimension`  $where $wheref  order by $order $order_direction limit $start_from,$number_results ";
   // print $sql;
 
    $data=array();
@@ -2230,8 +2230,8 @@ else if($order=='net')
 		   'id'=>$order_id
 		   ,'customer'=>$customer
 		   ,'date'=>strftime("%e %b %y", strtotime($row['Invoice Date']))
-		   ,'total_amount'=>money($row['Invoice Total Amount'])
-		   ,'net'=>money($row['Invoice Total Net Amount'])
+		   ,'total_amount'=>money($row['Invoice Total Amount'],$row['Invoice Currency'])
+		   ,'net'=>money($row['Invoice Total Net Amount'],$row['Invoice Currency'])
 
 		   ,'state'=>$state
 		   ,'orders'=>$row['Invoice XHTML Orders']

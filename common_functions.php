@@ -701,9 +701,7 @@ function ip()
 		// Returns the true IP if it has been found, else FALSE
 		if (empty($proxy_ip)) {
 			// True IP without proxy
-			if($direct_ip=='::1')
-			return 'Unknown';
-			else
+		
 			return $direct_ip;
 		} else {
 			$is_ip = preg_match('|^([0-9]{1,3}\.){3,3}[0-9]{1,3}|', $proxy_ip, $regs);

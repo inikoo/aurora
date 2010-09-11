@@ -758,7 +758,8 @@ if(isset($data ['Order Public ID'])){
 
         $customer->add_history_new_order($this);
 
-
+$customer->update_orders();
+                $customer->update_no_normal_data();
 
 
         break;
@@ -785,21 +786,14 @@ function send_to_warehouse($date=false) {
 
     }
 
-
-    $this->data['Order Current Dispatch State']='Ready to Pick';
-    $this->data['Order Current XHTML State']='Ready to Pick';
-
-
-
-
-    $sql=sprintf("update `Order Dimension` set
-                 `Order Current Dispatch State`=%s, `Order Current XHTML State`=%s  where `Order Key`=%d"
-                 ,prepare_mysql($this->data['Order Current Dispatch State'])
-                 ,prepare_mysql($this->data['Order Current XHTML State'])
+   $sql=sprintf("update `Order Transaction Fact` set
+                 `Current Dispatching State`='Ready to Pick'   where `Order Key`=%d and `Current Dispatching State` in ('Submitted by Customer','In Process')"
                  ,$this->id);
 
     mysql_query($sql);
 
+
+$this->update_dispatch_state();
 
     $data_dn=array(
                  'Delivery Note Date Created'=>$date,
@@ -812,8 +806,7 @@ function send_to_warehouse($date=false) {
     $dn=new DeliveryNote('create',$data_dn,$this);
     $dn->create_inventory_transaction_fact($this->id);
     $this->update_delivery_notes('save');
-    $customer=new Customer($this->data['Order Customer Key']);
-    $customer->update_history_order_in_warehouse($this);
+  
     return $dn;
 }
 
@@ -1382,6 +1375,7 @@ function add_order_transaction($data) {
 
 
             switch ($key) {
+            
             case('Shipping And Handing Net Amount'):
                 return money($this->data['Order Shipping Net Amount']+$this->data['Order Charges Net Amount']);
                 break;
@@ -1401,6 +1395,15 @@ function add_order_transaction($data) {
                     return '';
 
                 break;
+            case ('Weight'):
+                  if($this->data['Order Current Dispatch State']=='Dispatched'){
+                  if($this->data['Order Weight']=='')
+                  return weight($this->data['Order Dispatched Estimated Weight']);
+                  else
+                  return weight($this->data['Order Weight']);
+                  }else{
+                  return weight($this->data['Order Estimated Weight']);
+                  }
             case ('estimated_weight') :
                 if ($this->tipo == 'order') {
                     $w = 0;
@@ -2225,7 +2228,7 @@ $prefix='';
 
 
 
-            $sql = "select sum(`Transaction Tax Rate`*(`Order Transaction Gross Amount`-`Order Transaction Total Discount Amount`)) as tax, sum(`Order Transaction Gross Amount`) as gross,sum(`Order Transaction Total Discount Amount`) as discount, sum(`Invoice Transaction Shipping Amount`) as shipping,sum(`Invoice Transaction Charges Amount`) as charges    from `Order Transaction Fact` where  `Order Key`=" . $this->data ['Order Key'];
+            $sql = "select sum(`Estimated Dispatched Weight`) as disp_estimated_weight,sum(`Estimated Weight`) as estimated_weight,sum(`Weight`) as weight,sum(`Transaction Tax Rate`*(`Order Transaction Gross Amount`-`Order Transaction Total Discount Amount`)) as tax, sum(`Order Transaction Gross Amount`) as gross,sum(`Order Transaction Total Discount Amount`) as discount, sum(`Invoice Transaction Shipping Amount`) as shipping,sum(`Invoice Transaction Charges Amount`) as charges    from `Order Transaction Fact` where  `Order Key`=" . $this->data ['Order Key'];
            // print "$sql\n";
             $result = mysql_query ( $sql );
             if ($row = mysql_fetch_array ( $result, MYSQL_ASSOC )) {
@@ -2235,6 +2238,8 @@ $prefix='';
                 $this->data ['Order Items Net Amount'] = $total_items_net;
                 $this->data ['Order Items Tax Amount']= $row ['tax'];
                 $this->data ['Order Items Total Amount']= $this->data ['Order Items Net Amount'] +$this->data ['Order Items Tax Amount'];
+$this->data ['Order Estimated Weight']= $row ['estimated_weight'];
+$this->data ['Order Dispatched Estimated Weight']= $row ['disp_estimated_weight'];
 
 
 
@@ -2434,31 +2439,55 @@ $prefix='';
         return $dispatch_state;
         }
 
-        function update_dispatch_state() {
-          $sql = sprintf("select `Current Dispatching State` as state from `Order Transaction Fact` where `Order Key`=%d order by `Current Payment State`",
-         $this->id);
-            //print "$sql\n";
-            $result = mysql_query ( $sql );
-            $array_state=array();
-            while ($row = mysql_fetch_array ( $result, MYSQL_ASSOC )) {
-            $array_state[$row['state']]=$row['state'];
-            }
-         
-        
-       
-       $this->data['Order Current Dispatch State']=$this->translate_dispatch_state($array_state);
-        
-         
-            $sql=sprintf("update `Order Dimension` set `Order Current Dispatch State`=%s,`Order Current XHTML State`=%s  where `Order Key`=%d"
-                         ,prepare_mysql($this->data['Order Current Dispatch State'])
-                         ,prepare_mysql($this->calculate_state())
-                         ,$this->id
-                        );
-   
-            mysql_query($sql);
-       
-       
-       }
+
+function update_customer_history(){
+//print $this->data['Order Current Dispatch State']."\n";
+$customer=new Customer ($this->data['Order Customer Key']);
+switch ($this->data['Order Current Dispatch State']) {
+ 
+ case 'Picking & Packing':
+ case('Ready to Pick'):
+  case('Ready to Ship'):
+   case('Dispatched'):
+        $customer->update_history_order_in_warehouse($this);
+        break;
+    default:
+     
+        break;
+}
+
+
+
+}
+
+function update_dispatch_state() {
+    $sql = sprintf("select `Current Dispatching State` as state from `Order Transaction Fact` where `Order Key`=%d order by `Current Payment State`",
+                   $this->id);
+    //print "$sql\n";
+    $result = mysql_query ( $sql );
+    $array_state=array();
+    while ($row = mysql_fetch_array ( $result, MYSQL_ASSOC )) {
+        $array_state[$row['state']]=$row['state'];
+    }
+
+
+$old_dispatch_state=$this->data['Order Current Dispatch State'];
+    $this->data['Order Current Dispatch State']=$this->translate_dispatch_state($array_state);
+ $this->data['Order Current XHTML State']=$this->calculate_state();
+if($old_dispatch_state!=$this->data['Order Current Dispatch State']){
+
+    $sql=sprintf("update `Order Dimension` set `Order Current Dispatch State`=%s,`Order Current XHTML State`=%s  where `Order Key`=%d"
+                 ,prepare_mysql($this->data['Order Current Dispatch State'])
+                 ,prepare_mysql($this->data['Order Current XHTML State'])
+                 ,$this->id
+                );
+
+    mysql_query($sql);
+$this->update_customer_history();
+
+}
+
+}
         
         
         function translate_payment_state($array_payment_state){
@@ -2537,14 +2566,17 @@ $prefix='';
 
             $this->data ['Order Total Amount'] = $this->data ['Order Total Tax Amount'] + $this->data ['Order Total Net Amount'];
             $this->data ['Order Total To Pay Amount'] = $this->data ['Order Total Amount'];
-
             
             $this->data ['Order Items Adjust Amount']=0;
 
             $sql = sprintf ( "update `Order Dimension` set
                              `Order Total Net Amount`=%.2f
                              ,`Order Total Tax Amount`=%.2f ,`Order Shipping Net Amount`=%s ,`Order Shipping Tax Amount`=%.2f ,`Order Charges Net Amount`=%.2f ,`Order Charges Tax Amount`=%.2f ,`Order Total Amount`=%.2f
-                             , `Order Balance Total Amount`=%.2f  where  `Order Key`=%d "
+                             , `Order Balance Total Amount`=%.2f 
+                             ,`Order Estimated Weight`=%f
+                            ,`Order Dispatched Estimated Weight`=%f
+
+                             where  `Order Key`=%d "
                              , $this->data ['Order Total Net Amount']
                              , $this->data ['Order Total Tax Amount']
                              , (is_numeric($this->data ['Order Shipping Net Amount'])?$this->data ['Order Shipping Net Amount']:'NULL')
@@ -2555,6 +2587,8 @@ $prefix='';
 
                              , $this->data ['Order Total Amount']
                              , $this->data ['Order Total To Pay Amount']
+                             , $this->data ['Order Estimated Weight']
+                             , $this->data ['Order Dispatched Estimated Weight']
                              , $this->data ['Order Key']
                            );
 
@@ -2696,69 +2730,69 @@ $prefix='';
 
 
 
-  function update_charges_amount($data) {
-            $value=sprintf("%.2f",$data[0]['Charge Net Amount']);;
+ function update_charges_amount($data) {
+    $value=sprintf("%.2f",$data[0]['Charge Net Amount']);;
 
-            if ($value!=$this->data['Order Charges Net Amount']) {
-              
-                $this->data['Order Charges Net Amount']=$value;
-                
-                 $sql=sprintf('delete from `Order No Product Transaction Fact` where `Order Key`=%d and `Transaction Type`="Charges" and `Delivery Note Key` IS NULL and `Invoice Key` IS NULL',
-            $this->id
-            );
-            mysql_query($sql);
-           // print "$sql\n";
-           $charges_array=$data;
-           
-           $total_charges_net=0;
-           $total_charges_tax=0;
-           foreach($charges_array as $charge_data){
-           $total_charges_net+=$charge_data['Charge Net Amount'];
-           $total_charges_tax+=$charge_data['Charge Tax Amount'];
-            if($charge_data['Charge Tax Amount']!=0 or $charge_data['Charge Net Amount']!=0){
-            $sql=sprintf("insert into `Order No Product Transaction Fact` (`Order Key`,`Order Date`,`Transaction Type`,`Transaction Type Key`,`Transaction Description`,`Transaction Net Amount`,`Tax Category Code`,`Transaction Tax Amount`,`Transaction Outstandind Net Amount Balance`,`Transaction Outstandind Tax Amount Balance`,`Currency Code`,`Currency Exchange`,`Metadata`)  values (%d,%s,%s,%d,%s,%.2f,%s,%.2f,%.2f,%.2f,%s,%.2f,%s)  ",
-                $this->id,
-                prepare_mysql($this->data['Order Date']),
-                prepare_mysql('Charges'),
-                $charge_data['Charge Key'],
-                 prepare_mysql($charge_data['Charge Description']),
-                $charge_data['Charge Net Amount'],
-                prepare_mysql($this->data['Order Tax Code']),
-                 $charge_data['Charge Tax Amount'],
-                  $charge_data['Charge Net Amount'],
-                  $charge_data['Charge Tax Amount'],
-                    prepare_mysql($this->data['Order Currency']),
-                    $this->data['Order Currency Exchange'],
-                    prepare_mysql($this->data['Order Original Metadata'])
-                );
-            
-            //print ("$sql\n");
-            mysql_query($sql);
-            }
-            
-           }
+    if ($value!=$this->data['Order Charges Net Amount']) {
 
+        $this->data['Order Charges Net Amount']=$value;
 
-            $this->data['Order Charges Net Amount']=$total_charges_net;
-            $this->data['Order Charges Tax Amount']=$total_charges_tax;
+        $sql=sprintf('delete from `Order No Product Transaction Fact` where `Order Key`=%d and `Transaction Type`="Charges" and `Delivery Note Key` IS NULL and `Invoice Key` IS NULL',
+                     $this->id
+                    );
+        mysql_query($sql);
+        // print "$sql\n";
+        $charges_array=$data;
 
+        $total_charges_net=0;
+        $total_charges_tax=0;
+        foreach($charges_array as $charge_data) {
+            $total_charges_net+=$charge_data['Charge Net Amount'];
+            $total_charges_tax+=$charge_data['Charge Tax Amount'];
+            if ($charge_data['Charge Tax Amount']!=0 or $charge_data['Charge Net Amount']!=0) {
+                $sql=sprintf("insert into `Order No Product Transaction Fact` (`Order Key`,`Order Date`,`Transaction Type`,`Transaction Type Key`,`Transaction Description`,`Transaction Net Amount`,`Tax Category Code`,`Transaction Tax Amount`,`Transaction Outstandind Net Amount Balance`,`Transaction Outstandind Tax Amount Balance`,`Currency Code`,`Currency Exchange`,`Metadata`)  values (%d,%s,%s,%d,%s,%.2f,%s,%.2f,%.2f,%.2f,%s,%.2f,%s)  ",
+                             $this->id,
+                             prepare_mysql($this->data['Order Date']),
+                             prepare_mysql('Charges'),
+                             $charge_data['Charge Key'],
+                             prepare_mysql($charge_data['Charge Description']),
+                             $charge_data['Charge Net Amount'],
+                             prepare_mysql($this->data['Order Tax Code']),
+                             $charge_data['Charge Tax Amount'],
+                             $charge_data['Charge Net Amount'],
+                             $charge_data['Charge Tax Amount'],
+                             prepare_mysql($this->data['Order Currency']),
+                             $this->data['Order Currency Exchange'],
+                             prepare_mysql($this->data['Order Original Metadata'])
+                            );
 
-            $sql=sprintf("update `Order Dimension` set `Order Charges Net Amount`=%s ,`Order Charges Tax Amount`=%.2f where `Order Key`=%d"
-                         ,$this->data['Order Charges Net Amount']
-                         ,$this->data['Order Charges Tax Amount']
-                         ,$this->id
-                        );
-            mysql_query($sql);
-                
-                
-                
-                
-                
-                
-          
+               //print ("$sql\n");
+                mysql_query($sql);
             }
 
         }
+
+
+        $this->data['Order Charges Net Amount']=$total_charges_net;
+        $this->data['Order Charges Tax Amount']=$total_charges_tax;
+
+
+        $sql=sprintf("update `Order Dimension` set `Order Charges Net Amount`=%s ,`Order Charges Tax Amount`=%.2f where `Order Key`=%d"
+                     ,$this->data['Order Charges Net Amount']
+                     ,$this->data['Order Charges Tax Amount']
+                     ,$this->id
+                    );
+        mysql_query($sql);
+
+
+
+$this->update_totals_from_order_transactions();
+
+
+
+    }
+
+}
 
 
 

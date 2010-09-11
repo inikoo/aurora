@@ -470,8 +470,8 @@ class DeliveryNote extends DB_Table {
 
             $map_to_otf=$row['Order Transaction Fact Key'];
 
-$state='Ready to Pick';
-$sql = sprintf ( "update `Order Transaction Fact` set `Current Dispatching State`=%s where `Order Transaction Fact Key`=%d  ",
+        $state='Ready to Pick';
+        $sql = sprintf ( "update `Order Transaction Fact` set `Current Dispatching State`=%s where `Order Transaction Fact Key`=%d  ",
                          prepare_mysql($state),
                          
                          $row['Order Transaction Fact Key']
@@ -509,9 +509,10 @@ $sql = sprintf ( "update `Order Transaction Fact` set `Current Dispatching State
                 $note = $a;
 
 
-
-                $sql = sprintf ( "insert into `Inventory Transaction Fact`  (`Date Created`,`Date`,`Delivery Note Key`,`Part SKU`,`Location Key`,`Inventory Transaction Quantity`,`Inventory Transaction Type`,`Inventory Transaction Amount`,`Required`,`Given`,`Amount In`,`Metadata`,`Note`,`Supplier Product Key`,`Map To Order Transaction Fact`) values (%s,%s,%d,%s,%d,%s,%s,%.2f,%f,%f,%f,%s,%s,%s,%s) "
-                                 ,prepare_mysql ($date),
+                $weight=
+                $sql = sprintf ( "insert into `Inventory Transaction Fact`  (`Inventory Transaction Weight`,`Date Created`,`Date`,`Delivery Note Key`,`Part SKU`,`Location Key`,`Inventory Transaction Quantity`,`Inventory Transaction Type`,`Inventory Transaction Amount`,`Required`,`Given`,`Amount In`,`Metadata`,`Note`,`Supplier Product Key`,`Map To Order Transaction Fact`) values (%f,%s,%s,%d,%s,%d,%s,%s,%.2f,%f,%f,%f,%s,%s,%s,%s) ",
+                                 0,
+                                 prepare_mysql ($date),
                                  prepare_mysql ($date),
                                  $this->id,
                                  prepare_mysql ( $part_data['Part SKU'] ),
@@ -948,12 +949,9 @@ mysql_query ( $sql );
         if (count($orders_ids)==1) {
             $order=new Order(array_pop($orders_ids));
 
-            if ($percentage_picked==1)
-                $order->update_dispatch_state('Ready Pack');
-            else
-                $order->update_dispatch_state('Picking');
-            $customer=new Customer($order->data['Order Customer Key']);
-            $customer->update_history_order_in_warehouse($order);
+    
+                $order->update_dispatch_state();
+           
 
         }
         return $percentage_picked;
@@ -993,12 +991,10 @@ mysql_query ( $sql );
         $orders_ids=$this->get_orders_ids();
         if (count($orders_ids)==1) {
             $order=new Order(array_pop($orders_ids));
-            if ($percentage_packed==1)
-                $order->update_dispatch_state('Ready to Ship');
-            else
-                $order->update_dispatch_state('Packing');
-            $customer=new Customer($order->data['Order Customer Key']);
-            $customer->update_history_order_in_warehouse($order);
+              $order->update_item_totals_from_order_transactions();
+        $order->update_totals_from_order_transactions();
+            $order->update_dispatch_state();
+           
 
         }
 
@@ -1212,7 +1208,7 @@ $sql = sprintf ( "update `Delivery Note Dimension` set `Delivery Note Date Finis
 
 function get_packed_estimated_weight(){
 $weight=0;
-$sql=sprintf("select sum(`Estimated Weight`*(`Delivery Note Quantity`/`Order Quantity`)) as weight from `Order Transaction Fact` where `Order Quantity`!=0 and `Delivery Note Key`=%d",
+$sql=sprintf("select sum(`Estimated Dispatched Weight`) as weight from `Order Transaction Fact` where `Order Quantity`!=0 and `Delivery Note Key`=%d",
 $this->id
 );
  $res=mysql_query ( $sql );
@@ -1235,7 +1231,7 @@ $this->id
     
     
 
-    $sql=sprintf("select `Required`,`Picked`,`Out of Stock`,`Map To Order Transaction Fact`  from   `Inventory Transaction Fact` where `Delivery Note Key`=%d and `Part SKU`=%d  "
+    $sql=sprintf("select `Part SKU`,`Required`,`Picked`,`Out of Stock`,`Map To Order Transaction Fact`  from   `Inventory Transaction Fact` where `Delivery Note Key`=%d and `Part SKU`=%d  "
                  ,$this->id
                  ,$sku
                 );
@@ -1251,9 +1247,11 @@ $this->id
         }
       
             $packing_factor=$qty/$row['Picked'];
-     
-        
-        $sql = sprintf ( "update `Inventory Transaction Fact` set `Packed`=%f,`Date Packed`=%s,`Date`=%s ,`Packer Key`=%s where `Delivery Note Key`=%d and `Part SKU`=%d  "
+        $part=new Part($row['Part SKU']);
+                $weight=$qty*$part->data['Part Gross Weight'];
+
+        $sql = sprintf ( "update `Inventory Transaction Fact` set `Inventory Transaction Weight`=%f,`Packed`=%f,`Date Packed`=%s,`Date`=%s ,`Packer Key`=%s where `Delivery Note Key`=%d and `Part SKU`=%d  "
+                         , $weight
                          , $qty
                          , prepare_mysql ( $date )
                          , prepare_mysql ( $date )
@@ -1262,7 +1260,7 @@ $this->id
                          ,$sku
                        );
         mysql_query ( $sql );
-
+//print "$sql\n";
         $factor=1;
         if (is_numeric($row['Map To Order Transaction Fact'])) {
             $factor=1;
@@ -1280,7 +1278,11 @@ $this->id
         else
             $state='Packing';
           
-        $sql = sprintf ( "update `Order Transaction Fact` set `Current Dispatching State`=%s,`Delivery Note Quantity`=%f,`Packing Finished Date`=%s,`Packer Key`=%s ,`Packing Factor`=%f where `Order Transaction Fact Key`=%d  ",
+          
+          
+          
+        $sql = sprintf ( "update `Order Transaction Fact` set `Estimated Dispatched Weight`=%f,`Current Dispatching State`=%s,`Delivery Note Quantity`=%f,`Packing Finished Date`=%s,`Packer Key`=%s ,`Packing Factor`=%f where `Order Transaction Fact Key`=%d  ",
+                         $weight,
                          prepare_mysql($state),
                          $qty*$factor,
                          prepare_mysql ( $date ),
@@ -1381,9 +1383,11 @@ function ready_to_ship(){
 
 foreach($this->get_orders_objects() as $order) {
     $order->update_shipping($this->id);
-       $order->update_charges($this->id);
- }
+    $order->update_charges($this->id);
 
+$order->update_dispatch_state();
+
+}
 
 
 //$shipping_amount=$this->calculate_shipping();
