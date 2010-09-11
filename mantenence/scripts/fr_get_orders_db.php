@@ -2,7 +2,7 @@
 //include("../../external_libs/adminpro/adminpro_config.php");
 
 include_once('../../app_files/db/dns.php');
-include_once('../../class.Department.php');
+include_once('../../class.Department.php');f
 include_once('../../class.Family.php');
 include_once('../../class.Product.php');
 include_once('../../class.Supplier.php');
@@ -247,6 +247,8 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
         list($act_data,$header_data)=read_header($header,$map_act,$y_map,$map,false);
         $header_data=filter_header($header_data);
+                round_header_data_totals();
+
         list($tipo_order,$parent_order_id,$header_data)=get_tipo_order($header_data['ltipo'],$header_data);
 
         //print_r($header_data);

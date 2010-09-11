@@ -209,6 +209,7 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
         list($act_data,$header_data)=read_header($header,$map_act,$y_map,$map,false);
         $header_data=filter_header($header_data);
+        round_header_data_totals();
 
         //print_r($header_data);
         // exit;
