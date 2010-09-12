@@ -156,6 +156,10 @@ $tax=$header_data['tax1']+$header_data['tax2'];
 $diff_net=round($header_data['total_net']-$invoice->data['Invoice Total Net Amount'],2);
 $diff_tax=round($tax-$invoice->data['Invoice Total Tax Amount'],2);
 $total_diff=round($header_data['total_topay']-$invoice->data['Invoice Total Amount'],2);
+
+if($total_diff==0 and !$continue)
+return true;
+
 //printf("Diff Net %s Tax %s Total %s \n",$diff_net,$diff_tax,$total_diff);
 if($diff_net==0 and  $diff_tax==0 and $total_diff==0){
 return;
@@ -195,7 +199,7 @@ foreach($adjust_transactions as $adjust_data){
                     );
 
         mysql_query($sql);
-       // print "$continue $sql\n";
+      //  print "$continue $sql\n";
 }
 $invoice->update_totals();
 
