@@ -46,16 +46,25 @@ global $myconf;
 
 
 $data=array(
-          'editor'=>array('Date'=>'2003-08-28 09:00:00')
-	  ,'Company Name'=>'Ancient Wisdom'
-	  ,'Company Fiscal Name'=>'Ancient Wisdom Marketing Ltd'
-	  ,'Company Tax Number'=>'764298589'
-	  ,'Company Registration Number'=>'4108870'
-	  ,'Company Main Plain Email'=>'mail@ancientwisdom.biz'
+          'editor'=>array('Date'=>'2003-08-28 09:00:00'),
+	  'Company Name'=>'Ancient Wisdom',
+	  'Company Fiscal Name'=>'Ancient Wisdom Marketing Ltd',
+	  'Company Tax Number'=>'764298589',
+	  'Company Registration Number'=>'4108870',
+	  'Company Main Plain Email'=>'mail@ancientwisdom.biz',
+	  'Company Address Line 1'=>'Unit 15, Block B',
+	  'Company Address Town'=>'Sheffield',
+	  'Company Address Line 2'=>'Parkwood Business Park',
+	  'Company Address Line 3'=>'Parkwood Road',
+	  'Company Address Postal Code'=>'S3 8EL',
+	  'Company Address Country Name'=>'United Kingdom',
+	  'Company Address Country First Division'=>'',
+	  'Company Address Country Second Division'=>'',
       );
 
 
 $company=new Company('find create auto',$data);
+$address_collection_address_key=$company->data['Company Main Address Key'];
 $sql=sprintf("delete * from  `Corporation Dimension` " );
 mysql_query($sql);
 $sql=sprintf("insert into `Corporation Dimension` values (%s,'GBP',%d) ",prepare_mysql($company->data['Company Name']),$company->id );
@@ -431,9 +440,14 @@ $store_data=array('Store Code'=>'UK',
 		  'Store Telephone'=>'+44 (0) 114 272 9165',
 		  'Store FAX'=>'+44 (0) 114 270 6571',
 		  'Store Slogan'=>'giftware sourced worldwide',
-		  'Store Tax Category Code'=>'S1'
+		  'Store Tax Category Code'=>'S1',
+		 'Store Collection Address Key'=> $address_collection_address_key
 		  );
 $store=new Store('find',$store_data,'create');
+
+$store_collection_address=array(
+    ''
+);
 
 $store_data=array('Store Code'=>'DE',
 		  'Store Name'=>'AW-Geshenke',
@@ -447,7 +461,9 @@ $store_data=array('Store Code'=>'DE',
 		  'Store Telephone'=>'+49 (0)831 2531 986',
 		  'Store FAX'=>'',
 		  'Store Slogan'=>'Geschenkwaren',
-'Store Tax Category Code'=>'S1'
+'Store Tax Category Code'=>'S1',
+		 'Store Collection Address Key'=> $address_collection_address_key
+
 		  );
 $store=new Store('find',$store_data,'create');
 $store_data=array('Store Code'=>'FR',
@@ -462,7 +478,9 @@ $store_data=array('Store Code'=>'FR',
 		  'Store Telephone'=>'',
 		  'Store FAX'=>'',
 		  'Store Slogan'=>'',
-		  'Store Tax Category Code'=>'S1'
+		  'Store Tax Category Code'=>'S1',
+		  		 'Store Collection Address Key'=> $address_collection_address_key
+
 		  );
 $store=new Store('find',$store_data,'create');
 
@@ -1194,6 +1212,8 @@ $store_data=array('Store Code'=>'PL',
 		  'Store URL'=>'www.aw-podarki.com',
 		  'Store Telephone'=>'+48 1142 677 736',
 		  'Store Email'=>'urszula@aw-podarki.com',
+		  		 'Store Collection Address Key'=> $address_collection_address_key
+
 		  );
 $store=new Store('find',$store_data,'create');
 $store_key=$store->id;

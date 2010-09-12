@@ -257,7 +257,8 @@ global $customer_key,$filename,$store_code,$order_data_id,$date_order,$shipping_
 
 
         $order=new Order('new',$order_data);
-        
+        if($header_data['collection']=='Yes')
+            $order->update_order_is_for_collection('Yes');
         $discounts_map=array();
       // print_r($data['products']);
         foreach($data['products'] as $transaction) {

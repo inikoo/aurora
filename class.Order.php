@@ -19,6 +19,7 @@ include_once('class.Customer.php');
 include_once('class.Store.php');
 include_once('class.Ship_To.php');
 include_once('class.Invoice.php');
+
 include_once('class.DeliveryNote.php');
 include_once('class.TaxCategory.php');
 
@@ -2889,7 +2890,7 @@ $tax_category=new TaxCategory('code',$customer->data['Customer Tax Category Code
             $this->public_id_format=$store->data[ 'Store Order Public ID Format' ];
 
 if(!isset($this->data ['Order Tax Code'])){
-$tax_category=new TaxCategory($store->data['Customer Tax Category Code']);
+$tax_category=new TaxCategory($store->data['Store Tax Category Code']);
 
             $this->data ['Order Tax Rate'] = $tax_category->data['Tax Category Rate'];
             $this->data ['Order Tax Code'] = $tax_category->data['Tax Category Code'];
@@ -3535,7 +3536,7 @@ $deal_info=percentage($amount,$row['Order Transaction Gross Amount']).' Off';
         }
 
 
-        function update_shipping_type($value) {
+        function update_is_for_collection($value) {
 
             if ($value!='Yes')
                 $value='No';
@@ -3545,8 +3546,12 @@ $deal_info=percentage($amount,$row['Order Transaction Gross Amount']).' Off';
 
                 if ($value=='Yes') {
                     $store=new Store($this->data['Order Store Key']);
-                    $store_country_code=$store->data['Store Home Country Code 2 Alpha'];
-
+                    $collection_address=new Address($store->data['Store Collection Address Key']);
+                    if($collection_address->id){
+                    $store_country_code=$collection_address->data['Address Country 2 Alpha Code'];
+                    }else{
+                    $store_country_code='XX';
+                    }
                     $sql=sprintf("update `Order Dimension` set `Order For Collection`='Yes' ,`Order Ship To Country Code`='', `Order Main Country 2 Alpha Code`=%s, `Order XHTML Ship Tos`='',`Order Ship To Keys`='' where `Order Key`=%d"
                                  ,prepare_mysql($store_country_code)
                                  ,$this->id
