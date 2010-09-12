@@ -132,7 +132,7 @@ function edit_new_order_shipping_type() {
 
     $order=new Order($order_key);
     if ($order->id) {
-        $order->update_shipping_type($value);
+        $order->update_order_is_for_collection($value);
         if ($order->updated) {
             $response=array('state'=>200,'result'=>'updated','new_value'=>$order->new_value);
 

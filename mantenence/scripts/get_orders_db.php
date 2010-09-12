@@ -175,7 +175,10 @@ if ($row_test=mysql_fetch_array($result_test, MYSQL_ASSOC)) {
                 $sql=sprintf("select count(*) as num  from `Delivery Note Dimension`  where `Delivery Note Metadata`=%s "
                              ,prepare_mysql($store_code.$order_data_id));
                 $result_test3=mysql_query($sql);
+                 if($contador>20)
+                exit;
                 if ($row_test3=mysql_fetch_array($result_test3, MYSQL_ASSOC)) {
+               
                     if ($row_test3['num']==0) {
 
 
