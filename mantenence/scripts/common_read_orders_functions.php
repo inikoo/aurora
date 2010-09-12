@@ -241,7 +241,7 @@ function get_data($header_data){
 }
 
 function create_order($data){
-global $customer_key,$filename,$store_code,$order_data_id,$date_order,$shipping_net,$charges_net,$order,$dn,$tax_category_object;
+global $customer_key,$filename,$store_code,$order_data_id,$date_order,$shipping_net,$charges_net,$order,$dn,$tax_category_object,$header_data;
         $order_data=array(
                         'type'=>'system',
                         'Customer Key'=>$customer_key,
@@ -284,7 +284,7 @@ global $customer_key,$filename,$store_code,$order_data_id,$date_order,$shipping_
                   );
 
 
-            $order->skip_update_after_individual_transaction=false;
+            $order->skip_update_after_individual_transaction=true;
          //   print_r($data);
             $transaction_data=$order->add_order_transaction($data);
             if($transaction_data['updated'])
@@ -310,7 +310,7 @@ global $customer_key,$filename,$store_code,$order_data_id,$date_order,$shipping_
                   );
 
 
-            $order->skip_update_after_individual_transaction=false;
+            $order->skip_update_after_individual_transaction=true;
             $transaction_data=$order->add_order_transaction($data);
                 
                 
@@ -319,6 +319,18 @@ global $customer_key,$filename,$store_code,$order_data_id,$date_order,$shipping_
 
 
         }
+        
+            $order->update_discounts();
+        $order->update_item_totals_from_order_transactions();
+        
+        $order->update_shipping();
+        $order->update_charges();
+        $order->update_item_totals_from_order_transactions();
+        
+        $order->update_no_normal_totals();
+        $order->update_totals_from_order_transactions();
+        
+        
 //print_r($discounts_map);
         foreach($discounts_map as $otf_key=>$discount) {
             $order->update_transaction_discount_amount($otf_key,$discount);

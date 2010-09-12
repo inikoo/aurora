@@ -3536,7 +3536,7 @@ $deal_info=percentage($amount,$row['Order Transaction Gross Amount']).' Off';
         }
 
 
-        function update_is_for_collection($value) {
+        function update_order_is_for_collection($value) {
 
             if ($value!='Yes')
                 $value='No';

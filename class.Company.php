@@ -632,7 +632,6 @@ class Company extends DB_Table {
 
 
             $address_data['editor']=$this->editor;
-            //print_r($address_data);print "====";
             $address=new Address("find in company ".$this->id." create",$address_data);
             $address->editor=$this->editor;
             $this->associate_address($address->id);
