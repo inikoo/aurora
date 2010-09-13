@@ -20,7 +20,12 @@
   </div>  
   <div  id="dn_table" class="data_table" style="clear:both;{if $view!='dn'}display:none{/if}">
     <span class="clean_table_title">{t}Delivery Notes Per Store{/t}</span>
-    <div style="clear:both;margin:0 0px;padding:0 20px ;border-bottom:1px solid #999;margin-bottom:10px"></div>
+    <div style="clear:both;margin:0 0px;padding:0 20px ;border-bottom:1px solid #999;margin-bottom:0px"></div>
+    <table style="float:left;margin:0 0 0 0px ;padding:0"  class="options" >
+	<tr><td  {if $dn_view=='state'}class="selected"{/if} id="dn_state" >{t}Dispatch State{/t}</td>
+    <td  {if $dn_view=='type'}class="selected"{/if} id="dn_type" >{t}Type of Order{/t}</td>
+    </tr>
+	</table>
     {include file='table_splinter.tpl' table_id=2 filter_name=$filter_name2 filter_value=$filter_value2  no_filter=1} 
     <div  id="table2"   class="data_table_container dtable btable with_total "> </div>
   </div>   

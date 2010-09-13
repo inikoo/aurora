@@ -8256,6 +8256,10 @@ function list_delivery_notes_per_store() {
     else
         $f_value=$conf['f_value'];
 
+    if (isset( $_REQUEST['view']))
+        $view=$_REQUEST['view'];
+    else
+        $view=$conf['view'];
 
     if (isset( $_REQUEST['tableid']))
         $tableid=$_REQUEST['tableid'];
@@ -8291,6 +8295,7 @@ function list_delivery_notes_per_store() {
                 'order_dir'=>$order_direction,
                 'nr'=>$number_results,
                 'sf'=>$start_from,
+                'view'=>$view,
                 'where'=>$where,
                 'f_field'=>$f_field,
                 'f_value'=>$f_value

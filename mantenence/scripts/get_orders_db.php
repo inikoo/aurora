@@ -136,7 +136,9 @@ $fam_promo_key=$fam_promo->id;
 $sql="select *,replace(   replace(replace(replace(replace(replace(replace(replace(replace(filename,'r/Orders/','r/Orders/00'),'s/Orders/','s/Orders/0'),'y/Orders/','y/Orders/0'),'z/Orders/9','z/Orders/09'),'x/Orders/','x/Orders/0'),'t/Orders/','t/Orders/0'),'u/Orders/','u/Orders/0'),'z/Orders/8','z/Orders/08')     ,directory,'') as name from  orders_data.orders  where   (last_transcribed is NULL  or last_read>last_transcribed) and deleted='No'   order by name ";
 
 //$sql="select * from  orders_data.orders  where    (last_transcribed is NULL  or last_read>last_transcribed) and deleted='No'  order by filename ";
-//$sql="select * from  orders_data.orders where filename like '%/28478%.xls'   order by filename";
+//$sql="select * from  orders_data.orders where filename like '%/28668.xls'   order by filename";
+//$sql="select * from  orders_data.orders where filename like '%/24854.xls'   order by filename";
+//$sql="select * from  orders_data.orders where filename like '%/28478.xls'   order by filename";
 
 //$sql="select * from  orders_data.orders where filename like '%/%ref%.xls'   order by filename";
 //$sql="select * from  orders_data.orders  where filename like '/mnt/%/Orders/93284.xls' order by filename";
@@ -175,8 +177,7 @@ if ($row_test=mysql_fetch_array($result_test, MYSQL_ASSOC)) {
                 $sql=sprintf("select count(*) as num  from `Delivery Note Dimension`  where `Delivery Note Metadata`=%s "
                              ,prepare_mysql($store_code.$order_data_id));
                 $result_test3=mysql_query($sql);
-                 if($contador>20)
-                exit;
+              
                 if ($row_test3=mysql_fetch_array($result_test3, MYSQL_ASSOC)) {
                
                     if ($row_test3['num']==0) {
@@ -1319,7 +1320,7 @@ $shipping_transactions[]=$transaction;
         //echo "Memory: ".memory_get_usage(true) . "\n";
 
 
-        // print_r($products_data);
+        // print_r($transactions);
         $data['Order For']='Customer';
 
 
@@ -1442,9 +1443,11 @@ get_data($header_data);
         $data['Customer Data']['Customer Tax Category Code']=$tax_category_object->data['Tax Category Code'];
         $data['Customer Data']['editor']=$data['editor'];
         $data['Customer Data']['editor']['Date']=date("Y-m-d H:i:s",strtotime($data['Customer Data']['editor']['Date']." -1 second"));
-        $customer = new Customer ( 'find create', $data['Customer Data'] );
+     
+     
+     $customer = new Customer ( 'find create', $data['Customer Data'] );
        
-        
+       
         $data['Order Customer Key']=$customer->id;
       $customer_key=$customer->id;
 
@@ -1491,7 +1494,7 @@ switch ($tipo_order) {
         create_refund($data,$header_data, $data_dn_transactions);
 
     default:
-      
+       print "Unknown Order $tipo_order\n";
         break;
 }
  print "\n";

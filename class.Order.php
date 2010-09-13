@@ -678,16 +678,17 @@ function create_order($data) {
         global $myconf;
         $this->editor=$data ['editor'];
         $this->data ['Order Type'] = $data ['Order Type'];
+         if(isset($data['Order Date']))
+        $this->data ['Order Date'] =$data['Order Date'];
+        else
+        $this->data ['Order Date'] = date('Y-m-d H:i:s');
         $this->set_data_from_customer($data['Customer Key']);
         $this->data ['Order Current Dispatch State'] = 'In Process';
         $this->data ['Order Current Payment State'] = 'Waiting Payment';
         $this->data ['Order Current XHTML State'] = 'In Process';
         $this->data ['Order Sale Reps IDs'] =array($this->editor['User Key']);
         $this->data ['Order For'] = 'Customer';
-        if(isset($data['Order Date']))
-        $this->data ['Order Date'] =$data['Order Date'];
-        else
-        $this->data ['Order Date'] = date('Y-m-d H:i:s');
+       
         $this->data ['Order Customer Message']='';
        
       
@@ -796,11 +797,17 @@ function send_to_warehouse($date=false) {
 
 $this->update_dispatch_state();
 
+if($this->data['Order For Collection']=='Yes')
+$dispatch_method='Collection';
+else
+$dispatch_method='Dispatch';
+
     $data_dn=array(
                  'Delivery Note Date Created'=>$date,
                  'Delivery Note ID'=>$this->data['Order Public ID'],
                  'Delivery Note File As'=>$this->data['Order File As'],
                  'Delivery Note Type'=>$this->data['Order Type'],
+                 'Delivery Note Dispatch Method'=>$dispatch_method,
                  'Delivery Note Title'=>_('Delivery Note for').' '.$this->data['Order Type'].' <a href="order.php?id='.$this->id.'">'.$this->data['Order Public ID'].'</a>'
              );
 
@@ -811,7 +818,7 @@ $this->update_dispatch_state();
     return $dn;
 }
 
-function send_post_action_to_warehouse($date=false,$type) {
+function send_post_action_to_warehouse($date=false,$type,$metadata='') {
 
     if (!$date)
         $date=date('Y-m-d H:i:s');
@@ -828,13 +835,20 @@ function send_post_action_to_warehouse($date=false,$type) {
 $type_formated=$type;
 $title="Delivery Note for $type of".$this->data['Order Type'].' <a href="order.php?id='.$this->id.'">'.$this->data['Order Public ID'].'</a>';
 
+if($this->data['Order For Collection']=='Yes')
+$dispatch_method='Collection';
+else
+$dispatch_method='Dispatch';
 
     $data_dn=array(
                  'Delivery Note Date Created'=>$date,
                  'Delivery Note ID'=>$this->data['Order Public ID']." ($type_formated)",
                  'Delivery Note File As'=>$this->data['Order File As']." ($type_formated)",
                  'Delivery Note Type'=>$type,
-                 'Delivery Note Title'=>$title
+                 'Delivery Note Title'=>$title,
+                 'Delivery Note Dispatch Method'=>$dispatch_method,
+                 'Delivery Note Metadata'=>$metadata
+
              );
 
     $dn=new DeliveryNote('create',$data_dn,$this);
@@ -939,6 +953,8 @@ function delete_transaction($otf_key){
 $sql=sprintf("delete from `Order Transaction Fact` where `Order Transaction Fact Key`=%d",$otf_key);
 mysql_query($sql);
 }
+
+
 
 function add_order_transaction($data) {
 
@@ -2057,7 +2073,7 @@ function update_xhtml_delivery_notes() {
 $prefix='';
     $this->data ['Order XHTML Delivery Notes'] ='';
     foreach($this->get_delivery_notes_objects() as $delivery_note) {
-        $this->data ['Order XHTML Delivery Notes'] .= sprintf ( '%s <a href="delivery_note.php?id=%d">%s</a>, ', $prefix, $delivery_note->data ['Delivery Note Key'], $delivery_note->data ['Delivery Note Public ID'] );
+        $this->data ['Order XHTML Delivery Notes'] .= sprintf ( '%s <a href="delivery_note.php?id=%d">%s</a>, ', $prefix, $delivery_note->data ['Delivery Note Key'], $delivery_note->data ['Delivery Note ID'] );
     }
     $this->data ['Order XHTML Delivery Notes'] =_trim(preg_replace('/\, $/','',$this->data ['Order XHTML Delivery Notes']));
    
@@ -2827,15 +2843,16 @@ $this->update_totals_from_order_transactions();
             } else
                 $store_key=$customer->data['Customer Store Key'];
 
-
             if ($customer->data['Customer Active Ship To Records']==0) {
                 $ship_to= $customer->set_current_ship_to('return object');
-        
-   
-    
-    // $this->data ['Order XHTML Ship Tos']=$ship_to->data['Ship To XHTML Address'];
-                //$this->data ['Order Ship To Keys']=$ship_to->id;
-                $customer->add_ship_to($ship_to->id,'Yes');
+
+                $data_ship_to=array(
+                'Ship To Key'=>$ship_to->id,
+                'Current Ship To Is Other Key'=>false,
+                'Date'=>$this->data['Order Date']
+                );
+               
+                $customer->update_ship_to($data_ship_to);
             }else{
 
             $ship_to= new Ship_To($customer->data['Customer Last Ship To Key']);
@@ -2844,8 +2861,8 @@ $this->update_totals_from_order_transactions();
 
 
 
-$this->data ['Order Ship To Key To Deliver']=$ship_to->id;
-$this->data ['Destination Country 2 Alpha Code']=$ship_to->data['Ship To Country 2 Alpha Code'];
+            $this->data ['Order Ship To Key To Deliver']=$ship_to->id;
+            $this->data ['Destination Country 2 Alpha Code']=$ship_to->data['Ship To Country 2 Alpha Code'];
             $this->data ['Order XHTML Ship Tos']=$ship_to->data['Ship To XHTML Address'];
             $this->data ['Order Ship To Keys']=$ship_to->id;
             $this->data ['Order Ship To Country Code']=$ship_to->data['Ship To Country Code'];

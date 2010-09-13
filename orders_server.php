@@ -90,6 +90,7 @@ $_SESSION['state']['stores']['orders_view']=$_REQUEST['view'];
 }
 
 $smarty->assign('view',$_SESSION['state']['stores']['orders_view']);
+$smarty->assign('dn_view',$_SESSION['state']['stores']['delivery_notes']['view']);
 
 
 
@@ -99,15 +100,12 @@ $smarty->assign('title', _('Orders'));
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
 
-$tipo_filter0=($q==''?$_SESSION['state']['orders']['table']['f_field']:'public_id');
+$tipo_filter0=($q==''?$_SESSION['state']['stores']['orders']['f_field']:'public_id');
 $smarty->assign('filter0',$tipo_filter0);
-$smarty->assign('filter_value0',($q==''?$_SESSION['state']['orders']['table']['f_value']:addslashes($q)));
+$smarty->assign('filter_value0',($q==''?$_SESSION['state']['stores']['orders']['f_value']:addslashes($q)));
 $filter_menu0=array(
-		   'public_id'=>array('db_key'=>'public_id','menu_label'=>'Order Number starting with  <i>x</i>','label'=>'Order Number'),
-		   'customer_name'=>array('db_key'=>'customer_name','menu_label'=>'Customer Name starting with <i>x</i>','label'=>'Customer'),
-		   'minvalue'=>array('db_key'=>'minvalue','menu_label'=>'Orders with a minimum value of <i>'.$myconf['currency_symbol'].'n</i>','label'=>'Min Value ('.$myconf['currency_symbol'].')'),
-		   'maxvalue'=>array('db_key'=>'maxvalue','menu_label'=>'Orders with a maximum value of <i>'.$myconf['currency_symbol'].'n</i>','label'=>'Max Value ('.$myconf['currency_symbol'].')'),
-		   'max'=>array('db_key'=>'max','menu_label'=>'Orders from the last <i>n</i> days','label'=>'Last (days)')
+		   'code'=>array('db_key'=>'code','menu_label'=>'Store Code starting with  <i>x</i>','label'=>'Code'),
+		   
 		   );
 $smarty->assign('filter_menu0',$filter_menu0);
 $smarty->assign('filter_name0',$filter_menu0[$tipo_filter0]['label']);

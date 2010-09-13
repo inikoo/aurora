@@ -2721,8 +2721,12 @@ function new_delivery_address() {
     }
 
     $ship_to= new Ship_To('find create',$data);
-
-    $customer->add_ship_to($ship_to->id,'No');
+$data_ship_to=array(
+                'Ship To Key'=>$ship_to->id,
+                'Current Ship To Is Other Key'=>$customer->data['Customer Last Ship To Key'],
+                'Date'=>$editor['Date']
+                );
+    $customer->update_ship_to($data_ship_to);
 
     if ($ship_to->new ) {
 
