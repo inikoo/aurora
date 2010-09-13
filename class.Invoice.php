@@ -1573,7 +1573,6 @@ $this->data['Invoice XHTML Store']=sprintf("<a href='store.php?id=%d'>%s</a>",$s
  $store=new Store($this->data ['Invoice Store Key']);
 
     $this->data ['Invoice Store Code'] = $store->data ['Store Code'];
-    // print_r($invoice_data);
     if (isset($invoice_data['Invoice Currency'])) {
         $this->data['Invoice Currency']=$invoice_data['Invoice Currency'];
     } else {

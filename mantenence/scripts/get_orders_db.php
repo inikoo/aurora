@@ -1494,6 +1494,11 @@ switch ($tipo_order) {
        print "Unknown Order $tipo_order\n";
         break;
 }
+$store=new Store($store_key);
+$store->update_orders();
+$store->update_customers_data();
+
+
  print "\n";
   $sql="update orders_data.orders set last_transcribed=NOW() where id=".$order_data_id;
             mysql_query($sql);

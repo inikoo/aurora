@@ -7,6 +7,45 @@ if(!$user->can_view('orders'))
 ?>
 var view='<?php echo$_SESSION['state']['stores']['orders_view']?>'
 
+var change_dn_view=function(e){
+    
+    var table=tables['table2'];
+    var tipo=this.id;
+  	table.hideColumn('dn_ready_to_pick');
+	table.hideColumn('dn_picking');
+	table.hideColumn('dn_packing');
+		table.hideColumn('dn_ready');
+	table.hideColumn('dn_send');
+	table.hideColumn('dn_returned');
+	table.hideColumn('dn_orders');
+	table.hideColumn('dn_samples');
+	table.hideColumn('dn_donations');
+	table.hideColumn('dn_replacements');
+	table.hideColumn('dn_shortages');
+	
+	if(tipo=='dn_state'){
+	    table.showColumn('dn_ready_to_pick');
+	    table.showColumn('dn_picking');	   
+	    table.showColumn('dn_packing');
+	    table.showColumn('dn_ready');
+	    table.showColumn('dn_send');
+	    table.showColumn('dn_returned');
+	}
+	if(tipo=='dn_type'){
+	    table.showColumn('dn_orders');
+	    table.showColumn('dn_samples');
+	    table.showColumn('dn_donations');
+	    table.showColumn('dn_replacements');	 
+	    table.showColumn('dn_shortages');
+	}
+
+Dom.removeClass(['dn_state','dn_type'],'selected');
+	Dom.get(tipo).className="selected";
+	table.view=tipo;
+	YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=stores-delivery_notes-view&value=' + escape(tipo) ,{success:function(o) {}});
+    
+}
+
 
 YAHOO.util.Event.addListener(window, "load", function() {
     tables = new function() {
@@ -146,17 +185,17 @@ YAHOO.util.Event.addListener(window, "load", function() {
 				       {key:"code", label:"<?php echo _('Code')?>", width:60,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}},
 				       {key:"name", label:"<?php echo _('Store Name')?>", width:110,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}},
 				       {key:"dn",label:"<?php echo _('Total')?>", width:80,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}},
-				       	{key:"dn_ready_to_pick",label:"<?php echo _('To Pick')?>", width:80,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}},
-				       {key:"dn_picking",label:"<?php echo _('Picking')?>", width:80,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}},
-				       {key:"dn_packing",label:"<?php echo _('Packing')?>", width:80,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}},
-				       {key:"dn_ready",label:"<?php echo _('Ready')?>", width:80,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}},
-				       {key:"dn_send",label:"<?php echo _('Send')?>", width:80,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}},
-				       {key:"dn_returned",label:"<?php echo _('Return')?>", width:80,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}},
-				       {key:"dn_order",label:"<?php echo _('Orders')?>", width:80,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}},
-				       {key:"dn_samples",label:"<?php echo _('Samples')?>", width:80,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}},
-				       {key:"dn_donations",label:"<?php echo _('Donations')?>", width:80,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}},
-				       {key:"dn_replacements",label:"<?php echo _('Replacements')?>", width:80,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}},
-				       {key:"dn_shortages",label:"<?php echo _('Shortages')?>", width:80,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				       	{key:"dn_ready_to_pick",label:"<?php echo _('To Pick')?>",<?php echo($_SESSION['state']['stores']['delivery_notes']['view']!='dn_state'?'hidden:true,':'')?> width:80,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}},
+				       {key:"dn_picking",label:"<?php echo _('Picking')?>", <?php echo($_SESSION['state']['stores']['delivery_notes']['view']!='dn_state'?'hidden:true,':'')?>width:80,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}},
+				       {key:"dn_packing",label:"<?php echo _('Packing')?>",<?php echo($_SESSION['state']['stores']['delivery_notes']['view']!='dn_state'?'hidden:true,':'')?> width:80,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}},
+				       {key:"dn_ready",label:"<?php echo _('Ready')?>",<?php echo($_SESSION['state']['stores']['delivery_notes']['view']!='dn_state'?'hidden:true,':'')?> width:80,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}},
+				       {key:"dn_send",label:"<?php echo _('Send')?>",<?php echo($_SESSION['state']['stores']['delivery_notes']['view']!='dn_state'?'hidden:true,':'')?> width:80,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}},
+				       {key:"dn_returned",label:"<?php echo _('Returned')?>",<?php echo($_SESSION['state']['stores']['delivery_notes']['view']!='dn_state'?'hidden:true,':'')?> width:80,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}},
+				       {key:"dn_orders",label:"<?php echo _('Orders')?>",<?php echo($_SESSION['state']['stores']['delivery_notes']['view']!='dn_type'?'hidden:true,':'')?> width:80,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}},
+				       {key:"dn_samples",label:"<?php echo _('Samples')?>",<?php echo($_SESSION['state']['stores']['delivery_notes']['view']!='dn_type'?'hidden:true,':'')?> width:80,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}},
+				       {key:"dn_donations",label:"<?php echo _('Donations')?>",<?php echo($_SESSION['state']['stores']['delivery_notes']['view']!='dn_type'?'hidden:true,':'')?> width:80,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}},
+				       {key:"dn_replacements",label:"<?php echo _('Replacements')?>",<?php echo($_SESSION['state']['stores']['delivery_notes']['view']!='dn_type'?'hidden:true,':'')?> width:80,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}},
+				       {key:"dn_shortages",label:"<?php echo _('Shortages')?>",<?php echo($_SESSION['state']['stores']['delivery_notes']['view']!='dn_type'?'hidden:true,':'')?> width:80,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 
 					 ];
 
@@ -179,7 +218,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 		
 		fields: [
 			 "code",
-			 "name",
+			 "name","dn_orders","dn_samples","dn_donations","dn_replacements","dn_shortages",
 			 "dn","dn_ready_to_pick","dn_picking","dn_packing","dn_ready","dn_send","dn_returned"
 			 ]};
 
@@ -234,7 +273,8 @@ function init(){
 
 var ids=['orders','invoices','dn'];
 	YAHOO.util.Event.addListener(ids, "click", change_view);
-	
+	var ids=['dn_state','dn_type'];
+	YAHOO.util.Event.addListener(ids, "click", change_dn_view);
     var oACDS = new YAHOO.util.FunctionDataSource(mygetTerms);
     oACDS.queryMatchContains = true;
     var oAutoComp = new YAHOO.widget.AutoComplete("f_input1","f_container1", oACDS);
