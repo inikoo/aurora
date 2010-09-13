@@ -31,6 +31,8 @@ round($header_data['tax2'],2);
 
 function delete_old_data() {
     global $store_code,$order_data_id;
+    
+    
     $sql=sprintf("select `Order Key`  from `Order Dimension`  where `Order Original Metadata`=%s  ",prepare_mysql($store_code.$order_data_id));
     $result_test=mysql_query($sql);
     while ($row_test=mysql_fetch_array($result_test, MYSQL_ASSOC)) {
@@ -68,6 +70,10 @@ mysql_query($sql);
 
         $sql=sprintf("delete from `Invoice Delivery Note Bridge` where `Delivery Note Key`=%d   ",$row_test['Delivery Note Key']);
         mysql_query($sql)  ;
+
+
+        $sql=sprintf("delete from `History Dimension` where `Direct Object Key`=%d and `Direct Object`='Delivery Note'   ",$row_test['Delivery Note Key']);
+       mysql_query($sql);
 
     };
 
@@ -133,7 +139,8 @@ mysql_query($sql);
     mysql_query($sql);
 
     $sql=sprintf("delete from `Inventory Transaction Fact` where `Metadata`=%s   ",prepare_mysql($store_code.$order_data_id));
-    if (!mysql_query($sql))
+  // print "$sql\n";
+   if (!mysql_query($sql))
         print "$sql Warning can no delete old inv";
     $sql=sprintf("delete from `Order No Product Transaction Fact` where `Metadata`=%s ",prepare_mysql($store_code.$order_data_id));
     if (!mysql_query($sql))
@@ -348,8 +355,9 @@ global $customer_key,$filename,$store_code,$order_data_id,$date_order,$shipping_
             'Charge Key'=>0,
             'Charge Description'=>'Charge'
             ));
-        
+        //print_r($header_data);
         $order->update_charges_amount($charges_data);
+       // print_r($order->data);
         $dn=$order->send_to_warehouse($date_order);
  
  
@@ -449,98 +457,120 @@ function send_order($data,$data_dn_transactions) {
     $dn->approved_for_shipping($date_inv);
     // print $dn->id."\n";
 
+if($dn->data['Delivery Note Dispatch Method']=='Dispatch')
     $dn->dispatch(array('Delivery Note Date'=>$date_inv));
 
 
 
 }
-function create_post_order($data,$data_dn_transactions){
-global $customer_key,$filename,$store_code,$order_data_id,$date_order,$shipping_net,$charges_net,$order,$dn,$invoice,$shipping_net;
- global $charges_net,$order,$dn,$payment_method,$date_inv,$extra_shipping,$parcel_type;
- global $packer_data,$picker_data,$parcels,$tipo_order,$parent_order_id,$customer;
- 
- 
- if($tipo_order==6)
-         $data['Order Type']='Replacement';
-         else
-          $data['Order Type']='Missing';
-          
-          
-          
-        if($parent_order_id){
-            $parent_order=new Order('public_id',$parent_order_id);
-        }else{
-         $order_id=$customer->get_last_order();
-                if ($order_id) {
-                    $parent_order=new Order('id',$order_id);
-                    $parent_order->update_customer=false;
-                    print "Parent Order not given, using customer last order\n";
-                } else {
-                    print "Parent order can not be found skipping (Rpl/Sht)\n";
-                    return;
-                }
+function create_post_order($data,$data_dn_transactions) {
+    global $customer_key,$filename,$store_code,$order_data_id,$date_order,$shipping_net,$charges_net,$order,$dn,$invoice,$shipping_net;
+    global $charges_net,$order,$dn,$payment_method,$date_inv,$extra_shipping,$parcel_type;
+    global $packer_data,$picker_data,$parcels,$tipo_order,$parent_order_id,$customer,$tax_category_object;
+
+
+    if ($tipo_order==6)
+        $data['Order Type']='Replacement';
+    else
+        $data['Order Type']='Missing';
+
+
+
+    if ($parent_order_id) {
+        $parent_order=new Order('public_id',$parent_order_id);
+    } else {
+        $order_id=$customer->get_last_order();
+        if ($order_id) {
+            $parent_order=new Order('id',$order_id);
+            $parent_order->update_customer=false;
+            print "Parent Order not given, using customer last order\n";
+        } else {
+            print "Parent order can not be found skipping (Rpl/Sht)\n";
+            return;
         }
-         
-       if($parent_order->id){
-       $discounts_map=array();
-       $transaction_not_found=0;
-       $post_data=array();
-       foreach($data['products'] as $transaction) {
+    }
+
+
+
+
+    if ($parent_order->id) {
+    
+            $customer=new Customer($parent_order->data['Order Customer Key']);
+            $ship_to= new Ship_To($customer->data['Customer Last Ship To Key']);
+           if(!$ship_to->id){
+           exit("terrible error customer dont have last ship to when processing a replacement\n");
+           
+           }
+    
+        $discounts_map=array();
+        $transaction_not_found=0;
+        $post_data=array();
+       // print_r($data);
+        foreach($data['products'] as $transaction) {
             $product=new Product('id',$transaction['Product Key']);
             $quantity=$transaction['qty'];
             $data_transaction=array(
-                      'Product Key'=>$product->data['Product Current Key'],
-                      'qty'=>$quantity,
-                  );
-            if($data['Order Type']=='Replacement')
-               $result=$parent_order->set_transaction_as_shipped_damaged($data_transaction);
-                else
-             $result=$parent_order->set_transaction_as_not_received($data_transaction);
-             
-             if($result['error'])
-                $transaction_not_found++;
-              if($result['updated']){
-               
-              
-                
-                $quantity=$result['quantity'];
-                 $gross=$quantity*$product->data['Product History Price'];
-              $estimated_weight=$quantity*$product->data['Product Gross Weight'];
-                
-               $post_data[]=array(
-                      'Estimated Weight'=>$estimated_weight,
-                      'date'=>$date_order,
-                      'Product Key'=>$product->data['Product Current Key'],
-                       'Order Type'=> $data['Order Type'],
-                      'gross_amount'=>$gross,
-                      'discount_amount'=>0,
+                                  'Product Key'=>$product->data['Product Current Key'],
+                                  'qty'=>$quantity,
+                              );
+            if ($data['Order Type']=='Replacement')
+                $result=$parent_order->set_transaction_as_shipped_damaged($data_transaction);
+            else
+                $result=$parent_order->set_transaction_as_not_received($data_transaction);
 
-                      'qty'=>$quantity,
-                      'units_per_case'=>$product->data['Product Units Per Case'],
-                      'Current Dispatching State'=>'In Process',
-                      'Current Payment State'=>'Waiting Payment',
-                      'Metadata'=>$store_code.$order_data_id,
-                  );
-               
-               
-}
+            if ($result['error'])
+                $transaction_not_found++;
+            if (!$result['updated']) {
+
+
+
+                $quantity=$quantity;
+                $gross=$quantity*$product->data['Product History Price'];
+                $estimated_weight=$quantity*$product->data['Product Gross Weight'];
+
+  
+print_r($tax_category_object);
+
+                $post_data[]=array(
+                                  'Order Type'=> $data['Order Type'],
+                                 'Order Tax Rate'=>$tax_category_object->data['Tax Category Rate'],
+                                 'Order Tax Code'=>$tax_category_object->data['Tax Category Code'],
+                                 'Order Currency'=>$parent_order->data['Order Currency'],
+                                 'Estimated Weight'=>$estimated_weight,
+                                 'Date'=>$date_order,
+                                 'Product Key'=>$product->data['Product Current Key'],
+                                 'Gross'=>$gross,
+                                  'Ship To Key'=>$ship_to->id,
+                                 'Quantity'=>$quantity,
+                                 'Order Store Key'=>$parent_order->data['Order Store Key'],
+                                 'Order Customer Key'=>$parent_order->data['Order Customer Key'],
+
+                                 'units_per_case'=>$product->data['Product Units Per Case'],
+                                 'Current Dispatching State'=>'In Process',
+                                 'Current Payment State'=>'Waiting Payment',
+                                 'Metadata'=>$store_code.$order_data_id,
+                             );
+
+
+            }
 
         }
 
-     foreach($post_data as $post_transaction){
-     $parent_order->add_order_transaction($post_transaction);
-     }
-     
-       $dn=$parent_order->send_post_action_to_warehouse($date_order,$data['Order Type']);
+
+        $dn=$parent_order->send_post_action_to_warehouse($date_order,$data['Order Type'],$store_code.$order_data_id);
+        foreach($post_data as $post_transaction) {
+        $dn->add_orphan_transactions($post_transaction);
+        }
+        $dn->create_orphan_inventory_transaction_fact();
         $dn->approved_for_shipping($date_inv);
         $dn->dispatch(array('Delivery Note Date'=>$date_inv));
-         }else{
-          print "Parent order can not be found skipping (Rpl/Sht)\n";
-                    return;
-         
-         }
-         
-         
+    } else {
+        print "Parent order can not be found skipping (Rpl/Sht)\n";
+        return;
+
+    }
+
+
 }
 
 function create_refund($data,$header_data,$data_dn_transactions) {

@@ -49,7 +49,6 @@ class Customer extends DB_Table {
                                  ,'Customer Profits Top Percentage'
                                  ,'Customer First Order Date'
                                  ,'Customer Last Order Date'
-                                 ,'Customer Last Ship To Key'
                              );
 
 
@@ -908,60 +907,91 @@ $this->update_full_search();
 
 
 
-    function add_ship_to($ship_to_key,$is_principal='Yes') {
-
-        $is_active='Yes';
+    function update_ship_to($data) {
 
 
+$ship_to_key=$data['Ship To Key'];
+$current_ship_to=$data['Current Ship To Is Other Key'];
+    
+    if($current_ship_to){
+        $principal='No';
+       
+    }else{
+       $principal='Yes';
+        $current_ship_to=$ship_to_key;
+    }
+    $sql=sprintf('select * from `Customer Ship To Bridge` where `Customer Key`=%d and `Ship To Key`=%d',$this->id,$ship_to_key);
+    $res=mysql_query($sql);
+    if($row=mysql_fetch_assoc($res)){
+   
+    $from_date=$row['Ship To From Date'];
+    $to_date=$row['Ship To Last Used'];
+    
+    
+    if(strtotime($data['Date'])< strtotime($from_date))
+        $from_date=$data['Date'];
+    if(strtotime($data['Date'])> strtotime($to_date))
+        $to_date=$data['Date'];
+    
+    $sql=sprintf('update `Customer Ship To Bridge` set `Ship To From Date`=%s,`Ship To Last Used`=%s,`Is Principal`=%s,`Ship To Current Key`=%d where `Customer Key`=%d and `Ship To Key`=%d',
+   
+    prepare_mysql($from_date),
+    prepare_mysql($to_date),
+    prepare_mysql($principal),
+    $current_ship_to,
+    $this->id,
+    $ship_to_key
+    );
+     mysql_query($sql);
+    
+    }else{
+    $sql=sprintf("insert into `Customer Ship To Bridge` (`Customer Key`,`Ship To Key`,`Is Principal`,`Times Used`,`Ship To From Date`,`Ship To Last Used`,`Ship To Current Key`) values (%d,%d,%s,0,%s,%s,%d)",
+    $this->id,
+    $ship_to_key,
+    prepare_mysql($principal),
+    prepare_mysql($data['Date']),
+    prepare_mysql($data['Date']),
+    $current_ship_to
+    );
+    mysql_query($sql);
+    }
 
 
-        if ($is_principal!='Yes')
-            $is_principal='No';
-
-
-        $sql=sprintf("insert into `Customer Ship To Bridge` values (%d,%d,'%s','Normal',0,NOW(),NULL,NULL) on duplicate key update `Is Principal`='%s' ,`Is Active`='Yes'  "
-                     ,$this->id
-                     ,$ship_to_key
-                     ,$is_principal
-                     ,$is_principal);
-
+$sql=sprintf("update `Customer Dimension` set `Customer Last Ship To Key`=%d where `Customer Key`=%d",
+        $current_ship_to,
+                     $this->id
+                    );
         mysql_query($sql);
 
 
-        if ($is_principal='Yes') {
-            $this->update_main_ship_to($ship_to_key);
-
-        }
+      
 
         $this->update_ship_to_stats();
     }
 
 
 
-    function update_ship_to_stats() {
-    return;
-        $sql=sprintf("select count(*) as total,sum(if(`Is Active`='Yes',1,0)) as active from `Customer Ship To Bridge` where `Customer Key`=%d ",$this->id);
-        // print $sql;
-        $result=mysql_query($sql);
-        if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-            $active=$row['active'];
-            $total=$row['total'];
-        }
+function update_ship_to_stats() {
 
-
-        $sql=sprintf("update `Customer Dimension` set `Customer Active Ship To Records`=%d,`Customer Total Ship To Records`=%d where `Customer Key`=%d"
-
-                     ,$active
-                     ,$total
-                     ,$this->id
-                    );
-        mysql_query($sql);
-
-
+    $total_active_ship_to=0;
+    $total_ship_to=0;
+    $sql=sprintf('select sum(if(`Ship To Status`="Normal",1,0)) as active  ,count(*) as total  from  `Customer Ship To Bridge` where `Customer Key`=%d ',$this->id);
+    $res2=mysql_query($sql);
+    if ($row2=mysql_fetch_assoc($res2)) {
+        $total_active_ship_to=$row2['active'];
+        $total_ship_to=$row2['total'];
     }
+    $sql=sprintf("update `Customer Dimension` set `Customer Active Ship To Records`=%d,`Customer Total Ship To Records`=%d where `Customer Key`=%d"
+
+                 ,$total_active_ship_to
+                 ,$total_ship_to
+                 ,$this->id
+                );
+    mysql_query($sql);
+}
 
 
-    function update_main_ship_to($ship_to_key=false) {
+    function update_main_ship_to_old($ship_to_key=false) {
 
         if ($ship_to_key)
             $ship_to=new Ship_To($ship_to_key);
@@ -1071,7 +1101,9 @@ $this->update_full_search();
             break;
         default:
             $base_data=$this->base_data();
+            //print_r($base_data);
             if (array_key_exists($field,$base_data)) {
+            //print "*** $field\n";
                 $this->update_field($field,$value,$options);
             }
         }
@@ -3567,6 +3599,54 @@ $lang=$_SESSION ['lang'];
 
 }
 
+
+function add_history_order_post_order($dn) {
+
+
+date_default_timezone_set(TIMEZONE) ;
+$tz_date=strftime ( "%e %b %Y %H:%M %Z", strtotime ( $dn->data ['Delivery Note Date Created']." +00:00" ) );
+$tz_date_created=strftime ( "%e %b %Y %H:%M %Z", strtotime ( $dn->data ['Delivery Note Date Created']." +00:00" ) );
+
+date_default_timezone_set('GMT') ;
+
+if(!isset($_SESSION ['lang']))
+$lang=0;
+else
+$lang=$_SESSION ['lang'];
+
+    switch ($lang) {
+    default :
+        $note = sprintf ( '%s <a href="dn.php?id=%d">%s</a>',$dn->data['Delivery Note Type'],$dn->data ['Delivery Note Key'], $dn->data ['Delivery Note ID'] );
+        if ($this->editor['Author Alias']!='' and $this->editor['Author Key'] ) {
+                $details = '';
+            } else {
+                $details = '';
+
+            }
+       
+       
+
+    }
+    $history_data=array(
+                      'Date'=>$dn->data ['Delivery Note Date'],
+                      'Subject'=>'Customer',
+                      'Subject Key'=>$this->id,
+                      'Direct Object'=>'Delivery Note',
+                      'Direct Object Key'=>$dn->data ['Delivery Note Key'],
+                      'History Details'=>$details,
+                      'History Abstract'=>$note,
+                      'Metadata'=>'Post Order'
+
+                  );
+                  
+                 
+    $dn->add_history($history_data);
+    
+    
+    
+   
+
+}
 
 function update_history_order_in_warehouse($order) {
 

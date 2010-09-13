@@ -102,6 +102,12 @@ class DeliveryNote extends DB_Table {
             $this->data ['Delivery Note Date'] = $dn_data ['Delivery Note Date'];
         else
             $this->data ['Delivery Note Date'] ='';
+            
+            
+        if (isset($dn_data ['Delivery Note Dispatch Method']))
+            $this->data ['Delivery Note Dispatch Method'] = $dn_data ['Delivery Note Dispatch Method'];
+        else
+            $this->data ['Delivery Note Dispatch Method'] ='Unknown';    
 
         if (isset($dn_data ['Delivery Note Weight']))
             $this->data ['Delivery Note Weight'] = $dn_data ['Delivery Note Weight'];
@@ -144,11 +150,14 @@ class DeliveryNote extends DB_Table {
         $this->data ['Delivery Note Customer Name'] = $order->data ['Order Customer Name'];
 
         $this->data ['Delivery Note Store Key'] = $order->data ['Order Store Key'];
+        if (isset($dn_data ['Delivery Note Metadata']))
+        $this->data ['Delivery Note Metadata'] = $dn_data ['Delivery Note Metadata'];
 
+else
         $this->data ['Delivery Note Metadata'] = $order->data ['Order Original Metadata'];
 
 
-
+//print_r($this->data);
         if (isset($dn_data ['Delivery Note Date Created'])) {
             $this->data ['Delivery Note Date Created'] = $dn_data ['Delivery Note Date Created'];
         } else
@@ -191,8 +200,17 @@ class DeliveryNote extends DB_Table {
 
         } else {
             $this->data ['Delivery Note XHTML Ship To'] = _('Collected');
-            $store=new Store($this->data['Delivery Note Store Key']);
-            $this->data ['Delivery Note Country 2 Alpha Code'] = $store->data['Store Home Country Code 2 Alpha'];
+              $store=new Store($this->data['Delivery Note Store Key']);
+              $collection_address=new Address($store->data['Store Collection Address Key']);
+                    if($collection_address->id){
+                    $store_country_code=$collection_address->data['Address Country 2 Alpha Code'];
+                    }else{
+                    $store_country_code='XX';
+                    }
+            
+            
+            
+            $this->data ['Delivery Note Country 2 Alpha Code'] = $store_country_code;
             $this->data ['Delivery Note Ship To Key'] =0;
         }
 
@@ -298,9 +316,8 @@ class DeliveryNote extends DB_Table {
                          , prepare_mysql ($this->data ['Delivery Note Country 2 Alpha Code'])
                          , prepare_mysql ($this->data ['Delivery Note Shipper Code'])
 
-                       )
+                       );
 
-               ;
 
         if (mysql_query ( $sql )) {
 
@@ -457,59 +474,138 @@ class DeliveryNote extends DB_Table {
         mysql_query($sql);
     }
   
-    function create_inventory_transaction_fact($order_key) {
-        $date=$this->data['Delivery Note Date Created'];
-        $skus_data=array();
-        $sql=sprintf('select OTF.`Product Key`,`Product Gross Weight`,`Order Quantity`,`Order Bonus Quantity`,`Order Transaction Fact Key`,`Current Autorized to Sell Quantity` from `Order Transaction Fact` OTF left join `Product History Dimension` PH  on (OTF.`Product Key`=PH.`Product Key`)  left join `Product Dimension` P  on (PH.`Product ID`=P.`Product ID`)     where `Order Key`=%d '
-                     ,$order_key);
-        $res=mysql_query($sql);
+ 
+  function create_orphan_inventory_transaction_fact() {
+    $date=$this->data['Delivery Note Date Created'];
+    $skus_data=array();
+    $sql=sprintf('select OTF.`Product Key`,`Product Gross Weight`,`Delivery Note Quantity`,`Order Transaction Fact Key` from `Order Transaction Fact` OTF left join `Product History Dimension` PH  on (OTF.`Product Key`=PH.`Product Key`)  left join `Product Dimension` P  on (PH.`Product ID`=P.`Product ID`)     where `Order Key` IS NULL and `Delivery Note Key`=%d '
+                 ,$this->id);
+    $res=mysql_query($sql);
 
-        while ($row=mysql_fetch_assoc($res)) {
-            $product=new Product('id',$row['Product Key']);
-            $part_list=$product->get_part_list($date);
+    while ($row=mysql_fetch_assoc($res)) {
+        $product=new Product('id',$row['Product Key']);
+        $part_list=$product->get_part_list($date);
 
-            $map_to_otf=$row['Order Transaction Fact Key'];
+        $map_to_otf=$row['Order Transaction Fact Key'];
 
         $state='Ready to Pick';
         $sql = sprintf ( "update `Order Transaction Fact` set `Current Dispatching State`=%s where `Order Transaction Fact Key`=%d  ",
                          prepare_mysql($state),
-                         
+
                          $row['Order Transaction Fact Key']
                        );
         mysql_query ( $sql );
 
 
-            foreach($part_list as $part_data) {
-                if ($part_data['Parts Per Product']!=1)
-                    $map_to_otf.=':'.$part_data['Parts Per Product'];
-                $part = new Part ( 'sku', $part_data['Part SKU'] );
-                $location_key = $part->get ( 'Picking Location Key' );
-                $location_key=$part->get_picking_location_key($date);
-                $supplier_products=$part->get_supplier_products($date);
+        foreach($part_list as $part_data) {
+            if ($part_data['Parts Per Product']!=1)
+                $map_to_otf.=':'.$part_data['Parts Per Product'];
+            $part = new Part ( 'sku', $part_data['Part SKU'] );
+            $location_key = $part->get ( 'Picking Location Key' );
+            $location_key=$part->get_picking_location_key($date);
+            $supplier_products=$part->get_supplier_products($date);
 
-                $supplier_product_key=0;
-                if (count($supplier_products)>0) {
+            $supplier_product_key=0;
+            if (count($supplier_products)>0) {
 
-                    $supplier_products_rnd_key=array_rand($supplier_products,1);
-                    $supplier_products_keys=preg_split('/,/',$supplier_products[$supplier_products_rnd_key]['Supplier Product Keys']);
-                    // print_r($supplier_products_keys);
-                    $supplier_product_key=$supplier_products_keys[array_rand($supplier_products_keys)];
+                $supplier_products_rnd_key=array_rand($supplier_products,1);
+                $supplier_products_keys=preg_split('/,/',$supplier_products[$supplier_products_rnd_key]['Supplier Product Keys']);
+                // print_r($supplier_products_keys);
+                $supplier_product_key=$supplier_products_keys[array_rand($supplier_products_keys)];
 
-                }
+            }
 
-                $product = new product ($row ['Product Key'] );
-                $a = sprintf ( '<a href="product.php?id=%d">%s</a> <a href="deliverynote.php?id=%d">%s</a>'
-                               , $product->id
-                               , $product->code
-                               , $this->id
-                               , $this->data['Delivery Note ID']
-                             );
-                unset ( $product );
-                //$note = $a . ', ' . $order->data ['Order Current XHTML State'];
-                $note = $a;
+            $product = new product ($row ['Product Key'] );
+            $a = sprintf ( '<a href="product.php?id=%d">%s</a> <a href="dn.php?id=%d">%s</a>'
+                           , $product->id
+                           , $product->code
+                           , $this->id
+                           , $this->data['Delivery Note ID']
+                         );
+            unset ( $product );
+            //$note = $a . ', ' . $order->data ['Order Current XHTML State'];
+            $note = $a;
 
 
-                $weight=
+            $weight=
+                $sql = sprintf ( "insert into `Inventory Transaction Fact`  (`Inventory Transaction Weight`,`Date Created`,`Date`,`Delivery Note Key`,`Part SKU`,`Location Key`,`Inventory Transaction Quantity`,`Inventory Transaction Type`,`Inventory Transaction Amount`,`Required`,`Given`,`Amount In`,`Metadata`,`Note`,`Supplier Product Key`,`Map To Order Transaction Fact`) values (%f,%s,%s,%d,%s,%d,%s,%s,%.2f,%f,%f,%f,%s,%s,%s,%s) ",
+                                 0,
+                                 prepare_mysql ($date),
+                                 prepare_mysql ($date),
+                                 $this->id,
+                                 prepare_mysql ( $part_data['Part SKU'] ),
+                                 $location_key,
+                                 0,
+                                 "'Order In Process'",
+                                 0,
+                                 $part_data['Parts Per Product'] * $row ['Delivery Note Quantity'],
+                                 0,
+                                 0,
+                                 prepare_mysql ( $this->data ['Delivery Note Metadata'] ),
+                                 prepare_mysql ( $note ),
+                                 $supplier_product_key,
+                                 $map_to_otf
+                               );
+            mysql_query($sql);
+
+
+        }
+    }
+}
+  
+function create_inventory_transaction_fact($order_key) {
+    $date=$this->data['Delivery Note Date Created'];
+    $skus_data=array();
+    $sql=sprintf('select OTF.`Product Key`,`Product Gross Weight`,`Order Quantity`,`Order Bonus Quantity`,`Order Transaction Fact Key`,`Current Autorized to Sell Quantity` from `Order Transaction Fact` OTF left join `Product History Dimension` PH  on (OTF.`Product Key`=PH.`Product Key`)  left join `Product Dimension` P  on (PH.`Product ID`=P.`Product ID`)     where `Order Key`=%d '
+                 ,$order_key);
+    $res=mysql_query($sql);
+
+    while ($row=mysql_fetch_assoc($res)) {
+        $product=new Product('id',$row['Product Key']);
+        $part_list=$product->get_part_list($date);
+
+        $map_to_otf=$row['Order Transaction Fact Key'];
+
+        $state='Ready to Pick';
+        $sql = sprintf ( "update `Order Transaction Fact` set `Current Dispatching State`=%s where `Order Transaction Fact Key`=%d  ",
+                         prepare_mysql($state),
+
+                         $row['Order Transaction Fact Key']
+                       );
+        mysql_query ( $sql );
+
+
+        foreach($part_list as $part_data) {
+            if ($part_data['Parts Per Product']!=1)
+                $map_to_otf.=':'.$part_data['Parts Per Product'];
+            $part = new Part ( 'sku', $part_data['Part SKU'] );
+            $location_key = $part->get ( 'Picking Location Key' );
+            $location_key=$part->get_picking_location_key($date);
+            $supplier_products=$part->get_supplier_products($date);
+
+            $supplier_product_key=0;
+            if (count($supplier_products)>0) {
+
+                $supplier_products_rnd_key=array_rand($supplier_products,1);
+                $supplier_products_keys=preg_split('/,/',$supplier_products[$supplier_products_rnd_key]['Supplier Product Keys']);
+                // print_r($supplier_products_keys);
+                $supplier_product_key=$supplier_products_keys[array_rand($supplier_products_keys)];
+
+            }
+
+            $product = new product ($row ['Product Key'] );
+            $a = sprintf ( '<a href="product.php?id=%d">%s</a> <a href="dn.php?id=%d">%s</a>'
+                           , $product->id
+                           , $product->code
+                           , $this->id
+                           , $this->data['Delivery Note ID']
+                         );
+            unset ( $product );
+            //$note = $a . ', ' . $order->data ['Order Current XHTML State'];
+            $note = $a;
+
+
+            $weight=
                 $sql = sprintf ( "insert into `Inventory Transaction Fact`  (`Inventory Transaction Weight`,`Date Created`,`Date`,`Delivery Note Key`,`Part SKU`,`Location Key`,`Inventory Transaction Quantity`,`Inventory Transaction Type`,`Inventory Transaction Amount`,`Required`,`Given`,`Amount In`,`Metadata`,`Note`,`Supplier Product Key`,`Map To Order Transaction Fact`) values (%f,%s,%s,%d,%s,%d,%s,%s,%.2f,%f,%f,%f,%s,%s,%s,%s) ",
                                  0,
                                  prepare_mysql ($date),
@@ -528,12 +624,12 @@ class DeliveryNote extends DB_Table {
                                  $supplier_product_key,
                                  $map_to_otf
                                );
-                mysql_query($sql);
-//print "$sql\n";
+            mysql_query($sql);
 
-            }
+
         }
     }
+}
   
   
   function approved_for_shipping($date){
@@ -543,44 +639,79 @@ class DeliveryNote extends DB_Table {
   }
   
   
-    function dispatch($data) {
-if(!array_key_exists('Delivery Note Date',$data) or !$data['Delivery Note Date']  ){
-$data['Delivery Note Date']=date('Y-m-d H:i:s');
-}
-
-        
-            $sql=sprintf("select `Delivery Note Quantity`,`Order Transaction Fact Key` from `Order Transaction Fact` where `Delivery Note Key`=%s  and `Current Dispatching State`='Ready to Ship'  ",
-            $this->id);
-           
-           $result=mysql_query($sql);
-            $_data=array();
-            while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
-
-                $sql = sprintf ( "update  `Order Transaction Fact` set `Actual Shipping Date`=%s,`Shipped Quantity`=%f,  `Current Dispatching State`=%s where   `Order Transaction Fact Key`=%d",
-                                  prepare_mysql($data['Delivery Note Date']),
-                                 $row['Delivery Note Quantity'],
-                                 prepare_mysql('Dispatched'),
-                                 $row['Order Transaction Fact Key']
-                                 );
-                mysql_query ( $sql );
-      //print "$sql\n";
-            }
-
-
-$this->data['Delivery Note State']='Dispatched';
-$this->data['Delivery Note Date']=$data['Delivery Note Date'];
-
- $sql=sprintf("update `Delivery Note Dimension` set `Delivery Note State`=%s, `Delivery Note Date`=%s where `Delivery Note Key`=%d",
-                       prepare_mysql($this->data['Delivery Note State']),
-                         prepare_mysql($this->data['Delivery Note Date']),
-                        $this->id
-                        );
-mysql_query ( $sql );
-      foreach($this->get_orders_objects() as $key=>$order) {
-             $order->update_dispatch_state();
-        }
-
+function dispatch($data) {
+    if (!array_key_exists('Delivery Note Date',$data) or !$data['Delivery Note Date']  ) {
+        $data['Delivery Note Date']=date('Y-m-d H:i:s');
     }
+
+
+    $sql=sprintf("select `Delivery Note Quantity`,`Order Transaction Fact Key` from `Order Transaction Fact` where `Delivery Note Key`=%s  and `Current Dispatching State`='Ready to Ship'  ",
+                 $this->id);
+
+    $result=mysql_query($sql);
+    $_data=array();
+    while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
+
+        $sql = sprintf ( "update  `Order Transaction Fact` set `Actual Shipping Date`=%s,`Shipped Quantity`=%f,  `Current Dispatching State`=%s where   `Order Transaction Fact Key`=%d",
+                         prepare_mysql($data['Delivery Note Date']),
+                         $row['Delivery Note Quantity'],
+                         prepare_mysql('Dispatched'),
+                         $row['Order Transaction Fact Key']
+                       );
+        mysql_query ( $sql );
+    }
+
+
+    $this->data['Delivery Note State']='Dispatched';
+    $this->data['Delivery Note Date']=$data['Delivery Note Date'];
+
+    $sql=sprintf("update `Delivery Note Dimension` set `Delivery Note State`=%s, `Delivery Note Date`=%s where `Delivery Note Key`=%d",
+                 prepare_mysql($this->data['Delivery Note State']),
+                 prepare_mysql($this->data['Delivery Note Date']),
+                 $this->id
+                );
+    mysql_query ( $sql );
+    foreach($this->get_orders_objects() as $key=>$order) {
+        $order->update_dispatch_state();
+    }
+
+$customer=new Customer($this->data['Delivery Note Customer Key']);
+    $numbers_of_times_used=0;
+    $sql=sprintf('select count(*) as num from `Delivery Note Dimension` where `Delivery Note Customer Key`=%d and `Delivery Note Ship To Key`=%d',$customer->id,$this->data['Delivery Note Ship To Key']);
+    $res2=mysql_query($sql);
+    if($row2=mysql_fetch_assoc($res2)){
+    $numbers_of_times_used=$row2['num'];
+    }
+    
+    
+     $sql=sprintf('select * from `Customer Ship To Bridge` where `Customer Key`=%d and `Ship To Key`=%d',$customer->id,$this->data['Delivery Note Ship To Key']);
+    $res=mysql_query($sql);
+    if($row=mysql_fetch_assoc($res)){
+    
+    
+    $from_date=$row['Ship To From Date'];
+    $to_date=$row['Ship To Last Used'];
+    }
+    
+    if(strtotime($this->data['Delivery Note Date'])< strtotime($from_date))
+        $from_date=$this->data['Delivery Note Date'];
+    if(strtotime($this->data['Delivery Note Date'])> strtotime($to_date))
+        $to_date=$this->data['Delivery Note Date'];
+    
+    $sql=sprintf('update `Customer Ship To Bridge` set `Times Used`=%d ,`Ship To From Date`=%s,`Ship To Last Used`=%s  where `Customer Key`=%d and `Ship To Key`=%d',
+    $numbers_of_times_used,
+    prepare_mysql($from_date),
+    prepare_mysql($to_date),
+ 
+    $customer->id,
+   $this->data['Delivery Note Ship To Key']
+    );
+     mysql_query($sql);
+
+
+
+
+}
     function set_parcels($parcels,$parcel_type='Box') {
 
         if (is_numeric($parcels)) {
@@ -1393,6 +1524,45 @@ $order->update_dispatch_state();
 //$shipping_amount=$this->calculate_shipping();
 //$charges_amount=$this->calculate_charges();
 
+
+
+}
+
+function add_orphan_transactions($data){
+
+$bonus_quantity=0;
+
+print_r($data);
+        $sql = sprintf ( "insert into `Order Transaction Fact` (`Order Bonus Quantity`,`Order Transaction Type`,`Transaction Tax Rate`,`Transaction Tax Code`,`Order Currency Code`,`Estimated Weight`,`Order Last Updated Date`,`Product Key`,`Current Dispatching State`,`Current Payment State`,`Customer Key`,`Order Key`,`Order Public ID`,`Delivery Note Quantity`,`Ship To Key`,`Order Transaction Gross Amount`,`Order Transaction Total Discount Amount`,`Metadata`,`Store Key`,`Units Per Case`,`Customer Message`) 
+        values (%f,%s,%f,%s,%s,%s,%s,%s,%s,%d,%s,%s,%s,%s,%s,%.2f,%.2f,%s,%s,%f,'') ",
+                         $bonus_quantity,
+                         prepare_mysql($data['Order Type']),
+                         $data['Order Tax Rate'],
+                         prepare_mysql ($data['Order Tax Code']),
+                         prepare_mysql ( $data['Order Currency'] ),
+                         $data['Estimated Weight'],
+               
+                         prepare_mysql ( $data ['Date'] ),
+                         $data ['Product Key'],
+                         prepare_mysql ( $data ['Current Dispatching State'] ),
+                         prepare_mysql ( $data ['Current Payment State'] ),
+                         prepare_mysql ( $data['Order Customer Key' ] ),
+                         0,
+                         "''",
+                         $data['Quantity'],
+                         prepare_mysql ( $data['Ship To Key'] ),
+                         $data['Gross'],
+                         0,
+                         prepare_mysql ( $data ['Metadata'] ,false),
+                         prepare_mysql ( $data['Order Store Key'] ),
+                         $data ['units_per_case']
+
+                       );
+
+    
+
+    if (! mysql_query ( $sql ))
+        exit ( "$sql can not update orphan transaction\n" );
 
 
 }

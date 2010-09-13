@@ -789,6 +789,11 @@ function update_orders() {
     $this->data['Store Cancelled Delivery Notes']=0;
        
 
+    $this->data['Store Delivery Notes For Orders']=0;
+    $this->data['Store Delivery Notes For Replacements']=0;
+    $this->data['Store Delivery Notes For Samples']=0;
+    $this->data['Store Delivery Notes For Donations']=0;
+    $this->data['Store Delivery Notes For Shortages']=0;
     
     
     $sql="select count(*) as `Store Total Orders`,sum(IF(`Order Current Dispatch State`='Dispatched',1,0 )) as `Store Dispatched Orders` ,sum(IF(`Order Current Dispatch State`='Cancelled',1,0 )) as `Store Cancelled Orders`,sum(IF(`Order Current Dispatch State`='Unknown',1,0 )) as `Store Unknown Orders` from `Order Dimension`   where `Order Store Key`=".$this->id;
@@ -818,8 +823,12 @@ function update_orders() {
     sum(IF(`Delivery Note State`='Picking & Packing' or `Delivery Note State`='Picking' or `Delivery Note State`='Picker Assigned' or `Delivery Note State`='' ,1,0 )) as `Store Picking Delivery Notes`,
     sum(IF(`Delivery Note State`='Packing' or `Delivery Note State`='Packer Assigned' or `Delivery Note State`='Picked' ,1,0 )) as `Store Packing Delivery Notes`,
     sum(IF(`Delivery Note State`='Approved' or `Delivery Note State`='Packed' ,1,0 )) as `Store Ready to Dispatch Delivery Notes`,
-    sum(IF(`Delivery Note State`='Dispatched' ,1,0 )) as `Store Dispatched Delivery Notes`
-
+    sum(IF(`Delivery Note State`='Dispatched' ,1,0 )) as `Store Dispatched Delivery Notes`,
+    sum(IF(`Delivery Note Type`='Replacement & Shortages' or `Delivery Note Type`='Replacement' ,1,0 )) as `Store Delivery Notes For Replacements`,
+    sum(IF(`Delivery Note Type`='Replacement & Shortages' or `Delivery Note Type`='Shortages' ,1,0 )) as `Store Delivery Notes For Shortages`,
+    sum(IF(`Delivery Note Type`='Sample' ,1,0 )) as `Store Delivery Notes For Samples`,
+    sum(IF(`Delivery Note Type`='Donation' ,1,0 )) as `Store Delivery Notes For Donations`,
+    sum(IF(`Delivery Note Type`='Order' ,1,0 )) as `Store Delivery Notes For Orders`
     from `Delivery Note Dimension`   where `Delivery Note Store Key`=".$this->id;
     $result=mysql_query($sql);
     if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
@@ -827,12 +836,14 @@ function update_orders() {
         $this->data['Store Ready to Pick Delivery Notes']=$row['Store Ready to Pick Delivery Notes'];
         $this->data['Store Picking Delivery Notes']=$row['Store Picking Delivery Notes'];
         $this->data['Store Packing Delivery Notes']=$row['Store Packing Delivery Notes'];
-
         $this->data['Store Ready to Dispatch Delivery Notes']=$row['Store Ready to Dispatch Delivery Notes'];
         $this->data['Store Dispatched Delivery Notes']=$row['Store Dispatched Delivery Notes'];
-               $this->data['Store Returned Delivery Notes']=$row['Store Returned Delivery Notes'];
-
-
+        $this->data['Store Returned Delivery Notes']=$row['Store Returned Delivery Notes'];
+        $this->data['Store Delivery Notes For Replacements']=$row['Store Delivery Notes For Replacements'];
+        $this->data['Store Delivery Notes For Shortages']=$row['Store Delivery Notes For Shortages'];
+        $this->data['Store Delivery Notes For Samples']=$row['Store Delivery Notes For Samples'];
+        $this->data['Store Delivery Notes For Donations']=$row['Store Delivery Notes For Donations'];
+        $this->data['Store Delivery Notes For Orders']=$row['Store Delivery Notes For Orders'];
  }
  
  //print "$sql\n";
@@ -840,6 +851,7 @@ function update_orders() {
  $sql=sprintf("update `Store Dimension` set `Store Total Orders`=%d,`Store Dispatched Orders`=%d,`Store Cancelled Orders`=%d,`Store Orders In Process`=%d,`Store Unknown Orders`=%d
  ,`Store Total Invoices`=%d ,`Store Invoices`=%d ,`Store Refunds`=%d ,`Store Paid Invoices`=%d ,`Store Paid Refunds`=%d ,`Store Partially Paid Invoices`=%d ,`Store Partially Paid Refunds`=%d
 ,`Store Total Delivery Notes`=%d,`Store Ready to Pick Delivery Notes`=%d,`Store Picking Delivery Notes`=%d,`Store Packing Delivery Notes`=%d,`Store Ready to Dispatch Delivery Notes`=%d,`Store Dispatched Delivery Notes`=%d,`Store Returned Delivery Notes`=%d
+,`Store Delivery Notes For Replacements`=%d,`Store Delivery Notes For Shortages`=%d,`Store Delivery Notes For Samples`=%d,`Store Delivery Notes For Donations`=%d,`Store Delivery Notes For Orders`=%d
  where `Store Key`=%d",
  $this->data['Store Total Orders'],
   $this->data['Store Dispatched Orders'],
@@ -860,7 +872,11 @@ function update_orders() {
     $this->data['Store Ready to Dispatch Delivery Notes'],
     $this->data['Store Dispatched Delivery Notes'],
     $this->data['Store Returned Delivery Notes'],
-
+$this->data['Store Delivery Notes For Replacements'],
+        $this->data['Store Delivery Notes For Shortages'],
+        $this->data['Store Delivery Notes For Samples'],
+        $this->data['Store Delivery Notes For Donations'],
+        $this->data['Store Delivery Notes For Orders'],
  $this->id
  );
  //print $sql;
