@@ -157,7 +157,6 @@ else
         $this->data ['Delivery Note Metadata'] = $order->data ['Order Original Metadata'];
 
 
-//print_r($this->data);
         if (isset($dn_data ['Delivery Note Date Created'])) {
             $this->data ['Delivery Note Date Created'] = $dn_data ['Delivery Note Date Created'];
         } else
@@ -183,12 +182,10 @@ else
         if (isset($dn_data ['Delivery Note Shipper Code']))
             $this->data ['Delivery Note Shipper Code']=$dn_data ['Delivery Note Shipper Code'];
 
-        //get tyhe customer mos rtecent ship to
-        //    $this->data ['Delivery Note Country 2 Alpha Code'] = 'XX';
+       
         $this->data ['Delivery Note XHTML Ship To'] = '';
         $this->data ['Delivery Note Ship To Key'] = 0;
-        //  $this->data ['Delivery Note Country 2 Alpha Code'] = 'XX';
-        // print_r($dn_data);
+
         if ($order->data ['Order Ship To Key To Deliver']) {
 
 
@@ -510,7 +507,6 @@ else
 
                 $supplier_products_rnd_key=array_rand($supplier_products,1);
                 $supplier_products_keys=preg_split('/,/',$supplier_products[$supplier_products_rnd_key]['Supplier Product Keys']);
-                // print_r($supplier_products_keys);
                 $supplier_product_key=$supplier_products_keys[array_rand($supplier_products_keys)];
 
             }
@@ -588,7 +584,6 @@ function create_inventory_transaction_fact($order_key) {
 
                 $supplier_products_rnd_key=array_rand($supplier_products,1);
                 $supplier_products_keys=preg_split('/,/',$supplier_products[$supplier_products_rnd_key]['Supplier Product Keys']);
-                // print_r($supplier_products_keys);
                 $supplier_product_key=$supplier_products_keys[array_rand($supplier_products_keys)];
 
             }
@@ -1528,38 +1523,36 @@ $order->update_dispatch_state();
 
 }
 
-function add_orphan_transactions($data){
+function add_orphan_transactions($data) {
 
-$bonus_quantity=0;
+    $bonus_quantity=0;
+    $sql = sprintf ( "insert into `Order Transaction Fact` (`Order Bonus Quantity`,`Order Transaction Type`,`Transaction Tax Rate`,`Transaction Tax Code`,`Order Currency Code`,`Estimated Weight`,`Order Last Updated Date`,`Product Key`,`Current Dispatching State`,`Current Payment State`,`Customer Key`,`Order Key`,`Order Public ID`,`Delivery Note Quantity`,`Ship To Key`,`Order Transaction Gross Amount`,`Order Transaction Total Discount Amount`,`Metadata`,`Store Key`,`Units Per Case`,`Customer Message`)
+                     values (%f,%s,%f,%s,%s,%s,%s,%s,%s,%d,%s,%s,%s,%s,%s,%.2f,%.2f,%s,%s,%f,'') ",
+                     $bonus_quantity,
+                     prepare_mysql($data['Order Type']),
+                     $data['Order Tax Rate'],
+                     prepare_mysql ($data['Order Tax Code']),
+                     prepare_mysql ( $data['Order Currency'] ),
+                     $data['Estimated Weight'],
 
-print_r($data);
-        $sql = sprintf ( "insert into `Order Transaction Fact` (`Order Bonus Quantity`,`Order Transaction Type`,`Transaction Tax Rate`,`Transaction Tax Code`,`Order Currency Code`,`Estimated Weight`,`Order Last Updated Date`,`Product Key`,`Current Dispatching State`,`Current Payment State`,`Customer Key`,`Order Key`,`Order Public ID`,`Delivery Note Quantity`,`Ship To Key`,`Order Transaction Gross Amount`,`Order Transaction Total Discount Amount`,`Metadata`,`Store Key`,`Units Per Case`,`Customer Message`) 
-        values (%f,%s,%f,%s,%s,%s,%s,%s,%s,%d,%s,%s,%s,%s,%s,%.2f,%.2f,%s,%s,%f,'') ",
-                         $bonus_quantity,
-                         prepare_mysql($data['Order Type']),
-                         $data['Order Tax Rate'],
-                         prepare_mysql ($data['Order Tax Code']),
-                         prepare_mysql ( $data['Order Currency'] ),
-                         $data['Estimated Weight'],
-               
-                         prepare_mysql ( $data ['Date'] ),
-                         $data ['Product Key'],
-                         prepare_mysql ( $data ['Current Dispatching State'] ),
-                         prepare_mysql ( $data ['Current Payment State'] ),
-                         prepare_mysql ( $data['Order Customer Key' ] ),
-                         0,
-                         "''",
-                         $data['Quantity'],
-                         prepare_mysql ( $data['Ship To Key'] ),
-                         $data['Gross'],
-                         0,
-                         prepare_mysql ( $data ['Metadata'] ,false),
-                         prepare_mysql ( $data['Order Store Key'] ),
-                         $data ['units_per_case']
+                     prepare_mysql ( $data ['Date'] ),
+                     $data ['Product Key'],
+                     prepare_mysql ( $data ['Current Dispatching State'] ),
+                     prepare_mysql ( $data ['Current Payment State'] ),
+                     prepare_mysql ( $data['Order Customer Key' ] ),
+                     0,
+                     "''",
+                     $data['Quantity'],
+                     prepare_mysql ( $data['Ship To Key'] ),
+                     $data['Gross'],
+                     0,
+                     prepare_mysql ( $data ['Metadata'] ,false),
+                     prepare_mysql ( $data['Order Store Key'] ),
+                     $data ['units_per_case']
 
-                       );
+                   );
 
-    
+
 
     if (! mysql_query ( $sql ))
         exit ( "$sql can not update orphan transaction\n" );

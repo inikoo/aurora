@@ -8381,7 +8381,7 @@ function list_delivery_notes_per_store() {
 
    
 
-    $sql="select  `Store Total Delivery Notes` as dn,`Store Ready to Pick Delivery Notes` as dn_ready_to_pick,`Store Picking Delivery Notes` as dn_picking,`Store Packing Delivery Notes` as dn_packing,`Store Ready to Dispatch Delivery Notes` as dn_ready,`Store Dispatched Delivery Notes` as dn_send, `Store Returned Delivery Notes`as dn_returned from `Store Dimension`  $where     ";
+    $sql="select `Store Delivery Notes For Shortages` as dn_shortages,`Store Delivery Notes For Replacements` as dn_replacements, `Store Delivery Notes For Donations` as dn_donations, `Store Delivery Notes For Samples` as dn_samples, `Store Delivery Notes For Orders` as dn_orders, `Store Total Delivery Notes` as dn,`Store Ready to Pick Delivery Notes` as dn_ready_to_pick,`Store Picking Delivery Notes` as dn_picking,`Store Packing Delivery Notes` as dn_packing,`Store Ready to Dispatch Delivery Notes` as dn_ready,`Store Dispatched Delivery Notes` as dn_send, `Store Returned Delivery Notes`as dn_returned from `Store Dimension`  $where     ";
     $res = mysql_query($sql);
     if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
         $total_dn=$row['dn'];
@@ -8391,6 +8391,11 @@ function list_delivery_notes_per_store() {
         $total_dn_ready=$row['dn_ready'];
          $total_dn_send=$row['dn_send'];
         $total_dn_returned=$row['dn_returned'];
+         $total_dn_orders=$row['dn_orders'];
+        $total_dn_shortages=$row['dn_shortages'];
+        $total_dn_replacements=$row['dn_replacements'];
+        $total_dn_donations=$row['dn_donations'];
+        $total_dn_samples=$row['dn_samples'];
 
     }
 
@@ -8398,7 +8403,7 @@ function list_delivery_notes_per_store() {
 
 
 
-    $sql="select `Store Name`,`Store Code`,`Store Key`,  `Store Total Delivery Notes` as dn,`Store Ready to Pick Delivery Notes` as dn_ready_to_pick,`Store Picking Delivery Notes` as dn_picking,`Store Packing Delivery Notes` as dn_packing,`Store Ready to Dispatch Delivery Notes` as dn_ready,`Store Dispatched Delivery Notes` as dn_send,`Store Returned Delivery Notes`as dn_returned from   `Store Dimension` $where $wheref   order by $order $order_direction limit $start_from,$number_results    ";
+    $sql="select `Store Name`,`Store Code`,`Store Key`,`Store Delivery Notes For Shortages` as dn_shortages,`Store Delivery Notes For Replacements` as dn_replacements, `Store Delivery Notes For Donations` as dn_donations, `Store Delivery Notes For Samples` as dn_samples, `Store Delivery Notes For Orders` as dn_orders, `Store Total Delivery Notes` as dn,`Store Ready to Pick Delivery Notes` as dn_ready_to_pick,`Store Picking Delivery Notes` as dn_picking,`Store Packing Delivery Notes` as dn_packing,`Store Ready to Dispatch Delivery Notes` as dn_ready,`Store Dispatched Delivery Notes` as dn_send,`Store Returned Delivery Notes`as dn_returned from   `Store Dimension` $where $wheref   order by $order $order_direction limit $start_from,$number_results    ";
     //print $sql;
     $res = mysql_query($sql);
 
@@ -8419,6 +8424,11 @@ function list_delivery_notes_per_store() {
         $dn_ready=percentage($row['dn_ready'],$total_dn_ready);
         $dn_send=percentage($row['dn_send'],$total_dn_send);
         $dn_returned=percentage($row['dn_returned'],$total_dn_returned);
+        $dn_orders=percentage($row['dn_orders'],$total_dn_orders);
+        $dn_shortages=percentage($row['dn_shortages'],$total_dn_shortages);
+        $dn_replacements=percentage($row['dn_replacements'],$total_dn_replacements);
+        $dn_donations=percentage($row['dn_donations'],$total_dn_donations);
+        $dn_samples=percentage($row['dn_samples'],$total_dn_samples);        
           } else {
         $dn=number($row['dn']);
         $dn_ready_to_pick=number($row['dn_ready_to_pick']);
@@ -8427,6 +8437,13 @@ function list_delivery_notes_per_store() {
         $dn_ready=number($row['dn_ready']);
         $dn_send=number($row['dn_send']);
         $dn_returned=number($row['dn_returned']);
+        $dn_orders=number($row['dn_orders']);
+        $dn_shortages=number($row['dn_shortages']);
+        $dn_replacements=number($row['dn_replacements']);
+        $dn_donations=number($row['dn_donations']);
+        $dn_samples=number($row['dn_samples']);
+        
+        
         }
 
         $adata[]=array(
@@ -8438,7 +8455,12 @@ function list_delivery_notes_per_store() {
                      'dn_packing'=>$dn_packing,
                      'dn_ready'=>$dn_ready,
                      'dn_send'=>$dn_send,
-                     'dn_returned'=>$dn_returned
+                     'dn_returned'=>$dn_returned,
+                     'dn_orders'=>$dn_orders,
+                     'dn_shortages'=>$dn_shortages,
+                     'dn_replacements'=>$dn_replacements,
+                     'dn_donations'=>$dn_donations,
+                     'dn_samples'=>$dn_samples
                  );
     }
     mysql_free_result($res);
@@ -8451,14 +8473,25 @@ function list_delivery_notes_per_store() {
         $total_dn_ready='100.00%';
         $total_dn_send='100.00%';
         $total_dn_returned='100.00%';
+          $total_dn_orders='100.00%';
+        $total_dn_shortages='100.00%';
+        $total_dn_replacements='100.00%';
+        $total_dn_donations='100.00%';
+        $total_dn_samples='100.00%';
     } else {
        $total_dn=number($total_dn);
         $total_dn_ready_to_pick=number($total_dn_ready_to_pick);
         $total_dn_packing=number($total_dn_packing);
         $total_dn_picking=number($total_dn_picking);
         $total_dn_ready=number($total_dn_ready);
-        $total_dn_ready=number($total_dn_ready);
+        $total_dn_send=number($total_dn_send);
         $total_dn_returned=number($total_dn_returned);
+         $total_dn_orders=number($total_dn_orders);
+        $total_dn_shortages=number($total_dn_shortages);
+        $total_dn_replacements=number($total_dn_replacements);
+        $total_dn_donations=number($total_dn_donations);
+        $total_dn_samples=number($total_dn_samples);
+
 
     }
 
@@ -8472,7 +8505,12 @@ function list_delivery_notes_per_store() {
                      'dn_packing'=>$total_dn_packing,
                      'dn_ready'=>$total_dn_ready,
                      'dn_send'=>$total_dn_send,
-                     'dn_returned'=>$total_dn_returned
+                     'dn_returned'=>$total_dn_returned,
+                     'dn_orders'=>$total_dn_orders,
+                     'dn_shortages'=>$total_dn_shortages,
+                     'dn_replacements'=>$total_dn_replacements,
+                     'dn_donations'=>$total_dn_donations,
+                     'dn_samples'=>$total_dn_samples
 
              );
 

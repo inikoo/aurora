@@ -2,7 +2,6 @@
 
 function round_header_data_totals(){
 global $header_data;
-//print_r($header_data);
 
 if(is_numeric($header_data['charges'])){
 $header_data['charges']=round($header_data['charges'],2);
@@ -25,7 +24,6 @@ $header_data['tax2']=0.00;
 }else{
 round($header_data['tax2'],2);
 };
-//print_r($header_data);
 
 }
 
@@ -151,7 +149,6 @@ mysql_query($sql);
 function adjust_invoice($invoice,$continue=true){
 global $header_data,$tax_category_object;
 
-//print_r($header_data);
 $adjust_transactions=array();
 
 if($header_data['tax2']==''){
@@ -267,7 +264,6 @@ global $customer_key,$filename,$store_code,$order_data_id,$date_order,$shipping_
         if($header_data['collection']=='Yes')
             $order->update_order_is_for_collection('Yes');
         $discounts_map=array();
-      // print_r($data['products']);
         foreach($data['products'] as $transaction) {
 
             $product=new Product('id',$transaction['Product Key']);
@@ -292,7 +288,6 @@ global $customer_key,$filename,$store_code,$order_data_id,$date_order,$shipping_
 
 
             $order->skip_update_after_individual_transaction=true;
-         //   print_r($data);
             $transaction_data=$order->add_order_transaction($data);
             if($transaction_data['updated'])
             $discounts_map[$transaction_data['otf_key']]=$transaction['discount_amount'];
@@ -338,7 +333,6 @@ global $customer_key,$filename,$store_code,$order_data_id,$date_order,$shipping_
         $order->update_totals_from_order_transactions();
         
         
-//print_r($discounts_map);
         foreach($discounts_map as $otf_key=>$discount) {
             $order->update_transaction_discount_amount($otf_key,$discount);
         }
@@ -355,9 +349,7 @@ global $customer_key,$filename,$store_code,$order_data_id,$date_order,$shipping_
             'Charge Key'=>0,
             'Charge Description'=>'Charge'
             ));
-        //print_r($header_data);
         $order->update_charges_amount($charges_data);
-       // print_r($order->data);
         $dn=$order->send_to_warehouse($date_order);
  
  
@@ -369,7 +361,6 @@ function send_order($data,$data_dn_transactions) {
     global $customer_key,$filename,$store_code,$order_data_id,$date_order,$shipping_net,$charges_net,$order,$dn,$invoice,$shipping_net;
     global $charges_net,$order,$dn,$payment_method,$date_inv,$extra_shipping,$parcel_type;
     global $packer_data,$picker_data,$parcels,$credits,$tax_category_object;
-//print_r($data_dn_transactions);
 
     if (count($picker_data['id'])==0)$staff_key=0;
     else {
@@ -416,9 +407,7 @@ function send_order($data,$data_dn_transactions) {
 
 
     foreach ($skus_to_pick_data as $sku=>$value) {
-        //print "$sku ".$value['picked']."\n";
         $dn->set_as_packed($sku,$value['picked'],$date_order);
-        //        $dn->update_packing_percentage();
     }
 
     $dn->update_packing_percentage();
@@ -426,7 +415,6 @@ function send_order($data,$data_dn_transactions) {
     $dn->set_parcels($parcels,$parcel_type);
     $dn->ready_to_ship();
 
-    //print_r($order->data);
 
     if ($order->data['Order Type']=='Order' or ((  ($order->data['Order Type']=='Sample'  or $order->data['Order Type']=='Donation') and $order->data['Order Total Amount']!=0 ))) {
         $invoice=$dn->create_invoice($date_inv);
@@ -468,7 +456,6 @@ function send_order($data,$data_dn_transactions) {
 
 
     $dn->approved_for_shipping($date_inv);
-    // print $dn->id."\n";
 
 if($dn->data['Delivery Note Dispatch Method']=='Dispatch')
     $dn->dispatch(array('Delivery Note Date'=>$date_inv));
@@ -518,7 +505,6 @@ function create_post_order($data,$data_dn_transactions) {
         $discounts_map=array();
         $transaction_not_found=0;
         $post_data=array();
-       // print_r($data);
         foreach($data['products'] as $transaction) {
             $product=new Product('id',$transaction['Product Key']);
             $quantity=$transaction['qty'];
@@ -534,15 +520,9 @@ function create_post_order($data,$data_dn_transactions) {
             if ($result['error'])
                 $transaction_not_found++;
             if (!$result['updated']) {
-
-
-
                 $quantity=$quantity;
                 $gross=$quantity*$product->data['Product History Price'];
                 $estimated_weight=$quantity*$product->data['Product Gross Weight'];
-
-  
-
                 $post_data[]=array(
                                   'Order Type'=> $data['Order Type'],
                                  'Order Tax Rate'=>$tax_category_object->data['Tax Category Rate'],
@@ -556,19 +536,13 @@ function create_post_order($data,$data_dn_transactions) {
                                  'Quantity'=>$quantity,
                                  'Order Store Key'=>$parent_order->data['Order Store Key'],
                                  'Order Customer Key'=>$parent_order->data['Order Customer Key'],
-
                                  'units_per_case'=>$product->data['Product Units Per Case'],
                                  'Current Dispatching State'=>'In Process',
                                  'Current Payment State'=>'Waiting Payment',
                                  'Metadata'=>$store_code.$order_data_id,
                              );
-
-
-            }
-
+           }
         }
-
-
         $dn=$parent_order->send_post_action_to_warehouse($date_order,$data['Order Type'],$store_code.$order_data_id);
         foreach($post_data as $post_transaction) {
         $dn->add_orphan_transactions($post_transaction);
@@ -579,10 +553,7 @@ function create_post_order($data,$data_dn_transactions) {
     } else {
         print "Parent order can not be found skipping (Rpl/Sht)\n";
         return;
-
     }
-
-
 }
 
 function create_refund($data,$header_data,$data_dn_transactions) {
