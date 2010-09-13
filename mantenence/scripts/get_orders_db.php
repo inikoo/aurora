@@ -138,7 +138,7 @@ $sql="select *,replace(   replace(replace(replace(replace(replace(replace(replac
 //$sql="select * from  orders_data.orders  where    (last_transcribed is NULL  or last_read>last_transcribed) and deleted='No'  order by filename ";
 //$sql="select * from  orders_data.orders where filename like '%/28668.xls'   order by filename";
 //$sql="select * from  orders_data.orders where filename like '%/24854.xls'   order by filename";
-//$sql="select * from  orders_data.orders where filename like '%/28478.xls'   order by filename";
+//$sql="select * from  orders_data.orders where filename like '%/114585.xls'   order by filename";
 
 //$sql="select * from  orders_data.orders where filename like '%/%ref%.xls'   order by filename";
 //$sql="select * from  orders_data.orders  where filename like '/mnt/%/Orders/93284.xls' order by filename";
@@ -370,7 +370,7 @@ $editor=array(
 
 
         $transactions=read_products($products,$prod_map);
-        
+        //print_r($transactions);
         unset($products);
         $_customer_data=setup_contact($act_data,$header_data,$date_index2,$editor);
         $customer_data=array();
@@ -1415,10 +1415,7 @@ $shipping_transactions[]=$transaction;
         }
         // print_r($products_data);
 
-if(count($credits)>1){
-print_r($credits);
-exit;
-}
+
         //Tipo order
         // 1 DELIVERY NOTE
         // 2 INVOICE
@@ -1492,7 +1489,7 @@ switch ($tipo_order) {
         print "Refund ";
        
         create_refund($data,$header_data, $data_dn_transactions);
-
+        break;
     default:
        print "Unknown Order $tipo_order\n";
         break;
