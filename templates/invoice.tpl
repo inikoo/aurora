@@ -20,6 +20,7 @@
   <tr><td  class="aright" >{t}Items Gross{/t}</td><td width=100 class="aright">{$invoice->get('Items Gross Amount')}</td></tr>
   <tr><td  class="aright" >{t}Discounts{/t}</td><td width=100 class="aright">-{$invoice->get('Items Discount Amount')}</td></tr>
 {/if}
+
   <tr><td  class="aright" >{t}Items Net{/t}</td><td width=100 class="aright">{$invoice->get('Items Net Amount')}</td></tr>
   {if $invoice->get('Invoice Refund Net Amount')!=0 }
   <tr><td  class="aright" >{t}Credits{/t}</td><td width=100 class="aright">{$invoice->get('Refund Net Amount')}</td></tr>
@@ -27,12 +28,17 @@
   {if $invoice->get('Invoice Charges Net Amount')!=0}
   <tr><td  class="aright" >{t}Charges{/t}</td><td width=100 class="aright">{$invoice->get('Charges Net Amount')}</td></tr>
   {/if}
+  {if $invoice->get('Invoice Total Net Adjust Amount')!=0}
+  <tr style="color:red"><td  class="aright" >{t}Adjust Net{/t}</td><td width=100 class="aright">{$invoice->get('Total Net Adjust Amount')}</td></tr>
+  {/if}
  {if $invoice->get('Invoice Shipping Net Amount')!=0}
   <tr style="border-bottom:1px solid #777"><td  class="aright" >{t}Shipping{/t}</td><td width=100 class="aright">{$invoice->get('Shipping Net Amount')}</td></tr>	
  {/if}
   <tr  style="border-top:1px solid #777"     ><td    class="aright" >{t}Total Net{/t}</td><td width=100 class="aright">{$invoice->get('Total Net Amount')}</td></tr>
   
-  
+  {if $invoice->get('Invoice Total Tax Adjust Amount')!=0}
+  <tr  style="color:red"><td  class="aright" >{t}Adjust Tax{/t}</td><td width=100 class="aright">{$invoice->get('Total Tax Adjust Amount')}</td></tr>
+  {/if}
   <tr style="border-bottom:1px solid #777"><td  class="aright" >{t}Tax{/t}</td><td width=100 class="aright">{$invoice->get('Total Tax Amount')}</td></tr>
   <tr><td  class="aright" >{t}Total{/t}</td><td width=100 class="aright"><b>{$invoice->get('Total Amount')}</b></td></tr>
 

@@ -368,7 +368,7 @@ global $customer_key,$filename,$store_code,$order_data_id,$date_order,$shipping_
 function send_order($data,$data_dn_transactions) {
     global $customer_key,$filename,$store_code,$order_data_id,$date_order,$shipping_net,$charges_net,$order,$dn,$invoice,$shipping_net;
     global $charges_net,$order,$dn,$payment_method,$date_inv,$extra_shipping,$parcel_type;
-    global $packer_data,$picker_data,$parcels;
+    global $packer_data,$picker_data,$parcels,$credits,$tax_category_object;
 //print_r($data_dn_transactions);
 
     if (count($picker_data['id'])==0)$staff_key=0;
@@ -431,6 +431,18 @@ function send_order($data,$data_dn_transactions) {
     if ($order->data['Order Type']=='Order' or ((  ($order->data['Order Type']=='Sample'  or $order->data['Order Type']=='Donation') and $order->data['Order Total Amount']!=0 ))) {
         $invoice=$dn->create_invoice($date_inv);
 
+  
+        foreach($credits as $credit){
+            $credit_data=array(
+            'Order Key'=>($credit['parent_key']=='NULL'?0:$credit['parent_key']),
+            'Transaction Description'=>$credit['description'],
+            'Tax Category Code'=>$invoice->data['Invoice Tax Code'],
+            'Transaction Invoice Net Amount'=>$credit['value'],
+            'Transaction Invoice Tax Amount'=>$credit['value']*$tax_category_object->data['Tax Category Rate']
+            );
+            $invoice->add_credit_no_product_transaction($credit_data);
+        }
+
         $invoice->update(array
                          (
                              'Invoice Metadata'=>$store_code.$order_data_id,
@@ -442,6 +454,7 @@ function send_order($data,$data_dn_transactions) {
 
 
                          ));
+        $invoice->update_totals();
         adjust_invoice($invoice);
        
         
@@ -529,7 +542,6 @@ function create_post_order($data,$data_dn_transactions) {
                 $estimated_weight=$quantity*$product->data['Product Gross Weight'];
 
   
-print_r($tax_category_object);
 
                 $post_data[]=array(
                                   'Order Type'=> $data['Order Type'],
