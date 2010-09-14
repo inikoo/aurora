@@ -57,7 +57,7 @@ $_SESSION['locale_info'] = localeconv();
 $_SESSION['lang']=1;
 
 
-
+$shipping_transactions=array();
 
 
 include_once('fr_local_map.php');
