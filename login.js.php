@@ -1,6 +1,8 @@
 
     var onmySubmit =function(){
-
+    
+    
+    
 	var input_login=document.getElementById("_login_");
 	var input_pwd=document.getElementById("_passwd_");
 	var input_epwd=document.getElementById("ep");
@@ -25,8 +27,10 @@ var submit_form_on_enter=function(e){
      else
          Key = e.which; //firefox     
 
-     if (key == 13)
-	 onmySubmit()
+     if (Key == 13){
+	 onmySubmit();
+	 
+	 }
 };
 
 function init() {
@@ -37,10 +41,8 @@ function init() {
     document.getElementById("_passwd_").value='';
 
 
-
-    // var log_in=document.getElementById("_login_");
-    //log_in.focus();
-    
+    YAHOO.util.Dom.get("_login_").focus();
+  
     var oPushButton1 = new YAHOO.widget.Button("login_go"); 
     oPushButton1.on("click", onmySubmit); 
     

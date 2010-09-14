@@ -57,6 +57,7 @@ $_SESSION['locale_info'] = localeconv();
 $_SESSION['lang']=1;
 
 
+$shipping_transactions=array();
 
 
 
