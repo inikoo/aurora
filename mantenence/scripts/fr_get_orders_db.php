@@ -1511,11 +1511,14 @@ switch ($tipo_order) {
         print "Refund ";
        
         create_refund($data,$header_data, $data_dn_transactions);
-
+    break;
     default:
       
         break;
 }
+
+$store->update_orders();
+$store->update_customers_data();
  print "\n";
   $sql="update fr_orders_data.orders set last_transcribed=NOW() where id=".$order_data_id;
             mysql_query($sql);
