@@ -1414,6 +1414,13 @@ $len_name=strlen($name_data['Contact Surname']);
 
         if ($main_email_key!=$email_key) {
             $email=new Email($email_key);
+            
+            if(!$email->id){
+            	$this->error=true;
+            	$this->msg.='Email to set as principal not found';
+            	return;
+            }
+            
             $email->editor=$this->editor;
             $sql=sprintf("update `Email Bridge`  set `Is Main`='No' where `Subject Type`='Contact' and  `Subject Key`=%d  and `Email Key`=%d",
                          $this->id
@@ -1532,13 +1539,14 @@ $len_name=strlen($name_data['Contact Surname']);
     }
 
     function get_emails() {
-        $sql=sprintf("select `Email Key` from `Email Bridge` where  `Subject Type`='Contact' and `Subject Key`=%d "
+        $sql=sprintf("select `Email Key`,`Is Main` from `Email Bridge` where  `Subject Type`='Contact' and `Subject Key`=%d "
                      ,$this->id );
 
         $emails=array();
         $result=mysql_query($sql);
         while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
             $email=new Email($row['Email Key']);
+            $email->data['Email Is Main']=$row['Is Main'];
             $emails[$row['Email Key']]= $email;
         }
         return $emails;

@@ -1,32 +1,22 @@
 <?php
-    include_once('common.php');
-
+include_once('common.php');
 $unit_list='';
 foreach(getEnumVals('`Supplier Product Dimension`','Supplier Product Unit Type') as $value){
     $unit_list.=",'".$value."'";
 }
 $unit_list=preg_replace('/^,/','',$unit_list);
-
- print "var supplier_id='".$_SESSION['state']['supplier']['id']."';";
-
- print "var units_list=[$unit_list]";
+print "var supplier_id='".$_SESSION['state']['supplier']['id']."';";
+print "var units_list=[$unit_list];";
 ?>
-  
-   
+var Dom   = YAHOO.util.Dom;
 
-  
-    var Dom   = YAHOO.util.Dom;
 var editing='<?php echo $_SESSION['state']['supplier']['edit']?>';
-
 
 var validate_scope_data={
     'code':{'changed':false,'validated':true,'required':true,'group':1,'type':'item','regexp':"[a-z\\d]+",'name':'Supplier_Code'}
     ,'name':{'changed':false,'validated':true,'required':true,'group':1,'type':'item','regexp':"[a-z\\d]+",'name':'Supplier_Name'}
 
 };
-
-
-
 function validate_scope(){
 var changed=false;
 var errors=false;
@@ -57,8 +47,6 @@ var errors=false;
     
     
 }
-
-
 YAHOO.util.Event.addListener(window, "load", function() {
 	tables = new function() {
 
@@ -138,8 +126,6 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 
     };});
-
-
 var change_view=function(e){
 	
     var table=tables['table0'];
@@ -211,10 +197,6 @@ function change_block(e){
 
 
 }
-
-
-
-
 function validate_supplier_code(query){
  query=unescape(query);
     var old_code=Dom.get('Supplier_Code').getAttribute('ovalue');
@@ -265,7 +247,6 @@ function validate_supplier_code(query){
 
 
 }
-
 function validate_supplier_name(query){
     query=unescape(query);
     var old_name=Dom.get('Supplier_Name').getAttribute('ovalue');
@@ -294,7 +275,6 @@ function validate_supplier_name(query){
     validate_scope();   
     
 }
-
 function save_edit_supplier(){
     
     for(item in validate_scope_data){
@@ -303,7 +283,6 @@ function save_edit_supplier(){
 	var request='ar_edit_suppliers.php?tipo=edit_supplier&key=' + item+ '&newvalue=' + 
 	    encodeURIComponent(item_input.value) + 
 	    '&supplier_key='+supplier_id;
-	
 	YAHOO.util.Connect.asyncRequest('POST',request ,{
 		success:function(o) {
 		    //alert(o.responseText)
@@ -344,7 +323,6 @@ function save_edit_supplier(){
     
     
 }
-
 function reset_edit_supplier(){
     for(item in validate_scope_data){
 	var item_input=Dom.get(validate_scope_data[item].name);
@@ -355,8 +333,7 @@ function reset_edit_supplier(){
     }
     validate_scope(); 
 }
-
-    function init(){
+function init(){
 	var oACDS = new YAHOO.util.FunctionDataSource(mygetTerms);
 	oACDS.queryMatchContains = true;
 	var oAutoComp = new YAHOO.widget.AutoComplete("f_input0","f_container", oACDS);
@@ -387,31 +364,24 @@ function reset_edit_supplier(){
 
 	}
 YAHOO.util.Event.onDOMReady(init);
-
 YAHOO.util.Event.onContentReady("filtermenu0", function () {
 	var oMenu = new YAHOO.widget.ContextMenu("filtermenu0", {trigger:"filter_name0"});
 	oMenu.render();
 	oMenu.subscribe("show", oMenu.focus);
 	
     });
-
-
 YAHOO.util.Event.onContentReady("rppmenu0", function () {
 	var oMenu = new YAHOO.widget.ContextMenu("rppmenu0", {trigger:"rtext_rpp0" });
 	oMenu.render();
 	oMenu.subscribe("show", oMenu.focus);
 	YAHOO.util.Event.addListener("rtext_rpp0", "click",oMenu.show , null, oMenu);
 });
-
-
 YAHOO.util.Event.onContentReady("filtermenu0", function () {
 	var oMenu = new YAHOO.widget.ContextMenu("filtermenu0", {trigger:"filter_name0"});
 	oMenu.render();
 	oMenu.subscribe("show", oMenu.focus);
 	
     });
-
-
 YAHOO.util.Event.onContentReady("rppmenu0", function () {
 	var oMenu = new YAHOO.widget.ContextMenu("rppmenu0", {trigger:"rtext_rpp0" });
 	oMenu.render();

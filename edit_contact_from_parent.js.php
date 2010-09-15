@@ -52,7 +52,7 @@ var Number_New_Contact_Address=0;
 
 var save_contact=function(){
 
-
+var errors=0;
     var table='contact';
     if(Dom.get('Contact_Key').value==0){
 	var contact_key=0;
@@ -63,6 +63,15 @@ var save_contact=function(){
    }
     save_contact_elements=0;
 
+var errors_found=0;
+
+var elements_saved=0;
+var elements_to_save=0;
+  if(Contact_Name_Changes>0 || Contact_Details_Changes>0){
+  elements_to_save++;
+  }
+  elements_to_save+=Contact_Emails_to_edit+Contact_Emails_to_add;
+ 
    
     if(Contact_Name_Changes>0 || Contact_Details_Changes>0){
 	var name_value=new Object();
@@ -75,14 +84,17 @@ var save_contact=function(){
 	var items=Contact_Details_Keys;
 	for(i in items){
 	    value[items[i]]=Dom.get(items[i]).value;
-	}    
+	}   
+	
+	
+	
 	value['Contact_Name_Components']=name_value;
 	var json_value = YAHOO.lang.JSON.stringify(value); 
 	var request='ar_edit_contacts.php?tipo='+action+'_'+escape(table)+ '&value=' + json_value+'&id='+contact_key+'&subject='+Subject+'&subject_key='+Subject_Key; 
-	alert(request);
+	//alert(request);
 	YAHOO.util.Connect.asyncRequest('POST',request ,{
 		success:function(o) {
-		    	alert(o.responseText);
+		    	//alert(o.responseText);
 		    var r =  YAHOO.lang.JSON.parse(o.responseText);
 		if(r.action=='updated'){
 		    
@@ -90,8 +102,12 @@ var save_contact=function(){
 		    Contact_Data[contact_key]=r.updated_data;
 		   
 		    save_contact_elements++;
+		    elements_saved++;
+		    if(elements_saved>=elements_to_save)
+		     cancel_edit_contact();
 		}else if(r.action=='error'){
 		    alert(r.msg);
+		    errors_found++;
 		}
 		
 		
@@ -123,7 +139,7 @@ var save_contact=function(){
 		  
 		    YAHOO.util.Connect.asyncRequest('POST',request ,{
 			    success:function(o) {
-				alert(o.responseText);
+				//alert(o.responseText);
 				var r =  YAHOO.lang.JSON.parse(o.responseText);
 				if(r.action=='updated' || r.action=='created'){
 				    
@@ -140,8 +156,16 @@ var save_contact=function(){
 				    }
 				    set_main_email(r.main_email_key);
 				    save_contact_elements++;
+				    elements_saved++;
+				     if(elements_saved>=elements_to_save)
+		           cancel_edit_contact();
+				    
 				}else if(r.action=='error'){
-				    alert(r.msg);
+				errors++;
+				 errors_found++;
+				   Dom.get('email_tr_msg'+r.email_key).style.display='';
+				   Dom.get('email_msg'+r.email_key).innerHTML=r.msg;
+
 				}
 				
 				
@@ -206,7 +230,7 @@ var save_contact=function(){
 		    var json_value = YAHOO.lang.JSON.stringify(value); 
 		    
 		    var request='ar_edit_contacts.php?tipo=edit_telecom&value=' + json_value+'&id='+contact_key+'&subject=contact&subject_key='+contact_key; 
-		 alert(request);
+		 //alert(request);
 		  
 		    YAHOO.util.Connect.asyncRequest('POST',request ,{
 			    success:function(o) {
@@ -246,7 +270,7 @@ var save_contact=function(){
 
 
 
-      cancel_edit_contact();
+   //   cancel_edit_contact();
 };
 var create_contact=function(){
     
@@ -528,8 +552,7 @@ var edit_contact=function (e,contact_button){
 		    Dom.get('Email_Contact_Name'+email_key).setAttribute('ovalue',email_data['Email_Contact_Name']);
 		    Dom.get('Email_Description'+email_key).value=email_data['Email_Description'];
 		    Dom.get('Email_Description'+email_key).setAttribute('ovalue',email_data['Email_Description']);
-		    
-
+		   
 		    if(email_data['Email_Is_Main']=='Yes')
 			Dom.get('Email_Is_Main'+email_key).checked=true;
 		    else

@@ -40,6 +40,7 @@
     {/foreach}
   </div>
 </div>
+{if $search_scope}
 <table class="search"  border=0>
 <tr>
 <td class="label" style="" >{$search_label}:</td>
@@ -56,3 +57,4 @@
 <div id="{$search_scope}_search_results" style="font-size:10px;float:right;background:#fff;border:1px solid #777;padding:10px;margin-top:0px;width:500px;position:absolute;z-index:20;top:-500px">
 <table id="{$search_scope}_search_results_table"></table>
 </div>
+{/if}

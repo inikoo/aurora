@@ -91,11 +91,13 @@ if($mode=='pid'){
   if(mysql_num_rows($result)>1){
     $_SESSION['state']['product']['server']['tag']=$tag;
     $js_files[]= 'js/search.js';
-    $js_files[]='product.js.php'; 
+   // $js_files[]='product.js.php'; 
     $js_files[]='product_server.js.php'; 
     $smarty->assign('css_files',$css_files);
     $smarty->assign('js_files',$js_files);
     $smarty->assign('code',$tag);
+    $smarty->assign('search_label',_('Products'));
+$smarty->assign('search_scope','products');
     $smarty->display('product_server.tpl');
      mysql_free_result($result);
     exit;

@@ -88,7 +88,7 @@
     
     <tr id="contact_form" style="display:none">
       <td colspan=2 style="padding:0">
-	<table border=1 class="edit" style="margin:10px 0 0 0;padding:0" id="edit_contact_table">
+	<table border=0 sclass="edit" style="margin:10px 0 0 0;padding:0" id="edit_contact_table">
 	  <tr >
 	    <input type="hidden" id="Contact_Key" value="" ovalue=""  />
 	    <td style="width:160px;" class="" >Name:</td>
@@ -146,8 +146,8 @@
       <td class="label">{t}Title{/t}:</td><td><input id="Contact_Title"></td>
     </tr>
     
-    <tr class="titlev">
-      <td colspan=3 ><span id="title_email_and_mbiles" style='display:none'>{t}Contact Email & Mobiles{/t}:</span>
+    <tr class="title">
+      <td colspan=3 ><span id="title_email_and_mobiles" style='display:none'>{t}Contact Email & Mobiles{/t}:</span>
 	<span style="display:none" class="small_button" id="cancel_edit_contact_button"  onclick="cancel_save_email()" >Cancel Edit Email</span>
 	<span style="display:none" class="small_button" id="cancel_edit_contact_button"  onclick="cancel_save_email()">Cancel Edit Mobile</span>
 	<span style="display:none" class="small_button" id="save_add_email_button" onclick="save_email()" >Save Email</span>
@@ -158,7 +158,7 @@
       </td>
     </tr>
     
-    
+    <tr id=email_msg_mould style="display:none;"  ><td colspan="2" class="email_msg"></td></tr>
     <tr id="email_mould" class="mould" style="display:none;">
       <td  class="" style="padding-left:10px" >{t}Email{/t}:</td>
       <td style="padding-left:10px">

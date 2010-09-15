@@ -8,10 +8,10 @@ include_once('common.php');
 		      var tableid=2;
 		      var tableDivEL="table"+tableid;
 		      var ColumnDefs = [
-					{key:"id", label:"<?=_('Product ID')?>", width:90,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-					,{key:"store", label:"<?=_('Store')?>", width:120,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-					,{key:"description", label:"<?=_('Description')?>", sortable:true, width:240,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-					,{key:"parts", label:"<?=_('Parts')?>",width:120,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+					{key:"id", label:"<?php echo _('Product ID')?>", width:90,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+					,{key:"store", label:"<?php echo _('Store')?>", width:120,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+					,{key:"description", label:"<?php echo _('Description')?>", sortable:true, width:240,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+					,{key:"parts", label:"<?php echo _('Parts')?>",width:120,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 
 					];
 		      
@@ -65,3 +65,13 @@ include_once('common.php');
 	    };
     });
 
+
+function init(){
+ init_search('products');
+
+
+    
+    
+}
+
+YAHOO.util.Event.onDOMReady(init);
