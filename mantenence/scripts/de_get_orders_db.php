@@ -26,6 +26,7 @@ $to_update=array(
                'departments'=>array(),
                'stores'=>array(),
                'parts'=>array()
+               
            );
 
 $con=@mysql_connect($dns_host,$dns_user,$dns_pwd );

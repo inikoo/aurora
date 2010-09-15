@@ -466,10 +466,11 @@ class Email extends DB_Table {
         $res=mysql_query($sql);
         // print $sql;
         while ($row=mysql_fetch_array($res)) {
-            print_r($row);
-            print"email $data alredy n the system whan trying to updating it !!!!!!!! cjack in class.Email.php\n";
-            return;
-
+            //print_r($row);
+            //print"email $data alredy n the system whan trying to updating it !!!!!!!! cjack in class.Email.php\n";
+            $this->msg_updated=_('Email is already associated with another contact');
+$this->error_updated=true;
+return;
         }
 
 

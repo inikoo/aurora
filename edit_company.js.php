@@ -79,7 +79,7 @@ foreach($contacts as $contact){
 			 ,$email->data['Email']
 			 ,addslashes($email->data['Email Contact Name'])
 			 ,addslashes('')
-			 ,''
+			 ,$email->data['Email Is Main']
 			 );
   }
   $email_data=preg_replace('/^,/','',$email_data);
@@ -304,27 +304,6 @@ CountryDS.maxCacheEntries = 100;
 
 
 
-
-
-
-
-
-
-
-
-
-//var change_block = function(e){
-//   if(Dom.hasClass(this, 'selected'))
-//	return;
- //   Dom.removeClass(current_block, 'selected');
-//    Dom.addClass(this, 'selected');
-//    Dom.setStyle('d_'+current_block, 'display','none');
-//    Dom.setStyle('d_'+this.id, 'display','');
-//    current_block=this.id;
-//};
-
-
-
 var save_details=function(e){
     var items = ["name","fiscal_name","tax_number","registration_number"];
     var table='company';
@@ -332,22 +311,22 @@ var save_details=function(e){
     for ( var i in items )
 	{
 	    var key=items[i];
-	    var value=Dom.get(items[i]).value;
+	    var value=Dom.get(key).value;
 	    var request='ar_edit_contacts.php?tipo=edit_'+table+'&key=' + key + '&newvalue=' + encodeURIComponent(value)+'&id='+company_key; 
-	   
+	//   alert(request);
 	    YAHOO.util.Connect.asyncRequest('POST',request ,{
 		    success:function(o) {
-			alert(o.responseText);
+			//alert(o.responseText);
 			var r =  YAHOO.lang.JSON.parse(o.responseText);
 			if(r.action=='updated'){
-			    Dom.get(items[i]).value=r.value;
-			    Dom.get(items[i]).getAttribute('ovalue')=r.newvalue;
+			    Dom.get(r.key).value=r.newvalue;
+			    Dom.get(r.key).setAttribute('ovalue',r.newvalue);
 			    save_details++;
 			}else if(r.action=='error'){
 			    alert(r.msg);
 			}
 			    
-
+update_details()
 			
 		    }
 		});

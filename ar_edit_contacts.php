@@ -298,10 +298,10 @@ function edit_company() {
     }
 
     $translator=array(
-                    'name'=>'Company Name'
-                           ,'fiscal_name'=>'Company Fiscal Name'
-                                          ,'tax_number'=>'Company Tax Number'
-                                                        ,'registration_number'=>'Company Registration Number'
+                    'name'=>'Company Name',
+                           'fiscal_name'=>'Company Fiscal Name',
+                                          'tax_number'=>'Company Tax Number',
+                                                        'registration_number'=>'Company Registration Number'
 
 
                 );
@@ -312,7 +312,7 @@ function edit_company() {
 
                          $translator[$_REQUEST['key']]=>stripslashes(urldecode($_REQUEST['newvalue']))
                      );
-        print_r($update_data);
+        //print_r($update_data);
         $company->update($update_data);
 
         if ($company->error_updated) {
@@ -372,7 +372,7 @@ function edit_email($data) {
         $email->set_editor($editor);
         $email->update(array('Email'=>$data['value']['Email']));
         if ($email->error_updated) {
-            $response=array('state'=>200,'action'=>'error','msg'=>$email->msg_updated);
+            $response=array('state'=>200,'action'=>'error','msg'=>$email->msg_updated,'email_key'=>$data['value']['Email Key']);
             echo json_encode($response);
             return;
         }
@@ -381,12 +381,14 @@ function edit_email($data) {
             $msg=_('Email updated');
 
         $update_data=array(
-                         'Email Key'=>$data['value']['Email Key']
-                                     ,'Email Description'=>$data['value']['Email Description']
-                                                          ,'Email Is Main'=>$data['value']['Email Is Main']
-                                                                           ,'Email Contact Name'=>$data['value']['Email Contact Name']
+                         'Email Key'=>$data['value']['Email Key'],
+                         'Email Description'=>$data['value']['Email Description'],
+                         'Email Is Main'=>$data['value']['Email Is Main'],
+                         'Email Contact Name'=>$data['value']['Email Contact Name']
                      );
-        $subject->add_email($update_data);
+        $subject->associate_email($email->id);
+        if ($data['value']['Email Is Main']=='Yes')
+            $subject->update_principal_email($email->id);
         if ($subject->updated)
             $msg=_('Email updated');
         $email->set_scope($data['subject'],$data['subject_key']);
@@ -394,14 +396,14 @@ function edit_email($data) {
     } else {
         $action='created';
         $update_data=array(
-                         'Email'=>$data['value']['Email']
-                                 ,'Email Description'=>$data['value']['Email Description']
-                                                      ,'Email Is Main'=>$data['value']['Email Is Main']
-                                                                       ,'Email Contact Name'=>$data['value']['Email Contact Name']
+                         'Email'=>$data['value']['Email'],
+                         'Email Description'=>$data['value']['Email Description'],
+                         'Email Is Main'=>$data['value']['Email Is Main'],
+                         'Email Contact Name'=>$data['value']['Email Contact Name']
                      );
         $subject->add_email($update_data,'if found error');
         if ($subject->error) {
-            $response=array('state'=>200,'action'=>'error','msg'=>$subject->msg_updated);
+            $response=array('state'=>200,'action'=>'error','msg'=>$subject->msg_updated,'email_key'=>$data['value']['Email Key']);
             echo json_encode($response);
             return;
         }
@@ -410,26 +412,26 @@ function edit_email($data) {
             $email->set_scope($data['subject'],$data['subject_key']);
             $msg=_("Email created");
         } else {
-            $response=array('state'=>200,'action'=>'nochange','msg'=>$subject->msg_updated);
+            $response=array('state'=>200,'action'=>'nochange','msg'=>$subject->msg_updated,'email_key'=>$data['value']['Email Key']);
             echo json_encode($response);
             return;
         }
     }
     $updated_email_data=array(
-                            'Email'=>$email->data['Email']
-                                    ,'Email_Description'=>$email->data['Email Description']
-                                                         ,'Email_Contact_Name'=> $email->data['Email Contact Name']
-                                                                               ,'Email_Is_Main'=> $email->data['Email Is Main']
+                            'Email'=>$email->data['Email'],
+                            'Email_Description'=>$email->data['Email Description'],
+                            'Email_Contact_Name'=> $email->data['Email Contact Name'],
+                            'Email_Is_Main'=> $email->data['Email Is Main']
                         );
     $subject->reread();
     $response=array(
-                  'state'=>200
-                          ,'action'=>$action
-                                    ,'msg'=>$msg
-                                           ,'email_key'=>$email->id
-                                                        ,'updated_data'=>$updated_email_data
-                                                                        ,'xhtml_subject'=>$subject->display('card')
-                                                                                         ,'main_email_key'=>$subject->get_main_email_key()
+                  'state'=>200,
+                  'action'=>$action,
+                  'msg'=>$msg,
+                  'email_key'=>$data['value']['Email Key'],
+                  'updated_data'=>$updated_email_data,
+                  'xhtml_subject'=>$subject->display('card'),
+                  'main_email_key'=>$subject->get_principal_email_key()
               );
 
     echo json_encode($response);
@@ -1368,7 +1370,7 @@ function delete_email() {
     $subject->remove_email($email_key);
     if ($is_company) {
         $contact_found_keys=$subject->get_contact_keys();
-        print_r($contact_found_keys);
+        //print_r($contact_found_keys);
         foreach($contact_found_keys as $contact_found_key) {
             $contact=new Contact($contact_found_key);
             $contact->editor=$subject->editor;
