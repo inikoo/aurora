@@ -49,7 +49,7 @@ $correct_partner=true;
 $force_update=true;
 
 
-$orders_array_full_path = glob("/Users/raul/dw/mantenence/scripts/orders-poland/*.csv");
+$orders_array_full_path = glob("/mnt/z/orders-poland/*.csv");
 //$orders_array_full_path=array_reverse($orders_array_full_path);
 
 
