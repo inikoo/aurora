@@ -1335,14 +1335,25 @@ if(isset( $_REQUEST['tableid']))
    $_order=$order;
    $_dir=$order_direction;
 
-   if($order=='customer')
+  if($order=='dispatched')
+         $order='dispatched';
+ elseif($order=='orders')
+         $order='orders';
+          elseif($order=='charged')
+         $order='charged';
+          elseif($order=='to_dispatch')
+         $order='to_dispatch';
+          elseif($order=='dispatched')
+         $order='dispatched';
+          elseif($order=='nodispatched')
+         $order='nodispatched';
+  else
      $order='`Customer Name`';
 
 
-   $sql=sprintf("select   CD.`Customer Key` as customer_id,`Customer Name`,`Customer Main Location`,sum(`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`-`Invoice Transaction Net Refund Amount`) as charged ,count(distinct `Order Key`) as orders ,sum(`Shipped Quantity`) as dispatched,sum(`Current Manufacturing Quantity`+`Current On Shelf Quantity`+`Current On Box Quantity`) as todispach,sum(`No Shipped Due Out of Stock`+`No Shipped Due No Authorized`+`No Shipped Due Not Found`) as nodispatched from     `Order Transaction Fact` OTF left join `Customer Dimension` CD on (OTF.`Customer Key`=CD.`Customer Key`)  left join `Product History Dimension` PD on (PD.`Product Key`=OTF.`Product Key`)       left join `Product Dimension` P  on (PD.`Product ID`=P.`Product ID`)     $where $wheref  group by CD.`Customer Key`    order by $order $order_direction  limit $start_from,$number_results "
+   $sql=sprintf("select   CD.`Customer Key` as customer_id,`Customer Name`,`Customer Main Location`,sum(`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`-`Invoice Transaction Net Refund Amount`) as charged ,count(distinct `Order Key`) as orders ,sum(`Shipped Quantity`) as dispatched,sum(`Current Manufacturing Quantity`+`Current On Shelf Quantity`+`Current On Box Quantity`) as to_dispatch,sum(`No Shipped Due Out of Stock`+`No Shipped Due No Authorized`+`No Shipped Due Not Found`) as nodispatched from     `Order Transaction Fact` OTF left join `Customer Dimension` CD on (OTF.`Customer Key`=CD.`Customer Key`)  left join `Product History Dimension` PD on (PD.`Product Key`=OTF.`Product Key`)       left join `Product Dimension` P  on (PD.`Product ID`=P.`Product ID`)     $where $wheref  group by CD.`Customer Key`    order by $order $order_direction  limit $start_from,$number_results "
 		);
 
-   // print "$sql\n";
    $data=array();
    
   $res = mysql_query($sql);
@@ -1353,7 +1364,7 @@ if(isset( $_REQUEST['tableid']))
 		   'customer'=>sprintf('<a href="customer.php?id=%d"><b>%s</b></a>, %s',$row['customer_id'],$row['Customer Name'],$row['Customer Main Location']),
 		   'charged'=>money($row['charged']),
 		   'orders'=>number($row['orders']),
-		   'todispach'=>number($row['todispach']),
+		   'to_dispatch'=>number($row['to_dispatch']),
 		   'dispatched'=>number($row['dispatched']),
 		   'nodispatched'=>number($row['nodispatched'])
 
