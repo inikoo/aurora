@@ -9704,14 +9704,25 @@ $rtext=$total_records." ".ngettext('stock operation','stock operations',$total_r
         elseif($qty==0) {
             $qty='';
         }
+        
+        switch ($data['Inventory Transaction Type']) {
+            case 'Order In Process':
+                $transaction_type='OIP';
+                break;
+            default:
+                $transaction_type=$data['Inventory Transaction Type'];
+                break;
+        }
+        
+        
         $location=sprintf('<a href="location.php?id=%d">%s</a>',$data['Location Key'],$data {'Location Code'});
         $adata[]=array(
 
-                     'type'=>$data['Inventory Transaction Type']
-                            ,'change'=>$qty
-                                      ,'date'=>strftime("%c", strtotime($data['Date']))
-                                              ,'note'=>$data['Note']
-                                                      ,'location'=>$location
+                     'type'=>$transaction_type,
+                            'change'=>$qty,
+                            'date'=>strftime("%c", strtotime($data['Date'])),
+                            'note'=>$data['Note'],
+                             'location'=>$location
 
                  );
     }

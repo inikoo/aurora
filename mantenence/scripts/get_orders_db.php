@@ -138,7 +138,7 @@ $sql="select *,replace(   replace(replace(replace(replace(replace(replace(replac
 //$sql="select * from  orders_data.orders  where    (last_transcribed is NULL  or last_read>last_transcribed) and deleted='No'  order by filename ";
 $sql="select * from  orders_data.orders where filename like '%/a/%.xls'   order by filename";
 //$sql="select * from  orders_data.orders where filename like '%/24854.xls'   order by filename";
-//$sql="select * from  orders_data.orders where filename like '%/114585.xls'   order by filename";
+$sql="select * from  orders_data.orders where filename like '%/114585.xls'   order by filename";
 
 //$sql="select * from  orders_data.orders where filename like '%/%ref%.xls'   order by filename";
 //$sql="select * from  orders_data.orders  where filename like '/mnt/%/Orders/93284.xls' order by filename";
