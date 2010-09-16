@@ -39,6 +39,24 @@ $version='V 1.0';
 
 $Data_Audit_ETL_Software="$software $version";
 
+
+$_argv=$_SERVER['argv'];
+if(isset($_argv[1]))
+$date=$_argv[1];
+else
+$date=date("Y-m-d H:i:s");
+
+$editor=array(
+                            'Date'=>$date,
+                            'Author Name'=>'',
+                            'Author Alias'=>'',
+                            'Author Type'=>'',
+                            'Author Key'=>0,
+                            'User Key'=>0,
+                        );
+
+
+
 $file_name='/data/plaza/AWorder2002.xls';
 //$csv_file='order_uk_tmp.csv';
 $csv_file='gb.csv';
@@ -52,10 +70,10 @@ $count=0;
 $store_key=1;
 $create_cat=false;
 
-$gold_camp=new Campaign('code','GB.GR');
-$vol_camp=new Campaign('code','GB.Vol');
-$bogof_camp=new Campaign('code','GB.BOGOF');
-$fam_promo=$fam_promo=new Family('code','Promo_GB',$store_key);
+$gold_camp=new Campaign('code','UK.GR');
+$vol_camp=new Campaign('code','UK.Vol');
+$bogof_camp=new Campaign('code','UK.BOGOF');
+$fam_promo=$fam_promo=new Family('code','Promo_UK',$store_key);
 $fam_promo_key=$fam_promo->id;
 
 
@@ -95,13 +113,13 @@ while(($_cols = fgetcsv($handle_csv))!== false){
 
 
 $fam_name='Products Without Family';
-$fam_code='PND_GB';
+$fam_code='PND_UK';
 
 
 $new_family=true;
 
 
-$department_name='ND';
+$department_name='ND_UK';
 $department_code='Products Without Department';
 
 $current_fam_name='';
@@ -392,6 +410,7 @@ foreach($__cols as $cols){
 
 
        $dep_data=array(
+                'editor'=>$editor,
 		       'Product Department Code'=>$department_code,
 		       'Product Department Name'=>$department_name,
 		       'Product Department Store Key'=>$store_key
@@ -401,6 +420,7 @@ foreach($__cols as $cols){
     
 	 
 	 $fam_data=array(
+	           'editor'=>$editor,
 			 'Product Family Code'=>$current_fam_code,
 			 'Product Family Name'=>$current_fam_name,
 			 'Product Family Main Department Key'=>$department->id,
@@ -494,6 +514,7 @@ foreach($__cols as $cols){
 
 
        $data=array(
+         'editor'=>$editor,
 		  'product sales type'=>'Public Sale',
 		  'product type'=>'Normal',
 		  'product record type'=>'Normal',
@@ -511,8 +532,8 @@ foreach($__cols as $cols){
 		  'product special characteristic'=>$special_char,
 		  'product net weight'=>$_w,
 		  'product gross weight'=>$_w,
-		  'product valid from'=>date('Y-m-d H:i:s'),
-		  'product valid to'=>date('Y-m-d H:i:s'),
+		  'product valid from'=>$editor['date'],
+		  'product valid to'=>$editor['date'],
 		  'deals'=>$deals
 		    );
 
@@ -685,86 +706,11 @@ if(preg_match('/pouches/i',$department_code)){
 
 
 
-function create_shipping(){
-  $max_cost=-1;
-  $sql="select `World Region`,GROUP_CONCAT(\"'\",`Country Name`,\"'\") as countries,`World Region Key`  from kbase.`Country Dimension` group by `World Region`  ";
-  $res=mysql_query($sql);
-  while($row=mysql_fetch_array($res)){
-    $world_region=$row['World Region'];
-    $countries=$row['countries'];
-    $wr_key=$row['World Region Key'];
-
-    //print "$world_region \n";
-    //$sql="insert into kbase.`World Region Dimension` (`World Region Name`) values ('$world_region')";
-    //mysql_query($sql);
-    //$wr_key=mysql_insert_id();
-    //mysql_query("update kbase.`Country Dimension` set `World Region Key`=$wr_key where `World Region`='$world_region'  ");
-
-   
-    $sql=sprintf("select AVG(carriage) as cost from aw_old.paso_ordersxls  left join aw_old.paso_customer as pc on (pc.id=paso_cust) where tipo=3 and  a38!=40849 and carriage>0  and a10 not like  'UK' and  a10 not like '' and a10 in (%s);"
-		 ,$countries
-		 );
-    $res2=mysql_query($sql);
-    if($row2=mysql_fetch_array($res2)){
-      $cost=(float) $row2['cost'];
-      if($max_cost<$cost)
-	$max_cost=$cost;
-    }else
-      $cost=0;
-    
-    $data=array('Shipping Type'=>'Normal','Shipping Destination Type'=>'World Region','Shipping Destination Key'=>$wr_key,'Shipping Price Method'=>'Flat','Shipping Allowance Metadata'=>sprintf("%.2f",$cost));
-    
-    $shipping=new Shipping('find create',$data);
-    
-    print "$world_region $cost $max_cost\n";
-  }
-
-  $sql=sprintf("update `Shipping Dimension` set `Shipping Allowance Metadata`=%.2f where  `Shipping Allowance Metadata`='0.00'",$max_cost);
-   $res=mysql_query($sql);
-
-
-
-$sql="select *  from kbase.`Country Dimension`   ";
-  $res=mysql_query($sql);
-  while($row=mysql_fetch_array($res)){
-    
-    $sql=sprintf("select AVG(carriage) as cost from aw_old.paso_ordersxls  left join aw_old.paso_customer as pc on (pc.id=paso_cust) where tipo=3 and  a38!=40849 and carriage>0  and a10 in ('%s');"
-		 ,$row['Country Name']
-		 );
-    $res2=mysql_query($sql);
-    if($row2=mysql_fetch_array($res2)){
-      $cost=(float) $row2['cost'];
- 
-      
-    }else{
-      $cost=0;
-
-    }
-
-      
-
-    if($cost>0){
-      $cost=(float) $row2['cost'];
- $data=array('Shipping Type'=>'Normal','Shipping Destination Type'=>'Country','Shipping Destination Key'=>$row['Country Key'],'Shipping Price Method'=>'Flat','Shipping Allowance Metadata'=>sprintf("%.2f",$cost));
-    
-    $shipping=new Shipping('find create',$data);
-      
-    }else{
-       $data=array('Shipping Type'=>'Normal','Shipping Destination Type'=>'Country','Shipping Destination Key'=>$wr_key,'Shipping Price Method'=>'Parent','Shipping Allowance Metadata'=>$row['World Region Key']);
-    
-       $shipping=new Shipping('find create',$data);
-
-    }
-    
-
-  }
-
-}
 
 
 function update_supplier_part($code,$scode,$supplier_code,$units,$w,$product,$description,$supplier_cost){
 global $myconf;
- $product->update_for_sale_since(date("Y-m-d H:i:s",strtotime("now +1 seconds")));
+ $product->update_for_sale_since(date("Y-m-d H:i:s",strtotime($editor['date']." +1 seconds")));
 	if(preg_match('/^SG\-|^info\-/i',$code))
 	  $supplier_code='AW';
 	if($supplier_code=='AW')
@@ -1356,6 +1302,7 @@ if(preg_match('/^Wenzels$/i',$supplier_code)){
 	if(preg_match('/^(apac)$/i',$supplier_code)){
 	  $supplier_code='Salco';
 	  $the_supplier_data=array(
+	    'editor'=>$editor,
 				   'Supplier Name'=>'APAC Packaging Ltd'
 				   ,'Supplier Code'=>$supplier_code
 				   ,'Supplier Address Line 1'=>'Loughborough Road'
@@ -1387,8 +1334,9 @@ if(preg_match('/^Wenzels$/i',$supplier_code)){
 	if($supplier_code=='' or $supplier_code=='0'){
 	  $supplier_code='Unknown';
 	  $the_supplier_data=array(
-				   'Supplier Name'=>'Unknown Supplier'
-				   ,'Supplier Code'=>$supplier_code
+	               'editor'=>$editor, 
+				   'Supplier Name'=>'Unknown Supplier',
+				   'Supplier Code'=>$supplier_code
 				   );
 	}
 	
@@ -1442,13 +1390,14 @@ if(preg_match('/^Wenzels$/i',$supplier_code)){
 	  $scode='?'.$code;
 	}
 	$sp_data=array(
+	  'editor'=>$editor,
 		       'Supplier Key'=>$supplier->id,
 		       'Supplier Product Code'=>$scode,
 		       'Supplier Product Cost'=>sprintf("%.4f",$supplier_cost),
 		       'Supplier Product Name'=>$description,
 		       'Supplier Product Description'=>$description,
-		       'Supplier Product Valid From'=>date('Y-m-d H:i:s'),
-		       'Supplier Product Valid To'=>date('Y-m-d H:i:s')
+		       'Supplier Product Valid From'=>$editor['date'],
+		       'Supplier Product Valid To'=>$editor['date']
 		       );
 	$supplier_product=new SupplierProduct('find',$sp_data,'create');
 	if($supplier_product->found_in_key){
@@ -1459,14 +1408,15 @@ if(preg_match('/^Wenzels$/i',$supplier_code)){
 	
 
 	$part_data=array(
+	          'editor'=>$editor,
 			 'Part Most Recent'=>'Yes',
 			 'Part XHTML Currently Supplied By'=>sprintf('<a href="supplier.php?id=%d">%s</a>',$supplier->id,$supplier->get('Supplier Code')),
 			 'Part XHTML Currently Used In'=>sprintf('<a href="product.php?id=%d">%s</a>',$product->id,$product->get('Product Code')),
 			 'Part XHTML Description'=>preg_replace('/\(.*\)\s*$/i','',$product->get('Product XHTML Short Description')),
 		     'Part Unit Description'=>strip_tags(preg_replace('/\(.*\)\s*$/i','',$product->get('Product XHTML Short Description'))),
 
-			 'part valid from'=>date('Y-m-d H:i:s'),
-			 'part valid to'=>date('Y-m-d H:i:s'),
+			 'part valid from'=>$editor['date'],
+			 'part valid to'=>$editor['date'],
 			 'Part Gross Weight'=>$w
 			 );
 	$part=new Part('new',$part_data);
@@ -1479,8 +1429,8 @@ if(preg_match('/^Wenzels$/i',$supplier_code)){
 	$rules[]=array('Part Sku'=>$part->data['Part SKU'],
 		       'Supplier Product Units Per Part'=>$units
 		       ,'supplier product part most recent'=>'Yes'
-		       ,'supplier product part valid from'=>date('Y-m-d H:i:s')
-		       ,'supplier product part valid to'=>date('Y-m-d H:i:s')
+		       ,'supplier product part valid from'=>$editor['date']
+		       ,'supplier product part valid to'=>$editor['date']
 		       ,'factor supplier product'=>1
 		       );
 

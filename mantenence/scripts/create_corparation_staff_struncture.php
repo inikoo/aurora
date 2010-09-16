@@ -506,7 +506,7 @@ $small_order_charge=new Charge('find create',$charge_data);
 
 
 $dept_data=array(
-		   'Product Department Code'=>'ND',
+		   'Product Department Code'=>'ND_UK',
 		   'Product Department Name'=>'Products Without Department',
 		   'Product Department Store Key'=>$store_key
 		   );
@@ -515,7 +515,7 @@ $dept_no_dept=new Department('find',$dept_data,'create');
 $dept_no_dept_key=$dept_no_dept->id;
 
 $dept_data=array(
-		   'Product Department Code'=>'Promo',
+		   'Product Department Code'=>'Promo_UK',
 		   'Product Department Name'=>'Promotional Items',
 		   'Product Department Store Key'=>$store_key
 		   );
@@ -524,7 +524,7 @@ $dept_promo=new Department('find',$dept_data,'create');
 $dept_promo_key=$dept_promo->id;
 
 $fam_data=array(
-		   'Product Family Code'=>'PND_GB',
+		   'Product Family Code'=>'PND_UK',
 		   'Product Family Name'=>'Products Without Family',
 		   'Product Family Main Department Key'=>$dept_no_dept_key,
 		   'Product Family Store Key'=>$store_key,
@@ -537,7 +537,7 @@ $fam_no_fam_key=$fam_no_fam->id;
 //print_r($fam_no_fam);
 
 $fam_data=array(
-		   'Product Family Code'=>'Promo_GB',
+		   'Product Family Code'=>'Promo_UK',
 		   'Product Family Name'=>'Promotional Items',
 		   'Product Family Main Department Key'=>$dept_promo_key,
 		   'Product Family Store Key'=>$store_key,
@@ -556,7 +556,7 @@ $fam_promo_key=$fam_promo->id;
 
  $campaign=array(
 		     'Campaign Name'=>'Gold Reward'
-		     ,'Campaign Code'=>'GB.GR'
+		     ,'Campaign Code'=>'UK.GR'
 		     ,'Campaign Description'=>'Small order charge waive & discounts on seleted items if last order within 1 calendar month'
 		     ,'Campaign Begin Date'=>''
 		     ,'Campaign Expiration Date'=>''
@@ -598,7 +598,7 @@ $gold_reward_cam_id=$gold_camp->id;
 
 $campaign=array(
 		     'Campaign Name'=>'Volumen Discount'
-		      ,'Campaign Code'=>'GB.Vol'
+		      ,'Campaign Code'=>'UK.Vol'
 		     ,'Campaign Trigger'=>'Family'
 		     ,'Campaign Description'=>'Percentage off when order more than some quantity of products in the same family'
 		     ,'Campaign Begin Date'=>''
@@ -626,7 +626,7 @@ $volume_cam_id=$vol_camp->id;
 
 $free_shipping_campaign_data=array(
 		     'Campaign Name'=>'Free Shipping'
-		      ,'Campaign Code'=>'GB.FShip'
+		      ,'Campaign Code'=>'UK.FShip'
 		     ,'Campaign Description'=>'Free shipping to selected destinations when order more than some amount'
 		     ,'Campaign Begin Date'=>''
 		     ,'Campaign Expiration Date'=>''
@@ -662,7 +662,7 @@ $free_shipping_campaign->create_deal('[Country Name] Free Shipping',$data);
 
 $campaign=array(
 		     'Campaign Name'=>'BOGOF'
-		       ,'Campaign Code'=>'GB.BOGOF'
+		       ,'Campaign Code'=>'UK.BOGOF'
 		     ,'Campaign Description'=>'Buy one Get one Free'
 		     ,'Campaign Begin Date'=>''
 		     ,'Campaign Expiration Date'=>''
@@ -697,7 +697,7 @@ $bogof_cam_id=$bogof_camp->id;
 $campaign=array(
 		     'Campaign Name'=>'First Order Bonus'
 		     ,'Campaign Trigger'=>'Order'
-		       ,'Campaign Code'=>'GB.FOB'
+		       ,'Campaign Code'=>'UK.FOB'
 		     ,'Campaign Description'=>'When you order over £100+vat for the first time we give you over a £100 of stock. (at retail value).'
 		     ,'Campaign Begin Date'=>''
 		     ,'Campaign Expiration Date'=>''

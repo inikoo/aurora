@@ -81,56 +81,19 @@ $version='V 1.0';
 $Data_Audit_ETL_Software="$software $version";
 srand(12344);
 
-$store_key=1;
-$dept_no_dept=new Department('code_store','ND',$store_key);
-if (!$dept_no_dept->id) {
-    $dept_data=array(
-                   'code'=>'ND',
-                   'name'=>'Products Without Department',
-                   'store_key'=>$store_key
-               );
-    $dept_no_dept=new Department('create',$dept_data);
-    $dept_no_dept_key=$dept_no_dept->id;
-}
-$dept_promo=new Department('code_store','Promo',$store_key);
-if (!$dept_promo->id) {
-    $dept_data=array(
-                   'code'=>'Promo',
-                   'name'=>'Promotional Items',
-                   'store_key'=>$store_key
-               );
-    $dept_promo=new Department('create',$dept_data);
+$store=new Store("code","UK");
+$store_key=$store->id;
 
-}
-
-
+$dept_no_dept=new Department('code','ND_UK',$store_key);
 $dept_no_dept_key=$dept_no_dept->id;
+$dept_promo=new Department('code','Promo_UK',$store_key);
 $dept_promo_key=$dept_promo->id;
 
-$fam_no_fam=new Family('code_store','PND_GB',$store_key);
-if (!$fam_no_fam->id) {
-    $fam_data=array(
-                  'Product Family Code'=>'PND_GB',
-                  'Product Family Name'=>'Products Without Family',
-                  'Product Family Main Department Key'=>$dept_no_dept_key
-              );
-    $fam_no_fam=new Family('create',$fam_data);
-    $fam_no_fam_key=$fam_no_fam->id;
-}
-$fam_promo=new Family('code_store','Promo_GB',$store_key);
-if (!$fam_promo->id) {
-    $fam_data=array(
-                  'code'=>'Promo_GB',
-                  'name'=>'Promotional Items',
-                  'Product Family Main Department Key'=>$dept_promo_key
-              );
-    $fam_promo=new Family('create',$fam_data);
 
-}
-
+$fam_no_fam=new Family('code','PND_UK',$store_key);
 $fam_no_fam_key=$fam_no_fam->id;
+$fam_promo=new Family('code','Promo_UK',$store_key);
 $fam_promo_key=$fam_promo->id;
-
 
 
 $sql="select *,replace(   replace(replace(replace(replace(replace(replace(replace(replace(filename,'r/Orders/','r/Orders/00'),'s/Orders/','s/Orders/0'),'y/Orders/','y/Orders/0'),'z/Orders/9','z/Orders/09'),'x/Orders/','x/Orders/0'),'t/Orders/','t/Orders/0'),'u/Orders/','u/Orders/0'),'z/Orders/8','z/Orders/08')     ,directory,'') as name from  orders_data.orders  where   (last_transcribed is NULL  or last_read>last_transcribed) and deleted='No' and filename like '%/a/%.xls'  order by name ";

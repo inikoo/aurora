@@ -36,7 +36,7 @@ $version='V 1.0';
 $Data_Audit_ETL_Software="$software $version";
 
 
-$days=8000;
+$days=30;
 
 $currencies=array();
 $sql=sprintf("select `Country Currency Code` from kbase.`Country Dimension` group by `Country Currency Code`");

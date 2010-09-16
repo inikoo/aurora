@@ -80,49 +80,15 @@ srand(12341);
 $store=new Store("code","FR");
 $store_key=$store->id;
 
-$dept_data=array(
-               'Product Department Code'=>'ND',
-               'Product Department Name'=>'Products Without Department',
-               'Product Department Store Key'=>$store_key
-           );
-
-$dept_no_dept=new Department('find',$dept_data);
+$dept_no_dept=new Department('code','ND_FR',$store_key);
 $dept_no_dept_key=$dept_no_dept->id;
-
-$dept_data=array(
-               'Product Department Code'=>'Promo',
-               'Product Department Name'=>'Promotional Items',
-               'Product Department Store Key'=>$store_key
-           );
-$dept_promo=new Department('find',$dept_data);
+$dept_promo=new Department('code','Promo_FR',$store_key);
 $dept_promo_key=$dept_promo->id;
 
-$fam_data=array(
-              'Product Family Code'=>'PND_FR',
-              'Product Family Name'=>'Products Without Family',
-              'Product Family Main Department Key'=>$dept_no_dept_key,
-              'Product Family Store Key'=>$store_key,
-              'Product Family Special Characteristic'=>'None'
-          );
 
-$fam_no_fam=new Family('find',$fam_data);
+$fam_no_fam=new Family('code','PND_FR',$store_key);
 $fam_no_fam_key=$fam_no_fam->id;
-
-$fam_data=array(
-              'Product Family Code'=>'Promo_FR',
-              'Product Family Name'=>'Promotional Items',
-              'Product Family Main Department Key'=>$dept_promo_key,
-              'Product Family Store Key'=>$store_key,
-              'Product Family Special Characteristic'=>'None'
-          );
-
-
-
-$fam_promo=new Family('find',$fam_data);
-
-
-
-$fam_no_fam_key=$fam_no_fam->id;
+$fam_promo=new Family('code','Promo_FR',$store_key);
 $fam_promo_key=$fam_promo->id;
 
 $sql="select * from  fr_orders_data.orders  where deleted='Yes'  order by filename  ";
