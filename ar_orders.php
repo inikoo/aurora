@@ -2302,9 +2302,9 @@ function transactions_to_process(){
 		   ,'description'=>$row['Product XHTML Short Description']
 		   ,'tariff_code'=>$row['Product Tariff Code']
 		   ,'quantity'=>number($row['Order Quantity'])
-		   ,'gross'=>money($row['Order Transaction Gross Amount'])
-		   ,'discount'=>money($row['Order Transaction Total Discount Amount'])
-		   ,'to_charge'=>money($row['Order Transaction Gross Amount']-$row['Order Transaction Total Discount Amount'])
+		   ,'gross'=>money($row['Order Transaction Gross Amount'],$row['Order Currency Code'])
+		   ,'discount'=>money($row['Order Transaction Total Discount Amount'],$row['Order Currency Code'])
+		   ,'to_charge'=>money($row['Order Transaction Gross Amount']-$row['Order Transaction Total Discount Amount'],$row['Order Currency Code'])
 		   );
    }
 
@@ -2364,9 +2364,9 @@ function transactions_cancelled(){
 		   ,'description'=>$row['Product XHTML Short Description']
 		   ,'tariff_code'=>$row['Product Tariff Code']
 		   ,'quantity'=>number($row['Order Quantity'])
-		   ,'gross'=>money($row['Order Transaction Gross Amount'])
-		   ,'discount'=>money($row['Order Transaction Total Discount Amount'])
-		   ,'to_charge'=>money($row['Order Transaction Gross Amount']-$row['Order Transaction Total Discount Amount'])
+		   ,'gross'=>money($row['Order Transaction Gross Amount'],$row['Order Currency Code'])
+		   ,'discount'=>money($row['Order Transaction Total Discount Amount'],$row['Order Currency Code'])
+		   ,'to_charge'=>money($row['Order Transaction Gross Amount']-$row['Order Transaction Total Discount Amount'],$row['Order Currency Code'])
 		   );
    }
 

@@ -60,11 +60,16 @@ $column=0;
 $products=false;
 $count=0;
 
-$store=new Store('find','PL');
+$store=new Store('code','PL');
 $store_key=$store->id;
 
+$gold_camp=new Campaign('code','PL.GR');
+$vol_camp=new Campaign('code','PL.Vol');
+$bogof_camp=new Campaign('code','PL.BOGOF');
+$fam_promo=$fam_promo=new Family('code','Promo_PL',$store_key);
+$fam_promo_key=$fam_promo->id;
 
-$gold_camp=new Campaign('find create',$campaign);
+
 
 $__cols=array();
 $inicio=false;

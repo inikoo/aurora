@@ -144,7 +144,8 @@ while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
 
 
   $sql=sprintf("select `Invoice Category`,`Store Name`,`Store Key`,`Store Currency Code`,sum(if(`Invoice Title`='Invoice',1,0)) as invoices,sum(`Invoice Total Profit`) as profit,sum(`Invoice Total Net Amount`) as net,sum(`Invoice Total Tax Amount`) as tax ,sum(`Invoice Total Net Amount`*`Invoice Currency Exchange`) as eq_net,sum(`Invoice Total Tax Amount`*`Invoice Currency Exchange`) as eq_tax from `Invoice Dimension` I left join `Store Dimension` S on (S.`Store Key`=`Invoice Store Key`) where `Invoice Store Key`=%d %s group by `Invoice Category`",$row['Store Key'],$int[0]);
-  $result2=mysql_query($sql);
+// print $sql."<br><br>";
+ $result2=mysql_query($sql);
   if(mysql_num_rows($result2) >1 ){
     while($row2=mysql_fetch_array($result2, MYSQL_ASSOC)){
       $store_data[$row['Store Key'].'.'.$row2['Invoice Category']]=array(

@@ -1212,6 +1212,7 @@ $store_data=array('Store Code'=>'PL',
 		  'Store URL'=>'www.aw-podarki.com',
 		  'Store Telephone'=>'+48 1142 677 736',
 		  'Store Email'=>'urszula@aw-podarki.com',
+		   'Store Tax Category Code'=>'S1',
 		  		 'Store Collection Address Key'=> $address_collection_address_key
 
 		  );

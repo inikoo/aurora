@@ -1387,7 +1387,7 @@ function add_order_transaction($data) {
 
                 $amount='Order '.$key;
 
-                return money($this->data[$amount]);
+                return money($this->data[$amount],$this->data['Order Currency']);
             }
 
 
@@ -2904,6 +2904,10 @@ $tax_category=new TaxCategory('code',$customer->data['Customer Tax Category Code
             $this->data ['Order Store Code'] = $store->data[ 'Store Code' ];
             $this->data ['Order XHTML Store'] = sprintf ( '<a href="store.php?id=%d">%s</a>', $store->id, $store->data[ 'Store Code' ] );
             $this->data ['Order Currency']=$store->data[ 'Store Currency Code' ];
+            
+         //   print_r($this->data);
+            
+            
             $this->public_id_format=$store->data[ 'Store Order Public ID Format' ];
 
 if(!isset($this->data ['Order Tax Code'])){
