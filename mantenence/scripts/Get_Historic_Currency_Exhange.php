@@ -39,24 +39,33 @@ $Data_Audit_ETL_Software="$software $version";
 $start_date='2003-01-01';
 
 $end_date=date('Y-m-d');
-chdir('../../');
-$ce=new CurrencyExchange('GBPEUR',$start_date,$end_date);
-exit;
+//chdir('../../');
+//$ce=new CurrencyExchange('GBPEUR',$start_date,$end_date);
+//exit;
 
 
 //./get_currency_exchange.py   20030101 20090701 GBPEUR=X >> currency_dat
 
 $random=md5(mt_rand());
 $tmp_file="currency_$random.txt";
-$days=100;
+$days=8000;
 
-//print "./get_currency_exchange.py   ".date("Ymd",strtotime("today -$days day"))." ".date("Ymd")." GBPEUR=X > $tmp_file\n";exit;
-exec("./get_currency_exchange.py   ".date("Ymd",strtotime("today -$days day"))." ".date("Ymd")." GBPEUR=X > $tmp_file");
-exec("./get_currency_exchange.py   ".date("Ymd",strtotime("today -$days day"))." ".date("Ymd")." EURGBP=X >> $tmp_file");
-exec("./get_currency_exchange.py   ".date("Ymd",strtotime("today -$days day"))." ".date("Ymd")." GBPUSD=X >> $tmp_file");
-exec("./get_currency_exchange.py   ".date("Ymd",strtotime("today -$days day"))." ".date("Ymd")." USDGBP=X >> $tmp_file");
-exec("./get_currency_exchange.py   ".date("Ymd",strtotime("today -$days day"))." ".date("Ymd")." USDEUR=X >> $tmp_file");
-exec("./get_currency_exchange.py   ".date("Ymd",strtotime("today -$days day"))." ".date("Ymd")." EURUSD=X >> $tmp_file");
+$currencies=array('GBP','EUR','PLN','USD','JPY','JPY','AUD','CHF','NZD','CAD','CNY','INR','MXN','BRL','KRW','HKD','ISK','ILS','NOK','DKK','SKK','ZAR','SEK');
+
+exec("echo '' > $tmp_file");
+
+foreach($currencies as $cur1){
+foreach($currencies as $cur2){
+if($cur1!=$cur2){
+print "./get_currency_exchange.py   ".date("Ymd",strtotime("today -$days day"))." ".date("Ymd")." $cur1$cur2=X >> $tmp_file\n";
+exec("./get_currency_exchange.py   ".date("Ymd",strtotime("today -$days day"))." ".date("Ymd")." $cur1$cur2=X >> $tmp_file");
+exec("./get_currency_exchange.py   ".date("Ymd",strtotime("today -$days day"))." ".date("Ymd")." $cur2$cur1=X >> $tmp_file");
+}
+
+}
+}
+
+
 
 
 $row = 1;
@@ -66,10 +75,12 @@ while (($data = fgetcsv($handle, 1000, ",")) !== FALSE) {
     $pair=preg_replace('/=X/','',$data[0]);
     $date=date("Y-m-d",strtotime($data[1]));
     $exchange=$data[2];
-
-    $sql=sprintf("insert into kbase.`History Currency Exchange Dimension` values (%s,%s,%f)  ",prepare_mysql($date) ,prepare_mysql($pair),$exchange);
-    print "$sql\n";
+    if($exchange>0){
+    $sql=sprintf("insert into kbase.`History Currency Exchange Dimension` values (%s,%s,%f)  ON DUPLICATE KEY UPDATE `Exchange`=%f  ",
+    prepare_mysql($date) ,prepare_mysql($pair),$exchange,$exchange);
+   // print "$sql\n";
     mysql_query($sql);
+}
 }
 fclose($handle);
 unset($tmp_file);

@@ -1,6 +1,66 @@
 <?php
 
+  function get_dates_pl($filedate,$header_data,$tipo_order,$new_file=true){
 
+    $datetime_updated=date("Y-m-d H:i:s",$filedate);
+    $time_updated_menos30min=date("H:i:s",$filedate-1800);
+
+    list($date_updated,$time_updated)=preg_split('/\s/',$datetime_updated);
+    if($new_file){
+      if($tipo_order==2  or $tipo_order==6 or $tipo_order==7 or $tipo_order==9  or $tipo_order==8   ){
+      
+	//print_r($header_data);
+	
+//	$header_data['date_inv']=preg_replace('/-lip-/i','-07-',$header_data['date_inv']);
+//		$header_data['date_order']=preg_replace('/-lip-/i','-07-',$header_data['date_order']);
+
+	
+	if($header_data['date_inv']=='' or $header_data['date_inv']=='1970-01-01')
+	  $header_data['date_inv']=$header_data['date_order'];
+      
+     // print_r($header_data);
+      
+      //exit;
+      
+      
+	if($date_updated ==$header_data['date_inv']){
+	
+	  $date_charged=$date_updated." ".$time_updated;
+
+	  $date_processed=$header_data['date_order']." 09:30:00";
+	  if(strtotime($date_processed)>strtotime($date_charged))
+	    $date_processed=$header_data['date_order']." ".$time_updated_menos30min;
+
+	}else{
+	  $date_charged=$header_data['date_inv']." 17:30:00";
+	  $date_processed=$header_data['date_order']." 09:30:00";
+	}
+	$date_index=$date_charged;
+      }else{
+
+
+	$date_charged="NULL";
+
+
+
+	if($date_updated ==$header_data['date_order']){
+	  //print $header_data['date_order']." xssssssssssssxx";
+	  $date_processed=$date_updated." ".$time_updated;
+	  // print "$date_processed  xssssssssssssxx\n";
+
+	}
+	else
+	  $date_processed=$header_data['date_order']." 08:30:00";
+	$date_index=$date_processed;
+
+	// print $date_index." xxx\n";
+
+      }
+    }
+    //  print "$date_index,$date_processed,$date_charged\n";
+    return array($date_index,$date_processed,$date_charged);
+
+  }
 
 
 function mb_unserialize($serial_str) {
@@ -42,6 +102,8 @@ function parse_payment_method($method){
   return 'Unknown';
 
 }
+
+
 
 
 
@@ -2725,9 +2787,6 @@ function set_principal_address($recipient_id,$tipo,$address_id,$date_index='',$h
 
 
 
-
-
-
 function insert_orden_files($order_id,$filename,$checksum,$checksum_header,$checksum_products,$file_date){
   $db =& MDB2::singleton();
 
@@ -2991,7 +3050,7 @@ function xcreate_orden($customer_id,
 
 
 
-  $a_taken=get_user_id($header['takenby'],$order_id,'taken',$header_data['order_num']);
+  $a_taken=get_user_id($header['takenby'],$order_id,'taken');
   if(count($a_taken)==1)
     $_taken=$a_taken[0];
   else
@@ -3900,14 +3959,19 @@ function set_transactions($transactions,$order_id,$tipo_order,$parent_order_id,$
 
 
 
+
 function setup_contact($act_data,$header_data,$date_index){
+
+
+
+
   $co='';
   $header_data['country_d2']='';
   $header_data['country']='';
   $header_data['country_d1']='';
 
   $new_customer=false;
-  $skip_del_address=false;
+ $skip_del_address=false;
 
 
   $this_is_order_number=$header_data['history'];
@@ -3917,19 +3981,22 @@ function setup_contact($act_data,$header_data,$date_index){
 
   }
 
+  
+
+ 
+
+  //print_r($header_data);
+  //exit;
+    
   $email='';
   $tel=$header_data['phone'];
   if(preg_match('/[a-z0-9\.\-]+\@[a-z0-9\.\-]+/',$header_data['phone'],$match)){
      $email=$match[0];
      $tel=preg_replace("/$email/",'',$header_data['phone']);
   }
-  $country='France';
-
-if(!$header_data['postcode'])
-$header_data['postcode']='';
+  $country='Poland';
   $postalcode=$header_data['postcode'];
- if(preg_match('/^[a-z]{4,} \d+$/i',$header_data['postcode'])){
- 
+  if(preg_match('/^[a-z\s]{5,} \d+$/i',$header_data['postcode'])){
     $tmp=preg_split('/\s/',$header_data['postcode']);
     $country=$tmp[0];
     $postalcode=$tmp[1];
@@ -3959,75 +4026,28 @@ $header_data['postcode']='';
     $act_data['town_d2']='';
   }
     
-
-    // Try to fix it
-    if(!isset($header_data['order_num'])){
-
   
-      exit("NO num_inv \n");
-    
-  
-  }
-
- 
   
  if(!isset($act_data['town_d1']))
     $act_data['town_d1']='';
   
 if(!isset($act_data['town_d2']))
     $act_data['town_d2']='';
- 
 
+    // Try to fix it
+    if(!isset($header_data['order_num'])){
+
+     exit("NO num_inv \n");
+
+    }
+
+
+    $different_delivery_address=false;
+    $act_data['town']=_trim($act_data['town']);
+    $header_data['postcode']=_trim( $header_data['postcode']);
     
-
+    
     $act_data=act_transformations($act_data);
-
- 
-
-
-
-
-
-  $different_delivery_address=false;
-
-
-
- 
-
-
-
-    
-/*   $extra_contact=false; */
-/*   if($act_data['contact']!=''){ */
-
-/*     $_contact=$act_data['contact']; */
-/*     $split_names=preg_split('/\s+and\s+|\&|\/|\s+or\s+/i',$act_data['contact']); */
-/*     if(count($split_names)==2){ */
-/*       $split_names1=preg_split('/\s+/i',$split_names[0]); */
-/*       $split_names2=preg_split('/\s+/i',$split_names[1]); */
-/*       if(count($split_names1)==1 and count($split_names2)==2 ){ */
-/* 	$name1=$split_names1[0].' '.$split_names2[1]; */
-/* 	$name2=$split_names[1]; */
-/*       }else{ */
-/* 	$name1=$split_names[0]; */
-/* 	$name2=$split_names[1]; */
-/*       } */
-/*       $act_data['contact']=$name1; */
-/*       $extra_contact=$name2; */
-/*       if($_contact==$act_data['name']){ */
-/* 	$act_data['name']=preg_replace('/\s+and\s+|\&|\/|\s+or\s+/i',' & ',$act_data['name']); */
-/*       } */
-
-/*     } */
-/*     $there_is_contact=true; */
-/*   }else{ */
-/*     $there_is_contact=false; */
-/*     if(!preg_match('/C \& P Trading|Peter \& Paul Ltd|Health.*Beauty.*Salon|plant.*herb/i',$act_data['name'])) */
-/*       $act_data['contact']=$act_data['name']; */
-
-/*   } */
-    
-  //  print $act_data['contact']." >>> $extra_contact   \n ";
     
   if($act_data['name']!=$act_data['contact'] )
     $tipo_customer='Company';
@@ -4039,19 +4059,6 @@ if(!isset($act_data['town_d2']))
   }
   
   
-
-  if(preg_match('/^c\/o/i',$act_data['a1'])){
-    $co=$act_data['a1'];
-    $act_data['a1']='';
-  }
-  if(preg_match('/^c\/o/i',$act_data['a2'])){
-    $co=$act_data['a2'];
-    $act_data['a2']='';
-  }
-  if(preg_match('/^c\/o/i',$act_data['a3'])){
-    $co=$act_data['a3'];
-    $act_data['a3']='';
-  }
 
   $address_raw_data=get_address_raw();
   $address_raw_data['address1']=$act_data['a1'];
@@ -4109,7 +4116,7 @@ if(!isset($act_data['town_d2']))
     $different_del_address=true;
 
 
-   
+    
 
 
     $a_diff=array_diff_assoc($del_address_data,$shop_address_data);
@@ -4173,6 +4180,11 @@ if(!isset($act_data['town_d2']))
 
 
 
+
+
+
+
+
     if(count($a_diff)==1){
     
       if(array_key_exists('postcode',$a_diff) 
@@ -4207,10 +4219,6 @@ if(!isset($act_data['town_d2']))
 
 
 
-  //  $country_id=$shop_address_data['country_id'];
-
-
-
   $email_data=guess_email($act_data['email']);
   
   // print_r($email_data);
@@ -4219,15 +4227,16 @@ if(!isset($act_data['town_d2']))
     
   $shop_address_data['default_country_id']=30;
 
+
+  if($shop_address_data['country']=='')  
+     $shop_address_data['country']='Poland';
+
+
   if(isset($act_data['act']))
     $customer_data['Customer Old ID']=$act_data['act'];
   else
     $customer_data['Customer Old ID']='';
-  if($shop_address_data['country']=='')  
-     $shop_address_data['country']='France';
-
-
- 
+      
   
   $customer_data['type']=$tipo_customer;
   $customer_data['contact_name']=$act_data['contact'];
@@ -4238,37 +4247,25 @@ if(!isset($act_data['town_d2']))
   $customer_data['mobile']=$act_data['mob'];
   $customer_data['address_data']=$shop_address_data;
   $customer_data['address_data']['type']='3line';
+
   $customer_data['address_data']=$shop_address_data;
   $customer_data['address_data']['type']='3line';
   $customer_data['address_data']['name']=$act_data['contact'];
   $customer_data['address_data']['company']=$act_data['name'];
   $customer_data['address_data']['telephone']=_trim($act_data['tel']);
 
-
-
-    if($customer_data['address_data']['country']=='Reunion'){
-      $customer_data['address_data']['country']='France';
-      $customer_data['address_data']['country_d1']='Reunion';
-
-    }
-
-
-
-
-
   $customer_data['has_shipping']=true;
   if($customer_data['has_shipping']){
     $del_address_data['default_country_id']=30;
     $customer_data['shipping_data']=$del_address_data;
+
     $customer_data['shipping_data']['name']=$header_data['customer_contact'];
     $customer_data['shipping_data']['company']=$header_data['trade_name'];
     
-    if($customer_data['shipping_data']['country']=='Reunion'){
-      $customer_data['shipping_data']['country']='France';
-      $customer_data['shipping_data']['country_d1']='Reunion';
+    if($customer_data['shipping_data']['country']=='')
+      $customer_data['shipping_data']['country']='Germany';
+    //    print "->".$customer_data['shipping_data']['country'];
 
-    }
-    
 
     $_tel=preg_split('/ /',$header_data['phone']);
     $email=$_tel[count($_tel)-1];
@@ -4303,10 +4300,10 @@ if(!isset($act_data['town_d2']))
   else
     $customer_data['Customer Old ID']='';
       
-  
-    // print_r($customer_data);
-    //exit;
-return $customer_data;
+     //print_r($customer_data);
+    // exit;
+
+  return $customer_data;
 
 
 
@@ -4331,6 +4328,8 @@ function read_header($raw_header_data,$map_act,$y_map,$map,$convert_encoding=tru
   $header_data=array();
   //first read the act part
 
+
+
   $raw_act_data=array_shift($raw_header_data);
   // print_r($raw_act_data);
   if($raw_act_data){
@@ -4342,8 +4341,7 @@ function read_header($raw_header_data,$map_act,$y_map,$map,$convert_encoding=tru
 	$cols[$key]=$col;
     }
  
-    //     print_r($cols);
-    //exit;
+    
     $act_data['name']=mb_ucwords($cols[$map_act['name']]);
     $act_data['contact']=mb_ucwords($cols[$map_act['contact']]);
     if($act_data['name']=='' and $act_data['contact']!='') // Fix only contact
@@ -4357,20 +4355,27 @@ function read_header($raw_header_data,$map_act,$y_map,$map,$convert_encoding=tru
     $act_data['postcode']=$cols[$map_act['postcode']];
    
     $act_data['country']=mb_ucwords($cols[$map_act['country']]);
+    
+    //print mb_ucwords($cols[$map_act['country']]);
+    
+    // print_r($act_data);
+
+    //exit("fixinf bug in sa_map");
+
     $act_data['tel']=$cols[$map_act['tel']];
     $act_data['fax']=$cols[$map_act['fax']];
     $act_data['mob']=$cols[$map_act['mob']];
     $act_data['source']=$cols[$map_act['source']];
     $act_data['act']=$cols[$map_act['act']];
-    $act_data['country_d1']='';
-
+    //    $act_data['email']=$cols[count($cols)-1];
     $act_data['email']=$cols[$map_act['int_email']];
 
+    $act_data['country_d1']='';
     //  if($act_data['a1']==0)$act_data['a1']='';
     //if($act_data['a2']==0)$act_data['a2']='';
     //if($act_data['a3']==0)$act_data['a3']='';
-
-      
+    // print_r($act_data);
+    
 
   }
   
@@ -4407,6 +4412,12 @@ function read_header($raw_header_data,$map_act,$y_map,$map,$convert_encoding=tru
 	$header[$key]=$_data;
 
 	break;
+	case('money'):
+	$_data=preg_replace('/[^\d^\.]/','',$_data);
+	if($_data=='')
+	$_data=0;
+	$header[$key]=$_data;
+	break;
       case('name'):
 	$_data=_trim($_data);
 	if($_data=='0')$_data='';
@@ -4414,8 +4425,18 @@ function read_header($raw_header_data,$map_act,$y_map,$map,$convert_encoding=tru
 
 	break;
       case('date'):
+//print "$_data\n";
+	$_data=preg_replace('/-cze-/i','-june-',$_data);
+	$_data=preg_replace('/-maj-/i','-may-',$_data);
 
-	$header[$key]=date("Y-m-d",mktime(0, 0, 0, 1 , $_data-1, 1900));
+	$_data=preg_replace('/-lip-/i','-july-',$_data);
+		$_data=preg_replace('/-sie-/i','-august-',$_data);
+		$_data=preg_replace('/-wrz-/i','-september-',$_data);
+
+    $_date=strtotime($_data);
+//print "\n $_data ".date("Y-m-d",$_date)."\n";
+
+	$header[$key]=date("Y-m-d",$_date);
 	break;
       default:
 	$header[$key]=$_data;
@@ -4447,7 +4468,8 @@ function read_header($raw_header_data,$map_act,$y_map,$map,$convert_encoding=tru
 
 function read_records($handle_csv,$y_map,$number_header_rows){
 
-
+  // print_r($y_map);
+  //exit;
 
   $first_order_bonus=false;
     
@@ -4459,6 +4481,9 @@ function read_records($handle_csv,$y_map,$number_header_rows){
   $products=array();
   $act=false;
   $row=0;
+  
+ 
+  
   while(($cols = fgetcsv($handle_csv))!== false){
 
     if($row<$number_header_rows){// is a header data
@@ -4470,10 +4495,33 @@ function read_records($handle_csv,$y_map,$number_header_rows){
 // 	  print_r($cols);
 // 	print $y_map['bonus']."\n ";
 // 	}
-//       }
-      // print count($cols)."\n";
+//    }
+      //print count($cols)."\n";
 
 
+foreach($cols as $key=>$_data){
+if($key==$y_map['credit'] or $key==$y_map['price'] or $key==$y_map['rrp']){
+
+if($_data!=''){
+
+$_data=preg_replace('/[^\d^\.]/','',$_data);
+	if($_data=='')
+	$_data=0;
+$cols[$key]=$_data;
+}
+}
+
+if($key==$y_map['discount'] ){
+
+$_data=preg_replace('/[^\d^\.]/','',$_data);
+	if($_data=='')
+	$_data=0;
+	
+	$_data=$_data/100;
+	$cols[$key]=$_data;
+
+}
+}
 
 
       if(count($cols)<$y_map['discount'])
@@ -4484,13 +4532,12 @@ function read_records($handle_csv,$y_map,$number_header_rows){
       if(preg_match('/regalo de bienvenida/i',$cols[$y_map['description']]))
 	$first_order_bonus=true;
 
-      //  if($cols[$y_map['code']]=='Pack-29')
-      //	print $y_map['bonus'];
+     
      
       if(
 	 (
 	    
-
+	 
 
 	  $cols[$y_map['code']]!=''
 	  and (is_numeric($cols[$y_map['credit']]) or $cols[$y_map['discount']]==1   )
@@ -4499,12 +4546,14 @@ function read_records($handle_csv,$y_map,$number_header_rows){
 	  and (  ( is_numeric($cols[$y_map['order']])   and  $cols[$y_map['order']]!=0   )   
 		 or ( is_numeric($cols[$y_map['reorder']])   and  $cols[$y_map['reorder']]!=0   and $re_order   )  
 		 or ( is_numeric($cols[$y_map['bonus']])   and  $cols[$y_map['bonus']]!=0   ) )  
-	  )or (preg_match('/credit/i',$cols[$y_map['code']])   and  $cols[$y_map['price']]!='' and  $cols[$y_map['price']]!=0  )
+
+)
+ or (preg_match('/credit/i',$cols[$y_map['code']])   and  $cols[$y_map['price']]!='' and  $cols[$y_map['price']]!=0  )
 	 ){
 
+//printf("XXXX %s %s %s %s \n",$cols[$y_map['code']],$cols[$y_map['order']],$cols[$y_map['credit']] ,$cols[$y_map['discount']]);
 
-	
-
+//exit;
 
 // 	if($cols['units']==1 or $cols['units']='')
 // 	  $cols['name']=$cols['description'];
@@ -4556,7 +4605,6 @@ function read_records($handle_csv,$y_map,$number_header_rows){
   
 
 // }
-
 
 
 

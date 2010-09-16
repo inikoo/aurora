@@ -1,5 +1,18 @@
 <?php 
 
+function filter_header($data){
+  foreach($data as $key=>$value){
+ $value=preg_replace("/\\\\\"/",'"',$value);
+  
+    $data[$key]=_trim($value);
+  }
+  
+  if(preg_match('/\d{2}-\d{2}-\d{2}/',$data['notes2']))
+     $data['notes2']='';
+  return $data;
+}
+
+
 function round_header_data_totals(){
 global $header_data;
 

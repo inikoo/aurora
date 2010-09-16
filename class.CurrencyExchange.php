@@ -137,6 +137,7 @@ var $same_currency=false;
      if(!$date){
       $this->from=date('Y-m-d');
       $this->to=date('Y-m-d');
+      
     }else{
       $this->from=$date;
       if(!$date2)
@@ -153,6 +154,22 @@ var $same_currency=false;
 
 
   function load_currency_exchange($from=false,$to=false,$fixing_date=false){
+
+
+if(!$from)
+      $from=date("Y-m-d",strtotime($this->from));
+    if(!$to)
+      $to=date("Y-m-d",strtotime($this->to));
+/*
+$sql=sprintf("select * from kbase.`Date Dimension` where `Date`>=%s and `Date`<=%s limit 36500",mysql_query($from),mysql_query($to));
+$res=mysql_query($sql)
+while($row=mysql_fetch_assoc($res)){
+
+
+
+}
+*/
+
     $random=md5(mt_rand());
     $tmp_file="app_files/tmp/currency_$random.txt";
     $days=100;
@@ -162,7 +179,7 @@ var $same_currency=false;
     if(!$to)
       $to=date("Ymd",strtotime($this->to));
 
-   //print sprintf("./mantenence/scripts/get_currency_exchange.py  %s %s %s=X > %s\n",$from,$to,$this->currency_pair,$tmp_file);
+   print sprintf("./mantenence/scripts/get_currency_exchange.py  %s %s %s=X > %s\n",$from,$to,$this->currency_pair,$tmp_file);
    
     exec(sprintf("./mantenence/scripts/get_currency_exchange.py  %s %s %s=X > %s",$from,$to,$this->currency_pair,$tmp_file));
    
@@ -287,7 +304,9 @@ return $exchange;
 
 }
 
-function current_exchange_from_google(){
+
+
+function get_current_exchange_from_google(){
 
 
 
@@ -320,7 +339,7 @@ function current_exchange_from_google(){
 
 
 
-function current_exchange_from_yahoo(){
+function get_current_exchange_from_yahoo(){
 
  $url = "http://download.finance.yahoo.com/d/quotes.csv?s=".$this->currency_pair."=X&f=l1&e=.cs";
  

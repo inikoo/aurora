@@ -45,60 +45,60 @@ $number_header_rows=22;
 
 $_y_map['code']=3;
 $_y_map['description']=6;
-$_y_map['price']=7+2;
-$_y_map['order']=8+2;
-$_y_map['reorder']=9+2;
-$_y_map['bonus']=11+2;
-$_y_map['credit']=14+2;
-$_y_map['rrp']=16+2;
-$_y_map['discount']=18+2;
+$_y_map['price']=7;
+$_y_map['order']=8;
+$_y_map['reorder']=9;
+$_y_map['bonus']=11;
+$_y_map['credit']=14;
+$_y_map['rrp']=16;
+$_y_map['discount']=18;
 $_y_map['units']=5;
-$_y_map['supplier_code']=21+2;
-$_y_map['supplier_product_code']=20+2;
-$_y_map['supplier_product_cost']=25+2;
-$_y_map['w']=28+2;
+$_y_map['supplier_code']=21;
+$_y_map['supplier_product_code']=20;
+$_y_map['supplier_product_cost']=25;
+$_y_map['w']=28;
 
 
 $_map['stipo']=array('row'=>2,'col'=>0);
 $_map['ltipo']=array('row'=>2,'col'=>6);
-$_map['pickedby']=array('row'=>2,'col'=>14+2);
-$_map['parcels']=array('row'=>2,'col'=>18+2);
-$_map['packedby']=array('row'=>3,'col'=>14+2);
-$_map['weight']=array('row'=>3,'col'=>18+2);
+$_map['pickedby']=array('row'=>2,'col'=>14);
+$_map['parcels']=array('row'=>2,'col'=>18);
+$_map['packedby']=array('row'=>3,'col'=>14);
+$_map['weight']=array('row'=>3,'col'=>18);
 $_map['trade_name']=array('row'=>5,'col'=>6,'tipo'=>'name');
-$_map['takenby']=array('row'=>5,'col'=>7+2,'tipo'=>'name');
-$_map['customer_num']=array('row'=>5,'col'=>8+2);
-$_map['order_num']=array('row'=>5,'col'=>11+2);
-$_map['date_order']=array('row'=>5,'col'=>14+2,'tipo'=>'date');
-$_map['date_inv']=array('row'=>5,'col'=>16+2,'tipo'=>'date');
+$_map['takenby']=array('row'=>5,'col'=>7,'tipo'=>'name');
+$_map['customer_num']=array('row'=>5,'col'=>8);
+$_map['order_num']=array('row'=>5,'col'=>11);
+$_map['date_order']=array('row'=>5,'col'=>14,'tipo'=>'date');
+$_map['date_inv']=array('row'=>5,'col'=>16,'tipo'=>'date');
 $_map['pay_method']=array('row'=>6,'col'=>2);
 $_map['address1']=array('row'=>6,'col'=>6,'tipo'=>'name');
 $_map['history']=array('row'=>7,'col'=>2);
 $_map['address2']=array('row'=>7,'col'=>6,'tipo'=>'name');
-$_map['notes']=array('row'=>7,'col'=>8+2);
-$_map['total_net']=array('row'=>7,'col'=>18+2);
+$_map['notes']=array('row'=>7,'col'=>8);
+$_map['total_net']=array('row'=>7,'col'=>18,'tipo'=>'money');
 $_map['gold']=array('row'=>8,'col'=>2);
 $_map['address3']=array('row'=>8,'col'=>6,'tipo'=>'name');
-$_map['charges']=array('row'=>8,'col'=>14+2);
-$_map['tax1']=array('row'=>8,'col'=>18+2);
+$_map['charges']=array('row'=>8,'col'=>14,'tipo'=>'money');
+$_map['tax1']=array('row'=>8,'col'=>18,'tipo'=>'money');
 $_map['city']=array('row'=>9,'col'=>6,'tipo'=>'name');
-$_map['total_topay']=array('row'=>9,'col'=>18+2);
+$_map['total_topay']=array('row'=>9,'col'=>18,'tipo'=>'money');
 $_map['tax2']=false;
 $_map['postcode']=array('row'=>10,'col'=>6);
-$_map['notes2']=array('row'=>10,'col'=>8+2);
-$_map['shipping']=array('row'=>11,'col'=>14+2);
+$_map['notes2']=array('row'=>10,'col'=>8);
+$_map['shipping']=array('row'=>11,'col'=>14,'tipo'=>'money');
 $_map['customer_contact']=array('row'=>13,'col'=>6,'tipo'=>'name');
 $_map['phone']=array('row'=>14,'col'=>6,'tipo'=>'string');
-$_map['total_order']=array('row'=>14,'col'=>$_y_map['order']);
-$_map['total_reorder']=array('row'=>14,'col'=>$_y_map['reorder']);
-$_map['total_bonus']=array('row'=>14,'col'=>$_y_map['bonus']);
-$_map['total_items_charge_value']=array('row'=>14,'col'=>14+2);
-$_map['total_rrp']=array('row'=>14,'col'=>16+2);
-$_map['feedback']=array('row'=>16,'col'=>20+2);
+$_map['total_order']=array('row'=>14,'col'=>$_y_map['order'],'tipo'=>'money');
+$_map['total_reorder']=array('row'=>14,'col'=>$_y_map['reorder'],'tipo'=>'money');
+$_map['total_bonus']=array('row'=>14,'col'=>$_y_map['bonus'],'tipo'=>'money');
+$_map['total_items_charge_value']=array('row'=>14,'col'=>14,'tipo'=>'money');
+$_map['total_rrp']=array('row'=>14,'col'=>16,'tipo'=>'money');
+$_map['feedback']=array('row'=>16,'col'=>20);
 $_map['source_tipo']=false;
 $_map['extra_id1']=false;
 $_map['extra_id2']=false;
-$_map['dn_country_code']=array('row'=>5,'col'=>9+2);
+$_map['dn_country_code']=array('row'=>5,'col'=>9);
 
 
 
@@ -128,7 +128,7 @@ function get_tipo_order($ltipo,$header){
  
   $parent_id='';
   $tipo=0;
- if(preg_match('/proforma/i',$ltipo)){
+ if(preg_match('/PROFORMA/i',$ltipo)){
 
     $tipo=20;
   }elseif(preg_match('/FOLGESENDUNG/i',$ltipo)){
@@ -145,12 +145,12 @@ function get_tipo_order($ltipo,$header){
     $tipo=4;
 
 
-}ELSEif(preg_match('/DELIVERY NOTE|nota de envio|BON DE COMMANDE|VERSANDANZEIGE/i',$ltipo)){
+}ELSEif(preg_match('/ZAMÓWIENIE/i',$ltipo)){
 
     $tipo=1;
-  }elseif(preg_match('/FACTURE. sample order|facture|facutura|FACTURE|RECHNUNG/i',$ltipo)){
+  }elseif(preg_match('/FAKTURA/i',$ltipo)){
     $tipo=2;
-  }elseif(preg_match('/STORNIERT|STORNIERUNG/i',$ltipo)){
+  }elseif(preg_match('/ANULOWANIE/i',$ltipo)){
     $tipo=3;
     $header['notes2']=preg_replace('/^STORNIERT?$/i','',$header['notes2']);
 
