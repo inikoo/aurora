@@ -145,6 +145,7 @@ $transactions=array('all_transactions'=>$row['all_transactions'],'in_transaction
 
 }
 $smarty->assign('transactions',$transactions);
+$smarty->assign('transaction_type',$_SESSION['state']['part']['transactions']['view']);
 
 
 $q='';
