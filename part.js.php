@@ -235,9 +235,23 @@ var  change_web_status =function(tipo){
 
       }
 
+
+ var change_transaction_type=function(e){
+     var table=tables.table1;
+     var datasource=tables.dataSource1;
+     Dom.removeClass(Dom.getElementsByClassName('transaction_type','span' , 'transaction_chooser'),'selected');;
+     Dom.addClass(this,'selected');     
+     var request='&view='+this.getAttribute('table_type');
+     datasource.sendRequest(request,table.onDataReturnInitializeTable, table);       
+ }
+
 function init(){
 
 init_search('part');
+
+
+var ids =Array("restrictions_all_transactions","restrictions_oip_transactions","restrictions_out_transactions","restrictions_in_transactions","restrictions_audit_transactions","restrictions_move_transactions") ;
+Event.addListener(ids, "click", change_transaction_type);
 
     
  YAHOO.util.Event.addListener('clean_table_filter_show1', "click",show_filter,1);

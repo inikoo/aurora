@@ -1573,6 +1573,7 @@ $default_state=array(
                                                   'elements'=>array()
                                               ),
                               'transactions'=>array(
+                                                'view'=>'all_transactions',
                                                  'order'=>'date',
                                                  'order_dir'=>'desc',
                                                  'sf'=>0,

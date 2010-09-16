@@ -9535,7 +9535,7 @@ function is_family_special_char() {
 
 function part_transactions() {
     $conf=$_SESSION['state']['part']['transactions'];
-    $part_sku=$_SESSION['state']['part']['id'];
+    $part_sku=$_SESSION['state']['part']['sku'];
     if (isset( $_REQUEST['elements']))
         $elements=$_REQUEST['elements'];
     else
@@ -9580,6 +9580,12 @@ function part_transactions() {
         $f_value=$_REQUEST['f_value'];
     else
         $f_value=$conf['f_value'];
+        
+    if (isset( $_REQUEST['view']))
+        $view=$_REQUEST['view'];
+    else
+        $view=$conf['view'];
+        
     if (isset( $_REQUEST['tableid']))
         $tableid=$_REQUEST['tableid'];
     else
@@ -9596,6 +9602,7 @@ function part_transactions() {
 
     $_SESSION['state']['part']['transactions']=
         array(
+            'view'=>$view,
             'order'=>$order,
             'order_dir'=>$order_direction,
             'nr'=>$number_results,
@@ -9621,8 +9628,33 @@ function part_transactions() {
 }
 
     $where=$where.sprintf(" and `Part SKU`=%d ",$part_sku);
+    
+
+    switch ($view) {
+        case 'oip_transactions':
+            $where.=" and `Inventory Transaction Type`='Order In Process' ";
+            break;
+        case('in_transactions'):
+             $where.=" and `Inventory Transaction Type` in ('In') ";
+            break;     
+        case('move_transactions'):
+             $where.=" and `Inventory Transaction Type` in ('Move In','Move Out') ";
+            break;     
+        case('out_transactions'):
+             $where.=" and `Inventory Transaction Type` in ('Sale','Broken','Lost') ";
+            break;     
+        case('audit_transactions'):
+             $where.="and `Inventory Transaction Type` in ('Not Found','No Dispatched','Associate','Disassociate','Adjust') ";
+            break;             
+        default:
+            
+            break;
+    }
+    
+    
+    
     $sql="select count(*) as total from `Inventory Transaction Fact`     $where $wheref";
-    $result=mysql_query($sql);
+   $result=mysql_query($sql);
     if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
         $total=$row['total'];
     }
