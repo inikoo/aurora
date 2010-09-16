@@ -11,6 +11,7 @@ include_once('../../class.Warehouse.php');
 include_once('../../class.Node.php');
 include_once('../../class.Shipping.php');
 include_once('../../class.SupplierProduct.php');
+include_once('local_map.php');
 
 error_reporting(E_ALL);
 date_default_timezone_set('UTC');
@@ -35,16 +36,26 @@ date_default_timezone_set('UTC');
 
 $_department_code='';
 $software='Get_Products.php';
-$version='V 1.0';
+$version='V 1.1';
 
 $Data_Audit_ETL_Software="$software $version";
 
 
 $_argv=$_SERVER['argv'];
+
 if(isset($_argv[1]))
-$date=$_argv[1];
+$file_name=$_argv[1];
+else
+$file_name='/data/plaza/AWorder2002.xls';
+if(isset($_argv[2]))
+$date=$_argv[2];
 else
 $date=date("Y-m-d H:i:s");
+
+if(isset($_argv[3]) and $_argv[3]=='old')
+$map=$_y_map_old;
+else
+$map=$_y_map;
 
 $editor=array(
                             'Date'=>$date,
@@ -57,9 +68,12 @@ $editor=array(
 
 
 
-$file_name='/data/plaza/AWorder2002.xls';
+
 //$csv_file='order_uk_tmp.csv';
 $csv_file='gb.csv';
+//print '/usr/local/bin/xls2csv    -s cp1252   -d 8859-1   '.$file_name.' > '.$csv_file;
+
+//exit;
 exec('/usr/local/bin/xls2csv    -s cp1252   -d 8859-1   '.$file_name.' > '.$csv_file);
 
 $handle_csv = fopen($csv_file, "r");
@@ -83,10 +97,10 @@ $inicio=false;
 while(($_cols = fgetcsv($handle_csv))!== false){
   
 
-  $code=$_cols[3];
+  $code=$_cols[$map['code']];
 
  
-  if($code=='FO-A1' and !$inicio){
+  if(($code=='FO-A1' or $code=='AWFO-01') and !$inicio){
     $inicio=true;
     $x=$__cols[count($__cols)-4];
     $z=$__cols[count($__cols)-3];
@@ -119,8 +133,8 @@ $fam_code='PND_UK';
 $new_family=true;
 
 
-$department_name='ND_UK';
-$department_code='Products Without Department';
+$department_code='ND_UK';
+$department_name='Products Without Department';
 
 $current_fam_name='';
 $current_fam_code='';
@@ -130,16 +144,18 @@ $promotion='';
 
 
 
+
+
 foreach($__cols as $cols){
   
-  if(preg_match('/First Order Bonus/i',$cols[6])){
+  if(preg_match('/First Order Bonus/i',$cols[$map['description']])){
     break;
   }
 
 
   $is_product=true;
   
-  $code=_trim($cols[3]);
+  $code=_trim($cols[$map['code']]);
 
 
   if(count($cols)<25){
@@ -149,11 +165,11 @@ foreach($__cols as $cols){
   }
 
 
-  $price=$cols[7];
-  $supplier_code=_trim($cols[21]);
-  $part_code=_trim($cols[22]);
-  $supplier_cost=$cols[25];
-  $rrp=$cols[16];
+  $price=$cols[$map['price']];
+  $supplier_code=_trim($cols[$map['supplier_code']]);
+  $part_code=_trim($cols[$map['supplier_product_code']]);
+  $supplier_cost=$cols[$map['supplier_product_cost']];
+  $rrp=$cols[$map['rrp']];
 
 
   //    if(!preg_match('/bot-10/i',$code)){
@@ -299,14 +315,14 @@ foreach($__cols as $cols){
     }else
        $deals=array();
     
-    $units=$cols[5];
+    $units=$cols[$map['units']];
     if($units=='' OR $units<=0)
       $units=1;
 
-    $description=_trim( mb_convert_encoding($cols[6], "UTF-8", "ISO-8859-1,UTF-8"));
+    $description=_trim( mb_convert_encoding($cols[$map['description']], "UTF-8", "ISO-8859-1,UTF-8"));
     
     
-    if($description=='' and  $cols[7]==''){
+    if($description=='' and  $cols[$map['price']]==''){
       continue;
     }
     
@@ -315,10 +331,10 @@ foreach($__cols as $cols){
       $description='Musk';
 
     
-    $supplier_code=_trim($cols[21]);
+    $supplier_code=_trim($cols[$map['supplier_code']]);
 
-    $w=$cols[28];
-    $price=$cols[7];
+    $w=$cols[$map['w']];
+    $price=$cols[$map['price']];
 
 
     //print "-> $description <-  -> $price <- \n";
@@ -418,7 +434,8 @@ foreach($__cols as $cols){
        $department=new Department('find',$dep_data,'create');	
 
     
-	 
+       $current_fam_code=preg_replace('/ code/i','',$current_fam_code);
+
 	 $fam_data=array(
 	           'editor'=>$editor,
 			 'Product Family Code'=>$current_fam_code,
@@ -532,8 +549,8 @@ foreach($__cols as $cols){
 		  'product special characteristic'=>$special_char,
 		  'product net weight'=>$_w,
 		  'product gross weight'=>$_w,
-		  'product valid from'=>$editor['date'],
-		  'product valid to'=>$editor['date'],
+		  'product valid from'=>$editor['Date'],
+		  'product valid to'=>$editor['Date'],
 		  'deals'=>$deals
 		    );
 
@@ -550,8 +567,8 @@ foreach($__cols as $cols){
        
 
        if($product->new_id){
-	        $scode=_trim($cols[20]);
-	        $supplier_code=$cols[21];
+	        $scode=_trim($cols[$map['supplier_product_code']]);
+	        $supplier_code=$cols[$map['supplier_code']];
             update_supplier_part($code,$scode,$supplier_code,$units,$w,$product,$description,$supplier_cost);
 	  
 	    $product->set_duplicates_as_historic();
@@ -572,18 +589,18 @@ foreach($__cols as $cols){
     
     // print "Col $column\n";
     //print_r($cols);
-    if($cols[3]!='' and $cols[6]!=''  and $cols[3]!='SHOP-Fit' and $cols[3]!='RDS-47' and $cols[3]!='ISH-94' and $cols[3]!='OB-108' and !preg_match('/^DB-/',$cols[3])  and !preg_match('/^pack-/i',$cols[3])  ){
-      $fam_code=$cols[3];
-      $fam_name=_trim( mb_convert_encoding($cols[6], "UTF-8", "ISO-8859-1,UTF-8"));
+    if($cols[$map['code']]!='' and $cols[$map['description']]!=''  and $cols[$map['code']]!='SHOP-Fit' and $cols[$map['code']]!='RDS-47' and $cols[$map['code']]!='ISH-94' and $cols[$map['code']]!='OB-108' and !preg_match('/^DB-/',$cols[$map['code']])  and !preg_match('/^pack-/i',$cols[$map['code']])  ){
+      $fam_code=$cols[$map['code']];
+      $fam_name=_trim( mb_convert_encoding($cols[$map['description']], "UTF-8", "ISO-8859-1,UTF-8"));
       $fam_position=$column;
 
       
     }
     
-    if(preg_match('/off\s+\d+\s+or\s+more|\s*\d+\s*or more\s*\d+|buy \d+ get \d+ free/i',_trim($cols[6]))){
+    if(preg_match('/off\s+\d+\s+or\s+more|\s*\d+\s*or more\s*\d+|buy \d+ get \d+ free/i',_trim($cols[$map['description']]))){
       
 
-      $promotion=$cols[6];
+      $promotion=$cols[$map['description']];
 
       $promotion=preg_replace('/^\s*order\s*/i','',$promotion);
       $promotion=preg_replace('/discount\s*$/i','',$promotion);
@@ -593,12 +610,12 @@ foreach($__cols as $cols){
       $promotion_position=$column;
       // print "*********** Promotion $promotion $promotion_position \n";
     }
-    if($cols[3]=='' and $cols[6]==''){
+    if($cols[$map['code']]=='' and $cols[$map['description']]==''){
       $blank_position=$column;
     }
 
-    if($cols[6]!='' and preg_match('/Sub Total/i',$cols[11])){
-      $department_name=$cols[6];
+    if($cols[$map['description']]!='' and preg_match('/Sub Total/i',$cols[$map['bonus']])){
+      $department_name=$cols[$map['description']];
       $department_position=$column;
 
 
@@ -621,7 +638,7 @@ foreach($__cols as $cols){
       }if($department_code=='Collectables Department'){
 	$department_code='Collec';
       }
-      if($department_code=='Crystal Department'){
+      if($department_code=='Crystal Department' or $department_code=='Slovensky Crystal Order'){
 	$department_code='Crystal';
       }
    if($department_code=='Cards, Posters & Gift Wrap'){
@@ -633,9 +650,9 @@ foreach($__cols as $cols){
 if($department_code=='Candle Dept'){
 	$department_code='Candles';
       }
-   if($department_code=='Stoneware'){
+if(preg_match('/Stoneware/i',$department_code)){
 	$department_code='Stone';
-	$department_name='Stoneware Department';
+	//$department_name='Stoneware Department';
 
       }
    if($department_code=='Jewellery Quarter'){
@@ -671,13 +688,18 @@ if(preg_match('/bagsbags/i',$department_code)){
 	$department_name='Eco Bags Dept';
       }
 
-if(preg_match('/Packaging Dept/i',$department_code)){
+if(preg_match('/Packaging Dept/i',$department_code) or $department_code=='Packaging Ect Supplies' ){
 	$department_code='Pack';
-	$department_name='Packaging Dept';
+	//	$department_name='Packaging Dept';
       }
 if(preg_match('/Fashion/i',$department_code)){
 	$department_code='Scarv';
       }
+
+if(preg_match('/Gift Box Dept/i',$department_code)){
+	$department_code='GiftB';
+      }
+
 
 if($department_code=='Woodware Dept'){
   $department_code='Wood';
@@ -695,8 +717,8 @@ if(preg_match('/pouches/i',$department_code)){
 
     }
     
-    $posible_fam_code=$cols[3];
-    $posible_fam_name=$cols[6];
+    $posible_fam_code=$cols[$map['code']];
+    $posible_fam_name=$cols[$map['description']];
   }
   
 
@@ -709,8 +731,8 @@ if(preg_match('/pouches/i',$department_code)){
 
 
 function update_supplier_part($code,$scode,$supplier_code,$units,$w,$product,$description,$supplier_cost){
-global $myconf;
- $product->update_for_sale_since(date("Y-m-d H:i:s",strtotime($editor['date']." +1 seconds")));
+  global $myconf,$editor,$map;
+ $product->update_for_sale_since(date("Y-m-d H:i:s",strtotime($editor['Date']." +1 seconds")));
 	if(preg_match('/^SG\-|^info\-/i',$code))
 	  $supplier_code='AW';
 	if($supplier_code=='AW')
@@ -1396,8 +1418,8 @@ if(preg_match('/^Wenzels$/i',$supplier_code)){
 		       'Supplier Product Cost'=>sprintf("%.4f",$supplier_cost),
 		       'Supplier Product Name'=>$description,
 		       'Supplier Product Description'=>$description,
-		       'Supplier Product Valid From'=>$editor['date'],
-		       'Supplier Product Valid To'=>$editor['date']
+		       'Supplier Product Valid From'=>$editor['Date'],
+		       'Supplier Product Valid To'=>$editor['Date']
 		       );
 	$supplier_product=new SupplierProduct('find',$sp_data,'create');
 	if($supplier_product->found_in_key){
@@ -1415,8 +1437,8 @@ if(preg_match('/^Wenzels$/i',$supplier_code)){
 			 'Part XHTML Description'=>preg_replace('/\(.*\)\s*$/i','',$product->get('Product XHTML Short Description')),
 		     'Part Unit Description'=>strip_tags(preg_replace('/\(.*\)\s*$/i','',$product->get('Product XHTML Short Description'))),
 
-			 'part valid from'=>$editor['date'],
-			 'part valid to'=>$editor['date'],
+			 'part valid from'=>$editor['Date'],
+			 'part valid to'=>$editor['Date'],
 			 'Part Gross Weight'=>$w
 			 );
 	$part=new Part('new',$part_data);
@@ -1429,8 +1451,8 @@ if(preg_match('/^Wenzels$/i',$supplier_code)){
 	$rules[]=array('Part Sku'=>$part->data['Part SKU'],
 		       'Supplier Product Units Per Part'=>$units
 		       ,'supplier product part most recent'=>'Yes'
-		       ,'supplier product part valid from'=>$editor['date']
-		       ,'supplier product part valid to'=>$editor['date']
+		       ,'supplier product part valid from'=>$editor['Date']
+		       ,'supplier product part valid to'=>$editor['Date']
 		       ,'factor supplier product'=>1
 		       );
 
