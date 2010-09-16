@@ -213,7 +213,17 @@
  
   <div id="block_stock_transaction" class="data_table" style="clear:both;margin-top:20px">
     <span   class="clean_table_title">{t}Part Stock Transactions{/t}</span>
-    
+     <div id="table_type" class="table_type">
+        <div  style="font-size:90%"   id="transaction_chooser" >
+            <span style="float:right;margin-left:20px" class="table_type invoice_type state_details {if $transaction_type=='all_transactions'}selected{/if}"  id="restrictions_all_transactions" table_type="all_transactions"  >{t}All{/t} ({$transactions.all_transactions})</span>
+            <span style="float:right;margin-left:20px" class="table_type invoice_type state_details {if $transaction_type=='oip_transactions'}selected{/if}"  id="restrictions_oip_transactions" table_type="oip_transactions"   >{t}OIP{/t} ({$transactions.oip_transactions})</span>
+            <span style="float:right;margin-left:20px" class="table_type invoice_type state_details {if $transaction_type=='out_transactions'}selected{/if}"  id="restrictions_out_transactions" table_type="out_transactions"   >{t}Out{/t} ({$transactions.out_transactions})</span>
+            <span style="float:right;margin-left:20px" class="table_type invoice_type state_details {if $transaction_type=='in_transactions'}selected{/if}"  id="restrictions_in_transactions" table_type="in_transactions"   >{t}In{/t} ({$transactions.in_transactions})</span>
+            <span style="float:right;margin-left:20px" class="table_type invoice_type state_details {if $transaction_type=='audit_transactions'}selected{/if}"  id="restrictions_audit_transactions" table_type="audit_transactions"   >{t}Audits{/t} ({$transactions.audit_transactions})</span>
+            <span style="float:right;margin-left:20px" class="table_type invoice_type state_details {if $transaction_type=='move_transactions'}selected{/if}"  id="restrictions_move_transactions" table_type="move_transactions"   >{t}Movements{/t} ({$transactions.move_transactions})</span>
+
+        </div>
+     </div>
     
     <div style="clear:both;margin:0 0px;padding:0 20px ;border-bottom:1px solid #999;margin-bottom:10px"></div>
    
