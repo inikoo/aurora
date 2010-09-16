@@ -81,53 +81,17 @@ $store=new Store("code","DE");
 $store_key=$store->id;
 
 
-$dept_data=array(
-               'Product Department Code'=>'ND',
-               'Product Department Name'=>'Products Without Department',
-               'Product Department Store Key'=>$store_key
-           );
 
-$dept_no_dept=new Department('find',$dept_data,'create');
+$dept_no_dept=new Department('code','ND_DE',$store_key);
 $dept_no_dept_key=$dept_no_dept->id;
-
-$dept_data=array(
-               'Product Department Code'=>'Promo',
-               'Product Department Name'=>'Promotional Items',
-               'Product Department Store Key'=>$store_key
-           );
-$dept_promo=new Department('find',$dept_data,'create');
+$dept_promo=new Department('code','Promo_DE',$store_key);
 $dept_promo_key=$dept_promo->id;
 
-$fam_data=array(
-              'Product Family Code'=>'PND_DE',
-              'Product Family Name'=>'Products Without Family',
-              'Product Family Main Department Key'=>$dept_no_dept_key,
-              'Product Family Store Key'=>$store_key,
-              'Product Family Special Characteristic'=>'None'
-          );
 
-$fam_no_fam=new Family('find',$fam_data,'create');
+$fam_no_fam=new Family('code','PND_DE',$store_key);
 $fam_no_fam_key=$fam_no_fam->id;
-
-//print_r($fam_no_fam);
-
-$fam_data=array(
-              'Product Family Code'=>'Promo_DE',
-              'Product Family Name'=>'Promotional Items',
-              'Product Family Main Department Key'=>$dept_promo_key,
-              'Product Family Store Key'=>$store_key,
-              'Product Family Special Characteristic'=>'None'
-          );
-
-
-
-$fam_promo=new Family('find',$fam_data,'create');
-
-
-
-$fam_no_fam_key=$fam_no_fam->id;
+$fam_promo=new Family('code','Promo_DE',$store_key);
 $fam_promo_key=$fam_promo->id;
-
 
 
 $sql="select * from  de_orders_data.orders  where   (last_transcribed is NULL  or last_read>last_transcribed) and deleted='No'  order by filename  ";
