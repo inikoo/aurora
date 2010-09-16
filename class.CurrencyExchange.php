@@ -155,12 +155,12 @@ var $same_currency=false;
 
   function load_currency_exchange($from=false,$to=false,$fixing_date=false){
 
-
+/*
 if(!$from)
       $from=date("Y-m-d",strtotime($this->from));
     if(!$to)
       $to=date("Y-m-d",strtotime($this->to));
-/*
+
 $sql=sprintf("select * from kbase.`Date Dimension` where `Date`>=%s and `Date`<=%s limit 36500",mysql_query($from),mysql_query($to));
 $res=mysql_query($sql)
 while($row=mysql_fetch_assoc($res)){
