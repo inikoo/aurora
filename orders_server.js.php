@@ -56,7 +56,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 				       {key:"name", label:"<?php echo _('Store Name')?>", width:110,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}},
 				       {key:"orders",label:"<?php echo _('Orders')?>", width:100,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}},
 				       {key:"cancelled",label:"<?php echo _('Cancelled')?>", width:90,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}},
-				       {key:"unknown",label:"<?php echo _('Unknown')?>", width:90,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}},
+				       {key:"suspended",label:"<?php echo _('Suspended')?>", width:90,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}},
 				       {key:"pending", label:"<?php echo _('Pending')?>", width:100,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}},
 				       {key:"dispatched",label:"<?php echo _('Dispatched')?>", width:100,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}},
 
@@ -85,7 +85,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 			 "orders",
 			 "cancelled",
 			 "unknown",
-			 "paid","pending","dispatched"
+			 "paid","pending","dispatched","suspended"
 			 ]};
 
 	    this.table0 = new YAHOO.widget.DataTable(tableDivEL, OrdersColumnDefs,

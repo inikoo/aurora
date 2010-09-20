@@ -436,7 +436,7 @@ var clear_interval = function(e,suffix){
 Event.addListener("submit_intervaldn", "click", change_interval,'dn');
  Event.addListener("clear_intervaldn", "click", clear_interval,'dn'); 
 
-var ids =Array("restrictions_orders_cancelled","restrictions_orders_unknown","restrictions_orders_dispatched","restrictions_orders_in_process","restrictions_all_orders") ;
+var ids =Array("restrictions_orders_cancelled","restrictions_orders_suspended","restrictions_orders_unknown","restrictions_orders_dispatched","restrictions_orders_in_process","restrictions_all_orders") ;
 Event.addListener(ids, "click", change_order_dispatch_type);
 var ids =Array("restrictions_paid","restrictions_to_pay","restrictions_refunds","restrictions_invoices","restrictions_all_invoices") ;
 Event.addListener(ids, "click", change_invoice_type);

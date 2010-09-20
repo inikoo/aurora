@@ -7792,8 +7792,8 @@ function list_orders_per_store() {
     $total_cancelled=0;
     $total_todo=0;
     $total_paid=0;
-
-    $sql="select  `Store Total Orders` as orders,`Store Unknown Orders` as unknown,`Store Dispatched Orders` as dispatched,`Store Cancelled Orders` cancelled,`Store Orders In Process` as todo   from `Store Dimension`  $where     ";
+$total_suspended=0;
+    $sql="select  `Store Total Orders` as orders,`Store Unknown Orders` as unknown,`Store Suspended Orders` as suspended,`Store Dispatched Orders` as dispatched,`Store Cancelled Orders` cancelled,`Store Orders In Process` as todo   from `Store Dimension`  $where     ";
     //print $sql;
     $res = mysql_query($sql);
     if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
@@ -7802,6 +7802,7 @@ function list_orders_per_store() {
         $total_dispatched=$row['dispatched'];
         $total_cancelled=$row['cancelled'];
         $total_todo=$row['todo'];
+        $total_suspended=$row['suspended'];
 
 
     }
@@ -7810,7 +7811,7 @@ function list_orders_per_store() {
 
 
 
-    $sql="select `Store Name`,`Store Code`,`Store Key`, `Store Total Orders` as orders,`Store Unknown Orders` as unknown,`Store Dispatched Orders` as dispatched,`Store Cancelled Orders` cancelled,`Store Orders In Process` as todo from   `Store Dimension` $where $wheref   order by $order $order_direction limit $start_from,$number_results    ";
+    $sql="select `Store Name`,`Store Code`,`Store Key`,`Store Total Orders` as orders,`Store Suspended Orders` as suspended, `Store Total Orders` as orders,`Store Unknown Orders` as unknown,`Store Dispatched Orders` as dispatched,`Store Cancelled Orders` cancelled,`Store Orders In Process` as todo from   `Store Dimension` $where $wheref   order by $order $order_direction limit $start_from,$number_results    ";
     //print $sql;
     $res = mysql_query($sql);
 
@@ -7829,6 +7830,7 @@ function list_orders_per_store() {
             $unknown=percentage($row['unknown'],$total_unknown);
             $todo=percentage($todo,$total_todo);
             $dispatched=percentage($row['dispatched'],$total_dispatched);
+            $suspended=percentage($row['suspended'],$total_suspended);
 
         } else {
             $orders=number($row['orders']);
@@ -7836,15 +7838,18 @@ function list_orders_per_store() {
             $unknown=number($row['unknown']);
             $todo=number($todo);
             $dispatched=number($row['dispatched']);
-
+            $suspended=number($row['suspended']);
         }
-
+        if($row['unknown']>0)
+        $unknown=sprintf('(<a href="orders.php?store=%d&view=orders&dispatch=unknown">%s</a>) ',$row['Store Key'],$unknown);
+        else
+        $unknown='';
         $orders=sprintf('<a href="orders.php?store=%d&view=orders&dispatch=all_orders">%s</a>',$row['Store Key'],$orders);
-        $unknown=sprintf('<a href="orders.php?store=%d&view=orders&dispatch=unknown">%s</a>',$row['Store Key'],$unknown);
         $cancelled=sprintf('<a href="orders.php?store=%d&view=orders&dispatch=cancelled">%s</a>',$row['Store Key'],$cancelled);
         $dispatched=sprintf('<a href="orders.php?store=%d&view=orders&dispatch=dispatched">%s</a>',$row['Store Key'],$dispatched);
-        $todo=sprintf('<a href="orders.php?store=%d&view=orders&dispatch=in_process">%s</a>',$row['Store Key'],$todo);
-  
+        $todo=$unknown.sprintf('<a href="orders.php?store=%d&view=orders&dispatch=in_process">%s</a>',$row['Store Key'],$todo);
+          $suspended=sprintf('<a href="orders.php?store=%d&view=orders&dispatch=suspended">%s</a>',$row['Store Key'],$suspended);
+
   
 
         $adata[]=array(
@@ -7855,6 +7860,7 @@ function list_orders_per_store() {
                      'cancelled'=>$cancelled,
                      'dispatched'=>$dispatched,
                      'pending'=>$todo,
+                     'suspended'=>$suspended
 
                  );
     }
@@ -7864,16 +7870,19 @@ function list_orders_per_store() {
         $sum_orders='100.00%';
         $sum_cancelled='100.00%';
         $sum_paid='100.00%';
-        $sum_unknown='100.00%';
-
+        $sum_unknown='';
+         $sum_suspended='100.00%';
     } else {
         $sum_orders=number($total_orders);
         $sum_cancelled=number($total_cancelled);
         $sum_paid=number($total_paid);
-        $sum_unknown=number($total_unknown);
+        if($total_unknown>0)    
+        $sum_unknown="(".number($total_unknown).") ";
+        else
+        $sum_unknown='';
         $sum_todo=number($total_todo);
         $sum_dispatched=number($total_dispatched);
-
+        $sum_suspended=number($total_suspended);
     }
 
 
@@ -7885,15 +7894,10 @@ function list_orders_per_store() {
                  'paid'=>$sum_paid,
                  'cancelled'=>$sum_cancelled,
                  'dispatched'=>$sum_dispatched,
-                 'pending'=>$sum_todo,
-
+                 'pending'=>$sum_unknown.$sum_todo,
+                  'suspended'=>$sum_suspended  
              );
 
-
-    // if($total<$number_results)
-    //  $rtext=$total.' '.ngettext('store','stores',$total);
-    //else
-    //  $rtext='';
 
     $total_records=ceil($total_records/$number_results)+$total_records;
 

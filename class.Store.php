@@ -771,7 +771,8 @@ function update_orders() {
     $this->data['Store Cancelled Orders']=0;
     $this->data['Store Orders In Process']=0;
     $this->data['Store Unknown Orders']=0;
-    
+        $this->data['Store Suspended Orders']=0;
+
     $this->data['Store Total Invoices']=0;
     $this->data['Store Invoices']=0;
     $this->data['Store Refunds']=0;
@@ -796,13 +797,15 @@ function update_orders() {
     $this->data['Store Delivery Notes For Shortages']=0;
     
     
-    $sql="select count(*) as `Store Total Orders`,sum(IF(`Order Current Dispatch State`='Dispatched',1,0 )) as `Store Dispatched Orders` ,sum(IF(`Order Current Dispatch State`='Cancelled',1,0 )) as `Store Cancelled Orders`,sum(IF(`Order Current Dispatch State`='Unknown',1,0 )) as `Store Unknown Orders` from `Order Dimension`   where `Order Store Key`=".$this->id;
+    $sql="select count(*) as `Store Total Orders`,sum(IF(`Order Current Dispatch State`='Dispatched',1,0 )) as `Store Dispatched Orders` ,sum(IF(`Order Current Dispatch State`='Suspended',1,0 )) as `Store Suspended Orders`,sum(IF(`Order Current Dispatch State`='Cancelled',1,0 )) as `Store Cancelled Orders`,sum(IF(`Order Current Dispatch State`='Unknown',1,0 )) as `Store Unknown Orders` from `Order Dimension`   where `Order Store Key`=".$this->id;
     $result=mysql_query($sql);
     if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
         $this->data['Store Total Orders']=$row['Store Total Orders'];
         $this->data['Store Dispatched Orders']=$row['Store Dispatched Orders'];
         $this->data['Store Cancelled Orders']=$row['Store Cancelled Orders'];
         $this->data['Store Unknown Orders']=$row['Store Unknown Orders'];
+                $this->data['Store Suspended Orders']=$row['Store Suspended Orders'];
+
         $this->data['Store Orders In Process']=  $this->data['Store Total Orders']- $this->data['Store Dispatched Orders']-$this->data['Store Cancelled Orders']-$this->data['Store Unknown Orders'];
     }
 
@@ -848,12 +851,13 @@ function update_orders() {
  
  //print "$sql\n";
  
- $sql=sprintf("update `Store Dimension` set `Store Total Orders`=%d,`Store Dispatched Orders`=%d,`Store Cancelled Orders`=%d,`Store Orders In Process`=%d,`Store Unknown Orders`=%d
+ $sql=sprintf("update `Store Dimension` set `Store Total Orders`=%d,`Store Suspended Orders`=%d,`Store Dispatched Orders`=%d,`Store Cancelled Orders`=%d,`Store Orders In Process`=%d,`Store Unknown Orders`=%d
  ,`Store Total Invoices`=%d ,`Store Invoices`=%d ,`Store Refunds`=%d ,`Store Paid Invoices`=%d ,`Store Paid Refunds`=%d ,`Store Partially Paid Invoices`=%d ,`Store Partially Paid Refunds`=%d
 ,`Store Total Delivery Notes`=%d,`Store Ready to Pick Delivery Notes`=%d,`Store Picking Delivery Notes`=%d,`Store Packing Delivery Notes`=%d,`Store Ready to Dispatch Delivery Notes`=%d,`Store Dispatched Delivery Notes`=%d,`Store Returned Delivery Notes`=%d
 ,`Store Delivery Notes For Replacements`=%d,`Store Delivery Notes For Shortages`=%d,`Store Delivery Notes For Samples`=%d,`Store Delivery Notes For Donations`=%d,`Store Delivery Notes For Orders`=%d
  where `Store Key`=%d",
  $this->data['Store Total Orders'],
+   $this->data['Store Suspended Orders'],
   $this->data['Store Dispatched Orders'],
    $this->data['Store Cancelled Orders'],
     $this->data['Store Orders In Process'],
