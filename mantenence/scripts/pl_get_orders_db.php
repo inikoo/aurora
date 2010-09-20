@@ -1154,130 +1154,7 @@ $parts_per_product=1;
 
             }
             $used_parts_sku[$part->sku]['supplier_product_key']=$supplier_product->id;
-
-            //print "Start -------------------\n";
-            //print_r($product);
-            //print_r($part);
-            //print "End   -------------------\n";
-
-            if ($transaction['order']!=0) {
-                $products_data[]=array(
-                                     'Product Key'=>$product->id,
-                                     'Estimated Weight'=>$product->data['Product Gross Weight']*$transaction['order'],
-                                     'qty'=>$transaction['order'],
-                                     'gross_amount'=>$transaction['order']*$transaction['price'],
-                                     'discount_amount'=>$transaction['order']*$transaction['price']*$transaction['discount'],
-                                     'units_per_case'=>$product->data['Product Units Per Case']
-                                 );
-
-                      //print_r($transaction);
-
-                $net_amount=round(($transaction['order']-$transaction['reorder'])*$transaction['price']*(1-$transaction['discount']),2 );
-                $gross_amount=round(($transaction['order']-$transaction['reorder'])*$transaction['price'],2);
-                $net_discount=-$net_amount+$gross_amount;
-
-                if ($net_amount>0 ) {
-                    $product->update_last_sold_date($date_order);
-                    $product->update_first_sold_date($date_order);
-                    $product->update_for_sale_since(date("Y-m-d H:i:s",strtotime("$date_order -1 second")));
-
-
-                    if ($product->updated_field['Product For Sale Since Date']) {
-                        $_date_order=date("Y-m-d H:i:s",strtotime("$date_order -2 second"));
-                        $sql=sprintf("update `History Dimension` set `History Date`=%s  where `Action`='created' and `Direct Object`='Product' and `Direct Object Key`=%d  ",prepare_mysql($_date_order),$product->pid);
-                        mysql_query($sql);
-
-
-                    }
-
-                }
-
-
-                $data_invoice_transactions[]=array(
-                'original_amount'=>round(($transaction['order']-$transaction['reorder'])*$transaction['original_price']*(1-$transaction['discount']),2 )
-               
-                ,
-                                                 'Product Key'=>$product->id,
-                                                 'invoice qty'=>$transaction['order']-$transaction['reorder'],
-                                                 'gross amount'=>$gross_amount,
-                                                 'discount amount'=>$net_discount,
-                                                 'current payment state'=>'Paid',
-                                                 'description'=>$transaction['description'].($transaction['code']!=''?" (".$transaction['code'].")":''),
-                                                 'credit'=>$transaction['credit']   
-
-
-                                             );
-                // print_r($data_invoice_transactions);
-                $estimated_w+=$product->data['Product Gross Weight']*($transaction['order']-$transaction['reorder']);
-                //print "$estimated_w ".$product->data['Product Gross Weight']." ".($transaction['order']-$transaction['reorder'])."\n";
-                $data_dn_transactions[]=array(
-                                            'Product Key'=>$product->id,
-                                            'Estimated Weight'=>$product->data['Product Gross Weight']*($transaction['order']-$transaction['reorder']),
-                                            'Product ID'=>$product->data['Product ID'],
-                                            'Delivery Note Quantity'=>$transaction['order']-$transaction['reorder'],
-                                            'Current Autorized to Sell Quantity'=>$transaction['order'],
-                                            'Shipped Quantity'=>$transaction['order']-$transaction['reorder'],
-                                            'No Shipped Due Out of Stock'=>$transaction['reorder'],
-                                            'No Shipped Due No Authorized'=>0,
-                                            'No Shipped Due Not Found'=>0,
-                                            'No Shipped Due Other'=>0,
-                                            'amount in'=>(($transaction['order']-$transaction['reorder'])*$transaction['price'])*(1-$transaction['discount']),
-                                            'given'=>0,
-                                            'required'=>$transaction['order'],
-                                            'pick_method'=>'historic',
-                                            'pick_method_data'=>array(
-                                                                   'parts_sku'=>$used_parts_sku
-                                                               )
-                                        );
-
-            }
-            if ($transaction['bonus']>0) {
-                $products_data[]=array(
-                                     'Product Key'=>$product->id
-                                                   ,'qty'=>0
-                                                   ,'bonus qty'=>$transaction['bonus']
-                                                          ,'gross_amount'=>0
-                                                                          ,'discount_amount'=>0
-                                                                                             ,'Estimated Weight'=>0
-                                                                                                                 ,'units_per_case'=>$product->data['Product Units Per Case']
-                                 );
-                $data_invoice_transactions[]=array(
-                                                 'Product Key'=>$product->id,
-                                                 'credit'=>0,
-                                                 'original_amount'=>0,
-                                                 'description'=>$transaction['description'].($transaction['code']!=''?" (".$transaction['code'].")":''),
-                                                               'invoice qty'=>$transaction['bonus'],
-                                                                    'gross amount'=>($transaction['bonus'])*$transaction['price'],
-                                                                                              'discount amount'=>($transaction['bonus'])*$transaction['price'],
-                                               'current payment state'=>'No Applicable'
-                                             );
-
-                $estimated_w+=$product->data['Product Gross Weight']*$transaction['bonus'];
-                $data_dn_transactions[]=array(
-                                            'Product Key'=>$product->id
-                                                          ,'Product ID'=>$product->data['Product ID']
-                                                                        ,'Delivery Note Quantity'=>$transaction['bonus']
-                                                                                                  ,'Current Autorized to Sell Quantity'=>$transaction['bonus']
-                                                                                                                                        ,'Shipped Quantity'=>$transaction['bonus']
-                                                                                                                                                            ,'No Shipped Due Out of Stock'=>0
-                                                                                                                                                                                           ,'No Shipped Due No Authorized'=>0
-                                                                                                                                                                                                                           ,'No Shipped Due Not Found'=>0
-                                                                                                                                                                                                                                                       ,'No Shipped Due Other'=>0
-                                                                                                                                                                                                                                                                               ,'Estimated Weight'=>$product->data['Product Gross Weight']*($transaction['bonus'])
-                                                                                                                                                                                                                                                                                                   ,'amount in'=>0
-                                                                                                                                                                                                                                                                                                                ,'given'=>$transaction['bonus']
-                                                                                                                                                                                                                                                                                                                         ,'required'=>0
-                                                                                                                                                                                                                                                                                                                                     ,'pick_method'=>'historic'
-                                                                                                                                                                                                                                                                                                                                                    ,'pick_method_data'=>array(
-                                                                                                                                                                                                                                                                                                                                                                            'parts_sku'=>$used_parts_sku
-                                                                                                                                                                                                                                                                                                                                                                        )
-
-                                        );
-
-
-
-
-            }
+create_dn_invoice_transactions($transaction,$product,$used_parts_sku);
 
         }
 
@@ -1439,11 +1316,19 @@ get_data($header_data);
         
         $data['Order Customer Key']=$customer->id;
       $customer_key=$customer->id;
+
 switch ($tipo_order) {
     case 1://Delivery Note
     print "DN";
     $data['Order Type']='Order';
         create_order($data);
+              if(strtotime('today -1 month')>strtotime($date_order)){
+            $order->suspend(_('Order automatically suspended'),date("Y-m-d H:i:s",strtotime($date_order." +1 month")));
+        }
+   if(strtotime('today -6 month')>strtotime($date_order)){
+            $order->cancel(_('Order automatically cancelled'),date("Y-m-d H:i:s",strtotime($date_order." +6 month")));
+        }
+        
         break;
      case 2://Invoice
      case 8: //follow
@@ -1455,6 +1340,7 @@ switch ($tipo_order) {
      send_order($data,$data_dn_transactions);
         break;
          case 3://Cancel
+         print "Cancel";
          $data['Order Type']='Order';
         create_order($data);
         $order->cancel('',$date_order);
@@ -1477,16 +1363,21 @@ switch ($tipo_order) {
         case(7)://MISSING
         print "RPL/MISS ";
         create_post_order($data,$data_dn_transactions);
+            send_order($data,$data_dn_transactions);
+
         break; 
         case(9)://Refund
         print "Refund ";
        
         create_refund($data,$header_data, $data_dn_transactions);
-break;
+    break;
     default:
-      
+          print "Unknown ".$header_data['ltipo'];
+
         break;
 }
+
+
 $store->update_orders();
 $store->update_customers_data();
 
