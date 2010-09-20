@@ -147,34 +147,42 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
         $total_credit_value=0;
         $update=false;
         $old_order_key=0;
-        $sql=sprintf("select count(*) as num  from `Order Dimension`  where `Order Original Metadata`=%s  "
+        
+        
+        $sql=sprintf("select count(*) as num  from `Order Dimension`  where `Order Original Metadata`=%s ",prepare_mysql($store_code.$order_data_id));
+$result_test=mysql_query($sql);
+if ($row_test=mysql_fetch_array($result_test, MYSQL_ASSOC)) {
+    if ($row_test['num']==0) {
+        $sql=sprintf("select count(*) as num  from `Invoice Dimension`  where `Invoice Metadata`=%s "
                      ,prepare_mysql($store_code.$order_data_id));
-        $result_test=mysql_query($sql);
-        if ($row_test=mysql_fetch_array($result_test, MYSQL_ASSOC)) {
-            if ($row_test['num']==0) {
-
-                // test also for invoices please
-
-                $sql_in_invoices=sprintf("select count(*) as num  from `Invoice Dimension`  where `Invoice Metadata`=%s  "
-                                         ,prepare_mysql($store_code.$order_data_id));
-                $result_test_in_invoices=mysql_query($sql_in_invoices);
-                if ($row_test_in_invoices=mysql_fetch_array($result_test_in_invoices, MYSQL_ASSOC)) {
-                    if ($row_test_in_invoices['num']==0) {
-
-
-                        print "NEW $contador $order_data_id $filename \n";
+        $result_test2=mysql_query($sql);
+        if ($row_test2=mysql_fetch_array($result_test2, MYSQL_ASSOC)) {
+            if ($row_test2['num']==0) {
+                $sql=sprintf("select count(*) as num  from `Delivery Note Dimension`  where `Delivery Note Metadata`=%s "
+                             ,prepare_mysql($store_code.$order_data_id));
+                $result_test3=mysql_query($sql);
+                if ($row_test3=mysql_fetch_array($result_test3, MYSQL_ASSOC)) {
+                    if ($row_test3['num']==0) {
+                        print "NEW $contador $order_data_id $filename ";
                     } else {
                         $update=true;
-                        print "UPD $contador $order_data_id $filename \n";
+                        print "UPD $contador $order_data_id $filename ";
                     }
                 }
             } else {
-
                 $update=true;
-                print "UPD $contador $order_data_id $filename \n";
+                print "UPD $contador $order_data_id $filename ";
             }
         }
-        mysql_free_result($result_test);
+    } else {
+        $update=true;
+        print "UPD $contador $order_data_id $filename ";
+    }
+}
+mysql_free_result($result_test);
+        
+        
+
 
         $_header=mb_unserialize($row['header']);
         $header=array();

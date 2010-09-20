@@ -107,228 +107,6 @@ function create_order($data) {
     switch ($type) {
 
 
-    case ('direct_data_injection_to_delete') :
-        exit('do not use it any more\n');
-        $this->editor=$data ['editor'];
-        $this->data ['Delivery Note Key'] = '';
-
-
-        $this->data['Order Tax Code']=$data['Order Tax Code'];;
-        $this->data['Order Tax Rate']=$data['Order Tax Rate'];
-
-        if (isset ( $data ['ghost_order'] ))
-            $this->ghost_order = true;
-        else
-            $this->ghost_order = false;
-
-
-        if (! isset ( $data ['store_id'] ))
-            $data ['store_id'] = 0;
-
-        $store = new Store ( 'id', $data ['store_id'] );
-        if ($store->id) {
-            $this->data ['Order Store Key'] = $store->id;
-            $this->data ['Order Store Code'] = $store->data[ 'Store Code' ];
-
-            $this->data ['Order XHTML Store'] = sprintf ( '<a href="store.php?id=%d">%s</a>', $store->id, $store->data[ 'Store Code' ] );
-            $this->data ['Order Currency']=$store->data[ 'Store Currency Code' ];
-            $store_country_code=$store->data['Store Home Country Code 2 Alpha'];
-        } else {
-            $this->data ['Order Store Key'] = '';
-            $this->data ['Order Store Code'] = '';
-            $this->data ['Order XHTML Store'] = _ ( 'Unknown' );
-            $this->data ['Order Currency']=$myconf['currency_code'];
-            $store_country_code='XX';
-
-        }
-
-
-        $data['Customer Data']['editor']=$this->editor;
-        $data['Customer Data']['editor']['Date']=date("Y-m-d H:i:s",strtotime($data['Customer Data']['editor']['Date']." -1 second"));
-        $this->data ['Order XHTML Ship Tos']='';
-        if ($data['staff sale']=='Yes') {
-
-            $staff=new Staff('id',$data['staff sale key']);
-            $customer = new Customer ( 'find staff create', $staff );
-            $this->data ['Order Main Country 2 Alpha Code']=$store_country_code;
-            $this->data ['Order Ship To Key To Deliver']=0;
-            $this->data ['Order XHTML Ship Tos']=_('Collection');
-            $this->data ['Order Ship To Keys']='';
-            $this->data ['Order Main Country 2 Alpha Code']=$store_country_code;
-            $this->data ['Order Ship To Country Code']='';
-
-        }
-        elseif($data['Delivery Note Dispatch Method']=='Collected') {
-            $customer = new Customer ( 'find create', $data['Customer Data'] );
-            $data['Delivery Note Dispatch Method']='Collected';
-            $this->data ['Order Ship To Key To Deliver']=0;
-            $this->data ['Order Ship To Keys']='';
-            $this->data ['Order Main Country 2 Alpha Code']=$customer -> data['Customer Main Country 2 Alpha Code'];
-            $this->data ['Order Ship To Country Code']='';
-        }
-        else {
-            //print "Cust data\n";
-            $data['Customer Data']['editor']=$this->editor;
-
-            // $customer = new Customer ( 'find create', $data['Customer Data'] );
-
-            if ( date("Y-m-d",strtotime($customer->data['Customer First Contacted Date']))==date("Y-m-d",strtotime($data ['order date']))  ) {
-                $data ['order date']=date("Y-m-d H:i:s",strtotime($customer->data['Customer First Contacted Date'])+900  );
-
-            }
-
-
-
-            $this->data ['Order Main Country 2 Alpha Code']=$customer -> data['Customer Main Country 2 Alpha Code'];
-
-
-
-            if (isset($data['Shipping Address']) and is_array($data['Shipping Address']) and !array_empty($data['Shipping Address'])) {
-                $address=new Address('find create',$data['Shipping Address']);
-                $customer->update(array('Customer Delivery Address Link','None'));
-                $customer->associate_delivery_address($address->id);
-
-            }
-
-            $ship_to_data=$customer->get_ship_to_data();
-
-            $ship_to=new Ship_To('find create',$ship_to_data);
-
-            $this->data ['Order Ship To Key To Deliver']=$ship_to->id;
-            $this->data ['Order XHTML Ship Tos']=$ship_to->data['Ship To XHTML Address'];
-            $this->data ['Order Ship To Keys']=$ship_to->id;
-            $this->data ['Order Ship To Country Code']= $ship_to->data['Ship To Country 2 Alpha Code'];
-            $this->billing_address=new Address($customer->data['Customer Billing Address Key']);
-
-        }
-
-
-        if (!$customer->id ) {
-         
-            print_r($data['Customer Data'] );
-            print_r($customer);
-            exit("Customer Can not be found \n");
-        }
-
-
-
-
-
-
-
-
-
-        if (isset($data['Order Currency']))
-            $this->data ['Order Currency']=$data['Order Currency'];
-
-
-        $this->data['Order Currency']=$data['Order Currency'];
-        $this->data['Order Currency Exchange']=$data['Order Currency Exchange'];
-
-        $this->tax_rate = $data ['tax_rate'];
-        $this->data ['Order Date'] = $data ['order date'];
-        $this->data ['Backlog Date'] = $data ['order date'];
-
-        $this->data ['Order Public ID'] = $data ['order id'];
-        $this->data ['Order File As'] = $this->prepare_file_as($data ['order id']);
-        $this->data ['Order Type'] = $data ['Order Type'];
-
-        $this->data ['Order Customer Key'] = $customer->id;
-
-
-        $this->data ['Order Customer Name'] = $customer->data[ 'Customer Name' ];
-
-        $this->data ['Order Customer Contact Name'] = $data ['Order Customer Contact Name'];
-        $this->data ['Order Current Dispatch State'] = 'In Process';
-        $this->data ['Order Current Payment State'] = 'Waiting Payment';
-        $this->data ['Order Current XHTML State'] = 'In Process';
-
-        if (strtotime ( $this->data ['Order Date'] ) < strtotime ( "today - 4 month" )) {
-            $this->data ['Order Current Dispatch State'] = 'Unknown';
-            $this->data ['Order Current Payment State'] = 'Unknown';
-            $this->data ['Order Current XHTML State'] = _ ( 'Old Order Unknown State' );
-
-        }
-
-        $this->data ['Order Customer Message'] = _trim ( $data ['order customer message'] );
-
-        $this->data ['Order XHTML Sale Reps'] = $data ['Order XHTML Sale Reps'];
-        $this->data ['Order Sale Reps IDs'] = $data ['Order Sale Reps IDs'];
-
-        $this->data ['Order Original Data MIME Type'] = $data ['order original data mime type'];
-        //      $this->data ['Order Original Data'] = $data ['order original data'];
-        $this->data ['Order Original Data Source'] = $data ['order original data source'];
-        if (isset ( $data ['Order Original Metadata'] ))
-            $this->data ['Order Original Metadata'] = $data ['Order Original Metadata'];
-        else
-            $this->data ['Order Original Metadata']='';
-        $this->data ['Order Original Data Filename'] = $data ['Order Original Data Filename'];
-
-        $this->data ['Order Main Source Type'] = $data ['Order Main Source Type'];
-        if (isset($data ['Order For']))
-            $this->data ['Order For'] = $data ['Order For'];
-        else
-            $this->data ['Order For'] = 'Customer';
-
-
-
-        $this->data ['Order Items Adjust Amount'] = 0;
-
-        if (! $this->ghost_order) {
-            $this->create_order_header ();
-
-            foreach ( $this->data ['Order Sale Reps IDs'] as $sale_rep_id ) {
-                $sql = sprintf ( "insert into `Order Sales Rep Bridge`  (%d,%d)", $this->id, $sale_rep_id );
-
-            }
-
-            $line_number = 0;
-            foreach ( $data ['products'] as $product_data ) {
-                //TODO
-                $ship_to_key=0;
-                $line_number ++;
-                $product_data ['date'] = $this->data ['Order Date'];
-                $product_data ['line_number'] = $line_number;
-
-                $product_data ['metadata'] = $this->data ['Order Original Metadata'];
-                $product_data ['ship to key'] = $ship_to_key;
-                $product_data ['Current Dispatching State'] = $this->data ['Order Current Dispatch State'];
-                $product_data ['Current Payment State'] = $this->data ['Order Current Payment State'];
-
-                $this->add_order_transaction ( $product_data );
-
-            }
-
-
-
-
-            $this->get_items_totals_by_adding_transactions();
-            if ($this->update_customer) {
-                $customer->update_orders();
-                $customer->update_no_normal_data();
-
-            }
-            $customer->add_history_new_order($this);
-
-            //       $this->cutomer_rankings();
-
-
-
-
-
-        } else {
-            $this->data ['Order Key'] = 0;
-            $this->data ['Order Public ID'] = '';
-
-        }
-
-
-        $this->update_no_normal_totals('save');
-
-
-
-
-        break;
     case ('imap_email_mals-e') :
         $ip = gethostbyname ( 'imap.gmail.com' );
         $ip = 'imap.gmail.com';
@@ -340,11 +118,7 @@ function create_order($data) {
             print "MENSSAGE NUMBER $i\n";
             $email = imap_body ( $mbox, $i );
             $email = mb_convert_encoding ( $email, "UTF-8", "UTF-8, ISO-8859-1" );
-            //	print $email;
-
-
-            // 	print "\n**********\n".mb_detect_encoding($email,'UTF-8, ISO-8859-1')."\n";
-            // 	exit;
+    
             if (preg_match ( '/\nUsername\s*:\s*\d+/', $email, $match ))
                 $edata ['username'] = preg_replace ( '/username\s*:\s*/i', '', _trim ( $match [0] ) );
             if (preg_match ( '/\nDate\s*:\s*[a-zA-Z0-9\-\s]+:\d\d\s*/', $email, $match )) {
@@ -529,9 +303,7 @@ function create_order($data) {
                 else
                     $same_address = false;
 
-                //print "C:$same_contact  CM:$same_company  T:$same_telephone E:$same_email  A:$same_address \n";
-                // exit;
-
+  
 
             }
             $cdata ['has_shipping'] = true;
@@ -613,8 +385,7 @@ function create_order($data) {
                     $product = new Product ( 'code', $code, $this->data ['Order Date'] );
                     if (! $product->id) {
                         $this->errors [] = _ ( 'Error(1): Undentified Product. Line:' ) . $product_line;
-                        print "Error(1), product undentified Line: $code $product_line\n";
-                        exit ();
+                        exit ("Error(1), product undentified Line: $code $product_line\n");
                     } else {
                         $qty = _trim ( $_data [1] );
                         // Get here the discounts
@@ -627,8 +398,7 @@ function create_order($data) {
                 } else {
                   
                     $this->errors [] = _ ( 'Error(2): Can not read product line. Line:' ) . $product_line;
-                    print "Error(2), product undentified Count:" . count ( $_data ) . " Line:$product_line\n";
-                    exit ();
+                    exit ("Error(2), product undentified Count:" . count ( $_data ) . " Line:$product_line\n");
                 }
             }
 
@@ -788,38 +558,32 @@ function send_to_warehouse($date=false) {
 
     }
 
-   $sql=sprintf("update `Order Transaction Fact` set
-                 `Current Dispatching State`='Ready to Pick'   where `Order Key`=%d and `Current Dispatching State` in ('Submitted by Customer','In Process')"
-                 ,$this->id);
-
-    mysql_query($sql);
-
-
-$this->update_dispatch_state();
-
-if($this->data['Order For Collection']=='Yes')
-$dispatch_method='Collection';
-else
-$dispatch_method='Dispatch';
-
+    if ($this->data['Order For Collection']=='Yes') {
+        $dispatch_method='Collection';
+    } else {
+        $dispatch_method='Dispatch';
+    }
     $data_dn=array(
                  'Delivery Note Date Created'=>$date,
                  'Delivery Note ID'=>$this->data['Order Public ID'],
                  'Delivery Note File As'=>$this->data['Order File As'],
                  'Delivery Note Type'=>$this->data['Order Type'],
                  'Delivery Note Dispatch Method'=>$dispatch_method,
-                 'Delivery Note Title'=>_('Delivery Note for').' '.$this->data['Order Type'].' <a href="order.php?id='.$this->id.'">'.$this->data['Order Public ID'].'</a>'
-             );
+                 'Delivery Note Title'=>_('Delivery Note for').' '.$this->data['Order Type'].' <a href="order.php?id='.$this->id.'">'.$this->data['Order Public ID'].'</a>',
+                 'Delivery Note Customer Key'=>$this->data['Order Customer Key'],
+                  'Delivery Note Metadata'=>$this->data['Order Original Metadata']
+
+           );
 
     $dn=new DeliveryNote('create',$data_dn,$this);
     $dn->create_inventory_transaction_fact($this->id);
     $this->update_delivery_notes('save');
-  
+    $this->update_dispatch_state();
+
     return $dn;
 }
 
 function send_post_action_to_warehouse($date=false,$type,$metadata='') {
-
     if (!$date)
         $date=date('Y-m-d H:i:s');
 
@@ -829,95 +593,174 @@ function send_post_action_to_warehouse($date=false,$type,$metadata='') {
         return;
 
     }
+    
+   
+    
+    $type_formated=$type;
+    $title="Delivery Note for $type of ".$this->data['Order Type'].' <a href="order.php?id='.$this->id.'">'.$this->data['Order Public ID'].'</a>';
 
-
-  
-$type_formated=$type;
-$title="Delivery Note for $type of".$this->data['Order Type'].' <a href="order.php?id='.$this->id.'">'.$this->data['Order Public ID'].'</a>';
-
-if($this->data['Order For Collection']=='Yes')
-$dispatch_method='Collection';
-else
-$dispatch_method='Dispatch';
-
+    if ($this->data['Order For Collection']=='Yes')
+        $dispatch_method='Collection';
+    else
+        $dispatch_method='Dispatch';
+    if ($type=='Replacement')
+        $suffix='rpl';
+    elseif($type=='Missing')
+    $suffix='sh';
+    else
+        $suffix='';
     $data_dn=array(
                  'Delivery Note Date Created'=>$date,
-                 'Delivery Note ID'=>$this->data['Order Public ID']." ($type_formated)",
-                 'Delivery Note File As'=>$this->data['Order File As']." ($type_formated)",
+                 'Delivery Note ID'=>$this->data['Order Public ID']."$suffix",
+                 'Delivery Note File As'=>$this->data['Order File As']."$suffix",
                  'Delivery Note Type'=>$type,
                  'Delivery Note Title'=>$title,
                  'Delivery Note Dispatch Method'=>$dispatch_method,
-                 'Delivery Note Metadata'=>$metadata
+                 'Delivery Note Metadata'=>$metadata,
+                  'Delivery Note Customer Key'=>$this->data['Order Customer Key']
 
              );
-
+         
     $dn=new DeliveryNote('create',$data_dn,$this);
-    $dn->create_inventory_transaction_fact($this->id);
-    $this->update_delivery_notes('save');
+    //$dn->create_inventory_transaction_fact($this->id);
+    $this->update_xhtml_delivery_notes();
     $customer=new Customer($this->data['Order Customer Key']);
-    $customer->update_history_post_order_in_warehouse($this,$type);
+
+    $customer->add_history_post_order_in_warehouse($dn,$type);
     return $dn;
 }
 
-        function cancel($note='',$date=false) {
-       
-            $this->cancelled=false;
-            if (preg_match('/Dispatched/',$this->data ['Order Current Dispatch State'])) {
-                $this->msg=_('Order can not be cancelled, because has already been dispatched');
+function cancel($note='',$date=false) {
 
-            }
-            if (preg_match('/Cancelled/',$this->data ['Order Current Dispatch State'])) {
-                $this->msg=_('Order is already cancelled');
+    $this->cancelled=false;
+    if (preg_match('/Dispatched/',$this->data ['Order Current Dispatch State'])) {
+        $this->msg=_('Order can not be cancelled, because has already been dispatched');
 
-            } else {
+    }
+    if (preg_match('/Cancelled/',$this->data ['Order Current Dispatch State'])) {
+        $this->msg=_('Order is already cancelled');
 
-                if (!$date)
-                    $date=date('Y-m-d H:i:s');
-                $this->data ['Order Cancelled Date'] = $date;
+    } else {
 
-                $this->data ['Order Cancel Note'] = $note;
+        if (!$date)
+            $date=date('Y-m-d H:i:s');
+        $this->data ['Order Cancelled Date'] = $date;
 
-                $this->data ['Order Current Payment State'] = 'Cancelled';
-                $this->data ['Order Current Dispatch State'] = 'Cancelled';
-                $this->data ['Order Current XHTML State'] = _ ( 'Order Cancelled' );
-                $this->data ['Order XHTML Invoices'] = '';
-                $this->data ['Order XHTML Delivery Notes'] = '';
-                $this->data ['Order Balance Total Amount'] = 0;
-                $this->data ['Order Balance Net Amount'] = 0;
-                $this->data ['Order Balance Tax Amount'] = 0;
-                $this->data ['Order Outstanding Balance Total Amount'] = 0;
-                $this->data ['Order Outstanding Balance Net Amount'] = 0;
-                $this->data ['Order Outstanding Balance Tax Amount'] = 0;
+        $this->data ['Order Cancel Note'] = $note;
 
-
-
-                $sql = sprintf ( "update `Order Dimension` set `Order Cancelled Date`=%s, `Order Current Payment State`=%s,`Order Current Dispatch State`=%s,`Order Current XHTML State`=%s,`Order XHTML Invoices`='',`Order XHTML Delivery Notes`='' ,`Order Balance Net Amount`=0,`Order Balance Tax Amount`=0,`Order Balance Total Amount`=0 ,`Order Outstanding Balance Net Amount`=0,`Order Outstanding Balance Tax Amount`=0,`Order Outstanding Balance Total Amount`=0,`Order Profit Amount`=0,`Order Cancel Note`=%s  where `Order Key`=%d"
-                                 , prepare_mysql ( $this->data ['Order Cancelled Date'] )
-                                 , prepare_mysql ( $this->data ['Order Current Payment State'] )
-                                 , prepare_mysql ( $this->data ['Order Current Dispatch State'] )
-                                 , prepare_mysql ( $this->data ['Order Current XHTML State'] )
-                                 , prepare_mysql ( $this->data ['Order Cancel Note'] )
-
-                                 , $this->id );
-                if (! mysql_query ( $sql ))
-                    exit ( "$sql arror can not update cancel\n" );
-
-                $sql = sprintf ( "update `Order Transaction Fact` set `Consolidated`='Yes',`Current Dispatching State`='Cancelled',`Current Payment State`='Cancelled' where `Order Key`=%d ", $this->id )
-
-                       ;
-                if (! mysql_query ( $sql ))
-                    exit ( "$sql error dfsdfs doerde.pgp" );
-
-$customer=new Customer($this->data['Order Customer Key']);
- $customer->editor=$this->editor;
-$customer->add_history_order_cancelled($this);
-                $this->cancelled=true;
-
-            }
+        $this->data ['Order Current Payment State'] = 'Cancelled';
+        $this->data ['Order Current Dispatch State'] = 'Cancelled';
+        $this->data ['Order Current XHTML State'] = _ ( 'Order Cancelled' );
+        $this->data ['Order XHTML Invoices'] = '';
+        $this->data ['Order XHTML Delivery Notes'] = '';
+        $this->data ['Order Balance Total Amount'] = 0;
+        $this->data ['Order Balance Net Amount'] = 0;
+        $this->data ['Order Balance Tax Amount'] = 0;
+        $this->data ['Order Outstanding Balance Total Amount'] = 0;
+        $this->data ['Order Outstanding Balance Net Amount'] = 0;
+        $this->data ['Order Outstanding Balance Tax Amount'] = 0;
 
 
 
+        $sql = sprintf ( "update `Order Dimension` set `Order Cancelled Date`=%s, `Order Current Payment State`=%s,`Order Current Dispatch State`=%s,`Order Current XHTML State`=%s,`Order XHTML Invoices`='',`Order XHTML Delivery Notes`='' ,`Order Balance Net Amount`=0,`Order Balance Tax Amount`=0,`Order Balance Total Amount`=0 ,`Order Outstanding Balance Net Amount`=0,`Order Outstanding Balance Tax Amount`=0,`Order Outstanding Balance Total Amount`=0,`Order Profit Amount`=0,`Order Cancel Note`=%s  where `Order Key`=%d"
+                         , prepare_mysql ( $this->data ['Order Cancelled Date'] )
+                         , prepare_mysql ( $this->data ['Order Current Payment State'] )
+                         , prepare_mysql ( $this->data ['Order Current Dispatch State'] )
+                         , prepare_mysql ( $this->data ['Order Current XHTML State'] )
+                         , prepare_mysql ( $this->data ['Order Cancel Note'] )
+
+                         , $this->id );
+        if (! mysql_query ( $sql ))
+            exit ( "$sql arror can not update cancel\n" );
+
+        $sql = sprintf ( "update `Order Transaction Fact` set `Consolidated`='Yes',`Current Dispatching State`='Cancelled',`Current Payment State`='Cancelled' where `Order Key`=%d ", $this->id )
+
+               ;
+        if (! mysql_query ( $sql ))
+            exit ( "$sql error dfsdfs doerde.pgp" );
+
+        foreach($this->get_delivery_notes_objects() as $dn){
+            $dn->cancel($note,$date);
         }
+
+        $customer=new Customer($this->data['Order Customer Key']);
+        $customer->editor=$this->editor;
+        $customer->add_history_order_cancelled($this);
+        $this->cancelled=true;
+
+    }
+
+
+
+}
+
+
+function suspend($note='',$date=false) {
+
+    $this->cancelled=false;
+    if (preg_match('/Dispatched/',$this->data ['Order Current Dispatch State'])) {
+        $this->msg=_('Order can not be suspended, because has already been dispatched');
+
+    }elseif (preg_match('/Cancelled/',$this->data ['Order Current Dispatch State'])) {
+        $this->msg=_('Order is cancelled');
+
+    }elseif (preg_match('/Suspended/',$this->data ['Order Current Dispatch State'])) {
+        $this->msg=_('Order is already suspended');
+
+    }  else {
+
+        if (!$date)
+            $date=date('Y-m-d H:i:s');
+        $this->data ['Order Cancelled Date'] = $date;
+
+        $this->data ['Order Cancel Note'] = $note;
+
+        $this->data ['Order Current Payment State'] = 'Cancelled';
+        $this->data ['Order Current Dispatch State'] = 'Cancelled';
+        $this->data ['Order Current XHTML State'] = _ ( 'Order Cancelled' );
+        $this->data ['Order XHTML Invoices'] = '';
+        $this->data ['Order XHTML Delivery Notes'] = '';
+        $this->data ['Order Balance Total Amount'] = 0;
+        $this->data ['Order Balance Net Amount'] = 0;
+        $this->data ['Order Balance Tax Amount'] = 0;
+        $this->data ['Order Outstanding Balance Total Amount'] = 0;
+        $this->data ['Order Outstanding Balance Net Amount'] = 0;
+        $this->data ['Order Outstanding Balance Tax Amount'] = 0;
+
+
+
+        $sql = sprintf ( "update `Order Dimension` set `Order Cancelled Date`=%s, `Order Current Payment State`=%s,`Order Current Dispatch State`=%s,`Order Current XHTML State`=%s,`Order XHTML Invoices`='',`Order XHTML Delivery Notes`='' ,`Order Balance Net Amount`=0,`Order Balance Tax Amount`=0,`Order Balance Total Amount`=0 ,`Order Outstanding Balance Net Amount`=0,`Order Outstanding Balance Tax Amount`=0,`Order Outstanding Balance Total Amount`=0,`Order Profit Amount`=0,`Order Cancel Note`=%s  where `Order Key`=%d"
+                         , prepare_mysql ( $this->data ['Order Cancelled Date'] )
+                         , prepare_mysql ( $this->data ['Order Current Payment State'] )
+                         , prepare_mysql ( $this->data ['Order Current Dispatch State'] )
+                         , prepare_mysql ( $this->data ['Order Current XHTML State'] )
+                         , prepare_mysql ( $this->data ['Order Cancel Note'] )
+
+                         , $this->id );
+        if (! mysql_query ( $sql ))
+            exit ( "$sql arror can not update cancel\n" );
+
+        $sql = sprintf ( "update `Order Transaction Fact` set `Consolidated`='Yes',`Current Dispatching State`='Cancelled',`Current Payment State`='Cancelled' where `Order Key`=%d ", $this->id )
+
+               ;
+        if (! mysql_query ( $sql ))
+            exit ( "$sql error dfsdfs doerde.pgp" );
+
+        foreach($this->get_delivery_notes_objects() as $dn){
+            $dn->cancel($note,$date);
+        }
+
+        $customer=new Customer($this->data['Order Customer Key']);
+        $customer->editor=$this->editor;
+        $customer->add_history_order_cancelled($this);
+        $this->cancelled=true;
+
+    }
+
+
+
+}
+
 
         function no_payment_applicable() {
 
@@ -1017,6 +860,9 @@ function add_order_transaction($data) {
                 $bonus_quantity=$old_bonus_quantity;
             }
             $total_quantity=$quantity+$bonus_quantity;
+
+
+
             if ($total_quantity==0) {
                 $this->delete_transaction($row['Order Transaction Fact Key']);
             } else {
@@ -1035,6 +881,8 @@ function add_order_transaction($data) {
 
                                );
                 mysql_query($sql);
+                $otf_key=$row['Order Transaction Fact Key'];
+              //  print "$sql\n";
             }
 
         } else {
@@ -1079,6 +927,10 @@ function add_order_transaction($data) {
                              prepare_mysql ( $this->data ['Order Store Key'] ),
                              $data ['units_per_case']
                            );
+                           if (! mysql_query ( $sql ))
+        exit ( "$sql can not update order trwansiocion facrt after invoice 1223" );
+    $otf_key=mysql_insert_id();
+    
         }
     } else {
         $total_quantity=$quantity+$bonus_quantity;
@@ -1119,12 +971,13 @@ function add_order_transaction($data) {
                          $data ['units_per_case']
 
                        );
+                       if (! mysql_query ( $sql ))
+        exit ( "$sql can not update order trwansiocion facrt after invoice 1223" );
+    $otf_key=mysql_insert_id();
 
     }
 
-    if (! mysql_query ( $sql ))
-        exit ( "$sql can not update order trwansiocion facrt after invoice 1223" );
-    $otf_key=mysql_insert_id();
+    
 
     if (!$this->skip_update_after_individual_transaction) {
         $this->update_discounts();
@@ -1277,7 +1130,7 @@ function add_order_transaction($data) {
 
          
             if (count ( $deal ) > 0)
-                exit ();
+                exit ('Count deal is zero');
 
             //       $sql=sprintf("select * from `Deal Dimension` where `Allowance Type`='Percentage Off' and  `Triger`='Product' and `Trigger Key`=%d ",$item['product_id']);
             //       $result =& $this->db->query($sql);
@@ -1350,8 +1203,7 @@ function add_order_transaction($data) {
                 $this->data ['Order Key'] = $this->id;
             }
             else {
-                print "$sql  Error coan not create order header";
-                exit ();
+                exit ( "$sql  Error coan not create order header");
             }
 
         }
@@ -1523,7 +1375,7 @@ function add_order_transaction($data) {
 
 function get_delivery_notes_ids(){
 $sql=sprintf("select `Delivery Note Key` from `Order Transaction Fact` where `Order Key`=%d group by `Delivery Note Key`",$this->id);
-	   
+	 
             $res = mysql_query ( $sql );
             $delivery_notes=array();
             while ($row = mysql_fetch_array ( $res, MYSQL_ASSOC )) {
@@ -1539,7 +1391,7 @@ function get_delivery_notes_objects(){
 $delivery_notes=array();
 $delivery_notes_ids=$this->get_delivery_notes_ids();
 foreach ($delivery_notes_ids as $order_id) {
-    $delivery_notes[$order_id]=new Invoice($order_id);
+    $delivery_notes[$order_id]=new DeliveryNote($order_id);
 }
 return $delivery_notes;
 }
@@ -2184,9 +2036,6 @@ $prefix='';
                 else
                     $this->same_address = false;
 
-                //  print "C:$this->same_contact  CM:$this->same_company  T:$this->same_telephone   A:$this->same_address \n";
-                // exit;
-
 
             }
 
@@ -2367,7 +2216,7 @@ $this->data ['Order Dispatched Estimated Weight']= $row ['disp_estimated_weight'
             //update no normal fields
             $this->data ['Order XHTML Invoices'] ='';
             foreach($this->invoices as $invoice) {
-                $this->data ['Order XHTML Invoices'] .= sprintf ( '<a href="invoice.php?id=%d">%s%s</a>, ',$invoice->data ['Invoice Key'], $myconf['invoice_id_prefix'], $invoice->data ['Invoice Public ID'] );
+                $this->data ['Order XHTML Invoices'] .= sprintf ( '<a href="invoice.php?id=%d">%s</a>, ',$invoice->data ['Invoice Key'], $invoice->data ['Invoice Public ID'] );
 
             }
             $this->data ['Order XHTML Invoices'] =_trim(preg_replace('/\, $/','',$this->data ['Order XHTML Invoices']));
@@ -2387,40 +2236,16 @@ $this->data ['Order Dispatched Estimated Weight']= $row ['disp_estimated_weight'
 
 
         function update_delivery_notes($args='') {
-            global $myconf;
-            $sql=sprintf("select `Delivery Note Key` from `Order Transaction Fact` where `Order Key`=%d group by `Delivery Note Key`",$this->id);
-            $res = mysql_query ( $sql );
-            $this->delivery_notes=array();
-            while ($row = mysql_fetch_array ( $res, MYSQL_ASSOC )) {
-                if ($row['Delivery Note Key']) {
-                    $dn=new DeliveryNote($row['Delivery Note Key']);
-                    $this->delivery_notes[$row['Delivery Note Key']]=$dn;
-                }
-
-            }
-            //update no normal fields
-            $this->data ['Order XHTML Delivery Notes'] ='';
-            foreach($this->delivery_notes as $dn) {
-                $this->data ['Order XHTML Delivery Notes'] .= sprintf ( '<a href="dn.php?id=%d">%s%s</a>, ', $dn->data ['Delivery Note Key'], $myconf['dn_id_prefix'], $dn->data ['Delivery Note ID'] );
-
-            }
-            $this->data ['Order XHTML Delivery Notes'] =_trim(preg_replace('/\, $/','',$this->data ['Order XHTML Delivery Notes']));
-            //$where_dns=preg_replace('/\,$/',')',$where_dns);
-
-            if (!preg_match('/no save/i',$args)) {
-                $sql=sprintf("update `Order Dimension`  set `Order XHTML Delivery Notes`=%s where `Order Key`=%d"
-                             ,prepare_mysql($this->data ['Order XHTML Delivery Notes'])
-                             ,$this->id
-                            );
-                mysql_query($sql);
-
-            }
+     
+           
+           $this->update_xhtml_delivery_notes();
+           
 
         }
 
     function translate_dispatch_state($array_dispatch_state){
       
-       
+       print_r($array_dispatch_state);
         $dispatch_state='Unknown';
         if(count($array_dispatch_state)==1)
         switch ($state=array_pop($array_dispatch_state)) {
@@ -2445,6 +2270,7 @@ $this->data ['Order Dispatched Estimated Weight']= $row ['disp_estimated_weight'
                 if(array_key_exists('No Picked Due Other',$array_dispatch_state))unset($array_dispatch_state['No Picked Due Other']);
 
                 if(count($array_dispatch_state)==0){
+                print "*** $pivot\n";
                 return $pivot;
                 }
             
@@ -2453,6 +2279,8 @@ $this->data ['Order Dispatched Estimated Weight']= $row ['disp_estimated_weight'
         
         
         }
+        
+        print "*** $dispatch_state\n";
         return $dispatch_state;
         }
 
@@ -2480,7 +2308,7 @@ switch ($this->data['Order Current Dispatch State']) {
 function update_dispatch_state() {
     $sql = sprintf("select `Current Dispatching State` as state from `Order Transaction Fact` where `Order Key`=%d order by `Current Payment State`",
                    $this->id);
-    //print "$sql\n";
+    print "$sql\n";
     $result = mysql_query ( $sql );
     $array_state=array();
     while ($row = mysql_fetch_array ( $result, MYSQL_ASSOC )) {
@@ -2703,12 +2531,10 @@ $this->update_customer_history();
             $this->data ['Order Total Amount'] = $this->data ['Order Total Net Amount'] + $this->data ['Order Total Tax Amount'];
             $sql = sprintf ( "update `Order Dimension` set `Order Items Gross Amount`=%.2f, `Order Items Discount Amount`=%.2f, `Order Items Net Amount`=%.2f ,`Order Total Tax Amount`=%.2f ,`Order Shipping Net Amount`=%.2f ,`Order Charges Net Amount`=%.2f,`Order Shipping Tax Amount`=%.2f ,`Order Charges Tax Amount`=%.2f ,`Order Total Net Amount`=%.2f ,`Order Total Amount`=%.2f , `Order Balance Total Amount`=%.2f  where  `Order Key`=%d ", $this->data ['Order Items Gross Amount'], $this->data ['Order Items Discount Amount'], $this->data ['Order Items Net Amount'], $this->data ['Order Total Tax Amount'], $this->data ['Order Shipping Net Amount'], $this->data ['Order Charges Net Amount'], $this->data ['Order Shipping Tax Amount'], $this->data ['Order Charges Tax Amount'], $this->data ['Order Total Net Amount'], $this->data ['Order Total Amount'], $balance, $this->data ['Order Key'] );
 
-            //print "$sql\n";
-            //	exit;
-            //		print "Aqui3 $sql\n";
+       
 
             if (! mysql_query ( $sql ))
-                exit ( "$sql eroro3 con no update totals" );
+                exit ( "$sql error 3  con no update totals" );
 
         }
 
@@ -2838,26 +2664,14 @@ $this->update_totals_from_order_transactions();
 
 
             $customer=new Customer($customer_key);
-            if (!$customer->id) {
-                $customer= new Customer('create anonymous');
-            } else
+if(!$store_key){
                 $store_key=$customer->data['Customer Store Key'];
-
-            if ($customer->data['Customer Active Ship To Records']==0) {
-                $ship_to= $customer->set_current_ship_to('return object');
-
-                $data_ship_to=array(
-                'Ship To Key'=>$ship_to->id,
-                'Current Ship To Is Other Key'=>false,
-                'Date'=>$this->data['Order Date']
-                );
-               
-                $customer->update_ship_to($data_ship_to);
-            }else{
-
-            $ship_to= new Ship_To($customer->data['Customer Last Ship To Key']);
-            }
-
+}
+ 
+ $ship_to=$customer->get_ship_to($this->data['Order Date']);
+ 
+ 
+    
 
 
 
@@ -2892,36 +2706,36 @@ $tax_category=new TaxCategory('code',$customer->data['Customer Tax Category Code
 
 
         }
-        function set_data_from_store($store_key) {
-            $store=new Store($store_key);
-            if (!$store->id) {
-                $this->error=true;
-                return;
-            }
+function set_data_from_store($store_key) {
+    $store=new Store($store_key);
+    if (!$store->id) {
+        $this->error=true;
+        return;
+    }
 
 
-            $this->data ['Order Store Key'] = $store->id;
-            $this->data ['Order Store Code'] = $store->data[ 'Store Code' ];
-            $this->data ['Order XHTML Store'] = sprintf ( '<a href="store.php?id=%d">%s</a>', $store->id, $store->data[ 'Store Code' ] );
-            $this->data ['Order Currency']=$store->data[ 'Store Currency Code' ];
-            
-         //   print_r($this->data);
-            
-            
-            $this->public_id_format=$store->data[ 'Store Order Public ID Format' ];
+    $this->data ['Order Store Key'] = $store->id;
+    $this->data ['Order Store Code'] = $store->data[ 'Store Code' ];
+    $this->data ['Order XHTML Store'] = sprintf ( '<a href="store.php?id=%d">%s</a>', $store->id, $store->data[ 'Store Code' ] );
+    $this->data ['Order Currency']=$store->data[ 'Store Currency Code' ];
 
-if(!isset($this->data ['Order Tax Code'])){
-$tax_category=new TaxCategory($store->data['Store Tax Category Code']);
+    //   print_r($this->data);
 
-            $this->data ['Order Tax Rate'] = $tax_category->data['Tax Category Rate'];
-            $this->data ['Order Tax Code'] = $tax_category->data['Tax Category Code'];
+
+    $this->public_id_format=$store->data[ 'Store Order Public ID Format' ];
+
+    if (!isset($this->data ['Order Tax Code'])) {
+        $tax_category=new TaxCategory($store->data['Store Tax Category Code']);
+
+        $this->data ['Order Tax Rate'] = $tax_category->data['Tax Category Rate'];
+        $this->data ['Order Tax Code'] = $tax_category->data['Tax Category Code'];
+    }
+
+
+    //$this->set_taxes($store->data['Store Tax Country Code']);
+
+
 }
-
-
-            //$this->set_taxes($store->data['Store Tax Country Code']);
-
-
-        }
 
  
 
@@ -2935,16 +2749,12 @@ $tax_category=new TaxCategory($store->data['Store Tax Category Code']);
          $sqla=sprintf("UPDATE `Store Dimension` SET `Store Order Last Order ID` = LAST_INSERT_ID(`Store Order Last Order ID` + 1) where `Store Key`=%d"
          ,$this->data['Order Store Key']);
         mysql_query($sqla);
-       // $sql="SELECT LAST_INSERT_ID() as last;";
-        //    mysql_query($sql);
-           
-        
+      
         
         
            
             $public_id=mysql_insert_id();
             
-            //exit("$sqla  $public_id");
             
             $this->data['Order Public ID']=sprintf($this->public_id_format,$public_id);
             $this->data['Order File As']=$this->prepare_file_as($this->data['Order Public ID']);
@@ -3661,11 +3471,11 @@ $sql=sprintf("insert into `Search Full Text Dimension` values  (%s,'Order',%d,%s
 ,prepare_mysql($second_full_search)
 );
 mysql_query($sql);
-//exit($sql);
+
 }
 
 
-function prepare_file_as($number){
+public function prepare_file_as($number){
 
 $number=strtolower($number);
 if(preg_match("/^\d+/",$number,$match)){
@@ -3712,13 +3522,13 @@ function set_transaction_post_action($action,$data) {
          $col='`Shipped Not Received Quantity`';
          else
          return $result_data;
+         
             $sql=sprintf("update %s=%f where `Order Transaction Fact Key`=%d ",
                          $col,
                          $qty,
                          $row['Order Transaction Fact Key']
                         );
             mysql_query($sql);
-
             $result_data['updated']=true;
             $result_data['quantity']=$qty;
         }

@@ -94,7 +94,7 @@ function hide_details(){
 	    Dom.get(table.view).className="";
 	    Dom.get(tipo).className="selected";
 	    table.view=tipo
-		YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=department-view&value=' + escape(tipo) );
+		YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=department-view&value=' + escape(tipo),{} );
 	}
     }
 

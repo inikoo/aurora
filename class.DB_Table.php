@@ -313,6 +313,7 @@ abstract class DB_Table {
                     );
 
         mysql_query($sql);
+      
 
     }
 

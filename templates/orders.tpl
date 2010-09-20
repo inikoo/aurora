@@ -103,8 +103,26 @@
  <div   id="dn_table"  class="data_table" style="{if $view!='dn'}display:none{/if};clear:both">
     <span class="clean_table_title">{t}Delivery Note List{/t}</span>
     
-        <div id="table_type" class="table_type">
-    <a  style="float:right"  class="table_type state_details"  href="dn_csv.php" >{t}Export (CSV){/t}</a>
+        <div style="font-size:90%"  id="table_type" class="table_type">
+    <a     style="float:right;margin-left:20px" class="table_type state_details"  href="dn_csv.php" >{t}Export (CSV){/t}</a>
+            <span style="float:right;margin-left:20px" class="table_type dispatch state_details {if $dn_state_type=='all'}selected{/if}"  id="restrictions_dn_all" table_type="all"  >{t}All{/t} ({$store->get('Total Orders')})</span>
+            <img onClick="change_dn_view()" style="float:right;margin-left:20px;position:relative;top:5px;" src="art/icons/previous.png" alt="x"/>
+           <div id="dn_view_state_chooser" style="{if $dn_view!='dn_state'}display:none{/if}">
+           <span style="float:right;margin-left:20px" class="table_type dispatch state_details {if $dn_state_type=='cancelled'}selected{/if}"  id="restrictions_dn_returned"  table_type="returned"  >{t}Return{/t} ({$store->get('Returned Delivery Notes')})</span>
+            <span style="float:right;margin-left:20px" class="table_type dispatch state_details {if $dn_state_type=='cancelled'}selected{/if}"  id="restrictions_dn_send"  table_type="send"  >{t}Send{/t} ({$store->get('Dispatched Delivery Notes')})</span>
+            <span style="float:right;margin-left:20px" class="table_type dispatch state_details {if $dn_state_type=='cancelled'}selected{/if}"  id="restrictions_dn_ready"  table_type="ready"  >{t}Ready{/t} ({$store->get('Ready to Dispatch Delivery Notes')})</span>
+            <span style="float:right;margin-left:20px" class="table_type dispatch state_details {if $dn_state_type=='unknown'}selected{/if}"  id="restrictions_dn_unknown"  table_type="unknown"  >{t}Packing{/t} ({$store->get('Packing Delivery Notes')})</span>
+            <span style="float:right;margin-left:20px" class="table_type dispatch state_details {if $dn_state_type=='dispatched'}selected{/if}"  id="restrictions_dn_picking"  table_type="picking"  >{t}Picking{/t} ({$store->get('Picking Delivery Notes')})</span>
+            <span style="float:right;margin-left:20px" class="table_type dispatch  state_details {if $dn_state_type=='in_process'}selected{/if}"  id="restrictions_dn_ready_to_pick" table_type="ready_to_pick"   >{t}To Pick{/t} ({$store->get('Ready to Pick Delivery Notes')})</span>
+            </div>
+             <div id="dn_view_type_chooser" style="{if $dn_view!='dn_type'}display:none{/if}">
+            <span style="float:right;margin-left:20px" class="table_type dispatch state_details {if $dn_state_type=='cancelled'}selected{/if}"  id="restrictions_dn_cancelled"  table_type="cancelled"  >{t}Shortages{/t} ({$store->get('Cancelled Orders')})</span>
+            <span style="float:right;margin-left:20px" class="table_type dispatch state_details {if $dn_state_type=='cancelled'}selected{/if}"  id="restrictions_dn_cancelled"  table_type="cancelled"  >{t}Replacements{/t} ({$store->get('Cancelled Orders')})</span>
+            <span style="float:right;margin-left:20px" class="table_type dispatch state_details {if $dn_state_type=='unknown'}selected{/if}"  id="restrictions_dn_unknown"  table_type="unknown"  >{t}Donations{/t} ({$store->get('Unknown Orders')})</span>
+            <span style="float:right;margin-left:20px" class="table_type dispatch state_details {if $dn_state_type=='dispatched'}selected{/if}"  id="restrictions_dn_dispatched"  table_type="dispatched"  >{t}Samples{/t} ({$store->get('Dispatched Orders')})</span>
+            <span style="float:right;margin-left:20px" class="table_type dispatch  state_details {if $dn_state_type=='in_process'}selected{/if}"  id="restrictions_dn_in_process" table_type="in_process"   >{t}Orders{/t} ({$store->get('Orders In Process')})</span>
+            </div>
+            
      </div>
     <div id="list_options0"> 
       <div style="clear:both;margin:0 0px;padding:0 20px ;border-bottom:1px solid #999"></div>
