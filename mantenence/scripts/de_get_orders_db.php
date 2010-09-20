@@ -96,7 +96,7 @@ $fam_promo_key=$fam_promo->id;
 
 $sql="select * from  de_orders_data.orders  where   (last_transcribed is NULL  or last_read>last_transcribed) and deleted='No'  order by filename  ";
 //$sql="select * from  de_orders_data.orders where filename like '%refund.xls'   order by filename";
-//$sql="select * from  de_orders_data.orders  where (filename like '/mnt/%DE0614.xls' ) order by filename";
+//$sql="select * from  de_orders_data.orders  where (filename like '/mnt/%DE0004r%.xls' ) order by filename";
 
 
 $contador=0;
@@ -123,18 +123,47 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
         // check if it is already readed
         $update=false;
         $old_order_key=0;
-        $sql=sprintf("select count(*) as num  from `Order Dimension`  where `Order Original Metadata`=%s  ",prepare_mysql($store_code.$order_data_id));
-
-        $result_test=mysql_query($sql);
-        if ($row_test=mysql_fetch_array($result_test, MYSQL_ASSOC)) {
-            if ($row_test['num']==0) {
-                print "NEW $contador $order_data_id $filename ";
+        
+        
+$sql=sprintf("select count(*) as num  from `Order Dimension`  where `Order Original Metadata`=%s ",prepare_mysql($store_code.$order_data_id));
+$result_test=mysql_query($sql);
+if ($row_test=mysql_fetch_array($result_test, MYSQL_ASSOC)) {
+    if ($row_test['num']==0) {
+        $sql=sprintf("select count(*) as num  from `Invoice Dimension`  where `Invoice Metadata`=%s "
+                     ,prepare_mysql($store_code.$order_data_id));
+        $result_test2=mysql_query($sql);
+        if ($row_test2=mysql_fetch_array($result_test2, MYSQL_ASSOC)) {
+            if ($row_test2['num']==0) {
+                $sql=sprintf("select count(*) as num  from `Delivery Note Dimension`  where `Delivery Note Metadata`=%s "
+                             ,prepare_mysql($store_code.$order_data_id));
+                $result_test3=mysql_query($sql);
+                if ($row_test3=mysql_fetch_array($result_test3, MYSQL_ASSOC)) {
+                    if ($row_test3['num']==0) {
+                        print "NEW $contador $order_data_id $filename ";
+                    } else {
+                        $update=true;
+                        print "UPD $contador $order_data_id $filename ";
+                    }
+                }
             } else {
                 $update=true;
                 print "UPD $contador $order_data_id $filename ";
             }
         }
-        mysql_free_result($result_test);
+    } else {
+        $update=true;
+        print "UPD $contador $order_data_id $filename ";
+    }
+}
+mysql_free_result($result_test);
+
+
+
+
+
+
+
+
 
         $header=mb_unserialize($row['header']);
         $products=mb_unserialize($row['products']);
@@ -942,7 +971,7 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
             $part_list=array();
 
 
-
+            $parts_per_product=1;
             if ($product->new_id ) {
 
                 $uk_product=new Product('code_store',$code,1);
@@ -1156,6 +1185,8 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
 
                 $data_invoice_transactions[]=array(
+                
+                
                 'original_amount'=>round(($transaction['order']-$transaction['reorder'])*$transaction['original_price']*(1-$transaction['discount']),2 )
                
                 ,
@@ -1173,6 +1204,12 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
                 $estimated_w+=$product->data['Product Gross Weight']*($transaction['order']-$transaction['reorder']);
                 //print "$estimated_w ".$product->data['Product Gross Weight']." ".($transaction['order']-$transaction['reorder'])."\n";
                 $data_dn_transactions[]=array(
+                                     'Estimated Weight'=>$product->data['Product Gross Weight']*$transaction['order'],
+                                     'qty'=>$transaction['order'],
+                                     'gross_amount'=>$transaction['order']*$transaction['price'],
+                                     'discount_amount'=>$transaction['order']*$transaction['price']*$transaction['discount'],
+                                     'units_per_case'=>$product->data['Product Units Per Case'],
+                                     
                                             'Product Key'=>$product->id,
                                             'Estimated Weight'=>$product->data['Product Gross Weight']*($transaction['order']-$transaction['reorder']),
                                             'Product ID'=>$product->data['Product ID'],
@@ -1216,6 +1253,12 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
                 $estimated_w+=$product->data['Product Gross Weight']*$transaction['bonus'];
                 $data_dn_transactions[]=array(
+                     'qty'=>0
+                                                   ,'bonus qty'=>$transaction['bonus']
+                                                          ,'gross_amount'=>0
+                                                                          ,'discount_amount'=>0
+                                                                                             ,'Estimated Weight'=>0
+                                                                                                                 ,'units_per_case'=>$product->data['Product Units Per Case'],
                                             'Product Key'=>$product->id
                                                           ,'Product ID'=>$product->data['Product ID']
                                                                         ,'Delivery Note Quantity'=>$transaction['bonus']
@@ -1398,52 +1441,55 @@ get_data($header_data);
       $customer_key=$customer->id;
 
 switch ($tipo_order) {
-    case 1://Delivery Note
+case 1://Delivery Note
     print "DN";
     $data['Order Type']='Order';
-        create_order($data);
-        break;
-     case 2://Invoice
-     case 8: //follow
-      print "INV";
-     $data['Order Type']='Order';
-     
-        create_order($data);
-     
-     send_order($data,$data_dn_transactions);
-        break;
-         case 3://Cancel
-         $data['Order Type']='Order';
-        create_order($data);
-        $order->cancel('',$date_order);
-        break;
-         case 4://Sample
-               print "Sample";
+    create_order($data);
+    break;
+case 2://Invoice
+case 8: //follow
+    print "INV";
+    $data['Order Type']='Order';
 
-         $data['Order Type']='Sample';
-        create_order($data);
-        send_order($data,$data_dn_transactions);
-        break;
-         case 5://Donation
-                        print "Donation";
+    create_order($data);
 
-         $data['Order Type']='Donation';
-        create_order($data);
-        send_order($data,$data_dn_transactions);
-        break;
-        case(6)://REPLACEMENT
-        case(7)://MISSING
-        print "RPL/MISS ";
-        create_post_order($data,$data_dn_transactions);
-        break; 
-        case(9)://Refund
-        print "Refund ";
-       
-        create_refund($data,$header_data, $data_dn_transactions);
-break;
-    default:
-      
-        break;
+    send_order($data,$data_dn_transactions);
+    break;
+case 3://Cancel
+    print "Cancel";
+    $data['Order Type']='Order';
+    create_order($data);
+    $order->cancel('',$date_order);
+    break;
+case 4://Sample
+    print "Sample";
+
+    $data['Order Type']='Sample';
+    create_order($data);
+    send_order($data,$data_dn_transactions);
+    break;
+case 5://Donation
+    print "Donation";
+
+    $data['Order Type']='Donation';
+    create_order($data);
+    send_order($data,$data_dn_transactions);
+    break;
+case(6)://REPLACEMENT
+case(7)://MISSING
+    print "RPL/MISS ";
+    create_post_order($data,$data_dn_transactions);
+    send_order($data,$data_dn_transactions);
+    break;
+case(9)://Refund
+    print "Refund ";
+
+    create_refund($data,$header_data, $data_dn_transactions);
+    break;
+default:
+    
+    print "Unknown ".$header_data['ltipo'];
+    break;
 }
 $store->update_orders();
 $store->update_customers_data();

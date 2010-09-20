@@ -279,12 +279,14 @@ $where.=' and `Deep`=1 ';
      else
        $note=$row['History Abstract'].' <img class="button" d="no" id="ch'.$row['History Key'].'" hid="'.$row['History Key'].'" onClick="showdetails(this)" src="art/icons/closed.png" alt="Show details" />';
 
+$objeto=$row['Direct Object'];
+
 
      $data[]=array(
 		   'id'=>$row['History Key'],
 		   'date'=>strftime("%a %e %b %Y", strtotime($row['History Date']." +00:00")),
 		   'time'=>strftime("%H:%M", strtotime($row['History Date']." +00:00")),
-		   'objeto'=>$row['Direct Object'],
+		   'objeto'=>$objeto,
 		   'note'=>$note,
 		   'handle'=>$row['User Alias']
 		   );

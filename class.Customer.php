@@ -3378,7 +3378,29 @@ switch ($this->data['Customer Delivery Address Link']) {
     }
     
     
+ function get_ship_to($date=false){
  
+ if(!$date){
+ $date=date("Y-m-d H:i:s");
+ }
+         if ($this->data['Customer Active Ship To Records']==0) {
+                $ship_to= $this->set_current_ship_to('return object');
+
+                $data_ship_to=array(
+                'Ship To Key'=>$ship_to->id,
+                'Current Ship To Is Other Key'=>false,
+                'Date'=>$date
+                );
+               
+                $this->update_ship_to($data_ship_to);
+            }else{
+
+            $ship_to= new Ship_To($this->data['Customer Last Ship To Key']);
+            }
+
+return $ship_to; 
+ 
+ }
 
 function get_ship_to_data(){
   $address=new address($this->data['Customer Main Delivery Address Key']);
@@ -3600,7 +3622,7 @@ $lang=$_SESSION ['lang'];
 }
 
 
-function add_history_order_post_order($dn) {
+function add_history_post_order_in_warehouse($dn) {
 
 
 date_default_timezone_set(TIMEZONE) ;
@@ -3616,11 +3638,14 @@ $lang=$_SESSION ['lang'];
 
     switch ($lang) {
     default :
-        $note = sprintf ( '%s <a href="dn.php?id=%d">%s</a>',$dn->data['Delivery Note Type'],$dn->data ['Delivery Note Key'], $dn->data ['Delivery Note ID'] );
+    $state=$dn->data['Delivery Note State'];
+        $note = sprintf ( '%s <a href="dn.php?id=%d">%s</a> (%s)',$dn->data['Delivery Note Type'],$dn->data ['Delivery Note Key'], $dn->data ['Delivery Note ID'],$state );
+        $details=$dn->data['Delivery Note Title'];
+        
         if ($this->editor['Author Alias']!='' and $this->editor['Author Key'] ) {
-                $details = '';
+                $details.= '';
             } else {
-                $details = '';
+                $details.= '';
 
             }
        
@@ -3628,10 +3653,10 @@ $lang=$_SESSION ['lang'];
 
     }
     $history_data=array(
-                      'Date'=>$dn->data ['Delivery Note Date'],
+                      'Date'=>$dn->data ['Delivery Note Date Created'],
                       'Subject'=>'Customer',
                       'Subject Key'=>$this->id,
-                      'Direct Object'=>'Delivery Note',
+                      'Direct Object'=>'After Sale',
                       'Direct Object Key'=>$dn->data ['Delivery Note Key'],
                       'History Details'=>$details,
                       'History Abstract'=>$note,
@@ -3639,7 +3664,7 @@ $lang=$_SESSION ['lang'];
 
                   );
                   
-                 
+  //   print_r($history_data);            
     $dn->add_history($history_data);
     
     
@@ -3741,9 +3766,7 @@ date_default_timezone_set('GMT') ;
     $order->add_history($history_data);
 
 }
-function update_history_post_order_in_warehouse($order,$type){
 
-}
 
 }
 ?>

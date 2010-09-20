@@ -62,8 +62,23 @@ mysql_free_result($result);
 if(isset($_REQUEST['view']) and preg_match('/^orders|invoices|dn$/',$_REQUEST['view'])){
 $_SESSION['state']['orders']['view']=$_REQUEST['view'];
 }
+if(isset($_REQUEST['invoice_type']) and preg_match('/^all|invoices|refunds|to_pay|paid$/',$_REQUEST['invoice_type'])){
+$_SESSION['state']['orders']['invoices']['invoice_type']=$_REQUEST['invoice_type'];
+}
+        
+if(isset($_REQUEST['dispatch']) and preg_match('/^all_orders|in_process|dispatched|unknown|cancelled$/',$_REQUEST['dispatch'])){
+$_SESSION['state']['orders']['table']['dispatch']=$_REQUEST['dispatch'];
+}
 
 $smarty->assign('view',$_SESSION['state']['orders']['view']);
+$smarty->assign('dispatch',$_SESSION['state']['orders']['table']['dispatch']);
+$smarty->assign('invoice_type',$_SESSION['state']['orders']['invoices']['invoice_type']);
+$smarty->assign('dn_state_type',$_SESSION['state']['orders']['dn']['dn_state_type']);
+
+$smarty->assign('dn_view',$_SESSION['state']['stores']['delivery_notes']['view']);
+
+
+
 $smarty->assign('from',$_SESSION['state']['orders']['from']);
 $smarty->assign('to',$_SESSION['state']['orders']['to']);
 
@@ -106,10 +121,6 @@ $smarty->assign('parent','orders');
 $smarty->assign('title', _('Orders'));
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
-
-$smarty->assign('dispatch',$_SESSION['state']['orders']['table']['dispatch']);
-$smarty->assign('invoice_type',$_SESSION['state']['orders']['invoices']['invoice_type']);
-$smarty->assign('dn_state',$_SESSION['state']['orders']['dn']['dn_state']);
 
 
 

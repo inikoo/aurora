@@ -328,7 +328,7 @@ $default_state=array(
                                          'f_value'=>'','f_show'=>false,
                                          'from'=>'',
                                          'to'=>'',
-                                         'dn_state'=>'all',
+                                         'dn_state_type'=>'all',
                                          'elements'=>array()
                                      )
                                      ,'ready_to_pick_dn'=>array(

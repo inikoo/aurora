@@ -175,19 +175,37 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
         // check if it is already readed
         $update=false;
         $old_order_key=0;
-        $sql=sprintf("select count(*) as num  from `Order Dimension`  where `Order Original Metadata`=%s  ",prepare_mysql($store_code.$order_data_id));
-
-        $result_test=mysql_query($sql);
-        if ($row_test=mysql_fetch_array($result_test, MYSQL_ASSOC)) {
-            if ($row_test['num']==0) {
-                print "NEW $contador $order_data_id $filename ";
+$sql=sprintf("select count(*) as num  from `Order Dimension`  where `Order Original Metadata`=%s ",prepare_mysql($store_code.$order_data_id));
+$result_test=mysql_query($sql);
+if ($row_test=mysql_fetch_array($result_test, MYSQL_ASSOC)) {
+    if ($row_test['num']==0) {
+        $sql=sprintf("select count(*) as num  from `Invoice Dimension`  where `Invoice Metadata`=%s "
+                     ,prepare_mysql($store_code.$order_data_id));
+        $result_test2=mysql_query($sql);
+        if ($row_test2=mysql_fetch_array($result_test2, MYSQL_ASSOC)) {
+            if ($row_test2['num']==0) {
+                $sql=sprintf("select count(*) as num  from `Delivery Note Dimension`  where `Delivery Note Metadata`=%s "
+                             ,prepare_mysql($store_code.$order_data_id));
+                $result_test3=mysql_query($sql);
+                if ($row_test3=mysql_fetch_array($result_test3, MYSQL_ASSOC)) {
+                    if ($row_test3['num']==0) {
+                        print "NEW $contador $order_data_id $filename ";
+                    } else {
+                        $update=true;
+                        print "UPD $contador $order_data_id $filename ";
+                    }
+                }
             } else {
                 $update=true;
                 print "UPD $contador $order_data_id $filename ";
             }
         }
-
-
+    } else {
+        $update=true;
+        print "UPD $contador $order_data_id $filename ";
+    }
+}
+mysql_free_result($result_test);
 
 
 
@@ -987,6 +1005,7 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
                 $supplier=new Supplier('new',$the_supplier_data);
             }
 
+            $parts_per_product=1;
 
             $part_list=array();
             if ($product->new_id ) {
@@ -1450,6 +1469,7 @@ switch ($tipo_order) {
      send_order($data,$data_dn_transactions);
         break;
          case 3://Cancel
+         print "Cancel";
          $data['Order Type']='Order';
         create_order($data);
         $order->cancel('',$date_order);
@@ -1472,6 +1492,8 @@ switch ($tipo_order) {
         case(7)://MISSING
         print "RPL/MISS ";
         create_post_order($data,$data_dn_transactions);
+            send_order($data,$data_dn_transactions);
+
         break; 
         case(9)://Refund
         print "Refund ";
@@ -1479,7 +1501,8 @@ switch ($tipo_order) {
         create_refund($data,$header_data, $data_dn_transactions);
     break;
     default:
-      
+          print "Unknown ".$header_data['ltipo'];
+
         break;
 }
 

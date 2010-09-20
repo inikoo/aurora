@@ -633,7 +633,6 @@ Class TimeSeries  {
         $this->where=sprintf(" and `Part SKU` = %d",$part_sku);
         $this->max_forecast_bins=60;
 
-        // print_r($this);
 
     }
 
@@ -682,7 +681,6 @@ Class TimeSeries  {
         $this->where=sprintf(" and `Part SKU` in %s ",$part_skus);
         $this->max_forecast_bins=12;
 
-        // print_r($this);
 
     }
 
@@ -696,7 +694,6 @@ Class TimeSeries  {
         } else {
             if (!$this->last_date=$this->last_date()) {
 
-                 print "caca2";
                 return;
             }
         }
@@ -742,7 +739,6 @@ Class TimeSeries  {
                     );
 
         if (!isset($this->first)) {
-            print_r($this);
         }
 
         $sql=sprintf("insert into `Time Series Dimension` values (%s,%s,%s,%d,%d,%d,%s,%f,%d,'First','','','')   ON DUPLICATE KEY UPDATE  `Time Series Value`=%f ,`Time Series Count`=%d ,`Time Series Type`='First' ,`Time Series Tag`='',`Time Series Parent Key`=%d "
@@ -778,7 +774,6 @@ Class TimeSeries  {
                          ,$this->parent_key
                         );
             mysql_query($sql);
-            // print "$sql<br>";
         }
 
         if (isset($this->current)) {
@@ -917,7 +912,6 @@ Class TimeSeries  {
 
 
     function forecast_using_monthly_data() {
-        //exit("todo");
         return;
     }
 
@@ -946,10 +940,7 @@ Class TimeSeries  {
 
         $start_year=date("Y",$from_time);
         $start_bin=date("m",$from_time);
-        //	print $this->first_complete_year." ".$this->first_complete_bin."\n";
-        //	print_r($this->values);
-        //	exit($values);
-
+       
         $number_values=count($this->values);
 
         if ($number_values<2)
@@ -960,7 +951,6 @@ Class TimeSeries  {
             $few_points=true;
         else
             $few_points=false;
-        // print "values : $number_values\n";
 
 
         if (!$number_period_for_forecasting)
@@ -972,7 +962,6 @@ Class TimeSeries  {
 
 
 
-        //print $values;
         $script=sprintf("library(forecast,quietly );values=c(%s);",$values);
         if (!$few_points) {
             $script.=sprintf("ts= ts(values, start=c(%d,%d),frequency = %d);",$start_year,$start_bin,$this->frequency);
@@ -988,7 +977,6 @@ Class TimeSeries  {
             $script.="fit<-arima(ts);fcast = forecast(fit,$number_period_for_forecasting);print(fcast) ;";
 
         }
-        //print $script;
 
 
 
@@ -1016,10 +1004,6 @@ Class TimeSeries  {
             $count_forecast_data = preg_split('/\n/',$count_forecast_data);
 
 
-
-
-            //print_r($values_forecast_data);
-            // print_r($count_forecast_data);
             $forecast_bins=0;
             foreach($values_forecast_data as $line) {
                 if ($forecast_bins>$number_period_for_forecasting)
@@ -1084,20 +1068,17 @@ Class TimeSeries  {
                     else
                         $uncertainty=($data[4]-$data[3])/(2*$data[0]);
 
-                    //print $date."\n";
                     $forecast[$date]['count']=round($data[0]);
                     $forecast[$date]['deviation'].='|'.round($data[1]).','.round($data[2]).','.round($data[3]).','.round($data[4]).','.$uncertainty;
                     $forecast_bins++;
 
                 }
-                // print_r($forecast);
 
                 if (preg_match('/Point Forecast/i',$line))
                     $read=true;
             }
 
 
-            //print_r($forecast);
             return $forecast;
 
         }
@@ -1199,13 +1180,10 @@ $number_period_for_forecasting=26;
 
 
 
-            print_r($values_forecast_data);
-             print_r($count_forecast_data);
             $forecast_bins=0;
             $forecast_week_number=0;
             foreach($values_forecast_data as $line) {
-               // if ($forecast_bins>$number_period_for_forecasting)
-                //    break;
+         
                 $line=_trim($line);
                 if ($read and $line!='') {
                     $regex='/^\d{4}\.\d+\s*/i';
@@ -1214,7 +1192,6 @@ $number_period_for_forecasting=26;
                         
                         
                     $line=preg_replace($regex,'',$line);
-                    //print_r($line);
                     $forecast_week_number++;
                     $num_weeks=7*$forecast_week_number;
                     $date=date("Y-m-d",strtotime($last_date." + $num_weeks days"));
@@ -1249,8 +1226,7 @@ $number_period_for_forecasting=26;
             $forecast_bins=0;
             $forecast_week_number=0;
             foreach($count_forecast_data as $line) {
-               // if ($forecast_bins>$number_period_for_forecasting)
-                //    break;
+    
                 $line=_trim($line);
                 if ($read and $line!='') {
                   $regex='/^\d{4}\.\d+\s*/i';
@@ -1259,7 +1235,6 @@ $number_period_for_forecasting=26;
                         
                         
                     $line=preg_replace($regex,'',$line);
-                    //print_r($line);
                     $forecast_week_number++;
                     $num_weeks=7*$forecast_week_number;
                     $date=date("Y-m-d",strtotime($last_date." + $num_weeks days"));
@@ -1279,20 +1254,17 @@ $number_period_for_forecasting=26;
                     else
                         $uncertainty=($data[4]-$data[3])/(2*$data[0]);
 
-                    //print $date."\n";
                     $forecast[$date]['count']=round($data[0]);
                     $forecast[$date]['deviation'].='|'.round($data[1]).','.round($data[2]).','.round($data[3]).','.round($data[4]).','.$uncertainty;
                     $forecast_bins++;
 
                 }
-                // print_r($forecast);
 
                 if (preg_match('/Point Forecast/i',$line))
                     $read=true;
             }
 
 
-            print_r($forecast);
             return $forecast;
 
         }
@@ -1318,7 +1290,6 @@ $number_period_for_forecasting=26;
 
             $this->values["$year-01-01"]=array('count'=>0,'value'=>0);
         }
-        // print_r($this->values);
 
         $sql=sprintf("SELECT %s as number,%s as date ,YEAR(%s) AS year ,sum(%s) as value FROM %s where YEAR(%s)>=%s and YEAR(%s)<=%s %s  GROUP BY year limit 10000"
                      ,$this->count
@@ -1330,7 +1301,6 @@ $number_period_for_forecasting=26;
                      ,$this->where
                     );
 
-        // print "$sql\n";
 
         $res=mysql_query($sql);
 
@@ -1366,7 +1336,6 @@ $sql=sprintf("SELECT %s as number,%s as date  ,sum(%s) as value FROM %s where %s
                      ,$this->date_field,prepare_mysql($date)
                      ,$this->where
                     );
-                    print "$sql\n";
                             $res=mysql_query($sql);
 
 if ($row=mysql_fetch_assoc($res)) {
@@ -1401,11 +1370,9 @@ function get_values_day_by_day() {
                      ,prepare_mysql($this->start_date)
                      ,prepare_mysql($this->last_date)
                     );
-//print "$sql\n";
 
         $data=array();
         $res = mysql_query($sql);
-        // print "$sql\n";
 
 $start_day=$this->first_complete_date;
 $last_day=date("Y-m-d");
@@ -1433,7 +1400,6 @@ $last_day=date("Y-m-d");
             
             
             if($values=$this->get_value_day($row['date'])){
-            print_r($values);
             }
             
             
@@ -1500,11 +1466,9 @@ $last_day=date("Y-m-d");
                      ,prepare_mysql($this->start_date)
                      ,prepare_mysql($this->last_date)
                     );
-//print "$sql\n";
 
         $data=array();
         $res = mysql_query($sql);
-        // print "$sql\n";
 
 $start_day=$this->first_complete_date;
 $last_day=date("Y-m-d");
@@ -1541,7 +1505,6 @@ $last_day=date("Y-m-d");
                      ,$this->where
                     );
 
-       //  print "$sql\n";
 
         $res=mysql_query($sql);
 
@@ -1610,8 +1573,6 @@ $last_day=date("Y-m-d");
                      ,$this->where
                     );
 
-         print "$sql\n";
-        //exit;
         $res=mysql_query($sql);
 
         while ($row=mysql_fetch_array($res)) {
@@ -1631,8 +1592,6 @@ $last_day=date("Y-m-d");
             }
         }
 
-        // print_r($data);
-        //  exit;
         foreach($data as $_values) {
             $this->values[$_values['date']]=$_values;
         }
@@ -1652,8 +1611,7 @@ $last_day=date("Y-m-d");
         $first_yearweek=yearweek($this->start_date);
         $last_yearweek=yearweek($this->last_date );
         $current_yearweek=yearweek(date("Y-m-d")) ;
-        //print "xx ".$this->start_date;
-        //exit;
+   
         $sql=sprintf("select `First Day` as date,`Year Week` as yearweek,`Year` as year from kbase.`Week Dimension` where `Last Day`>=%s and `First Day` <= %s  ; "
                      ,prepare_mysql($this->start_date)
                      ,prepare_mysql($this->last_date)
@@ -1662,7 +1620,6 @@ $last_day=date("Y-m-d");
 
         $data=array();
         $res = mysql_query($sql);
-        // print "$sql\n";
 
         while ($row=mysql_fetch_array($res)) {
 
@@ -1686,10 +1643,7 @@ $last_day=date("Y-m-d");
                                         );
             }
         }
-        //print_r($data);
-        //exit($current_yearweek);
-
-
+     
 
         $sql=sprintf("SELECT %s as number,%s as date ,YEARWEEK(%s,3) AS yearweek  , sum(%s) as value FROM %s where %s>=%s  and %s<=%s %s  GROUP BY yearweek limit 10000"
                      ,$this->count
@@ -1701,10 +1655,8 @@ $last_day=date("Y-m-d");
                      ,$this->where
                     );
 
-        // print "$sql\n";
 
         $res=mysql_query($sql);
-        //exit;
         while ($row=mysql_fetch_array($res)) {
 
             if ($row['yearweek']==$first_yearweek or $row['yearweek']==$current_yearweek ) {
@@ -1727,15 +1679,9 @@ $last_day=date("Y-m-d");
                 $data[$row['yearweek']]['value']=$row['value'];
             }
         }
-        //print_r($data);
         foreach($data as $_values) {
             $this->values[$_values['date']]=$_values;
         }
-
-        //print "$first_yearweek  $current_yearweek \n";
-
-        //exit;
-
 
 
     }
@@ -1753,14 +1699,12 @@ $last_day=date("Y-m-d");
         $first_yearweek=$this->normalized_yearweek($this->start_date);
         $last_yearweek=$this->normalized_yearweek($this->last_date );
         $current_yearweek=$this->normalized_yearweek(date("Y-m-d") );
-        //print "xx ".$this->start_date;
-        //exit;
+
         $sql=sprintf("select count(*) as factor,`First Day` as date,`Year Week Normalized` as yearweek,`Year` as year from `Week Dimension` where `Normalized Last Day`>%s and `First Day` <= %s  group by `Year Week Normalized`; "
                      ,prepare_mysql($this->start_date)
                      ,prepare_mysql($this->last_date)
                     );
 
-        //print $sql;
 
         $data=array();
         $res = mysql_query($sql);
@@ -1774,11 +1718,7 @@ $last_day=date("Y-m-d");
                                                                  ,'factor'=>$row['factor']
                                     );
         }
-        //   print_r($data);
-        //exit;
-
-
-
+      
         $sql=sprintf("SELECT %s as number,%s as date ,YEARWEEK(%s,3) AS yearweek , (select `Year Week Normalized` from `Week Dimension` as WD where WD.`Year Week`=yearweek) as normalized_yearweek , sum(%s) as value FROM %s where %s>=%s  and %s<=%s %s  GROUP BY yearweek limit 10000"
                      ,$this->count
                      ,$this->date_field,$this->date_field
@@ -1789,10 +1729,8 @@ $last_day=date("Y-m-d");
                      ,$this->where
                     );
 
-        // print "$sql\n";
 
         $res=mysql_query($sql);
-        //exit;
         while ($row=mysql_fetch_array($res)) {
 
             if ($row['normalized_yearweek']==$first_yearweek or $row['normalized_yearweek']==$current_yearweek) {
@@ -1804,7 +1742,6 @@ $last_day=date("Y-m-d");
                 $data[$row['normalized_yearweek']]['value']=$row['value']/$data['factor'];
             }
         }
-        //print_r($data);
         foreach($data as $_values) {
             $this->normalized_values[$_values['date']]=$_values;
         }
@@ -1838,7 +1775,6 @@ $last_day=date("Y-m-d");
 
         $data=array();
         $res = mysql_query($sql);
-        //print "$sql\n";
 
         while ($row=mysql_fetch_array($res)) {
             $data[$row['yearquarter']]=array(
@@ -1847,7 +1783,6 @@ $last_day=date("Y-m-d");
                                                            ,'count'=>0
                                        );
         }
-        //print_r($data);
 
 
 
@@ -1862,10 +1797,8 @@ $last_day=date("Y-m-d");
                      ,$this->where
                     );
 
-        // print "$sql\n";
 
         $res=mysql_query($sql);
-        // print "$sql\n";
         while ($row=mysql_fetch_array($res)) {
             if ($row['yearquarter']==$first_yearquarter or $row['yearquarter']==$current_yearquarter) {
                 if ($row['yearquarter']==$first_yearquarter) {
@@ -1887,14 +1820,9 @@ $last_day=date("Y-m-d");
                 $data[$row['yearquarter']]['value']=$row['value'];
             }
         }
-        //print_r($data);
         foreach($data as $_values) {
             $this->values[$_values['date']]=$_values;
         }
-        //  exit;
-
-
-
 
     }
 
@@ -2287,9 +2215,6 @@ $to=prepare_mysql_datetime($to,'date');
 
         $data=array();
 
-        //$where_dates=prepare_mysql_dates($from,$to,"`Time Series Date`");
-        //print "-> $to,$where_to\n";
-        //print_r($where_dates);
 
         $sql=sprintf("SELECT `Time Series Label`,`Time Series Type`,`Time Series Value` as value,MONTH(`Time Series Date`) as month,`Time Series Count` as count ,UNIX_TIMESTAMP(`Time Series Date`) as date ,substring(`Time Series Date`, 1,7) AS dd from `Time Series Dimension` where  `Time Series Frequency`='Monthly' and  `Time Series Name`=%s and `Time Series Name Key`=%d and `Time Series Name Second Key`=%d %s %s order by `Time Series Date`,`Time Series Type` desc"
                      ,prepare_mysql($this->name)
@@ -2298,15 +2223,13 @@ $to=prepare_mysql_datetime($to,'date');
                      ,$where_from
                      ,$where_to
                     );
-//	 print "$sql<br>";
-//exit("caca\n");
+
         $prev_month='';
         $prev_year=array();
         $forecast_region=false;
         $data_region=false;
         $res = mysql_query($sql);
         while ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
-            // print_r($row);
 
             if (is_numeric($prev_month)) {
                 $diff=$row['value']-$prev_month;
@@ -2419,12 +2342,7 @@ $to=prepare_mysql_datetime($to,'date');
             unset($data[$current_value[0]]['tip_value'.$suffix]);
         }
         mysql_free_result($res);
-        //$_data=array();
-        //$i=0;
 
-        //foreach($data as $__data)
-        //   $_data[]=$__data;
-        // print_r($data);
         return $data;
 
     }
@@ -2453,7 +2371,6 @@ $to=prepare_mysql_datetime($to,'date');
                      ,$where_from
                      ,$where_to
                     );
-        //   print "$sql<br>";
 
         $prev_year=array();
         $forecast_region=false;
@@ -2537,11 +2454,6 @@ $to=prepare_mysql_datetime($to,'date');
 
         }
         mysql_free_result($res);
-        //$_data=array();
-        //$i=0;
-
-        //foreach($data as $__data)
-        //   $_data[]=$__data;
 
         return $data;
 
@@ -2572,7 +2484,6 @@ $to=prepare_mysql_datetime($to,'date');
                      ,$where_from
                      ,$where_to
                     );
-        //   print "$sql<br>";
 
         $prev_year=array();
         $forecast_region=false;
@@ -2702,7 +2613,6 @@ $to=prepare_mysql_datetime($to,'date');
                      ,$where_from
                      ,$where_to
                     );
-        print "$sql<br>";
 
         $prev_yearquarter=array();
         $forecast_region=false;
@@ -2816,8 +2726,6 @@ $to=prepare_mysql_datetime($to,'date');
 
 
 
-// $where_dates=prepare_mysql_dates($from,$to,"`Time Series Date`");
-//print_r($where_dates);
 
         $sql=sprintf("SELECT `Time Series Label`,`Time Series Type`,`Time Series Value` as value, YEARWEEK(`Time Series Date`,3)   yearweek ,WEEK(`Time Series Date`,3) as week,YEAR(`Time Series Date`) as year,`Time Series Count` as count ,UNIX_TIMESTAMP(`Time Series Date`) as date from `Time Series Dimension` where  `Time Series Frequency`='Weekly' and  `Time Series Name`=%s and `Time Series Name Key`=%d and `Time Series Name Second Key`=%d %s %s order by `Time Series Date`,`Time Series Type` desc"
                      ,prepare_mysql($this->name)
@@ -2826,7 +2734,6 @@ $to=prepare_mysql_datetime($to,'date');
                      ,$where_from
                      ,$where_to
                     );
-     //   print "$sql<br>";
 
         $prev_yearweek=array();
         $forecast_region=false;

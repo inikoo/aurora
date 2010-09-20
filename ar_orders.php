@@ -1704,10 +1704,10 @@ if(isset( $_REQUEST['where']))
      $where=$conf['where'];
      
      
-     if(isset( $_REQUEST['dn_state']))
-     $state=$_REQUEST['dn_state'];
+     if(isset( $_REQUEST['dn_state_type']))
+     $state=$_REQUEST['dn_state_type'];
    else
-     $state=$conf['dn_state'];
+     $state=$conf['dn_state_type'];
      
   
  if(isset( $_REQUEST['from']))
@@ -1766,7 +1766,7 @@ if(isset( $_REQUEST['where']))
    }else
      $store=$_SESSION['state']['orders']['store'];
 
-     $_SESSION['state']['orders']['dn']=array('dn_state'=>$state,'order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value);
+     $_SESSION['state']['orders']['dn']=array('dn_state_type'=>$state,'order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value);
      $_SESSION['state']['orders']['view']=$view;
      $date_interval=prepare_mysql_dates($from,$to,'`Delivery Note Date`','only_dates');
      if($date_interval['error']){
@@ -1926,7 +1926,7 @@ $date=strftime("%e %b %y", strtotime($row['Delivery Note Date Created']));
 		   'id'=>$order_id
 		   ,'customer'=>$customer
 		   ,'date'=>$date
-		   ,'type'=>$type.' ('.$row['Delivery Note XHTML Orders'].')'
+		   ,'type'=>$type.($row['Delivery Note XHTML Orders']?' ('.$row['Delivery Note XHTML Orders'].')':'')
 		   ,'orders'=>$row['Delivery Note XHTML Orders']
 		   ,'invoices'=>$row['Delivery Note XHTML Invoices']
 		   ,'weight'=>number($row['Delivery Note Weight'],1,true).' Kg'

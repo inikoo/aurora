@@ -1462,7 +1462,7 @@ $order_date='';
                  $credit_transaction_data['Transaction Invoice Tax Amount'],
                  prepare_mysql($this->data['Invoice Currency']),
                  $this->data['Invoice Currency Exchange'],
-                 prepare_mysql($this->data['Invoice Metadata'])
+                 prepare_mysql($credit_transaction_data['Metadata'])
                 );
     mysql_query($sql);
     $this->update_refund_totals();

@@ -443,9 +443,6 @@ table.search  .submitsearch {xbottom:-1px;cursor:pointer;z-index:2;right:2px;pos
 
 
 
-span.state_details,search_sugestion{color:#777;cursor:pointer;} 
-span.state_details:hover ,search_sugestion:hover{color:#555;text-decoration:underline}
-span.selected{color:#444;text-decoration:underline} 
 
 
 
@@ -723,3 +720,13 @@ position:relative;top:1px;
 .home_splinter_options span{color:#999;cursor:pointer}
 .home_splinter_options span:hover{color:#777}
 .home_splinter_options span.selected{color:#333;font-weight:100;text-decoration:none;}
+
+
+span.state_details,search_sugestion{cursor:pointer;}
+span.state_details.selected{color:#000 ;font-weight:600}
+span.state_details:hover{color:#222}
+
+
+a.state_details{cursor:pointer;}
+a.state_details.selected{color:#000 ;font-weight:600}
+a.state_details:hover{color:#000;text-decoration:none}

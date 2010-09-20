@@ -7622,9 +7622,9 @@ function list_orders_per_store() {
             $start_from=$start_from-$page;
         }
 
-    } else
+    } else {
         $number_results=$conf['nr'];
-
+    }
 
 
 
@@ -7640,9 +7640,9 @@ function list_orders_per_store() {
     $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
     if (isset( $_REQUEST['where']))
         $where=addslashes($_REQUEST['where']);
-    else
+    else {
         $where=$conf['where'];
-
+    }
 
 
     if (isset( $_REQUEST['f_field']))
@@ -7665,33 +7665,34 @@ function list_orders_per_store() {
     if (isset( $_REQUEST['percentages'])) {
         $percentages=$_REQUEST['percentages'];
 
-    } else
+    } else {
         $percentages=$_SESSION['state']['stores']['orders']['percentages'];
-
+    }
 
 
     if (isset( $_REQUEST['period'])) {
         $period=$_REQUEST['period'];
 
-    } else
+    } else {
         $period=$_SESSION['state']['stores']['orders']['period'];
-
+    }
     if (isset( $_REQUEST['avg'])) {
         $avg=$_REQUEST['avg'];
 
-    } else
+    } else {
         $avg=$_SESSION['state']['stores']['orders']['avg'];
-
+    }
     $_SESSION['state']['stores']['orders']=array(
-                                               'percentages'=>$percentages						    ,'period'=>$period
-                                                       ,'avg'=>$avg
-                                                              ,'order'=>$order
-                                                                       ,'order_dir'=>$order_direction
-                                                                                    ,'nr'=>$number_results
-                                                                                          ,'sf'=>$start_from
-                                                                                                ,'where'=>$where
-                                                                                                         ,'f_field'=>$f_field
-                                                                                                                    ,'f_value'=>$f_value
+                                               'percentages'=>$percentages,
+                                               'period'=>$period,
+                                               'avg'=>$avg,
+                                               'order'=>$order,
+                                               'order_dir'=>$order_direction,
+                                               'nr'=>$number_results,
+                                               'sf'=>$start_from,
+                                               'where'=>$where,
+                                               'f_field'=>$f_field,
+                                               'f_value'=>$f_value
                                            );
     // print_r($_SESSION['tables']['families_list']);
 
@@ -7801,7 +7802,7 @@ function list_orders_per_store() {
         $total_dispatched=$row['dispatched'];
         $total_cancelled=$row['cancelled'];
         $total_todo=$row['todo'];
-       
+
 
     }
 
@@ -7818,14 +7819,13 @@ function list_orders_per_store() {
 
 
     while ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
-        $name=sprintf('<a href="orders.php?store=%d">%s</a>',$row['Store Key'],$row['Store Name']);
-        $code=sprintf('<a href="orders.php?store=%d">%s</a>',$row['Store Key'],$row['Store Code']);
+        $name=sprintf('<a href="orders.php?store=%d&view=orders">%s</a>',$row['Store Key'],$row['Store Name']);
+        $code=sprintf('<a href="orders.php?store=%d&view=orders">%s</a>',$row['Store Key'],$row['Store Code']);
 
         $todo=$row['todo'];
         if ($percentages) {
             $orders=percentage($row['orders'],$total_orders);
             $cancelled=percentage($row['cancelled'],$total_cancelled);
-           // $paid=percentage($row['paid'],$total_paid);
             $unknown=percentage($row['unknown'],$total_unknown);
             $todo=percentage($todo,$total_todo);
             $dispatched=percentage($row['dispatched'],$total_dispatched);
@@ -7833,18 +7833,24 @@ function list_orders_per_store() {
         } else {
             $orders=number($row['orders']);
             $cancelled=number($row['cancelled']);
-           // $paid=number($row['paid']);
             $unknown=number($row['unknown']);
             $todo=number($todo);
             $dispatched=number($row['dispatched']);
 
         }
 
+        $orders=sprintf('<a href="orders.php?store=%d&view=orders&dispatch=all_orders">%s</a>',$row['Store Key'],$orders);
+        $unknown=sprintf('<a href="orders.php?store=%d&view=orders&dispatch=unknown">%s</a>',$row['Store Key'],$unknown);
+        $cancelled=sprintf('<a href="orders.php?store=%d&view=orders&dispatch=cancelled">%s</a>',$row['Store Key'],$cancelled);
+        $dispatched=sprintf('<a href="orders.php?store=%d&view=orders&dispatch=dispatched">%s</a>',$row['Store Key'],$dispatched);
+        $todo=sprintf('<a href="orders.php?store=%d&view=orders&dispatch=in_process">%s</a>',$row['Store Key'],$todo);
+  
+  
+
         $adata[]=array(
                      'code'=>$code,
                      'name'=>$name,
                      'orders'=>$orders,
-                     //'paid'=>$paid,
                      'unknown'=>$unknown,
                      'cancelled'=>$cancelled,
                      'dispatched'=>$dispatched,
@@ -7927,10 +7933,6 @@ function list_invoices_per_store() {
     } else
         $number_results=$conf['nr'];
 
-
-
-
-
     if (isset( $_REQUEST['o']))
         $order=$_REQUEST['o'];
     else
@@ -7985,20 +7987,18 @@ function list_invoices_per_store() {
         $avg=$_SESSION['state']['stores']['invoices']['avg'];
 
     $_SESSION['state']['stores']['invoices']=array(
-                                               'percentages'=>$percentages,
-                                               'period'=>$period,
-                                                       'avg'=>$avg,
-                                                              'order'=>$order,
-                                                                       'order_dir'=>$order_direction,
-                                                                                    'nr'=>$number_results,
-                                                                                          'sf'=>$start_from,
-                                                                                                'where'=>$where,
-                                                                                                         'f_field'=>$f_field,
-                                                                                                                    'f_value'=>$f_value
-                                           );
-    // print_r($_SESSION['tables']['families_list']);
+                'percentages'=>$percentages,
+                'period'=>$period,
+                'avg'=>$avg,
+                'order'=>$order,
+                'order_dir'=>$order_direction,
+                'nr'=>$number_results,
+                'sf'=>$start_from,
+                'where'=>$where,
+                'f_field'=>$f_field,
+                'f_value'=>$f_value
+            );
 
-    //  print_r($_SESSION['tables']['families_list']);
     $where="where true  ";
 
     $filter_msg='';
@@ -8012,7 +8012,6 @@ function list_invoices_per_store() {
 
 
     $sql="select count(*) as total from `Store Dimension`   $where $wheref";
-//print $sql;
     $result=mysql_query($sql);
     if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
         $total=$row['total'];
@@ -8074,30 +8073,28 @@ function list_invoices_per_store() {
     $order='`Store Name`';
     elseif($order=='invoices')
     $order='invoices';
-      elseif($order=='invoicess_paid')
+    elseif($order=='invoicess_paid')
     $order='invoices_paid';
-       elseif($order=='invoices_to_be_paid')
+    elseif($order=='invoices_to_be_paid')
     $order='invoices_to_be_paid';
-   elseif($order=='refunds')
+    elseif($order=='refunds')
     $order='refunds';
-        elseif($order=='refundss_paid')
+    elseif($order=='refundss_paid')
     $order='refunds_paid';
-       elseif($order=='refunds_to_be_paid')
+    elseif($order=='refunds_to_be_paid')
     $order='refunds_to_be_paid';
     else
-
-
         $order='`Store Code`';
 
 
     $total_invoices=0;
-        $total_invoices_paid=0;
-        $total_invoices_to_be_paid=0;
-        $total_refunds=0;
-        $total_refunds_paid=0;
-        $total_refunds_to_be_paid=0;
+    $total_invoices_paid=0;
+    $total_invoices_to_be_paid=0;
+    $total_refunds=0;
+    $total_refunds_paid=0;
+    $total_refunds_to_be_paid=0;
 
-    $sql="select  `Store Invoices` as invoices,`Store Refunds` as refunds,`Store Total Invoices` as total_invoices,`Store Paid Invoices` as invoices_paid,`Store Invoices`-`Store Paid Invoices` as invoices_to_be_paid,`Store Paid Invoices` as refunds_paid,`Store Refunds`-`Store Paid Refunds` as refunds_to_be_paid from `Store Dimension`  $where     ";
+    $sql="select  `Store Invoices` as invoices,`Store Refunds` as refunds,`Store Total Invoices` as total_invoices,`Store Paid Invoices` as invoices_paid,`Store Invoices`-`Store Paid Invoices` as invoices_to_be_paid,`Store Paid Refunds` as refunds_paid,`Store Refunds`-`Store Paid Refunds` as refunds_to_be_paid from `Store Dimension`  $where     ";
     //print $sql;
     $res = mysql_query($sql);
     if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
@@ -8107,7 +8104,7 @@ function list_invoices_per_store() {
         $total_refunds=$row['refunds'];
         $total_refunds_paid=$row['refunds_paid'];
         $total_refunds_to_be_paid=$row['refunds_to_be_paid'];
-       
+
 
     }
 
@@ -8115,7 +8112,7 @@ function list_invoices_per_store() {
 
 
 
-    $sql="select `Store Name`,`Store Code`,`Store Key`,`Store Invoices` as invoices,`Store Refunds` as refunds,`Store Total Invoices` as total_invoices,`Store Paid Invoices` as invoices_paid,`Store Invoices`-`Store Paid Invoices` as invoices_to_be_paid,`Store Paid Invoices` as refunds_paid,`Store Refunds`-`Store Paid Refunds` as refunds_to_be_paid  from   `Store Dimension` $where $wheref   order by $order $order_direction limit $start_from,$number_results    ";
+    $sql="select `Store Name`,`Store Code`,`Store Key`,`Store Invoices` as invoices,`Store Refunds` as refunds,`Store Total Invoices` as total_invoices,`Store Paid Invoices` as invoices_paid,`Store Invoices`-`Store Paid Invoices` as invoices_to_be_paid,`Store Paid Refunds` as refunds_paid,`Store Refunds`-`Store Paid Refunds` as refunds_to_be_paid  from   `Store Dimension` $where $wheref   order by $order $order_direction limit $start_from,$number_results    ";
     //print $sql;
     $res = mysql_query($sql);
 
@@ -8124,28 +8121,35 @@ function list_invoices_per_store() {
 
 
     while ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
-        $name=sprintf('<a href="orders.php?store=%d">%s</a>',$row['Store Key'],$row['Store Name']);
-        $code=sprintf('<a href="orders.php?store=%d">%s</a>',$row['Store Key'],$row['Store Code']);
+        $name=sprintf('<a href="orders.php?store=%d&view=invoices">%s</a>',$row['Store Key'],$row['Store Name']);
+        $code=sprintf('<a href="orders.php?store=%d&view=invoices">%s</a>',$row['Store Key'],$row['Store Code']);
 
-       
+
         if ($percentages) {
-         $invoices=percentage($row['invoices'],$total_invoices);
-        $invoices_paid=percentage($row['invoices_paid'],$total_invoices_paid);
-        $invoices_to_be_paid=percentage($row['invoices_to_be_paid'],$total_invoices_to_be_paid);
-        $refunds=percentage($row['refunds'],$total_refunds);
-        $refunds_paid=percentage($row['refunds_paid'],$total_refunds_paid);
-        $refunds_to_be_paid=percentage($row['refunds_to_be_paid'],$total_refunds_to_be_paid);
-        
+            $invoices=percentage($row['invoices'],$total_invoices);
+            $invoices_paid=percentage($row['invoices_paid'],$total_invoices_paid);
+            $invoices_to_be_paid=percentage($row['invoices_to_be_paid'],$total_invoices_to_be_paid);
+            $refunds=percentage($row['refunds'],$total_refunds);
+            $refunds_paid=percentage($row['refunds_paid'],$total_refunds_paid);
+            $refunds_to_be_paid=percentage($row['refunds_to_be_paid'],$total_refunds_to_be_paid);
+
 
         } else {
             $invoices=number($row['invoices']);
-        $invoices_paid=number($row['invoices_paid']);
-        $invoices_to_be_paid=number($row['invoices_to_be_paid']);
-        $refunds=number($row['refunds']);
-        $refunds_paid=number($row['refunds_paid']);
-        $refunds_to_be_paid=number($row['refunds_to_be_paid']);
+            $invoices_paid=number($row['invoices_paid']);
+            $invoices_to_be_paid=number($row['invoices_to_be_paid']);
+            $refunds=number($row['refunds']);
+            $refunds_paid=number($row['refunds_paid']);
+            $refunds_to_be_paid=number($row['refunds_to_be_paid']);
 
         }
+
+        $invoices=sprintf('<a href="orders.php?store=%d&view=invoices&invoice_type=invoices">%s</a>',$row['Store Key'],$invoices);
+        $invoices_paid=sprintf('<a href="orders.php?store=%d&view=invoices&invoice_type=paid">%s</a>',$row['Store Key'],$invoices_paid);
+        $invoices_to_be_paid=sprintf('<a href="orders.php?store=%d&view=invoices&invoice_type=to_paid">%s</a>',$row['Store Key'],$invoices_to_be_paid);
+        $refunds=sprintf('<a href="orders.php?store=%d&view=invoices&invoice_type=refunds">%s</a>',$row['Store Key'],$refunds);
+        $refunds_paid=sprintf('<a href="orders.php?store=%d&view=invoices&invoice_type=refunds">%s</a>',$row['Store Key'],$refunds_paid);
+        $refunds_to_be_paid=sprintf('<a href="orders.php?store=%d&view=invoices&invoice_type=refunds">%s</a>',$row['Store Key'],$refunds_to_be_paid);
 
         $adata[]=array(
                      'code'=>$code,
@@ -8153,7 +8157,7 @@ function list_invoices_per_store() {
                      'invoices'=>$invoices,
                      'invoices_paid'=>$invoices_paid,
                      'invoices_to_be_paid'=>$invoices_to_be_paid,
-                                          'refunds'=>$refunds,
+                     'refunds'=>$refunds,
                      'refunds_paid'=>$refunds_paid,
                      'refunds_to_be_paid'=>$refunds_to_be_paid,
                  );
@@ -8162,19 +8166,19 @@ function list_invoices_per_store() {
 
     if ($percentages) {
         $total_invoices='100.00%';
-       $total_invoices_paid='100.00%';
-       $total_invoices_to_be_paid='100.00%';
- $total_refunds='100.00%';
-       $total_refunds_paid='100.00%';
-       $total_refunds_to_be_paid='100.00%';
+        $total_invoices_paid='100.00%';
+        $total_invoices_to_be_paid='100.00%';
+        $total_refunds='100.00%';
+        $total_refunds_paid='100.00%';
+        $total_refunds_to_be_paid='100.00%';
 
 
     } else {
         $total_invoices=number($total_invoices);
-               $total_invoices_paid=number($total_invoices_paid);
+        $total_invoices_paid=number($total_invoices_paid);
         $total_invoices_to_be_paid=number($total_invoices_to_be_paid);
- $total_refunds=number($total_refunds);
-               $total_refunds_paid=number($total_refunds_paid);
+        $total_refunds=number($total_refunds);
+        $total_refunds_paid=number($total_refunds_paid);
         $total_refunds_to_be_paid=number($total_refunds_to_be_paid);
 
     }
@@ -8186,7 +8190,7 @@ function list_invoices_per_store() {
                  'invoices'=>$total_invoices,
                  'invoices_paid'=>$total_invoices_paid,
                  'invoices_to_be_paid'=>$total_invoices_to_be_paid,
-                    'refunds'=>$total_refunds,
+                 'refunds'=>$total_refunds,
                  'refunds_paid'=>$total_refunds_paid,
                  'refunds_to_be_paid'=>$total_refunds_to_be_paid,
 
@@ -8412,8 +8416,8 @@ function list_delivery_notes_per_store() {
 
 
     while ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
-        $name=sprintf('<a href="orders.php?store=%d">%s</a>',$row['Store Key'],$row['Store Name']);
-        $code=sprintf('<a href="orders.php?store=%d">%s</a>',$row['Store Key'],$row['Store Code']);
+        $name=sprintf('<a href="orders.php?store=%d&view=dn">%s</a>',$row['Store Key'],$row['Store Name']);
+        $code=sprintf('<a href="orders.php?store=%d&view=dn">%s</a>',$row['Store Key'],$row['Store Code']);
 
 
         if ($percentages) {

@@ -126,18 +126,37 @@ continue;
         // check if it is already readed
         $update=false;
         $old_order_key=0;
-        $sql=sprintf("select count(*) as num  from `Order Dimension`  where `Order Original Metadata`=%s  ",prepare_mysql($store_code.$order_data_id));
-
-        $result_test=mysql_query($sql);
-        if ($row_test=mysql_fetch_array($result_test, MYSQL_ASSOC)) {
-            if ($row_test['num']==0) {
-                print "NEW $contador $order_data_id $filename ";
+$sql=sprintf("select count(*) as num  from `Order Dimension`  where `Order Original Metadata`=%s ",prepare_mysql($store_code.$order_data_id));
+$result_test=mysql_query($sql);
+if ($row_test=mysql_fetch_array($result_test, MYSQL_ASSOC)) {
+    if ($row_test['num']==0) {
+        $sql=sprintf("select count(*) as num  from `Invoice Dimension`  where `Invoice Metadata`=%s "
+                     ,prepare_mysql($store_code.$order_data_id));
+        $result_test2=mysql_query($sql);
+        if ($row_test2=mysql_fetch_array($result_test2, MYSQL_ASSOC)) {
+            if ($row_test2['num']==0) {
+                $sql=sprintf("select count(*) as num  from `Delivery Note Dimension`  where `Delivery Note Metadata`=%s "
+                             ,prepare_mysql($store_code.$order_data_id));
+                $result_test3=mysql_query($sql);
+                if ($row_test3=mysql_fetch_array($result_test3, MYSQL_ASSOC)) {
+                    if ($row_test3['num']==0) {
+                        print "NEW $contador $order_data_id $filename ";
+                    } else {
+                        $update=true;
+                        print "UPD $contador $order_data_id $filename ";
+                    }
+                }
             } else {
                 $update=true;
                 print "UPD $contador $order_data_id $filename ";
             }
         }
-        mysql_free_result($result_test);
+    } else {
+        $update=true;
+        print "UPD $contador $order_data_id $filename ";
+    }
+}
+mysql_free_result($result_test);
 
         $header=mb_unserialize($row['header']);
         
@@ -959,6 +978,7 @@ continue;
 
             $part_list=array();
 
+$parts_per_product=1;
 
 
             if ($product->new_id ) {
