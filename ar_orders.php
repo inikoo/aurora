@@ -559,6 +559,7 @@ if(isset( $_REQUEST['where']))
 				 'in_process'=>",'Submited','In Process','Ready to Pick','Picking','Ready to Pack','Ready to Ship','Packing'"
 				 ,'cancelled'=>",'Cancelled'"
 				 ,'dispatched'=>",'Dispatched'"
+				  ,'suspended'=>",'Suspended'"
 				 ,'unknown'=>"'Unknown'"
 				 );
      $_where='';

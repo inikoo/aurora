@@ -657,10 +657,8 @@ function create_inventory_transaction_fact($order_key) {
              $order->update_dispatch_state();
         }
   }
-  
-  
-function dispatch($data) {
-    if (!array_key_exists('Delivery Note Date',$data) or !$data['Delivery Note Date']  ) {
+private function handle_to_customer($data){
+   if (!array_key_exists('Delivery Note Date',$data) or !$data['Delivery Note Date']  ) {
         $data['Delivery Note Date']=date('Y-m-d H:i:s');
     }
 
@@ -696,9 +694,19 @@ function dispatch($data) {
                  $this->id
                 );
     mysql_query ( $sql );
+
+
     foreach($this->get_orders_objects() as $key=>$order) {
         $order->update_dispatch_state();
     }
+
+
+}
+  
+function dispatch($data) {
+
+
+$this->handle_to_customer($data);
 
     $customer=new Customer($this->data['Delivery Note Customer Key']);
     $numbers_of_times_used=0;
@@ -737,6 +745,18 @@ function dispatch($data) {
 
 
 }
+function set_as_collected($data) {
+
+ 
+
+$this->handle_to_customer($data);
+
+
+
+}
+
+
+
     function set_parcels($parcels,$parcel_type='Box') {
 
         if (is_numeric($parcels)) {
@@ -760,6 +780,35 @@ function dispatch($data) {
 
 
     }
+    
+    function delete(){
+          $sql=sprintf("delete from  `Inventory Transaction Fact` where `Delivery Note Key`=%d  and `Inventory Transaction Type`='Order In Process'  ",
+                 $this->id);
+             mysql_query($sql);
+             
+          
+         $orders=$this->get_orders_objects();
+         $invoices=$this->get_invoices_objects();
+         
+         $store_key=$this->data['Delivery Note Store Key'];
+         
+          $sql=sprintf("delete from  `Delivery Note Dimension` where `Delivery Note Key`=%d  ",
+                 $this->id);
+             mysql_query($sql);
+         //print $sql;
+         
+         foreach($orders as $order){
+            $order->update_xhtml_delivery_notes();
+         }
+           foreach($invoices as $invoice){
+            $invoice->update_xhtml_delivery_notes();
+         }
+         
+         $store=new Store($store_key);
+         $store->update_orders();
+        
+    }
+    
     function cancel($note='',$date=false) {
         $this->cancelled=false;
         if (preg_match('/Dispatched/',$this->data ['Delivery Note State'])) {
@@ -776,12 +825,13 @@ function dispatch($data) {
 
   
             if (preg_match('/Ready to be Picked/',$this->data ['Delivery Note State'])) {
-                $this->data ['Delivery Note State'] = 'Cancelled';
                 
-                    $sql=sprintf("delete from  `Inventory Transaction Fact` where `Delivery Note Key`=%s  and `Inventory Transaction Type`='Order In Process'  ",
-                 $this->id);
+                
+              
 
-             mysql_query($sql);
+                    $this->delete();
+                     $this->cancelled=true;
+                     return;
                 
                 
             } else {
@@ -813,6 +863,62 @@ function dispatch($data) {
 
 
     }
+    
+    function suspend($note='',$date=false) {
+        $this->suspended=false;
+        if (preg_match('/Dispatched/',$this->data ['Delivery Note State'])) {
+            $this->msg=_('Delivery Note can not be suspended, because has already been dispatched');
+            return;
+        }elseif (preg_match('/Suspended/',$this->data ['Delivery Note State'])) {
+            $this->_('Order is already suspended');
+            return;
+        }elseif (preg_match('/Cancelled/',$this->data ['Delivery Note State'])) {
+            $this->_('Order is already cancelled');
+            return;
+        } else {
+
+            if (!$date)
+                $date=date('Y-m-d H:i:s');
+
+  
+            if (preg_match('/Ready to be Picked/',$this->data ['Delivery Note State'])) {
+               
+                   $this->delete();
+                     $this->suspended=true;
+                     return;
+                
+            } else {
+                $this->data ['Delivery Note State'] = 'Cancelled to Restock';
+
+            }
+
+            $this->data ['Delivery Note Dispatch Method'] ='NA';
+
+
+
+
+            $sql = sprintf ( "update `Delivery Note Dimension` set `Delivery Note State`=%s , `Delivery Note Dispatch Method`=%s where `Delivery Note Key`=%d"
+                             , prepare_mysql ( $this->data ['Delivery Note State'] )
+                             , prepare_mysql ( $this->data ['Delivery Note Dispatch Method'] )
+
+
+                             , $this->id );
+            mysql_query ( $sql );
+             
+
+
+
+
+            $this->suspended=true;
+
+        }
+
+
+
+    }
+    
+    
+    
     function assign_picker($staff_key) {
         $this->assigned=false;
 
@@ -1336,9 +1442,9 @@ function set_as_picked($itf_key,$qty,$date=false,$picker_key=false) {
             $picking_factor=0;
 
 $sku=$row['Part SKU'];
-if($row['Picked'])
-print ">>>>>";
-   print "*******  $sku  *$original_qty*$qty   ".$row['Required']."   *********  $picking_factor   \n";
+//if($row['Picked'])
+//print ">>>>>";
+ //  print "*******  $sku  *$original_qty*$qty   ".$row['Required']."   *********  $picking_factor   \n";
 
     $part=new Part($sku);
 
@@ -1428,7 +1534,7 @@ $this->id
             $packing_factor=round($qty/$row['Picked'],4);
         $part=new Part($row['Part SKU']);
                 $weight=$qty*$part->data['Part Gross Weight'];
-   print "*******  $sku  *$original_qty*$qty   ".$row['Picked']."   *********  $packing_factor   \n";
+ //  print "*******  $sku  *$original_qty*$qty   ".$row['Picked']."   *********  $packing_factor   \n";
 
         $sql = sprintf ( "update `Inventory Transaction Fact` set `Inventory Transaction Weight`=%f,`Packed`=%f,`Date Packed`=%s,`Date`=%s ,`Packer Key`=%s where `Inventory Transaction Key`=%d  "
                          , $weight

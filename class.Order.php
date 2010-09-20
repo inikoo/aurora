@@ -673,11 +673,10 @@ function cancel($note='',$date=false) {
         if (! mysql_query ( $sql ))
             exit ( "$sql arror can not update cancel\n" );
 
-        $sql = sprintf ( "update `Order Transaction Fact` set `Consolidated`='Yes',`Current Dispatching State`='Cancelled',`Current Payment State`='Cancelled' where `Order Key`=%d ", $this->id )
-
-               ;
-        if (! mysql_query ( $sql ))
-            exit ( "$sql error dfsdfs doerde.pgp" );
+        $sql = sprintf ( "update `Order Transaction Fact` set `Consolidated`='Yes',`Current Dispatching State`='Cancelled',`Current Payment State`='Cancelled' where `Order Key`=%d ", $this->id );
+  mysql_query ( $sql );
+          $sql = sprintf ( "update `Order No Product Transaction Fact` set `State`='Cancelled'  where `Order Key`=%d ", $this->id );
+        mysql_query ( $sql );
 
         foreach($this->get_delivery_notes_objects() as $dn){
             $dn->cancel($note,$date);
@@ -697,11 +696,11 @@ function cancel($note='',$date=false) {
 
 function suspend($note='',$date=false) {
 
-    $this->cancelled=false;
+    $this->suspended=false;
     if (preg_match('/Dispatched/',$this->data ['Order Current Dispatch State'])) {
         $this->msg=_('Order can not be suspended, because has already been dispatched');
 
-    }elseif (preg_match('/Cancelled/',$this->data ['Order Current Dispatch State'])) {
+    }elseif (preg_match('/Suspended/',$this->data ['Order Current Dispatch State'])) {
         $this->msg=_('Order is cancelled');
 
     }elseif (preg_match('/Suspended/',$this->data ['Order Current Dispatch State'])) {
@@ -711,13 +710,13 @@ function suspend($note='',$date=false) {
 
         if (!$date)
             $date=date('Y-m-d H:i:s');
-        $this->data ['Order Cancelled Date'] = $date;
+        $this->data ['Order Suspended Date'] = $date;
 
-        $this->data ['Order Cancel Note'] = $note;
+        $this->data ['Order Suspend Note'] = $note;
 
-        $this->data ['Order Current Payment State'] = 'Cancelled';
-        $this->data ['Order Current Dispatch State'] = 'Cancelled';
-        $this->data ['Order Current XHTML State'] = _ ( 'Order Cancelled' );
+        $this->data ['Order Current Payment State'] = 'No Applicable';
+        $this->data ['Order Current Dispatch State'] = 'Suspended';
+        $this->data ['Order Current XHTML State'] = _( 'Order Suspended' );
         $this->data ['Order XHTML Invoices'] = '';
         $this->data ['Order XHTML Delivery Notes'] = '';
         $this->data ['Order Balance Total Amount'] = 0;
@@ -729,31 +728,29 @@ function suspend($note='',$date=false) {
 
 
 
-        $sql = sprintf ( "update `Order Dimension` set `Order Cancelled Date`=%s, `Order Current Payment State`=%s,`Order Current Dispatch State`=%s,`Order Current XHTML State`=%s,`Order XHTML Invoices`='',`Order XHTML Delivery Notes`='' ,`Order Balance Net Amount`=0,`Order Balance Tax Amount`=0,`Order Balance Total Amount`=0 ,`Order Outstanding Balance Net Amount`=0,`Order Outstanding Balance Tax Amount`=0,`Order Outstanding Balance Total Amount`=0,`Order Profit Amount`=0,`Order Cancel Note`=%s  where `Order Key`=%d"
-                         , prepare_mysql ( $this->data ['Order Cancelled Date'] )
+        $sql = sprintf ( "update `Order Dimension` set `Order Suspended Date`=%s, `Order Current Payment State`=%s,`Order Current Dispatch State`=%s,`Order Current XHTML State`=%s,`Order XHTML Invoices`='',`Order XHTML Delivery Notes`='' ,`Order Balance Net Amount`=0,`Order Balance Tax Amount`=0,`Order Balance Total Amount`=0 ,`Order Outstanding Balance Net Amount`=0,`Order Outstanding Balance Tax Amount`=0,`Order Outstanding Balance Total Amount`=0,`Order Profit Amount`=0,`Order Suspend Note`=%s  where `Order Key`=%d"
+                         , prepare_mysql ( $this->data ['Order Suspended Date'] )
                          , prepare_mysql ( $this->data ['Order Current Payment State'] )
                          , prepare_mysql ( $this->data ['Order Current Dispatch State'] )
                          , prepare_mysql ( $this->data ['Order Current XHTML State'] )
-                         , prepare_mysql ( $this->data ['Order Cancel Note'] )
+                         , prepare_mysql ( $this->data ['Order Suspend Note'] )
 
                          , $this->id );
-        if (! mysql_query ( $sql ))
-            exit ( "$sql arror can not update cancel\n" );
+        mysql_query ( $sql );
 
-        $sql = sprintf ( "update `Order Transaction Fact` set `Consolidated`='Yes',`Current Dispatching State`='Cancelled',`Current Payment State`='Cancelled' where `Order Key`=%d ", $this->id )
-
-               ;
-        if (! mysql_query ( $sql ))
-            exit ( "$sql error dfsdfs doerde.pgp" );
+        $sql = sprintf ( "update `Order Transaction Fact` set `Current Dispatching State`='Suspended',`Current Payment State`='No Applicable' where `Order Key`=%d ", $this->id );
+        mysql_query ( $sql );
+          $sql = sprintf ( "update `Order No Product Transaction Fact` set `State`='Suspended'  where `Order Key`=%d ", $this->id );
+        mysql_query ( $sql );
 
         foreach($this->get_delivery_notes_objects() as $dn){
-            $dn->cancel($note,$date);
+            $dn->suspend($note,$date);
         }
 
         $customer=new Customer($this->data['Order Customer Key']);
         $customer->editor=$this->editor;
-        $customer->add_history_order_cancelled($this);
-        $this->cancelled=true;
+        $customer->add_history_order_suspended($this);
+        $this->suspended=true;
 
     }
 
@@ -1253,6 +1250,9 @@ function add_order_transaction($data) {
                 break;
             case('Cancel Date'):
                 return strftime('%D',strtotime($this->data['Order Cancelled Date']));
+                break;
+ case('Suspended Date'):
+                return strftime('%D',strtotime($this->data['Order Suspended Date']));
                 break;
 
             case ('Order Main Ship To Key') :
@@ -2245,7 +2245,7 @@ $this->data ['Order Dispatched Estimated Weight']= $row ['disp_estimated_weight'
 
     function translate_dispatch_state($array_dispatch_state){
       
-       print_r($array_dispatch_state);
+    //   print_r($array_dispatch_state);
         $dispatch_state='Unknown';
         if(count($array_dispatch_state)==1)
         switch ($state=array_pop($array_dispatch_state)) {
@@ -2270,7 +2270,7 @@ $this->data ['Order Dispatched Estimated Weight']= $row ['disp_estimated_weight'
                 if(array_key_exists('No Picked Due Other',$array_dispatch_state))unset($array_dispatch_state['No Picked Due Other']);
 
                 if(count($array_dispatch_state)==0){
-                print "*** $pivot\n";
+               // print "*** $pivot\n";
                 return $pivot;
                 }
             
@@ -2280,7 +2280,7 @@ $this->data ['Order Dispatched Estimated Weight']= $row ['disp_estimated_weight'
         
         }
         
-        print "*** $dispatch_state\n";
+       // print "*** $dispatch_state\n";
         return $dispatch_state;
         }
 
@@ -2308,7 +2308,7 @@ switch ($this->data['Order Current Dispatch State']) {
 function update_dispatch_state() {
     $sql = sprintf("select `Current Dispatching State` as state from `Order Transaction Fact` where `Order Key`=%d order by `Current Payment State`",
                    $this->id);
-    print "$sql\n";
+    //print "$sql\n";
     $result = mysql_query ( $sql );
     $array_state=array();
     while ($row = mysql_fetch_array ( $result, MYSQL_ASSOC )) {
