@@ -1554,7 +1554,12 @@ else if(preg_match('/^(alex|ale)$/i',$_name)  )
 
       }
     }
-    //  print "$date_index,$date_processed,$date_charged\n";
+    
+    if(($tipo_order==4 or $tipo_order==5 or $tipo_order==6 or $tipo_order==7 or $tipo_order==9 ) and  $date_charged=='NULL'){
+        $date_charged=$date_processed;
+    }
+    
+//     print "$date_index,$date_processed,$date_charged\n";
     return array($date_index,$date_processed,$date_charged);
 
   }

@@ -105,24 +105,24 @@
  <div   id="dn_table"  class="data_table" style="{if $view!='dn'}display:none{/if};clear:both">
     <span class="clean_table_title">{t}Delivery Note List{/t}</span>
     
-        <div style="font-size:90%"  id="table_type" class="table_type">
-    <a     style="float:right;margin-left:20px" class="table_type state_details"  href="dn_csv.php" >{t}Export (CSV){/t}</a>
-            <span style="float:right;margin-left:20px" class="table_type dispatch state_details {if $dn_state_type=='all'}selected{/if}"  id="restrictions_dn_all" table_type="all"  >{t}All{/t} ({$store->get('Total Orders')})</span>
-            <img onClick="change_dn_view()" style="float:right;margin-left:20px;position:relative;top:5px;" src="art/icons/previous.png" alt="x"/>
-           <div id="dn_view_state_chooser" style="{if $dn_view!='dn_state'}display:none{/if}">
-           <span style="float:right;margin-left:20px" class="table_type dispatch state_details {if $dn_state_type=='cancelled'}selected{/if}"  id="restrictions_dn_returned"  table_type="returned"  >{t}Return{/t} ({$store->get('Returned Delivery Notes')})</span>
-            <span style="float:right;margin-left:20px" class="table_type dispatch state_details {if $dn_state_type=='cancelled'}selected{/if}"  id="restrictions_dn_send"  table_type="send"  >{t}Send{/t} ({$store->get('Dispatched Delivery Notes')})</span>
-            <span style="float:right;margin-left:20px" class="table_type dispatch state_details {if $dn_state_type=='cancelled'}selected{/if}"  id="restrictions_dn_ready"  table_type="ready"  >{t}Ready{/t} ({$store->get('Ready to Dispatch Delivery Notes')})</span>
-            <span style="float:right;margin-left:20px" class="table_type dispatch state_details {if $dn_state_type=='unknown'}selected{/if}"  id="restrictions_dn_unknown"  table_type="unknown"  >{t}Packing{/t} ({$store->get('Packing Delivery Notes')})</span>
-            <span style="float:right;margin-left:20px" class="table_type dispatch state_details {if $dn_state_type=='dispatched'}selected{/if}"  id="restrictions_dn_picking"  table_type="picking"  >{t}Picking{/t} ({$store->get('Picking Delivery Notes')})</span>
-            <span style="float:right;margin-left:20px" class="table_type dispatch  state_details {if $dn_state_type=='in_process'}selected{/if}"  id="restrictions_dn_ready_to_pick" table_type="ready_to_pick"   >{t}To Pick{/t} ({$store->get('Ready to Pick Delivery Notes')})</span>
+        <div style="font-size:90%"  id="dn_table_type" class="table_type">
+    <a style="float:right;margin-left:20px" class="table_type state_details"  href="dn_csv.php" >{t}Export (CSV){/t}</a>
+            <span style="float:right;margin-left:20px" class="table_type dn_view state_details {if $dn_state_type=='all'}selected{/if}"  id="restrictions_dn_all" table_type="all"  >{t}All{/t} ({$store->get('Total Orders')})</span>
+            <img onClick="change_dn_view(this)" state="{$dn_view}"   style="cursor:pointer;float:right;margin-left:20px;position:relative;top:5px;" src="art/icons/previous.png" alt="x"/>
+           <div id="dn_view_state_chooser"    style="{if $dn_view!='dn_state'}display:none{/if}">
+           <span style="float:right;margin-left:20px" class="table_type dn_view state_details {if $dn_state_type=='returned'}selected{/if}"  id="restrictions_dn_returned"  table_type="returned"  >{t}Return{/t} ({$store->get('Returned Delivery Notes')})</span>
+            <span style="float:right;margin-left:20px" class="table_type dn_view state_details {if $dn_state_type=='send'}selected{/if}"  id="restrictions_dn_send"  table_type="send"  >{t}Send{/t} ({$store->get('Dispatched Delivery Notes')})</span>
+            <span style="float:right;margin-left:20px" class="table_type dn_view state_details {if $dn_state_type=='ready'}selected{/if}"  id="restrictions_dn_ready"  table_type="ready"  >{t}Ready{/t} ({$store->get('Ready to dn_view Delivery Notes')})</span>
+            <span style="float:right;margin-left:20px" class="table_type dn_view state_details {if $dn_state_type=='packing'}selected{/if}"  id="restrictions_dn_packing"  table_type="packing"  >{t}Packing{/t} ({$store->get('Packing Delivery Notes')})</span>
+            <span style="float:right;margin-left:20px" class="table_type dn_view state_details {if $dn_state_type=='picking'}selected{/if}"  id="restrictions_dn_picking"  table_type="picking"  >{t}Picking{/t} ({$store->get('Picking Delivery Notes')})</span>
+            <span style="float:right;margin-left:20px" class="table_type dn_view  state_details {if $dn_state_type=='ready_to_pick'}selected{/if}"  id="restrictions_dn_ready_to_pick" table_type="ready_to_pick"   >{t}To Pick{/t} ({$store->get('Ready to Pick Delivery Notes')})</span>
             </div>
              <div id="dn_view_type_chooser" style="{if $dn_view!='dn_type'}display:none{/if}">
-            <span style="float:right;margin-left:20px" class="table_type dispatch state_details {if $dn_state_type=='cancelled'}selected{/if}"  id="restrictions_dn_cancelled"  table_type="cancelled"  >{t}Shortages{/t} ({$store->get('Cancelled Orders')})</span>
-            <span style="float:right;margin-left:20px" class="table_type dispatch state_details {if $dn_state_type=='cancelled'}selected{/if}"  id="restrictions_dn_cancelled"  table_type="cancelled"  >{t}Replacements{/t} ({$store->get('Cancelled Orders')})</span>
-            <span style="float:right;margin-left:20px" class="table_type dispatch state_details {if $dn_state_type=='unknown'}selected{/if}"  id="restrictions_dn_unknown"  table_type="unknown"  >{t}Donations{/t} ({$store->get('Unknown Orders')})</span>
-            <span style="float:right;margin-left:20px" class="table_type dispatch state_details {if $dn_state_type=='dispatched'}selected{/if}"  id="restrictions_dn_dispatched"  table_type="dispatched"  >{t}Samples{/t} ({$store->get('Dispatched Orders')})</span>
-            <span style="float:right;margin-left:20px" class="table_type dispatch  state_details {if $dn_state_type=='in_process'}selected{/if}"  id="restrictions_dn_in_process" table_type="in_process"   >{t}Orders{/t} ({$store->get('Orders In Process')})</span>
+            <span style="float:right;margin-left:20px" class="table_type dn_view state_details {if $dn_state_type=='shortages'}selected{/if}"  id="restrictions_dn_shortages"  table_type="shortages"  >{t}Shortages{/t} ({$store->get('Delivery Notes For Shortages')})</span>
+            <span style="float:right;margin-left:20px" class="table_type dn_view state_details {if $dn_state_type=='replacements'}selected{/if}"  id="restrictions_dn_replacements"  table_type="replacements"  >{t}Replacements{/t} ({$store->get('Delivery Notes For Replacements')})</span>
+            <span style="float:right;margin-left:20px" class="table_type dn_view state_details {if $dn_state_type=='donations'}selected{/if}"  id="restrictions_dn_donations"  table_type="donations"  >{t}Donations{/t} ({$store->get('Delivery Notes For Donations')})</span>
+            <span style="float:right;margin-left:20px" class="table_type dn_view state_details {if $dn_state_type=='samples'}selected{/if}"  id="restrictions_dn_samples"  table_type="samples"  >{t}Samples{/t} ({$store->get('Delivery Notes For Samples')})</span>
+            <span style="float:right;margin-left:20px" class="table_type dn_view  state_details {if $dn_state_type=='orders'}selected{/if}"  id="restrictions_dn_orders" table_type="orders"   >{t}Orders{/t} ({$store->get('Delivery Notes For Orders')})</span>
             </div>
             
      </div>

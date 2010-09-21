@@ -66,7 +66,7 @@ if(isset($_REQUEST['invoice_type']) and preg_match('/^all|invoices|refunds|to_pa
 $_SESSION['state']['orders']['invoices']['invoice_type']=$_REQUEST['invoice_type'];
 }
         
-if(isset($_REQUEST['dispatch']) and preg_match('/^all_orders|in_process|dispatched|unknown|cancelled$/',$_REQUEST['dispatch'])){
+if(isset($_REQUEST['dispatch']) and preg_match('/^all_orders|in_process|dispatched|unknown|cancelled|suspended$/',$_REQUEST['dispatch'])){
 $_SESSION['state']['orders']['table']['dispatch']=$_REQUEST['dispatch'];
 }
 

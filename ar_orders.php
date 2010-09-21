@@ -1783,6 +1783,49 @@ if(isset( $_REQUEST['where']))
 
    $where.=$date_interval['mysql'];
    
+ 
+switch ($state) {
+case 'shortages':
+    $where.=' and `Delivery Note Type` in ("Shortages","Replacement & Shortages")';
+    break;
+case 'replacements':
+    $where.=' and `Delivery Note Type` in ("Replacement","Replacement & Shortages")';
+    break;
+case 'donations':
+    $where.=' and `Delivery Note Type`="Donation"';
+    break;
+case 'samples':
+    $where.=' and `Delivery Note Type`="Sample"';
+    break;
+case 'orders':
+    $where.=' and `Delivery Note Type`="Order"';
+    break;
+case 'returned':
+    $where.=' and `Delivery Note State`="Cancelled to Restock"';
+    break;
+case 'send':
+    $where.=' and `Delivery Note State`="Dispatched"';
+    break;
+case 'ready':
+    $where.=' and `Delivery Note State` in ("Packed","Approved")';
+    break;
+case 'packing':
+    $where.=" and `Delivery Note State` in ('Picking & Packing','Packer Assigned','Picked','Packing')";
+    break;
+case 'picking':
+    $where.=' and `Delivery Note State` in ("Picking & Packing","Picking")';
+    break;
+
+case 'ready_to_pick':
+    $where.=' and `Delivery Note State` in ("Ready to be Picked","Picker Assigned")';
+    break;
+default:
+
+    break;
+}
+   
+   
+   
    $wheref='';
 
   if($f_field=='max' and is_numeric($f_value) )
