@@ -288,6 +288,12 @@ class Store extends DB_Table{
 
       return number($this->data[$amount]);
     }
+    if (preg_match('/^Delivery Notes For (Orders|Replacements|Shortages|Samples|Donations)$/',$key)) {
+
+      $amount='Store '.$key;
+
+      return number($this->data[$amount]);
+    }
     
      if (preg_match('/(Orders|Delivery Notes|Invoices|Refunds|Orders In Process)$/',$key)) {
 

@@ -2245,7 +2245,7 @@ $this->data ['Order Dispatched Estimated Weight']= $row ['disp_estimated_weight'
 
     function translate_dispatch_state($array_dispatch_state){
       
-    //   print_r($array_dispatch_state);
+      // print_r($array_dispatch_state);
         $dispatch_state='Unknown';
         if(count($array_dispatch_state)==1)
         switch ($state=array_pop($array_dispatch_state)) {
@@ -2270,7 +2270,7 @@ $this->data ['Order Dispatched Estimated Weight']= $row ['disp_estimated_weight'
                 if(array_key_exists('No Picked Due Other',$array_dispatch_state))unset($array_dispatch_state['No Picked Due Other']);
 
                 if(count($array_dispatch_state)==0){
-               // print "*** $pivot\n";
+              //  print "*** $pivot\n";
                 return $pivot;
                 }
             
@@ -2280,7 +2280,7 @@ $this->data ['Order Dispatched Estimated Weight']= $row ['disp_estimated_weight'
         
         }
         
-       // print "*** $dispatch_state\n";
+      //  print "*** $dispatch_state\n";
         return $dispatch_state;
         }
 

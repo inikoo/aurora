@@ -241,7 +241,8 @@ function get_tipo_order($ltipo,$header){
   }else{ 
     print "--->".$ltipo."<----\n";
     $tipo=0;
-    exit("tipo not found\n");
+    print("tipo not found\n");
+    return;
   }
   
 

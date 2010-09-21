@@ -1151,7 +1151,7 @@ $number_period_for_forecasting=26;
             $script.="fit<-arima(ts);fcast = forecast(fit,$number_period_for_forecasting);print(fcast) ;";
 
         //}
-        print $script;
+        //print $script;
 
 
         $cmd = "echo \"$script\" |  R --vanilla --slave -q";

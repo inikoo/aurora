@@ -96,12 +96,12 @@ $fam_promo=new Family('code','Promo_UK',$store_key);
 $fam_promo_key=$fam_promo->id;
 
 
-$sql="select *,replace(   replace(replace(replace(replace(replace(replace(replace(replace(filename,'r/Orders/','r/Orders/00'),'s/Orders/','s/Orders/0'),'y/Orders/','y/Orders/0'),'z/Orders/9','z/Orders/09'),'x/Orders/','x/Orders/0'),'t/Orders/','t/Orders/0'),'u/Orders/','u/Orders/0'),'z/Orders/8','z/Orders/08')     ,directory,'') as name from  orders_data.orders  where   (last_transcribed is NULL  or last_read>last_transcribed) and deleted='No'   order by name ";
+$sql="select *,replace(   replace(replace(replace(replace(replace(replace(replace(replace(filename,'r/Orders/','r/Orders/00'),'s/Orders/','s/Orders/0'),'y/Orders/','y/Orders/0'),'z/Orders/9','z/Orders/09'),'x/Orders/','x/Orders/0'),'t/Orders/','t/Orders/0'),'u/Orders/','u/Orders/0'),'z/Orders/8','z/Orders/08')     ,directory,'') as name from  orders_data.orders  where   (last_transcribed is NULL  or last_read>last_transcribed) and deleted='No'  and  filename like '%/a/%.xls'  order by name ";
 
 //$sql="select * from  orders_data.orders  where    (last_transcribed is NULL  or last_read>last_transcribed) and deleted='No'  order by filename ";
 //$sql="select * from  orders_data.orders where filename like '%/a/%.xls'   order by filename";
 //$sql="select * from  orders_data.orders where filename like '%/5%.xls'   order by filename";
-//$sql="select * from  orders_data.orders where filename like '%/114585.xls'   order by filename";
+$sql="select * from  orders_data.orders where filename like '%/114953.xls'   order by filename";
 
 //$sql="select * from  orders_data.orders where filename like '%/%ref%.xls'   order by filename";
 //$sql="select * from  orders_data.orders  where filename like '/mnt/%/Orders/93284.xls' order by filename";
@@ -201,6 +201,8 @@ mysql_free_result($result_test);
         //print_r($header_data);
         list($tipo_order,$parent_order_id,$header_data)=get_tipo_order($header_data['ltipo'],$header_data);
 
+        if(!$tipo_order)
+            continue;
         if (preg_match('/^1?\d{5}sh$/i',$filename_number)) {
             $tipo_order=7;
             $parent_order_id=preg_replace('/sh/i','',$filename_number);
@@ -1218,9 +1220,16 @@ $shipping_transactions[]=$transaction;
         $data['Shipping Address']=$shipping_addresses;
         // $data['metadata_id']=$order_data_id;
         $data['tax_rate']=.15;
+        
+        
+        
+        
         if (strtotime($date_order)<strtotime('2008-11-01') or strtotime($date_order)>strtotime('2009-12-31'))
             $data['tax_rate']=.175;
         $currency=$__currency_code;
+
+
+
 
 
 
@@ -1306,6 +1315,7 @@ switch ($tipo_order) {
         send_order($data,$data_dn_transactions);
         break;
          case 3://Cancel
+         print "Cancel";
          $data['Order Type']='Order';
         create_order($data);
         $order->cancel('',$date_order);
@@ -1314,6 +1324,10 @@ switch ($tipo_order) {
                print "Sample";
 
          $data['Order Type']='Sample';
+         
+         
+         
+         
         create_order($data);
         send_order($data,$data_dn_transactions);
         break;

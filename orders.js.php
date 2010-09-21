@@ -216,7 +216,35 @@ Event.addListener(window, "load", function() {
     });
 
 
+function change_dn_view(o){
 
+if(o.getAttribute('state')=='dn_state'){
+
+dn_state='dn_type';
+Dom.get("dn_view_state_chooser").style.display='none';
+Dom.get("dn_view_type_chooser").style.display='';
+}else{
+dn_state='dn_state';
+Dom.get("dn_view_state_chooser").style.display='';
+Dom.get("dn_view_type_chooser").style.display='none';
+}
+
+
+
+
+o.setAttribute('state',dn_state);
+
+ 
+     var table=tables.table2;
+     var datasource=tables.dataSource2;
+     Dom.removeClass(Dom.getElementsByClassName('dn_view','span' , 'dn_table_type'),'selected');;
+     Dom.addClass('restrictions_dn_all','selected');     
+     var request='&dn_state_type=all';
+     datasource.sendRequest(request,table.onDataReturnInitializeTable, table);       
+
+YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=stores-delivery_notes-view&value=' + escape(dn_state) ,{success:function(o) {}});
+
+}
 
 function init(){
 
@@ -418,13 +446,13 @@ var clear_interval = function(e,suffix){
      var request='&invoice_type='+this.getAttribute('table_type');
      datasource.sendRequest(request,table.onDataReturnInitializeTable, table);       
  }
- var change_dn_status=function(e){
+ var change_dn_type=function(e){
      var new_dispatch=this.id;
      var table=tables.table2;
      var datasource=tables.dataSource2;
-     Dom.removeClass(Dom.getElementsByClassName('dn_state','span' , 'dn_chooser'),'selected');;
+     Dom.removeClass(Dom.getElementsByClassName('dn_view','span' , 'dn_table_type'),'selected');;
      Dom.addClass(this,'selected');     
-     var request='&dn_state='+this.getAttribute('table_type');
+     var request='&dn_state_type='+this.getAttribute('table_type');
      datasource.sendRequest(request,table.onDataReturnInitializeTable, table);       
  } 
  
@@ -440,6 +468,8 @@ var ids =Array("restrictions_orders_cancelled","restrictions_orders_suspended","
 Event.addListener(ids, "click", change_order_dispatch_type);
 var ids =Array("restrictions_paid","restrictions_to_pay","restrictions_refunds","restrictions_invoices","restrictions_all_invoices") ;
 Event.addListener(ids, "click", change_invoice_type);
+var ids =Array("restrictions_dn_all","restrictions_dn_returned","restrictions_dn_send","restrictions_dn_ready","restrictions_dn_packing","restrictions_dn_picking","restrictions_dn_ready_to_pick","restrictions_dn_shortages","restrictions_dn_replacements","restrictions_dn_donations","restrictions_dn_samples","restrictions_dn_orders") ;
+Event.addListener(ids, "click", change_dn_type);
 
  var change_view = function (e){
 	    new_view=this.id
