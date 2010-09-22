@@ -53,11 +53,11 @@ break;
    if(isset($_REQUEST['from']))
      $from=$_REQUEST['from'];
    else
-     $from=date("d-m-Y",strtotime('-1 year') );
+     $from=date("Y-m-d",strtotime('-1 year') );
    if(isset($_REQUEST['to']))
      $to=$_REQUEST['to'];
    else
-     $to=date("d-m-Y",strtotime('now') );
+     $to=date("Y-m-d",strtotime('now') );
    $_from=$from;
    $_to=$to;
 

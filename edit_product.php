@@ -132,7 +132,7 @@ $product_home="Products Home";
 
 
 
-$smarty->assign('date',date('d-m-Y'));
+$smarty->assign('date',date('Y-m-d'));
 $smarty->assign('time',date('H:i'));
 
 if(isset($_REQUEST['edit'])  ){

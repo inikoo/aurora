@@ -1147,7 +1147,7 @@ function plot_assets(){
 		      );
   
   
- // print $ar_address;
+  print $ar_address;
 
 
   $fields='"date"';
