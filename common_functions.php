@@ -137,14 +137,16 @@ function prepare_mysql_datetime($datetime,$tipo='datetime'){
     return array('mysql_date'=>'','status'=>'empty','ok'=>false);
   $time='';
   if(preg_match('/datetime/',$tipo)){
-     if(preg_match('/^[0123]\d[\-\/][01]\d[\-\/]\d{4}\s[012]\d:[0123456]\d$/',$datetime))
+     if(preg_match('/^[12]\d{3}[\-\/][01]\d[\-\/][0123]\d\s[012]\d:[0123456]\d$/',$datetime))
        $datetime=$datetime.':00';
-    if(!preg_match('/^[0123]\d[\-\/][01]\d[\-\/]\d{4}\s[012]\d:[0123456]\d:[0123456]\d$/',$datetime))
+    if(!preg_match('/^[12]\d{3}[\-\/][01]\d[\-\/][0123]\d\s[012]\d:[0123456]\d:[0123456]\d$/',$datetime))
       return array('mysql_date'=>'','status'=>_('error, date time not reconozied')." $datetime",'ok'=>false);
     $ts=date('U',strtotime($datetime));
     list($date,$time)=preg_split('/\s+/',$datetime);
   }else{
-    if(!preg_match('/^[0123]\d[\-\/][01]\d[\-\/]\d{4}/',$datetime))
+
+
+    if(!preg_match('/^[12]\d{3}[\-\/][01]\d[\-\/][0123]\d/',$datetime))
       return array('mysql_date'=>'','status'=>'wrong date','ok'=>false);
     $date=$datetime;
     $ts=date('U',strtotime($date));

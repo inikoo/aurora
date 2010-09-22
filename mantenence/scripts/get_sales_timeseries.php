@@ -28,9 +28,6 @@ $stores=array(1);
 $forecast=true;
 
 
-
-  
-
 //$sql="select * from `Part Dimension`  ";
 //$result=mysql_query($sql);
 //while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
@@ -185,6 +182,11 @@ while($row=mysql_fetch_array($res)){
 /*   $tm->save_values(); */
 /*   if($forecast) */
 /*     $tm->forecast(); */
+$tm=new TimeSeries(array('w','product department ('.$row['Product Department Key'].') sales'));
+  $tm->get_values();
+  $tm->save_values();
+  if($forecast)
+    $tm->forecast();
 $tm=new TimeSeries(array('m','product department ('.$row['Product Department Key'].') sales'));
   $tm->get_values();
   $tm->save_values();
@@ -202,7 +204,7 @@ $tm=new TimeSeries(array('y','product department ('.$row['Product Department Key
     $tm->forecast();
 }
 
-
+exit;
 
 $sql="select * from `Product Family Dimension`   where `Product Family Store Key` in (".join(',',$stores).")    ";
 $res=mysql_query($sql);

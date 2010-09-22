@@ -15,7 +15,7 @@ include_once('app_files/key.php');
 include_once('aes.php');
 include_once('set_locales.php');
 
-//print date("d-m-Y H:i:s",date('U')+300);
+//print date("Y-m-d H:i:s",date('U')+300);
 $Sk="skstart|".(date('U')+3600)."|".ip()."|".IKEY."|".sha1(mt_rand()).sha1(mt_rand());
 $St=AESEncryptCtr($Sk,SKEY, 256);
 

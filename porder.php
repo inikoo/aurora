@@ -119,7 +119,7 @@ $smarty->assign('thousand_sep',$myconf['thousand_sep']);
 
 
 
-$smarty->assign('date',date("d-m-Y"));
+$smarty->assign('date',date("Y-m-d"));
 $smarty->assign('time',date("H:i"));
 
 

@@ -61,7 +61,7 @@ plot_interval_data[ Dom.get('plot_info').getAttribute("period")].forecast_bins=t
 
 function change_plot_period(period){
     o=Dom.get('plot_'+plot);
-    alert('plot_'+plot)
+   // alert('plot_'+plot)
     Dom.get('plot_info').setAttribute("period",period);
     Dom.get('plot_info').setAttribute("from",plot_interval_data[period].bins);
     Dom.get('plot_info').setAttribute("to",plot_interval_data[period].forecast_bins);
@@ -82,7 +82,7 @@ function change_plot(o){
 
 
 
-alert(tipo)
+//alert(tipo)
 	if(tipo=='pie'){
 	    plot='pie';
 			var pie_interval=o.getAttribute("interval");
@@ -127,7 +127,7 @@ alert(tipo)
 	    plot='store';
 	    Dom.get("pie_options").style.display='none';
 	    var plot_url='plot.php?tipo='+tipo+'&category='+category+'&period='+period+'&keys='+keys+'&from='+from+'&to='+to;
-	    alert(plot_url);
+	   // alert(plot_url);
 
 
 	    //Dom.get("the_plot").width="100%";
@@ -147,7 +147,7 @@ alert(tipo)
 	    
 	   // Dom.get("pie_options").style.display='none';
 	    var plot_url='plot.php?tipo='+tipo+'&category='+category+'&period='+period+'&keys='+keys+'&from='+from+'&to='+to;
-	    alert(plot_url);
+	  //  alert(plot_url);
 
 
 	    //Dom.get("the_plot").width="100%";

@@ -2363,7 +2363,7 @@ $to=prepare_mysql_datetime($to,'date');
             $where_to=sprintf('and `Time Series Date`<=%s ',prepare_mysql($to['mysql_date']));
 
         $data=array();
-        $where_dates=prepare_mysql_dates($from,$to,"`Time Series Date`");
+        
         $sql=sprintf("SELECT `Time Series Label`,`Time Series Type`,`Time Series Value` as value,YEAR(`Time Series Date`) as year,`Time Series Count` as count ,UNIX_TIMESTAMP(`Time Series Date`) as date from `Time Series Dimension` where  `Time Series Frequency`='Yearly' and  `Time Series Name`=%s and `Time Series Name Key`=%d and `Time Series Name Second Key`=%d %s %s order by `Time Series Date`,`Time Series Type` desc"
                      ,prepare_mysql($this->name)
                      ,$this->name_key
@@ -2405,9 +2405,12 @@ $to=prepare_mysql_datetime($to,'date');
                                     'date'=>strftime("%y", strtotime('@'.$row['date']))
                                 );
             // print $row['year']."<br>\n";
+            
+           // print_r($row);
+            
             if ($row['Time Series Type']=='First') {
                 $first_value=array($row['year'],$row['value'],$tip) ;
-
+$last_complete_value=array($row['year'],$row['value'],$tip) ;
             }
             if ($row['Time Series Type']=='Current') {
                 $current_value=array($row['year'],$row['value'],$tip) ;
@@ -2605,7 +2608,7 @@ $to=prepare_mysql_datetime($to,'date');
 
 
         $data=array();
-        $where_dates=prepare_mysql_dates($from,$to,"`Time Series Date`");
+        //$where_dates=prepare_mysql_dates($from,$to,"`Time Series Date`");
         $sql=sprintf("SELECT `Time Series Label`,`Time Series Type`,`Time Series Value` as value, CONCAT(YEAR(`Time Series Date`),QUARTER(`Time Series Date`))   yearquarter,QUARTER(`Time Series Date`) as quarter,YEAR(`Time Series Date`) as year,`Time Series Count` as count ,UNIX_TIMESTAMP(`Time Series Date`) as date from `Time Series Dimension` where  `Time Series Frequency`='Quarterly' and  `Time Series Name`=%s and `Time Series Name Key`=%d and `Time Series Name Second Key`=%d    order by `Time Series Date`,`Time Series Type` desc"
                      ,prepare_mysql($this->name)
                      ,$this->name_key
@@ -2711,11 +2714,11 @@ $to=prepare_mysql_datetime($to,'date');
 
     function plot_data_per_week($tipo,$suffix,$from,$to) {
         $data=array();
-
+print "$from\n";
 $from=prepare_mysql_datetime($from,'date');
 $to=prepare_mysql_datetime($to,'date');
 
-
+print_r($from);
         $where_from='';
         if ($from['ok'])
             $where_from=sprintf('and `Time Series Date`>=%s ',prepare_mysql($from['mysql_date']));
@@ -2734,7 +2737,7 @@ $to=prepare_mysql_datetime($to,'date');
                      ,$where_from
                      ,$where_to
                     );
-
+exit($sql);
         $prev_yearweek=array();
         $forecast_region=false;
         $data_region=false;

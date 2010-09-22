@@ -698,9 +698,9 @@ return $this->get_full_order_form();
       if (!isset( $this->data['weeks'])) {
 
 	if (is_numeric($this->data['first_date'])) {
-	  $date1=date('d-m-Y',strtotime('@'.$this->data['first_date']));
+	  $date1=date('Y-m-d',strtotime('@'.$this->data['first_date']));
 	  $day1=date('N')-1;
-	  $date2=date('d-m-Y');
+	  $date2=date('Y-m-d');
 	  $days=datediff('d',$date1,$date2);
 	  $weeks=number_weeks($days,$day1);
 	} else

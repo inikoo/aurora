@@ -541,6 +541,8 @@ function list_item($tipo,$category,$period,$item_keys,$split=false,$from=false,$
       $tm=new TimeSeries(array($period,"$tipo ($key) $category"));
       //print_r($tm);
       //exit;
+      
+     
       $tmp_data=$tm->plot_data($from,$to);
       // print_r($tmp_data);
 

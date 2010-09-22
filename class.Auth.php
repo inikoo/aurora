@@ -135,7 +135,7 @@ class Auth {
 
 	  if($time<time(date('U'))  ){
 	    $pass_tests=false;
-	    //print date("d-m-Y H:i:s",$time).' '.date("d-m-Y H:i:s",date('U')+300);
+	    //print date("Y-m-d H:i:s",$time).' '.date("Y-m-d H:i:s",date('U')+300);
 	    
 	  }else
 	    $this->pass['time']='Yes';

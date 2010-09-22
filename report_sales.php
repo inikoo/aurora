@@ -337,8 +337,8 @@ $smarty->display('report_sales.tpl');
 // $smarty->assign('month_name',date('M'));
 
 // $smarty->assign('week',date('W'));
-// $smarty->assign('from',date('d-m-Y'));
-// $smarty->assign('to',date('d-m-Y'));
+// $smarty->assign('from',date('Y-m-d'));
+// $smarty->assign('to',date('Y-m-d'));
 
 
 // $smarty->display('report_sales.tpl');
