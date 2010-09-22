@@ -73,10 +73,6 @@ case('sales_by_store');
 case('sales_share_by_store');
 plot_sales_by_store($tipo);
 
-
-
-break;
-
 break;
 case('customers');
 case('active_customers');
@@ -579,7 +575,7 @@ $out='<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN""http://www.
  <script type="text/javascript">
 
 
- function formatCurrencyAxisLabel( value ){
+function formatCurrencyAxisLabel( value ){
 if( value==0)
     return "";
 else if ( value>=499){
@@ -598,12 +594,8 @@ return value+"%";
  function formatPercentageAxisLabelx2BUG( value ){
 return 2*value+"%";
 }
-
-
-
-
- function formatNumberAxisLabel( value ){return YAHOO.util.Number.format( value,{prefix: "",thousandsSeparator: ",",decimalPlaces: 0});}
- function formatPercentageAxisLabel( value ){return YAHOO.util.Number.format( value,{prefix: "",thousandsSeparator: ",",decimalPlaces: 0})+"%";}
+function formatNumberAxisLabel( value ){return YAHOO.util.Number.format( value,{prefix: "",thousandsSeparator: ",",decimalPlaces: 0});}
+function formatPercentageAxisLabel( value ){return YAHOO.util.Number.format( value,{prefix: "",thousandsSeparator: ",",decimalPlaces: 0})+"%";}
 
  function DataTipText( item, index, series ){return item["tip_"+series["yField"]]    }
 
@@ -983,6 +975,8 @@ function plot_assets(){
    if(is_numeric($from)){
            $_SESSION['state'][$plot_page]['plot_interval'][$period]['plot_bins']=$from;
 
+
+
    switch($period){
 
    case('y'):
@@ -1010,7 +1004,9 @@ function plot_assets(){
     $to=false;
 
  if(is_numeric($to)){
-         $_SESSION['state'][$plot_page]['plot_forecast'][$period]['plot_forecast_bins']=$to;
+         $_SESSION['state'][$plot_page]['plot_interval'][$period]['plot_forecast_bins']=$to;
+
+
 
    switch($period){
 
@@ -1147,7 +1143,7 @@ function plot_assets(){
 		      );
   
   
-  print $ar_address;
+  //print $ar_address;
 
 
   $fields='"date"';
@@ -1172,7 +1168,7 @@ function plot_assets(){
     if($period=='q'){
     $x_axis='qua';
     }if($period=='m'){
-    $x_axis='justyears';
+   // $x_axis='justyears';
     }
     //print $period;
     $xfield=array('label'=>_('Date'),'name'=>'date','tipo_axis'=>'Category','axis'=>$x_axis);

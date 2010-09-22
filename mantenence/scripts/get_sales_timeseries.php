@@ -24,7 +24,7 @@ require_once '../../conf/conf.php';
 $_SESSION['lang']=1;
 
 
-$stores=array(1);
+//$stores=array(1);
 $forecast=true;
 
 
@@ -173,7 +173,7 @@ if($myconf['currency_code']!=$store->data['Store Currency Code']){
  
 }
  
-$sql="select * from `Product Department Dimension`  where `Product Department Store Key` in (".join(',',$stores).")    ";
+$sql="select * from `Product Department Dimension`  where `Product Department Store Key`    ";
 $res=mysql_query($sql);
 while($row=mysql_fetch_array($res)){
   print 'product department ('.$row['Product Department Key'].') sales'."\n";

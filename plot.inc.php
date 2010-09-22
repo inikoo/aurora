@@ -10,6 +10,7 @@ $plot_category=$_SESSION['state'][$page]['plot_category'];
 
 $plot_interval=$_SESSION['state'][$page]['plot_interval'][$plot_period]['plot_bins'];
 $plot_forecast=$_SESSION['state'][$page]['plot_interval'][$plot_period]['plot_forecast_bins'];
+//print $plot_forecast;
 
 
 $smarty->assign('plot_period',$plot_period);
