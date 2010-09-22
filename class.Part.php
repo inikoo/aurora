@@ -1065,7 +1065,7 @@ function get_picking_location_key($date=false) {
         return $this->get_picking_location_historic($date);
     }
     $sql=sprintf("select `Location Key` from `Part Location Dimension` where `Part SKU` in (%s) and `Can Pick`='Yes'",$this->sku);
-    $location_key=0;
+    $location_key=1;
     $res=mysql_query($sql);
 
     if ($row=mysql_fetch_assoc($res)) {
