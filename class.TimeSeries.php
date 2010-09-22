@@ -2198,9 +2198,9 @@ $last_day=date("Y-m-d");
 
     function plot_data_per_month($tipo,$suffix,$from='',$to='',$currency='') {
 
-
 $from=prepare_mysql_datetime($from,'date');
 $to=prepare_mysql_datetime($to,'date');
+
 
 
         $where_from='';
@@ -2223,7 +2223,7 @@ $to=prepare_mysql_datetime($to,'date');
                      ,$where_from
                      ,$where_to
                     );
-
+//print $sql;
         $prev_month='';
         $prev_year=array();
         $forecast_region=false;
@@ -2714,11 +2714,11 @@ $to=prepare_mysql_datetime($to,'date');
 
     function plot_data_per_week($tipo,$suffix,$from,$to) {
         $data=array();
-print "$from\n";
+//print "$from\n";
 $from=prepare_mysql_datetime($from,'date');
 $to=prepare_mysql_datetime($to,'date');
 
-print_r($from);
+//print_r($from);
         $where_from='';
         if ($from['ok'])
             $where_from=sprintf('and `Time Series Date`>=%s ',prepare_mysql($from['mysql_date']));
@@ -2737,7 +2737,7 @@ print_r($from);
                      ,$where_from
                      ,$where_to
                     );
-exit($sql);
+//exit($sql);
         $prev_yearweek=array();
         $forecast_region=false;
         $data_region=false;

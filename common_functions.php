@@ -161,11 +161,11 @@ function prepare_mysql_datetime($datetime,$tipo='datetime'){
 
  if(preg_match('/datetime/',$tipo)){
    
-   $mysql_datetime= trim(join ('-',array_reverse($date)).' '.$time);
+   $mysql_datetime= trim(join ('-',$date).' '.$time);
  }else{
    
 
-   $mysql_datetime= join ('-',array_reverse($date));
+   $mysql_datetime= join ('-',$date);
     if(preg_match('/start/i',$tipo))
       $mysql_datetime.=' 00:00:00';
      if(preg_match('/midday/i',$tipo))
