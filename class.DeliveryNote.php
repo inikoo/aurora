@@ -663,10 +663,62 @@ private function handle_to_customer($data){
     }
 
 
-    $sql=sprintf("update `Inventory Transaction Fact` set `Inventory Transaction Type`='Sale' where `Delivery Note Key`=%s  and `Inventory Transaction Type`='Order In Process'  ",
-                 $this->id);
+$sql=sprintf("select * from `Inventory Transaction Fact` where `Delivery Note Key`=%d",$this->id);
+$res=mysql_query($sql);
+while($row=mysql_fetch_assoc($res)){
+
+if($row['Out of Stock']>0){
+
+
+$note=_('Out of Stock');
+ $sql = sprintf ( "insert into `Inventory Transaction Fact`  (`Inventory Transaction Weight`,`Date Created`,`Date`,`Delivery Note Key`,`Part SKU`,`Location Key`,`Inventory Transaction Quantity`,`Inventory Transaction Type`,`Inventory Transaction Amount`,`Required`,`Given`,`Amount In`,`Metadata`,`Note`,`Supplier Product Key`,`Map To Order Transaction Fact`) values (%f,%s,%s,%d,%s,%d,%s,%s,%.2f,%f,%f,%f,%s,%s,%s,%s) ",
+                                 0,
+                                 prepare_mysql ($this->data['Delivery Note Date Finish Picking']),
+                                 prepare_mysql ($this->data['Delivery Note Date Finish Picking']),
+                                 $this->id,
+                                 $row['Part SKU'],
+                                 $row['Location Key'],
+                                 0,
+                                 "'Adjust'",
+                                 0,
+                                 0,
+                                 0,
+                                 0,
+                                 prepare_mysql ( $row['Metadata'] ),
+                                 prepare_mysql ( $note ),
+                                 $row['Supplier Product Key'],
+                                'NULL'
+                               );
+            mysql_query($sql);
+
+
+}
+
+
+if($row['Inventory Transaction Quantity']==0){
+ $sql=sprintf("update `Inventory Transaction Fact` set `Inventory Transaction Type`='No Dispatched' where `Delivery Note Key`=%d  and `Inventory Transaction Key`=%d  ",
+                 $this->id,
+                 $row['Inventory Transaction Key']
+                 
+                 );
 
     mysql_query($sql);
+
+}else{
+
+ $sql=sprintf("update `Inventory Transaction Fact` set `Inventory Transaction Type`='Sale' where `Delivery Note Key`=%d  and `Inventory Transaction Key`=%d  ",
+                 $this->id,
+                 $row['Inventory Transaction Key']
+                 
+                 );
+
+    mysql_query($sql);
+}
+
+}
+
+
+   
 
     $sql=sprintf("select `Delivery Note Quantity`,`Order Transaction Fact Key` from `Order Transaction Fact` where `Delivery Note Key`=%s  and `Current Dispatching State`='Ready to Ship'  ",
                  $this->id);
