@@ -505,8 +505,8 @@ protected function create($dn_data,$order=false) {
         $product=new Product('id',$row['Product Key']);
         $part_list=$product->get_part_list($date);
 
-        $map_to_otf=$row['Order Transaction Fact Key'];
-
+        $map_to_otf_key=$row['Order Transaction Fact Key'];
+$map_to_otf_metadata='';
         $state='Ready to Pick';
         $sql = sprintf ( "update `Order Transaction Fact` set `Current Dispatching State`=%s where `Order Transaction Fact Key`=%d  ",
                          prepare_mysql($state),
@@ -517,8 +517,10 @@ protected function create($dn_data,$order=false) {
 
 
         foreach($part_list as $part_data) {
-            if ($part_data['Parts Per Product']!=1)
-                $map_to_otf.=':'.$part_data['Parts Per Product'];
+            if ($part_data['Parts Per Product']!=1){
+            $map_to_otf_metadata=$part_data['Parts Per Product'];
+               }
+                
             $part = new Part ( 'sku', $part_data['Part SKU'] );
             $location_key = $part->get ( 'Picking Location Key' );
             $location_key=$part->get_picking_location_key($date);
@@ -546,7 +548,7 @@ protected function create($dn_data,$order=false) {
 
 
             $weight=
-                $sql = sprintf ( "insert into `Inventory Transaction Fact`  (`Inventory Transaction Weight`,`Date Created`,`Date`,`Delivery Note Key`,`Part SKU`,`Location Key`,`Inventory Transaction Quantity`,`Inventory Transaction Type`,`Inventory Transaction Amount`,`Required`,`Given`,`Amount In`,`Metadata`,`Note`,`Supplier Product Key`,`Map To Order Transaction Fact`) values (%f,%s,%s,%d,%s,%d,%s,%s,%.2f,%f,%f,%f,%s,%s,%s,%s) ",
+                $sql = sprintf ( "insert into `Inventory Transaction Fact`  (`Inventory Transaction Weight`,`Date Created`,`Date`,`Delivery Note Key`,`Part SKU`,`Location Key`,`Inventory Transaction Quantity`,`Inventory Transaction Type`,`Inventory Transaction Amount`,`Required`,`Given`,`Amount In`,`Metadata`,`Note`,`Supplier Product Key`,`Map To Order Transaction Fact Key`,`Map To Order Transaction Fact Metadata`) values (%f,%s,%s,%d,%s,%d,%s,%s,%.2f,%f,%f,%f,%s,%s,%s,%d,%s) ",
                                  0,
                                  prepare_mysql ($date),
                                  prepare_mysql ($date),
@@ -562,7 +564,8 @@ protected function create($dn_data,$order=false) {
                                  prepare_mysql ( $this->data ['Delivery Note Metadata'] ),
                                  prepare_mysql ( $note ),
                                  $supplier_product_key,
-                                 $map_to_otf
+                                 $map_to_otf_key,
+                                   prepare_mysql ( $map_to_otf_metadata )
                                );
             mysql_query($sql);
 
@@ -585,8 +588,8 @@ function create_inventory_transaction_fact($order_key) {
         $product=new Product('id',$row['Product Key']);
         $part_list=$product->get_part_list($date);
 
-        $map_to_otf=$row['Order Transaction Fact Key'];
-
+        $map_to_otf_key=$row['Order Transaction Fact Key'];
+$map_to_otf_metadata='';
         $state='Ready to Pick';
         $sql = sprintf ( "update `Order Transaction Fact` set `Current Dispatching State`=%s where `Order Transaction Fact Key`=%d  ",
                          prepare_mysql($state),
@@ -598,7 +601,7 @@ function create_inventory_transaction_fact($order_key) {
 
         foreach($part_list as $part_data) {
             if ($part_data['Parts Per Product']!=1)
-                $map_to_otf.=':'.$part_data['Parts Per Product'];
+                $map_to_otf_metadata=$part_data['Parts Per Product'];
             $part = new Part ( 'sku', $part_data['Part SKU'] );
             $location_key = $part->get ( 'Picking Location Key' );
             $location_key=$part->get_picking_location_key($date);
@@ -626,7 +629,7 @@ function create_inventory_transaction_fact($order_key) {
 
 
             $weight=
-                $sql = sprintf ( "insert into `Inventory Transaction Fact`  (`Inventory Transaction Weight`,`Date Created`,`Date`,`Delivery Note Key`,`Part SKU`,`Location Key`,`Inventory Transaction Quantity`,`Inventory Transaction Type`,`Inventory Transaction Amount`,`Required`,`Given`,`Amount In`,`Metadata`,`Note`,`Supplier Product Key`,`Map To Order Transaction Fact`) values (%f,%s,%s,%d,%s,%d,%s,%s,%.2f,%f,%f,%f,%s,%s,%s,%s) ",
+                $sql = sprintf ( "insert into `Inventory Transaction Fact`  (`Inventory Transaction Weight`,`Date Created`,`Date`,`Delivery Note Key`,`Part SKU`,`Location Key`,`Inventory Transaction Quantity`,`Inventory Transaction Type`,`Inventory Transaction Amount`,`Required`,`Given`,`Amount In`,`Metadata`,`Note`,`Supplier Product Key`,`Map To Order Transaction Fact Key`,`Map To Order Transaction Fact Metadata`) values (%f,%s,%s,%d,%s,%d,%s,%s,%.2f,%f,%f,%f,%s,%s,%s,%d,%s) ",
                                  0,
                                  prepare_mysql ($date),
                                  prepare_mysql ($date),
@@ -642,7 +645,8 @@ function create_inventory_transaction_fact($order_key) {
                                  prepare_mysql ( $this->data ['Delivery Note Metadata'] ),
                                  prepare_mysql ( $note ),
                                  $supplier_product_key,
-                                 $map_to_otf
+                                 $map_to_otf_key,
+                                  prepare_mysql ( $map_to_otf_metadata )
                                );
             mysql_query($sql);
 
@@ -671,7 +675,7 @@ if($row['Out of Stock']>0){
 
 
 $note=_('Out of Stock');
- $sql = sprintf ( "insert into `Inventory Transaction Fact`  (`Inventory Transaction Weight`,`Date Created`,`Date`,`Delivery Note Key`,`Part SKU`,`Location Key`,`Inventory Transaction Quantity`,`Inventory Transaction Type`,`Inventory Transaction Amount`,`Required`,`Given`,`Amount In`,`Metadata`,`Note`,`Supplier Product Key`,`Map To Order Transaction Fact`) values (%f,%s,%s,%d,%s,%d,%s,%s,%.2f,%f,%f,%f,%s,%s,%s,%s) ",
+ $sql = sprintf ( "insert into `Inventory Transaction Fact`  (`Inventory Transaction Weight`,`Date Created`,`Date`,`Delivery Note Key`,`Part SKU`,`Location Key`,`Inventory Transaction Quantity`,`Inventory Transaction Type`,`Inventory Transaction Amount`,`Required`,`Given`,`Amount In`,`Metadata`,`Note`,`Supplier Product Key`) values (%f,%s,%s,%d,%s,%d,%s,%s,%.2f,%f,%f,%f,%s,%s,%s) ",
                                  0,
                                  prepare_mysql ($this->data['Delivery Note Date Finish Picking']),
                                  prepare_mysql ($this->data['Delivery Note Date Finish Picking']),
@@ -686,8 +690,8 @@ $note=_('Out of Stock');
                                  0,
                                  prepare_mysql ( $row['Metadata'] ),
                                  prepare_mysql ( $note ),
-                                 $row['Supplier Product Key'],
-                                'NULL'
+                                 $row['Supplier Product Key']
+                               
                                );
             mysql_query($sql);
 
@@ -1397,7 +1401,7 @@ $this->handle_to_customer($data);
  function set_as_out_of_stock($itf_key,$qty,$date=false,$picker_key=false) {
 
 
-    $sql=sprintf("select `Part SKU`,`Required`,`Picked`,`Map To Order Transaction Fact`  from   `Inventory Transaction Fact` where `Inventory Transaction Key`=%d  "
+    $sql=sprintf("select `Part SKU`,`Required`,`Picked`,`Map To Order Transaction Fact Key`,IFNULL(`Map To Order Transaction Fact Metadata`,1)  as `Map To Order Transaction Fact Metadata` from   `Inventory Transaction Fact` where `Inventory Transaction Key`=%d  "
                  ,$itf_key
                 );
     $res=mysql_query ( $sql );
@@ -1431,16 +1435,10 @@ $picking_factor=($qty+$row['Picked'])/$row['Required'];
             $state='Picking';
         }
 
-        $factor=1;
-        if (is_numeric($row['Map To Order Transaction Fact'])) {
-            $factor=1;
-            $otf_key=$row['Map To Order Transaction Fact'];
-        } else {
-            $tmp=preg_split('/\:/',$row['Map To Order Transaction Fact']);
-            $factor=$tmp[1];
-            $otf_key=$tmp[0];
-        }
-
+        
+        $otf_key=$row['Map To Order Transaction Fact Key'];
+        $factor=$row['Map To Order Transaction Fact Metadata'];
+       
 
         $sql = sprintf ( "update `Order Transaction Fact` set `Current Dispatching State`=%s,`No Shipped Due Out of Stock`=%f,`Packing Finished Date`=%s,`Picker Key`=%s ,`Picking Factor`=%f where `Order Transaction Fact Key`=%d  ",
                          prepare_mysql($state),
@@ -1477,7 +1475,7 @@ function set_as_picked($itf_key,$qty,$date=false,$picker_key=false) {
     
 
 
-    $sql=sprintf("select `Part SKU`,`Required`,`Picked`,`Map To Order Transaction Fact`  from   `Inventory Transaction Fact` where `Inventory Transaction Key`=%d  "
+    $sql=sprintf("select `Part SKU`,`Required`,`Picked`,`Map To Order Transaction Fact Key`,IFNULL(`Map To Order Transaction Fact Metadata`,1) as `Map To Order Transaction Fact Metadata`  from   `Inventory Transaction Fact` where `Inventory Transaction Key`=%d  "
                  ,$itf_key
                 );
                 
@@ -1511,15 +1509,12 @@ $sku=$row['Part SKU'];
                        );
         mysql_query ( $sql );
 
-        $factor=1;
-        if (is_numeric($row['Map To Order Transaction Fact'])) {
-            $factor=1;
-            $otf_key=$row['Map To Order Transaction Fact'];
-        } else {
-            $tmp=preg_split('/\:/',$row['Map To Order Transaction Fact']);
-            $factor=$tmp[1];
-            $otf_key=$tmp[0];
-        }
+       
+          $otf_key=$row['Map To Order Transaction Fact Key'];
+        $factor=$row['Map To Order Transaction Fact Metadata'];
+        
+        
+        
         if($picking_factor>=1)
         $state='Ready to Pack';
         else
@@ -1566,7 +1561,7 @@ $this->id
     
     
 
-    $sql=sprintf("select `Part SKU`,`Required`,`Picked`,`Packed`,`Out of Stock`,`Map To Order Transaction Fact`  from   `Inventory Transaction Fact` where `Inventory Transaction Key`=%d  "
+    $sql=sprintf("select `Part SKU`,`Required`,`Picked`,`Packed`,`Out of Stock`,`Map To Order Transaction Fact Key`,IFNULL(`Map To Order Transaction Fact Metadata`,1)  as `Map To Order Transaction Fact Metadata`  from   `Inventory Transaction Fact` where `Inventory Transaction Key`=%d  "
                  ,$itf_key
                 );
     $res=mysql_query ( $sql );
@@ -1597,17 +1592,9 @@ $this->id
                          ,$itf_key
                        );
         mysql_query ( $sql );
-//print "$sql\n";
-        $factor=1;
-        if (is_numeric($row['Map To Order Transaction Fact'])) {
-            $factor=1;
-            $otf_key=$row['Map To Order Transaction Fact'];
-        } else {
-            $tmp=preg_split('/\:/',$row['Map To Order Transaction Fact']);
-            $factor=$tmp[1];
-            $otf_key=$tmp[0];
-        }
-
+ 
+          $otf_key=$row['Map To Order Transaction Fact Key'];
+        $factor=$row['Map To Order Transaction Fact Metadata'];
        
             
         if($packing_factor>=1)

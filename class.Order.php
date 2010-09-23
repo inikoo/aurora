@@ -2686,7 +2686,7 @@ if(!$store_key){
             $this->data ['Order Customer Name'] = $customer->data[ 'Customer Name' ];
             $this->data ['Order Customer Contact Name'] = $customer->data ['Customer Main Contact Name'];
             $this->data ['Order Main Country 2 Alpha Code'] = $customer->data ['Customer Main Country 2 Alpha Code'];
-
+$this->data['Order Customer Order Number']=$customer->get_number_of_orders()+1;
 
 if($customer->data['Customer Tax Category Code']){
 $tax_category=new TaxCategory('code',$customer->data['Customer Tax Category Code']);

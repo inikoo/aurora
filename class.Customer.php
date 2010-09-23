@@ -3846,6 +3846,17 @@ date_default_timezone_set('GMT') ;
 
 }
 
+function get_number_of_orders(){
+$sql=sprintf("select count(*) as number from `Order Dimension` where `Order Customer Key`=%d ",$this->id);
+$number=0;
+$res=mysql_query($sql);
+if($row=mysql_fetch_assoc($res)){
+$number=$row['number'];
+}
+return $number;
+
+
+}
 
 }
 ?>

@@ -68,6 +68,15 @@ $data=array(
 		   ,'Page Section'=>'Reports'
 		   ,'Page Parent Category'=>'Activity/Performace Reports'
 		   )
+		   	     ,array(
+		    'Page Type'=>'Internal'
+		   ,'Page Title'=>'Customer First Order Analysis'
+		   ,'Page Short Title'=>'First Order'
+		   ,'Page Description'=>''
+		   ,'Page URL'=>'report_first_order.php'
+		   ,'Page Section'=>'Reports'
+		   ,'Page Parent Category'=>'Sales Reports'
+		   )
 	       ,array(
 		    'Page Type'=>'Internal'
 		   ,'Page Title'=>'Top Customers Report'
@@ -95,7 +104,7 @@ $data=array(
 foreach($data as $page_data){
   
   $page=new Page('find',$page_data,'create');
-  print_r($page);
+  //print_r($page);
   
 }
 

@@ -101,7 +101,7 @@ $sql="select *,replace(   replace(replace(replace(replace(replace(replace(replac
 //$sql="select * from  orders_data.orders  where    (last_transcribed is NULL  or last_read>last_transcribed) and deleted='No'  order by filename ";
 //$sql="select * from  orders_data.orders where filename like '%/a/%.xls'   order by filename";
 //$sql="select * from  orders_data.orders where filename like '%/5%.xls'   order by filename";
-//$sql="select * from  orders_data.orders where filename like '%/114953.xls'   order by filename";
+//$sql="select * from  orders_data.orders where filename like '%/102691rpl.xls'   order by filename";
 
 //$sql="select * from  orders_data.orders where filename like '%/%ref%.xls'   order by filename";
 //$sql="select * from  orders_data.orders  where filename like '/mnt/%/Orders/93284.xls' order by filename";
@@ -124,6 +124,9 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
         $update=false;
         $old_order_key=0;
   
+  
+  //if($contador>50)
+  //exit;
   
 $sql=sprintf("select count(*) as num  from `Order Dimension`  where `Order Original Metadata`=%s ",prepare_mysql($store_code.$order_data_id));
 $result_test=mysql_query($sql);

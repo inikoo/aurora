@@ -204,9 +204,9 @@ $tm=new TimeSeries(array('y','product department ('.$row['Product Department Key
     $tm->forecast();
 }
 
-exit;
 
-$sql="select * from `Product Family Dimension`   where `Product Family Store Key` in (".join(',',$stores).")    ";
+
+$sql="select * from `Product Family Dimension`   where `Product Family Store Key`     ";
 $res=mysql_query($sql);
 while($row=mysql_fetch_array($res)){
   print 'product family ('.$row['Product Family Key'].') sales'."\n";
@@ -234,7 +234,7 @@ while($row=mysql_fetch_array($res)){
 }
 
 
-$sql="select * from `Product Dimension`   where `Product Store Key` in (".join(',',$stores).")      ";
+$sql="select * from `Product Dimension`   where `Product Store Key`     ";
 $res=mysql_query($sql);
 while($row=mysql_fetch_array($res)){
   //print 'product id ('.$row['Product Code'].') '.$row['Product ID'].' sales'."\n";

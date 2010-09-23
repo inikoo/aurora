@@ -540,7 +540,7 @@ function send_order($data,$data_dn_transactions) {
 
  foreach($data_dn_transactions as $key=>$value) {
  
- $sql=sprintf("select `Inventory Transaction Key` from `Inventory Transaction Fact` where `Map To Order Transaction Fact` =%d",$value['otf_key']);
+ $sql=sprintf("select `Inventory Transaction Key` from `Inventory Transaction Fact` where `Map To Order Transaction Fact Key` =%d",$value['otf_key']);
  $res=mysql_query($sql);
  if($row=mysql_fetch_assoc($res)){
     $itf=$row['Inventory Transaction Key'];
@@ -1509,6 +1509,15 @@ else if(preg_match('/^(alex|ale)$/i',$_name)  )
 
   function get_dates($filedate,$header_data,$tipo_order,$new_file=true){
 
+
+if($header_data['date_inv']=='1899-12-30')
+    $header_data['date_inv']='';
+if($header_data['date_order']=='1899-12-30')
+    $header_data['date_order']='';
+
+
+
+
     $datetime_updated=date("Y-m-d H:i:s",$filedate);
     $time_updated_menos30min=date("H:i:s",$filedate-1800);
 
@@ -1559,7 +1568,7 @@ else if(preg_match('/^(alex|ale)$/i',$_name)  )
         $date_charged=$date_processed;
     }
     
-//     print "$date_index,$date_processed,$date_charged\n";
+  //  print "$date_index,$date_processed,$date_charged\n";
     return array($date_index,$date_processed,$date_charged);
 
   }
