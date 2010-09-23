@@ -1,6 +1,6 @@
 <?php
 require_once 'common.php';
-
+require_once 'ar_common.php';
 if(!isset($output_type))
   $output_type='ajax';
 
@@ -16,6 +16,16 @@ if (!isset($_REQUEST['tipo'])) {
 
 $tipo=$_REQUEST['tipo'];
 switch ($tipo) {
+case('first_order_share_histogram'):
+
+ $data=prepare_values($_REQUEST,array(
+                             'department_key'=>array('type'=>'key')
+                         ));
+    
+    first_order_share_histogram($data);
+    break;
+
+break;
 case('invoices_with_no_tax'):
    if(!$user->can_view('orders'))
   exit();
@@ -52,7 +62,46 @@ break;
 
 }
 
+function first_order_share_histogram($data){
 
+$sql=sprintf("select OD.`Order Key`,(`Order Items Gross Amount`) as total, (select sum(`Order Transaction Gross Amount`) from `Order Transaction Fact` left join `Product History Dimension` PH on (OTF.`Product Key`=PH.`Product Key`) left join `Product Dimension` P on (P.`Product ID`=PH.`Product ID`) where `OTF.`Order Key`=OD.`Order Key` and `Product Main Department Key`=%d) as in_department where `Order Customer Order Number`=1  and Date(OD.`Order Date`)>=%s and Date(OD.`Order Date`)<=%s  ",
+$data['department_key'],
+prepare_mysql($data['from']),
+prepare_mysql($data['to']),
+
+);
+
+$histogram=array('share_80'=0,'share_60'=0,'share_40'=0,'share_20'=0,'share_00'=0);
+
+$res=mysql_query($sql);
+while($row=mysql_fetch_assoc($res)){
+if($row['total']==0)
+continue;
+$share=$row['in_department']/$row['total']
+if($share<=.2){
+$histogram['share_00']++;
+}elseif($share<=.4){
+$histogram['share_20']++;
+}elseif($share<=.6){
+$histogram['share_40']++;
+}elseif($share<=.8){
+$histogram['share_60']++;
+}else{
+$histogram['share_80']++;
+}
+
+    $response=array('state'=>200,'data'=>$data);
+    echo json_encode($response);
+
+}
+
+
+
+//$sql=sprintf("select sum  from `Order Transaction Fact` OTF left join `Order Dimension` OD on (`OTF.`Order Key`=OD.`Order Key`) left join `Product History Dimension` PH on (OTF.`Product Key`=PH.`Product Key`) left join `Product Dimension` P on (P.`Product ID`=PH.`Product ID`) where `Order Customer Order Number`=1 and `Product Main Department Key`=%d  ",
+//$data['department_key']
+//);
+
+}
 
 function pickers_report(){
    $conf=$_SESSION['state']['report']['pickers'];

@@ -12,6 +12,7 @@ if (!isset($_REQUEST['tipo'])) {
 
 $tipo=$_REQUEST['tipo'];
 switch ($tipo) {
+
 case('all'):
  $data=prepare_values($_REQUEST,array(
                              'q'=>array('type'=>'string')
@@ -73,12 +74,78 @@ case('customers'):
     $data['user']=$user;
     search_customer($data);
     break;
+case('departments'):
+
+    $data=prepare_values($_REQUEST,array(
+                             'q'=>array('type'=>'string'),
+                                'scope'=>array('type'=>'string'),
+                                 'scope_key'=>array('type'=>'number')
+                         ));
+    $data['user']=$user;
+    search_departments($data);
+    break;    
 default:
     $response=array('state'=>404,'resp'=>"Operation not found $tipo");
     echo json_encode($response);
 
 }
 
+function search_departments($data){
+    $the_results=array();
+
+    $max_results=10;
+    $user=$data['user'];
+    $q=$data['q'];
+   
+
+    if ($q=='') {
+        $response=array('state'=>200,'results'=>0,'data'=>'');
+        echo json_encode($response);
+        return;
+    }
+
+
+    if ($data['scope']=='store') {
+        $stores=$_SESSION['state']['store']['id'];
+
+    }    if ($data['scope']=='store_key') {
+        if($data['scope_key'])
+        $stores=$data['scope_key'];
+        else
+        $stores=join(',',$user->stores);
+
+    }  else
+        $stores=join(',',$user->stores);
+
+
+    if (!$stores) {
+        $response=array('state'=>200,'results'=>0,'data'=>'','mgs'=>'Store Error');
+        echo json_encode($response);
+        return;
+    }
+    
+    
+  $sql=sprintf('select `Product Department Key`,`Product Department Code`,`Product Department Name` from   `Product Department Dimension` where `Product Department Store Key` in (%s) and ( `Product Department Code` like "%s%%"  or `Product Department Name` REGEXP "[[:<:]]%s"    )  ',
+  $stores,
+  addslashes($q),
+  addslashes($q)
+  );
+ // print $sql;
+$res=mysql_query($sql);
+while($row=mysql_fetch_assoc($res)){
+    $the_results[]=array(
+    'key'=>$row['Product Department Key'],
+    'name'=>$row['Product Department Name'],
+    'code'=>$row['Product Department Code']
+    
+);
+}
+
+
+ $response=array('state'=>200,'data'=>$the_results);
+    echo json_encode($response);
+    
+}
 
 
 function search_customer_by_parts($data) {
@@ -590,7 +657,7 @@ function search_products($data) {
     $max_results=10;
     $user=$data['user'];
     $q=$data['q'];
-    // $q=_trim($_REQUEST['q']);
+   
 
     if ($q=='') {
         $response=array('state'=>200,'results'=>0,'data'=>'');
