@@ -96,7 +96,7 @@ foreach($orders_array as $order_index=>$order){
 
 
 foreach($orders_array as $order_index=>$order){
-  if(preg_match('/^\d{4,5}r$|^\d{4,5}ref$|^\d{4,5}\s?refund$|^\d{4,5}rr$|^\d{4,5}ra$|^\d{4,5}r2$|^\d{4,5}\-2ref$|^\d{5}rpl$|^\d{5}sht?$|^\d{5}rfn$|^1\d{5}(ref|sht|rpl)$/i',$order)){
+  if(preg_match('/^\d{4,5}r$|^\d{4,5}ref$|^\d{4,5}\s?refund$|^\d{4,5}rr$|^\d{4,5}ra$|^\d{4,5}r2$|^\d{4,5}\-2ref$|^\d{5}rpl$|^\d{5}sht?$|^\d{5}rfn$|^1\d{5}(ref|sht|rpl|sh|refund|repl)$/i',$order)){
      $good_files[]=$orders_array_full_path[$order_index];
     $good_files_number[]=$order;
   }
@@ -108,12 +108,17 @@ foreach($orders_array as $order_index=>$order){
 
 //include_once('z.php');
 
+print_r($good_files);
+
 $cvs_repo='/data/orders_data/';
 $sql="update orders_data.orders set deleted='Yes' ";
   mysql_query($sql);
 foreach($good_files_number as $order_index=>$order){
+
+  //print "$order_index $order  ->";
    $filename=$good_files[$order_index];
-  $sql=sprintf("update orders_data.orders set deleted='No'   where  `filename`=%s",prepare_mysql($filename));
+  $sql=sprintf("update orders_data.orders set deleted='No'   where  filename=%s",prepare_mysql($filename));
+  //  print  "$sql\n";
   mysql_query($sql);
 }
 
@@ -125,15 +130,11 @@ foreach($good_files_number as $order_index=>$order){
 
   $updated=false;
 
-  $is_refund=false;
+
   $act_data=array();
   $map=array();
-  if(!preg_match('/^\d{4,5}$/i',$order)){
-    $is_refund=true;
-  }
-  $filename=$good_files[$order_index];
-  //  print "$filename\n";
 
+  $filename=$good_files[$order_index];
   $filedate=filemtime($filename);
   $filedatetime=date("Y-m-d H:i:s",strtotime('@'.$filedate));
   $just_file=preg_replace('/.*\//i','',$filename);
@@ -202,7 +203,7 @@ foreach($good_files_number as $order_index=>$order){
 
 
 
-    $cvs_filename=sprintf("%06d.csv",$id);
+    $cvs_filename=sprintf("%08d.csv",$id);
     // copy($csv_file,$cvs_repo.$cvs_filename );
     $handle_csv = fopen($csv_file, "r");
     unlink($csv_file);
