@@ -96,7 +96,7 @@ foreach($orders_array as $order_index=>$order){
 
 
 foreach($orders_array as $order_index=>$order){
-  if(preg_match('/^\d{4,5}r$|^\d{4,5}ref$|^\d{4,5}\s?refund$|^\d{4,5}rr$|^\d{4,5}ra$|^\d{4,5}r2$|^\d{4,5}\-2ref$|^\d{5}rpl$|^\d{5}sht?$|^\d{5}rfn$|^1\d{5}(ref|sht|rpl)$/i',$order)){
+  if(preg_match('/^\d{4,5}r$|^\d{4,5}ref$|^\d{4,5}\s?refund$|^\d{4,5}rr$|^\d{4,5}ra$|^\d{4,5}r2$|^\d{4,5}\-2ref$|^\d{5}rpl$|^\d{5}sht?$|^\d{5}rfn$|^1\d{5}(ref|sht|rpl|sh|refund|repl)$/i',$order)){
      $good_files[]=$orders_array_full_path[$order_index];
     $good_files_number[]=$order;
   }
@@ -128,7 +128,7 @@ foreach($good_files_number as $order_index=>$order){
   $is_refund=false;
   $act_data=array();
   $map=array();
-  if(!preg_match('/^\d{4,5}$/i',$order)){
+  if(!preg_match('/^\d{4,6}$/i',$order)    ){
     $is_refund=true;
   }
   $filename=$good_files[$order_index];
@@ -202,7 +202,7 @@ foreach($good_files_number as $order_index=>$order){
 
 
 
-    $cvs_filename=sprintf("%06d.csv",$id);
+    $cvs_filename=sprintf("%08d.csv",$id);
     // copy($csv_file,$cvs_repo.$cvs_filename );
     $handle_csv = fopen($csv_file, "r");
     unlink($csv_file);
