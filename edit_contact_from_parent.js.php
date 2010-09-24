@@ -216,7 +216,42 @@ var elements_to_save=0;
 	}
 
     }
+   if(Contact_Telecoms_to_delete>0 ){
+	var elements_array=Dom.getElementsByClassName('Telecom', 'input');
+	for( var i in elements_array ){
+	    var telecom_key=elements_array[i].getAttribute('telecom_key');
+	    
+	    alert(telecom_key+" -> "+Dom.get('Telecom'+telecom_key).value+" "+Dom.get('Telecom'+telecom_key).getAttribute('to_delete'));
+	    
+	    if(  telecom_key>0 && Dom.get('Telecom'+telecom_key).getAttribute('to_delete')==1  ){
+		
+		var request='ar_edit_contacts.php?tipo=delete_telecom&value=' +telecom_key+'&id='+contact_key+'&subject=contact&subject_key='+contact_key; 
+		alert(request);
+		YAHOO.util.Connect.asyncRequest('POST',request ,{
+			    success:function(o) {
+				alert(o.responseText);
+				var r =  YAHOO.lang.JSON.parse(o.responseText);
+				if(r.action=='deleted' ){
+				    Dom.get('contact_display'+contact_key).innerHTML=r.xhtml_subject;
+				    delete  Contact_Data[contact_key]['Telecoms'][r.telecom_key];
+				    set_main_telecom(r.main_telecom_key);
+				    save_contact_elements++;
+				    elements_saved++;
+				  
+				
+				  if(elements_saved>=elements_to_save)
+		           		cancel_edit_contact();
+				    
+				    
+				}else if(r.action=='error'){
+				    alert(r.msg);
+				}
+			    }
+			});
+	    }
+	}
 
+    }
 
 
        if(Contact_Telecoms_to_edit>0 || Contact_Telecoms_to_add>0){
@@ -240,7 +275,7 @@ var elements_to_save=0;
 		    var json_value = YAHOO.lang.JSON.stringify(value); 
 		    
 		    var request='ar_edit_contacts.php?tipo=edit_telecom&value=' + json_value+'&id='+contact_key+'&subject=contact&subject_key='+contact_key; 
-		 //alert(request);
+		 alert(request);
 		  
 		    YAHOO.util.Connect.asyncRequest('POST',request ,{
 			    success:function(o) {

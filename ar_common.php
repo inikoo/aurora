@@ -85,7 +85,7 @@ function prepare_values($data,$value_names){
 	  $extra_data['required elements']=array();
 	foreach($extra_data['required elements'] as $element_name=>$element_type){
 	  if(!isset($raw_data[$element_name]) or !is_type($element_type,$raw_data[$element_name]) )
-	    exit(json_encode(array('state'=>400,'msg'=>'Error wrong 5 value')));
+	    exit(json_encode(array('state'=>400,'msg'=>"Error wrong 5 value  $element_name  ")));
 	}
 	foreach($raw_data as $key=>$value){
 	  if(is_string($value)) 

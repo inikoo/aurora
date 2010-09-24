@@ -54,7 +54,7 @@ foreach($contacts as $contact){
   $mobile_data='';
   foreach($mobiles as $mobile){
     $scope_related_mobile_type='Work Mobile';
-    if(isset($mobile->data['Telecom Type'][$scope_related_mobile_type])){
+    //if(isset($mobile->data['Telecom Type'][$scope_related_mobile_type])){
 	$mobile_data.=sprintf(',%d:{"Mobile_Key":%d,"Mobile":"%s","Country_Code":"%s","National_Access_Code":"%s","Number":%s,"Telecom_Is_Main":"%s","Telecom Type Description":"%s"}'
 			      ,$mobile->id
 			      ,$mobile->id
@@ -62,11 +62,11 @@ foreach($contacts as $contact){
 			      ,addslashes($mobile->data['Telecom Country Telephone Code'])
 			      ,addslashes($mobile->data['Telecom National Access Code'])
 			      ,addslashes($mobile->data['Telecom Number'])
-			      ,$mobile->data['Telecom Is Main'][$scope_related_mobile_type]
-			      ,$mobile->data['Telecom Type'][$scope_related_mobile_type]
+			      ,$mobile->data['Mobile Is Main']
+			      ,$mobile->data['Telecom Type']
 			      );
       }
-  }
+  //}
   $mobile_data=preg_replace('/^,/','',$mobile_data);
 
   $emails=$contact->get_emails();
