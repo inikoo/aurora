@@ -1376,10 +1376,16 @@ function delete_email() {
     if (!is_numeric($email_key)) {
         $email = new Email('email',$email_key);
         $email_key=$email->id;
+    }else{
+    $email = new Email($email_key);
+        $email_key=$email->id;
+        
     }
 
 
-    $subject->remove_email($email_key);
+
+
+    $email->delete();
     if ($is_company) {
         $contact_found_keys=$subject->get_contact_keys();
         //print_r($contact_found_keys);
@@ -1391,7 +1397,7 @@ function delete_email() {
     }
 
 
-    if ($subject->updated) {
+    if ($email->deleted) {
         $action='deleted';
         $msg=_('Email deleted');
         $subject->reread();
@@ -1402,7 +1408,7 @@ function delete_email() {
 
 
 
-    $response=array('state'=>200,'action'=>$action,'msg'=>$msg,'email_key'=>$email_key,'xhtml_subject'=>$subject->display('card'),'main_email_key'=>$subject->get_main_email_key());
+    $response=array('state'=>200,'action'=>$action,'msg'=>$msg,'email_key'=>$email_key,'xhtml_subject'=>$subject->display('card'),'main_email_key'=>$subject->get_principal_email_key());
 
 
     echo json_encode($response);

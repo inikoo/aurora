@@ -67,10 +67,13 @@ var errors_found=0;
 
 var elements_saved=0;
 var elements_to_save=0;
+
+
   if(Contact_Name_Changes>0 || Contact_Details_Changes>0){
   elements_to_save++;
   }
-  elements_to_save+=Contact_Emails_to_edit+Contact_Emails_to_add;
+
+  elements_to_save+=Contact_Emails_to_edit+Contact_Emails_to_add+Contact_Emails_to_delete;
  
    
     if(Contact_Name_Changes>0 || Contact_Details_Changes>0){
@@ -190,13 +193,20 @@ var elements_to_save=0;
 		var request='ar_edit_contacts.php?tipo=delete_email&value=' +email_key+'&id='+contact_key+'&subject=contact&subject_key='+contact_key; 
 		 YAHOO.util.Connect.asyncRequest('POST',request ,{
 			    success:function(o) {
-					alert(o.responseText);
+				//alert(o.responseText);
 				var r =  YAHOO.lang.JSON.parse(o.responseText);
 				if(r.action=='deleted' ){
 				    Dom.get('contact_display'+contact_key).innerHTML=r.xhtml_subject;
 				    delete  Contact_Data[contact_key]['Emails'][r.email_key];
 				    set_main_email(r.main_email_key);
 				    save_contact_elements++;
+				    elements_saved++;
+				  
+				
+				  if(elements_saved>=elements_to_save)
+		           		cancel_edit_contact();
+				    
+				    
 				}else if(r.action=='error'){
 				    alert(r.msg);
 				}

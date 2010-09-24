@@ -26,13 +26,8 @@ include_once('class.Contact.php');
 
 class Email extends DB_Table {
 
-    /*  public  $data=array(); */
-    /*   public $id=false; */
-    /*   public  $new=false; */
-    /*   public $error=false; */
-    /*   public $updated=false; */
-    /*   public $msg=''; */
-
+     public  $deleted=false;
+  
 
 
 
@@ -859,8 +854,8 @@ return;
         mysql_query($sql);
         $sql=sprintf("delete from `Email Bridge`  where  `Email Key`=%d", $this->id);
         mysql_query($sql);
-
-        $history_data['History Abstract']='Email Deleted';
+$this->deleted=true;
+$history_data['History Abstract']='Email Deleted';
         $history_data['History Details']=_('Email').' '.$this->display('plain')." "._('has been deleted');
         $history_data['Action']='deleted';
         $history_data['Direct Object']='Email';
@@ -868,16 +863,10 @@ return;
         $history_data['Indirect Object']='';
         $history_data['Indirect Object Key']='';
         $this->add_history($history_data);
-
-
-
-
-
-
         $parents=array('Contact','Company','Customer','Supplier');
         foreach($parents as $parent) {
             $sql=sprintf("select `$parent Key` as `Parent Key`   from  `$parent Dimension` where `$parent Main Email Key`=%d group by `$parent Key`",$this->id);
-//print "$sql\n";
+
             $res=mysql_query($sql);
             while ($row=mysql_fetch_array($res)) {
                 $principal_email_changed=false;
@@ -903,10 +892,6 @@ return;
                              ,$parent_object->id
                             );
                 mysql_query($sql);
-
-
-
-
                 $history_data['History Abstract']='Email Removed';
                 $history_data['History Details']=_('Email').' '.$this->display('plain')." "._('has been deleted from')." ".$parent_object->get_name()." ".$parent_label;
                 $history_data['Action']='disassociate';
@@ -915,6 +900,15 @@ return;
                 $history_data['Indirect Object']='Email';
                 $history_data['Indirect Object Key']=$this->id;
                 $this->add_history($history_data);
+                
+                $emails=$parent_object->get_emails();
+                foreach($emails as $email){
+                    $parent_object->update_principal_email($email->id);
+                    break;
+                }
+                
+                
+                
             }
         }
     }
