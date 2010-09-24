@@ -34,7 +34,7 @@ class Contact extends DB_Table {
     public $scope_key=false;
     private  $new_home_telephone_keys=array();
     public $inserted_email=false;
-
+	public $add_telecom=false;
 
 
 
@@ -3032,6 +3032,52 @@ $this->updated=true;
             global $myconf;
 
             switch ($tipo) {
+            case('card_principal'):
+              $email_label="E:";
+                $tel_label="T:";
+                $fax_label="F:";
+                $mobile_label="M:";
+
+                $email='';$company='';
+                $tel='';
+                $fax='';
+                $mobile='';
+                $name=sprintf('<span class="name">%s</span>',$this->data['Contact Name']);
+                if ($this->data['Contact Company Key'])
+                    $company=sprintf('<span class="company">%s</span><br/>',$this->data['Contact Company Name']);
+                
+              
+              
+        
+                
+                if ($this->data['Contact Main XHTML Email'])
+                    $email=sprintf('<span class="email">%s %s</span><br/>',$email_label,$this->data['Contact Main XHTML Email']);                
+                if ($this->data['Contact Main XHTML Telephone'])
+                    $tel=sprintf('<span class="tel">%s %s</span><br/>',$tel_label,$this->data['Contact Main XHTML Telephone']);
+                if ($this->data['Contact Main XHTML FAX'])
+                    $fax=sprintf('<span class="fax">%s %s</span><br/>',$fax_label,$this->data['Contact Main XHTML FAX']);
+                if ($this->data['Contact Main XHTML Mobile'])
+                    $mobile=sprintf('<span class="mobile">%s %s</span><br/>',$mobile_label,$this->data['Contact Main XHTML Mobile']);               
+           
+               
+              
+
+                $address=sprintf('<span class="mobile">%s</span>',$this->data['Contact Main XHTML Address']);
+                $card=sprintf('<div class="contact_card">%s <div  class="tels">%s %s %s %s %s</div><div  class="address">%s</div> </div>'
+                              ,$name
+                              ,$company
+                              ,$email
+                              ,$tel
+                              ,$fax
+                              ,$mobile
+                              ,$address
+                             );
+
+                return $card;
+            
+            
+            
+            break;
             case('card'):
 
 
@@ -3049,18 +3095,15 @@ $this->updated=true;
                     $company=sprintf('<span class="company">%s</span><br/>',$this->data['Contact Company Name']);
                 
                 $email='';
-               // if ($this->data['Contact Main XHTML Email'])
-               //     $email=sprintf('<span class="email">%s</span><br/>',$this->data['Contact Main XHTML Email']);
-                
+      
                 $emails=$this->get_emails();
-                $number_emails=count($emails)+10;
+                $number_emails=count($emails);
                 foreach ($emails as $email_object) {
                 if($email_object->data['Email Is Main']=='Yes' and $number_emails>1){
                 	$main_tag='&#9733; ';
                 }else{
                 	$main_tag='';
                 }
-                
                     $email.=sprintf('%s<span class="email">%s</span><br/>',$main_tag,$email_object->display());
                 }
                 
@@ -3070,8 +3113,24 @@ $this->updated=true;
                     $tel=sprintf('<span class="tel">%s %s</span><br/>',$tel_label,$this->data['Contact Main XHTML Telephone']);
                 if ($this->data['Contact Main XHTML FAX'])
                     $fax=sprintf('<span class="fax">%s %s</span><br/>',$fax_label,$this->data['Contact Main XHTML FAX']);
-                if ($this->data['Contact Main XHTML Mobile'])
-                    $mobile=sprintf('<span class="mobile">%s %s</span>',$mobile_label,$this->data['Contact Main XHTML Mobile']);
+               
+               
+              	$mobile=''; 
+                $mobiles=$this->get_mobiles();
+                $number_mobiles=count($mobiles);
+                
+                
+                
+                foreach ($mobiles as $mobile_object) {
+                if($mobile_object->data['Mobile Is Main']=='Yes' and $number_mobiles>1){
+                	$main_tag='&#9733; ';
+                }else{
+                	$main_tag='';
+                }
+                    $mobile.=sprintf('%s %s <span class="mobile">%s</span><br/>',$main_tag,$mobile_label,$mobile_object->display());
+                }               
+               
+              
 
                 $address=sprintf('<span class="mobile">%s</span>',$this->data['Contact Main XHTML Address']);
                 $card=sprintf('<div class="contact_card">%s <div  class="tels">%s %s %s %s %s</div><div  class="address">%s</div> </div>'
@@ -3622,7 +3681,7 @@ $this->updated=true;
         function get_mobiles() {
 
 
-            $sql=sprintf("select TB.`Telecom Key` from `Telecom Bridge` TB   left join `Telecom Dimension` T on (T.`Telecom Key`=TB.`Telecom Key`) where `Telecom Type`='Mobile'    and `Subject Type`='Contact' and `Subject Key`=%d  group by TB.`Telecom Key` order by `Is Main` desc  ",$this->id);
+            $sql=sprintf("select TB.`Telecom Key`,`Is Main` from `Telecom Bridge` TB   left join `Telecom Dimension` T on (T.`Telecom Key`=TB.`Telecom Key`) where `Telecom Type`='Mobile'    and `Subject Type`='Contact' and `Subject Key`=%d  group by TB.`Telecom Key` order by `Is Main`   ",$this->id);
             $mobiles=array();
             $result=mysql_query($sql);
 //print $sql;
@@ -3630,6 +3689,7 @@ $this->updated=true;
                 $mobile= new Telecom($row['Telecom Key']);
                 $mobile->set_scope('Contact',$this->id);
                 $mobiles[]= $mobile;
+                $mobile->data['Mobile Is Main']=$row['Is Main'];
 
             }
             $this->number_mobiles=count($mobiles);
@@ -3929,8 +3989,11 @@ $this->msg='Wrong email key';
 
         function get_principal_mobile_key() {
 
-            $sql=sprintf("select TB.`Telecom Key` from `Telecom Bridge`   TB left join `Telecom Dimension` T on (T.`Telecom Key`=TB.`Telecom Key`)  where  `Telecom Technology Type`='Mobile'  and   `Subject Type`='Contact' and `Subject Key`=%d and `Is Main`='Yes'"
+            $sql=sprintf("select TB.`Telecom Key` from `Telecom Bridge`   TB left join `Telecom Dimension` T on (T.`Telecom Key`=TB.`Telecom Key`)  where  `Telecom Type`='Mobile'  and   `Subject Type`='Contact' and `Subject Key`=%d and `Is Main`='Yes'"
                          ,$this->id );
+                         
+            //print "$sql\n";             
+                         
             $res=mysql_query($sql);
             if ($row=mysql_fetch_array($res)) {
                 $main_mobile_key=$row['Telecom Key'];
@@ -3947,6 +4010,7 @@ $this->msg='Wrong email key';
                          $mobile_key
                         );
             mysql_query($sql);
+            $this->add_telecom=true;
             if (!$this->get_principal_mobile_key()) {
                 $this->update_principal_mobil($mobile_key);
             }
@@ -3966,6 +4030,7 @@ $this->msg='Wrong email key';
                              ,$main_mobile_key
                             );
                 mysql_query($sql);
+               
                 $sql=sprintf("update `Telecom Bridge`  set `Is Main`='Yes' where `Subject Type`='Contact'  and  `Subject Key`=%d  and `Telecom Key`=%d"
                              ,$this->id
                              ,$mobil->id

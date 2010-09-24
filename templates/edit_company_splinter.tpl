@@ -210,7 +210,7 @@
 	<input class="Telecom_Is_Main" type="checkbox" ovalue="No"  telecom_type="mobile" onclick="update_is_main_telecom(this)"/><span>{t}Main{/t}</span>
 	
 	<span class="small_button undelete_telecom"  style="display:none" mobile_key="" onclick="unmark_telecom_to_delete(this)">{t}Cancel Delete{/t}</span>
-	<span class="small_button delete_telecom"   mobile_key="" onclick="mark_telcom_to_delete(this)">{t}Delete{/t}</span>
+	<span class="small_button delete_telecom"   mobile_key="" onclick="mark_telecom_to_delete(this)">{t}Delete{/t}</span>
 	
       </td>
     </tr>
@@ -261,7 +261,7 @@
 	    <td>
 	      <input class="Telecom_Is_Main" type="checkbox" ovalue="No"  telecom_type="telephone" onclick="update_is_main_telecom(this)"/><span>{t}Main{/t}</span>
 	      <span class="small_button undelete_telecom"  style="display:none" email_key="" onclick="unmark_telecom_to_delete(this)">{t}Cancel Delete{/t}</span>
-	      <span class="small_button delete_telecom"   telephone_key="" onclick="mark_telcom_to_delete(this)">{t}Delete{/t}</span>
+	      <span class="small_button delete_telecom"   telephone_key="" onclick="mark_telecom_to_delete(this)">{t}Delete{/t}</span>
 	      
 	    </td>
 	  </tr>	
@@ -301,7 +301,7 @@
 	    <td>
 	      <input class="Telecom_Is_Main" type="checkbox" ovalue="No"  telecom_type="fax" onclick="update_is_main_telecom(this)"/><span>{t}Main{/t}</span>
 	      <span class="small_button undelete_telecom"  style="display:none" email_key="" onclick="unmark_telecom_to_delete(this)">{t}Cancel Delete{/t}</span>
-	      <span class="small_button delete_telecom"   fax_key="" onclick="mark_telcom_to_delete(this)">{t}Delete{/t}</span>
+	      <span class="small_button delete_telecom"   fax_key="" onclick="mark_telecom_to_delete(this)">{t}Delete{/t}</span>
 	      
 	    </td>
 	  </tr>	

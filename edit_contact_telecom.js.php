@@ -35,7 +35,6 @@ function calculate_num_changed_in_telecom(){
     Contact_Telecoms_to_delete=to_delete;
     Contact_Telecoms_to_add=new_telecom;
 
-
     render_after_contact_item_change();
 
 

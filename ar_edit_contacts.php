@@ -144,19 +144,23 @@ case('delete_email'):
     delete_email();
     break;
 case('edit_telecom'):
-    $data=prepare_values($_REQUEST,array(
-                             'id'=>array('type'=>'key')
-                                  ,'value'=>array('type'=>'json array','required elements'=>array(
-                                                      'Telecom'=>'string'
-                                                                ,'Telecom Key'=>'numeric'
-                                                                               ,'Telecom Type'=>'string'
-                                                                                               ,'Telecom Container'=>'numeric'
-                                                                                                                    ,'Telecom Is Main'=>'string'
-                                                  ))
-                                           ,'subject_key'=>array('type'=>'key')
-                                                          ,'subject'=>array('type'=>'enum','valid values regex'=>'/company|contact/i')
-                         ));
-    edit_telecom($data);
+$data=prepare_values($_REQUEST,array(
+                         'id'=>array('type'=>'key'),
+                         'value'=>array(
+                                     'type'=>'json array',
+                                     'required elements'=>array(
+                                                             'Telecom'=>'string',
+                                                             'Telecom Key'=>'numeric',
+                                                             'Telecom Type'=>'string',
+                                                             
+                                                             'Telecom Is Main'=>'string',
+                                                         )),
+                         'subject_key'=>array('type'=>'key'),
+                         'subject'=>array('type'=>'enum',
+                                          'valid values regex'=>'/company|contact/i'
+                                         )
+                     ));
+edit_telecom($data);
     break;
 case('new_corporation'):
     $data=prepare_values($_REQUEST,array(
@@ -495,7 +499,7 @@ function edit_telecom($data) {
 
         if ($telecom->updated)
             $msg=_('Telecom updated');
-
+/*
         $update_data=array(
                          'Telecom Key'=>$data['value']['Telecom Key'],
                          'Telecom Is Main'=>$data['value']['Telecom Is Main'],
@@ -505,44 +509,52 @@ function edit_telecom($data) {
         if ($subject->updated)
             $msg=_('Telecom updated');
         $telecom->set_scope($data['subject'],$data['subject_key']);
+*/
+
 
     } else {
         $action='created';
 
 
-        $update_data=array(
+        $telephone_data=array(
                          'Telecom'=>$data['value']['Telecom'],
-                         'Telecom Is Main'=>$data['value']['Telecom Is Main'],
+ //                        'Telecom Is Main'=>$data['value']['Telecom Is Main'],
                          'Telecom Type'=>$data['value']['Telecom Type']
                      );
 
 
 
-        $telephone_data=array('Telecom Raw Number'=>$data['value']['Telecom']);
-        $telephone_data['editor']=$editor;
-        $telephone=new Telecom("find in $subject_type ".$subject->id." create  country code ".$subject->data[$subject_type.' Main Country Code']."   ",$telephone_data);
 
-        if ($telephone->is_mobile()) {
-            $subject->add_tel(array(
-                                  'Telecom Key'=>$telephone->id,
-                                  'Telecom Type'=>'Mobile'
-                              ));
-
-        } else {
-            $subject->add_tel(array(
-                                  'Telecom Key'=>$telephone->id,
-                                  'Telecom Type'=>'Home Telephone'
-                              ));
-            //  $this->new_home_telephone_keys[$telephone->id]=1;
-            $address_key=$subject->data[$subject_type.' Main Address Key'];
-            if ($address_key) {
-                $sql=sprintf("insert into `Address Telecom Bridge` values (%d,%d)",$address_key,$telephone->id);
-                mysql_query($sql);
-            }
+         if($data['value']['Telecom Category']=='Mobile'){
+        $telephone_data['Telecom Type']='Mobile';
         }
 
 
+        $telephone_data['Telecom Raw Number']=$data['value']['Telecom'];
+        $telephone_data['editor']=$editor;
+       // print_r($telephone_data);
+        //exit;
+        $telephone=new Telecom("find in $subject_type ".$subject->id." create  country code ".$subject->data[$subject_type.' Main Country Code']."   ",$telephone_data);
+
+        if(!$telephone->id){
+              $response=array('state'=>200,'action'=>'error','msg'=>'Error finding the telecom');
+            echo json_encode($response);
+            return;
+        }
+
+
+        if($data['value']['Telecom Category']=='Mobile'){
+        $subject->associate_mobile($telephone->id);
+        }
+
     }
+
+        if($data['value']['Telecom Is Main']==1 and $data['value']['Telecom Category']=='Mobile'){
+        $subject->update_principal_mobil($telephone->id);
+        
+        }
+
+
 
     if ($subject->error) {
         $response=array('state'=>200,'action'=>'error','msg'=>$subject->msg_updated);
@@ -558,7 +570,7 @@ function edit_telecom($data) {
                       'state'=>200,
                       'action'=>$action,
                       'msg'=>$msg,
-                      'telecom_key'=>$telecom->id,
+                      'telecom_key'=>$telephone->id,
                       'updated_data'=>$updated_telecom_data,
                       'xhtml_subject'=>$subject->display('card'),
                       'main_telecom_key'=>$subject->get_main_telecom_key()
