@@ -3053,8 +3053,9 @@ $this->updated=true;
                //     $email=sprintf('<span class="email">%s</span><br/>',$this->data['Contact Main XHTML Email']);
                 
                 $emails=$this->get_emails();
+                $number_emails=count($emails)+10;
                 foreach ($emails as $email_object) {
-                if($email_object->data['Email Is Main']=='Yes'){
+                if($email_object->data['Email Is Main']=='Yes' and $number_emails>1){
                 	$main_tag='&#9733; ';
                 }else{
                 	$main_tag='';
@@ -3062,7 +3063,6 @@ $this->updated=true;
                 
                     $email.=sprintf('%s<span class="email">%s</span><br/>',$main_tag,$email_object->display());
                 }
-                
                 
                 
                 
