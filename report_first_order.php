@@ -52,19 +52,22 @@ $smarty->assign('parent','reports');
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
 
-$report_name='report_sales_with_no_tax';
+$report_name='report_first_order';
+
 
 if(isset($_REQUEST['tipo'])){
   $tipo=$_REQUEST['tipo'];
   $_SESSION['state'][$report_name]['tipo']=$tipo;
 }else
   $tipo=$_SESSION['state'][$report_name]['tipo'];
-
+/*
 if(isset($_REQUEST['currency_type'])){
   $currency_type=$_REQUEST['currency_type'];
   $_SESSION['state'][$report_name]['currency_type']=$currency_type;
 }else
   $currency_type=$_SESSION['state'][$report_name]['currency_type'];
+
+*/
 
 $store_keys=join(',',$user->stores);
 
@@ -77,17 +80,16 @@ if($tipo=='quick_all')
   $tipo='all_invoices';
 
 include_once('report_dates.php');
-$_SESSION['state'][$report_name]['stores']=$store_keys;
-$_SESSION['state'][$report_name]['invoices']['from']=$from;
-$_SESSION['state'][$report_name]['invoices']['to']=$to;
-$_SESSION['state'][$report_name]['customers']['from']=$from;
-$_SESSION['state'][$report_name]['customers']['to']=$to;
+
 $smarty->assign('tipo',$tipo);
-$smarty->assign('currency_type',$currency_type);
+//$smarty->assign('currency_type',$currency_type);
 
 $smarty->assign('period',$period);
 $smarty->assign('from',$from);
 $smarty->assign('to',$to);
+
+$_SESSION['state'][$report_name]['to']=$to;
+$_SESSION['state'][$report_name]['from']=$from;
 
 
 $sql=sprintf("select `Store Key`,`Store Code`,`Store Name` from   `Store Dimension` where `Store Key` in (%s)  ",$store_keys);
@@ -115,20 +117,6 @@ while($row=mysql_fetch_assoc($res)){
 
 $smarty->assign('stores_data',$stores_data);
 
-$departments_data=array();
-$sql=sprintf("select `Product Department Key`,`Product Department Code`,`Product Department Name` from   `Product Department Dimension` where `Product Department Store Key` in (%s)  ",$store_keys);
-$res=mysql_query($sql);
-while($row=mysql_fetch_assoc($res)){
-    $departments_data[$row['Product Department Key']]=array(
-    'department_key'=>$row['Product Department Key'],
-    'department_name'=>$row['Product Department Name'],
-    'department_code'=>$row['Product Department Code'],
-    'number_first_orders'=>0
-);
-}
-
-
-$smarty->assign('departments_data',$departments_data);
 
 
 
