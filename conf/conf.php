@@ -488,7 +488,31 @@ $default_state=array(
 										   )
                                                               ),
 					 ),
-		   
+		    'report_first_order'=>array(
+						     'tipo'=>'y',
+						     'y'=>date('Y'),
+						     'm'=>date('m'),
+						     'd'=>date('d'),
+						     'w'=>date('W'),
+						     'department_key'=>false,
+						     'share'=>.8,
+						     'from'=>'',
+									'to'=>'',
+						     'products'=>array(
+									'order'=>'date',
+									'order_dir'=>'',
+									'sf'=>0,
+									'nr'=>30,
+									'where'=>'where true',
+									'f_field'=>'',
+									'f_value'=>'',
+									'f_show'=>false,
+                                    
+									'elements'=>array()
+									)
+						    
+
+						     ),
 
                    'report_sales_with_no_tax'=>array(
 						     'tipo'=>'y'
@@ -1636,7 +1660,7 @@ $default_state=array(
                                                       'elements'=>array()
                                                   )
                               ),
-                   'report'=>array(
+                   'report_to_delete'=>array(
                                 'tipo'=>'m'
                                        ,'y'=>date('Y')
                                             ,'m'=>date('m')

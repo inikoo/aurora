@@ -29,7 +29,7 @@ function is_type($type,$value){
 
 
 function prepare_values($data,$value_names){
-  
+  global $user;
   if(!is_array($data))
     exit(json_encode(array('state'=>400,'msg'=>'Error wrong value 1')));
   

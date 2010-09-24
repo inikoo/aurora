@@ -10,7 +10,7 @@
 <td>
 <table class="options" >
 {foreach from=$stores_data key=k item=v}
-    <td   >{$v.store_name} ({$v.number_first_orders})</td>
+    <td id="store_{$v.store_key}" key="{$v.store_key}" onClick="choose_store(this)" >{$v.store_name} ({$v.number_first_orders})</td>
 {/foreach}
 </table>
 </td>
@@ -20,6 +20,10 @@
 <td>
   <div style="width:20em;position:relative;top:00px" >
   <input id="store_key" type="hidden" value="0"/>
+    <input id="from" type="hidden" value="{$from}"/>
+  <input id="to" type="hidden" value="{$to}"/>
+
+
   <input id="department_key" type="hidden" value="0"/>
 		<input id="department" style="text-align:left;width:23em" type="text">
 		<div id="department_Container" style="" ></div>
@@ -33,7 +37,7 @@
 </td>
 </tr>
 
-<tr>
+<tr id="share_tr" style="display:none">
 <td>{t}Share of order{/t}:</td>
 <td>
 <table style="float:left" class="options" >
