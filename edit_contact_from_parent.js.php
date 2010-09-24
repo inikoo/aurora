@@ -136,7 +136,7 @@ var elements_to_save=0;
 		    var json_value = YAHOO.lang.JSON.stringify(value); 
 		    
 		    var request='ar_edit_contacts.php?tipo=edit_email&value=' + json_value+'&id='+contact_key+'&subject=contact&subject_key='+contact_key; 
-		  alert(request)
+		 // alert(request)
 		    YAHOO.util.Connect.asyncRequest('POST',request ,{
 			    success:function(o) {
 				//alert(o.responseText);

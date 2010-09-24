@@ -72,6 +72,9 @@ foreach($contacts as $contact){
   $emails=$contact->get_emails();
   $number_of_emails=count($emails);
   $email_data='';
+  
+ // print_r($emails);
+  
   foreach($emails as $email){
     $email_data.=sprintf(',%d:{"Email_Key":%d,"Email":"%s","Email_Contact_Name":"%s","Email_Description":"%s","Email_Is_Main":"%s"}'
 			 ,$email->id

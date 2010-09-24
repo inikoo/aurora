@@ -33,6 +33,7 @@ class Contact extends DB_Table {
     public $scope=false;
     public $scope_key=false;
     private  $new_home_telephone_keys=array();
+    public $inserted_email=false;
 
 
 
@@ -1400,8 +1401,9 @@ $len_name=strlen($name_data['Contact Surname']);
                      ,$email_key
                      ,$this->id
                     );
-//print "+++++++++ $sql\n";
+
         mysql_query($sql);
+		$this->inserted_email=$email_key;
         if (!$this->get_principal_email_key()) {
             $this->update_principal_email($email_key);
         }
@@ -1539,7 +1541,7 @@ $len_name=strlen($name_data['Contact Surname']);
     }
 
     function get_emails() {
-        $sql=sprintf("select `Email Key`,`Is Main` from `Email Bridge` where  `Subject Type`='Contact' and `Subject Key`=%d "
+        $sql=sprintf("select `Email Key`,`Is Main` from `Email Bridge` where  `Subject Type`='Contact' and `Subject Key`=%d order by `Is Main`"
                      ,$this->id );
 
         $emails=array();
@@ -3045,8 +3047,25 @@ $this->updated=true;
                 $name=sprintf('<span class="name">%s</span>',$this->data['Contact Name']);
                 if ($this->data['Contact Company Key'])
                     $company=sprintf('<span class="company">%s</span><br/>',$this->data['Contact Company Name']);
-                if ($this->data['Contact Main XHTML Email'])
-                    $email=sprintf('<span class="email">%s</span><br/>',$this->data['Contact Main XHTML Email']);
+                
+                $email='';
+               // if ($this->data['Contact Main XHTML Email'])
+               //     $email=sprintf('<span class="email">%s</span><br/>',$this->data['Contact Main XHTML Email']);
+                
+                $emails=$this->get_emails();
+                foreach ($emails as $email_object) {
+                if($email_object->data['Email Is Main']=='Yes'){
+                	$main_tag='&#9733; ';
+                }else{
+                	$main_tag='';
+                }
+                
+                    $email.=sprintf('%s<span class="email">%s</span><br/>',$main_tag,$email_object->display());
+                }
+                
+                
+                
+                
                 if ($this->data['Contact Main XHTML Telephone'])
                     $tel=sprintf('<span class="tel">%s %s</span><br/>',$tel_label,$this->data['Contact Main XHTML Telephone']);
                 if ($this->data['Contact Main XHTML FAX'])
@@ -3851,6 +3870,13 @@ $this->updated=true;
         }
 
    function associate_email($email_key) {
+
+
+if(!$email_key){
+$this->error=true;
+$this->msg='Wrong email key';
+
+}
 
             $email_keys=$this->get_emails_keys();
 

@@ -386,7 +386,9 @@ function edit_email($data) {
                          'Email Is Main'=>$data['value']['Email Is Main'],
                          'Email Contact Name'=>$data['value']['Email Contact Name']
                      );
-        $subject->associate_email($email->id);
+    
+     
+     $subject->associate_email($email->id);
         if ($data['value']['Email Is Main']=='Yes')
             $subject->update_principal_email($email->id);
         if ($subject->updated)
@@ -395,20 +397,30 @@ function edit_email($data) {
 
     } else {
         $action='created';
-        $update_data=array(
+        $email_data=array(
                          'Email'=>$data['value']['Email'],
                          'Email Description'=>$data['value']['Email Description'],
                          'Email Is Main'=>$data['value']['Email Is Main'],
                          'Email Contact Name'=>$data['value']['Email Contact Name']
                      );
-        $subject->add_email($update_data,'if found error');
+      
+       
+     $email=new Email('find create',$email_data);
+                if ($email->found) {
+                    $response=array('state'=>200,'action'=>'error','msg'=>'Email Found','email_key'=>$email->id);
+            echo json_encode($response);
+            return;
+                }
+      
+        $subject->associate_email($email->id);         
+                     
+      
         if ($subject->error) {
             $response=array('state'=>200,'action'=>'error','msg'=>$subject->msg_updated,'email_key'=>$data['value']['Email Key']);
             echo json_encode($response);
             return;
         }
         if ($subject->inserted_email) {
-            $email=new Email ($subject->inserted_email);
             $email->set_scope($data['subject'],$data['subject_key']);
             $msg=_("Email created");
         } else {
