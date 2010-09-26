@@ -45,6 +45,10 @@ function init(){
 
 YAHOO.util.Event.addListener("calpop1", "click", cal1.show, cal1, true);
 YAHOO.util.Event.addListener("calpop2", "click", cal2.show, cal2, true);
+
+YAHOO.util.Event.addListener(["quick_all","quick_this_year","quick_this_month","quick_this_week","quick_yesterday","quick_today"], "click",quick_link);
+
+
 }
 
 YAHOO.util.Event.onDOMReady(init);

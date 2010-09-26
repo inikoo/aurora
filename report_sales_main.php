@@ -46,11 +46,14 @@ include_once('reports_list.php');
 $smarty->assign('parent','reports');
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
+
+
+
 if(isset($_REQUEST['tipo'])){
   $tipo=$_REQUEST['tipo'];
-  $_SESSION['state']['report']['tipo']=$tipo;
+  $_SESSION['state']['report_sales']['tipo']=$tipo;
 }else
-  $tipo=$_SESSION['state']['report']['tipo'];
+  $tipo=$_SESSION['state']['report_sales']['tipo'];
 
 $sql=sprintf("select count(*) as num_stores from  `Store Dimension` ");
 $res=mysql_query($sql);

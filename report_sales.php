@@ -51,9 +51,10 @@ if(isset($_REQUEST['tipo']) and preg_match('/y|m|d|q|w|f|all/',$_REQUEST['tipo']
 
 
 $root_title=_('Sales Report');
-if(isset($_REQUEST['store_key']) and is_numeric($_REQUEST['store_key']))
+if(isset($_REQUEST['store_key']) and is_numeric($_REQUEST['store_key'])){
   $store_keys=$_REQUEST['store_key'];
-else{
+  $_SESSION['state']['report_sales']['store_keys']=$store_keys;
+}else{
 if(is_numeric($_SESSION['state']['report_sales']['store_keys']))
  $store_keys=$_SESSION['state']['report_sales']['store_keys'];
 else{
@@ -74,11 +75,6 @@ $_SESSION['state']['report_sales']['period']=$period;
 		$js_files[]='reports_calendar.js.php';
   $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
-/* $valid_rates=array( */
-/* 		   array('date'=>'01-01-2000','rate'=>17.5), */
-/* 		   array('date'=>'01-12-2008','rate'=>15) */
-/* 		   ); */
-
 
 
 
@@ -118,12 +114,12 @@ $day_interval=(strtotime($to)-strtotime($from))/3600/24;
    if($day_interval>=7){
      $_from=$from;
      $_to=$to;
-     preg_match('/\d{4}$/',$from,$match1);
+     preg_match('/^\d{4}/',$from,$match1);
      $last_year=$match1[0]-1;
-     $_from=preg_replace('/\d{4}$/',$last_year,$_from);
-     preg_match('/\d{4}$/',$to,$match2);
+     $_from=preg_replace('/^\d{4}/',$last_year,$_from);
+     preg_match('/^\d{4}/',$to,$match2);
      $last_year=$match2[0]-1;
-     $_to=preg_replace('/\d{4}$/',$last_year,$_to);
+     $_to=preg_replace('/^\d{4}/',$last_year,$_to);
 
 
      $interval_data_last_year=sales_in_interval($_from,$_to,$store_keys);

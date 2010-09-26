@@ -6,10 +6,12 @@
 
 
 
+<div class="branch"> 
+  <span><a  href="reports.php">{t}Reports{/t}</a> &rarr; <a  href="reports_section.php?category=Sales%20Reports">{t}Sales Reports{/t}</a> &rarr; <a  href="report_sales_main.php?tipo={$tipo}&y={$year}&m={$month}&d={$day}&w={$week}&from={$from}&to={$to}">{t}Store Sales Overview{/t}</a>
+</div>
 
 
-
-<h1 style="clear:left">{$title}</h1>
+<h1 style="clear:left;width:700px;">{$title}</h1>
 
 {if $total_invoices>0}
 <p style="width:450px">
