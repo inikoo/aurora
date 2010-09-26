@@ -1641,10 +1641,14 @@ $this->set_audits();
             list($lost,$lost_value)=$this->get_lost($row['Date'].' 23:59:59');
             $storing_cost=0;
             $comercial_value=$this->part->get_comercial_value($row['Date'].' 23:59:59');
-
-            $sql=sprintf("insert into `Inventory Spanshot Fact` values (%s,%d,%d,%f,%.2f ,%.2f,%.2f ,%.f,%f,%f,%f) "
+            $location_type="Unknown";
+            $warehouse_key=1;
+            $sql=sprintf("insert into `Inventory Spanshot Fact` values (%s,%d,%d,%d,%f,%.2f ,%.2f,%.2f ,%.f,%f,%f,%f,%s) "
                          ,prepare_mysql($row['Date'])
+
                          ,$this->part_sku
+                                                                           ,$warehouse_key
+
                          ,$this->location_key
 
                          ,$stock
@@ -1658,9 +1662,10 @@ $this->set_audits();
                          ,$sold
                          ,$in
                          ,$lost
+                         ,prepare_mysql($location_type)
                         );
             mysql_query($sql);
-            //print "$sql\n";
+           // print "$sql\n";
         }
 
     }

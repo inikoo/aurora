@@ -6,33 +6,41 @@
 {include file='calendar_splinter.tpl'}
 
 
+<div class="branch"> 
+  <span><a  href="reports.php">{t}Reports{/t}</a> &rarr; <a  href="reports_section.php?category=Sales%20Reports">{t}Sales Reports{/t}</a>
+</div>
 
 
 <h1 style="clear:left">{$title}</h1>
 
 
-<table class="report_sales1" id="report_sales_invoices">
+<table class="report_sales1" id="report_sales_invoices" style="width:650px">
 <tr style="border-bottom:1px solid #ccc;margin-bottom:5px"><td colspan=7>
 <div  style="margin-bottom:5px">
 <span class="state_details" style="margin-right:20px">{t}Profit{/t}</span>
 <span class="state_details selected">{t}Invoices{/t}</span>
+<span class="state_details ">{t}{$corporate_currency}{/t}</span>
+<span class="state_details ">{t}{$store_currencies}{/t}</span>
+
 </div>
 </td></tr>
-<tr><td>{t}Store{/t}</td><td></td><td>{t}Invoices{/t}</td><td>{t}Net Sales{/t}</td><td></td><td></td><td>{t}Tax{/t}</td></tr>
+<tr>
+<td style="width:150px">{t}Store{/t}</td>
+<td></td><td>{t}Invoices{/t}</td><td>{t}Net Sales{/t}</td><td></td><td></td><td>{t}Tax{/t}</td></tr>
 {foreach from=$store_data   item=data }
 <tr class="geo"><td class="label"> {$data.store}</td><td style="text-align:left">{$data.substore}</td><td>{$data.invoices}</td><td>{$data.net}</td><td>{$data.per_eq_net}</td><td>{$data.sub_per_eq_net}</td><td>{$data.tax}</td></tr>
 {/foreach}
 </table>
 
 
-<table class="report_sales1"id="report_sales_profit" >
+<table class="report_sales1"id="report_sales_profit" style="width:650px">
 <tr style="border-bottom:1px solid #ccc;margin-bottom:5px"><td colspan=7>
 <div  style="margin-bottom:5px">
 <span class="state_details selected" style="margin-right:20px">{t}Profit{/t}</span>
 <span class="state_details ">{t}Invoices{/t}</span>
 </div>
 </td></tr>
-<tr><td>{t}Store{/t}</td><td></td><td>{t}Revenue{/t}</td><td>{t}Profit{/t}</td><td>{t}Margin{/t}</td><td></td><td></td></tr>
+<tr><td style="width:150px">{t}Store{/t}</td><td></td><td>{t}Revenue{/t}</td><td>{t}Profit{/t}</td><td>{t}Margin{/t}</td><td></td><td></td></tr>
 {foreach from=$store_data_profit   item=data }
 <tr class="geo"><td class="label"> {$data.store}</td><td style="text-align:left">{$data.substore}</td><td>{$data.net}</td><td>{$data.profit}</td><td>{$data.margin}</td></tr>
 {/foreach}

@@ -1049,7 +1049,7 @@ function get_supplier_products_historic($date) {
 
 function get_picking_location_historic($date) {
     $sql=sprintf("select `Location Key` from `Inventory Spanshot Fact` where `Part SKU` in (%s) and `Location Type`='Picking'",$this->sku);
-    $location_key=0;
+    $location_key=1;
     $res=mysql_query($sql);
 
     if ($row=mysql_fetch_assoc($res)) {
@@ -1071,6 +1071,7 @@ function get_picking_location_key($date=false) {
     if ($row=mysql_fetch_assoc($res)) {
         $location_key=$row['Location Key'];
     }
+    
   return $location_key;
   }
   
@@ -1154,10 +1155,12 @@ return $part_locations;
     function update_stock_history() {
     
     
-        $sql=sprintf("select `Location Key`  from `Inventory Transaction Fact` where `Part SKU`=%d ",$this->sku);
-//print "$sql\n";
+        $sql=sprintf("select `Location Key`  from `Inventory Transaction Fact` where `Part SKU`=%d group by `Location Key`",$this->sku);
+//print $sql;
         $result=mysql_query($sql);
         while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
+        
+  //      print $this->sku.'_'.$row['Location Key']."\n";
             $part_location=new PartLocation($this->sku.'_'.$row['Location Key']);
             $part_location->update_stock_history();
         }

@@ -603,7 +603,7 @@ $map_to_otf_metadata='';
             if ($part_data['Parts Per Product']!=1)
                 $map_to_otf_metadata=$part_data['Parts Per Product'];
             $part = new Part ( 'sku', $part_data['Part SKU'] );
-            $location_key = $part->get ( 'Picking Location Key' );
+          //  $location_key = $part->get ( 'Picking Location Key' );
             $location_key=$part->get_picking_location_key($date);
             $supplier_products=$part->get_supplier_products($date);
 
@@ -649,7 +649,7 @@ $map_to_otf_metadata='';
                                   prepare_mysql ( $map_to_otf_metadata )
                                );
             mysql_query($sql);
-
+print "$location_key \n";
 
         }
     }
