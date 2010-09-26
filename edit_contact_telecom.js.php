@@ -26,6 +26,19 @@ function calculate_num_changed_in_telecom(){
     }
  
 
+    var elements_array=Dom.getElementsByClassName('Mobile_Is_Main', 'input');
+    for( var i in elements_array ){
+	var input_element=elements_array[i];
+	var telecom_key=input_element.getAttribute('telecom_key');
+	if(telecom_key>0  && input_element.getAttribute('ovalue')!=input_element.value){
+	    changed[telecom_key]=1;
+	    break;
+	}
+    }
+
+
+
+
     var changes=0;
     for(i in changed)
 	changes++;
@@ -117,6 +130,8 @@ function unmark_telecom_to_delete(o){
 function add_telecom(o){
   var container_key=o.getAttribute('container_key');
   var telecom_type=o.getAttribute('telecom_type');
+  
+  
     if(Number_New_Empty_Telecoms[telecom_type]==0 ){
 
 	var telecom_key='new'+telecom_type+Number_New_Telecoms;
@@ -130,6 +145,18 @@ else if(telecom_type=='telephone')
 else if(telecom_type=='fax')
     var telecom_numbers=Contact_Data[Current_Contact_Index]['Addresses'][container_key]['Number_Of_Faxes']+Number_New_Telecoms[telecom_type];
 
+
+if(telecom_type=='mobile'){
+if(telecom_numbers==0 ){
+	    Dom.get('Mobile_Is_Main'+telecom_key).value='Yes';
+   	    Dom.get('Mobile_Is_Main'+telecom_key).setAttribute('ovalue','Yes');
+	    Dom.get('Mobile_Is_Main'+telecom_key).checked=true;   
+	}else{
+	    Dom.get('Mobile_Is_Main'+telecom_key).value='No';
+   	    Dom.get('Mobile_Is_Main'+telecom_key).setAttribute('ovalue','No');
+        Dom.get('Mobile_Is_Main'+telecom_key).checked=false;   
+	    }
+}else{
 if(telecom_numbers==0 ){
 	    Dom.get('Telecom_Is_Main'+telecom_key).value='Yes';
    	    Dom.get('Telecom_Is_Main'+telecom_key).setAttribute('ovalue','Yes');
@@ -139,7 +166,7 @@ if(telecom_numbers==0 ){
    	    Dom.get('Telecom_Is_Main'+telecom_key).setAttribute('ovalue','No');
         Dom.get('Telecom_Is_Main'+telecom_key).checked=false;   
 	    }
-
+}
 
 
 	Number_New_Empty_Telecoms[telecom_type]++;
@@ -173,10 +200,17 @@ function clone_telecom(telecom_type,container_key,telecom_key){
     
      element_array[0].id='Telecom'+telecom_key;
 
+if(telecom_type=='mobile'){
+   var element_array=Dom.getElementsByClassName('Mobile_Is_Main', 'input',insertedElement);
+      element_array[0].setAttribute('telecom_key',telecom_key);
+      element_array[0].id='Mobile_Is_Main'+telecom_key;
+
+}else{
+
       var element_array=Dom.getElementsByClassName('Telecom_Is_Main', 'input',insertedElement);
       element_array[0].setAttribute('telecom_key',telecom_key);
       element_array[0].id='Telecom_Is_Main'+telecom_key;
-     
+}     
      var element_array=Dom.getElementsByClassName('telecom_to_delete', 'span',insertedElement);
      element_array[0].setAttribute('telecom_key',telecom_key);
      element_array[0].id='telecom_to_delete'+telecom_key;
@@ -208,6 +242,45 @@ function clone_telecom(telecom_type,container_key,telecom_key){
 
      //var element_array=Dom.getElementsByClassName('Telecom_Details', 'tbody',insertedElement);
      //element_array[0].id="Telecom_Details"+telecom_key;
+}
+
+
+
+function update_is_main_mobile(o){
+    
+   
+    if(o.value=='Yes'){
+
+	o.checked=true;
+	return;
+    }
+
+
+
+
+    telecom_key=o.getAttribute('telecom_key');
+    if(Dom.get('Telecom'+telecom_key).getAttribute('valid')==0 || Dom.get('Telecom'+telecom_key).value==''){
+       
+	o.checked=false;
+	return;
+    }
+
+    var elements_array=Dom.getElementsByClassName('Mobile_Is_Main', 'input');
+    for (i in elements_array){
+	var input_element=elements_array[i];
+	var telecom_key=input_element.getAttribute('telecom_key');
+	if( telecom_key!=null && (telecom_key.match('new') || telecom_key>0) ){
+	    if(input_element.value=='Yes')
+		old_is_main_key=telecom_key;
+	    input_element.value='No';
+	    input_element.checked=false;
+	    
+	}
+    }
+    
+    o.value='Yes';
+    o.checked=true;
+    calculate_num_changed_in_telecom();
 }
 
 
@@ -248,6 +321,24 @@ function update_is_main_telecom(o){
     o.checked=true;
     calculate_num_changed_in_telecom();
 }
+
+function set_main_mobile(main_mobile_key) {
+
+    var mobiles=data['Mobiles'];
+    for (i in mobiles) {
+        if (i==main_mobile_key) {
+            data['Mobiles'][i]['Telecom_Is_Main']='Yes';
+            //Dom.get('Mobile_Is_Main'+i).checked=true;
+            //Dom.get('Mobile_Is_Main'+i).value='Yes';
+        } else {
+            data['Mobiles'][i]['Telecom_Is_Main']='No';
+         //   Dom.get('Mobile_Is_Main'+i).checked=false;
+           //             Dom.get('Mobile_Is_Main'+i).value='No';
+
+        }
+    }
+}
+
 
 function set_main_telecom(main_telecom_key){
 

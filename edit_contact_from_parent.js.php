@@ -74,7 +74,8 @@ var elements_to_save=0;
   }
 
   elements_to_save+=Contact_Emails_to_edit+Contact_Emails_to_add+Contact_Emails_to_delete;
- 
+   elements_to_save+=Contact_Telecoms_to_edit+Contact_Telecoms_to_add+Contact_Telecoms_to_delete;
+
    
     if(Contact_Name_Changes>0 || Contact_Details_Changes>0){
 	var name_value=new Object();
@@ -221,25 +222,29 @@ var elements_to_save=0;
 	for( var i in elements_array ){
 	    var telecom_key=elements_array[i].getAttribute('telecom_key');
 	    
-	    alert(telecom_key+" -> "+Dom.get('Telecom'+telecom_key).value+" "+Dom.get('Telecom'+telecom_key).getAttribute('to_delete'));
+	    //alert(telecom_key+" -> "+Dom.get('Telecom'+telecom_key).value+" "+Dom.get('Telecom'+telecom_key).getAttribute('to_delete'));
 	    
 	    if(  telecom_key>0 && Dom.get('Telecom'+telecom_key).getAttribute('to_delete')==1  ){
 		
-		var request='ar_edit_contacts.php?tipo=delete_telecom&value=' +telecom_key+'&id='+contact_key+'&subject=contact&subject_key='+contact_key; 
-		alert(request);
+		if(Dom.get('Telecom'+telecom_key).getAttribute('telecom_type')=='Mobile'){
+		tipo='delete_mobile';
+		}else{
+		tipo='delete_telecom';
+		}
+		
+		var request='ar_edit_contacts.php?tipo='+tipo+'&value=' +telecom_key+'&id='+contact_key+'&subject=contact&subject_key='+contact_key; 
+		//alert(request);
 		YAHOO.util.Connect.asyncRequest('POST',request ,{
 			    success:function(o) {
-				alert(o.responseText);
+				//alert(o.responseText);
 				var r =  YAHOO.lang.JSON.parse(o.responseText);
 				if(r.action=='deleted' ){
 				    Dom.get('contact_display'+contact_key).innerHTML=r.xhtml_subject;
-				    delete  Contact_Data[contact_key]['Telecoms'][r.telecom_key];
-				    set_main_telecom(r.main_telecom_key);
+				    delete  Contact_Data[contact_key]['Mobiles'][r.telecom_key];
+				    set_main_mobile(r.main_mobile_key);
 				    save_contact_elements++;
 				    elements_saved++;
-				  
-				
-				  if(elements_saved>=elements_to_save)
+				  	if(elements_saved>=elements_to_save)
 		           		cancel_edit_contact();
 				    
 				    
@@ -269,34 +274,46 @@ var elements_to_save=0;
 		    value['Telecom Category']=Dom.get('Telecom'+telecom_key).getAttribute('telecom_type');
 		    value['Telecom Type']=Dom.get('Telecom'+telecom_key).getAttribute('telecom_type_description');
 		    value['Telecom Container']=Dom.get('Telecom'+telecom_key).getAttribute('container_key');
-		    value['Telecom Is Main']=Dom.get('Telecom_Is_Main'+telecom_key).value;
+		    value['Telecom Is Main']=Dom.get('Mobile_Is_Main'+telecom_key).value;
 
 
 		    var json_value = YAHOO.lang.JSON.stringify(value); 
 		    
-		    var request='ar_edit_contacts.php?tipo=edit_telecom&value=' + json_value+'&id='+contact_key+'&subject=contact&subject_key='+contact_key; 
-		 alert(request);
+		     if( telecom_key.match('new')){
+		     	tipo='add_mobile';
+		     }else{
+		     	tipo='edit_mobile';
+		     }
+		    var request='ar_edit_contacts.php?tipo='+tipo+'&value=' + json_value+'&id='+contact_key+'&subject=contact&subject_key='+contact_key; 
+		// alert(request);
 		  
 		    YAHOO.util.Connect.asyncRequest('POST',request ,{
 			    success:function(o) {
-			alert(o.responseText);
-			return;
+			//alert(o.responseText)
 				var r =  YAHOO.lang.JSON.parse(o.responseText);
 				if(r.action=='updated' || r.action=='created'){
 				    
 				    Dom.get('contact_display'+contact_key).innerHTML=r.xhtml_subject;
-				    if(r.action=='created')
-					Contact_Data[contact_key]['Telecoms'][r.telecom_key]=new Object();
+				    if(r.action=='created'){
+					
+					Contact_Data[contact_key]['Mobiles'][r.telecom_key]=new Object();
+					
+					Number_New_Empty_Telecoms['mobile']=0;
+					}
 				    for(i in r.updated_data){
 					var contact_item_value=r.updated_data[i];
 					if(contact_item_value==null)contact_item_value='';
 					
 				
 					
-					Contact_Data[contact_key]['Telecoms'][r.telecom_key][i]=contact_item_value;
+					Contact_Data[contact_key]['Mobiles'][r.telecom_key][i]=contact_item_value;
 				    }
-				    set_main_telecom(r.main_telecom_key);
+				    set_main_mobile(r.main_mobile_key);
 				    save_contact_elements++;
+				    elements_saved++;
+				  	if(elements_saved>=elements_to_save)
+		           		cancel_edit_contact();
+				    
 				}else if(r.action=='error'){
 				    alert(r.msg);
 				}
@@ -565,11 +582,11 @@ var edit_contact=function (e,contact_button){
 	    Dom.get('Telecom'+mobile_key).setAttribute('telecom_type_description',mobile_data['Telecom Type Description']);
 
 	    if(mobile_data['Telecom_Is_Main']=='Yes')
-	      Dom.get('Telecom_Is_Main'+mobile_key).checked=true;
+	      Dom.get('Mobile_Is_Main'+mobile_key).checked=true;
 	    else
-	      Dom.get('Telecom_Is_Main'+mobile_key).checked=false;
-	    Dom.get('Telecom_Is_Main'+mobile_key).value=mobile_data['Telecom_Is_Main'];
-	    Dom.get('Telecom_Is_Main'+mobile_key).setAttribute('ovalue',mobile_data['Telecom_Is_Main']);
+	      Dom.get('Mobile_Is_Main'+mobile_key).checked=false;
+	    Dom.get('Mobile_Is_Main'+mobile_key).value=mobile_data['Telecom_Is_Main'];
+	    Dom.get('Mobile_Is_Main'+mobile_key).setAttribute('ovalue',mobile_data['Telecom_Is_Main']);
 	    var components=Telecom_Components['mobile'];
 	    for (i in components){
 	      Dom.get(components[i]+mobile_key).value=mobile_data[components[i]];
