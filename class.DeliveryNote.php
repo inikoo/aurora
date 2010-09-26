@@ -649,7 +649,7 @@ $map_to_otf_metadata='';
                                   prepare_mysql ( $map_to_otf_metadata )
                                );
             mysql_query($sql);
-print "$location_key \n";
+//print "$location_key \n";
 
         }
     }
