@@ -97,7 +97,7 @@ elseif($tipo=='w') {
     $from=date("Y-m-d", $_time);
     $to=date("Y-m-d", $_time_n);
     $period=_('Week').' '.date("W Y", $_time);
-    $title="$period ($ffrom-$fto)".$root_title;
+    $title="$period ($ffrom-$fto) ".$root_title;
 
     $smarty->assign('up',array('url'=>'tipo=y&y='.date("Y",$_time),'title'=>date("Y",$_time)));
     $smarty->assign('next',array('url'=>'tipo=w&w='.date("W",$_time_n).'&y='.date("Y",$_time_n),'title'=>_('Week').' '.date("W-Y",$_time_n)));
