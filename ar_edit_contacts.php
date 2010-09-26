@@ -143,6 +143,9 @@ case('remove_email'):
 case('delete_email'):
     delete_email();
     break;
+case('delete_mobile'):
+    delete_mobile();
+    break;    
 case('edit_telecom'):
 $data=prepare_values($_REQUEST,array(
                          'id'=>array('type'=>'key'),
@@ -162,6 +165,42 @@ $data=prepare_values($_REQUEST,array(
                      ));
 edit_telecom($data);
     break;
+    
+case('edit_mobile'):
+$data=prepare_values($_REQUEST,array(
+                         'id'=>array('type'=>'key'),
+                         'value'=>array(
+                                     'type'=>'json array',
+                                     'required elements'=>array(
+                                                             'Telecom'=>'string',
+                                                             'Telecom Key'=>'numeric',
+                                                             'Telecom Type'=>'string',
+                                                             'Telecom Is Main'=>'string',
+                                                         )),
+                         'subject_key'=>array('type'=>'key'),
+                         'subject'=>array('type'=>'enum',
+                                          'valid values regex'=>'/company|contact/i'
+                                         )
+                     ));
+edit_mobile($data);
+    break;    
+ case('add_mobile'):
+$data=prepare_values($_REQUEST,array(
+                         'value'=>array(
+                                     'type'=>'json array',
+                                     'required elements'=>array(
+                                                             'Telecom'=>'string',
+                                                             'Telecom Key'=>'numeric',
+                                                             'Telecom Type'=>'string',
+                                                             'Telecom Is Main'=>'string',
+                                                         )),
+                         'subject_key'=>array('type'=>'key'),
+                         'subject'=>array('type'=>'enum',
+                                          'valid values regex'=>'/company|contact/i'
+                                         )
+                     ));
+add_mobile($data);
+    break;       
 case('new_corporation'):
     $data=prepare_values($_REQUEST,array(
                              'values'=>array('type'=>'json array')
@@ -453,6 +492,145 @@ function edit_email($data) {
     echo json_encode($response);
 
 }
+
+
+
+function add_mobile($data) {
+global $editor;
+    if (preg_match('/^company$/i',$data['subject'])) {
+        //todo things here
+    }
+
+    $contact=new Contact($data['subject_key']);
+
+    $action='created';
+
+
+    $mobile_data=array(
+                        'Telecom'=>$data['value']['Telecom'],
+                        'Telecom Type'=>$data['value']['Telecom Type'],
+                        'Telecom Type'=>'Mobile',
+                        'Telecom Raw Number'=>$data['value']['Telecom'],
+                        'editor'=>$editor
+                    );
+
+    $mobile=new Telecom("find in Contact ".$contact->id." create  country code ".$contact->data['Contact Main Country Code']."   ",$mobile_data);
+
+
+
+
+    if (!$mobile->id) {
+        $response=array('state'=>200,'action'=>'error','msg'=>$mobile->msg);
+        echo json_encode($response);
+        return;
+    }
+    
+    $contact->associate_mobile($mobile->id);
+     if($data['value']['Telecom Is Main']=='Yes' ){
+        $contact->update_principal_mobil($mobile->id);
+     }
+     
+     if ($contact->add_telecom) {
+     
+        $updated_telecom_data=array(
+        "Mobile_Key"=>$mobile->id,
+        "Mobile"=>$mobile->display(),
+        "Country_Code"=>$mobile->data['Telecom Country Telephone Code'],
+        "National_Access_Code"=>$mobile->data['Telecom National Access Code'],
+        "Number"=>$mobile->data['Telecom Number'],
+        "Telecom_Is_Main"=>$data['value']['Telecom Is Main'],
+        "Telecom Type Description"=>$mobile->data['Telecom Type'],
+        );
+     
+        $msg='';
+        $response=array(
+                      'state'=>200,
+                      'action'=>$action,
+                      'msg'=>$msg,
+                      'telecom_key'=>$mobile->id,
+                      'updated_data'=>$updated_telecom_data,
+                      'xhtml_subject'=>$contact->display('card'),
+                      'main_mobile_key'=>$contact->get_principal_mobile_key()
+                  );
+
+        echo json_encode($response);
+        return;
+    }else {
+        $response=array('state'=>200,'action'=>'nochange','msg'=>$contact->msg_updated);
+        echo json_encode($response);
+        return;
+
+    }
+
+
+
+}
+function edit_mobile($data){
+global $editor;
+    if (preg_match('/^company$/i',$data['subject'])) {
+        //todo things here
+    }
+
+    $contact=new Contact($data['subject_key']);
+
+        
+        $mobile=new Telecom('id',$data['value']['Telecom Key']);
+        if (!$mobile->id) {
+            $response=array('state'=>400,'msg'=>'Telecom not found');
+            echo json_encode($response);
+            return;
+        }
+        $mobile->set_editor($editor);
+        $mobile->update_number($data['value']['Telecom']);
+        if ($mobile->error_updated) {
+            $response=array('state'=>200,'action'=>'error','msg'=>$mobile->msg_updated);
+            echo json_encode($response);
+            return;
+        }
+
+        
+            
+
+ if($data['value']['Telecom Is Main']=='Yes' ){
+        $contact->update_principal_mobil($mobile->id);
+     }
+     
+      if ($mobile->updated or $contact->updated) {
+     
+        $updated_telecom_data=array(
+        "Mobile_Key"=>$mobile->id,
+        "Mobile"=>$mobile->display(),
+        "Country_Code"=>$mobile->data['Telecom Country Telephone Code'],
+        "National_Access_Code"=>$mobile->data['Telecom National Access Code'],
+        "Number"=>$mobile->data['Telecom Number'],
+        "Telecom_Is_Main"=>$data['value']['Telecom Is Main'],
+        "Telecom Type Description"=>$mobile->data['Telecom Type'],
+        );
+     $action='updated';
+        $msg=_('Telecom updated');
+        $response=array(
+                      'state'=>200,
+                      'action'=>$action,
+                      'msg'=>$msg,
+                      'telecom_key'=>$mobile->id,
+                      'updated_data'=>$updated_telecom_data,
+                      'xhtml_subject'=>$contact->display('card'),
+                      'main_mobile_key'=>$contact->get_principal_mobile_key()
+                  );
+
+        echo json_encode($response);
+        return;
+    }else {
+        $response=array('state'=>200,'action'=>'nochange','msg'=>$mobile->msg_updated);
+        echo json_encode($response);
+        return;
+
+    }
+     
+
+}
+
+
 function edit_telecom($data) {
     global $editor;
 
@@ -549,7 +727,9 @@ function edit_telecom($data) {
 
     }
 
-        if($data['value']['Telecom Is Main']==1 and $data['value']['Telecom Category']=='Mobile'){
+
+
+        if($data['value']['Telecom Is Main']=='Yes' and $data['value']['Telecom Category']=='Mobile'){
         $subject->update_principal_mobil($telephone->id);
         
         }
@@ -564,7 +744,7 @@ function edit_telecom($data) {
 
     if ($subject->add_telecom) {
         $updated_telecom_data=array();
-        $action='';
+     
         $msg='';
         $response=array(
                       'state'=>200,
@@ -1351,10 +1531,6 @@ function delete_email() {
         echo json_encode($response);
         return;
     }
-
-
-
-
     if ( !isset($_REQUEST['subject'])
             or !is_numeric($_REQUEST['subject_key'])
             or $_REQUEST['subject_key']<=0       or !preg_match('/^company|contact$/i',$_REQUEST['subject'])
@@ -1383,7 +1559,6 @@ function delete_email() {
         return;
     }
 
-
     $email_key=$_REQUEST['value'];
     if (!is_numeric($email_key)) {
         $email = new Email('email',$email_key);
@@ -1393,10 +1568,6 @@ function delete_email() {
         $email_key=$email->id;
         
     }
-
-
-
-
     $email->delete();
     if ($is_company) {
         $contact_found_keys=$subject->get_contact_keys();
@@ -1407,25 +1578,76 @@ function delete_email() {
             $contact->remove_email($email->id);
         }
     }
-
-
     if ($email->deleted) {
         $action='deleted';
         $msg=_('Email deleted');
         $subject->reread();
     } else {
-        $action='nochage';
+        $action='nochange';
         $msg=_('Email could not be deleted');
     }
 
-
-
     $response=array('state'=>200,'action'=>$action,'msg'=>$msg,'email_key'=>$email_key,'xhtml_subject'=>$subject->display('card'),'main_email_key'=>$subject->get_principal_email_key());
-
-
     echo json_encode($response);
 }
+function delete_mobile() {
+    global $editor;
+    if ( !isset($_REQUEST['value'])  ) {
+        $response=array('state'=>400,'msg'=>'Error no value');
+        echo json_encode($response);
+        return;
+    }
+    if ( !isset($_REQUEST['subject'])
+            or !is_numeric($_REQUEST['subject_key'])
+            or $_REQUEST['subject_key']<=0       or !preg_match('/^contact$/i',$_REQUEST['subject'])
 
+       ) {
+        $response=array('state'=>400,'msg'=>'Error wrong subject/subject key');
+        echo json_encode($response);
+        return;
+    }
+    $subject_type=$_REQUEST['subject'];
+    $subject_key=$_REQUEST['subject_key'];
+
+
+   
+        $subject=new Contact($subject_key);
+  
+
+
+    if (!$subject->id) {
+        $response=array('state'=>400,'msg'=>'Contact not found');
+        echo json_encode($response);
+        return;
+    }
+        $mobil = new Telecom($_REQUEST['value']);
+
+ if (!$mobil->id) {
+        $response=array('state'=>400,'msg'=>'Mobile not found');
+        echo json_encode($response);
+        return;
+    }
+
+    
+    
+    
+        $mobil_key=$mobil->id;
+        
+  
+    $mobil->delete();
+  
+    if ($mobil->deleted) {
+        $action='deleted';
+        $msg=_('Mobile deleted');
+        $subject->reread();
+    } else {
+        $action='nochange';
+        $msg=_('Mobile could not be deleted');
+    }
+
+    $response=array('state'=>200,'action'=>$action,'msg'=>$msg,'telecom_key'=>$mobil_key,'xhtml_subject'=>$subject->display('card'),'main_mobil_key'=>$subject->get_principal_mobile_key());
+    echo json_encode($response);
+}
 
 function delete_address() {
     global $editor;

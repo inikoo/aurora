@@ -4041,7 +4041,7 @@ $this->msg='Wrong email key';
                 $sql=sprintf("update `Contact Dimension` set  `Contact Main Mobile Key`=%d where `Contact Key`=%d",$mobil->id,$this->id);
                 $this->data['Contact Main Mobile Key']=$mobil->id;
                 mysql_query($sql);
-
+				$this->updated=true;
                 $mobil->update_parents();
 
             }

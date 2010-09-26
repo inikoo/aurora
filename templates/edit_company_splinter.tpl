@@ -207,7 +207,7 @@
 	<input  class="Telecom" telecom_type="Mobile" telecom_type_description=""  container_key="" value="" ovalue="" to_delete=0  telecom_key=0 onkeyup="validate_telecom(this);telecom_change()"     /> 
       </td >
       <td>
-	<input class="Telecom_Is_Main" type="checkbox" ovalue="No"  telecom_type="mobile" onclick="update_is_main_telecom(this)"/><span>{t}Main{/t}</span>
+	<input class="Mobile_Is_Main" type="checkbox" ovalue="No"  telecom_type="mobile" onclick="update_is_main_mobile(this)"/><span>{t}Main{/t}</span>
 	
 	<span class="small_button undelete_telecom"  style="display:none" mobile_key="" onclick="unmark_telecom_to_delete(this)">{t}Cancel Delete{/t}</span>
 	<span class="small_button delete_telecom"   mobile_key="" onclick="mark_telecom_to_delete(this)">{t}Delete{/t}</span>

@@ -55,7 +55,6 @@ function calculate_num_changed_in_email(){
 	    changed[email_key]=1;
 	    break;
 	}
-	
     }
 
 

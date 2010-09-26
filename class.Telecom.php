@@ -15,7 +15,7 @@ include_once('class.DB_Table.php');
 include_once('class.Country.php');
 
 class Telecom extends DB_Table {
-
+var $deleted=false;
 
     /*
       Constructor: Telecom
@@ -1224,85 +1224,91 @@ class Telecom extends DB_Table {
 
 
 
-  function delete() {
-        $sql=sprintf("delete from `Telecom Dimension` where `Telecom Key`=%d",$this->id);
-        mysql_query($sql);
-        $sql=sprintf("delete from `Telecom Bridge`  where  `Telecom Key`=%d", $this->id);
-        mysql_query($sql);
+function delete() {
+    $sql=sprintf("delete from `Telecom Dimension` where `Telecom Key`=%d",$this->id);
+    mysql_query($sql);
+    $sql=sprintf("delete from `Telecom Bridge`  where  `Telecom Key`=%d", $this->id);
+    mysql_query($sql);
+    $this->deleted=true;
+    $history_data['History Abstract']='Telecom Deleted';
+    $history_data['History Details']=$this->data['Telecom Type'].' '.$this->display('plain')." "._('has been deleted');
+    $history_data['Action']='deleted';
+    $history_data['Direct Object']='Telecom';
+    $history_data['Direct Object Key']=$this->id;
+    $history_data['Indirect Object']='';
+    $history_data['Indirect Object Key']='';
+    $this->add_history($history_data);
 
-        $history_data['History Abstract']='Telecom Deleted';
-        $history_data['History Details']=$this->data['Telecom Type'].' '.$this->display('plain')." "._('has been deleted');
-        $history_data['Action']='deleted';
-        $history_data['Direct Object']='Telecom';
-        $history_data['Direct Object Key']=$this->id;
-        $history_data['Indirect Object']='';
-        $history_data['Indirect Object Key']='';
-        $this->add_history($history_data);
+
+    $type=$this->data['Telecom Type'];
+    if ($type=='Fax')
+        $type="FAX";
 
 
-$type=$this->data['Telecom Type'];
-if($type=='Fax')$type="FAX";
-
+    if ($type=='Mobile')
+        $parents=array('Contact');
+    else
         $parents=array('Contact','Company','Customer','Supplier');
-        foreach($parents as $parent) {
-            $sql=sprintf("select `$parent Key` as `Parent Key`   from  `$parent Dimension` where `$parent Main $type Key`=%d group by `$parent Key`"
-                ,$this->id);
-            $res=mysql_query($sql);
-            while ($row=mysql_fetch_array($res)) {
-                $principal_Telecom_changed=false;
-
-                if ($parent=='Contact') {
-                    $parent_object=new Contact($row['Parent Key']);
-                    $parent_label=_('Contact');
-                }
-                elseif($parent=='Customer') {
-                    $parent_object=new Customer($row['Parent Key']);
-                    $parent_label=_('Customer');
-                }
-                elseif($parent=='Supplier') {
-                    $parent_object=new Supplier($row['Parent Key']);
-                    $parent_label=_('Supplier');
-                }
-                elseif($parent=='Company') {
-                    $parent_object=new Company($row['Parent Key']);
-                    $parent_label=_('Company');
-                }
-                
-                
-                
-                $sql=sprintf("update `$parent Dimension` set `$parent Main $type Key`=0, `$parent Main Plain $type`='',`$parent Main XHTML $type`='' where `$parent Key`=%d"
-
-                             ,$parent_object->id
-                            );
-                mysql_query($sql);
 
 
 
+    foreach($parents as $parent) {
+        $sql=sprintf("select `$parent Key` as `Parent Key`   from  `$parent Dimension` where `$parent Main $type Key`=%d group by `$parent Key`"
+                     ,$this->id);
+        // print "$sql";
+        $res=mysql_query($sql);
+        while ($row=mysql_fetch_array($res)) {
+            $principal_Telecom_changed=false;
 
-                $history_data['History Abstract']=$this->data['Telecom Type'].' Removed';
-                $history_data['History Details']=$this->data['Telecom Type'].' '.$this->display('plain')." "._('has been deleted from')." ".$parent_object->get_name()." ".$parent_label;
-                $history_data['Action']='disassociate';
-                $history_data['Direct Object']=$parent;
-                $history_data['Direct Object Key']=$parent_object->id;
-                $history_data['Indirect Object']='Telecom';
-                $history_data['Indirect Object Key']=$this->id;
-                $this->add_history($history_data);
+            if ($parent=='Contact') {
+                $parent_object=new Contact($row['Parent Key']);
+                $parent_label=_('Contact');
             }
+            elseif($parent=='Customer') {
+                $parent_object=new Customer($row['Parent Key']);
+                $parent_label=_('Customer');
+            }
+            elseif($parent=='Supplier') {
+                $parent_object=new Supplier($row['Parent Key']);
+                $parent_label=_('Supplier');
+            }
+            elseif($parent=='Company') {
+                $parent_object=new Company($row['Parent Key']);
+                $parent_label=_('Company');
+            }
+
+
+
+            $sql=sprintf("update `$parent Dimension` set `$parent Main $type Key`=0, `$parent Main Plain $type`='',`$parent Main XHTML $type`='' where `$parent Key`=%d"
+
+                         ,$parent_object->id
+                        );
+            mysql_query($sql);
+
+
+
+
+            $history_data['History Abstract']=$this->data['Telecom Type'].' Removed';
+            $history_data['History Details']=$this->data['Telecom Type'].' '.$this->display('plain')." "._('has been deleted from')." ".$parent_object->get_name()." ".$parent_label;
+            $history_data['Action']='disassociate';
+            $history_data['Direct Object']=$parent;
+            $history_data['Direct Object Key']=$parent_object->id;
+            $history_data['Indirect Object']='Telecom';
+            $history_data['Indirect Object Key']=$this->id;
+            $this->add_history($history_data);
+
+            if ($parent=='Contact' and $type=='Mobile') {
+                $mobiles=$parent_object->get_mobiles();
+                foreach($mobiles as $mobile) {
+                    $parent_object->update_principal_mobil($mobile->id);
+                    break;
+                }
+            }
+
+
         }
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
+}
 
 }
 ?>
