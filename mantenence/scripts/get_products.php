@@ -733,8 +733,12 @@ if(preg_match('/pouches/i',$department_code)){
 function update_supplier_part($code,$scode,$supplier_code,$units,$w,$product,$description,$supplier_cost){
   global $myconf,$editor,$map;
  $product->update_for_sale_since(date("Y-m-d H:i:s",strtotime($editor['Date']." +1 seconds")));
-	if(preg_match('/^SG\-|^info\-/i',$code))
+	if(preg_match('/^SG\-|^info\-|^FO\-/i',$code))
 	  $supplier_code='AW';
+
+ if (preg_match('/^(SG|FO|EO|PS|BO|EOB|AM)\-/i',$code))
+                $supplier_code='AW';
+
 	if($supplier_code=='AW')
 	  $scode=$code;
 
@@ -776,7 +780,7 @@ function update_supplier_part($code,$scode,$supplier_code,$units,$w,$product,$de
 				   ,'Supplier Main Plain Telephone'=>'020 8527 6439'
 				   );
 	}
-if(preg_match('/^puck$/i',$supplier_code)){
+if(preg_match('/^(puck|puckator)$/i',$supplier_code)){
 	  $supplier_code='Puck';
 	  $the_supplier_data=array(
 				   'Supplier Name'=>'Puckator',
@@ -1353,8 +1357,8 @@ if(preg_match('/^Wenzels$/i',$supplier_code)){
 	}
 
 
-	if($supplier_code=='' or $supplier_code=='0'){
-	  $supplier_code='Unknown';
+	if($supplier_code=='' or $supplier_code=='0' or $supplier_code=='?' or preg_match('/\"[0-9]{3}/',$supplier_code) or preg_match('/disc 20\+/i',$supplier_code)  ){
+	  $supplier_code='UNK';
 	  $the_supplier_data=array(
 	               'editor'=>$editor, 
 				   'Supplier Name'=>'Unknown Supplier',
@@ -1391,7 +1395,7 @@ if(preg_match('/^Wenzels$/i',$supplier_code)){
 	}
 
 
-	if(preg_match('/\d+ or more|0.10000007|8.0600048828125|0.050000038|0.150000076|0.8000006103|1.100000610|1.16666666|1.650001220|1.80000122070/i',$scode)){
+	if(preg_match('/\d+ or more|0.10000007|0\.300000152587891|8.0600048828125|0.050000038|0.150000076|0.8000006103|1.100000610|1.16666666|1.650001220|1.80000122070/i',$scode)){
 	  print "$code wrong supplier code -> ($scode)\n";
 
 	  $scode='';

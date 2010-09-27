@@ -758,9 +758,9 @@ $shipping_transactions[]=$transaction;
             $transaction['supplier_product_code']=preg_replace('/\s*\"$/','',$transaction['supplier_product_code']);
 
 
-            if (preg_match('/\d+ or more|\d|0.10000007|0.050000038|0.150000076|0.8000006103|1.100000610|1.16666666|1.650001220|1.80000122070/i',$transaction['supplier_product_code']))
+            if (preg_match('/\d+ or more|\d|0.10000007|0\.300000152587891|0.050000038|0.150000076|0.8000006103|1.100000610|1.16666666|1.650001220|1.80000122070/i',$transaction['supplier_product_code']))
                 $transaction['supplier_product_code']='';
-            if (preg_match('/^(\?|new|0.25|0.5|0.8|8.0600048828125|0.8000006103|01 Glass Jewellery Box|1|0.1|0.05|1.5625|10|\d{1,2}\s?\+\s?\d{1,2}\%)$/i',$transaction['supplier_product_code']))
+            if (preg_match('/^(\?|new|0.25|0.5|0.8|0\.300000152587891|8.0600048828125|0.8000006103|01 Glass Jewellery Box|1|0.1|0.05|1.5625|10|\d{1,2}\s?\+\s?\d{1,2}\%)$/i',$transaction['supplier_product_code']))
                 $transaction['supplier_product_code']='';
             if ($transaction['supplier_product_code']=='same')
                 $transaction['supplier_product_code']=$transaction['code'];
@@ -788,12 +788,15 @@ $shipping_transactions[]=$transaction;
                 $transaction['supplier_code'] ='';
                 $supplier_product_cost='';
             }
-            if (preg_match('/^(SG|FO|EO|PS|BO)\-/i',$transaction['code']))
+            if (preg_match('/^(SG|FO|EO|PS|BO|EOB|AM)\-/i',$transaction['code']))
                 $transaction['supplier_code'] ='AW';
             if ($transaction['supplier_code']=='AW')
                 $transaction['supplier_product_code']=$transaction['code'];
-            if ($transaction['supplier_code']=='' or preg_match('/\d/',$transaction['supplier_code']) )
-                $transaction['supplier_code']='Unknown';
+            if ($transaction['supplier_code']=='' or preg_match('/\d/',$transaction['supplier_code'])
+		or $transaction['supplier_code']=='?' or   preg_match('/\"[0-9]{3}/',$transaction['supplier_code']) or preg_match('/disc 20\+/i',$transaction['supplier_code']) 
+		
+		)
+                $transaction['supplier_code']='UNK';
             $unit_type='Piece';
             $description=_trim($transaction['description']);
             $description=str_replace("\\\"","\"",$description);
@@ -980,8 +983,8 @@ $shipping_transactions[]=$transaction;
             $to_update['stores'][$product->data['Product Store Key']]=1;
 
             $supplier_code=_trim($transaction['supplier_code']);
-            if ($supplier_code=='' or $supplier_code=='0' or  preg_match('/^costa$/i',$supplier_code))
-                $supplier_code='Unknown';
+            if ($supplier_code=='' or $supplier_code=='0' or   $supplier_code=='?' or preg_match('/\"[0-9]{3}/',$supplier_code) or preg_match('/disc 20\+/i',$supplier_code)   or   preg_match('/^costa$/i',$supplier_code))
+                $supplier_code='UNK';
             $supplier=new Supplier('code',$supplier_code);
             if (!$supplier->id) {
                 $the_supplier_data=array(

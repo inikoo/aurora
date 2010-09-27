@@ -847,12 +847,15 @@ mysql_free_result($result_test);
                 $transaction['supplier_code'] ='';
                 $supplier_product_cost='';
             }
-            if (preg_match('/^(SG|FO|EO|PS|BO)\-/i',$transaction['code']))
+            if (preg_match('/^(SG|FO|EO|PS|BO|EOB|AM)\-/i',$transaction['code']))
                 $transaction['supplier_code'] ='AW';
             if ($transaction['supplier_code']=='AW')
                 $transaction['supplier_product_code']=$transaction['code'];
-            if ($transaction['supplier_code']=='' or preg_match('/\d/',$transaction['supplier_code']) )
-                $transaction['supplier_code']='Unknown';
+            if ($transaction['supplier_code']=='' or preg_match('/\d/',$transaction['supplier_code'])
+	or $transaction['supplier_code']=='?' or   preg_match('/\"[0-9]{3}/',$transaction['supplier_code']) or preg_match('/disc 20\+/i',$transaction['supplier_code']) 
+
+ )
+                $transaction['supplier_code']='UNK';
             $unit_type='Piece';
             $description=_trim($transaction['description']);
             $description=str_replace("\\\"","\"",$description);

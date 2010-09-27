@@ -1544,18 +1544,25 @@ function list_supplier_products() {
     $_order=$order;
     $_dir=$order_direction;
 
-$parent='none';
-    $_SESSION['state']['supplier']['products']=array('order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value
-            ,'view'=>$product_view
-                    ,'percentage'=>$product_percentage
-                                  ,'period'=>$product_period
-                                                    );
+   
+    $_SESSION['state']['supplier']['products']=array(
+						     'order'=>$order,
+						     'order_dir'=>$order_direction,
+						     'nr'=>$number_results,
+						     'sf'=>$start_from,
+						     'where'=>$where,
+						     'f_field'=>$f_field,
+						     'f_value'=>$f_value,
+						     'view'=>$product_view,
+						     'percentage'=>$product_percentage,
+						     'period'=>$product_period
+						     );
     $_SESSION['state']['supplier']['id']=$supplier_id;
 
 
-if($parent=='none')
-$where.='';
-else
+    //if($parent=='none')
+    //$where.='';
+    //else
     $where=$where.' and `supplier key`='.$supplier_id;
 
 
@@ -1666,6 +1673,8 @@ else
       $order='`Supplier Product Code`';
     
     $sql="select * from `Supplier Product Dimension`  $where $wheref  order by $order $order_direction limit $start_from,$number_results ";
+
+    //  print $sql;
     $data=array();
 
     $result=mysql_query($sql);
