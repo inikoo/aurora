@@ -205,12 +205,10 @@
  
   <div id="block_stock_history" class="data_table" style="clear:both;margin-top:20px;">
     <span   class="clean_table_title">{t}Part Stock History{/t}</span>
-     <div >
-          <span id="stock_history_type_day" style="float:right" class="table_type state_details {if $stock_history_type=='day'}selected{/if}">{t}Monthly{/t}</span>
-
-     <span id="stock_history_type_week" style="float:right;margin-right:10px" class="table_type state_details {if $stock_history_type=='week'}selected{/if}">{t}Weekly{/t}</span>
-     <span id="stock_history_type_day" style="float:right;margin-right:10px" class="table_type state_details {if $stock_history_type=='day'}selected{/if}">{t}Daily{/t}</span>
-
+     <div id="stock_history_type">
+        <span id="stock_history_type_month" table_type="month" style="float:right" class="table_type state_details {if $stock_history_type=='month'}selected{/if}">{t}Monthly{/t}</span>
+        <span id="stock_history_type_week" table_type="week" style="float:right;margin-right:10px" class="table_type state_details {if $stock_history_type=='week'}selected{/if}">{t}Weekly{/t}</span>
+        <span id="stock_history_type_day" table_type="day" style="float:right;margin-right:10px" class="table_type state_details {if $stock_history_type=='day'}selected{/if}">{t}Daily{/t}</span>
      </div>
     
     <div style="clear:both;margin:0 0px;padding:0 20px ;border-bottom:1px solid #999;margin-bottom:10px"></div>
