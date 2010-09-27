@@ -9878,7 +9878,7 @@ function part_stock_history() {
 
    switch ($type) {
         case 'month':
-           $group=' group by DATE_FORMAT(%Y%m)   ';
+           $group=' group by DATE_FORMAT(`Date`,"%Y%m")   ';
             break;
              case 'day':
               $group=' group by `Date`   ';
@@ -9919,7 +9919,7 @@ $filtered=$total_records-$total;
 
     switch ($type) {
         case 'month':
-               $rtext=$total_records.' '.ngettext('months','month',$total);
+               $rtext=$total_records.' '.ngettext('month','months',$total);
             break;
              case 'day':
                $rtext=$total_records.' '.ngettext('days','days',$total);
@@ -9946,9 +9946,10 @@ $filtered=$total_records-$total;
 
 $order='`Date`';
 
-    $sql=sprintf("select  GROUP_CONCAT(distinct '<a href=\"location.php?id=',ISF.`Location Key`,'\">',`Location Code`,'<a/>') as locations,`Date`, ( select  sum(`Quantity On Hand`) from `Inventory Spanshot Fact` OISF where `Part SKU`=%d and OISF.`Date`=ISF.`Date`  )as `Quantity On Hand`, ( select  sum(`Value At Cost`) from `Inventory Spanshot Fact` OISF where `Part SKU`=%d and OISF.`Date`=ISF.`Date`  )as `Value At Cost`,sum(`Sold Amount`) as `Sold Amount`,sum(`Value Comercial`) as `Value Comercial`,sum(`Storing Cost`) as `Storing Cost`,sum(`Quantity Sold`) as `Quantity Sold`,sum(`Quantity In`) as `Quantity In`,sum(`Quantity Lost`) as `Quantity Lost`  from `Inventory Spanshot Fact` ISF left join `Location Dimension` L on (ISF.`Location key`=L.`Location key`)  $where $wheref   $group order by $order $order_direction  limit $start_from,$number_results "
+    $sql=sprintf("select  GROUP_CONCAT(distinct '<a href=\"location.php?id=',ISF.`Location Key`,'\">',`Location Code`,'<a/>') as locations,`Date`, ( select  sum(`Quantity On Hand`) from `Inventory Spanshot Fact` OISF where `Part SKU`=%d and OISF.`Date`=ISF.`Date`  )as `Quantity On Hand`, ( select  sum(`Value At Cost`) from `Inventory Spanshot Fact` OISF where `Part SKU`=%d and OISF.`Date`=ISF.`Date`  )as `Value At Cost`,sum(`Sold Amount`) as `Sold Amount`,sum(`Value Comercial`) as `Value Comercial`,sum(`Storing Cost`) as `Storing Cost`,sum(`Quantity Sold`) as `Quantity Sold`,sum(`Quantity In`) as `Quantity In`,sum(`Quantity Lost`) as `Quantity Lost`  from `Inventory Spanshot Fact` ISF left join `Location Dimension` L on (ISF.`Location key`=L.`Location key`)  $where $wheref   %s order by $order $order_direction  limit $start_from,$number_results "
      ,$part_sku
     ,$part_sku
+    ,$group
     );
 
 
