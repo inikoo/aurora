@@ -112,9 +112,6 @@ if(isset($_REQUEST['id']) and is_numeric($_REQUEST['id'])){
   
  }
 
-
-
-
 $subject_id=$part->id;
 include_once('plot.inc.php');
 
