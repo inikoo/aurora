@@ -610,8 +610,7 @@ $default_state=array(
 
                               'plot'=>'part_stock_history',
                               'plot_interval'=>array(
-                                                  'y'=>array('plot_bins'=>5,
-                                                             'plot_forecast_bins'=>3),
+                                                  'y'=>array('plot_bins'=>5,'plot_forecast_bins'=>3),'d'=>array('plot_bins'=>30,'plot_forecast_bins'=>5),
                                                   'q'=>array('plot_bins'=>12,
                                                              'plot_forecast_bins'=>3),
                                                   'm'=>array('plot_bins'=>18,
@@ -620,7 +619,7 @@ $default_state=array(
                                                              'plot_forecast_bins'=>3),
                                               ),
                               'plot_period'=>'m',
-                              'plot_category'=>'stock_history',
+                              'plot_category'=>'stock',
 
 
 
@@ -1551,8 +1550,7 @@ $default_state=array(
 
                               'plot'=>'part_stock_history',
                               'plot_interval'=>array(
-                                                  'y'=>array('plot_bins'=>5,
-                                                             'plot_forecast_bins'=>3),
+                                                  'y'=>array('plot_bins'=>5,'plot_forecast_bins'=>3),'d'=>array('plot_bins'=>30,'plot_forecast_bins'=>5),
                                                   'q'=>array('plot_bins'=>12,
                                                              'plot_forecast_bins'=>3),
                                                   'm'=>array('plot_bins'=>18,
@@ -1561,7 +1559,7 @@ $default_state=array(
                                                              'plot_forecast_bins'=>3),
                                               ),
                               'plot_period'=>'m',
-                              'plot_category'=>'stock_history',
+                              'plot_category'=>'stock',
 
 
                               'plot_data'=>array('part_stock_history'=>array(

@@ -6,13 +6,14 @@ $page=$_REQUEST['page'];
 ?>
 
 var category_labels={'sales':'<?php echo _('Net Item Sales')?>','profit':'<?php echo _('Profits')?>'};
-var period_labels={'m':'<?php echo _('Montly')?>','y':'<?php echo _('Yearly')?>','w':'<?php echo _('Weekly')?>','q':'<?php echo _('Quarterly')?>'};
-var pie_period_labels={'m':'<?php echo _('Month')?>','y':'<?php echo _('Year')?>','w':'<?php echo _('Week')?>','q':'<?php echo _('Quarter')?>'};
+var period_labels={'d':'<?php echo _('Daily')?>','m':'<?php echo _('Montly')?>','y':'<?php echo _('Yearly')?>','w':'<?php echo _('Weekly')?>','q':'<?php echo _('Quarterly')?>'};
+var pie_period_labels={'d':'<?php echo _('Daily')?>','m':'<?php echo _('Month')?>','y':'<?php echo _('Year')?>','w':'<?php echo _('Week')?>','q':'<?php echo _('Quarter')?>'};
 
 var plot='<?php echo$_SESSION['state'][$page]['plot']?>';
 
 
 var plot_interval_data={
+    'd':{'bins':<?php echo $_SESSION['state'][$page]['plot_interval']['d']['plot_bins']?>,'forecast_bins':<?php echo $_SESSION['state'][$page]['plot_interval']['d']['plot_forecast_bins']?>},
     'y':{'bins':<?php echo $_SESSION['state'][$page]['plot_interval']['y']['plot_bins']?>,'forecast_bins':<?php echo $_SESSION['state'][$page]['plot_interval']['y']['plot_forecast_bins']?>},
     'q':{'bins':<?php echo $_SESSION['state'][$page]['plot_interval']['q']['plot_bins']?>,'forecast_bins':<?php echo $_SESSION['state'][$page]['plot_interval']['q']['plot_forecast_bins']?>},
     'm':{'bins':<?php echo $_SESSION['state'][$page]['plot_interval']['m']['plot_bins']?>,'forecast_bins':<?php echo $_SESSION['state'][$page]['plot_interval']['m']['plot_forecast_bins']?>},
@@ -61,7 +62,7 @@ plot_interval_data[ Dom.get('plot_info').getAttribute("period")].forecast_bins=t
 
 function change_plot_period(period){
     o=Dom.get('plot_'+plot);
-   // alert('plot_'+plot)
+  
     Dom.get('plot_info').setAttribute("period",period);
     Dom.get('plot_info').setAttribute("from",plot_interval_data[period].bins);
     Dom.get('plot_info').setAttribute("to",plot_interval_data[period].forecast_bins);
@@ -82,7 +83,7 @@ function change_plot(o){
 
 
 
-//alert(tipo)
+
 	if(tipo=='pie'){
 	    plot='pie';
 			var pie_interval=o.getAttribute("interval");
@@ -140,23 +141,22 @@ function change_plot(o){
 	    Dom.get("plot_category").innerHTML=category_labels[category];
 	    Dom.get("plot_period").innerHTML=period_labels[period];
 	    Dom.get("plot_options").style.display='';
-	}else if(tipo=='part_outs' || tipo=='part_stock_history' ){
+	}else if(tipo=='part_outs' || tipo=='part_stock_history'  ){
 	    plot='part';
 	    
 	    //plot.php?tipo=part&category=stock_history&period=m&keys=16841&currency=GBP&from=18&to=3
 	    
 	   // Dom.get("pie_options").style.display='none';
-	    var plot_url='plot.php?tipo='+tipo+'&category='+category+'&period='+period+'&keys='+keys+'&from='+from+'&to='+to;
-	  //  alert(plot_url);
+	    var plot_url='plot.php?tipo='+plot+'&category='+category+'&period='+period+'&keys='+keys+'&from='+from+'&to='+to;
+	  // alert(plot_url);
 
 
 	    //Dom.get("the_plot").width="100%";
 	    plot_code=tipo+'_'+category+'_'+period;
-
+//alert(category)
         if(from==100)
         from='∀';
 	    Dom.get("plot_interval").innerHTML=from+':'+to;
-
 	    Dom.get("plot_category").innerHTML=category_labels[category];
 	    Dom.get("plot_period").innerHTML=period_labels[period];
 	    Dom.get("plot_options").style.display='';
@@ -176,26 +176,28 @@ function change_plot(o){
 
 
 YAHOO.util.Event.onContentReady("plot_period_menu", function () {
-	 var oMenu = new YAHOO.widget.Menu("plot_period_menu", { context:["plot_period","br", "tr"]  });
+	 var oMenu = new YAHOO.widget.ContextMenu("plot_period_menu", { trigger:"plot_period"  });
+
 	 oMenu.render();
 	 oMenu.subscribe("show", oMenu.focus);
-	 YAHOO.util.Event.addListener("plot_period", "click", oMenu.show, null, oMenu);
+
+
+	
     });
 YAHOO.util.Event.onContentReady("plot_category_menu", function () {
-	 var oMenu = new YAHOO.widget.Menu("plot_category_menu", { context:["plot_category","br", "tr"]  });
+	 var oMenu = new YAHOO.widget.ContextMenu("plot_category_menu", { trigger:"plot_category"   });
 	 oMenu.render();
 	 oMenu.subscribe("show", oMenu.focus);
-	 YAHOO.util.Event.addListener("plot_category", "click", oMenu.show, null, oMenu);
     });
 YAHOO.util.Event.onContentReady("plot_interval_menu", function () {
-	 var oMenu = new YAHOO.widget.Menu("plot_interval_menu", { context:["plot_interval","br", "tr"]  });
+	 var oMenu = new YAHOO.widget.ContextMenu("plot_interval_menu", { trigger:"plot_interval"  });
 	 oMenu.render();
 	 oMenu.subscribe("show", oMenu.focus);
-	 YAHOO.util.Event.addListener("plot_interval", "click", oMenu.show, null, oMenu);
+
     });
+
 YAHOO.util.Event.onContentReady("pie_interval_menu", function () {
-	 var oMenu = new YAHOO.widget.Menu("pie_interval_menu", { context:["pie_interval","br", "tr"]  });
+	 var oMenu = new YAHOO.widget.ContextMenu("pie_interval_menu", { trigger:"pie_interval" });
 	 oMenu.render();
 	 oMenu.subscribe("show", oMenu.focus);
-	 YAHOO.util.Event.addListener("pie_interval", "click", oMenu.show, null, oMenu);
     });

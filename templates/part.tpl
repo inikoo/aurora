@@ -219,33 +219,9 @@
 <div  id="table0"  style="font-size:85%"   class="data_table_container dtable btable "> </div>
 </div>
  
- <div   id="block_plot" style="clear:both;{if $display.plot==0}display:none{/if};margin-top:50px;min-height:420px"  >
+<div   id="block_plot" style="clear:both;{if $display.plot==0}display:none{/if};margin-top:50px;min-height:420px"  >
    {include file='plot_splinter.tpl'}
  </div>
- 
- 
- 
- 
-
- 
- 
- 
- 
- 
- 
-
-
-
-
-
-
-
-
-
-
-
-
-
 </div>
 </div>
 

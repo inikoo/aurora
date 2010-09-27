@@ -3,6 +3,10 @@ include_once('common.php');?>
   var Event = YAHOO.util.Event;
      var Dom   = YAHOO.util.Dom;
 
+var category_labels={'stock':'<?php echo _('Stock Keeping Units')?>','value':'<?php echo _('Stock value')?>'};
+
+
+
 YAHOO.util.Event.addListener(window, "load", function() {
 	tables = new function() {
 		
