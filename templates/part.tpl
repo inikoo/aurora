@@ -29,7 +29,7 @@
       <td class="aright">
 	
 	<tr><td>{t}Status{/t}:</td><td>{$part->get('Part Status')}</td></tr>
-      <tr><td>{t}Keeping since{/t}:</td><td>{$part->get('Valid From')}</td></tr>
+      <tr><td>{t}Keeping since{/t}:</td><td>{$part->get('Valid From Datetime')}</td></tr>
 	<tr><td>{t}Supplied by{/t}:</td><td>{$part->get('Part XHTML Currently Supplied By')}</td></tr>
 	<tr><td>{t}Cost{/t}:</td><td>{$part->get('Cost')}</td></tr>
     </table>

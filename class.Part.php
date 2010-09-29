@@ -658,9 +658,18 @@ class part extends DB_Table {
             return $this->get_unit_cost($args);
             break;
         case('Picking Location Key'):
-            $location_key=1;
-            return $location_key;
+            
+            return $this->get_picking_location_key();
             break;
+        case('Valid From'):
+            return strftime("%x",strtotime($this->data['Part Valid From']));
+            
+        break;
+         case('Valid From Datetime'):
+            return strftime("%c",strtotime($this->data['Part Valid From']));
+            
+        break;
+        
         case('Current Associated Locations'):
 
             if (!$this->current_locations_loaded)
@@ -873,13 +882,8 @@ class part extends DB_Table {
                     );
         mysql_query($sql);
 
-
-        if (mysql_affected_rows()) {
-            $this->update_product_part_list_dates();
-        }
-
-
-        //print "$sql\n";
+        $this->update_product_part_list_dates();
+        
 
     }
     function update_valid_dates($date) {
@@ -1520,12 +1524,14 @@ return $part_locations;
     function wrap_transactions() {
 
         $sql=sprintf("select `Location Key` from `Inventory Transaction Fact` where  `Part SKU`=%d  group by `Location Key`  ",$this->sku);
-
+        $locations=array(1=>1);    
         $res2=mysql_query($sql);
         while ($row2=mysql_fetch_array($res2)) {
-            $location_key=$row2['Location Key'];
-            //print "---> Location $location_key \n";
-
+            $locations[$row2['Location Key']]=$row2['Location Key'];
+        
+        }
+        
+        foreach($locations as $location_key){
 
             $sql=sprintf("select `Date`,`Inventory Transaction Type` from `Inventory Transaction Fact` where  `Part SKU`=%d and `Location Key`=%d  order by `Date`,`Inventory Transaction Key`   ",$this->sku,$location_key);
             //print "$sql\n";
@@ -1568,20 +1574,23 @@ return $part_locations;
             if ($row3=mysql_fetch_array($res3)) {
                 $first_audit_date=($row3['Inventory Audit Date']);
             }
-            //    print "\n$sql\n";
+             //   print "\n$sql\n";
             $sql=sprintf("select `Date` from `Inventory Transaction Fact` where  `Part SKU`=%d and `Location Key`=%d  order by `Date`  ",$this->sku,$location_key);
             $first_itf_date='none';
             $res3=mysql_query($sql);
             if ($row3=mysql_fetch_array($res3)) {
                 $first_itf_date=($row3['Date']);
             }
-            // print "$sql\n";
+           //  print "$sql\n";
             //print "R: $first_audit_date $first_itf_date \n ";
             if ($first_audit_date=='none' and $first_itf_date=='none') {
-                print "\nError1 : Part ".$this->sku." ".$this->data['Part XHTML Currently Used In']."  \n";
-                return;
-            }
-            elseif($first_audit_date=='none') {
+            //    print "\nError1 : Part ".$this->sku." ".$this->data['Part XHTML Currently Used In']."  \n";
+            //    exit;
+            //    return;
+                $first_date=$this->data['Part Valid From'];
+                // print "\nError1 : Part ".$this->sku." ".$this->data['Part XHTML Currently Used In']." ".$this->data['Part Valid From']." \n";
+                
+            }elseif($first_audit_date=='none') {
                 $first_date=$first_itf_date;
             }
             elseif($first_itf_date=='none') {
@@ -1595,22 +1604,22 @@ return $part_locations;
 
             }
 
-            //print "caca";
+           
             $pl_data=array(
                          'Part SKU'=>$this->sku,
                          'Location Key'=>$location_key,
                          'Date'=>$first_date);
-           // print_r($pl_data);
+           //print_r($pl_data);
             $part_location=new PartLocation('find',$pl_data
                                             ,'create');
             //print_r($part_location);
             if ($part_location->found) {
 
-                $sql=sprintf("delete from  `Inventory Transaction Fact` where `Inventory Transaction Type` in ('Associate') where `Part SKU`=%d and `Location Key`=%d  limit 1 "
+                $sql=sprintf("delete from  `Inventory Transaction Fact` where `Inventory Transaction Type` in ('Associate') and `Part SKU`=%d and `Location Key`=%d  limit 1 "
                              ,$this->sku
                              ,$location_key
                             );
-                //print "$sql\n";
+               
 
                 mysql_query($sql);
                 $location=new Location($location_key);
@@ -1629,7 +1638,7 @@ return $part_locations;
                 mysql_query($sql);
                 //print "$sql\n";
             }
-            $this->update_valid_from($first_date);
+           
 
 
             if ($this->data['Part Status']=='Discontinued') {
@@ -1678,8 +1687,8 @@ return $part_locations;
                 $this->update_stock();
 
             }
-
-
+           
+            $this->update_valid_from($first_date);
 
         }
 

@@ -32,12 +32,11 @@ require_once '../../conf/conf.php';
 date_default_timezone_set('UTC');
 
 $sql=sprintf("select  (select units from aw_old.product p where p.id=bulk_id) as r1_units,(select code from aw_old.product p where p.id=bulk_id) as r1 ,(select units from aw_old.product p where p.id=product_id) as r2_units ,(select code from aw_old.product p where p.id=product_id) as r2,(select count(*) from aw_old.product_relations as prtmp where prtmp.product_id=aw_old.product_relations.product_id) as multiplicity   from aw_old.product_relations ");
-//print "$sql\n";
-//exit;
+
 $res=mysql_query($sql);
 while ($row=mysql_fetch_array($res)) {
 
-    if ($row['r1']=='')
+    if ($row['r1']=='' or $row['r2']=='')
         continue;
 
     if ($row['multiplicity']==1) {

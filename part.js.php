@@ -33,7 +33,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 		 
 		    
 		    
-		    this.dataSource0 = new YAHOO.util.DataSource("ar_assets.php?tipo=part_stock_history&tableid="+tableid);
+		    this.dataSource0 = new YAHOO.util.DataSource("ar_assets.php?tipo=part_stock_history&sf=0&tableid="+tableid);
 		    this.dataSource0.responseType = YAHOO.util.DataSource.TYPE_JSON;
 		    this.dataSource0.connXhrMode = "queueRequests";
 		    this.dataSource0.responseSchema = {
@@ -109,7 +109,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 		 
 		    
 		
-		    this.dataSource1 = new YAHOO.util.DataSource("ar_assets.php?tipo=part_transactions&tableid="+tableid);
+		    this.dataSource1 = new YAHOO.util.DataSource("ar_assets.php?tipo=part_transactions&sf=0&tableid="+tableid);
 		    this.dataSource1.responseType = YAHOO.util.DataSource.TYPE_JSON;
 		    this.dataSource1.connXhrMode = "queueRequests";
 		    this.dataSource1.responseSchema = {
