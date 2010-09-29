@@ -1041,130 +1041,118 @@ $this->updated=true;
 
 
 
-  function create_product_id($data) {
-    
-    //print "ok create id \n";
+function create_product_id($data) {
 
-$base_data=$this->get_base_data();
+    $base_data=$this->get_base_data();
     foreach($data as $key=>$value) {
-      if (isset($base_data[strtolower($key)]))
-	$base_data[strtolower($key)]=_trim($value);
+        if (isset($base_data[strtolower($key)]))
+            $base_data[strtolower($key)]=_trim($value);
     }
 
     $base_data['product code file as']=$this->normalize_code($base_data['product code']);
 
     if (!is_numeric($base_data['product units per case']) or $base_data['product units per case']<1)
-      $base_data['product units per case']=1;
+        $base_data['product units per case']=1;
 
-    
-    //    print_r($base_data);
-	
+
     $family=new Family($base_data['product family key']);
-    if(!$family->id){
-      $this->error=true;
-      $this->msg='Wrong family';
-      print_r($data);
-      exit('error family');
-      return;
+    if (!$family->id) {
+        $this->error=true;
+        $this->msg='Wrong family';
+        print_r($data);
+        exit('error family');
+        return;
     }
-    // print ($family->new.' x:');
-    //print_r($family->data['Product Family Main Department Key']);
-    //exit;
+
     $department=new Department($family->data['Product Family Main Department Key']);
-    
+
     $base_data['product main department key']=$department->id;
     $base_data['product main department code']=$department->data['Product Department Code'];
     $base_data['product main department name']=$department->data['Product Department Name'];
     $base_data['product family code']=$family->data['Product Family Code'];
     $base_data['product family name']=$family->data['Product Family Name'];
-	    
+
     $store=new Store($base_data['product store key']);
-	    
-	    
-	    
+
+
+
     $base_data['Product Current Key']=$this->id;
 
 
     $keys='(';
     $values='values(';
     foreach($base_data as $key=>$value) {
-      $keys.="`$key`,";
-      $values.=prepare_mysql($value).",";
+        $keys.="`$key`,";
+        $values.=prepare_mysql($value).",";
     }
     $keys=preg_replace('/,$/',')',$keys);
     $values=preg_replace('/,$/',')',$values);
-    $sql=sprintf("insert into `Product Dimension` %s %s",$keys,$values);
- //   print "Inserting Product ID\n";    
-// print "$sql\n";
-    if (mysql_query($sql)) {
-    if($this->external_DB_link)mysql_query($sql,$this->external_DB_link);
-      $this->pid = mysql_insert_id();
-      $this->code =$base_data['product code'];
-      $this->new_id=true;
-      $this->new=true;
-
-
- 
-
-
-
-      $editor_data=$this->get_editor_data();
-
-      $data_for_history=array('Action'=>'created'
-			      ,'History Abstract'=>_('Product Created')
-			      ,'History Details'=>_('Product')." ".$this->code." (ID:".$this->get('ID').") "._('Created')
-			      );
-      $this->add_history($data_for_history);
-	
-      //print "$sql\n";
-      $family->update_product_data();
-      $department->update_product_data();
-      $store->update_product_data();
-
-      $sql=sprintf("select `Category Key` from `Category Dimension` where `Category Default`='Yes' and `Category Subject`='Product' ");
-      $res_cat=mysql_query($sql);
-      //print "$sql\n";
-      while($row=mysql_fetch_array($res_cat)){
-	$sql=sprintf("insert into `Category Bridge` values (%d,'Product',%d) ",$row['Category Key'],$this->pid  );
-	mysql_query($sql);if($this->external_DB_link)mysql_query($sql,$this->external_DB_link);
-      }
-
-    }else{
-    exit("Error can not insert if $sql\n");
     
+    $old_pids=$this-<get_produc
+    
+    $sql=sprintf("insert into `Product Dimension` %s %s",$keys,$values);
+    
+    if (mysql_query($sql)) {
+        if ($this->external_DB_link)mysql_query($sql,$this->external_DB_link);
+        $this->pid = mysql_insert_id();
+        $this->code =$base_data['product code'];
+        $this->new_id=true;
+        $this->new=true;
+
+        $editor_data=$this->get_editor_data();
+
+        $data_for_history=array(
+                              'Action'=>'created',
+                              'History Abstract'=>_('Product Created'),
+                              'History Details'=>_('Product')." ".$this->code." (ID:".$this->get('ID').") "._('Created')
+                          );
+        $this->add_history($data_for_history);
+
+        $family->update_product_data();
+        $department->update_product_data();
+        $store->update_product_data();
+
+        $sql=sprintf("select `Category Key` from `Category Dimension` where `Category Default`='Yes' and `Category Subject`='Product' ");
+        $res_cat=mysql_query($sql);
+        //print "$sql\n";
+        while ($row=mysql_fetch_array($res_cat)) {
+            $sql=sprintf("insert into `Category Bridge` values (%d,'Product',%d) ",$row['Category Key'],$this->pid  );
+            mysql_query($sql);
+            if ($this->external_DB_link)mysql_query($sql,$this->external_DB_link);
+        }
+
+    } else {
+        exit("Error can not insert if $sql\n");
+
     }
 
     $this->get_data('pid',$this->pid);
- $this->data['Product Short Description']=$this->get('short description');
-  $this->data['Product XHTML Short Description']=$this->get('xhtml short description');
+    $this->data['Product Short Description']=$this->get('short description');
+    $this->data['Product XHTML Short Description']=$this->get('xhtml short description');
 
     $sql=sprintf("update  `Product Dimension` set `Product Short Description`=%s ,`Product XHTML Short Description`=%s where `Product ID`=%d"
-		 ,prepare_mysql($this->data['Product Short Description'])
-		 ,prepare_mysql($this->data['Product XHTML Short Description'])
-		 ,$this->pid);
-    mysql_query($sql);if($this->external_DB_link)mysql_query($sql,$this->external_DB_link);
-   
-       $this->update_full_search();
-       
-       
-    if($this->new_key){
-       $sql=sprintf("update  `Product History Dimension` set `Product History Short Description`=%s ,`Product History XHTML Short Description`=%s ,`Product ID`=%d where `Product Key`=%d"
-		   ,prepare_mysql($this->get('historic short description'))
-		   ,prepare_mysql($this->get('historic xhtml short description'))
-		   ,$this->pid
-		   ,$this->id
-		   );
-      mysql_query($sql);if($this->external_DB_link)mysql_query($sql,$this->external_DB_link);
-      
+                 ,prepare_mysql($this->data['Product Short Description'])
+                 ,prepare_mysql($this->data['Product XHTML Short Description'])
+                 ,$this->pid);
+    mysql_query($sql);
+    if ($this->external_DB_link)mysql_query($sql,$this->external_DB_link);
+
+    $this->update_full_search();
+
+
+    if ($this->new_key) {
+        $sql=sprintf("update  `Product History Dimension` set `Product History Short Description`=%s ,`Product History XHTML Short Description`=%s ,`Product ID`=%d where `Product Key`=%d"
+                     ,prepare_mysql($this->get('historic short description'))
+                     ,prepare_mysql($this->get('historic xhtml short description'))
+                     ,$this->pid
+                     ,$this->id
+                    );
+        mysql_query($sql);
+        if ($this->external_DB_link)mysql_query($sql,$this->external_DB_link);
+
     }
 
-       
-        
-
-
-
-
-  }
+}
 
   function create_code($data) {
     $base_data_same_code=$this->get_base_data_same_code();
@@ -2710,6 +2698,19 @@ $number_images=$row['num'];
     while ($row=mysql_fetch_array($res)) {
       $this->categories[$row['Category Key']]=$row['Category Key'];
     }
+  }
+
+  function get_product_ids_with_same_code_store($store_key) {
+    $sql=sprintf("select `Product ID` from `Product Dimension`  where `Product Code`=%s and `Product Store Key`=%d group by `Product ID`",
+		 prepare_mysql($this->code),
+		 $store_key
+		 );
+    $res=mysql_query($sql);
+    $pids=array();
+    while ($row=mysql_fetch_array($res)) {
+      $this->pids[$row['Product ID']]=$row['Product ID'];
+    }
+
   }
 
   function get_historic_keys_with_same_code() {

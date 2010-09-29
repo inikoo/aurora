@@ -9726,7 +9726,7 @@ $rtext=$total_records." ".ngettext('stock operation','stock operations',$total_r
 
 
 
-    $order=' `Date` desc , `Inventory Transaction Key` desc ';
+    $order=' `Date` desc ,`Inventory Transaction Type`, `Inventory Transaction Key` desc ';
     $order_direction=' ';
 
     $sql="select  `Note`,`Inventory Transaction Type`,`Inventory Transaction Quantity`,`Date`,ITF.`Location Key`,`Location Code`  from `Inventory Transaction Fact` ITF left join `Location Dimension` L on (ITF.`Location key`=L.`Location key`)  $where $wheref order by $order $order_direction limit $start_from,$number_results ";

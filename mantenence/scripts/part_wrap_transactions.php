@@ -39,12 +39,23 @@ while($row=mysql_fetch_array($res)){
 $sql=sprintf('delete from `Part Location Dimension`');
 mysql_query($sql);
 
+
+
 print "Wrap part transactions\n";
 $sql=sprintf('select `Part SKU`,`Part XHTML Currently Used In`  from `Part Dimension`    ');
 $res=mysql_query($sql);
 $count=0;
 while($row=mysql_fetch_array($res)){
-  $part=new Part($row['Part SKU']);
+ $part=new Part($row['Part SKU']);
+  $sql=sprintf("delete from  `Inventory Transaction Fact` where `Inventory Transaction Type` in ('Associate') and `Part SKU`=%d  "
+                             ,$part->sku
+                            
+                            );
+  mysql_query($sql);
+
+//print "$sql\n";
+
+ 
   $part->wrap_transactions();
   $count++;
   print percentage($count,$total)."\r";
