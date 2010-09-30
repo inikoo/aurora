@@ -1088,8 +1088,12 @@ function create_product_id($data) {
     $keys=preg_replace('/,$/',')',$keys);
     $values=preg_replace('/,$/',')',$values);
     
-    $old_pids=$this-<get_produc
-    
+    $old_pids=$this->get_product_ids_with_same_code_store($base_data['product code'],$base_data['product store key']);
+    //if(count($old_pids)>0){
+      //print $base_data['product code']."\n";
+    //print_r($old_pids);
+    // exit;
+    //}
     $sql=sprintf("insert into `Product Dimension` %s %s",$keys,$values);
     
     if (mysql_query($sql)) {
@@ -2700,17 +2704,17 @@ $number_images=$row['num'];
     }
   }
 
-  function get_product_ids_with_same_code_store($store_key) {
+  function get_product_ids_with_same_code_store($code,$store_key) {
     $sql=sprintf("select `Product ID` from `Product Dimension`  where `Product Code`=%s and `Product Store Key`=%d group by `Product ID`",
-		 prepare_mysql($this->code),
+		 prepare_mysql($code),
 		 $store_key
 		 );
     $res=mysql_query($sql);
     $pids=array();
     while ($row=mysql_fetch_array($res)) {
-      $this->pids[$row['Product ID']]=$row['Product ID'];
+      $pids[$row['Product ID']]=$row['Product ID'];
     }
-
+    return $pids;
   }
 
   function get_historic_keys_with_same_code() {
@@ -5524,20 +5528,21 @@ mysql_query($sql);
 
 
 function set_duplicates_as_historic($date=false){
-$sql=sprintf("select `Product ID` from `Product Dimension` where `Product Store Key`=%d and `Product Code`=%s and `Product Record Type`!='Historic' and `Product ID`!=%d "
-	      ,$this->data['Product Store Key']
-	      ,prepare_mysql($this->code)
-	      ,$this->pid
-	      
+  $sql=sprintf("select `Product ID` from `Product Dimension` where `Product Store Key`=%d and `Product Code`=%s and `Product Record Type`!='Historic' and `Product ID`!=%d "
+	       ,$this->data['Product Store Key']
+	       ,prepare_mysql($this->code)
+	       ,$this->pid
+	       
 	      );
-$res_code=mysql_query($sql);
-while($row_c=mysql_fetch_array($res_code)){
-  $product_to_set_as_historic=new Product('pid',$row_c['Product ID']);
-  $product_to_set_as_historic->set_as_historic($date);
-}
+  $res_code=mysql_query($sql);
+  $old_pids=array();
+  while($row_c=mysql_fetch_array($res_code)){
+    $old_pids[]=$row_c['Product ID'];
+    $product_to_set_as_historic=new Product('pid',$row_c['Product ID']);
+    $product_to_set_as_historic->set_as_historic($date);
+  }
 
-
-
+  return $old_pids;
 
 }
 
@@ -5560,13 +5565,17 @@ function set_as_historic($date=false){
  
    if(!mysql_query($sql))
     exit($sql);
-  $sql=sprintf("update `Product Part Dimension` set `Product Part Valid To`=%s ,`Product Part Most Recent`='No' where `Product ID`=%d and `Product Part Most Recent`='Yes' "
-,prepare_mysql($date)
-,$this->pid
 
-);
- if(!mysql_query($sql))
-    exit($sql);
+
+  
+
+   $sql=sprintf("update `Product Part Dimension` set `Product Part Valid To`=%s ,`Product Part Most Recent`='No' where `Product ID`=%d and `Product Part Most Recent`='Yes' "
+		,prepare_mysql($date)
+		,$this->pid
+		
+		);
+   if(!mysql_query($sql))
+     exit($sql);
 
 
 }

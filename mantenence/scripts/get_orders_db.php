@@ -1004,9 +1004,9 @@ $shipping_transactions[]=$transaction;
 
 
             if ($product->new_id ) {
-                //creamos una parte nueva
-                $part_data=array(
-
+	      //creamos una parte nueva
+	      $part_data=array(
+			       
                                'Part Status'=>'Not In Use',
                                'Part XHTML Currently Supplied By'=>sprintf('<a href="supplier.php?id=%d">%s</a>',$supplier->id,$supplier->get('Supplier Code')),
                                'Part XHTML Currently Used In'=>sprintf('<a href="product.php?id=%d">%s</a>',$product->id,$product->get('Product Code')),
