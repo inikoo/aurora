@@ -1321,7 +1321,7 @@ $this->data['Supplier Main XHTML Email']='';
         if (
             !$this->get_principal_contact_address_key()  
             ) {
-            $this->update_principal_contact_address($address_key);
+            $this->update_principal_address($address_key);
         }
     } 
 
@@ -1342,19 +1342,53 @@ $this->data['Supplier Main XHTML Email']='';
     }
     
        function update_principal_contact_address($address_key){
-        update_principal_address($address_key);
+        $this->update_principal_address($address_key);
     }
     
 function update_principal_address($address_key) {
 
-    $subject=new Company($this->data['Supplier Company Key']);
-    $subject_type='Company';
+  //    $subject=new Company($this->data['Supplier Company Key']);
+  //  $subject_type='Company';
+  //  $subject->update_principal_address($address_key);
+  $parent='Supplier';
+  $sql=sprintf("update `Address Bridge`  set `Is Main`='No' where `Subject Type`='$parent' and  `Subject Key`=%d  and `Address Key`=%d",
+                                 $this->id
+                                 ,$address_key
+                                );
+                    mysql_query($sql);
+                    $sql=sprintf("update `Address Bridge`  set `Is Main`='Yes' where `Subject Type`='$parent' and  `Subject Key`=%d  and `Address Key`=%d",
+                                 $this->id
+                                 ,$address_key
+                                );
+                    mysql_query($sql);
+		    $address=new Address($address_key);
+		    $this->data['Supplier Main Address Key']=$address_key;
+		    $this->data['Supplier Main XHTML Address']=$address->display('xhtml');
+		    $this->data['Supplier Main Plain Address']=$address->display('plain');
+		    $this->data['Supplier Main Country Key']=$address->data['Address Country Key'];
+		    $this->data['Supplier Main Country Code']=$address->data['Address Country Code'];
+		    $this->data['Supplier Main Country']=$address->data['Address Country Name'];
+		    $this->data['Supplier Main Location']=$address->display('location');
+		    
 
-    $subject->update_principal_address($address_key);
-    $this->get_data('id',$this->id);
-    $this->updated=$subject->updated;
-    $this->msg=$subject->msg;
-    $this->new_value=$subject->new_value;
+		    $sql=sprintf("update `Supplier Dimension` set `Supplier Main Address Key`=%d,`Supplier Main XHTML Address`=%s ,`Supplier Main Plain Address`=%s,`Supplier Main Country Key`=%d,`Supplier Main Country Code`=%s,`Supplier Main Country`=%s,`Supplier Main Location`=%s where `Supplier Key`=%d",
+				 $this->data['Supplier Main Address Key'],
+				 prepare_mysql($this->data['Supplier Main XHTML Address']),
+				 prepare_mysql($this->data['Supplier Main Plain Address']),
+				 $this->data['Supplier Main Country Key'],
+				 prepare_mysql($this->data['Supplier Main Country Code']),
+				 prepare_mysql($this->data['Supplier Main Country']),
+				 prepare_mysql($this->data['Supplier Main Location']),
+
+				 $this->id
+				 
+				 );
+		    mysql_query($sql);
+
+		    //  $this->get_data('id',$this->id);
+		    $this->updated=true;
+		    //$this->msg=$subject->msg;
+		    $this->new_value=$address_key;
 
 }
     

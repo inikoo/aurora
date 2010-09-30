@@ -3223,7 +3223,7 @@ Array
     }
     
     function update_principal_contact_address($address_key){
-        update_principal_address($address_key);
+        $this->update_principal_address($address_key);
     }
     
     function update_principal_address($address_key){

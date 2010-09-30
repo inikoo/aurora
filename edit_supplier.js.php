@@ -14,7 +14,7 @@ print "var units_list=[$unit_list];";
 $supplier=new Supplier($_SESSION['state']['supplier']['id']);
 $addresses=$supplier->get_address_keys();
 
-print_r($addresses);
+
 
 //$addresses[$customer->data['Customer Billing Address Key']]=$customer->data['Customer Billing Address Key'];
 $address_data="\n";
