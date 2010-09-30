@@ -94,17 +94,16 @@ class part extends DB_Table {
         $values=preg_replace('/,$/',')',$values);
 
         $sql=sprintf("insert into `Part Dimension` %s %s",$keys,$values);
-        // print "$sql\n";
-        // exit;
         if (mysql_query($sql)) {
             $this->id = mysql_insert_id();
             $this->sku =$this->id ;
             $this->new=true;
             $this->get_data('id',$this->id);
-            $data_for_history=array('Action'=>'created'
-                                             ,'History Abstract'=>_('Part Created')
-                                                                 ,'History Details'=>_('Part')." ".$this->get_sku()." (".$this->data['Part XHTML Description'].")"._('Created')
-                                   );
+            $data_for_history=array(
+				    'Action'=>'created',
+				    'History Abstract'=>_('Part Created'),
+				    'History Details'=>_('Part')." ".$this->get_sku()." (".$this->data['Part XHTML Description'].")"._('Created')
+				    );
 
 
         } else {

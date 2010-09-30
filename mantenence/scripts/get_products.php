@@ -52,11 +52,13 @@ $date=$_argv[2];
 else
 $date=date("Y-m-d H:i:s");
 
-if(isset($_argv[3]) and $_argv[3]=='old')
+if(isset($_argv[3]) and $_argv[3]=='old'){
 $map=$_y_map_old;
-else
+$is_old=true;
+}else{
 $map=$_y_map;
-
+$is_old=false;
+}
 $editor=array(
                             'Date'=>$date,
                             'Author Name'=>'',
@@ -158,7 +160,7 @@ foreach($__cols as $cols){
   $code=_trim($cols[$map['code']]);
 
 
-  if(count($cols)<25){
+  if(count($cols)<25 or($is_old and $code=='HOT-01')){
     continue;
     //print_r($cols);
     
@@ -567,11 +569,30 @@ foreach($__cols as $cols){
        
 
        if($product->new_id){
-	        $scode=_trim($cols[$map['supplier_product_code']]);
-	        $supplier_code=$cols[$map['supplier_code']];
-            update_supplier_part($code,$scode,$supplier_code,$units,$w,$product,$description,$supplier_cost);
-	  
-	    $product->set_duplicates_as_historic();
+	 $scode=_trim($cols[$map['supplier_product_code']]);
+	 $supplier_code=$cols[$map['supplier_code']];
+	 update_supplier_part($code,$scode,$supplier_code,$units,$w,$product,$description,$supplier_cost);
+	 
+	 $old_pids=$product->set_duplicates_as_historic($date);
+	 if(count($old_pids)>0){
+	   $sql="select  GROUP_CONCAT(distinct `Part SKU`) skus from `Product Part Dimension` PPD left join `Product Part List` PPL on (PPL.`Product Part Key`=PPD.`Product Part Key`)where `Product ID` in (".join(",",$old_pids).")  ";
+	   
+	   $res=mysql_query($sql);
+	   $skus='';
+	   if ($row=mysql_fetch_array($res)) {
+	     $skus= $row['skus'];
+	   }
+	   
+	   if($skus!=''){
+	     $sql="update `Part Dimension` set `Part Status`='Not In Use',`Part Valid To`=".prepare_mysql($date)." where `Part SKU` in (".$skus.") ";
+	     if(!mysql_query($sql)){
+	       exit("$sql\n");
+	     }
+	     
+	   }
+	 }
+
+
  }
        
      $product->change_current_key($product->id);
@@ -732,33 +753,30 @@ if(preg_match('/pouches/i',$department_code)){
 
 function update_supplier_part($code,$scode,$supplier_code,$units,$w,$product,$description,$supplier_cost){
   global $myconf,$editor,$map;
- $product->update_for_sale_since(date("Y-m-d H:i:s",strtotime($editor['Date']." +1 seconds")));
-	if(preg_match('/^SG\-|^info\-|^FO\-/i',$code))
-	  $supplier_code='AW';
-
- if (preg_match('/^(SG|FO|EO|PS|BO|EOB|AM)\-/i',$code))
-                $supplier_code='AW';
-
+  $product->update_for_sale_since(date("Y-m-d H:i:s",strtotime($editor['Date']." +1 seconds")));
+  if(preg_match('/^SG\-|^info\-|^FO\-/i',$code))
+    $supplier_code='AW';
+  
+  if (preg_match('/^(SG|FO|EO|PS|BO|EOB|AM)\-/i',$code))
+    $supplier_code='AW';
+  
 	if($supplier_code=='AW')
 	  $scode=$code;
-
-
-
+	
 	if($scode=='SSK-452A' and $supplier_code=='Smen')
 	  $scode='SSK-452A bis';
-
-
+	
+	
 	if(preg_match('/^(StoneM|Smen)$/i',$supplier_code)){
 	  $supplier_code='StoneM';
 	}
+	
 
-
-		$the_supplier_data=array(
-		      'name'=>$supplier_code,
-		      'code'=>$supplier_code,
-		      );
-
-	// Suppplier data
+	$the_supplier_data=array(
+				 'name'=>$supplier_code,
+				 'code'=>$supplier_code,
+				 );
+	
 	if(preg_match('/Ackerman|Ackerrman|Akerman/i',$supplier_code)){
 	  $supplier_code='Ackerman';
 	  $the_supplier_data=array(
@@ -1401,7 +1419,7 @@ if(preg_match('/^Wenzels$/i',$supplier_code)){
 	  $scode='';
 	}if(preg_match('/^(\?|new|\d|0.25|0.5|0.8|0.8000006103|01 Glass Jewellery Box|1|0.1|0.05|1.5625|10|\d{1,2}\s?\+\s?\d{1,2}\%)$/i',$scode)){
 	  print "$code wrong supplier code -> ($scode)\n";
-		   
+	  
 	  $scode='';
 	}
 	if($scode=='same'){
@@ -1434,24 +1452,22 @@ if(preg_match('/^Wenzels$/i',$supplier_code)){
 	
 
 	$part_data=array(
-	          'editor'=>$editor,
+			 'editor'=>$editor,
 			 'Part Most Recent'=>'Yes',
 			 'Part XHTML Currently Supplied By'=>sprintf('<a href="supplier.php?id=%d">%s</a>',$supplier->id,$supplier->get('Supplier Code')),
 			 'Part XHTML Currently Used In'=>sprintf('<a href="product.php?id=%d">%s</a>',$product->id,$product->get('Product Code')),
 			 'Part XHTML Description'=>preg_replace('/\(.*\)\s*$/i','',$product->get('Product XHTML Short Description')),
-		     'Part Unit Description'=>strip_tags(preg_replace('/\(.*\)\s*$/i','',$product->get('Product XHTML Short Description'))),
-
+			 'Part Unit Description'=>strip_tags(preg_replace('/\(.*\)\s*$/i','',$product->get('Product XHTML Short Description'))),
+			 
 			 'part valid from'=>$editor['Date'],
 			 'part valid to'=>$editor['Date'],
 			 'Part Gross Weight'=>$w
 			 );
 	$part=new Part('new',$part_data);
-	//	print_r($part->data);
-	
+	if($part->new){
+	  
+	}
 
-	
-
-	
 	$rules[]=array('Part Sku'=>$part->data['Part SKU'],
 		       'Supplier Product Units Per Part'=>$units
 		       ,'supplier product part most recent'=>'Yes'
@@ -1459,9 +1475,9 @@ if(preg_match('/^Wenzels$/i',$supplier_code)){
 		       ,'supplier product part valid to'=>$editor['Date']
 		       ,'factor supplier product'=>1
 		       );
-
 	
-
+	
+	
 	$supplier_product->new_part_list('',$rules);
 	
 	$part_list[]=array(
@@ -1469,12 +1485,11 @@ if(preg_match('/^Wenzels$/i',$supplier_code)){
 			   'Parts Per Product'=>1,
 			   'Product Part Type'=>'Simple'
 			   );
-			   
+	
 			
-			   
-			 $product->new_current_part_list(array(),$part_list)  ;
-	//$product->new_part_list(array(),$part_list);
-$supplier_product->load('used in');
+	
+	$product->new_current_part_list(array(),$part_list)  ;
+	$supplier_product->load('used in');
 	$product->load('parts');
 	$part->load('used in');
 	$part->load('supplied by');
