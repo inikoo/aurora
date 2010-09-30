@@ -394,85 +394,26 @@ function init(){
     var ids = ["name","fiscal_name","tax_number","registration_number"]; 
     YAHOO.util.Event.addListener(ids, "keyup", update_details);
     
-    var ids = ["address_description","address_country_d1","address_country_d2","address_town","address_town_d2","address_town_d1","address_postal_code","address_street","address_internal","address_building"]; 
-    YAHOO.util.Event.addListener(ids, "keyup", on_address_item_change);
-    YAHOO.util.Event.addListener(ids, "change",on_address_item_change);
-    //TODO: event when paste with the middle mouse (peroblem in  linux only)
     
-    YAHOO.util.Event.addListener('save_address_button', "click",save_address);
+    edit_address(1,'contact_');
+	var ids = ["contact_address_description","contact_address_country_d1","contact_address_country_d2","contact_address_town","contact_address_town_d2","contact_address_town_d1","contact_address_postal_code","contact_address_street","contact_address_internal","contact_address_building"]; 
+	YAHOO.util.Event.addListener(ids, "keyup", on_address_item_change,'contact_');
+	YAHOO.util.Event.addListener(ids, "change",on_address_item_change,'contact_');
+	 
+	YAHOO.util.Event.addListener('contact_save_address_button', "click",save_address,{prefix:'contact_',subject:'Customer',subject_key:customer_id,type:'contact'});
+	YAHOO.util.Event.addListener('contact_reset_address_button', "click",reset_address,'contact_');
 	
+	var Countries_DS = new YAHOO.util.FunctionDataSource(match_country);
+	Countries_DS.responseSchema = {fields: ["id", "name", "code","code2a","postal_regex"]}
+	var Countries_AC = new YAHOO.widget.AutoComplete("contact_address_country", "contact_address_country_container", Countries_DS);
+	Countries_AC.forceSelection = true; 
+	Countries_AC.useShadow = true;
+    Countries_AC.suffix='contact_';
+	Countries_AC.resultTypeList = false;
+	Countries_AC.formatResult = countries_format_results;
+	Countries_AC.itemSelectEvent.subscribe(onCountrySelected);
     
-
-
-    
-
-     // Use a FunctionDataSource
-    var Countries_DS = new YAHOO.util.FunctionDataSource(match_country);
-    Countries_DS.responseSchema = {
-        fields: ["id", "name", "code","code2a"]
-    }
-
-    // Instantiate AutoComplete
-    var Countries_AC = new YAHOO.widget.AutoComplete("address_country", "address_country_container", Countries_DS);
-    Countries_AC.useShadow = true;
-    Countries_AC.resultTypeList = false;
-
-    // Custom formatter to highlight the matching letters
-    Countries_AC.formatResult = function(oResultData, sQuery, sResultMatch) {
-        var query = sQuery.toLowerCase(),
-	name = oResultData.name,
-	code = oResultData.code,
-	
-	query = sQuery.toLowerCase(),
-	nameMatchIndex = name.toLowerCase().indexOf(query),
-	codeMatchIndex = code.toLowerCase().indexOf(query),
-        
-	displayname, displaycode;
-            
-        if(nameMatchIndex > -1) {
-            displayname = highlightMatch(name, query, nameMatchIndex);
-        }
-        else {
-            displayname = name;
-        }
-
-        if(codeMatchIndex > -1) {
-            displaycode = highlightMatch(code, query, codeMatchIndex);
-        }
-        else {
-            displaycode = code;
-        }
-
-     
-        return displayname + " (" + displaycode + ")";
-        
-    };
-
-    // Helper function for the formatter
-    var highlightMatch = function(full, snippet, matchindex) {
-        return full.substring(0, matchindex) + 
-                "<span class='match'>" + 
-                full.substr(matchindex, snippet.length) + 
-                "</span>" +
-                full.substring(matchindex + snippet.length);
-    };
-
   
-    var onCountrySelected = function(sType, aArgs) {
-        var myAC = aArgs[0]; // reference back to the AC instance
-        var elLI = aArgs[1]; // reference to the selected LI element
-        var oData = aArgs[2]; // object literal of selected item's result data
-        
-        // update hidden form field with the selected item's ID
-
-        Dom.get("address_country_code").value = oData.code;
-        Dom.get("address_country_2acode").value = oData.code2a;
-        myAC.getInputEl().value = oData.name + " (" + oData.code + ") ";
-on_address_item_change();
-	update_address_labels(oData.code);
-
-    };
-    Countries_AC.itemSelectEvent.subscribe(onCountrySelected);
 
  
 

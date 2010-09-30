@@ -359,12 +359,20 @@ $this->data['Supplier Main XHTML Email']='';
 		//	print "=================\n";
 
 
-            $company->update_parents_principal_address_keys($company->data['Company Main Address Key']);
+            //$company->update_parents_principal_address_keys($company->data['Company Main Address Key']);
+            
+            
             $address=new Address($company->data['Company Main Address Key']);
             $address->editor=$this->editor;
-            $address->update_parents();
+
+            $this->create_contact_address_bridge($address->id);
+            
+
+            //$address->update_parents();
             $address->update_parents_principal_telecom_keys('Telephone');
             $address->update_parents_principal_telecom_keys('FAX');
+            
+            
             $tel=new Telecom($address->get_principal_telecom_key('Telephone'));
             $tel->editor=$this->editor;
             if ($tel->id)
@@ -1304,6 +1312,19 @@ $this->data['Supplier Main XHTML Email']='';
 
     }
 
+     function create_contact_address_bridge($address_key) {
+        $sql=sprintf("insert into `Address Bridge` (`Subject Type`,`Address Function`,`Subject Key`,`Address Key`) values ('Supplier','Contact',%d,%d)  ",
+                     $this->id,
+                     $address_key
+                    );
+        mysql_query($sql);
+        if (
+            !$this->get_principal_contact_address_key()  
+            ) {
+            $this->update_principal_contact_address($address_key);
+        }
+    } 
+
     function create_company_bridge($company_key) {
         $sql=sprintf("insert into  `Company Bridge` (`Company Key`, `Subject Type`,`Subject Key`,`Is Main`) values (%d,%s,%d,'No')  "
                      ,$company_key
@@ -1319,6 +1340,26 @@ $this->data['Supplier Main XHTML Email']='';
 
 
     }
+    
+       function update_principal_contact_address($address_key){
+        update_principal_address($address_key);
+    }
+    
+function update_principal_address($address_key) {
+
+    $subject=new Company($this->data['Supplier Company Key']);
+    $subject_type='Company';
+
+    $subject->update_principal_address($address_key);
+    $this->get_data('id',$this->id);
+    $this->updated=$subject->updated;
+    $this->msg=$subject->msg;
+    $this->new_value=$subject->new_value;
+
+}
+    
+    
+    
     function update_principal_company($company_key) {
         $main_company_key=$this->get_principal_company_key();
 
@@ -1402,6 +1443,15 @@ $this->data['Supplier Main XHTML Email']='';
         return $main_contact_key;
     }
 
+function get_principal_contact_address_key() {
+    $main_address_key=0;
+    $sql=sprintf("select `Address Key` from `Address Bridge` where `Subject Type`='Supplier' and `Address Function`='Contact' and `Subject Key`=%d and `Is Main`='Yes'",$this->id );
+    $res=mysql_query($sql);
+    if ($row=mysql_fetch_array($res)) {
+        $main_address_key=$row['Address Key'];
+    }
+    return $main_address_key;
+}
 
     function get_principal_company_key() {
         $sql=sprintf("select `Company Key` from `Company Bridge` where `Subject Type`='Supplier' and `Subject Key`=%d and `Is Main`='Yes'",$this->id );
@@ -1444,7 +1494,20 @@ $this->data['Supplier Main XHTML Email']='';
         return $companies;
     }
 
+  function get_address_keys() {
 
+
+        $sql=sprintf("select * from `Address Bridge` CB where   `Subject Type`='Supplier' and `Subject Key`=%d  group by `Address Key` order by `Is Main` desc  ",$this->id);
+        $address_keys=array();
+        $result=mysql_query($sql);
+
+        while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+
+            $address_keys[$row['Address Key']]= $row['Address Key'];
+        }
+        return $address_keys;
+
+    }
 
 }
 

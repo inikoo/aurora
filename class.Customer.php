@@ -3172,7 +3172,18 @@ Array
 
 
     }
-    
+     function create_contact_address_bridge($address_key) {
+        $sql=sprintf("insert into `Address Bridge` (`Subject Type`,`Address Function`,`Subject Key`,`Address Key`) values ('Customer','Contact',%d,%d)  ",
+                     $this->id,
+                     $address_key
+                    );
+        mysql_query($sql);
+        if (
+            !$this->get_principal_contact_address_key()  
+            ) {
+            $this->update_principal_contact_address($address_key);
+        }
+    } 
 
   function create_delivery_address_bridge($address_key) {
         $sql=sprintf("insert into `Address Bridge` (`Subject Type`,`Address Function`,`Subject Key`,`Address Key`) values ('Customer','Shipping',%d,%d)  ",
@@ -3210,6 +3221,11 @@ Array
         }
 
     }
+    
+    function update_principal_contact_address($address_key){
+        update_principal_address($address_key);
+    }
+    
     function update_principal_address($address_key){
         
     
@@ -3331,28 +3347,39 @@ Array
 
     }
 
-    function get_principal_billing_address_key() {
+function get_principal_contact_address_key() {
+    $main_address_key=0;
+    $sql=sprintf("select `Address Key` from `Address Bridge` where `Subject Type`='Customer' and `Address Function`='Contact' and `Subject Key`=%d and `Is Main`='Yes'",$this->id );
+    $res=mysql_query($sql);
+    if ($row=mysql_fetch_array($res)) {
+        $main_address_key=$row['Address Key'];
+    }
+    return $main_address_key;
+}
 
-switch ($this->data['Customer Billing Address Link']) {
+
+function get_principal_billing_address_key() {
+
+    switch ($this->data['Customer Billing Address Link']) {
     case 'Contact':
         return $this->data['Customer Main Address Key'];
         break;
-   
+
     default:
-          $sql=sprintf("select `Address Key` from `Address Bridge` where `Subject Type`='Customer' and `Address Function`='Billing' and `Subject Key`=%d and `Is Main`='Yes'",$this->id );
+        $sql=sprintf("select `Address Key` from `Address Bridge` where `Subject Type`='Customer' and `Address Function`='Billing' and `Subject Key`=%d and `Is Main`='Yes'",$this->id );
         $res=mysql_query($sql);
         if ($row=mysql_fetch_array($res)) {
             $main_address_key=$row['Address Key'];
         } else {
-             $main_address_key=$this->data['Customer Main Address Key'];
+            $main_address_key=$this->data['Customer Main Address Key'];
         }
 
         return $main_address_key;
         break;
-}
-
-
     }
+
+
+}
  function get_principal_delivery_address_key() {
 
 switch ($this->data['Customer Delivery Address Link']) {
