@@ -85,7 +85,7 @@ if (($handle = fopen($filename, "r")) !== FALSE) {
     while (($data = fgetcsv($handle, filesize($filename), ",")) !== FALSE) {
         $num = count($data);
 
-        //print "$num $row\n";
+        print "$num $row\r";
         if ($num!=105)
             break;
 
