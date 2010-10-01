@@ -1315,7 +1315,7 @@ get_data($header_data);
         $customer = new Customer ( 'find create', $data['Customer Data'] );
               if($customer_data['Customer Delivery Address Link']=='None'){
        $shipping_addresses['Address Input Format']='3 Line';
-       $address=new Address('create',$shipping_addresses);
+       $address=new Address('find in customer '.$customer->id." create update",$shipping_addresses);
        $customer->create_delivery_address_bridge($address->id);
        }
   
