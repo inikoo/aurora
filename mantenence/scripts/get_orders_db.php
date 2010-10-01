@@ -101,7 +101,7 @@ $sql="select *,replace(   replace(replace(replace(replace(replace(replace(replac
 
 //$sql="select * from  orders_data.orders  where    (last_transcribed is NULL  or last_read>last_transcribed) and deleted='No'  order by filename ";
 //$sql="select * from  orders_data.orders where filename like '%/a/%.xls'   order by filename";
-//$sql="select * from  orders_data.orders where filename like '%/5%.xls'   order by filename";
+//$sql="select * from  orders_data.orders where filename like '%/6954.xls'   order by filename";
 //$sql="select * from  orders_data.orders where filename like '%/102691rpl.xls'   order by filename";
 
 //$sql="select * from  orders_data.orders where filename like '%/%ref%.xls'   order by filename";
@@ -331,7 +331,9 @@ $editor=array(
        // print_r($transactions);
         unset($products);
         $_customer_data=setup_contact($act_data,$header_data,$date_index2,$editor);
-                list($_customer_data['type'],$_customer_data['company_name'],$_customer_data['contact_name'])=parse_company_person($_customer_data['company_name'],$_customer_data['contact_name']);
+         
+        
+         list($_customer_data['type'],$_customer_data['company_name'],$_customer_data['contact_name'])=parse_company_person($_customer_data['company_name'],$_customer_data['contact_name']);
 
         $customer_data=array();
 
@@ -398,7 +400,6 @@ $editor=array(
             $shipping_addresses['Address Country Second Division']=$_customer_data['shipping_data']['country_d2'];
             unset($customer_data['shipping_data']);
         }
-
         if (strtotime($date_order)>strtotime($date2)) {
             print "Warning (Fecha Factura anterior Fecha Orden) $filename $date_order  $date2 \n";
             $date2=date("Y-m-d H:i:s",strtotime($date_order.' +8 hour'));
@@ -1290,12 +1291,20 @@ get_data($header_data);
         $data['Customer Data']['editor']=$data['editor'];
         $data['Customer Data']['editor']['Date']=date("Y-m-d H:i:s",strtotime($data['Customer Data']['editor']['Date']." -1 second"));
      
-     
+//     print_r($data['Customer Data']);
      $customer = new Customer ( 'find create', $data['Customer Data'] );
         if (!$customer->id) {
         exit("Error Customer can not found in get_order\n");
         
         }
+       
+       
+       if($customer_data['Customer Delivery Address Link']=='None'){
+       $shipping_addresses['Address Input Format']='3 Line';
+       $address=new Address('create',$shipping_addresses);
+       $customer->create_delivery_address_bridge($address->id);
+       }
+       
        
         $data['Order Customer Key']=$customer->id;
       $customer_key=$customer->id;

@@ -1254,7 +1254,12 @@ get_data($header_data);
         $customer = new Customer ( 'find create', $data['Customer Data'] );
         $data['Order Customer Key']=$customer->id;
       $customer_key=$customer->id;
-
+       if($customer_data['Customer Delivery Address Link']=='None'){
+       $shipping_addresses['Address Input Format']='3 Line';
+       $address=new Address('create',$shipping_addresses);
+       $customer->create_delivery_address_bridge($address->id);
+       }
+  
 
 switch ($tipo_order) {
     case 1://Delivery Note
