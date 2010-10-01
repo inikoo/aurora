@@ -693,13 +693,15 @@ $contact->editor=$this->editor;
                 
                 $this->associate_contact($contact->id);
                 
-                $company->update_parents_principal_address_keys($company->data['Company Main Address Key']);
+                //$company->update_parents_principal_address_keys($company->data['Company Main Address Key']);
+                
+                
                 
                 $address=new Address($company->data['Company Main Address Key']);
                 $address->editor=$this->editor;
                  $address->new=true;
-               
-                $address->update_parents();
+               $this->create_contact_address_bridge($address->id);
+               // $address->update_parents();
                 
               
               $address->update_parents_principal_telecom_keys('Telephone');
@@ -3227,8 +3229,42 @@ Array
     }
     
     function update_principal_address($address_key){
-        
     
+   
+    
+ 
+   $sql=sprintf("update `Address Bridge`  set `Is Main`='No' where `Subject Type`='Customer' and  `Subject Key`=%d  and `Address Key`=%d",
+                                 $this->id
+                                 ,$address_key
+                                );
+                    mysql_query($sql);
+                    $sql=sprintf("update `Address Bridge`  set `Is Main`='Yes' where `Subject Type`='Customer' and  `Subject Key`=%d  and `Address Key`=%d",
+                                 $this->id
+                                 ,$address_key
+                                );
+                    mysql_query($sql);
+                    $sql=sprintf("update `Customer Dimension` set `Customer Main Address Key`=%d where `Customer Key`=%d"
+                                 ,$address_key
+                                 ,$this->id
+                                );
+                    mysql_query($sql);
+  
+   if ($this->data['Customer Delivery Address Link']=='Contact') {
+                            $this->update_principal_delivery_address($address_key);
+
+                        }
+                        if ($this->data['Customer Billing Address Link']=='Contact') {
+                            $this->update_principal_billing_address($address_key);
+
+                        }
+  
+  $address=new Address($address_key);
+  $address->update_parents('Customer');
+  $this->updated=true;
+  $this->new_value=$address_key;
+  
+  
+  /*  
             if ($this->data['Customer Type']=='Person') {
                 $subject=new Contact($this->data['Customer Main Contact Key']);
                 $subject_type='Contact';
@@ -3238,11 +3274,11 @@ Array
 
             }
             $subject->update_principal_address($address_key);
-            $this->get_data('id',$this->id);
+               $this->get_data('id',$this->id);
             $this->updated=$subject->updated;
             $this->msg=$subject->msg;
             $this->new_value=$subject->new_value;
-
+*/
     
     }
     
