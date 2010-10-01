@@ -1306,7 +1306,12 @@ get_data($header_data);
         $data['Customer Data']['editor']['Date']=date("Y-m-d H:i:s",strtotime($data['Customer Data']['editor']['Date']." -1 second"));
         $customer = new Customer ( 'find create', $data['Customer Data'] );
        
-        
+               if($customer_data['Customer Delivery Address Link']=='None'){
+       $shipping_addresses['Address Input Format']='3 Line';
+       $address=new Address('create',$shipping_addresses);
+       $customer->create_delivery_address_bridge($address->id);
+       }
+  
         $data['Order Customer Key']=$customer->id;
       $customer_key=$customer->id;
 
