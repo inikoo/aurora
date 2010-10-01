@@ -96,7 +96,7 @@ $fam_promo_key=$fam_promo->id;
 
 $sql="select * from  de_orders_data.orders  where   (last_transcribed is NULL  or last_read>last_transcribed) and deleted='No'  order by filename  ";
 //$sql="select * from  de_orders_data.orders where filename like '%refund.xls'   order by filename";
-//$sql="select * from  de_orders_data.orders  where (filename like '/mnt/%DE0004r%.xls' ) order by filename";
+//$sql="select * from  de_orders_data.orders  where (filename like '/mnt/%DE0095%.xls' ) order by filename";
 
 
 $contador=0;
@@ -329,12 +329,16 @@ mysql_free_result($result_test);
         //   echo "Memory: ".memory_get_usage(true) . "x\n";
         //     echo "Memory: ".memory_get_usage() . "x\n";
         $_customer_data=setup_contact($act_data,$header_data,$date_index2);
-
+ list($_customer_data['type'],$_customer_data['company_name'],$_customer_data['contact_name'])=parse_company_person($_customer_data['company_name'],$_customer_data['contact_name']);
         $customer_data=array();
 
         if (isset($header_data['tax_number']) and $header_data['tax_number']!='') {
             $customer_data['Customer Tax Number']=$header_data['tax_number'];
         }
+
+
+       
+
 
         //    print_r($_customer_data);
         foreach($_customer_data as $_key =>$value) {

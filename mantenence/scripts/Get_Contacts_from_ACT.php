@@ -84,8 +84,12 @@ $contacts_date=array();
 if (($handle = fopen($filename, "r")) !== FALSE) {
     while (($data = fgetcsv($handle, filesize($filename), ",")) !== FALSE) {
         $num = count($data);
-
+//   print_r($data);
         print "$num $row\r";
+        
+    //    if($row>1000)
+     //       break;
+        
         if ($num!=105)
             break;
 
@@ -143,7 +147,7 @@ if (($handle = fopen($filename, "r")) !== FALSE) {
         $act_data['tax_number']=parse_tax_number($cols[$map_act['real_tax_number']+3]);
 
 
-        //    print $cols[92]."\n";
+        //   print $cols[92]."\n";
 
         $act_data['country_d1']='';
         //  $act_data['vat_number']=$cols[88+3];
@@ -218,75 +222,10 @@ foreach($contacts as $act_data) {
 //   continue;
 
 //print_r($act_data);
-    if ($act_data['name']!='' and $act_data['contact']!='') {
-        $tipo_customer='Company';
-        if ($act_data['name']==$act_data['contact'] ) {
-            $person_factor=is_person($act_data['name']);
-            $company_factor=is_company($act_data['name']);
-            if ($company_factor>$person_factor) {
-                $tipo_customer='Company';
-                $act_data['contact']='';
-            } else {
-                $tipo_customer='Person';
-                $act_data['name']='';
-            }
 
-        } else {
-            $company_person_factor=is_person($act_data['name']);
-            $company_company_factor=is_company($act_data['name']);
-            $person_company_factor=is_company($act_data['contact']);
-            $person_person_factor=is_person($act_data['contact']);
+//===XXxxxXXX
 
-            if ($person_company_factor>$person_person_factor or $company_person_factor>$company_company_factor) {
-                $_name=$act_data['name'];
-                $act_data['name']=$act_data['contact'];
-                $act_data['contact']=$_name;
-            }
-
-
-
-        }
-
-
-    }
-    elseif($act_data['name']!='') {
-        $tipo_customer='Company';
-        $company_person_factor=is_person($act_data['name']);
-        $company_company_factor=is_company($act_data['name']);
-
-        if ( $company_person_factor>$company_company_factor) {
-            $tipo_customer='Person';
-            $_name=$act_data['name'];
-            $act_data['name']=$act_data['contact'];
-            $act_data['contact']=$_name;
-        }
-
-
-    }
-    elseif($act_data['contact']!='') {
-        $tipo_customer='Person';
-        $person_company_factor=is_company($act_data['contact']);
-        $person_person_factor=is_person($act_data['contact']);
-
-        if ($person_company_factor>$person_person_factor ) {
-            $tipo_customer='Company';
-            $_name=$act_data['name'];
-            $act_data['name']=$act_data['contact'];
-            $act_data['contact']=$_name;
-        }
-
-
-    }
-    else {
-        $tipo_customer='Person';
-
-    }
-
-
-
-
-
-
+ list($tipo_customer,$act_data['name'],$act_data['contact'])=parse_company_person($act_data['name'],$act_data['contact']);
 
     $email_data=guess_email($act_data['email']);
 
@@ -318,21 +257,27 @@ foreach($contacts as $act_data) {
     $_customer_data['email']=$email_data['email'];
 
 
-
+$de_customer=false;
     $customer_data['Customer Store Key']=1;
     if (preg_match('/aw-geschenke/i',$act_data['source'])){
  $store=new Store('code','DE');     
    $customer_data['Customer Store Key']=$store->id;
+$de_customer=true;
 
-    }if (preg_match('/nabil/i',$act_data['takenby'])){
+    }elseif (preg_match('/nabil/i',$act_data['takenby']) 
+    or ( $act_data['international_email']!='' and 
+    (  preg_match('/cadeaux/i',$act_data['source'])  or preg_match('/^(fr|france)$/i',$act_data['source'])) 
+    )
+    
+    ){
       $store=new Store('code','FR');     
    $customer_data['Customer Store Key']=$store->id;
     }
 
 
 
-
-
+if(!$de_customer)
+    continue;
     if ($customer_data['Customer Store Key']!=1)
         $_customer_data['email']=$act_data['international_email'];
 
@@ -427,15 +372,21 @@ foreach($contacts as $act_data) {
     }
 
     // print_r($act_data);
+//print_r($customer_data);
 
     $customer = new Customer ( 'find create',  $customer_data);
+//print_r($customer);
 
     //   if(count($act_data['history'])>0){
     //  print "Customer ".$customer->id." with History\n\n\n\n\n\n";
     //  print_r($act_data['history']);
     // }
-
+    
+$store->update_customers_data();
     foreach($act_data['history'] as $h_tipo=>$histories) {
+    
+    //print_r($histories);
+    
         if ($h_tipo=='Note')
             foreach($histories as $date=>$history) {
             $customer->add_note($history,'',$date);
@@ -511,7 +462,7 @@ function get_history_data($raw_history) {
 
     $date_splited=preg_split($date_separator,$raw_history);
     unset($date_splited[0]);
-    // print_r($date_splited);
+     //print_r($date_splited);
 
     foreach($date_splited as $y) {
         $x=preg_split('/\s+\-\s+/',$y);
@@ -553,136 +504,10 @@ function get_history_data($raw_history) {
 
     }
 
-    //print_r($dates);
+ //   print_r($history);
     return $history;
 
 }
-
-
-
-function is_person($name) {
-    $company_suffix="L\.?T\.?D\.?";
-    $company_prefix="The";
-    $company_words=array('Gifts','Chemist','Pharmacy','Company','Business');
-    $name=_trim($name);
-    $probability=1;
-    if (preg_match('/\d/',$name)) {
-        $probability*=0.00001;
-    }
-    if (preg_match("/\s+".$company_suffix."$/",$name)) {
-        $probability*=0.001;
-    }
-    if (preg_match("/\s+".$company_prefix."$/",$name)) {
-        $probability*=0.001;
-    }
-    // print_r($company_words);
-    foreach($company_words as $word) {
-        if (preg_match("/\b".$word."\b/i",$name)) {
-            $probability*=0.01;
-        }
-    }
-
-
-    return $probability;
-
-}
-
-function is_company($name) {
-
-    $name=_trim($name);
-    global $person_prefix;
-    $probability=1;
-
-    if (preg_match("/^".$person_prefix."\s+/",$name)) {
-        $probability*=0.01;
-    }
-    $components=preg_split('/\s/',$name);
-
-
-    if (count($components)>1) {
-        $has_sal=false;
-        $saludation=preg_replace('/\./','',$components[0]);
-        $sql=sprintf('select `Salutation Key` from kbase.`Salutation Dimension` where `Salutation`=%s  ',prepare_mysql($saludation));
-        $res=mysql_query($sql);
-        if ($row=mysql_fetch_array($res)) {
-            $probability*=0.9;
-        }
-
-
-
-    }
-
-
-
-    if (count($components)==2) {
-        $name_ok=false;
-        $surname_ok=false;
-        $sql=sprintf('select `First Name Key` from kbase.`First Name Dimension` where `First Name`=%s  ',prepare_mysql($components[0]));
-        $res=mysql_query($sql);
-        if ($row=mysql_fetch_array($res)) {
-            $name_ok=true;
-        }
-        $sql=sprintf('select `Surname Key` from kbase.`Surname Dimension` where `Surname`=%s  ',prepare_mysql($components[1]));
-        $res=mysql_query($sql);
-        if ($row=mysql_fetch_array($res)) {
-            $surname_ok=true;
-        }
-        if ($surname_ok and $name_ok) {
-            $probability*=0.75;
-        }
-        if ($name_ok) {
-            $probability*=0.95;
-        }
-        if ($surname_ok) {
-            $probability*=0.95;
-        }
-
-        if (strlen($components[0])==1) {
-            $probability*=0.95;
-        }
-
-
-
-    }
-    elseif(count($components)==3) {
-
-        $name_ok=false;
-        $surname_ok=false;
-        $sql=sprintf('select `First Name Key` from kbase.`First Name Dimension` where `First Name`=%s  ',prepare_mysql($components[0]));
-        $res=mysql_query($sql);
-        if ($row=mysql_fetch_array($res)) {
-            $name_ok=true;
-        }
-        $sql=sprintf('select `Surname Key` from kbase.`Surname Dimension` where `Surname`=%s  ',prepare_mysql($components[2]));
-        $res=mysql_query($sql);
-        if ($row=mysql_fetch_array($res)) {
-            $surname_ok=true;
-        }
-        if ($surname_ok and $name_ok) {
-            $probability*=0.75;
-        }
-        if ($name_ok) {
-            $probability*=0.95;
-        }
-        if ($surname_ok) {
-            $probability*=0.95;
-        }
-
-        if (strlen($components[1])==1) {
-            $probability*=0.95;
-        }
-
-        if (strlen($components[1])==1 and strlen($components[0])==1 ) {
-            $probability*=0.99;
-        }
-
-    }
-
-
-    return $probability;
-}
-
-
 
 
 ?>

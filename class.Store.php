@@ -698,7 +698,8 @@ $sql=sprintf("select sum(if(`Product Record Type`='New',1,0)) as new,sum(if(`Pro
  
 
  
-     $sql=sprintf("select count(*) as num ,sum(IF(`Customer Orders`>0,1,0)) as customers,sum(IF(`New Served Customer`='Yes',1,0)) as new_served,sum(IF(`New Customer`='Yes',1,0)) as new_contact,sum(IF(`Active Customer`='Yes',1,0)) as active, sum(IF(`Customer Type by Activity`='Inactive',1,0)) as lost  from   `Customer Dimension` where `Customer Store Key`=%d",$this->id);
+     $sql=sprintf("select count(*) as num ,sum(IF(`Customer Orders`>0,1,0)) as customers,sum(IF(`New Served Customer`='Yes',1,0)) as new_served,sum(IF(`New Customer`='Yes',1,0)) as new_contact,sum(IF(`Active Customer`='Yes' and `Customer Orders Invoiced`>0  ,1,0)) as active, sum(IF(`Customer Type by Activity`='Inactive' and `Customer Orders Invoiced`>0,1,0)) as lost  from   `Customer Dimension` where `Customer Store Key`=%d",$this->id);
+   //  print $sql;
      $result=mysql_query($sql);
      if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
       $this->data['Store Total Customer Contacts']=$row['num'];
@@ -706,7 +707,7 @@ $sql=sprintf("select sum(if(`Product Record Type`='New',1,0)) as new,sum(if(`Pro
       $this->data['Store Total Customers']=$row['customers'];
       $this->data['Store Active Customers']=$row['active'];
       $this->data['Store New Customers']=$row['new_served'];
-      $this->data['Store Lost Customers']=$row['num'];
+      $this->data['Store Lost Customers']=$row['lost'];
      }else{
          $this->data['Store Total Customer Contacts']=0;
       $this->data['Store New Customer Contacts']=0;
@@ -728,7 +729,7 @@ $sql=sprintf("select sum(if(`Product Record Type`='New',1,0)) as new,sum(if(`Pro
 		 ,$this->id
 		 );
     mysql_query($sql);
- 
+ //print "\n$sql\n";
  
  }
  
