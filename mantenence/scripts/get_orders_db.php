@@ -331,6 +331,8 @@ $editor=array(
        // print_r($transactions);
         unset($products);
         $_customer_data=setup_contact($act_data,$header_data,$date_index2,$editor);
+                list($_customer_data['type'],$_customer_data['company_name'],$_customer_data['contact_name'])=parse_company_person($_customer_data['company_name'],$_customer_data['contact_name']);
+
         $customer_data=array();
 
         if (isset($header_data['tax_number']) and $header_data['tax_number']!='') {

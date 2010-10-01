@@ -329,7 +329,7 @@ mysql_free_result($result_test);
         //   echo "Memory: ".memory_get_usage(true) . "x\n";
         //     echo "Memory: ".memory_get_usage() . "x\n";
         $_customer_data=setup_contact($act_data,$header_data,$date_index2);
- list($_customer_data['type'],$_customer_data['company_name'],$_customer_data['contact_name'])=parse_company_person($_customer_data['company_name'],$_customer_data['contact_name']);
+        list($_customer_data['type'],$_customer_data['company_name'],$_customer_data['contact_name'])=parse_company_person($_customer_data['company_name'],$_customer_data['contact_name']);
         $customer_data=array();
 
         if (isset($header_data['tax_number']) and $header_data['tax_number']!='') {
