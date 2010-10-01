@@ -101,7 +101,7 @@ $sql="select *,replace(   replace(replace(replace(replace(replace(replace(replac
 
 //$sql="select * from  orders_data.orders  where    (last_transcribed is NULL  or last_read>last_transcribed) and deleted='No'  order by filename ";
 //$sql="select * from  orders_data.orders where filename like '%/a/%.xls'   order by filename";
-//$sql="select * from  orders_data.orders where filename like '%/6954.xls'   order by filename";
+$sql="select * from  orders_data.orders where filename like '%/6954.xls'   order by filename";
 //$sql="select * from  orders_data.orders where filename like '%/102691rpl.xls'   order by filename";
 
 //$sql="select * from  orders_data.orders where filename like '%/%ref%.xls'   order by filename";
@@ -1301,7 +1301,8 @@ get_data($header_data);
        
        if($customer_data['Customer Delivery Address Link']=='None'){
        $shipping_addresses['Address Input Format']='3 Line';
-       $address=new Address('create',$shipping_addresses);
+       $address=new Address('find in customer '.$customer->id." create update",$shipping_addresses);
+      // print_r($address);
        $customer->create_delivery_address_bridge($address->id);
        }
        
