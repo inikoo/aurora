@@ -27,12 +27,12 @@ mysql_query("SET time_zone ='+0:00'");
 mysql_query("SET NAMES 'utf8'");
 require_once '../../conf/conf.php';           
 
-$sql="select * from kbase.`Country Dimension`";
-$result=mysql_query($sql);
-while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
-print "cp ../../examples/_countries/".strtolower(preg_replace('/\s/','_',$row['Country Name']))."/ammap_data.xml ".$row['Country Code'].".xml\n";
-}
-exit;
+//$sql="select * from kbase.`Country Dimension`";
+//$result=mysql_query($sql);
+//while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
+//print "cp ../../examples/_countries/".strtolower(preg_replace('/\s/','_',$row['Country Name']))."/ammap_data.xml ".$row['Country Code'].".xml\n";
+//}
+//exit;
 
 $sql="select * from `Customer Dimension`";
 $result=mysql_query($sql);
@@ -41,7 +41,7 @@ while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
   //print $row['Customer Key']."\n";
   $customer=new Customer($row['Customer Key']);
   //$customer->update_orders();
-  
+   $customer->update_temporal_data();
   $customer->update_activity();
   $customer->update_full_search();
   print $customer->id."\r";
