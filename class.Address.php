@@ -4460,9 +4460,35 @@ class Address extends DB_Table {
 
 
 
-    function update_parents() {
+    function update_parents($parents=false) {
    
-        $sql=sprintf("select `Customer Key`  from  `Customer Dimension` where `Customer Main Delivery Address Key`=%d group by `Customer Key`",$this->id);
+    if(!$parents)
+        $parents=array('Contact','Company','Customer','Supplier');
+    elseif(is_string($parents))
+        $parents=array($parents);
+
+        foreach($parents as $parent) {
+        
+        
+           
+        
+        
+        
+            $sql=sprintf("select `$parent Key` as `Parent Key`   from  `$parent Dimension` where `$parent Main Address Key`=%d group by `$parent Key`",$this->id);
+
+            $res=mysql_query($sql);
+            while ($row=mysql_fetch_array($res)) {
+                $principal_address_changed=false;
+
+                if ($parent=='Contact') {
+                    $parent_object=new Contact($row['Parent Key']);
+                    $parent_label=_('Contact');
+                }
+                elseif($parent=='Customer') {
+                    $parent_object=new Customer($row['Parent Key']);
+                    $parent_label=_('Customer');
+                    
+                        $sql=sprintf("select `Customer Key`  from  `Customer Dimension` where `Customer Main Delivery Address Key`=%d group by `Customer Key`",$this->id);
         $res=mysql_query($sql);
         while ($row=mysql_fetch_array($res)) {
 
@@ -4478,23 +4504,9 @@ class Address extends DB_Table {
                         );
             mysql_query($sql);
         }
-
-
-        $parents=array('Contact','Company','Customer','Supplier');
-        foreach($parents as $parent) {
-            $sql=sprintf("select `$parent Key` as `Parent Key`   from  `$parent Dimension` where `$parent Main Address Key`=%d group by `$parent Key`",$this->id);
-
-            $res=mysql_query($sql);
-            while ($row=mysql_fetch_array($res)) {
-                $principal_address_changed=false;
-
-                if ($parent=='Contact') {
-                    $parent_object=new Contact($row['Parent Key']);
-                    $parent_label=_('Contact');
-                }
-                elseif($parent=='Customer') {
-                    $parent_object=new Customer($row['Parent Key']);
-                    $parent_label=_('Customer');
+                    
+                    
+                    
                 }
                 elseif($parent=='Supplier') {
                     $parent_object=new Supplier($row['Parent Key']);
