@@ -96,7 +96,7 @@ $fam_promo_key=$fam_promo->id;
 
 $sql="select * from  de_orders_data.orders  where   (last_transcribed is NULL  or last_read>last_transcribed) and deleted='No'  order by filename  ";
 //$sql="select * from  de_orders_data.orders where filename like '%refund.xls'   order by filename";
-//$sql="select * from  de_orders_data.orders  where (filename like '/mnt/%DE0095%.xls' ) order by filename";
+//$sql="select * from  de_orders_data.orders  where (filename like '/mnt/%DE0412%.xls' ) order by filename";
 
 
 $contador=0;
@@ -104,8 +104,8 @@ $contador=0;
 $res=mysql_query($sql);
 
 while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
-
-
+//if(preg_match('/DE0412/',$row2['filename']))
+//exit;
     $sql="select * from de_orders_data.data where id=".$row2['id'];
     // print "$sql\n";
 
@@ -1304,10 +1304,12 @@ get_data($header_data);
         $data['Customer Data']['Customer Tax Category Code']=$tax_category_object->data['Tax Category Code'];
         $data['Customer Data']['editor']=$data['editor'];
         $data['Customer Data']['editor']['Date']=date("Y-m-d H:i:s",strtotime($data['Customer Data']['editor']['Date']." -1 second"));
+        //print_r($data['Customer Data']);
         $customer = new Customer ( 'find create', $data['Customer Data'] );
        
                if($customer_data['Customer Delivery Address Link']=='None'){
        $shipping_addresses['Address Input Format']='3 Line';
+       //print_r($shipping_addresses);
        $address=new Address('find in customer '.$customer->id." create update",$shipping_addresses);
        $customer->create_delivery_address_bridge($address->id);
        }

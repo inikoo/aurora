@@ -2098,7 +2098,16 @@ function list_customers() {
 
 
     $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
-    $_SESSION['state']['customers']['table']=array('order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value);
+    //$_SESSION['state']['customers']['table']=array('order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value);
+$_SESSION['state']['customers']['table']['order']=$order;
+$_SESSION['state']['customers']['table']['order_dir']=$order_direction;
+$_SESSION['state']['customers']['table']['nr']=$number_results;
+$_SESSION['state']['customers']['table']['sf']=$start_from;
+$_SESSION['state']['customers']['table']['where']=$where;
+$_SESSION['state']['customers']['table']['f_field']=$f_field;
+$_SESSION['state']['customers']['table']['f_value']=$f_value;
+
+
     $filter_msg='';
     $wheref='';
 
@@ -2292,7 +2301,7 @@ function list_customers() {
 
                      'ship_town'=>$data['Customer Main Delivery Address Town'],
                      'ship_postcode'>$data['Customer Main Delivery Address Postal Code'],
-                     'ship_region'=>$data['Customer Main Delivery Address Country Region'],
+                     'ship_region'=>$data['Customer Main Delivery Address Region'],
                      'ship_country'=>$data['Customer Main Delivery Address Country'],
 
                      'go'=>sprintf("<a href='edit_customer.php?id=%d'><img src='art/icons/page_go.png' alt='go'></a>",$data['Customer Key'])

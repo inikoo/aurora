@@ -173,7 +173,33 @@ class Staff extends DB_Table{
 
      if($create and !$this->found){
        
-	$this->create($raw_data);
+        $sql="select `Corporation Company Key` from `Corporation Dimension`";
+      $res=mysql_query($sql);
+    if($row=mysql_fetch_array($res)){
+    $company_key=$row['Corporation Company Key'];
+$company=new Company($company_key);
+    }else{
+    exit("Error no corporation\n");
+    }
+    
+     $data=array(
+                          'Staff Address Line 1'=>'',
+                          'Staff Address Town'=>'',
+                          'Staff Address Line 2'=>'',
+                          'Staff Address Line 3'=>'',
+                          'Staff Address Postal Code'=>'',
+                          'Staff Address Country Code'=>'',
+                          'Staff Address Country Name'=>$company->data['Company Main Country'],
+                          'Staff Address Country First Division'=>'',
+                          'Staff Address Country Second Division'=>''
+                      );
+       
+       foreach($raw_data as $key=>$value){
+       $data[$key]=$value;
+       }
+       
+       
+	$this->create($data);
 	
      }
 
@@ -191,6 +217,22 @@ $company=new Company($company_key);
     }else{
     exit("Error no corporation\n");
     }
+    
+     $address_data=array(
+                          'Staff Address Line 1'=>'',
+                          'Staff Address Town'=>'',
+                          'Staff Address Line 2'=>'',
+                          'Staff Address Line 3'=>'',
+                          'Staff Address Postal Code'=>'',
+                          'Staff Address Country Code'=>'',
+                          'Staff Address Country Name'=>$company->data['Company Main Country'],
+                          'Staff Address Country First Division'=>'',
+                          'Staff Address Country Second Division'=>''
+                      );
+
+    
+    
+    
    $child=new Contact ('find in staff create update',$data);
 
 	if($child->error){
@@ -236,6 +278,9 @@ $company=new Company($company_key);
 
       $this->id=mysql_insert_id();
       $this->get_data('id',$this->id);
+      
+      
+      
       
 
       if(!$this->data['Staff ID']){

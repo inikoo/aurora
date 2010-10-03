@@ -256,6 +256,7 @@ foreach($contacts as $act_data) {
     $_customer_data['company_name']=$act_data['name'];
     $_customer_data['email']=$email_data['email'];
 
+$fr_customer=false;
 
 $de_customer=false;
     $customer_data['Customer Store Key']=1;
@@ -272,12 +273,17 @@ $de_customer=true;
     ){
       $store=new Store('code','FR');     
    $customer_data['Customer Store Key']=$store->id;
+   $fr_customer=true;
+
     }
 
 
 
-if(!$de_customer)
+ if ($customer_data['Customer Store Key']==1)
     continue;
+    
+    
+    
     if ($customer_data['Customer Store Key']!=1)
         $_customer_data['email']=$act_data['international_email'];
 

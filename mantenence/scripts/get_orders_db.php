@@ -101,7 +101,7 @@ $sql="select *,replace(   replace(replace(replace(replace(replace(replace(replac
 
 //$sql="select * from  orders_data.orders  where    (last_transcribed is NULL  or last_read>last_transcribed) and deleted='No'  order by filename ";
 //$sql="select * from  orders_data.orders where filename like '%/a/%.xls'   order by filename";
-//$sql="select * from  orders_data.orders where filename like '%/6954.xls'   order by filename";
+$sql="select * from  orders_data.orders where filename like '%/38626.xls'   order by filename";
 //$sql="select * from  orders_data.orders where filename like '%/102691rpl.xls'   order by filename";
 
 //$sql="select * from  orders_data.orders where filename like '%/%ref%.xls'   order by filename";
@@ -1291,7 +1291,38 @@ get_data($header_data);
         $data['Customer Data']['editor']=$data['editor'];
         $data['Customer Data']['editor']['Date']=date("Y-m-d H:i:s",strtotime($data['Customer Data']['editor']['Date']." -1 second"));
      
-//     print_r($data['Customer Data']);
+   // print_r($data);
+    
+    if($data['staff sale']=='Yes' and $data['staff sale key']){
+    $staff=new Staff($data['staff sale key']);
+    $data['Customer Data']['Customer Type']='Person';
+    $data['Customer Data']['Customer Main Contact Key']=$staff->data['Staff Contact Key'];
+    $data['Customer Data']['Customer Main Contact Name']='';
+    $data['Customer Data']['Customer Company Name']='';
+    $data['Customer Data']['Customer Staff']='Yes';
+    $data['Customer Data']['Customer Name']='';
+        $data['Customer Data']['Customer Address Line 1']='';
+    $data['Customer Data']['Customer Address Line 2']='';
+    $data['Customer Data']['Customer Address Line 3']='';
+
+
+
+    $data['Customer Data']['Customer Staff Key']=$staff->id;
+        $data['Customer Data']['has_shipping']=false;
+
+$data['Delivery Note Dispatch Method']='Collected';
+
+    //print_r($data['Customer Data']);
+    //exit;
+    $customer = new Customer ( 'find staff create', $staff );
+   // print_r($customer);exit;
+    }else{
+    
+    if($data['staff sale']=='Yes' ){
+    print "Warning staff not identified ";
+    }
+    
+    
      $customer = new Customer ( 'find create', $data['Customer Data'] );
         if (!$customer->id) {
         exit("Error Customer can not found in get_order\n");
@@ -1305,7 +1336,7 @@ get_data($header_data);
       // print_r($address);
        $customer->create_delivery_address_bridge($address->id);
        }
-       
+       }
        
         $data['Order Customer Key']=$customer->id;
       $customer_key=$customer->id;
