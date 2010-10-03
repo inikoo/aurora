@@ -73,11 +73,13 @@ $refund_data=array(
 'Invoice Customer Key'=>$this->data['Order Customer Key'],
 'Invoice Store Key'=>$this->data['Order Store Key'],
 'Order Key'=>$this->id,
+
 'Invoice Public ID'=>$this->data['Order Public ID'].$refund_tag
 );
 if(!$data)$data=array();
 
 if(array_key_exists('Invoice Metadata',$data))$refund_data['Invoice Metadata']=$data['Invoice Metadata'];
+if(array_key_exists('Invoice Date',$data))$refund_data['Invoice Date']=$data['Invoice Date'];
 
 $refund=new Invoice('create refund',$refund_data);
           
@@ -538,7 +540,7 @@ $customer->update_orders();
 
     }
     
-
+$this->update_full_search();
     if (!$this->ghost_order) {
         $this->get_data('id',$this->id);
         $this->update_item_totals_from_order_transactions();
@@ -579,6 +581,7 @@ function send_to_warehouse($date=false) {
     $dn->create_inventory_transaction_fact($this->id);
     $this->update_delivery_notes('save');
     $this->update_dispatch_state();
+$this->update_full_search();
 
     return $dn;
 }
