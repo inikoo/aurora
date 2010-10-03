@@ -213,7 +213,6 @@ class Customer extends DB_Table {
 
         }
 
-        //  print_r($raw_data);
         if (!isset($raw_data['Customer Type']) or !preg_match('/^(Company|Person)$/i',$raw_data['Customer Type']) ) {
 
 
@@ -227,10 +226,8 @@ class Customer extends DB_Table {
 
 
         }
-        //	$raw_data['Customer Main Plain Email']='mail@ancientwisdom.biz';
 
         $raw_data['Customer Type']=ucwords($raw_data['Customer Type']);
-        //print $raw_data['Customer Type']."\n";
         if ($raw_data['Customer Type']=='Person') {
             $child=new Contact ('find in customer $find_fuzzy use old_id',$raw_data);
         } else {
@@ -246,8 +243,6 @@ class Customer extends DB_Table {
             $this->found_child_key=$child->found_key;
             $customer_found_keys=$child->get_customer_keys();
 
-            //print "Customer Keys found in child ".$child->id." \n";
-            //print_r($customer_found_keys);
             if (count($customer_found_keys)>0) {
                 foreach($customer_found_keys as $customer_found_key) {
                     $tmp_customer=new Customer($customer_found_key);
@@ -264,13 +259,8 @@ class Customer extends DB_Table {
 
         }
 
-        //print_r($this);
-
-
-        // print "$options";
         if ($this->found) {
             $this->get_data('id',$this->found_key);
-            //  print "customer Found: ".$this->found_key."  \n";
         }
 
 
@@ -291,8 +281,8 @@ class Customer extends DB_Table {
             // return;
         }
 
-
-
+//print_r($raw_data);
+//print "A".$this->found."  B".$this->found_child."\n";
 
         if ($create) {
 
@@ -319,11 +309,9 @@ class Customer extends DB_Table {
                         return;
                     }
 
-                    //  print "updating children-----------------\n";
-                    // print_r($child);
-                    //print "------------------------\n";
+                
                     $child=new Contact ('find in customer create update',$raw_data);
-                    //$child
+                
 
 
 
@@ -347,11 +335,7 @@ class Customer extends DB_Table {
 
             } else {// customer not found
                 if ($this->found_child) {
-                    //	  	     	    print "----------------------------------******************\n";
-                    //  print_r($raw_data);
-                    //  print_r( $child->translate_data($raw_data,'from customer')  );
-                    //   print "-----------------------------------------------\n";
-
+                  
                     if ($raw_data['Customer Type']=='Person') {
 
                         //print_r($raw_data);
@@ -376,13 +360,13 @@ class Customer extends DB_Table {
 
                         }
 
-                        $contact=new contact('id',$this->found_child_key);
+                        //$contact=new contact('id',$this->found_child_key);
                         // print_r($contact->data);
                         // print_r($raw_data);
                         // print "lets update the contact\n";
                         $contact=new contact('find in customer $find_fuzzy create update',$raw_data);
                         //print "updated contact\n";
-                        //print_r($contact->data);
+                        //print_r($contact);
                         $raw_data['Customer Main Contact Key']=$contact->id;
 
                     } else {
@@ -674,7 +658,6 @@ function create($raw_data,$args='') {
 
            
             $this->data['Customer Name']=$contact->display('name');
-
             $this->data['Customer File As']=$contact->data['Contact File As'];
 
             $this->data['Customer Company Key']=0;
@@ -702,6 +685,7 @@ function create($raw_data,$args='') {
             $address=new Address($company->data['Company Main Address Key']);
             $address->editor=$this->editor;
             $address->new=true;
+          
             $this->create_contact_address_bridge($address->id);
             // $address->update_parents();
 
@@ -1124,6 +1108,11 @@ function update_ship_to_stats() {
 
 
     function update_name($value,$options='') {
+  if ($value=='') {
+            $this->error=true;
+            $this->msg=_('Invalid Customer Name');
+            return;
+        }
 
         $field='Customer Name';
         $this->update_field($field,$value,$options);
@@ -1137,6 +1126,11 @@ function update_ship_to_stats() {
 
 
     function update_main_contact_name($value,$options='') {
+      if ($value=='') {
+            $this->error=true;
+            $this->msg=_('Invalid Customer Contact Name');
+            return;
+        }
         $field='Customer Main Contact Name';
         $this->update_field($field,$value,$options);
     }
@@ -1145,6 +1139,13 @@ function update_ship_to_stats() {
 
 
     function update_child_main_contact_name($value) {
+    
+      if ($value=='') {
+            $this->error=true;
+            $this->msg=_('Invalid Contact Name');
+            return;
+        }
+    
         $contact=new Contact($this->data['Customer Main Contact Key']);
         $contact->editor=$this->editor;
         $contact->update(array('Contact Name'=>$value));
@@ -1400,7 +1401,6 @@ function update_ship_to_stats() {
 
     function update_company($company_key=false) {
 
-        // print "XxX \n";
 
         $this->associated=false;
         if (!$company_key) {
@@ -1609,26 +1609,17 @@ return;
                 $average_max_interval=$row2['a'];
                 //print "$average_max_interval\n";
                 if (is_numeric($average_max_interval)) {
-                    //print "xxxxxxxxxxxxxx\n";
                     if (   (strtotime('now')-strtotime($this->data['Customer Last Order Date']))/(3600*24)  <  $average_max_interval) {
-                        // print "xxxxxxxxxxxxxx1\n";
 
                         $this->data['Active Customer']='Maybe';
                         $this->data['Customer Type by Activity']='New';
 
                     } else {
-
-
-                        //print "xxxxxxxxxxxxxx2\n";
-
                         $this->data['Active Customer']='No';
                         $this->data['Customer Type by Activity']='Inactive';
                         //   print $this->data['Customer Last Order Date']." +$average_max_interval days\n";
                         $this->data['Customer Lost Date']=date("Y-m-d H:i:s",strtotime($this->data['Customer Last Order Date']." +".ceil($average_max_interval)." day" ));
                     }
-
-
-                    //print "+++++++++++++\n";
                 } else {
                     $this->data['Active Customer']='Unknown';
                     $this->data['Customer Type by Activity']='Unknown';
@@ -1638,7 +1629,6 @@ return;
                 $this->data['Active Customer']='Unknown';
                 $this->data['Customer Type by Activity']='Unknown';
             }
-            //print "-----------\n";
 
         }
         else {
@@ -2630,10 +2620,8 @@ function add_note($note,$details='',$date=false) {
 
     if ($date!='')
         $history_data['Date']=$date;
-  //  print_r($history_data);
-    //	print "adding history\n";
+
     $this->add_history($history_data,$force_save=true);
-    //print "====  ================  |";
     $this->updated=true;
     $this->new_value='';
 }
@@ -2677,11 +2665,9 @@ function add_note($note,$details='',$date=false) {
 
 
     function delivery_address_xhtml() {
-      //  print_r($this->data);
 
         if ($this->data['Customer Delivery Address Link']=='None') {
-	  //$delivery_address=new Ship_To($this->data['Customer Main Delivery Address Key']);
-	  // return $delivery_address->data['Ship To XHTML Address'];
+	  
 	  $address=new Address($this->data['Customer Main Delivery Address Key']);
 	  
 	}elseif ($this->data['Customer Delivery Address Link']=='Billing')
@@ -3181,13 +3167,23 @@ Array
 
     }
     
-   function associate_delivery_address($address_key) {
+  function disassociate_email($email_key){
+  
+  
+  $sql=sprintf("delete from `Email Bridge` where `Subject Type`='Customer' and `Subject Key`=%d  and `Email Key`=%d ",
+  $this->id,
+  $email_key
+  );
+  mysql_query($sql);
+  
+  }
+  
+  function associate_delivery_address($address_key) {
         if (!$address_key){
             return;
             
          }   
         $address_keys=$this->get_delivery_address_keys();
-//print_r($address_keys);
         if (!array_key_exists($address_key,$address_keys)) {
             $this->create_delivery_address_bridge($address_key);
             $this->updated=true;
@@ -3218,6 +3214,7 @@ Array
                      $address_key
                     );
         mysql_query($sql);
+        //print $this->get_principal_contact_address_key()." $sql\n";
         if (
             !$this->get_principal_contact_address_key()  
             ) {
@@ -3287,6 +3284,7 @@ Array
                                 );
                     mysql_query($sql);
   
+  
    if ($this->data['Customer Delivery Address Link']=='Contact') {
                             $this->update_principal_delivery_address($address_key);
 
@@ -3297,6 +3295,9 @@ Array
                         }
   
   $address=new Address($address_key);
+  
+  //print_r($address);
+
   $address->update_parents('Customer');
   $this->updated=true;
   $this->new_value=$address_key;

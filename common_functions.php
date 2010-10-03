@@ -907,28 +907,34 @@ function _trim($string){
 
 
 function mb_ucwords($str) {
-
+$str=_trim($str);
     if(preg_match('/^PO BOX\s+/i',$str))
      return strtoupper($str);
 
+
+
     $result='';
-    $str=_trim($str);
+    
     
     $words=preg_split('/ /',$str);
     $first=true;
     foreach($words as $word){
-        
-        if(!$first and preg_match('/^(UK|USA|HP|IBM|GB|MB|CD|DVD|USB)$/i',$word)){
+        if(preg_match('/([a-z]\.){1,}$/i',$word)){
+            $result.=' '.strtoupper($word);
+            continue;
+        }elseif(!$first and preg_match('/^(UK|USA|HP|IBM|GB|MB|CD|DVD|USB)$/i',$word)){
              $result.=' '.strtoupper($word);
             continue;
         }
-        if(!$first and preg_match('/^(and|y|o|or|of|at|des|les|las|le)$/i',$word)){
+        elseif(!$first and preg_match('/^(and|y|o|or|of|at|des|les|las|le)$/i',$word)){
              $result.=' '.strtoupper($word);
             continue;
         }
         $result.=' '.capitalize($word);
         $first=false;
     }
+        
+    
         
     return _trim($result);
 }

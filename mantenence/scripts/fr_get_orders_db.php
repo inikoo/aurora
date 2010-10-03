@@ -147,7 +147,7 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
 $sql="select * from  fr_orders_data.orders  where   (last_transcribed is NULL  or last_read>last_transcribed) and deleted='No'   order by filename  ";
 //$sql="select * from  fr_orders_data.orders where filename like '%refund.xls'   order by filename";
-//$sql="select * from  fr_orders_data.orders  where filename like '/mnt/%FR0054.xls'  order by filename";
+//$sql="select * from  fr_orders_data.orders  where filename like '/mnt/%/FR0197.xls'  order by filename";
 
 
 $contador=0;
@@ -157,6 +157,8 @@ $res=mysql_query($sql);
 
 while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
+//if(preg_match('/FR0197/',$row2['filename']))
+//exit;
 
     $sql="select * from fr_orders_data.data where id=".$row2['id'];
     //print "$sql\n";
@@ -1334,8 +1336,9 @@ get_data($header_data);
         $data['Customer Data']['Customer Tax Category Code']=$tax_category_object->data['Tax Category Code'];
         $data['Customer Data']['editor']=$data['editor'];
         $data['Customer Data']['editor']['Date']=date("Y-m-d H:i:s",strtotime($data['Customer Data']['editor']['Date']." -1 second"));
+       //print_r($data['Customer Data'] );
         $customer = new Customer ( 'find create', $data['Customer Data'] );
-       
+       //print_r($customer);
                if($customer_data['Customer Delivery Address Link']=='None'){
        $shipping_addresses['Address Input Format']='3 Line';
               $address=new Address('find in customer '.$customer->id." create update",$shipping_addresses);

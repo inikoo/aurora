@@ -1651,7 +1651,15 @@ $len_name=strlen($name_data['Contact Surname']);
                             );
                 mysql_query($sql);
 
-
+                if($parent=='Customer' and $parent_object->data['Customer Type']=='Person'){
+                	$sql=sprintf("update `$parent Dimension` set `$parent Name`=%s, `$parent File As`=%s  where `$parent Key`=%d"
+                             ,prepare_mysql($this->display('name'))
+                             ,prepare_mysql($this->data['Contact File As'])
+                             ,$parent_object->id
+                            );
+                mysql_query($sql);
+                
+                }
 
                 if ($old_principal_contact!=$parent_object->data[$parent.' Main Contact Name'])
                     $principal_contact_changed=true;
@@ -1671,6 +1679,11 @@ $len_name=strlen($name_data['Contact Surname']);
                        
                         $this->add_history($history_data);
                     } else {
+                    
+                    if($this->display('name')==''){
+                    //print_r($this);
+                    exit("contact name changed to nothing\n");
+                    }
                         $history_data['History Abstract']='Main Contact Changed';
                         $history_data['History Details']=_('Contact changed from').' '.$old_principal_contact.' '._('to').' '.$this->display('name')." "._('in')." ".$parent_object->get_name()." ".$parent_label;
                         $history_data['Action']='changed';
@@ -2352,8 +2365,9 @@ $this->updated=true;
                 $this->data['Contact Formal Greeting']=$this->unknown_formal_greting;
             }
 
-
+//print "updatin name \n\n\n\n";
             $parsed_data=$this->parse_name($value);
+  //          print_r($parsed_data);
             foreach($parsed_data as $key=>$val) {
                 if (array_key_exists($key,$this->data))
                     $this->data[$key]=$val;
@@ -2522,7 +2536,7 @@ $this->updated=true;
 
             $values='';
             foreach($this->data as $key=>$value) {
-                if (preg_match('/Contact Name|Contact File As|Greeting/i',$key)) {
+                if (preg_match('/Contact Name|Contact File As|Greeting|Salutation|First Name|Surname|Suffix/i',$key)) {
 
                     $values.=" `$key`=";
                     if (preg_match('/suffix|plain/i',$key))
@@ -3219,9 +3233,6 @@ $this->updated=true;
             $name=_trim($data['Contact Salutation'].' '.$data['Contact First Name'].' '.$data['Contact Surname'].' '.$data['Contact Suffix']);
 
 
-
-            if ($name=='')
-                $name='';
 
             return $name;
 
