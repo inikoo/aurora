@@ -218,18 +218,6 @@ $company=new Company($company_key);
     exit("Error no corporation\n");
     }
     
-     $address_data=array(
-                          'Staff Address Line 1'=>'',
-                          'Staff Address Town'=>'',
-                          'Staff Address Line 2'=>'',
-                          'Staff Address Line 3'=>'',
-                          'Staff Address Postal Code'=>'',
-                          'Staff Address Country Code'=>'',
-                          'Staff Address Country Name'=>$company->data['Company Main Country'],
-                          'Staff Address Country First Division'=>'',
-                          'Staff Address Country Second Division'=>''
-                      );
-
     
     
     
