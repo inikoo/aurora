@@ -102,7 +102,7 @@ $sql="select *,replace(   replace(replace(replace(replace(replace(replace(replac
 //$sql="select * from  orders_data.orders  where    (last_transcribed is NULL  or last_read>last_transcribed) and deleted='No'  order by filename ";
 //$sql="select * from  orders_data.orders where filename like '%/a/%.xls'   order by filename";
 //$sql="select * from  orders_data.orders where filename like '%/38626.xls'   order by filename";
-//$sql="select * from  orders_data.orders where filename like '%/102691rpl.xls'   order by filename";
+$sql="select * from  orders_data.orders where filename like '%/29321R.xls'   order by filename";
 
 //$sql="select * from  orders_data.orders where filename like '%/%ref%.xls'   order by filename";
 //$sql="select * from  orders_data.orders  where filename like '/mnt/%/Orders/93284.xls' order by filename";
@@ -1292,7 +1292,7 @@ get_data($header_data);
         $data['Customer Data']['editor']['Date']=date("Y-m-d H:i:s",strtotime($data['Customer Data']['editor']['Date']." -1 second"));
      
    // print_r($data);
-    
+   //  print_r($data['Customer Data']);
     if($data['staff sale']=='Yes' and $data['staff sale key']){
     $staff=new Staff($data['staff sale key']);
     $data['Customer Data']['Customer Type']='Person';
@@ -1312,7 +1312,7 @@ get_data($header_data);
 
 $data['Delivery Note Dispatch Method']='Collected';
 
-    //print_r($data['Customer Data']);
+   
     //exit;
     $customer = new Customer ( 'find staff create', $staff );
    // print_r($customer);exit;

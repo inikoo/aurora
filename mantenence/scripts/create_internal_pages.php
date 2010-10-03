@@ -49,6 +49,15 @@ $data=array(
 		   ,'Page Section'=>'Reports'
 		   ,'Page Parent Category'=>'Sales Reports'
 		   )
+		  ,array(
+		   'Page Type'=>'Internal'
+		   ,'Page Title'=>'Geographic Sales Report'
+		   ,'Page Short Title'=>'Geographic Sales'
+		   ,'Page Description'=>''
+		   ,'Page URL'=>'report_geo_sales.php'
+		   ,'Page Section'=>'Reports'
+		   ,'Page Parent Category'=>'Sales Reports'
+		   )
 	     ,array(
 		   'Page Type'=>'Internal'
 		   ,'Page Title'=>'Reporte Modelo 347 (ES)'

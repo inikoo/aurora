@@ -875,6 +875,9 @@ function create_refund($data,$header_data,$data_dn_transactions) {
     foreach($parent_order->get_invoices_objects() as $invoice) {
         //print $header_data['total_topay']." ".$invoice->data['Invoice Total Amount']."\n";
     }
+    
+   // print $date_inv;
+    
     $refund=$parent_order->create_refund(array(
     'Invoice Metadata'=>$store_code.$order_data_id,
     'Invoice Date'=>$date_inv,
