@@ -14,35 +14,67 @@
 <h1 style="clear:left">{$title}</h1>
 
 
-<table class="report_sales1" id="report_sales_invoices" style="width:650px">
+<table class="report_sales1" id="report_sales_invoices" style="width:700px;{if $view!='invoices'}display:none{/if}">
 <tr style="border-bottom:1px solid #ccc;margin-bottom:5px"><td colspan=7>
-<div  style="margin-bottom:5px">
-<span class="state_details" style="margin-right:20px">{t}Profit{/t}</span>
-<span class="state_details selected">{t}Invoices{/t}</span>
-<span class="state_details ">{t}{$corporate_currency}{/t}</span>
-<span class="state_details ">{t}{$store_currencies}{/t}</span>
+<div  style="margin-bottom:5px;color:#999;">
+<span id="invoices_profits_button"  view="profit" class="state_details" style="margin-right:20px">{t}Profit{/t}</span>
+<span class="state_details selected"  style="cursor:default;margin-right:20px">{t}Invoices{/t}</span>
+<span id="invoices_corporate_currency_button" currency="corporate" class="state_details currency_corporate {if $currencies=='corporation'}selected{/if}" style="margin-right:5px">{$corporate_symbol}</span>
+<span id="invoices_stores_currency_button" currency="stores" class="state_details currency_stores {if $currencies!='corporation'}selected{/if}">({$store_currencies})</span>
 
 </div>
 </td></tr>
 <tr>
 <td style="width:150px">{t}Store{/t}</td>
-<td></td><td>{t}Invoices{/t}</td><td>{t}Net Sales{/t}</td><td></td><td></td><td>{t}Tax{/t}</td></tr>
+<td></td><td>{t}Invoices{/t}</td>
+    <td style="{if $currencies=='corporation'}display:none{/if}">{t}Net Sales{/t}</td>
+    <td style="{if $currencies!='corporation'}display:none{/if}">{t}Net Sales{/t}</td>
+    <td></td>
+    <td></td>
+    <td style="{if $currencies=='corporation'}display:none{/if}">{t}Tax{/t}</td>
+    <td style="{if $currencies!='corporation'}display:none{/if}">{t}Tax{/t}</td>
+</tr>
 {foreach from=$store_data   item=data }
-<tr class="geo"><td class="label"> {$data.store}</td><td style="text-align:left">{$data.substore}</td><td>{$data.invoices}</td><td>{$data.net}</td><td>{$data.per_eq_net}</td><td>{$data.sub_per_eq_net}</td><td>{$data.tax}</td></tr>
+<tr class="geo">
+    <td class="label"> {$data.store}</td>
+    <td style="text-align:left">{$data.substore}</td>
+    <td>{$data.invoices}</td>
+    <td class="currency_stores" style="{if $currencies=='corporation'}display:none{/if}">{$data.net}</td>
+    <td class="currency_corporate" style="{if $currencies!='corporation'}display:none{/if}">{$data.eq_net}</td>
+    <td>{$data.per_eq_net}</td>
+    <td>{$data.sub_per_eq_net}</td>
+    <td class="currency_stores" style="{if $currencies=='corporation'}display:none{/if}">{$data.tax}</td>
+    <td class="currency_corporate" style="{if $currencies!='corporation'}display:none{/if}">{$data.eq_tax}</td></tr>
 {/foreach}
 </table>
 
 
-<table class="report_sales1"id="report_sales_profit" style="width:650px">
+<table  class="report_sales1"id="report_sales_profit" style="width:700px;{if $view!='profits'}display:none{/if}">
 <tr style="border-bottom:1px solid #ccc;margin-bottom:5px"><td colspan=7>
-<div  style="margin-bottom:5px">
-<span class="state_details selected" style="margin-right:20px">{t}Profit{/t}</span>
-<span class="state_details ">{t}Invoices{/t}</span>
+<div  style="margin-bottom:5px;;color:#999;">
+<span class="state_details selected" style="cursor:default;margin-right:20px">{t}Profit{/t}</span>
+<span  id="profits_invoices_button" view="invoices" class="state_details"  style="margin-right:20px">{t}Invoices{/t}</span>
+<span id="profits_corporate_currency_button"  currency="corporate" class="state_details {if $currencies=='corporation'}selected{/if}" style="margin-right:5px">{$corporate_symbol}</span>
+<span id="profits_stores_currency_button"  currency="stores" class="state_details {if $currencies!='corporation'}selected{/if}">({$store_currencies})</span>
 </div>
 </td></tr>
-<tr><td style="width:150px">{t}Store{/t}</td><td></td><td>{t}Revenue{/t}</td><td>{t}Profit{/t}</td><td>{t}Margin{/t}</td><td></td><td></td></tr>
+<tr><td style="width:150px">{t}Store{/t}</td>
+<td></td>
+<td style="{if $currencies=='corporation'}display:none{/if}">{t}Revenue{/t}</td>
+<td style="{if $currencies!='corporation'}display:none{/if}">{t}Revenue{/t}</td>
+<td style="{if $currencies=='corporation'}display:none{/if}">{t}Profit{/t}</td>
+<td style="{if $currencies!='corporation'}display:none{/if}">{t}Profit{/t}</td>
+<td>{t}Margin{/t}</td></tr>
 {foreach from=$store_data_profit   item=data }
-<tr class="geo"><td class="label"> {$data.store}</td><td style="text-align:left">{$data.substore}</td><td>{$data.net}</td><td>{$data.profit}</td><td>{$data.margin}</td></tr>
+<tr class="geo">
+    <td class="label"> {$data.store}</td>
+    <td style="text-align:left">{$data.substore}</td>
+    <td class="currency_stores" style="{if $currencies=='corporation'}display:none{/if}">{$data.net}</td>
+    <td class="currency_corporate" style="{if $currencies!='corporation'}display:none{/if}">{$data.eq_net}</td>
+    <td class="currency_stores" style="{if $currencies=='corporation'}display:none{/if}">{$data.profit}</td>
+    <td class="currency_corporate" style="{if $currencies!='corporation'}display:none{/if}">{$data.eq_profit}</td>
+    <td>{$data.margin}</td>
+</tr>
 {/foreach}
 </table>
 
