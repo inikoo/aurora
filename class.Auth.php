@@ -153,7 +153,7 @@ class Auth {
 	  
 	  //print_r($this->pass);
  	  if($pass_tests ){
-
+// crete new user session create here the new class
 	    $this->status=true;
 	    $this->user_key=$row['User Key'];
 	    $this->user_parent_key=$row['User Parent Key'];
