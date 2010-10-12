@@ -1076,6 +1076,16 @@ $default_state=array(
                                                'f_field'=>'alias',
                                                'f_value'=>''
                                            ),
+                                  'loginhistory'=>array(
+                                               'display'=>'all',
+                                               'order'=>'login_date',
+                                               'order_dir'=>'',
+                                               'sf'=>0,
+                                               'nr'=>50,
+                                               'where'=>'where true',
+                                               'f_field'=>'user',
+                                               'f_value'=>''
+                                           ),
                                'groups'=>array(
                                             'order'=>'name',
                                             'order_dir'=>'',

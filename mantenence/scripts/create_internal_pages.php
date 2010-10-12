@@ -38,7 +38,7 @@ $data=array(
 		   ,'Page Description'=>'Quick snapshoot of the latest sales figures and the compation of these with previous data'
 		   ,'Page URL'=>'report_sales_activity.php'
 		   ,'Page Section'=>'Reports'
-		   ,'Page Parent Category'=>'Activity/Performace Reports'
+		   ,'Page Parent Category'=>'Activity/Performance Reports'
 		   )
 	     ,array(
 		   'Page Type'=>'Internal'
@@ -75,7 +75,7 @@ $data=array(
 		   ,'Page Description'=>''
 		   ,'Page URL'=>'report_pp.php'
 		   ,'Page Section'=>'Reports'
-		   ,'Page Parent Category'=>'Activity/Performace Reports'
+		   ,'Page Parent Category'=>'Activity/Performance Reports'
 		   )
 		   	     ,array(
 		    'Page Type'=>'Internal'
@@ -93,7 +93,7 @@ $data=array(
 		   ,'Page Description'=>''
 		   ,'Page URL'=>'report_customers.php'
 		   ,'Page Section'=>'Reports'
-		   ,'Page Parent Category'=>'Activity/Performace Reports'
+		   ,'Page Parent Category'=>'Activity/Performance Reports'
 		   )
 	     ,array(
 		    'Page Type'=>'Internal'
