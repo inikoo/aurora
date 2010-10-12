@@ -29,7 +29,7 @@
     {/foreach}
   </div>
 </div>
-<table class="search"  border=0>
+<table class="search"  border=0 style="{if $search_label==''}display:none{/if}">
 <tr>
 <td class="label" style="" >{$search_label}:</td>
 <td class="form" style="">

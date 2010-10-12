@@ -153,7 +153,6 @@ class Auth {
 	  
 	  //print_r($this->pass);
  	  if($pass_tests ){
-		
 
 	    $this->status=true;
 	    $this->user_key=$row['User Key'];

@@ -2,7 +2,7 @@
 <span class="nav2 onleft"><a {if $users_type=='staff'}class="selected"{/if} href="users_staff.php">{t}Staff Users{/t}</a></span>
 <span class="nav2 onleft"><a {if $users_type=='staff'}class="selected"{/if} href="users_supplier.php">{t}Supplier Users{/t}</a></span>
 <span class="nav2 onleft"><a {if $users_type=='staff'}class="selected"{/if} href="users_customer.php">{t}Customer Users{/t}</a></span>
-
+<span class="nav2 onleft"><a {if $users_type=='staff'}class="selected"{/if} href="users_loginhistory.php">{t}Login History{/t}</a></span>
 
 <div class="right_box">
   <div class="general_options">
