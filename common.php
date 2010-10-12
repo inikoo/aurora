@@ -1,5 +1,6 @@
 <?php
-define('DEBUG', 1);
+ob_start();
+define('DEBUG', 0);
 if(DEBUG){ error_reporting(E_ALL);}
 
 //$path = 'classes';set_include_path(get_include_path() . PATH_SEPARATOR . $path);
@@ -59,10 +60,14 @@ $smarty->config_dir = $myconf['config_dir'];
 
 $logout = (array_key_exists('logout', $_REQUEST)) ? $_REQUEST['logout'] : false;
 if ($logout){
-  $sql=sprintf("update session_history set end=NOW()  where session_id=%s  ",prepare_mysql(session_id()));
-  mysql_query($sql);
+
+  $sql=sprintf("update `User Log Dimension` set `Logout Date`=NOW()  where `Session ID`=%s", prepare_mysql(session_id()));
+   mysql_query($sql);
+
+  session_regenerate_id();
   session_destroy();
   unset($_SESSION);
+  
   include_once 'login.php';
   exit;
  }
@@ -210,5 +215,5 @@ $export_data=array(
 		   ,'pdf'=>array('label'=>_('Export as pdf'),'title'=>'PDF')
 		   );
 
-
+ob_end_flush();
 ?>
