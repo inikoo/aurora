@@ -153,11 +153,12 @@ class Auth {
 	  
 	  //print_r($this->pass);
  	  if($pass_tests ){
+		
 
 	    $this->status=true;
 	    $this->user_key=$row['User Key'];
 	    $this->user_parent_key=$row['User Parent Key'];
-
+            $this->create_user_log($ip);
 	  }
 	  
 	}
@@ -173,6 +174,17 @@ class Auth {
    
     
   }
+
+
+
+
+function create_user_log($ip)
+{
+
+   $sql=sprintf("INSERT INTO `User Log Dimension` (`User Key`,`Session ID`, `IP`, `Start Date`, `Logout Date`) VALUES ('%d', %s, '%s', %s, %s)", $this->user_key, prepare_mysql(session_id()), $ip, prepare_mysql(date('Y-m-d H:i:s')), 'NULL');
+   
+   mysql_query($sql);
+}
 
   public function get_user_key(){
     return $this->user_key;
