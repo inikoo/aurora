@@ -129,6 +129,14 @@ case('delete_company_department'):
                          ));
     delete_company_department($data);
     break;
+case ('edit_corporation'):
+ $data=prepare_values($_REQUEST,array(
+                             'key'=>array('type'=>'string'),
+                             'newvalue'=>array('type'=>'string')
+                         ));
+    edit_corporation($data);
+    break;
+
 case('delete_contact'):
     $data=prepare_values($_REQUEST,array(
                              'contact_key'=>array('type'=>'key')
@@ -3032,6 +3040,18 @@ $data_ship_to=array(
 }
 
 
+function edit_corporation($data){
+include_once('class.Corporation.php');
+$corporation=new Corporation();
+$corporation->update(array($data['key']=>$data['newvalue']));
+ if ($corporation->updated) {
+        $response= array('state'=>200,'newvalue'=>$corporation->new_value,'key'=>$_REQUEST['okey']);
 
+    } else {
+        $response= array('state'=>400,'msg'=>$corporation->msg,'key'=>$_REQUEST['okey']);
+    }
+    echo json_encode($response);
+
+}
 
 ?>

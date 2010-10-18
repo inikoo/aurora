@@ -136,5 +136,9 @@ ALTER TABLE `Inventory Transaction Fact` CHANGE `Map To Order Transaction Fact` 
 ALTER TABLE `Inventory Transaction Fact` DROP INDEX `Map To Order Transaction Fact` ;
 ALTER TABLE `Inventory Transaction Fact` ADD INDEX ( `Map To Order Transaction Fact Key` ) ;
 ALTER TABLE `Inventory Transaction Fact` ADD `Map To Order Transaction Fact Metadata` VARCHAR( 255 ) NULL DEFAULT NULL ;
+
+
+
+
 */
 ?>

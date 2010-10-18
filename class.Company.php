@@ -944,7 +944,6 @@ class Company extends DB_Table {
 
 
 
-
         if ($value=='') {
             $this->new=false;
             $this->msg.=" Company name should have a value";
@@ -969,7 +968,7 @@ class Company extends DB_Table {
             return;
         }
         elseif($affected==0) {
-            //$this->msg.=' '._('Same value as the old record');
+            $this->msg.=' '._('Same value as the old record');
 
         } else {
             $this->msg.=' '._('Company name updated')."\n";
@@ -1019,6 +1018,16 @@ class Company extends DB_Table {
             }
             mysql_free_result($res);
 
+
+$sql=sprintf("select * from `Corporation Dimension` where `Corporation Company Key`=%d  ",$this->id);
+            $res=mysql_query($sql);
+            while ($row=mysql_fetch_array($res)) {
+                $corporation=new Corporation ();
+                    $corporation->editor=$this->editor;
+                    $corporation->update_name($this->data['Company Name']);
+                 
+            }
+            mysql_free_result($res);
 
         }
 

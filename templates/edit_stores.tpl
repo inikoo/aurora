@@ -23,9 +23,16 @@
       
       <div id="edit_messages"></div>
       <div  class="edit_block" style="margin:0;padding:0 0px;{if $edit!="description"}display:none{/if}"  id="d_description">
+      
+       <div class="general_options" style="float:right">
+	        <span  style="margin-right:10px;visibility:hidden" onClick="save_edit_general('corporation')" id="save_edit_corporation" class="state_details">{t}Save{/t}</span>
+	        <span style="margin-right:10px;visibility:hidden" onClick="reset_edit_general('corporation')" id="reset_edit_corporation" class="state_details">{t}Reset{/t}</span>
+      </div>
+      
 	<table class="edit">
-	  <tr><td>{t}Corporation Name{/t}:</td><td><input  id="name" onKeyUp="description_changed(this)"    onMouseUp="description_changed(this)"  onChange="description_changed(this)" changed=0 type='text' class='text' style="width:15em" MAXLENGTH="16" value="" /></td></tr>
-	  
+	  <tr><td style="width:200px">{t}Corporation Name{/t}:</td><td style="width:200px"><input  id="name" onKeyUp="validate_general('corporation','name',this.value)"    onMouseUp="validate_general('corporation','name',this.value)"  onChange="validate_general('corporation','name',this.value)" changed=0 type='text' class='text' style="width:100%" MAXLENGTH="256" value="{$corporation->get('Corporation Name')}" ovalue="{$corporation->get('Corporation Name')}" /></td><td class="edit_td_alert" id="name_msg"></td></tr>
+	  <tr><td>{t}Corporation Currency{/t}:</td><td><input  id="currency" onKeyUp="validate_general('corporation','currency',this.value)"    onMouseUp="validate_general('corporation','currency',this.value)"  onChange="validate_general('corporation','currency',this.value)" changed=0 type='text' class='text' style="width:3em" MAXLENGTH="3" value="{$corporation->get('Corporation Currency')}"  ovalue="{$corporation->get('Corporation Currency')}" /></td><td class="edit_td_alert" id="currency_msg"></td></tr>
+
 	</table>
 	
       </div>

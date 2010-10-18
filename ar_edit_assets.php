@@ -132,6 +132,7 @@ case('edit_departments'):
   list_departments_for_edition();
  
    break;
+case('edit_stores_list'):
 
 case('edit_stores'):
    list_stores_for_edition();
@@ -1203,7 +1204,7 @@ mysql_free_result($result);
    $adata=array();
    //   print "$sql";
    while($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
-     if($row['Store For Sale Products']>0){
+     if($row['Store For Public Sale Products']>0){
        $delete='<img src="art/icons/discontinue.png" /> <span conclick="close_store('.$row['Store Key'].')"  id="del_'.$row['Store Key'].'" style="cursor:pointer">'._('Close').'<span>';
        $delete_type='close';
      }else{
