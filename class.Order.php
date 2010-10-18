@@ -865,6 +865,7 @@ function add_order_transaction($data) {
 
             if ($total_quantity==0) {
                 $this->delete_transaction($row['Order Transaction Fact Key']);
+                $otf_key=0;
             } else {
                 $product=new Product('id',$data['Product Key']);
                 $gross=$total_quantity*$product->data['Product History Price'];

@@ -70,9 +70,9 @@ abstract class DB_Table {
 
 
         }
-
-        if (!$this->updated)
-            $this->msg.=' '._('Nothing to be updated')."\n";
+            
+        if (!$this->updated and $this->msg=='')
+            $this->msg.=_('Nothing to be updated')."\n";
     }
 
     protected function update_field_switcher($field,$value,$options='') {
@@ -141,7 +141,11 @@ abstract class DB_Table {
         if ($this->table_name=='Supplier Product')
             $key_field='Supplier Product Current Key';
 
+        
+     
         $sql="select `".$field."` as value from  `".$this->table_name." Dimension`  where `$key_field`=".$this->id;
+        
+        
         $result=mysql_query($sql);
         if ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
             $old_value=$row['value'];

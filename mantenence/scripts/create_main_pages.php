@@ -32,10 +32,10 @@ global $myconf;
 $store_code='UK';
 $store_key=1;
 
-include_once('../../sites/UK/create_main_pages.php');
-include_once('../../sites/DE/create_main_pages.php');
-include_once('../../sites/FR/create_main_pages.php');
-include_once('../../sites/PL/create_main_pages.php');
+include_once('gb_create_main_pages.php');
+include_once('de_create_main_pages.php');
+include_once('fr_create_main_pages.php');
+include_once('pl_create_main_pages.php');
 
 
 

@@ -13,6 +13,7 @@
 */
 include_once('common.php');
 include_once('assets_header_functions.php');
+include_once('class.Corporation.php');
 
 //include_once('stock_functions.php');
 if(!$user->can_view('stores'))
@@ -38,6 +39,10 @@ $smarty->assign('view_sales',$view_sales);
 $smarty->assign('view_stock',$view_stock);
 $smarty->assign('create',$create);
 $smarty->assign('modify',$modify);
+
+
+$corporation=new Corporation();
+$smarty->assign('corporation',$corporation);
 
 $number_of_stores=count($user->stores);
 

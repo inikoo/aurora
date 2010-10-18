@@ -88,8 +88,14 @@ var myonCellClick = function(oArgs) {
 
 	if(column.action=='add_object')
 	    var new_qty=parseFloat(data['quantity'])+1;
-	else
-	    var new_qty=parseFloat(data['quantity'])-1;
+	else{
+	    qty=parseFloat(data['quantity'])
+	    if(qty==0){
+	        return;
+	    }
+	    var new_qty=qty-1;
+
+        }
 
  var ar_file='ar_edit_orders.php';
 	request='tipo=edit_new_order&id='+order_key+'&key=quantity&newvalue='+new_qty+'&oldvalue='+data['quantity']+'&pid='+ data['pid'];
@@ -97,7 +103,7 @@ var myonCellClick = function(oArgs) {
 				    'POST',
 				    ar_file, {
 					success:function(o) {
-					    //alert(o.responseText);
+					   // alert(o.responseText);
 					    var r = YAHOO.lang.JSON.parse(o.responseText);
 					    if (r.state == 200) {
 						for(x in r.data){
