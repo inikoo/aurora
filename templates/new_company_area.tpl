@@ -10,9 +10,9 @@
     <div style="float:left;padding:20px;border:1px solid #ddd;width:400px">
       <table class="edit">
 	<tr><td class="label">{t}New Company Area{/t}:</td><td><span style="font-weight:800"></td></tr>
-	<tr><td class="label">{t}Area Code{/t}:</td><td><input  id="area_code" ovalue=""  type="text"/></td></tr>
-	<tr><td class="label">{t}Area Name{/t}:</td><td><input  id="area_name" ovalue=""  type="text"/></td></tr>
-	<tr><td class="label">{t}Area Description{/t}:</td><td><textarea ovalue="" id="area_description"></textarea></td></tr>
+	<tr><td class="label">{t}Area Code{/t}:</td><td><input  onKeyUp="validate_general('company_area', 'area_code', this.value)" id="area_code" ovalue=""  type="text"/></td><td id="area_code_msg"></td><td id="area_code_msg"></td></tr>
+	<tr><td class="label">{t}Area Name{/t}:</td><td><input   onKeyUp="validate_general('company_area', 'area_name', this.value)" id="area_name" ovalue=""  type="text"/></td><td id="area_name_msg"></td><td id="area_name_msg"></td></tr>
+	<tr><td class="label">{t}Area Description{/t}:</td><td><textarea ovalue="" id="area_description"></textarea></td><td id="area_description_msg"></td></tr>
 
 
 
@@ -22,9 +22,9 @@
     </div>
     
     <div id="location_save_block" style="margin:0px 20px;padding:20px 20px;float:left;border:1px solid #ddd;width:300px">
-      <span id="add_area" class="button">{t}Save{/t}</span>
+      <span id="save_edit_company_area" onClick="save_new_general('company_area')" class="button">{t}Save{/t}</span>
       
-      <span style="margin-right:10px" id="reset_add_area" class="button">{t}Cancel{/t}</span>
+      <span style="margin-right:10px" onClick="reset_edit_general('company_area')" id="reset_edit_company_area" class="button">{t}Cancel{/t}</span>
 
     </div>
     

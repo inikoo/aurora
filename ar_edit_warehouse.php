@@ -461,9 +461,9 @@ function list_warehouse_areas_for_edition(){
    elseif($order=='code')
      $order='`Warehouse Area Code`';
  
-
+//---------------- chnges done here also-----------------------------
  
-   $sql="select *  from `Warehouse Area Dimension` $where $wheref order by $order $order_direction limit $start_from,$number_results    ";
+   $sql="select *  from `Company Area Dimension` $where $wheref order by $order $order_direction limit $start_from,$number_results    ";
   
    $res = mysql_query($sql);
    $adata=array();
@@ -474,10 +474,10 @@ function list_warehouse_areas_for_edition(){
    while($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
     
     $adata[]=array(
-		   'wa_key'=>$row['Warehouse Area Key'],
-		   'code'=>$row['Warehouse Area Code'],
-		   'name'=>$row['Warehouse Area Name'],
-		   'description'=>$row['Warehouse Area Description'],
+		  // 'wa_key'=>$row['Warehouse Area Key'],
+		   'code'=>$row['area_code'],
+		   'name'=>$row['area_name'],
+		   'description'=>$row['area_description_msg'],
 
 		   
 		   );
