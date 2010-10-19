@@ -1,5 +1,5 @@
 <?php
-ob_start();
+
 define('DEBUG', 0);
 if(DEBUG){ error_reporting(E_ALL);}
 
@@ -215,5 +215,5 @@ $export_data=array(
 		   ,'pdf'=>array('label'=>_('Export as pdf'),'title'=>'PDF')
 		   );
 
-ob_end_flush();
+
 ?>

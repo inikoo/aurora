@@ -10,18 +10,12 @@ var Dom   = YAHOO.util.Dom;
 
 
 
-       
-            
-            
-
-   
-    
-    
+          
     YAHOO.util.Event.addListener(window, "load", function() {
     tables = new function() {
 
 	    
-	    //START OF THE TABLE=========================================================================================================================
+	    //START OF THE TABLE ========================================================================================
 	 
 	    var tableid=0; // Change if you have more the 1 table
 	    var tableDivEL="table"+tableid;
