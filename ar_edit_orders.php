@@ -314,7 +314,9 @@ function transactions_to_process() {
         $_SESSION['state']['order']['store_key']=$store_key;
     } else
         $store_key=$_SESSION['state']['order']['store_key'];
-    $conf=$_SESSION['state']['products']['table'];
+    
+
+  $conf=$_SESSION['state']['products']['table'];
     if (isset( $_REQUEST['sf']))
         $start_from=$_REQUEST['sf'];
     else
@@ -367,6 +369,12 @@ function transactions_to_process() {
         $tableid=$_REQUEST['tableid'];
     else
         $tableid=0;
+
+
+   if (isset( $_REQUEST['family_code']))
+        $family_code=$_REQUEST['family_code'];
+    else
+        $family_code=$conf['family_code'];
 
 
     if (isset( $_REQUEST['show_all']) and preg_match('/^(yes|no)$/',$_REQUEST['show_all'])  ) {

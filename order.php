@@ -21,6 +21,9 @@ $css_files=array(
 		 'container.css',
 		 'table.css'
 		 );
+
+
+
 $js_files=array(
 
 		$yui_path.'utilities/utilities.js',
@@ -29,6 +32,7 @@ $js_files=array(
 		$yui_path.'datasource/datasource-min.js',
 		$yui_path.'autocomplete/autocomplete-min.js',
 		$yui_path.'datatable/datatable-min.js',
+                $yui_path.'dragdrop/dragdrop-min.js',
 		$yui_path.'container/container-min.js',
 
 		$yui_path.'menu/menu-min.js',

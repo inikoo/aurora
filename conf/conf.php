@@ -412,7 +412,8 @@ $default_state=array(
                                               'elements'=>array(),
                                               'mode'=>'same_code',//same_code,same_id,all
                                               'parent'=>'none',//store,department,family,none
-                                              'restrictions'=>'forsale'
+                                              'restrictions'=>'forsale',
+				              'family_code'=>''
                                           )
                               ),
 

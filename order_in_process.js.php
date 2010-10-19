@@ -243,7 +243,7 @@ function close_dialog(tipo){
     var ar_file='ar_edit_orders.php';
     
     var request='tipo=edit_'+column.object+'&id='+order_key+'&key=' + column.key + '&newvalue=' + encodeURIComponent(newValue) + '&oldvalue=' + encodeURIComponent(oldValue)+ myBuildUrl(datatable,record);
-    //alert('R:'+request);
+    alert('R:'+request);
 
     YAHOO.util.Connect.asyncRequest(
 				    'POST',
@@ -536,8 +536,57 @@ Dom.get("shipping_amount").value='';
 dialog_edit_shipping.hide();
 }
 
+
+
+
+var submit_family_code_search_on_enter=function(e){
+
+     var key;     
+     if(window.event)
+          key = window.event.keyCode; //IE
+     else
+          key = e.which; //firefox     
+
+     if (key == 13){
+	// Ajax Call 
+
+	var value=encodeURIComponent(Dom.get("family_search").value);
+	var ar_file='ar_assets.php'; 
+	var request='tipo=is_valid_family_code&code='+value;
+	alert('R:'+request);
+	return;
+	YAHOO.util.Connect.asyncRequest(
+					'POST',
+					ar_file, {
+					    success:function(o) {
+						alert(o.responseText);
+						var r = YAHOO.lang.JSON.parse(o.responseText);
+						if (r.state == 200) {
+						window.location.reload();
+						}
+					    },
+					failure:function(o) {
+					    alert(o.statusText);
+					    
+					},
+					scope:this
+				    },
+				    request
+				    
+				    ); 
+
+	
+}
+	
+};
+
+
+
 function init(){
-    var oACDS = new YAHOO.util.FunctionDataSource(mygetTerms);
+
+    YAHOO.util.Event.addListener('family_search', "keyup",submit_family_code_search_on_enter);
+
+   var oACDS = new YAHOO.util.FunctionDataSource(mygetTerms);
     
     oACDS.queryMatchContains = true;
     var oAutoComp = new YAHOO.widget.AutoComplete("f_input0","f_container0", oACDS);
@@ -577,6 +626,30 @@ Event.addListener("reset_set_shipping", "click", reset_set_shipping);
 
 
 YAHOO.util.Event.onDOMReady(init);
+
+YAHOO.util.Event.onContentReady("panel2", function () {
+
+
+panel2 = new YAHOO.widget.Panel("panel2", { xy:[350,330], width:"250px", visible: false } );
+
+var kl = new YAHOO.util.KeyListener(document, { keys:27 },{ fn:panel2.hide,scope:panel2,correctScope:true }, "keyup" ); 
+													
+
+	panel2.cfg.queueProperty("keylisteners", kl);
+	panel2.render();
+ 
+	var kl2 = new YAHOO.util.KeyListener(document, { ctrl:true, keys:70 }, 
+												   { fn:panel2.show, 
+													 scope:panel2,
+													 correctScope:true } );
+	
+	kl2.enable();
+ 
+
+
+    });
+
+
 
 YAHOO.util.Event.onContentReady("rppmenu0", function () {
 	 var oMenu = new YAHOO.widget.ContextMenu("rppmenu0", {trigger:"rtext_rpp0" });
