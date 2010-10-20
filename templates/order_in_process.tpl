@@ -108,7 +108,7 @@
 
  <span   style="float:right;margin-left:20px" class="state_details {if !$show_all}selected{/if}" onClick="show_only_ordered_products()"  id="show_only_ordered_products"  >{t}Show only ordered{/t}</span>
    <span   style="float:right;margin-left:20px" class="state_details {if $show_all}selected{/if}" onClick="show_all_products()"  id="show_all_products"  >{t}Show All{/t}</span>
- <span style="float:right;visibility:hidden" id="showing_only_family">Showing only <span id="search_family_code">XX</span> Family Products</span>    
+ <span class="state_details" style="float:right;visibility:hidden" id="showing_only_family">Showing only <span  style="  font-style: italic;" id="search_family_code"></span> Family Products</span>    
       
 
       
@@ -227,4 +227,5 @@
 
 <div id="search_error" style="position:relative; visibility:hidden;margin-bottom:10px">{t}You have entered unexisting family{/t}</div>
 </div> 
+
 {include file='footer.tpl'}
