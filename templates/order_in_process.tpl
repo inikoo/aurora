@@ -102,8 +102,13 @@
 	</div>
 <div style="clear:both;margin:0 0px;padding:0 20px ;border-bottom:1px solid #999"></div>
     <div id="list_options0"> 
-      
-      <span   style="float:right;margin-left:20px" class="state_details" state="{$show_all}"  id="show_all"  atitle="{if !$show_all}{t}Show only ordered{/t}{else}{t}Show all products available{/t}{/if}"  >{if $show_all}{t}Show only ordered{/t}{else}{t}Show all products available{/t}{/if}</span>     
+
+
+   
+
+ <span   style="float:right;margin-left:20px" class="state_details {if !$show_all}selected{/if}" onClick="show_only_ordered_products()"  id="show_only_ordered_products"  >{t}Show only ordered{/t}</span>
+   <span   style="float:right;margin-left:20px" class="state_details {if $show_all}selected{/if}" onClick="show_all_products()"  id="show_all_products"  >{t}Show All{/t}</span>
+ <span style="float:right;visibility:hidden" id="showing_only_family">Showing only <span id="search_family_code">XX</span> Family Products</span>    
       
 
       
@@ -219,5 +224,7 @@
 
 
 <div>Search Family: <input id="family_search" value=""/></div>
+
+<div id="search_error" style="position:relative; visibility:hidden;margin-bottom:10px">{t}You have entered unexisting family{/t}</div>
 </div> 
 {include file='footer.tpl'}

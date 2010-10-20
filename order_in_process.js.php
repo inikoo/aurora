@@ -335,7 +335,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 				     ];
 
 
-	    this.dataSource0 = new YAHOO.util.DataSource("ar_edit_orders.php?tipo=transactions_to_process&tid=0");
+	    this.dataSource0 = new YAHOO.util.DataSource("ar_edit_orders.php?tipo=transactions_to_process&tid=0&family_code=");
 	    this.dataSource0.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource0.connXhrMode = "queueRequests";
 	    this.dataSource0.responseSchema = {
@@ -394,33 +394,28 @@ YAHOO.util.Event.addListener(window, "load", function() {
     };
   });
 
+function show_only_ordered_products(){
 
-
-function change_show_all(){
-
-  var state=this.getAttribute('state');
-  var alter=Dom.get('show_all').getAttribute('atitle');
-
-  var current=Dom.get('show_all').innerHTML;
-  Dom.get('show_all').innerHTML=alter;
-  Dom.get('show_all').setAttribute('atitle',current);
-
-
-  if(state==1){
-      var show_all='no';
-      Dom.get('show_all').setAttribute('state',0);
-  }else{
-      var show_all='yes';
-      Dom.get('show_all').setAttribute('state',1);
-
-      
-  }
-  
+ Dom.removeClass('show_all_products','selected')
+   Dom.addClass('show_only_ordered_products','selected')
     
    var table=tables['table0'];
    var datasource=tables['dataSource0'];
-   var request='&show_all='+show_all;
-   // alert(request);
+   var request='&show_all=no';
+  
+   datasource.sendRequest(request,table.onDataReturnInitializeTable, table); 
+}
+
+function show_all_products(){
+
+  
+    Dom.addClass('show_all_products','selected')
+   Dom.removeClass('show_only_ordered_products','selected')
+
+   var table=tables['table0'];
+   var datasource=tables['dataSource0'];
+   var request='&show_all=yes';
+  
    datasource.sendRequest(request,table.onDataReturnInitializeTable, table); 
 }
 
@@ -553,16 +548,33 @@ var submit_family_code_search_on_enter=function(e){
 	var value=encodeURIComponent(Dom.get("family_search").value);
 	var ar_file='ar_assets.php'; 
 	var request='tipo=is_valid_family_code&code='+value;
-	alert('R:'+request);
-	return;
+	//alert('R:'+request);
+	//return;
 	YAHOO.util.Connect.asyncRequest(
 					'POST',
 					ar_file, {
 					    success:function(o) {
-						alert(o.responseText);
+						//alert(o.responseText);
 						var r = YAHOO.lang.JSON.parse(o.responseText);
 						if (r.state == 200) {
-						window.location.reload();
+	
+
+
+					
+
+
+  
+						  Dom.get("search_error").style.visibility='hidden';
+
+						var table=tables['table0'];
+   						var datasource=tables['dataSource0'];
+   						var request='&show_all=yes&family_code='+value;
+  
+   						datasource.sendRequest(request,table.onDataReturnInitializeTable, table); 
+
+						}else{
+					          
+						  Dom.get("search_error").style.visibility='visible';
 						}
 					    },
 					failure:function(o) {

@@ -394,7 +394,8 @@ function transactions_to_process() {
 
 
     $_SESSION['state']['products']['table']=array(
-                                                'order'=>$order
+'family_code'=>$family_code
+                                                ,'order'=>$order
                                                         ,'order_dir'=>$order_direction
                                                                      ,'nr'=>$number_results
                                                                            ,'sf'=>$start_from
@@ -419,7 +420,6 @@ function transactions_to_process() {
 
 
 
-
     if (!$show_all) {
 
         $table='  `Order Transaction Fact` OTF  left join `Product History Dimension` PHD on (PHD.`Product Key`=OTF.`Product Key`) left join `Product Dimension` P on (PHD.`Product ID`=P.`Product ID`)  ';
@@ -433,6 +433,10 @@ function transactions_to_process() {
 
     }
 
+if($family_code!=''){
+
+$where.=sprintf(" and `Product Family Code`=%s ",prepare_mysql($family_code));
+}
 
 
 
@@ -448,7 +452,7 @@ function transactions_to_process() {
     $sql="select count(*) as total from $table   $where $wheref   ";
 
     // print_r($conf);exit;
-    //     print $sql;
+        // print $sql;
     $res=mysql_query($sql);
     if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
         $total=$row['total'];
