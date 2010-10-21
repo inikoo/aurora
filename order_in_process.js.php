@@ -608,7 +608,17 @@ function init(){
     oACDS.queryMatchContains = true;
     var oAutoComp = new YAHOO.widget.AutoComplete("f_input0","f_container0", oACDS);
     oAutoComp.minQueryLength = 0; 
+//---------------------------------------discount search code from here-----------------------
+ change_staff_discount = new YAHOO.widget.Dialog("change_staff_discount", 
+			{ 
+			    visible : false,close:false,
+			    underlay: "none",draggable:false
+			    
+			} );
+       change_staff_discount.render();
+       //       change_staff_discount.show();
 
+//---------------------------------------discount search ends here---------------------------
 
         YAHOO.util.Event.addListener(["set_for_collection","set_for_shipping"], "click",change_shipping_type);
 
@@ -651,7 +661,7 @@ function focus_search_family(){
 
 
 panel2.show()
-getElementbyid('search_family').focus();
+document.getElementById('search_family').focus();
 // SOLVE THIS ONE DAY PLEASE
 }
 
@@ -687,3 +697,29 @@ YAHOO.util.Event.onContentReady("filtermenu0", function () {
 	 oMenu.subscribe("show", oMenu.focus);
 	 
     });
+//------------------------------------discount code ------------------------------
+var change_discount=function(o){
+//alert("caca")
+    var y=(Dom.getY(o))
+    var x=(Dom.getX(o))
+    x=x-90;y=y+15;
+    //    alert(y);
+    Dom.setX('change_staff_discount', x)
+    Dom.setY('change_staff_discount', y)
+   
+    //    add_user_dialog_staff.cfg.setProperty("x", "500");
+    //add_user_dialog_staff.cfg.setProperty("y", 500);
+    
+    change_staff_discount.show();
+    
+}
+function close_change_discount_dialog(){
+
+	Dom.get('change_discount_value').value='';
+	
+	
+
+	Dom.get('change_discount_save').style.visibility='hidden';
+	change_staff_discount.hide();
+
+    }
