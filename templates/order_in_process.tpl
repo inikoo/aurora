@@ -228,4 +228,20 @@
 <div id="search_error" style="position:relative; visibility:hidden;margin-bottom:10px">{t}You have entered unexisting family{/t}</div>
 </div> 
 
+<! ------------------------ discount search starts here ----------------------------------->
+<div id="change_staff_discount" style="display:nonex;position:absolute;xleft:-100px;xtop:-150px;background:#fff;padding:5px;border:1px solid #777;font-size:90%">
+  <div class="bd" >
+    <h2 >{t}Select Discount{/t}</h2>
+ <table class="edit inbox" border=0 >
+      
+   
+      <tr style="height:20px; border:none; " > <td style="padding-right:25px ">{t}Discount{/t}: </td><td style="text-align:left;"><input onKeyup="change_discount_function(this.value,'change_discount')" style="width:6em" type="text" id="change_discount_value" value=""/></td><td>%</td></tr>
+     
+ 
+    <tr class="buttons" ><td style="text-align:left"><span id="change_discount_cancel"  style="margin-left:0px;" class="unselectable_text button" onClick="close_change_discount_dialog()">{t}Cancel{/t}<img src="art/icons/cross.png"></span></td><td><span  onclick="change_discount_function2()" id="change_discount_save"   class="unselectable_text button"     style="visibility:hidden;margin-right:30px">{t}Save{/t} <img src="art/icons/disk.png" ></span></td><td></td></tr>
+  </table>
+  </div>
+</div>
+<! -------------------------discount search ends here ------------------------------------>
+
 {include file='footer.tpl'}

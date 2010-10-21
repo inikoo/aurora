@@ -605,7 +605,7 @@ $where.=sprintf(" and `Product Family Code`=%s ",prepare_mysql($family_code));
                      'add'=>'+',
                      'remove'=>'-',
                      //'change'=>'<span onClick="quick_change("+",'.$row['Product ID'].')" class="quick_add">+</span> <span class="quick_add" onClick="quick_change("-",'.$row['Product ID'].')" >-</span>',
-                     'to_charge'=>money($row['Order Transaction Gross Amount']-$row['Order Transaction Total Discount Amount'])
+                     'to_charge'=>'<span onClick="change_discount(this)">'.money($row['Order Transaction Gross Amount']-$row['Order Transaction Total Discount Amount']).'</span>'
 
                  );
 
