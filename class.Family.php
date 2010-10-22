@@ -1725,6 +1725,9 @@ class Family extends DB_Table {
                                                                                                                                                                                                                                                                                                    ,'Page Store Product Layouts'=>$product_layouts
                    );
 
+
+
+
         $page_data['Page Store Function']='Family Catalogue';
         $page_data['Page Store Creation Date']=date('Y-m-d H:i:s');
         $page_data['Page Store Last Update Date']=date('Y-m-d H:i:s');
@@ -1732,7 +1735,7 @@ class Family extends DB_Table {
         $page_data['Page Section']='catalogue';
         $page_data['Page Type']='Store';
         $page_data['Page Store Source Type'] ='Dynamic';
-        $page_data['Page Store Code']=$store->data['Store Code'];
+        $page_data['Page Store Key']=$store->id;
         $page_data['Page Parent Key']=$this->id;
 
 

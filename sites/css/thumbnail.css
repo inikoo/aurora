@@ -1,6 +1,6 @@
 .thumbnails{margin-top:10px;}
 
-.thumbnails .product_container{text-align:botton;margin:15px;height:180px;width:185px;float:left;margin-bottom:15px;padding:bottom:10px;xborder:1px solid red;margin-bottom:60px}
+.thumbnails .product_container{text-align:botton;margin:15px;height:150px;width:155px;float:left;margin-bottom:15px;padding:bottom:10px;xborder:1px solid red;margin-bottom:10px}
 .thumbnails img{max-height:100px;max-width: 170px;}
 .thumbnails td.image{height:120px;vertical-align:middle;text-align:center}
 .thumbnails td.description{font-size:10px;height:60px;text-align:center;vertical-align:bottom}

@@ -25,9 +25,9 @@ $smarty->assign('main_showcase',$showcases['main']['template']);
 //$smarty->assign('second_showcase',$showcases['second']['template']);
 
 
-$smarty->assign('home_header_template',"../templates/home_header.tpl");
-$smarty->assign('right_menu_template',"../templates/right_menu.tpl");
-$smarty->assign('left_menu_template',"../templates/left_menu.tpl");
+$smarty->assign('home_header_template',"templates/home_header.".$store->data['Store Locale'].".tpl");
+$smarty->assign('right_menu_template',"templates/right_menu.".$store->data['Store Locale'].".tpl");
+$smarty->assign('left_menu_template',"templates/left_menu.".$store->data['Store Locale'].".tpl");
 
 
 
