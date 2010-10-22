@@ -16,9 +16,10 @@
 
 #header_info a{color:#fff}
 
+#top_content{padding-top:4px}
 #page_content{min-height:400px;}
 #found_in,#see_also{background-position:bottom;background-repeat:no-repeat;padding-top:1px;padding-bottom:10px}
-#found_in{margin-left:20px;font-size:12px;width:460px;float:left;}
+#found_in{margin-left:0px;font-size:10px;width:160px;float:left;font-style:italic}
 
 #register_banner a{color:#fff}
 #register_banner{color:#fff;background-image:url('../art/family_register_banner.png');font-size:14px;;margin:10px auto;width:760px;height:200px;padding:0px;}

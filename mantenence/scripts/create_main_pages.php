@@ -53,7 +53,6 @@ while($row=mysql_fetch_array($res)){
   
 }
 
-
 foreach($page_data as $store_code=>$data){
   $store=new Store('code',$store_code);
 
@@ -65,16 +64,15 @@ foreach($data as $page_data){
   $page_data['Page Store Last Structural Change Date']=date('Y-m-d H:i:s');
   $page_data['Page Type']='Store';
   $page_data['Page Store Source Type'] ='Static';
-  $page_data['Page Store Code']=$store_code;
+  $page_data['Page Store Key']=$store->id;
   $page_data['Page Parent Key']=$store->id;
- 
+
+  //print_r($page_data);
+
   $page=new Page('find',$page_data,'create');
-  //  print_r($page_data);
   // print_r($page);
 }
 }
-
-
 //print_r($store_data);
 foreach($store_data as $store_code=>$xdata){
   $store=new Store('code',$store_code);
@@ -88,8 +86,6 @@ foreach($store_data as $store_code=>$xdata){
  
   $store->create_page($data);
 }
-
-
 $sql=sprintf("select * from `Product Department Dimension` left join  `Store Dimension` on (`Product Department Store Key`=`Store Key`)  where `Product Department Sales Type`='Public Sale'  ");
 
 $res=mysql_query($sql);
@@ -98,9 +94,9 @@ $department=new Department($row['Product Department Key']);
   $data=array();
   $data['Page Store Slogan']=(isset($department_data[$row['Store Code'].'_'.$row['Product Department Code']]['Slogan'])?$department_data[$row['Store Code'].'_'.$row['Product Department Code']]['Slogan']:'');
   $data['Page Store Resume']=(isset($department_data[$row['Store Code'].'_'.$row['Product Department Code']]['Resume'])?$department_data[$row['Store Code'].'_'.$row['Product Department Code']]['Resume']:'');
-$data['Page Store Function']='Department Catalogue';
+  $data['Page Store Function']='Department Catalogue';
   $data['Showcases Layout']='Splited';
-  $department->create_page($data);
+ $department->create_page($data);
 }
 
 

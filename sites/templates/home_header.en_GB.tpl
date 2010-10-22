@@ -21,12 +21,12 @@
    <div id="header_info" >
       <h1>{$header_title}</h1>
       <h2>{$header_subtitle}</h2>
-      <div id="header_commentary">
+      <div id="header_commentary" style="font-size:80%">
 	{$comentary}
       </div>  
       
     </div>
-    <a href="index.php" alt="home"><img src="{$store_code}/art/logo.png"/></a><br/>
+    <a href="index.php" alt="home"><img src="art/logo.png"/></a><br/>
     <div  id="slogan">{$slogan}</div>
     {include file="$main_menu_template"}
   </div>
