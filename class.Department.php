@@ -1310,7 +1310,7 @@ public $new_value=false;
       $store=new Store($this->data['Product Department Store Key']);
       $store_page_data=$store->get_page_data();
 	
-      //print_r($store_page_data);
+   //   print_r($store_page_data);
 //exit;
       if(!array_key_exists('Showcases',$data)){
 
@@ -1388,7 +1388,7 @@ public $new_value=false;
       $page_data['Page Section']='catalogue';
       $page_data['Page Type']='Store';
       $page_data['Page Store Source Type'] ='Dynamic';
-      $page_data['Page Store Code']=$store->data['Store Code'];
+      $page_data['Page Store Key']=$store->id;
       $page_data['Page Parent Key']=$this->id;
 
       $page=new Page('find',$page_data,'create');

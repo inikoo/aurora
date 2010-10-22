@@ -1098,7 +1098,10 @@ $default_state=array(
                                         ),
 
                            ),
-
+                    'page'=>array(
+                    'id'=>0,
+                    'edit'=>'properties'    
+                    ),
                    'store'=>array(
                                'details'=>false,
                                'percentages'=>false,
@@ -1109,6 +1112,8 @@ $default_state=array(
                                'avg'=>'totals',
 
                                'plot_interval'=>array(
+                                                    'd'=>array('plot_bins'=>15,
+                                                              'plot_forecast_bins'=>3),
                                                    'y'=>array('plot_bins'=>5,
                                                               'plot_forecast_bins'=>3),
                                                    'q'=>array('plot_bins'=>12,

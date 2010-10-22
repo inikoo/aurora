@@ -256,14 +256,17 @@ Dom.get('list_options'+table_id).style.display='none'
  tipo=data.tipo;
 	var table_id=0;
 	var request='ar_assets.php?tipo='+tipo+'&parent='+parent;
+	if(data.parent_key!= undefined){
+	    request+='&parent_key='+data.parent_key
+	}
 	YAHOO.util.Connect.asyncRequest('POST',request ,{
 	    success:function(o) {
-
+//alert(o.responseText)
 		var r =  YAHOO.lang.JSON.parse(o.responseText);
 		if(r.resultset.state==200){
 		    var container=Dom.get('thumbnails'+table_id);
 		    for(x in r.resultset.data){
-    if(r.resultset.data[x].type=='item'){
+            if(r.resultset.data[x].type=='item'){
 			var img = new YAHOO.util.Element(document.createElement('img')); 
 			img.set('src', r.resultset.data[x].image); 
 			img.set('alt', r.resultset.data[x].image); 
@@ -271,8 +274,7 @@ Dom.get('list_options'+table_id).style.display='none'
 			internal_span.set('innerHTML', r.resultset.data[x].code); 
 		 
 			var div = new YAHOO.util.Element(document.createElement('div')); 
-		
-
+            Dom.addClass(div,'product_container');
 			img.appendTo(div); 
 			internal_span.appendTo(div); 
 		

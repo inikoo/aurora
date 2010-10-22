@@ -1,6 +1,7 @@
 <?php
 $traslated_labels=array(
 			'search'=>'Search',
+			'home'=>'Home',
 			'login'=>'login',
 			'register'=>'register',
 			'contact'=>'Contact',

@@ -526,8 +526,11 @@ var tableid=5; // Change if you have more the 1 table
 	    var tableDivEL="table"+tableid;
 
 	    var CustomersColumnDefs = [
-				       {key:"section",label:"<?php echo _('Date')?>", width:200,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				       ,{key:"title",label:"<?php echo _('Author')?>", width:70,sortable:true,formatter:this.customer_name,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+	      {key:"id", label:"<?php echo _('Key')?>", width:20,sortable:false,isPrimaryKey:true,hidden:true} 
+				    ,{key:"go",label:'',width:20,}
+				      , {key:"title",label:"<?php echo _('Title')?>", width:240,sortable:true,formatter:this.customer_name,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				       ,{key:"section",label:"<?php echo _('Section')?>", width:70,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+
 				       ];
 	    
 	    this.dataSource5 = new YAHOO.util.DataSource("ar_edit_assets.php?tipo=store_pages&tableid=5");
@@ -547,11 +550,11 @@ var tableid=5; // Change if you have more the 1 table
 		
 		
 		fields: [
-			 "section","title"
+			 "section","title","id","go"
 			 ]};
 	    
-	    this.table1 = new YAHOO.widget.DataTable(tableDivEL, CustomersColumnDefs,
-						     this.dataSource1
+	    this.table5 = new YAHOO.widget.DataTable(tableDivEL, CustomersColumnDefs,
+						     this.dataSource5
 						     , {
 							 renderLoopSize: 50,generateRequest : myRequestBuilder
 							 ,paginator : new YAHOO.widget.Paginator({
@@ -565,8 +568,8 @@ var tableid=5; // Change if you have more the 1 table
 							     })
 							 
 							 ,sortedBy : {
-							    Key: "<?php echo$_SESSION['state']['store']['history']['order']?>",
-							     dir: "<?php echo$_SESSION['state']['store']['history']['order_dir']?>"
+							    Key: "<?php echo$_SESSION['state']['store']['pages']['order']?>",
+							     dir: "<?php echo$_SESSION['state']['store']['pages']['order_dir']?>"
 							 },
 							 dynamicData : true
 							 

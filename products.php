@@ -126,7 +126,6 @@ $smarty->assign('js_files',$js_files);
 $product_home="Products Home";
 $smarty->assign('home',$product_home);
 
-
 $number_products=$products['for_sale'];
 $smarty->assign('total_products',$number_products);
 $tipo_filter=($q==''?$_SESSION['state']['products']['table']['f_field']:'code');

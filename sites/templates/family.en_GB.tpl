@@ -1,12 +1,11 @@
 {include file="$head_template"}
 <body class="yui-skin-sam kaktus">
   <div id="container" >
-    {include file="../templates/family_header.tpl"}
-   
+   {include file="$header_template"}
       
       
      
-	<div >
+	<div id="top_content" >
 	  <div id="found_in">
 	   
 	   <a href="department.php?code={$family->get('Product Family Main Department Code')}">{$family->get('Product Family Main Department Name')}</a>
@@ -64,13 +63,9 @@
      </div>
      
      
+<div id="list_options0"></div>
+        {include file='templates/table_splinter.tpl' table_id=0 filter_name=$filter_name0 filter_value=$filter_value0  }
 
-    <div  class="clean_table_caption"  style="clear:both;">
-
-      <div style="float:left;"><div id="table_info0" class="clean_table_info"><span id="rtext0"></span> <span class="rtext_rpp" id="rtext_rpp0"></span> <span class="filter_msg"  id="filter_msg0"></span></div></div>
-      <div class="clean_table_filter" id="clean_table_filter0" style="display:none"><div class="clean_table_info"><span id="filter_name0">{$filter_name}</span>: <input style="border-bottom:none" id='f_input0' value="{$filter_value}" size=10/><div id='f_container0'></div></div></div>
-      <div class="clean_table_controls" style="" ><div><span  style="margin:0 5px" id="paginator0"></span></div></div>
-    </div>
     <div id="thumbnails0" class="thumbnails" style="border-top:1px solid SteelBlue;clear:both;{if $table_type!='thumbnails'}display:none{/if}"></div>
     <div id="table0"   class="data_table_container dtable btable "  style="{if $table_type!='list'}display:none{/if}"   > </div>
     <div id="manual0" class="manual" style="border-top:1px solid SteelBlue;clear:both;{if $table_type!='manual'}display:none{/if}"></div>

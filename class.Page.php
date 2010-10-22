@@ -45,19 +45,24 @@ class Page extends DB_Table{
        return;
      }
      
-     $this->get_data($arg1,$arg2);
+     $this->get_data($arg1,$arg2,$arg3);
 
   }
 
 
-  function get_data($tipo,$tag){
+  function get_data($tipo,$tag,$tag2=false){
    
-    if(preg_match('/url|address|www/i',$tipo))
+    if(preg_match('/url|address|www/i',$tipo)){
       $sql=sprintf("select * from `Page Dimension` where  `Page URL`=%s",prepare_mysql($tag));
-    else
-      $sql=sprintf("select * from `Page Dimension` where  `Page Key`=%d",$tag);
+    }elseif($tipo=='store_page_code'){
+        $sql=sprintf("select * from `Page Store Dimension` PS left join `Page Dimension` P  on (P.`Page Key`=PS.`Page Key`) where `Page Code`=%s and `Page Store Key`=%d ",
+        prepare_mysql($tag2),
+        $tag
+        );
 
-   
+    }else{
+      $sql=sprintf("select * from `Page Dimension` where  `Page Key`=%d",$tag);
+   }
     $result =mysql_query($sql);
     if($this->data=mysql_fetch_array($result, MYSQL_ASSOC)){
       $this->id=$this->data['Page Key'];
@@ -103,37 +108,9 @@ function find($raw_data,$options){
    }
 
 
-    $data=$this->base_data();
-    foreach($raw_data as $key=>$value){
-      if(array_key_exists($key,$data))
-	$data[$key]=_trim($value);
-     
-      
-    }
 
 
-
-    $extra_data=array();
-    if($data['Page Type']=='Internal'){
-      $extra_data=$this->internal_base_data();
-      foreach($raw_data as $key=>$value){
-	if(array_key_exists($key,$extra_data))
-	  $extra_data[$key]=_trim($value);
-	   
-	   }
-      
-    }elseif($data['Page Type']=='Store'){
-      $extra_data=$this->store_base_data();
-      foreach($raw_data as $key=>$value){
-	if(array_key_exists($key,$extra_data)){
-	  $extra_data[$key]=$value;
-      if(is_string($value))
-      $extra_data[$key]=_trim($value);
-      }
-      }
-      
-    }
-
+    
 
 
 
@@ -146,8 +123,7 @@ function find($raw_data,$options){
       $update='update';
     }
 
-    
-    
+   
 
 
     //   $sql=sprintf("select `Page Key` from `Page Dimension` P left join `Page Store Dimension` PS on (P.`Page Key`=PS.`Page Key`)   where `Page URL`=%s "
@@ -163,7 +139,7 @@ function find($raw_data,$options){
 
 
     if(!$this->found and $create){
-      $this->create($data,$extra_data);
+      $this->create($raw_data);
 
     }
 
@@ -171,7 +147,19 @@ function find($raw_data,$options){
   }
 
 
-function create_internal($data){
+function create_internal($raw_data){
+
+      $data=$this->internal_base_data();
+      foreach($raw_data as $key=>$value){
+	if(array_key_exists($key,$data))
+	  $data[$key]=_trim($value);
+	   
+	   }
+      
+    
+
+
+
   $keys='(';
   $values='values(';
   $data['Page Key']=$this->id;
@@ -198,7 +186,31 @@ function create_internal($data){
 }
 
 
-function create($data,$extra_data=false){
+function create($raw_data){
+
+
+  if(!isset($raw_data['Page Code']) or  $raw_data['Page Code']==''){
+  
+    $raw_data['Page Code']=preg_replace('/\s/','',strtolower($raw_data['Page Section'].'_'.$raw_data['Page Short Title']));
+  }
+
+  if(!isset($raw_data['Page URL']) or  $raw_data['Page URL']==''){
+  
+    $raw_data['Page URL']="info.php?page=".$raw_data['Page Code'];
+  }
+  
+  
+  
+  
+    $data=$this->base_data();
+    foreach($raw_data as $key=>$value){
+      if(array_key_exists($key,$data))
+	$data[$key]=_trim($value);
+     
+      
+    }
+
+  
   
   $keys='(';
   $values='values(';
@@ -212,24 +224,32 @@ function create($data,$extra_data=false){
   $keys=preg_replace('/,$/',')',$keys);
   $values=preg_replace('/,$/',')',$values);
   $sql=sprintf("insert into `Page Dimension` %s %s",$keys,$values);
-  //print $sql;
-      if (mysql_query($sql)) {
+  
+  
+  if (mysql_query($sql)) {
 	$this->id=mysql_insert_id();
 	$this->get_data('id',$this->id);
 	
 	$this->update_valid_url();
 	$this->update_working_url();
 	
+	
+	
+	
+	
+	
+	
 	if($this->data['Page Type']=='Internal'){
-	  $this->create_internal($extra_data);
+	  $this->create_internal($raw_data);
 	}elseif($this->data['Page Type']=='Store'){
-	  $this->create_store_page($extra_data);
+	  $this->create_store_page($raw_data);
 	}
 	
 	
 	
       }else{
 	$this->error=true;$this->msg='Can not insert Page Dimension';
+	exit("$sql\n");
       }
      
      
@@ -237,7 +257,21 @@ function create($data,$extra_data=false){
 
 
 
-function create_store_page($data){
+function create_store_page($raw_data){
+
+ 
+      $data=$this->store_base_data();
+      foreach($raw_data as $key=>$value){
+	if(array_key_exists($key,$data)){
+	  $data[$key]=$value;
+      if(is_string($value))
+      $data[$key]=_trim($value);
+      }
+      }
+      
+    
+
+
   
   $data['Page Key']=$this->id;
 
@@ -275,6 +309,8 @@ function create_store_page($data){
   }
   
   
+  
+  
   $data['Page Store Product Layouts']=serialize($data['Page Store Product Layouts']);
   
   $keys='(';
@@ -289,7 +325,6 @@ function create_store_page($data){
   $keys=preg_replace('/,$/',')',$keys);
   $values=preg_replace('/,$/',')',$values);
   $sql=sprintf("insert into `Page Store Dimension` %s %s",$keys,$values);
-  //   print "$sql\n\n";
   
       if (mysql_query($sql)) {
 
@@ -297,6 +332,7 @@ function create_store_page($data){
 	
       }else{
 	$this->error=true;$this->msg='Can not insert Page Store Dimension';
+	print "$sql\n";exit;
       }
      
 }
