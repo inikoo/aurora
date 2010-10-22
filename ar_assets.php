@@ -3533,6 +3533,8 @@ function list_departments() {
 function list_products() {
 
 
+$display_total=false;
+
 
     $conf=$_SESSION['state']['products']['table'];
     if (isset( $_REQUEST['view']))
@@ -3549,15 +3551,19 @@ function list_products() {
 
     if (isset( $_REQUEST['nr'])) {
         $number_results=$_REQUEST['nr'];
-
+        if($display_total){
         if ($start_from>0) {
             $page=floor($start_from/$number_results);
             $start_from=$start_from-$page;
         }
+}
 
-    }      else
+
+
+
+    }      else{
         $number_results=$conf['nr'];
-
+}
 
 
 
@@ -3728,24 +3734,28 @@ function list_products() {
     elseif($f_field=='description' and $f_value!='')
     $wheref.=" and  `Product Name` like '%".addslashes($f_value)."%'";
 
-    $sql="select count(*) as total from $db_table  $where $wheref   ";
-    //print $sql;
+    $sql="select count(*) as total from `Product Dimension`  $where $wheref";
+
     $res=mysql_query($sql);
     if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+
         $total=$row['total'];
     }
-    if ($wheref=='') {
-        $filtered=0;
-        $total_records=$total;
-    } else {
-        $sql="select count(*) as total from `Product Dimension`  $where   ";
+    if ($wheref!='') {
+        $sql="select count(*) as total_without_filters from `Product Dimension`  $where ";
         $res=mysql_query($sql);
         if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
-            $total_records=$row['total'];
-            $filtered=$total_records-$total;
+
+            $total_records=$row['total_without_filters'];
+            $filtered=$row['total_without_filters']-$total;
         }
 
+    } else {
+        $filtered=0;
+        $filter_total=0;
+        $total_records=$total;
     }
+    mysql_free_result($res);
 
 
     $rtext=$total_records." ".ngettext('product','products',$total_records);
@@ -4396,7 +4406,7 @@ function list_products() {
 
     }
 
-
+if($display_total){
     $total_title='Total';
     if ($view=='sales')
         $total_title=_('Total');
@@ -4424,6 +4434,8 @@ function list_products() {
 
 
     $total_records=ceil($total_records/$number_results)+$total_records;
+}
+
 
     $response=array('resultset'=>
                                 array('state'=>200,
@@ -4434,7 +4446,7 @@ function list_products() {
                                       'filter_msg'=>$filter_msg,
                                       'rtext'=>$rtext,
                                       'rtext_rpp'=>$rtext_rpp,
-                                      'total_records'=>$total_records,
+                                      'total_records'=>$total,
                                       'records_offset'=>$start_from,
                                       'records_perpage'=>$number_results,
                                      )

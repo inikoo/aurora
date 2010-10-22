@@ -1543,7 +1543,7 @@ function list_pages_for_edition(){
  
  $where=' where `Page Type`="Store" ';
  if($parent=='store')
-     $where=sprintf("and  `Page Parent Key`=%d ",$parent_id);
+     $where.=sprintf("and `Page Store Function` in ('Front Page Store','Search','Information','Unknown','Store Catalogue') and `Page Store Key`=%d ",$parent_id);
    
    
  $filter_msg='';
@@ -1567,7 +1567,6 @@ function list_pages_for_edition(){
      $total=$row['total'];
    }
 mysql_free_result($result);
-     
      if($wheref==''){
        $filtered=0;$total_records=$total;
    }else{
@@ -1632,9 +1631,11 @@ mysql_free_result($result);
     
     
     $adata[]=array(
+           'id'=>$row['Page Key'],		
 		  'section'=>$row['Page Section'],
-		  'title'=>$row['Page Title']
-		  
+		  'title'=>$row['Page Title'],
+		  'go'=>sprintf("<a href='edit_page.php?id=%d'><img src='art/icons/page_go.png' alt='go'></a>",$row['Page Key'])
+
 		  
 		   );
   }

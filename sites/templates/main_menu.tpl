@@ -1,5 +1,3 @@
-
-
 <ul class="menu" id="menu">
 <li><a href="index.php" class="menulink">{$traslated_labels.home}</a></li>
 	<li><a href="#" class="menulink">{$traslated_labels.info}</a>

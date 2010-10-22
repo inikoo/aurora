@@ -172,7 +172,7 @@
       </div>
       <div  class="edit_block" style="margin:0;padding:0 0px;{if $edit!="web"}display:none{/if}"  id="d_web">
 
-<div class="general_options" style="float:right">
+      <div class="general_options" style="float:right">
 	     <span style="margin-right:10px;{if $family->get('Product Family Page Key')}display:none{/if}"  onclick="" id="web_create" class="state_details">{t}Create Page{/t}</span>
 	  
 	   </div>

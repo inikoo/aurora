@@ -1316,7 +1316,6 @@ if($type=='all_customers'){
     }
     mysql_free_result($res);
 
-    // $rtext=$total_records." ".ngettext('identified customers','identified customers',$total_records);
 
     $rtext=$total_records." ".ngettext('customer','customers',$total_records);
     if ($total_records>$number_results)

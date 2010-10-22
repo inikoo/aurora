@@ -1431,7 +1431,7 @@ $this->data['Store Delivery Notes For Replacements'],
       $page_data['Page Type']='Store';
       $page_data['Page Section']='catalogue';
       $page_data['Page Store Source Type'] ='Dynamic';
-      $page_data['Page Store Code']=$this->data['Store Code'];
+      $page_data['Page Store Key']=$this->data['Store Key'];
       $page_data['Page Parent Key']=$this->data['Store Key'];
 //print_r($page_data);
       $page=new Page('find',$page_data,'create');
@@ -1445,7 +1445,7 @@ $this->data['Store Delivery Notes For Replacements'],
  function get_page_data(){
   $data=array();
   $sql=sprintf("select * from `Page Store Dimension` PSD left join `Page Dimension` PD on (PSD.`Page Key`=PD.`Page Key`) where PSD.`Page Key`=%d",$this->data['Store Page Key']);
-  // print $sql;
+ // print $sql;
   $res=mysql_query($sql);
   if($row=mysql_fetch_array($res)){
     $data=$row;

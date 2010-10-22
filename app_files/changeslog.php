@@ -138,7 +138,9 @@ ALTER TABLE `Inventory Transaction Fact` ADD INDEX ( `Map To Order Transaction F
 ALTER TABLE `Inventory Transaction Fact` ADD `Map To Order Transaction Fact Metadata` VARCHAR( 255 ) NULL DEFAULT NULL ;
 
 
+0.9.10
 
+ALTER TABLE `Page Store Dimension` CHANGE `Page Store Code` `Page Store Key` SMALLINT UNSIGNED NOT NULL 
 
 */
 ?>

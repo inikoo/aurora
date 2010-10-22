@@ -2,7 +2,7 @@
 <?php
 
 
-include_once('../common.php');
+include_once('common.php');
 $family_key=sprintf("%d",$_REQUEST['key']);
 print "var family_key=$family_key;";
 
@@ -12,7 +12,6 @@ print "var family_key=$family_key;";
 
 var Dom   = YAHOO.util.Dom;
 var Event   = YAHOO.util.Event;
-
 
    
 function fast_change_item(tipo,product_id){
@@ -33,7 +32,7 @@ var ar_file='ar_edit_orders.php';
 				    'POST',
 				    ar_file, {
 					success:function(o) {
-					   // alert(o.responseText);
+					   //alert(o.responseText);
 					    var r = YAHOO.lang.JSON.parse(o.responseText);
 					    if (r.state == 200) {
 						Dom.get('order_qty_'+product_id).value=r.quantity;
@@ -171,7 +170,6 @@ YAHOO.util.Event.addListener(window, "load", function() {
 				    ,{key:"price", label:"<?php echo _('Price')?>",width:100,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				   
 			       ];
-
 	    this.dataSource0 = new YAHOO.util.DataSource("ar_assets.php?tipo=products&parent=family&parent_key="+family_key);
 	    this.dataSource0.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource0.connXhrMode = "queueRequests";
@@ -256,7 +254,7 @@ ids=['table_type_thumbnails','table_type_list','table_type_manual'];
  YAHOO.util.Event.addListener(ids, "click",change_table_type,{table_id:0,parent:'family'});
  
   YAHOO.util.Event.addListener("checkout", "click",checkout);
-
+/*
  search_scope='products';
      var store_name_oACDS = new YAHOO.util.FunctionDataSource(search_products_in_store);
      store_name_oACDS.queryMatchContains = true;
@@ -267,13 +265,11 @@ ids=['table_type_thumbnails','table_type_list','table_type_manual'];
   Event.addListener(search_scope+"_clean_search", "click",clear_search,search_scope);   
  
  
- 
 
 
  YAHOO.util.Event.addListener('product_submit_search', "click",submit_search,'product');
  YAHOO.util.Event.addListener('product_search', "keydown", submit_search_on_enter,'product');
-
-
+*/
 
  }
 
