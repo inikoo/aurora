@@ -659,9 +659,11 @@ YAHOO.util.Event.onContentReady("panel2", function () {
 
 function focus_search_family(){
 
-
+alert("reached to function focus_search_family()")
 panel2.show()
-document.getElementById('search_family').focus();
+
+document.getElementById('family_search').focus()
+alert("caca")
 // SOLVE THIS ONE DAY PLEASE
 }
 
@@ -697,7 +699,7 @@ YAHOO.util.Event.onContentReady("filtermenu0", function () {
 	 oMenu.subscribe("show", oMenu.focus);
 	 
     });
-//------------------------------------discount code ------------------------------
+//------------------------------------ discount code ------------------------------
 var change_discount=function(o){
 //alert("caca")
     var y=(Dom.getY(o))
