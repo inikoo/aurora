@@ -250,6 +250,12 @@ Dom.get('billing_address').style.display='';
 
 }
 
+function back_to_take_order(){
+    location.href='order.php?id=<?php echo $_SESSION['state']['order']['id']?>'; 
+
+
+}
+
 
 function init(){
   
@@ -260,7 +266,7 @@ function init(){
     oAutoComp.minQueryLength = 0; 
     var ids = ["details","company","delivery","delivery2"]; 
     YAHOO.util.Event.addListener(ids, "click", change_block);
-
+    Event.addListener("back_to_take_order", "click", back_to_take_order , true);
     
     YAHOO.util.Event.addListener('add_new_delivery_address', "click",display_new_delivery_address );
         YAHOO.util.Event.addListener('show_edit_billing_address', "click",display_edit_billing_address );

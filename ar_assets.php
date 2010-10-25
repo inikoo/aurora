@@ -36,6 +36,34 @@ if (!isset($_REQUEST['tipo'])) {
 
 $tipo=$_REQUEST['tipo'];
 switch ($tipo) {
+//--------------- search family code starts here-----------------------------------------
+case('is_valid_family_code'):
+
+  
+$family_code=$_REQUEST['code'];
+
+    if (isset($_REQUEST['code'])!="") {
+                 $sql=sprintf("select * from `Product Family Dimension` where `Product Family Code`=%s  order by `Product Family Key`  ",prepare_mysql($family_code));
+   //print($sql);     
+
+            $res=mysql_query($sql);
+	    $count=mysql_num_rows($res);
+	    if($count==0)
+		{
+	$response= array('state'=>400,'found'=>'no','msg'=>_("You have entered unexisting family"));
+        echo json_encode($response);
+        exit;
+
+		}
+	    else{
+		$response= array('state'=>200,'found'=>'yes','msg'=>_("Family found"));
+        echo json_encode($response);
+        exit;
+		}
+           }
+    break;
+//--------------- search family code ends here-----------------------------------------
+
 case('is_store_code'):
     is_store_code();
     break;
