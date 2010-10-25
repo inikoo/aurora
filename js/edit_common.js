@@ -13,6 +13,25 @@ function swap_this_radio(o,input_element){
 	Dom.get(input_element).value=o.getAttribute('radio_value');
     }
 }
+
+var select_option_table=function(o){
+    Dom.addClass(o,'selected');
+   
+}
+
+var select_radio_option_table=function(o){
+    if(Dom.hasClass(o,'selected')){
+    Dom.removeClass(o,'selected');
+   }else{
+   Dom.addClass(o,'selected');
+   }
+}
+
+var save_option_table=function(o){
+Dom.getElementsByClassName('selected', 'td', o)
+}
+
+
 var CellEdit = function (callback, newValue) {
     var record = this.getRecord(),
     column = this.getColumn(),

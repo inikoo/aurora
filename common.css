@@ -484,9 +484,6 @@ table.submit_order{ float:right;text-align:right ;border-spacing:0px  3px;border
 table.submit_order td.but{ background:#238546;color:#fff;cursor:pointer;padding:2px 3px;text-align:center }
 
 
-.staff_list td{ text-align:center;cursor:pointer  }
-.staff_list td.selected{ background:#7296e1;color:white   }
-
 span.but{ xbackground:#238546;color:#bbb;cursor:pointer;padding:2px 3px;text-align:center ;border:1px solid #ccc}
 
 span.xxxselected { background:#7296e1;color:#fff ;border:1px solid navy}
@@ -730,3 +727,11 @@ span.state_details:hover{color:#222}
 a.state_details{cursor:pointer;}
 a.state_details.selected{color:#000 ;font-weight:600}
 a.state_details:hover{color:#000;text-decoration:none}
+
+.export_csv_menu{}
+
+
+.options_list td{ border:1px solid #999;text-align:center;cursor:pointer  }
+.options_list td.selected{ background:#7296e1;color:white   }
+.options_list td.empty{ border:none;cursor:default  }
+

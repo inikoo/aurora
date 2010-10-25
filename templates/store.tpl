@@ -210,5 +210,6 @@
   </div>
 </div>
 
+{include file='export_csv_splinter.tpl' id=0 options_data  }
 
 {include file='footer.tpl'}

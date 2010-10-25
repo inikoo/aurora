@@ -1,0 +1,120 @@
+<?php
+/*
+ File: customer_csv.php 
+
+ Customer CSV data for export
+
+ About: 
+ Autor: Raul Perusquia <rulovico@gmail.com>
+ 
+ Copyright (c) 2010, Kaktus 
+ 
+ Version 2.0
+*/
+
+include_once('common.php');
+include_once('ar_common.php');
+
+if(!isset($_REQUEST['tipo']))
+exit("unknown operation");
+
+$tipo=$_REQUEST['tipo'];
+
+list($filename,$adata)=get_data($tipo);
+
+if(!$filename){
+exit("unknown operation 2");
+}
+
+print_r($adata);
+
+
+/*
+header("Content-type: application/octet-stream");
+header("Content-Disposition: attachment; filename=\"".$filename."\"");
+$out = fopen('php://output', 'w');
+foreach ($adata as $data) {
+    fputcsv($out, $data);
+}
+
+fclose($out);
+*/
+
+function get_data($tipo){
+$filename='';
+$data=array();
+
+
+switch ($tipo) {
+    case 'customers':
+        $filename=_('customers').'.csv';
+        $data=get_customers_data();
+        break;
+    case 'stores':
+        $filename=_('stores').'.csv';
+        $f_field=$_SESSION['state']['stores']['table']['f_field'];
+        $f_value=$_SESSION['state']['stores']['table']['f_value'];
+        $wheref=wheref_stores($f_field,$f_value);
+        $filename=_('stores').'.csv';
+        $data=get_stores_data($wheref);
+        break;        
+    default:
+        
+        break;
+}
+return array($filename,$data);
+}
+
+function get_stores_data($wheref){
+
+
+$data=prepare_values($_REQUEST,array('values'=>array('type'=>'json array','optional'=>true)));
+if(isset($data['values'])){
+print_r($data['values']);
+}else{
+$fields_to_export=$_SESSION['state']['stores']['table']['csv_export'];
+}
+
+//print_r($fields_to_export);
+
+
+$fields=array(
+'code'=>array('title'=>_('Code'),'db_name'=>'Store Code'),
+'name'=>array('title'=>_('Name'),'db_name'=>'Store Name'),
+'departments'=>array('title'=>_('Departments'),'db_name'=>'Store Departments'),
+'families'=>array('title'=>_('Departments'),'db_name'=>'Store Families'),
+
+);
+
+
+foreach($fields as $key=>$value){
+if(!isset($fields_to_export[$key]) or  !$fields_to_export[$key]  )
+unset($fields[$key]);
+}
+
+
+
+$data=array();
+$_data=array();
+foreach($fields as $key=>$options){
+$_data[]=$key;
+}
+$data[]=$_data;
+$sql="select * from `Store Dimension` where true $wheref";
+$res=mysql_query($sql);
+
+while($row=mysql_fetch_assoc($res)){
+$_data=array();
+foreach($fields as $key=>$options){
+
+$_data[]=$row[$options['db_name']];
+}
+$data[]=$_data;
+}
+//print_r($data);exit;
+
+return $data;
+
+}
+ 
+?>

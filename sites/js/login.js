@@ -20,7 +20,7 @@ function login(){
     //Dom.get('loginform').submit();
     
      var request='ar_login.php?ep='+encodeURIComponent(epwd)+'&login_handle='+input_login;
-     // alert(request);
+      //alert(request);
     	YAHOO.util.Connect.asyncRequest('POST',request ,{
 		success:function(o) {
 		    var r =  YAHOO.lang.JSON.parse(o.responseText);

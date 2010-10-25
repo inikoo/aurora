@@ -177,7 +177,7 @@
 </div>
 
 
-<div id="staff_dialog" class="yuimenu staff_list"  >
+<div id="staff_dialog" class="yuimenu options_list"  >
   <div class="bd">
     <table border=1>
       {foreach from=$staff item=_staff name=foo}

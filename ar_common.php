@@ -106,7 +106,23 @@ function prepare_values($data,$value_names){
 }
 
 
+function wheref_stores($f_field,$f_value){
+$wheref='';
+   if ($f_field=='name' and $f_value!='')
+        $wheref.=" and  `Store Name` like '%".addslashes($f_value)."%'";
+   elseif ($f_field=='code'  and $f_value!='')
+        $wheref.=" and  `Store Code` like '".addslashes($f_value)."%'";
+return $wheref;
+}
 
+function wheref_departments($f_field,$f_value){
+$wheref='';
+  if ($f_field=='name' and $f_value!='')
+        $wheref.=" and  `Product Department Name` like '".addslashes($f_value)."%'";
+    if ($f_field=='code' and $f_value!='')
+        $wheref.=" and  `Product Department Code` like '".addslashes($f_value)."%'";
 
+return $wheref;
 
+}
 ?>

@@ -3,26 +3,13 @@ include_once('common.php');
 include_once('class.Store.php');
 include_once('class.CompanyArea.php');
 
-if(!$user->can_view('orders'))
-  exit();
 
-if(isset($_REQUEST['store']) and is_numeric($_REQUEST['store']) ){
-  $store_id=$_REQUEST['store'];
 
-}else{
-  $store_id=$_SESSION['state']['orders']['store'];
-
-}
-
-if(!($user->can_view('stores') and in_array($store_id,$user->stores)   ) ){
-  header('Location: index.php');
+if(!($user->can_view('orders')    ) ){
+  header('Location: index.php?cannot_view');
    exit;
 }
 
-$store=new Store($store_id);
-$smarty->assign('store',$store);
-
-$_SESSION['state']['orders']['store']=$store_id;
 
 
 $q='';

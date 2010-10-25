@@ -22,7 +22,7 @@ require_once 'class.Order.php';
 require_once 'class.Location.php';
 require_once 'class.PartLocation.php';
 //require_once 'common_functions.php';
-//require_once 'ar_common.php';
+require_once 'ar_common.php';
 
 
 
@@ -2719,14 +2719,8 @@ function list_departments() {
 
 
     $filter_msg='';
-    $wheref='';
-    if ($f_field=='name' and $f_value!='')
-        $wheref.=" and  `Product Department Name` like '".addslashes($f_value)."%'";
-    if ($f_field=='code' and $f_value!='')
-        $wheref.=" and  `Product Department Code` like '".addslashes($f_value)."%'";
-
-
-
+    $wheref=wheref_departments($f_field,$f_value);
+   
 
 
     $sql="select count(*) as total from `Product Department Dimension`   $where $wheref";
@@ -5944,10 +5938,6 @@ function list_stores() {
     } else
         $number_results=$conf['nr'];
 
-
-
-
-
     if (isset( $_REQUEST['o']))
         $order=$_REQUEST['o'];
     else
@@ -6033,16 +6023,9 @@ function list_stores() {
     $where="where true  ";
 
     $filter_msg='';
-    $wheref='';
-    if ($f_field=='name' and $f_value!='')
-        $wheref.=" and  `Store Name` like '%".addslashes($f_value)."%'";
-    if ($f_field=='code'  and $f_value!='')
-        $wheref.=" and  `Store Code` like '".addslashes($f_value)."%'";
-
-
-
-
-    $sql="select count(*) as total from `Store Dimension`   $where $wheref";
+    $wheref=wheref_stores($f_field,$f_value);
+ 
+   $sql="select count(*) as total from `Store Dimension`   $where $wheref";
     $result=mysql_query($sql);
     if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
         $total=$row['total'];
