@@ -251,11 +251,11 @@ Dom.get('billing_address').style.display='';
 }
 
 function back_to_take_order(){
-    location.href='order.php?id=<?php echo $_SESSION['state']['order']['id']?>'; 
+
+    location.href='order.php?id=+id'; 
 
 
 }
-
 
 function init(){
   
