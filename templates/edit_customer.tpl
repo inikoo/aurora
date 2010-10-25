@@ -16,7 +16,7 @@
     <li> <span class="item {if $edit=='marketing'}selected{/if}"  id="marketing">  <span> {t}Marketing Data{/t}</span></span></li>
 
   </ul>
-<div style="text-align:right;cursor:pointer;" id="back_to_take_order" class="quick_button">{t}Order{/t}</div>
+{if $return_to_order}<div style="text-align:right;cursor:pointer;" onClick="back_to_take_order({ $return_to_order})" class="quick_button">{t}Order{/t}</div>{/if}
  <div class="tabbed_container" > 
    
  
