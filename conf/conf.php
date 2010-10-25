@@ -1789,17 +1789,13 @@ $default_state=array(
                                            'sales_1y'=>false,
                                            'sales_1q'=>false,
                                            'sales_1m'=>false,
-                                           'sales_1q'=>false,
+                                           'sales_1w'=>false,
                                            'profit_all'=>false,
                                            'profit_1y'=>false,
                                            'profit_1q'=>false,
                                            'profit_1m'=>false,
-                                           'profit_1q'=>false,
-                                           'margin_all'=>false,
-                                           'margin_1y'=>false,
-                                           'margin_1q'=>false,
-                                           'margin_1m'=>false,
-                                           'margin_1q'=>false,
+                                           'profit_1w'=>false
+                                          
                                     
                                            )
                                        
