@@ -1148,6 +1148,10 @@ $default_state=array(
                                                                                     )
                                                  ),
 
+
+
+
+
                                'table'=>array(
                                            'where'=>'where true',
                                            'f_field'=>'code',
@@ -1155,8 +1159,12 @@ $default_state=array(
                                            'order'=>'name',
                                            'order_dir'=>'',
                                            'sf'=>0,
-                                           'nr'=>25,
+                                           'nr'=>25
+                                           
                                        ),
+                                     
+                                       
+                                       
                                'history'=>array(
                                              'where'=>'where true',
                                              'f_field'=>'abstract',
@@ -1763,6 +1771,21 @@ $default_state=array(
                                             'order_dir'=>'',
                                             'sf'=>0,
                                             'nr'=>25,
+                                              'csv_export'=>array(
+                                           'code'=>true,
+                                           'name'=>true,
+                                           'departments'=>false,
+                                           'families'=>false,
+                                           'products'=>false,
+                                           'discontinued'=>false,
+                                           'new'=>false,
+                                           'surplus'=>false,
+                                           'ok'=>false,
+                                           'low'=>false,
+                                           'gone'=>false,
+                                           'unknown'=>false,
+                                           )
+                                       
                                         ),
                                 'orders'=>array(
                                              'percentages'=>false,

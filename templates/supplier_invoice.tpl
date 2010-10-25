@@ -106,7 +106,7 @@
 	</table>
     </td></tr>
 
-    <tr id="staff_list_row"><td></td></tr>
+    <tr id="options_list_row"><td></td></tr>
 </table>
 
 
@@ -147,7 +147,7 @@
       <td id="received_by" >{$received_by}</td>
       <td class="aright" id="edit_received_by" style="display:none" >
 	<select name="received_by"  id="v_received_by" >
-	  {foreach from=$staff_list item=staff key=staff_id }
+	  {foreach from=$options_list item=staff key=staff_id }
 	  <option value="{$staff_id}" {if $received_id==$staff_id}selected="selected"{/if}   >{$staff}</option>
 	  {/foreach}
 	</select>
@@ -158,7 +158,7 @@
       <td id="checked_by" >{$checked_by}</td>
       <td class="aright" id="edit_checked_by" style="display:none" >
 	<select name="checked_by"  id="v_checked_by" >
-	  {foreach from=$staff_list item=staff key=staff_id }
+	  {foreach from=$options_list item=staff key=staff_id }
 	  <option value="{$staff_id}" {if $checked_id==$staff_id}selected="selected"{/if}   >{$staff}</option>
 	  {/foreach}
 	</select>
@@ -314,7 +314,7 @@
 </div>
 
 
-<div id="receiver_list" class="yuimenu staff_list" style="display:none" >
+<div id="receiver_list" class="yuimenu options_list" style="display:none" >
   <div class="bd">
     <table border=1>
       {foreach from=$staff item=_staff name=foo}
@@ -326,7 +326,7 @@
   </div>
 </div>
 
-<div id="checker_list" class="yuimenu staff_list" style="display:none" >
+<div id="checker_list" class="yuimenu options_list" style="display:none" >
   <div class="bd">
     <table border=1>
       {foreach from=$staff item=_staff name=foo}

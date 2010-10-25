@@ -11,6 +11,11 @@
 
 <div class="data_table" style="clear:both">
     <span class="clean_table_title">{t}Stores{/t}</span>
+      <div  style="font-size:90%">
+         <span  id="export_csv0" style="float:right;margin-left:20px"  class="table_type state_details" tipo="stores" >{t}Export (CSV){/t}</span>
+         </div>
+    
+    
  <div class="table_top_bar" ></div>
  <span   style="float:right;margin-left:80px" class="state_details"  id="change_display_mode" >{$display_mode_label}</span>
 <table style="float:left;margin:0 0 0 0px ;padding:0"  class="options" >
@@ -98,5 +103,6 @@
   </div>
 </div>
 
+{include file='export_csv_menu_splinter.tpl' id=0  export_options=$csv_export_options }
 
 {include file='footer.tpl'}
