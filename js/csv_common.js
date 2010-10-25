@@ -4,9 +4,11 @@ function download_csv(e,tipo){
 
 function download_csv_from_dialog(e,args){
 
-alert(args)
-fields_to_export=YAHOO.lang.JSON.stringify(Dom.getElementsByClassName('selected', 'td', args.table));
+fields_to_export_data=Dom.getElementsByClassName('selected', 'td', Dom.get(args.table));
+var fields_to_export=new Object;
+for(x in fields_to_export_data){
+fields_to_export[fields_to_export_data[x].getAttribute('name')]=1;
+}
 
-
-   window.location.href='export_csv.php?tipo='+args.tipo+'&fields='+fields_to_export;
+   window.location.href='export_csv.php?tipo='+args.tipo+'&fields='+YAHOO.lang.JSON.stringify(fields_to_export);
 }

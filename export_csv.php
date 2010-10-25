@@ -26,10 +26,10 @@ if(!$filename){
 exit("unknown operation 2");
 }
 
-print_r($adata);
+//print_r($adata);
 
 
-/*
+
 header("Content-type: application/octet-stream");
 header("Content-Disposition: attachment; filename=\"".$filename."\"");
 $out = fopen('php://output', 'w');
@@ -38,7 +38,6 @@ foreach ($adata as $data) {
 }
 
 fclose($out);
-*/
 
 function get_data($tipo){
 $filename='';
@@ -67,15 +66,14 @@ return array($filename,$data);
 
 function get_stores_data($wheref){
 
-
-$data=prepare_values($_REQUEST,array('values'=>array('type'=>'json array','optional'=>true)));
-if(isset($data['values'])){
-print_r($data['values']);
+$data=prepare_values($_REQUEST,array('fields'=>array('type'=>'json array','optional'=>true)));
+if(isset($data['fields'])){
+$fields_to_export=$data['fields'];
 }else{
 $fields_to_export=$_SESSION['state']['stores']['table']['csv_export'];
 }
 
-//print_r($fields_to_export);
+
 
 
 $fields=array(
@@ -83,6 +81,15 @@ $fields=array(
 'name'=>array('title'=>_('Name'),'db_name'=>'Store Name'),
 'departments'=>array('title'=>_('Departments'),'db_name'=>'Store Departments'),
 'families'=>array('title'=>_('Departments'),'db_name'=>'Store Families'),
+'products'=>array('title'=>_('Products'),'db_name'=>'Store For Public Sale Products'),
+'discontinued'=>array('title'=>_('Discontinued'),'db_name'=>'Store Discontinued Products'),
+'new'=>array('title'=>_('New'),'db_name'=>'Store New Products'),
+'surplus'=>array('title'=>_('Surplus'),'db_name'=>'Store Surplus Availability Products'),
+'ok'=>array('title'=>_('Ok'),'db_name'=>'Store Optimal Availability Products'),
+'gone'=>array('title'=>_('Gone'),'db_name'=>'Store Out Of Stock Products'),
+'low'=>array('title'=>_('Gone'),'db_name'=>'Store Low Availability Products'),
+'critical'=>array('title'=>_('Gone'),'db_name'=>'Store Critical Availability Products'),
+'unknown'=>array('title'=>_('Unknown'),'db_name'=>'Store Unknown Stock Products'),
 
 );
 

@@ -9,7 +9,7 @@ var Dom   = YAHOO.util.Dom;
 var period='period_<?php echo $_SESSION['state']['stores']['period']?>';
 var avg='avg_<?php echo $_SESSION['state']['stores']['avg']?>';
 
-
+var csvMenu;
 
 
 
@@ -275,15 +275,15 @@ function change_display_mode(name,label){
 
 
  function init(){
- YAHOO.util.Event.addListener('export_csv0', "click",download_csv,'stores');
-  YAHOO.util.Event.addListener('export_csv0_in_dialog', "click",download_csv_from_dialog,{table:'export_csv_table0',tipo:'stores'});
 
  
-  var csvMenu = new YAHOO.widget.ContextMenu("export_csv_menu0", {trigger:"export_csv0" });
+ YAHOO.util.Event.addListener('export_csv0', "click",download_csv,'stores');
+ YAHOO.util.Event.addListener('export_csv0_in_dialog', "click",download_csv_from_dialog,{table:'export_csv_table0',tipo:'stores'});
+  csvMenu = new YAHOO.widget.ContextMenu("export_csv_menu0", {trigger:"export_csv0" });
 	 csvMenu.render();
 	 csvMenu.subscribe("show", csvMenu.focus);
    
-    
+ YAHOO.util.Event.addListener('export_csv0_close_dialog', "click",csvMenu.hide,csvMenu,true);
  
  init_search('products');
     
