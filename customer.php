@@ -154,7 +154,7 @@ $smarty->assign('general_options_list',$general_options_list);
     
     $editing_block=$_SESSION['state']['customer']['edit'];
     $smarty->assign('edit',$editing_block);
-    
+    if($_REQUEST['return_to_order']){$smarty->assign('return_to_order',$_REQUEST['return_to_order']);}
    
     $js_files[]='edit_address.js.php';
     $js_files[]='edit_contact_from_parent.js.php';
