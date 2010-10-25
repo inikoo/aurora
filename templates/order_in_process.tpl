@@ -5,8 +5,9 @@
   <div id="yui-main">
     <div class="yui-b">
       <div style="text-align:right">
-	<span class="state_details" id="cancel">Cancel</span>
-	<span class="state_details" id="done" style="margin-left:20px">Send to Warehouse</span>
+	<span class="state_details" id="continue_later"><a href="customer.php?id={$order->get('order customer key')}">Continue Later</a></span>
+	<span class="state_details" id="cancel" style="margin-left:20px">Cancel</span>
+	<span class="state_details" id="done" style="margin-left:20px"><a href="customer.php?id={$order->get('order customer key')}">Send to Warehouse</a></span>
 
       </div>
       <div class="yui-b" style="border:1px solid #ccc;text-align:left;padding:10px;margin: 0px 0 10px 0;height:15em">
@@ -102,8 +103,13 @@
 	</div>
 <div style="clear:both;margin:0 0px;padding:0 20px ;border-bottom:1px solid #999"></div>
     <div id="list_options0"> 
-      
-      <span   style="float:right;margin-left:20px" class="state_details" state="{$show_all}"  id="show_all"  atitle="{if !$show_all}{t}Show only ordered{/t}{else}{t}Show all products available{/t}{/if}"  >{if $show_all}{t}Show only ordered{/t}{else}{t}Show all products available{/t}{/if}</span>     
+
+
+   
+
+ <span   style="float:right;margin-left:20px" class="state_details {if !$show_all}selected{/if}" onClick="show_only_ordered_products()"  id="show_only_ordered_products"  >{t}Show only ordered{/t}</span>
+   <span   style="float:right;margin-left:20px" class="state_details {if $show_all}selected{/if}" onClick="show_all_products()"  id="show_all_products"  >{t}Show All{/t}</span>
+ <span class="state_details" style="float:right;visibility:hidden" id="showing_only_family">Showing only <span  style="  font-style: italic;" id="search_family_code"></span> Family Products</span>    
       
 
       
@@ -219,5 +225,24 @@
 
 
 <div>Search Family: <input id="family_search" value=""/></div>
+
+<div id="search_error" style="position:relative; visibility:hidden;margin-bottom:10px">{t}You have entered unexisting family{/t}</div>
 </div> 
+
+<! ------------------------ discount search starts here ----------------------------------->
+<div id="change_staff_discount" style="display:nonex;position:absolute;xleft:-100px;xtop:-150px;background:#fff;padding:5px;border:1px solid #777;font-size:90%">
+  <div class="bd" >
+    <h2 >{t}Select Discount{/t}</h2>
+ <table class="edit inbox" border=0 >
+      
+   
+      <tr style="height:20px; border:none; " > <td style="padding-right:25px ">{t}Discount{/t}: </td><td style="text-align:left;"><input onKeyup="change_discount_function(this.value,'change_discount')" style="width:6em" type="text" id="change_discount_value" value=""/></td><td>%</td></tr>
+     
+ 
+    <tr class="buttons" ><td style="text-align:left"><span id="change_discount_cancel"  style="margin-left:0px;" class="unselectable_text button" onClick="close_change_discount_dialog()">{t}Cancel{/t}<img src="art/icons/cross.png"></span></td><td><span  onclick="change_discount_function2()" id="change_discount_save"   class="unselectable_text button"     style="visibility:hidden;margin-right:30px">{t}Save{/t} <img src="art/icons/disk.png" ></span></td><td></td></tr>
+  </table>
+  </div>
+</div>
+<! -------------------------discount search ends here ------------------------------------>
+
 {include file='footer.tpl'}
