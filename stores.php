@@ -219,6 +219,7 @@ if ($edit) {
                                                        'surplus'=>array('label'=>_('Surplus'),'selected'=>$_SESSION['state']['stores']['table']['csv_export']['surplus']),
                                                        'ok'=>array('label'=>_('Ok'),'selected'=>$_SESSION['state']['stores']['table']['csv_export']['ok']),
                                                        'low'=>array('label'=>_('Low'),'selected'=>$_SESSION['state']['stores']['table']['csv_export']['low']),
+                                                       'critical'=>array('label'=>_('Critical'),'selected'=>$_SESSION['state']['stores']['table']['csv_export']['critical']),
                                                        'gone'=>array('label'=>_('Gone'),'selected'=>$_SESSION['state']['stores']['table']['csv_export']['gone'])
                                                    ),
                                                    array(
@@ -231,7 +232,20 @@ if ($edit) {
                                                    )
                                                )
                                     ),
-                            'sales'=>array('title'=>_('Sales'))
+                            'sales'=>array('title'=>_('Sales (All)'),
+                            'rows'=>
+                                               array(
+                                                   array(
+                                                       'sales_all'=>array('label'=>_('Sales'),'selected'=>$_SESSION['state']['stores']['table']['csv_export']['sales_all']),
+                                                       'profit_all'=>array('label'=>_('Profit'),'selected'=>$_SESSION['state']['stores']['table']['csv_export']['profit_all']),
+                                                       'margin_all'=>array('label'=>_('Margin'),'selected'=>$_SESSION['state']['stores']['table']['csv_export']['margin_all']),
+                                                        array('label'=>''),
+                                                             array('label'=>''),
+                                                   )
+                            
+                            
+                            )
+                            )
                         );
 
                         

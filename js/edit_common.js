@@ -27,8 +27,28 @@ var select_radio_option_table=function(o){
    }
 }
 
-var save_option_table=function(o){
-Dom.getElementsByClassName('selected', 'td', o)
+var save_option_table=function(args){
+
+fields_to_export_data=Dom.getElementsByClassName('selectable_option', 'td', Dom.get(args.table));
+var fields_to_export=new Object;
+for(x in fields_to_export_data){
+//alert(fields_to_export_data[x].getAttribute('name'))
+//fields_to_export[fields_to_export_data[x].getAttribute('name')]=1;
+if(Dom.hasClass(fields_to_export_data[x],'selected')){
+flag=1;
+}else{
+flag=0;
+}
+	  
+	  
+	  
+	  YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys='+args.session_address+'-'+fields_to_export_data[x].getAttribute('name')+'&value=' + escape(flag),{} );
+
+}
+
+
+
+
 }
 
 
