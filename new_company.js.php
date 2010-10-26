@@ -110,7 +110,7 @@ function save_new_company(e){
 		           window.location='edit_company_areas.php?edit=new_company_areas';
 
 		        }else if(scope=='supplier'){
-		           window.location='edit_supplier.php?edit='+r.supplier_key;
+		           window.location='edit_supplier.php?id='+r.supplier_key;
 
 		        }else if(scope=='customer'){
 		           window.location='customer.php?id='+r.customer_key;
