@@ -56,7 +56,15 @@ switch ($tipo) {
         $wheref=wheref_stores($f_field,$f_value);
         $filename=_('stores').'.csv';
         $data=get_stores_data($wheref);
-        break;        
+        break; 
+    case 'families':
+        $filename=_('families').'.csv';
+        $f_field=$_SESSION['state']['families']['table']['f_field'];
+        $f_value=$_SESSION['state']['families']['table']['f_value'];
+        $wheref=wheref_stores($f_field,$f_value);
+        $filename=_('families').'.csv';
+        $data=get_stores_data($wheref);
+        break;              
     default:
         
         break;
