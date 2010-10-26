@@ -413,8 +413,16 @@ $default_state=array(
                                               'mode'=>'same_code',//same_code,same_id,all
                                               'parent'=>'none',//store,department,family,none
                                               'restrictions'=>'forsale',
-				              'family_code'=>''
+				              'family_code'=>'',
+						 'csv_export'=>array(
+                                           'code'=>true,
+                                           'name'=>true,
+                                           'state'=>true,
+                                         
+                                           'web'=>true
+                                          
                                           )
+                                          ),
                               ),
 
                    'supplier_product'=>array(

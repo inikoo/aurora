@@ -110,7 +110,8 @@ $js_files=array(
 		'table_common.js.php',
 		'js/search.js',
 		'products.js.php',
-		'js/dropdown.js'
+		'js/dropdown.js',
+		  'js/csv_common.js'
 		);
 
 

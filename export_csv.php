@@ -63,6 +63,14 @@ switch ($tipo) {
         $wheref=wheref_stores($f_field,$f_value);
         $filename=_('families').'.csv';
         $data=get_families_data($wheref);
+        break;   
+    case 'products':
+        $filename=_('products').'.csv';
+        $f_field=$_SESSION['state']['products']['table']['f_field'];
+        $f_value=$_SESSION['state']['products']['table']['f_value'];
+        $wheref=wheref_stores($f_field,$f_value);
+        $filename=_('products').'.csv';
+        $data=get_products_data($wheref);
         break;        
     default:
         
@@ -172,6 +180,57 @@ $_data[]=$options['title'];
 }
 $data[]=$_data;
 $sql="select * from `Product Family Dimension` where true $wheref";
+$res=mysql_query($sql);
+
+while($row=mysql_fetch_assoc($res)){
+$_data=array();
+foreach($fields as $key=>$options){
+
+$_data[]=$row[$options['db_name']];
+}
+$data[]=$_data;
+}
+//print_r($data);exit;
+
+return $data;
+
+}
+
+
+
+function get_products_data($wheref){
+
+$data=prepare_values($_REQUEST,array('fields'=>array('type'=>'json array','optional'=>true)));
+if(isset($data['fields'])){
+$fields_to_export=$data['fields'];
+}else{
+$fields_to_export=$_SESSION['state']['products']['table']['csv_export'];
+}
+
+
+$fields=array(
+'code'=>array('title'=>_('Code'),'db_name'=>'Product Code'),
+'name'=>array('title'=>_('Name'),'db_name'=>'Product Short Description'),
+'state'=>array('title'=>_('State'),'db_name'=>'Product Sales Type'),
+'web'=>array('title'=>_('Web'),'db_name'=>'Product Web State')
+
+);
+
+
+foreach($fields as $key=>$value){
+if(!isset($fields_to_export[$key]) or  !$fields_to_export[$key]  )
+unset($fields[$key]);
+}
+
+
+
+$data=array();
+$_data=array();
+foreach($fields as $key=>$options){
+$_data[]=$options['title'];
+}
+$data[]=$_data;
+$sql="select * from `Product Dimension` where true $wheref";
 $res=mysql_query($sql);
 
 while($row=mysql_fetch_assoc($res)){
