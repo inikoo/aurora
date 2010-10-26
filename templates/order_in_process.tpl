@@ -23,7 +23,7 @@
 
 
 
-    <a href="customer.php?edit={$order->get('order customer key')}"><span id="change_delivery_address" class="state_details" style="display:block;margin-top:10px">{t}Change Delivery Address{/t}</span></a>
+    <a href="customer.php?edit={$order->get('order customer key')}&return_to_order={$order->id}&edit_block=delivery"><span id="change_delivery_address" class="state_details" style="display:block;margin-top:10px">{t}Change Delivery Address{/t}</span></a>
 
 
 
