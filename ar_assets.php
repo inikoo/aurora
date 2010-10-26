@@ -5351,10 +5351,18 @@ function list_families() {
     $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
 
 
-    $_SESSION['state'][$conf_table]['table']=array('order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value
-            ,'mode'=>$mode,'restrictions'=>'','parent'=>$parent
-                                                  );
+    $_SESSION['state'][$conf_table]['table']['exchange_type']=$exchange_type;
+    $_SESSION['state'][$conf_table]['table']['exchange_value']=$exchange_value;
+    $_SESSION['state'][$conf_table]['table']['show_default_currency']=$show_default_currency;
+    $_SESSION['state'][$conf_table]['table']['order']=$order;
+    $_SESSION['state'][$conf_table]['table']['order_dir']=$order_dir;
+    $_SESSION['state'][$conf_table]['table']['nr']=$number_results;
+    $_SESSION['state'][$conf_table]['table']['sf']=$start_from;
+    $_SESSION['state'][$conf_table]['table']['where']=$where;
+    $_SESSION['state'][$conf_table]['table']['f_field']=$f_field;
+    $_SESSION['state'][$conf_table]['table']['f_value']=$f_value;
 
+   
     $_SESSION['state'][$conf_table]['period']=$period;
     $_SESSION['state'][$conf_table]['mode']=$mode;
     $_SESSION['state'][$conf_table]['restrictions']=$restrictions;
