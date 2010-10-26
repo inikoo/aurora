@@ -48,7 +48,8 @@ $js_files=array(
 		'table_common.js.php',
 		'js/search.js',
 		'families.js.php',
-		 'js/dropdown.js'
+		 'js/dropdown.js',
+	         'js/csv_common.js'
 		);
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);

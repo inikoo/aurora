@@ -7,6 +7,9 @@
   
    <div class="data_table" style="margin:0px;clear:both">
     <span class="clean_table_title">{t}Families{/t}</span>
+
+<span  id="export_csv0" style="float:right;margin-left:20px"  class="table_type state_details" tipo="families" >{t}Export (CSV){/t}</span>
+
  <div style="clear:both;margin:0 0px;padding:0 20px ;border-bottom:1px solid #999"></div>
 <span   style="float:right;margin-left:80px" class="state_details" state="{$show_percentages}"  id="show_percentages"  atitle="{if $show_percentages}{t}Normal Mode{/t}{else}{t}Comparison Mode{/t}{/if}"  >{if $show_percentages}{t}Comparison Mode{/t}{else}{t}Normal Mode{/t}{/if}</span>
  <table style="float:left;margin:0 0 0 0px ;padding:0"  class="options" >
