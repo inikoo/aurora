@@ -55,16 +55,15 @@ switch ($tipo) {
         $f_value=$_SESSION['state']['stores']['table']['f_value'];
         $wheref=wheref_stores($f_field,$f_value);
         $filename=_('stores').'.csv';
-        $data=get_stores_data($wheref);
-        break; 
+        $data=get_stores_data($wheref);break;
     case 'families':
         $filename=_('families').'.csv';
         $f_field=$_SESSION['state']['families']['table']['f_field'];
         $f_value=$_SESSION['state']['families']['table']['f_value'];
         $wheref=wheref_stores($f_field,$f_value);
         $filename=_('families').'.csv';
-        $data=get_stores_data($wheref);
-        break;              
+        $data=get_families_data($wheref);
+        break;        
     default:
         
         break;
@@ -80,8 +79,6 @@ $fields_to_export=$data['fields'];
 }else{
 $fields_to_export=$_SESSION['state']['stores']['table']['csv_export'];
 }
-
-
 
 
 $fields=array(
@@ -140,5 +137,54 @@ $data[]=$_data;
 return $data;
 
 }
- 
+
+function get_families_data($wheref){
+
+$data=prepare_values($_REQUEST,array('fields'=>array('type'=>'json array','optional'=>true)));
+if(isset($data['fields'])){
+$fields_to_export=$data['fields'];
+}else{
+$fields_to_export=$_SESSION['state']['families']['table']['csv_export'];
+}
+
+
+$fields=array(
+'code'=>array('title'=>_('Code'),'db_name'=>'Product Family Code'),
+'stores'=>array('title'=>_('Stores'),'db_name'=>'Product Family Store Code'),
+'name'=>array('title'=>_('Name'),'db_name'=>'Product Family Name'),
+'products'=>array('title'=>_('Products'),'db_name'=>'Product Family For Public Sale Products'),
+'sales'=>array('title'=>_('Sales'),'db_name'=>'Product Family 1 Year Acc Invoiced Amount'),
+'profit'=>array('title'=>_('Profit'),'db_name'=>'Product Family 1 Year Acc Profit'),
+);
+
+
+foreach($fields as $key=>$value){
+if(!isset($fields_to_export[$key]) or  !$fields_to_export[$key]  )
+unset($fields[$key]);
+}
+
+
+
+$data=array();
+$_data=array();
+foreach($fields as $key=>$options){
+$_data[]=$options['title'];
+}
+$data[]=$_data;
+$sql="select * from `Product Family Dimension` where true $wheref";
+$res=mysql_query($sql);
+
+while($row=mysql_fetch_assoc($res)){
+$_data=array();
+foreach($fields as $key=>$options){
+
+$_data[]=$row[$options['db_name']];
+}
+$data[]=$_data;
+}
+//print_r($data);exit;
+
+return $data;
+
+}
 ?>
