@@ -77,13 +77,13 @@ else if(column.object=='new_porder'  )
 	ar_file='ar_edit_assets.php';
     //   alert(column.object)
     var request='tipo=edit_'+column.object+'&key=' + column.key + '&newvalue=' + encodeURIComponent(newValue) + '&oldvalue=' + encodeURIComponent(oldValue)+ myBuildUrl(datatable,record);
-    alert(ar_file+'?'+request);
+ //   alert(ar_file+'?'+request);
 
     YAHOO.util.Connect.asyncRequest(
 				    'POST',
 				    ar_file, {
 					success:function(o) {
-					    alert(o.responseText);
+					   // alert(o.responseText);
 					    var r = YAHOO.lang.JSON.parse(o.responseText);
 					    if (r.state == 200) {
 						
@@ -149,7 +149,7 @@ var onCellClick = function(oArgs) {
 						ar_file+'?tipo=delete_'+column.object + myBuildUrl(this,record),
 						{
 						    success: function (o) {
-							alert(o.responseText);
+							//alert(o.responseText);
 							var r = YAHOO.lang.JSON.parse(o.responseText);
 							if (r.state == 200 && r.action=='deleted') {
 								
@@ -259,7 +259,7 @@ function validate_scope_new(branch){
     var errors=false;
 
     for(item in validate_scope_data[branch]){
-	  alert(item+ 'Validated:'+validate_scope_data[branch][item].validated+' Req:'+validate_scope_data[branch][item].required);
+	 // alert(item+ 'Validated:'+validate_scope_data[branch][item].validated+' Req:'+validate_scope_data[branch][item].required);
 	if(validate_scope_data[branch][item].validated==false   ||    (validate_scope_data[branch][item].required &&  Dom.get(validate_scope_data[branch][item].name).value=='' )  )
             errors=true;
     }
@@ -310,7 +310,7 @@ function validate_scope_edit(branch){
 
 function validate_general(branch,item,query){
 
-alert(branch+' I:'+item+' q:'+query);
+//alert(branch+' I:'+item+' q:'+query);
     var data= validate_scope_data[branch][item];
     
     var old_value=Dom.get(data.name).getAttribute('ovalue');
@@ -319,7 +319,7 @@ alert(branch+' I:'+item+' q:'+query);
  
 	if(old_value.toLowerCase()!=trim(query.toLowerCase()) || validate_scope_data[branch]['type']=='new'    ){  
 	    validate_scope_data[branch][item].changed=true;
-alert("c")
+//alert("c")
 	    if(data.ar=='find'){
 		var request=data.ar_request+query; 
 		// alert(request)
@@ -492,6 +492,8 @@ scope_edit_ar_file=validate_scope_metadata[branch]['ar_file'];
     var request=scope_edit_ar_file+'?tipo='+operation+'_'+branch+'&parent='+parent+'&parent_key=' + parent_key+ '&values=' + 
 	jsonificated_values
 	alert(request)
+		alert("returning")
+
 	return ;	
 	YAHOO.util.Connect.asyncRequest('POST',request ,{
 		success:function(o) {
