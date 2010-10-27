@@ -879,8 +879,16 @@ $default_state=array(
                                                          'f_value'=>'','f_show'=>false,
                                                          'mode'=>'',
                                                          'restrictions'=>'none',
-                                                         'parent'=>''
-                                                     )
+                                                         'parent'=>'',
+							'csv_export'=>array(
+                                           		'area'=>true,
+							'code'=>true,
+                                           		'name'=>true,
+                                           		'department_description'=>false,
+                                           		'no_of_department_employee'=>false,
+                                           		'company_area_name'=>false,
+                                           		'company_area_description'=>false,
+						 )),
                                          ),
                    'company_areas'=>array(
                                        'view'=>'general',

@@ -13,6 +13,7 @@
  
 <div class="data_table" style="clear:both">
    <span class="clean_table_title">{t}Departments List{/t}</span>
+  <span  id="export_csv0" style="float:right;margin-left:20px"  class="table_type state_details" tipo="stores" >{t}Export (CSV){/t}</span>
   
   
   {include file='table_splinter.tpl' table_id=0 filter_name=$filter_name0 filter_value=$filter_value0  }

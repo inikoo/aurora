@@ -71,7 +71,15 @@ switch ($tipo) {
         $wheref=wheref_stores($f_field,$f_value);
         $filename=_('products').'.csv';
         $data=get_products_data($wheref);
-        break;        
+        break;
+   case 'company_departments':
+        $filename=_('company_departments').'.csv';
+        $f_field=$_SESSION['state']['company_departments']['table']['f_field'];
+        $f_value=$_SESSION['state']['company_departments']['table']['f_value'];
+        $wheref=wheref_stores($f_field,$f_value);
+        $filename=_('company_departments').'.csv';
+        $data=get_company_departments_data($wheref);
+        break;                
     default:
         
         break;
@@ -231,6 +239,60 @@ $_data[]=$options['title'];
 }
 $data[]=$_data;
 $sql="select * from `Product Dimension` where true $wheref";
+$res=mysql_query($sql);
+
+while($row=mysql_fetch_assoc($res)){
+$_data=array();
+foreach($fields as $key=>$options){
+
+$_data[]=$row[$options['db_name']];
+}
+$data[]=$_data;
+}
+//print_r($data);exit;
+
+return $data;
+
+}
+function get_company_departments_data($wheref){
+
+$data=prepare_values($_REQUEST,array('fields'=>array('type'=>'json array','optional'=>true)));
+if(isset($data['fields'])){
+$fields_to_export=$data['fields'];
+}else{
+$fields_to_export=$_SESSION['state']['company_departments']['table']['csv_export'];
+}
+
+
+$fields=array(
+'area'=>array('title'=>_('Area'),'db_name'=>'Company Area Code'),
+'code'=>array('title'=>_('Code'),'db_name'=>'Company Department Code'),
+'name'=>array('title'=>_('Name'),'db_name'=>'Company Department Name'),
+
+'department_description'=>array('title'=>_('Departments Description'),'db_name'=>'Company Department Description'),
+'no_of_department_employee'=>array('title'=>_('No. Of Department Employee'),'db_name'=>'Company Department Number Employees'),
+'company_area_name'=>array('title'=>_('Company Area Name'),'db_name'=>'Company Area Name'),
+'company_area_description'=>array('title'=>_('Company Area Description'),'db_name'=>'Company Area Description'),
+
+);
+
+
+foreach($fields as $key=>$value){
+if(!isset($fields_to_export[$key]) or  !$fields_to_export[$key]  )
+unset($fields[$key]);
+}
+
+
+
+$data=array();
+$_data=array();
+foreach($fields as $key=>$options){
+$_data[]=$options['title'];
+}
+$data[]=$_data;
+
+ 
+$sql="select * from `Company Department Dimension` CDS left join `Company Area Dimension` CAS on CDS.`Company Key`=CAS.`Company Key` where true $wheref";
 $res=mysql_query($sql);
 
 while($row=mysql_fetch_assoc($res)){
