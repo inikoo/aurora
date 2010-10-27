@@ -3672,11 +3672,11 @@ $display_total=false;
         $restrictions=$conf['restrictions'];
 
 
+$conf_table='products';
 
-
-    $_SESSION['state'][$conf_table]['table']['exchange_type']=$exchange_type;
-    $_SESSION['state'][$conf_table]['table']['exchange_value']=$exchange_value;
-    $_SESSION['state'][$conf_table]['table']['show_default_currency']=$show_default_currency;
+    //$_SESSION['state'][$conf_table]['table']['exchange_type']=$exchange_type;
+    //$_SESSION['state'][$conf_table]['table']['exchange_value']=$exchange_value;
+    //$_SESSION['state'][$conf_table]['table']['show_default_currency']=$show_default_currency;
     $_SESSION['state'][$conf_table]['table']['order']=$order;
     $_SESSION['state'][$conf_table]['table']['order_dir']=$order_dir;
     $_SESSION['state'][$conf_table]['table']['nr']=$number_results;
@@ -5361,9 +5361,9 @@ function list_families() {
     $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
 
 
-    $_SESSION['state'][$conf_table]['table']['exchange_type']=$exchange_type;
-    $_SESSION['state'][$conf_table]['table']['exchange_value']=$exchange_value;
-    $_SESSION['state'][$conf_table]['table']['show_default_currency']=$show_default_currency;
+   // $_SESSION['state'][$conf_table]['table']['exchange_type']=$exchange_type;
+    //$_SESSION['state'][$conf_table]['table']['exchange_value']=$exchange_value;
+    //$_SESSION['state'][$conf_table]['table']['show_default_currency']=$show_default_currency;
     $_SESSION['state'][$conf_table]['table']['order']=$order;
     $_SESSION['state'][$conf_table]['table']['order_dir']=$order_dir;
     $_SESSION['state'][$conf_table]['table']['nr']=$number_results;
