@@ -232,8 +232,8 @@ abstract class DB_Table {
 
     protected function add_history($raw_data,$force=false) {
 
-        $editor_data=$this->get_editor_data();
 
+        $editor_data=$this->get_editor_data();
         if ($this->no_history)
             return;
 
@@ -315,7 +315,6 @@ abstract class DB_Table {
                      ,prepare_mysql($data['Deep'])
                      ,prepare_mysql($data['Metadata'])
                     );
-
         mysql_query($sql);
       
 
