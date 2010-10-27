@@ -343,6 +343,8 @@ function list_history($asset_type) {
     }
     elseif($asset_type=='position') {
         $asset='Position';
+    }elseif($asset_type=='supplier') {
+        $asset='Supplier';
     }
 
 
@@ -517,7 +519,7 @@ function list_history($asset_type) {
         $rev_order_direction='';
 
     $order='`History Date` '.$order_direction.',`History Key`  '.$rev_order_direction;
-
+$_order='date';
 
     $sql=sprintf("select  * from `History Dimension` H left join `User Dimension` U on (U.`User Key`=H.`User Key`)   $where $wheref order by $order  limit $start_from,$number_results ");
     //print $sql;

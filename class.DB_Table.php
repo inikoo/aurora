@@ -278,6 +278,7 @@ abstract class DB_Table {
         $data['Indirect Object Key']=0;
         $data['Deep']=1;
         $data['Date']=$editor_data['Date'];
+        
         if (isset($raw_data['Indirect Object']))
             $data['History Abstract']=$raw_data['Indirect Object'].' '._('changed');
         else
@@ -294,6 +295,8 @@ abstract class DB_Table {
 
         if (isset($raw_data['old_value']) and  isset($raw_data['new_value']) ) {
             $data['History Details']=$data['Indirect Object'].' '._('changed from')." \"".$raw_data['old_value']."\" "._('to')." \"".$raw_data['new_value']."\"";
+            $data['History Abstract'].=' ('.$raw_data['old_value'].'&rarr;'.$raw_data['new_value'].')';
+
         }
         elseif(  isset($raw_data['new_value']) ) {
             $data['History Details']=$data['Indirect Object'].' '._('changed to')." \"".$raw_data['new_value']."\"";

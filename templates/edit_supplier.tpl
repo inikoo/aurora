@@ -23,8 +23,8 @@
   
        <div class="general_options" style="float:right">
 	
-	<span  style="margin-right:10px;visibility:hidden"  id="save_edit_supplier" class="state_details">{t}Save{/t}</span>
-	<span style="margin-right:10px;visibility:hidden" id="reset_edit_supplier" class="state_details">{t}Reset{/t}</span>
+	<span  style="margin-right:10px;visibility:hidden"  id="save_edit_supplier" onClick="save_edit_general('supplier')" class="state_details">{t}Save{/t}</span>
+	<span style="margin-right:10px;visibility:hidden" id="reset_edit_supplier" onClick="reset_edit_general('supplier')" class="state_details">{t}Reset{/t}</span>
 	
       </div>
   

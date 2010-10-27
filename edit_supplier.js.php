@@ -87,36 +87,48 @@ var validate_scope_data={
     ,'name':{'changed':false,'validated':true,'required':true,'group':1,'type':'item','regexp':"[a-z\\d]+",'name':'Supplier_Name'}
 
 };
-function validate_scope(){
-var changed=false;
-var errors=false;
-//alert(validate_scope_data['name'].changed+'v:'+validate_scope_data['name'].validated)
 
+var validate_scope_data=
+{
+    'supplier':{
+    	'name':{'changed':false,'validated':true,'required':true,'group':1,'type':'item'
+		,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Supplier Name')?>'}],'name':'Supplier_Name'
+		,'ar':false}
+	,'code':{'changed':false,'validated':true,'required':false,'group':1,'type':'item'
+		 ,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Supplier Code')?>'}]
+		 ,'name':'Supplier_Code','ar':'find','ar_request':'ar_suppliers.php?tipo=is_supplier_code&query='}
+  }
+  
+};
 
-    for(item in validate_scope_data){
-    
-        if(validate_scope_data[item].changed==true)
-            changed=true;
-         if(validate_scope_data[item].validated==false)
-            errors=true;
-    }
-    
-    if(changed ){
-	Dom.get('reset_edit_supplier').style.visibility='visible';
-	if(!errors)
-	    Dom.get('save_edit_supplier').style.visibility='visible';
-	else
-	    Dom.get('save_edit_supplier').style.visibility='hidden';
+//"[ext\d\(\)\[\]\-\s]+"
+var validate_scope_metadata={
+'supplier':{'type':'edit','ar_file':'ar_edit_suppliers.php','key_name':'supplier_key','key':<?php echo $_SESSION['state']['supplier']['id']?>}
+};
 
-    }else{
-        Dom.get('save_edit_supplier').style.visibility='hidden';
-	Dom.get('reset_edit_supplier').style.visibility='hidden';
-
-    }
-    
-    
-    
+function validate_supplier_code(query){
+validate_general('supplier','code',query);
 }
+function validate_supplier_name(query){
+
+validate_general('supplier','name',query);
+}
+
+function post_item_updated_actions(branch,key,newvalue){
+
+	var table_id=1
+
+
+    var table=tables['table'+table_id];
+    var datasource=tables['dataSource'+table_id];
+
+  
+    var request='&tableid='+table_id+'&sf=0';
+    datasource.sendRequest(request,table.onDataReturnInitializeTable, table);  
+}
+
+
+
 YAHOO.util.Event.addListener(window, "load", function() {
 	tables = new function() {
 
@@ -192,6 +204,76 @@ YAHOO.util.Event.addListener(window, "load", function() {
 		this.table0.subscribe("cellMouseoutEvent", unhighlightEditableCell);
 		this.table0.subscribe("cellClickEvent", onCellClick);
 
+var tableid=1; // Change if you have more the 1 table
+	    var tableDivEL="table"+tableid;
+
+	    var CustomersColumnDefs = [
+				       {key:"date",label:"<?php echo _('Date')?>", width:200,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				       ,{key:"author",label:"<?php echo _('Author')?>", width:70,sortable:true,formatter:this.customer_name,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				       //     ,{key:"tipo", label:"<?php echo _('Type')?>", width:90,sortable:true,formatter:this.customer_name,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				       //,{key:"diff_qty",label:"<?php echo _('Qty')?>", width:90,sortable:true,formatter:this.customer_name,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				       ,{key:"abstract", label:"<?php echo _('Description')?>", width:370,sortable:true,formatter:this.customer_name,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				       ];
+	    //?tipo=customers&tid=0"
+	    
+	    this.dataSource1 = new YAHOO.util.DataSource("ar_history.php?tipo=history&type=supplier&tableid=1");
+	    this.dataSource1.responseType = YAHOO.util.DataSource.TYPE_JSON;
+	    this.dataSource1.connXhrMode = "queueRequests";
+	    this.dataSource1.responseSchema = {
+		resultsList: "resultset.data", 
+		metaFields: {
+		  
+		 rowsPerPage:"resultset.records_perpage",
+		    RecordOffset : "resultset.records_offset", 
+		       rtext:"resultset.rtext",
+		    rtext_rpp:"resultset.rtext_rpp",
+		    sort_key:"resultset.sort_key",
+		    sort_dir:"resultset.sort_dir",
+		    tableid:"resultset.tableid",
+		    filter_msg:"resultset.filter_msg",
+		    totalRecords: "resultset.total_records"
+		
+		},
+		
+		
+		fields: [
+			 "id"
+			 ,"note"
+			 ,'author','date','tipo','abstract','details'
+			 ]};
+	    
+	    this.table1 = new YAHOO.widget.DataTable(tableDivEL, CustomersColumnDefs,
+						     this.dataSource1
+						     , {
+							 renderLoopSize: 50,generateRequest : myRequestBuilder
+							 ,paginator : new YAHOO.widget.Paginator({
+								 rowsPerPage    : <?php echo$_SESSION['state']['supplier']['history']['nr']?>,containers : 'paginator1', alwaysVisible:false,
+								 pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',
+								 previousPageLinkLabel : "<",
+								 nextPageLinkLabel : ">",
+								 firstPageLinkLabel :"<<",
+								 lastPageLinkLabel :">>",rowsPerPageOptions : [10,25,50,100,250,500]
+								 ,template : "{FirstPageLink}{PreviousPageLink}<strong id='paginator_info1'>{CurrentPageReport}</strong>{NextPageLink}{LastPageLink}"
+							     })
+							 
+							 ,sortedBy : {
+							    Key: "<?php echo$_SESSION['state']['supplier']['history']['order']?>",
+							     dir: "<?php echo$_SESSION['state']['supplier']['history']['order_dir']?>"
+							 },
+							 dynamicData : true
+							 
+						     }
+						     
+						     );
+	    
+	    this.table1.handleDataReturnPayload =myhandleDataReturnPayload;
+	    this.table1.doBeforeSortColumn = mydoBeforeSortColumn;
+	    this.table1.doBeforePaginatorChange = mydoBeforePaginatorChange;
+
+		    
+		    
+	    this.table1.filter={key:'<?php echo$_SESSION['state']['supplier']['history']['f_field']?>',value:'<?php echo$_SESSION['state']['supplier']['history']['f_value']?>'};
+
 
 
 
@@ -243,6 +325,8 @@ var change_view=function(e){
     table.view=tipo
     YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=suppliers-view&value=' + escape(tipo),{} );
 };
+
+
 function change_block(e){
      if(editing!=this.id){
 	
@@ -267,142 +351,7 @@ function change_block(e){
 
 
 }
-function validate_supplier_code(query){
- query=unescape(query);
-    var old_code=Dom.get('Supplier_Code').getAttribute('ovalue');
- 
 
-
-    if(old_code.toLowerCase()!=trim(query.toLowerCase())){  
-    validate_scope_data.code.changed=true;
-
-	var request='ar_suppliers.php?tipo=is_supplier_code&query='+query; 
- // alert(request)
-  YAHOO.util.Connect.asyncRequest('POST',request ,{
-	    success:function(o) {
-		//alert(o.responseText)
-		var r =  YAHOO.lang.JSON.parse(o.responseText);
-		if(r.state==200){
-		    if(r.found==1){
-		    Dom.get('Supplier_Code_msg').innerHTML=r.msg;
-		    validate_scope_data.code.validated=false;
-		    }else{
-            Dom.get('Supplier_Code_msg').innerHTML='';
-		    validate_scope_data.code.validated=true;
-		    
-		     var validator=new RegExp(validate_scope_data.code.regexp,"i");
-            if(!validator.test(query)){
-	           
-	                validate_scope_data.code.validated=false;
-                   Dom.get('Supplier_Code_msg').innerHTML='<?php echo _('Invalid Supplier Code')?>';
-
-                 }
-		    
-		    
-		    }
-		    validate_scope(); 
-
-		}else
-		    Dom.get(msg_div).innerHTML='<span class="error">'+r.msg+'</span>';
-	    }
-	    
-	    });
-}else{
-                 validate_scope_data.code.validated=true;
-                                  validate_scope_data.code.changed=false;
- validate_scope(); 
-		    }
-		    
-		
-
-
-}
-function validate_supplier_name(query){
-    query=unescape(query);
-    var old_name=Dom.get('Supplier_Name').getAttribute('ovalue');
-  
-    //    alert(trim(query.toLowerCase())+'<-')
-  if(old_name.toLowerCase()!=trim(query.toLowerCase())){  
-	validate_scope_data.name.changed=true;
-	var validator=new RegExp(validate_scope_data.name.regexp,"i");
-	if(!validator.test(query)){
-	    
-	    validate_scope_data.code.validated=false;
-	    Dom.get('Supplier_Name_msg').innerHTML='<?php echo _('Invalid Supplier Name')?>';
-	    
-	}else{
-	    validate_scope_data.name.validated=true;
-	    Dom.get('Supplier_Name_msg').innerHTML='';
-            
-	}
-    }
-    else{
-	validate_scope_data.name.validated=true;
-	validate_scope_data.name.changed=false;
-	
-    }
-    
-    validate_scope();   
-    
-}
-function save_edit_supplier(){
-    
-    for(item in validate_scope_data){
-	if(validate_scope_data[item].changed){
-	var item_input=Dom.get(validate_scope_data[item].name);
-	var request='ar_edit_suppliers.php?tipo=edit_supplier&key=' + item+ '&newvalue=' + 
-	    encodeURIComponent(item_input.value) + 
-	    '&supplier_key='+supplier_id;
-	YAHOO.util.Connect.asyncRequest('POST',request ,{
-		success:function(o) {
-		    //alert(o.responseText)
-		    var r =  YAHOO.lang.JSON.parse(o.responseText);
-		    if(r.state==200){
-			
-			validate_scope_data[r.key].changed=false;
-			validate_scope_data[r.key].validated=true;
-			Dom.get(validate_scope_data[r.key].name).setAttribute('ovalue',r.newvalue);
-			Dom.get(validate_scope_data[r.key].name).value=r.newvalue;
-			Dom.get(validate_scope_data[r.key].name+'_msg').innerHTML='<?php echo _('Updated')?>';
-			
-			//var table=tables.table1;
-			//	var datasource=tables.dataSource1;
-			//var request='';
-			//datasource.sendRequest(request,table.onDataReturnInitializeTable, table); 
-			if(r.key=='name'){
-			    Dom.get('title_name').innerHTML=r.newvalue;
-			    Dom.get('name').value=r.newvalue;
-			    Dom.get('name').setAttribute('ovalue',r.newvalue);
-
-			}
-			
-			if(r.key=='code')
-			    Dom.get('title_code').innerHTML=r.newvalue;
-		    }else{
-			validate_scope_data[r.key].changed=true;
-			validate_scope_data[r.key].validated=false;
-			Dom.get(validate_scope_data[r.key].name+'_msg').innerHTML=r.msg;
-			
-		    }
-		    
-		}
-			    
-	    });
-	}
-    }
-    
-    
-}
-function reset_edit_supplier(){
-    for(item in validate_scope_data){
-	var item_input=Dom.get(validate_scope_data[item].name);
-	item_input.value=item_input.getAttribute('ovalue');
-	validate_scope_data[item].changed=false;
-	validate_scope_data[item].validated=true;
-	Dom.get(validate_scope_data[item].name+'_msg').innerHTML='';
-    }
-    validate_scope(); 
-}
 function init(){
 	var oACDS = new YAHOO.util.FunctionDataSource(mygetTerms);
 	oACDS.queryMatchContains = true;
@@ -411,13 +360,9 @@ function init(){
 	
 	
 
-
 	var ids = ["products","details","company"]; 
 	YAHOO.util.Event.addListener(ids, "click", change_block);
-	
-	YAHOO.util.Event.addListener('save_edit_supplier', "click", save_edit_supplier);
-	YAHOO.util.Event.addListener('reset_edit_supplier', "click", reset_edit_supplier);
-		
+
 	 var supplier_code_oACDS = new YAHOO.util.FunctionDataSource(validate_supplier_code);
 	    supplier_code_oACDS.queryMatchContains = true;
 	    var supplier_code_oAutoComp = new YAHOO.widget.AutoComplete("Supplier_Code","Supplier_Code_Container", supplier_code_oACDS);
@@ -431,8 +376,9 @@ function init(){
 	    supplier_name_oAutoComp.minQueryLength = 0; 
 	    supplier_name_oAutoComp.queryDelay = 0.1;
 
-
 	}
+	
+	
 YAHOO.util.Event.onDOMReady(init);
 YAHOO.util.Event.onContentReady("filtermenu0", function () {
 	var oMenu = new YAHOO.widget.ContextMenu("filtermenu0", {trigger:"filter_name0"});
@@ -446,15 +392,14 @@ YAHOO.util.Event.onContentReady("rppmenu0", function () {
 	oMenu.subscribe("show", oMenu.focus);
 	YAHOO.util.Event.addListener("rtext_rpp0", "click",oMenu.show , null, oMenu);
 });
-YAHOO.util.Event.onContentReady("filtermenu0", function () {
-	var oMenu = new YAHOO.widget.ContextMenu("filtermenu0", {trigger:"filter_name0"});
-	oMenu.render();
-	oMenu.subscribe("show", oMenu.focus);
-	
+YAHOO.util.Event.onContentReady("rppmenu1", function () {
+	 var oMenu = new YAHOO.widget.ContextMenu("rppmenu1", {trigger:"rtext_rpp1" });
+	 oMenu.render();
+	 oMenu.subscribe("show", oMenu.focus);
     });
-YAHOO.util.Event.onContentReady("rppmenu0", function () {
-	var oMenu = new YAHOO.widget.ContextMenu("rppmenu0", {trigger:"rtext_rpp0" });
-	oMenu.render();
-	oMenu.subscribe("show", oMenu.focus);
-	YAHOO.util.Event.addListener("rtext_rpp0", "click",oMenu.show , null, oMenu);
-});
+YAHOO.util.Event.onContentReady("filtermenu1", function () {
+	 var oMenu = new YAHOO.widget.ContextMenu("filtermenu1", {trigger:"filter_name1"});
+	 oMenu.render();
+	 oMenu.subscribe("show", oMenu.focus);
+	 
+    });
