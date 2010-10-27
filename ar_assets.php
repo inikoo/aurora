@@ -3672,11 +3672,11 @@ $display_total=false;
         $restrictions=$conf['restrictions'];
 
 
+$conf_table='products';
 
-
-    $_SESSION['state'][$conf_table]['table']['exchange_type']=$exchange_type;
-    $_SESSION['state'][$conf_table]['table']['exchange_value']=$exchange_value;
-    $_SESSION['state'][$conf_table]['table']['show_default_currency']=$show_default_currency;
+    //$_SESSION['state'][$conf_table]['table']['exchange_type']=$exchange_type;
+    //$_SESSION['state'][$conf_table]['table']['exchange_value']=$exchange_value;
+    //$_SESSION['state'][$conf_table]['table']['show_default_currency']=$show_default_currency;
     $_SESSION['state'][$conf_table]['table']['order']=$order;
     $_SESSION['state'][$conf_table]['table']['order_dir']=$order_dir;
     $_SESSION['state'][$conf_table]['table']['nr']=$number_results;
@@ -3767,7 +3767,6 @@ $display_total=false;
     $wheref.=" and  `Product Name` like '%".addslashes($f_value)."%'";
 
     $sql="select count(*) as total from `Product Dimension`  $where $wheref";
-
     $res=mysql_query($sql);
     if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
@@ -4470,7 +4469,8 @@ if($display_total){
 
 
     $response=array('resultset'=>
-                                array('state'=>200,
+                                array(
+                                'state'=>200,
                                       'data'=>$adata,
                                       'sort_key'=>$_order,
                                       'sort_dir'=>$_dir,
@@ -5361,9 +5361,9 @@ function list_families() {
     $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
 
 
-    $_SESSION['state'][$conf_table]['table']['exchange_type']=$exchange_type;
-    $_SESSION['state'][$conf_table]['table']['exchange_value']=$exchange_value;
-    $_SESSION['state'][$conf_table]['table']['show_default_currency']=$show_default_currency;
+   // $_SESSION['state'][$conf_table]['table']['exchange_type']=$exchange_type;
+    //$_SESSION['state'][$conf_table]['table']['exchange_value']=$exchange_value;
+    //$_SESSION['state'][$conf_table]['table']['show_default_currency']=$show_default_currency;
     $_SESSION['state'][$conf_table]['table']['order']=$order;
     $_SESSION['state'][$conf_table]['table']['order_dir']=$order_dir;
     $_SESSION['state'][$conf_table]['table']['nr']=$number_results;

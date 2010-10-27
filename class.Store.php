@@ -377,18 +377,7 @@ class Store extends DB_Table{
    
   }
 
-  /*
-    Function: update
-    Funcion que permite actualizar el nombre o el codigo en la tabla store dimension, cuidando que no se duplique el valor del codigo o el nombre en dicha tabla
-  */
-  // JFA
-
-  function update($key,$a1=false,$a2=false){
-    $this->updated=false;
-    $this->msg='Nothing to change';
-   
-    switch($key){
-    case('code'):
+function update_code($a1){
 
       if(_trim($a1)==$this->data['Store Code']){
 	$this->updated=true;
@@ -423,13 +412,13 @@ class Store extends DB_Table{
 	$this->updated=true;$this->new_value=$a1;
 	$this->data['Store Code']=$a1;
 
-	
-
-	$this->add_history(array(
+	$history_data=array(
 				 'Indirect Object'=>'Store Code'
 				 ,'History Abstract'=>_('Store Code Changed').' ('.$this->get('Store Code').')'
 				 ,'History Details'=>_('Store')." ".$this->data['Store Name']." "._('changed code from').' '.$old_value." "._('to').' '. $this->get('Store Code')
-				 ));
+				 );
+//print_r($history_data);
+	$this->add_history($history_data);
 	
 
 	
@@ -441,6 +430,20 @@ class Store extends DB_Table{
 	$this->updated=false;
 	
       }
+}
+
+  /*
+    Function: update
+    Funcion que permite actualizar el nombre o el codigo en la tabla store dimension, cuidando que no se duplique el valor del codigo o el nombre en dicha tabla
+  */
+
+  function update($key,$a1=false,$a2=false){
+    $this->updated=false;
+    $this->msg='Nothing to change';
+   
+    switch($key){
+    case('code'):
+$this->update_code($a1);
       break;	
       
       case('slogan'):
