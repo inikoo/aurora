@@ -1473,11 +1473,23 @@ $default_state=array(
                                            'code'=>true,
                                            'name'=>true,
                                            'stores'=>true,
-                                         
                                            'products'=>false,
-                                          
-                                           'sales'=>false,
-                                           'profit'=>false
+					   'surplus'=>false,
+                                           'ok'=>false,
+                                           'low'=>false,
+                                           'critical'=>false,
+                                           'gone'=>false,
+                                           'unknown'=>false,
+                                           'sales_all'=>false,
+                                           'sales_1y'=>false,
+                                           'sales_1q'=>false,
+                                           'sales_1m'=>false,
+                                           'sales_1w'=>false,
+                                           'profit_all'=>false,
+                                           'profit_1y'=>false,
+                                           'profit_1q'=>false,
+                                           'profit_1m'=>false,
+                                           'profit_1w'=>false
                                           )
                                     
                                            ),

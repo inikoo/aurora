@@ -169,8 +169,24 @@ $fields=array(
 'stores'=>array('title'=>_('Stores'),'db_name'=>'Product Family Store Code'),
 'name'=>array('title'=>_('Name'),'db_name'=>'Product Family Name'),
 'products'=>array('title'=>_('Products'),'db_name'=>'Product Family For Public Sale Products'),
-'sales'=>array('title'=>_('Sales'),'db_name'=>'Product Family 1 Year Acc Invoiced Amount'),
-'profit'=>array('title'=>_('Profit'),'db_name'=>'Product Family 1 Year Acc Profit'),
+
+'surplus'=>array('title'=>_('Surplus'),'db_name'=>'Product Family Surplus Availability Products'),
+'ok'=>array('title'=>_('Ok'),'db_name'=>'Product Family Optimal Availability Products'),
+'low'=>array('title'=>_('Gone'),'db_name'=>'Product Family Low Availability Products'),
+'critical'=>array('title'=>_('Gone'),'db_name'=>'Product Family Critical Availability Products'),
+'gone'=>array('title'=>_('Unknown'),'db_name'=>'Product Family Out Of Stock Products'),
+'unknown'=>array('title'=>_('Unknown'),'db_name'=>'Product Family Unknown Stock Products'),
+
+'sales_all'=>array('title'=>_('Total Sales'),'db_name'=>'Product Family Total Acc Invoiced Gross Amount'),
+'profit_all'=>array('title'=>_('Total Profit'),'db_name'=>'Product Family Total Acc Profit'),
+'sales_1y'=>array('title'=>_('Sales 1Y'),'db_name'=>'Product Family 1 Year Acc Invoiced Gross Amount'),
+'profit_1y'=>array('title'=>_('Profit 1Y'),'db_name'=>'Product Family 1 Year Acc Profit'),
+'sales_1q'=>array('title'=>_('Sales 1Q'),'db_name'=>'Product Family 1 Quarter Acc Invoiced Gross Amount'),
+'profit_1q'=>array('title'=>_('Profit 1Q'),'db_name'=>'Product Family 1 Quarter Acc Profit'),
+'sales_1m'=>array('title'=>_('Sales 1M'),'db_name'=>'Product Family 1 Month Acc Invoiced Gross Amount'),
+'profit_1m'=>array('title'=>_('Profit 1M'),'db_name'=>'Product Family 1 Month Acc Profit'),
+'sales_1w'=>array('title'=>_('Sales 1W'),'db_name'=>'Product Family 1 Week Acc Invoiced Gross Amount'),
+'profit_1w'=>array('title'=>_('Profit 1W'),'db_name'=>'Product Family 1 Week Acc Profit'),
 );
 
 
