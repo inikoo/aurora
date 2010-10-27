@@ -128,17 +128,6 @@ if(isset($_REQUEST['view'])){
 $smarty->assign('view',$_SESSION['state'][$page]['view']);
 
 
-$smarty->assign('show_percentages',$_SESSION['state'][$page]['percentages']);
-$smarty->assign('avg',$_SESSION['state'][$page]['avg']);
-$smarty->assign('period',$_SESSION['state'][$page]['period']);
-$info_period_menu=array(
-			array("period"=>'week','label'=>_('Last Week'),'title'=> _('Last Week'))
-		     ,array("period"=>'month','label'=>_('Last Month'),'title'=>_('Last Month'))
-		     ,array("period"=>'quarter','label'=>_('Last Quarter'),'title'=>_('Last Quarter'))
-		     ,array("period"=>'year','label'=>_('Last Year'),'title'=>_('Last Year'))
-		     ,array("period"=>'all','label'=>_('All'),'title'=>_('All'))
-		     );
-$smarty->assign('info_period_menu',$info_period_menu);
 
 
 $subject_id=$store_id;
@@ -169,6 +158,23 @@ mysql_free_result($res);
 
 
  $smarty->assign('stores',$stores);
+ 
+ $q='';
+$tipo_filter=($q==''?$_SESSION['state']['store']['history']['f_field']:'code');
+$smarty->assign('filter',$tipo_filter);
+$smarty->assign('filter_value',($q==''?$_SESSION['state']['store']['history']['f_value']:addslashes($q)));
+$filter_menu=array(
+		   'notes'=>array('db_key'=>'notes','menu_label'=>'Records with  notes *<i>x</i>*','label'=>_('Notes')),
+		   'author'=>array('db_key'=>'author','menu_label'=>'Done by <i>x</i>*','label'=>_('Notes')),
+		   'uptu'=>array('db_key'=>'upto','menu_label'=>'Records up to <i>n</i> days','label'=>_('Up to (days)')),
+		   'older'=>array('db_key'=>'older','menu_label'=>'Records older than  <i>n</i> days','label'=>_('Older than (days)')),
+		   'abstract'=>array('db_key'=>'abstract','menu_label'=>'Records with abstract','label'=>_('Abstract'))
+            
+		   );
+$smarty->assign('filter_name1',$filter_menu[$tipo_filter]['label']);
+$paginator_menu=array(10,25,50,100,500);
+$smarty->assign('paginator_menu1',$paginator_menu);
+ 
 $smarty->display('edit_store.tpl');
 
 ?>
