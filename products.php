@@ -211,7 +211,7 @@ $smarty->assign('period',$_SESSION['state']['products']['period']);
                         );
 $smarty->assign('export_csv_table_cols',4);
 
-                        
+                     
 $smarty->assign('csv_export_options',$csv_export_options);
 $smarty->display('products.tpl');
 ?>

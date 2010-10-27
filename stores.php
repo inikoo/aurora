@@ -283,8 +283,6 @@ if ($edit) {
                             )
                         );
 $smarty->assign('export_csv_table_cols',7);
-
-                        
 $smarty->assign('csv_export_options',$csv_export_options);
 
 //{include file='export_csv_menu_splinter.tpl' id=0  export_options=$csv_export_options }
