@@ -153,7 +153,7 @@ $smarty->assign('avg',$_SESSION['state']['products']['avg']);
 $smarty->assign('period',$_SESSION['state']['products']['period']);
 
 
-$smarty->display('products.tpl');
+
 
 // -----------------------------------------products export csv right clicking code-------------------------------------
 
@@ -213,4 +213,5 @@ $smarty->assign('export_csv_table_cols',7);
 
                      
 $smarty->assign('csv_export_options',$csv_export_options);
+$smarty->display('products.tpl');
 ?>
