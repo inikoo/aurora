@@ -46,7 +46,9 @@ $js_files=array(
 		$yui_path.'menu/menu-min.js',
 		'common.js.php',
 		'table_common.js.php',
-		'company_departments.js.php'
+		'company_departments.js.php',
+		'js/edit_common.js',
+                            'js/csv_common.js'
 		);
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
