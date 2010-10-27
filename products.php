@@ -211,6 +211,6 @@ $smarty->display('products.tpl');
                         );
 $smarty->assign('export_csv_table_cols',7);
 
-                        
+                     
 $smarty->assign('csv_export_options',$csv_export_options);
 ?>
