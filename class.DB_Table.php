@@ -279,7 +279,7 @@ abstract class DB_Table {
         $data['Deep']=1;
         $data['Date']=$editor_data['Date'];
         if (isset($raw_data['Indirect Object']))
-            $data['History Abstract']=$raw_data['Indirect Object'].' '._('changed');
+            $data['History Abstract']=$raw_data['Indirect Object'].' '._('changed').' ('.$raw_data['old_value'].'&rarr;'.$raw_data['new_value'].')';
         else
             $data['History Abstract']='Unknown';
         $data['History Details']=$data['History Abstract'];

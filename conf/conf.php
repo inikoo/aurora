@@ -1925,7 +1925,7 @@ $default_state=array(
 
                                        ),
                                   'history'=>array(
-                                                'order'=>'date_index',
+                                                'order'=>'date',
                                                 'order_dir'=>'desc',
                                                 'sf'=>0,
                                                 'nr'=>15,
