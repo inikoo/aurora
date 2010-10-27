@@ -443,7 +443,7 @@ function save_edit_general(branch){
 
 	    YAHOO.util.Connect.asyncRequest('POST',request ,{
 		    success:function(o) {
-			//alert(o.responseText)
+		//	alert(o.responseText)
 			    var r =  YAHOO.lang.JSON.parse(o.responseText);
 			if(r.state==200){
 			
@@ -462,7 +462,7 @@ function save_edit_general(branch){
 			    Dom.get(validate_scope_data[branch][r.key].name+'_msg').innerHTML=r.msg;
 			
 			}
-		    
+		    validate_scope_edit(branch)
 		    }
 			    
 		});
