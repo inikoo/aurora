@@ -110,7 +110,7 @@ $js_files=array(
 		'table_common.js.php',
 		'js/search.js',
 		'products.js.php',
-		'js/dropdown.js',
+		'js/dropdown.js','js/edit_common.js',
 		  'js/csv_common.js'
 		);
 
@@ -155,7 +155,7 @@ $smarty->assign('period',$_SESSION['state']['products']['period']);
 
 
 
-// -----------------------------------------products export csv right clicking code-------------------------------------
+// ----------------------------products export csv right clicking code----------------------------
 
 
  $csv_export_options=array(
@@ -209,7 +209,7 @@ $smarty->assign('period',$_SESSION['state']['products']['period']);
                             )
                             )
                         );
-$smarty->assign('export_csv_table_cols',7);
+$smarty->assign('export_csv_table_cols',4);
 
                         
 $smarty->assign('csv_export_options',$csv_export_options);
