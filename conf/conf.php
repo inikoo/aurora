@@ -419,7 +419,14 @@ $default_state=array(
                                            'name'=>true,
                                            'state'=>true,
                                          
-                                           'web'=>true
+                                           'web'=>false,
+					   'product_short_description'=>false,
+					    'product_total_invoiced_amount'=>false,
+						'product_total_profit'=>false,
+						'product_1y_acc_invoiced_amount'=>false,
+						'product_1y_acc_profit_amount'=>false,
+						'product_1q_acc_invoiced_amount'=>false,
+						'product_1q_acc_profit_amount'=>false,
                                           
                                           )
                                           ),
