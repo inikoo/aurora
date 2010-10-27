@@ -154,4 +154,63 @@ $smarty->assign('period',$_SESSION['state']['products']['period']);
 
 
 $smarty->display('products.tpl');
+
+// -----------------------------------------products export csv right clicking code-------------------------------------
+
+
+ $csv_export_options=array(
+                            'description'=>array(
+                                              'title'=>_('Description'),
+                                              'rows'=>
+                                                     array(
+                                                         array(
+                                                             'code'=>array('label'=>_('Code'),'selected'=>$_SESSION['state']['products']['table']['csv_export']['code']),
+                                                             'name'=>array('label'=>_('Name'),'selected'=>$_SESSION['state']['products']['table']['csv_export']['name']),
+                                                             'state'=>array('label'=>_('State'),'selected'=>$_SESSION['state']['products']['table']['csv_export']['state']),
+                                                             'web'=>array('label'=>_('Web'),'selected'=>$_SESSION['state']['products']['table']['csv_export']['web']),
+                                                             'product_short_description'=>array('label'=>_('Products Description'),'selected'=>$_SESSION['state']['products']['table']['csv_export']['product_short_description']),
+                                                   
+                                                                
+                                                         )
+                                                     )
+                                          ),
+                            
+                            'sales_all'=>array('title'=>_('Sales (All times)'),
+                            'rows'=>
+                                               array(
+                                                   array(
+                                                       'product_total_invoiced_amount'=>array('label'=>_(' Invoiced Amount'),'selected'=>$_SESSION['state']['products']['table']['csv_export']['product_total_invoiced_amount']),
+                                                       'product_total_profit'=>array('label'=>_('Profit'),'selected'=>$_SESSION['state']['products']['table']['csv_export']['product_total_profit']),
+                                                        array('label'=>''),
+                                                             array('label'=>''),
+                                                   )
+                            )
+                            ),
+'sales_1y'=>array('title'=>_('Sales (1 Year)'),
+                            'rows'=>
+                                               array(
+                                                   array(
+                                                       'product_1y_acc_invoiced_amount'=>array('label'=>_('Invoiced Amount'),'selected'=>$_SESSION['state']['products']['table']['csv_export']['product_1y_acc_invoiced_amount']),
+                                                       'product_1y_acc_profit_amount'=>array('label'=>_('Profit'),'selected'=>$_SESSION['state']['products']['table']['csv_export']['product_1y_acc_profit_amount']),
+                                                        array('label'=>''),
+                                                             array('label'=>''),
+                                                   )
+                            )
+                            ),
+'sales_1q'=>array('title'=>_('Sales (1 Quarter)'),
+                            'rows'=>
+                                               array(
+                                                   array(
+                                                       'product_1q_acc_invoiced_amount'=>array('label'=>_('Invoiced Amount'),'selected'=>$_SESSION['state']['products']['table']['csv_export']['product_1q_acc_invoiced_amount']),
+                                                       'product_1q_acc_profit_amount'=>array('label'=>_('Profit'),'selected'=>$_SESSION['state']['products']['table']['csv_export']['product_1q_acc_profit_amount']),
+                                                        array('label'=>''),
+                                                             array('label'=>''),
+                                                   )
+                            )
+                            )
+                        );
+$smarty->assign('export_csv_table_cols',7);
+
+                        
+$smarty->assign('csv_export_options',$csv_export_options);
 ?>
