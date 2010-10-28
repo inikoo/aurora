@@ -1182,7 +1182,33 @@ $default_state=array(
                                            'order'=>'name',
                                            'order_dir'=>'',
                                            'sf'=>0,
-                                           'nr'=>25
+                                           'nr'=>25,
+                                              'csv_export'=>array(
+                                           'code'=>true,
+                                           'name'=>true,
+                                           'families'=>false,
+                                           'products'=>false,
+                                           'discontinued'=>false,
+                                           'new'=>false,
+                                           'surplus'=>false,
+                                           'ok'=>false,
+                                           'low'=>false,
+                                           'critical'=>false,
+                                           'gone'=>false,
+                                           'unknown'=>false,
+                                           'sales_all'=>false,
+                                           'sales_1y'=>false,
+                                           'sales_1q'=>false,
+                                           'sales_1m'=>false,
+                                           'sales_1w'=>false,
+                                           'profit_all'=>false,
+                                           'profit_1y'=>false,
+                                           'profit_1q'=>false,
+                                           'profit_1m'=>false,
+                                           'profit_1w'=>false
+                                          
+                                    
+                                           )
                                            
                                        ),
                                      
@@ -1424,7 +1450,27 @@ $default_state=array(
                                             'nr'=>20,
                                             'where'=>'where true',
                                             'f_field'=>'code',
-                                            'f_value'=>''
+                                            'f_value'=>'',
+                                               'csv_export'=>array(
+                                           'code'=>true,
+                                           'name'=>true,
+                                           'web'=>true,
+                                           'status'=>true,
+                                           'products'=>false,
+                                     
+                                           'sales_all'=>false,
+                                           'sales_1y'=>false,
+                                           'sales_1q'=>false,
+                                           'sales_1m'=>false,
+                                           'sales_1w'=>false,
+                                           'profit_all'=>false,
+                                           'profit_1y'=>false,
+                                           'profit_1q'=>false,
+                                           'profit_1m'=>false,
+                                           'profit_1w'=>false
+                                          
+                                    
+                                           )
 
                                         ),
                                 'history'=>array(

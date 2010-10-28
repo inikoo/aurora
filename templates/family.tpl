@@ -203,7 +203,7 @@
 <div class="data_table"  style="clear:both">
      <span id="table_title" class="clean_table_title">{t}Products{/t}</span>
 	
-<span  id="export_csv0" style="float:right;margin-left:20px"  class="table_type state_details" tipo="product" >{t}Export (CSV){/t}</span>
+<span  id="export_csv0" style="float:right;margin-left:20px"  class="table_type state_details" tipo="products_in_family" >{t}Export (CSV){/t}</span>
      <div id="table_type">
      <span id="table_type_list" style="float:right" class="table_type state_details {if $table_type=='list'}selected{/if}">{t}List{/t}</span>
      <span id="table_type_thumbnail" style="float:right;margin-right:10px" class="table_type state_details {if $table_type=='thumbnails'}selected{/if}">{t}Thumbnails{/t}</span>

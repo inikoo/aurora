@@ -1,5 +1,6 @@
 <?php
 require_once 'common.php';
+require_once 'ar_common.php';
 
 
 
@@ -21,7 +22,20 @@ break;
 case('is_supplier_code'):
 is_supplier_code();
 break;
-
+case('is_product_name'):
+$data=prepare_values($_REQUEST,array(
+                             'supplier_key'=>array('type'=>'key'),
+                             'query'=>array('type'=>'string')
+                         ));
+is_product_name($data);
+break;
+case('is_product_code'):
+ $data=prepare_values($_REQUEST,array(
+                             'supplier_key'=>array('type'=>'key'),
+                             'query'=>array('type'=>'string')
+                         ));
+is_product_code($data);
+break;
 case('supplier_products'):
     list_supplier_products();
 
@@ -1734,7 +1748,7 @@ function list_supplier_products() {
         }
 
 
-$code=$row['Supplier Product Code'];
+$code=sprintf('<a href="supplier_product.php?code=%s&supplier_key=%d">%s</a>',$row['Supplier Product Code'],$row['Supplier Key'],$row['Supplier Product Code']);
 if($row['Supplier Product Days Available']=='')
 $weeks_until='ND';
 else
@@ -1818,6 +1832,96 @@ $res=mysql_query($sql);
    ,$data['Supplier Key']
    ,$data['Supplier Name']
    ,$data['Supplier Code']
+   );
+   $response= array(
+                       'state'=>200,
+                       'found'=>1,
+                       'msg'=>$msg
+                   );
+        echo json_encode($response);
+        return;
+    }else{
+       $response= array(
+                       'state'=>200,
+                       'found'=>0
+                   );
+        echo json_encode($response);
+        return;
+    }
+
+}
+
+function is_product_code($data){
+$query=$data['query'];
+$supplier_key=$data['supplier_key'];
+
+    if($query==''){
+       $response= array(
+                       'state'=>200,
+                       'found'=>0
+                   );
+        echo json_encode($response);
+        return;
+    }
+    
+    
+    
+$sql=sprintf("select `Supplier Product Name`,`Supplier Product Code`,`Supplier Product Name`,`Supplier Key` from `Supplier Product Dimension` where  `Supplier Key`=%d and `Supplier Product Code`=%s  ",
+        $supplier_key,
+        prepare_mysql($query)
+        );
+$res=mysql_query($sql);
+
+    if ($data=mysql_fetch_array($res)) {
+   $msg=sprintf('Product <a href="supplier_product.php?code=%s&supplier_key=%d">%s</a> already has this code (%s)',
+   $data['Supplier Product Code'],
+   $data['Supplier Key'],
+   $data['Supplier Product Name'],
+   $data['Supplier Product Code']
+   );
+   $response= array(
+                       'state'=>200,
+                       'found'=>1,
+                       'msg'=>$msg
+                   );
+        echo json_encode($response);
+        return;
+    }else{
+       $response= array(
+                       'state'=>200,
+                       'found'=>0
+                   );
+        echo json_encode($response);
+        return;
+    }
+
+}
+function is_product_name($data){
+$query=$data['query'];
+$supplier_key=$data['supplier_key'];
+
+    if($query==''){
+       $response= array(
+                       'state'=>200,
+                       'found'=>0
+                   );
+        echo json_encode($response);
+        return;
+    }
+    
+    
+    
+$sql=sprintf("select `Supplier Product Name`,`Supplier Product Code`,`Supplier Product Name`,`Supplier Key` from `Supplier Product Dimension` where  `Supplier Key`=%d and `Supplier Product Name`=%s  ",
+        $supplier_key,
+        prepare_mysql($query)
+        );
+$res=mysql_query($sql);
+
+    if ($data=mysql_fetch_array($res)) {
+   $msg=sprintf('Product <a href="supplier_product.php?code=%s&supplier_key=%d">%s</a> has the same name',
+   $data['Supplier Product Code'],
+   $data['Supplier Key'],
+   $data['Supplier Product Code']
    );
    $response= array(
                        'state'=>200,
