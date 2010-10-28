@@ -262,16 +262,20 @@ $fields_to_export=$_SESSION['state']['products']['table']['csv_export'];
 $fields=array(
 'code'=>array('title'=>_('Code'),'db_name'=>'Product Code'),
 'name'=>array('title'=>_('Name'),'db_name'=>'Product Short Description'),
-'state'=>array('title'=>_('State'),'db_name'=>'Product Sales Type'),
+'status'=>array('title'=>_('Status'),'db_name'=>'Product Sales Type'),
 'web'=>array('title'=>_('Web'),'db_name'=>'Product Web State'),
 
-'product_short_description'=>array('title'=>_('Short Description'),'db_name'=>'Product Short Description'),
-'product_total_invoiced_amount'=>array('title'=>_('Total Invoiced Amount'),'db_name'=>'Product Total Invoiced Amount'),
-'product_total_profit'=>array('title'=>_('Product Total Profit'),'db_name'=>'Product Total Profit'),
-'product_1y_acc_invoiced_amount'=>array('title'=>_('Product 1 Year Acc Invoiced Amount'),'db_name'=>'Product 1 Year Acc Invoiced Amount'),
-'product_1y_acc_profit_amount'=>array('title'=>_('Product 1 Year Acc Profit'),'db_name'=>'Product 1 Year Acc Profit'),
-'product_1q_acc_invoiced_amount'=>array('title'=>_('Product 1 Quarter Acc Invoiced Amount'),'db_name'=>'Product 1 Quarter Acc Invoiced Amount'),
-'product_1q_acc_profit_amount'=>array('title'=>_('Product 1 Quarter Acc Profit'),'db_name'=>'Product 1 Quarter Acc Profit'),
+
+'sales_all'=>array('title'=>_('Total Sales'),'db_name'=>'Product Total Invoiced Gross Amount'),
+'profit_all'=>array('title'=>_('Total Profit'),'db_name'=>'Product Total Profit'),
+'sales_1y'=>array('title'=>_('Sales 1Y'),'db_name'=>'Product 1 Year Acc Invoiced Gross Amount'),
+'profit_1y'=>array('title'=>_('Profit 1Y'),'db_name'=>'Product 1 Year Acc Profit'),
+'sales_1q'=>array('title'=>_('Sales 1Q'),'db_name'=>'Product 1 Quarter Acc Invoiced Gross Amount'),
+'profit_1q'=>array('title'=>_('Profit 1Q'),'db_name'=>'Product 1 Quarter Acc Profit'),
+'sales_1m'=>array('title'=>_('Sales 1M'),'db_name'=>'Product 1 Month Acc Invoiced Gross Amount'),
+'profit_1m'=>array('title'=>_('Profit 1M'),'db_name'=>'Product 1 Month Acc Profit'),
+'sales_1w'=>array('title'=>_('Sales 1W'),'db_name'=>'Product 1 Week Acc Invoiced Gross Amount'),
+'profit_1w'=>array('title'=>_('Profit 1W'),'db_name'=>'Product 1 Week Acc Profit'),
 
 
 );
