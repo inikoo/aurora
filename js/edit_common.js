@@ -1,3 +1,52 @@
+function isPositiveInteger(val){
+      if(val==null){return false;}
+      if (val.length==0){return false;}
+      for (var i = 0; i < val.length; i++) {
+            var ch = val.charAt(i)
+            if (ch < "0" || ch > "9") {
+            return false
+            }
+      }
+      return true;
+}
+
+
+function isInteger(val){
+      if(val==null){return false;}
+      if (val.length==0){return false;}
+      for (var i = 0; i < val.length; i++) {
+            var ch = val.charAt(i)
+            if (i == 0 && ch == "-") {
+            continue
+            }
+      if (ch < "0" || ch > "9") {
+            return false
+      }
+}
+return true
+}
+
+
+function isValidNumber(val){
+      if(val==null){return false;}
+      if (val.length==0){return false;}
+      var DecimalFound = false
+      for (var i = 0; i < val.length; i++) {
+            var ch = val.charAt(i)
+            if (i == 0 && ch == "-") {
+                  continue
+            }
+            if (ch == "." && !DecimalFound) {
+                  DecimalFound = true
+                  continue
+            }
+            if (ch < "0" || ch > "9") {
+                  return false
+            }
+      }
+      return true
+}
+
 function swap_radio(e,input_element){
     swap_this_radio(this,input_element);
 }
@@ -280,7 +329,8 @@ function validate_scope_new(branch) {
 
     for (item in validate_scope_data[branch]) {
         if (validate_scope_data[branch][item].required==true && validate_scope_data[branch][item].validated==false) {
-            errors=true;
+          // alert(item+" error")
+           errors=true;
         }
     }
     if (errors) {
@@ -293,26 +343,19 @@ function validate_scope_new(branch) {
 }
 
 function validate_general(branch,item,query){
+//alert(validate_scope_metadata[branch]['type']+' '+branch)
     if (validate_scope_metadata[branch]['type']=='new') {
         validate_general_new(branch,item,query)
     } else {
         validate_general_edit(branch,item,query)
     }
 }
-function validate_general_new(branch,item,query) {
-
-
-    var data= validate_scope_data[branch][item];
 
 
 
-
-        if (''!=trim(query.toLowerCase())    ) {
-            validate_scope_data[branch][item].changed=true;
-
-            if (data.ar=='find') {
-                var request=data.ar_request+query;
-                //alert(request)
+function ar_validation(branch,item,query){
+var data= validate_scope_data[branch][item];
+               var request=data.ar_request+query;
                 YAHOO.util.Connect.asyncRequest('POST',request , {success:function(o) {
                         // alert(o.responseText)
                         var r =  YAHOO.lang.JSON.parse(o.responseText);
@@ -321,18 +364,7 @@ function validate_general_new(branch,item,query) {
                                 Dom.get(data.name+'_msg').innerHTML=r.msg;
                                 validate_scope_data[branch][item].validated=false;
                             } else {
-                                Dom.get(data.name+'_msg').innerHTML='';
-                                validate_scope_data[branch][item].validated=true;
-                                for (validator_index in data.validation) {
-                                    validator_data=data.validation[validator_index];
-                                    var validator=new RegExp(validator_data.regexp,"i");
-                                    if (!validator.test(query)) {
-
-                                        validate_scope_data[branch][item].validated=false;
-                                        Dom.get(data.name+'_msg').innerHTML=validator_data.invalid_msg;
-                                        break;
-                                    }
-                                }
+                             client_validation(branch,item,query)
                             }
                             validate_scope(branch);
                         } else
@@ -340,37 +372,89 @@ function validate_general_new(branch,item,query) {
                     }
 
                 });
-            } else {
-
-               
-                Dom.get(data.name+'_msg').innerHTML='';
-                validate_scope_data[branch][item].validated=true;
-
-                for (validator_index in data.validation) {
-                    validator_data=data.validation[validator_index];
-                    var validator=new RegExp(validator_data.regexp,"i");
-                    if (!validator.test(query) && query!='') {
-                        validate_scope_data[branch][item].validated=false;
-                        Dom.get(data.name+'_msg').innerHTML=validator_data.invalid_msg;
-                        break;
-                    }
-                }
-            }
-        
-            validate_scope(branch);
-
-
-        } 
-        else {
-            validate_scope_data[branch][item].validated=false;
-            validate_scope_data[branch][item].changed=false;
-            validate_scope(branch);
-
-        }
-  
-
 
 }
+
+
+function regex_validation(regexp,query) {
+    var validator=new RegExp(regexp,"i");
+    if (!validator.test(query) && query!='') {
+        return false;
+    } else {
+        return true;
+    }
+}
+
+function numeric_validation(type,query){
+var valid=false;
+switch ( type ) {
+                        	case 'money':
+                        	case 'number':
+                        		if(isValidNumber(query))
+                        		    valid=true
+                        		break;
+                        	case 'integer':
+                        	if(isInteger(query))
+                        		    valid=true
+                        	break;
+                        	case 'positive integer':
+                        	if(isPositiveInteger(query))
+                        		    valid=true
+                        	break;
+                        
+                        		
+                        }
+return valid;
+}
+
+function client_validation(branch,item,query){
+ var data= validate_scope_data[branch][item];
+ Dom.get(data.name+'_msg').innerHTML='';
+            validate_scope_data[branch][item].validated=true;
+            var valid=true;
+            for (validator_index in data.validation) {
+
+                if (!valid)
+                    break;
+
+                validator_data=data.validation[validator_index];
+
+                if (validator_data.regexp != undefined) {
+
+                    valid=regex_validation(validator_data.regexp,query)
+
+                } else if (validator_data.numeric != undefined) {
+                    valid=numeric_validation(validator_data.numeric,query)
+                      }
+                  }
+            if (!valid) {
+                validate_scope_data[branch][item].validated=false;
+               
+                Dom.get(data.name+'_msg').innerHTML=validator_data.invalid_msg;
+            }
+
+}
+
+
+function validate_general_new(branch,item,query) {
+    var data= validate_scope_data[branch][item];
+    if (''!=trim(query.toLowerCase())    ) {
+        validate_scope_data[branch][item].changed=true;
+
+        if (data.ar=='find') {
+           
+            ar_validation(branch,item,query)
+            return;
+        } else {
+            client_validation(branch,item,query)
+        }
+    } else {
+        validate_scope_data[branch][item].validated=false;
+        validate_scope_data[branch][item].changed=false;
+    }
+    validate_scope(branch);
+}
+  
 function validate_general_edit(branch,item,query) {
 
 //alert(branch+' I:'+item+' q:'+query);
@@ -559,7 +643,7 @@ function save_new_general(branch){
 	//
 	    var item_input=Dom.get(validate_scope_data[branch][item].name);
 
-alert(validate_scope_data[branch][item].dbname+' --- '+item_input.value)
+//alert(validate_scope_data[branch][item].dbname+' --- '+item_input.value)
 	values[validate_scope_data[branch][item].dbname]=item_input.value;
     }	
 
@@ -571,8 +655,7 @@ scope_edit_ar_file=validate_scope_metadata[branch]['ar_file'];
     jsonificated_values=YAHOO.lang.JSON.stringify(values);
 	
 	
-    var request=scope_edit_ar_file+'?tipo='+operation+'_'+branch+'&parent='+parent+'&parent_key=' + parent_key+ '&values=' + 
-	jsonificated_values
+    var request=scope_edit_ar_file+'?tipo='+operation+'_'+branch+'&parent='+parent+'&parent_key=' + parent_key+ '&values=' + 	jsonificated_values;
 	alert(request)
 		alert("returning")
 
