@@ -72,6 +72,14 @@ switch ($tipo) {
         $filename=_('products').'.csv';
         $data=get_products_data($wheref);
         break;
+    case 'departments':
+        $filename=_('departments').'.csv';
+        $f_field=$_SESSION['state']['departments']['table']['f_field'];
+        $f_value=$_SESSION['state']['departments']['table']['f_value'];
+        $wheref=wheref_stores($f_field,$f_value);
+        $filename=_('departments').'.csv';
+        $data=get_departments_data($wheref);
+        break;
    case 'company_departments':
         $filename=_('company_departments').'.csv';
         $f_field=$_SESSION['state']['company_departments']['table']['f_field'];
@@ -279,6 +287,75 @@ $data[]=$_data;
 return $data;
 
 }
+
+function get_departments_data($wheref){
+
+$data=prepare_values($_REQUEST,array('fields'=>array('type'=>'json array','optional'=>true)));
+if(isset($data['fields'])){
+$fields_to_export=$data['fields'];
+}else{
+$fields_to_export=$_SESSION['state']['stores']['table']['csv_export'];
+}
+
+
+$fields=array(
+'code'=>array('title'=>_('Code'),'db_name'=>'Product Department Code'),
+'name'=>array('title'=>_('Name'),'db_name'=>'Product Department Name'),
+'families'=>array('title'=>_('Families'),'db_name'=>'Product Department Families'),
+'products'=>array('title'=>_('Products'),'db_name'=>'Product Department For Public Sale Products'),
+'discontinued'=>array('title'=>_('Discontinued'),'db_name'=>'Product Department Discontinued Products'),
+
+
+'surplus'=>array('title'=>_('Surplus'),'db_name'=>'Product Department Surplus Availability Products'),
+'ok'=>array('title'=>_('Ok'),'db_name'=>'Product Department Optimal Availability Products'),
+'gone'=>array('title'=>_('Gone'),'db_name'=>'Product Department Out Of Stock Products'),
+'low'=>array('title'=>_('Gone'),'db_name'=>'Product Department Low Availability Products'),
+'critical'=>array('title'=>_('Gone'),'db_name'=>'Product Department Critical Availability Products'),
+'unknown'=>array('title'=>_('Unknown'),'db_name'=>'Product Department Unknown Sales State Products'),
+'sales_all'=>array('title'=>_('Total Sales'),'db_name'=>'Product Department Total Invoiced Gross Amount'),
+'profit_all'=>array('title'=>_('Total Profit'),'db_name'=>'Product Department Total Profit'),
+'sales_1y'=>array('title'=>_('Sales 1Y'),'db_name'=>'Product Department 1 Year Acc Invoiced Gross Amount'),
+'profit_1y'=>array('title'=>_('Profit 1Y'),'db_name'=>'Product Department 1 Year Acc Profit'),
+'sales_1q'=>array('title'=>_('Sales 1Q'),'db_name'=>'Product Department 1 Quarter Acc Invoiced Gross Amount'),
+'profit_1q'=>array('title'=>_('Profit 1Q'),'db_name'=>'Product Department 1 Quarter Acc Profit'),
+'sales_1m'=>array('title'=>_('Sales 1M'),'db_name'=>'Product Department 1 Month Acc Invoiced Gross Amount'),
+'profit_1m'=>array('title'=>_('Profit 1M'),'db_name'=>'Product Department 1 Month Acc Profit'),
+'sales_1w'=>array('title'=>_('Sales 1W'),'db_name'=>'Product Department 1 Week Acc Invoiced Gross Amount'),
+'profit_1w'=>array('title'=>_('Profit 1W'),'db_name'=>'Product Department 1 Week Acc Profit'),
+);
+
+
+foreach($fields as $key=>$value){
+if(!isset($fields_to_export[$key]) or  !$fields_to_export[$key]  )
+unset($fields[$key]);
+}
+
+
+$wheref='';
+$data=array();
+$_data=array();
+foreach($fields as $key=>$options){
+$_data[]=$options['title'];
+}
+$data[]=$_data;
+$wheref.=" and `Product Department Store Key`=".$_SESSION['state']['store']['id'];
+$sql="select * from `Product Department Dimension` where true $wheref";
+$res=mysql_query($sql);
+
+while($row=mysql_fetch_assoc($res)){
+$_data=array();
+foreach($fields as $key=>$options){
+
+$_data[]=$row[$options['db_name']];
+}
+$data[]=$_data;
+}
+//print_r($data);exit;
+
+return $data;
+
+}
+
 function get_company_departments_data($wheref){
 
 $data=prepare_values($_REQUEST,array('fields'=>array('type'=>'json array','optional'=>true)));

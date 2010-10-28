@@ -1494,7 +1494,7 @@ case('stores'):
     list_stores();
     break;
     //=====================================================================================
-case('company_departments'):
+//case('company_departments'):
 case('departments'):
     list_departments();
 
