@@ -5,9 +5,12 @@
  <div style="clear:left;">
     <h1>{t}Orders Corporate Overview{/t}</h1>
   </div>
-
+  
   <div  id="orders_table" class="data_table" style="clear:both;{if $view!='orders'}display:none{/if}">
+
+
     <span class="clean_table_title">{t}Orders Per Store{/t}</span>
+<span  id="export_csv0" style="float:right;margin-left:20px"  class="table_type state_details" tipo="orders" >{t}Export (CSV){/t}</span>
     <div style="clear:both;margin:0 0px;padding:0 20px ;border-bottom:1px solid #999;margin-bottom:10px"></div>
     {include file='table_splinter.tpl' table_id=0 filter_name=$filter_name0 filter_value=$filter_value0  no_filter=1} 
     <div  id="table0"   class="data_table_container dtable btable with_total "> </div>
