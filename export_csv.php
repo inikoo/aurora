@@ -317,7 +317,7 @@ $data=prepare_values($_REQUEST,array('fields'=>array('type'=>'json array','optio
 if(isset($data['fields'])){
 $fields_to_export=$data['fields'];
 }else{
-$fields_to_export=$_SESSION['state']['stores']['table']['csv_export'];
+$fields_to_export=$_SESSION['state']['departments']['table']['csv_export'];
 }
 
 
