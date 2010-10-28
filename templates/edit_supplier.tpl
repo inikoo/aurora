@@ -123,7 +123,7 @@
 <tr ><td style="" class="label">{t}Units per Case{/t}:</td>
 	  <td  style="text-align:left">
 	    <div  style="width:15em;position:relative;top:00px" >
-	      <input style="text-align:left;width:9em" id="Product_Units_Per_Case" value="" ovalue="" valid="0">
+	      <input style="text-align:left;width:9em" id="Product_Units_Per_Case" value="1" ovalue="1" valid="0">
 	      <div id="Product_Units_Per_Case_Container" style="" ></div>
 	    </div>
 	  </td>
@@ -135,7 +135,7 @@
 	  <table border=0>
 	  <tr>
 	  <td style="padding:2px 0px">
-	  <select id="Product_Price_Currency">
+	  <select id="Product_Currency">
 	  {foreach from=$currency_list key=key item=value}
 	    <option {if $currency_list_selected==$key}selected="selected"{/if} value="{$key}">{$value}</option>
 	  {/foreach}
@@ -157,8 +157,7 @@
 	
 	<tr ><td style="" class="label">{t}Description{/t}:</td>
 	  <td  style="text-align:left">
-	   <textarea id="Product_Description">
-	   </textarea>
+	   <textarea id="Product_Description"></textarea>
 	  </td>
 	  	  <td id="Product_Description_msg" class="edit_td_alert"></td>
 

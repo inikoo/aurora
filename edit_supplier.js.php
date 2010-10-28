@@ -99,24 +99,27 @@ var validate_scope_data=
 		 ,'name':'Supplier_Code','ar':'find','ar_request':'ar_suppliers.php?tipo=is_supplier_code&query='}
   },
   'product':{
-    'code':{'changed':false,'validated':false,'required':true,'group':1,'type':'item'
+    'code':{'changed':false,'validated':false,'required':true,'group':1,'type':'item','dbname':'Supplier Product Code'
 		 ,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Product Code')?>'}]
 		 ,'name':'Product_Code','ar':'find','ar_request':'ar_suppliers.php?tipo=is_product_code&supplier_key=<?php echo $_SESSION['state']['supplier']['id']?>&query='},
-   'name':{'changed':false,'validated':false,'required':true,'group':1,'type':'item'
+   'name':{'changed':false,'validated':false,'required':true,'group':1,'type':'item','dbname':'Supplier Product Name'
 		 ,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Product Code')?>'}]
 		 ,'name':'Product_Name','ar':'find','ar_request':'ar_suppliers.php?tipo=is_product_name&supplier_key=<?php echo $_SESSION['state']['supplier']['id']?>&query='},
-	'description':{'changed':false,'validated':false,'required':true,'group':1,'type':'item'
+	'description':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','dbname':'Supplier Product Description'
 		 ,'validation':false
 		 ,'name':'Product_Description','ar':false,'ar_request':false},
-	 'unit':{'default':'ea', 'changed':false,'validated':true,'required':true,'group':1,'type':'select'
+	 'unit':{'default':'ea', 'changed':false,'validated':true,'required':true,'group':1,'type':'select','dbname':'Supplier Product Unit Type'
 		 ,'validation':false
 		 ,'name':'Product_Unit','ar':false,'ar_request':false},	 
-	'units_per_case':{'default':1,'changed':false,'validated':false,'required':true,'group':1,'type':'item'
-		 ,'validation':[{'numeric':"positive integer",'invalid_msg':'<?php echo _('Invalid Product Code')?>'}]
-		 ,'name':'Product_Code','ar':'find','ar_request':'ar_suppliers.php?tipo=is_product_code&supplier_key=<?php echo $_SESSION['state']['supplier']['id']?>&query='},
-	'price':{'default':'ea', 'changed':false,'validated':true,'required':true,'group':1,'type':'select'
-		 ,'validation':false
-		 ,'name':'Product_Unit','ar':false,'ar_request':false},	 	 
+	'units_per_case':{'default':1,'changed':false,'validated':true,'required':true,'group':1,'type':'item','dbname':'Supplier Product Units Per Case'
+		 ,'validation':[{'numeric':"positive integer",'invalid_msg':'<?php echo _('Units per case should be a number')?>'}]
+		 ,'name':'Product_Units_Per_Case','ar':'find','ar_request':'ar_suppliers.php?tipo=is_product_code&supplier_key=<?php echo $_SESSION['state']['supplier']['id']?>&query='},
+	'price_per_case':{'changed':false,'validated':false,'required':true,'group':1,'type':'item','dbname':'Supplier Product Cost Per Case'
+		,'validation':[{'numeric':"money",'invalid_msg':'<?php echo _('Invalid Product Price')?>'}]
+		 ,'name':'Product_Price_Per_Case','ar':false,'ar_request':false},	
+	'currency_price':{'changed':false,'validated':true,'required':true,'group':1,'type':'select','dbname':'Supplier Product Currency'
+		,'validation':false
+		 ,'name':'Product_Currency','ar':false,'ar_request':false},	 
   }
   
 };
@@ -124,7 +127,7 @@ var validate_scope_data=
 
 var validate_scope_metadata={
 'supplier':{'type':'edit','ar_file':'ar_edit_suppliers.php','key_name':'supplier_key','key':<?php echo $_SESSION['state']['supplier']['id']?>},
-'product':{'type':'new','ar_file':'ar_edit_suppliers.php','key_name':'supplier_key','key':<?php echo $_SESSION['state']['supplier']['id']?>}
+'product':{'type':'new','ar_file':'ar_edit_suppliers.php','key_name':'supplier','key':<?php echo $_SESSION['state']['supplier']['id']?>}
 
 };
 
@@ -138,8 +141,11 @@ function show_new_product_dialog(){
 }
 
 function validate_product_units_per_case(query){
-validate_general('supplier','units_per_case',query);
+validate_general('product','units_per_case',query);
 
+}
+function validate_product_price_per_case(query){
+validate_general('product','price_per_case',query);
 }
 
 function validate_supplier_code(query){
@@ -379,7 +385,12 @@ function init(){
 	    product_code_oAutoComp.minQueryLength = 0; 
 	    product_code_oAutoComp.queryDelay = 0.25;
 	
-	
+	 var product_name_oACDS = new YAHOO.util.FunctionDataSource(validate_product_name);
+	    product_name_oACDS.queryMatchContains = true;
+	    var product_name_oAutoComp = new YAHOO.widget.AutoComplete("Product_Name","Product_Name_Container", product_name_oACDS);
+	    product_name_oAutoComp.minQueryLength = 0; 
+	    product_name_oAutoComp.queryDelay = 0.25;
+	    
 	 var product_name_oACDS = new YAHOO.util.FunctionDataSource(validate_product_units_per_case);
 	    product_name_oACDS.queryMatchContains = true;
 	    var product_name_oAutoComp = new YAHOO.widget.AutoComplete("Product_Units_Per_Case","Product_Units_Per_Case_Container", product_name_oACDS);
@@ -388,7 +399,11 @@ function init(){
 
 
 
-
+ var product_price_per_case_oACDS = new YAHOO.util.FunctionDataSource(validate_product_price_per_case);
+	    product_price_per_case_oACDS.queryMatchContains = true;
+	    var product_price_per_case_oAutoComp = new YAHOO.widget.AutoComplete("Product_Price_Per_Case","Product_Price_Per_Case_Container", product_price_per_case_oACDS);
+	    product_price_per_case_oAutoComp.minQueryLength = 0; 
+	    product_price_per_case_oAutoComp.queryDelay = 0.25;
 
 	}
 	

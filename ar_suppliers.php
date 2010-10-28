@@ -16,6 +16,7 @@ if(!isset($_REQUEST['tipo']))
 
 $tipo=$_REQUEST['tipo'];
 switch($tipo){
+
 case('find_supplier'):
 find_supplier();
 break;
@@ -1989,5 +1990,7 @@ function find_supplier() {
 
 
 }
+
+
 
 ?>

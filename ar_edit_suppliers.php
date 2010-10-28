@@ -24,6 +24,15 @@ $editor=array(
 
 $tipo=$_REQUEST['tipo'];
 switch($tipo){
+case('create_product'):
+
+$data=prepare_values($_REQUEST,array(
+                             'parent_key'=>array('type'=>'key'),
+                             'values'=>array('type'=>'json array')
+                         ));
+                         
+create_product($data);
+break;
 case('new_supplier'):
  $data=prepare_values($_REQUEST,array(
 			     'values'=>array('type'=>'json array')
@@ -678,6 +687,21 @@ $supplier_data['editor']=$editor;
 
 }
 
+function create_product($data){
+global $editor;
 
+$sp_data=$data['values'];
+
+
+$sp_data['editor']=$editor;
+$sp_data['Supplier Key']=$data['parent_key'];
+$sp_data['Supplier Key']=$data['parent_key'];
+$sp_data['Supplier Product Valid From']=date("Y-m-d H:i:s");
+$sp_data['Supplier Product Cost']=$sp_data['Supplier Product Cost Per Case']/$sp_data['Supplier Product Units Per Case'];
+
+print_r($sp_data);
+$supplier_product=new SupplierProduct('find',$sp_data,'create');
+
+}
 
 ?>
