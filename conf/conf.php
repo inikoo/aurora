@@ -1514,9 +1514,50 @@ $default_state=array(
                                            'profit_1w'=>false
                                           )
                                     
-                                           ),
+                                           ),),
+// --------------------------------------------product under family export(csv) starts----------------------
+				'product'=>array(
+                                  'details'=>false,
+                                  'view'=>'general',
+                                  'percentages'=>false,
+                                  'period'=>'year',
+                                  'mode'=>'all',
+                                  'avg'=>'totals',
+                                  'mode'=>'all',//same_code,same_id,all
+                                  'parent'=>'none',//store,department,family,none
+                                  'restrictions'=>'forsale',
+                                  'table'=>array(
+                                              'order'=>'code',
+                                              'order_dir'=>'',
+                                              'sf'=>0,
+                                              'nr'=>20,
+                                              'where'=>'where true',
+                                              'f_field'=>'code',
+                                              'f_value'=>'','f_show'=>false,
+                                              'mode'=>'all',//same_code,same_id,all
+                                              'parent'=>'none',//store,department,family,none
+                                              'restrictions'=>'forsale',
+                                           'csv_export'=>array(
+                                           'code'=>true,
+                                           'name'=>true,
+                                           'status'=>true,
+                                           'web'=>false,
+                                           'sales_all'=>false,
+                                           'sales_1y'=>false,
+                                           'sales_1q'=>false,
+                                           'sales_1m'=>false,
+                                           'sales_1w'=>false,
+                                           'profit_all'=>false,
+                                           'profit_1y'=>false,
+                                           'profit_1q'=>false,
+                                           'profit_1m'=>false,
+                                           'profit_1w'=>false
+                                          )
+                                    
+                                           ), ),
+//--------------------------------------------product under family export(csv) ends----------------------
                                        
-                                        ),
+                                    
                    'product'=>array(
                                  'details'=>false,
                                  'plot'=>'product',
