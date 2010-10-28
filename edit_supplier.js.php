@@ -108,12 +108,15 @@ var validate_scope_data=
 	'description':{'changed':false,'validated':false,'required':true,'group':1,'type':'item'
 		 ,'validation':false
 		 ,'name':'Product_Description','ar':false,'ar_request':false},
-	 'unit':{'changed':false,'validated':false,'required':true,'group':1,'type':'item'
+	 'unit':{'default':'ea', 'changed':false,'validated':true,'required':true,'group':1,'type':'select'
 		 ,'validation':false
 		 ,'name':'Product_Unit','ar':false,'ar_request':false},	 
-		    'units_per_case':{'default':1,'changed':false,'validated':false,'required':true,'group':1,'type':'item'
+	'units_per_case':{'default':1,'changed':false,'validated':false,'required':true,'group':1,'type':'item'
 		 ,'validation':[{'numeric':"positive integer",'invalid_msg':'<?php echo _('Invalid Product Code')?>'}]
-		 ,'name':'Product_Code','ar':'find','ar_request':'ar_suppliers.php?tipo=is_product_code&supplier_key=<?php echo $_SESSION['state']['supplier']['id']?>&query='}, 
+		 ,'name':'Product_Code','ar':'find','ar_request':'ar_suppliers.php?tipo=is_product_code&supplier_key=<?php echo $_SESSION['state']['supplier']['id']?>&query='},
+	'price':{'default':'ea', 'changed':false,'validated':true,'required':true,'group':1,'type':'select'
+		 ,'validation':false
+		 ,'name':'Product_Unit','ar':false,'ar_request':false},	 	 
   }
   
 };
@@ -132,6 +135,11 @@ function show_new_product_dialog(){
         Dom.addClass('save_new_product','disabled');
 
  Dom.setStyle('show_new_product_dialog_button','display','none');
+}
+
+function validate_product_units_per_case(query){
+validate_general('supplier','units_per_case',query);
+
 }
 
 function validate_supplier_code(query){
