@@ -163,7 +163,21 @@ $smarty->assign('from','supplier');
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
 
-foreach(getEnumVals('`Supplier Product Dimension`','Supplier Product Unit Type'));
+$units=array();
+foreach(getEnumVals('`Supplier Product Dimension`','Supplier Product Unit Type') as $option){
+$units[$option]=$option;
+}
+$smarty->assign('units_list',$units);
+$smarty->assign('units_list_selected','ea');
+
+$currencies=array();
+$sql=sprintf("select `Currency Code`,`Currency Name`,`Currency Short Name` from kbase.`Currency Dimension");
+$res=mysql_query($sql);
+while($row=mysql_fetch_assoc($res)){
+$currencies[$row['Currency Code']]=sprintf("(%s) %s",$row['Currency Code'],$row['Currency Name']);
+}
+$smarty->assign('currency_list',$currencies);
+$smarty->assign('currency_selected',$supplier->data['Supplier Default Currency']);
 
 $smarty->display('edit_supplier.tpl');
 

@@ -141,6 +141,6 @@ ALTER TABLE `Inventory Transaction Fact` ADD `Map To Order Transaction Fact Meta
 0.9.10
 
 ALTER TABLE `Page Store Dimension` CHANGE `Page Store Code` `Page Store Key` SMALLINT UNSIGNED NOT NULL 
-
+ALTER TABLE `Supplier Dimension` ADD `Supplier Default Currency` VARCHAR( 3 ) NOT NULL DEFAULT 'USD';
 */
 ?>

@@ -29,7 +29,6 @@ exit("unknown operation 2");
 //print_r($adata);
 //exit;
 
-
 header("Content-type: application/octet-stream");
 header("Content-Disposition: attachment; filename=\"".$filename."\"");
 $out = fopen('php://output', 'w');
@@ -87,7 +86,7 @@ switch ($tipo) {
         $f_value=$_SESSION['state']['departments']['table']['f_value'];
         $wheref=wheref_stores($f_field,$f_value);
         $filename=_('departments').'.csv';
-        $where=sprintf(' `Product Family Key`=%d ',$_SESSION['state']['store']['id']);
+        $where=sprintf(' `Product Department Store Key`=%d ',$_SESSION['state']['store']['id']);
         $data=get_departments_data($wheref,$where);
         break;
    case 'products_in_family':
@@ -362,6 +361,7 @@ $_data[]=$options['title'];
 }
 $data[]=$_data;
 $sql="select * from `Product Department Dimension` where $where $wheref";
+
 $res=mysql_query($sql);
 
 while($row=mysql_fetch_assoc($res)){
