@@ -318,5 +318,6 @@
     </ul>
   </div>
 </div>
+{include file='export_csv_menu_splinter.tpl' id=0 cols=$export_csv_table_cols session_address="family-table-csv_export" export_options=$csv_export_options }
 {include file='footer.tpl'}
 

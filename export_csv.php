@@ -69,7 +69,7 @@ switch ($tipo) {
         $f_value=$_SESSION['state']['family']['table']['f_value'];
         $wheref=wheref_stores($f_field,$f_value);
         $filename=_('products').'.csv';
-        $where=sprintf(' `Product Department Key`=%d ',$_SESSION['state']['department']['id']);
+        $where=sprintf(' `Product Main Department Key`=%d ',$_SESSION['state']['department']['id']);
         $data=get_families_data($wheref,$where);
         break;       
     case 'products':
