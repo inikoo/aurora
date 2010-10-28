@@ -1500,6 +1500,7 @@ case('departments'):
 
     break;
 
+case('product'):
 
 case('products'):
     list_products();
@@ -4497,6 +4498,8 @@ if($display_total){
 
     echo json_encode($response);
 }
+
+
 function list_parts() {
     $conf=$_SESSION['state']['parts']['table'];
     if (isset( $_REQUEST['view']))
