@@ -97,14 +97,42 @@ var validate_scope_data=
 	,'code':{'changed':false,'validated':true,'required':false,'group':1,'type':'item'
 		 ,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Supplier Code')?>'}]
 		 ,'name':'Supplier_Code','ar':'find','ar_request':'ar_suppliers.php?tipo=is_supplier_code&query='}
+  },
+  'product':{
+    'code':{'changed':false,'validated':false,'required':true,'group':1,'type':'item'
+		 ,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Product Code')?>'}]
+		 ,'name':'Product_Code','ar':'find','ar_request':'ar_suppliers.php?tipo=is_product_code&supplier_key=<?php echo $_SESSION['state']['supplier']['id']?>&query='},
+   'name':{'changed':false,'validated':false,'required':true,'group':1,'type':'item'
+		 ,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Product Code')?>'}]
+		 ,'name':'Product_Name','ar':'find','ar_request':'ar_suppliers.php?tipo=is_product_name&supplier_key=<?php echo $_SESSION['state']['supplier']['id']?>&query='},
+	'description':{'changed':false,'validated':false,'required':true,'group':1,'type':'item'
+		 ,'validation':false
+		 ,'name':'Product_Description','ar':false,'ar_request':false},
+	 'unit':{'changed':false,'validated':false,'required':true,'group':1,'type':'item'
+		 ,'validation':false
+		 ,'name':'Product_Unit','ar':false,'ar_request':false},	 
+		    'units_per_case':{'default':1,'changed':false,'validated':false,'required':true,'group':1,'type':'item'
+		 ,'validation':[{'numeric':"positive integer",'invalid_msg':'<?php echo _('Invalid Product Code')?>'}]
+		 ,'name':'Product_Code','ar':'find','ar_request':'ar_suppliers.php?tipo=is_product_code&supplier_key=<?php echo $_SESSION['state']['supplier']['id']?>&query='}, 
   }
   
 };
 
-//"[ext\d\(\)\[\]\-\s]+"
+
 var validate_scope_metadata={
-'supplier':{'type':'edit','ar_file':'ar_edit_suppliers.php','key_name':'supplier_key','key':<?php echo $_SESSION['state']['supplier']['id']?>}
+'supplier':{'type':'edit','ar_file':'ar_edit_suppliers.php','key_name':'supplier_key','key':<?php echo $_SESSION['state']['supplier']['id']?>},
+'product':{'type':'new','ar_file':'ar_edit_suppliers.php','key_name':'supplier_key','key':<?php echo $_SESSION['state']['supplier']['id']?>}
+
 };
+
+function show_new_product_dialog(){
+    Dom.setStyle('new_product_dialog','display','');
+        Dom.setStyle('cancel_new_product','visibility','visible');
+        Dom.setStyle('save_new_product','visibility','visible');
+        Dom.addClass('save_new_product','disabled');
+
+ Dom.setStyle('show_new_product_dialog_button','display','none');
+}
 
 function validate_supplier_code(query){
 validate_general('supplier','code',query);
@@ -112,6 +140,14 @@ validate_general('supplier','code',query);
 function validate_supplier_name(query){
 
 validate_general('supplier','name',query);
+}
+
+function validate_product_code(query){
+validate_general('product','code',query);
+}
+function validate_product_name(query){
+
+validate_general('product','name',query);
 }
 
 function post_item_updated_actions(branch,key,newvalue){
@@ -278,53 +314,6 @@ var tableid=1; // Change if you have more the 1 table
 
 
     };});
-var change_view=function(e){
-	
-    var table=tables['table0'];
-    var tipo=this.id;
-
-    table.hideColumn('location');
-    table.hideColumn('email');
-    table.hideColumn('for_sale');
-    table.hideColumn('tobediscontinued');
-    table.hideColumn('nosale');
-    table.hideColumn('high');
-    table.hideColumn('normal');
-    table.hideColumn('low');
-    table.hideColumn('critical');
-    table.hideColumn('outofstock');
-    table.hideColumn('profit');
-    table.hideColumn('profit_after_storing');
-    table.hideColumn('cost');
-    if(tipo=='general'){
-	table.showColumn('name');
-	table.showColumn('location');
-	table.showColumn('email');
-    }else if(tipo=='stock'){
-	table.showColumn('high');
-	table.showColumn('normal');
-	table.showColumn('low');
-	table.showColumn('critical');
-	table.showColumn('outofstock');
-
-
-    }else if(tipo=='sales'){
-	table.showColumn('profit');
-	table.showColumn('profit_after_storing');
-	table.showColumn('cost');
-
-    }else if(tipo=='products'){
-	table.showColumn('for_sale');
-	table.showColumn('tobediscontinued');
-	table.showColumn('nosale');
-    }
-	
-
-    Dom.get(table.view).className="";
-    Dom.get(tipo).className="selected";
-    table.view=tipo
-    YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=suppliers-view&value=' + escape(tipo),{} );
-};
 
 
 function change_block(e){
@@ -375,6 +364,23 @@ function init(){
 	    var supplier_name_oAutoComp = new YAHOO.widget.AutoComplete("Supplier_Name","Supplier_Name_Container", supplier_name_oACDS);
 	    supplier_name_oAutoComp.minQueryLength = 0; 
 	    supplier_name_oAutoComp.queryDelay = 0.1;
+
+ var product_code_oACDS = new YAHOO.util.FunctionDataSource(validate_product_code);
+	    product_code_oACDS.queryMatchContains = true;
+	    var product_code_oAutoComp = new YAHOO.widget.AutoComplete("Product_Code","Product_Code_Container", product_code_oACDS);
+	    product_code_oAutoComp.minQueryLength = 0; 
+	    product_code_oAutoComp.queryDelay = 0.25;
+	
+	
+	 var product_name_oACDS = new YAHOO.util.FunctionDataSource(validate_product_units_per_case);
+	    product_name_oACDS.queryMatchContains = true;
+	    var product_name_oAutoComp = new YAHOO.widget.AutoComplete("Product_Units_Per_Case","Product_Units_Per_Case_Container", product_name_oACDS);
+	    product_name_oAutoComp.minQueryLength = 0; 
+	    product_name_oAutoComp.queryDelay = 0.1;
+
+
+
+
 
 	}
 	

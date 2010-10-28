@@ -1,4 +1,5 @@
 function download_csv(e,tipo){
+   //alert('export_csv.php?tipo='+tipo)
    window.location.href='export_csv.php?tipo='+tipo;
 }
 

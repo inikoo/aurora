@@ -27,7 +27,7 @@ exit("unknown operation 2");
 }
 
 //print_r($adata);
-
+//exit;
 
 
 header("Content-type: application/octet-stream");
@@ -63,7 +63,16 @@ switch ($tipo) {
         $wheref=wheref_stores($f_field,$f_value);
         $filename=_('families').'.csv';
         $data=get_families_data($wheref);
-        break;   
+        break;
+  case 'families_in_department':
+    
+        $f_field=$_SESSION['state']['family']['table']['f_field'];
+        $f_value=$_SESSION['state']['family']['table']['f_value'];
+        $wheref=wheref_stores($f_field,$f_value);
+        $filename=_('products').'.csv';
+        $where=sprintf(' `Product Department Key`=%d ',$_SESSION['state']['department']['id']);
+        $data=get_families_data($wheref,$where);
+        break;       
     case 'products':
         $filename=_('products').'.csv';
         $f_field=$_SESSION['state']['products']['table']['f_field'];
@@ -78,15 +87,17 @@ switch ($tipo) {
         $f_value=$_SESSION['state']['departments']['table']['f_value'];
         $wheref=wheref_stores($f_field,$f_value);
         $filename=_('departments').'.csv';
-        $data=get_departments_data($wheref);
+        $where=sprintf(' `Product Family Key`=%d ',$_SESSION['state']['store']['id']);
+        $data=get_departments_data($wheref,$where);
         break;
-   case 'product':
-        $filename=_('product').'.csv';
-        $f_field=$_SESSION['state']['product']['table']['f_field'];
-        $f_value=$_SESSION['state']['product']['table']['f_value'];
+   case 'products_in_family':
+    
+        $f_field=$_SESSION['state']['family']['table']['f_field'];
+        $f_value=$_SESSION['state']['family']['table']['f_value'];
         $wheref=wheref_stores($f_field,$f_value);
-        $filename=_('product').'.csv';
-        $data=get_products_data($wheref);
+        $filename=_('products').'.csv';
+        $where=sprintf(' `Product Family Key`=%d ',$_SESSION['state']['family']['id']);
+        $data=get_products_data($wheref,$where);
         break;
    case 'company_departments':
         $filename=_('company_departments').'.csv';
@@ -103,7 +114,7 @@ switch ($tipo) {
 return array($filename,$data);
 }
 
-function get_stores_data($wheref){
+function get_stores_data($wheref,$where='true'){
 
 $data=prepare_values($_REQUEST,array('fields'=>array('type'=>'json array','optional'=>true)));
 if(isset($data['fields'])){
@@ -153,7 +164,7 @@ foreach($fields as $key=>$options){
 $_data[]=$options['title'];
 }
 $data[]=$_data;
-$sql="select * from `Store Dimension` where true $wheref";
+$sql="select * from `Store Dimension` where $where $wheref";
 $res=mysql_query($sql);
 
 while($row=mysql_fetch_assoc($res)){
@@ -238,7 +249,7 @@ return $data;
 
 
 
-function get_products_data($wheref){
+function get_products_data($wheref,$where=' true'){
 
 $data=prepare_values($_REQUEST,array('fields'=>array('type'=>'json array','optional'=>true)));
 if(isset($data['fields'])){
@@ -279,7 +290,7 @@ foreach($fields as $key=>$options){
 $_data[]=$options['title'];
 }
 $data[]=$_data;
-$sql="select * from `Product Dimension` where true $wheref";
+$sql="select * from `Product Dimension` where $where $wheref";
 $res=mysql_query($sql);
 
 while($row=mysql_fetch_assoc($res)){
@@ -296,7 +307,7 @@ return $data;
 
 }
 
-function get_departments_data($wheref){
+function get_departments_data($wheref,$where){
 
 $data=prepare_values($_REQUEST,array('fields'=>array('type'=>'json array','optional'=>true)));
 if(isset($data['fields'])){
@@ -339,15 +350,14 @@ unset($fields[$key]);
 }
 
 
-$wheref='';
+
 $data=array();
 $_data=array();
 foreach($fields as $key=>$options){
 $_data[]=$options['title'];
 }
 $data[]=$_data;
-$wheref.=" and `Product Department Store Key`=".$_SESSION['state']['store']['id'];
-$sql="select * from `Product Department Dimension` where true $wheref";
+$sql="select * from `Product Department Dimension` where $where $wheref";
 $res=mysql_query($sql);
 
 while($row=mysql_fetch_assoc($res)){
@@ -366,67 +376,6 @@ return $data;
 
 
 
-function get_product_data($wheref){
-
-$data=prepare_values($_REQUEST,array('fields'=>array('type'=>'json array','optional'=>true)));
-if(isset($data['fields'])){
-$fields_to_export=$data['fields'];
-}else{
-$fields_to_export=$_SESSION['state']['product']['table']['csv_export'];
-}
-
-
-$fields=array(
-'code'=>array('title'=>_('Code'),'db_name'=>'Product Code'),
-'name'=>array('title'=>_('Name'),'db_name'=>'Product Short Description'),
-'status'=>array('title'=>_('Status'),'db_name'=>'Product Type'),
-'web'=>array('title'=>_('Web'),'db_name'=>'Product Web State'),
-
-
-'sales_all'=>array('title'=>_('Total Sales'),'db_name'=>'Product Total Invoiced Gross Amount'),
-'profit_all'=>array('title'=>_('Total Profit'),'db_name'=>'Product Total Profit'),
-'sales_1y'=>array('title'=>_('Sales 1Y'),'db_name'=>'Product 1 Year Acc Invoiced Gross Amount'),
-'profit_1y'=>array('title'=>_('Profit 1Y'),'db_name'=>'Product 1 Year Acc Profit'),
-'sales_1q'=>array('title'=>_('Sales 1Q'),'db_name'=>'Product 1 Quarter Acc Invoiced Gross Amount'),
-'profit_1q'=>array('title'=>_('Profit 1Q'),'db_name'=>'Product 1 Quarter Acc Profit'),
-'sales_1m'=>array('title'=>_('Sales 1M'),'db_name'=>'Product 1 Month Acc Invoiced Gross Amount'),
-'profit_1m'=>array('title'=>_('Profit 1M'),'db_name'=>'Product 1 Month Acc Profit'),
-'sales_1w'=>array('title'=>_('Sales 1W'),'db_name'=>'Product 1 Week Acc Invoiced Gross Amount'),
-'profit_1w'=>array('title'=>_('Profit 1W'),'db_name'=>'Product 1 Week Acc Profit'),
-);
-
-
-foreach($fields as $key=>$value){
-if(!isset($fields_to_export[$key]) or  !$fields_to_export[$key]  )
-unset($fields[$key]);
-}
-
-
-$wheref='';
-$data=array();
-$_data=array();
-foreach($fields as $key=>$options){
-$_data[]=$options['title'];
-}
-$data[]=$_data;
-$wheref.=" and `Product Family Key`=".$_SESSION['state']['family']['id'];
-
-$sql="select * from `Product Dimension` where true $wheref";
-$res=mysql_query($sql);
-
-while($row=mysql_fetch_assoc($res)){
-$_data=array();
-foreach($fields as $key=>$options){
-
-$_data[]=$row[$options['db_name']];
-}
-$data[]=$_data;
-}
-//print_r($data);exit;
-
-return $data;
-
-}
 
 
 

@@ -253,55 +253,43 @@ function validate_scope(branch) {
 }
 
 
-function validate_scope_new(branch){
+function validate_scope_edit(branch) {
     var errors=false;
 
-    for(item in validate_scope_data[branch]){
-	 // alert(item+ 'Validated:'+validate_scope_data[branch][item].validated+' Req:'+validate_scope_data[branch][item].required);
-	if(validate_scope_data[branch][item].validated==false   ||    (validate_scope_data[branch][item].required &&  Dom.get(validate_scope_data[branch][item].name).value=='' )  )
+    for (item in validate_scope_data[branch]) {
+        if (validate_scope_data[branch][item].validated==false   ||    (validate_scope_data[branch][item].required &&  Dom.get(validate_scope_data[branch][item].name).value=='' )  )
             errors=true;
     }
-    
-   
-    if(errors){
-	Dom.addClass('save_edit_'+branch,'disabled');
-    }else{
-	
-	Dom.removeClass('save_edit_'+branch,'disabled');
 
-  }
- 
+
+    if (errors) {
+        Dom.addClass('save_edit_'+branch,'disabled');
+    } else {
+        Dom.removeClass('save_edit_'+branch,'disabled');
+    }
+
 }
 
 
 
 
-function validate_scope_edit(branch){
+function validate_scope_new(branch) {
 
     var changed=false;
     var errors=false;
 
-    for(item in validate_scope_data[branch]){
-    
-        if(validate_scope_data[branch][item].changed==true)
-            changed=true;
-	if(validate_scope_data[branch][item].validated==false)
+    for (item in validate_scope_data[branch]) {
+        if (validate_scope_data[branch][item].required==true && validate_scope_data[branch][item].validated==false) {
             errors=true;
+        }
     }
-    
-    if(changed ){
-	Dom.get('reset_edit_'+branch).style.visibility='visible';
-	if(!errors)
-	    Dom.get('save_edit_'+branch).style.visibility='visible';
-	else
-	    Dom.get('save_edit_'+branch).style.visibility='hidden';
-
-    }else{
-        Dom.get('save_edit_'+branch).style.visibility='hidden';
-	Dom.get('reset_edit_'+branch).style.visibility='hidden';
-
+    if (errors) {
+        Dom.addClass('save_new_'+branch,'disabled');
+    } else {
+        
+        Dom.removeClass('save_new_'+branch,'disabled');
     }
- 
+
 }
 
 function validate_general(branch,item,query){
@@ -311,7 +299,78 @@ function validate_general(branch,item,query){
         validate_general_edit(branch,item,query)
     }
 }
+function validate_general_new(branch,item,query) {
 
+
+    var data= validate_scope_data[branch][item];
+
+
+
+
+        if (''!=trim(query.toLowerCase())    ) {
+            validate_scope_data[branch][item].changed=true;
+
+            if (data.ar=='find') {
+                var request=data.ar_request+query;
+                //alert(request)
+                YAHOO.util.Connect.asyncRequest('POST',request , {success:function(o) {
+                        // alert(o.responseText)
+                        var r =  YAHOO.lang.JSON.parse(o.responseText);
+                        if (r.state==200) {
+                            if (r.found==1) {
+                                Dom.get(data.name+'_msg').innerHTML=r.msg;
+                                validate_scope_data[branch][item].validated=false;
+                            } else {
+                                Dom.get(data.name+'_msg').innerHTML='';
+                                validate_scope_data[branch][item].validated=true;
+                                for (validator_index in data.validation) {
+                                    validator_data=data.validation[validator_index];
+                                    var validator=new RegExp(validator_data.regexp,"i");
+                                    if (!validator.test(query)) {
+
+                                        validate_scope_data[branch][item].validated=false;
+                                        Dom.get(data.name+'_msg').innerHTML=validator_data.invalid_msg;
+                                        break;
+                                    }
+                                }
+                            }
+                            validate_scope(branch);
+                        } else
+                            Dom.get('msg_div').innerHTML='<span class="error">'+r.msg+'</span>';
+                    }
+
+                });
+            } else {
+
+               
+                Dom.get(data.name+'_msg').innerHTML='';
+                validate_scope_data[branch][item].validated=true;
+
+                for (validator_index in data.validation) {
+                    validator_data=data.validation[validator_index];
+                    var validator=new RegExp(validator_data.regexp,"i");
+                    if (!validator.test(query) && query!='') {
+                        validate_scope_data[branch][item].validated=false;
+                        Dom.get(data.name+'_msg').innerHTML=validator_data.invalid_msg;
+                        break;
+                    }
+                }
+            }
+        
+            validate_scope(branch);
+
+
+        } 
+        else {
+            validate_scope_data[branch][item].validated=false;
+            validate_scope_data[branch][item].changed=false;
+            validate_scope(branch);
+
+        }
+  
+
+
+}
 function validate_general_edit(branch,item,query) {
 
 //alert(branch+' I:'+item+' q:'+query);
@@ -403,6 +462,28 @@ function reset_edit_general(branch){
     }
     validate_scope(branch); 
 };
+
+
+function cancel_new_general(branch){
+   
+    for(item in validate_scope_data[branch]){
+	
+	var item_input=Dom.get(validate_scope_data[branch][item].name);
+
+	item_input.value='';
+	
+	
+	validate_scope_data[branch][item].changed=false;
+	validate_scope_data[branch][item].validated=false;
+	Dom.get(validate_scope_data[branch][item].name+'_msg').innerHTML='';
+    }
+    Dom.setStyle('save_new_'+branch,'visibility','hidden');
+    Dom.setStyle('cancel_new_'+branch,'visibility','hidden');
+     Dom.setStyle('show_new_'+branch+'_dialog_button','display','');
+     Dom.setStyle('new_'+branch+'_dialog','display','none');
+
+};
+
 function post_item_updated_actions(branch,key,newvalue){
     return true;
 }
