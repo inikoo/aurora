@@ -112,11 +112,9 @@
 	  <td  style="text-align:left">
 	  <select id="Product_Unit">
 	  {foreach from=$units_list key=key item=value}
-	    <option value="{$key}">{$value}</option>
-
+	    <option {if $units_list_selected==$key}selected="selected"{/if} value="{$key}">{$value}</option>
 	  {/foreach}
-  
-</select>
+      </select>
 	   
 	  </td>
 	  	  <td id="Product_Unit_msg" class="edit_td_alert"></td>
@@ -137,10 +135,12 @@
 	  <table border=0>
 	  <tr>
 	  <td style="padding:2px 0px">
-	  <div  style="width:3em;"  >
-	      <input style="text-align:left;width:3em" id="Product_Price_Currency" value="" ovalue="" valid="0">
-	      <div id="Product_Price_Currency_Container" style="" ></div>
-	    </div>
+	  <select id="Product_Price_Currency">
+	  {foreach from=$currency_list key=key item=value}
+	    <option {if $currency_list_selected==$key}selected="selected"{/if} value="{$key}">{$value}</option>
+	  {/foreach}
+      </select>
+	  
 	    </td>
 	    <td style="padding:2px 0px 2px 12px">
 	     <div  style="width:15em;position:relative;top:00px" >
