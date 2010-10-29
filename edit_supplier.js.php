@@ -108,7 +108,7 @@ var validate_scope_data=
 	'description':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','dbname':'Supplier Product Description'
 		 ,'validation':false
 		 ,'name':'Product_Description','ar':false,'ar_request':false},
-	 'unit':{'default':'ea', 'changed':false,'validated':true,'required':true,'group':1,'type':'select','dbname':'Supplier Product Unit Type'
+	 'unit':{'default':true, 'changed':false,'validated':true,'required':true,'group':1,'type':'select','dbname':'Supplier Product Unit Type'
 		 ,'validation':false
 		 ,'name':'Product_Unit','ar':false,'ar_request':false},	 
 	'units_per_case':{'default':1,'changed':false,'validated':true,'required':true,'group':1,'type':'item','dbname':'Supplier Product Units Per Case'
@@ -117,7 +117,7 @@ var validate_scope_data=
 	'price_per_case':{'changed':false,'validated':false,'required':true,'group':1,'type':'item','dbname':'Supplier Product Cost Per Case'
 		,'validation':[{'numeric':"money",'invalid_msg':'<?php echo _('Invalid Product Price')?>'}]
 		 ,'name':'Product_Price_Per_Case','ar':false,'ar_request':false},	
-	'currency_price':{'changed':false,'validated':true,'required':true,'group':1,'type':'select','dbname':'Supplier Product Currency'
+	'currency_price':{'default':true,'changed':false,'validated':true,'required':true,'group':1,'type':'select','dbname':'Supplier Product Currency'
 		,'validation':false
 		 ,'name':'Product_Currency','ar':false,'ar_request':false},	 
   }
@@ -163,6 +163,17 @@ function validate_product_name(query){
 
 validate_general('product','name',query);
 }
+
+function post_new_create_actions(branch,r){
+
+var table_id=0
+    var table=tables['table'+table_id];
+    var datasource=tables['dataSource'+table_id];
+    var request='&tableid='+table_id+'&sf=0';
+    datasource.sendRequest(request,table.onDataReturnInitializeTable, table);  
+
+}
+
 
 function post_item_updated_actions(branch,key,newvalue){
 
