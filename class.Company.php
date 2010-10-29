@@ -816,7 +816,6 @@ class Company extends DB_Table {
     protected function update_field_switcher($field,$value,$options='') {
 
 
-        //  print "$field -> $value\n";
 
 
         switch ($field) {
@@ -863,6 +862,7 @@ class Company extends DB_Table {
                     $address->update_principal_telecom_number($value,$type);
 
                 } else {
+
                     $telephone_data=array();
                     $telephone_data['editor']=$this->editor;
                     $telephone_data['Telecom Raw Number']=$value;

@@ -184,23 +184,17 @@
      </table>
 
    <div id="customer_contact_address" style="float:left;xborder:1px solid #ddd;width:400px;margin-right:40px;min-height:300px">
-     
-  <div style="border-bottom:1px solid #777;margin-bottom:5px">
-       
+     <div style="border-bottom:1px solid #777;margin-bottom:5px">
        {t}Contact Address{/t}:
-   
      </div>
-       <table>
+     <table>
        {include file='edit_address_splinter.tpl' address_identifier='contact_' hide_type=true hide_description=true  }
-
      </table>
-     
      <div style="display:none" id='contact_current_address' ></div>
      <div style="display:none" id='contact_address_display{$customer->get("Customer Main Address Key")}' ></div>
-     
    </div>
 
- <div id="customer_contact_address" style="float:left;xborder:1px solid #ddd;width:400px;margin-bottom:20px;">
+ <div id="customer_billing_address" style="float:left;xborder:1px solid #ddd;width:400px;margin-bottom:20px;">
      <div style="border-bottom:1px solid #777;margin-bottom:7px">
      
        {t}Billing Information{/t}:<span class="state_details" style="float:right;display:none" address_key="" id="billing_cancel_edit_address">{t}Cancel{/t}</span>

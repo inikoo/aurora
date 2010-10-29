@@ -118,9 +118,11 @@ function edit_supplier() {
     $key_dic=array(
 		   'name'=>'Supplier Company Name'
 		   ,'code'=>'Supplier Code'
-		   ,'email'=>'Supplier Email'
+		   ,'contact'=>'Supplier Main Contact Name'
+		   ,'email'=>'Supplier Main Plain Email'
 		   ,'telephone'=>'Supplier Main Plain Telephone'
-		   ,'contact_name'=>'Email'
+		   ,'fax'=>'Supplier Main Plain FAX'
+		   ,'www'=>'Supplier Main Web Site'
 		   ,"address"=>'Address'
 		   ,"town"=>'Main Address Town'
 		   ,"postcode"=>'Main Address Town'
@@ -136,8 +138,8 @@ function edit_supplier() {
     if(array_key_exists($_REQUEST['key'],$key_dic))
        $key=$key_dic[$_REQUEST['key']];
     
-    
-    $supplier->update(array($key=>stripslashes(urldecode($_REQUEST['newvalue']))));
+    $update_data=array($key=>stripslashes(urldecode($_REQUEST['newvalue'])));
+    $supplier->update($update_data);
   }
 
 

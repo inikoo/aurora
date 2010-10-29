@@ -314,17 +314,37 @@ function validate_scope(branch) {
 
 
 function validate_scope_edit(branch) {
-    var errors=false;
+  
+  var errors=false;
+  var changed=false;
 
     for (item in validate_scope_data[branch]) {
         if (validate_scope_data[branch][item].validated==false   ||    (validate_scope_data[branch][item].required &&  Dom.get(validate_scope_data[branch][item].name).value=='' )  )
             errors=true;
+        if (validate_scope_data[branch][item].changed==true)
+            changed=true;
     }
+
+Dom.setStyle('save_edit_'+branch,'visibility','visible');
+Dom.setStyle('reset_edit_'+branch,'visibility','visible');
+
+
+if(changed){
+        Dom.setStyle('save_edit_'+branch,'visibility','visible');
+        Dom.setStyle('reset_edit_'+branch,'visibility','visible');
+
+}else{
+        Dom.setStyle('save_edit_'+branch,'visibility','hidden');
+        Dom.setStyle('reset_edit_'+branch,'visibility','hidden');
+
+}
 
 
     if (errors) {
+        
         Dom.addClass('save_edit_'+branch,'disabled');
     } else {
+
         Dom.removeClass('save_edit_'+branch,'disabled');
     }
 
@@ -354,7 +374,7 @@ function validate_scope_new(branch) {
 }
 
 function validate_general(branch,item,query) {
-//alert(validate_scope_metadata[branch]['type']+' '+branch)
+//alert(validate_scope_metadata[branch]['type']+' '+branch+' '+query)
     if (validate_scope_metadata[branch]['type']=='new') {
         validate_general_new(branch,item,query)
     } else {
@@ -367,7 +387,7 @@ function validate_general(branch,item,query) {
 function ar_validation(branch,item,query) {
     var data= validate_scope_data[branch][item];
     var request=data.ar_request+query;
-YAHOO.util.Connect.asyncRequest('POST',request , {success:function(o) {
+    YAHOO.util.Connect.asyncRequest('POST',request , {success:function(o) {
         // alert(o.responseText)
         var r =  YAHOO.lang.JSON.parse(o.responseText);
         if (r.state==200) {
@@ -375,6 +395,7 @@ YAHOO.util.Connect.asyncRequest('POST',request , {success:function(o) {
                 Dom.get(data.name+'_msg').innerHTML=r.msg;
                 validate_scope_data[branch][item].validated=false;
             } else {
+                
                 client_validation(branch,item,query)
             }
             validate_scope(branch);
@@ -382,16 +403,19 @@ YAHOO.util.Connect.asyncRequest('POST',request , {success:function(o) {
             Dom.get('msg_div').innerHTML='<span class="error">'+r.msg+'</span>';
     }
 
-                                                     });
+            });
 
 }
 
 
 function regex_validation(regexp,query) {
+
     var validator=new RegExp(regexp,"i");
-    if (!validator.test(query) && query!='') {
+    if (!validator.test(query)) {
+       /// alert("Err "+query);
         return false;
     } else {
+    //alert('ok')
         return true;
     }
 }
@@ -433,7 +457,8 @@ function client_validation(branch,item,query) {
         if (validator_data.regexp != undefined) {
 
             valid=regex_validation(validator_data.regexp,query)
-
+            
+            
         } else if (validator_data.numeric != undefined) {
             valid=numeric_validation(validator_data.numeric,query)
               }
@@ -479,50 +504,11 @@ function validate_general_edit(branch,item,query) {
             validate_scope_data[branch][item].changed=true;
 
             if (data.ar=='find') {
-                var request=data.ar_request+query;
-                //alert(request)
-YAHOO.util.Connect.asyncRequest('POST',request , {success:function(o) {
-                    // alert(o.responseText)
-                    var r =  YAHOO.lang.JSON.parse(o.responseText);
-                    if (r.state==200) {
-                        if (r.found==1) {
-                            Dom.get(data.name+'_msg').innerHTML=r.msg;
-                            validate_scope_data[branch][item].validated=false;
-                        } else {
-                            Dom.get(data.name+'_msg').innerHTML='';
-                            validate_scope_data[branch][item].validated=true;
-                            for (validator_index in data.validation) {
-                                validator_data=data.validation[validator_index];
-                                var validator=new RegExp(validator_data.regexp,"i");
-                                if (!validator.test(query)) {
+                 ar_validation(branch,item,query)
+            }
+            else {
+                client_validation(branch,item,query)
 
-                                    validate_scope_data[branch][item].validated=false;
-                                    Dom.get(data.name+'_msg').innerHTML=validator_data.invalid_msg;
-                                    break;
-                                }
-                            }
-                        }
-                        validate_scope(branch);
-                    } else
-                        Dom.get('msg_div').innerHTML='<span class="error">'+r.msg+'</span>';
-                }
-
-                                                                 });
-            } else {
-
-
-                Dom.get(data.name+'_msg').innerHTML='';
-                validate_scope_data[branch][item].validated=true;
-
-                for (validator_index in data.validation) {
-                    validator_data=data.validation[validator_index];
-                    var validator=new RegExp(validator_data.regexp,"i");
-                    if (!validator.test(query) && query!='') {
-                        validate_scope_data[branch][item].validated=false;
-                        Dom.get(data.name+'_msg').innerHTML=validator_data.invalid_msg;
-                        break;
-                    }
-                }
             }
 
             validate_scope(branch);
@@ -628,11 +614,11 @@ function save_edit_general(branch) {
                         encodeURIComponent(item_input.value) +  '&oldvalue=' +
                         encodeURIComponent(item_input.getAttribute('ovalue')) +
                         '&'+branch_key_name+'='+branch_key;
-            //  alert(request);
+              alert(request);
 
             YAHOO.util.Connect.asyncRequest('POST',request , {
 success:function(o) {
-                    //	alert(o.responseText)
+                    	alert(o.responseText)
                     var r =  YAHOO.lang.JSON.parse(o.responseText);
                     if (r.state==200) {
 

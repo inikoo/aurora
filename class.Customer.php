@@ -1092,7 +1092,6 @@ function update_ship_to_stats() {
             $this->msg=$contact->msg;
             $this->new_value=$contact->new_value;
                 
-            break;
 
             break;
         default:

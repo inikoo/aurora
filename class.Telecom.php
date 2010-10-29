@@ -1067,13 +1067,7 @@ var $deleted=false;
 
 
 
-    /*Method: update
-      Switcher calling the apropiate update method
-      Parameters:
-      $data - associated array with Email Dimension fields
-        */
     public function update($data,$options='') {
-    
     
         if ($data['Telecom Number']=='') {
             $this->error=true;
@@ -1116,7 +1110,6 @@ var $deleted=false;
 
 
     function update_number($value,$country_code='UNK') {
-    
           $_data=preg_replace('/[^\d]/','',$value);
 
             if (strlen($_data)<3) {
@@ -1142,7 +1135,6 @@ var $deleted=false;
     }
 
     function update_parents() {
-//print_r($this);
         $parents=array('Address','Contact','Company','Customer','Supplier');
         $types=array("Mobile","FAX","Telephone");
         foreach($types as $type) {
@@ -1182,7 +1174,7 @@ var $deleted=false;
                              ,prepare_mysql($parent_object->data[$parent." Main XHTML $type"])
                              ,$parent_object->id
                             );
-                          //  print "$sql\n";
+                         //   print "$sql\n";
                 mysql_query($sql);
 
 //print "$old_princial_telecom -> ".$parent_object->data[$parent." Main Plain $type"]."\n";
@@ -1284,7 +1276,6 @@ function delete() {
                          ,$parent_object->id
                         );
             mysql_query($sql);
-
 
 
 
