@@ -271,14 +271,31 @@ YAHOO.util.Event.addListener(window, "load", function() {
 function init(){
 // -----------------------------------------------------------------
 
-YAHOO.util.Event.addListener('export_csv0', "click",download_csv,'orders');
- YAHOO.util.Event.addListener('export_csv0_in_dialog', "click",download_csv_from_dialog,{table:'export_csv_table0',tipo:'orders'});
+YAHOO.util.Event.addListener('export_csv0', "click",download_csv,'orders_per_store');
+ YAHOO.util.Event.addListener('export_csv0_in_dialog', "click",download_csv_from_dialog,{table:'export_csv_table0',tipo:'orders_per_store'});
   csvMenu = new YAHOO.widget.ContextMenu("export_csv_menu0", {trigger:"export_csv0" });
 	 csvMenu.render();
 	 csvMenu.subscribe("show", csvMenu.focus);
    
  YAHOO.util.Event.addListener('export_csv0_close_dialog', "click",csvMenu.hide,csvMenu,true);
+
 // -----------------------------------------------------------------
+YAHOO.util.Event.addListener('export_csv1', "click",download_csv,'invoices_per_store');
+ YAHOO.util.Event.addListener('export_csv1_in_dialog', "click",download_csv_from_dialog,{table:'export_csv_table1',tipo:'invoices_per_store'});
+  csvMenu = new YAHOO.widget.ContextMenu("export_csv_menu1", {trigger:"export_csv1" });
+         csvMenu.render();
+         csvMenu.subscribe("show", csvMenu.focus);
+   
+ YAHOO.util.Event.addListener('export_csv1_close_dialog', "click",csvMenu.hide,csvMenu,true);
+// --------------------------------------------------------------------
+YAHOO.util.Event.addListener('export_csv2', "click",download_csv,'delivery_notes_per_store');
+ YAHOO.util.Event.addListener('export_csv2_in_dialog', "click",download_csv_from_dialog,{table:'export_csv_table2',tipo:'delivery_notes_per_store'});
+  csvMenu = new YAHOO.widget.ContextMenu("export_csv_menu2", {trigger:"export_csv2" });
+         csvMenu.render();
+         csvMenu.subscribe("show", csvMenu.focus);
+   
+ YAHOO.util.Event.addListener('export_csv2_close_dialog', "click",csvMenu.hide,csvMenu,true);
+// --------------------------------------------------------------------
  init_search('orders');
 
 var ids=['orders','invoices','dn'];

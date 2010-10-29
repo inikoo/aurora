@@ -303,29 +303,7 @@ $default_state=array(
                                             'elements'=>array(),
                                             'dispatch'=>'all_orders',
                                             'paid'=>'',
-                                            'order_type'=>'',
-				           
-                                           'csv_export'=>array(
-                                           'code'=>true,
-                                           'name'=>true,
-                                           'orders'=>false,
-                                           'cancelled'=>false,
-                                           'suspended'=>false,
-                                           'pending'=>false,
-                                           'dispatched'=>false,
-                                           'sales_all'=>false,
-                                           'sales_1y'=>false,
-                                           'sales_1q'=>false,
-                                           'sales_1m'=>false,
-                                           'sales_1w'=>false,
-                                           'profit_all'=>false,
-                                           'profit_1y'=>false,
-                                           'profit_1q'=>false,
-                                           'profit_1m'=>false,
-                                           'profit_1w'=>false
-                                          
-                                    
-                                           )
+                                            'order_type'=>''
                                            
 
 
@@ -1993,6 +1971,33 @@ $default_state=array(
                                              'order_dir'=>'',
                                              'sf'=>0,
                                              'nr'=>25,
+						
+                                           'csv_export'=>array(
+                                           'code'=>true,
+                                           'name'=>true,
+                                           'orders'=>true,
+                                           'cancelled'=>false,
+                                           'suspended'=>false,
+                                           'pending'=>false,
+                                           'dispatched'=>false,
+
+                                       
+                                           'sales_all'=>false,
+                                           'sales_1y'=>false,
+                                           'sales_1q'=>false,
+                                           'sales_1m'=>false,
+                                           'sales_1w'=>false,
+                                           'profit_all'=>false,
+                                           'profit_1y'=>false,
+                                           'profit_1q'=>false,
+                                           'profit_1m'=>false,
+                                           'profit_1w'=>false
+                                          
+                                    
+                                           )
+
+
+
                                          ),
                                          'invoices'=>array(
                                              'percentages'=>false,
@@ -2008,6 +2013,32 @@ $default_state=array(
                                              'order_dir'=>'',
                                              'sf'=>0,
                                              'nr'=>25,
+
+						
+                                           'csv_export'=>array(
+                                           'code'=>true,
+                                           'name'=>true,
+                                           'invoices'=>true,
+                                           'invpaid'=>true,
+                                           'invtopay'=>false,
+                                           'refunds'=>false,
+                                           'refpaid'=>false,
+					   'reftopay'=>false,
+
+                                           'sales_all'=>false,
+                                           'sales_1y'=>false,
+                                           'sales_1q'=>false,
+                                           'sales_1m'=>false,
+                                           'sales_1w'=>false,
+                                           'profit_all'=>false,
+                                           'profit_1y'=>false,
+                                           'profit_1q'=>false,
+                                           'profit_1m'=>false,
+                                           'profit_1w'=>false
+                                          
+                                    
+                                           )
+
                                          ),'delivery_notes'=>array(
                                              'percentages'=>false,
                                              'dn_state'=>'all',
@@ -2022,6 +2053,30 @@ $default_state=array(
                                              'order_dir'=>'',
                                              'sf'=>0,
                                              'nr'=>25,
+                                           'csv_export'=>array(
+                                           'code'=>true,
+                                           'name'=>true,
+                                           'total'=>true,
+                                           'topick'=>false,
+                                           'picking'=>false,
+                                           'packing'=>false,
+                                           'ready'=>false,
+					   'send'=>false,
+					   'returned'=>false,
+
+                                           'sales_all'=>false,
+                                           'sales_1y'=>false,
+                                           'sales_1q'=>false,
+                                           'sales_1m'=>false,
+                                           'sales_1w'=>false,
+                                           'profit_all'=>false,
+                                           'profit_1y'=>false,
+                                           'profit_1q'=>false,
+                                           'profit_1m'=>false,
+                                           'profit_1w'=>false
+                                          
+                                    
+                                           )
                                          ),
                                 'customers'=>array(
                                                 'percentages'=>false,
