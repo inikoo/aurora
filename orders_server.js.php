@@ -269,6 +269,16 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 
 function init(){
+// -----------------------------------------------------------------
+
+YAHOO.util.Event.addListener('export_csv0', "click",download_csv,'orders');
+ YAHOO.util.Event.addListener('export_csv0_in_dialog', "click",download_csv_from_dialog,{table:'export_csv_table0',tipo:'orders'});
+  csvMenu = new YAHOO.widget.ContextMenu("export_csv_menu0", {trigger:"export_csv0" });
+	 csvMenu.render();
+	 csvMenu.subscribe("show", csvMenu.focus);
+   
+ YAHOO.util.Event.addListener('export_csv0_close_dialog', "click",csvMenu.hide,csvMenu,true);
+// -----------------------------------------------------------------
  init_search('orders');
 
 var ids=['orders','invoices','dn'];
