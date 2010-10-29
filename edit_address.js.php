@@ -125,13 +125,13 @@ var save_address=function(e,options) {
 
         var json_value = YAHOO.lang.JSON.stringify(value);
         var request='ar_edit_contacts.php?tipo=edit_address&value=' + json_value+'&id='+address_key+'&key='+options.type+'&subject='+options.subject+'&subject_key='+options.subject_key;
-        //   alert(request);return;
+          
 
         YAHOO.util.Connect.asyncRequest('POST',request , {
 success:function(o) {
          //       alert(o.responseText)
                 var r =  YAHOO.lang.JSON.parse(o.responseText);
-                
+                if(r.state==200){
                 if (r.action=='updated') {
                
               
@@ -239,7 +239,9 @@ success:function(o) {
                     
                     
                     
-                } else if (r.action=='error') {
+                } 
+                }
+                else{
                     alert(r.msg);
                 }
             }

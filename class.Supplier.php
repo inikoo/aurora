@@ -598,6 +598,7 @@ $this->data['Supplier Main XHTML Email']='';
     }
 
     function update_field_switcher($field,$value,$options='') {
+        //print "$field";
         switch ($field) {
         case('Supplier ID'):
         case('Supplier Main Contact Key'):
@@ -614,10 +615,37 @@ $this->data['Supplier Main XHTML Email']='';
 
 
             break;
+            case('Supplier Main Plain Telephone'):
+        case('Supplier Main Plain FAX'):
+
+            if ($field=='Supplier Main Plain Telephone')
+                $type='Telephone';
+            else
+                $type='FAX';
+                
+         
+                $subject=new Company($this->data['Supplier Company Key']);
+                $subject_type='Company';
+
+        
+            $subject->update(array($subject_type.' Main Plain '.$type=>$value));
+            $this->updated=$subject->updated;
+            $this->msg=$subject->msg;
+            $this->new_value=$subject->new_value;
+
+            break;  
         case('Supplier Company Name'):
             $this->update_company_name($value,$options);
             break;
-
+case('Supplier Main Contact Name'):
+            $this->update_child_main_contact_name($value);
+            break;
+             case('Supplier Main Plain Email'):
+                $contact=new Contact($this->data['Supplier Main Contact Key']);
+                $contact->update(array('Contact Main Plain Email'=>$value));
+                 $this->updated=$contact->updated;
+            $this->msg=$contact->msg;
+            $this->new_value=$contact->new_value;
         default:
             $this->update_field($field,$value,$options);
         }
@@ -893,7 +921,26 @@ $this->data['Supplier Main XHTML Email']='';
         }
 
     }
+  function update_child_main_contact_name($value) {
+    
+      if ($value=='') {
+            $this->error=true;
+            $this->msg=_('Invalid Contact Name');
+            return;
+        }
+    
+        $contact=new Contact($this->data['Supplier Main Contact Key']);
+        $contact->editor=$this->editor;
+        $contact->update(array('Contact Name'=>$value));
 
+
+        if ($contact->updated) {
+
+            $this->updated=true;
+            $this->new_value=$contact->new_value;
+        }
+
+    }
 
     /*
       function:update_contact
@@ -902,8 +949,12 @@ $this->data['Supplier Main XHTML Email']='';
 
 
         $this->associated=false;
-        if (!$contact_key)
-            return;
+        if (!$contact_key){
+         $this->msg='contact key not found';
+         return;
+            
+        }    
+            
         $contact=new contact($contact_key);
         if (!$contact->id) {
             $this->msg='contact not found';
@@ -1553,7 +1604,9 @@ function get_principal_contact_address_key() {
         return $address_keys;
 
     }
-
+function get_main_address_key(){
+return $this->data['Supplier Main Address Key'];
+}   
 }
 
 

@@ -26,7 +26,7 @@
 	<span style="margin-right:10px;visibility:hidden" id="reset_edit_supplier" onClick="reset_edit_general('supplier')" class="state_details">{t}Reset{/t}</span>
       </div>
   
-   <table class="edit" border=0 style="clear:both">
+   <table class="edit" border=1 style="clear:both">
 	<tr class="first"><td style="width:11em" class="label">Supplier Code:</td>
 	  <td  style="text-align:left;width:19em">
 	    <div  style="width:15em;position:relative;top:00px" >
@@ -47,8 +47,69 @@
 
 	</tr>
 
-
+ <tr class=""><td style=";width:12em" class="label" >{t}Contact Name{/t}:</td>
+   <td  style="text-align:left;width:18em;">
+     <div  style="width:15em;position:relative;top:00px" >
+       <input style="text-align:left;width:18em" id="Supplier_Main_Contact_Name" value="{$supplier->get('Supplier Main Contact Name')}" ovalue="{$supplier->get('Supplier Main Contact Name')}" valid="0">
+       <div id="Supplier_Main_Contact_Name_Container" style="" ></div>
+     </div>
+   </td>
+   <td id="Supplier_Main_Contact_Name_msg" class="edit_td_alert"></td>
+ </tr>
+ 
+ <tr class=""><td style="" class="label">{t}Contact Email{/t}:</td>
+   <td  style="text-align:left">
+     <div  style="width:15em;position:relative;top:00px" >
+       <input style="text-align:left;width:18em" id="Supplier_Main_Email" value="{$supplier->get('Supplier Main Plain Email')}" ovalue="{$supplier->get('Supplier Main Plain Email')}" valid="0">
+       <div id="Supplier_Main_Email_Container" style="" ></div>
+     </div>
+   </td>
+   <td id="Supplier_Main_Email_msg" class="edit_td_alert"></td>
+ </tr>
+ 
+ <tr class=""><td style="" class="label">{t}Telephone{/t}:</td>
+   <td  style="text-align:left">
+     <div  style="width:15em;" >
+       <input style="text-align:left;width:18em" id="Supplier_Main_Telephone" value="{$supplier->get('Supplier Main XHTML Telephone')}" ovalue="{$supplier->get('Supplier Main XHTML Telephone')}" valid="0">
+       <div id="Supplier_Main_Telephone_Container" style="" ></div>
+     </div>
+   </td>
+   <td id="Supplier_Main_Telephone_msg" class="edit_td_alert"></td>
+ </tr>
+ 
+<tr class=""><td style="" class="label">{t}Fax{/t}:</td>
+   <td  style="text-align:left">
+     <div  style="width:15em;" >
+       <input style="text-align:left;width:18em" id="Supplier_Main_Fax" value="{$supplier->get('Supplier Main XHTML FAX')}" ovalue="{$supplier->get('Supplier Main XHTML FAX')}" valid="0">
+       <div id="Supplier_Main_Fax_Container" style="" ></div>
+     </div>
+   </td>
+   <td id="Supplier_Main_Fax_msg" class="edit_td_alert"></td>
+ </tr>
+ <tr class=""><td style="" class="label">{t}Web Page{/t}:</td>
+   <td  style="text-align:left">
+     <div  style="width:15em;" >
+       <input style="text-align:left;width:18em" id="Supplier_Main_Web_Site" value="{$supplier->get('Supplier Main Web Site')}" ovalue="{$supplier->get('Supplier Main Web Site')}" valid="0">
+       <div id="Supplier_Main_Web_Site_Container" style="" ></div>
+     </div>
+   </td>
+   <td id="Supplier_Main_Web_Site_msg" class="edit_td_alert"></td>
+ </tr>
+ 
      </table>
+    
+    <div id="supplier_contact_address" style="float:left;width:400px;margin-right:40px;min-height:300px;margin-top:30px">
+     <div style="border-bottom:1px solid #777;margin-bottom:7px">
+       {t}Contact Address{/t}:
+     </div>
+     <table border=0>
+       {include file='edit_address_splinter.tpl' address_identifier='contact_' hide_type=true hide_description=true  }
+     </table>
+     <div style="display:none" id='contact_current_address' ></div>
+     <div style="display:none" id='contact_address_display{$supplier->get("Supplier Main Address Key")}' ></div>
+   </div>
+    
+  <div style="clear:both"></div>
    </div>
    
 

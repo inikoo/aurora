@@ -97,6 +97,12 @@ var validate_scope_data=
 	,'code':{'changed':false,'validated':true,'required':false,'group':1,'type':'item'
 		 ,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Supplier Code')?>'}]
 		 ,'name':'Supplier_Code','ar':'find','ar_request':'ar_suppliers.php?tipo=is_supplier_code&query='}
+	,'contact':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'Supplier_Main_Contact_Name','validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Contact Name')?>'}]}
+	,'email':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'Supplier_Main_Email','validation':[{'regexp':regexp_valid_email,'invalid_msg':'<?php echo _('Invalid Email')?>'}]}
+	,'telephone':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'Supplier_Main_Telephone','validation':[{'regexp':"[ext\\d\\(\\)\\[\\]\\-\\s]+",'invalid_msg':'<?php echo _('Invalid Telephone')?>'}]}
+	,'fax':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'Supplier_Main_Fax','validation':[{'regexp':"[ext\\d\\(\\)\\[\\]\\-\\s]+",'invalid_msg':'<?php echo _('Invalid Fax')?>'}]}
+	,'www':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'Supplier_Main_Web_Site','validation':[{'regexp':regexp_valid_www,'invalid_msg':'<?php echo _('Invalid URL')?>'}]}
+
   },
   'product':{
     'code':{'changed':false,'validated':false,'required':true,'group':1,'type':'item','dbname':'Supplier Product Code'
@@ -141,27 +147,40 @@ function show_new_product_dialog(){
 }
 
 function validate_product_units_per_case(query){
-validate_general('product','units_per_case',query);
+validate_general('product','units_per_case',unescape(query));
 
 }
 function validate_product_price_per_case(query){
-validate_general('product','price_per_case',query);
+validate_general('product','price_per_case',unescape(query));
 }
 
 function validate_supplier_code(query){
-validate_general('supplier','code',query);
+validate_general('supplier','code',unescape(query));
 }
 function validate_supplier_name(query){
-
-validate_general('supplier','name',query);
+validate_general('supplier','name',unescape(query));
 }
-
+function validate_supplier_main_contact_name(query){
+validate_general('supplier','contact',unescape(query));
+}
+function validate_supplier_main_email(query){
+validate_general('supplier','email',unescape(query));
+}
+function validate_supplier_main_tel(query){
+validate_general('supplier','telephone',unescape(query));
+}
+function validate_supplier_main_fax(query){
+validate_general('supplier','fax',unescape(query));
+}
+function validate_supplier_main_www(query){
+validate_general('supplier','www',unescape(query));
+}
 function validate_product_code(query){
-validate_general('product','code',query);
+validate_general('product','code',unescape(query));
 }
 function validate_product_name(query){
 
-validate_general('product','name',query);
+validate_general('product','name',unescape(query));
 }
 
 function post_new_create_actions(branch,r){
@@ -390,6 +409,38 @@ function init(){
 	    supplier_name_oAutoComp.minQueryLength = 0; 
 	    supplier_name_oAutoComp.queryDelay = 0.1;
 
+
+var supplier_main_contact_name_oACDS = new YAHOO.util.FunctionDataSource(validate_supplier_main_contact_name);
+	    supplier_main_contact_name_oACDS.queryMatchContains = true;
+	    var supplier_main_contact_name_oAutoComp = new YAHOO.widget.AutoComplete("Supplier_Main_Contact_Name","Supplier_Main_Contact_Name_Container", supplier_main_contact_name_oACDS);
+	    supplier_main_contact_name_oAutoComp.minQueryLength = 0; 
+	    supplier_main_contact_name_oAutoComp.queryDelay = 0.1;
+	    
+ var supplier_main_email_oACDS = new YAHOO.util.FunctionDataSource(validate_supplier_main_email);
+	    supplier_main_email_oACDS.queryMatchContains = true;
+	    var supplier_main_email_oAutoComp = new YAHOO.widget.AutoComplete("Supplier_Main_Email","Supplier_Main_Email_Container", supplier_main_email_oACDS);
+	    supplier_main_email_oAutoComp.minQueryLength = 0; 
+	    supplier_main_email_oAutoComp.queryDelay = 0.1;
+
+var supplier_main_tel_oACDS = new YAHOO.util.FunctionDataSource(validate_supplier_main_tel);
+	    supplier_main_tel_oACDS.queryMatchContains = true;
+	    var supplier_main_tel_oAutoComp = new YAHOO.widget.AutoComplete("Supplier_Main_Telephone","Supplier_Main_Telephone_Container", supplier_main_tel_oACDS);
+	    supplier_main_tel_oAutoComp.minQueryLength = 0; 
+	    supplier_main_tel_oAutoComp.queryDelay = 0.1;
+
+var supplier_main_fax_oACDS = new YAHOO.util.FunctionDataSource(validate_supplier_main_fax);
+	    supplier_main_fax_oACDS.queryMatchContains = true;
+	    var supplier_main_fax_oAutoComp = new YAHOO.widget.AutoComplete("Supplier_Main_Fax","Supplier_Main_Fax_Container", supplier_main_fax_oACDS);
+	    supplier_main_fax_oAutoComp.minQueryLength = 0; 
+	    supplier_main_fax_oAutoComp.queryDelay = 0.1;
+	    
+var supplier_main_www_oACDS = new YAHOO.util.FunctionDataSource(validate_supplier_main_www);
+	    supplier_main_www_oACDS.queryMatchContains = true;
+	    var supplier_main_www_oAutoComp = new YAHOO.widget.AutoComplete("Supplier_Main_Web_Site","Supplier_Main_Web_Site_Container", supplier_main_www_oACDS);
+	    supplier_main_www_oAutoComp.minQueryLength = 0; 
+	    supplier_main_www_oAutoComp.queryDelay = 0.1;	    
+
+
  var product_code_oACDS = new YAHOO.util.FunctionDataSource(validate_product_code);
 	    product_code_oACDS.queryMatchContains = true;
 	    var product_code_oAutoComp = new YAHOO.widget.AutoComplete("Product_Code","Product_Code_Container", product_code_oACDS);
@@ -416,6 +467,22 @@ function init(){
 	    product_price_per_case_oAutoComp.minQueryLength = 0; 
 	    product_price_per_case_oAutoComp.queryDelay = 0.25;
 
+<?php print sprintf("edit_address(%d,'contact_');",$supplier->data['Supplier Main Address Key']);?>
+	var ids = ["contact_address_description","contact_address_country_d1","contact_address_country_d2","contact_address_town","contact_address_town_d2","contact_address_town_d1","contact_address_postal_code","contact_address_street","contact_address_internal","contact_address_building"]; 
+	YAHOO.util.Event.addListener(ids, "keyup", on_address_item_change,'contact_');
+	YAHOO.util.Event.addListener(ids, "change",on_address_item_change,'contact_');
+	YAHOO.util.Event.addListener('contact_save_address_button', "click",save_address,{prefix:'contact_',subject:'Supplier',subject_key:supplier_id,type:'contact'});
+	YAHOO.util.Event.addListener('contact_reset_address_button', "click",reset_address,'contact_');
+
+	var Countries_DS = new YAHOO.util.FunctionDataSource(match_country);
+	Countries_DS.responseSchema = {fields: ["id", "name", "code","code2a","postal_regex"]}
+	var Countries_AC = new YAHOO.widget.AutoComplete("contact_address_country", "contact_address_country_container", Countries_DS);
+	Countries_AC.forceSelection = true; 
+	Countries_AC.useShadow = true;
+    Countries_AC.suffix='contact_';
+	Countries_AC.resultTypeList = false;
+	Countries_AC.formatResult = countries_format_results;
+	Countries_AC.itemSelectEvent.subscribe(onCountrySelected);
 	}
 	
 	
