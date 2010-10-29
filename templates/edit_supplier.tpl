@@ -88,6 +88,7 @@
   
   
    <table id="new_product_dialog" class="edit" border=0 style="clear:both;display:none">
+   <tr><td></td><td  id="new_product_dialog_msg"></td></tr>
 	<tr class="first"><td style="width:11em" class="label">Product Code:</td>
 	  <td  style="text-align:left;width:19em">
 	    <div  style="width:15em;position:relative;top:00px" >
@@ -112,7 +113,7 @@
 	  <td  style="text-align:left">
 	  <select id="Product_Unit">
 	  {foreach from=$units_list key=key item=value}
-	    <option {if $units_list_selected==$key}selected="selected"{/if} value="{$key}">{$value}</option>
+	    <option {if $units_list_selected==$key}selected="selected" default=1{else}default=0{/if} value="{$key}">{$value}</option>
 	  {/foreach}
       </select>
 	   
@@ -137,7 +138,7 @@
 	  <td style="padding:2px 0px">
 	  <select id="Product_Currency">
 	  {foreach from=$currency_list key=key item=value}
-	    <option {if $currency_list_selected==$key}selected="selected"{/if} value="{$key}">{$value}</option>
+	    <option {if $currency_selected==$key}selected="selected" default=1{else}default=0{/if} value="{$key}"   >{$value}</option>
 	  {/foreach}
       </select>
 	  

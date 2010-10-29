@@ -687,20 +687,34 @@ $supplier_data['editor']=$editor;
 
 }
 
-function create_product($data){
-global $editor;
+function create_product($data) {
+    global $editor;
 
-$sp_data=$data['values'];
+    $sp_data=$data['values'];
 
 
-$sp_data['editor']=$editor;
-$sp_data['Supplier Key']=$data['parent_key'];
-$sp_data['Supplier Key']=$data['parent_key'];
-$sp_data['Supplier Product Valid From']=date("Y-m-d H:i:s");
-$sp_data['Supplier Product Cost']=$sp_data['Supplier Product Cost Per Case']/$sp_data['Supplier Product Units Per Case'];
+    $sp_data['editor']=$editor;
+    $sp_data['Supplier Key']=$data['parent_key'];
+    $sp_data['Supplier Key']=$data['parent_key'];
+    $sp_data['Supplier Product Valid From']=date("Y-m-d H:i:s");
+    $sp_data['Supplier Product Cost']=$sp_data['Supplier Product Cost Per Case']/$sp_data['Supplier Product Units Per Case'];
 
-print_r($sp_data);
-$supplier_product=new SupplierProduct('find',$sp_data,'create');
+
+    $supplier_product=new SupplierProduct('find',$sp_data,'create');
+
+
+    if ($supplier_product->new) {
+    $msg=_('Supplier Product logged');
+        $response= array('state'=>200,'action'=>'created','object_key'=>$supplier_product->id,'msg'=>$msg);
+    } else {
+        if ($supplier_product->found)
+            $response= array('state'=>400,'action'=>'found','object_key'=>$supplier_product->found_key,'msg'=>_('Product already in the database'));
+        else
+            $response= array('state'=>400,'action'=>'error','object_key'=>0,'msg'=>$supplier_product->msg);
+    }
+
+
+    echo json_encode($response);
 
 }
 
