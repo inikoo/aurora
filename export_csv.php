@@ -105,6 +105,15 @@ switch ($tipo) {
         $wheref=wheref_stores($f_field,$f_value);
         $filename=_('company_departments').'.csv';
         $data=get_company_departments_data($wheref);
+        break;    
+   case 'orders':
+        $filename=_('orders').'.csv';
+        $f_field=$_SESSION['state']['orders']['table']['f_field'];
+        $f_value=$_SESSION['state']['orders']['table']['f_value'];
+        $wheref=wheref_stores($f_field,$f_value);
+        $filename=_('orders').'.csv';
+	 $where=sprintf(' `Store Key`=%d ',$_SESSION['state']['store']['id']);
+        $data=get_orders_data($wheref);
         break;                
     default:
         
@@ -422,6 +431,69 @@ $data[]=$_data;
 
  
 $sql="select * from `Company Department Dimension` CDS left join `Company Area Dimension` CAS on CDS.`Company Key`=CAS.`Company Key` where true $wheref";
+$res=mysql_query($sql);
+
+while($row=mysql_fetch_assoc($res)){
+$_data=array();
+foreach($fields as $key=>$options){
+
+$_data[]=$row[$options['db_name']];
+}
+$data[]=$_data;
+}
+//print_r($data);exit;
+
+return $data;
+
+}
+
+
+function get_orders_data($wheref,$where='true'){
+
+$data=prepare_values($_REQUEST,array('fields'=>array('type'=>'json array','optional'=>true)));
+if(isset($data['fields'])){
+$fields_to_export=$data['fields'];
+}else{
+$fields_to_export=$_SESSION['state']['orders']['table']['csv_export'];
+}
+
+
+$fields=array(
+'code'=>array('title'=>_('Code'),'db_name'=>'Store Code'),
+'name'=>array('title'=>_('Name'),'db_name'=>'Store Name'),
+'orders'=>array('title'=>_('Orders'),'db_name'=>'Store Total Orders'),
+'cancelled'=>array('title'=>_('Cancelled'),'db_name'=>'Store Cancelled Orders'),
+'suspended'=>array('title'=>_('Suspended'),'db_name'=>'Store Suspended Orders'),
+'pending'=>array('title'=>_('Pending'),'db_name'=>'Store Orders In Process'),
+'dispatched'=>array('title'=>_('Dispatched'),'db_name'=>'Store Dispatched Orders'),
+
+'sales_all'=>array('title'=>_('Total Sales'),'db_name'=>'Store Total Invoiced Gross Amount'),
+'profit_all'=>array('title'=>_('Total Profit'),'db_name'=>'Store Total Profit'),
+'sales_1y'=>array('title'=>_('Sales 1Y'),'db_name'=>'Store 1 Year Acc Invoiced Amount'),
+'profit_1y'=>array('title'=>_('Profit 1Y'),'db_name'=>'Store 1 Year Acc Profit'),
+'sales_1q'=>array('title'=>_('Sales 1Q'),'db_name'=>'Store 1 Quarter Acc Invoiced Amount'),
+'profit_1q'=>array('title'=>_('Profit 1Q'),'db_name'=>'Store 1 Quarter Acc Profit'),
+'sales_1m'=>array('title'=>_('Sales 1M'),'db_name'=>'Store 1 Month Acc Invoiced Amount'),
+'profit_1m'=>array('title'=>_('Profit 1M'),'db_name'=>'Store 1 Month Acc Profit'),
+'sales_1w'=>array('title'=>_('Sales 1W'),'db_name'=>'Store 1 Week Acc Invoiced Amount'),
+'profit_1w'=>array('title'=>_('Profit 1W'),'db_name'=>'Store 1 Week Acc Profit'),
+);
+
+
+foreach($fields as $key=>$value){
+if(!isset($fields_to_export[$key]) or  !$fields_to_export[$key]  )
+unset($fields[$key]);
+}
+
+
+
+$data=array();
+$_data=array();
+foreach($fields as $key=>$options){
+$_data[]=$options['title'];
+}
+$data[]=$_data;
+$sql="select * from `Store Dimension` where $where $wheref";
 $res=mysql_query($sql);
 
 while($row=mysql_fetch_assoc($res)){

@@ -303,7 +303,32 @@ $default_state=array(
                                             'elements'=>array(),
                                             'dispatch'=>'all_orders',
                                             'paid'=>'',
-                                            'order_type'=>''
+                                            'order_type'=>'',
+				           
+                                           'csv_export'=>array(
+                                           'code'=>true,
+                                           'name'=>true,
+                                           'orders'=>false,
+                                           'cancelled'=>false,
+                                           'suspended'=>false,
+                                           'pending'=>false,
+                                           'dispatched'=>false,
+                                           'sales_all'=>false,
+                                           'sales_1y'=>false,
+                                           'sales_1q'=>false,
+                                           'sales_1m'=>false,
+                                           'sales_1w'=>false,
+                                           'profit_all'=>false,
+                                           'profit_1y'=>false,
+                                           'profit_1q'=>false,
+                                           'profit_1m'=>false,
+                                           'profit_1w'=>false
+                                          
+                                    
+                                           )
+                                           
+
+
                                         ),
                                 'invoices'=>array(
                                                'order'=>'date',

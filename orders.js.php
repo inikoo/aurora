@@ -248,7 +248,6 @@ YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=stores-
 
 function init(){
 
-
 init_search('orders_store');
  
 
