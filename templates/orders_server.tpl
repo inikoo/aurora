@@ -11,6 +11,8 @@
 
     <span class="clean_table_title">{t}Orders Per Store{/t}</span>
 <span  id="export_csv0" style="float:right;margin-left:20px"  class="table_type state_details" tipo="orders_per_store" >{t}Export (CSV){/t}</span>
+
+
     <div style="clear:both;margin:0 0px;padding:0 20px ;border-bottom:1px solid #999;margin-bottom:10px"></div>
     {include file='table_splinter.tpl' table_id=0 filter_name=$filter_name0 filter_value=$filter_value0  no_filter=1} 
     <div  id="table0"   class="data_table_container dtable btable with_total "> </div>
@@ -18,6 +20,8 @@
   <div  id="invoices_table" class="data_table" style="clear:both;{if $view!='invoices'}display:none{/if}">
     <span class="clean_table_title">{t}Invoices Per Store{/t}</span>
 <span  id="export_csv1" style="float:right;margin-left:20px"  class="table_type state_details" tipo="invoices_per_store" >{t}Export (CSV){/t}</span>
+
+
     <div style="clear:both;margin:0 0px;padding:0 20px ;border-bottom:1px solid #999;margin-bottom:10px"></div>
     {include file='table_splinter.tpl' table_id=1 filter_name=$filter_name1 filter_value=$filter_value1  no_filter=1} 
     <div  id="table1"   class="data_table_container dtable btable with_total "> </div>
@@ -25,6 +29,7 @@
   <div  id="dn_table" class="data_table" style="clear:both;{if $view!='dn'}display:none{/if}">
     <span class="clean_table_title">{t}Delivery Notes Per Store{/t}</span>
 <span  id="export_csv2" style="float:right;margin-left:20px"  class="table_type state_details" tipo="delivery_notes_per_store" >{t}Export (CSV){/t}</span>
+
     <div style="clear:both;margin:0 0px;padding:0 20px ;border-bottom:1px solid #999;margin-bottom:0px"></div>
     <table style="float:left;margin:0 0 0 0px ;padding:0"  class="options" >
 	<tr><td  {if $dn_view=='dn_state'}class="selected"{/if} id="dn_state" >{t}Dispatch State{/t}</td>
