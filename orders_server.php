@@ -24,7 +24,6 @@ if(!$user->can_view('orders'))
 
 
 
-
 $smarty->assign('box_layout','yui-t0');
 
 
@@ -101,8 +100,7 @@ $smarty->assign('parent','orders');
 $smarty->assign('title', _('Orders'));
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
-
-$tipo_filter0=($q==''?$_SESSION['state']['store']['orders']['f_field']:'public_id');
+$tipo_filter0=($q==''?$_SESSION['state']['stores']['orders']['f_field']:'public_id');
 $smarty->assign('filter0',$tipo_filter0);
 $smarty->assign('filter_value0',($q==''?$_SESSION['state']['stores']['orders']['f_value']:addslashes($q)));
 $filter_menu0=array(
@@ -202,13 +200,13 @@ $smarty->assign('csv_export_options0',$csv_export_options0);
                                                          array(
                                                              'code'=>array('label'=>_('Code'),'selected'=>$_SESSION['state']['stores']['invoices']['csv_export']['code']),
                                                              'name'=>array('label'=>_('Name'),'selected'=>$_SESSION['state']['stores']['invoices']['csv_export']['name']),
-                                                             'invoices'=>array('label'=>_('Invoices'),'selected'=>$_SESSION['state']['stores']['invoices']['csv_export']['surplus']),
-                                                       'invpaid'=>array('label'=>_('Inv Paid'),'selected'=>$_SESSION['state']['stores']['invoices']['csv_export']['ok']),
-                                                       'invtopay'=>array('label'=>_('Inv To Pay'),'selected'=>$_SESSION['state']['stores']['invoices']['csv_export']['low']),
-                                                       'refunds'=>array('label'=>_('Refunds'),'selected'=>$_SESSION['state']['stores']['invoices']['csv_export']['critical']),
-                                                       'refpaid'=>array('label'=>_('Ref Paid'),'selected'=>$_SESSION['state']['stores']['invoices']['csv_export']['gone']),
+                                                             'invoices'=>array('label'=>_('Invoices'),'selected'=>$_SESSION['state']['stores']['invoices']['csv_export']['invoices']),
+                                                       'invpaid'=>array('label'=>_('Inv Paid'),'selected'=>$_SESSION['state']['stores']['invoices']['csv_export']['invpaid']),
+                                                       'invtopay'=>array('label'=>_('Inv To Pay'),'selected'=>$_SESSION['state']['stores']['invoices']['csv_export']['invtopay']),
+                                                       'refunds'=>array('label'=>_('Refunds'),'selected'=>$_SESSION['state']['stores']['invoices']['csv_export']['refunds']),
+                                                       'refpaid'=>array('label'=>_('Ref Paid'),'selected'=>$_SESSION['state']['stores']['invoices']['csv_export']['refpaid']),
                                                 
-                                                       'reftopay'=>array('label'=>_('Ref To Pay'),'selected'=>$_SESSION['state']['stores']['invoices']['csv_export']['unknown']),
+                                                       'reftopay'=>array('label'=>_('Ref To Pay'),'selected'=>$_SESSION['state']['stores']['invoices']['csv_export']['reftopay']),
                                                      
                                                          )
                                                      )
@@ -289,7 +287,7 @@ $smarty->assign('csv_export_options1',$csv_export_options1);
                                                        'ready'=>array('label'=>_('Ready'),'selected'=>$_SESSION['state']['stores']['delivery_notes']['csv_export']['ready']),
                                                 
                                                        'send'=>array('label'=>_('Send'),'selected'=>$_SESSION['state']['stores']['delivery_notes']['csv_export']['send']),
-							'returned'=>array('label'=>_('Returned'),'selected'=>$_SESSION['state']['stores']['idelivery_notes']['csv_export']['returned']),
+							'returned'=>array('label'=>_('Returned'),'selected'=>$_SESSION['state']['stores']['delivery_notes']['csv_export']['returned']),
                                                      
                                                          )
                                                      )
