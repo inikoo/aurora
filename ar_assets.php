@@ -7734,18 +7734,18 @@ function list_orders_per_store() {
     } else {
         $avg=$_SESSION['state']['stores']['orders']['avg'];
     }
-    $_SESSION['state']['stores']['orders']=array(
-                                               'percentages'=>$percentages,
-                                               'period'=>$period,
-                                               'avg'=>$avg,
-                                               'order'=>$order,
-                                               'order_dir'=>$order_direction,
-                                               'nr'=>$number_results,
-                                               'sf'=>$start_from,
-                                               'where'=>$where,
-                                               'f_field'=>$f_field,
-                                               'f_value'=>$f_value
-                                           );
+   
+     $_SESSION['state']['stores']['orders']['percentages']=$percentages;                                
+     $_SESSION['state']['stores']['orders']['period']=$period;                                
+     $_SESSION['state']['stores']['orders']['avg']=$avg;                                
+     $_SESSION['state']['stores']['orders']['order']=$order;                                
+     $_SESSION['state']['stores']['orders']['order_dir']=$order_direction;                                
+     $_SESSION['state']['stores']['orders']['nr']=$number_results;                                
+     $_SESSION['state']['stores']['orders']['sf']=$start_from;                                
+     $_SESSION['state']['stores']['orders']['where']=$where;                                
+     $_SESSION['state']['stores']['orders']['f_field']=$f_field;                                
+     $_SESSION['state']['stores']['orders']['f_value']=$f_value;                                
+                                           
     // print_r($_SESSION['tables']['families_list']);
 
     //  print_r($_SESSION['tables']['families_list']);
@@ -8042,18 +8042,18 @@ function list_invoices_per_store() {
     } else
         $avg=$_SESSION['state']['stores']['invoices']['avg'];
 
-    $_SESSION['state']['stores']['invoices']=array(
-                'percentages'=>$percentages,
-                'period'=>$period,
-                'avg'=>$avg,
-                'order'=>$order,
-                'order_dir'=>$order_direction,
-                'nr'=>$number_results,
-                'sf'=>$start_from,
-                'where'=>$where,
-                'f_field'=>$f_field,
-                'f_value'=>$f_value
-            );
+   
+ $_SESSION['state']['stores']['invoices']['percentages']=$percentages;                                
+     $_SESSION['state']['stores']['invoices']['period']=$period;                                
+     $_SESSION['state']['stores']['invoices']['avg']=$avg;                                
+     $_SESSION['state']['stores']['invoices']['order']=$order;                                
+     $_SESSION['state']['stores']['invoices']['order_dir']=$order_direction;                                
+     $_SESSION['state']['stores']['invoices']['nr']=$number_results;                                
+     $_SESSION['state']['stores']['invoices']['sf']=$start_from;                                
+     $_SESSION['state']['stores']['invoices']['where']=$where;                                
+     $_SESSION['state']['stores']['invoices']['f_field']=$f_field;                                
+     $_SESSION['state']['stores']['invoices']['f_value']=$f_value;         
+
 
     $where="where true  ";
 
@@ -8347,19 +8347,21 @@ function list_delivery_notes_per_store() {
     } else
         $avg=$_SESSION['state']['stores']['delivery_notes']['avg'];
 
-    $_SESSION['state']['stores']['delivery_notes']=array(
-                'percentages'=>$percentages,
-                'period'=>$period,
-                'avg'=>$avg,
-                'order'=>$order,
-                'order_dir'=>$order_direction,
-                'nr'=>$number_results,
-                'sf'=>$start_from,
-                'view'=>$view,
-                'where'=>$where,
-                'f_field'=>$f_field,
-                'f_value'=>$f_value
-            );
+  
+            
+          $_SESSION['state']['stores']['delivery_notes']['percentages']=$percentages;                                
+     $_SESSION['state']['stores']['delivery_notes']['period']=$period;                                
+     $_SESSION['state']['stores']['delivery_notes']['avg']=$avg;                                
+     $_SESSION['state']['stores']['delivery_notes']['order']=$order;                                
+     $_SESSION['state']['stores']['delivery_notes']['order_dir']=$order_direction;                                
+     $_SESSION['state']['stores']['delivery_notes']['nr']=$number_results;                                
+     $_SESSION['state']['stores']['delivery_notes']['sf']=$start_from;                                
+     $_SESSION['state']['stores']['delivery_notes']['where']=$where;                                
+     $_SESSION['state']['stores']['delivery_notes']['view']=$view;                                
+
+     $_SESSION['state']['stores']['delivery_notes']['f_field']=$f_field;                                
+     $_SESSION['state']['stores']['delivery_notes']['f_value']=$f_value;            
+            
     // print_r($_SESSION['tables']['families_list']);
 
     //  print_r($_SESSION['tables']['families_list']);

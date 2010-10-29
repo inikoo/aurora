@@ -609,7 +609,7 @@ $fields=array(
 'topick'=>array('title'=>_('To Pick'),'db_name'=>'Store Ready to Pick Delivery Notes'),
 'picking'=>array('title'=>_('Picking'),'db_name'=>'Store Picking Delivery Notes'),
 'packing'=>array('title'=>_('Packing'),'db_name'=>'Store Packing Delivery Notes'),
-'ready'=>array('title'=>_('Ready'),'db_name'=>'Store Ready to Dispatch Delivery Notes '),
+'ready'=>array('title'=>_('Ready'),'db_name'=>'Store Ready to Dispatch Delivery Notes'),
 'send'=>array('title'=>_('Send'),'db_name'=>'Store Dispatched Delivery Notes'),
 'returned'=>array('title'=>_('Returned'),'db_name'=>'Store Returned Delivery Notes'),
 
@@ -643,6 +643,7 @@ $sql="select * from `Store Dimension` where $where $wheref";
 $res=mysql_query($sql);
 
 while($row=mysql_fetch_assoc($res)){
+//print_r($row);
 $_data=array();
 foreach($fields as $key=>$options){
 
