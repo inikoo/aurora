@@ -318,8 +318,15 @@ $default_state=array(
 		                                                                   'balancetotal'=>false,
                                                                                    'outstandingbalancenet'=>false,
                                                                                    'outstandingbalancetax'=>false,
-                                                                                   'outstandingbalancetotal'=>false
-                                                                                   
+                                                                                   'outstandingbalancetotal'=>false,
+										   'contactname'=>false,
+										   'sourcetype'=>false,
+										   'paymentstate'=>false,
+										   'actiontaken'=>false,
+										   'ordertype'=>false,
+										   'shippingmethod'=>false
+
+
                                                                                )
 // -----------------------------------------------------------------------------------------------------------------
 
