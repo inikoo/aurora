@@ -141,7 +141,7 @@ switch ($tipo) {
         $wheref=wheref_stores($f_field,$f_value);
         $filename=_('orders').'.csv';
         $where=sprintf(' `Order Store Key`=%d ',$_SESSION['state']['store']['id']);
-        $data=get_orders_in_order_data($wheref);
+        $data=get_orders_in_order_data($wheref,$where);
         break;  
                      
     default:
@@ -684,17 +684,25 @@ $fields=array(
 'status'=>array('title'=>_('Status'),'db_name'=>'Order Current Dispatch State'),
 
 
-'totaltax'=>array('title'=>_('Tax'),'db_name'=>'Order Total Tax Amount'),
-'totalnet'=>array('title'=>_('Net'),'db_name'=>'Order Total Net Amount'),
+'totaltax'=>array('title'=>_('Total Tax'),'db_name'=>'Order Total Tax Amount'),
+'totalnet'=>array('title'=>_('Total Net'),'db_name'=>'Order Total Net Amount'),
 'total'=>array('title'=>_('Total'),'db_name'=>'Order Total Net Amount'),
 
-'balancenet'=>array('title'=>_('Net'),'db_name'=>'Order Balance Net Amount'),
-'balancetax'=>array('title'=>_('Tax'),'db_name'=>'Order Balance Tax Amount'),
-'balancetotal'=>array('title'=>_('Total'),'db_name'=>'Order Balance Total Amount'),
+'balancenet'=>array('title'=>_('Balance Net'),'db_name'=>'Order Balance Net Amount'),
+'balancetax'=>array('title'=>_('Balance Tax'),'db_name'=>'Order Balance Tax Amount'),
+'balancetotal'=>array('title'=>_('Balance Total'),'db_name'=>'Order Balance Total Amount'),
 
-'outstandingbalancenet'=>array('title'=>_('Net'),'db_name'=>'Order Outstanding Balance Net Amount'),
-'outstandingbalancetax'=>array('title'=>_('Tax'),'db_name'=>'Order Outstanding Balance Tax Amount'),
-'outstandingbalancetotal'=>array('title'=>_('Total'),'db_name'=>'Order Outstanding Balance Total Amount')
+'outstandingbalancenet'=>array('title'=>_('Outstanding Balance Net'),'db_name'=>'Order Outstanding Balance Net Amount'),
+'outstandingbalancetax'=>array('title'=>_('Outstanding Balance Tax'),'db_name'=>'Order Outstanding Balance Tax Amount'),
+'outstandingbalancetotal'=>array('title'=>_('Outstanding Balance Total'),'db_name'=>'Order Outstanding Balance Total Amount'),
+
+'contactname'=>array('title'=>_('Customer Contact Name'),'db_name'=>'Order Customer Contact Name'),
+'sourcetype'=>array('title'=>_('Source Type'),'db_name'=>'Order Main Source Type'),
+'paymentstate'=>array('title'=>_('Payment State'),'db_name'=>'Order Current Payment State'),
+'actiontaken'=>array('title'=>_('Actions Taken'),'db_name'=>'Order Actions Taken'),
+'ordertype'=>array('title'=>_('Type'),'db_name'=>'Order Type'),
+'shippingmethod'=>array('title'=>_('Shipping Method'),'db_name'=>'Order Shipping Method'),
+
 );
 
 
