@@ -1,9 +1,7 @@
 {include file='header.tpl'}
 <div id="bd" >
-<div >
 
  {include file='suppliers_navigation.tpl'}
- </div>
  <div id="no_details_title" style="clear:left;{if $show_details}display:none;{/if}">
   <h1>{t}Supplier{/t}: {$supplier->get('Supplier Name')} <span style="color:SteelBlue">({$supplier->get('Supplier Code')})</span></h1>
    <table style="width:500px" >

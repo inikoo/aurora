@@ -1392,11 +1392,44 @@ default:
 
   }
 
+function get_formated_price($locale=''){
+
+  $data=array(
+'Product Price'=>$this->data['Supplier Product Cost'],
+'Product Units Per Case'=>$this->data['Supplier Product Units Per Case'],
+'Product Currency'=>$this->get('Supplier Product Currency'),
+'Product Unit Type'=>$this->data['Supplier Product Unit Type'],
+
+
+'locale'=>$locale);
+
+return formated_price($data);
+}
+
+function get_formated_price_per_unit($locale=''){
+
+  $data=array(
+'Product Price'=>$this->data['Supplier Product Cost'],
+'Product Units Per Case'=>$this->data['Supplier Product Units Per Case'],
+'Product Currency'=>$this->get('Supplier Product Currency'),
+'Product Unit Type'=>$this->data['Supplier Product Unit Type'],
+
+'Label'=>'',
+
+
+'locale'=>$locale);
+
+return formated_price_per_unit($data);
+}
 
 
   function units_convertion_factor($unit_from,$unit_to=false){
     return 1;
   }
 
+
+function get_part_locations(){
+
+}
 
 }
