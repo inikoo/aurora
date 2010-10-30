@@ -111,6 +111,8 @@ $js_files=array(
 		'common.js.php',
 		'table_common.js.php',
 		'js/search.js',
+		'js/edit_common.js',
+                'js/csv_common.js',
 		'orders.js.php'
 		);
 
@@ -170,6 +172,62 @@ $paginator_menu2=array(10,25,50,100,500);
 $smarty->assign('paginator_menu2',$paginator_menu2);
 
 
+
+// -----------------------------------------------export csv code starts here------------------------
+ $csv_export_options=array(
+                            'description'=>array(
+                                              'title'=>_('Description'),
+                                              'rows'=>
+                                                     array(
+                                                         array(
+                                                             'code'=>array('label'=>_('Order Id'),'selected'=>$_SESSION['state']['orders']['table']['csv_export']['code']),
+                                                             'last_date'=>array('label'=>_('Last Updated'),'selected'=>$_SESSION['state']['orders']['table']['csv_export']['last_date']),
+                                                            
+                                                             'customer'=>array('label'=>_('Customer'),'selected'=>$_SESSION['state']['orders']['table']['csv_export']['customer']),
+                                                             'status'=>array('label'=>_('Status'),'selected'=>$_SESSION['state']['orders']['table']['csv_export']['status']),
+                                                            
+                                                     
+                                                         )
+                                                     )
+                                          ),
+                          
+                            'total'=>array('title'=>_('Total'),
+                            'rows'=>
+                                               array(
+                                                   array(
+                                                       'totalnet'=>array('label'=>_('Net'),'selected'=>$_SESSION['state']['orders']['table']['csv_export']['totalnet']),
+                                                       'totaltax'=>array('label'=>_('Tax'),'selected'=>$_SESSION['state']['orders']['table']['csv_export']['totaltax']),
+							 'total'=>array('label'=>_('Total'),'selected'=>$_SESSION['state']['orders']['table']['csv_export']['total']),
+                                                       
+                                                   )
+                            )
+                            ),
+'balance'=>array('title'=>_('Balance'),
+                            'rows'=>
+                                               array(
+                                                   array(
+                                                       'balancenet'=>array('label'=>_('Net'),'selected'=>$_SESSION['state']['orders']['table']['csv_export']['balancenet']),
+                                                       'balancetax'=>array('label'=>_('Tax'),'selected'=>$_SESSION['state']['orders']['table']['csv_export']['balancetax']),
+						       'balancetotal'=>array('label'=>_('Total'),'selected'=>$_SESSION['state']['orders']['table']['csv_export']['balancetotal']),
+                                                        
+                                                   )
+                            )
+                            ),
+'outstanding'=>array('title'=>_('Outstanding Balance'),
+                            'rows'=>
+                                               array(
+                                                   array(
+                                                       'outstandingbalancenet'=>array('label'=>_('Net'),'selected'=>$_SESSION['state']['orders']['table']['csv_export']['outstandingbalancenet']),
+                                                       'outstandingbalancetax'=>array('label'=>_('Tax'),'selected'=>$_SESSION['state']['orders']['table']['csv_export']['outstandingbalancetax']),
+							'outstandingbalancetotal'=>array('label'=>_('Total'),'selected'=>$_SESSION['state']['orders']['table']['csv_export']['outstandingbalancetotal']),
+                                                       
+                                                   )
+                            )
+                            )
+                        );
+$smarty->assign('export_csv_table_cols',4);
+$smarty->assign('csv_export_options',$csv_export_options);
+// -----------------------------------------------export csv code ends here------------------------
 
 
 $smarty->display('orders.tpl');

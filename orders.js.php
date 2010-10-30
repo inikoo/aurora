@@ -247,7 +247,15 @@ YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=stores-
 }
 
 function init(){
-
+// -------------------------Export(CSV) code for order list under order --------------------
+  YAHOO.util.Event.addListener('export_csv0', "click",download_csv,'orders');
+ YAHOO.util.Event.addListener('export_csv0_in_dialog', "click",download_csv_from_dialog,{table:'export_csv_table0',tipo:'orders'});
+  csvMenu = new YAHOO.widget.ContextMenu("export_csv_menu0", {trigger:"export_csv0" });
+	 csvMenu.render();
+	 csvMenu.subscribe("show", csvMenu.focus);
+   
+ YAHOO.util.Event.addListener('export_csv0_close_dialog', "click",csvMenu.hide,csvMenu,true);
+// -------------------------Export(CSV) code for order list under order ends here--------------
 init_search('orders_store');
  
 
