@@ -303,7 +303,26 @@ $default_state=array(
                                             'elements'=>array(),
                                             'dispatch'=>'all_orders',
                                             'paid'=>'',
-                                            'order_type'=>''
+                                            'order_type'=>'',
+// --------------------------------------------export csv for order list in order page -----------------------------
+								 'csv_export'=>array(
+                                                                                   'code'=>true,
+                                                                                   'last_date'=>true,
+                                                                                   'customer'=>true,
+                                                                                   'status'=>true,
+                                                                                   'totaltax'=>false,
+                                                                                   'totalnet'=>false,
+                                                                                   'total'=>true,
+                                                                                   'balancenet'=>false,
+                                                                                   'balancetax'=>false,
+		                                                                   'balancetotal'=>false,
+                                                                                   'outstandingbalancenet'=>false,
+                                                                                   'outstandingbalancetax'=>false,
+                                                                                   'outstandingbalancetotal'=>false
+                                                                                   
+                                                                               )
+// -----------------------------------------------------------------------------------------------------------------
+
 
 
 

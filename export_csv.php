@@ -133,7 +133,16 @@ switch ($tipo) {
         $filename=_('delivery_notes_per_store').'.csv';
 	 $where=sprintf(' `Store Key`=%d ',$_SESSION['state']['store']['id']);
         $data=get_delivery_notes_data($wheref);
-        break; 
+        break;
+   case 'orders':
+        $filename=_('orders').'.csv';
+        $f_field=$_SESSION['state']['orders']['table']['f_field'];
+        $f_value=$_SESSION['state']['orders']['table']['f_value'];
+        $wheref=wheref_stores($f_field,$f_value);
+        $filename=_('orders').'.csv';
+        $where=sprintf(' `Order Store Key`=%d ',$_SESSION['state']['store']['id']);
+        $data=get_orders_in_order_data($wheref);
+        break;  
                      
     default:
         
@@ -644,6 +653,68 @@ $res=mysql_query($sql);
 
 while($row=mysql_fetch_assoc($res)){
 //print_r($row);
+$_data=array();
+foreach($fields as $key=>$options){
+
+$_data[]=$row[$options['db_name']];
+}
+$data[]=$_data;
+}
+//print_r($data);exit;
+
+return $data;
+
+}
+
+
+function get_orders_in_order_data($wheref,$where='true'){
+
+$data=prepare_values($_REQUEST,array('fields'=>array('type'=>'json array','optional'=>true)));
+if(isset($data['fields'])){
+$fields_to_export=$data['fields'];
+}else{
+$fields_to_export=$_SESSION['state']['orders']['table']['csv_export'];
+}
+
+
+$fields=array(
+'code'=>array('title'=>_('Order Id'),'db_name'=>'Order Public ID'),
+'last_date'=>array('title'=>_('Last Updated'),'db_name'=>'Order Last Updated Date'),
+'customer'=>array('title'=>_('Customer'),'db_name'=>'Order Customer Name'),
+'status'=>array('title'=>_('Status'),'db_name'=>'Order Current Dispatch State'),
+
+
+'totaltax'=>array('title'=>_('Tax'),'db_name'=>'Order Total Tax Amount'),
+'totalnet'=>array('title'=>_('Net'),'db_name'=>'Order Total Net Amount'),
+'total'=>array('title'=>_('Total'),'db_name'=>'Order Total Net Amount'),
+
+'balancenet'=>array('title'=>_('Net'),'db_name'=>'Order Balance Net Amount'),
+'balancetax'=>array('title'=>_('Tax'),'db_name'=>'Order Balance Tax Amount'),
+'balancetotal'=>array('title'=>_('Total'),'db_name'=>'Order Balance Total Amount'),
+
+'outstandingbalancenet'=>array('title'=>_('Net'),'db_name'=>'Order Outstanding Balance Net Amount'),
+'outstandingbalancetax'=>array('title'=>_('Tax'),'db_name'=>'Order Outstanding Balance Tax Amount'),
+'outstandingbalancetotal'=>array('title'=>_('Total'),'db_name'=>'Order Outstanding Balance Total Amount')
+);
+
+
+foreach($fields as $key=>$value){
+if(!isset($fields_to_export[$key]) or  !$fields_to_export[$key]  )
+unset($fields[$key]);
+}
+
+
+
+$data=array();
+$_data=array();
+foreach($fields as $key=>$options){
+$_data[]=$options['title'];
+}
+$data[]=$_data;
+$sql="select * from `Order Dimension` where $where $wheref";
+$res=mysql_query($sql);
+
+while($row=mysql_fetch_assoc($res)){
 $_data=array();
 foreach($fields as $key=>$options){
 
