@@ -142,9 +142,11 @@ $user->read_suppliers();
 //exit;
 $nav_menu=array();
 if($user->can_view('users'))
-  	$nav_menu[] = array(_('Users'), 'users_staff.php','users');
+  	$nav_menu[] = array(_('Users'), 'users.php','users');
 else
 	 $nav_menu[] = array(_('Profile'), 'user.php','users');
+	 
+	 
 if($user->can_view('staff'))
   $nav_menu[] = array(_('Staff'), 'hr.php','staff');
 if($user->can_view('suppliers'))
