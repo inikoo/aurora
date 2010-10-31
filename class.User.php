@@ -155,21 +155,10 @@ function create($data){
     $values=preg_replace('/,$/',')',$values); 
     $sql=sprintf("insert into `User Dimension` %s %s",$keys,$values);
  
-       
     if(mysql_query($sql)){
       
       $user_id=mysql_insert_id();
-     
-    
-      //   if(isset($data['group'])){
-      //$groups=split(',',$data['group']);
-      //foreach($data['group'] as $group_id){
-      //while(is_numeric($group_id)){
-      //	  $sql=sprintf("insert into `User Gr` (perm_user_id,group_id) values (%d,%d)",$puser_id,$group_id);
-      //	  mysql_query($sql);
-      //	}
-      // }
-      // }
+  
     $this->new=true;
     $this->msg= _('User added susesfully');
     $this->get_data('id',$user_id);
