@@ -46,7 +46,7 @@ $js_files=array(
 $smarty->assign('parent','users');
 
 
-$smarty->assign('user',$user);
+$smarty->assign('user_class',$user);
 
 switch ($user->data['User Type']) {
     case 'Administrator':
