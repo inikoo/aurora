@@ -48,10 +48,6 @@ $session = new Session($myconf['max_session_time'],1,100);
 //print '//'.$_SESSION['state']['store']['plot'];
 require('external_libs/Smarty/Smarty.class.php');
 $smarty = new Smarty();
-
-
-
-
 $smarty->template_dir = $myconf['template_dir'];
 $smarty->compile_dir = $myconf['compile_dir'];
 $smarty->cache_dir = $myconf['cache_dir'];
@@ -72,8 +68,6 @@ if ($logout){
   exit;
  }
 
-
-
 $is_already_logged_in=(isset($_SESSION['logged_in']) and $_SESSION['logged_in']? true : false);
 
 if(!$is_already_logged_in){
@@ -87,7 +81,7 @@ if(!$is_already_logged_in){
   if(!$sk and array_key_exists('mk', $_REQUEST)    ){
     $auth->authenticate_from_masterkey($_REQUEST['mk']);
   }else{
-    $auth->authenticate($handle,$sk);
+    $auth->authenticate($handle,$sk,'staff');
   }
   
   if($auth->is_authenticated()){
