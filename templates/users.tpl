@@ -8,6 +8,8 @@
 <h2>{t}Administration Account{/t}</h2>
 <table>
 <tr><th>{t}Handle{/t}</th><th>{t}Login Count{/t}</th><th>{t}Last Login{/t}</th><th>{t}Failed Login Count{/t}</th><th>{t}Last Failed Login{/t}</th></tr>
+<tr><th>{$root->data['User Handle']}</th><th>{t}Login Count{/t}</th><th>{t}Last Login{/t}</th><th>{t}Failed Login Count{/t}</th><th>{t}Last Failed Login{/t}</th></tr>
+
 </table>
 </div>
 <div id="staff_column" class="col">

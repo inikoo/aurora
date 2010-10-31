@@ -87,6 +87,10 @@ $number_staff=$row['num'];
 
 }
 
+$root=new User('Administrator');
+$smarty->assign('root',$root);
+
+
 $smarty->assign('number_staff',$number_staff);
 
 
