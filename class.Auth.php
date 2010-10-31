@@ -101,7 +101,7 @@ class Auth {
 
 
     function authenticate_from_login() {
-  date_default_timezone_set('UTC');
+        date_default_timezone_set('UTC');
         include_once('aes.php');
         $this->status=false;
         $pass_tests=false;
@@ -176,15 +176,15 @@ class Auth {
             $this->log_failed_login();
         }
 
- date_default_timezone_set(TIMEZONE) ;
+        date_default_timezone_set(TIMEZONE) ;
 
     }
 
 
     function log_failed_login() {
-    date_default_timezone_set('UTC');
-    $date=date("Y-m-d H:i:s");
-    $ip=ip();
+        date_default_timezone_set('UTC');
+        $date=date("Y-m-d H:i:s");
+        $ip=ip();
         $sql=sprintf("insert into `User Failed Log Dimension` values (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)",
                      prepare_mysql($this->handle),
                      prepare_mysql($this->log_page),
@@ -199,36 +199,53 @@ class Auth {
                      prepare_mysql($this->pass['ikey'])
 
                     );
-              mysql_query($sql);    
-          if($this->pass['handle_key']){    
-          
-          $sql=sprintf("select count(*) as num from `User Failed Log Dimension` where `User Key`=%d",$this->pass['handle_key']);
-          $res=mysql_query($sql);
-          $num_failed_logins=0;
-          if($row=mysql_fetch_assoc($res)){
-          $num_failed_logins=$row['num'];
-          }
-          $sql=sprintf("update `User Dimension` set `User Failed Login Count`=%d, `User Last Failed Login IP`=%s,`User Last Failed Login`=%s where `User Key`=%d",
-          $num_failed_logins,
-           prepare_mysql($ip),
-           prepare_mysql($date),
-           $this->pass['handle_key']
-          );
-          mysql_query($sql);    
-         }     
-              date_default_timezone_set(TIMEZONE) ;
+        mysql_query($sql);
+        if ($this->pass['handle_key']) {
+
+            $sql=sprintf("select count(*) as num from `User Failed Log Dimension` where `User Key`=%d",$this->pass['handle_key']);
+            $res=mysql_query($sql);
+            $num_failed_logins=0;
+            if ($row=mysql_fetch_assoc($res)) {
+                $num_failed_logins=$row['num'];
+            }
+            $sql=sprintf("update `User Dimension` set `User Failed Login Count`=%d, `User Last Failed Login IP`=%s,`User Last Failed Login`=%s where `User Key`=%d",
+                         $num_failed_logins,
+                         prepare_mysql($ip),
+                         prepare_mysql($date),
+                         $this->pass['handle_key']
+                        );
+            mysql_query($sql);
+        }
+        date_default_timezone_set(TIMEZONE) ;
     }
 
     function create_user_log() {
-date_default_timezone_set('UTC');
-        $sql=sprintf("INSERT INTO `User Log Dimension` (`User Key`,`Session ID`, `IP`, `Start Date`, `Logout Date`) VALUES ('%d', %s, '%s', %s, %s)",
-        $this->user_key, 
-        prepare_mysql(session_id()),
-        ip(), 
-        prepare_mysql(date('Y-m-d H:i:s')), 
-        'NULL');
+        date_default_timezone_set('UTC');
+        $ip=ip();
+        $date=date('Y-m-d H:i:s');
+        $sql=sprintf("INSERT INTO `User Log Dimension` (`User Key`,`Session ID`, `IP`, `Start Date`, `Logout Date`) VALUES (%d, %s, %s, %s, %s)",
+                     $this->user_key,
+                     prepare_mysql(session_id()),
+                     prepare_mysql($ip),
+                     prepare_mysql($date),
+                     'NULL');
 
         mysql_query($sql);
+        
+         $sql=sprintf("select count(*) as num from `User Log Dimension` where `User Key`=%d",$this->user_key);
+            $res=mysql_query($sql);
+            $num_logins=0;
+            if ($row=mysql_fetch_assoc($res)) {
+                $num_logins=$row['num'];
+            }
+            $sql=sprintf("update `User Dimension` set `User Login Count`=%d, `User Last Login IP`=%s,`User Last Login`=%s where `User Key`=%d",
+                         $num_logins,
+                         prepare_mysql($ip),
+                         prepare_mysql($date),
+                         $this->user_key
+                        );
+            mysql_query($sql);
+        
         date_default_timezone_set(TIMEZONE) ;
     }
 

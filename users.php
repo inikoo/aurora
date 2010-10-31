@@ -56,6 +56,19 @@ $smarty->assign('title', _('Users'));
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
 
+$sql=sprintf("select count(*) as num  ,  `User Type`  from `User Dimension` where `User Active`='Yes' group by `User Type`");
+$res=mysql_query($sql);
+$number_users=array('Administrator'=>0,'Customer'=>0,'Staff'=>0,'Supplier'=>0);
+while($row=mysql_fetch_assoc($res)){
+$number_users[$row['User Type']]=number($row['num']);
+
+}
+$smarty->assign('number_users',$number_users);
+
+
+
+
+
 $sql=sprintf("select `Store Key` from `Store Dimension`");
 $res=mysql_query($sql);
 $stores=array();
