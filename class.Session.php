@@ -173,33 +173,6 @@ class Session
 
     }
 
-    /**
-     *  Get the number of online users
-     *
-     *  @return integer     number of users currently online
-     */
-    function get_users_online()
-    {
-
-        // call the garbage collector
-        $this->gc($this->sessionLifetime);
-
-        // counts the rows from the database
-        $result = @mysql_fetch_assoc(@mysql_query("
-
-            SELECT
-                COUNT(session_id) as count
-            FROM session_data
-
-        "));
-
-
-	
-
-        // return the number of found rows
-        return $result["count"];
-
-    }
 
     /**
      *  Custom open() function
@@ -241,14 +214,14 @@ class Session
       $sql = "
 
             SELECT
-                session_data
+                `Session Data`
             FROM
-                session_data
+                `Session Dimension`
             WHERE
 
-                session_id = '".addslashes($session_id)."' AND
-                http_user_agent = '".addslashes(md5($_SERVER["HTTP_USER_AGENT"] . $this->securityCode))."' AND
-                session_expire > '".time()."'
+                `Session ID` = '".addslashes($session_id)."' AND
+                `HTTP User Agent` = '".addslashes(md5($_SERVER["HTTP_USER_AGENT"] . $this->securityCode))."' AND
+                `Session Expire` > '".time()."'
             LIMIT 1
 
         ";
@@ -257,7 +230,7 @@ class Session
        $result=mysql_query($sql);
 
       if( ($data=mysql_fetch_array($result, MYSQL_ASSOC))){
-	return $data['session_data']; 
+	return $data['Session Data']; 
       }
       else 
 	return "";
@@ -280,11 +253,11 @@ class Session
 
       $sql="
             INSERT INTO
-                session_data (
-                    session_id,
-                    http_user_agent,
-                    session_data,
-                    session_expire
+                `Session Dimension` (
+                    `Session ID`,
+                    `HTTP User Agent`,
+                    `Session Data`,
+                    `Session Expire`
                 )
             VALUES (
                 '".addslashes($session_id)."',
@@ -293,9 +266,9 @@ class Session
                 '".addslashes(time() + $this->sessionLifetime)."'
             )
             ON DUPLICATE KEY UPDATE
-                session_data = '".addslashes($session_data)."',
-                session_expire = '".addslashes(time() + $this->sessionLifetime)."',
-                http_user_agent = '".addslashes(md5($_SERVER["HTTP_USER_AGENT"] . $this->securityCode))."'
+                `Session Data` = '".addslashes($session_data)."',
+                `Session Expire` = '".addslashes(time() + $this->sessionLifetime)."',
+                `HTTP User Agent` = '".addslashes(md5($_SERVER["HTTP_USER_AGENT"] . $this->securityCode))."'
         ";
 
       //  print_r($session_data);
@@ -336,9 +309,9 @@ class Session
       
       $sql="
             DELETE FROM
-                session_data
+                `Session Dimension`
             WHERE
-                session_id = '".mysql_real_escape_string($session_id)."'
+                `Session ID` = '".mysql_real_escape_string($session_id)."'
 
         ";
 
@@ -362,9 +335,9 @@ class Session
       $sql ="
 
             DELETE FROM
-                session_data
+                `Session Dimension`
             WHERE
-                session_expire < '".mysql_real_escape_string(time() - $maxlifetime)."'
+                `Session Expire` < '".mysql_real_escape_string(time() - $maxlifetime)."'
 
         ";
       
