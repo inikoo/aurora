@@ -7,14 +7,12 @@
   <span  ><a  href="store.php?id={$store->id}">{$store->get('Store Name')}</a> &rarr; <a  href="department.php?id={$product->get('Product Main Department Key')}">{$product->get('Product Main Department Name')}</a> &rarr; <a  href="family.php?id={$product->get('Product Family Key')}">{$product->get('Product Family Name')}</a></span>
 </div>
 
-
-  <div id="no_details_title" style="clear:right;{if $show_details}display:none;{/if}">
+<div id="no_details_title" style="clear:right;{if $show_details}display:none;{/if}">
     <h1>{t}Product{/t}: [{$product->get('Product Code')}] {$product->get('Product Name')} ({$product->get('Product ID')})</h1>
 {if $product->get('Product Record Type')=='Historic'}
 {t}Historic Product{/t}
 {/if}
-
-  </div>
+</div>
 
 
 
@@ -53,15 +51,7 @@
   
   
     </div>
-
-
-
-
-
 <div class="" id="block_info"  style="width:890px">
-      
-
-      
       <div   style="clear:left;padding:0;width:100%">
 
 	  <div id="photo_container" style="margin-top:10px;float:left">
@@ -308,16 +298,6 @@
      
 
     </div> 
-
-  
-
-
-  
- 
-
-
-
-
 <div  id="block_timeline" class="data_table" style="{if $display.orders==0}display:none;{/if}clear:both;margin:25px 0px">
     <span id="table_title" class="clean_table_title">{t}Product Code Timeline{/t}</span>
     {include file='table_splinter.tpl' table_id=3 filter_name=$filter_name3 filter_value=$filter_value3}

@@ -3,6 +3,13 @@
 	<div id="no_details_title" style="clear:right;{if $show_details}display:none;{/if}">
     <h1>{t}Users Handing{/t}</h1>
 </div>
+
+<div class="top_row">
+<h2>{t}Administration Account{/t}</h2>
+<table>
+<tr><th>{t}Handle{/t}</th><th>{t}Login Count{/t}</th><th>{t}Last Login{/t}</th><th>{t}Failed Login Count{/t}</th><th>{t}Last Failed Login{/t}</th></tr>
+</table>
+</div>
 <div id="staff_column" class="col">
 <h2>{t}Staff{/t}</h2>
 <table>
