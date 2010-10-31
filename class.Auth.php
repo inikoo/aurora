@@ -183,12 +183,14 @@ class Auth {
 
     function log_failed_login() {
     date_default_timezone_set('UTC');
+    $date=date("Y-m-d H:i:s");
+    $ip=ip();
         $sql=sprintf("insert into `User Failed Log Dimension` values (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)",
                      prepare_mysql($this->handle),
                      prepare_mysql($this->log_page),
                      prepare_mysql($this->pass['handle_key']),
-                     prepare_mysql(date("Y-m-d H:i:s")),
-                     prepare_mysql(ip()),
+                     prepare_mysql($date),
+                     prepare_mysql($ip),
                      prepare_mysql($this->pass['main_reason']),
                      prepare_mysql($this->pass['handle']),
                      prepare_mysql($this->pass['password']),
@@ -198,6 +200,22 @@ class Auth {
 
                     );
               mysql_query($sql);    
+          if($this->pass['handle_key']){    
+          
+          $sql=sprintf("select count(*) as num from `User Failed Log Dimension` where `User Key`=%d",$this->pass['handle_key']);
+          $res=mysql_query($sql);
+          $num_failed_logins=0;
+          if($row=mysql_fetch_assoc($res)){
+          $num_failed_logins=$row['num'];
+          }
+          $sql=sprintf("update `User Dimension` set `User Failed Login Count`=%d, `User Last Failed Login IP`=%s,`User Last Failed Login`=%s where `User Key`=%d",
+          $num_failed_logins,
+           prepare_mysql($ip),
+           prepare_mysql($date),
+           $this->pass['handle_key']
+          );
+          mysql_query($sql);    
+         }     
               date_default_timezone_set(TIMEZONE) ;
     }
 
