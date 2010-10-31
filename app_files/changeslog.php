@@ -175,5 +175,18 @@ ALTER TABLE `User Failed Log Dimension` ADD `IKey OK` ENUM( 'Yes', 'No', 'Unknow
 ALTER TABLE `User Dimension` CHANGE `User Last Failed Login Count` `User Last Failed Login` DATETIME NOT NULL ;
 ALTER TABLE `User Dimension` CHANGE `User Last Failed Login` `User Last Failed Login` DATETIME NULL DEFAULT NULL ;
 RENAME TABLE `session_data` TO  `Session Dimension` ;
+ALTER TABLE `Session Dimension` CHANGE `session_id` `Session ID` VARCHAR( 32 ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL ,
+CHANGE `http_user_agent` `HTTP User Agent` VARCHAR( 32 ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL ,
+CHANGE `session_data` `Session Data` BLOB NOT NULL ,
+CHANGE `session_expire` `Session Expire` INT( 11 ) NOT NULL DEFAULT '0';
+
+0.9.12
+ DROP TABLE `session`, `session_history`, `session_noauth`;
+DROP TABLE `Language Country Bridge`, `Language Dimension`, `Locale Dimension`;
+
+0.9.14
+ALTER TABLE `User Dimension` CHANGE `User Last Login IP` `User Last Login IP` VARCHAR( 64 ) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL ,
+CHANGE `User Last Failed Login IP` `User Last Failed Login IP` VARCHAR( 64 ) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL ;
+
 */
 ?>

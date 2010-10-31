@@ -300,7 +300,7 @@ $company=new Company($company_key);
 
    }
 
-function crete_user() {
+function create_user() {
     $password=generatePassword(8,10);
     $user_data=array(
                    'User Handle'=>$this->data['Staff Alias'],
@@ -310,12 +310,13 @@ function crete_user() {
                    'User Active'=>'Yes',
                    'User Type'=>'Staff',
 
-                   'User Parent Key'=>$staff->id,
+                   'User Parent Key'=>$this->id,
 
                );
-    //  print_r($user_data);
+     
     $user= new User('find',$user_data,'create');
-    return $user;
+  
+   return $user;
 
 }
 
