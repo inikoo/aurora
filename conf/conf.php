@@ -93,140 +93,152 @@ $myconf=array(
 $default_state=array(
                    'export'=>'xls',
                    'home'=>array(
-                              'display'=>'top_customers'
-                                        ,'splinters'=>array(
-                                                         'top_products'=>array('nr'=>20,'period'=>'all','order'=>'net_sales','order_dir'=>'desc')
-                                                                        ,'top_customers'=>array('nr'=>20,'period'=>'all','order'=>'net_balance','order_dir'=>'desc')
-                                                                                         ,'orders_in_process'=>array()
-                                                                                                              ,'messages'=>array()
-                                                     )
+                              'display'=>'top_customers',
+                              'splinters'=>array(
+                                              'top_products'=>array('nr'=>20,'period'=>'all','order'=>'net_sales','order_dir'=>'desc'),
+                                              'top_customers'=>array('nr'=>20,'period'=>'all','order'=>'net_balance','order_dir'=>'desc'),
+                                              'orders_in_process'=>array(
+                                                                  'store_keys'=>'all',
+                                                                  'sf'=>0,
+                                                                  'nr'=>50,
+                                                                  'f_value'=>'',
+                                                                  'f_show'=>false,
+                                                                  'f_field'=>'customer',
+                                                                  'from'=>'',
+                                                                  'to'=>'',
+                                                                  'order'=>'date',
+                                                                  'order_dir'=>'',
+                                                                  'where'=>''
+                                                                  ),
+                                              'messages'=>array()
+                                          )
                           ),
                    'report_data'=>$report_data,
                    'porder'=>array(
-                                'id'=>''
-                                     ,'show_all'=>false ,'supplier_key'=>0
-                                                                        ,'view'=>'used_in'
-                                                                                ,'products'=>array(
-                                                                                                'order'=>'code',
-                                                                                                'order_dir'=>'',
-                                                                                                'sf'=>0,
-                                                                                                'nr'=>25,
-                                                                                                'where'=>'where true',
-                                                                                                'f_field'=>'code',
-                                                                                                'f_value'=>'',2,'f_show'=>false,
-                                                                                                'from'=>'',
-                                                                                                'to'=>''
-                                                                                            )
+                                'id'=>'',
+                                'show_all'=>false, 'supplier_key'=>0,
+                                'view'=>'used_in',
+                                'products'=>array(
+                                               'order'=>'code',
+                                               'order_dir'=>'',
+                                               'sf'=>0,
+                                               'nr'=>25,
+                                               'where'=>'where true',
+                                               'f_field'=>'code',
+                                               'f_value'=>'',2,'f_show'=>false,
+                                               'from'=>'',
+                                               'to'=>''
+                                           )
                             ),
                    'supplier_dn'=>array(
-                                     'id'=>''
-                                          ,'show_all'=>false
-                                                      ,'supplier_key'=>0
-                                                                      ,'pos'=>''
-                                                                             ,'view'=>'used_in'
-                                                                                     ,'products'=>array(
-                                                                                                     'order'=>'code',
-                                                                                                     'order_dir'=>'',
-                                                                                                     'sf'=>0,
-                                                                                                     'nr'=>25,
-                                                                                                     'where'=>'where true',
-                                                                                                     'f_field'=>'code',
-                                                                                                     'f_value'=>'','f_show'=>false,
-                                                                                                     'from'=>'',
-                                                                                                     'to'=>''
-                                                                                                 )
+                                     'id'=>'',
+                                     'show_all'=>false,
+                                     'supplier_key'=>0,
+                                     'pos'=>'',
+                                     'view'=>'used_in',
+                                     'products'=>array(
+                                                    'order'=>'code',
+                                                    'order_dir'=>'',
+                                                    'sf'=>0,
+                                                    'nr'=>25,
+                                                    'where'=>'where true',
+                                                    'f_field'=>'code',
+                                                    'f_value'=>'','f_show'=>false,
+                                                    'from'=>'',
+                                                    'to'=>''
+                                                )
                                  ),
                    'supplier_invoice'=>array(
-                                          'id'=>''
-                                               ,'show_all'=>false
-                                                           ,'supplier_key'=>0
-                                                                           ,'pos'=>''
-                                                                                  ,'view'=>'used_in'
-                                                                                          ,'products'=>array(
-                                                                                                          'order'=>'code',
-                                                                                                          'order_dir'=>'',
-                                                                                                          'sf'=>0,
-                                                                                                          'nr'=>25,
-                                                                                                          'where'=>'where true',
-                                                                                                          'f_field'=>'code',
-                                                                                                          'f_value'=>'','f_show'=>false,
-                                                                                                          'from'=>'',
-                                                                                                          'to'=>''
-                                                                                                      )
+                                          'id'=>'',
+                                          'show_all'=>false,
+                                          'supplier_key'=>0,
+                                          'pos'=>'',
+                                          'view'=>'used_in',
+                                          'products'=>array(
+                                                         'order'=>'code',
+                                                         'order_dir'=>'',
+                                                         'sf'=>0,
+                                                         'nr'=>25,
+                                                         'where'=>'where true',
+                                                         'f_field'=>'code',
+                                                         'f_value'=>'','f_show'=>false,
+                                                         'from'=>'',
+                                                         'to'=>''
+                                                     )
                                       ),
                    'porders'=>array(
-                                 'id'=>''
-                                      ,'show_all'=>false
-                                                  ,'parent'=>'supplier'
-                                                            ,'parent_key'=>0
-                                                                          ,'table'=>array(
-                                                                                       'order'=>'date',
-                                                                                       'view'=>'general',
-                                                                                       'order_dir'=>'',
-                                                                                       'sf'=>0,
-                                                                                       'nr'=>25,
-                                                                                       'where'=>'where true',
-                                                                                       'f_field'=>'public_id',
-                                                                                       'f_value'=>'','f_show'=>false,
-                                                                                       'from'=>'',
-                                                                                       'to'=>''
-                                                                                   )
+                                 'id'=>'',
+                                 'show_all'=>false,
+                                 'parent'=>'supplier',
+                                 'parent_key'=>0,
+                                 'table'=>array(
+                                             'order'=>'date',
+                                             'view'=>'general',
+                                             'order_dir'=>'',
+                                             'sf'=>0,
+                                             'nr'=>25,
+                                             'where'=>'where true',
+                                             'f_field'=>'public_id',
+                                             'f_value'=>'','f_show'=>false,
+                                             'from'=>'',
+                                             'to'=>''
+                                         )
                              ),
                    'supplier_invoices'=>array(
-                                           'id'=>''
-                                                ,'show_all'=>false
-                                                            ,'parent'=>'supplier'
-                                                                      ,'parent_key'=>0
-                                                                                    ,'table'=>array(
-                                                                                                 'order'=>'date',
-                                                                                                 'view'=>'general',
-                                                                                                 'order_dir'=>'',
-                                                                                                 'sf'=>0,
-                                                                                                 'nr'=>25,
-                                                                                                 'where'=>'where true',
-                                                                                                 'f_field'=>'public_id',
-                                                                                                 'f_value'=>'','f_show'=>false,
-                                                                                                 'from'=>'',
-                                                                                                 'to'=>''
-                                                                                             )
+                                           'id'=>'',
+                                           'show_all'=>false,
+                                           'parent'=>'supplier',
+                                           'parent_key'=>0,
+                                           'table'=>array(
+                                                       'order'=>'date',
+                                                       'view'=>'general',
+                                                       'order_dir'=>'',
+                                                       'sf'=>0,
+                                                       'nr'=>25,
+                                                       'where'=>'where true',
+                                                       'f_field'=>'public_id',
+                                                       'f_value'=>'','f_show'=>false,
+                                                       'from'=>'',
+                                                       'to'=>''
+                                                   )
                                        ),
                    'supplier_dns'=>array(
-                                      'id'=>''
-                                           ,'show_all'=>false
-                                                       ,'parent'=>'supplier'
-                                                                 ,'parent_key'=>0
-                                                                               ,'table'=>array(
-                                                                                            'order'=>'date',
-                                                                                            'view'=>'general',
-                                                                                            'order_dir'=>'',
-                                                                                            'sf'=>0,
-                                                                                            'nr'=>25,
-                                                                                            'where'=>'where true',
-                                                                                            'f_field'=>'public_id',
-                                                                                            'f_value'=>'','f_show'=>false,
-                                                                                            'from'=>'',
-                                                                                            'to'=>''
-                                                                                        )
+                                      'id'=>'',
+                                      'show_all'=>false,
+                                      'parent'=>'supplier',
+                                      'parent_key'=>0,
+                                      'table'=>array(
+                                                  'order'=>'date',
+                                                  'view'=>'general',
+                                                  'order_dir'=>'',
+                                                  'sf'=>0,
+                                                  'nr'=>25,
+                                                  'where'=>'where true',
+                                                  'f_field'=>'public_id',
+                                                  'f_value'=>'','f_show'=>false,
+                                                  'from'=>'',
+                                                  'to'=>''
+                                              )
                                   ),
 
 
                    'dn'=>array(
                             'id'=>''),
                    'order'=>array(
-                               'id'=>''
-                                    ,'show_all'=>false
-                                                ,'store_key'=>0
-                                                             ,'all_products'=>array(
-                                                                                 'order'=>'code',
-                                                                                 'order_dir'=>'',
-                                                                                 'sf'=>0,
-                                                                                 'nr'=>25,
-                                                                                 'where'=>'where true',
-                                                                                 'f_field'=>'code',
-                                                                                 'f_value'=>'','f_show'=>false,
-                                                                                 'from'=>'',
-                                                                                 'to'=>''
-                                                                             )
+                               'id'=>'',
+                               'show_all'=>false,
+                               'store_key'=>0,
+                               'all_products'=>array(
+                                                  'order'=>'code',
+                                                  'order_dir'=>'',
+                                                  'sf'=>0,
+                                                  'nr'=>25,
+                                                  'where'=>'where true',
+                                                  'f_field'=>'code',
+                                                  'f_value'=>'','f_show'=>false,
+                                                  'from'=>'',
+                                                  'to'=>''
+                                              )
                            ),
 
                    'marketing'=>array(
@@ -249,33 +261,33 @@ $default_state=array(
 
 
                                  'sales'=>array(
-                                             'plot'=>'total_sales_month'
-                                                    ,'store_key'=>1
-                                                                 ,'tipo'=>'y'
-                                                                         ,'y'=>date('Y')
-                                                                              ,'m'=>date('m')
-                                                                                   ,'d'=>date('d')
-                                                                                        ,'w'=>date('W')
+                                             'plot'=>'total_sales_month',
+                                             'store_key'=>1,
+                                             'tipo'=>'y',
+                                             'y'=>date('Y'),
+                                             'm'=>date('m'),
+                                             'd'=>date('d'),
+                                             'w'=>date('W'),
                                          )
                                          ,'stock'=>array(
                                                       'plot'=>'total_outofstock_month'
                                                   )
                                                   ,'geosales'=>array(
-                                                                  'level'=>'region'
-                                                                          ,'region'=>'world'
-                                                                                    ,'map_exclude'=>''
-                                                                                                   ,'table'=>array(
-                                                                                                                'order'=>'country_code',
-                                                                                                                'order_dir'=>'',
-                                                                                                                'sf'=>0,
-                                                                                                                'nr'=>25,
-                                                                                                                'where'=>'where true',
-                                                                                                                'f_field'=>'country',
-                                                                                                                'f_value'=>'','f_show'=>false,
-                                                                                                                'from'=>'',
-                                                                                                                'to'=>''
+                                                                  'level'=>'region',
+                                                                  'region'=>'world',
+                                                                  'map_exclude'=>'',
+                                                                  'table'=>array(
+                                                                              'order'=>'country_code',
+                                                                              'order_dir'=>'',
+                                                                              'sf'=>0,
+                                                                              'nr'=>25,
+                                                                              'where'=>'where true',
+                                                                              'f_field'=>'country',
+                                                                              'f_value'=>'','f_show'=>false,
+                                                                              'from'=>'',
+                                                                              'to'=>''
 
-                                                                                                            ),
+                                                                          ),
                                                               )
 
                              ),
@@ -305,29 +317,29 @@ $default_state=array(
                                             'paid'=>'',
                                             'order_type'=>'',
 // --------------------------------------------export csv for order list in order page -----------------------------
-								 'csv_export'=>array(
-                                                                                   'code'=>true,
-                                                                                   'last_date'=>true,
-                                                                                   'customer'=>true,
-                                                                                   'status'=>true,
-                                                                                   'totaltax'=>false,
-                                                                                   'totalnet'=>false,
-                                                                                   'total'=>true,
-                                                                                   'balancenet'=>false,
-                                                                                   'balancetax'=>false,
-		                                                                   'balancetotal'=>false,
-                                                                                   'outstandingbalancenet'=>false,
-                                                                                   'outstandingbalancetax'=>false,
-                                                                                   'outstandingbalancetotal'=>false,
-										   'contactname'=>false,
-										   'sourcetype'=>false,
-										   'paymentstate'=>false,
-										   'actiontaken'=>false,
-										   'ordertype'=>false,
-										   'shippingmethod'=>false
+                                            'csv_export'=>array(
+                                                             'code'=>true,
+                                                             'last_date'=>true,
+                                                             'customer'=>true,
+                                                             'status'=>true,
+                                                             'totaltax'=>false,
+                                                             'totalnet'=>false,
+                                                             'total'=>true,
+                                                             'balancenet'=>false,
+                                                             'balancetax'=>false,
+                                                             'balancetotal'=>false,
+                                                             'outstandingbalancenet'=>false,
+                                                             'outstandingbalancetax'=>false,
+                                                             'outstandingbalancetotal'=>false,
+                                                             'contactname'=>false,
+                                                             'sourcetype'=>false,
+                                                             'paymentstate'=>false,
+                                                             'actiontaken'=>false,
+                                                             'ordertype'=>false,
+                                                             'shippingmethod'=>false
 
 
-                                                                               )
+                                                         )
 // -----------------------------------------------------------------------------------------------------------------
 
 
@@ -598,37 +610,39 @@ $default_state=array(
                                         ),
 
                    'report_sales_with_no_tax'=>array(
-                                                  'tipo'=>'y'
-                                                         ,'y'=>date('Y')
-                                                              ,'m'=>date('m')
-                                                                   ,'d'=>date('d')
-                                                                        ,'w'=>date('W')
-                                                                             ,'stores'=>false
-                                                                                       ,'currency_type'=>'original'
-                                                                                                        ,'invoices'=>array(
-                                                                                                                        'order'=>'date',
-                                                                                                                        'order_dir'=>'',
-                                                                                                                        'sf'=>0,
-                                                                                                                        'nr'=>25,
-                                                                                                                        'where'=>'where true',
-                                                                                                                        'f_field'=>'public_id',
-                                                                                                                        'f_value'=>'','f_show'=>false,
-                                                                                                                        'from'=>'',
-                                                                                                                        'to'=>'',
-                                                                                                                        'elements'=>array()
-                                                                                                                    )
-                                                                                                                    ,'customers'=>array(
-                                                                                                                                     'order'=>'name',
-                                                                                                                                     'order_dir'=>'',
-                                                                                                                                     'sf'=>0,
-                                                                                                                                     'nr'=>25,
-                                                                                                                                     'where'=>'where true',
-                                                                                                                                     'f_field'=>'customer',
-                                                                                                                                     'f_value'=>'','f_show'=>false,
-                                                                                                                                     'from'=>'',
-                                                                                                                                     'to'=>'',
-                                                                                                                                     'elements'=>array()
-                                                                                                                                 )
+                                                  'tipo'=>'y',
+                                                  'y'=>date('Y'),
+                                                  'm'=>date('m'),
+                                                  'd'=>date('d'),
+                                                  'w'=>date('W'),
+                                                  'stores'=>false,
+                                                  'currency_type'=>'original',
+                                                  'invoices'=>array(
+                                                                 'order'=>'date',
+                                                                 'order_dir'=>'',
+                                                                 'sf'=>0,
+                                                                 'nr'=>25,
+                                                                 'where'=>'where true',
+                                                                 'f_field'=>'public_id',
+                                                                 'f_value'=>'',
+                                                                 'f_show'=>false,
+                                                                 'from'=>'',
+                                                                 'to'=>'',
+                                                                 'elements'=>array()
+                                                             )
+                                                             ,'customers'=>array(
+                                                                              'order'=>'name',
+                                                                              'order_dir'=>'',
+                                                                              'sf'=>0,
+                                                                              'nr'=>25,
+                                                                              'where'=>'where true',
+                                                                              'f_field'=>'customer',
+                                                                              'f_value'=>'',
+                                                                              'f_show'=>false,
+                                                                              'from'=>'',
+                                                                              'to'=>'',
+                                                                              'elements'=>array()
+                                                                          )
 
                                               ),
 
@@ -693,7 +707,8 @@ $default_state=array(
 
                                                  'plot'=>'part_stock_history',
                                                  'plot_interval'=>array(
-                                                                     'y'=>array('plot_bins'=>5,'plot_forecast_bins'=>3),'d'=>array('plot_bins'=>30,'plot_forecast_bins'=>5),
+                                                                     'y'=>array('plot_bins'=>5,'plot_forecast_bins'=>3),
+                                                                     'd'=>array('plot_bins'=>30,'plot_forecast_bins'=>5),
                                                                      'q'=>array('plot_bins'=>12,
                                                                                 'plot_forecast_bins'=>3),
                                                                      'm'=>array('plot_bins'=>18,
@@ -1439,21 +1454,21 @@ $default_state=array(
                                     'edit'=>'description',
                                     'plot'=>'department',
                                     'plot_data'=>array('department'=>array(
-                                                                        'period'=>'m'
-                                                                                 ,'category'=>'sales'
-                                                                                             ,'page'=>'plot.php'
+                                                                        'period'=>'m',
+                                                                        'category'=>'sales',
+                                                                        'page'=>'plot.php'
                                                                     )
                                                                     ,'top_families'=>array(
-                                                                                        'period'=>'m'
-                                                                                                 ,'category'=>'sales'
-                                                                                                             ,'page'=>'plot.php'
+                                                                                        'period'=>'m',
+                                                                                        'category'=>'sales',
+                                                                                        'page'=>'plot.php'
                                                                                     )
                                                                                     ,'pie'=>array(
-                                                                                               'period'=>'m'
-                                                                                                        ,'category'=>'sales'
-                                                                                                                    ,'page'=>'pie.php'
-                                                                                                                            ,'forecast'=>'no'
-                                                                                                                                        ,'date'=>'today'
+                                                                                               'period'=>'m',
+                                                                                               'category'=>'sales',
+                                                                                               'page'=>'pie.php',
+                                                                                               'forecast'=>'no',
+                                                                                               'date'=>'today'
                                                                                            )
                                                       ),
 
@@ -1990,10 +2005,39 @@ $default_state=array(
                                                         'f_value'=>'','f_show'=>false,
                                                         'elements'=>array()
 
-                                                    )
-                                                    ,'customers'=>array('store_keys'=>'all','top'=>100,'criteria'=>'net_balance','f_value'=>'','f_show'=>false,'f_field'=>'customer_name','from'=>'','to'=>'')
-                                                                 ,'products'=>array('store_keys'=>'all','top'=>100,'criteria'=>'net_sales','f_value'=>'','f_show'=>false,'f_field'=>'code','from'=>'','to'=>'')
-                                                                             ,'orders_in_process'=>array('store_keys'=>'all','sf'=>0,'nr'=>50,'f_value'=>'','f_show'=>false,'f_field'=>'customer','from'=>'','to'=>'','order'=>'date','order_dir'=>'','where'=>'')
+                                                    ),
+                                          'customers'=>array(
+                                                          'store_keys'=>'all',
+                                                          'top'=>100,
+                                                          'criteria'=>'net_balance',
+                                                          'f_value'=>'',
+                                                          'f_show'=>false,
+                                                          'f_field'=>'customer_name',
+                                                          'from'=>'',
+                                                          'to'=>''
+                                                      ),
+                                          'products'=>array('store_keys'=>'all',
+                                                            'top'=>100,
+                                                            'criteria'=>'net_sales',
+                                                            'f_value'=>'',
+                                                            'f_show'=>false,
+                                                            'f_field'=>'code',
+                                                            'from'=>'',
+                                                            'to'=>''
+                                                           ),
+                                          'orders_in_process'=>array(
+                                                                  'store_keys'=>'all',
+                                                                  'sf'=>0,
+                                                                  'nr'=>50,
+                                                                  'f_value'=>'',
+                                                                  'f_show'=>false,
+                                                                  'f_field'=>'customer',
+                                                                  'from'=>'',
+                                                                  'to'=>'',
+                                                                  'order'=>'date',
+                                                                  'order_dir'=>'',
+                                                                  'where'=>''
+                                                              )
 
 
 
@@ -2130,45 +2174,45 @@ $default_state=array(
                                                             )
 
                                            ),
-                                           'delivery_notes'=>array(
-                                                                  'percentages'=>false,
-                                                                  'dn_state'=>'all',
-                                                                  'view'=>'dn_state',
-                                                                  'period'=>'year',
-                                                                  'mode'=>'all',
-                                                                  'avg'=>'totals',
-                                                                  'where'=>'where true',
-                                                                  'f_field'=>'code',
-                                                                  'f_value'=>'','f_show'=>false,
-                                                                  'order'=>'name',
-                                                                  'order_dir'=>'',
-                                                                  'sf'=>0,
-                                                                  'nr'=>25,
-                                                                  'csv_export'=>array(
-                                                                                   'code'=>true,
-                                                                                   'name'=>true,
-                                                                                   'total'=>true,
-                                                                                   'topick'=>false,
-                                                                                   'picking'=>false,
-                                                                                   'packing'=>false,
-                                                                                   'ready'=>false,
-                                                                                   'send'=>false,
-                                                                                   'returned'=>false,
+                                'delivery_notes'=>array(
+                                                     'percentages'=>false,
+                                                     'dn_state'=>'all',
+                                                     'view'=>'dn_state',
+                                                     'period'=>'year',
+                                                     'mode'=>'all',
+                                                     'avg'=>'totals',
+                                                     'where'=>'where true',
+                                                     'f_field'=>'code',
+                                                     'f_value'=>'','f_show'=>false,
+                                                     'order'=>'name',
+                                                     'order_dir'=>'',
+                                                     'sf'=>0,
+                                                     'nr'=>25,
+                                                     'csv_export'=>array(
+                                                                      'code'=>true,
+                                                                      'name'=>true,
+                                                                      'total'=>true,
+                                                                      'topick'=>false,
+                                                                      'picking'=>false,
+                                                                      'packing'=>false,
+                                                                      'ready'=>false,
+                                                                      'send'=>false,
+                                                                      'returned'=>false,
 
-                                                                                   'sales_all'=>false,
-                                                                                   'sales_1y'=>false,
-                                                                                   'sales_1q'=>false,
-                                                                                   'sales_1m'=>false,
-                                                                                   'sales_1w'=>false,
-                                                                                   'profit_all'=>false,
-                                                                                   'profit_1y'=>false,
-                                                                                   'profit_1q'=>false,
-                                                                                   'profit_1m'=>false,
-                                                                                   'profit_1w'=>false
+                                                                      'sales_all'=>false,
+                                                                      'sales_1y'=>false,
+                                                                      'sales_1q'=>false,
+                                                                      'sales_1m'=>false,
+                                                                      'sales_1w'=>false,
+                                                                      'profit_all'=>false,
+                                                                      'profit_1y'=>false,
+                                                                      'profit_1q'=>false,
+                                                                      'profit_1m'=>false,
+                                                                      'profit_1w'=>false
 
 
-                                                                               )
-                                                              ),
+                                                                  )
+                                                 ),
                                 'customers'=>array(
                                                 'percentages'=>false,
                                                 'view'=>'general',

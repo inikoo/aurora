@@ -155,21 +155,10 @@ function create($data){
     $values=preg_replace('/,$/',')',$values); 
     $sql=sprintf("insert into `User Dimension` %s %s",$keys,$values);
  
-       
     if(mysql_query($sql)){
       
       $user_id=mysql_insert_id();
-     
-    
-      //   if(isset($data['group'])){
-      //$groups=split(',',$data['group']);
-      //foreach($data['group'] as $group_id){
-      //while(is_numeric($group_id)){
-      //	  $sql=sprintf("insert into `User Gr` (perm_user_id,group_id) values (%d,%d)",$puser_id,$group_id);
-      //	  mysql_query($sql);
-      //	}
-      // }
-      // }
+  
     $this->new=true;
     $this->msg= _('User added susesfully');
     $this->get_data('id',$user_id);
@@ -186,13 +175,15 @@ function create($data){
 
   function get_data($key,$data,$data2='Staff'){
     global $_group;
-    //    print "acac---- $key ----  $data ---asasqqqqqqqqq";
     if($key=='handle')
       $sql=sprintf("select * from  `User Dimension` where `User Handle`=%s and `User Type`=%s"
 		   ,prepare_mysql($data)
 		   ,prepare_mysql($data2)
 		   );
- 
+	elseif($key=='Administrator')
+      $sql=sprintf("select * from  `User Dimension` where  `User Type`='Administrator'"
+		 
+		   );	   
     else
       $sql=sprintf("select * from `User Dimension` where `User Key`=%d",$data);
      
@@ -622,8 +613,18 @@ function get($key){
   if(array_key_exists($key,$this->data))
     return $this->data[$key];
 
+  switch($key){
+case('Login Count'):
+case('Failed Login Count'):
+return number($this->data['User '.$key]);
+break;
 
-  switch($tipo){
+case('Created '):
+case('Last Failed Login'):
+case('Last Login'):
+
+return strftime ( "%e %b %Y %H:%M %Z", strtotime ( $this->data ['User '.$key]." +00:00" ) );
+break;
   case('User Pasword'):
     return "******";
   case('isactive'):
@@ -631,9 +632,6 @@ function get($key){
   case('groups'):
     return $this->data['groups'];
   }
-
- if(array_key_exists($key,$this->data))
-    return $this->data[$key];
 
 }
    

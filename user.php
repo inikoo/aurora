@@ -13,14 +13,7 @@
 */
 
 include_once('common.php');
-
 include_once('class.User.php');
-
-$view_orders=$user->can_view('Orders');
-$smarty->assign('view_orders',$view_orders);
-
-
-$smarty->assign('box_layout','yui-t4');
 
 $css_files=array(
 		 $yui_path.'reset-fonts-grids/reset-fonts-grids.css',
@@ -46,24 +39,41 @@ $js_files=array(
 		'common.js.php',
 		'table_common.js.php',
 		'js/search.js',
-		'index.js.php'
+		
 		);
 
 
-
-
 $smarty->assign('parent','users');
-$smarty->assign('title', _('User'));
-$smarty->assign('css_files',$css_files);
-$smarty->assign('js_files',$js_files);
+
 
 $smarty->assign('user_class',$user);
 
+switch ($user->data['User Type']) {
+    case 'Administrator':
+    $title=_('Administrative User');
+       $tpl='user_administrator.tpl';
+       $js_files[]='user_administrator.js.php';
+        break;
+   case 'Staff':
+   $title=_('Staff User');
+       $tpl='user_staff.tpl';
+        break;
+    case 'Customer':
+       $title=_('Customer User');
 
-$smarty->display('user.tpl');
+       $tpl='user_customer.tpl';
+        break;
+        case 'Supplier':
+           $title=_('Supplier User');
 
+       $tpl='user_supplier.tpl';
+        break;    
+}
 
-
+$smarty->assign('title', $title);
+$smarty->assign('css_files',$css_files);
+$smarty->assign('js_files',$js_files);
+       $smarty->display($tpl);
 
 
 ?>

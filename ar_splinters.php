@@ -23,8 +23,9 @@ case('customers'):
   case('products'):
   $results=list_products();
   break;
-
-break;
+ case('orders_in_process'):
+  orders_in_process();
+  break;
 }
 
 
@@ -249,7 +250,10 @@ function list_customers(){
    $filter_msg='';
    $wheref='';
 
-     
+     if($store=='')
+          $where=sprintf(' where false ');
+
+     else
      $where=sprintf(' where `Customer Store Key` in (%s) and `Customer Orders Invoiced`>0',$store);
 
   
@@ -272,7 +276,7 @@ function list_customers(){
 
   
    $sql="select  `Store Code`,`Customer Type by Activity`,`Customer Last Order Date`,`Customer Main XHTML Telephone`,`Customer Key`,`Customer Name`,`Customer Main Location`,`Customer Main XHTML Email`,`Customer Main Town`,`Customer Main Country First Division`,`Customer Main Delivery Address Postal Code`,`Customer Orders Invoiced` as Invoices , `Customer Net Balance` as Balance  from `Customer Dimension` C  left join `Store Dimension` SD on (C.`Customer Store Key`=SD.`Store Key`)  $where $wheref  group by `Customer Key` order by $order $order_direction limit $start_from,$number_results";
-// print $sql;
+ //print $sql;
    $adata=array();
   
   
@@ -356,5 +360,167 @@ mysql_free_result($result);
 
 }
 
+function orders_in_process(){
 
+  $conf=$_SESSION['state']['home']['splinters']['orders_in_process'];
+   if(isset( $_REQUEST['sf']))
+      $start_from=$_REQUEST['sf'];
+    else
+      $start_from=$conf['sf'];
+    if(isset( $_REQUEST['nr']))
+      $number_results=$_REQUEST['nr'];
+    else
+      $number_results=$conf['nr'];
+      
+      
+  if(isset( $_REQUEST['o']))
+    $order=$_REQUEST['o'];
+  else
+    $order=$conf['order'];
+ 
+ if(isset( $_REQUEST['od']))
+    $order_dir=$_REQUEST['od'];
+  else
+    $order_dir=$conf['order_dir'];
+     if(isset( $_REQUEST['f_field']))
+     $f_field=$_REQUEST['f_field'];
+    else
+      $f_field=$conf['f_field'];
+
+   if(isset( $_REQUEST['f_value']))
+     $f_value=$_REQUEST['f_value'];
+    else
+      $f_value=$conf['f_value'];
+ if(isset( $_REQUEST['where']))
+      $where=$_REQUEST['where'];
+    else
+      $where=$conf['where'];
+  
+ if(isset( $_REQUEST['from']))
+    $from=$_REQUEST['from'];
+  else
+    $from=$conf['from'];
+  if(isset( $_REQUEST['to']))
+    $to=$_REQUEST['to'];
+  else
+    $to=$conf['to'];
+
+
+   if(isset( $_REQUEST['tableid']))
+    $tableid=$_REQUEST['tableid'];
+  else
+    $tableid=0;
+
+
+   $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
+
+   $_SESSION['state']['report']['orders_in_progress']['order']=$order;
+      $_SESSION['state']['report']['orders_in_progress']['order_dir']=$order_direction;
+      $_SESSION['state']['report']['orders_in_progress']['sf']=$start_from;
+      $_SESSION['state']['report']['orders_in_progress']['nr']=$number_results;
+
+  
+
+   $date_interval=prepare_mysql_dates($from,$to,'date_index','only_dates');
+   if($date_interval['error']){
+      $date_interval=prepare_mysql_dates($conf['from'],$conf['to']);
+   }else{
+     $_SESSION['state']['report']['orders_in_progress']['from']=$date_interval['from'];
+     $_SESSION['state']['report']['orders_in_progress']['to']=$date_interval['to'];
+   }
+
+$output_type='ajax';
+   $filtered=0;
+   $rtext='';
+ 
+   $wheref='';
+
+
+$where=' where `Order Current Dispatch State`="In Process"';
+
+
+   $_order=$order;
+   $_dir=$order_direction;
+  $filter_msg='';
+
+   $sql="select count(*) as total from `Order Dimension` $where $wheref  ";
+$res=mysql_query($sql);
+if($row=mysql_fetch_assoc($res)){
+$total_records=$row['total'];
+
+}else
+$total_records=0;
+
+
+   $rtext=$total_records." ".ngettext('order','orders',$total_records);
+    if ($total_records>$number_results)
+        $rtext_rpp=sprintf(" (%d%s)",$number_results,_('rpp'));
+    else
+        $rtext_rpp=" ("._("showing all records").")";
+
+
+
+   if($order=='invoices')
+     $order='`Invoices`';
+
+   else   
+     $order='`Order Date`';
+
+  
+   $sql="select  `Order Date`,`Order Currency`,`Order Total Net Amount`+`Order Total Tax Amount` as `Order Total`,C.`Customer Key`, `Customer Name`,`Order Public ID`,`Order Key` from `Order Dimension` O left join `Customer Dimension` C on (O.`Order Customer Key`=C.`Customer Key`) $where $wheref  order by  $order $order_direction limit $start_from,$number_results";
+   //print $sql;
+   $adata=array();
+  
+  
+   $position=1;
+  $result=mysql_query($sql);
+  while($data=mysql_fetch_array($result, MYSQL_ASSOC)){
+
+
+
+  
+
+
+  
+    $order="<a href='order.php?id=".$data['Order Key']."'>".$data['Order Public ID'].'</a>'; 
+    $customer="<a href='customer.php?id=".$data['Customer Key']."'>".$data['Customer Name'].'</a>'; 
+
+    $adata[]=array(
+		   'order'=>$order
+	,'customer'=>$customer	  
+,'value'=>money($data['Order Total'],$data['Order Currency'])
+,'date'=>strftime("%x",strtotime($data['Order Date']))
+		   );
+  }
+mysql_free_result($result);
+
+
+
+
+  $response=array('resultset'=>
+		   array('state'=>200,
+			 'data'=>$adata,
+			 'rtext'=>$rtext,
+			 'rtext_rpp'=>$rtext_rpp,
+			 'sort_key'=>$_order,
+			 'sort_dir'=>$_dir,
+			 'tableid'=>$tableid,
+			 'filter_msg'=>$filter_msg,
+			 'total_records'=>$total_records,
+			 'records_offset'=>$start_from,
+
+			 'records_perpage'=>$number_results,
+			 'records_order'=>$order,
+			 'records_order_dir'=>$order_dir,
+			 'filtered'=>$filtered
+			 )
+		   );
+  if($output_type=='ajax'){
+    echo json_encode($response);
+    return;
+  }else{
+    return $response;
+  }
+
+}
 ?>
