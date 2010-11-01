@@ -1320,9 +1320,17 @@ function list_departments_for_edition(){
    
    $store_id=$_SESSION['state']['store']['id'];
 
+$conf_table='store';
 
-
-   $_SESSION['state']['store']['table']=array('order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value);
+  // $_SESSION['state']['store']['table']=array('order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value);
+    $_SESSION['state'][$conf_table]['table']['order']=$order;
+    $_SESSION['state'][$conf_table]['table']['order_dir']=$order_dir;
+    $_SESSION['state'][$conf_table]['table']['nr']=$number_results;
+    $_SESSION['state'][$conf_table]['table']['sf']=$start_from;
+    $_SESSION['state'][$conf_table]['table']['where']=$where;
+    $_SESSION['state'][$conf_table]['table']['f_field']=$f_field;
+    $_SESSION['state'][$conf_table]['table']['f_value']=$f_value;
+   
    
    //$where=$where.' '.sprintf(" and `Product Department Store Key`=%d",$store_id);
    
@@ -1377,29 +1385,44 @@ function list_departments_for_edition(){
     $order='`Product Department Name`';
    elseif($order=='code')
     $order='`Product Department Code`';
-  
-
-    $sql="select D.`Product Department Key`,`Product Department Code`,`Product Department Name`,`Product Department For Public Sale Products`+`Product Department For Private Sale Products`+`Product Department In Process Products` as Products  from `Product Department Dimension` D  $where $wheref  order by $order $order_direction limit $start_from,$number_results    ";
+   elseif($order=='sales_type')
+    $order='`Product Department Sales Type`';
+else
+$order='`Product Department Name`';
+    $sql="select D.`Product Department Sales Type`, D.`Product Department Key`,`Product Department Code`,`Product Department Name`,`Product Department For Public Sale Products`+`Product Department For Private Sale Products`+`Product Department In Process Products` as Products  from `Product Department Dimension` D  $where $wheref  order by $order $order_direction limit $start_from,$number_results    ";
     
     $res = mysql_query($sql);
     $adata=array();
-    //print "$sql";
+   // print "$sql";
     while($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
-      if($row['Products']>0){
-	$delete='<img src="art/icons/discontinue.png" /> <span  style="cursor:pointer">'._('Discontinue').'<span>';
-	$delete_type='discontinue';
-      }else{
-	$delete='<img src="art/icons/delete.png" /> <span  style="cursor:pointer">'._('Delete').'<span>';
-      $delete_type='delete';
-    }
+//      if($row['Products']>0){
+//	$delete='<img src="art/icons/discontinue.png" /> <span  style="cursor:pointer">'._('Discontinue').'<span>';//
+//	$delete_type='discontinue';
+//      }else{
+//	$delete='<img src="art/icons/delete.png" /> <span  style="cursor:pointer">'._('Delete').'<span>';
+//      $delete_type='delete';
+//    }
+
+switch ($row['Product Department Sales Type']) {
+    case 'Public Sale':
+        $sales_type=_('Public Sale');
+        break;
+    case 'Private Sale':
+        $sales_type=_('Private Sale');
+        break;
+    case 'Not for Sale':
+        $sales_type=_('Not for Sale');
+        break;        
+}
+
 
 
       $adata[]=array(
 		     'id'=>$row['Product Department Key'],
 		     'name'=>$row['Product Department Name'],
 		     'code'=>$row['Product Department Code'],
-		     'delete'=>$delete,
-		     'delete_type'=>$delete_type,
+		     'sales_type'=>$sales_type,
+		     //'delete_type'=>$delete_type,
 		     'go'=>sprintf("<a href='department.php?id=%d&edit=1'><img src='art/icons/page_go.png' alt='go'></a>",$row['Product Department Key'])
 		     );
    }

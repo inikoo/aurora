@@ -2328,8 +2328,8 @@ if($key=='Customer Fiscal Name' or $key=='Fiscal Name'){
       Returns formated id
     */
     function get_formated_id() {
-        global $myconf;
-
+       
+        $customer_id_prefix='';
         $sql="select count(*) as num from `Customer Dimension`";
         $res=mysql_query($sql);
         $min_number_zeros=4;
@@ -2340,7 +2340,7 @@ if($key=='Customer Fiscal Name' or $key=='Fiscal Name'){
         if (!is_numeric($min_number_zeros))
             $min_number_zeros=4;
 
-        return sprintf("%s%0".$min_number_zeros."d",$myconf['customer_id_prefix'], $this->id);
+        return sprintf("%s%0".$min_number_zeros."d",$customer_id_prefix, $this->id);
 
     }
 

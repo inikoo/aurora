@@ -36,15 +36,22 @@ class Auth {
     }
 
 
-    function authenticate($handle=false,$sk=false,$page=false) {
+    function authenticate($handle=false,$sk=false,$page=false,$page_key=f0) {
 
         $this->log_page=$page;
         switch ($this->log_page) {
         case 'staff':
             $this->user_type="'Administrator','Staff'";
-
+            $this->where_user_type=" and `User Type` in ('Administrator','Staff')"; 
             break;
-
+        case 'customer':    
+             $this->user_type="'Customer'";
+            $this->where_user_type=sprintf(" and `User Type`='Customer' and `User Site Key`=%d ",$page_key); 
+            break;
+         case 'supplier':    
+             $this->user_type="'Supplier'";
+            $this->where_user_type=sprintf(" and `User Type`='Supplier'  "); 
+            break;
         }
 
         if ($handle and $sk) {
@@ -116,11 +123,11 @@ class Auth {
                         'main_reason'=>'handle'
                     );
 
-        $sql=sprintf("select `User Key`,`User Password`,`User Parent Key` from `User Dimension` where `User Handle`=%s and `User Active`='Yes' and `User Type` in (%s)  "
+        $sql=sprintf("select `User Key`,`User Password`,`User Parent Key` from `User Dimension` where `User Handle`=%s and `User Active`='Yes' %s  "
                      ,prepare_mysql($this->handle)
-                     ,$this->user_type
+                     ,$this->where_user_type
                     );
-
+//print $sql;
         $res=mysql_query($sql);
         if ($row=mysql_fetch_array($res)) {
             $this->pass['handle']='Yes';
@@ -171,7 +178,7 @@ class Auth {
             $this->status=true;
             $this->user_key=$row['User Key'];
             $this->user_parent_key=$row['User Parent Key'];
-            $this->create_user_log($ip);
+            $this->create_user_log();
         } else {
             $this->log_failed_login();
         }
@@ -257,5 +264,8 @@ class Auth {
     }
 
 
+public function set_user_key($user_key){
+    $this->user_key=$user_key;
+}
 }
 ?>
