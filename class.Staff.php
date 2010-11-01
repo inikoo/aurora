@@ -14,6 +14,7 @@
 
   //require_once 'class.Name.php';
 require_once 'class.Email.php';
+require_once 'class.User.php';
 
 class Staff extends DB_Table{
 
@@ -299,5 +300,24 @@ $company=new Company($company_key);
 
    }
 
+function create_user() {
+    $password=generatePassword(8,10);
+    $user_data=array(
+                   'User Handle'=>$this->data['Staff Alias'],
+                   'User Alias'=>$this->data['Staff Name'],
+
+                   'User Password'=>hash('sha256',$password),
+                   'User Active'=>'Yes',
+                   'User Type'=>'Staff',
+
+                   'User Parent Key'=>$this->id,
+
+               );
+     
+    $user= new User('find',$user_data,'create');
+  
+   return $user;
+
+}
 
 }

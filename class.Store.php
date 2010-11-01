@@ -250,6 +250,10 @@ class Store extends DB_Table{
 
    
     switch($key){
+    case('Total Customer Contacts'):
+        return number($this->data['Store Total Customer Contacts']);
+    case('Total Users'):
+        return number($this->data['Store Total Users']);    
     case('All To Pay Invoices'):
     return $this->data['Store Total Invoices']-$this->data['Store Paid Invoices']-$this->data['Store Paid Refunds'];
     case('All Paid Invoices'):

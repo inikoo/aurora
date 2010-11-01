@@ -2,6 +2,7 @@
 include_once('common.php');
 //include_once('stock_functions.php');
 include_once('class.SupplierProduct.php');
+include_once('class.Supplier.php');
 
 
 
@@ -32,19 +33,9 @@ $js_files=array(
 		$yui_path.'datatable/datatable-debug.js',
 		$yui_path.'container/container-min.js',
 		$yui_path.'menu/menu-min.js',
-		'js/common.js.php',
-		'js/table_common.js.php',
+		'common.js.php',
+		'table_common.js.php',
 		);
-
-
-
-
-
-// $_SESSION['views']['product_blocks'][5]=0;
-// foreach($_SESSION['views']['product_blocks'] as $key=>$value){
-//   $hide[$key]=($value==1?0:1);
-// }
-// //print_r($hide);
 
 $smarty->assign('display',$_SESSION['state']['supplier_product']['display']);
 
@@ -64,7 +55,7 @@ header('Location: supplier.php?id='.$_REQUEST['supplier_key']);
    exit;
 
 }
-
+$supplier=new Supplier($supplier_product->data['Supplier Key']);
 
 $_SESSION['state']['supplier_product']['code']=$supplier_product->data['Supplier Product Code'];
 $_SESSION['state']['supplier_product']['code']=$supplier_product->data['Supplier Key'];
@@ -73,6 +64,7 @@ $_SESSION['state']['supplier_product']['code']=$supplier_product->data['Supplier
 
 
 $smarty->assign('supplier_product',$supplier_product);
+$smarty->assign('supplier',$supplier);
 
 $smarty->assign('parent','suppliers');
 $smarty->assign('title',$supplier_product->get('Supplier Product Code'));
@@ -80,7 +72,7 @@ $smarty->assign('title',$supplier_product->get('Supplier Product Code'));
 
 
 $js_files[]= 'js/search.js';
-$js_files[]='js/supplier_product.js.php';
+$js_files[]='supplier_product.js.php';
 
 
 
