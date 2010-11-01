@@ -1947,7 +1947,19 @@ if(isset( $_REQUEST['where']))
    }else
      $store=$_SESSION['state']['orders']['store'];
 
-     $_SESSION['state']['orders']['dn']=array('dn_state_type'=>$state,'order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value);
+
+    // $_SESSION['state']['orders']['dn']=array('dn_state_type'=>$state,'order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value);
+
+ $_SESSION['state']['orders']['dn']['dn_state_type']=$state;
+    $_SESSION['state']['orders']['dn']['order']=$order;
+    $_SESSION['state']['orders']['dn']['order_dir']=$order_direction;
+    $_SESSION['state']['orders']['dn']['nr']=$number_results;
+    $_SESSION['state']['orders']['dn']['sf']=$start_from;
+    $_SESSION['state']['orders']['dn']['where']=$where;
+    $_SESSION['state']['orders']['dn']['f_field']=$f_field;
+    $_SESSION['state']['orders']['dn']['f_value']=$f_value;
+
+
      $_SESSION['state']['orders']['view']=$view;
      $date_interval=prepare_mysql_dates($from,$to,'`Delivery Note Date`','only_dates');
      if($date_interval['error']){
