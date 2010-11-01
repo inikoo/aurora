@@ -174,7 +174,7 @@ $smarty->assign('paginator_menu2',$paginator_menu2);
 
 
 // -----------------------------------------------export csv code starts here------------------------
- $csv_export_options=array(
+ $csv_export_options0=array(
                             'description'=>array(
                                               'title'=>_('Description'),
                                               'rows'=>
@@ -254,6 +254,102 @@ $smarty->assign('export_csv_table_cols',5);
 $smarty->assign('csv_export_options',$csv_export_options);
 // -----------------------------------------------export csv code ends here------------------------
 
+// ----------------------------------export csv array for invoice list starts here -----------------------------------------------
+ $csv_export_options1=array(
+                            'description'=>array(
+                                              'title'=>_('Description'),
+                                              'rows'=>
+                                                     array(
+                                                         array(
+                                                             'code'=>array('label'=>_('Code'),'selected'=>$_SESSION['state']['orders']['invoices']['csv_export']['code']),
+                                                             'date'=>array('label'=>_('Date'),'selected'=>$_SESSION['state']['orders']['invoices']['csv_export']['date']),
+                                                             'name'=>array('label'=>_('Customer'),'selected'=>$_SESSION['state']['orders']['invoices']['csv_export']['name']),
+                                                       
+                                                        
+                                                         )
+                                                     )
+                                          ),
+                            
+                            'payment_details'=>array('title'=>_('Payment Details'),
+                            'rows'=>
+                                               array(
+                                                   array(
+                                                       'paymentmethod'=>array('label'=>_('Pament Method'),'selected'=>$_SESSION['state']['orders']['invoices']['csv_export']['paymentmethod']),
+                                                       'invoicefor'=>array('label'=>_('Invoice For'),'selected'=>$_SESSION['state']['orders']['invoices']['csv_export']['invoicefor']),
+                                                       'invoicepaid'=>array('label'=>_('Invoice Paid'),'selected'=>$_SESSION['state']['orders']['invoices']['csv_export']['invoicepaid']),
+                                                   
+                                                   )
+                            )
+                            ),
+'other_invoice_details'=>array('title'=>_('Other Invoice Details'),
+                            'rows'=>
+                                               array(
+                                                   array(
+                                                       'invoice_total_amount'=>array('label'=>_('Total Amount'),'selected'=>$_SESSION['state']['orders']['invoices']['csv_export']['invoice_total_amount']),
+                                                       'invoice_total_profit'=>array('label'=>_('Total Profit'),'selected'=>$_SESSION['state']['orders']['invoices']['csv_export']['invoice_total_profit']),
+							 'invoice_total_tax_amount'=>array('label'=>_('Total Tax Amount'),'selected'=>$_SESSION['state']['orders']['invoices']['csv_export']['invoice_total_tax_amount']),
+                                                       'invoice_total_tax_adjust_amount'=>array('label'=>_('Total Tax Adjust Amount'),'selected'=>$_SESSION['state']['orders']['invoices']['csv_export']['invoice_total_tax_adjust_amount']),
+							'invoice_total_adjust_amount'=>array('label'=>_('Total Adjust Amount'),'selected'=>$_SESSION['state']['orders']['invoices']['csv_export']['invoice_total_adjust_amount']),
+                                                        
+                                                   )
+                            )
+                            )
+                        );
+$smarty->assign('export_csv_table_cols1',3);
+$smarty->assign('csv_export_options1',$csv_export_options1);
+// ----------------------------------export csv array for invoices list ends here -----------------------------------------------
 
+// ----------------------------------export csv array for delivery notes list starts here ---------------------------------------
+ $csv_export_options2=array(
+                            'description'=>array(
+                                              'title'=>_('Description'),
+                                              'rows'=>
+                                                     array(
+                                                         array(
+                                                             'id'=>array('label'=>_('Delivery Note ID'),'selected'=>$_SESSION['state']['orders']['dn']['csv_export']['id']),
+                                                             'date'=>array('label'=>_('Date'),'selected'=>$_SESSION['state']['orders']['dn']['csv_export']['date']),
+                                                             'type'=>array('label'=>_('Type'),'selected'=>$_SESSION['state']['orders']['dn']['csv_export']['type']),
+                                                       'customer_name'=>array('label'=>_('Customer'),'selected'=>$_SESSION['state']['orders']['dn']['csv_export']['customer_name']),
+                                                       'weight'=>array('label'=>_('Weight'),'selected'=>$_SESSION['state']['orders']['dn']['csv_export']['weight']),
+                                                       'parcels_no'=>array('label'=>_('Parcels'),'selected'=>$_SESSION['state']['orders']['dn']['csv_export']['parcels_no'])
+                                                     
+                                                         )
+                                                     )
+                                          ),
+                            
+                            'picking'=>array('title'=>_('Picking'),
+                            'rows'=>
+                                               array(
+                                                   array(
+                                                       'start_picking_date'=>array('label'=>_('Start Picking Date'),'selected'=>$_SESSION['state']['orders']['dn']['csv_export']['start_picking_date']),
+                                                       'finish_picking_date'=>array('label'=>_('Finish Picking Date'),'selected'=>$_SESSION['state']['orders']['dn']['csv_export']['finish_picking_date'])
+                                                   )
+                            )
+                            ),
+'packing'=>array('title'=>_('Packing'),
+                            'rows'=>
+                                               array(
+                                                   array(
+                                                       'start_packing_date'=>array('label'=>_('Start Packing Date'),'selected'=>$_SESSION['state']['orders']['dn']['csv_export']['start_packing_date']),
+                                                       'finish_packing_date'=>array('label'=>_('Finish Packing Date'),'selected'=>$_SESSION['state']['orders']['dn']['csv_export']['finish_packing_date'])
+                                                   )
+                            )
+                            ),
+'other_details'=>array('title'=>_('Other Details'),
+                            'rows'=>
+                                               array(
+                                                   array(
+                                                       'state'=>array('label'=>_('State'),'selected'=>$_SESSION['state']['orders']['dn']['csv_export']['state']),
+                                                       'dispatched_method'=>array('label'=>_('Dispatch Method'),'selected'=>$_SESSION['state']['orders']['dn']['csv_export']['dispatched_method']),
+                                                       'parcel_type'=>array('label'=>_('Parcel Type'),'selected'=>$_SESSION['state']['orders']['dn']['csv_export']['parcel_type']),
+                                                       'boxes_no'=>array('label'=>_('Number Of Boxes'),'selected'=>$_SESSION['state']['orders']['dn']['csv_export']['boxes_no'])
+                                                   )
+                            )
+                            )
+
+                        );
+$smarty->assign('export_csv_table_cols2',4);
+$smarty->assign('csv_export_options2',$csv_export_options2);
+// ----------------------------------export csv array for delivery notes list ends here-----------------------------------------------
 $smarty->display('orders.tpl');
 ?>

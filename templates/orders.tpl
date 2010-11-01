@@ -59,8 +59,9 @@
    <div  id="invoices_table"   class="data_table" style="{if $view!='invoices'}display:none{/if};clear:both">
     <span class="clean_table_title">{t}Invoice List{/t}</span>
      <div id="table_type" class="table_type">
+<span  id="export_csv1" style="float:right;margin-left:20px"  class="table_type state_details" tipo="invoices" >{t}Export (CSV){/t}</span>
         <div  style="font-size:90%"   id="invoice_chooser"  style="display:{if $view!='orders'}none{/if}">
-            <a style="float:right;margin-left:20px"  class="table_type state_details"  href="invoices_csv.php" >{t}Export (CSV){/t}</a>
+           
             <span style="float:right;margin-left:20px" class="table_type invoice_type state_details {if $invoice_type=='all'}selected{/if}"  id="restrictions_all_invoices" table_type="all"  >{t}All{/t} ({$store->get('Total Invoices')})</span>
             <span style="float:right;margin-left:20px" class="table_type invoice_type state_details {if $invoice_type=='invoices'}selected{/if}"  id="restrictions_invoices" table_type="invoices"   >{t}Invoices{/t} ({$store->get('Invoices')})</span>
             <span style="float:right;margin-left:20px" class="table_type invoice_type state_details {if $invoice_type=='refunds'}selected{/if}"  id="restrictions_refunds"  table_type="refunds"  >{t}Refunds{/t} ({$store->get('Refunds')})</span>
@@ -106,7 +107,7 @@
     <span class="clean_table_title">{t}Delivery Note List{/t}</span>
     
         <div style="font-size:90%"  id="dn_table_type" class="table_type">
-    <a style="float:right;margin-left:20px" class="table_type state_details"  href="dn_csv.php" >{t}Export (CSV){/t}</a>
+   <span  id="export_csv2" style="float:right;margin-left:20px"  class="table_type state_details" tipo="dn" >{t}Export (CSV){/t}</span>
             <span style="float:right;margin-left:20px" class="table_type dn_view state_details {if $dn_state_type=='all'}selected{/if}"  id="restrictions_dn_all" table_type="all"  >{t}All{/t} ({$store->get('Total Orders')})</span>
             <img onClick="change_dn_view(this)" state="{$dn_view}"   style="cursor:pointer;float:right;margin-left:20px;position:relative;top:5px;" src="art/icons/previous.png" alt="x"/>
            <div id="dn_view_state_chooser"    style="{if $dn_view!='dn_state'}display:none{/if}">
@@ -183,5 +184,8 @@
     </ul>
   </div>
 </div>
-{include file='export_csv_menu_splinter.tpl' id=0 cols=$export_csv_table_cols session_address="orders-table-csv_export" export_options=$csv_export_options }
+{include file='export_csv_menu_splinter.tpl' id=0 cols=$export_csv_table_cols session_address="orders-table-csv_export0" export_options=$csv_export_options0 }
+{include file='export_csv_menu_splinter.tpl' id=1 cols=$export_csv_table_cols1 session_address="orders-table-csv_export1" export_options=$csv_export_options1 }
+{include file='export_csv_menu_splinter.tpl' id=2 cols=$export_csv_table_cols2 session_address="orders-table-csv_export2" export_options=$csv_export_options2 }
+
 {include file='footer.tpl'}
