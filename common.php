@@ -54,10 +54,12 @@ $smarty->cache_dir = $myconf['cache_dir'];
 $smarty->config_dir = $myconf['config_dir'];
 
 
+
 $logout = (array_key_exists('logout', $_REQUEST)) ? $_REQUEST['logout'] : false;
 if ($logout){
 
-  $sql=sprintf("update `User Log Dimension` set `Logout Date`=NOW()  where `Session ID`=%s", prepare_mysql(session_id()));
+  
+$sql=sprintf("update `User Log Dimension` set `Logout Date`=NOW()  where `Session ID`=%s", prepare_mysql(session_id()));
    mysql_query($sql);
 
   session_regenerate_id();
@@ -70,22 +72,43 @@ if ($logout){
 
 $is_already_logged_in=(isset($_SESSION['logged_in']) and $_SESSION['logged_in']? true : false);
 
-if(!$is_already_logged_in){
+if($is_already_logged_in){
+
+if($_SESSION['logged_in_page']!=0){
+    
+    $sql=sprintf("update `User Log Dimension` set `Logout Date`=NOW()  where `Session ID`=%s", prepare_mysql(session_id()));
+   mysql_query($sql);
+
+  session_regenerate_id();
+  session_destroy();
+  unset($_SESSION);
+  
+  include_once 'login.php';
+  exit;
+    
+    }
+$user=new User($_SESSION['user_key']);
+
+}else{
+  
+  
+
   include_once('app_files/key.php');
   $auth=new Auth(IKEY,SKEY);
   $handle = (array_key_exists('_login_', $_REQUEST)) ? $_REQUEST['_login_'] : false;
-  
-  
   $sk = (array_key_exists('ep', $_REQUEST)) ? $_REQUEST['ep'] : false;
 
+    
+    
   if(!$sk and array_key_exists('mk', $_REQUEST)    ){
     $auth->authenticate_from_masterkey($_REQUEST['mk']);
-  }else{
-    $auth->authenticate($handle,$sk,'staff');
+  }elseif($handle){
+    $auth->authenticate($handle,$sk,'staff',0);
   }
   
   if($auth->is_authenticated()){
     $_SESSION['logged_in']=true;
+    $_SESSION['logged_in_page']=0;
     $_SESSION['user_key']=$auth->get_user_key();
     $user=new User($_SESSION['user_key']);  
     $_SESSION['text_locale']=$user->data['User Preferred Locale'];
@@ -95,8 +118,6 @@ if(!$is_already_logged_in){
       include_once 'login.php';
     exit;
   }  
-}else{
-	$user=new User($_SESSION['user_key']);
 }
 
 $_client_locale='en_GB.UTF-8';

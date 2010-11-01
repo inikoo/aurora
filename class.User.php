@@ -622,7 +622,9 @@ break;
 case('Created '):
 case('Last Failed Login'):
 case('Last Login'):
-
+if($this->data ['User '.$key]=='' or $this->data ['User '.$key]=='0000-00-00 00:00:00')
+   return '';
+   else
 return strftime ( "%e %b %Y %H:%M %Z", strtotime ( $this->data ['User '.$key]." +00:00" ) );
 break;
   case('User Pasword'):
@@ -892,6 +894,7 @@ function can_view_list($right_name){
     
   return $list;
 }
+
 
 }
 

@@ -49,8 +49,7 @@ var validWorldPhoneChars = phoneNumberDelimiters + "+";
 // Minimum no of digits in an international phone no.
 var minDigitsInIPhoneNumber = 6;
 
-function isInteger(s)
-{   var i;
+function isInteger(s){   var i;
     for (i = 0; i < s.length; i++)
     {   
         // Check that current character is number.
@@ -60,8 +59,8 @@ function isInteger(s)
     // All characters are numbers.
     return true;
 }
-function trim(s)
-{   var i;
+
+function trim(s){   var i;
     var returnString = "";
     // Search through string's characters one by one.
     // If character is not a whitespace, append to returnString.
@@ -73,8 +72,8 @@ function trim(s)
     }
     return returnString;
 }
-function stripCharsInBag(s, bag)
-{   var i;
+
+function stripCharsInBag(s, bag){   var i;
     var returnString = "";
     // Search through string's characters one by one.
     // If character is not in bag, append to returnString.
@@ -99,9 +98,6 @@ if(strPhone.indexOf("(")==-1 && strPhone.indexOf(")")!=-1)return false
 s=stripCharsInBag(strPhone,validWorldPhoneChars);
 return (isInteger(s) && s.length >= minDigitsInIPhoneNumber);
 }
-
-
-
 
 function submit_email(){
     
@@ -136,7 +132,7 @@ function submit_email(){
 	
 	YAHOO.util.Connect.asyncRequest('POST',request ,{
 		success:function(o) {
-	       alert(o.responseText);
+	       //alert(o.responseText);
 		    var r =  YAHOO.lang.JSON.parse(o.responseText);
 		    if(r.state=='200'){
 			if(r.result=='new'){
@@ -169,8 +165,6 @@ function submit_email(){
     
    
 }
-
-
 
 function customer_type_selected(){
     
@@ -219,15 +213,12 @@ function customer_type_selected(){
 
 }
 
-
 function password_changed(){
 
     if(Dom.get('password').getAttribute('confirmed')=='yes'){
 	check_password();
     }
 }
-
-
 
 function email_confirmation_changed(){
     if(this.getAttribute('confirmed')=='yes'){
@@ -385,7 +376,6 @@ function telephone_changed(){
     }
 }
 
-
 function person_choosen(){
     data.customer_is_company=false;
     Dom.get('person').checked=true;
@@ -394,6 +384,7 @@ function person_choosen(){
     Dom.setStyle('submit_details','display','');
 
 }
+
 function company_choosen(){
     data.customer_is_company=true;
     Dom.get('company').checked=true;
@@ -403,8 +394,6 @@ function company_choosen(){
     Dom.setStyle('company_or_person','display','none');
 
 }
-
-
 
 function submit_details(){
  var error_tag=false;
@@ -595,9 +584,6 @@ function check_password(){
     return !error_tab;
 
 }
-
-
-
 
 function name_changed(){
     if(this.value==''){

@@ -3204,6 +3204,18 @@ function list_departments() {
         $code=sprintf('<a href="department.php?id=%d">%s</a>',$row['Product Department Key'],$row['Product Department Code']);
         $name=sprintf('<a href="department.php?id=%d">%s</a>',$row['Product Department Key'],$row['Product Department Name']);
 
+switch ($row['Product Department Sales Type']) {
+    case 'Public Sale':
+        $sales_type=_('Public Sale');
+        break;
+    case 'Private Sale':
+        $sales_type=_('Private Sale');
+        break;
+    case 'Not for Sale':
+        $sales_type=_('Not for Sale');
+        break;        
+}
+
 
 
         if ($period=='all') {
@@ -3495,7 +3507,7 @@ function list_departments() {
                      'optimal'=>number($row['Product Department Optimal Availability Products']),
                      'low'=>number($row['Product Department Low Availability Products']),
                      'critical'=>number($row['Product Department Critical Availability Products']),
-
+                      'sales_type'=>$sales_type,  
 
                      'sales'=>$tsall,
 
@@ -3526,7 +3538,8 @@ function list_departments() {
                      'active'=>number($sum_active),
                      'sales'=>$tsall,
                      'profit'=>$tprofit,
-                     'discontinued'=>number($sum_discontinued)
+                     'discontinued'=>number($sum_discontinued),
+                     'sales_type'=>''
 // 		 'outofstock'=>number($row['product department out of stock products']),
 // 		 'stockerror'=>number($row['product department unknown stock products']),
 // 		 'stock_value'=>money($row['product department stock value']),

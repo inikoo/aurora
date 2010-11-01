@@ -67,7 +67,18 @@ $smarty->config_dir = 'server_files/smarty/configs';
 
 $logged_in=(isset($_SESSION['logged_in']) and $_SESSION['logged_in']? true : false);
 
-if ($logged_in) {
+if ($logged_in ) {
+
+if($_SESSION['logged_in_page']!=$store_key){
+       include_once('app_files/key.php');
+  
+    include_once('aes.php');
+    $Sk="skstart|".(date('U')+300)."|".ip()."|".IKEY."|".sha1(mt_rand()).sha1(mt_rand());
+    $St=AESEncryptCtr($Sk,SKEY, 256);
+    $smarty->assign('secret_string',$St);
+
+}else{
+
 
     if (!isset($_SESSION['state'])) {
         include_once('conf/state.php');
@@ -78,10 +89,18 @@ if ($logged_in) {
     $smarty->assign('user',$user);
     if(isset($_SESSION['order_data']))
     $smarty->assign('order',$_SESSION['order_data']);
-
+}
 
 } else {
+
+
+    
+
     include_once('app_files/key.php');
+    //$auth=new Auth(IKEY,SKEY);
+    
+    
+    
     include_once('aes.php');
     $Sk="skstart|".(date('U')+300)."|".ip()."|".IKEY."|".sha1(mt_rand()).sha1(mt_rand());
     $St=AESEncryptCtr($Sk,SKEY, 256);

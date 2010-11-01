@@ -51,6 +51,12 @@
 </div>    
   </div>
 
+<div  id="block_orders" class="data_table" style="clear:both;margin:25px 0px">
+    <span id="table_title" class="clean_table_title">{t}Orders with this Product{/t}</span>
+    {include file='table_splinter.tpl' table_id=0 filter_name=$filter_name0 filter_value=$filter_value0}
+    <div  id="table0"   class="data_table_container dtable btable "> </div>
+  </div>
+
 
 {include file='footer.tpl'}
 

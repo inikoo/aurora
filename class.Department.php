@@ -33,7 +33,7 @@ public $new_value=false;
       Returns:
       void
     */
-
+var $external_DB_link=false;
     function Department ($a1=false,$a2=false,$a3=false) {
         $this->table_name='Product Department';
         $this->ignore_fields=array(
@@ -286,16 +286,43 @@ public $new_value=false;
 
     }
 
-    /*
-        Function: update
-        Funcion que permite actualizar el nombre o el codigo en la tabla Product Department Dimension, evitando registros duplicados.
-    */
-// JFA
+ function update_sales_type($value) {
+    if (
+        $value=='Public Sale' or $value=='Private Sale' or $value=='Not For Sale'
+    ) {
+        $sales_state=$value;
+
+        $sql=sprintf("update `Product Department Dimension` set `Product Department Sales Type`=%s  where  `Product Department Key`=%d "
+                     ,prepare_mysql($sales_state)
+                     ,$this->id
+                    );
+        //print $sql;
+        if (mysql_query($sql)) {
+            if ($this->external_DB_link)mysql_query($sql,$this->external_DB_link);
+            $this->msg=_('Department Sales Type updated');
+            $this->updated=true;
+
+            $this->new_value=$value;
+            return;
+        } else {
+            $this->msg=_("Error: Department sales type could not be updated ");
+            $this->updated=false;
+            return;
+        }
+    } else
+        $this->msg=_("Error: wrong value")." [Sales Type] ($value)";
+    $this->updated=false;
+}
+
+
     function update($key,$a1=false,$a2=false) {
         $this->updated=false;
         $this->msg='Nothing to change';
 
         switch ($key) {
+        case('sales_type'):
+        $this->update_sales_type($a1);
+        break;
         case('code'):
 
             if ($a1==$this->data['Product Department Code']) {
