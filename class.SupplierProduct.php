@@ -12,6 +12,9 @@
  Version 2.0
 */
 class supplierproduct extends DB_Table {
+
+
+
     function supplierproduct($a1,$a2=false,$a3=false) {
 
         $this->table_name='Supplier Product';
@@ -154,12 +157,14 @@ class supplierproduct extends DB_Table {
                 if ($row=mysql_fetch_array($result2, MYSQL_ASSOC)   ) {
                     $this->code=$row['Supplier Product Code'];
                     $this->supplier_key=$row['Supplier Key'];
+                     $this->pid=row['Supplier Product Key'];
                     foreach($row as $key=>$value) {
                         $this->data[$key]=$value;
                     }
 
 
                 } else {
+                $this->pid=0;
                     $this->code='';
                     $this->supplier_key='';
                     $this->data['Supplier Product Code']='';
@@ -178,6 +183,7 @@ class supplierproduct extends DB_Table {
             $result=mysql_query($sql);
             if ($this->data=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
                 $this->id=$this->data['Supplier Product Current Key'];
+                $this->pid=row['Supplier Product Key'];
                 $this->key=$this->id;
                 $this->code=$this->data['Supplier Product Code'];
                 $this->supplier_key=$this->data['Supplier Key'];
@@ -299,7 +305,8 @@ class supplierproduct extends DB_Table {
             //print mysql_affected_rows()."\n";
             $this->code = $base_data['supplier product code'];
             $this->supplier_key = $base_data['supplier key'];
-            $this->new_key_id=mysql_insert_id();
+            $this->pid=mysql_insert_id();
+            $this->new_key_id=$this->pid;
             $this->new_code=true;
 
             $this->get_data('code',$this->code,$this->supplier_key);
@@ -1480,5 +1487,21 @@ return formated_price_per_unit($data);
 function get_part_locations(){
 
 }
+
+function load_images_slidesshow(){
+  $sql=sprintf("select `Image Thumbnail URL`,`Image Small URL`,`Is Principal`,ID.`Image Key`,`Image Caption`,`Image URL`,`Image Filename`,`Image File Size`,`Image File Checksum`,`Image Width`,`Image Height`,`Image File Format` from `Image Bridge` PIB left join `Image Dimension` ID on (PIB.`Image Key`=ID.`Image Key`) where `Subject Type`='Supplier Product' and   `Subject Key`=%d",$this->pid);
+  $res=mysql_query($sql);
+  $this->images_slideshow=array();
+  while ($row=mysql_fetch_array($res)) {
+	  if ($row['Image Height']!=0)
+	    $ratio=$row['Image Width']/$row['Image Height'];
+	  else
+	    $ratio=1;
+	    
+	  $this->images_slideshow[]=array('name'=>$row['Image Filename'],'small_url'=>$row['Image Small URL'],'thumbnail_url'=>$row['Image Thumbnail URL'],'filename'=>$row['Image Filename'],'ratio'=>$ratio,'caption'=>$row['Image Caption'],'is_principal'=>$row['Is Principal'],'id'=>$row['Image Key']);
+}
+
+}
+
 
 }

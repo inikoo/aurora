@@ -4,16 +4,16 @@ include_once('common.php');
 include_once('class.SupplierProduct.php');
 include_once('class.Supplier.php');
 
+$view_suppliers=$user->can_view('suppliers');
+
+
+if(!$view_suppliers){
+    header('Location: index.php');
+    exit();
+}
 
 
 
-//smarty->assign('view_suppliers',$view_suppliers);
-//$smarty->assign('view_sales',$view_sales);
-//$smarty->assign('view_stock',$view_stock);
-//$smarty->assign('create',$create);
-//$smarty->assign('modify',$modify);
-//$smarty->assign('view_orders',$view_orders);
-//$smarty->assign('view_customers',$view_cust);
 
 $css_files=array(
 		 $yui_path.'reset-fonts-grids/reset-fonts-grids.css',
@@ -39,19 +39,18 @@ $js_files=array(
 
 $smarty->assign('display',$_SESSION['state']['supplier_product']['display']);
 
-// $smarty->assign('view_plot',$_SESSION['views']['product_plot']);
+$supplier_key=(isset($_REQUEST['supplier_key'])?$_REQUEST['supplier_key']:$_SESSION['state']['supplier_product']['supplier_key']);
+$supplier_product_code=(isset($_REQUEST['code'])?$_REQUEST['code']:$_SESSION['state']['supplier_product']['code']);
 
-if(!isset($_REQUEST['code']) 
-or !isset($_REQUEST['supplier_key'])  
-or !is_numeric($_REQUEST['supplier_key'])
-){
-//header('Location: suppliers.php?e');
-   exit('x');
+if(!$supplier_key or !$supplier_product_code){
+ header('Location: suppliers.php?e');
+    exit();
 }
 
-$supplier_product= new SupplierProduct('code',$_REQUEST['code'],$_REQUEST['supplier_key']);
+
+$supplier_product= new SupplierProduct('code',$supplier_product_code,$supplier_key);
 if(!$supplier_product->id){
-header('Location: supplier.php?id='.$_REQUEST['supplier_key']);
+header('Location: supplier.php?id='.$supplier_key);
    exit;
 
 }
@@ -61,7 +60,7 @@ $_SESSION['state']['supplier_product']['code']=$supplier_product->data['Supplier
 $_SESSION['state']['supplier_product']['supplier_key']=$supplier_product->data['Supplier Key'];
 
 
-$modify=true;
+$modify=$user->can_edit('suppliers');
 $general_options_list=array();
 if($modify)
   $general_options_list[]=array('tipo'=>'url','url'=>'edit_supplier_product.php','label'=>_('Edit Product'));
