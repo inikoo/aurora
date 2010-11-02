@@ -46,7 +46,13 @@ $data=array();
 switch ($tipo) {
     case 'customers':
         $filename=_('customers').'.csv';
-        $data=get_customers_data();
+
+        $f_field=$_SESSION['state']['customers']['table']['f_field'];
+        $f_value=$_SESSION['state']['customers']['table']['f_value'];
+        $wheref=wheref_stores($f_field,$f_value);
+        $filename=_('customers').'.csv';
+	$where=sprintf(' `Customer Store Key`=%d ',$_SESSION['state']['customers']['store']);
+        $data=get_customerslist_data($wheref,$where);
         break;
     case 'stores':
         $filename=_('stores').'.csv';
@@ -143,7 +149,42 @@ switch ($tipo) {
         $where=sprintf(' `Order Store Key`=%d ',$_SESSION['state']['store']['id']);
         $data=get_orders_in_order_data($wheref,$where);
         break;  
-                     
+   case 'invoices':
+        $filename=_('invoices').'.csv';
+        $f_field=$_SESSION['state']['orders']['invoices']['f_field'];
+        $f_value=$_SESSION['state']['orders']['invoices']['f_value'];
+        $wheref=wheref_stores($f_field,$f_value);
+        $filename=_('invoices').'.csv';
+        $where=sprintf(' `Invoice Store Key`=%d ',$_SESSION['state']['store']['id']);
+        $data=get_orders_invoices_data($wheref,$where);
+        break;  
+   case 'dn':
+        $filename=_('delivery_notes').'.csv';
+        $f_field=$_SESSION['state']['orders']['dn']['f_field'];
+        $f_value=$_SESSION['state']['orders']['dn']['f_value'];
+        $wheref=wheref_stores($f_field,$f_value);
+        $filename=_('delivery_notes').'.csv';
+        $where=sprintf(' `Delivery Note Store Key`=%d ',$_SESSION['state']['store']['id']);
+        $data=get_orders_delivery_notes_data($wheref,$where);
+        break;  
+   case 'customers_per_store':
+        $filename=_('customers_per_store').'.csv';
+        $f_field=$_SESSION['state']['stores']['customers']['f_field'];
+        $f_value=$_SESSION['state']['stores']['customers']['f_value'];
+
+        $wheref=wheref_stores($f_field,$f_value);
+        $filename=_('customers_per_store').'.csv';
+	 $where=sprintf(' `Store Key`=%d ',$_SESSION['state']['store']['id']);
+        $data=get_customers_data($wheref);
+        break; 
+     case 'parts':
+        $filename=_('parts').'.csv';
+        $f_field=$_SESSION['state']['parts']['table']['f_field'];
+        $f_value=$_SESSION['state']['parts']['table']['f_value'];
+        $wheref=wheref_stores($f_field,$f_value);
+        $filename=_('parts').'.csv';
+        $data=get_parts_data($wheref);
+        break;                    
     default:
         
         break;
@@ -735,4 +776,316 @@ $data[]=$_data;
 return $data;
 
 }
+function get_orders_invoices_data($wheref,$where='true'){
+
+$data=prepare_values($_REQUEST,array('fields'=>array('type'=>'json array','optional'=>true)));
+if(isset($data['fields'])){
+$fields_to_export=$data['fields'];
+}else{
+$fields_to_export=$_SESSION['state']['orders']['invoices']['csv_export'];
+}
+
+
+$fields=array(
+'code'=>array('title'=>_('Code'),'db_name'=>'Invoice Public ID'),
+'date'=>array('title'=>_('date'),'db_name'=>'Invoice Date'),
+'name'=>array('title'=>_('Customer'),'db_name'=>'Invoice Customer Name'),
+
+'paymentmethod'=>array('title'=>_('Payment Method'),'db_name'=>'Invoice Main Payment Method'),
+'invoicefor'=>array('title'=>_('Invoice For'),'db_name'=>'Invoice For'),
+'invoicepaid'=>array('title'=>_('Invoice Paid'),'db_name'=>'Invoice Paid'),
+
+'invoice_total_amount'=>array('title'=>_('Invoice Total Amount'),'db_name'=>'Invoice Total Amount'),
+'invoice_total_profit'=>array('title'=>_('Invoice Total Profit'),'db_name'=>'Invoice Total Profit'),
+'invoice_total_tax_amount'=>array('title'=>_('Invoice Total Tax Amount'),'db_name'=>'Invoice Total Tax Amount'),
+'invoice_total_tax_adjust_amount'=>array('title'=>_('Invoice Total Tax Adjust Amount'),'db_name'=>'Invoice Total Tax Adjust Amount'),
+'invoice_total_adjust_amount'=>array('title'=>_('Invoice Total Adjust Amount'),'db_name'=>'Invoice Total Adjust Amount')
+);
+
+
+foreach($fields as $key=>$value){
+if(!isset($fields_to_export[$key]) or  !$fields_to_export[$key]  )
+unset($fields[$key]);
+}
+
+
+
+$data=array();
+$_data=array();
+foreach($fields as $key=>$options){
+$_data[]=$options['title'];
+}
+$data[]=$_data;
+$sql="select * from `Invoice Dimension` where $where $wheref";
+$res=mysql_query($sql);
+
+while($row=mysql_fetch_assoc($res)){
+$_data=array();
+foreach($fields as $key=>$options){
+
+$_data[]=$row[$options['db_name']];
+}
+$data[]=$_data;
+}
+//print_r($data);exit;
+
+return $data;
+
+}
+function get_orders_delivery_notes_data($wheref,$where='true'){
+
+$data=prepare_values($_REQUEST,array('fields'=>array('type'=>'json array','optional'=>true)));
+if(isset($data['fields'])){
+$fields_to_export=$data['fields'];
+}else{
+$fields_to_export=$_SESSION['state']['orders']['dn']['csv_export'];
+}
+
+
+$fields=array(
+'id'=>array('title'=>_('Delivery Note ID'),'db_name'=>'Delivery Note ID'),
+'date'=>array('title'=>_('Date'),'db_name'=>'Delivery Note Date'),
+'type'=>array('title'=>_('Type'),'db_name'=>'Delivery Note Type'),
+'customer_name'=>array('title'=>_('Customer'),'db_name'=>'Delivery Note Customer Name'),
+'weight'=>array('title'=>_('Weight(in kilograms)'),'db_name'=>'Delivery Note Weight'),
+'parcels_no'=>array('title'=>_('Parcels'),'db_name'=>'Delivery Note Number Parcels'),
+
+'start_picking_date'=>array('title'=>_('Start Picking Date'),'db_name'=>'Delivery Note Date Start Picking'),
+'finish_picking_date'=>array('title'=>_('Finish Picking Date'),'db_name'=>'Delivery Note Date Finish Picking'),
+
+'start_packing_date'=>array('title'=>_('Start Packing Date'),'db_name'=>'Delivery Note Date Start Packing'),
+'finish_packing_date'=>array('title'=>_('Finish Packing Date'),'db_name'=>'Delivery Note Date Finish Packing'),
+
+'state'=>array('title'=>_('State'),'db_name'=>'Delivery Note State'),
+'dispatched_method'=>array('title'=>('Dispatch Method'),'db_name'=>'Delivery Note Dispatch Method'),
+'parcel_type'=>array('title'=>_('Parcel Type'),'db_name'=>'Delivery Note Parcel Type'),
+'boxes_no'=>array('title'=>_('Number Of Boxes'),'db_name'=>'Delivery Note Number Boxes')
+);
+
+
+foreach($fields as $key=>$value){
+if(!isset($fields_to_export[$key]) or  !$fields_to_export[$key]  )
+unset($fields[$key]);
+}
+
+
+
+$data=array();
+$_data=array();
+foreach($fields as $key=>$options){
+$_data[]=$options['title'];
+}
+$data[]=$_data;
+$sql="select * from `Delivery Note Dimension` where $where $wheref";
+$res=mysql_query($sql);
+
+while($row=mysql_fetch_assoc($res)){
+$_data=array();
+foreach($fields as $key=>$options){
+
+$_data[]=$row[$options['db_name']];
+}
+$data[]=$_data;
+}
+//print_r($data);exit;
+
+return $data;
+
+}
+function get_customers_data($wheref,$where='true'){
+
+$data=prepare_values($_REQUEST,array('fields'=>array('type'=>'json array','optional'=>true)));
+if(isset($data['fields'])){
+$fields_to_export=$data['fields'];
+}else{
+$fields_to_export=$_SESSION['state']['stores']['customers']['csv_export'];
+}
+
+
+$fields=array(
+'code'=>array('title'=>_('Code'),'db_name'=>'Store Code'),
+'name'=>array('title'=>_('Store Name'),'db_name'=>'Store Name'),
+'total_customer_contacts'=>array('title'=>_('Total Customer Contacts'),'db_name'=>'Store Total Customer Contacts'),
+'new_customer_contacts'=>array('title'=>_('New Customer Contacts'),'db_name'=>'Store New Customer Contacts'),
+'total_customer'=>array('title'=>_('Store Total Customers'),'db_name'=>'Store Total Customers'),
+'active_customer'=>array('title'=>_('Active Customers'),'db_name'=>'Store Active Customers'),
+'new_customer'=>array('title'=>_('New Customers'),'db_name'=>'Store New Customers'),
+'lost_customer'=>array('title'=>_('Lost Customers'),'db_name'=>'Store Lost Customers'),
+
+'sales_all'=>array('title'=>_('Total Sales'),'db_name'=>'Store Total Invoiced Amount'),
+'profit_all'=>array('title'=>_('Total Profit'),'db_name'=>'Store Total Profit'),
+'sales_1y'=>array('title'=>_('Sales 1Y'),'db_name'=>'Store 1 Year Acc Invoiced Amount'),
+'profit_1y'=>array('title'=>_('Profit 1Y'),'db_name'=>'Store 1 Year Acc Profit'),
+'sales_1q'=>array('title'=>_('Sales 1Q'),'db_name'=>'Store 1 Quarter Acc Invoiced Amount'),
+'profit_1q'=>array('title'=>_('Profit 1Q'),'db_name'=>'Store 1 Quarter Acc Profit'),
+'sales_1m'=>array('title'=>_('Sales 1M'),'db_name'=>'Store 1 Month Acc Invoiced Amount'),
+'profit_1m'=>array('title'=>_('Profit 1M'),'db_name'=>'Store 1 Month Acc Profit'),
+'sales_1w'=>array('title'=>_('Sales 1W'),'db_name'=>'Store 1 Week Acc Invoiced Amount'),
+'profit_1w'=>array('title'=>_('Profit 1W'),'db_name'=>'Store 1 Week Acc Profit')
+);
+
+
+foreach($fields as $key=>$value){
+if(!isset($fields_to_export[$key]) or  !$fields_to_export[$key]  )
+unset($fields[$key]);
+}
+
+
+
+$data=array();
+$_data=array();
+foreach($fields as $key=>$options){
+$_data[]=$options['title'];
+}
+$data[]=$_data;
+$sql="select * from `Store Dimension` where $where $wheref";
+$res=mysql_query($sql);
+
+while($row=mysql_fetch_assoc($res)){
+$_data=array();
+foreach($fields as $key=>$options){
+
+$_data[]=$row[$options['db_name']];
+}
+$data[]=$_data;
+}
+//print_r($data);exit;
+
+return $data;
+
+}
+function get_customerslist_data($wheref,$where='true'){
+
+$data=prepare_values($_REQUEST,array('fields'=>array('type'=>'json array','optional'=>true)));
+if(isset($data['fields'])){
+$fields_to_export=$data['fields'];
+}else{
+$fields_to_export=$_SESSION['state']['customers']['table']['csv_export'];
+}
+
+
+$fields=array(
+'id'=>array('title'=>_('Customer Id'),'db_name'=>'Customer Key'),
+'name'=>array('title'=>_('Customer Name'),'db_name'=>'Customer Name'),
+'location'=>array('title'=>_('Location'),'db_name'=>'Customer Main Delivery Address Town'),
+'last_orders'=>array('title'=>_('Last Order'),'db_name'=>'Customer Last Order Date'),
+'orders'=>array('title'=>_('Orders'),'db_name'=>'Customer Orders'),
+'status'=>array('title'=>_('Status'),'db_name'=>'Customer Type by Activity ')
+/*'new_customer'=>array('title'=>_('New Customers'),'db_name'=>'Store New Customers'),
+'lost_customer'=>array('title'=>_('Lost Customers'),'db_name'=>'Store Lost Customers'),
+
+'sales_all'=>array('title'=>_('Total Sales'),'db_name'=>'Store Total Invoiced Amount'),
+'profit_all'=>array('title'=>_('Total Profit'),'db_name'=>'Store Total Profit'),
+'sales_1y'=>array('title'=>_('Sales 1Y'),'db_name'=>'Store 1 Year Acc Invoiced Amount'),
+'profit_1y'=>array('title'=>_('Profit 1Y'),'db_name'=>'Store 1 Year Acc Profit'),
+'sales_1q'=>array('title'=>_('Sales 1Q'),'db_name'=>'Store 1 Quarter Acc Invoiced Amount'),
+'profit_1q'=>array('title'=>_('Profit 1Q'),'db_name'=>'Store 1 Quarter Acc Profit'),
+'sales_1m'=>array('title'=>_('Sales 1M'),'db_name'=>'Store 1 Month Acc Invoiced Amount'),
+'profit_1m'=>array('title'=>_('Profit 1M'),'db_name'=>'Store 1 Month Acc Profit'),
+'sales_1w'=>array('title'=>_('Sales 1W'),'db_name'=>'Store 1 Week Acc Invoiced Amount'),
+'profit_1w'=>array('title'=>_('Profit 1W'),'db_name'=>'Store 1 Week Acc Profit')*/
+);
+
+
+foreach($fields as $key=>$value){
+if(!isset($fields_to_export[$key]) or  !$fields_to_export[$key]  )
+unset($fields[$key]);
+}
+
+
+
+$data=array();
+$_data=array();
+foreach($fields as $key=>$options){
+$_data[]=$options['title'];
+}
+$data[]=$_data;
+$sql="select * from `Customer Dimension` where $where $wheref";
+$res=mysql_query($sql);
+
+while($row=mysql_fetch_assoc($res)){
+$_data=array();
+foreach($fields as $key=>$options){
+
+$_data[]=$row[$options['db_name']];
+}
+$data[]=$_data;
+}
+//print_r($data);exit;
+
+return $data;
+
+}
+function get_parts_data($wheref){
+
+$data=prepare_values($_REQUEST,array('fields'=>array('type'=>'json array','optional'=>true)));
+if(isset($data['fields'])){
+$fields_to_export=$data['fields'];
+}else{
+$fields_to_export=$_SESSION['state']['parts']['table']['csv_export'];
+}
+
+
+$fields=array(
+'sku'=>array('title'=>_('SKU'),'db_name'=>'Part SKU'),
+'used_in'=>array('title'=>_('Used In'),'db_name'=>'Part Currently Used In'),
+'description'=>array('title'=>_('Discription'),'db_name'=>'Part Unit Description'),
+'stock'=>array('title'=>_('Stock'),'db_name'=>'Part Current Stock'),
+'stock_cost'=>array('title'=>_('Stock Cost'),'db_name'=>'Part Current Stock Cost'),
+
+'unit'=>array('title'=>_('Part Unit'),'db_name'=>'Part Unit'),
+'status'=>array('title'=>_('Part Status'),'db_name'=>'Part Status'),
+'valid_from'=>array('title'=>_('Valid From'),'db_name'=>'Part Valid From'),
+'valid_to'=>array('title'=>_('Valid To'),'db_name'=>'Part Valid To'),
+
+'total_lost'=>array('title'=>_('Total Lost'),'db_name'=>'Part Total Lost'),
+'total_broken'=>array('title'=>_('Total Broken'),'db_name'=>'Part Total Broken'),
+'total_sold'=>array('title'=>_('Total Sold'),'db_name'=>'Part Total Sold'),
+'total_given'=>array('title'=>_('Total Given'),'db_name'=>'Part Total Given'),
+
+'sales_all'=>array('title'=>_('Total Sold Amount'),'db_name'=>'Part Total Sold Amount'),
+'profit_all'=>array('title'=>_('Total Profit When Sold'),'db_name'=>'Part Total Profit When Sold'),
+
+'sales_1y'=>array('title'=>_('Sales 1Y'),'db_name'=>'Part 1 Year Acc Sold'),
+'profit_1y'=>array('title'=>_('Profit 1Y'),'db_name'=>'Part 1 Year Acc Profit When Sold'),
+'sales_1q'=>array('title'=>_('Sales 1Q'),'db_name'=>'Part 1 Quarter Acc Sold'),
+'profit_1q'=>array('title'=>_('Profit 1Q'),'db_name'=>'Part 1 Quarter Acc Profit When Sold'),
+'sales_1m'=>array('title'=>_('Sales 1M'),'db_name'=>'Part 1 Month Acc Sold'),
+'profit_1m'=>array('title'=>_('Profit 1M'),'db_name'=>'Part 1 Month Acc Profit When Sold'),
+'sales_1w'=>array('title'=>_('Sales 1W'),'db_name'=>'Part 1 Week Acc Sold Amount'),
+'profit_1w'=>array('title'=>_('Profit 1W'),'db_name'=>'Part 1 Week Acc Profit When Sold'),
+);
+
+
+foreach($fields as $key=>$value){
+if(!isset($fields_to_export[$key]) or  !$fields_to_export[$key]  )
+unset($fields[$key]);
+}
+
+
+
+$data=array();
+$_data=array();
+foreach($fields as $key=>$options){
+$_data[]=$options['title'];
+}
+$data[]=$_data;
+$sql="select * from `Part Dimension` where true $wheref";
+$res=mysql_query($sql);
+
+while($row=mysql_fetch_assoc($res)){
+$_data=array();
+foreach($fields as $key=>$options){
+
+$_data[]=$row[$options['db_name']];
+}
+$data[]=$_data;
+}
+//print_r($data);exit;
+
+return $data;
+
+}
+
+
 ?>

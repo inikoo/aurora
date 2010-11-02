@@ -47,7 +47,7 @@
       <span class="clean_table_title">Customers List</span>
       
    <div  style="font-size:90%">
-         <a  style="float:right;margin-left:20px"  class="table_type state_details"  href="customers_csv.php" >{t}Export (CSV){/t}</a>
+         <span  id="export_csv0" style="float:right;margin-left:20px"  class="table_type state_details" tipo="customers_per_store" >{t}Export (CSV){/t}</span>
           <span style="float:right;margin-left:20px" class="table_type  state_details {if $table_type=='all_contacts'}selected{/if}"  id="restrictions_all_contacts" table_type="all_contacts"  >{t}All Contacts{/t} ({$store->get('Total Customer Contacts')})</span>
           <span style="float:right;margin-left:20px" class="table_type  state_details {if $table_type=='all_customers'}selected{/if}"  id="restrictions_all_customers" table_type="all_customers"   >{t}All Customers{/t} ({$store->get('Total Customers')})</span>
           <span style="float:right;margin-left:20px" class="table_type  state_details {if $table_type=='active_customers'}selected{/if}"  id="restrictions_active_customers"  table_type="active_customers"  >{t}Active Customers{/t} ({$store->get('Active Customers')})</span>
@@ -140,6 +140,6 @@
 
 </div>
 
-
+{include file='export_csv_menu_splinter.tpl' id=0 cols=$export_csv_table_cols session_address="customers_per_store-table-csv_export0" export_options=$csv_export_options0 }
 
 {include file='footer.tpl'}

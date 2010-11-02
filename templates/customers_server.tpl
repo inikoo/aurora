@@ -14,6 +14,8 @@
 
 <div class="data_table" style="clear:both">
     <span class="clean_table_title">{t}Customers per Store{/t}</span>
+<span  id="export_csv0" style="float:right;margin-left:20px"  class="table_type state_details" tipo="customers_per_store" >{t}Export (CSV){/t}</span>
+
  <div style="clear:both;margin:0 0px;padding:0 20px ;border-bottom:1px solid #999"></div>
  <span   style="float:right;margin-left:80px" class="state_details"  id="change_display_mode" >{$display_mode_label}</span>
 
@@ -74,5 +76,5 @@
     </ul>
   </div>
 </div>
-
+{include file='export_csv_menu_splinter.tpl' id=0 cols=$export_csv_table_cols0 session_address="orders-table-csv_export0" export_options=$csv_export_options0 }
 {include file='footer.tpl'}

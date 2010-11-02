@@ -127,7 +127,7 @@ $smarty->assign('filter_name0',$filter_menu[$tipo_filter]['label']);
 
 $paginator_menu=array(10,25,50,100,500);
 $smarty->assign('paginator_menu0',$paginator_menu);
-// --------------------------------families' Export(csv) right click code----------------
+
  $csv_export_options=array(
                             'description'=>array(
                                               'title'=>_('Description'),
@@ -156,7 +156,7 @@ $smarty->assign('paginator_menu0',$paginator_menu);
                                                        'critical'=>array('label'=>_('Critical'),'selected'=>$_SESSION['families']['stores']['table']['csv_export']['critical']),
                                                        'gone'=>array('label'=>_('Gone'),'selected'=>$_SESSION['state']['families']['table']['csv_export']['gone']),
                                                 
-                                                       'unknown'=>array('label'=>_('Unknown'),'selected'=>$_SESSION['families']['stores']['table']['csv_export']['unknown']),
+                                                       'unknown'=>array('label'=>_('Unknown'),'selected'=>$_SESSION['state']['families']['table']['csv_export']['unknown']),
                                                              array('label'=>''),
                                                        
 
