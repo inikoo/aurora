@@ -31,7 +31,8 @@ $js_files=array(
 		'parts.js.php',
 		 'js/dropdown.js',
 		 'js/edit_common.js',
-		 'js/dropdown.js'
+		 'js/dropdown.js',
+		 'js/csv_common.js'
 		);
 
 if(!$user->can_view('parts')){
