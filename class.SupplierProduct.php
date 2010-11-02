@@ -408,16 +408,31 @@ class supplierproduct extends DB_Table {
       $result=mysql_query($sql);
       while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 	$parts[$row['Part SKU']]=array(
-				  'Part SKU'=>$row['Part SKU']
-				  ,'Supplier Product Units Per Part'=>$row['Supplier Product Units Per Part']
-				  ,'Supplier Product Unit'=>$row['Supplier Product Unit']
-				  );
+				  'Part_SKU'=>$row['Part SKU'],
+				  'Supplier_Product_Units_Per_Part'=>$row['Supplier Product Units Per Part'],
+				  'Supplier Product Unit'=>$row['Supplier Product Unit'],
+				  'part'=>new Part($row['Part SKU']),
+				  'Parts_Per_Supplier_Product_Unit'=>1/$row['Supplier Product Units Per Part'],
+				);
       }
 	    
       return $parts;
     }
 
-
+  function get_parts_objects(){
+      $parts=array();
+      $sql=sprintf("select `Supplier Product Unit`,`Supplier Product Unit`,`Supplier Product Units Per Part`,`Part SKU`  from `Supplier Product Part List` where `Supplier Product Code`=%s and `Supplier Key`=%d and `Supplier Product Part Most Recent`='Yes' group by  `Part SKU`;"
+		   ,prepare_mysql($this->data['Supplier Product Code'])
+		   ,$this->data['Supplier Key']
+		   );
+      $result=mysql_query($sql);
+      while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
+	$parts[$row['Part SKU']]=new Part($row['Part SKU']);
+				 
+      }
+	    
+      return $parts;
+    }
 
     function get($key='') {
 
@@ -430,6 +445,12 @@ class supplierproduct extends DB_Table {
 
 	
         switch ($key) {
+     case('Units Per Case'):
+     return number($this->data['Supplier Product '.$key]);
+     break;
+     case('Unit'):
+     return $this->get_formated_unit();
+     break;
 	case('Formated Cost'):
 	  //print_r($this->data);
 	  //return $this->data['Supplier Product Cost'];
@@ -1392,6 +1413,19 @@ default:
 
   }
 
+function get_formated_unit(){
+
+    switch($this->data['Supplier Product Unit Type']){
+    case('ea'):
+        return _('Item');
+        break;
+    default:
+        return _($this->data['Supplier Product Unit Type']);
+    
+    }
+   
+}
+
 function get_formated_price($locale=''){
 
   $data=array(
@@ -1405,7 +1439,21 @@ function get_formated_price($locale=''){
 
 return formated_price($data);
 }
+function get_formated_price_per_case($locale=''){
 
+  $data=array(
+'Product Price'=>$this->data['Supplier Product Cost'],
+'Product Units Per Case'=>$this->data['Supplier Product Units Per Case'],
+'Product Currency'=>$this->get('Supplier Product Currency'),
+'Product Unit Type'=>$this->data['Supplier Product Unit Type'],
+
+'Label'=>'',
+
+
+'locale'=>$locale);
+
+return formated_price($data);
+}
 function get_formated_price_per_unit($locale=''){
 
   $data=array(
@@ -1426,6 +1474,7 @@ return formated_price_per_unit($data);
   function units_convertion_factor($unit_from,$unit_to=false){
     return 1;
   }
+
 
 
 function get_part_locations(){

@@ -58,9 +58,14 @@ header('Location: supplier.php?id='.$_REQUEST['supplier_key']);
 $supplier=new Supplier($supplier_product->data['Supplier Key']);
 
 $_SESSION['state']['supplier_product']['code']=$supplier_product->data['Supplier Product Code'];
-$_SESSION['state']['supplier_product']['code']=$supplier_product->data['Supplier Key'];
+$_SESSION['state']['supplier_product']['supplier_key']=$supplier_product->data['Supplier Key'];
 
 
+$modify=true;
+$general_options_list=array();
+if($modify)
+  $general_options_list[]=array('tipo'=>'url','url'=>'edit_supplier_product.php','label'=>_('Edit Product'));
+$smarty->assign('general_options_list',$general_options_list);
 
 
 $smarty->assign('supplier_product',$supplier_product);
@@ -79,7 +84,13 @@ $js_files[]='supplier_product.js.php';
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
 
+//$parts=$product_suppliir->get_parts();
+
 
 
 $smarty->display('supplier_product.tpl');
+
+
+
+
 ?>
