@@ -223,7 +223,7 @@ get_header_info($user,$smarty);
 
 $general_options_list=array();
 if($modify)
-  $general_options_list[]=array('tipo'=>'url','url'=>'product.php?edit=1','label'=>_('Edit Product'));
+  $general_options_list[]=array('tipo'=>'url','url'=>'edit_product.php','label'=>_('Edit Product'));
 $smarty->assign('general_options_list',$general_options_list);
 
 
