@@ -984,8 +984,16 @@ $conf=$_SESSION['state']['families']['table'];
   $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
   
   
-  $_SESSION['state']['families']['table']=array('order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value);
-  
+  //$_SESSION['state']['families']['table']=array('order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value);
+  $conf_table='families';
+    $_SESSION['state'][$conf_table]['table']['order']=$order;
+    $_SESSION['state'][$conf_table]['table']['order_dir']=$order_dir;
+    $_SESSION['state'][$conf_table]['table']['nr']=$number_results;
+    $_SESSION['state'][$conf_table]['table']['sf']=$start_from;
+    $_SESSION['state'][$conf_table]['table']['where']=$where;
+    $_SESSION['state'][$conf_table]['table']['f_field']=$f_field;
+    $_SESSION['state'][$conf_table]['table']['f_value']=$f_value;
+
   
   //  $where.=" and `Product Department Key`=".$id;
 

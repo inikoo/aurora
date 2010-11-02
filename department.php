@@ -387,10 +387,10 @@ if($edit){
                                                        'surplus'=>array('label'=>_('Surplus'),'selected'=>$_SESSION['state']['families']['table']['csv_export']['surplus']),
                                                        'ok'=>array('label'=>_('Ok'),'selected'=>$_SESSION['state']['families']['table']['csv_export']['ok']),
                                                        'low'=>array('label'=>_('Low'),'selected'=>$_SESSION['state']['families']['table']['csv_export']['low']),
-                                                       'critical'=>array('label'=>_('Critical'),'selected'=>$_SESSION['families']['stores']['table']['csv_export']['critical']),
+                                                       'critical'=>array('label'=>_('Critical'),'selected'=>$_SESSION['state']['families']['table']['csv_export']['critical']),
                                                        'gone'=>array('label'=>_('Gone'),'selected'=>$_SESSION['state']['families']['table']['csv_export']['gone']),
                                                 
-                                                       'unknown'=>array('label'=>_('Unknown'),'selected'=>$_SESSION['families']['stores']['table']['csv_export']['unknown']),
+                                                       'unknown'=>array('label'=>_('Unknown'),'selected'=>$_SESSION['state']['families']['table']['csv_export']['unknown']),
                                                              array('label'=>''),
                                                        
 
