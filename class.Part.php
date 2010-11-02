@@ -637,7 +637,7 @@ class part extends DB_Table {
         }
 
 
-        if (preg_match('/^(Total|1).*(Given|Lost|Required|Sold|Provided|Broken|Adquired)$/',$key)) {
+        if (preg_match('/^(Total|1).*(Given|Lost|Required|Sold|Provided|Broken|Adquired)$/',$key) or $key=='Current Stock'  ) {
 
             $amount='Part '.$key;
 
@@ -712,7 +712,6 @@ class part extends DB_Table {
 
         return false;
     }
-
 
 
 

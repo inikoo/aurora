@@ -510,8 +510,23 @@ $default_state=array(
                               ),
 
                    'supplier_product'=>array(
-                                          'display'=>''
-
+                                          'display'=>'',
+                                          'supplier_key'=>0,
+                                          'supplier_code'=>'',
+                                           'porders'=>array(
+                                             'order'=>'date',
+                                             'view'=>'general',
+                                             'order_dir'=>'',
+                                             'sf'=>0,
+                                             'nr'=>25,
+                                             'where'=>'where true',
+                                             'f_field'=>'public_id',
+                                             'f_value'=>'',
+                                             'f_show'=>false,
+                                             'from'=>'',
+                                             'to'=>''
+                                             
+                                         ) 
                                       ),
 
 
