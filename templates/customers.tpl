@@ -140,6 +140,6 @@
 
 </div>
 
-{include file='export_csv_menu_splinter.tpl' id=0 cols=$export_csv_table_cols session_address="orders-table-csv_export0" export_options=$csv_export_options0 }
+{include file='export_csv_menu_splinter.tpl' id=0 cols=$export_csv_table_cols session_address="customers_per_store-table-csv_export0" export_options=$csv_export_options0 }
 
 {include file='footer.tpl'}

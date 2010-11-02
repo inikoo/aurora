@@ -51,7 +51,7 @@ switch ($tipo) {
         $f_value=$_SESSION['state']['customers']['table']['f_value'];
         $wheref=wheref_stores($f_field,$f_value);
         $filename=_('customers').'.csv';
-	$where=sprintf(' `Customer Store Key`=%d ',$_SESSION['state']['store']['id']);
+	$where=sprintf(' `Customer Store Key`=%d ',$_SESSION['state']['customers']['store']);
         $data=get_customerslist_data($wheref,$where);
         break;
     case 'stores':
@@ -177,7 +177,14 @@ switch ($tipo) {
 	 $where=sprintf(' `Store Key`=%d ',$_SESSION['state']['store']['id']);
         $data=get_customers_data($wheref);
         break; 
-                     
+     case 'parts':
+        $filename=_('parts').'.csv';
+        $f_field=$_SESSION['state']['parts']['table']['f_field'];
+        $f_value=$_SESSION['state']['parts']['table']['f_value'];
+        $wheref=wheref_stores($f_field,$f_value);
+        $filename=_('parts').'.csv';
+        $data=get_parts_data($wheref);
+        break;                    
     default:
         
         break;
@@ -994,6 +1001,76 @@ $_data[]=$options['title'];
 }
 $data[]=$_data;
 $sql="select * from `Customer Dimension` where $where $wheref";
+$res=mysql_query($sql);
+
+while($row=mysql_fetch_assoc($res)){
+$_data=array();
+foreach($fields as $key=>$options){
+
+$_data[]=$row[$options['db_name']];
+}
+$data[]=$_data;
+}
+//print_r($data);exit;
+
+return $data;
+
+}
+function get_parts_data($wheref){
+
+$data=prepare_values($_REQUEST,array('fields'=>array('type'=>'json array','optional'=>true)));
+if(isset($data['fields'])){
+$fields_to_export=$data['fields'];
+}else{
+$fields_to_export=$_SESSION['state']['parts']['table']['csv_export'];
+}
+
+
+$fields=array(
+'sku'=>array('title'=>_('SKU'),'db_name'=>'Part SKU'),
+'used_in'=>array('title'=>_('Used In'),'db_name'=>'Part Currently Used In'),
+'description'=>array('title'=>_('Discription'),'db_name'=>'Part Unit Description'),
+'stock'=>array('title'=>_('Stock'),'db_name'=>'Part Current Stock'),
+'stock_cost'=>array('title'=>_('Stock Cost'),'db_name'=>'Part Current Stock Cost'),
+
+'unit'=>array('title'=>_('Part Unit'),'db_name'=>'Part Unit'),
+'status'=>array('title'=>_('Part Status'),'db_name'=>'Part Status'),
+'valid_from'=>array('title'=>_('Valid From'),'db_name'=>'Part Valid From'),
+'valid_to'=>array('title'=>_('Valid To'),'db_name'=>'Part Valid To'),
+
+'total_lost'=>array('title'=>_('Total Lost'),'db_name'=>'Part Total Lost'),
+'total_broken'=>array('title'=>_('Total Broken'),'db_name'=>'Part Total Broken'),
+'total_sold'=>array('title'=>_('Total Sold'),'db_name'=>'Part Total Sold'),
+'total_given'=>array('title'=>_('Total Given'),'db_name'=>'Part Total Given'),
+
+'sales_all'=>array('title'=>_('Total Sold Amount'),'db_name'=>'Part Total Sold Amount'),
+'profit_all'=>array('title'=>_('Total Profit When Sold'),'db_name'=>'Part Total Profit When Sold'),
+
+'sales_1y'=>array('title'=>_('Sales 1Y'),'db_name'=>'Part 1 Year Acc Sold'),
+'profit_1y'=>array('title'=>_('Profit 1Y'),'db_name'=>'Part 1 Year Acc Profit When Sold'),
+'sales_1q'=>array('title'=>_('Sales 1Q'),'db_name'=>'Part 1 Quarter Acc Sold'),
+'profit_1q'=>array('title'=>_('Profit 1Q'),'db_name'=>'Part 1 Quarter Acc Profit When Sold'),
+'sales_1m'=>array('title'=>_('Sales 1M'),'db_name'=>'Part 1 Month Acc Sold'),
+'profit_1m'=>array('title'=>_('Profit 1M'),'db_name'=>'Part 1 Month Acc Profit When Sold'),
+'sales_1w'=>array('title'=>_('Sales 1W'),'db_name'=>'Part 1 Week Acc Sold Amount'),
+'profit_1w'=>array('title'=>_('Profit 1W'),'db_name'=>'Part 1 Week Acc Profit When Sold'),
+);
+
+
+foreach($fields as $key=>$value){
+if(!isset($fields_to_export[$key]) or  !$fields_to_export[$key]  )
+unset($fields[$key]);
+}
+
+
+
+$data=array();
+$_data=array();
+foreach($fields as $key=>$options){
+$_data[]=$options['title'];
+}
+$data[]=$_data;
+$sql="select * from `Part Dimension` where true $wheref";
 $res=mysql_query($sql);
 
 while($row=mysql_fetch_assoc($res)){
