@@ -10,6 +10,65 @@ var can_add_family=false;
 var scope_key=<?php echo$_SESSION['state']['department']['id']?>;
 var scope='department';
 
+
+var validate_scope_metadata={
+    'department':{'type':'edit','ar_file':'ar_edit_assets.php','key_name':'id','key':<?php echo$_SESSION['state']['department']['id']?>}
+//    ,'department_page_html_head':{'type':'edit','ar_file':'ar_edit_assets.php','key_name':'id','key':<?php echo$_SESSION['state']['department']['id']?>}
+//    ,'department_page_header':{'type':'edit','ar_file':'ar_edit_assets.php','key_name':'id','key':<?php echo$_SESSION['state']['department']['id']?>}
+//,'department_page_content':{'type':'edit','ar_file':'ar_edit_assets.php','key_name':'id','key':<?php echo$_SESSION['state']['department']['id']?>}
+};
+
+var validate_scope_data={
+    'department':{
+	'name':{'changed':false,'validated':true,'required':true,'group':1,'type':'item'
+		,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Department Name')?>'}],'name':'name'
+		,'ar':'find','ar_request':'ar_assets.php?tipo=is_department_name&store_key='+store_key+'&query='}
+	,'code':{'changed':false,'validated':true,'required':false,'group':1,'type':'item'
+		 ,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Department Code')?>'}]
+		 ,'name':'code','ar':'find','ar_request':'ar_assets.php?tipo=is_department_code&store_key='+store_key+'&query='}
+//	,'special_char':{'changed':false,'validated':true,'required':false,'group':1,'type':'item'
+//			 ,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Family Special Characteristic')?>'}]
+//			 ,'name':'special_char','ar':'find','ar_request':'ar_assets.php?tipo=is_department_special_char&store_key='+store_key+'&query='}
+//	,'description':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','validation':[],'name':'description','ar':false}
+    }
+//    ,'department_page_html_head':{
+//	'url':{'changed':false,'validated':true,'required':false,'group':1,'type':'item'
+//		 ,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid URL')?>'}]
+//		 ,'name':'department_page_html_head_url','ar':false
+		 
+//	}
+//	,'title':{'changed':false,'validated':true,'required':false,'group':1,'type':'item'
+//		 ,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Title')?>'}]
+//		 ,'name':'department_page_html_head_title','ar':false
+		 
+//	}
+	
+//	,'keywords':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','validation':[],'name':'department_page_html_head_keywords','ar':false}
+//    }
+//,'department_page_header':{
+//	'store_title':{'changed':false,'validated':true,'required':false,'group':1,'type':'item'
+//		 ,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Title')?>'}]
+//		 ,'name':'department_page_header_store_title','ar':false
+		 
+//	}
+//	,'subtitle':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','validation':[],'name':'department_page_header_subtitle','ar':false}
+//	,'slogan':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','validation':[],'name':'department_page_header_slogan','ar':false}
+//	,'resume':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','validation':[],'name':'department_page_header_resume','ar':false}
+	
+ //   }
+//,'department_page_content':{
+	
+//	'presentation_template_data':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','validation':[],'name':'department_page_content_presentation_template_data','ar':false}
+	
+  //  }
+
+
+};
+
+
+
+
+
 function change_block(e){
      if(editing!=this.id){
      
@@ -30,230 +89,6 @@ function change_block(e){
 	 YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=department-edit&value='+this.id ,{});
 	editing=this.id;
     }
-}
-
-
-
-var description_num_changed=0;
-var description_warnings= new Object();
-var description_errors= new Object();
-
-function update_form(){
-    if(editing=='description'){
-	this_errors=description_errors;
-	this_num_changed=description_num_changed
-
-    }
-
-    if(this_num_changed>0){
-	Dom.get(editing+'_save').style.display='';
-	Dom.get(editing+'_reset').style.display='';
-
-    }else{
-	Dom.get(editing+'_save').style.display='none';
-	Dom.get(editing+'_reset').style.display='none';
-
-    }
-    Dom.get(editing+'_num_changes').innerHTML=this_num_changed;
-
-    // Dom.get(editing+'_save_div').style.display='';
-    errors_div=Dom.get(editing+'_errors');
-    // alert(errors);
-    errors_div.innerHTML='';
-
-
-    for (x in this_errors)
-	{
-	    // alert(errors[x]);
-	    Dom.get(editing+'_save').style.display='none';
-	    errors_div.innerHTML=errors_div.innerHTML+' '+this_errors[x];
-	}
-
-
-
-
-}
-
-
-function edit_dept_changed(o){
-    var ovalue=o.getAttribute('ovalue');
-    var name=o.name;
-    if(ovalue!=o.value){
-	if(name=='code'){
-	    if(o.value==''){
-		description_errors.code="<?php echo _("The department code can not be empty")?>";
-	    }else if(o.value.lenght>16){
-		description_errors.code="<?php echo _("The product code can not have more than 16 characters")?>";
-	    }else
-		delete description_errors.code;
-	}
-	if(name=='name'){
-	    if(o.value==''){
-		description_errors.name="<?php echo _("The department name  can not be empty")?>";
-	    }else if(o.value.lenght>255){
-		description_errors.name="<?php echo _("The product code can not have more than 255  characters")?>";
-	    }else
-		delete description_errors.name;
-	}
-	
-
-
-	if(o.getAttribute('changed')==0){
-	    description_num_changed++;
-	    o.setAttribute('changed',1);
-	}
-    }else{
-	if(o.getAttribute('changed')==1){
-	    description_num_changed--;
-	    o.setAttribute('changed',0);
-	}
-    }
-    update_form();
-}
-
-function reset(tipo){
-
-    if(tipo=='description'){
-	tag='name';
-	Dom.get(tag).value=Dom.get(tag).getAttribute('ovalue');
-	Dom.get(tag).setAttribute('changed',0);
-	tag='code';
-	Dom.get(tag).value=Dom.get(tag).getAttribute('ovalue');
-	Dom.get(tag).setAttribute('changed',0);
-
-	description_num_changed=0;
-	Dom.get(editing+'_save').style.display='none';
-	Dom.get(editing+'_reset').style.display='none';
-
-	Dom.get(editing+'_num_changes').innerHTML=description_num_changed;
-	description_warnings= new Object();
-	description_errors= new Object();
-	
-    }
-    update_form();
-}
-
-function save(tipo){
-
-    if(tipo=='description'){
-	var keys=new Array("code","name");
-	for (x in keys)
-	    {
-		 key=keys[x];
-		 element=Dom.get(key);
-		if(element.getAttribute('changed')==1){
-
-		    newvalue=element.value;
-		    oldValue=element.getAttribute('ovalue');
-		    
-		    var request='ar_edit_assets.php?tipo=edit_department&key=' + key+ '&newvalue=' + 
-			encodeURIComponent(newvalue) + '&oldvalue=' + encodeURIComponent(oldValue)+ 
-			'&id='+department_id;
-
-		    YAHOO.util.Connect.asyncRequest('POST',request ,{
-			    success:function(o) {
-				//alert(o.responseText);
-				var r =  YAHOO.lang.JSON.parse(o.responseText);
-				if(r.state==200){
-				    var element=Dom.get(r.key);
-				    element.getAttribute('ovalue',r.newvalue);
-				    element.value=r.newvalue;
-				    element.setAttribute('changed',0);
-				    description_num_changed--;
-				    var table=tables.table1;
-				    var datasource=tables.dataSource1;
-				    var request='';
-				    datasource.sendRequest(request,table.onDataReturnInitializeTable, table); 
-				    if(r.key=='name')
-					Dom.get('title_name').innerHTML=r.newvalue;
-				    
-				     if(r.key=='code')
-					Dom.get('title_code').innerHTML=r.newvalue;
-				}else{
-				    Dom.get('description_errors').innerHTML='<span class="error">'+r.msg+'</span>';
-				    
-				}
-				update_form();	
-			    }
-			    
-			});
-		}
-	    }
-	
-    }
-
-}
-
-
-function new_family_changed(o){
-    if(Dom.get("new_code").value!='' && Dom.get("new_name").value!=''  && Dom.get("new_special_char").value!='' ){
-       	Dom.removeClass('save_new_family','disabled');
-	can_add_family=true;
-    }else{
-	Dom.removeClass('save_new_family','disabled');
-	can_add_family=false;
-    }
-}
-
-function save_new_family(){
-
-    var msg_div='new_family_messages';
-
-    var code=Dom.get('new_code').value;
-    var name=Dom.get('new_name').value;
-    var special_char=Dom.get('new_special_char').value;
-    var description=Dom.get('new_description').innerHTML;
-    var request='ar_edit_assets.php?tipo=new_family&code='+encodeURIComponent(code)+'&name='+encodeURIComponent(name)+'&description='+encodeURIComponent(name)+'&special_char='+encodeURIComponent(special_char);
-    YAHOO.util.Connect.asyncRequest('POST',request ,{
-	    success:function(o) {
-
-		var r =  YAHOO.lang.JSON.parse(o.responseText);
-		if(r.state==200){
-		    var table=tables['table0'];
-		    var datasource=tables['dataSource0'];
-		    var request='';
-		    datasource.sendRequest(request,table.onDataReturnInitializeTable, table); 
-		    Dom.get(msg_div).innerHTML='';
-
-		    Dom.get('new_code').value='';
-		    Dom.get('new_name').value='';
-		    Dom.get('special_char').value='';
-		    hide_add_family_dialog();
-
-
-
-		}else
-		    Dom.get(msg_div).innerHTML='<span class="error">'+r.msg+'</span>';
-	    }
-	    
-	    });
-
-}
-function cancel_add_family(){
-    Dom.get('new_code').value='';
-    Dom.get('new_name').value='';
-    
-    hide_add_family_dialog(); 
-}
-
-function hide_add_family_dialog(){
-    Dom.get('new_family_dialog').style.display='none';
-    Dom.get('add_family').style.display='';
-    Dom.get('save_new_family').style.display='none';
-    Dom.get('cancel_add_family').style.display='none';
-}
-
-function show_add_family_dialog(){
-    
-    Dom.get('new_family_dialog').style.display='';
-    Dom.get('add_family').style.display='none';
-
-    Dom.get('save_new_family').style.display='';
-
-    Dom.addClass('save_new_family','disabled');
-    Dom.get('cancel_add_family').style.display='';
-    Dom.get('new_code').focus();
-
 }
 
 
