@@ -57,10 +57,10 @@ if ($modify) {
 $smarty->assign('general_options_list',$general_options_list);
 
 
-if (isset($_REQUEST['edit']))
-    $edit=$_REQUEST['edit'];
-else
-    $edit=$_SESSION['state']['stores']['editing'];
+if (isset($_REQUEST['edit'])){
+ header('Location: edit_stores.php');
+ exit;
+}
 
 
 
@@ -97,15 +97,9 @@ $js_files=array(
 
           );
 
-if ($edit) {
-    $smarty->assign('edit',$_SESSION['state']['stores']['edit']);
-   
-    $js_files[]='country_select.js.php';
-    $js_files[]='edit_stores.js.php';
-} else {
     $js_files[]='js/search.js';
     $js_files[]='stores.js.php';
-}
+
 
 
 $smarty->assign('css_files',$css_files);
@@ -187,9 +181,9 @@ $paginator_menu=array(10,25,50,100,500);
 $smarty->assign('paginator_menu0',$paginator_menu);
 $smarty->assign('mode_options_menu',$mode_options);
 
-if ($edit) {
-    $smarty->display('edit_stores.tpl');
-} else
+
+   
+
     $csv_export_options=array(
                             'description'=>array(
                                               'title'=>_('Description'),
@@ -286,7 +280,6 @@ $smarty->assign('export_csv_table_cols',7);
 $smarty->assign('csv_export_options',$csv_export_options);
 
 //{include file='export_csv_menu_splinter.tpl' id=0  export_options=$csv_export_options }
-
 
 $smarty->display('stores.tpl');
 
