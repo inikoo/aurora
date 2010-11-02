@@ -876,7 +876,7 @@ $default_state=array(
                                                ),
                                    'table'=>array(
                                                'order'=>'name',
-                                               'order_dir'=>'',
+                                               'order_dir'=>'last_orders',
                                                'sf'=>0,
                                                'nr'=>25,
                                                'type'=>'all_contacts',
@@ -1619,7 +1619,32 @@ $default_state=array(
                                            'nr'=>20,
                                            'where'=>'where true',
                                            'f_field'=>'used_in',
-                                           'f_value'=>''
+                                           'f_value'=>'',
+						 'csv_export'=>array(
+                                                               'sku'=>true,
+                                                               'used_in'=>true,
+                                                               'description'=>true,
+                                                               'stock'=>true,
+                                                               'stock_cost'=>true,
+                                                               'unit'=>false,
+                                                               'status'=>false,
+                                                               'valid_from'=>false,
+                                                               'valid_to'=>false,
+                                                               'total_lost'=>false,
+                                                               'total_broken'=>false,
+                                                               'total_sold'=>false,
+                                                               'total_given'=>false,
+                                                               'sales_all'=>false,
+                                                               'profit_all'=>false,
+                                                               'sales_1y'=>false,
+                                                               'profit_1y'=>false,
+                                                               'sales_1q'=>false,
+                                                               'profit_1q'=>false,
+                                                               'sales_1m'=>false,
+                                                               'profit_1m'=>false,
+                                                               'sales_1w'=>false,
+                                                               'profit_1w'=>false
+                                                           )
 
                                        )
                            ),

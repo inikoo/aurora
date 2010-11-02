@@ -4581,7 +4581,15 @@ function list_parts() {
         $percentage=$_SESSION['state']['parts']['percentage'];
     $_SESSION['state']['parts']['percentage']=$percentage;
 
-    $_SESSION['state']['parts']['table']=array('order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value);
+    //$_SESSION['state']['parts']['table']=array('order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value);
+
+    $_SESSION['state']['parts']['table']['order']=$order;
+    $_SESSION['state']['parts']['table']['order_dir']=$order_direction;
+    $_SESSION['state']['parts']['table']['nr']=$number_results;
+    $_SESSION['state']['parts']['table']['sf']=$start_from;
+    $_SESSION['state']['parts']['table']['where']=$where;
+    $_SESSION['state']['parts']['table']['f_field']=$f_field;
+    $_SESSION['state']['parts']['table']['f_value']=$f_value;
 
 
     $filter_msg='';
