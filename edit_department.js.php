@@ -867,7 +867,6 @@ function post_item_updated_actions(branch,key,newvalue){
     var ids = ["description","families","discounts","pictures","web"]; 
     YAHOO.util.Event.addListener(ids, "click", change_block);
    YAHOO.util.Event.addListener('add_family', "click");
-  
 
 
 YAHOO.util.Event.onDOMReady(init);
