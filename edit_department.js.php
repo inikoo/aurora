@@ -866,7 +866,7 @@ function post_item_updated_actions(branch,key,newvalue){
     
     var ids = ["description","families","discounts","pictures","web"]; 
     YAHOO.util.Event.addListener(ids, "click", change_block);
-    YAHOO.util.Event.addListener('add_department', "click", show_add_department_dialog);
+   YAHOO.util.Event.addListener('add_family', "click");
     YAHOO.util.Event.addListener('save_new_department', "click",save_new_department);
     YAHOO.util.Event.addListener('cancel_add_department', "click", cancel_add_department);
 
