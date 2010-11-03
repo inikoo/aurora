@@ -15,10 +15,15 @@ $_parts=preg_replace("/\,$/","",$_parts);
 print "\nvar part_list={ $_parts };";
 
 
+
+
  ?>
 var Event = YAHOO.util.Event;
 var Dom   = YAHOO.util.Dom;
-var product_pid='<?php echo $_REQUEST['product_id']?>';
+var product_pid='<?php echo $_REQUEST['pid']?>';
+var scope='product';
+var scope_key=product_pid;
+
 var validate_scope_data=
 {
     'product_description':{
@@ -514,7 +519,7 @@ close_add_part_dialog();
 function init(){
 
 
-
+YAHOO.util.Event.on('uploadButton', 'click', upload_image);
 
 
 

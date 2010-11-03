@@ -416,8 +416,16 @@ function edit_deal(){
 
 
 function upload_image($subject='product'){
-	$target_path = "app_files/pics/tmp/";
+
+	$target_path = "app_files/tmp/";
  	$filename='pimg_'.date('U');
+ 	
+ 	if (!file_exists($target_path)) {
+    	$response= array('state'=>400,'msg'=>"Image tmp directory do not exist (".$target_path.")");
+ 			echo json_encode($response); 
+ 			return;
+	} 
+ 	
   	if(move_uploaded_file($_FILES['testFile']['tmp_name'],$target_path.$filename )) {
    		include_once('class.Image.php');
    		$name=preg_replace('/\.[a-z]+$/i','',$_FILES['testFile']['name']);

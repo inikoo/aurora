@@ -96,7 +96,8 @@ $css_files=array(
 		 'common.css',
 		 'button.css',
 		 'table.css',
-		 'css/edit.css'
+		 'css/edit.css',
+		  'css/dropdown.css',
 		 );
 
 
@@ -115,6 +116,7 @@ $js_files=array(
 		'js/php.default.min.js',
 		'common.js.php',
 		'js/search.js',
+		 'js/dropdown.js',
 		'table_common.js.php',
 		'js/upload_image.js',
 		'js/edit_common.js'
@@ -187,7 +189,8 @@ foreach($parts_info as $key=>$value){
 $_parts[$key]=$key;
 }
 
-$js_files[]=sprintf('edit_product.js.php?symbol=%s&product_id=%d&cats=%s&parts=%s',$product->data['Currency Symbol'],$product->pid,join(',',$nodes->root),join(',',$_parts));
+$js_files[]=sprintf('edit_product.js.php?symbol=%s&pid=%d&cats=%s&parts=%s',
+    $product->data['Currency Symbol'],$product->pid,join(',',$nodes->root),join(',',$_parts));
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
 

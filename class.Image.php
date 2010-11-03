@@ -45,7 +45,7 @@ var $found_key=0;
   function Image($a1,$a2=false,$a3=false) {
 
     $this->path='app_files/pics/';
-    $this->tmp_path='app_files/pics/tmp/';
+    $this->tmp_path='app_files/tmp/';
     $this->name='';
      $this->original_name='';
     $this->found=false;
@@ -194,9 +194,12 @@ $this->large_size=array(800,600);
    $this->openImage($filename);
    if ($this->im) {
 
-     
-      if (!file_exists($this->path))
+   if (!file_exists($this->path)){
 	mkdir($this->path, 0700);
+
+	
+      
+  }    
       
       if (!file_exists($this->path.'/original'))
 	mkdir($this->path.'/original', 0700);
