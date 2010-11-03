@@ -121,15 +121,6 @@
 	    </td>
 	     <td id="description_msg" class="edit_td_alert" style="width:300px"></td>
 	  </tr>
-
-
-
-
-
-
-    
-      
-
     </table>
     </div>
      <div  id="d_pictures" class="edit_block" style="{if $edit!='pictures'}display:none{/if}" >
