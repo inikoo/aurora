@@ -4,12 +4,12 @@
 var Event = YAHOO.util.Event;
 var Dom   = YAHOO.util.Dom;
 var department_id=<?php echo$_SESSION['state']['department']['id']?>;
-var editing=<?php echo $_SESSION['state']['department']['edit']?>;
-var can_add_family=false;
+var editing='<?php echo $_SESSION['state']['department']['edit']?>';
+var can_add_department=false;
 
 var scope_key=<?php echo$_SESSION['state']['department']['id']?>;
 var scope='department';
-
+var store_key=<?php echo$_SESSION['state']['store']['id']?>;
 
 var validate_scope_metadata={
     'department':{'type':'edit','ar_file':'ar_edit_assets.php','key_name':'id','key':<?php echo$_SESSION['state']['department']['id']?>}
