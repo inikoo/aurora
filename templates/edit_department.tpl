@@ -35,9 +35,15 @@
      <div class="general_options" style="float:right">
        
        <span style="margin-right:10px;display:none"  onclick="save('description')" id="description_save" class="state_details">{t}Save Changes{/t}</span>
-       <span style="margin-right:10px;display:none;" id="description_reset" onclick="reset('description')" i class="state_details">{t}Reset{/t}</span>
+       <span style="margin-right:10px;display:none;" id="description_reset" onclick="reset('description')" class="state_details">{t}Reset{/t}</span>
        
      </div>
+
+
+
+
+
+
 
      <table class="edit">
       <tr><td class="label">{t}Code{/t}:</td><td><input  id="code" onKeyUp="edit_dept_changed(this)"    onMouseUp="edit_dept_changed(this)"  onChange="edit_dept_changed(this)"  name="code" changed=0 type='text' class='text' style="width:15em" MAXLENGTH="16" value="{$department->get('Product Department Code')}" ovalue="{$department->get('Product Department Code')}"  /></td></tr>

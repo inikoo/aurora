@@ -4,7 +4,7 @@
 var Event = YAHOO.util.Event;
 var Dom   = YAHOO.util.Dom;
 var department_id=<?php echo$_SESSION['state']['department']['id']?>;
-var editing='<?php echo $_SESSION['state']['department']['edit']?>';
+var editing=<?php echo $_SESSION['state']['department']['edit']?>;
 var can_add_family=false;
 
 var scope_key=<?php echo$_SESSION['state']['department']['id']?>;
@@ -249,14 +249,112 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	};
     });
 
+// ------------------------------------------------------------------------
+function validate_department_page_content_presentation_template_data(query){validate_general('department_page_content','presentation_template_data',unescape(query));}
 
+
+function validate_department_page_header_store_title(query){validate_general('department_page_header','store_title',unescape(query));}
+function validate_department_page_header_subtitle(query){validate_general('department_page_header','subtitle',unescape(query));}
+function validate_department_page_header_slogan(query){validate_general('department_page_header','slogan',unescape(query));}
+function validate_department_page_header_resume(query){validate_general('department_page_header','resume',unescape(query));}
+
+
+function validate_department_page_html_head_url(query){validate_general('department_page_html_head','url',unescape(query));}
+
+function validate_department_page_html_head_title(query){validate_general('department_page_html_head','title',unescape(query));}
+function validate_department_page_html_head_keywords(query){validate_general('department_page_html_head','keywords',unescape(query));}
+
+
+function validate_code(query){
+   
+ validate_general('department','code',unescape(query));
+}
+function validate_name(query){
+ validate_general('department','name',unescape(query));
+}
+function validate_special_char(query){
+ validate_general('department','special_char',unescape(query));
+}
+
+function validate_description(query){
+   
+ validate_general('department','description',unescape(query));
+}
+
+
+function reset_edit_department(){
+ reset_edit_general('department');
+}
+function save_edit_department(){
+ save_edit_general('departmenty');
+}
+function reset_edit_department_page_header(){ reset_edit_general('department_page_header');}
+function save_edit_department_page_header(){save_edit_general('department_page_header');}
+
+function reset_edit_department_page_html_head(){ reset_edit_general('department_page_html_head');}
+function save_edit_department_page_html_head(){save_edit_general('department_page_html_head');}
+
+function reset_edit_department_page_content(){ reset_edit_general('department_page_content');}
+function save_edit_department_page_content(){save_edit_general('department_page_content');}
+
+
+function post_item_updated_actions(branch,key,newvalue){
+
+ if(key=='name')
+     Dom.get('title_name').innerHTML=newvalue;
+ 
+ else if(key=='code')
+     Dom.get('title_code').innerHTML=newvalue;
+
+ 
+ var table=tables.table1;
+ var datasource=tables.dataSource1;
+ var request='';
+ datasource.sendRequest(request,table.onDataReturnInitializeTable, table); 
+ 
+}
+
+
+// ------------------------------------------------------------------------
 
 
 
 
 function init(){
- 	YAHOO.util.Event.on('uploadButton', 'click', onUploadButtonClick);
+// -----------------------------------------------------------------
+   var ids = ["checkbox_thumbnails","checkbox_list","checkbox_slideshow","checkbox_manual"]; 
+    YAHOO.util.Event.addListener(ids, "click", select_layout);
 
+// -----------------------------------------------------------------	
+ 	YAHOO.util.Event.on('uploadButton', 'click', onUploadButtonClick);
+// ---------------------------------------------------------------------
+ YAHOO.util.Event.addListener('reset_edit_department', "click", reset_edit_family);
+    YAHOO.util.Event.addListener('save_edit_department', "click", save_edit_family);
+
+
+var department_code_oACDS = new YAHOO.util.FunctionDataSource(validate_code);
+    department_code_oACDS.queryMatchContains = true;
+    var department_code_oAutoComp = new YAHOO.widget.AutoComplete("code","code_Container", family_code_oACDS);
+    department_code_oAutoComp.minQueryLength = 0; 
+    department_code_oAutoComp.queryDelay = 0.1;
+    
+     var department_name_oACDS = new YAHOO.util.FunctionDataSource(validate_name);
+    department_name_oACDS.queryMatchContains = true;
+    var department_name_oAutoComp = new YAHOO.widget.AutoComplete("name","name_Container", family_name_oACDS);
+    department_name_oAutoComp.minQueryLength = 0; 
+    department_name_oAutoComp.queryDelay = 0.1;
+
+  
+
+    
+    var department_page_content_presentation_template_data_oACDS = new YAHOO.util.FunctionDataSource(validate_department_page_content_presentation_template_data);
+    
+    department_page_content_presentation_template_data_oACDS.queryMatchContains = true;
+    var department_page_content_presentation_template_data_oAutoComp = new YAHOO.widget.AutoComplete("department_page_content_presentation_template_data","department_page_content_presentation_template_data_Container", department_page_content_presentation_template_data_oACDS);
+    department_page_content_presentation_template_data_oAutoComp.minQueryLength = 0; 
+    department_page_content_presentation_template_data_oAutoComp.queryDelay = 0.1;
+}
+// ---------------------------------------------------------------------
  
     function mygetTerms(query) {multireload();};
     var oACDS = new YAHOO.widget.DS_JSFunction(mygetTerms);
