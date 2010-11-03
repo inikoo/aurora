@@ -82,10 +82,6 @@
 
 {include file='edit_images_splinter.tpl'}
 
-  
- 
-// ---------------------------------------------------------------------
-
 
 </div>  
    <div  id="d_families" class="edit_block" style="{if $edit!="department"}display:none{/if}"  >

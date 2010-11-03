@@ -98,17 +98,17 @@ $default_state=array(
                                               'top_products'=>array('nr'=>20,'period'=>'all','order'=>'net_sales','order_dir'=>'desc'),
                                               'top_customers'=>array('nr'=>20,'period'=>'all','order'=>'net_balance','order_dir'=>'desc'),
                                               'orders_in_process'=>array(
-                                                                  'store_keys'=>'all',
-                                                                  'sf'=>0,
-                                                                  'nr'=>50,
-                                                                  'f_value'=>'',
-                                                                  'f_show'=>false,
-                                                                  'f_field'=>'customer',
-                                                                  'from'=>'',
-                                                                  'to'=>'',
-                                                                  'order'=>'date',
-                                                                  'order_dir'=>'',
-                                                                  'where'=>''
+                                                                      'store_keys'=>'all',
+                                                                      'sf'=>0,
+                                                                      'nr'=>50,
+                                                                      'f_value'=>'',
+                                                                      'f_show'=>false,
+                                                                      'f_field'=>'customer',
+                                                                      'from'=>'',
+                                                                      'to'=>'',
+                                                                      'order'=>'date',
+                                                                      'order_dir'=>'',
+                                                                      'where'=>''
                                                                   ),
                                               'messages'=>array()
                                           )
@@ -357,23 +357,23 @@ $default_state=array(
                                                'from'=>'',
                                                'to'=>'',
                                                'elements'=>array(),
-						 'csv_export'=>array(
-                                                                                   'code'=>true,
-                                                                                   'date'=>true,
-                                                                                   'name'=>true,
-                                                                                   'paymentmethod'=>false,
-                                                                                   'invoicefor'=>false,
-                                                                                   'invoicepaid'=>false,
+                                               'csv_export'=>array(
+                                                                'code'=>true,
+                                                                'date'=>true,
+                                                                'name'=>true,
+                                                                'paymentmethod'=>false,
+                                                                'invoicefor'=>false,
+                                                                'invoicepaid'=>false,
 
-										   'invoice_total_amount'=>true,
-                                                                                   'invoice_total_profit'=>false,
-                                                                                   'invoice_total_tax_amount'=>false,
-                                                                                   'invoice_total_tax_adjust_amount'=>false,
-                                                                                   'invoice_total_adjust_amount'=>false
-                                                                                   
+                                                                'invoice_total_amount'=>true,
+                                                                'invoice_total_profit'=>false,
+                                                                'invoice_total_tax_amount'=>false,
+                                                                'invoice_total_tax_adjust_amount'=>false,
+                                                                'invoice_total_adjust_amount'=>false
 
 
-                                                                               )
+
+                                                            )
                                            ),
                                 'dn'=>array(
                                          'order'=>'date',
@@ -387,26 +387,26 @@ $default_state=array(
                                          'to'=>'',
                                          'dn_state_type'=>'all',
                                          'elements'=>array(),
-						'csv_export'=>array(
-                                                                                   'id'=>true,
-                                                                                   'date'=>true,
-                                                                                   'type'=>true,
-                                                                                   'customer_name'=>true,
-                                                                                   'weight'=>false,
-                                                                                   'parcels_no'=>false,
+                                         'csv_export'=>array(
+                                                          'id'=>true,
+                                                          'date'=>true,
+                                                          'type'=>true,
+                                                          'customer_name'=>true,
+                                                          'weight'=>false,
+                                                          'parcels_no'=>false,
 
-										   'start_picking_date'=>false,
-                                                                                   'finish_picking_date'=>false,
-                                                                                   'start_packing_date'=>false,
-                                                                                   'finish_packing_date'=>false,
-                                                                                   'state'=>false,
-										   'dispatched_method'=>false,
-                                                                                   'parcel_type'=>false,
-                                                                                   'boxes_no'=>false
-                                                                                   
+                                                          'start_picking_date'=>false,
+                                                          'finish_picking_date'=>false,
+                                                          'start_packing_date'=>false,
+                                                          'finish_packing_date'=>false,
+                                                          'state'=>false,
+                                                          'dispatched_method'=>false,
+                                                          'parcel_type'=>false,
+                                                          'boxes_no'=>false
 
 
-                                                                               )
+
+                                                      )
                                      )
                                      ,'ready_to_pick_dn'=>array(
                                                              'order'=>'date',
@@ -513,20 +513,20 @@ $default_state=array(
                                           'display'=>'',
                                           'supplier_key'=>0,
                                           'supplier_code'=>'',
-                                           'porders'=>array(
-                                             'order'=>'date',
-                                             'view'=>'general',
-                                             'order_dir'=>'',
-                                             'sf'=>0,
-                                             'nr'=>25,
-                                             'where'=>'where true',
-                                             'f_field'=>'public_id',
-                                             'f_value'=>'',
-                                             'f_show'=>false,
-                                             'from'=>'',
-                                             'to'=>''
-                                             
-                                         ) 
+                                          'porders'=>array(
+                                                        'order'=>'date',
+                                                        'view'=>'general',
+                                                        'order_dir'=>'',
+                                                        'sf'=>0,
+                                                        'nr'=>25,
+                                                        'where'=>'where true',
+                                                        'f_field'=>'public_id',
+                                                        'f_value'=>'',
+                                                        'f_show'=>false,
+                                                        'from'=>'',
+                                                        'to'=>''
+
+                                                    )
                                       ),
 
 
@@ -900,32 +900,32 @@ $default_state=array(
                                                'f_field'=>'customer name',
                                                'f_value'=>'',
 
-		                                  'csv_export'=>array(
-                                                            'id'=>true,
-                                                            'name'=>true,
-                                                            'location'=>true,
-                                                            'last_orders'=>true,
-                                                            'orders'=>true,
-                                                            'status'=>true
-                                                           /* 'surplus'=>false,
-                                                            'ok'=>false,
-                                                            'low'=>false,
-                                                            'critical'=>false,
-                                                            'gone'=>false,
-                                                            'unknown'=>false,
-                                                            'sales_all'=>false,
-                                                            'sales_1y'=>false,
-                                                            'sales_1q'=>false,
-                                                            'sales_1m'=>false,
-                                                            'sales_1w'=>false,
-                                                            'profit_all'=>false,
-                                                            'profit_1y'=>false,
-                                                            'profit_1q'=>false,
-                                                            'profit_1m'=>false,
-                                                            'profit_1w'=>false */
+                                               'csv_export'=>array(
+                                                                'id'=>true,
+                                                                'name'=>true,
+                                                                'location'=>true,
+                                                                'last_orders'=>true,
+                                                                'orders'=>true,
+                                                                'status'=>true
+                                                                         /* 'surplus'=>false,
+                                                                          'ok'=>false,
+                                                                          'low'=>false,
+                                                                          'critical'=>false,
+                                                                          'gone'=>false,
+                                                                          'unknown'=>false,
+                                                                          'sales_all'=>false,
+                                                                          'sales_1y'=>false,
+                                                                          'sales_1q'=>false,
+                                                                          'sales_1m'=>false,
+                                                                          'sales_1w'=>false,
+                                                                          'profit_all'=>false,
+                                                                          'profit_1y'=>false,
+                                                                          'profit_1q'=>false,
+                                                                          'profit_1m'=>false,
+                                                                          'profit_1w'=>false */
 
 
-                                                        )
+                                                            )
 
                                            ),
                                    'advanced_search'=>array(
@@ -1466,7 +1466,7 @@ $default_state=array(
                                     'restrictions'=>'for_sale',
                                     'editing'=>'details',
                                     'table_type'=>'list',
-                                    
+
                                     'plot'=>'department',
                                     'plot_data'=>array('department'=>array(
                                                                         'period'=>'m',
@@ -1635,31 +1635,31 @@ $default_state=array(
                                            'where'=>'where true',
                                            'f_field'=>'used_in',
                                            'f_value'=>'',
-						 'csv_export'=>array(
-                                                               'sku'=>true,
-                                                               'used_in'=>true,
-                                                               'description'=>true,
-                                                               'stock'=>true,
-                                                               'stock_cost'=>true,
-                                                               'unit'=>false,
-                                                               'status'=>false,
-                                                               'valid_from'=>false,
-                                                               'valid_to'=>false,
-                                                               'total_lost'=>false,
-                                                               'total_broken'=>false,
-                                                               'total_sold'=>false,
-                                                               'total_given'=>false,
-                                                               'sales_all'=>false,
-                                                               'profit_all'=>false,
-                                                               'sales_1y'=>false,
-                                                               'profit_1y'=>false,
-                                                               'sales_1q'=>false,
-                                                               'profit_1q'=>false,
-                                                               'sales_1m'=>false,
-                                                               'profit_1m'=>false,
-                                                               'sales_1w'=>false,
-                                                               'profit_1w'=>false
-                                                           )
+                                           'csv_export'=>array(
+                                                            'sku'=>true,
+                                                            'used_in'=>true,
+                                                            'description'=>true,
+                                                            'stock'=>true,
+                                                            'stock_cost'=>true,
+                                                            'unit'=>false,
+                                                            'status'=>false,
+                                                            'valid_from'=>false,
+                                                            'valid_to'=>false,
+                                                            'total_lost'=>false,
+                                                            'total_broken'=>false,
+                                                            'total_sold'=>false,
+                                                            'total_given'=>false,
+                                                            'sales_all'=>false,
+                                                            'profit_all'=>false,
+                                                            'sales_1y'=>false,
+                                                            'profit_1y'=>false,
+                                                            'sales_1q'=>false,
+                                                            'profit_1q'=>false,
+                                                            'sales_1m'=>false,
+                                                            'profit_1m'=>false,
+                                                            'sales_1w'=>false,
+                                                            'profit_1w'=>false
+                                                        )
 
                                        )
                            ),
@@ -1710,7 +1710,7 @@ $default_state=array(
 
                                           ),),
 // --------------------------------------------product under family export(csv) starts----------------------
-                   'product'=>array(
+                   'product_delete'=>array(
                                  'details'=>false,
                                  'view'=>'general',
                                  'percentages'=>false,
@@ -1756,6 +1756,8 @@ $default_state=array(
                                  'details'=>false,
                                  'plot'=>'product',
                                  'plot_interval'=>array(
+                                                        'd'=>array('plot_bins'=>7,
+                                                                'plot_forecast_bins'=>3),
                                                      'y'=>array('plot_bins'=>5,
                                                                 'plot_forecast_bins'=>3),
                                                      'q'=>array('plot_bins'=>12,
@@ -2266,30 +2268,30 @@ $default_state=array(
                                                 'order_dir'=>'',
                                                 'sf'=>0,
                                                 'nr'=>25,
-							 'csv_export'=>array(
-                                                                                   'code'=>true,
-                                                                                   'name'=>true,
-                                                                                   'total_customer_contacts'=>true,
-                                                                                   'new_customer_contacts'=>true,
-                                                                                   'total_customer'=>true,
-                                                                                   'active_customer'=>true,
-                                                                                   'new_customer'=>true,
-                                                                                   'lost_customer'=>true,
-                                                                                  
-
-                                                                                   'sales_all'=>false,
-                                                                                   'sales_1y'=>false,
-                                                                                   'sales_1q'=>false,
-                                                                                   'sales_1m'=>false,
-                                                                                   'sales_1w'=>false,
-                                                                                   'profit_all'=>false,
-                                                                                   'profit_1y'=>false,
-                                                                                   'profit_1q'=>false,
-                                                                                   'profit_1m'=>false,
-                                                                                   'profit_1w'=>false
+                                                'csv_export'=>array(
+                                                                 'code'=>true,
+                                                                 'name'=>true,
+                                                                 'total_customer_contacts'=>true,
+                                                                 'new_customer_contacts'=>true,
+                                                                 'total_customer'=>true,
+                                                                 'active_customer'=>true,
+                                                                 'new_customer'=>true,
+                                                                 'lost_customer'=>true,
 
 
-                                                                               )
+                                                                 'sales_all'=>false,
+                                                                 'sales_1y'=>false,
+                                                                 'sales_1q'=>false,
+                                                                 'sales_1m'=>false,
+                                                                 'sales_1w'=>false,
+                                                                 'profit_all'=>false,
+                                                                 'profit_1y'=>false,
+                                                                 'profit_1q'=>false,
+                                                                 'profit_1m'=>false,
+                                                                 'profit_1w'=>false
+
+
+                                                             )
                                             )
 
 
