@@ -24,9 +24,10 @@ if(!isset($_REQUEST['id']) or !is_numeric($_REQUEST['id']) )
   }
 $department=new Department($department_id);
 
-if(!( $user->can_view('stores') and in_array($department->data['Product Department Store Key'],$user->stores)))
+if(!( $user->can_view('stores') and in_array($department->data['Product Department Store Key'],$user->stores))){
+header('Location: index.php');
   exit();
-
+}
 $store=new Store($department->get('Product Department Store Key'));
 
 
@@ -37,13 +38,12 @@ $modify=$user->can_edit('stores');
 
 
 
-if(isset($_REQUEST['edit']))
-  $edit=$_REQUEST['edit'];
-else
-  $edit=$_SESSION['state']['department']['editing'];
+if(isset($_REQUEST['edit'])){
+header('Location: edit_department.php?id='.$department_id);
+  exit();
 
-if(!$modify)
-  $edit=false;
+}
+
 
 $smarty->assign('view_parts',$user->can_view('parts'));
 
@@ -67,14 +67,11 @@ $smarty->assign('search_scope','products');
 
 $general_options_list=array();
 
-if($edit){
-  $general_options_list[]=array('tipo'=>'url','url'=>'department.php?edit=0','label'=>_('Exit Edit'));
 
-}else{
 if($modify)
   $general_options_list[]=array('tipo'=>'url','url'=>'department.php?edit=1','label'=>_('Edit Department'));
   $general_options_list[]=array('tipo'=>'js','state'=>$show_details,'id'=>'details','label'=>($show_details?_('Hide Details'):_('Show Details')));
-}
+
   
 $smarty->assign('general_options_list',$general_options_list);
 
@@ -83,7 +80,7 @@ $css_files=array(
 		 $yui_path.'menu/assets/skins/sam/menu.css',
 		 $yui_path.'button/assets/skins/sam/button.css',
 		 $yui_path.'assets/skins/sam/autocomplete.css',
-
+	
 
 		 'common.css',
 		 'container.css',
@@ -115,21 +112,10 @@ $department->load_images_slidesshow();
 $images=$department->images_slideshow;
 $smarty->assign('images',$images);
 
-if($edit){
 
-$smarty->assign('edit',$_SESSION['state']['department']['edit']);
-  $css_files[]='css/edit.css';
-  
-  $js_files[]='js/edit_common.js';
-  $js_files[]='js/upload_image.js';
-  $js_files[]='edit_department.js.php';
-  
-  
-  
- }else{
      $js_files[]='js/search.js';
      $js_files[]='department.js.php';
-}
+
 
 
 $smarty->assign('css_files',$css_files);
@@ -352,14 +338,7 @@ $smarty->assign('paginator_menu0',$paginator_menu);
 		     );
   $smarty->assign('filter_menu0',$filter_menu);
 
-//$table_title=_('Family List');
-//$smarty->assign('table_title',$table_title);
-//$smarty->assign('table_info',$families['families'].' '.ngettext('Families','Families',$families['families']).' '._('in').' '.$families['department']);
-if($edit){
 
-  $smarty->assign('title', _('Editing').': '.$department->get('Product Department Code'));
-  $smarty->display('edit_department.tpl');
- }else{
   $smarty->assign('title',$department->get('Product Department Name'));
 // --------------------------------families' Export(csv) right click code----------------
  $csv_export_options=array(
@@ -462,7 +441,7 @@ $smarty->assign('csv_export_options',$csv_export_options);
 
 // -----------------------------------------------export csv code ends here------------------------
   $smarty->display('department.tpl');
- }
+ 
 
 
 ?>

@@ -14,35 +14,29 @@
     <li> <span class="item {if $edit=='details'}selected{/if}"  id="details">  <span> {t}Description{/t}</span></span></li>
     <li> <span class="item {if $edit=='discounts'}selected{/if}"  id="discounts">  <span> {t}Discounts{/t}</span></span></li>
     <li> <span class="item {if $edit=='pictures'}selected{/if}" id="pictures"  ><span>  {t}Pictures{/t}</span></span></li>
-    <li> <span class="item {if $edit=='products'}selected{/if}" id="products"  ><span> {t}Products{/t}</span></span></li>
+    <li> <span class="item {if $edit=='families'}selected{/if}" id="families"  ><span> {t}Families{/t}</span></span></li>
     <li> <span class="item {if $edit=='web'}selected{/if} " id="web" ><span> {t}Web Pages{/t}</span></span></li>
   </ul>
  <div class="tabbed_container"> 
   <span style="display:none" id="description_num_changes"></span>
     <div id="description_errors"></div>
-  <div id="info_name" style="margin-left:20px;float:left;width:360px;{if !($edit=='discounts' or $edit=='pictures')  }display:none{/if}">
-	<table    class="show_info_product">
-	  <tr>
-	    <td>{t}Department Code{/t}:</td><td  class="aright">{$department->get('Product Department Code')}</td>
-	  </tr>
-	  <tr>
-	    <td>{t}Department Name{/t}:</td><td  class="aright">{$department->get('Product Department Name')}</td>
-	  </tr>
-	</table>
-   </div>
-    <div  id="d_details" class="edit_block" style="{if $edit!='details'}display:none{/if}"  >
+    
+    
+    
+  
+   <div  id="d_details" class="edit_block" style="{if $edit!='details'}display:none{/if}"  >
       
     
-      <div class="general_options" style="float:right">
+      <div class="general_options" style="text-align:right;xfloat:right">
 	
-	<span  style="margin-right:10px;visibility:hidden"  id="save_edit_department" class="state_details">{t}Save{/t}</span>
-	<span style="margin-right:10px;visibility:hidden" id="reset_edit_department" class="state_details">{t}Reset{/t}</span>
+	<span  style="margin-right:10px;visibility:hidden"  onClick="save_edit_general('department')" id="save_edit_department" class="state_details">{t}Save{/t}</span>
+	<span style="margin-right:10px;visibility:hidden"  onClick="reset_edit_general('department')" id="reset_edit_department" class="state_details">{t}Reset{/t}</span>
 	
       </div>
 
 
 
-    <table styel="clear:both" class="edit">
+    <table border=0 styel="clear:both" class="edit">
       <tr><td class="label" >{t}Department Code{/t}:</td><td>
 	 <div  style="width:15em" >
 
@@ -83,7 +77,7 @@
 	 
     </table>
     </div>
-     <div  id="d_pictures" class="edit_block" style="{if $edit!='pictures'}display:none{/if}" >
+   <div  id="d_pictures" class="edit_block" style="{if $edit!='pictures'}display:none{/if}" >
 
 
 {include file='edit_images_splinter.tpl'}
@@ -94,7 +88,7 @@
 
 
 </div>  
-   <div  class="edit_block" style="{if $edit!="department"}display:none{/if}"  id="d_families">
+   <div  id="d_families" class="edit_block" style="{if $edit!="department"}display:none{/if}"  >
      
 
 
@@ -134,7 +128,7 @@
   </div>
   
     </div>
-   <div  class="edit_block" style="{if $edit!="web"}display:none{/if}"  id="d_web">
+   <div  id="d_web" class="edit_block" style="{if $edit!="web"}display:none{/if}"  >
 
      <div class="general_options" style="float:right">
        <span style="margin-right:10px;"  onclick="" id="web_create" class="state_details">{t}Create Page{/t}</span>
@@ -213,7 +207,7 @@
     </table>
 
    </div>   
-    
+   <div  id="d_discounts" class="edit_block" style="{if $edit!="discounts"}display:none{/if}"></div> 
    
    </div>
   
