@@ -23,8 +23,12 @@ var validate_scope_data={
 		,'ar':'find','ar_request':'ar_assets.php?tipo=is_department_name&store_key='+store_key+'&query='}
 	,'code':{'changed':false,'validated':true,'required':false,'group':1,'type':'item'
 		 ,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Department Code')?>'}]
-		 ,'name':'code','ar':'find','ar_request':'ar_assets.php?tipo=is_department_code&store_key='+store_key+'&query='}
+		 ,'name':'code','ar':'find','ar_request':'ar_assets.php?tipo=is_department_code&store_key='+store_key+'&query='}}
 };
+
+
+
+
 
 
 
@@ -773,20 +777,37 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	};
     });
 
-// ------------------------------------------------------------------------
+
+
+
+
+function init(){
+
+   var ids = ["checkbox_thumbnails","checkbox_list","checkbox_slideshow","checkbox_manual"]; 
+    YAHOO.util.Event.addListener(ids, "click", select_layout);
+
+
+ 	YAHOO.util.Event.on('uploadButton', 'click', onUploadButtonClick);
+
+ 
+
+
+var department_code_oACDS = new YAHOO.util.FunctionDataSource(validate_code);
+    department_code_oACDS.queryMatchContains = true;
+    var department_code_oAutoComp = new YAHOO.widget.AutoComplete("code","code_Container", department_code_oACDS);
+    department_code_oAutoComp.minQueryLength = 0; 
+    department_code_oAutoComp.queryDelay = 0.1;
+    
+     var department_name_oACDS = new YAHOO.util.FunctionDataSource(validate_name);
+    department_name_oACDS.queryMatchContains = true;
+    var department_name_oAutoComp = new YAHOO.widget.AutoComplete("name","name_Container", department_name_oACDS);
+    department_name_oAutoComp.minQueryLength = 0; 
+    department_name_oAutoComp.queryDelay = 0.1;
+
+ 
 function validate_department_page_content_presentation_template_data(query){validate_general('department_page_content','presentation_template_data',unescape(query));}
 
 
-function validate_department_page_header_store_title(query){validate_general('department_page_header','store_title',unescape(query));}
-function validate_department_page_header_subtitle(query){validate_general('department_page_header','subtitle',unescape(query));}
-function validate_department_page_header_slogan(query){validate_general('department_page_header','slogan',unescape(query));}
-function validate_department_page_header_resume(query){validate_general('department_page_header','resume',unescape(query));}
-
-
-function validate_department_page_html_head_url(query){validate_general('department_page_html_head','url',unescape(query));}
-
-function validate_department_page_html_head_title(query){validate_general('department_page_html_head','title',unescape(query));}
-function validate_department_page_html_head_keywords(query){validate_general('department_page_html_head','keywords',unescape(query));}
 
 
 function validate_code(query){
@@ -827,34 +848,6 @@ function post_item_updated_actions(branch,key,newvalue){
 // ------------------------------------------------------------------------
 
 
-
-
-function init(){
-// -----------------------------------------------------------------
-   var ids = ["checkbox_thumbnails","checkbox_list","checkbox_slideshow","checkbox_manual"]; 
-    YAHOO.util.Event.addListener(ids, "click", select_layout);
-
-// -----------------------------------------------------------------	
- 	YAHOO.util.Event.on('uploadButton', 'click', onUploadButtonClick);
-// ---------------------------------------------------------------------
- YAHOO.util.Event.addListener('reset_edit_department', "click", reset_edit_department);
-    YAHOO.util.Event.addListener('save_edit_department', "click", save_edit_department);
-
-
-var department_code_oACDS = new YAHOO.util.FunctionDataSource(validate_code);
-    department_code_oACDS.queryMatchContains = true;
-    var department_code_oAutoComp = new YAHOO.widget.AutoComplete("code","code_Container", department_code_oACDS);
-    department_code_oAutoComp.minQueryLength = 0; 
-    department_code_oAutoComp.queryDelay = 0.1;
-    
-     var department_name_oACDS = new YAHOO.util.FunctionDataSource(validate_name);
-    department_name_oACDS.queryMatchContains = true;
-    var department_name_oAutoComp = new YAHOO.widget.AutoComplete("name","name_Container", department_name_oACDS);
-    department_name_oAutoComp.minQueryLength = 0; 
-    department_name_oAutoComp.queryDelay = 0.1;
-
-  
-
     
     var department_page_content_presentation_template_data_oACDS = new YAHOO.util.FunctionDataSource(validate_department_page_content_presentation_template_data);
     
@@ -878,7 +871,7 @@ var department_code_oACDS = new YAHOO.util.FunctionDataSource(validate_code);
     YAHOO.util.Event.addListener('cancel_add_department', "click", cancel_add_department);
 
 
-}
+
 
 YAHOO.util.Event.onDOMReady(init);
 YAHOO.util.Event.onContentReady("rppmenu0", function () {
