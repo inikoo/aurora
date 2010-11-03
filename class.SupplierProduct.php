@@ -157,7 +157,7 @@ class supplierproduct extends DB_Table {
                 if ($row=mysql_fetch_array($result2, MYSQL_ASSOC)   ) {
                     $this->code=$row['Supplier Product Code'];
                     $this->supplier_key=$row['Supplier Key'];
-                     $this->pid=row['Supplier Product Key'];
+                     $this->pid=$row['Supplier Product Key'];
                     foreach($row as $key=>$value) {
                         $this->data[$key]=$value;
                     }
@@ -183,7 +183,7 @@ class supplierproduct extends DB_Table {
             $result=mysql_query($sql);
             if ($this->data=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
                 $this->id=$this->data['Supplier Product Current Key'];
-                $this->pid=row['Supplier Product Key'];
+                $this->pid=$this->data['Supplier Product Key'];
                 $this->key=$this->id;
                 $this->code=$this->data['Supplier Product Code'];
                 $this->supplier_key=$this->data['Supplier Key'];
