@@ -1206,7 +1206,7 @@ function init(){
 
 
 
- 	YAHOO.util.Event.on('uploadButton', 'click', onUploadButtonClick);
+ 	YAHOO.util.Event.on('uploadButton', 'click', upload_image);
 
  
     part_selected= function(sType, aArgs) {
