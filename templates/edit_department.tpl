@@ -9,15 +9,15 @@
    
  
 
-   <ul class="tabs" id="chooser_ul" style="clear:both">
-      <li> <span class="item {if $edit=='description'}selected{/if}"  id="description">  <span> {t}Description{/t}</span></span></li>
-      <li> <span class="item {if $edit=='discounts'}selected{/if}"  id="discounts">  <span> {t}Discounts{/t}</span></span></li>
-      <li> <span class="item {if $edit=='pictures'}selected{/if}" id="pictures"  ><span>  {t}Pictures{/t}</span></span></li>
-      <li> <span class="item {if $edit=='families'}selected{/if}" id="families"  ><span> {t}Families{/t}</span></span></li>
-      <li> <span class="item {if $edit=='web'}selected{/if} " id="web" ><span> {t}Web Pages{/t}</span></span></li>
-    </ul>
-  
-  <div class="tabbed_container"> 
+<div id="msg_div"></div>
+  <ul class="tabs" id="chooser_ul" style="clear:both">
+    <li> <span class="item {if $edit=='details'}selected{/if}"  id="details">  <span> {t}Description{/t}</span></span></li>
+    <li> <span class="item {if $edit=='discounts'}selected{/if}"  id="discounts">  <span> {t}Discounts{/t}</span></span></li>
+    <li> <span class="item {if $edit=='pictures'}selected{/if}" id="pictures"  ><span>  {t}Pictures{/t}</span></span></li>
+    <li> <span class="item {if $edit=='products'}selected{/if}" id="products"  ><span> {t}Products{/t}</span></span></li>
+    <li> <span class="item {if $edit=='web'}selected{/if} " id="web" ><span> {t}Web Pages{/t}</span></span></li>
+  </ul>
+ <div class="tabbed_container"> 
   <span style="display:none" id="description_num_changes"></span>
     <div id="description_errors"></div>
   <div id="info_name" style="margin-left:20px;float:left;width:360px;{if !($edit=='discounts' or $edit=='pictures')  }display:none{/if}">
@@ -30,55 +30,93 @@
 	  </tr>
 	</table>
    </div>
-   <div  class="edit_block" style="{if $edit!="description"}display:none{/if}"  id="d_description">
-   
-     <div class="general_options" style="float:right">
-       
-       <span style="margin-right:10px;display:none"  onclick="save('description')" id="description_save" class="state_details">{t}Save Changes{/t}</span>
-       <span style="margin-right:10px;display:none;" id="description_reset" onclick="reset('description')" class="state_details">{t}Reset{/t}</span>
-       
-     </div>
-
-
-
-
-
-
-
-     <table class="edit">
-      <tr><td class="label">{t}Code{/t}:</td><td><input  id="code" onKeyUp="edit_dept_changed(this)"    onMouseUp="edit_dept_changed(this)"  onChange="edit_dept_changed(this)"  name="code" changed=0 type='text' class='text' style="width:15em" MAXLENGTH="16" value="{$department->get('Product Department Code')}" ovalue="{$department->get('Product Department Code')}"  /></td></tr>
+    <div  id="d_details" class="edit_block" style="{if $edit!='details'}display:none{/if}"  >
       
-      
-      <tr><td class="label">{t}Name{/t}:</td><td><input   id="name" onKeyUp="edit_dept_changed(this)"    onMouseUp="edit_dept_changed(this)"  onChange="edit_dept_changed(this)"  name="name" changed=0 type='text'  MAXLENGTH="255" style="width:30em"  class='text' value="{$department->get('Product Department Name')}"  ovalue="{$department->get('Product Department Name')}"  /></td>
-      </tr>
+    
+      <div class="general_options" style="float:right">
+	
+	<span  style="margin-right:10px;visibility:hidden"  id="save_edit_department" class="state_details">{t}Save{/t}</span>
+	<span style="margin-right:10px;visibility:hidden" id="reset_edit_department" class="state_details">{t}Reset{/t}</span>
+	
+      </div>
+
+
+
+    <table styel="clear:both" class="edit">
+      <tr><td class="label" >{t}Department Code{/t}:</td><td>
+	 <div  style="width:15em" >
+
+	      <input  
+		 id="code" 
+		 changed=0 
+		 type='text' 
+		 class='text' 
+		 style="width:15em" 
+		 MAXLENGTH="16" 
+		 value="{$department->get('Product Department Code')}" 
+		 ovalue="{$department->get('Product Department Code')}"  
+		 />
+		 <div id="code_Container" style="" ></div>
+         </div>
+	    </td>
+	     <td id="code_msg" class="edit_td_alert" style="width:300px"></td>
+
+	  </tr>
+	  <tr><td class="label">{t}Department Name{/t}:</td><td>
+	      <div  style="width:30em" >
+		<input   
+		   id="name" 
+		  
+		   changed=0 
+		   type='text'  
+		   MAXLENGTH="255" 
+		   style="width:30em"  
+		   class='text' 
+		   value="{$department->get('Product Department Name')}"  
+		   ovalue="{$department->get('Product Department Name')}"  
+		   />
+		<div id="name_Container" style="" ></div>
+              </div>
+	    </td>
+	     <td id="name_msg" class="edit_td_alert" style="width:300px"></td>
+	  </tr>
+	 
     </table>
-   
-   </div>   
-   <div  class="edit_block" style="{if $edit!="discounts"}display:none{/if}"  id="d_discounts">
-   </div>   
-   <div  class="edit_block" style="{if $edit!="pictures"}display:none{/if}"  id="d_pictures">
-   {include file='edit_images_splinter.tpl'}
+    </div>
+     <div  id="d_pictures" class="edit_block" style="{if $edit!='pictures'}display:none{/if}" >
 
-   
-   </div>   
-   <div  class="edit_block" style="{if $edit!="families"}display:none{/if}"  id="d_families">
+
+{include file='edit_images_splinter.tpl'}
+
+  
+ 
+// ---------------------------------------------------------------------
+
+
+</div>  
+   <div  class="edit_block" style="{if $edit!="department"}display:none{/if}"  id="d_families">
      
+
+
+
+
+
+
+
      <div class="general_options" style="float:right">
-       <span   style="margin-right:10px"  id="add_family" class="state_details" >Create Family</span>
-       <span  style="margin-right:10px;display:none"  id="save_new_family" class="state_details">{t}Save{/t}</span>
-       <span style="margin-right:10px;display:none" id="cancel_add_family" class="state_details">{t}Close Dialog{/t}</span>
+       <span   style="margin-right:10px"  id="add_department" class="state_details" >Create Department</span>
+       <span  style="margin-right:10px;display:none"  id="save_new_department" class="state_details">{t}Save{/t}</span>
+       <span style="margin-right:10px;display:none" id="cancel_add_department" class="state_details">{t}Close Dialog{/t}</span>
      </div>
 
-    <div     style="margin:0 0 10px 0;padding:10px;border:1px solid #ccc;display:none"  id="new_family_dialog" >
-      <div id="new_family_messages" class="messages_block"></div>
+    <div     style="margin:0 0 10px 0;padding:10px;border:1px solid #ccc;display:none"  id="new_department_dialog" >
+      <div id="new_department_messages" class="messages_block"></div>
     <table >
-      <tr><td>{t}Family Code{/t}:</td><td><input  id="new_code" onKeyUp="new_family_changed(this)"    onMouseUp="new_family_changed(this)"  onChange="new_family_changed(this)"  name="code" changed=0 type='text' class='text' style="width:15em" MAXLENGTH="16" value="" /></td></tr>
-      <tr><td>{t}Family Name{/t}:</td><td><input   id="new_name" onKeyUp="new_family_changed(this)"    onMouseUp="new_family_changed(this)"  onChange="new_family_changed(this)"  name="name" changed=0 type='text'  MAXLENGTH="255" style="width:30em"  class='text' value="" /></td></tr>
-      <tr><td>{t}Special Characteristic{/t}:</td><td><input   id="new_special_char" onKeyUp="new_family_changed(this)"    onMouseUp="new_family_changed(this)"  onChange="new_family_changed(this)"  name="name" changed=0 type='text'  MAXLENGTH="255" style="width:30em"  class='text' value="" /></td></tr>
+      <tr><td>{t}Department Code{/t}:</td><td><input  id="new_code" onKeyUp="new_department_changed(this)"    onMouseUp="new_department_changed(this)"  onChange="new_department_changed(this)"  name="code" changed=0 type='text' class='text' style="width:15em" MAXLENGTH="16" value="" /></td></tr>
+      <tr><td>{t}Department Name{/t}:</td><td><input   id="new_name" onKeyUp="new_department_changed(this)"    onMouseUp="new_department_changed(this)"  onChange="new_department_changed(this)"  name="name" changed=0 type='text'  MAXLENGTH="255" style="width:30em"  class='text' value="" /></td></tr>
       
-      <tr><td>{t}Description{/t}:</td><td><textarea   id="new_description" onKeyUp="new_family_changed(this)"    onMouseUp="new_family_changed(this)"  onChange="new_family_changed(this)"  name="description" changed=0 type='text'  MAXLENGTH="255" style="width:30em"  ></textarea> </td></tr>
       <td>
-	  <span class="save" id="add_new_family" onclick="save_new_family()" style="display:none">Add</span>
+	  <span class="save" id="add_new_department" onclick="save_new_department()" style="display:none">Add</span>
       </td></tr>
     </table>
   </div>
