@@ -1464,9 +1464,9 @@ $default_state=array(
                                     'mode'=>'all',
                                     'avg'=>'totals',
                                     'restrictions'=>'for_sale',
-                                    'editing'=>false,
+                                    'editing'=>'details',
                                     'table_type'=>'list',
-                                    'edit'=>'description',
+                                    
                                     'plot'=>'department',
                                     'plot_data'=>array('department'=>array(
                                                                         'period'=>'m',
