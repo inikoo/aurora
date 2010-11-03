@@ -15,6 +15,8 @@ include_once('class.Contact.php');
 include_once('class.Telecom.php');
 include_once('class.Email.php');
 include_once('class.Address.php');
+include_once('class.Corporation.php');
+
 //include_once('Name.php');
 /* class: Company
    Class to manage the *Company Dimension* table
