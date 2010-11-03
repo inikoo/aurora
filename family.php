@@ -429,7 +429,14 @@ $smarty->assign('info_period_menu',$info_period_menu);
 $smarty->assign('export_csv_table_cols',6);
 $smarty->assign('csv_export_options',$csv_export_options);
 // -----------------------------------------------export csv code ends here------------------------
-  $smarty->display('family.tpl');
+
+$family->load_images_slidesshow();
+$images=$family->images_slideshow;
+$smarty->assign('div_img_width',190);
+$smarty->assign('img_width',190);
+$smarty->assign('images',$images);
+$smarty->assign('num_images',count($images));
+$smarty->display('family.tpl');
  
 
 ?>

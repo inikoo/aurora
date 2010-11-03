@@ -23,7 +23,7 @@ class Family extends DB_Table {
 
     var $products=false;
     public $images_slideshow=array();
-
+var $external_DB_link=false;
     /*
       Constructor: Family
       Initializes the class, trigger  Search/Load/Create for the data set
@@ -1571,7 +1571,7 @@ class Family extends DB_Table {
     function load_images() {
         $sql=sprintf("select PIB.`Is Principal`,ID.`Image Key`,`Image Caption`,`Image URL`,`Image Thumbnail URL`,`Image Small URL`,`Image Large URL`,`Image Filename`,`Image File Size`,`Image File Checksum`,`Image Width`,`Image Height`,`Image File Format` from `Image Bridge` PIB left join `Image Dimension` ID on (PIB.`Image Key`=ID.`Image Key`) where `Subject Type`='Family' and `Subject Key`=%d",$this->id);
 
-        //      print $sql;
+         //    print $sql;
         $res=mysql_query($sql);
         $this->images=array();
 
@@ -1587,7 +1587,7 @@ class Family extends DB_Table {
     }
     function load_images_slidesshow() {
         $sql=sprintf("select `Image Thumbnail URL`,`Image Small URL`,`Is Principal`,ID.`Image Key`,`Image Caption`,`Image URL`,`Image Filename`,`Image File Size`,`Image File Checksum`,`Image Width`,`Image Height`,`Image File Format` from `Image Bridge` PIB left join `Image Dimension` ID on (PIB.`Image Key`=ID.`Image Key`) where `Subject Type`='Family' and   `Subject Key`=%d",$this->id);
-        //       print $sql;
+            //  print $sql;
         $res=mysql_query($sql);
         $this->images_slideshow=array();
 
@@ -1604,7 +1604,7 @@ class Family extends DB_Table {
     function update_main_image() {
 
         $this->load_images();
-        print_r($this->images);
+       
         $num_images=count($this->images);
         $main_image_src='art/nopic.png';
         if ($num_images>0) {
@@ -1785,6 +1785,34 @@ switch ($type) {
 
 return false;
 }
+
+
+function remove_image($image_key){
+
+$this->load_images();
+
+if(array_key_exists($image_key,$this->images)){
+$sql=sprintf("delete from `Image Bridge` where `Subject Type`='Family' and `Subject Key`=%d  and `Image Key`=%d",$this->id,$image_key);
+//print $sql;
+mysql_query($sql);
+if($this->external_DB_link)mysql_query($sql,$this->external_DB_link);
+$this->updated=true;
+$was_principal=($this->images[$image_key]['Is Principal']=='Yes'?true:false);
+unset($this->images[$image_key]);
+
+if($was_principal and count($this->images)>0){
+$this->update_principal_image();
+
+}
+
+}else{
+
+  $this->msg=_('Image not associated');
+}
+
+
+}
+
 
 }
 ?>

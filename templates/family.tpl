@@ -14,7 +14,28 @@
   
 <div id="info" style="margin:10px 0;padding:0;{if !$show_details}display:none;{/if}">
 
-<h2 style="margin:0;padding:0">Family Information</h2>
+
+ <div id="photo_container" style="margin-top:0px;float:left">
+	    <div style="border:1px solid #ddd;padding-stop:0;width:220px;xheight:230px;text-align:center;margin:0 10px 0 0px">
+	     
+	      <div id="imagediv"   style="border:1px solid #ddd;width:{$div_img_width}px;height:{$div_img_height}px;padding:5px 5px;xborder:none;cursor:pointer;xbackground:red;margin: 10px 0 10px 9px;vertical-align:middle">
+		<img src="{ if $num_images>0}{$images[0].small_url}{else}art/nopic.png{/if}"  style="vertical-align:middle;display:block;" width="{$img_width}px" valign="center" border=1  id="image"   alt="{t}Image{/t}"/>
+	      </div>
+	    </div>
+	    
+	    { if $num_images>1}
+	    <div style="width:160px;margin:auto;padding-top:5px"  >
+	      {foreach from=$images item=image  name=foo}
+	      {if $image.is_principal==0}
+	      <img  style="float:left;border:1px solid#ccc;padding:2px;margin:2px;cursor:pointer" src="{$image.thumbnail_url}"  title="" alt="" />
+	      {/if}
+	      {/foreach}
+	    </div>
+	    {/if}
+	    
+	    
+	  </div>
+<h2 style="margin:20px 0 0 0 ;padding:0">Family Information</h2>
 <div style="width:350px;float:left">
   <table    class="show_info_product">
 
@@ -143,7 +164,8 @@
 </div>
 
 </div>
-<div id="plot" class="top_bar" style="position:relative;left:-20px;clear:both;padding:0;margin:0;{if !$show_details}display:none;{/if}">
+<div style="clear:both"></div>
+<div id="plot" class="top_bar" style="clear:both;position:relative;left:-20px;clear:both;padding:0;margin:0;{if !$show_details}display:none;{/if};margin-top:30px;">
 
       <div display="none" id="plot_info" keys="{$store->id}" ></div>
       <ul id="plot_chooser" class="tabs" style="margin:0 20px;padding:0 20px "  >
@@ -200,7 +222,7 @@
      
      </div>
 
-<div class="data_table"  style="clear:both">
+<div class="data_table"  style="margin-top:10px;clear:both">
      <span id="table_title" class="clean_table_title">{t}Products{/t}</span>
 	
 <span  id="export_csv0" style="float:right;margin-left:20px"  class="table_type state_details" tipo="products_in_family" >{t}Export (CSV){/t}</span>
@@ -252,14 +274,6 @@
 
 	 <div class="clean_table_controls" style="" ><div><span  style="margin:0 5px" id="paginator0"></span></div></div>
        </div>
-  
-    
-    
-    
-    
-   
-    
-    
     <div id="thumbnails0" class="thumbnails" style="border-top:1px solid SteelBlue;clear:both;{if $table_type!='thumbnails'}display:none{/if}"></div>
     <div  id="table0"   class="data_table_container dtable btable with_total"  style="{if $table_type=='thumbnails'}display:none{/if}"   > </div>
   

@@ -1480,9 +1480,9 @@ function delete_image(){
 if($scope=='product')
     $subject=new Product('pid',$scope_key);
 elseif($scope=='family')
-    $subject=new Product($scope_key);
+    $subject=new Family($scope_key);
 elseif($scope=='department')
-    $subject=new Product($scope_key);    
+    $subject=new Department($scope_key);    
 
 
 $subject->remove_image($image_key);

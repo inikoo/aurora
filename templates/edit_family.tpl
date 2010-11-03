@@ -114,15 +114,7 @@
     </table>
     </div>
      <div  id="d_pictures" class="edit_block" style="{if $edit!='pictures'}display:none{/if}" >
-
-
 {include file='edit_images_splinter.tpl'}
-
-  
- 
-
-
-
 </div>
       <div  class="edit_block" style="margin:0;padding:0 0px;{if $edit!="discounts"}display:none{/if}"  id="d_discounts">
 		<div  class="new_item_dialog"  id="new_deal_dialog" style="display:none">

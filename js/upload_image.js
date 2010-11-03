@@ -110,7 +110,7 @@ function delete_image(o){
 	
 
 	var request='ar_edit_assets.php?tipo=delete_image&scope='+scope+'&scope_key='+scope_key+'&image_key='+escape(image_key);
-	//	alert(request)
+	alert(request)
 	YAHOO.util.Connect.asyncRequest('POST',request ,{
 		success:function(o) {
 		     alert(o.responseText);
