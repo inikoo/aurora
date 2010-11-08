@@ -430,8 +430,9 @@ function validate_general(branch,item,query) {
 function ar_validation(branch,item,query) {
     var data= validate_scope_data[branch][item];
     var request=data.ar_request+query;
-    YAHOO.util.Connect.asyncRequest('POST',request , {success:function(o) {
-        //alert(o.responseText)
+   //alert(request)
+   YAHOO.util.Connect.asyncRequest('POST',request , {success:function(o) {
+       // alert(o.responseText)
         var r =  YAHOO.lang.JSON.parse(o.responseText);
         if (r.state==200) {
             if (r.found==1) {
@@ -599,7 +600,7 @@ function reset_edit_general(branch) {
 function cancel_new_general(branch) {
 
     for (item in validate_scope_data[branch]) {
-
+        //alert(validate_scope_data[branch][item].name)
         var item_input=Dom.get(validate_scope_data[branch][item].name);
         //alert(validate_scope_data[branch][item].name)
         if (validate_scope_data[branch][item].default!=undefined) {
@@ -719,10 +720,10 @@ function save_new_general(branch) {
 
 
     var request=scope_edit_ar_file+'?tipo='+operation+'_'+branch+'&parent='+parent+'&parent_key=' + parent_key+ '&values=' + 	jsonificated_values;
-
+//alert(request)
     YAHOO.util.Connect.asyncRequest('POST',request , {
 success:function(o) {
-            //  alert(o.responseText);
+           //  alert(o.responseText);
 
             var r =  YAHOO.lang.JSON.parse(o.responseText);
             Dom.get("new_"+branch+"_dialog_msg").innerHTML=r.msg;
@@ -752,6 +753,7 @@ success:function(o) {
 }
 
 function post_new_create_actions(branch,response) {
+
     cancel_new_general(branch)
 }
 function post_new_found_actions(branch,response) {}

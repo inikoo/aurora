@@ -12,7 +12,8 @@ var scope='department';
 var store_key=<?php echo$_SESSION['state']['store']['id']?>;
 
 var validate_scope_metadata={
-    'department':{'type':'edit','ar_file':'ar_edit_assets.php','key_name':'id','key':<?php echo$_SESSION['state']['department']['id']?>}
+    'department':{'type':'edit','ar_file':'ar_edit_assets.php','key_name':'id','key':<?php echo$_SESSION['state']['department']['id']?>},
+    'family':{'type':'new','ar_file':'ar_edit_assets.php','key_name':'department_id','key':<?php echo$_SESSION['state']['department']['id']?>}
 
 };
 
@@ -23,7 +24,22 @@ var validate_scope_data={
 		,'ar':'find','ar_request':'ar_assets.php?tipo=is_department_name&store_key='+store_key+'&query='}
 	,'code':{'changed':false,'validated':true,'required':false,'group':1,'type':'item'
 		 ,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Department Code')?>'}]
-		 ,'name':'code','ar':'find','ar_request':'ar_assets.php?tipo=is_department_code&store_key='+store_key+'&query='}}
+		 ,'name':'code','ar':'find','ar_request':'ar_assets.php?tipo=is_department_code&store_key='+store_key+'&query='}},
+	'family':{
+	'name':{'changed':false,'validated':false,'required':true,'group':1,'type':'item','dbname':'Product Family Name'
+		,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Family Name')?>'}],'name':'family_name'
+		,'ar':'find','ar_request':'ar_assets.php?tipo=is_family_name&store_key='+store_key+'&query='}
+	,'code':{'changed':false,'validated':false,'required':true,'group':1,'type':'item','dbname':'Product Family Code'
+		 ,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Family Code')?>'}]
+		 ,'name':'family_code','ar':'find','ar_request':'ar_assets.php?tipo=is_family_code&store_key='+store_key+'&query='}
+	,'special_char':{'changed':false,'validated':false,'required':true,'group':1,'type':'item','dbname':'Product Family Special Characteristic'
+		,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Special Characteristic')?>'}],'name':'family_special_char'
+		,'ar':false,'ar_request':false}
+	,'description':{'changed':false,'validated':false,'required':false,'group':1,'type':'textarea','dbname':'Product Family Description'
+		 ,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Family Description')?>'}]
+		 ,'name':'family_description','ar':false,'ar_request':false}	 
+		 }
+		 
 };
 
 
@@ -126,17 +142,17 @@ var CellEdit = function (callback, newValue) {
 
 
 
+function show_new_family_dialog(){
+    Dom.setStyle('new_family_dialog','display','');
+        Dom.setStyle('cancel_new_family','visibility','visible');
+        Dom.setStyle('save_new_family','visibility','visible');
+        Dom.addClass('save_new_family','disabled');
 
-
-
-function new_product_changed(o){
-    if(Dom.get("new_code").value!='' && Dom.get("new_code").value!='')
-	Dom.get("add_new_product").style.display='';
-    else
-	Dom.get("add_new_product").style.display='';
-
-
+ Dom.setStyle('show_new_family_dialog_button','display','none');
 }
+
+
+
 
 function deal_term_save(deal_key){
 deal_save(deal_key,'term');
@@ -388,246 +404,8 @@ var description_errors= new Object();
 
 
 
-function update_form(){
-
-    
-    if(editing=='description'){
-	this_errors=description_errors;
-	this_num_changed=description_num_changed
-
-    }
-
-    if(this_num_changed>0){
-	Dom.get(editing+'_save').style.display='';
-	Dom.get(editing+'_reset').style.display='';
-
-    }else{
-	Dom.get(editing+'_save').style.display='none';
-	Dom.get(editing+'_reset').style.display='none';
-
-    }
-    Dom.get(editing+'_num_changes').innerHTML=this_num_changed;
-
-    // Dom.get(editing+'_save_div').style.display='';
-    errors_div=Dom.get(editing+'_errors');
-    // alert(errors);
-    errors_div.innerHTML='';
 
 
-    for (x in this_errors)
-	{
-	    // alert(errors[x]);
-	    Dom.get(editing+'_save').style.display='none';
-	    errors_div.innerHTML=errors_div.innerHTML+' '+this_errors[x];
-	}
-
-
-
-
-}
-
-
-//function create_part(){
-//    var part_description=Dom.get('new_name').value;
-//    if(part_description=='')
-//	part_description='??';
-//    var part_used_in=Dom.get('new_code').value;
-//    if(part_used_in=='')
-//	part_used_in='??';
-
-
-//    var data={sku:'TBC',description:part_description,usedin:part_used_in,partsperpick:1,notes:'',delete:'<img src="art/icons/cross.png">'}
-//    tables.table1.addRow(data, 0);
-//}
-
-function edit_department_changed(o){
-    var ovalue=o.getAttribute('ovalue');
-    var name=o.name;
-    if(ovalue!=o.value){
-	if(name=='code'){
-	    if(o.value==''){
-		description_errors.code="<?php echo _("The department code can not be empty")?>";
-	    }else if(o.value.lenght>16){
-		description_errors.code="<?php echo _("The product code can not have more than 16 characters")?>";
-	    }else
-		delete description_errors.code;
-	}
-	if(name=='name'){
-	    if(o.value==''){
-		description_errors.name="<?php echo _("The department name can not be empty")?>";
-	    }else if(o.value.lenght>255){
-		description_errors.name="<?php echo _("The product code can not have more than 255  characters")?>";
-	    }else
-		delete description_errors.name;
-	}
-	
-
-	if(o.getAttribute('changed')==0){
-	    description_num_changed++;
-	    o.setAttribute('changed',1);
-	}
-    }else{
-	if(o.getAttribute('changed')==1){
-	    description_num_changed--;
-	    o.setAttribute('changed',0);
-	}
-    }
-    update_form();
-}
-
-function reset(tipo){
-
-    if(tipo=='description'){
-	tag='name';
-	Dom.get(tag).value=Dom.get(tag).getAttribute('ovalue');
-	Dom.get(tag).setAttribute('changed',0);
-	tag='code';
-	Dom.get(tag).value=Dom.get(tag).getAttribute('ovalue');
-	Dom.get(tag).setAttribute('changed',0);
-	
-	
-	Dom.get(editing+'_save').style.display='none';
-	Dom.get(editing+'_reset').style.display='none';
-
-	Dom.get(editing+'_num_changes').innerHTML=description_num_changed;
-	description_partrnings= new Object();
-	description_errors= new Object();
-	
-    }
-    update_form();
-}
-
-function save(tipo){
-
-    if(tipo=='description'){
-	var keys=new Array("code","name","special_char");
-	for (x in keys)
-	    {
-		 key=keys[x];
-		 element=Dom.get(key);
-		if(element.getAttribute('changed')==1){
-
-		    newValue=element.value;
-		    oldValue=element.getAttribute('ovalue');
-		    
-		    var request='ar_edit_assets.php?tipo=edit_department&key=' + key+ '&newvalue=' + 
-			encodeURIComponent(newValue) + '&oldvalue=' + encodeURIComponent(oldValue)+ 
-			'&id='+family_id;
-		  
-		    YAHOO.util.Connect.asyncRequest('POST',request ,{
-			    success:function(o) {
-				alert(o.responseText);
-				var r =  YAHOO.lang.JSON.parse(o.responseText);
-				if(r.state==200){
-				    var element=Dom.get(r.key);
-				    element.getAttribute('ovalue',r.newvalue);
-				    element.value=r.newvalue;
-				    element.setAttribute('changed',0);
-				    description_num_changed--;
-				    var table=tables.table1;
-				    var datasource=tables.dataSource1;
-				    var request='';
-				    datasource.sendRequest(request,table.onDataReturnInitializeTable, table); 
-				    if(r.key=='name')
-					Dom.get('title_name').innerHTML=r.newvalue;
-				    
-				     if(r.key=='code')
-					Dom.get('title_code').innerHTML=r.newvalue;
-				    
-
-
-				}
-				update_form();	
-			    }
-			    
-			});
-		}
-	    }
-	
-    }
-
-}
-
-
-function new_department_changed(o){
-    if(Dom.get("new_code").value!='' && Dom.get("new_name").value!=''){
-	Dom.get("add_new_department").style.display='';
-    }else
-	Dom.get("add_new_department").style.display='none';
-}
-
-
-function save_new_department(){
-
-    var msg_div='add_department_messages';
-
-    var code=Dom.get('new_code').value;
-    var name=Dom.get('new_name').value;
-    var description=Dom.get('new_description').innerHTML;
-    var request='ar_edit_assets.php?tipo=new_department&code='+encodeURIComponent(code)+'&name='+encodeURIComponent(name)+'&description='+encodeURIComponent(name);
-    YAHOO.util.Connect.asyncRequest('POST',request ,{
-	    success:function(o) {
-		
-		var r =  YAHOO.lang.JSON.parse(o.responseText);
-		if(r.state==200){
-		    var table=tables['table0'];
-		    var datasource=tables['dataSource0'];
-		    var request='';
-		    datasource.sendRequest(request,table.onDataReturnInitializeTable, table); 
-		    Dom.get(msg_div).innerHTML='';
-		}else
-		    Dom.get(msg_div).innerHTML='<span class="error">'+r.msg+'</span>';
-	    }
-	    
-	    });
-
-}
-
-
-
-var tmponCellClick = function(oArgs) {
-		var target = oArgs.target,
-		column = this.getColumn(target),
-		record = this.getRecord(target);
-		switch (column.action) {
-		case 'delete':
-		    this.deleteRow(target);
-		    break;
-		default:
-
-		    this.onEventShowCellEditor(oArgs);
-		    break;
-		}
-	    };    var highlightEditableCell = function(oArgs) {
-		var target = oArgs.target;
-		column = this.getColumn(target);
-
-		switch (column.action) {
-		case 'delete':
-		    this.highlightRow(target);
-		default:
-		    if(YAHOO.util.Dom.hasClass(target, "yui-dt-editable")) {
-			this.highlightCell(target);
-		    }
-		}
-	    };
-
-	      var unhighlightEditableCell = function(oArgs) {
-		var target = oArgs.target;
-		column = this.getColumn(target);
-
-		switch (column.action) {
-		case 'delete':
-		    this.unhighlightRow(target);
-		default:
-		    if(YAHOO.util.Dom.hasClass(target, "yui-dt-editable")) {
-			this.unhighlightCell(target);
-		    }
-		}
-	    };
-
-
-// ------------------------------ends ---------------------------------------------------
 
 
 YAHOO.util.Event.addListener(window, "load", function() {
@@ -643,12 +421,12 @@ YAHOO.util.Event.addListener(window, "load", function() {
 				    ,{key:"go", label:"", width:20,action:"none"}
 				    ,{key:"code", label:"<?php echo _('Code')?>", width:70,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC},editor: new YAHOO.widget.TextboxCellEditor({asyncSubmitter: CellEdit}),object:'department'}
 				    ,{key:"name", label:"<?php echo _('Name')?>",width:300, sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC},editor: new YAHOO.widget.TextboxCellEditor({asyncSubmitter: CellEdit}),object:'department'}
-				    ,{key:"delete", label:"",width:100,className:"aleft",action:"delete",object:'department'}
-				    ,{key:"delete_type", label:"",hidden:true,isTypeKey:true}
+				    
+                    ,{key:"sales_type", label:"<?php echo _('Sale Type')?>",width:100, sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC},object:'department',editor: new YAHOO.widget.RadioCellEditor({asyncSubmitter: CellEdit,radioOptions:[{label:"<?php echo _('Public Sale')?>",value:'Public Sale'},{label:"<?php echo _('Private Sale')?>",value:'Private Sale'},{label:"<?php echo _('Not For Sale')?>",value:'Not For Sale'}],disableBtns:true})}
 
 				     ];
 
-	    this.dataSource0 = new YAHOO.util.DataSource("ar_edit_assets.php?tipo=edit_departments&parent=department&tableid=0");
+	    this.dataSource0 = new YAHOO.util.DataSource("ar_edit_assets.php?tipo=edit_families&parent=department&tableid=0");
 	    this.dataSource0.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource0.connXhrMode = "queueRequests";
 	    this.dataSource0.responseSchema = {
@@ -667,7 +445,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 		fields: [
 			 "code",
 			 "name",
-			 'delete','delete_type','id','edit','go'
+			 'sales_type','id','edit','go'
 			 ]};
 	    
 	    this.table0 = new YAHOO.widget.DataTable(tableDivEL, OrdersColumnDefs,
@@ -790,6 +568,16 @@ function validate_name(query){
  validate_general('department','name',unescape(query));
 }
 
+function validate_family_code(query){
+  
+ validate_general('family','code',unescape(query));
+}
+function validate_family_name(query){
+ validate_general('family','name',unescape(query));
+}
+function validate_family_special_char(query){
+ validate_general('family','special_char',unescape(query));
+}
 
 function reset_edit_department(){
  reset_edit_general('department');
@@ -798,17 +586,25 @@ function save_edit_department(){
  save_edit_general('departmenty');
 }
 
+function post_new_create_actions(branch,r){
 
+var table_id=0
+    var table=tables['table'+table_id];
+    var datasource=tables['dataSource'+table_id];
+    var request='&tableid='+table_id+'&sf=0';
+    datasource.sendRequest(request,table.onDataReturnInitializeTable, table);  
+
+}
 
 function post_item_updated_actions(branch,key,newvalue){
 
  if(key=='name')
      Dom.get('title_name').innerHTML=newvalue;
  
- else if(key=='code')
+ else if(key=='code'){
      Dom.get('title_code').innerHTML=newvalue;
-
- 
+ Dom.get('title_code_bis').innerHTML=newvalue;
+ }
  var table=tables.table1;
  var datasource=tables.dataSource1;
  var request='';
@@ -840,9 +636,24 @@ var department_code_oACDS = new YAHOO.util.FunctionDataSource(validate_code);
     department_name_oAutoComp.minQueryLength = 0; 
     department_name_oAutoComp.queryDelay = 0.1;
 
+var family_code_oACDS = new YAHOO.util.FunctionDataSource(validate_family_code);
+    family_code_oACDS.queryMatchContains = true;
+    var family_code_oAutoComp = new YAHOO.widget.AutoComplete("family_code","family_code_Container", family_code_oACDS);
+    family_code_oAutoComp.minQueryLength = 0; 
+    family_code_oAutoComp.queryDelay = 0.1;
+    
+     var family_name_oACDS = new YAHOO.util.FunctionDataSource(validate_family_name);
+    family_name_oACDS.queryMatchContains = true;
+    var family_name_oAutoComp = new YAHOO.widget.AutoComplete("family_name","family_name_Container", family_name_oACDS);
+    family_name_oAutoComp.minQueryLength = 0; 
+    family_name_oAutoComp.queryDelay = 0.1;
 
 
-
+  var family_special_char_oACDS = new YAHOO.util.FunctionDataSource(validate_family_special_char);
+    family_special_char_oACDS.queryMatchContains = true;
+    var family_special_char_oAutoComp = new YAHOO.widget.AutoComplete("family_special_char","family_special_char_Container", family_special_char_oACDS);
+    family_special_char_oAutoComp.minQueryLength = 0; 
+    family_special_char_oAutoComp.queryDelay = 0.1;
 
  
     function mygetTerms(query) {multireload();};
@@ -853,7 +664,6 @@ var department_code_oACDS = new YAHOO.util.FunctionDataSource(validate_code);
     
     var ids = ["details","families","discounts","pictures","web"]; 
     YAHOO.util.Event.addListener(ids, "click", change_block);
-   YAHOO.util.Event.addListener('add_family', "click");
 }
 
 YAHOO.util.Event.onDOMReady(init);

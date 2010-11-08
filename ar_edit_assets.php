@@ -30,12 +30,7 @@ $data=prepare_values($_REQUEST,array(
                              'newvalue'=>array('type'=>'json array')
                              ,'key'=>array('type'=>'key')
                              ));
-                                                
-
-
-
-
-edit_part_list($data);
+ edit_part_list($data);
 break;
 case('store_pages'):
 list_pages_for_edition();
@@ -125,8 +120,12 @@ case('edit_product'):
  case('new_department'):
   create_department();
    break;
- case('new_family'):
-create_family();
+ case('create_family'):
+ $data=prepare_values($_REQUEST,array(
+                             'values'=>array('type'=>'json array')
+                             ,'parent_key'=>array('type'=>'key')
+                             ));
+create_family($data);
    break;
 case('edit_departments'):
   list_departments_for_edition();
@@ -195,27 +194,37 @@ function create_department(){
      $response=array('state'=>400,'resp'=>_('Error'));
    echo json_encode($response);
 }
-function create_family(){
+function create_family($data){
   global $editor;
- if(isset($_REQUEST['name'])  and  isset($_REQUEST['code'])   ){
-     $department_key=$_SESSION['state']['department']['id'];
+  
+  
+  
+ if(array_key_exists('Product Family Name',$data['values']) 
+ and  array_key_exists('Product Family Code',$data['values']) 
+ and  array_key_exists('Product Family Special Characteristic',$data['values']) 
+ and  array_key_exists('Product Family Description',$data['values']) 
+ 
+ ){
+     $department_key=$data['parent_key'];
      
      $family=new Family('create',array(
 					      
-				       'Product Family Code'=>$_REQUEST['code']
-				       ,'Product Family Name'=>$_REQUEST['name']
-				       ,'Product Family Description'=>$_REQUEST['description']
-				       ,'Product Family Special Characteristic'=>$_REQUEST['special_char']
+				       'Product Family Code'=>$data['values']['Product Family Code']
+				       ,'Product Family Name'=>$data['values']['Product Family Name']
+				       ,'Product Family Description'=>$data['values']['Product Family Description']
+				       ,'Product Family Special Characteristic'=>$data['values']['Product Family Special Characteristic']
 				       ,'Product Family Main Department Key'=>$department_key
 				       ,'editor'=>$editor
 				       ));
      if(!$family->new){
-       $state='401';
+      
+        $response=array('state'=>200,'msg'=>$family->msg,'action'=>'found','object_key'=>$family->id);
      }else{
-       $state='200';
+     
+        $response=array('state'=>200,'msg'=>$family->msg,'action'=>'created');
      }
 
-     $response=array('state'=>$state,'msg'=>$family->msg);
+    
 
 
  }
@@ -1045,25 +1054,34 @@ mysql_free_result($result);
   elseif($order=='name')
     $order='`Product Family Name`';
   
-  $sql="select F.`Product Family Key`,`Product Family Code`,`Product Family Name`,`Product Family For Sale Products`+`Product Family In Process Products`+`Product Family Not For Sale Products`+`Product Family Discontinued Products`+`Product Family Unknown Sales State Products` as Products  from `Product Family Dimension` F  $where $wheref  order by $order $order_direction limit $start_from,$number_results    ";
-
+  $sql="select `Product Family Sales Type`,F.`Product Family Key`,`Product Family Code`,`Product Family Name`,`Product Family For Public Sale Products`+`Product Family In Process Products`+`Product Family Not For Sale Products`+`Product Family Discontinued Products`+`Product Family Unknown Sales State Products` as Products  from `Product Family Dimension` F  $where $wheref  order by $order $order_direction limit $start_from,$number_results    ";
+//print $sql;
   $res = mysql_query($sql);
   $adata=array();
   while($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
-    if($row['Products']>0){
-      $delete='<img src="art/icons/discontinue.png" /> <span xonclick="discontinue_family('.$row['Product Family Key'].')"  id="del_'.$row['Product Family Key'].'" style="cursor:pointer">'._('Discontinue').'<span>';
-      $delete_type='discontinue';
-    }else{
-      $delete='<img src="art/icons/delete.png" /> <span xonclick="delete_family('.$row['Product Family Key'].')"  id="del_'.$row['Product Family Key'].'" style="cursor:pointer">'._('Delete').'<span>';
-      $delete_type='delete';
-    }
+   
+    
+    switch ($row['Product Family Sales Type']) {
+    case 'Public Sale':
+        $sales_type=_('Public Sale');
+        break;
+    case 'Private Sale':
+        $sales_type=_('Private Sale');
+        break;
+    case 'Not for Sale':
+        $sales_type=_('Not for Sale');
+        break;        
+}
+
+    
+    
 $adata[]=array(
 	       'id'=>$row['Product Family Key'],
 	       'edit'=>sprintf('<a href="family.php?id=%d&edit=1">%03d<a>',$row['Product Family Key'],$row['Product Family Key']),
 	       'code'=>$row['Product Family Code'],
 	       'name'=>$row['Product Family Name'],
-	       'delete'=>$delete,
-	       'delete_type'=>$delete_type,
+	       'sales_type'=>$sales_type,
+	      
 	       'go'=>sprintf("<a href='family.php?id=%d&edit=1'><img src='art/icons/page_go.png' alt='go'></a>",$row['Product Family Key'])
 
 		   );
