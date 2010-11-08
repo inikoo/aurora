@@ -89,7 +89,9 @@ $js_files=array(
 		'common.js.php',
 		'table_common.js.php',
 		'js/dropdown.js',
-				'deals.js.php'
+		'deals.js.php',
+		 'js/edit_common.js',
+	         'js/csv_common.js'
 
 		);
 
@@ -123,7 +125,41 @@ $smarty->assign('title', $store->data['Store Name']);
   $paginator_menu=array(10,25,50,100,500);
   $smarty->assign('paginator_menu0',$paginator_menu);
 
-  
+
+
+  $csv_export_options=array(
+                            'description'=>array(
+                                              'title'=>_('Description'),
+                                              'rows'=>
+                                                     array(
+                                                         array(
+                                                             'name'=>array('label'=>_('Name'),'selected'=>$_SESSION['state']['deals']['table']['csv_export']['name']),
+                                                             'trigger'=>array('label'=>_('Trigger'),'selected'=>$_SESSION['state']['deals']['table']['csv_export']['trigger']),
+                                                             'target'=>array('label'=>_('Target'),'selected'=>$_SESSION['state']['deals']['table']['csv_export']['target']),
+                                                             
+                                                             'status'=>array('label'=>_('Status'),'selected'=>$_SESSION['state']['deals']['table']['csv_export']['status']),
+                                                   
+                                                            
+                                                     
+                                                         )
+                                                     )
+                                          ),
+                            'other_details'=>array(
+                                        'title'=>_('Other Details'),
+                                        'rows'=>
+                                               array(
+                                                   array(
+                                                       'terms_description'=>array('label'=>_('Terms Description'),'selected'=>$_SESSION['state']['deals']['table']['csv_export']['terms_description']),
+                                                       'allowance_description'=>array('label'=>_('Allowance Description'),'selected'=>$_SESSION['state']['deals']['table']['csv_export']['allowance_description']),
+                                                       'terms_type'=>array('label'=>_('Terms Type'),'selected'=>$_SESSION['state']['deals']['table']['csv_export']['terms_type'])
+                                                   )
+                            )
+                            )
+                        );
+$smarty->assign('export_csv_table_cols',2);
+
+                        
+$smarty->assign('csv_export_options',$csv_export_options); 
  
   $smarty->display('deals.tpl');
  
