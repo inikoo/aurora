@@ -513,6 +513,7 @@ $default_state=array(
                                           'display'=>'',
                                           'supplier_key'=>0,
                                           'supplier_code'=>'',
+                                          'editing'=>'prices',
                                           'porders'=>array(
                                                         'order'=>'date',
                                                         'view'=>'general',
@@ -526,7 +527,19 @@ $default_state=array(
                                                         'from'=>'',
                                                         'to'=>''
 
-                                                    )
+                                                    ),
+                                                   'history'=>array(
+                                               'where'=>'where true',
+                                               'f_field'=>'abstract',
+                                               'f_value'=>'','f_show'=>false,
+                                               'order'=>'date',
+                                               'order_dir'=>'desc',
+                                               'sf'=>0,
+                                               'nr'=>25,
+                                               'from'=>'',
+                                               'to'=>'',
+                                               'elements'=>''
+                                           )  
                                       ),
 
 

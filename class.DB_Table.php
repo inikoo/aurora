@@ -319,7 +319,7 @@ abstract class DB_Table {
                      ,prepare_mysql($data['Metadata'])
                     );
         mysql_query($sql);
-      
+        //print $sql;
 
     }
 

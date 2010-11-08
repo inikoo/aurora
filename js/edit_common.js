@@ -58,6 +58,32 @@ function isValidNumber(val) {
            }
            return true
               }
+              
+              
+              
+ function isPositiveNumber(val) {
+    if (val==null) {
+        return false;
+    }
+    if (val.length==0) {
+        return false;
+    }
+    var DecimalFound = false
+    for (var i = 0; i < val.length; i++) {
+        var ch = val.charAt(i)
+       
+        if (ch == "." && !DecimalFound) {
+            DecimalFound = true
+                           continue
+                       }
+        if (ch < "0" || ch > "9") {
+            return false
+               }
+           }
+           return true
+              }             
+              
+              
 
 function swap_radio(e,input_element) {
     swap_this_radio(this,input_element);
@@ -108,6 +134,23 @@ var save_option_table=function(args) {
     }
 
 
+
+
+}
+
+
+function option_selected(branch,item){
+    var data= validate_scope_data[branch][item];
+select=Dom.get(data.name);
+
+ if(select.value==select.getAttribute('ovalue')){
+    validate_scope_data[branch][item].changed=false;
+ }else{
+     validate_scope_data[branch][item].changed=true;
+
+ }
+
+validate_scope(branch);
 
 
 }
@@ -388,7 +431,7 @@ function ar_validation(branch,item,query) {
     var data= validate_scope_data[branch][item];
     var request=data.ar_request+query;
     YAHOO.util.Connect.asyncRequest('POST',request , {success:function(o) {
-        // alert(o.responseText)
+        //alert(o.responseText)
         var r =  YAHOO.lang.JSON.parse(o.responseText);
         if (r.state==200) {
             if (r.found==1) {
@@ -399,9 +442,11 @@ function ar_validation(branch,item,query) {
                 client_validation(branch,item,query)
             }
             validate_scope(branch);
-        } else
-            Dom.get('msg_div').innerHTML='<span class="error">'+r.msg+'</span>';
-    }
+        } else{
+            Dom.get(data.name+'_msg').innerHTML='<span class="error">'+r.msg+'</span>';
+            }
+   
+   }
 
             });
 
@@ -436,7 +481,15 @@ function numeric_validation(type,query) {
         if (isPositiveInteger(query))
             valid=true
                   break;
-
+case 'positive integer':
+        if (isPositiveInteger(query))
+            valid=true
+                  break;
+ case 'positive':
+ 
+        if (isPositiveNumber(query))
+            valid=true
+                  break;                 
 
     }
     return valid;
@@ -553,7 +606,7 @@ function cancel_new_general(branch) {
             if (validate_scope_data[branch][item].type=='select') {
 
                 for ( i in item_input.options) {
-                    alert(item_input.options[i].defaultSelected+' '+item_input.options[i].value)
+                   // alert(item_input.options[i].defaultSelected+' '+item_input.options[i].value)
                     if (item_input.options[i].defaultSelected) {
                         item_input.selectedIndex=item_input.options[i].index;
                         break;
@@ -618,7 +671,7 @@ function save_edit_general(branch) {
 
             YAHOO.util.Connect.asyncRequest('POST',request , {
 success:function(o) {
-                    	alert(o.responseText)
+                   	alert(o.responseText)
                     var r =  YAHOO.lang.JSON.parse(o.responseText);
                     if (r.state==200) {
 

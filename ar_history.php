@@ -345,6 +345,9 @@ function list_history($asset_type) {
         $asset='Position';
     }elseif($asset_type=='supplier') {
         $asset='Supplier';
+    }elseif($asset_type=='supplier_product') {
+        $asset='Supplier Product';
+         $id_key='pid';
     }
 
 

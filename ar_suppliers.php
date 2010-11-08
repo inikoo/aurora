@@ -16,6 +16,20 @@ if(!isset($_REQUEST['tipo']))
 
 $tipo=$_REQUEST['tipo'];
 switch($tipo){
+case('is_supplier_product_code'):
+    $data=prepare_values($_REQUEST,array(
+                             'supplier_key'=>array('type'=>'key'),
+                             'query'=>array('type'=>'string')
+                         ));
+    is_supplier_product_code($data);
+    break;
+case('is_supplier_product_name'):
+    $data=prepare_values($_REQUEST,array(
+                             'supplier_key'=>array('type'=>'key'),
+                             'query'=>array('type'=>'string')
+                         ));
+    is_supplier_product_name($data);
+    break;
 
 case('find_supplier'):
 find_supplier();
@@ -1749,7 +1763,7 @@ function list_supplier_products() {
         }
 
 
-$code=sprintf('<a href="supplier_product.php?code=%s&supplier_key=%d">%s</a>',$row['Supplier Product Code'],$row['Supplier Key'],$row['Supplier Product Code']);
+$code=sprintf('<a href="supplier_product.php?pid=%d">%s</a>',$row['Supplier Product Key'],$row['Supplier Product Code']);
 if($row['Supplier Product Days Available']=='')
 $weeks_until='ND';
 else
@@ -1991,6 +2005,106 @@ function find_supplier() {
 
 }
 
+function is_supplier_product_name($data) {
+    if (!isset($data['query']) or !isset($data['supplier_key'])) {
+        $response= array(
+                       'state'=>400,
+                       'msg'=>'Error'
+                   );
+        echo json_encode($response);
+        return;
+    } else
+        $query=$data['query'];
+    if ($query=='') {
+        $response= array(
+                       'state'=>200,
+                       'found'=>0
+                   );
+        echo json_encode($response);
+        return;
+    }
 
+    $supplier_key=$data['supplier_key'];
+
+    $sql=sprintf("select `Supplier Product Key`,`Supplier Product Code` from `Supplier Product Dimension` where  `Supplier Key`=%d and  `Supplier Product Name`=%s  "
+                 ,$supplier_key
+                 ,prepare_mysql($query)
+                );
+    $res=mysql_query($sql);
+
+    if ($data=mysql_fetch_array($res)) {
+        $msg=sprintf('Another supplier_product (<a href="supplier_product.php?pid=%d">%s</a>) already has this name'
+                     ,$data['Supplier Product Key']
+                     ,$data['Supplier Product Code']
+                    );
+        $response= array(
+                       'state'=>200,
+                       'found'=>1,
+                       'msg'=>$msg
+                   );
+        echo json_encode($response);
+        return;
+    } else {
+        $response= array(
+                       'state'=>200,
+                       'found'=>0
+                   );
+        echo json_encode($response);
+        return;
+    }
+
+}
+
+function is_supplier_product_code($data) {
+    if (!isset($data['query']) or !isset($data['supplier_key']) ) {
+        $response= array(
+                       'state'=>400,
+                       'msg'=>'Error'
+                   );
+        echo json_encode($response);
+        return;
+    } else
+        $query=$data['query'];
+    if ($query=='') {
+        $response= array(
+                       'state'=>200,
+                       'found'=>0
+                   );
+        echo json_encode($response);
+        return;
+    }
+
+    $supplier_key=$data['supplier_key'];
+
+    $sql=sprintf("select `Supplier Product Key`,`Supplier Product Name`,`Supplier Product Code` from `Supplier Product Dimension` where `Supplier Key`=%d and `Supplier Product Code`=%s  "
+                 ,$supplier_key
+                 ,prepare_mysql($query)
+                );
+                
+    $res=mysql_query($sql);
+
+    if ($data=mysql_fetch_array($res)) {
+        $msg=sprintf('Product: <a href="supplier_product.php?pid=%d">%s</a> already has this code (%s)'
+                     ,$data['Supplier Product Key']
+                     ,$data['Supplier Product Name']
+                     ,$data['Supplier Product Code']
+                    );
+        $response= array(
+                       'state'=>200,
+                       'found'=>1,
+                       'msg'=>$msg
+                   );
+        echo json_encode($response);
+        return;
+    } else {
+        $response= array(
+                       'state'=>200,
+                       'found'=>0
+                   );
+        echo json_encode($response);
+        return;
+    }
+
+}
 
 ?>

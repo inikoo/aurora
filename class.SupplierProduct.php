@@ -179,7 +179,7 @@ class supplierproduct extends DB_Table {
                          ,prepare_mysql($tag)
                          ,$supplier_key
                         );
-//print "$sql\n";
+
             $result=mysql_query($sql);
             if ($this->data=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
                 $this->id=$this->data['Supplier Product Current Key'];
@@ -192,6 +192,25 @@ class supplierproduct extends DB_Table {
             }
             return;
 
+        }elseif($tipo=='pid'){
+                    $sql=sprintf("select * from `Supplier Product Dimension` where `Supplier Product Key`=%d",
+                         $tag
+                         
+                        );
+
+            $result=mysql_query($sql);
+            if ($this->data=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
+                $this->id=$this->data['Supplier Product Current Key'];
+
+                $this->pid=$this->data['Supplier Product Key'];
+
+                $this->key=$this->id;
+                $this->code=$this->data['Supplier Product Code'];
+                $this->supplier_key=$this->data['Supplier Key'];
+            }
+        
+        
+        
         }
 
     }
@@ -211,12 +230,24 @@ class supplierproduct extends DB_Table {
     function create_key($data) {
 //print_r($data);
         $base_data=array(
-                       'sph cost'=>'',
-                       'sph valid from'=>date("Y-m-d H:i:s"),
-                       'sph valid to'=>date("Y-m-d H:i:s"),
+                       'SPH Case Cost'=>'',
+                        'SPH Units Per Case'=>'1',
+                        'SPH Type'=>'Normal',
+                       'SPH Valid From'=>date("Y-m-d H:i:s"),
+                       'SPH Valid To'=>date("Y-m-d H:i:s"),
                    );
+                   
+                  
+                   
         foreach($data as $key=>$value) {
-            $key=strtolower(preg_replace('/^supplier product /i','sph ',$key));
+                if($key=='Supplier Product Case Cost'){
+                      $key='SPH Case Cost';  
+                }elseif($key=='Supplier Product Units Per Case'){
+                      $key='SPH Units Per Case';  
+                }
+       
+       
+            $key=preg_replace('/^supplier product /i','sph ',$key);
             if (array_key_exists($key,$base_data))
 
                 $base_data[$key]=_trim($value);
@@ -229,9 +260,9 @@ class supplierproduct extends DB_Table {
         $values='values(';
         foreach($base_data as $key=>$value) {
 
-	  if($key=='sph cost'){
+	  if($key=='SPH Case Cost'){
 	    $keys.="`$key`,";
-            $values.=sprintf("%.4f",$value).",";
+            $values.=sprintf("%.2f",$value).",";
 
 	  }else{
 
@@ -260,13 +291,13 @@ class supplierproduct extends DB_Table {
     function create_code($data) {
 
         $base_data=array(
-                       'supplier key'=>1,
-                       'supplier product code'=>'',
-                       'supplier product name'=>'',
-                       'supplier product description'=>'',
-                       'supplier product cost'=>'',
-                       'supplier product valid from'=>date("Y-m-d H:i:s"),
-                       'supplier product valid to'=>date("Y-m-d H:i:s"),
+                       'Supplier key'=>1,
+                       'Supplier Product Code'=>'',
+                       'Supplier Product Dame'=>'',
+                       'Supplier Product Description'=>'',
+                      
+                       'Supplier Product Valid From'=>date("Y-m-d H:i:s"),
+                       'Supplier Product Valid Fo'=>date("Y-m-d H:i:s"),
 
                    );
 
@@ -275,16 +306,18 @@ class supplierproduct extends DB_Table {
                 $base_data[strtolower($key)]=_trim($value);
         }
         $supplier=new Supplier($base_data['supplier key']);
-        $base_data['supplier code']=$supplier->data['Supplier Code'];
-        $base_data['supplier name']=$supplier->data['Supplier Name'];
-        $base_data['supplier product current key']=$this->key;
+        $base_data['Supplier Code']=$supplier->data['Supplier Code'];
+        $base_data['Supplier Name']=$supplier->data['Supplier Name'];
+        $base_data['Supplier Product Units Per Case']=$this->data['SPH Units Per Case'];
+        $base_data['Supplier Product Current Key']=$this->key;
+        $base_data['Supplier Product Unit Cost']=$this->data['SPH Case Cost']/$this->data['SPH Units Per Case'];
 
         $keys='(';
         $values='values(';
         foreach($base_data as $key=>$value) {
 
 
-	   if($key=='supplier product cost'){
+	   if($key=='Supplier Product Unit Cost'){
 	    $keys.="`$key`,";
             $values.=sprintf("%.4f",$value).",";
 
@@ -722,32 +755,311 @@ $action='edited';
 
 
 
+function update_dimensions($field,$value){
 
- function update_field_switcher($field,$value,$options=''){
-switch($field){
-case('Supplier Product Cost'):
-$this->update_cost($value);
-break;
-case('Supplier Product Buy State'):
-$this->update_buy_state($value);
-break;
-default:
-   $base_data=$this->base_data();
-      if (preg_match('/^Address.*Data$/',$field))
-     $this->update_field($field,$value,$options);
-   elseif(array_key_exists($field,$base_data)) {
-     
-     if ($value!=$this->data[$field]) {
-       
-       $this->update_field($field,$value,$options);
-     }
-   }
-   
-   
+if($value==''){
+$value='NULL';
+}elseif(!is_numeric($value)){
+$this->error=true;
+$this->msg=_('Value has to be a number');
+return;
+}elseif($value==0){
+$this->error=true;
+$this->msg=_('Value can not be zero');
+return;
+}elseif($value<0){
+$this->error=true;
+$this->msg=_('Value can not negative');
+return;
+}else{
+$value=sprintf("%f",$value);
 }
+
+switch ($field) {
+    case 'unit_net_weight':
+    case 'Supplier Product Unit Net Weight':
+        $sql=sprintf("update `Supplier Product Dimension` set `Supplier Product Unit Net Weight`=%s where `Supplier Product Key`=%d",$value,$this->pid);
+        $indirect_object='Supplier Product Unit Net Weight';
+        
+        $old_value=$this->data['Supplier Product Unit Net Weight'];
+        
+        if($old_value==''){
+        $abstract=_('Supplier Product Net Unit Weight set to').' '.weight($value);
+        $details=_('Supplier Product')." ".$this->code." (ID:".$this->pid.") "._('Net Unit Weight set to').' '.weight($value);
+        
+        }else{
+        $abstract=_('Product Unit Net Weight Changed').' ('.weight($old_value).'&rarr;'.weight($value).')';
+        $details=_('Supplier Product')." ".$this->code." (ID:".$this->pid.") "._('Net Weight changed').' '._('from')." ".weight($old_value)." "._('per unit')." "._('to').' '. weight($value).' '._('per unit');
+        }
+        break;
+    case 'unit_gross_weight':
+    case 'Supplier Product Unit Gross Weight':
+        $sql=sprintf("update `Supplier Product Dimension` set `Supplier Product Unit Gross Weight`=%s where `Supplier Product Key`=%d",$value,$this->pid);
+        $indirect_object='Supplier Product Unit Gross Weight';
+        
+        $old_value=$this->data['Supplier Product Unit Gross Weight'];
+        
+        if($old_value==''){
+        $abstract=_('Supplier Product Gross Unit Weight set to').' '.weight($value);
+        $details=_('Supplier Product')." ".$this->code." (ID:".$this->pid.") "._('Gross Unit Weight set to').' '.weight($value);
+        
+        }else{
+        $abstract=_('Product Unit Gross Weight Changed').' ('.weight($old_value).'&rarr;'.weight($value).')';
+        $details=_('Supplier Product')." ".$this->code." (ID:".$this->pid.") "._('Gross Weight changed').' '._('from')." ".weight($old_value)." "._('per unit')." "._('to').' '. weight($value).' '._('per unit');
+        }
+        break;
+      case 'case_gross_weight':
+    case 'Supplier Product Case Gross Weight':
+        $sql=sprintf("update `Supplier Product Dimension` set `Supplier Product Case Gross Weight`=%s where `Supplier Product Key`=%d",$value,$this->pid);
+        $indirect_object='Supplier Product Case Gross Weight';
+        
+        $old_value=$this->data['Supplier Product Case Gross Weight'];
+        
+        if($old_value==''){
+        $abstract=_('Supplier Product Gross Case Weight set to').' '.weight($value);
+        $details=_('Supplier Product')." ".$this->code." (ID:".$this->pid.") "._('Gross Case Weight set to').' '.weight($value);
+        
+        }else{
+        $abstract=_('Product Case Gross Weight Changed').' ('.weight($old_value).'&rarr;'.weight($value).')';
+        $details=_('Supplier Product')." ".$this->code." (ID:".$this->pid.") "._('Gross Weight changed').' '._('from')." ".weight($old_value)." "._('per case')." "._('to').' '. weight($value).' '._('per case');
+        }
+        break;  
+      case 'unit_gross_volume':
+    case 'Supplier Product Unit Gross Volume':
+        $sql=sprintf("update `Supplier Product Dimension` set `Supplier Product Unit Gross Volume`=%s where `Supplier Product Key`=%d",$value,$this->pid);
+        $indirect_object='Supplier Product Unit Gross Volume';
+        
+        $old_value=$this->data['Supplier Product Unit Gross Volume'];
+        
+        if($old_value==''){
+        $abstract=_('Supplier Product Gross Unit Volume set to').' '.volume($value);
+        $details=_('Supplier Product')." ".$this->code." (ID:".$this->pid.") "._('Gross Unit Volume set to').' '.volume($value);
+        
+        }else{
+        $abstract=_('Product Unit Gross Volume Changed').' ('.volume($old_value).'&rarr;'.volume($value).')';
+        $details=_('Supplier Product')." ".$this->code." (ID:".$this->pid.") "._('Gross Volume changed').' '._('from')." ".volume($old_value)." "._('per unit')." "._('to').' '. volume($value).' '._('per unit');
+        }
+        break;   
+         case 'unit_mov':
+    case 'Supplier Product Unit Minimun Orthogonal Gross Volume':
+        $sql=sprintf("update `Supplier Product Dimension` set `Supplier Product Unit Minimun Orthogonal Gross Volume`=%s where `Supplier Product Key`=%d",$value,$this->pid);
+        $indirect_object='Supplier Product Unit Gross Volume';
+        
+        $old_value=$this->data['Supplier Product Unit Minimun Orthogonal Gross Volume'];
+        
+        if($old_value==''){
+        $abstract=_('Supplier Product Unit Minimun Orthogonal Gross Volume set to').' '.volume($value);
+        $details=_('Supplier Product')." ".$this->code." (ID:".$this->pid.") "._('Unit Minimun Orthogonal Gross Volume set to').' '.volume($value);
+        
+        }else{
+        $abstract=_('Supplier Product Unit Minimun Orthogonal Gross Volume Changed').' ('.volume($old_value).'&rarr;'.volume($value).')';
+        $details=_('Supplier Product')." ".$this->code." (ID:".$this->pid.") "._('Supplier Product Minimun Orthogonal Gross Volume changed').' '._('from')." ".volume($old_value)." "._('per unit')." "._('to').' '. volume($value).' '._('per unit');
+        }
+        break;    
+               case 'case_mov':
+    case 'Supplier Product Case Minimun Orthogonal Gross Volume':
+        $sql=sprintf("update `Supplier Product Dimension` set `Supplier Product Case Minimun Orthogonal Gross Volume`=%s where `Supplier Product Key`=%d",$value,$this->pid);
+        $indirect_object='Supplier Product Case Gross Volume';
+        
+        $old_value=$this->data['Supplier Product Case Minimun Orthogonal Gross Volume'];
+        
+        if($old_value==''){
+        $abstract=_('Supplier Product Case Minimun Orthogonal Gross Volume set to').' '.volume($value);
+        $details=_('Supplier Product')." ".$this->code." (ID:".$this->pid.") "._('Case Minimun Orthogonal Gross Volume set to').' '.volume($value);
+        
+        }else{
+        $abstract=_('Supplier Product Case Minimun Orthogonal Gross Volume Changed').' ('.volume($old_value).'&rarr;'.volume($value).')';
+        $details=_('Supplier Product')." ".$this->code." (ID:".$this->pid.") "._('Supplier Product Minimun Orthogonal Gross Volume changed').' '._('from')." ".volume($old_value)." "._('per case')." "._('to').' '. volume($value).' '._('per case');
+        }
+        break;    
+        
+    default:
+       
+        break;
+}
+
+ mysql_query($sql);
+ $affected=mysql_affected_rows();
+ if($affected==-1){
+    $this->msg.=' '._('Record can not be updated')."\n";
+    $this->error_updated=true;
+    $this->error=true;
    
+    return;
+  }elseif($affected==0){
+    $this->msg.=_('Same value as the old record');
+    
+  }else{
+$this->updated=true;
+$this->new_value=$value;
+$this->data[$indirect_object]=$value;
+$this->add_history(array(
+                 'Direct Object Key'=>$this->pid,   
+				 'Indirect Object'=>$indirect_object,
+				 'History Abstract'=>$abstract,
+				 'History Details'=>$details
+				 ));
+
+}
+
+}
+
+
+function update_unit_type($value){
+
+if(!in_array($value,getEnumValues("Supplier Product Dimension","Supplier Product Unit Type" ))){
+$this->error=true;
+$this->msg='Invalid Value';
+return;
+}
+$old_value=$this->data['Supplier Product Unit Type'];
+$sql=sprintf("update `Supplier Product Dimension` set `Supplier Product Unit Type`=%s where `Supplier Product Key`=%d",
+prepare_mysql($value),
+$this->pid
+);
+ mysql_query($sql);
+
+ $affected=mysql_affected_rows();
+ if($affected==-1){
+    $this->msg.=' '._('Record can not be updated')."\n";
+    $this->error_updated=true;
+    $this->error=true;
    
- }
+    return;
+  }elseif($affected==0){
+    $this->msg.=_('Same value as the old record');
+    
+  }else{
+$this->updated=true;
+$this->new_value=$value;
+$this->data['Supplier Product Unit Type']=$value;
+
+  if($old_value=='Unknown'){
+        $abstract=_('Supplier Product Unit Type set to').' '.$value;
+        $details=_('Supplier Product')." ".$this->code." (ID:".$this->pid.") "._('Supplier Product Unit Type set to').' '.$value;
+        
+        }else{
+        $abstract=_('Supplier Product Unit Type  Changed').' ('.$old_value.'&rarr;'.$value.')';
+        $details=_('Supplier Product')." ".$this->code." (ID:".$this->pid.") "._('Supplier Product Unit Type changed').' '._('from')." ".$old_value." "._('to').' '. $value;
+        }
+
+
+
+$this->add_history(array(
+                 'Direct Object Key'=>$this->pid,   
+				 'Indirect Object'=>'Supplier Product Unit Type',
+				 'History Abstract'=>$abstract,
+				 'History Details'=>$details
+				 ));
+
+}
+
+
+
+}
+
+function update_unit_packing_type($value){
+
+if(!in_array($value,getEnumValues("Supplier Product Dimension","Supplier Product Unit Package Type" ))){
+$this->error=true;
+$this->msg='Invalid Value';
+return;
+}
+$old_value=$this->data['Supplier Product Unit Package Type'];
+$sql=sprintf("update `Supplier Product Dimension` set `Supplier Product Unit Package Type`=%s where `Supplier Product Key`=%d",
+prepare_mysql($value),
+$this->pid
+);
+ mysql_query($sql);
+ $affected=mysql_affected_rows();
+ if($affected==-1){
+    $this->msg.=' '._('Record can not be updated')."\n";
+    $this->error_updated=true;
+    $this->error=true;
+   
+    return;
+  }elseif($affected==0){
+    $this->msg.=_('Same value as the old record');
+    
+  }else{
+$this->updated=true;
+$this->new_value=$value;
+$this->data['Supplier Product Unit Package Type']=$value;
+
+  if($old_value=='Unknown'){
+        $abstract=_('Supplier Product Unit Package Type set to').' '.$value;
+        $details=_('Supplier Product')." ".$this->code." (ID:".$this->pid.") "._('Supplier Product Unit Package Type set to').' '.$value;
+        
+        }else{
+        $abstract=_('Supplier Product Unit Package Type  Changed').' ('.$old_value.'&rarr;'.$value.')';
+        $details=_('Supplier Product')." ".$this->code." (ID:".$this->pid.") "._('Supplier Product Unit Package Type  changed').' '._('from')." ".$old_value." "._('to').' '. $value;
+        }
+
+
+$this->add_history(array(
+                 'Direct Object Key'=>$this->pid,   
+				 'Indirect Object'=>'Supplier Product Unit Package Type',
+				 'History Abstract'=>$abstract,
+				 'History Details'=>$details
+				 ));
+
+}
+
+
+
+}
+
+function update_field_switcher($field,$value,$options='') {
+//print "$field $value";
+    switch ($field) {
+    case('Supplier Product Cost'):
+        $this->update_cost($value);
+        break;
+    case('Supplier Product Buy State'):
+        $this->update_buy_state($value);
+        break;
+    case 'unit_net_weight':
+    case 'Supplier Product Unit Net Weight':
+    case 'unit_gross_weight':
+    case 'Supplier Product Unit Gross Weight':
+    case 'Supplier Product Unit Gross Volume':
+    case 'Supplier Product Unit Minimun Orthogonal Gross Volume':
+    case 'Supplier Product Case Gross Weight':
+    case 'Supplier Product Case Minimun Orthogonal Gross Volume':
+    case 'unit_gross_volume':
+    case 'unit_mov':
+    case 'case_gross_weight':
+    case 'case_mov':
+        $this->update_dimensions($field,$value);
+        break;
+    case('unit_packing_type'):
+        $this->update_unit_packing_type($value);
+    break;
+    case('Supplier Product Unit Type'):
+     case('unit_type'):
+        $this->update_unit_type($value);
+    break;
+    case('url'):
+        $field="Supplier Product URL";
+       
+        
+    default:
+        $base_data=$this->base_data();
+        if (preg_match('/^Address.*Data$/',$field))
+            $this->update_field($field,$value,$options);
+        elseif(array_key_exists($field,$base_data)) {
+
+            if ($value!=$this->data[$field]) {
+
+                $this->update_field($field,$value,$options);
+            }
+        }
+
+
+    }
+
+
+}
 
  function change_current_key($new_current_key) {
 

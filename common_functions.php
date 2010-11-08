@@ -20,6 +20,7 @@
 function getEnumValues($table, $field) {
     $enum_array = array();
     $query = 'SHOW COLUMNS FROM `' . $table . '` LIKE "' . $field . '"';
+   // print $query;
     $result = mysql_query($query);
     $row = mysql_fetch_row($result);
     preg_match_all('/\'(.*?)\'/', $row[1], $enum_array);
@@ -1577,6 +1578,7 @@ function getEnumVals($table,$field,$sorted=true)
 {
    
     $result=mysql_query('show columns from '.$table.';');
+  
     while($tuple=mysql_fetch_assoc($result))
     {
         if($tuple['Field'] == $field)

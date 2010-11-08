@@ -109,7 +109,7 @@ function delete_image(o){
 
 	
 
-	var request='ar_edit_assets.php?tipo=delete_image&scope='+scope+'&scope_key='+scope_key+'&image_key='+escape(image_key);
+	var request='ar_edit_assets.php?tipo=delete_image&scope='+scope+'&scope_key='+scope_key+'&image_key='+escape(image_key);0
 	alert(request)
 	YAHOO.util.Connect.asyncRequest('POST',request ,{
 		success:function(o) {
@@ -138,7 +138,8 @@ var upload_image = function(e){
     
     YAHOO.util.Connect.setForm('testForm', true);
     var request='ar_edit_assets.php?tipo=upload_product_image&subject='+scope+'&subject_key='+scope_key;
-    var uploadHandler = {
+   alert(request);
+   var uploadHandler = {
       upload: function(o) {
 	   alert(o.responseText)
 	    var r =  YAHOO.lang.JSON.parse(o.responseText);

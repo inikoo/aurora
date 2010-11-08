@@ -17,9 +17,6 @@ include_once('class.Page.php');
 /* class: Department
    Class to manage the *Product Department Dimension* table
 */
-// JFA
-
-
 
 
 class Department extends DB_Table {
@@ -1446,7 +1443,7 @@ $number_images=$row['num'];
 	    );
 	//	print "$sql\n";
 	mysql_query($sql);
-       $sql=sprintf("select `Image Thumbnail URL`,`Image Small URL`,`Is Principal`,ID.`Image Key`,`Image Caption`,`Image URL`,`Image Filename`,`Image File Size`,`Image File Checksum`,`Image Width`,`Image Height`,`Image File Format` from `Image Bridge` PIB left join `Image Dimension` ID on (PIB.`Image Key`=ID.`Image Key`) where `Subject Type`='Product' and   `Subject Key`=%d and  PIB.`Image Key`=%d"
+       $sql=sprintf("select `Image Thumbnail URL`,`Image Small URL`,`Is Principal`,ID.`Image Key`,`Image Caption`,`Image URL`,`Image Filename`,`Image File Size`,`Image File Checksum`,`Image Width`,`Image Height`,`Image File Format` from `Image Bridge` PIB left join `Image Dimension` ID on (PIB.`Image Key`=ID.`Image Key`) where `Subject Type`='Department' and   `Subject Key`=%d and  PIB.`Image Key`=%d"
 		    ,$this->id
 		    ,$image_key
 		    );
