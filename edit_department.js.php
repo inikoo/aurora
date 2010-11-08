@@ -824,7 +824,8 @@ function init(){
 
  	//YAHOO.util.Event.on('uploadButton', 'click', onUploadButtonClick);
 
- 
+ 	YAHOO.util.Event.on('uploadButton', 'click', upload_image);
+
 
 
 var department_code_oACDS = new YAHOO.util.FunctionDataSource(validate_code);

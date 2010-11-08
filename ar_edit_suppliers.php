@@ -51,10 +51,20 @@ case('new_supplier'):
 case('supplier_products'):
   list_supplier_products();
   break;
+case('edit_product_description'):
+    $data=prepare_values($_REQUEST,array(
+                             'pid'=>array('type'=>'key'),
+                             'newvalue'=>array('type'=>'string'),
+			     'key'=>array('type'=>'string'),
+			      'okey'=>array('type'=>'string')
+                         ));
+  edit_supplier_product($data);
+  break;  
+  
 case('edit_supplier'):
   edit_supplier();
   break;
-case('edit_product_supplier'):
+case('edit_supplier_product'):
 
 			     $data=prepare_values($_REQUEST,array(
 			     'newvalue'=>array('type'=>'string')
@@ -62,7 +72,7 @@ case('edit_product_supplier'):
 			     ,'sph_key'=>array('type'=>'key')
 			   
 			     ));
-  edit_product_supplier($data);
+  edit_supplier_product($data);
   break;
 case('complex_edit_supplier'):
   complex_edit_supplier();
@@ -83,7 +93,7 @@ $data['delete_type']=preg_replace('/delete/','Deleted',$data['delete_type']);
 $data['newvalue']=$data['delete_type'];
 $data['key']='Supplier Product Buy State';			     
 //print_r($data);
-  edit_product_supplier($data);
+  edit_supplier_product($data);
   break;
 default:
    $response=array('state'=>405,'resp'=>'Unknown Type');
@@ -153,11 +163,24 @@ function edit_supplier() {
 
 }
 
-function edit_product_supplier($data) {
+function edit_supplier_product($data) {
   $key=$data['key'];
  
   
+  if(isset($data['sph_key'])){
   $supplier_product=new SupplierProduct('id',$data['sph_key']);
+  }elseif(isset($data['pid'])){
+   $supplier_product=new SupplierProduct('pid',$data['pid']);
+  }
+  
+  if(!$supplier_product->id){
+     $response= array('state'=>400,'msg'=>$supplier_product->msg,'key'=>$key);
+       echo json_encode($response);
+       exit;
+  }
+  
+  
+
   global $editor;
   $supplier_product->editor=$editor;
   
@@ -199,9 +222,9 @@ function edit_product_supplier($data) {
         $response= array(
         'state'=>200,
         'newvalue'=>$supplier_product->new_value,
-        'key'=>$key,
-        'sp_current_key'=>$supplier_product->data['Supplier Product Current Key']
-        
+        'key'=>$data['okey'],
+        'sp_current_key'=>$supplier_product->data['Supplier Product Current Key'],
+         'sp_pid'=>$supplier_product->pid
         );
 
         if($key=='Supplier Product Buy State'){
@@ -625,7 +648,7 @@ function list_supplier_products() {
         $data[]=array(
 		      'sph_key'=>$row['Supplier Product Current Key']
 		      ,'code'=>$row['Supplier Product Code']
-		      		   ,'go'=>sprintf("<a href='product_supplier.php?code=%s&supplier_key=%d&edit=1'><img src='art/icons/page_go.png' alt='go'></a>"
+		      		   ,'go'=>sprintf("<a href='supplier_supplier.php?code=%s&supplier_key=%d&edit=1'><img src='art/icons/page_go.png' alt='go'></a>"
 		      		   ,$row['Supplier Product Code'],$row['Supplier Key'])
 
                       

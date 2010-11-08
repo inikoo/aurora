@@ -39,25 +39,28 @@ $js_files=array(
 
 $smarty->assign('display',$_SESSION['state']['supplier_product']['display']);
 
-$supplier_key=(isset($_REQUEST['supplier_key'])?$_REQUEST['supplier_key']:$_SESSION['state']['supplier_product']['supplier_key']);
-$supplier_product_code=(isset($_REQUEST['code'])?$_REQUEST['code']:$_SESSION['state']['supplier_product']['code']);
-
-if(!$supplier_key or !$supplier_product_code){
+$product_supplier_key=(isset($_REQUEST['pid'])?$_REQUEST['pid']:$_SESSION['state']['supplier_product']['pid']);
+//$supplier_key=(isset($_REQUEST['supplier_key'])?$_REQUEST['supplier_key']:$_SESSION['state']['supplier_product']['supplier_key']);
+//$supplier_product_code=(isset($_REQUEST['code'])?$_REQUEST['code']:$_SESSION['state']['supplier_product']['code']);
+if(!$product_supplier_key){
  header('Location: suppliers.php?e');
     exit();
 }
-
-
-$supplier_product= new SupplierProduct('code',$supplier_product_code,$supplier_key);
+$supplier_product= new SupplierProduct('pid',$product_supplier_key);
 if(!$supplier_product->id){
-header('Location: supplier.php?id='.$supplier_key);
+header('Location: suppliers.php');
    exit;
 
 }
+$supplier_key=$supplier_product->supplier_key;
+$supplier_product_code=$supplier_product->code;
 $supplier=new Supplier($supplier_product->data['Supplier Key']);
 
-$_SESSION['state']['supplier_product']['code']=$supplier_product->data['Supplier Product Code'];
-$_SESSION['state']['supplier_product']['supplier_key']=$supplier_product->data['Supplier Key'];
+$_SESSION['state']['supplier_product']['code']=$supplier_product_code;
+$_SESSION['state']['supplier_product']['supplier_key']=$supplier_key;
+$_SESSION['state']['supplier_product']['pid']=$supplier_product->pid;
+$_SESSION['state']['supplier_product']['id']=$supplier_product->id;
+
 
 
 $modify=$user->can_edit('suppliers');

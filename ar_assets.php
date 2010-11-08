@@ -9461,7 +9461,7 @@ function is_store_name($data) {
                        'state'=>400,
                        'msg'=>'Error'
                    );
-        echo json_enname($response);
+        echo json_encode($response);
         return;
     } else
         $query=$data['query'];
@@ -9511,7 +9511,7 @@ function is_department_name($data) {
                        'state'=>400,
                        'msg'=>'Error'
                    );
-        echo json_enname($response);
+        echo json_encode($response);
         return;
     } else
         $query=$data['query'];
@@ -9613,7 +9613,7 @@ function is_family_name($data) {
                        'state'=>400,
                        'msg'=>'Error'
                    );
-        echo json_enname($response);
+        echo json_encode($response);
         return;
     } else
         $query=$data['query'];
@@ -9714,7 +9714,7 @@ function is_family_special_char($data) {
                        'state'=>400,
                        'msg'=>'Error'
                    );
-        echo json_enname($response);
+        echo json_encode($response);
         return;
     } else
         $query=$data['query'];

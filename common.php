@@ -164,17 +164,26 @@ else
 	 
 if($user->can_view('staff'))
   $nav_menu[] = array(_('Staff'), 'hr.php','staff');
-if($user->can_view('suppliers'))
-  $nav_menu[] = array(_('Suppliers'), 'suppliers.php','suppliers');
-//if($user->is('Supplier'))
-//  $nav_menu[] = array(_('My Products'), 'myproducts.php','myproducts');
 
 if($user->can_view('reports')){
-  // if(count($user->stores)==1){
-  //  $nav_menu[] = array(_('Reports'), sprintf('report_sales.php?store_key=%d&tipo=m&y=%d&m=%d',$user->stores[0],date('Y'),date('m')));
-  //  }else
-
  $nav_menu[] = array(_('Reports'), 'reports.php','reports');
+}
+if($user->can_view('suppliers'))
+  $nav_menu[] = array(_('Suppliers'), 'suppliers.php','suppliers');
+if($user->can_view('warehouses')){
+if($user->warehouses==1)
+$nav_menu[] = array(_('Warehouse'), 'warehouse.php','warehouses');
+
+else
+$nav_menu[] = array(_('Warehouses'), 'warehouses.php','warehouses');
+}
+
+  $nav_menu[] = array(_('Marketing'), 'marketing.php','marketing');
+if($user->can_view('stores')){
+    if(count($user->stores)==1){
+    $nav_menu[] = array(_('Products'), 'store.php?id='.$user->stores[0],'products');
+    }else
+    $nav_menu[] = array(_('Products'), 'stores.php','products');
 }
 
 if($user->can_view('orders')){
@@ -194,32 +203,21 @@ if($user->can_view('customers')){
   $nav_menu[] = array(_('Customers'), 'customers_server.php','customers');
 
 }
-if($user->can_view('warehouses')){
-if($user->warehouses==1)
-$nav_menu[] = array(_('Warehouse'), 'warehouse.php','warehouses');
 
-else
-$nav_menu[] = array(_('Warehouses'), 'warehouses.php','warehouses');
-}
 
-if($user->can_view('stores')){
-    if(count($user->stores)==1){
-    $nav_menu[] = array(_('Products'), 'store.php?id='.$user->stores[0],'products');
-    }else
-    $nav_menu[] = array(_('Products'), 'stores.php','products');
-}
+
 
 if($user->data['User Type']=='Supplier'){
 
 
 $nav_menu[] = array(_('Orders'), 'suppliers.php?orders'  ,'orders');
 $nav_menu[] = array(_('Products'), 'suppliers.php?products'  ,'products');
-$nav_menu[] = array(_('Home'), 'suppliers_index.php','home');
+$nav_menu[] = array(_('Dashboard'), 'suppliers_index.php','home');
 }
 
 
 else
-  $nav_menu[] = array(_('Home'), 'index.php','home');
+  $nav_menu[] = array(_('Dashboard'), 'index.php','home');
 
 $smarty->assign('nav_menu',$nav_menu);
 $smarty->assign('theme',$myconf['theme']);

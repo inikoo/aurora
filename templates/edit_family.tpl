@@ -715,12 +715,7 @@ YAHOO.util.Dom.setStyle(overlay, 'height', uiLayer.bottom-uiLayer.top + "px");
 
  <div id="the_table1" class="data_table" style=" clear:both">
   <span class="clean_table_title">{t}History{/t}</span>
-  <div  id="clean_table_caption1" class="clean_table_caption"  style="clear:both;">
-    <div style="float:left;"><div id="table_info1" class="clean_table_info"><span id="rtext1"></span> <span class="filter_msg"  id="filter_msg1"></span></div></div>
-    <div id="clean_table_filter1" class="clean_table_filter" style="display:none">
-      <div class="clean_table_info"><span id="filter_name1" class="filter_name" >{$filter_name}</span>: <input style="border-bottom:none" id='f_input1' value="{$filter_value}" size=10/><div id='f_container'></div></div></div>
-    <div class="clean_table_controls" style="" ><div><span  style="margin:0 5px" id="paginator1"></span></div></div>
-  </div>
+   {include file='table_splinter.tpl' table_id=1 filter_name=$filter_name1 filter_value=$filter_value1  }
   <div  id="table1"   class="data_table_container dtable btable "> </div>
 </div> 
   

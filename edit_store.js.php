@@ -47,7 +47,7 @@ var validate_scope_data={
 	     ,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Telephone')?>'}]
 	     ,'name':'telephone','ar':false}
 	,'url':{'changed':false,'validated':true,'required':false,'group':1,'type':'item'
-	     ,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid URL')?>'}]
+	     ,'validation':[{'regexp':regexp_valid_www,'invalid_msg':'<?php echo _('Invalid URL')?>'}]
 	     ,'name':'url','ar':false}        
 	,'fax':{'changed':false,'validated':true,'required':false,'group':1,'type':'item'
 	     ,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid FAX')?>'}]

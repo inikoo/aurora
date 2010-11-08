@@ -21,30 +21,35 @@ if(!$modify){
     exit();
 }
 
+$product_supplier_key=(isset($_REQUEST['pid'])?$_REQUEST['pid']:$_SESSION['state']['supplier_product']['pid']);
 $supplier_key=(isset($_REQUEST['supplier_key'])?$_REQUEST['supplier_key']:$_SESSION['state']['supplier_product']['supplier_key']);
 $supplier_product_code=(isset($_REQUEST['code'])?$_REQUEST['code']:$_SESSION['state']['supplier_product']['code']);
-
-if(!$supplier_key or !$supplier_product_code){
+if(!$product_supplier_key){
  header('Location: suppliers.php?e');
     exit();
 }
-
-
-$supplier_product= new SupplierProduct('code',$supplier_product_code,$supplier_key);
+$supplier_product= new SupplierProduct('pid',$product_supplier_key);
 if(!$supplier_product->id){
-header('Location: supplier.php?id='.$supplier_key);
+header('Location: suppliers.php');
    exit;
 
 }
+$supplier_key=$supplier_product->supplier_key;
+$supplier_product_code=$supplier_product->code;
 $supplier=new Supplier($supplier_product->data['Supplier Key']);
-$_SESSION['state']['supplier_product']['code']=$supplier_product->data['Supplier Product Code'];
-$_SESSION['state']['supplier_product']['supplier_key']=$supplier_product->data['Supplier Key'];
+
+$_SESSION['state']['supplier_product']['code']=$supplier_product_code;
+$_SESSION['state']['supplier_product']['supplier_key']=$supplier_key;
+
+$_SESSION['state']['supplier_product']['pid']=$supplier_product->pid;
+$_SESSION['state']['supplier_product']['id']=$supplier_product->id;
 
 $general_options_list=array();
 $general_options_list[]=array('tipo'=>'url','url'=>'supplier_product.php','label'=>_('Exit Edit'));
 $smarty->assign('general_options_list',$general_options_list);
 
 
+$smarty->assign('supplier_product',$supplier_product);
 
 $supplier_product->load_images_slidesshow();
 $images=$supplier_product->images_slideshow;
@@ -52,6 +57,17 @@ $images=$supplier_product->images_slideshow;
 
 $smarty->assign('images',$images);
 $smarty->assign('num_images',count($images));
+
+
+if(isset($_REQUEST['edit_tab'])){
+  $editing=$_REQUEST['edit_tab'];
+$_SESSION['state']['supplier_product']['editing']=$edit;
+}else{
+  $editing=$_SESSION['state']['supplier_product']['editing'];
+}
+$smarty->assign('edit',$editing);
+
+
 
 
 $css_files=array(
@@ -101,15 +117,30 @@ $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
 
 $units_types=getEnumValues("Supplier Product Dimension","Supplier Product Unit Type" );
-//print_r($units_types);
+
 $unit_type_options=array();
 foreach($units_types as $units_type ){
   $unit_type_options[$units_type]=$units_type;
 }
+$smarty->assign('unit_type_options',$unit_type_options);
+$smarty->assign('unit_type',$supplier_product->data['Supplier Product Unit Type']);
 
-$smarty->assign('unit_type_options',$unit_type_options
-                                );
-$smarty->assign('unit_type',$product->data['Product Unit Type']);
+
+$unit_packing_types=getEnumValues("Supplier Product Dimension","Supplier Product Unit Package Type" );
+
+$unit_packing_type_options=array();
+$i=0;$index=0;
+foreach($unit_packing_types as $units_type ){
+  $unit_packing_type_options[$units_type]=$units_type;
+  if($units_type==$supplier_product->data['Supplier Product Unit Package Type']){
+   $index=$i; 
+  }
+  $i++;
+}
+
+$smarty->assign('unit_packing_type_options',$unit_packing_type_options);
+$smarty->assign('unit_packing_type',$supplier_product->data['Supplier Product Unit Package Type']);
+$smarty->assign('unit_packing_index',$index);
 
 $smarty->display('edit_supplier_product.tpl');
 ?>
