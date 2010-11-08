@@ -73,7 +73,9 @@ $js_files=array(
 		'common.js.php',
 		'table_common.js.php',
 		'js/edit_common.js',
-		'warehouse_orders.js.php'
+		'warehouse_orders.js.php',
+		 'js/edit_common.js',
+	         'js/csv_common.js'
 		);
 
 
@@ -121,7 +123,39 @@ $smarty->assign('filter_name2',$filter_menu2[$tipo_filter2]['label']);
 $paginator_menu2=array(10,25,50,100,500);
 $smarty->assign('paginator_menu2',$paginator_menu2);
 
-
+$csv_export_options0=array(
+                            'description'=>array(
+                                              'title'=>_('Description'),
+                                              'rows'=>
+                                                     array(
+                                                         array(
+                                                             'id'=>array('label'=>_('Order Id'),'selected'=>$_SESSION['state']['orders']['ready_to_pick_dn']['csv_export']['id']),
+                                                             'date'=>array('label'=>_('Last Updated'),'selected'=>$_SESSION['state']['orders']['ready_to_pick_dn']['csv_export']['date']),
+                                                            
+                                                             'type'=>array('label'=>_('Type'),'selected'=>$_SESSION['state']['orders']['ready_to_pick_dn']['csv_export']['type']),
+                                                             'customer_name'=>array('label'=>_('Customer Name'),'selected'=>$_SESSION['state']['orders']['ready_to_pick_dn']['csv_export']['customer_name']),
+                                                            
+                                                     
+                                                         )
+                                                     )
+                                          ),
+                          
+                            'details'=>array('title'=>_('Other Details'),
+                            'rows'=>
+                                               array(
+                                                   array(
+                                                       'weight'=>array('label'=>_('Weight'),'selected'=>$_SESSION['state']['orders']['ready_to_pick_dn']['csv_export']['weight']),
+                                                       'picks'=>array('label'=>_('Picks'),'selected'=>$_SESSION['state']['orders']['ready_to_pick_dn']['csv_export']['picks']),
+							 'parcel_type'=>array('label'=>_('Parcel Type'),'selected'=>$_SESSION['state']['orders']['ready_to_pick_dn']['csv_export']['parcel_type'])
+                                                       
+                                                 
+                                                       
+                                                   )
+                            )
+                            )
+                        );
+$smarty->assign('export_csv_table_cols',2);
+$smarty->assign('csv_export_options',$csv_export_options0);
 
 
 $smarty->display('warehouse_orders.tpl');

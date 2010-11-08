@@ -5,7 +5,7 @@
 
   <div  id="orders_table" class="data_table" style="clear:left;margin-top:23px">
     <span class="clean_table_title">{t}Orders In Warehouse{/t}</span>
-
+<span  id="export_csv0" style="float:right;margin-left:20px"  class="table_type state_details" tipo="ready_to_pick_orders" >{t}Export (CSV){/t}</span>
      
    <div  style="font-size:90%">
    
@@ -155,3 +155,4 @@
   <span class="button" onclick="pick_assigned_save()" >Go</span><td></tr>
 </table>
 </div>
+{include file='export_csv_menu_splinter.tpl' id=0 cols=$export_csv_table_cols session_address="ready_to_pick_orders-table-csv_export" export_options=$csv_export_options }

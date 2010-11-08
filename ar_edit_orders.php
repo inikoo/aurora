@@ -677,19 +677,25 @@ function ready_to_pick_orders() {
 
 
 
-    $_SESSION['state']['orders']['ready_to_pick_dn']=array(
-                'order'=>$order,
-                'order_dir'=>$order_direction,
-                'nr'=>$number_results,
-                'sf'=>$start_from,
-                'where'=>$where,
-                'f_field'=>$f_field,
-                'f_value'=>$f_value,
+    //$_SESSION['state']['orders']['ready_to_pick_dn']=array(
+    //            'order'=>$order,
+    //            'order_dir'=>$order_direction,
+    //            'nr'=>$number_results,
+    //            'sf'=>$start_from,
+     //           'where'=>$where,
+     //           'f_field'=>$f_field,
+     //           'f_value'=>$f_value,
 
 
-            );
+      //      );
 
-
+ $_SESSION['state']['orders']['ready_to_pick_dn']['order']=$order;
+    $_SESSION['state']['orders']['ready_to_pick_dn']['order_dir']=$order_direction;
+    $_SESSION['state']['orders']['ready_to_pick_dn']['nr']=$number_results;
+    $_SESSION['state']['orders']['ready_to_pick_dn']['sf']=$start_from;
+    $_SESSION['state']['orders']['ready_to_pick_dn']['where']=$where;
+    $_SESSION['state']['orders']['ready_to_pick_dn']['f_field']=$f_field;
+    $_SESSION['state']['orders']['ready_to_pick_dn']['f_value']=$f_value;
 
 
 

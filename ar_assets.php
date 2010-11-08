@@ -7278,11 +7278,27 @@ function list_deals() {
         $tableid=0;
 
     if ($parent=='store_with_children')
-        $conf=$_SESSION['state']['deals']['table']=array('order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value);
+	{
+    $_SESSION['state']['deals']['table']['order']=$order;
+    $_SESSION['state']['deals']['table']['order_dir']=$order_direction;
+    $_SESSION['state']['deals']['table']['nr']=$number_results;
+    $_SESSION['state']['deals']['table']['sf']=$start_from;
+    $_SESSION['state']['deals']['table']['where']=$where;
+    $_SESSION['state']['deals']['table']['f_field']=$f_field;
+    $_SESSION['state']['deals']['table']['f_value']=$f_value;
+
+
+	}
+       // $conf=$_SESSION['state']['deals']['table']=array('order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value);
     else
         $_SESSION['state'][$parent]['deals']=array('order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value);
 
-    if ($parent=='store')
+  
+
+
+
+
+  if ($parent=='store')
         $where=sprintf("where  (`Store Key`=%d and `Deal Trigger`='Order')     ",$parent_id);
     if ($parent=='store_with_children')
         $where=sprintf("where  `Store Key`=%d     ",$parent_id);

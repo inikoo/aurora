@@ -418,7 +418,16 @@ $default_state=array(
                                                              'f_value'=>'','f_show'=>false,
                                                              'from'=>'',
                                                              'to'=>'',
-                                                             'elements'=>array()
+                                                             'elements'=>array(),
+                                         'csv_export'=>array(
+                                                          'id'=>true,
+                                                          'date'=>true,
+                                                          'type'=>true,
+                                                          'customer_name'=>false,
+                                                          'weight'=>false,
+                                                          'picks'=>false,
+							  'parcel_type'=>false
+                                                      )
                                                          )
 
 
@@ -2431,6 +2440,18 @@ $default_state=array(
                                               'order_dir'=>'',
                                               'sf'=>0,
                                               'nr'=>25,
+						'csv_export'=>array(
+                                                                 'name'=>true,
+                                                                 'trigger'=>true,
+                                                                 'target'=>true,
+                                                                 'status'=>false,
+                                                                 'terms_description'=>false,
+                                                                 'allowance_description'=>false,
+                                                                 'terms_type'=>false
+
+                                                             )
+
+
                                           )),
                    'position'=>array(
                                   'id'=>0,
