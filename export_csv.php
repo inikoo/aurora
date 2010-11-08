@@ -157,7 +157,16 @@ switch ($tipo) {
         $filename=_('invoices').'.csv';
         $where=sprintf(' `Invoice Store Key`=%d ',$_SESSION['state']['store']['id']);
         $data=get_orders_invoices_data($wheref,$where);
-        break;  
+        break;
+   case 'ready_to_pick_orders':
+        $filename=_('warehouse_orders').'.csv';
+        $f_field=$_SESSION['state']['orders']['ready_to_pick_dn']['f_field'];
+        $f_value=$_SESSION['state']['orders']['ready_to_pick_dn']['f_value'];
+        $wheref=wheref_stores($f_field,$f_value);
+        $filename=_('warehouse_orders').'.csv';
+        $where=sprintf(' `Delivery Note State` not in ("Dispatched","Cancelled") ');
+        $data=get_orders_ready_to_pick_orders_data($wheref,$where);
+        break;    
    case 'dn':
         $filename=_('delivery_notes').'.csv';
         $f_field=$_SESSION['state']['orders']['dn']['f_field'];
@@ -184,7 +193,16 @@ switch ($tipo) {
         $wheref=wheref_stores($f_field,$f_value);
         $filename=_('parts').'.csv';
         $data=get_parts_data($wheref);
-        break;                    
+        break;
+    case 'deals':
+        $filename=_('deals').'.csv';
+        $f_field=$_SESSION['state']['deals']['table']['f_field'];
+        $f_value=$_SESSION['state']['deals']['table']['f_value'];
+        $wheref=wheref_stores($f_field,$f_value);
+        $filename=_('deals').'.csv';
+        $data=get_deals_data($wheref);
+        break;
+                    
     default:
         
         break;
@@ -832,6 +850,60 @@ $data[]=$_data;
 return $data;
 
 }
+
+function get_orders_ready_to_pick_orders_data($wheref,$where='true'){
+
+$data=prepare_values($_REQUEST,array('fields'=>array('type'=>'json array','optional'=>true)));
+if(isset($data['fields'])){
+$fields_to_export=$data['fields'];
+}else{
+$fields_to_export=$_SESSION['state']['orders']['ready_to_pick_dn']['csv_export'];
+}
+
+
+$fields=array(
+'id'=>array('title'=>_('Order Id'),'db_name'=>'Delivery Note ID'),
+'type'=>array('title'=>_('Type'),'db_name'=>'Delivery Note State'),
+'date'=>array('title'=>_('Last Updated'),'db_name'=>'Delivery Note Date Created'),
+
+'weight'=>array('title'=>_('Weight'),'db_name'=>'Delivery Note Estimated Weight'),
+'picks'=>array('title'=>_('Picks'),'db_name'=>'Delivery Note Distinct Items'),
+'customer_name'=>array('title'=>_('Customer Name'),'db_name'=>'Delivery Note Customer Name'),
+'parcel_type'=>array('title'=>_('Parcel Type'),'db_name'=>'Delivery Note Parcel Type')
+);
+
+
+foreach($fields as $key=>$value){
+if(!isset($fields_to_export[$key]) or  !$fields_to_export[$key]  )
+unset($fields[$key]);
+}
+
+
+
+$data=array();
+$_data=array();
+foreach($fields as $key=>$options){
+$_data[]=$options['title'];
+}
+$data[]=$_data;
+$sql="select * from `Delivery Note Dimension` where $where $wheref";
+$res=mysql_query($sql);
+
+while($row=mysql_fetch_assoc($res)){
+$_data=array();
+foreach($fields as $key=>$options){
+
+$_data[]=$row[$options['db_name']];
+}
+$data[]=$_data;
+}
+//print_r($data);exit;
+
+return $data;
+
+}
+
+
 function get_orders_delivery_notes_data($wheref,$where='true'){
 
 $data=prepare_values($_REQUEST,array('fields'=>array('type'=>'json array','optional'=>true)));
@@ -1086,6 +1158,59 @@ $data[]=$_data;
 return $data;
 
 }
+function get_deals_data($wheref){
+
+$data=prepare_values($_REQUEST,array('fields'=>array('type'=>'json array','optional'=>true)));
+if(isset($data['fields'])){
+$fields_to_export=$data['fields'];
+}else{
+$fields_to_export=$_SESSION['state']['deals']['table']['csv_export'];
+}
+
+
+$fields=array(
+'name'=>array('title'=>_('Name'),'db_name'=>'Deal Name'),
+'trigger'=>array('title'=>_('Trigger'),'db_name'=>'Deal Trigger'),
+'target'=>array('title'=>_('Target'),'db_name'=>'Deal Allowance Target'),
+'status'=>array('title'=>_('Status'),'db_name'=>'Deal Status'),
+'terms_description'=>array('title'=>_('Terms Description'),'db_name'=>'Deal Terms Description'),
+'allowance_description'=>array('title'=>_('Allowance Description'),'db_name'=>'Deal Allowance Description'),
+'terms_type'=>array('title'=>_('Terms Type'),'db_name'=>'Deal Terms Type'),
+
+);
+
+
+foreach($fields as $key=>$value){
+if(!isset($fields_to_export[$key]) or  !$fields_to_export[$key]  )
+unset($fields[$key]);
+}
+
+
+
+$data=array();
+$_data=array();
+foreach($fields as $key=>$options){
+$_data[]=$options['title'];
+}
+$data[]=$_data;
+$sql="select * from `Deal Dimension` where true $wheref";
+$res=mysql_query($sql);
+
+while($row=mysql_fetch_assoc($res)){
+$_data=array();
+foreach($fields as $key=>$options){
+
+$_data[]=$row[$options['db_name']];
+}
+$data[]=$_data;
+}
+//print_r($data);exit;
+
+return $data;
+
+}
+
+
 
 
 ?>
