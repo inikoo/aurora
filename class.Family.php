@@ -177,6 +177,9 @@ var $external_DB_link=false;
 
         if ($this->found) {
             $this->get_data('id',$this->found_key);
+            if($create){
+                $this->msg=_('Family').' '.$this->data['Product Family Code'].' '._('is already created');
+            }
         }
 
         if (!$this->found and $create) {
