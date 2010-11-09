@@ -49,7 +49,13 @@ case('delete_part_new_product'):
 case('edit_family_page_html_head'):
 case('edit_family_page_header'):
 case('edit_family_page_content'):
- edit_page('family');
+$data=prepare_values($_REQUEST,array(
+                             'newvalue'=>array('type'=>'string'),
+                             'key'=>array('type'=>'srting'),
+                             'id'=>array('type'=>'key')
+                             ));
+
+ edit_page('family',$data);
   break;
 case('add_part_new_product'):
 
@@ -89,7 +95,13 @@ case('delete_department'):
 delete_department();
    break;
  case('edit_family'):
-  edit_family(); 
+ $data=prepare_values($_REQUEST,array(
+                             'newvalue'=>array('type'=>'string'),
+                             'key'=>array('type'=>'string'),
+                             'id'=>array('type'=>'key')
+                             ));
+
+  edit_family($data); 
    break;
 
 case('edit_product_advanced'):
@@ -388,16 +400,15 @@ function edit_product(){
 }
 
 
-function edit_family(){
-  //print_r($_REQUEST);
-  $family=new family($_REQUEST['id']);
+function edit_family($data){
+  $family=new family($data['id']);
  global $editor;
  $family->editor=$editor;
- $family->update($_REQUEST['key'],stripslashes(urldecode($_REQUEST['newvalue'])),stripslashes(urldecode($_REQUEST['oldvalue'])));
+ $family->update(array($data['key']=>stripslashes(urldecode($data['newvalue']))));
  
 
    if($family->updated){
-     $response= array('state'=>200,'newvalue'=>$family->new_value,'key'=>$_REQUEST['key']);
+     $response= array('state'=>200,'newvalue'=>$family->new_value,'key'=>$data['key']);
 	  
    }else{
      $response= array('state'=>400,'msg'=>$family->msg,'key'=>$_REQUEST['key']);
@@ -1044,7 +1055,7 @@ mysql_free_result($result);
    if($total_records>$number_results)
      $rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
    else
-     $rtext_rpp='';
+     $rtext_rpp='('._('Showing all').')';
    
    $_order=$order;
    $_dir=$order_direction;
@@ -1088,21 +1099,22 @@ $adata[]=array(
   }
 mysql_free_result($res);
   $response=array('resultset'=>
-		  array('state'=>200,
-			'data'=>$adata,
-			'sort_key'=>$_order,
-			'sort_dir'=>$_dir,
-			 'tableid'=>$tableid,
-			'filter_msg'=>$filter_msg,
-			'total_records'=>$total,
-			'records_offset'=>$start_from,
-			'records_returned'=>$start_from+$total,
-			'records_perpage'=>$number_results,
-			'records_order'=>$order,
-			'records_order_dir'=>$order_dir,
-			'rtext'=>$rtext,
-			'rtext_rpp'=>$rtext_rpp,
-			'filtered'=>$filtered
+		  array(
+		  
+		       'state'=>200,
+                                      'data'=>$adata,
+                                      'sort_key'=>$_order,
+                                      'sort_dir'=>$_dir,
+                                      'tableid'=>$tableid,
+                                      'filter_msg'=>$filter_msg,
+                                      'rtext'=>$rtext,
+                                      'rtext_rpp'=>$rtext_rpp,
+                                      'total_records'=>$total,
+                                      'records_offset'=>$start_from,
+                                      'records_perpage'=>$number_results,
+		  
+		  
+		 
 			)
 		  );
 
@@ -2674,19 +2686,19 @@ function edit_part_new_product($sku){
 
 }
 
-function  edit_page($subject){
-$family=new family($_REQUEST['id']);
+function  edit_page($subject,$data){
+$family=new family($data['id']);
  global $editor;
  $family->editor=$editor;
  $page=new Page($family->data['Product Family Page Key']);
- $page->update_field_switcher($_REQUEST['key'],stripslashes(urldecode($_REQUEST['newvalue'])));
+ $page->update_field_switcher($data['key'],stripslashes(urldecode($data['newvalue'])));
  
 
    if($page->updated){
-     $response= array('state'=>200,'newvalue'=>$page->new_value,'key'=>$_REQUEST['key']);
+     $response= array('state'=>200,'newvalue'=>$page->new_value,'key'=>$data['key']);
 	  
    }else{
-     $response= array('state'=>400,'msg'=>$page->msg,'key'=>$_REQUEST['key']);
+     $response= array('state'=>400,'msg'=>$page->msg,'key'=>$data['key']);
    }
    echo json_encode($response); 
 
@@ -2724,6 +2736,9 @@ $values=$data['newvalue'];
 
 $part_list_data=array();
 foreach($values as $key =>$value){
+
+if(!$value['deleted']){
+
 	$part_list_data[$value['sku']]=array(
  			   'Product ID'=>$product->get('Product ID'),
  			   'Part SKU'=>$value['sku'],
@@ -2731,6 +2746,7 @@ foreach($values as $key =>$value){
  			   'Parts Per Product'=>$value['ppp'],
  			   'Product Part List Note'=>$value['note']
  			   );
+ 			   }
 
 }
 $date=date('Y-m-d H:i:s');
@@ -2744,7 +2760,7 @@ $header_data=array(
 $value['confirm']='new';
 
 
-//print_r($part_list_data);
+
 $product_part_key=$product->find_product_part_list($part_list_data);
 
 

@@ -24,12 +24,14 @@ var product_pid='<?php echo $_REQUEST['pid']?>';
 var scope='product';
 var scope_key=product_pid;
 
+var Editor_change_part;
+
 var validate_scope_data=
 {
     'product_description':{
 	'name':{'changed':false,'validated':true,'required':true,'group':1,'type':'item','name':'Product_Name','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Customer Name')?>'}]}
 	,'special_characteristic':{'changed':false,'validated':true,'required':true,'group':1,'type':'item','name':'Product_Special_Characteristic','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Special Characteristic')?>'}]}
-    	,'description':{'changed':false,'validated':true,'required':true,'group':1,'type':'item','name':'Product_Description','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Description')?>'}]}
+    	,'description':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'Product_Description','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Description')?>'}]}
 
 }
     , 'product_price':{
@@ -214,11 +216,11 @@ part_list[part_key].note=Dom.get('pickers_note'+part_list[part_key].sku).value;
 }
 json_value = YAHOO.lang.JSON.stringify(part_list);
  var request='ar_edit_assets.php?tipo=edit_part_list&key=' + key+ '&newvalue=' + json_value
-		
+	//	alert(request);
 		  
 		    YAHOO.util.Connect.asyncRequest('POST',request ,{
 			    success:function(o) {
-				alert(o.responseText);
+			//	alert(o.responseText);
 				var r =  YAHOO.lang.JSON.parse(o.responseText);
 				if(r.state==200){
 				  
@@ -399,7 +401,7 @@ Dom.get('the_part_dialog').style.display='none';
 function add_part(sku){
   x= Dom.getX('add_part');
    y= Dom.getY('add_part');
-   Dom.setX('Editor_add_part', x-80);
+   Dom.setX('Editor_add_part', x-490);
    Dom.setY('Editor_add_part', y);
    Dom.get('add_part_input').focus();
    Editor_add_part.show();
@@ -482,9 +484,9 @@ part_list['sku'+sku]={'sku':sku,'new':true,'deleted':false};
     oTD.innerHTML=description;
   
     var oTD= oTR.insertCell(3);
-    oTD.innerHTML='<span style="cursor:pointer"><img onClick="remove_part('+sku+')" src="art/icons/delete_bw.png"/> <?php echo _('Remove')?></span>';
+    oTD.innerHTML='<span style="cursor:pointer" onClick="remove_part('+sku+')" ><img src="art/icons/delete_bw.png"/> <?php echo _('Remove')?></span><span onClick="show_change_part_dialog('+sku+',this)"  style="cursor:pointer;margin-left:15px"><img  src="art/icons/arrow_refresh_bw.png"/> <?php echo _('Change')?></span>';
     oTR= oTbl.insertRow(-1);
- 
+      oTR.id="sup_tr2_"+sku;
   var oTD= oTR.insertCell(0);
     oTD.innerHTML=  '<?php echo _('Parts Per Product')?>:';
     Dom.addClass(oTD,'label');
@@ -516,8 +518,16 @@ close_add_part_dialog();
 };
 
 
-function init(){
 
+
+
+
+function init(){
+Editor_change_part = new YAHOO.widget.Dialog("Editor_change_part", {width:'450px',close:false,visible:false,underlay: "none",draggable:false});
+    Editor_change_part.render();
+    
+    
+    
 
 YAHOO.util.Event.on('uploadButton', 'click', upload_image);
 
@@ -541,6 +551,10 @@ Editor_add_part = new YAHOO.widget.Dialog("Editor_add_part", {close:false,visibl
     Event.addListener('save_edit_product_weight', "click", save_edit_weight);
     Event.addListener('reset_edit_product_weight', "click", reset_edit_weight);
 
+    
+    
+    
+    
     
     var product_name_oACDS = new YAHOO.util.FunctionDataSource(validate_product_name);
     product_name_oACDS.queryMatchContains = true;
@@ -590,8 +604,165 @@ Editor_add_part = new YAHOO.widget.Dialog("Editor_add_part", {close:false,visibl
 
 }
 
+YAHOO.util.Event.addListener(window, "load", function() {
+    tables = new function() {
+
+ var tableid=0; 
+	    var tableDivEL="table"+tableid;
+
+	    var CustomersColumnDefs = [
+				       {key:"date",label:"<?php echo _('Date')?>", width:200,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				       ,{key:"author",label:"<?php echo _('Author')?>", width:70,sortable:true,formatter:this.customer_name,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				      ,{key:"abstract", label:"<?php echo _('Description')?>", width:370,sortable:true,formatter:this.customer_name,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				       ];
+	   
+
+	    this.dataSource0 = new YAHOO.util.DataSource("ar_history.php?tipo=history&type=product&tableid=0");
+	    this.dataSource0.responseType = YAHOO.util.DataSource.TYPE_JSON;
+	    this.dataSource0.connXhrMode = "queueRequests";
+	    this.dataSource0.responseSchema = {
+		resultsList: "resultset.data", 
+		metaFields: {
+		    rowsPerPage:"resultset.records_perpage",
+		    rtext:"resultset.rtext",
+		    rtext_rpp:"resultset.rtext_rpp",
+		    sort_key:"resultset.sort_key",
+		    sort_dir:"resultset.sort_dir",
+		    tableid:"resultset.tableid",
+		    filter_msg:"resultset.filter_msg",
+		    totalRecords: "resultset.total_records"
+		},
+		
+		
+		fields: [
+			 "id"
+			 ,"note"
+			 ,'author','date','tipo','abstract','details'
+			 ]};
+	    
+	    this.table0 = new YAHOO.widget.DataTable(tableDivEL, CustomersColumnDefs,
+						     this.dataSource0
+						     , {
+
+							 renderLoopSize: 50,generateRequest : myRequestBuilder
+							 ,paginator : new YAHOO.widget.Paginator({
+								 rowsPerPage    : <?php echo$_SESSION['state']['product']['history']['nr']?>,containers : 'paginator0', alwaysVisible:false,
+								 pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',
+								 previousPageLinkLabel : "<",
+								 nextPageLinkLabel : ">",
+								 firstPageLinkLabel :"<<",
+								 lastPageLinkLabel :">>",rowsPerPageOptions : [10,25,50,100,250,500]
+								 ,template : "{FirstPageLink}{PreviousPageLink}<strong id='paginator_info1'>{CurrentPageReport}</strong>{NextPageLink}{LastPageLink}"
+							     })
+							 
+							 ,sortedBy : {
+							    Key: "<?php echo$_SESSION['state']['product']['history']['order']?>",
+							     dir: "<?php echo$_SESSION['state']['product']['history']['order_dir']?>"
+							 },
+							 dynamicData : true
+							 
+						     }
+						     
+						     );
+	    
+	    this.table0.handleDataReturnPayload =myhandleDataReturnPayload;
+	    this.table0.doBeforeSortColumn = mydoBeforeSortColumn;
+	    this.table0.doBeforePaginatorChange = mydoBeforePaginatorChange;
+
+		    
+		    
+	    this.table0.filter={key:'<?php echo$_SESSION['state']['product']['history']['f_field']?>',value:'<?php echo$_SESSION['state']['product']['history']['f_value']?>'};
+
+
+};
+    });
 
 YAHOO.util.Event.onDOMReady(init);
 
+YAHOO.util.Event.onContentReady("rppmenu0", function () {
+	 var oMenu = new YAHOO.widget.ContextMenu("rppmenu0", {trigger:"rtext_rpp0" });
+	 oMenu.render();
+	 oMenu.subscribe("show", oMenu.focus);
+    });
+
+YAHOO.util.Event.onContentReady("filtermenu0", function () {
+	 var oMenu = new YAHOO.widget.ContextMenu("filtermenu0", {  trigger: "filter_name0"  });
+	 oMenu.render();
+	 oMenu.subscribe("show", oMenu.focus);
+    });
 
 
+function close_change_part_dialog(){
+
+Dom.get('change_part').value='';
+Dom.setStyle('change_part_selector','display','');
+Dom.setStyle('save_change_part','display','none');
+Dom.setStyle('change_part_confirmation','display','none');
+ Editor_change_part.hide();
+}
+
+function change_part_selected(sType, aArgs){
+alert("caca")
+//remove_part(Dom.get('change_part_sku').value)
+//add_part_selected(sType, aArgs);
+//close_change_part_dialog();
+alert("s")
+
+//var myAC = aArgs[0]; // reference back to the AC instance 
+  //      var elLI = aArgs[1]; // reference to the selected LI element 
+//	        var oData = aArgs[2]; // object literal of selected item's result data 
+
+//Dom.get('change_part_new_part').innerHTML=oData[0];
+
+//Dom.get('change_part').value='';
+//Dom.setStyle('change_part_selector','display','none');
+//Dom.setStyle('save_change_part','display','');
+//Dom.setStyle('change_part_confirmation','display','');
+}
+
+function show_change_part_dialog(sku,o){
+
+  Dom.get('change_part_sku').value=sku;
+   x= Dom.getX(o)-455;
+   y= Dom.getY(o);
+   Dom.setX('Editor_change_part', x);
+   Dom.setY('Editor_change_part', y);
+   Dom.get('change_part').focus();
+   Editor_change_part.show();
+  
+}
+
+
+
+
+YAHOO.util.Event.onContentReady("change_part", function () {
+  
+  var new_loc_oDS = new YAHOO.util.XHRDataSource("ar_assets.php");
+    new_loc_oDS.responseType = YAHOO.util.XHRDataSource.TYPE_JSON;
+    new_loc_oDS.responseSchema = {
+resultsList : "data"
+        ,
+
+       fields : ["info","sku","description","usedin","formated_sku"]
+    };
+    var new_loc_oAC = new YAHOO.widget.AutoComplete("change_part", "change_part_container", new_loc_oDS);
+  
+  
+  new_loc_oAC.generateRequest = function(sQuery) {
+
+        sku=Dom.get("change_part_sku").value;
+        request=  "?tipo=find_part&except_part="+sku+"&query=" + sQuery ;  
+     
+     return request;
+    };
+    new_loc_oAC.forceSelection = true;
+    new_loc_oAC.itemSelectEvent.subscribe(change_part_selected);
+    
+});
+
+
+function remove_part(sku){
+
+part_list['sku'+sku].deleted=true;
+Dom.setStyle(['part_list'+sku,'sup_tr2_'+sku,'sup_tr3_'+sku],'display','none')
+}
