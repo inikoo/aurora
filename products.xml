@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rss version="2.0" xmlns:g="http://base.google.com/ns/1.0">
+ <library>
+    
+    <products>
+      <product>
+        <title>Night Wolfs (£1.25)</title>
+        <code>3DART-01</code>
+        <state>Public Sale</state>
+        <web>Auto</web>
+      </product>
+      <product>
+        <title>Winter Wolfs (£1.25)</title>
+        <code>3DART-02</code>
+        <state>Public Sale</state>
+        <web>Auto</web> 
+      </product>
+      <product>
+        <title>White Tiger (£1.25)</title>
+        <code>3DART-03</code>
+        <state>Public Sale</state>
+        <web>Auto</web> 
+      </product>
+      <product>
+        <title>Bengal Tiger (£1.25)</title>
+        <code>3DART-04</code>
+        <state>Public Sale</state>
+        <web>Auto</web> 
+      </product>
+      <product>
+        <title>China Tiger (£1.25)</title>
+        <code>3DART-05</code>
+        <state>Public Sale</state>
+        <web>Auto</web> 
+      </product>
+      <product>
+        <title>Parrots (£1.25)</title>
+        <code>3DART-06</code>
+        <state>Public Sale</state>
+        <web>Auto</web> 
+      </product>
+      <product>
+        <title>China Peacocks (£1.25)</title>
+        <code>3DART-07</code>
+        <state>Public Sale</state>
+        <web>Auto</web> 
+      </product>
+      <product>
+        <title>White Horses (£1.25)</title>
+        <code>3DART-08</code>
+        <state>Public Sale</state>
+        <web>Auto</web> 
+      </product>
+       <product>
+        <title>Horses (£1.25)</title>
+        <code>3DART-09</code>
+        <state>Public Sale</state>
+        <web>Auto</web> 
+      </product>
+      <product>
+        <title>Gold Fish (£1.25)</title>
+        <code>3DART-10</code>
+        <state>Public Sale</state>
+        <web>Auto</web> 
+      </product>
+      <product>
+        <title>Tropical Fish (£1.25)</title>
+        <code>3DART-11</code>
+        <state>Public Sale</state>
+        <web>Auto</web> 
+      </product>
+    </products>
+</library>
+</rss>
+
