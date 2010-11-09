@@ -23,7 +23,7 @@
      <div class="tabbed_container" > 
  
       
-      <div style="clear:both;height:.1em;padding:0px 20px;;margin:20px auto;xborder-top: 1px solid #cbb;;xborder-bottom: 1px solid #caa;width:770px;" id="description_messages">
+      <div style="clear:both;height:.1em;padding:0px 20px;;margin:0px auto;xborder-top: 1px solid #cbb;;xborder-bottom: 1px solid #caa;width:770px;" id="description_messages">
 	
 	<div id="info_name" style="float:left;width:260px;{if !( $edit=='pictures') }display:none{/if}">
 	  
@@ -82,11 +82,12 @@
 	
 	
 	<table style="margin:5px 0px ;xwidth:500px"  border=0 class="edit">
-	  <tr>
-	    <td >{t}Type of Product{/t}:</td>
+	 <tr class="title"><td >{t}Type of Product{/t}</td></tr>
+	 <tr>
+	   
 	    
-	    <td >
-	      <div class="options" style="margin:0px 0">
+	    <td style="text-align:center" >
+	      <div class="options" style="margin:0px 0;font-size:140%">
 		<span {if $product->get('Product Type')=="Normal"}class="selected"{/if} id="type_prod_normal">{t}Simple{/t}</span>
 		<span {if $product->get('Product Type')=="Shortcut"}class="selected"{/if} id="type_prod_shortcut">{t}Shortcut{/t}</span>
 		<span {if $product->get('Product Type')=="Mix"} class="selected"{/if} id="type_prod_mix">{t}Mixture{/t}</span>
@@ -96,7 +97,7 @@
 	  </tr>
 </table>
 
-<h2>{t}Part List{/t}</h2>
+
 
 
 	    {if $num_parts==0}
@@ -106,37 +107,44 @@
 	  
 	  {else}
 	  <div style="text-align:right"  id="product_part_items" product_part_key="{$product->get_current_product_part_key()}"  >
-	  <span style="margin-right:10px;" onClick="add_part()" id="add_part" class="state_details">{t}Add Part to List{/t}</span>
+	 
 	  <span style="margin-right:10px;visibility:hidden" id="save_edit_part"   onclick="save_part()" class="state_details">{t}Save{/t}</span>
 	  <span style="margin-right:10px;visibility:hidden" id="reset_edit_part"  onclick="reset_part()" class="state_details">{t}Reset{/t}</span>
+	   <span style="margin-right:10px;" onClick="add_part()" id="add_part" class="state_details">{t}Add Part to List{/t}</span>
 	  </div>
 	  
 	  
 	  
 	 	  <table class="edit" border=0  id="part_editor_table"   >
-	 	  
-	    {foreach from=$parts item=part key=part_sku }
-	    
-	    <tr  id="part_list{$part_sku}" sku="{$part_sku}" class="top title">
+	 	   <tr class="title"><td colspan=3 >{t}Part List{/t}</td></tr>
+	   
+	  {foreach from=$product->get_current_part_list('smarty') key=sku item=part_list}
+	   
+	   <tr  id="part_list{$sku}" sku="{$sku}" class="top title">
 		<td class="label" style="width:150px;font-weight:200">{t}Part{/t}</td>
-		<td style="width:120px"><span>{$part.sku}</span></td>
-		<td style="width:350px">{$part.description}</td>
-		<td><span style="cursor:pointer"><img  onClick="remove_part({$part_sku})" src="art/icons/delete_bw.png"/> {t}Remove{/t}</span></td>
+		<td style="width:120px"><span>{$part_list.part->get_sku()}</span></td>
+		<td style="width:350px">{$part_list.part->get('Part XHTML Description')}</td>
+		<td>
+		<span onClick="remove_part({$sku})" style="cursor:pointer"><img   src="art/icons/delete_bw.png"/> {t}Remove{/t}</span>
+		<span onClick="show_change_part_dialog({$sku},this)"  style="cursor:pointer;margin-left:15px"><img  src="art/icons/arrow_refresh_bw.png"/> {t}Change{/t}</span>
+		</td>
 	    </tr>
-	    <tr>
+	   
+	   <tr id="sup_tr2_{$sku}">
 		<td class="label" >{t}Parts Per Product{/t}:</td>
 		<td style="text-align:left;" colspan=3>
-		  <input style="padding-left:2px;text-align:left;width:3em" value="{$part.parts_per_product}"  
+		  <input style="padding-left:2px;text-align:left;width:3em" value="{$part_list.Parts_Per_Product}"  
 		  onblur="part_changed(this)"  onkeyup="part_changed(this)"  
-		  ovalue="{$part.parts_per_product}" id="parts_per_product{$part_sku}"> <span  id="parts_per_product_msg{$part_sku}"></span></td>
+		  ovalue="{$part_list.Parts_Per_Product}" id="parts_per_product{$sku}"> <span  id="parts_per_product_msg{$sku}"></span></td>
 	      </tr>
-	      <tr id="sup_tr3_{$part_sku}" class="last">
+	    
+	    <tr id="sup_tr3_{$sku}" class="last">
 		<td class="label">{t}Note For Pickers{/t}:</td>
-	     <td style="text-align:left" colspan=3><input id="pickers_note{$part_sku}" style=";width:400px"   onblur="part_changed(this)"  onkeyup="part_changed(this)"     value="{$part.note}" ovalue="{$part.note}" ></td>
+	     <td style="text-align:left" colspan=3>
+	     <input id="pickers_note{$sku}" style=";width:400px"   onblur="part_changed(this)"  onkeyup="part_changed(this)"     value="{$part_list.Product_Part_List_Note}" ovalue="{$part_list.Product_Part_List_Note}" ></td>
 	      </tr>
 	      
-	      {/foreach}
-	   
+	   {/foreach}
 	    
 	  </table>	  
 	  
@@ -276,6 +284,7 @@
       {foreach from=$parts item=part key=part_id }
       <tr  id="sup_tr1_{$part_id}" class="top title">
 	<td  class="label" colspan=2>
+	  <img id="change_part_{$part_id}" class="icon" onclick="change_part({$part_id},'{$part}')"  src="art/icons/arrow_refresh_bw.png">
 	  <img id="delete_part_{$part_id}" class="icon" onclick="delete_part({$part_id},'{$part}')"  src="art/icons/cross.png">
 	  <img id="save_part_{$part_id}" class="icon" style="visibility:hidden" onClick="save_part({$part_id})" src="art/icons/disk.png">
 	  <a href="part.php?id={$part_id}">{$part.code}</a>
@@ -428,7 +437,43 @@
 </div>
 
 
-<div id="Editor_add_part" style="position:fixed;top:-200px;width:280px">
+<div id="Editor_change_part" style="xposition:fixed;xtop:-200px;">
+  <div style="display:none" class="hd"></div>
+    <div class="bd dt-editor" >
+          <table border=0>
+	    <input type="hidden" id="change_part_sku" value=0 >
+	    <tbody id="change_part_selector">
+	    <tr><td>{t}Choose the part{/t}</tr>
+	    <tr >
+	    
+	    <td  >
+			
+			<div  style="width:410px">
+			  <input id="change_part" type="text" value=""   >
+			  <div id="change_part_container"></div>
+			</div>
+
+
+	      </td>
+	    </tr>
+	   </tbody>
+	   <tbody id="change_part_confirmation" style="display:none">
+	   <tr><td>{t}Part{/t}: <span id="change_part_old_part"></span> <br/>{t}will be replaced with{/t}:<br/><span id="change_part_new_part"></span>
+	   
+	   </td></tr>
+	   
+	   </tbody>
+	   
+	  </table>
+	  <div style="margin-top:20px">
+
+	    <button id="save_change_part" class="state_details" style="display:none" onclick="save_change_part();" >{t}Save{/t}</button>
+	    <button class="state_details" onclick="close_change_part_dialog()" >{t}Cancel{/t}</button>
+	  </div>
+    </div>
+</div>
+
+<div id="Editor_add_part" style="position:fixed;top:-200px;">
   <div style="display:none" class="hd"></div>
     <div class="bd dt-editor" >
           <table border=0>
@@ -438,14 +483,14 @@
 	    <input type="hidden" id="add_part_sku" value=0 >
 	     <input type="hidden" id="add_part_key" value=0 >
 
-	    <tr><td>{t}Add part{/t}</tr>
+	    <tr><td>{t}Add Part{/t}</tr>
 	    <tr>
 	    
 	    <td id="other_part" >
 			
-			<div id="add_part"  style="width:260px">
-			  <input id="add_part_input" type="text" value="" >
-			  <div id="add_part_container"></div>
+			<div id="add_part"  style="width:460px">
+			  <input id="add_part_input" type="text" value="" style="width:460px">
+			  <div id="add_part_container" style="width:460px"></div>
 			</div>
 
 
@@ -453,11 +498,37 @@
 	    </tr>
 	   
 	  </table>
+	  
+	  <div>
+	  
+	  </div>
+	  
 	  <div class="yui-dt-button">
-	    <button style="display:none" onclick="save_add_part();" class="yui-dt-default">{t}Save{/t}</button>
+	    <button style="display:none" onclick="save_add_part();" class="state_details">{t}Save{/t}</button>
 	    <button onclick="close_add_part_dialog()" >{t}Cancel{/t}</button>
 	  </div>
     </div>
+</div>
+
+<div id="filtermenu0" class="yuimenu">
+  <div class="bd">
+    <ul class="first-of-type">
+      <li style="text-align:left;margin-left:10px;border-bottom:1px solid #ddd">{t}Filter options{/t}:</li>
+      {foreach from=$filter_menu0 item=menu }
+      <li class="yuimenuitem"><a class="yuimenuitemlabel" onClick="change_filter('{$menu.db_key}','{$menu.label}',0)"> {$menu.menu_label}</a></li>
+      {/foreach}
+    </ul>
+  </div>
+</div>
+<div id="rppmenu0" class="yuimenu">
+  <div class="bd">
+    <ul class="first-of-type">
+       <li style="text-align:left;margin-left:10px;border-bottom:1px solid #ddd">{t}Rows per Page{/t}:</li>
+      {foreach from=$paginator_menu0 item=menu }
+      <li class="yuimenuitem"><a class="yuimenuitemlabel" onClick="change_rpp({$menu},0)"> {$menu}</a></li>
+      {/foreach}
+    </ul>
+  </div>
 </div>
 
 {include file='footer.tpl'}

@@ -4489,7 +4489,7 @@ if($this->external_DB_link)mysql_query($sql,$this->external_DB_link);
 return $skus;
  }
  
- function get_current_part_list(){
+ function get_current_part_list($options=false){
    
    $part_list=array();
   
@@ -4498,12 +4498,20 @@ return $skus;
 		);
 		//print $sql;
    $res=mysql_query($sql);
-   if($row=mysql_fetch_assoc($res)){
+   while($row=mysql_fetch_assoc($res)){
    
+    if(preg_match('/smarty/i',$options)){
+    $_row=array();
+    foreach($row as $key=>$value){
+        $_row[preg_replace('/\s+/','_',$key)]=$value;
+    }
+     $part_list[$row['Part SKU']]=$_row;
+     
+    }else{
     
 	 $part_list[$row['Part SKU']]=$row;
-       
-
+       }
+$part_list[$row['Part SKU']]['part']=new Part($row['Part SKU']);
        
    }
    

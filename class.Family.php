@@ -285,38 +285,25 @@ var $external_DB_link=false;
             $this->id=$this->data['Product Family Key'];
 
     }
-    /*
-        Function: update
-        Funcion que permite actualizar el nombre o el codigo en la tabla Product Family Dimension, evitando registros duplicados.
-    */
-// JFA
-    function update($key,$a1=false,$a2=false) {
-        $this->updated=false;
-        $this->msg='Nothing to change';
-
-        switch ($key) {
-        case('special_char'):
-        case('Product Family Special Characteristic'):
-            $this->update_field('Product Family Special Characteristic',$a1);
-            break;
-        case('code'):
-
-            if ($a1==$this->data['Product Family Code']) {
+   
+  
+  function update_code($value){
+    if ($value==$this->data['Product Family Code']) {
                 $this->updated=true;
-                $this->new_value=$a1;
+                $this->new_value=$value;
                 return;
 
             }
 
-            if ($a1=='') {
+            if ($value=='') {
                 $this->msg=_('Error: Wrong code (empty)');
                 return;
             }
-            if (!(strtolower($a1)==strtolower($this->data['Product Family Code']) and $a1!=$this->data['Product Family Code'])) {
+            if (!(strtolower($value)==strtolower($this->data['Product Family Code']) and $value!=$this->data['Product Family Code'])) {
 
                 $sql=sprintf("select count(*) as num from `Product Family Dimension` where `Product Family Store Key`=%d and `Product Family Code`=%s  COLLATE utf8_general_ci "
                              ,$this->data['Product Family Store Key']
-                             ,prepare_mysql($a1)
+                             ,prepare_mysql($value)
                             );
                 $res=mysql_query($sql);
                 $row=mysql_fetch_array($res);
@@ -327,15 +314,15 @@ var $external_DB_link=false;
             }
             $old_value=$this->get('Product Family Code') ;
             $sql=sprintf("update `Product Family Dimension` set `Product Family Code`=%s where `Product Family Key`=%d "
-                         ,prepare_mysql($a1)
+                         ,prepare_mysql($value)
                          ,$this->id
                         );
             if (mysql_query($sql)) {
                 $this->msg=_('Family code updated');
                 $this->updated=true;
-                $this->new_value=$a1;
+                $this->new_value=$value;
 
-                $this->data['Product Family Code']=$a1;
+                $this->data['Product Family Code']=$value;
 
 
                 $data_for_history=array(
@@ -351,25 +338,25 @@ var $external_DB_link=false;
                 $this->updated=false;
 
             }
-            break;
-
-        case('name'):
-
-            if ($a1==$this->data['Product Family Name']) {
+  }
+  
+  
+  function update_name($value){
+   if ($value==$this->data['Product Family Name']) {
                 $this->updated=true;
-                $this->new_value=$a1;
+                $this->new_value=$value;
                 return;
 
             }
 
-            if ($a1=='') {
+            if ($value=='') {
                 $this->msg=_('Error: Wrong name (empty)');
                 return;
             }
-            if (!(strtolower($a1)==strtolower($this->data['Product Family Name']) and $a1!=$this->data['Product Family Name'])) {
+            if (!(strtolower($value)==strtolower($this->data['Product Family Name']) and $value!=$this->data['Product Family Name'])) {
                 $sql=sprintf("select count(*) as num from `Product Family Dimension` where `Product Family Store Key`=%d and `Product Family Name`=%s  COLLATE utf8_general_ci"
                              ,$this->data['Product Family Store Key']
-                             ,prepare_mysql($a1)
+                             ,prepare_mysql($value)
                             );
                 $res=mysql_query($sql);
                 $row=mysql_fetch_array($res);
@@ -380,15 +367,15 @@ var $external_DB_link=false;
             }
             $old_value=$this->get('Product Family Name') ;
             $sql=sprintf("update `Product Family Dimension` set `Product Family Name`=%s where `Product Family Key`=%d "
-                         ,prepare_mysql($a1)
+                         ,prepare_mysql($value)
                          ,$this->id
                         );
             if (mysql_query($sql)) {
                 $this->msg=_('Family name updated');
                 $this->updated=true;
-                $this->new_value=$a1;
+                $this->new_value=$value;
 
-                $this->data['Product Family Name']=$a1;
+                $this->data['Product Family Name']=$value;
 
                 $this->add_history(array(
                                        'Indirect Object'=>'Product Family Name'
@@ -404,18 +391,39 @@ var $external_DB_link=false;
                 $this->updated=false;
 
             }
-            break;
+  }
+  
+function update_field_switcher($field,$value,$options='') {
 
-        case('description'):
-            $this->update_description($a1);
-
-            break;
-
-
+    switch ($field) {
+    case('special_char'):
+    case('Product Family Special Characteristic'):
+        $this->update_field('Product Family Special Characteristic',$value);
+        break;
+    case('code'):
+        $this->update_code($value);
+        break;
+    case('name'):
+        $this->update_name($value);
+        break;
+    case('sales_type'):
+        $this->update_sales_type($value);
+        break;    
+    case('description'):
+        $this->update_description($value);
+        break;
+    default:
+        $base_data=$this->base_data();
+        if (array_key_exists($field,$base_data)) {
+            if ($value!=$this->data[$field]) {
+                $this->update_field($field,$value,$options);
+            }
         }
-
     }
+    }
+ 
 
+  
 
     function update_description($description) {
 
@@ -460,11 +468,41 @@ var $external_DB_link=false;
     }
 
 
+
+ function update_sales_type($value) {
+    if (
+        $value=='Public Sale' or $value=='Private Sale' or $value=='Not For Sale'
+    ) {
+        $sales_state=$value;
+
+        $sql=sprintf("update `Product Family Dimension` set `Product Family Sales Type`=%s  where  `Product Family Key`=%d "
+                     ,prepare_mysql($sales_state)
+                     ,$this->id
+                    );
+        //print $sql;
+        if (mysql_query($sql)) {
+            if ($this->external_DB_link)mysql_query($sql,$this->external_DB_link);
+            $this->msg=_('Family Sales Type updated');
+            $this->updated=true;
+
+            $this->new_value=$value;
+            return;
+        } else {
+            $this->msg=_("Error: Family sales type could not be updated ");
+            $this->updated=false;
+            return;
+        }
+    } else
+        $this->msg=_("Error: wrong value")." [Sales Type] ($value)";
+    $this->updated=false;
+}
+
+
     /*
         Function: delete
         Funcion que permite eliminar registros en la tabla Product Family Dimension,Product Family Department Bridge, cuidando la integridad referencial con los productos.
     */
-// JFA
+
     function delete() {
         $this->deleted=false;
         $this->load('products_info');

@@ -211,6 +211,9 @@ $smarty->assign('store',$store);
 
 $smarty->assign('edit',$edit);
 
+$paginator_menu=array(10,25,50,100,500);
+$smarty->assign('paginator_menu0',$paginator_menu);
+
   $smarty->assign('title', _('Editing').': '.$department->get('Product Department Code'));
   $smarty->display('edit_department.tpl');
 
