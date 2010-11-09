@@ -2760,6 +2760,8 @@ $header_data=array(
 $value['confirm']='new';
 
 
+//print_r($part_list_data);
+
 
 $product_part_key=$product->find_product_part_list($part_list_data);
 
@@ -2787,6 +2789,7 @@ $product->set_duplicates_as_historic();
 
 
 }else{
+
 $product->new_current_part_list($header_data,$part_list_data);
 }
 

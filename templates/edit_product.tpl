@@ -106,17 +106,22 @@
 	    <div id="adding_new_part" style="width:400px;margin-bottom:45px"><input id="new_part_input" type="text"><div id="new_part_container"></div></div>
 	  
 	  {else}
-	  <div style="text-align:right"  id="product_part_items" product_part_key="{$product->get_current_product_part_key()}"  >
+	  
+	  
+	  
+	  
+	 	  <table class="edit" border=0  id="part_editor_table"   >
+	 	   <tr class="title">
+	 	   <td colspan=2 >{t}Part List{/t}</td>
+	 	   <td colspan=2>
+	 	   <div style="text-align:right;font-weight:100"  id="product_part_items" product_part_key="{$product->get_current_product_part_key()}"  >
 	 
 	  <span style="margin-right:10px;visibility:hidden" id="save_edit_part"   onclick="save_part()" class="state_details">{t}Save{/t}</span>
 	  <span style="margin-right:10px;visibility:hidden" id="reset_edit_part"  onclick="reset_part()" class="state_details">{t}Reset{/t}</span>
 	   <span style="margin-right:10px;" onClick="add_part()" id="add_part" class="state_details">{t}Add Part to List{/t}</span>
 	  </div>
-	  
-	  
-	  
-	 	  <table class="edit" border=0  id="part_editor_table"   >
-	 	   <tr class="title"><td colspan=3 >{t}Part List{/t}</td></tr>
+	 	   </td>
+	 	   </tr>
 	   
 	  {foreach from=$product->get_current_part_list('smarty') key=sku item=part_list}
 	   

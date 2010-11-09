@@ -205,7 +205,7 @@ part_render_save_buttons();
 }
 
 function save_part(){
-
+alert("x")
 
 key=Dom.get("product_part_items").getAttribute("product_part_key");
 
@@ -216,7 +216,7 @@ part_list[part_key].note=Dom.get('pickers_note'+part_list[part_key].sku).value;
 }
 json_value = YAHOO.lang.JSON.stringify(part_list);
  var request='ar_edit_assets.php?tipo=edit_part_list&key=' + key+ '&newvalue=' + json_value
-	//	alert(request);
+		alert(request);
 		  
 		    YAHOO.util.Connect.asyncRequest('POST',request ,{
 			    success:function(o) {
@@ -702,11 +702,11 @@ Dom.setStyle('change_part_confirmation','display','none');
 }
 
 function change_part_selected(sType, aArgs){
-alert("caca")
-//remove_part(Dom.get('change_part_sku').value)
-//add_part_selected(sType, aArgs);
-//close_change_part_dialog();
-alert("s")
+//alert("caca")
+remove_part(Dom.get('change_part_sku').value)
+add_part_selected(sType, aArgs);
+close_change_part_dialog();
+//alert("s")
 
 //var myAC = aArgs[0]; // reference back to the AC instance 
   //      var elLI = aArgs[1]; // reference to the selected LI element 
@@ -764,5 +764,6 @@ resultsList : "data"
 function remove_part(sku){
 
 part_list['sku'+sku].deleted=true;
-Dom.setStyle(['part_list'+sku,'sup_tr2_'+sku,'sup_tr3_'+sku],'display','none')
+Dom.setStyle(['part_list'+sku,'sup_tr2_'+sku,'sup_tr3_'+sku],'display','none');
+part_render_save_buttons();
 }
