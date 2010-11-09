@@ -244,12 +244,13 @@ YAHOO.util.Event.addListener(window, "load", function() {
 		resultsList: "resultset.data", 
 		metaFields: {
 		    rowsPerPage:"resultset.records_perpage",
+		    rtext:"resultset.rtext",
+		    rtext_rpp:"resultset.rtext_rpp",
 		    sort_key:"resultset.sort_key",
 		    sort_dir:"resultset.sort_dir",
 		    tableid:"resultset.tableid",
 		    filter_msg:"resultset.filter_msg",
-		    rtext:"resultset.rtext",
-		    totalRecords: "resultset.total_records" // Access to value in the server response
+		    totalRecords: "resultset.total_records"
 		},
 		
 		
@@ -302,3 +303,14 @@ YAHOO.util.Event.onDOMReady(init);
 
 
 
+YAHOO.util.Event.onContentReady("rppmenu0", function () {
+	 var oMenu = new YAHOO.widget.ContextMenu("rppmenu0", {trigger:"rtext_rpp0" });
+	 oMenu.render();
+	 oMenu.subscribe("show", oMenu.focus);
+    });
+
+YAHOO.util.Event.onContentReady("filtermenu0", function () {
+	 var oMenu = new YAHOO.widget.ContextMenu("filtermenu0", {  trigger: "filter_name0"  });
+	 oMenu.render();
+	 oMenu.subscribe("show", oMenu.focus);
+    });
