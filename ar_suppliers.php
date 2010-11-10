@@ -1777,8 +1777,8 @@ $weeks_until=round($row['Supplier Product Days Available']/7).' w';
 		      ,'tuos'=>$weeks_until
                 ,'supplier'=>sprintf('<a href="supplier.php?id=%d">%s</a>',$row['Supplier Key'],$row['Supplier Code'])
 		      ,'name'=>$row['Supplier Product Name']
-		      ,'description'=>'<span style="font-size:95%">'.number($row['Supplier Product Units Per Case']).'x '.$row['Supplier Product Name'].' @'.money($row['Supplier Product Cost']/$row['Supplier Product Units Per Case']).' '.$row['Supplier Product Unit Type'].'</span>'
-		      ,'cost'=>money($row['Supplier Product Cost'])
+		      ,'description'=>'<span style="font-size:95%">'.number($row['Supplier Product Units Per Case']).'x '.$row['Supplier Product Name'].' @'.money($row['Supplier Product Cost Per Case']).' '.$row['Supplier Product Unit Type'].'</span>'
+		      ,'cost'=>money($row['Supplier Product Cost Per Case'])
 		      ,'used_in'=>$row['Supplier Product XHTML Used In']
 		      ,'profit'=>$profit
 		      ,'allcost'=>$allcost

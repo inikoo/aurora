@@ -205,6 +205,9 @@ $smarty->assign('unit_type_options',$unit_type_options
                                 );
 $smarty->assign('unit_type',$product->data['Product Unit Type']);
 
+$paginator_menu=array(10,25,50,100,500);
+$smarty->assign('paginator_menu0',$paginator_menu);
+
 
 //while($row=mysql_fetch_array($res)){
   //$tree=preg_split('/>/',$row['Category Position']);
@@ -217,6 +220,8 @@ $smarty->assign('unit_type',$product->data['Product Unit Type']);
 //$smarty->assign('cat_use',$cat_use);
 //$smarty->assign('cat_material',$cat_material);
 //$smarty->assign('cat_theme',$cat_theme);
+
+
 $smarty->display('edit_product.tpl');
 
 

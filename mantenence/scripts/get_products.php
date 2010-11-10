@@ -1438,7 +1438,7 @@ if(preg_match('/^Wenzels$/i',$supplier_code)){
 		       'Supplier Key'=>$supplier->id,
 		       'Supplier Product Code'=>$scode,
 		         'Supplier Product Units Per Case'=>1,
-		       'Supplier Product Case Cost'=>sprintf("%.4f",$supplier_cost),
+		       'Supplier Product Cost Per Case'=>sprintf("%.2f",$supplier_cost),
 		       'Supplier Product Name'=>$description,
 		       'Supplier Product Description'=>$description,
 		       'Supplier Product Valid From'=>$editor['Date'],

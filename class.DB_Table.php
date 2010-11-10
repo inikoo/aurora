@@ -49,6 +49,7 @@ abstract class DB_Table {
 
 
     public function update($data,$options='') {
+    
         if (!is_array($data)) {
             $this->error=true;
             return;

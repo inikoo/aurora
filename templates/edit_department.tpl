@@ -1,7 +1,9 @@
 {include file='header.tpl'}
 <div id="bd" >
  {include file='assets_navigation.tpl'}
-
+<div style="clear:left;"> 
+ <span class="branch" ><a  href="store.php?id={$store->id}">{$store->get('Store Name')}</a>&rarr; <span id="title_name_bis">{$department->get('Product Department Name')}</span></span>
+ </div>
  
 <div style="clear:left;margin:0 0px">
     <h1>{t}Editing Department{/t}: <span id="title_name">{$department->get('Product Department Name')}</span> (<span id="title_code">{$department->get('Product Department Code')}</span>)</h1>
@@ -84,42 +86,104 @@
 
 
 </div>  
-   <div  id="d_families" class="edit_block" style="{if $edit!="department"}display:none{/if}"  >
+   <div  id="d_families" class="edit_block" style="{if $edit!="families"}display:none{/if}"  >
      
 
+<div class="general_options" style="float:right">
+		<span  style="margin-right:10px;visibility:hidden"  id="save_new_family" onClick="save_new_general('family')" class="state_details">{t}Save New Family{/t}</span>
+  	    <span style="margin-right:10px;visibility:hidden" id="cancel_new_family" onClick="cancel_new_general('family')" class="state_details">{t}Cancel New Family{/t}</span>
+	    <span  style="margin-right:10px;"  id="show_new_family_dialog_button" onClick="show_new_family_dialog()" class="state_details">{t}Create New Family{/t}</span>
+	    <span  style="margin-right:10px;"  id="import_new_family" class="state_details">{t}Import Families (CSV){/t}</span>
+</div>
 
 
 
 
 
+    
 
-     <div class="general_options" style="float:right">
-       <span   style="margin-right:10px"  id="add_department" class="state_details" >Create Department</span>
-       <span  style="margin-right:10px;display:none"  id="save_new_department" class="state_details">{t}Save{/t}</span>
-       <span style="margin-right:10px;display:none" id="cancel_add_department" class="state_details">{t}Close Dialog{/t}</span>
-     </div>
-
-    <div     style="margin:0 0 10px 0;padding:10px;border:1px solid #ccc;display:none"  id="new_department_dialog" >
-      <div id="new_department_messages" class="messages_block"></div>
+    <div     style="margin:0 0 10px 0;padding:10px;border:1px solid #ccc;display:none"  id="new_family_dialog" >
+      <div id="new_family_messages" class="messages_block"></div>
     <table >
-      <tr><td>{t}Department Code{/t}:</td><td><input  id="new_code" onKeyUp="new_department_changed(this)"    onMouseUp="new_department_changed(this)"  onChange="new_department_changed(this)"  name="code" changed=0 type='text' class='text' style="width:15em" MAXLENGTH="16" value="" /></td></tr>
-      <tr><td>{t}Department Name{/t}:</td><td><input   id="new_name" onKeyUp="new_department_changed(this)"    onMouseUp="new_department_changed(this)"  onChange="new_department_changed(this)"  name="name" changed=0 type='text'  MAXLENGTH="255" style="width:30em"  class='text' value="" /></td></tr>
-      
-      <td>
-	  <span class="save" id="add_new_department" onclick="save_new_department()" style="display:none">Add</span>
-      </td></tr>
+        <tr><td></td><td  id="new_family_dialog_msg"></td></tr>
+
+        <tr><td class="label" >{t}Family Code{/t}:</td><td>
+	 <div  style="width:15em" >
+
+	      <input  
+		 id="family_code" 
+		 changed=0 
+		 type='text' 
+		 class='text' 
+		 style="width:15em" 
+		 MAXLENGTH="16" 
+		 value="" 
+		 ovalue=""  
+		 />
+		 <div id="family_code_Container" style="" ></div>
+         </div>
+	    </td>
+	     <td id="family_code_msg" class="edit_td_alert" style="width:300px"></td>
+
+	  </tr>
+	  <tr><td class="label">{t}Family Name{/t}:</td><td>
+	      <div  style="width:30em" >
+		<input   
+		   id="family_name" 
+		  
+		   changed=0 
+		   type='text'  
+		   MAXLENGTH="255" 
+		   style="width:30em"  
+		   class='text' 
+		   value=""  
+		   ovalue=""  
+		   />
+		<div id="family_name_Container" style="" ></div>
+              </div>
+	    </td>
+	     <td id="family_name_msg" class="edit_td_alert" style="width:300px"></td>
+	  </tr>   
+        <tr>
+        <td class="label">{t}Special Characteristic{/t}:</td><td>
+	      <div  style="width:30em" >
+		<input   
+		   id="family_special_char" 
+		  
+		   changed=0 
+		   type='text'  
+		   MAXLENGTH="255" 
+		   style="width:30em"  
+		   class='text' 
+		   value=""  
+		   ovalue=""  
+		   />
+		<div id="family_special_char_Container" style="" ></div>
+              </div>
+	    </td>
+	     <td id="family_special_char_msg" class="edit_td_alert" style="width:300px"></td>
+	  </tr>  
+	   </tr>   
+        <tr>
+        <td class="label">{t}Description{/t}:</td><td>
+	      <div  style="width:30em" >
+		<textarea   
+		   id="family_description" 
+		  
+		  
+		   ovalue=""  
+		   /></textarea>
+	    </td>
+	     <td id="family_description_msg" class="edit_td_alert" style="width:300px"></td>
+	  </tr>  
+	  
     </table>
   </div>
 
 
   <div   class="data_table" >
     <span class="clean_table_title">{t}Families{/t}</span>
-
-    <div  class="clean_table_caption"  style="clear:both;">
-      <div style="float:left;"><div id="table_info0" class="clean_table_info"><span id="rtext0"></span> <span class="rtext_rpp" id="rtext_rpp0"></span> <span class="filter_msg"  id="filter_msg0"></span></div></div>
-      <div class="clean_table_filter" style="display:none" id="clean_table_filter0"><div class="clean_table_info"><span id="filter_name0" class="filter_name" >{$filter_name0}</span>: <input style="border-bottom:none" id='f_input0' value="{$filter_value0}" size=10/><div id='f_container0'></div></div></div>
-      <div class="clean_table_controls" style="" ><div><span  style="margin:0 5px" id="paginator0"></span></div></div>
-    </div>
+ {include file='table_splinter.tpl' table_id=0 filter_name=$filter_name0 filter_value=$filter_value0  }
     <div  id="table0"   class="data_table_container dtable btable "> </div>
   </div>
   

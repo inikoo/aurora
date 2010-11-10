@@ -6008,7 +6008,8 @@ function list_families() {
     $total_records=ceil($total/$number_results)+$total;
     $number_results++;
     $response=array('resultset'=>
-                                array('state'=>200,
+                                array(
+                                        'state'=>200,
                                       'data'=>$adata,
                                       'sort_key'=>$_order,
                                       'sort_dir'=>$_dir,
