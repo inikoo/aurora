@@ -947,7 +947,7 @@ return $this->get_supplier_products_historic($date);
 
 function get_supplier_products_historic($date) {
     $supplier_products=array();
-    $sql=sprintf("select `SPH Key`,  `Supplier Product Units Per Part`,SPPL.`Supplier Product Code`,  SD.`Supplier Key`,`Supplier Code` from `Supplier Product Part List` SPPL   left join `Supplier Dimension` SD on (SD.`Supplier Key`=SPPL.`Supplier Key`) left join `Supplier Product History Dimension` H on ( H.`Supplier Product Code`=SPPL.`Supplier Product Code` and H.`Supplier Key`=SPPL.`Supplier Key`)  where `Part SKU`=%d  and ( (`SPH Valid From`<=%s and `SPH Valid To`>=%s)  ) and ( (`Supplier Product Part Valid From`<=%s  and `Supplier Product Part Valid To`>%s ) or  (`Supplier Product Part Valid From`<=%s and `Supplier Product Part Most Recent`='Yes')  ) ;"
+    $sql=sprintf("select `SPH Key`,  `Supplier Product Units Per Part`,SPPL.`Supplier Product Code`,  SD.`Supplier Key`,`Supplier Code` from `Supplier Product Part List` SPPL   left join `Supplier Dimension` SD on (SD.`Supplier Key`=SPPL.`Supplier Key`) left join `Supplier Product History Dimension` H on ( H.`Supplier Product Key`=SPPL.`Supplier Product Code` and H.`Supplier Key`=SPPL.`Supplier Key`)  where `Part SKU`=%d  and ( (`SPH Valid From`<=%s and `SPH Valid To`>=%s)  ) and ( (`Supplier Product Part Valid From`<=%s  and `Supplier Product Part Valid To`>%s ) or  (`Supplier Product Part Valid From`<=%s and `Supplier Product Part Most Recent`='Yes')  ) ;"
                  ,$this->data['Part SKU'],
                  prepare_mysql($date),
                  prepare_mysql($date),
