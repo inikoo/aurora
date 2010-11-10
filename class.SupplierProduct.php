@@ -64,7 +64,7 @@ class supplierproduct extends DB_Table {
                 $data[$key]=_trim($value);
         }
 
-        if ($data['Supplier Product Code']=='' or $data['Supplier Product Cost']=='' ) {
+        if ($data['Supplier Product Code']=='' or $raw_data['Supplier Product Cost Per Case']=='' ) {
             $this->error=true;
             $this->msg='No code/cost';
             return;
@@ -149,10 +149,11 @@ class supplierproduct extends DB_Table {
             if ($this->data=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
                 $this->id=$this->data['SPH Key'];
                 $this->key=$this->id;
-                $sql=sprintf("select * from `Supplier Product Dimension` where `Supplier Product Code`=%s and   `Supplier Key`=%d "
-                             ,prepare_mysql($this->data['Supplier Product Code'])
-                             ,$this->data['Supplier Key']
+                $sql=sprintf("select * from `Supplier Product Dimension` where `Supplier Product Key`=%d "
+                           
+                             ,$this->data['Supplier Product Key']
                             );
+                           
                 $result2=mysql_query($sql);
                 if ($row=mysql_fetch_array($result2, MYSQL_ASSOC)   ) {
                     $this->code=$row['Supplier Product Code'];
@@ -240,7 +241,7 @@ class supplierproduct extends DB_Table {
                   
                    
         foreach($data as $key=>$value) {
-                if($key=='Supplier Product Case Cost'){
+                if($key=='Supplier Product Cost Per Case'){
                       $key='SPH Case Cost';  
                 }elseif($key=='Supplier Product Units Per Case'){
                       $key='SPH Units Per Case';  
@@ -253,8 +254,7 @@ class supplierproduct extends DB_Table {
                 $base_data[$key]=_trim($value);
         }
 
-        $base_data['Supplier Product Code']=$data['Supplier Product Code'];
-        $base_data['Supplier Key']=$data['Supplier Key'];
+       
 
         $keys='(';
         $values='values(';
@@ -289,28 +289,27 @@ class supplierproduct extends DB_Table {
 
     }
     function create_code($data) {
-
         $base_data=array(
-                       'Supplier key'=>1,
+                       'Supplier Key'=>1,
                        'Supplier Product Code'=>'',
-                       'Supplier Product Dame'=>'',
+                       'Supplier Product Name'=>'',
                        'Supplier Product Description'=>'',
-                      
+                      'Supplier Product Cost Per Case'=>0,
                        'Supplier Product Valid From'=>date("Y-m-d H:i:s"),
-                       'Supplier Product Valid Fo'=>date("Y-m-d H:i:s"),
+                       'Supplier Product Valid To'=>date("Y-m-d H:i:s"),
 
                    );
 
         foreach($data as $key=>$value) {
-            if (isset($base_data[strtolower($key)]))
-                $base_data[strtolower($key)]=_trim($value);
+            if (isset($base_data[$key]))
+                $base_data[$key]=_trim($value);
         }
-        $supplier=new Supplier($base_data['supplier key']);
+        $supplier=new Supplier($base_data['Supplier Key']);
         $base_data['Supplier Code']=$supplier->data['Supplier Code'];
         $base_data['Supplier Name']=$supplier->data['Supplier Name'];
         $base_data['Supplier Product Units Per Case']=$this->data['SPH Units Per Case'];
         $base_data['Supplier Product Current Key']=$this->key;
-        $base_data['Supplier Product Unit Cost']=$this->data['SPH Case Cost']/$this->data['SPH Units Per Case'];
+        
 
         $keys='(';
         $values='values(';
@@ -338,13 +337,18 @@ class supplierproduct extends DB_Table {
         //  print "$sql\n\n";
         if (mysql_query($sql)) {
             //print mysql_affected_rows()."\n";
-            $this->code = $base_data['supplier product code'];
-            $this->supplier_key = $base_data['supplier key'];
+            $this->code = $base_data['Supplier Product Code'];
+            $this->supplier_key = $base_data['Supplier Key'];
             $this->pid=mysql_insert_id();
             $this->new_key_id=$this->pid;
             $this->new_code=true;
 
-            $this->get_data('code',$this->code,$this->supplier_key);
+            $sql=sprintf("update `Supplier Product History Dimension` set `Supplier Product Key`=%d where `SPH Key`=%d",
+            $this->pid,
+            $this->id
+            );
+            mysql_query($sql);
+            $this->get_data('pid',$this->pid);
         } else {
             print "$sql  Error can not create Product Supplier\n";
             exit;

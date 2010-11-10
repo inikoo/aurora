@@ -1444,6 +1444,7 @@ if(preg_match('/^Wenzels$/i',$supplier_code)){
 		       'Supplier Product Valid From'=>$editor['Date'],
 		       'Supplier Product Valid To'=>$editor['Date']
 		       );
+	//	print_r($sp_data);
 	$supplier_product=new SupplierProduct('find',$sp_data,'create');
 	if($supplier_product->found_in_key){
 	  print "$code (duplicate supplier code)\n";
