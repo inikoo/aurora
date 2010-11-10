@@ -13,7 +13,7 @@
 */
 class supplierproduct extends DB_Table {
 
-
+  public $external_DB_link=false;
 
     function supplierproduct($a1,$a2=false,$a3=false) {
 
@@ -366,9 +366,15 @@ class supplierproduct extends DB_Table {
 
     function get_products(){
       $products=array();
-       $sql=sprintf("select PD.`Product ID`,`Product Code`,`Supplier Product Units Per Part`,`Parts Per Product` from `Supplier Product Part List` SPPL left join `Product Part List` PPL on (SPPL.`Part SKU`=PPL.`Part SKU`) left join `Product Part Dimension` PPD on (PPD.`Product Part Key`=PPL.`Product Part Key`)   left join `Product Dimension` PD on (PPD.`Product ID`=PD.`Product ID`) where `Supplier Product Code`=%s and `Supplier Key`=%d and `Supplier Product Part Most Recent`='Yes' group by `Product Code`;"
-                         ,prepare_mysql($this->code)
-                         ,$this->supplier_key
+       $sql=sprintf("select PD.`Product ID`,`Product Code`,`Supplier Product Units Per Part`,`Parts Per Product` 
+from `Supplier Product Part List` SPPL 
+ left join `Supplier Product Part Dimension` SPPD on (SPPD.`Supplier Product Part Key`=SPPL.`Supplier Product Part Key`)
+left join `Product Part List` PPL on (SPPL.`Part SKU`=PPL.`Part SKU`) 
+left join `Product Part Dimension` PPD on (PPD.`Product Part Key`=PPL.`Product Part Key`)   
+left join `Product Dimension` PD on (PPD.`Product ID`=PD.`Product ID`) 
+where SPPD.`Supplier Product Key`=%d and `Supplier Product Part Most Recent`='Yes' group by `Product Code`;"
+                       
+                         ,$this->pid
                         );
 
 
@@ -396,14 +402,12 @@ class supplierproduct extends DB_Table {
             $used_in_products=preg_replace('/^, /','',$used_in_products);
 
             $used_in_parts='';
-            $sql=sprintf("select PD.`Part SKU` from `Supplier Product Part List` SPPL  left join `Part Dimension` PD on (SPPL.`Part SKU`=PD.`Part SKU`) where `Supplier Product Code`=%s and `Supplier Key`=%d  and `Supplier Product Part Most Recent`='Yes' group by PD.`Part SKU`;"
-                         ,prepare_mysql($this->code)
-                         ,$this->supplier_key
+            $sql=sprintf("select PD.`Part SKU` from `Supplier Product Part List` SPPL left join `Supplier Product Part Dimension` SPPD on (SPPD.`Supplier Product Part Key`=SPPL.`Supplier Product Part Key`) left join `Part Dimension` PD on (SPPL.`Part SKU`=PD.`Part SKU`) where `Supplier Product Key`=%d  and `Supplier Product Part Most Recent`='Yes' group by PD.`Part SKU`;",
+                         $this->pid
                         );
             $result=mysql_query($sql);
             $num_parts=0;
-            // print "$sql\n";
-            while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
+	    while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
                 $used_in_parts.=sprintf(', <a href="part.php?id=%d">%s</a>',$row['Part SKU'],$row['Part SKU']);
                 $num_parts++;
             }
@@ -1825,6 +1829,220 @@ function load_images_slidesshow(){
 	  $this->images_slideshow[]=array('name'=>$row['Image Filename'],'small_url'=>$row['Image Small URL'],'thumbnail_url'=>$row['Image Thumbnail URL'],'filename'=>$row['Image Filename'],'ratio'=>$ratio,'caption'=>$row['Image Caption'],'is_principal'=>$row['Is Principal'],'id'=>$row['Image Key']);
 }
 
+}
+
+function new_current_part_list($header_data,$list){
+  
+  $product_part_key=$this->find_product_part_list($list);
+  if($product_part_key){
+    $this->update_product_part_list($product_part_key,$header_data,$list);
+  }else{
+    $product_part_key=$this->create_product_part_list($header_data,$list);
+  }
+  $this->set_part_list_as_current($product_part_key);
+  
+}
+
+
+
+function create_product_part_list($header_data,$list){
+  $product_part_key=0;
+  $_base_list_data=array(
+			 'Part SKU'=>'',
+			 'Supplier Product Units Per Part'=>''
+			 );
+  $_base_data=array(
+		    'Supplier Product Key'=>$this->pid,
+		    'Supplier Product Part Type'=>'Simple',
+		    'Supplier Product Part Metadata'=>'',
+		    'Supplier Product Part Valid From'=>date('Y-m-d H:i:s'),
+		    'Supplier Product Part Valid To'=>date('Y-m-d H:i:s'),
+		    'Supplier Product Part Most Recent'=>'No',
+		    'Supplier Product Part In Use'=>'No'
+
+		    );
+  
+  $base_data=$_base_data;
+  foreach($header_data as $key=>$value) {
+    if (array_key_exists ($key,$base_data))
+      $base_data[$key]=_trim($value);
+  }
+
+  $keys='(';
+  $values='values(';
+  foreach($base_data as $key=>$value) {
+    $keys.="`$key`,";
+    if($key=='Supplier Product Part Metadata' )
+      $values.=prepare_mysql($value,false).',';
+    else
+	$values.=prepare_mysql($value).',';
+  }
+  $keys=preg_replace('/,$/',')',$keys);
+  $values=preg_replace('/,$/',')',$values);
+  $sql=sprintf("insert into `Supplier Product Part Dimension` %s %s",$keys,$values);
+  if (mysql_query($sql)) {
+    $product_part_key=mysql_insert_id(); 
+    if($this->external_DB_link)mysql_query($sql,$this->external_DB_link);
+    
+    $this->new_value=array('Supplier Product Part Key'=>$product_part_key);
+    $this->updated=true;
+    $this->new_part_list=true;
+    $this->new_part_list_key=$product_part_key;
+    
+    foreach($list as $data) {
+      $items_base_data=$_base_list_data;
+      foreach($data as $key=>$value) {
+	if (array_key_exists ($key,$items_base_data))
+	  $items_base_data[$key]=_trim($value);
+      }
+      $items_base_data['Supplier Product Part Key']=$product_part_key;
+      $keys='(';
+      $values='values(';
+      foreach($items_base_data as $key=>$value) {
+	$keys.="`$key`,";
+
+	  $values.=prepare_mysql($value).',';
+      }
+      $keys=preg_replace('/,$/',')',$keys);
+      $values=preg_replace('/,$/',')',$values);
+      $sql=sprintf("insert into `Supplier Product Part List` %s %s",$keys,$values);
+      mysql_query($sql);if($this->external_DB_link)mysql_query($sql,$this->external_DB_link);
+    }
+  }
+  return $product_part_key;
+}
+
+function set_part_list_as_current($product_part_key){
+  $current_part_key=$this->get_current_part_key();
+  if($current_part_key!=$product_part_key){
+    $sql=sprintf("update `Supplier Product Part Dimension` set `Supplier Product Part Valid To`=%s where `Supplier Product Part Key`=%d  ",prepare_mysql(date('Y-m-d H:i:s')),$current_part_key);
+    mysql_query($sql);
+    $sql=sprintf("update `Supplier Product Part List` set `Supplier Product Part Most Recent`='No' where `Supplier Product Key`=%d  ",$this->pid);
+    mysql_query($sql);
+    $sql=sprintf("update `Supplier Product Part List` set `Supplier Product Part Most Recent`='Yes' where `Supplier Product Part Key`=%d  ",$product_part_key);
+    mysql_query($sql);
+    $sql=sprintf("update `Supplier Product Part Dimension` set `Supplier Product Part Most Recent`='No' where `Supplier Product Key`=%d  ",$this->pid);
+    mysql_query($sql);
+    $sql=sprintf("update `Supplier Product Part Dimension` set `Supplier Product Part Most Recent`='Yes' ,`Supplier Product Part Valid To`=NULL  where `Supplier Product Part Key`=%d  ",$product_part_key);
+    mysql_query($sql);
+  }
+}
+
+function update_product_part_list($product_part_key,$header_data,$list){
+  
+  $this->new_value=array();
+
+  $old_data=$this->get_product_part_dimension_data($product_part_key);
+  $old_items_data=$this->get_product_part_list_data($product_part_key);
+  
+  if($old_data['Supplier Product Part Metadata']!=$header_data['Supplier Product Part Metadata']){
+    $sql=sprintf("update `Supplier Product Part Dimension` set `Supplier Product Part Metadata`=%s where `Supplier Product Part Key`=%d"
+		 ,prepare_mysql($header_data['Supplier Product Part Metadata'])
+		 ,$product_part_key
+		 );
+    mysql_query($sql);
+    $this->updated=true;
+    $this->part_list_updated=true;
+    
+    $this->new_value['Supplier Product Part Metadata']=$header_data['Supplier Product Part Metadata'];
+  }
+  
+
+}
+
+function get_product_part_dimension_data($product_part_key){
+  $sql=sprintf("select * from `Supplier Product Part Dimension` where `Supplier Product Part Key`=%d  ",$product_part_key);
+  
+  $res=mysql_query($sql);
+  if($row=mysql_fetch_assoc($res)){
+    return $row;
+  }else
+    return false;
+}
+
+function get_product_part_list_data($product_part_key){
+  $data=array();
+  $sql=sprintf("select * from `Supplier Product Part List` where `Supplier Product Part Key`=%d  ",$product_part_key);
+  $res=mysql_query($sql);
+  while($row=mysql_fetch_assoc($res)){
+    $data[$row['Part SKU']]=$row;
+  }
+  return $data;
+}
+
+function get_current_part_key(){
+  $product_part_key=0;
+  $sql=sprintf("select `Supplier Product Part Key` from `Supplier Product Part Dimension` where `Supplier Product Key`=%d and `Supplier Product Part Most Recent`='Yes' ",$this->pid);
+  
+  $res=mysql_query($sql);
+  if($row=mysql_fetch_assoc($res)){
+    $product_part_key=$row['Supplier Product Part Key'];
+    
+  }
+  return $product_part_key;
+}
+
+function find_product_part_list($list){
+  
+  $this_list_num_parts=count($list);
+  $good_product_parts=array();
+  $found_product_parts=array();
+  
+  foreach($list as $key=>$value){
+    
+    $sql=sprintf("select PPD.`Supplier Product Part Key` from  `Supplier Product Part Dimension`  PPD  left join  `Supplier Product Part List` PPL on (PPL.`Supplier Product Part Key`=PPD.`Supplier Product Part Key`)where `Supplier Product Key`=%d and `Part SKU`=%d  and `Supplier Product Units Per Part`=%f and `Supplier Product Part Type`=%s   ",
+		 $this->pid,
+		 $value['Part SKU'],
+		 $value['Supplier Product Units Per Part'],
+		 prepare_mysql($value['Supplier Product Part Type'])
+		 );
+    
+    $res=mysql_query($sql);
+    
+    $found_list[$value['Part SKU']]=array();
+    while($row=mysql_fetch_assoc($res)){
+      $found_list[$value['Part SKU']][$row['Supplier Product Part Key']]=$row['Supplier Product Part Key'];
+      $found_product_parts[$row['Supplier Product Part Key']]=$row['Supplier Product Part Key'];
+    }
+  }
+  
+  foreach($found_list as $sku=>$found_data){
+    if(count($found_data)==0){
+      return 0;
+    }
+  }
+  
+  foreach($found_product_parts as $product_part_key){
+    $sql=sprintf("select count(*) as num from  `Supplier Product Part List` where `Supplier Product Part Key`=%d",$product_part_key);
+    $res=mysql_query($sql);
+    $num_parts;
+    if($row=mysql_fetch_assoc($res)){
+      $num_parts=$row['num'];
+    }
+    if($num_parts!=$this_list_num_parts)
+      break;
+    
+    foreach($found_list as $sku=>$found_data){
+      if(!array_key_exists($product_part_key,$found_data)){
+        break;
+      }
+      $good_product_parts[$product_part_key]=$product_part_key;
+    }
+    
+  }
+  
+  
+  if(count($good_product_parts)==0){
+    return 0;
+  }elseif(count($good_product_parts)==1){
+    return array_pop($good_product_parts);
+  }else{
+    print "Error ====\n";
+    print_r($list);
+    print_r($good_product_parts);
+    exit("Debug this part list is duplicated\n");
+  }
+  
 }
 
 
