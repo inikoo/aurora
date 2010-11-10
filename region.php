@@ -61,7 +61,7 @@ $tag='world';
 
 switch ($mode) {
 case 'world':
-
+$template='world.tpl';
     break;
 case 'wregion':
   
