@@ -1446,6 +1446,8 @@ if(preg_match('/^Wenzels$/i',$supplier_code)){
 		       );
 	//	print_r($sp_data);
 	$supplier_product=new SupplierProduct('find',$sp_data,'create');
+	//	print_r($supplier_product->data);
+
 	if($supplier_product->found_in_key){
 	  print "$code (duplicate supplier code)\n";
 	}elseif($supplier_product->found_in_code){
