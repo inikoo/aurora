@@ -1108,7 +1108,7 @@ mysql_free_result($result_test);
                          'Supplier Key'=>$supplier->id,
                          'Supplier Product Status'=>'Not In Use',
                          'Supplier Product Code'=>$scode,
-                         'Supplier Product Cost'=>sprintf("%.4f",$supplier_product_cost),
+                         'Supplier Product Cost Per Case'=>sprintf("%.2f",$supplier_product_cost),
                          'Supplier Product Name'=>$description,
                          'Supplier Product Description'=>$description
                                                         ,'Supplier Product Valid From'=>$date_order

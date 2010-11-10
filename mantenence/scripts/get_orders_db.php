@@ -1108,11 +1108,11 @@ $shipping_transactions[]=$transaction;
                          'Supplier Key'=>$supplier->id,
                          'Supplier Product Status'=>'Not In Use',
                          'Supplier Product Code'=>$scode,
-                         'Supplier Product Cost'=>sprintf("%.4f",$supplier_product_cost),
+                         'Supplier Product Cost Per Case'=>sprintf("%.2f",$supplier_product_cost),
                          'Supplier Product Name'=>$description,
-                         'Supplier Product Description'=>$description
-                                                        ,'Supplier Product Valid From'=>$date_order
-                                                                                       ,'Supplier Product Valid To'=>$date2
+                         'Supplier Product Description'=>$description,
+                         'Supplier Product Valid From'=>$date_order,
+                         'Supplier Product Valid To'=>$date2
                      );
             // print "-----$scode <-------------\n";
             //print_r($sp_data);
