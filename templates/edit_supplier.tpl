@@ -147,11 +147,7 @@
 </div>
   
   
-   <div class="general_options" style="float:right">
-		<span  style="margin-right:10px;visibility:hidden"  id="save_new_product" onClick="save_new_general('product')" class="state_details">{t}Save New Product{/t}</span>
-  	    <span style="margin-right:10px;visibility:hidden" id="cancel_new_product" onClick="cancel_new_general('product')" class="state_details">{t}Cancel New Product{/t}</span>
-	    <span  style="margin-right:10px;"  id="show_new_product_dialog_button" onClick="show_new_product_dialog()" class="state_details">{t}Create New Product{/t}</span>
-</div>
+  
   
   
    <table id="new_product_dialog" class="edit" border=0 style="clear:both;display:none">

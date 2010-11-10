@@ -181,13 +181,13 @@ var CellEdit = function (callback, newValue) {
         ar_file='ar_edit_assets.php';
     //   alert(column.object)
     var request='tipo=edit_'+column.object+'&key=' + column.key + '&newvalue=' + encodeURIComponent(newValue) + '&oldvalue=' + encodeURIComponent(oldValue)+ myBuildUrl(datatable,record);
- // alert(ar_file+'?'+request);
+//  alert(ar_file+'?'+request);
 
     YAHOO.util.Connect.asyncRequest(
         'POST',
     ar_file, {
 success:function(o) {
-            // alert(o.responseText);
+            alert(o.responseText);
             var r = YAHOO.lang.JSON.parse(o.responseText);
             if (r.state == 200) {
 
@@ -720,10 +720,10 @@ function save_new_general(branch) {
 
 
     var request=scope_edit_ar_file+'?tipo='+operation+'_'+branch+'&parent='+parent+'&parent_key=' + parent_key+ '&values=' + 	jsonificated_values;
-//alert(request)
+alert(request)
     YAHOO.util.Connect.asyncRequest('POST',request , {
 success:function(o) {
-           //  alert(o.responseText);
+             alert(o.responseText);
 
             var r =  YAHOO.lang.JSON.parse(o.responseText);
             Dom.get("new_"+branch+"_dialog_msg").innerHTML=r.msg;
