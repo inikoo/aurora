@@ -56,11 +56,19 @@ case('edit_product_description'):
                              'pid'=>array('type'=>'key'),
                              'newvalue'=>array('type'=>'string'),
 			     'key'=>array('type'=>'string'),
-			      'okey'=>array('type'=>'string')
+			         'okey'=>array('type'=>'string')
                          ));
   edit_supplier_product($data);
   break;  
-  
+  case('edit_product_supplier'):
+    $data=prepare_values($_REQUEST,array(
+                             'sph_key'=>array('type'=>'key'),
+                             'newvalue'=>array('type'=>'string'),
+			     'key'=>array('type'=>'string')
+			   
+                         ));
+  edit_supplier_product($data);
+  break;  
 case('edit_supplier'):
   edit_supplier();
   break;
@@ -166,7 +174,9 @@ function edit_supplier() {
 function edit_supplier_product($data) {
   $key=$data['key'];
  
-  
+ if(!isset($data['okey'])){
+  $data['okey']=$data['key'];
+  }
   if(isset($data['sph_key'])){
   $supplier_product=new SupplierProduct('id',$data['sph_key']);
   }elseif(isset($data['pid'])){
@@ -206,7 +216,7 @@ function edit_supplier_product($data) {
 		   ,'description'=>'Supplier Product Description'
 		   ,'unit_type'=>'Supplier Product Unit Type'
 		   ,'units'=>'Supplier Product Units Per Case'
-		   ,"cost"=>'Supplier Product Cost'
+		   ,"cost"=>'Supplier Product Cost Per Case'
        
 		   
     );
@@ -653,7 +663,7 @@ function list_supplier_products() {
 
                       
 		      ,'name'=>$row['Supplier Product Name']
-		      ,'cost'=>money($row['Supplier Product Cost'])
+		      ,'cost'=>money($row['Supplier Product Cost Per Case'])
 		      //,'usedin'=>$row['Supplier Product XHTML Used In']
 		      ,'unit_type'=>$row['Supplier Product Unit Type']
 		      ,'units'=>$row['Supplier Product Units Per Case']
@@ -722,7 +732,7 @@ function create_product($data) {
     $sp_data['Supplier Key']=$data['parent_key'];
     $sp_data['Supplier Key']=$data['parent_key'];
     $sp_data['Supplier Product Valid From']=date("Y-m-d H:i:s");
-    $sp_data['Supplier Product Cost']=$sp_data['Supplier Product Cost Per Case']/$sp_data['Supplier Product Units Per Case'];
+                                                     
 
 
     $supplier_product=new SupplierProduct('find',$sp_data,'create');
