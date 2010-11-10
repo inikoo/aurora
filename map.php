@@ -9,34 +9,37 @@ require_once 'common.php';
 
 
 
-if(isset($_REQUEST['country']))
-  $tipo='country';
+if (isset($_REQUEST['country']))
+    $tipo='country';
 
 
 
 
-switch($tipo){
+switch ($tipo) {
+case('world'):
+
+
+
+    break;
+
 case('country'):
- 
-  $code=$_REQUEST['country'];
-  $opt='';
-  if(isset($_REQUEST['opt'])){
-  $opt=$_REQUEST['opt'];
-  }
-  
-  $smarty->assign('path',$ammap_path);
-  $data_file=$ammap_path.'/data/country/'.$code.$opt.'.xml';
-   $smarty->assign('data_file',$data_file);
 
- 
- $smarty->display('map.tpl');
-  
-  
-  break;
-  
-  }
-  
-  
-  
-  ?>
-  
+    $code=$_REQUEST['country'];
+    $opt='';
+    if (isset($_REQUEST['opt'])) {
+        $opt=$_REQUEST['opt'];
+    }
+
+    $smarty->assign('path',$ammap_path);
+    $data_file=$ammap_path.'/data/country/'.$code.$opt.'.xml';
+    $smarty->assign('data_file',$data_file);
+    $smarty->display('map.tpl');
+
+
+    break;
+
+}
+
+
+
+?>
