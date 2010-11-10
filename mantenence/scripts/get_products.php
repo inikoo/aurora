@@ -1472,17 +1472,27 @@ if(preg_match('/^Wenzels$/i',$supplier_code)){
 	  
 	}
 
-	$rules[]=array('Part Sku'=>$part->data['Part SKU'],
-		       'Supplier Product Units Per Part'=>$units
-		       ,'supplier product part most recent'=>'Yes'
-		       ,'supplier product part valid from'=>$editor['Date']
-		       ,'supplier product part valid to'=>$editor['Date']
-		       ,'factor supplier product'=>1
+
+
+	$spp_header=array(
+			  'Supplier Product Part Type'=>'Simple',
+		       'Supplier Product Part Most Recent'=>'Yes',
+		       'Supplier Product Part Valid From'=>$editor['Date'],
+		       'Supplier Product Part Valid To'=>$editor['Date'],
+		       'Supplier Product Part In Use'=>'Yes'
 		       );
+
+	$spp_list=array(
+			array(
+			      'Part SKU'=>$part->data['Part SKU'],
+			      'Supplier Product Units Per Part'=>1,
+			      'Supplier Product Part Type'=>'Simple'
+			      )
+			);
 	
 	
 	
-	$supplier_product->new_part_list('',$rules);
+	$supplier_product->new_current_part_list($spp_header,$spp_list);
 	
 	$part_list[]=array(
 			   'Part SKU'=>$part->get('Part SKU'),
