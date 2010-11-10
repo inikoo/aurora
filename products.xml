@@ -1,0 +1,622 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rss version="2.0" xmlns:g="http://base.google.com/ns/1.0">
+ <library>
+    
+    <products>
+      <product>
+        <title>Night Wolfs (&amp;#163;1.25)</title>
+        <code>3DART-01</code>
+        <state>Public Sale</state>
+        <web>Auto</web>
+      </product>
+      <product>
+        <title>Winter Wolfs (&amp;#163;1.25)</title>
+        <code>3DART-02</code>
+        <state>Public Sale</state>
+        <web>Auto</web> 
+      </product>
+      <product>
+        <title>White Tiger (&amp;#163;1.25)</title>
+        <code>3DART-03</code>
+        <state>Public Sale</state>
+        <web>Auto</web> 
+      </product>
+      <product>
+        <title>Bengal Tiger (&amp;#163;1.25)</title>
+        <code>3DART-04</code>
+        <state>Public Sale</state>
+        <web>Auto</web> 
+      </product>
+      <product>
+        <title>China Tiger (&amp;#163;1.25)</title>
+        <code>3DART-05</code>
+        <state>Public Sale</state>
+        <web>Auto</web> 
+      </product>
+      <product>
+        <title>Parrots (&amp;#163;1.25)</title>
+        <code>3DART-06</code>
+        <state>Public Sale</state>
+        <web>Auto</web> 
+      </product>
+      <product>
+        <title>China Peacocks (&amp;#163;1.25)</title>
+        <code>3DART-07</code>
+        <state>Public Sale</state>
+        <web>Auto</web> 
+      </product>
+      <product>
+        <title>White Horses (&amp;#163;1.25)</title>
+        <code>3DART-08</code>
+        <state>Public Sale</state>
+        <web>Auto</web> 
+      </product>
+       <product>
+        <title>Horses (&amp;#163;1.25)</title>
+        <code>3DART-09</code>
+        <state>Public Sale</state>
+        <web>Auto</web> 
+      </product>
+      <product>
+        <title>Gold Fish (&amp;#163;1.25)</title>
+        <code>3DART-10</code>
+        <state>Public Sale</state>
+        <web>Auto</web> 
+      </product>
+      <product>
+        <title>Tropical Fish (&amp;#163;1.25)</title>
+        <code>3DART-11</code>
+        <state>Public Sale</state>
+        <web>Auto</web> 
+      </product>
+      <product>
+        <title>Dolphins (&amp;#163;1.25)</title>
+        <code>3DART-12</code>
+        <state>Public Sale</state>
+        <web>Auto</web> 
+      </product>
+      <product>
+        <title>Sea Creatures (&amp;#163;1.25)</title>
+        <code>3DART-13</code>
+        <state>Public Sale</state>
+        <web>Auto</web> 
+      </product>
+      <product>
+        <title>Penguins (&amp;#163;1.25)</title>
+        <code>3DART-14</code>
+        <state>Public Sale</state>
+        <web>Auto</web> 
+      </product>
+      <product>
+        <title>Polar Bears (&amp;#163;1.25)</title>
+        <code>3DART-15</code>
+        <state>Public Sale</state>
+        <web>Auto</web> 
+      </product>
+      <product>
+        <title>Elephants (&amp;#163;1.25)</title>
+        <code>3DART-16</code>
+        <state>Public Sale</state>
+        <web>Auto</web> 
+      </product>
+      <product>
+        <title>Pandas (&amp;#163;1.25)</title>
+        <code>3DART-17</code>
+        <state>Public Sale</state>
+        <web>Auto</web> 
+      </product>
+      <product>
+        <title>Storks (&amp;#163;1.25)</title>
+        <code>3DART-18</code>
+        <state>Public Sale</state>
+        <web>Auto</web> 
+      </product>
+      <product>
+        <title>Dragon (&amp;#163;1.25)</title>
+        <code>3DART-19</code>
+        <state>Public Sale</state>
+        <web>Auto</web> 
+      </product>
+      <product>
+        <title>Flower &amp; Butterfly (&amp;#163;1.25)</title>
+        <code>3DART-20</code>
+        <state>Public Sale</state>
+        <web>Auto</web> 
+      </product>
+      <product>
+        <title>Aboriginal Art Bags - Green &amp; Blue (&amp;#163;4.85)</title>
+        <code>ABBag-01</code>
+        <state>Public Sale</state>
+        <web>Auto</web> 
+      </product>
+      <product>
+        <title>City-Bags mit Aborigine-Muster - grun &amp; blau (5,95  &amp;#8364;)</title>
+        <code>ABBag-01</code>
+        <state>Public Sale</state>
+        <web>Auto</web> 
+      </product>
+      <product>
+        <title>Aboriginal Art Bags - Red &amp; Blue (&amp;#163;4.85)</title>
+        <code>ABBag-02</code>
+        <state>Public Sale</state>
+        <web>Auto</web> 
+      </product>
+      <product>
+        <title>City-Bags mit Aborigine-Muster - rot &amp; blau (5,95 &amp;#8364;)</title>
+        <code>ABBag-02</code>
+        <state>Public Sale</state>
+        <web>Auto</web> 
+      </product>
+      <product>
+        <title>Aboriginal Art Bags - Maroon &amp; Green (&amp;#163;4.85)</title>
+        <code>ABBag-03</code>
+        <state>Public Sale</state>
+        <web>Auto</web> 
+      </product>
+      <product>
+        <title>City-Bags mit Aborigine-Muster - kastanienbraun &amp; grün (5,95 &amp;#8364;)</title>
+        <code>ABBag-03</code>
+        <state>Public Sale</state>
+        <web>Auto</web> 
+      </product>
+      
+
+// ---------------------------------------2nd page ------------------------
+     <product>
+        <title>Total Unwind Potion 7kg Hessian Sack (&amp;#163;11.85)</title>
+        <code>ABP-01</code>
+        <state>Public Sale</state>
+        <web>Auto</web> 
+      </product>
+     <product>
+        <title>Aromatherapiebadesalze 7kg Totale Entspannung 7kg (15,95 &amp;#8364;)</title>
+        <code>ABP-01</code>
+        <state>Public Sale</state>
+        <web>Auto</web> 
+      </product>
+      <product>
+        <title>Potion Relaxante (19,99 &amp;#8364;)</title>
+        <code>ABP-01</code>
+        <state>Public Sale</state>
+        <web>Auto</web> 
+      </product>
+      <product>
+        <title>Total Detox Potion 7kg Hessian Sack (&amp;#163;11.85)</title>
+        <code>ABP-02</code>
+        <state>Public Sale</state>
+        <web>Auto</web> 
+      </product>
+      <product>
+        <title>Aromatherapiebadesalze 7kg Totale Entgiftung 7kg (15,95 &amp;#8364;)</title>
+        <code>ABP-02</code>
+        <state>Public Sale</state>
+        <web>Auto</web> 
+      </product>
+      <product>
+        <title>Potion Détox (19,99 &amp;#8364;)</title>
+        <code>ABP-02</code>
+        <state>Public Sale</state>
+        <web>Auto</web> 
+      </product>
+      <product>
+        <title>PMT Potion 7kg Hessian Sack (&amp;#163;11.85)</title>
+        <code>ABP-03</code>
+        <state>Public Sale</state>
+        <web>Auto</web> 
+      </product>
+      <product>
+        <title>Aromatherapiebadesalze 7kg PMS-Linderung 7kg (15,95 &amp;#8364;)</title>
+        <code>ABP-03</code>
+        <state>Public Sale</state>
+        <web>Auto</web> 
+      </product>
+      <product>
+        <title>Potion Bien-être (19,99 &amp;#8364;)</title>
+        <code>ABP-03</code>
+        <state>Public Sale</state>
+        <web>Auto</web> 
+      </product>
+      <product>
+        <title>Passion Potion 7kg Hessian Sack (&amp;#163;11.85)</title>
+        <code>ABP-04</code>
+        <state>Public Sale</state>
+        <web>Auto</web> 
+      </product>
+      <product>
+        <title>Aromatherapiebadesalze 7kg Leidenschaft 7kg (15,95 &amp;#8364;)</title>
+        <code>ABP-04</code>
+        <state>Public Sale</state>
+        <web>Auto</web> 
+      </product>
+      <product>
+        <title>Potion Éveil des sens (19,99 &amp;#8364;)</title>
+        <code>ABP-04</code>
+        <state>Public Sale</state>
+        <web>Auto</web> 
+      </product>
+      <product>
+        <title>Wake Up Potion 7kg Hessian Sack (&amp;#163;11.85)</title>
+        <code>ABP-05</code>
+        <state>Public Sale</state>
+        <web>Auto</web> 
+      </product>
+      <product>
+        <title>Aromatherapiebadesalze 7kg Wach Auf 7kg (15,95 &amp;#8364;)</title>
+        <code>ABP-05</code>
+        <state>Public Sale</state>
+        <web>Auto</web> 
+      </product>
+      <product>
+        <title>Potion Tonifiante (19,99 &amp;#8364;)</title>
+        <code>ABP-05</code>
+        <state>Public Sale</state>
+        <web>Auto</web> 
+      </product>
+      <product>
+        <title>Colds &amp; Flu Potion 7kg Hessian Sack (&amp;#163;11.85)</title>
+        <code>ABP-06</code>
+        <state>Public Sale</state>
+        <web>Auto</web> 
+      </product>
+      <product>
+        <title>Aromatherapiebadesalze 7kg Erkaltung &amp; Grippe 7kg (15,95 &amp;#8364;)</title>
+        <code>ABP-06</code>
+        <state>Public Sale</state>
+        <web>Auto</web> 
+      </product>
+      <product>
+        <title>Potion Anti-coups de froid (19,99 &amp;#8364;)</title>
+        <code>ABP-06</code>
+        <state>Public Sale</state>
+        <web>Auto</web> 
+      </product>
+      <product>
+        <title>Brass Scoop (1 only) (&amp;#163;3.75)</title>
+        <code>ABP-20</code>
+        <state>Public Sale</state>
+        <web>Auto</web> 
+      </product>
+      <product>
+        <title>Messingloffel (wird einzeln verkauft!) (4,99 &amp;#8364;)</title>
+        <code>ABP-20</code>
+        <state>Public Sale</state>
+        <web>Auto</web> 
+      </product>
+      <product>
+        <title>Petite pelle (4,99 &amp;#8364;)</title>
+        <code>ABP-20</code>
+        <state>Public Sale</state>
+        <web>Auto</web> 
+      </product>
+      <product>
+        <title>Brass Scoop (1 only) (&amp;#163;2.75)</title>
+        <code>ABP-20a</code>
+        <state>Public Sale</state>
+        <web>Auto</web> 
+      </product>
+      <product>
+        <title>Messingloffel (wird einzeln verkauft!) (3,50 &amp;#8364;)</title>
+        <code>ABP-20a</code>
+        <state>Public Sale</state>
+        <web>Auto</web> 
+      </product>
+      <product>
+        <title>Display Tub (&amp;#163;5.00)</title>
+        <code>ABP-21</code>
+        <state>Public Sale</state>
+        <web>Auto</web> 
+      </product>
+      <product>
+        <title>Metal Scoop (1 only) (&amp;#163;1.35)</title>
+        <code>ABP-22</code>
+        <state>Public Sale</state>
+        <web>Auto</web> 
+      </product>
+      <product>
+        <title>Bag Labels for Bath Potions (sheet of 40) (&amp;#163;1.00)</title>
+        <code>ABP-Bag</code>
+        <state>Public Sale</state>
+        <web>Auto</web> 
+      </product>
+
+// ----------------------------------------------------------------------------------------
+      <product>
+        <title>Etiketten fur Badesalze (48) (2,00 &amp;#8364;)</title>
+        <code>ABP-Bag</code>
+        <state>Public Sale</state>
+        <web>Auto</web> 
+      </product>
+      <product>
+        <title>etiquette-ingredient (40) (2,00 &amp;#8364;)</title>
+        <code>ABP-Bag</code>
+        <state>Public Sale</state>
+        <web>Auto</web> 
+      </product>
+      <product>
+        <title>10x Total Unwind Potion in Bags (&amp;#163;12.50)</title>
+        <code>ABPX-01</code>
+        <state>Public Sale</state>
+        <web>Auto</web> 
+      </product>
+      <product>
+        <title>10x Totale Entspannung - Badesalz in Beuteln (15,95 &amp;#8364;)</title>
+        <code>ABPX-01</code>
+        <state>Public Sale</state>
+        <web>Auto</web> 
+      </product>
+      <product>
+        <title>10x Potion Relaxante (19,99 &amp;#8364;)</title>
+        <code>ABPX-01</code>
+        <state>Public Sale</state>
+        <web>Auto</web> 
+      </product>
+      <product>
+        <title>10x Total Detox Potion in Bags (&amp;#163;12.50)</title>
+        <code>ABPX-02</code>
+        <state>Public Sale</state>
+        <web>Auto</web> 
+      </product>
+      <product>
+        <title>10x Totale Entgiftung - Badesalz in Beuteln (15,95 &amp;#8364;)</title>
+        <code>ABPX-02</code>
+        <state>Public Sale</state>
+        <web>Auto</web> 
+      </product>
+      <product>
+        <title>10x Potion Détox (19,99 &amp;#8364;)</title>
+        <code>ABPX-02</code>
+        <state>Public Sale</state>
+        <web>Auto</web> 
+      </product>
+      <product>
+        <title>10x PMT Potion in Bags (&amp;#163;12.50)</title>
+        <code>ABPX-03</code>
+        <state>Public Sale</state>
+        <web>Auto</web> 
+      </product>
+      <product>
+        <title>10x Potion Bien-etre (19,99 &amp;#8364;)</title>
+        <code>ABPX-03</code>
+        <state>Public Sale</state>
+        <web>Auto</web> 
+      </product>
+      <product>
+        <title>10x PMS-Linderung - Badesalz in Beuteln (15,95 &amp;#8364;)</title>
+        <code>ABPX-03</code>
+        <state>Public Sale</state>
+        <web>Auto</web> 
+      </product>
+      <product>
+        <title>10x Passion Potion in Bags (&amp;#163;12.50)</title>
+        <code>ABPX-04</code>
+        <state>Public Sale</state>
+        <web>Auto</web> 
+      </product>
+      <product>
+        <title>10x Leidenschaft - Badesalz in Beuteln (15,95 &amp;#8364;)</title>
+        <code>ABPX-04</code>
+        <state>Public Sale</state>
+        <web>Auto</web> 
+      </product>
+      <product>
+        <title>10x Potion Éveil des sens (19,99 &amp;#8364;)</title>
+        <code>ABPX-04</code>
+        <state>Public Sale</state>
+        <web>Auto</web> 
+      </product>
+      <product>
+        <title>10x Wake Up Potion in Bags (&amp;#163;12.50)</title>
+        <code>ABPX-05</code>
+        <state>Public Sale</state>
+        <web>Auto</web> 
+      </product>
+      <product>
+        <title>10x Wach Auf - Badesalz in Beuteln (15,95 &amp;#8364;)</title>
+        <code>ABPX-05</code>
+        <state>Public Sale</state>
+        <web>Auto</web> 
+      </product>
+      <product>
+        <title>10x Potion Tonifiante (19,99 &amp;#8364;)</title>
+        <code>ABPX-05</code>
+        <state>Public Sale</state>
+        <web>Auto</web> 
+      </product>
+      <product>
+        <title>10x Colds &amp; Flu Potion in Bags (&amp;#163;12.50)</title>
+        <code>ABPX-06</code>
+        <state>Public Sale</state>
+        <web>Auto</web> 
+      </product>
+      <product>
+        <title>10x Erkaltung &amp; Grippe - Badesalz in Beuteln (15,95 &amp;#8364;)</title>
+        <code>ABPX-06</code>
+        <state>Public Sale</state>
+        <web>Auto</web> 
+      </product>
+       <product>
+        <title>10x Potion Anti-coups de froid (19,99 &amp;#8364;)</title>
+        <code>ABPX-06</code>
+        <state>Public Sale</state>
+        <web>Auto</web> 
+      </product>
+ 
+
+
+
+
+
+
+
+  // -----------------------------------------second last page's content------------------------------------------------   
+      <product>
+        <title>Paper Bags - Holly &amp; Berry 9 x 14 (500) (&amp;#163;11.00)</title>
+        <code>Xpack-07</code>
+        <state>Public Sale</state>
+        <web>Auto</web> 
+      </product>
+      <product>
+        <title>Paper Bags - Holly &amp; Berry 10 x 10 (1000) (&amp;#163;12.50)</title>
+        <code>Xpack-06</code>
+        <state>Public Sale</state>
+        <web>Auto</web> 
+      </product>
+      <product>
+        <title>Paper Bags - Holly &amp; Berry 7x7 (1000) (&amp;#163;9.75)</title>
+        <code>Xpack-05</code>
+        <state>Public Sale</state>
+        <web>Auto</web> 
+      </product>
+      <product>
+        <title>Counter Roll - Holly &amp; Berry (&amp;#163;32.00)</title>
+        <code>Xpack-04</code>
+        <state>Public Sale</state>
+        <web>Auto</web> 
+      </product>
+      <product>
+        <title>Xmas Wrap 475x675 (ream) (&amp;#163;18.50)</title>
+        <code>Xpack-03</code>
+        <state>Public Sale</state>
+        <web>Auto</web> 
+      </product>
+      <product>
+        <title>Santa Sacks (40) (&amp;#163;4.50)</title>
+        <code>Xpack-02</code>
+        <state>Public Sale</state>
+        <web>Auto</web> 
+      </product>
+      <product>
+        <title>Xmas Carrier Bags - Mixed (100) (&amp;#163;8.50)</title>
+        <code>Xpack-01</code>
+        <state>Public Sale</state>
+        <web>Auto</web> 
+      </product>
+      <product>
+        <title>Antique Dragon (&amp;#163;1.65)</title>
+        <code>XOB-23</code>
+        <state>Public Sale</state>
+        <web>Auto</web> 
+      </product>
+      <product>
+        <title>Brûleurs à Huile Antique Dragon (2,00 &amp;#8364;)</title>
+        <code>XOB-23</code>
+        <state>Public Sale</state>
+        <web>Auto</web> 
+      </product>
+      <product>
+        <title>Japanese Garden (&amp;#163;1.65)</title>
+        <code>XOB-22</code>
+        <state>Public Sale</state>
+        <web>Auto</web> 
+      </product>
+      <product>
+        <title>Brûleurs à Huile Japanese Garden (2,00 &amp;#8364;)</title>
+        <code>XOB-22</code>
+        <state>Public Sale</state>
+        <web>Auto</web> 
+      </product>
+      <product>
+        <title>Japanese Dragon (&amp;#163;1.65)</title>
+        <code>XOB-21</code>
+        <state>Public Sale</state>
+        <web>Auto</web> 
+      </product>
+      <product>
+        <title>Japanischer Drachen (1,95 &amp;#8364;)</title>
+        <code>XOB-21</code>
+        <state>Public Sale</state>
+        <web>Auto</web> 
+      </product>
+      <product>
+        <title>Brûleurs à Huile Japanese Dragon (2,00 &amp;#8364;)</title>
+        <code>XOB-21</code>
+        <state>Public Sale</state>
+        <web>Auto</web> 
+      </product>
+      <product>
+        <title>Japanese Garden (&amp;#163;1.65)</title>
+        <code>XOB-20</code>
+        <state>Public Sale</state>
+        <web>Auto</web> 
+      </product>
+      <product>
+        <title>Japanischer Garten (1,95 &amp;#8364;)</title>
+        <code>XOB-20</code>
+        <state>Public Sale</state>
+        <web>Auto</web> 
+      </product>
+      <product>
+        <title>Bruleurs a Huile Japanese Garden (2,00 &amp;#8364;)</title>
+        <code>XOB-20</code>
+        <state>Public Sale</state>
+        <web>Auto</web> 
+      </product>
+      <product>
+        <title>Japanese Lady des 2 (&amp;#163;1.65)</title>
+        <code>XOB-19</code>
+        <state>Public Sale</state>
+        <web>Auto</web> 
+      </product>
+      <product>
+        <title>Japanische Dame Design 2 (1,95 &amp;#8364;)</title>
+        <code>XOB-19</code>
+        <state>Public Sale</state>
+        <web>Auto</web> 
+      </product>
+      <product>
+        <title>Bruleurs a Huile Japanese Lady des 2 (2,00 &amp;#8364;)</title>
+        <code>XOB-19</code>
+        <state>Public Sale</state>
+        <web>Auto</web> 
+      </product>
+      <product>
+        <title>Japanese Lady des 1 (&amp;#163;1.65)</title>
+        <code>XOB-18</code>
+        <state>Public Sale</state>
+        <web>Auto</web> 
+      </product>
+      <product>
+        <title>Japanische Dame Design 1 (1,95 &amp;#8364;)</title>
+        <code>XOB-18</code>
+        <state>Public Sale</state>
+        <web>Auto</web> 
+      </product>
+      <product>
+        <title>Bruleurs a Huile Japanese Lady des 1 (2,00 &amp;#8364;)</title>
+        <code>XOB-18</code>
+        <state>Public Sale</state>
+        <web>Auto</web> 
+      </product>
+      <product>
+        <title>Oil Burner Yin &amp; Yang des 3 (&amp;#163;2.85)</title>
+        <code>XOB-17</code>
+        <state>Public Sale</state>
+        <web>Auto</web> 
+      </product>
+      <product>
+        <title>Bruleurs a Huile Yin &amp; Yang des 3 (3,35 &amp;#8364;)</title>
+        <code>XOB-17</code>
+        <state>Public Sale</state>
+        <web>Auto</web> 
+      </product>
+      <product>
+        <title>Oil Burner Yin &amp; Yang des 2 (&amp;#163;2.85)</title>
+        <code>XOB-16</code>
+        <state>Public Sale</state>
+        <web>Auto</web> 
+      </product>
+      <product>
+        <title>Bruleurs a Huile Yin &amp; Yang des 2 (3,35 &amp;#8364;)</title>
+        <code>XOB-16</code>
+        <state>Public Sale</state>
+        <web>Auto</web> 
+      </product>
+     
+
+
+
+
+    </products>
+</library>
+</rss>
+

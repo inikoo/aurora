@@ -142,5 +142,9 @@ $smarty->assign('unit_packing_type_options',$unit_packing_type_options);
 $smarty->assign('unit_packing_type',$supplier_product->data['Supplier Product Unit Package Type']);
 $smarty->assign('unit_packing_index',$index);
 
+$paginator_menu=array(10,25,50,100,500);
+$smarty->assign('paginator_menu0',$paginator_menu);
+
+
 $smarty->display('edit_supplier_product.tpl');
 ?>

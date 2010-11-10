@@ -1246,9 +1246,12 @@ function create_product_id($data) {
 
 function find_product_part_list($list){
 
+$this_list_num_parts=count($list);
 
-$product_part_list_keys=array();
-$all_product_part_list_keys=array();
+$good_product_parts=array();
+
+$found_product_parts=array();
+
 foreach($list as $key=>$value){
     
     $sql=sprintf("select PPD.`Product Part Key` from  `Product Part Dimension`  PPD  left join  `Product Part List` PPL on (PPL.`Product Part Key`=PPD.`Product Part Key`)where `Product ID`=%d and `Part SKU`=%d  and `Parts Per Product`=%f and `Product Part Type`=%s   "
@@ -1259,28 +1262,59 @@ foreach($list as $key=>$value){
     );
     
     $res=mysql_query($sql);
-    //print "$sql\n";
-    $product_part_list_keys[$value['Part SKU']]=array();
+    
+    $found_list[$value['Part SKU']]=array();
     while($row=mysql_fetch_assoc($res)){
-        $product_part_list_keys[$value['Part SKU']][]=$row['Product Part Key'];
-        $all_product_part_list_keys[$row['Product Part Key']]=$row['Product Part Key'];
+       $found_list[$value['Part SKU']][$row['Product Part Key']]=$row['Product Part Key'];
+       
+       
+       
+       $found_product_parts[$row['Product Part Key']]=$row['Product Part Key'];
+       // $product_part_list_keys[$value['Part SKU']][]=$row['Product Part Key'];
+       // $all_product_part_list_keys[$row['Product Part Key']]=$row['Product Part Key'];
+    }
+}
+//print_r($found_list);
+//print_r($found_product_parts);
+
+foreach($found_list as $sku=>$found_data){
+    if(count($found_data)==0){
+    
+        return 0;
     }
 }
 
+foreach($found_product_parts as $product_part_key){
+    $sql=sprintf("select count(*) as num from  `Product Part List` where `Product Part Key`=%d",$product_part_key);
+     $res=mysql_query($sql);
+     $num_parts;
+     if($row=mysql_fetch_assoc($res)){
+        $num_parts=$row['num'];
+     }
+if($num_parts!=$this_list_num_parts)
+    break;
 
+    foreach($found_list as $sku=>$found_data){
+    if(!array_key_exists($product_part_key,$found_data)){
+        break;
+    }
+    $good_product_parts[$product_part_key]=$product_part_key;
+     }
 
-foreach($product_part_list_keys as $array_to_intersect){
-$all_product_part_list_keys=array_intersect($all_product_part_list_keys,$array_to_intersect);
 }
 
-if(count($all_product_part_list_keys)==0){
+
+
+
+
+if(count($good_product_parts)==0){
     return 0;
-}elseif(count($all_product_part_list_keys)==1){
-    return array_pop($all_product_part_list_keys);
+}elseif(count($good_product_parts)==1){
+    return array_pop($good_product_parts);
 }else{
 print "Error ====\n";
 print_r($list);
-print_r($all_product_part_list_keys);
+print_r($good_product_parts);
     exit("Debug this part list is duplicated\n");
 }
 
@@ -1388,18 +1422,19 @@ $this->new_value=array();
 function get_current_part_key(){
 $product_part_key=0;
 $sql=sprintf("select `Product Part Key` from `Product Part Dimension` where `Product ID`=%d and `Product Part Most Recent`='Yes' ",$this->pid);
+
 $res=mysql_query($sql);
 if($row=mysql_fetch_assoc($res)){
 $product_part_key=$row['Product Part Key'];
 
 }
-
+return $product_part_key;
 }
 
 function set_part_list_as_current($product_part_key){
 $current_part_key=$this->get_current_part_key();
 
-//print "$current_part_key $product_part_key\n";
+
 
 if($current_part_key!=$product_part_key){
     
@@ -1429,6 +1464,8 @@ if($current_part_key!=$product_part_key){
 function new_current_part_list($header_data,$list){
 
 $product_part_key=$this->find_product_part_list($list);
+
+
 if($product_part_key){
 //print "found\n";
 $this->update_product_part_list($product_part_key,$header_data,$list);
@@ -4489,7 +4526,7 @@ if($this->external_DB_link)mysql_query($sql,$this->external_DB_link);
 return $skus;
  }
  
- function get_current_part_list(){
+ function get_current_part_list($options=false){
    
    $part_list=array();
   
@@ -4498,12 +4535,20 @@ return $skus;
 		);
 		//print $sql;
    $res=mysql_query($sql);
-   if($row=mysql_fetch_assoc($res)){
+   while($row=mysql_fetch_assoc($res)){
    
+    if(preg_match('/smarty/i',$options)){
+    $_row=array();
+    foreach($row as $key=>$value){
+        $_row[preg_replace('/\s+/','_',$key)]=$value;
+    }
+     $part_list[$row['Part SKU']]=$_row;
+     
+    }else{
     
 	 $part_list[$row['Part SKU']]=$row;
-       
-
+       }
+$part_list[$row['Part SKU']]['part']=new Part($row['Part SKU']);
        
    }
    
