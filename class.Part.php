@@ -1002,8 +1002,8 @@ function get_supplier_products_historic($date) {
         }
         // print "not found in date";
 
-        $sql=sprintf("select AVG(`Supplier Product Unit Cost`*`Supplier Product Units Per Part`) as cost from `Supplier Product Dimension` SP left join `Supplier Product Part List` B  on (SP.`Supplier Product Code`=B.`Supplier Product Code` and SP.`Supplier Key`=B.`Supplier Key` ) where `Part SKU`=%d and `Supplier Product Part Most Recent`='Yes' ",$this->sku);
-        // print $sql;
+        $sql=sprintf("select AVG(`Supplier Product Cost Per Case`/`Supplier Product Units Per Case`*`Supplier Product Units Per Part`) as cost from `Supplier Product Dimension` SP left join `Supplier Product Part List` B  on (SP.`Supplier Product Code`=B.`Supplier Product Code` and SP.`Supplier Key`=B.`Supplier Key` ) where `Part SKU`=%d and `Supplier Product Part Most Recent`='Yes' ",$this->sku);
+	//   print $sql;
         $res=mysql_query($sql);
         if ($row=mysql_fetch_array($res)) {
             return $row['cost'];

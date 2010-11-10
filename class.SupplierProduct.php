@@ -77,22 +77,23 @@ class supplierproduct extends DB_Table {
 
 
 
-        $sql=sprintf("select `Supplier Product Code` from `Supplier Product Dimension` where `Supplier Product Code`=%s  and  `Supplier Key`=%d "
+        $sql=sprintf("select `Supplier Product Code`,`Supplier Product Key` from `Supplier Product Dimension` where `Supplier Product Code`=%s  and  `Supplier Key`=%d "
                      ,prepare_mysql($data['Supplier Product Code'])
                      ,$data['Supplier Key']
                     );
         $result4=mysql_query($sql);
         if ($row4=mysql_fetch_array($result4)) {
             $this->found_in_code=true;
+	    $this->found_pid=$row4['Supplier Product Key'];
             $this->found_code=$row4['Supplier Product Code'];
             $this->get_data('code',$data['Supplier Product Code'],$data['Supplier Key']);
-            $sql=sprintf("select `SPH Key` from `Supplier Product History Dimension` where `Supplier Product Code`=%s and  `Supplier Key`=%d and `SPH Cost`=%.4f "
-                         ,prepare_mysql($data['Supplier Product Code'])
-			 ,$data['Supplier Key']
-                         ,$data['Supplier Product Cost']
+            $sql=sprintf("select `SPH Key` from `Supplier Product History Dimension` where `Supplier Product Key`=%d  and `SPH Case Cost`=%.2f "
+                       
+			 ,$row4['Supplier Product Key']
+                         ,$data['Supplier Product Cost Per Case']
 
                         );
-            // print("$sql\n");
+	    //print "$sql\n";
             $result2=mysql_query($sql);
             if ($row2=mysql_fetch_array($result2)) {
                 $this->found_in_key=true;
@@ -105,7 +106,7 @@ class supplierproduct extends DB_Table {
 
 
 
-
+	//	print "FK: ".$this->found_in_key." FC:".$this->found_in_code."\n";
 
         if ($create) {
 
@@ -117,9 +118,10 @@ class supplierproduct extends DB_Table {
             }
             elseif($this->found_in_code) {
 
-                $this->get_data('code',$this->found_code,$data['Supplier Key']);
-                $this->create_key($data);
-
+                $this->get_data('pid',$this->pid);
+                $data['Supplier Product Key']=$this->pid;
+		$this->create_key($data);
+		
             }
             else {
                 // print_r($data);
@@ -145,7 +147,8 @@ class supplierproduct extends DB_Table {
     function get_data($tipo,$tag,$supplier_key=1) {
         if ($tipo=='id' or $tipo=='key') {
             $sql=sprintf("select * from `Supplier Product History Dimension` where `SPH Key`=%d ",$tag);
-            $result=mysql_query($sql);
+            //print "$sql\n";
+	    $result=mysql_query($sql);
             if ($this->data=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
                 $this->id=$this->data['SPH Key'];
                 $this->key=$this->id;
@@ -255,6 +258,9 @@ class supplierproduct extends DB_Table {
         }
 
        
+	if(array_key_exists('Supplier Product Key',$data))
+	  $base_data['Supplier Product Key']=$data['Supplier Product Key'];
+
 
         $keys='(';
         $values='values(';
@@ -697,7 +703,7 @@ mysql_query($sql);
 
         }
         $old_formated_price=$this->get('Formated Price');
-        $sql=sprintf("select `SPH Key` from `Supplier Product History Dimension` where `Supplier Product Code`=%s and `Supplier Key`=%d and `SPH Cost`=%.2f "
+        $sql=sprintf("select `SPH Key` from `Supplier Product History Dimension` where `Supplier Product Code`=%s and `Supplier Key`=%d and `SPH Case Cost`=%.2f "
 
                      ,prepare_mysql($this->code)
                      ,$this->supplier_key
@@ -709,7 +715,7 @@ mysql_query($sql);
         $num_historic_records=mysql_num_rows($res);
         if ($num_historic_records==0) {
             $data=array(
-                    'SPH Cost'=>$amount
+                    'SPH Case Cost'=>$amount
                     ,'Supplier Product Code'=>$this->code
                     ,'Supplier Key'=>$this->supplier_key
             );
@@ -1067,7 +1073,7 @@ function update_field_switcher($field,$value,$options='') {
 
  function change_current_key($new_current_key) {
 
-    $sql=sprintf("select `SPH Cost` from `Supplier Product History Dimension` where `Supplier Key`=%d and `Supplier Product Code`=%s and `SPH Key`=%d "
+    $sql=sprintf("select `SPH Case Cost` from `Supplier Product History Dimension` where `Supplier Key`=%d and `Supplier Product Code`=%s and `SPH Key`=%d "
 		 ,$this->supplier_key
 		 ,prepare_mysql($this->code)
 		 ,$new_current_key
@@ -1082,7 +1088,7 @@ function update_field_switcher($field,$value,$options='') {
     }
     $row=mysql_fetch_array($res);
 
-    $price=$row['SPH Cost'];
+    $price=$row['SPH Case Cost'];
 
 
     $sql=sprintf("update `Supplier Product Dimension` set `Supplier Product Cost`=%.2f,`Supplier Product Current Key`=%d  where `Supplier Product Code`=%s and `Supplier Key`=%d "
