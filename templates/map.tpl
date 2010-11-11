@@ -14,7 +14,7 @@
 <body onLoad="ammap.focus()">
 <!-- saved from url=(0013)about:internet -->
 <!-- ammap script-->
-  <script type="text/javascript" src="external_libs/ammap_2.5.4/ammap/swfobject.js"></script>
+  <script type="text/javascript" src="{$ammap_path}/ammap/swfobject.js"></script>
 	<div id="flashcontent">
 		<strong>You need to upgrade your Flash Player</strong>
 	</div>
