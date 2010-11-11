@@ -488,8 +488,8 @@ $sql = sprintf("select `Invoice Transaction Gross Amount`,`Invoice Transaction T
     from `Order Transaction Fact` where `Invoice Key`=%d   " ,
     $this->data ['Invoice Key']);
     
-  // print $sql;
- //  print "$\n";
+ //  print $sql;
+ // print "$\n";
    $counter=0;
    $result = mysql_query ( $sql );
     while ( $row = mysql_fetch_array ( $result, MYSQL_ASSOC ) ) {
@@ -504,7 +504,7 @@ $sql = sprintf("select `Invoice Transaction Gross Amount`,`Invoice Transaction T
         //$items_refund_tax_outstanding_balance+=$row['Invoice Transaction Outstanding Refund Tax Balance'];
         $items_gross+=$row['Invoice Transaction Gross Amount'];
         $items_discounts+=$row['Invoice Transaction Total Discount Amount'];
-    //     print "Items net:".$row['Product Code']."   $items_net : ".$row['item_net']." ".$counter."\n";
+     //  print "Items net:  $items_net : ".$row['item_net']." ".$counter."\n";
     }
 
 $sql=sprintf("select * from `Order No Product Transaction Fact` where `Invoice Key`=%d",$this->id);

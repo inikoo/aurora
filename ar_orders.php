@@ -700,20 +700,20 @@ if(isset( $_REQUEST['where']))
      }else
        $store=$_SESSION['state']['orders']['store'];
      
-     
-     $_SESSION['state']['orders']['table']=array(
-						 'order'=>$order,
-						 'order_dir'=>$order_direction,
-						 'nr'=>$number_results,
-						 'sf'=>$start_from,
-						 'where'=>$where,
-						 'f_field'=>$f_field,
-						 'f_value'=>$f_value,
-						 'dispatch'=>$dispatch,
-						 'paid'=>$paid,
-						 'order_type'=>$order_type
-
-						 );
+   
+		  $_SESSION['state']['orders']['table']['order']=$order;
+     $_SESSION['state']['orders']['table']['order_dir']=$order_direction;
+     $_SESSION['state']['orders']['table']['nr']=$number_results;
+     $_SESSION['state']['orders']['table']['sf']=$start_from;
+     $_SESSION['state']['orders']['table']['where']=$where;
+     $_SESSION['state']['orders']['table']['f_field']=$f_field;
+     $_SESSION['state']['orders']['table']['f_value']=$f_value;
+     $_SESSION['state']['orders']['table']['dispatch']=$dispatch;
+     $_SESSION['state']['orders']['table']['paid']=$paid;				 
+     $_SESSION['state']['orders']['table']['order_type']=$order_type;				 
+						 
+						 
+						 
      $_SESSION['state']['orders']['view']=$view;
      $date_interval=prepare_mysql_dates($from,$to,'`Order Date`','only_dates');
      if($date_interval['error']){
@@ -2303,16 +2303,20 @@ $store=$_SESSION['state']['report']['sales']['store'];
      $store=$_SESSION['state']['orders']['store'];
 
 
-     $_SESSION['state']['orders']['invoices']=array(
-     'invoice_type'=>$type,
-     'order'=>$order,
-     'order_dir'=>$order_direction,
-     'nr'=>$number_results,
-     'sf'=>$start_from,
-     'where'=>$where,
-     'f_field'=>$f_field,
-     'f_value'=>$f_value
-     );
+   
+     
+       
+     $_SESSION['state']['orders']['invoices']['order']=$order;
+     $_SESSION['state']['orders']['invoices']['order_dir']=$order_direction;
+     $_SESSION['state']['orders']['invoices']['nr']=$number_results;
+     $_SESSION['state']['orders']['invoices']['sf']=$start_from;
+     $_SESSION['state']['orders']['invoices']['where']=$where;
+     $_SESSION['state']['orders']['invoices']['f_field']=$f_field;
+     $_SESSION['state']['orders']['invoices']['f_value']=$f_value;
+    
+     $_SESSION['state']['orders']['invoices']['invoice_type']=$type;
+     
+     
      $_SESSION['state']['orders']['view']=$view;
      $date_interval=prepare_mysql_dates($from,$to,'`Invoice Date`','only_dates');
      if($date_interval['error']){

@@ -1,9 +1,13 @@
 <?php
 /*
 file: map.php
- */
 
-$ammap_path='external_libs/ammap_2.5.4';
+ */
+include_once('common.php');
+$ammap_path='external_libs/ammap_2.5.5';
+
+
+    $smarty->assign('ammap_path',$ammap_path);
 
 require_once 'common.php';
 

@@ -251,7 +251,7 @@ $smarty->assign('paginator_menu2',$paginator_menu2);
                             )
                         );
 $smarty->assign('export_csv_table_cols',5);
-$smarty->assign('csv_export_options',$csv_export_options);
+$smarty->assign('csv_export_options',$csv_export_options0);
 // -----------------------------------------------export csv code ends here------------------------
 
 // ----------------------------------export csv array for invoice list starts here -----------------------------------------------

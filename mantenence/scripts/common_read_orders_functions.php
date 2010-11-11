@@ -580,8 +580,8 @@ function send_order($data,$data_dn_transactions) {
     if(!($tipo_order==6 or $tipo_order==7)){
     if ($order->data['Order Type']=='Order' or ((  ($order->data['Order Type']=='Sample'  or $order->data['Order Type']=='Donation') and $order->data['Order Total Amount']!=0 ))) {
         $invoice=$dn->create_invoice($date_inv);
-
-  
+       // print_r($invoice);
+           // exit("----\n");
         foreach($credits as $credit){
             $credit_data=array(
             'Order Key'=>($credit['parent_key']=='NULL'?0:$credit['parent_key']),
