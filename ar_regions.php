@@ -158,7 +158,7 @@ function list_country_list(){
    $adata=array();
  $sql="select `Country Name` from kbase.`Country Dimension` order by $order $order_direction  limit $start_from,$number_results;";
 
-    printf($sql);
+    
    $res=mysql_query($sql);
    
    while($row=mysql_fetch_array($res)) {
