@@ -42,7 +42,8 @@ $js_files=array(
               'common.js.php',
               'table_common.js.php',
               'js/dropdown.js',
-              'region.js.php'
+              'region.js.php',
+		'world.js.php'
           );
 
 $smarty->assign('css_files',$css_files);
@@ -78,6 +79,18 @@ $_SESSION['state']['region']['mode']=$mode;
 
 $_SESSION['state']['region']['orders']['mode']=$mode;
 $_SESSION['state']['region']['customers']['mode']=$mode;
+
+
+
+
+
+//$tipo_filter=$_SESSION['state']['country_list']['table']['f_field'];
+
+//$smarty->assign('filter0',$tipo_filter);
+//$smarty->assign('filter_value0',$_SESSION['state']['country_list']['table']['f_value']);
+
+$paginator_menu=array(10,25,50,100,500);
+$smarty->assign('paginator_menu0',$paginator_menu);
 
 $smarty->display($template);
 ?>

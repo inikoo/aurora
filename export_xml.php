@@ -1,33 +1,77 @@
 <?php 
-    /* here we must specify the version of XML : i.e: 1.0 */ 
-    $xml = new DomDocument('1.0'); 
-    $xml->load('products.xml'); 
 
-?> 
-<html> 
-    <head> 
-        <title>XML Library</title> 
-    </head> 
-    <body>
-<table border=1 cellpadding=5 cellspacing=0><tr><td>Name</td><td>Code</td><td>State</td><td>Web</td></tr> 
-        <?php foreach($xml->getElementsBytagName('product') as $product): 
-            /* find the title */ 
-            $title = $product->getElementsByTagName('title')->item(0)->firstChild->nodeValue; 
+include_once('common.php');
+include_once('ar_common.php');
 
-            /* find the author - for simplicity we assume there is only one */ 
-             $code = $product->getElementsByTagName('code')->item(0)->firstChild->nodeValue; 
-	     $state = $product->getElementsByTagName('state')->item(0)->firstChild->nodeValue; 
-	     $web = $product->getElementsByTagName('web')->item(0)->firstChild->nodeValue; 
-            ?> 
-             
-        <div>
-<tr style="font-size:11px;font-weight:none;"> 
-            <td width="250px"><?php echo($title) ?> </td>
-            <td width="100px"><?php echo($code) ?></td>
-	    <td width="150px"> <?php echo($state) ?></td> 
-            <td> <?php echo($web) ?></td>  
-            </tr>
-        </div>     
-        <?php endforeach; ?> 
-</table>
-</html> 
+header("Content-Type:text/xml");
+
+
+
+$output = "<?xml version=\"1.0\" ?>\n"; 
+$output .= "<schema>"; 
+
+// iterate over each table and return the fields for each table
+
+$result_fld=mysql_query("select * from `Product Dimension` where true");
+   while( $row1 = mysql_fetch_row($result_fld) ) {
+      $output .= "<field name=\"$row1[0]\" type=\"$row1[1]\"";
+      //$output .= ($row1[3] == "PRI") ? " primary_key=\"yes\" />" : " />";
+   } 
+
+  
+
+
+$output .= "</schema>"; 
+
+// tell the browser what kind of file is come in
+header("Content-type: text/xml"); 
+// print out XML that describes the schema
+echo $output; 
+
+
+
+
+/*
+
+$_data=array();
+
+foreach($fields as $key=>$options){
+
+$_data[]=$row[$options['db_name']];
+}
+$data[]=$_data;
+}
+//print_r($data);exit;
+
+//return $data;
+
+
+$xml = new SimpleXMLElement('<root/>');
+$_csv='';
+	foreach($data as $key=>$value){
+//$_csv.="\t".$value;
+
+array_walk_recursive($value, array ($xml, 'addChild'));
+
+}
+print $xml->asXML();/*
+
+/*
+$_xml='';
+	foreach($data as $key=>$value){
+$_xml.="\t".$value;
+}
+
+$xml.=preg_replace('/^\t/','',$_xml)."\n";
+		  // fputcsv($out, $data);
+  	  
+*/
+//mysql_free_result($res);
+
+
+
+
+
+
+// ------------------------------------
+   ?>
