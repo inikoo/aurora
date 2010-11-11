@@ -12,8 +12,7 @@
  Version 2.0
 */
 require_once 'common.php';
-require_once 'class.User.php';
-require_once 'class.Staff.php';
+
 
 
 if(!isset($_REQUEST['tipo']))
@@ -108,13 +107,13 @@ function list_country_list(){
   $filter_msg='';
   $wheref='';
  
-  $sql="select count(*) as total from `Country Dimension`  $where $wheref   ";
+  $sql="select count(*) as total from `Country Dimension` ";
   
      $res=mysql_query($sql);
-     if($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
-       $total=$row['total'];
-     }
-     mysql_free_result($res);
+   //  if($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+   //    $total=$row['total'];
+    // }
+    // mysql_free_result($res);
      if($wheref==''){
        $filtered=0;
        $total_records=$total;
@@ -129,29 +128,27 @@ function list_country_list(){
    }
 
      
-   $rtext=$total_records." ".ngettext('user','users',$total_records);
-     if($total_records>$number_results)
-       $rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
-     else
-       $rtext_rpp=_('(Showing all)');
+  // $rtext=$total_records." ".ngettext('country_name','country_name',$total_records);
+   //  if($total_records>$number_results)
+   //    $rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
+  //   else
+  //     $rtext_rpp=_('(Showing all)');
 
 
-     $translations=array('handle'=>'`User Handle`');
-     if(array_key_exists($order,$translations))
-       $order=$translations[$order];
+    // $translations=array('handle'=>'`User Handle`');
+   //  if(array_key_exists($order,$translations))
+   //    $order=$translations[$order];
      
-    $order=`Country Name`
+    $order=`Country Name`;
    $adata=array();
-   $sql="select `Country Name` from Country Dimension  $where $wheref  order by $order $order_direction limit $start_from,$number_results;";
-   
+   $sql="select `Country Name` from `Country Dimension`  order by $order $order_direction limit $start_from,$number_results;";
+    printf($sql);
    $res=mysql_query($sql);
    
    while($row=mysql_fetch_array($res)) {
      $adata[]=array(
-		   'country_name'=>$row['Country Name'],
-		  // 'ip'=>$row['IP'],
-                  // 'login_date'=>strftime("%c",strtotime($row['Start Date'])),
-                  // 'logout_date'=>strftime("%c",strtotime($row['Logout Date'])),
+		   'country_name'=>$row['Country Name']
+		 
 		   );
 
    }
@@ -163,17 +160,17 @@ function list_country_list(){
 	 'sort_key'=>$_order,
 			 'sort_dir'=>$_dir,
 			 'tableid'=>$tableid,
-			 
+			 'filter_msg'=>$filter_msg,
 			 'total_records'=>$total,
 			 'records_offset'=>$start_from,
 			 'records_returned'=>$total,
 			 'records_perpage'=>$number_results,
-			 'records_text'=>$rtext,
-			 'records_order'=>$order,
-			 'records_order_dir'=>$order_dir,
-			 
-			 'rtext'=>$rtext,
-			'rtext_rpp'=>$rtext_rpp
+			// 'records_text'=>$rtext,
+			// 'records_order'=>$order,
+			// 'records_order_dir'=>$order_dir,
+			// 'filtered'=>$filtered,
+			// 'rtext'=>$rtext,
+			//'rtext_rpp'=>$rtext_rpp
 			 )
 		   );
      
