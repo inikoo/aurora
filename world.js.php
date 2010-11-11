@@ -63,7 +63,7 @@ var Dom   = YAHOO.util.Dom;
 								 , {
 								     renderLoopSize: 50,generateRequest : myRequestBuilder
 								      ,paginator : new YAHOO.widget.Paginator({
-									      rowsPerPage:<?php echo$_SESSION['state']['country_list']['table']['nr']?>,containers : 'paginator0', 
+									      rowsPerPage:<?php echo$_SESSION['state']['world']['countries']['nr']?>,containers : 'paginator0', 
  									      pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',
 									      previousPageLinkLabel : "<",
  									      nextPageLinkLabel : ">",
@@ -73,8 +73,8 @@ var Dom   = YAHOO.util.Dom;
 									  })
 								     
 								     ,sortedBy : {
-									 key: "<?php echo$_SESSION['state']['country_list']['table']['order']?>",
-									 dir: "<?php echo$_SESSION['state']['country_list']['table']['order_dir']?>"
+									 key: "<?php echo$_SESSION['state']['world']['countries']['order']?>",
+									 dir: "<?php echo$_SESSION['state']['world']['countries']['order_dir']?>"
 								     },
 								     dynamicData : true
 
@@ -88,7 +88,7 @@ var Dom   = YAHOO.util.Dom;
 
 
 	    this.table0.doBeforePaginatorChange = mydoBeforePaginatorChange;
-	    this.table0.filter={key:'<?php echo$_SESSION['state']['country_list']['table']['f_field']?>',value:'<?php echo$_SESSION['state']['country_list']['table']['f_value']?>'};
+	    this.table0.filter={key:'<?php echo$_SESSION['state']['world']['countries']['f_field']?>',value:'<?php echo$_SESSION['state']['world']['countries']['f_value']?>'};
 	    //YAHOO.util.Event.addListener('yui-pg0-0-page-report', "click",myRowsPerPageDropdown);
 	
 
