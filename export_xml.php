@@ -21,8 +21,8 @@
             ?> 
              
         <div>
-<tr style="font-size:12px;font-weight:none;"> 
-            <td width="220px"><?php echo($title) ?> </td>
+<tr style="font-size:11px;font-weight:none;"> 
+            <td width="250px"><?php echo($title) ?> </td>
             <td width="100px"><?php echo($code) ?></td>
 	    <td width="150px"> <?php echo($state) ?></td> 
             <td> <?php echo($web) ?></td>  
