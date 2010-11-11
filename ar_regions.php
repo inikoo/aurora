@@ -110,10 +110,10 @@ function list_country_list(){
   $sql="select count(*) as total from kbase.`Country Dimension` ";
   
      $res=mysql_query($sql);
-   //  if($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
-   //    $total=$row['total'];
-    // }
-    // mysql_free_result($res);
+    if($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+      $total=$row['total'];
+     }
+     mysql_free_result($res);
      if($wheref==''){
        $filtered=0;
        $total_records=$total;
