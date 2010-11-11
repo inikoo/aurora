@@ -2370,6 +2370,29 @@ $default_state=array(
                                                  'f_value'=>'','f_show'=>false,
                                                  'from'=>'',
                                                  'to'=>'',
+                                                'csv_export'=>array(
+                                                                 'code'=>true,
+                                                                 'supplier'=>true,
+                                                                 'product_name'=>true,
+                                                                 'product_description'=>true,
+                                                                 'unit_type'=>true,
+                                                                 'currency'=>true,
+                                                                 'valid_from'=>true,
+                                                                 'valid_to'=>true,
+                                                                 'buy_state'=>false,
+                                                                 'cost_all'=>false,
+                                                                 'cost_1y'=>false,
+                                                                 'cost_1q'=>false,
+                                                                 'cost_1m'=>false,
+                                                                 'cost_1w'=>false,
+                                                                 'profit_all'=>false,
+                                                                 'profit_1y'=>false,
+                                                                 'profit_1q'=>false,
+                                                                 'profit_1m'=>false,
+                                                                 'profit_1w'=>false
+
+
+                                                             )
                                              ),
                                   'po'=>array(
                                            'order'=>'date_index',

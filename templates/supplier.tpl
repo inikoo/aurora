@@ -64,7 +64,7 @@
 	  </tr>
 	</table>
       
-      
+     <span  id="export_csv0" style="float:right;margin-left:20px"  class="table_type state_details" tipo="supplier" >{t}Export (CSV){/t}</span>
 
        <div  id="info"  style="{if !$show_details}display:none;{/if};clear:left"   >
 	 <h2 style="font-size:150%;">{t}Supplier Details{/t}</h2>
@@ -310,7 +310,7 @@
     </ul>
   </div>
 </div>
-
+{include file='export_csv_menu_splinter.tpl' id=0 cols=$export_csv_table_cols session_address="supplier-table-csv_export" export_options=$csv_export_options }
 
 {include file='footer.tpl'}
 

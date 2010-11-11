@@ -1582,18 +1582,22 @@ function list_supplier_products() {
     $_dir=$order_direction;
 
    
-    $_SESSION['state']['supplier']['products']=array(
-						     'order'=>$order,
-						     'order_dir'=>$order_direction,
-						     'nr'=>$number_results,
-						     'sf'=>$start_from,
-						     'where'=>$where,
-						     'f_field'=>$f_field,
-						     'f_value'=>$f_value,
-						     'view'=>$product_view,
-						     'percentage'=>$product_percentage,
-						     'period'=>$product_period
-						     );
+  
+    $_SESSION['state']['stores']['table']['view']=$product_view;
+    $_SESSION['state']['stores']['table']['percentage']=$product_percentage;
+    $_SESSION['state']['stores']['table']['period']=$product_period;
+    $_SESSION['state']['stores']['table']['order']=$order;
+    $_SESSION['state']['stores']['table']['order_dir']=$order_dir;
+    $_SESSION['state']['stores']['table']['nr']=$number_results;
+    $_SESSION['state']['stores']['table']['sf']=$start_from;
+    $_SESSION['state']['stores']['table']['where']=$where;
+    $_SESSION['state']['stores']['table']['f_field']=$f_field;
+    $_SESSION['state']['stores']['table']['f_value']=$f_value;
+
+
+
+
+
     $_SESSION['state']['supplier']['id']=$supplier_id;
 
 
