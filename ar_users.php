@@ -367,7 +367,6 @@ $order='`Start Date`';
 
 
 
-
 function list_groups(){
 $conf=$_SESSION['state']['users']['groups'];
   if(isset( $_REQUEST['sf']))
