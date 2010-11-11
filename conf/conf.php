@@ -2537,6 +2537,26 @@ $default_state=array(
 
 
                               ),
+     
+					'country_list'=>array(
+                                                  'display'=>'all',
+                                                  'order'=>'country_name',
+                                                  'order_dir'=>'',
+                                                  'sf'=>0,
+                                                  'nr'=>25,
+                                                  'where'=>'where true',
+                                                  'f_field'=>'country_name',
+                                                  'f_value'=>'',
+						'table'=>array(
+                                                  'display'=>'all',
+                                                  'order'=>'country_name',
+                                                  'order_dir'=>'',
+                                                  'sf'=>0,
+                                                  'nr'=>25,
+                                                  'where'=>'where true',
+                                                  'f_field'=>'country_name',
+                                                  'f_value'=>'',
+                                              ))
 
                );
 
