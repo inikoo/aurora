@@ -1364,11 +1364,19 @@ if(isset( $_REQUEST['where']))
   else
     $tableid=0;
    $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
-  $_SESSION['state']['suppliers']['table']=array('order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value);
-  $_order=$order;
+ /* $_SESSION['state']['suppliers']['table']=array('order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value);*/
+ 
+
+    $_SESSION['state']['suppliers']['table']['order']=$order;
+    $_SESSION['state']['suppliers']['table']['order_dir']=$order_direction;
+    $_SESSION['state']['suppliers']['table']['nr']=$number_results;
+    $_SESSION['state']['suppliers']['table']['sf']=$start_from;
+    $_SESSION['state']['suppliers']['table']['where']=$where;
+    $_SESSION['state']['suppliers']['table']['f_field']=$f_field;
+    $_SESSION['state']['suppliers']['table']['f_value']=$f_value;
+
+ $_order=$order;
   $_dir=$order_direction;
-
-
 
    $wheref='';
   if($f_field=='code'  and $f_value!='')

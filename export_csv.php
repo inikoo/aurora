@@ -202,6 +202,13 @@ switch ($tipo) {
         $filename=_('deals').'.csv';
         $data=get_deals_data($wheref);
         break;
+    case 'suppliers':
+        $filename=_('suppliers').'.csv';
+        $f_field=$_SESSION['state']['suppliers']['table']['f_field'];
+        $f_value=$_SESSION['state']['suppliers']['table']['f_value'];
+        $wheref=wheref_stores($f_field,$f_value);
+        $filename=_('suppliers').'.csv';
+        $data=get_suppliers_data($wheref);break;
                     
     default:
         
@@ -1209,7 +1216,76 @@ $data[]=$_data;
 return $data;
 
 }
+function get_suppliers_data($wheref,$where='true'){
 
+$data=prepare_values($_REQUEST,array('fields'=>array('type'=>'json array','optional'=>true)));
+if(isset($data['fields'])){
+$fields_to_export=$data['fields'];
+}else{
+$fields_to_export=$_SESSION['state']['suppliers']['table']['csv_export'];
+}
+
+
+$fields=array(
+'id'=>array('title'=>_('Id'),'db_name'=>'Supplier Key'),
+'code'=>array('title'=>_('Code'),'db_name'=>'Supplier Code'),
+'name'=>array('title'=>_('Name'),'db_name'=>'Supplier Name'),
+'opo'=>array('title'=>_('Open Purchase Orders'),'db_name'=>'Supplier Open Purchase Orders'),
+
+'contact_name'=>array('title'=>_('Contact Name'),'db_name'=>'Supplier Main Contact Name'),
+'telephone'=>array('title'=>_('Telephone'),'db_name'=>'Supplier Main XHTML Telephone'),
+'email'=>array('title'=>_('Email'),'db_name'=>'Supplier Main Plain Email'),
+'currency'=>array('title'=>_('Currency'),'db_name'=>'Supplier Default Currency'),
+
+'discontinued'=>array('title'=>_('Discontinued'),'db_name'=>'Supplier Discontinued Supplier Products'),
+'surplus'=>array('title'=>_('Surplus'),'db_name'=>'Supplier Surplus Availability Products'),
+'ok'=>array('title'=>_('Ok'),'db_name'=>'Supplier Optimal Availability Products'),
+'low'=>array('title'=>_('Low'),'db_name'=>'Supplier Low Availability Products'),
+'critical'=>array('title'=>_('Critical'),'db_name'=>'Supplier Critical Availability Products'),
+'gone'=>array('title'=>_('Gone'),'db_name'=>'Supplier Out Of Stock Products'),
+
+'cost_all'=>array('title'=>_('Total Costs'),'db_name'=>'Supplier Total Cost'),
+'profit_all'=>array('title'=>_('Total Profit'),'db_name'=>'Supplier Total Parts Profit'),
+'cost_1y'=>array('title'=>_('Costs 1Y'),'db_name'=>'Supplier 1 Year Acc Cost'),
+'profit_1y'=>array('title'=>_('Profit 1Y'),'db_name'=>'Supplier 1 Year Acc Parts Profit'),
+'cost_1q'=>array('title'=>_('Costs 1Q'),'db_name'=>'Supplier 1 Quarter Acc Cost'),
+'profit_1q'=>array('title'=>_('Profit 1Q'),'db_name'=>'Supplier 1 Quarter Acc Parts Profit'),
+'cost_1m'=>array('title'=>_('Costs 1M'),'db_name'=>'Supplier 1 Month Acc Cost'),
+'profit_1m'=>array('title'=>_('Profit 1M'),'db_name'=>'Supplier 1 Month Acc Parts Profit'),
+'cost_1w'=>array('title'=>_('Costs 1W'),'db_name'=>'Supplier 1 Week Acc Cost'),
+'profit_1w'=>array('title'=>_('Profit 1W'),'db_name'=>'Supplier 1 Week Acc Parts Profit'),
+);
+
+
+foreach($fields as $key=>$value){
+if(!isset($fields_to_export[$key]) or  !$fields_to_export[$key]  )
+unset($fields[$key]);
+}
+
+
+
+$data=array();
+$_data=array();
+foreach($fields as $key=>$options){
+$_data[]=$options['title'];
+}
+$data[]=$_data;
+$sql="select * from `Supplier Dimension` where $where $wheref";
+$res=mysql_query($sql);
+
+while($row=mysql_fetch_assoc($res)){
+$_data=array();
+foreach($fields as $key=>$options){
+
+$_data[]=$row[$options['db_name']];
+}
+$data[]=$_data;
+}
+//print_r($data);exit;
+
+return $data;
+
+}
 
 
 
