@@ -140,8 +140,23 @@ function list_country_list(){
    //    $order=$translations[$order];
      
     //$order=`Country Name`;
+
+
+  $_order=$order;
+   $_dir=$order_direction;
+
+   
+   if($order=='country_name' or $order=='')
+     $order='`Country Name`';
+   
+
+
+
+
+
+
    $adata=array();
- $sql="select `Country Name` from `Country Dimension`  limit $start_from,$number_results;";
+ $sql="select `Country Name` from `Country Dimension` order by $order $order_direction  limit $start_from,$number_results;";
 
     printf($sql);
    $res=mysql_query($sql);
