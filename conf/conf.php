@@ -2538,26 +2538,38 @@ $default_state=array(
 
                               ),
      
-					'country_list'=>array(
-                                                  'display'=>'all',
-                                                  'order'=>'country_name',
-                                                  'order_dir'=>'',
-                                                  'sf'=>0,
-                                                  'nr'=>25,
-                                                  'where'=>'where true',
-                                                  'f_field'=>'country_name',
-                                                  'f_value'=>'',
-						'table'=>array(
-                                                  'display'=>'all',
-                                                  'order'=>'country_name',
-                                                  'order_dir'=>'desc',
-                                                  'sf'=>0,
-                                                  'nr'=>25,
-                                                  'where'=>'where true',
-                                                  'f_field'=>'country_name',
-                                                  'f_value'=>'',
-                                              ))
-
+		'world'=>array(
+           		 'countries'=>array(
+                            'display'=>'all',
+                            'order'=>'country_name',
+                            'order_dir'=>'desc',
+                            'sf'=>0,
+                            'nr'=>25,
+                            'where'=>'where true',
+                            'f_field'=>'country_name',
+                            'f_value'=>'',
+                     	   ),
+          		  'wregions'=>array(
+                           'display'=>'all',
+                           'order'=>'wregion_name',
+                           'order_dir'=>'desc',
+                           'sf'=>0,
+                           'nr'=>25,
+                           'where'=>'where true',
+                           'f_field'=>'wregion_name',
+                           'f_value'=>'',
+                     	  ),
+          		  'continents'=>array(
+                             'display'=>'all',
+                             'order'=>'continent_name',
+                             'order_dir'=>'desc',
+                             'sf'=>0,
+                             'nr'=>25,
+                             'where'=>'where true',
+                             'f_field'=>'continent_name',
+                             'f_value'=>'',
+                       	  ),
+        )	
                );
 
 

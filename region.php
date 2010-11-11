@@ -84,10 +84,10 @@ $_SESSION['state']['region']['customers']['mode']=$mode;
 
 
 
-//$tipo_filter=$_SESSION['state']['country_list']['table']['f_field'];
+$tipo_filter=$_SESSION['state']['world']['countries']['f_field'];
 
-//$smarty->assign('filter0',$tipo_filter);
-//$smarty->assign('filter_value0',$_SESSION['state']['country_list']['table']['f_value']);
+$smarty->assign('filter0',$tipo_filter);
+$smarty->assign('filter_value0',$_SESSION['state']['world']['countries']['f_value']);
 
 $paginator_menu=array(10,25,50,100,500);
 $smarty->assign('paginator_menu0',$paginator_menu);

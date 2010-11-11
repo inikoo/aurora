@@ -44,7 +44,7 @@ case('country_list'):
 
 
 function list_country_list(){
- $conf=$_SESSION['state']['country_list']['table'];
+ $conf=$_SESSION['state']['world']['countries'];
   if(isset( $_REQUEST['sf']))
      $start_from=$_REQUEST['sf'];
    else
@@ -93,7 +93,7 @@ function list_country_list(){
    $filter_msg='';
 
 
-  $_SESSION['state']['country_list']['table']=array(
+  $_SESSION['state']['world']['countries']=array(
 						 'type'=>$type
 						 ,'order'=>$order
 						 ,'order_dir'=>$order_direction
@@ -139,9 +139,9 @@ function list_country_list(){
    //  if(array_key_exists($order,$translations))
    //    $order=$translations[$order];
      
-    $order=`Country Name`;
+    //$order=`Country Name`;
    $adata=array();
- $sql="select `Country Name` from `Country Dimension`  order by $order $order_direction limit $start_from,$number_results;";
+ $sql="select `Country Name` from `Country Dimension`  limit $start_from,$number_results;";
 
     printf($sql);
    $res=mysql_query($sql);
