@@ -107,7 +107,7 @@ function list_country_list(){
   $filter_msg='';
   $wheref='';
  
-  $sql="select count(*) as total from `Country Dimension` ";
+  $sql="select count(*) as total from kbase.`Country Dimension` ";
   
      $res=mysql_query($sql);
    //  if($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
@@ -118,7 +118,7 @@ function list_country_list(){
        $filtered=0;
        $total_records=$total;
      } else{
-       $sql="select count(*) as total from `Country Dimension`  $where   ";
+       $sql="select count(*) as total from kbase.`Country Dimension`  $where   ";
        $res=mysql_query($sql);
        if($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
 	 $total_records=$row['total'];
@@ -156,7 +156,7 @@ function list_country_list(){
 
 
    $adata=array();
- $sql="select `Country Name` from `Country Dimension` order by $order $order_direction  limit $start_from,$number_results;";
+ $sql="select `Country Name` from kbase.`Country Dimension` order by $order $order_direction  limit $start_from,$number_results;";
 
     printf($sql);
    $res=mysql_query($sql);
