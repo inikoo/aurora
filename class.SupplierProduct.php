@@ -138,12 +138,6 @@ class supplierproduct extends DB_Table {
         }
 
     }
-
-
-
-
-
-
     function get_data($tipo,$tag,$supplier_key=1) {
         if ($tipo=='id' or $tipo=='key') {
             $sql=sprintf("select * from `Supplier Product History Dimension` where `SPH Key`=%d ",$tag);
@@ -361,9 +355,6 @@ class supplierproduct extends DB_Table {
         }
 
     }
-
-
-
     function get_products(){
       $products=array();
        $sql=sprintf("select PD.`Product ID`,`Product Code`,`Supplier Product Units Per Part`,`Parts Per Product` 
@@ -386,9 +377,6 @@ where SPPD.`Supplier Product Key`=%d and `Supplier Product Part Most Recent`='Ye
 	 
 	    return $products;
     }
-
-
-
     function load($data_to_be_read,$args='') {
         switch ($data_to_be_read) {
         case('used in'):
@@ -454,7 +442,6 @@ where SPPD.`Supplier Product Key`=%d and `Supplier Product Part Most Recent`='Ye
 
         }
     }
-
     function get_parts(){
       $parts=array();
       $sql=sprintf("select `Supplier Product Unit`,`Supplier Product Unit`,`Supplier Product Units Per Part`,`Part SKU`  from `Supplier Product Part List` where `Supplier Product Code`=%s and `Supplier Key`=%d and `Supplier Product Part Most Recent`='Yes' group by  `Part SKU`;"
@@ -474,8 +461,7 @@ where SPPD.`Supplier Product Key`=%d and `Supplier Product Part Most Recent`='Ye
 	    
       return $parts;
     }
-
-  function get_parts_objects(){
+    function get_parts_objects(){
       $parts=array();
       $sql=sprintf("select `Supplier Product Unit`,`Supplier Product Unit`,`Supplier Product Units Per Part`,`Part SKU`  from `Supplier Product Part List` where `Supplier Product Code`=%s and `Supplier Key`=%d and `Supplier Product Part Most Recent`='Yes' group by  `Part SKU`;"
 		   ,prepare_mysql($this->data['Supplier Product Code'])
@@ -489,7 +475,6 @@ where SPPD.`Supplier Product Key`=%d and `Supplier Product Part Most Recent`='Ye
 	    
       return $parts;
     }
-
     function get($key='') {
 
         if (array_key_exists($key,$this->data))
@@ -601,7 +586,6 @@ where SPPD.`Supplier Product Key`=%d and `Supplier Product Part Most Recent`='Ye
         }
 
     }
-
     function update_valid_dates($date) {
         $this->update_valid_dates_key($date);
         $this->update_valid_dates_code($date);
@@ -649,8 +633,6 @@ where SPPD.`Supplier Product Key`=%d and `Supplier Product Part Most Recent`='Ye
         $affected+=mysql_affected_rows();
         return $affected;
     }
-
-
 function update_stock(){
 $parts=$this->get_parts();
 $stock=0;
@@ -671,7 +653,6 @@ mysql_query($sql);
 //print "$sql\n";
 
 }
-
 function update_days_availeable(){
 $parts=$this->get_parts();
 $days_until=0;
@@ -693,9 +674,6 @@ mysql_query($sql);
 //print "$sql\n";
 
 }
-
-
-
     function update_cost($value) {
         $change_at='now';
 
@@ -765,10 +743,6 @@ $action='edited';
 
 
     }
-
-
-
-
 function update_dimensions($field,$value){
 
 if($value==''){
@@ -917,8 +891,6 @@ $this->add_history(array(
 }
 
 }
-
-
 function update_unit_type($value){
 
 if(!in_array($value,getEnumValues("Supplier Product Dimension","Supplier Product Unit Type" ))){
@@ -971,7 +943,6 @@ $this->add_history(array(
 
 
 }
-
 function update_unit_packing_type($value){
 
 if(!in_array($value,getEnumValues("Supplier Product Dimension","Supplier Product Unit Package Type" ))){
@@ -1022,7 +993,6 @@ $this->add_history(array(
 
 
 }
-
 function update_field_switcher($field,$value,$options='') {
 //print "$field $value";
     switch ($field) {
@@ -1074,7 +1044,6 @@ function update_field_switcher($field,$value,$options='') {
 
 
 }
-
  function change_current_key($new_current_key) {
 
     $sql=sprintf("select `SPH Case Cost` from `Supplier Product History Dimension` where `Supplier Key`=%d and `Supplier Product Code`=%s and `SPH Key`=%d "
@@ -1110,9 +1079,7 @@ function update_field_switcher($field,$value,$options='') {
    
 
   }
-  
-  
-  protected function update_buy_state($value,$options=''){
+   protected function update_buy_state($value,$options=''){
   $field='Supplier Product Buy State';
   //print "** Update Field $field $value\n";
   
@@ -1200,7 +1167,6 @@ function update_field_switcher($field,$value,$options='') {
   }
 
 }
-
   function get_historic_keys(){
     $sql=sprintf("select `SPH Key` from `Supplier Product History Dimension` where `Supplier Product Code`=%s and `Supplier Key`=%d "
 		 ,prepare_mysql($this->data['Supplier Product Code'])
@@ -1214,8 +1180,6 @@ function update_field_switcher($field,$value,$options='') {
     }
     return $historic_keys;
   }
-
-  
   function upload_sales(){
     $this->load('parts');
     // total
@@ -1488,9 +1452,6 @@ function update_field_switcher($field,$value,$options='') {
 
 
   }
-
-
-
   function upload_current_key_sales(){
  $this->load('parts');
 	  // total
@@ -1747,7 +1708,6 @@ function update_field_switcher($field,$value,$options='') {
 
 
   }
-
 function get_formated_unit(){
 
     switch($this->data['Supplier Product Unit Type']){
@@ -1760,7 +1720,6 @@ function get_formated_unit(){
     }
    
 }
-
 function get_formated_price($locale=''){
 
   $data=array(
@@ -1804,18 +1763,12 @@ function get_formated_price_per_unit($locale=''){
 
 return formated_price_per_unit($data);
 }
-
-
   function units_convertion_factor($unit_from,$unit_to=false){
     return 1;
   }
-
-
-
 function get_part_locations(){
 
 }
-
 function load_images_slidesshow(){
   $sql=sprintf("select `Image Thumbnail URL`,`Image Small URL`,`Is Principal`,ID.`Image Key`,`Image Caption`,`Image URL`,`Image Filename`,`Image File Size`,`Image File Checksum`,`Image Width`,`Image Height`,`Image File Format` from `Image Bridge` PIB left join `Image Dimension` ID on (PIB.`Image Key`=ID.`Image Key`) where `Subject Type`='Supplier Product' and   `Subject Key`=%d",$this->pid);
   $res=mysql_query($sql);
@@ -1830,7 +1783,6 @@ function load_images_slidesshow(){
 }
 
 }
-
 function new_current_part_list($header_data,$list){
   
   $product_part_key=$this->find_product_part_list($list);
@@ -1842,9 +1794,6 @@ function new_current_part_list($header_data,$list){
   $this->set_part_list_as_current($product_part_key);
   
 }
-
-
-
 function create_product_part_list($header_data,$list){
   $product_part_key=0;
   $_base_list_data=array(
@@ -1911,7 +1860,6 @@ function create_product_part_list($header_data,$list){
   }
   return $product_part_key;
 }
-
 function set_part_list_as_current($product_part_key){
   $current_part_key=$this->get_current_part_key();
   if($current_part_key!=$product_part_key){
@@ -1927,7 +1875,6 @@ function set_part_list_as_current($product_part_key){
     mysql_query($sql);
   }
 }
-
 function update_product_part_list($product_part_key,$header_data,$list){
   
   $this->new_value=array();
@@ -1949,7 +1896,6 @@ function update_product_part_list($product_part_key,$header_data,$list){
   
 
 }
-
 function get_product_part_dimension_data($product_part_key){
   $sql=sprintf("select * from `Supplier Product Part Dimension` where `Supplier Product Part Key`=%d  ",$product_part_key);
   
@@ -1959,7 +1905,6 @@ function get_product_part_dimension_data($product_part_key){
   }else
     return false;
 }
-
 function get_product_part_list_data($product_part_key){
   $data=array();
   $sql=sprintf("select * from `Supplier Product Part List` where `Supplier Product Part Key`=%d  ",$product_part_key);
@@ -1969,7 +1914,6 @@ function get_product_part_list_data($product_part_key){
   }
   return $data;
 }
-
 function get_current_part_key(){
   $product_part_key=0;
   $sql=sprintf("select `Supplier Product Part Key` from `Supplier Product Part Dimension` where `Supplier Product Key`=%d and `Supplier Product Part Most Recent`='Yes' ",$this->pid);
@@ -1981,7 +1925,6 @@ function get_current_part_key(){
   }
   return $product_part_key;
 }
-
 function find_product_part_list($list){
   
   $this_list_num_parts=count($list);
@@ -2043,6 +1986,32 @@ function find_product_part_list($list){
     exit("Debug this part list is duplicated\n");
   }
   
+}
+function new_historic_part_list($header_data,$list){
+
+$product_part_key=$this->find_product_part_list($list);
+if($product_part_key){
+$this->update_product_part_list($product_part_key,$header_data,$list);
+$this->update_product_part_list_historic_dates($product_part_key,$header_data['Supplier Product Part Valid From'],$header_data['Supplier Product Part Valid To']);
+
+}else{
+$product_part_key=$this->create_product_part_list($header_data,$list);
+}
+}
+
+function update_product_part_list_historic_dates($product_part_key,$date1,$date2){
+$sql=sprintf("update `Supplier Product Part Dimension` set `Supplier Product Part Valid From`=%s where `Supplier Product Part Key`=%d and (`Supplier Product Part Valid From` is null or `Supplier Product Part Valid From`>%s)"
+,prepare_mysql($date1)
+,$product_part_key
+,prepare_mysql($date1)
+);
+mysql_query($sql);
+$sql=sprintf("update `Supplier Product Part Dimension` set `Supplier Product Part Valid To`=%s where `Supplier Product Part Key`=%d and (`Supplier Product Part Valid To` is null or `Supplier Product Part Valid To`<%s)"
+,prepare_mysql($date2)
+,$product_part_key
+,prepare_mysql($date2)
+);
+mysql_query($sql);
 }
 
 
