@@ -85,12 +85,21 @@ $_SESSION['state']['region']['customers']['mode']=$mode;
 
 
 $tipo_filter=$_SESSION['state']['world']['countries']['f_field'];
-
 $smarty->assign('filter0',$tipo_filter);
 $smarty->assign('filter_value0',$_SESSION['state']['world']['countries']['f_value']);
 
+$tipo_filter=$_SESSION['state']['world']['wregions']['f_field'];
+$smarty->assign('filter1',$tipo_filter);
+$smarty->assign('filter_value1',$_SESSION['state']['world']['wregions']['f_value']);
+
+$tipo_filter=$_SESSION['state']['world']['continents']['f_field'];
+$smarty->assign('filter2',$tipo_filter);
+$smarty->assign('filter_value2',$_SESSION['state']['world']['wregions']['f_value']);
+
+
 $paginator_menu=array(10,25,50,100,500);
 $smarty->assign('paginator_menu0',$paginator_menu);
-
+$smarty->assign('paginator_menu1',$paginator_menu);
+$smarty->assign('paginator_menu2',$paginator_menu);
 $smarty->display($template);
 ?>
