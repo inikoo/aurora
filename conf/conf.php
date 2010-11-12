@@ -2560,6 +2560,34 @@ $default_state=array(
                            'f_value'=>'',
                      	  ),
           		  'continents'=>array(
+			     'continent_code'=>'',
+                             'display'=>'all',
+                             'order'=>'continent_name',
+                             'order_dir'=>'desc',
+                             'sf'=>0,
+                             'nr'=>20,
+                             'where'=>'where true',
+                             'f_field'=>'continent_code',
+                             'f_value'=>'',
+                       	  ),
+        ),	
+
+
+
+
+			 'continent'=>array(
+                           'continent_code'=>'',
+                           'wregions'=>array(
+                           'display'=>'all',
+                           'order'=>'wregion_name',
+                           'order_dir'=>'asc',
+                           'sf'=>0,
+                           'nr'=>20,
+                           'where'=>'where true',
+                           'f_field'=>'wregion_name',
+                           'f_value'=>'',
+                               ),
+                            'continents'=>array(
                              'display'=>'all',
                              'order'=>'continent_name',
                              'order_dir'=>'desc',
@@ -2568,8 +2596,9 @@ $default_state=array(
                              'where'=>'where true',
                              'f_field'=>'continent_name',
                              'f_value'=>'',
-                       	  ),
-        )	
+                                 ),
+        )
+
                );
 
 

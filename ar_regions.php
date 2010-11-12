@@ -487,6 +487,8 @@ $continent_name=sprintf('<a href="region.php?continent=%s">%s</a>',$row['Contine
 // ----------------------------------------------- continent -------------------------------------------------------------
 function list_continent(){
  $conf=$_SESSION['state']['world']['continents'];
+ 
+
   if(isset( $_REQUEST['sf']))
      $start_from=$_REQUEST['sf'];
    else
@@ -539,7 +541,7 @@ function list_continent(){
 						 'type'=>$type
 						 ,'order'=>$order
 						 ,'order_dir'=>$order_direction
-						 ,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value);
+						 ,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value,'continent_code'=>$continent_code);
 
 
 
@@ -590,22 +592,23 @@ function list_continent(){
    
    if($order=='continent_name' or $order=='')
      $order='`Continent`';
+//if($f_value=='continent_code' or $f_value=='')
+    // $f_value='`Continent Code`';
    
 
 
-
-
- $wheref.=" and  `Continent Code` like '".addslashes($f_value)."%'";
+$wheref.=" and  `Continent Code`=%s,".$_SESSION['state']['continent']['continent_code'];
 
    $adata=array();
  $sql="select * from kbase.`Country Dimension` $where $wheref order by $order $order_direction  limit $start_from,$number_results;";
 
- 
+ print($sql);
    $res=mysql_query($sql);
    
    while($row=mysql_fetch_array($res)) {
 //$continent_name=sprintf('<a href="region.php?continent=%s">%s</a>',$row['Continent Code'],$row['Continent']);
      $adata[]=array(
+		   'continent_code'=>$row['Continent Code'], 
 		   'country_name'=>$row['Country Name'],
 		   'world_region'=>$row['World Region'],
 		   'head_of_state'=>$row['Country Head of State'],
