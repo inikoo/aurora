@@ -154,14 +154,15 @@ function list_country_list(){
 
 
    $adata=array();
- $sql="select distinct `Country Name` from kbase.`Country Dimension` order by $order $order_direction  limit $start_from,$number_results;";
+ $sql="select distinct `Country Name`,`Country Code` from kbase.`Country Dimension` order by $order $order_direction  limit $start_from,$number_results;";
 
     
    $res=mysql_query($sql);
    
    while($row=mysql_fetch_array($res)) {
+    $country_name=sprintf('<a href="region.php?country=%s">%s</a>',$row['Country Code'],$row['Country Name']);
      $adata[]=array(
-		   'country_name'=>$row['Country Name']
+		   'country_name'=>$country_name
 		 
 		   );
 
@@ -310,8 +311,9 @@ function  list_world_region(){
    $res=mysql_query($sql);
    
    while($row=mysql_fetch_array($res)) {
+$wregion_name=sprintf('<a href="region.php?world_region=%s">%s</a>',$row['World Region'],$row['World Region']);
      $adata[]=array(
-		   'wregion_name'=>$row['World Region']
+		   'wregion_name'=>$wregion_name
 		 
 		   );
 
@@ -460,8 +462,9 @@ function list_continent_list(){
    $res=mysql_query($sql);
    
    while($row=mysql_fetch_array($res)) {
+$continent_name=sprintf('<a href="region.php?continent=%s">%s</a>',$row['Continent'],$row['Continent']);
      $adata[]=array(
-		   'continent_name'=>$row['Continent']
+		   'continent_name'=>$continent_name
 		 
 		   );
 
