@@ -43,11 +43,9 @@ $js_files=array(
               'table_common.js.php',
               'js/dropdown.js',
               'region.js.php',
-		'world.js.php'
+		
           );
 
-$smarty->assign('css_files',$css_files);
-$smarty->assign('js_files',$js_files);
 
 if(isset($_REQUEST['country'])){
 $mode='country';
@@ -55,9 +53,17 @@ $tag=$_REQUEST['country'];
 }if(isset($_REQUEST['wregion'])){
 $mode='wregion';
 $tag=$_REQUEST['wregion'];
+}if(isset($_REQUEST['continent'])){
+$mode='continent';
+$tag=$_REQUEST['continent'];
+$js_files[]='continent.js.php';
+
 }else{
 $mode='world';
 $tag='world';
+
+$js_files[]='world.js.php';
+
 }
 
 switch ($mode) {
@@ -69,8 +75,11 @@ case 'wregion':
     $tempalte='world_region.tpl';
     break;
 case 'continent':
+    $smarty->assign('continent_code',$tag);
 $template='continent.tpl';
+    
     break;
+    
 case 'country':
    
     $country=new Country('code',  Address::parse_country($tag));
@@ -104,5 +113,8 @@ $paginator_menu=array(10,25,50,100,500);
 $smarty->assign('paginator_menu0',$paginator_menu);
 $smarty->assign('paginator_menu1',$paginator_menu);
 $smarty->assign('paginator_menu2',$paginator_menu);
+$smarty->assign('css_files',$css_files);
+$smarty->assign('js_files',$js_files);
+
 $smarty->display($template);
 ?>

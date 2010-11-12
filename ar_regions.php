@@ -81,11 +81,7 @@ function list_country_list(){
   else
     $tableid=0;
 
-   
- if(isset( $_REQUEST['type']))
-    $type=$_REQUEST['type'];
-  else
-    $type=$conf['type'];
+
 
 
  $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
@@ -95,10 +91,11 @@ function list_country_list(){
 
 
   $_SESSION['state']['world']['countries']=array(
-						 'type'=>$type
-						 ,'order'=>$order
+					
+						 'order'=>$order
 						 ,'order_dir'=>$order_direction
-						 ,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value);
+						 ,'nr'=>$number_results,
+						 'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value);
 
 
 
@@ -232,12 +229,7 @@ function  list_world_region(){
   else
     $tableid=0;
 
-   
- if(isset( $_REQUEST['type']))
-    $type=$_REQUEST['type'];
-  else
-    $type=$conf['type'];
-
+ 
 
  $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
    $_order=$order;
@@ -246,8 +238,8 @@ function  list_world_region(){
 
 
   $_SESSION['state']['world']['wregions']=array(
-						 'type'=>$type
-						 ,'order'=>$order
+						
+						 'order'=>$order
 						 ,'order_dir'=>$order_direction
 						 ,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value);
 
@@ -383,11 +375,7 @@ function list_continent_list(){
   else
     $tableid=0;
 
-   
- if(isset( $_REQUEST['type']))
-    $type=$_REQUEST['type'];
-  else
-    $type=$conf['type'];
+
 
 
  $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
@@ -397,8 +385,8 @@ function list_continent_list(){
 
 
   $_SESSION['state']['world']['continents']=array(
-						 'type'=>$type
-						 ,'order'=>$order
+					
+						 'order'=>$order
 						 ,'order_dir'=>$order_direction
 						 ,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value);
 
