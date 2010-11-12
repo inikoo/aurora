@@ -224,6 +224,16 @@ YAHOO.util.Event.addListener('clean_table_filter_show0', "click",show_filter,0);
  oACDS.queryMatchContains = true;
  var oAutoComp = new YAHOO.widget.AutoComplete("f_input0","f_container0", oACDS);
  oAutoComp.minQueryLength = 0; 
+
+var oACDS1 = new YAHOO.util.FunctionDataSource(mygetTerms);
+ oACDS1.queryMatchContains = true;
+ var oAutoComp1 = new YAHOO.widget.AutoComplete("f_input1","f_container1", oACDS);
+ oAutoComp1.minQueryLength = 0; 
+
+var oACDS2 = new YAHOO.util.FunctionDataSource(mygetTerms);
+ oACDS2.queryMatchContains = true;
+ var oAutoComp2 = new YAHOO.widget.AutoComplete("f_input2","f_container2", oACDS);
+ oAutoCom2p.minQueryLength = 0; 
 //init_search('world_region');
   
 
