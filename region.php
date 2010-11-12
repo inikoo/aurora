@@ -68,6 +68,9 @@ case 'wregion':
   
     $tempalte='world_region.tpl';
     break;
+case 'continent':
+$template='continent.tpl';
+    break;
 case 'country':
    
     $country=new Country('code',  Address::parse_country($tag));
