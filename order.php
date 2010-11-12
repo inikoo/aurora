@@ -9,6 +9,10 @@ if(!$user->can_view('orders')){
   header('Location: index.php');
    exit;
 }
+  $smarty->assign('search_label',_('Orders'));
+$smarty->assign('search_scope','orders_store');
+
+  
   
 $css_files=array(
 		 $yui_path.'reset-fonts-grids/reset-fonts-grids.css',

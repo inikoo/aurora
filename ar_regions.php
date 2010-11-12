@@ -33,8 +33,8 @@ case('world_region'):
 case('continent_list'):
     list_continent_list();
     break;
-case('continent'):
-    list_continent();
+case('countries_in_continent'):
+    list_countries_in_continent();
     break;
  default:
    $response=array('state'=>404,'msg'=>_('Operation not found'));
@@ -485,7 +485,7 @@ $continent_name=sprintf('<a href="region.php?continent=%s">%s</a>',$row['Contine
    echo json_encode($response);
 }
 // ----------------------------------------------- continent -------------------------------------------------------------
-function list_continent(){
+function list_countries_in_continent(){
  $conf=$_SESSION['state']['world']['continents'];
  
 
@@ -524,11 +524,7 @@ function list_continent(){
   else
     $tableid=0;
 
-   
- if(isset( $_REQUEST['type']))
-    $type=$_REQUEST['type'];
-  else
-    $type=$conf['type'];
+$continent_code=$_SESSION['state']['continent']['code'];
 
 
  $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
@@ -538,10 +534,10 @@ function list_continent(){
 
 
   $_SESSION['state']['world']['continents']=array(
-						 'type'=>$type
-						 ,'order'=>$order
+						
+						 'order'=>$order
 						 ,'order_dir'=>$order_direction
-						 ,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value,'continent_code'=>$continent_code);
+						 ,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value);
 
 
 
@@ -597,12 +593,12 @@ function list_continent(){
    
 
 
-$wheref.=" and  `Continent Code`=%s,".$_SESSION['state']['continent']['continent_code'];
+$where=sprintf(" where  `Continent Code`=%s ",prepare_mysql($continent_code));
 
    $adata=array();
  $sql="select * from kbase.`Country Dimension` $where $wheref order by $order $order_direction  limit $start_from,$number_results;";
 
- print($sql);
+ //print($sql);
    $res=mysql_query($sql);
    
    while($row=mysql_fetch_array($res)) {

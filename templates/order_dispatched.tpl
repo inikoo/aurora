@@ -18,11 +18,12 @@
        
        <div style="border:0px solid #ddd;width:190px;float:right">
 	 <table border=0  style="width:100%;border-top:1px solid #333;border-bottom:1px solid #333;width:100%,padding:0;margin:0;float:right;margin-left:0px" >
-	   {if $order->get('Order Items Discount Amount')!=0 }
-	   <tr><td  class="aright" >{t}Items Gross{/t}</td><td width=100 class="aright">{$order->get('Items Gross Amount')}</td></tr>
+	  
+	   <tr><td  class="aright" >{t}Ordered Amount{/t}</td><td width=100 class="aright">{$order->get('Items Gross Amount')}</td></tr>
+	    {if $order->get('Order Net Credited Amount')!=0  }
 	   <tr><td  class="aright" >{t}Discounts{/t}</td><td width=100 class="aright">-{$order->get('Items Discount Amount')}</td></tr>
-	   
 	   {/if}
+	
 	   <tr><td  class="aright" >{t}Items Net{/t}</td><td width=100 class="aright">{$order->get('Items Net Amount')}</td></tr>
 	   {if $order->get('Order Net Credited Amount')!=0  }
 	   <tr><td  class="aright" >{t}Credits{/t}</td><td width=100 class="aright">{$order->get('Net Credited Amount')}</td></tr>
@@ -57,7 +58,7 @@
 
 
 <h2>{t}Items{/t}</h2>
-      <div  id="table0" class="dtable btable" style="margin-bottom:0"></div>
+      <div  id="table0" class="dtable btable" style="margin-bottom:0;font-size:80%"></div>
 
 	    
     </div>

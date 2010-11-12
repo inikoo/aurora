@@ -2576,7 +2576,7 @@ $default_state=array(
 
 
 			 'continent'=>array(
-                           'continent_code'=>'',
+                           'code'=>'',
                            'wregions'=>array(
                            'display'=>'all',
                            'order'=>'wregion_name',
@@ -2587,14 +2587,14 @@ $default_state=array(
                            'f_field'=>'wregion_name',
                            'f_value'=>'',
                                ),
-                            'continents'=>array(
+                            'countries'=>array(
                              'display'=>'all',
-                             'order'=>'continent_name',
+                             'order'=>'country_name',
                              'order_dir'=>'desc',
                              'sf'=>0,
                              'nr'=>20,
                              'where'=>'where true',
-                             'f_field'=>'continent_name',
+                             'f_field'=>'country_name',
                              'f_value'=>'',
                                  ),
         )
