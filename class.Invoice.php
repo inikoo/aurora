@@ -331,16 +331,16 @@ protected function create($invoice_data) {
     $dn_keys=join(',',$delivery_notes_ids);
 
     $tax_category=$this->data['Invoice Tax Code'];
-    $sql=sprintf('select `Transaction Tax Rate`,`Order Quantity`,`Delivery Note Quantity`,`Order Transaction Gross Amount`,`Order Transaction Total Discount Amount`,`Order Transaction Fact Key`,`Product Key`,`Delivery Note Quantity` from `Order Transaction Fact` where `Delivery Note Key` in (%s) and ISNULL(`Invoice Key`)  '
+    $sql=sprintf('select `Current Autorized to Sell Quantity`,`Transaction Tax Rate`,`Order Quantity`,`Delivery Note Quantity`,`Order Transaction Gross Amount`,`Order Transaction Total Discount Amount`,`Order Transaction Fact Key`,`Product Key`,`Delivery Note Quantity` from `Order Transaction Fact` where `Delivery Note Key` in (%s) and ISNULL(`Invoice Key`)  '
     ,$dn_keys);
     $res=mysql_query($sql);
     while ($row=mysql_fetch_assoc($res)) {
-        if ($row['Order Quantity']!=0) {
-            $factor_actually_packed=$row['Delivery Note Quantity']/$row['Order Quantity'];
-        } else {
-            $factor_actually_packed=0;
+        if ($row['Current Autorized to Sell Quantity']==0) {
+            continue;
         }
-        $sql=sprintf("update `Order Transaction Fact` set `Invoice Date`=%s,`Invoice Currency Code`=%s,`Invoice Key`=%d,`Invoice Public ID`=%s,`Invoice Quantity`=%f,`Invoice Transaction Gross Amount`=%.2f,`Invoice Transaction Total Discount Amount`=%.2f,`Invoice Transaction Item Tax Amount`=%.2f where `Order Transaction Fact Key`=%d",
+            $factor_actually_packed=$row['Delivery Note Quantity']/$row['Current Autorized to Sell Quantity'];
+       
+        $sql=sprintf("update `Order Transaction Fact` set `Invoice Date`=%s,`Invoice Currency Code`=%s,`Invoice Key`=%d,`Invoice Public ID`=%s,`Invoice Quantity`=%f,`Invoice Transaction Gross Amount`=%.2f,`Invoice Transaction Total Discount Amount`=%.2f,`Invoice Transaction Item Tax Amount`=%.3f where `Order Transaction Fact Key`=%d",
                      prepare_mysql($this->data['Invoice Date']),
                      prepare_mysql($this->data['Invoice Currency']),
                      $this->id,
@@ -349,7 +349,7 @@ protected function create($invoice_data) {
 
                      $row['Order Transaction Gross Amount']*$factor_actually_packed,
                      $row['Order Transaction Total Discount Amount']*$factor_actually_packed,
-                     ($row['Order Transaction Gross Amount']-$row['Order Transaction Total Discount Amount'])*$factor_actually_packed*$row['Transaction Tax Rate'],
+                     round(($row['Order Transaction Gross Amount']-$row['Order Transaction Total Discount Amount'])*$factor_actually_packed*$row['Transaction Tax Rate'],3),
                      $row['Order Transaction Fact Key']
                     );
         mysql_query($sql);
@@ -507,6 +507,10 @@ $sql = sprintf("select `Invoice Transaction Gross Amount`,`Invoice Transaction T
      //  print "Items net:  $items_net : ".$row['item_net']." ".$counter."\n";
     }
 
+
+//print "$items_net $items_tax ----------------\n";
+
+
 $sql=sprintf("select * from `Order No Product Transaction Fact` where `Invoice Key`=%d",$this->id);
 //print "$sql\n";
  $result = mysql_query ( $sql );
@@ -547,7 +551,7 @@ $this->data['Invoice Refund Tax Amount']=$items_refund_tax;
     $this->data['Invoice Items Gross Amount']=$items_gross;
     $this->data['Invoice Items Discount Amount']=$items_discounts;
     $this->data['Invoice Total Net Amount']=$this->data['Invoice Refund Net Amount']+$this->data['Invoice Total Net Adjust Amount']+$this->data['Invoice Shipping Net Amount']+$this->data['Invoice Items Net Amount']+$this->data['Invoice Charges Net Amount'];
-    $this->data['Invoice Total Tax Amount']=$this->data['Invoice Refund Tax Amount']+$this->data['Invoice Total Tax Adjust Amount']+$this->data['Invoice Shipping Tax Amount']+$this->data['Invoice Items Tax Amount']+$this->data['Invoice Charges Tax Amount'];
+    $this->data['Invoice Total Tax Amount']=round($this->data['Invoice Refund Tax Amount']+$this->data['Invoice Total Tax Adjust Amount']+$this->data['Invoice Shipping Tax Amount']+$this->data['Invoice Items Tax Amount']+$this->data['Invoice Charges Tax Amount'],2);
    
   // print $this->data['Invoice Shipping Net Amount']."zz\n";
    $this->data['Invoice Outstanding Net Balance']=$items_net_outstanding_balance+$items_refund_net_outstanding_balance;

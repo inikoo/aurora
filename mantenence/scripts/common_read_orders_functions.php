@@ -335,7 +335,7 @@ $adjust_transactions[]=array('Net'=>$total_diff,'Tax'=>0,'Transaction Descriptio
 
 }
 
-
+//print_r($adjust_transactions);
 
 
 
@@ -459,7 +459,7 @@ global $customer_key,$filename,$store_code,$order_data_id,$date_order,$shipping_
             }elseif( $transaction['given']>0){
              $product=new Product('id',$transaction['Product Key']);
             $quantity=$transaction['given'];
-            $gross=$quantity*$product->data['Product History Price'];
+            $gross=0;
             $estimated_weight=$quantity*$product->data['Product Gross Weight'];
                  $data=array(
                       'Estimated Weight'=>$estimated_weight,
@@ -474,7 +474,7 @@ global $customer_key,$filename,$store_code,$order_data_id,$date_order,$shipping_
                       'Current Payment State'=>'Waiting Payment',
                       'Metadata'=>$store_code.$order_data_id,
                   );
-
+//print_r($data);
 
             $order->skip_update_after_individual_transaction=true;
             $transaction_data=$order->add_order_transaction($data);
@@ -517,7 +517,7 @@ global $customer_key,$filename,$store_code,$order_data_id,$date_order,$shipping_
         $order->update_charges_amount($charges_data);
         $dn=$order->send_to_warehouse($date_order);
  
- 
+
  return $order;
  
 }
