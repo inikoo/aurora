@@ -28,7 +28,7 @@ var Dom   = YAHOO.util.Dom;
 				       {key:"currency",label:"<?php echo _('Country Currency Name')?>", width:100,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}			
 			];
 			       
-	    this.dataSource0 = new YAHOO.util.DataSource("ar_regions.php?tipo=continent&tableid=0");
+	    this.dataSource0 = new YAHOO.util.DataSource("ar_regions.php?tipo=countries_in_continent&tableid=0");
 	    this.dataSource0.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource0.connXhrMode = "queueRequests";
 	    this.dataSource0.responseSchema = {
@@ -54,7 +54,7 @@ var Dom   = YAHOO.util.Dom;
 								 , {
 								     renderLoopSize: 50,generateRequest : myRequestBuilder
 								      ,paginator : new YAHOO.widget.Paginator({
-									      rowsPerPage:<?php echo$_SESSION['state']['world']['continents']['nr']?>,containers : 'paginator0', 
+									      rowsPerPage:<?php echo $_SESSION['state']['continent']['countries']['nr']?>,containers : 'paginator0', 
  									      pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',
 									      previousPageLinkLabel : "<",
  									      nextPageLinkLabel : ">",
@@ -64,8 +64,8 @@ var Dom   = YAHOO.util.Dom;
 									  })
 								     
 								     ,sortedBy : {
-									 key: "<?php echo$_SESSION['state']['world']['continents']['order']?>",
-									 dir: "<?php echo$_SESSION['state']['world']['continents']['order_dir']?>"
+									 key: "<?php echo$_SESSION['state']['continent']['countries']['order']?>",
+									 dir: "<?php echo$_SESSION['state']['continent']['countries']['order_dir']?>"
 								     },
 								     dynamicData : true
 

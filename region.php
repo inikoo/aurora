@@ -77,7 +77,7 @@ case 'wregion':
 case 'continent':
     $smarty->assign('continent_code',$tag);
 $template='continent.tpl';
-    
+    $_SESSION['state']['continent']['code']=$tag;
     break;
     
 case 'country':
