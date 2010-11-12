@@ -3,75 +3,29 @@
 include_once('common.php');
 include_once('ar_common.php');
 
-header("Content-Type:text/xml");
 
-
-
-$output = "<?xml version=\"1.0\" ?>\n"; 
-$output .= "<schema>"; 
-
-// iterate over each table and return the fields for each table
-
-$result_fld=mysql_query("select * from `Product Dimension` where true");
-   while( $row1 = mysql_fetch_row($result_fld) ) {
-      $output .= "<field name=\"$row1[0]\" type=\"$row1[1]\"";
-      //$output .= ($row1[3] == "PRI") ? " primary_key=\"yes\" />" : " />";
-   } 
-
-  
-
-
-$output .= "</schema>"; 
-
-// tell the browser what kind of file is come in
 header("Content-type: text/xml"); 
-// print out XML that describes the schema
-echo $output; 
 
 
+$query = "SELECT * FROM `Product Dimension` ORDER BY `Product Code` ASC"; 
+$resultID = mysql_query($query) or die("Data not found."); 
 
+$xml_output = "<?xml version=\"1.0\"?>\n"; 
+$xml_output .= "<products>\n"; 
 
-/*
+for($x = 0 ; $x < mysql_num_rows($resultID) ; $x++){ 
+    $row = mysql_fetch_assoc($resultID); 
+    $xml_output .= "\t<product>\n"; 
+	$row['Product Code'] = str_replace("&", "&amp;", $row['Product Code']);
+    $xml_output .= "\t\t<code>" . $row['Product Code'] . "</code>";  
+        $row['Product Name'] = str_replace("&", "&amp;", $row['Product Name']); 
+        
+    $xml_output .= "\t\t<name>" . $row['Product Name'] . "</name>"; 
+    $xml_output .= "\t</product>\n"; 
+} 
 
-$_data=array();
+$xml_output .= "</products>"; 
 
-foreach($fields as $key=>$options){
+echo $xml_output; 
 
-$_data[]=$row[$options['db_name']];
-}
-$data[]=$_data;
-}
-//print_r($data);exit;
-
-//return $data;
-
-
-$xml = new SimpleXMLElement('<root/>');
-$_csv='';
-	foreach($data as $key=>$value){
-//$_csv.="\t".$value;
-
-array_walk_recursive($value, array ($xml, 'addChild'));
-
-}
-print $xml->asXML();/*
-
-/*
-$_xml='';
-	foreach($data as $key=>$value){
-$_xml.="\t".$value;
-}
-
-$xml.=preg_replace('/^\t/','',$_xml)."\n";
-		  // fputcsv($out, $data);
-  	  
-*/
-//mysql_free_result($res);
-
-
-
-
-
-
-// ------------------------------------
-   ?>
+ ?>
