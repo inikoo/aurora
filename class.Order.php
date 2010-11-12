@@ -844,7 +844,7 @@ function add_order_transaction($data) {
 
     if ($this->data['Order Current Dispatch State']=='In Process') {
 
-        $sql=sprintf("select `Order Bonus Quantity`,`Order Quantity`,`Order Transaction Fact Key` from `Order Transaction Fact` where `Order Key`=%d and `Product Key`=%d ",
+        $sql=sprintf("select `Order Bonus Quantity`,`Order Quantity`,`Order Transaction Gross Amount`,`Order Transaction Total Discount Amount`,`Order Transaction Fact Key` from `Order Transaction Fact` where `Order Key`=%d and `Product Key`=%d ",
                      $this->id,
                      $data ['Product Key']);
         $res=mysql_query($sql);
@@ -852,7 +852,9 @@ function add_order_transaction($data) {
 
             $old_quantity=$row['Order Quantity'];
             $old_bonus_quantity=$row['Order Bonus Quantity'];
-
+            
+            
+            
             if (!$quantity_set) {
                 $quantity=$old_quantity;
             }
@@ -876,14 +878,14 @@ function add_order_transaction($data) {
                                  $quantity,
                                  $bonus_quantity,
                                  prepare_mysql ( $data ['date'] ),
-                                 $data ['gross_amount'],
+                                 $row['Order Transaction Gross Amount']+$data ['gross_amount'],
                                  0,
                                  $row['Order Transaction Fact Key']
 
                                );
                 mysql_query($sql);
                 $otf_key=$row['Order Transaction Fact Key'];
-              //  print "$sql\n";
+             //  print "$sql\n";
             }
 
         } else {
@@ -898,7 +900,7 @@ function add_order_transaction($data) {
             }
 
             $product=new Product('id',$data['Product Key']);
-            $gross=$total_quantity*$product->data['Product History Price'];
+            $gross=$quantity*$product->data['Product History Price'];
             $estimated_weight=$total_quantity*$product->data['Product Gross Weight'];
 
 
@@ -928,6 +930,7 @@ function add_order_transaction($data) {
                              prepare_mysql ( $this->data ['Order Store Key'] ),
                              $data ['units_per_case']
                            );
+                           //print "$sql\n";
                            if (! mysql_query ( $sql ))
         exit ( "$sql can not update order trwansiocion facrt after invoice 1223" );
     $otf_key=mysql_insert_id();

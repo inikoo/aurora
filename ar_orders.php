@@ -1924,6 +1924,8 @@ if(isset( $_REQUEST['where']))
     $tableid=0;
 
 
+
+
    $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
 
         
