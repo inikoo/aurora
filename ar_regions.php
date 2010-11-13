@@ -750,7 +750,7 @@ $where=sprintf(" where  `World Region Code`=%s ",prepare_mysql($wregion_code));
    $adata=array();
  $sql="select * from kbase.`Country Dimension` $where $wheref order by $order $order_direction  limit $start_from,$number_results;";
 
- print($sql);
+// print($sql);
    $res=mysql_query($sql);
    
    while($row=mysql_fetch_array($res)) {
