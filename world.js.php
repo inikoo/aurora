@@ -101,7 +101,7 @@ var tableid=1;
 					];
 		    
 		      
-		      this.dataSource1 = new YAHOO.util.DataSource("ar_regions.php?tipo=world_region&tableid=1");
+		      this.dataSource1 = new YAHOO.util.DataSource("ar_regions.php?tipo=wregion&tableid=1");
 		      this.dataSource1.responseType = YAHOO.util.DataSource.TYPE_JSON;
 		      this.dataSource1.connXhrMode = "queueRequests";
 		      this.dataSource1.responseSchema = {

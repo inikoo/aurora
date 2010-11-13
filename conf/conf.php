@@ -2550,6 +2550,7 @@ $default_state=array(
                             'f_value'=>'',
                      	   ),
           		  'wregions'=>array(
+			   'wregion_code'=>'',
                            'display'=>'all',
                            'order'=>'wregion_name',
                            'order_dir'=>'asc',
@@ -2578,6 +2579,7 @@ $default_state=array(
 			 'continent'=>array(
                            'code'=>'',
                            'wregions'=>array(
+			   'wregion_code'=>'',
                            'display'=>'all',
                            'order'=>'wregion_name',
                            'order_dir'=>'asc',
@@ -2587,6 +2589,21 @@ $default_state=array(
                            'f_field'=>'wregion_name',
                            'f_value'=>'',
                                ),
+                            'countries'=>array(
+                             'display'=>'all',
+                             'order'=>'country_name',
+                             'order_dir'=>'desc',
+                             'sf'=>0,
+                             'nr'=>20,
+                             'where'=>'where true',
+                             'f_field'=>'country_name',
+                             'f_value'=>'',
+                                 ),
+                            ),
+                          
+			 'wregion'=>array(
+                           'code'=>'',
+                           
                             'countries'=>array(
                              'display'=>'all',
                              'order'=>'country_name',
