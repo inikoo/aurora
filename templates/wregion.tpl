@@ -1,5 +1,4 @@
 {include file='header.tpl'}
-
 <div id="bd"  >
 <div class="branch" style="text-align:right;;width:300px;float:right"> 
   <span  ><span>{t}World Regions{/t} &crarr;</span> 
@@ -11,7 +10,7 @@
 
 
 <div  id="block_continents" class="data_table" style="clear:both;margin:25px 0px">
-    <span id="table_title" class="clean_table_title">{t}World Regions{/t}</span>
+    <span id="table_title" class="clean_table_title">{t}Countries{/t}</span>
     {include file='table_splinter.tpl' table_id=0 filter_name=$filter_name0 filter_value=$filter_value0}
     <div  id="table0"   class="data_table_container dtable btable "> </div>
   </div>  

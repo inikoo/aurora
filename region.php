@@ -50,12 +50,11 @@ $js_files=array(
 if(isset($_REQUEST['country'])){
 $mode='country';
 $tag=$_REQUEST['country'];
-}if(isset($_REQUEST['wregion'])){
+}elseif(isset($_REQUEST['wregion'])){
 $mode='wregion';
 $tag=$_REQUEST['wregion'];
-$js_files[]='wregion.js.php';print("fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
-}
-if(isset($_REQUEST['continent'])){
+$js_files[]='wregion.js.php';
+}elseif(isset($_REQUEST['continent'])){
 $mode='continent';
 $tag=$_REQUEST['continent'];
 $js_files[]='continent.js.php';
@@ -74,8 +73,9 @@ $template='world.tpl';
     break;
 case 'wregion':
     $smarty->assign('wregion_code',$tag);
-    $tempalte='wregion.tpl';
+    $template='wregion.tpl';
     $_SESSION['state']['wregion']['code']=$tag;
+    
     break;
 case 'continent':
     $smarty->assign('continent_code',$tag);
@@ -110,7 +110,6 @@ $smarty->assign('filter_value1',$_SESSION['state']['world']['wregions']['f_value
 $tipo_filter=$_SESSION['state']['world']['continents']['f_field'];
 $smarty->assign('filter2',$tipo_filter);
 $smarty->assign('filter_value2',$_SESSION['state']['world']['continents']['f_value']);
-
 
 $paginator_menu=array(10,25,50,100,500);
 $smarty->assign('paginator_menu0',$paginator_menu);

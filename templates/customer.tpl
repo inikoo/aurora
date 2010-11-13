@@ -32,6 +32,8 @@
        
 
      
+     
+     
 <table id="customer_data" style="width:500px" border=0>
 
 <tr>
@@ -79,7 +81,9 @@
 </div>
 
       
+<div>
 
+</div>
 
  <div id="the_table" class="data_table" style="clear:both;margin-top:20px">
       <span class="clean_table_title">{t}History/Notes{/t}</span>
