@@ -21,12 +21,12 @@ var Dom   = YAHOO.util.Dom;
 	    var tableDivEL="table"+tableid;
 	    var ColumnDefs = [
 		
-			      	       {key:"country_name", label:"<?php echo _('Country Name')?>",width:100,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}},
+			      	       {key:"country_name", label:"<?php echo _('Country Name')?>",width:140,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}},
 				       {key:"population", label:"<?php echo _('Population')?>", width:80,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}},
-				       {key:"head_of_state", label:"<?php echo _('Country Head of State')?>", width:215,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}},
+				       {key:"head_of_state", label:"<?php echo _('Country Head of State')?>", width:175,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}},
 				       {key:"goverment_form", label:"<?php echo _('Country Goverment Form')?>", width:205,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}},
-				       {key:"currency",label:"<?php echo _('Currency')?>", width:80,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}},
-				       {key:"last_update",label:"<?php echo _('Last Update')?>", width:100,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}				
+				       {key:"currency",label:"<?php echo _('Currency')?>", width:45,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}},
+				       {key:"last_update",label:"<?php echo _('Last Update')?>", width:130,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}				
 			];
 			       
 	    this.dataSource0 = new YAHOO.util.DataSource("ar_regions.php?tipo=countries_in_wregion&tableid=0");
