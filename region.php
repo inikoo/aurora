@@ -53,7 +53,7 @@ $tag=$_REQUEST['country'];
 }if(isset($_REQUEST['wregion'])){
 $mode='wregion';
 $tag=$_REQUEST['wregion'];
-$js_files[]='wregion.js.php';print("fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
+$js_files[]='wregion.js.php';
 }
 if(isset($_REQUEST['continent'])){
 $mode='continent';
