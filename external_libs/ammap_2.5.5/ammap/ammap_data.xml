@@ -9,7 +9,7 @@
   <!--areas are movie clips inside map file. areas can have child objects:movies, labels & lines -->
   <!-- check online help for all possible area's attributes -->
   <areas>
-      <area title="AFGHANISTAN" mc_name="AF"></area>
+      <area title="AFGHANISTAN" mc_name="AF" url="region.php?country=AFG"></area>
       <area title="ALAND ISLANDS" mc_name="AX"></area>
       <area title="ALBANIA" mc_name="AL"></area>
       <area title="ALGERIA" mc_name="DZ"></area>
