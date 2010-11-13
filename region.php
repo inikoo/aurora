@@ -54,7 +54,9 @@ $tag=$_REQUEST['country'];
 $mode='wregion';
 $tag=$_REQUEST['wregion'];
 $js_files[]='wregion.js.php';
+
 }elseif(isset($_REQUEST['continent'])){
+
 $mode='continent';
 $tag=$_REQUEST['continent'];
 $js_files[]='continent.js.php';
