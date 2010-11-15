@@ -19,7 +19,7 @@
        <div style="border:0px solid #ddd;width:190px;float:right">
 	 <table border=0  style="width:100%;border-top:1px solid #333;border-bottom:1px solid #333;width:100%,padding:0;margin:0;float:right;margin-left:0px" >
 	  
-	   <tr><td  class="aright" >{t}Ordered Amount{/t}</td><td width=100 class="aright">{$order->get('Items Gross Amount')}</td></tr>
+	   <tr><td  class="aright" >{t}Ordered Amount{/t}</td><td width=100 class="aright">{$order->get('Order')}</td></tr>
 	    {if $order->get('Order Net Credited Amount')!=0  }
 	   <tr><td  class="aright" >{t}Discounts{/t}</td><td width=100 class="aright">-{$order->get('Items Discount Amount')}</td></tr>
 	   {/if}
