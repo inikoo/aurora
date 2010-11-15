@@ -73,7 +73,7 @@
     <x></x>                                                   <!-- [] (Number or Number%) x position of small map. If not defined, will be aligned to right side --> 
     <y></y>                                                   <!-- [] (Number or Number%) y position of small map. If not defined, will be aligned to bottom -->
     <width></width>                                           <!-- [25%] (Number or Number%) width of small map (height is calculated automatically) -->
-    <color>#FFCC00</color>                                           <!-- [] (hex color code) leave empty if you want to keep original map color -->    
+    <color>#444444</color>                                           <!-- [] (hex color code) leave empty if you want to keep original map color -->    
     <border_width></border_width>                             <!-- [5] (Number) -->
     <border_color></border_color>                             <!-- [#FFFFFF] (hex color code) -->
     <rectangle_color></rectangle_color>                       <!-- [#FFFFFF] (hex color code) color of rectangle, indicating active area on a small map -->
