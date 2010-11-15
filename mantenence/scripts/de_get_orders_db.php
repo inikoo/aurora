@@ -1110,17 +1110,12 @@ mysql_free_result($result_test);
                          'Supplier Product Code'=>$scode,
                          'Supplier Product Cost Per Case'=>sprintf("%.2f",$supplier_product_cost),
                          'Supplier Product Name'=>$description,
-                         'Supplier Product Description'=>$description
-                                                        ,'Supplier Product Valid From'=>$date_order
-                                                                                       ,'Supplier Product Valid To'=>$date2
+                         'Supplier Product Description'=>$description,
+                                                        'Supplier Product Valid From'=>$date_order,
+                                                                                       'Supplier Product Valid To'=>$date2
                      );
-            // print "-----$scode <-------------\n";
-            //print_r($sp_data);
+            
             $supplier_product=new SupplierProduct('find',$sp_data,'create');
-
-
-            
-            
             $spp_header=array(
 			  'Supplier Product Part Type'=>'Simple',
 		       'Supplier Product Part Most Recent'=>'Yes',
@@ -1137,9 +1132,6 @@ mysql_free_result($result_test);
 			      'Supplier Product Part Type'=>'Simple'
 			      )
 			);
-	
-	
-	
 	$supplier_product->new_historic_part_list($spp_header,$spp_list);
             
 

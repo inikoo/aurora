@@ -906,58 +906,37 @@ mysql_free_result($result_test);
 
             // $scode= preg_replace('/\?/i','_unk',$scode);
 
-            $sp_data=array(
+          
+           
+    $sp_data=array(
                          'Supplier Key'=>$supplier->id,
                          'Supplier Product Status'=>'Not In Use',
                          'Supplier Product Code'=>$scode,
-                         'Supplier Product Cost'=>sprintf("%.4f",$supplier_product_cost),
+                         'Supplier Product Cost Per Case'=>sprintf("%.2f",$supplier_product_cost),
                          'Supplier Product Name'=>$description,
-                         'Supplier Product Description'=>$description
-                                                        ,'Supplier Product Valid From'=>$date_order
-                                                                                       ,'Supplier Product Valid To'=>$date2
+                         'Supplier Product Description'=>$description,
+                                                        'Supplier Product Valid From'=>$date_order,
+                                                                                       'Supplier Product Valid To'=>$date2
                      );
-            // print "-----$scode <-------------\n";
-            //print_r($sp_data);
+            
             $supplier_product=new SupplierProduct('find',$sp_data,'create');
-//if($supplier_product->found_in_key){
-//    $supplier_product->update_valid_dates($date_order);
+            $spp_header=array(
+			  'Supplier Product Part Type'=>'Simple',
+		       'Supplier Product Part Most Recent'=>'Yes',
+		       'Supplier Product Part Valid From'=>$date_order,
+		       'Supplier Product Part Valid To'=>$date2,
+		       'Supplier Product Part In Use'=>'Yes',
+		       'Supplier Product Part Metadata'=>''
+		       );
 
-//}
-//print_r($supplier_product);
-            if ($supplier_product->new or $part->new) {
-                $rules=array();
-                $rules[]=array('Part Sku'=>$part->data['Part SKU'],
-                               'Supplier Product Units Per Part'=>$transaction['units']
-                                                                 ,'supplier product part most recent'=>'Yes'
-                                                                                                      ,'supplier product part valid from'=>$date_order
-                                                                                                                                          ,'supplier product part valid to'=>$date2
-                                                                                                                                                                            ,'factor supplier product'=>1
-                              );
-                $supplier_product->new_part_list('',$rules);
-            } else {
-                //Note assuming only one sppl
-
-                $sql=sprintf("update `Supplier Product Part List`  set  `Supplier Product Part Valid From`=%s where `Supplier Product Part Valid From`>%s and `Supplier Product Code`=%s and `Supplier Key`=%d and `Part SKU`=%d and  `Supplier Product Part Most Recent`='Yes'"
-                             ,prepare_mysql($date_order)
-                             ,prepare_mysql($date_order)
-                             ,prepare_mysql($supplier_product->code)
-                             ,$supplier_product->supplier_key
-                             ,$part->sku
-                            );
-                mysql_query($sql);
-                //print $sql;
-                $sql=sprintf("update  `Supplier Product Part List` set `Supplier Product Part Valid To`=%s where `Supplier Product Part Valid To`<%s and `Supplier Product Code`=%s  and `Supplier Key`=%d and `Part SKU`=%d and  `Supplier Product Part Most Recent`='Yes'"
-                             ,prepare_mysql($date2)
-                             ,prepare_mysql($date2)
-                             ,prepare_mysql($supplier_product->code)
-                             ,$supplier_product->supplier_key
-                             ,$part->sku
-                            );
-                mysql_query($sql);
-
-            }
-
-
+	$spp_list=array(
+			array(
+			      'Part SKU'=>$part->data['Part SKU'],
+			      'Supplier Product Units Per Part'=>$transaction['units'],
+			      'Supplier Product Part Type'=>'Simple'
+			      )
+			);
+	$supplier_product->new_historic_part_list($spp_header,$spp_list);
 
             $used_parts_sku[$part->sku]['supplier_product_key']=$supplier_product->id;
 
