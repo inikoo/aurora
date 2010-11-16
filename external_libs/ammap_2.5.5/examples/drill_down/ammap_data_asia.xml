@@ -217,7 +217,7 @@
     <movie file="home" x="50" y="71" url="!ammap_data.xml"></movie>
   </movies>  
   <labels>
-    <label x="60" y="60" url="!ammap_data.xml" remain="true" color_hover="#CC0000" zoom_x="0%" zoom_y="0" zoom="100%">
+    <label x="60" y="60" url="!external_libs/ammap_2.5.5/examples/drill_down/ammap_data.xml" remain="true" color_hover="#CC0000" zoom_x="0%" zoom_y="0" zoom="100%">
       <text><![CDATA[<b>Back to world map</b>]]></text>
     </label>
   </labels>
