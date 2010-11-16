@@ -1666,6 +1666,11 @@ $tax_code='UNK';
 
         $invoice=new Invoice ('create',$data_invoice);
       
+      
+  
+        $invoice->update_totals();
+      
+      
 //$shipping_amount=$this->calculate_shipping();
 //print $shipping_amount;
 //$charges_amount=$this->calculate_charges();

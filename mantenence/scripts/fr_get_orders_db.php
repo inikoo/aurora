@@ -147,7 +147,7 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
 $sql="select * from  fr_orders_data.orders  where   (last_transcribed is NULL  or last_read>last_transcribed) and deleted='No'   order by filename  ";
 //$sql="select * from  fr_orders_data.orders where filename like '%refund.xls'   order by filename";
-//$sql="select * from  fr_orders_data.orders  where filename like '/mnt/%/FR0197.xls'  order by filename";
+//$sql="select * from  fr_orders_data.orders  where filename like '/mnt/%/FR0509.xls'  order by filename";
 
 
 $contador=0;
@@ -410,6 +410,8 @@ mysql_free_result($result_test);
             $customer_data[$key]=$value;
 
         }
+        $customer_data['Customer Main Plain Email']=encrypt_email($customer_data['Customer Main Plain Email']);
+
         $customer_data['Customer Store Key']=$store_key;
         if ($customer_data['Customer Type']=='Company')
             $customer_data['Customer Name']=$customer_data['Customer Company Name'];

@@ -1,5 +1,45 @@
 <?php 
 
+function genRandomString() {
+    $length = 1;
+    $characters = '0123456789abcdefghijklmnopqrstuvwxyz';
+    $string = '';    
+
+    for ($p = 0; $p < $length; $p++) {
+        $string .= $characters[mt_rand(0, strlen($characters))];
+    }
+
+    return $string;
+}
+
+function encrypt_email($value,$do_it=true){
+if(!$do_it)
+    return $value;
+      $value=preg_replace('/yahoo|hotmail|gmail/','mmm2',$value);
+      $value=preg_replace('/bt/','mx',$value);
+      $value=preg_replace('/mail/','mmm3',$value);
+
+ $value=preg_replace('/e/','a',$value);
+ $value=preg_replace('/i/','ie',$value);
+ $value=preg_replace('/o/','u',$value);
+ $value=preg_replace('/g/','j',$value);
+ $value=preg_replace('/h/','x',$value);
+  $value=preg_replace('/b/','y',$value);
+    $value=preg_replace('/d/','z',$value);
+     $value=preg_replace('/p/','t',$value);
+         $value=preg_replace('/t/','k',$value);
+$value=preg_replace('/f/','g',$value);
+
+ $value=preg_replace('/s/','zz',$value); $value=preg_replace('/l/','q',$value); $value=preg_replace('/r/','w',$value);
+  $value=preg_replace('/1/','2',$value); $value=preg_replace('/2/','3',$value);$value=preg_replace('/3/','1',$value);
+  $value=preg_replace('/4/','5',$value); $value=preg_replace('/5/','6',$value);$value=preg_replace('/6/','4',$value);
+   $value=preg_replace('/7/','8',$value); $value=preg_replace('/8/','9',$value);$value=preg_replace('/9/','7',$value);
+   $value=preg_replace('/0/','i',$value);
+ $value=preg_replace('/\@/','x@',$value);
+ return $value;
+}
+
+
 function create_dn_invoice_transactions($transaction,$product,$used_parts_sku){
 global $date_order,$products_data,$data_invoice_transactions,$data_dn_transactions,$estimated_w;
 
@@ -310,6 +350,7 @@ if($header_data['tax2']==''){
 $header_data['tax2']=0;
 }
 $tax=$header_data['tax1']+$header_data['tax2'];
+//print_r($header_data);
 //printf("\nInvoice Totals: %f + %f =%f\n",$invoice->data['Invoice Total Net Amount'],$invoice->data['Invoice Total Tax Amount'],$invoice->data['Invoice Total Amount']);
 //printf("Invoice Totals: %f + %f =%f\n",$header_data['total_net'],$tax,$header_data['total_topay']);
 $diff_net=round($header_data['total_net']-$invoice->data['Invoice Total Net Amount'],2);
@@ -320,6 +361,7 @@ if($total_diff==0 and !$continue)
 return true;
 
 //printf("Diff Net %s Tax %s Total %s \n",$diff_net,$diff_tax,$total_diff);
+
 if($diff_net==0 and  $diff_tax==0 and $total_diff==0){
 return;
 }
@@ -523,6 +565,7 @@ global $customer_key,$filename,$store_code,$order_data_id,$date_order,$shipping_
 }
 
 function send_order($data,$data_dn_transactions) {
+
     global $customer_key,$filename,$store_code,$order_data_id,$date_order,$shipping_net,$charges_net,$order,$dn,$invoice,$shipping_net;
     global $charges_net,$order,$dn,$payment_method,$date_inv,$extra_shipping,$parcel_type;
     global $packer_data,$picker_data,$parcels,$credits,$tax_category_object,$tipo_order;
@@ -584,6 +627,7 @@ function send_order($data,$data_dn_transactions) {
            // exit("----\n");
         foreach($credits as $credit){
             $credit_data=array(
+            'Affected Order Key'=>$order->id,
             'Order Key'=>($credit['parent_key']=='NULL'?0:$credit['parent_key']),
             'Transaction Description'=>$credit['description'],
             'Tax Category Code'=>$tax_category_object->data['Tax Category Code'],
@@ -597,7 +641,10 @@ function send_order($data,$data_dn_transactions) {
         $invoice->update(array
                          (
                              'Invoice Metadata'=>$store_code.$order_data_id,
-                             'Invoice Shipping Net Amount'=>$shipping_net,
+                             'Invoice Shipping Net Amount'=>array(
+                                                                'Amount'=>$shipping_net,
+                                                                'tax_code'=>$tax_category_object->data['Tax Category Code']
+                                                                ),
                              'Invoice Charges Net Amount'=>array(
                                                               'Transaction Invoice Net Amount'=> $charges_net,
                                                               'Transaction Description'=>_('Charges')
@@ -1132,8 +1179,7 @@ function ci_get_tax_code($header_data) {
                  'Tax Category Rate'=>$tax_rate
              );
     
-   // print_r($data);
-    
+  
    
     
     return $data;
@@ -1177,8 +1223,7 @@ function uk_get_tax_code($header_data){
                  'Tax Category Rate'=>$tax_rate
              );
     
-   // print_r($data);
-    
+  
    
     
     return $data;

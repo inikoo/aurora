@@ -1239,17 +1239,25 @@ function add_order_transaction($data) {
 
             if (array_key_exists ( $key, $this->data ))
                 return $this->data [$key];
-
-            if (preg_match('/^(Total|Items|(Shipping |Charges )?Net).*(Amount)$/',$key)) {
+                                     
+            if (preg_match('/^(Invoiced Refund Net|Invoiced Refund Tax|Total|Items|Invoiced Items|Invoiced Tax|Invoiced Net|Invoiced Charges|Invoiced Shipping|Out of Stock|(Shipping |Charges )?Net).*(Amount)$/',$key)) {
 
                 $amount='Order '.$key;
-
+                
                 return money($this->data[$amount],$this->data['Order Currency']);
             }
 
 
             switch ($key) {
-            
+             case('Invoiced Total Tax Amount'):
+                return money($this->data['Order Invoiced Tax Amount']+$this->data['Order Invoiced Refund Tax Amount'],$this->data['Order Currency']);
+                break;
+                 case('Invoiced Total Net Amount'):
+                return money($this->data['Order Invoiced Net Amount']+$this->data['Order Invoiced Refund Net Amount'],$this->data['Order Currency']);
+                break;   
+            case('Invoiced Total Amount'):
+                return money($this->data['Order Invoiced Net Amount']+$this->data['Order Invoiced Tax Amount']+$this->data['Order Invoiced Refund Net Amount']+$this->data['Order Invoiced Refund Tax Amount'],$this->data['Order Currency']);
+                break;
             case('Shipping And Handing Net Amount'):
                 return money($this->data['Order Shipping Net Amount']+$this->data['Order Charges Net Amount']);
                 break;
@@ -1259,7 +1267,7 @@ function add_order_transaction($data) {
             case('Cancel Date'):
                 return strftime('%D',strtotime($this->data['Order Cancelled Date']));
                 break;
- case('Suspended Date'):
+            case('Suspended Date'):
                 return strftime('%D',strtotime($this->data['Order Suspended Date']));
                 break;
 
@@ -2142,9 +2150,31 @@ $this->data ['Order Dispatched Estimated Weight']= $row ['disp_estimated_weight'
             $this->data['Order Outstanding Balance Net Amount']=0;
             $this->data['Order Outstanding Balance Tax Amount']=0;
             $this->data['Order Outstanding Balance Total Amount']=0;
-            $sql = "select  sum(IFNULL(`Cost Supplier`,0)+IFNULL(`Cost Manufacure`,0)+IFNULL(`Cost Storing`,0)+IFNULL(`Cost Handing`,0)+IFNULL(`Cost Shipping`,0))as costs,   sum(`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`) as net  ,sum(`Invoice Transaction Item Tax Amount`) as tax,sum(`Invoice Transaction Net Refund Amount`) as ref_net,sum(`Invoice Transaction Tax Refund Amount`) as ref_tax,sum(`Invoice Transaction Outstanding Net Balance`) as ob_net ,sum(`Invoice Transaction Outstanding Tax Balance`) as ob_tax ,sum(`Invoice Transaction Outstanding Refund Net Balance`) as ref_ob_net ,sum(`Invoice Transaction Outstanding Refund Tax Balance`) as ref_ob_tax  from `Order Transaction Fact`    where  `Order Key`=" . $this->data ['Order Key'];
-           
+             $this->data['Order Invoiced Refund Net Amount']=0;
+                $this->data['Order Invoiced Refund Tax Amount']=0;
+          $this->data['Order Invoiced Refund Notes']='';
+                
+            $sql = "select  
+            sum(IFNULL(`Cost Supplier`,0)+IFNULL(`Cost Manufacure`,0)+IFNULL(`Cost Storing`,0)+IFNULL(`Cost Handing`,0)+IFNULL(`Cost Shipping`,0))as costs,
+            sum(`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`) as net,
+            sum(`Invoice Transaction Item Tax Amount`) as tax,
+            sum(`Invoice Transaction Net Refund Amount`) as ref_net,
+            sum(`Invoice Transaction Tax Refund Amount`) as ref_tax,
+            sum(`Invoice Transaction Outstanding Net Balance`) as ob_net ,
+            sum(`Invoice Transaction Outstanding Tax Balance`) as ob_tax ,
+            sum(`Invoice Transaction Outstanding Refund Net Balance`) as ref_ob_net ,
+            sum(`Invoice Transaction Outstanding Refund Tax Balance`) as ref_ob_tax ,
+            
+            sum(`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`) as inv_items,
+            sum(`Invoice Transaction Shipping Amount`) as inv_shp,
+            sum(`Invoice Transaction Charges Amount`) as inv_charges,
+            sum(`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`+`Invoice Transaction Shipping Amount`+`Invoice Transaction Charges Amount`) as inv_net,
+            sum(`Invoice Transaction Item Tax Amount`+`Invoice Transaction Shipping Tax Amount`+`Invoice Transaction Charges Tax Amount`) as inv_tax,
+            sum(if(`Order Quantity`>0, `No Shipped Due Out of Stock`*(`Order Transaction Gross Amount`-`Order Transaction Total Discount Amount`)/`Order Quantity`,0)) as out_of_stock_net
+            from `Order Transaction Fact`    where  `Order Key`=" . $this->data ['Order Key'];
+         
             $result = mysql_query ( $sql );
+            //print $sql;
             if ($row = mysql_fetch_array ( $result, MYSQL_ASSOC )) {
                 $this->data['Order Balance Net Amount']=$row['net']+$row['ref_net'];
                 $this->data['Order Balance Tax Amount']=$row['tax']+$row['ref_tax'];
@@ -2156,14 +2186,25 @@ $this->data ['Order Dispatched Estimated Weight']= $row ['disp_estimated_weight'
                 $this->data['Order Tax Refund Amount']=$row['ref_tax'];
                 $this->data['Order Net Refund Amount']=$row['ref_net'];
 
+                $this->data['Order Invoiced Items Amount']=$row['inv_items'];
+                $this->data['Order Invoiced Shipping Amount']=$row['inv_shp'];
+                $this->data['Order Invoiced Charges Amount']=$row['inv_charges'];
+                $this->data['Order Invoiced Net Amount']=$row['inv_net'];
+                $this->data['Order Invoiced Tax Amount']=$row['inv_tax'];
+                $this->data['Order Out of Stock Amount']=$row['out_of_stock_net'];
+                
+
 
 
                 $this->data['Order Profit Amount']= $this->data['Order Balance Net Amount']-$this->data['Order Outstanding Balance Net Amount']- $row['costs'];  
              
             }
         
+        
+        
+        
+        
            $sql = sprintf("select * from `Order No Product Transaction Fact` where `Order Key`=%d" , $this->data ['Order Key']);
-          
             $result = mysql_query ( $sql );
             while ($row = mysql_fetch_array ( $result, MYSQL_ASSOC )) {
                 $this->data['Order Balance Net Amount']+=$row['Transaction Invoice Net Amount'];
@@ -2173,35 +2214,62 @@ $this->data ['Order Dispatched Estimated Weight']= $row ['disp_estimated_weight'
                 $this->data['Order Outstanding Balance Tax Amount']+=$row['Transaction Outstandind Tax Amount Balance'];
                 $this->data['Order Outstanding Balance Total Amount']+=$row['Transaction Outstandind Net Amount Balance']+$row['Transaction Outstandind Tax Amount Balance'];
 
-                if($row['Transaction Type']=='Refund'){
+                if($row['Transaction Type']=='Refund' or $row['Transaction Type']=='Credit'){
                 $this->data['Order Tax Refund Amount']+=$row['Transaction Invoice Tax Amount'];
                 $this->data['Order Net Refund Amount']+=$row['Transaction Invoice Net Amount'];
-            }
-
-
-                //$this->data['Order Profit Amount']= $this->data['Order Balance Net Amount']-$this->data['Order Outstanding Balance Net Amount']- $row['costs'];  
-             
+                }
             }
            
+           $sql = sprintf("select * from `Order No Product Transaction Fact` where `Transaction Type` in ('Refund','Credit') and `Affected Order Key`=%d" , $this->data ['Order Key']);
+            
+            $result = mysql_query ( $sql );
+            while ($row = mysql_fetch_array ( $result, MYSQL_ASSOC )) {
+            
+                $this->data['Order Invoiced Refund Net Amount']+=$row['Transaction Invoice Net Amount'];
+                $this->data['Order Invoiced Refund Tax Amount']+=$row['Transaction Invoice Tax Amount'];
+                if($row['Transaction Description']!='')
+               $this->data['Order Invoiced Refund Notes'].='<br/>'.$row['Transaction Description'];
+            }
+            $this->data['Order Invoiced Refund Notes']=preg_replace('/<br\/>/','',$this->data['Order Invoiced Refund Notes']);
 
-        
-           
-
-                $sql=sprintf("update `Order Dimension` set `Order Balance Net Amount`=%.2f,`Order Balance Tax Amount`=%.2f,`Order Balance Total Amount`=%.2f,`Order Outstanding Balance Net Amount`=%.2f,`Order Outstanding Balance Tax Amount`=%.2f,`Order Outstanding Balance Total Amount`=%.2f,`Order Tax Refund Amount`=%.2f,`Order Net Refund Amount`=%.2f,`Order Profit Amount`=%.2f  where `Order Key`=%d"
-                             ,$this->data['Order Balance Net Amount']
-                             ,$this->data['Order Balance Tax Amount']
-                             ,$this->data['Order Balance Total Amount']
-                             ,$this->data['Order Outstanding Balance Net Amount']
-                             ,$this->data['Order Outstanding Balance Tax Amount']
-                             ,$this->data['Order Outstanding Balance Total Amount']
-                             ,$this->data['Order Tax Refund Amount']
-                             ,$this->data['Order Net Refund Amount']
-                             ,$this->data['Order Profit Amount']
-                             ,$this->id);
+                $sql=sprintf("update `Order Dimension` set 
+                `Order Balance Net Amount`=%.2f,`Order Balance Tax Amount`=%.2f,`Order Balance Total Amount`=%.2f,
+                `Order Outstanding Balance Net Amount`=%.2f,`Order Outstanding Balance Tax Amount`=%.2f,`Order Outstanding Balance Total Amount`=%.2f,
+                `Order Tax Refund Amount`=%.2f,`Order Net Refund Amount`=%.2f,`Order Profit Amount`=%.2f,
+                `Order Invoiced Items Amount`=%.2f,`Order Invoiced Shipping Amount`=%.2f,`Order Invoiced Charges Amount`=%.2f,
+                `Order Invoiced Net Amount`=%.2f,`Order Invoiced Tax Amount`=%.2f,
+                `Order Out of Stock Amount`=%.2f,
+                `Order Invoiced Refund Net Amount`=%.2f,
+                 `Order Invoiced Refund Tax Amount`=%.2f,
+                  `Order Invoiced Refund Notes`=%s
+                where `Order Key`=%d",
+                             $this->data['Order Balance Net Amount'],
+                             $this->data['Order Balance Tax Amount'],
+                             $this->data['Order Balance Total Amount'],
+                             
+                             $this->data['Order Outstanding Balance Net Amount'],
+                             $this->data['Order Outstanding Balance Tax Amount'],
+                             $this->data['Order Outstanding Balance Total Amount'],
+                             
+                             $this->data['Order Tax Refund Amount'],
+                             $this->data['Order Net Refund Amount'],
+                             $this->data['Order Profit Amount'],
+                             
+                              $this->data['Order Invoiced Items Amount'],
+                $this->data['Order Invoiced Shipping Amount'],
+                $this->data['Order Invoiced Charges Amount'],
+                
+                $this->data['Order Invoiced Net Amount'],
+                $this->data['Order Invoiced Tax Amount'],
+                $this->data['Order Out of Stock Amount'],
+                $this->data['Order Invoiced Refund Net Amount'],
+                $this->data['Order Invoiced Refund Tax Amount'],
+                prepare_mysql($this->data['Order Invoiced Refund Notes']),
+                             $this->id);
              
 
                 if (!mysql_query($sql))
-                    exit("$sql\n");
+                    exit("ERROR $sql\n");
 
         
 
