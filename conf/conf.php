@@ -1092,7 +1092,7 @@ $default_state=array(
                                   'action_after_create'=>'continue',
                                   'edit'=>'details',
                                   'details'=>false,
-
+                                    'view'=>'history',
                                   'assets'=>array(
                                                'order'=>'subject',
                                                'order_dir'=>'',
