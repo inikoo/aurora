@@ -226,6 +226,7 @@
      <span id="table_title" class="clean_table_title">{t}Products{/t}</span>
 	
 <span  id="export_csv0" style="float:right;margin-left:20px"  class="table_type state_details" tipo="products_in_family" >{t}Export (CSV){/t}</span>
+<a style="float:right;margin-left:20px"  class="table_type state_details"  href="export_products_xml.php" >{t}Export (XML){/t}</a>
      <div id="table_type">
      <span id="table_type_list" style="float:right" class="table_type state_details {if $table_type=='list'}selected{/if}">{t}List{/t}</span>
      <span id="table_type_thumbnail" style="float:right;margin-right:10px" class="table_type state_details {if $table_type=='thumbnails'}selected{/if}">{t}Thumbnails{/t}</span>
