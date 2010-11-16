@@ -1276,12 +1276,12 @@ $default_state=array(
                                        ),
 				'supplier'=>array(
                                            'display'=>'all',
-                                           'order'=>'alias',
+                                           'order'=>'name',
                                            'order_dir'=>'',
                                            'sf'=>0,
-                                           'nr'=>50,
+                                           'nr'=>25,
                                            'where'=>'where true',
-                                           'f_field'=>'alias',
+                                           'f_field'=>'name',
                                            'f_value'=>''
                                        ),
                                'loginhistory'=>array(
