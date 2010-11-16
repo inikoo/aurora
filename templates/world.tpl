@@ -8,7 +8,7 @@
 
 	<script type="text/javascript">
 		// <![CDATA[		
-		var so = new SWFObject("external_libs/ammap_2.5.5/ammap/ammap.swf", "ammap", "100%", "100%", "8", "#E7CC9F");
+		var so = new SWFObject("external_libs/ammap_2.5.5/ammap/ammap.swf", "ammap", "100%", "100%", "8", "#7d96cb");
     so.addVariable("path", "external_libs/ammap_2.5.5/ammap/");
 		so.addVariable("data_file", escape("external_libs/ammap_2.5.5/examples/drill_down/ammap_data.xml"));
     so.addVariable("settings_file", escape("external_libs/ammap_2.5.5/examples/drill_down/ammap_settings.xml"));		
