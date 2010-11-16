@@ -1274,6 +1274,16 @@ $default_state=array(
                                            'f_field'=>'alias',
                                            'f_value'=>''
                                        ),
+				'supplier'=>array(
+                                           'display'=>'all',
+                                           'order'=>'alias',
+                                           'order_dir'=>'',
+                                           'sf'=>0,
+                                           'nr'=>50,
+                                           'where'=>'where true',
+                                           'f_field'=>'alias',
+                                           'f_value'=>''
+                                       ),
                                'loginhistory'=>array(
                                                   'display'=>'all',
                                                   'order'=>'login_date',

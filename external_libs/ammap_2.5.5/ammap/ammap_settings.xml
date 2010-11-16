@@ -67,7 +67,7 @@
   </zoom>
   
   <small_map>                                                 <!-- small map -->
-    <enabled></enabled>                                       <!-- [true] (true / false) whether to display small map or not -->
+    <enabled>false</enabled>                                       <!-- [true] (true / false) whether to display small map or not -->
     <locked></locked>                                         <!-- [false] (true / false) whether it would be possible to drag small map when dragging border of small map -->
     <active></active>                                         <!-- [true] (true / false) whether clicking on a small map will result position change of big map -->
     <x></x>                                                   <!-- [] (Number or Number%) x position of small map. If not defined, will be aligned to right side --> 
