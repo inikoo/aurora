@@ -16,7 +16,7 @@ World>Reg
 
 	  <div id="photo_container" style="float:left;border:0px solid #777;width:510px;height:320px">
 
-	    <iframe id="the_map" src ="map.php?country={$country->get('Country Code')}" frameborder="0" scrolling="no" width="550"  height="420"></iframe>
+	   <iframe id="the_map" src ="map.php?country={$country->get('Country 2 Alpha Code')}" frameborder="0" scrolling="no" width="550"  height="420"></iframe>
 	   
 	    
 	    
@@ -24,6 +24,7 @@ World>Reg
 	  
 
 	<div style="float:left;">
+
 	  <h2>{$country->get('Country Name')} [{$country->get('Country Code')}]</h2>
 	  <div class=""  style="width:100%;">
 	    <div class="" style="width:100%;font-size:90%"   >

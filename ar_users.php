@@ -28,6 +28,9 @@ switch($tipo){
 case('staff_users'):
     list_staff_users();
     break;
+case('supplier_users'):
+    list_supplier_users();
+    break;
  case('users'):
     list_users();
     break;
@@ -639,6 +642,200 @@ $password='';
                                      )
                    );
     echo json_encode($response);
+}
+
+function list_supplier_users() {
+    global $myconf;
+
+    $conf=$_SESSION['state']['users']['supplier'];
+    if(isset( $_REQUEST['sf']))
+     $start_from=$_REQUEST['sf'];
+   else
+     $start_from=$conf['sf'];
+   if(isset( $_REQUEST['nr']))
+     $number_results=$_REQUEST['nr'];
+   else
+     $number_results=$conf['nr'];
+  if(isset( $_REQUEST['o']))
+    $order=$_REQUEST['o'];
+  else
+    $order=$conf['order'];
+  if(isset( $_REQUEST['od']))
+    $order_dir=$_REQUEST['od'];
+  else
+    $order_dir=$conf['order_dir'];
+    if(isset( $_REQUEST['f_field']))
+     $f_field=$_REQUEST['f_field'];
+   else
+     $f_field=$conf['f_field'];
+
+  if(isset( $_REQUEST['f_value']))
+     $f_value=$_REQUEST['f_value'];
+   else
+     $f_value=$conf['f_value'];
+if(isset( $_REQUEST['where']))
+     $where=$_REQUEST['where'];
+   else
+     $where=$conf['where'];
+  
+   if(isset( $_REQUEST['tableid']))
+    $tableid=$_REQUEST['tableid'];
+  else
+    $tableid=0;
+   $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
+ /* $_SESSION['state']['suppliers']['table']=array('order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value);*/
+ 
+
+    $_SESSION['state']['users']['supplier']['order']=$order;
+    $_SESSION['state']['users']['supplier']['order_dir']=$order_direction;
+    $_SESSION['state']['users']['supplier']['nr']=$number_results;
+    $_SESSION['state']['userss']['supplier']['sf']=$start_from;
+    $_SESSION['state']['userss']['supplier']['where']=$where;
+    $_SESSION['state']['users']['supplier']['f_field']=$f_field;
+    $_SESSION['state']['users']['supplier']['f_value']=$f_value;
+
+ $_order=$order;
+  $_dir=$order_direction;
+
+   $wheref='';
+  if($f_field=='code'  and $f_value!='')
+    $wheref.=" and `Supplier Code` like '".addslashes($f_value)."%'";
+  if($f_field=='name' and $f_value!='')
+    $wheref.=" and  `Supplier Name` like '".addslashes($f_value)."%'";
+ elseif($f_field=='low' and is_numeric($f_value))
+    $wheref.=" and lowstock>=$f_value  ";
+   elseif($f_field=='outofstock' and is_numeric($f_value))
+    $wheref.=" and outofstock>=$f_value  ";
+
+
+   $sql="select count(*) as total from `Supplier Dimension`    $where $wheref";
+   $result=mysql_query($sql);
+   if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
+    $total=$row['total'];
+   }
+   if($wheref==''){
+     $filtered=0; $total_records=$total;
+   }else{
+     $sql="select count(*) as total from `Supplier Dimension` $where      ";
+     $result=mysql_query($sql);
+     if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
+       	$total_records=$row['total'];
+       $filtered=$row['total']-$total;
+     }
+     
+   }
+  
+  $rtext=$total_records." ".ngettext('supplier','suppliers',$total_records);
+    if ($total_records>$number_results)
+        $rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
+    else
+        $rtext_rpp=' ('._('Showing all').')';
+
+
+
+
+
+
+  $filter_msg='';
+  
+     switch($f_field){
+     case('code'):
+       if($total==0 and $filtered>0)
+	 $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any supplier with code")." <b>$f_value</b>* ";
+       elseif($filtered>0)
+	 $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ("._('suppliers with code')." <b>$f_value</b>*)";
+       break;
+     case('name'):
+       if($total==0 and $filtered>0)
+	 $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any supplier with name")." <b>$f_value</b>* ";
+       elseif($filtered>0)
+	 $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ("._('suppliers with name')." <b>$f_value</b>*)";
+       break;
+     case('low'):
+       if($total==0 and $filtered>0)
+	 $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any supplier with more than ")." <b>".number($f_value)."</b> "._('low stock products');
+       elseif($filtered>0)
+	 $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ("._('Suppliers with')." <b><".number($f_value)."</b> "._('low stock products').")";
+       break;
+     case('outofstock'):
+       if($total==0 and $filtered>0)
+	 $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any supplier with more than ")." <b>".number($f_value)."</b> "._('out of stock products');
+       elseif($filtered>0)
+	 $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ("._('Suppliers with')." <b><".number($f_value)."</b> "._('out of stock products').")";
+       break;
+     }
+
+     
+     if($order=='code')
+       $order='`Supplier Code`';
+     elseif($order=='name')
+       $order='`Supplier Name`';
+     elseif($order=='id')
+       $order='`Supplier Key`';
+      elseif($order=='location')
+       $order='`Supplier Main Location`';
+      elseif($order=='email')
+       $order='`Supplier Main XHTML Email`';
+        elseif($order=='pending_pos'){
+               $order='`Supplier Open Purchase Orders`';
+
+        }
+
+ //    elseif($order='used_in')
+//        $order='Supplier Product XHTML Used In';
+
+   $sql="select *   from `Supplier Dimension` $where $wheref order by $order $order_direction limit $start_from,$number_results";
+   // print $sql;
+   $result=mysql_query($sql);
+   $data=array();
+   while($row=mysql_fetch_array($result, MYSQL_ASSOC) ) {
+
+     $id="<a href='supplier.php?id=".$row['Supplier Key']."'>".$myconf['supplier_id_prefix'].sprintf("%05d",$row['Supplier Key']).'</a>';
+     $code="<a href='supplier.php?id=".$row['Supplier Key']."'>".$row['Supplier Code']."</a>";
+
+     $profit=money($row['Supplier Total Parts Profit']);
+     $profit_after_storing=money($row['Supplier Total Parts Profit After Storing']);
+     $cost=money($row['Supplier Total Cost']);
+
+     $data[]=array(
+		   'id'=>$id
+		   ,'code'=>$code
+		   ,'name'=>$row['Supplier Name']
+                   ,'active'=>$row['Supplier Active']
+                   ,'telephone'=>$row['Supplier Main XHTML Telephone']
+		   ,'for_sale'=>number($row['Supplier For Sale Products'])
+		   ,'low'=>number($row['Supplier Low Availability Products'])
+		   ,'outofstock'=>number($row['Supplier Out Of Stock Products'])
+		   ,'location'=>$row['Supplier Main Location']
+		   ,'email'=>$row['Supplier Main XHTML Email']
+		   ,'profit'=>$profit		 
+		   ,'profit_after_storing'=>$profit_after_storing
+		   ,'cost'=>$cost
+		   ,'pending_pos'=>number($row['Supplier Open Purchase Orders'])
+		   );
+   }
+   
+
+   $response=array('resultset'=>
+		   array('state'=>200,
+			 'data'=>$data,
+			 'sort_key'=>$_order,
+			  'rtext'=>$rtext,
+                                      'rtext_rpp'=>$rtext_rpp,
+			 'sort_dir'=>$_dir,
+			 'tableid'=>$tableid,
+			 'filter_msg'=>$filter_msg,
+			 'total_records'=>$total,
+			 'records_offset'=>$start_from,
+			 'records_returned'=>$start_from+$total,
+			 'records_perpage'=>$number_results,
+			 'records_text'=>$rtext,
+			 'records_order'=>$order,
+			 'records_order_dir'=>$order_dir,
+			 'filtered'=>$filtered
+			 )
+		   );
+   echo json_encode($response);
 }
 
 
