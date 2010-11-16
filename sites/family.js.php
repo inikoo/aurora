@@ -8,12 +8,10 @@ print "var family_key=$family_key;";
 
 ?>
 
-
-
 var Dom   = YAHOO.util.Dom;
 var Event   = YAHOO.util.Event;
 
-   
+  
 function fast_change_item(tipo,product_id){
 
 var qty=Dom.get('order_qty_'+product_id).value;
@@ -27,12 +25,12 @@ if(tipo=='remove'){
 
 var ar_file='ar_edit_orders.php';
 		request='tipo=edit_new_order&key=quantity&newvalue='+qty+'&pid='+ product_id;
-
+//alert(request)
 	YAHOO.util.Connect.asyncRequest(
 				    'POST',
 				    ar_file, {
 					success:function(o) {
-					   //alert(o.responseText);
+					  //alert(o.responseText);
 					    var r = YAHOO.lang.JSON.parse(o.responseText);
 					    if (r.state == 200) {
 						Dom.get('order_qty_'+product_id).value=r.quantity;
@@ -85,7 +83,6 @@ Dom.setStyle('fast_add'+product_pid,'display','none');
 
 }
 
-
 function undo_item(product_pid){
 Dom.get('order_qty_'+product_pid).value=Dom.get('order_qty_'+product_pid).getAttribute('ovalue');
 Dom.setStyle('order_button'+product_pid,'display','none');
@@ -95,8 +92,6 @@ Dom.setStyle('fast_remove'+product_pid,'display','');
 Dom.setStyle('fast_add'+product_pid,'display','');
 
 }
-
-
 
 function order_item(product_id){
 var qty=Dom.get('order_qty_'+product_id).value;
@@ -230,10 +225,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    this.table0.doBeforeSortColumn = mydoBeforeSortColumn;
 	    this.table0.doBeforePaginator = mydoBeforePaginatorChange;
 
-						     
-	    
-	    this.table0.view='<?php echo$_SESSION['state']['products']['view']?>';
-
+		
 		
 
 
@@ -243,12 +235,11 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	};
     });
 
-
 function checkout(){
     location.href="checkout.php";
 }
 
- function init(){
+function init(){
   get_thumbnails({tipo:'products',parent:'family',parent_key:family_key});
 ids=['table_type_thumbnails','table_type_list','table_type_manual'];
  YAHOO.util.Event.addListener(ids, "click",change_table_type,{table_id:0,parent:'family'});
@@ -284,7 +275,6 @@ YAHOO.util.Event.onContentReady("rppmenu0", function () {
 	 oMenu.render();
 	 oMenu.subscribe("show", oMenu.focus);
     });
-
 YAHOO.util.Event.onContentReady("filtermenu0", function () {
 	 var oMenu = new YAHOO.widget.ContextMenu("filtermenu0", {trigger:"filter_name0"});
 	 oMenu.render();

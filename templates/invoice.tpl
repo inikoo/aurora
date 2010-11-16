@@ -66,14 +66,14 @@
 
 
 <h2>{t}Items{/t}</h2>
-      <div  id="table0" class="dtable btable" style="margin-bottom:0"></div>
+      <div  id="table0" class="dtable btable" style="margin-bottom:0;font-size:90%"></div>
 
 	    
     </div>
 {if $items_out_of_stock}
 <div style="clear:both;margin:30px 0" >
 <h2>{t}Items Out of Stock{/t}</h2>
-<div  id="table1" class="dtable btable" style="margin-bottom:0"></div>
+<div  id="table1" class="dtable btable" style="margin-bottom:0;font-size:80%"></div>
 </div>
 {/if}
   </div>
