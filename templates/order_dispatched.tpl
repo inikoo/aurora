@@ -67,8 +67,11 @@
      </div>
 
 
+<h2>{t}Post-Order Items{/t}</h2>
+      <div  id="table1" class="dtable btable" style="margin-bottom:0;font-size:80%"></div>
 
-<h2>{t}Items{/t}</h2>
+
+<h2>{t}Ordered Items{/t}</h2>
       <div  id="table0" class="dtable btable" style="margin-bottom:0;font-size:80%"></div>
 
 	    

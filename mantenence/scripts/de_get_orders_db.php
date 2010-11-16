@@ -1201,7 +1201,7 @@ create_dn_invoice_transactions($transaction,$product,$used_parts_sku);
         $data['staff sale key']=$header_data['staff sale key'];
 
 
-
+$customer_data['Customer Main Plain Email']=encrypt_email($customer_data['Customer Main Plain Email']);
 
        
         $data['products']=$products_data;
@@ -1290,6 +1290,10 @@ get_data($header_data);
         $data['Customer Data']['editor']=$data['editor'];
         $data['Customer Data']['editor']['Date']=date("Y-m-d H:i:s",strtotime($data['Customer Data']['editor']['Date']." -1 second"));
         //print_r($data['Customer Data']);
+        
+        
+        
+        
         $customer = new Customer ( 'find create', $data['Customer Data'] );
        
                if($customer_data['Customer Delivery Address Link']=='None'){
