@@ -32,6 +32,9 @@ switch($tipo){
 case('transactions_dipatched'):
 transactions_dipatched();
 break;
+case('post_transactions_dipatched'):
+post_transactions_dipatched();
+break;
 //-------------------- shortcut key code starts here --------------------
 case('shortcut_key_search'):
 list_shortcut_key_search();
@@ -2367,7 +2370,7 @@ function transactions_dipatched(){
 
 
 
-   $where=' where `Order Key`='.$order_id;
+   $where=' where `Order Transaction Type` not in ("Replacement","Missing")  and  `Order Key`='.$order_id;
 
    $total_charged=0;
    $total_discounts=0;
@@ -2429,7 +2432,77 @@ function transactions_dipatched(){
 		   );
    echo json_encode($response);
 }
+function post_transactions_dipatched(){
+ if(isset( $_REQUEST['id']) and is_numeric( $_REQUEST['id']))
+     $order_id=$_REQUEST['id'];
+   else
+     $order_id=$_SESSION['state']['order']['id'];
+   
 
+
+
+   $where=' where `Order Transaction Type`  in ("Replacement","Missing")  and  `Order Key`='.$order_id;
+
+   $total_charged=0;
+   $total_discounts=0;
+   $total_picks=0;
+
+   $data=array();
+   
+   $order=' order by `Product Code`';
+   
+   $sql="select * from `Order Transaction Fact` O left join `Product History Dimension` PH on (O.`Product key`=PH.`Product Key`) left join `Product Dimension` P on (P.`Product ID`=PH.`Product ID`)  $where $order  ";
+   
+   //  $sql="select  p.id as id,p.code as code ,product_id,p.description,units,ordered,dispatched,charge,discount,promotion_id    from transaction as t left join product as p on (p.id=product_id)  $where    ";
+   
+   
+   
+   
+
+   $result=mysql_query($sql);
+   while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
+  
+  $ordered='';
+  if($row['Order Quantity']!=0)
+    $ordered.=number($row['Order Quantity']);
+ if($row['Order Bonus Quantity']>0){
+    $ordered='<br/>'._('Bonus').' +'.number($row['Order Bonus Quantity']);
+  }
+   if($row['No Shipped Due Out of Stock']>0){
+    $ordered.='<br/> '._('No Stk').' -'.number($row['No Shipped Due Out of Stock']);
+  }
+  $ordered=preg_replace('/^<br\/>/','',$ordered);
+     $code=sprintf('<a href="product.php?pid=%s">%s</a>',$row['Product ID'],$row['Product Code']);
+     $data[]=array(
+
+		   'code'=>$code
+		   ,'description'=>$row['Product XHTML Short Description']
+		  
+		   ,'ordered'=>$ordered
+		   ,'dispatched'=>number($row['Shipped Quantity'])
+		   ,'invoiced'=>money($row['Invoice Transaction Gross Amount']-$row['Invoice Transaction Total Discount Amount'],$row['Order Currency Code'])
+		   );
+   }
+
+
+ 
+   
+
+   $response=array('resultset'=>
+		   array('state'=>200,
+			 'data'=>$data
+// 			 'total_records'=>$total,
+// 			 'records_offset'=>$start_from,
+// 			 'records_returned'=>$start_from+$res->numRows(),
+// 			 'records_perpage'=>$number_results,
+// 			 'records_text'=>$rtext,
+// 			 'records_order'=>$order,
+// 			 'records_order_dir'=>$order_dir,
+// 			 'filtered'=>$filtered
+			 )
+		   );
+   echo json_encode($response);
+}
 
 function transactions_cancelled(){
  if(isset( $_REQUEST['id']) and is_numeric( $_REQUEST['id']))
