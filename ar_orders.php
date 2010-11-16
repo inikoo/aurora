@@ -29,6 +29,9 @@ if(!isset($_REQUEST['tipo']))
 
 $tipo=$_REQUEST['tipo'];
 switch($tipo){
+case('transactions_dipatched'):
+transactions_dipatched();
+break;
 //-------------------- shortcut key code starts here --------------------
 case('shortcut_key_search'):
 list_shortcut_key_search();
@@ -918,233 +921,7 @@ mysql_free_result($res);
 		   );
    echo json_encode($response);
 }
-function list_transactions(){
-  if(isset( $_REQUEST['id']) and is_numeric( $_REQUEST['id']))
-     $order_id=$_REQUEST['id'];
-   else
-     $order_id=$_SESSION['state']['order']['id'];
 
- //   if(isset( $_REQUEST['o']))
-//      $order=$_REQUEST['o'];
-//    else
-//      $order=$_SESSION['tables']['transaction_list'][0];
-//    if(isset( $_REQUEST['od']))
-//      $order_dir=$_REQUEST['od'];
-//    else
-//      $order_dir=$_SESSION['tables']['transaction_list'][1];
-   
-   
-//    $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
-   
-
-//    $_SESSION['tables']['transaction_list']=array($order,$order_direction);
-   
-   $where=' where order_id='.$order_id;
-
-   $total_charged=0;
-   $total_discounts=0;
-   $total_picks=0;
-
-   
-   $sql="select weight, p.price as price,concat(100000+p.group_id,p.ncode) as display_order,p.id as id,p.code as code ,product_id,p.description,units,ordered,dispatched,charge,discount,promotion_id    from transaction as t left join product as p on (p.id=product_id)  $where  and dispatched> 0 and (charge!=0 or discount!=1)    ";
-   
-   //  $sql="select  p.id as id,p.code as code ,product_id,p.description,units,ordered,dispatched,charge,discount,promotion_id    from transaction as t left join product as p on (p.id=product_id)  $where    ";
-   //     print $sql;
-   $result=mysql_query($sql);
-   $data=array();
-   while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
-     $discount='';
-     $ndiscount=0;
-     $cost='';
-     $ncost=0;
-     if($row['charge']==0 or $row['discount']==1)
-       $outer_price=$row['price'];
-     else{
-       $outer_price=$row['charge']/((1-$row['discount'])*$row['dispatched'] );
-       $ncost=$outer_price;///$row['dispatched'];
-       //       $$row['dispatched']/$row['o']
-
-       $cost= money($ncost);
-       if($row['discount']>0){
-	 $ndiscount=$row['discount']* $row['charge'] ;
-	 $discount='('.number(100*$row['discount'],0).'%) '.money(  $ndiscount);
-       }
-     }
-
-
-     
-
-
-
-     $total_charged+=$row['charge'];
-     $total_discounts+=$ndiscount;
-     $total_picks+=$row['dispatched'];
-     $data[]=array(
-		   'id'=>$row['id']
-		   ,'product_id'=>$row['product_id']
-		   ,'code'=>$row['code']
-		   ,'description'=>number($row['units']).'x '.$row['description'].' @ '.$cost
-		   ,  'cost'=>$cost
-		   //'ordered'=>$row['ordered'],
-		   ,'dispatched'=>number($row['dispatched'],2)
-		   ,'charge'=>money($row['charge'])
-		   ,'discount'=>$discount
-
-		   );
-   }
-   mysql_free_result($result);
-
-
-
-
-   // todo transactions
- $sql="select * from todo_transaction  $where and (bonus=0 and  discount!=1)";
-
-   //  $sql="select  p.id as id,p.code as code ,product_id,p.description,units,ordered,dispatched,charge,discount,promotion_id    from transaction as t left join product as p on (p.id=product_id)  $where    ";
- // print $sql;
-   $result=mysql_query($sql);
-
-   while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
-
-     $charged=($row['ordered']-$row['reorder']) * $row['price']*(1-$row['discount']);
-     $total_charged+=$charged;
-     $total_discounts+=$ndiscount;
-     $pick=number($row['ordered']-$row['reorder']);
-     $total_picks+=$pick;
-
-     $discount='';
-     $ndiscount=0;
-     $cost='';
-     $ncost=0;
-     if($charged==0 or $row['discount']==1)
-       $outer_price=$row['price'];
-     else{
-       $outer_price=$charged/((1-$row['discount'])*$pick );
-       $ncost=$outer_price*$pick;
-       $cost= money($ncost);
-       if($row['discount']>0){
-	 $ndiscount=$row['discount']* $charged;
-	 $discount='('.number(100*$row['discount'],0).'%'._('off').') '.$myconf['currency_symbol'].money($ndiscount);
-       }
-     }
-
-
-
-
-
-
-
-
-
-
-
-       $data[]=array(
-		   'id'=>$row['id']
-		   ,'product_id'=>-1
-		   ,'code'=>$row['code']
-		   ,'description'=>$row['description'].' @ '.money($row['price'])
-		   ,  'cost'=>money($row['price'] )
-		   //'ordered'=>$row['ordered'],
-		   ,'dispatched'=>number($pick)
-		   ,'charge'=>money($charged)
-		   ,'discount'=>$discount
-		   //'promotion_id'=>$row['promotion_id']
-		   );
-
-   }
-
-   mysql_free_result($result);
-
-   // todo transactions
- $sql="select * from todo_transaction  $where and (bonus!=0 or  discount=1)";
-
-   //  $sql="select  p.id as id,p.code as code ,product_id,p.description,units,ordered,dispatched,charge,discount,promotion_id    from transaction as t left join product as p on (p.id=product_id)  $where    ";
- //  print $sql;
-   $result=mysql_query($sql);
-
-   while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
-     
-     $pick=$row['bonus']+$row['ordered']-$row['reorder'];
-
-     $data[]=array(
-		   'id'=>$row['id']
-		   ,'product_id'=>-1
-		   ,'code'=>$row['code']
-		   ,'description'=>$row['description'].' ('._('Free Bonus').')'
-		   ,  'cost'=>''
-		   //'ordered'=>$row['ordered'],
-		   ,'dispatched'=>number($pick)
-		   ,'charge'=>''
-		   ,'discount'=>''
-		   //'promotion_id'=>$row['promotion_id']
-		   );
-
-   }
-
-
-
-
-
-
-
-
-
-
-  $sql="select promotion,bonus.id as id,product_id,p.units as units,concat(100000+p.group_id,p.ncode) as display_order,p.code as code,p.description as description, qty from bonus   left join product as p on (product_id=p.id) $where";
-
-   //  $sql="select  p.id as id,p.code as code ,product_id,p.description,units,ordered,dispatched,charge,discount,promotion_id    from transaction as t left join product as p on (p.id=product_id)  $where    ";
-  //  print $sql;
-   $result=mysql_query($sql);
-
-   while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
-
-     $tipo_discount=_('Free Bonus');
-     if($row['promotion'])
-       $tipo_discount=_('First Order Bonus');
-     $data[]=array(
-		   'id'=>$row['id']
-		   ,'product_id'=>$row['product_id']
-		   ,'code'=>$row['code']
-		   ,'description'=>number($row['units']).'x '.$row['description'].' ('.$tipo_discount.')'
-		   ,  'cost'=>''
-		   //'ordered'=>$row['ordered'],
-		   ,'dispatched'=>number($row['qty'])
-		   ,'charge'=>''
-		   ,'discount'=>''
-		   //'promotion_id'=>$row['promotion_id']
-		   );
-
-   }
-   mysql_free_result($result);
-   $data[]=array(
-		 'id'=>0
-		 ,'product_id'=>''
-		 ,'code'=>_('Subtotal')
-		 ,'description'=>''
-		 ,  'cost'=>''
-		 //'ordered'=>$row['ordered'],
-		 ,'dispatched'=>number($total_picks)
-		 ,'charge'=>money($total_charged)
-		 ,'discount'=>money($total_discounts)
-		 //'promotion_id'=>$row['promotion_id']
-		 );
-   
-
-   $response=array('resultset'=>
-		   array('state'=>200,
-			 'data'=>$data
-// 			 'total_records'=>$total,
-// 			 'records_offset'=>$start_from,
-// 			 'records_returned'=>$start_from+$res->numRows(),
-// 			 'records_perpage'=>$number_results,
-// 			 'records_text'=>$rtext,
-// 			 'records_order'=>$order,
-// 			 'records_order_dir'=>$order_dir,
-// 			 'filtered'=>$filtered
-			 )
-		   );
-   echo json_encode($response);
-}
 function list_transactions_in_invoice() {
 
     if (isset( $_REQUEST['id']) and is_numeric( $_REQUEST['id']))
@@ -1162,7 +939,7 @@ function list_transactions_in_invoice() {
     $total_picks=0;
 
     $data=array();
-    $sql="select * from `Order Transaction Fact` O  left join `Product History Dimension` PH on (O.`Product Key`=PH.`Product Key`) left join  `Product Dimension` P on (PH.`Product ID`=P.`Product ID`) $where   ";
+    $sql="select * from `Order Transaction Fact` O  left join `Product History Dimension` PH on (O.`Product Key`=PH.`Product Key`) left join  `Product Dimension` P on (PH.`Product ID`=P.`Product ID`) $where order by `Product Code`  ";
 
     //  $sql="select  p.id as id,p.code as code ,product_id,p.description,units,ordered,dispatched,charge,discount,promotion_id    from transaction as t left join product as p on (p.id=product_id)  $where    ";
     //   print $sql;
@@ -2580,6 +2357,79 @@ function transactions_to_process(){
 		   );
    echo json_encode($response);
 }
+
+function transactions_dipatched(){
+ if(isset( $_REQUEST['id']) and is_numeric( $_REQUEST['id']))
+     $order_id=$_REQUEST['id'];
+   else
+     $order_id=$_SESSION['state']['order']['id'];
+   
+
+
+
+   $where=' where `Order Key`='.$order_id;
+
+   $total_charged=0;
+   $total_discounts=0;
+   $total_picks=0;
+
+   $data=array();
+   
+   $order=' order by `Product Code`';
+   
+   $sql="select * from `Order Transaction Fact` O left join `Product History Dimension` PH on (O.`Product key`=PH.`Product Key`) left join `Product Dimension` P on (P.`Product ID`=PH.`Product ID`)  $where $order  ";
+   
+   //  $sql="select  p.id as id,p.code as code ,product_id,p.description,units,ordered,dispatched,charge,discount,promotion_id    from transaction as t left join product as p on (p.id=product_id)  $where    ";
+   
+   
+   
+   
+
+   $result=mysql_query($sql);
+   while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
+  
+  $ordered='';
+  if($row['Order Quantity']!=0)
+    $ordered.=number($row['Order Quantity']);
+ if($row['Order Bonus Quantity']>0){
+    $ordered='<br/>'._('Bonus').' +'.number($row['Order Bonus Quantity']);
+  }
+   if($row['No Shipped Due Out of Stock']>0){
+    $ordered.='<br/> '._('No Stk').' -'.number($row['No Shipped Due Out of Stock']);
+  }
+  $ordered=preg_replace('/^<br\/>/','',$ordered);
+     $code=sprintf('<a href="product.php?pid=%s">%s</a>',$row['Product ID'],$row['Product Code']);
+     $data[]=array(
+
+		   'code'=>$code
+		   ,'description'=>$row['Product XHTML Short Description']
+		  
+		   ,'ordered'=>$ordered
+		   ,'dispatched'=>number($row['Shipped Quantity'])
+		   ,'invoiced'=>money($row['Invoice Transaction Gross Amount']-$row['Invoice Transaction Total Discount Amount'],$row['Order Currency Code'])
+		   );
+   }
+
+
+ 
+   
+
+   $response=array('resultset'=>
+		   array('state'=>200,
+			 'data'=>$data
+// 			 'total_records'=>$total,
+// 			 'records_offset'=>$start_from,
+// 			 'records_returned'=>$start_from+$res->numRows(),
+// 			 'records_perpage'=>$number_results,
+// 			 'records_text'=>$rtext,
+// 			 'records_order'=>$order,
+// 			 'records_order_dir'=>$order_dir,
+// 			 'filtered'=>$filtered
+			 )
+		   );
+   echo json_encode($response);
+}
+
 
 function transactions_cancelled(){
  if(isset( $_REQUEST['id']) and is_numeric( $_REQUEST['id']))

@@ -62,21 +62,23 @@ $smarty->compile_dir ='server_files/smarty/templates_c';
 $smarty->cache_dir = 'server_files/smarty/cache';
 $smarty->config_dir = 'server_files/smarty/configs';
 
-
-
+$_SESSION ['lang']='';
 
 $logged_in=(isset($_SESSION['logged_in']) and $_SESSION['logged_in']? true : false);
 
 if ($logged_in ) {
 
 if($_SESSION['logged_in_page']!=$store_key){
+
+
        include_once('app_files/key.php');
   
     include_once('aes.php');
     $Sk="skstart|".(date('U')+300)."|".ip()."|".IKEY."|".sha1(mt_rand()).sha1(mt_rand());
     $St=AESEncryptCtr($Sk,SKEY, 256);
     $smarty->assign('secret_string',$St);
-
+$logged_in=0;
+$_SESSION['logged_in']=0;
 }else{
 
 

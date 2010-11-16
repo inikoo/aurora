@@ -1,5 +1,6 @@
 {include file='header.tpl'}
-<div id="bd">
+<div id="bd" style="padding:0px">
+<div style="padding:0px 20px">
   {include file='contacts_navigation.tpl'}
   <div id="no_details_title"  style="clear:left;xmargin:0 20px;{if $details!=0}display:none{/if}">
     <h1 style="padding-bottom:0px">{$customer->get('Customer Name')} <span style="color:SteelBlue">{$id}</span>
@@ -80,65 +81,37 @@
   </table>
 </div>
 
-      
-<div>
-
 </div>
+  <ul class="tabs" id="chooser_ul" style="clear:both;margin-top:25px">
+    <li> <span class="item {if $view=='history'}selected{/if}"  id="details">  <span> {t}History, Notes{/t}</span></span></li>
+    <li> <span class="item {if $view=='orders'}selected{/if}"  id="discounts">  <span> {t}Orders{/t}</span></span></li>
+    <li> <span class="item {if $view=='products'}selected{/if}" id="pictures"  ><span>  {t}Products Ordered{/t}</span></span></li>
 
- <div id="the_table" class="data_table" style="clear:both;margin-top:20px">
+  </ul>
+  <div  style="clear:both;width:100%;border-bottom:1px solid #ccc">
+  </div>
+  
+  
+  
+ <div id="block_history" class="data_table" style="{if $view!='history'}display:none;{/if}clear:both;margin:20px 0 40px 0;padding:0 20px">
       <span class="clean_table_title">{t}History/Notes{/t}</span>
- 
- 
-
-      <div  class="clean_table_caption"  style="clear:both;">
-	<div style="float:left;">
-	  <div id="table_info0" class="clean_table_info"><span id="rtext0"></span> <span class="rtext_rpp" id="rtext_rpp0"></span> <span class="filter_msg"  id="filter_msg0"></span></div>
-	</div>
-	<div class="clean_table_filter clean_table_filter_show" id="clean_table_filter_show0" {if $filter_show0 or $filter_value0!=''}style="display:none"{/if}>{t}filter results{/t}</div>
-	<div class="clean_table_filter" id="clean_table_filter0" {if !$filter_show0 and $filter_value0==''}style="display:none"{/if}>
-	  <div class="clean_table_info" style="padding-bottom:1px; ">
-	    <span id="filter_name0" style="margin-right:5px">{$filter_name0}:</span>
-	    <input style="border-bottom:none;width:6em;" id='f_input0' value="{$filter_value0}" size=10/> <span class="clean_table_filter_show" id="clean_table_filter_hide0" style="margin-left:8px">{t}Close filter{/t}</span>
-	    <div id='f_container0'></div>
-	  </div>
-	</div>	
-	<div class="clean_table_controls" style="" ><div><span  style="margin:0 5px" id="paginator0"></span></div></div>
-      </div>
-	
-
+ {include file='table_splinter.tpl' table_id=0 filter_name=$filter_name0 filter_value=$filter_value0  }
       <div  id="table0"   class="data_table_container dtable btable "> </div>
-  
-  
-  
-  </div>
+    </div>
 
 
-<div id="the_table" class="data_table" style="clear:both;margin-top:21px">
+<div id="block_products" class="data_table" style="{if $view!='products'}display:none;{/if}clear:both;margin:20px 0 40px 0;padding:0 20px">
       <span class="clean_table_title">{t}Products Ordered{/t}</span>
- 
- 
-
-      <div  class="clean_table_caption"  style="clear:both;">
-	<div style="float:left;">
-	  <div id="table_info1" class="clean_table_info"><span id="rtext1"></span> <span class="rtext_rpp" id="rtext_rpp1"></span> <span class="filter_msg"  id="filter_msg1"></span></div>
-	</div>
-	<div class="clean_table_filter clean_table_filter_show" id="clean_table_filter_show1" {if $filter_show1 or $filter_value1!=''}style="display:none"{/if}>{t}filter results{/t}</div>
-	<div class="clean_table_filter" id="clean_table_filter1" {if !$filter_show1 and $filter_value1==''}style="display:none"{/if}>
-	  <div class="clean_table_info" style="padding-bottom:1px; ">
-	    <span id="filter_name1" class="filter_name"  style="margin-right:5px">{$filter_name1}:</span>
-	    <input style="border-bottom:none;width:6em;" id='f_input1' value="{$filter_value1}" size=10/> <span class="clean_table_filter_show" id="clean_table_filter_hide1" style="margin-left:8px">{t}Close filter{/t}</span>
-	    <div id='f_container1'></div>
-	  </div>
-	</div>	
-	<div class="clean_table_controls" style="" ><div><span  style="margin:0 5px" id="paginator1"></span></div></div>
-      </div>
-	
-
-      <div  id="table1"   class="data_table_container dtable btable "> </div>
-  
-  
-  
+ {include file='table_splinter.tpl' table_id=1 filter_name=$filter_name1 filter_value=$filter_value1  }
+       <div  id="table1"   class="data_table_container dtable btable "> </div>
   </div>
+
+<div id="block_orders" class="data_table" style="{if $view!='orders'}display:none;{/if}clear:both;margin:20px 0 40px 0;padding:0 20px">
+      <span class="clean_table_title">{t}Orders{/t}</span>
+ {include file='table_splinter.tpl' table_id=2 filter_name=$filter_name2 filter_value=$filter_value2  }
+       <div  id="table2"   class="data_table_container dtable btable "> </div>
+  </div>
+
 
 </div> 
 
