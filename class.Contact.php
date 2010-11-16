@@ -1681,11 +1681,14 @@ $len_name=strlen($name_data['Contact Surname']);
                     } else {
                     
                     if($this->display('name')==''){
-                    //print_r($this);
-                    exit("contact name changed to nothing\n");
-                    }
+                      $history_data['History Abstract']='Main Contact set to Unknown';
+                        $history_data['History Details']=_('Contact changed from').' '.$old_principal_contact.' '._('to an unknown name in')." ".$parent_object->get_name()." ".$parent_label;
+                   
+                    }else{
+                       
                         $history_data['History Abstract']='Main Contact Changed';
                         $history_data['History Details']=_('Contact changed from').' '.$old_principal_contact.' '._('to').' '.$this->display('name')." "._('in')." ".$parent_object->get_name()." ".$parent_label;
+                        }
                         $history_data['Action']='changed';
                         $history_data['Direct Object']=$parent;
                         $history_data['Direct Object Key']=$parent_object->id;
