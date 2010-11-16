@@ -139,7 +139,7 @@ var active=function(el, oRecord, oColumn, oData){
 			      {key:"isactive",label:"<?php echo _('Active')?>" ,className:'aright',width:45  }
 			     // , {key:"alias", label:"<?php echo _('Login')?>",width:70,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 			      ,{key:"name", label:"<?php echo _('Supplier Name')?>",width:200,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-                              ,{key:"location", label:"<?php echo _('Location')?>",width:200,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+                              ,{key:"location", label:"<?php echo _('Location')?>",width:200,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				,{key:"email", label:"<?php echo _('Email')?>",width:200,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				,{key:"telephone", label:"<?php echo _('Telephone')?>",width:180,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 
@@ -209,63 +209,7 @@ var active=function(el, oRecord, oColumn, oData){
 
 	    
 
-	    var tableid=1; // Change if you have more the 1 table
-	    var tableDivEL="table"+tableid;
-	    var ColumnDefs = [
-			      {key:"id", label:"<?php echo _('Id')?>", width:40,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}},
-			      {key:"name", label:"<?php echo _('Group')?>", sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}},
-			      {key:"users", label:"<?php echo _('Users')?>", sortable:false,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-			      ];
-
-	    this.dataSource1 = new YAHOO.util.DataSource("ar_users.php?tipo=groups&tableid=1");
-	    this.dataSource1.responseType = YAHOO.util.DataSource.TYPE_JSON;
-	    this.dataSource1.connXhrMode = "queueRequests";
-	    this.dataSource1.responseSchema = {
-		resultsList: "resultset.data", 
-		metaFields: {
-		    rowsPerPage:"resultset.records_perpage",
-		    sort_key:"resultset.sort_key",
-		    sort_dir:"resultset.sort_dir",
-		    tableid:"resultset.tableid",
-		    filter_msg:"resultset.filter_msg",
-		    totalRecords: "resultset.total_records" // Access to value in the server response
-		},
-		
-		
-		fields: [
-		       "id","name","users"
-			 ]};
-
-	    this.table1 = new YAHOO.widget.DataTable(tableDivEL, ColumnDefs,
-								   this.dataSource1
-								 , {
-								     // sortedBy: {key:"<?php echo$_SESSION['tables']['customers_list'][0]?>", dir:"<?php echo$_SESSION['tables']['customers_list'][1]?>"},
-								     renderLoopSize: 50,generateRequest : myRequestBuilder
-								    //    ,paginator : new YAHOO.widget.Paginator({
-// 									      rowsPerPage    : <?php echo$_SESSION['state']['users']['groups']['nr']?>,containers : 'paginator', 
-//  									      pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',
-// 									      previousPageLinkLabel : "<",
-//  									      nextPageLinkLabel : ">",
-//  									      firstPageLinkLabel :"<<",
-//  									      lastPageLinkLabel :">>",rowsPerPageOptions : [10,25,50,100,250,500]
-// 									      ,template : "{FirstPageLink}{PreviousPageLink}<strong>{CurrentPageReport}</strong>{NextPageLink}{LastPageLink}"
-// 									  })
-								     
-								     ,sortedBy : {
-									 key: "<?php echo$_SESSION['state']['users']['groups']['order']?>",
-									 dir: "<?php echo$_SESSION['state']['users']['groups']['order_dir']?>"
-								     },
-								     dynamicData : true
-
-								  }
-								   
-								 );
-	    
-	    this.table1.handleDataReturnPayload =myhandleDataReturnPayload;
-	    this.table1.doBeforeSortColumn = mydoBeforeSortColumn;
-	    // this.table1.doBeforePaginatorChange = mydoBeforePaginatorChange;
-	    // this.table1.filter={key:'<?php echo$_SESSION['state']['users']['supplier']['f_field']?>',value:'<?php echo$_SESSION['state']['users']['supplier']['f_value']?>'};
-	    //YAHOO.util.Event.addListener('yui-pg0-0-page-report', "click",myRowsPerPageDropdown)
+	   
 
 
 

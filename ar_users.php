@@ -716,7 +716,7 @@ function list_supplier_users() {
         $total=$row['total'];
     }
     if ($wheref!='') {
-        $sql="select count(*) as total from `Supplier Dimension` SD  left join `User Dimension` on (`User Parent Key`=`Ssupplier Key`)  $where ";
+        $sql="select count(*) as total from `Supplier Dimension` SD  left join `User Dimension` on (`User Parent Key`=`Supplier Key`)  $where ";
         $res=mysql_query($sql);
         if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
             $total_records=$row['total'];
@@ -803,7 +803,7 @@ $sql="select *   from `Supplier Dimension` SD  left join `User Dimension` U on (
                        'email'=>$data['Supplier Main Plain Email'],
                        'telephone'=>$data['Supplier Main XHTML Telephone'],
 		  // 'groups'=>$groups,
-  // 'stores'=>$stores,
+                  // 'stores'=>$stores,
 		  // 'warehouses'=>$warehouses,
                      'isactive'=>$is_active
                  );
