@@ -139,13 +139,13 @@ var active=function(el, oRecord, oColumn, oData){
 			      {key:"isactive",label:"<?php echo _('Active')?>" ,className:'aright',width:45  }
 			     // , {key:"alias", label:"<?php echo _('Login')?>",width:70,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 			      ,{key:"name", label:"<?php echo _('Supplier Name')?>",width:200,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-			      ,{key:"groups",formatter:group,label:"<?php echo _('Groups')?>",className:"aleft"}
-			       ,{key:"stores",formatter:stores, label:"<?php echo _('Stores')?>",sortable:true,className:"aleft"}
-			       ,{key:"warehouses",formatter:warehouses, label:"<?php echo _('Warehouses')?>",sortable:true,className:"aleft"
-				
-				 
-			      
-	     }
+                              ,{key:"location", label:"<?php echo _('Location')?>",width:200,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				,{key:"email", label:"<?php echo _('Email')?>",width:200,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				,{key:"telephone", label:"<?php echo _('Telephone')?>",width:180,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+
+
+			     
+			     
 
 
 			
@@ -170,7 +170,7 @@ var active=function(el, oRecord, oColumn, oData){
 		
 		
 		fields: [
-			 "id","isactive","name","email","lang","groups","tipo","active","alias","stores","warehouses"
+			 "id","isactive","name","location","email","telephone","lang","tipo","active","alias"
 			 ]};
 
 	    this.table0 = new YAHOO.widget.DataTable(tableDivEL, ColumnDefs,

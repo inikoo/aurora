@@ -777,9 +777,9 @@ $sql="select *   from `Supplier Dimension` SD  left join `User Dimension` U on (
     $res=mysql_query($sql);
     while ($data=mysql_fetch_array($res)) {
 
- $groups=preg_split('/,/',$data['Groups']);
-      $stores=preg_split('/,/',$data['Stores']);
-     $warehouses=preg_split('/,/',$data['Warehouses']);
+// $groups=preg_split('/,/',$data['Groups']);
+//      $stores=preg_split('/,/',$data['Stores']);
+//     $warehouses=preg_split('/,/',$data['Warehouses']);
 
         //   $_id=$myconf['staff_prefix'].sprintf('%03d',$data['Staff Key']);
         //  $id=sprintf('<a href="staff.php?id=%d">%s</a>',$data['Staff Key'],$_id);
@@ -799,10 +799,12 @@ $sql="select *   from `Supplier Dimension` SD  left join `User Dimension` U on (
                      //'alias'=>$data['Staff Alias'],
                      'name'=>$data['Supplier Name'],
                      		   //'password'=>$password,
-
-		   'groups'=>$groups,
-   'stores'=>$stores,
-		   'warehouses'=>$warehouses,
+                      'location'=>$data['Supplier Main Location'],
+                       'email'=>$data['Supplier Main Plain Email'],
+                       'telephone'=>$data['Supplier Main XHTML Telephone'],
+		  // 'groups'=>$groups,
+  // 'stores'=>$stores,
+		  // 'warehouses'=>$warehouses,
                      'isactive'=>$is_active
                  );
 
