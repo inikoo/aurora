@@ -157,13 +157,13 @@ function list_country_list(){
 
 
    $adata=array();
- $sql="select distinct `Country Name`,`Country Code` from kbase.`Country Dimension` order by $order $order_direction  limit $start_from,$number_results;";
+ $sql="select distinct `Country Name`,`Country 2 Alpha Code` from kbase.`Country Dimension` order by $order $order_direction  limit $start_from,$number_results;";
 
     
    $res=mysql_query($sql);
    
    while($row=mysql_fetch_array($res)) {
-    $country_name=sprintf('<a href="region.php?country=%s">%s</a>',$row['Country Code'],$row['Country Name']);
+    $country_name=sprintf('<a href="region.php?country=%s">%s</a>',$row['Country 2 Alpha Code'],$row['Country Name']);
      $adata[]=array(
 		   'country_name'=>$country_name
 		 
