@@ -1,7 +1,7 @@
 {include file="$head_template"}
 <body class="yui-skin-sam kaktus">
   <div id="container" >
-    {include file="../templates/checkout_header.tpl"}
+    {include file="templates/checkout_header.en_GB.tpl"}
    
       
       
