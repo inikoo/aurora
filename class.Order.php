@@ -3614,6 +3614,69 @@ function set_transaction_post_action($action,$data) {
     return $result_data;
 }
 
+function get_number_dispatched_post_order_transactions(){
+$sql=sprintf("select count(*) as num from `Order Transaction Fact` where `Order Key`=%d and `Order Transaction Type` in ('Missing','Replacement') ",$this->id);
+$res=mysql_query($sql);
+$number=0;
+if($row=mysql_fetch_assoc($res)){
+$number=$row['num'];
+}
+return $number;
+}
+
+
+function post_order_totals_in_process(){
+    
+    $sql=sprintf("select sum(`Quantity`*(`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`)/`Invoice Quantity`) as refunds from `Order Post Transaction In Process Dimension` POT left join `Order Transaction Fact` OTF on (OTF.`Order Transaction Fact`=POT.`Order Transaction Fact`) where `Invoice Quantity`>0");
+
+}
+
+function create_post_transaction_in_process($otf_key,$key,$values){
+  
+  if(!preg_match('/^(Quantity|Operation|Reason|To Be Returned)$/',$key)){
+   $this->error=true;
+    return;
+  }
+  
+   $this->update_post_transaction=false;
+  $this->created_post_transaction=false;
+$sql=sprintf('select * from `Order Post Transaction In Process Dimension` where `Order Transaction Fact Key`=%d',$otf_key);
+$res=mysql_query($sql);
+if($row=mysql_fetch_assoc($res)){
+    if($row['Order Key']!=$this->id){
+    $this->error=true;
+    return;
+    }
+    
+    $sql=sprintf("update `Order Post Transaction In Process Dimension` set `%s`=%s where `Order Post Transaction In Process Key`=%d ",
+    $key,
+    prepare_mysql($values[$key]),
+    $row['Order Post Transaction In Process Key']
+    );
+
+     if (mysql_affected_rows()>0) {
+     $this->update_post_transaction=true;
+     }
+
+
+}else{
+    $sql=sprintf("insert into `Order Post Transaction In Process Dimension` (`Order Transaction Fact Key`,`Order Key`,`Quantity`,`Operation`,`Reason`,`To Be Returned`) values (%d,%d,%f,%s,%s,%s)",
+    $otf_key,
+    $this->id,
+    $values['Quantity'],
+    prepare_mysql($values['Operation']),
+        prepare_mysql($values['Reason']),
+        prepare_mysql($values['To Be Returned'])
+
+    );
+    mysql_query($sql);
+    if (mysql_affected_rows()>0) {
+$this->created_post_transaction=true;
+     }
+
+}
+
+}
 
 
     }

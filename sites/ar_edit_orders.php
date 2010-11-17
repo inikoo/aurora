@@ -47,7 +47,9 @@ case('edit_new_order'):
     case('transactions_to_process'):
     transactions_to_process();
   break;
-   
+     case('post_transactions_to_process'):
+    post_transactions_to_process();
+  break;  
 default:
   $response=array('state'=>404,'resp'=>_('Operation not found'));
   echo json_encode($response);
@@ -542,7 +544,223 @@ print $sql;
 
 
 }
+function post_transactions_to_process(){
+ 
+ global $store_key;
+ 
+     $order_id=$_SESSION['order_key'];
+$start_from=0;
+ 
+$nr=250;
+$order='';
+$order_direction='';
+$tableid=0;
+$f_field='';
+$order_dir='';
+    $number_results=250;
 
+
+
+
+
+
+  
+     
+     $table='  `Order Transaction Fact` OTF  left join `Product History Dimension` PHD on (PHD.`Product Key`=OTF.`Product Key`) left join `Product Dimension` P on (PHD.`Product ID`=P.`Product ID`)  ';
+     $where=sprintf(' where `Order Quantity`>0 and `Order Key`=%d',$order_id);
+   //  $sql_qty=', `Order Quantity`,`Order Transaction Gross Amount`,`Order Transaction Total Discount Amount`,(select GROUP_CONCAT(`Deal Info`) from `Order Transaction Deal Bridge` OTDB where OTDB.`Order Key`=OTF.`Order Key` and OTDB.`Order Line`=OTF.`Order Line`) as `Deal Info`';
+  
+$sql_qty=', `Order Quantity`,`Order Transaction Gross Amount`,`Order Transaction Total Discount Amount`,(select GROUP_CONCAT(`Deal Info`) from `Order Transaction Deal Bridge` OTDB where OTDB.`Order Key`=OTF.`Order Key` and OTDB.`Order Line`=OTF.`Order Line`) as `Deal Info`';
+  
+  
+
+     $_order=$order;
+    $_dir=$order_direction;
+    $filter_msg='';
+    $wheref='';
+    if ($f_field=='code' and $f_value!='')
+        $wheref.=" and  `Product Code` like '".addslashes($f_value)."%'";
+    elseif($f_field=='name' and $f_value!='')
+    $wheref.=" and  `Product Name` like '%".addslashes($f_value)."%'";
+   
+      $sql="select count(*) as total from $table   $where $wheref   ";
+ 
+    // print_r($conf);exit;
+      //    print $sql;
+    $res=mysql_query($sql);
+    if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+        $total=$row['total'];
+    }
+    if ($wheref=='') {
+        $filtered=0;
+        $total_records=$total;
+    } else {
+        $sql="select count(*) as total from $table  $where   ";
+        $res=mysql_query($sql);
+        if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+            $total_records=$row['total'];
+            $filtered=$total_records-$total;
+        }
+
+    }
+
+
+    $rtext=$total_records." ".ngettext('product','products',$total_records);
+    if ($total_records>$number_results)
+        $rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
+    else
+        $rtext_rpp=' '._('(Showing all)');
+
+    if ($total==0 and $filtered>0) {
+        switch ($f_field) {
+        case('code'):
+            $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any product with code like ")." <b>".$f_value."*</b> ";
+            break;
+        case('name'):
+            $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any product with name like ")." <b>".$f_value."*</b> ";
+            break;
+        }
+    }
+    elseif($filtered>0) {
+        switch ($f_field) {
+        case('code'):
+            $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total "._('products with code like')." <b>".$f_value."*</b>";
+            break;
+        case('name'):
+            $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total "._('products with name like')." <b>".$f_value."*</b>";
+            break;
+        }
+    }
+    else
+        $filter_msg='';
+
+    $_order=$order;
+    $_order_dir=$order_dir;
+    $order='`Product Code File As`';
+    if ($order=='stock')
+      $order='`Product Availability`';
+    if ($order=='code')
+      $order='`Product Code File As`';
+    else if ($order=='name')
+      $order='`Product Name`';
+    else if ($order=='available_for')
+      $order='`Product Available Days Forecast`';
+    elseif($order=='family') {
+      $order='`Product Family`Code';
+    }
+    elseif($order=='dept') {
+      $order='`Product Main Department Code`';
+    }
+    elseif($order=='expcode') {
+      $order='`Product Tariff Code`';
+    }
+    elseif($order=='parts') {
+      $order='`Product XHTML Parts`';
+    }
+    elseif($order=='supplied') {
+      $order='`Product XHTML Supplied By`';
+    }
+    elseif($order=='gmroi') {
+      $order='`Product GMROI`';
+    }
+    elseif($order=='state') {
+      $order='`Product Sales State`';
+    }
+    elseif($order=='web') {
+      $order='`Product Web State`';
+    }
+
+
+    
+ $sql="select  `Product Availability`,`Product Record Type`,P.`Product ID`,`Product Code`,`Product XHTML Short Description`,`Product Price`,`Product Units Per Case`,`Product Record Type`,`Product Web State`,`Product Family Name`,`Product Main Department Name`,`Product Tariff Code`,`Product XHTML Parts`,`Product GMROI`,`Product XHTML Parts`,`Product XHTML Supplied By`,`Product Stock Value`  $sql_qty from $table   $where $wheref order by $order $order_direction limit $start_from,$number_results    ";
+ 
+    $res = mysql_query($sql);
+
+    $adata=array();
+print $sql;
+ while ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+
+   if (is_numeric($row['Product Availability']))
+     $stock=number($row['Product Availability']);
+   else
+     $stock='?';
+   $type=$row['Product Record Type'];
+   if ($row['Product Record Type']=='In Process')
+            $type.='<span style="color:red">*</span>';
+   switch ($row['Product Web State']) {
+   case('Online Force Out of Stock'):
+     $web_state=_('Out of Stock');
+     break;
+        case('Online Auto'):
+	  $web_state=_('Auto');
+	  break;
+   case('Unknown'):
+     $web_state=_('Unknown');
+        case('Offline'):
+	  $web_state=_('Offline');
+	  break;
+   case('Online Force Hide'):
+     $web_state=_('Hide');
+            break;
+   case('Online Force For Sale'):
+     $web_state=_('Sale');
+     break;
+        default:
+	  $web_state=$row['Product Web State'];
+   }
+   
+
+   $deal_info='';
+   if($row['Deal Info']!=''){
+     $deal_info=' <span class="deal_info">'.$row['Deal Info'].'</span>';
+   }
+
+   $adata[]=array(
+		  'pid'=>$row['Product ID'],
+		  'code'=>$row['Product Code'],
+		'description'=>$row['Product XHTML Short Description'].$deal_info,
+		'shortname'=>number($row['Product Units Per Case']).'x @'.money($row['Product Price']/$row['Product Units Per Case']).' '._('ea'),
+		'family'=>$row['Product Family Name'],
+		'dept'=>$row['Product Main Department Name'],
+		'expcode'=>$row['Product Tariff Code'],
+                     'parts'=>$row['Product XHTML Parts'],
+		  'supplied'=>$row['Product XHTML Supplied By'],
+		  'gmroi'=>$row['Product GMROI'],
+		  //		  'stock_value'=>money($row['Product Stock Value']),
+                     'stock'=>$stock,
+		  'quantity'=>$row['Order Quantity'],
+		  'state'=>$type,
+		  'web'=>$web_state,
+		  //		  'image'=>$row['Product Main Image'],
+		  'type'=>'item',
+		  'add'=>'+',
+		  'remove'=>'-',
+		  //'change'=>'<span onClick="quick_change("+",'.$row['Product ID'].')" class="quick_add">+</span> <span class="quick_add" onClick="quick_change("-",'.$row['Product ID'].')" >-</span>',
+		  'to_charge'=>money($row['Order Transaction Gross Amount']-$row['Order Transaction Total Discount Amount'])
+		     
+                 );
+
+
+ }
+
+ $response=array('resultset'=>
+                                array('state'=>200,
+                                      'data'=>$adata,
+                                      'sort_key'=>$_order,
+                                      'sort_dir'=>$_dir,
+                                      'tableid'=>$tableid,
+                                      'filter_msg'=>$filter_msg,
+                                      'rtext'=>$rtext,
+                                      'rtext_rpp'=>$rtext_rpp,
+                                      'total_records'=>$total_records-$filtered,
+                                      'records_offset'=>$start_from,
+                                      'records_perpage'=>$number_results,
+                                     )
+                   );
+    echo json_encode($response);
+
+
+}
 
 function ready_to_pick_orders(){
  

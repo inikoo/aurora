@@ -2451,37 +2451,40 @@ function post_transactions_dipatched(){
    
    $order=' order by `Product Code`';
    
-   $sql="select * from `Order Transaction Fact` O left join `Product History Dimension` PH on (O.`Product key`=PH.`Product Key`) left join `Product Dimension` P on (P.`Product ID`=PH.`Product ID`)  $where $order  ";
+   $sql="select `Order Transaction Type`,`Delivery Note Quantity`,`Delivery Note ID`,`Delivery Note Key`,P.`Product ID`,`Product Code`,`Product XHTML Short Description` from `Order Transaction Fact` O left join `Product History Dimension` PH on (O.`Product key`=PH.`Product Key`) left join `Product Dimension` P on (P.`Product ID`=PH.`Product ID`)  $where $order  ";
    
    //  $sql="select  p.id as id,p.code as code ,product_id,p.description,units,ordered,dispatched,charge,discount,promotion_id    from transaction as t left join product as p on (p.id=product_id)  $where    ";
    
    
    
-   
+   //print $sql;
 
    $result=mysql_query($sql);
    while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
   
-  $ordered='';
-  if($row['Order Quantity']!=0)
-    $ordered.=number($row['Order Quantity']);
- if($row['Order Bonus Quantity']>0){
-    $ordered='<br/>'._('Bonus').' +'.number($row['Order Bonus Quantity']);
-  }
-   if($row['No Shipped Due Out of Stock']>0){
-    $ordered.='<br/> '._('No Stk').' -'.number($row['No Shipped Due Out of Stock']);
-  }
-  $ordered=preg_replace('/^<br\/>/','',$ordered);
+
+switch ($row['Order Transaction Type']) {
+    case 'Replacement':
+       $notes=_('Replacement');
+        break;
+       case 'Missing':
+       $notes=_('Missing');
+        break;
+        default:
+        $notes='';
+        
+}
+
+
      $code=sprintf('<a href="product.php?pid=%s">%s</a>',$row['Product ID'],$row['Product Code']);
      $data[]=array(
 
 		   'code'=>$code
 		   ,'description'=>$row['Product XHTML Short Description']
-		  
-		   ,'ordered'=>$ordered
-		   ,'dispatched'=>number($row['Shipped Quantity'])
-		   ,'invoiced'=>money($row['Invoice Transaction Gross Amount']-$row['Invoice Transaction Total Discount Amount'],$row['Order Currency Code'])
-		   );
+		    ,'dn'=>sprintf('<a href="dn.php?id=%d">%s</a>',$row['Delivery Note Key'],$row['Delivery Note ID'])
+		  ,'dispatched'=>number($row['Delivery Note Quantity'])
+		  ,'notes'=>$notes
+		  );
    }
 
 

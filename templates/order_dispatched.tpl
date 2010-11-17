@@ -2,7 +2,7 @@
 <div id="bd" >
  {include file='orders_navigation.tpl'}
 
-     <div style="border:1px solid #ccc;text-align:left;padding:10px;margin: 30px 0 10px 0">
+     <div style="border:1px solid #ccc;text-align:left;padding:10px;margin: 40px 0 10px 0">
 
        <div style="border:0px solid #ddd;width:400px;float:left"> 
          <h1 style="padding:0 0 10px 0">{t}Order{/t} {$order->get('Order Public ID')}</h1>
@@ -66,10 +66,14 @@
        <div style="clear:both"></div>
      </div>
 
+<div id="msg_dispatched_post_transactions" style="{if !$order->get_number_dispatched_post_order_transactions()}display:none;{/if}border:1px solid #fd4646;padding:5px 10px;background:#ff6969;color:#fff;xtext-align:center;text-weight:800">
+{t}This order has some dispatched post transactions{/t} <span onClick="show_dispatched_post_transactions()" style="font-size:90%;cursor:pointer">({t}Show details){/t}</span>
+</div>
 
-<h2>{t}Post-Order Items{/t}</h2>
+<div style="display:none;border-top:1px solid #fd7777;border-bottom:1px solid #fd7777;padding:0 0 10px 0;" id="dispatched_post_transactions">
+<h2>{t}Dispatched Post-Order Items{/t}</h2>
       <div  id="table1" class="dtable btable" style="margin-bottom:0;font-size:80%"></div>
-
+</div>
 
 <h2>{t}Ordered Items{/t}</h2>
       <div  id="table0" class="dtable btable" style="margin-bottom:0;font-size:80%"></div>

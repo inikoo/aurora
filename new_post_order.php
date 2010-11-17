@@ -43,41 +43,7 @@ $js_files=array(
 		'table_common.js.php'
 		);
 
-if(isset($_REQUEST['new']) ){
-  date_default_timezone_set('UTC');
-  if(isset($_REQUEST['customer_key']) and is_numeric($_REQUEST['customer_key']) ){
-    $customer=new Customer($_REQUEST['customer_key']);
-    if(!$customer->id)
-      $customer=new Customer('create anonymous');
-  }else
-    $customer=new Customer('create anonymous');
-  $editor=array(
-		'Author Name'=>$user->data['User Alias'],
-		'Author Alias'=>$user->data['User Alias'],
-		'Author Type'=>$user->data['User Type'],
-		'Author Key'=>$user->data['User Parent Key'],
-		'User Key'=>$user->id
-		);
-  
-  $order_data=array('type'=>'system'
-		    ,'Customer Key'=>$customer->id
-		    ,'Order Original Data MIME Type'=>'application/kaktus'
-		    ,'Order Type'=>'Order'
-		    ,'editor'=>$editor
-		    
-		    );
-  $order=new Order('new',$order_data);
-//exit;
- if($order->error)
-    exit('error');
- 
-  $_SESSION['state']['order']['show_all']=true;
-  header('Location: order.php?id='.$order->id);
-  exit;
-  
 
-
-}
 
 
 
@@ -102,19 +68,9 @@ if(!($user->can_view('stores') and in_array($order->data['Order Store Key'],$use
 
 $customer=new Customer($order->get('order customer key'));
 
-if(isset($_REQUEST['pick_aid'])){
-  $js_files[]='order_pick_aid.js.php';
-  $template='order_pick_aid.tpl';
-}else{
-
-
-  switch($order->get('Order Current Dispatch State')){
-    
-  case('In Process'):
-
-    $js_files[]='js/edit_common.js';
-    $js_files[]='order_in_process.js.php?order_key='.$order_id;
-    $template='order_in_process.tpl';
+ $js_files[]='js/edit_common.js';
+    $js_files[]='new_post_order.js.php?order_key='.$order_id;
+    $template='new_post_order.tpl';
     
    
     $_SESSION['state']['order']['store_key']=$order->data['Order Store Key'];
@@ -137,57 +93,6 @@ if(isset($_REQUEST['pick_aid'])){
     $smarty->assign('paginator_menu0',$paginator_menu);
 
 
-
-
-   break;
-  case('Ready to Pick'):
-    $js_files[]='order_in_warehouse.js.php?order_key='.$order_id;
-    $template='order_in_warehouse.tpl';
-    break;
-  case('Dispatched'):
-  
- 
-
-if ($modify){
-    $general_options_list[]=array('tipo'=>'url','url'=>'new_post_order.php?type=rpl&id='.$order->id,'label'=>_('Make Replacement'));
-    $general_options_list[]=array('tipo'=>'url','url'=>'new_post_order.php?type=sht&id='.$order->id,'label'=>_('Make Shortage'));
-        $general_options_list[]=array('tipo'=>'url','url'=>'new_refund.php?id='.$order->id,'label'=>_('Refund'));
-
-
-}
-  
-     $smarty->assign('search_label',_('Orders'));
-$smarty->assign('search_scope','orders_store');
-    
-    $js_files[]='order_dispatched.js.php';
-    $template='order_dispatched.tpl';
-  break; 
- case('Cancelled'):
- $smarty->assign('search_label',_('Orders'));
-$smarty->assign('search_scope','orders_store');
-    
-    $js_files[]='order_cancelled.js.php';
-    $template='order_cancelled.tpl';
-  break; 
-  case('Suspended'):
-
-    
-    $js_files[]='order_suspended.js.php';
-    $template='order_suspended.tpl';
-  break; 
-case('Unknown'):
- $js_files[]='order_unknown.js.php';
-    $template='order_unknown.tpl';
-break;
-case('Ready to Ship'):
- $js_files[]='order_ready_to_ship.js.php';
-    $template='order_ready_to_ship.tpl';
-break;
- default:
-   exit('todo '.$order->get('Order Current Dispatch State'));
-  break;
-}  
-}
 $smarty->assign('general_options_list',$general_options_list);
 
 
