@@ -43,6 +43,8 @@
 <h2>{t}Customers{/t}</h2>
 <table>
 <tr><td>{t}Online Stores{/t}:</td><td><a href="stores.php">{$number_stores}</a></td><tr>
+<tr><td>{t}Total Customers{/t}:</td><td>{$number_customers}</td><tr>
+<tr><td><a href="users_customer.php">{t}Users{/t}</a>:</td><td><a href="users_customer.php">{$number_users.Customer}</a></td><tr>
 </table>
 {if $number_stores>1}
 <table>
@@ -50,6 +52,7 @@
 {foreach from=$stores item=store}
 <tr><td>{$store->get('Store Code')}</td><td class="aright">{$store->get('Total Customer Contacts')}</td><td class="aright">{$store->get('Total Users')}</td><tr>
 {/foreach}
+
 </table>
 {/if}
 </div>
