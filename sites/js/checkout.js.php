@@ -387,6 +387,12 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    
 	    this.table0.view='';
 	    this.table0.filter={key:'',value:''};
+
+
+
+
+
+
     
     };
   });
@@ -533,6 +539,77 @@ Dom.get("shipping_amount").value='';
 dialog_edit_shipping.hide();
 }
 
+
+//--------------------------------------------------------------------
+
+  var change_view=function(e){
+	
+	var table=tables['table0'];
+	var tipo=this.id;
+	//	alert(table.view+' '+tipo)
+	if(table.view!=tipo){
+	    table.hideColumn('active');
+	    table.hideColumn('families');
+	    table.hideColumn('departments');
+	    table.hideColumn('todo');
+	    table.hideColumn('discontinued');
+
+	    table.hideColumn('sales');
+	    table.hideColumn('profit');
+	     table.hideColumn('new');
+	    table.hideColumn('stock_error');
+	    table.hideColumn('outofstock');
+	    table.hideColumn('surplus');
+	    table.hideColumn('optimal');
+	    table.hideColumn('low');
+	    table.hideColumn('critcal');
+	    table.hideColumn('margin');
+
+	    if(tipo=='product'){
+		Dom.get('period_options').style.display='';
+		Dom.get('avg_options').style.display='';
+		table.showColumn('pid');
+		table.showColumn('code');
+		table.showColumn('description');
+	  	table.showColumn('quantity');
+
+	    }
+	    if(tipo=='addr'){
+		Dom.get('period_options').style.display='';
+		Dom.get('avg_options').style.display='';
+		table.showColumn('sales');
+		table.showColumn('profit');
+		table.showColumn('margin');
+
+	    }
+	    if(tipo=='customer'){
+		Dom.get('period_options').style.display='none';
+		Dom.get('avg_options').style.display='none';
+		table.showColumn('active');
+		table.showColumn('families');
+		table.showColumn('departments');
+		table.showColumn('todo');
+		table.showColumn('discontinued');
+
+	    }
+	    if(tipo=='payment'){
+		Dom.get('period_options').style.display='none';
+		Dom.get('avg_options').style.display='none';
+		
+		table.showColumn('surplus');
+		table.showColumn('optimal');
+		table.showColumn('low');
+		table.showColumn('critcal');
+		table.showColumn('stock_error');
+		table.showColumn('outofstock');
+	    }
+
+//---------------------------------------------------------------------
+
+
+
+
+
 function init(){
     var oACDS = new YAHOO.util.FunctionDataSource(mygetTerms);
     
@@ -565,6 +642,12 @@ Event.addListener("save_set_shipping", "click", save_set_shipping);
 Event.addListener("reset_set_shipping", "click", reset_set_shipping);
 
 
+//---------------------------------component block
+ids=['addr','customer','payment'];
+ YAHOO.util.Event.addListener(ids, "click",change_view)//------------------------------------------------
+
+
+
 
 }
 
@@ -587,3 +670,13 @@ YAHOO.util.Event.onContentReady("filtermenu0", function () {
 	 oMenu.subscribe("show", oMenu.focus);
 	 
     });
+
+
+
+
+
+
+
+
+
+
