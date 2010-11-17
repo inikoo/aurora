@@ -30,7 +30,7 @@
   <layers></layers>																						<!-- [movies,labels,lines] Use this setting to change the sequence of layers. The left-most layer will be behind all the other layers. Please note that objects with x/y coordinates will still be placed on top of objects with long/lat coordinates. -->
   
   <background>                                                <!-- background -->
-    <color></color>                                           <!-- [#444444] (hex color code) -->
+    <color>#7d96cb</color>                                           <!-- [#444444] (hex color code) -->
     <alpha></alpha>                                           <!-- [0] (0 - 100) use 0 if you are using custom swf or jpg for background -->
     <border_color></border_color>                             <!-- [#000000] (hex color code) -->
     <border_alpha></border_alpha>                             <!-- [0] (0 - 100) -->
@@ -41,7 +41,7 @@
   </background>
   
   <zoom>                                                      <!-- zoom control -->
-    <enabled></enabled>                                       <!-- [true] (true / false) whether to display zoom control or not -->
+    <enabled>true</enabled>                                       <!-- [true] (true / false) whether to display zoom control or not -->
     <locked></locked>                                         <!-- [false] (true / false) whether it would be possible to drag zoom bar when dragging "home" icon -->
     <mouse_wheel_enabled></mouse_wheel_enabled>               <!-- [true] (true / false) whether to enable zooming with mouse wheel. Mouse wheel work only after user clicks somewhere on a flash. To workaround this issue, you have to add: onLoad="ammap.focus()" to your html <body> -->    
     <arrows_enabled></arrows_enabled>                         <!-- [true] (true / false) whether to display navigation arrows or not -->
@@ -67,13 +67,13 @@
   </zoom>
   
   <small_map>                                                 <!-- small map -->
-    <enabled>false</enabled>                                       <!-- [true] (true / false) whether to display small map or not -->
+    <enabled>true</enabled>                                       <!-- [true] (true / false) whether to display small map or not -->
     <locked></locked>                                         <!-- [false] (true / false) whether it would be possible to drag small map when dragging border of small map -->
     <active></active>                                         <!-- [true] (true / false) whether clicking on a small map will result position change of big map -->
     <x></x>                                                   <!-- [] (Number or Number%) x position of small map. If not defined, will be aligned to right side --> 
     <y></y>                                                   <!-- [] (Number or Number%) y position of small map. If not defined, will be aligned to bottom -->
     <width></width>                                           <!-- [25%] (Number or Number%) width of small map (height is calculated automatically) -->
-    <color>#444444</color>                                           <!-- [] (hex color code) leave empty if you want to keep original map color -->    
+    <color>#0000ff</color>                                           <!-- [] (hex color code) leave empty if you want to keep original map color -->    
     <border_width></border_width>                             <!-- [5] (Number) -->
     <border_color></border_color>                             <!-- [#FFFFFF] (hex color code) -->
     <rectangle_color></rectangle_color>                       <!-- [#FFFFFF] (hex color code) color of rectangle, indicating active area on a small map -->
@@ -103,7 +103,7 @@
     <active_only_if_value_set></active_only_if_value_set>     <!-- [false] (true / false) if set to true, areas (countries) without defined value in data file will not display balloon and will not change color on roll over -->
     <color_solid></color_solid>                               <!-- [#990000] (hex color code) color of area with highest value-->
     <color_light></color_light>                               <!-- [#FFCC00] (hex color code) color of areas with value = 0 or value is not set -->
-    <color_hover>#CC0000</color_hover>                        <!-- [] (hex color code) -->
+    <color_hover>#0000ff</color_hover>                        <!-- [] (hex color code) -->
     <color_selected></color_selected>                          <!-- [] (hex color code) If not specified, original area color will be used -->
     <color_unlisted></color_unlisted>                         <!-- [] (hex color code) The color of the areas which are in the map file, but not listed in the data file. If you don't set any color here, the area will keep it's original color. Setting a color allows keeping data file smaller. -->
     <color_no_value></color_no_value>                         <!-- [] (hex color code) The color of the areas which have no value attribute. Leave this empty if you do not use value attributes in areas. -->    
