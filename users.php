@@ -87,10 +87,18 @@ $res=mysql_query($sql);
 $number_suppliers=0;
 while($row=mysql_fetch_assoc($res)){
 $number_suppliers=$row['num'];
+}
+$smarty->assign('number_suppliers',$number_suppliers);
+
+
+$sql=sprintf("select count(*) as num  from `Customer Dimension`");
+$res=mysql_query($sql);
+$number_custmers=0;
+while($row=mysql_fetch_assoc($res)){
+$number_custmers=$row['num'];
 
 }
-
-$smarty->assign('number_suppliers',$number_suppliers);
+$smarty->assign('number_customers',$number_custmers);
 
 $sql=sprintf("select count(*) as num  from `Staff Dimension` where `Staff Currently Working`='Yes'");
 $res=mysql_query($sql);
