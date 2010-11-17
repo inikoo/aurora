@@ -9,7 +9,7 @@
 	<script type="text/javascript">
 		// <![CDATA[
 		
-		var so = new SWFObject("external_libs/ammap_2.5.5/ammap/ammap.swf", "ammap", "975", "300", "8", "#7d96cb");
+		var so = new SWFObject("external_libs/ammap_2.5.5/ammap/ammap.swf", "ammap", "975", "300", "8", "#ffffff");
 		so.addVariable("path", "external_libs/ammap_2.5.5/ammap/");
 		so.addVariable("settings_file", escape("external_libs/ammap_2.5.5/ammap/ammap_settings.xml"));                  // you can set two or more different settings files here (separated by commas)
 		so.addVariable("data_file", escape("external_libs/ammap_2.5.5/ammap/ammap_data.xml"));		
@@ -23,7 +23,6 @@
 		so.write("flashcontent");
 		// ]]>
 	</script></div>
-
 
 
 
