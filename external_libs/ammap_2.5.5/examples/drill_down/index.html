@@ -11,17 +11,17 @@
 <body onLoad="ammap.focus()">
 <!-- saved from url=(0013)about:internet -->
 <!-- ammap script-->
-  <script type="text/javascript" src="external_libs/ammap_2.5.5/ammap/swfobject.js"></script>
+  <script type="text/javascript" src="../../ammap/swfobject.js"></script>
 	<div id="flashcontent">
 		<strong>You need to upgrade your Flash Player</strong>
 	</div>
 
 	<script type="text/javascript">
 		// <![CDATA[		
-		var so = new SWFObject("external_libs/ammap_2.5.5/ammap/ammap.swf", "ammap", "100%", "100%", "8", "#E7CC9F");
-    so.addVariable("path", "external_libs/ammap_2.5.5/examples/drill_down/ammap/");
-		so.addVariable("data_file", escape("external_libs/ammap_2.5.5/examples/drill_down/ammap_data.xml"));
-    so.addVariable("settings_file", escape("external_libs/ammap_2.5.5/examples/drill_down/ammap_settings.xml"));		
+		var so = new SWFObject("../../ammap/ammap.swf", "ammap", "100%", "100%", "8", "#E7CC9F");
+    so.addVariable("path", "../../ammap/");
+		so.addVariable("data_file", escape("ammap_data.xml"));
+    so.addVariable("settings_file", escape("ammap_settings.xml"));		
 		so.addVariable("preloader_color", "#999999");
 		so.write("flashcontent");
 		// ]]>
