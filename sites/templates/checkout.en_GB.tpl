@@ -35,6 +35,7 @@
 </div>
 <span id="change_delivery_address" class="state_details" style="display:block;margin-top:10px">{t}Change Delivery Address{/t}</span>
 <span id="set_for_collection" class="state_details" style="display:block;margin-top:4px" value="Yes">{t}Set this order is for collection{/t}</span>
+
 <div id="for_collection"  style="{if $order->get('Order For Collection')=='No'}display:none;{/if}float:left;line-height: 1.0em;margin:5px 0 0 0px;color:#444;font-size:80%;width:140px">
 <span>{t}For collection{/t}</span>
 <span id="set_for_shipping" class="state_details" style="display:block;margin-top:4px" value="No">{t}Set for shipping{/t}</span>
@@ -101,7 +102,41 @@
 	<span id="table_title" class="clean_table_title">{t}Items{/t}</span>
 
 	<div id="table_type">
-	 	</div>
+
+
+
+
+
+
+<div  class="clean_table_caption"  style="clear:both;">
+<div class="table_top_bar" ></div>
+<span   style="float:right;margin-left:80px" class="state_details"  id="change_display_mode" >{$display_mode_label}</span>
+<table style="float:left;margin:0 0 0 0px ;padding:0"  class="options" >
+	<tr><td  {if $view=='general'}class="selected"{/if} id="product" >{t}Product Details{/t}</td>
+	  {if $view_stock}<td {if $view=='stock'}class="selected"{/if}  id="addr"  >{t}Delivery Address{/t}</td>{/if}
+	  {if $view_sales}<td  {if $view=='sales'}class="selected"{/if}  id="customer"  >{t}Customer Data{/t}</td>{/if}
+	  {if $view_sales}<td  {if $view=='sales'}class="selected"{/if}  id="payment"  >{t}Payment Options{/t}</td>{/if}
+	</tr>
+      </table>
+	 <div style="float:left;">
+	   <div id="table_info0" class="clean_table_info"><span id="rtext0"></span> <span class="rtext_rpp" id="rtext_rpp0"></span> <span class="filter_msg"  id="filter_msg0"></span></div>
+	 </div>
+	 <div class="clean_table_filter clean_table_filter_show" id="clean_table_filter_show0" {if $filter_show0}style="display:none"{/if}>{t}filter results{/t}</div>
+	 <div class="clean_table_filter" id="clean_table_filter0" {if !$filter_show0}style="display:none"{/if}>
+	   <div class="clean_table_info" style="padding-bottom:1px; ">
+	     <span id="filter_name0" class="filter_name"  style="margin-right:5px">{$filter_name0}:</span>
+	     <input style="border-bottom:none;width:6em;" id='f_input0' value="{$filter_value0}" size=10/> <span class="clean_table_filter_show" id="clean_table_filter_hide0" style="margin-left:8px">{t}Hide filter{/t}</span>
+	     <div id='f_container0'></div>
+	   </div>
+	 </div>
+	 <div class="clean_table_controls" style="" ><div><span  style="margin:0 5px" id="paginator0"></span></div></div>
+       </div>
+       
+              <div  id="table0"   class="data_table_container dtable btable with_total"> </div>
+
+
+
+	 </div>
 	
      
 
@@ -113,15 +148,7 @@
   </div>
 
 
-    <div  class="clean_table_caption"  style="clear:both;">
-      <div style="float:left;"><div id="table_info0" class="clean_table_info"><span id="rtext0"></span> <span class="rtext_rpp" id="rtext_rpp0"></span> <span class="filter_msg"  id="filter_msg0"></span></div></div>
-      <div class="clean_table_filter" id="clean_table_filter0" style="display:none"><div class="clean_table_info"><span id="filter_name0">{$filter_name}</span>: <input style="border-bottom:none" id='f_input0' value="{$filter_value}" size=10/><div id='f_container0'></div></div></div>
-      <div class="clean_table_controls" style="" ><div><span  style="margin:0 5px" id="paginator0"></span></div></div>
-    </div>
-    <div id="thumbnails0" class="thumbnails" style="border-top:1px solid SteelBlue;clear:both;display:none"></div>
-    <div  id="table0"   class="data_table_container dtable btable "> </div>
-  
-</div>
+    
 	
 	
     {include  file="$footer_template"}
