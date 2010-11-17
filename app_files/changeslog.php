@@ -251,5 +251,19 @@ ALTER TABLE `Order Dimension` ADD `Order Invoiced Items Amount` DECIMAL( 16, 2 )
 ALTER TABLE `Order No Product Transaction Fact` ADD `Affected Order Key` MEDIUMINT UNSIGNED NULL DEFAULT NULL AFTER `Order Key` ;
 ALTER TABLE `Order Dimension` ADD `Order Invoiced Refund Net Amount` DECIMAL( 16, 2 ) NOT NULL DEFAULT '0' AFTER `Order Invoiced Charges Amount` ,ADD `Order Invoiced Refund Tax Amount` DECIMAL( 16, 2 ) NOT NULL DEFAULT '0' AFTER `Order Invoiced Refund Net Amount` ;
 ALTER TABLE `Order Dimension` ADD `Order Invoiced Refund Notes` TEXT NULL DEFAULT NULL AFTER `Order Margin` ;
+
+CREATE TABLE `dw`.`Order Post Transaction In Process Dimension` (
+`Order Post Transaction In Process Key` MEDIUMINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY ,
+`Order Transaction In Process Key` MEDIUMINT UNSIGNED NOT NULL ,
+`Order Key` MEDIUMINT UNSIGNED NOT NULL ,
+`Quantity` FLOAT NOT NULL ,
+`Operation` ENUM( 'Replacement', 'Credit', 'Refund' ) NOT NULL ,
+`Reason` ENUM( 'Other', 'Damaged', 'Missing', 'Do Not Like' ) NOT NULL DEFAULT 'Other',
+`To Be Returned` ENUM( 'Yes', 'No' ) NOT NULL DEFAULT 'No',
+INDEX ( `Order Transaction In Process Key` , `Order Key` )
+) ENGINE = MYISAM ;
+ALTER TABLE `Order Post Transaction In Process Dimension` CHANGE `Order Transaction In Process Key` `Order Transaction Fact Key` MEDIUMINT( 8 ) UNSIGNED NOT NULL ;
+ALTER TABLE `Order Post Transaction In Process Dimension` CHANGE `Operation` `Operation` ENUM( 'Resend', 'Credit', 'Refund' ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL ;
+
 */
 ?>

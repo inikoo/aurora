@@ -228,6 +228,24 @@ $default_state=array(
                                'id'=>'',
                                'show_all'=>false,
                                'store_key'=>0,
+                               
+                                'post_transactions'=>array(
+                                              'operation'=>'Resend',  
+                                               'reason'=>'Other',
+                                               'to_be_returned'=>'No',  
+                                              'order'=>'code',
+                                              'order_dir'=>'',
+                                              'sf'=>0,
+                                              'nr'=>25,
+                                              'where'=>'where true',
+                                              'f_field'=>'code',
+                                              'f_value'=>'','f_show'=>false,
+
+                                            
+                                            
+                                       
+                                          ),
+                               
                                'all_products'=>array(
                                                   'order'=>'code',
                                                   'order_dir'=>'',
