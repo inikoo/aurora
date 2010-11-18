@@ -603,6 +603,7 @@ dialog_edit_shipping.hide();
 		table.showColumn('stock_error');
 		table.showColumn('outofstock');
 	    }
+}
 
 //---------------------------------------------------------------------
 
@@ -641,7 +642,7 @@ Event.addListener("set_shipping", "click", dialog_edit_shipping.show,dialog_edit
 Event.addListener("save_set_shipping", "click", save_set_shipping);
 Event.addListener("reset_set_shipping", "click", reset_set_shipping);
 
-
+}
 //---------------------------------component block
 ids=['addr','customer','payment'];
  YAHOO.util.Event.addListener(ids, "click",change_view)//------------------------------------------------
@@ -649,7 +650,7 @@ ids=['addr','customer','payment'];
 
 
 
-}
+
 
 
 
@@ -670,7 +671,7 @@ YAHOO.util.Event.onContentReady("filtermenu0", function () {
 	 oMenu.subscribe("show", oMenu.focus);
 	 
     });
-
+}
 
 
 
