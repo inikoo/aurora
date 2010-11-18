@@ -643,7 +643,7 @@ Event.addListener("reset_set_shipping", "click", reset_set_shipping);
 
 
 //---------------------------------component block
-ids=['addr','customer','payment'];
+ids=['product','addr','customer','payment'];
  YAHOO.util.Event.addListener(ids, "click",change_view)//------------------------------------------------
 
 
@@ -676,7 +676,7 @@ YAHOO.util.Event.onContentReady("filtermenu0", function () {
 
 
 
-
-
+}
+}
 
 

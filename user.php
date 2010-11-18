@@ -56,17 +56,18 @@ switch ($user->data['User Type']) {
         break;
    case 'Staff':
    $title=_('Staff User');
-       $tpl='user_staff.tpl';
+       $tpl='staff_user.tpl';
+       $js_files[]='staff_user.js.php';
         break;
     case 'Customer':
        $title=_('Customer User');
-
-       $tpl='user_customer.tpl';
+       $tpl='customer_user.tpl';
+       $js_files[]='customer_user.js.php';
         break;
         case 'Supplier':
            $title=_('Supplier User');
-
-       $tpl='user_supplier.tpl';
+       $tpl='supplier_user.tpl';
+       $js_files[]='supplier_user.js.php';
         break;    
 }
 

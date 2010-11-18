@@ -81,6 +81,7 @@ class User extends DB_Table{
 	
  $sql="select `User Key`  from `User Dimension` where `User Type`=".prepare_mysql($data['User Type'])." and `User Handle`=".prepare_mysql($data['User Handle']);
  $result = mysql_query($sql) or die('Query failed:x ' . mysql_error());
+
  if ($row = mysql_fetch_array($result, MYSQL_ASSOC)) {
    $this->found=true;
    $this->found_key=$row['User Key'];
@@ -183,7 +184,11 @@ function create($data){
 	elseif($key=='Administrator')
       $sql=sprintf("select * from  `User Dimension` where  `User Type`='Administrator'"
 		 
-		   );	   
+		   );	
+ //  elseif($key=='Staff')
+  //    $sql=sprintf("select * from  `User Dimension` where  `User Type`='Staff'"
+//		 
+//		   );	   
     else
       $sql=sprintf("select * from `User Dimension` where `User Key`=%d",$data);
      
