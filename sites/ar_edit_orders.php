@@ -345,15 +345,17 @@ $order_dir='';
 
 
 
+
+
+
+
   
      
      $table='  `Order Transaction Fact` OTF  left join `Product History Dimension` PHD on (PHD.`Product Key`=OTF.`Product Key`) left join `Product Dimension` P on (PHD.`Product ID`=P.`Product ID`)  ';
      $where=sprintf(' where `Order Quantity`>0 and `Order Key`=%d',$order_id);
    //  $sql_qty=', `Order Quantity`,`Order Transaction Gross Amount`,`Order Transaction Total Discount Amount`,(select GROUP_CONCAT(`Deal Info`) from `Order Transaction Deal Bridge` OTDB where OTDB.`Order Key`=OTF.`Order Key` and OTDB.`Order Line`=OTF.`Order Line`) as `Deal Info`';
   
-$sql_qty=', `Order Quantity`,`Order Transaction Gross Amount`,`Order Transaction Total Discount Amount`,(select GROUP_CONCAT(`Deal Info`) from `Order Transaction Deal Bridge` OTDB where OTDB.`Order Key`=OTF.`Order Key` and OTDB.`Order Line`=OTF.`Order Line`) as `Deal Info`';
-  
-  
+$sql_qty=', `Order Quantity`,`Order Transaction Gross Amount`,`Order Transaction Total Discount Amount`,(select GROUP_CONCAT(`Deal Info`) from `Order Transaction Deal Bridge` OTDB where OTDB.`Order Key`=OTF.`Order Key`) as `Deal Info`';  
 
      $_order=$order;
     $_dir=$order_direction;
@@ -377,6 +379,7 @@ $sql_qty=', `Order Quantity`,`Order Transaction Gross Amount`,`Order Transaction
         $total_records=$total;
     } else {
         $sql="select count(*) as total from $table  $where   ";
+
         $res=mysql_query($sql);
         if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
             $total_records=$row['total'];
@@ -453,12 +456,12 @@ $sql_qty=', `Order Quantity`,`Order Transaction Gross Amount`,`Order Transaction
 
 
     
- $sql="select  `Product Availability`,`Product Record Type`,P.`Product ID`,`Product Code`,`Product XHTML Short Description`,`Product Price`,`Product Units Per Case`,`Product Record Type`,`Product Web State`,`Product Family Name`,`Product Main Department Name`,`Product Tariff Code`,`Product XHTML Parts`,`Product GMROI`,`Product XHTML Parts`,`Product XHTML Supplied By`,`Product Stock Value`  $sql_qty from $table   $where $wheref order by $order $order_direction limit $start_from,$number_results    ";
+ $sql="select  `Product Availability`,`Product Record Type`,P.`Product ID`,`Product Code`,`Product XHTML Short Description`,`Product Price`,`Product Units Per Case`,`Product Record Type`,`Product Web State`,`Product Family Name`,`Product Main Department Name`,`Product Tariff Code`,`Product XHTML Parts`,`Product GMROI`,`Product XHTML Parts`,`Product XHTML Supplied By`,`Product Stock Value`  $sql_qty from $table   $where $wheref order by $order $order_direction limit $start_from,$number_results   ";
  
     $res = mysql_query($sql);
 
     $adata=array();
-print $sql;
+//print $sql;
  while ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
    if (is_numeric($row['Product Availability']))
@@ -523,6 +526,7 @@ print $sql;
 
 
  }
+
 
  $response=array('resultset'=>
                                 array('state'=>200,
