@@ -316,7 +316,7 @@ $default_state=array(
                                             'dispatch'=>'all_orders',
                                             'paid'=>'',
                                             'order_type'=>'',
-// --------------------------------------------export csv for order list in order page -----------------------------
+
                                             'csv_export'=>array(
                                                              'code'=>true,
                                                              'last_date'=>true,
@@ -340,7 +340,7 @@ $default_state=array(
 
 
                                                          )
-// -----------------------------------------------------------------------------------------------------------------
+
 
 
 
@@ -1780,7 +1780,7 @@ $default_state=array(
                                                            )
 
                                           ),),
-// --------------------------------------------product under family export(csv) starts----------------------
+
                    'product_delete'=>array(
                                  'details'=>false,
                                  'view'=>'general',
@@ -1820,7 +1820,7 @@ $default_state=array(
                                                           )
 
                                          ), ),
-//--------------------------------------------product under family export(csv) ends----------------------
+
 
 
                    'product'=>array(

@@ -613,11 +613,12 @@ $password='';
   $password='<img style="cursor:pointer" user_name="'.$data['User Alias'].'" user_id="'.$data['User Key'].'" onClick="change_passwd(this)" src="art/icons/key.png"/>';
   }
 
+$staff_name=sprintf('<a href="staff_user.php?id=%d">%s</a>',$data['Staff Key'],$data['Staff Name']); 
         $adata[]=array(
                      'id'=>$data['User Key'],
                      'staff_id'=>$data['Staff Key'],
                      'alias'=>$data['Staff Alias'],
-                     'name'=>$data['Staff Name'],
+                     'name'=>$staff_name,
                      		   'password'=>$password,
 
 		   'groups'=>$groups,
@@ -795,12 +796,12 @@ $sql="select *   from `Supplier Dimension` SD  left join `User Dimension` U on (
 //  if ($data['User Key']){
 //  $password='<img style="cursor:pointer" user_name="'.$data['User Alias'].'" user_id="'.$data['User Key'].'" onClick="change_passwd(this)" src="art/icons/key.png"/>';
  // }
-
+$supplier_name=sprintf('<a href="supplier_user.php?id=%d">%s</a>',$data['Supplier Key'],$data['Supplier Name']); 
         $adata[]=array(
                      'id'=>$data['User Key'],
                      'supplier_id'=>$data['Supplier Key'],
                      //'alias'=>$data['Staff Alias'],
-                     'name'=>$data['Supplier Name'],
+                     'name'=>$supplier_name,
                      		   //'password'=>$password,
                       'location'=>$data['Supplier Main Location'],
                        'email'=>$data['Supplier Main Plain Email'],
@@ -981,12 +982,12 @@ $sql="select *   from `Customer Dimension` SD  left join `User Dimension` U on (
 //  if ($data['User Key']){
 //  $password='<img style="cursor:pointer" user_name="'.$data['User Alias'].'" user_id="'.$data['User Key'].'" onClick="change_passwd(this)" src="art/icons/key.png"/>';
  // }
-
+$customer_name=sprintf('<a href="customer_user.php?id=%d">%s</a>',$data['Customer Key'],$data['Customer Main Contact Name']); 
         $adata[]=array(
                      'id'=>$data['User Key'],
                      'customer_id'=>$data['Customer Key'],
                      //'alias'=>$data['Staff Alias'],
-                     'name'=>$data['Customer Main Contact Name'],
+                     'name'=>$customer_name,
                      		   //'password'=>$password,
                       'location'=>$data['Customer Main Location'],
                        'email'=>$data['Customer Main Plain Email'],
