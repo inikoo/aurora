@@ -233,7 +233,7 @@
  <!-- check online help for all possible area's attributes -->
   <movies>
     <!-- the following movie is bounded to a map (is moving together with a map when map is dragged or moved). However the size is not changing, as "fixed_size" is set to "true". If you set it to false (or just delete it), the target will be resized together with the map. -->
-    <movie lat="51.3025" long="-0.0739" file="target" width="10" height="10" color="#CC0000" fixed_size="true" title="build-in movie usage example"></movie>
+   <!-- <movie lat="51.3025" long="-0.0739" file="target" width="10" height="10" color="#CC0000" fixed_size="true" title="build-in movie usage example"></movie> -->
     <!-- the following movie is loaded. You can load swf, jpg, gif, png files. You can find a lot of icons in swf format in ammap/icons folder. This movie is bounded to a stage, and is not moved or resized together with the map -->
     <movie x="59.6667%" y="77.5%" file="icons/pin.swf" title="loaded movie usage example" text_box_width="250" text_box_height="140">
       <description>
@@ -251,7 +251,7 @@
     </label>
   </labels>
   <!-- movies can be bounded to a map or to a stage. lines can't have child objects. -->
-  <lines>
+  <!--<lines>
     <line long="-0.0739, -74" lat="51.3025, 40.43" arrow="end" width="1" alpha="40"></line>
-  </lines>
+  </lines> -->
 </map>

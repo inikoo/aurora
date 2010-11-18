@@ -4,7 +4,7 @@ include_once('class.Order.php');
 include_once('class.Customer.php');
 
 
-$yui_path="../external_libs/yui/2.8.0r4/build/";
+ $yui_path="external_libs/yui/2.8.1/build/";
 
 $css_files=array(
 		 'css/common.css',
