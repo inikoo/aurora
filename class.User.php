@@ -185,9 +185,9 @@ function create($data){
       $sql=sprintf("select * from  `User Dimension` where  `User Type`='Administrator'"
 		 
 		   );	
- //  elseif($key=='Staff')
-  //    $sql=sprintf("select * from  `User Dimension` where  `User Type`='Staff'"
-//		 
+   //elseif($key=='Staff')
+  //   $sql=sprintf("select * from  `User Dimension` where  `User Type`='Staff'"
+		 
 //		   );	   
     else
       $sql=sprintf("select * from `User Dimension` where `User Key`=%d",$data);
@@ -613,7 +613,7 @@ function add_warehouse($to_add,$history=true){
 
 function get($key){
   
-   
+ 
   
   if(array_key_exists($key,$this->data))
     return $this->data[$key];
