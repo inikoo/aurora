@@ -16,7 +16,7 @@ include_once('class.Store.php');
 include_once('class.Warehouse.php');
 
 class User extends DB_Table{
-
+ 
 
   private $groups_read=false;
   private $rights_read=false;
