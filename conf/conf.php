@@ -1264,7 +1264,7 @@ $default_state=array(
                                                         )
                         ),
                    'users'=>array(
-                               'staff'=>array(
+                               'staff'=>array('id'=>'',
                                            'display'=>'all',
                                            'order'=>'alias',
                                            'order_dir'=>'',
@@ -2634,7 +2634,8 @@ $default_state=array(
                              'f_field'=>'country_name',
                              'f_value'=>'',
                                  ),
-        )
+                            )
+
 
                );
 
