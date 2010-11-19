@@ -68,9 +68,7 @@ print $s;
 		    totalRecords: "resultset.total_records" // Access to value in the server response
 		},
 		
-	//	fields: [
-	//		 "id","login","login_count","last_login","failed_login_coun","failed_last_login","lang","tipo","active","alias"
-	//		 ]};
+	
               fields: [
 			 "id","login","login_count","last_login","failed_login_count","failed_last_login","lang","tipo","active","alias"
 			 ]};
