@@ -28,9 +28,7 @@ switch($tipo){
 case('staff_users'):
     list_staff_users();
     break;
-case('staff_user'):
-    list_staff_user();
-    break;
+
 case('supplier_users'):
     list_supplier_users();
     break;
@@ -650,109 +648,7 @@ $alias=sprintf('<a href="staff_user.php?id=%d">%s</a>',$data['User Key'],$data['
                    );
     echo json_encode($response);
 }
-function list_staff_user() {
-    global $myconf;
 
-    $conf=$_SESSION['state']['users']['staff'];
-
-    if (isset( $_REQUEST['sf']))
-        $start_from=$_REQUEST['sf'];
-    else
-        $start_from=$conf['sf'];
-    if (isset( $_REQUEST['nr']))
-        $number_results=$_REQUEST['nr'];
-    else
-        $number_results=$conf['nr'];
-    if (isset( $_REQUEST['o']))
-        $order=$_REQUEST['o'];
-    else
-        $order=$conf['order'];
-    if (isset( $_REQUEST['od']))
-        $order_dir=$_REQUEST['od'];
-    else
-        $order_dir=$conf['order_dir'];
-    if (isset( $_REQUEST['f_field']))
-        $f_field=$_REQUEST['f_field'];
-    else
-        $f_field=$conf['f_field'];
-
-    if (isset( $_REQUEST['f_value']))
-        $f_value=$_REQUEST['f_value'];
-    else
-        $f_value=$conf['f_value'];
-    if (isset( $_REQUEST['where']))
-        $where=$_REQUEST['where'];
-    else
-        $where=$conf['where'];
-
-
-    if (isset( $_REQUEST['tableid']))
-        $tableid=$_REQUEST['tableid'];
-    else
-        $tableid=0;
-
-    $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
-    $_order=$order;
-    $_dir=$order_direction;
-
-
-
-    $_SESSION['state']['users']['staff']=array(
-                                           
-                                             'order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value);
-
-
-
-    $wheref='';
-
-
-$_order=$order;
-  
-        $order='uld.`Start Date` desc,ufld.`Date` desc';
-    $sql="SELECT sd.`Staff Name`,sd.`Staff Key` as staff_key , ud.`User Handle` , ud.`User Alias` , count( uld.`User Key` ),uld.`User Key` AS user_key, ufld.`Date` AS failed_last_login, count( ufld.`User Key` ) AS failed_login_count, ud.`User Handle` , ud.`User Alias` , count( uld.`User Key` ) AS login_count, count( uld.`Start Date` ) AS last_login_date
-FROM `Staff Dimension` sd
-LEFT JOIN `User Dimension` ud ON ( sd.`Staff Key` = ud.`User Parent Key` )
-LEFT JOIN `User Failed Log Dimension` ufld ON ( ud.`User Key` = ufld.`User Key` )
-LEFT JOIN `User Log Dimension` uld ON ( uld.`User Key` = ud.`User Key` )
-where sd.`Staff key`='17' order by $order $order_direction limit $start_from,$number_results";
-// the where conditio
-     print $sql;
-  $adata=array();
-    $res=mysql_query($sql);
-    while ($data=mysql_fetch_array($res)) {
-
-        $adata[]=array(
-                     'id'=>$data['user_key'],
-                     'staff_id'=>$data['staff_key'],
-                     'alias'=>$data['User Alias'],
-                     'login_count'=>$data['login_count'],
-                      'last_login'=>$data['last_login_date'],
-                       'failed_login_count'=>$data['failed_login_count'],
-                       'failed_last_login'=>$data['failed_last_login']
-		 
-                     
-                 );
-
-
- }
-    mysql_free_result($res);
-    $response=array('resultset'=>
-                                array('state'=>200,
-                                      'data'=>$adata,
-                                      'sort_key'=>$_order,
-                                      'sort_dir'=>$_dir,
-                                      'tableid'=>$tableid,
-                                      'records_offset'=>$start_from,
-                                     // 'records_returned'=>$start_from+$total,
-                                      'records_perpage'=>$number_results,
-                                      //'rtext'=>$rtext,
-                                      'records_order'=>$_order,
-                                      'records_order_dir'=>$order_dir,
-                                      
-                                     )
-                   );
-    echo json_encode($response);
-}
 
 function list_supplier_users() {
     global $myconf;
@@ -902,7 +798,7 @@ $sql="select *   from `Supplier Dimension` SD  left join `User Dimension` U on (
 //  if ($data['User Key']){
 //  $password='<img style="cursor:pointer" user_name="'.$data['User Alias'].'" user_id="'.$data['User Key'].'" onClick="change_passwd(this)" src="art/icons/key.png"/>';
  // }
-$supplier_name=sprintf('<a href="supplier_user.php?id=%d">%s</a>',$data['Supplier Key'],$data['Supplier Name']); 
+$supplier_name=sprintf('<a href="supplier_user.php?id=%d">%s</a>',$data['User Key'],$data['Supplier Name']); 
         $adata[]=array(
                      'id'=>$data['User Key'],
                      'supplier_id'=>$data['Supplier Key'],
@@ -1088,7 +984,7 @@ $sql="select *   from `Customer Dimension` SD  left join `User Dimension` U on (
 //  if ($data['User Key']){
 //  $password='<img style="cursor:pointer" user_name="'.$data['User Alias'].'" user_id="'.$data['User Key'].'" onClick="change_passwd(this)" src="art/icons/key.png"/>';
  // }
-$customer_name=sprintf('<a href="customer_user.php?id=%d">%s</a>',$data['Customer Key'],$data['Customer Main Contact Name']); 
+$customer_name=sprintf('<a href="customer_user.php?id=%d">%s</a>',$data['User Key'],$data['Customer Main Contact Name']); 
         $adata[]=array(
                      'id'=>$data['User Key'],
                      'customer_id'=>$data['Customer Key'],
