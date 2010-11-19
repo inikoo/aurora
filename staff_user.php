@@ -48,7 +48,7 @@ $id=$_REQUEST['id'];
 
 
 $user_staff=new User($id);
-print($user_staff->data['User Type']); 
+print($user_staff->data['User Type']);  //User Type is not selected
 
 $title=_('Staff User');
 $smarty->assign('user_class',$user_staff);
@@ -57,7 +57,7 @@ $smarty->assign('user_class',$user_staff);
 $smarty->assign('title', $title);
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
- $smarty->display('staff_user.tpl');     // $smarty->display($tpl);
+ $smarty->display('staff_user.tpl');     
 
 
 ?>
