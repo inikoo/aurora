@@ -616,12 +616,12 @@ $password='';
   $password='<img style="cursor:pointer" user_name="'.$data['User Alias'].'" user_id="'.$data['User Key'].'" onClick="change_passwd(this)" src="art/icons/key.png"/>';
   }
 
-$staff_name=sprintf('<a href="staff_user.php?id=%d">%s</a>',$data['Staff Key'],$data['Staff Name']); 
+$alias=sprintf('<a href="staff_user.php?id=%d">%s</a>',$data['User Key'],$data['Staff Alias']); 
         $adata[]=array(
                      'id'=>$data['User Key'],
                      'staff_id'=>$data['Staff Key'],
-                     'alias'=>$data['Staff Alias'],
-                     'name'=>$staff_name,
+                     'alias'=>$alias,
+                     'name'=>$data['Staff Name'],
                      		   'password'=>$password,
 
 		   'groups'=>$groups,

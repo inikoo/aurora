@@ -221,7 +221,7 @@
      </tr>
 {/if}
 
-       {include file='edit_address_splinter.tpl' close_if_reset=true address_identifier='billing_'  hide_type=true hide_description=true address_function='Billing'  show_form=false  }
+      
       
      </table>
      
