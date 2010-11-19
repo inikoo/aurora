@@ -43,38 +43,21 @@ $js_files=array(
 		);
 
 
-//$smarty->assign('parent','users');
+$smarty->assign('parent','users');
+$id=$_REQUEST['id'];
 
-$smarty->assign('user_class',$user);
 
-// print($user->data['User Type']);      //showing user type=Administrator
-switch ($user->data['User Type']) {
-    case 'Administrator':
-    $title=_('Administrative User');
- $tpl='user_administrator.tpl';
-       $js_files[]='user_administrator.js.php';
-        break;
-   case 'Staff':
-   $title=_('Staff User');
-       $tpl='staff_user.tpl';
-       $js_files[]='staff_user.js.php';
-        break;
-    case 'Customer':
-       $title=_('Customer User');
-       $tpl='customer_user.tpl';
-       $js_files[]='customer_user.js.php';
-        break;
-        case 'Supplier':
-           $title=_('Supplier User');
-       $tpl='supplier_user.tpl';
-       $js_files[]='supplier_user.js.php';
-        break;    
-}
+$user_staff=new User($id);
+print($user_staff->data['User Type']); 
+
+$title=_('Staff User');
+$smarty->assign('user_class',$user_staff);
+
 
 $smarty->assign('title', $title);
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
-       $smarty->display($tpl);
+ $smarty->display('staff_user.tpl');     // $smarty->display($tpl);
 
 
 ?>
