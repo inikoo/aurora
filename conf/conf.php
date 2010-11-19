@@ -1282,7 +1282,7 @@ $default_state=array(
                                                         )
                         ),
                    'users'=>array(
-                               'staff'=>array('id'=>'',
+                               'staff'=>array(
                                            'display'=>'all',
                                            'order'=>'alias',
                                            'order_dir'=>'',
