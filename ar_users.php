@@ -715,6 +715,7 @@ LEFT JOIN `User Dimension` ud ON ( sd.`Staff Key` = ud.`User Parent Key` )
 LEFT JOIN `User Failed Log Dimension` ufld ON ( ud.`User Key` = ufld.`User Key` )
 LEFT JOIN `User Log Dimension` uld ON ( uld.`User Key` = ud.`User Key` )
 where sd.`Staff key`='17' order by $order $order_direction limit $start_from,$number_results";
+// the where conditio
      print $sql;
   $adata=array();
     $res=mysql_query($sql);
