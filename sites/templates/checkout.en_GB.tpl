@@ -31,9 +31,19 @@
 
 <div class="address">
 <h2>Delivery Address</h2>
+
+
+
+
+
+
 {$order->get('Order XHTML Ship Tos')}
+
+
+
+
 </div>
-<span id="change_delivery_address" class="state_details" style="display:block;margin-top:10px">{t}Change Delivery Address{/t}</span>
+<span id="change_delivery_address" class="state_details" style="display:block;margin-top:10px" onclick="window.location.href='edit_del_address.php'">{t}Change Delivery Address{/t}</span>
 <span id="set_for_collection" class="state_details" style="display:block;margin-top:4px" value="Yes">{t}Set this order is for collection{/t}</span>
 
 <div id="for_collection"  style="{if $order->get('Order For Collection')=='No'}display:none;{/if}float:left;line-height: 1.0em;margin:5px 0 0 0px;color:#444;font-size:80%;width:140px">
@@ -111,13 +121,7 @@
 <div  class="clean_table_caption"  style="clear:both;">
 <div class="table_top_bar" ></div>
 <span   style="float:right;margin-left:80px" class="state_details"  id="change_display_mode" >{$display_mode_label}</span>
-<table style="float:left;margin:0 0 0 0px ;padding:0"  class="options" >
-	<tr><td  {if $view=='general'}class="selected"{/if} id="product" >{t}Product Details{/t}</td>
-	  {if $view_stock}<td {if $view=='stock'}class="selected"{/if}  id="addr"  >{t}Delivery Address{/t}</td>{/if}
-	  {if $view_sales}<td  {if $view=='sales'}class="selected"{/if}  id="customer"  >{t}Customer Data{/t}</td>{/if}
-	  {if $view_sales}<td  {if $view=='sales'}class="selected"{/if}  id="payment"  >{t}Payment Options{/t}</td>{/if}
-	</tr>
-      </table>
+
 	 <div style="float:left;">
 	   <div id="table_info0" class="clean_table_info"><span id="rtext0"></span> <span class="rtext_rpp" id="rtext_rpp0"></span> <span class="filter_msg"  id="filter_msg0"></span></div>
 	 </div>
