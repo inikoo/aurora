@@ -48,7 +48,7 @@ $id=$_REQUEST['id'];
 
 
 $user_staff=new User($id);
-print($user_staff->data['User Type']);  //User Type is not selected
+// print($user_staff->data['User Type']);  //User Type is not selected
 
 $title=_('Staff User');
 $smarty->assign('user_class',$user_staff);
