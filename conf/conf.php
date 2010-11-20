@@ -1059,6 +1059,23 @@ $default_state=array(
                                                    'parent'=>''
                                                )
                                    ),
+                   'company_staff'=>array(
+                                       'view'=>'general',
+                                       'parent'=>'none',
+                                       'details'=>0,
+                                       'table'=>array(
+                                                   'order'=>'name',
+                                                   'order_dir'=>'',
+                                                   'sf'=>0,
+                                                   'nr'=>25,
+                                                   'where'=>'where true',
+                                                   'f_field'=>'staff name',
+                                                   'f_value'=>'','f_show'=>false,
+                                                   'mode'=>'',
+                                                   'restrictions'=>'none',
+                                                   'parent'=>''
+                                               )
+                                   ),
                    'companies'=>array(
                                    'view'=>'general',
                                    'details'=>0,
