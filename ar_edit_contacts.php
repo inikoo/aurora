@@ -229,6 +229,9 @@ case('new_corporation'):
 case('edit_company_areas'):
     list_company_areas();
     break;
+case('edit_company_staff'):
+    list_company_staff();
+    break;
 case('edit_company_departments'):
     list_company_departments();
     break;
@@ -2353,11 +2356,6 @@ function list_customers() {
 
 
 function list_company_areas() {
-
-
-
-
-
     $conf=$_SESSION['state']['company_areas']['table'];
     if (isset( $_REQUEST['view']))
         $view=$_REQUEST['view'];
@@ -2576,6 +2574,225 @@ function list_company_areas() {
     echo json_encode($response);
 
 }
+
+function list_company_staff() {
+    $conf=$_SESSION['state']['company_staff']['table'];
+    if (isset( $_REQUEST['view']))
+        $view=$_REQUEST['view'];
+    else
+        $view=$_SESSION['state']['company_staff']['view'];
+
+    if (isset( $_REQUEST['sf']))
+        $start_from=$_REQUEST['sf'];
+    else
+        $start_from=$conf['sf'];
+    if (!is_numeric($start_from))
+        $start_from=0;
+
+    if (isset( $_REQUEST['nr'])) {
+        $number_results=$_REQUEST['nr'];
+    } else
+        $number_results=$conf['nr'];
+
+
+    if (isset( $_REQUEST['o']))
+        $order=$_REQUEST['o'];
+    else
+        $order=$conf['order'];
+
+    if (isset( $_REQUEST['od']))
+        $order_dir=$_REQUEST['od'];
+    else
+        $order_dir=$conf['order_dir'];
+    $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
+
+
+
+    if (isset( $_REQUEST['where']))
+        $where=addslashes($_REQUEST['where']);
+    else
+        $where=$conf['where'];
+
+
+    if (isset( $_REQUEST['f_field']))
+        $f_field=$_REQUEST['f_field'];
+    else
+        $f_field=$conf['f_field'];
+
+    if (isset( $_REQUEST['f_value']))
+        $f_value=$_REQUEST['f_value'];
+    else
+        $f_value=$conf['f_value'];
+
+
+    if (isset( $_REQUEST['tableid']))
+        $tableid=$_REQUEST['tableid'];
+    else
+        $tableid=0;
+
+
+
+
+    if (isset( $_REQUEST['parent']))
+        $parent=$_REQUEST['parent'];
+    else
+        $parent=$conf['parent'];
+
+    if (isset( $_REQUEST['mode']))
+        $mode=$_REQUEST['mode'];
+    else
+        $mode=$conf['mode'];
+
+    if (isset( $_REQUEST['restrictions']))
+        $restrictions=$_REQUEST['restrictions'];
+    else
+        $restrictions=$conf['restrictions'];
+
+
+
+
+    $_SESSION['state']['company_staff']['table']=array('order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value
+            ,'mode'=>$mode,'restrictions'=>'','parent'=>$parent
+                                                      );
+
+
+
+
+    $group='';
+
+
+
+
+
+    $filter_msg='';
+
+    $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
+
+    //  if(!is_numeric($start_from))
+    //        $start_from=0;
+    //      if(!is_numeric($number_results))
+    //        $number_results=25;
+
+
+    $_order=$order;
+    $_dir=$order_direction;
+    $filter_msg='';
+    $wheref='';
+    if ($f_field=='staff name' and $f_value!='')
+        $wheref.=" and  `Staff Name` like '%".addslashes($f_value)."%'";
+    elseif($f_field=='email' and $f_value!='')
+   // $wheref.=" and  `Company Main Plain Email` like '".addslashes($f_value)."%'";
+    $wheref.="";
+    $sql="select count(*) as total from `Staff Dimension`  $where $wheref   ";
+//print $sql;
+    $res=mysql_query($sql);
+    if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+        $total=$row['total'];
+    }
+    if ($wheref=='') {
+        $filtered=0;
+        $total_records=$total;
+    } else {
+        $sql="select count(*) as total from `Staff Dimension`  $where   ";
+        $res=mysql_query($sql);
+        if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+            $total_records=$row['total'];
+            $filtered=$total_records-$total;
+        }
+
+    }
+    mysql_free_result($res);
+
+    $rtext=$total_records." ".ngettext('company staff','company staff',$total_records);
+    if ($total_records>$number_results)
+        $rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
+    else
+        $rtext_rpp=' '._('(Showing all)');
+
+    if ($total==0 and $filtered>0) {
+        switch ($f_field) {
+        case('name'):
+            $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any contact with name like ")." <b>".$f_value."*</b> ";
+            break;
+        case('email'):
+            $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any contact with email like ")." <b>".$f_value."*</b> ";
+            break;
+        }
+    }
+    elseif($filtered>0) {
+        switch ($f_field) {
+        case('name'):
+            $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total "._('companies with name like')." <b>".$f_value."*</b>";
+            break;
+        case('email'):
+            $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total "._('companies with email like')." <b>".$f_value."*</b>";
+            break;
+        }
+    }
+    else
+        $filter_msg='';
+
+    $_order=$order;
+    $_order_dir=$order_dir;
+    $order='`Staff Name`';
+
+    if ($order=='code')
+        $order='`Staff ID`';
+
+
+
+    $sql="select  * from `Staff Dimension` P  $where $wheref $group order by $order $order_direction limit $start_from,$number_results    ";
+
+    $res = mysql_query($sql);
+    $adata=array();
+
+    // print "$sql";
+    while ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+
+        
+            $delete='<img src="art/icons/delete.png"/>';
+       
+        $adata[]=array(
+
+
+                     'id'=>$row['Staff Key']
+
+                          ,'go'=>sprintf("<a href='hr.php?edit=1&id=%d'><img src='art/icons/page_go.png' alt='go'></a>",$row['Staff Key'])
+
+                                ,'code'=>$row['Staff Key']
+                                        ,'name'=>$row['Staff Name']
+                                                ,'delete'=>$delete
+                                                          ,'delete_type'=>'delete'
+                 );
+    }
+    mysql_free_result($res);
+
+
+    // $total_records=ceil($total_records/$number_results)+$total_records;
+
+    $response=array('resultset'=>
+                                array('state'=>200,
+                                      'data'=>$adata,
+                                      'sort_key'=>$_order,
+                                      'sort_dir'=>$_dir,
+                                      'tableid'=>$tableid,
+                                      'filter_msg'=>$filter_msg,
+                                      'rtext'=>$rtext,
+                                      'rtext_rpp'=>$rtext_rpp,
+                                      'total_records'=>$total_records,
+                                      'records_offset'=>$start_from,
+                                      'records_perpage'=>$number_results,
+                                     )
+                   );
+
+
+
+
+    echo json_encode($response);
+
+}
+
+
 
 
 function list_company_departments() {
@@ -2842,6 +3059,7 @@ function new_company_area($data) {
     echo json_encode($response);
 
 }
+
 
 
 function new_company_department($data) {
