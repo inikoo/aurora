@@ -19,6 +19,10 @@ var myBuildUrl = function(datatable,record) {
 
     }
     return url;
+
+
+
+this.dataSource0 = new YAHOO.util.DataSource("ar_edit_common.php?tipo=common");//-----------------------------------for modify common.php
 };
 
 
