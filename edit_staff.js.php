@@ -24,15 +24,15 @@ var validate_scope_data={
     'name':{'changed':false,'validated':true,'required':true,'group':1,'type':'item'
 	    ,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Staff Name')?>'}],'name':'Company_Staff_Name','dbname':'Staff Name'
 	    ,'ar':'find','ar_request':'ar_staff.php?tipo=is_company_staff_name&company_key='+parent_key+'&query='}
-    ,'code':{'changed':false,'validated':true,'required':false,'group':1,'type':'item'
-	     ,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Staff Code')?>'}]
-	     ,'name':'Company_Staff_Code' ,'dbname':'Staff Key','ar':'find','ar_request':'ar_staff.php?tipo=is_company_staff_code&company_key='+parent_key+'&query='}
+    ,'id':{'changed':false,'validated':true,'required':false,'group':1,'type':'item'
+	     ,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Staff Id')?>'}]
+	     ,'name':'Company_Staff_Id' ,'dbname':'Staff Key','ar':'find','ar_request':'ar_staff.php?tipo=is_company_staff_id&company_key='+parent_key+'&query='}
    }
 };
 var validate_scope_metadata={'company_staff':{'type':'edit','ar_file':'ar_edit_staff.php'}};
 
-function validate_code(query){
- validate_general('company_staff','code',unescape(query));
+function validate_id(query){
+ validate_general('company_staff','id',unescape(query));
 }
 function validate_name(query){
  validate_general('company_staff','name',unescape(query));
@@ -50,8 +50,8 @@ function post_item_updated_actions(branch,key,newvalue){
  if(key=='name')
      Dom.get('title_name').innerHTML=newvalue;
  
- else if(key=='code')
-     Dom.get('title_code').innerHTML=newvalue;
+ else if(key=='id')
+     Dom.get('title_id').innerHTML=newvalue;
 
  
  var table=tables.table1;
@@ -82,15 +82,16 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    var tableid=0; // Change if you have more the 1 table
 	    var tableDivEL="table"+tableid;
 	    var OrdersColumnDefs = [ 
-				    {key:"id", label:"<?php echo _('Staff Key')?>", width:20,sortable:false,isPrimaryKey:true,hidden:true} 
+				    {key:"key", label:"<?php echo _('Staff Key')?>", width:20,sortable:false,isPrimaryKey:true,hidden:true}
 				    ,{key:"go",label:'',width:20,}
-				    ,{key:"code", label:"<?php echo _('Staff Key')?>", width:100,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC},  editor: new YAHOO.widget.TextboxCellEditor({asyncSubmitter: CellEdit}),object:'company_staff'}
+				       ,{key:"id", label:"<?php echo _('Staff ID')?>", width:100,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC},  editor: new YAHOO.widget.TextboxCellEditor({asyncSubmitter: CellEdit}),object:'company_staff'}
 				    ,{key:"name", label:"<?php echo _('Staff Name')?>", width:340,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}, editor: new YAHOO.widget.TextboxCellEditor({asyncSubmitter: CellEdit}),object:'company_staff' }
 				    ,{key:"delete", label:"", width:170,sortable:false,className:"aleft",action:'delete',object:'company_staff'}
 				    ,{key:"delete_type", label:"",hidden:true,isTypeKey:true}
 				     ];
 
-	    this.dataSource0 = new YAHOO.util.DataSource("ar_edit_staff.php?tipo=edit_company_staff&parent=corporation");
+	    //this.dataSource0 = new YAHOO.util.DataSource("ar_edit_staff.php?tipo=edit_company_staff&parent=corporation");
+            this.dataSource0 = new YAHOO.util.DataSource("ar_edit_staff.php?tipo=edit_company_staff&parent=corporation");
 	    this.dataSource0.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource0.connXhrMode = "queueRequests";
 	    this.dataSource0.responseSchema = {
@@ -105,7 +106,8 @@ YAHOO.util.Event.addListener(window, "load", function() {
 		},
 		
 		fields: [
-			 'id','code','name','delete','delete_type','go'
+			  'id','key','name','delete','delete_type','go'
+
 			 ]};
 	    
 	    this.table0 = new YAHOO.widget.DataTable(tableDivEL, OrdersColumnDefs,
@@ -233,7 +235,7 @@ function show_add_staff_dialog(){
 
     Dom.addClass('save_edit_company_staff','disabled');
     Dom.get('reset_edit_company_staff').style.visibility='visible';
-    Dom.get('Company_Staff_Code').focus();
+    Dom.get('Company_Staff_Id').focus();
 
 
 }
@@ -250,11 +252,11 @@ function init(){
 
 
 
-    var store_code_oACDS = new YAHOO.util.FunctionDataSource(validate_code);
-    store_code_oACDS.queryMatchContains = true;
-    var store_code_oAutoComp = new YAHOO.widget.AutoComplete("Company_Staff_Code","Company_Staff_Code_Container", staff_code_oACDS);
-    store_code_oAutoComp.minQueryLength = 0; 
-    store_code_oAutoComp.queryDelay = 0.1;
+    var store_id_oACDS = new YAHOO.util.FunctionDataSource(validate_id);
+    store_id_oACDS.queryMatchContains = true;
+    var store_id_oAutoComp = new YAHOO.widget.AutoComplete("Company_Staff_Id","Company_Staff_Id_Container", staff_id_oACDS);
+    store_id_oAutoComp.minQueryLength = 0; 
+    store_id_oAutoComp.queryDelay = 0.1;
     
      var store_name_oACDS = new YAHOO.util.FunctionDataSource(validate_name);
     store_name_oACDS.queryMatchContains = true;

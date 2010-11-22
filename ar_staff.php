@@ -26,10 +26,10 @@ case('is_position_name'):
   is_position_name();
   break;
 case('is_company_staff_code'):
-    is_company_staff_code();
+    is_company_staff_id();
     break;
 case('is_company_staff_name'):
-    is_company_staff_code();
+    is_company_staff_name();
     break;
   case('find_position'):
    require_once 'ar_edit_common.php';
@@ -380,7 +380,7 @@ if($order=='name')
 
 
 
-function is_company_staff_code() {
+function is_company_staff_id() {
     if (!isset($_REQUEST['query']) or !isset($_REQUEST['company_key']) ) {
         $response= array(
                        'state'=>400,
@@ -450,11 +450,10 @@ function is_company_staff_name() {
 
     $company_key=$_REQUEST['company_key'];
 
-   $sql=sprintf("select `Staff Key`,`Staff Name` from `Staff Dimension` where `Company Key`=%d  "
-                 ,$company_key
+   $sql=sprintf("select `Staff Key`,`Staff Name` from `Staff Dimension`"
                 );
     $res=mysql_query($sql);
-print("********************");print($sql);
+//print("******");print($sql);
     if ($data=mysql_fetch_array($res)) {
         $msg=sprintf('Another Company Staff <a href="edit_each_staff.php?id=%d">(%s)</a> already has this name'
                      ,$data['Staff Key']
@@ -537,7 +536,7 @@ if (!isset($_REQUEST['query']) ) {
         echo json_encode($response);
         return;
     }
-    
+ 
     
 $sql=sprintf("select `Position Key`,`Position Name`,`Position Code` from `Position Dimension` where  `Position Code`=%s  "
 	     ,$company_key
