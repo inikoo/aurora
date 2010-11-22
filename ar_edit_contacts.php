@@ -2737,7 +2737,7 @@ function list_company_staff() {
     $order='`Staff Name`';
 
     if ($order=='code')
-        $order='`Staff ID`';
+        $order='`Staff Key`';
 
 
 
