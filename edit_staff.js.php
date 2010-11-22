@@ -82,9 +82,9 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    var tableid=0; // Change if you have more the 1 table
 	    var tableDivEL="table"+tableid;
 	    var OrdersColumnDefs = [ 
-				    {key:"id", label:"<?php echo _('Staff Key')?>", width:20,sortable:false,isPrimaryKey:true,hidden:true} 
+				    {key:"key", label:"<?php echo _('Staff Key')?>", width:20,sortable:false,isPrimaryKey:true,hidden:true}
 				    ,{key:"go",label:'',width:20,}
-				    ,{key:"code", label:"<?php echo _('Staff Key')?>", width:100,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC},  editor: new YAHOO.widget.TextboxCellEditor({asyncSubmitter: CellEdit}),object:'company_staff'}
+				       ,{key:"id", label:"<?php echo _('Staff ID')?>", width:100,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC},  editor: new YAHOO.widget.TextboxCellEditor({asyncSubmitter: CellEdit}),object:'company_staff'}
 				    ,{key:"name", label:"<?php echo _('Staff Name')?>", width:340,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}, editor: new YAHOO.widget.TextboxCellEditor({asyncSubmitter: CellEdit}),object:'company_staff' }
 				    ,{key:"delete", label:"", width:170,sortable:false,className:"aleft",action:'delete',object:'company_staff'}
 				    ,{key:"delete_type", label:"",hidden:true,isTypeKey:true}
@@ -105,7 +105,8 @@ YAHOO.util.Event.addListener(window, "load", function() {
 		},
 		
 		fields: [
-			 'id','code','name','delete','delete_type','go'
+			  'id','key','name','delete','delete_type','go'
+
 			 ]};
 	    
 	    this.table0 = new YAHOO.widget.DataTable(tableDivEL, OrdersColumnDefs,
