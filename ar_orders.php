@@ -954,7 +954,7 @@ function list_transactions_in_dn(){
 
 
 
-   $where=' where   `Delivery Note Key`='.$order_id;
+   $where=sprintf(' where   `Delivery Note Key`=%d',$order_id);
 
    $total_charged=0;
    $total_discounts=0;
@@ -2397,7 +2397,7 @@ function post_transactions(){
 
 
 
-   $where=' where  POT.`Order Key`='.$order_id;
+   $where=sprintf(' where  (POT.`Order Key`=%d or  O.`Order Key`=%d )',$order_id,$order_id);
 
    $total_charged=0;
    $total_discounts=0;
@@ -2407,13 +2407,13 @@ function post_transactions(){
    
    $order=' order by `Product Code`';
    
-   $sql="select `Operation`,`Delivery Note Quantity`,`Delivery Note ID`,`Delivery Note Key`,P.`Product ID`,`Product Code`,`Product XHTML Short Description` from `Order Post Transaction Dimension` POT left join `Order Transaction Fact` O on (O.`Order Transaction Fact Key`=POT.`Order Transaction Fact Key`) left join `Product History Dimension` PH on (O.`Product key`=PH.`Product Key`) left join `Product Dimension` P on (P.`Product ID`=PH.`Product ID`)  $where $order  ";
+   $sql="select POT.`Quantity`,`State`,`Operation`,O.`Delivery Note Quantity`,O.`Delivery Note ID`,O.`Delivery Note Key`,P.`Product ID`,`Product Code`,`Product XHTML Short Description` from `Order Post Transaction Dimension` POT left  join `Order Transaction Fact` O on (O.`Order Transaction Fact Key`=POT.`Order Post Transaction Fact Key`) left  join `Order Transaction Fact` OTF on (OTF.`Order Transaction Fact Key`=POT.`Order Transaction Fact Key`) left join `Product History Dimension` PH on (OTF.`Product Key`=PH.`Product Key`) left join `Product Dimension` P on (P.`Product ID`=PH.`Product ID`)  $where $order  ";
    
    //  $sql="select  p.id as id,p.code as code ,product_id,p.description,units,ordered,dispatched,charge,discount,promotion_id    from transaction as t left join product as p on (p.id=product_id)  $where    ";
    
    
-   
-   //print $sql;
+  
+//  print $sql;
 
    $result=mysql_query($sql);
    while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
@@ -2430,7 +2430,26 @@ switch ($row['Operation']) {
         $notes='';
         
 }
+switch ($row['State']) {
+    case 'In Process':
+       $notes.=sprintf(', <a href="new_post_order.php?id=%d">%s</a>',$order_id,_('In Process'));
+        break;
+       case 'In Warehouse':
+       $notes.=sprintf(',%s <a href="dn.php?id=%d">%s</a>',_('In Warehouse'),$row['Delivery Note Key'],$row['Delivery Note ID']);
+        break;
+         case 'Dispatched':
+       $notes.=_('Dispatched');
+        break;
+        default:
+        $notes.='';
+        
+}
 
+if($row['State']!='In Process'){
+$qty=$row['Delivery Note Quantity'];
+}else{
+$qty=number($row['Quantity']);
+}
 
      $code=sprintf('<a href="product.php?pid=%s">%s</a>',$row['Product ID'],$row['Product Code']);
      $data[]=array(
@@ -2438,7 +2457,7 @@ switch ($row['Operation']) {
 		   'code'=>$code
 		   ,'description'=>$row['Product XHTML Short Description']
 		    ,'dn'=>sprintf('<a href="dn.php?id=%d">%s</a>',$row['Delivery Note Key'],$row['Delivery Note ID'])
-		  ,'dispatched'=>number($row['Delivery Note Quantity'])
+		  ,'dispatched'=>$qty
 		  ,'notes'=>$notes
 		  );
    }

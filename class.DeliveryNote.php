@@ -247,7 +247,9 @@ protected function create($dn_data,$order=false) {
 
         $total_estimated_weight=0;
         $distinct_items=0;
-        $sql=sprintf('select `Order Bonus Quantity`,`Product Gross Weight`,`Order Quantity`,`Order Transaction Fact Key` from `Order Transaction Fact` OTF left join `Product History Dimension` PH  on (OTF.`Product Key`=PH.`Product Key`)  left join `Product Dimension` P  on (PH.`Product ID`=P.`Product ID`)     where `Order Key`=%d  and `Delivery Note Key` IS NULL ',$order->id);
+        $sql=sprintf('select `Order Bonus Quantity`,`Product Gross Weight`,`Order Quantity`,`Order Transaction Fact Key` from `Order Transaction Fact` OTF left join `Product History Dimension` PH  on (OTF.`Product Key`=PH.`Product Key`)  left join `Product Dimension` P  on (PH.`Product ID`=P.`Product ID`)     where `Order Key`=%d  and (`Delivery Note Key` IS NULL or `Delivery Note Key`=0 )',$order->id);
+    //    print "$sql\n";
+      //  exit;
         $res=mysql_query($sql);
         while ($row=mysql_fetch_assoc($res)) {
             $estimated_weight=($row['Order Quantity']+$row['Order Bonus Quantity'])*$row['Product Gross Weight'];
@@ -268,8 +270,9 @@ protected function create($dn_data,$order=false) {
         }
 
 
-        $sql=sprintf('select `Order No Product Transaction Fact Key` from `Order No Product Transaction Fact` where `Order Key`=%d and `Delivery Note Key` IS NULL  ',$order->id);
+        $sql=sprintf('select `Order No Product Transaction Fact Key` from `Order No Product Transaction Fact` where `Order Key`=%d and ( `Delivery Note Key` IS NULL  or `Delivery Note Key`=0) ',$order->id);
         $res=mysql_query($sql);
+        //print "$sql\n";
         while ($row=mysql_fetch_assoc($res)) {
             $sql = sprintf ( "update  `Order No Product Transaction Fact` set `Delivery Note Date`=%s,`Delivery Note Key`=%d where `Order No Product Transaction Fact Key`=%d",
                   prepare_mysql ($this->data ['Delivery Note Date Created']),
@@ -278,7 +281,7 @@ protected function create($dn_data,$order=false) {
                   
 );
             mysql_query ( $sql );
-           
+           //print "$sql\n";
         }
 
 
@@ -338,7 +341,7 @@ protected function create($dn_data,$order=false) {
 
                        );
 
-
+//print $sql;
         if (mysql_query ( $sql )) {
 
             $this->data ['Delivery Note Key'] = mysql_insert_id ();
@@ -574,25 +577,32 @@ $map_to_otf_metadata='';
 }
   
 
-function create_post_order_inventory_transaction_fact($order_key){
+function create_post_order_inventory_transaction_fact($order_key) {
 
 
 
     $date=$this->data['Delivery Note Date Created'];
     $skus_data=array();
-    
-    $sql=sprintf('select `Order Post Transaction Key`,OTF.`Product Key`,`Quantity`,OTF.`Order Transaction Fact Key` from `Order Post Transaction Dimension` POT left join  `Order Transaction Fact` OTF  on (POT.`Order Transaction Fact Key`=OTF.`Order Transaction Fact Key`)  where POT.`Order Key`=%d  and `State` in ("In Process")  '
+
+    $sql=sprintf('select `Order Post Transaction Key`,OTF.`Product Key`,`Delivery Note Quantity`,OTF.`Order Transaction Fact Key` from  `Order Transaction Fact` OTF  left join `Order Post Transaction Dimension` POT on (POT.`Order Post Transaction Fact Key`=OTF.`Order Transaction Fact Key`)   where OTF.`Order Key`=%d  and `Order Transaction Type`="Resend" and `Current Dispatching State` in ("In Process")  '
                  ,$order_key);
     $res=mysql_query($sql);
-print $sql;
+//print $sql;
     while ($row=mysql_fetch_assoc($res)) {
         $product=new Product('id',$row['Product Key']);
         $part_list=$product->get_part_list($date);
 
         $map_to_otf_key=$row['Order Transaction Fact Key'];
-$map_to_otf_metadata='';
-        $state='Ready to Pick';
+        $map_to_otf_metadata='';
+        $state='In Warehouse';
         $sql = sprintf ( "update `Order Post Transaction Dimension` set `State`=%s where `Order Post Transaction Key`=%d  ",
+                         prepare_mysql($state),
+                         $row['Order Post Transaction Key']
+                       );
+        mysql_query ( $sql );
+//print $sql;
+  $state='Ready to Pick';
+        $sql = sprintf ( "update `Order Transaction Fact` set `Current Dispatching State`=%s where `Order Transaction Fact Key`=%d  ",
                          prepare_mysql($state),
 
                          $row['Order Transaction Fact Key']
@@ -604,7 +614,7 @@ $map_to_otf_metadata='';
             if ($part_data['Parts Per Product']!=1)
                 $map_to_otf_metadata=$part_data['Parts Per Product'];
             $part = new Part ( 'sku', $part_data['Part SKU'] );
-          //  $location_key = $part->get ( 'Picking Location Key' );
+            //  $location_key = $part->get ( 'Picking Location Key' );
             $location_key=$part->get_picking_location_key($date);
             $supplier_products=$part->get_supplier_products($date);
 
@@ -629,28 +639,28 @@ $map_to_otf_metadata='';
             $note = $a;
 
 
-            $weight=
-                $sql = sprintf ( "insert into `Inventory Transaction Fact`  (`Inventory Transaction Weight`,`Date Created`,`Date`,`Delivery Note Key`,`Part SKU`,`Location Key`,`Inventory Transaction Quantity`,`Inventory Transaction Type`,`Inventory Transaction Amount`,`Required`,`Given`,`Amount In`,`Metadata`,`Note`,`Supplier Product Key`,`Map To Order Transaction Fact Key`,`Map To Order Transaction Fact Metadata`) values (%f,%s,%s,%d,%s,%d,%s,%s,%.2f,%f,%f,%f,%s,%s,%s,%d,%s) ",
-                                 0,
-                                 prepare_mysql ($date),
-                                 prepare_mysql ($date),
-                                 $this->id,
-                                 prepare_mysql ( $part_data['Part SKU'] ),
-                                 $location_key,
-                                 0,
-                                 "'Order In Process'",
-                                 0,
-                                 $part_data['Parts Per Product'] * $row ['Quantity'],
-                                 0,
-                                 0,
-                                 prepare_mysql ( $this->data ['Delivery Note Metadata'] ),
-                                 prepare_mysql ( $note ),
-                                 $supplier_product_key,
-                                 $map_to_otf_key,
-                                  prepare_mysql ( $map_to_otf_metadata )
-                               );
+
+            $sql = sprintf ( "insert into `Inventory Transaction Fact`  (`Inventory Transaction Weight`,`Date Created`,`Date`,`Delivery Note Key`,`Part SKU`,`Location Key`,`Inventory Transaction Quantity`,`Inventory Transaction Type`,`Inventory Transaction Amount`,`Required`,`Given`,`Amount In`,`Metadata`,`Note`,`Supplier Product Key`,`Map To Order Transaction Fact Key`,`Map To Order Transaction Fact Metadata`) values (%f,%s,%s,%d,%s,%d,%s,%s,%.2f,%f,%f,%f,%s,%s,%s,%d,%s) ",
+                             0,
+                             prepare_mysql ($date),
+                             prepare_mysql ($date),
+                             $this->id,
+                             prepare_mysql ( $part_data['Part SKU'] ),
+                             $location_key,
+                             0,
+                             "'Order In Process'",
+                             0,
+                             $part_data['Parts Per Product'] * $row ['Delivery Note Quantity'],
+                             0,
+                             0,
+                             prepare_mysql ( $this->data ['Delivery Note Metadata'] ),
+                             prepare_mysql ( $note ),
+                             $supplier_product_key,
+                             $map_to_otf_key,
+                             prepare_mysql ( $map_to_otf_metadata )
+                           );
             mysql_query($sql);
-print "$sql\n";
+//print "$sql\n";
 
         }
     }
