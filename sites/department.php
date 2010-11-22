@@ -57,7 +57,9 @@ $smarty->assign('families',$families);
 $smarty->assign('js_files',$js_files);
 $smarty->display("../templates/department.".$store->data['Store Locale'].".tpl");
 
-
+$page_data=$department->get_page_data();
+update_page_key_visit_log($page_data['Page Key']);
+$_SESSION['prev_page_key']=$page_data['Page Key'];
 
 
 ?>
