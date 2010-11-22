@@ -5,9 +5,8 @@
   <div id="yui-main">
     <div class="yui-b">
       <div style="text-align:right">
-	<span class="state_details" id="continue_later"><a href="customer.php?id={$order->get('order customer key')}">Continue Later</a></span>
+	<span class="state_details" id="continue_later"><a href="order.php?id={$order->id}">Continue Later</a></span>
 	<span class="state_details" id="cancel" style="margin-left:20px">Cancel</span>
-	<span class="state_details" id="done" style="margin-left:20px"><a href="customer.php?id={$order->get('order customer key')}">Send to Warehouse</a></span>
 
       </div>
       <div class="yui-b" style="border:1px solid #ccc;text-align:left;padding:10px;margin: 0px 0 10px 0;height:15em">
@@ -40,61 +39,46 @@
 
 <div style="clear:both"></div>
        </div>
- <div style="border:0px solid #ddd;width:190px;float:right;">
- {t}Free Replacement{/t}
- </div>
 
 
-          <div style="border:0px solid #ddd;width:190px;float:right;display:none">
-	 <table border=0  style="width:100%;border-top:1px solid #333;border-bottom:1px solid #333;width:100%,padding:0;margin:0;float:right;margin-left:0px" >
-	   
-	   <tr  {if $order->get('Order Items Discount Amount')==0 }style="display:none"{/if} id="tr_order_items_gross"  ><td  class="aright" >{t}Items Gross{/t}</td><td width=100 class="aright" id="order_items_gross">{$order->get('Items Gross Amount')}</td></tr>
-	   <tr  {if $order->get('Order Items Discount Amount')==0 }style="display:none"{/if}   id="tr_order_items_discounts"  ><td  class="aright" >{t}Discounts{/t}</td><td width=100 class="aright"  id="order_items_discount">-{$order->get('Items Discount Amount')}</td></tr>
-	   
-	   
-	   <tr><td  class="aright" >{t}Items Net{/t}</td><td width=100 class="aright" id="order_items_net">{$order->get('Items Net Amount')}</td></tr>
-	 
-	   <tr  {if $order->get('Order Net Credited Amount')==0}style="display:none"{/if}><td  class="aright" >{t}Credits{/t}</td><td width=100 class="aright" id="order_credits"  >{$order->get('Net Credited Amount')}</td></tr>
-	   
-	   <tr {if  $order->get('Order Charges Net Amount')==0} style="display:none"{/if}  id="tr_order_items_charges"    ><td  class="aright" >{t}Charges{/t}</td><td id="order_charges"  width=100 class="aright">{$order->get('Charges Net Amount')}</td></tr>
-	   
-	   <tr id="tr_order_shipping" style="{if $order->get('Order Shipping Method')=='Calculated' and $order->get('Order Shipping Net Amount')!=''}{else}display:none;{/if}"><td  class="aright" >{t}Shipping{/t}</td>
-	   <td id="order_shipping" width=100 class="aright">{$order->get('Shipping Net Amount')}</td>
-	   
-	   
-	   </tr>
-	   
-	 <tr id="tr_order_shipping_on_demand" style="{if $order->get('Order Shipping Method')=='On Demand' or ( $order->get('Order Shipping Method')=='Calculated' and $order->get('Order Shipping Net Amount')=='')}{else}display:none;{/if}"><td  class="aright" >{t}Shipping{/t}</td>
-	   <td  width=100 class="aright"><span id="given_shipping"  >{if $order->get('Order Shipping Net Amount')!=''}{$order->get('Shipping Net Amount')}</span>{/if}
-	   
-	   <br/><span class="state_details" id="set_shipping">{t}Change Shipping{/t}</span>
 
-	   </td>
-	   
-	   
-	   </tr>
-	   
-	   
-	   <tr style="border-top:1px solid #777"><td  class="aright" >{t}Net{/t}</td><td id="order_net" width=100 class="aright">{$order->get('Total Net Amount')}</td></tr>
-	   
-	   
-	   <tr style="border-bottom:1px solid #777"><td  class="aright" >{t}VAT{/t}</td><td id="order_tax" width=100 class="aright">{$order->get('Total Tax Amount')}</td></tr>
-	   <tr><td  class="aright" >{t}Total{/t}</td><td id="order_total" width=100 class="aright"><b>{$order->get('Total Amount')}</b></td></tr>
-	   
-	 </table>
-       </div>
 
-       <div style="border:0px solid red;width:290px;float:right">
-	 {if $note}<div class="notes">{$note}</div>{/if}
-	 <table border=0  style="border-top:1px solid #333;border-bottom:1px solid #333;width:100%,padding-right:0px;margin-right:30px;float:right" >
-	   
-	   <tr><td>{t}Order Date{/t}:</td><td class="aright">{$order->get('Date')}</td></tr>
-	   
+          <div style="border:0px solid #ddd;width:430px;float:right;xdisplay:none">
+	 <table border=0  style="width:100%;xborder-top:1px solid #333;xborder-bottom:1px solid #333;width:100%,padding:0;margin:0;float:right;margin-left:0px" >
 	  
+	
+<tbody id="resend" style="{if $order_post_transactions_in_process.Resend.Distinct_Products==0}display:none{/if}">	   
+	   <tr  style="ont-size:90%;xborder-top:1px solid #ccc;border-bottom:1px solid #ccc">
+	   <td >{t}Products to Resend{/t}</td>
+	   <td style="width:150px;text-align:right" id="send"><span class="state_details">{t}Send to Warehouse{/t}</span></td>
+	   </tr>
+	        <tr><td  class="aright" >{t}Distinct Products{/t}</td><td id="Resend_Distinct_Products"  class="aright">{$order_post_transactions_in_process.Resend.Distinct_Products}</td></tr>
+	  <tr><td  class="aright" >{t}Market Value{/t}</td><td id="Resend_Formated_Market_Value"  class="aright">{$order_post_transactions_in_process.Resend.Formated_Market_Value}</td></tr>
+</tbody>
+<tbody id="refund" style="{if $order_post_transactions_in_process.Refund.Distinct_Products==0}display:none{/if}">	   
+	    <tr style="font-size:90%;xborder-top:1px solid #ccc;border-bottom:1px solid #ccc">
+	    <td >{t}Refunds{/t}</td>
+	    <td style="text-align:right"><span class="state_details">{t}Save{/t}</span></td>
+	    </tr>
+        <tr><td  class="aright" >{t}Distinct Products{/t}</td><td id="Refund_Distinct_Products"  class="aright">{$order_post_transactions_in_process.Refund.Distinct_Products}</td></tr>
+	  <tr><td  class="aright" >{t}Amount{/t}</td><td id="Refund_Formated_Amount"  class="aright">{$order_post_transactions_in_process.Refund.Formated_Amount}</td></tr>
+</tbody>
+<tbody id="credit" style="{if $order_post_transactions_in_process.Credit.Distinct_Products==0}display:none;{/if};border-bottom:1px solid #ccc;margin-bottom:10px">	 
+	     <tr style="font-size:90%;xborder-top:1px solid #ccc;border-bottom:1px solid #ccc">
+	     <td  >{t}Credits{/t}</td>
+	     <td style="text-align:right"><span class="state_details">{t}Save{/t}</span></td>
+	     </tr>
+	       <tr><td  class="aright" >{t}Distinct Products{/t}</td><td id="Credit_Distinct_Products"  class="aright">{$order_post_transactions_in_process.Credit.Distinct_Products}</td></tr>
+	  <tr><td  class="aright" >{t}Amount{/t}</td><td id="Credit_Formated_Amount"  class="aright">{$order_post_transactions_in_process.Credit.Formated_Amount}</td></tr>
+</tbody>
+	   
+	   
+
+	   
 	 </table>
-	 
        </div>
-       
+
+      
        
        <div style="clear:both"></div>
       </div>
@@ -153,66 +137,6 @@
 </div> 
 
 
-<div id="dialog_cancel">
-  <div style="text-align:left;margin-left:5px">{t}Reason of cancellation{/t}</div>
-  <div id="cancel_msg"></div>
-  
-  <table >
-    <tr><td colspan=2>
-	<textarea style="height:100px" id="cancel_input" onkeyup="change(event,this,'cancel')"></textarea>
-      </td>
-    <tr>
-    <tr class="buttons" style="font-size:100%">
-  <td style="text-align:center;width:50%">
-    <span  class="unselectable_text state_details" onClick="close_dialog('cancel')" >{t}Go Back{/t}</span></td>
-  <td style="text-align:center;width:50%">
-    <span  onclick="save('cancel')" id="cancel_save"  class="unselectable_text state_details"     style="visibility:hidden;" >{t}Continue{/t}</span></td></tr>
-</table>
-</div>
 
-
-
-<div id="dialog_edit_shipping" style="text-align:left;padding:10px">
-  <div id="edit_shipping__msg"></div>
-  {t}Set Shipping{/t}:
-  
-  <table style="margin:10px">
-<tr>
- <td> <input id="shipping_amount" value=""></td>
- </tr>
- <tr>
- <td style="text-align:right">
- <button id="reset_set_shipping">{t}Reset{/t}</button>
- <button id="save_set_shipping">{t}Save{/t}</button>
- </td>
-</tr>
-  </table>
-
-
-</div>
-
-<div id="panel2" style="visibility:hidden"> 
-
-
-<div>Search Family: <input id="family_search" value=""/></div>
-
-<div id="search_error" style="position:relative; visibility:hidden;margin-bottom:10px">{t}You have entered unexisting family{/t}</div>
-</div> 
-
-<! ------------------------ discount search starts here ----------------------------------->
-<div id="change_staff_discount" style="display:nonex;position:absolute;xleft:-100px;xtop:-150px;background:#fff;padding:5px;border:1px solid #777;font-size:90%">
-  <div class="bd" >
-    <h2 >{t}Select Discount{/t}</h2>
- <table class="edit inbox" border=0 >
-      
-   
-      <tr style="height:20px; border:none; " > <td style="padding-right:25px ">{t}Discount{/t}: </td><td style="text-align:left;"><input onKeyup="change_discount_function(this.value,'change_discount')" style="width:6em" type="text" id="change_discount_value" value=""/></td><td>%</td></tr>
-     
- 
-    <tr class="buttons" ><td style="text-align:left"><span id="change_discount_cancel"  style="margin-left:0px;" class="unselectable_text button" onClick="close_change_discount_dialog()">{t}Cancel{/t}<img src="art/icons/cross.png"></span></td><td><span  onclick="change_discount_function2()" id="change_discount_save"   class="unselectable_text button"     style="visibility:hidden;margin-right:30px">{t}Save{/t} <img src="art/icons/disk.png" ></span></td><td></td></tr>
-  </table>
-  </div>
-</div>
-<! -------------------------discount search ends here ------------------------------------>
 
 {include file='footer.tpl'}

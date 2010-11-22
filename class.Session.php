@@ -41,7 +41,7 @@
 
 class Session
 {
-
+var $id=0;
     /**
      *  Constructor of class
      *
@@ -214,7 +214,7 @@ class Session
       $sql = "
 
             SELECT
-                `Session Data`
+                `Session Data`,`Session Key`
             FROM
                 `Session Dimension`
             WHERE
@@ -230,7 +230,9 @@ class Session
        $result=mysql_query($sql);
 
       if( ($data=mysql_fetch_array($result, MYSQL_ASSOC))){
+      $this->id=$data['Session Key'];
 	return $data['Session Data']; 
+
       }
       else 
 	return "";

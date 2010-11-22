@@ -573,6 +573,90 @@ $map_to_otf_metadata='';
     }
 }
   
+
+function create_post_order_inventory_transaction_fact($order_key){
+
+
+
+    $date=$this->data['Delivery Note Date Created'];
+    $skus_data=array();
+    
+    $sql=sprintf('select `Order Post Transaction Key`,OTF.`Product Key`,`Quantity`,OTF.`Order Transaction Fact Key` from `Order Post Transaction Dimension` POT left join  `Order Transaction Fact` OTF  on (POT.`Order Transaction Fact Key`=OTF.`Order Transaction Fact Key`)  where POT.`Order Key`=%d  and `State` in ("In Process")  '
+                 ,$order_key);
+    $res=mysql_query($sql);
+print $sql;
+    while ($row=mysql_fetch_assoc($res)) {
+        $product=new Product('id',$row['Product Key']);
+        $part_list=$product->get_part_list($date);
+
+        $map_to_otf_key=$row['Order Transaction Fact Key'];
+$map_to_otf_metadata='';
+        $state='Ready to Pick';
+        $sql = sprintf ( "update `Order Post Transaction Dimension` set `State`=%s where `Order Post Transaction Key`=%d  ",
+                         prepare_mysql($state),
+
+                         $row['Order Transaction Fact Key']
+                       );
+        mysql_query ( $sql );
+
+
+        foreach($part_list as $part_data) {
+            if ($part_data['Parts Per Product']!=1)
+                $map_to_otf_metadata=$part_data['Parts Per Product'];
+            $part = new Part ( 'sku', $part_data['Part SKU'] );
+          //  $location_key = $part->get ( 'Picking Location Key' );
+            $location_key=$part->get_picking_location_key($date);
+            $supplier_products=$part->get_supplier_products($date);
+
+            $supplier_product_key=0;
+            if (count($supplier_products)>0) {
+
+                $supplier_products_rnd_key=array_rand($supplier_products,1);
+                $supplier_products_keys=preg_split('/,/',$supplier_products[$supplier_products_rnd_key]['Supplier Product Keys']);
+                $supplier_product_key=$supplier_products_keys[array_rand($supplier_products_keys)];
+
+            }
+
+            $product = new product ($row ['Product Key'] );
+            $a = sprintf ( '<a href="product.php?id=%d">%s</a> <a href="dn.php?id=%d">%s</a>'
+                           , $product->id
+                           , $product->code
+                           , $this->id
+                           , $this->data['Delivery Note ID']
+                         );
+            unset ( $product );
+            //$note = $a . ', ' . $order->data ['Order Current XHTML State'];
+            $note = $a;
+
+
+            $weight=
+                $sql = sprintf ( "insert into `Inventory Transaction Fact`  (`Inventory Transaction Weight`,`Date Created`,`Date`,`Delivery Note Key`,`Part SKU`,`Location Key`,`Inventory Transaction Quantity`,`Inventory Transaction Type`,`Inventory Transaction Amount`,`Required`,`Given`,`Amount In`,`Metadata`,`Note`,`Supplier Product Key`,`Map To Order Transaction Fact Key`,`Map To Order Transaction Fact Metadata`) values (%f,%s,%s,%d,%s,%d,%s,%s,%.2f,%f,%f,%f,%s,%s,%s,%d,%s) ",
+                                 0,
+                                 prepare_mysql ($date),
+                                 prepare_mysql ($date),
+                                 $this->id,
+                                 prepare_mysql ( $part_data['Part SKU'] ),
+                                 $location_key,
+                                 0,
+                                 "'Order In Process'",
+                                 0,
+                                 $part_data['Parts Per Product'] * $row ['Quantity'],
+                                 0,
+                                 0,
+                                 prepare_mysql ( $this->data ['Delivery Note Metadata'] ),
+                                 prepare_mysql ( $note ),
+                                 $supplier_product_key,
+                                 $map_to_otf_key,
+                                  prepare_mysql ( $map_to_otf_metadata )
+                               );
+            mysql_query($sql);
+print "$sql\n";
+
+        }
+    }
+
+}
+
 function create_inventory_transaction_fact($order_key) {
 
 

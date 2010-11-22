@@ -16,8 +16,24 @@ if (!isset($_REQUEST['tipo'])) {
 $tipo=$_REQUEST['tipo'];
 
 switch ($tipo) {
-case('picking_aid_sheet'):
 
+case('send_post_order_to_warehouse'):
+$data=prepare_values($_REQUEST,array(
+                            
+                             'order_key'=>array('type'=>'key')
+                         ));
+
+send_post_order_to_warehouse($data);
+break;
+case('cancel_post_transactions'):
+$data=prepare_values($_REQUEST,array(
+                            
+                             'order_key'=>array('type'=>'key')
+                         ));
+
+cancel_post_transactions_in_process($data);
+break;
+case('picking_aid_sheet'):
 picking_aid_sheet();
 break;
 case('create_invoice'):
@@ -316,61 +332,73 @@ function edit_new_order() {
 function edit_new_post_order($data) {
 
     $order_key=$data['order_key'];
-
     $otf_key=$data['otf_key'];
     $value=$data['new_value'];
     $key=$data['key'];
-    
-  $quantity=0;
-  
-    
- 
-        $order=new Order($order_key);
-
-     
-        $transaction_data=array(
-             'Quantity'=>0,
-            'Operation'=>$_SESSION['state']['order']['post_transactions']['operation'],
-            'Reason'=>$_SESSION['state']['order']['post_transactions']['reason'],
-            'To Be Returned'=>$_SESSION['state']['order']['post_transactions']['to_be_returned'],
-        );
-            
-         if($key=='quantity' and is_numeric($value) and $value>=0){
-         $transaction_data['Quantity']=$value;
-         $_key='Quantity';
-         }elseif($key=='operation'){
-         $transaction_data['Operation']=$value;
-          $_key='Operation';
-         }elseif($key=='reason'){
-         $transaction_data['Reason']=$value;
-          $_key='Reason';
-         }elseif($key=='to_be_returned'){
-         $transaction_data['To Be Returned']=$value;
-          $_key='To Be Returned';
-         }else{
-                $response=array('state'=>400,'msg'=>$order->msg);
-                echo json_encode($response);
-                exit;
-         }
-            
-     print $value." x ".$key;
-     
-        $transaction_data=$order->create_post_transaction_in_process($otf_key,$_key,$transaction_data);      
-
-     
+    $quantity=0;
+    $order=new Order($order_key);
 
 
+    $transaction_data=array(
+                          'Quantity'=>0,
+                          'Operation'=>$_SESSION['state']['order']['post_transactions']['operation'],
+                          'Reason'=>$_SESSION['state']['order']['post_transactions']['reason'],
+                          'To Be Returned'=>$_SESSION['state']['order']['post_transactions']['to_be_returned'],
+                      );
+
+    if ($key=='quantity' and is_numeric($value) and $value>=0) {
+        $transaction_data['Quantity']=$value;
+        $_key='Quantity';
+        
+    }
+    elseif($key=='operation') {
+        $transaction_data['Operation']=$value;
+        $_key='Operation';
+        $_SESSION['state']['order']['post_transactions']['operation']=$value;
+    }
+    elseif($key=='reason') {
+        $transaction_data['Reason']=$value;
+        $_key='Reason';
+                $_SESSION['state']['order']['post_transactions']['reason']=$value;
+
+    }
+    elseif($key=='to_be_returned') {
+        $transaction_data['To Be Returned']=$value;
+        $_key='To Be Returned';
+        $_SESSION['state']['order']['post_transactions']['to_be_returned']=$value;
+    }
+    else {
+        $response=array('state'=>400,'msg'=>$order->msg);
+        echo json_encode($response);
+        exit;
+    }
+
+
+
+    $transaction_data=$order->create_post_transaction_in_process($otf_key,$_key,$transaction_data);
+  // print_r($transaction_data);
+   if ($order->updated) {
         $response= array(
                        'state'=>200,
+                       'result'=>'updated',
                        'quantity'=>$transaction_data['Quantity'],
                        'operation'=>$transaction_data['Operation'],
                        'reason'=>$transaction_data['Reason'],
                        'to_be_returned'=>$transaction_data['To Be Returned'],
+                       'data'=>$order->get_post_transactions_in_process_data(),
+                       'new_value'=>$transaction_data[$_key]
                    );
+    }else{
+         $response= array(
+                       'state'=>200,
+                       'result'=>'nochange'
+                       );
     
+    }
     echo json_encode($response);
 
 }
+
 function transactions_to_process() {
     if (isset( $_REQUEST['id']) and is_numeric( $_REQUEST['id'])) {
         $order_id=$_REQUEST['id'];
@@ -773,7 +801,7 @@ $_SESSION['state']['order']['post_transactions']['f_value']=$f_value;
 
    
 
-    $table='  `Order Transaction Fact` OTF  left join `Product History Dimension` PHD on (PHD.`Product Key`=OTF.`Product Key`) left join `Product Dimension` P on (PHD.`Product ID`=P.`Product ID`) left join `Order Post Transaction In Process Dimension` POT on (POT.`Order Transaction Fact Key`=OTF.`Order Transaction Fact Key`)  ';
+    $table='  `Order Transaction Fact` OTF  left join `Product History Dimension` PHD on (PHD.`Product Key`=OTF.`Product Key`) left join `Product Dimension` P on (PHD.`Product ID`=P.`Product ID`) left join `Order Post Transaction Dimension` POT on (POT.`Order Transaction Fact Key`=OTF.`Order Transaction Fact Key`)  ';
     $where=sprintf(' where `Order Quantity`>0 and OTF.`Order Key`=%d',$order_id);
     $sql_qty=', `Order Quantity`,`Order Transaction Gross Amount`,`Order Transaction Total Discount Amount`,(select GROUP_CONCAT(`Deal Info`) from `Order Transaction Deal Bridge` OTDB where OTDB.`Order Key`=OTF.`Order Key` and OTDB.`Order Transaction Fact Key`=OTF.`Order Transaction Fact Key`) as `Deal Info`';
 
@@ -879,7 +907,7 @@ $_SESSION['state']['order']['post_transactions']['f_value']=$f_value;
 
 
 
-    $sql="select `Reason`,`To Be Returned`,`Operation`,`Quantity`,OTF.`Order Key`,OTF.`Order Transaction Fact Key`,`Invoice Currency Code`,(`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`) as charged, `Delivery Note Quantity`,`Product Availability`,`Product Record Type`,P.`Product ID`,`Product Code`,`Product XHTML Short Description`,`Product Price`,`Product Units Per Case`,`Product Record Type`,`Product Web State`,`Product Family Name`,`Product Main Department Name`,`Product Tariff Code`,`Product XHTML Parts`,`Product GMROI`,`Product XHTML Parts`,`Product XHTML Supplied By`,`Product Stock Value`  $sql_qty from $table   $where $wheref order by $order $order_direction limit $start_from,$number_results    ";
+    $sql="select `Reason`,`To Be Returned`,`Operation`,IFNULL(`Quantity`,'') as Quantity,OTF.`Order Key`,OTF.`Order Transaction Fact Key`,`Invoice Currency Code`,(`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`) as charged, `Delivery Note Quantity`,`Product Availability`,`Product Record Type`,P.`Product ID`,`Product Code`,`Product XHTML Short Description`,`Product Price`,`Product Units Per Case`,`Product Record Type`,`Product Web State`,`Product Family Name`,`Product Main Department Name`,`Product Tariff Code`,`Product XHTML Parts`,`Product GMROI`,`Product XHTML Parts`,`Product XHTML Supplied By`,`Product Stock Value`  $sql_qty from $table   $where $wheref order by $order $order_direction limit $start_from,$number_results    ";
 //print $sql;
 
     $res = mysql_query($sql);
@@ -936,7 +964,8 @@ $_SESSION['state']['order']['post_transactions']['f_value']=$f_value;
                      'stock'=>$stock,
                      'ordered'=>$row['Delivery Note Quantity'].' ('.money($row['charged'],$row['Invoice Currency Code']).')',
                      'state'=>$type,
-                
+                     'max_resend'=>$row['Delivery Note Quantity'],
+                     'max_refund'=>$row['charged'],
                      'add'=>'+',
                      'remove'=>'-',
                      'to_charge'=>'<span onClick="change_discount(this)">'.money($row['Order Transaction Gross Amount']-$row['Order Transaction Total Discount Amount']).'</span>',
@@ -1385,7 +1414,39 @@ foreach($dn_notes as $dn_key){
 $dn=new DeliveryNote($dn_key);
 $invoice=$dn->create_invoice();
 }
+}
+function cancel_post_transactions_in_process($data){
+$order=new Order($data['order_key']);
+$order->cancel_post_transactions_in_process();
+ if (!$order->error) {
+        $response=array('state'=>200,'order_key'=>$order->id);
+        echo json_encode($response);
+    } else {
+        $response=array('state'=>400,'msg'=>$order->msg);
+        echo json_encode($response);
+
+    }
+
+}
 
 
+function send_post_order_to_warehouse($data) {
+
+    $order=new Order($data['order_key']);
+
+
+$order->add_post_order_transactions();
+
+
+
+    $order->send_post_action_to_warehouse();
+    if (!$order->error) {
+        $response=array('state'=>200,'order_key'=>$order->id);
+        echo json_encode($response);
+    } else {
+        $response=array('state'=>400,'msg'=>$order->msg);
+        echo json_encode($response);
+
+    }
 
 }

@@ -586,7 +586,10 @@ $this->update_full_search();
     return $dn;
 }
 
-function send_post_action_to_warehouse($date=false,$type,$metadata='') {
+
+
+
+function send_post_action_to_warehouse($date=false,$type=false,$metadata='') {
     if (!$date)
         $date=date('Y-m-d H:i:s');
 
@@ -596,7 +599,9 @@ function send_post_action_to_warehouse($date=false,$type,$metadata='') {
         return;
 
     }
-    
+    if(!$type){
+        $type='Replacement & Shortages';
+    }
    
     
     $type_formated=$type;
@@ -624,11 +629,18 @@ function send_post_action_to_warehouse($date=false,$type,$metadata='') {
 
              );
          
+         
+     
+         
+         
+         
     $dn=new DeliveryNote('create',$data_dn,$this);
-    //$dn->create_inventory_transaction_fact($this->id);
-    $this->update_xhtml_delivery_notes();
+       $dn->create_post_order_inventory_transaction_fact($this->id);
+ $this->update_delivery_notes('save');
+    $this->update_dispatch_state();
+$this->update_full_search();
+    
     $customer=new Customer($this->data['Order Customer Key']);
-
     $customer->add_history_post_order_in_warehouse($dn,$type);
     return $dn;
 }
@@ -1501,126 +1513,7 @@ return $invoices;
                 return false;
         }
 
-        //  function submit($data){
-        //     if($this->data['status']<10){
-        //       $this->data['tipo']=1;
-        //       $this->data['status_id']=10;
-        //       $datetime=prepare_mysql_datetime($data['sdate'].' '.$data['stime']);
-        //       if($datetime['ok']){
 
-
-        // 	$this->get_data();
-        // 	//	return array('ok'=>false,'msg'=>$this->save_history('submit',array('date'=>'NOW','user_id'=>$data['user_id'])));
-        // 	$this->save_history('submit',array('date'=>'NOW','user_id'=>$data['user_id']));
-
-
-        // 	return array('ok'=>true);
-        //       }else
-        // 	return array('ok'=>false,'msg'=>_('wrong date').' '.$data['sdate'].' '.$data['stime']);
-        //     }else{
-        //       return array('ok'=>false,'msg'=>_('Order is already submited'));
-
-
-        //     }
-
-
-        //   }
-        function add_item($data) {
-
-            switch ($this->tipo) {
-            case ('po') :
-
-                //check if the product is related to the supplier
-                $sql = sprintf ( "select supplier_id,product2supplier.price,units from product2supplier  left join product on (product_id=product.id) where product2supplier.id=%d", $data ['product_id'] );
-                $res = $this->db->query ( $sql );
-                if ($row = $res->fetchRow ()) {
-                    if ($row ['supplier_id'] != $this->data ['supplier_id'])
-                        return array ('ok' => false, 'msg' => _ ( 'Product no related to this supplier' ) );
-                    $price = $row ['price'];
-                    $units = $row ['units'];
-                } else
-                    return array ('ok' => false, 'msg' => _ ( 'Product not exist' ) );
-
-                //check if already exist
-                $item_data = array ('outers' => '', 'est_price' => '', 'id' => $data ['product_id'] );
-
-                $sql = sprintf ( "select porden_item.id from porden_item  where porden_id=%d and p2s_id=%d", $this->id, $data ['product_id'] );
-
-                $res = $this->db->query ( $sql );
-                if ($row = $res->fetchRow ()) {
-                    if ($data ['qty'] != 0) {
-                        $sql = sprintf ( "update porden_item set expected_qty=%.3f,expected_price=%.3f where id=%d    ", $data ['qty'], $price, $row ['id'] );
-                        mysql_query ( $sql );
-                        $item_data = array ('outers' => number ( $data ['qty'] / $units ), 'est_price' => money ( $data ['qty'] * $price ), 'id' => $data ['product_id'] );
-                    } else {
-                        $sql = sprintf ( "delete from porden_item  where id=%d    ", $row ['id'] );
-                        //	  	return array('ok'=>false,'msg'=>$sql);
-                        mysql_query ( $sql );
-                    }
-                } else {
-                    if ($data ['qty'] != 0) {
-                        $sql = sprintf ( "insert into porden_item (porden_id,p2s_id,expected_qty,expected_price) values (%d,%d,%.3f,%.3f)", $this->id, $data ['product_id'], $data ['qty'], $price * $data ['qty'] );
-                        mysql_query ( $sql );
-                        $item_data = array ('outers' => number ( $data ['qty'] / $units ), 'est_price' => money ( $data ['qty'] * $price ), 'id' => $data ['product_id'] );
-                    }
-
-                }
-                $this->load ( 'items' );
-                $this->save ( 'items' );
-                return array ('ok' => true, 'item_data' => $item_data );
-            }
-
-        }
-
-        function item_checked($data) {
-
-            switch ($this->tipo) {
-            case ('po') :
-
-                //check if the product is related to the supplier
-                $sql = sprintf ( "select supplier_id,product2supplier.price,units from product2supplier  left join product on (product_id=product.id) where product2supplier.id=%d", $data ['product_id'] );
-                $res = $this->db->query ( $sql );
-                if ($row = $res->fetchRow ()) {
-                    if ($row ['supplier_id'] != $this->data ['supplier_id']) {
-                        // product not related
-
-
-                    }
-                    $price = $row ['price'];
-                    $units = $row ['units'];
-                } else
-                    return array ('ok' => false, 'msg' => _ ( 'Product not exist' ) );
-
-                //check if already exist
-                $item_data = array ('outers' => '', 'est_price' => '', 'id' => $data ['product_id'] );
-
-                $sql = sprintf ( "select porden_item.id from porden_item  where porden_id=%d and p2s_id=%d", $this->id, $data ['product_id'] );
-
-                $res = $this->db->query ( $sql );
-                if ($row = $res->fetchRow ()) {
-                    if ($data ['qty'] != 0) {
-                        $sql = sprintf ( "update porden_item set expected_qty=%.3f,expected_price=%.3f where id=%d    ", $data ['qty'], $price, $row ['id'] );
-                        mysql_query ( $sql );
-                        $item_data = array ('outers' => number ( $data ['qty'] / $units ), 'est_price' => money ( $data ['qty'] * $price ), 'id' => $data ['product_id'] );
-                    } else {
-                        $sql = sprintf ( "delete from porden_item  where id=%d    ", $row ['id'] );
-                        //	  	return array('ok'=>false,'msg'=>$sql);
-                        mysql_query ( $sql );
-                    }
-                } else {
-                    if ($data ['qty'] != 0) {
-                        $sql = sprintf ( "insert into porden_item (porden_id,p2s_id,expected_qty,expected_price) values (%d,%d,%.3f,%.3f)", $this->id, $data ['product_id'], $data ['qty'], $price * $data ['qty'] );
-                        mysql_query ( $sql );
-                        $item_data = array ('outers' => number ( $data ['qty'] / $units ), 'est_price' => money ( $data ['qty'] * $price ), 'id' => $data ['product_id'] );
-                    }
-
-                }
-                $this->load ( 'items' );
-                $this->save ( 'items' );
-                return array ('ok' => true, 'item_data' => $item_data );
-            }
-
-        }
 
         function set($tipo, $data) {
             global $_order_status;
@@ -3624,57 +3517,218 @@ $number=$row['num'];
 return $number;
 }
 
+function get_post_transactions_in_process_data(){
+    $data=array(
+        'Refund'=>array('Distinct_Products'=>0,'Amount'=>0,'Formated_Amount'=>money(0,$this->data['Order Currency'])),
+        'Credit'=>array('Distinct_Products'=>0,'Amount'=>0,'Formated_Amount'=>money(0,$this->data['Order Currency'])),
+        'Resend'=>array('Distinct_Products'=>0,'Market_Value'=>0,'Formated_Market_Value'=>money(0,$this->data['Order Currency']))
 
-function post_order_totals_in_process(){
-    
-    $sql=sprintf("select sum(`Quantity`*(`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`)/`Invoice Quantity`) as refunds from `Order Post Transaction In Process Dimension` POT left join `Order Transaction Fact` OTF on (OTF.`Order Transaction Fact`=POT.`Order Transaction Fact`) where `Invoice Quantity`>0");
-
-}
-
-function create_post_transaction_in_process($otf_key,$key,$values){
-  
-  if(!preg_match('/^(Quantity|Operation|Reason|To Be Returned)$/',$key)){
-   $this->error=true;
-    return;
-  }
-  
-   $this->update_post_transaction=false;
-  $this->created_post_transaction=false;
-$sql=sprintf('select * from `Order Post Transaction In Process Dimension` where `Order Transaction Fact Key`=%d',$otf_key);
-$res=mysql_query($sql);
-if($row=mysql_fetch_assoc($res)){
-    if($row['Order Key']!=$this->id){
-    $this->error=true;
-    return;
+        );
+    $sql=sprintf("select `Invoice Currency Code`, sum(`Quantity`*(`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`)/`Invoice Quantity`) as value, count(DISTINCT OTF.`Product Key` ) as num from `Order Post Transaction Dimension` POT left join `Order Transaction Fact` OTF on (OTF.`Order Transaction Fact Key`=POT.`Order Transaction Fact Key`) where `Invoice Quantity`>0 and POT.`Order Key`=%d and   `Operation`='Refund'",
+     $this->id
+   
+    );
+   $res=mysql_query($sql);
+    if($row=mysql_fetch_assoc($res)){
+         $data['Refund']['Distinct_Products']=$row['num'];
+                $data['Refund']['Amount']=$row['value'];
+        $data['Refund']['Formated_Amount']=money($row['value'],$row['Invoice Currency Code']);
     }
     
-    $sql=sprintf("update `Order Post Transaction In Process Dimension` set `%s`=%s where `Order Post Transaction In Process Key`=%d ",
-    $key,
-    prepare_mysql($values[$key]),
-    $row['Order Post Transaction In Process Key']
+      $sql=sprintf("select `Invoice Currency Code`, sum(`Quantity`*(`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`)/`Invoice Quantity`) as value, count(DISTINCT OTF.`Product Key` ) as num from `Order Post Transaction Dimension` POT left join `Order Transaction Fact` OTF on (OTF.`Order Transaction Fact Key`=POT.`Order Transaction Fact Key`) where `Invoice Quantity`>0 and POT.`Order Key`=%d and   `Operation`='Credit'",
+     $this->id
+   
+    );
+   $res=mysql_query($sql);
+    if($row=mysql_fetch_assoc($res)){
+         $data['Credit']['Distinct_Products']=$row['num'];
+                $data['Credit']['Amount']=$row['value'];
+        $data['Credit']['Formated_Amount']=money($row['value'],$row['Invoice Currency Code']);
+    }
+    
+    $sql=sprintf("select  `Product Currency`,sum(`Quantity`*`Product History Price`) as value,  count(DISTINCT OTF.`Product Key` ) as num from `Order Post Transaction Dimension` POT left join `Order Transaction Fact` OTF on (OTF.`Order Transaction Fact Key`=POT.`Order Transaction Fact Key`) left join `Product History DImension` PH on (OTF.`Product Key`=PH.`Product Key`) left join `Product Dimension` P on (P.`Product ID`=PH.`Product ID`)  where `Operation`='Resend' and POT.`Order Key`=%d ",
+    $this->id
     );
 
-     if (mysql_affected_rows()>0) {
-     $this->update_post_transaction=true;
-     }
 
 
-}else{
-    $sql=sprintf("insert into `Order Post Transaction In Process Dimension` (`Order Transaction Fact Key`,`Order Key`,`Quantity`,`Operation`,`Reason`,`To Be Returned`) values (%d,%d,%f,%s,%s,%s)",
-    $otf_key,
-    $this->id,
-    $values['Quantity'],
-    prepare_mysql($values['Operation']),
-        prepare_mysql($values['Reason']),
-        prepare_mysql($values['To Be Returned'])
 
-    );
-    mysql_query($sql);
-    if (mysql_affected_rows()>0) {
-$this->created_post_transaction=true;
-     }
+
+   $res=mysql_query($sql);
+    if($row=mysql_fetch_assoc($res)){
+        $data['Resend']['Distinct_Products']=$row['num'];
+                $data['Resend']['Market_Value']=$row['value'];
+        $data['Resend']['Formated_Market_Value']=money($row['value'],$row['Product Currency']);
+
+    }
+    
+    
+    return $data;
+    
+}
+
+
+
+function cancel_post_transactions_in_process(){
+$this->deleted_post_transactions=0;
+ $sql=sprintf("delete from `Order Post Transaction Dimension` where `Order Key`=%d ",
+                         $this->id
+                        );
+            mysql_query($sql);
+$this->deleted_post_transactions=mysql_affected_rows();
+
+
 
 }
+
+function create_post_transaction_in_process($otf_key,$key,$values) {
+
+    if (!preg_match('/^(Quantity|Operation|Reason|To Be Returned)$/',$key)) {
+        $this->error=true;
+        return;
+    }
+$this->deleted_post_transaction=false;
+    $this->update_post_transaction=false;
+    $this->created_post_transaction=false;
+    $this->updated=false;
+    $sql=sprintf('select * from `Order Post Transaction Dimension` where `Order Transaction Fact Key`=%d',$otf_key);
+    $res=mysql_query($sql);
+    if ($row=mysql_fetch_assoc($res)) {
+        if ($row['Order Key']!=$this->id) {
+            $this->error=true;
+            return;
+        }
+
+        if ($key=='Quantity' and $values[$key]<=0) {
+            $sql=sprintf("delete from `Order Post Transaction Dimension` where `Order Post Transaction Key`=%d ",
+                         $row['Order Post Transaction Key']
+                        );
+            mysql_query($sql);
+            if (mysql_affected_rows()>0) {
+                $this->update_post_transaction=true;
+                $this->updated=true;
+                
+                $opt_key=$row['Order Post Transaction Key'];
+$this->deleted_post_transaction=true;
+            }
+        } else {
+
+
+            $sql=sprintf("update `Order Post Transaction Dimension` set `%s`=%s where `Order Post Transaction Key`=%d ",
+                         $key,
+                         prepare_mysql($values[$key]),
+                         $row['Order Post Transaction Key']
+                        );
+            mysql_query($sql);
+            if (mysql_affected_rows()>0) {
+                
+            
+            
+                $this->update_post_transaction=true;
+                $this->updated=true;
+                $opt_key=$row['Order Post Transaction Key'];
+            
+               
+                
+            }
+        }
+
+    } else {
+        $sql=sprintf("insert into `Order Post Transaction Dimension` (`Order Transaction Fact Key`,`Order Key`,`Quantity`,`Operation`,`Reason`,`To Be Returned`) values (%d,%d,%f,%s,%s,%s)",
+                     $otf_key,
+                     $this->id,
+                     $values['Quantity'],
+                     prepare_mysql($values['Operation']),
+                     prepare_mysql($values['Reason']),
+                     prepare_mysql($values['To Be Returned'])
+
+                    );
+        mysql_query($sql);
+        if (mysql_affected_rows()>0) {
+            $this->created_post_transaction=true;
+            $this->updated=true;
+            $opt_key=mysql_insert_id();
+        }
+
+    }
+    $transaction_data=array();
+    if ($this->created_post_transaction or $this->update_post_transaction) {
+    
+         $sql=sprintf('select `Operation`,`Reason`,`Quantity`,`To Be Returned` from `Order Post Transaction Dimension` where `Order Transaction Fact Key`=%d',$otf_key);
+                $res2=mysql_query($sql);
+                if ($row=mysql_fetch_assoc($res2)) {
+                    $transaction_data['Quantity']=$row['Quantity'];
+        $transaction_data['Operation']=$row['Operation'];
+        $transaction_data['Reason']=$row['Reason'];
+        $transaction_data['To Be Returned']=$row['To Be Returned'];
+                }
+    
+        
+        $transaction_data['Order Post Transaction Key']=$opt_key;
+    }
+    if($this->deleted_post_transaction){
+       $transaction_data['Quantity']='';
+        $transaction_data['Operation']='';
+        $transaction_data['Reason']='';
+        $transaction_data['To Be Returned']='';
+    }
+    return $transaction_data;
+
+}
+
+
+function add_post_order_transactions($data) {
+
+$sql=sprintf()
+
+$order_key=$this->id;
+$order_date=date('Y-m-d H:i:s');
+$order_public_id=$this->data['Order Public ID'];
+
+    $bonus_quantity=0;
+    $sql = sprintf ( "insert into `Order Transaction Fact` (`Order Date`,`Order Key`,`Order Public ID`,`Delivery Note Key`,`Delivery Note ID`,`Order Bonus Quantity`,`Order Transaction Type`,`Transaction Tax Rate`,`Transaction Tax Code`,`Order Currency Code`,`Estimated Weight`,`Order Last Updated Date`,`Product Key`,`Current Dispatching State`,`Current Payment State`,`Customer Key`,`Delivery Note Quantity`,`Ship To Key`,`Order Transaction Gross Amount`,`Order Transaction Total Discount Amount`,`Metadata`,`Store Key`,`Units Per Case`,`Customer Message`)
+                     values (%s,%s,%s,%d,%s,%f,%s,%f,%s,%s,%s,  %s,%d,%s,%s,%d,%s,%s,%.2f,%.2f,%s,%s,%f,'') ",
+                     prepare_mysql($order_date),
+                     prepare_mysql($order_key),
+                     prepare_mysql($order_public_id),
+
+                     0,
+                                          prepare_mysql(''),
+
+                     $bonus_quantity,
+                     prepare_mysql('Resend'),
+                     $data['Order Tax Rate'],
+                     prepare_mysql ($data['Order Tax Code']),
+                     prepare_mysql ( $data['Order Currency'] ),
+                     $data['Estimated Weight'],
+
+                     prepare_mysql ( $data ['Date'] ),
+                     $data ['Product Key'],
+                     prepare_mysql ( $data ['Current Dispatching State'] ),
+                     prepare_mysql ( $data ['Current Payment State'] ),
+                     prepare_mysql ( $data['Order Customer Key' ] ),
+           
+                     $data['Quantity'],
+                     prepare_mysql ( $data['Ship To Key'] ),
+                     $data['Gross'],
+                     0,
+                     prepare_mysql ( $data ['Metadata'] ,false),
+                     prepare_mysql ( $data['Order Store Key'] ),
+                     $data ['units_per_case']
+
+                   );
+
+
+//print "$sql\n";
+    if (! mysql_query ( $sql ))
+        exit ( "$sql can not update orphan transaction\n" );
+$otf_key=mysql_insert_id();
+$this->update_xhtml_orders();
+foreach($this->get_orders_objects() as $order){
+    $order->update_xhtml_delivery_notes();
+}
+
+return array('otf_key'=>$otf_key);
 
 }
 

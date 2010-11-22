@@ -67,95 +67,53 @@ $logged_in=(isset($_SESSION['logged_in']) and $_SESSION['logged_in']? true : fal
 
 if ($logged_in ) {
 
-if($_SESSION['logged_in_page']!=$store_key){
+    if ($_SESSION['logged_in_page']!=$store_key) {
 
 
-       include_once('app_files/key.php');
-  
-    include_once('aes.php');
-    $Sk="skstart|".(date('U')+300)."|".ip()."|".IKEY."|".sha1(mt_rand()).sha1(mt_rand());
-    $St=AESEncryptCtr($Sk,SKEY, 256);
-    $smarty->assign('secret_string',$St);
-$logged_in=0;
-$_SESSION['logged_in']=0;
+        include_once('app_files/key.php');
 
-}
-else{
+        include_once('aes.php');
+        $Sk="skstart|".(date('U')+300)."|".ip()."|".IKEY."|".sha1(mt_rand()).sha1(mt_rand());
+        $St=AESEncryptCtr($Sk,SKEY, 256);
+        $smarty->assign('secret_string',$St);
+        $logged_in=0;
+        $_SESSION['logged_in']=0;
+
+    } else {
 
 
-    if (!isset($_SESSION['state'])) {
-        include_once('conf/state.php');
-        $_SESSION['state']=$default_state;
+        if (!isset($_SESSION['state'])) {
+            include_once('conf/state.php');
+            $_SESSION['state']=$default_state;
+        }
+
+        $user=new User($_SESSION['user_key']);
+        $smarty->assign('user',$user);
+        if (isset($_SESSION['order_data']))
+            $smarty->assign('order',$_SESSION['order_data']);
+
+
+
     }
-
-    $user=new User($_SESSION['user_key']);
-    $smarty->assign('user',$user);
-    if(isset($_SESSION['order_data']))
-    $smarty->assign('order',$_SESSION['order_data']);
-//--------------------------------------------------------------
-
-$file = $_SERVER["SCRIPT_NAME"]; //current file path gets stored in $file 
-$break = Explode('/', $file);
-$cur_file = $break[count($break) - 1];
-//echo $file;
-print "current file : $cur_file <br>";           //current file name gets stored in $file 
-
-$purl = $_SERVER['HTTP_REFERER'];        //previous page url
-$break = Explode('/', $purl);
-$prev_url = $break[count($break) - 1];   //previous page file name with value passed to it
-
-$pos = strpos($prev_url, '?');
-
-$prev_file = substr($prev_url,0, $pos);
-print "previous file : $prev_file<br>";
-//echo("<br>");
-
-
-if(mime_content_type($cur_file)==mime_content_type($prev_file))
-{
-$sql1=sprintf("INSERT INTO `kaktus`.`User Click Dimension` (
-`User Click Key` ,
-`User Key` ,
-`URL` ,
-`Page Key` ,
-`Date` ,
-`Previous Page` ,
-`Session Key` ,
-`Previous Page Key`
-)
-VALUES (
-'3','user', '$file', '6', NOW() , '$prev_file', '6', '6'
-);");
-
-//print($sql1);
-$r=mysql_query($sql1);
-if($r)
-echo "inserted";
-else
-echo"not inserted";
-
-}
-//------------------------------------------------------------------/
-
-
-
-}
 
 } else {
 
 
-    
+
 
     include_once('app_files/key.php');
     //$auth=new Auth(IKEY,SKEY);
-    
-    
-    
+
+
+
     include_once('aes.php');
     $Sk="skstart|".(date('U')+300)."|".ip()."|".IKEY."|".sha1(mt_rand()).sha1(mt_rand());
     $St=AESEncryptCtr($Sk,SKEY, 256);
     $smarty->assign('secret_string',$St);
 }
+
+
+log_visit($session->id);
 
 
 $smarty->assign('logged_in',$logged_in);
@@ -212,6 +170,79 @@ while ($row=mysql_fetch_array($res)) {
 
 $smarty->assign('departments',$departments);
 
+function log_visit($session_key) {
+global $user_click_key;
+
+    $file = $_SERVER["SCRIPT_NAME"]; //current file path gets stored in $file
+
+ 
+ $break = Explode('/', $file);
+    $cur_file = $break[count($break) - 1];
+if(preg_match('/^ar\_/',$cur_file)){
+    return;
+}
+
+
+//echo $file;
+   // print "current file : $cur_file <br>";           //current file name gets stored in $file
+
+    $purl = $_SERVER['HTTP_REFERER'];        //previous page url
+    $break = Explode('/', $purl);
+    $prev_url = $break[count($break) - 1];   //previous page file name with value passed to it
+
+    $pos = strpos($prev_url, '?');
+
+    $prev_file = substr($prev_url,0, $pos);
+   // print "previous file : $prev_file<br>";
+//echo("<br>");
+
+
+    if (isset($user)) {
+        $user_key=$user->id;
+    } else {
+        $user_key=0;
+    }
+
+    $page_key=0;
+    $date=date("Y-m-d H:i:s");
+   
+    $prev_page_key=0;
+    if (mime_content_type($cur_file)==mime_content_type($prev_file)) {
+        $sql1=sprintf("INSERT INTO `User Click Dimension` (
+
+                      `User Key` ,
+                      `URL` ,
+                      `Page Key` ,
+                      `Date` ,
+                      `Previous Page` ,
+                      `Session Key` ,
+                      `Previous Page Key`
+                      )
+                      VALUES (
+                      %d,%s, %d,%s, %s, %d,%d
+                      );",
+                      $user_key,
+                      prepare_mysql($cur_file),
+                      $page_key,
+                      prepare_mysql($date),
+                      prepare_mysql($prev_file),
+                      $session_key,
+                      $prev_page_key
+                     );
+
+        //print($sql1);
+        mysql_query($sql1);
+        $user_click_key= mysql_insert_id();
+
+    }
+
+}
+function update_page_key_visit_log($page_key){
+    global $user_click_key;
+    $sql=sprintf("update `User Click Dimension`  set `Page Key`=%d where `User Click Key`=%d",$page_key,$user_click_key);
+    mysql_query($sql);
+
+}
 
 
 ?>
