@@ -149,9 +149,9 @@ if(isset($_REQUEST['pick_aid'])){
  
 
 if ($modify){
-    $general_options_list[]=array('tipo'=>'url','url'=>'new_post_order.php?type=rpl&id='.$order->id,'label'=>_('Make Replacement'));
-    $general_options_list[]=array('tipo'=>'url','url'=>'new_post_order.php?type=sht&id='.$order->id,'label'=>_('Make Shortage'));
-        $general_options_list[]=array('tipo'=>'url','url'=>'new_refund.php?id='.$order->id,'label'=>_('Refund'));
+    $general_options_list[]=array('tipo'=>'url','url'=>'new_post_order.php?id='.$order->id,'label'=>_('Post Dispatch Operations'));
+ //   $general_options_list[]=array('tipo'=>'url','url'=>'new_post_order.php?type=sht&id='.$order->id,'label'=>_('Make Shortage'));
+   //     $general_options_list[]=array('tipo'=>'url','url'=>'new_refund.php?id='.$order->id,'label'=>_('Refund'));
 
 
 }

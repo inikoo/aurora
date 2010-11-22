@@ -117,7 +117,7 @@ var myonCellClick = function(oArgs) {
 				    'POST',
 				    ar_file, {
 					success:function(o) {
-					    //alert(o.responseText);
+					   // alert(o.responseText);
 					    var r = YAHOO.lang.JSON.parse(o.responseText);
 					    if (r.state == 200) {
 					    if(r.result=='updated'){
@@ -125,7 +125,7 @@ var myonCellClick = function(oArgs) {
 					    datatable.updateCell(record,'operation',r.operation);
 					        datatable.updateCell(record,'reason',r.reason);
 					    datatable.updateCell(record,'to_be_returned',r.to_be_returned);
-                      
+                      if(r.data != undefined){
                       for(x in r.data){
                             for (y in r.data[x]){
                                 if(Dom.get(x+'_'+y)!=null)
@@ -134,7 +134,7 @@ var myonCellClick = function(oArgs) {
 						   
 						}
 						
-                      }
+                      
                         
                         if(r.data['Refund']['Distinct_Products']==0){
                         Dom.setStyle('refund','display','none');
@@ -154,24 +154,8 @@ var myonCellClick = function(oArgs) {
                          Dom.setStyle('resend','display','');
                         }                        
                         
-
-					    /*
-					 
-						
-
-						datatable.updateCell(record,'quantity',r.quantity);
-						datatable.updateCell(record,'to_charge',r.to_charge);
-					
-
-
-						for(var i=0; i<records.getLength(); i++) {
-						    var rec=records.getRecord(i);
-						    if(r.discount_data[rec.getData('pid')]!=undefined){
-						    datatable.updateCell(rec,'to_charge',r.discount_data[rec.getData('pid')].to_charge);
-						    datatable.updateCell(rec,'description',r.discount_data[rec.getData('pid')].description);
-						    }
-						}
-*/
+}
+					    }
 					
 					    } else {
 						alert(r.msg);
@@ -498,12 +482,12 @@ function create_delivery_note(){
 					'POST',
 					ar_file, {
 					    success:function(o) {
-					    					alert(o.responseText);
+					    				//	alert(o.responseText);
 
-						return;
+						
 						var r = YAHOO.lang.JSON.parse(o.responseText);
 						if (r.state == 200) {
-						window.location.reload();
+						window.location='order.php?id='+r.order_key;
 						}
 					    },
 					failure:function(o) {

@@ -2275,7 +2275,7 @@ switch ($this->data['Order Current Dispatch State']) {
 }
 
 function update_dispatch_state() {
-    $sql = sprintf("select `Current Dispatching State` as state from `Order Transaction Fact` where `Order Key`=%d order by `Current Payment State`",
+    $sql = sprintf("select `Current Dispatching State` as state from `Order Transaction Fact` where `Order Key`=%d and `Order Transaction Type`!='Resend' order by `Current Payment State`",
                    $this->id);
     //print "$sql\n";
     $result = mysql_query ( $sql );
@@ -3679,7 +3679,7 @@ $this->deleted_post_transaction=true;
 
 function add_post_order_transactions($data) {
 $otf_key=array();
-$sql=sprintf("select OTF.`Product Key`,`Product Gross Weight`,`Quantity`,`Product Units Per Case` from `Order Post Transaction Dimension` POT  left join `Order Transaction Fact` OTF on (OTF.`Order Transaction Fact Key`=POT.`Order Transaction Fact Key`) left join `Product History Dimension`  PH on (PH.`Product Key`=OTF.`Product Key`) left join `Product Dimension` P on (P.`Product ID`=PH.`Product ID`)   where POT.`Order Key`=%d  and `State`='In Process' ",
+$sql=sprintf("select `Order Post Transaction Key`,OTF.`Product Key`,`Product Gross Weight`,`Quantity`,`Product Units Per Case` from `Order Post Transaction Dimension` POT  left join `Order Transaction Fact` OTF on (OTF.`Order Transaction Fact Key`=POT.`Order Transaction Fact Key`) left join `Product History Dimension`  PH on (PH.`Product Key`=OTF.`Product Key`) left join `Product Dimension` P on (P.`Product ID`=PH.`Product ID`)   where POT.`Order Key`=%d  and `State`='In Process' ",
 $this->id);
 
 $res=mysql_query($sql);
@@ -3724,9 +3724,11 @@ $order_public_id=$this->data['Order Public ID'];
 
 
     if (! mysql_query ( $sql ))
-        exit ( "$sql can not update orphan transaction\n" );
-$otf_key[]=mysql_insert_id();
+        exit ( "$sql can not update xx orphan transaction\n" );
+$otf_key=mysql_insert_id();
 
+$sql=sprintf("update  `Order Post Transaction Dimension` set `Order Post Transaction Fact Key`=%d where `Order Post Transaction Key`=%d   ",$otf_key,$row['Order Post Transaction Key']);
+mysql_query ( $sql );
 }
 
 

@@ -1447,7 +1447,7 @@ $transaction_data=array(
 
 $order->add_post_order_transactions($transaction_data);
 
-exit;
+
 
     $order->send_post_action_to_warehouse();
     if (!$order->error) {
