@@ -11,7 +11,6 @@ require_once "class.User.php";
 
 
 
-
 $secret_key='FDK/S5GRkZFXi47zvs4pTezyfEr5nWFthsFbG6j1CzCPYPX5';
 
 $default_DB_link=mysql_connect($dns_host,$dns_user,$dns_pwd );
@@ -79,7 +78,9 @@ if($_SESSION['logged_in_page']!=$store_key){
     $smarty->assign('secret_string',$St);
 $logged_in=0;
 $_SESSION['logged_in']=0;
-}else{
+
+}
+else{
 
 
     if (!isset($_SESSION['state'])) {
@@ -91,6 +92,53 @@ $_SESSION['logged_in']=0;
     $smarty->assign('user',$user);
     if(isset($_SESSION['order_data']))
     $smarty->assign('order',$_SESSION['order_data']);
+//--------------------------------------------------------------
+
+$file = $_SERVER["SCRIPT_NAME"]; //current file path gets stored in $file 
+$break = Explode('/', $file);
+$cur_file = $break[count($break) - 1];
+//echo $file;
+print "current file : $cur_file <br>";           //current file name gets stored in $file 
+
+$purl = $_SERVER['HTTP_REFERER'];        //previous page url
+$break = Explode('/', $purl);
+$prev_url = $break[count($break) - 1];   //previous page file name with value passed to it
+
+$pos = strpos($prev_url, '?');
+
+$prev_file = substr($prev_url,0, $pos);
+print "previous file : $prev_file<br>";
+//echo("<br>");
+
+
+if(mime_content_type($cur_file)==mime_content_type($prev_file))
+{
+$sql1=sprintf("INSERT INTO `kaktus`.`User Click Dimension` (
+`User Click Key` ,
+`User Key` ,
+`URL` ,
+`Page Key` ,
+`Date` ,
+`Previous Page` ,
+`Session Key` ,
+`Previous Page Key`
+)
+VALUES (
+'3','user', '$file', '6', NOW() , '$prev_file', '6', '6'
+);");
+
+//print($sql1);
+$r=mysql_query($sql1);
+if($r)
+echo "inserted";
+else
+echo"not inserted";
+
+}
+//------------------------------------------------------------------/
+
+
+
 }
 
 } else {
@@ -107,8 +155,6 @@ $_SESSION['logged_in']=0;
     $Sk="skstart|".(date('U')+300)."|".ip()."|".IKEY."|".sha1(mt_rand()).sha1(mt_rand());
     $St=AESEncryptCtr($Sk,SKEY, 256);
     $smarty->assign('secret_string',$St);
-
-
 }
 
 
@@ -142,6 +188,7 @@ while ($row=mysql_fetch_array($res)) {
     $inspiration_pages[]=array('url'=>$row['Page URL'],'short_title'=>$row['Page Short Title']);
     elseif($row['Page Section']=='incentives')
     $incentive_pages[]=array('url'=>$row['Page URL'],'short_title'=>$row['Page Short Title']);
+
 }
 $smarty->assign('info_pages',$info_pages);
 $smarty->assign('incentive_pages',$incentive_pages);
@@ -156,7 +203,15 @@ while ($row=mysql_fetch_array($res)) {
     $departments[]=array('code'=>$row['Product Department Code'],'name'=>$row['Product Department Name']);
 }
 
+
+
+
+
+
+
+
 $smarty->assign('departments',$departments);
+
 
 
 ?>
