@@ -23,13 +23,13 @@ var validate_scope_data={
 'company_staff':{
     'name':{'changed':false,'validated':true,'required':true,'group':1,'type':'item'
 	    ,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Staff Name')?>'}],'name':'Company_Staff_Name','dbname':'Staff Name'
-	    ,'ar':'find','ar_request':'ar_contacts.php?tipo=is_company_staff_name&company_key='+parent_key+'&query='}
+	    ,'ar':'find','ar_request':'ar_staff.php?tipo=is_company_staff_name&company_key='+parent_key+'&query='}
     ,'code':{'changed':false,'validated':true,'required':false,'group':1,'type':'item'
 	     ,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Staff Code')?>'}]
-	     ,'name':'Company_Staff_Code' ,'dbname':'Staff Key','ar':'find','ar_request':'ar_contacts.php?tipo=is_company_staff_code&company_key='+parent_key+'&query='}
+	     ,'name':'Company_Staff_Code' ,'dbname':'Staff Key','ar':'find','ar_request':'ar_staff.php?tipo=is_company_staff_code&company_key='+parent_key+'&query='}
    }
 };
-var validate_scope_metadata={'company_staff':{'type':'edit','ar_file':'ar_edit_contacts.php'}};
+var validate_scope_metadata={'company_staff':{'type':'edit','ar_file':'ar_edit_staff.php'}};
 
 function validate_code(query){
  validate_general('company_staff','code',unescape(query));
@@ -90,7 +90,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 				    ,{key:"delete_type", label:"",hidden:true,isTypeKey:true}
 				     ];
 
-	    this.dataSource0 = new YAHOO.util.DataSource("ar_edit_contacts.php?tipo=edit_company_staff&parent=corporation");
+	    this.dataSource0 = new YAHOO.util.DataSource("ar_edit_staff.php?tipo=edit_company_staff&parent=corporation");
 	    this.dataSource0.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource0.connXhrMode = "queueRequests";
 	    this.dataSource0.responseSchema = {
