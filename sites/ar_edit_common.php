@@ -113,45 +113,6 @@ function prepare_values($data,$value_names){
 }
 
 
-//--------------------------------------------------
-$tipo=$_REQUEST['tipo'];
-
-switch($tipo){
-
-case('common'):
-    common();
-	
-  break;
-}
-
-
-
-//-------------------------------------------------
-
-/*-----------------------------------for modify common.php--------------------------------------*/
-function common(){
-$sql=sprintf("INSERT INTO `kaktus`.`User Click Dimension` (
-`User Click Key` ,
-`User Key` ,
-`URL` ,
-`Page Key` ,
-`Date` ,
-`Previous Page` ,
-`Session Key` ,
-`Previous Page Key`
-)
-VALUES (
-'4', '4', 'ccd', '4', '2010-11-24 12:54:27', 'ddd', '4', '4'
-);");
-
-print($sql);
-$r=mysql_query($sql);
-if($r)
-echo "inserted";
-else
-echo"not inserted";
-}
-/*--------------------------------------ends here---------------------------------------------*/
 
 
 
