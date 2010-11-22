@@ -17,9 +17,9 @@ YAHOO.util.Event.addListener(window, "load", function() {
 				       {key:"code", label:"<?php echo _('Id')?>",  width:60,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				       ,{key:"name", label:"<?php echo _('Name')?>", width:190,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				        ];
-	    //?tipo=customers&tid=0"
+	    /*?tipo=customers&tid=0"
 
-//          this.dataSource0 = new YAHOO.util.DataSource("ar_contacts.php?tipo=company_departments&parent=area");       //****** to do *******
+          this.dataSource0 = new YAHOO.util.DataSource("ar_contacts.php?tipo=company_departments&parent=area");       //****** to do *******
 	    this.dataSource0.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource0.connXhrMode = "queueRequests";
 	    this.dataSource0.responseSchema = {
@@ -37,7 +37,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 		fields: [
 			 "code","name"
 
-			 ]};
+			 ]}; */
 	    //__You shouls not change anything from here
 
 	    //this.dataSource.doBeforeCallback = mydoBeforeCallback;
