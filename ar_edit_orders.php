@@ -1433,11 +1433,21 @@ $order->cancel_post_transactions_in_process();
 function send_post_order_to_warehouse($data) {
 
     $order=new Order($data['order_key']);
+$customer=new Customer ($order->data['Order Customer Key']);
+ $ship_to=$customer->get_ship_to();
 
+$transaction_data=array(
+'Metadata'=>'',
+'Current Payment State'=>'No Applicable',
+'Order Tax Rate'=>$order->data['Order Tax Rate'],
+'Order Tax Code'=>$order->data['Order Tax Code'],
+'Ship To Key'=>$ship_to->id,
+'Gross'=>0,
+);
 
-$order->add_post_order_transactions();
+$order->add_post_order_transactions($transaction_data);
 
-
+exit;
 
     $order->send_post_action_to_warehouse();
     if (!$order->error) {

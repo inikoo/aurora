@@ -218,6 +218,8 @@ ALTER TABLE `Supplier Product Part List` CHANGE `Supplier Product Part Key` `Sup
 ALTER TABLE `Supplier Product Part List` CHANGE `Supplier Product Part ID` `Supplier Product Part Key` MEDIUMINT( 8 ) UNSIGNED NOT NULL ;
 ALTER TABLE `Supplier Product Part List` DROP `Supplier Product Part Valid From` ,DROP `Supplier Product Part Valid To` ,DROP `Supplier Product Part Most Recent` ,DROP `Supplier Product Part Most Recent Key` ,DROP `Supplier Product Part Status` ;
 ALTER TABLE `Supplier Product Part List` DROP `Supplier Product Unit` ,DROP `Factor Supplier Product` ;
+
+
 CREATE TABLE `Supplier Product Part Dimension` (
 `Supplier Product Part Key` MEDIUMINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY ,
 `Supplier Product Key` MEDIUMINT UNSIGNED NOT NULL ,
@@ -252,7 +254,7 @@ ALTER TABLE `Order No Product Transaction Fact` ADD `Affected Order Key` MEDIUMI
 ALTER TABLE `Order Dimension` ADD `Order Invoiced Refund Net Amount` DECIMAL( 16, 2 ) NOT NULL DEFAULT '0' AFTER `Order Invoiced Charges Amount` ,ADD `Order Invoiced Refund Tax Amount` DECIMAL( 16, 2 ) NOT NULL DEFAULT '0' AFTER `Order Invoiced Refund Net Amount` ;
 ALTER TABLE `Order Dimension` ADD `Order Invoiced Refund Notes` TEXT NULL DEFAULT NULL AFTER `Order Margin` ;
 
-CREATE TABLE `dw`.`Order Post Transaction In Process Dimension` (
+CREATE TABLE `Order Post Transaction In Process Dimension` (
 `Order Post Transaction In Process Key` MEDIUMINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY ,
 `Order Transaction In Process Key` MEDIUMINT UNSIGNED NOT NULL ,
 `Order Key` MEDIUMINT UNSIGNED NOT NULL ,
@@ -262,6 +264,7 @@ CREATE TABLE `dw`.`Order Post Transaction In Process Dimension` (
 `To Be Returned` ENUM( 'Yes', 'No' ) NOT NULL DEFAULT 'No',
 INDEX ( `Order Transaction In Process Key` , `Order Key` )
 ) ENGINE = MYISAM ;
+
 ALTER TABLE `Order Post Transaction In Process Dimension` CHANGE `Order Transaction In Process Key` `Order Transaction Fact Key` MEDIUMINT( 8 ) UNSIGNED NOT NULL ;
 ALTER TABLE `Order Post Transaction In Process Dimension` CHANGE `Operation` `Operation` ENUM( 'Resend', 'Credit', 'Refund' ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL ;
 RENAME TABLE `Order Post Transaction In Process Dimension` TO `Order Post Transaction Dimension` ;
@@ -272,6 +275,8 @@ ALTER TABLE `Order Post Transaction Dimension` ADD INDEX ( `Order Key` ) ;
 ALTER TABLE `Customer Dimension` ADD `Customer Next Invoice Credit Amount` DECIMAL( 16, 2 ) NOT NULL DEFAULT '0.00' AFTER `Customer Outstanding Tax Balance` ;
 ALTER TABLE `Order Post Transaction Dimension` ADD `State` ENUM( 'In Process', 'In Warehoouse', 'Dispatched' ) NOT NULL DEFAULT 'In Process',ADD INDEX ( `State` ); 
 ALTER TABLE `Order Post Transaction Dimension` CHANGE `State` `State` ENUM( 'In Process by Customer', 'Submitted by Customer', 'In Process', 'Ready to Pick', 'Picking', 'Ready to Pack', 'Ready to Ship', 'Dispatched', 'Unknown', 'Packing', 'Cancelled', 'No Picked Due Out of Stock', 'No Picked Due No Authorised', 'No Picked due Not Found', 'No Picked Due Other', 'Suspended' ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'In Process';
+
+
 CREATE TABLE IF NOT EXISTS `User Click Dimension` (
   `User Click Key` mediumint(8) NOT NULL,
   `User Key` mediumint(8) NOT NULL,
@@ -283,10 +288,15 @@ CREATE TABLE IF NOT EXISTS `User Click Dimension` (
   `Previous Page Key` mediumint(9) DEFAULT NULL,
   PRIMARY KEY (`User Click Key`)
 ) ENGINE=MyISAM;
+
 ALTER TABLE `User Click Dimension` CHANGE `User Click Key` `User Click Key` MEDIUMINT( 8 ) NOT NULL AUTO_INCREMENT ;
 ALTER TABLE `Session Dimension` DROP PRIMARY KEY ;
 ALTER TABLE `Session Dimension` ADD `Session Dimension Key` INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY FIRST ;
 ALTER TABLE `Session Dimension` ADD UNIQUE (`Session ID`);
-ALTER TABLE `Session Dimension` CHANGE `Session Dimension Key` `Session Key` INT( 10 ) UNSIGNED NOT NULL AUTO_INCREMENT 
+ALTER TABLE `Session Dimension` CHANGE `Session Dimension Key` `Session Key` INT( 10 ) UNSIGNED NOT NULL AUTO_INCREMENT ;
+ALTER TABLE `Order Post Transaction Dimension` CHANGE `State` `State` ENUM( 'In Process', 'In Warehoouse', 'Dispatched' ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'In Process';
+ALTER TABLE `Order Transaction Fact` CHANGE `Order Transaction Type` `Order Transaction Type` ENUM( 'Order', 'Sample', 'Donation', 'Unknown', 'Other', 'Resend' ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'Unknown';
+
+
 */
 ?>
