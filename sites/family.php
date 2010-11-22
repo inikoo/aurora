@@ -53,7 +53,7 @@ $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
 
 $page_data=$family->get_page_data();
-
+update_page_key_visit_log($page_data['Page Key']);
 $can_view=array();
 $can_view['slideshow']=($page_data['Product Slideshow Layout']=='Yes'?1:0);    
 $can_view['manual']=($page_data['Product Manual Layout']=='Yes'?1:0);    

@@ -85,13 +85,18 @@ var myonCellClick = function(oArgs) {
     case('add_object'):
     case('remove_object'):
 	var data = record.getData();
-
-	if(column.action=='add_object'){
-	   
-	   if(data['quantity']==''){
+ if(data['quantity']==''){
 	        data['quantity']=0;
 	        }
+	if(column.action=='add_object'){
+	
+	  
+	        
 	    var new_qty=parseFloat(data['quantity'])+1;
+	    if(new_qty>data['max_resend'])
+	        new_qty=data['max_resend'];
+	    
+	    
 	}else{
 	    qty=parseFloat(data['quantity'])
 	    if(qty==0){
@@ -101,6 +106,10 @@ var myonCellClick = function(oArgs) {
 
         }
 
+
+        if(new_qty==data['quantity'])
+            return;
+
  var ar_file='ar_edit_orders.php';
 	request='tipo=edit_new_post_order&order_key='+data['order_key']+'&key=quantity&new_value='+new_qty+'&otf_key='+ data['otf_key'];
 	
@@ -108,31 +117,46 @@ var myonCellClick = function(oArgs) {
 				    'POST',
 				    ar_file, {
 					success:function(o) {
-					    alert(o.responseText);
+					    //alert(o.responseText);
 					    var r = YAHOO.lang.JSON.parse(o.responseText);
 					    if (r.state == 200) {
-						for(x in r.data){
-
-						    Dom.get(x).innerHTML=r.data[x];
-						}
-
-						if(r.discounts){
-						    Dom.get('tr_order_items_gross').style.display='';
-						    Dom.get('tr_order_items_discounts').style.display='';
-
-						}else{
-						    Dom.get('tr_order_items_gross').style.display='none';
-						    Dom.get('tr_order_items_discounts').style.display='none';
-
+					    if(r.result=='updated'){
+					    	datatable.updateCell(record,'quantity',r.quantity);
+					    datatable.updateCell(record,'operation',r.operation);
+					        datatable.updateCell(record,'reason',r.reason);
+					    datatable.updateCell(record,'to_be_returned',r.to_be_returned);
+                      
+                      for(x in r.data){
+                            for (y in r.data[x]){
+                                if(Dom.get(x+'_'+y)!=null)
+                                Dom.get(x+'_'+y).innerHTML=r.data[x][y];
+                            }
+						   
 						}
 						
-							if(r.charges){
-						    Dom.get('tr_order_items_charges').style.display='';
+                      }
+                        
+                        if(r.data['Refund']['Distinct_Products']==0){
+                        Dom.setStyle('refund','display','none');
+                        }else{
+                         Dom.setStyle('refund','display','');
+                        }
+                        if(r.data['Credit']['Distinct_Products']==0){
+                        Dom.setStyle('credit','display','none');
+                        }else{
+                         Dom.setStyle('credit','display','');
+                        }                       
+                    
+                       if(r.data['Resend']['Distinct_Products']==0){
+                       
+                        Dom.setStyle('resend','display','none');
+                        }else{
+                         Dom.setStyle('resend','display','');
+                        }                        
+                        
 
-						}else{
-						    Dom.get('tr_order_items_charges').style.display='none';
-
-						}
+					    /*
+					 
 						
 
 						datatable.updateCell(record,'quantity',r.quantity);
@@ -147,12 +171,8 @@ var myonCellClick = function(oArgs) {
 						    datatable.updateCell(rec,'description',r.discount_data[rec.getData('pid')].description);
 						    }
 						}
-
-						//for (i in r.discount_data){
-						//    alert(i+' '+r.discount_data[i].to_charge);
-						//}
-						
-						//	callback(true, r.newvalue);
+*/
+					
 					    } else {
 						alert(r.msg);
 						//	callback();
@@ -247,50 +267,60 @@ function close_dialog(tipo){
     var records=datatable.getRecordSet();
     var ar_file='ar_edit_orders.php';
     
-    var request='tipo=edit_'+column.object+'&id='+order_key+'&key=' + column.key + '&newvalue=' + encodeURIComponent(newValue) + '&oldvalue=' + encodeURIComponent(oldValue)+ myBuildUrl(datatable,record);
-    alert('R:'+request);
-
+    var data = record.getData();
+    
+    request='tipo=edit_new_post_order&order_key='+data['order_key']+'&key='+column.object+'&new_value='+encodeURIComponent(newValue)+'&otf_key='+ data['otf_key'];
+   // var request='tipo=edit_'+column.object+'&id='+order_key+'&key=' + column.key + '&newvalue=' + encodeURIComponent(newValue) + '&oldvalue=' + encodeURIComponent(oldValue)+ myBuildUrl(datatable,record);
+  //  alert('R:'+request);
+//return;
     YAHOO.util.Connect.asyncRequest(
 				    'POST',
 				    ar_file, {
 					success:function(o) {
-					    //alert(o.responseText);
+					   // alert(o.responseText);
 					    var r = YAHOO.lang.JSON.parse(o.responseText);
 					    if (r.state == 200) {
-						for(x in r.data){
-
-						    Dom.get(x).innerHTML=r.data[x];
-						}
-					      
-if(r.discounts){
-						    Dom.get('tr_order_items_gross').style.display='';
-						}else{
-						    Dom.get('tr_order_items_gross').style.display='none';
-
-						}
-
-		if(r.charges){
-						    Dom.get('tr_order_items_charges').style.display='';
-
-						}else{
-						    Dom.get('tr_order_items_charges').style.display='none';
-
+					    
+					     if(r.result=='updated'){
+					    	datatable.updateCell(record,'quantity',r.quantity);
+					    datatable.updateCell(record,'operation',r.operation);
+					        datatable.updateCell(record,'reason',r.reason);
+					    datatable.updateCell(record,'to_be_returned',r.to_be_returned);
+                      
+                      for(x in r.data){
+                            for (y in r.data[x]){
+                                if(Dom.get(x+'_'+y)!=null)
+                                Dom.get(x+'_'+y).innerHTML=r.data[x][y];
+                            }
+						    //Dom.get(x).innerHTML=r.data[x];
 						}
 						
+                      }
+                        
+					    
+					      if(r.data['Refund']['Distinct_Products']==0){
+                        Dom.setStyle('refund','display','none');
+                        }else{
+                         Dom.setStyle('refund','display','');
+                        }
+                        if(r.data['Credit']['Distinct_Products']==0){
+                        Dom.setStyle('credit','display','none');
+                        }else{
+                         Dom.setStyle('credit','display','');
+                        }                       
+                    
+                       if(r.data['Resend']['Distinct_Products']==0){
+                       
+                        Dom.setStyle('resend','display','none');
+                        }else{
+                         Dom.setStyle('resend','display','');
+                        }                        
+                        
 
-						datatable.updateCell(record,'quantity',r.quantity);
-						datatable.updateCell(record,'to_charge',r.to_charge);
+					    
+					    callback(true,r.new_value);
+					    
 					
-
-
-						for(var i=0; i<records.getLength(); i++) {
-						    var rec=records.getRecord(i);
-						    if(r.discount_data[rec.getData('pid')]!=undefined){
-						    datatable.updateCell(rec,'to_charge',r.discount_data[rec.getData('pid')].to_charge);
-						    datatable.updateCell(rec,'description',r.discount_data[rec.getData('pid')].description);
-						    }
-						}
-						callback(true,r.quantity);
 						
 
 					    } else {
@@ -323,8 +353,9 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 
 	    var InvoiceColumnDefs = [
-				        {key:"order_key", label:"", width:20,sortable:false,isPrimaryKey:true,hidden:true} 
+				        {key:"order_key", label:"", width:20,sortable:false,hidden:true} 
 				     	,{key:"otf_key", label:"", width:20,sortable:false,isPrimaryKey:true,hidden:true} 
+				     	,{key:"max_resend", label:"", width:20,sortable:false,hidden:true} 
 
 					,{key:"code", label:"<?php echo _('Code')?>",width:60,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				     ,{key:"description", label:"<?php echo _('Description')?>",width:280,sortable:false,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
@@ -333,9 +364,9 @@ YAHOO.util.Event.addListener(window, "load", function() {
 					,{key:"quantity",label:"<?php echo _('Qty')?>", width:40,sortable:false,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC},  editor: new YAHOO.widget.TextboxCellEditor({asyncSubmitter: CellEdit}),object:'new_order'}
 					,{key:"add",label:"", width:3,sortable:false,action:'add_object',object:'new_order'}
 					,{key:"remove",label:"", width:3,sortable:false,action:'remove_object',object:'new_order'}
-					,{key:"operation", label:"<?php echo _('Operation')?>",width:70, sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC},object:'department',editor: new YAHOO.widget.RadioCellEditor({asyncSubmitter: CellEdit,radioOptions:[{label:"<?php echo _('Refund')?><br>",value:'Refund'},{label:"<?php echo _('Credit')?><br>",value:'Credit'},{label:"<?php echo _('Resend')?><br>",value:'Resend'},{label:"<?php echo _('None')?><br>",value:'Cancel'}],disableBtns:true})}
-					,{key:"reason", label:"<?php echo _('Reason')?>",width:70, sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC},object:'department',editor: new YAHOO.widget.RadioCellEditor({asyncSubmitter: CellEdit,radioOptions:[{label:"<?php echo _('Damaged')?><br>",value:'Damaged'},{label:"<?php echo _('Not Received')?><br>",value:'Missing'},{label:"<?php echo _("Don't Like it")?><br>",value:'Do not Like'},{label:"<?php echo _('Other')?><br>",value:'Other'}],disableBtns:true})}
-					,{key:"to_be_returned", label:"<?php echo _('Rtn')?>",width:20, sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC},object:'department',editor: new YAHOO.widget.RadioCellEditor({asyncSubmitter: CellEdit,radioOptions:[{label:"<?php echo _('Damaged')?><br>",value:'Damaged'},{label:"<?php echo _('Not Received')?><br>",value:'Missing'},{label:"<?php echo _("Don't Like it")?><br>",value:'Do Not Like'},{label:"<?php echo _('Other')?><br>",value:'Other'}],disableBtns:true})}
+					,{key:"operation", label:"<?php echo _('Operation')?>",width:70, sortable:false,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC},object:'operation',editor: new YAHOO.widget.RadioCellEditor({asyncSubmitter: CellEdit,radioOptions:[{label:"<?php echo _('Refund')?><br>",value:'Refund'},{label:"<?php echo _('Credit')?><br>",value:'Credit'},{label:"<?php echo _('Resend')?><br>",value:'Resend'},{label:"<?php echo _('None')?><br>",value:'Cancel'}],disableBtns:true})}
+					,{key:"reason", label:"<?php echo _('Reason')?>",width:70, sortable:false,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC},object:'reason',editor: new YAHOO.widget.RadioCellEditor({asyncSubmitter: CellEdit,radioOptions:[{label:"<?php echo _('Damaged')?><br>",value:'Damaged'},{label:"<?php echo _('Not Received')?><br>",value:'Missing'},{label:"<?php echo _("Don't Like it")?><br>",value:'Do not Like'},{label:"<?php echo _('Other')?><br>",value:'Other'}],disableBtns:true})}
+					,{key:"to_be_returned", label:"<?php echo _('Rtn')?>",width:20, sortable:false,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC},object:'to_be_returned',editor: new YAHOO.widget.RadioCellEditor({asyncSubmitter: CellEdit,radioOptions:[{label:"<?php echo _('Yes')?><br>",value:'Yes'},{label:"<?php echo _('No')?>",value:'No'}],disableBtns:true})}
 				     ];
 
 
@@ -359,7 +390,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 			 ,"description"
 			 ,"quantity"
 			 ,"discount"
-			 ,"to_charge","gross","tariff_code","stock","add","remove","pid","ordered","operation","order_key","otf_key","reason","to_be_returned"
+			 ,"to_charge","gross","tariff_code","stock","add","remove","pid","ordered","operation","order_key","otf_key","reason","to_be_returned","max_resend","max_refund"
 			 // "promotion_id",
 			 ]};
 	    this.table0 = new YAHOO.widget.DataTable(tableDivEL, InvoiceColumnDefs,
@@ -460,7 +491,7 @@ function save(tipo){
 
 function create_delivery_note(){
 	var ar_file='ar_edit_orders.php'; 
-    	var request='tipo=send_to_warehouse&order_key='+order_key;
+    	var request='tipo=send_post_order_to_warehouse&order_key='+order_key;
 
 
 	YAHOO.util.Connect.asyncRequest(
@@ -488,19 +519,13 @@ function create_delivery_note(){
 
 }
 
-function open_cancel_dialog(){
+function cancel(){
 
-    dialog_cancel.show();
-    Dom.get('cancel_input').focus();
-}
-
-
-function save_set_shipping(){
-value=Dom.get("shipping_amount").value;
+   
 var ar_file='ar_edit_orders.php'; 
-    	var request='tipo=set_order_shipping&value='+value+'&order_key='+order_key;
+    	var request='tipo=cancel_post_transactions&order_key='+order_key;
 
-//alert(request);
+
 	YAHOO.util.Connect.asyncRequest(
 					'POST',
 					ar_file, {
@@ -508,15 +533,9 @@ var ar_file='ar_edit_orders.php';
 						//alert(o.responseText);
 						var r = YAHOO.lang.JSON.parse(o.responseText);
 						if (r.state == 200) {
-					
-					for(x in r.data){
-
-						    Dom.get(x).innerHTML=r.data[x];
-						}
-					Dom.get('given_shipping').innerHTML=r.shipping;
-					
-						}
-						reset_set_shipping()
+					        window.location.reload( true );
+					    
+					    }
 					    },
 					failure:function(o) {
 					    alert(o.statusText);
@@ -527,125 +546,31 @@ var ar_file='ar_edit_orders.php';
 				    request
 				    
 				    );  
-
-}
-
-function reset_set_shipping(){
-Dom.get("shipping_amount").value='';
-dialog_edit_shipping.hide();
+ 
+    
+    
 }
 
 
-
-
-var submit_family_code_search_on_enter=function(e){
-
-     var key;     
-     if(window.event)
-          key = window.event.keyCode; //IE
-     else
-          key = e.which; //firefox     
-
-     if (key == 13){
-	// Ajax Call 
-
-	var value=encodeURIComponent(Dom.get("family_search").value);
-	var ar_file='ar_assets.php'; 
-	var request='tipo=is_valid_family_code&code='+value;
-	//alert('R:'+request);
-	//return;
-	YAHOO.util.Connect.asyncRequest(
-					'POST',
-					ar_file, {
-					    success:function(o) {
-						//alert(o.responseText);
-						var r = YAHOO.lang.JSON.parse(o.responseText);
-						if (r.state == 200) {
-	
-
-
-					
-
-panel2.hide();
-  
-						  Dom.get("search_error").style.visibility='hidden';
-						  Dom.get("showing_only_family").style.visibility='visible';
-						  Dom.get("search_family_code").innerHTML=value;
-						  Dom.addClass("showing_only_family","selected");
-						 Dom.removeClass("show_all_products","selected");
-						 Dom.removeClass("show_only_ordered_products","selected");
-						var table=tables['table0'];
-						 
-   						var datasource=tables['dataSource0'];
-   						var request='&show_all=yes&family_code='+value;
-  
-   						datasource.sendRequest(request,table.onDataReturnInitializeTable, table); 
-
-						}else{
-					          
-						  Dom.get("search_error").style.visibility='visible';
-						}
-					    },
-					failure:function(o) {
-					    alert(o.statusText);
-					    
-					},
-					scope:this
-				    },
-				    request
-				    
-				    ); 
-
-	
-}
-	
-};
 
 
 
 function init(){
 
-    YAHOO.util.Event.addListener('family_search', "keyup",submit_family_code_search_on_enter);
 
    var oACDS = new YAHOO.util.FunctionDataSource(mygetTerms);
     
     oACDS.queryMatchContains = true;
     var oAutoComp = new YAHOO.widget.AutoComplete("f_input0","f_container0", oACDS);
     oAutoComp.minQueryLength = 0; 
-//---------------------------------------discount search code from here-----------------------
- change_staff_discount = new YAHOO.widget.Dialog("change_staff_discount", 
-			{ 
-			    visible : false,close:false,
-			    underlay: "none",draggable:false
-			    
-			} );
-       change_staff_discount.render();
-       //       change_staff_discount.show();
-
-//---------------------------------------discount search ends here---------------------------
-
+//
         YAHOO.util.Event.addListener(["set_for_collection","set_for_shipping"], "click",change_shipping_type);
 
     // YAHOO.util.Event.addListener('done', "click",create_delivery_note);
 
-var myDialog = new YAHOO.widget.Dialog("myDialog"); 
+  YAHOO.util.Event.addListener("cancel", "click",cancel );
+   YAHOO.util.Event.addListener("send", "click",create_delivery_note );
 
-
-//alert(Dom.get('cancel'));
-  dialog_cancel = new YAHOO.widget.Dialog("dialog_cancel", {context:["cancel","tr","tl"]  ,visible : false,close:false,underlay: "none",draggable:false});
-
-//  alert('xx')
-
-dialog_cancel.render();
-  YAHOO.util.Event.addListener("cancel", "click",open_cancel_dialog );
-   YAHOO.util.Event.addListener("done", "click",create_delivery_note );
-
-dialog_edit_shipping = new YAHOO.widget.Dialog("dialog_edit_shipping", {context:["tr_order_shipping_on_demand","tr","tl"]  ,visible : false,close:false,underlay: "none",draggable:false});
-dialog_edit_shipping.render();
-Event.addListener("set_shipping", "click", dialog_edit_shipping.show,dialog_edit_shipping , true);
-
-Event.addListener("save_set_shipping", "click", save_set_shipping);
-Event.addListener("reset_set_shipping", "click", reset_set_shipping);
 
 
 
@@ -658,36 +583,6 @@ Event.addListener("reset_set_shipping", "click", reset_set_shipping);
 
 YAHOO.util.Event.onDOMReady(init);
 
-YAHOO.util.Event.onContentReady("panel2", function () {
-
-
-function focus_search_family(){
-
-alert("reached to function focus_search_family()")
-panel2.show()
-
-document.getElementById('family_search').focus()
-alert("caca")
-// SOLVE THIS ONE DAY PLEASE
-}
-
-
-panel2 = new YAHOO.widget.Panel("panel2", { xy:[350,330], width:"250px", visible: false } );
-
-var kl = new YAHOO.util.KeyListener(document, { keys:27 },{ fn:panel2.hide,scope:panel2,correctScope:true }, "keyup" ); 
-													
-
-	panel2.cfg.queueProperty("keylisteners", kl);
-	panel2.render();
- 
-	var kl2 = new YAHOO.util.KeyListener(document, { ctrl:true, keys:75 }, 
-{ fn:focus_search_family } );
-	
-	kl2.enable();
- 
-
-
-    });
 
 
 
@@ -703,29 +598,3 @@ YAHOO.util.Event.onContentReady("filtermenu0", function () {
 	 oMenu.subscribe("show", oMenu.focus);
 	 
     });
-//------------------------------------ discount code ------------------------------
-var change_discount=function(o){
-//alert("caca")
-    var y=(Dom.getY(o))
-    var x=(Dom.getX(o))
-    x=x-90;y=y+15;
-    //    alert(y);
-    Dom.setX('change_staff_discount', x)
-    Dom.setY('change_staff_discount', y)
-   
-    //    add_user_dialog_staff.cfg.setProperty("x", "500");
-    //add_user_dialog_staff.cfg.setProperty("y", 500);
-    
-    change_staff_discount.show();
-    
-}
-function close_change_discount_dialog(){
-
-	Dom.get('change_discount_value').value='';
-	
-	
-
-	Dom.get('change_discount_save').style.visibility='hidden';
-	change_staff_discount.hide();
-
-    }

@@ -264,6 +264,29 @@ INDEX ( `Order Transaction In Process Key` , `Order Key` )
 ) ENGINE = MYISAM ;
 ALTER TABLE `Order Post Transaction In Process Dimension` CHANGE `Order Transaction In Process Key` `Order Transaction Fact Key` MEDIUMINT( 8 ) UNSIGNED NOT NULL ;
 ALTER TABLE `Order Post Transaction In Process Dimension` CHANGE `Operation` `Operation` ENUM( 'Resend', 'Credit', 'Refund' ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL ;
-
+RENAME TABLE `Order Post Transaction In Process Dimension` TO `Order Post Transaction Dimension` ;
+ALTER TABLE `Order Post Transaction Dimension` CHANGE `Order Post Transaction In Process Key` `Order Post Transaction Key` MEDIUMINT( 8 ) UNSIGNED NOT NULL AUTO_INCREMENT ;
+ALTER TABLE `Order Post Transaction Dimension` DROP INDEX `Order Transaction In Process Key` ;
+ALTER TABLE `Order Post Transaction Dimension` ADD INDEX ( `Order Transaction Fact Key` ) ;
+ALTER TABLE `Order Post Transaction Dimension` ADD INDEX ( `Order Key` ) ;
+ALTER TABLE `Customer Dimension` ADD `Customer Next Invoice Credit Amount` DECIMAL( 16, 2 ) NOT NULL DEFAULT '0.00' AFTER `Customer Outstanding Tax Balance` ;
+ALTER TABLE `Order Post Transaction Dimension` ADD `State` ENUM( 'In Process', 'In Warehoouse', 'Dispatched' ) NOT NULL DEFAULT 'In Process',ADD INDEX ( `State` ); 
+ALTER TABLE `Order Post Transaction Dimension` CHANGE `State` `State` ENUM( 'In Process by Customer', 'Submitted by Customer', 'In Process', 'Ready to Pick', 'Picking', 'Ready to Pack', 'Ready to Ship', 'Dispatched', 'Unknown', 'Packing', 'Cancelled', 'No Picked Due Out of Stock', 'No Picked Due No Authorised', 'No Picked due Not Found', 'No Picked Due Other', 'Suspended' ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'In Process';
+CREATE TABLE IF NOT EXISTS `User Click Dimension` (
+  `User Click Key` mediumint(8) NOT NULL,
+  `User Key` mediumint(8) NOT NULL,
+  `URL` varchar(1024) NOT NULL,
+  `Page Key` mediumint(10) NOT NULL,
+  `Date` datetime NOT NULL,
+  `Previous Page` varchar(1024) NOT NULL,
+  `Session Key` mediumint(10) NOT NULL,
+  `Previous Page Key` mediumint(9) DEFAULT NULL,
+  PRIMARY KEY (`User Click Key`)
+) ENGINE=MyISAM;
+ALTER TABLE `User Click Dimension` CHANGE `User Click Key` `User Click Key` MEDIUMINT( 8 ) NOT NULL AUTO_INCREMENT ;
+ALTER TABLE `Session Dimension` DROP PRIMARY KEY ;
+ALTER TABLE `Session Dimension` ADD `Session Dimension Key` INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY FIRST ;
+ALTER TABLE `Session Dimension` ADD UNIQUE (`Session ID`);
+ALTER TABLE `Session Dimension` CHANGE `Session Dimension Key` `Session Key` INT( 10 ) UNSIGNED NOT NULL AUTO_INCREMENT 
 */
 ?>

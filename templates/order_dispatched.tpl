@@ -70,7 +70,7 @@
 {t}This order has some dispatched post transactions{/t} <span onClick="show_dispatched_post_transactions()" style="font-size:90%;cursor:pointer">({t}Show details){/t}</span>
 </div>
 
-<div style="display:none;border-top:1px solid #fd7777;border-bottom:1px solid #fd7777;padding:0 0 10px 0;" id="dispatched_post_transactions">
+<div style="xdisplay:none;border-top:1px solid #fd7777;border-bottom:1px solid #fd7777;padding:0 0 10px 0;" id="dispatched_post_transactions">
 <h2>{t}Dispatched Post-Order Items{/t}</h2>
       <div  id="table1" class="dtable btable" style="margin-bottom:0;font-size:80%"></div>
 </div>
