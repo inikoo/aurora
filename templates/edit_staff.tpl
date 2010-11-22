@@ -34,11 +34,11 @@
 	<tr class="first"><td style="width:11em" class="label">Staff Id:</td>
 	  <td  style="text-align:left;width:19em">
 	    <div  style="width:15em;position:relative;top:00px" >
-	      <input style="text-align:left;width:18em" id="Company_Staff_Code" value="" ovalue="" >
-	      <div id="Company_Staff_Code_Container" style="" ></div>
+	      <input style="text-align:left;width:18em" id="Company_Staff_Id" value="" ovalue="" >
+	      <div id="Company_Staff_Id_Container" style="" ></div>
 	    </div>
 	  </td>
-	  <td id="Company_Staff_Code_msg" class="edit_td_alert"></td>
+	  <td id="Company_Staff_Id_msg" class="edit_td_alert"></td>
 	</tr>
 	<tr class="first"><td style="" class="label">{t}Staff Name{/t}:</td>
 	  <td  style="text-align:left">
