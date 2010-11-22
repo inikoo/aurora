@@ -2576,6 +2576,7 @@ function list_company_areas() {
 }
 
 function list_company_staff() {
+
     $conf=$_SESSION['state']['company_staff']['table'];
     if (isset( $_REQUEST['view']))
         $view=$_REQUEST['view'];
@@ -2594,8 +2595,7 @@ function list_company_staff() {
     } else
         $number_results=$conf['nr'];
 
-
-    if (isset( $_REQUEST['o']))
+   if (isset( $_REQUEST['o']))
         $order=$_REQUEST['o'];
     else
         $order=$conf['order'];
@@ -2606,13 +2606,10 @@ function list_company_staff() {
         $order_dir=$conf['order_dir'];
     $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
 
-
-
     if (isset( $_REQUEST['where']))
         $where=addslashes($_REQUEST['where']);
     else
         $where=$conf['where'];
-
 
     if (isset( $_REQUEST['f_field']))
         $f_field=$_REQUEST['f_field'];
@@ -2655,19 +2652,9 @@ function list_company_staff() {
             ,'mode'=>$mode,'restrictions'=>'','parent'=>$parent
                                                       );
 
-
-
-
     $group='';
-
-
-
-
-
     $filter_msg='';
-
     $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
-
     //  if(!is_numeric($start_from))
     //        $start_from=0;
     //      if(!is_numeric($number_results))
@@ -2748,8 +2735,6 @@ function list_company_staff() {
 
     // print "$sql";
     while ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
-
-        
             $delete='<img src="art/icons/delete.png"/>';
        
         $adata[]=array(
