@@ -3679,7 +3679,7 @@ $this->deleted_post_transaction=true;
 
 function add_post_order_transactions($data) {
 
-$sql=sprintf()
+//$sql=sprintf()
 
 $order_key=$this->id;
 $order_date=date('Y-m-d H:i:s');
