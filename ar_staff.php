@@ -26,10 +26,10 @@ case('is_position_name'):
   is_position_name();
   break;
 case('is_company_staff_code'):
-    is_company_staff_code();
+    is_company_staff_id();
     break;
 case('is_company_staff_name'):
-    is_company_staff_code();
+    is_company_staff_name();
     break;
   case('find_position'):
    require_once 'ar_edit_common.php';
@@ -380,7 +380,7 @@ if($order=='name')
 
 
 
-function is_company_staff_code() {
+function is_company_staff_id() {
     if (!isset($_REQUEST['query']) or !isset($_REQUEST['company_key']) ) {
         $response= array(
                        'state'=>400,

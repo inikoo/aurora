@@ -32,6 +32,10 @@ edit_positions();
 case('edit_company_staff'):
     list_company_staff();
     break;
+
+case('edit_ind_staff'):
+    edit_ind_staff();
+    break;
  default:
 
    $response=array('state'=>404,'resp'=>_('Operation not found'));
