@@ -521,14 +521,10 @@ function list_company_staff() {
     while ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
             $delete='<img src="art/icons/delete.png"/>';
        
-        $adata[]=array(
-
-
-                     'id'=>$row['Staff Key']
-
+         $adata[]=array(
+               'key'=>$row['Staff Key']
                           ,'go'=>sprintf("<a href='edit_each_staff.php?edit=1&id=%d'><img src='art/icons/page_go.png' alt='go'></a>",$row['Staff Key'])
-
-                                ,'code'=>$row['Staff Key']
+                                ,'id'=>$row['Staff ID']
                                         ,'name'=>$row['Staff Name']
                                                 ,'delete'=>$delete
                                                           ,'delete_type'=>'delete'
