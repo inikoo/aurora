@@ -1008,7 +1008,7 @@ function list_transactions_in_process_in_dn(){
 
 
 
-   $where=' where   `Delivery Note Key`='.$order_id;
+   $where=sprintf(' where   `Delivery Note Key`=%d',$order_id);
 
    $total_charged=0;
    $total_discounts=0;
@@ -1017,7 +1017,7 @@ function list_transactions_in_process_in_dn(){
    $data=array();
 
    $sql=sprintf("select `Required`,`Part XHTML Description`,`Part XHTML Currently Used In`,ITF.`Part SKU` from `Inventory Transaction Fact` as ITF left join `Part Dimension` P on (P.`Part SKU`=ITF.`Part SKU`)$where"); 
-    
+   
    $result=mysql_query($sql);
    $total_gross=0;
    $total_discount=0;

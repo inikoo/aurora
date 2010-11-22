@@ -3678,9 +3678,12 @@ $this->deleted_post_transaction=true;
 
 
 function add_post_order_transactions($data) {
+$otf_key=array();
+$sql=sprintf("select OTF.`Product Key`,`Product Gross Weight`,`Quantity`,`Product Units Per Case` from `Order Post Transaction Dimension` POT  left join `Order Transaction Fact` OTF on (OTF.`Order Transaction Fact Key`=POT.`Order Transaction Fact Key`) left join `Product History Dimension`  PH on (PH.`Product Key`=OTF.`Product Key`) left join `Product Dimension` P on (P.`Product ID`=PH.`Product ID`)   where POT.`Order Key`=%d  and `State`='In Process' ",
+$this->id);
 
-//$sql=sprintf()
-
+$res=mysql_query($sql);
+while($row=mysql_fetch_assoc($res)){
 $order_key=$this->id;
 $order_date=date('Y-m-d H:i:s');
 $order_public_id=$this->data['Order Public ID'];
@@ -3699,34 +3702,34 @@ $order_public_id=$this->data['Order Public ID'];
                      prepare_mysql('Resend'),
                      $data['Order Tax Rate'],
                      prepare_mysql ($data['Order Tax Code']),
-                     prepare_mysql ( $data['Order Currency'] ),
-                     $data['Estimated Weight'],
+                     prepare_mysql ( $this->data['Order Currency'] ),
+                     $row['Product Gross Weight']*$row['Quantity'],
 
-                     prepare_mysql ( $data ['Date'] ),
-                     $data ['Product Key'],
-                     prepare_mysql ( $data ['Current Dispatching State'] ),
+                     prepare_mysql($order_date),
+                     $row ['Product Key'],
+                     prepare_mysql ( 'In Process' ),
                      prepare_mysql ( $data ['Current Payment State'] ),
-                     prepare_mysql ( $data['Order Customer Key' ] ),
+                     prepare_mysql ( $this->data['Order Customer Key' ] ),
            
-                     $data['Quantity'],
+                     $row['Quantity'],
                      prepare_mysql ( $data['Ship To Key'] ),
                      $data['Gross'],
                      0,
                      prepare_mysql ( $data ['Metadata'] ,false),
-                     prepare_mysql ( $data['Order Store Key'] ),
-                     $data ['units_per_case']
+                     prepare_mysql ( $this->data['Order Store Key'] ),
+                     $row['Product Units Per Case']
 
                    );
 
 
-//print "$sql\n";
+
     if (! mysql_query ( $sql ))
         exit ( "$sql can not update orphan transaction\n" );
-$otf_key=mysql_insert_id();
-$this->update_xhtml_orders();
-foreach($this->get_orders_objects() as $order){
-    $order->update_xhtml_delivery_notes();
+$otf_key[]=mysql_insert_id();
+
 }
+
+
 
 return array('otf_key'=>$otf_key);
 

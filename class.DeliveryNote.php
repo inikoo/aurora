@@ -1812,27 +1812,27 @@ $order->update_dispatch_state();
 
 function add_orphan_transactions($data) {
 
-if($data['Order Key']){
-$order_key=$data['Order Key'];
-$order_date=$data['Order Date'];
-$order_public_id=$data['Order Public ID'];
-}else{
-$order_key='';
-$order_date='';
-$order_public_id='';
-}
+    if ($data['Order Key']) {
+        $order_key=$data['Order Key'];
+        $order_date=$data['Order Date'];
+        $order_public_id=$data['Order Public ID'];
+    } else {
+        $order_key='';
+        $order_date='';
+        $order_public_id='';
+    }
     $bonus_quantity=0;
     $sql = sprintf ( "insert into `Order Transaction Fact` (`Order Date`,`Order Key`,`Order Public ID`,`Delivery Note Key`,`Delivery Note ID`,`Order Bonus Quantity`,`Order Transaction Type`,`Transaction Tax Rate`,`Transaction Tax Code`,`Order Currency Code`,`Estimated Weight`,`Order Last Updated Date`,`Product Key`,`Current Dispatching State`,`Current Payment State`,`Customer Key`,`Delivery Note Quantity`,`Ship To Key`,`Order Transaction Gross Amount`,`Order Transaction Total Discount Amount`,`Metadata`,`Store Key`,`Units Per Case`,`Customer Message`)
                      values (%s,%s,%s,%d,%s,%f,%s,%f,%s,%s,%s,  %s,%d,%s,%s,%d,%s,%s,%.2f,%.2f,%s,%s,%f,'') ",
                      prepare_mysql($order_date),
                      prepare_mysql($order_key),
-                                          prepare_mysql($order_public_id),
+                     prepare_mysql($order_public_id),
 
                      $this->id,
-                                          prepare_mysql($this->data['Delivery Note ID']),
+                     prepare_mysql($this->data['Delivery Note ID']),
 
                      $bonus_quantity,
-                     prepare_mysql($data['Order Type']),
+                     prepare_mysql('Resend'),
                      $data['Order Tax Rate'],
                      prepare_mysql ($data['Order Tax Code']),
                      prepare_mysql ( $data['Order Currency'] ),
@@ -1843,7 +1843,7 @@ $order_public_id='';
                      prepare_mysql ( $data ['Current Dispatching State'] ),
                      prepare_mysql ( $data ['Current Payment State'] ),
                      prepare_mysql ( $data['Order Customer Key' ] ),
-           
+
                      $data['Quantity'],
                      prepare_mysql ( $data['Ship To Key'] ),
                      $data['Gross'],
@@ -1858,13 +1858,13 @@ $order_public_id='';
 //print "$sql\n";
     if (! mysql_query ( $sql ))
         exit ( "$sql can not update orphan transaction\n" );
-$otf_key=mysql_insert_id();
-$this->update_xhtml_orders();
-foreach($this->get_orders_objects() as $order){
-    $order->update_xhtml_delivery_notes();
-}
+    $otf_key=mysql_insert_id();
+    $this->update_xhtml_orders();
+    foreach($this->get_orders_objects() as $order) {
+        $order->update_xhtml_delivery_notes();
+    }
 
-return array('otf_key'=>$otf_key);
+    return array('otf_key'=>$otf_key);
 
 }
 
