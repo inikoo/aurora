@@ -450,11 +450,10 @@ function is_company_staff_name() {
 
     $company_key=$_REQUEST['company_key'];
 
-   $sql=sprintf("select `Staff Key`,`Staff Name` from `Staff Dimension` where `Company Key`=%d  "
-                 ,$company_key
+   $sql=sprintf("select `Staff Key`,`Staff Name` from `Staff Dimension`"
                 );
     $res=mysql_query($sql);
-print("********************");print($sql);
+//print("******");print($sql);
     if ($data=mysql_fetch_array($res)) {
         $msg=sprintf('Another Company Staff <a href="edit_each_staff.php?id=%d">(%s)</a> already has this name'
                      ,$data['Staff Key']
@@ -537,7 +536,7 @@ if (!isset($_REQUEST['query']) ) {
         echo json_encode($response);
         return;
     }
-    
+ 
     
 $sql=sprintf("select `Position Key`,`Position Name`,`Position Code` from `Position Dimension` where  `Position Code`=%s  "
 	     ,$company_key
