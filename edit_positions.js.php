@@ -15,7 +15,7 @@ var description_warnings= new Object();
 var description_errors= new Object();
 
 
-var scope='company_area';
+var scope='ind_positions';
 var scope_edit_ar_file='ar_edit_contacts.php';
 var scope_key_name='id';
 var scope_key=0;
@@ -31,7 +31,7 @@ var parent_key=<?php echo $_REQUEST['company_key']?>;
 
 
 var validate_scope_data={
-'position':{
+'ind_positions':{
   
   'area':{'required':true,'validated':false,'name':'Company_Area_Key' ,'dbname':'Company Area Key','validation':[{'regexp':"^\\d+$",'invalid_msg':'<?php echo _('Choose a Company Area')?>'}]}
    , 'department':{'required':true,'validated':false,'name':'Company_Department_Key' ,'dbname':'Company Department Key','validation':[{'regexp':"^\\d+$",'invalid_msg':'<?php echo _('Choose a Company Area')?>'}]}
@@ -50,14 +50,14 @@ var validate_scope_data={
    }
 };
 
-var validate_scope_metadata={'position':{'type':'new','ar_file':'ar_edit_warehouse.php'}};
+var validate_scope_metadata={'ind_positions':{'type':'new','ar_file':'ar_edit_staff.php'}};
 
 
 function validate_code(query){
- validate_general('position','code',unescape(query));
+ validate_general('ind_positions','code',unescape(query));
 }
 function validate_name(query){
- validate_general('position','name',unescape(query));
+ validate_general('ind_positions','name',unescape(query));
 }
 
 function validate_area(sType,aArgs){
@@ -97,11 +97,11 @@ if(validate_scope_data['position']['department']['validated']){
 
 }
 function reset_new_position(){
- reset_edit_general('position');
+ reset_edit_general('ind_positions');
 }
 function save_new_position(){
 
- save_new_general('position');
+ save_new_general('ind_positions');
 }
 
 
@@ -145,14 +145,14 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    var tableid=0; // Change if you have more the 1 table
 	    var tableDivEL="table"+tableid;
 	    var OrdersColumnDefs = [ 
-				    {key:"id", label:"<?php echo _('Key')?>", width:20,sortable:false,isPrimaryKey:true,hidden:true} 
+				    {key:"company_position_key", label:"<?php echo _('Key')?>", width:20,sortable:false,isPrimaryKey:true,hidden:true} 
 				    ,{key:"go",label:'',width:20,}
 
-				   ,{key:"code", label:"<?php echo _('Code')?>", width:100,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC},  editor: new YAHOO.widget.TextboxCellEditor({asyncSubmitter: CellEdit}),object:'positions'}
-				    ,{key:"name", label:"<?php echo _('Name')?>", width:340,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}, editor: new YAHOO.widget.TextboxCellEditor({asyncSubmitter: CellEdit}),object:'positions' }
-				    ,{key:"delete", label:"", width:170,sortable:false,className:"aleft",action:'delete',object:'department'}
+				   ,{key:"code", label:"<?php echo _('Code')?>", width:100,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC},  editor: new YAHOO.widget.TextboxCellEditor({asyncSubmitter: CellEdit}),object:'ind_positions'}
+				    ,{key:"name", label:"<?php echo _('Name')?>", width:340,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}, editor: new YAHOO.widget.TextboxCellEditor({asyncSubmitter: CellEdit}),object:'ind_positions' }
+				    ,{key:"delete", label:"", width:170,sortable:false,className:"aleft",action:'delete',object:'ind_positions'}
 				    ,{key:"delete_type", label:"",hidden:true,isTypeKey:true}
-				    				   				   ,{key:"area", label:"<?php echo _('Area')?>", width:100,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				    				   				//   ,{key:"area", label:"<?php echo _('Area')?>", width:100,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 
 				     ];
 
@@ -171,7 +171,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 		},
 		
 		fields: [
-			 'id','code','name','delete','delete_type','go','area'
+			 'company_position_key','code','name','delete','delete_type','go','area'
 			 ]};
 	    
 	    this.table0 = new YAHOO.widget.DataTable(tableDivEL, OrdersColumnDefs,

@@ -177,11 +177,12 @@ var CellEdit = function (callback, newValue) {
         ar_file='ar_edit_suppliers.php';
     else if (column.object=='new_porder'  )
         ar_file='ar_edit_porders.php';
-    else if (column.object=='ind_staff' || column.object=='positions'  )
+    else if (column.object=='ind_staff' || column.object=='ind_positions'  )
         ar_file='ar_edit_staff.php';
     else
         ar_file='ar_edit_assets.php';
-  //   alert(column.object)
+   //  alert(column.object)
+//alert(column.key)
     var request='tipo=edit_'+column.object+'&key=' + column.key + '&newvalue=' + encodeURIComponent(newValue) + '&oldvalue=' + encodeURIComponent(oldValue)+ myBuildUrl(datatable,record);
   alert(ar_file+'?'+request);
 
@@ -243,11 +244,11 @@ var onCellClick = function(oArgs) {
                     ar_file='ar_edit_staff.php';
                 else if (column.object=='supplier_product' || column.object=='supplier')
                     ar_file='ar_edit_suppliers.php';
-                else if (column.object=='company_staff'  )
+                else if (column.object=='ind_staff'  || column.object=='ind_positions' )
      		   ar_file='ar_edit_staff.php';
                 else
                     ar_file='ar_edit_assets.php';
-
+alert(column.object)
 
 
                 	alert(ar_file+'?tipo=delete_'+column.object + myBuildUrl(this,record))
