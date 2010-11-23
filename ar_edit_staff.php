@@ -34,7 +34,12 @@ case('edit_company_staff'):
     break;
 
 case('edit_ind_staff'):
-    edit_ind_staff();
+       $data=prepare_values($_REQUEST,array(
+                             'key'=>array('type'=>'string'),
+                             'newvalue'=>array('type'=>'string'),
+                             'staff_key'=>array('type'=>'key')
+                         ));
+    edit_ind_staff($data);
     break;
  default:
 
@@ -209,169 +214,15 @@ if($order=='name')
 }
 
 // ------------------------------- edit_ind_staff function will be here -----------------------
-function edit_ind_staff(){
-  global $myconf;
-
-$conf=$_SESSION['state']['hr']['staff'];
-  if(isset( $_REQUEST['sf']))
-     $start_from=$_REQUEST['sf'];
-   else
-     $start_from=$conf['sf'];
-   if(isset( $_REQUEST['nr']))
-     $number_results=$_REQUEST['nr'];
-   else
-     $number_results=$conf['nr'];
-  if(isset( $_REQUEST['o']))
-    $order=$_REQUEST['o'];
-  else
-    $order=$conf['order'];
-  if(isset( $_REQUEST['od']))
-    $order_dir=$_REQUEST['od'];
-  else
-    $order_dir=$conf['order_dir'];
-    if(isset( $_REQUEST['f_field']))
-     $f_field=$_REQUEST['f_field'];
-   else
-     $f_field=$conf['f_field'];
-
-  if(isset( $_REQUEST['f_value']))
-     $f_value=$_REQUEST['f_value'];
-   else
-     $f_value=$conf['f_value'];
-  if(isset( $_REQUEST['where']))
-     $where=$_REQUEST['where'];
-   else
-     $where=$conf['where'];
-  
-  if(isset( $_REQUEST['view']))
-    $view=$_REQUEST['view'];
-  else
-    $view=$_SESSION['state']['hr']['view'];
-
-
-
-
-   if(isset( $_REQUEST['tableid']))
-    $tableid=$_REQUEST['tableid'];
-  else
-    $tableid=0;
-
- $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
-   $_order=$order;
-   $_dir=$order_direction;
-
-
-
-  $_SESSION['state']['hr']['staff']=array('order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value);
-  $_SESSION['state']['hr']['view']=$view;
-
-
-   $wheref='';
-   if($f_field=='name' and $f_value!=''  )
-     $wheref.=" and  name like '%".addslashes($f_value)."%'    ";
-   else if($f_field=='position_id' or $f_field=='area_id'   and is_numeric($f_value) )
-     $wheref.=sprintf(" and  $f_field=%d ",$f_value);
-  
-  
-  switch($view){
-   case('all'):
-     break;
-   case('staff'):
-     $where.=" and `Staff Currently Working`='Yes'  ";
-     break;
-   case('exstaff'):
-     $where.=" and `Staff Currently Working`='No' ";
-     break;
-  }
-$wheref.=sprintf(" and  `Staff Key`=%d",1);  // here should chnge according to the selected staff key................
-   $sql="select count(*) as total from `Staff Dimension` SD left join `Contact Dimension` CD on (`Contact Key`=`Staff Contact Key`) $where $wheref";
-   print $sql;
-
-   $res=mysql_query($sql);
-   if($row=mysql_fetch_array($res, MYSQL_ASSOC)){
-     $total=$row['total'];
-   }if($wheref!=''){
-     $sql="select count(*) as total from `Staff Dimension` SD left join `Contact Dimension` CD on (`Contact Key`=`Staff Contact Key`)   $where ";
-
-     $res=mysql_query($sql);
-    if($row=mysql_fetch_array($res, MYSQL_ASSOC)){
-       $total_records=$row['total'];
-      $filtered=$row['total']-$total;
-     }
-
-   }else{
-     $filtered=0;
-     $total_records=$total;
-   }
-   
-   mysql_free_result($res);
-   $rtext=$total_records." ".ngettext('record','records',$total_records);
-   if($total_records>$number_results)
-     $rtext.=sprintf(" <span class='rtext_rpp'>(%d%s)</span>",$number_results,_('rpp'));
-   $filter_msg='';
-   
-    switch($f_field){
-     case('name'):
-       if($total==0 and $filtered>0)
-	 $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There is no staff with name")." <b>*".$f_value."*</b> ";
-       elseif($filtered>0)
-	 $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ("._('staff with name')." <b>*".$f_value."*</b>)";
-       break;
-    case('area_id'):
-       if($total==0 and $filtered>0)
-	 $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There is no staff on area")." <b>".$f_value."</b> ";
-       elseif($filtered>0)
-	 $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ("._('staff on area')." <b>".$f_value."</b>)";
-       break;
-    case('position_id'):
-       if($total==0 and $filtered>0)
-	 $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There is no staff with position")." <b>".$f_value."</b> ";
-       elseif($filtered>0)
-	 $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ("._('staff with position')." <b>".$f_value."</b>)";
-       break;
-
-    }
-
-if($order=='name')
-  $order='`Staff Name`';
-
-   $sql="select * from `Staff Dimension` SD left join `Contact Dimension` CD on (`Contact Key`=`Staff Contact Key`)  $where $wheref order by $order $order_direction limit $start_from,$number_results";
-
-   $adata=array();
-   $res=mysql_query($sql);
-   while($data=mysql_fetch_array($res)){
-
-
-     $_id=$myconf['staff_prefix'].sprintf('%03d',$data['Staff Key']);
-     $id=sprintf('<a href=edit_each_staff.php?edit=1&id=%d>%s</a>',$data['Staff Key'],$_id);
-     $adata[]=array(
-		    'id'=>$id,
-		    'alias'=>$data['Staff Alias'],
-		    'name'=>$data['Staff Name'],
-		    'department'=>$data['Staff Department Key'],
-		    'area'=>$data['Staff Area Key'],
-		    'position'=>$data['Staff Position Key']
-		    );
-  }
-  mysql_free_result($res);
-   $response=array('resultset'=>
-		   array('state'=>200,
-			 'data'=>$adata,
-			 'sort_key'=>$_order,
-			 'sort_dir'=>$_dir,
-			 'tableid'=>$tableid,
-			 'filter_msg'=>$filter_msg,
-			 'total_records'=>$total,
-			 'records_offset'=>$start_from,
-			 'records_returned'=>$start_from+$total,
-			 'records_perpage'=>$number_results,
-			 'rtext'=>$rtext,
-			 'records_order'=>$order,
-			 'records_order_dir'=>$order_dir,
-			 'filtered'=>$filtered
-			 )
-		   );
-   echo json_encode($response);
+function edit_ind_staff($data){
+$staff=new Staff($data['staff_key']);
+$staff->update(array($data['key']=>$data['newvalue']));
+ if($staff->updated){
+    $response=array('state'=>200,'action'=>'updated','key'=>$data['key'],'newvalue'=>$staff->new_value);
+ }else{
+     $response=array('state'=>200,'action'=>'nochange','key'=>$data['key'],'newvalue'=>$data['newvalue']);
+      }
+ 
 }
 
 

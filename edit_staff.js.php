@@ -82,7 +82,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    var tableid=0; // Change if you have more the 1 table
 	    var tableDivEL="table"+tableid;
 	    var OrdersColumnDefs = [ 
-				    {key:"key", label:"<?php echo _('Staff Key')?>", width:20,sortable:false,isPrimaryKey:true,hidden:true}
+				    {key:"staff_key", label:"<?php echo _('Staff Key')?>", width:20,sortable:false,isPrimaryKey:true,hidden:true}
 				    ,{key:"go",label:'',width:20,}
 				       ,{key:"id", label:"<?php echo _('Staff ID')?>", width:100,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC},  editor: new YAHOO.widget.TextboxCellEditor({asyncSubmitter: CellEdit}),object:'company_staff'}
 				    ,{key:"name", label:"<?php echo _('Staff Name')?>", width:340,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}, editor: new YAHOO.widget.TextboxCellEditor({asyncSubmitter: CellEdit}),object:'company_staff' }
@@ -106,7 +106,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 		},
 		
 		fields: [
-			  'id','key','name','delete','delete_type','go'
+			  'id','staff_key','name','delete','delete_type','go'
 
 			 ]};
 	    
