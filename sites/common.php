@@ -173,14 +173,32 @@ $smarty->assign('departments',$departments);
 function log_visit($session_key) {
 global $user_click_key;
 
-    $file = $_SERVER["SCRIPT_NAME"]; //current file path gets stored in $file
-
+   // $file = $_SERVER["SCRIPT_NAME"]; //current file path gets stored in $file
+$file = $_SERVER["PHP_SELF"];
+//echo $file;
  
  $break = Explode('/', $file);
     $cur_file = $break[count($break) - 1];
 if(preg_match('/^ar\_/',$cur_file)){
     return;
 }
+
+// function to get the full url of the current page
+function slfURL() 
+{ $s = empty($_SERVER["HTTPS"]) ? '' : ($_SERVER["HTTPS"] == "on") ? "s" : "";
+ $protocol = strleft1(strtolower($_SERVER["SERVER_PROTOCOL"]), "/").$s; $port = ($_SERVER["SERVER_PORT"] == "80") ? "" : (":".$_SERVER["SERVER_PORT"]); 
+return $protocol."://".$_SERVER['SERVER_NAME'].$port.$_SERVER['REQUEST_URI']; 
+}
+
+ function strleft1($s1, $s2) 
+{ return substr($s1, 0, strpos($s1, $s2)); }
+
+$cur_fullurl=slfURL();
+//print "$cur_fullurl<br>";
+$break = Explode('/', $cur_fullurl);
+$cur_url = $break[count($break) - 1];
+//print $cur_url;
+
 
 
 //echo $file;
@@ -206,7 +224,7 @@ if(preg_match('/^ar\_/',$cur_file)){
     $page_key=0;
     $date=date("Y-m-d H:i:s");
    
-    $prev_page_key=0;
+    $prev_page_key=$_SESSION['prev_page_key'];
     if (mime_content_type($cur_file)==mime_content_type($prev_file)) {
         $sql1=sprintf("INSERT INTO `User Click Dimension` (
 
@@ -222,7 +240,7 @@ if(preg_match('/^ar\_/',$cur_file)){
                       %d,%s, %d,%s, %s, %d,%d
                       );",
                       $user_key,
-                      prepare_mysql($cur_file),
+                      prepare_mysql($cur_url),
                       $page_key,
                       prepare_mysql($date),
                       prepare_mysql($prev_file),
