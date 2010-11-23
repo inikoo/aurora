@@ -29,8 +29,9 @@ edit_staff();
    case('positions'):
 edit_positions();
    break;
-case('edit_company_staff'):
-    list_company_staff();
+
+case('list_members_of_staff_to_edit'):
+    list_members_of_staff_to_edit();
     break;
 
 case('edit_ind_staff'):
@@ -222,10 +223,10 @@ $staff->update(array($data['key']=>$data['newvalue']));
  }else{
      $response=array('state'=>200,'action'=>'nochange','key'=>$data['key'],'newvalue'=>$data['newvalue']);
       }
- 
+ echo json_encode($response);
 }
 
-
+// --------------------------------------------------------------------------------------------
 
 function edit_positions(){
   global $myconf;
@@ -375,7 +376,7 @@ if($order=='name')
 		   );
    echo json_encode($response);
 }
-function list_company_staff() {
+function list_members_of_staff_to_edit() {
 
     $conf=$_SESSION['state']['company_staff']['table'];
     if (isset( $_REQUEST['view']))
