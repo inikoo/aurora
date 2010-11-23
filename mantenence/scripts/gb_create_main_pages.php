@@ -34,7 +34,19 @@ $page_data[$store_code]=array(
 		  ,'Page Store Subtitle'=>''
 		  ,'Page Store Slogan'=>'Hello stranger'
 		  ,'Page Store Resume'=>'Please note this is a wholesale site we supply wholesale to the trade.'
-
+          ,'Page Options'=>serialize(array(
+            'Form_Type'=>'Steps',
+            'Fields'=>array(
+                'Tax_Number'=>array('show'=>true,'required'=>false),
+                'Address'=>array('show'=>true,'required'=>false),
+                'Telephone'=>array('show'=>true,'required'=>false),
+                'Fax'=>array('show'=>true,'required'=>false),
+                'Where_Found_Us'=>array('show'=>true,'required'=>false),
+                'Newsletter'=>array('show'=>true,'required'=>false),
+                'Emarketing'=>array('show'=>true,'required'=>false),
+                'Catalogue'=>array('show'=>true,'required'=>false)
+                )
+          )) 
 		  
 		  )
   ,array(
@@ -248,7 +260,7 @@ $page_data[$store_code]=array(
 		    ,'Page Section'=>'incentives'
 		  ,'Page Source Template'=>'megaclearance.html'
 		  ,'Page Description'=>'Mega Clearance Page'
-		  ,'Page Title'=>'10p Special'
+		  ,'Page Title'=>'Mega Clearance'
 		  ,'Page Short Title'=>'MegaClearance'
 		  ,'Page Store Title'=>'Mega Clearance'
 		  ,'Page Store Subtitle'=>''
