@@ -320,4 +320,45 @@ function create_user() {
 
 }
 
+    function update_name($value) {
+    
+      if ($value=='') {
+            $this->error=true;
+            $this->msg=_('Invalid Name');
+            return;
+        }
+    
+        $contact=new Contact($this->data['Staff Contact Key']);
+        $contact->editor=$this->editor;
+        $contact->update(array('Contact Name'=>$value));
+
+
+        if ($contact->updated) {
+
+            $this->updated=true;
+            $this->new_value=$contact->new_value;
+        }
+
+    }
+
+   function update_field_switcher($field,$value,$options='') {
+        if (is_string($value))
+            $value=_trim($value);
+
+        switch ($field) {
+        case('Staff Name'):
+            
+            $this->update_name($value);
+            break;
+
+        default:
+            $base_data=$this->base_data();
+            if (array_key_exists($field,$base_data)) {
+                $this->update_field($field,$value,$options);
+            }
+        }
+    }
+
+
+
 }
