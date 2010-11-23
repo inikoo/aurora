@@ -37,7 +37,7 @@ $css_files=array(
 		 $yui_path.'reset-fonts-grids/reset-fonts-grids.css',
 		 $yui_path.'build/assets/skins/sam/skin.css',
 		 $yui_path.'menu/assets/skins/sam/menu.css',
-		 		 $yui_path.'autocomplete/assets/skins/sam/autocomplete.css',
+		  $yui_path.'autocomplete/assets/skins/sam/autocomplete.css',
 
 		 'common.css',
 		 'container.css',
