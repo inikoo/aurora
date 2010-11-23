@@ -56,5 +56,6 @@ $smarty->display("templates/login.".$store->data['Store Locale'].".tpl");
 $page_data=$store->get_page_data();
 update_page_key_visit_log($page_data['Page Key']);
 
+$_SESSION['prev_page_key']=$page_data['Page Key'];
 
 ?>

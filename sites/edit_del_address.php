@@ -71,5 +71,8 @@ $smarty->assign('customer',$customer);
 $smarty->assign("header_tpl","templates/checkout_header.".$store->data['Store Locale'].".tpl");
 
 
+$_SESSION['prev_page_key']=$page_data['Page Key'];
+
+
 $smarty->display("templates/edit_del_address.tpl");
 ?>

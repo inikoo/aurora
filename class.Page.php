@@ -147,6 +147,23 @@ function find($raw_data,$options){
   }
 
 
+/*/-----------------------------------------------------------------------------------------------------------------------------------------------
+function get_page_data()
+{
+  $data=array();
+  $sql=sprintf("select * from `Page Dimension` where  `Page Key`=%d",$tag);
+  // print $sql;
+  $res=mysql_query($sql);
+  if($row=mysql_fetch_array($res))
+  {
+    $data=$row;
+  }
+  
+  return $data;
+
+}
+//==================================================================================================================================================*/
+
 function create_internal($raw_data){
 
       $data=$this->internal_base_data();
