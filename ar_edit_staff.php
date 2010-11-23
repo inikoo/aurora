@@ -225,7 +225,6 @@ $staff->update(array($data['key']=>$data['newvalue']));
       }
  echo json_encode($response);
 }
-
 // --------------------------------------------------------------------------------------------
 
 function edit_positions(){
@@ -344,18 +343,31 @@ if($order=='name')
 
    $adata=array();
    $res=mysql_query($sql);
-   while($data=mysql_fetch_array($res)){
-
-
-    
+   /*while($data=mysql_fetch_array($res)){
      $adata[]=array(
 		    
 		    'code'=>$data['Company Position Code'],
 		    'name'=>$data['Company Position Title'],
-		    
+
+		    );
+  }*/
+   while($data=mysql_fetch_array($res)){
+ $delete='<img src="art/icons/delete.png"/>';
+
+    
+     $adata[]=array(
+		    'key'=>$data['Company Position Key'],
+		    'code'=>$data['Company Position Code'],
+		    'name'=>$data['Company Position Title'],
+		    'go'=>sprintf("<a href='edit_each_position.php?edit=1&id=%d'><img src='art/icons/page_go.png' alt='go'></a>",$data['Company Position Key'])
+		    ,'delete'=>$delete
+                    ,'delete_type'=>'delete'
 		    
 		    );
   }
+
+
+
   mysql_free_result($res);
    $response=array('resultset'=>
 		   array('state'=>200,
