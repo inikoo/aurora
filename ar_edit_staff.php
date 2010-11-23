@@ -42,6 +42,21 @@ case('edit_ind_staff'):
                          ));
     edit_ind_staff($data);
     break;
+case('edit_ind_positions'):
+       $data=prepare_values($_REQUEST,array(
+                             'key'=>array('type'=>'string'),
+                             'newvalue'=>array('type'=>'string'),
+                             'company_position_key'=>array('type'=>'key')
+                         ));
+    edit_ind_positions($data);
+    break;
+case('delete_ind_positions'):
+    $data=prepare_values($_REQUEST,array(
+                             'company_position_key'=>array('type'=>'key')
+                                  ,'delete_type'=>array('type'=>'string')
+                         ));
+    delete_ind_positions($data);
+    break;
  default:
 
    $response=array('state'=>404,'resp'=>_('Operation not found'));
@@ -226,6 +241,35 @@ $staff->update(array($data['key']=>$data['newvalue']));
  echo json_encode($response);
 }
 // --------------------------------------------------------------------------------------------
+
+function edit_ind_positions($data){
+$staff=new Staff($data['company_position_key']);
+$staff->update(array($data['key']=>$data['newvalue']));
+ if($staff->updated){
+    $response=array('state'=>200,'action'=>'updated','key'=>$data['key'],'newvalue'=>$staff->new_value);
+ }else{
+     $response=array('state'=>200,'action'=>'nochange','key'=>$data['key'],'newvalue'=>$data['newvalue']);
+      }
+ echo json_encode($response);
+}
+
+function delete_ind_positions($data) {
+    include_once('class.Staff.php');
+    $staff=new Staff($data['company_position_key']);
+    $staff->delete();
+     if ($staff->deleted) {
+        $action='deleted';
+        $msg=_('Area deleted');
+
+    } else {
+        $action='nochage';
+        $msg=_('Area could not be deleted');
+    }
+    $response=array('state'=>200,'action'=>$action);
+    echo json_encode($response);
+}
+
+
 
 function edit_positions(){
   global $myconf;
