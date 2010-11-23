@@ -215,6 +215,7 @@ $cur_url = $break[count($break) - 1];
 //echo("<br>");
 
 
+
     if (isset($user)) {
         $user_key=$user->id;
     } else {

@@ -2,6 +2,7 @@
 include_once('common.php');
 include_once('class.Department.php');
 
+
 $css_files=array(
 		 'css/common.css',
 		 'css/home.css',
