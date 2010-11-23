@@ -121,10 +121,10 @@ $smarty->assign('family',$family);
 
 $smarty->assign('js_files',$js_files);
 
-
+$_SESSION['prev_page_key']=$page_data['Page Key'];
 
 $smarty->display("../templates/family.".$store->data['Store Locale'].".tpl");
-$_SESSION['prev_page_key']=$page_data['Page Key'];
+
 
 
 
