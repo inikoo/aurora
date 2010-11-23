@@ -1454,9 +1454,11 @@ $this->data['Store Delivery Notes For Replacements'],
   $sql=sprintf("select * from `Page Store Dimension` PSD left join `Page Dimension` PD on (PSD.`Page Key`=PD.`Page Key`) where PSD.`Page Key`=%d",$this->data['Store Page Key']);
  // print $sql;
   $res=mysql_query($sql);
-  if($row=mysql_fetch_array($res)){
+  if($row=mysql_fetch_assoc($res)){
     $data=$row;
   }
+  
+  $data['Page Options']=unserialize($data['Page Options']);
   
   return $data;
 
