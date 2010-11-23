@@ -14,6 +14,7 @@ $smarty->assign('js_files',$js_files);
 
 if(isset($_REQUEST['page'])){
   $page=$_REQUEST['page'];
+
 }else{
   header('Location: index.php?nopage');
   exit;
@@ -48,8 +49,10 @@ $smarty->assign('contents',$page->data['Page Source Template']);
 $smarty->assign('js_files',$js_files);
 $smarty->display("templates/info.".$store->data['Store Locale'].".tpl");
 
-$page_data=$page->get_page_data();
-update_page_key_visit_log($page_data['Page Key']);
+
+update_page_key_visit_log($page->data['Page Key']);
+
+$_SESSION['prev_page_key']=$page->data['Page Key'];
 
 
 ?>
