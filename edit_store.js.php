@@ -634,7 +634,7 @@ function show_add_department_dialog(){
 
 
 function init(){
-    var ids = ["description","pictures","web","departments","discounts","charges","shipping","campaigns"]; 
+    var ids = ["description","pictures","web","departments","discounts","charges","shipping","campaigns","website"]; 
     YAHOO.util.Event.addListener(ids, "click", change_block);
     YAHOO.util.Event.addListener('add_department', "click", show_add_department_dialog);
     YAHOO.util.Event.addListener('save_new_department', "click",save_new_department);

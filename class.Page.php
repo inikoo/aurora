@@ -147,6 +147,17 @@ function find($raw_data,$options){
   }
 
 
+function get_options(){
+
+if(array_key_exists('Page Options',$this->data)){
+
+return unserialize ( $this->data['Page Options'] );
+}else{
+    return false;
+}
+
+}
+
 
 function create_internal($raw_data){
 
