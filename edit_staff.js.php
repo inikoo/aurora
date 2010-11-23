@@ -9,7 +9,7 @@ var description_num_changed=0;
 var description_warnings= new Object();
 var description_errors= new Object();
 
-var scope='company_staff';
+var scope='ind_staff';
 var scope_edit_ar_file='ar_edit_staff.php';
 var scope_key_name='id';
 var scope_key=0;
@@ -20,7 +20,7 @@ var parent_key=<?php echo $_REQUEST['company_key']?>;
 
 
 var validate_scope_data={
-'company_staff':{
+'ind_staff':{
     'name':{'changed':false,'validated':true,'required':true,'group':1,'type':'item'
 	    ,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Staff Name')?>'}],'name':'Company_Staff_Name','dbname':'Staff Name'
 	    ,'ar':'find','ar_request':'ar_staff.php?tipo=is_company_staff_name&company_key='+parent_key+'&query='}
@@ -29,19 +29,19 @@ var validate_scope_data={
 	     ,'name':'Company_Staff_Id' ,'dbname':'Staff Key','ar':'find','ar_request':'ar_staff.php?tipo=is_company_staff_id&company_key='+parent_key+'&query='}
    }
 };
-var validate_scope_metadata={'company_staff':{'type':'edit','ar_file':'ar_edit_staff.php'}};
+var validate_scope_metadata={'ind_staff':{'type':'edit','ar_file':'ar_edit_staff.php'}};
 
 function validate_id(query){
- validate_general('company_staff','id',unescape(query));
+ validate_general('ind_staff','id',unescape(query));
 }
 function validate_name(query){
- validate_general('company_staff','name',unescape(query));
+ validate_general('ind_staff','name',unescape(query));
 }
 function reset_new_staff(){
- reset_edit_general('company_staff');
+ reset_edit_general('ind_staff');
 }
 function save_new_staff(){
- save_new_general('company_staff');
+ save_new_general('ind_staff');
 }
 
 
@@ -79,19 +79,19 @@ YAHOO.util.Event.addListener(window, "load", function() {
     tables = new function() {
 
 
-	    var tableid=0; // Change if you have more the 1 table
+	    var tableid=0; // Change if you have more the 1 table..........
 	    var tableDivEL="table"+tableid;
 	    var OrdersColumnDefs = [ 
 				    {key:"staff_key", label:"<?php echo _('Staff Key')?>", width:20,sortable:false,isPrimaryKey:true,hidden:true}
 				    ,{key:"go",label:'',width:20,}
-				       ,{key:"id", label:"<?php echo _('Staff ID')?>", width:100,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC},  editor: new YAHOO.widget.TextboxCellEditor({asyncSubmitter: CellEdit}),object:'company_staff'}
-				    ,{key:"name", label:"<?php echo _('Staff Name')?>", width:340,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}, editor: new YAHOO.widget.TextboxCellEditor({asyncSubmitter: CellEdit}),object:'company_staff' }
-				    ,{key:"delete", label:"", width:170,sortable:false,className:"aleft",action:'delete',object:'company_staff'}
+				       ,{key:"id", label:"<?php echo _('Staff ID')?>", width:100,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC},  editor: new YAHOO.widget.TextboxCellEditor({asyncSubmitter: CellEdit}),object:'ind_staff'}
+				    ,{key:"name", label:"<?php echo _('Staff Name')?>", width:340,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}, editor: new YAHOO.widget.TextboxCellEditor({asyncSubmitter: CellEdit}),object:'ind_staff' }
+				    ,{key:"delete", label:"", width:170,sortable:false,className:"aleft",action:'delete',object:'ind_staff'}
 				    ,{key:"delete_type", label:"",hidden:true,isTypeKey:true}
 				     ];
 
 	    //this.dataSource0 = new YAHOO.util.DataSource("ar_edit_staff.php?tipo=edit_company_staff&parent=corporation");
-            this.dataSource0 = new YAHOO.util.DataSource("ar_edit_staff.php?tipo=edit_company_staff&parent=corporation");
+            this.dataSource0 = new YAHOO.util.DataSource("ar_edit_staff.php?tipo=list_members_of_staff_to_edit&parent=corporation");
 	    this.dataSource0.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource0.connXhrMode = "queueRequests";
 	    this.dataSource0.responseSchema = {
