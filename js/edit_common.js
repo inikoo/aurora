@@ -177,7 +177,7 @@ var CellEdit = function (callback, newValue) {
         ar_file='ar_edit_suppliers.php';
     else if (column.object=='new_porder'  )
         ar_file='ar_edit_porders.php';
-    else if (column.object=='company_staff' || column.object=='ind_staff'  )
+    else if (column.object=='ind_staff' || column.object=='positions'  )
         ar_file='ar_edit_staff.php';
     else
         ar_file='ar_edit_assets.php';
