@@ -56,6 +56,8 @@ $smarty->assign('js_files',$js_files);
 $smarty->display("templates/lost_password.".$store->data['Store Locale'].".tpl");
 
 
+$page_data=$store->get_page_data();
+update_page_key_visit_log($page_data['Page Key']);
 
 
 ?>
