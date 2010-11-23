@@ -40,7 +40,7 @@
 
 
       </td></tr>
-	     <tr><td class="label" style="width:100px">{t}Title{/t}:</td><td>
+	     <tr><td class="label" style="width:200px">{t}Title{/t}:</td><td>
 		 <div  style="width:15em" >
 		   <input  id="family_page_html_head_title"  style="width:30em" MAXLENGTH="64" value="{$page->get('Page Title')}" ovalue="{$page->get('Page Title')}"  />
 		   <div id="family_page_html_head_title_msg"></div>
@@ -61,6 +61,34 @@
 		 
 		 
 	     </td></tr>
+	     
+	     {if $page->get('Page Code')=='register'}
+	     <tr><td class="label">{t}Form Type{/t}:</td>
+	     <td>
+	     <div style="float:left;text-align:center;font-size:80%"><img style="border:1px solid #ccc" src="art/form_show_all.png"/><br>{t}Show all fields{/t}</div>
+	     <div style="margin-left:20px;float:left;text-align:center;font-size:80%"><img style="border:1px solid #ccc" src="art/form_show_in_steps.png"/><br>{t}Show by steps{/t}</div>
+	     
+	     </td>
+	    </td></tr>
+	    
+	     <tr><td class="label">{t}No Configurable Fields{/t}:</td>
+	     <td>{t}Email{/t}, {t}Password{/t}, {t}Type of business{/t}, [{t}Company Name{/t}/{t}Contact Name{/t}] ({t}at least one should be given{/t})</td>
+	     </tr>
+	     
+	     <tr><td class="label">{t}Configurable Fields{/t}:</td>
+	     <td>
+	     <table>
+	     <tr><td>{t}Tax Number{/t}</td><td id="option_Customer_Tax_Number">{t}Show{/t}</td></tr>
+	     <tr><td>{t}Address{/t}</td><td id="option_Address">{t}Show{/t}</td></tr>
+	     <tr><td>{t}Telephone{/t}</td><td id="option_Telephone">{t}Show{/t}</td></tr>
+	     <tr><td>{t}Fax{/t}</td><td id="option_Fax">{t}Show{/t}</td></tr>
+
+	     </table>
+	     </td>
+	     </tr>
+	    {/if}
+	     
+	     
 	     </table>
     </div>
 
