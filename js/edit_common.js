@@ -243,12 +243,14 @@ var onCellClick = function(oArgs) {
                     ar_file='ar_edit_staff.php';
                 else if (column.object=='supplier_product' || column.object=='supplier')
                     ar_file='ar_edit_suppliers.php';
+                else if (column.object=='company_staff'  )
+     		   ar_file='ar_edit_staff.php';
                 else
                     ar_file='ar_edit_assets.php';
 
 
 
-                //	alert(ar_file+'?tipo=delete_'+column.object + myBuildUrl(this,record))
+                	alert(ar_file+'?tipo=delete_'+column.object + myBuildUrl(this,record))
 
                 YAHOO.util.Connect.asyncRequest(
                     'GET',

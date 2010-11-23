@@ -10,7 +10,7 @@ var description_warnings= new Object();
 var description_errors= new Object();
 
 var scope='company_staff';
-var scope_edit_ar_file='ar_edit_contacts.php';
+var scope_edit_ar_file='ar_edit_staff.php';
 var scope_key_name='id';
 var scope_key=0;
 	

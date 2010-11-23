@@ -1262,7 +1262,7 @@ $default_state=array(
                                ),
                    'hr'=>array(
                             'view'=>'staff',
-                            'staff'=>array(
+                            'staff'=>array('id'=>'',
                                         'order'=>'name',
                                         'order_dir'=>'',
                                         'sf'=>0,
