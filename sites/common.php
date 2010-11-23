@@ -171,8 +171,10 @@ while ($row=mysql_fetch_array($res)) {
 $smarty->assign('departments',$departments);
 
 function log_visit($session_key) {
-global $user_click_key;
 
+
+global $user_click_key;
+$user_click_key=0;
    // $file = $_SERVER["SCRIPT_NAME"]; //current file path gets stored in $file
 $file = $_SERVER["PHP_SELF"];
 //echo $file;
@@ -181,6 +183,10 @@ $file = $_SERVER["PHP_SELF"];
     $cur_file = $break[count($break) - 1];
 if(preg_match('/^ar\_/',$cur_file)){
     return;
+}
+
+if(preg_match('/^ar_/',$cur_file)){
+return;
 }
 
 // function to get the full url of the current page
@@ -204,7 +210,7 @@ $cur_url = $break[count($break) - 1];
 //echo $file;
    // print "current file : $cur_file <br>";           //current file name gets stored in $file
 
-    $purl = $_SERVER['HTTP_REFERER'];        //previous page url
+    $purl = (isset($_SERVER['HTTP_REFERER'])?$_SERVER['HTTP_REFERER']:'');        //previous page url
     $break = Explode('/', $purl);
     $prev_url = $break[count($break) - 1];   //previous page file name with value passed to it
 
@@ -226,7 +232,9 @@ $cur_url = $break[count($break) - 1];
     $date=date("Y-m-d H:i:s");
    
     $prev_page_key=$_SESSION['prev_page_key'];
-    if (mime_content_type($cur_file)==mime_content_type($prev_file)) {
+  
+  
+  
         $sql1=sprintf("INSERT INTO `User Click Dimension` (
 
                       `User Key` ,
@@ -253,7 +261,7 @@ $cur_url = $break[count($break) - 1];
         mysql_query($sql1);
         $user_click_key= mysql_insert_id();
 
-    }
+  
 
 }
 function update_page_key_visit_log($page_key){

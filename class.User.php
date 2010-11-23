@@ -192,7 +192,6 @@ function create($data){
     else
       $sql=sprintf("select * from `User Dimension` where `User Key`=%d",$data);
      
-
     $result=mysql_query($sql);
     if($this->data=mysql_fetch_array($result, MYSQL_ASSOC)) {
       $this->id=$this->data['User Key'];
