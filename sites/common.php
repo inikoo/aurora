@@ -185,7 +185,7 @@ if(preg_match('/^ar\_/',$cur_file)){
     return;
 }
 
-if(preg_match('/^ar_/',$cur_file)){
+if(preg_match('/^ar_/',$cur_file) or preg_match('/\.js/',$cur_file)){
 return;
 }
 
@@ -214,9 +214,9 @@ $cur_url = $break[count($break) - 1];
     $break = Explode('/', $purl);
     $prev_url = $break[count($break) - 1];   //previous page file name with value passed to it
 
-    $pos = strpos($prev_url, '?');
+    //$pos = strpos($prev_url, '?');
 
-    $prev_file = substr($prev_url,0, $pos);
+    //$prev_file = substr($prev_url,0, $pos);
    // print "previous file : $prev_file<br>";
 //echo("<br>");
 
@@ -252,7 +252,7 @@ $cur_url = $break[count($break) - 1];
                       prepare_mysql($cur_url),
                       $page_key,
                       prepare_mysql($date),
-                      prepare_mysql($prev_file),
+                      prepare_mysql($prev_url),
                       $session_key,
                       $prev_page_key
                      );
