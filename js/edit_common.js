@@ -177,11 +177,11 @@ var CellEdit = function (callback, newValue) {
         ar_file='ar_edit_suppliers.php';
     else if (column.object=='new_porder'  )
         ar_file='ar_edit_porders.php';
-    else if (column.object=='company_staff'  )
+    else if (column.object=='company_staff' || column.object=='ind_staff'  )
         ar_file='ar_edit_staff.php';
     else
         ar_file='ar_edit_assets.php';
-    //   alert(column.object)
+  //   alert(column.object)
     var request='tipo=edit_'+column.object+'&key=' + column.key + '&newvalue=' + encodeURIComponent(newValue) + '&oldvalue=' + encodeURIComponent(oldValue)+ myBuildUrl(datatable,record);
   alert(ar_file+'?'+request);
 
