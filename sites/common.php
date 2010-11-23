@@ -185,7 +185,7 @@ if(preg_match('/^ar\_/',$cur_file)){
     return;
 }
 
-if(preg_match('/^ar_/',$cur_file)){
+if(preg_match('/^ar_/',$cur_file) or preg_match('/\.js/',$cur_file)){
 return;
 }
 
