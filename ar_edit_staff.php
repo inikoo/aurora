@@ -41,6 +41,7 @@ case('edit_ind_staff'):
        $data=prepare_values($_REQUEST,array(
                              'key'=>array('type'=>'string'),
                              'newvalue'=>array('type'=>'string'),
+                             'oldvalue'=>array('type'=>'string'),
                              'staff_key'=>array('type'=>'key')
                          ));
     edit_ind_staff($data);
@@ -246,11 +247,15 @@ if($order=='name')
 // ------------------------------- edit_ind_staff function will be here -----------------------
 function edit_ind_staff($data){
 $staff=new Staff($data['staff_key']);
-$staff->update(array($data['key']=>$data['newvalue']));
+
+
+$translate_keys=array('id'=>'Staff ID','name'=>'Staff Name');
+
+$staff->update(array($translate_keys[$data['key']]=>$data['newvalue']));
  if($staff->updated){
     $response=array('state'=>200,'action'=>'updated','key'=>$data['key'],'newvalue'=>$staff->new_value);
  }else{
-     $response=array('state'=>200,'action'=>'nochange','key'=>$data['key'],'newvalue'=>$data['newvalue']);
+     $response=array('state'=>200,'action'=>'nochange','key'=>$data['key'],'newvalue'=>$data['oldvalue']);
       }
  echo json_encode($response);
 }
@@ -612,7 +617,7 @@ function list_members_of_staff_to_edit() {
             $delete='<img src="art/icons/delete.png"/>';
        
          $adata[]=array(
-               'key'=>$row['Staff Key']
+               'staff_key'=>$row['Staff Key']
                           ,'go'=>sprintf("<a href='edit_each_staff.php?edit=1&id=%d'><img src='art/icons/page_go.png' alt='go'></a>",$row['Staff Key'])
                                 ,'id'=>$row['Staff ID']
                                         ,'name'=>$row['Staff Name']

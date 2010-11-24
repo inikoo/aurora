@@ -327,7 +327,7 @@ function create_user() {
             $this->msg=_('Invalid Name');
             return;
         }
-    
+  
         $contact=new Contact($this->data['Staff Contact Key']);
         $contact->editor=$this->editor;
         $contact->update(array('Contact Name'=>$value));
@@ -347,7 +347,7 @@ function create_user() {
 
         switch ($field) {
         case('Staff Name'):
-            
+             case('name'):
             $this->update_name($value);
             break;
 
@@ -360,6 +360,9 @@ function create_user() {
     }
 
 
+function get_name(){
+    return $this->data['Staff Name'];
+}
 
 }
 

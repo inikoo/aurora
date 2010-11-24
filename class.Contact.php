@@ -1624,9 +1624,17 @@ $len_name=strlen($name_data['Contact Surname']);
 
     function update_parents() {
 
-        $parents=array('Company','Customer','Supplier');
+        $parents=array('Company','Customer','Supplier','Staff');
         foreach($parents as $parent) {
-            $sql=sprintf("select `$parent Key` as `Parent Key`   from  `$parent Dimension` where `$parent Main Contact Key`=%d group by `$parent Key`",$this->id);
+        	
+        	if($parent=='Staff'){
+        		$col_contact_key="Staff Contact Key";
+        		$col_contact_name="Staff Name";
+        		}else{
+        		$col_contact_key="$parent Main Contact Key";
+            $col_contact_name="$parent Main Contact Name";
+            }
+            $sql=sprintf("select `$parent Key` as `Parent Key`   from  `$parent Dimension` where `$col_contact_key`=%d group by `$parent Key`",$this->id);
             $res=mysql_query($sql);
             while ($row=mysql_fetch_array($res)) {
                 $principal_contact_changed=false;
@@ -1642,17 +1650,20 @@ $len_name=strlen($name_data['Contact Surname']);
                 elseif($parent=='Company') {
                     $parent_object=new Company($row['Parent Key']);
                     $parent_label=_('Company');
+                } elseif($parent=='Staff') {
+                    $parent_object=new Staff($row['Parent Key']);
+                    $parent_label=_('Staff');
                 }
-                $old_principal_contact=$parent_object->data[$parent.' Main Contact Name'];
-                $parent_object->data[$parent.' Main Contact Name']=$this->display('name');
-                $sql=sprintf("update `$parent Dimension` set `$parent Main Contact Name`=%s where `$parent Key`=%d"
-                             ,prepare_mysql($parent_object->data[$parent.' Main Contact Name'])
+                $old_principal_contact=$parent_object->data[$col_contact_name];
+                $parent_object->data[$col_contact_name]=$this->display('name');
+                $sql=sprintf("update `$parent Dimension` set `$col_contact_name`=%s where `$parent Key`=%d"
+                             ,prepare_mysql($parent_object->data[$col_contact_name])
                              ,$parent_object->id
                             );
                 mysql_query($sql);
 
                 if($parent=='Customer' and $parent_object->data['Customer Type']=='Person'){
-                	$sql=sprintf("update `$parent Dimension` set `$parent Name`=%s, `$parent File As`=%s  where `$parent Key`=%d"
+                	$sql=sprintf("update `Customer Dimension` set `Customer Name`=%s, `Customer File As`=%s  where `Customer Key`=%d"
                              ,prepare_mysql($this->display('name'))
                              ,prepare_mysql($this->data['Contact File As'])
                              ,$parent_object->id
@@ -1661,7 +1672,7 @@ $len_name=strlen($name_data['Contact Surname']);
                 
                 }
 
-                if ($old_principal_contact!=$parent_object->data[$parent.' Main Contact Name'])
+                if ($old_principal_contact!=$parent_object->data[$col_contact_name])
                     $principal_contact_changed=true;
                         
 
