@@ -37,6 +37,17 @@ $page_data[$store_code]=array(
           ,'Page Options'=>serialize(array(
             'Form_Type'=>'Steps',
             'Fields'=>array(
+               // 'Tax_Number'=>array('show'=>true,'required'=>false),
+                'Address'=>array('show'=>true,'required'=>false),
+                'Telephone'=>array('show'=>true,'required'=>false),
+                'Fax'=>array('show'=>true,'required'=>false),
+                'Where_Found_Us'=>array('show'=>true,'required'=>false),
+                'Newsletter'=>array('show'=>true,'required'=>false),
+                'Emarketing'=>array('show'=>true,'required'=>false),
+                'Catalogue'=>array('show'=>true,'required'=>false)
+                )
+		,'Form_Type'=>'Show All',
+            'Fields'=>array(
                 'Tax_Number'=>array('show'=>true,'required'=>false),
                 'Address'=>array('show'=>true,'required'=>false),
                 'Telephone'=>array('show'=>true,'required'=>false),
@@ -46,9 +57,12 @@ $page_data[$store_code]=array(
                 'Emarketing'=>array('show'=>true,'required'=>true),
                 'Catalogue'=>array('show'=>true,'required'=>true)
                 )
+
           )) 
 		  
 		  )
+
+
   ,array(
 		  'Page Code'=>'lost_password'
 		  ,'Page Section'=>'registration'
