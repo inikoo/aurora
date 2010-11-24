@@ -630,7 +630,7 @@ function init(){
 
 
 
-    Event.addListener('submit_details', "click",submit_details);
+    Event.addListener('submit_details',"click",submit_details);
 
     Event.addListener('submit', "click",submit);
     
