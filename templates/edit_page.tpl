@@ -14,7 +14,8 @@
     <li><span  class="item {if $edit=='properties'}selected{/if}" id="properties" > <span>{t}Properties{/t}</span></span></li>
     <li> <span class="item {if $edit=='header'}selected{/if}"  id="header">  <span> {t}Header{/t}</span></span></li>
     <li> <span class="item {if $edit=='footer'}selected{/if}"  id="footer">  <span> {t}Footer{/t}</span></span></li>
-    <li> <span class="item {if $edit=='content'}selected{/if}" id="content"  ><span>  {t}Content{/t}</span></span></li>
+    <li> <span class="item {if $edit=='content'}selected{/if}" id="content"  ><span>  {if $page->get('Page Code')=='register'}Registration Form{else}{t}Content{/t}{/if}</span></span></li>
+
     <li> <span class="item {if $edit=='style'}selected{/if}" id="style"  ><span> {t}Style{/t}</span></span></li>
     <li> <span class="item {if $edit=='media'}selected{/if}" id="media"  ><span> {t}Media{/t}</span></span></li>
     <li> <span class="item {if $edit=='setup'}selected{/if}" id="setup"  ><span> {t}Setup{/t}</span></span></li>
@@ -24,6 +25,9 @@
  <input id="page_data" type="hidden" page_key={$page->id} />
      <div class="tabbed_container" > 
  
+      
+      
+  
       
 
     <div class="edit_block" {if $edit!="properties"}style="display:none"{/if}   id="d_properties">
@@ -62,33 +66,9 @@
 		 
 	     </td></tr>
 	     
-	     {if $page->get('Page Code')=='register'}
-	     <tr><td class="label">{t}Form Type{/t}:</td>
-	     <td>
-	     <div style="float:left;text-align:center;font-size:80%"><img style="border:1px solid #ccc" src="art/form_show_all.png"/><br>{t}Show all fields{/t}</div>
-	     <div style="margin-left:20px;float:left;text-align:center;font-size:80%"><img style="border:1px solid #ccc" src="art/form_show_in_steps.png"/><br>{t}Show by steps{/t}</div>
+	  
 	     
-	     </td>
-	    </td></tr>
 	    
-	     <tr><td class="label">{t}No Configurable Fields{/t}:</td>
-	     <td>{t}Email{/t}, {t}Password{/t}, {t}Type of business{/t}, [{t}Company Name{/t}/{t}Contact Name{/t}] ({t}at least one should be given{/t})</td>
-	     </tr>
-	     
-	     <tr><td class="label">{t}Configurable Fields{/t}:</td>
-	     <td>
-	     <table>
-	     <tr><td>{t}Tax Number{/t}</td><td id="option_Customer_Tax_Number">{t}Show{/t}</td></tr>
-	     <tr><td>{t}Address{/t}</td><td id="option_Address">{t}Show{/t}</td></tr>
-	     <tr><td>{t}Telephone{/t}</td><td id="option_Telephone">{t}Show{/t}</td></tr>
-	     <tr><td>{t}Fax{/t}</td><td id="option_Fax">{t}Show{/t}</td></tr>
-
-	     </table>
-	     </td>
-	     </tr>
-	    {/if}
-	     
-	     
 	     </table>
     </div>
 
@@ -145,6 +125,75 @@
     </div>
     <div class="edit_block" {if $edit!="content"}style="display:none"{/if}   id="d_content">
     
+    
+    {if $page->get('Page Code')=='register'}
+    <div class="general_options" style="float:right">
+	    <span  style="margin-right:10px;visibility:hidden"  id="save_edit_register_form" class="state_details">{t}Save{/t}</span>
+	    <span style="margin-right:10px;visibility:hidden" id="reset_edit_register_form" class="state_details">{t}Reset{/t}</span>
+    </div>
+    <table class="edit"  id="register_form_edit_table" >
+	     <tr class="title"><td colspan="2">{t}Registration Form{/t}
+
+
+
+	     </td></tr>
+
+
+      </td></tr>
+	     <tr style="padding-top:10px"><td class="label">{t}Form Type{/t}:</td>
+	     <td class="image_radio">
+	     <div {if $options.Form_Type=='Steps'}class="selected"{/if}><img style="" src="art/form_show_all{if $options.Form_Type!='Steps'}_bw{/if}.png"/><br>{t}Show all fields{/t}</div>
+	     <div {if $options.Form_Type=='Show All'}class="selected"{/if} style="margin-left:20px;"><img style="" src="art/form_show_in_steps{if $options.Form_Type!='Show All'}_bw{/if}.png"/><br>{t}Show by steps{/t}</div>
+	     
+	     </td>
+	    </td></tr>
+	   
+	     <tr style="display:none"><td class="label">{t}No Configurable Fields{/t}:</td>
+	     <td>{t}Email{/t}, {t}Password{/t}, {t}Type of business{/t}, [{t}Company Name{/t}/{t}Contact Name{/t}] ({t}at least one should be given{/t})</td>
+	     </tr>
+	     
+	     <tr><td class="label">{t}Configurable Fields{/t}:</td>
+	     <td>
+	     <table class="list_options" >
+	     <tr>
+	     <td>{t}Tax Number{/t}</td><td onclick="change_field_show(this)"  value="{$options.Fields.Tax_Number.show}" class="option" id="option_Customer_Tax_Number">{if $options.Fields.Tax_Number.show}{t}Displayed{/t}{else}Hidden{/if}</td>
+	     <td onclick="change_field_required(this)"  value="{$options.Fields.Tax_Number.show}" class="option" style="{if !$options.Fields.Tax_Number.show}visibility:hidden{/if}" >{if $options.Fields.Tax_Number.required}{t}Required{/t}{else}Optional{/if}</td>
+	     </tr>
+	     <tr>
+	     <td>{t}Address{/t}</td><td onclick="change_field_show(this)"  value="{$options.Fields.Address.show}"class="option" id="option_Address">{if $options.Fields.Address.show}{t}Displayed{/t}{else}Hidden{/if}</td>
+	     <td onclick="change_field_required(this)"  value="{$options.Fields.Address.show}" class="option" style="{if !$options.Fields.Address.show}visibility:hidden{/if}" >{if $options.Fields.Address.required}{t}Required{/t}{else}Optional{/if}</td>
+	     </tr>
+	     <tr>
+	     <td>{t}Telephone{/t}</td><td onclick="change_field_show(this)"  value="{$options.Fields.Telephone.show}" class="option" id="option_Telephone">{if $options.Fields.Telephone.show}{t}Displayed{/t}{else}Hidden{/if}</td>
+	     <td onclick="change_field_required(this)"  value="{$options.Fields.Telephone.show}" class="option" style="{if !$options.Fields.Telephone.show}visibility:hidden{/if}" >{if $options.Fields.Telephone.required}{t}Required{/t}{else}Optional{/if}</td>
+	     </tr>
+	     <tr>
+	     <td>{t}Fax{/t}</td><td onclick="change_field_show(this)"  value="{$options.Fields.Fax.show}"  class="option" id="option_Fax">{if $options.Fields.Fax.show}{t}Displayed{/t}{else}Hidden{/if}</td>
+	     <td onclick="change_field_required(this)"  value="{$options.Fields.Fax.show}" class="option" style="{if !$options.Fields.Fax.show}visibility:hidden{/if}" >{if $options.Fields.Fax.required}{t}Required{/t}{else}Optional{/if}</td>
+	     </tr>
+            <tr>
+	     <td>{t}Where Found Us{/t}</td><td onclick="change_field_show(this)"  value="{$options.Fields.Where_Found_Us.show}" class="option" id="option_Customer_Where_Found_Us">{if $options.Fields.Where_Found_Us.show}{t}Displayed{/t}{else}Hidden{/if}</td>
+	     <td onclick="change_field_required(this)"  value="{$options.Fields.Where_Found_Us.show}" class="option" style="{if !$options.Fields.Where_Found_Us.show}visibility:hidden{/if}" >{if $options.Fields.Where_Found_Us.required}{t}Required{/t}{else}Optional{/if}</td>
+	     </tr>
+	      <tr>
+	     <td>{t}Newsletter{/t}</td><td onclick="change_field_show(this)"  value="{$options.Fields.Newsletter.show}" class="option" id="option_Customer_Newsletter">{if $options.Fields.Newsletter.show}{t}Displayed{/t}{else}Hidden{/if}</td>
+	     <td onclick="change_field_required(this)"  value="{$options.Fields.Newsletter.show}" class="option" style="{if !$options.Fields.Newsletter.show}visibility:hidden{/if}" >{if $options.Fields.Newsletter.required}{t}Required{/t}{else}Optional{/if}</td>
+	     </tr>
+	      <tr>
+	     <td>{t}E-marketing{/t}</td><td onclick="change_field_show(this)"  value="{$options.Fields.Emarketing.show}" class="option" id="option_Customer_Emarketing">{if $options.Fields.Emarketing.show}{t}Displayed{/t}{else}Hidden{/if}</td>
+	     <td onclick="change_field_required(this)"  value="{$options.Fields.Emarketing.show}" class="option" style="{if !$options.Fields.Emarketing.show}visibility:hidden{/if}" >{if $options.Fields.Emarketing.required}{t}Required{/t}{else}Optional{/if}</td>
+	     </tr>
+	      <tr>
+	     <td>{t}Catalogue{/t}</td><td onclick="change_field_show(this)"  value="{$options.Fields.Catalogue.show}" class="option" id="option_Customer_Catalogue">{if $options.Fields.Catalogue.show}{t}Displayed{/t}{else}Hidden{/if}</td>
+	     <td onclick="change_field_required(this)"  value="{$options.Fields.Catalogue.show}" class="option" style="{if !$options.Fields.Catalogue.show}visibility:hidden{/if}" >{if $options.Fields.Catalogue.required}{t}Required{/t}{else}Optional{/if}</td>
+	     </tr>
+	     </table>
+	     </td>
+	     </tr>
+	     </table>
+	    {else}
+    
+    
      <table class="edit"  id="content_edit_table" >
 	     <tr class="title"><td colspan="2"><span style="font-weight:100" >[<span class="state_details selected">{t}Page Content{/t}</span>|Content Source]</span>
 	     <div style="width:50%;float:right;text-align:right;font-weight:100">
@@ -161,7 +210,7 @@
       </td></tr>
       
       </table>
-    
+    {/if}
     </div>
     <div class="edit_block" {if $edit!="style"}style="display:none"{/if}   id="d_style">
     </div>

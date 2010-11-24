@@ -40,11 +40,11 @@ $page_data[$store_code]=array(
                 'Tax_Number'=>array('show'=>true,'required'=>false),
                 'Address'=>array('show'=>true,'required'=>false),
                 'Telephone'=>array('show'=>true,'required'=>false),
-                'Fax'=>array('show'=>true,'required'=>false),
+                'Fax'=>array('show'=>false,'required'=>false),
                 'Where_Found_Us'=>array('show'=>true,'required'=>false),
-                'Newsletter'=>array('show'=>true,'required'=>false),
-                'Emarketing'=>array('show'=>true,'required'=>false),
-                'Catalogue'=>array('show'=>true,'required'=>false)
+                'Newsletter'=>array('show'=>true,'required'=>true),
+                'Emarketing'=>array('show'=>true,'required'=>true),
+                'Catalogue'=>array('show'=>true,'required'=>true)
                 )
           )) 
 		  
