@@ -15,7 +15,8 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    var tableDivEL="table"+tableid;
 	    var CustomersColumnDefs = [
 				       {key:"code", label:"<?php echo _('Id')?>",  width:60,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				       ,{key:"name", label:"<?php echo _('Name')?>", width:190,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				       ,{key:"name", label:"<?php echo _('Name')?>", width:190,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}},
+					
 				        ];
 	    /*?tipo=customers&tid=0"
 
