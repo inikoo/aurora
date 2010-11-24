@@ -140,7 +140,7 @@
 
 
       </td></tr>
-	     <tr style="padding-top:10px"><td class="label">{t}Form Type{/t}:</td>
+	     <tr><td class="label">{t}Form Type{/t}:</td>
 	     <td class="image_radio">
 	     <div {if $options.Form_Type=='Steps'}class="selected"{/if}><img style="" src="art/form_show_all{if $options.Form_Type!='Steps'}_bw{/if}.png"/><br>{t}Show all fields{/t}</div>
 	     <div {if $options.Form_Type=='Show All'}class="selected"{/if} style="margin-left:20px;"><img style="" src="art/form_show_in_steps{if $options.Form_Type!='Show All'}_bw{/if}.png"/><br>{t}Show by steps{/t}</div>
