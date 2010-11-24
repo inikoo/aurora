@@ -163,7 +163,7 @@ var CellEdit = function (callback, newValue) {
                                      datatable = this.getDataTable();
     recordIndex = datatable.getRecordIndex(record);
 
-    if (column.object=='company' || column.object=='customer' || column.object=='contact' || column.object=='company_area'  || column.object=='company_department')
+    if (column.object=='company' || column.object=='customer' || column.object=='contact' || column.object=='company_area')
         ar_file='ar_edit_contacts.php';
     else if (column.object=='warehouse_area' || column.object=='part_location'|| column.object=='shelf_type' || column.object=='location')
         ar_file='ar_edit_warehouse.php';
@@ -177,12 +177,12 @@ var CellEdit = function (callback, newValue) {
         ar_file='ar_edit_suppliers.php';
     else if (column.object=='new_porder'  )
         ar_file='ar_edit_porders.php';
-    else if (column.object=='ind_staff' || column.object=='ind_positions'  )
+    else if (column.object=='ind_staff' || column.object=='ind_positions' || column.object=='ind_department'  )
         ar_file='ar_edit_staff.php';
     else
         ar_file='ar_edit_assets.php';
    //  alert(column.object)
-//alert(column.key)
+alert(column.key)
     var request='tipo=edit_'+column.object+'&key=' + column.key + '&newvalue=' + encodeURIComponent(newValue) + '&oldvalue=' + encodeURIComponent(oldValue)+ myBuildUrl(datatable,record);
   alert(ar_file+'?'+request);
 
@@ -236,7 +236,7 @@ var onCellClick = function(oArgs) {
 
 
             if (confirm('Are you sure, you want to '+delete_type+' this row?')) {
-                if (column.object=='company' || column.object=='company_area' || column.object=='company_department')
+                if (column.object=='company' || column.object=='company_area')
                     ar_file='ar_edit_contacts.php';
                 else if (column.object=='warehouse_area' || column.object=='location')
                     ar_file='ar_edit_warehouse.php';
@@ -244,7 +244,7 @@ var onCellClick = function(oArgs) {
                     ar_file='ar_edit_staff.php';
                 else if (column.object=='supplier_product' || column.object=='supplier')
                     ar_file='ar_edit_suppliers.php';
-                else if (column.object=='ind_staff'  || column.object=='ind_positions' )
+                else if (column.object=='ind_staff'  || column.object=='ind_positions' || column.object=='ind_department' )
      		   ar_file='ar_edit_staff.php';
                 else
                     ar_file='ar_edit_assets.php';

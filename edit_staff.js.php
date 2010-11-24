@@ -123,7 +123,8 @@ YAHOO.util.Event.addListener(window, "load", function() {
  									      lastPageLinkLabel :">>",rowsPerPageOptions : [10,25,50,100,250,500],alwaysVisible:false
 									      ,template : "{FirstPageLink}{PreviousPageLink}<strong id='paginator_info0'>{CurrentPageReport}</strong>{NextPageLink}{LastPageLink}" })
 							   ,sortedBy : {
-							    Key: "<?php echo$_SESSION['state']['company_staff']['table']['order']?>",
+							   Key: "<?php echo$_SESSION['state']['company_staff']['table']['order']?>",
+								
 							     dir: "<?php echo$_SESSION['state']['company_staff']['table']['order_dir']?>"
 								     }
 							   ,dynamicData : true
