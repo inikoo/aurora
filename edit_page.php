@@ -17,6 +17,7 @@ $page= new Page($page_id);
 if(!$page->id)
   exit('Error page not found');
 
+$smarty->assign('options',$page->get_options());
 
 $smarty->assign('page',$page);
 $smarty->assign('edit',$_SESSION['state']['page']['edit']);

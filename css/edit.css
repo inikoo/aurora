@@ -66,3 +66,14 @@ table.form_state td.aleft{text-align:left}
 
 .shelf_locations table td.cols_header{}
 .shelf_locations table td.rows_header{text-align:right;padding-right:10px}
+
+.image_radio{font-size:80%;color:#aaa}
+.image_radio div{float:left;text-align:center;margin-bottom:10px;cursor:pointer}
+.image_radio div img{border:1px solid #ccc}
+.image_radio div.selected img{border:1px solid #999}
+.image_radio div.selected {font-weight:800;color:black;cursor:default}
+.image_radio div:hover {font-weight:800;color:black}
+.image_radio div img:hover{border:1px solid #999}
+
+.list_options tr{border-top:1px solid #ccc}
+.list_options td.option {padding-left:40px}
