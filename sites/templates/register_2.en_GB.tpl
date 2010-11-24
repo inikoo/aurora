@@ -25,7 +25,7 @@
 	   		<p id="email_ok" style="display:none">Ok</p>
 			<table>
 	     		<tr ><td id="email_label">Email:</td><td><input id="email" style="width:240px" type="text"></td><td></td></tr>
-	     		<tr ><td  id="email_confirmation_label">Confirm Email:</td><td><input id="email_confirmation" style="width:240px" confirmed="no" type="text"></td><td></td></tr>
+	     		<tr ><td  id="email_confirmation_label">Confirm Email:</td><td><input id="email_confirmation" style="width:240px" confirmed="no" type="text"></td><td></td></tr><tr height="35" valign="top"><td align="center" colspan="2"><span id="submit_email" class="button disabled">Validate Email</span></td></tr>
 	  			<div id="found_email" style="margin-top:20px;display:none">
 	   				<p><span id="registered_email" class="strong"></span> are already registered in {$store->get('Store Name')}.</p>
 	   				<p>Type your password to login</p>
@@ -38,8 +38,9 @@
 	   				<p id="password_msg4" style="display:none">Please type your password</p>
 		   			</div>
 
-	      		<tr><td id="password_login_label">Password:</td><td><input id="password_login"  type="password_login"></td></tr>
-	      		<tr><td id="password_confirmation_label">Confirm Password:</td><td><input id="password_confirmation" type="password"></td></tr>
+			
+	      		<tr><td id="password_label">Password:</td><td><input id="password" confirmed='no' type="password"></td></tr>
+	     <tr><td id="password_confirmation_label">Confirm Password:</td><td><input id="password_confirmation" type="password"></td></tr>
 
 	   		</table>
 			<p id="customer_type_other_msg" style="display:none">Please specify what type of customer are you</p>
@@ -73,13 +74,12 @@
 			   <tr><td>Tax/Registration Number:</td><td><input id="company_tax_number" type="text"></td></tr>
 		   
 			   <tr><td id="company_contact_label">Contact Name:</td><td><input id="company_contact" type="text"/></td></tr>
-		   
+		   	   <tr height="35" valign="top"><td align="center" colspan="2"><span class="button disabled" id="submit_details">Continue</span></td></tr>
 		   
 		
 		 	
-		   
-		   
-		   	<tr><td id="person_contact_label" >Contact Name:</td><td><input id="person_contact" type="text"/></td></tr>
+		 
+		   	
 		   
 		   
 		 	<p>Give us you contact details (optional)</p>
@@ -162,16 +162,16 @@
 	     			</div>
 	 
 	     		<table style="margin-top:20px">
-	       		<tr>
-		 	<td style="width:200px;border:1px solid #ccc;padding:10px">
-		   	<p>Almost done!</p>
-		   	<p id="final_tel_error_msg" style="display:none">Please check the telephone number<p>
-		   	<p id="final_msg">Click the submit button, and shorly you will receive an email with the instructions to activate your acount</p>
-		 	</td>
-		 	<td>
-		   	<span class="button disabled" id="submit" style="margin-left:20px">Submit</span>
-		 	</td>
-	     		</table>
+	       <tr>
+		 <td style="width:200px;border:1px solid #ccc;padding:10px">
+		   <p>Almost done!</p>
+		   <p id="final_tel_error_msg" style="display:none">Please check the telephone number<p>
+		   <p id="final_msg">Click the submit button, and shorly you will receive an email with the instructions to activate your acount</p>
+		 </td>
+		 <td>
+		   <span class="button disabled" id="submit" style="margin-left:20px">Submit</span>
+		 </td>
+	     </table>
 	     
 
 	   

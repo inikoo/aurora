@@ -37,7 +37,7 @@ $page_data[$store_code]=array(
           ,'Page Options'=>serialize(array(
             'Form_Type'=>'Steps',
             'Fields'=>array(
-               // 'Tax_Number'=>array('show'=>true,'required'=>false),
+                'Tax_Number'=>array('show'=>true,'required'=>false),
                 'Address'=>array('show'=>true,'required'=>false),
                 'Telephone'=>array('show'=>true,'required'=>false),
                 'Fax'=>array('show'=>true,'required'=>false),
@@ -46,7 +46,27 @@ $page_data[$store_code]=array(
                 'Emarketing'=>array('show'=>true,'required'=>false),
                 'Catalogue'=>array('show'=>true,'required'=>false)
                 )
-		,'Form_Type'=>'Show All',
+		
+
+          )) 
+		  
+		  )
+
+	,array(
+		  'Page Code'=>'register_2'
+		  ,'Page Section'=>'registration'
+		  ,'Page Source Template'=>'register_2.tpl'
+		  ,'Page URL'=>'register.php'
+		  ,'Page Description'=>'Registration Page'
+
+		  ,'Page Title'=>'Registration'
+		  ,'Page Short Title'=>'Registration'
+		  ,'Page Store Title'=>'Register to Ancient Wisdom'
+		  ,'Page Store Subtitle'=>''
+		  ,'Page Store Slogan'=>'Hello stranger'
+		  ,'Page Store Resume'=>'Please note this is a wholesale site we supply wholesale to the trade.'
+          ,'Page Options'=>serialize(array(
+            'Form_Type'=>'Steps',
             'Fields'=>array(
                 'Tax_Number'=>array('show'=>true,'required'=>false),
                 'Address'=>array('show'=>true,'required'=>false),
@@ -57,6 +77,7 @@ $page_data[$store_code]=array(
                 'Emarketing'=>array('show'=>true,'required'=>true),
                 'Catalogue'=>array('show'=>true,'required'=>true)
                 )
+		
 
           )) 
 		  
