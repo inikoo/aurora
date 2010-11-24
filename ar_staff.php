@@ -31,6 +31,12 @@ case('is_company_staff_code'):
 case('is_company_staff_name'):
     is_company_staff_name();
     break;
+case('is_company_department_code'):
+    is_company_department_code();
+    break;
+case('is_company_department_name'):
+    is_company_department_name();
+    break;
   case('find_position'):
    require_once 'ar_edit_common.php';
    $data=prepare_values($_REQUEST,array(
@@ -478,6 +484,103 @@ function is_company_staff_name() {
 }
 
 
+
+function is_company_department_code() {
+    if (!isset($_REQUEST['query']) or !isset($_REQUEST['company_key']) ) {
+        $response= array(
+                       'state'=>400,
+                       'msg'=>'Error'
+                   );
+        echo json_encode($response);
+        return;
+    } else
+        $query=$_REQUEST['query'];
+    if ($query=='') {
+        $response= array(
+                       'state'=>200,
+                       'found'=>0
+                   );
+        echo json_encode($response);
+        return;
+    }
+
+    $company_key=$_REQUEST['company_key'];
+
+    $sql=sprintf("select `Company Department Key`,`Company Department Code` from `Company Department Dimension` where `Company Key`=%d  "
+                 ,$company_key
+                );
+    $res=mysql_query($sql);
+
+    if ($data=mysql_fetch_array($res)) {
+        $msg=sprintf('Department Staff <a href="edit_each_department.php?id=%d">%s</a> already has this code (%s)'
+                     ,$data['Company Department Key']
+                     ,$data['Company Department Code']
+                    
+                    );
+        $response= array(
+                       'state'=>200,
+                       'found'=>1,
+                       'msg'=>$msg
+                   );
+        echo json_encode($response);
+        return;
+    } else {
+        $response= array(
+                       'state'=>200,
+                       'found'=>0
+                   );
+        echo json_encode($response);
+        return;
+    }
+
+}
+function is_company_staff_name() {
+  if (!isset($_REQUEST['query']) or !isset($_REQUEST['company_key']) ) {
+        $response= array(
+                       'state'=>400,
+                       'msg'=>'Error'
+                   );
+        echo json_encode($response);
+        return;
+    } else
+        $query=$_REQUEST['query'];
+    if ($query=='') {
+        $response= array(
+                       'state'=>200,
+                       'found'=>0
+                   );
+        echo json_encode($response);
+        return;
+    }
+
+    $company_key=$_REQUEST['company_key'];
+
+   $sql=sprintf("select `Company Department Key`,`Company Department Name` from `Company Department Dimension`"
+                );
+    $res=mysql_query($sql);
+//print("******");print($sql);
+    if ($data=mysql_fetch_array($res)) {
+        $msg=sprintf('Another Department Staff <a href="edit_each_department.php?id=%d">(%s)</a> already has this name'
+                     ,$data['Company Department Key']
+                     ,$data['Company Department Name']
+                    );
+        $response= array(
+                       'state'=>200,
+                       'found'=>1,
+                       'msg'=>$msg
+                   );
+        echo json_encode($response);
+        return;
+    } else {
+        $response= array(
+                       'state'=>200,
+                       'found'=>0
+                   );
+        echo json_encode($response);
+        return;
+    }
+
+}
 
 
 
