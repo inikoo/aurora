@@ -57,11 +57,13 @@ update_page_key_visit_log($page->data['Page Key']);
 $_SESSION['prev_page_key']=$page->data['Page Key'];
 
 $options=$page->get_options();
-//print_r($options);
-if($options['Form_Type']=='Steps'){
+print_r($options);
+if($options['Form_Type']=='Steps')
+{
 $js_files[]='js/register.js.php';
 $template="templates/register.".$store->data['Store Locale'].".tpl";
-}else{
+}
+else {
 $js_files[]='js/register_2.js.php';
 $template="templates/register_2.".$store->data['Store Locale'].".tpl";
 
