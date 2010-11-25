@@ -32,13 +32,13 @@ var validate_scope_data={
 
     'name':{'changed':false,'validated':true,'required':true,'group':1,'type':'item'
 	    ,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Staff Name')?>'}],'name':'Company_Staff_Name','dbname':'Staff Name'
-	    ,'ar':'find','ar_request':'ar_staff.php?tipo=is_company_staff_name&staff_key='+parent_key+'&query='}
+	    ,'ar':false,'ar_request':false}
     ,'id':{'changed':false,'validated':true,'required':false,'group':1,'type':'item'
 	     ,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Staff Id')?>'}]
-	     ,'name':'Company_Staff_Id' ,'dbname':'Staff ID','ar':'find','ar_request':'ar_staff.php?tipo=is_company_staff_code&staff_key='+parent_key+'&query='}
+	     ,'name':'Company_Staff_Id' ,'dbname':'Staff ID','ar':'find','ar_request':'ar_staff.php?tipo=is_staff_id&staff_key='+parent_key+'&query='}
      ,'alias':{'changed':false,'validated':true,'required':false,'group':1,'type':'item'
 	     ,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Staff Alias')?>'}]
-	     ,'name':'Company_Staff_Alias' ,'dbname':'Staff Alias','ar':'find','ar_request':'ar_staff.php?tipo=is_company_staff_alias&staff_key='+parent_key+'&query='}
+	     ,'name':'Company_Staff_Alias' ,'dbname':'Staff Alias','ar':'find','ar_request':'ar_staff.php?tipo=is_staff_alias&staff_key='+parent_key+'&query='}
     
 
    }

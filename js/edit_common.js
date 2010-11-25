@@ -427,6 +427,7 @@ alert(validate_scope_metadata[branch]['type']+' '+branch+' '+query)
         validate_general_new(branch,item,query)
     } else {
         validate_general_edit(branch,item,query)
+	
     }
 }
 
@@ -552,7 +553,7 @@ function validate_general_new(branch,item,query) {
 
 function validate_general_edit(branch,item,query) {
 
-//alert(branch+' I:'+item+' q:'+query);
+alert(branch+' I:'+item+' q:'+query);
     var data= validate_scope_data[branch][item];
 
     var old_value=Dom.get(data.name).getAttribute('ovalue');
