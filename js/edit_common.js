@@ -422,8 +422,8 @@ function validate_scope_new(branch) {
 }
 
 function validate_general(branch,item,query) {
-//alert(validate_scope_metadata[branch]['type']+' '+branch+' '+query)
-    if (validate_scope_metadata[branch]['type']=='new') {
+alert(validate_scope_metadata[branch]['type']+' '+branch+' '+query)
+    if (validate_scope_metadata[branch]['type']=='new') {  
         validate_general_new(branch,item,query)
     } else {
         validate_general_edit(branch,item,query)
