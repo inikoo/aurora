@@ -301,5 +301,19 @@ ALTER TABLE `Order Post Transaction Dimension` CHANGE `State` `State` ENUM( 'In 
 0.9.16
 ALTER TABLE `Store Dimension` ADD `Store B2B Only` ENUM( 'Yes', 'No' ) NOT NULL DEFAULT 'Yes';
 ALTER TABLE `Page Store Dimension` ADD `Page Options` TEXT NULL DEFAULT NULL AFTER `Product Manual Layout Data` ;
+
+ALTER TABLE `Order Post Transaction Dimension` ADD `Order Post Transaction Metadata` VARCHAR( 64 ) NULL DEFAULT NULL ,ADD INDEX ( `Order Post Transaction Metadata` ) ;
+ALTER TABLE `Order Post Transaction Dimension` CHANGE `Order Key` `Order Key` MEDIUMINT( 8 ) UNSIGNED NULL DEFAULT NULL ;
+ALTER TABLE `Order Post Transaction Dimension` CHANGE `Reason` `Reason` ENUM( 'Other', 'Damaged', 'Missing', 'Do Not Like', 'Unknown' ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'Other';
+ALTER TABLE `Order Post Transaction Dimension` CHANGE `Order Key` `Order Key` MEDIUMINT( 8 ) UNSIGNED NULL DEFAULT NULL 
+ALTER TABLE `Order Transaction Fact` DROP `Shipped Damaged Quantity` ,DROP `Shipped Not Received Quantity` ;
+ALTER TABLE `Order Transaction Fact` CHANGE `Cost Manufacure` `Cost Manufacture` DECIMAL( 12, 4 ) NULL DEFAULT NULL ;
+ALTER TABLE `Order Transaction Fact` DROP `Cost Manufacture` ;
+ALTER TABLE `Product Dimension` CHANGE `Product Cost` `Product Cost Supplier` DECIMAL( 16, 4 ) NULL DEFAULT NULL ;
+ALTER TABLE `Product Dimension` ADD `Product Cost Storing` DECIMAL( 12, 4 ) NULL DEFAULT NULL AFTER `Product Cost Supplier` ;
+ALTER TABLE `Product Dimension` DROP `Product Sales State DELETEME` ;
+ALTER TABLE `Part Dimension` CHANGE `Part Current Stock Cost` `Part Current Stock Cost Per Unit` DECIMAL( 12, 2 ) NULL DEFAULT NULL , CHANGE `Part Current Storing Cost` `Part Current Storing Cost Per Unit` DECIMAL( 12, 2 ) NULL DEFAULT NULL ;
+ALTER TABLE `Part Dimension` CHANGE `Part Average Future Cost` `Part Average Future Cost Per Unit` FLOAT NULL DEFAULT NULL ,CHANGE `Part Minimum Future Cost` `Part Minimum Future Cost Per Unit` FLOAT NULL DEFAULT NULL 
+
 */
 ?>

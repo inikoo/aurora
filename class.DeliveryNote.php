@@ -1821,7 +1821,7 @@ $order->update_dispatch_state();
 }
 
 function add_orphan_transactions($data) {
-
+print_r($data);
     if ($data['Order Key']) {
         $order_key=$data['Order Key'];
         $order_date=$data['Order Date'];
@@ -1832,6 +1832,10 @@ function add_orphan_transactions($data) {
         $order_public_id='';
     }
     $bonus_quantity=0;
+    
+    
+    $sql=sprintf("insert into `Order Post Transaction Dimension` values (`Order Transaction Fact Key`)  ");
+    
     $sql = sprintf ( "insert into `Order Transaction Fact` (`Order Date`,`Order Key`,`Order Public ID`,`Delivery Note Key`,`Delivery Note ID`,`Order Bonus Quantity`,`Order Transaction Type`,`Transaction Tax Rate`,`Transaction Tax Code`,`Order Currency Code`,`Estimated Weight`,`Order Last Updated Date`,`Product Key`,`Current Dispatching State`,`Current Payment State`,`Customer Key`,`Delivery Note Quantity`,`Ship To Key`,`Order Transaction Gross Amount`,`Order Transaction Total Discount Amount`,`Metadata`,`Store Key`,`Units Per Case`,`Customer Message`)
                      values (%s,%s,%s,%d,%s,%f,%s,%f,%s,%s,%s,  %s,%d,%s,%s,%d,%s,%s,%.2f,%.2f,%s,%s,%f,'') ",
                      prepare_mysql($order_date),
@@ -1865,10 +1869,28 @@ function add_orphan_transactions($data) {
                    );
 
 
-//print "$sql\n";
+
     if (! mysql_query ( $sql ))
         exit ( "$sql can not update orphan transaction\n" );
     $otf_key=mysql_insert_id();
+
+
+ $sql=sprintf("insert into `Order Post Transaction Dimension` (`Order Transaction Fact Key`,`Order Post Transaction Fact Key`,`Order Key`,`Quantity`,`Operation`,`Reason`,`To Be Returned`,`State`,`Order Post Transaction Metadata`) values (%s,%d,%s,%f,%s,%s,%s,%s,%s)  ",
+ prepare_mysql($data ['Order Transaction Fact Key']),
+ $otf_key,
+ prepare_mysql($order_key),
+  $data['Quantity'],
+  "'Resend'",
+   prepare_mysql($data['Reason']),
+  "'No'",
+  "'Dispatched'",
+  prepare_mysql ( $data ['Metadata'] ,false)
+ );
+
+  if (! mysql_query ( $sql ))
+        exit ( "$sql can not update orphan transaction 2\n" );
+
+
     $this->update_xhtml_orders();
     foreach($this->get_orders_objects() as $order) {
         $order->update_xhtml_delivery_notes();

@@ -1779,6 +1779,9 @@ if($this->external_DB_link)mysql_query($sql,$this->external_DB_link);
 
       break;
     case('cost'):
+    exit("user get_cost_suplier, update_cost")
+    
+    
       $cost=0;
       $unk=false;
       $change=false;
@@ -5559,7 +5562,34 @@ function set_as_historic($date=false){
 
 }
 
+  
 
+function get_cost_supplier(){
+$cost=0;
+foreach($this->get_part_list() as $part_data){
+$part=$part_data['part'];
+if($part->data['Part Current Stock']>0){
+    $part_cost=$part->data['Part Current Value']/$part->data['Part Current Stock'];
+}else{
+    list($get_unit_cost
+}
+
+}
+
+
+
+
+exit("caca");
+
+}
+
+function get_cost_manufuacture(){
+return 0;
+}
+
+function et_cost_storing(){
+return 0;
+}
 
 }
 

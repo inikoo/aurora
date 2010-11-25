@@ -2251,7 +2251,7 @@ function transactions_dipatched(){
 
 
 
-   $where=' where `Order Transaction Type` not in ("Replacement","Missing")  and  `Order Key`='.$order_id;
+   $where=' where `Order Transaction Type` not in ("Resend")  and  O.`Order Key`='.$order_id;
 
    $total_charged=0;
    $total_discounts=0;
@@ -2261,12 +2261,14 @@ function transactions_dipatched(){
    
    $order=' order by `Product Code`';
    
-   $sql="select * from `Order Transaction Fact` O left join `Product History Dimension` PH on (O.`Product key`=PH.`Product Key`) left join `Product Dimension` P on (P.`Product ID`=PH.`Product ID`)  $where $order  ";
+   $sql="select `Operation`,`Quantity`,`Order Currency Code`,`Order Quantity`,`Order Bonus Quantity`,`No Shipped Due Out of Stock`,PH.`Product ID` ,`Product Code`,`Product XHTML Short Description`,`Shipped Quantity`,(`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`) as amount 
+   from `Order Transaction Fact` O left join `Product History Dimension` PH on (O.`Product Key`=PH.`Product Key`) left join `Product Dimension` P on (P.`Product ID`=PH.`Product ID`) 
+   left join `Order Post Transaction Dimension` POT on (O.`Order Transaction Fact Key`=POT.`Order Transaction Fact Key`) 
+   $where $order  ";
    
    //  $sql="select  p.id as id,p.code as code ,product_id,p.description,units,ordered,dispatched,charge,discount,promotion_id    from transaction as t left join product as p on (p.id=product_id)  $where    ";
    
-   
-   
+ //  print $sql;
    
 
    $result=mysql_query($sql);
@@ -2283,14 +2285,21 @@ function transactions_dipatched(){
   }
   $ordered=preg_replace('/^<br\/>/','',$ordered);
      $code=sprintf('<a href="product.php?pid=%s">%s</a>',$row['Product ID'],$row['Product Code']);
+     
+     $dispatched=number($row['Shipped Quantity']);
+     
+     if($row['Quantity']>0  and $row['Operation']=='Resend'){
+     $dispatched.='<br/> '._('Resend').' +'.number($row['Quantity']);
+     }
+     
      $data[]=array(
 
 		   'code'=>$code
 		   ,'description'=>$row['Product XHTML Short Description']
 		  
 		   ,'ordered'=>$ordered
-		   ,'dispatched'=>number($row['Shipped Quantity'])
-		   ,'invoiced'=>money($row['Invoice Transaction Gross Amount']-$row['Invoice Transaction Total Discount Amount'],$row['Order Currency Code'])
+		   ,'dispatched'=>$dispatched
+		   ,'invoiced'=>money($row['amount'],$row['Order Currency Code'])
 		   );
    }
 
@@ -2438,7 +2447,7 @@ switch ($row['State']) {
        $notes.=sprintf(',%s <a href="dn.php?id=%d">%s</a>',_('In Warehouse'),$row['Delivery Note Key'],$row['Delivery Note ID']);
         break;
          case 'Dispatched':
-       $notes.=_('Dispatched');
+       $notes.=sprintf(',%s <a href="dn.php?id=%d">%s</a>',_('Dispatched'),$row['Delivery Note Key'],$row['Delivery Note ID']);
         break;
         default:
         $notes.='';
