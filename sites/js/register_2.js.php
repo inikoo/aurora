@@ -451,6 +451,11 @@ function submit_details(){
 }
 
 function submit(){
+	submit_email();
+	submit_customer_type();
+	submit_details();
+
+	
 
     Dom.get('telephone').setAttribute('check','yes');
 
@@ -496,7 +501,7 @@ function submit(){
 
     var jsonStr = YAHOO.lang.JSON.stringify(data);
     
-    Dom.setStyle('submit','display','none');
+    //Dom.setStyle('submit','display','none');
     Dom.setStyle('wait','display','');
 
     
@@ -610,15 +615,17 @@ function send_password_reminder(){
 
 function init(){
    
-    //Event.addListener("email_confirmation_label", "keyup", submit_email);
-    Event.addListener('email_confirmation_label', "click",submit_email);
     
+    //Event.addListener('submit_email', "click",submit_email);
+//=================================
+    Event.addListener('password', "click",submit_email);
+    //=====================================
     Event.addListener('customer_type_other', "click",customer_type_other_selected);
     ids=['customer_type_wholesaler','customer_type_big_shop','customer_type_small_shop','customer_type_internet','customer_type_market','customer_type_special'];
     Event.addListener(ids, "click",customer_type_selected);
     Event.addListener('other_type', "keyup",other_type_changed);
     Event.addListener('confirmation_trade_only', "click",confirmation_trade_only_changed);
-    Event.addListener('submit_customer_type', "click",submit_customer_type);
+   // Event.addListener('submit_customer_type', "click",submit_customer_type);
 
     Event.addListener('company', "click",company_choosen);
     Event.addListener('person', "click",person_choosen);
@@ -630,8 +637,9 @@ function init(){
 
 
 
-    Event.addListener('submit_details',"click",submit_details);
+    //Event.addListener('submit_details', "click",submit_details);
 
+   
     Event.addListener('submit', "click",submit);
     
         Event.addListener('password_reminder', "click",send_password_reminder);
