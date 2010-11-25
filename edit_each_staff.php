@@ -118,7 +118,7 @@ $js_files[]='js/edit_common.js';
 $js_files[]='edit_each_staff.js.php?staff_key='.$company_staff->data['Staff Key'];
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
-$smarty->assign('title', _('Editing Company Staff'));
+$smarty->assign('title', _('Editing Staff'));
 $smarty->assign('editing',true);
 
 $smarty->display('edit_each_staff.tpl');

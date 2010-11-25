@@ -12,7 +12,7 @@
 
  
    <ul class="tabs" id="chooser_ul" style="clear:both">
-         <li> <span class="item {if $edit=='details'}selected{/if}"  id="details">  <span> {t}Details{/t}</span></span></li>
+         <li> <span class="item {if $edit=='details'}selected{/if}"  id="details">  <span> {t}Staff Details{/t}</span></span></li>
 
      
    
@@ -23,8 +23,8 @@
     <div  class="edit_block" style="{if $edit!="details"}display:none{/if}"  id="d_details">
 
   <div class="general_options" style="float:right">
-	<span  style="margin-right:10px;visibility:hidden"  id="save_edit_company_staff" class="state_details">{t}Save{/t}</span>
-	<span style="margin-right:10px;visibility:hidden" id="reset_edit_company_staff" class="state_details">{t}Reset{/t}</span>
+	<span  style="margin-right:10px;visibility:hidden"  id="save_edit_staff" onClick="save_edit_general('company_staff')" class="state_details">{t}Save{/t}</span>
+	<span style="margin-right:10px;visibility:hidden" id="reset_edit_staff" onClick="reset_edit_general('company_staff')" class="state_details">{t}Reset{/t}</span>
    </div>
       
       
@@ -32,24 +32,35 @@
       <div id="new_staff_messages" class="messages_block"></div>
 	  <table class="edit">
 	   
-	<tr class="first"><td style="width:11em" class="label">Staff Key:</td>
+	<tr class="first"><td style="width:11em" class="label">Staff Id:</td>
 	  <td  style="text-align:left;width:19em">
 	    <div  style="width:15em;position:relative;top:00px" >
-	      <input style="text-align:left;width:18em" id="Company_Staff_Code" value="{$company_staff->get('Staff Key')}" ovalue="{$company_staff->get('Staff Key')}" >
-	      <div id="Company_Staff_Code_Container" style="" ></div>
+	      <input style="text-align:left;width:18em" id="Company_Staff_Id" value="{$company_staff->get('Staff ID')}" ovalue="{$company_staff->get('Staff ID')}" >
+	      <div id="Company_Staff_Id_Container" style="" ></div>
 	    </div>
 	  </td>
-	  <td id="Company_Staff_Code_msg" class="edit_td_alert"></td>
+	  <td id="Company_Staff_Id_msg" class="edit_td_alert"></td>
 	</tr>
 	<tr class="first"><td style="" class="label">{t}Staff Name{/t}:</td>
 	  <td  style="text-align:left">
 	    <div  style="width:15em;position:relative;top:00px" >
-	      <input style="text-align:left;width:18em" id="Company_Staff_Name" value="{$company_staff->get('Staff Name')}" ovalue="{$company_staff->get('staff Name')}">
+	      <input style="text-align:left;width:18em" id="Company_Staff_Name" value="{$company_staff->get('Staff Name')}" ovalue="{$company_staff->get('Staff Name')}">
 	      <div id="Company_staff_Name_Container" style="" ></div>
 	    </div>
 	  </td>
 	  	  <td id="Company_Staff_Name_msg" class="edit_td_alert"></td>
 
+	</tr>
+      
+
+        <tr class="first"><td style="" class="label">{t}Staff Alias{/t}:</td>
+	  <td  style="text-align:left">
+	    <div  style="width:15em;position:relative;top:00px" >
+	      <input style="text-align:left;width:18em" id="Company_Staff_Alias" value="{$company_staff->get('Staff Alias')}" ovalue="{$company_staff->get('Staff Alias')}">
+	      <div id="Company_staff_Alias_Container" style="" ></div>
+	    </div>
+	  </td>
+	  	  <td id="Company_Staff_Alias_msg" class="edit_td_alert"></td>
 	</tr>
 	
 	  </table>
