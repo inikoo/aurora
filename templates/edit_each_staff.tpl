@@ -12,10 +12,8 @@
 
  
    <ul class="tabs" id="chooser_ul" style="clear:both">
-         <li> <span class="item {if $edit=='details'}selected{/if}"  id="details">  <span> {t}Staff Details{/t}</span></span></li>
+         <li> <span class="item {if $edit=='company_staff'}selected{/if}"  id="details">  <span> {t}Staff Details{/t}</span></span></li>
 
-     
-   
     </ul>
   
   <div class="tabbed_container"> 
@@ -35,20 +33,21 @@
 	<tr class="first"><td style="width:11em" class="label">Staff Id:</td>
 	  <td  style="text-align:left;width:19em">
 	    <div  style="width:15em;position:relative;top:00px" >
+
 	      <input style="text-align:left;width:18em" id="Company_Staff_Id" value="{$company_staff->get('Staff ID')}" ovalue="{$company_staff->get('Staff ID')}" >
 	      <div id="Company_Staff_Id_Container" style="" ></div>
 	    </div>
 	  </td>
-	  <td id="Company_Staff_Id_msg" class="edit_td_alert"></td>
+	 <td id="Company_Staff_Id_msg" class="edit_td_alert"></td>
 	</tr>
 	<tr class="first"><td style="" class="label">{t}Staff Name{/t}:</td>
 	  <td  style="text-align:left">
 	    <div  style="width:15em;position:relative;top:00px" >
 	      <input style="text-align:left;width:18em" id="Company_Staff_Name" value="{$company_staff->get('Staff Name')}" ovalue="{$company_staff->get('Staff Name')}">
-	      <div id="Company_staff_Name_Container" style="" ></div>
+	      <div id="Company_Staff_Name_Container" style="" ></div>
 	    </div>
 	  </td>
-	  	  <td id="Company_Staff_Name_msg" class="edit_td_alert"></td>
+	  	 <td id="Company_Staff_Name_msg" class="edit_td_alert"></td>
 
 	</tr>
       
@@ -57,10 +56,10 @@
 	  <td  style="text-align:left">
 	    <div  style="width:15em;position:relative;top:00px" >
 	      <input style="text-align:left;width:18em" id="Company_Staff_Alias" value="{$company_staff->get('Staff Alias')}" ovalue="{$company_staff->get('Staff Alias')}">
-	      <div id="Company_staff_Alias_Container" style="" ></div>
+	      <div id="Company_Staff_Alias_Container" style="" ></div>
 	    </div>
 	  </td>
-	  	  <td id="Company_Staff_Alias_msg" class="edit_td_alert"></td>
+	  	 <td id="Company_Staff_Alias_msg" class="edit_td_alert"></td>
 	</tr>
 	
 	  </table>

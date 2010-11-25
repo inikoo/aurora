@@ -1,8 +1,6 @@
 <?php
 include_once('common.php');
 
-
-
 ?>
 var Event = YAHOO.util.Event;
 var Dom   = YAHOO.util.Dom;
@@ -17,15 +15,15 @@ var description_errors= new Object();
 var scope='company_staff';
 var scope_edit_ar_file='ar_edit_staff.php';
 var scope_key_name='id';
-var scope_key='<?php echo $_SESSION['state']['company_staff']['id']?>';
+var scope_key='<?php echo $_SESSION['state']['edit_each_staff']['id']?>';
 
 	
 var parent='staff';
 var parent_key_name='id';
 var parent_key=<?php echo $_REQUEST['staff_key']?>;
 
-/* var editing='<?php echo $_SESSION['state']['company_staff']['edit']?>';  */
 
+var editing='<?php echo $_SESSION['state']['edit_each_staff']['edit']?>';  
 
 
 
@@ -33,14 +31,14 @@ var validate_scope_data={
 'company_staff':{
 
     'name':{'changed':false,'validated':true,'required':true,'group':1,'type':'item'
-	    ,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Staff Name')?>'}],'name':'Company_Staff_Name','dbname':'Company Staff Name'
-	    ,'ar':'find','ar_request':'ar_contacts.php?tipo=is_company_staff_name&company_key='+parent_key+'&query='}
+	    ,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Staff Name')?>'}],'name':'Company_Staff_Name','dbname':'Staff Name'
+	    ,'ar':'find','ar_request':'ar_staff.php?tipo=is_company_staff_name&staff_key='+parent_key+'&query='}
     ,'id':{'changed':false,'validated':true,'required':false,'group':1,'type':'item'
 	     ,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Staff Id')?>'}]
-	     ,'name':'Company_Staff_Code' ,'dbname':'Company Staff Code','ar':'find','ar_request':'ar_contacts.php?tipo=is_company_staff_code&company_key='+parent_key+'&query='}
+	     ,'name':'Company_Staff_Id' ,'dbname':'Staff ID','ar':'find','ar_request':'ar_staff.php?tipo=is_company_staff_code&staff_key='+parent_key+'&query='}
      ,'alias':{'changed':false,'validated':true,'required':false,'group':1,'type':'item'
 	     ,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Staff Alias')?>'}]
-	     ,'name':'Company_Staff_Alias' ,'dbname':'Company Staff Alias','ar':'find','ar_request':'ar_contacts.php?tipo=is_company_staff_alias&company_key='+parent_key+'&query='}
+	     ,'name':'Company_Staff_Alias' ,'dbname':'Staff Alias','ar':'find','ar_request':'ar_staff.php?tipo=is_company_staff_alias&staff_key='+parent_key+'&query='}
     
 
    }
@@ -57,10 +55,13 @@ function validate_id(query){
 function validate_name(query){
  validate_general('company_staff','name',unescape(query));
 }
-function reset_edit_staff(){
+function validate_alias(query){
+ validate_general('company_staff','alias',unescape(query));
+}
+function reset_new_staff(){
  reset_edit_general('company_staff');
 }
-function save_edit_staff(){
+function save_new_staff(){
  save_edit_general('company_staff');
 }
 
@@ -261,7 +262,7 @@ function hide_add_staff_dialog(){
 function show_add_staff_dialog(){
     Dom.get('new_staff_dialog').style.display='';
     Dom.get('add_staff').style.display='none';
-    Dom.get('save_edit_company_staff').style.visibility='visible';
+    Dom.get('save_edit_staff').style.visibility='visible';
 
     Dom.addClass('save_edit_staff','disabled');
     Dom.get('reset_edit_staff').style.visibility='visible';
@@ -294,13 +295,12 @@ function change_block(){
 
 function init(){
 
-    var ids = ["company_staff"]; 
+    var ids = ["details"]; 
     YAHOO.util.Event.addListener(ids, "click", change_block);
 
     YAHOO.util.Event.addListener('add_staff', "click", show_add_staff_dialog);
-    YAHOO.util.Event.addListener('save_edit_staff', "click", save_edit_staff);
-   
-    YAHOO.util.Event.addListener('reset_edit_staff', "click", reset_edit_staff);
+    YAHOO.util.Event.addListener('save_edit_staff', "click", save_new_staff);   
+    YAHOO.util.Event.addListener('reset_edit_staff', "click", cancel_add_staff);
    
     var staff_id_oACDS = new YAHOO.util.FunctionDataSource(validate_id);
     staff_id_oACDS.queryMatchContains = true;
@@ -314,9 +314,14 @@ function init(){
     staff_name_oAutoComp.minQueryLength = 0; 
     staff_name_oAutoComp.queryDelay = 0.1;
 
+    var staff_alias_oACDS = new YAHOO.util.FunctionDataSource(validate_alias);
+    staff_alias_oACDS.queryMatchContains = true;
+    var staff_alias_oAutoComp = new YAHOO.widget.AutoComplete("Company_Staff_Alias","Company_Staff_Alias_Container", staff_alias_oACDS);
+    staff_alias_oAutoComp.minQueryLength = 0; 
+    staff_alias_oAutoComp.queryDelay = 0.1;
 
-    var ids = ["company_staff"]; 
-    YAHOO.util.Event.addListener(ids, "click", change_block);
+
+   
 
 }
 

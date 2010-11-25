@@ -335,7 +335,7 @@ function change_block(){
 	Dom.addClass(this, 'selected');
 	
 	YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=company_area-edit&value='+this.id );
-	
+
 	editing=this.id;
     }
 
