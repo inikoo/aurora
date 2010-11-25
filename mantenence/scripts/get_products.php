@@ -1507,7 +1507,7 @@ if(preg_match('/^Wenzels$/i',$supplier_code)){
 	$product->load('parts');
 	$part->load('used in');
 	$part->load('supplied by');
-	$product->load('cost');
+	$product->update_cost_supplier();
 
 }
 
