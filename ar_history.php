@@ -335,8 +335,9 @@ function list_history($asset_type) {
     elseif($asset_type=='company') {
         $asset='Company';
     }
-    elseif($asset_type=='company_area') {
-        $asset='Company Area';
+   
+    elseif($asset_type=='edit_each_staff') {
+        $asset='Company Staff';
     }
     elseif($asset_type=='company_department') {
         $asset='Company Department';
