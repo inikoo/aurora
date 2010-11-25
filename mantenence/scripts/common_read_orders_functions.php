@@ -234,6 +234,10 @@ function delete_old_data() {
     global $store_code,$order_data_id;
 
 
+
+        $sql=sprintf("delete from `Order Post Transaction Dimension`  where   `Order Post Transaction Metadata`=%s  ",prepare_mysql($store_code.$order_data_id));
+        mysql_query($sql);
+
     $sql=sprintf("select `Order Key`  from `Order Dimension`  where `Order Original Metadata`=%s  ",prepare_mysql($store_code.$order_data_id));
     $result_test=mysql_query($sql);
     while ($row_test=mysql_fetch_array($result_test, MYSQL_ASSOC)) {
@@ -689,17 +693,34 @@ function send_order($data,$data_dn_transactions) {
 
 
 }
+
+function find_otf_key_in_order($id,$data){
+$otf_key=0;
+$sql=sprintf("select `Order Transaction Fact Key`,`Shipped Quantity` from `Order Transaction Fact` where `Product Key`=%d and `Order Key`=%d order by `Order Key`, `Shipped Quantity` desc",
+                 $data['Product Key'],
+                 $id);
+    $res_lines=mysql_query($sql);
+     print "$sql\n";
+    if ($row=mysql_fetch_array($res_lines)) {
+    $otf_key=$row['Order Transaction Fact Key'];
+}
+return $otf_key;
+}
+
+
 function create_post_order($data,$data_dn_transactions) {
     global $customer_key,$filename,$store_code,$order_data_id,$date_order,$shipping_net,$charges_net,$order,$dn,$invoice,$shipping_net;
     global $charges_net,$order,$dn,$payment_method,$date_inv,$extra_shipping,$parcel_type,$date_order;
     global $packer_data,$picker_data,$parcels,$tipo_order,$parent_order_id,$customer,$tax_category_object,$customer_key,$data_dn_transactions;
 
 
-    if ($tipo_order==6)
+    if ($tipo_order==6){
         $data['Order Type']='Replacement';
-    else
+        $reason='Damaged';
+    }else{
         $data['Order Type']='Missing';
-
+        $reason='Missing';
+    }
 
 
     if ($parent_order_id) {
@@ -741,17 +762,20 @@ function create_post_order($data,$data_dn_transactions) {
             $data_transaction=array(
                                   'Product Key'=>$product->data['Product Current Key'],
                                   'qty'=>$quantity,
+                                 
                               );
-            if ($data['Order Type']=='Replacement')
-                $result=$parent_order->set_transaction_as_shipped_damaged($data_transaction);
-            else
-                $result=$parent_order->set_transaction_as_not_received($data_transaction);
+            //if ($data['Order Type']=='Replacement')
+            //    $result=$parent_order->set_transaction_as_shipped_damaged($data_transaction);
+            //else
+            //    $result=$parent_order->set_transaction_as_not_received($data_transaction);
 
+            $otf_key=find_otf_key_in_order($parent_order->id,$data_transaction);
 
             $quantity=$quantity;
             $gross=$quantity*$product->data['Product History Price'];
             $estimated_weight=$quantity*$product->data['Product Gross Weight'];
             $post_data[]=array(
+                            'Order Transaction Fact Key'=>$otf_key,
                              'Order Type'=> $data['Order Type'],
                              'Order Tax Rate'=>$tax_category_object->data['Tax Category Rate'],
                              'Order Tax Code'=>$tax_category_object->data['Tax Category Code'],
@@ -768,11 +792,12 @@ function create_post_order($data,$data_dn_transactions) {
                              'Current Dispatching State'=>'In Process',
                              'Current Payment State'=>'No Applicable',
                              'Metadata'=>$store_code.$order_data_id,
-                             'Order Key'=>($result['updated']?$parent_order->id:0),
+                             'Order Key'=>($otf_key?$parent_order->id:0),
                              'Order Date'=>$date_order,
                              'Order Public ID'=>$parent_order->data['Order Public ID'],
                              'Order Transaction Type'=>$data['Order Type'],
-                             'dn_trans_key'=>$dn_trans_key
+                             'dn_trans_key'=>$dn_trans_key,
+                              'Reason'=>$reason
                          );
 
 

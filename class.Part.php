@@ -223,6 +223,8 @@ class part extends DB_Table {
 
 
         case('stock'):
+        exit("use update stock\n");
+        /*
             if (!$this->current_locations_loaded)
                 $this->load('locations');
 
@@ -276,7 +278,7 @@ class part extends DB_Table {
 
             }
 
-
+*/
 
 
             break;
@@ -601,8 +603,7 @@ class part extends DB_Table {
         case('future costs'):
         case('estimated cost'):
 
-            $this->estimated_cost();
-            break;
+            exit("stimeted cost should be called with part->update_future_costs()");
         }
 
     }
@@ -986,44 +987,6 @@ function get_supplier_products_historic($date) {
 }
 
 
-    function get_unit_cost($date=false) {
-
-
-
-        if ($date) {
-            // print "from date";
-            $sql=sprintf("select AVG(`Supplier Product Unit Cost`*`Supplier Product Units Per Part`) as cost from `Supplier Product Dimension` SP left join `Supplier Product Part List` B  on (SP.`Supplier Product Code`=B.`Supplier Product Code` and SP.`Supplier Key`=B.`Supplier Key`) where `Part SKU`=%d and ( (`Supplier Product Part Valid From`<=%s and `Supplier Product Part Valid To`>=%s and `Supplier Product Part Most Recent`='No') or (`Supplier Product Part Most Recent`='Yes' and `Supplier Product Part Valid From`<=%s )  )  "
-                         ,$this->sku
-                         ,prepare_mysql($date)
-                         ,prepare_mysql($date)
-                         ,prepare_mysql($date)
-                        );
-            //	print $sql;
-            $res=mysql_query($sql);
-            if ($row=mysql_fetch_array($res)) {
-                if (is_numeric($row['cost']))
-                    return $row['cost'];
-            }
-        }
-        // print "not found in date";
-
-        $sql=sprintf("select AVG(`Supplier Product Cost Per Case`/`Supplier Product Units Per Case`*`Supplier Product Units Per Part`) as cost 
-from `Supplier Product Dimension` SP 
-left join `Supplier Product Part Dimension` SPPD  on (SP.`Supplier Product Key`=SPPD.`Supplier Product Key` )
-left join `Supplier Product Part List` B  on (SPPD.`Supplier Product Part Key`=B.`Supplier Product Part Key` )
- where `Part SKU`=%d and `Supplier Product Part Most Recent`='Yes' ",$this->sku);
-	//  print $sql;
-        $res=mysql_query($sql);
-        if ($row=mysql_fetch_array($res)) {
-            return $row['cost'];
-        }
-
-        return 0;
-
-
-
-
-    }
 
 
     function load_locations($date='') {
@@ -1461,32 +1424,91 @@ return $part_locations;
     }
 
 
-    function estimated_cost() {
-        $sql=sprintf("select min(`Supplier Product Unit Cost`*`Supplier Product Units Per Part`) as min_cost ,avg(`Supplier Product Unit Cost`*`Supplier Product Units Per Part`) as avg_cost from `Supplier Product Dimension` SPD left join  `Supplier Product Part List` SPPL on (SPD.`Supplier Product ID`=SPPL.`Supplier Product ID`)  left join `Supplier Dimension` SD on (SD.`Supplier Key`=SPPL.`Supplier Key`)   where `Part SKU`=%d and `Supplier Product Part Most Recent`='Yes'",$this->data['Part SKU']);
-        //   print "$sql\n";
+function update_estimated_future_cost() {
+list($avg_cost,$min_cost)=$this->get_estimated_future_cost();
+
+
+
+ $sql=sprintf("update `Part Dimension` set `Part Average Future Cost`=%s,`Part Minimum Future Cost`=%s where `Part SKU`=%d "
+                     ,prepare_mysql($avg_cost)
+                     ,prepare_mysql($min_cost)
+                     ,$this->id);
+             
+       mysql_query($sql);
+}
+
+
+
+
+
+
+
+
+    function get_unit_cost($date=false) {
+
+
+
+        if ($date) {
+            // print "from date";
+            $sql=sprintf("select AVG(`Supplier Product Unit Cost`*`Supplier Product Units Per Part`) as cost from `Supplier Product Dimension` SP left join `Supplier Product Part List` B  on (SP.`Supplier Product Code`=B.`Supplier Product Code` and SP.`Supplier Key`=B.`Supplier Key`) where `Part SKU`=%d and ( (`Supplier Product Part Valid From`<=%s and `Supplier Product Part Valid To`>=%s and `Supplier Product Part Most Recent`='No') or (`Supplier Product Part Most Recent`='Yes' and `Supplier Product Part Valid From`<=%s )  )  "
+                         ,$this->sku
+                         ,prepare_mysql($date)
+                         ,prepare_mysql($date)
+                         ,prepare_mysql($date)
+                        );
+            //	print $sql;
+            $res=mysql_query($sql);
+            if ($row=mysql_fetch_array($res)) {
+                if (is_numeric($row['cost']))
+                    return $row['cost'];
+            }
+        }
+        // print "not found in date";
+
+        $sql=sprintf("select AVG(`Supplier Product Cost Per Case`/`Supplier Product Units Per Case`*`Supplier Product Units Per Part`) as cost 
+from `Supplier Product Dimension` SP 
+left join `Supplier Product Part Dimension` SPPD  on (SP.`Supplier Product Key`=SPPD.`Supplier Product Key` )
+left join `Supplier Product Part List` B  on (SPPD.`Supplier Product Part Key`=B.`Supplier Product Part Key` )
+ where `Part SKU`=%d and `Supplier Product Part Most Recent`='Yes' ",$this->sku);
+	//  print $sql;
+        $res=mysql_query($sql);
+        if ($row=mysql_fetch_array($res)) {
+            return $row['cost'];
+        }
+
+        return 0;
+
+
+
+
+    }
+
+
+
+
+
+
+    function get_estimated_future_cost() {
+        $sql=sprintf("select min(`Supplier Product Cost Per Case`*`Supplier Product Units Per Part`/`Supplier Product Units Per Case`) as min_cost ,avg(`Supplier Product Cost Per Case`*`Supplier Product Units Per Part`/`Supplier Product Units Per Case`) as avg_cost   from `Supplier Product Part List` SPPL left join  `Supplier Product Part Dimension` SPPD on (  SPPL.`Supplier Product Part Key`=SPPD.`Supplier Product Part Key`)    left join  `Supplier Product Dimension` SPD  on (SPPD.`Supplier Product Key`=SPD.`Supplier Product Key`)      where `Part SKU`=%d and `Supplier Product Part Most Recent`='Yes'",$this->data['Part SKU']);
+      //print "$sql\n";
         $result=mysql_query($sql);
         if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
             if (is_numeric($row['avg_cost']))
                 $avg_cost=$row['avg_cost'];
             else
-                $avg_cost='NULL';
+                $avg_cost='';
             if (is_numeric($row['min_cost']))
                 $min_cost=$row['min_cost'];
             else
-                $min_cost='NULL';
+                $min_cost='';
 
         } else {
-            $avg_cost='NULL';
-            $min_cost='NULL';
+            $avg_cost='';
+            $min_cost='';
         }
 
-        $sql=sprintf("update `Part Dimension` set `Part Average Future Cost`=%s,`Part Minimum Future Cost`=%s where `Part SKU`=%d "
-                     ,$avg_cost
-                     ,$min_cost
-                     ,$this->id);
-        //            print "$sql\n";
-        if (!mysql_query($sql))
-            exit(" $sql\n error con not uopdate part futire costss");
+    return array($avg_cost,$min_cost);
+    
     }
     function update_used_in() {
         $used_in_products='';

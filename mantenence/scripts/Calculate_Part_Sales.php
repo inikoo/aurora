@@ -36,6 +36,8 @@ $result=mysql_query($sql);
 while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
   $part=new Part('sku',$row['Part SKU']);
 
+$part->update_estimated_future_cost();
+
   /*
   //Get  status
   if(isset($argv[1]) and $argv[1]=='first'){

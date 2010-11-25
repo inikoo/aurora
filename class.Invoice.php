@@ -198,7 +198,7 @@ protected function create($invoice_data) {
     $dn_keys=join(',',$delivery_notes_ids);
 
     $tax_category=$this->data['Invoice Tax Code'];
-    $sql=sprintf('select `Current Autorized to Sell Quantity`,`Transaction Tax Rate`,`Order Quantity`,`Delivery Note Quantity`,`Order Transaction Gross Amount`,`Order Transaction Total Discount Amount`,`Order Transaction Fact Key`,`Product Key`,`Delivery Note Quantity` from `Order Transaction Fact` where `Delivery Note Key` in (%s) and ISNULL(`Invoice Key`)  '
+    $sql=sprintf('select `Product Key`,`Current Autorized to Sell Quantity`,`Transaction Tax Rate`,`Order Quantity`,`Delivery Note Quantity`,`Order Transaction Gross Amount`,`Order Transaction Total Discount Amount`,`Order Transaction Fact Key`,`Product Key`,`Delivery Note Quantity` from `Order Transaction Fact` where `Delivery Note Key` in (%s) and ISNULL(`Invoice Key`)  '
     ,$dn_keys);
     $res=mysql_query($sql);
     while ($row=mysql_fetch_assoc($res)) {
@@ -207,7 +207,16 @@ protected function create($invoice_data) {
         }
             $factor_actually_packed=$row['Delivery Note Quantity']/$row['Current Autorized to Sell Quantity'];
        
-        $sql=sprintf("update `Order Transaction Fact` set `Invoice Date`=%s,`Invoice Currency Code`=%s,`Invoice Key`=%d,`Invoice Public ID`=%s,`Invoice Quantity`=%f,`Invoice Transaction Gross Amount`=%.2f,`Invoice Transaction Total Discount Amount`=%.2f,`Invoice Transaction Item Tax Amount`=%.3f where `Order Transaction Fact Key`=%d",
+       
+       $product=new Product('id',$row['Product Key']);
+       $cost_supplier=$product->get_cost_supplier();
+   
+         $cost_storing=$product->get_cost_storing();
+
+       
+       
+       
+        $sql=sprintf("update `Order Transaction Fact` set `Invoice Date`=%s,`Invoice Currency Code`=%s,`Invoice Key`=%d,`Invoice Public ID`=%s,`Invoice Quantity`=%f,`Invoice Transaction Gross Amount`=%.2f,`Invoice Transaction Total Discount Amount`=%.2f,`Invoice Transaction Item Tax Amount`=%.3f,`Cost Supplier`=%f,`Cost Storing`=%f where `Order Transaction Fact Key`=%d",
                      prepare_mysql($this->data['Invoice Date']),
                      prepare_mysql($this->data['Invoice Currency']),
                      $this->id,
@@ -217,6 +226,9 @@ protected function create($invoice_data) {
                      $row['Order Transaction Gross Amount']*$factor_actually_packed,
                      $row['Order Transaction Total Discount Amount']*$factor_actually_packed,
                      round(($row['Order Transaction Gross Amount']-$row['Order Transaction Total Discount Amount'])*$factor_actually_packed*$row['Transaction Tax Rate'],3),
+                     $cost_supplier,
+                   
+                     $cost_storing,
                      $row['Order Transaction Fact Key']
                     );
         mysql_query($sql);
@@ -379,6 +391,7 @@ $sql = sprintf("select `Invoice Transaction Gross Amount`,`Invoice Transaction T
         $items_tax+=$row['Invoice Transaction Item Tax Amount'];
         $items_net_outstanding_balance+=$row['Invoice Transaction Outstanding Net Balance'];
         $items_tax_outstanding_balance+=$row['Invoice Transaction Outstanding Tax Balance'];
+        
         //$items_refund_net+=$row['Invoice Transaction Net Refund Amount'];
         //$items_refund_tax+=$row['Invoice Transaction Tax Refund Amount'];
         //$items_refund_net_outstanding_balance+=$row['Invoice Transaction Outstanding Refund Net Balance'];
@@ -440,6 +453,21 @@ $this->data['Invoice Refund Tax Amount']=$items_refund_tax;
 
     $this->data['Invoice Total Amount']=$this->data['Invoice Total Net Amount']+$this->data['Invoice Total Tax Amount'];
    
+   $total_costs=0;
+  $sql=sprintf("select ifnull(sum(`Cost Supplier`/`Invoice Currency Exchange Rate`),0) as `Cost Supplier`  ,ifnull(sum(`Cost Storing`/`Invoice Currency Exchange Rate`),0) as `Cost Storing`,ifnull(sum(`Cost Handing`/`Invoice Currency Exchange Rate`),0)  as  `Cost Handing`,ifnull(sum(`Cost Shipping`/`Invoice Currency Exchange Rate`),0) as `Cost Shipping` from `Order Transaction Fact` where `Invoice Key`=%d",$this->id);
+
+$this->data ['Invoice Total Profit']=0;
+  $result = mysql_query ( $sql );
+   if ($row = mysql_fetch_array ( $result, MYSQL_ASSOC )) {
+     $total_costs=$row['Cost Supplier']+$row['Cost Storing']+$row['Cost Handing']+$row['Cost Shipping'];
+ 
+   }
+   $this->data ['Invoice Total Profit']= $this->data ['Invoice Total Net Amount']- $this->data ['Invoice Refund Net Amount']-$total_costs;
+
+
+   
+   
+   
    //print_r($this->data);
    $sql=sprintf("update  `Invoice Dimension` set `Invoice Refund Net Amount`=%f,`Invoice Refund Tax Amount`=%f,`Invoice Total Net Adjust Amount`=%f,`Invoice Total Tax Adjust Amount`=%f,`Invoice Total Adjust Amount`=%f,`Invoice Outstanding Net Balance`=%f,`Invoice Outstanding Tax Balance`=%f,`Invoice Items Gross Amount`=%f,`Invoice Items Discount Amount`=%f ,`Invoice Items Net Amount`=%f,`Invoice Shipping Net Amount`=%f ,`Invoice Charges Net Amount`=%f ,`Invoice Total Net Amount`=%f ,`Invoice Items Tax Amount`=%f ,`Invoice Shipping Tax Amount`=%f,`Invoice Charges Tax Amount`=%f ,`Invoice Total Tax Amount`=%f,`Invoice Total Amount`=%f where `Invoice Key`=%d",
                $this->data['Invoice Refund Net Amount'],
@@ -460,7 +488,7 @@ $this->data['Invoice Refund Tax Amount']=$items_refund_tax;
                  $this->data['Invoice Charges Tax Amount'],
                  $this->data['Invoice Total Tax Amount'],
                  $this->data['Invoice Total Amount'],
-
+                     $this->data['Invoice Total Amount'],
 
                  $this->id
                 );
@@ -1214,115 +1242,7 @@ $data['Invoice Paid Date']=date('Y-m-d H:i:s');
  }
 
 
- function get_totals_old($force_values=false){
 
-
-
-  // get refunds
-   $ref_net=0;
-   $ref_tax=0;
-   $sql = "select sum(`Transaction Net Amount`) as net,sum(`Transaction Tax Amount`) as  tax  from `Order No Product Transaction Fact`  where  `Invoice Key`=" . $this->data ['Invoice Key'];
-   //print $sql;
-   $result = mysql_query ( $sql );
-   if ($row = mysql_fetch_array ( $result, MYSQL_ASSOC )) {
-     $ref_net=$row['net'];
-     $ref_tax=$row['tax'];
-   }
-
-   
-   $sql = "select sum(`Invoice Transaction Gross Amount`) as gross,sum(`Invoice Transaction Total Discount Amount`) as discount  ,sum(`Invoice Transaction Total Tax Amount`) as tax,sum(`Invoice Transaction Net Refund Amount`) as ref_net,sum(`Invoice Transaction Tax Refund Amount`) as ref_tax,sum(`Invoice Transaction Outstanding Net Balance`) as ob_net ,sum(`Invoice Transaction Outstanding Tax Balance`) as ob_tax ,sum(`Invoice Transaction Outstanding Refund Net Balance`) as ref_ob_net ,sum(`Invoice Transaction Outstanding Refund Tax Balance`) as ref_ob_tax  from `Order Transaction Fact`  where  `Invoice Key`=" . $this->data ['Invoice Key'];
-   //print "$sql\n";
-   $result = mysql_query ( $sql );
-   if ($row = mysql_fetch_array ( $result, MYSQL_ASSOC )) {
-     $amount=$row['gross'];
-     $discounts=$row['discount'];
-     $tax=$row['tax'];
-   }
-   
-   
-   
-   $this->data ['Invoice Gross Amount'] = $amount;
-   $this->data ['Invoice Discount Amount'] = $discounts;
-   $net = $amount - $discounts;
-   
-   if(isset($force_values['Invoice Items Net Amount']))
-     $this->data ['Invoice Items Net Adjust Amount']=$force_values['Invoice Items Net Amount']-$net;
-   else
-     $this->data ['Invoice Items Net Adjust Amount']=0;
-
-
-
-
-
-   $this->data ['Invoice Items Net Amount']=$this->data ['Invoice Gross Amount'] - $this->data ['Invoice Discount Amount'] + $this->data ['Invoice Items Net Adjust Amount'];
-
-   $total_net=$this->data ['Invoice Items Net Amount']+$this->data ['Invoice Shipping Net Amount']+$this->data ['Invoice Charges Net Amount'];
-
-
-   if(isset($force_values['Invoice Total Net Amount']))
-     $this->data ['Invoice Total Net Adjust Amount']=$force_values['Invoice Total Net Amount']-$total_net-$ref_net;
-   else
-     $this->data ['Invoice Total Net Adjust Amount']=0;
-
-    if(isset($force_values['Invoice Total Tax Amount']))
-     $this->data ['Invoice Total Tax Adjust Amount']=$force_values['Invoice Total Tax Amount']-$tax-$ref_tax;
-   else
-     $this->data ['Invoice Total Tax Adjust Amount']=0;
-
-    $this->data ['Invoice Items Tax Amount'] =$tax;
-
-   $this->data ['Invoice Total Net Amount'] = $total_net+$ref_net+$this->data ['Invoice Total Net Adjust Amount'];
-   $this->distribute_costs ();
-   
-   $this->data ['Invoice Total Tax Amount'] = $tax+$ref_tax+$this->data ['Invoice Total Tax Adjust Amount'];
-   
-
-   $this->data ['Invoice Total Amount'] = $this->data ['Invoice Total Tax Amount']+$this->data ['Invoice Total Net Amount'];
-   
-
-  if(isset($force_values['Invoice Total Amount']))
-     $this->data ['Invoice Total Adjust Amount']=$force_values['Invoice Total Amount']-$this->data ['Invoice Total Amount'];
-   else
-     $this->data ['Invoice Total Adjust Amount']=0;
-
-
-  $total_costs=0;
-  $sql=sprintf("select ifnull(sum(`Cost Supplier`/`Invoice Currency Exchange Rate`),0) as `Cost Supplier`  ,ifnull(sum(`Cost Manufacure`/`Invoice Currency Exchange Rate`),0) as `Cost Manufacure` ,ifnull(sum(`Cost Storing`/`Invoice Currency Exchange Rate`),0) as `Cost Storing`,ifnull(sum(`Cost Handing`/`Invoice Currency Exchange Rate`),0)  as  `Cost Handing`,ifnull(sum(`Cost Shipping`/`Invoice Currency Exchange Rate`),0) as `Cost Shipping` from `Order Transaction Fact` where `Invoice Key`=%d",$this->id);
-
-  $result = mysql_query ( $sql );
-   if ($row = mysql_fetch_array ( $result, MYSQL_ASSOC )) {
-     $total_costs=$row['Cost Supplier']+$row['Cost Manufacure']+$row['Cost Storing']+$row['Cost Handing']+$row['Cost Shipping'];
- 
-   }
-   $this->data ['Invoice Total Profit']= $this->data ['Invoice Total Net Amount']- $this->data ['Invoice Refund Net Amount']-$total_costs;
-
-
-
-   //print "$total_net ".$this->data ['Invoice Total Net Adjust Amount']."\n";
-   $sql = sprintf ( "update `Invoice Dimension` set `Invoice Items Net Amount`=%.2f ,`Invoice Items Net Adjust Amount`=%.2f ,`Invoice Total Net Adjust Amount`=%.2f , `Invoice Items Gross Amount`=%.2f ,`Invoice Items Discount Amount`=%.2f  ,`Invoice Total Net Amount`=%.2f,`Invoice Items Tax Amount`=%.2f,`Invoice Refund Net Amount`=%.2f,`Invoice Refund Tax Amount`=%.2f,`Invoice Total Tax Adjust Amount`=%.2f, `Invoice Total Tax Amount`=%.2f,`Invoice Total Amount`=%.2f,`Invoice Total Adjust Amount`=%.2f,`Invoice Total Profit`=%.2f  where `Invoice Key`=%d"
-		    , $this->data ['Invoice Items Net Amount']
-		    , $this->data ['Invoice Items Net Adjust Amount']
-		    , $this->data ['Invoice Total Net Adjust Amount']
-		    , $amount
-		    , $discounts
-		    , $this->data ['Invoice Total Net Amount']
-		    , $this->data ['Invoice Items Tax Amount']
-		    , $ref_net
-		    , $ref_tax
-		    ,$this->data ['Invoice Total Tax Adjust Amount']
-
-		    ,$this->data ['Invoice Total Tax Amount']
-		    ,$this->data ['Invoice Total Amount']
-		    ,$this->data ['Invoice Total Adjust Amount']
-		    ,$this->data ['Invoice Total Profit']
-
-		    , $this->data ['Invoice Key'] 
-		     );
-   // print "$sql\n";
-   if (! mysql_query ( $sql ))
-      exit ( "$sql\n xcan not update invoice dimension after invccc\n" );
-
- }
  /*
 function: categorize
 Assig a category inside rhe store to the invoice 

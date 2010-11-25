@@ -2048,7 +2048,7 @@ $this->data ['Order Dispatched Estimated Weight']= $row ['disp_estimated_weight'
           $this->data['Order Invoiced Refund Notes']='';
                 
             $sql = "select  
-            sum(IFNULL(`Cost Supplier`,0)+IFNULL(`Cost Manufacure`,0)+IFNULL(`Cost Storing`,0)+IFNULL(`Cost Handing`,0)+IFNULL(`Cost Shipping`,0))as costs,
+            sum(IFNULL(`Cost Supplier`,0)+IFNULL(`Cost Storing`,0)+IFNULL(`Cost Handing`,0)+IFNULL(`Cost Shipping`,0))as costs,
             sum(`Invoice Transaction Gross Amount`-`Invoice Transaction Total Discount Amount`) as net,
             sum(`Invoice Transaction Item Tax Amount`) as tax,
             sum(`Invoice Transaction Net Refund Amount`) as ref_net,
@@ -2067,7 +2067,7 @@ $this->data ['Order Dispatched Estimated Weight']= $row ['disp_estimated_weight'
             from `Order Transaction Fact`    where  `Order Key`=" . $this->data ['Order Key'];
          
             $result = mysql_query ( $sql );
-            //print $sql;
+           
             if ($row = mysql_fetch_array ( $result, MYSQL_ASSOC )) {
                 $this->data['Order Balance Net Amount']=$row['net']+$row['ref_net'];
                 $this->data['Order Balance Tax Amount']=$row['tax']+$row['ref_tax'];
@@ -3462,50 +3462,6 @@ $file_as=$number;
 return $file_as;
 }
 
-
-function set_transaction_as_shipped_damaged($data){
-  return $this->set_transaction_post_action('Damaged',$data);
-}
-
-function set_transaction_as_not_received($data){
-  return $this->set_transaction_post_action('Missing',$data);
-}
-
-function set_transaction_post_action($action,$data) {
-    $result_data=array('error'=>true,'updated'=>false);
-    $sql=sprintf("select `Order Transaction Fact Key`,`Shipped Quantity` from `Order Transaction Fact` where `Product Key`=%d and `Order Key`",
-                 $data['Product Key'],
-                 $this->id);
-    $res_lines=mysql_query($sql);
-    while ($row=mysql_fetch_array($res_lines)) {
-        if ($row['Shipped Quantity']<$data['qty'])
-            $qty=$row['Shipped Quantity'];
-        else
-            $qty=$data['qty'];
-        $result_data['error']=false;
-        if ($qty>0) {
-        
-        if($action=='Damaged')
-           $col='`Shipped Damaged Quantity`';
-         elseif($action=='Missing')
-         $col='`Shipped Not Received Quantity`';
-         else
-         return $result_data;
-         
-            $sql=sprintf("update %s=%f where `Order Transaction Fact Key`=%d ",
-                         $col,
-                         $qty,
-                         $row['Order Transaction Fact Key']
-                        );
-            mysql_query($sql);
-            $result_data['updated']=true;
-            $result_data['quantity']=$qty;
-        }
-    }
-   
-    
-    return $result_data;
-}
 
 function get_number_dispatched_post_order_transactions(){
 $sql=sprintf("select count(*) as num from `Order Transaction Fact` where `Order Key`=%d and `Order Transaction Type` in ('Missing','Replacement') ",$this->id);
