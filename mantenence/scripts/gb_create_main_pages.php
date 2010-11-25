@@ -66,7 +66,7 @@ $page_data[$store_code]=array(
 		  ,'Page Store Slogan'=>'Hello stranger'
 		  ,'Page Store Resume'=>'Please note this is a wholesale site we supply wholesale to the trade.'
           ,'Page Options'=>serialize(array(
-            'Form_Type'=>'Steps',
+            'Form_Type'=>'Show All',
             'Fields'=>array(
                 'Tax_Number'=>array('show'=>true,'required'=>false),
                 'Address'=>array('show'=>true,'required'=>false),
