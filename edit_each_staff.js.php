@@ -28,7 +28,7 @@ var editing='<?php echo $_SESSION['state']['edit_each_staff']['edit']?>';
 
 
 var validate_scope_data={
-'company_staff':{
+'ind_staff':{
 
     'name':{'changed':false,'validated':true,'required':true,'group':1,'type':'item'
 	    ,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Staff Name')?>'}],'name':'Company_Staff_Name','dbname':'Staff Name'
@@ -45,7 +45,7 @@ var validate_scope_data={
 };
 
 
-var validate_scope_metadata={'company_staff':{'type':'edit','ar_file':'ar_edit_staff.php'}};
+var validate_scope_metadata={'ind_staff':{'type':'edit','ar_file':'ar_edit_staff.php'}};
 
 
 
@@ -254,7 +254,6 @@ function hide_add_staff_dialog(){
     Dom.get('new_staff_dialog').style.display='none';
     Dom.get('add_staff').style.display='';
     Dom.get('save_edit_staff').style.visibility='hidden';
-
     Dom.get('reset_edit_staff').style.visibility='hidden';
 
 }

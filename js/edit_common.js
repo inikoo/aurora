@@ -169,7 +169,7 @@ var CellEdit = function (callback, newValue) {
         ar_file='ar_edit_warehouse.php';
     else if (column.object=='user' )
         ar_file='ar_edit_users.php';
-    else if (column.object=='position' || column.object=='staff' )
+    else if (column.object=='position' || column.object=='staff'|| column.object=='company_staff' )
         ar_file='ar_edit_hr.php';
     else if (column.object=='new_order' )
         ar_file='ar_edit_orders.php';
@@ -177,7 +177,7 @@ var CellEdit = function (callback, newValue) {
         ar_file='ar_edit_suppliers.php';
     else if (column.object=='new_porder'  )
         ar_file='ar_edit_porders.php';
-    else if (column.object=='ind_staff' || column.object=='ind_positions' || column.object=='ind_department'  )
+    else if (column.object=='ind_staff' || column.object=='ind_positions' || column.object=='ind_department')
         ar_file='ar_edit_staff.php';
     else
         ar_file='ar_edit_assets.php';
