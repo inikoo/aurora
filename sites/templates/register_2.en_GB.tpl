@@ -118,10 +118,7 @@
 		 
 		 
 	       </table>
-	        <div class="continue">
-		 <span class="button disabled" id="submit_details" style="display:none">Submit Details</span>
-	       </div>
-
+	        
 		   
 		   
 		 	<p>Give us you contact details (optional)</p>
