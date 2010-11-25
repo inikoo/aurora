@@ -28,6 +28,12 @@ case('is_position_name'):
 case('is_company_staff_code'):
     is_company_staff_id();
     break;
+case('is_staff_id'):
+    is_staff_id();
+    break;
+case('is_staff_alias'):
+    is_staff_alias();
+    break;
 case('is_company_staff_name'):
     is_company_staff_name();
     break;
@@ -435,6 +441,109 @@ function is_company_staff_id() {
     }
 
 }
+
+
+function is_staff_id() {
+    if (!isset($_REQUEST['query']) or !isset($_REQUEST['staff_key']) ) {
+        $response= array(
+                       'state'=>400,
+                       'msg'=>'Error'
+                   );
+        echo json_encode($response);
+        return;
+    } else
+        $query=$_REQUEST['query'];
+    if ($query=='') {
+        $response= array(
+                       'state'=>200,
+                       'found'=>0
+                   );
+        echo json_encode($response);
+        return;
+    }
+
+    $staff_key=$_REQUEST['staff_key'];
+
+    $sql=sprintf("select `Staff Key`,`Staff Name` from `Staff Dimension` where `Staff Key`=%d  "
+                 ,$staff_key
+                );
+    $res=mysql_query($sql);
+
+    if ($data=mysql_fetch_array($res)) {
+    //   $msg=sprintf('Company Staff <a href="edit_each_staff.php?id=%d">%s</a> already has this code (%s)'
+    //                 ,$data['Staff Key']
+    //                ,$data['Staff Name']
+                    
+     //               );
+        $response= array(
+                       'state'=>200,
+                       'found'=>1,
+                       //'msg'=>$msg
+                   );
+        echo json_encode($response);
+        return;
+    } else {
+        $response= array(
+                       'state'=>200,
+                       'found'=>0
+                   );
+        echo json_encode($response);
+        return;
+    }
+
+}
+
+function is_staff_alias() {
+  if (!isset($_REQUEST['query']) or !isset($_REQUEST['staff_key']) ) {
+        $response= array(
+                       'state'=>400,
+                       'msg'=>'Error'
+                   );
+        echo json_encode($response);
+        return;
+    } else
+        $query=$_REQUEST['query'];
+    if ($query=='') {
+        $response= array(
+                       'state'=>200,
+                       'found'=>0
+                   );
+        echo json_encode($response);
+        return;
+    }
+
+    $staff_key=$_REQUEST['staff_key'];
+
+   $sql=sprintf("select `Staff Key`,`Staff Alias` from `Staff Dimension` where `Staff Key`=%d  ",$staff_key
+                );
+
+
+    $res=mysql_query($sql);
+//print("******");print($sql);
+    if ($data=mysql_fetch_array($res)) {
+  //     $msg=sprintf('Another Company Staff <a href="edit_each_staff.php?id=%d">(%s)</a> already has this alias name'
+    //                 ,$data['Staff Key']
+     //               ,$data['Staff Alias']
+              //      );
+        $response= array(
+                       'state'=>200,
+                       'found'=>1,
+                      // 'msg'=>$msg
+                   );
+        echo json_encode($response);
+        return;
+    } else {
+        $response= array(
+                       'state'=>200,
+                       'found'=>0
+                   );
+        echo json_encode($response);
+        return;
+    }
+
+}
+
+
 function is_company_staff_name() {
   if (!isset($_REQUEST['query']) or !isset($_REQUEST['company_key']) ) {
         $response= array(
@@ -534,7 +643,7 @@ function is_company_department_code() {
     }
 
 }
-function is_company_staff_name() {
+/*function is_company_staff_name() {
   if (!isset($_REQUEST['query']) or !isset($_REQUEST['company_key']) ) {
         $response= array(
                        'state'=>400,
@@ -582,7 +691,7 @@ function is_company_staff_name() {
 
 }
 
-
+*/
 
 
 
