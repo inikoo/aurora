@@ -4,8 +4,7 @@
 
   This file contains the Product Class
 
-  About:
-  Autor: Raul Perusquia <rulovico@gmail.com>
+  About:get  Autor: Raul Perusquia <rulovico@gmail.com>
 
   Copyright (c) on009, Kaktus
 
@@ -767,11 +766,7 @@ exit;
   }
 
 
-  /*
-    Function: money
-    Proporciona la moneda dependiendo el pais
-  */
-  // JFA
+
   function money($number) {
 
     if ($this->system_format) {
@@ -809,11 +804,6 @@ exit;
     return number_format($number,$decimal_places,$decimal_point,$thousand_sep);
 
   }
-  /*
-    Function: new_id
-    Asigna un nuevo ID al registro de la tabla Product Dimension.
-  */
-  // JFA
 
   function new_id() {
     $sql="select max(`Product id`) as id from `Product Dimension`";
@@ -1779,7 +1769,7 @@ if($this->external_DB_link)mysql_query($sql,$this->external_DB_link);
 
       break;
     case('cost'):
-    exit("user get_cost_suplier, update_cost")
+      exit("user get_cost_suplier, update_cost");
     
     
       $cost=0;
@@ -5561,25 +5551,38 @@ function set_as_historic($date=false){
 
 
 }
+function update_cost_supplier(){
 
+  $cost=$this->get_cost_supplier();
+
+  $sql=sprintf("update `Product Dimension` set `Product Cost Supplier`=%s  where `Product ID`=%d "
+		   ,$cost
+		   ,$this->pid
+		   );
+}
   
 
-function get_cost_supplier(){
+function get_cost_supplier($date=false){
 $cost=0;
+
+
 foreach($this->get_part_list() as $part_data){
-$part=$part_data['part'];
-if($part->data['Part Current Stock']>0){
-    $part_cost=$part->data['Part Current Value']/$part->data['Part Current Stock'];
-}else{
-    list($get_unit_cost
+  $part=$part_data['part'];
+  
+    if($part->data['Part Current Stock']>0 and !$date){
+      $part_cost=$part->data['Part Current Stock Cost Per Unit'];
+    }else{
+      $part_cost=$part->get_unit_cost($date);
+    }
+ 
+  
+  $part_cost+=$part_cost*$part_data['Parts Per Product'];
 }
 
-}
 
 
+return $part_cost;
 
-
-exit("caca");
 
 }
 
