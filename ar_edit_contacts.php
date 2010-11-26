@@ -5,7 +5,7 @@ require_once 'common.php';
 require_once 'class.Company.php';
 require_once 'class.Supplier.php';
 require_once 'ar_edit_common.php';
-
+include_once('class.CompanyDepartment.php');
 
 
 if (!isset($_REQUEST['tipo'])) {
@@ -101,6 +101,8 @@ case('create_company_department'):
                          ));
     new_company_department($data);
     break;
+case('edit_company_department'):
+  edit_company_department();
 case('edit_contact'):
     $data=prepare_values($_REQUEST,array(
                              'id'=>array('type'=>'key')
@@ -2811,6 +2813,57 @@ function edit_corporation($data) {
 
     } else {
         $response= array('state'=>400,'msg'=>$corporation->msg,'key'=>$_REQUEST['okey']);
+    }
+    echo json_encode($response);
+
+}
+
+
+function edit_company_department() {
+  $key=$_REQUEST['key'];
+ 
+  
+  $company_department=new CompanyDepartment($_REQUEST['department_key']);
+  global $editor;
+  $company_department->editor=$editor;
+  
+  if($key=='Attach'){
+    // print_r($_FILES);
+    $note=stripslashes(urldecode($_REQUEST['newvalue']));
+    $target_path = "uploads/".'attach_'.date('U');
+    $original_name=$_FILES['testFile']['name'];
+    $type=$_FILES['testFile']['type'];
+    $data=array('Caption'=>$note,'Original Name'=>$original_name,'Type'=>$type);
+
+    if(move_uploaded_file($_FILES['testFile']['tmp_name'],$target_path )) {
+      $company_department->add_attach($target_path,$data);
+      
+    }
+  }else{
+    
+
+    
+    $key_dic=array(
+		   'name'=>'Company Department Name'
+		   ,'code'=>'Company Department Code'
+		   ,'description'=>'Company Department Description'
+		  // ,'type'=>'Staff Type'
+		  
+		   
+    );
+    if(array_key_exists($_REQUEST['key'],$key_dic))
+       $key=$key_dic[$_REQUEST['key']];
+    
+    $update_data=array($key=>stripslashes(urldecode($_REQUEST['newvalue'])));
+    $company_department->update($update_data);
+  }
+
+
+    if ($company_department->updated) {
+        $response= array('state'=>200,'newvalue'=>$company_department->new_value,'key'=>$_REQUEST['key']);
+
+    } else {
+        $response= array('state'=>400,'msg'=>$company_department->msg,'key'=>$_REQUEST['key']);
     }
     echo json_encode($response);
 
