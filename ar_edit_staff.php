@@ -851,7 +851,7 @@ function list_department_staff() {
 
                      'id'=>$row['Company Department Key']
 
-                          ,'go'=>sprintf("<a href='edit_company_department.php?id=%d'><img src='art/icons/page_go.png' alt='go'></a>",$row['Company Department Key'])
+                          ,'go'=>sprintf("<a href='edit_company_department.php?edit=1&id=%d'><img src='art/icons/page_go.png' alt='go'></a>",$row['Company Department Key'])
 
                                 ,'code'=>$row['Company Department Code']
                                         ,'name'=>$row['Company Department Name']
