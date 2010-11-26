@@ -24,9 +24,9 @@ include_once('common_store_functions.php');
 
 
 class product extends DB_Table {
- public $new_key=false;
+  public $new_key=false;
   public $new_code=false;
-   public $new_id=false;
+  public $new_id=false;
   
   public $product=array();
   public $categories=array();
@@ -45,18 +45,18 @@ class product extends DB_Table {
   public $msg='';
  public $images_slideshow=array();
  
-public $new_value=false;
-public $new_part_list=false;
-public $part_list_updated=false;
-
-public $new_data=array();
-public $data=array();
-  // Variable: new
-  // Indicate if a new product was created
-  public $deleted=false;
-
+ public $new_value=false;
+ public $new_part_list=false;
+ public $part_list_updated=false;
  
-  public $location_to_update=false;
+ public $new_data=array();
+ public $data=array();
+ // Variable: new
+  // Indicate if a new product was created
+ public $deleted=false;
+ 
+ 
+ public $location_to_update=false;
   // Variable: id
   // Reference tothe Product Key
 
@@ -1401,6 +1401,9 @@ function set_part_list_as_current($product_part_key){
     $sql=sprintf("update `Product Part Dimension` set `Product Part Most Recent`='Yes' ,`Product Part Valid To`=NULL  where `Product Part Key`=%d  ",$product_part_key);
     mysql_query($sql);
   }
+
+  $this->get_cost_supplier();
+
 }
 
 
@@ -5552,36 +5555,39 @@ function set_as_historic($date=false){
 
 }
 function update_cost_supplier(){
-
-  $cost=$this->get_cost_supplier();
-
-  $sql=sprintf("update `Product Dimension` set `Product Cost Supplier`=%s  where `Product ID`=%d "
-		   ,$cost
-		   ,$this->pid
-		   );
-}
   
+  $cost=$this->get_cost_supplier();
+  
+  $sql=sprintf("update `Product Dimension` set `Product Cost Supplier`=%s  where `Product ID`=%d "
+	       ,$cost
+	       ,$this->pid
+	       );
+  mysql_query($sql);
+}
+
 
 function get_cost_supplier($date=false){
-$cost=0;
-
-
-foreach($this->get_part_list() as $part_data){
-  $part=$part_data['part'];
+  $cost=0;
   
+  // print_r($this->get_part_list());
+ 
+  foreach($this->get_part_list() as $part_data){
+    $part=$part_data['part'];
+    
     if($part->data['Part Current Stock']>0 and !$date){
       $part_cost=$part->data['Part Current Stock Cost Per Unit'];
     }else{
       $part_cost=$part->get_unit_cost($date);
     }
- 
+    
   
-  $part_cost+=$part_cost*$part_data['Parts Per Product'];
+    $cost+=$part_cost*$part_data['Parts Per Product'];
+
 }
 
 
-
-return $part_cost;
+  // exit;
+return $cost;
 
 
 }

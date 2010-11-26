@@ -3,7 +3,6 @@
  File: SupplierProduct.php
 
  This file contains the SupplierProduct Class
-
  About:
  Autor: Raul Perusquia <rulovico@gmail.com>
 
@@ -444,16 +443,16 @@ where SPPD.`Supplier Product Key`=%d and `Supplier Product Part Most Recent`='Ye
     }
     function get_parts(){
       $parts=array();
-      $sql=sprintf("select `Supplier Product Unit`,`Supplier Product Unit`,`Supplier Product Units Per Part`,`Part SKU`  from `Supplier Product Part List` where `Supplier Product Code`=%s and `Supplier Key`=%d and `Supplier Product Part Most Recent`='Yes' group by  `Part SKU`;"
-		   ,prepare_mysql($this->data['Supplier Product Code'])
-		   ,$this->data['Supplier Key']
+ $sql=sprintf("select `Part SKU`,`Supplier Product Units Per Part`  from  `Supplier Product Part Dimension` SPPD left join  `Supplier Product Part List` SPPL on (SPPD.`Supplier Product Part Key`=SPPL.`Supplier Product Part Key`) where `Supplier Product Key`=%d and `Supplier Product Part Most Recent`='Yes' group by  `Part SKU`;",
+		   $this->id
 		   );
+     
       $result=mysql_query($sql);
       while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 	$parts[$row['Part SKU']]=array(
 				  'Part_SKU'=>$row['Part SKU'],
 				  'Supplier_Product_Units_Per_Part'=>$row['Supplier Product Units Per Part'],
-				  'Supplier Product Unit'=>$row['Supplier Product Unit'],
+				  //'Supplier Product Unit'=>$row['Supplier Product Unit'],
 				  'part'=>new Part($row['Part SKU']),
 				  'Parts_Per_Supplier_Product_Unit'=>1/$row['Supplier Product Units Per Part'],
 				);
@@ -463,10 +462,11 @@ where SPPD.`Supplier Product Key`=%d and `Supplier Product Part Most Recent`='Ye
     }
     function get_parts_objects(){
       $parts=array();
-      $sql=sprintf("select `Supplier Product Unit`,`Supplier Product Unit`,`Supplier Product Units Per Part`,`Part SKU`  from `Supplier Product Part List` where `Supplier Product Code`=%s and `Supplier Key`=%d and `Supplier Product Part Most Recent`='Yes' group by  `Part SKU`;"
-		   ,prepare_mysql($this->data['Supplier Product Code'])
-		   ,$this->data['Supplier Key']
+      $sql=sprintf("select `Part SKU`  from  `Supplier Product Part Dimension` SPPD left join  `Supplier Product Part List` SPPL on (SPPD.`Supplier Product Part Key`=SPPL.`Supplier Product Part Key`) where `Supplier Product Key`=%d and `Supplier Product Part Most Recent`='Yes' group by  `Part SKU`;",
+		   $this->id
 		   );
+      // print "$sql\n";
+      //exit;
       $result=mysql_query($sql);
       while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 	$parts[$row['Part SKU']]=new Part($row['Part SKU']);
@@ -1874,6 +1874,13 @@ function set_part_list_as_current($product_part_key){
     $sql=sprintf("update `Supplier Product Part Dimension` set `Supplier Product Part Most Recent`='Yes' ,`Supplier Product Part Valid To`=NULL  where `Supplier Product Part Key`=%d  ",$product_part_key);
     mysql_query($sql);
   }
+
+  foreach($this->get_parts_objects() as $part){
+  
+    $part->update_estimated_future_cost();
+  }
+  //  exit;
+
 }
 function update_product_part_list($product_part_key,$header_data,$list){
   
