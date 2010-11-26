@@ -21,8 +21,8 @@
     <div  class="edit_block" style="{if $edit!="details"}display:none{/if}"  id="d_details">
 
   <div class="general_options" style="float:right">
-	<span  style="margin-right:10px;visibility:hidden"  id="save_edit_staff" onClick="save_edit_general('company_staff')" class="state_details">{t}Save{/t}</span>
-	<span style="margin-right:10px;visibility:hidden" id="reset_edit_staff" onClick="reset_edit_general('company_staff')" class="state_details">{t}Reset{/t}</span>
+	<span  style="margin-right:10px;visibility:hidden"  id="save_edit_company_staff" onClick="save_edit_general('company_staff')" class="state_details">{t}Save{/t}</span>
+	<span style="margin-right:10px;visibility:hidden" id="reset_edit_company_staff" onClick="reset_edit_general('company_staff')" class="state_details">{t}Reset{/t}</span>
    </div>
       
       

@@ -464,14 +464,14 @@ function is_staff_id() {
 
     $staff_key=$_REQUEST['staff_key'];
 
-    $sql=sprintf("select `Staff Key`,`Staff ID` from `Staff Dimension` where `Staff Key`=%d  "
-                 ,$query
+    $sql=sprintf("select `Staff Key`,`Staff ID`,`Staff Name` from `Staff Dimension` where `Staff Key`=%d  "
+                 ,prepare_mysql($query)
                 );
     $res=mysql_query($sql);
 
     if ($data=mysql_fetch_array($res)) {
-     $msg=sprintf('Company Staff <a href="edit_each_staff.php?id=%d">%d</a> already has this id '
-                    ,$data['Staff Key']
+     $msg=sprintf('Company Staff <a href="edit_each_staff.php?id=%d">%s</a> already has this id (%d) '
+                    ,$data['Staff Key'],$data['Staff Name']
                   ,$data['Staff ID']
                     
                   );
@@ -514,7 +514,7 @@ function is_staff_alias() {
 
     $staff_key=$_REQUEST['staff_key'];
 
-   $sql=sprintf("select `Staff Key`,`Staff Alias` from `Staff Dimension` where `Staff Key`=%d  ",$query
+   $sql=sprintf("select `Staff Key`,`Staff Alias` from `Staff Dimension` where `Staff Key`=%d  ",prepare_mysql($query)
                 );
 
 
