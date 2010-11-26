@@ -98,7 +98,8 @@ class part extends DB_Table {
             $this->id = mysql_insert_id();
             $this->sku =$this->id ;
             $this->new=true;
-            $this->get_data('id',$this->id);
+            
+	    $this->get_data('id',$this->id);
             $data_for_history=array(
 				    'Action'=>'created',
 				    'History Abstract'=>_('Part Created'),
@@ -1429,12 +1430,13 @@ list($avg_cost,$min_cost)=$this->get_estimated_future_cost();
 
 
 
- $sql=sprintf("update `Part Dimension` set `Part Average Future Cost`=%s,`Part Minimum Future Cost`=%s where `Part SKU`=%d "
+ $sql=sprintf("update `Part Dimension` set `Part Average Future Cost Per Unit`=%s,`Part Minimum Future Cost Per Unit`=%s where `Part SKU`=%d "
                      ,prepare_mysql($avg_cost)
                      ,prepare_mysql($min_cost)
                      ,$this->id);
              
-       mysql_query($sql);
+ //print "$sql\n";      
+ mysql_query($sql);
 }
 
 
@@ -1489,8 +1491,8 @@ left join `Supplier Product Part List` B  on (SPPD.`Supplier Product Part Key`=B
 
 
     function get_estimated_future_cost() {
-        $sql=sprintf("select min(`Supplier Product Cost Per Case`*`Supplier Product Units Per Part`/`Supplier Product Units Per Case`) as min_cost ,avg(`Supplier Product Cost Per Case`*`Supplier Product Units Per Part`/`Supplier Product Units Per Case`) as avg_cost   from `Supplier Product Part List` SPPL left join  `Supplier Product Part Dimension` SPPD on (  SPPL.`Supplier Product Part Key`=SPPD.`Supplier Product Part Key`)    left join  `Supplier Product Dimension` SPD  on (SPPD.`Supplier Product Key`=SPD.`Supplier Product Key`)      where `Part SKU`=%d and `Supplier Product Part Most Recent`='Yes'",$this->data['Part SKU']);
-      //print "$sql\n";
+        $sql=sprintf("select min(`Supplier Product Cost Per Case`*`Supplier Product Units Per Part`/`Supplier Product Units Per Case`) as min_cost ,avg(`Supplier Product Cost Per Case`*`Supplier Product Units Per Part`/`Supplier Product Units Per Case`) as avg_cost   from `Supplier Product Part List` SPPL left join  `Supplier Product Part Dimension` SPPD on (  SPPL.`Supplier Product Part Key`=SPPD.`Supplier Product Part Key`)    left join  `Supplier Product Dimension` SPD  on (SPPD.`Supplier Product Key`=SPD.`Supplier Product Key`)      where `Part SKU`=%d and `Supplier Product Part Most Recent`='Yes'",$this->sku);
+	//	print "$sql\n";
         $result=mysql_query($sql);
         if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
             if (is_numeric($row['avg_cost']))
@@ -1507,6 +1509,7 @@ left join `Supplier Product Part List` B  on (SPPD.`Supplier Product Part Key`=B
             $min_cost='';
         }
 
+	//	print "($avg_cost,$min_cost\n";
     return array($avg_cost,$min_cost);
     
     }
