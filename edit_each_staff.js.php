@@ -31,11 +31,11 @@ var validate_scope_data={
 'company_staff':{
 
     'name':{'changed':false,'validated':true,'required':true,'group':1,'type':'item'
-	    ,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Staff Name')?>'}],'name':'Company_Staff_Name','dbname':'Staff Name'
+	    ,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Staff Name')?>'}],'name':'Company_Staff_Name'
 	    ,'ar':false,'ar_request':false}
     ,'id':{'changed':false,'validated':true,'required':false,'group':1,'type':'item'
 	     ,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Staff Id')?>'}]
-	     ,'name':'Company_Staff_Id' ,'dbname':'Staff ID','ar':'find','ar_request':'ar_staff.php?tipo=is_staff_id&staff_key='+parent_key+'&query='}
+	     ,'name':'Company_Staff_Id' ,'ar':'find','ar_request':'ar_staff.php?tipo=is_staff_id&staff_key='+parent_key+'&query='}
      ,'alias':{'changed':false,'validated':true,'required':false,'group':1,'type':'item'
 	     ,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Staff Alias')?>'}]
 	     ,'name':'Company_Staff_Alias' ,'dbname':'Staff Alias','ar':'find','ar_request':'ar_staff.php?tipo=is_staff_alias&staff_key='+parent_key+'&query='}
@@ -45,7 +45,7 @@ var validate_scope_data={
 };
 
 
-var validate_scope_metadata={'company_staff':{'type':'edit','ar_file':'ar_edit_staff.php'}};
+var validate_scope_metadata={'company_staff':{'type':'edit','ar_file':'ar_edit_staff.php','key_name':'staff_key','key':<?php echo $_REQUEST['staff_key']?>}};
 
 
 
@@ -71,7 +71,7 @@ function save_new_staff(){
 
 function post_item_updated_actions(branch,key,newvalue){
 
- if(key=='name')
+ /*if(key=='name')
      Dom.get('title_name').innerHTML=newvalue;
  
  else if(key=='code')
@@ -81,7 +81,16 @@ function post_item_updated_actions(branch,key,newvalue){
  var table=tables.table1;
  var datasource=tables.dataSource1;
  var request='';
- datasource.sendRequest(request,table.onDataReturnInitializeTable, table); 
+ datasource.sendRequest(request,table.onDataReturnInitializeTable, table); */
+var table_id=1
+
+
+    var table=tables['table'+table_id];
+    var datasource=tables['dataSource'+table_id];
+
+  
+    var request='&tableid='+table_id+'&sf=0';
+    datasource.sendRequest(request,table.onDataReturnInitializeTable, table);  
  
 }
 
@@ -251,20 +260,20 @@ function cancel_add_staff(){
 
 
 function hide_add_staff_dialog(){
-    Dom.get('new_staff_dialog').style.display='none';
-    Dom.get('add_staff').style.display='';
-    Dom.get('save_edit_staff').style.visibility='hidden';
-    Dom.get('reset_edit_staff').style.visibility='hidden';
+    Dom.get('new_company_staff_dialog').style.display='none';
+    Dom.get('add_company_staff').style.display='';
+    Dom.get('save_edit_company_staff').style.visibility='hidden';
+    Dom.get('reset_edit_company_staff').style.visibility='hidden';
 
 }
 
 function show_add_staff_dialog(){
-    Dom.get('new_staff_dialog').style.display='';
-    Dom.get('add_staff').style.display='none';
-    Dom.get('save_edit_staff').style.visibility='visible';
+    Dom.get('new_company_staff_dialog').style.display='';
+    Dom.get('add_company_staff').style.display='none';
+    Dom.get('save_edit_company_staff').style.visibility='visible';
 
-    Dom.addClass('save_edit_staff','disabled');
-    Dom.get('reset_edit_staff').style.visibility='visible';
+    Dom.addClass('save_edit_company_staff','disabled');
+    Dom.get('reset_edit_company_staff').style.visibility='visible';
     Dom.get('Company_Staff_Id').focus();
 
 
@@ -297,9 +306,9 @@ function init(){
     var ids = ["details"]; 
     YAHOO.util.Event.addListener(ids, "click", change_block);
 
-    YAHOO.util.Event.addListener('add_staff', "click", show_add_staff_dialog);
-    YAHOO.util.Event.addListener('save_edit_staff', "click", save_new_staff);   
-    YAHOO.util.Event.addListener('reset_edit_staff', "click", cancel_add_staff);
+    YAHOO.util.Event.addListener('add_company_staff', "click", show_add_staff_dialog);
+    YAHOO.util.Event.addListener('save_edit_company_staff', "click", save_new_staff);   
+    YAHOO.util.Event.addListener('reset_edit_company_staff', "click", cancel_add_staff);
    
     var staff_id_oACDS = new YAHOO.util.FunctionDataSource(validate_id);
     staff_id_oACDS.queryMatchContains = true;
