@@ -54,7 +54,7 @@ function validate_code(query){
 function validate_name(query){
  validate_general('company_department','name',unescape(query));
 }
-function validate_alias(query){
+function validate_description(query){
  validate_general('company_department','description',unescape(query));
 }
 function reset_new_department(){

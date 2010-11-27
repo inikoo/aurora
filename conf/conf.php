@@ -1132,7 +1132,23 @@ $default_state=array(
                                                    'parent'=>''
                                                )
                                    ),
-                  
+                    'company_position'=>array(
+                                       'view'=>'general',
+                                       'parent'=>'none',
+                                       'details'=>0,
+                                       'table'=>array(
+                                                   'order'=>'name',
+                                                   'order_dir'=>'',
+                                                   'sf'=>0,
+                                                   'nr'=>25,
+                                                   'where'=>'where true',
+                                                   'f_field'=>'staff name',
+                                                   'f_value'=>'','f_show'=>false,
+                                                   'mode'=>'',
+                                                   'restrictions'=>'none',
+                                                   'parent'=>''
+                                               )
+                                   ),
                    'companies'=>array(
                                    'view'=>'general',
                                    'details'=>0,
@@ -2571,6 +2587,39 @@ $default_state=array(
                                                         'details'=>0,
                                                         'elements'=>array('h_comp'=>1,'h_cont'=>1,'note'=>1)
                                                     ),
+                                   
+                                      'history'=>array(
+                                                    'where'=>'where true',
+                                                    'f_field'=>'abstract',
+                                                    'f_value'=>'','f_show'=>false,
+                                                    'order'=>'date',
+                                                    'order_dir'=>'desc',
+                                                    'sf'=>0,
+                                                    'nr'=>25,
+                                                    'from'=>'',
+                                                    'to'=>'',
+                                                    'elements'=>''
+                                                ),
+
+
+                                  ),
+                       'edit_each_position'=>array(
+                                      'code'=>0,
+                                      'action_after_create'=>'continue',
+                                      'edit'=>'details',
+                              /*        'departments'=>array(
+                                                        'order'=>'code',
+                                                        'order_dir'=>'desc',
+                                                        'sf'=>0,
+                                                        'nr'=>10,
+                                                        'where'=>'where true',
+                                                        'f_field'=>'name',
+                                                        'f_value'=>'','f_show'=>false,
+                                                        'from'=>'',
+                                                        'to'=>'',
+                                                        'details'=>0,
+                                                        'elements'=>array('h_comp'=>1,'h_cont'=>1,'note'=>1)
+                                                    ),*/
                                    
                                       'history'=>array(
                                                     'where'=>'where true',

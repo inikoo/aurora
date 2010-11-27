@@ -5,9 +5,8 @@ require_once 'common.php';
 require_once 'class.Company.php';
 require_once 'class.Supplier.php';
 require_once 'ar_edit_common.php';
-
-
-
+include_once('class.CompanyPosition.php');
+include_once('class.CompanyArea.php');
 if(!isset($_REQUEST['tipo']))
   {
     $response=array('state'=>405,'resp'=>_('Non acceptable request').' (t)');
@@ -31,6 +30,12 @@ edit_positions();
    break;
 case('edit_company_staff'):
   edit_company_staff();
+  break;
+case('edit_company_area'):
+  edit_company_area();
+break;
+case('edit_company_position'):
+  edit_company_position();
   break;
 case('list_members_of_staff_to_edit'):
     list_members_of_staff_to_edit();
@@ -424,7 +429,7 @@ if($order=='name')
 		    'key'=>$data['Company Position Key'],
 		    'code'=>$data['Company Position Code'],
 		    'name'=>$data['Company Position Title'],
-		    'go'=>sprintf("<a href='edit_each_position.php?edit=1&id=%d'><img src='art/icons/page_go.png' alt='go'></a>",$data['Company Position Key'])
+		    'go'=>sprintf("<a href='edit_position.php?edit=1&id=%d'><img src='art/icons/page_go.png' alt='go'></a>",$data['Company Position Key'])
 		    ,'delete'=>$delete
                     ,'delete_type'=>'delete'
 		    
@@ -961,6 +966,105 @@ function edit_company_staff() {
 
     } else {
         $response= array('state'=>400,'msg'=>$staff->msg,'key'=>$_REQUEST['key']);
+    }
+    echo json_encode($response);
+
+}
+function edit_company_position() {
+  $key=$_REQUEST['key'];
+ 
+  
+  $company_position=new CompanyPosition($_REQUEST['position_key']);
+  global $editor;
+  $company_position->editor=$editor;
+  
+  if($key=='Attach'){
+    // print_r($_FILES);
+    $note=stripslashes(urldecode($_REQUEST['newvalue']));
+    $target_path = "uploads/".'attach_'.date('U');
+    $original_name=$_FILES['testFile']['name'];
+    $type=$_FILES['testFile']['type'];
+    $data=array('Caption'=>$note,'Original Name'=>$original_name,'Type'=>$type);
+
+    if(move_uploaded_file($_FILES['testFile']['tmp_name'],$target_path )) {
+      $company_position->add_attach($target_path,$data);
+      
+    }
+  }else{
+    
+
+    
+    $key_dic=array(
+		   'name'=>'Company Position Title'
+		   ,'code'=>'Company Position Code'
+		   ,'description'=>'Company Position Description'
+		  // ,'type'=>'Staff Type'
+		  
+		   
+    );
+    if(array_key_exists($_REQUEST['key'],$key_dic))
+       $key=$key_dic[$_REQUEST['key']];
+    
+    $update_data=array($key=>stripslashes(urldecode($_REQUEST['newvalue'])));
+    $company_position->update($update_data);
+  }
+
+
+    if ($company_position->updated) {
+        $response= array('state'=>200,'newvalue'=>$company_position->new_value,'key'=>$_REQUEST['key']);
+
+    } else {
+        $response= array('state'=>400,'msg'=>$company_position->msg,'key'=>$_REQUEST['key']);
+    }
+    echo json_encode($response);
+
+}
+
+function edit_company_area() {
+  $key=$_REQUEST['key'];
+ 
+  
+  $company_area=new CompanyArea($_REQUEST['company_key']);
+  global $editor;
+  $company_area->editor=$editor;
+  
+  if($key=='Attach'){
+    // print_r($_FILES);
+    $note=stripslashes(urldecode($_REQUEST['newvalue']));
+    $target_path = "uploads/".'attach_'.date('U');
+    $original_name=$_FILES['testFile']['name'];
+    $type=$_FILES['testFile']['type'];
+    $data=array('Caption'=>$note,'Original Name'=>$original_name,'Type'=>$type);
+
+    if(move_uploaded_file($_FILES['testFile']['tmp_name'],$target_path )) {
+      $company_area->add_attach($target_path,$data);
+      
+    }
+  }else{
+    
+
+    
+    $key_dic=array(
+		   'name'=>'Company Area Name'
+		   ,'code'=>'Company Area Code'
+		   ,'description'=>'Company Area Description'
+		  // ,'type'=>'Staff Type'
+		  
+		   
+    );
+    if(array_key_exists($_REQUEST['key'],$key_dic))
+       $key=$key_dic[$_REQUEST['key']];
+    
+    $update_data=array($key=>stripslashes(urldecode($_REQUEST['newvalue'])));
+    $company_area->update($update_data);
+  }
+
+
+    if ($company_area->updated) {
+        $response= array('state'=>200,'newvalue'=>$company_area->new_value,'key'=>$_REQUEST['key']);
+
+    } else {
+        $response= array('state'=>400,'msg'=>$company_area->msg,'key'=>$_REQUEST['key']);
     }
     echo json_encode($response);
 
