@@ -700,7 +700,7 @@ $sql=sprintf("select `Order Transaction Fact Key`,`Shipped Quantity` from `Order
                  $data['Product Key'],
                  $id);
     $res_lines=mysql_query($sql);
-     print "$sql\n";
+    // print "$sql\n";
     if ($row=mysql_fetch_array($res_lines)) {
     $otf_key=$row['Order Transaction Fact Key'];
 }
@@ -836,6 +836,16 @@ function create_post_order_with_out_order($data) {
     global $packer_data,$picker_data,$parcels,$tipo_order,$parent_order_id,$customer,$tax_category_object,$customer_key,$header_data,$data_dn_transactions;
 
 
+ if ($tipo_order==6){
+      
+        $reason='Damaged';
+    }else{
+       
+        $reason='Missing';
+    }
+
+
+
     $type=$data['Order Type'];
     $type_formated=$data['Order Type'];
     $title="Delivery Note for $type_formated for an unknown order of <a href='customer.php?id=".$customer->id."'>".$customer->data['Customer Name']."</a>";
@@ -904,7 +914,9 @@ function create_post_order_with_out_order($data) {
                          'Order Date'=>$date_order,
                          'Order Public ID'=>'',
                          'Order Transaction Type'=>$data['Order Type'],
-                         'dn_trans_key'=>$dn_trans_key
+                         'dn_trans_key'=>$dn_trans_key,
+                         'Reason'=>$reason,
+                         'Order Transaction Fact Key'=>0,
                      );
     }
 
@@ -1634,19 +1646,26 @@ function get_dates($filedate,$header_data,$tipo_order,$new_file=true) {
 
 
             $date_charged="NULL";
-
+if($header_data['date_order']!=''){
 
 
             if ($date_updated ==$header_data['date_order']) {
-                //print $header_data['date_order']." xssssssssssssxx";
+               // print $header_data['date_order']." xssssssssssssxx";
                 $date_processed=$date_updated." ".$time_updated;
                 // print "$date_processed  xssssssssssssxx\n";
 
-            } else
+            } else{
+                
+            
                 $date_processed=$header_data['date_order']." 08:30:00";
-            $date_index=$date_processed;
+            }
+           
+}else{
+    $date_processed='';
+}
 
-            // print $date_index." xxx\n";
+ $date_index=$date_processed;
+//         print $date_index." xxx\n";
 
         }
     }

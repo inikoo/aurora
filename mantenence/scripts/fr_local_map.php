@@ -133,7 +133,7 @@ function get_tipo_order($ltipo,$header){
   $tipo=0;
 
   
- if(preg_match('/proforma|pro-froma|pro forma|PROFORMA/i',$ltipo)){
+ if(preg_match('/proforma|pro-froma|pro forma|PROFORMA|FACTURE PROFORMA|DEVIS/i',$ltipo)){
 
     $tipo=11;
   }elseif(preg_match('/DELIVERY NOTE|nota de envio|BON DE COMMANDE/i',$ltipo)){

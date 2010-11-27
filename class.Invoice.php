@@ -208,15 +208,11 @@ protected function create($invoice_data) {
             $factor_actually_packed=$row['Delivery Note Quantity']/$row['Current Autorized to Sell Quantity'];
        
        
-       $product=new Product('id',$row['Product Key']);
-       $cost_supplier=$product->get_cost_supplier();
-   
-         $cost_storing=$product->get_cost_storing();
-
+     
        
        
        
-        $sql=sprintf("update `Order Transaction Fact` set `Invoice Date`=%s,`Invoice Currency Code`=%s,`Invoice Key`=%d,`Invoice Public ID`=%s,`Invoice Quantity`=%f,`Invoice Transaction Gross Amount`=%.2f,`Invoice Transaction Total Discount Amount`=%.2f,`Invoice Transaction Item Tax Amount`=%.3f,`Cost Supplier`=%f,`Cost Storing`=%f where `Order Transaction Fact Key`=%d",
+        $sql=sprintf("update `Order Transaction Fact` set `Invoice Date`=%s,`Invoice Currency Code`=%s,`Invoice Key`=%d,`Invoice Public ID`=%s,`Invoice Quantity`=%f,`Invoice Transaction Gross Amount`=%.2f,`Invoice Transaction Total Discount Amount`=%.2f,`Invoice Transaction Item Tax Amount`=%.3f where `Order Transaction Fact Key`=%d",
                      prepare_mysql($this->data['Invoice Date']),
                      prepare_mysql($this->data['Invoice Currency']),
                      $this->id,
@@ -226,9 +222,7 @@ protected function create($invoice_data) {
                      $row['Order Transaction Gross Amount']*$factor_actually_packed,
                      $row['Order Transaction Total Discount Amount']*$factor_actually_packed,
                      round(($row['Order Transaction Gross Amount']-$row['Order Transaction Total Discount Amount'])*$factor_actually_packed*$row['Transaction Tax Rate'],3),
-                     $cost_supplier,
-                   
-                     $cost_storing,
+               
                      $row['Order Transaction Fact Key']
                     );
         mysql_query($sql);
@@ -465,11 +459,8 @@ $this->data ['Invoice Total Profit']=0;
    $this->data ['Invoice Total Profit']= $this->data ['Invoice Total Net Amount']- $this->data ['Invoice Refund Net Amount']-$total_costs;
 
 
-   
-   
-   
-   //print_r($this->data);
-   $sql=sprintf("update  `Invoice Dimension` set `Invoice Refund Net Amount`=%f,`Invoice Refund Tax Amount`=%f,`Invoice Total Net Adjust Amount`=%f,`Invoice Total Tax Adjust Amount`=%f,`Invoice Total Adjust Amount`=%f,`Invoice Outstanding Net Balance`=%f,`Invoice Outstanding Tax Balance`=%f,`Invoice Items Gross Amount`=%f,`Invoice Items Discount Amount`=%f ,`Invoice Items Net Amount`=%f,`Invoice Shipping Net Amount`=%f ,`Invoice Charges Net Amount`=%f ,`Invoice Total Net Amount`=%f ,`Invoice Items Tax Amount`=%f ,`Invoice Shipping Tax Amount`=%f,`Invoice Charges Tax Amount`=%f ,`Invoice Total Tax Amount`=%f,`Invoice Total Amount`=%f where `Invoice Key`=%d",
+    
+   $sql=sprintf("update  `Invoice Dimension` set `Invoice Refund Net Amount`=%f,`Invoice Refund Tax Amount`=%f,`Invoice Total Net Adjust Amount`=%f,`Invoice Total Tax Adjust Amount`=%f,`Invoice Total Adjust Amount`=%f,`Invoice Outstanding Net Balance`=%f,`Invoice Outstanding Tax Balance`=%f,`Invoice Items Gross Amount`=%f,`Invoice Items Discount Amount`=%f ,`Invoice Items Net Amount`=%f,`Invoice Shipping Net Amount`=%f ,`Invoice Charges Net Amount`=%f ,`Invoice Total Net Amount`=%f ,`Invoice Items Tax Amount`=%f ,`Invoice Shipping Tax Amount`=%f,`Invoice Charges Tax Amount`=%f ,`Invoice Total Tax Amount`=%f,`Invoice Total Amount`=%f ,`Invoice Total Profit`=%f where `Invoice Key`=%d",
                $this->data['Invoice Refund Net Amount'],
                 $this->data['Invoice Refund Tax Amount'],
                $this->data['Invoice Total Net Adjust Amount'],
@@ -488,12 +479,12 @@ $this->data ['Invoice Total Profit']=0;
                  $this->data['Invoice Charges Tax Amount'],
                  $this->data['Invoice Total Tax Amount'],
                  $this->data['Invoice Total Amount'],
-                     $this->data['Invoice Total Amount'],
-
+                  
+ $this->data ['Invoice Total Profit'],
                  $this->id
                 );
     mysql_query($sql);
-//print "\n$sql\n";
+
 //print "\n$sql\n";
 }
 function update_refund_totals() {
@@ -954,8 +945,11 @@ function create_header() {
   if (mysql_query ( $sql )) {
     
     $this->data ['Invoice Key'] = mysql_insert_id ();
+    
     $this->id=$this->data ['Invoice Key'];
-  } else {
+  
+ 
+ } else {
     
     print "$sql Error can not create order header";
     exit ();
