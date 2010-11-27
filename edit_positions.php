@@ -64,7 +64,7 @@ $smarty->assign('js_files',$js_files);
 $smarty->assign('parent','staff');
 $smarty->assign('sub_parent','positions');
 
-$smarty->assign('title', _('Company Areas'));
+$smarty->assign('title', _('Company Positions'));
 
 $tipo_filter=$_SESSION['state']['hr']['staff']['f_field'];
 

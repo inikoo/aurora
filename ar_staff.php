@@ -25,6 +25,13 @@ case('is_position_code'):
 case('is_position_name'):
   is_position_name();
   break;
+case('is_company_area_code'):
+    is_company_area_code();
+    break;
+case('is_company_area_name'):
+    is_company_area_name();
+    break;
+
 case('is_company_staff_code'):
     is_company_staff_id();
     break;
@@ -829,6 +836,106 @@ $res=mysql_query($sql);
 
 }
 
+
+function is_company_area_code() {
+    if (!isset($_REQUEST['query']) or !isset($_REQUEST['company_key']) ) {
+        $response= array(
+                       'state'=>400,
+                       'msg'=>'Error'
+                   );
+        echo json_encode($response);
+        return;
+    } else
+        $query=$_REQUEST['query'];
+    if ($query=='') {
+        $response= array(
+                       'state'=>200,
+                       'found'=>0
+                   );
+        echo json_encode($response);
+        return;
+    }
+
+    $company_key=$_REQUEST['company_key'];
+
+    $sql=sprintf("select `Company Area Key`,`Company Area Name`,`Company Area Code` from `Company Area Dimension` where `Company Key`=%d and `Company Area Code`=%s  "
+                 ,$company_key
+                 ,prepare_mysql($query)
+                );
+    $res=mysql_query($sql);
+
+    if ($data=mysql_fetch_array($res)) {
+        $msg=sprintf('Company Area <a href="company_area.php?id=%d">%s</a> already has this code (%s)'
+                     ,$data['Company Area Key']
+                     ,$data['Company Area Name']
+                     ,$data['Company Area Code']
+                    );
+        $response= array(
+                       'state'=>200,
+                       'found'=>1,
+                       'msg'=>$msg
+                   );
+        echo json_encode($response);
+        return;
+    } else {
+        $response= array(
+                       'state'=>200,
+                       'found'=>0
+                   );
+        echo json_encode($response);
+        return;
+    }
+
+}
+function is_company_area_name() {
+    if (!isset($_REQUEST['query']) or !isset($_REQUEST['company_key']) ) {
+        $response= array(
+                       'state'=>400,
+                       'msg'=>'Error'
+                   );
+        echo json_encode($response);
+        return;
+    } else
+        $query=$_REQUEST['query'];
+    if ($query=='') {
+        $response= array(
+                       'state'=>200,
+                       'found'=>0
+                   );
+        echo json_encode($response);
+        return;
+    }
+
+    $company_key=$_REQUEST['company_key'];
+
+    $sql=sprintf("select `Company Area Key`,`Company Area Name`,`Company Area Code` from `Company Area Dimension` where `Company Key`=%d and `Company Area Name`=%s  "
+                 ,$company_key
+                 ,prepare_mysql($query)
+                );
+    $res=mysql_query($sql);
+
+    if ($data=mysql_fetch_array($res)) {
+        $msg=sprintf('Another Company Area <a href="company_area.php?id=%d">(%s)</a> already has this name'
+                     ,$data['Company Area Key']
+                     ,$data['Company Area Code']
+                    );
+        $response= array(
+                       'state'=>200,
+                       'found'=>1,
+                       'msg'=>$msg
+                   );
+        echo json_encode($response);
+        return;
+    } else {
+        $response= array(
+                       'state'=>200,
+                       'found'=>0
+                   );
+        echo json_encode($response);
+        return;
+    }
+
+}
 
 
 
