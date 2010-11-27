@@ -34,7 +34,7 @@
 	  <td  style="text-align:left;width:19em">
 	    <div  style="width:15em;position:relative;top:00px" >
 
-	      <input style="text-align:left;width:18em" code="Company_Department_Code" value="{$company_department->get('Company Department Code')}" ovalue="{$company_department->get('Company Department Code')}" >
+	      <input style="text-align:left;width:18em" id="Company_Department_Code" value="{$company_department->get('Company Department Code')}" ovalue="{$company_department->get('Company Department Code')}" >
 	      <div id="Company_Department_Code_Container" style="" ></div>
 	    </div>
 	  </td>

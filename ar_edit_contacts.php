@@ -103,6 +103,7 @@ case('create_company_department'):
     break;
 case('edit_company_department'):
   edit_company_department();
+break;
 case('edit_contact'):
     $data=prepare_values($_REQUEST,array(
                              'id'=>array('type'=>'key')
