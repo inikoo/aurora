@@ -29,7 +29,7 @@ $js_files=array(
 		'common.js.php',
 		'table_common.js.php',
 		'calendar_common.js.php',
-
+'reports_calendar.js.php',
 		'report_pp.js.php',
 		'js/dropdown.js'
 		);
@@ -40,11 +40,12 @@ $smarty->assign('parent','reports');
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
 
+
 if(isset($_REQUEST['tipo'])){
-$tipo=$_REQUEST['tipo'];
-$_SESSION['state']['report']['tipo']=$tipo;
+  $tipo=$_REQUEST['tipo'];
+  $_SESSION['state'][$report_name]['tipo']=$tipo;
 }else
-$tipo=$_SESSION['state']['report']['tipo'];
+  $tipo=$_SESSION['state'][$report_name]['tipo'];
 
 
 $root_title=_('Pickers & Packers Report');
@@ -57,10 +58,10 @@ $smarty->assign('report_url','report_pp.php');
 include_once('reports_list.php');
 
   
-$_SESSION['state']['report']['pickers']['from']=$from;
-$_SESSION['state']['report']['pickers']['to']=$to;
-$_SESSION['state']['report']['packers']['from']=$from;
-$_SESSION['state']['report']['packers']['to']=$to;
+$_SESSION['state']['report_pp']['pickers']['from']=$from;
+$_SESSION['state']['report_pp']['pickers']['to']=$to;
+$_SESSION['state']['report_pp']['packers']['from']=$from;
+$_SESSION['state']['report_pp']['packers']['to']=$to;
 
 $int=prepare_mysql_dates($from,$to,'`Invoice Date`','date start end');
 

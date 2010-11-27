@@ -663,7 +663,45 @@ $default_state=array(
 
 
                                         ),
+ 'report_pp'=>array(
+                                            'tipo'=>'y',
+                                            'y'=>date('Y'),
+                                            'm'=>date('m'),
+                                            'd'=>date('d'),
+                                            'w'=>date('W'),
+                                            'department_key'=>false,
+                                            'share'=>.8,
+                                            'from'=>'',
+                                            'to'=>'',
+                                             'pickers'=>array(
+                                                        'order'=>'alias',
+                                                        'order_dir'=>'',
+                                                        'sf'=>0,
+                                                        'nr'=>50,
+                                                        'from'=>'',
+                                                        'to'=>'',
+                                                        'where'=>'where true',
+                                                        'f_field'=>'',
+                                                        'f_value'=>'','f_show'=>false,
+                                                        'elements'=>array()
 
+                                                    ),
+                                          'packers'=>array(
+                                                        'order'=>'alias',
+                                                        'order_dir'=>'',
+                                                        'sf'=>0,
+                                                        'nr'=>50,
+                                                        'from'=>'',
+                                                        'to'=>'',
+                                                        'where'=>'where true',
+                                                        'f_field'=>'',
+                                                        'f_value'=>'','f_show'=>false,
+                                                        'elements'=>array()
+
+                                                    ),
+
+
+                                        ),
                    'report_sales_with_no_tax'=>array(
                                                   'tipo'=>'y',
                                                   'y'=>date('Y'),
@@ -2129,32 +2167,7 @@ $default_state=array(
                                                                                                      )
                                                                         ),
                                                   ),
-                                          'pickers'=>array(
-                                                        'order'=>'units',
-                                                        'order_dir'=>'',
-                                                        'sf'=>0,
-                                                        'nr'=>10000,
-                                                        'from'=>'',
-                                                        'to'=>'',
-                                                        'where'=>'where true',
-                                                        'f_field'=>'',
-                                                        'f_value'=>'','f_show'=>false,
-                                                        'elements'=>array()
-
-                                                    ),
-                                          'packers'=>array(
-                                                        'order'=>'tipo',
-                                                        'order_dir'=>'',
-                                                        'sf'=>0,
-                                                        'nr'=>10000,
-                                                        'from'=>'',
-                                                        'to'=>'',
-                                                        'where'=>'where true',
-                                                        'f_field'=>'',
-                                                        'f_value'=>'','f_show'=>false,
-                                                        'elements'=>array()
-
-                                                    ),
+                                         
                                           'customers'=>array(
                                                           'store_keys'=>'all',
                                                           'top'=>100,

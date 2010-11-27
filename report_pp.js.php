@@ -1,4 +1,5 @@
 <?php include_once('common.php');?>
+var link="report_pp.php";
 YAHOO.util.Event.addListener(window, "load", function() {
     tables = new function() {
 	    //START OF THE TABLE=========================================================================================================================
@@ -43,11 +44,10 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    this.table0 = new YAHOO.widget.DataTable(tableDivEL, CustomersColumnDefs,
 						     this.dataSource0
 						     , {
-							 // sortedBy: {key:"<?php echo$_SESSION['tables']['customers_list'][0]?>", dir:"<?php echo$_SESSION['tables']['customers_list'][1]?>"},
 							 renderLoopSize: 50,generateRequest : myRequestBuilder
 							 ,sortedBy : {
-							    Key: "<?php echo$_SESSION['state']['report']['pickers']['order']?>",
-							     dir: "<?php echo$_SESSION['state']['report']['pickers']['order_dir']?>"
+							    Key: "<?php echo $_SESSION['state']['report_pp']['pickers']['order']?>",
+							     dir: "<?php echo $_SESSION['state']['report_pp']['pickers']['order_dir']?>"
 							 },
 							 dynamicData : true
 							 
@@ -105,8 +105,8 @@ YAHOO.util.Event.addListener(window, "load", function() {
 							 // sortedBy: {key:"<?php echo$_SESSION['tables']['customers_list'][1]?>", dir:"<?php echo$_SESSION['tables']['customers_list'][1]?>"},
 							 renderLoopSize: 50,generateRequest : myRequestBuilder
 							 ,sortedBy : {
-							    Key: "<?php echo$_SESSION['state']['report']['packers']['order']?>",
-							     dir: "<?php echo$_SESSION['state']['report']['packers']['order_dir']?>"
+							    Key: "<?php echo $_SESSION['state']['report_pp']['packers']['order']?>",
+							     dir: "<?php echo $_SESSION['state']['report_pp']['packers']['order_dir']?>"
 							 },
 							 dynamicData : true
 							 

@@ -266,7 +266,7 @@ $total=0;
 
 
 function pickers_report(){
-   $conf=$_SESSION['state']['report']['pickers'];
+   $conf=$_SESSION['state']['report_pp']['pickers'];
  //  if(isset( $_REQUEST['sf']))
 //      $start_from=$_REQUEST['sf'];
 //    else
@@ -315,14 +315,14 @@ function pickers_report(){
 
    $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
 
-   $_SESSION['state']['report']['pickers']=array('order'=>$order,'order_dir'=>$order_direction);
-
+   $_SESSION['state']['report_pp']['pickers']['order']=$order;
+   $_SESSION['state']['report_pp']['pickers']['order_dir']=$order_direction;
    $date_interval=prepare_mysql_dates($from,$to,'`Order Date`','only_dates');
    if($date_interval['error']){
       $date_interval=prepare_mysql_dates($conf['from'],$conf['to']);
    }else{
-     $_SESSION['state']['report']['pickers']['from']=$date_interval['from'];
-     $_SESSION['state']['report']['pickers']['to']=$date_interval['to'];
+     $_SESSION['state']['report_pp']['pickers']['from']=$date_interval['from'];
+     $_SESSION['state']['report_pp']['pickers']['to']=$date_interval['to'];
    }
 
    
@@ -402,7 +402,7 @@ function pickers_report(){
 }
 
 function packers_report(){
-$conf=$_SESSION['state']['report']['packers'];
+$conf=$_SESSION['state']['report_pp']['packers'];
  //  if(isset( $_REQUEST['sf']))
 //      $start_from=$_REQUEST['sf'];
 //    else
@@ -449,18 +449,17 @@ $conf=$_SESSION['state']['report']['packers'];
     $tableid=0;
 
 
-   $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
+    $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
 
-   $_SESSION['state']['report']['packers']=array('order'=>$order,'order_dir'=>$order_direction);
-
+   $_SESSION['state']['report_pp']['packers']['order']=$order;
+   $_SESSION['state']['report_pp']['packers']['order_dir']=$order_direction;
    $date_interval=prepare_mysql_dates($from,$to,'`Order Date`','only_dates');
    if($date_interval['error']){
       $date_interval=prepare_mysql_dates($conf['from'],$conf['to']);
    }else{
-     $_SESSION['state']['report']['packers']['from']=$date_interval['from'];
-     $_SESSION['state']['report']['packers']['to']=$date_interval['to'];
+     $_SESSION['state']['report_pp']['packers']['from']=$date_interval['from'];
+     $_SESSION['state']['report_pp']['packers']['to']=$date_interval['to'];
    }
-
    
    
    $start_from=0;
