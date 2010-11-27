@@ -2214,7 +2214,7 @@ $this->data ['Order Dispatched Estimated Weight']= $row ['disp_estimated_weight'
 
     function translate_dispatch_state($array_dispatch_state){
       
-      // print_r($array_dispatch_state);
+      
         $dispatch_state='Unknown';
         if(count($array_dispatch_state)==1)
         switch ($state=array_pop($array_dispatch_state)) {
@@ -2688,8 +2688,7 @@ function set_data_from_store($store_key) {
     $this->data ['Order XHTML Store'] = sprintf ( '<a href="store.php?id=%d">%s</a>', $store->id, $store->data[ 'Store Code' ] );
     $this->data ['Order Currency']=$store->data[ 'Store Currency Code' ];
 
-    //   print_r($this->data);
-
+ 
 
     $this->public_id_format=$store->data[ 'Store Order Public ID Format' ];
 

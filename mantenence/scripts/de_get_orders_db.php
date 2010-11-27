@@ -96,7 +96,7 @@ $fam_promo_key=$fam_promo->id;
 
 $sql="select * from  de_orders_data.orders  where   (last_transcribed is NULL  or last_read>last_transcribed) and deleted='No'  order by filename  ";
 //$sql="select * from  de_orders_data.orders where filename like '%refund.xls'   order by filename";
-$sql="select * from  de_orders_data.orders  where (filename like '/mnt/%DE0004%.xls' ) order by filename";
+//$sql="select * from  de_orders_data.orders  where (filename like '/mnt/%DE0004%.xls' ) order by filename";
 
 
 $contador=0;
@@ -217,7 +217,12 @@ mysql_free_result($result_test);
         //  continue;
         // }
 
+if($header_data['date_order']=='1899-12-30')
+$header_data['date_order']='';
         list($date_index,$date_order,$date_inv)=get_dates($row2['timestamp'],$header_data,$tipo_order,true);
+//print_r($header_data);
+//print "$date_index,$date_order,$date_inv $tipo_order\n";
+
 
   $editor=array(
                             'Date'=>$date_order,
@@ -230,6 +235,10 @@ mysql_free_result($result_test);
 
       
  $data['editor']=$editor;
+
+
+
+
 
         if ($tipo_order==9) {
             if ( $date_inv=='NULL' or  strtotime($date_order)>strtotime($date_inv)) {
@@ -1232,7 +1241,7 @@ $customer_data['Customer Main Plain Email']=encrypt_email($customer_data['Custom
 
         if ($exchange==0) {
 
-            exit("error exhange is zero for $exchange_date\n");
+            exit("error exhange is zero for $exchange_date  ($date_order - $date_inv)  \n");
         }
         list($parcels,$parcel_type)=parse_parcels($header_data['parcels']);
 

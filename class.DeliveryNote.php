@@ -317,7 +317,6 @@ protected function create($dn_data,$order=false) {
     
     
     function create_header() {
-//print_r($this->data );
         $sql = sprintf ( "insert into `Delivery Note Dimension` (`Delivery Note State`,`Delivery Note Date Created`,`Delivery Note Dispatch Method`,`Delivery Note Store Key`,`Delivery Note XHTML Orders`,`Delivery Note XHTML Invoices`,`Delivery Note Date`,`Delivery Note ID`,`Delivery Note File As`,`Delivery Note Customer Key`,`Delivery Note Customer Name`,`Delivery Note XHTML Ship To`,`Delivery Note Ship To Key`,`Delivery Note Metadata`,`Delivery Note Weight`,`Delivery Note XHTML Pickers`,`Delivery Note Number Pickers`,`Delivery Note XHTML Packers`,`Delivery Note Number Packers`,`Delivery Note Type`,`Delivery Note Title`,`Delivery Note Country 2 Alpha Code`,`Delivery Note Shipper Code`) values (%s,%s,%s,%s,'','',%s,%s,%s,%s,%s,%s,%s,%s,%f,%s,%d,%s,%d,%s,%s,%s,%s)"
                          , prepare_mysql ( $this->data ['Delivery Note State'] )
 
@@ -1337,7 +1336,6 @@ $this->handle_to_customer($data);
 
         while ($row=mysql_fetch_assoc($res)) {
         
-  //      print_r($row);
             $to_be_picked=$row['Required']+$row['Given'];
             $qty=$row['Out of Stock']+$row['Picked'];
             $required_weight.=$to_be_picked*$row['Part Gross Weight'];
@@ -1575,7 +1573,6 @@ function set_as_picked($itf_key,$qty,$date=false,$picker_key=false) {
                 
     $res=mysql_query ( $sql );
     if ($row=mysql_fetch_assoc($res)) {
-   // print_r($row);
     $original_qty=$qty;
     $qty+=$row['Picked'];
     
@@ -1591,11 +1588,13 @@ $sku=$row['Part SKU'];
  //  print "*******  $sku  *$original_qty*$qty   ".$row['Required']."   *********  $picking_factor   \n";
 
     $part=new Part($sku);
+$cost_storing=0;
+$cost_supplier=$part->get_unit_cost()*$qty;
 
         $sql = sprintf ( "update `Inventory Transaction Fact` set `Picked`=%f,`Inventory Transaction Quantity`=%f,`Inventory Transaction Amount`=%f,`Date Picked`=%s,`Date`=%s ,`Picker Key`=%s where `Inventory Transaction Key`=%d  "
                          ,$qty
                          ,-1*$qty
-                         ,-1*$part->get_unit_cost()*$qty
+                         ,-1*$cost_supplier
                          , prepare_mysql ( $date )
                          , prepare_mysql ( $date )
                          , prepare_mysql ($picker_key)
@@ -1614,11 +1613,15 @@ $sku=$row['Part SKU'];
         else
                 $state='Picking';
 
-        $sql = sprintf ( "update `Order Transaction Fact` set `Current Dispatching State`=%s,`Picking Finished Date`=%s,`Picker Key`=%s,`Picking Factor`=%f where `Order Transaction Fact Key`=%d  ",
+
+
+        $sql = sprintf ( "update `Order Transaction Fact` set `Current Dispatching State`=%s,`Picking Finished Date`=%s,`Picker Key`=%s,`Picking Factor`=%f ,`Cost Supplier`=%f,`Cost Storing`=%f where `Order Transaction Fact Key`=%d  ",
                          prepare_mysql ( $state ),
                          prepare_mysql ( $date ),
                          prepare_mysql ($picker_key),
                          $picking_factor,
+                         $cost_supplier,
+                        $cost_storing,
                          $otf_key
                        );
         mysql_query ( $sql );
@@ -1630,19 +1633,19 @@ $sql = sprintf ( "update `Delivery Note Dimension` set `Delivery Note Date Finis
 
 }
 
-function get_packed_estimated_weight(){
-$weight=0;
-$sql=sprintf("select sum(`Estimated Dispatched Weight`) as weight from `Order Transaction Fact` where `Order Quantity`!=0 and `Delivery Note Key`=%d",
-$this->id
-);
- $res=mysql_query ( $sql );
+function get_packed_estimated_weight() {
+    $weight=0;
+    $sql=sprintf("select sum(`Estimated Dispatched Weight`) as weight from `Order Transaction Fact` where `Order Quantity`!=0 and `Delivery Note Key`=%d",
+                 $this->id
+                );
+    $res=mysql_query ( $sql );
     while ($row=mysql_fetch_assoc($res)) {
-    $weight=$row['weight'];
+        $weight=$row['weight'];
     }
     return $weight;
 }
 
-   function set_as_packed($itf_key,$qty,$date=false,$packer_key=false) {
+function set_as_packed($itf_key,$qty,$date=false,$packer_key=false) {
     if (!$date)
         $date=date("Y-m-d H:i:s");
     $this->updated=false;
@@ -1651,31 +1654,33 @@ $this->id
         $packer_key=$this->data['Delivery Note Assigned Packer Key'];
 
     }
-    
-    
-    
 
-    $sql=sprintf("select `Part SKU`,`Required`,`Picked`,`Packed`,`Out of Stock`,`Map To Order Transaction Fact Key`,IFNULL(`Map To Order Transaction Fact Metadata`,1)  as `Map To Order Transaction Fact Metadata`  from   `Inventory Transaction Fact` where `Inventory Transaction Key`=%d  "
+
+
+
+    $sql=sprintf("select `Inventory Transaction Amount`,`Inventory Transaction Storing Charge Amount`,`Part SKU`,`Required`,`Picked`,`Packed`,`Out of Stock`,`Map To Order Transaction Fact Key`,IFNULL(`Map To Order Transaction Fact Metadata`,1)  as `Map To Order Transaction Fact Metadata`  from   `Inventory Transaction Fact` where `Inventory Transaction Key`=%d  "
                  ,$itf_key
                 );
     $res=mysql_query ( $sql );
     if ($row=mysql_fetch_assoc($res)) {
         $sku=$row['Part SKU'];
-     if ($row['Required']-$row['Out of Stock']<=0 or $row['Picked']==0) {
+        if ($row['Required']-$row['Out of Stock']<=0 or $row['Picked']==0) {
             return;
         }
-   
-   $original_qty=$qty;
-   $qty=$qty+$row['Packed'];
-   
+
+        $original_qty=$qty;
+        $qty=$qty+$row['Packed'];
+
         if ($row['Picked']<$qty) {
             $qty=$row['Picked'];
         }
-      
-            $packing_factor=round($qty/$row['Picked'],4);
+
+        $packing_factor=round($qty/$row['Picked'],4);
         $part=new Part($row['Part SKU']);
-                $weight=$qty*$part->data['Part Gross Weight'];
- //  print "*******  $sku  *$original_qty*$qty   ".$row['Picked']."   *********  $packing_factor   \n";
+        $weight=$qty*$part->data['Part Gross Weight'];
+//  print "*******  $sku  *$original_qty*$qty   ".$row['Picked']."   *********  $packing_factor   \n";
+
+     
 
         $sql = sprintf ( "update `Inventory Transaction Fact` set `Inventory Transaction Weight`=%f,`Packed`=%f,`Date Packed`=%s,`Date`=%s ,`Packer Key`=%s where `Inventory Transaction Key`=%d  "
                          , $weight
@@ -1683,29 +1688,31 @@ $this->id
                          , prepare_mysql ( $date )
                          , prepare_mysql ( $date )
                          , prepare_mysql ($packer_key)
+                      
                          ,$itf_key
                        );
         mysql_query ( $sql );
- 
-          $otf_key=$row['Map To Order Transaction Fact Key'];
+
+        $otf_key=$row['Map To Order Transaction Fact Key'];
         $factor=$row['Map To Order Transaction Fact Metadata'];
-       
-            
-        if($packing_factor>=1)
+
+
+        if ($packing_factor>=1)
             $state='Ready to Ship';
         else
             $state='Packing';
-          
-          
-          
-          
-        $sql = sprintf ( "update `Order Transaction Fact` set `Estimated Dispatched Weight`=%f,`Current Dispatching State`=%s,`Delivery Note Quantity`=%f,`Packing Finished Date`=%s,`Packer Key`=%s ,`Packing Factor`=%f where `Order Transaction Fact Key`=%d  ",
+
+
+
+
+        $sql = sprintf ( "update `Order Transaction Fact` set `Estimated Dispatched Weight`=%f,`Current Dispatching State`=%s,`Delivery Note Quantity`=%f,`Packing Finished Date`=%s,`Packer Key`=%s ,`Packing Factor`=%f  where `Order Transaction Fact Key`=%d  ",
                          $weight,
                          prepare_mysql($state),
                          $qty*$factor,
                          prepare_mysql ( $date ),
                          prepare_mysql ($packer_key),
                          $packing_factor,
+                         
                          $otf_key
                        );
         mysql_query ( $sql );
@@ -1821,7 +1828,6 @@ $order->update_dispatch_state();
 }
 
 function add_orphan_transactions($data) {
-print_r($data);
     if ($data['Order Key']) {
         $order_key=$data['Order Key'];
         $order_date=$data['Order Date'];
