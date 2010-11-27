@@ -1,4 +1,9 @@
-<div class="cal_menu" style="width:155px" >
+<div  class="cal_menu_container" style="xborder:1px solid black" >
+<span id="show_calendar_div" onClick="show_calendar_div()" class="state_details">{t}Other Dates{/t} &darr;</span>
+<span id="hide_calendar_div" onClick="hide_calendar_div()" class="state_details" style="display:none">{t}Close{/t} &uarr;</span>
+
+<div  class="cal_menu" id="calendar_div"  style="display:none";   >
+
       {if $up}<a class="prev" href="{$report_url}?{$up.url}" ><img src="art/icons/up.png" alt="&uarr;" title="{$up.title}"  /></a>{/if}
 
 <span>{$tipo_title}</span> <span id="period">{$period}</span>
@@ -86,6 +91,17 @@
 
 </div>
 </div>
+
+
+</div>
+
+
+
+
+
+
+
+
 
 <div style="text-align:right;width:700px;margin-right:20px">
 
