@@ -66,11 +66,11 @@
        <div style="clear:both"></div>
      </div>
 
-<div id="msg_dispatched_post_transactions" style="{if !$order->get_number_dispatched_post_order_transactions()}display:none;{/if}border:1px solid #fd4646;padding:5px 10px;background:#ff6969;color:#fff;xtext-align:center;text-weight:800">
+<div id="msg_dispatched_post_transactions" style="{if !$order->get_number_post_order_transactions()}display:none;{/if}border:1px solid #fd4646;padding:5px 10px;background:#ff6969;color:#fff;xtext-align:center;text-weight:800">
 {t}This order has some dispatched post transactions{/t} <span onClick="show_dispatched_post_transactions()" style="font-size:90%;cursor:pointer">({t}Show details){/t}</span>
 </div>
 
-<div style="xdisplay:none;border-top:1px solid #fd7777;border-bottom:1px solid #fd7777;padding:0 0 10px 0;" id="dispatched_post_transactions">
+<div style="display:none;border-top:1px solid #fd7777;border-bottom:1px solid #fd7777;padding:0 0 10px 0;" id="dispatched_post_transactions">
 <h2>{t}Dispatched Post-Order Items{/t}</h2>
       <div  id="table1" class="dtable btable" style="margin-bottom:0;font-size:80%"></div>
 </div>

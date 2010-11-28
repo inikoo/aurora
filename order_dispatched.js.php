@@ -96,6 +96,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 
 function init(){
+init_search('orders_store');
     var change_view = function (e) {
         window.location = "orders.php?view="+this.id;
     }
