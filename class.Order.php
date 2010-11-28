@@ -3462,8 +3462,9 @@ return $file_as;
 }
 
 
-function get_number_dispatched_post_order_transactions(){
-$sql=sprintf("select count(*) as num from `Order Transaction Fact` where `Order Key`=%d and `Order Transaction Type` in ('Missing','Replacement') ",$this->id);
+
+function get_number_post_order_transactions(){
+$sql=sprintf("select count(*) as num from `Order Post Transaction Dimension` where `Order Key`=%d  ",$this->id);
 $res=mysql_query($sql);
 $number=0;
 if($row=mysql_fetch_assoc($res)){
@@ -3471,6 +3472,8 @@ $number=$row['num'];
 }
 return $number;
 }
+
+
 
 function get_post_transactions_in_process_data(){
     $data=array(
