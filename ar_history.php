@@ -330,7 +330,7 @@ function list_history($asset_type) {
     elseif($asset_type=='edit_each_staff') {
         $asset='Company Staff';
     }
-     elseif($asset_type=='edit_each_position') {
+     elseif($asset_type=='company_position') {
         $asset='Company Position';
     }
 
