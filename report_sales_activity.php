@@ -51,9 +51,9 @@ $from=date('Y-m-d',strtotime('now -7 day'));
 
 if(isset($_REQUEST['period'])){
 $period=$_REQUEST['period'];
-$_SESSION['state']['report']['activity']['period']=$period;
+$_SESSION['state']['report_activity']['period']=$period;
 }else
-$period=$_SESSION['state']['report']['activity']['period'];
+$period=$_SESSION['state']['report_activity']['period'];
 
 switch($period){
 case('day'):
@@ -82,7 +82,7 @@ $period_label=_('Last Week Sales Activity');
 
 
 
-$compare_against=$_SESSION['state']['report']['activity']['compare'];
+$compare_against=$_SESSION['state']['report_activity']['compare'];
 switch($compare_against){
 case('previous_period'):
 $compare_label=_('Change against previous period');

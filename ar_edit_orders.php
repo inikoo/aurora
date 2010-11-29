@@ -16,29 +16,32 @@ if (!isset($_REQUEST['tipo'])) {
 $tipo=$_REQUEST['tipo'];
 
 switch ($tipo) {
-
+case('create_refund'):
+    $data=prepare_values($_REQUEST,array(
+                             'order_key'=>array('type'=>'key')
+                         ));
+    create_refund($data);
+    break;
 case('send_post_order_to_warehouse'):
-$data=prepare_values($_REQUEST,array(
-                            
+    $data=prepare_values($_REQUEST,array(
                              'order_key'=>array('type'=>'key')
                          ));
-
-send_post_order_to_warehouse($data);
-break;
+    send_post_order_to_warehouse($data);
+    break;
 case('cancel_post_transactions'):
-$data=prepare_values($_REQUEST,array(
-                            
+    $data=prepare_values($_REQUEST,array(
+
                              'order_key'=>array('type'=>'key')
                          ));
 
-cancel_post_transactions_in_process($data);
-break;
+    cancel_post_transactions_in_process($data);
+    break;
 case('picking_aid_sheet'):
-picking_aid_sheet();
-break;
+    picking_aid_sheet();
+    break;
 case('create_invoice'):
-create_invoice();
-break;
+    create_invoice();
+    break;
 case('assign_picker'):
 
     $data=prepare_values($_REQUEST,array(
@@ -57,7 +60,7 @@ case('pick_it'):
                          ));
 
     start_picking($data);
-    break;    
+    break;
 case('ready_to_pick_orders'):
     ready_to_pick_orders();
     break;
@@ -77,20 +80,20 @@ case('edit_new_order'):
     edit_new_order();
     break;
 case('edit_new_post_order'):
-$data=prepare_values($_REQUEST,array(
+    $data=prepare_values($_REQUEST,array(
                              'order_key'=>array('type'=>'key'),
                              'otf_key'=>array('type'=>'key'),
                              'key'=>array('type'=>'string'),
                              'new_value'=>array('type'=>'string')
                          ));
     edit_new_post_order($data);
-    break;    
+    break;
 case('transactions_to_process'):
     transactions_to_process();
     break;
- case('post_transactions_to_process'):
+case('post_transactions_to_process'):
     post_transactions_to_process();
-    break;   
+    break;
 case('edit_new_order_shipping_type'):
     edit_new_order_shipping_type();
     break;
@@ -106,7 +109,7 @@ default:
 
 
 function cancel_order() {
-global $editor;
+    global $editor;
     $order_key=$_SESSION['state']['order']['id'];
 
     $order=new Order($order_key);
@@ -349,7 +352,7 @@ function edit_new_post_order($data) {
     if ($key=='quantity' and is_numeric($value) and $value>=0) {
         $transaction_data['Quantity']=$value;
         $_key='Quantity';
-        
+
     }
     elseif($key=='operation') {
         $transaction_data['Operation']=$value;
@@ -359,7 +362,7 @@ function edit_new_post_order($data) {
     elseif($key=='reason') {
         $transaction_data['Reason']=$value;
         $_key='Reason';
-                $_SESSION['state']['order']['post_transactions']['reason']=$value;
+        $_SESSION['state']['order']['post_transactions']['reason']=$value;
 
     }
     elseif($key=='to_be_returned') {
@@ -376,8 +379,8 @@ function edit_new_post_order($data) {
 
 
     $transaction_data=$order->create_post_transaction_in_process($otf_key,$_key,$transaction_data);
-  // print_r($transaction_data);
-   if ($order->updated) {
+    // print_r($transaction_data);
+    if ($order->updated) {
         $response= array(
                        'state'=>200,
                        'result'=>'updated',
@@ -388,12 +391,12 @@ function edit_new_post_order($data) {
                        'data'=>$order->get_post_transactions_in_process_data(),
                        'new_value'=>$transaction_data[$_key]
                    );
-    }else{
-         $response= array(
+    } else {
+        $response= array(
                        'state'=>200,
                        'result'=>'nochange'
-                       );
-    
+                   );
+
     }
     echo json_encode($response);
 
@@ -411,9 +414,9 @@ function transactions_to_process() {
         $_SESSION['state']['order']['store_key']=$store_key;
     } else
         $store_key=$_SESSION['state']['order']['store_key'];
-    
 
-  $conf=$_SESSION['state']['products']['table'];
+
+    $conf=$_SESSION['state']['products']['table'];
     if (isset( $_REQUEST['sf']))
         $start_from=$_REQUEST['sf'];
     else
@@ -468,7 +471,7 @@ function transactions_to_process() {
         $tableid=0;
 
 
-   if (isset( $_REQUEST['family_code']))
+    if (isset( $_REQUEST['family_code']))
         $family_code=$_REQUEST['family_code'];
     else
         $family_code=$conf['family_code'];
@@ -491,14 +494,14 @@ function transactions_to_process() {
 
 
     $_SESSION['state']['products']['table']=array(
-'family_code'=>$family_code
-                                                ,'order'=>$order
-                                                        ,'order_dir'=>$order_direction
-                                                                     ,'nr'=>$number_results
-                                                                           ,'sf'=>$start_from
-                                                                                 //						 ,'where'=>$where
-                                                                                 ,'f_field'=>$f_field
-                                                                                            ,'f_value'=>$f_value
+                                                'family_code'=>$family_code
+                                                              ,'order'=>$order
+                                                                       ,'order_dir'=>$order_direction
+                                                                                    ,'nr'=>$number_results
+                                                                                          ,'sf'=>$start_from
+                                                                                                //						 ,'where'=>$where
+                                                                                                ,'f_field'=>$f_field
+                                                                                                           ,'f_value'=>$f_value
                                             );
 
 
@@ -530,10 +533,10 @@ function transactions_to_process() {
 
     }
 
-if($family_code!=''){
+    if ($family_code!='') {
 
-$where.=sprintf(" and `Product Family Code`=%s ",prepare_mysql($family_code));
-}
+        $where.=sprintf(" and `Product Family Code`=%s ",prepare_mysql($family_code));
+    }
 
 
 
@@ -549,7 +552,7 @@ $where.=sprintf(" and `Product Family Code`=%s ",prepare_mysql($family_code));
     $sql="select count(*) as total from $table   $where $wheref   ";
 
     // print_r($conf);exit;
-        // print $sql;
+    // print $sql;
     $res=mysql_query($sql);
     if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
         $total=$row['total'];
@@ -792,14 +795,14 @@ function post_transactions_to_process() {
     else
         $tableid=0;
 
-$_SESSION['state']['order']['post_transactions']['order']=$order;
-$_SESSION['state']['order']['post_transactions']['order_dir']=$order_direction;
-$_SESSION['state']['order']['post_transactions']['nr']=$number_results;
-$_SESSION['state']['order']['post_transactions']['sf']=$start_from;
-$_SESSION['state']['order']['post_transactions']['f_field']=$f_field;
-$_SESSION['state']['order']['post_transactions']['f_value']=$f_value;
+    $_SESSION['state']['order']['post_transactions']['order']=$order;
+    $_SESSION['state']['order']['post_transactions']['order_dir']=$order_direction;
+    $_SESSION['state']['order']['post_transactions']['nr']=$number_results;
+    $_SESSION['state']['order']['post_transactions']['sf']=$start_from;
+    $_SESSION['state']['order']['post_transactions']['f_field']=$f_field;
+    $_SESSION['state']['order']['post_transactions']['f_value']=$f_value;
 
-   
+
 
     $table='  `Order Transaction Fact` OTF  left join `Product History Dimension` PHD on (PHD.`Product Key`=OTF.`Product Key`) left join `Product Dimension` P on (PHD.`Product ID`=P.`Product ID`) left join `Order Post Transaction Dimension` POT on (POT.`Order Transaction Fact Key`=OTF.`Order Transaction Fact Key`)  ';
     $where=sprintf(' where `Order Quantity`>0 and OTF.`Order Key`=%d',$order_id);
@@ -951,16 +954,16 @@ $_SESSION['state']['order']['post_transactions']['f_value']=$f_value;
             $deal_info=' <span class="deal_info">'.$row['Deal Info'].'</span>';
         }
 
-       
+
 
         $code=sprintf('<a href="product.php?pid=%d">%s</a>',$row['Product ID'],$row['Product Code']);
         $adata[]=array(
-                    'otf_key'=>$row['Order Transaction Fact Key'],
-                    'order_key'=>$row['Order Key'],
+                     'otf_key'=>$row['Order Transaction Fact Key'],
+                     'order_key'=>$row['Order Key'],
                      'pid'=>$row['Product ID'],
                      'code'=>$code,
                      'description'=>$row['Product XHTML Short Description'].$deal_info,
-                     
+
                      'stock'=>$stock,
                      'ordered'=>$row['Delivery Note Quantity'].' ('.money($row['charged'],$row['Invoice Currency Code']).')',
                      'state'=>$type,
@@ -971,8 +974,8 @@ $_SESSION['state']['order']['post_transactions']['f_value']=$f_value;
                      'to_charge'=>'<span onClick="change_discount(this)">'.money($row['Order Transaction Gross Amount']-$row['Order Transaction Total Discount Amount']).'</span>',
                      'quantity'=>$row['Quantity'],
                      'operation'=>$row['Operation'],
- 'reason'=>$row['Reason'],
-  'to_be_returned'=>$row['To Be Returned'],
+                     'reason'=>$row['Reason'],
+                     'to_be_returned'=>$row['To Be Returned'],
                  );
 
 
@@ -1047,14 +1050,14 @@ function ready_to_pick_orders() {
     //            'order_dir'=>$order_direction,
     //            'nr'=>$number_results,
     //            'sf'=>$start_from,
-     //           'where'=>$where,
-     //           'f_field'=>$f_field,
-     //           'f_value'=>$f_value,
+    //           'where'=>$where,
+    //           'f_field'=>$f_field,
+    //           'f_value'=>$f_value,
 
 
-      //      );
+    //      );
 
- $_SESSION['state']['orders']['ready_to_pick_dn']['order']=$order;
+    $_SESSION['state']['orders']['ready_to_pick_dn']['order']=$order;
     $_SESSION['state']['orders']['ready_to_pick_dn']['order_dir']=$order_direction;
     $_SESSION['state']['orders']['ready_to_pick_dn']['nr']=$number_results;
     $_SESSION['state']['orders']['ready_to_pick_dn']['sf']=$start_from;
@@ -1182,48 +1185,53 @@ function ready_to_pick_orders() {
 
         $w=weight($row['Delivery Note Estimated Weight']);
         $picks=number($row['Delivery Note Distinct Items']);
-       
+
         $operations='<div id="operations'.$row['Delivery Note Key'].'">';
         if ($row['Delivery Note State']=='Ready to be Picked') {
             $status='<div id="dn_state'.$row['Delivery Note Key'].'">'._('Ready to be Picked').'</div>';
             $operations.='<span style="cursor:pointer"  onClick="assign_picker(this,'.$row['Delivery Note Key'].')">'._('Assign Picker')."</span>";
             $operations.=' | <span style="cursor:pointer"  onClick="pick_it(this,'.$row['Delivery Note Key'].')">'._('Pick order')."</span>";
             $public_id=$row['Delivery Note ID'];
-      }
+        }
         elseif($row['Delivery Note State']=='Picker Assigned') {
             $status='<div id="dn_state'.$row['Delivery Note Key'].'">'._('Picker Assigned').'</div>';
             $operations.='<span style="cursor:pointer"  onClick="pick_it(this,'.$row['Delivery Note Key'].','.$row['Delivery Note Assigned Picker Key'].')"> <b>'.$row['Delivery Note Assigned Picker Alias'].'</b> '._('pick order')."</span>";
             $operations.=' <img src="art/icons/edit.gif" alt="'._('edit').'" style="cursor:pointer"  onClick="assign_picker(this,'.$row['Delivery Note Key'].')">';
             $public_id=sprintf("<a href='order_pick_aid.php?id=%d'>%s</a>",$row['Delivery Note Key'],$row['Delivery Note ID']);
-        }elseif($row['Delivery Note State']=='Packer Assigned') {
+        }
+        elseif($row['Delivery Note State']=='Packer Assigned') {
             $status='<div id="dn_state'.$row['Delivery Note Key'].'">'._('(Picked) Packer Assigned').'</div>';
             $operations.='<span style="cursor:pointer"  onClick="pack_it(this,'.$row['Delivery Note Key'].','.$row['Delivery Note Assigned Packer Key'].')"> <b>'.$row['Delivery Note Assigned Packer Alias'].'</b> '._('pack order')."</span>";
             $operations.=' <img src="art/icons/edit.gif" alt="'._('edit').'" style="cursor:pointer"  onClick="assign_packer(this,'.$row['Delivery Note Key'].')">';
             $public_id=sprintf("<a href='order_pick_aid.php?id=%d'>%s</a>",$row['Delivery Note Key'],$row['Delivery Note ID']);
-    }elseif($row['Delivery Note State']=='Picking') {
+        }
+        elseif($row['Delivery Note State']=='Picking') {
             $status='<div id="dn_state'.$row['Delivery Note Key'].'">'._('Picking').'('.percentage($row['Delivery Note Faction Picked'],1,0).') <b>'.$row['Delivery Note Assigned Picker Alias'].'</b> </div>';
             $operations.='<span style="cursor:pointer"  onClick="assign_packer(this,'.$row['Delivery Note Key'].')">'._('Assign Packer')."</span>";;
             $operations.=' | <span style="cursor:pointer"  onClick="pack_it(this,'.$row['Delivery Note Key'].')">'._('Start packing')."</span>";
-     $public_id=sprintf("<a href='order_pick_aid.php?id=%d'>%s</a>",$row['Delivery Note Key'],$row['Delivery Note ID']);
-     }elseif($row['Delivery Note State']=='Picked') {
+            $public_id=sprintf("<a href='order_pick_aid.php?id=%d'>%s</a>",$row['Delivery Note Key'],$row['Delivery Note ID']);
+        }
+        elseif($row['Delivery Note State']=='Picked') {
             $status='<div id="dn_state'.$row['Delivery Note Key'].'">'._('Picked').'</div>';
             $operations.='<span style="cursor:pointer"  onClick="assign_packer(this,'.$row['Delivery Note Key'].')">'._('Assign Packer')."</span>";;
             $operations.=' | <span style="cursor:pointer"  onClick="pack_it(this,'.$row['Delivery Note Key'].')">'._('Start packing')."</span>";
             $public_id=sprintf("<a href='order_pick_aid.php?id=%d'>%s</a>",$row['Delivery Note Key'],$row['Delivery Note ID']);
-    }elseif($row['Delivery Note State']=='Packing') {
-             $status='<div id="dn_state'.$row['Delivery Note Key'].'">'._('Packing').'('.percentage($row['Delivery Note Faction Packed'],1,0).') <b>'.$row['Delivery Note Assigned Packer Alias'].'</b> </div>';
-           
-     $public_id=sprintf("<a href='order_pack_aid.php?id=%d'>%s</a>",$row['Delivery Note Key'],$row['Delivery Note ID']);
-    }elseif($row['Delivery Note State']=='Packed') {
+        }
+        elseif($row['Delivery Note State']=='Packing') {
+            $status='<div id="dn_state'.$row['Delivery Note Key'].'">'._('Packing').'('.percentage($row['Delivery Note Faction Packed'],1,0).') <b>'.$row['Delivery Note Assigned Packer Alias'].'</b> </div>';
+
+            $public_id=sprintf("<a href='order_pack_aid.php?id=%d'>%s</a>",$row['Delivery Note Key'],$row['Delivery Note ID']);
+        }
+        elseif($row['Delivery Note State']=='Packed') {
             $status='<div id="dn_state'.$row['Delivery Note Key'].'">'._('Packed').'</div>';
-            
+
             $public_id=sprintf("<a href='order_pick_aid.php?id=%d'>%s</a>",$row['Delivery Note Key'],$row['Delivery Note ID']);
-    }
+        }
         else {
             $operations.='';
             $status=$row['Delivery Note State'];
             $public_id=sprintf("<a href='dn.php?id=%d'>%s</a>",$row['Delivery Note Key'],$row['Delivery Note ID']);
-                        $public_id=$row['Delivery Note ID'];
+            $public_id=$row['Delivery Note ID'];
 
         }
         $operations.='</div>';
@@ -1354,46 +1362,46 @@ function start_picking($data) {
 
 }
 
-function picking_aid_sheet(){
- if(isset( $_REQUEST['id']) and is_numeric( $_REQUEST['id']))
-     $order_id=$_REQUEST['id'];
-   else
-     $order_id=$_SESSION['state']['dn']['id'];
-   
+function picking_aid_sheet() {
+    if (isset( $_REQUEST['id']) and is_numeric( $_REQUEST['id']))
+        $order_id=$_REQUEST['id'];
+    else
+        $order_id=$_SESSION['state']['dn']['id'];
+
 //print_r($_SESSION['state']['dn']);
 
 
-   $where=' where `Delivery Note Key`='.$order_id;
+    $where=' where `Delivery Note Key`='.$order_id;
 
-   $total_charged=0;
-   $total_discounts=0;
-   $total_picks=0;
+    $total_charged=0;
+    $total_discounts=0;
+    $total_picks=0;
 
-   $data=array();
-   $sql="select `Part XHTML Currently Used In`,Part.`Part SKU`,`Part XHTML Description`,sum(`Required`) as qty ,`Part XHTML Picking Location` from `Inventory Transaction Fact` ITF  left join  `Part Dimension` Part on  (Part.`Part SKU`=ITF.`Part SKU`)  $where  group by Part.`Part SKU` ";
-  // print $sql;
-   $result=mysql_query($sql);
-   while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
-  
-     $sku=sprintf('<a href="part.php?sku=%d">SKU%05d</a>',$row['Part SKU'],$row['Part SKU']);
-     $data[]=array(
+    $data=array();
+    $sql="select `Part XHTML Currently Used In`,Part.`Part SKU`,`Part XHTML Description`,sum(`Required`) as qty ,`Part XHTML Picking Location` from `Inventory Transaction Fact` ITF  left join  `Part Dimension` Part on  (Part.`Part SKU`=ITF.`Part SKU`)  $where  group by Part.`Part SKU` ";
+    // print $sql;
+    $result=mysql_query($sql);
+    while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
 
-		   'sku'=>$sku
-		   ,'description'=>$row['Part XHTML Description']
-		   ,'used_in'=>$row['Part XHTML Currently Used In']
-		   ,'quantity'=>number($row['qty'])
-		   ,'location'=>$row['Part XHTML Picking Location']
-		  
-		   );
-   }
+        $sku=sprintf('<a href="part.php?sku=%d">SKU%05d</a>',$row['Part SKU'],$row['Part SKU']);
+        $data[]=array(
+
+                    'sku'=>$sku
+                          ,'description'=>$row['Part XHTML Description']
+                                         ,'used_in'=>$row['Part XHTML Currently Used In']
+                                                    ,'quantity'=>number($row['qty'])
+                                                                ,'location'=>$row['Part XHTML Picking Location']
+
+                );
+    }
 
 
- 
-   
 
-   $response=array('resultset'=>
-		   array('state'=>200,
-			 'data'=>$data
+
+
+    $response=array('resultset'=>
+                                array('state'=>200,
+                                      'data'=>$data
 // 			 'total_records'=>$total,
 // 			 'records_offset'=>$start_from,
 // 			 'records_returned'=>$start_from+$res->numRows(),
@@ -1402,23 +1410,23 @@ function picking_aid_sheet(){
 // 			 'records_order'=>$order,
 // 			 'records_order_dir'=>$order_dir,
 // 			 'filtered'=>$filtered
-			 )
-		   );
-   echo json_encode($response);
+                                     )
+                   );
+    echo json_encode($response);
 }
 
 
-function create_invoice($dn_notes){
-$dn_notes=preg_split('/\,/',$dn_notes);
-foreach($dn_notes as $dn_key){
-$dn=new DeliveryNote($dn_key);
-$invoice=$dn->create_invoice();
+function create_invoice($dn_notes) {
+    $dn_notes=preg_split('/\,/',$dn_notes);
+    foreach($dn_notes as $dn_key) {
+        $dn=new DeliveryNote($dn_key);
+        $invoice=$dn->create_invoice();
+    }
 }
-}
-function cancel_post_transactions_in_process($data){
-$order=new Order($data['order_key']);
-$order->cancel_post_transactions_in_process();
- if (!$order->error) {
+function cancel_post_transactions_in_process($data) {
+    $order=new Order($data['order_key']);
+    $order->cancel_post_transactions_in_process();
+    if (!$order->error) {
         $response=array('state'=>200,'order_key'=>$order->id);
         echo json_encode($response);
     } else {
@@ -1433,19 +1441,19 @@ $order->cancel_post_transactions_in_process();
 function send_post_order_to_warehouse($data) {
 
     $order=new Order($data['order_key']);
-$customer=new Customer ($order->data['Order Customer Key']);
- $ship_to=$customer->get_ship_to();
+    $customer=new Customer ($order->data['Order Customer Key']);
+    $ship_to=$customer->get_ship_to();
 
-$transaction_data=array(
-'Metadata'=>'',
-'Current Payment State'=>'No Applicable',
-'Order Tax Rate'=>$order->data['Order Tax Rate'],
-'Order Tax Code'=>$order->data['Order Tax Code'],
-'Ship To Key'=>$ship_to->id,
-'Gross'=>0,
-);
+    $transaction_data=array(
+                          'Metadata'=>'',
+                          'Current Payment State'=>'No Applicable',
+                          'Order Tax Rate'=>$order->data['Order Tax Rate'],
+                          'Order Tax Code'=>$order->data['Order Tax Code'],
+                          'Ship To Key'=>$ship_to->id,
+                          'Gross'=>0,
+                      );
 
-$order->add_post_order_transactions($transaction_data);
+    $order->add_post_order_transactions($transaction_data);
 
 
 
@@ -1460,3 +1468,28 @@ $order->add_post_order_transactions($transaction_data);
     }
 
 }
+
+function create_refund($data) {
+
+$date=date("Y-m-d H:i:s");
+    $order=new Order($data['order_key']);
+    
+    $refund=$order->create_refund(array(
+                                             'Invoice Metadata'=>'',
+                                             'Invoice Date'=>$date
+                                         )
+                                        );
+    
+    
+
+    if (!$order->error) {
+        $response=array('state'=>200,'order_key'=>$order->id);
+        echo json_encode($response);
+    } else {
+        $response=array('state'=>400,'msg'=>$order->msg);
+        echo json_encode($response);
+
+    }
+
+}
+

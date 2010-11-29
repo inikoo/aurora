@@ -422,7 +422,6 @@ var update_address_buttons=function() {
 
 
 function reset_address(e,prefix) {
-
     changes_address=0;
     index=Dom.get(prefix+"reset_address_button").getAttribute('address_key');
     Dom.setStyle(['address_showcase','move_address_button','add_address_button'], 'display', '');

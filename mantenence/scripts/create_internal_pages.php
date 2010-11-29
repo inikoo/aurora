@@ -77,6 +77,15 @@ $data=array(
 		   ,'Page Section'=>'Reports'
 		   ,'Page Parent Category'=>'Activity/Performance Reports'
 		   )
+		     ,array(
+		    'Page Type'=>'Internal'
+		   ,'Page Title'=>'Marked as Out of Stock Report'
+		   ,'Page Short Title'=>'Mark as Out of Stock'
+		   ,'Page Description'=>''
+		   ,'Page URL'=>'report_out_of_stock.php'
+		   ,'Page Section'=>'Reports'
+		   ,'Page Parent Category'=>'Activity/Performance Reports'
+		   )
 		   	     ,array(
 		    'Page Type'=>'Internal'
 		   ,'Page Title'=>'Customer First Order Analysis'

@@ -5,8 +5,8 @@ include_once('common.php');
     var panel1;
 
  var show_invoices=function(){
-     Dom.get('clean_table_title0').innerHTML='<?php echo _('Orders invoiced').' '.$_SESSION['state']['report']['sales']['period']?>.';
-     request="ar_orders.php?tipo=report_invoices&saveto=report_sales&where="+escape('where true')+"&view=invoices&sf=0&nr=10&from=<?php echo$_SESSION['state']['report']['sales']['from']?>&to=<?php echo$_SESSION['state']['report']['sales']['to']?>"
+     Dom.get('clean_table_title0').innerHTML='<?php echo _('Orders invoiced').' '.$_SESSION['state']['report_activity']['period']?>.';
+     request="ar_orders.php?tipo=report_invoices&saveto=report_sales&where="+escape('where true')+"&view=invoices&sf=0&nr=10&from=<?php echo$_SESSION['state']['report_activity']['from']?>&to=<?php echo$_SESSION['state']['report_activity']['to']?>"
      //  alert(request);
      var table=tables.table0;
      var datasource=tables.dataSource0;
@@ -15,8 +15,8 @@ include_once('common.php');
 
  }
  var show_invoices_home=function(){
-     Dom.get('clean_table_title0').innerHTML='<?php echo$myconf['_home']." "._('orders invoiced (excluding partners)').' '.$_SESSION['state']['report']['sales']['period']?>.';
-     request="ar_orders.php?tipo=report_invoices&saveto=report_sales&where="+escape('where  `Invoice For Partner`="No" and `Invoice Billing Country 2 Alpha Code`="<?php echo$myconf['country_2acode']?>"')+"&view=invoices&sf=0&nr=10&from=<?php echo$_SESSION['state']['report']['sales']['from']?>&to=<?php echo$_SESSION['state']['report']['sales']['to']?>"
+     Dom.get('clean_table_title0').innerHTML='<?php echo$myconf['_home']." "._('orders invoiced (excluding partners)').' '.$_SESSION['state']['report_activity']['period']?>.';
+     request="ar_orders.php?tipo=report_invoices&saveto=report_sales&where="+escape('where  `Invoice For Partner`="No" and `Invoice Billing Country 2 Alpha Code`="<?php echo$myconf['country_2acode']?>"')+"&view=invoices&sf=0&nr=10&from=<?php echo$_SESSION['state']['report_activity']['from']?>&to=<?php echo$_SESSION['state']['report_activity']['to']?>"
      // alert(request);
      var table=tables.table0;
      var datasource=tables.dataSource0;
@@ -26,8 +26,8 @@ include_once('common.php');
  }
 
 var show_invoices_nohome=function(){
-     Dom.get('clean_table_title0').innerHTML='<?php echo _('Export orders invoiced (excluding partners)').' '.$_SESSION['state']['report']['sales']['period']?>';
-     request="ar_orders.php?tipo=report_invoices&saveto=report_sales&where="+escape('where  `Invoice For Partner`="No" and  `Invoice Billing Country 2 Alpha Code`!="<?php echo$myconf['country_2acode']?>"')+"&view=invoices&sf=0&nr=10&from=<?php echo$_SESSION['state']['report']['sales']['from']?>&to=<?php echo$_SESSION['state']['report']['sales']['to']?>"
+     Dom.get('clean_table_title0').innerHTML='<?php echo _('Export orders invoiced (excluding partners)').' '.$_SESSION['state']['report_activity']['period']?>';
+     request="ar_orders.php?tipo=report_invoices&saveto=report_sales&where="+escape('where  `Invoice For Partner`="No" and  `Invoice Billing Country 2 Alpha Code`!="<?php echo$myconf['country_2acode']?>"')+"&view=invoices&sf=0&nr=10&from=<?php echo$_SESSION['state']['report_activity']['from']?>&to=<?php echo$_SESSION['state']['report_activity']['to']?>"
 
      var table=tables.table0;
      var datasource=tables.dataSource0;
@@ -37,8 +37,8 @@ var show_invoices_nohome=function(){
  }
    
 var show_invoices_partner=function(){
-     Dom.get('clean_table_title0').innerHTML='<?php echo _('Partners orders invoiced').' '.$_SESSION['state']['report']['sales']['period']?>';
-     request="ar_orders.php?tipo=report_invoices&saveto=report_sales&where="+escape('where  `Invoice For Partner`="Yes" ')+"&view=invoices&sf=0&nr=10&from=<?php echo$_SESSION['state']['report']['sales']['from']?>&to=<?php echo$_SESSION['state']['report']['sales']['to']?>"
+     Dom.get('clean_table_title0').innerHTML='<?php echo _('Partners orders invoiced').' '.$_SESSION['state']['report_activity']['period']?>';
+     request="ar_orders.php?tipo=report_invoices&saveto=report_sales&where="+escape('where  `Invoice For Partner`="Yes" ')+"&view=invoices&sf=0&nr=10&from=<?php echo$_SESSION['state']['report_activity']['from']?>&to=<?php echo$_SESSION['state']['report_activity']['to']?>"
 
      var table=tables.table0;
      var datasource=tables.dataSource0;
@@ -49,8 +49,8 @@ var show_invoices_partner=function(){
 
     var show_invoices_country=function(country_code,name){
 
-     Dom.get('clean_table_title0').innerHTML=name+' <?php echo _('orders invoiced').' '.$_SESSION['state']['report']['sales']['period']?>';
-     request="ar_orders.php?tipo=report_invoices&saveto=report_sales&where="+escape('where  `Invoice For Partner`="No"    and `Invoice Billing Country 2 Alpha Code`="'+country_code+'"')+"&view=invoices&sf=0&nr=10&from=<?php echo$_SESSION['state']['report']['sales']['from']?>&to=<?php echo$_SESSION['state']['report']['sales']['to']?>"
+     Dom.get('clean_table_title0').innerHTML=name+' <?php echo _('orders invoiced').' '.$_SESSION['state']['report_activity']['period']?>';
+     request="ar_orders.php?tipo=report_invoices&saveto=report_sales&where="+escape('where  `Invoice For Partner`="No"    and `Invoice Billing Country 2 Alpha Code`="'+country_code+'"')+"&view=invoices&sf=0&nr=10&from=<?php echo$_SESSION['state']['report_activity']['from']?>&to=<?php echo$_SESSION['state']['report_activity']['to']?>"
 
      var table=tables.table0;
      var datasource=tables.dataSource0;
@@ -88,7 +88,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 					 ];
 	    
-	    this.dataSource0 = new YAHOO.util.DataSource("ar_orders.php?tipo=report_invoices&view="+view+"&nr=10&from=<?php echo$_SESSION['state']['report']['sales']['from']?>&to=<?php echo$_SESSION['state']['report']['sales']['to']?>");
+	    this.dataSource0 = new YAHOO.util.DataSource("ar_orders.php?tipo=report_invoices&view="+view+"&nr=10&from=<?php echo$_SESSION['state']['report_activity']['from']?>&to=<?php echo$_SESSION['state']['report_activity']['to']?>");
 
 	    this.dataSource0.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource0.connXhrMode = "queueRequests";

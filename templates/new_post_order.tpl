@@ -9,34 +9,15 @@
 	<span class="state_details" id="cancel" style="margin-left:20px">Cancel</span>
 
       </div>
-      <div class="yui-b" style="border:1px solid #ccc;text-align:left;padding:10px;margin: 0px 0 10px 0;height:15em">
+      <div class="yui-b" style="border:1px solid #ccc;text-align:left;padding:10px;margin: 0px 0 10px 0;xheight:15em">
 
        <div style="xborder:1px solid #ddd;width:350px;float:left"> 
         <h1 style="padding:0 0 10px 0">{t}Order{/t} {$order->get('Order Public ID')}</h1>
         <h2 style="padding:0"><a href="customer.php?id={$order->get('order customer key')}">{$order->get('Order Customer Name')} ({$customer->get_formated_id()})</a></h2>
-        {$contact}<br/>
-           {if $tel!=''}{t}Tel{/t}: {$tel}<br/>{/if}
-	<div style="float:left;line-height: 1.0em;margin:5px 20px 0 0;color:#444;font-size:80%;width:140px"><span style="font-weight:500;color:#000">{t}Contact Address{/t}</span>:<br/><b>{$customer->get('Customer Main Contact Name')}</b><br/>{$customer->get('Customer Main XHTML Address')}</div>
-	<div id="shipping_address" style="{if $order->get('Order For Collection')=='Yes'}display:none;{/if}float:left;line-height: 1.0em;margin:5px 0 0 0px;color:#444;font-size:80%;width:140px">
-	<span style="font-weight:500;color:#000">{t}Shipping Address{/t}</span>:<br/>{$order->get('Order XHTML Ship Tos')}
-
-
-
-    <a href="customer.php?edit={$order->get('order customer key')}&return_to_order={$order->id}&edit_block=delivery"><span id="change_delivery_address" class="state_details" style="display:block;margin-top:10px">{t}Change Delivery Address{/t}</span></a>
-
-
-
-
-	<span id="set_for_collection" class="state_details" style="display:block;margin-top:4px" value="Yes">{t}Set this order is for collection{/t}</span>
-
-</div>
-<div id="for_collection"  style="{if $order->get('Order For Collection')=='No'}display:none;{/if}float:left;line-height: 1.0em;margin:5px 0 0 0px;color:#444;font-size:80%;width:140px">
-<span>{t}For collection{/t}</span>
-<span id="set_for_shipping" class="state_details" style="display:block;margin-top:4px" value="No">{t}Set for shipping{/t}</span>
-
-</div>
-
-
+      
+	<div style="float:left;line-height: 1.0em;margin:5px 20px 0 0;color:#444;font-size:80%;width:140px"><b>{$customer->get('Customer Main Contact Name')}</b><br/>{$customer->get('Customer Main XHTML Address')}</div>
+	
+	
 <div style="clear:both"></div>
        </div>
 
@@ -52,13 +33,20 @@
 	   <td >{t}Products to Resend{/t}</td>
 	   <td style="width:150px;text-align:right" id="send"><span class="state_details">{t}Send to Warehouse{/t}</span></td>
 	   </tr>
-	        <tr><td  class="aright" >{t}Distinct Products{/t}</td><td id="Resend_Distinct_Products"  class="aright">{$order_post_transactions_in_process.Resend.Distinct_Products}</td></tr>
-	  <tr><td  class="aright" >{t}Market Value{/t}</td><td id="Resend_Formated_Market_Value"  class="aright">{$order_post_transactions_in_process.Resend.Formated_Market_Value}</td></tr>
+	        <tr><td  class="aright" >{t}Distinct Products{/t}:</td><td id="Resend_Distinct_Products"  class="aright">{$order_post_transactions_in_process.Resend.Distinct_Products}</td></tr>
+	  <tr><td  class="aright" >{t}Market Value{/t}:</td><td id="Resend_Formated_Market_Value"  class="aright">{$order_post_transactions_in_process.Resend.Formated_Market_Value}</td></tr>
+     <tr><td  class="aright" >{t}Shipping Address{/t}:
+         
+
+     </td><td class="aright">{$order->get('Order XHTML Ship Tos')}</td></tr>
+<tr style="font-size:90%"><td><a href="customer.php?edit={$order->get('order customer key')}&return_to_order={$order->id}&edit_block=delivery"><span id="change_delivery_address" class="state_details" style="display:block;margin-top:10px">{t}Change Delivery Address{/t}</span></a>
+	<span id="set_for_collection" class="state_details" style="{if $order->get('Order For Collection')=='Yes'}display:none;{else}display:block;{/if}margin-top:4px" value="Yes">{t}Set this order is for collection{/t}</span>
+<span id="set_for_shipping" class="state_details" style="{if $order->get('Order For Collection')=='No'}display:none;{else}display:block;{/if}margin-top:4px" value="No">{t}Set for shipping{/t}</span></td></tr>
 </tbody>
 <tbody id="refund" style="{if $order_post_transactions_in_process.Refund.Distinct_Products==0}display:none{/if}">	   
 	    <tr style="font-size:90%;xborder-top:1px solid #ccc;border-bottom:1px solid #ccc">
 	    <td >{t}Refunds{/t}</td>
-	    <td style="text-align:right"><span class="state_details">{t}Save{/t}</span></td>
+	    <td style="text-align:right"><span id="save_refund" class="state_details">{t}Save{/t}</span></td>
 	    </tr>
         <tr><td  class="aright" >{t}Distinct Products{/t}</td><td id="Refund_Distinct_Products"  class="aright">{$order_post_transactions_in_process.Refund.Distinct_Products}</td></tr>
 	  <tr><td  class="aright" >{t}Amount{/t}</td><td id="Refund_Formated_Amount"  class="aright">{$order_post_transactions_in_process.Refund.Formated_Amount}</td></tr>
@@ -136,7 +124,10 @@
 
 </div> 
 
+<div  class="edit_block" style="width:800px" id="edit_address_dialog">
+ {include file='edit_delivery_address_splinter.tpl'}
 
+</div>
 
 
 {include file='footer.tpl'}

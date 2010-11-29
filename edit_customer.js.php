@@ -1,71 +1,18 @@
 <?php
-    include_once('common.php');
-        include_once('class.Customer.php');
 
-    $customer=new Customer($_SESSION['state']['customer']['id']);
+    include_once('common.php');
+    include_once('class.Customer.php');
+
+    if (!isset($_REQUEST['id'])) {
+    exit;
+}
+
+$customer=new Customer($_REQUEST['id']);
     
-print "var customer_id='".$_SESSION['state']['customer']['id']."';";
+print "var customer_id='".$_REQUEST['id']."';";
 
 
 $tax_number_regex="^((AT)?U[0-9]{8}|(BE)?0?[0-9]{9}|(BG)?[0-9]{9,10}|(CY)?[0-9]{8}L|(CZ)?[0-9]{8,10}|(DE)?[0-9]{9}|(DK)?[0-9]{8}|(EE)?[0-9]{9}|(EL|GR)?[0-9]{9}|(ES)?[0-9A-Z][0-9]{7}[0-9A-Z]|(FI)?[0-9]{8}|(FR)?[0-9A-Z]{2}[0-9]{9}|(GB)?([0-9]{9}([0-9]{3})?|[A-Z]{2}[0-9]{3})|(HU)?[0-9]{8}|(IE)?[0-9]S[0-9]{5}L|(IT)?[0-9]{11}|(LT)?([0-9]{9}|[0-9]{12})|(LU)?[0-9]{8}|(LV)?[0-9]{11}|(MT)?[0-9]{8}|(NL)?[0-9]{9}B[0-9]{2}|(PL)?[0-9]{10}|(PT)?[0-9]{9}|(RO)?[0-9]{2,10}|(SE)?[0-9]{12}|(SI)?[0-9]{8}|(SK)?[0-9]{10})$";
-
-
-$addresses=$customer->get_address_keys();
-//$addresses[$customer->data['Customer Billing Address Key']]=$customer->data['Customer Billing Address Key'];
-$address_data="\n";
-//$address_data.=sprintf('0:{"key":0,"country":"","country_code":"UNK","country_d1":"","country_d2":"","town":"","postal_code":"","town_d1":"","town_d2":"","fuzzy":"","street":"","building":"","internal":"","type":["Office"],"description":"","function":["Contact"] } ' );
- $address_data.="\n";
-foreach($addresses as $index){
-   // $address->set_scope('Customer',$cust);
-    
-    $address=new Address($index);
-
-
-    $type="[";
-    foreach($address->get('Type') as $_type){
-	$type.=prepare_mysql($_type,false).",";
-    }
-    $type.="]";
-    $type=preg_replace('/,]$/',']',$type);
-    
-    $function="[";
-    foreach($address->get('Function') as $value){
-	$function.=prepare_mysql($value,false).",";
-    }
-    $function.="]";
-    $function=preg_replace('/,]$/',']',$function);
-    
-
-  $address_data.="\n".sprintf('Address_Data[%d]={"key":%d,"country":%s,"country_code":%s,"country_d1":%s,"country_d2":%s,"town":%s,"postal_code":%s,"town_d1":%s,"town_d2":%s,"fuzzy":%s,"street":%s,"building":%s,"internal":%s,"type":%s,"description":%s,"function":%s}; ',
-			
-			 $address->id
-			 ,$address->id
-			 ,prepare_mysql($address->data['Address Country Name'],false)
-			 ,prepare_mysql($address->data['Address Country Code'],false)
-			 ,prepare_mysql($address->data['Address Country First Division'],false)
-			 ,prepare_mysql($address->data['Address Country Second Division'],false)
-			 ,prepare_mysql($address->data['Address Town'],false)
-			 ,prepare_mysql($address->data['Address Postal Code'],false)
-			 ,prepare_mysql($address->data['Address Town First Division'],false)
-			 ,prepare_mysql($address->data['Address Town Second Division'],false)
-			 ,prepare_mysql($address->data['Address Fuzzy'],false)
-			 ,prepare_mysql($address->display('street',false),false)
-			 ,prepare_mysql($address->data['Address Building'],false)
-			 ,prepare_mysql($address->data['Address Internal'],false)
-			 ,$type
-			 ,prepare_mysql($address->data['Address Description'],false)
-			 ,$function
-
-			 );
-  $address_data.="\n";
-
-
-
-
-}
-print $address_data;
-
-
 
 
 
@@ -222,10 +169,6 @@ function reset_edit_customer(){
 }
 
 
-function display_new_delivery_address(){
-  
-    edit_address(0,'delivery_');
-}
 
 function display_edit_billing_address(){
   billing_address_key=this.getAttribute('address_key');
@@ -268,7 +211,6 @@ function init(){
     YAHOO.util.Event.addListener(ids, "click", change_block);
     Event.addListener("back_to_take_order", "click", back_to_take_order , true);
     
-    YAHOO.util.Event.addListener('add_new_delivery_address', "click",display_new_delivery_address );
         YAHOO.util.Event.addListener('show_edit_billing_address', "click",display_edit_billing_address );
 
     
@@ -336,15 +278,6 @@ function init(){
 	Countries_AC.itemSelectEvent.subscribe(onCountrySelected);
 	
 
-	var Countries_DS = new YAHOO.util.FunctionDataSource(match_country);
-	Countries_DS.responseSchema = {fields: ["id", "name", "code","code2a","postal_regex"]}
-	var Countries_AC = new YAHOO.widget.AutoComplete("delivery_address_country", "delivery_address_country_container", Countries_DS);
-	Countries_AC.forceSelection = true; 
-	Countries_AC.useShadow = true;
-    Countries_AC.suffix='delivery_';
-	Countries_AC.resultTypeList = false;
-	Countries_AC.formatResult = countries_format_results;
-	Countries_AC.itemSelectEvent.subscribe(onCountrySelected);
 
 var Countries_DS = new YAHOO.util.FunctionDataSource(match_country);
 	Countries_DS.responseSchema = {fields: ["id", "name", "code","code2a","postal_regex"]}
@@ -356,13 +289,7 @@ var Countries_DS = new YAHOO.util.FunctionDataSource(match_country);
 	Countries_AC.formatResult = countries_format_results;
 	Countries_AC.itemSelectEvent.subscribe(onCountrySelected);
 
-     var ids = ["delivery_address_description","delivery_address_country_d1","delivery_address_country_d2","delivery_address_town","delivery_address_town_d2","delivery_address_town_d1","delivery_address_postal_code","delivery_address_street","delivery_address_internal","delivery_address_building"]; 
-	     YAHOO.util.Event.addListener(ids, "keyup", on_address_item_change,'delivery_');
-	     YAHOO.util.Event.addListener(ids, "change",on_address_item_change,'delivery_');
-	 
-	 YAHOO.util.Event.addListener('delivery_save_address_button', "click",save_address,{prefix:'delivery_',subject:'Customer',subject_key:customer_id,type:'Delivery'});
-	 YAHOO.util.Event.addListener('delivery_reset_address_button', "click",reset_address,'delivery_');
-
+ 
 
      var ids = ["billing_address_description","billing_address_country_d1","billing_address_country_d2","billing_address_town","billing_address_town_d2","billing_address_town_d1","billing_address_postal_code","billing_address_street","billing_address_internal","billing_address_building"]; 
 	     YAHOO.util.Event.addListener(ids, "keyup", on_address_item_change,'billing_');
