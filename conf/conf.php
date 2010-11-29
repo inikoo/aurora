@@ -2669,6 +2669,8 @@ $default_state=array(
                                                 ),
 
                                         ),
+  
+            
                    'deals'=>array('table'=>array(
                                               'where'=>'where true',
                                               'f_field'=>'name',

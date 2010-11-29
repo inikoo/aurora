@@ -211,7 +211,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 						     , {
 							 renderLoopSize: 50,generateRequest : myRequestBuilder
 							 ,paginator : new YAHOO.widget.Paginator({
-								 rowsPerPage    : <?php echo$_SESSION['state']['edit_each_position']['history']['nr']?>,containers : 'paginator1', alwaysVisible:false,
+								 rowsPerPage    : <?php echo$_SESSION['state']['position']['history']['nr']?>,containers : 'paginator1', alwaysVisible:false,
 								 pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',
 								 previousPageLinkLabel : "<",
 								 nextPageLinkLabel : ">",
@@ -221,8 +221,8 @@ YAHOO.util.Event.addListener(window, "load", function() {
 							     })
 							 
 							 ,sortedBy : {
-							    Key: "<?php echo$_SESSION['state']['edit_each_position']['history']['order']?>",
-							     dir: "<?php echo$_SESSION['state']['edit_each_position']['history']['order_dir']?>"
+							    Key: "<?php echo$_SESSION['state']['position']['history']['order']?>",
+							     dir: "<?php echo$_SESSION['state']['position']['history']['order_dir']?>"
 							 },
 							 dynamicData : true
 							 
