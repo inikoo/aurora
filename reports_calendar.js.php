@@ -15,6 +15,17 @@ location.href=link+"?tipo=f&from="+from+"&to="+to
 
 }
 
+function show_calendar_div(){
+Dom.setStyle("calendar_div",'display','');
+Dom.setStyle("show_calendar_div",'display','none');
+Dom.setStyle("hide_calendar_div",'display','');
+}
+
+function hide_calendar_div(){
+Dom.setStyle("calendar_div",'display','none');
+Dom.setStyle("show_calendar_div",'display','');
+Dom.setStyle("hide_calendar_div",'display','none');
+}
 
 
 function init(){

@@ -24,23 +24,6 @@ $_SESSION['state']['orders']['store']=$store_id;
 
 
 $q='';
-if(isset($_REQUEST['search']) and $_REQUEST['search']!=''  ){
-  // SEARCH!!!!!!!!!!!!
-  $q=$_REQUEST['search'];
-  //  print "$q";
-  $sql=sprintf("select `Order Key` as id from `Order Dimension` where `Order Public ID`='%s' ",addslashes($q));
-  $result=mysql_query($sql);
-  if($found=mysql_fetch_array($result, MYSQL_ASSOC)){
-    header('Location: order.php?id='. $found['id']);
-    exit;
-  }
-  mysql_free_result($result);
-  $_SESSION['tables']['order_list'][5]='public_id';
-  $_SESSION['tables']['order_list'][6]=addslashes($q);
-
-
- }
-
 
 $general_options_list=array();
 
