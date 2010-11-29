@@ -330,7 +330,9 @@ function list_history($asset_type) {
     elseif($asset_type=='edit_each_staff') {
         $asset='Company Staff';
     }
- 
+     elseif($asset_type=='company_position') {
+        $asset='Company Position';
+    }
 
     elseif($asset_type=='department') {
         $asset='Department';
@@ -367,7 +369,7 @@ function list_history($asset_type) {
 
     
  $asset_id=$_SESSION['state'][$asset_type][$id_key];
-//print($asset);print("*");print($asset_id);
+
     if (isset( $_REQUEST['elements']))
         $elements=$_REQUEST['elements'];
     else
@@ -465,7 +467,7 @@ function list_history($asset_type) {
 
 
     $sql="select count(*) as total from `History Dimension`  $where $wheref";
-//print($sql);
+//print($asset);print("**********");print($asset_id);print("*********");print($sql);print("*********");
 
     $res=mysql_query($sql);
     if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
