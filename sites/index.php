@@ -13,9 +13,8 @@ $js_files=array(
 		'js/aes.js',
 		'js/login.js',
 		'js/search.js',
-		'js/dropdown.js
-
-');
+		'js/dropdown.js'
+);
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
 
