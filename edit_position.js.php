@@ -108,7 +108,7 @@ var table=tables.table1;
 YAHOO.util.Event.addListener(window, "load", function() {
     tables = new function() {
 
-	/*    var tableid=0; // Change if you have more the 1 table
+	    var tableid=0; // Change if you have more the 1 table
 	    var tableDivEL="table"+tableid;
 	    var OrdersColumnDefs = [ 
 				    {key:"id", label:"<?php echo _('Key')?>", width:20,sortable:false,isPrimaryKey:true,hidden:true} 
@@ -169,13 +169,13 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    this.table0.subscribe("cellMouseoutEvent", unhighlightEditableCell);
 	    this.table0.subscribe("cellClickEvent", onCellClick);
 
-*/
+
 		
  var tableid=1; // Change if you have more the 1 table
 	    var tableDivEL="table"+tableid;
 
 	    var CustomersColumnDefs = [
-				       {key:"date",label:"<?php echo _('Date')?>", width:200,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				       {key:"date",label:"<?php echo _('Date')?>", width:200,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				       ,{key:"author",label:"<?php echo _('Author')?>", width:70,sortable:true,formatter:this.customer_name,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				       //     ,{key:"tipo", label:"<?php echo _('Type')?>", width:90,sortable:true,formatter:this.customer_name,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				       //,{key:"diff_qty",label:"<?php echo _('Qty')?>", width:90,sortable:true,formatter:this.customer_name,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
@@ -183,7 +183,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 				       ];
 	    //?tipo=customers&tid=0"
 	    
-	    this.dataSource1 = new YAHOO.util.DataSource("ar_history.php?tipo=history&type=company_area&tableid=1");
+	    this.dataSource1 = new YAHOO.util.DataSource("ar_history.php?tipo=history&type=edit_each_position&tableid=1");
 	   this.dataSource1.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource1.connXhrMode = "queueRequests";
 	    this.dataSource1.responseSchema = {
@@ -204,13 +204,14 @@ YAHOO.util.Event.addListener(window, "load", function() {
 			 ,"note"
 			 ,'author','date','tipo','abstract','details'
 			 ]};
+              
 	    
 	    this.table1 = new YAHOO.widget.DataTable(tableDivEL, CustomersColumnDefs,
 						     this.dataSource1
 						     , {
 							 renderLoopSize: 50,generateRequest : myRequestBuilder
 							 ,paginator : new YAHOO.widget.Paginator({
-								 rowsPerPage    : <?php echo$_SESSION['state']['company']['history']['nr']?>,containers : 'paginator1', alwaysVisible:false,
+								 rowsPerPage    : <?php echo$_SESSION['state']['edit_each_position']['history']['nr']?>,containers : 'paginator1', alwaysVisible:false,
 								 pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',
 								 previousPageLinkLabel : "<",
 								 nextPageLinkLabel : ">",
@@ -220,8 +221,8 @@ YAHOO.util.Event.addListener(window, "load", function() {
 							     })
 							 
 							 ,sortedBy : {
-							    Key: "<?php echo$_SESSION['state']['company']['history']['order']?>",
-							     dir: "<?php echo$_SESSION['state']['company']['history']['order_dir']?>"
+							    Key: "<?php echo$_SESSION['state']['edit_each_position']['history']['order']?>",
+							     dir: "<?php echo$_SESSION['state']['edit_each_position']['history']['order_dir']?>"
 							 },
 							 dynamicData : true
 							 
@@ -235,7 +236,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 		    
 		    
-	    this.table1.filter={key:'<?php echo$_SESSION['state']['product']['history']['f_field']?>',value:'<?php echo$_SESSION['state']['product']['history']['f_value']?>'};
+	    this.table1.filter={key:'<?php echo$_SESSION['state']['position']['history']['f_field']?>',value:'<?php echo$_SESSION['state']['position']['history']['f_value']?>'};
 
 
 	};

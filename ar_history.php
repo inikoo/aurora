@@ -323,6 +323,15 @@ function list_history($asset_type) {
     elseif($asset_type=='family') {
         $asset='Family';
     }
+
+   elseif($asset_type=='company_area') {
+        $asset='Company Area';
+    }
+    elseif($asset_type=='edit_each_staff') {
+        $asset='Company Staff';
+    }
+ 
+
     elseif($asset_type=='department') {
         $asset='Department';
     }
@@ -336,12 +345,11 @@ function list_history($asset_type) {
         $asset='Company';
     }
    
-    elseif($asset_type=='edit_each_staff') {
-        $asset='Company Staff';
-    }
+   
     elseif($asset_type=='company_department') {
         $asset='Company Department';
     }
+
     elseif($asset_type=='position') {
         $asset='Position';
     }elseif($asset_type=='supplier') {
@@ -357,8 +365,9 @@ function list_history($asset_type) {
 
     $conf=$_SESSION['state'][$asset_type]['history'];
 
-    // print_r($conf);
-    $asset_id=$_SESSION['state'][$asset_type][$id_key];
+    
+ $asset_id=$_SESSION['state'][$asset_type][$id_key];
+//print($asset);print("*");print($asset_id);
     if (isset( $_REQUEST['elements']))
         $elements=$_REQUEST['elements'];
     else
@@ -451,11 +460,13 @@ function list_history($asset_type) {
                          );
 
 
-    //   $where =$where.$view.sprintf(' and asset_id=%d  %s',$asset_id,$date_interval);
+    //  $where =$where.$view.sprintf(' and asset_id=%d  %s',$asset_id,$date_interval);
 
 
 
     $sql="select count(*) as total from `History Dimension`  $where $wheref";
+//print($sql);
+
     $res=mysql_query($sql);
     if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
@@ -599,7 +610,6 @@ function list_indirect_history($data) {
 
 
     }
-
 
 
     $conf=$_SESSION['state'][$data['parent']]['history'];

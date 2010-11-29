@@ -190,7 +190,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 				       ];
 	    //?tipo=customers&tid=0"
 	    
-	    this.dataSource1 = new YAHOO.util.DataSource("ar_history.php?tipo=history&type=edit_each_staff&tableid=1");
+	    this.dataSource1 = new YAHOO.util.DataSource("ar_history.php?tipo=history&type=company_staff&tableid=1");
 	   this.dataSource1.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource1.connXhrMode = "queueRequests";
 	    this.dataSource1.responseSchema = {
@@ -242,7 +242,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 		    
 		    
-	    this.table1.filter={key:'<?php echo$_SESSION['state']['product']['history']['f_field']?>',value:'<?php echo$_SESSION['state']['product']['history']['f_value']?>'};
+	    this.table1.filter={key:'<?php echo$_SESSION['state']['company']['history']['f_field']?>',value:'<?php echo$_SESSION['state']['company']['history']['f_value']?>'};
 
 
 	};

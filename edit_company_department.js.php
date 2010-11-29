@@ -189,7 +189,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 				       ];
 	    //?tipo=customers&tid=0"
 	    
-	    this.dataSource1 = new YAHOO.util.DataSource("ar_history.php?tipo=history&type=edit_each_department&tableid=1");
+	    this.dataSource1 = new YAHOO.util.DataSource("ar_history.php?tipo=history&type=company_department&tableid=1");
 	   this.dataSource1.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource1.connXhrMode = "queueRequests";
 	    this.dataSource1.responseSchema = {
@@ -216,7 +216,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 						     , {
 							 renderLoopSize: 50,generateRequest : myRequestBuilder
 							 ,paginator : new YAHOO.widget.Paginator({
-								 rowsPerPage    : <?php echo$_SESSION['state']['edit_each_department']['history']['nr']?>,containers : 'paginator1', alwaysVisible:false,
+								 rowsPerPage    : <?php echo$_SESSION['state']['company']['history']['nr']?>,containers : 'paginator1', alwaysVisible:false,
 								 pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',
 								 previousPageLinkLabel : "<",
 								 nextPageLinkLabel : ">",
@@ -226,8 +226,8 @@ YAHOO.util.Event.addListener(window, "load", function() {
 							     })
 							 
 							 ,sortedBy : {
-							    Key: "<?php echo$_SESSION['state']['edit_each_department']['history']['order']?>",
-							     dir: "<?php echo$_SESSION['state']['edit_each_department']['history']['order_dir']?>"
+							    Key: "<?php echo$_SESSION['state']['company']['history']['order']?>",
+							     dir: "<?php echo$_SESSION['state']['company']['history']['order_dir']?>"
 							 },
 							 dynamicData : true
 							 
@@ -241,7 +241,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 		    
 		    
-	    this.table1.filter={key:'<?php echo$_SESSION['state']['product']['history']['f_field']?>',value:'<?php echo$_SESSION['state']['product']['history']['f_value']?>'};
+	    this.table1.filter={key:'<?php echo$_SESSION['state']['company']['history']['f_field']?>',value:'<?php echo$_SESSION['state']['company']['history']['f_value']?>'};
 
 
 	};
