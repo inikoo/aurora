@@ -473,18 +473,14 @@ function save(tipo){
 
 }
 
-function create_delivery_note(){
+function create_refund(){
 	var ar_file='ar_edit_orders.php'; 
-    	var request='tipo=send_post_order_to_warehouse&order_key='+order_key;
-
-
+    	var request='tipo=create_refund&order_key='+order_key;
 	YAHOO.util.Connect.asyncRequest(
 					'POST',
 					ar_file, {
 					    success:function(o) {
 					    				//	alert(o.responseText);
-
-						
 						var r = YAHOO.lang.JSON.parse(o.responseText);
 						if (r.state == 200) {
 						window.location='order.php?id='+r.order_key;
@@ -492,7 +488,28 @@ function create_delivery_note(){
 					    },
 					failure:function(o) {
 					    alert(o.statusText);
-					    
+					},
+					scope:this
+				    },
+				    request
+				    );  
+}
+
+function create_delivery_note(){
+	var ar_file='ar_edit_orders.php'; 
+    	var request='tipo=send_post_order_to_warehouse&order_key='+order_key;
+	YAHOO.util.Connect.asyncRequest(
+					'POST',
+					ar_file, {
+					    success:function(o) {
+					    				//	alert(o.responseText);
+						var r = YAHOO.lang.JSON.parse(o.responseText);
+						if (r.state == 200) {
+						window.location='order.php?id='+r.order_key;
+						}
+					    },
+					failure:function(o) {
+					    alert(o.statusText);
 					},
 					scope:this
 				    },
@@ -500,12 +517,10 @@ function create_delivery_note(){
 				    
 				    );  
 
-
 }
 
-function cancel(){
 
-   
+function cancel(){
 var ar_file='ar_edit_orders.php'; 
     	var request='tipo=cancel_post_transactions&order_key='+order_key;
 
@@ -554,6 +569,7 @@ function init(){
 
   YAHOO.util.Event.addListener("cancel", "click",cancel );
    YAHOO.util.Event.addListener("send", "click",create_delivery_note );
+   YAHOO.util.Event.addListener("save_refund", "click",create_refund );
 
 
 

@@ -638,6 +638,58 @@ $default_state=array(
                                                                                      )
                                                         ),
                                   ),
+                                  
+                                     'report_customers'=>array(
+                                                          'store_keys'=>'all',
+                                                          'top'=>100,
+                                                          'criteria'=>'net_balance',
+                                                          'f_value'=>'',
+                                                          'f_show'=>false,
+                                                          'f_field'=>'customer_name',
+                                                          'from'=>'',
+                                                          'to'=>''
+                                                      ), 
+                                       'report_out_of_stock'=>array(
+                                        'tipo'=>'m',
+                                      'y'=>date('Y'),
+                                      'm'=>date('m'),
+                                      'd'=>date('d'),
+                                      'w'=>1,
+                                                          'store_keys'=>'all',
+                                                          'order'=>'date',
+                                                            'order_dir'=>'desc',
+                                                             'sf'=>0,
+                                      'nr'=>25,
+                                                          'f_value'=>'',
+                                                          'f_show'=>false,
+                                                          'f_field'=>'code',
+                                                          'from'=>'',
+                                                          'to'=>''
+                                                      ), 
+                                  
+                          'report_activity'=>array(
+                                      'tipo'=>'m',
+                                      'y'=>date('Y'),
+                                      'm'=>date('m'),
+                                      'd'=>date('d'),
+                                      'w'=>1,
+                                      'compare'=>'last_year','compare_period'=>'week',
+
+                                      'store_keys'=>'all',
+                                      'from'=>'',
+                                      'to'=>'',
+                                      'period'=>'',
+                                      'order'=>'date',
+                                      'order_dir'=>'desc',
+                                      'currency'=>'stores',
+                                      'view'=>'invoices',
+                                      'sf'=>0,
+                                      'nr'=>25,
+                                      
+                                      
+                                  ),          
+                                  
+                                  
                    'report_first_order'=>array(
                                             'tipo'=>'y',
                                             'y'=>date('Y'),
@@ -2184,16 +2236,7 @@ $default_state=array(
                                                                         ),
                                                   ),
                                          
-                                          'customers'=>array(
-                                                          'store_keys'=>'all',
-                                                          'top'=>100,
-                                                          'criteria'=>'net_balance',
-                                                          'f_value'=>'',
-                                                          'f_show'=>false,
-                                                          'f_field'=>'customer_name',
-                                                          'from'=>'',
-                                                          'to'=>''
-                                                      ),
+                                      
                                           'products'=>array('store_keys'=>'all',
                                                             'top'=>100,
                                                             'criteria'=>'net_sales',

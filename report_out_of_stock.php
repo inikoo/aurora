@@ -35,14 +35,14 @@ $js_files=array(
 		'table_common.js.php',
 		'calendar_common.js.php',
 
-		'report_customers.js.php',
+		'report_out_of_stock.js.php',
 		'reports_calendar.js.php',
 		'js/dropdown.js',
 		'js/export.js'
 
 		);
 include_once('reports_list.php');
-$report_name=_('Top Customers');
+$report_name=_('Out of Stock');
 
 
 $smarty->assign('parent','reports');
@@ -51,7 +51,7 @@ $smarty->assign('js_files',$js_files);
 
 
 
-$report_name='report_first_order';
+$report_name='report_out_of_stock';
 
 
 if(isset($_REQUEST['tipo'])){
@@ -63,18 +63,18 @@ if(isset($_REQUEST['tipo'])){
 
 
 
-$root_title=_('Customer Report');
+$root_title=_('Mark as Out of Stock Report');
 $smarty->assign('report_url','report_customers.php');
 
-if($_SESSION['state']['report_customers']['store_keys']=='all')
+if($_SESSION['state']['report_out_of_stock']['store_keys']=='all')
   $store_keys=join(',',$user->stores);
 else
-  $store_keys=$_SESSION['state']['report_customers']['store_keys'];
+  $store_keys=$_SESSION['state']['report_out_of_stock']['store_keys'];
 
 
 include_once('report_dates.php');
-$_SESSION['state']['report_customers']['from']=$from;
-$_SESSION['state']['report_customers']['to']=$to;
+$_SESSION['state']['report_out_of_stock']['from']=$from;
+$_SESSION['state']['report_out_of_stock']['to']=$to;
 
 
 
@@ -84,9 +84,6 @@ $export_output['label']=$export_data[$_SESSION['state']['export']]['label'];
 $smarty->assign('export',$export_output);
 $smarty->assign('export_menu',$export_data);
 
-
-$smarty->assign('criteria',$_SESSION['state']['report_customers']['criteria']);
-$smarty->assign('top',$_SESSION['state']['report_customers']['top']);
 
 
 
@@ -110,7 +107,7 @@ $smarty->assign('week',date('W'));
 
 $smarty->assign('from',$from);
 $smarty->assign('to',$to);
-$smarty->display('report_customers.tpl');
+$smarty->display('report_out_of_stock.tpl');
 
 
 ?>

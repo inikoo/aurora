@@ -1,7 +1,6 @@
 <?php include_once('common.php');
 
-print "var top=".$_SESSION['state']['report_customers']['top'].";";
-print "var criteria='".$_SESSION['state']['report_customers']['criteria']."';";
+
 
 
 ?>

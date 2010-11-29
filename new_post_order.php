@@ -12,6 +12,28 @@ if(!$user->can_view('orders')){
 
   $modify=$user->can_edit('orders');
   
+  if(!isset($_REQUEST['id']) or !is_numeric($_REQUEST['id'])){
+    header('Location: orders_server.php?msg=wrong_id');
+   exit;
+}
+
+ $general_options_list=array();
+$order_id=$_REQUEST['id'];
+$_SESSION['state']['order']['id']=$order_id;
+$order=new Order($order_id);
+if(!$order->id){
+   header('Location: orders_server.php?msg=order_not_found');
+   exit;
+
+}
+if(!($user->can_view('stores') and in_array($order->data['Order Store Key'],$user->stores)   ) ){
+  header('Location: orders_server.php');
+   exit;
+}
+
+$customer=new Customer($order->get('order customer key'));
+  
+  
 $css_files=array(
 		 $yui_path.'reset-fonts-grids/reset-fonts-grids.css',
 		 $yui_path.'menu/assets/skins/sam/menu.css',
@@ -40,33 +62,17 @@ $js_files=array(
 		$yui_path.'menu/menu-min.js',
 		$yui_path.'calendar/calendar-min.js',
 		'common.js.php',
-		'table_common.js.php'
+		'table_common.js.php',
+		'edit_address.js.php',
+		'address_data.js.php?tipo=customer&id='.$customer->id,
+		'edit_delivery_address_common.js.php',
 		);
 
 
 
 
 
-if(!isset($_REQUEST['id']) or !is_numeric($_REQUEST['id'])){
-    header('Location: orders_server.php?msg=wrong_id');
-   exit;
-}
 
- $general_options_list=array();
-$order_id=$_REQUEST['id'];
-$_SESSION['state']['order']['id']=$order_id;
-$order=new Order($order_id);
-if(!$order->id){
-   header('Location: orders_server.php?msg=order_not_found');
-   exit;
-
-}
-if(!($user->can_view('stores') and in_array($order->data['Order Store Key'],$user->stores)   ) ){
-  header('Location: orders_server.php');
-   exit;
-}
-
-$customer=new Customer($order->get('order customer key'));
 
  $js_files[]='js/edit_common.js';
     $js_files[]='new_post_order.js.php?order_key='.$order_id;
