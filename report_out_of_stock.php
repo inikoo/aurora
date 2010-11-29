@@ -51,7 +51,7 @@ $smarty->assign('js_files',$js_files);
 
 
 
-$report_name='report_out_of_stock';
+$report_name='report_part_out_of_stock';
 
 
 if(isset($_REQUEST['tipo'])){
@@ -66,15 +66,15 @@ if(isset($_REQUEST['tipo'])){
 $root_title=_('Mark as Out of Stock Report');
 $smarty->assign('report_url','report_customers.php');
 
-if($_SESSION['state']['report_out_of_stock']['store_keys']=='all')
+if($_SESSION['state']['report_part_out_of_stock']['store_keys']=='all')
   $store_keys=join(',',$user->stores);
 else
-  $store_keys=$_SESSION['state']['report_out_of_stock']['store_keys'];
+  $store_keys=$_SESSION['state']['report_part_out_of_stock']['store_keys'];
 
 
 include_once('report_dates.php');
-$_SESSION['state']['report_out_of_stock']['from']=$from;
-$_SESSION['state']['report_out_of_stock']['to']=$to;
+$_SESSION['state']['report_part_out_of_stock']['from']=$from;
+$_SESSION['state']['report_part_out_of_stock']['to']=$to;
 
 
 
