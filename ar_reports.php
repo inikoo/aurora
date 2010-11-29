@@ -28,10 +28,12 @@ case('first_order_share_histogram'):
     break;
 
 break;
+case('transactions_parts_marked_as_out_of_stock'):
+transactions_parts_marked_as_out_of_stock();
+break;
 case('first_order_products'):
 list_first_order_products();
 break;
-
 case('invoices_with_no_tax'):
    if(!$user->can_view('orders'))
   exit();
@@ -1029,32 +1031,32 @@ mysql_free_result($result);
 }
 
 
-function list_product_marled_as_out_of_stock(){
+function transactions_parts_marked_as_out_of_stock(){
 
 
   global $myconf,$output_type,$user;
 
-  $conf=$_SESSION['state']['report_out_of_stock'];
+  $conf=$_SESSION['state']['report_part_out_of_stock']['transactions'];
 
   $start_from=0;
   
   if(isset( $_REQUEST['nr'])){
      $number_results=$_REQUEST['nr'];
-     $_SESSION['state']['report_out_of_stock']['nr']=$number_results;
+     $_SESSION['state']['report_part_out_of_stock']['transactions']['nr']=$number_results;
   }else
-     $number_results=$conf['top'];
+     $number_results=$conf['nr'];
 
   if(isset( $_REQUEST['o'])){
     $order=$_REQUEST['o'];
-    $_SESSION['state']['report_out_of_stock']['criteria']=$order;
+    $_SESSION['state']['report_part_out_of_stock']['transactions']['order']=$order;
   }else
-    $order=$conf['criteria'];
+    $order=$conf['order'];
   $order_direction='desc';
    $order_dir='desc';
  
  if(isset( $_REQUEST['to'])){
     $to=$_REQUEST['to'];
-    $_SESSION['state']['report_out_of_stock']['to']=$to;
+    $_SESSION['state']['report_part_out_of_stock']['transactions']['to']=$to;
   }else
     $to=$conf['to'];
 
@@ -1062,22 +1064,22 @@ function list_product_marled_as_out_of_stock(){
 
  if(isset( $_REQUEST['from'])){
     $from=$_REQUEST['from'];
-    $_SESSION['state']['report_out_of_stock']['from']=$from;
+    $_SESSION['state']['report_part_out_of_stock']['transactions']['from']=$from;
   }else
     $from=$conf['from'];
 
 
 
 
-/*   if(isset( $_REQUEST['f_field'])) */
-/*     $f_field=$_REQUEST['f_field']; */
-/*   else */
-/*     $f_field=$conf['f_field']; */
+   if(isset( $_REQUEST['f_field'])) 
+     $f_field=$_REQUEST['f_field']; 
+   else 
+     $f_field=$conf['f_field']; 
 
-/*   if(isset( $_REQUEST['f_value'])) */
-/*      $f_value=$_REQUEST['f_value']; */
-/*    else */
-/*      $f_value=$conf['f_value']; */
+   if(isset( $_REQUEST['f_value'])) 
+   $f_value=$_REQUEST['f_value']; 
+    else 
+      $f_value=$conf['f_value']; 
 
 
   
@@ -1088,9 +1090,9 @@ function list_product_marled_as_out_of_stock(){
 
    if(isset( $_REQUEST['store_keys'])    ){
      $store=$_REQUEST['store_keys'];
-     $_SESSION['state']['report_out_of_stock']['store_keys']=$store;
+     $_SESSION['state']['report_part_out_of_stock']['store_keys']=$store;
    }else
-     $store=$_SESSION['state']['report_out_of_stock']['store_keys'];
+     $store=$_SESSION['state']['report_part_out_of_stock']['store_keys'];
 
    if($store=='all'){
       $store=join(',',$user->stores);
@@ -1100,20 +1102,24 @@ function list_product_marled_as_out_of_stock(){
   
    $filter_msg='';
    $wheref='';
-   $int=prepare_mysql_dates($from,$to,'`Invoice Date`','only dates');
+  // $int=prepare_mysql_dates($from,$to,'`Invoice Date`','only dates');
+   $int=prepare_mysql_dates($from,$to,'`Date Picked`','only dates');
 
    $where=sprintf('where true  %s',$int['mysql']);
+   
+   
+   $where=sprintf('where `Inventory Transaction Type`="Sale"  and  `Out of Stock`>0 and %s ',$int['mysql']);
 
    
    if(is_numeric($store)){
-     $where.=sprintf(' and `Customer Store Key`=%d ',$store);
+     $where.=sprintf(' and `Store Key`=%d ',$store);
    }elseif($store==''){
      
      $where.=sprintf(' and false ',$store);
 
    }else{
      
-     $where.=sprintf(' and `Customer Store Key` in (%s) ',$store);
+     $where.=sprintf(' and `Store Key` in (%s) ',$store);
 
    }
    
@@ -1128,18 +1134,18 @@ function list_product_marled_as_out_of_stock(){
    $_dir=$order_direction;
   
 
-   if($order=='invoices')
-     $order='`Invoices`';
+   if($order=='date')
+     $order='`Date Picked`';
 
    else   
-     $order='`Balance`';
+     $order='`Date Picked`';
 
   
-   $sql="select  `Store Code`,`Customer Type by Activity`,`Customer Last Order Date`,`Customer Main XHTML Telephone`,`Customer Key`,`Customer Name`,`Customer Main Location`,`Customer Main XHTML Email`,`Customer Main Town`,`Customer Main Country First Division`,`Customer Main Delivery Address Postal Code`,`Customer Orders Invoiced` as Invoices , `Customer Net Balance` as Balance  from `Customer Dimension` C  left join `Store Dimension` SD on (C.`Customer Store Key`=SD.`Store Key`)  left join `Invoice Dimension` I on (`Invoice Customer Key`=`Customer Key`)  $where $wheref  group by `Customer Key` order by $order $order_direction limit $start_from,$number_results";
+   $sql="select * from `Inventory Transaction Fact` ITF  left join `Part Dimension` PD on (ITF.`Part SKU`=PD.`Part SKU`)  left join `Order Transaction Fact` I on (`Map To Order Transaction Fact Key`=`Order Transaction Fact Key`)  $where $wheref  order by $order $order_direction limit $start_from,$number_results";
 
    $adata=array();
   
- // print $sql;
+ print $sql;
    $position=1;
   $result=mysql_query($sql);
   while($data=mysql_fetch_array($result, MYSQL_ASSOC)){
@@ -1149,43 +1155,9 @@ function list_product_marled_as_out_of_stock(){
   
 
 
-    $id="<a href='customer.php?id=".$data['Customer Key']."'>".$myconf['customer_id_prefix'].sprintf("%05d",$data['Customer Key']).'</a>'; 
-    $name="<a href='customer.php?id=".$data['Customer Key']."'>".$data['Customer Name'].'</a>'; 
-
     $adata[]=array(
-		   'position'=>'<b>'.$position++.'</b>',
-		   'id'=>$id,
-		   'name'=>$name,
-		   'store'=>$data['Store Code'],
-		   'location'=>$data['Customer Main Location'],
-		   //  'orders'=>number($data['Customer Orders']),
-		   'invoices'=>$data['Invoices'],
-		   'email'=>$data['Customer Main XHTML Email'],
-		   'telephone'=>$data['Customer Main XHTML Telephone'],
-		   'last_order'=>strftime("%e %b %Y", strtotime($data['Customer Last Order Date'])),
-		   // 'total_payments'=>money($data['Customer Net Payments']),
-		   'net_balance'=>money($data['Balance']),
-		   //'total_refunds'=>money($data['Customer Net Refunds']),
-		   //'total_profit'=>money($data['Customer Profit']),
-		   //'balance'=>money($data['Customer Outstanding Net Balance']),
-
-
-		   //'top_orders'=>number($data['Customer Orders Top Percentage']).'%',
-		   //'top_invoices'=>number($data['Customer Invoices Top Percentage']).'%',
-		   //'top_balance'=>number($data['Customer Balance Top Percentage']).'%',
-		   //'top_profits'=>number($data['Customer Profits Top Percentage']).'%',
-		   //'contact_name'=>$data['Customer Main Contact Name'],
-		   //'address'=>$data['Customer Main Location'],
-		   //'town'=>$data['Customer Main Town'],
-		   //'postcode'=>$data['Customer Main Postal Code'],
-		   //'region'=>$data['Customer Main Country First Division'],
-		   //'country'=>$data['Customer Main Country'],
-		   //		   'ship_address'=>$data['customer main ship to header'],
-		   //'ship_town'=>$data['Customer Main Delivery Address Town'],
-		   //'ship_postcode'>$data['Customer Main Delivery Address Postal Code'],
-		   //'ship_region'=>$data['Customer Main Delivery Address Country Region'],
-		   //'ship_country'=>$data['Customer Main Delivery Address Country'],
-		   'activity'=>$data['Customer Type by Activity']
+	
+		   'sku'=>sprintf("SKU%05d",$data['Part SKU'])
 
 		   );
   }

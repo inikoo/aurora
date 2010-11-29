@@ -649,22 +649,26 @@ $default_state=array(
                                                           'from'=>'',
                                                           'to'=>''
                                                       ), 
-                                       'report_out_of_stock'=>array(
+                                       'report_part_out_of_stock'=>array(
                                         'tipo'=>'m',
                                       'y'=>date('Y'),
                                       'm'=>date('m'),
                                       'd'=>date('d'),
                                       'w'=>1,
-                                                          'store_keys'=>'all',
+                                       'store_keys'=>'all',
+                                      'transactions'=>array(
+                                                         
                                                           'order'=>'date',
                                                             'order_dir'=>'desc',
                                                              'sf'=>0,
                                       'nr'=>25,
                                                           'f_value'=>'',
                                                           'f_show'=>false,
-                                                          'f_field'=>'code',
+                                                          'f_field'=>'used_in',
                                                           'from'=>'',
-                                                          'to'=>''
+                                                          'to'=>'',
+                                                          'view'=>''
+                                                          )
                                                       ), 
                                   
                           'report_activity'=>array(

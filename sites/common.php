@@ -231,8 +231,11 @@ $cur_url = $break[count($break) - 1];
     $page_key=0;
     $date=date("Y-m-d H:i:s");
    
+   
+   if(isset($_SESSION['prev_page_key']))
     $prev_page_key=$_SESSION['prev_page_key'];
-  
+  else
+  $prev_page_key=0;
   
   
         $sql1=sprintf("INSERT INTO `User Click Dimension` (
