@@ -11,6 +11,42 @@ var dialog_cancel,dialog_edit_shipping;
 YAHOO.namespace ("invoice"); 
 var panel2;
 
+var edit_delivery_address;
+
+function post_change_main_delivery_address(){
+ 
+    var ar_file='ar_edit_orders.php';
+    request='tipo=update_ship_to_key&order_key='+order_key+'&ship_to_key=0';
+	
+	YAHOO.util.Connect.asyncRequest(
+				    'POST',
+				    ar_file, {
+					success:function(o) {
+					 
+					   var r = YAHOO.lang.JSON.parse(o.responseText);
+					    if (r.state == 200) {
+						if(r.result=='updated'){
+						edit_delivery_address.hide()
+					Dom.get('delivery_address').innerHTML=r.new_value;
+						  
+						}
+					    } else {
+						alert(r.msg);
+						//	callback();
+					    }
+					},
+					    failure:function(o) {
+					    alert(o.statusText);
+					    // callback();
+					},
+					    scope:this
+					    },
+				    request
+				    
+				    );  
+}
+
+
 function change_shipping_type(){
 
 
@@ -112,7 +148,7 @@ var myonCellClick = function(oArgs) {
 
  var ar_file='ar_edit_orders.php';
 	request='tipo=edit_new_post_order&order_key='+data['order_key']+'&key=quantity&new_value='+new_qty+'&otf_key='+ data['otf_key'];
-	
+	//alert(request);
 	YAHOO.util.Connect.asyncRequest(
 				    'POST',
 				    ar_file, {
@@ -552,9 +588,29 @@ var ar_file='ar_edit_orders.php';
 
 
 
+function close_edit_delivery_address_dialog(){
+edit_delivery_address.hide();
+}
 
+function change_delivery_address(){
+
+ var y=(Dom.getY('control_panel'))
+    var x=(Dom.getX('control_panel'))
+Dom.setX('edit_delivery_address_dialog',x);
+Dom.setY('edit_delivery_address_dialog',y+0);
+ edit_delivery_address.show();
+}
 
 function init(){
+
+ edit_delivery_address = new YAHOO.widget.Dialog("edit_delivery_address_dialog", 
+			{ 
+			    visible : false,close:false,
+			    underlay: "none",draggable:false
+			    
+			} );
+       edit_delivery_address.render();
+
 
 
    var oACDS = new YAHOO.util.FunctionDataSource(mygetTerms);
@@ -564,6 +620,9 @@ function init(){
     oAutoComp.minQueryLength = 0; 
 //
         YAHOO.util.Event.addListener(["set_for_collection","set_for_shipping"], "click",change_shipping_type);
+
+                    YAHOO.util.Event.addListener("change_delivery_address", "click",change_delivery_address);
+
 
     // YAHOO.util.Event.addListener('done', "click",create_delivery_note);
 

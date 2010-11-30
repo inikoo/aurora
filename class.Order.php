@@ -3388,6 +3388,33 @@ $deal_info=percentage($amount,$row['Order Transaction Gross Amount']).' Off';
 
         }
 
+function update_ship_to($ship_to_key=false) {
+
+    if (!$ship_to_key) {
+        $customer=new Customer($this->data['Order Customer Key']);
+        $ship_to= $customer->set_current_ship_to('return object');
+    }else{
+        //TODO
+    }
+    
+    $sql=sprintf("update `Order Dimension` set `Order For Collection`='No' ,`Order Ship To Country Code`=%s,`Order XHTML Ship Tos`=%s,`Order Ship To Keys`=%s  where `Order Key`=%d"
+                 ,prepare_mysql($ship_to->data['Ship To Country Code'])
+                 ,prepare_mysql($ship_to->data['Ship To XHTML Address'])
+                 ,prepare_mysql($ship_to->id)
+                 ,$this->id
+                );
+    mysql_query($sql);
+    if (mysql_affected_rows()>0) {
+        $this->get_data('id',$this->id);
+        $this->updated=true;
+        $this->new_value=$ship_to->data['Ship To XHTML Address'];
+    }else{
+        $this->msg=_('Nothing to change');
+    }
+
+}
+
+
         function add_ship_to($ship_to_key) {
             $order_ship_to_keys=preg_split('/\s*\,\s*/',$this->data ['Order Ship To Keys']);
             if (!in_array($ship_to_key,$order_ship_to_keys)) {

@@ -3,7 +3,7 @@
  {include file='orders_navigation.tpl'}
 
   <div id="yui-main">
-    <div class="yui-b">
+    <div id="control_panel" class="yui-b">
       <div style="text-align:right">
 	<span class="state_details" id="continue_later"><a href="customer.php?id={$order->get('order customer key')}">Continue Later</a></span>
 	<span class="state_details" id="cancel" style="margin-left:20px">Cancel</span>
@@ -19,11 +19,11 @@
            {if $tel!=''}{t}Tel{/t}: {$tel}<br/>{/if}
 	<div style="float:left;line-height: 1.0em;margin:5px 20px 0 0;color:#444;font-size:80%;width:140px"><span style="font-weight:500;color:#000">{t}Contact Address{/t}</span>:<br/><b>{$customer->get('Customer Main Contact Name')}</b><br/>{$customer->get('Customer Main XHTML Address')}</div>
 	<div id="shipping_address" style="{if $order->get('Order For Collection')=='Yes'}display:none;{/if}float:left;line-height: 1.0em;margin:5px 0 0 0px;color:#444;font-size:80%;width:140px">
-	<span style="font-weight:500;color:#000">{t}Shipping Address{/t}</span>:<br/>{$order->get('Order XHTML Ship Tos')}
+	<span style="font-weight:500;color:#000">{t}Shipping Address{/t}</span>:<div id="delivery_address">{$order->get('Order XHTML Ship Tos')}</div>
 
 
 
-    <a href="customer.php?edit={$order->get('order customer key')}&return_to_order={$order->id}&edit_block=delivery"><span id="change_delivery_address" class="state_details" style="display:block;margin-top:10px">{t}Change Delivery Address{/t}</span></a>
+   <span id="change_delivery_address" class="state_details" style="display:block;margin-top:10px">{t}Change Delivery Address{/t}</span>
 
 
 
@@ -244,5 +244,8 @@
   </div>
 </div>
 <! -------------------------discount search ends here ------------------------------------>
-
+<div  id="edit_delivery_address_splinter_dialog" class="edit_block" style="width:870px;padding:5px 20px 20px 20px;background:#fff;" id="edit_address_dialog">
+<div style="text-align:right;margin-bottom:15px"><span onClick="close_edit_delivery_address_dialog()" class="state_details">{t}Close{/t}</span></div>
+ {include file='edit_delivery_address_splinter.tpl'}
+</div>
 {include file='footer.tpl'}
