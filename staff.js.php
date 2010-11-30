@@ -1,10 +1,15 @@
+
 <?php
 include_once('common.php');
+include_once('class.Staff.php');
+$staff=new Staff($_SESSION['state']['staff']['id']);
 ?>
+
+// ---------------------------------------------------------------------------------------------------------------------------
 var Event = YAHOO.util.Event;
 var Dom   = YAHOO.util.Dom;
 
-var can_add_department=false;
+/*var can_add_department=false;
 var description_num_changed=0;
 var description_warnings= new Object();
 var description_errors= new Object();
@@ -16,35 +21,65 @@ var scope_key=0;
 	
 var parent='company';
 var parent_key_name='id';
-var parent_key=<?php echo $_REQUEST['company_key']?>;
-
+var parent_key=<?php echo $_REQUEST['company_key']?>;   */
+var editing='<?php echo $_SESSION['state']['staff']['edit']?>';
 
 var validate_scope_data={
-'ind_staff':{
-    'name':{'changed':false,'validated':true,'required':true,'group':1,'type':'item'
-	    ,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Staff Name')?>'}],'name':'Company_Staff_Name','dbname':'Staff Name'
-	    ,'ar':'find','ar_request':'ar_staff.php?tipo=is_company_staff_name&company_key='+parent_key+'&query='}
-    ,'id':{'changed':false,'validated':true,'required':false,'group':1,'type':'item'
-	     ,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Staff Id')?>'}]
-	     ,'name':'Company_Staff_Id' ,'dbname':'Staff Key','ar':'find','ar_request':'ar_staff.php?tipo=is_company_staff_id&company_key='+parent_key+'&query='}
-   }
-
-
+'staff_salary':{
+     'name':{'changed':false,'validated':false,'required':true,'group':1,'type':'item'
+	    ,'validation':false,'name':'Staff_Name','dbname':'Staff Name'
+	    ,'ar':'false','ar_request':false},
+    'id':{'changed':false,'validated':false,'required':false,'group':1,'type':'item'
+	     ,'validation':false ,'name':'Staff_Id' ,'dbname':'Staff Key','ar':false,'ar_request':false},
+    'from_date':{'changed':false,'validated':false,'required':false,'group':1,'type':'item'
+	     ,'validation':false ,'name':'From_Date' ,'dbname':'From Date','ar':false,'ar_request':false},
+    'to_date':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','dbname':'Supplier Product Description'
+		 ,'validation':false ,'name':'To_Date','dbname':'To Date','ar':false,'ar_request':false},
+    'basic':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','dbname':'Supplier Product Description'
+		 ,'validation':false ,'name':'Basic','ar':false,'ar_request':false},
+	 'da':{'default':true, 'changed':false,'validated':true,'required':true,'group':1,'type':'select','dbname':'Supplier Product Unit Type'
+		 ,'validation':false
+		 ,'name':'Dearness Allowance','ar':false,'ar_request':false},	 
+	'hra':{'default':1,'changed':false,'validated':true,'required':true,'group':1,'type':'item','dbname':'Supplier Product Units Per Case'
+		 ,'validation':false ,'name':'House Rent Allowance','ar':false,'ar_request':false},
+	'conveyance':{'changed':false,'validated':false,'required':true,'group':1,'type':'item','dbname':'Supplier Product Cost Per Case'
+		,'validation':false,'name':'Conveyance','ar':false,'ar_request':false},	
+	'lta':{'default':true,'changed':false,'validated':true,'required':true,'group':1,'type':'select','dbname':'Supplier Product Currency'
+		,'validation':false,'name':'Leave Travel Assistance','ar':false,'ar_request':false},
+       'total_addition':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','dbname':'Supplier Product Description'
+		 ,'validation':false
+		 ,'name':'Total Addition','ar':false,'ar_request':false},
+	 'pf':{'default':true, 'changed':false,'validated':true,'required':true,'group':1,'type':'select','dbname':'Supplier Product Unit Type'
+		 ,'validation':false
+		 ,'name':'Provident Fund','ar':false,'ar_request':false},	 
+	'esi':{'default':1,'changed':false,'validated':true,'required':true,'group':1,'type':'item','dbname':'Supplier Product Units Per Case'
+		 ,'validation':false ,'name':'ESI','ar':false,'ar_request':false},
+	'loan':{'changed':false,'validated':false,'required':true,'group':1,'type':'item','dbname':'Supplier Product Cost Per Case'
+		,'validation':false ,'name':'Loan','ar':false,'ar_request':false},	
+	'profession_tax':{'default':true,'changed':false,'validated':true,'required':true,'group':1,'type':'select','dbname':'Supplier Product Currency'
+		,'validation':false,'name':'Profession Tax','ar':false,'ar_request':false},
+	'tds_it':{'default':true, 'changed':false,'validated':true,'required':true,'group':1,'type':'select','dbname':'Supplier Product Unit Type'
+		 ,'validation':false
+		 ,'name':'TDS/IT','ar':false,'ar_request':false},	 
+	'total_deduction':{'default':1,'changed':false,'validated':true,'required':true,'group':1,'type':'item','dbname':'Supplier Product Units Per Case'
+		 ,'validation':false ,'name':'Total Deduction','ar':false,'ar_request':false},
+	'net_salary':{'changed':false,'validated':false,'required':true,'group':1,'type':'item','dbname':'Supplier Product Cost Per Case'
+}		,'validation':false ,'name':'Net salary','ar':false,'ar_request':false}
 };
 
-var validate_scope_metadata={'ind_staff':{'type':'edit','ar_file':'ar_edit_staff.php'}};
+var validate_scope_metadata={'staff_salary':{'type':'new','ar_file':'ar_edit_staff.php'}};
 
 function validate_id(query){
- validate_general('ind_staff','id',unescape(query));
+ validate_general('staff_salary','id',unescape(query));
 }
 function validate_name(query){
- validate_general('ind_staff','name',unescape(query));
+ validate_general('staff_salary','name',unescape(query));
 }
 function reset_new_staff(){
- reset_edit_general('ind_staff');
+ reset_edit_general('staff_salary');
 }
 function save_new_staff(){
- save_new_general('ind_staff');
+ save_new_general('staff_salary');
 }
 
 
