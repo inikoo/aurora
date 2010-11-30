@@ -3,7 +3,7 @@
  {include file='orders_navigation.tpl'}
 
   <div id="yui-main">
-    <div class="yui-b">
+    <div id="control_panel" class="yui-b">
       <div style="text-align:right">
 	<span class="state_details" id="continue_later"><a href="order.php?id={$order->id}">Continue Later</a></span>
 	<span class="state_details" id="cancel" style="margin-left:20px">Cancel</span>
@@ -38,8 +38,8 @@
      <tr><td  class="aright" >{t}Shipping Address{/t}:
          
 
-     </td><td class="aright">{$order->get('Order XHTML Ship Tos')}</td></tr>
-<tr style="font-size:90%"><td><a href="customer.php?edit={$order->get('order customer key')}&return_to_order={$order->id}&edit_block=delivery"><span id="change_delivery_address" class="state_details" style="display:block;margin-top:10px">{t}Change Delivery Address{/t}</span></a>
+     </td><td id="delivery_address" class="aright">{$order->get('Order XHTML Ship Tos')}</td></tr>
+<tr style="font-size:90%"><td><span id="change_delivery_address" class="state_details" style="display:block;margin-top:10px">{t}Change Delivery Address{/t}</span>
 	<span id="set_for_collection" class="state_details" style="{if $order->get('Order For Collection')=='Yes'}display:none;{else}display:block;{/if}margin-top:4px" value="Yes">{t}Set this order is for collection{/t}</span>
 <span id="set_for_shipping" class="state_details" style="{if $order->get('Order For Collection')=='No'}display:none;{else}display:block;{/if}margin-top:4px" value="No">{t}Set for shipping{/t}</span></td></tr>
 </tbody>
@@ -124,9 +124,9 @@
 
 </div> 
 
-<div  class="edit_block" style="width:800px" id="edit_address_dialog">
+<div  id="edit_delivery_address_dialog" class="edit_block" style="width:870px;padding:5px 20px 20px 20px;background:#fff;" id="edit_address_dialog">
+<div style="text-align:right;margin-bottom:15px"><span onClick="close_edit_delivery_address_dialog()" class="state_details">{t}Close{/t}</span></div>
  {include file='edit_delivery_address_splinter.tpl'}
-
 </div>
 
 

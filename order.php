@@ -112,7 +112,17 @@ if(isset($_REQUEST['pick_aid'])){
   case('In Process'):
 
     $js_files[]='js/edit_common.js';
-    $js_files[]='order_in_process.js.php?order_key='.$order_id;
+  
+    
+    $js_files[]='edit_address.js.php';
+		$js_files[]='address_data.js.php?tipo=customer&id='.$customer->id;
+		
+		$js_files[]='edit_delivery_address_common.js.php';
+    	  $js_files[]='order_in_process.js.php?order_key='.$order_id;
+    	
+    	$css_files[]='css/edit_address.css';
+
+    
     $template='order_in_process.tpl';
     
    

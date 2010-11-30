@@ -43,7 +43,9 @@ $css_files=array(
 		 'text_editor.css',
 		 'common.css',
 		 'container.css',
-		 'table.css'
+		 'table.css',
+		 'css/edit_address.css',
+		  'css/edit.css'
 		 );
 
 

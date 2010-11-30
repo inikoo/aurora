@@ -16,6 +16,14 @@ if (!isset($_REQUEST['tipo'])) {
 $tipo=$_REQUEST['tipo'];
 
 switch ($tipo) {
+case('update_ship_to_key'):
+    $data=prepare_values($_REQUEST,array(
+                             'order_key'=>array('type'=>'key'),
+                             'ship_to_key'=>array('type'=>'numeric')
+                         ));
+    update_ship_to_key($data);
+    break;
+
 case('create_refund'):
     $data=prepare_values($_REQUEST,array(
                              'order_key'=>array('type'=>'key')
@@ -1493,3 +1501,18 @@ $date=date("Y-m-d H:i:s");
 
 }
 
+function  update_ship_to_key($data){
+
+ $order=new Order($data['order_key']);
+ $order->update_ship_to($data['ship_to_key']);
+ if ($order->updated) {
+        $response=array('state'=>200,'result'=>'updated','order_key'=>$order->id,'new_value'=>$order->new_value);
+        echo json_encode($response);
+    } else {
+        $response=array('state'=>400,'msg'=>$order->msg);
+        echo json_encode($response);
+
+    }
+
+
+}

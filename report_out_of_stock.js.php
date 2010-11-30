@@ -178,6 +178,9 @@ function export_data(){
 
 function init(){
 
+ 
+
+
 /*
    YAHOO.util.Event.addListener('export', "click", export_data);
  
