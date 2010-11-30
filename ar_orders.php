@@ -2268,7 +2268,6 @@ function transactions_dipatched(){
    
    //  $sql="select  p.id as id,p.code as code ,product_id,p.description,units,ordered,dispatched,charge,discount,promotion_id    from transaction as t left join product as p on (p.id=product_id)  $where    ";
    
- //  print $sql;
    
 
    $result=mysql_query($sql);

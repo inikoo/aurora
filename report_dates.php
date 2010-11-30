@@ -1,6 +1,7 @@
 <?php
 
 
+
 if ($tipo=='quick_this_month') {
     $tipo='m';
     $_SESSION['state'][$report_name]['y']=date('Y');
