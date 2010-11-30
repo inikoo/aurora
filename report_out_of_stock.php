@@ -73,9 +73,12 @@ else
 
 
 include_once('report_dates.php');
+
+
 $_SESSION['state']['report_part_out_of_stock']['from']=$from;
 $_SESSION['state']['report_part_out_of_stock']['to']=$to;
 
+$smarty->assign('view',$_SESSION['state']['report_part_out_of_stock']['view']);
 
 
 $export_output['type']=$_SESSION['state']['export'];
@@ -107,6 +110,39 @@ $smarty->assign('week',date('W'));
 
 $smarty->assign('from',$from);
 $smarty->assign('to',$to);
+
+$tipo_filter=$_SESSION['state']['report_part_out_of_stock']['transactions']['f_field'];
+$smarty->assign('filter0',$tipo_filter);
+$smarty->assign('filter_value0',$_SESSION['state']['report_part_out_of_stock']['transactions']['f_value']);
+
+$filter_menu=array(
+		   'used_in'=>array('db_key'=>_('customer name'),'menu_label'=>_('Customer Name'),'label'=>_('Name')),
+		   'sku'=>array('db_key'=>_('postcode'),'menu_label'=>_('Customer Postcode'),'label'=>_('Postcode')),
+
+				   );
+		   
+$smarty->assign('filter_menu0',$filter_menu);
+$smarty->assign('filter_name0',$filter_menu[$tipo_filter]['label']);
+$paginator_menu=array(10,25,50,100,500);
+$smarty->assign('paginator_menu0',$paginator_menu);
+
+$tipo_filter=$_SESSION['state']['report_part_out_of_stock']['parts']['f_field'];
+$smarty->assign('filter1',$tipo_filter);
+$smarty->assign('filter_value1',$_SESSION['state']['report_part_out_of_stock']['parts']['f_value']);
+
+$filter_menu=array(
+		   'used_in'=>array('db_key'=>_('customer name'),'menu_label'=>_('Customer Name'),'label'=>_('Name')),
+		   'sku'=>array('db_key'=>_('postcode'),'menu_label'=>_('Customer Postcode'),'label'=>_('Postcode')),
+
+				   );
+		   
+$smarty->assign('filter_menu1',$filter_menu);
+$smarty->assign('filter_name1',$filter_menu[$tipo_filter]['label']);
+$paginator_menu=array(10,25,50,100,500);
+$smarty->assign('paginator_menu1',$paginator_menu);
+
+
+
 $smarty->display('report_out_of_stock.tpl');
 
 
