@@ -656,19 +656,48 @@ $default_state=array(
                                       'd'=>date('d'),
                                       'w'=>1,
                                        'store_keys'=>'all',
+                                       'view'=>'transactions',
+                                         'from'=>'',
+                                                          'to'=>'',
                                       'transactions'=>array(
                                                          
                                                           'order'=>'date',
                                                             'order_dir'=>'desc',
                                                              'sf'=>0,
-                                      'nr'=>25,
+                                                        'nr'=>25,
+                                                          'f_value'=>'',
+                                                          'f_show'=>false,
+                                                          'f_field'=>'used_in',
+                                                        
+                                                          'view'=>''
+                                                          ),
+                                           'orders'=>array(
+                                                         
+                                                          'order'=>'date',
+                                                            'order_dir'=>'desc',
+                                                             'sf'=>0,
+                                                        'nr'=>25,
+                                                          'f_value'=>'',
+                                                          'f_show'=>false,
+                                                          'f_field'=>'public_id',
+                                                         
+                                                          'view'=>''
+                                                          ),                
+                                               'parts'=>array(
+                                                         
+                                                          'order'=>'date',
+                                                            'order_dir'=>'desc',
+                                                             'sf'=>0,
+                                                        'nr'=>25,
                                                           'f_value'=>'',
                                                           'f_show'=>false,
                                                           'f_field'=>'used_in',
                                                           'from'=>'',
                                                           'to'=>'',
                                                           'view'=>''
-                                                          )
+                                                          ),            
+                                                          
+                                                          
                                                       ), 
                                   
                           'report_activity'=>array(
