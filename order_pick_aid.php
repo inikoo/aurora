@@ -16,7 +16,8 @@ $css_files=array(
 		 'text_editor.css',
 		 'common.css',
 		 'container.css',
-		 'table.css'
+		 'table.css',
+		  'css/edit.css'
 		 );
 $js_files=array(
 
@@ -30,7 +31,8 @@ $js_files=array(
 		$yui_path.'menu/menu-min.js',
 		$yui_path.'calendar/calendar-min.js',
 		'common.js.php',
-		'table_common.js.php'
+		'table_common.js.php',
+		'js/edit_common.js',
 		);
 
 if(!isset($_REQUEST['id']) or !is_numeric($_REQUEST['id'])){

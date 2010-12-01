@@ -377,8 +377,12 @@ protected function create($dn_data,$order=false) {
         case('Shipping Net Amount'):
 
             return money($this->data['Delivery Note '.$key]);
+           break;
+        case('Faction Packed'):
+                case('Faction Picked'):
+            return percentage($this->data['Delivery Note'].' '.$key,1);
         }
-
+            
 
         if (isset($this->data[$key]))
             return $this->data[$key];
@@ -1323,6 +1327,35 @@ $this->handle_to_customer($data);
         $this->update_state($state);
 
     }
+    
+    function get_number_transactions(){
+  
+        $sql=sprintf("select count(*) as number from   `Inventory Transaction Fact` ITF        where `Delivery Note Key`=%d "
+                     ,$this->id
+
+                    );
+                    
+        $res=mysql_query ( $sql );
+        $number=0;
+        if ($row=mysql_fetch_assoc($res)) {
+            $number=$row['number'];
+        }
+        return $number;
+    }
+    function get_number_picked_transactions(){
+  
+        $sql=sprintf("select count(*) as number from   `Inventory Transaction Fact` ITF        where `Delivery Note Key`=%d and (`Required`<`Out of Stock`+`Picked`) "
+                     ,$this->id
+
+                    );
+        $res=mysql_query ( $sql );
+        $number=0;
+        if ($row=mysql_fetch_assoc($res)) {
+            $number=$row['number'];
+        }
+        return $number;
+    }
+    
     function get_picking_percentage() {
         $sql=sprintf("select `Required`,`Out of Stock`,ifnull(`Part Gross Weight`,0) as `Part Gross Weight`,`Picked` ,`Given`,`Inventory Transaction Quantity` from   `Inventory Transaction Fact` ITF           left join `Part Dimension` P on (P.`Part SKU`=ITF.`Part SKU`) where `Delivery Note Key`=%d  "
                      ,$this->id

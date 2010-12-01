@@ -1394,12 +1394,13 @@ function picking_aid_sheet() {
         $sku=sprintf('<a href="part.php?sku=%d">SKU%05d</a>',$row['Part SKU'],$row['Part SKU']);
         $data[]=array(
 
-                    'sku'=>$sku
-                          ,'description'=>$row['Part XHTML Description']
-                                         ,'used_in'=>$row['Part XHTML Currently Used In']
-                                                    ,'quantity'=>number($row['qty'])
-                                                                ,'location'=>$row['Part XHTML Picking Location']
-
+                    'sku'=>$sku,
+                    'description'=>$row['Part XHTML Description'],
+                    'used_in'=>$row['Part XHTML Currently Used In'],
+                    'quantity'=>number($row['qty']),
+                    'location'=>$row['Part XHTML Picking Location'],
+                    'add'=>'+',
+                    'remove'=>'-',
                 );
     }
 

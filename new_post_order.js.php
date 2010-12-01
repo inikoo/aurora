@@ -217,68 +217,7 @@ var myonCellClick = function(oArgs) {
 	break;
     }
 };   
-
-function change(e,o,tipo){
-    switch(tipo){
-    case('cancel'):
-	if(o.value!=''){
-	    enable_save(tipo);
-
-	    if(window.event)
-		key = window.event.keyCode; //IE
-	    else
-		key = e.which; //firefox     
-	    
-	    if (key == 13)
-		save(tipo);
-
-
-	}else
-	    disable_save(tipo);
-	break;
-    }
-};
-
-function enable_save(tipo){
-    switch(tipo){
-    case('cancel'):
-	Dom.get(tipo+'_save').style.visibility='visible';
-	break;
-    }
-};
-
-function disable_save(tipo){
-    switch(tipo){
-    case('cancel'):
-	Dom.get(tipo+'_save').style.visibility='hidden';
-	break;
-    }
-};
-
-
-function close_dialog(tipo){
-    switch(tipo){
-
-    
-    case('cancel'):
-
-	Dom.get(tipo+"_input").value='';
-	Dom.get(tipo+'_save').style.visibility='hidden';
-	dialog_cancel.hide();
-
-	break;
-    }
-};
-
-
-
-
-
-
-
-
-
-  var CellEdit = function (callback, newValue) {
+var CellEdit = function (callback, newValue) {
       
     var record = this.getRecord(),
     column = this.getColumn(),
@@ -358,6 +297,67 @@ function close_dialog(tipo){
 				    
 				    );  
   };
+function change(e,o,tipo){
+    switch(tipo){
+    case('cancel'):
+	if(o.value!=''){
+	    enable_save(tipo);
+
+	    if(window.event)
+		key = window.event.keyCode; //IE
+	    else
+		key = e.which; //firefox     
+	    
+	    if (key == 13)
+		save(tipo);
+
+
+	}else
+	    disable_save(tipo);
+	break;
+    }
+};
+
+function enable_save(tipo){
+    switch(tipo){
+    case('cancel'):
+	Dom.get(tipo+'_save').style.visibility='visible';
+	break;
+    }
+};
+
+function disable_save(tipo){
+    switch(tipo){
+    case('cancel'):
+	Dom.get(tipo+'_save').style.visibility='hidden';
+	break;
+    }
+};
+
+
+function close_dialog(tipo){
+    switch(tipo){
+
+    
+    case('cancel'):
+
+	Dom.get(tipo+"_input").value='';
+	Dom.get(tipo+'_save').style.visibility='hidden';
+	dialog_cancel.hide();
+
+	break;
+    }
+};
+
+
+
+
+
+
+
+
+
+  
 
 
 
