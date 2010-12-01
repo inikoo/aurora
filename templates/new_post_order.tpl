@@ -4,12 +4,12 @@
 
   <div id="yui-main">
     <div id="control_panel" class="yui-b">
-      <div style="text-align:right">
+    <div style="text-align:right">
 	<span class="state_details" id="continue_later"><a href="order.php?id={$order->id}">Continue Later</a></span>
 	<span class="state_details" id="cancel" style="margin-left:20px">Cancel</span>
 
       </div>
-      <div class="yui-b" style="border:1px solid #ccc;text-align:left;padding:10px;margin: 0px 0 10px 0;xheight:15em">
+    <div class="yui-b" style="border:1px solid #ccc;text-align:left;padding:10px;margin: 0px 0 10px 0;xheight:15em">
 
        <div style="xborder:1px solid #ddd;width:350px;float:left"> 
         <h1 style="padding:0 0 10px 0">{t}Order{/t} {$order->get('Order Public ID')}</h1>
@@ -71,7 +71,7 @@
        <div style="clear:both"></div>
       </div>
 
-      <div class="data_table"  style="clear:both">
+    <div class="data_table"  style="clear:both">
 	<span id="table_title" class="clean_table_title">{t}Ordered Items{/t}</span>
 	
 <div style="clear:both;margin:0 0px;padding:0 20px ;border-bottom:1px solid #999"></div>
@@ -93,6 +93,7 @@
     </div>
    
   </div>
+  
 </div>
 
 

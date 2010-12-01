@@ -1120,8 +1120,8 @@ $header_data['date_order']='';
                          'Supplier Product Cost Per Case'=>sprintf("%.2f",$supplier_product_cost),
                          'Supplier Product Name'=>$description,
                          'Supplier Product Description'=>$description,
-                                                        'Supplier Product Valid From'=>$date_order,
-                                                                                       'Supplier Product Valid To'=>$date2
+                         'Supplier Product Valid From'=>$date_order,
+                         'Supplier Product Valid To'=>$date2
                      );
             
             $supplier_product=new SupplierProduct('find',$sp_data,'create');

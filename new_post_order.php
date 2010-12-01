@@ -68,6 +68,8 @@ $js_files=array(
 		'edit_address.js.php',
 		'address_data.js.php?tipo=customer&id='.$customer->id,
 		'edit_delivery_address_common.js.php',
+		'js/edit_common.js',
+		'new_post_order.js.php?order_key='.$order_id
 		);
 
 
@@ -76,8 +78,7 @@ $js_files=array(
 
 
 
- $js_files[]='js/edit_common.js';
-    $js_files[]='new_post_order.js.php?order_key='.$order_id;
+
     $template='new_post_order.tpl';
     
    
