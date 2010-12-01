@@ -7925,8 +7925,8 @@ function list_orders_per_store() {
     $total_todo=0;
     $total_paid=0;
     $total_suspended=0;
-    $sql="select  `Store Total Orders` as orders,`Store Unknown Orders` as unknown,`Store Suspended Orders` as suspended,`Store Dispatched Orders` as dispatched,`Store Cancelled Orders` cancelled,`Store Orders In Process` as todo   from `Store Dimension`  $where     ";
-    //print $sql;
+    $sql="select  sum(`Store Total Orders`) as orders,sum(`Store Unknown Orders`) as unknown,sum(`Store Suspended Orders`) as suspended,sum(`Store Dispatched Orders`) as dispatched,sum(`Store Cancelled Orders`) cancelled,sum(`Store Orders In Process`) as todo   from `Store Dimension`  $where     ";
+   // print $sql;
     $res = mysql_query($sql);
     if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
         $total_orders=$row['orders'];

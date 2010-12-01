@@ -1004,11 +1004,21 @@ while($row=mysql_fetch_assoc($res)) {
     mysql_query($sql);
 }
 
+function update_delivery_note_data($data){
+$this->data['Invoice Delivery Country 2 Alpha Code']=$data['Invoice Delivery Country 2 Alpha Code'];
+ $sql=sprintf("update `Invoice Dimension` set `Invoice Delivery Country 2 Alpha Code`=%s where `Invoice Key`=%d "
+                 ,prepare_mysql($this->data['Invoice Delivery Country 2 Alpha Code'])
+                 ,$this->id
+                );
+    mysql_query($sql);
+
+}
+
 function update_xhtml_delivery_notes() {
 $prefix='';
     $this->data ['Invoice XHTML Delivery Notes'] ='';
     foreach($this->get_delivery_notes_objects() as $delivery_note) {
-        $this->data ['Invoice XHTML Delivery Notes'] .= sprintf ( '%s <a href="delivery_note.php?id=%d">%s</a>, ', $prefix, $delivery_note->data ['Delivery Note Key'], $delivery_note->data ['Delivery Note ID'] );
+        $this->data ['Invoice XHTML Delivery Notes'] .= sprintf ( '%s <a href="dn.php?id=%d">%s</a>, ', $prefix, $delivery_note->data ['Delivery Note Key'], $delivery_note->data ['Delivery Note ID'] );
     }
     $this->data ['Invoice XHTML Delivery Notes'] =_trim(preg_replace('/\, $/','',$this->data ['Invoice XHTML Delivery Notes']));
  
