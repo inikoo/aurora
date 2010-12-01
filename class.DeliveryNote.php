@@ -894,7 +894,9 @@ $this->handle_to_customer($data);
                 );
     mysql_query($sql);
 
-
+foreach($this->get_invoices_objects() as $invoice) {
+    $invoice->update_delivery_note_data(array('Invoice Delivery Country 2 Alpha Code'=>$this->data['Delivery Note Country 2 Alpha Code']));
+}
 
 
 }

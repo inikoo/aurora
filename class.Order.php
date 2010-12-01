@@ -1834,7 +1834,7 @@ function update_xhtml_delivery_notes() {
 $prefix='';
     $this->data ['Order XHTML Delivery Notes'] ='';
     foreach($this->get_delivery_notes_objects() as $delivery_note) {
-        $this->data ['Order XHTML Delivery Notes'] .= sprintf ( '%s <a href="delivery_note.php?id=%d">%s</a>, ', $prefix, $delivery_note->data ['Delivery Note Key'], $delivery_note->data ['Delivery Note ID'] );
+        $this->data ['Order XHTML Delivery Notes'] .= sprintf ( '%s <a href="dn.php?id=%d">%s</a>, ', $prefix, $delivery_note->data ['Delivery Note Key'], $delivery_note->data ['Delivery Note ID'] );
     }
     $this->data ['Order XHTML Delivery Notes'] =_trim(preg_replace('/\, $/','',$this->data ['Order XHTML Delivery Notes']));
    
