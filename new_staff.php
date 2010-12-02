@@ -54,7 +54,7 @@ $js_files=array(
 		'edit_contact_from_parent.js.php',
 		'edit_contact_telecom.js.php',
 		'edit_contact_name.js.php',
-		'edit_contact_email.js.php',
+		'edit_contact_email.js.php','new_staff.js.php',
 		'new_contact.js.php'
 		);
 

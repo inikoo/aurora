@@ -89,10 +89,7 @@ function save_new_company(e){
         var ar_file='ar_edit_suppliers.php';
     }else
         var ar_file='ar_edit_contacts.php';
-    
-    
-    
-    
+   
     var json_value = YAHOO.lang.JSON.stringify(subject_data); 
     var request=ar_file+'?tipo=new_'+scope+'&delete_email='+subject_found_email+'&values=' + encodeURIComponent(json_value); 
      //alert(request);return;

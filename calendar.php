@@ -19,10 +19,10 @@ include_once('class.Staff.php');
 
 
 ?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<link rel='stylesheet' type='text/css' href='fullcalendar/fullcalendar/fullcalendar.css' />
-<script type='text/javascript' src='fullcalendar/jquery/jquery-1.4.4.min.js'></script>
-<script type='text/javascript' src='fullcalendar/jquery/jquery-ui-1.8.6.custom.min.js'></script>
-<script type='text/javascript' src='fullcalendar/fullcalendar/fullcalendar.min.js'></script>
+<link rel='stylesheet' type='text/css' href='external_libs/fullcalendar/fullcalendar/fullcalendar.css' />
+<script type='text/javascript' src='external_libs/fullcalendar/jquery/jquery-1.4.4.min.js'></script>
+<script type='text/javascript' src='external_libs/fullcalendar/jquery/jquery-ui-1.8.6.custom.min.js'></script>
+<script type='text/javascript' src='external_libs/fullcalendar/fullcalendar/fullcalendar.min.js'></script>
 <script type='text/javascript'>
 
 $(document).ready(function() {
