@@ -19,9 +19,6 @@ if(!$modify or!$create){
   exit();
 }
 
-
-
-
 $smarty->assign('scope','supplier');
 
 
@@ -50,10 +47,8 @@ $js_files=array(
 		'js/phpjs.js',
 		'common.js.php',
 		'table_common.js.php',
-		'js/search.js'
-	
+		'js/search.js'	
 		);
-
 
  $sql=sprintf("select * from kbase.`Salutation Dimension` S left join kbase.`Language Dimension` L on S.`Language Code`=L.`Language ISO 639-1 Code` where `Language ISO 639-1 Code`=%s limit 1000",prepare_mysql($myconf['lang']));
 //print $sql;
@@ -64,9 +59,6 @@ while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
   $salutations[]=array('txt'=>$row['Salutation'],'relevance'=>$row['Relevance'],'id'=>$row['Salutation Key']);
 }
 mysql_free_result($result);
-
-
-
 $smarty->assign('prefix',$salutations);
 $editing_block='details';
 $smarty->assign('edit',$editing_block);
@@ -74,13 +66,9 @@ $smarty->assign('edit',$editing_block);
 $css_files[]='css/edit.css';
 $css_files[]=$yui_path.'autocomplete/assets/skins/sam/autocomplete.css';
 
-
 $tipo='company';
 
 $js_files[]='new_subject.js.php';
-
-
-
 $js_files[]='company.js.php';
 $js_files[]='js/validate_telecom.js';
 $js_files[]='new_company.js.php?scope=supplier';
@@ -90,8 +78,6 @@ $js_files[]='edit_contact_telecom.js.php';
 $js_files[]='edit_contact_name.js.php';
 $js_files[]='edit_contact_email.js.php';
 
-
-
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
 $smarty->assign('parent','suppliers');
@@ -99,8 +85,4 @@ $smarty->assign('tipo',$tipo);
 
 $smarty->assign('title','Creating New Supplier');
 $smarty->display('new_supplier.tpl');
-
-
-
-
 ?>

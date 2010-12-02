@@ -4,7 +4,7 @@ require_once 'common.php';
 	$year = date('Y');
 	$month = date('m');
 
- $sql="select  * from `Calendar Event Dimension` where month=$month";
+ $sql="select  * from `Calendar Event Dimension` where MONTH(`Date From`)=$month";
 
     $res = mysql_query($sql);
     $adata=array();
