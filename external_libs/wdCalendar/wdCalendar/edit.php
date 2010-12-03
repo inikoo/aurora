@@ -13,7 +13,7 @@ function getCalendarByRange($id){
   }
   return $row;
 }
-if($_GET["id"]){
+if(isset($_GET["id"])){
   $event = getCalendarByRange($_GET["id"]);
 }
 ?>

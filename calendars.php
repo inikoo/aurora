@@ -199,7 +199,7 @@ include_once('class.Staff.php');
             
             //Add a new event
             $("#faddbtn").click(function(e) {
-                var url ="edit.php";
+                var url ="external_libs/wdCalendar/wdCalendar/edit.php";
                 OpenModelWindow(url,{ width: 500, height: 400, caption: "Create New Calendar"});
             });
             //go to today
