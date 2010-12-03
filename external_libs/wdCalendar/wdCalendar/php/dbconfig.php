@@ -1,10 +1,11 @@
 <?php
 
- class DBConnection{
-        function getConnection(){
-             }
-          }
 
+class DBConnection{
+ function getConnection(){
+
+	   }
+}
 ?>
 
 
