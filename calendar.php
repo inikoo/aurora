@@ -16,8 +16,6 @@ include_once('common.php');
 include_once('class.Staff.php');
 
 
-
-
 ?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <link rel='stylesheet' type='text/css' href='external_libs/fullcalendar/fullcalendar/fullcalendar.css' />
 <script type='text/javascript' src='external_libs/fullcalendar/jquery/jquery-1.4.4.min.js'></script>
@@ -44,7 +42,6 @@ $(document).ready(function() {
 			}
 			
 		});
-		
 	});
 
 </script>
@@ -67,9 +64,7 @@ $(document).ready(function() {
 		width: 900px;
 		margin: 0 auto;
 		}
-
 </style>
-
 <?php
 
 $css_files=array(
@@ -99,15 +94,10 @@ $js_files=array(
 		$yui_path.'calendar/calendar-min.js',
 		'common.js.php',
 		'table_common.js.php',
-		'js/search.js',
-		
+		'js/search.js',		
 		);
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
-
-
-
-
 
 $smarty->display('calendar.tpl');
 
