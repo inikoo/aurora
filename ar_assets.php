@@ -5130,7 +5130,7 @@ function list_parts() {
                                                      ,'supplied_by'=>$data['Part XHTML Currently Supplied By']
                                                                     ,'stock'=>number($data['Part Current Stock'])
                                                                              ,'available_for'=>interval($data['Part XHTML Available For Forecast'])
-                                                                                              ,'stock_value'=>money($data['Part Current Stock Cost'])
+                                                                                              ,'stock_value'=>money($data['Part Current Value'])
                                                                                                              ,'sold'=>$sold
                                                                                                                      ,'given'=>$given
                                                                                                                               ,'money_in'=>$sold_amount

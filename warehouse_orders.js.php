@@ -96,7 +96,7 @@ var dn_key=Dom.get('pick_it_dn_key').value;
     YAHOO.util.Connect.asyncRequest('POST',request ,{
 	    
 	    success:function(o) {
-				alert(o.responseText)
+				//alert(o.responseText)
 		var r =  YAHOO.lang.JSON.parse(o.responseText);
 		if (r.state==200) {
 		    
