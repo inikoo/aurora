@@ -30,9 +30,9 @@
 	  
 	
 <tbody id="resend" style="">	   
-		        <tr><td  class="aright" >{t}Picker{/t}:</td><td id="Resend_Distinct_Products"  class="aright">{$delivery_note->get('Delivery Note XHTML Pickers')}</td></tr>
+		        <tr><td  class="aright" >{t}Picker{/t}:</td><td id="assigned_picker" key="{$delivery_note->get('Delivery Note Assigned Picker Key')}"  class="aright">{$delivery_note->get('Delivery Note Assigned Picker Alias')}</td></tr>
 
-	        <tr><td  class="aright" >{t}Transactions{/t}:</td><td  class="aright"><span id="number_picked_transactions">{$delivery_note->get_number_picked_transactions()}</span>/<span id="number_picked_transactions">{$delivery_note->get_number_transactions()}</span> <span style="margin-left:10px">{$delivery_note->get('Faction Picked')}</span></td></tr>
+	        <tr><td  class="aright" >{t}Transactions{/t}:</td><td  class="aright"><span id="number_picked_transactions">{$delivery_note->get_number_picked_transactions()}</span>/<span id="number_transactions">{$delivery_note->get_number_transactions()}</span> <span style="margin-left:10px" id="percentage_picked">{$delivery_note->get('Faction Picked')}</span></td></tr>
 	
 </tbody>
 

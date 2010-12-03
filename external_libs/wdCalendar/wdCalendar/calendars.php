@@ -217,7 +217,7 @@
       <div id="calhead" style="padding-left:1px;padding-right:1px;">          
             <div class="cHead"><div class="ftitle">Kaktus Calendar</div>
             <div id="loadingpannel" class="ptogtitle loadicon" style="display: none;">Loading data...</div>
-             <div id="errorpannel" class="ptogtitle loaderror" style="display: none;">Sorry, could not load your data, please try again later</div>
+             <div id="errorpannel" class="ptogtitle loaderror" style="display: none;">sSorry, could not load your data, please try again later</div>
             </div>          
             
             <div id="caltoolbar" class="ctoolbar">

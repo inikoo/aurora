@@ -16,6 +16,16 @@ if (!isset($_REQUEST['tipo'])) {
 $tipo=$_REQUEST['tipo'];
 
 switch ($tipo) {
+case('pick_order'):
+    $data=prepare_values($_REQUEST,array(
+                              'dn_key'=>  array('type'=>'key'),
+                              'picker_key'=>  array('type'=>'numeric'),
+                             'itf_key'=>array('type'=>'key'),
+                             'new_value'=>array('type'=>'numeric'),
+                             'key'=>array('type'=>'string'),
+                         ));
+    pick_order($data);
+    break;
 case('update_ship_to_key'):
     $data=prepare_values($_REQUEST,array(
                              'order_key'=>array('type'=>'key'),
@@ -1386,21 +1396,31 @@ function picking_aid_sheet() {
     $total_picks=0;
 
     $data=array();
-    $sql="select `Part XHTML Currently Used In`,Part.`Part SKU`,`Part XHTML Description`,sum(`Required`) as qty ,`Part XHTML Picking Location` from `Inventory Transaction Fact` ITF  left join  `Part Dimension` Part on  (Part.`Part SKU`=ITF.`Part SKU`)  $where  group by Part.`Part SKU` ";
+    $sql="select  `Picked`,`Out of Stock`,`Not Found`  ,`Inventory Transaction Key`,`Part XHTML Currently Used In`,Part.`Part SKU`,`Part XHTML Description`,`Required`,`Part XHTML Picking Location` from `Inventory Transaction Fact` ITF  left join  `Part Dimension` Part on  (Part.`Part SKU`=ITF.`Part SKU`)  $where  ";
     // print $sql;
     $result=mysql_query($sql);
     while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
 
+$todo='';
+if($row['Required']-$row['Picked']>0){
+$todo=sprintf("%s</span>",number($row['Required']-$row['Picked']-$row['Out of Stock']-$row['Not Found']));
+}
+
+$notes='';
+
         $sku=sprintf('<a href="part.php?sku=%d">SKU%05d</a>',$row['Part SKU'],$row['Part SKU']);
         $data[]=array(
-
+                    'itf_key'=>$row['Inventory Transaction Key'],
                     'sku'=>$sku,
                     'description'=>$row['Part XHTML Description'],
                     'used_in'=>$row['Part XHTML Currently Used In'],
-                    'quantity'=>number($row['qty']),
+                    'quantity'=>number($row['Required']),
                     'location'=>$row['Part XHTML Picking Location'],
                     'add'=>'+',
                     'remove'=>'-',
+                    'picked'=>$row['Picked'],
+                    'todo'=>$todo,
+                    'notes'=>$notes
                 );
     }
 
@@ -1510,10 +1530,30 @@ function  update_ship_to_key($data){
         $response=array('state'=>200,'result'=>'updated','order_key'=>$order->id,'new_value'=>$order->new_value);
         echo json_encode($response);
     } else {
-        $response=array('state'=>400,'msg'=>$order->msg);
+         $response=array('state'=>400,'msg'=>$order->msg);
         echo json_encode($response);
 
     }
 
+
+}
+
+
+function pick_order($data){
+
+$dn=new DeliveryNote($data['dn_key']);
+if($data['key']=='quantity'){
+    $transaction_data=$dn->set_as_picked($data['itf_key'],round($data['new_value'],8),date("Y-m-d H:i:s"),$data['picker_key']);
+    $dn->update_picking_percentage();
+    if(!$dn->error){
+
+      $response=array('state'=>200,'result'=>'updated','new_value'=>$transaction_data['Picked'],'todo'=>$transaction_data['Pending'],'picked'=>$transaction_data['Picked'],'percentage_picked'=>$dn->get('Faction Picked'),'number_picked_transactions'=>$dn->get_number_picked_transactions(),'number_transactions'=>$dn->get_number_transactions());
+        echo json_encode($response);
+    }else{
+      $response=array('state'=>400,'msg'=>$dn->msg);
+        echo json_encode($response);
+    }
+    return;
+}
 
 }

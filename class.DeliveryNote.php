@@ -380,7 +380,7 @@ protected function create($dn_data,$order=false) {
            break;
         case('Faction Packed'):
                 case('Faction Picked'):
-            return percentage($this->data['Delivery Note'].' '.$key,1);
+            return percentage($this->data['Delivery Note'.' '.$key],1);
         }
             
 
@@ -1302,7 +1302,7 @@ $this->handle_to_customer($data);
                      ,$this->id
                     );
         mysql_query($sql);
-//print $percentage_picked;
+
         if ($percentage_picked==1) {
 
             if ($this->data['Delivery Note State']=='Piking & Packing')
@@ -1313,7 +1313,9 @@ $this->handle_to_customer($data);
                 $state='Picked';
 
         } else {
-            if ($this->data['Delivery Note State']=='Packing')
+    if ($this->data['Delivery Note State']=='Picking')
+                $state='Picking';
+            elseif ($this->data['Delivery Note State']=='Packing')
                 $state='Piking & Packing';
             else if ($this->data['Delivery Note State']=='Packer Assigned')
                 $state='Picking & Packer Assigned';
@@ -1346,10 +1348,11 @@ $this->handle_to_customer($data);
     }
     function get_number_picked_transactions(){
   
-        $sql=sprintf("select count(*) as number from   `Inventory Transaction Fact` ITF        where `Delivery Note Key`=%d and (`Required`<`Out of Stock`+`Picked`) "
+        $sql=sprintf("select count(*) as number from   `Inventory Transaction Fact` ITF        where `Delivery Note Key`=%d and (`Required`=`Out of Stock`+`Picked`) "
                      ,$this->id
 
                     );
+               //     print $sql;
         $res=mysql_query ( $sql );
         $number=0;
         if ($row=mysql_fetch_assoc($res)) {
@@ -1598,33 +1601,35 @@ function set_as_picked($itf_key,$qty,$date=false,$picker_key=false) {
         $picker_key=$this->data['Delivery Note Assigned Picker Key'];
 
     }
-    
-    
 
 
-    $sql=sprintf("select `Part SKU`,`Required`,`Picked`,`Map To Order Transaction Fact Key`,IFNULL(`Map To Order Transaction Fact Metadata`,1) as `Map To Order Transaction Fact Metadata`  from   `Inventory Transaction Fact` where `Inventory Transaction Key`=%d  "
+
+
+    $sql=sprintf("select `Out of Stock`,`No Picked Other`,`Not Found`,`Part SKU`,`Required`,`Picked`,`Map To Order Transaction Fact Key`,IFNULL(`Map To Order Transaction Fact Metadata`,1) as `Map To Order Transaction Fact Metadata`  from   `Inventory Transaction Fact` where `Inventory Transaction Key`=%d  "
                  ,$itf_key
                 );
-                
+
     $res=mysql_query ( $sql );
     if ($row=mysql_fetch_assoc($res)) {
-    $original_qty=$qty;
-    $qty+=$row['Picked'];
-    
-     
+        $original_qty=$qty;
+       
+$out_of_stock=$row['Out of Stock'];
+$not_found=$row['No Picked Other'];
+$no_picked_other=$row['Not Found'];
+$pending=$row['Required']-$qty-$out_of_stock-$not_found-$no_picked_other;
         if ($row['Required']!=0) {
             $picking_factor=round($qty/$row['Required'],4);
         } else
             $picking_factor=0;
 
-$sku=$row['Part SKU'];
+        $sku=$row['Part SKU'];
 //if($row['Picked'])
 //print ">>>>>";
- //  print "*******  $sku  *$original_qty*$qty   ".$row['Required']."   *********  $picking_factor   \n";
+//  print "*******  $sku  *$original_qty*$qty   ".$row['Required']."   *********  $picking_factor   \n";
 
-    $part=new Part($sku);
-$cost_storing=0;
-$cost_supplier=$part->get_unit_cost()*$qty;
+        $part=new Part($sku);
+        $cost_storing=0;
+        $cost_supplier=$part->get_unit_cost()*$qty;
 
         $sql = sprintf ( "update `Inventory Transaction Fact` set `Picked`=%f,`Inventory Transaction Quantity`=%f,`Inventory Transaction Amount`=%f,`Date Picked`=%s,`Date`=%s ,`Picker Key`=%s where `Inventory Transaction Key`=%d  "
                          ,$qty
@@ -1637,16 +1642,16 @@ $cost_supplier=$part->get_unit_cost()*$qty;
                        );
         mysql_query ( $sql );
 
-       
-          $otf_key=$row['Map To Order Transaction Fact Key'];
+
+        $otf_key=$row['Map To Order Transaction Fact Key'];
         $factor=$row['Map To Order Transaction Fact Metadata'];
-        
-        
-        
-        if($picking_factor>=1)
-        $state='Ready to Pack';
+
+
+
+        if ($picking_factor>=1)
+            $state='Ready to Pack';
         else
-                $state='Picking';
+            $state='Picking';
 
 
 
@@ -1656,15 +1661,23 @@ $cost_supplier=$part->get_unit_cost()*$qty;
                          prepare_mysql ($picker_key),
                          $picking_factor,
                          $cost_supplier,
-                        $cost_storing,
+                         $cost_storing,
                          $otf_key
                        );
         mysql_query ( $sql );
-$sql = sprintf ( "update `Delivery Note Dimension` set `Delivery Note Date Finish Picking`=%s where `Delivery Note Key`=%d",
-                        prepare_mysql ( $date ),
+
+
+
+
+
+        $sql = sprintf ( "update `Delivery Note Dimension` set `Delivery Note Date Finish Picking`=%s where `Delivery Note Key`=%d",
+                         prepare_mysql ( $date ),
                          $this->id );
         mysql_query ( $sql );
     }
+
+
+return array('Picked'=>$qty,'Out of Stock'=>$out_of_stock,'Not Found'=>$not_found,'No Picked Other'=>$no_picked_other,'Pending'=>$pending);
 
 }
 

@@ -315,5 +315,9 @@ ALTER TABLE `Product Dimension` DROP `Product Sales State DELETEME` ;
 ALTER TABLE `Part Dimension` CHANGE `Part Current Stock Cost` `Part Current Stock Cost Per Unit` DECIMAL( 12, 2 ) NULL DEFAULT NULL , CHANGE `Part Current Storing Cost` `Part Current Storing Cost Per Unit` DECIMAL( 12, 2 ) NULL DEFAULT NULL ;
 ALTER TABLE `Part Dimension` CHANGE `Part Average Future Cost` `Part Average Future Cost Per Unit` FLOAT NULL DEFAULT NULL ,CHANGE `Part Minimum Future Cost` `Part Minimum Future Cost Per Unit` FLOAT NULL DEFAULT NULL ;
 
+0.9.16
+ALTER TABLE `Inventory Transaction Fact` ADD `Not Found` FLOAT NOT NULL DEFAULT '0' AFTER `Out of Stock`;
+ALTER TABLE `Inventory Transaction Fact` ADD `No Picked Other` FLOAT NOT NULL DEFAULT '0' AFTER `Not Found`;
+
 */
 ?>

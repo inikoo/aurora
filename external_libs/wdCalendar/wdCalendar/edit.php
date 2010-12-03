@@ -1,10 +1,12 @@
 <?php
+include_once("../../../common.php");
+
 include_once("php/dbconfig.php");
 include_once("php/functions.php");
 function getCalendarByRange($id){
   try{
-    $db = new DBConnection();
-    $db->getConnection();
+   // $db = new DBConnection();
+   // $db->getConnection();
     $sql = "select * from `jqcalendar` where `id` = " . $id;
     $handle = mysql_query($sql);
     //echo $sql;

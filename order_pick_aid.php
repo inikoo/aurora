@@ -8,6 +8,24 @@ if(!$user->can_view('orders')){
    exit;
 }
   
+  if(!isset($_REQUEST['id']) or !is_numeric($_REQUEST['id'])){
+    header('Location: orders_server.php?msg=wrong_id');
+   exit;
+}
+
+
+$dn_id=$_REQUEST['id'];
+$_SESSION['state']['dn']['id']=$dn_id;
+$dn=new DeliveryNote($dn_id);
+if(!$dn->id){
+   header('Location: orders_server.php?msg=order_not_found');
+   exit;
+
+}
+
+
+  
+  
 $css_files=array(
 		 $yui_path.'reset-fonts-grids/reset-fonts-grids.css',
 		 $yui_path.'menu/assets/skins/sam/menu.css',
@@ -33,26 +51,12 @@ $js_files=array(
 		'common.js.php',
 		'table_common.js.php',
 		'js/edit_common.js',
+		'order_pick_aid.js.php?dn_key='.$dn->id
 		);
 
-if(!isset($_REQUEST['id']) or !is_numeric($_REQUEST['id'])){
-    header('Location: orders_server.php?msg=wrong_id');
-   exit;
-}
-
-
-$dn_id=$_REQUEST['id'];
-$_SESSION['state']['dn']['id']=$dn_id;
-$dn=new DeliveryNote($dn_id);
-if(!$dn->id){
-   header('Location: orders_server.php?msg=order_not_found');
-   exit;
-
-}
 
 
 
-  $js_files[]='order_pick_aid.js.php';
   $template='order_pick_aid.tpl';
 
 $customer=new Customer($dn->data['Delivery Note Customer Key']);
