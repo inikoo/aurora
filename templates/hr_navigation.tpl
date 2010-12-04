@@ -3,6 +3,7 @@
 <span class="nav2 onleft"><a {if $sub_parent=='areas'}class="selected"{/if} href="company_areas.php">{t}Areas{/t}</a></span>
 <span class="nav2 onleft"><a {if $sub_parent=='departments'}class="selected"{/if}href="company_departments.php">{t}Departments{/t}</a></span>
 <span class="nav2 onleft"><a {if $sub_parent=='positions'}class="selected"{/if}href="positions.php">{t}Positions{/t}</a></span>
+<span class="nav2 onleft"><a {if $sub_parent=='holidays'}class="selected"{/if}href="holidays.php">{t}Holidays{/t}</a></span>
 {/if}
 
 

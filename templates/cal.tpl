@@ -93,9 +93,6 @@
   </div>
     
 
-<p></p>
-<p></p>
-
 </div>
 
 {include file='footer.tpl'}
