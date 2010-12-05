@@ -25,9 +25,15 @@ var Dom   = YAHOO.util.Dom;
 	    var ColumnDefs = [
 			
 			
-		
-			       {key:"country_name", label:"<?php echo _('Country Name')?>",width:120,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-			      
+                    {key:"flag", label:"",width:10,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+
+                   ,{key:"code", label:"<?php echo _('Code')?>",width:30,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+			       ,{key:"name", label:"<?php echo _('Name')?>",width:200,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+
+			      ,{key:"population", label:"<?php echo _('Population')?>",width:60,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+			       ,{key:"gnp", label:"<?php echo _('GNP')?>",width:60,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+			                                             ,{key:"wregion", label:"<?php echo _('Region')?>",width:200,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+
 				 
 			      
 	     
@@ -55,7 +61,7 @@ var Dom   = YAHOO.util.Dom;
 		
 		
 		fields: [
-			 "country_name"
+			 "name","flag",'code','population','gnp','wregion'
 			 ]};
 
 	    this.table0 = new YAHOO.widget.DataTable(tableDivEL, ColumnDefs,
@@ -209,9 +215,27 @@ var tableid=2;
     });
 
 
+function change_view(){
+ids=['countries','continents','wregions'];
+block_ids=['block_countries','block_continents','block_wregions'];
+map_ids=['map_countries','map_continents','map_wregions'];
 
+Dom.removeClass(ids,'selected');
+Dom.addClass(this,'selected')
+Dom.setStyle(block_ids,'display','none');
+Dom.setStyle('block_'+this.id,'display','');
+Dom.setStyle(map_ids,'display','none');
+Dom.setStyle('map_'+this.id,'display','');
+
+YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=world-view&value='+escape(this.id),{});
+}
 
  function init(){
+ 
+ var ids=['countries','continents','wregions'];
+YAHOO.util.Event.addListener(ids, "click",change_view);
+
+ 
 YAHOO.util.Event.addListener('clean_table_filter_show0', "click",show_filter,0);
  YAHOO.util.Event.addListener('clean_table_filter_hide0', "click",hide_filter,0);
  YAHOO.util.Event.addListener('clean_table_filter_show1', "click",show_filter,1);

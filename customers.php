@@ -422,17 +422,5 @@ $smarty->assign('export_csv_table_cols',2);
 
                         
 $smarty->assign('csv_export_options',$csv_export_options);
-
-
-
-
-
-
 $smarty->display('customers.tpl');
-
-
-
-
-
-
 ?>

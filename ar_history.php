@@ -157,7 +157,7 @@ function list_customer_history() {
 
     $where.=' and `Deep`=1 ';
 
-    $where.=sprintf(' and (  (`Subject`="Customer" and  `Subject Key`=%d) or (`Direct Object`="Customer" and  `Direct Object key`=%d ) or (`Indirect Object`="Customer" and  `Indirect Object key`=%d )         ) ',$customer_id,$customer_id,$customer_id);
+    $where.=sprintf(' and  `Customer Key`=%d   ',$customer_id);
 //   if(!$details)
 //    $where.=" and display!='details'";
 //  foreach($elements as $element=>$value){
@@ -196,8 +196,9 @@ function list_customer_history() {
 
 
 
-    $sql="select count(*) as total from  `History Dimension`   $where $wheref ";
-    //  print $sql;
+    $sql="select count(*) as total from `Customer History Bridge` CHB  left join  `History Dimension` H on (H.`History Key`=CHB.`History Key`)   $where $wheref ";
+    // print $sql;
+    // exit;
     $result=mysql_query($sql);
     if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
         $total=$row['total'];
@@ -208,7 +209,7 @@ function list_customer_history() {
         $total_records=$total;
     } else {
 
-        $sql="select count(*) as total from  `History Dimension`  $where";
+        $sql="select count(*) as total from `Customer History Bridge` CHB  left join  `History Dimension` H on (H.`History Key`=CHB.`History Key`)   $where";
         // print $sql;
         $result=mysql_query($sql);
         if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
@@ -268,8 +269,8 @@ function list_customer_history() {
     if ($order=='objeto')
         $order='Direct Object';
 
-    $sql="select * from `History Dimension` H left join `User Dimension` U on (H.`User Key`=U.`User Key`)  $where $wheref  order by `$order` $order_direction limit $start_from,$number_results ";
-    //  print $sql;
+    $sql="select * from `Customer History Bridge` CHB  left join  `History Dimension` H on (H.`History Key`=CHB.`History Key`)   left join `User Dimension` U on (H.`User Key`=U.`User Key`)  $where $wheref  order by `$order` $order_direction limit $start_from,$number_results ";
+     // print $sql;
     $result=mysql_query($sql);
     $data=array();
     while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {

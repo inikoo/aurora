@@ -129,11 +129,11 @@ function list_country_list(){
    }
 
      
-  // $rtext=$total_records." ".ngettext('country_name','country_name',$total_records);
-   //  if($total_records>$number_results)
-   //    $rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
-  //   else
-  //     $rtext_rpp=_('(Showing all)');
+   $rtext=$total_records." ".ngettext('Country','Countries',$total_records);
+     if($total_records>$number_results)
+       $rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
+    else
+       $rtext_rpp=_('(Showing all)');
 
 
     // $translations=array('handle'=>'`User Handle`');
@@ -147,26 +147,48 @@ function list_country_list(){
    $_dir=$order_direction;
 
    
-   if($order=='country_name' or $order=='')
-     $order='`Country Name`';
-   
-
+ 
+   if($order=='population')
+     $order='`Country Population`';
+ elseif($order=='gnp')
+     $order='`Country GNP`';
+     else
+      $order='`Country Name`';
 
 
 
 
 
    $adata=array();
- $sql="select distinct `Country Name`,`Country 2 Alpha Code` from kbase.`Country Dimension` order by $order $order_direction  limit $start_from,$number_results;";
+ $sql="select  `World Region Code`,`World Region`,`Country GNP`,`Country Population`,`Country Code`,`Country Name`,`Country 2 Alpha Code` from kbase.`Country Dimension` order by $order $order_direction  limit $start_from,$number_results;";
 
     
    $res=mysql_query($sql);
    
    while($row=mysql_fetch_array($res)) {
+       $wregion=sprintf('<a href="wregion.php?country=%s">%s</a>',$row['World Region Code'],$row['World Region']);
+
     $country_name=sprintf('<a href="region.php?country=%s">%s</a>',$row['Country 2 Alpha Code'],$row['Country Name']);
+        $country_code=sprintf('<a href="region.php?country=%s">%s</a>',$row['Country 2 Alpha Code'],$row['Country Code']);
+        $country_flag=sprintf('<img  src="art/flags/%s.gif" alt="">',strtolower($row['Country 2 Alpha Code']));
+
+if($row['Country Population']<100000){
+$population='>0.1M';
+}else{
+$population=number($row['Country Population']/1000000,1).'M';
+}
+if($row['Country GNP']=='')
+$gnp='ND';
+else
+$gnp='$'.number($row['Country GNP']/1000,0).'k';
+
      $adata[]=array(
-		   'country_name'=>$country_name
-		 
+		   'name'=>$country_name,
+		  'code'=>$country_code,
+		  'flag'=>$country_flag,
+        'population'=>$population,
+        'gnp'=>$gnp,
+        'wregion'=>$wregion
 		   );
 
    }
@@ -187,8 +209,8 @@ function list_country_list(){
 			// 'records_order'=>$order,
 			// 'records_order_dir'=>$order_dir,
 			// 'filtered'=>$filtered,
-			// 'rtext'=>$rtext,
-			//'rtext_rpp'=>$rtext_rpp
+			 'rtext'=>$rtext,
+			'rtext_rpp'=>$rtext_rpp
 			 )
 		   );
      

@@ -2822,14 +2822,15 @@ $default_state=array(
                               ),
      
 		'world'=>array(
+		'view'=>'countries',
            		 'countries'=>array(
                             'display'=>'all',
-                            'order'=>'country_name',
+                            'order'=>'name',
                             'order_dir'=>'asc',
                             'sf'=>0,
                             'nr'=>20,
                             'where'=>'where true',
-                            'f_field'=>'country_name',
+                            'f_field'=>'name',
                             'f_value'=>'',
                      	   ),
           		  'wregions'=>array(
