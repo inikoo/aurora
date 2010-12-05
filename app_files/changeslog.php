@@ -318,6 +318,15 @@ ALTER TABLE `Part Dimension` CHANGE `Part Average Future Cost` `Part Average Fut
 0.9.16
 ALTER TABLE `Inventory Transaction Fact` ADD `Not Found` FLOAT NOT NULL DEFAULT '0' AFTER `Out of Stock`;
 ALTER TABLE `Inventory Transaction Fact` ADD `No Picked Other` FLOAT NOT NULL DEFAULT '0' AFTER `Not Found`;
+CREATE TABLE `Customer History Bridge` (
+  `Customer Key` mediumint(8) unsigned NOT NULL,
+  `History Key` mediumint(8) unsigned NOT NULL,
+  PRIMARY KEY (`Customer Key`,`History Key`),
+  KEY `Customer Key` (`Customer Key`),
+  KEY `History Key` (`History Key`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+
 
 */
 ?>

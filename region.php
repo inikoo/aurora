@@ -13,6 +13,8 @@
 */
 include_once('common.php');
 include_once('class.Address.php');
+$ammap_path='external_libs/ammap_2.5.5';
+$smarty->assign('ammap_path',$ammap_path);
 
 
 $parent_page='product';
@@ -43,6 +45,7 @@ $js_files=array(
               'table_common.js.php',
               'js/dropdown.js',
               'region.js.php',
+              $ammap_path.'/ammap/swfobject.js'
 		
           );
 
@@ -71,6 +74,14 @@ $js_files[]='world.js.php';
 
 switch ($mode) {
 case 'world':
+$view=$_SESSION['state']['world']['view'];
+
+
+
+ $smarty->assign('settings_file','conf/world_map_settings.xml');
+    $smarty->assign('view',$view);
+
+
 $template='world.tpl';
     break;
 case 'wregion':
@@ -101,9 +112,17 @@ $_SESSION['state']['region']['customers']['mode']=$mode;
 
 
 
-$tipo_filter=$_SESSION['state']['world']['countries']['f_field'];
+$tipo_filter0=$_SESSION['state']['world']['countries']['f_field'];
+$filter_menu0=array(
+		   'name'=>array('db_key'=>_('customer name'),'menu_label'=>_('Country Name'),'label'=>_('Name')),
+		   'code'=>array('db_key'=>_('postcode'),'menu_label'=>_('Country Code'),'label'=>_('Code')),
+			   );
+		   
+$smarty->assign('filter_name0',$filter_menu0[$tipo_filter0]['label']);
+$smarty->assign('filter_menu0',$filter_menu0);
 $smarty->assign('filter0',$tipo_filter);
 $smarty->assign('filter_value0',$_SESSION['state']['world']['countries']['f_value']);
+
 
 $tipo_filter=$_SESSION['state']['world']['wregions']['f_field'];
 $smarty->assign('filter1',$tipo_filter);
