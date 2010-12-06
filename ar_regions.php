@@ -107,8 +107,16 @@ function list_country_list(){
 
   $filter_msg='';
   $wheref='';
+  
+
+if($f_field=='country_code' and $f_value!='')
+    $wheref.=" and  `Country Code` like '".addslashes($f_value)."%'";
+ elseif($f_field=='wregion_code' and $f_value!='')
+    $wheref.=" and  `World Region Code` like '".addslashes($f_value)."%'"; 
+ elseif($f_field=='wregion_code' and $f_value!='')
+    $wheref.=" and  `Continent Code` like '".addslashes($f_value)."%'";     
  
-  $sql="select count(*) as total from kbase.`Country Dimension` ";
+  $sql="select count(*) as total from kbase.`Country Dimension` $where $wheref  ";
   
      $res=mysql_query($sql);
     if($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
@@ -136,11 +144,31 @@ function list_country_list(){
        $rtext_rpp=_('(Showing all)');
 
 
-    // $translations=array('handle'=>'`User Handle`');
-   //  if(array_key_exists($order,$translations))
-   //    $order=$translations[$order];
-     
-    //$order=`Country Name`;
+  $filter_msg='';
+
+     switch($f_field){
+     case('country_code'):
+       if($total==0 and $filtered>0)
+	 $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any country with code")." <b>".$f_value."*</b> ";
+       elseif($filtered>0)
+	 $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ("._('countries with code like')." <b>$f_value</b>)";
+       break;
+      case('wregion_code'):
+       if($total==0 and $filtered>0)
+	 $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any world region with code")." <b>".$f_value."*</b> ";
+       elseif($filtered>0)
+	 $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ("._('regions with code like')." <b>$f_value</b>)";
+       break;
+       case('continent_code'):
+       if($total==0 and $filtered>0)
+	 $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any continent with code")." <b>".$f_value."*</b> ";
+       elseif($filtered>0)
+	 $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ("._('continents with code like')." <b>$f_value</b>)";
+       break;  
+     }
+
+
+
 
 
   $_order=$order;
@@ -160,14 +188,13 @@ function list_country_list(){
 
 
    $adata=array();
- $sql="select  `World Region Code`,`World Region`,`Country GNP`,`Country Population`,`Country Code`,`Country Name`,`Country 2 Alpha Code` from kbase.`Country Dimension` order by $order $order_direction  limit $start_from,$number_results;";
+ $sql="select  `World Region Code`,`World Region`,`Country GNP`,`Country Population`,`Country Code`,`Country Name`,`Country 2 Alpha Code` from kbase.`Country Dimension` $where $wheref  order by $order $order_direction  limit $start_from,$number_results;";
 
     
    $res=mysql_query($sql);
    
    while($row=mysql_fetch_array($res)) {
        $wregion=sprintf('<a href="wregion.php?country=%s">%s</a>',$row['World Region Code'],$row['World Region']);
-
     $country_name=sprintf('<a href="region.php?country=%s">%s</a>',$row['Country 2 Alpha Code'],$row['Country Name']);
         $country_code=sprintf('<a href="region.php?country=%s">%s</a>',$row['Country 2 Alpha Code'],$row['Country Code']);
         $country_flag=sprintf('<img  src="art/flags/%s.gif" alt="">',strtolower($row['Country 2 Alpha Code']));
@@ -179,6 +206,8 @@ $population=number($row['Country Population']/1000000,1).'M';
 }
 if($row['Country GNP']=='')
 $gnp='ND';
+elseif($row['Country GNP']<1000)
+$gnp='$'.number($row['Country GNP'],0);
 else
 $gnp='$'.number($row['Country GNP']/1000,0).'k';
 
@@ -270,13 +299,19 @@ function  list_world_region(){
 
 
 
-  $where=sprintf('where true ');
+  $where=sprintf('where `World Region Code`!="UNKN"    ');
 
 
   $filter_msg='';
   $wheref='';
  
-  $sql="select count(*) as total from kbase.`Country Dimension` ";
+
+ if($f_field=='wregion_code' and $f_value!='')
+    $wheref.=" and  `World Region Code` like '".addslashes($f_value)."%'"; 
+ elseif($f_field=='wregion_code' and $f_value!='')
+    $wheref.=" and  `Continent Code` like '".addslashes($f_value)."%'";     
+ 
+  $sql="select count(Distinct  `World Region Code`) as total from kbase.`Country Dimension` $where $wheref  ";
   
      $res=mysql_query($sql);
     if($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
@@ -287,7 +322,7 @@ function  list_world_region(){
        $filtered=0;
        $total_records=$total;
      } else{
-       $sql="select count(*) as total from kbase.`Country Dimension`  $where   ";
+       $sql="select count(Distinct  `World Region Code`) as total from kbase.`Country Dimension`  $where   ";
        $res=mysql_query($sql);
        if($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
 	 $total_records=$row['total'];
@@ -297,25 +332,48 @@ function  list_world_region(){
    }
 
      
-  // $rtext=$total_records." ".ngettext('country_name','country_name',$total_records);
-   //  if($total_records>$number_results)
-   //    $rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
-  //   else
-  //     $rtext_rpp=_('(Showing all)');
+   $rtext=$total_records." ".ngettext('Region','Regions',$total_records);
+     if($total_records>$number_results)
+       $rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
+    else
+       $rtext_rpp=_('(Showing all)');
 
 
-    // $translations=array('handle'=>'`User Handle`');
-   //  if(array_key_exists($order,$translations))
-   //    $order=$translations[$order];
+  $filter_msg='';
+
+     switch($f_field){
      
-    //$order=`Country Name`;
+      case('wregion_code'):
+       if($total==0 and $filtered>0)
+	 $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any world region with code")." <b>".$f_value."*</b> ";
+       elseif($filtered>0)
+	 $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ("._('regions with code like')." <b>$f_value</b>)";
+       break;
+       case('continent_code'):
+       if($total==0 and $filtered>0)
+	 $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any continent with code")." <b>".$f_value."*</b> ";
+       elseif($filtered>0)
+	 $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ("._('continents with code like')." <b>$f_value</b>)";
+       break;  
+     }
+
+
+
+
+
 
 
   $_order=$order;
    $_dir=$order_direction;
 
    
-   if($order=='wregion_name' or $order=='')
+   if($order=='wregion_code' )
+     $order='`World Region Code`';
+      elseif($order=='population' )
+     $order='`Population`';
+        elseif($order=='gnp' )
+     $order='`GNP`';
+   else
      $order='`World Region`';
    
 
@@ -325,22 +383,38 @@ function  list_world_region(){
 
 
    $adata=array();
- $sql="select distinct `World Region`,`World Region Code` from kbase.`Country Dimension` order by $order $order_direction  limit $start_from,$number_results;";
+ $sql="select  count(*) as Countries,sum(`Country GNP`) as GNP,sum(`Country Population`) as Population, `World Region`,`World Region Code` from kbase.`Country Dimension` $where $wheref group by `World Region Code` order by $order $order_direction  limit $start_from,$number_results;";
 
-    
+   // print $sql;
    $res=mysql_query($sql);
    
    while($row=mysql_fetch_array($res)) {
 $wregion_name=sprintf('<a href="region.php?wregion=%s">%s</a>',$row['World Region Code'],$row['World Region']);
-     $adata[]=array(
-		   'wregion_name'=>$wregion_name
-		 
+    $wregion_code=sprintf('<a href="region.php?wregion=%s">%s</a>',$row['World Region Code'],$row['World Region Code']);
+    if($row['Population']<100000){
+$population='>0.1M';
+}else{
+$population=number($row['Population']/1000000,1).'M';
+}
+if($row['GNP']=='')
+$gnp='ND';
+elseif($row['GNP']<1000)
+$gnp='$'.number($row['GNP'],0);
+else
+$gnp='$'.number($row['GNP']/1000,0).'k';
+    
+    $adata[]=array(
+		   'wregion_name'=>$wregion_name,
+		 'wregion_code'=>$wregion_code,
+		 'countries'=>number($row['Countries']),
+        'population'=>$population,
+        'gnp'=>$gnp,
 		   );
 
    }
   mysql_free_result($res);
 
-   $response=array('resultset'=>
+  $response=array('resultset'=>
 		   array('state'=>200,
 			 'data'=>$adata,
 	 'sort_key'=>$_order,
@@ -355,8 +429,8 @@ $wregion_name=sprintf('<a href="region.php?wregion=%s">%s</a>',$row['World Regio
 			// 'records_order'=>$order,
 			// 'records_order_dir'=>$order_dir,
 			// 'filtered'=>$filtered,
-			// 'rtext'=>$rtext,
-			//'rtext_rpp'=>$rtext_rpp
+			 'rtext'=>$rtext,
+			'rtext_rpp'=>$rtext_rpp
 			 )
 		   );
      
@@ -415,15 +489,17 @@ function list_continent_list(){
 						 ,'order_dir'=>$order_direction
 						 ,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value);
 
-
-
-  $where=sprintf('where true ');
+ $where=sprintf('where `Country Code`!="UNK" ');
 
 
   $filter_msg='';
   $wheref='';
+  
+
+ if($f_field=='continent_code' and $f_value!='')
+    $wheref.=" and  `Continent Code` like '".addslashes($f_value)."%'";     
  
-  $sql="select count(*) as total from kbase.`Country Dimension` ";
+  $sql="select count(Distinct `Continent Code`) as total from kbase.`Country Dimension` $where $wheref  ";
   
      $res=mysql_query($sql);
     if($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
@@ -434,7 +510,7 @@ function list_continent_list(){
        $filtered=0;
        $total_records=$total;
      } else{
-       $sql="select count(*) as total from kbase.`Country Dimension`  $where   ";
+       $sql="select count(Distinct `Continent Code`) as total from kbase.`Country Dimension`  $where   ";
        $res=mysql_query($sql);
        if($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
 	 $total_records=$row['total'];
@@ -444,27 +520,43 @@ function list_continent_list(){
    }
 
      
-  // $rtext=$total_records." ".ngettext('country_name','country_name',$total_records);
-   //  if($total_records>$number_results)
-   //    $rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
-  //   else
-  //     $rtext_rpp=_('(Showing all)');
+   $rtext=$total_records." ".ngettext('Continent','Continents',$total_records);
+     if($total_records>$number_results)
+       $rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
+    else
+       $rtext_rpp=_('(Showing all)');
 
 
-    // $translations=array('handle'=>'`User Handle`');
-   //  if(array_key_exists($order,$translations))
-   //    $order=$translations[$order];
-     
-    //$order=`Country Name`;
+  $filter_msg='';
+
+     switch($f_field){
+    
+       case('continent_code'):
+       if($total==0 and $filtered>0)
+	 $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any continent with code")." <b>".$f_value."*</b> ";
+       elseif($filtered>0)
+	 $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ("._('continents with code like')." <b>$f_value</b>)";
+       break;  
+     }
+
+
+
 
 
   $_order=$order;
    $_dir=$order_direction;
 
    
-   if($order=='continent_name' or $order=='')
-     $order='`Continent`';
-   
+ 
+   if($order=='population')
+     $order='`Population`';
+ elseif($order=='gnp')
+     $order='`GNP`';
+      elseif($order=='continent_code')
+     $order='`Continent Code`';
+     else
+      $order='`Continent`';
+
 
 
 
@@ -472,16 +564,32 @@ function list_continent_list(){
 
 
    $adata=array();
- $sql="select distinct `Continent`,`Continent Code` from kbase.`Country Dimension` order by $order $order_direction  limit $start_from,$number_results;";
+ $sql="select  count(*) as Countries,sum(`Country GNP`) as GNP,sum(`Country Population`) as Population,`Continent`,`Continent Code` from kbase.`Country Dimension` $where $wheref  group by `Continent Code` order by $order $order_direction  limit $start_from,$number_results;";
 
  
    $res=mysql_query($sql);
    
    while($row=mysql_fetch_array($res)) {
+    if($row['Population']<100000){
+$population='>0.1M';
+}else{
+$population=number($row['Population']/1000000,1).'M';
+}
+if($row['GNP']=='')
+$gnp='ND';
+elseif($row['GNP']<1000)
+$gnp='$'.number($row['GNP'],0);
+else
+$gnp='$'.number($row['GNP']/1000,0).'k';
 $continent_name=sprintf('<a href="region.php?continent=%s">%s</a>',$row['Continent Code'],$row['Continent']);
+$continent_code=sprintf('<a href="region.php?continent=%s">%s</a>',$row['Continent Code'],$row['Continent Code']);
+
      $adata[]=array(
-		   'continent_name'=>$continent_name
-		 
+		   'continent_name'=>$continent_name,
+		  'continent_code'=>$continent_code,
+		 'countries'=>number($row['Countries']),
+        'population'=>$population,
+        'gnp'=>$gnp,
 		   );
 
    }
@@ -502,8 +610,8 @@ $continent_name=sprintf('<a href="region.php?continent=%s">%s</a>',$row['Contine
 			// 'records_order'=>$order,
 			// 'records_order_dir'=>$order_dir,
 			// 'filtered'=>$filtered,
-			// 'rtext'=>$rtext,
-			//'rtext_rpp'=>$rtext_rpp
+			 'rtext'=>$rtext,
+			'rtext_rpp'=>$rtext_rpp
 			 )
 		   );
      
