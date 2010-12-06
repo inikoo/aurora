@@ -30,9 +30,10 @@ var Dom   = YAHOO.util.Dom;
                    ,{key:"code", label:"<?php echo _('Code')?>",width:30,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 			       ,{key:"name", label:"<?php echo _('Name')?>",width:200,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 
-			      ,{key:"population", label:"<?php echo _('Population')?>",width:60,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-			       ,{key:"gnp", label:"<?php echo _('GNP')?>",width:60,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-			                                             ,{key:"wregion", label:"<?php echo _('Region')?>",width:200,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+			      ,{key:"population", label:"<?php echo _('Population')?>",width:60,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+			       ,{key:"gnp", label:"<?php echo _('GNP')?>",width:60,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+			      
+			      ,{key:"wregion", label:"<?php echo _('Region')?>",width:200,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 
 				 
 			      
@@ -102,8 +103,11 @@ var tableid=1;
 		      var tableDivEL="table"+tableid;
 		      
 		      var ColumnDefs = [
-					{key:"wregion_name", label:"<?php echo _('World Region')?>",width:320, sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-					
+		      		{key:"wregion_code", label:"<?php echo _('Code')?>",width:80, sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+					,{key:"wregion_name", label:"<?php echo _('World Region')?>",width:320, sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+					 ,{key:"population", label:"<?php echo _('Population')?>",width:60,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+			       ,{key:"gnp", label:"<?php echo _('GNP')?>",width:60,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+			     
 					];
 		    
 		      
@@ -115,6 +119,7 @@ var tableid=1;
 			  metaFields: {
 			    rowsPerPage:"resultset.records_perpage",
 			    rtext:"resultset.rtext",
+			     rtext_rpp:"resultset.rtext_rpp",
 			    sort_key:"resultset.sort_key",
 			    sort_dir:"resultset.sort_dir",
 			    tableid:"resultset.tableid",
@@ -123,7 +128,7 @@ var tableid=1;
 			  },
 			  
 			  fields: [
-				  "wregion_name"
+				  "wregion_name","wregion_code","population","gnp"
 				   ]};
 		      
 		    this.table1 = new YAHOO.widget.DataTable(tableDivEL, ColumnDefs,
@@ -131,7 +136,7 @@ var tableid=1;
 								 , {
 								     renderLoopSize: 50,generateRequest : myRequestBuilder
 								      ,paginator : new YAHOO.widget.Paginator({
-									      rowsPerPage:<?php echo$_SESSION['state']['world']['wregions']['nr']?>,containers : 'paginator0', 
+									      rowsPerPage:<?php echo$_SESSION['state']['world']['wregions']['nr']?>,containers : 'paginator1', 
  									      pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',
 									      previousPageLinkLabel : "<",
  									      nextPageLinkLabel : ">",
@@ -158,8 +163,11 @@ var tableid=2;
 		      var tableDivEL="table"+tableid;
 		      
 		      var ColumnDefs = [
-					{key:"continent_name", label:"<?php echo _('Continents Name')?>",width:320, sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-					
+		      		{key:"continent_code", label:"<?php echo _('Code')?>",width:100, sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+					,{key:"continent_name", label:"<?php echo _('Continents')?>",width:320, sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+					 ,{key:"population", label:"<?php echo _('Population')?>",width:60,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+			       ,{key:"gnp", label:"<?php echo _('GNP')?>",width:60,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+			     
 					];
 		    
 		      
@@ -171,6 +179,7 @@ var tableid=2;
 			  metaFields: {
 			    rowsPerPage:"resultset.records_perpage",
 			    rtext:"resultset.rtext",
+			     rtext_rpp:"resultset.rtext_rpp",
 			    sort_key:"resultset.sort_key",
 			    sort_dir:"resultset.sort_dir",
 			    tableid:"resultset.tableid",
@@ -179,7 +188,7 @@ var tableid=2;
 			  },
 			  
 			  fields: [
-				  "continent_name"
+				  "continent_name","continent_code","population","gnp"
 				   ]};
 		      
 		    this.table2 = new YAHOO.widget.DataTable(tableDivEL, ColumnDefs,
@@ -243,7 +252,7 @@ YAHOO.util.Event.addListener('clean_table_filter_show0', "click",show_filter,0);
   YAHOO.util.Event.addListener('clean_table_filter_show2', "click",show_filter,2);
  YAHOO.util.Event.addListener('clean_table_filter_hide2', "click",hide_filter,2);
 
- init_search('country_list');
+ //init_search('country_list');
  var oACDS = new YAHOO.util.FunctionDataSource(mygetTerms);
  oACDS.queryMatchContains = true;
  var oAutoComp = new YAHOO.widget.AutoComplete("f_input0","f_container0", oACDS);
@@ -259,11 +268,12 @@ var oACDS2 = new YAHOO.util.FunctionDataSource(mygetTerms);
  var oAutoComp2 = new YAHOO.widget.AutoComplete("f_input2","f_container2", oACDS);
  oAutoCom2p.minQueryLength = 0; 
 //init_search('world_region');
-  
+  alert("x")
 
  }
 
  YAHOO.util.Event.onDOMReady(init);
+
 YAHOO.util.Event.onContentReady("rppmenu0", function () {
 	 var oMenu = new YAHOO.widget.ContextMenu("rppmenu0", {trigger:"rtext_rpp0" });
 	 oMenu.render();
@@ -275,8 +285,27 @@ YAHOO.util.Event.onContentReady("filtermenu0", function () {
 	 oMenu.render();
 	 oMenu.subscribe("show", oMenu.focus);
     });
- //YAHOO.util.Event.onContentReady("filtermenu1", function () {
-//	 var oMenu = new YAHOO.widget.ContextMenu("filtermenu1", {  trigger: "filter_name1"  });
-//	 oMenu.render();
-//	 oMenu.subscribe("show", oMenu.focus);
- //   });
+ 
+YAHOO.util.Event.onContentReady("rppmenu1", function () {
+	 var oMenu = new YAHOO.widget.ContextMenu("rppmenu1", {trigger:"rtext_rpp1" });
+	 oMenu.render();
+	 oMenu.subscribe("show", oMenu.focus);
+    });
+
+YAHOO.util.Event.onContentReady("filtermenu1", function () {
+	 var oMenu = new YAHOO.widget.ContextMenu("filtermenu1", {  trigger: "filter_name1"  });
+	 oMenu.render();
+	 oMenu.subscribe("show", oMenu.focus);
+    });
+    
+YAHOO.util.Event.onContentReady("rppmenu2", function () {
+	 var oMenu = new YAHOO.widget.ContextMenu("rppmenu2", {trigger:"rtext_rpp2" });
+	 oMenu.render();
+	 oMenu.subscribe("show", oMenu.focus);
+    });
+
+YAHOO.util.Event.onContentReady("filtermenu2", function () {
+	 var oMenu = new YAHOO.widget.ContextMenu("filtermenu2", {  trigger: "filter_name2"  });
+	 oMenu.render();
+	 oMenu.subscribe("show", oMenu.focus);
+    });    

@@ -2830,7 +2830,7 @@ $default_state=array(
                             'sf'=>0,
                             'nr'=>20,
                             'where'=>'where true',
-                            'f_field'=>'name',
+                            'f_field'=>'country_code',
                             'f_value'=>'',
                      	   ),
           		  'wregions'=>array(
@@ -2841,7 +2841,7 @@ $default_state=array(
                            'sf'=>0,
                            'nr'=>20,
                            'where'=>'where true',
-                           'f_field'=>'wregion_name',
+                           'f_field'=>'wregion_code',
                            'f_value'=>'',
                      	  ),
           		  'continents'=>array(
