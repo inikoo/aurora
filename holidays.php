@@ -40,7 +40,7 @@ include_once('class.Staff.php');
     
     <script type="text/javascript">
         $(document).ready(function() {     
-           var view="week";          
+           var view="month";          
            
             var DATA_FEED_URL = "external_libs/wdCalendar/wdCalendar/php/datafeed_holidays.php";
             var op = {

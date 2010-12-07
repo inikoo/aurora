@@ -4,7 +4,7 @@ border-bottom:2px solid #FFFFFF;
 	background:#FFFFFF;
 }
 .printborder {
-	border-left:9px solid #FFFFFF;
+	border-left:0px solid #FFFFFF;
 }
 
 .scolltimeevent
@@ -497,6 +497,8 @@ border-bottom:2px solid #FFFFFF;
 	border-left:4px solid white;
 	margin-left:auto;
 	margin-right:3px
+
+
 }
 
 .bubble {
@@ -509,7 +511,7 @@ border-bottom:2px solid #FFFFFF;
 	WIDTH: 25px
 }
 .bubble-cell-main {
-	WIDTH: 100%
+	WIDTH: 98%
 }
 .bubble-sprite {
 	BACKGROUND-IMAGE: url(images/calendar/bubble_combined.png); POSITION: absolute; WIDTH: 148px; HEIGHT: 96px
