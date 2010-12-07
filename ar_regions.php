@@ -93,12 +93,16 @@ function list_country_list(){
    $filter_msg='';
 
 
-  $_SESSION['state']['world']['countries']=array(
-					
-						 'order'=>$order
-						 ,'order_dir'=>$order_direction
-						 ,'nr'=>$number_results,
-						 'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value);
+  $_SESSION['state']['world']['countries']['order']=$order;
+  $_SESSION['state']['world']['countries']['order_dir']=$order_direction;
+  $_SESSION['state']['world']['countries']['nr']=$number_results;
+  $_SESSION['state']['world']['countries']['sf']=$start_from;
+  $_SESSION['state']['world']['countries']['where']=$where;
+  $_SESSION['state']['world']['countries']['f_field']=$f_field;
+  $_SESSION['state']['world']['countries']['f_value']=$f_value;
+
+
+
 
 
 
@@ -291,11 +295,15 @@ function  list_world_region(){
    $filter_msg='';
 
 
-  $_SESSION['state']['world']['wregions']=array(
-						
-						 'order'=>$order
-						 ,'order_dir'=>$order_direction
-						 ,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value);
+  $_SESSION['state']['world']['wregions']['order']=$order;
+  $_SESSION['state']['world']['wregions']['order_dir']=$order_direction;
+  $_SESSION['state']['world']['wregions']['nr']=$number_results;
+  $_SESSION['state']['world']['wregions']['sf']=$start_from;
+  $_SESSION['state']['world']['wregions']['where']=$where;
+  $_SESSION['state']['world']['wregions']['f_field']=$f_field;
+  $_SESSION['state']['world']['wregions']['f_value']=$f_value;
+
+ 
 
 
 
@@ -483,11 +491,15 @@ function list_continent_list(){
    $filter_msg='';
 
 
-  $_SESSION['state']['world']['continents']=array(
-					
-						 'order'=>$order
-						 ,'order_dir'=>$order_direction
-						 ,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value);
+$_SESSION['state']['world']['continents']['order']=$order;
+  $_SESSION['state']['world']['continents']['order_dir']=$order_direction;
+  $_SESSION['state']['world']['continents']['nr']=$number_results;
+  $_SESSION['state']['world']['continents']['sf']=$start_from;
+  $_SESSION['state']['world']['continents']['where']=$where;
+  $_SESSION['state']['world']['continents']['f_field']=$f_field;
+  $_SESSION['state']['world']['continents']['f_value']=$f_value;
+
+
 
  $where=sprintf('where `Country Code`!="UNK" ');
 
