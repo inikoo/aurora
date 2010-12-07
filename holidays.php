@@ -28,6 +28,7 @@ include_once('class.Staff.php');
     <link href="external_libs/wdCalendar/wdCalendar/css/alert.css" rel="stylesheet" type="text/css" /> 
     <link href="external_libs/wdCalendar/wdCalendar/css/main.css" rel="stylesheet" type="text/css" /> 
     <script src="external_libs/wdCalendar/wdCalendar/src/jquery.js" type="text/javascript"></script>  
+    
     <script src="external_libs/wdCalendar/wdCalendar/src/Plugins/Common.js" type="text/javascript"></script>    
     <script src="external_libs/wdCalendar/wdCalendar/src/Plugins/datepicker_lang_US.js" type="text/javascript"></script>     
     <script src="external_libs/wdCalendar/wdCalendar/src/Plugins/jquery.datepicker.js" type="text/javascript"></script>
@@ -41,7 +42,7 @@ include_once('class.Staff.php');
         $(document).ready(function() {     
            var view="week";          
            
-            var DATA_FEED_URL = "external_libs/wdCalendar/wdCalendar/php/datafeed.php";
+            var DATA_FEED_URL = "external_libs/wdCalendar/wdCalendar/php/datafeed_holidays.php";
             var op = {
                 view: view,
                 theme:3,
@@ -118,7 +119,7 @@ include_once('class.Staff.php');
             }
             function Edit(data)
             {
-               var eurl="external_libs/wdCalendar/wdCalendar/edit.php?id={0}&start={2}&end={3}&isallday={4}&title={1}";   
+               var eurl="external_libs/wdCalendar/wdCalendar/edit_holidays.php?id={0}&start={2}&end={3}&isallday={4}&title={1}";   
                 if(data)
                 {
                     var url = StrFormat(eurl,data);
@@ -196,7 +197,7 @@ include_once('class.Staff.php');
             
             //Add a new event
             $("#faddbtn").click(function(e) {
-                var url ="external_libs/wdCalendar/wdCalendar/edit.php";
+                var url ="external_libs/wdCalendar/wdCalendar/edit_holidays.php";
                 OpenModelWindow(url,{ width: 500, height: 400, caption: "Create New Calendar"});
             });
             //go to today
@@ -260,7 +261,7 @@ $js_files=array(
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
 
-$smarty->display('cal.tpl');
+$smarty->display('holidays.tpl');
 
 ?>
    
