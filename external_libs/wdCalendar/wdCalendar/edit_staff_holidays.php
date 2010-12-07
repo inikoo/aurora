@@ -229,7 +229,7 @@ if(isset($_GET["id"])){
                   $sarr = explode(" ", php2JsTime(mySql2PhpTime($event->StartTime)));
                   $earr = explode(" ", php2JsTime(mySql2PhpTime($event->EndTime)));
               }?>                    
-              <input MaxLength="10" class="required date" id="stpartdate" name="stpartdate" style="padding-left:2px;width:90px;" type="text" value="<?php echo isset($event)?$sarr[0]:""; ?>" />                       
+             <input MaxLength="10" class="required date" id="stpartdate" name="stpartdate" style="padding-left:2px;width:90px;" type="text" value="<?php echo isset($event)?$sarr[0]:""; ?>" />                       
               <input MaxLength="5" class="required time" id="stparttime" name="stparttime" style="width:40px;" type="text" value="<?php echo isset($event)?$sarr[1]:""; ?>" />To                       
               <input MaxLength="10" class="required date" id="etpartdate" name="etpartdate" style="padding-left:2px;width:90px;" type="text" value="<?php echo isset($event)?$earr[0]:""; ?>" />                       
               <input MaxLength="50" class="required time" id="etparttime" name="etparttime" style="width:40px;" type="text" value="<?php echo isset($event)?$earr[1]:""; ?>" />                                            
@@ -242,7 +242,17 @@ if(isset($_GET["id"])){
             <span>                        Location:
             </span>                    
             <input MaxLength="200" id="Location" name="Location" style="width:95%;" type="text" value="<?php echo isset($event)?$event->Location:""; ?>" />                 
-          </label>                 
+          </label> 
+
+
+ <label><span>Staff Id:</span>                    
+            <input MaxLength="200" id="StaffKey" name="StaffKey" style="width:95%;" type="text" value="<?php echo isset($event)?$event->StaffKey:""; ?>" />                 
+          </label> 
+ 
+
+
+
+                
           <label>                    
             <span>                        Remark:
             </span>                    
