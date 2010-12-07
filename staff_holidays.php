@@ -134,7 +134,7 @@ include_once('class.Staff.php');
                 $.each(data, function(i, item){
                     str += "[" + i + "]: " + item + "\n";
                 });
-                alert(str);               
+                alert(str);         
             }    
             function Delete(data,callback)
             {           
