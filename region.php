@@ -46,58 +46,61 @@ $js_files=array(
               'js/dropdown.js',
               'region.js.php',
               $ammap_path.'/ammap/swfobject.js'
-		
+
           );
 
 
-if(isset($_REQUEST['country'])){
-$mode='country';
-$tag=$_REQUEST['country'];
-}elseif(isset($_REQUEST['wregion'])){
-$mode='wregion';
-$tag=$_REQUEST['wregion'];
-$js_files[]='wregion.js.php';
+if (isset($_REQUEST['country'])) {
+    $mode='country';
+    $tag=$_REQUEST['country'];
+}
+elseif(isset($_REQUEST['wregion'])) {
+    $mode='wregion';
+    $tag=$_REQUEST['wregion'];
+    $js_files[]='wregion.js.php';
 
-}elseif(isset($_REQUEST['continent'])){
+}
+elseif(isset($_REQUEST['continent'])) {
 
-$mode='continent';
-$tag=$_REQUEST['continent'];
-$js_files[]='continent.js.php';
+    $mode='continent';
+    $tag=$_REQUEST['continent'];
+    $js_files[]='continent.js.php';
 
-}else{
-$mode='world';
-$tag='world';
+}
+else {
+    $mode='world';
+    $tag='world';
 
-$js_files[]='world.js.php';
+    $js_files[]='world.js.php';
 
 }
 
 switch ($mode) {
 case 'world':
-$view=$_SESSION['state']['world']['view'];
+    $view=$_SESSION['state']['world']['view'];
 
 
 
- $smarty->assign('settings_file','conf/world_map_settings.xml');
+    $smarty->assign('settings_file','conf/world_map_settings.xml');
     $smarty->assign('view',$view);
 
 
-$template='world.tpl';
+    $template='world.tpl';
     break;
 case 'wregion':
     $smarty->assign('wregion_code',$tag);
     $template='wregion.tpl';
     $_SESSION['state']['wregion']['code']=$tag;
-    
+
     break;
 case 'continent':
     $smarty->assign('continent_code',$tag);
-$template='continent.tpl';
+    $template='continent.tpl';
     $_SESSION['state']['continent']['code']=$tag;
     break;
-    
+
 case 'country':
-   
+
     $country=new Country('code',  Address::parse_country($tag));
     $smarty->assign('country',$country);
     $template='country.tpl';
@@ -113,11 +116,11 @@ $_SESSION['state']['region']['customers']['mode']=$mode;
 
 $tipo_filter0=$_SESSION['state']['world']['countries']['f_field'];
 $filter_menu0=array(
-		   'country_code'=>array('db_key'=>_('country_code'),'menu_label'=>_('Country Code'),'label'=>_('Code')),
-		   'wregion_code'=>array('db_key'=>_('wregion_code'),'menu_label'=>_('World Region Code'),'label'=>_('Region Code')),
-		   'continent_code'=>array('db_key'=>_('continent_code'),'menu_label'=>_('Continent Code'),'label'=>_('Continent Code')),
-			   );
-		   
+    'country_code'=>array('db_key'=>_('country_code'),'menu_label'=>_('Country Code'),'label'=>_('Code')),
+    'wregion_code'=>array('db_key'=>_('wregion_code'),'menu_label'=>_('World Region Code'),'label'=>_('Region Code')),
+    'continent_code'=>array('db_key'=>_('continent_code'),'menu_label'=>_('Continent Code'),'label'=>_('Continent Code')),
+);
+
 $smarty->assign('filter_name0',$filter_menu0[$tipo_filter0]['label']);
 $smarty->assign('filter_menu0',$filter_menu0);
 $smarty->assign('filter0',$tipo_filter0);
@@ -128,10 +131,10 @@ $smarty->assign('paginator_menu0',$paginator_menu0);
 
 $tipo_filter1=$_SESSION['state']['world']['wregions']['f_field'];
 $filter_menu1=array(
-		   'wregion_code'=>array('db_key'=>_('wregion_code'),'menu_label'=>_('World Region Code'),'label'=>_('Region Code')),
-		   'continent_code'=>array('db_key'=>_('continent_code'),'menu_label'=>_('Continent Code'),'label'=>_('Continent Code')),
-			   );
-		   
+                  'wregion_code'=>array('db_key'=>_('wregion_code'),'menu_label'=>_('World Region Code'),'label'=>_('Region Code')),
+                  'continent_code'=>array('db_key'=>_('continent_code'),'menu_label'=>_('Continent Code'),'label'=>_('Continent Code')),
+              );
+
 $smarty->assign('filter_name1',$filter_menu0[$tipo_filter1]['label']);
 $smarty->assign('filter_menu1',$filter_menu1);
 $smarty->assign('filter1',$tipo_filter1);
@@ -142,9 +145,9 @@ $smarty->assign('paginator_menu1',$paginator_menu1);
 
 $tipo_filter2=$_SESSION['state']['world']['continents']['f_field'];
 $filter_menu2=array(
-		   'continent_code'=>array('db_key'=>_('continent_code'),'menu_label'=>_('Continent Code'),'label'=>_('Continent Code')),
-			   );
-		   
+                  'continent_code'=>array('db_key'=>_('continent_code'),'menu_label'=>_('Continent Code'),'label'=>_('Continent Code')),
+              );
+
 $smarty->assign('filter_name2',$filter_menu0[$tipo_filter2]['label']);
 $smarty->assign('filter_menu2',$filter_menu2);
 $smarty->assign('filter1',$tipo_filter2);

@@ -102,7 +102,7 @@
     </balloon_text>
     <active_only_if_value_set></active_only_if_value_set> <!-- [false] (true / false) if set to true, areas (countries) without defined value in data file will not display balloon and will not change color on roll over -->
     <color_solid>#3b5998</color_solid>                               <!-- [#990000] 3b5998(hex color code) color of area with highest value-->
-    <color_light>#6d84b4</color_light>                               <!-- [#FFCC00] 6d84b4(hex color code) color of areas with value = 0 or value is not set -->
+    <color_light>#EEEEEE</color_light>                               <!-- [#FFCC00] 6d84b4(hex color code) color of areas with value = 0 or value is not set -->
     <color_hover>#3b5900</color_hover>                        <!-- [] (hex color code) -->
     <color_selected></color_selected>                          <!-- [] (hex color code) If not specified, original area color will be used -->    
     <color_unlisted></color_unlisted>                         <!-- [] (hex color code) The color of the areas which are in the map file, but not listed in the data file. If you don't set any color here, the area will keep it's original color. Setting a color allows keeping data file smaller. -->
