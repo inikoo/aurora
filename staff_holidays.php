@@ -1,31 +1,48 @@
+<?php
+/*
+ File: customer.php 
+
+ UI customer page
+
+ About: 
+ Autor: Raul Perusquia <rulovico@gmail.com>
+ 
+ Copyright (c) 2009, Kaktus 
+ 
+ Version 2.0
+*/
+
+include_once('common.php');
+include_once('class.Staff.php');
+
+
+?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
-<head id="Head1">
-    <title>	My Calendar </title>
+
+  
     <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
-    <link href="wdCalendar/wdCalendar/css/dailog.css" rel="stylesheet" type="text/css" />
-    <link href="wdCalendar/wdCalendar/css/calendar.css" rel="stylesheet" type="text/css" /> 
-    <link href="wdCalendar/wdCalendar/css/dp.css" rel="stylesheet" type="text/css" />   
-    <link href="wdCalendar/wdCalendar/css/alert.css" rel="stylesheet" type="text/css" /> 
-    <link href="wdCalendar/wdCalendar/css/main.css" rel="stylesheet" type="text/css" /> 
+    <link href="external_libs/wdCalendar/wdCalendar/css/dailog.css" rel="stylesheet" type="text/css" />
+    <link href="external_libs/wdCalendar/wdCalendar/css/calendar.css" rel="stylesheet" type="text/css" /> 
+    <link href="external_libs/wdCalendar/wdCalendar/css/dp.css" rel="stylesheet" type="text/css" />   
+    <link href="external_libs/wdCalendar/wdCalendar/css/alert.css" rel="stylesheet" type="text/css" /> 
+    <link href="external_libs/wdCalendar/wdCalendar/css/main.css" rel="stylesheet" type="text/css" /> 
+    <script src="external_libs/wdCalendar/wdCalendar/src/jquery.js" type="text/javascript"></script>  
     
+    <script src="external_libs/wdCalendar/wdCalendar/src/Plugins/Common.js" type="text/javascript"></script>    
+    <script src="external_libs/wdCalendar/wdCalendar/src/Plugins/datepicker_lang_US.js" type="text/javascript"></script>     
+    <script src="external_libs/wdCalendar/wdCalendar/src/Plugins/jquery.datepicker.js" type="text/javascript"></script>
 
-    <script src="wdCalendar/wdCalendar/src/jquery.js" type="text/javascript"></script>  
-    
-    <script src="wdCalendar/wdCalendar/src/Plugins/Common.js" type="text/javascript"></script>    
-    <script src="wdCalendar/wdCalendar/src/Plugins/datepicker_lang_US.js" type="text/javascript"></script>     
-    <script src="wdCalendar/wdCalendar/src/Plugins/jquery.datepicker.js" type="text/javascript"></script>
-
-    <script src="wdCalendar/wdCalendar/src/Plugins/jquery.alert.js" type="text/javascript"></script>    
-    <script src="wdCalendar/wdCalendar/src/Plugins/jquery.ifrmdailog.js" defer="defer" type="text/javascript"></script>
-    <script src="wdCalendar/wdCalendar/src/Plugins/wdCalendar_lang_US.js" type="text/javascript"></script>    
-    <script src="wdCalendar/wdCalendar/src/Plugins/jquery.calendar.js" type="text/javascript"></script>   
+    <script src="external_libs/wdCalendar/wdCalendar/src/Plugins/jquery.alert.js" type="text/javascript"></script>    
+    <script src="external_libs/wdCalendar/wdCalendar/src/Plugins/jquery.ifrmdailog.js" defer="defer" type="text/javascript"></script>
+    <script src="external_libs/wdCalendar/wdCalendar/src/Plugins/wdCalendar_lang_US.js" type="text/javascript"></script>    
+    <script src="external_libs/wdCalendar/wdCalendar/src/Plugins/jquery.calendar.js" type="text/javascript"></script>   
     
     <script type="text/javascript">
         $(document).ready(function() {     
            var view="week";          
            
-            var DATA_FEED_URL = "wdCalendar/wdCalendar/php/datafeed.php";
+            var DATA_FEED_URL = "external_libs/wdCalendar/wdCalendar/php/datafeed_staff_holidays.php";
             var op = {
                 view: view,
                 theme:3,
@@ -102,7 +119,7 @@
             }
             function Edit(data)
             {
-               var eurl="edit.php?id={0}&start={2}&end={3}&isallday={4}&title={1}";   
+               var eurl="external_libs/wdCalendar/wdCalendar/edit_staff_holidays.php?id={0}&start={2}&end={3}&isallday={4}&title={1}";   
                 if(data)
                 {
                     var url = StrFormat(eurl,data);
@@ -180,7 +197,7 @@
             
             //Add a new event
             $("#faddbtn").click(function(e) {
-                var url ="edit.php";
+                var url ="external_libs/wdCalendar/wdCalendar/edit_staff_holidays.php";
                 OpenModelWindow(url,{ width: 500, height: 400, caption: "Create New Calendar"});
             });
             //go to today
@@ -210,82 +227,41 @@
             
         });
     </script>    
-</head>
-<body>
-    <div>
+<?php
 
-      <div id="calhead" style="padding-left:1px;padding-right:1px;">          
-            <div class="cHead"><div class="ftitle">Kaktus Calendar</div>
-            <div id="loadingpannel" class="ptogtitle loadicon" style="display: none;">Loading data...</div>
-             <div id="errorpannel" class="ptogtitle loaderror" style="display: none;">sSorry, could not load your data, please try again later</div>
-            </div>          
-            
-            <div id="caltoolbar" class="ctoolbar">
-              <div id="faddbtn" class="fbutton">
-                <div><span title='Click to Create New Event' class="addcal">
+$css_files=array(
+		 $yui_path.'reset-fonts-grids/reset-fonts-grids.css',
+		 $yui_path.'menu/assets/skins/sam/menu.css',
+		 $yui_path.'calendar/assets/skins/sam/calendar.css',
+		 $yui_path.'button/assets/skins/sam/button.css',
+		 $yui_path.'editor/assets/skins/sam/editor.css',
+		 $yui_path.'assets/skins/sam/autocomplete.css',
 
-                New Event                
-                </span></div>
-            </div>
-            <div class="btnseparator"></div>
-             <div id="showtodaybtn" class="fbutton">
-                <div><span title='Click to back to today ' class="showtoday">
-                Today</span></div>
-            </div>
-              <div class="btnseparator"></div>
+		 'text_editor.css',
+		 'common.css',
+		 'button.css',
+		 'container.css',
+		 'table.css'
+		 );
+$js_files=array(
+		$yui_path.'utilities/utilities.js',
+		$yui_path.'json/json-min.js',
+		$yui_path.'paginator/paginator-min.js',
+		$yui_path.'datasource/datasource-min.js',
+		$yui_path.'autocomplete/autocomplete-min.js',
+		$yui_path.'datatable/datatable-min.js',
+		$yui_path.'container/container-min.js',
+		$yui_path.'editor/editor-min.js',
+		$yui_path.'menu/menu-min.js',
+		$yui_path.'calendar/calendar-min.js',
+		'common.js.php',
+		'table_common.js.php',
+		'js/search.js',		
+		);
+$smarty->assign('css_files',$css_files);
+$smarty->assign('js_files',$js_files);
 
-            <div id="showdaybtn" class="fbutton">
-                <div><span title='Day' class="showdayview">Day</span></div>
-            </div>
-              <div  id="showweekbtn" class="fbutton fcurrent">
-                <div><span title='Week' class="showweekview">Week</span></div>
-            </div>
-              <div  id="showmonthbtn" class="fbutton">
-                <div><span title='Month' class="showmonthview">Month</span></div>
+$smarty->display('staff_holidays.tpl');
 
-            </div>
-            <div class="btnseparator"></div>
-              <div  id="showreflashbtn" class="fbutton">
-                <div><span title='Refresh view' class="showdayflash">Refresh</span></div>
-                </div>
-             <div class="btnseparator"></div>
-            <div id="sfprevbtn" title="Prev"  class="fbutton">
-              <span class="fprev"></span>
-
-            </div>
-            <div id="sfnextbtn" title="Next" class="fbutton">
-                <span class="fnext"></span>
-            </div>
-            <div class="fshowdatep fbutton">
-                    <div>
-                        <input type="hidden" name="txtshow" id="hdtxtshow" />
-                        <span id="txtdatetimeshow">Loading</span>
-
-                    </div>
-            </div>
-            
-            <div class="clear"></div>
-            </div>
-      </div>
-      <div style="padding:1px;">
-
-        <div class="t1 chromeColor">
-            &nbsp;</div>
-        <div class="t2 chromeColor">
-            &nbsp;</div>
-        <div id="dvCalMain" class="calmain printborder">
-            <div id="gridcontainer" style="overflow-y: visible;">
-            </div>
-        </div>
-        <div class="t2 chromeColor">
-
-            &nbsp;</div>
-        <div class="t1 chromeColor">
-            &nbsp;
-        </div>   
-        </div>
-     
-  </div>
-    
-</body>
-</html>
+?>
+   
