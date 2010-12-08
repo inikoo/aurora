@@ -89,8 +89,35 @@ case 'world':
     break;
 case 'wregion':
     $smarty->assign('wregion_code',$tag);
+     $smarty->assign('settings_file','conf/world_map_settings.xml');
     $template='wregion.tpl';
     $_SESSION['state']['wregion']['code']=$tag;
+
+$sql=sprintf("select `World Region` from kbase.`Country Dimension` where `World Region Code`=%s",prepare_mysql($tag));
+$res=mysql_query($sql);
+if($row=mysql_fetch_assoc($res)){
+ $smarty->assign('wregion_name',$row['World Region']);
+}else{
+header('Location: region.php?world');
+  print $sql;
+  exit;
+
+}
+
+$tipo_filter0=$_SESSION['state']['wregion']['countries']['f_field'];
+$filter_menu0=array(
+    'country_code'=>array('db_key'=>_('country_code'),'menu_label'=>_('Country Code'),'label'=>_('Code'))
+   
+);
+
+$smarty->assign('filter_name0',$filter_menu0[$tipo_filter0]['label']);
+$smarty->assign('filter_menu0',$filter_menu0);
+$smarty->assign('filter0',$tipo_filter0);
+$smarty->assign('filter_value0',$_SESSION['state']['wregion']['countries']['f_value']);
+$paginator_menu0=array(10,25,50,100,500);
+$smarty->assign('paginator_menu0',$paginator_menu0);
+
+
 
     break;
 case 'continent':
@@ -104,16 +131,8 @@ case 'country':
     $country=new Country('code',  Address::parse_country($tag));
     $smarty->assign('country',$country);
     $template='country.tpl';
-}
-$_SESSION['state']['region']['tag']=$tag;
-$_SESSION['state']['region']['mode']=$mode;
-
-$_SESSION['state']['region']['orders']['mode']=$mode;
-$_SESSION['state']['region']['customers']['mode']=$mode;
-
-
-
-
+    
+    
 $tipo_filter0=$_SESSION['state']['world']['countries']['f_field'];
 $filter_menu0=array(
     'country_code'=>array('db_key'=>_('country_code'),'menu_label'=>_('Country Code'),'label'=>_('Code')),
@@ -154,6 +173,17 @@ $smarty->assign('filter1',$tipo_filter2);
 $smarty->assign('filter_value2',$_SESSION['state']['world']['continents']['f_value']);
 $paginator_menu2=array(10,25,50,100,500);
 $smarty->assign('paginator_menu2',$paginator_menu2);
+
+    
+}
+$_SESSION['state']['region']['tag']=$tag;
+$_SESSION['state']['region']['mode']=$mode;
+
+$_SESSION['state']['region']['orders']['mode']=$mode;
+$_SESSION['state']['region']['customers']['mode']=$mode;
+
+
+
 
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);

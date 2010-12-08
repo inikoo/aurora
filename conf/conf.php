@@ -2923,7 +2923,7 @@ $default_state=array(
                                                   'sf'=>0,
                                                   'nr'=>20,
                                                   'where'=>'where true',
-                                                  'f_field'=>'wregion_name',
+                                                  'f_field'=>'wregion_code',
                                                   'f_value'=>'',
                                               ),
                                    'countries'=>array(
@@ -2933,7 +2933,7 @@ $default_state=array(
                                                    'sf'=>0,
                                                    'nr'=>20,
                                                    'where'=>'where true',
-                                                   'f_field'=>'country_name',
+                                                   'f_field'=>'country_code',
                                                    'f_value'=>'',
                                                ),
                                ),
@@ -2943,12 +2943,12 @@ $default_state=array(
 
                                  'countries'=>array(
                                                  'display'=>'all',
-                                                 'order'=>'country_name',
+                                                 'order'=>'name',
                                                  'order_dir'=>'desc',
                                                  'sf'=>0,
                                                  'nr'=>20,
                                                  'where'=>'where true',
-                                                 'f_field'=>'country_name',
+                                                 'f_field'=>'country_code',
                                                  'f_value'=>'',
                                              ),
                              )
