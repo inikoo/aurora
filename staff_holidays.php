@@ -119,7 +119,7 @@ include_once('class.Staff.php');
             }
             function Edit(data)
             {
-               var eurl="external_libs/wdCalendar/wdCalendar/edit_staff_holidays.php?id={0}&start={2}&end={3}&isallday={4}&title={1}";   
+               var eurl="external_libs/wdCalendar/wdCalendar/edit_staff_holidays.php?id={0}&start={2}&end={3}&isallday={4}&title={1}&staffkey{10}";   
                 if(data)
                 {
                     var url = StrFormat(eurl,data);
@@ -130,16 +130,18 @@ include_once('class.Staff.php');
             }    
             function View(data)
             {
-               var str = "";
+               /*var str = "";
                 $.each(data, function(i, item){
                     str += "[" + i + "]: " + item + "\n";
                 });
-                alert(str);  
-		/* var str = "";
+                alert(str); */ 
+		 var str = "";
                 $.each(data, function(i, item){
                     str += "[" + i + "]: " + item + "\n";
-		if(i==10){alert(item);}
-                });*/
+		if(i==10){
+                window.location = "staff.php?id="+ item;
+		}
+                });
 		
 
        
@@ -175,7 +177,7 @@ include_once('class.Staff.php');
             });
             //to show week view
             $("#showweekbtn").click(function(e) {
-                //document.location.href="#week";
+               // sdocument.location.href="#week";
                 $("#caltoolbar div.fcurrent").each(function() {
                     $(this).removeClass("fcurrent");
                 })
