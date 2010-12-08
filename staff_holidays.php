@@ -130,11 +130,19 @@ include_once('class.Staff.php');
             }    
             function View(data)
             {
-                var str = "";
+               var str = "";
                 $.each(data, function(i, item){
                     str += "[" + i + "]: " + item + "\n";
                 });
-                alert(str);         
+                alert(str);  
+		/* var str = "";
+                $.each(data, function(i, item){
+                    str += "[" + i + "]: " + item + "\n";
+		if(i==10){alert(item);}
+                });*/
+		
+
+       
             }    
             function Delete(data,callback)
             {           
