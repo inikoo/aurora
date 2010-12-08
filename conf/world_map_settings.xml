@@ -5,7 +5,7 @@
 <!-- x, y, widths and heights can be set in pixels or in percents                                                     -->
 
 <settings>
-  <developer_mode></developer_mode>                           <!-- [false] (true / false) If set to true, developer information is displayed. You can also copy developer information to clipboard through right click menu -->
+  <developer_mode>true</developer_mode>                           <!-- [false] (true / false) If set to true, developer information is displayed. You can also copy developer information to clipboard through right click menu -->
   <projection>mercator</projection>                           <!-- [xy] (mercator, xy) Projection of your map. If you do not care about actual longitudes and latitudes I recommend to use xy projection. The default world map uses Mercator projection. -->  
   <width>100</width>                                             <!-- [] (Number) if empty, will be equal to width of your flash movie -->
   <height></height>                                           <!-- [] (Number) if empty, will be equal to height of your flash movie -->

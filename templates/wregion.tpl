@@ -1,38 +1,29 @@
 {include file='header.tpl'}
+<div id="bd"  >
+<div class="branch" style="width:300px"> 
+  <a href="region.php?world">{t}World{/t}</a>  &rarr;  <span>{t}Region{/t} {$wregion_name} ({$wregion_code})</span>
+</div>
 
-<div id="map"> 
-<script type="text/javascript" src="external_libs/ammap_2.5.5/ammap/swfobject.js"></script>
-	<div id="flashcontent">
+<div style="border:1px solid #ccc;padding:10px;margin-top:5px">
+
+<div id="map_countries" style="width:700px;height:480px;">
 		<strong>You need to upgrade your Flash Player</strong>
 	</div>
 
-	<script type="text/javascript">
-		// <![CDATA[
+	
+<script type="text/javascript">
+		// <![CDATA[		
+		var so = new SWFObject("{$ammap_path}/ammap/ammap.swf", "ammap", "100%", "100%", "8", "#FFFFFF");
+        so.addVariable("path", "{$ammap_path}/ammap/");
+		so.addVariable("data_file", escape("map_data_wregion_countries.xml.php?wregion={$wregion_code}"));
+        so.addVariable("settings_file", escape("{$settings_file}"));		
+		so.addVariable("preloader_color", "#999999");
+		so.write("map_countries");
 		
-		var so = new SWFObject("external_libs/ammap_2.5.5/ammap/ammap.swf", "ammap", "975", "300", "8", "#ffffff");
-		so.addVariable("path", "external_libs/ammap_2.5.5/ammap/");
-		so.addVariable("settings_file", escape("external_libs/ammap_2.5.5/ammap/ammap_settings.xml"));                  // you can set two or more different settings files here (separated by commas)
-		so.addVariable("data_file", escape("external_libs/ammap_2.5.5/ammap/ammap_data.xml"));		
-//  	so.addVariable("map_data", "<map ...>...</map>");                                   // you can pass map data as a string directly from this file
-//  	so.addVariable("map_settings", "<settings>...</settings>");                         // you can pass map settings as a string directly from this file
-//    so.addVariable("additional_map_settings", "<settings>...</settings>");              // you can append some map settings to the loaded ones
-//    so.addVariable("loading_settings", "LOADING SETTINGS");                             // you can set custom "loading settings" text here
-//    so.addVariable("loading_data", "LOADING DATA");                                     // you can set custom "loading data" text here
-//    so.addVariable("preloader_color", "#999999");	                                      // you can set preloader bar and text color here
-
-		so.write("flashcontent");
+	
 		// ]]>
-	</script></div>
-
-
-
-<div id="bd"  >
-<div class="branch" style="text-align:right;;width:300px;float:right"> 
-  <span  ><span>{t}World Regions{/t} &crarr;</span> 
-<span style="margin-left:20px" >{t}Countries{/t} &crarr;</a></span></span>
-</div>
-<div class="branch" style="width:300px"> 
-
+	</script>
+	
 </div>
 
 
