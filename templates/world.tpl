@@ -19,7 +19,7 @@
 
 <div style="border:1px solid #ccc;padding:10px;margin-top:5px">
 
-	<div id="map_countries" style="{if $view!='countries'}display:none;{/if}width:700px;height:480px;">
+<div id="map_countries" style="{if $view!='countries'}display:none;{/if}width:700px;height:480px;">
 		<strong>You need to upgrade your Flash Player</strong>
 	</div>
 
@@ -30,7 +30,8 @@
 <div id="map_continents" style="{if $view!='continents'}display:none;{/if}width:700px;height:480px;">
 		<strong>You need to upgrade your Flash Player</strong>
 	</div>
-	<script type="text/javascript">
+	
+<script type="text/javascript">
 		// <![CDATA[		
 		var so = new SWFObject("{$ammap_path}/ammap/ammap.swf", "ammap", "100%", "100%", "8", "#FFFFFF");
         so.addVariable("path", "{$ammap_path}/ammap/");
@@ -55,7 +56,6 @@
 		
 		// ]]>
 	</script>
-	
 	
 </div>
      

@@ -14,14 +14,26 @@ World>Reg
       
       <div   style="clear:left;padding:0;width:100%">
 
-	  <div id="photo_container" style="float:left;border:0px solid #777;width:510px;height:320px">
-
-	   <iframe id="the_map" src ="map.php?country={$country->get('Country 2 Alpha Code')}" frameborder="0" scrolling="no" width="550"  height="420"></iframe>
-	   
-	    
-	    
-	  </div>
+	 
 	  
+<div id="map_countries" zstyle="float:left;border:0px solid #777;width:310px;height:320px" style="margin-right:40px;float:left;width:400px;height:480px;border:0px solid black">
+		<strong>You need to upgrade your Flash Player</strong>
+	</div>
+
+	
+<script type="text/javascript">
+		// <![CDATA[		
+		var so = new SWFObject("{$ammap_path}/ammap/ammap.swf", "ammap", "100%", "100%", "8", "#FFFFFF");
+        so.addVariable("path", "{$ammap_path}/ammap/");
+		so.addVariable("data_file", escape("map_data_country.xml.php?code={$country->get('Country Code')}"));
+        so.addVariable("settings_file", escape("{$settings_file}"));		
+		so.addVariable("preloader_color", "#999999");
+		so.write("map_countries");
+		
+	
+		// ]]>
+	</script>
+
 
 	<div style="float:left;">
 
