@@ -326,6 +326,32 @@ CREATE TABLE `Customer History Bridge` (
   KEY `History Key` (`History Key`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
+CREATE TABLE IF NOT EXISTS `Staff Event Dimension` (
+  `Id` mediumint(11) NOT NULL AUTO_INCREMENT,
+  `Subject` varchar(1000) CHARACTER SET utf8 DEFAULT NULL,
+  `Location` varchar(200) CHARACTER SET utf8 DEFAULT NULL,
+  `Description` varchar(255) CHARACTER SET utf8 DEFAULT NULL,
+  `StartTime` datetime DEFAULT NULL,
+  `EndTime` datetime DEFAULT NULL,
+  `IsAllDayEvent` smallint(6) NOT NULL,
+  `Color` varchar(200) CHARACTER SET utf8 DEFAULT NULL,
+  `RecurringRule` varchar(500) CHARACTER SET utf8 DEFAULT NULL,
+  `StaffDateKey` mediumint(11) NOT NULL,
+  `StaffKey` mediumint(11) NOT NULL,
+  PRIMARY KEY (`Id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=15 ;
+CREATE TABLE IF NOT EXISTS `Corporation Event Dimension` (
+  `Id` int(11) NOT NULL AUTO_INCREMENT,
+  `Subject` enum('Others','National Holiday','Bank Holiday','Festive Holiday') DEFAULT 'Others',
+  `Location` varchar(200) CHARACTER SET utf8 DEFAULT NULL,
+  `Description` varchar(255) CHARACTER SET utf8 DEFAULT NULL,
+  `StartTime` datetime DEFAULT NULL,
+  `EndTime` datetime DEFAULT NULL,
+  `IsAllDayEvent` smallint(6) NOT NULL,
+  `Color` varchar(200) CHARACTER SET utf8 DEFAULT '6',
+  `RecurringRule` varchar(500) CHARACTER SET utf8 DEFAULT NULL,
+  PRIMARY KEY (`Id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=14 ;
 
 
 */
