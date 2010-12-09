@@ -8,7 +8,7 @@ var Event = YAHOO.util.Event;
 var dialog_note;
 
 var customer_key=<?php echo $_SESSION['state']['customer']['id']?>;
- alert("****************");
+
 function showdetails(o){
 
  
