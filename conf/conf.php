@@ -1349,6 +1349,42 @@ $default_state=array(
                                               'elements'=>array('orden'=>1,'h_cust'=>1,'h_cont'=>1,'note'=>1)
                                           )
                               ),
+// ------------------------------ history for staff.php starts here ---------------------------------------------------------
+ 		'staff'=>array(
+                                  'id'=>1,
+                                  'action_after_create'=>'continue',
+                                  'edit'=>'details',
+                                  'details'=>false,
+                                  'view'=>'history',
+                                  'assets'=>array(
+                                               'order'=>'subject',
+                                               'order_dir'=>'',
+                                               'sf'=>0,
+                                               'nr'=>25,
+                                               'where'=>'where true',
+                                               'f_field'=>'id',
+                                               'f_value'=>'','f_show'=>false,
+                                              // 'from'=>'',
+                                             //  'to'=>'',
+                                               //'type'=>'Family'
+
+                                           ),
+
+                                  'table'=>array(
+                                              'order'=>'date',
+                                              'order_dir'=>'desc',
+                                              'sf'=>0,
+                                              'nr'=>10,
+                                              'where'=>'where true',
+                                              'f_field'=>'date',
+                                              'f_value'=>'','f_show'=>false,
+                                              //'from'=>'',
+                                             // 'to'=>'',
+                                              'details'=>0,
+                                              //'elements'=>array('orden'=>1,'h_cust'=>1,'h_cont'=>1,'note'=>1)
+                                          )
+                              ),
+// ------------------------------ history for staff.php ends here -----------------------------------------------------------
                    'company'=>array(
                                  'id'=>1,
                                  'action_after_create'=>'continue',

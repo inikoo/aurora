@@ -1,322 +1,397 @@
-
 <?php
+//@author Raul Perusquia <rulovico@gmail.com>
+//Copyright (c) 2009 LW
 include_once('common.php');
-include_once('class.Staff.php');
-$staff=new Staff($_SESSION['state']['staff']['id']);
-?>
-
-// ---------------------------------------------------------------------------------------------------------------------------
+?>alert("jhfdjhfjhgk"); alert("****************");
+    var Dom   = YAHOO.util.Dom;
 var Event = YAHOO.util.Event;
-var Dom   = YAHOO.util.Dom;
+var dialog_note;
 
-/*var can_add_department=false;
-var description_num_changed=0;
-var description_warnings= new Object();
-var description_errors= new Object();
+var staff_key=<?php echo $_SESSION['state']['staff']['id']?>;
+alert(staff key);
+alert("****************");
+function showdetails(o){
 
-var scope='ind_staff';
-var scope_edit_ar_file='ar_edit_staff.php';
-var scope_key_name='id';
-var scope_key=0;
+  
+
+    var history_id=o.getAttribute('hid');
+    var details=o.getAttribute('d');
+    tr=Dom.getAncestorByTagName(o,'tr');
+    row_index=tr.rowIndex+1;
+    var table=Dom.getAncestorByTagName(o,'table');
+    //alert(o);
+    if(details=='no'){
+	row_class=tr.getAttribute('class');
+
+	var request="ar_history.php?tipo=history_details&id="+history_id;
+	//alert(request)	
+YAHOO.util.Connect.asyncRequest('POST',request ,{
+		success:function(o) {
+		    var r =  YAHOO.lang.JSON.parse(o.responseText);
+		    if (r.state==200) {
+			var x=table.insertRow(row_index);
+			x.setAttribute('class',row_class);
+			x.setAttribute('id','chd'+history_id);
+
+			var c1=x.insertCell(0);
+			var c2=x.insertCell(1);
+			var c3=x.insertCell(2);
+			x.setAttribute('style','padding:10px 0 ;border-top:none')
+			c1.innerHTML="";
+			c2.innerHTML="";
+			c3.setAttribute('style','padding:10px 0 ;');
+
+
+			c3.setAttribute('colspan',3);
+			c3.innerHTML=r.details;
+			Dom.get('ch'+history_id).src='art/icons/showed.png';
+			Dom.get('ch'+history_id).setAttribute('d','yes');
+
+			
+		    }
+		       
+		}
+	    });   
+    }else{
+	Dom.get('ch'+history_id).src='art/icons/closed.png';
+	Dom.get('ch'+history_id).setAttribute('d','no');
+	table.deleteRow(row_index);
+
+    }
+     
 	
-var parent='company';
-var parent_key_name='id';
-var parent_key=<?php echo $_REQUEST['company_key']?>;   */
-var editing='<?php echo $_SESSION['state']['staff']['edit']?>';
+}
 
-var validate_scope_data={
-'staff_salary':{
-     'name':{'changed':false,'validated':false,'required':true,'group':1,'type':'item'
-	    ,'validation':false,'name':'Staff_Name','dbname':'Staff Name'
-	    ,'ar':'false','ar_request':false},
-    'id':{'changed':false,'validated':false,'required':false,'group':1,'type':'item'
-	     ,'validation':false ,'name':'Staff_Id' ,'dbname':'Staff Key','ar':false,'ar_request':false},
-    'from_date':{'changed':false,'validated':false,'required':false,'group':1,'type':'item'
-	     ,'validation':false ,'name':'From_Date' ,'dbname':'From Date','ar':false,'ar_request':false},
-    'to_date':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','dbname':'Supplier Product Description'
-		 ,'validation':false ,'name':'To_Date','dbname':'To Date','ar':false,'ar_request':false},
-    'basic':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','dbname':'Supplier Product Description'
-		 ,'validation':false ,'name':'Basic','ar':false,'ar_request':false},
-	 'da':{'default':true, 'changed':false,'validated':true,'required':true,'group':1,'type':'select','dbname':'Supplier Product Unit Type'
-		 ,'validation':false
-		 ,'name':'Dearness Allowance','ar':false,'ar_request':false},	 
-	'hra':{'default':1,'changed':false,'validated':true,'required':true,'group':1,'type':'item','dbname':'Supplier Product Units Per Case'
-		 ,'validation':false ,'name':'House Rent Allowance','ar':false,'ar_request':false},
-	'conveyance':{'changed':false,'validated':false,'required':true,'group':1,'type':'item','dbname':'Supplier Product Cost Per Case'
-		,'validation':false,'name':'Conveyance','ar':false,'ar_request':false},	
-	'lta':{'default':true,'changed':false,'validated':true,'required':true,'group':1,'type':'select','dbname':'Supplier Product Currency'
-		,'validation':false,'name':'Leave Travel Assistance','ar':false,'ar_request':false},
-       'total_addition':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','dbname':'Supplier Product Description'
-		 ,'validation':false
-		 ,'name':'Total Addition','ar':false,'ar_request':false},
-	 'pf':{'default':true, 'changed':false,'validated':true,'required':true,'group':1,'type':'select','dbname':'Supplier Product Unit Type'
-		 ,'validation':false
-		 ,'name':'Provident Fund','ar':false,'ar_request':false},	 
-	'esi':{'default':1,'changed':false,'validated':true,'required':true,'group':1,'type':'item','dbname':'Supplier Product Units Per Case'
-		 ,'validation':false ,'name':'ESI','ar':false,'ar_request':false},
-	'loan':{'changed':false,'validated':false,'required':true,'group':1,'type':'item','dbname':'Supplier Product Cost Per Case'
-		,'validation':false ,'name':'Loan','ar':false,'ar_request':false},	
-	'profession_tax':{'default':true,'changed':false,'validated':true,'required':true,'group':1,'type':'select','dbname':'Supplier Product Currency'
-		,'validation':false,'name':'Profession Tax','ar':false,'ar_request':false},
-	'tds_it':{'default':true, 'changed':false,'validated':true,'required':true,'group':1,'type':'select','dbname':'Supplier Product Unit Type'
-		 ,'validation':false
-		 ,'name':'TDS/IT','ar':false,'ar_request':false},	 
-	'total_deduction':{'default':1,'changed':false,'validated':true,'required':true,'group':1,'type':'item','dbname':'Supplier Product Units Per Case'
-		 ,'validation':false ,'name':'Total Deduction','ar':false,'ar_request':false},
-	'net_salary':{'changed':false,'validated':false,'required':true,'group':1,'type':'item','dbname':'Supplier Product Cost Per Case'
-}		,'validation':false ,'name':'Net salary','ar':false,'ar_request':false}
+function save(tipo){
+    switch(tipo){
+    case('note'):
+	var value=encodeURIComponent(Dom.get(tipo+"_input").value);
+	var request="ar_edit_contacts.php?tipo=edit_customer&key=Note&customer_key="+customer_key+"&newvalue="+value;
+	//alert(request);
+	YAHOO.util.Connect.asyncRequest('POST',request ,{
+		success:function(o) {
+		    //	alert(o.responseText);
+
+		    var r =  YAHOO.lang.JSON.parse(o.responseText);
+		    if (r.state==200) {
+			close_dialog(tipo)
+			var table=tables['table0'];
+			var datasource=tables['dataSource0'];
+			var request='';
+			datasource.sendRequest(request,table.onDataReturnInitializeTable, table);    
+
+		    }else
+			Dom.get(tipo+'_msg').innerHTML=r.msg;
+		}
+	    });        
+	
+
+	break;
+    }
 };
 
-var validate_scope_metadata={'staff_salary':{'type':'new','ar_file':'ar_edit_staff.php'}};
+function change(e,o,tipo){
+    switch(tipo){
+    case('note'):
+	if(o.value!=''){
+	    enable_save(tipo);
 
-function validate_id(query){
- validate_general('staff_salary','id',unescape(query));
-}
-function validate_name(query){
- validate_general('staff_salary','name',unescape(query));
-}
-function reset_new_staff(){
- reset_edit_general('staff_salary');
-}
-function save_new_staff(){
- save_new_general('staff_salary');
-}
+	    if(window.event)
+		key = window.event.keyCode; //IE
+	    else
+		key = e.which; //firefox     
+	    
+	    if (key == 13)
+		save(tipo);
 
 
-function post_item_updated_actions(branch,key,newvalue){
+	}else
+	    disable_save(tipo);
+	break;
+    }
+};
 
- if(key=='name')
-     Dom.get('title_name').innerHTML=newvalue;
+
+function enable_save(tipo){
+    switch(tipo){
+    case('note'):
+	Dom.get(tipo+'_save').style.visibility='visible';
+	break;
+    }
+};
+
+function disable_save(tipo){
+    switch(tipo){
+    case('note'):
+	Dom.get(tipo+'_save').style.visibility='hidden';
+	break;
+    }
+};
+
+
+function close_dialog(tipo){
+    switch(tipo){
+  //   case('long_note'):
+// 	//Dom.get(tipo+"_input").value='';
+// 	dialog_note.hide();
+
+// 	break;
+  case('attach'):
+
+	Dom.get(tipo+"_note").value='';
+	//	Dom.get(tipo+'_save').style.visibility='hidden';
+	dialog_attach.hide();
+
+	break;
+    
+    case('note'):
+
+	Dom.get(tipo+"_input").value='';
+	Dom.get(tipo+'_save').style.visibility='hidden';
+	dialog_note.hide();
+
+	break;
+    
+ case('make_order'):
+
+     //	Dom.get(tipo+"_input").value='';
+	//Dom.get(tipo+'_save').style.visibility='hidden';
+	dialog_make_order.hide();
+
+	break;
+    }
+
+
+};
+
  
- else if(key=='id')
-     Dom.get('title_id').innerHTML=newvalue;
-
- 
- var table=tables.table1;
- var datasource=tables.dataSource1;
- var request='';
- datasource.sendRequest(request,table.onDataReturnInitializeTable, table); 
- }
-
-function post_create_actions(branch){
-var table=tables.table1;
- var datasource=tables.dataSource1;
- var request='';
- datasource.sendRequest(request,table.onDataReturnInitializeTable, table); 
- 
- var table=tables.table0;
- var datasource=tables.dataSource0;
- var request='';
- datasource.sendRequest(request,table.onDataReturnInitializeTable, table); 
-}
-
-
-
-
 YAHOO.util.Event.addListener(window, "load", function() {
-    tables = new function() {
-
-
-	    var tableid=0; // Change if you have more the 1 table..........
-	    var tableDivEL="table"+tableid;
-	    var OrdersColumnDefs = [ 
-				    {key:"staff_key", label:"<?php echo _('Staff Key')?>", width:20,sortable:false,isPrimaryKey:true,hidden:true}
-				    ,{key:"go",label:'',width:20,}
-				       ,{key:"id", label:"<?php echo _('Staff ID')?>", width:100,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC},  editor: new YAHOO.widget.TextboxCellEditor({asyncSubmitter: CellEdit}),object:'ind_staff'}
-				    ,{key:"name", label:"<?php echo _('Staff Name')?>", width:340,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}, editor: new YAHOO.widget.TextboxCellEditor({asyncSubmitter: CellEdit}),object:'ind_staff' }
-				    ,{key:"delete", label:"", width:170,sortable:false,className:"aleft",action:'delete',object:'ind_staff'}
-				    ,{key:"delete_type", label:"",hidden:true,isTypeKey:true}
-				     ];
-
-	    //this.dataSource0 = new YAHOO.util.DataSource("ar_edit_staff.php?tipo=edit_company_staff&parent=corporation");
-            this.dataSource0 = new YAHOO.util.DataSource("ar_edit_staff.php?tipo=list_members_of_staff_to_edit&parent=corporation");
-	    this.dataSource0.responseType = YAHOO.util.DataSource.TYPE_JSON;
+	    tables = new function() {
+		    
+		    var tableid=0; // Change if you have more the 1 table
+		    var tableDivEL="table"+tableid;  
+		    
+		    var ColumnDefs = [
+				      {key:"date", label:"<?php echo _('Date')?>",className:"aleft",width:150,sortable:true,sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				      ,{key:"subject", label:"<?php echo _('Subject')?>",className:"aleft",width:50}
+				      ,{key:"location", label:"<?php echo _('Location')?>", className:"aright",width:70,sortable:true,sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				      ,{key:"description", label:"<?php echo _('Description')?>",className:"aleft",width:80,sortable:true,sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}} ];
+		
+		    this.dataSource0  = new YAHOO.util.DataSource("ar_history.php?tipo=staff_history&tid="+tableid);
+		    this.dataSource0.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource0.connXhrMode = "queueRequests";
 	    this.dataSource0.responseSchema = {
 		resultsList: "resultset.data", 
 		metaFields: {
-		    rowsPerPage:"resultset.records_perpage",
-		    sort_key:"resultset.sort_key",rtext:"resultset.rtext",
-		    sort_dir:"resultset.sort_dir",
-		    tableid:"resultset.tableid",
-		    filter_msg:"resultset.filter_msg",
-		    totalRecords: "resultset.total_records"
-		},
-		
-		fields: [
-			  'id','staff_key','name','delete','delete_type','go'
+		    rtext:"resultset.rtext",
+		    rtext_rpp:"resultset.rtext_rpp",
 
-			 ]};
-	    
-	    this.table0 = new YAHOO.widget.DataTable(tableDivEL, OrdersColumnDefs,
-						     this.dataSource0, {
-							 //draggableColumns:true,
-							   renderLoopSize: 50,generateRequest : myRequestBuilder
-								       ,paginator : new YAHOO.widget.Paginator({
-									      rowsPerPage:<?php echo$_SESSION['state']['company_staff']['table']['nr']?>,containers : 'paginator', 
- 									      pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',
-									      previousPageLinkLabel : "<",
- 									      nextPageLinkLabel : ">",
- 									      firstPageLinkLabel :"<<",
- 									      lastPageLinkLabel :">>",rowsPerPageOptions : [10,25,50,100,250,500],alwaysVisible:false
-									      ,template : "{FirstPageLink}{PreviousPageLink}<strong id='paginator_info0'>{CurrentPageReport}</strong>{NextPageLink}{LastPageLink}" })
-							   ,sortedBy : {
-							   Key: "<?php echo$_SESSION['state']['company_staff']['table']['order']?>",
-								
-							     dir: "<?php echo$_SESSION['state']['company_staff']['table']['order_dir']?>"
-								     }
-							   ,dynamicData : true
-
-						     }
-						     );
-	    this.table0.handleDataReturnPayload =myhandleDataReturnPayload;
-	    this.table0.doBeforeSortColumn = mydoBeforeSortColumn;
-	    this.table0.doBeforePaginatorChange = mydoBeforePaginatorChange;
-	  
-	    this.table0.subscribe("cellMouseoverEvent", highlightEditableCell);
-	    this.table0.subscribe("cellMouseoutEvent", unhighlightEditableCell);
-	    this.table0.subscribe("cellClickEvent", onCellClick);
-		
- var tableid=1; // Change if you have more the 1 table
-	    var tableDivEL="table"+tableid;
-
-	    var CustomersColumnDefs = [
-				       {key:"date",label:"<?php echo _('Date')?>", width:200,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				       ,{key:"author",label:"<?php echo _('Author')?>", width:70,sortable:true,formatter:this.customer_name,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				       //     ,{key:"tipo", label:"<?php echo _('Type')?>", width:90,sortable:true,formatter:this.customer_name,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				       //,{key:"diff_qty",label:"<?php echo _('Qty')?>", width:90,sortable:true,formatter:this.customer_name,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				       ,{key:"abstract", label:"<?php echo _('Description')?>", width:370,sortable:true,formatter:this.customer_name,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				       ];
-	    //?tipo=customers&tid=0"
-	    
-	    this.dataSource1 = new YAHOO.util.DataSource("ar_history.php?tipo=indirect_history&parent="+parent+"&parent_key="+parent_key+"&scope=company_staff&tableid=1");
-	   this.dataSource1.responseType = YAHOO.util.DataSource.TYPE_JSON;
-	    this.dataSource1.connXhrMode = "queueRequests";
-	    this.dataSource1.responseSchema = {
-		resultsList: "resultset.data", 
-		metaFields: {
 		    rowsPerPage:"resultset.records_perpage",
 		    sort_key:"resultset.sort_key",
 		    sort_dir:"resultset.sort_dir",
 		    tableid:"resultset.tableid",
 		    filter_msg:"resultset.filter_msg",
-		    rtext:"resultset.rtext",
 		    totalRecords: "resultset.total_records" // Access to value in the server response
 		},
-		
-		
-		fields: [
-			 "id"
-			 ,"note"
-			 ,'author','date','tipo','abstract','details'
-			 ]};
-	    
-	    this.table1 = new YAHOO.widget.DataTable(tableDivEL, CustomersColumnDefs,
-						     this.dataSource1
-						     , {
-							 renderLoopSize: 50,generateRequest : myRequestBuilder
-							 ,paginator : new YAHOO.widget.Paginator({
-								 rowsPerPage    : <?php echo$_SESSION['state']['company']['history']['nr']?>,containers : 'paginator1', alwaysVisible:false,
-								 pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',
-								 previousPageLinkLabel : "<",
-								 nextPageLinkLabel : ">",
-								 firstPageLinkLabel :"<<",
-								 lastPageLinkLabel :">>",rowsPerPageOptions : [10,25,50,100,250,500]
-								 ,template : "{FirstPageLink}{PreviousPageLink}<strong id='paginator_info1'>{CurrentPageReport}</strong>{NextPageLink}{LastPageLink}"
-							     })
-							 
-							 ,sortedBy : {
-							    Key: "<?php echo$_SESSION['state']['company']['history']['order']?>",
-							     dir: "<?php echo$_SESSION['state']['company']['history']['order_dir']?>"
-							 },
-							 dynamicData : true
-							 
-						     }
-						     
-						     );
-	    
-	    this.table1.handleDataReturnPayload =myhandleDataReturnPayload;
-	    this.table1.doBeforeSortColumn = mydoBeforeSortColumn;
-	    this.table1.doBeforePaginatorChange = mydoBeforePaginatorChange;
+		fields: ["id","date","subject","location","description" ]};
+		    this.table0 = new YAHOO.widget.DataTable(tableDivEL, ColumnDefs,
+								   this.dataSource0
+								 , {
+								     renderLoopSize: 5,generateRequest : myRequestBuilder
+								       ,paginator : new YAHOO.widget.Paginator({
+									      rowsPerPage    : <?php echo$_SESSION['state']['staff']['table']['nr']?>,containers : 'paginator0', 
+ 									      pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',alwaysVisible:false,
+									      previousPageLinkLabel : "<",
+ 									      nextPageLinkLabel : ">",
+ 									      firstPageLinkLabel :"<<",
+ 									      lastPageLinkLabel :">>",rowsPerPageOptions : [10,25,50,100,250,500]
+									      ,template : "{FirstPageLink}{PreviousPageLink}<strong id='paginator_info0'>{CurrentPageReport}</strong>{NextPageLink}{LastPageLink}"
 
-		    
-		    
-	    this.table1.filter={key:'<?php echo$_SESSION['state']['company']['history']['f_field']?>',value:'<?php echo$_SESSION['state']['company']['history']['f_value']?>'};
 
+
+									  })
+								     
+								     ,sortedBy : {
+									 key: "<?php echo$_SESSION['state']['staff']['table']['order']?>",
+									 dir: "<?php echo$_SESSION['state']['staff']['table']['order_dir']?>"
+								     },
+								     dynamicData : true
+
+								  }
+								   
+								 );
+	    	    this.table0.handleDataReturnPayload =myhandleDataReturnPayload;
+	    this.table0.doBeforeSortColumn = mydoBeforeSortColumn;
+	    this.table0.doBeforePaginatorChange = mydoBeforePaginatorChange;
+		    this.table0.filter={key:'<?php echo$_SESSION['state']['staff']['table']['f_field']?>',value:'<?php echo$_SESSION['state']['staff']['table']['f_value']?>'};
+
+	    //   YAHOO.util.Event.addListener('f_input', "keyup",myFilterChangeValue,{table:this.table0,datasource:this.dataSource})
+			 
+	    
+	    //	    var Dom   = YAHOO.util.Dom;
+	    //alert(Dom.get('f_input'));
+
+	    YAHOO.util.Event.addListener('yui-pg0-0-page-report', "click",myRowsPerPageDropdown)
+
+
+
+
+
+
+
+
+
+   
 
 	};
     });
 
 
 
-
-
-
-function cancel_add_staff(){
-   reset_new_staff();
-    hide_add_staff_dialog(); 
 }
 
-
-function hide_add_staff_dialog(){
-    Dom.get('new_staff_dialog').style.display='none';
-    Dom.get('add_staff').style.display='';
-    Dom.get('save_edit_company_staff').style.visibility='hidden';
-
-    Dom.get('reset_edit_company_staff').style.visibility='hidden';
-
-}
-
-function show_add_staff_dialog(){
-    Dom.get('new_staff_dialog').style.display='';
-    Dom.get('add_staff').style.display='none';
-    Dom.get('save_edit_company_staff').style.visibility='visible';
-
-    Dom.addClass('save_edit_company_staff','disabled');
-    Dom.get('reset_edit_company_staff').style.visibility='visible';
-    Dom.get('Company_Staff_Id').focus();
-
-
-}
-
-
-function init(){
-   // var ids = ["description","pictures","web","departments","discounts","charges","shipping","campaigns"]; 
-   // YAHOO.util.Event.addListener(ids, "click", change_block);
-
- YAHOO.util.Event.addListener('add_staff', "click",show_add_staff_dialog);
-    YAHOO.util.Event.addListener('save_edit_company_staff', "click",save_new_staff);
-    YAHOO.util.Event.addListener('reset_edit_company_staff', "click",cancel_add_staff);
-
-
-
-
-    var store_id_oACDS = new YAHOO.util.FunctionDataSource(validate_id);
-    store_id_oACDS.queryMatchContains = true;
-    var store_id_oAutoComp = new YAHOO.widget.AutoComplete("Company_Staff_Id","Company_Staff_Id_Container", staff_id_oACDS);
-    store_id_oAutoComp.minQueryLength = 0; 
-    store_id_oAutoComp.queryDelay = 0.1;
+var upload_attach = function(e){
     
-     var store_name_oACDS = new YAHOO.util.FunctionDataSource(validate_name);
-    store_name_oACDS.queryMatchContains = true;
-    var store_name_oAutoComp = new YAHOO.widget.AutoComplete("Company_Staff_Name","Company_Staff_Name_Container", staff_name_oACDS);
-    store_name_oAutoComp.minQueryLength = 0; 
-    store_name_oAutoComp.queryDelay = 0.1;
+    var uploadHandler = {
+	upload: function(o) {
+	//alert(o.responseText);
+	    var r =  YAHOO.lang.JSON.parse(o.responseText);
+	    if (r.state==200) {
+		close_dialog('attach');
+		var table=tables['table0'];
+		var datasource=tables['dataSource0'];
+		var request='';
+		datasource.sendRequest(request,table.onDataReturnInitializeTable, table);    
+		
+	    }else
+		Dom.get('attach_msg').innerHTML=r.msg;
+	    
+	    
+	    
+      }
+    }; 
+    
+    YAHOO.util.Connect.setForm('attach_form', true);
+    var note=encodeURIComponent(Dom.get('attach_note').value)
+    var request="ar_edit_contacts.php?tipo=edit_customer&key=Attach&customer_key="+customer_key+"&newvalue="+note;
+
+    YAHOO.util.Connect.asyncRequest('POST',request, uploadHandler);
+}
+
+
+
+var oMenu;
+function init(){
+
+ // init_search('customers_store');
+alert("&&&&&&&&&&&&&&&&&&&&&&");
+
+YAHOO.util.Event.addListener('clean_table_filter_show0', "click",show_filter,0);
+ YAHOO.util.Event.addListener('clean_table_filter_hide0', "click",hide_filter,0);
+ YAHOO.util.Event.addListener('clean_table_filter_show1', "click",show_filter,1);
+ YAHOO.util.Event.addListener('clean_table_filter_hide1', "click",hide_filter,1);
+ 
+
+
+    var alt_shortcuts = function(type, args, obj) {
+	if(args[0]==78){
+	    window.location=Dom.get("next").href;
+	}else if(args[0]==80){
+	    window.location=Dom.get("next").href;
+	}
+
+    }
+
+    kpl1 = new YAHOO.util.KeyListener(document, { alt:true ,keys:[78,80] }, { fn:alt_shortcuts } );
+    kpl1.enable();
+
+   var search_data={tipo:'staff_name',container:'staff'};
+
+
+
+	
+
+ 	editor = new YAHOO.widget.Editor('long_note_input', texteditorConfig);
+
+	editor._defaultToolbar.buttonType = 'basic';
+ 	editor.render();
+
+	//	editor.on('editorKeyUp',change_textarea,'details' );
+	//-------------------------------------------------------------
+
+
+dialog_note = new YAHOO.widget.Dialog("dialog_note", {context:["note","tr","tl"]  ,visible : false,close:false,underlay: "none",draggable:false});
+dialog_note.render();
+
+dialog_attach = new YAHOO.widget.Dialog("dialog_attach", {context:["attach","tr","tl"]  ,visible : false,close:false,underlay: "none",draggable:false});
+dialog_attach.render();
+
+dialog_make_order = new YAHOO.widget.Dialog("dialog_make_order", {context:["make_order","tr","tl"]  ,visible : false,close:false,underlay: "none",draggable:false});
+dialog_make_order.render();
+
+
+Event.addListener("note", "click", dialog_note.show,dialog_note , true);
+Event.addListener("attach", "click", dialog_attach.show,dialog_attach , true);
+Event.addListener("make_order", "click", dialog_make_order.show,dialog_make_order , true);
+
+
+Event.addListener("take_order", "click", take_order , true);
+Event.on('upload_attach', 'click', upload_attach);
+
+
+dialog_long_note = new YAHOO.widget.Dialog("dialog_long_note", {context:["customer_data","tl","tl"] ,visible : false,close:false,underlay: "none",draggable:false});
+dialog_long_note.render();
+Event.addListener("long_note", "click", dialog_long_note.show,dialog_long_note , true);
+
+//Event.addListener("note", "click", dialog_note.hide,dialog_note , true);
+
+
+
+ var oACDS = new YAHOO.util.FunctionDataSource(mygetTerms);
+ oACDS.queryMatchContains = true;
+ var oAutoComp = new YAHOO.widget.AutoComplete("f_input0","f_container0", oACDS);
+ oAutoComp.minQueryLength = 0; 
+  var oACDS1 = new YAHOO.util.FunctionDataSource(mygetTerms);
+ oACDS1.queryMatchContains = true;
+ oACDS1.table_id=1;
+var oAutoComp1 = new YAHOO.widget.AutoComplete("f_input1","f_container1", oACDS1);
+ oAutoComp1.minQueryLength = 0; 
+
+
+
+
+
+
+
 
 }
 
 YAHOO.util.Event.onDOMReady(init);
 
 YAHOO.util.Event.onContentReady("filtermenu0", function () {
-	 var oMenu = new YAHOO.widget.ContextMenu("filtermenu0", {trigger:"filter_name0"});
+	 var oMenu = new YAHOO.widget.ContextMenu("filtermenu0", {  trigger: "filter_name0"  });
 	 oMenu.render();
 	 oMenu.subscribe("show", oMenu.focus);
-	 
     });
-
 
 YAHOO.util.Event.onContentReady("rppmenu0", function () {
 	 rppmenu = new YAHOO.widget.ContextMenu("rppmenu0", {trigger:"rtext_rpp0" });
 	 rppmenu.render();
 	 rppmenu.subscribe("show", rppmenu.focus);
+    });
+
+YAHOO.util.Event.onContentReady("filtermenu1", function () {
+	 var oMenu = new YAHOO.widget.ContextMenu("filtermenu1", {  trigger: "filter_name1"  });
+	 oMenu.render();
+	 oMenu.subscribe("show", oMenu.focus);
+	 YAHOO.util.Event.addListener("filter_name1", "click", oMenu.show, null, oMenu);
+    });
+
+YAHOO.util.Event.onContentReady("rppmenu1", function () {
+	 rppmenu = new YAHOO.widget.ContextMenu("rppmenu1", {trigger:"rtext_rpp1" });
+	 rppmenu.render();
+	 rppmenu.subscribe("show", rppmenu.focus);
+	 YAHOO.util.Event.addListener("rtext_rpp1", "click", rppmenu.show, null, rppmenu);
+
+
     });
