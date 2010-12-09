@@ -284,7 +284,7 @@ $sql=sprintf("select `Exchange`,`Date` from kbase.`History Currency Exchange Dim
       }else{
       
       
-      $exchange=$this->current_exchange_from_yahoo();
+      $exchange=$this->get_current_exchange_from_yahoo();
 
 if($exchange){
  $sql=sprintf("insert into kbase.`History Currency Exchange Dimension` values (%s,%s,%f) on duplicate key update `Exchange`=%f "

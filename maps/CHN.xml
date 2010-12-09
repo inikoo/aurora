@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map map_file="maps/china.swf" tl_long="73.620045" tl_lat="53.553745" br_long="134.768463" br_lat="18.168882" zoom="95%" zoom_x="3.63%" zoom_y="2.68%">
+  <areas>
+    <area mc_name="CN_34" title="Anhui"></area>
+    <area mc_name="CN_11" title="Beijing"></area>
+    <area mc_name="CN_50" title="Chongqing"></area>
+    <area mc_name="CN_35" title="Fujian"></area>
+    <area mc_name="CN_62" title="Gansu"></area>
+    <area mc_name="CN_44" title="Guangdong"></area>
+    <area mc_name="CN_45" title="Guangxi"></area>
+    <area mc_name="CN_52" title="Guizhou"></area>
+    <area mc_name="CN_46" title="Hainan"></area>
+    <area mc_name="CN_13" title="Hebei"></area>
+    <area mc_name="CN_23" title="Heilongjiang"></area>
+    <area mc_name="CN_41" title="Henan"></area>
+    <area mc_name="CN_91" title="Hong Kong"></area>
+    <area mc_name="CN_42" title="Hubei"></area>
+    <area mc_name="CN_43" title="Hunan"></area>
+    <area mc_name="CN_15" title="Inner Mongolia (Nei Mongolia)"></area>
+    <area mc_name="CN_32" title="Jiangsu"></area>
+    <area mc_name="CN_36" title="Jiangxi"></area>
+    <area mc_name="CN_22" title="Jilin"></area>
+    <area mc_name="CN_21" title="Liaoning"></area>
+    <area mc_name="CN_92" title="Macau (Macao)"></area>
+    <area mc_name="CN_64" title="Ningxia"></area>
+    <area mc_name="CN_63" title="Quinghai"></area>
+    <area mc_name="CN_61" title="Shaanxi"></area>
+    <area mc_name="CN_37" title="Shandong"></area>
+    <area mc_name="CN_31" title="Shanghai"></area>
+    <area mc_name="CN_14" title="Shanxi"></area>
+    <area mc_name="CN_51" title="Sichuan"></area>
+    <area mc_name="CN_12" title="Tianjin"></area>
+    <area mc_name="CN_54" title="Tibet (Xizang)"></area>
+    <area mc_name="CN_65" title="Xinjiang"></area>
+    <area mc_name="CN_53" title="Yunnan"></area>
+    <area mc_name="CN_33" title="Zhejiang"></area>
+    <area mc_name="TW" title="Taiwan" color="#FF6600"></area>
+    <area mc_name="borders" title="borders" color="#FFFFFF" balloon="false"></area>
+  </areas>
+
+  <movies>
+    <movie title="Beijing. Click to zoom" file="target" color="#CC0000" width="15" height="15" long="116.387909" lat="39.90601" zoom="397.619%" zoom_x="-232.52%" zoom_y="-120.98%" fixed_size="true"></movie>
+    <movie title="Hong Kong" file="circle" color="#000000" width="5" height="5" long="114.153542" lat="22.411249" fixed_size="true"></movie>
+    <movie title="Macau" file="circle" color="#000000" width="5" height="5" long="113.5502" lat="22.1636915147872" fixed_size="true"></movie>    
+    <movie title="Taipei" file="target" color="000000" width="10" height="10" long="121.564194" lat="25.080441" fixed_size="true"></movie>
+  </movies>
+
+  <labels>
+    <label x="38.3693%" y="26.6968%" text_size="18" color="#FFFFFF" remain="false">
+      <text>People's Republic of China</text>
+    </label>
+  </labels>
+</map>
