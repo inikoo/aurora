@@ -3,7 +3,7 @@
 <div style="padding:0px 20px">
  {include file='hr_navigation.tpl'}
   <div id="no_details_title"  style="clear:left;xmargin:0 20px;{if $details!=0}display:none{/if}">
-    <h1 style="padding-bottom:0px">{$staff->get('Staff Name')} <span style="color:SteelBlue">{$staff_id}</span>
+    <h1 style="padding-bottom:0px">{$staff->get('Staff Name')} <span style="color:SteelBlue">( {$staff->get('Staff ID')} )</span>
       {if $next.id>0}<a class="prev" href="staff.php?id={$prev.id}" ><img src="art/icons/previous.png" alt="<" title="{$prev.name}"  /></a>{/if}
       {if $next.id>0}<a class="next" href="staff.php?id={$next.id}" ><img src="art/icons/next.png" alt=">" title="{$next.name}"  /></a>{/if}
       
