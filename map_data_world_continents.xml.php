@@ -81,7 +81,8 @@ $countries_data[]=array(
     'url_code'=>$row['Continent Code'],
     'title'=>$continent_data[$row['Continent Code']]['name'],
     'link'=>$continent_data[$row['Continent Code']]['countries'],
-  'value'=>$continent_data[$row['Continent Code']]['value']
+  'value'=>$continent_data[$row['Continent Code']]['value'],
+    'view'=>'continent'
  );
 }
 $smarty->assign('map_data',$map_data);

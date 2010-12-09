@@ -80,7 +80,8 @@ while ($row=mysql_fetch_assoc($res)) {
                           'url_code'=>$row['World Region Code'],
                           'title'=>$wregion_data[$row['World Region Code']]['name'],
                           'link'=>$wregion_data[$row['World Region Code']]['countries'],
-                          'value'=>$wregion_data[$row['World Region Code']]['value']
+                          'value'=>$wregion_data[$row['World Region Code']]['value'],
+                          'view'=>'wregion'
                       );
 }
 

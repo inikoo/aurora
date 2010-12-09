@@ -18,7 +18,7 @@ $countries_data=array();
 $country_index=array();
 $i=0;
 while($row=mysql_fetch_assoc($res)){
-$countries_data[]=array('code'=>$row['Country 2 Alpha Code'],'url_code'=>$row['Country 2 Alpha Code'],'title'=>$row['Country Name'],'value'=>0);
+$countries_data[]=array('code'=>$row['Country 2 Alpha Code'],'url_code'=>$row['Country 2 Alpha Code'],'title'=>$row['Country Name'],'value'=>0,'view'=>'country');
 $country_index[$row['Country 2 Alpha Code']]=$i;
 $i++;
 }
