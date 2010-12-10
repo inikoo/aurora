@@ -444,26 +444,33 @@ $this->data['Supplier Main XHTML Email']='';
                 mysql_query($sql);
             }
 
-            $sql=sprintf("select  sum(if(`Product Sales State`='Unknown',1,0)) as sale_unknown, sum(if(`Product Sales State`='Discontinued',1,0)) as discontinued,sum(if(`Product Sales State`='Not for sale',1,0)) as not_for_sale,sum(if(`Product Sales State`='For Sale',1,0)) as for_sale,sum(if(`Product Sales State`='In Process',1,0)) as in_process,sum(if(`Product Availability State`='Unknown',1,0)) as availability_unknown,sum(if(`Product Availability State`='Optimal',1,0)) as availability_optimal,sum(if(`Product Availability State`='Low',1,0)) as availability_low,sum(if(`Product Availability State`='Critical',1,0)) as availability_critical,sum(if(`Product Availability State`='Surplus',1,0)) as availability_surplus,sum(if(`Product Availability State`='Out Of Stock',1,0)) as availability_outofstock from `Supplier Product Dimension` SPD left join `Supplier Product Part List` SPPL on (SPD.`Supplier Key`=SPPL.`Supplier Key` and SPD.`Supplier Product Code`=SPPL.`Supplier Product Code`) left join `Product Part List` PPL on (SPPL.`Part SKU`=PPL.`Part SKU`) left join `Product Dimension` PD on (PPL.`Product ID`=PD.`Product ID`) where SPD.`Supplier Key`=%d ;",
+            $sql=sprintf("select   sum(if(`Product Record Type`='Discontinued',1,0)) as discontinued,sum(if(`Product Sales Type`='Not for sale',1,0)) as not_for_sale,sum(if(`Product Sales Type`='Public Sale',1,0)) as for_sale,sum(if(`Product Record Type`='In Process',1,0)) as in_process,sum(if(`Product Availability State`='Unknown',1,0)) as availability_unknown,sum(if(`Product Availability State`='Optimal',1,0)) as availability_optimal,sum(if(`Product Availability State`='Low',1,0)) as availability_low,sum(if(`Product Availability State`='Critical',1,0)) as availability_critical,sum(if(`Product Availability State`='Surplus',1,0)) as availability_surplus,sum(if(`Product Availability State`='Out Of Stock',1,0)) as availability_outofstock from 
+            `Supplier Product Dimension` SPD 
+            left join `Supplier Product Part Dimension` SPPD on (SPD.`Supplier Product Key`=SPPD.`Supplier Product Key` ) 
+            left join `Supplier Product Part List` SPPL on (SPPD.`Supplier Product Part Key`=SPPL.`Supplier Product Part Key` ) 
+            left join `Product Part List` PPL on (SPPL.`Part SKU`=PPL.`Part SKU`) 
+            left join `Product Part Dimension` PPD on (PPD.`Product Part Key`=PPL.`Product Part Key`) 
+            left join `Product Dimension` PD on (PD.`Product ID`=PPD.`Product ID`) 
+            where SPD.`Supplier Key`=%d ;",
             $this->id);
-            print "$sql\n";
+           // print "$sql\n";
             $result=mysql_query($sql);
             if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
 
-                $sql=sprintf("update `Supplier Dimension` set `Supplier For Sale Products`=%d ,`Supplier Discontinued Products`=%d ,`Supplier Not For Sale Products`=%d ,`Supplier Unknown Sales State Products`=%d, `Supplier Optimal Availability Products`=%d , `Supplier Low Availability Products`=%d ,`Supplier Critical Availability Products`=%d ,`Supplier Out Of Stock Products`=%d,`Supplier Unknown Stock Products`=%d ,`Supplier Surplus Availability Products`=%d where `Supplier Key`=%d  ",
+                $sql=sprintf("update `Supplier Dimension` set `Supplier For Sale Products`=%d ,`Supplier Discontinued Products`=%d ,`Supplier Not For Sale Products`=%d , `Supplier Optimal Availability Products`=%d , `Supplier Low Availability Products`=%d ,`Supplier Critical Availability Products`=%d ,`Supplier Out Of Stock Products`=%d,`Supplier Unknown Stock Products`=%d ,`Supplier Surplus Availability Products`=%d where `Supplier Key`=%d  ",
                              $row['for_sale'],
                              $row['discontinued'],
                              $row['not_for_sale'],
-                             $row['sale_unknown'],
+                            // $row['sale_unknown'],
                              $row['availability_optimal'],
                              $row['availability_low'],
                              $row['availability_critical'],
                              $row['availability_outofstock'],
-                             $row['availability_unknown'],
+                            $row['availability_unknown'],
                              $row['availability_surplus'],
                              $this->id
                             );
-                //print "$sql\n";exit;
+               // print "$sql\n";exit;
                 mysql_query($sql);
             }
             $this->get_data('id',$this->id);
@@ -487,7 +494,7 @@ $this->data['Supplier Main XHTML Email']='';
                              ,$this->data['Supplier Total Parts Sold Amount']
                              ,$this->id
                             );
-                //      print "$sql\n";
+                //     print "$sql\n";
                 if (!mysql_query($sql))
                     exit("$sql\ncan not update sup\n");
             }

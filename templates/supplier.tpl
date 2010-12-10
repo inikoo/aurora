@@ -17,15 +17,7 @@
 
 	      
 	      
-	      {foreach from=$telecoms item=telecom}
-	       <tr><td >
-		   {if $telecom[0]=='mob'}<img src="art/icons/phone.png"/ title="{t}Mobile Phone{/t}">
-		   {elseif   $telecom[0]=='tel'}<img src="art/icons/telephone.png"/ title="{t}Telephone{/t}">
-		   {elseif   $telecom[0]=='email'}<img src="art/icons/email.png"/ title="{t}Email Address{/t}">
-		   {elseif   $telecom[0]=='fax'}<img src="art/icons/printer.png"/ title="{t}Fax{/t}">
-		   {/if}
-		 </td><td class="aright" style="padding-left:10px">{$telecom[1]}</td></tr>
-	       {/foreach}
+	    
 	     </table>
 	   </td>
 	 </tr>
@@ -64,7 +56,7 @@
 	  </tr>
 	</table>
       
-     <span  id="export_csv0" style="float:right;margin-left:20px"  class="table_type state_details" tipo="supplier" >{t}Export (CSV){/t}</span>
+     
 
        <div  id="info"  style="{if !$show_details}display:none;{/if};clear:left"   >
 	 <h2 style="font-size:150%;">{t}Supplier Details{/t}</h2>
@@ -80,7 +72,7 @@
       <td>{t}Name{/t}:</td><td>{$supplier->get('Supplier Name')}</td>
     </tr>
   <tr >
-      <td>{t}Location{/t}:</td><td>{$supplier->get('Supplier Location')}</td>
+      <td>{t}Location{/t}:</td><td>{$supplier->get('Supplier Main Location')}</td>
     </tr>
     <tr >
       <td>{t}Email{/t}:</td><td>{$supplier->get('Supplier Main XHTML Email')}</td>
@@ -110,10 +102,10 @@
 	<div style="width:280px;margin-left:10px;float:left">
 	 	<table    class="show_info_product"     >
 		  <tr>
-		    <td>{t}Items availeable{/t}:</td><td class="aright">{$supplier->get('Supplier Active Supplier Products')} </td>
+		    <td>{t}Items available{/t}:</td><td class="aright">{$supplier->get('Supplier Active Supplier Products')} </td>
 		  </tr>
 		  <tr>
-		    <td>{t}Items no longer availeable{/t}:</td><td class="aright">{$supplier->get('Supplier Discontinued Supplier Products')} </td>
+		    <td>{t}Items no longer available{/t}:</td><td class="aright">{$supplier->get('Supplier Discontinued Supplier Products')} </td>
 
 		  </tr>
 		</table>
@@ -121,18 +113,7 @@
 	
 		
 </div>
-{$supplier->get_contacts()}
-	{foreach from=$supplier->get_contacts() item=contact key=key }
-	<div class="contact_container"  id="contact_container{$contact->id}">
-	  
-	  <div class="contact_display"  id="contact_display{$contact->id}">{$contact->display('card')}</div>
-	  <div class="contact_buttons" id="contact_buttons{$contact->id}">
-	    <input type="checkbox" id="is_main_contact{$contact->id}" {if $contact->is_main() }value="Yes" ovalue="Yes" checked="checked" {else}value="No" ovalue="No"{/if} /> {t}Main{/t}
-	    <span class="small_button small_button_edit" id="delete_contact_button{$contact->id}" contact_id="{$contact->id}" onclick="delete_contact(event,this)" >{t}Delete{/t}</span>
-	    <span class="small_button small_button_edit" id="edit_contact_button{$contact->id}" contact_id="{$contact->id}" onclick="edit_contact(event,this)" >{t}Edit{/t}</span>
-	  </div>
-	</div>
-	{/foreach}
+
 
 <div style="{if !$show_details}display:none;{/if};clear:both"  id="plot"></div>
 </div>
@@ -143,7 +124,10 @@
 
   <div  id="block_pending" class="data_table" style="margin:25px 0px;{if $supplier->get('Supplier Open Purchase Orders')==0}display:none{/if}"    >
     <span class="clean_table_title">{t}Pending Orders{/t}</span>
+         
+
     <div id="list_options4"> 
+
         <div style="clear:both;margin:0 0px;padding:0 20px ;border-bottom:1px solid #999"></div>
     </div>
 
@@ -156,11 +140,11 @@
     </div>
     <div  id="table4"   class="data_table_container dtable btable "> </div>
   </div>
-  
   <div  id="block_products" class="data_table" style="margin:25px 0px;clear:both">
     <div class="data_table" >
       <span class="clean_table_title">{t}Supplier Products{/t}</span>
       <div id="list_options0"> 
+       <span  id="export_csv0" style="float:right;margin-left:20px"  class="table_type state_details" tipo="supplier" >{t}Export (CSV){/t}</span>
         <div style="clear:both;margin:0 0px;padding:0 20px ;border-bottom:1px solid #999"></div>
 
 	  <table style="float:left;margin:0 0 5px 0px ;padding:0"  class="options" >

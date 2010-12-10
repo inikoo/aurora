@@ -1583,16 +1583,16 @@ function list_supplier_products() {
 
    
   
-    $_SESSION['state']['stores']['table']['view']=$product_view;
-    $_SESSION['state']['stores']['table']['percentage']=$product_percentage;
-    $_SESSION['state']['stores']['table']['period']=$product_period;
-    $_SESSION['state']['stores']['table']['order']=$order;
-    $_SESSION['state']['stores']['table']['order_dir']=$order_dir;
-    $_SESSION['state']['stores']['table']['nr']=$number_results;
-    $_SESSION['state']['stores']['table']['sf']=$start_from;
-    $_SESSION['state']['stores']['table']['where']=$where;
-    $_SESSION['state']['stores']['table']['f_field']=$f_field;
-    $_SESSION['state']['stores']['table']['f_value']=$f_value;
+    $_SESSION['state']['supplier']['products']['view']=$product_view;
+    $_SESSION['state']['supplier']['products']['percentage']=$product_percentage;
+    $_SESSION['state']['supplier']['products']['period']=$product_period;
+    $_SESSION['state']['supplier']['products']['order']=$order;
+    $_SESSION['state']['supplier']['products']['order_dir']=$order_dir;
+    $_SESSION['state']['supplier']['products']['nr']=$number_results;
+    $_SESSION['state']['supplier']['products']['sf']=$start_from;
+    $_SESSION['state']['supplier']['products']['where']=$where;
+    $_SESSION['state']['supplier']['products']['f_field']=$f_field;
+    $_SESSION['state']['supplier']['products']['f_value']=$f_value;
 
 
 
@@ -1674,6 +1674,9 @@ function list_supplier_products() {
         break;
 
     }
+    
+    //print "$order --\n";
+    
     if ($order=='id')
       $order='`Supplier Product ID`';
       if ($order=='supplier')
@@ -1688,7 +1691,22 @@ function list_supplier_products() {
       $order='`Supplier Product Stock`';
     elseif($order=='name')
       $order='`Supplier Product Name`';
-    elseif($order=='required'){
+      elseif($order=='profit'){
+      
+        if ($product_period=='all') 
+            $order='`Supplier Product Total Parts Profit`';
+         elseif ($product_period=='year') 
+            $order='`Supplier Product 1 Year Acc Parts Profit`';
+      else if ($product_period=='quarter')
+                  $order='`Supplier Product 1 Quarter Acc Parts Profit`';
+
+      else if ($product_period=='month') 
+               $order='`Supplier Product 1 Month Acc Parts Profit`';
+
+   else if ($product_period=='week') 
+               $order='`Supplier Product 1 Week Acc Parts Profit`';
+
+   }elseif($order=='required'){
       if ($product_period=='all')
 	$order='`Supplier Product Total Parts Required`';
       elseif ($product_period=='year')
@@ -1715,7 +1733,7 @@ function list_supplier_products() {
     
     $sql="select * from `Supplier Product Dimension`  $where $wheref  order by $order $order_direction limit $start_from,$number_results ";
 
-    //  print $sql;
+   //   print $sql;
     $data=array();
 
     $result=mysql_query($sql);
