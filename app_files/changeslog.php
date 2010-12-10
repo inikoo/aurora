@@ -315,7 +315,7 @@ ALTER TABLE `Product Dimension` DROP `Product Sales State DELETEME` ;
 ALTER TABLE `Part Dimension` CHANGE `Part Current Stock Cost` `Part Current Stock Cost Per Unit` DECIMAL( 12, 2 ) NULL DEFAULT NULL , CHANGE `Part Current Storing Cost` `Part Current Storing Cost Per Unit` DECIMAL( 12, 2 ) NULL DEFAULT NULL ;
 ALTER TABLE `Part Dimension` CHANGE `Part Average Future Cost` `Part Average Future Cost Per Unit` FLOAT NULL DEFAULT NULL ,CHANGE `Part Minimum Future Cost` `Part Minimum Future Cost Per Unit` FLOAT NULL DEFAULT NULL ;
 
-0.9.16
+0.9.17
 ALTER TABLE `Inventory Transaction Fact` ADD `Not Found` FLOAT NOT NULL DEFAULT '0' AFTER `Out of Stock`;
 ALTER TABLE `Inventory Transaction Fact` ADD `No Picked Other` FLOAT NOT NULL DEFAULT '0' AFTER `Not Found`;
 CREATE TABLE `Customer History Bridge` (
@@ -327,32 +327,32 @@ CREATE TABLE `Customer History Bridge` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `Staff Event Dimension` (
-  `Id` mediumint(11) NOT NULL AUTO_INCREMENT,
+  `Staff Event Key` mediumint(11) NOT NULL AUTO_INCREMENT,
   `Subject` varchar(1000) CHARACTER SET utf8 DEFAULT NULL,
   `Location` varchar(200) CHARACTER SET utf8 DEFAULT NULL,
   `Description` varchar(255) CHARACTER SET utf8 DEFAULT NULL,
-  `StartTime` datetime DEFAULT NULL,
-  `EndTime` datetime DEFAULT NULL,
-  `IsAllDayEvent` smallint(6) NOT NULL,
+  `Start Time` datetime DEFAULT NULL,
+  `End Time` datetime DEFAULT NULL,
+  `Is All Day Event` smallint(6) NOT NULL,
   `Color` varchar(200) CHARACTER SET utf8 DEFAULT NULL,
-  `RecurringRule` varchar(500) CHARACTER SET utf8 DEFAULT NULL,
-  `StaffDateKey` mediumint(11) NOT NULL,
-  `StaffKey` mediumint(11) NOT NULL,
-  PRIMARY KEY (`Id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=15 ;
+  `Recurring Rule` varchar(500) CHARACTER SET utf8 DEFAULT NULL,
+  `Staff Date Key` mediumint(11) NOT NULL,
+  `Staff Key` mediumint(11) NOT NULL,
+  PRIMARY KEY (`Staff Event Key`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 CREATE TABLE IF NOT EXISTS `Corporation Event Dimension` (
-  `Id` int(11) NOT NULL AUTO_INCREMENT,
+  `Corporation Event Key` int(11) NOT NULL AUTO_INCREMENT,
   `Subject` enum('Others','National Holiday','Bank Holiday','Festive Holiday') DEFAULT 'Others',
   `Location` varchar(200) CHARACTER SET utf8 DEFAULT NULL,
   `Description` varchar(255) CHARACTER SET utf8 DEFAULT NULL,
-  `StartTime` datetime DEFAULT NULL,
-  `EndTime` datetime DEFAULT NULL,
-  `IsAllDayEvent` smallint(6) NOT NULL,
+  `Start Time` datetime DEFAULT NULL,
+  `End Time` datetime DEFAULT NULL,
+  `Is All Day Event` smallint(6) NOT NULL,
   `Color` varchar(200) CHARACTER SET utf8 DEFAULT '6',
-  `RecurringRule` varchar(500) CHARACTER SET utf8 DEFAULT NULL,
-  PRIMARY KEY (`Id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=14 ;
-
+  `Recurring Rule` varchar(500) CHARACTER SET utf8 DEFAULT NULL,
+  PRIMARY KEY (`Corporation Event Key`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+ALTER TABLE `Supplier Dimension` ADD `Supplier Unknown Stock Products` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0' AFTER `Supplier Out Of Stock Products` ;
 
 */
 ?>
