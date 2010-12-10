@@ -1,9 +1,9 @@
 <?php
-set_include_path(get_include_path() . PATH_SEPARATOR . $path);
+//set_include_path(get_include_path() . PATH_SEPARATOR . $path);
 
-$path_to_liveuser_dir = '/usr/share/php/'.PATH_SEPARATOR;
+//$path_to_liveuser_dir = '/usr/share/php/'.PATH_SEPARATOR;
 
-ini_set('include_path', $path_to_liveuser_dir.ini_get('include_path'));
+//ini_set('include_path', $path_to_liveuser_dir.ini_get('include_path'));
 
 error_reporting(E_ERROR | E_WARNING | E_PARSE | E_NOTICE);
 include_once('../../app_files/db/dns.php');
