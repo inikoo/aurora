@@ -148,8 +148,8 @@ case('delivery_notes_per_store'):
 case('product_code_timeline'):
     product_code_timeline();
     break;
-case('product_subcategories'):
-    list_product_subcategories();
+case('product_categories'):
+    list_product_categories();
     break;
 case('part_transactions'):
     part_transactions();
@@ -8778,7 +8778,7 @@ function product_code_timeline() {
     echo json_encode($response);
 }
 
-function list_product_subcategories() {
+function list_product_categories() {
     $conf=$_SESSION['state']['product_categories']['subcategories'];
     $conf2=$_SESSION['state']['product_categories'];
     if (isset( $_REQUEST['sf']))
@@ -8888,13 +8888,14 @@ function list_product_subcategories() {
         $root_category=$_REQUEST['category'];
         $_SESSION['state']['product_categories']['category']=$avg;
     } else
-        $root_category=$_SESSION['state']['product_categories']['category'];
+        $root_category=$_SESSION['state']['product_categories']['category_key'];
 
 
 
 
 
-    $where=sprintf("where `Category Position` like '%d>%%'  and `Category Deep`>1 ",$root_category);
+    $where=sprintf("where `Category Subject`='Product' and  `Category Parent Key`=%d ",$root_category);
+  //  $where=sprintf("where `Category Subject`='Product'  ");
 
     if ($stores_mode=='grouped')
         $group=' group by `Category Key`';
@@ -8909,13 +8910,19 @@ function list_product_subcategories() {
 
 
 
-    $sql="select count(*) as total   from `Category Dimension` S  left join `Product Category Dimension` PC on (`Category Key`=PC.`Product Category Key`)  $where $wheref";
-    $result=mysql_query($sql);
-    if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
-        $total=$row['total'];
-    }
-    mysql_free_result($result);
+    $sql="select count(*) as total   from `Category Dimension`   $where $wheref";
+    
+//$sql=" describe `Category Dimension`;";
+// $sql="select *  from `Category Dimension` where `Category Parent Key`=1 ";
+//print $sql;
+    $res=mysql_query($sql);
+    if ($row=mysql_fetch_assoc($res)) {
+      $total=$row['total'];
+//   print_r($row);
+   }
+    mysql_free_result($res);
 
+//exit;
     if ($wheref=='') {
         $filtered=0;
         $total_records=$total;
@@ -9325,7 +9332,7 @@ function list_product_subcategories() {
             $profit=$tprofit;
         }
         if ($stores_mode=='grouped')
-            $name=$row['Product Category Key'].' '.$row['Category Name'];
+            $name=sprintf('<a href="categories.php?id=%d">%s</a>',$row['Category Key'],$row['Category Name']);
         else
             $name=$row['Product Category Key'].' '.$row['Category Name']." (".$row['Product Category Store Key'].")";
         $adata[]=array(

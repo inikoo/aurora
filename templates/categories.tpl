@@ -1,18 +1,20 @@
 {include file='header.tpl'}
 <div id="bd" >
   {include file='assets_navigation.tpl'} 
+
+ 
+ <div class="branch"> 
+ <span ><a  href="categories.php?id=0">{t}Product Categories{/t}</a> &rarr; 
+ </div> 
+  
 <div style="clear:left;">
-  <h1>{t}Categories{/t}</h1>
+  <h1>{$main_title}</h1>
 </div>
 
- <div style="margin-bottom:20px" id="cat_chooser">
-  {foreach from=$main_category_list item=category name=foo}
-  <span class="button  cat_chooser {if $category.selected==1}selected{/if}" {if $smarty.foreach.foo.first}style="margin:0"{/if}   id="root_{$category.id}" cat_id={$category.id}  >{$category.name}</span>
-{/foreach}
- </div>
+
 
 <div class="data_table" style="clear:both">
-    <span class="clean_table_title">{t}Subcategories{/t}</span>
+    <span class="clean_table_title">{$subcategories_title}</span>
  <div style="clear:both;margin:0 0px;padding:0 20px ;border-bottom:1px solid #999"></div>
  <span   style="float:right;margin-left:20px" class="state_details"  id="change_stores_mode" >{$display_stores_mode_label}</span>
  <span   style="float:right;margin-left:20px" class="state_details"  id="change_stores" >{$display_stores_label}</span>
@@ -45,17 +47,8 @@
 	</tr>
       </table>
        
-    <div  class="clean_table_caption"  style="clear:both;">
-	 <div style="float:left;"><div id="table_info0" class="clean_table_info"><span id="rtext0"></span> <span class="rtext_rpp" id="rtext_rpp0"></span> <span class="filter_msg"  id="filter_msg0"></span></div></div>
-	 <div class="clean_table_filter" id="clean_table_filter0">
-	 <div class="clean_table_info" style="width:8.2em;padding-bottom:1px; ">
-	 <span id="filter_name0" class="filter_name"  style="margin-right:5px">{$filter_name}:</span>
-	 <input style="border-bottom:none;width:6em;" id='f_input0' value="{$filter_value}" size=10/>
-	 <div id='f_container0'></div>
-	 </div>
-	 </div>
-	 <div class="clean_table_controls" style="" ><div><span  style="margin:0 5px" id="paginator0"></span></div></div>
-       </div>
+    {include file='table_splinter.tpl' table_id=0 filter_name=$filter_name0 filter_value=$filter_value0  }
+
        <div  id="table0"   class="data_table_container dtable btable "> </div>		
 </div>
 
@@ -64,13 +57,13 @@
     <span class="clean_table_title">{t}Products{/t}</span>
  <div style="clear:both;margin:0 0px;padding:0 20px ;border-bottom:1px solid #999"></div>
  <span   style="float:right;margin-left:80px" class="state_details"  id="change_display_mode" >{$display_mode_label}</span>
-<table style="float:left;margin:0 0 0 0px ;padding:0"  class="options" >
+    <table style="float:left;margin:0 0 0 0px ;padding:0"  class="options" >
 	<tr><td  {if $view=='general'}class="selected"{/if} id="general" >{t}General{/t}</td>
 	  {if $view_stock}<td {if $view=='stock'}class="selected"{/if}  id="stock"  >{t}Stock{/t}</td>{/if}
 	  {if $view_sales}<td  {if $view=='sales'}class="selected"{/if}  id="sales"  >{t}Sales{/t}</td>{/if}
 	</tr>
       </table>
-        <table id="period_options" style="float:left;margin:0 0 0 20px ;padding:0{if $view!='sales' };display:none{/if}"  class="options_mini" >
+    <table id="period_options" style="float:left;margin:0 0 0 20px ;padding:0{if $view!='sales' };display:none{/if}"  class="options_mini" >
 	<tr>
 
 	  <td  {if $period=='all'}class="selected"{/if} period="all"  id="period_all" >{t}All{/t}</td>
@@ -80,9 +73,7 @@
 	  <td  {if $period=='week'}class="selected"{/if} period="week"  id="period_week"  >{t}1W{/t}</td>
 	</tr>
       </table>
-
-
-       <table  id="avg_options" style="float:left;margin:0 0 0 20px ;padding:0 {if $view!='sales'};display:none{/if}"  class="options_mini" >
+    <table  id="avg_options" style="float:left;margin:0 0 0 20px ;padding:0 {if $view!='sales'};display:none{/if}"  class="options_mini" >
 	<tr>
 	  <td {if $avg=='totals'}class="selected"{/if} avg="totals"  id="avg_totals" >{t}Totals{/t}</td>
 	  <td {if $avg=='month'}class="selected"{/if}  avg="month"  id="avg_month"  >{t}M AVG{/t}</td>
@@ -91,17 +82,8 @@
 	</tr>
       </table>
        
-    <div  class="clean_table_caption"  style="clear:both;">
-	 <div style="float:left;"><div id="table_info1" class="clean_table_info"><span id="rtext1"></span> <span class="rtext_rpp" id="rtext_rpp1"></span> <span class="filter_msg"  id="filter_msg1"></span></div></div>
-	 <div class="clean_table_filter" id="clean_table_filter1">
-	 <div class="clean_table_info" style="width:8.2em;padding-bottom:1px; ">
-	 <span id="filter_name1" class="filter_name"  style="margin-right:5px">{$filter_name}:</span>
-	 <input style="border-bottom:none;width:6em;" id='f_input1' value="{$filter_value}" size=11/>
-	 <div id='f_container1'></div>
-	 </div>
-	 </div>
-	 <div class="clean_table_controls" style="" ><div><span  style="margin:0 5px" id="paginator1"></span></div></div>
-       </div>
+        {include file='table_splinter.tpl' table_id=1 filter_name=$filter_name1 filter_value=$filter_value1  }
+
        <div  id="table1"   class="data_table_container dtable btable with_total"> </div>		
 </div>
   
