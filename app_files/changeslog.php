@@ -356,7 +356,32 @@ ALTER TABLE `Supplier Dimension` ADD `Supplier Unknown Stock Products` MEDIUMINT
 
 0.9.18
 ALTER TABLE `Category Dimension` ADD `Category Parent Key` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0' AFTER `Category Key` , ADD INDEX ( `Category Parent Key` ); 
+ALTER TABLE `Image Dimension` CHANGE `Image Thumbnail URL` `Image Thumbnail URL` VARCHAR( 256 ) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL ,CHANGE `Image Small URL` `Image Small URL` VARCHAR( 256 ) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL ,CHANGE `Image Large URL` `Image Large URL` VARCHAR( 256 ) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL ;
+CREATE TABLE `Site Image Bridge` (
+`Image Key` MEDIUMINT UNSIGNED NOT NULL ,
+`Store Key` SMALLINT UNSIGNED NOT NULL ,
+`Code` VARCHAR( 64 ) NOT NULL
+) ENGINE = MYISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
+ALTER TABLE `Site Image Bridge` ADD UNIQUE (`Image Key` ,`Store Key` ,`Code`);
+ALTER TABLE `Site Image Bridge` ADD INDEX ( `Image Key` ) ;
+ALTER TABLE `Site Image Bridge` ADD INDEX ( `Store Key` , `Code` ) ;
 
+CREATE TABLE `Site Dimension` (
+`Site Key` SMALLINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY ,
+`Store Key` SMALLINT UNSIGNED NOT NULL ,
+`Site Name` VARCHAR( 256 ) NOT NULL ,
+`Logo Data` TEXT NOT NULL ,
+`Header Data` TEXT NOT NULL ,
+`Footer Data` TEXT NOT NULL ,
+`Layout Data` TEXT NOT NULL ,
+INDEX ( `Store Key` )
+) ENGINE = MYISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
+
+ALTER TABLE `Site Dimension` CHANGE `Logo Data` `Site Logo Data` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL ,
+CHANGE `Header Data` `Site Header Data` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL ,
+CHANGE `Footer Data` `Site Footer Data` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL ,
+CHANGE `Layout Data` `Site Layout Data` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL ;
+ALTER TABLE `Site Dimension` CHANGE `Store Key` `Site Store Key` SMALLINT( 5 ) UNSIGNED NOT NULL ;
 
 */
 ?>
