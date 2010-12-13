@@ -452,7 +452,7 @@ $default_state=array(
                             ),
 
                    'product_categories'=>array(
-                                            'category'=>0,
+                                            'category_key'=>0,
                                             'from'=>'',
                                             'to'=>'',
                                             'period'=>'year',
