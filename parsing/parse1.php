@@ -7,6 +7,7 @@ $str='';
 foreach ($lines as $line_num => $line) {
    if($line_num>=151 && $line_num<=1953)
            $str.=$line;
+
 }
 echo($str);
 ?>
