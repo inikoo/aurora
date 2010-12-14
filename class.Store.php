@@ -1401,53 +1401,37 @@ $this->data['Store Delivery Notes For Replacements'],
 
 
   }
-
-  function create_page($data){
-    
-    if(array_key_exists('Showcases',$data))
- 	    $showcases=$data['Showcases'];
- 	else
- 	    $showcases['Presentation']=array('Display'=>true,'Type'=>'Template','Contents'=>$this->data['Store Name']);
-
- 	  if(array_key_exists('Showcases',$data))
- 	$product_layouts=$data['Product Layouts'];
- 	else
- 	$product_layouts=array('List'=>array('Display'=>true,'Type'=>'Auto'));
- 	
-	$showcases_layout=$data['Showcases Layout'];
-      $page_data=array(
-		       'Page Code'=>'SD_'.$this->data['Store Code']
-		       ,'Page Source Template'=>'pages/'.$this->data['Store Code'].'/catalogue'
-		       ,'Page URL'=>'catalogue.php?code='.$this->data['Store Code']
-		       ,'Page Description'=>'Store Catalogue'
-		       ,'Page Title'=>$this->data['Store Name']
-		       ,'Page Short Title'=>$this->data['Store Name']
-		       ,'Page Store Title'=>$this->data['Store Name']
-		       ,'Page Store Subtitle'=>''
-		       ,'Page Store Slogan'=>$data['Page Store Slogan']
-		       ,'Page Store Resume'=>$data['Page Store Resume']
-		       ,'Page Store Showcases'=>$showcases
-		       ,'Page Store Showcases Layout'=>$showcases_layout
-		       ,'Page Store Product Layouts'=>$product_layouts
+  
+  
+   function create_site($data){
+     $site_data=array(
+		       'Site Store Key'=>$this->id
+		       ,'Site Name'=>$this->data['Store Name']
+		       ,'Site Logo Data'=>array()
+		      ,'Site Header Data'=>array()
+		       ,'Site Footer Data'=>array()
+		        ,'Site Logo Data'=>array()
+		         ,'Site Layout Data'=>array()
 		       );
-      
-      $page_data['Page Store Function']='Store Catalogue';
-      $page_data['Page Store Creation Date']=date('Y-m-d H:i:s');
-      $page_data['Page Store Last Update Date']=date('Y-m-d H:i:s');
-      $page_data['Page Store Last Structural Change Date']=date('Y-m-d H:i:s');
-      $page_data['Page Type']='Store';
-      $page_data['Page Section']='catalogue';
-      $page_data['Page Store Source Type'] ='Dynamic';
-      $page_data['Page Store Key']=$this->data['Store Key'];
-      $page_data['Page Parent Key']=$this->data['Store Key'];
-//print_r($page_data);
-      $page=new Page('find',$page_data,'create');
-//print_r($page);
-      $sql=sprintf("update `Store Dimension` set `Store Page Key`=%d  where `Store Key`=%d",$page->id,$this->id);
-  //  print $sql;
-    mysql_query($sql);  
+   $site=new Site('new',$site_data);
+   
+   }
 
-	}
+
+function get_active_sites_keys(){
+$sql=sprintf("select `Site Key` from `Site Dimension` where `Site Store Key`=%d and `Site Active`='Yes' ",$this->id);
+
+$res=mysql_query($sql);
+$sites=array();
+while($row=mysql_fetch_assoc($res)){
+    $sites[$row['Site Key']]=$row['Site Key'];
+}
+return $sites;
+}
+
+
+
+  
  
  function get_page_data(){
   $data=array();

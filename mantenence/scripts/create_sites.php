@@ -73,7 +73,7 @@ while ($row=mysql_fetch_array($res)) {
 
 }
 
-print_r($store_data);
+
 
 foreach($store_data as $store_code=>$xdata) {
     $store=new Store('code',$store_code);
@@ -89,30 +89,35 @@ foreach($store_data as $store_code=>$xdata) {
 
 foreach($page_data as $store_code=>$data) {
     $store=new Store('code',$store_code);
-    
-    
 
-    foreach($data as $page_data) {
-        $page_data['Page Store Order Template']='No Applicable';
-        $page_data['Page Store Function']='Information';
-        $page_data['Page Store Creation Date']=date('Y-m-d H:i:s');
-        $page_data['Page Store Last Update Date']=date('Y-m-d H:i:s');
-        $page_data['Page Store Last Structural Change Date']=date('Y-m-d H:i:s');
-        $page_data['Page Type']='Store';
-        $page_data['Page Store Source Type'] ='Static';
-        $page_data['Page Store Key']=$store->id;
-        $page_data['Page Parent Key']=$store->id;
+    $site_keys=$store->get_active_sites_keys();
+    foreach($site_keys as $site_key) {
 
-        //print_r($page_data);
+        $site=new Site($site_key);
 
-        $page=new Page('find',$page_data,'create');
-        // print_r($page);
+        foreach($data as $page_data) {
+            $page_data['Page Store Order Template']='No Applicable';
+            $page_data['Page Store Function']='Information';
+            $page_data['Page Store Creation Date']=date('Y-m-d H:i:s');
+            $page_data['Page Store Last Update Date']=date('Y-m-d H:i:s');
+            $page_data['Page Store Last Structural Change Date']=date('Y-m-d H:i:s');
+            $page_data['Page Type']='Store';
+            $page_data['Page Store Source Type'] ='Static';
+
+            $site->add_page($page_data);
+
+
+        }
     }
 }
+
+
 //print_r($store_data);
 foreach($store_data as $store_code=>$xdata) {
     $store=new Store('code',$store_code);
-
+ $site_keys=$store->get_active_sites_keys();
+    foreach($site_keys as $site_key) {
+     $site=new Site($site_key);
     $data=array();
     $data['Page Store Slogan']=$xdata['Slogan'];
     $data['Page Store Resume']=$xdata['Resume'];
@@ -120,8 +125,13 @@ foreach($store_data as $store_code=>$xdata) {
     $data['Page Store Function']='Store Catalogue';
 
 
-    $store->create_page($data);
+    $site->add_store_page($data);
+    }
+    
 }
+
+exit;
+
 $sql=sprintf("select * from `Product Department Dimension` left join  `Store Dimension` on (`Product Department Store Key`=`Store Key`)  where `Product Department Sales Type`='Public Sale'  ");
 
 $res=mysql_query($sql);
