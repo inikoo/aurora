@@ -6,6 +6,7 @@ $pagedata = "";
 
 //Opens the file specified in $urlpage for reading only.
 $filetext = fopen("$urlpage", "r");
+
 //Starts a loop that stays open until the end of the file.
 while (!feof($filetext))
 {
@@ -22,7 +23,7 @@ fclose($filetext);
 $pagedata = ereg_replace("<head>(.*)head>", "", $pagedata);
 //Incase there is Javascript this removes everything between the <script> tags.
 $pagedata = ereg_replace("<script>(.*)script>", "", $pagedata);
-//This strips the tags exactally like our earlier fgetss did, only it does it after it's all pulled.
+
 //The '<p>' means that it won't strip '<p>' tags from the data.
 $pagedata = strip_tags($pagedata, '<p>');
 //Echos our result to the browser so you can see what you did.

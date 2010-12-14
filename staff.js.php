@@ -84,7 +84,70 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    YAHOO.util.Event.addListener('yui-pg0-0-page-report', "click",myRowsPerPageDropdown)
 
 
+// ------------------------------------------------working hours table starts here --------------------------------
+   var tableid=1; // Change if you have more the 1 table
+		    var tableDivEL="table"+tableid;  
+		    
+		    var ColumnDefs = [
+				      {key:"id", label:"<?php echo _('Staff Key')?>",className:"aleft",hidden:true,width:60,sortable:true,sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				    ,{key:"day", label:"<?php echo _('Day')?>",className:"aleft",width:100,sortable:true,sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				   ,{key:"start_time", label:"<?php echo _('Start Time')?>",className:"aleft",width:160}
+				      ,{key:"finish_time", label:"<?php echo _('Finish Time')?>",className:"aleft",width:160}
+				      ,{key:"total_breaks_time", label:"<?php echo _('Total Breaks Time')?>", className:"aleft",width:160,sortable:true,sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+                                     ,{key:"hours_worked", label:"<?php echo _('Hours Worked')?>", className:"aleft",width:180,sortable:true,sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 
+					   ];
+		
+		    this.dataSource1  = new YAHOO.util.DataSource("ar_staff.php?tipo=staff_working_hours&tid="+tableid);
+		    this.dataSource1.responseType = YAHOO.util.DataSource.TYPE_JSON;
+	    this.dataSource1.connXhrMode = "queueRequests";
+	    this.dataSource1.table_id=tableid;
+	    this.dataSource1.responseSchema = {
+		resultsList: "resultset.data", 
+		metaFields: {
+		    rtext:"resultset.rtext",
+		    rtext_rpp:"resultset.rtext_rpp",
+
+		    rowsPerPage:"resultset.records_perpage",
+		    sort_key:"resultset.sort_key",
+		    sort_dir:"resultset.sort_dir",
+		    tableid:"resultset.tableid",
+		    filter_msg:"resultset.filter_msg",
+		    totalRecords: "resultset.total_records" // Access to value in the server response
+		},
+		fields: ["id","finish_time","total_breaks_time","start_time","day","hours_worked" ]};
+		    this.table1 = new YAHOO.widget.DataTable(tableDivEL, ColumnDefs,
+								   this.dataSource1
+								 , {
+								     renderLoopSize: 5,generateRequest : myRequestBuilder
+								       ,paginator : new YAHOO.widget.Paginator({
+									      rowsPerPage    : <?php echo$_SESSION['state']['staff']['working_hours']['nr']?>,containers : 'paginator1', 
+ 									      pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',alwaysVisible:false,
+									      previousPageLinkLabel : "<",
+ 									      nextPageLinkLabel : ">",
+ 									      firstPageLinkLabel :"<<",
+ 									      lastPageLinkLabel :">>",rowsPerPageOptions : [10,25,50,100,250,500]
+									      ,template : "{FirstPageLink}{PreviousPageLink}<strong id='paginator_info1'>{CurrentPageReport}</strong>{NextPageLink}{LastPageLink}"
+
+
+
+									  })
+								     
+								     ,sortedBy : {
+									 key: "<?php echo$_SESSION['state']['staff']['working_hours']['order']?>",
+									 dir: "<?php echo$_SESSION['state']['staff']['working_hours']['order_dir']?>"
+								     },
+								     dynamicData : true
+
+								  }
+								   
+								 );
+	    	    this.table1.handleDataReturnPayload =myhandleDataReturnPayload;
+	    this.table1.doBeforeSortColumn = mydoBeforeSortColumn;
+	    this.table1.doBeforePaginatorChange = mydoBeforePaginatorChange;
+		    this.table1.filter={key:'<?php echo$_SESSION['state']['staff']['working_hours']['f_field']?>',value:'<?php echo$_SESSION['state']['staff']['working_hours']['f_value']?>'};
+
+	    
 
 
 
