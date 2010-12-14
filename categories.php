@@ -1,4 +1,6 @@
 <?php
+include_once('class.Node.php');
+
 include_once('common.php');
 include_once('assets_header_functions.php');
 
@@ -55,7 +57,29 @@ $js_files=array(
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
 
-$category=$_SESSION['state']['product_categories']['category'];
+
+if(isset($_REQUEST['id'])){
+$category_key=$_REQUEST['id'];
+}else{
+$category_key=$_SESSION['state']['product_categories']['category_key'];
+}
+
+$nodes=new Nodes('`Category Dimension`');
+
+if($cat_data=$nodes->fetch($category_key)){
+
+
+}else{
+$category_key=0;
+$main_title=_('Categories');
+$subcategories_title=_('Category List');
+
+}
+$_SESSION['state']['product_categories']['category_key']=$category_key;
+$smarty->assign('main_title',$main_title);
+$smarty->assign('subcategories_title',$subcategories_title);
+
+/*
 
 $sql="select `Category Name`,`Category Key` from `Category Dimension` where `Category Deep`=1 and `Category Subject`='Product' ";
 $res=mysql_query($sql);
@@ -151,7 +175,7 @@ if($_SESSION['state']['product_categories']['percentages']){
 
 $smarty->assign('display_mode',$display_mode);
 $smarty->assign('display_mode_label',$display_mode_label);
-
+*/
 
 $smarty->display('categories.tpl');
 
