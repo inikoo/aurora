@@ -89,7 +89,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 		    var tableDivEL="table"+tableid;  
 		    
 		    var ColumnDefs = [
-				      {key:"id", label:"<?php echo _('Staff Key')?>",className:"aleft",width:60,sortable:true,sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				      {key:"id", label:"<?php echo _('Staff Key')?>",className:"aleft",hidden:true,width:60,sortable:true,sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 				    ,{key:"day", label:"<?php echo _('Day')?>",className:"aleft",width:100,sortable:true,sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 				   ,{key:"start_time", label:"<?php echo _('Start Time')?>",className:"aleft",width:160}
 				      ,{key:"finish_time", label:"<?php echo _('Finish Time')?>",className:"aleft",width:160}
