@@ -211,8 +211,8 @@ if(isset($_GET["id"])){
       </div>                  
       <div style="clear: both">         
       </div>        
-      <div class="infocontainer">            
-        <form action="php/datafeed_staff_holidays.php?method=adddetails<?php echo isset($event)?"&id=".$event->Id:""; ?>" class="fform" id="fmEdit" method="post">                 
+      <div class="infocontainer"> <?php $staff_event_key="Staff Event Key"; ?>          
+        <form action="php/datafeed_each_staff_holidays.php?method=adddetails<?php echo isset($event)?"&id=".$event->$staff_event_key:""; ?>" class="fform" id="fmEdit" method="post">                 
           <label>                    
             <span>                        *Subject:              
             </span>                    
