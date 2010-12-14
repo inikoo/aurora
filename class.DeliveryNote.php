@@ -711,6 +711,9 @@ $map_to_otf_metadata='';
                 $supplier_products_keys=preg_split('/,/',$supplier_products[$supplier_products_rnd_key]['Supplier Product Keys']);
                 $supplier_product_key=$supplier_products_keys[array_rand($supplier_products_keys)];
 
+            }else{
+                exit("Error geting supplier products");
+            
             }
 
             $product = new product ($row ['Product Key'] );
@@ -1956,4 +1959,6 @@ function add_orphan_transactions($data) {
 
 
 }
+
+
 ?>

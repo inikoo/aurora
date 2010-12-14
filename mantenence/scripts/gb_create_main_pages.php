@@ -2,9 +2,6 @@
 $store_code='UK';
 
 
-
-
-
 $page_data[$store_code]=array(
 	    array(
 		  'Page Code'=>'home'
@@ -388,6 +385,10 @@ $page_data[$store_code]=array(
 $store_data[$store_code]=array(
 			      'Slogan'=>'UK Biggest Online Giftware Wholesaler'
 			      ,'Resume'=>'Currently we have over 10000 exotic, interesting & unique wholesale product lines spread over approaching 1000 web pages all available to order on-line for delivery next day in the UK (well we do our best)'
+			      ,'site_data'=>array(
+			        'Site Name'=>'Ancient Wisdom',
+			        'Site Logo Data'=>array('image_source'=>'sites_data/gb_logo.png'),
+			      )
 			      
 			      );
 
