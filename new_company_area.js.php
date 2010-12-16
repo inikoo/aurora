@@ -13,7 +13,7 @@ var validate_scope_data=
 
 
 var validate_scope_metadata={
-'company_area':{'type':'new','ar_file':'ar_edit_company.php','key_name':'none','key':0}
+'company_area':{'type':'new','ar_file':'ar_edit_contacts.php','key_name':'none','key':0}
 
 
 };

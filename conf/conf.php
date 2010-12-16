@@ -452,7 +452,7 @@ $default_state=array(
                             ),
 
                    'product_categories'=>array(
-                                            'category'=>0,
+                                            'category_key'=>0,
                                             'from'=>'',
                                             'to'=>'',
                                             'period'=>'year',
@@ -1356,8 +1356,8 @@ $default_state=array(
                                   'edit'=>'details',
                                   'details'=>false,
                                   'view'=>'history',
-                                  'assets'=>array(
-                                               'order'=>'subject',
+                                  'working_hours'=>array(
+                                               'order'=>'start_time',
                                                'order_dir'=>'',
                                                'sf'=>0,
                                                'nr'=>25,
