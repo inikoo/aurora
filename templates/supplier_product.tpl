@@ -112,7 +112,7 @@
 		  {foreach from=$supplier_product->get_parts() item=part_data}
 		  <tr>
 		    <td>1&rarr;{$part_data.Parts_Per_Supplier_Product_Unit}</td>
-		    <td>{$part_data.part->get_sku()}</td>
+		    <td><a href="part.php?sku={$part_data.part->sku}">{$part_data.part->get_sku()}</a></td>
 		    <td>{$part_data.part->get('Current Stock')}</td>
 		    <td>{$part_data.part->get('Part XHTML Available For Forecast')}</td>
 		  </tr>

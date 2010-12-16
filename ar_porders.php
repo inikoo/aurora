@@ -47,16 +47,9 @@ function list_purchase_orders_with_product(){
    
 
 
-    if(isset($_REQUEST['supplier_key']) and is_numeric($_REQUEST['supplier_key'])){
-      $_SESSION['state']['supplier_product']['porders']['supplier_key']=$_REQUEST['supplier_key'];
-    }
-   if(isset($_REQUEST['code'])  ){
-      $_SESSION['state']['supplier_product']['porders']['code']=$_REQUEST['code'];
-    }
- 
+  $pid= $_SESSION['state']['supplier_product']['pid'];
 
-  $supplier_key=$_SESSION['state']['supplier_product']['porders']['supplier_key'];
-  $parent_code=  $_SESSION['state']['supplier_product']['porders']['code'];
+  
 
   $conf=$_SESSION['state']['supplier_product']['porders'];
   if(isset( $_REQUEST['sf']))
@@ -134,8 +127,8 @@ function list_purchase_orders_with_product(){
    }
 
 
-    $where.=sprintf(' and `Purchase Order Supplier Key`=%d  and `Supplier Product Code`=%s  ',$supplier_key,prepare_mysql($parent_code));
-    $db_table=' `Purchase Order Transaction Fact` POTF left join `Supplier Product History Dimension`  SPHD on (`SPH Key`=`Supplier Product Key`) left join `Purchase Order Dimension` PO on (PO.`Purchase Order Key`=POTF.`Purchase Order Key`) ';
+    $where.=sprintf(' and POTF.`Supplier Product Key`=%d  ',$pid);
+    $db_table=' `Purchase Order Transaction Fact` POTF left join `Supplier Product History Dimension`  SPHD on (`SPH Key`=POTF.`Supplier Product Key`) left join `Purchase Order Dimension` PO on (PO.`Purchase Order Key`=POTF.`Purchase Order Key`) ';
  
    $where.=$date_interval['mysql'];
    
@@ -160,7 +153,7 @@ function list_purchase_orders_with_product(){
 
    
    $sql="select count( distinct PO.`Purchase Order Key`) as total from $db_table   $where $wheref ";
-
+   //   print $sql;
    $result=mysql_query($sql);
    if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
      $total=$row['total'];
