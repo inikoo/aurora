@@ -329,6 +329,7 @@ CREATE TABLE `Customer History Bridge` (
 ALTER TABLE `Supplier Dimension` ADD `Supplier Unknown Stock Products` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0' AFTER `Supplier Out Of Stock Products` ;
 
 0.9.18
+ALTER TABLE `Purchase Order Transaction Fact` ADD `Supplier Product Historic Key` MEDIUMINT UNSIGNED NULL DEFAULT NULL AFTER `Supplier Product Key` ;
 ALTER TABLE `Category Dimension` ADD `Category Parent Key` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0' AFTER `Category Key` , ADD INDEX ( `Category Parent Key` ); 
 ALTER TABLE `Image Dimension` CHANGE `Image Thumbnail URL` `Image Thumbnail URL` VARCHAR( 256 ) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL ,CHANGE `Image Small URL` `Image Small URL` VARCHAR( 256 ) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL ,CHANGE `Image Large URL` `Image Large URL` VARCHAR( 256 ) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL ;
 CREATE TABLE `Site Image Bridge` (
@@ -339,6 +340,7 @@ CREATE TABLE `Site Image Bridge` (
 ALTER TABLE `Site Image Bridge` ADD UNIQUE (`Image Key` ,`Store Key` ,`Code`);
 ALTER TABLE `Site Image Bridge` ADD INDEX ( `Image Key` ) ;
 ALTER TABLE `Site Image Bridge` ADD INDEX ( `Store Key` , `Code` ) ;
+
 
 CREATE TABLE `Site Dimension` (
 `Site Key` SMALLINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY ,
