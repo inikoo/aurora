@@ -96,9 +96,11 @@ case('create_company_area'):
     break;
 case('create_company_department'):
     $data=prepare_values($_REQUEST,array(
+			     'parent_key'=>array('type'=>'key'),
                              'values'=>array('type'=>'json array')
-                                      ,'parent_key'=>array('type'=>'key')
+                             					
                          ));
+
     new_company_department($data);
     break;
 case('create_company_position'):
@@ -2616,9 +2618,14 @@ function new_company_area($data) {
 
 
 function new_company_department($data) {
+
     global $editor;
     $company=new Company($data['parent_key']);
     $company->editor=$editor;
+
+
+
+
     if ($company->id) {
         $company->add_department($data['values']);
         if ($company->updated) {
