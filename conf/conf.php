@@ -16,7 +16,7 @@ $myconf=array(
             'staff_min_number_zeros_id'=>3,
 
             'max_session_time'=>36000,
-            'name'=>'Kaktus',
+            'name'=>'AW',
             'sname'=>'AW',
             'country'=>'UK',
             'country_code'=>'GBR',
