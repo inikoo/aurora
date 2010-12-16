@@ -354,5 +354,8 @@ CREATE TABLE IF NOT EXISTS `Corporation Event Dimension` (
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 ALTER TABLE `Supplier Dimension` ADD `Supplier Unknown Stock Products` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0' AFTER `Supplier Out Of Stock Products` ;
 
+0.9.18
+ALTER TABLE `Purchase Order Transaction Fact` ADD `Supplier Product Historic Key` MEDIUMINT UNSIGNED NULL DEFAULT NULL AFTER `Supplier Product Key` ;
+
 */
 ?>
