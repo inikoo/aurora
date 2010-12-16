@@ -265,6 +265,7 @@ function add_department($data) {
         }
         
     }
+
 function get_department_keys(){
     $department_keys=array();
     $sql=sprintf("select `Department Key` from `Company Area Department Bridge` where `Area Key`=%d",$this->id);

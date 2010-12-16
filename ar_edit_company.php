@@ -53,7 +53,7 @@ if( !isset($_REQUEST['values']) ){
      echo json_encode($response);
      return;
    }
-   $area=new company($raw_data['Warehouse Key']);
+   $area=new Company($raw_data['Warehouse Key']);
      if(!$warehouse->id){
      $response=array('state'=>400,'msg'=>'Wrong value');
      echo json_encode($response);
