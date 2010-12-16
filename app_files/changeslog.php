@@ -326,32 +326,6 @@ CREATE TABLE `Customer History Bridge` (
   KEY `History Key` (`History Key`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
-CREATE TABLE IF NOT EXISTS `Staff Event Dimension` (
-  `Staff Event Key` mediumint(11) NOT NULL AUTO_INCREMENT,
-  `Subject` varchar(1000) CHARACTER SET utf8 DEFAULT NULL,
-  `Location` varchar(200) CHARACTER SET utf8 DEFAULT NULL,
-  `Description` varchar(255) CHARACTER SET utf8 DEFAULT NULL,
-  `Start Time` datetime DEFAULT NULL,
-  `End Time` datetime DEFAULT NULL,
-  `Is All Day Event` smallint(6) NOT NULL,
-  `Color` varchar(200) CHARACTER SET utf8 DEFAULT NULL,
-  `Recurring Rule` varchar(500) CHARACTER SET utf8 DEFAULT NULL,
-  `Staff Date Key` mediumint(11) NOT NULL,
-  `Staff Key` mediumint(11) NOT NULL,
-  PRIMARY KEY (`Staff Event Key`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
-CREATE TABLE IF NOT EXISTS `Corporation Event Dimension` (
-  `Corporation Event Key` int(11) NOT NULL AUTO_INCREMENT,
-  `Subject` enum('Others','National Holiday','Bank Holiday','Festive Holiday') DEFAULT 'Others',
-  `Location` varchar(200) CHARACTER SET utf8 DEFAULT NULL,
-  `Description` varchar(255) CHARACTER SET utf8 DEFAULT NULL,
-  `Start Time` datetime DEFAULT NULL,
-  `End Time` datetime DEFAULT NULL,
-  `Is All Day Event` smallint(6) NOT NULL,
-  `Color` varchar(200) CHARACTER SET utf8 DEFAULT '6',
-  `Recurring Rule` varchar(500) CHARACTER SET utf8 DEFAULT NULL,
-  PRIMARY KEY (`Corporation Event Key`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 ALTER TABLE `Supplier Dimension` ADD `Supplier Unknown Stock Products` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0' AFTER `Supplier Out Of Stock Products` ;
 
 0.9.18
@@ -384,5 +358,43 @@ CHANGE `Layout Data` `Site Layout Data` TEXT CHARACTER SET utf8 COLLATE utf8_gen
 ALTER TABLE `Site Dimension` CHANGE `Store Key` `Site Store Key` SMALLINT( 5 ) UNSIGNED NOT NULL ;
 ALTER TABLE `Site Dimension` ADD `Site Active` ENUM( 'Yes', 'No' ) NOT NULL DEFAULT 'Yes';
 ALTER TABLE `Page Store Dimension` ADD `Page Site Key` MEDIUMINT UNSIGNED NOT NULL AFTER `Page Code` ,ADD INDEX ( `Page Site Key` ); 
+DROP TABLE `Staff Work Hours Dimension`;
+CREATE TABLE IF NOT EXISTS `Staff Work Hours Dimension` (
+  `Staff Key` mediumint(11) NOT NULL,
+  `Day` varchar(20) NOT NULL,
+  `Start Time` datetime NOT NULL,
+  `Finish Time` datetime NOT NULL,
+  `Total Breaks Time` time NOT NULL,
+  `Hours Worked` time NOT NULL
+) ENGINE = MYISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
+drop table `Staff Event Dimension` ;
+CREATE TABLE IF NOT EXISTS `Staff Event Dimension` (
+  `Staff Event Key` mediumint(11) NOT NULL AUTO_INCREMENT,
+  `Subject` varchar(1000) CHARACTER SET utf8 DEFAULT NULL,
+  `Location` varchar(200) CHARACTER SET utf8 DEFAULT NULL,
+  `Description` varchar(255) CHARACTER SET utf8 DEFAULT NULL,
+  `StartTime` datetime DEFAULT NULL,
+  `End Time` datetime DEFAULT NULL,
+  `Is All Day Event` smallint(6) NOT NULL,
+  `Color` varchar(200) CHARACTER SET utf8 DEFAULT '6',
+  `Recurring Rule` varchar(500) CHARACTER SET utf8 DEFAULT NULL,
+  `Staff Date Key` mediumint(11) NOT NULL,
+  `Staff Key` mediumint(11) NOT NULL,
+  PRIMARY KEY (`Staff Event Key`)
+) ENGINE = InnoDB CHARACTER SET utf8 COLLATE utf8_general_ci;
+drop table `Corporation Event Dimension`;
+CREATE TABLE IF NOT EXISTS `Corporation Event Dimension` (
+  `Corporation Event Key` int(11) NOT NULL AUTO_INCREMENT,
+  `Subject` enum('Others','National Holiday','Bank Holiday','Festive Holiday') DEFAULT 'Others',
+  `Location` varchar(200) CHARACTER SET utf8 DEFAULT NULL,
+  `Description` varchar(255) CHARACTER SET utf8 DEFAULT NULL,
+  `StartTime` datetime DEFAULT NULL,
+  `End Time` datetime DEFAULT NULL,
+  `Is All Day Event` smallint(6) NOT NULL,
+  `Color` varchar(200) CHARACTER SET utf8 DEFAULT '3',
+  `Recurring Rule` varchar(500) CHARACTER SET utf8 DEFAULT NULL,
+  PRIMARY KEY (`Corporation Event Key`)
+) ENGINE=InnoDB  DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
+
 */
 ?>
