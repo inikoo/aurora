@@ -41,13 +41,7 @@ case('new_supplier'):
  new_supplier($data);
  
  break;
- case('new_supplier'):
-  $data=prepare_values($_REQUEST,array(
-			     'values'=>array('type'=>'json array')
-			   
-			     ));
-  new_supplier($data);
-  break;
+
 case('supplier_products'):
   list_supplier_products();
   break;

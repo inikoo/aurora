@@ -113,7 +113,7 @@ if(isset($_GET["id"])){
             $("#Closebtn").click(function() { CloseModelWindow(); });
             $("#Deletebtn").click(function() {
                  if (confirm("Are you sure to remove this event")) {  
-                    var param = [{ "name": "calendarId", value: 8}];                
+                    var param = [{ "name": "calendarId", value: 8}]; 
                     $.post(DATA_FEED_URL + "?method=remove",
                         param,
                         function(data){

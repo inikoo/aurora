@@ -163,7 +163,7 @@ var CellEdit = function (callback, newValue) {
                                      datatable = this.getDataTable();
     recordIndex = datatable.getRecordIndex(record);
 
-    if (column.object=='company' || column.object=='customer' || column.object=='contact' || column.object=='company_area')
+    if (column.object=='company' || column.object=='customer' || column.object=='contact' || column.object=='company_area' || column.object=='company_department' || column.object=='company_position')
         ar_file='ar_edit_contacts.php';
     else if (column.object=='warehouse_area' || column.object=='part_location'|| column.object=='shelf_type' || column.object=='location')
         ar_file='ar_edit_warehouse.php';
