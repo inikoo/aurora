@@ -410,7 +410,7 @@ function list_staff_history() {
 
   
 
-    $where.=sprintf(' and  `Staff Key`=%d   ',$staff_id);
+    $where.=sprintf(' and  SED.`Staff Key`=%d   ',$staff_id);
 //   if(!$details)
 //    $where.=" and display!='details'";
 //  foreach($elements as $element=>$value){
@@ -440,7 +440,7 @@ function list_staff_history() {
     }
 
   
-    $sql="select count(*) as total from `Staff Event Dimension` SED  left join  `Staff Dimension` SD on (SED.`StaffKey`=SD.`Staff Key`)   $where $wheref ";
+    $sql="select count(*) as total from `Staff Event Dimension` SED  left join  `Staff Dimension` SD on (SED.`Staff Key`=SD.`Staff Key`)   $where $wheref ";
 // print $sql;
     // exit;
     $result=mysql_query($sql);
@@ -454,7 +454,7 @@ function list_staff_history() {
     } else {
 
         
-       $sql="select count(*) as total from `Staff Event Dimension` SED  left join  `Staff Dimension` SD on (SED.`StaffKey`=SD.`Staff Key`)   $where $wheref "; 
+       $sql="select count(*) as total from `Staff Event Dimension` SED  left join  `Staff Dimension` SD on (SED.`Staff Key`=SD.`Staff Key`)   $where $wheref "; 
       //  print $sql;
         $result=mysql_query($sql);
         if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
@@ -515,7 +515,7 @@ function list_staff_history() {
         $order='Subject';
 
 
-   $sql="select * from `Staff Event Dimension` SED  left join  `Staff Dimension` SD on (SED.`StaffKey`=SD.`Staff Key`)    $where $wheref  order by `$order` $order_direction limit $start_from,$number_results ";
+   $sql="select * from `Staff Event Dimension` SED  left join  `Staff Dimension` SD on (SED.`Staff Key`=SD.`Staff Key`)    $where $wheref  order by `$order` $order_direction limit $start_from,$number_results ";
  
     $result=mysql_query($sql);
     $data=array();

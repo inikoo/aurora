@@ -1,5 +1,6 @@
 <?php
 
+
 define('DEBUG', 0);
 if(DEBUG){ error_reporting(E_ALL);}
 

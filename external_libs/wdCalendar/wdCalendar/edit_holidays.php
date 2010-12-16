@@ -7,7 +7,7 @@ function getCalendarByRange($id){
   try{
    // $db = new DBConnection();
    // $db->getConnection();
-    $sql = "select * from `Corporation Event Dimension` where `id` = " . $id;
+    $sql = "select * from `Corporation Event Dimension` where `Corporation Event Key` = " . $id;
     $handle = mysql_query($sql);
     //echo $sql;
     $row = mysql_fetch_object($handle);
@@ -113,7 +113,7 @@ if(isset($_GET["id"])){
             $("#Closebtn").click(function() { CloseModelWindow(); });
             $("#Deletebtn").click(function() {
                  if (confirm("Are you sure to remove this event")) {  
-                    var param = [{ "name": "calendarId", value: 8}];                
+                    var param = [{ "name": "calendarId", value: 8}]; 
                     $.post(DATA_FEED_URL + "?method=remove",
                         param,
                         function(data){
@@ -211,8 +211,8 @@ if(isset($_GET["id"])){
       </div>                  
       <div style="clear: both">         
       </div>        
-      <div class="infocontainer">            
-        <form action="php/datafeed_holidays.php?method=adddetails<?php echo isset($event)?"&id=".$event->Id:""; ?>" class="fform" id="fmEdit" method="post">                 
+      <div class="infocontainer"><?php  $corporation_event_key="Corporation Event Key";?>           
+        <form action="php/datafeed_holidays.php?method=adddetails<?php echo isset($event)?"&id=".$event->$corporation_event_key:""; ?>" class="fform" id="fmEdit" method="post">                 
           <label>                    
             <span>                        *Subject:              
             </span>                    
@@ -226,15 +226,18 @@ if(isset($_GET["id"])){
             </span>                    
             <div>  
               <?php if(isset($event)){
+	          $end_time="End Time";
                   $sarr = explode(" ", php2JsTime(mySql2PhpTime($event->StartTime)));
-                  $earr = explode(" ", php2JsTime(mySql2PhpTime($event->EndTime)));
-              }?>                    
+                  $earr = explode(" ", php2JsTime(mySql2PhpTime($event->$end_time)));
+              }?>
+               <?php $is_all_day_event="Is All Day Event";
+              ?>                      
               <input MaxLength="10" class="required date" id="stpartdate" name="stpartdate" style="padding-left:2px;width:90px;" type="text" value="<?php echo isset($event)?$sarr[0]:""; ?>" />                       
               <input MaxLength="5" class="required time" id="stparttime" name="stparttime" style="width:40px;" type="text" value="<?php echo isset($event)?$sarr[1]:""; ?>" />To                       
               <input MaxLength="10" class="required date" id="etpartdate" name="etpartdate" style="padding-left:2px;width:90px;" type="text" value="<?php echo isset($event)?$earr[0]:""; ?>" />                       
               <input MaxLength="50" class="required time" id="etparttime" name="etparttime" style="width:40px;" type="text" value="<?php echo isset($event)?$earr[1]:""; ?>" />                                            
               <label class="checkp"> 
-                <input id="IsAllDayEvent" name="IsAllDayEvent" type="checkbox" value="1" <?php if(isset($event)&&$event->IsAllDayEvent!=0) {echo "checked";} ?>/>          All Day Event                      
+                <input id="IsAllDayEvent" name="IsAllDayEvent" type="checkbox" value="1" <?php if(isset($event)&&$event->$is_all_day_event!=0) {echo "checked";} ?>/>          All Day Event                      
               </label>                    
             </div>                
           </label>                 

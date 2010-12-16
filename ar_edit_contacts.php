@@ -6,7 +6,7 @@ require_once 'class.Company.php';
 require_once 'class.Supplier.php';
 require_once 'ar_edit_common.php';
 include_once('class.CompanyDepartment.php');
-
+include_once('class.Staff.php');
 
 if (!isset($_REQUEST['tipo'])) {
     $response=array('state'=>405,'resp'=>_('Non acceptable request').' (t)');
@@ -101,6 +101,22 @@ case('create_company_department'):
                          ));
     new_company_department($data);
     break;
+case('create_company_position'):
+    $data=prepare_values($_REQUEST,array(
+                             'values'=>array('type'=>'json array')
+                                      ,'parent_key'=>array('type'=>'key')
+                         ));
+    new_company_position($data);
+    break;
+case('new_staff'):
+ $data=prepare_values($_REQUEST,array(
+			     'values'=>array('type'=>'json array')
+			     
+				      ));
+ new_staff($data);
+ 
+ break;
+
 case('edit_company_department'):
   edit_company_department();
 break;
@@ -2620,6 +2636,60 @@ function new_company_department($data) {
     echo json_encode($response);
 
 }
+
+function new_staff($data) {
+   global $editor;
+$staff_data=Array();
+foreach($data['values'] as $key=>$value){
+    $staff_data[preg_replace('/^company /i','Staff ',$key)]=$value;
+}
+
+$staff_data['editor']=$editor;
+//print_r($supplier_data);
+//return;
+
+  $staff=new Staff('find',$staff_data,'create');
+  if($staff->new){
+    $response= array('state'=>200,'action'=>'created','staff_key'=>$staff->id);
+  }else{
+    if($staff->found)
+      $response= array('state'=>400,'action'=>'found','staff_key'=>$staff->found_key);
+    else
+      $response= array('state'=>400,'action'=>'error','staff_key'=>0,'msg'=>$staff->msg);
+  }
+ 
+
+  echo json_encode($response);  
+
+}
+
+
+
+
+
+function new_company_position($data) {
+    global $editor;
+    $company=new Company($data['parent_key']);
+    $company->editor=$editor;
+    if ($company->id) {
+        $company->add_position($data['values']);
+        if ($company->updated) {
+            $response= array('state'=>200,'action'=>'created');
+
+        } else {
+            $response= array('state'=>400,'action'=>'error','company_key'=>0,'msg'=>$company->msg);
+
+        }
+
+    } else {
+        $response= array('state'=>400,'action'=>'error','company_key'=>0,'msg'=>$company->msg);
+
+    }
+    echo json_encode($response);
+
+}
+
+
 
 
 

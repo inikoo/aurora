@@ -66,8 +66,7 @@ var $sql_condition; // overall sql conditions without WHERE ... (i.e  .. AND myf
 var $sql_condition_where; // DON'T CHANGE THIS 
 var $c_list  = array();  // DON'T CHANGE THIS
 
-function nodes($table_name = NULL)
-{
+function nodes($table_name = NULL){
 
 $this->table_name = $table_name;
 
@@ -122,9 +121,29 @@ $position  = $this->get_position($parent);
 
 // lets insert add the new category into the database.
 
-$sql = "INSERT into ".$this->table_name." (".$this->table_fields['position'].", ".implode("," , $keys).") VALUES('', '".implode("','" , $values)."' )";
+//$sql = "INSERT into ".$this->table_name." (";
+
+//print_r($fields);
+$fields['`Category Parent Key`']=$parent;
+ $_keys='';
+        $_values='';
+        foreach($fields as $key=>$value) {
+            $_keys.=",".$key."";
+            $_values.=','.prepare_mysql($value,false);
+        }
+        $_values=preg_replace('/^,/','',$_values);
+        $_keys=preg_replace('/^,/','',$_keys);
+
+        $sql="insert into ".$this->table_name." ($_keys) values ($_values)";
+
+
+//.$this->table_fields['position'].", ".implode("," , $keys).") VALUES('', '".implode("','" , $values)."' )";
+
+
+
 //print "$sql\n";
-mysql_query($sql) or die(trigger_error("<br><storng><u>MySQL Error:</u></strong><br>".mysql_error()."<br><br><storng><u>Query Used:</u></strong><br>".$sql."<br><br><storng><u>Info:</u></strong><br>",E_USER_ERROR));
+mysql_query($sql) or 
+die(trigger_error("<br><storng><u>MySQL Error:</u></strong><br>".mysql_error()."<br><br><storng><u>Query Used:</u></strong><br>".$sql."<br><br><storng><u>Info:</u></strong><br>",E_USER_ERROR));
 
 $node_id   = mysql_insert_id();
 $position .= $node_id.">";
@@ -480,17 +499,26 @@ return ($count < 1 ) ? 1 : $count;
 
 function fetch ($id)
 {
-$sql = "SELECT * 
-		FROM ".$this->table_name." 
-		WHERE ".$this->table_fields['id']." = '".$id."' ".$this->sql_condition;
-$res = mysql_query($sql) or die(trigger_error("<br><storng><u>MySQL Error:</u></strong><br>".mysql_error()."<br><br><storng><u>Query Used:</u></strong><br>".$sql."<br><br><storng><u>Info:</u></strong><br>",E_USER_ERROR));
 
-$record = mysql_fetch_array($res);
+$sql=sprintf("select * from %s where %s=%d %s",
+$this->table_name,
+$this->table_fields['id'],
+$id,
+$this->sql_condition
+);
+$res = mysql_query($sql);
+
+
+if($record = mysql_fetch_array($res)){
+
+
+
 $record["prefix"] = $this->get_prefix($record[ preg_replace('/`/','',$this->table_fields['position'])  ]);		
 $position_slices  = explode(">",$record[ preg_replace('/`/','',$this->table_fields['position'])]);
 $key              = count($position_slices)-3;
 if($key < 0) $key = 0;
 $record["parent"] = $position_slices["$key"];
+}
 return $record;
 }
 
