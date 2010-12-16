@@ -26,7 +26,9 @@
       </div>  
       
     </div>
-    <a href="index.php" alt="home"><img src="image.php?code=logo"/></a><br/>
+    <div style="height:70px;width:300px;border:1px solid red">
+    <a href="index.php" alt="home"><img src="image.php?code=logo" alt="logo" /></a><br/>
+    </div>
     <div  id="slogan">{$slogan}</div>
     {include file="$main_menu_template"}
   </div>

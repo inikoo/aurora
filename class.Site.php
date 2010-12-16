@@ -85,7 +85,22 @@ class Site extends DB_Table {
         }
 
 
-        if ($create) {
+        $sql=sprintf("select `Site Key` from `Site Dimension` where `Site Name`=%s and `Site Store Key`=%d ",
+            
+        prepare_mysql($raw_data['Site Name']),
+        $raw_data['Site Store Key']
+            
+        );
+        
+        $res=mysql_query($sql);
+        if($row=mysql_fetch_assoc($res)){
+             $this->found=true;
+        $this->found_key=$row['Site Key'];
+        $this->get_data('id',$this->found_key);
+        }
+        
+
+        if ($create and !$this->found) {
             $this->create($raw_data);
         }
 
@@ -315,11 +330,14 @@ class Site extends DB_Table {
 
 
 
+
+
+
         $page_data=array(
                        'Page Code'=>'PD_'.$store->data['Store Code'].'_'.$department->data['Product Department Code'],
-                       'Page Source Template'=>''
-                                              'Page URL'=>'department.php?code='.$department->data['Product Department Code']
-                                                         'Page Source Template'=>'pages/'.$store->data['Store Code'].'/department.tpl',
+                       'Page Source Template'=>'',
+                       'Page URL'=>'department.php?code='.$department->data['Product Department Code'],
+                       'Page Source Template'=>'pages/'.$store->data['Store Code'].'/department.tpl',
                        'Page Description'=>'Department Showcase Page',
                        'Page Title'=>$department->data['Product Department Name'],
                        'Page Short Title'=>$department->data['Product Department Name'],
