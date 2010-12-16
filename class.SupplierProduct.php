@@ -446,8 +446,9 @@ class supplierproduct extends DB_Table {
     function get_parts() {
         $parts=array();
         $sql=sprintf("select `Part SKU`,`Supplier Product Units Per Part`  from  `Supplier Product Part Dimension` SPPD left join  `Supplier Product Part List` SPPL on (SPPD.`Supplier Product Part Key`=SPPL.`Supplier Product Part Key`) where `Supplier Product Key`=%d and `Supplier Product Part Most Recent`='Yes' group by  `Part SKU`;",
-                     $this->id
+                     $this->pid
                     );
+	//print $sql;
 
         $result=mysql_query($sql);
         while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {

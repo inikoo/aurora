@@ -1,7 +1,7 @@
 <?php include_once('common.php');
 
-print sprintf("var supplier_product_code=%s;",prepare_mysql($_SESSION['state']['supplier_product']['code']));
-print sprintf("var supplier_key=%d;",$_SESSION['state']['supplier_product']['supplier_key']);
+print sprintf("var pid=%s;",prepare_mysql($_SESSION['state']['supplier_product']['pid']));
+
 
 ?>
   var Dom   = YAHOO.util.Dom;
@@ -22,8 +22,8 @@ YAHOO.util.Event.addListener(window, "load", function() {
 					   ,{key:"amount", label:"<?php echo _('Amount')?>", width:90,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 				       ];
 		
-		this.dataSource0 = new YAHOO.util.DataSource("ar_porders.php?tipo=purchase_orders_with_product&supplier_key="+supplier_key+"&code="+supplier_product_code+"&tableid=0");
-//alert("ar_porders.php?tipo=purchase_orders_with_product&p=supplier_key="+supplier_key+"&code="+supplier_product_code+"&tableid=0")
+		this.dataSource0 = new YAHOO.util.DataSource("ar_porders.php?tipo=purchase_orders_with_product&pid="+pid+"&tableid=0");
+		alert("ar_porders.php?tipo=purchase_orders_with_product&pid="+pid+"&tableid=0")
 	this.dataSource0.responseType = YAHOO.util.DataSource.TYPE_JSON;
 		this.dataSource0.connXhrMode = "queueRequests";
 		this.dataSource0.responseSchema = {
