@@ -89,9 +89,12 @@ case('edit_customers'):
     break;
 case('create_company_area'):
     $data=prepare_values($_REQUEST,array(
+			      'parent_key'=>array('type'=>'key'),
                              'values'=>array('type'=>'json array')
-                                      ,'parent_key'=>array('type'=>'key')
+                                     
                          ));
+
+
     new_company_area($data);
     break;
 case('create_company_department'):
