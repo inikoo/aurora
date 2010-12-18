@@ -1,4 +1,4 @@
-<div id="header" >
+<div id="header" style="{$page_data.header_style}">
   <div id="header_family" >
  
   

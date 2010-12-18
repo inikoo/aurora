@@ -18,7 +18,7 @@ if(isset($_REQUEST['code'])){
   exit;
 }
 
-$yui_path="../external_libs/yui/2.8.1/build/";
+
 
 $css_files=array(
 		 'css/common.css',
@@ -52,13 +52,22 @@ $js_files=array(
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
 
-$page_data=$family->get_page_data();
-update_page_key_visit_log($page_data['Page Key']);
+$page=$site->get_page_object('family',$family->id);
+if(!$page->id){
+  header('Location: index.php?page_not_found');
+  exit;
+}
+
+$smarty->assign('page',$page);
+$page_data=$page->get_data_for_smarty($page_data);
+$smarty->assign('page_data',$page_data);
+
+update_page_key_visit_log($page->data['Page Key']);
 $can_view=array();
-$can_view['slideshow']=($page_data['Product Slideshow Layout']=='Yes'?1:0);    
-$can_view['manual']=($page_data['Product Manual Layout']=='Yes'?1:0);    
-$can_view['list']=($page_data['Product List Layout']=='Yes'?1:0);    
-$can_view['thumbnails']=($page_data['Product Thumbnails Layout']=='Yes'?1:0);    
+$can_view['slideshow']=($page->data['Product Slideshow Layout']=='Yes'?1:0);    
+$can_view['manual']=($page->data['Product Manual Layout']=='Yes'?1:0);    
+$can_view['list']=($page->data['Product List Layout']=='Yes'?1:0);    
+$can_view['thumbnails']=($page->data['Product Thumbnails Layout']=='Yes'?1:0);    
 
 $number_views=0;
 foreach($can_view as $key=>$value){
@@ -83,14 +92,10 @@ foreach(preg_split('/\,/',$myconf['family_table_type']) as $_table_type){
 $table_type='thumbnails';
  $smarty->assign('table_type',$table_type);
 
-$smarty->assign('title',$page_data['Page Title']);
-$smarty->assign('header_title',$page_data['Page Store Title']);
-$smarty->assign('header_subtitle',$page_data['Page Store Subtitle']);
-$smarty->assign('slogan',$page_data['Page Store Slogan']);
-$smarty->assign('page_key',$page_data['Page Key']);
 
-$smarty->assign('comentary',$page_data['Page Store Resume']);
-$smarty->assign('contents',$page_data['Page Source Template']);
+$smarty->assign('page_key',$page->data['Page Key']);
+
+$smarty->assign('contents',$page->data['Page Source Template']);
 $smarty->assign('header_template',"../templates/family_header.".$store->data['Store Locale'].".tpl");
 $smarty->assign('right_menu_template',"../templates/right_menu.".$store->data['Store Locale'].".tpl");
 $smarty->assign('left_menu_template',"../templates/left_menu.".$store->data['Store Locale'].".tpl");
@@ -121,7 +126,7 @@ $smarty->assign('family',$family);
 
 $smarty->assign('js_files',$js_files);
 
-$_SESSION['prev_page_key']=$page_data['Page Key'];
+$_SESSION['prev_page_key']=$page->data['Page Key'];
 
 $smarty->display("../templates/family.".$store->data['Store Locale'].".tpl");
 

@@ -7,6 +7,7 @@ include_once('../../class.Family.php');
 include_once('../../class.Product.php');
 include_once('../../class.Supplier.php');
 include_once('../../class.Site.php');
+include_once('../../class.Image.php');
 
 include_once('../../class.Page.php');
 include_once('../../class.Store.php');
@@ -47,7 +48,7 @@ include_once('gb_create_main_pages.php');
 
 
 
-
+mysql_query('TRUNCATE TABLE `Site Dimension`');
 
 $sql=sprintf("select `Store Key` from  `Store Dimension  ");
 $res=mysql_query($sql);
@@ -57,7 +58,7 @@ while ($row=mysql_fetch_array($res)) {
 
 }
 
-//$sql=sprintf("select P.`Page Key` from `Page Dimension` P  left join `Page Store Dimension` PS on (P.`Page Key`=PS.`Page Key`)  where `Page Type`='Store'  and `Page Store Function`='Information' ");
+//$sql=sprintf("select P.`Page Key` from `Page Dimension` P  left join `Page Store Dimension` PS on (P.`Page Key`=PS.`Page Key`)  where `Page Type`='Store'  and `Page Store Section`='Information' ");
 $sql=sprintf("select P.`Page Key` from `Page Dimension` P  left join `Page Store Dimension` PS on (P.`Page Key`=PS.`Page Key`)  where `Page Type`='Store'  ");
 $res=mysql_query($sql);
 while ($row=mysql_fetch_array($res)) {
@@ -69,11 +70,14 @@ while ($row=mysql_fetch_array($res)) {
     mysql_query($sql);
     $sql=sprintf("delete from `Page Store Dimension` where `Page Key`=%d",$row['Page Key']);
     mysql_query($sql);
+
+
+
     //print "$sql\n";
 
 }
 
-
+chdir('../../');
 
 foreach($store_data as $store_code=>$xdata) {
     $store=new Store('code',$store_code);
@@ -82,7 +86,32 @@ foreach($store_data as $store_code=>$xdata) {
     $data['Site Name']=$site_data['Site Name'];
 
 
-    $store->create_site($data);
+    if (isset($site_data['Site Logo Data']['image_filename'])) {
+        $logo_file=$site_data['Site Logo Data']['image_filename'];
+        $iamge_data=array(
+                        'file'=>$site_data['Site Logo Data']['image_filename'],
+                        'source_path'=>'mantenence/scripts/',
+                        'path'=>'sites/app_files/pics/',
+                        'name'=>'logo',
+                        'caption'=>''
+                    );
+        $image=new Image('find',$iamge_data,'create');
+
+        if ($image->id) {
+            $data['Site Logo Data']['Image Key']=$image->id;
+            $data['Site Logo Data']['Image Source']=preg_replace('/^sites./','',$image->data['Image URL']);
+        }
+    }
+
+
+
+    $site=$store->create_site($data);
+    foreach($page_store_secton_data as $key=>$value){
+            $page_section=$site->get_page_section_object($key);
+            $page_section->update($value);
+           // print_r($page_section);
+    }
+
 }
 
 
@@ -97,17 +126,120 @@ foreach($page_data as $store_code=>$data) {
 
         foreach($data as $page_data) {
             $page_data['Page Store Order Template']='No Applicable';
-            $page_data['Page Store Function']='Information';
+
             $page_data['Page Store Creation Date']=date('Y-m-d H:i:s');
             $page_data['Page Store Last Update Date']=date('Y-m-d H:i:s');
             $page_data['Page Store Last Structural Change Date']=date('Y-m-d H:i:s');
             $page_data['Page Type']='Store';
             $page_data['Page Store Source Type'] ='Static';
 
-            $site->add_page($page_data);
+
+            $data_tag='Page Store Header Data';
+          if (isset($page_data[$data_tag]['style']['background-image'])) {
+                $file=$page_data[$data_tag]['style']['background-image'];
+                $image_data=array(
+                                'file'=>$file,
+                                'source_path'=>'mantenence/scripts/',
+                                'path'=>'sites/app_files/pics/',
+                                'name'=>'background_image',
+                                'caption'=>''
+                            );
+                $image=new Image('find',$image_data,'create');
+                if ($image->id) {
+                    $image_src=preg_replace('/^sites./','',$image->data['Image URL']);
+                    
+                    
+                   
+                    $page_data[$data_tag]['style']['background-image']="url('$image_src')";
+                } else {
+                    print $image->msg."\n";
+                    exit("bad image\n");
+                }
+            }
+            $data_tag='Page Store Content Data';
+            if (isset($page_data[$data_tag]['style']['background-image'])) {
+                $file=$page_data[$data_tag]['style']['background-image'];
+                $image_data=array(
+                                'file'=>$file,
+                                'source_path'=>'mantenence/scripts/',
+                                'path'=>'sites/app_files/pics/',
+                                'name'=>'background_image',
+                                'caption'=>''
+                            );
+                $image=new Image('find',$image_data,'create');
+                if ($image->id) {
+                    $image_src=preg_replace('/^sites./','',$image->data['Image URL']);
+                   
+                    
+                   
+                    $page_data[$data_tag]['style']['background-image']="url('$image_src')";
+                } else {
+                    print $image->msg."\n";
+                    exit("bad image\n");
+                }
+            }
+
+            if (isset($page_data['Page Store Content Data']['Showcases'])) {
+                foreach($page_data['Page Store Content Data']['Showcases'] as $key=>$showcase) {
+                    if ($showcase['type']=='banner') {
+                        $file=$showcase['src'];
+                        $image_data=array(
+                                        'file'=>$file,
+                                        'source_path'=>'mantenence/scripts/',
+                                        'path'=>'sites/app_files/pics/',
+                                        'name'=>'banner',
+                                        'caption'=>''
+                                    );
+                        $image=new Image('find',$image_data,'create');
+                        if ($image->id) {
+                            $image_src=preg_replace('/^sites./','',$image->data['Image URL']);
+                            $page_data['Page Store Content Data']['Showcases'][$key]['Image Key']=$image->id;
+                            $page_data['Page Store Content Data']['Showcases'][$key]['src']=preg_replace('/^sites./','',$image->data['Image URL']);
+                        } else {
+                            print $image->msg."\n";
+                            exit("\nCreate Site: bad image\n");
+                        }
+                    }elseif($showcase['type']=='div'){
+            
+                   if(isset($showcase['style']['background-image'])){
+                    $file=$showcase['style']['background-image'];
+                        $image_data=array(
+                                        'file'=>$file,
+                                        'source_path'=>'mantenence/scripts/',
+                                        'path'=>'sites/app_files/pics/',
+                                        'name'=>'div_bg_image',
+                                        'caption'=>''
+                                    );
+                        $image=new Image('find',$image_data,'create');
+                        if ($image->id) {
+                            $image_src=preg_replace('/^sites./','',$image->data['Image URL']);
+                            $page_data['Page Store Content Data']['Showcases'][$key]['Image Key']=$image->id;
+                            $page_data['Page Store Content Data']['Showcases'][$key]['style']['background-image']="url('$image_src')";
+                        } else {
+                            print $image->msg."\n";
+                            exit("\nCreate Site: bad image\n");
+                        }
+                    
+                    }
+                    
+                    }
+                }
+
+            }
+
+            if ($page_data['Page Code']=='home') {
+              //  print_r($page_data);
+              //exit;
+              $site->add_index_page($page_data);
+            } else {
+                $site->add_page($page_data);
+            }
+           
 
 
         }
+
+
     }
 }
 
@@ -115,34 +247,44 @@ foreach($page_data as $store_code=>$data) {
 //print_r($store_data);
 foreach($store_data as $store_code=>$xdata) {
     $store=new Store('code',$store_code);
- $site_keys=$store->get_active_sites_keys();
+    $site_keys=$store->get_active_sites_keys();
     foreach($site_keys as $site_key) {
-     $site=new Site($site_key);
-    $data=array();
-    $data['Page Store Slogan']=$xdata['Slogan'];
-    $data['Page Store Resume']=$xdata['Resume'];
-    $data['Showcases Layout']='Splited';
-    $data['Page Store Function']='Store Catalogue';
+        $site=new Site($site_key);
+        $data=array();
+        $data['Page Store Slogan']=$xdata['Slogan'];
+        $data['Page Store Resume']=$xdata['Resume'];
+        $data['Showcases Layout']='Splited';
+        $data['Page Store Section']='Store Catalogue';
 
 
-    $site->add_store_page($data);
+        $site->add_cataloge_page($data);
     }
-    
+
 }
 
-exit;
+
 
 $sql=sprintf("select * from `Product Department Dimension` left join  `Store Dimension` on (`Product Department Store Key`=`Store Key`)  where `Product Department Sales Type`='Public Sale'  ");
 
 $res=mysql_query($sql);
 while ($row=mysql_fetch_array($res)) {
-    $department=new Department($row['Product Department Key']);
-    $data=array();
-    $data['Page Store Slogan']=(isset($department_data[$row['Store Code'].'_'.$row['Product Department Code']]['Slogan'])?$department_data[$row['Store Code'].'_'.$row['Product Department Code']]['Slogan']:'');
-    $data['Page Store Resume']=(isset($department_data[$row['Store Code'].'_'.$row['Product Department Code']]['Resume'])?$department_data[$row['Store Code'].'_'.$row['Product Department Code']]['Resume']:'');
-    $data['Page Store Function']='Department Catalogue';
-    $data['Showcases Layout']='Splited';
-    $department->create_page($data);
+
+    $store=new Store($row['Product Department Store Key']);
+    $site_keys=$store->get_active_sites_keys();
+
+    foreach($site_keys as $site_key) {
+        $site=new Site($site_key);
+        $data=array();
+        $department=new Department($row['Product Department Key']);
+        $data=array();
+        $data['Page Parent Key']=$department->id;
+        $data['Page Store Slogan']=(isset($department_data[$row['Store Code'].'_'.$row['Product Department Code']]['Slogan'])?$department_data[$row['Store Code'].'_'.$row['Product Department Code']]['Slogan']:'');
+        $data['Page Store Resume']=(isset($department_data[$row['Store Code'].'_'.$row['Product Department Code']]['Resume'])?$department_data[$row['Store Code'].'_'.$row['Product Department Code']]['Resume']:'');
+        $data['Page Store Section']='Department Catalogue';
+        $data['Showcases Layout']='Splited';
+
+        $site->add_department_page($data);
+    }
 }
 
 
@@ -150,13 +292,24 @@ $sql=sprintf("select * from `Product Family Dimension` left join  `Store Dimensi
 
 $res=mysql_query($sql);
 while ($row=mysql_fetch_array($res)) {
-    $family=new Family($row['Product Family Key']);
-    $data=array();
-    $data['Page Store Slogan']=(isset($family_data[$row['Store Code'].'_'.$row['Product Family Code']]['Slogan'])?$family_data[$row['Store Code'].'_'.$row['Product Family Code']]['Slogan']:'');
-    $data['Page Store Resume']=(isset($family_data[$row['Store Code'].'_'.$row['Product Family Code']]['Resume'])?$family_data[$row['Store Code'].'_'.$row['Product Family Code']]['Resume']:'');
-    $data['Page Store Function']='Family Catalogue';
-    $data['Showcases Layout']='Splited';
-    $family->create_page($data);
+
+    $store=new Store($row['Product Family Store Key']);
+    $site_keys=$store->get_active_sites_keys();
+    foreach($site_keys as $site_key) {
+        $site=new Site($site_key);
+
+        $family=new Family($row['Product Family Key']);
+        $data=array();
+        $data['Page Parent Key']=$family->id;
+        $data['Page Store Slogan']=(isset($family_data[$row['Store Code'].'_'.$row['Product Family Code']]['Slogan'])?$family_data[$row['Store Code'].'_'.$row['Product Family Code']]['Slogan']:'');
+        $data['Page Store Resume']=(isset($family_data[$row['Store Code'].'_'.$row['Product Family Code']]['Resume'])?$family_data[$row['Store Code'].'_'.$row['Product Family Code']]['Resume']:'');
+        $data['Page Store Section']='Family Catalogue';
+        $data['Showcases Layout']='Splited';
+        $site->add_family_page($data);
+    }
 }
+
+
+
 
 ?>

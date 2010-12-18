@@ -1,4 +1,4 @@
-<div id="header" >
+<div id="header" style="{$page_data.header_style}" >
   <div id="header_home" >
     <div>
       <span id="second_slogan">{$store_slogan}</span>
@@ -19,17 +19,17 @@
 
 
    <div id="header_info" >
-      <h1>{$header_title}</h1>
-      <h2>{$header_subtitle}</h2>
+      <h1>{$page_data.title}</h1>
+      <h2>{$page_data.subtitle}</h2>
       <div id="header_commentary" style="font-size:80%">
-	{$comentary}
+	{$page_data.resume}
       </div>  
       
     </div>
-    <div style="height:70px;width:300px;border:1px solid red">
-    <a href="index.php" alt="home"><img src="image.php?code=logo" alt="logo" /></a><br/>
+    <div style="margin-top:10px;height:70px;width:300px">
+    <a href="index.php" alt="home"><img src="{$page_data.logo}" alt="logo" /></a><br/>
     </div>
-    <div  id="slogan">{$slogan}</div>
+    <div  id="slogan">{$page_data.slogan}</div>
     {include file="$main_menu_template"}
   </div>
 </div>

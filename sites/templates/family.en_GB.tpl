@@ -12,9 +12,9 @@
 	   
 	    
 	  </div>
-	  <div   id="search" style="float:left" >
-	  {$traslated_labels.search}: <input type="text"/>
-	  </div>
+	  {include file="templates/search_input.tpl"}
+	  
+	
 	 
 	  <div style="clear:both"></div>
 	</div>

@@ -398,5 +398,26 @@ CREATE TABLE IF NOT EXISTS `Corporation Event Dimension` (
   PRIMARY KEY (`Corporation Event Key`)
 ) ENGINE=InnoDB  DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
 
+0.9.19
+ALTER TABLE `Site Dimension` ADD `Site Index Page Key` MEDIUMINT UNSIGNED NOT NULL AFTER `Site Name` ;
+ALTER TABLE `Site Dimension` CHANGE `Site Index Page Key` `Site Index Page Key` MEDIUMINT( 8 ) UNSIGNED NOT NULL DEFAULT '0';
+CREATE TABLE `Page Store Section Dimension` (
+`Page Store Section Key` MEDIUMINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY ,
+`Page Store Section Code` VARCHAR( 64 ) NOT NULL ,
+`Page Store Section Logo Data` TEXT NULL DEFAULT NULL ,
+`Page Store Section Header Data` TEXT NULL DEFAULT NULL ,
+`Page Store Section Footer Data` TEXT NULL DEFAULT NULL ,
+`Page Store Section Layout Data` TEXT NULL DEFAULT NULL
+) ENGINE = MYISAM ;
+ALTER TABLE `Page Store Dimension` CHANGE `Page Store Section` `Page Store Section` ENUM( 'Front Page Store', 'Search', 'Product Descritiption', 'Information', 'Family Catalogue', 'Department Catalogue', 'Unknown', 'Store Catalogue', 'Registration', 'Client Section' ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'Unknown';
+ALTER TABLE `Page Store Dimension` CHANGE `Page Store Section` `Page Store Section` ENUM( 'Front Page Store', 'Search', 'Product Descritiption', 'Information', 'Family Catalogue', 'Department Catalogue', 'Unknown', 'Store Catalogue', 'Registration', 'Client Section', 'Check Out' ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'Unknown';
+ALTER TABLE `Page Store Dimension` ADD `Page Store Section Key` MEDIUMINT UNSIGNED NOT NULL AFTER `Page Store Source Type` ;
+ALTER TABLE `Page Store Dimension` CHANGE `Page Store Section` `Page Store Section` ENUM( 'Front Page Store', 'Search', 'Product Descritiption', 'Information', 'Category Catalogue', 'Family Catalogue', 'Department Catalogue', 'Unknown', 'Store Catalogue', 'Registration', 'Client Section', 'Check Out' ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'Unknown';
+ALTER TABLE `Page Store Dimension` ADD `Page Store Logo Data` TEXT NULL DEFAULT NULL AFTER `Page Options` ,ADD `Page Store Header Data` TEXT NULL DEFAULT NULL AFTER `Page Store Logo Data` ,ADD `Page Store Footer Data` TEXT NULL DEFAULT NULL AFTER `Page Store Header Data` ,ADD `Page Store Layout Data` TEXT NULL DEFAULT NULL AFTER `Page Store Footer Data` ;
+ALTER TABLE `Page Store Dimension` ADD `Page Store Content Data` TEXT NULL DEFAULT NULL AFTER `Page Store Header Data` ;
+ALTER TABLE `Page Store Section Dimension` ADD `Page Store Section Content Data` TEXT NULL DEFAULT NULL AFTER `Page Store Section Header Data` ;
+ALTER TABLE `Site Dimension` ADD `Site Content Data` TEXT NULL DEFAULT NULL AFTER `Site Header Data` ;
+ALTER TABLE `Image Dimension` CHANGE `Image File Format` `Image File Format` ENUM( 'jpeg', 'png', 'gif' ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'jpeg';
+ALTER TABLE `Page Store Section Dimension` ADD `Site Key` SMALLINT UNSIGNED NOT NULL AFTER `Page Store Section Key` ,ADD INDEX ( `Site Key` ); 
 */
 ?>
