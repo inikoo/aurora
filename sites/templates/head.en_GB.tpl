@@ -6,7 +6,7 @@
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <link href="{$store_code}/art/favicon.png" rel="shortcut icon" type="image/x-icon" />
 
-    <title>{$title}</title>
+    <title>{$page_data.title}</title>
     {foreach from=$css_files item=i }
     <link rel="stylesheet" href="{$i}" type="text/css" />
     {/foreach}	

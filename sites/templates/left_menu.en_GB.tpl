@@ -1,4 +1,4 @@
-<div id="left_menu">
+<div id="left_menu" style="">
   <div class="contacts">
     <h3><a href="info.php?page=contact">{$traslated_labels.contact}</a></h3>
     {if $tel }<span>T {$tel}</span><br/>{/if}

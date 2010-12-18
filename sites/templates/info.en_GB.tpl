@@ -2,13 +2,13 @@
  <body>
    <div id="container" >
      {include file="$home_header_template"}
-     <div id="page_content">
+     <div id="page_content" style="{$page_data.content_style}"  >
        {include file="$left_menu_template"}
      
        <div id="central_content">
-	        <div id="search" >
-	            Search: <input type="text"/>
-	        </div>
+       {include file="templates/search_input.tpl"}
+       
+	       
             <div id="content">
                 {$page->get('Product Presentation Template Data')}	 
             </div>

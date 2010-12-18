@@ -1,4 +1,4 @@
-#header{background-color:#f99013;background-image:url('../art/header/header_home.jpg');background-repeat:no-repeat;height:140px;border-bottom:2px solid black;background-position:bottom left;}
+#header{background-color:#f99013;background-repeat:no-repeat;height:140px;border-bottom:2px solid black;background-position:bottom left;}
 
 #header_home{float:left;width:215px;border:0px solid #fff}
 #header_title{float:left;margin-left:5px;width:645px;color:#7d0101;}
@@ -8,14 +8,14 @@
 
 #header_home div{;margin-left:15px;margin-top:125px}
 
-#slogan{color:#000;margin-left:10px;margin-top:15px;font-size:14px;font-style: italic; ;font-weight:800;;font-family:"Palatino Linotype"}
+#slogan{color:#000;margin-left:10px;margin-top:5px;font-size:14px;font-style: italic; ;font-weight:800;;font-family:"Palatino Linotype"}
 #second_slogan{font-size:10px;color:#fff;}
 #main_menu{margin-top:5px;margin-left:10px}
 #header_login{float:right;width:156px;color:#7d0101;font-size:10px;text-align:right;padding-right:10px}
 
 #header_info{margin-top:10px;clear:both;float:right;width:300px;color:#000;font-size:10px;text-align:right;padding-right:10px}
 
-#page_content{background-image:url('../art/left_nav.png') ;background-repeat:no-repeat;}
+#page_content{background-repeat:no-repeat;}
 
 
 #left_menu{width:200px;color:#ccc;height:100%;padding-left:10px;padding-bottom:30px;float:left;height:100%;background-position:bottom}

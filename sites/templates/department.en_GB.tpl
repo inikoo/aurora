@@ -2,13 +2,10 @@
 <body>
   <div id="container" >
     {include file="$home_header_template"}
-    <div id="page_content">
+    <div id="page_content" style="{$page_data.content_style}"  >
       {include file="$left_menu_template"}
       <div id="central_content" style="width:655px;">
-	<div id="search" >
-	  {$traslated_labels.search}: <input type="text"/>
-	</div>
-        
+	     {include file="templates/search_input.tpl"}
 	<div class="block" id="product_block_layout">
 	    {foreach from=$families item=family}
 	    <div style="width:100px;height:120px;float:left;margin:10px;margin-bottom:15px">

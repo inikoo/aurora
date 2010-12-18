@@ -27,17 +27,19 @@ if(isset($_REQUEST['code'])){
   exit;
 }
 
-$page_data=$department->get_page_data();
+
+$page=$site->get_page_object('department',$department->id);
+if(!$page->id){
+  header('Location: index.php?page_not_found');
+  exit;
+}
+
+$smarty->assign('page',$page);
+$page_data=$page->get_data_for_smarty($page_data);
+$smarty->assign('page_data',$page_data);
 
 
-
-$smarty->assign('title',$page_data['Page Title']);
-$smarty->assign('header_title',$page_data['Page Store Title']);
-$smarty->assign('header_subtitle',$page_data['Page Store Subtitle']);
-$smarty->assign('slogan',$page_data['Page Store Slogan']);
-
-$smarty->assign('comentary',$page_data['Page Store Resume']);
-$smarty->assign('contents',$page_data['Page Source Template']);
+$smarty->assign('contents',$page->data['Page Source Template']);
 $smarty->assign('home_header_template',"../templates/home_header.".$store->data['Store Locale'].".tpl");
 $smarty->assign('right_menu_template',"../templates/right_menu.".$store->data['Store Locale'].".tpl");
 $smarty->assign('left_menu_template',"../templates/left_menu.".$store->data['Store Locale'].".tpl");
@@ -58,9 +60,9 @@ $smarty->assign('families',$families);
 $smarty->assign('js_files',$js_files);
 $smarty->display("../templates/department.".$store->data['Store Locale'].".tpl");
 
-$page_data=$department->get_page_data();
-update_page_key_visit_log($page_data['Page Key']);
-$_SESSION['prev_page_key']=$page_data['Page Key'];
+
+update_page_key_visit_log($page->id);
+$_SESSION['prev_page_key']=$page->id;
 
 
 ?>

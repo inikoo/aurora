@@ -1,7 +1,7 @@
 #header #top_menu{font-size:80%;margin-right:10px;text-align:right;color:#000}
 #top_menu,#top_menu a{color:#990000}
 
-#header{background-color:#f29416;background-image:url('../art/header/header_background.jpg');background-repeat:no-repeat;;border-bottom:2px solid black;padding:0;margin:0}
+#header{padding:0;margin:0}
 #header_family{float:left;width:155px;border:0px solid #fff}
 #header_title{float:left;margin-left:5px;width:550px;color:#7d0101;text-align:left}
 #header_title h1{padding:10px 20px 0px; 0px;font-weight:800;font-size:28px;font-style: italic;font-family:"Palatino Linotype","Book Antiqua","New York"}

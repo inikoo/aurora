@@ -8,6 +8,7 @@ require_once 'common_functions.php';
 require_once "class.Session.php";
 require_once "class.Auth.php";
 require_once "class.User.php";
+require_once "class.Site.php";
 
 
 
@@ -28,7 +29,7 @@ date_default_timezone_set(TIMEZONE) ;
 mysql_query("SET time_zone='+0:00'");
 require_once 'conf/conf.php';
 
-
+$yui_path="../external_libs/yui/2.8.1/build/";
 $pics_path='http://tunder/';
 
 $max_session_time=36000;
@@ -36,7 +37,13 @@ $session = new Session($max_session_time,1,100);
 require('external_libs/Smarty/Smarty.class.php');
 $smarty = new Smarty();
 
-$store_key=$myconf['store_key'];
+
+$site=new Site($myconf['site_key']);
+$page_data=$site->get_data_for_smarty();
+
+
+
+$store_key=$site->data['Site Store Key'];
 $store=new Store($store_key);
 $store_code=$store->data['Store Code'];
 $smarty->assign('store_code',$store_code);
@@ -132,7 +139,7 @@ $smarty->assign('store_slogan',$store->data['Store Slogan']);
 
 
 
-$sql=sprintf("select `Page Section`,`Page Short Title`,`Page URL` from `Page Dimension` P  left join `Page Store Dimension` PS on (PS.`Page Key`=P.`Page Key`) where `Page Type`='Store' and `Page Parent Key`=%d and `Page Store Function`='Information'   ",$store_key);
+$sql=sprintf("select `Page Section`,`Page Short Title`,`Page URL` from `Page Dimension` P  left join `Page Store Dimension` PS on (PS.`Page Key`=P.`Page Key`) where `Page Type`='Store' and `Page Parent Key`=%d and `Page Store Section`='Information'   ",$store_key);
 
 $info_pages=array();
 $inspiration_pages=array();

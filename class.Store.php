@@ -1404,17 +1404,15 @@ $this->data['Store Delivery Notes For Replacements'],
   
   
    function create_site($data){
-     $site_data=array(
-		       'Site Store Key'=>$this->id
-		       ,'Site Name'=>$this->data['Store Name']
-		       ,'Site Logo Data'=>array()
-		      ,'Site Header Data'=>array()
-		       ,'Site Footer Data'=>array()
-		        ,'Site Logo Data'=>array()
-		         ,'Site Layout Data'=>array()
-		       );
-   $site=new Site('new',$site_data);
    
+		
+		       $data['Site Store Key']=$this->id;
+		       		       $data['Site Name']=$this->data['Store Name'];
+
+		       
+		       
+   $site=new Site('new',$data);
+   return $site;
    }
 
 
@@ -1426,6 +1424,8 @@ $sites=array();
 while($row=mysql_fetch_assoc($res)){
     $sites[$row['Site Key']]=$row['Site Key'];
 }
+//print "$sql\n";
+//print_r($sites);
 return $sites;
 }
 
@@ -1436,13 +1436,14 @@ return $sites;
  function get_page_data(){
   $data=array();
   $sql=sprintf("select * from `Page Store Dimension` PSD left join `Page Dimension` PD on (PSD.`Page Key`=PD.`Page Key`) where PSD.`Page Key`=%d",$this->data['Store Page Key']);
- // print $sql;
+print "$sql\n";
   $res=mysql_query($sql);
   if($row=mysql_fetch_assoc($res)){
     $data=$row;
+     $data['Page Options']=unserialize($data['Page Options']);
   }
   
-  $data['Page Options']=unserialize($data['Page Options']);
+ 
   
   return $data;
 
