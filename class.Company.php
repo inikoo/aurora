@@ -2222,6 +2222,16 @@ $sql=sprintf("select * from `Corporation Dimension` where `Corporation Company K
 
         }
     }
+   function add_position($data) {
+        include_once('class.CompanyPosition.php');
+        $data['Company Key']=$this->id;
+        $data['editor']=$this->editor;
+        $department=new CompanyPosition('find',$data,'create');
+        if ($department->id) {
+            $this->updated=true;
+
+        }
+    }
 
 
     /*
