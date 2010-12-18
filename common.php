@@ -11,6 +11,7 @@ require_once "class.Session.php";
 require_once "class.Auth.php";
 require_once "class.User.php";
 $external_DB_link=false;
+
 if(isset($connect_to_external) and isset($external_dns_user)){
 $external_DB_link=mysql_connect($external_dns_host,$external_dns_user,$external_dns_pwd );
 
@@ -42,8 +43,8 @@ require_once 'conf/conf.php';
 
 
 
-
 $session = new Session($myconf['max_session_time'],1,100);
+
 //print_r($_SESSION);
 //print '//'.session_id( );
 //print '//'.$_SESSION['state']['store']['plot'];
@@ -54,36 +55,36 @@ $smarty->compile_dir = $myconf['compile_dir'];
 $smarty->cache_dir = $myconf['cache_dir'];
 $smarty->config_dir = $myconf['config_dir'];
 
-
-
 $logout = (array_key_exists('logout', $_REQUEST)) ? $_REQUEST['logout'] : false;
 if ($logout){
 
-  
+/*  ?><script type = "text/javascript">alert("You are about to be signed out due to Inactivity");</script><?php   */
 $sql=sprintf("update `User Log Dimension` set `Logout Date`=NOW()  where `Session ID`=%s", prepare_mysql(session_id()));
    mysql_query($sql);
 
   session_regenerate_id();
   session_destroy();
   unset($_SESSION);
-  
+
   include_once 'login.php';
   exit;
  }
 
 $is_already_logged_in=(isset($_SESSION['logged_in']) and $_SESSION['logged_in']? true : false);
 
+
 if($is_already_logged_in){
 
 if($_SESSION['logged_in_page']!=0){
-    
+
+
     $sql=sprintf("update `User Log Dimension` set `Logout Date`=NOW()  where `Session ID`=%s", prepare_mysql(session_id()));
    mysql_query($sql);
 
   session_regenerate_id();
   session_destroy();
   unset($_SESSION);
-  
+
   include_once 'login.php';
   exit;
     
@@ -92,7 +93,7 @@ $user=new User($_SESSION['user_key']);
 
 }else{
   
-  
+//   echo "<script>alert(\"Session Expired! You are signed out due to Inactivity!. Please login again!\")</script>"; 
 
   include_once('app_files/key.php');
   $auth=new Auth(IKEY,SKEY);

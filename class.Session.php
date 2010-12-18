@@ -332,17 +332,14 @@ var $id=0;
     function gc($maxlifetime)
     {
 
-
-
       $sql ="
-
             DELETE FROM
                 `Session Dimension`
             WHERE
                 `Session Expire` < '".mysql_real_escape_string(time() - $maxlifetime)."'
 
         ";
-      
+     
       mysql_query($sql);
 
     }

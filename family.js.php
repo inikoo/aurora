@@ -294,7 +294,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 
  function init(){
-// -------------------------Export(CSV) code for department under store --------------------
+
   YAHOO.util.Event.addListener('export_csv0', "click",download_csv,'products_in_family');
  YAHOO.util.Event.addListener('export_csv0_in_dialog', "click",download_csv_from_dialog,{table:'export_csv_table0',tipo:'products_in_family'});
   csvMenu = new YAHOO.widget.ContextMenu("export_csv_menu0", {trigger:"export_csv0" });
@@ -302,7 +302,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	 csvMenu.subscribe("show", csvMenu.focus);
    
  YAHOO.util.Event.addListener('export_csv0_close_dialog', "click",csvMenu.hide,csvMenu,true);
-// -------------------------Export(CSV) code for department under store ends here--------------
+
   init_search('products_store');
  
  
