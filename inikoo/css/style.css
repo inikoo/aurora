@@ -17,7 +17,7 @@ a img{border:none}
 #footer a{margin-left: 40px;color:#777}
 
 
-ul {
+#menu1 ul {
 	list-style: none;
 	margin: 0;
 	padding: 0;
@@ -58,5 +58,8 @@ margin-bottom:0px;
 	background:  url(../images/menu1.gif) 0 -32px;
 	padding: 8px 0 0 10px;
 	}	
+#menu1 li a.selected {
+	color: orange;
 
+	}
 

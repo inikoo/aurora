@@ -29,7 +29,7 @@ date_default_timezone_set(TIMEZONE) ;
 mysql_query("SET time_zone='+0:00'");
 require_once 'conf/conf.php';
 
-$yui_path="../external_libs/yui/2.8.1/build/";
+$yui_path="external_libs/yui/2.8.1/build/";
 $pics_path='http://tunder/';
 
 $max_session_time=36000;

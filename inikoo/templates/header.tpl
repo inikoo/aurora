@@ -7,7 +7,7 @@
 
 <div id="wrap">
 <div id="top_menu">
-<img class="logo" src="images/top_menu_logo.png" alt="Inikoo"/>
+<a href="index.php"><img class="logo" src="images/top_menu_logo.png" alt="Inikoo"/></a>
 
 <img  style="padding:0;margin-bottom:15;margin-left:140px" src="images/tmb.product_info.selected.en_GB.png"  alt="About Inikoo"/>
 <img  style="cursor:pointer;padding:0;margin-bottom:15" src="images/tmb.price.en_GB.png"  alt="Price"/>
