@@ -1,0 +1,64 @@
+@charset "utf-8";
+/* CSS Document */
+
+editTop2{
+float:right;
+	padding-right:10px;
+	padding-top:3px;
+	font-weight:bold;
+	cursor:pointer;
+}
+.cross{
+float:right;
+	padding-right:10px;
+	padding-top:3px;
+	font-weight:bold;
+	cursor:pointer;
+}
+.textleftRectified{
+float:right;
+}
+.sub
+{
+	float:right;
+	padding-right:20px;
+	padding-top:3px;
+	font-weight:bold;
+	cursor:pointer;
+}
+.add
+{
+	float:right;
+	padding-right:10px;
+	padding-top:3px;
+	font-weight:bold;
+	cursor:pointer;
+	width:10px;
+}
+.edit
+{
+	float:right;
+	padding-right:10px;
+	padding-top:3px;
+	font-weight:bold;
+	cursor:pointer;
+}
+
+.cross
+{
+	float:right;
+	padding-right:10px;
+	padding-top:3px;
+	font-weight:bold;
+	cursor:pointer;
+}
+
+.crm_over
+{
+border:solid #333333 2px;
+}
+
+.crm_out
+{
+border:none;
+}
