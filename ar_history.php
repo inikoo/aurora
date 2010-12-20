@@ -199,8 +199,9 @@ function list_customer_history() {
 
 
 
-    $sql="select count(*) as total from `Customer History Bridge` CHB  left join  `History Dimension` H on (H.`History Key`=CHB.`History Key`)   $where $wheref ";
-    // print $sql;
+   //$sql="select count(*) as total from `Customer History Bridge` CHB  left join  `History Dimension` H on (H.`History Key`=CHB.`History Key`)   $where $wheref ";
+    $sql="select count(*) as total from `Customer Dimension` CD  left join  `History Dimension` H on (H.`Subject Key`=CD.`Customer Key`)   $where $wheref  ";
+    //print $sql;
     // exit;
     $result=mysql_query($sql);
     if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
@@ -212,7 +213,8 @@ function list_customer_history() {
         $total_records=$total;
     } else {
 
-        $sql="select count(*) as total from `Customer History Bridge` CHB  left join  `History Dimension` H on (H.`History Key`=CHB.`History Key`)   $where";
+       // $sql="select count(*) as total from `Customer History Bridge` CHB  left join  `History Dimension` H on (H.`History Key`=CHB.`History Key`)   $where";
+       $sql="select count(*) as total from `Customer Dimension` CD  left join  `History Dimension` H on (H.`Subject Key`=CD.`Customer Key`)   $where ";
         // print $sql;
         $result=mysql_query($sql);
         if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
@@ -272,8 +274,11 @@ function list_customer_history() {
     if ($order=='objeto')
         $order='Direct Object';
 
-    $sql="select * from `Customer History Bridge` CHB  left join  `History Dimension` H on (H.`History Key`=CHB.`History Key`)   left join `User Dimension` U on (H.`User Key`=U.`User Key`)  $where $wheref  order by `$order` $order_direction limit $start_from,$number_results ";
-     // print $sql;
+//    $sql="select * from `Customer History Bridge` CHB  left join  `History Dimension` H on (H.`History Key`=CHB.`History Key`)   left join `User Dimension` U on (H.`User Key`=U.`User Key`)  $where $wheref  order by `$order` $order_direction limit $start_from,$number_results ";
+
+$sql="select * from `Customer Dimension` CD  left join  `History Dimension` H on (H.`Subject Key`=CD.`Customer Key`)   $where $wheref  order by `$order` $order_direction limit $start_from,$number_results ";
+    
+// print $sql;
     $result=mysql_query($sql);
     $data=array();
     while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
@@ -283,8 +288,8 @@ function list_customer_history() {
         else
             $note=$row['History Abstract'].' <img class="button" d="no" id="ch'.$row['History Key'].'" hid="'.$row['History Key'].'" onClick="showdetails(this)" src="art/icons/closed.png" alt="Show details" />';
 
-        $objeto=$row['Direct Object'];
-
+        //$objeto=$row['Direct Object'];
+	$objeto=$row['History Details'];
 
         $data[]=array(
                     'id'=>$row['History Key'],
@@ -292,7 +297,7 @@ function list_customer_history() {
                     'time'=>strftime("%H:%M", strtotime($row['History Date']." +00:00")),
                     'objeto'=>$objeto,
                     'note'=>$note,
-                    'handle'=>$row['User Alias']
+                    'handle'=>$row['Customer Name']
                 );
     }
     mysql_free_result($result);

@@ -171,12 +171,12 @@ YAHOO.util.Event.addListener(window, "load", function() {
 		    var tableDivEL="table"+tableid;  
 		    
 		    var ColumnDefs = [
-				      {key:"date", label:"<?php echo _('Date')?>",className:"aright",width:150,sortable:true,sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				      {key:"date", label:"<?php echo _('Date')?>",className:"aleft",width:120,sortable:true,sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 				      ,{key:"time", label:"<?php echo _('Time')?>",className:"aleft",width:50}
-				      ,{key:"objeto", label:"<?php echo _('Type')?>", className:"aleft",width:70,sortable:true,sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				      ,{key:"handle", label:"<?php echo _('Author')?>",className:"aleft",width:80,sortable:true,sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				      ,{key:"objeto", label:"<?php echo _('Details')?>", className:"aleft",width:450,sortable:true,sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				    //  ,{key:"handle", label:"<?php echo _('Author')?>",className:"aleft",width:70,sortable:true,sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 
-				      ,{key:"note", label:"<?php echo _('Notes')?>",className:"aleft",width:400}
+				      ,{key:"note", label:"<?php echo _('Notes')?>",className:"aleft",width:200}
 					   ];
 		
 		    this.dataSource0  = new YAHOO.util.DataSource("ar_history.php?tipo=customer_history&tid="+tableid);
@@ -195,7 +195,8 @@ YAHOO.util.Event.addListener(window, "load", function() {
 		    filter_msg:"resultset.filter_msg",
 		    totalRecords: "resultset.total_records" // Access to value in the server response
 		},
-		fields: ["note","date","time","handle","objeto" ]};
+		//fields: ["note","date","time","handle","objeto" ]};
+                  fields: ["note","date","time","objeto" ]};
 		    this.table0 = new YAHOO.widget.DataTable(tableDivEL, ColumnDefs,
 								   this.dataSource0
 								 , {
@@ -310,7 +311,73 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 
 
+// ------------------------------------- orders start -------------------------------
+ var tableid=2; // Change if you have more the 1 table
+		    var tableDivEL="table"+tableid;  
+		    
+		    var ColumnDefs = [
+				      {key:"subject", label:"<?php echo _('Family')?>",className:"aleft",width:60,sortable:true,sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				   				      ,{key:"description", label:"<?php echo _('Description')?>",className:"aleft",width:270,sortable:true,sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+ ,{key:"product_code", label:"<?php echo _('Product Code')?>",className:"aleft",width:80,sortable:true,sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				   ,{key:"orders", label:"<?php echo _('Orders')?>",className:"aright",width:60}
 
+				      ,{key:"ordered", label:"<?php echo _('Ordered')?>",className:"aright",width:60}
+				      ,{key:"dispatched", label:"<?php echo _('Order State')?>", className:"aright",width:200,sortable:true,sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+
+					   ];
+		
+		    this.dataSource2  = new YAHOO.util.DataSource("ar_contacts.php?tipo=assets_in_process_customer&tid="+tableid);
+		    this.dataSource2.responseType = YAHOO.util.DataSource.TYPE_JSON;
+	    this.dataSource2.connXhrMode = "queueRequests";
+	    this.dataSource2.table_id=tableid;
+	    this.dataSource2.responseSchema = {
+		resultsList: "resultset.data", 
+		metaFields: {
+		    rtext:"resultset.rtext",
+		    rtext_rpp:"resultset.rtext_rpp",
+
+		    rowsPerPage:"resultset.records_perpage",
+		    sort_key:"resultset.sort_key",
+		    sort_dir:"resultset.sort_dir",
+		    tableid:"resultset.tableid",
+		    filter_msg:"resultset.filter_msg",
+		    totalRecords: "resultset.total_records" // Access to value in the server response
+		},
+		fields: ["subject","ordered","dispatched","orders","description","product_code" ]};
+		    this.table2 = new YAHOO.widget.DataTable(tableDivEL, ColumnDefs,
+								   this.dataSource2
+								 , {
+								     renderLoopSize: 5,generateRequest : myRequestBuilder
+								       ,paginator : new YAHOO.widget.Paginator({
+									      rowsPerPage    : <?php echo$_SESSION['state']['customer']['assets']['nr']?>,containers : 'paginator1', 
+ 									      pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',alwaysVisible:false,
+									      previousPageLinkLabel : "<",
+ 									      nextPageLinkLabel : ">",
+ 									      firstPageLinkLabel :"<<",
+ 									      lastPageLinkLabel :">>",rowsPerPageOptions : [10,25,50,100,250,500]
+									      ,template : "{FirstPageLink}{PreviousPageLink}<strong id='paginator_info1'>{CurrentPageReport}</strong>{NextPageLink}{LastPageLink}"
+
+
+
+									  })
+								     
+								     ,sortedBy : {
+									 key: "<?php echo$_SESSION['state']['customer']['assets']['order']?>",
+									 dir: "<?php echo$_SESSION['state']['customer']['assets']['order_dir']?>"
+								     },
+								     dynamicData : true
+
+								  }
+								   
+								 );
+	    	    this.table2.handleDataReturnPayload =myhandleDataReturnPayload;
+	    this.table2.doBeforeSortColumn = mydoBeforeSortColumn;
+	    this.table2.doBeforePaginatorChange = mydoBeforePaginatorChange;
+		    this.table2.filter={key:'<?php echo$_SESSION['state']['customer']['assets']['f_field']?>',value:'<?php echo$_SESSION['state']['customer']['assets']['f_value']?>'};
+
+	   
+
+// -------------------------------------orders end ----------------------------------
 
 
 
