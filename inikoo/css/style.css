@@ -9,7 +9,7 @@ a img{border:none}
 
 #wrap{width:1004px;margin:0px auto;margin-top:5px}
 #top_menu{height:67px;background-image:url('../images/top_menu_background.png');background-repeat:repeat-x;}
-#top_menu .logo{margin-left: 20px;}
+#top_menu #logo{margin-left: 20px;}
 
 #home_header{width:1004px;height:418px;color:red}
 #content{background:#fff;padding:10px 20px 10px 20px;border:1px solid #777;border-top:none;margin-bottom:30px}
@@ -17,11 +17,21 @@ a img{border:none}
 #footer a{margin-left: 40px;color:#777}
 
 
-#menu1 ul {
+#menu1 ul, #top_menu ul{
 	list-style: none;
 	margin: 0;
 	padding: 0;
 	}
+
+#top_menu ul{
+ margin-left:330px;
+	}
+ #top_menu li{
+ margin-top:20px;
+ display:block;
+	float:left
+	}
+
 
 img {
     border: none;
@@ -31,10 +41,10 @@ img {
 #menu1 {
 	width: 200px;
 	margin: 10px;
-	//border-style: solid solid none solid;
-	//border-color: #3D261D;
-	//border-size: 1px;
-	//border-width: 1px;
+	border-style: solid solid none solid;
+	border-color: #3D261D;
+	border-size: 1px;
+	border-width: 1px;
 	}
 	
 #menu1 li a {
