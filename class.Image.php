@@ -46,7 +46,7 @@ class Image  {
     function Image($a1,$a2=false,$a3=false) {
 
         $this->path='app_files/pics/';
-        $this->tmp_path='app_files/tmp/';
+        $this->tmp_path='app_files/pics/tmp/';
         $this->name='';
         $this->original_name='';
         $this->found=false;
@@ -267,7 +267,7 @@ class Image  {
             $keys=preg_replace('/,$/',')',$keys);
             $values=preg_replace('/,$/',')',$values);
             $sql=sprintf("insert into `Image Dimension` %s %s",$keys,$values);
-             print "$sql\n";
+            // print "$sql\n";
             if (mysql_query($sql)) {
                 $this->id=mysql_insert_id();
                 $this->new=true;
