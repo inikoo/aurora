@@ -446,13 +446,15 @@ function upload_image($subject='product'){
  			return;
 	} 
  	
+ 
+                        
   	if(move_uploaded_file($_FILES['testFile']['tmp_name'],$target_path.$filename )) {
    		include_once('class.Image.php');
    		$name=preg_replace('/\.[a-z]+$/i','',$_FILES['testFile']['name']);
 	   	$name=preg_replace('/[^a-z^\.^0-9]/i','_',$name);
    		$data=array(
 	    	'file'=>$filename
-	   		,'path'=>'assets/'
+	   		,'path'=>'app_files/pics/assets/'
 	    	,'name'=>$name
 	    	,'original_name'=>$_FILES['testFile']['name']
 	    	,'type'=>$_FILES['testFile']['type']
