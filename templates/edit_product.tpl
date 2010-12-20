@@ -22,7 +22,7 @@
  
      <div class="tabbed_container" > 
  
-      
+ 
       <div style="clear:both;height:.1em;padding:0px 20px;;margin:0px auto;xborder-top: 1px solid #cbb;;xborder-bottom: 1px solid #caa;width:770px;" id="description_messages">
 	
 	<div id="info_name" style="float:left;width:260px;{if !( $edit=='pictures') }display:none{/if}">
@@ -78,8 +78,9 @@
 	</div>
 	<div style="clear:both"></div>
       </div>
-      <div class="edit_block" {if $edit!="config"}style="display:none"{/if}   id="d_config">
-	
+
+
+<div class="edit_block" {if $edit!="config"}style="display:none"{/if}   id="d_config">
 	
 	<table style="margin:5px 0px ;xwidth:500px"  border=0 class="edit">
 	 <tr class="title"><td >{t}Type of Product{/t}</td></tr>
@@ -160,6 +161,7 @@
 	
 
 </div>
+
 <div class="edit_block" {if $edit!="web"}style="display:none"{/if}  id="d_web">
   <table class="edit" >
 
@@ -170,8 +172,9 @@
     
   </table>
 </div>
+
 <div class="edit_block" {if $edit!="prices"}style="display:none"{/if}  id="d_prices">
-<input id="v_cost" value="{$product->get('Product Cost')}" type="hidden"/>
+<input id="v_cost" value="{$product->get('Product Cost Supplier')}" type="hidden"/>
 
 <div class="general_options" style="float:right">
 	
@@ -191,7 +194,7 @@
        <div id="Product_Price_Container" style="" ></div>
      </div>
    </td>
-<td id="price_per_unit" cost="{$product->get('Product Cost')}"  old_price="{$product->get('Product Price')}"  units="{$product->get('Product Units Per Case')}">{$product->get_formated_price_per_unit()}</td>
+<td id="price_per_unit" cost="{$product->get('Product Cost Supplier')}"  old_price="{$product->get('Product Price')}"  units="{$product->get('Product Units Per Case')}">{$product->get_formated_price_per_unit()}</td>
 <td id="price_margin">{t}Margin{/t}: {$product->get('Margin')}</td>
 
    <td style="width:200px" id="Product_Price_msg" class="edit_td_alert"></td>
@@ -215,6 +218,7 @@
 
   
 </div>
+
 <div class="edit_block" {if $edit!="dimat"}style="display:none"{/if}  id="d_dimat">
 
 
@@ -258,8 +262,11 @@
 
 
 </div>
+
+
 <div class="edit_block" {if $edit!="parts"}style="display:none"{/if}  id="d_parts">
-  {t}Add new part{/t} 
+ 
+ {t}Add new part{/t} 
   <div id="adding_new_part" style="width:200px;margin-bottom:45px"><input id="new_part_input" type="text"><div id="new_part_container"></div></div>
 
   
