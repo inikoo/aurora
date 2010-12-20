@@ -1622,7 +1622,17 @@ function list_invoices_with_no_tax() {
 
 
 
-    $_SESSION['state']['report_sales_with_no_tax']['invoices']=array('f_show'=>$_SESSION['state']['report_sales_with_no_tax']['invoices']['f_show']   ,'order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value);
+  //  $_SESSION['state']['report_sales_with_no_tax']['invoices']=array('f_show'=>$_SESSION['state']['report_sales_with_no_tax']['invoices']['f_show']   ,'order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value);
+//$_SESSION['state']['report_sales_with_no_tax']['invoices']['f_show']=
+$_SESSION['state']['report_sales_with_no_tax']['invoices']['order']=$order;
+$_SESSION['state']['report_sales_with_no_tax']['invoices']['order_dir']=$order_direction;
+$_SESSION['state']['report_sales_with_no_tax']['invoices']['nr']=$number_results;
+$_SESSION['state']['report_sales_with_no_tax']['invoices']['sf']=$start_from;
+$_SESSION['state']['report_sales_with_no_tax']['invoices']['where']=$where;
+$_SESSION['state']['report_sales_with_no_tax']['invoices']['f_field']=$f_field;
+$_SESSION['state']['report_sales_with_no_tax']['invoices']['f_value']=$f_value;
+
+
 
     $date_interval=prepare_mysql_dates($from,$to,'`Invoice Date`','only_dates');
     if ($date_interval['error']) {
@@ -1953,7 +1963,17 @@ function list_customers_with_no_tax() {
 
 
 
-    $_SESSION['state']['report_sales_with_no_tax']['customers']=array('f_show'=>$_SESSION['state']['report_sales_with_no_tax']['customers']['f_show']   ,'order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value);
+//    $_SESSION['state']['report_sales_with_no_tax']['customers']=array('f_show'=>$_SESSION['state']['report_sales_with_no_tax']['customers']['f_show']   ,'order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value);
+
+
+$_SESSION['state']['report_sales_with_no_tax']['customers']['order']=$order;
+$_SESSION['state']['report_sales_with_no_tax']['customers']['order_dir']=$order_direction;
+$_SESSION['state']['report_sales_with_no_tax']['customers']['nr']=$number_results;
+$_SESSION['state']['report_sales_with_no_tax']['customers']['sf']=$start_from;
+$_SESSION['state']['report_sales_with_no_tax']['customers']['where']=$where;
+$_SESSION['state']['report_sales_with_no_tax']['customers']['f_field']=$f_field;
+$_SESSION['state']['report_sales_with_no_tax']['customers']['f_value']=$f_value;
+
 
     $date_interval=prepare_mysql_dates($from,$to,'`Invoice Date`','only_dates');
     if ($date_interval['error']) {
@@ -2076,7 +2096,8 @@ function list_customers_with_no_tax() {
         $order='`Country Code`';
     else if ($order=='num_invoices')
         $order='`Invoices`';
-
+    else
+         $order='`Customer Name`';
 
     $corporate_currency='GBP';
     $sql=sprintf("select `Corporation Currency` from `Corporation Dimension` ");
