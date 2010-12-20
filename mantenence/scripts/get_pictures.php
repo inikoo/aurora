@@ -87,14 +87,16 @@ foreach($pics as $key=>$value){
      
      $data=array(
 	    'file'=>'tmp'.$rand.'.jpg'
-	    ,'path'=>'assets/'
+	    ,'path'=>'app_files/pics/assets/'
 	    ,'name'=>$row['Product Code']
 	    ,'caption'=>''
 	    );
 
-     //print_r($data);
+ //    print_r($data);
 $image=new Image('find',$data,'create');
-      $product->add_image($image->id,'principal');
+    // print_r($image);
+   //  exit;
+     $product->add_image($image->id,'principal');
       //print_r($product);
       // print $product->msg."\n";
       $product->update_main_image();
