@@ -100,13 +100,13 @@
     </div>
 
 
-<div id="block_products" class="data_table" style="{if $view!='products'}display:none;{/if}clear:both;margin:20px 0 40px 0;padding:0 20px">
+<div id="block_products" class="data_table" style="{*{if $view!='products'}display:none;{/if}clear:both;*}margin:20px 0 40px 0;padding:0 20px">
       <span class="clean_table_title">{t}Products Ordered{/t}</span>
  {include file='table_splinter.tpl' table_id=1 filter_name=$filter_name1 filter_value=$filter_value1  }
        <div  id="table1"   class="data_table_container dtable btable "> </div>
   </div>
 
-<div id="block_orders" class="data_table" style="{if $view!='orders'}display:none;{/if}clear:both;margin:20px 0 40px 0;padding:0 20px">
+<div id="block_orders" class="data_table" style="{*{if $view!='orders'}display:none;{/if}clear:both;*}margin:20px 0 40px 0;padding:0 20px">
       <span class="clean_table_title">{t}Orders{/t}</span>
  {include file='table_splinter.tpl' table_id=2 filter_name=$filter_name2 filter_value=$filter_value2  }
        <div  id="table2"   class="data_table_container dtable btable "> </div>
