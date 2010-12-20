@@ -75,6 +75,12 @@ $main_title=_('Categories');
 $subcategories_title=_('Category List');
 
 }
+
+
+
+$main_title=_('Categories');
+$subcategories_title=_('Category List');
+
 $_SESSION['state']['product_categories']['category_key']=$category_key;
 $smarty->assign('main_title',$main_title);
 $smarty->assign('subcategories_title',$subcategories_title);
