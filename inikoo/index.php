@@ -1,10 +1,7 @@
 <?php
-date_default_timezone_set('Europe/London');
-require('Smarty/Smarty.class.php');
-$smarty = new Smarty;
+require('common.php');
 $smarty->assign('page_title','Inikoo');
-
-
-
+$smarty->assign('page_description','Inikoo Data Intelligence & Operational Business Software Home Page');
+$smarty->assign('page_keywords','business solutions');
 $smarty->display('index.tpl');
 ?>
