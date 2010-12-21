@@ -142,7 +142,7 @@
 	<form action="upload.php" enctype="multipart/form-data" method="post" id="attach_form">
 
 
-	  <input type="file" name="testFile"/>
+	  <input type="file" name="testFile"/>Warning: Smarty error: unable to read resource: "splinter_contacts_customers.tpl" in /var/www/kaktus19(copy)/external_libs/Smarty/Smarty.class.p
 
 	</form>
     </td><tr>
