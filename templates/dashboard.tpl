@@ -316,21 +316,7 @@ document.body.className = c;
 {/literal}
 <div id="wpwrap">
 <div id="wpcontent">
-<div id="wphead">
 
-<!--<img id="header-logo" src="dashboard_js_css/blank.gif" alt="" width="32" height="32">-->
-
-
-
-<div id="wphead-info">
-
-
-<!--<div id="favorite-actions"><!--<div id="favorite-first"><a href="http://primediart.com/project/work/wp-admin/post-new.php">New Post</a></div>--><div id="favorite-toggle"><br></div><!--<div style="width: 126px;" id="favorite-inside"><div class="favorite-action"><a href="http://primediart.com/project/work/wp-admin/edit.php?post_status=draft">Drafts</a></div>
-<div class="favorite-action"><a href="http://primediart.com/project/work/wp-admin/post-new.php?post_type=page">New Page</a></div>
-<div class="favorite-action"><a href="http://primediart.com/project/work/wp-admin/media-new.php">Upload</a></div>
-<div class="favorite-action"><a href="http://primediart.com/project/work/wp-admin/edit-comments.php">Comments</a></div>
-</div>--></div>
-</div>
 </div>
 
 <div id="wpbody">
@@ -461,7 +447,7 @@ title bar when you hover over it.</p><p>The modules on your Dashboard screen are
 
                {if $splinter.index == 4}
              
-                    <div class="pane" style="width:500px;"  id="pane_{$key}" {if $display_block!=$key}style="display:none"{/if}>
+                    <div class="pane" style="width:350px;"  id="pane_{$key}" {if $display_block!=$key}style="display:none"{/if}>
                     {include file=$splinter.tpl index=$splinter.index}
                     </div>
                {/if}
@@ -903,7 +889,6 @@ GUI interfac</p>
                {/if}
            
         { /foreach }
-
     
     </center>
     <!--<div id="inner6" style="background-color:#CCCCCC; height:35px; font-size:14px;">Remove this section</div>-->
@@ -975,7 +960,7 @@ GUI interfac</p>
 
                {if $splinter.index == 5}
              
-                    <div class="pane" style="width:500px;"  id="pane_{$key}" {if $display_block!=$key}style="display:none"{/if}>
+                    <div class="pane" style="width:350px;"  id="pane_{$key}" {if $display_block!=$key}style="display:none"{/if}>
                     {include file=$splinter.tpl index=$splinter.index}
                     </div>
                {/if}
@@ -999,11 +984,12 @@ GUI interfac</p>
     $("#edit7").click(function () {
       $('#div7').slideToggle("slow");
     });
-	function slide6()
+	function slide7()
 	{
       $('#div7').slideToggle("slow");
-		}
+	}
 </script>
+
 <script>
   $('#cross7').click(function () {
   $('#dashboard_recent_drafts').fadeOut("slow");
@@ -1013,7 +999,7 @@ GUI interfac</p>
     $("#save6").click(function () {
       $('#div7').slideToggle("slow");
     });
-	function slide6()
+	function slide7()
 	{
       $('#div7').slideToggle("slow");
 		}
@@ -1022,10 +1008,7 @@ GUI interfac</p>
     $("#exit6").click(function () {
       $('#div7').slideToggle("slow");
     });
-	function slide6()
-	{
-      $('#div7').slideToggle("slow");
-		}
+	
 </script>
 <script>
   $(document).ready(function() {
@@ -1115,7 +1098,7 @@ GUI interfac</p>
 <!--==================================================================END DIV====================================================================================-->
 
 <!--====================================================================== DIV 7====================================================================================-->
-<div onMouseOver="this.className='crm_over'" onMouseOut="this.className='menuOver'"  >
+
 <!--<div id="dashboard_primary" class="postbox">
 <div class="cross" id="cross7"><img width="15px" height="15px;" src="images/x.png" /></div>
 <div class="edit" id="edit7"><strong>Edit</strong></div>
@@ -1318,6 +1301,7 @@ var commonL10n = {
 try{convertEntities(commonL10n);}catch(e){};
 var wpAjax = {
 	noPerm: "You do not have permission to do that.",
+
 	broken: "An unidentified error has occurred."
 };
 try{convertEntities(wpAjax);}catch(e){};
