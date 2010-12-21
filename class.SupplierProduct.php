@@ -237,12 +237,18 @@ class supplierproduct extends DB_Table {
 
 
 
+
+
         foreach($data as $key=>$value) {
             if ($key=='Supplier Product Cost Per Case') {
                 $key='SPH Case Cost';
             }
             elseif($key=='Supplier Product Units Per Case') {
                 $key='SPH Units Per Case';
+            }elseif($key=='Supplier Product Valid From'){
+            $key='SPH Valid From';
+            }elseif($key=='Supplier Product Valid To'){
+            $key='SPH Valid To';
             }
 
 

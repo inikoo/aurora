@@ -1929,42 +1929,51 @@ function load_images(){
 
 
 
-  function add_image($image_key,$args='') {
-   $tmp_images_dir='app_files/pics/';
+function add_image($image_key,$args='') {
+
+
+
+    $tmp_images_dir='app_files/pics/';
     $principal='No';
     if (preg_match('/principal/i',$args))
-      $principal='Yes';
-  $sql=sprintf("select count(*) as num from `Image Bridge` PIB left join `Image Dimension` ID on (PIB.`Image Key`=ID.`Image Key`) where  `Subject Type`='Product' and `Subject Key`=%d",$this->pid);
-      $res=mysql_query($sql);
-     $row=mysql_fetch_array($res,MYSQL_ASSOC );
-$number_images=$row['num'];
-	if ($number_images==0)
-	  $principal='Yes';
-	$sql=sprintf("insert into `Image Bridge` values ('Product',%d,%d,%s,'') on duplicate key update `Is Principal`=%s "
-	    ,$this->pid
-	    ,$image_key
-	    ,prepare_mysql($principal)
-	    	    ,prepare_mysql($principal)
-	    );
-	//	print "$sql\n";
-	mysql_query($sql);if($this->external_DB_link)mysql_query($sql,$this->external_DB_link);
-       $sql=sprintf("select `Image Thumbnail URL`,`Image Small URL`,`Is Principal`,ID.`Image Key`,`Image Caption`,`Image URL`,`Image Filename`,`Image File Size`,`Image File Checksum`,`Image Width`,`Image Height`,`Image File Format` from `Image Bridge` PIB left join `Image Dimension` ID on (PIB.`Image Key`=ID.`Image Key`) where `Subject Type`='Product' and   `Subject Key`=%d and  PIB.`Image Key`=%d"
-		    ,$this->pid
-		    ,$image_key
-		    );
-       //  print $sql;
-      $res=mysql_query($sql);
+        $principal='Yes';
+    $sql=sprintf("select count(*) as num from `Image Bridge` PIB left join `Image Dimension` ID on (PIB.`Image Key`=ID.`Image Key`) where  `Subject Type`='Product' and `Subject Key`=%d",$this->pid);
 
-      if ($row=mysql_fetch_array($res)) {
-	  if ($row['Image Height']!=0)
-	    $ratio=$row['Image Width']/$row['Image Height'];
-	  else
-	    $ratio=1;
-	$this->new_value=array('name'=>$row['Image Filename'],'small_url'=>$row['Image Small URL'],'thumbnail_url'=>$row['Image Thumbnail URL'],'filename'=>$row['Image Filename'],'ratio'=>$ratio,'caption'=>$row['Image Caption'],'is_principal'=>$row['Is Principal'],'id'=>$row['Image Key']);
-	$this->images_slideshow[]=$this->new_value;
-      }
-	$this->msg="image added";
-      }
+    $res=mysql_query($sql);
+    $row=mysql_fetch_array($res,MYSQL_ASSOC );
+    $number_images=$row['num'];
+    if ($number_images==0)
+        $principal='Yes';
+
+    $sql=sprintf("insert into `Image Bridge` values ('Product',%d,%d,%s,'') on duplicate key update `Is Principal`=%s"
+                 ,$this->pid
+                 ,$image_key
+                 ,prepare_mysql($principal)
+                 ,prepare_mysql($principal)
+                );
+    	//print "$sql\n";
+  mysql_query($sql);
+
+
+    if ($this->external_DB_link)mysql_query($sql,$this->external_DB_link);
+    
+    $sql=sprintf("select `Image Thumbnail URL`,`Image Small URL`,`Is Principal`,ID.`Image Key`,`Image Caption`,`Image URL`,`Image Filename`,`Image File Size`,`Image File Checksum`,`Image Width`,`Image Height`,`Image File Format` from `Image Bridge` PIB left join `Image Dimension` ID on (PIB.`Image Key`=ID.`Image Key`) where `Subject Type`='Product' and   `Subject Key`=%d and  PIB.`Image Key`=%d"
+                 ,$this->pid
+                 ,$image_key
+                );
+
+    $res=mysql_query($sql);
+
+    if ($row=mysql_fetch_array($res)) {
+        if ($row['Image Height']!=0)
+            $ratio=$row['Image Width']/$row['Image Height'];
+        else
+            $ratio=1;
+        $this->new_value=array('name'=>$row['Image Filename'],'small_url'=>$row['Image Small URL'],'thumbnail_url'=>$row['Image Thumbnail URL'],'filename'=>$row['Image Filename'],'ratio'=>$ratio,'caption'=>$row['Image Caption'],'is_principal'=>$row['Is Principal'],'id'=>$row['Image Key']);
+        $this->images_slideshow[]=$this->new_value;
+    }
+    $this->msg="image added";
+}
 
 
     
