@@ -467,6 +467,7 @@ $default_state=array(
                                             'stores_mode'=>'grouped',
                                             'exchange_value'=>1,
                                             'show_default_currency'=>false,
+				            'edit'=>'details',
                                             'subcategories'=>array(
 
                                                                 'order'=>'name',
