@@ -1,11 +1,11 @@
 <div class="splinter_cell_dash_2">
 
 <div id="the_table" class="data_table" >
-<<<<<<< HEAD:templates/splinter_contacts_customers.tpl
+
  <span class="clean_table_title">Contacts and Customers</span>
-=======
+
  <span class="clean_table_title">Top Customers</span>
->>>>>>> 3209fa428155913da39bfda481fc2f8543f58980:templates/splinter_contacts_customers.tpl
+
  <div class="home_splinter_options">
  <span id="top_customers_50" nr="50" {if $conf_data.top_customers.nr==50}class="selected"{/if} style="float:right;margin-left:5px">50</span>
  <span id="top_customers_20" nr="20" {if $conf_data.top_customers.nr==20}class="selected"{/if} style="float:right;margin-left:5px">20</span>
@@ -15,11 +15,11 @@
  <span id="top_customers_1q" period="1q" {if $conf_data.top_customers.period=='1q'}class="selected"{/if} style="float:right;margin-left:5px">{t}1q{/t}</span>
  <span id="top_customers_1m" period="1m" {if $conf_data.top_customers.period=='1m'}class="selected"{/if} style="float:right;margin-left:5px">{t}1m{/t}</span>
  </div>
-<<<<<<< HEAD:templates/splinter_contacts_customers.tpl
+
   {include file='table_splinter.tpl' table_id=$index filter_name=$filter_name filter_value=$filter_value no_filter=1}
-=======
+
   {include file='table_dashboard.tpl' table_id=$index filter_name=$filter_name filter_value=$filter_value no_filter=1}
->>>>>>> 3209fa428155913da39bfda481fc2f8543f58980:templates/splinter_contacts_customers.tpl
+
    <div  id="table{$index}"   class="data_table_container dtable btable "> </div>
  </div>
  </div>

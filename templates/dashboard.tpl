@@ -1337,7 +1337,7 @@ that you run it […]</div></li></ul></div></div>
 	</table>
 </div>
 
-<div class="clear"></div>
+
 {include file='footer.tpl'}
 
 {literal}
