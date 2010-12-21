@@ -137,7 +137,7 @@ $splinters=array(
                                    'php'=>'splinter_top_products.php',
                                   'tpl'=>'dashboard_top_products.tpl',
                                   'js'=>'dashboard_top_products.js.php'
-                               ),
+                               )
 		
            );
 

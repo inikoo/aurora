@@ -316,21 +316,7 @@ document.body.className = c;
 {/literal}
 <div id="wpwrap">
 <div id="wpcontent">
-<div id="wphead">
 
-<!--<img id="header-logo" src="dashboard_js_css/blank.gif" alt="" width="32" height="32">-->
-
-
-
-<div id="wphead-info">
-
-
-<!--<div id="favorite-actions"><!--<div id="favorite-first"><a href="http://primediart.com/project/work/wp-admin/post-new.php">New Post</a></div>--><div id="favorite-toggle"><br></div><!--<div style="width: 126px;" id="favorite-inside"><div class="favorite-action"><a href="http://primediart.com/project/work/wp-admin/edit.php?post_status=draft">Drafts</a></div>
-<div class="favorite-action"><a href="http://primediart.com/project/work/wp-admin/post-new.php?post_type=page">New Page</a></div>
-<div class="favorite-action"><a href="http://primediart.com/project/work/wp-admin/media-new.php">Upload</a></div>
-<div class="favorite-action"><a href="http://primediart.com/project/work/wp-admin/edit-comments.php">Comments</a></div>
-</div>--></div>
-</div>
 </div>
 
 <div id="wpbody">
