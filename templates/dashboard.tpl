@@ -34,7 +34,7 @@ function addlist()
 	
 	}
 	
-	
+	ar_outstanding_order.php
 	
 }
 
@@ -131,7 +131,7 @@ function customise()
 		document.getElementById('dashboard_right_now').style.display="block";
 		
 	}
-	
+	ar_outstanding_order.php
 	if(document.getElementById("invoice_chk").checked==true)
 	{
 		//alert("checked");
