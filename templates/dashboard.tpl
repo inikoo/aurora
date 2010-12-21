@@ -34,7 +34,7 @@ function addlist()
 	
 	}
 	
-	ar_outstanding_order.php
+	
 	
 }
 
@@ -131,7 +131,7 @@ function customise()
 		document.getElementById('dashboard_right_now').style.display="block";
 		
 	}
-	ar_outstanding_order.php
+	
 	if(document.getElementById("invoice_chk").checked==true)
 	{
 		//alert("checked");
@@ -461,7 +461,7 @@ title bar when you hover over it.</p><p>The modules on your Dashboard screen are
 
                {if $splinter.index == 4}
              
-                    <div class="pane" style="width:500px;"  id="pane_{$key}" {if $display_block!=$key}style="display:none"{/if}>
+                    <div class="pane" style="width:350px;"  id="pane_{$key}" {if $display_block!=$key}style="display:none"{/if}>
                     {include file=$splinter.tpl index=$splinter.index}
                     </div>
                {/if}
@@ -903,7 +903,6 @@ GUI interfac</p>
                {/if}
            
         { /foreach }
-
     
     </center>
     <!--<div id="inner6" style="background-color:#CCCCCC; height:35px; font-size:14px;">Remove this section</div>-->
@@ -975,7 +974,7 @@ GUI interfac</p>
 
                {if $splinter.index == 5}
              
-                    <div class="pane" style="width:500px;"  id="pane_{$key}" {if $display_block!=$key}style="display:none"{/if}>
+                    <div class="pane" style="width:350px;"  id="pane_{$key}" {if $display_block!=$key}style="display:none"{/if}>
                     {include file=$splinter.tpl index=$splinter.index}
                     </div>
                {/if}
@@ -999,11 +998,12 @@ GUI interfac</p>
     $("#edit7").click(function () {
       $('#div7').slideToggle("slow");
     });
-	function slide6()
+	function slide7()
 	{
       $('#div7').slideToggle("slow");
-		}
+	}
 </script>
+
 <script>
   $('#cross7').click(function () {
   $('#dashboard_recent_drafts').fadeOut("slow");
@@ -1013,7 +1013,7 @@ GUI interfac</p>
     $("#save6").click(function () {
       $('#div7').slideToggle("slow");
     });
-	function slide6()
+	function slide7()
 	{
       $('#div7').slideToggle("slow");
 		}
@@ -1022,10 +1022,7 @@ GUI interfac</p>
     $("#exit6").click(function () {
       $('#div7').slideToggle("slow");
     });
-	function slide6()
-	{
-      $('#div7').slideToggle("slow");
-		}
+	
 </script>
 <script>
   $(document).ready(function() {
@@ -1115,7 +1112,7 @@ GUI interfac</p>
 <!--==================================================================END DIV====================================================================================-->
 
 <!--====================================================================== DIV 7====================================================================================-->
-<div onMouseOver="this.className='crm_over'" onMouseOut="this.className='menuOver'"  >
+
 <!--<div id="dashboard_primary" class="postbox">
 <div class="cross" id="cross7"><img width="15px" height="15px;" src="images/x.png" /></div>
 <div class="edit" id="edit7"><strong>Edit</strong></div>
@@ -1305,6 +1302,54 @@ that you run it […]</div></li></ul></div></div>
 <div class="clear"></div></div><!-- wpcontent -->
 </div><!-- wpwrap -->
 
+<div align="center">
+	    <div id="ajax_response">	
+<!-- post comment code----->
+ 		<!--/*{foreach from=$splinters key=key item=splinter}
+
+               {if $splinter.index == 8}
+             
+                    <div class="pane" style="text-align:center;"  id="pane_{$key}" {if $display_block!=$key}style="display:none"{/if}>
+                    {include file=$splinter.tpl index=$splinter.index}
+                    </div>
+               {/if}
+           
+        { /foreach }*/-->
+        
+        {section name=tplVar loop=$tplVar}
+                <div align="center">         
+                    <div class="comment_holder">
+                        <div id="photo"><img src="images/user.JPG">  <br>{ $tplVar[tplVar].name }  </div>
+                            
+ <div id="comment_text"><div id="date_posted">{$tplVar[tplVar].date_added}</div>{$tplVar[tplVar].comment}</div>
+                    </div>
+                </div>
+        {/section}
+        
+<!--end of post comment---->
+	</div>
+    </div>
+
+<div align="center">
+	<table border="0" cellpadding="4" cellspacing="0" class="comment_table" width="40%">
+	  <tr>
+	    <td>Name :</td>
+		<td><input type="text" name="name" id="name" size="30"></td>
+	  </tr>
+	  <tr>
+	    <td>Email :</td>
+		<td><input type="text" name="email" id="email" size="30"></td>
+	  </tr>
+	  <tr>
+	    <td valign="top">Comment :</td>
+		<td><textarea name="comment" id="comment" rows="5" cols="30"></textarea></td>
+	  </tr>
+	  <tr>
+		<td></td>
+	    <td align="left"><input type="button" value="Submit" id="submit">&nbsp;<img src="images/loading.gif" id="loading"></td>
+	  </tr>
+	</table>
+</div>
 
 <div class="clear"></div>
 {include file='footer.tpl'}
@@ -1318,6 +1363,7 @@ var commonL10n = {
 try{convertEntities(commonL10n);}catch(e){};
 var wpAjax = {
 	noPerm: "You do not have permission to do that.",
+
 	broken: "An unidentified error has occurred."
 };
 try{convertEntities(wpAjax);}catch(e){};
