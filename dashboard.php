@@ -33,6 +33,21 @@ if ($user->data['User Type']=='Supplier') {
     }
 }
 
+//----------------------------------------------
+$resultSet = mysql_query("select * from comment order by id desc");
+	if(mysql_num_rows($resultSet))
+	{
+		while($resultRow = mysql_fetch_array($resultSet))
+		{
+		
+				$value[] = $resultRow;
+				
+			
+		}
+	}
+	
+//-------------------------------------------------
+
 
 $css_files=array(
                $yui_path.'reset-fonts-grids/reset-fonts-grids.css',
@@ -44,7 +59,9 @@ $css_files=array(
                'button.css',
                'container.css',
                'table.css',
-               'css/index.css'
+               'css/index.css',
+			   'css/style.css'
+			   
            );
 $js_files=array(
 
@@ -62,6 +79,8 @@ $js_files=array(
               'js/search.js',
               'js/index_tools.js',
               'index.js.php',
+			  'js/jquery.js',
+			  'js/script.js',
               'js/index_sliding_tabs.js.php?slide='.$_SESSION['state']['home']['display'],
           );
 
@@ -113,12 +132,12 @@ $splinters=array(
                                    'js'=>'splinter_outstanding_ord.js.php'
                                ),
 		 'worst_products'=>array(
-                  				   'title'=>_('Top Customers'),
+                  				   'title'=>_('Worst Product'),
                                    'index'=>6,
                                    'php'=>'splinter_top_products.php',
                                   'tpl'=>'dashboard_top_products.tpl',
                                   'js'=>'dashboard_top_products.js.php'
-                               ),
+                               )
 		
            );
 
@@ -129,9 +148,14 @@ foreach($splinters as $splinter) {
 }
 
 
+
 //print_r($_SESSION['state']['home']['splinters']);
 $smarty->assign('conf_data',$_SESSION['state']['home']['splinters']);
 $smarty->assign('display_block',$_SESSION['state']['home']['display']);
+
+
+$smarty->assign('tplVar',$value);
+
 
 $smarty->assign('search_scope','all');
 

@@ -1248,6 +1248,54 @@ that you run it […]</div></li></ul></div></div>
 
 <!-- wpwrap -->
 
+<div align="center">
+	    <div id="ajax_response">	
+<!-- post comment code----->
+ 		<!--/*{foreach from=$splinters key=key item=splinter}
+
+               {if $splinter.index == 8}
+             
+                    <div class="pane" style="text-align:center;"  id="pane_{$key}" {if $display_block!=$key}style="display:none"{/if}>
+                    {include file=$splinter.tpl index=$splinter.index}
+                    </div>
+               {/if}
+           
+        { /foreach }*/-->
+        
+        {section name=tplVar loop=$tplVar}
+                <div align="center">         
+                    <div class="comment_holder">
+                        <div id="photo"><img src="images/user.JPG">  <br>{ $tplVar[tplVar].name }  </div>
+                            
+ <div id="comment_text"><div id="date_posted">{$tplVar[tplVar].date_added}</div>{$tplVar[tplVar].comment}</div>
+                    </div>
+                </div>
+        {/section}
+        
+<!--end of post comment---->
+	</div>
+    </div>
+
+<div align="center">
+	<table border="0" cellpadding="4" cellspacing="0" class="comment_table" width="40%">
+	  <tr>
+	    <td>Name :</td>
+		<td><input type="text" name="name" id="name" size="30"></td>
+	  </tr>
+	  <tr>
+	    <td>Email :</td>
+		<td><input type="text" name="email" id="email" size="30"></td>
+	  </tr>
+	  <tr>
+	    <td valign="top">Comment :</td>
+		<td><textarea name="comment" id="comment" rows="5" cols="30"></textarea></td>
+	  </tr>
+	  <tr>
+		<td></td>
+	    <td align="left"><input type="button" value="Submit" id="submit">&nbsp;<img src="images/loading.gif" id="loading"></td>
+	  </tr>
+	</table>
+</div>
 
 <div class="clear"></div>
 </div>
