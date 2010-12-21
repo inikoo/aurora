@@ -6,21 +6,7 @@
    <div  id="table{$index}"  class="data_table_container dtable btable "> </div>
  </div>
  
-<!-- 
- <div style="float:right;width:400px">
-<h1>{t}Pending Orders{/t}</h1>
 
-<div class="">
-<h2>{t}Orders to do{/t}</h2>
-<div>{$orders_in_process_data.orders}</div>
-</div>
-
-<div>
-<h2>{t}Value{/t}</h2>
-<div>{$orders_in_process_data.value}</div>
-</div>
-
-</div>-->
 
  
  
