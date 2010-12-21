@@ -712,7 +712,8 @@ $map_to_otf_metadata='';
                 $supplier_product_key=$supplier_products_keys[array_rand($supplier_products_keys)];
 
             }else{
-                //exit("Error geting supplier products");
+            //print_r($part);
+                exit("\nError geting supplier products\n");
             
             }
 
