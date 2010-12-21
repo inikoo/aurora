@@ -113,7 +113,14 @@ input.readonly,textarea.readonly{background-color:#ddd;}
 #edit-slug-box strong,.tablenav .displaying-num,#submitted-on{color:#777;}
 .login #nav a{color:#21759b!important;}
 .login #nav a:hover{color:#d54e21!important;}
-#footer{color:#777;border-color:#d1d1d1;background:#d9d9d9;background:-moz-linear-gradient(bottom,#d7d7d7,#e4e4e4);background:-webkit-gradient(linear,left bottom,left top,from(#d7d7d7),to(#e4e4e4));}
+
+#footer{ font-size:77%;text-align:center;margin-top:5px;color:#777;margin-bottom:100px}
+
+.bd labelc { display:block;float:left;width:30%;clear:left; }
+
+.clear{ clear:both; margin:10px 0 }
+
+
 #media-items,.imgedit-group{border-color:#dfdfdf;}
 .checkbox,.side-info,.plugins tr,#your-profile #rich_editing{background-color:#fff;}
 .plugins .inactive,.plugins .inactive th,.plugins .inactive td,tr.inactive+tr.plugin-update-tr .plugin-update{background-color:#eee;}
