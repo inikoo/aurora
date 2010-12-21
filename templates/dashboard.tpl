@@ -314,57 +314,15 @@ document.body.className = c;
 //]]>
 </script>
 {/literal}
-<div id="wpwrap">
+<div id="bd" style="padding:0px">
+
 <div id="wpcontent">
 
 </div>
 
 <div id="wpbody">
 
-<ul id="adminmenu">
 
-
-	<li class="wp-first-item wp-has-submenu wp-has-current-submenu wp-menu-open menu-top menu-top-first menu-icon-dashboard menu-top-last" id="menu-dashboard">
-	<div class="wp-menu-image"><a href="http://primediart.com/project/work/wp-admin/index.php"><br></a></div><div class="wp-menu-toggle"><br></div><a href="#" class="wp-first-item wp-has-submenu wp-has-current-submenu wp-menu-open menu-top menu-top-first menu-icon-dashboard menu-top-last" tabindex="1"><font color="#FFFFFF" size="+1">Dashboard</font></a>
-	<!--<div class="wp-submenu"><div class="wp-submenu-head">Dashboard</div><ul><li class="wp-first-item current"><a href="http://primediart.com/project/work/wp-admin/index.php" class="wp-first-item current" tabindex="1">Dashboard</a></li><li><a href="http://primediart.com/project/work/wp-admin/update-core.php" tabindex="1">Updates <span class="update-plugins count-1" title="1 Plugin Update"><span class="update-count">1</span></span></a></li></ul></div>--></li>
-	<li class="wp-menu-separator"><a class="separator" href="http://primediart.com/project/work/wp-admin/?unfoldmenu=1"><br></a></li>
-	<li class="wp-has-submenu open-if-no-js menu-top menu-icon-post menu-top-first" id="menu-posts">
-	<div class="wp-menu-image"><a href="http://primediart.com/project/work/wp-admin/edit.php"><br></a></div><div class="wp-menu-toggle"><br></div>
-	<a href="../customers_server.php" class="wp-has-submenu open-if-no-js menu-top menu-icon-post menu-top-first" tabindex="1">Customers</a>
-	<div class="wp-submenu"><div class="wp-submenu-head">Posts</div><ul><li class="wp-first-item"><a href="http://primediart.com/project/work/wp-admin/edit.php" class="wp-first-item" tabindex="1">Posts</a></li><li><a href="http://primediart.com/project/work/wp-admin/post-new.php" tabindex="1">Add New</a></li><li><a href="http://primediart.com/project/work/wp-admin/edit-tags.php?taxonomy=category" tabindex="1">Categories</a></li><li><a href="http://primediart.com/project/work/wp-admin/edit-tags.php?taxonomy=post_tag" tabindex="1">Post Tags</a></li></ul></div></li>
-	<li class="wp-has-submenu menu-top menu-icon-media" id="menu-media">
-	<div class="wp-menu-image"><a href="http://primediart.com/project/work/wp-admin/upload.php"><br></a></div><div class="wp-menu-toggle"><br></div><a href="../orders_server.php" class="wp-has-submenu menu-top menu-icon-media" tabindex="1">Orders</a>
-	<div class="wp-submenu"><div class="wp-submenu-head">Media</div><ul><li class="wp-first-item"><a href="http://primediart.com/project/work/wp-admin/upload.php" class="wp-first-item" tabindex="1">Library</a></li><li><a href="http://primediart.com/project/work/wp-admin/media-new.php" tabindex="1">Add New</a></li></ul></div></li>
-	<li class="wp-has-submenu menu-top menu-icon-links" id="menu-links">
-	<div class="wp-menu-image"><a href="http://primediart.com/project/work/wp-admin/link-manager.php"><br></a></div><div class="wp-menu-toggle"><br></div><a href="../stores.php" class="wp-has-submenu menu-top menu-icon-links" tabindex="1">Products</a>
-	<div class="wp-submenu"><div class="wp-submenu-head">Links</div><ul><li class="wp-first-item"><a href="http://primediart.com/project/work/wp-admin/link-manager.php" class="wp-first-item" tabindex="1">Links</a></li><li><a href="http://primediart.com/project/work/wp-admin/link-add.php" tabindex="1">Add New</a></li><li><a href="http://primediart.com/project/work/wp-admin/edit-link-categories.php" tabindex="1">Link Categories</a></li></ul></div></li>
-	<li class="wp-has-submenu menu-top menu-icon-page" id="menu-pages">
-	<div class="wp-menu-image"><a href="http://primediart.com/project/work/wp-admin/edit.php?post_type=page"><br></a></div><div class="wp-menu-toggle"><br></div><a href="../marketing.php" class="wp-has-submenu menu-top menu-icon-page" tabindex="1">Marketting</a>
-	<div class="wp-submenu"><div class="wp-submenu-head">Pages</div><ul><li class="wp-first-item"><a href="http://primediart.com/project/work/wp-admin/edit.php?post_type=page" class="wp-first-item" tabindex="1">Pages</a></li><li><a href="http://primediart.com/project/work/wp-admin/post-new.php?post_type=page" tabindex="1">Add New</a></li></ul></div></li>
-	<li class="menu-top menu-icon-comments menu-top-last" id="menu-comments">
-	<div class="wp-menu-image"><a href="http://primediart.com/project/work/wp-admin/edit-comments.php"><br></a></div><div style="display: none;" class="wp-menu-toggle"><br></div><a href="../warehouses.php" class="menu-top menu-icon-comments menu-top-last" tabindex="1">Warehouses <span id="awaiting-mod" class="count-0"><span class="pending-count">0</span></span></a></li>
-	<li class="wp-menu-separator"><a class="separator" href="http://primediart.com/project/work/wp-admin/?unfoldmenu=1"><br></a></li>
-	<li class="wp-has-submenu menu-top menu-icon-appearance menu-top-first" id="menu-appearance">
-	<div class="wp-menu-image"><a href="http://primediart.com/project/work/wp-admin/themes.php"><br></a></div><div class="wp-menu-toggle"><br></div><a href="../suppliers.php" class="wp-has-submenu menu-top menu-icon-appearance menu-top-first" tabindex="1">Suppliers</a>
-	<div class="wp-submenu"><div class="wp-submenu-head">Appearance</div><ul><li class="wp-first-item"><a href="http://primediart.com/project/work/wp-admin/themes.php" class="wp-first-item" tabindex="1">Themes</a></li><li><a href="../reports.php" tabindex="1">Reports</a></li><li><a href="http://primediart.com/project/work/wp-admin/nav-menus.php" tabindex="1">Menus</a></li><li><a href="http://primediart.com/project/work/wp-admin/themes.php?page=custom-background" tabindex="1">Background</a></li><li><a href="http://primediart.com/project/work/wp-admin/themes.php?page=custom-header" tabindex="1">Header</a></li><li><a href="http://primediart.com/project/work/wp-admin/theme-editor.php" tabindex="1">Editor</a></li></ul></div></li>
-	<li class="wp-has-submenu menu-top menu-icon-plugins" id="menu-plugins">
-	<div class="wp-menu-image"><a href="http://primediart.com/project/work/wp-admin/plugins.php"><br></a></div><div class="wp-menu-toggle"><br></div><a href="../hr.php" class="wp-has-submenu menu-top menu-icon-plugins" tabindex="1">Staffs <!--<span class="update-plugins count-1"><span class="plugin-count">1</span></span>--></a>
-	<div class="wp-submenu"><div class="wp-submenu-head">Plugins <span class="update-plugins count-1"><span class="plugin-count">1</span></span></div><ul><li class="wp-first-item"><a href="../users.php" class="wp-first-item" tabindex="1">Users</a></li><li><a href="http://primediart.com/project/work/wp-admin/plugin-install.php" tabindex="1">Add New</a></li><li><a href="http://primediart.com/project/work/wp-admin/plugin-editor.php" tabindex="1">Editor</a></li></ul></div></li>
-	<li class="wp-has-submenu menu-top menu-icon-users" id="menu-users">
-	<div class="wp-menu-image"><a href="http://primediart.com/project/work/wp-admin/users.php"><br></a></div><div class="wp-menu-toggle"><br></div><a href="http://primediart.com/project/work/wp-admin/users.php" class="wp-has-submenu menu-top menu-icon-users" tabindex="1">Users</a>
-	<div class="wp-submenu"><div class="wp-submenu-head">Users</div><ul><li class="wp-first-item"><a href="http://primediart.com/project/work/wp-admin/users.php" class="wp-first-item" tabindex="1">Users</a></li><li><a href="http://primediart.com/project/work/wp-admin/user-new.php" tabindex="1">Add New</a></li><li><a href="http://primediart.com/project/work/wp-admin/profile.php" tabindex="1">Your Profile</a></li></ul></div></li>
-	
-	<li class="wp-has-submenu menu-top menu-icon-users" id="menu-users">
-	<div class="wp-menu-image"><a href="http://primediart.com/project/work/wp-admin/users.php"><br></a></div><div class="wp-menu-toggle"><br></div><a href="../visit.php" class="wp-has-submenu menu-top menu-icon-users" tabindex="1">Visits</a>
-	<div class="wp-submenu"><div class="wp-submenu-head">Visits</div><ul><li class="wp-first-item"><a href="../visit.php" class="wp-first-item" tabindex="1">Visits</a></li><li><a href="http://primediart.com/project/work/wp-admin/user-new.php" tabindex="1">Add New</a></li><li><a href="http://primediart.com/project/work/wp-admin/profile.php" tabindex="1">Your Profile</a></li></ul></div></li>
-	
-	<li class="wp-has-submenu menu-top menu-icon-tools" id="menu-tools">
-	<div class="wp-menu-image"><a href="http://primediart.com/project/work/wp-admin/tools.php"><br></a></div><div class="wp-menu-toggle"><br></div><!--<a href="http://primediart.com/project/work/wp-admin/tools.php" class="wp-has-submenu menu-top menu-icon-tools" tabindex="1">Tools</a>-->
-	<div class="wp-submenu"><!--<div class="wp-submenu-head">Tools</div>--><ul><li class="wp-first-item"><!--<a href="http://primediart.com/project/work/wp-admin/tools.php" class="wp-first-item" tabindex="1">Tools</a>--></li><li><a href="http://primediart.com/project/work/wp-admin/import.php" tabindex="1">Import</a></li><li><a href="http://primediart.com/project/work/wp-admin/export.php" tabindex="1">Export</a></li></ul></div></li>
-	<li class="wp-has-submenu menu-top menu-icon-settings menu-top-last" id="menu-settings">
-	<div class="wp-menu-image"><a href="http://primediart.com/project/work/wp-admin/options-general.php"><br></a></div><div class="wp-menu-toggle"><br></div><!--<a href="http://primediart.com/project/work/wp-admin/options-general.php" class="wp-has-submenu menu-top menu-icon-settings menu-top-last" tabindex="1">Settings</a>-->
-	<div class="wp-submenu"><!--<div class="wp-submenu-head">Settings</div>--><ul><li class="wp-first-item"><a href="http://primediart.com/project/work/wp-admin/options-general.php" class="wp-first-item" tabindex="1">General</a></li><li><a href="http://primediart.com/project/work/wp-admin/options-writing.php" tabindex="1">Writing</a></li><li><a href="http://primediart.com/project/work/wp-admin/options-reading.php" tabindex="1">Reading</a></li><li><a href="http://primediart.com/project/work/wp-admin/options-discussion.php" tabindex="1">Discussion</a></li><li><a href="http://primediart.com/project/work/wp-admin/options-media.php" tabindex="1">Media</a></li><li><a href="http://primediart.com/project/work/wp-admin/options-privacy.php" tabindex="1">Privacy</a></li><li><a href="http://primediart.com/project/work/wp-admin/options-permalink.php" tabindex="1">Permalinks</a></li></ul></div></li>
-	<li class="wp-menu-separator-last"><a class="separator" href="http://primediart.com/project/work/wp-admin/?unfoldmenu=1"><br></a></li></ul>
 
 <div style="overflow: hidden;" id="wpbody-content">
 <div id="screen-meta">
@@ -1285,8 +1243,10 @@ that you run it […]</div></li></ul></div></div>
 
 <div class="clear"></div></div><!-- wpbody-content -->
 <div class="clear"></div></div><!-- wpbody -->
+
 <div class="clear"></div></div><!-- wpcontent -->
-</div><!-- wpwrap -->
+
+<!-- wpwrap -->
 
 <div align="center">
 	    <div id="ajax_response">	
@@ -1337,6 +1297,11 @@ that you run it […]</div></li></ul></div></div>
 	</table>
 </div>
 
+
+
+
+<div class="clear"></div>
+</div>
 
 {include file='footer.tpl'}
 
