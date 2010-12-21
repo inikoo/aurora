@@ -15,13 +15,16 @@ $view_stock=$user->can_view('product stock');
 $smarty->assign('view_parts',$user->can_view('parts'));
 $smarty->assign('view_sales',$view_sales);
 $smarty->assign('view_stock',$view_stock);
-$modify=false;
-
+//$modify=false;
+$modify=$user->can_edit('staff');
 get_header_info($user,$smarty);
 $general_options_list=array();
-if($modify)
-  $general_options_list[]=array('tipo'=>'url','url'=>'store.php?edit=1','label'=>_('Edit Store'));
+if($modify){
+//  $general_options_list[]=array('tipo'=>'url','url'=>'store.php?edit=1','label'=>_('Edit Store'));
 //$general_options_list[]=array('tipo'=>'js','state'=>$show_details,'id'=>'details','label'=>($show_details?_('Hide Details'):_('Show Details')));
+  
+  $general_options_list[]=array('tipo'=>'url','url'=>'new_category.php','label'=>_('Add Category'));
+            }
 $smarty->assign('general_options_list',$general_options_list);
 
 $smarty->assign('view',$_SESSION['state']['product_categories']['view']);
