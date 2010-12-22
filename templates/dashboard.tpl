@@ -1233,9 +1233,9 @@ that you run it […]</div></li></ul></div></div>
         {section name=tplVar loop=$tplVar}
                 <div align="center">         
                     <div class="comment_holder">
-                        <div id="photo"><img src="art/user.JPG">  <br>{ $tplVar[tplVar].name }  </div>
+                        <div id="photo"><img src="art/user.JPG">  <br>{ $tplVar[tplVar].Name }  </div>
                             
- <div id="comment_text"><div id="date_posted">{$tplVar[tplVar].date_added}</div>{$tplVar[tplVar].comment}</div>
+ <div id="comment_text"><div id="date_posted">{$tplVar[tplVar].Date Added}</div>{$tplVar[tplVar].Comment}</div>
                     </div>
                 </div>
         {/section}

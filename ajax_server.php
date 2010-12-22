@@ -6,16 +6,16 @@
 	$comment    = addSlashes($_POST['comment']);
 	
 	
-	$check = mysql_query("insert into Comment Dimension(name,email,comment) values('$name','$email','$comment')");
+	$check = mysql_query("insert into Comment Dimension(Name,Email,Comment) values('$name','$email','$comment')");
 	
-	//echo "insert into comment(name,email,comment,date_added) values('$name','$email','$comment','$date_added')"; die();
 	
-	$select = "select * from comment";
+	
+	$select = "select * from Comment Dimension";
 	$result = mysql_query($select);
 	$row = mysql_fetch_array($result);
 	
 	
-	$date_added = $row['date_added'];
+	$date_added = $row['Date Added'];
 
 	if($check)
 		echo $date_added;
