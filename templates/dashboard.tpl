@@ -382,8 +382,8 @@ on the arrow that appears on the right side of each navigation tab. You can also
 
 <div id="dashboard_right_now" class="postbox "  >
 
-<div id="cross1"><span class="cross" title="Click to Delete"><img width="15px" height="15px;" src="images/x.png" /> </span></div>
-<div class="edit_click" title="Click to toggle"><span class="editTop3"><img src="images/edit.JPG"/></span></div>
+<div id="cross1"><span class="cross" title="Click to Delete"><img width="15px" height="15px;" src="art/x.png" /> </span></div>
+<div class="edit_click" title="Click to toggle"><span class="editTop3"><img src="art/edit.JPG"/></span></div>
 
 <h3 class="hndle">NO CONTACTS AND CUSTOMERS</h3>
 
@@ -458,9 +458,9 @@ on the arrow that appears on the right side of each navigation tab. You can also
 
 
 <div id="dashboard_recent_comments" class="postbox ">
-<div class="cross" title="Click to Delete"><img onClick="fadeout()" width="15px" height="15px;" src="images/x.png" /> </div>
+<div class="cross" title="Click to Delete"><img onClick="fadeout()" width="15px" height="15px;" src="art/x.png" /> </div>
 
-<div class="edit_click"><span class="editTop2"><img src="images/edit.JPG"/></span></div>
+<div class="edit_click"><span class="editTop2"><img src="art/edit.JPG"/></span></div>
 
 
 <h3 class="hndle">TOP PRODUCTS</h3>
@@ -578,8 +578,8 @@ $("#dashboard_recent_comments").fadeOut();
 {/literal}
 <!--==================================================DIV 3=============================================================-->
 <div id="dashboard_incoming_links" class="postbox ">
-<div id="cross3" class="cross" onclick="sublist();"><img width="15px" height="15px;" src="images/x.png" /></div>
-<div id="edit3" class="edit" onclick="sublist();"><strong><img src="images/edit.JPG"/></strong></div>
+<div id="cross3" class="cross" onclick="sublist();"><img width="15px" height="15px;" src="art/x.png" /></div>
+<div id="edit3" class="edit" onclick="sublist();"><strong><img src="art/edit.JPG"/></strong></div>
 <!--<div class="sub" onclick="sublist();"><strong>-</strong></div>
 <div class="add" onclick="addlist();"><strong>+</strong></div>-->
 
@@ -649,7 +649,7 @@ $("#dashboard_recent_comments").fadeOut();
 <div id="dashboard_incoming_links" class="postbox ">
 <div onMouseOver="this.className='crm_over'" onMouseOut="this.className='menuOver'"  >
 <!--<div id="dashboard_plugins" class="postbox">
-<div id="cross4" class="cross"><img width="15px" height="15px;" src="images/x.png" /></div>
+<div id="cross4" class="cross"><img width="15px" height="15px;" src="art/x.png" /></div>
 <div id="edit4" class="edit"><strong>Edit</strong></div>
 <div id="sub4" class="sub" onclick="sublist4();"><strong>-</strong></div>
 <div id="sub4" class="add" onclick="addlist4();"><strong>+</strong></div>
@@ -795,8 +795,8 @@ GUI interfac</p>
 <!--===================================================================== DIV 6====================================================================================-->
 
 <div id="dashboard_recent_drafts" class="postbox ">
-<div class="cross" id="cross6"><img width="15px" height="15px;" src="images/x.png" /></div>
-<div class="edit" id="edit6"><strong><img src="images/edit.JPG"/></strong></div>
+<div class="cross" id="cross6"><img width="15px" height="15px;" src="art/x.png" /></div>
+<div class="edit" id="edit6"><strong><img src="art/edit.JPG"/></strong></div>
 <!--<div class="sub" onClick="sublist6();"><strong>-</strong></div>
 <div class="add" onClick="addlist6();"><strong>+</strong></div>-->
 <div class="handlediv" title="Click to toggle"><br></div>
@@ -872,8 +872,8 @@ GUI interfac</p>
 
 
 <div id="dashboard_recent_drafts" class="postbox ">
-<div class="cross" id="cross7"><img width="15px" height="15px;" src="images/x.png" /></div>
-<div class="edit" id="edit7"><strong><img src="images/edit.JPG"/></strong></div>
+<div class="cross" id="cross7"><img width="15px" height="15px;" src="art/x.png" /></div>
+<div class="edit" id="edit7"><strong><img src="art/edit.JPG"/></strong></div>
 <!--<div class="sub" onClick="sublist7();"><strong>-</strong></div>
 <div class="add" onClick="addlist7();"><strong>+</strong></div>-->
 <div class="handlediv" title="Click to toggle"><br></div>
@@ -949,8 +949,8 @@ GUI interfac</p>
 
 
 <div id="worst products" class="postbox ">
-<div class="cross" id="cross_worst"><img width="15px" height="15px;" src="images/x.png" /></div>
-<div class="edit" id="edit_worst"><strong><img src="images/edit.JPG"/></strong></div>
+<div class="cross" id="cross_worst"><img width="15px" height="15px;" src="art/x.png" /></div>
+<div class="edit" id="edit_worst"><strong><img src="art/edit.JPG"/></strong></div>
 <!--<div class="sub" onClick="sublist_worst();"><strong>-</strong></div>
 <div class="add" onClick="addlist_worst();"><strong>+</strong></div>-->
 <div class="handlediv" title="Click to toggle"><br></div>
@@ -1026,7 +1026,7 @@ GUI interfac</p>
 <!--====================================================================== DIV 7====================================================================================-->
 
 <!--<div id="dashboard_primary" class="postbox">
-<div class="cross" id="cross7"><img width="15px" height="15px;" src="images/x.png" /></div>
+<div class="cross" id="cross7"><img width="15px" height="15px;" src="art/x.png" /></div>
 <div class="edit" id="edit7"><strong>Edit</strong></div>
 <div class="sub" i onclick="sublist();"><strong>-</strong></div>
 <div class="add" onclick="addlist();"><strong>+</strong></div>
@@ -1233,7 +1233,7 @@ that you run it […]</div></li></ul></div></div>
         {section name=tplVar loop=$tplVar}
                 <div align="center">         
                     <div class="comment_holder">
-                        <div id="photo"><img src="images/user.JPG">  <br>{ $tplVar[tplVar].name }  </div>
+                        <div id="photo"><img src="art/user.JPG">  <br>{ $tplVar[tplVar].name }  </div>
                             
  <div id="comment_text"><div id="date_posted">{$tplVar[tplVar].date_added}</div>{$tplVar[tplVar].comment}</div>
                     </div>
@@ -1260,7 +1260,7 @@ that you run it […]</div></li></ul></div></div>
 	  </tr>
 	  <tr>
 		<td></td>
-	    <td align="left"><input type="button" value="Submit" id="submit">&nbsp;<img src="images/loading.gif" id="loading"></td>
+	    <td align="left"><input type="button" value="Submit" id="submit">&nbsp;<img src="art/loading.gif" id="loading"></td>
 	  </tr>
 	</table>
 </div>
