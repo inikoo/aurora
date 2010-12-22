@@ -367,9 +367,7 @@ on the arrow that appears on the right side of each navigation tab. You can also
 <div id="contextual-help-link-wrap" class="hide-if-no-js screen-meta-toggle">
 <a href="#contextual-help" id="contextual-help-link" class="show-settings">Help</a>
 </div>
-<div id="screen-options-link-wrap" class="hide-if-no-js screen-meta-toggle">
-<!--<a href="#screen-options" id="show-settings-link" class="show-settings">Language Options</a></div>-->
-</div>
+
 </div>
 
 <div class="wrap">
