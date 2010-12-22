@@ -383,7 +383,7 @@ on the arrow that appears on the right side of each navigation tab. You can also
 <div id="dashboard_right_now" class="postbox "  >
 
 <div id="cross1"><span class="cross" title="Click to Delete"><img width="15px" height="15px;" src="images/x.png" /> </span></div>
-<div class="edit_click" title="Click to toggle"><span class="editTop3">Edit</span></div>
+<div class="edit_click" title="Click to toggle"><span class="editTop3"><img src="images/edit.JPG"/></span></div>
 
 <h3 class="hndle">NO CONTACTS AND CUSTOMERS</h3>
 
@@ -460,7 +460,7 @@ on the arrow that appears on the right side of each navigation tab. You can also
 <div id="dashboard_recent_comments" class="postbox ">
 <div class="cross" title="Click to Delete"><img onClick="fadeout()" width="15px" height="15px;" src="images/x.png" /> </div>
 
-<div class="edit_click"><span class="editTop2">Edit</span></div>
+<div class="edit_click"><span class="editTop2"><img src="images/edit.JPG"/></span></div>
 
 
 <h3 class="hndle">TOP PRODUCTS</h3>
@@ -579,9 +579,9 @@ $("#dashboard_recent_comments").fadeOut();
 <!--==================================================DIV 3=============================================================-->
 <div id="dashboard_incoming_links" class="postbox ">
 <div id="cross3" class="cross" onclick="sublist();"><img width="15px" height="15px;" src="images/x.png" /></div>
-<div id="edit3" class="edit" onclick="sublist();"><strong>Edit</strong></div>
-<div class="sub" onclick="sublist();"><strong>-</strong></div>
-<div class="add" onclick="addlist();"><strong>+</strong></div>
+<div id="edit3" class="edit" onclick="sublist();"><strong><img src="images/edit.JPG"/></strong></div>
+<!--<div class="sub" onclick="sublist();"><strong>-</strong></div>
+<div class="add" onclick="addlist();"><strong>+</strong></div>-->
 
 
 <div class="handlediv" title="Click to toggle"><br></div>
@@ -796,9 +796,9 @@ GUI interfac</p>
 
 <div id="dashboard_recent_drafts" class="postbox ">
 <div class="cross" id="cross6"><img width="15px" height="15px;" src="images/x.png" /></div>
-<div class="edit" id="edit6"><strong>Edit</strong></div>
-<div class="sub" onClick="sublist6();"><strong>-</strong></div>
-<div class="add" onClick="addlist6();"><strong>+</strong></div>
+<div class="edit" id="edit6"><strong><img src="images/edit.JPG"/></strong></div>
+<!--<div class="sub" onClick="sublist6();"><strong>-</strong></div>
+<div class="add" onClick="addlist6();"><strong>+</strong></div>-->
 <div class="handlediv" title="Click to toggle"><br></div>
 <h3 class="hndle"><span>TOP CUSTOMERS </span></h3>
 <div class="inside">
@@ -873,9 +873,9 @@ GUI interfac</p>
 
 <div id="dashboard_recent_drafts" class="postbox ">
 <div class="cross" id="cross7"><img width="15px" height="15px;" src="images/x.png" /></div>
-<div class="edit" id="edit7"><strong>Edit</strong></div>
-<div class="sub" onClick="sublist7();"><strong>-</strong></div>
-<div class="add" onClick="addlist7();"><strong>+</strong></div>
+<div class="edit" id="edit7"><strong><img src="images/edit.JPG"/></strong></div>
+<!--<div class="sub" onClick="sublist7();"><strong>-</strong></div>
+<div class="add" onClick="addlist7();"><strong>+</strong></div>-->
 <div class="handlediv" title="Click to toggle"><br></div>
 <h3 class="hndle"><span>OUTSTANDING ORDER</span></h3>
 <div class="inside">
@@ -950,9 +950,9 @@ GUI interfac</p>
 
 <div id="worst products" class="postbox ">
 <div class="cross" id="cross_worst"><img width="15px" height="15px;" src="images/x.png" /></div>
-<div class="edit" id="edit_worst"><strong>Edit</strong></div>
-<div class="sub" onClick="sublist_worst();"><strong>-</strong></div>
-<div class="add" onClick="addlist_worst();"><strong>+</strong></div>
+<div class="edit" id="edit_worst"><strong><img src="images/edit.JPG"/></strong></div>
+<!--<div class="sub" onClick="sublist_worst();"><strong>-</strong></div>
+<div class="add" onClick="addlist_worst();"><strong>+</strong></div>-->
 <div class="handlediv" title="Click to toggle"><br></div>
 <h3 class="hndle"><span>WORST PRODUCTS </span></h3>
 <div class="inside">
