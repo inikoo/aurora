@@ -98,14 +98,71 @@ foreach($store_data as $store_code=>$xdata) {
         $image=new Image('find',$iamge_data,'create');
 
         if ($image->id) {
-            $data['Site Logo Data']['Image Key']=$image->id;
-            $data['Site Logo Data']['Image Source']=preg_replace('/^sites./','',$image->data['Image URL']);
+            $site_data['Site Logo Data']['Image Key']=$image->id;
+            $site_data['Site Logo Data']['Image Source']=preg_replace('/^sites./','',$image->data['Image URL']);
         }
     }
 
 
 
-    $site=$store->create_site($data);
+
+
+
+
+    $data_tag='Site Header Data';
+          if (isset($site_data[$data_tag]['style']['background-image'])) {
+                $file=$site_data[$data_tag]['style']['background-image'];
+                $image_data=array(
+                                'file'=>$file,
+                                'source_path'=>'mantenence/scripts/',
+                                'path'=>'sites/app_files/pics/',
+                                'name'=>'background_image',
+                                'caption'=>''
+                            );
+                $image=new Image('find',$image_data,'create');
+                if ($image->id) {
+                    $image_src=preg_replace('/^sites./','',$image->data['Image URL']);
+                    
+                    
+                   
+                    $site_data[$data_tag]['style']['background-image']="url('$image_src')";
+                } else {
+                    print $image->msg."\n";
+                    exit("bad image\n");
+                }
+            }
+            
+                    $data_tag='Site Footer Data';
+          if (isset($site_data[$data_tag]['style']['background-image'])) {
+                $file=$site_data[$data_tag]['style']['background-image'];
+                $image_data=array(
+                                'file'=>$file,
+                                'source_path'=>'mantenence/scripts/',
+                                'path'=>'sites/app_files/pics/',
+                                'name'=>'background_image',
+                                'caption'=>''
+                            );
+                $image=new Image('find',$image_data,'create');
+                if ($image->id) {
+                    $image_src=preg_replace('/^sites./','',$image->data['Image URL']);
+                    
+                    
+                   
+                    $site_data[$data_tag]['style']['background-image']="url('$image_src')";
+                } else {
+                    print $image->msg."\n";
+                    exit("bad image\n");
+                }
+            }
+
+
+
+//print_r($site_data);
+//print_r($data);
+//exit;
+
+
+    $site=$store->create_site($site_data);
     foreach($page_store_secton_data as $key=>$value){
             $page_section=$site->get_page_section_object($key);
             $page_section->update($value);
@@ -156,6 +213,31 @@ foreach($page_data as $store_code=>$data) {
                     exit("bad image\n");
                 }
             }
+            
+                    $data_tag='Page Store Footer Data';
+          if (isset($page_data[$data_tag]['style']['background-image'])) {
+                $file=$page_data[$data_tag]['style']['background-image'];
+                $image_data=array(
+                                'file'=>$file,
+                                'source_path'=>'mantenence/scripts/',
+                                'path'=>'sites/app_files/pics/',
+                                'name'=>'background_image',
+                                'caption'=>''
+                            );
+                $image=new Image('find',$image_data,'create');
+                if ($image->id) {
+                    $image_src=preg_replace('/^sites./','',$image->data['Image URL']);
+                    
+                    
+                   
+                    $page_data[$data_tag]['style']['background-image']="url('$image_src')";
+                } else {
+                    print $image->msg."\n";
+                    exit("bad image\n");
+                }
+            }
+            
+            
             $data_tag='Page Store Content Data';
             if (isset($page_data[$data_tag]['style']['background-image'])) {
                 $file=$page_data[$data_tag]['style']['background-image'];
