@@ -1,0 +1,87 @@
+/*
+   Script name  : PHP and Ajax Comment
+   File Name 	: style.css
+   Developed By : Amit Patil (India)
+   Email Id 	: amitpatil321@gmail.com
+   Date Created : 21 June 2009
+   Last Updated : 24 Aug 2009
+         This program is freeware.There is no any fucking copyright and bla bla bla.
+   You can use it for your personal use.You can also make any changes to this script.
+   But before using this script i would appericiate your mail.That will encourage me a lot.
+   Any suggestions are always welcome.
+         Have a fun with PHP.   
+*/
+body{
+	font-family :verdana;
+	font-size:12px;
+}
+#ajax_response{
+	border : 0px solid #C9D7F8;
+	width:60%;
+	-moz-border-radius : 9px;
+	margin-bottom : 10px;
+	text-align : center;
+}
+.comment_table{
+	clear : left; 
+	font-size:12px;
+	border : 2px solid #C9D7F8;
+	-moz-border-radius : 9px;
+}
+.comment_table input[type="text"],textarea,input[type="button"]{
+	border : 1px solid #C6C4C4;
+
+}
+.comment_table input[type="text"]:hover,textarea:hover,input[type="button"]:hover{
+	border : 1px solid #C6C4C4;
+	background : #E2E4FC;
+}
+.comment_table input[type="text"]:focus,textarea:focus,input[type="button"]:focus{
+	border : 1px solid #C6C4C4;
+	background : #E2E4FC;
+}
+.comment_holder{
+	border : 0px solid #ADADB6;
+	
+	width : 50%;
+	
+	
+	
+	background : #E2E4FC;
+}
+#loading{
+	visibility : hidden;
+}
+.highlight{
+	background : #E3FEE0;
+}
+#date_posted{
+	font-size : 10px;
+	text-align : right;
+	color: #6A7063;
+	border-bottom : 1px solid #928F89;
+}
+#photo{
+	border:0px solid #ADADB6;
+	float:left;
+	
+	padding:5px;
+	text-align : center;
+}
+#photo img{
+	padding : 4px;
+}
+#comment_text{
+	width:82%;
+	
+	border:0px solid #ADADB6;
+	
+	margin : 0px 0px;
+	
+	-moz-border-radius : 9px;
+	height : 80px;
+	
+}
+.required{
+	background :#FE8585;
+}

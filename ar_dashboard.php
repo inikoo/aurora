@@ -6,11 +6,11 @@
 	$comment    = addSlashes($_POST['comment']);
 	
 	
-	$check = mysql_query("insert into Comment Dimension(Name,Email,Comment) values('$name','$email','$comment')");
+	$check = mysql_query("insert into `Comment Dimension`(`Name`,`Email`,`Comment`) values('$name','$email','$comment')");
 	
 	
 	
-	$select = "select * from Comment Dimension";
+	$select = "select * from `Comment Dimension`";
 	$result = mysql_query($select);
 	$row = mysql_fetch_array($result);
 	
