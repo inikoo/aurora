@@ -469,7 +469,16 @@ $store_data[$store_code]=array(
 			      ,'site_data'=>array(
 			        'Site Name'=>'Ancient Wisdom',
 			        'Site Logo Data'=>array('image_filename'=>'sites_data/logo.gb.png'),
-			        'Registration Type'=>'Steps'
+			        'Registration Type'=>'Steps',
+			        'Site Footer Data'=>array(
+                    'style'=>array(
+                        'background-image'=>'sites_data/footer_background.jpg',
+                       'background-color'=>'#fff',
+                       'background-repeat'=>'no-repeat',
+                        'color'=>'#fff',
+                        'font-size'=>'8px'
+                        )
+                    )
 			      )
 			      
 			      );

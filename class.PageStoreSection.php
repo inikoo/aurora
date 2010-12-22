@@ -315,14 +315,14 @@ class PageStoreSection extends DB_Table {
 
 function get_data_for_smarty($data) {
 //print_r($this->data);
-    $header_style='';
+    $header_style=$data['header_style'];
     if ($this->data['Page Store Section Header Data'] and array_key_exists('style',$this->data['Page Store Section Header Data']))
         foreach($this->data['Page Store Section Header Data']['style'] as $key=>$value) {
         $header_style.="$key:$value;";
     }
     $data['header_style']=$header_style;
 
-    $footer_style='';
+    $footer_style=$data['footer_style'];
     if ($this->data['Page Store Section Footer Data'] and array_key_exists('style',$this->data['Page Store Section Footer Data']))
         foreach($this->data['Page Store Section Footer Data']['style'] as $key=>$value) {
         $footer_style.="$key:$value;";
