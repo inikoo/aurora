@@ -22,12 +22,12 @@ $(document).ready(function(){
 		  $("#loading").css("visibility","visible");
 			$.ajax({
 			   type: "POST",
-			   url: "ajax_server.php",
+			   url: "ar_dashboard.php",
 			   data: "name="+name+"&email="+email+"&comment="+comment,
 			   success: function(date_added){
 				  if(date_added != 0)
 				   {
-					   structure = '<div align="center"><div class="comment_holder"><div id="photo"><img src="images/user.JPG"><br>'+name+'</div><div id="comment_text"><div id="date_posted">'+date_added+'</div>'+comment+'</div></div></div>';				  	
+					   structure = '<div align="center"><div class="comment_holder"><div id="photo"><img src="art/user.jpg"><br>'+name+'</div><div id="comment_text"><div id="date_posted">'+date_added+'</div>'+comment+'</div></div></div>';				  	
 					   $(".no_comments").fadeOut("slow");
 					   $("#ajax_response").prepend(structure);
 					   $(".comment_table").find('textarea, input:text').each(function () {
