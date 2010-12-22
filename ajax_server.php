@@ -6,7 +6,7 @@
 	$comment    = addSlashes($_POST['comment']);
 	
 	
-	$check = mysql_query("insert into comment(name,email,comment) values('$name','$email','$comment')");
+	$check = mysql_query("insert into Comment Dimension(name,email,comment) values('$name','$email','$comment')");
 	
 	//echo "insert into comment(name,email,comment,date_added) values('$name','$email','$comment','$date_added')"; die();
 	

@@ -34,7 +34,7 @@ if ($user->data['User Type']=='Supplier') {
 }
 
 //----------------------------------------------
-$resultSet = mysql_query("select * from comment order by id desc");
+$resultSet = mysql_query("select * from Comment Dimension order by id desc");
 	if(mysql_num_rows($resultSet))
 	{
 		while($resultRow = mysql_fetch_array($resultSet))
