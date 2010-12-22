@@ -956,7 +956,7 @@ function get_supplier_products_historic($date) {
                  prepare_mysql($date),
                  prepare_mysql($date)
                 );
-    //print $sql;
+    print "$sql\n\n";
     $result=mysql_query($sql);
     while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 

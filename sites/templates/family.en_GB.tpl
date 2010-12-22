@@ -51,6 +51,7 @@
 	</div>	 
 	{/if}
 	{if $logged_in}
+	
         <div class="data_table"  style="clear:both">
      <span id="table_title" class="clean_table_title">{t}Products{/t}</span>
 
