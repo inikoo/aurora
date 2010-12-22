@@ -41,7 +41,6 @@ $resultSet = mysql_query("select * from comment order by id desc");
 		{
 		
 				$value[] = $resultRow;
-				
 			
 		}
 	}

@@ -352,25 +352,15 @@ document.body.className = c;
 </div>
 
 	<div id="contextual-help-wrap" class="hidden">
-	<div class="metabox-prefs"><p>Welcome to your WordPress Dashboard! You 
-will find helpful tips in the Help tab of each screen to assist you as 
-you get to know the application.</p><p>The left-hand navigation menu 
-provides links to the administration screens in your WordPress 
-application. You can expand or collapse navigation sections by clicking 
-on the arrow that appears on the right side of each navigation item when
- you hover over it. You can also minimize the navigation menu to a 
-narrow icon strip by clicking on the separator lines between navigation 
-sections that end in double arrowheads; when minimized, the submenu 
-items will be displayed on hover.</p><p>You can configure your dashboard
- by choosing which modules to display, how many columns to display them 
-in, and where each module should be placed. You can hide/show modules 
-and select the number of columns in the Screen Options tab. To rearrange
- the modules, drag and drop by clicking on the title bar of the selected
- module and releasing when you see a gray dotted-line box appear in the 
-location you want to place the module. You can also expand or collapse 
-each module by clicking once on the the module’s title bar. In addition,
- some modules are configurable, and will show a “Configure” link in the 
-title bar when you hover over it.</p><p>The modules on your Dashboard screen are:</p><p><strong>Right Now</strong> - Displays a summary of the content on your site and identifies which theme and version of WordPress you are using.</p><p><strong>Recent Comments</strong> - Shows the most recent comments on your posts (configurable, up to 30) and allows you to moderate them.</p><p><strong>Incoming Links</strong> - Shows links to your site found by Google Blog Search.</p><p><strong>QuickPress</strong> - Allows you to create a new post and either publish it or save it as a draft.</p><p><strong>Recent Drafts</strong> - Displays links to the 5 most recent draft posts you’ve started.</p><p><strong>Other WordPress News</strong> - Shows the feed from <a href="http://planet.wordpress.org/" target="_blank">WordPress Planet</a>. You can configure it to show a different feed of your choosing.</p><p><strong>Plugins</strong> - Features the most popular, newest, and recently updated plugins from the WordPress.org Plugin Directory.</p><p><strong>For more information:</strong></p><p><a href="http://codex.wordpress.org/Dashboard_SubPanel" target="_blank">Dashboard Documentation</a></p><p><a href="http://wordpress.org/support/" target="_blank">Support Forums</a></p></div>
+	<div class="metabox-prefs"><p>Welcome to KAKTUS Dashboard! </p>
+<p>The top menu 
+provides links to the administration screens in your Administrative Area. You can expand or collapse navigation sections by clicking 
+on the arrow that appears on the right side of each navigation tab. You can also minimize the navigation menu by clicking again on the down arrow.</p>
+
+<p>The modules on your Dashboard screen are:</p><p><strong>TOP PRODUCTS</strong> - Displays a summary of the content of the top enlisted product list.</p>
+<p><strong>WORST PRODUCT</strong> - Currently showing top product list by default. </p>
+<p><strong>TOP CUSTOMER</strong> - Shows top customer's name.</p><p>
+</div>
 	</div>
 
 <div id="screen-meta-links">
@@ -378,7 +368,7 @@ title bar when you hover over it.</p><p>The modules on your Dashboard screen are
 <a href="#contextual-help" id="contextual-help-link" class="show-settings">Help</a>
 </div>
 <div id="screen-options-link-wrap" class="hide-if-no-js screen-meta-toggle">
-<a href="#screen-options" id="show-settings-link" class="show-settings">Language Options</a></div>
+<!--<a href="#screen-options" id="show-settings-link" class="show-settings">Language Options</a></div>-->
 </div>
 </div>
 
@@ -589,7 +579,6 @@ $("#dashboard_recent_comments").fadeOut();
 </script>
 {/literal}
 <!--==================================================DIV 3=============================================================-->
-<!--
 <div id="dashboard_incoming_links" class="postbox ">
 <div id="cross3" class="cross" onclick="sublist();"><img width="15px" height="15px;" src="images/x.png" /></div>
 <div id="edit3" class="edit" onclick="sublist();"><strong>Edit</strong></div>
@@ -598,36 +587,17 @@ $("#dashboard_recent_comments").fadeOut();
 
 
 <div class="handlediv" title="Click to toggle"><br></div>
-<h3 class="hndle"><span>Stock Control<span class="postbox-title-action"></span></span></h3>
+<h3 class="hndle"><span>GUIDE TO PROGRAMMER<span class="postbox-title-action"></span></span></h3>
 <div id="div3" style="display:none; background-color:#999999;">
-	<center><form action="#" method="get">
-    <br />
-    <input name="CRM" type="checkbox" value="" />details about CRM &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-    <input name="Invoicing" type="checkbox" value="" />details about Invoicing<br>
-    <hr />
-    <input name="CRM" type="checkbox" value="" />details about CRM &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-    <input name="Invoicing" type="checkbox" value="" />details about Invoicing<br>
-    <input name="CRM" type="checkbox" value="" />details about CRM &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-    <input name="Invoicing" type="checkbox" value="" />details about Invoicing<br>
-    <hr />
-    <input name="save3" id="save3" type="button" value="save"/> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input  name="exit3" id="exit3" type="button" value="exit"/>
-    </form>
+	<center>
+    
+    	<p>Hi Guys ! Here you will get a step by step direction on how to develope a widget in dashboard. At first see the code in editor (Page Name : dashboard.tpl). Then go to design panel. You can now select any widget and then go to code. </p>
+        
+        <p>Find the respective div. If you want to make a new div then you just copy any of the existing div and paste it to your required place and also dont forget to edit the script of jquery. Ok you are done. Now you can see the div working. If you need to edit the content of the inside div then just put your logic to retrive dynamic data from database.</p>
+    
     </center>
-    <div id="inner3" style="background-color:#CCCCCC; height:35px; font-size:14px;">Remove this section</div>
-  
   </div>
 <div style="" class="inside">
-
-<div>
-<li id="1" style="display:none">list 1</li>
-<li id="2" style="display:none">list 2</li>
-<li id="3" style="display:none">list 3</li>
-<li id="4" style="display:none">list 4</li>
-<li id="5" style="display:none">list 5</li>
-</div>
-<p>This dashboard widget queries <a href="http://blogsearch.google.com/">Google Blog Search</a>
- so that when another blog links to your site it will show up here. It 
-has found no incoming links… yet. It’s okay — there is no rush.</p>
 </div>
 </div>
 
@@ -672,7 +642,7 @@ has found no incoming links… yet. It’s okay — there is no rush.</p>
     });
   });
   </script>
-{/literal}-->
+{/literal}
 <!--=========================================================END DIV 3==================================================================-->
 
 
