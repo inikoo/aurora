@@ -5,26 +5,26 @@ include_once('class.Page.php');
 
 $css_files=array(
 
-		 'css/common.css',
-		 'css/home.css',
-		 'css/info.css',
-		 'css/register.css',
-		 'css/dropdown.css'
-		 );
+               'css/common.css',
+               'css/home.css',
+               'css/info.css',
+               'css/register.css',
+               'css/dropdown.css'
+           );
 $js_files=array(
-		
-	      		$yui_path.'utilities/utilities.js',
-		$yui_path.'json/json-debug.js', 
-		'js/md5.js',
-		'js/sha256.js',
-		
-		'js/dropdown.js'
-);
+
+              $yui_path.'utilities/utilities.js',
+              $yui_path.'json/json-debug.js',
+              'js/md5.js',
+              'js/sha256.js',
+
+              'js/dropdown.js'
+          );
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
 
-if(isset($_REQUEST['we'])){
-  $smarty->assign('error',true);
+if (isset($_REQUEST['we'])) {
+    $smarty->assign('error',true);
 
 }
 
@@ -34,8 +34,8 @@ $smarty->assign('store',$store);
 
 $page=new Page('store_page_code',$store_key,'register');
 
-if(!$page->id){
-  header('Location: index.php');
+if (!$page->id) {
+    header('Location: index.php');
 }
 
 $smarty->assign('home_header_template' , "templates/home_header.".$store->data['Store Locale'].".tpl" );
@@ -58,14 +58,12 @@ $_SESSION['prev_page_key']=$page->data['Page Key'];
 
 
 //print_r($page_data);
-if($site->data['Registration Type']=='Steps')
-{
-$js_files[]='js/register.js.php';
-$template="templates/register_steps.".$store->data['Store Locale'].".tpl";
-}
-else {
-$js_files[]='js/register_2.js.php';
-$template="templates/register_simple.".$store->data['Store Locale'].".tpl";
+if ($site->data['Registration Type']=='Steps') {
+    $js_files[]='js/register.js.php';
+    $template="templates/register_steps.".$store->data['Store Locale'].".tpl";
+} else {
+    $js_files[]='js/register_2.js.php';
+    $template="templates/register_simple.".$store->data['Store Locale'].".tpl";
 
 }
 

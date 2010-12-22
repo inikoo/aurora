@@ -423,5 +423,14 @@ ALTER TABLE `Page Store Section Dimension` ADD `Site Key` SMALLINT UNSIGNED NOT 
 0.9.20
 ALTER TABLE `Site Dimension` ADD `Registration Type` ENUM( 'Steps', 'Simple', 'None' ) NOT NULL DEFAULT 'Simple' AFTER `Site Index Page Key`;
 ALTER TABLE `Page Store Dimension` CHANGE `Product Thumbnails Layout` `Product Thumbnails Layout` ENUM( 'Yes', 'No' ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'yes';
+CREATE TABLE IF NOT EXISTS `Comment Dimension` (
+  `Comment Key` mediumint(10) NOT NULL auto_increment,
+  `Name` varchar(255) character set utf8 NOT NULL,
+  `Email` varchar(200) character set utf8 NOT NULL,
+  `Comment` text character set utf8 NOT NULL,
+  `Date Added` timestamp NOT NULL default CURRENT_TIMESTAMP,
+  PRIMARY KEY  (`Comment Key`)
+) ENGINE=MyISAM  CHARACTER SET utf8 COLLATE utf8_general_ci;
+
 */
 ?>
