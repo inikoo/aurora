@@ -259,7 +259,7 @@ $(document).ready(function()
 
 {literal}
 <script type="text/javascript">
-s
+
 //<![CDATA[
 addLoadEvent = function(func){if(typeof jQuery!="undefined")jQuery(document).ready(func);else if(typeof wpOnload!='function'){wpOnload=func;}else{var oldonload=wpOnload;wpOnload=function(){oldonload();func();}}};
 var userSettings = {
