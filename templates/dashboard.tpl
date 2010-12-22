@@ -1153,17 +1153,7 @@ that you run it […]</div></li></ul></div></div>
 
 <div align="center">
 	    <div id="ajax_response">	
-<!-- post comment code----->
- 		<!--/*{foreach from=$splinters key=key item=splinter}
 
-               {if $splinter.index == 8}
-             
-                    <div class="pane" style="text-align:center;"  id="pane_{$key}" {if $display_block!=$key}style="display:none"{/if}>
-                    {include file=$splinter.tpl index=$splinter.index}
-                    </div>
-               {/if}
-           
-        { /foreach }*/-->
         
         {section name=tplVar loop=$tplVar}
                 <div align="center">         
@@ -1175,7 +1165,7 @@ that you run it […]</div></li></ul></div></div>
                 </div>
         {/section}
         
-<!--end of post comment---->
+
 	</div>
     </div>
 
