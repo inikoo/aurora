@@ -576,72 +576,7 @@ $("#dashboard_recent_comments").fadeOut();
 }
 </script>
 {/literal}
-<!--==================================================DIV 3=============================================================-->
-<div id="dashboard_incoming_links" class="postbox ">
-<div id="cross3" class="cross" onclick="sublist();"><img width="15px" height="15px;" src="art/x.png" /></div>
-<div id="edit3" class="edit" onclick="sublist();"><strong><img src="art/edit.JPG"/></strong></div>
-<!--<div class="sub" onclick="sublist();"><strong>-</strong></div>
-<div class="add" onclick="addlist();"><strong>+</strong></div>-->
 
-
-<div class="handlediv" title="Click to toggle"><br></div>
-<h3 class="hndle"><span>GUIDE TO PROGRAMMER<span class="postbox-title-action"></span></span></h3>
-<div id="div3" style="display:none; background-color:#999999;">
-	<center>
-    
-    	<p>Hi Guys ! Here you will get a step by step direction on how to develope a widget in dashboard. At first see the code in editor (Page Name : dashboard.tpl). Then go to design panel. You can now select any widget and then go to code. </p>
-        
-        <p>Find the respective div. If you want to make a new div then you just copy any of the existing div and paste it to your required place and also dont forget to edit the script of jquery. Ok you are done. Now you can see the div working. If you need to edit the content of the inside div then just put your logic to retrive dynamic data from database.</p>
-    
-    </center>
-  </div>
-<div style="" class="inside">
-</div>
-</div>
-
-{literal}
-<script>
-    $("#edit3").click(function () {
-      $('#div3').slideToggle("slow");
-    });
-	function slide3()
-	{
-      $('#div3').slideToggle("slow");
-		}
-</script>
-<script>
-  $('#cross3').click(function () {
-  $('#dashboard_incoming_links').fadeOut("slow");
-  });
-  </script>
-  <script>
-    $("#save3").click(function () {
-      $('#div3').slideToggle("slow");
-    });
-	function slide3()
-	{
-      $('#div3').slideToggle("slow");
-		}
-</script>
-<script>
-    $("#exit3").click(function () {
-      $('#div3').slideToggle("slow");
-    });
-	function slide3()
-	{
-      $('#div3').slideToggle("slow");
-		}
-</script>
-<script>
-
-  $(document).ready(function() {
-    $('#inner3').click(function () {
-      $('#dashboard_incoming_links').effect("explode");
-    });
-  });
-  </script>
-{/literal}
-<!--=========================================================END DIV 3==================================================================-->
 
 
 
