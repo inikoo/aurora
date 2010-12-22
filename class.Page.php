@@ -725,7 +725,8 @@ $data=$page_section->get_data_for_smarty($data);
             $header_style.="$key:$value;";
         }
         $data['header_style']=$header_style;
-        $footer_style='';
+       
+       $footer_style=$data['footer_style'];
         if ($this->data['Page Store Footer Data'] and array_key_exists('style',$this->data['Page Store Footer Data']))
             foreach($this->data['Page Store Footer Data']['style'] as $key=>$value) {
             $footer_style.="$key:$value;";
