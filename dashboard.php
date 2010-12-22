@@ -33,19 +33,19 @@ if ($user->data['User Type']=='Supplier') {
     }
 }
 
-//----------------------------------------------
+
 $resultSet = mysql_query("select * from `Comment Dimension` order by `Comment Key` desc");
 	if(mysql_num_rows($resultSet))
 	{
 		while($resultRow = mysql_fetch_array($resultSet))
 		{
 		
-				$value[] = $resultRow;
+				$comment_value[] = $resultRow;
 			
 		}
 	}
 	
-//-------------------------------------------------
+
 
 
 $css_files=array(
@@ -153,7 +153,7 @@ $smarty->assign('conf_data',$_SESSION['state']['home']['splinters']);
 $smarty->assign('display_block',$_SESSION['state']['home']['display']);
 
 
-$smarty->assign('tplVar',$value);
+$smarty->assign('tplVar',$comment_value);
 
 
 $smarty->assign('search_scope','all');
