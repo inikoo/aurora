@@ -646,7 +646,26 @@ return $page;
 
 function get_data_for_smarty(){
 
+
+
 $data['logo']=$this->data['Site Logo Data']['Image Source'];
+
+
+       $header_style='';
+        if ($this->data['Site Header Data'] and array_key_exists('style',$this->data['Site Header Data']))
+            foreach($this->data['Site Header Data']['style'] as $key=>$value) {
+            $header_style.="$key:$value;";
+        }
+        $data['header_style']=$header_style;
+       
+       $footer_style='';
+        if ($this->data['Site Footer Data'] and array_key_exists('style',$this->data['Site Footer Data']))
+            foreach($this->data['Site Footer Data']['style'] as $key=>$value) {
+            $footer_style.="$key:$value;";
+        }
+        $data['footer_style']=$footer_style;
+
+
 
 return $data;
 }

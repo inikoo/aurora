@@ -5,7 +5,7 @@ body{color:#333;font-size:14px;font-family:  Verdana, Arial, sans-serif;}
 #container{width:876px;margin:0 auto}
 
 
-#footer{clear:both;background-color:#fff;background-image:url('../art/footer/footer_background.jpg');background-repeat:no-repeat;width:875px;height:154px;color:#fff;font-size:8px}
+#footer{clear:both;width:875px;height:154px}
 #footer #company_info,#footer #company_contact{padding:5px 10px}
 
 #search_container{padding:0 10px;;margin-top:5px;color:#990000;font-style: italic; font-size:12px}

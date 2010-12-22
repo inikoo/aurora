@@ -32,7 +32,7 @@ exit('no page');
 }
 
 $page_data=$page->get_data_for_smarty($page_data);
-
+//print_r($page_data);
 
 $smarty->assign('page_data',$page_data);
 
