@@ -148,7 +148,7 @@ function checkout(){
 }
 
 function init(){
- // get_thumbnails({tipo:'products',parent:'family',parent_key:family_key});
+  get_thumbnails({tipo:'products',parent:'family',parent_key:family_key});
 ids=['table_type_thumbnails','table_type_list','table_type_manual'];
  YAHOO.util.Event.addListener(ids, "click",change_table_type,{table_id:0,parent:'family'});
  
