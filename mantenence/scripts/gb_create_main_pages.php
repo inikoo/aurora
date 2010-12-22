@@ -13,6 +13,16 @@ $page_store_secton_data['Information']=array(
 )
 );
 
+$page_store_secton_data['Registration']=array(
+'Page Store Section Content Data'=>array(
+'style'=>array('background-image'=>'sites_data/left_nav.png','background-repeat'=>'no-repeat')
+),
+'Page Store Section Header Data'=>array(
+'style'=>array('background-image'=>'sites_data/header_home.gb.jpg','background-color'=>'#f99013')
+)
+);
+
+
 $page_store_secton_data['Department Catalogue']=array(
 'Page Store Section Content Data'=>array(
 'style'=>array('background-image'=>'sites_data/left_nav.png')
@@ -458,7 +468,8 @@ $store_data[$store_code]=array(
 			      ,'Resume'=>'Currently we have over 10000 exotic, interesting & unique wholesale product lines spread over approaching 1000 web pages all available to order on-line for delivery next day in the UK (well we do our best)'
 			      ,'site_data'=>array(
 			        'Site Name'=>'Ancient Wisdom',
-			        'Site Logo Data'=>array('image_filename'=>'sites_data/logo.gb.png')
+			        'Site Logo Data'=>array('image_filename'=>'sites_data/logo.gb.png'),
+			        'Registration Type'=>'Steps'
 			      )
 			      
 			      );

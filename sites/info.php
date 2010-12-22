@@ -36,8 +36,9 @@ $smarty->assign('left_menu_template',"templates/left_menu.".$store->data['Store 
 
 $smarty->assign('page',$page);
 $page_data=$page->get_data_for_smarty($page_data);
-
 $smarty->assign('page_data',$page_data);
+
+
 
 $smarty->assign('contents',$page->data['Page Source Template']);
 

@@ -8,7 +8,7 @@
     <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
     <title>{$page_title}</title>
     <link href="css/style.css" rel="stylesheet" type="text/css" media="screen" />
-     <link rel="shortcut icon" href="images/favicon.png">
+    <link rel="shortcut icon" href="images/favicon.png"/>
     <script type="text/javascript"></script>
     {include file="../google_analytics/analytics_script.tpl"}
 </head>

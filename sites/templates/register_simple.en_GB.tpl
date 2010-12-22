@@ -2,79 +2,51 @@
  <body>
    <div id="container" >
      {include file="$home_header_template"}
-<div id="page_content" >
+	<div id="page_content" style="{$page_data.content_style}" >
 
-     {include file="$left_menu_template"}
-     <div id="central_content" style="min-height:600px">
-       
-       
-       <div id="error" style="border:1px solid #ccc;margin:20px 40px;padding:20px;{if !$error}display:none{/if}" > 
-	 <p>Oops, an internal error has ocurred. Try again please.</p><p>If the problem persists send us an email with all your details to {mailto address=$email encode="hex"}
+     		{include file="$left_menu_template"}
+		<div id="central_content" style="min-height:600px">
+ {include file="templates/search_input.tpl"}
+		<div id="error" style="border:1px solid #ccc;margin:20px 40px;padding:20px;{if !$error}display:none{/if}" > 
+	 	<p>Oops, an internal error has ocurred. Try again please.</p><p>If the problem persists send us an email with all your details to {mailto address=$email encode="hex"}
 	   and we will take the required actions.</p>
-       </div>
+       		</div>
        
-       <div  style="border:1px solid #ccc;margin:20px 40px;padding:20px;" > 
-	 
-	 <div id="get_email" store_key="{$store_key}" > 
-	   <p id="email_instructions">Please enter your email address.</p>
-	   <p id="email_error_msg_1" style="display:none">Hey, you forgot to write the email, <b>please write your email address</b>.</p>
-	   <p id="email_not_valid_msg_1" style="display:none">The email seems incorrect, <b>please double check your email address</b>.</p>
-	   <p id="email_not_valid_msg_2" style="display:none">That is not a email address, <b>please double check your email address</b>.</p>
-	   <p id="email_not_confirmed" style="display:none">Please confirm the the email address</p>
-	   <p id="email_error_confirmed" style="display:none">The emails are differents, make sure the both email fields are identical</p>
-	   <p id="email_ok" style="display:none">Ok</p>
-	   <table>
-	     <tr ><td id="email_label">Email:</td><td><input id="email" style="width:240px" type="text"></td><td></td></tr>
-	     <tr ><td  id="email_confirmation_label">Confirm Email:</td><td><input id="email_confirmation" style="width:240px" confirmed="no" type="text"></td><td><span id="submit_email" class="button disabled">Continue</span></td></tr>
-	  
-	   </table>
 	   
+       		<div  style="border:1px solid #ccc;margin:20px 40px;padding:20px;" > 
 	 
-	 </div>
-	
-	 <div id="found_email" style="margin-top:20px;display:none">
-	   <p><span id="registered_email" class="strong"></span> are already registered in {$store->get('Store Name')}.</p>
-	   <p>Type your password to login</p>
-	   <table>
-
-	      <tr><td id="password_login_label">Password:</td><td><input id="password_login"  type="password_login"></td></tr>
-	      
-
-	   </table>
+	 		<div id="get_email" store_key="{$store_key}" > 
+	   		<p id="email_instructions">Please enter your email address.</p>
+	   		<p id="email_error_msg_1" style="display:none">Hey, you forgot to write the email, <b>please write your email address</b>.</p>
+	   		<p id="email_not_valid_msg_1" style="display:none">The email seems incorrect, <b>please double check your email address</b>.</p>
+	   		<p id="email_not_valid_msg_2" style="display:none">That is not a email address, <b>please double check your email address</b>.</p>
+	  		 <p id="email_not_confirmed" style="display:none">Please confirm the the email address</p>
+	   		<p id="email_error_confirmed" style="display:none">The emails are differents, make sure the both email fields are identical</p>
+	   		<p id="email_ok" style="display:none">Ok</p>
+			<table>
+	     		<tr ><td id="email_label">Email:</td><td><input id="email" style="width:240px" type="text"></td><td></td></tr>
+	     		<tr ><td  id="email_confirmation_label">Confirm Email:</td><td><input id="email_confirmation" style="width:240px" confirmed="no" type="text"></td><td></td></tr>
+	  			<div id="found_email" style="margin-top:20px;display:none">
+	   				<p><span id="registered_email" class="strong"></span> are already registered in {$store->get('Store Name')}.</p>
+	   				<p>Type your password to login</p>
 	   
-	   <div style="font-size:80%;width:300px;float:right;color:#777;margin-top:10px">
-	     <p>
-	       <h4>You don't remember your password?</h4>
-	       Click <span id="password_reminder" class="link">here</span> and we will send you an email with instructions how to access your acount.
-	     </p>
+	 				<div id="get_password" style="margin-top:20px;display:none;" > 
+	   				<p id="password_instructions">Please type your password. (use at least 6 characters)</p>
+	   				<p id="password_msg1" style="display:none">Please confirm your password</p>
+	   				<p id="password_msg2" style="display:none">Please please be sure that both passwords are identical</p>
+	   				<p id="password_msg3" style="display:none">The passowrd should be at least 6 character long</p>
+	   				<p id="password_msg4" style="display:none">Please type your password</p>
+		   			</div>
 
-	      <p>
-	       <h4>You can not access your email account?</h4>
-	       Call us at {$tel}.
-	     </p>
-
-	   </div>
-
-	   <div style="clear:right"></div>
-	 </div>
-
-
-	 <div id="get_password" style="margin-top:20px;display:none;" > 
-	   <p id="password_instructions">Please type your password. (use at least 6 characters)</p>
-	   <p id="password_msg1" style="display:none">Please confirm your password</p>
-	   <p id="password_msg2" style="display:none">Please please be sure that both passwords are identical</p>
-	   <p id="password_msg3" style="display:none">The passowrd should be at least 6 character long</p>
-	   <p id="password_msg4" style="display:none">Please type your password</p>
-		   
-	   <table>
-
-	     <tr><td id="password_label">Password:</td><td><input id="password" confirmed='no' type="password"></td></tr>
+			
+	      		<tr><td id="password_label">Password:</td><td><input id="password" confirmed='no' type="password"></td></tr>
 	     <tr><td id="password_confirmation_label">Confirm Password:</td><td><input id="password_confirmation" type="password"></td></tr>
 
-	   </table>
-	 </div>
-	   
-	 <div id="get_customer_type" style="margin-top:20px;display:none" > 
+	   		</table>
+			
+
+			
+ <div id="get_customer_type" style="margin-top:20px;" > 
 	   <p id="customer_type_instructions">Please tell us what type of trader you are.</p>
 	   <p id="customer_type_not_confirmed_msg" style="display:none">Please confirm that you are a trader (check the appropiate box).</p>
 	   <p id="customer_type_not_confirmed_msg2" style="display:none">Sorry, but if you do not confirm that your intention is to trade with the products we offer, you can not register.</p>
@@ -104,9 +76,7 @@
 	     
 	     </div>
 	   </div>
-	   <div class="continue">
-	     <span class="button disabled" id="submit_customer_type">Continue</span>
-	   </div>
+	   
 	   
 	   </div>
 	   
@@ -126,7 +96,7 @@
 	     <p id="customer_details_msg2" style="display:none">Please provide your name (e.g. Mr Jones)</p>
 	     <p id="customer_details_msg3" style="display:none">Please fill the requered field</p>
 	     
-	       <table>
+			 <table>
 		 <tbody style="display:none" id="company_choosen">
 		   <tr><td id="company_name_label">Company Name:</td><td><input id="company_name" type="text"></td></tr>
 
@@ -148,20 +118,12 @@
 		 
 		 
 	       </table>
+	        
+		   
+		   
+		 	<p>Give us you contact details (optional)</p>
 	       
-	       <div class="continue">
-		 <span class="button disabled" id="submit_details" style="display:none">Continue</span>
-	       </div>
-
-	       
-	   </div>
-	     
-
-
-	   <div id="get_optional_details" style="margin-top:20px;display:none" > 
-	     <p>Give us you contact details (optional)</p>
-	       
-	       <table border=0>
+	       		<table border=0>
 		 <tr ><td id="telephone_label" >Telephone:</td><td><input id="telephone" check="no" type="text"></td></tr>
 		 <tr ><td>Address:</td><td></td></tr>
 		 
@@ -223,22 +185,22 @@
 	   
 	       </table>
 	     
-	       
-	  
-	    
-	     
-	     <div style="margin-top:20px;margin-left:10px">
-	     Receive our weekly Newsletter:
-	     <input type="checkbox" id="newsletter" />
-	     <br />
-	     Receive Ofers and special promotions by email:
-	     <input type="checkbox"id="emarketing"  />
-	     <br />
-	     Recevie a printed catalogue by post:
-	     <input type="checkbox" id="catalogue" />
-	     </div>
+		 
+		 
+		 
+		 
+	       			<div style="margin-top:20px;margin-left:10px">
+	     			Receive our weekly Newsletter:
+	     			<input type="checkbox" id="newsletter" />
+	     			<br />
+	     			Receive Ofers and special promotions by email:
+	     			<input type="checkbox"id="emarketing"  />
+	     			<br />
+	     			Recevie a printed catalogue by post:
+	     			<input type="checkbox" id="catalogue" />
+	     			</div>
 	 
-	     <table style="margin-top:20px">
+	     		<table style="margin-top:20px">
 	       <tr>
 		 <td style="width:200px;border:1px solid #ccc;padding:10px">
 		   <p>Almost done!</p>
@@ -250,17 +212,21 @@
 		 </td>
 	     </table>
 	     
+
 	   
 
 
-	 </div>
-       </div>
-       <div style="clear:both"></div>
+	 		</div>
+       			</div>
+       			<div style="clear:both"></div>
 
-      </div>
+      			</div>
      
    
-     {include file="$footer_template"}
+     			
      
-   </div>
+   
+     
+   			</div>
+			{include file="$footer_template"}
  </body>
