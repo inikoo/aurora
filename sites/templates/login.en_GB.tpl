@@ -1,11 +1,12 @@
 {include  file="$head_template"}
  <body>
-   <div id="container" >
+   <div id="container" style="{$page_data.content_style}">
      {include file="$home_header_template"}
      <div id="page_content" >
 
      {include file="$left_menu_template"}
      <div id="central_content" style="min-height:600px">
+     {include file="templates/search_input.tpl"}
        <div id="no_logged_error" style="border:1px solid #ccc;margin:20px 40px;padding:20px;{if !$login}display:none{/if}" > 
 	     <p>You are already login.</p>
        </div>
