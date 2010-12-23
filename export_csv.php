@@ -86,6 +86,14 @@ switch ($tipo) {
         $filename=_('products').'.csv';
         $data=get_products_data($wheref);
         break;
+    case 'staff':
+        $filename=_('staff').'.csv';
+        $f_field=$_SESSION['state']['staff']['table']['f_field'];
+        $f_value=$_SESSION['state']['staff']['table']['f_value'];
+        $wheref=wheref_stores($f_field,$f_value);
+        $filename=_('staff').'.csv';
+        $data=get_staff_data($wheref);
+        break;
     case 'departments':
         $filename=_('departments').'.csv';
         $f_field=$_SESSION['state']['departments']['table']['f_field'];
@@ -415,6 +423,60 @@ $_data[]=$options['title'];
 }
 $data[]=$_data;
 $sql="select * from `Product Dimension` where $where $wheref";
+$res=mysql_query($sql);
+
+while($row=mysql_fetch_assoc($res)){
+$_data=array();
+foreach($fields as $key=>$options){
+
+$_data[]=$row[$options['db_name']];
+}
+$data[]=$_data;
+}
+//print_r($data);exit;
+
+return $data;
+
+}
+
+
+function get_staff_data($wheref,$where=' true'){
+
+$data=prepare_values($_REQUEST,array('fields'=>array('type'=>'json array','optional'=>true)));
+if(isset($data['fields'])){
+$fields_to_export=$data['fields'];
+}else{
+$fields_to_export=$_SESSION['state']['staff']['table']['csv_export'];
+}
+
+
+$fields=array(
+'id'=>array('title'=>_('Td'),'db_name'=>'Staff Key'),
+'name'=>array('title'=>_('Name'),'db_name'=>'Staff Name'),
+'alias'=>array('title'=>_('Alias'),'db_name'=>'Staff Alias'),
+'position'=>array('title'=>_('Position'),'db_name'=>'Company Position Title'),
+'description'=>array('title'=>_('Description'),'db_name'=>'Company Position Description'),
+'valid_from'=>array('title'=>_('Valid From'),'db_name'=>'Staff Valid from'),
+'valid_to'=>array('title'=>_('Valid To'),'db_name'=>'Staff Valid To'),
+
+);
+
+
+foreach($fields as $key=>$value){
+if(!isset($fields_to_export[$key]) or  !$fields_to_export[$key]  )
+unset($fields[$key]);
+}
+
+
+
+$data=array();
+$_data=array();
+foreach($fields as $key=>$options){
+$_data[]=$options['title'];
+}
+$data[]=$_data;
+$sql="select * from `Company Position Staff Bridge` PSB left join `Company Position Dimension` P on (`Company Position Key`=`Position Key`) left join `Staff Dimension` SD on PSB.`Staff Key`= SD.`Staff Key` where $where $wheref";
+
 $res=mysql_query($sql);
 
 while($row=mysql_fetch_assoc($res)){
