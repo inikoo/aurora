@@ -1490,6 +1490,35 @@ $default_state=array(
 
                                            )
                                ),
+
+// ------------------------------------------------------------------------------------
+
+ 				'staff'=>array(
+                                             'view'=>'general',
+                                             'parent'=>'none',
+                                             'details'=>0,
+                                             'table'=>array(
+                                                         'order'=>'name',
+                                                         'order_dir'=>'',
+                                                         'sf'=>0,
+                                                         'nr'=>25,
+                                                         'where'=>'where true',
+                                                         'f_field'=>'name',
+                                                         'f_value'=>'','f_show'=>false,
+                                                         
+                                                         'csv_export'=>array(
+                                                                'id'=>true,
+                                                                'alias'=>false,
+                                                                'name'=>true,
+                                                                'position'=>true,
+                                                                'description'=>false,
+                                                                'valid_from'=>false,
+                                                                'valid_to'=>false
+                                                                      )),
+                                         ),
+
+// -----------------------------------------------------------------------------------
+
                    'hr'=>array(
                             'view'=>'staff',
                             'staff'=>array('id'=>'',
@@ -1500,6 +1529,7 @@ $default_state=array(
                                            'where'=>'where true',
                                            'f_field'=>'name',
                                            'f_value'=>''
+
                                           ),
                             'areas'=>array(
                                         'order'=>'name',
