@@ -136,12 +136,25 @@
       </tbody>
  </table>
 </div>
+<br><br>
+{* ------------------amcolumn charts starts here ------------------------------------------------*}
+{include file='amcolumn.tpl'}
+{* ------------------amcolumn charts ends here ------------------------------------------------*}
 
 </div>
+
+
+
+
+
+
 <div id="plot" class="top_bar" style="clear:both;padding:0;margin:0;{if !$show_details}display:none;{/if}">
 {include file='plot_splinter.tpl'}
 </div>     
-     
+ 
+
+
+
 <div class="data_table" style="clear:both;">
     <span   class="clean_table_title">{t}Departments{/t}</span>
 <span  id="export_csv0" style="float:right;margin-left:20px"  class="table_type state_details" tipo="families" >{t}Export (CSV){/t}</span>
