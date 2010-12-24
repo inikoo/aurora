@@ -27,7 +27,9 @@ $(document).ready(function(){
 			   success: function(date_added){
 				  if(date_added != 0)
 				   {
-					   structure = '<div align="center"><div class="comment_holder"><div id="photo"><img src="art/user.jpg"><br>'+name+'</div><div id="comment_text"><div id="date_posted">'+date_added+'</div>'+comment+'</div></div></div>';				  	
+					   structure = '<div align="center"><div class="comment_holder"><div id="photo"><img src="art/user.jpg"><br>'+name+'</div><div id="comment_text"><div id="date_posted">'+date_added+'</div>'+comment+'</div></div></div>';
+
+                                            //alert(structure);				  	
 					   $(".no_comments").fadeOut("slow");
 					   $("#ajax_response").prepend(structure);
 					   $(".comment_table").find('textarea, input:text').each(function () {

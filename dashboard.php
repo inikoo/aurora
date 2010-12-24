@@ -39,10 +39,11 @@ $resultSet = mysql_query("select * from `Comment Dimension` order by `Comment Ke
 	{
 		while($resultRow = mysql_fetch_array($resultSet))
 		{
-		
+ 			 
 				$comment_value[] = $resultRow;
 			
 		}
+	
 	}
 	
 
@@ -110,21 +111,21 @@ $splinters=array(
                                   'js'=>'dashboard_top_products.js.php'
                               ),
                'top_customers'=>array(
-                  				   'title'=>_('Top Customers'),
+                  		   'title'=>_('Top Customers'),
                                    'index'=>2,
                                    'php'=>'splinter_top_customers.php',
                                    'tpl'=>'dashboard_top_customers.tpl',
                                    'js'=>'dashboard_top_customers.js.php'
                                ),
-			   'contacts_customers'=>array(
-                  				   'title'=>_('Contacts and Customers'),
+		'contacts_customers'=>array(
+                  		  'title'=>_('Contacts and Customers'),
                                    'index'=>4,
                                    'php'=>'splinter_contacts_customers.php',
                                    'tpl'=>'splinter_contacts_customers.tpl',
                                    'js'=>'splinter_contacts_customers.js.php'
                                ),
 			  'outstanding_ord'=>array(
-                  				   'title'=>_('Outstanding Orders'),
+                  		   'title'=>_('Outstanding Orders'),
                                    'index'=>5,
                                    'php'=>'splinter_outstanding_ord.php',
                                    'tpl'=>'splinter_outstanding_ord.tpl',
@@ -154,7 +155,6 @@ $smarty->assign('display_block',$_SESSION['state']['home']['display']);
 
 
 $smarty->assign('tplVar',$comment_value);
-
 
 $smarty->assign('search_scope','all');
 
