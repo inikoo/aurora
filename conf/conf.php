@@ -1252,6 +1252,7 @@ $default_state=array(
                                                    'mode'=>'',
                                                    'restrictions'=>'none',
                                                    'parent'=>''
+					
                                                )
                                    ),
                    'company_staff'=>array(
@@ -1491,7 +1492,7 @@ $default_state=array(
                                            )
                                ),
 
-// ------------------------------------------------------------------------------------
+
 
  				'staff'=>array(
                                              'view'=>'general',
@@ -1504,8 +1505,7 @@ $default_state=array(
                                                          'nr'=>25,
                                                          'where'=>'where true',
                                                          'f_field'=>'name',
-                                                         'f_value'=>'','f_show'=>false,
-                                                         
+                                                         'f_value'=>'','f_show'=>false,        
                                                          'csv_export'=>array(
                                                                 'id'=>true,
                                                                 'alias'=>false,
@@ -1514,10 +1514,58 @@ $default_state=array(
                                                                 'description'=>false,
                                                                 'valid_from'=>false,
                                                                 'valid_to'=>false
-                                                                      )),
+                                                                )
+                                                        ),
+ 	                               'company_areas'=>array(
+                                      		   'view'=>'general',
+                                      		   'parent'=>'none',
+                                      		   'details'=>0,
+                                      		   'order'=>'name',
+                                                   'order_dir'=>'',
+                                                   'sf'=>0,
+                                                   'nr'=>25,
+                                                   'where'=>'where true',
+                                                   'f_field'=>'name',
+                                                   'f_value'=>'','f_show'=>false,
+                                                   'mode'=>'',
+                                                   'restrictions'=>'none',
+                                                   'parent'=>'',                                     
+						  'csv_export'=>array(
+                                                                'id'=>true,
+                                                                'code'=>false,
+                                                                'name'=>true,
+                                                                'description'=>true,
+                                                                'number_of_department'=>false,
+                                                                'number_of_position'=>false,
+                                                                'number_of_employee'=>false
+                                                                     )                                              
+                                                            ),
+ 	                               'positions'=>array(
+                                      		   'view'=>'general',
+                                      		   'parent'=>'none',
+                                      		   'details'=>0,
+                                      		   'order'=>'name',
+                                                   'order_dir'=>'',
+                                                   'sf'=>0,
+                                                   'nr'=>25,
+                                                   'where'=>'where true',
+                                                   'f_field'=>'name',
+                                                   'f_value'=>'','f_show'=>false,
+                                                   'mode'=>'',
+                                                   'restrictions'=>'none',
+                                                   'parent'=>'',                                     
+						  'csv_export'=>array(
+                                                                'code'=>true,
+                                                                'name'=>true,
+                                                                'description'=>true,
+                                                                'employees'=>false,
+                                                                'department_name'=>true,
+                                                                'department_code'=>false,
+                                                                'department_description'=>false
+                                                                     )                                              
+                                                            ),
                                          ),
-
-// -----------------------------------------------------------------------------------
+ 
 
                    'hr'=>array(
                             'view'=>'staff',
