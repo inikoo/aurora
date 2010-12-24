@@ -102,6 +102,14 @@ switch ($tipo) {
         $filename=_('company_areas').'.csv';
         $data=get_company_areas_data($wheref);
         break;
+   case 'company_departments':
+        $filename=_('company_departments').'.csv';
+        $f_field=$_SESSION['state']['staff']['company_departments']['f_field'];
+        $f_value=$_SESSION['state']['staff']['company_departments']['f_value'];
+        $wheref=wheref_stores($f_field,$f_value);
+        $filename=_('company_departments').'.csv';
+        $data=get_company_departments_data($wheref);
+        break;    
     case 'positions':
         $filename=_('positions').'.csv';
         $f_field=$_SESSION['state']['staff']['positions']['f_field'];
@@ -128,14 +136,7 @@ switch ($tipo) {
         $where=sprintf(' `Product Family Key`=%d ',$_SESSION['state']['family']['id']);
         $data=get_products_data($wheref,$where);
         break;
-   case 'company_departments':
-        $filename=_('company_departments').'.csv';
-        $f_field=$_SESSION['state']['company_departments']['table']['f_field'];
-        $f_value=$_SESSION['state']['company_departments']['table']['f_value'];
-        $wheref=wheref_stores($f_field,$f_value);
-        $filename=_('company_departments').'.csv';
-        $data=get_company_departments_data($wheref);
-        break;    
+
    case 'orders_per_store':
         $filename=_('orders_per_store').'.csv';
         $f_field=$_SESSION['state']['stores']['orders']['f_field'];
@@ -667,20 +668,17 @@ $data=prepare_values($_REQUEST,array('fields'=>array('type'=>'json array','optio
 if(isset($data['fields'])){
 $fields_to_export=$data['fields'];
 }else{
-$fields_to_export=$_SESSION['state']['company_departments']['table']['csv_export'];
+$fields_to_export=$_SESSION['state']['staff']['company_departments']['csv_export'];
 }
 
 
 $fields=array(
-'area'=>array('title'=>_('Area'),'db_name'=>'Company Area Code'),
+'id'=>array('title'=>_('Area'),'db_name'=>'Company Department Key'),
 'code'=>array('title'=>_('Code'),'db_name'=>'Company Department Code'),
 'name'=>array('title'=>_('Name'),'db_name'=>'Company Department Name'),
-
 'department_description'=>array('title'=>_('Departments Description'),'db_name'=>'Company Department Description'),
-'no_of_department_employee'=>array('title'=>_('No. Of Department Employee'),'db_name'=>'Company Department Number Employees'),
-'company_area_name'=>array('title'=>_('Company Area Name'),'db_name'=>'Company Area Name'),
-'company_area_description'=>array('title'=>_('Company Area Description'),'db_name'=>'Company Area Description'),
-
+'number_of_position'=>array('title'=>_('No. Of Department Employee'),'db_name'=>'Company Department Number Positions'),
+'number_of_employee'=>array('title'=>_('Company Area Name'),'db_name'=>'Company Department Number Employees')
 );
 
 
@@ -699,7 +697,7 @@ $_data[]=$options['title'];
 $data[]=$_data;
 
  
-$sql="select * from `Company Department Dimension` CDS left join `Company Area Dimension` CAS on CDS.`Company Key`=CAS.`Company Key` where true $wheref";
+$sql="select * from `Company Department Dimension` where true $wheref";
 $res=mysql_query($sql);
 
 while($row=mysql_fetch_assoc($res)){
