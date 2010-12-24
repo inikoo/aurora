@@ -1226,16 +1226,8 @@ $default_state=array(
                                                          'f_value'=>'','f_show'=>false,
                                                          'mode'=>'',
                                                          'restrictions'=>'none',
-                                                         'parent'=>'',
-                                                         'csv_export'=>array(
-                                                                          'area'=>true,
-                                                                          'code'=>true,
-                                                                          'name'=>true,
-                                                                          'department_description'=>false,
-                                                                          'no_of_department_employee'=>false,
-                                                                          'company_area_name'=>false,
-                                                                          'company_area_description'=>false,
-                                                                      )),
+                                                         'parent'=>''
+                                                         ),
                                          ),
                    'company_areas'=>array(
                                        'view'=>'general',
@@ -1563,6 +1555,29 @@ $default_state=array(
                                                                 'department_code'=>false,
                                                                 'department_description'=>false
                                                                      )                                              
+                                                            ),
+                                         'company_departments'=>array(
+                                      		   'view'=>'general',
+                                      		   'parent'=>'none',
+                                      		   'details'=>0,
+                                      		   'order'=>'name',
+                                                   'order_dir'=>'',
+                                                   'sf'=>0,
+                                                   'nr'=>25,
+                                                   'where'=>'where true',
+                                                   'f_field'=>'name',
+                                                   'f_value'=>'','f_show'=>false,
+                                                   'mode'=>'',
+                                                   'restrictions'=>'none',
+                                                   'parent'=>'',                                     
+						         'csv_export'=>array(
+                                                                          'id'=>false,
+                                                                          'code'=>true,
+                                                                          'name'=>true,
+                                                                          'department_description'=>true,
+                                                                          'number_of_position'=>false,
+                                                                          'number_of_employee'=>false
+                                                                      )                                           
                                                             ),
                                          ),
  
