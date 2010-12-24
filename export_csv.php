@@ -94,6 +94,22 @@ switch ($tipo) {
         $filename=_('staff').'.csv';
         $data=get_staff_data($wheref);
         break;
+    case 'company_areas':
+        $filename=_('company_areas').'.csv';
+        $f_field=$_SESSION['state']['staff']['company_areas']['f_field'];
+        $f_value=$_SESSION['state']['staff']['company_areas']['f_value'];
+        $wheref=wheref_stores($f_field,$f_value);
+        $filename=_('company_areas').'.csv';
+        $data=get_company_areas_data($wheref);
+        break;
+    case 'positions':
+        $filename=_('positions').'.csv';
+        $f_field=$_SESSION['state']['staff']['positions']['f_field'];
+        $f_value=$_SESSION['state']['staff']['positions']['f_value'];
+        $wheref=wheref_stores($f_field,$f_value);
+        $filename=_('positions').'.csv';
+        $data=get_positions_data($wheref);
+        break;
     case 'departments':
         $filename=_('departments').'.csv';
         $f_field=$_SESSION['state']['departments']['table']['f_field'];
@@ -493,8 +509,87 @@ return $data;
 
 }
 
-function get_departments_data($wheref,$where){
+function get_company_areas_data($wheref,$where=' true'){
+$data=prepare_values($_REQUEST,array('fields'=>array('type'=>'json array','optional'=>true)));
+if(isset($data['fields'])){
+$fields_to_export=$data['fields'];
+}else{
+$fields_to_export=$_SESSION['state']['staff']['company_areas']['csv_export'];
+}
+$fields=array(
+'id'=>array('title'=>_('Id'),'db_name'=>'Company Area Key'),
+'name'=>array('title'=>_('Name'),'db_name'=>'Company Area Name'),
+'code'=>array('title'=>_('Code'),'db_name'=>'Company Area Code'),
+'description'=>array('title'=>_('Description'),'db_name'=>'Company Area Description'),
+'number_of_department'=>array('title'=>_('No. Of department'),'db_name'=>'Company Area Number Departments'),
+'number_of_position'=>array('title'=>_('No. Of Position'),'db_name'=>'Company Area Number Positions'),
+'number_of_employee'=>array('title'=>_('No. Of Employee'),'db_name'=>'Company Area Number Employees'),
+);
+foreach($fields as $key=>$value){
+if(!isset($fields_to_export[$key]) or  !$fields_to_export[$key]  )
+unset($fields[$key]);
+}
+$data=array();
+$_data=array();
+foreach($fields as $key=>$options){
+$_data[]=$options['title'];
+}
+$data[]=$_data;
+$sql="select * from `Company Area Dimension` where $where $wheref";
+$res=mysql_query($sql);
+while($row=mysql_fetch_assoc($res)){
+$_data=array();
+foreach($fields as $key=>$options){
+$_data[]=$row[$options['db_name']];
+}
+$data[]=$_data;
+}
+//print_r($data);exit;
+return $data;
+}
 
+function get_positions_data($wheref,$where=' true'){
+$data=prepare_values($_REQUEST,array('fields'=>array('type'=>'json array','optional'=>true)));
+if(isset($data['fields'])){
+$fields_to_export=$data['fields'];
+}else{
+$fields_to_export=$_SESSION['state']['staff']['positions']['csv_export'];
+}
+$fields=array(
+'code'=>array('title'=>_('Code'),'db_name'=>'Company Position Code'),
+'name'=>array('title'=>_('Name'),'db_name'=>'Company Position Title'),
+'description'=>array('title'=>_('Description'),'db_name'=>'Company Position Description'),
+'employees'=>array('title'=>_('Employee'),'db_name'=>'Company Position Employees'),
+'department_name'=>array('title'=>_('Department Name'),'db_name'=>'Company Department Name'),
+'department_code'=>array('title'=>_('Department Code'),'db_name'=>'Company Department Code'),
+'department_description'=>array('title'=>_('Department Description'),'db_name'=>'Company Department Description'),
+);
+foreach($fields as $key=>$value){
+if(!isset($fields_to_export[$key]) or  !$fields_to_export[$key]  )
+unset($fields[$key]);
+}
+$data=array();
+$_data=array();
+foreach($fields as $key=>$options){
+$_data[]=$options['title'];
+}
+$data[]=$_data;
+
+$sql="select * from `Company Position Dimension` CPD left join `Company Department Position Bridge` CDPB on (`Company Position Key`=`Position Key`) left join `Company Department Dimension` CDD on CDD.`Company Department Key`= CDPB.`Department Key` where $where $wheref";
+
+$res=mysql_query($sql);
+while($row=mysql_fetch_assoc($res)){
+$_data=array();
+foreach($fields as $key=>$options){
+$_data[]=$row[$options['db_name']];
+}
+$data[]=$_data;
+}
+//print_r($data);exit;
+return $data;
+}
+
+function get_departments_data($wheref,$where){
 $data=prepare_values($_REQUEST,array('fields'=>array('type'=>'json array','optional'=>true)));
 if(isset($data['fields'])){
 $fields_to_export=$data['fields'];

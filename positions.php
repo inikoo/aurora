@@ -40,6 +40,8 @@ $js_files=array(
 		$yui_path.'menu/menu-min.js',
 		'common.js.php',
 		'table_common.js.php',
+		'js/edit_common.js',
+		'js/csv_common.js',
 		'positions.js.php'
 		);
 $smarty->assign('css_files',$css_files);
@@ -68,6 +70,41 @@ $smarty->assign('filter_name0',$filter_menu[$tipo_filter]['label']);
 
 $paginator_menu=array(10,25,50,100,500);
 $smarty->assign('paginator_menu0',$paginator_menu);
+ $csv_export_options=array(
+                            'description'=>array(
+                                              'title'=>_('Description'),
+                                              'rows'=>
+                                                     array(
+                                                         array(
+                                                             'code'=>array('label'=>_('Code'),'selected'=>$_SESSION['state']['staff']['positions']['csv_export']['code']),
+                                                             'name'=>array('label'=>_('Name'),'selected'=>$_SESSION['state']['staff']['positions']['csv_export']['name']),
+                                                             'description'=>array('label'=>_('Description'),'selected'=>$_SESSION['state']['staff']['positions']['csv_export']['description']),
+                                                             'employees'=>array('label'=>_('Employees'),'selected'=>$_SESSION['state']['staff']['positions']['csv_export']['employees']),
+                                                             
+                                                
+                                                   )
+                            )
+                            ),
 
+
+'Other Details'=>array(
+                                              'title'=>_('Other Details'),
+                                              'rows'=>
+                                                     array(
+                                                         array(
+                                                             'department_name'=>array('label'=>_('Department Name'),'selected'=>$_SESSION['state']['staff']['positions']['csv_export']['department_name']),
+                                                             'department_code'=>array('label'=>_('Department Code'),'selected'=>$_SESSION['state']['staff']['positions']['csv_export']['department_code']),
+                                                             'department_description'=>array('label'=>_('Department Description'),'selected'=>$_SESSION['state']['staff']['positions']['csv_export']['department_description']),
+                                                            
+                                                             
+                                                
+                                                   )
+                            )
+                            )
+                        );
+$smarty->assign('export_csv_table_cols',2);
+
+                     
+$smarty->assign('csv_export_options',$csv_export_options);
 $smarty->display('positions.tpl');
 ?>
