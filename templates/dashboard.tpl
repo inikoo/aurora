@@ -6,9 +6,9 @@
   <script src="http://ui.jquery.com/latest/ui/effects.core.js"></script>
 <script src="http://ui.jquery.com/latest/ui/effects.explode.js"></script>
 
-<!--<link rel="stylesheet" href="dashboard_js_css/dashboard.css" type="text/css" media="all">-->
-
 <link rel="stylesheet" href="dashboard_js_css/dashboard.css" type="text/css" media="all">
+
+
 
 {literal}
 <script language="javascript">
@@ -302,7 +302,7 @@ try{convertEntities(quicktagsL10n);}catch(e){};
 </script>
 {/literal}
 <script type="text/javascript" src="dashboard_js_css/load-scripts.js"></script>
-</head><body class="wp-admin js  index-php">
+</head>
 {literal}
 <script type="text/javascript">
 //<![CDATA[
@@ -400,8 +400,8 @@ on the arrow that appears on the right side of each navigation tab. You can also
            
         { /foreach }
     
-    </center>
-    <!--<div id="inner1" style="background-color:#CCCCCC; height:35px; font-size:14px;">Remove this section</div>-->
+   	 </center>
+    
   
   	{literal}
 	<script>
@@ -829,7 +829,7 @@ GUI interfac</p>
         { /foreach }
     
     </center>
-    <!--<div id="inner6" style="background-color:#CCCCCC; height:35px; font-size:14px;">Remove this section</div>-->
+   
   
   </div>
 </div>
@@ -857,7 +857,7 @@ GUI interfac</p>
   });
   </script>
   <script>
-    $("#save6").click(function () {
+    $("#save7").click(function () {
       $('#div7').slideToggle("slow");
     });
 	function slide7()
@@ -866,7 +866,7 @@ GUI interfac</p>
 		}
 </script>
 <script>
-    $("#exit6").click(function () {
+    $("#exit7").click(function () {
       $('#div7').slideToggle("slow");
     });
 	
@@ -997,47 +997,7 @@ basically done, and we’re just squashing bugs. To the brave of heart and
 that you run it […]</div></li></ul></div></div>
 </div>-->
 </div>
-{literal}
-<script>
-    $("#edit7").click(function () {
-      $('#div7').slideToggle("slow");
-    });
-	function slide7()
-	{
-      $('#div7').slideToggle("slow");
-		}
-</script>
-<script>
-  $('#cross7').click(function () {
-  $('#dashboard_primary').fadeOut("slow");
-  });
-  </script>
-  <script>
-    $("#save7").click(function () {
-      $('#div7').slideToggle("slow");
-    });
-	function slide7()
-	{
-      $('#div7').slideToggle("slow");
-		}
-</script>
-<script>
-    $("#exit7").click(function () {
-      $('#div7').slideToggle("slow");
-    });
-	function slide7()
-	{
-      $('#div7').slideToggle("slow");
-		}
-</script>
-<script>
-  $(document).ready(function() {
-    $('#inner7').click(function () {
-      $('#dashboard_primary').effect("explode");
-    });
-  });
-  </script>
-  {/literal}
+
 <!--==================================================================END DIV 7====================================================================================-->
 
 <!--===================================================================== DIV 8====================================================================================-->
@@ -1066,7 +1026,7 @@ that you run it […]</div></li></ul></div></div>
     <div id="inner8" style="background-color:#CCCCCC; height:35px; font-size:14px;">Remove this section</div>
   
   </div>
-<div class="rss-widget"><ul><li><a class="rsswidget" href="http://feedproxy.google.com/%7Er/weblogtoolscollection/UXMP/%7E3/QhpdwwBM2C0/" title="Joseph Scott who is working on the Akismet plugin for WordPress notified everyone via the WordPress core development blog that there would be some changes coming to Akismet, starting with version 2.5. In version 2.5 of the plugin, there will be some new files added such as admin.php, akismet,css, akismet.js, and widget.php. There will also be a test mode inc […]">Weblog Tools Collection: Changes Slated For Akismet</a></li><li><a class="rsswidget" href="http://feedproxy.google.com/%7Er/weblogtoolscollection/UXMP/%7E3/IINrLIbMJDw/" title="WordPress is certainly the most popular open source blogging platform, but how are development decisions made? You may have heard that WordPress is a democracy, that Matt Mullenweg makes all the decisions, or that Automattic governs the development of WordPress.&nbsp;Of course, neither of those are true. WordPress is actually a Meritocracy. It’s really quite simp […]">Weblog Tools Collection: How WordPress Decisions are Made</a></li><li><a class="rsswidget" href="http://feedproxy.google.com/%7Er/weblogtoolscollection/UXMP/%7E3/57tBRL-wfPU/" title="The fine folks over at Testking.com have created and shared an info-graphic that displays the power of WordPress. The image contains interesting information that can be found within the Codex but has been displayed in a nice, visual form. Notables include: time line of releases and major milestones from 2003 to 2010, web usage of WordPress, percentages of we […]">Weblog Tools Collection: One Image Shows The Power Of WordPress</a></li><li><a class="rsswidget" href="http://feedproxy.google.com/%7Er/weblogtoolscollection/UXMP/%7E3/e5XoRzeq-pM/" title="New plugins Snow Storm displays falling snow flakes on the front of your WordPress website for a festive presentation. WordPress Gzip Compression enables gzip-compression if the visitor’s browser can handle it. This will speed up your WordPress website drastically and reduces bandwidth usage. Updated plugins Easy FancyBox enables the FancyBox 1.3.4 jQuery ex […]">Weblog Tools Collection: WordPress Plugin Releases for 12/6</a></li><li><a class="rsswidget" href="http://wordpress.tv/2010/12/02/big-web-show/" title=" […]">WordPress.tv: The Big Web Show 29 with Dan Benjamin and Jeffrey Zeldman: Matt Mullenweg Interview</a></li></ul></div></div>
+<div class="rss-widget"><ul><li><a class="rsswidget" href="http://feedproxy.google.com/%7Er/weblogtoolscollection/UXMP/%7E3/QhpdwwBM2C0/" title="Joseph Scott who is working on the Akismet plugin for WordPress notified everyone via the WordPress core development blog that there would be some changes coming to Akismet, starting with version 2.5. In version 2.5 of the plugin, there will be some new files added such as admin.php, akismet,css, akismet.js, and widget.php. There will also be a test mode inc […]">Weblog Tools Collection: Changes Slated FoTC & expected CTC r Akismet</a></li><li><a class="rsswidget" href="http://feedproxy.google.com/%7Er/weblogtoolscollection/UXMP/%7E3/IINrLIbMJDw/" title="WordPress is certainly the most popular open source blogging platform, but how are development decisions made? You may have heard that WordPress is a democracy, that Matt Mullenweg makes all the decisions, or that Automattic governs the development of WordPress.&nbsp;Of course, neither of those are true. WordPress is actually a Meritocracy. It’s really quite simp […]">Weblog Tools Collection: How WordPress Decisions are Made</a></li><li><a class="rsswidget" href="http://feedproxy.google.com/%7Er/weblogtoolscollection/UXMP/%7E3/57tBRL-wfPU/" title="The fine folks over at Testking.com have created and shared an info-graphic that displays the power of WordPress. The image contains interesting information that can be found within the Codex but has been displayed in a nice, visual form. Notables include: time line of releases and major milestones from 2003 to 2010, web usage of WordPress, percentages of we […]">Weblog Tools Collection: One Image Shows The Power Of WordPress</a></li><li><a class="rsswidget" href="http://feedproxy.google.com/%7Er/weblogtoolscollection/UXMP/%7E3/e5XoRzeq-pM/" title="New plugins Snow Storm displays falling snow flakes on the front of your WordPress website for a festive presentation. WordPress Gzip Compression enables gzip-compression if the visitor’s browser can handle it. This will speed up your WordPress website drastically and reduces bandwidth usage. Updated plugins Easy FancyBox enables the FancyBox 1.3.4 jQuery ex […]">Weblog Tools Collection: WordPress Plugin Releases for 12/6</a></li><li><a class="rsswidget" href="http://wordpress.tv/2010/12/02/big-web-show/" title=" […]">WordPress.tv: The Big Web Show 29 with Dan Benjamin and Jeffrey Zeldman: Matt Mullenweg Interview</a></li></ul></div></div>
 </div>-->
 </div>
 {literal}
@@ -1156,18 +1116,27 @@ that you run it […]</div></li></ul></div></div>
 
         
         {section name=tplVar loop=$tplVar}
-                <div align="center">         
-                    <div class="comment_holder">
+	
+             <div align="center">         
+                .    <div class="comment_holder">
                         <div id="photo"><img src="art/user.jpg" width="20" height="20">  <br>{ $tplVar[tplVar].Name }  </div>
                             
  <div id="comment_text"><div id="date_posted">{$tplVar[tplVar].Date Added}</div>{$tplVar[tplVar].Comment}</div>
                     </div>
                 </div>
+
         {/section}
         
 
+	
+
 	</div>
     </div>
+
+	 Items {$paginate.first}-{$paginate.last} out of {$paginate.total} displayed.
+
+
+	 {paginate_prev} {paginate_middle} {paginate_next}
 
 <div align="center">
 	<table border="0" cellpadding="4" cellspacing="0" class="comment_table" width="40%">
@@ -1235,4 +1204,4 @@ try{convertEntities(plugininstallL10n);}catch(e){};
 
 <script type="text/javascript">if(typeof wpOnload=='function')wpOnload();</script>
 {/literal}
-</body></html>
+

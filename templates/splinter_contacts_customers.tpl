@@ -4,8 +4,8 @@
 
  <span class="clean_table_title">Contacts and Customers</span>
 
- <span class="clean_table_title">Top Customers</span>
 
+     
  <div class="home_splinter_options">
  <span id="top_customers_50" nr="50" {if $conf_data.top_customers.nr==50}class="selected"{/if} style="float:right;margin-left:5px">50</span>
  <span id="top_customers_20" nr="20" {if $conf_data.top_customers.nr==20}class="selected"{/if} style="float:right;margin-left:5px">20</span>
@@ -16,7 +16,7 @@
  <span id="top_customers_1m" period="1m" {if $conf_data.top_customers.period=='1m'}class="selected"{/if} style="float:right;margin-left:5px">{t}1m{/t}</span>
  </div>
 
-  {include file='table_splinter.tpl' table_id=$index filter_name=$filter_name filter_value=$filter_value no_filter=1}
+  
 
   {include file='table_dashboard.tpl' table_id=$index filter_name=$filter_name filter_value=$filter_value no_filter=1}
 
