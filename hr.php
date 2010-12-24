@@ -68,11 +68,6 @@ $smarty->assign('filter_name0',$filter_menu[$tipo_filter]['label']);
 
 $paginator_menu=array(10,25,50,100,500);
 $smarty->assign('paginator_menu0',$paginator_menu);
-
-
-// ----------------------------products export csv right clicking code----------------------------
-
-
  $csv_export_options=array(
                             'description'=>array(
                                               'title'=>_('Description'),
@@ -105,7 +100,7 @@ $smarty->assign('paginator_menu0',$paginator_menu);
                             )
                             )
                         );
-$smarty->assign('export_csv_table_cols',1);
+$smarty->assign('export_csv_table_cols',2);
 
                      
 $smarty->assign('csv_export_options',$csv_export_options);
