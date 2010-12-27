@@ -70,4 +70,47 @@
   </div>
 </div>
 </div> 
+
+<div id="Editor_move_items" xstyle="position:fixed;top:-200px">
+xx  <div style="display:none" class="hd"></div>
+    <div class="bd dt-editor" >
+          <table border=0>
+          
+         
+          
+	    <input type="hidden" id="move_sku" value=0 >
+	    <input type="hidden" id="move_record_index" value=0 >
+	    <input type="hidden" id="move_other_location_key" value=0 >
+	    <input type="hidden" id="move_this_location_key" value="{$location->id}" >
+
+	    <tr><td colspan="3">{t}Move{/t} <span id="move_sku_formated"></span></td></tr>
+	    <tr>
+	    <td id="this_location"  style="width:80px;text-align:right;padding-right:10px;"></td>
+	    <td id="flow"  style="width:40px;text-align:center" onClick="change_move_flow()" flow="right"><img src="art/icons/arrow_right.png" /></td>
+	    <td id="other_location" style="width:80px">
+			<div id="location_move_to" style="width:80px;margin-left:2px">
+			  <input id="location_move_to_input" type="text" style="width:80px;">
+			  <div id="location_move_to_container" ></div>
+			</div>
+			<div id="location_move_from" style="margin-left:2px;display:none">
+			  <input id="location_move_from_input" type="text" style="" value="">
+			  <div id="location_move_from_container"></div>
+			</div>
+
+
+	      </td>
+	    </tr>
+	    <tr>
+	      <td style="text-align:right;padding-right:10px;cursor:pointer" ovalue=""  id="move_stock_left" onclick="move_stock_right()"></td>
+	      <td><input value='' style="width:45px;text-align:center" id="move_qty"  onkeyup="move_qty_changed()"   /></td>
+	      <td style="padding-left:10px;cursor:pointer" id="move_stock_right"  ovalue="" onclick="move_stock_left()"></td>
+	    </tr>
+	  </table>
+	  <div class="yui-dt-button">
+	    <button onclick="save_move_items();" class="yui-dt-default">{t}Save{/t}</button>
+	    <button onclick="close_move_dialog()" >{t}Cancel{/t}</button>
+	  </div>
+    </div>
+</div>
+
 {include file='footer.tpl'}

@@ -312,6 +312,8 @@ var highlightEditableCell = function(oArgs) {
     case('add_object'):
     case('remove_object'):
     case('edit_object'):
+    case('edit_object'):
+        case('edit_pending'):    
 
         this.highlightCell(target);
         break;
