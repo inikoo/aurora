@@ -18,8 +18,8 @@ $orders_in_process_data['value']=money($row['net']+$row['tax'],$currency);
 
 }
 $smarty->assign('orders_in_process_data',$orders_in_process_data);
-*/
 
+*/
 
 
 ?>
