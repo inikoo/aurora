@@ -7,7 +7,7 @@
       <div style="text-align:right">
 	<span class="state_details" id="continue_later"><a href="customer.php?id={$order->get('order customer key')}">Continue Later</a></span>
 	<span class="state_details" id="cancel" style="margin-left:20px">Cancel</span>
-	<span class="state_details" id="done" style="margin-left:20px"><a href="customer.php?id={$order->get('order customer key')}">Send to Warehouse</a></span>
+	<span class="state_details" id="done" style="margin-left:20px">Send to Warehouse</span>
 
       </div>
       <div class="yui-b" style="border:1px solid #ccc;text-align:left;padding:10px;margin: 0px 0 10px 0;height:15em">

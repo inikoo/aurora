@@ -1869,7 +1869,7 @@ function edit_company2() {
     echo json_encode($response);
 }
 function new_company($data) {
-    Timer::timing_milestone('begin');
+    //Timer::timing_milestone('begin');
     global $editor;
     $data['editor']=$editor;
 
@@ -1890,7 +1890,7 @@ function new_company($data) {
 }
 
 function new_customer($data) {
-    Timer::timing_milestone('begin');
+    //Timer::timing_milestone('begin');
     global $editor;
 
 
@@ -1944,7 +1944,7 @@ function new_customer($data) {
 
 
 function new_corporation($data) {
-    Timer::timing_milestone('begin');
+    //Timer::timing_milestone('begin');
     global $editor;
 
     $company=new Company('find create',$data['values']);
