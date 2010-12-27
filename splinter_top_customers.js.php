@@ -19,8 +19,8 @@ YAHOO.util.Event.onContentReady("table<?php print $_REQUEST['table_id']?>", func
 
 
 	    var CustomersColumnDefs = [
-				       {key:"position", label:"", width:2,sortable:false,className:"aleft"}
-				       ,{key:"name", label:"<?php echo _('Customer Name')?>", width:185,sortable:false,className:"aleft"}
+				      {key:"position", label:"", width:2,sortable:false,className:"aleft"}
+				      ,{key:"name", label:"<?php echo _('Customer Name')?>", width:185,sortable:false,className:"aleft"}
 
 				      
 				       ,{key:"last_order", label:"<?php echo _('Last Order')?>",width:70,sortable:false,className:"aright"}
