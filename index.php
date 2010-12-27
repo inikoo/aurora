@@ -91,7 +91,7 @@ $splinters=array(
                                   'js'=>'splinter_top_products.js.php'
                               ),
                'top_customers'=>array(
-                  'title'=>_('Top Customers'),
+                  		'title'=>_('Top Customers'),
                                    'index'=>2,
                                    'php'=>'splinter_top_customers.php',
                                    'tpl'=>'splinter_top_customers.tpl',

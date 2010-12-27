@@ -1,35 +1,32 @@
 <?php include_once('common.php');
 
-print "var nr=parseInt(".$_SESSION['state']['home']['splinters']['top_customers']['nr'].");";
-print "var criteria='".$_SESSION['state']['home']['splinters']['top_customers']['order']."';";
-?>
+print "var nr=parseInt(".$_SESSION['state']['home']['splinters']['top_products']['nr'].");";
+print "var criteria='".$_SESSION['state']['home']['splinters']['top_products']['order']."';";
 
-top_customers_tables= new Object();
+?>
+top_products_tables= new Object();
 
 YAHOO.util.Event.onContentReady("table<?php print $_REQUEST['table_id']?>", function () {
 
-
+ 
 
 	     //START OF THE TABLE=========================================================================================================================
-<?php print "var tableid=".$_REQUEST['table_id'].";";?>
 
-		
+		<?php print "var tableid=".$_REQUEST['table_id'].";";?>
+
 	    var tableDivEL="table"+tableid;
 
 
-
 	    var CustomersColumnDefs = [
-				       //{key:"position", label:"", width:2,sortable:false,className:"aleft"} ,
-				       {key:"name", label:"<?php echo _('Customer Name')?>", width:185,sortable:false,className:"aleft"}
+				      // {key:"position", label:"", width:2,sortable:false,className:"aleft"} ,
+				       {key:"name", label:"<?php echo _('Name')?>", width:80,sortable:false,className:"aleft"}
+				       ,{key:"invoices", label:"<?php echo _('Invoices')?>", width:45,sortable:false,className:"aleft"}
+				       ,{key:"email", label:"<?php echo _('Email')?>", width:80,sortable:false,className:"aleft"}
+
+				       ,{key:"last_order", label:"<?php echo _('Last Order')?>", width:65,sortable:false,className:"aright"}
 
 				      
-				       //,{key:"last_order", label:"<?php echo _('Last Order')?>",width:70,sortable:false,className:"aright"}
-				       //,{key:"invoices", label:"<?php echo _('Invoices')?>",sortable:false,className:"aright"}
-				    
-				       
-				     	      
-				      ,{key:"net_balance", label:"<?php echo _('Balance')?>",sortable:false,className:"aright"}
-				      
+				     
 				      
 				      
 				     
@@ -37,11 +34,11 @@ YAHOO.util.Event.onContentReady("table<?php print $_REQUEST['table_id']?>", func
 
 					 ];
 	    //?tipo=customers&tid=0"
-	    top_customers_tables.dataSourcetopcust = new YAHOO.util.DataSource("ar_splinters.php?tipo=customers&tableid="+tableid);
+	    top_products_tables.dataSourcetopprod = new YAHOO.util.DataSource("ar_top_customer.php?tipo=customers&tableid="+tableid);
 	  //  alert("ar_reports.php?tipo=customers&nr=20&tableid="+tableid)
-	    top_customers_tables.dataSourcetopcust.responseType = YAHOO.util.DataSource.TYPE_JSON;
-	    top_customers_tables.dataSourcetopcust.connXhrMode = "queueRequests";
-	    top_customers_tables.dataSourcetopcust.responseSchema = {
+	    top_products_tables.dataSourcetopprod.responseType = YAHOO.util.DataSource.TYPE_JSON;
+	    top_products_tables.dataSourcetopprod.connXhrMode = "queueRequests";
+	    top_products_tables.dataSourcetopprod.responseSchema = {
 		resultsList: "resultset.data", 
 		metaFields: {
 		    rowsPerPage:"resultset.records_perpage",
@@ -55,28 +52,18 @@ YAHOO.util.Event.onContentReady("table<?php print $_REQUEST['table_id']?>", func
 		
 		
 		fields: [
-			 'position',
-			 'id',
 			 'name',
-			 'location',
-			 'orders',
 			 'email',
-			 'telephone',
-			 'last_order','activity',
-			 'total_payments','contact_name'
-			 ,"address","town","postcode","region","country"
-			 ,"ship_address","ship_town","ship_postcode","ship_region","ship_country"
-			 ,"total_paymants","total_refunds","net_balance","total_profit","balance"
-			 ,"top_orders","top_invoices","top_balance","top_profits","invoices","store"
+			'invoices',
+			'last_order'
 			 ]};
 	    //__You shouls not change anything from here
 
-	    //top_customers_tables.dataSource.doBeforeCallback = mydoBeforeCallback;
+	    //top_products_tables.dataSource.doBeforeCallback = mydoBeforeCallback;
 
 
-
-	    top_customers_tables.table1 = new YAHOO.widget.DataTable(tableDivEL, CustomersColumnDefs,
-								   top_customers_tables.dataSourcetopcust
+	    top_products_tables.table1 = new YAHOO.widget.DataTable(tableDivEL, CustomersColumnDefs,
+								   top_products_tables.dataSourcetopprod
 								 , {
 								     renderLoopSize: 50,generateRequest : myRequestBuilder
 								       ,paginator : new YAHOO.widget.Paginator({
@@ -92,46 +79,37 @@ YAHOO.util.Event.onContentReady("table<?php print $_REQUEST['table_id']?>", func
 
 									  })
 								     
-								     ,sortedBy : {
-									 key: criteria,
-									 dir: 'desc'
-								     },
-								     dynamicData : true
+								   //  ,sortedBy : {
+									// key: criteria,
+									// dir: 'desc'
+								    // }
+								     ,dynamicData : true
 
 								  }
 								   
 								 );
 	    
-	    top_customers_tables.table1.handleDataReturnPayload =myhandleDataReturnPayload;
-	    top_customers_tables.table1.doBeforeSortColumn = mydoBeforeSortColumn;
-	    top_customers_tables.table1.doBeforePaginatorChange = mydoBeforePaginatorChange;
+	    top_products_tables.table1.handleDataReturnPayload =myhandleDataReturnPayload;
+	    top_products_tables.table1.doBeforeSortColumn = mydoBeforeSortColumn;
+	    top_products_tables.table1.doBeforePaginatorChange = mydoBeforePaginatorChange;
 
 		    
 		    
-	    top_customers_tables.table1.view='<?php echo$_SESSION['state']['customers']['view']?>';
+	   
 
-	    top_customers_tables.table1.filter={key:'<?php echo$_SESSION['state']['customers']['table']['f_field']?>',value:'<?php echo$_SESSION['state']['customers']['table']['f_value']?>'};
+	    top_products_tables.table1.filter={key:'',value:''};
 
-	    //   YAHOO.util.Event.addListener('f_input', "keyup",myFilterChangeValue,{table:top_customers_tables.table1,datasource:top_customers_tables.dataSource})
-			 
-	    
-	    //	    var Dom   = YAHOO.util.Dom;
-	    //alert(Dom.get('f_input'));
-
-	    YAHOO.util.Event.addListener('yui-pg0-0-page-report', "click",myRowsPerPageDropdown)
-	
 	});
-
 
 function change_period(){
 var period=this.getAttribute('period');
 var tableid=<?php print $_REQUEST['table_id']?>;
 
-var table=top_customers_tables.table1;
-    var datasource=top_customers_tables.dataSourcetopcust;
+var table=top_products_tables.table1;
+    var datasource=top_products_tables.dataSourcetopprod;
     var request='&period=' + period;
     datasource.sendRequest(request,table.onDataReturnInitializeTable, table);
-ids=['top_customers_all','top_customers_1y','top_customers_1m','top_customers_1q'];
+ids=['top_products_all','top_products_1y','top_products_1m','top_products_1q'];
 Dom.removeClass(ids,'selected');
 Dom.addClass(this,'selected');
 
@@ -140,21 +118,20 @@ function change_number(){
 var nr=this.getAttribute('nr');
 var tableid=<?php print $_REQUEST['table_id']?>;
 
-var table=top_customers_tables.table1;
-    var datasource=top_customers_tables.dataSourcetopcust;
+var table=top_products_tables.table1;
+    var datasource=top_products_tables.dataSourcetopprod;
     var request='&nr=' + nr;
     datasource.sendRequest(request,table.onDataReturnInitializeTable, table);
-ids=['top_customers_50','top_customers_10','top_customers_20'];
+ids=['top_products_50','top_products_10','top_products_20'];
 Dom.removeClass(ids,'selected');
 Dom.addClass(this,'selected');
 
 }
 function init(){
- ids=['top_customers_50','top_customers_10','top_customers_20'];
+ ids=['top_products_50','top_products_10','top_products_20'];
  YAHOO.util.Event.addListener(ids, "click",change_number);
  
-ids=['top_customers_all','top_customers_1y','top_customers_1m','top_customers_1q'];
+ids=['top_products_all','top_products_1y','top_products_1m','top_products_1q'];
  YAHOO.util.Event.addListener(ids, "click",change_period);
 }
 YAHOO.util.Event.onDOMReady(init);
-

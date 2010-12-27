@@ -18,7 +18,7 @@
 		<div id="wid_menu" >
 			<img style="position:relative;top:3px;display:none" src="art/icons/previous.png" alt="" id="previous" />
 			<ul id="buttons">
-			{foreach from=$splinters key=key item=splinter}
+	{foreach from=$splinters key=key item=splinter}
             <li id="splinter_but_{$key}" key="{$key}" class="splinter_buttons {if $display_block==$key}active{/if}" onClick="change_block(this)"  >{$splinter.title}</li>
             {/foreach}
             </ul>

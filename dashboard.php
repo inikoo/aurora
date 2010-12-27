@@ -18,10 +18,14 @@ include_once('common.php');
 include_once('class.Product.php');
 include_once('class.Order.php');
 include_once('class.Customer.php');
+include('pagination.class.php');
 
 $general_options_list=array();
 //$general_options_list[]=array('tipo'=>'js','state'=>'','id'=>'edit_widgets','label'=>_('Customize Page'));
 $smarty->assign('general_options_list',$general_options_list);
+
+// Create the pagination object
+        $pagination = new pagination;
 
 if ($user->data['User Type']=='Supplier') {
     $num_suppliers=count($user->suppliers);
@@ -39,10 +43,11 @@ $resultSet = mysql_query("select * from `Comment Dimension` order by `Comment Ke
 	{
 		while($resultRow = mysql_fetch_array($resultSet))
 		{
-		
+ 			 
 				$comment_value[] = $resultRow;
 			
 		}
+	
 	}
 	
 
@@ -110,28 +115,28 @@ $splinters=array(
                                   'js'=>'dashboard_top_products.js.php'
                               ),
                'top_customers'=>array(
-                  				   'title'=>_('Top Customers'),
+                  		   'title'=>_('Top Customers'),
                                    'index'=>2,
-                                   'php'=>'splinter_top_customers.php',
+                                   'php'=>'dashboard_top_customers.php',
                                    'tpl'=>'dashboard_top_customers.tpl',
                                    'js'=>'dashboard_top_customers.js.php'
                                ),
-			   'contacts_customers'=>array(
-                  				   'title'=>_('Contacts and Customers'),
+		'contacts_customers'=>array(
+                  		  'title'=>_('Contacts and Customers'),
                                    'index'=>4,
                                    'php'=>'splinter_contacts_customers.php',
                                    'tpl'=>'splinter_contacts_customers.tpl',
                                    'js'=>'splinter_contacts_customers.js.php'
                                ),
-			  'outstanding_ord'=>array(
-                  				   'title'=>_('Outstanding Orders'),
+		 'outstanding_ord'=>array(
+                  		   'title'=>_('Outstanding Orders'),
                                    'index'=>5,
                                    'php'=>'splinter_outstanding_ord.php',
                                    'tpl'=>'splinter_outstanding_ord.tpl',
                                    'js'=>'splinter_outstanding_ord.js.php'
                                ),
 		 'worst_products'=>array(
-                  				   'title'=>_('Worst Product'),
+                  		   'title'=>_('Worst Product'),
                                    'index'=>6,
                                    'php'=>'splinter_top_products.php',
                                   'tpl'=>'dashboard_top_products.tpl',
@@ -148,12 +153,30 @@ foreach($splinters as $splinter) {
 
 
 
-//print_r($_SESSION['state']['home']['splinters']);
+
 $smarty->assign('conf_data',$_SESSION['state']['home']['splinters']);
 $smarty->assign('display_block',$_SESSION['state']['home']['display']);
 
 
-$smarty->assign('tplVar',$comment_value);
+	if (count($comment_value)) 
+	{
+          	$commentPages = $pagination->generate($comment_value, 4);
+          	 
+          	if (count($commentPages) != 0) 
+		{
+            		
+            		 $pageNumbers = '<div class="numbers">'.$pagination->links().'</div>';
+            		
+          
+			
+			$smarty->assign('tplVar',$commentPages);
+			
+            		
+       		 	$smarty->assign('pagination_bottom',$pageNumbers);
+				
+          	}
+        }
+
 
 
 $smarty->assign('search_scope','all');
