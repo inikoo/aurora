@@ -7,7 +7,7 @@
 <script src="http://ui.jquery.com/latest/ui/effects.explode.js"></script>
 
 <link rel="stylesheet" href="dashboard_js_css/dashboard.css" type="text/css" media="all">
-
+<!--<link href="style.css" rel="stylesheet" type="text/css" />-->
 
 
 {literal}
@@ -314,80 +314,59 @@ document.body.className = c;
 //]]>
 </script>
 {/literal}
+
+
 <div id="bd" style="padding:0px">
 
-<div id="wpcontent">
+	<div id="wpcontent">
 
-</div>
+	<div id="wpbody">
 
-<div id="wpbody">
-
-
-
-<div style="overflow: hidden;" id="wpbody-content">
-<div id="screen-meta">
-<div id="screen-options-wrap" class="hidden">
-	<form id="adv-settings" action="" method="post">
-			<h5>Show on screen</h5>
-		<div class="metabox-prefs">
-			<label for="dashboard_right_now-hide"><input class="hide-postbox-tog" name="dashboard_right_now-hide" id="dashboard_right_now-hide" value="dashboard_right_now" checked="checked" type="checkbox">English</label>
-<label for="dashboard_recent_comments-hide"><input class="hide-postbox-tog" name="dashboard_recent_comments-hide" id="dashboard_recent_comments-hide" value="dashboard_recent_comments" checked="checked" type="checkbox">Chinese <span class="postbox-title-action"><a href="http://primediart.com/project/work/wp-admin/?edit=dashboard_recent_comments#dashboard_recent_comments" class="edit-box open-box">Configure</a></span></label>
-<label for="dashboard_incoming_links-hide"><input class="hide-postbox-tog" name="dashboard_incoming_links-hide" id="dashboard_incoming_links-hide" value="dashboard_incoming_links" checked="checked" type="checkbox">Spanish <span class="postbox-title-action"><a href="http://primediart.com/project/work/wp-admin/?edit=dashboard_incoming_links#dashboard_incoming_links" class="edit-box open-box">Configure</a></span></label>
-<!--<label for="dashboard_plugins-hide"><input class="hide-postbox-tog" name="dashboard_plugins-hide" id="dashboard_plugins-hide" value="dashboard_plugins" checked="checked" type="checkbox">Plugins</label>
-<label for="dashboard_quick_press-hide"><input class="hide-postbox-tog" name="dashboard_quick_press-hide" id="dashboard_quick_press-hide" value="dashboard_quick_press" checked="checked" type="checkbox">QuickPress</label>
-<label for="dashboard_recent_drafts-hide"><input class="hide-postbox-tog" name="dashboard_recent_drafts-hide" id="dashboard_recent_drafts-hide" value="dashboard_recent_drafts" checked="checked" type="checkbox">Recent Drafts</label>
-<label for="dashboard_primary-hide"><input class="hide-postbox-tog" name="dashboard_primary-hide" id="dashboard_primary-hide" value="dashboard_primary" checked="checked" type="checkbox">WordPress Blog <span class="postbox-title-action"><a href="http://primediart.com/project/work/wp-admin/?edit=dashboard_primary#dashboard_primary" class="edit-box open-box">Configure</a></span></label>
-<label for="dashboard_secondary-hide"><input class="hide-postbox-tog" name="dashboard_secondary-hide" id="dashboard_secondary-hide" value="dashboard_secondary" checked="checked" type="checkbox">Other WordPress News <span class="postbox-title-action"><a href="http://primediart.com/project/work/wp-admin/?edit=dashboard_secondary#dashboard_secondary" class="edit-box open-box">Configure</a></span></label>-->
-			<br class="clear">
+		<div style="overflow: hidden;" id="wpbody-content">
+			<div id="screen-meta">
+				<div id="screen-options-wrap" class="hidden">
+				
 		</div>
-		<!--<h5>Screen Layout</h5>-->
-<!--<div class="columns-prefs">Number of Columns:
-<label><input name="screen_columns" value="1" type="radio"> 1</label>
-<label><input name="screen_columns" value="2" checked="checked" type="radio"> 2</label>
-<label><input name="screen_columns" value="3" type="radio"> 3</label>
-<label><input name="screen_columns" value="4" type="radio"> 4</label>
-</div>-->
-<div><input id="screenoptionnonce" name="screenoptionnonce" value="ac1f1e5121" type="hidden"></div>
-</form>
-</div>
 
-	<div id="contextual-help-wrap" class="hidden">
-	<div class="metabox-prefs"><p>Welcome to KAKTUS Dashboard! </p>
-<p>The top menu 
+	<div id="contextual-help-wrap" class="hidden" style="display:none;">
+		<div class="metabox-prefs"><p>Welcome to KAKTUS Dashboard! </p>
+		<p>The top menu 
 provides links to the administration screens in your Administrative Area. You can expand or collapse navigation sections by clicking 
 on the arrow that appears on the right side of each navigation tab. You can also minimize the navigation menu by clicking again on the down arrow.</p>
 
-<p>The modules on your Dashboard screen are:</p><p><strong>TOP PRODUCTS</strong> - Displays a summary of the content of the top enlisted product list.</p>
-<p><strong>WORST PRODUCT</strong> - Currently showing top product list by default. </p>
-<p><strong>TOP CUSTOMER</strong> - Shows top customer's name.</p><p>
-</div>
+		<p>The modules on your Dashboard screen are:</p><p><strong>TOP PRODUCTS</strong> - Displays a summary of the content of the top enlisted product list.</p>
+		<p><strong>WORST PRODUCT</strong> - Currently showing top product list by default. </p>
+		<p><strong>TOP CUSTOMER</strong> - Shows top customer's name.</p><p>
+	</div>
 	</div>
 
-<div id="screen-meta-links">
-<div id="contextual-help-link-wrap" class="hide-if-no-js screen-meta-toggle">
-<a href="#contextual-help" id="contextual-help-link" class="show-settings">Help</a>
-</div>
+		<div id="screen-meta-links">
+			<div id="contextual-help-link-wrap" class="hide-if-no-js screen-meta-toggle" align="right">
+				<a href="#contextual-help" id="contextual-help-link" class="show-settings">Help</a>
+			</div>
 
-</div>
+		</div>
 
-<div class="wrap">
-	<div id="icon-index" class="icon32"><br></div>
-<h2>Dashboard</h2>
+		<div class="wrap">
+			<div id="icon-index" class="icon32"><br></div>
+			<h2>Dashboard</h2>
 
-<div id="dashboard-widgets-wrap">
+			<div id="dashboard-widgets-wrap">
 
-<div id="dashboard-widgets" class="metabox-holder">
-	<div class="postbox-container" style="width: 49%;">
-<div id="normal-sortables" class="meta-box-sortables ui-sortable">
+				<div id="dashboard-widgets" class="metabox-holder">
+				<div class="postbox-container" style="width: 49%;">
+				<div id="normal-sortables" class="meta-box-sortables ui-sortable">
 
-<div id="dashboard_right_now" class="postbox "  >
+				<div id="dashboard_right_now" class="postbox "  >
 
-<div id="cross1"><span class="cross" title="Click to Delete"><img width="15px" height="15px;" src="art/x.png" /> </span></div>
-<div class="edit_click" title="Click to toggle"><span class="editTop3"><img src="art/edit.JPG"/></span></div>
+				<div id="cross1"><span class="cross" title="Click to Delete"><img width="15px" height="15px;" src="art/x.png" /> </span>
+				</div>
+				<div class="edit_click" title="Click to toggle"><span class="editTop3"><img src="art/edit.JPG"/></span>
+				</div>
 
-<h3 class="hndle">NO CONTACTS AND CUSTOMERS</h3>
+			<h3 class="hndle">NO CONTACTS AND CUSTOMERS</h3>
 
-<div id="div1" style="display:none;">
+			<div id="div1" style="display:none;">
 	<center>    
         {foreach from=$splinters key=key item=splinter}
 
@@ -403,51 +382,32 @@ on the arrow that appears on the right side of each navigation tab. You can also
    	 </center>
     
   
-  	{literal}
-	<script>
-    $(".editTop3").click(function () {
-      $('#div1').slideToggle("slow");
-    });
+{literal}
+<script>
+	$(".editTop3").click(function () {
+	$('#div1').slideToggle("slow");
+	});
 	function slideCrm()
 	{
-      $('#div1').slideToggle("slow");
-		}
+	$('#div1').slideToggle("slow");
+	}
 </script>
-	<script>
-  $(document).ready(function() {
-    $('#inner1').click(function () {
-      $('#div1').effect("explode");
-    });
-  });
-  </script>
- 	<script>
-  $('#cross1').click(function () {
-  $('#dashboard_right_now').fadeOut("slow");
-  });
-  </script>
-  {/literal}
+<script>
+	$(document).ready(function() {
+	$('#inner1').click(function () {
+	$('#div1').effect("explode");
+	});
+	});
+</script>
+<script>
+	$('#cross1').click(function () {
+	$('#dashboard_right_now').fadeOut("slow");
+	});
+</script>
+{/literal}
+
 <div id="crm" class="inside">
-
-<!--
-	<div class="table table_content">
-	<p class="sub">Content</p>
-	<table>
-	<tbody><tr class="first"><td class="first b b-posts"><a href="http://primediart.com/project/work/wp-admin/edit.php">2</a></td><td class="t posts"><a href="http://primediart.com/project/work/wp-admin/edit.php">Posts</a></td></tr><tr><td class="first b b_pages"><a href="http://primediart.com/project/work/wp-admin/edit.php?post_type=page">2</a></td><td class="t pages"><a href="http://primediart.com/project/work/wp-admin/edit.php?post_type=page">Pages</a></td></tr><tr><td class="first b b-cats"><a href="http://primediart.com/project/work/wp-admin/edit-tags.php?taxonomy=category">1</a></td><td class="t cats"><a href="http://primediart.com/project/work/wp-admin/edit-tags.php?taxonomy=category">Category</a></td></tr><tr><td class="first b b-tags"><a href="http://primediart.com/project/work/wp-admin/edit-tags.php">0</a></td><td class="t tags"><a href="http://primediart.com/project/work/wp-admin/edit-tags.php">Tags</a></td></tr>
-	</tbody></table>
-	</div>
-	<div class="table table_discussion">
-	<p class="sub">Discussion</p>
-	<table>
-	<tbody><tr class="first"><td class="b b-comments"><a href="http://primediart.com/project/work/wp-admin/edit-comments.php"><span class="total-count">1</span></a></td><td class="last t comments"><a href="http://primediart.com/project/work/wp-admin/edit-comments.php">Comment</a></td></tr><tr><td class="b b_approved"><a href="http://primediart.com/project/work/wp-admin/edit-comments.php?comment_status=approved"><span class="approved-count">1</span></a></td><td class="last t"><a class="approved" href="http://primediart.com/project/work/wp-admin/edit-comments.php?comment_status=approved">Approved</a></td></tr>
-	<tr><td class="b b-waiting"><a href="http://primediart.com/project/work/wp-admin/edit-comments.php?comment_status=moderated"><span class="pending-count">0</span></a></td><td class="last t"><a class="waiting" href="http://primediart.com/project/work/wp-admin/edit-comments.php?comment_status=moderated">Pending</a></td></tr>
-	<tr><td class="b b-spam"><a href="http://primediart.com/project/work/wp-admin/edit-comments.php?comment_status=spam"><span class="spam-count">0</span></a></td><td class="last t"><a class="spam" href="http://primediart.com/project/work/wp-admin/edit-comments.php?comment_status=spam">Spam</a></td></tr>
-	</tbody></table>
-	</div>-->
-	<!--<div class="versions">
-	<p><a href="http://primediart.com/project/work/wp-admin/themes.php" class="button rbutton">Change Theme</a>Theme <span class="b"><a href="http://primediart.com/project/work/wp-admin/themes.php">Twenty Ten</a></span> with <span class="b"><a href="http://primediart.com/project/work/wp-admin/widgets.php">7 Widgets</a></span></p><span id="wp-version-message">You are using <span class="b">WordPress 3.0.2</span>.</span>
-	<br class="clear"></div>-->
-	
-	</div>
+</div>
 </div>
 </div>
 
@@ -457,7 +417,7 @@ on the arrow that appears on the right side of each navigation tab. You can also
 
 
 
-<div id="dashboard_recent_comments" class="postbox ">
+<div id="dashboard_recent_comments" class="postbox">
 <div class="cross" title="Click to Delete"><img onClick="fadeout()" width="15px" height="15px;" src="art/x.png" /> </div>
 
 <div class="edit_click"><span class="editTop2"><img src="art/edit.JPG"/></span></div>
@@ -496,15 +456,7 @@ $('#divR').slideToggle("slow");
 
 <div id="comment-1" class="comment even thread-even depth-1 comment-item approved">
 
-<!--<img alt="" src="dashboard_js_css/ad516503a11cd5ca435acc9bb6523536.png" class="avatar avatar-50 photo avatar-default" width="50" height="50">-->
-<!--<div class="dashboard-comment-wrap">
-<h4 class="comment-meta">
-From <cite class="comment-author"><a href="http://wordpress.org/" rel="external nofollow" class="url">Mr WordPress</a></cite> on <a href="http://primediart.com/project/work/wp-admin/post.php?post=1&action=edit">WELCOME TO OUR WEBSITE</a> <a class="comment-link" href="http://primediart.com/project/work/?p=1#comment-1">#</a> <span class="approve">[Pending]</span> </h4>
 
-<blockquote><p>Hi, this is a comment.To delete a comment, just log in and view the post's comments. There you will have ...</p></blockquote>
-<p class="row-actions"><span class="approve"><a href="http://primediart.com/project/work/wp-admin/comment.php?action=approvecomment&p=1&c=1&_wpnonce=2b177a8d88" class="dim:the-comment-list:comment-1:unapproved:e7e7d3:e7e7d3:new=approved vim-a" title="Approve this comment">Approve</a></span><span class="unapprove"><a href="http://primediart.com/project/work/wp-admin/comment.php?action=unapprovecomment&p=1&c=1&_wpnonce=2b177a8d88" class="dim:the-comment-list:comment-1:unapproved:e7e7d3:e7e7d3:new=unapproved vim-u" title="Unapprove this comment">Unapprove</a></span><span class="reply hide-if-no-js"> | <a onclick="commentReply.open('1','1');return false;" class="vim-r hide-if-no-js" title="Reply to this comment" href="#">Reply</a></span><span class="edit"> | <a class="" href="#" title="Edit comment">Edit</a></span><span class="spam"> | <a href="http://primediart.com/project/work/wp-admin/comment.php?action=spamcomment&p=1&c=1&_wpnonce=c995c354e0" class="delete:the-comment-list:comment-1::spam=1 vim-s vim-destructive" title="Mark this comment as spam">Spam</a></span><span class="trash"> | <a href="http://primediart.com/project/work/wp-admin/comment.php?action=trashcomment&p=1&c=1&_wpnonce=c995c354e0" class="delete:the-comment-list:comment-1::trash=1 delete vim-d vim-destructive" title="Move this comment to the trash">Trash</a></span></p>
-</div>-->
-<!--<span class="textright textleftRectified"><a href="http://primediart.com/project/work/wp-admin/edit-comments.php" class="button">View all</a></span>-->
 </div>
 </div>
 
@@ -676,10 +628,10 @@ GUI interfac</p>
 {/literal}
 
 </div></div></div>	</div>
-<!--==================================================================END DIV 4====================================================================================-->
+<!--=============END DIV 4====================================================================================-->
 <div class="postbox-container" style="width: 49%;">
 <div id="side-sortables" class="meta-box-sortables ui-sortable">
-<!--==================================================================== DIV 5====================================================================================-->
+<!--========================= DIV 5====================================================================================-->
 <div onMouseOver="this.className='crm_over'" onMouseOut="this.className='menuOver'"  >
 
 </div>
@@ -996,6 +948,10 @@ basically done, and we’re just squashing bugs. To the brave of heart and
  always, this is software still in development and we don’t recommend 
 that you run it […]</div></li></ul></div></div>
 </div>-->
+
+
+
+
 </div>
 
 <!--==================================================================END DIV7============================================================================-->
@@ -1085,21 +1041,7 @@ that you run it […]</div></li></ul></div></div>
 	<p>
 <input id="closedpostboxesnonce" name="closedpostboxesnonce" value="7def193573" type="hidden"><input id="meta-box-order-nonce" name="meta-box-order-nonce" value="0155bfc370" type="hidden">	</p>
 </form>
-</div><!-- dashboard-widgets-wrap -->
-<!--<div><h3>Customise Page</h3>
-<h4>Remove your prefered topics</h4>
-<form>
-<input name="crm_chk" id="crm_chk" type="checkbox" value="" />CRM <br />
-<input name="invoice_chk" id="invoice_chk" type="checkbox" value="" />Invoicing <br />
-<input name="stock_chk" id="stock_chk" type="checkbox" value="" />Stock Control<br />
-<input name="ecom_chk" id="ecom_chk" type="checkbox" value="" />Ecommerce<br />
-<input name="marketing_chk" id="marketing_chk" type="checkbox" value="" />Electronic Marketing<br />
-<input name="report_chk" id="report_chk" type="checkbox" value="" />Reporting Tools<br />
-<input name="news_chk" id="news_chk" type="checkbox" value="" />Other News<br />
-<input name="quick_chk" id="quick_chk" type="checkbox" value="" />Quick Press<br /><div style="padding-left:800px;"><a href="#top">Back to top</a></div>
-<input name="submit" type="button" value="save" onclick="customise();" />
-</form>
-</div>-->  
+</div> 
 
 </div><!-- wrap -->
 
