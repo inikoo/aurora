@@ -16,6 +16,16 @@ if (!isset($_REQUEST['tipo'])) {
 $tipo=$_REQUEST['tipo'];
 
 switch ($tipo) {
+case('update_no_dispatched'):
+    $data=prepare_values($_REQUEST,array(
+                                'dn_key'=>  array('type'=>'key'),
+                              'itf_key'=>  array('type'=>'key'),
+                              'out_of_stock'=>  array('type'=>'numeric'),
+                             'not_found'=>array('type'=>'numeric'),
+                             'no_picked_other'=>array('type'=>'numeric'),
+                         ));
+    update_no_dispatched($data);
+    break;
 case('pick_order'):
     $data=prepare_values($_REQUEST,array(
                               'dn_key'=>  array('type'=>'key'),
@@ -1396,15 +1406,19 @@ function picking_aid_sheet() {
     $total_picks=0;
 
     $data=array();
-    $sql="select  `Picked`,`Out of Stock`,`Not Found`  ,`Inventory Transaction Key`,`Part XHTML Currently Used In`,Part.`Part SKU`,`Part XHTML Description`,`Required`,`Part XHTML Picking Location` from `Inventory Transaction Fact` ITF  left join  `Part Dimension` Part on  (Part.`Part SKU`=ITF.`Part SKU`)  $where  ";
+    $sql="select  `Picked`,IFNULL(`Out of Stock`,0) as `Out of Stock`,`Not Found` ,`No Picked Other` ,`Inventory Transaction Key`,`Part XHTML Currently Used In`,Part.`Part SKU`,`Part XHTML Description`,`Required`,`Part XHTML Picking Location` from `Inventory Transaction Fact` ITF  left join  `Part Dimension` Part on  (Part.`Part SKU`=ITF.`Part SKU`)  $where  ";
     // print $sql;
     $result=mysql_query($sql);
     while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
 
-$todo='';
+$formated_todo='';
+$todo=0;
 if($row['Required']-$row['Picked']>0){
-$todo=sprintf("%s</span>",number($row['Required']-$row['Picked']-$row['Out of Stock']-$row['Not Found']));
+
+$todo=$row['Required']-$row['Picked']-$row['Out of Stock']-$row['Not Found']-$row['No Picked Other'];
+$formated_todo=number($todo);
 }
+
 
 $notes='';
 
@@ -1420,7 +1434,13 @@ $notes='';
                     'remove'=>'-',
                     'picked'=>$row['Picked'],
                     'todo'=>$todo,
-                    'notes'=>$notes
+                    'formated_todo'=>$formated_todo,
+                    'notes'=>$notes,
+                    'required'=>$row['Required'],
+                    'picked'=>$row['Picked'],
+                    'out_of_stock'=>$row['Out of Stock'],
+                    'not_found'=>$row['Not Found'],
+                    'no_picked_other'=>$row['No Picked Other']
                 );
     }
 
@@ -1556,4 +1576,37 @@ if($data['key']=='quantity'){
     return;
 }
 
+}
+
+
+function update_no_dispatched($data){
+$dn=new DeliveryNote($data['dn_key']);
+if (!$dn->id) {
+$response=array('state'=>400,'msg'=>$dn->msg);
+echo json_encode($response);        
+}
+$dn->update_unpicked_transaction_data($data['itf_key'],array(
+                                            'Out of Stock'=>$data['out_of_stock'],
+                                            'Not Found'=>$data['not_found'],
+                                             'No Picked Other'=>$data['no_picked_other']
+                                            )
+                                            );
+                                            
+                                            
+ if (!$dn->error) {
+     
+        if ($dn->updated) {
+            $response=array('state'=>200,'result'=>'updated','new_value'=>$dn->new_value);
+
+        } else {
+            $response=array('state'=>200,'result'=>'no_change');
+
+        }
+
+    } else {
+        $response=array('state'=>400,'msg'=>$dn->msg);
+
+    }
+    echo json_encode($response);                                           
+                                            
 }

@@ -29,6 +29,21 @@ var myonCellClick = function(oArgs) {
 
 		
     switch (column.action) {
+    case('edit_object'):
+    var data = record.getData();
+    Dom.get('formated_todo_units').innerHTML=data['formated_todo'];
+
+    Dom.get('todo_units').value=data['todo'];
+        Dom.get('todo_itf_key').value=data['itf_key'];
+       
+    Dom.get('out_of_stock_units').value=(data['out_of_stock']==0)?'':data['out_of_stock'];
+        Dom.get('not_found_units').value=(data['not_found']==0)?'':data['not_found']
+           Dom.get('no_picked_other_units').value=(data['no_picked_other']==0)?'':data['no_picked_other']
+
+   Dom.get('to_assign_todo_units').innerHTML=data['todo']-data['out_of_stock']-data['not_found']-data['no_picked_other'];
+
+
+    break;
     case('add_object'):
     case('remove_object'):
 	var data = record.getData();
@@ -209,7 +224,9 @@ YAHOO.util.Event.addListener(window, "load", function() {
                        ,{key:"picked",label:"<?php echo _('Picked')?>", width:40,sortable:false,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC},  editor: new YAHOO.widget.TextboxCellEditor({asyncSubmitter: CellEdit}),object:'pick_aid'}
 					,{key:"add",label:"", width:3,sortable:false,action:'add_object',object:'pick_aid'}
 					,{key:"remove",label:"", width:3,sortable:false,action:'remove_object',object:'pick_aid'}
-					,{key:"todo",label:"<?php echo _('Pending')?>", width:70,sortable:false,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+					
+
+					,{key:"formated_todo",label:"<?php echo _('Pending')?>", width:70,sortable:false,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC},action:'edit_object',object:'pending_transactions'}
 					,{key:"notes",label:"", width:100,sortable:false,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 
 				   ];
@@ -225,7 +242,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 			 ,"used_in"
 			 ,"description"
 			 ,"location"
-			 ,"quantity","picked","add","remove","itf_key","todo","notes"
+			 ,"quantity","picked","add","remove","itf_key","todo","notes","required",'out_of_stock','not_found','formated_todo',"no_picked_other"
 			
 			 ]};
 	    this.InvoiceDataTable = new YAHOO.widget.DataTable(tableDivEL, InvoiceColumnDefs,
@@ -247,6 +264,101 @@ YAHOO.util.Event.addListener(window, "load", function() {
   });
 
 
+function add_no_dispatchable(tipo){
+
+to_assign=  parseFloat((Dom.get('to_assign_todo_units').innerHTML=='')?0:Dom.get('to_assign_todo_units').innerHTML);
+no_dipatchable_units=parseFloat((Dom.get(tipo).value=='')?0:Dom.get(tipo).value);
+if(to_assign>0){
+    
+    if(to_assign<1){
+        transfer=to_assign;
+    }else{
+        transfer=1;
+    }
+    
+    Dom.get('to_assign_todo_units').innerHTML=to_assign-transfer;
+    Dom.get(tipo).value=no_dipatchable_units+transfer;
+
+}
+
+}
+function remove_no_dispatchable(tipo){
+to_assign=  parseFloat((Dom.get('to_assign_todo_units').innerHTML=='')?0:Dom.get('to_assign_todo_units').innerHTML);
+no_dipatchable_units=parseFloat((Dom.get(tipo).value=='')?0:Dom.get(tipo).value);
+if(no_dipatchable_units>0){
+    
+    if(no_dipatchable_units<1){
+        transfer=no_dipatchable_units;
+    }else{
+        transfer=1;
+    }
+    
+    Dom.get('to_assign_todo_units').innerHTML=to_assign+transfer;
+    Dom.get(tipo).value=no_dipatchable_units-transfer;
+
+}
+
+}
+
+function save_no_dispatchable(){
+
+todo=Dom.get('todo_units').value;
+out_of_stock=(Dom.get('out_of_stock_units').value==''?0:Dom.get('out_of_stock_units').value);
+not_found=(Dom.get('not_found_units').value==''?0:Dom.get('not_found_units').value);
+no_picked_other=(Dom.get('no_picked_other_units').value==''?0:Dom.get('no_picked_other_units').value);
+
+
+if(todo-out_of_stock-not_found-no_picked_other<0){
+Dom.setStyle('todo_error_msg','display','block')
+return;
+}
+
+
+var ar_file='ar_edit_orders.php'; 
+var request='tipo=update_no_dispatched&dn_key='+dn_key+'&itf_key='+Dom.get('todo_itf_key').value+'&out_of_stock='+out_of_stock+'&not_found='+not_found+'&no_picked_other='+no_picked_other;
+
+
+
+
+YAHOO.util.Connect.asyncRequest(
+				    'POST',
+				    ar_file, {
+					success:function(o) {
+					    alert(o.responseText);
+			return;
+					   var r = YAHOO.lang.JSON.parse(o.responseText);
+					    if (r.state == 200) {
+					    
+					     if(r.result=='updated'){
+					    
+						
+                      }
+                        
+					   
+                        
+
+					    
+					
+					    
+					
+						
+
+					    } else {
+						alert(r.msg);
+						
+					    }
+					},
+					    failure:function(o) {
+					    alert(o.statusText);
+					   
+					},
+					    scope:this
+					    },
+				    request
+				    
+				    );  
+
+}
 
 
 function init(){

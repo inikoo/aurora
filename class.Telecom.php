@@ -946,7 +946,7 @@ var $deleted=false;
       Find for the telephone access code in a number
      */
 
-    function find_area_code($number,$country_code='UNK') {
+    static function  find_area_code($number,$country_code='UNK') {
         // print "$number,$country_code\n  ";
 
         if (strlen($number>5)) {
