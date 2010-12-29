@@ -499,6 +499,7 @@ function create_delivery_note(){
     	var request='tipo=send_to_warehouse&order_key='+order_key;
 
 
+
 	YAHOO.util.Connect.asyncRequest(
 					'POST',
 					ar_file, {
@@ -508,7 +509,7 @@ function create_delivery_note(){
 						return;
 						var r = YAHOO.lang.JSON.parse(o.responseText);
 						if (r.state == 200) {
-						window.location.reload();
+						//window.location.reload();
 						}
 					    },
 					failure:function(o) {
@@ -683,7 +684,6 @@ function init(){
 
         YAHOO.util.Event.addListener(["set_for_collection","set_for_shipping"], "click",change_shipping_type);
 
-    // YAHOO.util.Event.addListener('done', "click",create_delivery_note);
 
 var myDialog = new YAHOO.widget.Dialog("myDialog"); 
 
