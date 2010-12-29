@@ -97,7 +97,7 @@ $fam_promo=new Family('code','Promo_UK',$store_key);
 $fam_promo_key=$fam_promo->id;
 
 
-$sql="select *,replace(   replace(replace(replace(replace(replace(replace(replace(replace(filename,'r/Orders/','r/Orders/00'),'s/Orders/','s/Orders/0'),'y/Orders/','y/Orders/0'),'z/Orders/9','z/Orders/09'),'x/Orders/','x/Orders/0'),'t/Orders/','t/Orders/0'),'u/Orders/','u/Orders/0'),'z/Orders/8','z/Orders/08')     ,directory,'') as name from  orders_data.orders  where   (last_transcribed is NULL  or last_read>last_transcribed) and deleted='No'   order by name ";
+$sql="select *,replace(   replace(replace(replace(replace(replace(replace(replace(replace(filename,'r/Orders/','r/Orders/000'),'s/Orders/','s/Orders/00'),'y/Orders/','y/Orders/00'),'z/Orders/9','z/Orders/009'),'x/Orders/','x/Orders/00'),'t/Orders/','t/Orders/00'),'u/Orders/','u/Orders/00'),'z/Orders/8','z/Orders/008')     ,directory,'') as name from  orders_data.orders  where   (last_transcribed is NULL  or last_read>last_transcribed)   order by name  ";
 
 //$sql="select * from  orders_data.orders  where    (last_transcribed is NULL  or last_read>last_transcribed) and deleted='No'  order by filename ";
 //$sql="select * from  orders_data.orders where filename like '%/a/%.xls'   order by filename";
@@ -1120,7 +1120,7 @@ $shipping_transactions[]=$transaction;
                      );
             // print "-----$scode <-------------\n";
             //print_r($sp_data);
-            $supplier_product=new SupplierProduct('find',$sp_data,'create');
+            $supplier_product=new SupplierProduct('find',$sp_data,'create update');
 
 
 

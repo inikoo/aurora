@@ -20,7 +20,7 @@ include_once('common_read_orders_functions.php');
 function microtime_float() {
     list($utime, $time) = explode(" ", microtime());
     return ((float)$utime + (float)$time);
-  }
+}
 
 
 
@@ -86,10 +86,10 @@ if (($handle = fopen($filename, "r")) !== FALSE) {
         $num = count($data);
 //   print_r($data);
         print "$num $row\r";
-        
-    //    if($row>1000)
-     //       break;
-        
+
+        //    if($row>1000)
+        //       break;
+
         if ($num!=105)
             break;
 
@@ -182,8 +182,8 @@ if (($handle = fopen($filename, "r")) !== FALSE) {
 
         // if($act_data['tax_number']!='')
         //  print ($act_data['tax_number']."\n");
-         //     if($row>200)
-         //  break;
+        //     if($row>200)
+        //  break;
         //      print "$row\r";
 
         // print_r($cols);
@@ -213,7 +213,7 @@ $time_data=array();
 $contador=0;
 foreach($contacts as $act_data) {
     $base_time=microtime_float();
-            $contador++;
+    $contador++;
 
 
     //  print "$contador\r";
@@ -225,7 +225,7 @@ foreach($contacts as $act_data) {
 
 //===XXxxxXXX
 
- list($tipo_customer,$act_data['name'],$act_data['contact'])=parse_company_person($act_data['name'],$act_data['contact']);
+    list($tipo_customer,$act_data['name'],$act_data['contact'])=parse_company_person($act_data['name'],$act_data['contact']);
 
     $email_data=guess_email($act_data['email']);
 
@@ -247,7 +247,12 @@ foreach($contacts as $act_data) {
         $address_raw_data['country_d1']=$act_data['country_d1'];
 
 
-    $shop_address_data=$address_raw_data;
+
+
+
+
+
+
     $_customer_data=array();
     $_customer_data['Customer Old ID']=$act_data['act'];
     $_customer_data['type']=$tipo_customer;
@@ -256,34 +261,45 @@ foreach($contacts as $act_data) {
     $_customer_data['company_name']=$act_data['name'];
     $_customer_data['email']=$email_data['email'];
 
-$fr_customer=false;
+    $fr_customer=false;
 
-$de_customer=false;
+    $de_customer=false;
     $customer_data['Customer Store Key']=1;
-    if (preg_match('/aw-geschenke/i',$act_data['source'])){
- $store=new Store('code','DE');     
-   $customer_data['Customer Store Key']=$store->id;
-$de_customer=true;
 
-    }elseif (preg_match('/nabil/i',$act_data['takenby']) 
-    or ( $act_data['international_email']!='' and 
-    (  preg_match('/cadeaux/i',$act_data['source'])  or preg_match('/^(fr|france)$/i',$act_data['source'])) 
-    )
-    
-    ){
-      $store=new Store('code','FR');     
-   $customer_data['Customer Store Key']=$store->id;
-   $fr_customer=true;
+    if (preg_match('/aw-geschenke/i',$act_data['source'])) {
+        $store=new Store('code','DE');
+        $customer_data['Customer Store Key']=$store->id;
+        $de_customer=true;
+        if ($address_raw_data['country']=='')
+            $address_raw_data['country']='Germany';
+    }
+    elseif (preg_match('/nabil/i',$act_data['takenby'])
+            or ( $act_data['international_email']!='' and
+                 (  preg_match('/cadeaux/i',$act_data['source'])  or preg_match('/^(fr|france)$/i',$act_data['source']))
+               )
+
+           ) {
+        $store=new Store('code','FR');
+        $customer_data['Customer Store Key']=$store->id;
+        $fr_customer=true;
+        if ($address_raw_data['country']=='')
+            $address_raw_data['country']='France';
 
     }
+    else {
+        if ($address_raw_data['country']=='')
+            $address_raw_data['country']='United Kingdom';
+
+        //  continue;
+    }
+
+    $shop_address_data=$address_raw_data;
 
 
 
- if ($customer_data['Customer Store Key']==1)
-    continue;
-    
-    
-    
+
+
+
     if ($customer_data['Customer Store Key']!=1)
         $_customer_data['email']=$act_data['international_email'];
 
@@ -387,12 +403,12 @@ $de_customer=true;
     //  print "Customer ".$customer->id." with History\n\n\n\n\n\n";
     //  print_r($act_data['history']);
     // }
-    
-$store->update_customers_data();
+
+    $store->update_customers_data();
     foreach($act_data['history'] as $h_tipo=>$histories) {
-    
-    //print_r($histories);
-    
+
+        //print_r($histories);
+
         if ($h_tipo=='Note')
             foreach($histories as $date=>$history) {
             $customer->add_note($history,'',$date);
@@ -404,17 +420,17 @@ $store->update_customers_data();
     }
 
 
-$time_data[]=microtime_float()-$base_time;
-   if(fmod($contador,100)==0){
-    list($min,$avg,$max)=get_time_averages($time_data);
-     $stringData="$contador $min $avg $max\n";
-    
-    fwrite($fh, $stringData);
+    $time_data[]=microtime_float()-$base_time;
+    if (fmod($contador,100)==0) {
+        list($min,$avg,$max)=get_time_averages($time_data);
+        $stringData="$contador $min $avg $max\n";
 
-    $time_data=array();
+        fwrite($fh, $stringData);
+
+        $time_data=array();
     }
-    
-    
+
+
 
 
     //print "caca";
@@ -424,19 +440,19 @@ $time_data[]=microtime_float()-$base_time;
 
 fclose($fh);
 
-function get_time_averages($data){
-$bins=count($data);
-$min=9999999999;
-$max=-9999999999;
-$sum=0;
-foreach($data as $value){
-    if($value<$min)
-        $min=$value;
-    if($value>$max)
-        $max=$value;
-    $sum+=$value;    
-}
-return array($min,$sum/$bins,$max);
+function get_time_averages($data) {
+    $bins=count($data);
+    $min=9999999999;
+    $max=-9999999999;
+    $sum=0;
+    foreach($data as $value) {
+        if ($value<$min)
+            $min=$value;
+        if ($value>$max)
+            $max=$value;
+        $sum+=$value;
+    }
+    return array($min,$sum/$bins,$max);
 
 }
 
@@ -468,7 +484,7 @@ function get_history_data($raw_history) {
 
     $date_splited=preg_split($date_separator,$raw_history);
     unset($date_splited[0]);
-     //print_r($date_splited);
+    //print_r($date_splited);
 
     foreach($date_splited as $y) {
         $x=preg_split('/\s+\-\s+/',$y);
@@ -510,7 +526,7 @@ function get_history_data($raw_history) {
 
     }
 
- //   print_r($history);
+//   print_r($history);
     return $history;
 
 }

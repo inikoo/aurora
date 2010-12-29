@@ -1309,10 +1309,10 @@ class DeliveryNote extends DB_Table {
                      ,$this->id
                     );
         mysql_query($sql);
-
+        $this->data['Delivery Order Picking Factor']=$percentage_picked;
         if ($percentage_picked==1) {
-
-            if ($this->data['Delivery Note State']=='Piking & Packing')
+print_r($this->data);
+            if ($this->data['Delivery Note State']=='Picking & Packing')
                 $state='Packing';
             else if ($this->data['Delivery Note State']=='Picking & Packer Assigned')
                 $state='Packer Assigned';
@@ -1355,7 +1355,7 @@ class DeliveryNote extends DB_Table {
     }
     function get_number_picked_transactions() {
 
-        $sql=sprintf("select count(*) as number from   `Inventory Transaction Fact` ITF        where `Delivery Note Key`=%d and (`Required`=`Out of Stock`+`Picked`) "
+        $sql=sprintf("select count(*) as number from   `Inventory Transaction Fact` ITF        where `Delivery Note Key`=%d and (`Required`=`Out of Stock`+`Picked`+`Not Found`+`No Picked Other`) "
                      ,$this->id
 
                     );
@@ -1368,8 +1368,10 @@ class DeliveryNote extends DB_Table {
         return $number;
     }
 
+
+
     function get_picking_percentage() {
-        $sql=sprintf("select `Required`,`Out of Stock`,ifnull(`Part Gross Weight`,0) as `Part Gross Weight`,`Picked` ,`Given`,`Inventory Transaction Quantity` from   `Inventory Transaction Fact` ITF           left join `Part Dimension` P on (P.`Part SKU`=ITF.`Part SKU`) where `Delivery Note Key`=%d  "
+        $sql=sprintf("select `Required`,`Not Found`,`No Picked Other`,`Out of Stock`,ifnull(`Part Gross Weight`,0) as `Part Gross Weight`,`Picked` ,`Given`,`Inventory Transaction Quantity` from   `Inventory Transaction Fact` ITF           left join `Part Dimension` P on (P.`Part SKU`=ITF.`Part SKU`) where `Delivery Note Key`=%d  "
                      ,$this->id
 
                     );
@@ -1378,21 +1380,30 @@ class DeliveryNote extends DB_Table {
         $required_items=0;
         $picked_weight=0;
         $picked_items=0;
-
+//print "$sql";
         while ($row=mysql_fetch_assoc($res)) {
-
+//print_r($row);
             $to_be_picked=$row['Required']+$row['Given'];
-            $qty=$row['Out of Stock']+$row['Picked'];
-            $required_weight.=$to_be_picked*$row['Part Gross Weight'];
+            $qty=$row['Out of Stock']+$row['Picked']+$row['Not Found']+$row['No Picked Other'];
+            $required_weight+=$to_be_picked*$row['Part Gross Weight'];
             $required_items++;
+
+            // print "$to_be_picked $qty \n";
+
             if ($to_be_picked==0) {
+
+
             } else if ($qty>=$to_be_picked) {
-                $picked_weight=$to_be_picked*$row['Part Gross Weight'];
+                $picked_weight+=$to_be_picked*$row['Part Gross Weight'];
                 $picked_items++;
             } else {
-                $picked_weight.=$qty*$row['Part Gross Weight'];
+
+
+                $picked_weight+=$qty*$row['Part Gross Weight'];
                 $picked_items+=($qty/$to_be_picked);
             }
+            //  print "$to_be_picked $qty | $picked_items   $picked_weight  | $required_items $required_weight  \n";
+
         }
         if ($required_items==0) {
             $percentage_picked=1;
@@ -1432,6 +1443,8 @@ class DeliveryNote extends DB_Table {
                      ,$this->id
                     );
         mysql_query($sql);
+        $this->data['Delivery Order Packing Factor']=$percentage_packed;
+
 //print $percentage_packed;
         if ($percentage_packed==1) {
 
@@ -1624,16 +1637,12 @@ class DeliveryNote extends DB_Table {
             $not_found=$row['No Picked Other'];
             $no_picked_other=$row['Not Found'];
             $pending=$row['Required']-$qty-$out_of_stock-$not_found-$no_picked_other;
-            if ($row['Required']!=0) {
-                $picking_factor=round($qty/$row['Required'],4);
+            if ($pending!=0) {
+                $picking_factor=round($qty/$pending,4);
             } else
                 $picking_factor=0;
 
             $sku=$row['Part SKU'];
-//if($row['Picked'])
-//print ">>>>>";
-//  print "*******  $sku  *$original_qty*$qty   ".$row['Required']."   *********  $picking_factor   \n";
-
             $part=new Part($sku);
             $cost_storing=0;
             $cost_supplier=$part->get_unit_cost()*$qty;
@@ -1684,9 +1693,107 @@ class DeliveryNote extends DB_Table {
         }
 
 
-        return array('Picked'=>$qty,'Out of Stock'=>$out_of_stock,'Not Found'=>$not_found,'No Picked Other'=>$no_picked_other,'Pending'=>$pending);
+        return array(
+                   'Picked'=>$qty,
+                   'Out of Stock'=>$out_of_stock,
+                   'Not Found'=>$not_found,
+                   'No Picked Other'=>$no_picked_other,
+                   'Pending'=>$pending
+               );
 
     }
+
+    function update_unpicked_transaction_data($itf_key,$data) {
+        if (array_key_exists('Date',$data))
+            $date=$data['Date'];
+        else
+            $date=date("Y-m-d H:i:s");
+
+        if (array_key_exists('Picker Key',$data))
+            $picker_key=$data['Picker Key'];
+        else
+            $picker_key=false;
+        $sql=sprintf("select * from `Inventory Transaction Fact` where `Inventory Transaction Key`=%d and `Delivery Note Key`=%d",
+                     $itf_key,
+                     $this->id);
+        $res=mysql_query($sql);
+        if ($row=mysql_fetch_assoc($res)) {
+            if ($data['Out of Stock']==$row['Out of Stock'] and  $row['Not Found']==$data['Not Found'] and  $row['No Picked Other']==$data['No Picked Other']) {
+
+                return;
+            }
+
+            $todo=$row['Required']-$row['Picked']-$data['Out of Stock']-$data['Not Found']-$data['No Picked Other'];
+            if ($todo<0) {
+                $this->error=true;
+                $this->msg=_('Error, the sum of out of stock and not found units are greater than the number of not picked units');
+                return;
+            }
+
+            $out_of_stock=$row['Out of Stock'];
+            $not_found=$row['No Picked Other'];
+            $no_picked_other=$row['Not Found'];
+            $pending=$row['Required']-$row['Picked']-$out_of_stock-$not_found-$no_picked_other;
+            if ($pending!=0) {
+                $picking_factor=round($row['Picked']/$pending,4);
+            } else
+                $picking_factor=0;
+            $otf_key=$row['Map To Order Transaction Fact Key'];
+            $factor=$row['Map To Order Transaction Fact Metadata'];
+
+
+
+
+
+
+
+
+            $sql=sprintf("update `Inventory Transaction Fact` set `Out of Stock`=%f , `Not Found`=%f, `No Picked Other`=%f where `Inventory Transaction Key`=%d ",
+                         $data['Out of Stock'],
+                         $data['Not Found'],
+                         $data['No Picked Other'],
+                         $itf_key
+                        );
+            mysql_query($sql);
+
+
+            if ($picking_factor>=1)
+                $state='Ready to Pack';
+            else
+                $state='Picking';
+
+
+
+            $sql = sprintf ( "update `Order Transaction Fact` set `Current Dispatching State`=%s,`Picking Finished Date`=%s,`Picker Key`=%s,`Picking Factor`=%f where `Order Transaction Fact Key`=%d  ",
+                             prepare_mysql ( $state ),
+                             prepare_mysql ( $date ),
+                             prepare_mysql ($picker_key),
+                             $picking_factor,
+
+                             $otf_key
+                           );
+            mysql_query ( $sql );
+
+
+
+
+
+            $sql = sprintf ( "update `Delivery Note Dimension` set `Delivery Note Date Finish Picking`=%s where `Delivery Note Key`=%d",
+                             prepare_mysql ( $date ),
+                             $this->id );
+            mysql_query ( $sql );
+
+            $this->updated=true;
+
+
+        } else {
+            $this->msg='itf not found';
+
+        }
+
+
+    }
+
 
     function get_packed_estimated_weight() {
         $weight=0;
@@ -1961,39 +2068,7 @@ class DeliveryNote extends DB_Table {
 
     }
 
-    function update_unpicked_transaction_data($itf_key,$data) {
 
-        $sql=sprintf("select * from `Inventory Transaction Fact` where `Inventory Transaction Key`=%d and `Delivery Note Key`=%d",
-                     $itf_key,
-                     $this->id);
-        $res=mysql_query($sql);
-        if($row=mysql_fetch_assoc($res)){
-            if($data['Out of Stock']==$row['Out of Stock'] and  $row['Not Found']==$data['Not Found'] and  $row['No Picked Other']==$data['No Picked Other']){
-                
-                return;
-            }
-            
-            $todo=$row['Required']-$row['Picked']-$data['Out of Stock']-$data['Not Found']-$data['No Picked Other'];
-            if($todo<0){
-                $this->error=true;
-                $this->msg=_('Error, the sum of out of stock and not found units are greater than the number of not picked units');
-                return;
-            }
-            $sql=sprintf("update `Inventory Transaction Fact` set `Out of Stock`=%f , `Not Found`=%f, `No Picked Other`=%f where `Inventory Transaction Key`=%d ",
-            $data['Out of Stock'],
-            $data['Not Found'],
-            $data['No Picked Other'],
-            $itf_key
-            );
-            mysql_query($sql);
-            
-        }else{
-            $this->msg='itf not found';
-        
-        }
-
-
-    }
 
 
 }
