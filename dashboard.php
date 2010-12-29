@@ -188,7 +188,7 @@ $smarty->assign('parent','home');
 $smarty->assign('title', _('Dashboard'));
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
-$smarty->display('dashboard.tpl');
+$smarty->display('db.tpl');
 
 ?>
 
