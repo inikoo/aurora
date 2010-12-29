@@ -18,9 +18,9 @@ $tipo=$_REQUEST['tipo'];
 switch ($tipo) {
 case('update_no_dispatched'):
     $data=prepare_values($_REQUEST,array(
-                                'dn_key'=>  array('type'=>'key'),
-                              'itf_key'=>  array('type'=>'key'),
-                              'out_of_stock'=>  array('type'=>'numeric'),
+                             'dn_key'=>  array('type'=>'key'),
+                             'itf_key'=>  array('type'=>'key'),
+                             'out_of_stock'=>  array('type'=>'numeric'),
                              'not_found'=>array('type'=>'numeric'),
                              'no_picked_other'=>array('type'=>'numeric'),
                          ));
@@ -28,8 +28,8 @@ case('update_no_dispatched'):
     break;
 case('pick_order'):
     $data=prepare_values($_REQUEST,array(
-                              'dn_key'=>  array('type'=>'key'),
-                              'picker_key'=>  array('type'=>'numeric'),
+                             'dn_key'=>  array('type'=>'key'),
+                             'picker_key'=>  array('type'=>'numeric'),
                              'itf_key'=>array('type'=>'key'),
                              'new_value'=>array('type'=>'numeric'),
                              'key'=>array('type'=>'string'),
@@ -1406,21 +1406,35 @@ function picking_aid_sheet() {
     $total_picks=0;
 
     $data=array();
-    $sql="select  `Picked`,IFNULL(`Out of Stock`,0) as `Out of Stock`,`Not Found` ,`No Picked Other` ,`Inventory Transaction Key`,`Part XHTML Currently Used In`,Part.`Part SKU`,`Part XHTML Description`,`Required`,`Part XHTML Picking Location` from `Inventory Transaction Fact` ITF  left join  `Part Dimension` Part on  (Part.`Part SKU`=ITF.`Part SKU`)  $where  ";
+    $sql="select  `Picked`,IFNULL(`Out of Stock`,0) as `Out of Stock`,IFNULL(`Not Found`,0) as `Not Found`,IFNULL(`No Picked Other`,0) as `No Picked Other` ,`Inventory Transaction Key`,`Part XHTML Currently Used In`,Part.`Part SKU`,`Part XHTML Description`,`Required`,`Part XHTML Picking Location` from `Inventory Transaction Fact` ITF  left join  `Part Dimension` Part on  (Part.`Part SKU`=ITF.`Part SKU`)  $where  ";
     // print $sql;
     $result=mysql_query($sql);
     while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
 
-$formated_todo='';
-$todo=0;
-if($row['Required']-$row['Picked']>0){
+        $formated_todo='';
+        $todo=0;
+        if ($row['Required']-$row['Picked']>0) {
 
-$todo=$row['Required']-$row['Picked']-$row['Out of Stock']-$row['Not Found']-$row['No Picked Other'];
-$formated_todo=number($todo);
-}
+            $todo=$row['Required']-$row['Picked']-$row['Out of Stock']-$row['Not Found']-$row['No Picked Other'];
+            if ($todo==0)
+                $formated_todo='';
+            else
+                $formated_todo=number($todo);
+        }
 
 
-$notes='';
+        $notes='';
+        if ($row['Out of Stock']!=0) {
+            $notes.=_('Out of Stock').' '.number($row['Out of Stock']);
+        }
+        if ($row['Not Found']!=0) {
+            $notes.='<br/>'._('Not Found').' '.number($row['Not Found']);
+        }
+        if ($row['No Picked Other']!=0) {
+            $notes.='<br/>'._('Not picked (other)').' '.number($row['No Picked Other']);
+        }
+//$notes=preg_replace('/^\,/', '', $notes);
+
 
         $sku=sprintf('<a href="part.php?sku=%d">SKU%05d</a>',$row['Part SKU'],$row['Part SKU']);
         $data[]=array(
@@ -1520,16 +1534,16 @@ function send_post_order_to_warehouse($data) {
 
 function create_refund($data) {
 
-$date=date("Y-m-d H:i:s");
+    $date=date("Y-m-d H:i:s");
     $order=new Order($data['order_key']);
-    
+
     $refund=$order->create_refund(array(
-                                             'Invoice Metadata'=>'',
-                                             'Invoice Date'=>$date
-                                         )
-                                        );
-    
-    
+                                      'Invoice Metadata'=>'',
+                                      'Invoice Date'=>$date
+                                  )
+                                 );
+
+
 
     if (!$order->error) {
         $response=array('state'=>200,'order_key'=>$order->id);
@@ -1542,15 +1556,15 @@ $date=date("Y-m-d H:i:s");
 
 }
 
-function  update_ship_to_key($data){
+function  update_ship_to_key($data) {
 
- $order=new Order($data['order_key']);
- $order->update_ship_to($data['ship_to_key']);
- if ($order->updated) {
+    $order=new Order($data['order_key']);
+    $order->update_ship_to($data['ship_to_key']);
+    if ($order->updated) {
         $response=array('state'=>200,'result'=>'updated','order_key'=>$order->id,'new_value'=>$order->new_value);
         echo json_encode($response);
     } else {
-         $response=array('state'=>400,'msg'=>$order->msg);
+        $response=array('state'=>400,'msg'=>$order->msg);
         echo json_encode($response);
 
     }
@@ -1559,44 +1573,63 @@ function  update_ship_to_key($data){
 }
 
 
-function pick_order($data){
+function pick_order($data) {
 
-$dn=new DeliveryNote($data['dn_key']);
-if($data['key']=='quantity'){
-    $transaction_data=$dn->set_as_picked($data['itf_key'],round($data['new_value'],8),date("Y-m-d H:i:s"),$data['picker_key']);
+    $dn=new DeliveryNote($data['dn_key']);
+    if ($data['key']=='quantity') {
+        $transaction_data=$dn->set_as_picked($data['itf_key'],round($data['new_value'],8),date("Y-m-d H:i:s"),$data['picker_key']);
+        $dn->update_picking_percentage();
+        if (!$dn->error) {
+
+            $response=array('state'=>200,
+                            'result'=>'updated',
+                            'new_value'=>$transaction_data['Picked'],
+                            'todo'=>$transaction_data['Pending'],
+                            'formated_todo'=>number($transaction_data['Pending']),
+
+                            'picked'=>$transaction_data['Picked'],
+                            'percentage_picked'=>$dn->get('Faction Picked'),
+                            'number_picked_transactions'=>$dn->get_number_picked_transactions(),
+                            'number_transactions'=>$dn->get_number_transactions()
+                           );
+            echo json_encode($response);
+        } else {
+            $response=array('state'=>400,'msg'=>$dn->msg);
+            echo json_encode($response);
+        }
+        return;
+    }
+
+}
+
+
+function update_no_dispatched($data) {
+    $dn=new DeliveryNote($data['dn_key']);
+    if (!$dn->id) {
+        $response=array('state'=>400,'msg'=>$dn->msg);
+        echo json_encode($response);
+    }
+    $transaction_data=$dn->update_unpicked_transaction_data($data['itf_key'],array(
+                                              'Out of Stock'=>$data['out_of_stock'],
+                                              'Not Found'=>$data['not_found'],
+                                              'No Picked Other'=>$data['no_picked_other']
+                                          )
+                                         );
     $dn->update_picking_percentage();
-    if(!$dn->error){
-
-      $response=array('state'=>200,'result'=>'updated','new_value'=>$transaction_data['Picked'],'todo'=>$transaction_data['Pending'],'picked'=>$transaction_data['Picked'],'percentage_picked'=>$dn->get('Faction Picked'),'number_picked_transactions'=>$dn->get_number_picked_transactions(),'number_transactions'=>$dn->get_number_transactions());
-        echo json_encode($response);
-    }else{
-      $response=array('state'=>400,'msg'=>$dn->msg);
-        echo json_encode($response);
-    }
-    return;
-}
-
-}
 
 
-function update_no_dispatched($data){
-$dn=new DeliveryNote($data['dn_key']);
-if (!$dn->id) {
-$response=array('state'=>400,'msg'=>$dn->msg);
-echo json_encode($response);        
-}
-$dn->update_unpicked_transaction_data($data['itf_key'],array(
-                                            'Out of Stock'=>$data['out_of_stock'],
-                                            'Not Found'=>$data['not_found'],
-                                             'No Picked Other'=>$data['no_picked_other']
-                                            )
-                                            );
-                                            
-                                            
- if (!$dn->error) {
-     
+    if (!$dn->error) {
+
         if ($dn->updated) {
-            $response=array('state'=>200,'result'=>'updated','new_value'=>$dn->new_value);
+            $response=array('state'=>200,'result'=>'updated','new_value'=>$dn->new_value,
+              'todo'=>$transaction_data['Pending'],
+                            'formated_todo'=>number($transaction_data['Pending']),
+
+                            'picked'=>$transaction_data['Picked'],
+                            'percentage_picked'=>$dn->get('Faction Picked'),
+                            'number_picked_transactions'=>$dn->get_number_picked_transactions(),
+                            'number_transactions'=>$dn->get_number_transactions()
+            );
 
         } else {
             $response=array('state'=>200,'result'=>'no_change');
@@ -1607,6 +1640,6 @@ $dn->update_unpicked_transaction_data($data['itf_key'],array(
         $response=array('state'=>400,'msg'=>$dn->msg);
 
     }
-    echo json_encode($response);                                           
-                                            
+    echo json_encode($response);
+
 }

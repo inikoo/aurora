@@ -87,18 +87,19 @@ var picker_key=Dom.get('assigned_picker').getAttribute('key');
 				    'POST',
 				    ar_file, {
 					success:function(o) {
-					 //  alert(o.responseText);
+					  alert(o.responseText);
 					    var r = YAHOO.lang.JSON.parse(o.responseText);
 					    if (r.state == 200) {
 					    if(r.result=='updated'){
 					    	datatable.updateCell(record,'picked',r.picked);
-					    	if(r.todo==0)
-					    	    r.todo='';
-					    						     					     datatable.updateCell(record,'todo',r.todo);
-
-					    Dom.get('number_picked_transactions').innerHTML=r.number_picked_transactions;
-					   Dom.get('number_transactions').innerHTML=r.number_transactions;
-					    Dom.get('percentage_picked').innerHTML=r.percentage_picked;
+					    	if(r.formated_todo==0)
+					    	    r.formated_todo='';
+					    	datatable.updateCell(record,'formated_todo',r.formated_todo);
+                            datatable.updateCell(record,'todo',r.todo);
+					        
+					        Dom.get('number_picked_transactions').innerHTML=r.number_picked_transactions;
+					        Dom.get('number_transactions').innerHTML=r.number_transactions;
+					        Dom.get('percentage_picked').innerHTML=r.percentage_picked;
 
 					
                      
@@ -266,7 +267,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 function add_no_dispatchable(tipo){
 
-to_assign=  parseFloat((Dom.get('to_assign_todo_units').innerHTML=='')?0:Dom.get('to_assign_todo_units').innerHTML);
+to_assign=  parseFloat((Dom.get('formated_todo_units').innerHTML=='')?0:Dom.get('formated_todo_units').innerHTML);
 no_dipatchable_units=parseFloat((Dom.get(tipo).value=='')?0:Dom.get(tipo).value);
 if(to_assign>0){
     
@@ -276,14 +277,14 @@ if(to_assign>0){
         transfer=1;
     }
     
-    Dom.get('to_assign_todo_units').innerHTML=to_assign-transfer;
+    Dom.get('formated_todo_units').innerHTML=to_assign-transfer;
     Dom.get(tipo).value=no_dipatchable_units+transfer;
 
 }
 
 }
 function remove_no_dispatchable(tipo){
-to_assign=  parseFloat((Dom.get('to_assign_todo_units').innerHTML=='')?0:Dom.get('to_assign_todo_units').innerHTML);
+to_assign=  parseFloat((Dom.get('formated_todo_units').innerHTML=='')?0:Dom.get('formated_todo_units').innerHTML);
 no_dipatchable_units=parseFloat((Dom.get(tipo).value=='')?0:Dom.get(tipo).value);
 if(no_dipatchable_units>0){
     
@@ -293,7 +294,7 @@ if(no_dipatchable_units>0){
         transfer=1;
     }
     
-    Dom.get('to_assign_todo_units').innerHTML=to_assign+transfer;
+    Dom.get('formated_todo_units').innerHTML=to_assign+transfer;
     Dom.get(tipo).value=no_dipatchable_units-transfer;
 
 }

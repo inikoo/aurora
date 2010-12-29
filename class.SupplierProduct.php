@@ -114,23 +114,21 @@ class supplierproduct extends DB_Table {
 
 
 
-            }
-            elseif($this->found_in_code) {
+            }elseif($this->found_in_code) {
 
                 $this->get_data('pid',$this->pid);
                 $data['Supplier Product Key']=$this->pid;
                 $this->create_key($data);
 
-            }
-            else {
+            }else {
                 // print_r($data);
                 $this->create($data);
             }
 
-            if (isset($raw_data['date1']))
-                $this->update_valid_dates($raw_data['date1']);
-            if (isset($raw_data['date2']))
-                $this->update_valid_dates($raw_data['date2']);
+            if (isset($raw_data['Supplier Product Valid From']))
+                $this->update_valid_dates($raw_data['Supplier Product Valid From']);
+            if (isset($raw_data['Supplier Product Valid To']))
+                $this->update_valid_dates($raw_data['Supplier Product Valid To']);
             else {
                 $this->update_valid_dates(date('Y-m-d H:i:s'));
             }
@@ -2023,7 +2021,8 @@ class supplierproduct extends DB_Table {
 
     }
     function new_historic_part_list($header_data,$list) {
-
+//print_r($header_data);
+//print_r($list);
         $product_part_key=$this->find_product_part_list($list);
         if ($product_part_key) {
             $this->update_product_part_list($product_part_key,$header_data,$list);
@@ -2041,6 +2040,7 @@ class supplierproduct extends DB_Table {
                      ,prepare_mysql($date1)
                     );
         mysql_query($sql);
+        //print "$sql\n";
         $sql=sprintf("update `Supplier Product Part Dimension` set `Supplier Product Part Valid To`=%s where `Supplier Product Part Key`=%d and (`Supplier Product Part Valid To` is null or `Supplier Product Part Valid To`<%s)"
                      ,prepare_mysql($date2)
                      ,$product_part_key

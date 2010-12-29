@@ -22,7 +22,7 @@ if(!$dn->id){
    exit;
 
 }
-
+$dn->update_picking_percentage();
 
   
   
