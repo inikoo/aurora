@@ -148,7 +148,7 @@ function get_tipo_order($ltipo,$header){
 }ELSEif(preg_match('/DELIVERY NOTE|nota de envio|BON DE COMMANDE|VERSANDANZEIGE/i',$ltipo)){
 
     $tipo=1;
-  }elseif(preg_match('/FACTURE. sample order|facture|facutura|FACTURE|RECHNUNG/i',$ltipo)){
+  }elseif(preg_match('/FACTURE. sample order|facture|facutura|FACTURE|invoice|RECHNUNG/i',$ltipo)){
     $tipo=2;
   }elseif(preg_match('/STORNIERT|STORNIERUNG/i',$ltipo)){
     $tipo=3;

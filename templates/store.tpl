@@ -136,27 +136,69 @@
       </tbody>
  </table>
 </div>
-<br><br>
-{* ------------------amcolumn charts starts here ------------------------------------------------*}
-{include file='amcolumn.tpl'}
-{* ------------------amcolumn charts ends here ------------------------------------------------*}
 
+
+
+
+
+
+<div  style="color:red;clear:both">
+<ul class="tabs" id="chooser_ul" style="margin-top:25px">
+    <li>
+	  <span class="item {if $plot_tipo=='store'}selected{/if}" onClick="change_plot(this)" id="plot_store" tipo="store"    >
+	    <span>{$store->get('Store Code')} {t}Store{/t}</span>
+	  </span>
+	</li>
+
+	<li>
+	  <span class="item {if $plot_tipo=='top_departments'}selected{/if}"  id="plot_top_departments" onClick="change_plot(this)" tipo="top_departments"  >
+	    <span>{t}Top Departments{/t}</span>
+	  </span>
+	</li>
+	<li>
+	  <span class="item {if $plot_tipo=='pie'}selected{/if}" onClick="change_plot(this)" id="plot_pie" tipo="pie"     forecast="{$plot_data.pie.forecast}" interval="{$plot_data.pie.interval}"  >
+	    <span>{t}Department's Pie{/t}</span>
+	  </span>
+	</li>
+
+  </ul>
+  
+<script type="text/javascript" src="external_libs/amstock/amstock/swfobject.js"></script>
+
+	<div id="flashcontent" style="clear:both;border:1px solid #ccc" >
+		<strong>You need to upgrade your Flash Player</strong>
+	</div>
+
+	<script type="text/javascript">
+		// <![CDATA[
+		
+		var so = new SWFObject("external_libs/amstock/amstock/amstock.swf", "amstock", "905", "500", "8", "#FFFFFF");
+		so.addVariable("path", "");
+		so.addVariable("settings_file", encodeURIComponent("conf/plot_asset_sales.xml.php?tipo=store_sales&store_key={$store->id}"));
+		so.addVariable("preloader_color", "#999999");
+
+		
+		
+
+		so.write("flashcontent");
+		// ]]>
+	</script>
+  
+  
+  <div style="clear:both">xx</div>
 </div>
-
-
-
-
-
+</div>
+{*
 
 <div id="plot" class="top_bar" style="clear:both;padding:0;margin:0;{if !$show_details}display:none;{/if}">
 {include file='plot_splinter.tpl'}
 </div>     
  
-
+*}
 
 
 <div class="data_table" style="clear:both;">
-    <span   class="clean_table_title">{t}Departments{/t}</span>
+    <span   class="clean_table_title" style="margin-top:25px">{t}Departments{/t}</span>
 <span  id="export_csv0" style="float:right;margin-left:20px"  class="table_type state_details" tipo="families" >{t}Export (CSV){/t}</span>
     <div style="clear:both;margin:0 0px;padding:0 20px ;border-bottom:1px solid #999"></div>
     <span   style="float:right;margin-left:80px" class="state_details" state="{$show_percentages}"  id="show_percentages"  atitle="{if $show_percentages}{t}Normal Mode{/t}{else}{t}Comparison Mode{/t}{/if}"  >{if $show_percentages}{t}Comparison Mode{/t}{else}{t}Normal Mode{/t}{/if}</span>
