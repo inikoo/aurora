@@ -12,10 +12,7 @@
 
 <link rel="stylesheet" href="dashboard_js_css/dashboard.css" type="text/css" media="all">
 
-
-
-
-
+s
 <link rel="stylesheet" href="dashboard_js_css/load-styles.css" type="text/css" media="all">
 <link rel="stylesheet" id="thickbox-css" href="dashboard_js_css/thickbox.css" type="text/css" media="all">
 <link rel="stylesheet" id="colors-css" href="dashboard_js_css/colors-fresh.css" type="text/css" media="all">
@@ -71,7 +68,7 @@ on the arrow that appears on the right side of each navigation tab. You can also
 		<p><strong>TOP CUSTOMER</strong> - Shows top customer's name.</p><p>
 	</div>
 	</div>
-
+index.php
 <div id="screen-meta-links">
 <div id="contextual-help-link-wrap" class="hide-if-no-js screen-meta-toggle">
 <a href="#contextual-help" id="contextual-help-link" class="show-settings">Help</a>
@@ -520,7 +517,7 @@ var thickboxL10n = {
 	of: "of",
 	close: "Close",
 	noiframes: "This feature requires inline frames. You have iframes disabled or your browser does not support them."
-};
+}; 
 try{convertEntities(thickboxL10n);}catch(e){};
 var plugininstallL10n = {
 	plugin_information: "Plugin Information:",
