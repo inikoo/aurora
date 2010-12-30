@@ -121,7 +121,7 @@ $splinters=array(
                                    'tpl'=>'dashboard_top_customers.tpl',
                                    'js'=>'dashboard_top_customers.js.php'
                                ),
-		'contacts_customers'=>array(
+		' contacts_customers'=>array(
                   		  'title'=>_('Contacts and Customers'),
                                    'index'=>4,
                                    'php'=>'splinter_contacts_customers.php',
