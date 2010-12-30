@@ -78,7 +78,7 @@ on the arrow that appears on the right side of each navigation tab. You can also
 </div>
 
 <div class="wrap">
-	<div id="icon-index" class="icon32"></div>
+	<div id="icon-index" class="icon32"><br></div>
 <h2>Dashboard</h2>
 
 <div id="dashboard-widgets-wrap">
@@ -272,7 +272,6 @@ $("#dashboard_recent_comments").fadeOut();
 			<div id="dashboard_quick_press" class="postbox ">
 <div class="cross" id="cross5"><img width="15px" height="15px;" src="art/x.png" /></div>
 <div class="edit" id="edit5"><strong><img width="15px" height="15px;" src="art/edit.JPG" /></strong></div>
-
 
 
 <div class="handlediv" title="Click to toggle"><h3 class="hndle">TOP PRODUCTS</h3></div>
