@@ -78,10 +78,49 @@
 {/foreach}
 </table>
 
-
-
 <div id="plot" class="top_bar" style="position:relative;left:-20px;clear:both;padding:0;margin:0;{if !$display_plot}display:none{/if}">
-<div display="none" id="plot_info" keys="{$store_keys}"  invoice_category_keys="{$invoice_category_keys}"   ></div>
+<div display="none" id="plot_info" keys="{$formated_store_keys}"  invoice_category_keys="{$invoice_category_keys}"   ></div>
+    <ul id="plot_chooser" class="tabs" style="margin:0 20px;padding:0 20px "  >
+	    <li>
+	        <span class="item {if $plot_tipo=='per_store'}selected{/if}" onClick="change_plot(this)" id="plot_per_store" tipo="par_store" category="{$plot_data.per_store.category}" period="{$plot_data.per_store.period}" >
+	            <span>Invoices per Store</span>
+	        </span>
+	    </li>
+	    <li>
+	        <span class="item {if $plot_tipo=='per_category'}selected{/if}"  id="plot_per_category" onClick="change_plot(this)" tipo="per_category" category="{$plot_data.per_category.category}" period="{$plot_data.per_category.period}" name=""  >
+	            <span>{t}Invoices per Category{/t}</span>
+	        </span>
+	    </li>
+    </ul> 
+    <script type="text/javascript" src="external_libs/amstock/amstock/swfobject.js"></script>
+
+	<div id="flashcontent" style="clear:both;border:1px solid #ccc" >
+		<strong>You need to upgrade your Flash Player</strong>
+	</div>
+
+	<script type="text/javascript">
+		// <![CDATA[
+		
+		var so = new SWFObject("external_libs/amstock/amstock/amstock.swf", "amstock", "905", "500", "8", "#FFFFFF");
+		so.addVariable("path", "");
+		so.addVariable("settings_file", encodeURIComponent("conf/plot_asset_sales.xml.php?tipo=store_sales&store_key={$store_keys}"));
+		so.addVariable("preloader_color", "#999999");
+
+		
+		
+
+		so.write("flashcontent");
+		// ]]>
+	</script>
+  
+  
+  <div style="clear:both"></div>
+    
+</div>
+
+{*
+<div id="plot" class="top_bar" style="position:relative;left:-20px;clear:both;padding:0;margin:0;{if !$display_plot}display:none{/if}">
+<div display="none" id="plot_info" keys="{$formated_store_keys}"  invoice_category_keys="{$invoice_category_keys}"   ></div>
       <ul id="plot_chooser" class="tabs" style="margin:0 20px;padding:0 20px "  >
 	<li>
 	  <span class="item {if $plot_tipo=='per_store'}selected{/if}" onClick="change_plot(this)" id="plot_per_store" tipo="par_store" category="{$plot_data.per_store.category}" period="{$plot_data.per_store.period}" >
@@ -113,7 +152,7 @@
    
     
   </div>
-
+*}
 
 </div>
 

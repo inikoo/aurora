@@ -107,8 +107,8 @@ $smarty->assign('view',$_SESSION['state']['report_sales']['view']);
 
 $smarty->assign('currencies',$_SESSION['state']['report_sales']['currency']);
 
-
-$smarty->assign('store_keys',$formated_store_keys);
+$smarty->assign('store_keys',$store_keys);
+$smarty->assign('formated_store_keys',$formated_store_keys);
 $smarty->assign('invoice_category_keys','('.join(',',$invoice_category_key).')');
 $report_name='report_sales';
 
