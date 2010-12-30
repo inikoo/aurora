@@ -6,7 +6,7 @@
     var $page = 1; // Current Page
     var $perPage = 4; // Items on each page, defaulted to 10
     var $showFirstAndLast = false; // if you would like the first and last page options.
-    global $queryURL = '';
+    global $queryURL;
     
     function generate($array, $perPage = 4)
     {
