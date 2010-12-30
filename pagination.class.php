@@ -1,11 +1,13 @@
 <?php
 
+	error_reporting(0);
 
   class pagination
   {
     var $page = 1; // Current Page
     var $perPage = 4; // Items on each page, defaulted to 10
     var $showFirstAndLast = false; // if you would like the first and last page options.
+   
     
     function generate($array, $perPage = 4)
     {
@@ -39,10 +41,11 @@
       $plinks = array();
       $links = array();
       $slinks = array();
+      $queryURL = '';
       
       // Concatenate the get variables to add to the page numbering string
       if (count($_GET)) {
-        $queryURL = '';
+        
         foreach ($_GET as $key => $value) {
           if ($key != 'page') {
             $queryURL .= '&'.$key.'='.$value;
