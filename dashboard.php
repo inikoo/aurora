@@ -56,7 +56,7 @@ $resultSet = mysql_query("select * from `Comment Dimension` order by `Comment Ke
 $css_files=array(
                $yui_path.'reset-fonts-grids/reset-fonts-grids.css',
                $yui_path.'menu/assets/skins/sam/menu.css',
-			   $yui_path.'css/dashboard.css',
+	       $yui_path.'css/dashboard.css',
                $yui_path.'calendar/assets/skins/sam/calendar.css',
                $yui_path.'button/assets/skins/sam/button.css',
                'common.css',
@@ -64,7 +64,7 @@ $css_files=array(
                'container.css',
                'table.css',
                'css/index.css',
-			   'css/style.css'
+		'css/style.css'
 			   
            );
 $js_files=array(
@@ -83,8 +83,8 @@ $js_files=array(
               'js/search.js',
               'js/index_tools.js',
               'index.js.php',
-			  'js/jquery.js',
-			  'js/script.js',
+	      'js/jquery.js',
+	      'js/script.js',
               'js/index_sliding_tabs.js.php?slide='.$_SESSION['state']['home']['display'],
           );
 

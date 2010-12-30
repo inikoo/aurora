@@ -441,7 +441,6 @@ del
 text-decoration:line-through;
 }
 #wpwrap
-    cursor:pointer; 
 {
 height:auto;min-height:100%;width:100%;
 }
@@ -3216,7 +3215,7 @@ border-right-style:solid;border-right-width:1px;
 }
 div#custom-background-image
 {
-min-height:100px;border:1px solid #c90;
+min-height:100px;border:1px solid #dfdfdf;
 }
 div#custom-background-image img
 {
@@ -3228,7 +3227,7 @@ padding-right:15px;
 }
 .appearance_page_custom-header #headimg
 {
-border:1px solid #c90;min-height:100px;width:100%;
+border:1px solid #DFDFDF;min-height:100px;width:100%;
 }
 .appearance_page_custom-header #upload-form p label
 {
