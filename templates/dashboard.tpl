@@ -10,12 +10,12 @@
   <script src="http://ui.jquery.com/latest/ui/effects.core.js"></script>
 <script src="http://ui.jquery.com/latest/ui/effects.explode.js"></script>
 
-<link rel="stylesheet" href="dashboard.css" type="text/css" media="all">
+<link rel="stylesheet" href="../dashboard.css" type="text/css" media="all">
 
 
-<link rel="stylesheet" href="load-styles.css" type="text/css" media="all">
-<link rel="stylesheet" id="thickbox-css" href="thickbox.css" type="text/css" media="all">
-<link rel="stylesheet" id="colors-css" href="colors-fresh.css" type="text/css" media="all">
+<link rel="stylesheet" href="../load-styles.css" type="text/css" media="all">
+<link rel="stylesheet" id="../thickbox-css" href="thickbox.css" type="text/css" media="all">
+<link rel="stylesheet" id="../colors-css" href="colors-fresh.css" type="text/css" media="all">
 {literal}
 <script type="text/javascript">
 /* <![CDATA[ */
