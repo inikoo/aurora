@@ -195,9 +195,6 @@ $("#dashboard_recent_comments").fadeOut();
 <div id="cross3" class="cross"><img width="15px" height="15px;" src="art/x.png" /></div>
 <div id="edit3" class="edit"><strong><img width="15px" height="15px;" src="art/edit.JPG" /></strong></div>
 
-
-
-<div class="handlediv" title="Click to toggle"></div>
 <h3 class="hndle">WORST PRODUCTS</h3>
 <div id="div3" style="display:none; background-color:#999999;">
 	<center>
@@ -274,7 +271,7 @@ $("#dashboard_recent_comments").fadeOut();
 <div class="edit" id="edit5"><strong><img width="15px" height="15px;" src="art/edit.JPG" /></strong></div>
 
 
-<div class="handlediv" title="Click to toggle"><h3 class="hndle">TOP PRODUCTS</h3></div>
+<h3 class="hndle">TOP PRODUCTS</h3>
 
 
 <div id="div4" style="display:none; background-color:#999999;">
@@ -347,7 +344,7 @@ $("#dashboard_recent_comments").fadeOut();
 <div class="cross" id="cross6"><img width="15px" height="15px;" src="art/x.png" /></div>
 <div class="edit" id="edit6"><strong><img width="15px" height="15px;" src="art/edit.JPG" /></strong></div>
 
-<div class="handlediv" title="Click to toggle"><h3 class="hndle">OUTSTANDING ORDER</h3></div>
+<h3 class="hndle">OUTSTANDING ORDER</h3>
 
 
 	<div id="div7" style="display:none;">
