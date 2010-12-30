@@ -78,7 +78,7 @@ on the arrow that appears on the right side of each navigation tab. You can also
 </div>
 
 <div class="wrap">
-	<div id="icon-index" class="icon32"><br></div>
+	<div id="icon-index" class="icon32"></div>
 <h2>Dashboard</h2>
 
 <div id="dashboard-widgets-wrap">
