@@ -185,7 +185,7 @@
 	</script>
   
   
-  <div style="clear:both">xx</div>
+  <div style="clear:both"></div>
 </div>
 </div>
 {*
