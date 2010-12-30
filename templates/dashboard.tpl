@@ -10,7 +10,7 @@
   <script src="http://ui.jquery.com/latest/ui/effects.core.js"></script>
 <script src="http://ui.jquery.com/latest/ui/effects.explode.js"></script>
 
-<!--<link rel="stylesheet" href="dashboard_js_css/dashboard.css" type="text/css" media="all">-->
+<link rel="stylesheet" href="dashboard_js_css/dashboard.css" type="text/css" media="all">
 
 
 <link rel="stylesheet" href="dashboard_js_css/load-styles.css" type="text/css" media="all">
