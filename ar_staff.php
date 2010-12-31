@@ -244,11 +244,11 @@ if($order=='name')
 
 // ------------------------------------------ Staff Working Hours Table Starts Here ----------------------------------
 function list_staff_working_hours() {
-    $conf=$_SESSION['state']['staff']['working_hours'];
+    $conf=$_SESSION['state']['staff_history']['working_hours'];
     if (isset( $_REQUEST['id']))
         $staff_id=$_REQUEST['id'];
     else
-       $staff_id=$_SESSION['state']['staff']['id'];
+       $staff_id=$_SESSION['state']['staff_history']['id'];
     if (isset( $_REQUEST['sf']))
         $start_from=$_REQUEST['sf'];
     else
@@ -288,10 +288,10 @@ function list_staff_working_hours() {
 
 
 
-    if (isset( $_REQUEST['type']))
+  /*  if (isset( $_REQUEST['type']))
         $type=$_REQUEST['type'];
     else
-        $type=$conf['type'];
+        $type=$conf['type'];*/
 
     if (isset( $_REQUEST['tid']))
         $tableid=$_REQUEST['tid'];
@@ -300,9 +300,9 @@ function list_staff_working_hours() {
 
 
     $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
-    $_SESSION['state']['staff']['id']=$staff_id;
+    $_SESSION['state']['staff_history']['id']=$staff_id;
 
-    $_SESSION['state']['staff']['working_hours']=array('type'=>$type,'order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'f_field'=>$f_field,'f_value'=>$f_value);
+    $_SESSION['state']['staff_history']['working_hours']=array('order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'f_field'=>$f_field,'f_value'=>$f_value);
     /*$date_interval=prepare_mysql_dates($from,$to,'date_index','only_dates');
     if ($date_interval['error']) {
         $date_interval=prepare_mysql_dates($_SESSION['state']['staff']['table']['from'],$_SESSION['state']['staff']['table']['to']);
@@ -414,7 +414,7 @@ if($order=='start_time')
   $order='`Start Time`';
 
    $sql="select * from `Staff Work Hours Dimension`  $where $wheref order by $order $order_direction limit $start_from,$number_results";
-
+//print $sql;
    $adata=array();
    $res=mysql_query($sql);
    while($data=mysql_fetch_array($res)){
