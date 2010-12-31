@@ -164,7 +164,7 @@ function close_dialog(tipo){
 };
 
  
-YAHOO.util.Event.addListener(window, "load", function() {
+Event.addListener(window, "load", function() {
 	    tables = new function() {
 		    
 		    var tableid=0; // Change if you have more the 1 table
@@ -173,10 +173,10 @@ YAHOO.util.Event.addListener(window, "load", function() {
 		    var ColumnDefs = [
 				      {key:"date", label:"<?php echo _('Date')?>",className:"aleft",width:120,sortable:true,sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 				      ,{key:"time", label:"<?php echo _('Time')?>",className:"aleft",width:50}
-				      ,{key:"objeto", label:"<?php echo _('Details')?>", className:"aleft",width:450,sortable:true,sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				    //  ,{key:"handle", label:"<?php echo _('Author')?>",className:"aleft",width:70,sortable:true,sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				    //  ,{key:"objeto", label:"<?php echo _('Details')?>", className:"aleft",width:450,sortable:true,sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				      ,{key:"handle", label:"<?php echo _('Author')?>",className:"aleft",width:70,sortable:true,sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 
-				      ,{key:"note", label:"<?php echo _('Notes')?>",className:"aleft",width:200}
+				      ,{key:"note", label:"<?php echo _('Notes')?>",className:"aleft",width:400}
 					   ];
 		
 		    this.dataSource0  = new YAHOO.util.DataSource("ar_history.php?tipo=customer_history&tid="+tableid);
@@ -228,13 +228,13 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    this.table0.doBeforePaginatorChange = mydoBeforePaginatorChange;
 		    this.table0.filter={key:'<?php echo$_SESSION['state']['customer']['table']['f_field']?>',value:'<?php echo$_SESSION['state']['customer']['table']['f_value']?>'};
 
-	    //   YAHOO.util.Event.addListener('f_input', "keyup",myFilterChangeValue,{table:this.table0,datasource:this.dataSource})
+	    //   Event.addListener('f_input', "keyup",myFilterChangeValue,{table:this.table0,datasource:this.dataSource})
 			 
 	    
 	    //	    var Dom   = YAHOO.util.Dom;
 	    //alert(Dom.get('f_input'));
 
-	    YAHOO.util.Event.addListener('yui-pg0-0-page-report', "click",myRowsPerPageDropdown)
+	    Event.addListener('yui-pg0-0-page-report', "click",myRowsPerPageDropdown)
 
 
 
@@ -316,17 +316,14 @@ YAHOO.util.Event.addListener(window, "load", function() {
 		    var tableDivEL="table"+tableid;  
 		    
 		    var ColumnDefs = [
-				      {key:"subject", label:"<?php echo _('Family')?>",className:"aleft",width:60,sortable:true,sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-				   				      ,{key:"description", label:"<?php echo _('Description')?>",className:"aleft",width:270,sortable:true,sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
- ,{key:"product_code", label:"<?php echo _('Product Code')?>",className:"aleft",width:80,sortable:true,sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-				   ,{key:"orders", label:"<?php echo _('Orders')?>",className:"aright",width:60}
-
-				      ,{key:"ordered", label:"<?php echo _('Ordered')?>",className:"aright",width:60}
-				      ,{key:"dispatched", label:"<?php echo _('Order State')?>", className:"aright",width:200,sortable:true,sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				      {key:"number", label:"<?php echo _('Order ID')?>",className:"aleft",width:60,sortable:true,sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				   				      ,{key:"date", label:"<?php echo _('Date')?>",className:"aleft",width:170,sortable:true,sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+ ,{key:"amount", label:"<?php echo _('Amount')?>",className:"aleft",width:80,sortable:true,sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				   ,{key:"notes", label:"<?php echo _('Notes')?>",className:"aright",width:200}
 
 					   ];
 		
-		    this.dataSource2  = new YAHOO.util.DataSource("ar_contacts.php?tipo=assets_in_process_customer&tid="+tableid);
+		    this.dataSource2  = new YAHOO.util.DataSource("ar_contacts.php?tipo=customer_orders&tid="+tableid);
 		    this.dataSource2.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource2.connXhrMode = "queueRequests";
 	    this.dataSource2.table_id=tableid;
@@ -436,18 +433,28 @@ var upload_attach = function(e){
     YAHOO.util.Connect.asyncRequest('POST',request, uploadHandler);
 }
 
+function change_view(){
+ids=['orders','history','products'];
+block_ids=['block_orders','block_history','block_products'];
+Dom.setStyle(block_ids,'display','none');
+Dom.setStyle('block_'+this.id,'display','');
+Dom.removeClass(ids,'selected');
+Dom.addClass(this,'selected');
 
+YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=customer-view&value='+this.id ,{});
+}
 
 var oMenu;
 function init(){
 
   init_search('customers_store');
+Event.addListener(['orders','history','products'], "click",change_view);
 
 
-YAHOO.util.Event.addListener('clean_table_filter_show0', "click",show_filter,0);
- YAHOO.util.Event.addListener('clean_table_filter_hide0', "click",hide_filter,0);
- YAHOO.util.Event.addListener('clean_table_filter_show1', "click",show_filter,1);
- YAHOO.util.Event.addListener('clean_table_filter_hide1', "click",hide_filter,1);
+Event.addListener('clean_table_filter_show0', "click",show_filter,0);
+ Event.addListener('clean_table_filter_hide0', "click",hide_filter,0);
+ Event.addListener('clean_table_filter_show1', "click",show_filter,1);
+ Event.addListener('clean_table_filter_hide1', "click",hide_filter,1);
  
 
 
