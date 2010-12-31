@@ -1351,6 +1351,7 @@ $default_state=array(
                                   'details'=>false,
                                   'view'=>'history',
                                   'working_hours'=>array(
+'id'=>'',
                                                'order'=>'start_time',
                                                'order_dir'=>'',
                                                'sf'=>0,
