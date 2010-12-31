@@ -1344,7 +1344,7 @@ $default_state=array(
                                           )
                               ),
 // ------------------------------ history for staff.php starts here ---------------------------------------------------------
- 		'staff'=>array(
+ 		'staff_history'=>array(
                                   'id'=>1,
                                   'action_after_create'=>'continue',
                                   'edit'=>'details',
@@ -1490,6 +1490,8 @@ $default_state=array(
                                              'view'=>'general',
                                              'parent'=>'none',
                                              'details'=>0,
+					     'view'=>'history',
+                                            
                                              'table'=>array(
                                                          'order'=>'name',
                                                          'order_dir'=>'',
