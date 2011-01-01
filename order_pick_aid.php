@@ -24,6 +24,12 @@ if(!$dn->id){
 }
 $dn->update_picking_percentage();
 
+$number_transactions=$dn->get_number_transactions();
+$number_picked_transactions=$dn->get_number_picked_transactions();
+$smarty->assign('picked',($number_picked_transactions>=$number_transactions?true:false));
+$smarty->assign('number_transactions',$number_transactions);
+$smarty->assign('number_picked_transactions',$number_picked_transactions);
+
   
   
 $css_files=array(

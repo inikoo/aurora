@@ -6,8 +6,8 @@
   <div id="control_panel" class="yui-b">
 
  <div style="text-align:right">
-	<span class="state_details" id="continue_later"><a href="order.php?id={$delivery_note->id}">Continue Later</a></span>
-	<span class="state_details" id="finish" style="margin-left:20px">Finish</span>
+	<span class="state_details" id="continue_later" style="{if $picked}display:none{/if}"><a href="warehouse_orders.php">{t}Continue Later{/t}</a></span>
+	<span class="state_details" id="finish" style="{if !$picked}display:none;{/if}margin-left:20px"><a href="warehouse_orders.php">{t}Close{/t}</a></span>
 
       </div>
     <div class="yui-b" style="border:1px solid #ccc;text-align:left;padding:10px;margin: 0px 0 10px 0;xheight:15em">
@@ -28,7 +28,7 @@
 <tbody id="resend" style="">	   
 		        <tr><td  class="aright" >{t}Picker{/t}:</td><td id="assigned_picker" key="{$delivery_note->get('Delivery Note Assigned Picker Key')}"  class="aright">{$delivery_note->get('Delivery Note Assigned Picker Alias')}</td></tr>
 
-	        <tr><td  class="aright" >{t}Transactions{/t}:</td><td  class="aright"><span id="number_picked_transactions">{$delivery_note->get_number_picked_transactions()}</span>/<span id="number_transactions">{$delivery_note->get_number_transactions()}</span> <span style="margin-left:10px" id="percentage_picked">{$delivery_note->get('Faction Picked')}</span></td></tr>
+	        <tr><td  class="aright" >{t}Transactions{/t}:</td><td  class="aright"><span id="number_picked_transactions">{$number_picked_transactions}</span>/<span id="number_transactions">{$number_transactions}</span> <span style="margin-left:10px" id="percentage_picked">{$delivery_note->get('Faction Picked')}</span></td></tr>
 	
 </tbody>
 
@@ -65,23 +65,25 @@
 </div>
 </div>
 
-<div id="Editor_no_dispatchable" style="width:200px" xstyle="position:fixed;top:-200px">
+<div id="no_dispatchable_editor_dialog" style="width:200px" xstyle="position:fixed;top:-200px">
   <div style="display:none" class="hd"></div>
     <div class="bd dt-editor" >
     
-    <div style="display:none" id="todo_error_msg">
+    <div style="display:none;margin-top:20px" id="todo_error_msg">
     <p>
     {t}Error, the sum of out of stock and not found units are greater than the number of not picked units{/t}
     </p>
     </div>
     
     
-          <table border=0>
+          <table border=0 style="margin:0">
           
          
           
 	    <input type="hidden" id="todo_itf_key" value=0 >
 	    <input type="hidden" id="todo_units" value=0 >
+	    <input type="hidden" id="required_units" value=0 >
+	    <input type="hidden" id="picked_units" value=0 >
 
 	    <tr><td colspan="4">{t}Pending{/t}: <span id="formated_todo_units"></span></td></tr>
 	    <tr style="display:none">
@@ -105,9 +107,9 @@
 	    </tr>	   
 	
 	  </table>
-	  <div class="yui-dt-button">
+	  <div class="yui-dt-button" style="margin-top:0px">
 	    <button onclick="save_no_dispatchable();" class="yui-dt-default">{t}Save{/t}</button>
-	    <button onclick="close_no_dispatchable_dialog()" >{t}Cancel{/t}</button>
+	    <button style="display:none" onclick="close_no_dispatchable_dialog()" >{t}Cancel{/t}</button>
 	  </div>
     </div>
 </div>

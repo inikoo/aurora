@@ -8,6 +8,8 @@ print "var dn_key=$dn_key;";
 
 YAHOO.namespace ("invoice"); 
 
+var updating_record;
+var no_dispatchable_editor_dialog;
 var myonCellClick = function(oArgs) {
 
 
@@ -30,18 +32,33 @@ var myonCellClick = function(oArgs) {
 		
     switch (column.action) {
     case('edit_object'):
+    
+    updating_record=record;
+    
     var data = record.getData();
     Dom.get('formated_todo_units').innerHTML=data['formated_todo'];
-
     Dom.get('todo_units').value=data['todo'];
-        Dom.get('todo_itf_key').value=data['itf_key'];
-       
+    Dom.get('todo_itf_key').value=data['itf_key'];
     Dom.get('out_of_stock_units').value=(data['out_of_stock']==0)?'':data['out_of_stock'];
-        Dom.get('not_found_units').value=(data['not_found']==0)?'':data['not_found']
-           Dom.get('no_picked_other_units').value=(data['no_picked_other']==0)?'':data['no_picked_other']
+        Dom.get('required_units').value=data['required'];
+    Dom.get('picked_units').value=data['picked'];
 
-   Dom.get('to_assign_todo_units').innerHTML=data['todo']-data['out_of_stock']-data['not_found']-data['no_picked_other'];
+    Dom.get('not_found_units').value=(data['not_found']==0)?'':data['not_found']
+    Dom.get('no_picked_other_units').value=(data['no_picked_other']==0)?'':data['no_picked_other']
+    Dom.get('to_assign_todo_units').innerHTML=data['todo']-data['out_of_stock']-data['not_found']-data['no_picked_other'];
 
+
+ var y=(Dom.getY(target))
+   var x=(Dom.getX(target))
+
+  
+  x=x-120;
+    y=y+18;
+    Dom.setX('no_dispatchable_editor_dialog', x)
+    Dom.setY('no_dispatchable_editor_dialog', y)
+   //Dom.get('Assign_Picker_Staff_Name').focus();
+   //Dom.get('assign_picker_dn_key').value=dn_key;
+    no_dispatchable_editor_dialog.show();
 
     break;
     case('add_object'):
@@ -60,8 +77,15 @@ var myonCellClick = function(oArgs) {
 	        
 	    var new_qty=parseFloat(data['picked'])+1;
 	  
-	    if(new_qty>data['quantity'])
-	        new_qty=data['quantity'];
+	  
+	  	  pending=data['required']-data['out_of_stock']-data['not_found']-data['no_picked_other']
+
+	// alert('('+new_qty+'>'+pending+')  '+data['required']+' o:'+data['out_of_stock']+' '+data['not_found']+' '+data['no_picked_other'])
+	//  return;
+	  
+	  //alert(pending);
+	  if(new_qty>(pending))
+	        new_qty=pending;
 	    
 	    
 	}else{
@@ -87,7 +111,7 @@ var picker_key=Dom.get('assigned_picker').getAttribute('key');
 				    'POST',
 				    ar_file, {
 					success:function(o) {
-					  alert(o.responseText);
+					 // alert(o.responseText);
 					    var r = YAHOO.lang.JSON.parse(o.responseText);
 					    if (r.state == 200) {
 					    if(r.result=='updated'){
@@ -101,7 +125,13 @@ var picker_key=Dom.get('assigned_picker').getAttribute('key');
 					        Dom.get('number_transactions').innerHTML=r.number_transactions;
 					        Dom.get('percentage_picked').innerHTML=r.percentage_picked;
 
-					
+					        if(r.number_picked_transactions>=r.number_transactions){
+					            Dom.setStyle('finish','display','');
+					            Dom.setStyle('continue_later','display','none');
+					        }else{
+					            Dom.setStyle('finish','display','none');
+					            Dom.setStyle('continue_later','display','');
+					        }
                      
                                    
                         
@@ -144,9 +174,11 @@ var CellEdit = function (callback, newValue) {
     var data = record.getData();
     
     var picker_key=Dom.get('assigned_picker').getAttribute('key');
-if(newValue>data['quantity'])
- new_qty=data['quantity']
- else
+    	  pending=data['required']-data['out_of_stock']-data['not_found']-data['no_picked_other']
+
+    if(newValue>pending)
+        new_qty=pending
+    else
         new_qty=newValue
 
  var ar_file='ar_edit_orders.php';
@@ -173,6 +205,13 @@ if(newValue>data['quantity'])
 					     Dom.get('number_picked_transactions').innerHTML=r.number_picked_transactions;
 					        Dom.get('number_transactions').innerHTML=r.number_transactions;
 					        Dom.get('percentage_picked').innerHTML=r.percentage_picked;
+					        if(r.number_picked_transactions>=r.number_transactions){
+					            Dom.setStyle('finish','display','');
+					            Dom.setStyle('continue_later','display','none');
+					        }else{
+					            Dom.setStyle('finish','display','none');
+					            Dom.setStyle('continue_later','display','');
+					        }
 						
                       }
                         
@@ -202,7 +241,7 @@ if(newValue>data['quantity'])
   };
 
 YAHOO.util.Event.addListener(window, "load", function() {
-    YAHOO.invoice.XHR_JSON = new function() {
+    tables = new function() {
 
 
 		
@@ -228,15 +267,18 @@ YAHOO.util.Event.addListener(window, "load", function() {
 					
 
 					,{key:"formated_todo",label:"<?php echo _('Pending')?>", width:70,sortable:false,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC},action:'edit_object',object:'pending_transactions'}
-					,{key:"notes",label:"", width:100,sortable:false,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+					,{key:"notes",label:"", width:100,sortable:false,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC},action:'edit_object',object:'pending_transactions'}
+					,{key:"out_of_stock",label:"", width:1,hidden:true}
+					,{key:"not_found",label:"", width:1,hidden:true}
+					,{key:"no_picked_other",label:"", width:1,hidden:true}
 
 				   ];
 
 
-	    this.InvoiceDataSource = new YAHOO.util.DataSource("ar_edit_orders.php?tipo=picking_aid_sheet&tid=0");
-	    this.InvoiceDataSource.responseType = YAHOO.util.DataSource.TYPE_JSON;
-	    this.InvoiceDataSource.connXhrMode = "queueRequests";
-	    this.InvoiceDataSource.responseSchema = {
+	    this.pick_aidDataSource = new YAHOO.util.DataSource("ar_edit_orders.php?tipo=picking_aid_sheet&tid=0");
+	    this.pick_aidDataSource.responseType = YAHOO.util.DataSource.TYPE_JSON;
+	    this.pick_aidDataSource.connXhrMode = "queueRequests";
+	    this.pick_aidDataSource.responseSchema = {
 		resultsList: "resultset.data", 
 		fields: [
 			 "sku"
@@ -246,17 +288,17 @@ YAHOO.util.Event.addListener(window, "load", function() {
 			 ,"quantity","picked","add","remove","itf_key","todo","notes","required",'out_of_stock','not_found','formated_todo',"no_picked_other"
 			
 			 ]};
-	    this.InvoiceDataTable = new YAHOO.widget.DataTable(tableDivEL, InvoiceColumnDefs,
-								   this.InvoiceDataSource, {
+	    this.pick_aidDataTable = new YAHOO.widget.DataTable(tableDivEL, InvoiceColumnDefs,
+								   this.pick_aidDataSource, {
 								       renderLoopSize: 50
 								   }
 								   
 								   );
 	
 
- this.InvoiceDataTable.subscribe("cellMouseoverEvent", highlightEditableCell);
-	    this.InvoiceDataTable.subscribe("cellMouseoutEvent", unhighlightEditableCell);
-	    this.InvoiceDataTable.subscribe("cellClickEvent", myonCellClick);
+ this.pick_aidDataTable.subscribe("cellMouseoverEvent", highlightEditableCell);
+	    this.pick_aidDataTable.subscribe("cellMouseoutEvent", unhighlightEditableCell);
+	    this.pick_aidDataTable.subscribe("cellClickEvent", myonCellClick);
 	
 
 
@@ -304,12 +346,16 @@ if(no_dipatchable_units>0){
 function save_no_dispatchable(){
 
 todo=Dom.get('todo_units').value;
+picked=Dom.get('picked_units').value;
+
+required=Dom.get('required_units').value;
+
 out_of_stock=(Dom.get('out_of_stock_units').value==''?0:Dom.get('out_of_stock_units').value);
 not_found=(Dom.get('not_found_units').value==''?0:Dom.get('not_found_units').value);
 no_picked_other=(Dom.get('no_picked_other_units').value==''?0:Dom.get('no_picked_other_units').value);
 
-
-if(todo-out_of_stock-not_found-no_picked_other<0){
+//alert(todo+' '+out_of_stock+' '+not_found+' '+no_picked_other)
+if(required-picked-out_of_stock-not_found-no_picked_other<0){
 Dom.setStyle('todo_error_msg','display','block')
 return;
 }
@@ -325,14 +371,37 @@ YAHOO.util.Connect.asyncRequest(
 				    'POST',
 				    ar_file, {
 					success:function(o) {
-					    alert(o.responseText);
-			return;
+					//    alert(o.responseText);
+			
 					   var r = YAHOO.lang.JSON.parse(o.responseText);
 					    if (r.state == 200) {
 					    
 					     if(r.result=='updated'){
-					    
-						
+			                
+						    Dom.get('number_picked_transactions').innerHTML=r.number_picked_transactions;
+					        Dom.get('number_transactions').innerHTML=r.number_transactions;
+					        Dom.get('percentage_picked').innerHTML=r.percentage_picked;
+					        if(r.number_picked_transactions>=r.number_transactions){
+					            Dom.setStyle('finish','display','');
+					            Dom.setStyle('continue_later','display','none');
+					        }else{
+					            Dom.setStyle('finish','display','none');
+					            Dom.setStyle('continue_later','display','');
+					        }
+					        
+					        datatable=tables['pick_aidDataTable'];
+					        datatable.updateCell(updating_record,'formated_todo',r.formated_todo);
+                            datatable.updateCell(updating_record,'notes',r.notes);
+                           // datatable.updateCell(updating_record,'todo',r.todo);
+                            datatable.updateCell(updating_record,'out_of_stock',r.out_of_stock);
+                        
+                            datatable.updateCell(updating_record,'not_found',r.not_found);
+                            datatable.updateCell(updating_record,'no_picked_other',no_picked_other);
+
+  no_dispatchable_editor_dialog.hide();
+
+
+					        
                       }
                         
 					   
@@ -365,6 +434,8 @@ YAHOO.util.Connect.asyncRequest(
 function init(){
 
 
+ no_dispatchable_editor_dialog = new YAHOO.widget.Dialog("no_dispatchable_editor_dialog", {visible : false,close:true,underlay: "none",draggable:false});
+ no_dispatchable_editor_dialog.render();
 
 }
 

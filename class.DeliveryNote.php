@@ -1309,14 +1309,14 @@ class DeliveryNote extends DB_Table {
                      ,$this->id
                     );
         mysql_query($sql);
-        $this->data['Delivery Order Picking Factor']=$percentage_picked;
+        $this->data['Delivery Note Faction Picked']=$percentage_picked;
         if ($percentage_picked==1) {
-print_r($this->data);
+
             if ($this->data['Delivery Note State']=='Picking & Packing')
                 $state='Packing';
             else if ($this->data['Delivery Note State']=='Picking & Packer Assigned')
                 $state='Packer Assigned';
-            else if ($this->data['Delivery Note State']=='Picking' or $this->data['Delivery Note State']=='Ready to be Picked')
+            else if ($this->data['Delivery Note State']=='Picked' or  $this->data['Delivery Note State']=='Picking' or $this->data['Delivery Note State']=='Ready to be Picked')
                 $state='Picked';
 
         } else {
@@ -1726,13 +1726,13 @@ print_r($this->data);
             $todo=$row['Required']-$row['Picked']-$data['Out of Stock']-$data['Not Found']-$data['No Picked Other'];
             if ($todo<0) {
                 $this->error=true;
-                $this->msg=_('Error, the sum of out of stock and not found units are greater than the number of not picked units');
+                $this->msg=_('Error, the sum of out of stock and not found units are greater than the number of not picked units')."(".$row['Required']."+".$row['Picked'].")";
                 return;
             }
-
+            $picked=$row['Picked'];
             $out_of_stock=$row['Out of Stock'];
-            $not_found=$row['No Picked Other'];
-            $no_picked_other=$row['Not Found'];
+            $not_found=$row['Not Found'];
+            $no_picked_other=$row['No Picked Other'];
             $pending=$row['Required']-$row['Picked']-$out_of_stock-$not_found-$no_picked_other;
             if ($pending!=0) {
                 $picking_factor=round($row['Picked']/$pending,4);
@@ -1742,12 +1742,6 @@ print_r($this->data);
             $factor=$row['Map To Order Transaction Fact Metadata'];
 
 
-
-
-
-
-
-
             $sql=sprintf("update `Inventory Transaction Fact` set `Out of Stock`=%f , `Not Found`=%f, `No Picked Other`=%f where `Inventory Transaction Key`=%d ",
                          $data['Out of Stock'],
                          $data['Not Found'],
@@ -1755,6 +1749,11 @@ print_r($this->data);
                          $itf_key
                         );
             mysql_query($sql);
+
+            $out_of_stock=$data['Out of Stock'];
+            $not_found=$data['Not Found'];
+            $no_picked_other=$data['No Picked Other'];
+            $pending=$row['Required']-$picked-$out_of_stock-$not_found-$no_picked_other;
 
 
             if ($picking_factor>=1)
@@ -1785,6 +1784,14 @@ print_r($this->data);
 
             $this->updated=true;
 
+
+ return array(
+                   'Picked'=>$picked,
+                   'Out of Stock'=>$out_of_stock,
+                   'Not Found'=>$not_found,
+                   'No Picked Other'=>$no_picked_other,
+                   'Pending'=>$pending
+               );
 
         } else {
             $this->msg='itf not found';
