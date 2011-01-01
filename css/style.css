@@ -5,7 +5,7 @@ body{
 }
 #ajax_response{
 	border : 0px solid #C9D7F8;
-	width:60%;
+	width:100%;
 	-moz-border-radius : 9px;
 	margin-bottom : 10px;
 	text-align : center;
@@ -26,16 +26,16 @@ body{
 }
 .comment_table input[type="text"]:focus,textarea:focus,input[type="button"]:focus{
 	border : 1px solid #C6C4C4;
-	background : #E2E4FC;
+	background : #F0F8FF;
 }
 .comment_holder{
-	border : 0px solid #ADADB6;
+	border : 0px solid #F0F8FF;
 	
-	width : 50%;
+	width : 100%;
 	
 	
 	
-	background : #E2E4FC;
+	background : #F0F8FF;
 }
 #loading{
 	visibility : hidden;
