@@ -95,7 +95,7 @@ $js_files=array(
 		'table_common.js.php',
 		'js/search.js',
 		'js/edit_common.js',
-        'js/csv_common.js',
+                'js/csv_common.js',
 		'orders.js.php'
 		);
 
@@ -185,7 +185,7 @@ $smarty->assign('paginator_menu2',$paginator_menu2);
                                                    )
                             )
                             ),
-'balance'=>array('title'=>_('Balance'),
+			   'balance'=>array('title'=>_('Balance'),
                             'rows'=>
                                                array(
                                                    array(
