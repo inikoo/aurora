@@ -1577,8 +1577,11 @@ function pick_order($data) {
 
     $dn=new DeliveryNote($data['dn_key']);
     if ($data['key']=='quantity') {
+    
+  
         $transaction_data=$dn->set_as_picked($data['itf_key'],round($data['new_value'],8),date("Y-m-d H:i:s"),$data['picker_key']);
-        $dn->update_picking_percentage();
+ 
+  $dn->update_picking_percentage();
         if (!$dn->error) {
 
             $response=array('state'=>200,
@@ -1621,10 +1624,36 @@ function update_no_dispatched($data) {
     if (!$dn->error) {
 
         if ($dn->updated) {
+        
+          $formated_todo='';
+        
+        if ($transaction_data['Pending']>0) {
+           $formated_todo=number($transaction_data['Pending']);
+        }
+
+
+
+
+        $notes='';
+        if ($transaction_data['Out of Stock']!=0) {
+            $notes.=_('Out of Stock').' '.number($transaction_data['Out of Stock']);
+        }
+        if ($transaction_data['Not Found']!=0) {
+            $notes.='<br/>'._('Not Found').' '.number($transaction_data['Not Found']);
+        }
+        if ($transaction_data['No Picked Other']!=0) {
+            $notes.='<br/>'._('Not picked (other)').' '.number($transaction_data['No Picked Other']);
+        }
+        
+        
             $response=array('state'=>200,'result'=>'updated','new_value'=>$dn->new_value,
               'todo'=>$transaction_data['Pending'],
-                            'formated_todo'=>number($transaction_data['Pending']),
-
+                            'formated_todo'=>$formated_todo,
+                            'notes'=>$notes,
+                            'out_of_stock'=>$transaction_data['Out of Stock'],
+                            'not_found'=>$transaction_data['Not Found'],
+                            'no_picked_other'=>$transaction_data['No Picked Other'],
+                            
                             'picked'=>$transaction_data['Picked'],
                             'percentage_picked'=>$dn->get('Faction Picked'),
                             'number_picked_transactions'=>$dn->get_number_picked_transactions(),
