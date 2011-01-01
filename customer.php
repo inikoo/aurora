@@ -14,6 +14,7 @@
 
 include_once('common.php');
 include_once('class.Customer.php');
+include_once('class.Store.php');
 if(!$user->can_view('customers')){
 header('Location: index.php');
    exit;

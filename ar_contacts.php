@@ -151,11 +151,354 @@ case('plot_order_interval'):
 
     echo json_encode($response);
     break;
+ case('customer_orders'):
+   if(!$user->can_view('orders'))
+     exit();
+ list_customer_orders();
+
+ 
+   break;
+
+
+
 
 default:
     $response=array('state'=>404,'resp'=>_('Operation not found'));
     echo json_encode($response);
 
+}
+function list_customer_orders(){
+   if(isset($_REQUEST['customer_id']))
+      $customer_id=$_REQUEST['customer_id'];
+   if(isset($_REQUEST['saveto']) and $_REQUEST['saveto']=='report_sales')
+      $conf=$_SESSION['state']['report']['sales'];
+    else
+      $conf=$_SESSION['state']['orders']['table'];
+  if(isset( $_REQUEST['sf']))
+     $start_from=$_REQUEST['sf'];
+   else
+     $start_from=$conf['sf'];
+   if(isset( $_REQUEST['nr']))
+     $number_results=$_REQUEST['nr'];
+   else
+     $number_results=$conf['nr'];
+  if(isset( $_REQUEST['o']))
+    $order=$_REQUEST['o'];
+  else
+    $order=$conf['order'];
+  if(isset( $_REQUEST['od']))
+    $order_dir=$_REQUEST['od'];
+  else
+    $order_dir=$conf['order_dir'];
+    if(isset( $_REQUEST['f_field']))
+     $f_field=$_REQUEST['f_field'];
+   else
+     $f_field=$conf['f_field'];
+
+  if(isset( $_REQUEST['f_value']))
+     $f_value=$_REQUEST['f_value'];
+   else
+     $f_value=$conf['f_value'];
+if(isset( $_REQUEST['where']))
+     $where=$_REQUEST['where'];
+   else
+     $where=$conf['where'];
+  
+ if(isset( $_REQUEST['from']))
+    $from=$_REQUEST['from'];
+ else{
+   if(isset($_REQUEST['saveto']) and $_REQUEST['saveto']=='report_sales')
+     $from=$conf['from'];
+   else
+     $from=$_SESSION['state']['orders']['from'];
+ }
+
+  if(isset( $_REQUEST['to']))
+    $to=$_REQUEST['to'];
+  else{
+    if(isset($_REQUEST['saveto']) and $_REQUEST['saveto']=='report_sales')
+      $to=$conf['to'];
+    else
+      $to=$_SESSION['state']['orders']['to'];
+  }
+
+   if(isset( $_REQUEST['view']))
+    $view=$_REQUEST['view'];
+   else{
+     if(isset($_REQUEST['saveto']) and $_REQUEST['saveto']=='report_sales')
+       $view=$conf['view'];
+     else
+       $view=$_SESSION['state']['orders']['view'];
+
+   }
+   if(isset( $_REQUEST['tableid']))
+    $tableid=$_REQUEST['tableid'];
+  else
+    $tableid=2;
+
+ 
+  if(isset( $_REQUEST['dispatch']))
+    $dispatch=$_REQUEST['dispatch'];
+   else{
+     $dispatch=$conf['dispatch'];
+   }
+  if(isset( $_REQUEST['order_type']))
+    $order_type=$_REQUEST['order_type'];
+   else{
+     $order_type=$conf['order_type'];
+   }
+  if(isset( $_REQUEST['paid']))
+    $paid=$_REQUEST['paid'];
+   else{
+     $paid=$conf['paid'];
+   }
+
+
+
+
+   $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
+
+        
+   if(isset($_REQUEST['saveto']) and $_REQUEST['saveto']=='report_sales'){
+     
+     $_SESSION['state']['report']['sales']['order']=$order;
+     $_SESSION['state']['report']['sales']['order_dir']=$order_direction;
+     $_SESSION['state']['report']['sales']['nr']=$number_results;
+     $_SESSION['state']['report']['sales']['sf']=$start_from;
+     $_SESSION['state']['report']['sales']['where']=$where;
+     $_SESSION['state']['report']['sales']['f_field']=$f_field;
+     $_SESSION['state']['report']['sales']['f_value']=$f_value;
+     $_SESSION['state']['report']['sales']['to']=$to;
+     $_SESSION['state']['report']['sales']['from']=$from;
+     $date_interval=prepare_mysql_dates($from,$to,'`Order Date`','only_dates');
+     
+   }else{
+
+
+     if(isset( $_REQUEST['store_id'])    ){
+       $store=$_REQUEST['store_id'];
+       $_SESSION['state']['orders']['store']=$store;
+     }else
+       $store=$_SESSION['state']['orders']['store'];
+     
+   
+		  $_SESSION['state']['orders']['table']['order']=$order;
+     $_SESSION['state']['orders']['table']['order_dir']=$order_direction;
+     $_SESSION['state']['orders']['table']['nr']=$number_results;
+     $_SESSION['state']['orders']['table']['sf']=$start_from;
+     $_SESSION['state']['orders']['table']['where']=$where;
+     $_SESSION['state']['orders']['table']['f_field']=$f_field;
+     $_SESSION['state']['orders']['table']['f_value']=$f_value;
+     $_SESSION['state']['orders']['table']['dispatch']=$dispatch;
+     $_SESSION['state']['orders']['table']['paid']=$paid;				 
+     $_SESSION['state']['orders']['table']['order_type']=$order_type;				 
+						 
+						 
+						 
+     $_SESSION['state']['orders']['view']=$view;
+     $date_interval=prepare_mysql_dates($from,$to,'`Order Date`','only_dates');
+     if($date_interval['error']){
+       $date_interval=prepare_mysql_dates($_SESSION['state']['orders']['from'],$_SESSION['state']['orders']['to']);
+     }else{
+       $_SESSION['state']['orders']['from']=$date_interval['from'];
+       $_SESSION['state']['orders']['to']=$date_interval['to'];
+     }
+   }
+
+
+ if(is_numeric($store)){
+     $where.=sprintf(' and `Order Store Key`=%d',$store);
+   }
+
+   $where.=$date_interval['mysql'];
+   
+
+   
+     $dipatch_types=preg_split('/,/',$dispatch);
+     if(!array_key_exists('all_orders',$dipatch_types)){
+      $valid_dispatch_types=array(
+				 'in_process'=>",'Submited','In Process','Ready to Pick','Picking','Ready to Pack','Ready to Ship','Packing'"
+				 ,'cancelled'=>",'Cancelled'"
+				 ,'dispatched'=>",'Dispatched'"
+				  ,'suspended'=>",'Suspended'"
+				 ,'unknown'=>"'Unknown'"
+				 );
+    $_where='';
+$where.=sprintf(' and `Order Customer Key`=%d',$customer_id);
+     foreach($dipatch_types as $dipatch_type){
+       if(array_key_exists($dipatch_type,$valid_dispatch_types))
+        $_where.=$valid_dispatch_types[$dipatch_type];
+     }
+     $_where=preg_replace('/^,/','',$_where);
+     if($_where!=''){
+       $where.=' and `Order Current Dispatch State` in ('.$_where.')';
+     }else{
+        $_SESSION['state']['orders']['table']['dispatch']='all_orders';
+     }
+  }
+  
+  
+  $wheref='';
+
+  if($f_field=='max' and is_numeric($f_value) )
+    $wheref.=" and  (TO_DAYS(NOW())-TO_DAYS(`Order Last Updated Date`))<=".$f_value."    ";
+  else if($f_field=='min' and is_numeric($f_value) )
+    $wheref.=" and  (TO_DAYS(NOW())-TO_DAYS(`Order Last Updated Date`))>=".$f_value."    ";
+   elseif($f_field=='customer_name' and $f_value!='')
+    $wheref.=" and  `Order Customer Name` like '".addslashes($f_value)."%'";
+   elseif($f_field=='public_id' and $f_value!='')
+    $wheref.=" and  `Order Public ID` like '".addslashes($f_value)."%'";
+
+
+  else if($f_field=='maxvalue' and is_numeric($f_value) )
+    $wheref.=" and  `Order Total Amount`<=".$f_value."    ";
+  else if($f_field=='minvalue' and is_numeric($f_value) )
+    $wheref.=" and  `Order Total Amount`>=".$f_value."    ";
+   
+
+
+   
+
+   
+  $sql="select count(*) as total from `Order Dimension`   $where $wheref ";
+  //print $sql ;
+   $result=mysql_query($sql);
+  if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
+    $total=$row['total'];
+  }
+  if($where==''){
+    $filtered=0;
+     $total_records=$total;
+  }else{
+    
+      $sql="select count(*) as total from `Order Dimension`  $where";
+      $result=mysql_query($sql);
+      if($row=mysql_fetch_array($result, MYSQL_ASSOC)){
+	$total_records=$row['total'];
+	$filtered=$total_records-$total;
+      }
+      
+  }
+  mysql_free_result($result);
+
+  $rtext=$total_records." ".ngettext('order','orders',$total_records);
+
+  if($total_records>$number_results)
+    $rtext_rpp=sprintf(" (%d%s)",$number_results,_('rpp'));
+  else
+    $rtext_rpp=sprintf("Showing all orders");
+
+  $filter_msg='';
+
+     switch($f_field){
+     case('public_id'):
+       if($total==0 and $filtered>0)
+	 $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any order with number")." <b>".$f_value."*</b> ";
+       elseif($filtered>0)
+	 $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ("._('orders starting with')." <b>$f_value</b>)";
+       break;
+     case('customer_name'):
+       if($total==0 and $filtered>0)
+	 $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any order with customer")." <b>".$f_value."*</b> ";
+       elseif($filtered>0)
+	 $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ("._('orders with customer')." <b>".$f_value."*</b>)";
+       break;  
+     case('minvalue'):
+       if($total==0 and $filtered>0)
+	 $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any order minimum value of")." <b>".money($f_value)."</b> ";
+       elseif($filtered>0)
+	 $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ("._('orders with min value of')." <b>".money($f_value)."*</b>)";
+       break;  
+   case('maxvalue'):
+       if($total==0 and $filtered>0)
+	 $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any order maximum value of")." <b>".money($f_value)."</b> ";
+       elseif($filtered>0)
+	 $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ("._('orders with max value of')." <b>".money($f_value)."*</b>)";
+       break;  
+ case('max'):
+       if($total==0 and $filtered>0)
+	 $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any order older than")." <b>".number($f_value)."</b> "._('days');
+       elseif($filtered>0)
+	 $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ("._('last')." <b>".number($f_value)."</b> "._('days orders').")";
+       break;  
+     }
+
+
+
+   
+   $_order=$order;
+   $_dir=$order_direction;
+
+   
+   if($order=='date')
+     $order='`Order Date`';
+   else if($order=='last_date')
+     $order='`Order Last Updated Date`';
+   else if($order=='id')
+     $order='`Order File As`';
+   else if($order=='state'){
+  // if($order_direction=='desc')
+//     $order='`Order Current Dispatch State`,`Order Current Payment State`';
+//else
+//$order='`Order Current Payment State`,`Order Current Dispatch State`';
+$order='`Order Current XHTML State`';
+}
+   else if($order=='total_amount')
+     $order='`Order Balance Total Amount`';
+else if($order=='customer')
+     $order='`Order Customer Name`';
+
+  $sql="select `Order Balance Total Amount`,`Order Type`,`Order Currency Exchange`,`Order Currency`,`Order Key`,`Order Public ID`,`Order Customer Key`,`Order Customer Name`,`Order Last Updated Date`,`Order Date`,`Order Total Amount` ,`Order Current XHTML State` from `Order Dimension`  $where $wheref  order by $order $order_direction limit $start_from,$number_results ";
+  //print $sql;
+  global $myconf;
+
+   $data=array();
+
+   $res = mysql_query($sql);
+   while($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+     $order_id=sprintf('<a href="order.php?id=%d">%s</a>',$row['Order Key'],$row['Order Public ID']);
+   //  $customer=sprintf('<a href="customer.php?id=%d">%s</a>',$row['Order Customer Key'],$row['Order Customer Name']);
+     $state=$row['Order Current XHTML State'];
+     if($row ['Order Type'] != 'Order')
+       $state.=' ('.$row ['Order Type'].')';
+       
+       if($row['Order Balance Total Amount']!=$row['Order Total Amount']){
+       $mark='<span style="color:red">*</span>';
+       }else{
+       $mark='<span style="visibility:hidden">*</span>';
+       }
+       
+       
+     $data[]=array(
+		   'id'=>$order_id,
+		  // 'customer'=>$customer,
+		  // 'date'=>strftime("%e %b %y %H:%M", strtotime($row['Order Date'])),
+		   'last_date'=>strftime("%e %b %y %H:%M", strtotime($row['Order Last Updated Date'])),
+		   'total_amount'=>money($row['Order Balance Total Amount'],$row['Order Currency']).$mark,
+		   'state'=>$state
+		   );
+   }
+mysql_free_result($res);
+   $response=array('resultset'=>
+		   array('state'=>200,
+			 'data'=>$data,
+			 'rtext'=>$rtext,
+			 'rtext_rpp'=>$rtext_rpp,
+			 'sort_key'=>$_order,
+			 'sort_dir'=>$_dir,
+			 'tableid'=>$tableid,
+			 'filter_msg'=>$filter_msg,
+			 'total_records'=>$total,
+			 'records_offset'=>$start_from,
+			 'records_returned'=>$start_from+$total,
+			 'records_perpage'=>$number_results,
+
+			 'records_order'=>$order,
+			 'records_order_dir'=>$order_dir,
+			 'filtered'=>2 //$filtered
+			 )
+		   );
+   echo json_encode($response);
 }
 
 function list_assets_dispatched_to_customer() {
@@ -401,7 +744,7 @@ function list_assets_dispatched_to_customer() {
     echo json_encode($response);
 
 }
-// ---------------------------------orders start --------------
+
 function list_assets_in_process_customer() {
     $conf=$_SESSION['state']['customer']['assets'];
     if (isset( $_REQUEST['id']))
@@ -645,7 +988,7 @@ function list_assets_in_process_customer() {
 
 }
 
-// ---------------------------------orders end ----------------
+
 
 function list_companies() {
     $conf=$_SESSION['state']['companies']['table'];

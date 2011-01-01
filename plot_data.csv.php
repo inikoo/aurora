@@ -39,6 +39,9 @@ $tmp['value'.$i]=0;
 
  $sql=sprintf("select  `Date` from kbase.`Date Dimension` where `Date`>= ( select min(`Invoice Date`)   from `Invoice Dimension` where `Invoice Store Key`=%d ) and `Date`<=NOW()  order by `Date` desc",
                          $data['store_key']);
+
+//print $sql;
+
             $res=mysql_query($sql);
             while ($row=mysql_fetch_assoc($res)) {
             
