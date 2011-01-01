@@ -38,7 +38,7 @@ div.tabs-panel,ul.category-tabs li.tabs,ul.add-menu-item-tabs li.tabs{border-col
 ul.category-tabs li.tabs,ul.add-menu-item-tabs li.tabs{background-color:#f1f1f1;}
 input.disabled,textarea.disabled{background-color:#ccc;}
 #plugin-information .action-button a,#plugin-information .action-button a:hover,#plugin-information .action-button a:visited{color:#fff;}
-.widget .widget-top,.postbox h3,.stuffbox h3{background:#dfdfdf url("../images/gray-grad.png") repeat-x left top;text-shadow:#fff 0 1px 0;}
+.widget .widget-top,.postbox h3,.stuffbox h3{background:#3B5998 url("../images/gray-grad.png") repeat-x left top;text-shadow:#fff 0 1px 0;}
 .form-table th,.form-wrap label{color:#222;text-shadow:#fff 0 1px 0;}
 .description,.form-wrap p{color:#666;}
 strong .post-com-count span{background-color:#21759b;}
@@ -134,7 +134,7 @@ input.readonly,textarea.readonly{background-color:#ddd;}
 table.widefat span.delete a,table.widefat span.trash a,table.widefat span.spam a,#dashboard_recent_comments .delete a,#dashboard_recent_comments .trash a,#dashboard_recent_comments .spam a{color:#bc0b0b;}
 .widget,#widget-list .widget-top,.postbox,#titlediv,#poststuff .postarea,.stuffbox{border-color:#dfdfdf;}
 .widget,.postbox{background-color:#fff;}
-.ui-sortable .postbox h3{color:#464646;}
+.ui-sortable .postbox h3{color:#ffffff;}
 .widget .widget-top,.ui-sortable .postbox h3:hover{color:#000;}
 .curtime #timestamp{background-image:url(../images/date-button.gif);}
 #quicktags #ed_link{color:#00f;}

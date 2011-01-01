@@ -16,6 +16,7 @@
 <link rel="stylesheet" href="../load-styles.css" type="text/css" media="all">
 <link rel="stylesheet" id="../thickbox-css" href="thickbox.css" type="text/css" media="all">
 <link rel="stylesheet" id="../colors-css" href="colors-fresh.css" type="text/css" media="all">
+<link rel="stylesheet" id="../common.css"  type="text/css">
 {literal}
 <script type="text/javascript">
 /* <![CDATA[ */
@@ -53,7 +54,7 @@ document.body.className = c;
 
 
 
-<div style="overflow: hidden;" id="wpbody-content">
+<div id="wpbody-content">
 <div id="screen-meta">
 
 
@@ -98,7 +99,7 @@ on the arrow that appears on the right side of each navigation tab. You can also
 
 <h3 class="hndle"><span>NO CONTACTS AND CUSTOMERS</span></h3>
 
-<div id="div1" style="display:none; background-color:#999999;">
+<div id="div1" style="display:none; ">
 	<center>
      {foreach from=$splinters key=key item=splinter}
 
@@ -142,7 +143,7 @@ on the arrow that appears on the right side of each navigation tab. You can also
 
 <br>
 
-			<div id="dashboard_recent_comments" class="postbox ">
+<div id="dashboard_recent_comments" class="postbox ">
 <div class="cross" title="Click to Delete"><img onClick="fadeout()" width="15px" height="15px;" src="art/x.png" /> </div>
 
 <div class="edit_click" title="Click to toggle"><span class="editTop2"><img width="15px" height="15px;" src="art/edit.JPG" /></span></div>
@@ -150,7 +151,7 @@ on the arrow that appears on the right side of each navigation tab. You can also
 
 <h3 class="hndle">TOP CUSTOMERS</h3>
 
-<div id="divR" style="display:none; background-color:#999999;">
+<div id="divR" style="display:none;">
 <center>
   {foreach from=$splinters key=key item=splinter}
 
@@ -191,12 +192,12 @@ $("#dashboard_recent_comments").fadeOut();
 <br>
 <!--==================================================DIV 3=============================================================-->
 		
-        	<div id="dashboard_incoming_links" class="postbox ">
+<div id="dashboard_incoming_links" class="postbox ">
 <div id="cross3" class="cross"><img width="15px" height="15px;" src="art/x.png" /></div>
-<div id="edit3" class="edit"><strong><img width="15px" height="15px;" src="art/edit.JPG" /></strong></div>
+<div id="edit3" class="edit_click"><strong><img width="15px" height="15px;" src="art/edit.JPG" /></strong></div>
 
 <h3 class="hndle">WORST PRODUCTS</h3>
-<div id="div3" style="display:none; background-color:#999999;">
+<div id="div3" style="display:none;">
 	<center>
     {foreach from=$splinters key=key item=splinter}
 
@@ -263,18 +264,21 @@ $("#dashboard_recent_comments").fadeOut();
 
 <!--============================================================DIV 4==========================================================================-->
 </div></div></td>
+
+<td width="200px"></td>
+
     		<td width="270px"><div class="postbox-container">
 <div id="side-sortables" class="meta-box-sortables ui-sortable" style="width:350px;">
 <!--====================================== DIV 5=======================================-->
 			<div id="dashboard_quick_press" class="postbox ">
 <div class="cross" id="cross5"><img width="15px" height="15px;" src="art/x.png" /></div>
-<div class="edit" id="edit5"><strong><img width="15px" height="15px;" src="art/edit.JPG" /></strong></div>
+<div class="edit_click" id="edit5"><strong><img width="15px" height="15px;" src="art/edit.JPG" /></strong></div>
 
 
 <h3 class="hndle">TOP PRODUCTS</h3>
 
 
-<div id="div4" style="display:none; background-color:#999999;">
+<div id="div4" style="display:none; ">
 	<center>
     {foreach from=$splinters key=key item=splinter}
 
@@ -342,7 +346,7 @@ $("#dashboard_recent_comments").fadeOut();
 <!--============================ DIV 6=============================-->
 			<div id="dashboard_recent_drafts" class="postbox ">
 <div class="cross" id="cross6"><img width="15px" height="15px;" src="art/x.png" /></div>
-<div class="edit" id="edit6"><strong><img width="15px" height="15px;" src="art/edit.JPG" /></strong></div>
+<div class="edit_click" id="edit6"><strong><img width="15px" height="15px;" src="art/edit.JPG" /></strong></div>
 
 <h3 class="hndle">OUTSTANDING ORDER</h3>
 
