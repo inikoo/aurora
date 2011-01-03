@@ -84,9 +84,9 @@
 </div>
   <ul class="tabs" id="chooser_ul" style="clear:both;margin-top:25px">
     <li> <span class="item {if $view=='history'}selected{/if}"  id="history">  <span> {t}History, Notes{/t}</span></span></li>
-    <li> <span class="item {if $view=='orders'}selected{/if}"  id="orders">  <span> {t}Orders{/t}</span></span></li>
+    
     <li> <span class="item {if $view=='products'}selected{/if}" id="products"  ><span>  {t}Products Ordered{/t}</span></span></li>
-
+    <li> <span class="item {if $view=='orders'}selected{/if}"  id="orders">  <span> {t}Orders{/t}</span></span></li>
   </ul>
   <div  style="clear:both;width:100%;border-bottom:1px solid #ccc">
   </div>
@@ -110,8 +110,6 @@
  {include file='table_splinter.tpl' table_id=2 filter_name=$filter_name2 filter_value=$filter_value2  }
        <div  id="table2"   class="data_table_container dtable btable "> </div>
   </div>
-
-
 </div> 
 
 <div id="dialog_note">

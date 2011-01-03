@@ -89,7 +89,6 @@ $smarty->assign('js_files',$js_files);
 
 $warehouse_area=new CompanyArea('code','WAH');
 $pickers=$warehouse_area->get_current_staff_with_position_code('PICK');
-
 $number_cols=5;
 $row=0;
  $pickers_data=array();
@@ -106,6 +105,26 @@ $row=0;
    }
 
 $smarty->assign('pickers',$pickers_data);
+
+$packers=$warehouse_area->get_current_staff_with_position_code('PACK');
+$number_cols=5;
+$row=0;
+ $packers_data=array();
+    $contador=0;
+    foreach($packers as $packer){
+       if(fmod($contador,$number_cols)==0 and $contador>0)
+        $row++;
+        $tmp=array();
+     foreach($packer as $key=>$value){
+       $tmp[preg_replace('/\s/','',$key)]=$value;
+     }
+      $packers_data[$row][]=$tmp;
+ $contador++;
+   }
+
+$smarty->assign('packers',$packers_data);
+
+
 //print_r($pickers_data);
 
 $tipo_filter2=$_SESSION['state']['orders']['ready_to_pick_dn']['f_field'];

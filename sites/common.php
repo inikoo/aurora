@@ -39,6 +39,9 @@ $smarty = new Smarty();
 
 
 $site=new Site($myconf['site_key']);
+if(!$site->id){
+exit ("Site data found (".$myconf['site_key'].')<br/> click <a href="../mantenence/scripts/create_sites.php">here to create one</a> ');
+}
 $page_data=$site->get_data_for_smarty();
 
 
