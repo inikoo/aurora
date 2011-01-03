@@ -89,6 +89,15 @@ case('pick_it'):
 
     start_picking($data);
     break;
+case('pack_it'):
+    $data=prepare_values($_REQUEST,array(
+                             'dn_key'=>array('type'=>'key'),
+                             'pin'=>array('type'=>'string'),
+                             'staff_key'=>array('type'=>'key')
+                         ));
+
+    start_packing($data);
+    break;    
 case('ready_to_pick_orders'):
     ready_to_pick_orders();
     break;
@@ -1359,6 +1368,51 @@ function start_picking($data) {
 
 
     $dn->start_picking($data['staff_key']);
+    if ($dn->assigned) {
+        $response=array(
+                      'state'=>200,
+                      'action'=>'updated',
+                      'operations'=>$dn->operations,
+                      'dn_state'=>$dn->dn_state
+                  );
+
+
+
+    } else if ($dn->error) {
+        $response=array(
+                      'state'=>400,
+                      'msg'=>$dn->msg
+                  );
+
+
+
+    } else {
+        $response=array(
+                      'state'=>200,
+                      'action'=>'uncharged',
+
+                  );
+
+
+    }
+    echo json_encode($response);
+
+}
+
+function start_packing($data) {
+
+    $dn=new DeliveryNote($data['dn_key']);
+    if (!$dn->id) {
+        $response=array(
+                      'state'=>400,
+                      'msg'=>'Unknown Delivery Note'
+                  );
+        echo json_encode($response);
+        exit;
+    }
+
+
+    $dn->start_packing($data['staff_key']);
     if ($dn->assigned) {
         $response=array(
                       'state'=>200,
