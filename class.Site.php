@@ -179,7 +179,7 @@ function create_site_page_sections(){
  $sections=getEnumValues('Page Store Dimension', 'Page Store Section');
 
  foreach($sections as $section){
-    $sql=sprintf("INSERT INTO `dw`.`Page Store Section Dimension` (
+    $sql=sprintf("INSERT INTO `Page Store Section Dimension` (
 `Page Store Section Key` ,
 `Site Key` ,
 `Page Store Section Code` ,
@@ -195,6 +195,7 @@ NULL , %s, %s, NULL , NULL , NULL , NULL , NULL
  ",$this->id,prepare_mysql($section));
  
 mysql_query($sql);
+//print $sql;
 }
 }
 

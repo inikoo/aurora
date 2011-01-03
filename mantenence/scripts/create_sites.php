@@ -163,6 +163,7 @@ foreach($store_data as $store_code=>$xdata) {
 
 
     $site=$store->create_site($site_data);
+    $site->create_site_page_sections();
     foreach($page_store_secton_data as $key=>$value){
             $page_section=$site->get_page_section_object($key);
             $page_section->update($value);
