@@ -59,6 +59,10 @@ $correct_partner=true;
 $force_update=false;
 
 
+$sql="update orders_data.orders set deleted='Yes' ";
+  mysql_query($sql);
+
+
 $orders_array_full_path = glob("/mnt/*/Orders/*.xls");
 //$orders_array_full_path1 = glob("/mnt/z/Orders_Aug10/*.xls");
 //$orders_array_full_path2 = glob("/mnt/z/Orders_Aug10/*.xls");
@@ -105,8 +109,7 @@ foreach($orders_array as $order_index=>$order){
 
 
 $cvs_repo='/data/orders_data/';
-$sql="update orders_data.orders set deleted='Yes' ";
-  mysql_query($sql);
+
 foreach($good_files_number as $order_index=>$order){
 
   //print "$order_index $order  ->";
