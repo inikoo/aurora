@@ -1289,7 +1289,7 @@ class DeliveryNote extends DB_Table {
                          ,prepare_mysql ($staff_key)
                          ,prepare_mysql ($staff_alias,false)
                          , $this->id );
-     // print $sql;
+        // print $sql;
         mysql_query ( $sql );
         $this->assigned=true;
         $operations='<a href="order_pack_aid.php?id='.$this->id.'" >'._('Packing')." (".$staff->data['Staff Alias'].")</a>";
@@ -1299,8 +1299,8 @@ class DeliveryNote extends DB_Table {
         $sql = sprintf ( "update `Order Transaction Fact` set `Start Packing Date`=%s  where `Delivery Note Key`=%d",
                          prepare_mysql($date),
                          $this->id );
-  //  print $sql;
-    mysql_query ( $sql );
+        //  print $sql;
+        mysql_query ( $sql );
 
     }
     function update_picking_percentage() {
@@ -1369,7 +1369,7 @@ class DeliveryNote extends DB_Table {
         return $number;
     }
 
-  function get_number_packed_transactions() {
+    function get_number_packed_transactions() {
 
         $sql=sprintf("select count(*) as number from   `Inventory Transaction Fact` ITF        where `Delivery Note Key`=%d and (`Picked`=`Packed`) "
                      ,$this->id
@@ -1705,9 +1705,7 @@ class DeliveryNote extends DB_Table {
                              prepare_mysql ( $date ),
                              $this->id );
             mysql_query ( $sql );
-        }
-
-
+        
         return array(
                    'Picked'=>$qty,
                    'Out of Stock'=>$out_of_stock,
@@ -1715,6 +1713,13 @@ class DeliveryNote extends DB_Table {
                    'No Picked Other'=>$no_picked_other,
                    'Pending'=>$pending
                );
+        
+        }else{
+            print "Error no itf found $itf_key\n";
+        }
+
+
+       
 
     }
 
@@ -1800,13 +1805,13 @@ class DeliveryNote extends DB_Table {
             $this->updated=true;
 
 
- return array(
-                   'Picked'=>$picked,
-                   'Out of Stock'=>$out_of_stock,
-                   'Not Found'=>$not_found,
-                   'No Picked Other'=>$no_picked_other,
-                   'Pending'=>$pending
-               );
+            return array(
+                       'Picked'=>$picked,
+                       'Out of Stock'=>$out_of_stock,
+                       'Not Found'=>$not_found,
+                       'No Picked Other'=>$no_picked_other,
+                       'Pending'=>$pending
+                   );
 
         } else {
             $this->msg='itf not found';
