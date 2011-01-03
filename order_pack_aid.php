@@ -22,17 +22,13 @@ if(!$dn->id){
    exit;
 
 }
-$dn->update_picking_percentage();
 
-//$dn->start_packing(1);
-
-//print_r($dn);
 
 $number_transactions=$dn->get_number_transactions();
-$number_picked_transactions=$dn->get_number_picked_transactions();
-$smarty->assign('picked',($number_picked_transactions>=$number_transactions?true:false));
+$number_packed_transactions=$dn->get_number_packed_transactions();
+$smarty->assign('packed',($number_packed_transactions>=$number_transactions?true:false));
 $smarty->assign('number_transactions',$number_transactions);
-$smarty->assign('number_picked_transactions',$number_picked_transactions);
+$smarty->assign('number_packed_transactions',$number_packed_transactions);
 
   
   
@@ -61,13 +57,13 @@ $js_files=array(
 		'common.js.php',
 		'table_common.js.php',
 		'js/edit_common.js',
-		'order_pick_aid.js.php?dn_key='.$dn->id
+		'order_pack_aid.js.php?dn_key='.$dn->id
 		);
 
 
 
 
-  $template='order_pick_aid.tpl';
+  $template='order_pack_aid.tpl';
 
 $customer=new Customer($dn->data['Delivery Note Customer Key']);
 
@@ -77,7 +73,7 @@ $smarty->assign('customer',$customer);
 
 
 $smarty->assign('parent','orders');
-$smarty->assign('title',_('Picking Aid Sheet').' '.$dn->get('Delivery Note Title') );
+$smarty->assign('title',_('Packing Aid Sheet').' '.$dn->get('Delivery Note Title') );
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
 $smarty->display($template);

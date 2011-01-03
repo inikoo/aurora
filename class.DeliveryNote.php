@@ -1289,7 +1289,7 @@ class DeliveryNote extends DB_Table {
                          ,prepare_mysql ($staff_key)
                          ,prepare_mysql ($staff_alias,false)
                          , $this->id );
-        //  print $sql;
+     // print $sql;
         mysql_query ( $sql );
         $this->assigned=true;
         $operations='<a href="order_pack_aid.php?id='.$this->id.'" >'._('Packing')." (".$staff->data['Staff Alias'].")</a>";
@@ -1299,7 +1299,8 @@ class DeliveryNote extends DB_Table {
         $sql = sprintf ( "update `Order Transaction Fact` set `Start Packing Date`=%s  where `Delivery Note Key`=%d",
                          prepare_mysql($date),
                          $this->id );
-        mysql_query ( $sql );
+  //  print $sql;
+    mysql_query ( $sql );
 
     }
     function update_picking_percentage() {
@@ -1312,7 +1313,7 @@ class DeliveryNote extends DB_Table {
         $this->data['Delivery Note Faction Picked']=$percentage_picked;
         if ($percentage_picked==1) {
 
-            if ($this->data['Delivery Note State']=='Picking & Packing')
+            if ($this->data['Delivery Note State']=='Picking & Packing' or $this->data['Delivery Note State']=='Packing')
                 $state='Packing';
             else if ($this->data['Delivery Note State']=='Picking & Packer Assigned')
                 $state='Packer Assigned';
@@ -1368,6 +1369,20 @@ class DeliveryNote extends DB_Table {
         return $number;
     }
 
+  function get_number_packed_transactions() {
+
+        $sql=sprintf("select count(*) as number from   `Inventory Transaction Fact` ITF        where `Delivery Note Key`=%d and (`Picked`=`Packed`) "
+                     ,$this->id
+
+                    );
+        //     print $sql;
+        $res=mysql_query ( $sql );
+        $number=0;
+        if ($row=mysql_fetch_assoc($res)) {
+            $number=$row['number'];
+        }
+        return $number;
+    }
 
 
     function get_picking_percentage() {

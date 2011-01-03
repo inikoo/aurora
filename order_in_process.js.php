@@ -4,6 +4,10 @@ $order_key=0;
 if(isset($_REQUEST['order_key']) )
     $order_key=$_REQUEST['order_key'];
 print "var order_key=$order_key;";
+$customer_key=0;
+if(isset($_REQUEST['customer_key']) )
+    $customer_key=$_REQUEST['customer_key'];
+print "var customer_key=$customer_key;";
 ?>
 var Dom   = YAHOO.util.Dom;
 var Event = YAHOO.util.Event;
@@ -504,12 +508,12 @@ function create_delivery_note(){
 					'POST',
 					ar_file, {
 					    success:function(o) {
-					    					alert(o.responseText);
+					    	//				alert(o.responseText);
 
-						return;
+						//return;
 						var r = YAHOO.lang.JSON.parse(o.responseText);
 						if (r.state == 200) {
-						//window.location.reload();
+						window.location="customer.php?id="+customer_key;
 						}
 					    },
 					failure:function(o) {
