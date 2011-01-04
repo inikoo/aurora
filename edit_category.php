@@ -1,6 +1,7 @@
 <?php
 include_once('common.php');
 include_once('class.Node.php');
+include_once('class.Category.php');
 /*
 if(!$user->can_view('staff')){
    header('Location: index.php?no=1');
@@ -15,7 +16,7 @@ $category_key=$_SESSION['state']['product_categories']['category_key'];
 }
 
 $nodes=new Nodes('`Category Dimension`');
-
+$category=new Category('category_key',$category_key);
 if($cat_data=$nodes->fetch($category_key)){
 }else{
 $category_key=0;
@@ -32,7 +33,8 @@ $smarty->assign('subcategories_title',$subcategories_title);
 
 
 
-
+if(!$category= new Category('category_key',$category_key))
+  exit('Error category not found');
 
 
 
@@ -77,7 +79,7 @@ $js_files=array(
 		'common.js.php',
 		'table_common.js.php',
 		);
-
+$smarty->assign('category',$category);
 $smarty->assign('parent','category');
 $smarty->assign('sub_parent','category');
 //print("*************");print($edit);

@@ -1,7 +1,6 @@
 {include file='header.tpl'}
 <div id="bd" >
-  {include file='assets_navigation.tpl'} 
-
+ 
  
  <div class="branch"> 
  <span ><a  href="categories.php?id=0">{t}Product Categories{/t}</a> &rarr; 
@@ -15,17 +14,17 @@
 
  
    <ul class="tabs" id="chooser_ul" style="clear:both">
-         <li> <span class="item {if $edit=='category'}selected{/if}"  id="details">  <span> {t}Staff Details{/t}</span></span></li>
+         <li> <span class="item {if $edit=='category'}selected{/if}"  id="details">  <span> {t}Category Details{/t}</span></span></li>
 
     </ul>
   
   <div class="tabbed_container"> 
  
-   {* <div  class="edit_block" style="{if $edit!="details"}display:none{/if}"  id="d_details">*}
+   <div  class="edit_block" style="{if $edit!="details"}display:none{/if}"  id="d_details">
 
   <div class="general_options" style="float:right">
-	<span  style="margin-right:10px;visibility:hidden"  id="save_edit_company_staff" onClick="save_edit_general('category')" class="state_details">{t}Save{/t}</span>
-	<span style="margin-right:10px;visibility:hidden" id="reset_edit_company_staff" onClick="reset_edit_general('category')" class="state_details">{t}Reset{/t}</span>
+	<span  style="margin-right:10px;visibility:hidden"  id="save_edit_category" onClick="save_edit_general('category')" class="state_details">{t}Save{/t}</span>
+	<span style="margin-right:10px;visibility:hidden" id="reset_edit_category" onClick="reset_edit_general('category')" class="state_details">{t}Reset{/t}</span>
    </div>
       
       
@@ -33,7 +32,7 @@
       <div id="new_staff_messages" class="messages_block"></div>
 	  <table class="edit">
 	   
-	{*<tr class="first"><td style="width:11em" class="label">Staff Id:</td>
+    {*  <tr class="first"><td style="width:11em" class="label">Staff Id:</td>
 	  <td  style="text-align:left;width:19em">
 	    <div  style="width:15em;position:relative;top:00px" >
 
@@ -42,12 +41,12 @@
 	    </div>
 	  </td>
 	 <td id="Company_Staff_Id_msg" class="edit_td_alert"></td>
-	</tr>*}
-
+	</tr>
+    *}
 	<tr class="first"><td style="" class="label">{t}Category Name{/t}:</td>
 	  <td  style="text-align:left">
 	    <div  style="width:15em;position:relative;top:00px" >
-	      <input style="text-align:left;width:18em" id="Company_Staff_Name" value="{$category->get('Category Name')}" ovalue="{$category->get('Category Name')}">
+	      <input style="text-align:left;width:18em" id="Category_Name" value="{$category->get('Category Name')}" ovalue="{$category->get('Category Name')}">
 	      <div id="Category_Name_Container" style="" ></div>
 	    </div>
 	  </td>
@@ -64,7 +63,8 @@
 	    </div>
 	  </td>
 	  	 <td id="Company_Staff_Alias_msg" class="edit_td_alert"></td>
-	</tr>*}
+	</tr>
+     *}
 	
 	  </table>
 	  

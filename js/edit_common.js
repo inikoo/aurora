@@ -157,6 +157,7 @@ validate_scope(branch);
 
 
 var CellEdit = function (callback, newValue) {
+alert("********************");
     var record = this.getRecord(),
                  column = this.getColumn(),
                           oldValue = this.value,
@@ -181,8 +182,7 @@ var CellEdit = function (callback, newValue) {
         ar_file='ar_edit_staff.php';
     else
         ar_file='ar_edit_assets.php';
-   //  alert(column.object)
-//alert(column.key)
+
     var request='tipo=edit_'+column.object+'&key=' + column.key + '&newvalue=' + encodeURIComponent(newValue) + '&oldvalue=' + encodeURIComponent(oldValue)+ myBuildUrl(datatable,record);
 //  alert(ar_file+'?'+request);
 
