@@ -92,9 +92,12 @@ $customer->load('contacts');
 $smarty->assign('customer',$customer);
 
 
-  $smarty->assign('search_label',_('Customers'));
+$smarty->assign('search_label',_('Customers'));
 $smarty->assign('search_scope','customers');
 
+if(isset($_REQUEST['p'])){
+  
+  if($_REQUEST['p']=='cs'){
   
   $order=$_SESSION['state']['customers']['table']['order'];
   if($order=='name')
@@ -168,10 +171,20 @@ $result=mysql_query($sql);
 if(!$next=mysql_fetch_array($result, MYSQL_ASSOC))
   $next=array('id'=>0,'name'=>'');
 mysql_free_result($result);
+$smarty->assign('parent_info',"p=cs&");
 
 $smarty->assign('prev',$prev);
 $smarty->assign('next',$next);
+$store=new Store($customer->data['Customer Store Key']);
+$smarty->assign('parent_url','customers.php?store='.$store->id);
+$parent_title=$store->data['Store Name'].' '._('Customers');
+$smarty->assign('parent_title',$parent_title);
 
+}
+
+
+
+}
 
 
 $show_details=$_SESSION['state']['customer']['details'];

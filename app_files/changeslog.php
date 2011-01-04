@@ -431,6 +431,11 @@ CREATE TABLE IF NOT EXISTS `Comment Dimension` (
   `Date Added` timestamp NOT NULL default CURRENT_TIMESTAMP,
   PRIMARY KEY  (`Comment Key`)
 ) ENGINE=MyISAM  CHARACTER SET utf8 COLLATE utf8_general_ci;
+0.9.21
 
+ALTER TABLE `History Dimension` ADD `Author Name` VARCHAR( 256 ) NULL AFTER `History Key`;
+ALTER TABLE `History Dimension` CHANGE `Action` `Action` ENUM( 'sold_since', 'last_sold', 'first_sold', 'placed', 'wrote', 'deleted', 'edited', 'cancelled', 'charged', 'merged', 'created', 'associated', 'disassociate' ) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT 'edited';
+ALTER TABLE `History Dimension` CHANGE `Preposition` `Preposition` ENUM( 'about', '', 'to' ) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL ;
+ALTER TABLE `History Dimension` CHANGE `Direct Object Key` `Direct Object Key` MEDIUMINT( 8 ) UNSIGNED NULL DEFAULT '0';
 */
 ?>

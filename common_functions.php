@@ -1527,6 +1527,63 @@ function translate_written_number($string){
     }
 
 
+
+    function guess_file_format($filename) {
+
+        $mimetype='Unknown';
+       
+
+        ob_start();
+        system("uname");
+
+
+
+        $system='Unknown';
+        $_system = ob_get_clean();
+
+        // print "S:$system M:$mimetype\n";
+
+        if (preg_match('/darwin/i',$_system)) {
+            ob_start();
+            $system='Mac';
+            system("file -I $filename");
+            $mimetype=ob_get_clean();
+            $mimetype=preg_replace('/^.*\:/','',$mimetype);
+
+        }
+        elseif(preg_match('/linux/i',$_system)) {
+            ob_start();
+            $system='Linux';
+            $mimetype = system("file -ib $filename");
+            $mimetype=ob_get_clean();
+        }
+        else {
+            $system='Other';
+
+        }
+
+
+        if (preg_match('/png/i',$mimetype))
+            $format='png';
+        elseif(preg_match('/jpeg/i',$mimetype))
+        $format='jpeg';
+        elseif(preg_match('/image.psd/i',$mimetype))
+        $format='psd';
+        elseif(preg_match('/gif/i',$mimetype))
+        $format='gif';
+        elseif(preg_match('/wbmp$/i',$mimetype))
+        $format='wbmp';
+        
+        else {
+            $format='other';
+        }
+//  print "S:$system M:$mimetype\n";
+        // return;
+
+        return $format;
+
+    }
+
 function guess_file_mime($file){
     
     ob_start();
@@ -1541,7 +1598,8 @@ function guess_file_mime($file){
      $system='Mac';
      system("file -I $file");
      $mimetype=ob_get_clean();
-     
+      $mimetype=preg_replace('/^.*\:\s*/','',$mimetype);
+     $mimetype=preg_replace('/\s*;.*$/','',$mimetype);
    }elseif(preg_match('/linux/i',$_system)){
      $system='Linux'; 
      ob_start();

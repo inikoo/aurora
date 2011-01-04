@@ -62,6 +62,7 @@ YAHOO.util.Connect.asyncRequest('POST',request ,{
 }
 
 function save(tipo){
+   
     switch(tipo){
     case('note'):
 	var value=encodeURIComponent(Dom.get(tipo+"_input").value);
@@ -69,7 +70,7 @@ function save(tipo){
 	//alert(request);
 	YAHOO.util.Connect.asyncRequest('POST',request ,{
 		success:function(o) {
-		    //	alert(o.responseText);
+		    	alert(o.responseText);
 
 		    var r =  YAHOO.lang.JSON.parse(o.responseText);
 		    if (r.state==200) {
@@ -86,7 +87,13 @@ function save(tipo){
 	
 
 	break;
+   
+    
     }
+    
+    
+    
+    
 };
 
 function change(e,o,tipo){
@@ -171,12 +178,12 @@ Event.addListener(window, "load", function() {
 		    var tableDivEL="table"+tableid;  
 		    
 		    var ColumnDefs = [
-				      {key:"date", label:"<?php echo _('Date')?>",className:"aleft",width:120,sortable:true,sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				      {key:"date", label:"<?php echo _('Date')?>",className:"aright",width:120,sortable:true,sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 				      ,{key:"time", label:"<?php echo _('Time')?>",className:"aleft",width:50}
 				    //  ,{key:"objeto", label:"<?php echo _('Details')?>", className:"aleft",width:450,sortable:true,sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				      ,{key:"handle", label:"<?php echo _('Author')?>",className:"aleft",width:70,sortable:true,sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				      ,{key:"handle", label:"<?php echo _('Author')?>",className:"aleft",width:100,sortable:true,sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 
-				      ,{key:"note", label:"<?php echo _('Notes')?>",className:"aleft",width:400}
+				      ,{key:"note", label:"<?php echo _('Notes')?>",className:"aleft",width:450}
 					   ];
 		
 		    this.dataSource0  = new YAHOO.util.DataSource("ar_history.php?tipo=customer_history&tid="+tableid);
@@ -319,9 +326,9 @@ Event.addListener(window, "load", function() {
 		    var ColumnDefs =  [
 				       {key:"subject", label:"<?php echo _('Order ID')?>", width:80,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}},
 				       {key:"last_update", label:"<?php echo _('Last Updated')?>", width:200,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}},
-				       {key:"current_state",label:"<?php echo _('Current State')?>", width:100,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}},
-                                        {key:"order_date", label:"<?php echo _('Order Date')?>", width:200,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}},
-				      {key:"total_amount", label:"<?php echo _('Total')?>", width:150,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				       {key:"current_state",label:"<?php echo _('Current State')?>", width:200,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}},
+                                        {key:"order_date", label:"<?php echo _('Order Date')?>", width:120,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}},
+				      {key:"total_amount", label:"<?php echo _('Total')?>", width:100,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				 
 					
 					 ];

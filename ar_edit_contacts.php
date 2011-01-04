@@ -65,7 +65,7 @@ case('edit_address_type'):
 case('edit_address'):
     $data=prepare_values($_REQUEST,array(
                              'value'=>array('type'=>'json array'),
-                              'subject'=>array('type'=>'enum',
+                             'subject'=>array('type'=>'enum',
                                               'valid values regex'=>'/company|contact|supplier|customer/i'
                                              ),
                              'subject_key'=>array('type'=>'key'),
@@ -89,9 +89,9 @@ case('edit_customers'):
     break;
 case('create_company_area'):
     $data=prepare_values($_REQUEST,array(
-			      'parent_key'=>array('type'=>'key'),
+                             'parent_key'=>array('type'=>'key'),
                              'values'=>array('type'=>'json array')
-                                     
+
                          ));
 
 
@@ -99,9 +99,9 @@ case('create_company_area'):
     break;
 case('create_company_department'):
     $data=prepare_values($_REQUEST,array(
-			     'parent_key'=>array('type'=>'key'),
+                             'parent_key'=>array('type'=>'key'),
                              'values'=>array('type'=>'json array')
-                             					
+
                          ));
 
     new_company_department($data);
@@ -114,17 +114,17 @@ case('create_company_position'):
     new_company_position($data);
     break;
 case('new_staff'):
- $data=prepare_values($_REQUEST,array(
-			     'values'=>array('type'=>'json array')
-			     
-				      ));
- new_staff($data);
- 
- break;
+    $data=prepare_values($_REQUEST,array(
+                             'values'=>array('type'=>'json array')
+
+                         ));
+    new_staff($data);
+
+    break;
 
 case('edit_company_department'):
-  edit_company_department();
-break;
+    edit_company_department();
+    break;
 case('edit_contact'):
     $data=prepare_values($_REQUEST,array(
                              'id'=>array('type'=>'key')
@@ -1333,8 +1333,8 @@ function edit_address($data) {
         break;
     case('Supplier'):
         $subject_object=new Supplier($subject_key);
-        break;    
-   
+        break;
+
 
     }
 
@@ -1540,13 +1540,13 @@ function edit_address($data) {
 
         $response=array('state'=>200,'action'=>'updated','warning'=>$warning,'is_main'=>$is_main,'is_main_delivery'=>$is_main_delivery,'msg'=>$address->msg_updated,'key'=>$address->id,'updated_data'=>$updated_address_data,'xhtml_address'=>$address->display('xhtml'));
 
-        if($subject=='Customer'){
-         $response['xhtml_delivery_address_bis']=$address_comment;
-                  $response['xhtml_billing_address']=$billing_address;
+        if ($subject=='Customer') {
+            $response['xhtml_delivery_address_bis']=$address_comment;
+            $response['xhtml_billing_address']=$billing_address;
 
-        
+
         }
-        
+
 
     } else {
         if ($address->error_updated)
@@ -2029,7 +2029,7 @@ function edit_customer() {
     if ($key=='Attach') {
         // print_r($_FILES);
         $note=stripslashes(urldecode($_REQUEST['newvalue']));
-        $target_path = "uploads/".'attach_'.date('U');
+        $target_path = "app_files/uploads/".'attach_'.date('U');
         $original_name=$_FILES['testFile']['name'];
         $type=$_FILES['testFile']['type'];
         $data=array('Caption'=>$note,'Original Name'=>$original_name,'Type'=>$type);
@@ -2043,22 +2043,22 @@ function edit_customer() {
 
 
         $key_dic=array(
-                     'fiscal_name'=>'Customer Fiscal Name'
-                                   ,'name'=>'Customer Name'
-                                           ,'email'=>'Customer Main Plain Email'
-                                                    ,'telephone'=>'Customer Main Plain Telephone'
-                                                                 ,'contact'=>'Customer Main Contact Name'
-                                                                            ,"address"=>'Address'
-                                                                                       ,"town"=>'Main Address Town'
-                                                                                               ,"tax_number"=>'Customer Tax Number'
-                                                                                                             ,"postcode"=>'Main Address Town'
-                                                                                                                         ,"region"=>'Main Address Town'
-                                                                                                                                   ,"country"=>'Main Address Country'
-                                                                                                                                              ,"ship_address"=>'Main Ship To'
-                                                                                                                                                              ,"ship_town"=>'Main Ship To Town'
-                                                                                                                                                                           ,"ship_postcode"=>'Main Ship To Postal Code'
-                                                                                                                                                                                            ,"ship_region"=>'Main Ship To Country Region'
-                                                                                                                                                                                                           ,"ship_country"=>'Main Ship To Country'
+                     'fiscal_name'=>'Customer Fiscal Name',
+                     'name'=>'Customer Name',
+                     'email'=>'Customer Main Plain Email',
+                     'telephone'=>'Customer Main Plain Telephone',
+                     'contact'=>'Customer Main Contact Name',
+                     "address"=>'Address',
+                     "town"=>'Main Address Town',
+                     "tax_number"=>'Customer Tax Number',
+                     "postcode"=>'Main Address Town',
+                     "region"=>'Main Address Town',
+                     "country"=>'Main Address Country',
+                     "ship_address"=>'Main Ship To',
+                     "ship_town"=>'Main Ship To Town',
+                     "ship_postcode"=>'Main Ship To Postal Code',
+                     "ship_region"=>'Main Ship To Country Region',
+                     "ship_country"=>'Main Ship To Country'
 
                  );
         if (array_key_exists($_REQUEST['key'],$key_dic))
@@ -2648,28 +2648,28 @@ function new_company_department($data) {
 }
 
 function new_staff($data) {
-   global $editor;
-$staff_data=Array();
-foreach($data['values'] as $key=>$value){
-    $staff_data[preg_replace('/^company /i','Staff ',$key)]=$value;
-}
+    global $editor;
+    $staff_data=Array();
+    foreach($data['values'] as $key=>$value) {
+        $staff_data[preg_replace('/^company /i','Staff ',$key)]=$value;
+    }
 
-$staff_data['editor']=$editor;
+    $staff_data['editor']=$editor;
 //print_r($supplier_data);
 //return;
 
-  $staff=new Staff('find',$staff_data,'create');
-  if($staff->new){
-    $response= array('state'=>200,'action'=>'created','staff_key'=>$staff->id);
-  }else{
-    if($staff->found)
-      $response= array('state'=>400,'action'=>'found','staff_key'=>$staff->found_key);
-    else
-      $response= array('state'=>400,'action'=>'error','staff_key'=>0,'msg'=>$staff->msg);
-  }
- 
+    $staff=new Staff('find',$staff_data,'create');
+    if ($staff->new) {
+        $response= array('state'=>200,'action'=>'created','staff_key'=>$staff->id);
+    } else {
+        if ($staff->found)
+            $response= array('state'=>400,'action'=>'found','staff_key'=>$staff->found_key);
+        else
+            $response= array('state'=>400,'action'=>'error','staff_key'=>0,'msg'=>$staff->msg);
+    }
 
-  echo json_encode($response);  
+
+    echo json_encode($response);
 
 }
 
@@ -2901,43 +2901,43 @@ function edit_corporation($data) {
 
 
 function edit_company_department() {
-  $key=$_REQUEST['key'];
- 
-  
-  $company_department=new CompanyDepartment($_REQUEST['department_key']);
-  global $editor;
-  $company_department->editor=$editor;
-  
-  if($key=='Attach'){
-    // print_r($_FILES);
-    $note=stripslashes(urldecode($_REQUEST['newvalue']));
-    $target_path = "uploads/".'attach_'.date('U');
-    $original_name=$_FILES['testFile']['name'];
-    $type=$_FILES['testFile']['type'];
-    $data=array('Caption'=>$note,'Original Name'=>$original_name,'Type'=>$type);
+    $key=$_REQUEST['key'];
 
-    if(move_uploaded_file($_FILES['testFile']['tmp_name'],$target_path )) {
-      $company_department->add_attach($target_path,$data);
-      
+
+    $company_department=new CompanyDepartment($_REQUEST['department_key']);
+    global $editor;
+    $company_department->editor=$editor;
+
+    if ($key=='Attach') {
+        // print_r($_FILES);
+        $note=stripslashes(urldecode($_REQUEST['newvalue']));
+        $target_path = "uploads/".'attach_'.date('U');
+        $original_name=$_FILES['testFile']['name'];
+        $type=$_FILES['testFile']['type'];
+        $data=array('Caption'=>$note,'Original Name'=>$original_name,'Type'=>$type);
+
+        if (move_uploaded_file($_FILES['testFile']['tmp_name'],$target_path )) {
+            $company_department->add_attach($target_path,$data);
+
+        }
+    } else {
+
+
+
+        $key_dic=array(
+                     'name'=>'Company Department Name'
+                            ,'code'=>'Company Department Code'
+                                    ,'description'=>'Company Department Description'
+                                                   // ,'type'=>'Staff Type'
+
+
+                 );
+        if (array_key_exists($_REQUEST['key'],$key_dic))
+            $key=$key_dic[$_REQUEST['key']];
+
+        $update_data=array($key=>stripslashes(urldecode($_REQUEST['newvalue'])));
+        $company_department->update($update_data);
     }
-  }else{
-    
-
-    
-    $key_dic=array(
-		   'name'=>'Company Department Name'
-		   ,'code'=>'Company Department Code'
-		   ,'description'=>'Company Department Description'
-		  // ,'type'=>'Staff Type'
-		  
-		   
-    );
-    if(array_key_exists($_REQUEST['key'],$key_dic))
-       $key=$key_dic[$_REQUEST['key']];
-    
-    $update_data=array($key=>stripslashes(urldecode($_REQUEST['newvalue'])));
-    $company_department->update($update_data);
-  }
 
 
     if ($company_department->updated) {

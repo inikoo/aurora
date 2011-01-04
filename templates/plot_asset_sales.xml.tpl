@@ -70,11 +70,11 @@
 
   <!-- these settings affects numbers which are displayed on the chart, not the one in data file -->
   <number_format>  
-    <!-- [,] (separator) -->
-	  <decimal_separator></decimal_separator>
+   
+	  <decimal_separator>{$locale_data.decimal_point}</decimal_separator>
 	  
-	  <!-- [ ] (separator) use "none" if you don't want thousands to be separated -->
-	  <thousand_separator></thousand_separator>
+	
+	  <thousand_separator>{$locale_data.thousand_sep}</thousand_separator>
 	  
     <!-- defines how many numbers should be left after comma --> 	  
 	  <digits_after_decimal>
@@ -609,7 +609,7 @@
   				<data_sources>
   				  <close>close</close>
           </data_sources>
-          <period_value></period_value>
+          <period_value>sum</period_value>
           <compare_source>close</compare_source>
           <title>{$graph_data.title}</title>
           <color></color>
@@ -627,7 +627,7 @@
   				
   				<alpha></alpha>
   				
-  				<fill_alpha></fill_alpha>
+  				<fill_alpha>15</fill_alpha>
   				
           <dashed></dashed>  	
           
@@ -643,20 +643,13 @@
   				<bullet_alpha></bullet_alpha>
 
           <column_width></column_width>  		          		
-  				
           <smoothed></smoothed>  				
-          
-  
           <stack_to></stack_to>
-          
-
           <hidden></hidden>
-          
           <min_max></min_max>          
          
-          
   		    <legend>
-            <date key="false" title="false"><![CDATA[{literal}{close}{/literal}]]></date>
+            <date key="false" title="false"><![CDATA[{literal}{close}{/literal} {$graph_data.currency_code}]]></date>
             <period key="false" title="false"></period>
             <date_comparing key="false" title="false"><![CDATA[]]></date_comparing>
             <period_comparing key="false" title="false"><![CDATA[]]></period_comparing>
@@ -785,7 +778,7 @@
         <axis></axis>
       </trend_lines>      
        	
-      <column_width>0</column_width>
+      <column_width>50</column_width>
   		<graphs>
   			<graph gid="0">
   			  <axis></axis>
@@ -794,7 +787,7 @@
   				  <close>volume</close>
           </data_sources>
           
-          <period_value>average</period_value>
+          <period_value>sum</period_value>
           <compare_source></compare_source>
           <title></title>
   				<color></color>

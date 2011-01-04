@@ -432,17 +432,18 @@ function create_order($data) {
             }
 
             $history_data=array(
-                              'Date'=>$this->data ['order date']
-                                     ,'Subject'=>'Customer'
-                                                ,'Subject Key'=>$customer->id
-                                                               ,'Action'=>'placed'
-                                                                         ,'Direct Object'=>'Order'
-                                                                                          ,'Direct Object Key'=>$this->data ['Order Key']
-                                                                                                               ,'History Abstract'=>$abstract
-                                                                                                                                   ,'History Details'=>$note
+                              'Date'=>$this->data ['order date'],
+                                     'Subject'=>'Customer',
+                                                'Subject Key'=>$customer->id,
+                                                               'Action'=>'placed',
+                                                                         'Direct Object'=>'Order',
+                                                                                          'Direct Object Key'=>$this->data ['Order Key'],
+                                                                                                               'History Abstract'=>$abstract,
+                                                                                                                                   'History Details'=>$note
                           );
-            $this->add_history($history_data);
-
+             $history_key=$this->add_history($history_data);
+  $sql=sprintf("insert into `Customer History Bridge` values (%d,%d)",$customer->id,$history_key);
+    mysql_query($sql);
 
         }
 
