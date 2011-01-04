@@ -17,7 +17,7 @@ var scope_edit_ar_file='ar_assets.php';
 var scope_key_name='category_key';
 var scope_key='<?php echo $_SESSION['state']['product_categories']['category_key']?>';
 
-	
+
 var parent='category';
 var parent_key_name='id';
 var parent_key=<?php echo $_REQUEST['category_key']?>;
@@ -37,7 +37,7 @@ var validate_scope_data={
 };
 
 
-var validate_scope_metadata={'category':{'type':'edit','ar_file':'ar_assets.php','key_name':'category_key','key':<?php echo $_REQUEST['category_key']?>}};
+var validate_scope_metadata={'category':{'type':'edit','ar_file':'ar_edit_assets.php','key_name':'category_key','key':<?php echo $_REQUEST['category_key']?>}};
 
 
 
@@ -56,7 +56,12 @@ function reset_new_category(){
 function save_new_category(){
  save_edit_general('category');
 }
-
+function save_edit_category(){
+    save_edit_general('category');
+}
+function reset_edit_category(){
+    reset_edit_general('category')
+}
 
 
 
@@ -298,9 +303,9 @@ function init(){
     var ids = ["details"]; 
     YAHOO.util.Event.addListener(ids, "click", change_block);
 
-    YAHOO.util.Event.addListener('add_category', "click", show_add_staff_dialog);
-    YAHOO.util.Event.addListener('save_edit_category', "click", save_new_staff);   
-    YAHOO.util.Event.addListener('reset_edit_category', "click", cancel_add_staff);
+    YAHOO.util.Event.addListener('add_category', "click", show_add_category_dialog);
+    YAHOO.util.Event.addListener('save_edit_category', "click", save_new_category);   
+    YAHOO.util.Event.addListener('reset_edit_category', "click", cancel_add_category);
    
  /*   var staff_id_oACDS = new YAHOO.util.FunctionDataSource(validate_id);
     staff_id_oACDS.queryMatchContains = true;

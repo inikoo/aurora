@@ -350,7 +350,7 @@ Event.addListener(window, "load", function() {
 		    filter_msg:"resultset.filter_msg",
 		    totalRecords: "resultset.total_records" // Access to value in the server response
 		},
-		//fields: ["id","last_date","customer","state","total_amount"]};
+		
 		fields: ["subject","last_update","current_state","order_date","total_amount"]};
 			  
 		    this.table2 = new YAHOO.widget.DataTable(tableDivEL, ColumnDefs,
