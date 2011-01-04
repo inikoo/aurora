@@ -1395,7 +1395,7 @@ class DeliveryNote extends DB_Table {
         $required_items=0;
         $picked_weight=0;
         $picked_items=0;
-//print "$sql";
+
         while ($row=mysql_fetch_assoc($res)) {
 //print_r($row);
             $to_be_picked=$row['Required']+$row['Given'];

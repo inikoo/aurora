@@ -4,8 +4,7 @@
   {include file='contacts_navigation.tpl'}
   <div id="no_details_title"  style="clear:left;xmargin:0 20px;{if $details!=0}display:none{/if}">
     <h1 style="padding-bottom:0px">{$customer->get('Customer Name')} <span style="color:SteelBlue">{$id}</span>
-      {if $next.id>0}<a class="prev" href="customer.php?id={$prev.id}" ><img src="art/icons/previous.png" alt="<" title="{$prev.name}"  /></a>{/if}
-      {if $next.id>0}<a class="next" href="customer.php?id={$next.id}" ><img src="art/icons/next.png" alt=">" title="{$next.name}"  /></a>{/if}
+     
       
     </h1> 
 
@@ -20,7 +19,7 @@
     <tr><td  id="attach">{t}Attach File{/t}</td></tr>
     
     <tr><td id="take_order">{t}Take Order{/t}</td></tr>
-    <tr><td id="make_order">{t}Make Order{/t}</td></tr>
+    
 
 
     <tr style="display:none"><td  id="long_note">{t}Long Note{/t}</td></tr>
@@ -47,15 +46,7 @@
 {if $customer->get('Customer Main Telephone Key')}<tr><td colspan=2 class="aright">{$customer->get('Customer Main XHTML Telephone')}</td ><td><img src="art/icons/telephone.png"/></td></tr>{/if}
 
 
-{foreach from=$telecoms item=telecom}
-<tr><td >
-{if $telecom[0]=='mob'}<img src="art/icons/phone.png"/ title="{t}Mobile Phone{/t}">
-{elseif   $telecom[0]=='tel'}<img src="art/icons/telephone.png"/ title="{t}Telephone{/t}">
-{elseif   $telecom[0]=='email'}<img src="art/icons/email.png"/ title="{t}Email Address{/t}">
-{elseif   $telecom[0]=='fax'}<img src="art/icons/printer.png"/ title="{t}Fax{/t}">
-{/if}
-</td><td class="aright" style="padding-left:10px">{$telecom[1]}</td></tr>
-{/foreach}
+
 </table>
 </td>
 </tr>
@@ -100,7 +91,7 @@
 
 
 <div id="block_products" class="data_table" style="{if $view!='products'}display:none;{/if}clear:both;margin:20px 0 40px 0;padding:0 20px">
-      <span class="clean_table_title">{t}Products Ordered{/t}</span>
+      <span class="clean_table_title">{t}Product Families Ordered{/t}</span>
  {include file='table_splinter.tpl' table_id=1 filter_name=$filter_name1 filter_value=$filter_value1  }
        <div  id="table1"   class="data_table_container dtable btable "> </div>
   </div>
@@ -139,7 +130,7 @@
 	<form action="upload.php" enctype="multipart/form-data" method="post" id="attach_form">
 
 
-	  <input type="file" name="testFile"/>Warning: Smarty error: unable to read resource: "splinter_contacts_customers.tpl" in /var/www/kaktus19(copy)/external_libs/Smarty/Smarty.class.p
+	  <input type="file" name="testFile"/>
 
 	</form>
     </td><tr>

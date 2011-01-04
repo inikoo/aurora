@@ -334,59 +334,9 @@ class Image  {
 
     function get_format($filename) {
 
-        $mimetype='Unknown';
-        if ($this->mime_type!='')
-            $mimetype=$this->mime_type;
+    
 
-
-        ob_start();
-        system("uname");
-
-
-
-        $system='Unknown';
-        $_system = ob_get_clean();
-
-        // print "S:$system M:$mimetype\n";
-
-        if (preg_match('/darwin/i',$_system)) {
-            ob_start();
-            $system='Mac';
-            system("file -I $filename");
-            $mimetype=ob_get_clean();
-            $mimetype=preg_replace('/^.*\:/','',$mimetype);
-
-        }
-        elseif(preg_match('/linux/i',$_system)) {
-            ob_start();
-            $system='Linux';
-            $mimetype = system("file -ib $filename");
-            $mimetype=ob_get_clean();
-        }
-        else {
-            $system='Other';
-
-        }
-
-
-        if (preg_match('/png/i',$mimetype))
-            $format='png';
-        elseif(preg_match('/jpeg/i',$mimetype))
-        $format='jpeg';
-        elseif(preg_match('/image.psd/i',$mimetype))
-        $format='psd';
-        elseif(preg_match('/gif/i',$mimetype))
-        $format='gif';
-        elseif(preg_match('/wbmp$/i',$mimetype))
-        $format='wbmp';
-        
-        else {
-            $format='other';
-        }
-//  print "S:$system M:$mimetype\n";
-        // return;
-
-        $this->format=$format;
+        $this->format=guess_file_format($filename);
 
     }
 

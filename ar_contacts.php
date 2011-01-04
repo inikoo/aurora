@@ -372,9 +372,9 @@ if($row['Order Balance Total Amount']!=$row['Order Total Amount']){
        }
         $adata[]=array(
                      'subject'=>$row['Order Public ID'],
-                      'last_update'=>$row['Order Last Updated Date'],
+                      'last_update'=>strftime("%a %e %b %Y %T", strtotime($row['Order Last Updated Date'].' UTC')) ,
                      'current_state'=>$row['Order Current XHTML State'],
-		     'order_date'=>$row['Order Date'],
+		     'order_date'=>strftime("%a %e %b %Y", strtotime($row['Order Date'].' UTC')) ,
                     'total_amount'=>money($row['Order Balance Total Amount'],$row['Order Currency']).$mark,
 
 
@@ -2000,7 +2000,7 @@ if($type=='all_customers'){
     while ($data=mysql_fetch_array($result, MYSQL_ASSOC)) {
 
 
-        $id="<a href='customer.php?id=".$data['Customer Key']."'>".$myconf['customer_id_prefix'].sprintf("%05d",$data['Customer Key']).'</a>';
+        $id="<a href='customer.php?p=cs&id=".$data['Customer Key']."'>".$myconf['customer_id_prefix'].sprintf("%05d",$data['Customer Key']).'</a>';
         if ($data['Customer Type']=='Person') {
             $name='<img src="art/icons/user.png" alt="('._('Person').')">';
         } else {
@@ -2008,7 +2008,7 @@ if($type=='all_customers'){
 
         }
 
-        $name.=" <a href='customer.php?id=".$data['Customer Key']."'>".$data['Customer Name'].'</a>';
+        $name.=" <a href='customer.php?p=cs&id=".$data['Customer Key']."'>".$data['Customer Name'].'</a>';
 
 
 

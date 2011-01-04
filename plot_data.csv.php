@@ -30,11 +30,11 @@ $number_stores=count($store_keys);
 $tmp=array();
 for($i=0;$i<$number_stores;$i++){
 
-$tmp['vol'.$i]=0;
+$tmp['vol'.$i]='';
 }
 for($i=0;$i<$number_stores;$i++){
 
-$tmp['value'.$i]=0;
+$tmp['value'.$i]='';
 }
 
  $sql=sprintf("select  `Date` from kbase.`Date Dimension` where `Date`>= ( select min(`Invoice Date`)   from `Invoice Dimension` where `Invoice Store Key`=%d ) and `Date`<=NOW()  order by `Date` desc",
@@ -51,7 +51,7 @@ $tmp['value'.$i]=0;
 
             }
 
-$graph_data=array();
+//$graph_data=array();
 $i=0;
 foreach($store_keys as $store_key){
 $sql=sprintf("select Date(`Invoice Date`) as date,sum(`Invoice Total Net Amount`) as net, count(*) as invoices  from `Invoice Dimension` where `Invoice Store Key`=%d group by Date(`Invoice Date`) order by `Date` desc",

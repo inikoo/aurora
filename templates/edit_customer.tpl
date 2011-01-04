@@ -34,7 +34,7 @@
 	        <span style="margin-right:10px;visibility:hidden" id="reset_edit_customer" class="state_details">{t}Reset{/t}</span>
       </div>
   
-   <table class="edit" border=1 style="clear:both;margin-bottom:40px">
+   <table class="edit" border=0 style="clear:both;margin-bottom:40px">
  <tr style="display:none"><td class="label" style="width:12em">{t}Type{/t}:</td>
 	       <td style="width:19em"> 
 		 <div class="options" style="margin:5px 0" id="shelf_type_type_container">

@@ -47,6 +47,23 @@ abstract class DB_Table {
         return $data;
     }
 
+ function base_history_data() {
+
+
+        $data=array();
+        $result = mysql_query("SHOW COLUMNS FROM `History Dimension`");
+        if (!$result) {
+            echo 'Could not run query: ' . mysql_error();
+            exit;
+        }
+        if (mysql_num_rows($result) > 0) {
+            while ($row = mysql_fetch_assoc($result)) {
+                if (!in_array($row['Field'],$this->ignore_fields))
+                    $data[$row['Field']]=$row['Default'];
+            }
+        }
+        return $data;
+    }
 
     public function update($data,$options='') {
     
@@ -250,50 +267,84 @@ abstract class DB_Table {
         else
             $table=$this->table_name;
 
+        $data=$this->base_history_data();
+        foreach($raw_data as $key=>$value) {
+            $data[$key]=$value;
+        }
 
-        if (!isset($raw_data['Subject']) or  !isset($raw_data['Subject Key']) ) {
+        //print_r($data);
+    
+        if ($data['Subject']=='' or  !$data['Subject Key']) {
             include_once('class.User.php');
             $user=new User($editor_data['User Key']);
             if ($user->id) {
 
                 $data['Subject']=$user->data['User Type'];
                 $data['Subject Key']=$user->data['User Parent Key'];
-            } else {
+                $data['Author Name']=$user->data['User Alias'];
+         } else {
                 $data['Subject']='Staff';
                 $data['Subject Key']=0;
+                $data['Author Name']=_('Unknown');
             }
 
         }
 
-        $data['User Key']=$editor_data['User Key'];
-        $data['Metadata']='';
 
-        $data['Action']='edited';
+     
+        $data['User Key']=$editor_data['User Key'];
+        
+
+        
         $data['Direct Object']=$table;
         if ($this->table_name=='Product')
             $data['Direct Object Key']=$this->pid;
         else
             $data['Direct Object Key']=$this->id;
-        $data['Preposition']='to';
-        $data['Indirect Object']='';
-        $data['Indirect Object Key']=0;
-        $data['Deep']=1;
+        
+      
+     
+    
         $data['Date']=$editor_data['Date'];
         
-        if (isset($raw_data['Indirect Object']))
-            $data['History Abstract']=$raw_data['Indirect Object'].' '._('changed');
+        if ($data['History Abstract']==''){
+            if($data['Indirect Object'])
+            $data['History Abstract']=$data['Indirect Object'].' '._('changed');
         else
             $data['History Abstract']='Unknown';
-        $data['History Details']=$data['History Abstract'];
+            }
+            
+            
+      
 
-        foreach($raw_data as $key=>$value) {
-            $data[$key]=$value;
+
+       
+        if($data['Author Name']==''){
+      
+
+
+           if($data['Subject']=='Customer' ){
+        $customer=new Customer($data['Subject Key']);
+            $data['Author Name']=$customer->data['Customer Name'];
+        }    elseif($data['Subject']=='Staff' ){
+        $staff=new Staff($data['Subject Key']);
+            $data['Author Name']=$staff->data['Staff Alias'];
+        }  elseif($data['Subject']=='Supplier' ){
+        $supplier=new Supplier($data['Subject Key']);
+            $data['Author Name']=$staff->data['Supplier Name'];
         }
+        
+        
+
+}
+
+
 
         if ($data['Action']=='created') {
             $data['Preposition']='';
         }
-
+        
+        if($data['History Details']==''){
         if (isset($raw_data['old_value']) and  isset($raw_data['new_value']) ) {
             $data['History Details']=$data['Indirect Object'].' '._('changed from')." \"".$raw_data['old_value']."\" "._('to')." \"".$raw_data['new_value']."\"";
             $data['History Abstract'].=' ('.$raw_data['old_value'].'&rarr;'.$raw_data['new_value'].')';
@@ -302,8 +353,10 @@ abstract class DB_Table {
         elseif(  isset($raw_data['new_value']) ) {
             $data['History Details']=$data['Indirect Object'].' '._('changed to')." \"".$raw_data['new_value']."\"";
         }
+        }
 
-        $sql=sprintf("insert into `History Dimension` (`History Date`,`Subject`,`Subject Key`,`Action`,`Direct Object`,`Direct Object Key`,`Preposition`,`Indirect Object`,`Indirect Object Key`,`History Abstract`,`History Details`,`User Key`,`Deep`,`Metadata`) values (%s,%s,%d,%s,%s,%d,%s,%s,%d,%s,%s,%d,%s,%s)"
+        $sql=sprintf("insert into `History Dimension` (`Author Name`,`History Date`,`Subject`,`Subject Key`,`Action`,`Direct Object`,`Direct Object Key`,`Preposition`,`Indirect Object`,`Indirect Object Key`,`History Abstract`,`History Details`,`User Key`,`Deep`,`Metadata`) values (%s,%s,%s,%d,%s,%s,%d,%s,%s,%d,%s,%s,%d,%s,%s)"
+                      ,prepare_mysql($data['Author Name'])
                      ,prepare_mysql($data['Date'])
                      ,prepare_mysql($data['Subject'])
                      , $data['Subject Key']
@@ -320,6 +373,8 @@ abstract class DB_Table {
                      ,prepare_mysql($data['Metadata'])
                     );
         mysql_query($sql);
+        return mysql_insert_id();
+        
         //print $sql;
 
     }

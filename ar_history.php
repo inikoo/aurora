@@ -160,7 +160,7 @@ function list_customer_history() {
 
     $where.=' and `Deep`=1 ';
 
-    $where.=sprintf(' and  `Customer Key`=%d   ',$customer_id);
+    $where.=sprintf(' and  B.`Customer Key`=%d   ',$customer_id);
 //   if(!$details)
 //    $where.=" and display!='details'";
 //  foreach($elements as $element=>$value){
@@ -200,7 +200,7 @@ function list_customer_history() {
 
 
    //$sql="select count(*) as total from `Customer History Bridge` CHB  left join  `History Dimension` H on (H.`History Key`=CHB.`History Key`)   $where $wheref ";
-    $sql="select count(*) as total from `Customer Dimension` CD  left join  `History Dimension` H on (H.`Subject Key`=CD.`Customer Key`)   $where $wheref  ";
+    $sql="select count(*) as total from  `History Dimension` H  left join `Customer History Bridge` B  on (B.`History Key`=H.`History Key`)   $where $wheref  ";
     //print $sql;
     // exit;
     $result=mysql_query($sql);
@@ -214,7 +214,7 @@ function list_customer_history() {
     } else {
 
        // $sql="select count(*) as total from `Customer History Bridge` CHB  left join  `History Dimension` H on (H.`History Key`=CHB.`History Key`)   $where";
-       $sql="select count(*) as total from `Customer Dimension` CD  left join  `History Dimension` H on (H.`Subject Key`=CD.`Customer Key`)   $where ";
+       $sql="select count(*) as total from  `History Dimension` H  left join `Customer History Bridge` B  on (B.`History Key`=H.`History Key`)   $where ";
         // print $sql;
         $result=mysql_query($sql);
         if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
@@ -271,7 +271,7 @@ function list_customer_history() {
     if ($order=='objeto')
         $order='Direct Object';
 //    $sql="select * from `Customer History Bridge` CHB  left join  `History Dimension` H on (H.`History Key`=CHB.`History Key`)   left join `User Dimension` U on (H.`User Key`=U.`User Key`)  $where $wheref  order by `$order` $order_direction limit $start_from,$number_results ";
-$sql="select * from `Customer Dimension` CD  left join  `History Dimension` H on (H.`Subject Key`=CD.`Customer Key`)   $where $wheref  order by `$order` $order_direction limit $start_from,$number_results ";
+$sql="select `Subject`,`Author Name`,`History Details`,`History Abstract`,H.`History Key`,`History Date` from    `History Dimension` H  left join `Customer History Bridge` B  on (B.`History Key`=H.`History Key`) left join          `Customer Dimension` CD on (B.`Customer Key`=CD.`Customer Key`)   $where $wheref  order by `$order` $order_direction limit $start_from,$number_results ";
     // print $sql;
     $result=mysql_query($sql);
     $data=array();
@@ -283,6 +283,11 @@ $sql="select * from `Customer Dimension` CD  left join  `History Dimension` H on
 
         //$objeto=$row['Direct Object'];
 	$objeto=$row['History Details'];
+	
+	if($row['Subject']=='Customer')
+	$author=_('Customer');
+	else
+	$author=$row['Author Name'];
 
         $data[]=array(
                     'id'=>$row['History Key'],
@@ -290,7 +295,7 @@ $sql="select * from `Customer Dimension` CD  left join  `History Dimension` H on
                     'time'=>strftime("%H:%M", strtotime($row['History Date']." +00:00")),
                     'objeto'=>$objeto,
                     'note'=>$note,
-                    'handle'=>$row['Customer Name']
+                    'handle'=>$author,
                 );
     }
     mysql_free_result($result);

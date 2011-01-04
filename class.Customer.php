@@ -618,7 +618,7 @@ function create($raw_data,$args='') {
                                              ,'History Details'=>_trim(_('New customer')." ".$this->data['Customer Name']." "._('added'))
                                                                 ,'Action'=>'created'
                       );
-        $this->add_history($history_data);
+        $this->add_customer_history($history_data);
         $this->new=true;
 
 
@@ -890,7 +890,7 @@ function create($raw_data,$args='') {
                                                                     ,'Action'=>'created'
 
                           );
-            $this->add_history($history_data);
+            $this->add_customer_history($history_data);
             $this->new=true;
 
         }
@@ -1266,7 +1266,7 @@ function update_ship_to_stats() {
                                                 ,'History Details'=>$details
                                                                    ,'History Abstract'=>$note
                           );
-            $this->add_history($history_data);
+            $this->add_customer_history($history_data);
         }
 
     }
@@ -1341,7 +1341,7 @@ function update_ship_to_stats() {
                                                                        ,'History Abstract'=>$note
                                                                                            ,'Action'=>'edited'
                               );
-                $this->add_history($history_data);
+                $this->add_customer_history($history_data);
 
             }
 
@@ -1378,7 +1378,7 @@ function update_ship_to_stats() {
                                                                    ,'History Abstract'=>$note
                                                                                        ,'Action'=>'edited'
                           );
-            $this->add_history($history_data);
+            $this->add_customer_history($history_data);
 
         }
 
@@ -1393,7 +1393,7 @@ function update_ship_to_stats() {
                                                                                        ,'Action'=>'edited',
                               'Deep'=>2
                           );
-            $this->add_history($history_data,true);
+            $this->add_customer_history($history_data,true);
         }
 
     }
@@ -1459,7 +1459,7 @@ function update_ship_to_stats() {
                                                                        ,'History Abstract'=>$note
                                                                                            ,'Action'=>'edited'
                               );
-                $this->add_history($history_data);
+                $this->add_customer_history($history_data);
 
             }
 
@@ -1496,7 +1496,7 @@ function update_ship_to_stats() {
                                                                    ,'History Abstract'=>$note
                                                                                        ,'Action'=>'edited'
                           );
-            //$this->add_history($history_data);
+            //$this->add_customer_history($history_data);
 
         }
 
@@ -1511,7 +1511,7 @@ function update_ship_to_stats() {
                                                                                        ,'Action'=>'edited',
                               'Deep'=>2
                           );
-            $this->add_history($history_data,true);
+            $this->add_customer_history($history_data,true);
         }
 
         $this->update_contact($company->data['Company Main Contact Key']);
@@ -1926,7 +1926,7 @@ return;
             $details='';
 
 
-            $this->add_history(array(
+            $this->add_customer_history(array(
                                    'Date'=>$date
                                           ,'Action'=>'wrote'
                                                     ,'Direct Object'=>'Note'
@@ -2299,7 +2299,7 @@ if($key=='Customer Fiscal Name' or $key=='Fiscal Name'){
                                                     ,'History Details'=>$details
                                                                        ,'History Abstract'=>$note
                               );
-                $this->add_history($history_data);
+                $this->add_customer_history($history_data);
 
             }
 
@@ -2620,14 +2620,25 @@ function add_note($note,$details='',$date=false) {
     if ($date!='')
         $history_data['Date']=$date;
 
-    $this->add_history($history_data,$force_save=true);
+    $history_key=$this->add_customer_history($history_data,$force_save=true);
+    $sql=sprintf("insert into `Customer History Bridge` values (%d,%d)",$this->id,$history_key);
+    mysql_query($sql);
+    
     $this->updated=true;
     $this->new_value='';
 }
 
 
 
+function add_customer_history($history_data,$force_save=true){
+  $history_key=$this->add_history($history_data,$force_save=true);
+  
+  
+  
+    $sql=sprintf("insert into `Customer History Bridge` values (%d,%d)",$this->id,$history_key);
+    mysql_query($sql);
 
+}
 
 
     function add_attach($file,$data) {
@@ -2655,7 +2666,7 @@ function add_note($note,$details='',$date=false) {
                                                                                                              ,'Indirect Object'=>'Customer'
                                                                                                                                 ,'Indirect Object Key'=>$this->id
                           );
-            $this->add_history($history_data);
+            $this->add_customer_history($history_data);
             $this->updated=true;
             $this->new_value='';
         }
@@ -3640,7 +3651,10 @@ date_default_timezone_set('GMT') ;
                       'History Abstract'=>$note,
                       'Metadata'=>'Process'
                   );
-    $order->add_history($history_data);
+   
+    $history_key=$order->add_history($history_data);
+  $sql=sprintf("insert into `Customer History Bridge` values (%d,%d)",$this->id,$history_key);
+    mysql_query($sql);
 
 }
 function add_history_order_cancelled($order) {
@@ -3704,7 +3718,9 @@ $lang=$_SESSION ['lang'];
         $order->id
     );
     mysql_query($sql);
-    $order->add_history($history_data);
+    $history_key=$order->add_history($history_data);
+  $sql=sprintf("insert into `Customer History Bridge` values (%d,%d)",$this->id,$history_key);
+    mysql_query($sql);
     
     
     
@@ -3783,8 +3799,9 @@ $lang=$_SESSION ['lang'];
         $order->id
     );
     mysql_query($sql);
-    $order->add_history($history_data);
-    
+   $history_key=$order->add_history($history_data);
+  $sql=sprintf("insert into `Customer History Bridge` values (%d,%d)",$this->id,$history_key);
+    mysql_query($sql);
     
     
     switch ($lang) {
@@ -3845,8 +3862,10 @@ $lang=$_SESSION ['lang'];
                   );
                   
   //   print_r($history_data);            
-    $dn->add_history($history_data);
-    
+ 
+    $history_key=$dn->add_history($history_data);
+  $sql=sprintf("insert into `Customer History Bridge` values (%d,%d)",$this->id,$history_key);
+    mysql_query($sql);
     
     
    
@@ -3943,7 +3962,9 @@ date_default_timezone_set('GMT') ;
                       'History Abstract'=>$note,
                       'Metadata'=>'Process'
                   );
-    $order->add_history($history_data);
+    $history_key=$order->add_history($history_data);
+  $sql=sprintf("insert into `Customer History Bridge` values (%d,%d)",$this->id,$history_key);
+    mysql_query($sql);
 
 }
 

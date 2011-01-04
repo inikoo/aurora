@@ -165,10 +165,11 @@
   
 <script type="text/javascript" src="external_libs/amstock/amstock/swfobject.js"></script>
 
-	<div id="flashcontent" style="clear:both;border:1px solid #ccc" >
+<div id="plot" style="clear:both;border:1px solid #ccc" >
+	<div id="single_data_set"  >
 		<strong>You need to upgrade your Flash Player</strong>
 	</div>
-
+</div>
 	<script type="text/javascript">
 		// <![CDATA[
 		
@@ -180,7 +181,7 @@
 		
 		
 
-		so.write("flashcontent");
+		so.write("plot");
 		// ]]>
 	</script>
   
