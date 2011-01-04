@@ -9,7 +9,7 @@ require_once 'common.php';
 require_once 'class.Product.php';
 require_once 'class.Department.php';
 require_once 'class.Family.php';
-
+require_once 'class.Category.php';
 require_once 'class.Order.php';
 require_once 'class.Location.php';
 require_once 'class.PartLocation.php';
@@ -113,6 +113,9 @@ case('edit_product_weight'):
 case('edit_product_description'):
 case('edit_product'):
   edit_product();
+   break;
+case('edit_category'):
+  edit_category();
    break;
  case('edit_department'):
  edit_department();
@@ -399,6 +402,51 @@ function edit_product(){
    echo json_encode($response); 
 }
 
+function edit_category(){
+  $category=new Category('category_key',$_REQUEST['category_key']);
+  global $editor;
+ $category->editor=$editor;
+$key=$_REQUEST['key'];
+  if($key=='Attach'){
+    // print_r($_FILES);
+    $note=stripslashes(urldecode($_REQUEST['newvalue']));
+    $target_path = "uploads/".'attach_'.date('U');
+    $original_name=$_FILES['testFile']['name'];
+    $type=$_FILES['testFile']['type'];
+    $data=array('Caption'=>$note,'Original Name'=>$original_name,'Type'=>$type);
+
+    if(move_uploaded_file($_FILES['testFile']['tmp_name'],$target_path )) {
+      $category->add_attach($target_path,$data);
+      
+    }
+  }else{
+    
+
+    
+    $key_dic=array(
+		   'name'=>'Category Name'
+		   ,'id'=>'Category Key'
+		 // ,'alias'=>'Staff Alias'
+		  // ,'type'=>'Staff Type'
+		  
+		   
+    );
+    if(array_key_exists($_REQUEST['key'],$key_dic))
+       $key=$key_dic[$_REQUEST['key']];
+    
+    $update_data=array($key=>stripslashes(urldecode($_REQUEST['newvalue'])));
+    $category->update($update_data);
+  }
+
+
+    if ($category->updated) {
+        $response= array('state'=>200,'newvalue'=>$category->new_value,'key'=>$_REQUEST['key']);
+
+    } else {
+        $response= array('state'=>400,'msg'=>$category->msg,'key'=>$_REQUEST['key']);
+    }
+   echo json_encode($response); 
+}
 
 function edit_family($data){
   $family=new family($data['id']);
