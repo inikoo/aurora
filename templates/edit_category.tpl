@@ -53,19 +53,21 @@
 	  	 <td id="Category_Name_msg" class="edit_td_alert"></td>
 
 	</tr>
-      
+      <tr class="first"><td style="" class="label">{t}Subcategories{/t}:</td></tr>
+         {foreach from=$subcategory_name item=subcategory}
 
-      {*  <tr class="first"><td style="" class="label">{t}Staff Alias{/t}:</td>
-	  <td  style="text-align:left">
+   <tr><td></td>   <td  style="text-align:left">
 	    <div  style="width:15em;position:relative;top:00px" >
-	      <input style="text-align:left;width:18em" id="Company_Staff_Alias" value="{$company_staff->get('Staff Alias')}" ovalue="{$company_staff->get('Staff Alias')}">
-	      <div id="Company_Staff_Alias_Container" style="" ></div>
+	      <input style="text-align:left;width:18em" id="Subcategory_Name" value="{$subcategory}" ovalue="{$subcategory}">
+	      <div id="Subcategory_Name_Container" style="" ></div>
 	    </div>
 	  </td>
-	  	 <td id="Company_Staff_Alias_msg" class="edit_td_alert"></td>
-	</tr>
-     *}
+	  	 <td id="Subcategory_Name_msg" class="edit_td_alert"></td><tr>
+	{/foreach}</tr>
+    
 	
+
+
 	  </table>
 	  
  </div>

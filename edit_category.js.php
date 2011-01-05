@@ -32,7 +32,10 @@ var validate_scope_data={
 
     'name':{'changed':false,'validated':true,'required':true,'group':1,'type':'item'
 	    ,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Category Name')?>'}],'name':'Category_Name'
-	    ,'ar':false,'ar_request':false}
+	    ,'ar':false,'ar_request':false},
+   'subcategory_name':{'changed':false,'validated':true,'required':true,'group':1,'type':'item'
+	    ,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Subcategory Name')?>'}],'name':'Subcategory_Name'
+	    ,'ar':false,'ar_request':false},
    }
 };
 
@@ -47,9 +50,9 @@ var validate_scope_metadata={'category':{'type':'edit','ar_file':'ar_edit_assets
 function validate_name(query){
  validate_general('category','name',unescape(query));
 }
-/*function validate_alias(query){
- validate_general('company_staff','alias',unescape(query));
-}*/
+function validate_subcategory_name(query){
+ validate_general('category','subcategory_name',unescape(query));
+}
 function reset_new_category(){
  reset_edit_general('category');
 }
@@ -311,7 +314,7 @@ function init(){
     staff_id_oACDS.queryMatchContains = true;
     var staff_id_oAutoComp = new YAHOO.widget.AutoComplete("Company_Staff_Id","Company_Staff_Id_Container", staff_id_oACDS);
     staff_id_oAutoComp.minQueryLength = 0; 
-    staff_id_oAutoComp.queryDelay = 0.1;*/
+    staff_id_oAutoComp.queryDelay = 0.1; */
     
      var category_name_oACDS = new YAHOO.util.FunctionDataSource(validate_name);
     category_name_oACDS.queryMatchContains = true;
@@ -319,11 +322,11 @@ function init(){
     category_name_oAutoComp.minQueryLength = 0; 
     category_name_oAutoComp.queryDelay = 0.1;
 
-  /*  var staff_alias_oACDS = new YAHOO.util.FunctionDataSource(validate_alias);
-    staff_alias_oACDS.queryMatchContains = true;
-    var staff_alias_oAutoComp = new YAHOO.widget.AutoComplete("Company_Staff_Alias","Company_Staff_Alias_Container", staff_alias_oACDS);
-    staff_alias_oAutoComp.minQueryLength = 0; 
-    staff_alias_oAutoComp.queryDelay = 0.1;*/
+   var subcategory_name_oACDS = new YAHOO.util.FunctionDataSource(validate_alias);
+    subcategory_name_oACDS.queryMatchContains = true;
+    var subcategory_name_oAutoComp = new YAHOO.widget.AutoComplete("Subcategory_Name","Subcategory_Name_Container", subcategory_name_oACDS);
+    subcategory_name_oAutoComp.minQueryLength = 0; 
+    subcategory_name_oAutoComp.queryDelay = 0.1; 
 
 
    
