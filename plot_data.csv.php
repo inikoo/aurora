@@ -11,6 +11,18 @@ if (!isset($_REQUEST['tipo'])) {
 
 $tipo=$_REQUEST['tipo'];
 switch ($tipo) {
+case('customers_orders_pie'):
+    $data=prepare_values($_REQUEST,array(
+                             'store_key'=>array('type'=>'key'),
+                         ));
+    customers_orders_pie($data);
+    break;
+case('customers_data_completeness_pie'):
+    $data=prepare_values($_REQUEST,array(
+                             'store_key'=>array('type'=>'key'),
+                         ));
+    customers_data_completeness_pie($data);
+    break;
 case('customer_departments_pie'):
     $data=prepare_values($_REQUEST,array(
                              'customer_key'=>array('type'=>'key'),
@@ -33,89 +45,227 @@ case('store_sales'):
 
 }
 
+
+function customers_orders_pie($data) {
+
+    $pie_data=array(
+     "o51_"=>array('title'=>_('Contacts with more than 50 orders'),'number'=>0,'short_title'=>"50> "._("Orders")),  
+        "o21_50"=>array('title'=>_('Contacts with 21-50 orders'),'number'=>0,'short_title'=>"21-50 "._("Orders")),
+     "o11_20"=>array('title'=>_('Contacts with 11-20 orders'),'number'=>0,'short_title'=>"11-20 "._("Orders")),
+    "o5_10"=>array('title'=>_('Contacts with 5-10 orders'),'number'=>0,'short_title'=>"5-10 "._("Orders")),
+     "o4"=>array('title'=>_('Contacts with 4 orders'),'number'=>0,'short_title'=>"4 "._("Orders")),
+       "o3"=>array('title'=>_('Contacts with 3 orders'),'number'=>0,'short_title'=>"3 "._("Orders")),
+        "o2"=>array('title'=>_('Contacts with 2 orders'),'number'=>0,'short_title'=>"2 "._("Orders")),
+         "o1"=>array('title'=>_('Contacts with one orders'),'number'=>0,'short_title'=>"1 "._("Order")),
+                  "o0"=>array('title'=>_('Contacts with no orders'),'number'=>0,'short_title'=>_('No Orders')),
+                 
+                
+               
+                
+               
+                
+                
+                 
+            );
+
+    $number_slices=9;
+    $others=0;
+
+    $where='where true';
+    if ($data['store_key']) {
+        $where=sprintf("where `Customer Store Key`=%d",$data['store_key']);
+    }
+
+
+    $sql=sprintf("select  
+    sum(if(`Customer Orders`=0,1,0)) as o0 ,
+   sum(if(`Customer Orders`=1,1,0)) as o1 ,
+   sum(if(`Customer Orders`=2,1,0)) as o2 ,
+   sum(if(`Customer Orders`=3,1,0)) as o3 ,
+   sum(if(`Customer Orders`=4,1,0)) as o4 ,
+   sum(if(`Customer Orders`>=5 and `Customer Orders`<=10,1,0)) as o5_10 ,
+  sum(if(`Customer Orders`>=11 and `Customer Orders`<=20,1,0)) as o11_20 ,
+  sum(if(`Customer Orders`>=21 and `Customer Orders`<=50,1,0)) as o21_50 ,
+  sum(if(`Customer Orders`>=51 ,1,0)) as `o51_` 
+    from `Customer Dimension` %s",
+                 $where
+                );
+
+    $res=mysql_query($sql);
+
+    while ($row=mysql_fetch_assoc($res)) {
+        $pie_data['o0']['number']=$row['o0'];
+         $pie_data['o1']['number']=$row['o1'];
+         $pie_data['o2']['number']=$row['o2'];
+         $pie_data['o3']['number']=$row['o3'];
+         $pie_data['o5_10']['number']=$row['o5_10'];
+         $pie_data['o11_20']['number']=$row['o11_20'];
+         $pie_data['o21_50']['number']=$row['o21_50'];
+         $pie_data['o51_']['number']=$row['o51_'];
+         
+                              }
+
+
+    foreach($pie_data as $key=>$values) {
+        if($values['number']>0)
+        printf("%s;%.2f;;;customers.php?where=data_%s,4s\n",$values['short_title'],$values['number'],$key,$values['title']);
+    }
+
+
+
+
+
+
+}
+
+function customers_data_completeness_pie($data) {
+
+    $pie_data=array(
+                  "ok"=>array('title'=>_('Contacts with all data'),'number'=>0,'short_title'=>'Ok'),
+                  "a"=>array('title'=>_('Contacts missing address'),'number'=>0,'short_title'=>"No Address"),
+                  "e"=>array('title'=>_('Contacts missing email'),'number'=>0,'short_title'=>'No Email'),
+                  "t"=>array('title'=>_('Contacts missing telephone'),'number'=>0,'short_title'=>'No Tel'),
+                      "ae"=>array('title'=>_('Contacts missing address & email'),'number'=>0,'short_title'=>'No Email & Address'),
+                  "at"=>array('title'=>_('Contacts missing address & telephone'),'number'=>0,'short_title'=>'No Address & Tel'),
+                  "et"=>array('title'=>_('Contacts missing email & telephone'),'number'=>0,'short_title'=>'No Email & Tel'),
+                  "aet"=>array('title'=>_('Contacts missing address, email & telephone'),'number'=>0,'short_title'=>"No Email Address Tel"),
+              );
+
+    $number_slices=9;
+    $others=0;
+
+    $where='where true';
+    if ($data['store_key']) {
+        $where=sprintf("where `Customer Store Key`=%d",$data['store_key']);
+    }
+
+
+    $sql=sprintf("select  count(*) as total,
+    sum(if(ISNULL(`Customer Main Email Key`) AND  !ISNULL(`Customer Main Telephone Key`) AND  `Customer Main Country Key`!=244  ,1,0)) as e ,
+        sum(if(!ISNULL(`Customer Main Email Key`) AND  ISNULL(`Customer Main Telephone Key`) AND  `Customer Main Country Key`!=244  ,1,0)) as t ,
+    sum(if(!ISNULL(`Customer Main Email Key`) AND  !ISNULL(`Customer Main Telephone Key`) AND  `Customer Main Country Key`=244  ,1,0)) as a,
+ sum(if(ISNULL(`Customer Main Email Key`) AND  !ISNULL(`Customer Main Telephone Key`) AND  `Customer Main Country Key`=244  ,1,0)) as ae,
+  sum(if(!ISNULL(`Customer Main Email Key`) AND  ISNULL(`Customer Main Telephone Key`) AND  `Customer Main Country Key`=244  ,1,0)) as at,
+  sum(if(ISNULL(`Customer Main Email Key`) AND  !ISNULL(`Customer Main Telephone Key`) AND  `Customer Main Country Key`!=244  ,1,0)) as et,
+   sum(if(ISNULL(`Customer Main Email Key`) AND  ISNULL(`Customer Main Telephone Key`) AND  `Customer Main Country Key`!=244  ,1,0)) as aet
+    from `Customer Dimension` %s",
+                 $where
+                );
+
+    $res=mysql_query($sql);
+
+    while ($row=mysql_fetch_assoc($res)) {
+        $pie_data['a']['number']=$row['a'];
+         $pie_data['e']['number']=$row['e'];
+          $pie_data['t']['number']=$row['t'];
+           $pie_data['ae']['number']=$row['ae'];
+            $pie_data['at']['number']=$row['at'];
+             $pie_data['et']['number']=$row['et'];
+              $pie_data['aet']['number']=$row['aet'];
+        $pie_data['ok']['number']=$row['total']-$row['a']-$row['e']-$row['t']-$row['ae']-$row['at']-$row['et']-$row['aet'];
+                              }
+
+
+    foreach($pie_data as $key=>$values) {
+        if($values['number']>0)
+        printf("%s;%.2f;;;customers.php?where=data_%s,4s\n",$values['short_title'],$values['number'],$key,$values['title']);
+    }
+
+
+
+
+
+
+}
+
 function customer_departments_pie($data) {
-$number_slices=9;
-$others=0;
- $sql=sprintf("select count(distinct `Product Main Department Key`) num_slices ,sum(`Order Transaction Gross Amount`-`Order Transaction Total Discount Amount`) as amount   from `Order Transaction Fact`  OTF left join    `Product History Dimension` as PH  on (OTF.`Product Key`=PH.`Product Key`) left join `Product Dimension` P on (PH.`Product ID`=P.`Product ID`)  where `Customer Key`=%d",
+    $number_slices=9;
+    $others=0;
+    $sql=sprintf("select count(distinct `Product Main Department Key`) num_slices ,sum(`Order Transaction Gross Amount`-`Order Transaction Total Discount Amount`) as amount   from `Order Transaction Fact`  OTF left join    `Product History Dimension` as PH  on (OTF.`Product Key`=PH.`Product Key`) left join `Product Dimension` P on (PH.`Product ID`=P.`Product ID`)  where `Customer Key`=%d",
                  $data['customer_key']
                 );
 
     $res=mysql_query($sql);
-   // print $sql;
+    // print $sql;
     if ($row=mysql_fetch_assoc($res)) {
-   
-        if ($row['amount']>0){
-        if($row['num_slices']==10){
-        $number_slices=10;
-        }elseif($row['num_slices']>10){
-        $others=$row['amount'];
-        
-       // printf("%s;%.2f\n",_('Others'),$row['amount']);
-   }
-   
-   }
-   }
 
-    $sql=sprintf("select `Product Main Department Code` ,`Product Main Department Name` ,sum(`Order Transaction Gross Amount`-`Order Transaction Total Discount Amount`) as amount   from `Order Transaction Fact`  OTF left join    `Product History Dimension` as PH  on (OTF.`Product Key`=PH.`Product Key`) left join `Product Dimension` P on (PH.`Product ID`=P.`Product ID`)  where `Customer Key`=%d group by `Product Main Department Key` order by amount desc limit %d",
+        if ($row['amount']>0) {
+            if ($row['num_slices']==10) {
+                $number_slices=10;
+            }
+            elseif($row['num_slices']>10) {
+                $others=$row['amount'];
+
+                // printf("%s;%.2f\n",_('Others'),$row['amount']);
+            }
+
+        }
+    }
+
+    $sql=sprintf("select `Product Main Department Code` ,`Product Main Department Name` ,`Product Main Department Key`,sum(`Order Transaction Gross Amount`-`Order Transaction Total Discount Amount`) as amount   from `Order Transaction Fact`  OTF left join    `Product History Dimension` as PH  on (OTF.`Product Key`=PH.`Product Key`) left join `Product Dimension` P on (PH.`Product ID`=P.`Product ID`)  where `Customer Key`=%d group by `Product Main Department Key` order by amount desc limit %d",
                  $data['customer_key'],
                  $number_slices
                 );
 //print $sql;
-$sum_slices=0;
+    $sum_slices=0;
     $res=mysql_query($sql);
     while ($row=mysql_fetch_assoc($res)) {
-        if ($row['amount']>0){
-            printf("%s;%.2f\n",$row['Product Main Department Code'],$row['amount']);
+        if ($row['amount']>0) {
+            // printf("%s;%.2f\n",$row['Product Main Department Code'],$row['amount']);
+            $descripton=$row['Product Main Department Name'];
+            printf("%s;%.2f;;;department.php?id=%d;%s\n",$row['Product Main Department Code'],$row['amount'],$row['Product Main Department Key'],$descripton);
             $sum_slices+=$row['amount'];
-            
+
+        }
     }
+
+    if ($others) {
+        printf("%s;%.2f;true\n",_('Others'),$others-$sum_slices);
     }
-    
-    if($others){
-    printf("%s;%.2f;true\n",_('Others'),$others-$sum_slices);
-    }
-    
+
 }
 
 function customer_families_pie($data) {
 
-$number_slices=14;
-$others=0;
- $sql=sprintf("select count(distinct `Product Family Key`) num_slices ,sum(`Order Transaction Gross Amount`-`Order Transaction Total Discount Amount`) as amount   from `Order Transaction Fact`  OTF left join    `Product History Dimension` as PH  on (OTF.`Product Key`=PH.`Product Key`) left join `Product Dimension` P on (PH.`Product ID`=P.`Product ID`)  where `Customer Key`=%d",
+    $number_slices=14;
+    $others=0;
+    $sql=sprintf("select count(distinct `Product Family Key`) num_slices ,sum(`Order Transaction Gross Amount`-`Order Transaction Total Discount Amount`) as amount   from `Order Transaction Fact`  OTF left join    `Product History Dimension` as PH  on (OTF.`Product Key`=PH.`Product Key`) left join `Product Dimension` P on (PH.`Product ID`=P.`Product ID`)  where `Customer Key`=%d",
                  $data['customer_key']
                 );
 
     $res=mysql_query($sql);
-   // print $sql;
+    // print $sql;
     if ($row=mysql_fetch_assoc($res)) {
-   
-        if ($row['amount']>0){
-        if($row['num_slices']==10){
-        $number_slices=10;
-        }elseif($row['num_slices']>10){
-        $others=$row['amount'];
-        
-       // printf("%s;%.2f\n",_('Others'),$row['amount']);
-   }
-   
-   }
-   }
 
-    $sql=sprintf("select `Product Family Name`,`Product Family Code` ,sum(`Order Transaction Gross Amount`-`Order Transaction Total Discount Amount`) as amount   from `Order Transaction Fact`  OTF left join    `Product History Dimension` as PH  on (OTF.`Product Key`=PH.`Product Key`) left join `Product Dimension` P on (PH.`Product ID`=P.`Product ID`)  where `Customer Key`=%d group by `Product Family Key` order by amount desc  limit %d",
+        if ($row['amount']>0) {
+            if ($row['num_slices']==10) {
+                $number_slices=10;
+            }
+            elseif($row['num_slices']>10) {
+                $others=$row['amount'];
+
+                // printf("%s;%.2f\n",_('Others'),$row['amount']);
+            }
+
+        }
+    }
+
+    $sql=sprintf("select `Product Family Name`,`Product Family Code`,`Product Family Key` ,sum(`Order Transaction Gross Amount`-`Order Transaction Total Discount Amount`) as amount   from `Order Transaction Fact`  OTF left join    `Product History Dimension` as PH  on (OTF.`Product Key`=PH.`Product Key`) left join `Product Dimension` P on (PH.`Product ID`=P.`Product ID`)  where `Customer Key`=%d group by `Product Family Key` order by amount desc  limit %d",
                  $data['customer_key'],
-                   $number_slices
+                 $number_slices
                 );
 //print $sql;
     $res=mysql_query($sql);
     $sum_slices=0;
     while ($row=mysql_fetch_assoc($res)) {
         if ($row['amount']>0)
-            printf("%s;%.2f\n",$row['Product Family Code'],$row['amount']);
-            $sum_slices+=$row['amount'];
+            $descripton=$row['Product Family Name'];
+        printf("%s;%.2f;;;family.php?id=%d;%s\n",$row['Product Family Code'],$row['amount'],$row['Product Family Key'],$descripton);
+        $sum_slices+=$row['amount'];
     }
-    
-     if($others){
-    printf("%s;%.2f;true\n",_('Others'),$others-$sum_slices);
+
+    if ($others) {
+        printf("%s;%.2f;true\n",_('Others'),$others-$sum_slices);
     }
 }
 

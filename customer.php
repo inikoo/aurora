@@ -44,13 +44,17 @@ $_SESSION['state']['customers']['store']=$customer->data['Customer Store Key'];
 
 
 if(isset($_REQUEST['view']) and preg_match('/^(history|products|orders)$/',$_REQUEST['view']) ){
-  $_SESSION['state']['customer']['view']=$_REQUEST['view'];
+ 
   $view=$_REQUEST['view'];
 }else{
   $view=$_SESSION['state']['customer']['view'];
 }
-$smarty->assign('view',$view);
+if(!$customer->data['Customer Orders']){
+$view='history';
+}
 
+$smarty->assign('view',$view);
+ $_SESSION['state']['customer']['view']=$view;
 
 $css_files=array(
 		 $yui_path.'reset-fonts-grids/reset-fonts-grids.css',
@@ -77,6 +81,7 @@ $js_files=array(
 		$yui_path.'editor/editor-min.js',
 		$yui_path.'menu/menu-min.js',
 		$yui_path.'calendar/calendar-min.js',
+		'external_libs/ampie/ampie/swfobject.js',
 		'common.js.php',
 		'table_common.js.php',
 		'js/search.js',
@@ -196,6 +201,7 @@ $general_options_list=array();
 
 if($modify)
   $general_options_list[]=array('tipo'=>'url','url'=>'edit_customer.php?id='.$customer->id,'label'=>_('Edit Customer'));
+
 $general_options_list[]=array('tipo'=>'js','state'=>$show_details,'id'=>'details','label'=>($show_details?_('Hide Details'):_('Show Details')));
   $general_options_list[]=array('tipo'=>'url','url'=>'customer_csv.php?id='.$customer->id,'label'=>_('CSV Data'));
 
@@ -206,7 +212,7 @@ $smarty->assign('general_options_list',$general_options_list);
 
 
 
-
+$smarty->assign('number_orders',$customer->get('Customer Orders'));
 $smarty->assign('parent','customers');
 $smarty->assign('title','Customer: '.$customer->get('customer name'));
 $customer_home=_("Customers List");
