@@ -83,12 +83,15 @@ $js_files=array(
 $sql=sprintf("select * from `Category Dimension` where `Category Parent Key`=%d",$category_key);
 $res = mysql_query($sql);
 while ($row = mysql_fetch_assoc($res)){
-   $subcategory_name[] = $row['Category Name'];
-   $subcategory_key[] = $row['Category Key'];
+      $subcategory_name[] = $row['Category Name'];
+ //  $subcategory_name[] = $row['Category Name'];
+ //  $subcategory_key[] = $row['Category Key'];
 } 
 $smarty->assign('subcategory_name', $subcategory_name); 
-$smarty->assign('subcategory_key', $subcategory_key); 
+//$smarty->assign('subcategory_key', $subcategory_key); 
 
+
+  
 
 
 $smarty->assign('category',$category);
