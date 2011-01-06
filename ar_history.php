@@ -270,6 +270,10 @@ function list_customer_history() {
         $order='History Abstract';
     if ($order=='objeto')
         $order='Direct Object';
+     if ($order=='handle')
+        $order='Author Name';    
+        
+        
 //    $sql="select * from `Customer History Bridge` CHB  left join  `History Dimension` H on (H.`History Key`=CHB.`History Key`)   left join `User Dimension` U on (H.`User Key`=U.`User Key`)  $where $wheref  order by `$order` $order_direction limit $start_from,$number_results ";
 $sql="select `Subject`,`Author Name`,`History Details`,`History Abstract`,H.`History Key`,`History Date` from    `History Dimension` H  left join `Customer History Bridge` B  on (B.`History Key`=H.`History Key`) left join          `Customer Dimension` CD on (B.`Customer Key`=CD.`Customer Key`)   $where $wheref  order by `$order` $order_direction limit $start_from,$number_results ";
     // print $sql;

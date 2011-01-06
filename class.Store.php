@@ -736,7 +736,7 @@ $sql=sprintf("select sum(if(`Product Record Type`='New',1,0)) as new,sum(if(`Pro
 		 ,$this->id
 		 );
     mysql_query($sql);
- //print "\n$sql\n";
+// print "\n$sql\n";
  
  }
  
@@ -967,6 +967,7 @@ $this->data['Store Delivery Notes For Replacements'],
       if(!mysql_query($sql))
 	exit("$sql\ncan not update dept sales\n");
     }
+    print "$sql\n\n";
     // days on sale
      
     $on_sale_days=0;

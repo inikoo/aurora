@@ -17,13 +17,13 @@
   <table class="quick_button" style="clear:both;float:right;margin-top:0px;">
     <tr><td  id="note">{t}Quick Note{/t}</td></tr>
     <tr><td  id="attach">{t}Attach File{/t}</td></tr>
-    
+    <tr style="display:none"><td  id="link">{t}Link File{/t}</td></tr>
     <tr><td id="take_order">{t}Take Order{/t}</td></tr>
     
 
 
     <tr style="display:none"><td  id="long_note">{t}Long Note{/t}</td></tr>
-    <tr style="display:none"><td  id="attach">{t}Attach File{/t}</td></tr>
+  
     <tr style="display:none"><td id="call" >{t}Call{/t}</td></tr>
 <tr style="display:none"><td  id="email" >{t}Email{/t}</td></tr>
     <tr style="display:none"><td id="others" >{t}Other{/t}</td></tr>
@@ -75,10 +75,11 @@
 </div>
   <ul class="tabs" id="chooser_ul" style="clear:both;margin-top:25px">
     <li> <span class="item {if $view=='history'}selected{/if}"  id="history">  <span> {t}History, Notes{/t}</span></span></li>
-    
-    <li> <span class="item {if $view=='products'}selected{/if}" id="products"  ><span>  {t}Products Ordered{/t}</span></span></li>
-    <li> <span class="item {if $view=='orders'}selected{/if}"  id="orders">  <span> {t}Orders{/t}</span></span></li>
-  </ul>
+  
+    <li {if !$customer->get('Customer Orders')}style="display:none"{/if}> <span class="item {if $view=='products'}selected{/if}" id="products"  ><span>  {t}Products Ordered{/t}</span></span></li>
+    <li {if !$customer->get('Customer Orders')}style="display:none"{/if}> <span class="item {if $view=='orders'}selected{/if}"  id="orders">  <span> {t}Orders{/t}</span></span></li>
+ 
+ </ul>
   <div  style="clear:both;width:100%;border-bottom:1px solid #ccc">
   </div>
   
@@ -92,7 +93,7 @@
 
 <div id="block_products" class="data_table" style="{if $view!='products'}display:none;{/if}clear:both;margin:20px 0 40px 0;padding:0 20px">
 
- <script type="text/javascript" src="external_libs/ampie/ampie/swfobject.js"></script>
+ 
 	<div style="float:left" id="plot1">
 		<strong>You need to upgrade your Flash Player</strong>
 	</div>
@@ -150,6 +151,32 @@
     <span  class="unselectable_text button" onClick="close_dialog('note')" >{t}Cancel{/t} <img src="art/icons/cross.png"/></span></td>
   <td style="text-align:center;width:50%">
     <span  onclick="save('note')" id="note_save"  class="unselectable_text button"     style="visibility:hidden;" >{t}Save{/t} <img src="art/icons/disk.png" ></span></td></tr>
+</table>
+</div>
+
+
+<div id="dialog_link">
+  <div id="link_msg"></div>
+  <table >
+     <tr><td colspan=2>
+
+	  {t}Link Note{/t}:<br/> <input type="text" id="link_note"/>
+
+    </td><tr>
+    <tr><td colspan=2>
+	<form action="upload.php" enctype="multipart/form-data" method="post" id="link_form">
+
+
+	  <input type="file" name="testFile" id="link_file" />
+
+	</form>
+    </td><tr>
+	
+    <tr class="buttons" style="font-size:100%">
+  <td style="text-align:center;width:50%">
+    <span  class="state_details" onClick="close_dialog('link')" >{t}Cancel{/t}</span></td>
+  <td style="text-align:center;width:50%">
+    <span  onclick="save('link')" id="upload_link"  class="state_details"     xstyle="visibility:hidden;" >{t}Upload{/t}</span></td></tr>
 </table>
 </div>
 

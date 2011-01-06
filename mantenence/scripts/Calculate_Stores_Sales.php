@@ -35,8 +35,9 @@ while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
 
   $store=new Store($row['Store Key']);
   $store->update_orders();
-  $store->load('sales');
  
+ $store->update_store_sales();
+      $store->update_sales_default_currency();
 $store->update_customers_data();
 
   $store->load('products_info');
