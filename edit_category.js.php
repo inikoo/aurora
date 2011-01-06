@@ -6,10 +6,9 @@ var Event = YAHOO.util.Event;
 var Dom   = YAHOO.util.Dom;
 
 function subcategory_f(subcategory){
-alert("dooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo");alert(subcategory);
 var sn=subcategory;
-var a="<?php echo "hi";?>";
-alert(a);
+
+alert(sn);
 
 }
 //var can_add_department=false;
