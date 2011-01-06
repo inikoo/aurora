@@ -251,7 +251,7 @@ var onCellClick = function(oArgs) {
 //alert(column.object)
 
 
-                //	alert(ar_file+'?tipo=delete_'+column.object + myBuildUrl(this,record))
+              // 	alert(ar_file+'?tipo=delete_'+column.object + myBuildUrl(this,record))
 
                 YAHOO.util.Connect.asyncRequest(
                     'GET',
@@ -424,7 +424,7 @@ function validate_scope_new(branch) {
 }
 
 function validate_general(branch,item,query) {
-//alert(validate_scope_metadata[branch]['type']+' '+branch+' '+query)
+alert(validate_scope_metadata[branch]['type']+' '+branch+' '+query)
     if (validate_scope_metadata[branch]['type']=='new') {  
         validate_general_new(branch,item,query)
     } else {
@@ -554,7 +554,6 @@ function validate_general_new(branch,item,query) {
 }
 
 function validate_general_edit(branch,item,query) {
-
 //alert(branch+' I:'+item+' q:'+query);
     var data= validate_scope_data[branch][item];
 
@@ -648,13 +647,13 @@ function post_item_updated_actions(branch,key,newvalue) {
 
 function save_edit_general(branch) {
 
-
+alert("***REACHED TO save_edit_general****");
     operation='edit';
     scope_edit_ar_file=validate_scope_metadata[branch]['ar_file'];
     branch_key=validate_scope_metadata[branch]['key'];
     branch_key_name=validate_scope_metadata[branch]['key_name'];
 
-
+//alert(scope_edit_ar_file);alert(branch_key);alert(branch_key_name);
 
     for (item in validate_scope_data[branch]) {
 
@@ -676,11 +675,11 @@ function save_edit_general(branch) {
                         encodeURIComponent(item_input.value) +  '&oldvalue=' +
                         encodeURIComponent(item_input.getAttribute('ovalue')) +
                         '&'+branch_key_name+'='+branch_key;
-            //  alert(request);
+              alert(request);
 
             YAHOO.util.Connect.asyncRequest('POST',request , {
 success:function(o) {
-                  // 	alert(o.responseText)
+                   	alert(o.responseText)
                     var r =  YAHOO.lang.JSON.parse(o.responseText);
                     if (r.state==200) {
 
