@@ -437,5 +437,23 @@ ALTER TABLE `History Dimension` ADD `Author Name` VARCHAR( 256 ) NULL AFTER `His
 ALTER TABLE `History Dimension` CHANGE `Action` `Action` ENUM( 'sold_since', 'last_sold', 'first_sold', 'placed', 'wrote', 'deleted', 'edited', 'cancelled', 'charged', 'merged', 'created', 'associated', 'disassociate' ) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT 'edited';
 ALTER TABLE `History Dimension` CHANGE `Preposition` `Preposition` ENUM( 'about', '', 'to' ) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL ;
 ALTER TABLE `History Dimension` CHANGE `Direct Object Key` `Direct Object Key` MEDIUMINT( 8 ) UNSIGNED NULL DEFAULT '0';
+ALTER TABLE `Time Series Dimension` ADD `Open` FLOAT NULL DEFAULT NULL AFTER `Time Series Count` ,
+ADD `High` FLOAT NULL DEFAULT NULL AFTER `Open` ,
+ADD `Low` FLOAT NULL DEFAULT NULL AFTER `High` ,
+ADD `Close` FLOAT NULL DEFAULT NULL AFTER `Low` ,
+ADD `Volume` FLOAT NULL DEFAULT NULL AFTER `Close` ,
+ADD `Adj Close` FLOAT NULL DEFAULT NULL AFTER `Volume` ;
+ALTER TABLE `Customer Dimension` ADD INDEX ( `Active Customer` ) ;
+ALTER TABLE `Customer Dimension` ADD INDEX ( `Actual Customer` ) ;
+ALTER TABLE `Customer Dimension` ADD INDEX ( `Customer First Order Date` ) ;
+ALTER TABLE `Customer Dimension` ADD INDEX ( `Customer Lost Date` ) ;
+ALTER TABLE `Store Dimension` ADD `Store 1 Year New Customers` MEDIUMINT NOT NULL DEFAULT '0' AFTER `Store New Customers` ,
+ADD `Store 1 Quarter New Customers` MEDIUMINT NOT NULL DEFAULT '0' AFTER `Store 1 Year New Customers` ,
+ADD `Store 1 Month New Customers` MEDIUMINT NOT NULL DEFAULT '0' AFTER `Store 1 Quarter New Customers` ,
+ADD `Store 1 Week New Customers` MEDIUMINT NOT NULL DEFAULT '0' AFTER `Store 1 Month New Customers` ;
+ALTER TABLE `Store Dimension` ADD `Store 1 Year Lost Customers` MEDIUMINT NOT NULL DEFAULT '0' AFTER `Store Lost Customers` ,
+ADD `Store 1 Quarter Lost Customers` MEDIUMINT NOT NULL DEFAULT '0' AFTER `Store 1 Year Lost Customers` ,
+ADD `Store 1 Month Lost Customers` MEDIUMINT NOT NULL DEFAULT '0' AFTER `Store 1 Quarter Lost Customers` ,
+ADD `Store 1 Week Lost Customers` MEDIUMINT NOT NULL DEFAULT '0' AFTER `Store 1 Month Lost Customers` ;
 */
 ?>
