@@ -11,6 +11,13 @@ if (!isset($_REQUEST['tipo'])) {
 
 $tipo=$_REQUEST['tipo'];
 switch ($tipo) {
+case('number_of_customers'):
+    $data=prepare_values($_REQUEST,array(
+                             'store_key'=>array('type'=>'key'),
+                         ));
+    number_of_customers($data);
+    break;
+
 case('customers_orders_pie'):
     $data=prepare_values($_REQUEST,array(
                              'store_key'=>array('type'=>'key'),
@@ -46,27 +53,41 @@ case('store_sales'):
 }
 
 
+function  number_of_customers($data) {
+    $sql=sprintf("select `Time Series Date`,`Open`,`High`,`Low`,`Close`,`Volume` from `Time Series Dimension` where `Time Series Name`='customer population' and `Time Series Name Key`=%d order by `Time Series Date` desc",
+                 $data['store_key']
+                );
+     $res=mysql_query($sql);
+ 
+    while ($row=mysql_fetch_assoc($res)) {
+    printf("%s,%s,%s,%s,%s,%s\n",$row['Time Series Date'],$row['Open'],$row['High'],$row['Low'],$row['Close'],$row['Volume']);
+    }
+
+
+}
+
+
 function customers_orders_pie($data) {
 
     $pie_data=array(
-     "o51_"=>array('title'=>_('Contacts with more than 50 orders'),'number'=>0,'short_title'=>"50> "._("Orders")),  
-        "o21_50"=>array('title'=>_('Contacts with 21-50 orders'),'number'=>0,'short_title'=>"21-50 "._("Orders")),
-     "o11_20"=>array('title'=>_('Contacts with 11-20 orders'),'number'=>0,'short_title'=>"11-20 "._("Orders")),
-    "o5_10"=>array('title'=>_('Contacts with 5-10 orders'),'number'=>0,'short_title'=>"5-10 "._("Orders")),
-     "o4"=>array('title'=>_('Contacts with 4 orders'),'number'=>0,'short_title'=>"4 "._("Orders")),
-       "o3"=>array('title'=>_('Contacts with 3 orders'),'number'=>0,'short_title'=>"3 "._("Orders")),
-        "o2"=>array('title'=>_('Contacts with 2 orders'),'number'=>0,'short_title'=>"2 "._("Orders")),
-         "o1"=>array('title'=>_('Contacts with one orders'),'number'=>0,'short_title'=>"1 "._("Order")),
+                  "o51_"=>array('title'=>_('Contacts with more than 50 orders'),'number'=>0,'short_title'=>"50> "._("Orders")),
+                  "o21_50"=>array('title'=>_('Contacts with 21-50 orders'),'number'=>0,'short_title'=>"21-50 "._("Orders")),
+                  "o11_20"=>array('title'=>_('Contacts with 11-20 orders'),'number'=>0,'short_title'=>"11-20 "._("Orders")),
+                  "o5_10"=>array('title'=>_('Contacts with 5-10 orders'),'number'=>0,'short_title'=>"5-10 "._("Orders")),
+                  "o4"=>array('title'=>_('Contacts with 4 orders'),'number'=>0,'short_title'=>"4 "._("Orders")),
+                  "o3"=>array('title'=>_('Contacts with 3 orders'),'number'=>0,'short_title'=>"3 "._("Orders")),
+                  "o2"=>array('title'=>_('Contacts with 2 orders'),'number'=>0,'short_title'=>"2 "._("Orders")),
+                  "o1"=>array('title'=>_('Contacts with one orders'),'number'=>0,'short_title'=>"1 "._("Order")),
                   "o0"=>array('title'=>_('Contacts with no orders'),'number'=>0,'short_title'=>_('No Orders')),
-                 
-                
-               
-                
-               
-                
-                
-                 
-            );
+
+
+
+
+
+
+
+
+              );
 
     $number_slices=9;
     $others=0;
@@ -77,17 +98,17 @@ function customers_orders_pie($data) {
     }
 
 
-    $sql=sprintf("select  
-    sum(if(`Customer Orders`=0,1,0)) as o0 ,
-   sum(if(`Customer Orders`=1,1,0)) as o1 ,
-   sum(if(`Customer Orders`=2,1,0)) as o2 ,
-   sum(if(`Customer Orders`=3,1,0)) as o3 ,
-   sum(if(`Customer Orders`=4,1,0)) as o4 ,
-   sum(if(`Customer Orders`>=5 and `Customer Orders`<=10,1,0)) as o5_10 ,
-  sum(if(`Customer Orders`>=11 and `Customer Orders`<=20,1,0)) as o11_20 ,
-  sum(if(`Customer Orders`>=21 and `Customer Orders`<=50,1,0)) as o21_50 ,
-  sum(if(`Customer Orders`>=51 ,1,0)) as `o51_` 
-    from `Customer Dimension` %s",
+    $sql=sprintf("select
+                 sum(if(`Customer Orders`=0,1,0)) as o0 ,
+                 sum(if(`Customer Orders`=1,1,0)) as o1 ,
+                 sum(if(`Customer Orders`=2,1,0)) as o2 ,
+                 sum(if(`Customer Orders`=3,1,0)) as o3 ,
+                 sum(if(`Customer Orders`=4,1,0)) as o4 ,
+                 sum(if(`Customer Orders`>=5 and `Customer Orders`<=10,1,0)) as o5_10 ,
+                 sum(if(`Customer Orders`>=11 and `Customer Orders`<=20,1,0)) as o11_20 ,
+                 sum(if(`Customer Orders`>=21 and `Customer Orders`<=50,1,0)) as o21_50 ,
+                 sum(if(`Customer Orders`>=51 ,1,0)) as `o51_`
+                 from `Customer Dimension` %s",
                  $where
                 );
 
@@ -95,20 +116,20 @@ function customers_orders_pie($data) {
 
     while ($row=mysql_fetch_assoc($res)) {
         $pie_data['o0']['number']=$row['o0'];
-         $pie_data['o1']['number']=$row['o1'];
-         $pie_data['o2']['number']=$row['o2'];
-         $pie_data['o3']['number']=$row['o3'];
-         $pie_data['o5_10']['number']=$row['o5_10'];
-         $pie_data['o11_20']['number']=$row['o11_20'];
-         $pie_data['o21_50']['number']=$row['o21_50'];
-         $pie_data['o51_']['number']=$row['o51_'];
-         
-                              }
+        $pie_data['o1']['number']=$row['o1'];
+        $pie_data['o2']['number']=$row['o2'];
+        $pie_data['o3']['number']=$row['o3'];
+        $pie_data['o5_10']['number']=$row['o5_10'];
+        $pie_data['o11_20']['number']=$row['o11_20'];
+        $pie_data['o21_50']['number']=$row['o21_50'];
+        $pie_data['o51_']['number']=$row['o51_'];
+
+    }
 
 
     foreach($pie_data as $key=>$values) {
-        if($values['number']>0)
-        printf("%s;%.2f;;;customers.php?where=data_%s,4s\n",$values['short_title'],$values['number'],$key,$values['title']);
+        if ($values['number']>0)
+            printf("%s;%.2f;;;customers.php?where=data_%s,4s\n",$values['short_title'],$values['number'],$key,$values['title']);
     }
 
 
@@ -125,7 +146,7 @@ function customers_data_completeness_pie($data) {
                   "a"=>array('title'=>_('Contacts missing address'),'number'=>0,'short_title'=>"No Address"),
                   "e"=>array('title'=>_('Contacts missing email'),'number'=>0,'short_title'=>'No Email'),
                   "t"=>array('title'=>_('Contacts missing telephone'),'number'=>0,'short_title'=>'No Tel'),
-                      "ae"=>array('title'=>_('Contacts missing address & email'),'number'=>0,'short_title'=>'No Email & Address'),
+                  "ae"=>array('title'=>_('Contacts missing address & email'),'number'=>0,'short_title'=>'No Email & Address'),
                   "at"=>array('title'=>_('Contacts missing address & telephone'),'number'=>0,'short_title'=>'No Address & Tel'),
                   "et"=>array('title'=>_('Contacts missing email & telephone'),'number'=>0,'short_title'=>'No Email & Tel'),
                   "aet"=>array('title'=>_('Contacts missing address, email & telephone'),'number'=>0,'short_title'=>"No Email Address Tel"),
@@ -141,14 +162,14 @@ function customers_data_completeness_pie($data) {
 
 
     $sql=sprintf("select  count(*) as total,
-    sum(if(ISNULL(`Customer Main Email Key`) AND  !ISNULL(`Customer Main Telephone Key`) AND  `Customer Main Country Key`!=244  ,1,0)) as e ,
-        sum(if(!ISNULL(`Customer Main Email Key`) AND  ISNULL(`Customer Main Telephone Key`) AND  `Customer Main Country Key`!=244  ,1,0)) as t ,
-    sum(if(!ISNULL(`Customer Main Email Key`) AND  !ISNULL(`Customer Main Telephone Key`) AND  `Customer Main Country Key`=244  ,1,0)) as a,
- sum(if(ISNULL(`Customer Main Email Key`) AND  !ISNULL(`Customer Main Telephone Key`) AND  `Customer Main Country Key`=244  ,1,0)) as ae,
-  sum(if(!ISNULL(`Customer Main Email Key`) AND  ISNULL(`Customer Main Telephone Key`) AND  `Customer Main Country Key`=244  ,1,0)) as at,
-  sum(if(ISNULL(`Customer Main Email Key`) AND  !ISNULL(`Customer Main Telephone Key`) AND  `Customer Main Country Key`!=244  ,1,0)) as et,
-   sum(if(ISNULL(`Customer Main Email Key`) AND  ISNULL(`Customer Main Telephone Key`) AND  `Customer Main Country Key`!=244  ,1,0)) as aet
-    from `Customer Dimension` %s",
+                 sum(if(ISNULL(`Customer Main Email Key`) AND  !ISNULL(`Customer Main Telephone Key`) AND  `Customer Main Country Key`!=244  ,1,0)) as e ,
+                 sum(if(!ISNULL(`Customer Main Email Key`) AND  ISNULL(`Customer Main Telephone Key`) AND  `Customer Main Country Key`!=244  ,1,0)) as t ,
+                 sum(if(!ISNULL(`Customer Main Email Key`) AND  !ISNULL(`Customer Main Telephone Key`) AND  `Customer Main Country Key`=244  ,1,0)) as a,
+                 sum(if(ISNULL(`Customer Main Email Key`) AND  !ISNULL(`Customer Main Telephone Key`) AND  `Customer Main Country Key`=244  ,1,0)) as ae,
+                 sum(if(!ISNULL(`Customer Main Email Key`) AND  ISNULL(`Customer Main Telephone Key`) AND  `Customer Main Country Key`=244  ,1,0)) as at,
+                 sum(if(ISNULL(`Customer Main Email Key`) AND  !ISNULL(`Customer Main Telephone Key`) AND  `Customer Main Country Key`!=244  ,1,0)) as et,
+                 sum(if(ISNULL(`Customer Main Email Key`) AND  ISNULL(`Customer Main Telephone Key`) AND  `Customer Main Country Key`!=244  ,1,0)) as aet
+                 from `Customer Dimension` %s",
                  $where
                 );
 
@@ -156,19 +177,19 @@ function customers_data_completeness_pie($data) {
 
     while ($row=mysql_fetch_assoc($res)) {
         $pie_data['a']['number']=$row['a'];
-         $pie_data['e']['number']=$row['e'];
-          $pie_data['t']['number']=$row['t'];
-           $pie_data['ae']['number']=$row['ae'];
-            $pie_data['at']['number']=$row['at'];
-             $pie_data['et']['number']=$row['et'];
-              $pie_data['aet']['number']=$row['aet'];
+        $pie_data['e']['number']=$row['e'];
+        $pie_data['t']['number']=$row['t'];
+        $pie_data['ae']['number']=$row['ae'];
+        $pie_data['at']['number']=$row['at'];
+        $pie_data['et']['number']=$row['et'];
+        $pie_data['aet']['number']=$row['aet'];
         $pie_data['ok']['number']=$row['total']-$row['a']-$row['e']-$row['t']-$row['ae']-$row['at']-$row['et']-$row['aet'];
-                              }
+    }
 
 
     foreach($pie_data as $key=>$values) {
-        if($values['number']>0)
-        printf("%s;%.2f;;;customers.php?where=data_%s,4s\n",$values['short_title'],$values['number'],$key,$values['title']);
+        if ($values['number']>0)
+            printf("%s;%.2f;;;customers.php?where=data_%s,4s\n",$values['short_title'],$values['number'],$key,$values['title']);
     }
 
 
