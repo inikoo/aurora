@@ -61,7 +61,7 @@
 
    <tr><td></td>   <td  style="text-align:left">
 	    <div  style="width:15em;position:relative;top:00px" >
-	      <input style="text-align:left;width:18em" id="Subcategory_Name" value="{$subcategory}" ovalue="{$subcategory}" onclick=subcategory_f('{$subcategory}');>
+	      <input style="text-align:left;width:18em" id="Subcategory_Name" value="{$subcategory.subcategory_name}" ovalue="{$subcategory.subcategory_name}" onclick=subcategory_f('{$subcategory.subcategory_key}');>
 	      <div id="Subcategory_Name_Container" style="" ></div>
 	    </div>
 	  </td>
