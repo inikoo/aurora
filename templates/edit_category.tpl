@@ -8,20 +8,20 @@
 
 
 
- {*<div id="no_details_title"  style="clear:left;xmargin:0 20px;{if $details!=0}display:none{/if}">*}
+{* <div id="no_details_title"  style="clear:left;xmargin:0 20px;{if $details!=0}display:none{/if}"> *}
     <h1>{t}Editing Category{/t}:</h1>
- {* </div>*}
+{*  </div> *}
 
  
    <ul class="tabs" id="chooser_ul" style="clear:both">
-         <li> <span class="item {if $edit=='category'}selected{/if}"  id="details">  <span> {t}Category Details{/t}</span></span></li>
-
+         <li> <span class="item {if $edit=='details'}selected{/if}"  id="details">  <span> {t}Description{/t}</span></span></li>
+          <li> <span class="item {if $edit=='subcategory'}selected{/if}"  id="subcategory">  <span> {t}Subcategories{/t}</span></span></li>
     </ul>
   
   <div class="tabbed_container"> 
  
-   <div  class="edit_block" style="{if $edit!="details"}display:none{/if}"  id="d_details">
-
+{*  <div  class="edit_block" style="{if $edit!="category"}display:none{/if}"  id="d_details">*}
+ 
   <div class="general_options" style="float:right">
 	<span  style="margin-right:10px;visibility:hidden"  id="save_edit_category" onClick="save_edit_general('category')" class="state_details">{t}Save{/t}</span>
 	<span style="margin-right:10px;visibility:hidden" id="reset_edit_category" onClick="reset_edit_general('category')" class="state_details">{t}Reset{/t}</span>
@@ -29,20 +29,8 @@
       
       
       
-      <div id="new_staff_messages" class="messages_block"></div>
-	  <table class="edit">
-	   
-    {*  <tr class="first"><td style="width:11em" class="label">Staff Id:</td>
-	  <td  style="text-align:left;width:19em">
-	    <div  style="width:15em;position:relative;top:00px" >
-
-	      <input style="text-align:left;width:18em" id="Company_Staff_Id" value="{$company_staff->get('Staff ID')}" ovalue="{$company_staff->get('Staff ID')}" >
-	      <div id="Company_Staff_Id_Container" style="" ></div>
-	    </div>
-	  </td>
-	 <td id="Company_Staff_Id_msg" class="edit_td_alert"></td>
-	</tr>
-    *}
+      <div id="new_category_messages" class="messages_block"></div>
+	  <table class="edit"> 
 	<tr class="first"><td style="" class="label">{t}Category Name{/t}:</td>
 	  <td  style="text-align:left">
 	    <div  style="width:15em;position:relative;top:00px" >
@@ -51,27 +39,39 @@
 	    </div>
 	  </td>
 	  	 <td id="Category_Name_msg" class="edit_td_alert"></td>
+	</tr></table>
+{*</div>*}
 
-	</tr>
+
+
+
+
+ {*<div  class="edit_block" style="{if $edit!="subcategory"}display:none{/if}"  id="d_subcategory">*}
+
+  <div class="general_options" style="float:right">
+	<span  style="margin-right:10px;visibility:hidden"  id="save_edit_subcategory" onClick="save_edit_general('subcategory')" class="state_details">{t}Save{/t}</span>
+	<span style="margin-right:10px;visibility:hidden" id="reset_edit_subcategory" onClick="reset_edit_general('subcategory')" class="state_details">{t}Reset{/t}</span>
+   </div>  
+   
+      <div id="new_category_messages" class="messages_block"></div>
+	  <table class="edit"> 
       <tr class="first"><td style="" class="label">{t}Subcategories{/t}:</td></tr>
-         {foreach from=$subcategory_name item=subcategory}
+
+    {foreach from=$subcategory_name item=subcategory}
 
    <tr><td></td>   <td  style="text-align:left">
 	    <div  style="width:15em;position:relative;top:00px" >
-	      <input style="text-align:left;width:18em" id="Subcategory_Name" value="{$subcategory}" ovalue="{$subcategory}">
+	      <input style="text-align:left;width:18em" id="Subcategory_Name" value="{$subcategory.subcategory_name}" ovalue="{$subcategory.subcategory_name}" onclick=subcategory_f('{$subcategory.subcategory_key}');>
 	      <div id="Subcategory_Name_Container" style="" ></div>
 	    </div>
 	  </td>
 	  	 <td id="Subcategory_Name_msg" class="edit_td_alert"></td><tr>
 	{/foreach}</tr>
-    
-	
 
 
 	  </table>
-	  
- </div>
-  
+	 {* </div>
+*}
  </div>
  
  
@@ -119,5 +119,5 @@
     </div>
   </div>
   
-  
+ 
   {include file='footer.tpl'}

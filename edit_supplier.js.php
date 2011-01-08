@@ -409,8 +409,7 @@ function init(){
 	    supplier_name_oAutoComp.minQueryLength = 0; 
 	    supplier_name_oAutoComp.queryDelay = 0.1;
 
-
-var supplier_main_contact_name_oACDS = new YAHOO.util.FunctionDataSource(validate_supplier_main_contact_name);
+	  var supplier_main_contact_name_oACDS = new YAHOO.util.FunctionDataSource(validate_supplier_main_contact_name);
 	    supplier_main_contact_name_oACDS.queryMatchContains = true;
 	    var supplier_main_contact_name_oAutoComp = new YAHOO.widget.AutoComplete("Supplier_Main_Contact_Name","Supplier_Main_Contact_Name_Container", supplier_main_contact_name_oACDS);
 	    supplier_main_contact_name_oAutoComp.minQueryLength = 0; 

@@ -1091,21 +1091,9 @@ $default_state=array(
                    'customers'=>array(
                                    'store'=>'',
                                    'view'=>'general',
-                                   'details'=>0,
-                                   'plot'=>'active_customers',
-                                   'plot_data'=>array(
-                                                   'active_customers'=>array(
-                                                                          'period'=>'m',
-                                                                          'category'=>'total',
-                                                                          'page'=>'plot.php'
-                                                                      ),
-                                                   'customers'=>array(
-                                                                   'period'=>'m',
-                                                                   'category'=>'total',
-                                                                   'page'=>'plot.php'
-                                                               )
-
-                                               ),
+                                
+                                   'stats_view'=>'population',
+                                   
                                    'table'=>array(
                                                'order'=>'name',
                                                'order_dir'=>'last_orders',

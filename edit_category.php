@@ -9,6 +9,9 @@ if(!$user->can_view('staff')){
 }
 */
 
+
+
+
 if(isset($_REQUEST['id'])){
 $category_key=$_REQUEST['id'];
 }else{
@@ -79,17 +82,13 @@ $js_files=array(
 		'common.js.php',
 		'table_common.js.php',
 		);
-
-$sql=sprintf("select * from `Category Dimension` where `Category Parent Key`=%d",$category_key);
+$subcategory_name=array();
+$sql=sprintf("select `Category Key` as subcategory_key,`Category Name` as subcategory_name from `Category Dimension` where `Category Parent Key`=%d",$category_key);
 $res = mysql_query($sql);
 while ($row = mysql_fetch_assoc($res)){
-   $subcategory_name[] = $row['Category Name'];
-   $subcategory_key[] = $row['Category Key'];
-} 
+      $subcategory_name[] = $row;
+}
 $smarty->assign('subcategory_name', $subcategory_name); 
-$smarty->assign('subcategory_key', $subcategory_key); 
-
-
 
 $smarty->assign('category',$category);
 $smarty->assign('parent','category');
@@ -99,7 +98,9 @@ if($edit){
 $smarty->assign('edit',$_SESSION['state']['product_categories']['edit'] );
 $css_files[]='css/edit.css';
 $js_files[]='js/edit_common.js';
+
 $js_files[]='edit_category.js.php?category_key='.$category_key;
+
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
 $smarty->assign('title', _('Editing Category'));

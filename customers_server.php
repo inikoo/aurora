@@ -52,7 +52,7 @@ $js_files=array(
 
 
 
-$smarty->assign('details',$_SESSION['state']['customers']['details']);
+//$smarty->assign('details',$_SESSION['state']['customers']['details']);
 $smarty->assign('advanced_search',$_SESSION['state']['customers']['advanced_search']);
 
 
@@ -93,8 +93,8 @@ $smarty->assign('paginator_menu0',$paginator_menu);
 
 
 
-$smarty->assign('plot_tipo',$_SESSION['state']['customers']['plot']);
-$smarty->assign('view',$_SESSION['state']['customers']['view']);
+//$smarty->assign('plot_tipo',$_SESSION['state']['customers']['plot']);
+//$smarty->assign('view',$_SESSION['state']['customers']['view']);
 
 
  $csv_export_options0=array(

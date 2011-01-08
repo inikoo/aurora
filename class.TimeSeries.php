@@ -61,7 +61,42 @@ Class TimeSeries  {
         if (!$this->name or !$this->freq)
             return;
 
-        if (preg_match('/^invoice(\s|_)category:?/i',$this->name)) {
+        if(preg_match('/customer population \((\d)+\)\s*?/i',$this->name,$match)){
+$store_key_array=array();
+
+                
+
+            if (preg_match('/\(.+\)/',$match[0],$keys)) {
+                $keys=preg_replace('/\(|\)/','',$keys[0]);
+                $keys=preg_split('/\s*,\s*/',$keys);
+
+                $store_keys='(';
+
+                foreach($keys as $key) {
+                    if (is_numeric($key)) {
+                        $store_keys.=sprintf("%d,",$key);
+                        $store_key_array[]=$key;
+
+                    }
+                }
+                $store_keys=preg_replace('/,$/',')',$store_keys);
+            }
+
+            //$this->keys=$keys;
+            //print_r($store_keys);
+            
+            $this->name_key=array_pop($keys);
+            $this->name='customer population';
+            //$this->count='count(*)';
+            //$this->date_field='`Invoice Date`';
+            //$this->table='`Invoice Dimension`';
+            //$this->value_field='`Invoice Currency Exchange`*`Invoice Total Net Amount`';
+            //$this->max_forecast_bins=12;
+            //$this->where=sprintf(' and `Invoice Category Key`=%d',$category_key);
+            $this->label=_('CP')." (".$this->name_key.")";
+            
+          
+        }elseif (preg_match('/^invoice(\s|_)category:?/i',$this->name)) {
 
             $category=_trim(preg_replace('/^invoice(\s|_)category:?/','',$this->name));
             $category=preg_replace('/^\(/','',$category);
@@ -687,7 +722,7 @@ Class TimeSeries  {
 
 
 
-    function get_values() {
+    function get_values($options='') {
 
         if ($this->to_present) {
             $this->last_date=date('Y-m-d');
@@ -716,12 +751,52 @@ Class TimeSeries  {
             break;
   case('Daily'):
 
-            $this->get_values_day_by_day();
+            $this->get_values_day_by_day($options);
             break;
 
         }
 
     }
+
+
+function save_day_values($date,$data){
+
+  $sql=sprintf("insert into `Time Series Dimension` values (%s,%s,%s,%d,%d,%d,%s,%f,%d,%s,%s,%s,%s,%s,%s,'Data','','','')   
+  ON DUPLICATE KEY UPDATE  `Time Series Value`=%f ,`Time Series Count`=%d , `Open`=%s,`High`=%s,`Low`=%s,`Close`=%s,`Volume`=%,`Adj Close`=%s, `Time Series Type`='Data' ,`Time Series Tag`='' ,`Time Series Parent Key`=%d ",
+                         prepare_mysql($date),
+                         prepare_mysql($this->freq),
+                         prepare_mysql($this->name),
+                         $this->name_key,
+                         $this->name_key2,
+                         $this->parent_key,
+                         prepare_mysql($this->label),
+                         $data['value'],
+                         $data['count'],
+                         prepare_mysql($data['open']),
+                          prepare_mysql($data['high']),
+                           prepare_mysql($data['low']),
+                            prepare_mysql($data['close']),
+                             prepare_mysql($data['volume']),
+                              prepare_mysql($data['adj close']),
+                         $data['value'],
+                         $data['count'],
+                           prepare_mysql($data['open']),
+                          prepare_mysql($data['high']),
+                           prepare_mysql($data['low']),
+                            prepare_mysql($data['close']),
+                             prepare_mysql($data['volume']),
+                              prepare_mysql($data['adj close']),
+                         $this->parent_key
+                        );
+            $ok=mysql_query($sql);
+         
+            if(!$ok){
+                exit("$sql;");
+            }else{
+                print("$sql;\n");
+            }
+
+}
 
 
     function save_values() {
@@ -1327,7 +1402,96 @@ $number_period_for_forecasting=26;
 
 
 
-function get_value_day($date) {
+function get_customer_population_value_day($date,$last_close) {
+
+
+
+    $new_customers=0;
+    $lost_customers=0;
+$delta_data_date=array();
+$delta_data=array();
+    $sql=sprintf("select `Customer First Order Date` as the_date from `Customer Dimension`  where `Actual Customer`='Yes' and `Customer Store Key`=%d and DATE(`Customer First Order Date`)=%s",
+                 $this->name_key,
+                 prepare_mysql($date)
+                );
+
+    $res=mysql_query($sql);
+    while ($row=mysql_fetch_array($res)) {
+        $delta_data[]=1;  
+        $delta_data_date[]=strtotime($row['the_date']);
+        $new_customers++;
+    }
+
+ $sql=sprintf("select `Customer Lost Date` the_date  from `Customer Dimension`  where`Active Customer`='No'  and `Actual Customer`='Yes' and `Customer Store Key`=%d and Date(`Customer Lost Date`)=%s",
+                 $this->name_key,
+                 prepare_mysql($date)
+                );
+  
+    $res=mysql_query($sql);
+    while ($row=mysql_fetch_array($res)) {
+        $delta_data[]=-1;  
+        $delta_data_date[]=strtotime($row['the_date']);
+        $lost_customers++;
+    }
+
+    if($new_customers==0 and $lost_customers==0){
+    
+    $data=array(
+    'value'=>$last_close,
+    'count'=>0,
+    'open'=>$last_close,
+    'close'=>$last_close,
+    'low'=>$last_close,
+    'high'=>$last_close,
+    'volume'=>$last_close,
+    'adj close'=>false,
+    'note'=>'no change'
+    );
+    return $data;
+    
+    }else{
+    
+    array_multisort($delta_data_date,$delta_data);
+    $data['adj close']=false;
+    $data['open']=$last_close;
+    $min=9999999999;
+    $max=-9999999999;
+    $current=$last_close;
+    $volume=0;
+    foreach($delta_data as $delta){
+        $current+=$delta;
+        $volume++;
+        if($current>$max)
+            $max=$current;
+        if($current<$min)
+            $min=$current;    
+        
+        
+    }
+      $data['close']=$current;
+      $data['high']=$current;
+      $data['low']=$min;
+       $data['volume']=$volume;
+    
+    
+    return $data;
+    
+    
+    }
+
+
+    return false;
+}
+
+
+function get_value_day($date,$last_close=false) {
+
+if($this->name=='customer population'){
+    return $this->get_customer_population_value_day($date,$last_close);
+   
+}
+
+
 $sql=sprintf("SELECT %s as number,%s as date  ,sum(%s) as value FROM %s where %s=%s %s  "
                      ,$this->count
                      ,$this->date_field
@@ -1339,7 +1503,13 @@ $sql=sprintf("SELECT %s as number,%s as date  ,sum(%s) as value FROM %s where %s
                             $res=mysql_query($sql);
 
 if ($row=mysql_fetch_assoc($res)) {
-return $row;
+$data=array(
+'value'=>$row['value'],
+'count'=>$row['number'],
+'close'=>$row['value']
+);
+
+return $data;
 }else{
 return false;
 }
@@ -1347,101 +1517,137 @@ return false;
 }
 
 
-function get_values_day_by_day() {
-
-
-        $this->first_complete_day();
-        if ($this->no_data)
-            return;
-
-        $start_day=$this->start_day;
-        $last_day=date("Y-m-d");
-
-        if ($last_day<$start_day) {
-            $this->error=true;
-            $this->no_data=true;
-            return;
-        }
-      
 
 
 
- $sql=sprintf("select `Date` as date from kbase.`Date Dimension` where `Date`>=%s and `Date` <= %s  ; "
-                     ,prepare_mysql($this->start_date)
-                     ,prepare_mysql($this->last_date)
-                    );
+function get_values_day_by_day($options='') {
 
-        $data=array();
-        $res = mysql_query($sql);
+if(preg_match('/save/i',$options)){
+$save=true;
+}else{
+$save=false;
+}
 
-$start_day=$this->first_complete_date;
-$last_day=date("Y-m-d");
-        while ($row=mysql_fetch_array($res)) {
 
-            if ($row['date']==$start_day) {
-                $this->first=array(
-                                 'date'=>$row['date']
-                                        ,'value'=>0
-                                                 ,'count'=>0
-                             );
-            } else if ($row['date']==$last_day) {
-                $this->current=array(
-                                   'date'=>$row['date']
-                                          ,'value'=>0
-                                                   ,'count'=>0
-                               );
-            } else {
-                $data[$row['date']]=array(
-                                            'date'=>$row['date']
-                                                   ,'value'=>0
-                                                            ,'count'=>0
-                                        );
-            }
-            
-            
-            if($values=$this->get_value_day($row['date'])){
-            }
-            
-            
-        }
-/*
-        $sql=sprintf("SELECT %s as number,%s as date  ,sum(%s) as value FROM %s where %s>=%s and %s<=%s %s  GROUP BY date limit 100000"
-                     ,$this->count
-                     ,$this->date_field
-                     ,$this->value_field
-                     ,$this->table
-                     ,$this->date_field,prepare_mysql($start_day)
-                     ,$this->date_field,prepare_mysql($last_day)
-                     ,$this->where
-                    );
 
-       //  print "$sql\n";
+    $this->first_complete_day();
+    if ($this->no_data)
+        return;
 
-        $res=mysql_query($sql);
+    $start_day=$this->start_day;
+    $last_day=date("Y-m-d");
 
-        while ($row=mysql_fetch_array($res)) {
-            $day=$row['date'];
-            
-            
-           
-                if ($day==date('Y-m-d')) {
-                    $this->current=array('date'=>$day,'count'=>$row['number'],'value'=>$row['value']);
-                unset($this->values[$day]);
+    if ($last_day<$start_day) {
+        $this->error=true;
+        $this->no_data=true;
+        return;
+    }
 
-                }elseif ($day==$start_day) {
-                    $this->first=array('date'=>$day,'count'=>$row['number'],'value'=>$row['value']);
-                unset($this->values[$day]);
 
-               
-            } else {
-                $this->values[$day]['count']=$row['number'];
-                $this->values[$day]['value']=$row['value'];
-            }
+
+
+    $sql=sprintf("select `Date` as date from kbase.`Date Dimension` where `Date`>=%s and `Date` <= %s  ; "
+                 ,prepare_mysql($this->start_date)
+                 ,prepare_mysql($this->last_date)
+                );
+
+    $data=array();
+    $all_data=array();
+    $res = mysql_query($sql);
+
+    $start_day=$this->first_complete_date;
+    $last_day=date("Y-m-d");
+    $is_first=false;
+    $is_current=false;
+    $is_data=false;
+
+    $last_close=0;
+
+    while ($row=mysql_fetch_array($res)) {
+
+        if ($row['date']==$start_day) {
+            $this->first=array(
+                             'date'=>$row['date'],
+                             'value'=>0,
+                             'count'=>0,
+                             'open'=>0,
+                             'low'=>0,
+                             'high'=>0,
+                             'close'=>0,
+                             'volume'=>0,
+                             'adj close'=>0
+                         );
+            $is_first=true;
+        } else if ($row['date']==$last_day) {
+            $this->current=array(
+                               'date'=>$row['date'],
+                               'value'=>0,
+                               'count'=>0,
+                               'open'=>0,
+                               'low'=>0,
+                               'high'=>0,
+                               'close'=>0,
+                               'volume'=>0,
+                               'adj close'=>0
+                           );
+            $is_current=true;
+        } else {
+            $data[$row['date']]=array(
+                                    'date'=>$row['date'],
+                                    'value'=>0,
+                                    'count'=>0,
+                                    'open'=>0,
+                                    'low'=>0,
+                                    'high'=>0,
+                                    'close'=>0,
+                                    'volume'=>0,
+                                    'adj close'=>0
+                                );
+            $is_data=true;
         }
 
-*/
+        $all_data[$row['date']]=array('date'=>$row['date'],
+                                      'value'=>0,
+                                      'count'=>0,
+                                      'open'=>0,
+                                      'low'=>0,
+                                      'high'=>0,
+                                      'close'=>0,
+                                      'volume'=>0,
+                                      'adj close'=>0
+                                     );
+
+
+        if ($values=$this->get_value_day($row['date'],$last_close)) {
+        print_r($values);
+        $last_close=$values['close'];
+            foreach($values as $key=>$value) {
+                if (array_key_exists($key,$all_data[$row['date']])) {
+                    $all_data[$row['date']][$key]=$value;
+                    if ($is_first)
+                        $this->first[$key]=$value;
+                    elseif($is_current)
+                    $this->current[$key]=$value;
+                    else
+                        $data[$row['date']][$key]=$value;
+                }
+            }
+
+        }
+
+    
+        if($save){
+        $this->save_day_values($row['date'],$all_data[$row['date']]);
+        }
+
 
     }
+
+   
+
+
+
+}
 
  function get_values_per_day() {
 
@@ -1852,7 +2058,39 @@ $last_day=date("Y-m-d");
 
         }
     }
+    
+    
+  function store_first_complete_day(){
+    
+        $sql=sprintf("select `Store Valid From` as day from `Store Dimension`  where `Store Valid From` IS NOT NULL  and `Store Key`=%d  "
+                     
+                     ,$this->name_key
+                    
+                    );
+
+      //  print "$sql\n";
+
+        $res=mysql_query($sql);
+        if ($row=mysql_fetch_array($res)) {
+          
+            $this->start_date=date("Y-m-d", strtotime($row['day']));
+            $this->start_day=$this->start_date;
+            $this->start_bin=1;
+            $time=strtotime($row['day'].' +1 day');
+            $this->first_complete_date=date("Y-m-d", $time);
+            $this->first_complete_bin=1;
+            $this->no_data=false;
+        } else
+            $this->no_data=true;
+    }
+    
    function first_complete_day() {
+   
+   if($this->name=='customer population'){
+   return $this->store_first_complete_day();
+   }
+   
+   
         $sql=sprintf("select %s as day from %s  where %s IS NOT NULL %s   order by %s limit 1  "
                      
                      ,$this->date_field
@@ -1986,7 +2224,28 @@ $last_day=date("Y-m-d");
 
 
 
-    function last_date() {
+  
+  function store_last_day(){
+  $sql=sprintf("select `Store Valid To` as date from `Store Dimension` where `Store Valid To` IS NOT NULL and `Store Key` =%d  "
+                     ,$this->name_key
+
+                    );
+               // print $sql;
+        $res=mysql_query($sql);
+        if ($row=mysql_fetch_array($res)) {
+            return $row['date'];
+
+        } else
+            return false;
+  
+  }
+  
+  function last_date() {
+    
+    if($this->name=='customer population'){
+        return $this->store_last_day();
+    }
+    
         $sql=sprintf("select %s as date from %s where %s IS NOT NULL %s  order by %s desc limit 1  "
                      ,$this->date_field
 
@@ -2465,6 +2724,7 @@ $last_complete_value=array($row['year'],$row['value'],$tip) ;
 
 
    function plot_data_per_day($tipo,$suffix,$from='',$to='') {
+
 
 
 $from=prepare_mysql_datetime($from,'date');
