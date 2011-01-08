@@ -253,6 +253,11 @@ YAHOO.util.Event.addListener(window, "load", function() {
    
  YAHOO.util.Event.addListener('export_csv0_close_dialog', "click",csvMenu.hide,csvMenu,true);
 // ------------------------------------------------------------------------------------------
+
+// -------------------------Import(CSV) code for customer list under order --------------------
+  YAHOO.util.Event.addListener('import_csv0', "click",popup,'import.php');
+ 
+// ------------------------------------------------------------------------------------------
   init_search('customers_store');
 
 YAHOO.util.Event.addListener('clean_table_filter_show0', "click",show_filter,0);
