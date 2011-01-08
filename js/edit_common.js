@@ -653,7 +653,7 @@ alert("***REACHED TO save_edit_general****");
     branch_key=validate_scope_metadata[branch]['key'];
     branch_key_name=validate_scope_metadata[branch]['key_name'];
 
-//alert(scope_edit_ar_file);alert(branch_key);alert(branch_key_name);
+alert(scope_edit_ar_file);alert(branch_key);alert(branch_key_name);
 
     for (item in validate_scope_data[branch]) {
 

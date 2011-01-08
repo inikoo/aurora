@@ -6,10 +6,10 @@ var Event = YAHOO.util.Event;
 var Dom   = YAHOO.util.Dom;
 
 function subcategory_f(subcategory){
-var sn=subcategory;
+var subcategory_key=subcategory;
 
-alert(sn);
-
+alert(subcategory_key);
+window.location.href = "edit_category.php?sn=" + sn;
 }
 //var can_add_department=false;
 var description_num_changed=0;
@@ -48,6 +48,7 @@ var validate_scope_data={
 
 var validate_scope_metadata={'category':{'type':'edit','ar_file':'ar_edit_assets.php','key_name':'category_key','key':<?php echo $_REQUEST['category_key']?>},
 				'subcategory':{'type':'edit','ar_file':'ar_edit_assets.php','key_name':'category_key','key':<?php echo $_REQUEST['category_key']?>}};
+				//'subcategory':{'type':'edit','ar_file':'ar_edit_assets.php','key_name':'category_key','key':subcategory_key}};
 
 
 
@@ -343,6 +344,10 @@ function init(){
     YAHOO.util.Event.addListener('add_category', "click", show_add_category_dialog);
     YAHOO.util.Event.addListener('save_edit_category', "click", save_new_category);   
     YAHOO.util.Event.addListener('reset_edit_category', "click", cancel_add_category);
+
+    YAHOO.util.Event.addListener('add_subcategory', "click", show_add_subcategory_dialog);
+    YAHOO.util.Event.addListener('save_edit_subcategory', "click", save_new_subcategory);   
+    YAHOO.util.Event.addListener('reset_edit_subcategory', "click", cancel_add_subcategory);
    
  /*   var staff_id_oACDS = new YAHOO.util.FunctionDataSource(validate_id);
     staff_id_oACDS.queryMatchContains = true;
