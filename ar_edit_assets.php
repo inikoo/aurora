@@ -460,7 +460,6 @@ $category_key=$_REQUEST['category_key'];
  $category->editor=$editor;
 $key=$_REQUEST['key'];
   if($key=='Attach'){
-    // print_r($_FILES);
     $note=stripslashes(urldecode($_REQUEST['newvalue']));
     $target_path = "uploads/".'attach_'.date('U');
     $original_name=$_FILES['testFile']['name'];
@@ -485,8 +484,9 @@ $key=$_REQUEST['key'];
     );
     if(array_key_exists($_REQUEST['key'],$key_dic))
        $key=$key_dic[$_REQUEST['key']];
-    
-    $update_data=array($key=>stripslashes(urldecode($_REQUEST['newvalue'])));
+if($key=='subcategory_name')$key='Category Name';
+    echo "key=".$key;
+    $update_data=array($key=>stripslashes(urldecode($_REQUEST['newvalue'])));echo " updte data=".$update_data;
     $category->update($update_data);
   }
 
