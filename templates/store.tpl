@@ -170,17 +170,12 @@
 		<strong>You need to upgrade your Flash Player</strong>
 	</div>
 </div>
-	<script type="text/javascript">
+<script type="text/javascript">
 		// <![CDATA[
-		
 		var so = new SWFObject("external_libs/amstock/amstock/amstock.swf", "amstock", "905", "500", "8", "#FFFFFF");
 		so.addVariable("path", "");
 		so.addVariable("settings_file", encodeURIComponent("conf/plot_asset_sales.xml.php?tipo=store_sales&store_key={$store->id}"));
 		so.addVariable("preloader_color", "#999999");
-
-		
-		
-
 		so.write("plot");
 		// ]]>
 	</script>

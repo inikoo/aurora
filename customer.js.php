@@ -6,7 +6,7 @@ include_once('common.php');
     var Dom   = YAHOO.util.Dom;
 var Event = YAHOO.util.Event;
 var dialog_note;
-
+var dialog_link;
 var customer_key=<?php echo $_SESSION['state']['customer']['id']?>;
 
 function showdetails(o){
@@ -65,12 +65,13 @@ function save(tipo){
    
     switch(tipo){
     case('note'):
-	var value=encodeURIComponent(Dom.get(tipo+"_input").value);
+        var value=encodeURIComponent(Dom.get(tipo+"_input").value);
+
 	var request="ar_edit_contacts.php?tipo=edit_customer&key=Note&customer_key="+customer_key+"&newvalue="+value;
 	//alert(request);
 	YAHOO.util.Connect.asyncRequest('POST',request ,{
 		success:function(o) {
-		    	alert(o.responseText);
+		    //	alert(o.responseText);
 
 		    var r =  YAHOO.lang.JSON.parse(o.responseText);
 		    if (r.state==200) {
@@ -87,8 +88,36 @@ function save(tipo){
 	
 
 	break;
-   
+   case('link'):
+   var value='';
+   if(Dom.get("link_note").value!='')
+    value=Dom.get("link_note").value+'; ';
+   alert(Dom.get("link_file").html);
+    	value=value+Dom.get("link_file").value+' <a href="file://'+Dom.get("link_file").value+'">link</a>';
+
+   var value=encodeURIComponent(value);
+	var request="ar_edit_contacts.php?tipo=edit_customer&key=Note&customer_key="+customer_key+"&newvalue="+value;
+	alert(request);
+	
+	YAHOO.util.Connect.asyncRequest('POST',request ,{
+		success:function(o) {
+		    alert(o.responseText);
+
+		    var r =  YAHOO.lang.JSON.parse(o.responseText);
+		    if (r.state==200) {
+			close_dialog(tipo)
+			var table=tables['table0'];
+			var datasource=tables['dataSource0'];
+			var request='';
+			datasource.sendRequest(request,table.onDataReturnInitializeTable, table);    
+
+		    }else
+			Dom.get(tipo+'_msg').innerHTML=r.msg;
+		}
+	    });        
+  
     
+    break;
     }
     
     
@@ -157,6 +186,15 @@ function close_dialog(tipo){
 	dialog_note.hide();
 
 	break;
+    
+     case('link'):
+    Dom.get("link_note").value='';
+	Dom.get("link_file").value='';
+	//Dom.get(tipo+'_save').style.visibility='hidden';
+	dialog_link.hide();
+
+	break;
+    
     
  case('make_order'):
 
@@ -492,12 +530,17 @@ dialog_note.render();
 dialog_attach = new YAHOO.widget.Dialog("dialog_attach", {context:["attach","tr","tl"]  ,visible : false,close:false,underlay: "none",draggable:false});
 dialog_attach.render();
 
+dialog_link = new YAHOO.widget.Dialog("dialog_link", {context:["link","tr","tl"]  ,visible : false,close:false,underlay: "none",draggable:false});
+dialog_link.render();
+
 dialog_make_order = new YAHOO.widget.Dialog("dialog_make_order", {context:["make_order","tr","tl"]  ,visible : false,close:false,underlay: "none",draggable:false});
 dialog_make_order.render();
 
 
 Event.addListener("note", "click", dialog_note.show,dialog_note , true);
 Event.addListener("attach", "click", dialog_attach.show,dialog_attach , true);
+Event.addListener("link", "click", dialog_link.show,dialog_link , true);
+
 Event.addListener("make_order", "click", dialog_make_order.show,dialog_make_order , true);
 
 

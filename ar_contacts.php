@@ -345,10 +345,21 @@ $where=sprintf(" where true and `Order Customer Key`=%d  ",$customer_id);
 
     if ($order=='subject') {
        
-            $order='`Order Last Updated Date`';
+            $order='`Order Public ID`';
           
 
+    }elseif($order=='last_update'){
+    $order='`Order Last Updated Date`';
+    }elseif($order=='current_state'){
+    $order='`Order Current XHTML State`';
+    }elseif($order=='order_date'){
+    $order='`Order Date`';
+    }elseif($order=='total_amount'){
+    $order='`Order Balance Total Amount`';
     }
+
+
+
 
     
 
@@ -602,6 +613,12 @@ function list_assets_dispatched_to_customer() {
         }
 
     
+    }elseif($order=='dispatched'){
+    $order='`Delivery Note Quantity`';
+    }elseif($order=='orders'){
+    $order='`Number of Orders`';
+    }elseif($order=='ordered'){
+    $order='`Order Quantity`';
     }
 
     $adata=array();

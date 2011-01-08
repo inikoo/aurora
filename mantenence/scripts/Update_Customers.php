@@ -34,7 +34,7 @@ require_once '../../conf/conf.php';
 //}
 //exit;
 
-$sql="select * from `Customer Dimension`";
+$sql="select * from `Customer Dimension` order by `Customer Key` desc";
 $result=mysql_query($sql);
 while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
 

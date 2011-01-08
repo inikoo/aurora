@@ -5,7 +5,12 @@ include_once('common.php');
 var Event = YAHOO.util.Event;
 var Dom   = YAHOO.util.Dom;
 
+function subcategory_f(subcategory){
+var subcategory_key=subcategory;
 
+alert(subcategory_key);
+window.location.href = "edit_category.php?sn=" + sn;
+}
 //var can_add_department=false;
 var description_num_changed=0;
 var description_warnings= new Object();
@@ -16,7 +21,6 @@ var scope='category';
 var scope_edit_ar_file='ar_assets.php';
 var scope_key_name='category_key';
 var scope_key='<?php echo $_SESSION['state']['product_categories']['category_key']?>';
-
 
 var parent='category';
 var parent_key_name='id';
@@ -32,15 +36,19 @@ var validate_scope_data={
 
     'name':{'changed':false,'validated':true,'required':true,'group':1,'type':'item'
 	    ,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Category Name')?>'}],'name':'Category_Name'
-	    ,'ar':false,'ar_request':false},
-   'subcategory_name':{'changed':false,'validated':true,'required':true,'group':1,'type':'item'
+	    ,'ar':false,'ar_request':false}
+   },
+'subcategory':{
+    'subcategory_name':{'changed':false,'validated':true,'required':true,'group':1,'type':'item'
 	    ,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Subcategory Name')?>'}],'name':'Subcategory_Name'
-	    ,'ar':false,'ar_request':false},
+	    ,'ar':false,'ar_request':false}
    }
 };
 
 
-var validate_scope_metadata={'category':{'type':'edit','ar_file':'ar_edit_assets.php','key_name':'category_key','key':<?php echo $_REQUEST['category_key']?>}};
+var validate_scope_metadata={'category':{'type':'edit','ar_file':'ar_edit_assets.php','key_name':'category_key','key':<?php echo $_REQUEST['category_key']?>},
+				'subcategory':{'type':'edit','ar_file':'ar_edit_assets.php','key_name':'category_key','key':<?php echo $_REQUEST['category_key']?>}};
+				//'subcategory':{'type':'edit','ar_file':'ar_edit_assets.php','key_name':'category_key','key':subcategory_key}};
 
 
 
@@ -51,7 +59,7 @@ function validate_name(query){
  validate_general('category','name',unescape(query));
 }
 function validate_subcategory_name(query){
- validate_general('category','subcategory_name',unescape(query));
+ validate_general('subcategory','subcategory_name',unescape(query));
 }
 function reset_new_category(){
  reset_edit_general('category');
@@ -64,6 +72,20 @@ function save_edit_category(){
 }
 function reset_edit_category(){
     reset_edit_general('category')
+}
+
+
+function reset_new_subcategory(){
+ reset_edit_general('subcategory');
+}
+function save_new_subcategory(){
+ save_edit_general('subcategory');
+}
+function save_edit_subcategory(){
+    save_edit_general('subcategory');
+}
+function reset_edit_subcategory(){
+    reset_edit_general('subcategory')
 }
 
 
@@ -257,26 +279,39 @@ function cancel_add_category(){
    reset_new_category();
     hide_add_category_dialog(); 
 }
-
+function cancel_add_subcategory(){
+    reset_new_subcategory();
+    hide_add_subcategory_dialog(); 
+}
 
 function hide_add_category_dialog(){
     Dom.get('new_category_dialog').style.display='none';
     Dom.get('add_category').style.display='';
     Dom.get('save_edit_category').style.visibility='hidden';
     Dom.get('reset_edit_category').style.visibility='hidden';
-
+}
+function hide_add_subcategory_dialog(){
+    Dom.get('new_subcategory_dialog').style.display='none';
+    Dom.get('add_subcategory').style.display='';
+    Dom.get('save_edit_subcategory').style.visibility='hidden';
+    Dom.get('reset_edit_subcategory').style.visibility='hidden';
 }
 
 function show_add_category_dialog(){
     Dom.get('new_category_dialog').style.display='';
     Dom.get('add_category').style.display='none';
     Dom.get('save_edit_category').style.visibility='visible';
-
     Dom.addClass('save_edit_category','disabled');
     Dom.get('reset_edit_category').style.visibility='visible';
     Dom.get('Category_Name').focus();
-
-
+}
+function show_add_subcategory_dialog(){
+    Dom.get('new_subcategory_dialog').style.display='';
+    Dom.get('add_subcategory').style.display='none';
+    Dom.get('save_edit_subcategory').style.visibility='visible';
+    Dom.addClass('save_edit_subcategory','disabled');
+    Dom.get('reset_edit_subcategory').style.visibility='visible';
+    Dom.get('Subcategory_Name').focus();
 }
 
 
@@ -287,13 +322,13 @@ function change_block(){
    if(editing!=this.id){
 
 	Dom.get('d_details').style.display='none';
-	//Dom.get('d_departments').style.display='none';
+	Dom.get('d_subcategory').style.display='none';
 
 	Dom.get('d_'+this.id).style.display='';
 	Dom.removeClass(editing,'selected');
 	Dom.addClass(this, 'selected');
 	
-	YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=company_staff-edit&value='+this.id );
+	YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=category-edit&value='+this.id );
 	
 	editing=this.id;
     }
@@ -303,12 +338,16 @@ function change_block(){
 
 function init(){
 
-    var ids = ["details"]; 
+    var ids = ["category","details","subcategory"]; 
     YAHOO.util.Event.addListener(ids, "click", change_block);
 
     YAHOO.util.Event.addListener('add_category', "click", show_add_category_dialog);
     YAHOO.util.Event.addListener('save_edit_category', "click", save_new_category);   
     YAHOO.util.Event.addListener('reset_edit_category', "click", cancel_add_category);
+
+    YAHOO.util.Event.addListener('add_subcategory', "click", show_add_subcategory_dialog);
+    YAHOO.util.Event.addListener('save_edit_subcategory', "click", save_new_subcategory);   
+    YAHOO.util.Event.addListener('reset_edit_subcategory', "click", cancel_add_subcategory);
    
  /*   var staff_id_oACDS = new YAHOO.util.FunctionDataSource(validate_id);
     staff_id_oACDS.queryMatchContains = true;
@@ -322,7 +361,7 @@ function init(){
     category_name_oAutoComp.minQueryLength = 0; 
     category_name_oAutoComp.queryDelay = 0.1;
 
-   var subcategory_name_oACDS = new YAHOO.util.FunctionDataSource(validate_alias);
+   var subcategory_name_oACDS = new YAHOO.util.FunctionDataSource(validate_subcategory_name);
     subcategory_name_oACDS.queryMatchContains = true;
     var subcategory_name_oAutoComp = new YAHOO.widget.AutoComplete("Subcategory_Name","Subcategory_Name_Container", subcategory_name_oACDS);
     subcategory_name_oAutoComp.minQueryLength = 0; 
