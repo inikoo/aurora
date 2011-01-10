@@ -151,6 +151,7 @@ case('product_code_timeline'):
 case('product_categories'):
     list_product_categories();
     break;
+
 case('part_transactions'):
     part_transactions();
     break;
@@ -9336,7 +9337,7 @@ function list_product_categories() {
         else
             $name=$row['Product Category Key'].' '.$row['Category Name']." (".$row['Product Category Store Key'].")";
         $adata[]=array(
-		     'go'=>sprintf("<a href='edit_category.php?edit=1&id=%d'><img src='art/icons/page_go.png' alt='go'></a>",$row['Category Key']),
+		     //'go'=>sprintf("<a href='edit_category.php?edit=1&id=%d'><img src='art/icons/page_go.png' alt='go'></a>",$row['Category Key']),
                      'id'=>$row['Category Key'],
                      'name'=>$name,
                      'departments'=>number($row['Product Category Departments']),
@@ -9424,8 +9425,6 @@ function list_product_categories() {
                    );
     echo json_encode($response);
 }
-
-
 
 
 
