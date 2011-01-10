@@ -26,7 +26,7 @@
  <span class="nav2 onleft"><a href="products.php?parent=none">{t}Products{/t}</a></span>
   <span class="nav2 onleft"><a href="deals.php">{t}Deals{/t}</a></span>
 
- <span class="nav2 onleft"><a href="categories.php">{t}Categories{/t}</a></span>
+ <span class="nav2 onleft"><a href="categories.php">{t}Products Categories{/t}</a></span>
 {if $view_parts}<span class="nav2 onleft"><a href="parts.php">{t}Parts{/t}</a></span>{/if}
 
 <div class="right_box">

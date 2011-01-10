@@ -10,6 +10,7 @@
       <span class="clean_table_title">Customers List</span>
       
    <div  style="font-size:90%">
+<span  id="export_csv0" style="float:right;margin-left:20px"  class="table_type state_details" tipo="customers" ><a href="convert_to_pdf.php">PDF</a></span>
          <span  id="export_csv0" style="float:right;margin-left:20px"  class="table_type state_details" tipo="customers" >{t}Export (CSV){/t}</span>
           <span style="float:right;margin-left:20px" class="table_type  state_details {if $table_type=='all_contacts'}selected{/if}"  id="restrictions_all_contacts" table_type="all_contacts"  >{t}All Contacts{/t} ({$store->get('Total Customer Contacts')})</span>
           <span style="float:right;margin-left:20px" class="table_type  state_details {if $table_type=='all_customers'}selected{/if}"  id="restrictions_all_customers" table_type="all_customers"   >{t}All Customers{/t} ({$store->get('Total Customers')})</span>
