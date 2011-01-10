@@ -299,11 +299,11 @@ function store_sales($data) {
     $tmp=array();
     for ($i=0; $i<$number_stores; $i++) {
 
-        $tmp['vol'.$i]='';
+        $tmp['vol'.$i]=0;
     }
     for ($i=0; $i<$number_stores; $i++) {
 
-        $tmp['value'.$i]='';
+        $tmp['value'.$i]=0;
     }
 
     $sql=sprintf("select  `Date` from kbase.`Date Dimension` where `Date`>= ( select min(`Invoice Date`)   from `Invoice Dimension` where `Invoice Store Key`=%d ) and `Date`<=NOW()  order by `Date` desc",
@@ -323,13 +323,13 @@ function store_sales($data) {
 //$graph_data=array();
     $i=0;
     foreach($store_keys as $store_key) {
-        $sql=sprintf("select Date(`Invoice Date`) as date,sum(`Invoice Total Net Amount`) as net, count(*) as invoices  from `Invoice Dimension` where `Invoice Store Key`=%d group by Date(`Invoice Date`) order by `Date` desc",
+        $sql=sprintf("select Date(`Invoice Date`) as date,sum(`Invoice Total Net Amount`) as net, count(*) as invoices  from `Invoice Dimension` where `Invoice Store Key`=%d and `Invoice Date`<=NOW()  group by Date(`Invoice Date`) order by `Date` desc",
                      $store_key);
-        // print $sql;
+        
         $res=mysql_query($sql);
         while ($row=mysql_fetch_assoc($res)) {
             $graph_data[$row['date']]['vol'.$i]=$row['invoices'];
-            $graph_data[$row['date']]['value'.$i]=$row['net'];
+           $graph_data[$row['date']]['value'.$i]=$row['net'];
         }
         $i++;
     }
@@ -337,7 +337,7 @@ function store_sales($data) {
     $out='';
 //print_r($graph_data);
     foreach($graph_data as $key=>$value) {
-        print $key.','.join(',',$value)."\n";
+       print $key.','.join(',',$value)."\n";
     }
 
     /*
