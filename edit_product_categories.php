@@ -20,7 +20,7 @@ $modify=$user->can_edit('staff');
 get_header_info($user,$smarty);
 $general_options_list=array();
 if($modify){
-  $general_options_list[]=array('tipo'=>'url','url'=>'edit_product_categories.php?edit=1','label'=>_('Edit Categories'));
+//  $general_options_list[]=array('tipo'=>'url','url'=>'edit_product_categories.php?edit=1','label'=>_('Edit Categories'));
 //$general_options_list[]=array('tipo'=>'js','state'=>$show_details,'id'=>'details','label'=>($show_details?_('Hide Details'):_('Show Details')));
   
   $general_options_list[]=array('tipo'=>'url','url'=>'new_category.php','label'=>_('Add Category'));
@@ -53,8 +53,8 @@ $js_files=array(
 		$yui_path.'menu/menu-min.js',
 		'common.js.php',
 		'table_common.js.php',
-		'search.js',
-		'categories.js.php',
+		'search.js','js/edit_common.js',
+		'edit_product_categories.js.php',
 		'js/dropdown.js'
 		);
 $smarty->assign('css_files',$css_files);
