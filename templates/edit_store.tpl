@@ -17,8 +17,8 @@
     
       <li> <span class="item {if $edit=='pictures'}selected{/if}" id="pictures"  ><span>  {t}Pictures{/t}</span></span></li>
     <li> <span class="item {if $edit=='departments'}selected{/if}" id="departments"  ><span> {t}Departments{/t}</span></span></li>
-      <li> <span class="item {if $edit=='website'}selected{/if} " id="website" ><span> {t}Web Site{/t}</span></span></li>
-    <li> <span class="item {if $edit=='web'}selected{/if} " id="web" ><span> {t}Web Pages{/t}</span></span></li>
+      <li> <span class="item {if $edit=='website'}selected{/if} " id="website" ><span class="todo" style="background-color: #C8E02B">{t}Web Sites{/t}</span></span></li>
+    <li style="display:none" > <span class="item {if $edit=='web'}selected{/if} " id="web" ><span> {t}Web Pages{/t}</span></span></li>
   </ul>
   
   <div class="tabbed_container" > 
@@ -35,118 +35,54 @@
 	
       </table>
     </div>
-     <div  class="edit_block" style="{if $edit!="website"}display:none{/if}"  id="d_website">
+    
+    
+   
+    
+     <div  class="edit_block" style="{if $edit!='website'}display:none{/if}"  id="d_website">
       
-     
-	 <div class="general_options" style="float:right">
-	
-	<span  style="margin-right:10px;visibility:hidden"  id="save_edit_store" class="state_details">{t}Save{/t}</span>
-	<span style="margin-right:10px;visibility:hidden" id="reset_edit_store" class="state_details">{t}Reset{/t}</span>
-	
+      
+      
+      
+      <div class="todo" style="font-size:80%;width:50%">
+
+
+      <h1>TO DO</h1>
+
+<h2>New Site (Button/Form)</h2>
+<h3>Objective</h3>
+
+
+<p>
+[Create new Site] button will display a new site form (previously hidden).
+form submission should be done by AJAX (use yui flame-work, found in js/common_edit.js)
+
+</p>
+<h3>Files</h3>
+<p>
+ar fie: ar_edit_sites.php?tipo=create_site&...data... <br>
+DB: `Site Dimension`
+</p>
       </div>
-	
+      
+    
+     
+	 <div class="todo" style="font-size:80%;width:50%;margin-top:10px">
+      <h1>TO DO</h1>
+<h2>List Sites (editable table)</h2>
+<h3>Objective</h3>
+<p>
+List the store sites, link to edit_site.php?id= 
+</p>
+<h3>Files</h3>
+<p>
+ar fie: ar_edit_sites.php?tipo=list_store_&...data... <br>
+DB: `Site Dimension`
+</p>
+      </div>
+      
 	
      
-	
-	
-      <table style="margin:0;clear:both" class="edit" border=0>
-	<tr><td class="label" >{t}Store Code{/t}:</td><td>
-		 <div  style="width:15em" >
-
-	      <input  
-		 id="code" 
-		 
-		 name="code" 
-		 changed=0 
-		 type='text' 
-		 class='text' 
-		 style="width:15em" 
-		 MAXLENGTH="16" 
-		 value="{$store->get('Store Code')}" 
-		 ovalue="{$store->get('Store Code')}"  
-		 />
-		 <div id="code_Container" style="" ></div>
-         </div>
-	    </td>
-	     <td id="code_msg" class="edit_td_alert" style="width:300px"></td>
-
-	  </tr>
-
-	  <tr><td class="label">{t}Store Name{/t}:</td><td>
-	  <div  style="width:30em" >
-	   <input  id="name" name="name" changed=0 type='text' MAXLENGTH="255" style="width:30em"  class='text' value="{$store->get('Store Name')}" ovalue="{$store->get('Store Name')}" />
-	   <div id="name_Container" style="" ></div>
-       </div>
-	   </td>
-	   <td id="name_msg" class="edit_td_alert" style="width:300px"></td>
-	  </tr>
-	  
-	    <tr><td class="label">{t}Store Slogan{/t}:</td><td>
-	  <div  style="width:30em" >
-	   <input  id="slogan" changed=0 type='text' MAXLENGTH="255" style="width:30em"  class='text' 
-	   value="{$store->get('Store Slogan')}" ovalue="{$store->get('Store Slogan')}" />
-	   <div id="slogan_Container" style="" ></div>
-       </div>
-	   </td>
-	   <td id="slogan_msg" class="edit_td_alert" style="width:300px"></td>
-	  </tr>
-	  
-	  
-	  <tr><td class="label">{t}Store Contact{/t}:</td><td>
-	  <div  style="width:30em" >
-	   <input  id="contact" changed=0 type='text' MAXLENGTH="255" style="width:30em"  class='text' 
-	   value="{$store->get('Store Contact Name')}" ovalue="{$store->get('Store Contact Name')}" />
-	   <div id="contact_Container" style="" ></div>
-       </div>
-	   </td>
-	   <td id="contact_msg" class="edit_td_alert" style="width:300px"></td>
-	  </tr>
-	  
-	
-	 
-	  <tr><td class="label">{t}Store Email{/t}:</td><td>
-	  <div  style="width:30em" >
-	   <input  id="email" changed=0 type='text' MAXLENGTH="255" style="width:30em"  class='text' 
-	   value="{$store->get('Store Email')}" ovalue="{$store->get('Store Email')}" />
-	   <div id="email_Container" style="" ></div>
-       </div>
-	   </td>
-	   <td id="email_msg" class="edit_td_alert" style="width:300px"></td>
-	  </tr>
-	 
-	   <tr><td class="label">{t}Store Telephone{/t}:</td><td>
-	  <div  style="width:30em" >
-	   <input  id="telephone" changed=0 type='text' MAXLENGTH="255" style="width:30em"  class='text' 
-	   value="{$store->get('Store Telephone')}" ovalue="{$store->get('Store Telephone')}" />
-	   <div id="telephone_Container" style="" ></div>
-       </div>
-	   </td>
-	   <td id="telephone_msg" class="edit_td_alert" style="width:300px"></td>
-	  </tr>
-	 
-	  <tr><td class="label">{t}Store Fax{/t}:</td><td>
-	  <div  style="width:30em" >
-	   <input  id="fax" changed=0 type='text' MAXLENGTH="255" style="width:30em"  class='text' 
-	   value="{$store->get('Store Fax')}" ovalue="{$store->get('Store Fax')}" />
-	   <div id="fax_Container" style="" ></div>
-       </div>
-	   </td>
-	   <td id="fax_msg" class="edit_td_alert" style="width:300px"></td>
-	  </tr>
-	
-	 <tr><td class="label">{t}Store URL{/t}:</td><td>
-	  <div  style="width:30em" >
-	   <input  id="url" changed=0 type='text' MAXLENGTH="255" style="width:30em"  class='text' 
-	   value="{$store->get('Store URL')}" ovalue="{$store->get('Store URL')}" />
-	   <div id="url_Container" style="" ></div>
-       </div>
-	   </td>
-	   <td id="url_msg" class="edit_td_alert" style="width:300px"></td>
-	  </tr>
-	
-	
-	
-	</table>
       </div>
     
     
