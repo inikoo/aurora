@@ -65,11 +65,15 @@ if(isset($_POST['submit']))
 	
 		$table=`Customer Dimension`;
 
+
      		$uploadedfile= $_FILES['uploadedfile']['name'];
 		
 		//read the csv file and store data in $data array
-    		 $handle = fopen("$uploadedfile", "r");
-(fgetcsv($handle));
+		echo(chmod("$target_path", 0666));
+    		 $handle = fopen($_FILES['uploadedfile']['name'], "r");
+
+		
+		(fgetcsv($handle));
      		 while (($data = fgetcsv($handle)) !== FALSE)
 
      		{
