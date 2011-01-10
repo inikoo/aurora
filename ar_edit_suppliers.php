@@ -554,12 +554,23 @@ function list_supplier_products() {
     $_dir=$order_direction;
 
 
-    $_SESSION['state']['supplier']['products']=array('order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value
-            ,'view'=>$product_view
-                    ,'percentage'=>$product_percentage
-                                  ,'period'=>$product_period
-                                                    );
+  
+ $_SESSION['state']['supplier']['products']['view']=$product_view;
+    $_SESSION['state']['supplier']['products']['percentage']=$product_percentage;
+    $_SESSION['state']['supplier']['products']['period']=$product_period;
+    $_SESSION['state']['supplier']['products']['order']=$order;
+    $_SESSION['state']['supplier']['products']['order_dir']=$order_dir;
+    $_SESSION['state']['supplier']['products']['nr']=$number_results;
+    $_SESSION['state']['supplier']['products']['sf']=$start_from;
+    $_SESSION['state']['supplier']['products']['where']=$where;
+    $_SESSION['state']['supplier']['products']['f_field']=$f_field;
+    $_SESSION['state']['supplier']['products']['f_value']=$f_value;
+
+
+
     $_SESSION['state']['supplier']['id']=$supplier_id;
+
+
 
     $where=$where.' and `Supplier Product Buy State` in ("Ok","Discontinued") and `supplier key`='.$supplier_id;
 

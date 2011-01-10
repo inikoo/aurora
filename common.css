@@ -734,3 +734,5 @@ a.state_details:hover{color:#000;text-decoration:none}
 .options_list td.selected{ background:#7296e1;color:white   }
 .options_list td.empty{ border:none;cursor:default  }
 
+span.todo,div.todo {background-color: #C8E02B}
+div.todo {;padding:20px} 

@@ -374,7 +374,7 @@
 		  <span class="small_button small_button_edit" id="edit_address_button0" address_id="0" onclick="edit_address(0)" >{t}Edit{/t}</span>
 		</div>
 	      </div>
-	      
+	     
 	      {foreach from=$addresses item=address key=key }
 	      <div class="address_container"  id="address_container{$address->id}">
 		<div class="address_display"  id="address_display{$address->id}">{$address->display('xhtml')}</div>
