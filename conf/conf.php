@@ -1828,6 +1828,67 @@ $default_state=array(
 
                            ),
 
+
+
+
+
+ 'site'=>array(
+                               
+                               'view'=>'general',
+                               'period'=>'year',
+                               'percentage'=>0,
+                               'mode'=>'all',
+                               'avg'=>'totals',
+                                 'details'=>true,
+                             
+                               'edit'=>'general',
+                               'editing'=>false,
+                               'id'=>false,
+                              
+
+
+
+
+                               'pages'=>array(
+                                           'where'=>'where true',
+                                           'f_field'=>'code',
+                                           'f_value'=>'',
+                                           'f_show'=>false,
+                                           'order'=>'name',
+                                           'order_dir'=>'',
+                                           'sf'=>0,
+                                           'nr'=>25,
+                                          
+
+                                       ),
+
+ 'history'=>array(
+                                             'where'=>'where true',
+                                             'f_field'=>'abstract',
+                                             'f_value'=>'','f_show'=>false,
+                                             'order'=>'date',
+                                             'order_dir'=>'desc',
+                                             'sf'=>0,
+                                             'nr'=>25,
+                                             'from'=>'',
+                                             'to'=>'',
+                                             'elements'=>''
+                                         )
+
+                           
+
+                           ),
+
+
+
+
+
+
+
+
+
+
+
                    'departments'=>array(
                                      'details'=>false,
                                      'percentages'=>false,
