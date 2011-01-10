@@ -188,7 +188,7 @@
 
 <div class="data_table" style="clear:both;margin-top:25px">
 <div class="todo">
-<h1>TO DO (KAKTUS-317)</h1>
+<h1>TO DO (KAKTUS-319)</h1>
 <h2>List/thumbnails of store websites</h2>
 <h3>Objective</h3>
 <p>
