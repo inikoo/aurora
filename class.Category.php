@@ -668,4 +668,46 @@ $sql=sprintf("select sum(if(`Product Record Type`='In process',1,0)) as in_proce
 
   }
 
+
+function delete(){
+$this->deleted=false;
+/* if($this->data['Company Area Number Employees']>0){
+$this->msg=_('Company Area could not be deleted because').' '.gettext($this->data['Company Area Number Employees'],'employee','employees').' '.gettext($this->data['Company Area Number Employees'],'is','are').' '._('associated with it');
+return;
+}
+
+$this->load_positions();
+foreach($this->positions as $position_key=>$position){
+    $position=new CompanyPosition($position_key);
+    $position->editor=$this->editor;
+    $position->delete();
+}
+$this->load_departments();
+foreach($this->departments as $department_key=>$department){
+    $department=new CompanyArea($department_key);
+    $department->editor=$this->editor;
+    $department->delete();
+}
+
+*/
+
+$sql=sprintf('delete from `Category Dimension` where `Category Key`=%d',$this->id);
+mysql_query($sql);
+
+$history_data=array(
+                    'History Abstract'=>_('Category deleted').' ('.$this->data['Category Name'].')'
+                    ,'History Details'=>_trim(_('Category')." ".$this->data['Category Name'].' ('.$this->data['Category Key'].') '._('has been permanently') )
+		    ,'Action'=>'deleted'
+		    );
+ $this->add_history($history_data);
+$this->deleted=true;
+
+}
+
+
+
+
+
+
+
 }
