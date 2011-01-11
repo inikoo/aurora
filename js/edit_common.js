@@ -184,13 +184,13 @@ var CellEdit = function (callback, newValue) {
         ar_file='ar_edit_assets.php';
 
     var request='tipo=edit_'+column.object+'&key=' + column.key + '&newvalue=' + encodeURIComponent(newValue) + '&oldvalue=' + encodeURIComponent(oldValue)+ myBuildUrl(datatable,record);
-//  alert(ar_file+'?'+request);
+ //alert(ar_file+'?'+request);
 
     YAHOO.util.Connect.asyncRequest(
         'POST',
     ar_file, {
 success:function(o) {
-            //alert(o.responseText);
+          //  alert(o.responseText);
             var r = YAHOO.lang.JSON.parse(o.responseText);
             if (r.state == 200) {
 
@@ -251,13 +251,13 @@ var onCellClick = function(oArgs) {
 //alert(column.object)
 
 
-              // 	alert(ar_file+'?tipo=delete_'+column.object + myBuildUrl(this,record))
+              //	alert(ar_file+'?tipo=delete_'+column.object + myBuildUrl(this,record))
 
                 YAHOO.util.Connect.asyncRequest(
                     'GET',
                 ar_file+'?tipo=delete_'+column.object + myBuildUrl(this,record), {
 success: function (o) {
-                        //alert(o.responseText);
+                      // alert(o.responseText);
                         var r = YAHOO.lang.JSON.parse(o.responseText);
                         if (r.state == 200 && r.action=='deleted') {
 
@@ -647,13 +647,13 @@ function post_item_updated_actions(branch,key,newvalue) {
 
 function save_edit_general(branch) {
 
-alert("***REACHED TO save_edit_general****");
+
     operation='edit';
     scope_edit_ar_file=validate_scope_metadata[branch]['ar_file'];
     branch_key=validate_scope_metadata[branch]['key'];
     branch_key_name=validate_scope_metadata[branch]['key_name'];
 
-alert(scope_edit_ar_file);alert(branch_key);alert(branch_key_name);
+//alert(scope_edit_ar_file);alert(branch_key);alert(branch_key_name);
 
     for (item in validate_scope_data[branch]) {
 
@@ -679,7 +679,7 @@ alert(scope_edit_ar_file);alert(branch_key);alert(branch_key_name);
 
             YAHOO.util.Connect.asyncRequest('POST',request , {
 success:function(o) {
-                   	alert(o.responseText)
+                   	//calert(o.responseText)
                     var r =  YAHOO.lang.JSON.parse(o.responseText);
                     if (r.state==200) {
 

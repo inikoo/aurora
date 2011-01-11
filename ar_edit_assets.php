@@ -114,6 +114,10 @@ case('edit_product_description'):
 case('edit_product'):
   edit_product();
    break;
+case('edit_categories'):
+    $data=prepare_values($_REQUEST,array('id'=>array('type'=>'key'),'newvalue' =>array('type'=>'string'),'key' =>array('type'=>'string_value')));
+    edit_categories($data);
+    break;
 case('edit_category'):
   edit_category();
    break;
@@ -165,6 +169,15 @@ case('edit_products'):
 case('edit_product_categories'):
     list_edit_product_categories();
     break;
+
+case('delete_categories'):
+    $data=prepare_values($_REQUEST,array(
+                             'id'=>array('type'=>'key')
+                                  ,'delete_type'=>array('type'=>'string')
+                         ));
+    delete_categories($data);
+    break;
+
 
  default:
 
@@ -3484,6 +3497,7 @@ function list_edit_product_categories() {
                $name=$row['Category Name'];
         else
             $name=$row['Product Category Key'].' '.$row['Category Name']." (".$row['Product Category Store Key'].")";
+            $delete='<img src="art/icons/delete.png"/>';
         $adata[]=array(
 		     'go'=>sprintf("<a href='edit_category.php?edit=1&id=%d'><img src='art/icons/page_go.png' alt='go'></a>",$row['Category Key']),
                      'id'=>$row['Category Key'],
@@ -3502,7 +3516,8 @@ function list_edit_product_categories() {
                      'critical'=>number($row['Product Category Critical Availability Products']),
                      'sales'=>$sales,
                      'profit'=>$profit
-
+                                               ,'delete'=>$delete
+                                                          ,'delete_type'=>'delete'
 
                  );
     }
@@ -3575,7 +3590,39 @@ function list_edit_product_categories() {
 }
 
 
+function edit_categories($data){
+$category=new Category($data['id']);
+if($data['key']=='name'){$data['key']='Category Name';}
+$category->update(array($data['key']=>$data['newvalue']));print($data['key']);
+ if($category->updated){
+    $response=array('state'=>200,'action'=>'updated','key'=>$data['key'],'newvalue'=>$category->new_value);
+ }else{
+     $response=array('state'=>200,'action'=>'nochange','key'=>$data['key'],'newvalue'=>$data['newvalue']);
+      }
+ echo json_encode($response);
+}
 
+function delete_categories($data) {
+    include_once('class.Category.php');
+    global $editor;
+    $subject=new Category($data['id']);
+    if (!$subject->id) {
+        $response=array('state'=>400,'msg'=>'Area not found');
+        echo json_encode($response);
+        return;
+    }
+    $subject->editor=$editor;
+    $subject->delete();
+    if ($subject->deleted) {
+        $action='deleted';
+        $msg=_('Area deleted');
 
+    } else {
+        $action='nochage';
+        $msg=_('Area could not be deleted');
+    }
+    $response=array('state'=>200,'action'=>$action);
+    echo json_encode($response);
+}
 
 ?>
