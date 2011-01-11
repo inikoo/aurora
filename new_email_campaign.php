@@ -51,7 +51,7 @@ $js_files=array(
 		'common.js.php',
 		'table_common.js.php',
 		'js/search.js',
-		'index.js.php'
+		'new_email_campaign.js.php'
 		);
 
 

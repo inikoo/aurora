@@ -455,5 +455,14 @@ ALTER TABLE `Store Dimension` ADD `Store 1 Year Lost Customers` MEDIUMINT NOT NU
 ADD `Store 1 Quarter Lost Customers` MEDIUMINT NOT NULL DEFAULT '0' AFTER `Store 1 Year Lost Customers` ,
 ADD `Store 1 Month Lost Customers` MEDIUMINT NOT NULL DEFAULT '0' AFTER `Store 1 Quarter Lost Customers` ,
 ADD `Store 1 Week Lost Customers` MEDIUMINT NOT NULL DEFAULT '0' AFTER `Store 1 Month Lost Customers` ;
+
+CREATE TABLE `Email Campaign Dimension` (
+`Email Campaign Key` MEDIUMINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY ,
+`Email Campaign Name` VARCHAR( 256 ) NOT NULL ,
+`Email Campaign Objective` TEXT NOT NULL ,
+`Email Campaign Maximum Emails` MEDIUMINT UNSIGNED NOT NULL
+) ENGINE = MYISAM ;
+ALTER TABLE `Email Campaign Dimension` ADD `Email Campaign Status` ENUM( 'Creating', 'Ready', 'Sending', 'Complete' ) NOT NULL ,ADD INDEX ( `Email Campaign Status` ) ;
+
 */
 ?>

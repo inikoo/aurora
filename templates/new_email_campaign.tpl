@@ -7,12 +7,19 @@
 <div class="top_row" >
 
 <table class="edit" style="margin-top:10px">
-<tr><td class="label">{t}Campaign Name:{/t}</td><td><input id="email_campaign_name" type="text" value=""></td></tr>
-<tr><td class="label">{t}Campaign Objetive:{/t}</td><td><textarea id="email_campaign_objetive"  ></textarea></td></tr>
+<tr><td class="label">{t}Campaign Name:{/t}</td><td><input style="width:300px" id="email_campaign_name" type="text" value=""></td></tr>
+<tr><td class="label">{t}Campaign Objetive:{/t}</td><td><textarea style="width:300px"  id="email_campaign_objetive"  ></textarea></td></tr>
 </table>
+
+<button id="cancel_new_email_campaign">{t}Cancel{/t}</button>
+<button id="save_new_email_campaign">{t}Create{/t}</button>
+
 </div>
 
 </div>
+
+<div id="create_email_list_block" style="display:none">
+
 <div id="staff_column" class="col">
 <h2>{t}Products{/t}</h2>
 <div style="font-size:80%">
@@ -33,7 +40,7 @@
 <h2>{t}Customers{/t}</h2>
 
 </div>
-
+</div>
 
 </div>
 
