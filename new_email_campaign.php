@@ -18,11 +18,9 @@ include_once('class.Product.php');
 include_once('class.Order.php');
 
 
-
 $general_options_list=array();
 $general_options_list[]=array('tipo'=>'url','url'=>'marketing_reports.php','label'=>_('Reports'));
-
-$general_options_list[]=array('tipo'=>'url','url'=>'new_email_campaign.php','label'=>_('Create Email Campaign'));
+$general_options_list[]=array('tipo'=>'url','url'=>'campaign.php?new','label'=>_('Create Campaign'));
 $general_options_list[]=array('tipo'=>'url','url'=>'newsletter.php?new','label'=>_('Create Newsletter'));
 $smarty->assign('general_options_list',$general_options_list);
 
@@ -37,7 +35,7 @@ $css_files=array(
 		 'common.css',
 		 'button.css',
 		 'container.css',
-		 'table.css'
+		 'table.css','css/users.css'
 		 );
 $js_files=array(
 
@@ -66,10 +64,7 @@ $smarty->assign('js_files',$js_files);
 
 
 
-
-
-$smarty->display('marketing.tpl');
-
+$smarty->display('new_email_campaign.tpl');
 
 
 
