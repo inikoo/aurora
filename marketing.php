@@ -17,7 +17,7 @@ include_once('common.php');
 include_once('class.Product.php');
 include_once('class.Order.php');
 
-
+$page='marketing';
 
 $general_options_list=array();
 $general_options_list[]=array('tipo'=>'url','url'=>'marketing_reports.php','label'=>_('Reports'));
@@ -53,10 +53,18 @@ $js_files=array(
 		'common.js.php',
 		'table_common.js.php',
 		'js/search.js',
-		'index.js.php'
+		'marketing.js.php'
 		);
 
 
+ 
+if (isset($_REQUEST['view'])) {
+    $valid_views=array('metrics','email','web_internal','web','other','newsletter');
+    if (in_array($_REQUEST['view'], $valid_views))
+        $_SESSION['state'][$page]['view']=$_REQUEST['view'];
+
+}
+$smarty->assign('view',$_SESSION['state'][$page]['view']);
 
 
 $smarty->assign('parent','home');

@@ -1885,7 +1885,19 @@ $default_state=array(
 
 
 
-
+                'marketing'=>array(
+                'view'=>'metrics',
+                'email_campaigns'=>array(
+                                                 'where'=>'where true',
+                                                 'f_field'=>'name',
+                                                 'f_value'=>'','f_show'=>false,
+                                                 'order'=>'date',
+                                                 'order_dir'=>'desc',
+                                                 'sf'=>0,
+                                                 'nr'=>25,
+                                                 'view'=>'general'
+                )
+                ),
 
 
 
