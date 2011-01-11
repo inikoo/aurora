@@ -2,6 +2,20 @@
 <div id="bd" >
 {include file='contacts_navigation.tpl'}
 
+
+{literal}
+<script language="javascript">
+function poponload()
+{
+    testwindow = window.open("xml_import.php", "mywindow", "location=1,status=1,scrollbars=1,width=300,height=300");
+    testwindow.moveTo(500, 200);
+}
+</script>
+{/literal} 
+
+
+
+
   <div id="no_details_title"  style="clear:left;xmargin:0 20px;">
     <h1>{t}Customers{/t} ({$store->get('Store Code')})</h1>
   </div>
@@ -10,13 +24,13 @@
       <span class="clean_table_title">Customers List</span>
       
    <div  style="font-size:90%">
-<span  id="export_csv0" style="float:right;margin-left:20px"  class="table_type state_details" tipo="customers" ><a href="convert_to_pdf.php">PDF</a></span>
+
          <span  id="export_csv0" style="float:right;margin-left:20px"  class="table_type state_details" tipo="customers" >{t}Export (CSV){/t}</span>
           <span style="float:right;margin-left:20px" class="table_type  state_details {if $table_type=='all_contacts'}selected{/if}"  id="restrictions_all_contacts" table_type="all_contacts"  >{t}All Contacts{/t} ({$store->get('Total Customer Contacts')})</span>
           <span style="float:right;margin-left:20px" class="table_type  state_details {if $table_type=='all_customers'}selected{/if}"  id="restrictions_all_customers" table_type="all_customers"   >{t}All Customers{/t} ({$store->get('Total Customers')})</span>
           <span style="float:right;margin-left:20px" class="table_type  state_details {if $table_type=='active_customers'}selected{/if}"  id="restrictions_active_customers"  table_type="active_customers"  >{t}Active Customers{/t} ({$store->get('Active Customers')})</span>
 
-	  <span  id="import_csv0" style="float:right;margin-left:20px"  class="table_type state_details" tipo="import.php" >{t}Import (CSV){/t}</span>
+	
 
      </div>
   <div style="clear:both;margin:0 0px;padding:0 20px ;border-bottom:1px solid #999"></div>

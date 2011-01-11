@@ -10,6 +10,20 @@ var avg='avg_<?php echo $_SESSION['state']['product_categories']['avg']?>';
 
 
 
+/*
+//var scope='categories';
+//var scope_edit_ar_file='ar_edit_assets.php';
+//var scope_key_name='category_key';
+//var scope_key=<?php echo $_SESSION['state']['product_categories']['category_key']?>;	
+//var parent='categories';
+//var parent_key_name='category_key';
+//var parent_key=<?php echo $_REQUEST['category_key']?>;
+//var editing='<?php echo $_SESSION['state']['product_categories']['edit']?>';
+
+*/var editing='<?php echo $_SESSION['state']['product_categories']['edit']?>';
+
+
+
 function change_category(){
     if(Dom.hasClass(this,'selected'))
     	return;
@@ -20,13 +34,8 @@ function change_category(){
     var table=tables['table'+table_id];
     var datasource=tables['dataSource'+table_id];
     var request='&category=' + this.getAttribute('cat_id');
-    datasource.sendRequest(request,table.onDataReturnInitializeTable, table);   
-
-
-    
+    datasource.sendRequest(request,table.onDataReturnInitializeTable, table);       
 }
-
-
 
 
     var change_view=function(e){
@@ -78,16 +87,64 @@ function change_category(){
 		table.showColumn('stock_error');
 		table.showColumn('outofstock');
 	    }
-
-	    
-
-	
+	    	
 	Dom.get(table.view).className="";
 	Dom.get(tipo).className="selected";
 	table.view=tipo
 	YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=product_categories-view&value=' + escape(tipo) );
 	}
   }
+
+
+
+
+
+var validate_scope_data={
+'ind_staff':{
+    'name':{'changed':false,'validated':true,'required':true,'group':1,'type':'item'
+	    ,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Categories Name')?>'}],'name':'Company_Staff_Name','dbname':'Staff Name'
+	   }
+            }
+};
+
+// var validate_scope_metadata={'categories':{'type':'edit','ar_file':'ar_edit_assets.php'}};
+
+function validate_name(query){
+ validate_general('categories','name',unescape(query));
+}
+function reset_new_staff(){
+ reset_edit_general('categories');
+}
+function save_new_staff(){
+ save_new_general('categories');
+}
+function post_item_updated_actions(branch,key,newvalue){
+
+ if(key=='name')
+     Dom.get('title_name').innerHTML=newvalue;
+ 
+ var table=tables.table0;
+ var datasource=tables.dataSource0;
+ var request='';
+ datasource.sendRequest(request,table.onDataReturnInitializeTable, table); 
+}
+
+function post_create_actions(branch){
+var table=tables.table0;
+ var datasource=tables.dataSource0;
+ var request='';
+ datasource.sendRequest(request,table.onDataReturnInitializeTable, table); 
+ 
+ var table=tables.table0;
+ var datasource=tables.dataSource0;
+ var request='';
+ datasource.sendRequest(request,table.onDataReturnInitializeTable, table); 
+}
+
+
+
+
+
 
 
 
@@ -98,6 +155,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    var tableid=0; // Change if you have more the 1 table
 	    var tableDivEL="table"+tableid;
 	    var OrdersColumnDefs = [ 
+				    {key:"id", label:"<?php echo _('Key')?>", width:20,sortable:false,isPrimaryKey:true,hidden:true} ,
 				   {key:"go",label:'',width:20,},
 				    {key:"name", label:"<?php echo _('Name')?>", width:260,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC},editor: new YAHOO.widget.TextboxCellEditor({asyncSubmitter: CellEdit}),object:'categories'}
 				
@@ -111,7 +169,8 @@ YAHOO.util.Event.addListener(window, "load", function() {
 				    ,{key:"critical", label:"<?php echo _('Critical')?>", width:70,sortable:true,className:"aright",<?php echo($_SESSION['state']['product_categories']['view']=='stock'?'':'hidden:true,')?>sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 				    ,{key:"outofstock", label:"<?php echo _('Gone')?>", width:70,sortable:true,className:"aright",<?php echo($_SESSION['state']['product_categories']['view']=='stock'?'':'hidden:true,')?>sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 				    ,{key:"stock_error", label:"<?php echo _('Unknown')?>", width:70,sortable:true,className:"aright",<?php echo($_SESSION['state']['product_categories']['view']=='stock'?'':'hidden:true,')?>sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-
+                                    ,{key:"delete", label:"", width:100,sortable:false,className:"aleft",action:'delete',object:'categories'}
+				    ,{key:"delete_type", label:"",hidden:true,isTypeKey:true}
 
 				     ];
 
@@ -135,7 +194,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 			 'id',"go",
 			 "name",
 			 'families','departments',
-			 'active',"sales","stock_error","stock_value","outofstock","profit","surplus","optimal","low","critical","code","todo","discontinued"
+			 'active',"sales","stock_error","stock_value","outofstock","profit","surplus","optimal","low","critical","code","todo","discontinued",'delete','delete_type'
 			 ]};
 	    
 	    this.table0 = new YAHOO.widget.DataTable(tableDivEL, OrdersColumnDefs,

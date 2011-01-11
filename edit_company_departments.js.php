@@ -1,8 +1,5 @@
 <?php
 include_once('common.php');
-
-
-
 ?>
 
 var Event = YAHOO.util.Event;
