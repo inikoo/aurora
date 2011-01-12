@@ -609,7 +609,7 @@
   				<data_sources>
   				  <close>close</close>
           </data_sources>
-          <period_value>sum</period_value>
+          <period_value>close</period_value>
           <compare_source>close</compare_source>
           <title>{$graph_data.title}</title>
           <color></color>
