@@ -431,8 +431,10 @@ CREATE TABLE IF NOT EXISTS `Comment Dimension` (
   `Date Added` timestamp NOT NULL default CURRENT_TIMESTAMP,
   PRIMARY KEY  (`Comment Key`)
 ) ENGINE=MyISAM  CHARACTER SET utf8 COLLATE utf8_general_ci;
-0.9.21
 
+
+
+0.9.21
 ALTER TABLE `History Dimension` ADD `Author Name` VARCHAR( 256 ) NULL AFTER `History Key`;
 ALTER TABLE `History Dimension` CHANGE `Action` `Action` ENUM( 'sold_since', 'last_sold', 'first_sold', 'placed', 'wrote', 'deleted', 'edited', 'cancelled', 'charged', 'merged', 'created', 'associated', 'disassociate' ) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT 'edited';
 ALTER TABLE `History Dimension` CHANGE `Preposition` `Preposition` ENUM( 'about', '', 'to' ) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL ;
@@ -464,5 +466,30 @@ CREATE TABLE `Email Campaign Dimension` (
 ) ENGINE = MYISAM ;
 ALTER TABLE `Email Campaign Dimension` ADD `Email Campaign Status` ENUM( 'Creating', 'Ready', 'Sending', 'Complete' ) NOT NULL ,ADD INDEX ( `Email Campaign Status` ) ;
 
+CREATE TABLE `Email Campaign Mailing List` (
+`Email Campaign Mailing List Key` MEDIUMINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY ,
+`Email Campaign Key` MEDIUMINT UNSIGNED NOT NULL ,
+`Email Key` MEDIUMINT UNSIGNED NOT NULL ,
+`Email Send Key` MEDIUMINT UNSIGNED NULL DEFAULT NULL ,
+INDEX ( `Email Campaign Key` , `Email Key` , `Email Send Key` )
+) ENGINE = MYISAM ;
+
+CREATE TABLE `kaktus_empty`.`Email Campaign Scope Bridge` (
+`Email Campaign Key` MEDIUMINT UNSIGNED NOT NULL ,
+`Email Campaign Scope` ENUM( 'Product', 'Family', 'Department', 'Store', 'Campaign', 'Deal' ) NOT NULL ,
+`Email Campaign Scope Key` MEDIUMINT UNSIGNED NULL DEFAULT NULL ,
+`Email Campaign Scope Linked` ENUM( 'Yes', 'No' ) NOT NULL DEFAULT 'No',
+`Email Campaign Scope Visited` ENUM( 'Yes', 'No', 'NA' ) NOT NULL DEFAULT 'NA',
+INDEX ( `Email Campaign Key` , `Email Campaign Scope Linked` , `Email Campaign Scope Visited` )
+) ENGINE = MYISAM ;
+ALTER TABLE `Email Campaign Dimension` ADD `Email Campaign Engine` ENUM( 'Internal', 'External' ) NOT NULL DEFAULT 'Internal',ADD `Email Campaign Content` LONGTEXT NULL DEFAULT NULL ;
+ALTER TABLE `Email Campaign Dimension` CHANGE `Email Campaign Maximum Emails` `Email Campaign Maximum Emails` MEDIUMINT( 8 ) UNSIGNED NULL DEFAULT NULL ;
+
+ALTER TABLE `Email Campaign Dimension` ADD `Email Last Updated Date` DATETIME NOT NULL AFTER `Email Campaign Key` ,
+ADD `Email Campaign Creation Date` DATETIME NOT NULL AFTER `Email Last Updated Date` ,
+ADD `Email Campaign Date` DATETIME NULL DEFAULT NULL AFTER `Email Campaign Creation Date` ,
+ADD INDEX ( `Email Last Updated Date` ) ;
+ALTER TABLE `Email Campaign Dimension` CHANGE `Email Last Updated Date` `Email Campaign Last Updated Date` DATETIME NOT NULL 
+ALTER TABLE `dw3`.`Email Campaign Dimension` ADD INDEX ( `Email Campaign Store Key` ) ;
 */
 ?>
