@@ -10,25 +10,44 @@ $tipo=$_REQUEST['tipo'];
 switch ($tipo) {
 
 case('site_hits'):
-if (!isset($_REQUEST['site_key'])) {
-    exit;
-}
+    if (!isset($_REQUEST['site_key'])) {
+        exit;
+    }
 
-$sql=sprintf("select *  from `Store Dimension` where `Site Key` in (%s)",addslashes($_REQUEST['site_key']));
-$res=mysql_query($sql);
-$graphs_data=array();
-$gid=0;
-while($row=mysql_fetch_assoc($res)){
-$graphs_data[]=array(
-                    'gid'=>$gid,
-                    'title'=>$row['Site Name'].' '._('Hits'),
-                  
-                    );
-$gid++;
-}
-$data_args='tipo=site_hits&store_key='.$_REQUEST['site_key'];
+    $sql=sprintf("select *  from `Site Dimension` where `Site Key` in (%s)",addslashes($_REQUEST['site_key']));
+    $res=mysql_query($sql);
+    $graphs_data=array();
+    $gid=0;
+    while ($row=mysql_fetch_assoc($res)) {
+        $graphs_data[]=array(
+                           'gid'=>$gid,
+                           'title'=>$row['Site Name'].' '._('Hits'),
+
+                       );
+        $gid++;
+    }
+    $data_args='tipo=site_hits&store_key='.$_REQUEST['site_key'];
+    break;
+case('number_of_contacts'):
+ if (!isset($_REQUEST['store_key']) or $_REQUEST['store_key']=='') {
+        exit;
+    }
+    $sql=sprintf("select *  from `Store Dimension` where `Store Key` in (%s)",addslashes($_REQUEST['store_key']));
+    $res=mysql_query($sql);
+    $graphs_data=array();
+    $gid=0;
+    if ($row=mysql_fetch_assoc($res)) {
+        $graphs_data[]=array(
+                           'gid'=>$gid,
+                           'title'=>$row['Store Name'].' '._('Contacts'),
+
+                       );
+        $gid++;
+    }else{
+       exit;
+    }
+    $data_args='tipo=number_of_contacts&store_key='.$_REQUEST['store_key'];
 break;
-
 }
 
 
