@@ -211,6 +211,7 @@ usort($contacts, 'compare');
 
 $time_data=array();
 $contador=0;
+$start_time=microtime_float();
 foreach($contacts as $act_data) {
     $base_time=microtime_float();
     $contador++;
@@ -419,6 +420,8 @@ foreach($contacts as $act_data) {
         }
     }
 
+
+    print "Customers:\t$contador\t ".(microtime_float()-$start_time)/$contador."s/c \r";
 
     $time_data[]=microtime_float()-$base_time;
     if (fmod($contador,100)==0) {
