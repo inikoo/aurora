@@ -7509,18 +7509,7 @@ function list_customers_per_store() {
     } else
         $avg=$_SESSION['state']['stores']['customers']['avg'];
 
-  /*  $_SESSION['state']['stores']['customers']=array(
-                'percentages'=>$percentages
-                              ,'period'=>$period
-                                        ,'avg'=>$avg
-                                               ,'order'=>$order
-                                                        ,'order_dir'=>$order_direction
-                                                                     ,'nr'=>$number_results
-                                                                           ,'sf'=>$start_from
-                                                                                 ,'where'=>$where
-                                                                                          ,'f_field'=>$f_field
-                                                                                                     ,'f_value'=>$f_value
-            );*/
+ 
 
  $_SESSION['state']['stores']['customers']['percentage']=$percentages;
     $_SESSION['state']['stores']['customers']['period']=$period;
