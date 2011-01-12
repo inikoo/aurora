@@ -1,13 +1,13 @@
 <?php
 /*
- File: marketing.php 
+ File: email_campaign.php 
 
  UI index page
 
  About: 
  Autor: Raul Perusquia <rulovico@gmail.com>
  
- Copyright (c) 2009, Kaktus 
+ Copyright (c) 2011, Kaktus 
  
  Version 2.0
 */
@@ -16,6 +16,9 @@ include_once('common.php');
 
 include_once('class.Product.php');
 include_once('class.Order.php');
+
+
+
 
 
 $general_options_list=array();
@@ -51,7 +54,7 @@ $js_files=array(
 		'common.js.php',
 		'table_common.js.php',
 		'js/search.js',
-		'index.js.php'
+		'email_campaign.js.php'
 		);
 
 
@@ -63,16 +66,9 @@ $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
 
 
-$new=false;
-if(isset($_REQUEST['new'])){
-$new=true;
-}
 
-if($new)
-$smarty->display('new_campaign.tpl');
 
-else
-$smarty->display('campaign.tpl');
+$smarty->display('email_campaign.tpl');
 
 
 
