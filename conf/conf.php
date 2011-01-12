@@ -1881,7 +1881,9 @@ $default_state=array(
 
 
 
-
+'email_campaign'=>array(
+'id'=>false
+),
 
 
 
