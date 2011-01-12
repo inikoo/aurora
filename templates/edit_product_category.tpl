@@ -20,7 +20,7 @@
   
   <div class="tabbed_container"> 
  
- {* <div  class="edit_block" style="{if $edit!="description"}display:none{/if}"  id="d_description">*}
+{*  <div  class="edit_block" style="{if $edit!="description"}display:none{/if}"  id="d_description">*}
  
   <div class="general_options" style="float:right">
 	<span  style="margin-right:10px;visibility:hidden"  id="save_edit_category" onClick="save_edit_general('category')" class="state_details">{t}Save{/t}</span>
@@ -46,7 +46,7 @@
 
 
 
- <div  class="edit_block" style="{if $edit!="subcategory"}display:none{/if}"  id="d_subcategory">
+ {*<div  class="edit_block" style="{if $edit!="subcategory"}display:none{/if}"  id="d_subcategory">
 
   <div class="general_options" style="float:right">
 	<span  style="margin-right:10px;visibility:hidden"  id="save_edit_subcategory" onClick="save_edit_general('subcategory')" class="state_details">{t}Save{/t}</span>
@@ -70,8 +70,21 @@
 
 
 	  </table>
-	 </div>
-
+	 </div>*}
+{* ----------------------------------------------------------------------------------------------------------------------------------------- *}
+<div   class="data_table" sxtyle="margin:25px 20px">
+	  <span class="clean_table_title">{t}SubCategories{/t}</span>
+	 
+	  <div  class="clean_table_caption"  style="clear:both;">
+	    <div style="float:left;"><div id="table_info0" class="clean_table_info"><span id="rtext0"></span> <span class="rtext_rpp" id="rtext_rpp0"></span> <span class="filter_msg"  id="filter_msg0"></span></div></div>
+	    <div class="clean_table_filter" style="display:none" id="clean_table_filter0"><div class="clean_table_info"><span id="filter_name0" class="filter_name" >{$filter_name0}</span>: <input style="border-bottom:none" id='f_input0' value="{$filter_value0}" size=10/><div id='f_container0'></div></div></div>
+	    <div class="clean_table_controls" style="" ><div><span  style="margin:0 5px" id="paginator0"></span></div></div>
+	  </div>
+	  <div  id="table0"   class="data_table_container dtable btable "> </div>
+	</div>
+     
+     
+{* ----------------------------------------------------------------------------------------------------------------------------------------- *}
  </div>
  
  

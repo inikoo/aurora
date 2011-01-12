@@ -163,7 +163,7 @@ var CellEdit = function (callback, newValue) {
                           oldValue = this.value,
                                      datatable = this.getDataTable();
     recordIndex = datatable.getRecordIndex(record);
-
+//alert(column.object);
     if (column.object=='company' || column.object=='customer' || column.object=='contact' || column.object=='company_area' || column.object=='company_department' || column.object=='company_position')
         ar_file='ar_edit_contacts.php';
     else if (column.object=='warehouse_area' || column.object=='part_location'|| column.object=='shelf_type' || column.object=='location')
@@ -184,13 +184,13 @@ var CellEdit = function (callback, newValue) {
         ar_file='ar_edit_assets.php';
 
     var request='tipo=edit_'+column.object+'&key=' + column.key + '&newvalue=' + encodeURIComponent(newValue) + '&oldvalue=' + encodeURIComponent(oldValue)+ myBuildUrl(datatable,record);
- //alert(ar_file+'?'+request);
+//alert(ar_file+'?'+request);
 
     YAHOO.util.Connect.asyncRequest(
         'POST',
     ar_file, {
 success:function(o) {
-          //  alert(o.responseText);
+        //   alert(o.responseText);
             var r = YAHOO.lang.JSON.parse(o.responseText);
             if (r.state == 200) {
 
@@ -251,13 +251,13 @@ var onCellClick = function(oArgs) {
 //alert(column.object)
 
 
-              //	alert(ar_file+'?tipo=delete_'+column.object + myBuildUrl(this,record))
+            //	alert(ar_file+'?tipo=delete_'+column.object + myBuildUrl(this,record))
 
                 YAHOO.util.Connect.asyncRequest(
                     'GET',
                 ar_file+'?tipo=delete_'+column.object + myBuildUrl(this,record), {
 success: function (o) {
-                      // alert(o.responseText);
+                     alert(o.responseText);
                         var r = YAHOO.lang.JSON.parse(o.responseText);
                         if (r.state == 200 && r.action=='deleted') {
 

@@ -136,19 +136,22 @@ var table=tables.table1;
 
 YAHOO.util.Event.addListener(window, "load", function() {
     tables = new function() {
-/*
-	    var tableid=0; // Change if you have more the 1 table
+  var tableid=0; // Change if you have more the 1 table
 	    var tableDivEL="table"+tableid;
 	    var OrdersColumnDefs = [ 
 				    {key:"id", label:"<?php echo _('Key')?>", width:20,sortable:false,isPrimaryKey:true,hidden:true} 
 				    ,{key:"go",label:'',width:20,}
-				    ,{key:"code", label:"<?php echo _('Code')?>", width:100,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC},  editor: new YAHOO.widget.TextboxCellEditor({asyncSubmitter: CellEdit}),object:'company_staff'}
-				    ,{key:"name", label:"<?php echo _('Name')?>", width:340,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}, editor: new YAHOO.widget.TextboxCellEditor({asyncSubmitter: CellEdit}),object:'company_staff' }
-				    ,{key:"delete", label:"", width:170,sortable:false,className:"aleft",action:'delete',object:'department'}
+				  //  ,{key:"code", label:"<?php echo _('Code')?>", width:100,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC},  editor: new YAHOO.widget.TextboxCellEditor({asyncSubmitter: CellEdit}),object:'department'}
+				    ,{key:"name", label:"<?php echo _('Name')?>", width:340,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}, editor: new YAHOO.widget.TextboxCellEditor({asyncSubmitter: CellEdit}),object:'subcategory' }
+				//	,{key:"sales_type", label:"<?php echo _('Sale Type')?>",width:100, sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC},object:'department',editor: new YAHOO.widget.RadioCellEditor({asyncSubmitter: CellEdit,radioOptions:[{label:"<?php echo _('Public Sale')?>",value:'Public Sale'},{label:"<?php echo _('Private Sale')?>",value:'Private Sale'},{label:"<?php echo _('Not For Sale')?>",value:'Not For Sale'}],disableBtns:true})}
+
+			// ,{key:"delete", label:"", width:170,sortable:false,className:"aleft",action:'delete',object:'department'}
+				   // ,{key:"delete_type", label:"",hidden:true,isTypeKey:true}
+                                      ,{key:"delete", label:"", width:100,sortable:false,className:"aleft",action:'delete',object:'subcategory'}
 				    ,{key:"delete_type", label:"",hidden:true,isTypeKey:true}
 				     ];
 
-	    this.dataSource0 = new YAHOO.util.DataSource("ar_edit_contacts.php?tipo=edit_company_departments&parent=staff");
+	    this.dataSource0 = new YAHOO.util.DataSource("ar_edit_assets.php?tipo=edit_product_subcategories");
 	    this.dataSource0.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource0.connXhrMode = "queueRequests";
 	    this.dataSource0.responseSchema = {
@@ -163,7 +166,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 		},
 		
 		fields: [
-			 'id','code','name','delete','delete_type','go'
+			 'id','name','delete','delete_type','go'
 			 ]};
 	    
 	    this.table0 = new YAHOO.widget.DataTable(tableDivEL, OrdersColumnDefs,
@@ -171,7 +174,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 							 //draggableColumns:true,
 							   renderLoopSize: 50,generateRequest : myRequestBuilder
 								       ,paginator : new YAHOO.widget.Paginator({
-									      rowsPerPage:<?php echo$_SESSION['state']['company_staff']['table']['nr']?>,containers : 'paginator', 
+									      rowsPerPage:<?php echo$_SESSION['state']['store']['table']['nr']?>,containers : 'paginator', 
  									      pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',
 									      previousPageLinkLabel : "<",
  									      nextPageLinkLabel : ">",
@@ -181,8 +184,8 @@ YAHOO.util.Event.addListener(window, "load", function() {
 									  })
 								     
 							   ,sortedBy : {
-							    Key: "<?php echo$_SESSION['state']['company_staff']['table']['order']?>",
-							     dir: "<?php echo$_SESSION['state']['company_staff']['table']['order_dir']?>"
+							    Key: "<?php echo$_SESSION['state']['store']['table']['order']?>",
+							     dir: "<?php echo$_SESSION['state']['store']['table']['order_dir']?>"
 								     }
 							   ,dynamicData : true
 
@@ -198,7 +201,10 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    this.table0.subscribe("cellMouseoutEvent", unhighlightEditableCell);
 	    this.table0.subscribe("cellClickEvent", onCellClick);
 
-*/
+
+
+
+
 		
  var tableid=1; // Change if you have more the 1 table
 	    var tableDivEL="table"+tableid;
@@ -206,7 +212,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    var CustomersColumnDefs = [
 				       {key:"date",label:"<?php echo _('Date')?>", width:200,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				       ,{key:"author",label:"<?php echo _('Author')?>", width:70,sortable:true,formatter:this.customer_name,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				       //  ,{key:"tipo", label:"<?php echo _('Type')?>", width:90,sortable:true,formatter:this.customer_name,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				       //     ,{key:"tipo", label:"<?php echo _('Type')?>", width:90,sortable:true,formatter:this.customer_name,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				       //,{key:"diff_qty",label:"<?php echo _('Qty')?>", width:90,sortable:true,formatter:this.customer_name,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				       ,{key:"abstract", label:"<?php echo _('Description')?>", width:370,sortable:true,formatter:this.customer_name,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				       ];
@@ -338,7 +344,7 @@ function change_block(){
 
 function init(){
 
-    var ids = ["description","subcategory"]; 
+    var ids = ["description","details","subcategory"]; 
     YAHOO.util.Event.addListener(ids, "click", change_block);
 
     YAHOO.util.Event.addListener('add_category', "click", show_add_category_dialog);
