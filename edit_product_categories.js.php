@@ -100,7 +100,7 @@ function change_category(){
 
 
 var validate_scope_data={
-'ind_staff':{
+'categories':{
     'name':{'changed':false,'validated':true,'required':true,'group':1,'type':'item'
 	    ,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Categories Name')?>'}],'name':'Company_Staff_Name','dbname':'Staff Name'
 	   }
