@@ -114,6 +114,10 @@ case('edit_product_description'):
 case('edit_product'):
   edit_product();
    break;
+case('edit_subcategory'):
+    $data=prepare_values($_REQUEST,array('id'=>array('type'=>'key'),'newvalue' =>array('type'=>'string'),'key' =>array('type'=>'string_value')));
+    edit_categories($data);
+    break;
 case('edit_categories'):
     $data=prepare_values($_REQUEST,array('id'=>array('type'=>'key'),'newvalue' =>array('type'=>'string'),'key' =>array('type'=>'string_value')));
     edit_categories($data);
@@ -168,6 +172,16 @@ case('edit_products'):
   break;
 case('edit_product_categories'):
     list_edit_product_categories();
+    break;
+case('edit_product_subcategories'):
+    list_edit_product_categories();
+    break;
+case('delete_subcategory'):
+    $data=prepare_values($_REQUEST,array(
+                             'id'=>array('type'=>'key')
+                                  ,'delete_type'=>array('type'=>'string')
+                         ));
+    delete_categories($data);
     break;
 
 case('delete_categories'):
