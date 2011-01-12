@@ -12,6 +12,7 @@ $tipo=$_REQUEST['tipo'];
 switch ($tipo) {
 case('create_email_marketing'):
     $data=prepare_values($_REQUEST,array(
+      'store_key'=>array('type'=>'key'),
                              'name'=>array('type'=>'string'),
                              'objective'=>array('type'=>'string'),
                          ));
@@ -26,6 +27,7 @@ function new_email_marketing($data) {
 require_once 'class.EmailCampaign.php';
 
 $email_campaign_data=array(
+    'Email Campaign Store Key'=>$data['store_key'],
     'Email Campaign Name'=>$data['name'],
     'Email Campaign Objective'=>$data['objective']
 
@@ -39,7 +41,7 @@ if($email_campaign->id){
  $response= array('state'=>400,'msg'=>$email_campaign->msg);
 
 }
-
+    echo json_encode($response);
 
 }
 

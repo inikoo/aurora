@@ -13,9 +13,17 @@
 */
 
 include_once('common.php');
+if(count($user->stores)==0){
+      header('Location: marketing.php');
+}
 
 include_once('class.Product.php');
 include_once('class.Order.php');
+
+
+
+
+
 
 
 $general_options_list=array();
@@ -61,7 +69,27 @@ $smarty->assign('parent','home');
 $smarty->assign('title', _('Marketing'));
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
+$store_key=0;
+$stores_data=array();
+$sql=sprintf("select `Store Key`,`Store Code`,`Store Name` from   `Store Dimension` where `Store Key` in (%s)  ",$store_keys=join(',',$user->stores));
+$res=mysql_query($sql);
+while($row=mysql_fetch_assoc($res)){
+    $stores_data[$row['Store Key']]=array(
+    'key'=>$row['Store Key'],
+    'name'=>$row['Store Name'],
+    'code'=>$row['Store Code']
 
+);
+$store_key=$row['Store Key'];
+}
+$number_stores=count($stores_data);
+$smarty->assign('number_stores',$number_stores);
+if($number_stores!=1){
+
+$store_key=0;
+}
+$smarty->assign('store_key',$store_key);
+$smarty->assign('stores_data',$stores_data);
 
 
 $smarty->display('new_email_campaign.tpl');

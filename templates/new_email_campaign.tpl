@@ -7,6 +7,19 @@
 <div class="top_row" >
 
 <table class="edit" style="margin-top:10px">
+
+
+<tr {if $number_stores==1}style="display:none"{/if} ><td class="label">{t}Store:{/t}</td>
+<td>
+<input  id="store_key" type="hidden" value="{$store_key}">
+<table class="options" id="store_options" >
+{foreach from=$stores_data item=store}
+<td onclick="select_store({$store.key})" id="store_button{$store.key}" class="option">{$store.code}</td>
+
+{/foreach}
+</table>
+</td>
+</tr>
 <tr><td class="label">{t}Campaign Name:{/t}</td><td><input style="width:300px" id="email_campaign_name" type="text" value=""></td></tr>
 <tr><td class="label">{t}Campaign Objetive:{/t}</td><td><textarea style="width:300px"  id="email_campaign_objetive"  ></textarea></td></tr>
 </table>

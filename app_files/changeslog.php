@@ -474,7 +474,7 @@ CREATE TABLE `Email Campaign Mailing List` (
 INDEX ( `Email Campaign Key` , `Email Key` , `Email Send Key` )
 ) ENGINE = MYISAM ;
 
-CREATE TABLE `kaktus_empty`.`Email Campaign Scope Bridge` (
+CREATE TABLE `Email Campaign Scope Bridge` (
 `Email Campaign Key` MEDIUMINT UNSIGNED NOT NULL ,
 `Email Campaign Scope` ENUM( 'Product', 'Family', 'Department', 'Store', 'Campaign', 'Deal' ) NOT NULL ,
 `Email Campaign Scope Key` MEDIUMINT UNSIGNED NULL DEFAULT NULL ,
@@ -482,14 +482,16 @@ CREATE TABLE `kaktus_empty`.`Email Campaign Scope Bridge` (
 `Email Campaign Scope Visited` ENUM( 'Yes', 'No', 'NA' ) NOT NULL DEFAULT 'NA',
 INDEX ( `Email Campaign Key` , `Email Campaign Scope Linked` , `Email Campaign Scope Visited` )
 ) ENGINE = MYISAM ;
+
+0.9.22
 ALTER TABLE `Email Campaign Dimension` ADD `Email Campaign Engine` ENUM( 'Internal', 'External' ) NOT NULL DEFAULT 'Internal',ADD `Email Campaign Content` LONGTEXT NULL DEFAULT NULL ;
 ALTER TABLE `Email Campaign Dimension` CHANGE `Email Campaign Maximum Emails` `Email Campaign Maximum Emails` MEDIUMINT( 8 ) UNSIGNED NULL DEFAULT NULL ;
-
 ALTER TABLE `Email Campaign Dimension` ADD `Email Last Updated Date` DATETIME NOT NULL AFTER `Email Campaign Key` ,
 ADD `Email Campaign Creation Date` DATETIME NOT NULL AFTER `Email Last Updated Date` ,
 ADD `Email Campaign Date` DATETIME NULL DEFAULT NULL AFTER `Email Campaign Creation Date` ,
 ADD INDEX ( `Email Last Updated Date` ) ;
 ALTER TABLE `Email Campaign Dimension` CHANGE `Email Last Updated Date` `Email Campaign Last Updated Date` DATETIME NOT NULL 
-ALTER TABLE `dw3`.`Email Campaign Dimension` ADD INDEX ( `Email Campaign Store Key` ) ;
+ALTER TABLE `Email Campaign Dimension` ADD INDEX ( `Email Campaign Store Key` ) ;
+ALTER TABLE `Email Campaign Dimension` CHANGE `Email Campaign Status` `Email Campaign Status` ENUM( 'Creating', 'Ready', 'Sending', 'Complete' ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'Creating';
 */
 ?>
