@@ -39,7 +39,10 @@ $Data_Audit_ETL_Software="$software $version";
 $days=90;
 
 $currencies=array();
-$sql=sprintf("select `Country Currency Code` from kbase.`Country Dimension`  group by `Country Currency Code`");
+$where='';
+//$where="where  `Country Currency Code` in ('GBP','EUR') ";
+
+$sql=sprintf("select `Country Currency Code` from kbase.`Country Dimension` $where   group by `Country Currency Code`");
 $res=mysql_query($sql);
 while ($row=mysql_fetch_array($res)) {
     if ($row['Country Currency Code']!='')
