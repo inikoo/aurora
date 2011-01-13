@@ -1,10 +1,15 @@
 {include file='header.tpl'}
 <div id="bd" >
+<div id="table_type" class="table_type">
+ <span  id="export_csv0" style="float:right;margin-left:20px"  class="table_type state_details" tipo="invoices" ><a href="pdf_invoices.php?id={$invoice->get('Invoice Key')}">PDF Invoice</a></span>
+</div>
   <div id="yui-main">
+
+
     <div class="yui-b">
 
       <div class="yui-b" style="border:1px solid #ccc;text-align:left;padding:10px;margin: 30px 0 10px 0">
-
+ 
        <div style="width:400px;float:left"> 
         <h1 style="padding:0 0 10px 0">{t}Invoice{/t} {$invoice->get('Invoice Public ID')}</h1>
         <h2 style="padding:0">{$invoice->get('Invoice Customer Name')} <a href="customer.php?id={$invoice->get('Invoice Customer Key')}">{$invoice->get('Invoice Customer Key')}</a></h2>
