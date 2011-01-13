@@ -73,7 +73,18 @@ $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
 
 
+$q='';
+$tipo_filter=($q==''?$_SESSION['state'][$page]['email_campaigns']['f_field']:'code');
+$smarty->assign('filter',$tipo_filter);
+$smarty->assign('filter_value',($q==''?$_SESSION['state'][$page]['email_campaigns']['f_value']:addslashes($q)));
+$filter_menu=array(
+                 'name'=>array('db_key'=>'name','menu_label'=>'Campaign with name like <i>x</i>','label'=>'Name')
+             );
+$smarty->assign('filter_menu0',$filter_menu);
 
+$smarty->assign('filter_name0',$filter_menu[$tipo_filter]['label']);
+$paginator_menu=array(10,25,50,100,500);
+$smarty->assign('paginator_menu0',$paginator_menu);
 
 
 $smarty->display('marketing.tpl');

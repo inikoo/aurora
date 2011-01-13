@@ -15,13 +15,20 @@ include_once('class.DB_Table.php');
 include_once('class.Page.php');
 include_once('class.PageStoreSection.php');
 
+
 class EmailCampaign extends DB_Table {
 
     var $new=false;
-
     function EmailCampaign($arg1=false,$arg2=false) {
         $this->table_name='Email Campaign';
-        $this->ignore_fields=array('Email Campaign Key','Email Campaign Maximum Emails');
+        $this->ignore_fields=array(
+                'Email Campaign Key',
+                'Email Campaign Maximum Emails',
+                'Email Campaign Last Updated Date',
+                'Email Campaign Creation Date',
+                'Email Campaign Date',
+                
+        );
 
 
         if (!$arg1 and !$arg2) {
@@ -111,13 +118,18 @@ class EmailCampaign extends DB_Table {
 
         }
 
+  $data['Email Campaign Creation Date']=date("Y-m-d H:i:s");
+  $data['Email Campaign Last Updated Date']=$data['Email Campaign Creation Date'];
+  
   
 
         $keys='(';
         $values='values(';
         foreach($data as $key=>$value) {
             $keys.="`$key`,";
-
+            if($key=='Email Campaign Objective')
+             $values.=prepare_mysql($value,false).",";
+             else
             $values.=prepare_mysql($value).",";
         }
         $keys=preg_replace('/,$/',')',$keys);

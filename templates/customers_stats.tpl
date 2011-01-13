@@ -26,7 +26,6 @@
 
 <div style="width:25em;float:left;margin-left:20px">
   <table    class="show_info_product">
-     
        <tbody id="info_all" style="">
 	 <tr >
 	  <td>{t}Active Customers{/t}:</td><td class="aright">{$store->get('Active Customers')}</td>
@@ -37,9 +36,7 @@
 	<tr >
 	  <td>{t}Lost Customers (1 month){/t}:</td><td class=" aright">{$store->get('1 Month Lost Customers')}</td>
 	</tr>
-
-
-      </tbody>
+    </tbody>
       
       </table>
 </div>
@@ -47,7 +44,7 @@
 	<div id="number_of_customers"  >
 		<strong>You need to upgrade your Flash Player</strong>
 	</div>
-</div>
+
 <script type="text/javascript">
 		// <![CDATA[
 		var so = new SWFObject("external_libs/amstock/amstock/amstock.swf", "amstock", "905", "500", "8", "#FFFFFF");
@@ -57,7 +54,7 @@
 		so.write("number_of_customers");
 		// ]]>
 	</script>
-
+</div>
 
 <div id="block_orders" style="{if $view!='orders'}display:none;{/if}clear:both;margin:20px 0 40px 0;padding:0 20px">
 	<div style="float:left" id="plot_orders">
@@ -80,7 +77,34 @@
 
 
 <div id="block_population" style="{if $view!='population'}display:none;{/if}clear:both;margin:20px 0 40px 0;padding:0 20px">
+<div style="width:25em;float:left;margin-left:20px">
+  <table    class="show_info_product">
+       <tbody id="info_all" style="">
+	 <tr >
+	  <td>{t}Contacts{/t}:</td><td class="aright">{$store->get('Total Customer Contacts')}</td>
+	</tr>
+	 	<tr >
+	  <td>{t}New Contacts (1 month){/t}:</td><td class="aright">{$store->get('1 Month New Customers Contacts')}</td>
+	</tr>
+	
+    </tbody>
+      
+      </table>
+</div>
 
+	<div id="number_of_contacts"  >
+		<strong>You need to upgrade your Flash Player</strong>
+	</div>
+
+<script type="text/javascript">
+		// <![CDATA[
+		var so = new SWFObject("external_libs/amstock/amstock/amstock.swf", "amstock", "905", "500", "8", "#FFFFFF");
+		so.addVariable("path", "");
+		so.addVariable("settings_file", encodeURIComponent("conf/plot_general_timeseries.xml.php?tipo=number_of_contacts&store_key={$store->id}"));
+		so.addVariable("preloader_color", "#999999");
+		so.write("number_of_contacts");
+		// ]]>
+	</script>
 
 
 </div>

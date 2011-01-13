@@ -60,8 +60,37 @@ Class TimeSeries  {
 
         if (!$this->name or !$this->freq)
             return;
+ if(preg_match('/contact population \((\d)+\)\s*?/i',$this->name,$match)){
+$store_key_array=array();
 
-        if(preg_match('/customer population \((\d)+\)\s*?/i',$this->name,$match)){
+                
+
+            if (preg_match('/\(.+\)/',$match[0],$keys)) {
+                $keys=preg_replace('/\(|\)/','',$keys[0]);
+                $keys=preg_split('/\s*,\s*/',$keys);
+
+                $store_keys='(';
+
+                foreach($keys as $key) {
+                    if (is_numeric($key)) {
+                        $store_keys.=sprintf("%d,",$key);
+                        $store_key_array[]=$key;
+
+                    }
+                }
+                $store_keys=preg_replace('/,$/',')',$store_keys);
+            }
+
+            //$this->keys=$keys;
+            //print_r($store_keys);
+            
+            $this->name_key=array_pop($keys);
+            $this->name='contact population';
+          
+            $this->label=_('CoP')." (".$this->name_key.")";
+            
+          
+        }elseif(preg_match('/customer population \((\d)+\)\s*?/i',$this->name,$match)){
 $store_key_array=array();
 
                 
@@ -792,8 +821,6 @@ function save_day_values($date,$data){
          
             if(!$ok){
                 exit("$sql;");
-            }else{
-                print("$sql;\n");
             }
 
 }
@@ -1402,9 +1429,43 @@ $number_period_for_forecasting=26;
 
 
 
+function get_contact_population_value_day($date,$last_close) {
+
+$new=0;
+ 
+
+ $sql=sprintf("select count(*) as new  from `Customer Dimension` where  `Customer Store Key`=%d and Date(`Customer First Contacted Date`)=%s",
+                 $this->name_key,
+                 prepare_mysql($date)
+                );
+  
+    $res=mysql_query($sql);
+    while ($row=mysql_fetch_array($res)) {
+        $new=$row['new'];
+    }
+    
+    $data=array(
+    'value'=>$last_close,
+    'count'=>0,
+    'open'=>$last_close,
+    'close'=>$last_close+$new,
+    'low'=>$last_close+$new,
+    'high'=>$last_close,
+    'volume'=>$new,
+    'adj close'=>false,
+
+    );
+    return $data;
+    
+    
+   
+}
+
+
+
+
+
 function get_customer_population_value_day($date,$last_close) {
-
-
 
     $new_customers=0;
     $lost_customers=0;
@@ -1488,7 +1549,8 @@ function get_value_day($date,$last_close=false) {
 
 if($this->name=='customer population'){
     return $this->get_customer_population_value_day($date,$last_close);
-   
+}elseif($this->name=='contact population'){
+    return $this->get_contact_population_value_day($date,$last_close);
 }
 
 
@@ -1619,7 +1681,7 @@ $save=false;
 
 
         if ($values=$this->get_value_day($row['date'],$last_close)) {
-        print_r($values);
+       // print_r($values);
         $last_close=$values['close'];
             foreach($values as $key=>$value) {
                 if (array_key_exists($key,$all_data[$row['date']])) {
@@ -2086,7 +2148,7 @@ $last_day=date("Y-m-d");
     
    function first_complete_day() {
    
-   if($this->name=='customer population'){
+   if($this->name=='customer population' or $this->name=='contact population'){
    return $this->store_first_complete_day();
    }
    
@@ -2242,7 +2304,7 @@ $last_day=date("Y-m-d");
   
   function last_date() {
     
-    if($this->name=='customer population'){
+    if($this->name=='customer population' or $this->name=='contact population'){
         return $this->store_last_day();
     }
     
