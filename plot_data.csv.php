@@ -11,6 +11,14 @@ if (!isset($_REQUEST['tipo'])) {
 
 $tipo=$_REQUEST['tipo'];
 switch ($tipo) {
+
+case('number_of_contacts'):
+    $data=prepare_values($_REQUEST,array(
+                             'store_key'=>array('type'=>'key'),
+                         ));
+    number_of_contacts($data);
+    break;
+
 case('number_of_customers'):
     $data=prepare_values($_REQUEST,array(
                              'store_key'=>array('type'=>'key'),
@@ -49,6 +57,19 @@ case('store_sales'):
                          ));
     store_sales($data);
     break;
+
+}
+
+function  number_of_contacts($data) {
+    $sql=sprintf("select `Time Series Date`,`Open`,`High`,`Low`,`Close`,`Volume` from `Time Series Dimension` where `Time Series Name`='contact population' and `Time Series Name Key`=%d order by `Time Series Date` desc",
+                 $data['store_key']
+                );
+     $res=mysql_query($sql);
+ 
+    while ($row=mysql_fetch_assoc($res)) {
+    printf("%s,%s,%s\n",$row['Time Series Date'],$row['Volume'],$row['Close']);
+    }
+
 
 }
 

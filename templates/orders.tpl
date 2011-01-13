@@ -59,7 +59,7 @@
    <div  id="invoices_table"   class="data_table" style="{if $view!='invoices'}display:none{/if};clear:both">
     <span class="clean_table_title">{t}Invoice List{/t}</span>
      <div id="table_type" class="table_type">
- <span  id="export_csv0" style="float:right;margin-left:20px"  class="table_type state_details" tipo="invoices" ><a href="pdf_invoices.php">PDF Converter</a></span>
+
 <span  id="export_csv1" style="float:right;margin-left:20px"  class="table_type state_details" tipo="invoices" >{t}Export (CSV){/t}</span>
         <div  style="font-size:90%"   id="invoice_chooser"  style="display:{if $view!='orders'}none{/if}">
            
