@@ -1,6 +1,9 @@
 {include file='header.tpl'}
 <div id="bd" >
- {include file='assets_navigation.tpl'}  
+ <div id="table_type" class="table_type">
+<span  id="export_csv0" style="float:right;margin-left:20px"  class="table_type state_details" tipo="invoices" ><a href="categories.php">Exit Edit</a></span>
+ <span  id="export_csv0" style="float:right;margin-left:20px"  class="table_type state_details" tipo="invoices" ><a href="new_category.php">Add Category</a></span>
+</div>
  
 
 
