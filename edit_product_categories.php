@@ -22,7 +22,7 @@ $general_options_list=array();
 if($modify){
 //  $general_options_list[]=array('tipo'=>'url','url'=>'edit_product_categories.php?edit=1','label'=>_('Edit Categories'));
 //$general_options_list[]=array('tipo'=>'js','state'=>$show_details,'id'=>'details','label'=>($show_details?_('Hide Details'):_('Show Details')));
-  
+   $general_options_list[]=array('tipo'=>'url','url'=>'categories.php','label'=>_('Exit Edit '));
   $general_options_list[]=array('tipo'=>'url','url'=>'new_category.php','label'=>_('Add Category'));
           }
 $smarty->assign('general_options_list',$general_options_list);
@@ -74,14 +74,14 @@ if($cat_data=$nodes->fetch($category_key)){
 
 }else{
 $category_key=0;
-$main_title=_('Categories');
+$main_title=_('Editing Product Categories');
 $subcategories_title=_('Category List');
 
 }
 
 
 
-$main_title=_('Categories');
+$main_title=_('Editing Product Categories');
 $subcategories_title=_('Category List');
 
 $_SESSION['state']['product_categories']['category_key']=$category_key;
@@ -186,6 +186,6 @@ $smarty->assign('display_mode',$display_mode);
 $smarty->assign('display_mode_label',$display_mode_label);
 */
 
-$smarty->display('categories.tpl');
+$smarty->display('edit_product_categories.tpl');
 
 ?>

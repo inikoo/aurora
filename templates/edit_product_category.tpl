@@ -1,11 +1,16 @@
 {include file='header.tpl'}
-<div id="bd" >
- <div id="table_type" class="table_type">
-<span  id="export_csv0" style="float:right;margin-left:20px"  class="table_type state_details" tipo="invoices" ><a href="categories.php">Exit Edit</a></span>
- <span  id="export_csv0" style="float:right;margin-left:20px"  class="table_type state_details" tipo="invoices" ><a href="new_category.php">Add Category</a></span>
+<div id="bd" > 
+<div class="search_box" style="margin-top:15px">
+  <div class="general_options">
+    {foreach from=$general_options_list item=options }
+        {if $options.tipo=="url"}
+            <span onclick="window.location.href='{$options.url}'" >{$options.label}</span>
+        {else}
+            <span  id="{$options.id}" state="{$options.state}">{$options.label}</span>
+        {/if}
+    {/foreach}
+    </div>
 </div>
- 
-
 
 
  <div class="branch"> 
