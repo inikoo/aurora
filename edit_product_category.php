@@ -2,12 +2,13 @@
 include_once('common.php');
 include_once('class.Node.php');
 include_once('class.Category.php');
-/*
-if(!$user->can_view('staff')){
+include_once('assets_header_functions.php');
+
+if(!$user->can_view('stores')){
    header('Location: index.php?no=1');
    exit;
 }
-*/
+
 
 
 
@@ -47,18 +48,17 @@ $edit=false;
 if(isset($_REQUEST['edit']) and $_REQUEST['edit'])
   $edit=true;
 
-
+$general_options_list=array();
 if(!$modify)
  $edit=false;
-$general_options_list=array();
+
 
 if($edit){
   $general_options_list[]=array('tipo'=>'url','url'=>'categories.php','label'=>_('Exit Edit'));
-
+    $general_options_list[]=array('tipo'=>'url','url'=>'new_category.php','label'=>_('Add Category'));
 }else{
-if($modify){
- // $general_options_list[]=array('tipo'=>'url','url'=>'categories.php','label'=>_('Exit Edit'));
-  $general_options_list[]=array('tipo'=>'url','url'=>'edit_category?edit=1','label'=>_('Edit Staff'));
+if($modify){$general_options_list[]=array('tipo'=>'url','url'=>'new_category.php','label'=>_('Add Category'));
+ $general_options_list[]=array('tipo'=>'url','url'=>'categories.php','label'=>_('Exit Edit'));
 }
 }
 $smarty->assign('general_options_list',$general_options_list);

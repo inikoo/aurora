@@ -4,13 +4,13 @@ include_once('common.php');
 ?>
 var Event = YAHOO.util.Event;
 var Dom   = YAHOO.util.Dom;
-
+/*
 function subcategory_f(subcategory){
 var subcategory_key=subcategory;
 
 alert(subcategory_key);
 window.location.href = "edit_category.php?sn=" + sn;
-}
+}*/
 //var can_add_department=false;
 var description_num_changed=0;
 var description_warnings= new Object();
@@ -141,12 +141,9 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    var OrdersColumnDefs = [ 
 				    {key:"id", label:"<?php echo _('Key')?>", width:20,sortable:false,isPrimaryKey:true,hidden:true} 
 				   // ,{key:"go",label:'',width:20,}
-				  //  ,{key:"code", label:"<?php echo _('Code')?>", width:100,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC},  editor: new YAHOO.widget.TextboxCellEditor({asyncSubmitter: CellEdit}),object:'department'}
+				 
 				    ,{key:"name", label:"<?php echo _('Name')?>", width:340,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}, editor: new YAHOO.widget.TextboxCellEditor({asyncSubmitter: CellEdit}),object:'subcategory' }
-				//	,{key:"sales_type", label:"<?php echo _('Sale Type')?>",width:100, sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC},object:'department',editor: new YAHOO.widget.RadioCellEditor({asyncSubmitter: CellEdit,radioOptions:[{label:"<?php echo _('Public Sale')?>",value:'Public Sale'},{label:"<?php echo _('Private Sale')?>",value:'Private Sale'},{label:"<?php echo _('Not For Sale')?>",value:'Not For Sale'}],disableBtns:true})}
-
-			// ,{key:"delete", label:"", width:170,sortable:false,className:"aleft",action:'delete',object:'department'}
-				   // ,{key:"delete_type", label:"",hidden:true,isTypeKey:true}
+				
                                       ,{key:"delete", label:"", width:100,sortable:false,className:"aleft",action:'delete',object:'subcategory'}
 				    ,{key:"delete_type", label:"",hidden:true,isTypeKey:true}
 				     ];

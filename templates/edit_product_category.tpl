@@ -1,7 +1,10 @@
 {include file='header.tpl'}
 <div id="bd" >
+ {include file='assets_navigation.tpl'}  
  
- 
+
+
+
  <div class="branch"> 
  <span ><a  href="categories.php?id=0">{t}Product Categories{/t}</a> &rarr; 
  </div> 
