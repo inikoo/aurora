@@ -1,26 +1,32 @@
 {include file='header.tpl'}
 <div id="bd" >
+ <div id="table_type" class="table_type">
+<span  id="export_csv0" style="float:right;margin-left:20px"  class="table_type state_details" tipo="invoices" ><a href="categories.php">Exit Edit</a></span>
+ <span  id="export_csv0" style="float:right;margin-left:20px"  class="table_type state_details" tipo="invoices" ><a href="new_category.php">Add Category</a></span>
+</div>
  
- 
+
+
+
  <div class="branch"> 
  <span ><a  href="categories.php?id=0">{t}Product Categories{/t}</a> &rarr; 
  </div> 
 
 
 
-{* <div id="no_details_title"  style="clear:left;xmargin:0 20px;{if $details!=0}display:none{/if}"> *}
+
     <h1>{t}Editing Category{/t}:</h1>
-{*  </div> *}
+
 
  
    <ul class="tabs" id="chooser_ul" style="clear:both">
          <li> <span class="item {if $edit=='description'}selected{/if}"  id="description">  <span> {t}Description{/t}</span></span></li>
-          <li> <span class="item {if $edit=='subcategory'}selected{/if}"  id="subcategory">  <span> {t}Subcategories{/t}</span></span></li>
+         {* <li> <span class="item {if $edit=='subcategory'}selected{/if}"  id="subcategory">  <span> {t}Subcategories{/t}</span></span></li>*}
     </ul>
   
   <div class="tabbed_container"> 
  
-{*  <div  class="edit_block" style="{if $edit!="description"}display:none{/if}"  id="d_description">*}
+{* <div  class="edit_block" style="{if $edit!="description"}display:none{/if}"  id="d_description">*}
  
   <div class="general_options" style="float:right">
 	<span  style="margin-right:10px;visibility:hidden"  id="save_edit_category" onClick="save_edit_general('category')" class="state_details">{t}Save{/t}</span>
@@ -46,34 +52,11 @@
 
 
 
- {*<div  class="edit_block" style="{if $edit!="subcategory"}display:none{/if}"  id="d_subcategory">
 
-  <div class="general_options" style="float:right">
-	<span  style="margin-right:10px;visibility:hidden"  id="save_edit_subcategory" onClick="save_edit_general('subcategory')" class="state_details">{t}Save{/t}</span>
-	<span style="margin-right:10px;visibility:hidden" id="reset_edit_subcategory" onClick="reset_edit_general('subcategory')" class="state_details">{t}Reset{/t}</span>
-   </div>  
-   
-      <div id="new_category_messages" class="messages_block"></div>
-	  <table class="edit"> 
-      <tr class="first"><td style="" class="label">{t}Subcategories{/t}:</td></tr>
-
-    {foreach from=$subcategory_name item=subcategory}
-
-   <tr><td></td>   <td  style="text-align:left">
-	    <div  style="width:15em;position:relative;top:00px" >
-	      <input style="text-align:left;width:18em" id="Subcategory_Name" value="{$subcategory.subcategory_name}" ovalue="{$subcategory.subcategory_name}" onclick=subcategory_f('{$subcategory.subcategory_key}');>
-	      <div id="Subcategory_Name_Container" style="" ></div>
-	    </div>
-	  </td>
-	  	 <td id="Subcategory_Name_msg" class="edit_td_alert"></td><tr>
-	{/foreach}</tr>
-
-
-	  </table>
-	 </div>*}
 {* ----------------------------------------------------------------------------------------------------------------------------------------- *}
+{*<div  class="edit_block" style="{if $edit!="subcategory"}display:none{/if}"  id="d_subcategory">*}
 <div   class="data_table" sxtyle="margin:25px 20px">
-	  <span class="clean_table_title">{t}SubCategories{/t}</span>
+	  <span class="clean_table_title">{t}Subcategories{/t}</span>
 	 
 	  <div  class="clean_table_caption"  style="clear:both;">
 	    <div style="float:left;"><div id="table_info0" class="clean_table_info"><span id="rtext0"></span> <span class="rtext_rpp" id="rtext_rpp0"></span> <span class="filter_msg"  id="filter_msg0"></span></div></div>
@@ -83,7 +66,7 @@
 	  <div  id="table0"   class="data_table_container dtable btable "> </div>
 	</div>
      
-     
+   {*</div>*}  
 {* ----------------------------------------------------------------------------------------------------------------------------------------- *}
  </div>
  

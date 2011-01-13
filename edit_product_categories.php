@@ -24,7 +24,7 @@ if($modify){
 //$general_options_list[]=array('tipo'=>'js','state'=>$show_details,'id'=>'details','label'=>($show_details?_('Hide Details'):_('Show Details')));
   
   $general_options_list[]=array('tipo'=>'url','url'=>'new_category.php','label'=>_('Add Category'));
-            }
+          }
 $smarty->assign('general_options_list',$general_options_list);
 
 $smarty->assign('view',$_SESSION['state']['product_categories']['view']);
