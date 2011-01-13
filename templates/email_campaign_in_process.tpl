@@ -2,22 +2,26 @@
 <div id="bd" >
 {include file='marketing_navigation.tpl'}
 <div style="clear:left;margin:0 0px">
-    <h1 style="margin-bottom:20px">{t}New Email Campaign{/t}</h1>
+
+
+
+    <h1>{t}Email Campaign{/t}: {$email_campaign->get('Email Campaign Name')}</h1>
+
+
+
+
+
+   
 
 <div class="top_row" >
 
 <table class="edit" style="margin-top:10px">
 
 
-<tr {if $number_stores==1}style="display:none"{/if} ><td class="label">{t}Store:{/t}</td>
+<tr ><td class="label">{t}Store:{/t}</td>
 <td>
-<input  id="store_key" type="hidden" value="{$store_key}">
-<table class="options" id="store_options" >
-{foreach from=$stores_data item=store}
-<td onclick="select_store({$store.key})" id="store_button{$store.key}" class="option">{$store.code}</td>
+{$store->get('Store Name')}
 
-{/foreach}
-</table>
 </td>
 </tr>
 <tr><td class="label">{t}Campaign Name:{/t}</td><td><input style="width:300px" id="email_campaign_name" type="text" value=""></td></tr>

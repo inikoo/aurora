@@ -1,21 +1,51 @@
 <?php
 /*
- File: marketing.php 
+ File: email_campaign.php 
 
  UI index page
 
  About: 
  Autor: Raul Perusquia <rulovico@gmail.com>
  
- Copyright (c) 2009, Kaktus 
+ Copyright (c) 2011, Kaktus 
  
  Version 2.0
 */
 
 include_once('common.php');
 
-include_once('class.Product.php');
-include_once('class.Order.php');
+include_once('class.Store.php');
+
+include_once('class.EmailCampaign.php');
+
+$page='email_campaign';
+$smarty->assign('page',$page);
+if (isset($_REQUEST['id']) and is_numeric($_REQUEST['id']) ) {
+    $email_campaign_id=$_REQUEST['id'];
+
+} else {
+    $email_campaign_id=$_SESSION['state'][$page]['id'];
+}
+
+if (isset($_REQUEST['edit'])) {
+    header('Location: edit_email_campaign.php?id='.$email_campaign_id);
+
+    exit("E2");
+}
+
+$email_campaign=new EmailCampaign($email_campaign_id);
+if(!$email_campaign->id){
+ header('Location: marketing.php?error=no_EC');
+exit;
+}
+
+
+
+if (!($user->can_view('stores') and in_array($email_campaign->data['Email Campaign Store Key'],$user->stores)   ) ) {
+    header('Location: index.php?error=ns');
+    exit;
+}
+
 
 
 $general_options_list=array();
@@ -24,7 +54,8 @@ $general_options_list[]=array('tipo'=>'url','url'=>'campaign.php?new','label'=>_
 $general_options_list[]=array('tipo'=>'url','url'=>'newsletter.php?new','label'=>_('Create Newsletter'));
 $smarty->assign('general_options_list',$general_options_list);
 
-$view_orders=$user->can_view('Orders');
+$store=new Store($email_campaign->data['Email Campaign Store Key']);
+$smarty->assign('store',$store);
 
 
 $css_files=array(
@@ -35,7 +66,7 @@ $css_files=array(
 		 'common.css',
 		 'button.css',
 		 'container.css',
-		 'table.css'
+		 'table.css','css/users.css'
 		 );
 $js_files=array(
 
@@ -51,7 +82,7 @@ $js_files=array(
 		'common.js.php',
 		'table_common.js.php',
 		'js/search.js',
-		'index.js.php'
+		'email_campaign.js.php'
 		);
 
 
@@ -62,17 +93,16 @@ $smarty->assign('title', _('Marketing'));
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
 
+$smarty->assign('email_campaign',$email_campaign);
 
-$new=false;
-if(isset($_REQUEST['new'])){
-$new=true;
+switch ($email_campaign->data['Email Campaign State']) {
+    case 'Creating':
+        $tpl_file='email_campaign_in_process.tpl';
+        break;
+    
 }
 
-if($new)
-$smarty->display('new_campaign.tpl');
-
-else
-$smarty->display('campaign.tpl');
+$smarty->display($tpl_file);
 
 
 
