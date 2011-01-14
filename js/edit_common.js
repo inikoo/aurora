@@ -157,7 +157,7 @@ validate_scope(branch);
 
 
 var CellEdit = function (callback, newValue) {
-alert("********");
+
     var record = this.getRecord(),
                  column = this.getColumn(),
                           oldValue = this.value,
