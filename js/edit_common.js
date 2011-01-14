@@ -157,7 +157,7 @@ validate_scope(branch);
 
 
 var CellEdit = function (callback, newValue) {
-
+alert("********");
     var record = this.getRecord(),
                  column = this.getColumn(),
                           oldValue = this.value,
@@ -191,8 +191,8 @@ alert(ar_file+'?'+request);
     ar_file, {
 success:function(o) {
           alert(o.responseText);
-
-            var r = YAHOO.lang.JSON.parse(o.responseText);
+alert("before r");
+            var r = YAHOO.lang.JSON.parse(o.responseText);alert(r);alert("after r");
 
             if (r.state == 200) {
 
