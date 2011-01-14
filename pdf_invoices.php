@@ -1,4 +1,10 @@
 <?php
+require_once('common.php');
+$id = isset($_REQUEST['id']) ? $_REQUEST['id'] : '';
+$sql = "select `Invoice Public ID` from `Invoice Dimension` where `Invoice Key` = '".$id."'";
+$result = mysql_query($sql);
+$row = mysql_fetch_array($result);
+$invoice_public_id=$row[0];
 require_once('external_libs/PDF/config/lang/eng.php');
 require_once('pdf_main.php');
 $pdf = new TCPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
@@ -25,5 +31,6 @@ $page1 = ob_get_contents();
 ob_clean();
 $page1 = preg_replace("/\s\s+/", '', $page1);
 $pdf->writeHTML($page1, true, 0, true, 0);
-$pdf->Output('invoice_details.pdf', 'I');
+$pdf_file_name=$invoice_public_id.'.pdf';
+$pdf->Output($pdf_file_name, 'I');
 ?>
