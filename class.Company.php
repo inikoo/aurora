@@ -2201,6 +2201,8 @@ $sql=sprintf("select * from `Corporation Dimension` where `Corporation Company K
     }
 
     function add_area($data) {
+$data1=$data;
+print_r($data1);
         include_once('class.CompanyArea.php');
         $data['Company Key']=$this->id;
         $data['editor']=$this->editor;

@@ -191,9 +191,9 @@ alert(ar_file+'?'+request);
     ar_file, {
 success:function(o) {
           alert(o.responseText);
-//alert("before");
+
             var r = YAHOO.lang.JSON.parse(o.responseText);
-//alert("after");
+
             if (r.state == 200) {
 
                 if (r.key=='cost' && column.object=='product_supplier') {
