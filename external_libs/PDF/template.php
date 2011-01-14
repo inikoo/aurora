@@ -9,6 +9,7 @@ $row = mysql_fetch_array($result);
 if(mysql_num_rows($result) > 0)
 {
 ?>
+
 <center>
 <table width="100%" border="0"  bgcolor="#FFFFFF" style="font:'Lucida Sans Unicode', 'Lucida Grande', sans-serif; font-size:24px;">
 	 <tr>
