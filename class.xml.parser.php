@@ -55,7 +55,8 @@ xml_parser_free($this->xml_obj);
 }
 }
 
-return true;
+//return true;
+return $this->output;
 }
 
 

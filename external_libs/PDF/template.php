@@ -3,7 +3,9 @@ require_once('common.php');
 //require_once 'class.Order.php';
 //require_once 'class.Invoice.php';
 $id = isset($_REQUEST['id']) ? $_REQUEST['id'] : '';
-$sql = "select * from `Invoice Dimension` where `Invoice Key` = '".$id."'";
+$sql = "select * from `Invoice Dimension` ID left join `Order Transaction Fact` O on (O.`Invoice Key`=ID.`Invoice Key`) where ID.`Invoice Key` = '".$id."'";
+
+
 $result = mysql_query($sql);
 $row = mysql_fetch_array($result);
 if(mysql_num_rows($result) > 0)
@@ -13,43 +15,42 @@ if(mysql_num_rows($result) > 0)
 <center>
 <table width="100%" border="0"  bgcolor="#FFFFFF" style="font:'Lucida Sans Unicode', 'Lucida Grande', sans-serif; font-size:24px;">
 	 <tr>
-    <td colspan="3" align="center" style="font-size:35px;font-weight:bold;">INVOICE DETAILS <br><br></td>
+    <td colspan="3" align="center" style="font-size:40px;font-weight:bold;">INVOICE<br><br></td>
   </tr>
   <tr height="35%">
-    <td width="45%" style="font-size:30px;font-weight:bold;">Invoice Number - <?php echo $row['Invoice Public ID']; ?> </td>
+    <td width="45%" style="font-size:30px;font-weight:bold;"><?php echo $row['Invoice Customer Name']; ?></td>
 <td width="20%"></td>
-    <td width="35%" style="font-size:30px;font-weight:bold;">Invoice Date - <?php echo $row['Invoice Date']; ?></td>
+    <td width="35%" style="font-size:30px;font-weight:bold;"><table><tr><td>Invoice Number</td><td><?php echo $row['Invoice Public ID']; ?></td></tr></table></td>
   </tr>
   <tr>
-    <td><span style="font-size:28px;"><?php echo $row['Invoice Customer Name']; ?></span><br>
+    <td>
 <?php echo $row['Invoice XHTML Address']; ?><br>
 Order - <?php echo $row['Invoice Public ID']; ?><br>
 Delivery Notes - <?php echo $row['Invoice Public ID']; ?></td>
     <td>&nbsp;</td>
     <td><table border="0">
-			<tr>
-				<td>Items Gross</td><td align="right"><?php echo $row['Invoice Items Gross Amount']; ?></td><td></td>
+                        <tr> 
+				<td>Invoice Date</td><td align="right"><?php echo strftime("%a %e %b %Y", strtotime($row['Invoice Date'].' UTC'));?></td><td></td>
 			</tr>
 			<tr>
-				<td>Discounts</td><td align="right"><?php echo $row['Invoice Items Discount Amount']; ?></td>
+				<td>Items Gross</td><td align="right"><?php echo money($row['Invoice Items Gross Amount'],$row['Invoice Currency Code']); ?></td><td></td>
 			</tr>
 			<tr>
-				<td>Items Net</td><td align="right"><?php echo $row['Invoice Items Net Amount']; ?></td>
+				<td>Discounts</td><td align="right"><?php echo money($row['Invoice Items Discount Amount'],$row['Invoice Currency Code']); ?></td>
 			</tr>
 			<tr>
-				<td>Adjust Net</td><td align="right"><?php echo $row['Invoice Total Net Adjust Amount']; ?></td>
+				<td>Items Net</td><td align="right"><?php echo money($row['Invoice Items Net Amount'],$row['Invoice Currency Code']); ?></td>
 			</tr>
 			<tr>
-				<td>Shipping</td><td align="right"><?php echo $row['Invoice Shipping Net Amount']; ?></td>
+				<td>Adjust Net</td><td align="right"><?php echo money($row['Invoice Total Net Adjust Amount'],$row['Invoice Currency Code']); ?></td>
 			</tr>
-			<tr>
-				<td>Total Net</td><td align="right"><?php echo $row['Invoice Total Net Amount']; ?></td>
-			</tr>
-			<tr>
-				<td>Tax</td><td align="right"><?php echo $row['Invoice Total Tax Amount'];?></td>
-			</tr>
-	<tr style="font-weight:bold;font-size:26px;"><td>Total</td><td align="right"><?php echo $row['Invoice Total Amount'];?></td></tr>	
+				
 		</table>
+<?php
+                                   $shipping=money($row['Invoice Shipping Net Amount'],$row['Invoice Currency Code']);
+                                   $total_net=money($row['Invoice Total Net Amount'],$row['Invoice Currency Code']);
+                                   $tax=money($row['Invoice Total Tax Amount'],$row['Invoice Currency Code']);
+				   $total_amt=money($row['Invoice Total Amount'],$row['Invoice Currency Code']); ?>
      </td>
   </tr>
   
@@ -97,6 +98,35 @@ Delivery Notes - <?php echo $row['Invoice Public ID']; ?></td>
  }
 ?>
 </table>
+
+<br><br>
+
+<table width="100%" border="0"  bgcolor="#FFFFFF" style="font:'Lucida Sans Unicode', 'Lucida Grande', sans-serif; font-size:24px;">
+	
+  <tr>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td><table border="0">
+                       
+			<tr>
+				<td>Shipping</td><td align="right"><?php echo $shipping; ?></td><td></td>
+			</tr>
+			<tr>
+				<td>Total Net</td><td align="right"><?php echo $total_net; ?></td>
+			</tr>
+			<tr>
+				<td>Tax</td><td align="right"><?php echo $tax;?></td>
+			</tr>
+	<tr style="font-weight:bold;font-size:26px;"><td>Total</td><td align="right"><?php echo $total_amt;?></td></tr>	
+		</table>
+     </td>
+  </tr>
+</table>
+
+
+
+
+
 <?php
 }
 else
