@@ -3606,8 +3606,11 @@ function list_edit_product_categories() {
 
 function edit_categories($data){
 $category=new Category($data['id']);
-if($data['key']=='name'){$data['key']='Category Name';}
-$category->update(array($data['key']=>$data['newvalue']));print($data['key']);
+
+$translate_keys=array('id'=>'Category Key','name'=>'Category Name');
+
+//if($data['key']=='name'){$data['key']='Category Name';}
+$category->update(array($translate_keys[$data['key']]=>$data['newvalue']));//print($data['key']);
  if($category->updated){
     $response=array('state'=>200,'action'=>'updated','key'=>$data['key'],'newvalue'=>$category->new_value);
  }else{
