@@ -15,7 +15,7 @@ if(mysql_num_rows($result) > 0)
 <center>
 <table width="100%" border="0"  bgcolor="#FFFFFF" style="font:'Lucida Sans Unicode', 'Lucida Grande', sans-serif; font-size:24px;">
 	 <tr>
-    <td colspan="3" align="center" style="font-size:40px;font-weight:bold;">INVOICE<br><br></td>
+    <td colspan="3" align="center" style="font-size:48px;font-weight:bold;">INVOICE<hr></td>
   </tr>
   <tr height="35%">
     <td width="45%" style="font-size:30px;font-weight:bold;"><?php echo $row['Invoice Customer Name']; ?></td>
