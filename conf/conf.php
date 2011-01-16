@@ -467,7 +467,7 @@ $default_state=array(
                                             'stores_mode'=>'grouped',
                                             'exchange_value'=>1,
                                             'show_default_currency'=>false,
-				            'edit'=>'details',
+				            'edit'=>'description',
                                             'subcategories'=>array(
 
                                                                 'order'=>'name',
@@ -3147,6 +3147,40 @@ $default_state=array(
                                                  'f_field'=>'country_code',
                                                  'f_value'=>'',
                                              ),
+                             ),
+                             'categories'=>array(
+                             
+                             'edit'=>'description',
+                             'parent_key'=>0,
+                             'subject'=>'',
+                             'subject_key'=>0,
+                             'store_key'=>0,
+                             'table'=>array(
+                                                                  
+                                                                  'sf'=>0,
+                                                                  'nr'=>50,
+                                                                  'f_value'=>'',
+                                                                  'f_show'=>true,
+                                                                  'f_field'=>'name',
+                                                                  'from'=>'',
+                                                                  'to'=>'',
+                                                                  'order'=>'name',
+                                                                  'order_dir'=>'',
+                                                                  'where'=>''
+                                                              ),
+                                                              'history'=>array(
+                                                                  
+                                                                  'sf'=>0,
+                                                                  'nr'=>50,
+                                                                  'f_value'=>'',
+                                                                  'f_show'=>true,
+                                                                  'f_field'=>'abstract',
+                                                                  'from'=>'',
+                                                                  'to'=>'',
+                                                                  'order'=>'date',
+                                                                  'order_dir'=>'',
+                                                                  'where'=>''
+                                                              )
                              )
 
 

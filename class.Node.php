@@ -41,7 +41,7 @@ class summary:
 class nodes
 {
 
-
+var $id=0;
 var $HtmlTree;
 var $HtmlRow;
 var $table_name   = "`Category Dimension`";
@@ -115,6 +115,9 @@ if($this->sql_condition != "") $this->sql_condition_where = " WHERE ".$this->sql
 function add_new($parent = 0 , $fields = array() )  // add new category
 {
 $keys = array_keys($fields);
+
+
+
 $values= array_values($fields);
 // lets get the position from the $parent value
 $position  = $this->get_position($parent);
@@ -124,10 +127,16 @@ $position  = $this->get_position($parent);
 //$sql = "INSERT into ".$this->table_name." (";
 
 //print_r($fields);
-$fields['`Category Parent Key`']=$parent;
+$fields['Category Parent Key']=$parent;
  $_keys='';
         $_values='';
         foreach($fields as $key=>$value) {
+        
+        
+if(!preg_match('/^\`.+\`$/',$key)){
+$key="`".$key."`";
+}
+
             $_keys.=",".$key."";
             $_values.=','.prepare_mysql($value,false);
         }
@@ -144,6 +153,10 @@ $fields['`Category Parent Key`']=$parent;
 //print "$sql\n";
 mysql_query($sql) or 
 die(trigger_error("<br><storng><u>MySQL Error:</u></strong><br>".mysql_error()."<br><br><storng><u>Query Used:</u></strong><br>".$sql."<br><br><storng><u>Info:</u></strong><br>",E_USER_ERROR));
+$this->id=mysql_insert_id();
+
+
+
 
 $node_id   = mysql_insert_id();
 $position .= $node_id.">";
@@ -154,6 +167,9 @@ $sql = "UPDATE ".$this->table_name."
 		WHERE ".$this->table_fields['id']." = '".mysql_insert_id()."' ".$this->sql_condition;
 
 mysql_query($sql) or die(trigger_error("<br><storng><u>MySQL Error:</u></strong><br>".mysql_error()."<br><br><storng><u>Query Used:</u></strong><br>".$sql."<br><br><storng><u>Info:</u></strong><br>",E_USER_ERROR));
+
+
+
 
 $this->_optimize_orders($position);
 }

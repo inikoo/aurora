@@ -22,12 +22,15 @@
 </dl>
 
 {/if}
- <span class="nav2 onleft"><a href="families.php">{t}Families{/t}</a></span>
- <span class="nav2 onleft"><a href="products.php?parent=none">{t}Products{/t}</a></span>
-  <span class="nav2 onleft"><a href="deals.php">{t}Deals{/t}</a></span>
 
- <span class="nav2 onleft"><a href="categories.php">{t}Products Categories{/t}</a></span>
-{if $view_parts}<span class="nav2 onleft"><a href="parts.php">{t}Parts{/t}</a></span>{/if}
+{if $store_key}
+
+ <span class="nav2 onleft"><a href="families.php?store_id={$store_key}">{t}Families{/t}</a></span>
+ <span class="nav2 onleft"><a href="products.php?store_id={$store_key}">{t}Products{/t}</a></span>
+  <span class="nav2 onleft"><a href="deals.php?store_id={$store_key}">{t}Deals{/t}</a></span>
+ <span class="nav2 onleft"><a href="product_categories.php?store_id={$store_key}id=0">{t}Products Categories{/t}</a></span>
+
+{/if}
 
 <div class="right_box">
   <div class="general_options">

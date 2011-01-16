@@ -1216,11 +1216,16 @@ class supplierproduct extends DB_Table {
         $historic_keys=join(',',$this->get_historic_keys());
 
 
+        if($historic_keys==''){
+        print_r($this);
+            exit("Mega error Supplier Product with out historic key\n");
+        }
+
 
         $sql=sprintf("select   sum(`Inventory Transaction Storing Charge Amount`) as storing,   ifnull(sum(`Given`*`Inventory Transaction Amount`/(`Inventory Transaction Quantity`)),0) as value_free,   ifnull(sum(`Required`),0) as required, ifnull(sum(`Given`),0) as given, ifnull(sum(`Amount In`),0) as amount_in, ifnull(sum(`Inventory Transaction Quantity`),0) as qty, ifnull(sum(`Inventory Transaction Amount`),0) as value from  `Inventory Transaction Fact` where   `Inventory Transaction Type`='Sale' and `Supplier Product Key` in (%s)  "
         ,$historic_keys);
         //print_r($this->parts_sku);
-           print "$sql\n";
+        //   print "$sql\n";
         //exit;
         $result=mysql_query($sql);
         if ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
@@ -1242,7 +1247,7 @@ class supplierproduct extends DB_Table {
         $profit_sold_after_storing=$profit_sold-$storing;
 
 
-
+//print "** $required ***\n";
 
 
         $sql=sprintf("update `Supplier Product Dimension` set `Supplier Product Total Cost`=%.2f,`Supplier Product Total Parts Required`=%f ,`Supplier Product Total Parts Provided`=%f,`Supplier Product Total Parts Used`=%f ,`Supplier Product Total Sold Amount`=%f ,`Supplier Product Total Parts Profit`=%f ,`Supplier Product Total Parts Profit After Storing`=%f  where  `Supplier Key`=%d  and `Supplier Product Code`=%s"
@@ -1257,7 +1262,8 @@ class supplierproduct extends DB_Table {
                      ,prepare_mysql($this->data['Supplier Product Code'])
 
                     );
-        // print "$sql\n";
+     //    print "$sql\n";
+      //  exit;
         if (!mysql_query($sql))
             exit("error con not uopdate product part when loading sales");
 
@@ -1462,7 +1468,9 @@ class supplierproduct extends DB_Table {
                      ,$this->data['Supplier Key']
                      ,prepare_mysql($this->data['Supplier Product Code'])
                     );
-        //                  print "$sql\n";
+         //                print "$sql\n";
+        
+       // exit;
         if (!mysql_query($sql))
             exit("error con not uopdate product part when loading sales");
 

@@ -348,7 +348,8 @@ foreach($contacts as $act_data) {
         if ($_key=='email')
             $key=preg_replace('/^email$/','Customer Main Plain Email',$_key);
         if ($_key=='telephone')
-            $key=preg_replace('/^telephone$/','Customer Main Pain Telephone',$_key);
+            $key=preg_replace('/^telephone$/','
+            Customer Main Pain Telephone',$_key);
         if ($_key=='fax')
             $key=preg_replace('/^fax$/','Customer Main Plain FAX',$_key);
         if ($_key=='mobile')
