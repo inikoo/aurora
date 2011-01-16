@@ -8882,9 +8882,9 @@ function list_product_categories() {
 
 
 
+$store_key=$_SESSION['state']['store']['id'];
 
-
-    $where=sprintf("where `Category Subject`='Product' and  `Category Parent Key`=%d ",$root_category);
+    $where=sprintf("where `Category Subject`='Product' and  `Category Parent Key`=%d and `Category Store Key`=%d",$root_category,$store_key);
   //  $where=sprintf("where `Category Subject`='Product'  ");
 
     if ($stores_mode=='grouped')
@@ -9322,13 +9322,14 @@ function list_product_categories() {
             $profit=$tprofit;
         }
         if ($stores_mode=='grouped')
-            $name=sprintf('<a href="categories.php?id=%d">%s</a>',$row['Category Key'],$row['Category Name']);
+            $name=sprintf('<a href="product_categories.php?id=%d">%s</a>',$row['Category Key'],$row['Category Name']);
         else
             $name=$row['Product Category Key'].' '.$row['Category Name']." (".$row['Product Category Store Key'].")";
         $adata[]=array(
 		     //'go'=>sprintf("<a href='edit_category.php?edit=1&id=%d'><img src='art/icons/page_go.png' alt='go'></a>",$row['Category Key']),
                      'id'=>$row['Category Key'],
                      'name'=>$name,
+                   
                      'departments'=>number($row['Product Category Departments']),
                      'families'=>number($row['Product Category Families']),
                      'active'=>number($row['Product Category For Public Sale Products']),

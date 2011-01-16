@@ -2,16 +2,8 @@
 <div id="bd" >
 {include file='marketing_navigation.tpl'}
 <div style="clear:left;margin:0 0px">
+<h1>{t}Email Campaign{/t}: {$email_campaign->get('Email Campaign Name')}</h1>
 
-
-
-    <h1>{t}Email Campaign{/t}: {$email_campaign->get('Email Campaign Name')}</h1>
-
-
-
-
-
-   
 
 <div class="top_row" >
 
@@ -24,8 +16,8 @@
 
 </td>
 </tr>
-<tr><td class="label">{t}Campaign Name:{/t}</td><td><input style="width:300px" id="email_campaign_name" type="text" value=""></td></tr>
-<tr><td class="label">{t}Campaign Objetive:{/t}</td><td><textarea style="width:300px"  id="email_campaign_objetive"  ></textarea></td></tr>
+<tr><td class="label">{t}Campaign Name:{/t}</td><td><input style="width:300px" id="email_campaign_name" type="text" value="{$email_campaign->get('Email Campaign Name')}"></td></tr>
+<tr><td class="label">{t}Campaign Objetive:{/t}</td><td><textarea style="width:300px"  id="email_campaign_objetive"  >{$email_campaign->get('Email Campaign Objective')}</textarea></td></tr>
 </table>
 
 <button id="cancel_new_email_campaign">{t}Cancel{/t}</button>

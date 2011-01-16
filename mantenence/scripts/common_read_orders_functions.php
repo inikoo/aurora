@@ -365,6 +365,7 @@ function adjust_invoice($invoice,$continue=true) {
 //print_r($header_data);
 //printf("\nInvoice Totals: %f + %f =%f\n",$invoice->data['Invoice Total Net Amount'],$invoice->data['Invoice Total Tax Amount'],$invoice->data['Invoice Total Amount']);
 //printf("Invoice Totals: %f + %f =%f\n",$header_data['total_net'],$tax,$header_data['total_topay']);
+
     $diff_net=round($header_data['total_net']-$invoice->data['Invoice Total Net Amount'],2);
     $diff_tax=round($tax-$invoice->data['Invoice Total Tax Amount'],2);
     $total_diff=round($header_data['total_topay']-$invoice->data['Invoice Total Amount'],2);
@@ -373,7 +374,7 @@ function adjust_invoice($invoice,$continue=true) {
         return true;
 
 //printf("Diff Net %s Tax %s Total %s \n",$diff_net,$diff_tax,$total_diff);
-
+//exit;
     if ($diff_net==0 and  $diff_tax==0 and $total_diff==0) {
         return;
     }
@@ -470,6 +471,8 @@ function create_order($data) {
 
 
     $order=new Order('new',$order_data);
+    
+   
     if ($header_data['collection']=='Yes')
         $order->update_order_is_for_collection('Yes');
     $discounts_map=array();
@@ -570,8 +573,14 @@ function create_order($data) {
                             'Charge Description'=>'Charge'
                         ));
     $order->update_charges_amount($charges_data);
+    
+    
+    
+    
     $dn=$order->send_to_warehouse($date_order);
 
+
+    
 
     return $order;
 
@@ -637,7 +646,7 @@ function send_order($data,$data_dn_transactions) {
         if ($order->data['Order Type']=='Order' or ((  ($order->data['Order Type']=='Sample'  or $order->data['Order Type']=='Donation') and $order->data['Order Total Amount']!=0 ))) {
             $invoice=$dn->create_invoice($date_inv);
             // print_r($invoice);
-            // exit("----\n");
+             //exit("----\n");
             foreach($credits as $credit) {
                 $credit_data=array(
                                  'Affected Order Key'=>$order->id,
@@ -650,6 +659,9 @@ function send_order($data,$data_dn_transactions) {
                              );
                 $invoice->add_credit_no_product_transaction($credit_data);
             }
+
+
+       
 
             $invoice->update(array
                              (
@@ -665,7 +677,14 @@ function send_order($data,$data_dn_transactions) {
 
 
                              ));
-            $invoice->update_totals();
+       
+     
+       
+       $invoice->update_totals();
+       
+       
+       
+       
             adjust_invoice($invoice);
 
 
@@ -1187,6 +1206,8 @@ function get_tax_code($type,$header_data) {
         break;
     }
     $tax_category=new TaxCategory('find',$tax_cat_data,'create');
+
+
     return $tax_category;
 }
 

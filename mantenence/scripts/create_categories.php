@@ -30,6 +30,15 @@ require_once '../../conf/conf.php';
 global $myconf;
 
 
+$sql=sprintf("truncate `Category Dimension`;");
+mysql_query($sql);
+
+
+$data=array('Category Name'=>'hola','Category Subject'=>'Product');
+
+$cat=new Category('find create',$data);
+print_r($cat);
+exit;
 $nodes=new Nodes('`Category Dimension`');
 $data=array('`Category Name`'=>'Use');
 $nodes->add_new(0 , $data);

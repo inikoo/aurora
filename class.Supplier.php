@@ -478,7 +478,29 @@ $this->data['Supplier Main XHTML Email']='';
             break;
 
         case('sales'):
-            $sql=sprintf("select sum(`Supplier Product Total Sold Amount`) as sold,sum(`Supplier Product Total Parts Profit`) as profit,sum(`Supplier Product Total Parts Profit After Storing`) as profit_astoring,sum(`Supplier Product Total Cost`) as cost  from `Supplier Product Dimension`  where `supplier key`=%d",$this->id);
+          
+            $this->update_sales();
+
+
+            break;
+        }
+
+    }
+    
+    
+    function update_sales(){
+    
+    
+      $this->data['Supplier Total Parts Profit']=0;
+                $this->data['Supplier Total Parts Profit After Storing']=0;
+                $this->data['Supplier Total Cost']=0;
+                $this->data['Supplier Total Parts Sold Amount']=0;
+    
+    
+    
+    
+    
+      $sql=sprintf("select sum(`Supplier Product Total Sold Amount`) as sold,sum(`Supplier Product Total Parts Profit`) as profit,sum(`Supplier Product Total Parts Profit After Storing`) as profit_astoring,sum(`Supplier Product Total Cost`) as cost  from `Supplier Product Dimension`  where `supplier key`=%d",$this->id);
             //    print $sql;
             $result=mysql_query($sql);
             if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
@@ -487,7 +509,12 @@ $this->data['Supplier Main XHTML Email']='';
                 $this->data['Supplier Total Cost']=$row['cost'];
                 $this->data['Supplier Total Parts Sold Amount']=$row['sold'];
 
-                $sql=sprintf("update `Supplier Dimension` set  `Supplier Total Parts Profit`=%.2f,`Supplier Total Parts Profit After Storing`=%.2f,`Supplier Total Cost`=%.2f ,`Supplier Total Parts Sold Amount`=%.2f  where `Supplier Key`=%d "
+              
+            }
+
+
+
+  $sql=sprintf("update `Supplier Dimension` set  `Supplier Total Parts Profit`=%.2f,`Supplier Total Parts Profit After Storing`=%.2f,`Supplier Total Cost`=%.2f ,`Supplier Total Parts Sold Amount`=%.2f  where `Supplier Key`=%d "
                              ,$this->data['Supplier Total Parts Profit']
                              ,$this->data['Supplier Total Parts Profit After Storing']
                              ,$this->data['Supplier Total Cost']
@@ -497,15 +524,11 @@ $this->data['Supplier Main XHTML Email']='';
                 //     print "$sql\n";
                 if (!mysql_query($sql))
                     exit("$sql\ncan not update sup\n");
-            }
 
-
-
-
-            break;
-        }
 
     }
+    
+    
     /*
       Function: create_code
       Create supplier code based in the supplier name

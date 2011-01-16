@@ -490,9 +490,8 @@ ALTER TABLE `Email Campaign Dimension` ADD `Email Last Updated Date` DATETIME NO
 ADD `Email Campaign Creation Date` DATETIME NOT NULL AFTER `Email Last Updated Date` ,
 ADD `Email Campaign Date` DATETIME NULL DEFAULT NULL AFTER `Email Campaign Creation Date` ,
 ADD INDEX ( `Email Last Updated Date` ) ;
-ALTER TABLE `Email Campaign Dimension` CHANGE `Email Last Updated Date` `Email Campaign Last Updated Date` DATETIME NOT NULL 
+ALTER TABLE `Email Campaign Dimension` CHANGE `Email Last Updated Date` `Email Campaign Last Updated Date` DATETIME NOT NULL ;
 ALTER TABLE `Email Campaign Dimension` ADD INDEX ( `Email Campaign Store Key` ) ;
-ALTER TABLE `Email Campaign Dimension` CHANGE `Email Campaign Status` `Email Campaign Status` ENUM( 'Creating', 'Ready', 'Sending', 'Complete' ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'Creating';
 ALTER TABLE `Email Campaign Dimension` CHANGE `Email Campaign Status` `Email Campaign State` ENUM( 'Creating', 'Ready', 'Sending', 'Complete' ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'Creating';
 
 ALTER TABLE `Store Dimension` ADD `Store 1 Year New Customers Contacts` MEDIUMINT NOT NULL DEFAULT '0' AFTER `Store New Customers` ,
@@ -500,7 +499,49 @@ ADD `Store 1 Quarter New Customers Contacts` MEDIUMINT NOT NULL DEFAULT '0' AFTE
 ADD `Store 1 Month New Customers Contacts` MEDIUMINT NOT NULL DEFAULT '0' AFTER `Store 1 Quarter New Customers Contacts` ,
 ADD `Store 1 Week New Customers Contacts` MEDIUMINT NOT NULL DEFAULT '0' AFTER `Store 1 Month New Customers Contacts`,
 ADD `Store 1 Day New Customers Contacts` MEDIUMINT NOT NULL DEFAULT '0' AFTER `Store 1 Week New Customers Contacts`;
-ALTER TABLE `dw3`.`Customer Dimension` ADD INDEX ( `Customer First Contacted Date` ) ;
+ALTER TABLE `Customer Dimension` ADD INDEX ( `Customer First Contacted Date` ) ;
 
+
+INSERT INTO `Right Dimension` (
+`Right Key` ,
+`Right Type` ,
+`Right Name` ,
+`Right Access` ,
+`Rigth Access Keys`
+)
+VALUES (
+NULL , 'View', 'supplier sales', 'All', ''
+);
+
+INSERT INTO `Right Dimension` (
+`Right Key` ,
+`Right Type` ,
+`Right Name` ,
+`Right Access` ,
+`Rigth Access Keys`
+)
+VALUES (
+NULL , 'View', 'supplier stock', 'All', ''
+);
+
+INSERT INTO `User Group Rights Bridge` (
+`Group Key` ,
+`Right Key`
+)
+VALUES (
+'3', '59'
+);
+
+INSERT INTO `User Group Rights Bridge` (
+`Group Key` ,
+`Right Key`
+)
+VALUES (
+'3', '58'
+);
+
+ALTER TABLE `Category Dimension` ADD `Category Store Key` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0' AFTER `Category Key` ,ADD INDEX ( `Category Store Key` ) ;
+ALTER TABLE `Category Dimension` ADD `Category Subject Key` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0' AFTER `Category Subject` ,ADD INDEX ( `Category Subject Key` ) ;
 */
+
 ?>

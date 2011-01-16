@@ -1,37 +1,28 @@
 {include file='header.tpl'}
 <div id="bd" > 
-<div class="search_box" style="margin-top:15px">
-  <div class="general_options">
-    {foreach from=$general_options_list item=options }
-        {if $options.tipo=="url"}
-            <span onclick="window.location.href='{$options.url}'" >{$options.label}</span>
-        {else}
-            <span  id="{$options.id}" state="{$options.state}">{$options.label}</span>
-        {/if}
-    {/foreach}
-    </div>
-</div>
+{include file='assets_navigation.tpl'}
 
 
- <div class="branch"> 
- <span ><a  href="categories.php?id=0">{t}Product Categories{/t}</a> &rarr; 
+{if $category}
+<div class="branch"> 
+ <span ><a  href="edit_product_category.php?store_id={$store->id}&id=0">{t}Product Categories{/t}</a> &rarr; {$category->get_smarty_tree('edit_product_category.php')}
  </div> 
-
-
-
-
-    <h1>{t}Editing Category{/t}:</h1>
-
+    <h1 style="clear:both">{t}Editing Category{/t}: <span id="cat_title">{$category->get('Category Name')}</span></h1>
+{else}
+<h1 style="clear:both">{t}Editing Main Categories{/t}</h1>
+{/if}
 
  
    <ul class="tabs" id="chooser_ul" style="clear:both">
-         <li> <span class="item {if $edit=='description'}selected{/if}"  id="description">  <span> {t}Description{/t}</span></span></li>
-         {* <li> <span class="item {if $edit=='subcategory'}selected{/if}"  id="subcategory">  <span> {t}Subcategories{/t}</span></span></li>*}
+         <li> <span class="item {if $edit=='description'}selected{/if}" {if !$category}style="display:none"{/if} id="description">  <span> {t}Description{/t}</span></span></li>
+         <li> <span class="item {if $edit=='subcategory'}selected{/if}"  id="subcategory">  <span> {t}Subcategories{/t}</span></span></li>
     </ul>
   
   <div class="tabbed_container"> 
  
-{* <div  class="edit_block" style="{if $edit!="description"}display:none{/if}"  id="d_description">*}
+
+{if $category}
+ <div  class="edit_block" style="{if $edit!="description"}display:none{/if}"  id="d_description">
  
   <div class="general_options" style="float:right">
 	<span  style="margin-right:10px;visibility:hidden"  id="save_edit_category" onClick="save_edit_general('category')" class="state_details">{t}Save{/t}</span>
@@ -51,15 +42,14 @@
 	  </td>
 	  	 <td id="Category_Name_msg" class="edit_td_alert"></td>
 	</tr></table>
-{*</div>*}
+</div>
+{/if}
 
 
 
 
 
-
-{* ----------------------------------------------------------------------------------------------------------------------------------------- *}
-{*<div  class="edit_block" style="{if $edit!="subcategory"}display:none{/if}"  id="d_subcategory">*}
+<div  class="edit_block" style="{if $edit!="subcategory"}display:none{/if}"  id="d_subcategory">
 <div   class="data_table" sxtyle="margin:25px 20px">
 	  <span class="clean_table_title">{t}Subcategories{/t}</span>
 	 
@@ -71,23 +61,19 @@
 	  <div  id="table0"   class="data_table_container dtable btable "> </div>
 	</div>
      
-   {*</div>*}  
-{* ----------------------------------------------------------------------------------------------------------------------------------------- *}
+   </div>
  </div>
  
  
  
  
-  <div id="the_table1" class="data_table" style=" clear:both">
+ 
+ 
+ <div id="the_table1" class="data_table" style="clear:both">
   <span class="clean_table_title">{t}History{/t}</span>
-  <div  id="clean_table_caption1" class="clean_table_caption"  style="clear:both;">
-    <div style="float:left;"><div id="table_info1" class="clean_table_info"><span id="rtext1"></span> <span class="filter_msg"  id="filter_msg1"></span></div></div>
-    <div id="clean_table_filter1" class="clean_table_filter" style="display:none">
-      <div class="clean_table_info"><span id="filter_name1" class="filter_name" >{$filter_name}</span>: <input style="border-bottom:none" id='f_input1' value="{$filter_value}" size=10/><div id='f_container'></div></div></div>
-    <div class="clean_table_controls" style="" ><div><span  style="margin:0 5px" id="paginator1"></span></div></div>
-  </div>
+     {include file='table_splinter.tpl' table_id=1 filter_name=$filter_name1 filter_value=$filter_value1  }
   <div  id="table1"   class="data_table_container dtable btable "> </div>
-</div> 
+</div>
  
 
 
@@ -122,3 +108,4 @@
   
  
   {include file='footer.tpl'}
+{include file='new_category_splinter.tpl'}
