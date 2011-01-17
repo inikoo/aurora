@@ -1216,7 +1216,6 @@ function create_product_id($data) {
     $this->get_data('pid',$this->pid);
     $this->msg='Product Created';
     $this->new=true;
-
     //$this->fix_todotransaction();
     //$this->set_stock(true);
     //$this->set_sales(true);

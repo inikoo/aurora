@@ -254,6 +254,7 @@ var $external_DB_link=false;
 
             $department->update_families();
             $store->update_families();
+            $this->update_full_search();
             $this->new=true;
 
         } else {
@@ -323,7 +324,7 @@ var $external_DB_link=false;
                 $this->new_value=$value;
 
                 $this->data['Product Family Code']=$value;
-
+$this->update_full_search();
 
                 $data_for_history=array(
                                       'Indirect Object'=>'Product Family Code'
@@ -376,7 +377,7 @@ var $external_DB_link=false;
                 $this->new_value=$value;
 
                 $this->data['Product Family Name']=$value;
-
+$this->update_full_search();
                 $this->add_history(array(
                                        'Indirect Object'=>'Product Family Name'
                                                          ,'History Abstract'=>('Product Family Name Changed').' ('.$this->get('Product Family Name').')'
@@ -1757,6 +1758,34 @@ $this->update_principal_image();
 
 }
 
+
+function update_full_search(){
+
+$first_full_search=$this->data['Product Family Code'].' '.$this->data['Product Family Name'];
+$second_full_search='';
+
+if($this->data['Product Family Main Image']!='art/nopic.png')
+$img=preg_replace('/small/','thumbnails',$this->data['Product Family Main Image']);
+else
+$img='';
+$sql=sprintf("insert into `Search Full Text Dimension` (`Store Key`,`Subject`,`Subject Key`,`First Search Full Text`,`Second Search Full Text`,`Search Result Name`,`Search Result Description`,`Search Result Image`) values  (%s,'Family',%d,%s,%s,%s,%s,%s) on duplicate key 
+update `First Search Full Text`=%s ,`Second Search Full Text`=%s ,`Search Result Name`=%s,`Search Result Description`=%s,`Search Result Image`=%s"
+,$this->data['Product Family Store Key']
+,$this->id
+,prepare_mysql($first_full_search)
+,prepare_mysql($second_full_search,false)
+,prepare_mysql($this->data['Product Family Code'],false)
+,prepare_mysql($this->data['Product Family Name'],false)
+,prepare_mysql($img,false)
+,prepare_mysql($first_full_search)
+,prepare_mysql($second_full_search,false)
+,prepare_mysql($this->data['Product Family Code'],false)
+,prepare_mysql($this->data['Product Family Name'],false)
+,prepare_mysql($img,false)
+);
+mysql_query($sql);
+//exit($sql);
+}
 
 }
 ?>

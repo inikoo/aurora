@@ -545,6 +545,7 @@ ALTER TABLE `Category Dimension` ADD `Category Subject Key` MEDIUMINT UNSIGNED N
 
 0.9.23
 ALTER TABLE `Category Dimension` CHANGE `Category Subject` `Category Subject` ENUM( 'Product', 'Supplier', 'Customer', 'Family', 'Invoice' ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'Product';
+ALTER TABLE `Search Full Text Dimension` CHANGE `Subject` `Subject` ENUM( 'Family', 'Customer', 'Product', 'Part', 'Order', 'Page' ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL ;
 */
 
 ?>
