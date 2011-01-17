@@ -104,7 +104,12 @@ function parse_money($a){
 
 function parse_number($a){
     if(is_string($a)){
-	$a.replace ( /\<?php echo $_SESSION['locale_info']['thousands_sep']?>/,'');
+    <?php
+    if($_SESSION['locale_info']['thousands_sep']!=''){
+    print 'a.replace ( /\\'.$_SESSION['locale_info']['thousands_sep']."/,'');";
+    }
+    ?>
+	
 	$a.replace ( /\<?php echo $_SESSION['locale_info']['decimal_point']?>/,'.');
     }    
     return parseFloat($a);

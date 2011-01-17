@@ -42,7 +42,7 @@ function money_locale($amount,$locale='',$currency_code=''){
   if(!is_numeric($amount))
     $amount=0;
   global $_client_locale;
-  $format="%n";
+  $format="%i";
   if($locale){
     $locale.='.UTF-8';
     setlocale(LC_MONETARY, ($locale));
@@ -53,10 +53,13 @@ function money_locale($amount,$locale='',$currency_code=''){
     $format="%i";
   }
   $money=money_format($format,$amount);
-  if($currency_code){
-    $money=preg_replace('/[A-Z]{3}/',currency_symbol($currency_code),$money);
-  }
+  
+  if(preg_match('/[A-Z]{3}/',$money,$match)){
+        $money=preg_replace('/[A-Z]{3}/',currency_symbol($match[0]),$money);
 
+  }
+  
+  
   setlocale(LC_MONETARY, ($_client_locale));
   return $money;
 }
@@ -415,6 +418,7 @@ function currency_symbol($currency){
      return '£';
      break;
    case('EUR'):
+    case('EU'):
      return '€';
      break;
    case('USD'):

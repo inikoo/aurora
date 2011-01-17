@@ -53,7 +53,8 @@ case('customer_families_pie'):
 case('store_sales'):
     $data=prepare_values($_REQUEST,array(
                              'store_key'=>array('type'=>'string'),
-
+                        'from'=>array('type'=>'date','optional'=>true),
+                        'to'=>array('type'=>'date','optional'=>true),
                          ));
     store_sales($data);
     break;
@@ -61,6 +62,7 @@ case('store_sales'):
 }
 
 function  number_of_contacts($data) {
+
     $sql=sprintf("select `Time Series Date`,`Open`,`High`,`Low`,`Close`,`Volume` from `Time Series Dimension` where `Time Series Name`='contact population' and `Time Series Name Key`=%d order by `Time Series Date` desc",
                  $data['store_key']
                 );
@@ -100,14 +102,6 @@ function customers_orders_pie($data) {
                   "o2"=>array('title'=>_('Contacts with 2 orders'),'number'=>0,'short_title'=>"2 "._("Orders")),
                   "o1"=>array('title'=>_('Contacts with one orders'),'number'=>0,'short_title'=>"1 "._("Order")),
                   "o0"=>array('title'=>_('Contacts with no orders'),'number'=>0,'short_title'=>_('No Orders')),
-
-
-
-
-
-
-
-
               );
 
     $number_slices=9;
@@ -313,6 +307,9 @@ function customer_families_pie($data) {
 
 
 function store_sales($data) {
+    
+    
+    
     $graph_data=array();
 
     $store_keys=preg_split('/,/',$data['store_key']);
@@ -327,8 +324,21 @@ function store_sales($data) {
         $tmp['value'.$i]=0;
     }
 
-    $sql=sprintf("select  `Date` from kbase.`Date Dimension` where `Date`>= ( select min(`Invoice Date`)   from `Invoice Dimension` where `Invoice Store Key`=%d ) and `Date`<=NOW()  order by `Date` desc",
-                 $data['store_key']);
+if(array_key_exists('to',$data)){
+$dates=sprintf(" `Date`<=%s  ",prepare_mysql($data['to']));    
+}else{
+$dates=sprintf(" `Date`<=NOW()  ");    
+}
+if(array_key_exists('from',$data)){
+$dates.=sprintf("and `Date`>=%s  ",prepare_mysql($data['from']));    
+}else{
+$dates.=sprintf("and  `Date`>= ( select min(`Invoice Date`)   from `Invoice Dimension` where `Invoice Store Key`=%d )  ",$data['store_key']);    
+}
+
+    $sql=sprintf("select  `Date` from kbase.`Date Dimension` where  %s order by `Date` desc",
+                 $dates
+                 
+                 );
 
 //print $sql;
 
@@ -344,9 +354,20 @@ function store_sales($data) {
 //$graph_data=array();
     $i=0;
     foreach($store_keys as $store_key) {
-        $sql=sprintf("select Date(`Invoice Date`) as date,sum(`Invoice Total Net Amount`) as net, count(*) as invoices  from `Invoice Dimension` where `Invoice Store Key`=%d and `Invoice Date`<=NOW()  group by Date(`Invoice Date`) order by `Date` desc",
+    
+    if(array_key_exists('to',$data)){
+$dates=sprintf(" `Invoice Date`<=%s  ",prepare_mysql($data['to']));    
+}else{
+$dates=sprintf(" `Invoice Date`<=NOW()  ");    
+}
+if(array_key_exists('from',$data)){
+$dates.=sprintf("and `Invoice Date`>=%s  ",prepare_mysql($data['from']));    
+}    
+    
+        $sql=sprintf("select Date(`Invoice Date`) as date,sum(`Invoice Total Net Amount`) as net, count(*) as invoices  from `Invoice Dimension` where  %s and `Invoice Store Key`=%d   group by Date(`Invoice Date`) order by `Date` desc",
+                     $dates,
                      $store_key);
-        
+        //print $sql;
         $res=mysql_query($sql);
         while ($row=mysql_fetch_assoc($res)) {
             $graph_data[$row['date']]['vol'.$i]=$row['invoices'];

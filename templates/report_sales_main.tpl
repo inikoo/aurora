@@ -13,14 +13,13 @@
 
 <h1 style="clear:left">{$title}</h1>
 
-
 <table class="report_sales1" id="report_sales_invoices" style="width:700px;{if $view!='invoices'}display:none{/if}">
 <tr style="border-bottom:1px solid #ccc;margin-bottom:5px"><td colspan=7>
 <div  style="margin-bottom:5px;color:#999;">
 <span id="invoices_profits_button"  view="profit" class="state_details" style="margin-right:20px">{t}Profit{/t}</span>
 <span class="state_details selected"  style="cursor:default;margin-right:20px">{t}Invoices{/t}</span>
-<span id="invoices_corporate_currency_button" currency="corporate" class="state_details currency_corporate {if $currencies=='corporation'}selected{/if}" style="margin-right:5px">{$corporate_symbol}</span>
-<span id="invoices_stores_currency_button" currency="stores" class="state_details currency_stores {if $currencies!='corporation'}selected{/if}">({$store_currencies})</span>
+<span id="invoices_corporate_currency_button" currency="corporate" class="state_details currency_corporate {if $currencies=='corporation'}selected{/if}" style="{if !$mixed_currencies}display:none;{/if}margin-right:5px">{$corporate_symbol}</span>
+<span id="invoices_stores_currency_button" currency="stores" class="state_details currency_stores {if $currencies!='corporation'}selected{/if}" style="{if !$mixed_currencies}display:none;{/if}">({$store_currencies})</span>
 
 </div>
 </td></tr>
@@ -54,8 +53,8 @@
 <div  style="margin-bottom:5px;;color:#999;">
 <span class="state_details selected" style="cursor:default;margin-right:20px">{t}Profit{/t}</span>
 <span  id="profits_invoices_button" view="invoices" class="state_details"  style="margin-right:20px">{t}Invoices{/t}</span>
-<span id="profits_corporate_currency_button"  currency="corporate" class="state_details {if $currencies=='corporation'}selected{/if}" style="margin-right:5px">{$corporate_symbol}</span>
-<span id="profits_stores_currency_button"  currency="stores" class="state_details {if $currencies!='corporation'}selected{/if}">({$store_currencies})</span>
+<span id="profits_corporate_currency_button"  currency="corporate" class="state_details {if $currencies=='corporation'}selected{/if}" style="{if !$mixed_currencies}display:none;{/if}margin-right:5px" >{$corporate_symbol}</span>
+<span id="profits_stores_currency_button"  currency="stores" class="state_details {if $currencies!='corporation'}selected{/if}"  style="{if !$mixed_currencies}display:none;{/if}">({$store_currencies})</span>
 </div>
 </td></tr>
 <tr><td style="width:150px">{t}Store{/t}</td>
@@ -103,7 +102,7 @@
 		
 		var so = new SWFObject("external_libs/amstock/amstock/amstock.swf", "amstock", "905", "500", "8", "#FFFFFF");
 		so.addVariable("path", "");
-		so.addVariable("settings_file", encodeURIComponent("conf/plot_asset_sales.xml.php?tipo=store_sales&store_key={$store_keys}"));
+		so.addVariable("settings_file", encodeURIComponent("conf/plot_asset_sales.xml.php?tipo=store_sales&store_key={$store_keys}&from={$from}&to={$to}"));
 		so.addVariable("preloader_color", "#999999");
 
 		
@@ -118,41 +117,7 @@
     
 </div>
 
-{*
-<div id="plot" class="top_bar" style="position:relative;left:-20px;clear:both;padding:0;margin:0;{if !$display_plot}display:none{/if}">
-<div display="none" id="plot_info" keys="{$formated_store_keys}"  invoice_category_keys="{$invoice_category_keys}"   ></div>
-      <ul id="plot_chooser" class="tabs" style="margin:0 20px;padding:0 20px "  >
-	<li>
-	  <span class="item {if $plot_tipo=='per_store'}selected{/if}" onClick="change_plot(this)" id="plot_per_store" tipo="par_store" category="{$plot_data.per_store.category}" period="{$plot_data.per_store.period}" >
-	    <span>Invoices per Store</span>
-	  </span>
-	</li>
-	<li>
-	  <span class="item {if $plot_tipo=='per_category'}selected{/if}"  id="plot_per_category" onClick="change_plot(this)" tipo="per_category" category="{$plot_data.per_category.category}" period="{$plot_data.per_category.period}" name=""  >
-	    <span>{t}Invoices per Category{/t}</span>
-	  </span>
-	</li>
 
-      </ul> 
-      
-      <ul id="plot_options" class="tabs" style="{if $plot_tipo=='pie'}display:none{/if};position:relative;top:.6em;float:right;margin:0 20px;padding:0 20px;font-size:90% "  >
-	<li><span class="item"> <span id="plot_category"  category="{$plot_category}" style="xborder:1px solid black;display:inline-block; vertical-align:middle">{$plot_formated_category}</span></span></li>
-	<li><span class="item"> <span id="plot_period"   period="{$plot_period}" style="xborder:1px solid black;display:inline-block; vertical-align:middle">{$plot_formated_period}</span></span></li>
-    	
-      </ul> 
-
-      <div style="clear:both;margin:0 20px;padding:0 20px ;border-bottom:1px solid #999">
-      </div>
-      
-      <div  id="plot_div" class="product_plot"  style="width:865px;height:425px;">
-	<iframe id="the_plot" src ="{$plot_page}?{$plot_args}" frameborder=0 height="425" scrolling="no" width="{if $plot_tipo=='pie'}500px{else}100%{/if}"></iframe>
-      </div>
-      
-
-   
-    
-  </div>
-*}
 
 </div>
 
