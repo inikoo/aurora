@@ -9,7 +9,12 @@
     </ul>
   </dd>
 </dl>
-{else}
+{/if}
+
+
+
+{if $store_key}
+
 <dl class="dropdown">
   <dt id="one-ddheader" onmouseover="ddMenu('one',1)" onmouseout="ddMenu('one',-1)" onclick="window.location='store.php?id={$store_id}'" >{t}Departments{/t}</dt>
   <dd id="one-ddcontent" onmouseover="cancelHide('one')" onmouseout="ddMenu('one',-1)">
@@ -20,11 +25,6 @@
     </ul>
   </dd>
 </dl>
-
-{/if}
-
-{if $store_key}
-
  <span class="nav2 onleft"><a href="families.php?store_id={$store_key}">{t}Families{/t}</a></span>
  <span class="nav2 onleft"><a href="products.php?store_id={$store_key}">{t}Products{/t}</a></span>
   <span class="nav2 onleft"><a href="deals.php?store_id={$store_key}">{t}Deals{/t}</a></span>
