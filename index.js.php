@@ -1,7 +1,7 @@
 <?php
 include_once('common.php');
 ?>
-    var Dom   = YAHOO.util.Dom;
+var Dom   = YAHOO.util.Dom;
 var Event = YAHOO.util.Event;
 
 
@@ -45,6 +45,8 @@ YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=home-di
 }
 
 function init(){
+
+ init_search();
 
 // var panes=Dom.getElementsByClassName('splinter_buttons', 'li', 'buttons');
 //for (var j = 0; j < panes.length; j++) {
