@@ -758,9 +758,9 @@ return $this->get_full_order_form();
     if (isset($this->data[$_key]))
       return $this->data[$_key];
      // print_r($this);
-    print "Error -> $key <- not found in get from Product\n";
+    exit( "Error -> $key <- not found in get from Product\n");
 
-exit;
+
     return false;
 
   }
