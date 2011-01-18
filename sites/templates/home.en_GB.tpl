@@ -28,5 +28,6 @@
        {include file="$right_menu_template"}
         <div style="clear:both"></div>
      </div>
+	<div align=center>Hits Number in this site : {$count_hits}</div>
      {include file="$footer_template"}
  </body>
