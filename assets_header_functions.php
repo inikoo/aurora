@@ -1,5 +1,4 @@
 <?php
-
 function get_header_info($user,$smarty){
   $store_list=array();
   if($user->stores){
@@ -25,6 +24,4 @@ function get_header_info($user,$smarty){
     $smarty->assign('tree_list',$store_list);
   }
 }
-
-
 ?>

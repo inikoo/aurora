@@ -440,7 +440,7 @@ function adjust_invoice($invoice,$continue=true) {
         printf("Aft  Invoice Totals: %f + %f =%f\n",$header_data['total_net'],$tax,$header_data['total_topay']);
 
         printf("Aft Diff Net %s Tax %s Total %s \n",$diff_net,$diff_tax,$total_diff);
-        exit("Error in adjust\n");
+        print("Error in adjust\n");
     }
 
 }

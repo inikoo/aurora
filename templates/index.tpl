@@ -5,6 +5,7 @@
 
 
 
+
  <div id="search" style="border:0px solid black;margin:auto;text-align:center;padding:10px;margin:10px">
     <span  >{t}Search{/t}:</span>
     <input size="45" class="text" id="all_search" value="" state="" name="search"/><img style="position:relative;left:-18px;display:none"align="absbottom" id="all_clean_search"  class="submitsearch" src="art/icons/cross_bw.png" >
@@ -20,16 +21,8 @@
 
 
 
-
-
-
-
-
-
-
-
-
 	<div id="wrapper">
+	<inpput type="hidden" value='{$store_keys}' id="store_keys">
 		<div id="wid_menu" >
 			<img style="position:relative;top:3px;display:none" src="art/icons/previous.png" alt="" id="previous"/>
 			<ul id="buttons">

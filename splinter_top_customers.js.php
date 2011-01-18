@@ -20,7 +20,7 @@ YAHOO.util.Event.onContentReady("table<?php print $_REQUEST['table_id']?>", func
 
 	    var CustomersColumnDefs = [
 				      {key:"position", label:"", width:2,sortable:false,className:"aleft"}
-				      ,{key:"name", label:"<?php echo _('Customer Name')?>", width:185,sortable:false,className:"aleft"}
+				      ,{key:"name", label:"<?php echo _('Customer Name')?>", width:175,sortable:false,className:"aleft"}
 
 				      
 				       ,{key:"last_order", label:"<?php echo _('Last Order')?>",width:70,sortable:false,className:"aright"}
@@ -138,15 +138,21 @@ Dom.addClass(this,'selected');
 }
 function change_number(){
 var nr=this.getAttribute('nr');
-var tableid=<?php print $_REQUEST['table_id']?>;
-
 var table=top_customers_tables.table1;
-    var datasource=top_customers_tables.dataSourcetopcust;
-    var request='&nr=' + nr;
-    datasource.sendRequest(request,table.onDataReturnInitializeTable, table);
+    table.get('paginator').setRowsPerPage(nr)
 ids=['top_customers_50','top_customers_10','top_customers_20'];
 Dom.removeClass(ids,'selected');
 Dom.addClass(this,'selected');
+
+//var tableid=<?php print $_REQUEST['table_id']?>;
+
+//var table=top_customers_tables.table1;
+  //  var datasource=top_customers_tables.dataSourcetopcust;
+    //var request='&nr=' + nr;
+    //datasource.sendRequest(request,table.onDataReturnInitializeTable, table);
+//ids=['top_customers_50','top_customers_10','top_customers_20'];
+//Dom.removeClass(ids,'selected');
+//Dom.addClass(this,'selected');
 
 }
 function init(){

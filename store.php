@@ -12,9 +12,9 @@
  Version 2.0
 */
 include_once('common.php');
+
 include_once('class.Store.php');
 include_once('assets_header_functions.php');
-
 $page='store';
 $smarty->assign('page',$page);
 if (isset($_REQUEST['id']) and is_numeric($_REQUEST['id']) ) {

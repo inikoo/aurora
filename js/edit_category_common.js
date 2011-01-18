@@ -44,12 +44,14 @@ var ar_file='ar_edit_categories.php';
     var request='&table_id=0';
     datasource.sendRequest(request,table.onDataReturnInitializeTable, table);     
 					
-					table_id=1;
+					table_id='_history';
 					var table=tables['table'+table_id];
-    var datasource=tables['dataSource'+table_id];
-    var request='&table_id=0';
-    datasource.sendRequest(request,table.onDataReturnInitializeTable, table);   
+					if(table!= undefined){
 					
+    var datasource=tables['dataSource'+table_id];
+    var request='&table_id=_history';
+    datasource.sendRequest(request,table.onDataReturnInitializeTable, table);   
+					}
 					cancel_new_category()
 						}
 						
