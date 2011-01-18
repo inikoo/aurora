@@ -1,6 +1,6 @@
 <?php
-
 include_once('common.php');
+include('counter.php');
 $css_files=array(
 		 'css/common.css',
 		 
@@ -30,9 +30,14 @@ $page=$site->get_page_object('index');
 if(!$page->id){
 exit('no page');
 }
+//count hits
+$hit = GetCountPage();
+
+$smarty->assign('count_hits',$hit);
 
 $page_data=$page->get_data_for_smarty($page_data);
 //print_r($page_data);
+
 
 $smarty->assign('page_data',$page_data);
 
