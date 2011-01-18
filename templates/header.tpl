@@ -14,7 +14,8 @@
     <script type="text/javascript">{$script}</script>
         
   </head>
-  <body  class=" yui-skin-sam kaktus">
+
+  <body  class=" yui-skin-sam kaktus" onload="get_default({$v})">
     <div id="{$page_layout}" class="{$box_layout}">
     
       <div id="hd" >

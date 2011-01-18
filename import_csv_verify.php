@@ -1,6 +1,6 @@
 <?php
 /*
- File: store.php 
+
 
  UI store page
 
@@ -14,6 +14,9 @@
 include_once('common.php');
 include_once('class.Store.php');
 include_once('assets_header_functions.php');
+	
+
+	
 
 
 $css_files=array(
@@ -44,10 +47,9 @@ $js_files=array(
 		'js/php.default.min.js',
 		'common.js.php',
 		'table_common.js.php',
-		
-		'js/dropdown.js',
-        'import_data.js.php'    
-		);
+		'js/ajax_function.js',
+		'js/dropdown.js'
+        	);
 
 
 if(!isset($_REQUEST['tipo'])){
@@ -56,14 +58,11 @@ exit("to do a page where the user can choose the correct options");
 
 $scope=$_REQUEST['tipo'];
 
-include_once('xml2array.php');
+
 
 switch($scope){
 case('customers_store'):
 $scope_args=$_SESSION['state']['customers']['store'];
-
-// $xml=file_get_contents('conf/import_file_customers.xml');
-//$fields=xml2array($xml);
 
 
 break;
@@ -71,16 +70,54 @@ default:
 $scope_args='';
 }
 
+if(isset($_POST['submit']))
+{
+	if (($_FILES["fileUpload"]["type"] == "text/csv") && ($_FILES["fileUpload"]["size"] < 20000))
+	  {
+	  if ($_FILES["fileUpload"]["error"] > 0)
+	    {
+	    echo "Error: " . $_FILES["fileUpload"]["error"] . "<br />";
+	    }
+	  else
+	    {
+			$target_path = "uploads/";
+
+			$target_path = $target_path . basename( $_FILES['fileUpload']['name']); 
+
+			if(move_uploaded_file($_FILES['fileUpload']['tmp_name'], $target_path)) 
+			{
+				$vv=basename( $_FILES['fileUpload']['name']);
+				
+
+				require_once 'csvparser.php';
+				$csv = new CSV_PARSER;
+				//loading the CSV File
+				$csv->load($target_path);
+	
+				$r = $csv->connect();
+						
+				//echo '<pre>'; print_r($r);
+			}
+	    }
+	  }
+	else
+	  {
+	  echo "Invalid file";
+	  }
+}
+
+
+$v = 0;
+
+$smarty->assign('v',$v);
+$smarty->assign('rr',$r);
 $smarty->assign('scope',$scope);
 $smarty->assign('scope_args',$scope_args);
 $smarty->assign('js_files',$js_files);
 $smarty->assign('css_files',$css_files);
-$smarty->assign('js_files',$js_files);
 
 
 
-
- 
-  $smarty->display('import_data.tpl');
+  $smarty->display('import_csv_verify.tpl');
 
 ?>

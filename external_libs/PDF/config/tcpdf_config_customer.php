@@ -101,42 +101,42 @@ if (!defined('K_TCPDF_EXTERNAL_CONFIG')) {
 	/**
 	 * page format
 	 */
-	define ('PDF_PAGE_FORMAT', 'A4');
+	define ('PDF_PAGE_FORMAT', 'MY_SIZE');
 
 	/**
 	 * page orientation (P=portrait, L=landscape)
 	 */
-	define ('PDF_PAGE_ORIENTATION', 'P');
+	define ('PDF_PAGE_ORIENTATION', 'L');
 
 	/**
 	 * document creator
 	 */
-	define ('PDF_CREATOR', 'Kaktus');
+///////////	define ('PDF_CREATOR', 'Kaktus');
 
 	/**
 	 * document author
 	 */
-	define ('PDF_AUTHOR', 'Kaktus');
+//////////	define ('PDF_AUTHOR', 'Kaktus');
 
 	/**
 	 * header title
 	 */
-	define ('PDF_HEADER_TITLE', 'Generate Receipta');
+///////////	define ('PDF_HEADER_TITLE', 'Generate Receipt');
 
 	/**
 	 * header description string
 	 */
-	define ('PDF_HEADER_STRING', "www.kaktus.com");
+//////////	define ('PDF_HEADER_STRING', "www.kaktus.com");
 
 	/**
 	 * image logo
 	 */
-	define ('PDF_HEADER_LOGO', 'kaktus-logo.png');
+	define ('PDF_HEADER_LOGO', '');
 
 	/**
 	 * header logo image width [mm]
 	 */
-	define ('PDF_HEADER_LOGO_WIDTH', 20);
+	define ('PDF_HEADER_LOGO_WIDTH', 0);
 
 	/**
 	 *  document unit of measure [pt=point, mm=millimeter, cm=centimeter, in=inch]
@@ -146,32 +146,32 @@ if (!defined('K_TCPDF_EXTERNAL_CONFIG')) {
 	/**
 	 * header margin
 	 */
-	define ('PDF_MARGIN_HEADER', 5);
+	define ('PDF_MARGIN_HEADER', 0);
 
 	/**
 	 * footer margin
 	 */
-	define ('PDF_MARGIN_FOOTER', 10);
+	define ('PDF_MARGIN_FOOTER', 0);
 
 	/**
 	 * top margin
 	 */
-	define ('PDF_MARGIN_TOP', 27);
+	define ('PDF_MARGIN_TOP', 0);
 
 	/**
 	 * bottom margin
 	 */
-	define ('PDF_MARGIN_BOTTOM', 25);
+	define ('PDF_MARGIN_BOTTOM', 0);
 
 	/**
 	 * left margin
 	 */
-	define ('PDF_MARGIN_LEFT', 15);
+	define ('PDF_MARGIN_LEFT', 0);
 
 	/**
 	 * right margin
 	 */
-	define ('PDF_MARGIN_RIGHT', 15);
+	define ('PDF_MARGIN_RIGHT', 0);
 
 	/**
 	 * default main font name
