@@ -35,7 +35,7 @@ function parse_payment_method($method){
   return 'Unknown';
 
 }
-function filter_header($data){
+function filter_header_old($data){
   foreach($data as $key=>$value){
     $data[$key]=_trim($value);
   }

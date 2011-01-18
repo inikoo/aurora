@@ -3575,24 +3575,25 @@ $address_plain='';
 if($address->id){
 $address_plain=$address->display('Plain');
 }
-
-$first_full_search=$this->data['Customer Name'].' '.$address_plain.' '.$this->data['Customer Main Contact Name'].' '.$this->data['Customer Main Plain Email'];
+$address_plain=$address->data['Address Country Name'].' '.$address->data['Address Postal Code'].' '.$address->data['Address Town'];
+$first_full_search=$this->data['Customer Name'].' '.$this->data['Customer Name'].' '.$address_plain.' '.$this->data['Customer Main Contact Name'].' '.$this->data['Customer Main Plain Email'];
 $second_full_search=$this->data['Customer Type'];
 
 
-$sql=sprintf("insert into `Search Full Text Dimension`  (`Store Key`,`Subject`,`Subject Key`,`First Search Full Text`,`Second Search Full Text`,`Search Result Name`,`Search Result Description`,`Search Result Image`)  values  (%s,'Customer',%d,%s,%s,%s,%s,%s) on duplicate key 
+$sql=sprintf("insert into `Search Full Text Dimension`  (`Store Key`,`Subject`,`Subject Key`,`First Search Full Text`,`Second Search Full Text`,`Search Result Name`,`Search Result Description`,`Search Result Image`)  
+values  (%s,'Customer',%d,%s,%s,%s,%s,%s) on duplicate key 
 update `First Search Full Text`=%s ,`Second Search Full Text`=%s ,`Search Result Name`=%s,`Search Result Description`=%s,`Search Result Image`=%s"
 ,$this->data['Customer Store Key']
 ,$this->id
 ,prepare_mysql($first_full_search)
 ,prepare_mysql($second_full_search)
-,prepare_mysql($this->get_formated_id())
-,prepare_mysql($this->data['Customer Name'].' <span style="margin-left:10px">'.$this->data['Customer Main Location'].'</span> (O:<b>'.number($this->data['Customer Orders']).'</b>)')
+,prepare_mysql($this->data['Customer Name'])
+,prepare_mysql($this->data['Customer Main Location'].' ('._('Orders').':<b>'.number($this->data['Customer Orders']).'</b>)')
 ,"''"
 ,prepare_mysql($first_full_search)
 ,prepare_mysql($second_full_search)
-,prepare_mysql($this->get_formated_id())
-,prepare_mysql($this->data['Customer Name'].' <span style="margin-left:10px">'.$this->data['Customer Main Location'].'</span> (O:<b>'.number($this->data['Customer Orders']).'</b>)')
+,prepare_mysql($this->data['Customer Name'])
+,prepare_mysql($this->data['Customer Main Location'].' ('._('Orders').':<b>'.number($this->data['Customer Orders']).'</b>)')
 
 
 ,"''"

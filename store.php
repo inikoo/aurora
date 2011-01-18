@@ -40,6 +40,7 @@ if (!($user->can_view('stores') and in_array($store_id,$user->stores)   ) ) {
 
 $store=new Store($store_id);
 $_SESSION['state'][$page]['id']=$store->id;
+$smarty->assign('store_key',$store->id);
 
 $view_sales=$user->can_view('product sales');
 $view_stock=$user->can_view('product stock');

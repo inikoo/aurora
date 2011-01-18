@@ -20,14 +20,14 @@ var description_errors= new Object();
 var scope='category';
 var scope_edit_ar_file='ar_assets.php';
 var scope_key_name='category_key';
-var scope_key='<?php echo $_SESSION['state']['product_categories']['category_key']?>';
+var scope_key='<?php $_REQUEST['key']?>';
 
 var parent='category';
 var parent_key_name='id';
-var parent_key=<?php echo $_REQUEST['category_key']?>;
+//var parent_key=<?php //echo $_REQUEST['category_key']?>;
 
 
-var editing='<?php echo $_SESSION['state']['product_categories']['edit']?>';  
+//var editing='<?php //echo $_SESSION['state']['product_categories']['edit']?>';  
 
 
 
@@ -37,19 +37,13 @@ var validate_scope_data={
     'name':{'changed':false,'validated':true,'required':true,'group':1,'type':'item'
 	    ,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Category Name')?>'}],'name':'Category_Name'
 	    ,'ar':false,'ar_request':false}
-   },
-'subcategory':{
-    'subcategory_name':{'changed':false,'validated':true,'required':true,'group':1,'type':'item'
-	    ,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Subcategory Name')?>'}],'name':'Subcategory_Name'
-	    ,'ar':false,'ar_request':false}
    }
+  
 };
 
 
-var validate_scope_metadata={'category':{'type':'edit','ar_file':'ar_edit_assets.php','key_name':'category_key','key':<?php echo $_REQUEST['category_key']?>},
-				'subcategory':{'type':'edit','ar_file':'ar_edit_assets.php','key_name':'category_key','key':<?php echo $_REQUEST['category_key']?>}};
-				//'subcategory':{'type':'edit','ar_file':'ar_edit_assets.php','key_name':'category_key','key':subcategory_key}};
-
+var validate_scope_metadata={'category':{'type':'edit','ar_file':'ar_edit_assets.php','key_name':'category_key','key':<?php echo $_REQUEST['key']?>}};
+				
 
 
 /*function validate_id(query){
@@ -64,23 +58,12 @@ function validate_subcategory_name(query){
 function reset_new_category(){
  reset_edit_general('category');
 }
-function save_new_category(){
- save_edit_general('category');
-}
-function save_edit_category(){
-    save_edit_general('category');
-}
+
 function reset_edit_category(){
     reset_edit_general('category')
 }
 
 
-function reset_new_subcategory(){
- reset_edit_general('subcategory');
-}
-function save_new_subcategory(){
- save_edit_general('subcategory');
-}
 function save_edit_subcategory(){
     save_edit_general('subcategory');
 }
@@ -140,7 +123,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    var tableDivEL="table"+tableid;
 	    var OrdersColumnDefs = [ 
 				    {key:"id", label:"<?php echo _('Key')?>", width:20,sortable:false,isPrimaryKey:true,hidden:true} 
-				   // ,{key:"go",label:'',width:20,}
+				    ,{key:"go",label:'',width:20,}
 				 
 				    ,{key:"name", label:"<?php echo _('Name')?>", width:340,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}, editor: new YAHOO.widget.TextboxCellEditor({asyncSubmitter: CellEdit}),object:'subcategory' }
 				
@@ -148,7 +131,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 				    ,{key:"delete_type", label:"",hidden:true,isTypeKey:true}
 				     ];
 
-	    this.dataSource0 = new YAHOO.util.DataSource("ar_edit_assets.php?tipo=edit_product_subcategories");
+	    this.dataSource0 = new YAHOO.util.DataSource("ar_edit_categories.php?tipo=edit_product_category_list");
 	    this.dataSource0.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource0.connXhrMode = "queueRequests";
 	    this.dataSource0.responseSchema = {
@@ -171,7 +154,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 							 //draggableColumns:true,
 							   renderLoopSize: 50,generateRequest : myRequestBuilder
 								       ,paginator : new YAHOO.widget.Paginator({
-									      rowsPerPage:<?php echo$_SESSION['state']['store']['table']['nr']?>,containers : 'paginator', 
+									      rowsPerPage:<?php echo$_SESSION['state']['categories']['table']['nr']?>,containers : 'paginator', 
  									      pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',
 									      previousPageLinkLabel : "<",
  									      nextPageLinkLabel : ">",
@@ -181,8 +164,8 @@ YAHOO.util.Event.addListener(window, "load", function() {
 									  })
 								     
 							   ,sortedBy : {
-							    Key: "<?php echo$_SESSION['state']['store']['table']['order']?>",
-							     dir: "<?php echo$_SESSION['state']['store']['table']['order_dir']?>"
+							    Key: "<?php echo$_SESSION['state']['categories']['table']['order']?>",
+							     dir: "<?php echo$_SESSION['state']['categories']['table']['order_dir']?>"
 								     }
 							   ,dynamicData : true
 
@@ -215,7 +198,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 				       ];
 	    //?tipo=customers&tid=0"
 	    
-	    this.dataSource1 = new YAHOO.util.DataSource("ar_history.php?tipo=history&type=company_staff&tableid=1");
+	    this.dataSource1 = new YAHOO.util.DataSource("ar_history.php?tipo=history&type=product_categories&tableid=1");
 	   this.dataSource1.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource1.connXhrMode = "queueRequests";
 	    this.dataSource1.responseSchema = {
@@ -242,7 +225,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 						     , {
 							 renderLoopSize: 50,generateRequest : myRequestBuilder
 							 ,paginator : new YAHOO.widget.Paginator({
-								 rowsPerPage    : <?php echo$_SESSION['state']['edit_each_staff']['history']['nr']?>,containers : 'paginator1', alwaysVisible:false,
+								 rowsPerPage    : <?php echo$_SESSION['state']['categories']['history']['nr']?>,containers : 'paginator1', alwaysVisible:false,
 								 pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',
 								 previousPageLinkLabel : "<",
 								 nextPageLinkLabel : ">",
@@ -252,8 +235,8 @@ YAHOO.util.Event.addListener(window, "load", function() {
 							     })
 							 
 							 ,sortedBy : {
-							    Key: "<?php echo$_SESSION['state']['edit_each_staff']['history']['order']?>",
-							     dir: "<?php echo$_SESSION['state']['edit_each_staff']['history']['order_dir']?>"
+							    Key: "<?php echo$_SESSION['state']['categories']['history']['order']?>",
+							     dir: "<?php echo$_SESSION['state']['categories']['history']['order_dir']?>"
 							 },
 							 dynamicData : true
 							 
@@ -278,63 +261,23 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 
 
-function cancel_add_category(){
-   reset_new_category();
-    hide_add_category_dialog(); 
-}
-function cancel_add_subcategory(){
-    reset_new_subcategory();
-    hide_add_subcategory_dialog(); 
-}
-
-function hide_add_category_dialog(){
-    Dom.get('new_category_dialog').style.display='none';
-    Dom.get('add_category').style.display='';
-    Dom.get('save_edit_category').style.visibility='hidden';
-    Dom.get('reset_edit_category').style.visibility='hidden';
-}
-function hide_add_subcategory_dialog(){
-    Dom.get('new_subcategory_dialog').style.display='none';
-    Dom.get('add_subcategory').style.display='';
-    Dom.get('save_edit_subcategory').style.visibility='hidden';
-    Dom.get('reset_edit_subcategory').style.visibility='hidden';
-}
-
-function show_add_category_dialog(){
-    Dom.get('new_category_dialog').style.display='';
-    Dom.get('add_category').style.display='none';
-    Dom.get('save_edit_category').style.visibility='visible';
-    Dom.addClass('save_edit_category','disabled');
-    Dom.get('reset_edit_category').style.visibility='visible';
-    Dom.get('Category_Name').focus();
-}
-function show_add_subcategory_dialog(){
-    Dom.get('new_subcategory_dialog').style.display='';
-    Dom.get('add_subcategory').style.display='none';
-    Dom.get('save_edit_subcategory').style.visibility='visible';
-    Dom.addClass('save_edit_subcategory','disabled');
-    Dom.get('reset_edit_subcategory').style.visibility='visible';
-    Dom.get('Subcategory_Name').focus();
-}
-
-
 
 
 
 function change_block(){
-   if(editing!=this.id){
+  
 
 	Dom.get('d_description').style.display='none';
 	Dom.get('d_subcategory').style.display='none';
 
 	Dom.get('d_'+this.id).style.display='';
-	Dom.removeClass(editing,'selected');
+	
+	Dom.removeClass(['description','subcategory'],'selected');
 	Dom.addClass(this, 'selected');
 	
-	YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=subcategory-edit&value='+this.id );
-	
-	editing=this.id;
-    }
+	YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=categories_view&value='+this.id ,{});
+
+ 
 
 
 }
@@ -344,11 +287,11 @@ function init(){
     var ids = ["description","subcategory"]; 
     YAHOO.util.Event.addListener(ids, "click", change_block);
 
-    YAHOO.util.Event.addListener('add_category', "click", show_add_category_dialog);
+//    YAHOO.util.Event.addListener('add_category', "click", show_add_category_dialog);
     YAHOO.util.Event.addListener('save_edit_category', "click", save_new_category);   
     YAHOO.util.Event.addListener('reset_edit_category', "click", cancel_add_category);
 
-    YAHOO.util.Event.addListener('add_subcategory', "click", show_add_subcategory_dialog);
+  //  YAHOO.util.Event.addListener('add_subcategory', "click", show_add_subcategory_dialog);
     YAHOO.util.Event.addListener('save_edit_subcategory', "click", save_new_subcategory);   
     YAHOO.util.Event.addListener('reset_edit_subcategory', "click", cancel_add_subcategory);
    

@@ -47,7 +47,7 @@ abstract class DB_Table {
         return $data;
     }
 
- function base_history_data() {
+    function base_history_data() {
 
 
         $data=array();
@@ -66,7 +66,7 @@ abstract class DB_Table {
     }
 
     public function update($data,$options='') {
-    
+
         if (!is_array($data)) {
             $this->error=true;
             return;
@@ -88,7 +88,7 @@ abstract class DB_Table {
 
 
         }
-            
+
         if (!$this->updated and $this->msg=='')
             $this->msg.=_('Nothing to be updated')."\n";
     }
@@ -159,11 +159,11 @@ abstract class DB_Table {
         if ($this->table_name=='Supplier Product')
             $key_field='Supplier Product Current Key';
 
-        
-     
+
+
         $sql="select `".$field."` as value from  `".$this->table_name." Dimension`  where `$key_field`=".$this->id;
-        
-        
+
+
         $result=mysql_query($sql);
         if ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
             $old_value=$row['value'];
@@ -185,6 +185,9 @@ abstract class DB_Table {
             $this->data[$field]=$value;
         }
         else {
+        
+     
+        
             $this->data[$field]=$value;
             $this->msg.=" $field "._('Record updated').", \n";
             $this->msg_updated.=" $field "._('Record updated').", \n";
@@ -195,14 +198,15 @@ abstract class DB_Table {
             if (preg_match('/no( |\_)history|nohistory/i',$options))
                 $save_history=false;
             if (
-                preg_match('/customer|contact|company|order|staff|supplier|address|telecom|user|store|product|company area|company department|position/i',$this->table_name)
+                preg_match('/customer|contact|company|order|staff|supplier|address|telecom|user|store|product|company area|company department|position|category/i',$this->table_name)
                 and !$this->new
                 and $save_history
             ) {
+              // print "xxxxxxxx2";
                 $history_data=array(
-                                  'Indirect Object'=>$field
-                                                    ,'old_value'=>$old_value
-                                                                 ,'new_value'=>$value
+                                  'Indirect Object'=>$field,
+                                                    'old_value'=>$old_value,
+                                                                 'new_value'=>$value
 
                               );
                 if ($this->table_name=='Product Family')
@@ -273,7 +277,7 @@ abstract class DB_Table {
         }
 
         //print_r($data);
-    
+
         if ($data['Subject']=='' or  !$data['Subject Key']) {
             include_once('class.User.php');
             $user=new User($editor_data['User Key']);
@@ -282,7 +286,7 @@ abstract class DB_Table {
                 $data['Subject']=$user->data['User Type'];
                 $data['Subject Key']=$user->data['User Parent Key'];
                 $data['Author Name']=$user->data['User Alias'];
-         } else {
+            } else {
                 $data['Subject']='Staff';
                 $data['Subject Key']=0;
                 $data['Author Name']=_('Unknown');
@@ -291,72 +295,80 @@ abstract class DB_Table {
         }
 
 
-     
-        $data['User Key']=$editor_data['User Key'];
-        
 
-        
+        $data['User Key']=$editor_data['User Key'];
+
+
+
         $data['Direct Object']=$table;
         if ($this->table_name=='Product')
             $data['Direct Object Key']=$this->pid;
         else
             $data['Direct Object Key']=$this->id;
-        
-      
-     
-    
+
+
+
+
         $data['Date']=$editor_data['Date'];
-        
-        if ($data['History Abstract']==''){
-            if($data['Indirect Object'])
-            $data['History Abstract']=$data['Indirect Object'].' '._('changed');
-        else
-            $data['History Abstract']='Unknown';
-            }
-            
-            
-      
 
-
-       
-        if($data['Author Name']==''){
-      
-
-
-           if($data['Subject']=='Customer' ){
-        $customer=new Customer($data['Subject Key']);
-            $data['Author Name']=$customer->data['Customer Name'];
-        }    elseif($data['Subject']=='Staff' ){
-        $staff=new Staff($data['Subject Key']);
-            $data['Author Name']=$staff->data['Staff Alias'];
-        }  elseif($data['Subject']=='Supplier' ){
-        $supplier=new Supplier($data['Subject Key']);
-            $data['Author Name']=$staff->data['Supplier Name'];
+        if ($data['History Abstract']=='') {
+            if ($data['Indirect Object'])
+                $data['History Abstract']=$data['Indirect Object'].' '._('changed');
+            else
+                $data['History Abstract']='Unknown';
         }
-        
-        
 
-}
+
+
+
+        if (!array_key_exists('Author name', $data)) {
+            $data['Author Name']='';
+        }
+
+        if ($data['Author Name']=='') {
+
+
+
+            if ($data['Subject']=='Customer' ) {
+                include_once('class.Customer.php');
+                $customer=new Customer($data['Subject Key']);
+                $data['Author Name']=$customer->data['Customer Name'];
+            }
+            elseif($data['Subject']=='Staff' ) {
+            include_once('class.Staff.php');
+                $staff=new Staff($data['Subject Key']);
+                $data['Author Name']=$staff->data['Staff Alias'];
+            }
+            elseif($data['Subject']=='Supplier' ) {
+                        include_once('class.Supplier.php');
+
+                $supplier=new Supplier($data['Subject Key']);
+                $data['Author Name']=$staff->data['Supplier Name'];
+            }
+
+
+
+        }
 
 
 
         if ($data['Action']=='created') {
             $data['Preposition']='';
         }
-        
-        if($data['History Details']==''){
-        if (isset($raw_data['old_value']) and  isset($raw_data['new_value']) ) {
-            $data['History Details']=$data['Indirect Object'].' '._('changed from')." \"".$raw_data['old_value']."\" "._('to')." \"".$raw_data['new_value']."\"";
-            $data['History Abstract'].=' ('.$raw_data['old_value'].'&rarr;'.$raw_data['new_value'].')';
 
-        }
-        elseif(  isset($raw_data['new_value']) ) {
-            $data['History Details']=$data['Indirect Object'].' '._('changed to')." \"".$raw_data['new_value']."\"";
-        }
+        if ($data['History Details']=='') {
+            if (isset($raw_data['old_value']) and  isset($raw_data['new_value']) ) {
+                $data['History Details']=$data['Indirect Object'].' '._('changed from')." \"".$raw_data['old_value']."\" "._('to')." \"".$raw_data['new_value']."\"";
+                $data['History Abstract'].=' ('.$raw_data['old_value'].'&rarr;'.$raw_data['new_value'].')';
+
+            }
+            elseif(  isset($raw_data['new_value']) ) {
+                $data['History Details']=$data['Indirect Object'].' '._('changed to')." \"".$raw_data['new_value']."\"";
+            }
         }
 
         $sql=sprintf("insert into `History Dimension` (`Author Name`,`History Date`,`Subject`,`Subject Key`,`Action`,`Direct Object`,`Direct Object Key`,`Preposition`,`Indirect Object`,`Indirect Object Key`,`History Abstract`,`History Details`,`User Key`,`Deep`,`Metadata`) values (%s,%s,%s,%d,%s,%s,%d,%s,%s,%d,%s,%s,%d,%s,%s)"
-                      ,prepare_mysql($data['Author Name'])
+                     ,prepare_mysql($data['Author Name'])
                      ,prepare_mysql($data['Date'])
                      ,prepare_mysql($data['Subject'])
                      , $data['Subject Key']
@@ -373,9 +385,10 @@ abstract class DB_Table {
                      ,prepare_mysql($data['Metadata'])
                     );
         mysql_query($sql);
-        return mysql_insert_id();
-        
         //print $sql;
+        return mysql_insert_id();
+
+        
 
     }
 

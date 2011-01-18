@@ -40,6 +40,14 @@ if(!$suppliers=mysql_fetch_array($result, MYSQL_ASSOC))
 $create=$user->can_create('suppliers');
 
 $modify=$user->can_edit('suppliers');
+$view_sales=$user->can_view('supplier sales');
+
+
+
+$view_stock=$user->can_view('supplier stock');
+
+$smarty->assign('view_sales',$view_sales);
+$smarty->assign('view_stock',$view_stock);
 
 
 $smarty->assign('create',$create);

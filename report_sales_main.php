@@ -261,7 +261,6 @@ foreach($store_data as $key=>$val){
 
 }
 
-
 if($mixed_currencies){
   $store_data[]=array(
 		      'store'=>_('Total')

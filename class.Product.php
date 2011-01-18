@@ -758,9 +758,9 @@ return $this->get_full_order_form();
     if (isset($this->data[$_key]))
       return $this->data[$_key];
      // print_r($this);
-    print "Error -> $key <- not found in get from Product\n";
+    exit( "Error -> $key <- not found in get from Product\n");
 
-exit;
+
     return false;
 
   }
@@ -1216,7 +1216,6 @@ function create_product_id($data) {
     $this->get_data('pid',$this->pid);
     $this->msg='Product Created';
     $this->new=true;
-
     //$this->fix_todotransaction();
     //$this->set_stock(true);
     //$this->set_sales(true);

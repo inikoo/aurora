@@ -121,7 +121,7 @@ if (!defined('K_TCPDF_EXTERNAL_CONFIG')) {
 	/**
 	 * header title
 	 */
-	define ('PDF_HEADER_TITLE', 'Generate Receipt');
+	define ('PDF_HEADER_TITLE', 'Generate Receipta');
 
 	/**
 	 * header description string

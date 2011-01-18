@@ -125,8 +125,11 @@ $user=new User($_SESSION['user_key']);
 $_client_locale='en_GB.UTF-8';
 include_once('set_locales.php');
 require('locale.php');
+
+//print_r(localeconv());
 $_SESSION['locale_info'] = localeconv();
-$_SESSION['locale_info']['currency_symbol']=$myconf['currency_symbol'];
+if($_SESSION['locale_info']['currency_symbol']=='EU')
+$_SESSION['locale_info']['currency_symbol']='Û';
 
 $smarty->assign('lang_code',$_SESSION['text_locale_code']);
 $smarty->assign('lang_country_code',strtolower($_SESSION['text_locale_country_code']));

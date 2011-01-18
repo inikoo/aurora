@@ -451,7 +451,7 @@ foreach($__cols as $cols){
    
    if(!$family->id){
     print_r($family);
-    exit;
+    exit("Error");
    
    }
 
@@ -586,7 +586,7 @@ foreach($__cols as $cols){
 	   if($skus!=''){
 	     $sql="update `Part Dimension` set `Part Status`='Not In Use',`Part Valid To`=".prepare_mysql($date)." where `Part SKU` in (".$skus.") ";
 	     if(!mysql_query($sql)){
-	       exit("$sql\n");
+	       exit("$sql\nError\n");
 	     }
 	     
 	   }

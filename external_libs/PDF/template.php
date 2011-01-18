@@ -8,6 +8,8 @@ $sql = "select * from `Invoice Dimension` ID left join `Order Transaction Fact` 
 
 $result = mysql_query($sql);
 $row = mysql_fetch_array($result);
+$qr_value="Invoice Id=".$id." Customer Name=".$row['Invoice Customer Name']." Total=".$row['Invoice Total Net Amount'];
+
 if(mysql_num_rows($result) > 0)
 {
 ?>
@@ -93,6 +95,7 @@ Delivery Notes - <?php echo $row['Invoice Public ID']; ?></td>
         <td align="center"><?php echo $discount; ?></td>
 	<td align="center"><?php echo money($row['Invoice Transaction Gross Amount']-$row['Invoice Transaction Total Discount Amount'],$row['Invoice Currency Code']); ?></td>
     </tr>
+
 </center>
 <?php
  }
@@ -117,7 +120,12 @@ Delivery Notes - <?php echo $row['Invoice Public ID']; ?></td>
 			<tr>
 				<td>Tax</td><td align="right"><?php echo $tax;?></td>
 			</tr>
+                        
 	<tr style="font-weight:bold;font-size:26px;"><td>Total</td><td align="right"><?php echo $total_amt;?></td></tr>	
+
+                         <tr>
+				<td colspan="3" align="right"><br><img align="right" src="https://chart.googleapis.com/chart?cht=qr&chs=250x100&chl=<?php echo $qr_value;?>"></td>
+			</tr>
 		</table>
      </td>
   </tr>
