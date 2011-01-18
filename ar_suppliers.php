@@ -1473,6 +1473,7 @@ if(isset( $_REQUEST['where']))
 
      $id="<a href='supplier.php?id=".$row['Supplier Key']."'>".$myconf['supplier_id_prefix'].sprintf("%05d",$row['Supplier Key']).'</a>';
      $code="<a href='supplier.php?id=".$row['Supplier Key']."'>".$row['Supplier Code']."</a>";
+     $sales=money($row['Supplier Total Parts Sold Amount']);
 
      $profit=money($row['Supplier Total Parts Profit']);
      $profit_after_storing=money($row['Supplier Total Parts Profit After Storing']);
@@ -1487,6 +1488,7 @@ if(isset( $_REQUEST['where']))
 		   ,'outofstock'=>number($row['Supplier Out Of Stock Products'])
 		   ,'location'=>$row['Supplier Main Location']
 		   ,'email'=>$row['Supplier Main XHTML Email']
+		   ,'sales'=>$sales
 		   ,'profit'=>$profit		 
 		   ,'profit_after_storing'=>$profit_after_storing
 		   ,'cost'=>$cost

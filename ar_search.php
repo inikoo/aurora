@@ -14,7 +14,7 @@ $tipo=$_REQUEST['tipo'];
 switch ($tipo) {
 
 case('all'):
- $data=prepare_values($_REQUEST,array(
+    $data=prepare_values($_REQUEST,array(
                              'q'=>array('type'=>'string')
                          ));
     $data['user']=$user;
@@ -44,7 +44,7 @@ case('parts'):
 case('locations'):
     $data=prepare_values($_REQUEST,array(
                              'q'=>array('type'=>'string')
-                                ,'scope'=>array('type'=>'string')
+                                 ,'scope'=>array('type'=>'string')
                          ));
     $data['user']=$user;
     search_locations($data);
@@ -55,13 +55,13 @@ case('locations'):
 case('orders'):
 case('orders_store'):
 
- $data=prepare_values($_REQUEST,array(
+    $data=prepare_values($_REQUEST,array(
                              'q'=>array('type'=>'string')
-                                ,'scope'=>array('type'=>'string')
+                                 ,'scope'=>array('type'=>'string')
                          ));
     $data['user']=$user;
     search_orders($data);
-break;
+    break;
 case('customer_name'):
     search_customer_name($user);
     break;
@@ -78,25 +78,25 @@ case('departments'):
 
     $data=prepare_values($_REQUEST,array(
                              'q'=>array('type'=>'string'),
-                                'scope'=>array('type'=>'string'),
-                                 'scope_key'=>array('type'=>'number')
+                             'scope'=>array('type'=>'string'),
+                             'scope_key'=>array('type'=>'number')
                          ));
     $data['user']=$user;
     search_departments($data);
-    break;    
+    break;
 default:
     $response=array('state'=>404,'resp'=>"Operation not found $tipo");
     echo json_encode($response);
 
 }
 
-function search_departments($data){
+function search_departments($data) {
     $the_results=array();
 
     $max_results=10;
     $user=$data['user'];
     $q=$data['q'];
-   
+
 
     if ($q=='') {
         $response=array('state'=>200,'results'=>0,'data'=>'');
@@ -108,11 +108,12 @@ function search_departments($data){
     if ($data['scope']=='store') {
         $stores=$_SESSION['state']['store']['id'];
 
-    }    if ($data['scope']=='store_key') {
-        if($data['scope_key'])
-        $stores=$data['scope_key'];
+    }
+    if ($data['scope']=='store_key') {
+        if ($data['scope_key'])
+            $stores=$data['scope_key'];
         else
-        $stores=join(',',$user->stores);
+            $stores=join(',',$user->stores);
 
     }  else
         $stores=join(',',$user->stores);
@@ -123,28 +124,28 @@ function search_departments($data){
         echo json_encode($response);
         return;
     }
-    
-    
-  $sql=sprintf('select `Product Department Key`,`Product Department Code`,`Product Department Name` from   `Product Department Dimension` where `Product Department Store Key` in (%s) and ( `Product Department Code` like "%s%%"  or `Product Department Name` REGEXP "[[:<:]]%s"    )  ',
-  $stores,
-  addslashes($q),
-  addslashes($q)
-  );
- // print $sql;
-$res=mysql_query($sql);
-while($row=mysql_fetch_assoc($res)){
-    $the_results[]=array(
-    'key'=>$row['Product Department Key'],
-    'name'=>$row['Product Department Name'],
-    'code'=>$row['Product Department Code']
-    
-);
-}
 
 
- $response=array('state'=>200,'data'=>$the_results);
+    $sql=sprintf('select `Product Department Key`,`Product Department Code`,`Product Department Name` from   `Product Department Dimension` where `Product Department Store Key` in (%s) and ( `Product Department Code` like "%s%%"  or `Product Department Name` REGEXP "[[:<:]]%s"    )  ',
+                 $stores,
+                 addslashes($q),
+                 addslashes($q)
+                );
+// print $sql;
+    $res=mysql_query($sql);
+    while ($row=mysql_fetch_assoc($res)) {
+        $the_results[]=array(
+                           'key'=>$row['Product Department Key'],
+                           'name'=>$row['Product Department Name'],
+                           'code'=>$row['Product Department Code']
+
+                       );
+    }
+
+
+    $response=array('state'=>200,'data'=>$the_results);
     echo json_encode($response);
-    
+
 }
 
 
@@ -299,48 +300,48 @@ function search_customer_by_parts($data) {
 
 
 
-function search_orders($data){
- $max_results=10;
- $user=$data['user'];
+function search_orders($data) {
+    $max_results=10;
+    $user=$data['user'];
     $q=$data['q'];
-    
-      if ($q=='') {
+
+    if ($q=='') {
         $response=array('state'=>200,'results'=>0,'data'=>'');
         echo json_encode($response);
-exit;
+        exit;
     }
-    
- $candidates=array();
- 
+
+    $candidates=array();
+
     if ($data['scope']=='store') {
         $stores=$_SESSION['state']['orders']['store'];
 
     } else
         $stores=join(',',$user->stores);
-        
-    $sql=sprintf("select `Order Customer Name`,`Order Currency`,`Order Balance Total Amount`,`Order Key`,`Order Public ID`,`Order Current XHTML State` from `Order Dimension` where   `ORder Store Key` in (%s)  and `Order Public ID` like '%s%%' order by `Order Date` desc  limit 10",$stores,addslashes($q));    
-    $res=mysql_query($sql);
-        while ($row=mysql_fetch_array($res)) {
-          if($row['Order Public ID']==$q){
-          $candidates[$row['Order Key']]=110;
-          $candidates_data[$row['Order Key']]=array(
-          'public_id'=>$row['Order Public ID'],
-          'state'=>$row['Order Current XHTML State'],
-          'balance'=>money($row['Order Balance Total Amount'],$row['Order Currency']),
-          'customer'=>$row['Order Customer Name']
-          );
-          }else{
-             $candidates[$row['Order Key']]=100;
-             $candidates_data[$row['Order Key']]=array('public_id'=>$row['Order Public ID'],'state'=>$row['Order Current XHTML State'],
-             'balance'=>money($row['Order Balance Total Amount'],$row['Order Currency']),
-             'customer'=>$row['Order Customer Name']
-             );
 
-          }
-        
+    $sql=sprintf("select `Order Customer Name`,`Order Currency`,`Order Balance Total Amount`,`Order Key`,`Order Public ID`,`Order Current XHTML State` from `Order Dimension` where   `ORder Store Key` in (%s)  and `Order Public ID` like '%s%%' order by `Order Date` desc  limit 10",$stores,addslashes($q));
+    $res=mysql_query($sql);
+    while ($row=mysql_fetch_array($res)) {
+        if ($row['Order Public ID']==$q) {
+            $candidates[$row['Order Key']]=110;
+            $candidates_data[$row['Order Key']]=array(
+                                                    'public_id'=>$row['Order Public ID'],
+                                                    'state'=>$row['Order Current XHTML State'],
+                                                    'balance'=>money($row['Order Balance Total Amount'],$row['Order Currency']),
+                                                    'customer'=>$row['Order Customer Name']
+                                                );
+        } else {
+            $candidates[$row['Order Key']]=100;
+            $candidates_data[$row['Order Key']]=array('public_id'=>$row['Order Public ID'],'state'=>$row['Order Current XHTML State'],
+                                                'balance'=>money($row['Order Balance Total Amount'],$row['Order Currency']),
+                                                'customer'=>$row['Order Customer Name']
+                                                     );
+
         }
-        
-        arsort($candidates);
+
+    }
+
+    arsort($candidates);
     $total_candidates=count($candidates);
 
     if ($total_candidates==0) {
@@ -362,9 +363,9 @@ exit;
         if ($counter>$max_results)
             break;
     }
-        
-        
-$response=array('state'=>200,'results'=>count($results),'data'=>$results,'link'=>'order.php?id=');
+
+
+    $response=array('state'=>200,'results'=>count($results),'data'=>$results,'link'=>'order.php?id=');
     echo json_encode($response);
 }
 
@@ -657,7 +658,7 @@ function search_products($data) {
     $max_results=10;
     $user=$data['user'];
     $q=$data['q'];
-   
+
 
     if ($q=='') {
         $response=array('state'=>200,'results'=>0,'data'=>'');
@@ -965,92 +966,105 @@ function search_parts($data) {
 function search_full_text($data) {
     $the_results=array();
 
-    $max_results=10;
+    $max_results=20;
     $user=$data['user'];
     $q=$data['q'];
     // $q=_trim($_REQUEST['q']);
-    
+
     if ($q=='') {
         $response=array('state'=>200,'results'=>0,'data'=>'');
         echo json_encode($response);
         return;
     }
-    
+
     $candidates=array();
-    
+
     $q_parts=preg_split('/\s+/',$q);
-    foreach($q_parts as $q_part){
-      $sql=sprintf("select `Subject`,`Subject Key`,`Search Full Text Key`,`Search Result Name`,`Search Result Description`,`Search Result Image`   from `Search Full Text Dimension` where `Search Result Name`='%s' limit 20",addslashes($q_part));;
-      
-      $res=mysql_query($sql);
-    while ($row=mysql_fetch_array($res)) {
-      
-      $candidates[$row['Search Full Text Key']]=100;
-      $link='';
-      switch($row['Subject']){
-      case('Product'):
-        $link='product.php?pid=';
-        break;
-      case('Order'):
-	$link='order.php?id=';
-	break;
-      case('Part'):
-        $link='part.php?id=';
-        break;
-      case('Customer'):
-	$link='customer.php?id=';
-	break;
-      case('Family'):
-        $link='family.php?id=';
-        break;
-      }
-        $image='';
-        if($row['Search Result Image']!='')
-        $image='<img src="'.$row['Search Result Image'].'">';
-        $part_data[$row['Search Full Text Key']]=array('link'=>$link,'key'=>$row['Subject Key'],'name'=>$row['Search Result Name'],'description'=>$row['Search Result Description'],'image'=>$image);
+    foreach($q_parts as $q_part) {
+        $sql=sprintf("select `Store Code`,`Subject`,`Subject Key`,`Search Full Text Key`,`Search Result Name`,`Search Result Description`,`Search Result Image`   from `Search Full Text Dimension` S left join `Store Dimension` SD on (SD.`Store Key`=S.`Store Key`)    where `Search Result Name`='%s' limit 20",addslashes($q_part));;
+        //  print $sql;
+        $res=mysql_query($sql);
+        while ($row=mysql_fetch_array($res)) {
+            $store_code=$row['Store Code'];
+            $candidates[$row['Search Full Text Key']]=100;
+            $link='';
+            switch ($row['Subject']) {
+            case('Product'):
+                $link='product.php?pid=';
+                $icon='brick.png';
+                break;
+            case('Order'):
+                $link='order.php?id=';
+                 $icon='basket.png';
+                break;
+            case('Part'):
+                $link='part.php?id=';
+                 $icon='package_green.png';
+                break;
+            case('Customer'):
+                $link='customer.php?id=';
+                 $icon='vcard.png';
+                break;
+            case('Family'):
+                $link='family.php?id=';
+                 $icon='bricks.png';
+                break;
+            }
+            $image='';
+            if ($row['Search Result Image']!='')
+                $image='<img src="'.$row['Search Result Image'].'">';
+            $part_data[$row['Search Full Text Key']]=array('subject'=>$row['Subject'],'store_code'=>$store_code,'icon'=>$icon,'link'=>$link,'key'=>$row['Subject Key'],'name'=>$row['Search Result Name'],'description'=>$row['Search Result Description'],'image'=>$image);
 
+        }
     }
- } 
-  
-    $sql=sprintf("select `Subject`,`Subject Key`,`Search Full Text Key`,`Search Result Name`,`Search Result Description`,`Search Result Image`, match (`First Search Full Text`) AGAINST ('%s' IN NATURAL LANGUAGE MODE) as score   from `Search Full Text Dimension` where match (`First Search Full Text`) AGAINST ('%s' IN NATURAL LANGUAGE MODE) limit 20",addslashes($q),addslashes($q));;
 
-// print $sql;
+    $sql=sprintf("select `Store Code`,`Subject`,`Subject Key`,`Search Full Text Key`,`Search Result Name`,`Search Result Description`,`Search Result Image`, match (`First Search Full Text`) AGAINST ('%s' IN NATURAL LANGUAGE MODE) as score   from `Search Full Text Dimension`  S left join `Store Dimension` SD on (SD.`Store Key`=S.`Store Key`) where match (`First Search Full Text`) AGAINST ('%s' IN NATURAL LANGUAGE MODE)ORDER BY  score desc limit 20",addslashes($q),addslashes($q));;
+
+
     $res=mysql_query($sql);
     while ($row=mysql_fetch_array($res)) {
-        
-        if(array_key_exists($row['Search Full Text Key'],$candidates))
-         $candidates[$row['Search Full Text Key']]+=$row['score'];
-         else
-        $candidates[$row['Search Full Text Key']]=$row['score'];
-      
-    $link='';
-      switch($row['Subject']){
-      case('Product'):
-        $link='product.php?pid=';
-        break;
-      case('Order'):
-	$link='order.php?id=';
-	break;
-      case('Part'):
-        $link='part.php?id=';
-        break;
-      case('Customer'):
-	$link='customer.php?id=';
-	break;
-      case('Family'):
-        $link='family.php?id=';
-        break;
-      }
+
+        if (array_key_exists($row['Search Full Text Key'],$candidates))
+            $candidates[$row['Search Full Text Key']]+=$row['score'];
+        else
+            $candidates[$row['Search Full Text Key']]=$row['score'];
+
+        $link='';
+         $store_code=$row['Store Code'];
+        switch ($row['Subject']) {
+       
+        case('Product'):
+            $link='product.php?pid=';
+            $icon='brick.png';
+            break;
+        case('Order'):
+            $link='order.php?id=';
+            $icon='basket.png';
+            break;
+        case('Part'):
+            $link='part.php?id=';
+            $icon='package_green.png';
+            break;
+        case('Customer'):
+            $link='customer.php?id=';
+             $icon='vcard.png';
+
+            break;
+        case('Family'):
+            $link='family.php?id=';
+            $icon='bricks.png';
+            break;
+        }
         $image='';
-        if($row['Search Result Image']!='')
-        $image='<img src="'.$row['Search Result Image'].'">';
+        if ($row['Search Result Image']!='')
+            $image='<img src="'.$row['Search Result Image'].'">';
 
 
-        $part_data[$row['Search Full Text Key']]=array('link'=>$link,'key'=>$row['Subject Key'],'name'=>$row['Search Result Name'],'description'=>$row['Search Result Description'],'image'=>$image);
+        $part_data[$row['Search Full Text Key']]=array('store_code'=>$store_code,'icon'=>$icon, 'link'=>$link,'key'=>$row['Subject Key'],'name'=>$row['Search Result Name'],'description'=>$row['Search Result Description'],'image'=>$image);
 
     }
 
- 
+
 
 
     arsort($candidates);

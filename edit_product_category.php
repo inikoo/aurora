@@ -1,110 +1,142 @@
 <?php
-include_once('common.php');
-include_once('class.Node.php');
 include_once('class.Category.php');
+
+include_once('common.php');
 include_once('assets_header_functions.php');
 
-if(!$user->can_view('stores')){
-   header('Location: index.php?no=1');
-   exit;
+
+
+if (!$user->can_view('stores')  ) {
+    header('Location: index.php');
+    exit;
 }
 
 
 
 
-
-if(isset($_REQUEST['id'])){
-$category_key=$_REQUEST['id'];
-}else{
-$category_key=$_SESSION['state']['product_categories']['category_key'];
+$modify=$user->can_edit('stores');
+if (!$modify) {
+    header('Location: product_categories.php');
 }
 
-$nodes=new Nodes('`Category Dimension`');
-$category=new Category('category_key',$category_key);
-if($cat_data=$nodes->fetch($category_key)){
-}else{
-$category_key=0;
-$main_title=_('Categories');
-$subcategories_title=_('Category List');
-}
-$main_title=_('Categories');
-$subcategories_title=_('Category List');
-
-$_SESSION['state']['product_categories']['category_key']=$category_key;
-$smarty->assign('main_title',$main_title);
-$smarty->assign('subcategories_title',$subcategories_title);
-
-
-
-
-if(!$category= new Category('category_key',$category_key))
-  exit('Error category not found');
-
-
-
-$modify=$user->can_edit('staff');
-
-$edit=false;
-if(isset($_REQUEST['edit']) and $_REQUEST['edit'])
-  $edit=true;
-
+get_header_info($user,$smarty);
 $general_options_list=array();
-if(!$modify)
- $edit=false;
 
-
-if($edit){
-  $general_options_list[]=array('tipo'=>'url','url'=>'categories.php','label'=>_('Exit Edit'));
-    $general_options_list[]=array('tipo'=>'url','url'=>'new_category.php','label'=>_('Add Category'));
-}else{
-if($modify){$general_options_list[]=array('tipo'=>'url','url'=>'new_category.php','label'=>_('Add Category'));
- $general_options_list[]=array('tipo'=>'url','url'=>'categories.php','label'=>_('Exit Edit'));
-}
-}
-$smarty->assign('general_options_list',$general_options_list);
+$view=$_SESSION['state']['categories']['edit'];
 $css_files=array(
-		 $yui_path.'reset-fonts-grids/reset-fonts-grids.css',
-		 $yui_path.'build/assets/skins/sam/skin.css',
-		 $yui_path.'menu/assets/skins/sam/menu.css',
-		 'common.css',
-		 'container.css',
-		 'table.css'
-		 );
+               $yui_path.'reset-fonts-grids/reset-fonts-grids.css',
+               $yui_path.'menu/assets/skins/sam/menu.css',
+               $yui_path.'button/assets/skins/sam/button.css',
+               'common.css',
+               'container.css',
+               'button.css',
+               'table.css',
+               'css/dropdown.css'
+
+           );
 $js_files=array(
-		$yui_path.'utilities/utilities.js',
-		$yui_path.'json/json-min.js',
-		$yui_path.'paginator/paginator-min.js',
-		$yui_path.'datasource/datasource-min.js',
-		$yui_path.'autocomplete/autocomplete-min.js',
-		$yui_path.'datatable/datatable-min.js',
-		$yui_path.'container/container-min.js',
-		$yui_path.'menu/menu-min.js',
-		'common.js.php',
-		'table_common.js.php',
-		);
-$subcategory_name=array();
-$sql=sprintf("select `Category Key` as subcategory_key,`Category Name` as subcategory_name from `Category Dimension` where `Category Parent Key`=%d",$category_key);
-$res = mysql_query($sql);
-while ($row = mysql_fetch_assoc($res)){
-      $subcategory_name[] = $row;
-}
-$smarty->assign('subcategory_name', $subcategory_name); 
-
-$smarty->assign('category',$category);
-$smarty->assign('parent','category');
-$smarty->assign('sub_parent','category');
-//print("*************");print($edit);
-if($edit){
-$smarty->assign('edit',$_SESSION['state']['product_categories']['edit'] );
-$css_files[]='css/edit.css';
-$js_files[]='js/edit_common.js';
-
-$js_files[]='edit_product_category.js.php?category_key='.$category_key;
-
+              $yui_path.'utilities/utilities.js',
+              $yui_path.'json/json-min.js',
+              $yui_path.'paginator/paginator-min.js',
+              $yui_path.'datasource/datasource-min.js',
+              $yui_path.'autocomplete/autocomplete-min.js',
+              $yui_path.'datatable/datatable-min.js',
+              $yui_path.'container/container-min.js',
+              $yui_path.'menu/menu-min.js',
+              'common.js.php',
+              'table_common.js.php',
+              'search.js',
+              'js/edit_common.js',
+              'js/dropdown.js',
+              'js/edit_category_common.js'
+          );
 $smarty->assign('css_files',$css_files);
-$smarty->assign('js_files',$js_files);
-$smarty->assign('title', _('Editing Category'));
-$smarty->assign('editing',true);
-$smarty->display('edit_product_category.tpl');
+
+
+
+if (isset($_REQUEST['id'])) {
+    $category_key=$_REQUEST['id'];
+
+
+} else {
+    $category_key=$_SESSION['state']['product_categories']['category_key'];
 }
+$_SESSION['state']['product_categories']['category_key']=$category_key;
+
+
+if (!$category_key) {
+    $category_key=0;
+    $view='subcategory';
+    $_SESSION['state']['categories']['edit']=$view;
+
+
+if (isset($_REQUEST['store_id']) and is_numeric($_REQUEST['store_id']) ) {
+    $store_id=$_REQUEST['store_id'];
+
+} else {
+    $store_id=$_SESSION['state']['store']['id'];
+}
+
+
+
+    $general_options_list[]=array('tipo'=>'url','url'=>'product_categories.php?store_id='.$store_id.'&id=0','label'=>_('Exit Edit'));
+    $general_options_list[]=array('tipo'=>'js','id'=>'new_category','label'=>_('Add Category'));
+
+
+
+} else {
+
+
+
+    $category=new Category($category_key);
+    if (!$category->id) {
+        header('Location: product_categories.php?id=0&error=cat_not_found');
+        exit;
+
+    }
+    $category_key=$category->id;
+
+
+    if ($modify) {
+        $general_options_list[]=array('tipo'=>'url','url'=>'product_categories.php?id='.$category->id,'label'=>_('Exit Edit'));
+        $general_options_list[]=array('tipo'=>'js','id'=>'new_category','label'=>_('Add Subcategory'));
+
+    }
+
+
+
+    $smarty->assign('category',$category);
+
+
+    $tpl_file='product_category.tpl';
+$store_id=$category->data['Category Store Key'];
+
+
+}
+
+$store=new Store($store_id);
+
+if (!$store->id) {
+ header('Location: index.php?error=store_not_found');
+    exit;
+  
+}
+
+$_SESSION['state']['categories']['subject']='Product';
+
+$_SESSION['state']['categories']['parent_key']=$category_key;
+$_SESSION['state']['categories']['subject_key']=false;
+$_SESSION['state']['categories']['store_key']=$store->id;
+
+
+$js_files[]='edit_product_category.js.php?key='.$category_key;
+$smarty->assign('js_files',$js_files);
+$smarty->assign('category_key',$category_key);
+
+$smarty->assign('general_options_list',$general_options_list);
+$smarty->assign('edit',$view);
+$_SESSION['state']['store']['id']=$store->id;
+$smarty->assign('store',$store);
+
+$smarty->display('edit_product_category.tpl');
 ?>

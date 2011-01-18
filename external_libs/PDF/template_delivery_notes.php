@@ -9,6 +9,7 @@ $weight=$weight_sql[0];
 
 $result = mysql_query($sql);
 $row = mysql_fetch_array($result);
+$qr_value="Delivery Note Id=".$id." Customer Name=".$row['Delivery Note Customer Name']." Weight=".$weight;
 if(mysql_num_rows($result) > 0)
 {
 ?>
@@ -80,12 +81,16 @@ Invoice - <?php echo $row['Delivery Note XHTML Invoices']; ?></td>
         <td align="center"><?php echo $row['Product XHTML Short Description']; ?></td>
         <td align="center"><?php echo $row['Delivery Note Quantity']; ?></td>
     </tr>
-</center>
+    
+
 <?php
  }
 ?>
-</table>
 
+</table>
+<table><tr>
+	<td colspan="3" align="right"><br><img align="right" src="https://chart.googleapis.com/chart?cht=qr&chs=250x100&chl=<?php echo $qr_value;?>"></td>
+			</tr></table>
 
 <?php
 }

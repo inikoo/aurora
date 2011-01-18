@@ -163,7 +163,8 @@ var CellEdit = function (callback, newValue) {
                           oldValue = this.value,
                                      datatable = this.getDataTable();
     recordIndex = datatable.getRecordIndex(record);
-//alert(column.object);
+
+
     if (column.object=='company' || column.object=='customer' || column.object=='contact' || column.object=='company_area' || column.object=='company_department' || column.object=='company_position')
         ar_file='ar_edit_contacts.php';
     else if (column.object=='warehouse_area' || column.object=='part_location'|| column.object=='shelf_type' || column.object=='location')
@@ -180,19 +181,21 @@ var CellEdit = function (callback, newValue) {
         ar_file='ar_edit_porders.php';
     else if (column.object=='ind_staff' || column.object=='ind_positions' || column.object=='ind_department')
         ar_file='ar_edit_staff.php';
+      else if (column.object=='subcategory')
+        ar_file='ar_edit_categories.php';    
     else
         ar_file='ar_edit_assets.php';
 
     var request='tipo=edit_'+column.object+'&key=' + column.key + '&newvalue=' + encodeURIComponent(newValue) + '&oldvalue=' + encodeURIComponent(oldValue)+ myBuildUrl(datatable,record);
-alert(ar_file+'?'+request);
 
     YAHOO.util.Connect.asyncRequest(
         'POST',
     ar_file, {
 success:function(o) {
           alert(o.responseText);
-alert("before r");
-            var r = YAHOO.lang.JSON.parse(o.responseText);alert(r);alert("after r");
+//alert("before r");
+            var r = YAHOO.lang.JSON.parse(o.responseText)
+            //;alert(r);alert("after r");
 
             if (r.state == 200) {
 

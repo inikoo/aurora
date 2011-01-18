@@ -1,5 +1,10 @@
 <?php
 include_once('conf/locale_defaults.php');
+if(file_exists('conf/locale_settings.php')){
+include_once('conf/locale_settings.php');
+
+}
+
 
 if (!function_exists('_')){
 	function _($str){
@@ -18,9 +23,13 @@ function ngettext($str){
 
 }
 
-$default_locale=$default_locale_data['lang'].'_'.$default_locale_data['country'].($default_locale_data['encoding']!=''?'.'.$default_locale_data['encoding']:'');
+$default_locale=$default_locale_data['lang'].'_'.$default_locale_data['country'].($default_locale_data['encoding']!=''?'.'.$default_locale_data['encoding']:'').($default_locale_data['suffix']!=''?'.'.$default_locale_data['suffix']:'');
 $_client_locale=$default_locale;
+
 setlocale(LC_ALL,$default_locale );
+//print $default_locale;
+//print_r(localeconv());
+//exit;
 $_SESSION['locale']=$default_locale;
 //if(isset($_REQUEST['_locale']) and preg_match('/[a-z]{2}\_[A-Z]{2}\.UTF-8/i',$_REQUEST['_locale']) ){
 //print $_REQUEST['_locale']."<-";

@@ -1065,11 +1065,11 @@
 	
     <!-- [] (date) You can set start date from which the chart will be shown when loaded 
     (the selected predefined period will be ignored if the date is set here) -->	
-		<from></from>
+		<from>{$from}</from>
 		
     <!-- [] (date) You can set end date util which the chart will be shown when loaded 
     If you set "from" date and do not set "to" date, the last date of the data set will be used -->	
-		<to></to>	
+		<to>{$to}</to>	
   
   </period_selector>
   

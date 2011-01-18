@@ -199,7 +199,7 @@ function list_customer_history() {
 
 
 
-   //$sql="select count(*) as total from `Customer History Bridge` CHB  left join  `History Dimension` H on (H.`History Key`=CHB.`History Key`)   $where $wheref ";
+    //$sql="select count(*) as total from `Customer History Bridge` CHB  left join  `History Dimension` H on (H.`History Key`=CHB.`History Key`)   $where $wheref ";
     $sql="select count(*) as total from  `History Dimension` H  left join `Customer History Bridge` B  on (B.`History Key`=H.`History Key`)   $where $wheref  ";
     //print $sql;
     // exit;
@@ -213,8 +213,8 @@ function list_customer_history() {
         $total_records=$total;
     } else {
 
-       // $sql="select count(*) as total from `Customer History Bridge` CHB  left join  `History Dimension` H on (H.`History Key`=CHB.`History Key`)   $where";
-       $sql="select count(*) as total from  `History Dimension` H  left join `Customer History Bridge` B  on (B.`History Key`=H.`History Key`)   $where ";
+        // $sql="select count(*) as total from `Customer History Bridge` CHB  left join  `History Dimension` H on (H.`History Key`=CHB.`History Key`)   $where";
+        $sql="select count(*) as total from  `History Dimension` H  left join `Customer History Bridge` B  on (B.`History Key`=H.`History Key`)   $where ";
         // print $sql;
         $result=mysql_query($sql);
         if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
@@ -270,12 +270,12 @@ function list_customer_history() {
         $order='History Abstract';
     if ($order=='objeto')
         $order='Direct Object';
-     if ($order=='handle')
-        $order='Author Name';    
-        
-        
+    if ($order=='handle')
+        $order='Author Name';
+
+
 //    $sql="select * from `Customer History Bridge` CHB  left join  `History Dimension` H on (H.`History Key`=CHB.`History Key`)   left join `User Dimension` U on (H.`User Key`=U.`User Key`)  $where $wheref  order by `$order` $order_direction limit $start_from,$number_results ";
-$sql="select `Subject`,`Author Name`,`History Details`,`History Abstract`,H.`History Key`,`History Date` from    `History Dimension` H  left join `Customer History Bridge` B  on (B.`History Key`=H.`History Key`) left join          `Customer Dimension` CD on (B.`Customer Key`=CD.`Customer Key`)   $where $wheref  order by `$order` $order_direction limit $start_from,$number_results ";
+    $sql="select `Subject`,`Author Name`,`History Details`,`History Abstract`,H.`History Key`,`History Date` from    `History Dimension` H  left join `Customer History Bridge` B  on (B.`History Key`=H.`History Key`) left join          `Customer Dimension` CD on (B.`Customer Key`=CD.`Customer Key`)   $where $wheref  order by `$order` $order_direction limit $start_from,$number_results ";
     // print $sql;
     $result=mysql_query($sql);
     $data=array();
@@ -286,12 +286,12 @@ $sql="select `Subject`,`Author Name`,`History Details`,`History Abstract`,H.`His
             $note=$row['History Abstract'].' <img class="button" d="no" id="ch'.$row['History Key'].'" hid="'.$row['History Key'].'" onClick="showdetails(this)" src="art/icons/closed.png" alt="Show details" />';
 
         //$objeto=$row['Direct Object'];
-	$objeto=$row['History Details'];
-	
-	if($row['Subject']=='Customer')
-	$author=_('Customer');
-	else
-	$author=$row['Author Name'];
+        $objeto=$row['History Details'];
+
+        if ($row['Subject']=='Customer')
+            $author=_('Customer');
+        else
+            $author=$row['Author Name'];
 
         $data[]=array(
                     'id'=>$row['History Key'],
@@ -352,7 +352,7 @@ function list_staff_history() {
     else
         $order_dir=$conf['order_dir'];
 
-  if (isset( $_REQUEST['details']))
+    if (isset( $_REQUEST['details']))
         $details=$_REQUEST['details'];
     else
         $details=$conf['details'];
@@ -373,24 +373,24 @@ function list_staff_history() {
     else
         $where=$conf['where'];
 
-  /*  if (isset( $_REQUEST['from']))
-        $from=$_REQUEST['from'];
-    else
-        $from=$conf['from'];
-    if (isset( $_REQUEST['to']))
-        $to=$_REQUEST['to'];
-    else
-        $to=$conf['to'];*/
+    /*  if (isset( $_REQUEST['from']))
+          $from=$_REQUEST['from'];
+      else
+          $from=$conf['from'];
+      if (isset( $_REQUEST['to']))
+          $to=$_REQUEST['to'];
+      else
+          $to=$conf['to'];*/
 
-  /*  $elements=$conf['elements'];
-    if (isset( $_REQUEST['element_orden']))
-        $elements['orden']=$_REQUEST['e_orden'];
-    if (isset( $_REQUEST['element_h_cust']))
-        $elements['h_cust']=$_REQUEST['e_orden'];
-    if (isset( $_REQUEST['element_h_cont']))
-        $elements['h_cont']=$_REQUEST['e_orden'];
-    if (isset( $_REQUEST['element_note']))
-        $elements['note']=$_REQUEST['e_orden'];*/
+    /*  $elements=$conf['elements'];
+      if (isset( $_REQUEST['element_orden']))
+          $elements['orden']=$_REQUEST['e_orden'];
+      if (isset( $_REQUEST['element_h_cust']))
+          $elements['h_cust']=$_REQUEST['e_orden'];
+      if (isset( $_REQUEST['element_h_cont']))
+          $elements['h_cont']=$_REQUEST['e_orden'];
+      if (isset( $_REQUEST['element_note']))
+          $elements['note']=$_REQUEST['e_orden'];*/
 
 
     if (isset( $_REQUEST['tableid']))
@@ -404,18 +404,18 @@ function list_staff_history() {
     $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
     $_SESSION['state']['staff_history']['id']=$staff_id;
     $_SESSION['state']['staff_history']['table']=array('details'=>$details,'order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value);
-/*    $date_interval=prepare_mysql_dates($from,$to,'date_index','only_dates');
-    if ($date_interval['error']) {
-        $date_interval=prepare_mysql_dates($_SESSION['state']['staff']['table']['from'],$_SESSION['state']['staff']['table']['to']);
-    } else {
-        $_SESSION['state']['staff']['table']['from']=$date_interval['from'];
-        $_SESSION['state']['staff']['table']['to']=$date_interval['to'];
-    }
-*/
+    /*    $date_interval=prepare_mysql_dates($from,$to,'date_index','only_dates');
+        if ($date_interval['error']) {
+            $date_interval=prepare_mysql_dates($_SESSION['state']['staff']['table']['from'],$_SESSION['state']['staff']['table']['to']);
+        } else {
+            $_SESSION['state']['staff']['table']['from']=$date_interval['from'];
+            $_SESSION['state']['staff']['table']['to']=$date_interval['to'];
+        }
+    */
 
 
 
-  
+
 
     $where.=sprintf(' and  SD.`Staff Key`=%d and `Subject`="Staff"  ',$staff_id);
 //   if(!$details)
@@ -426,19 +426,20 @@ function list_staff_history() {
 //    }
 //  }
 
-   // $where.=$date_interval['mysql'];
+    // $where.=$date_interval['mysql'];
 
     $wheref='';
 
 
 
-   /* if ( $f_field=='notes' and $f_value!='' )
-        $wheref.=" and   `History Abstract` like '%".addslashes($f_value)."%'   ";
-    if ($f_field=='upto' and is_numeric($f_value) )
-        $wheref.=" and  (TO_DAYS(NOW())-TO_DAYS(date))<=".$f_value."    ";
-    else if ($f_field=='older' and is_numeric($f_value))
-        $wheref.=" and  (TO_DAYS(NOW())-TO_DAYS(date))>=".$f_value."    ";
-    else*/if($f_field=='author' and $f_value!='') {
+    /* if ( $f_field=='notes' and $f_value!='' )
+         $wheref.=" and   `History Abstract` like '%".addslashes($f_value)."%'   ";
+     if ($f_field=='upto' and is_numeric($f_value) )
+         $wheref.=" and  (TO_DAYS(NOW())-TO_DAYS(date))<=".$f_value."    ";
+     else if ($f_field=='older' and is_numeric($f_value))
+         $wheref.=" and  (TO_DAYS(NOW())-TO_DAYS(date))>=".$f_value."    ";
+     else*/
+    if ($f_field=='author' and $f_value!='') {
         if (is_numeric($f_value))
             $wheref.=" and   staff_id=$f_value   ";
         else {
@@ -446,24 +447,24 @@ function list_staff_history() {
         }
     }
 
-  
- $sql="select count(*) as total from `Staff Dimension` SD  left join  `History Dimension` H on (H.`Direct Object Key`=SD.`Staff Key`)   $where $wheref  ";
-   // $sql="select count(*) as total from `Staff Event Dimension` SED  left join  `Staff Dimension` SD on (SED.`Staff Key`=SD.`Staff Key`)   $where $wheref ";
- //print $sql;
+
+    $sql="select count(*) as total from `Staff Dimension` SD  left join  `History Dimension` H on (H.`Direct Object Key`=SD.`Staff Key`)   $where $wheref  ";
+    // $sql="select count(*) as total from `Staff Event Dimension` SED  left join  `Staff Dimension` SD on (SED.`Staff Key`=SD.`Staff Key`)   $where $wheref ";
+//print $sql;
     // exit;
     $result=mysql_query($sql);
     if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
         $total=$row['total'];
     }
-   if ($where=='') {
+    if ($where=='') {
         $filtered=0;
         $filter_total=0;
         $total_records=$total;
     } else {
 
-   $sql="select count(*) as total from `Staff Dimension` SD  left join  `History Dimension` H on (H.`Direct Object Key`=SD.`Staff Key`)   $where $wheref  ";      
-      // $sql="select count(*) as total from `Staff Event Dimension` SED  left join  `Staff Dimension` SD on (SED.`Staff Key`=SD.`Staff Key`)   $where $wheref "; 
-     // print $sql;
+        $sql="select count(*) as total from `Staff Dimension` SD  left join  `History Dimension` H on (H.`Direct Object Key`=SD.`Staff Key`)   $where $wheref  ";
+        // $sql="select count(*) as total from `Staff Event Dimension` SED  left join  `Staff Dimension` SD on (SED.`Staff Key`=SD.`Staff Key`)   $where $wheref ";
+        // print $sql;
         $result=mysql_query($sql);
         if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
             $filtered=$row['total']-$total;
@@ -474,7 +475,7 @@ function list_staff_history() {
     mysql_free_result($result);
 
 
-   $rtext=$total_records." ".ngettext('record','records',$total_records);
+    $rtext=$total_records." ".ngettext('record','records',$total_records);
 
     if ($total==0)
         $rtext_rpp='';
@@ -519,31 +520,31 @@ function list_staff_history() {
         $order='History Date';
     if ($order=='staff_id')
         $order='Staff Key';
-     if ($order=='subject')
+    if ($order=='subject')
         $order='Subject';
-     if ($order=='name')
+    if ($order=='name')
         $order='Staff Name';
 
-$sql="select * from `Staff Dimension` SD  left join  `History Dimension` H on (H.`Direct Object Key`=SD.`Staff Key`)   $where $wheref  order by `$order` $order_direction limit $start_from,$number_results ";
- //  print $sql;
+    $sql="select * from `Staff Dimension` SD  left join  `History Dimension` H on (H.`Direct Object Key`=SD.`Staff Key`)   $where $wheref  order by `$order` $order_direction limit $start_from,$number_results ";
+//  print $sql;
     $result=mysql_query($sql);
     $data=array();
 
     while ($row=mysql_fetch_array($result)) {
 
-      if ($row['History Details']=='')
+        if ($row['History Details']=='')
             $note=$row['History Abstract'];
         else
             $note=$row['History Abstract'].' <img class="button" d="no" id="ch'.$row['History Key'].'" hid="'.$row['History Key'].'" onClick="showdetails(this)" src="art/icons/closed.png" alt="Show details" />';
 
-       // $objeto=$row['Direct Object']; 
+        // $objeto=$row['Direct Object'];
 
         $objeto=$row['History Details'];
         $data[]=array(
                     'id'=>$row['History Key'],
-		    'date'=>strftime("%a %e %b %Y", strtotime($row['History Date']." +00:00")),
-		    'time'=>strftime("%H:%M", strtotime($row['History Date']." +00:00")),
-                     'objeto'=>$objeto,
+                    'date'=>strftime("%a %e %b %Y", strtotime($row['History Date']." +00:00")),
+                    'time'=>strftime("%H:%M", strtotime($row['History Date']." +00:00")),
+                    'objeto'=>$objeto,
                     'note'=>$note,
                     //'description'=>$row['History Details']
                 );
@@ -556,7 +557,7 @@ $sql="select * from `Staff Dimension` SD  left join  `History Dimension` H on (H
                                       'sort_dir'=>$_dir,
                                       'tableid'=>$tableid,
                                       'filter_msg'=>$filter_msg,
-                                     // 'total_records'=>$total,
+                                      // 'total_records'=>$total,
                                       'records_offset'=>$start_from,
                                       //	 'records_returned'=>$start_from+$res->numRows(),
                                       'records_perpage'=>$number_results,
@@ -582,13 +583,13 @@ function list_history($asset_type) {
         $asset='Family';
     }
 
-   elseif($asset_type=='company_area') {
+    elseif($asset_type=='company_area') {
         $asset='Company Area';
     }
     elseif($asset_type=='edit_each_staff') {
         $asset='Company Staff';
     }
-     elseif($asset_type=='company_position') {
+    elseif($asset_type=='company_position') {
         $asset='Company Position';
     }
 
@@ -604,19 +605,25 @@ function list_history($asset_type) {
     elseif($asset_type=='company') {
         $asset='Company';
     }
-   
-   
+
+
     elseif($asset_type=='company_department') {
         $asset='Company Department';
     }
 
     elseif($asset_type=='position') {
         $asset='Position';
-    }elseif($asset_type=='supplier') {
+    }
+    elseif($asset_type=='supplier') {
         $asset='Supplier';
-    }elseif($asset_type=='supplier_product') {
+    }
+    elseif($asset_type=='supplier_product') {
         $asset='Supplier Product';
-         $id_key='pid';
+        $id_key='pid';
+    }elseif($asset_type=='product_categories') {
+        $asset='Category';
+        $id_key='parent_key';
+        $asset_type='categories';
     }
 
 
@@ -625,13 +632,13 @@ function list_history($asset_type) {
 
     $conf=$_SESSION['state'][$asset_type]['history'];
 
-    
- $asset_id=$_SESSION['state'][$asset_type][$id_key];
 
-    if (isset( $_REQUEST['elements']))
-        $elements=$_REQUEST['elements'];
-    else
-        $elements=$conf['elements'];
+    $asset_id=$_SESSION['state'][$asset_type][$id_key];
+
+    //if (isset( $_REQUEST['elements']))
+   //     $elements=$_REQUEST['elements'];
+    //else
+     //   $elements=$conf['elements'];
 
     if (isset( $_REQUEST['from']))
         $from=$_REQUEST['from'];
@@ -697,7 +704,7 @@ function list_history($asset_type) {
             'f_value'=>$f_value,
             'from'=>$from,
             'to'=>$to,
-            'elements'=>$elements
+         //   'elements'=>$elements
         );
 
 
@@ -725,7 +732,8 @@ function list_history($asset_type) {
 
 
     $sql="select count(*) as total from `History Dimension`  $where $wheref";
-//print($asset);print("**********");print($asset_id);print("*********");print($sql);print("*********");
+//print($asset);print("**********");print($asset_id);print("*********");
+//print($sql);print("*********");
 
     $res=mysql_query($sql);
     if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
@@ -777,10 +785,10 @@ function list_history($asset_type) {
     }
     else
         $filter_msg='';
-        
-        
-        
-        
+
+
+
+
 
 
 
@@ -794,7 +802,7 @@ function list_history($asset_type) {
         $rev_order_direction='';
 
     $order='`History Date` '.$order_direction.',`History Key`  '.$rev_order_direction;
-$_order='date';
+    $_order='date';
 
     $sql=sprintf("select  * from `History Dimension` H left join `User Dimension` U on (U.`User Key`=H.`User Key`)   $where $wheref order by $order  limit $start_from,$number_results ");
     //print $sql;
