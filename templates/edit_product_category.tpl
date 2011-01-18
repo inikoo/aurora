@@ -71,8 +71,8 @@
  
  <div id="the_table1" class="data_table" style="clear:both">
   <span class="clean_table_title">{t}History{/t}</span>
-     {include file='table_splinter.tpl' table_id=1 filter_name=$filter_name1 filter_value=$filter_value1  }
-  <div  id="table1"   class="data_table_container dtable btable "> </div>
+     {include file='table_splinter.tpl' table_id='_history' filter_name=$filter_name1 filter_value=$filter_value1  }
+  <div  id="table_history"   class="data_table_container dtable btable "> </div>
 </div>
  
 

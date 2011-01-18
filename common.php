@@ -1,11 +1,11 @@
 <?php
-
-
 define('DEBUG', 0);
 if(DEBUG){ error_reporting(E_ALL);}
 
 //$path = 'classes';set_include_path(get_include_path() . PATH_SEPARATOR . $path);
-require_once 'app_files/db/dns.php'; 
+
+require_once 'app_files/db/dns.php';
+
 require_once 'common_functions.php';
 require_once "class.Session.php";
 require_once "class.Auth.php";

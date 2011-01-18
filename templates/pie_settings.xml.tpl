@@ -24,7 +24,7 @@
   <pie>
     <x></x>                                                   <!-- [50%](Number / Number% / !Number) -->
     <y>50%</y>                                                   <!-- [45%](Number / Number% / !Number) -->
-    <radius>140</radius>                                       <!-- [25%] (Number / Number%) -->
+    <radius>25%</radius>                                       <!-- [25%] (Number / Number%) -->
     <inner_radius></inner_radius>                             <!-- [0] (Number / Number%) the radius of the hole (if you want to have donut, use > 0) -->
     <height>0</height>                                        <!-- [0] (Number) pie height (for 3D effect) -->
     <angle>0</angle>                                          <!-- [0] (0 - 90) lean angle (for 3D effect) -->

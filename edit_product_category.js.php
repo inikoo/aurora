@@ -186,7 +186,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 
 		
- var tableid=1; // Change if you have more the 1 table
+ var tableid='_history'; // Change if you have more the 1 table
 	    var tableDivEL="table"+tableid;
 
 	    var CustomersColumnDefs = [
@@ -198,10 +198,10 @@ YAHOO.util.Event.addListener(window, "load", function() {
 				       ];
 	    //?tipo=customers&tid=0"
 	    
-	    this.dataSource1 = new YAHOO.util.DataSource("ar_history.php?tipo=history&type=product_categories&tableid=1");
-	   this.dataSource1.responseType = YAHOO.util.DataSource.TYPE_JSON;
-	    this.dataSource1.connXhrMode = "queueRequests";
-	    this.dataSource1.responseSchema = {
+	    this.dataSource_history = new YAHOO.util.DataSource("ar_history.php?tipo=history&type=product_categories&tableid=_history");
+	   this.dataSource_history.responseType = YAHOO.util.DataSource.TYPE_JSON;
+	    this.dataSource_history.connXhrMode = "queueRequests";
+	    this.dataSource_history.responseSchema = {
 		resultsList: "resultset.data", 
 		metaFields: {
 		    rowsPerPage:"resultset.records_perpage",
@@ -220,8 +220,8 @@ YAHOO.util.Event.addListener(window, "load", function() {
 			 ,'author','date','tipo','abstract','details'
 			 ]};
 	    
-	    this.table1 = new YAHOO.widget.DataTable(tableDivEL, CustomersColumnDefs,
-						     this.dataSource1
+	    this.table_history = new YAHOO.widget.DataTable(tableDivEL, CustomersColumnDefs,
+						     this.dataSource_history
 						     , {
 							 renderLoopSize: 50,generateRequest : myRequestBuilder
 							 ,paginator : new YAHOO.widget.Paginator({
@@ -244,13 +244,13 @@ YAHOO.util.Event.addListener(window, "load", function() {
 						     
 						     );
 	    
-	    this.table1.handleDataReturnPayload =myhandleDataReturnPayload;
-	    this.table1.doBeforeSortColumn = mydoBeforeSortColumn;
-	    this.table1.doBeforePaginatorChange = mydoBeforePaginatorChange;
+	    this.table_history.handleDataReturnPayload =myhandleDataReturnPayload;
+	    this.table_history.doBeforeSortColumn = mydoBeforeSortColumn;
+	    this.table_history.doBeforePaginatorChange = mydoBeforePaginatorChange;
 
 		    
 		    
-	    this.table1.filter={key:'<?php echo$_SESSION['state']['company']['history']['f_field']?>',value:'<?php echo$_SESSION['state']['company']['history']['f_value']?>'};
+	    this.table_history.filter={key:'<?php echo$_SESSION['state']['company']['history']['f_field']?>',value:'<?php echo$_SESSION['state']['company']['history']['f_value']?>'};
 
 
 	};

@@ -2,6 +2,9 @@
 
 
 require_once 'common.php';
+
+setlocale(LC_ALL,'en_GB');
+
 require_once 'ar_common.php';
 
 if (!isset($_REQUEST['tipo'])) {
@@ -11,6 +14,15 @@ if (!isset($_REQUEST['tipo'])) {
 
 $tipo=$_REQUEST['tipo'];
 switch ($tipo) {
+
+case('top_families'):
+//print_r($_REQUEST);
+    $data=prepare_values($_REQUEST,array(
+                             'store_keys'=>array('type'=>'string'),
+                             'period'=>array('type'=>'string')
+                         ));
+    top_families($data);
+    break;
 
 case('number_of_contacts'):
     $data=prepare_values($_REQUEST,array(
@@ -294,10 +306,11 @@ function customer_families_pie($data) {
     $res=mysql_query($sql);
     $sum_slices=0;
     while ($row=mysql_fetch_assoc($res)) {
-        if ($row['amount']>0)
+        if ($row['amount']>0){
             $descripton=$row['Product Family Name'];
-        printf("%s;%.2f;;;family.php?id=%d;%s\n",$row['Product Family Code'],$row['amount'],$row['Product Family Key'],$descripton);
-        $sum_slices+=$row['amount'];
+            printf("%s;%.2f;;;family.php?id=%d;%s\n",$row['Product Family Code'],$row['amount'],$row['Product Family Key'],$descripton);
+            $sum_slices+=$row['amount'];
+        }
     }
 
     if ($others) {
@@ -395,6 +408,84 @@ $dates.=sprintf("and `Invoice Date`>=%s  ",prepare_mysql($data['from']));
      }
 
     */
+}
+
+function top_families($data){
+
+$max_slices=10;
+
+
+$store_keys=preg_split('/,/',$data['store_keys']);
+
+if(!is_array($store_keys) or count($store_keys)==0){
+return;
+}
+
+$valid_store_keys=array();
+foreach($store_keys as $store_key){
+if(is_numeric($store_key))
+    $valid_store_keys[]=$store_key;
+}
+if(count($valid_store_keys)==0)return;
+
+$period=$data['period'];
+
+$field='(`Product Family Total Invoiced Gross Amount`-`Product Family Total Invoiced Discount Amount`)';
+
+
+
+ switch($period){
+
+case('1m'):
+$field='(`Product Family 1 Month Acc Quantity Invoiced`)';
+
+break;
+case('1y'):
+$field='(`Product Family 1 Year Acc Quantity Invoiced`)';
+
+break;
+case('1q'):
+$field='(`Product Family 1 Quarter Acc Quantity Invoiced`)';
+
+break;
+ default:
+$field='(`Product Family Total Invoiced Gross Amount`-`Product Family Total Invoiced Discount Amount`)';
+
+
+}
+
+
+
+
+
+
+
+$total=0;
+$sql=sprintf("select sum%s as sales from `Product Family Dimension` where `Product Family Store Key` in (%s)  ",
+$field,
+join(",",$valid_store_keys)
+);
+$res=mysql_query($sql);
+if($row=mysql_fetch_assoc($res)){
+$total=$row['sales'];
+}
+
+$others=$total;
+$sql=sprintf("select `Product Family Name`,`Product Family Key`,`Product Family Code`,%s as sales from `Product Family Dimension` where `Product Family Store Key` in (%s) order by sales desc limit %d ",
+$field,
+join(",",$valid_store_keys),
+$max_slices
+);
+$res=mysql_query($sql);
+while($row=mysql_fetch_assoc($res)){
+$descripton='';//$row['Product Family Name'];
+printf("%s;%.2f;;;family.php?id=%d;%s\n",$row['Product Family Code'],$row['sales'],$row['Product Family Key'],$descripton);
+$others-=$row['sales'];
+}
+
+ if ($others) {
+        printf("%s;%.2f;true\n",_('Others'),$others);
+    }
 
 }
 

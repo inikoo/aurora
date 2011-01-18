@@ -170,7 +170,7 @@ mysql_free_result($result);
 		   array('state'=>200,
 			 'data'=>$adata,
 			 'rtext'=>$rtext,
-			 'sort_key'=>$_order,
+			 'sort_key'=>'position',
 			 'sort_dir'=>$_dir,
 			 'tableid'=>$tableid,
 			 'filter_msg'=>$filter_msg,
@@ -254,7 +254,7 @@ function list_customers(){
           $where=sprintf(' where false ');
 
      else
-     $where=sprintf(' where `Customer Store Key` in (%s) and `Customer Orders Invoiced`>0',$store);
+     $where=sprintf(' where `Invoice Store Key` in (%s) ',$store);
 
   
 
@@ -262,6 +262,26 @@ function list_customers(){
    $rtext='';
    $total=$number_results;
    
+
+  switch($period){
+
+case('1m'):
+ $where=sprintf(" where `Invoice Store Key` in (%s) and  `Invoice Date`>=%s",$store,prepare_mysql(date("Y-m-d H:i:s",strtotime("now -1 month"))));
+break;
+case('1y'):
+ $where=sprintf(" where `Invoice Store Key` in (%s)  and `Invoice Date`>=%s",$store,prepare_mysql(date("Y-m-d H:i:s",strtotime("now -1 year"))));
+
+break;
+case('1q'):
+ $where=sprintf("where `Invoice Store Key` in (%s)  and `Invoice Date`>=%s",$store,prepare_mysql(date("Y-m-d H:i:s",strtotime("now -3 months"))));
+
+break;
+ default:
+      $where=sprintf(' where `Customer Store Key` in (%s) ',$store);
+
+
+}
+
 
 
    $_order=$order;
@@ -274,8 +294,19 @@ function list_customers(){
    else   
      $order='`Balance`';
 
-  
-   $sql="select  `Store Code`,`Customer Type by Activity`,`Customer Last Order Date`,`Customer Main XHTML Telephone`,`Customer Key`,`Customer Name`,`Customer Main Location`,`Customer Main XHTML Email`,`Customer Main Town`,`Customer Main Country First Division`,`Customer Main Delivery Address Postal Code`,`Customer Orders Invoiced` as Invoices , `Customer Net Balance` as Balance  from `Customer Dimension` C  left join `Store Dimension` SD on (C.`Customer Store Key`=SD.`Store Key`)  $where $wheref  group by `Customer Key` order by $order $order_direction limit $start_from,$number_results";
+
+
+
+
+
+
+
+ if($period=='all') 
+ $sql="select  `Store Code`,`Customer Type by Activity`,`Customer Last Order Date`,`Customer Main XHTML Telephone`,`Customer Key`,`Customer Name`,`Customer Main Location`,`Customer Main XHTML Email`,`Customer Main Town`,`Customer Main Country First Division`,`Customer Main Delivery Address Postal Code`,`Customer Orders Invoiced` as Invoices , `Customer Net Balance` as Balance  from `Customer Dimension` C  left join `Store Dimension` SD on (C.`Customer Store Key`=SD.`Store Key`)  $where $wheref  group by `Customer Key` order by $order $order_direction limit $start_from,$number_results";
+ else
+    $sql="select  `Store Code`,`Customer Type by Activity`,`Customer Last Order Date`,`Customer Main XHTML Telephone`,C.`Customer Key`,`Customer Name`,`Customer Main Location`,`Customer Main XHTML Email`,`Customer Main Town`,`Customer Main Country First Division`,`Customer Main Delivery Address Postal Code`,count(distinct `Invoice Key`) as Invoices , sum(`Invoice Total Net Amount`) as Balance  from  `Invoice Dimension` I left join   `Customer Dimension` C on (`Invoice Customer Key`=C.`Customer Key`) left join `Store Dimension` SD on (C.`Customer Store Key`=SD.`Store Key`)  $where $wheref  group by `Invoice Customer Key` order by $order $order_direction limit $start_from,$number_results";
+
+ 
  //print $sql;
    $adata=array();
   

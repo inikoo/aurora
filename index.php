@@ -33,6 +33,11 @@ if ($user->data['User Type']=='Supplier') {
 }
 
 
+
+$smarty->assign('store_keys',join($user->stores));
+
+
+
 $css_files=array(
                $yui_path.'reset-fonts-grids/reset-fonts-grids.css',
                $yui_path.'menu/assets/skins/sam/menu.css',
@@ -61,6 +66,8 @@ $js_files=array(
               'common.js.php',
               'table_common.js.php',
               'js/search.js',
+		 'external_libs/ampie/ampie/swfobject.js',
+
         //      'js/index_tools.js',
               'index.js.php',
 
