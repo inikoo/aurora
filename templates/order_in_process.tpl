@@ -224,7 +224,7 @@
 <div id="panel2" style="visibility:hidden"> 
 
 
-<div>Search Family: <input id="family_search" value=""/></div>
+<div>Search Family: <input id="family_search" value="" name="family_search"/></div>
 
 <div id="search_error" style="position:relative; visibility:hidden;margin-bottom:10px">{t}You have entered unexisting family{/t}</div>
 </div> 
