@@ -4,13 +4,7 @@ include_once('common.php');
 ?>
 var Event = YAHOO.util.Event;
 var Dom   = YAHOO.util.Dom;
-/*
-function subcategory_f(subcategory){
-var subcategory_key=subcategory;
 
-alert(subcategory_key);
-window.location.href = "edit_category.php?sn=" + sn;
-}*/
 //var can_add_department=false;
 var description_num_changed=0;
 var description_warnings= new Object();
@@ -18,7 +12,7 @@ var description_errors= new Object();
 
 
 var scope='category';
-var scope_edit_ar_file='ar_assets.php';
+var scope_edit_ar_file='ar_edit_categories.php';
 var scope_key_name='category_key';
 var scope_key='<?php $_REQUEST['key']?>';
 
@@ -28,7 +22,6 @@ var parent_key_name='id';
 
 
 //var editing='<?php //echo $_SESSION['state']['product_categories']['edit']?>';  
-
 
 
 var validate_scope_data={
@@ -42,14 +35,14 @@ var validate_scope_data={
 };
 
 
-var validate_scope_metadata={'category':{'type':'edit','ar_file':'ar_edit_assets.php','key_name':'category_key','key':<?php echo $_REQUEST['key']?>}};
+var validate_scope_metadata={'category':{'type':'edit','ar_file':'ar_edit_categories.php','key_name':'category_key','key':<?php echo $_REQUEST['key']?>}};
 				
-
 
 /*function validate_id(query){
  validate_general('company_staff','id',unescape(query));
 }*/
 function validate_name(query){
+//alert("********");alert(query);
  validate_general('category','name',unescape(query));
 }
 function validate_subcategory_name(query){
@@ -62,13 +55,19 @@ function reset_new_category(){
 function reset_edit_category(){
     reset_edit_general('category')
 }
-
-
 function save_edit_subcategory(){
     save_edit_general('subcategory');
 }
 function reset_edit_subcategory(){
     reset_edit_general('subcategory')
+}
+
+
+function save_new_category(){
+ save_edit_general('category');
+}
+function save_edit_category(){
+    save_edit_general('category');
 }
 
 
@@ -255,9 +254,6 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 	};
     });
-
-
-
 
 
 

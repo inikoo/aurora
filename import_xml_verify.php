@@ -123,7 +123,7 @@ function objectsIntoArray($arrObjData, $arrSkipIndices = array())
 	else
 	{
          ?>
-           <script>location.href = "http://localhost/kaktus/import_xml.php?tipo=customers_store" </script>
+           <script>location.href = "import_xml.php?tipo=customers_store" </script>
 	 <?php 
 	}}
 	else
