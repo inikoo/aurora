@@ -98,7 +98,8 @@ if(isset($_POST['submit']))
 	  }
 	else
 	  {
-	  echo "Invalid file";
+		header('location:import_csv.php?tipo=customers_store&error=Invalid File');	 	
+
 	  }
 }
 
