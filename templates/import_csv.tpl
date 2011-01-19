@@ -6,10 +6,11 @@
     <h1>Import Contacts From CSV File</h1>
   </div>
 <br>
+
 <h3>Upload your File:</h3>
 <div class="left3Quarters">
                 
-
+{$error}
 <form id="form" name="form" method="post" action="import_csv_verify.php?tipo=customers_store" enctype="multipart/form-data">
 <input type="hidden" name="form" value="form" />
  
@@ -17,16 +18,7 @@
 
     
     <div class="prop">
-	<label  for="fileUpload" class="import_level">
-	Source</label>
-        <span>
-		<select name="source" id="source">
-		  <option>---Select---</option>
-		  <option value="Rediffmail">Rediffmail</option>
-		  <option value="Hotmail">Hotmail</option>
-		  <option value="Thunderbird">Thunderbird</option>
-		</select>
-        </span>
+	
 	<label  for="fileUpload" class="import_level">
 	CSV File</label>
         <span><input type="file" id="fileUpload" class="input2" name="fileUpload" size="50" />

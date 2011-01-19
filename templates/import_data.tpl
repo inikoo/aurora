@@ -26,7 +26,7 @@
  
 <div class="ImportSection"><h3>Import from vCard file</h3>
         <p>vCard is a file format standard for electronic business cards used by Apple Address Book and many other applications<br>
-        <a href="">Import from vCard file</a>
+        <a href="parse_vcard.php">Import from vCard file</a>
         </p>
         </div>
  
