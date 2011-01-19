@@ -1,8 +1,9 @@
 <?php
+	include('common.php');
 	require_once 'csvparser.php';
 	$csv = new CSV_PARSER;
 	//loading the CSV File
-	$csv->load('uploads/Book1.csv');
+	$csv->load($_SESSION['file_path']);
 	//extracting the HEADERS
 	$h = $csv->getHeaders();
 	$index = $_REQUEST['v'];
