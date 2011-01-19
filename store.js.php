@@ -39,7 +39,7 @@ var change_view=function(e){
 	table.hideColumn('surplus');
 	table.hideColumn('optimal');
 	table.hideColumn('low');
-	table.hideColumn('critcal');
+	table.hideColumn('critical');
 	
 	if(tipo=='sales'){
 	    Dom.get('period_options').style.display='';
@@ -63,7 +63,7 @@ var change_view=function(e){
 	    table.showColumn('surplus');
 	    table.showColumn('optimal');
 	    table.showColumn('low');
-	    table.showColumn('critcal');
+	    table.showColumn('critical');
 	    table.showColumn('stock_error');
 	    table.showColumn('outofstock');
 	}
