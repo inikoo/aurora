@@ -7,7 +7,7 @@
 </h1>
   </div>
 <br>
-<h3>&nbsp;&nbsp;&nbsp;<img src="images/exclamation-red-frame.png"/>&nbsp;&nbsp;Please make a decision on all fields marked 'Unknown, Please Choose...' </h3>
+<h3>{$wrong}</h3>
 <div class="left3Quarters">
                 
 
@@ -30,29 +30,11 @@
                     <ul class="formActions">
                         <li>
                             <div class="framedsection">
-				<table class="recordList">
-		                    <tbody>
-				    	  <tr>
-						<th class="list-column-left" style="text-align: left; width: 20%; padding-left:5px;">
-						            Column
-						</th>
-				                <th class="list-column-left" style="text-align: left; width: 40%;padding-left:10px;">
-				                    Assigned Field
-				                </th>
-				                <th class="list-column-left" style="text-align: left; width: 30%;">
-				                    <span style="float: left;">Sample Values</span>
-				             <span style="float: right;padding-right:5px;"> <a href="#" class="subtext">next sample</a>
-				                    </span>
-				                 </th>
-		                          </tr>
-		               	   </tbody>
-			    	</table>
-				<div style="height:200px;overflow:auto; vertical-align:top;">
-					<div id="call_table"></div>
-
-                                </div>
-
+				
+				<div id="call_table"></div>
+                 
                             </div>
+
 			    <ul class="formActions">
                     		<li>
 				        <div class="bt"><input type="submit" value="Continue" name="" id="">

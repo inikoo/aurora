@@ -7,23 +7,45 @@
 	$h = $csv->getHeaders();
 	$index = $_REQUEST['v'];
 	$r = $csv->getRow($index);
-	
 ?>
-<div style="height:200px;overflow:auto; vertical-align:top;">
-<table border=0 width=600 align="center" style="border:1px solid #000000">
-	
+
+
+
+
+
+<table class="recordList">
+		
+		<tr>
+		<th class="list-column-left" style="text-align: left; width: 20%; padding-left:5px;">
+		    Column
+		</th>
+		<th class="list-column-left" style="text-align: left; width: 40%;padding-left:10px;">
+		Assigned Field
+		</th>
+		<th class="list-column-left" style="text-align: left; width: 30%;">
+		<span style="float: left;">Sample Values</span>
+		<span style="float: right;padding-right:5px;"> 
+
+	 &nbsp;
+
+	<a href="#" class="subtext"  onclick="getNext(<?php echo $index; ?>)">Next</a>
+		</span>
+		</th>
+		</tr>
+<tr>&nbsp;</tr>
+		
 	<?php
 	for($j=0; $j<count($h)-1; $j++)
 	{ 
 	?>
 	<tr>
-		<td>
+		<td width=150 align=center >
 		<!-- Header Output -->
 		<?php echo $h[$j];?>
 		</td>
 		<td align=center>
 		<select name="assign_field" id="assign_field">
-		    <option>Unknown Please Choose</option>
+		    <option value="0">Unknown Please Choose</option>
 		    <option value="Customer Main Contact Name">Customer Main Contact Name</option>
 		    <option value="Customer Name">Customer Name</option>
 		    <option value="Customer Type">Customer Type</option>
@@ -55,13 +77,9 @@
 	}
 	?>
 <tr>
-<td colspan="3" align="right">
-	
-	<a href="#" id="prev" onclick="getPrev(<?php echo $index; ?>)">Previous</a>
-	<a href="#" id="next" onclick="getNext(<?php echo $index; ?>)">Next</a>	
-</td>
+
 </tr>
 </table>
-</div>
+
 			
 

@@ -72,6 +72,8 @@ $scope_args='';
 
 if(isset($_POST['submit']))
 {
+	if($_FILES['fileUpload']['name']=='') { header('location:import_csv.php?tipo=customers_store'); }
+		
 	if (($_FILES["fileUpload"]["type"] == "text/csv") && ($_FILES["fileUpload"]["size"] < 20000))
 	  {
 	  if ($_FILES["fileUpload"]["error"] > 0)
@@ -106,16 +108,25 @@ if(isset($_POST['submit']))
 	  }
 }
 
+if(isset($_REQUEST['assign_field']) && $_REQUEST['assign_field'] == 0)
+{
+	$wrong = '&nbsp;&nbsp;&nbsp;<img src="images/exclamation-red-frame.png"/>&nbsp;&nbsp;Please make a decision on all fields marked Unknown, Please Choose...';
+}
+else
+{
+	$wrong = '';
+}
+
 
 $v = 0;
 
 $smarty->assign('v',$v);
-$smarty->assign('rr',$r);
+
 $smarty->assign('scope',$scope);
 $smarty->assign('scope_args',$scope_args);
 $smarty->assign('js_files',$js_files);
 $smarty->assign('css_files',$css_files);
-
+$smarty->assign('wrong',$wrong);
 
 
   $smarty->display('import_csv_verify.tpl');
