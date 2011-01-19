@@ -251,12 +251,14 @@ var onCellClick = function(oArgs) {
                     ar_file='ar_edit_suppliers.php';
                 else if (column.object=='ind_staff'  || column.object=='ind_positions' || column.object=='ind_department' )
      		   ar_file='ar_edit_staff.php';
+		else if (column.object=='subcategory')
+     		   ar_file='ar_edit_categories.php';
                 else
                     ar_file='ar_edit_assets.php';
 //alert(column.object)
 
 
-            //	alert(ar_file+'?tipo=delete_'+column.object + myBuildUrl(this,record))
+           	//alert(ar_file+'?tipo=delete_'+column.object + myBuildUrl(this,record))
 
                 YAHOO.util.Connect.asyncRequest(
                     'GET',
@@ -429,6 +431,7 @@ function validate_scope_new(branch) {
 }
 
 function validate_general(branch,item,query) {
+alert("***********");
 alert(validate_scope_metadata[branch]['type']+' '+branch+' '+query)
     if (validate_scope_metadata[branch]['type']=='new') {  
         validate_general_new(branch,item,query)
