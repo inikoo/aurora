@@ -15,7 +15,7 @@
         
   </head>
 
-  <body  class=" yui-skin-sam kaktus" onload="get_default({$v})">
+  <body  class=" yui-skin-sam kaktus">
     <div id="{$page_layout}" class="{$box_layout}">
     
       <div id="hd" >

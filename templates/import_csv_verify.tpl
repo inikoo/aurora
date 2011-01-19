@@ -1,4 +1,7 @@
 ﻿{include file='header.tpl'}
+<script language="Javascript">
+	window.onload = get_default({$v});
+</script>
 <div id="bd">
  
 
