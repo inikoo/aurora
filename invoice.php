@@ -22,10 +22,29 @@ $customer=new Customer($invoice->data['Invoice Customer Key']);
 
 //print_r($invoice->data);
 
-$js_file='invoice.js.php';
-$template='invoice.tpl';
 
+if ($invoice->data['Invoice Title']=='Invoice') {
+    if ($invoice->data['Invoice Paid']=='Yes') {
+        $js_file='invoice.js.php';
+        $template='invoice.tpl';
+    } else {
+        $js_file='invoice_in_process.js.php';
+        $template='invoice_in_process.tpl';
 
+    }
+    $smarty->assign('title',_('Invoice').' '.$invoice->get('Invoice Public ID') );
+
+} else {
+    if ($invoice->data['Invoice Paid']=='Yes') {
+        $js_file='refund.js.php';
+        $template='refund.tpl';
+    } else {
+        $js_file='refund_in_process.js.php';
+        $template='refund_in_process.tpl';
+    }
+    $smarty->assign('title',_('Refund').' '.$invoice->get('Invoice Public ID') );
+
+}
 $smarty->assign('invoice',$invoice);
 $smarty->assign('customer',$customer);
 
@@ -59,7 +78,6 @@ $js_files=array(
 
 
 $smarty->assign('parent','orders');
-$smarty->assign('title',_('Invoice').' '.$invoice->get('Invoice Public ID') );
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
 

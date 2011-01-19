@@ -197,7 +197,7 @@ function get_data(){
 
 
 var save_new_contact=function(e){
-   
+  
     if(!can_add_contact){
 
 	return;
@@ -208,7 +208,7 @@ var save_new_contact=function(e){
     
     var json_value = YAHOO.lang.JSON.stringify(contact_data); 
     var request='ar_edit_contacts.php?tipo=new_'+scope+'&values=' + encodeURIComponent(json_value); 
-    // alert(request);
+    alert(request);
 
     YAHOO.util.Connect.asyncRequest('POST',request ,{
 	    success:function(o) {
@@ -310,7 +310,7 @@ var find_contact=function(){
      
 
     function update_save_button(){
-	//	alert(contact_found);
+		//alert(contact_found);
 	if(contact_found==true){
 
 	    Dom.get('save_new_contact').style.display='none';
@@ -365,7 +365,7 @@ var find_contact=function(){
 	    }
 
 	}
-	//	alert(validate_data.email.validated+' '+validate_data.email.inputed)
+	//alert(validate_data.email.validated+' '+validate_data.email.inputed)
 	if(valid_items_in_group<min_valid_items){
 	    //valid_form=false;
 	}
@@ -498,7 +498,7 @@ function  validate_telephone(original_query) {
 function telephone_inputed(){
     var item='telephone';
     var value=Dom.get('Telephone').value.replace(/\s+/,"");
-    //  alert(value)
+   // alert(value)
     if(value=='')
 	validate_data[item].inputed=false;
     else
@@ -535,7 +535,7 @@ function validate_postal_code(){
     var postal_code=Dom.get('address_postal_code').value.replace(/\s+/,"");
     var o=Dom.get("address_postal_code");
     var tr=Dom.get('tr_address_postal_code');
-    // alert(postal_regex+' '+postal_code)
+   // alert(postal_regex+' '+postal_code)
     var item='postal_code';
 
     var valid=postal_regex.test(postal_code);

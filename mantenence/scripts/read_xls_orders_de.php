@@ -1,11 +1,11 @@
 <?php
 date_default_timezone_set('UTC');
 
-set_include_path(get_include_path() . PATH_SEPARATOR . $path);
+//set_include_path(get_include_path() . PATH_SEPARATOR . $path);
 
-$path_to_liveuser_dir = '/usr/share/php/'.PATH_SEPARATOR;
+//$path_to_liveuser_dir = '/usr/share/php/'.PATH_SEPARATOR;
 
-ini_set('include_path', $path_to_liveuser_dir.ini_get('include_path'));
+//ini_set('include_path', $path_to_liveuser_dir.ini_get('include_path'));
 
 error_reporting(E_ERROR | E_WARNING | E_PARSE | E_NOTICE);
 include_once('../../app_files/db/dns.php');
@@ -62,6 +62,7 @@ $force_update=false;
 
 
 $orders_array_full_path = glob("/mnt/z/Orders-germany/*.xls");
+
 //$orders_array_full_path=array_reverse($orders_array_full_path);
 
 
@@ -104,7 +105,7 @@ foreach($orders_array as $order_index=>$order){
 
 //include_once('z.php');
 
-$cvs_repo='/data/orders_data/';
+//$cvs_repo='/data/orders_data/';
 
 
 $sql="update de_orders_data.orders set deleted='Yes' ";
@@ -159,7 +160,7 @@ foreach($good_files_number as $order_index=>$order){
 	exec('/usr/local/bin/xls2csv    -s cp1252   -d 8859-1   '.$tmp_file.' > '.$csv_file);
 	$handle_csv = fopen($csv_file, "r");
 	unlink($tmp_file);
-	copy($csv_file,$row['filename_cvs'] );
+	//copy($csv_file,$row['filename_cvs'] );
 	$handle_csv = fopen($csv_file, "r");
 	unlink($csv_file);
 	$sql=sprintf("update de_orders_data.orders set last_read=NOW() where id=%d",$row['id']);
@@ -200,12 +201,12 @@ foreach($good_files_number as $order_index=>$order){
 
 
     $cvs_filename=sprintf("%06d.csv",$id);
-    copy($csv_file,$cvs_repo.$cvs_filename );
+    //copy($csv_file,$cvs_repo.$cvs_filename );
     $handle_csv = fopen($csv_file, "r");
     unlink($csv_file);
     
-    $sql=sprintf("update de_orders_data.orders set filename_cvs=%s where id=%d",prepare_mysql($cvs_repo.$cvs_filename),$id);
-    mysql_query($sql);
+    //$sql=sprintf("update de_orders_data.orders set filename_cvs=%s where id=%d",prepare_mysql($cvs_repo.$cvs_filename),$id);
+   // mysql_query($sql);
     $updated=true;
     
   }

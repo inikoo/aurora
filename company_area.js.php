@@ -18,7 +18,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 				       ,{key:"name", label:"<?php echo _('Name')?>", width:190,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				        ];
 	    //?tipo=customers&tid=0"
-	    this.dataSource0 = new YAHOO.util.DataSource("ar_contacts.php?tipo=company_departments&parent=area");
+	    this.dataSource0 = new YAHOO.util.DataSource("ar_contacts.php?tipo=company_areas&parent=area");
 	    this.dataSource0.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource0.connXhrMode = "queueRequests";
 	    this.dataSource0.responseSchema = {

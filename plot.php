@@ -73,10 +73,6 @@ case('sales_by_store');
 case('sales_share_by_store');
 plot_sales_by_store($tipo);
 
-
-
-break;
-
 break;
 case('customers');
 case('active_customers');
@@ -316,12 +312,17 @@ case('part'):
 
   $category=$_REQUEST['category'];
    $sku=$_REQUEST['keys'];
-   $from=$_REQUEST['from'];
-   $to=$_REQUEST['to'];
+  
    $period=$_REQUEST['period'];
 
-   $ar_address="ar_plot.php?tipo=part_$category&keys=$sku&period=$period&from=$from&to=$to";
-   //print $ar_address;
+
+$_SESSION['state']['part']['plot_period']=$period;
+
+list($from,$to)=calculate_dates($period, (isset($_REQUEST['from'])?$_REQUEST['from']:false)  ,(isset($_REQUEST['to'])?$_REQUEST['to']:false));
+
+
+   $ar_address="ar_plot.php?tipo=part_".$category."_history&keys=$sku&period=$period&from=$from&to=$to";
+ 
    $fields='"Date","Stock","Sales","In","tip_Stock","tip_Sales","tip_In"';
    
    $yfields=array(
@@ -579,7 +580,7 @@ $out='<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN""http://www.
  <script type="text/javascript">
 
 
- function formatCurrencyAxisLabel( value ){
+function formatCurrencyAxisLabel( value ){
 if( value==0)
     return "";
 else if ( value>=499){
@@ -598,12 +599,8 @@ return value+"%";
  function formatPercentageAxisLabelx2BUG( value ){
 return 2*value+"%";
 }
-
-
-
-
- function formatNumberAxisLabel( value ){return YAHOO.util.Number.format( value,{prefix: "",thousandsSeparator: ",",decimalPlaces: 0});}
- function formatPercentageAxisLabel( value ){return YAHOO.util.Number.format( value,{prefix: "",thousandsSeparator: ",",decimalPlaces: 0})+"%";}
+function formatNumberAxisLabel( value ){return YAHOO.util.Number.format( value,{prefix: "",thousandsSeparator: ",",decimalPlaces: 0});}
+function formatPercentageAxisLabel( value ){return YAHOO.util.Number.format( value,{prefix: "",thousandsSeparator: ",",decimalPlaces: 0})+"%";}
 
  function DataTipText( item, index, series ){return item["tip_"+series["yField"]]    }
 
@@ -941,6 +938,72 @@ mysql_free_result($result);
    $tipo_chart='ColumnChart';
 }
 
+function calculate_dates($period,$from,$to){
+global $plot_page;
+  
+    
+   if(is_numeric($from)){
+           $_SESSION['state'][$plot_page]['plot_interval'][$period]['plot_bins']=$from;
+
+
+
+   switch($period){
+ case('d'):
+   $from=date('Y-m-d',strtotime("now - $from days"));
+   break;
+   case('y'):
+   $from=date('Y-m-01',strtotime("now - $from years"));
+   break;
+   case('q'):
+     $_from=$from*3;
+   $from=date('Y-m-01',strtotime("now - $_from months"));
+   break;
+   case('m'):
+   $from=date('Y-m-01',strtotime("now - $from months"));
+   break;
+   case('w'):
+   $_from=$from+3;
+   $from=date('Y-m-01',strtotime("now - $_from weeks"));
+   break;
+   }
+
+   }
+   
+   
+  // print_r($_REQUEST);
+   
+
+
+ if(is_numeric($to)){
+         $_SESSION['state'][$plot_page]['plot_interval'][$period]['plot_forecast_bins']=$to;
+
+
+
+   switch($period){
+ case('d'):
+   $to=date('Y-m-d',strtotime("now + $to days"));
+   break;
+   case('y'):
+   $to=date('Y-m-d',strtotime("now + $to years"));
+   break;
+   case('q'):
+     $_to=$to*3;
+   $to=date('Y-m-d',strtotime("now + $_to months"));
+   break;
+   case('m'):
+   $to=date('Y-m-d',strtotime("now + $to months"));
+   break;
+   case('w'):
+   $to=date('Y-m-d',strtotime("now + $to weeks"));
+   break;
+   }
+
+   }
+
+return array($from,$to);
+}
+
+
 function plot_assets(){
   global $color_palette,$yfields,$fields,$yfield_label_type,$tipo_chart,$xfield,$ar_address;
  
@@ -974,63 +1037,8 @@ function plot_assets(){
     $plot_name='product';
     $plot_page='product';
   }
-
-  if(isset($_REQUEST['from']))
-    $from=$_REQUEST['from'];
-  else
-    $from=false;
-    
-   if(is_numeric($from)){
-           $_SESSION['state'][$plot_page]['plot_interval'][$period]['plot_bins']=$from;
-
-   switch($period){
-
-   case('y'):
-   $from=date('Y-m-01',strtotime("now - $from years"));
-   break;
-   case('q'):
-     $_from=$from*3;
-   $from=date('Y-m-01',strtotime("now - $_from months"));
-   break;
-   case('m'):
-   $from=date('Y-m-01',strtotime("now - $from months"));
-   break;
-   case('w'):
-   $_from=$from+3;
-   $from=date('Y-m-01',strtotime("now - $_from weeks"));
-   break;
-   }
-
-   }
-  // print_r($_REQUEST);
-   
-  if(isset($_REQUEST['to']))
-    $to=$_REQUEST['to'];
-  else
-    $to=false;
-
- if(is_numeric($to)){
-         $_SESSION['state'][$plot_page]['plot_forecast'][$period]['plot_forecast_bins']=$to;
-
-   switch($period){
-
-   case('y'):
-   $to=date('Y-m-d',strtotime("now + $to years"));
-   break;
-   case('q'):
-     $_to=$to*3;
-   $to=date('Y-m-d',strtotime("now + $_to months"));
-   break;
-   case('m'):
-   $to=date('Y-m-d',strtotime("now + $to months"));
-   break;
-   case('w'):
-   $to=date('Y-m-d',strtotime("now + $to weeks"));
-   break;
-   }
-
-   }
-
+ 
+list($from,$to)=calculate_dates($period, (isset($_REQUEST['from'])?$_REQUEST['from']:false)  ,(isset($_REQUEST['to'])?$_REQUEST['to']:false));
 
 
  if(isset($_REQUEST['category']))
@@ -1147,7 +1155,7 @@ function plot_assets(){
 		      );
   
   
- // print $ar_address;
+  //print $ar_address;
 
 
   $fields='"date"';
@@ -1172,7 +1180,7 @@ function plot_assets(){
     if($period=='q'){
     $x_axis='qua';
     }if($period=='m'){
-    $x_axis='justyears';
+   // $x_axis='justyears';
     }
     //print $period;
     $xfield=array('label'=>_('Date'),'name'=>'date','tipo_axis'=>'Category','axis'=>$x_axis);

@@ -359,12 +359,20 @@ $this->data['Supplier Main XHTML Email']='';
 		//	print "=================\n";
 
 
-            $company->update_parents_principal_address_keys($company->data['Company Main Address Key']);
+            //$company->update_parents_principal_address_keys($company->data['Company Main Address Key']);
+            
+            
             $address=new Address($company->data['Company Main Address Key']);
             $address->editor=$this->editor;
-            $address->update_parents();
+
+            $this->create_contact_address_bridge($address->id);
+            
+
+            //$address->update_parents();
             $address->update_parents_principal_telecom_keys('Telephone');
             $address->update_parents_principal_telecom_keys('FAX');
+            
+            
             $tel=new Telecom($address->get_principal_telecom_key('Telephone'));
             $tel->editor=$this->editor;
             if ($tel->id)
@@ -436,25 +444,33 @@ $this->data['Supplier Main XHTML Email']='';
                 mysql_query($sql);
             }
 
-            $sql=sprintf("select  sum(if(`Product Sales State`='Unknown',1,0)) as sale_unknown, sum(if(`Product Sales State`='Discontinued',1,0)) as discontinued,sum(if(`Product Sales State`='Not for sale',1,0)) as not_for_sale,sum(if(`Product Sales State`='For Sale',1,0)) as for_sale,sum(if(`Product Sales State`='In Process',1,0)) as in_process,sum(if(`Product Availability State`='Unknown',1,0)) as availability_unknown,sum(if(`Product Availability State`='Optimal',1,0)) as availability_optimal,sum(if(`Product Availability State`='Low',1,0)) as availability_low,sum(if(`Product Availability State`='Critical',1,0)) as availability_critical,sum(if(`Product Availability State`='Surplus',1,0)) as availability_surplus,sum(if(`Product Availability State`='Out Of Stock',1,0)) as availability_outofstock from `Supplier Product Dimension` SPD left join `Supplier Product Part List` SPPL on (SPD.`Supplier Key`=SPPL.`Supplier Key` and SPD.`Supplier Product Code`=SPPL.`Supplier Product Code`) left join `Product Part List` PPL on (SPPL.`Part SKU`=PPL.`Part SKU`) left join `Product Dimension` PD on (PPL.`Product ID`=PD.`Product ID`) where SPD.`Supplier Key`=%d ;",$this->id);
-            //   print "$sql\n";
+            $sql=sprintf("select   sum(if(`Product Record Type`='Discontinued',1,0)) as discontinued,sum(if(`Product Sales Type`='Not for sale',1,0)) as not_for_sale,sum(if(`Product Sales Type`='Public Sale',1,0)) as for_sale,sum(if(`Product Record Type`='In Process',1,0)) as in_process,sum(if(`Product Availability State`='Unknown',1,0)) as availability_unknown,sum(if(`Product Availability State`='Optimal',1,0)) as availability_optimal,sum(if(`Product Availability State`='Low',1,0)) as availability_low,sum(if(`Product Availability State`='Critical',1,0)) as availability_critical,sum(if(`Product Availability State`='Surplus',1,0)) as availability_surplus,sum(if(`Product Availability State`='Out Of Stock',1,0)) as availability_outofstock from 
+            `Supplier Product Dimension` SPD 
+            left join `Supplier Product Part Dimension` SPPD on (SPD.`Supplier Product Key`=SPPD.`Supplier Product Key` ) 
+            left join `Supplier Product Part List` SPPL on (SPPD.`Supplier Product Part Key`=SPPL.`Supplier Product Part Key` ) 
+            left join `Product Part List` PPL on (SPPL.`Part SKU`=PPL.`Part SKU`) 
+            left join `Product Part Dimension` PPD on (PPD.`Product Part Key`=PPL.`Product Part Key`) 
+            left join `Product Dimension` PD on (PD.`Product ID`=PPD.`Product ID`) 
+            where SPD.`Supplier Key`=%d ;",
+            $this->id);
+           // print "$sql\n";
             $result=mysql_query($sql);
             if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
 
-                $sql=sprintf("update `Supplier Dimension` set `Supplier For Sale Products`=%d ,`Supplier Discontinued Products`=%d ,`Supplier Not For Sale Products`=%d ,`Supplier Unknown Sales State Products`=%d, `Supplier Optimal Availability Products`=%d , `Supplier Low Availability Products`=%d ,`Supplier Critical Availability Products`=%d ,`Supplier Out Of Stock Products`=%d,`Supplier Unknown Stock Products`=%d ,`Supplier Surplus Availability Products`=%d where `Supplier Key`=%d  ",
+                $sql=sprintf("update `Supplier Dimension` set `Supplier For Sale Products`=%d ,`Supplier Discontinued Products`=%d ,`Supplier Not For Sale Products`=%d , `Supplier Optimal Availability Products`=%d , `Supplier Low Availability Products`=%d ,`Supplier Critical Availability Products`=%d ,`Supplier Out Of Stock Products`=%d,`Supplier Unknown Stock Products`=%d ,`Supplier Surplus Availability Products`=%d where `Supplier Key`=%d  ",
                              $row['for_sale'],
                              $row['discontinued'],
                              $row['not_for_sale'],
-                             $row['sale_unknown'],
+                            // $row['sale_unknown'],
                              $row['availability_optimal'],
                              $row['availability_low'],
                              $row['availability_critical'],
                              $row['availability_outofstock'],
-                             $row['availability_unknown'],
+                            $row['availability_unknown'],
                              $row['availability_surplus'],
                              $this->id
                             );
-                //print "$sql\n";exit;
+               // print "$sql\n";exit;
                 mysql_query($sql);
             }
             $this->get_data('id',$this->id);
@@ -462,7 +478,29 @@ $this->data['Supplier Main XHTML Email']='';
             break;
 
         case('sales'):
-            $sql=sprintf("select sum(`Supplier Product Total Sold Amount`) as sold,sum(`Supplier Product Total Parts Profit`) as profit,sum(`Supplier Product Total Parts Profit After Storing`) as profit_astoring,sum(`Supplier Product Total Cost`) as cost  from `Supplier Product Dimension`  where `supplier key`=%d",$this->id);
+          
+            $this->update_sales();
+
+
+            break;
+        }
+
+    }
+    
+    
+    function update_sales(){
+    
+    
+      $this->data['Supplier Total Parts Profit']=0;
+                $this->data['Supplier Total Parts Profit After Storing']=0;
+                $this->data['Supplier Total Cost']=0;
+                $this->data['Supplier Total Parts Sold Amount']=0;
+    
+    
+    
+    
+    
+      $sql=sprintf("select sum(`Supplier Product Total Sold Amount`) as sold,sum(`Supplier Product Total Parts Profit`) as profit,sum(`Supplier Product Total Parts Profit After Storing`) as profit_astoring,sum(`Supplier Product Total Cost`) as cost  from `Supplier Product Dimension`  where `supplier key`=%d",$this->id);
             //    print $sql;
             $result=mysql_query($sql);
             if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
@@ -471,25 +509,26 @@ $this->data['Supplier Main XHTML Email']='';
                 $this->data['Supplier Total Cost']=$row['cost'];
                 $this->data['Supplier Total Parts Sold Amount']=$row['sold'];
 
-                $sql=sprintf("update `Supplier Dimension` set  `Supplier Total Parts Profit`=%.2f,`Supplier Total Parts Profit After Storing`=%.2f,`Supplier Total Cost`=%.2f ,`Supplier Total Parts Sold Amount`=%.2f  where `Supplier Key`=%d "
+              
+            }
+
+
+
+  $sql=sprintf("update `Supplier Dimension` set  `Supplier Total Parts Profit`=%.2f,`Supplier Total Parts Profit After Storing`=%.2f,`Supplier Total Cost`=%.2f ,`Supplier Total Parts Sold Amount`=%.2f  where `Supplier Key`=%d "
                              ,$this->data['Supplier Total Parts Profit']
                              ,$this->data['Supplier Total Parts Profit After Storing']
                              ,$this->data['Supplier Total Cost']
                              ,$this->data['Supplier Total Parts Sold Amount']
                              ,$this->id
                             );
-                //      print "$sql\n";
+                //     print "$sql\n";
                 if (!mysql_query($sql))
                     exit("$sql\ncan not update sup\n");
-            }
 
-
-
-
-            break;
-        }
 
     }
+    
+    
     /*
       Function: create_code
       Create supplier code based in the supplier name
@@ -590,6 +629,7 @@ $this->data['Supplier Main XHTML Email']='';
     }
 
     function update_field_switcher($field,$value,$options='') {
+        //print "$field";
         switch ($field) {
         case('Supplier ID'):
         case('Supplier Main Contact Key'):
@@ -606,10 +646,37 @@ $this->data['Supplier Main XHTML Email']='';
 
 
             break;
+            case('Supplier Main Plain Telephone'):
+        case('Supplier Main Plain FAX'):
+
+            if ($field=='Supplier Main Plain Telephone')
+                $type='Telephone';
+            else
+                $type='FAX';
+                
+         
+                $subject=new Company($this->data['Supplier Company Key']);
+                $subject_type='Company';
+
+        
+            $subject->update(array($subject_type.' Main Plain '.$type=>$value));
+            $this->updated=$subject->updated;
+            $this->msg=$subject->msg;
+            $this->new_value=$subject->new_value;
+
+            break;  
         case('Supplier Company Name'):
             $this->update_company_name($value,$options);
             break;
-
+case('Supplier Main Contact Name'):
+            $this->update_child_main_contact_name($value);
+            break;
+             case('Supplier Main Plain Email'):
+                $contact=new Contact($this->data['Supplier Main Contact Key']);
+                $contact->update(array('Contact Main Plain Email'=>$value));
+                 $this->updated=$contact->updated;
+            $this->msg=$contact->msg;
+            $this->new_value=$contact->new_value;
         default:
             $this->update_field($field,$value,$options);
         }
@@ -885,7 +952,26 @@ $this->data['Supplier Main XHTML Email']='';
         }
 
     }
+  function update_child_main_contact_name($value) {
+    
+      if ($value=='') {
+            $this->error=true;
+            $this->msg=_('Invalid Contact Name');
+            return;
+        }
+    
+        $contact=new Contact($this->data['Supplier Main Contact Key']);
+        $contact->editor=$this->editor;
+        $contact->update(array('Contact Name'=>$value));
 
+
+        if ($contact->updated) {
+
+            $this->updated=true;
+            $this->new_value=$contact->new_value;
+        }
+
+    }
 
     /*
       function:update_contact
@@ -894,8 +980,12 @@ $this->data['Supplier Main XHTML Email']='';
 
 
         $this->associated=false;
-        if (!$contact_key)
-            return;
+        if (!$contact_key){
+         $this->msg='contact key not found';
+         return;
+            
+        }    
+            
         $contact=new contact($contact_key);
         if (!$contact->id) {
             $this->msg='contact not found';
@@ -1304,6 +1394,19 @@ $this->data['Supplier Main XHTML Email']='';
 
     }
 
+     function create_contact_address_bridge($address_key) {
+        $sql=sprintf("insert into `Address Bridge` (`Subject Type`,`Address Function`,`Subject Key`,`Address Key`) values ('Supplier','Contact',%d,%d)  ",
+                     $this->id,
+                     $address_key
+                    );
+        mysql_query($sql);
+        if (
+            !$this->get_principal_contact_address_key()  
+            ) {
+            $this->update_principal_address($address_key);
+        }
+    } 
+
     function create_company_bridge($company_key) {
         $sql=sprintf("insert into  `Company Bridge` (`Company Key`, `Subject Type`,`Subject Key`,`Is Main`) values (%d,%s,%d,'No')  "
                      ,$company_key
@@ -1319,6 +1422,71 @@ $this->data['Supplier Main XHTML Email']='';
 
 
     }
+    
+       function update_principal_contact_address($address_key){
+        $this->update_principal_address($address_key);
+    }
+    
+function update_principal_address($address_key) {
+
+
+    $parent='Supplier';
+    $sql=sprintf("update `Address Bridge`  set `Is Main`='No' where `Subject Type`='$parent' and  `Subject Key`=%d  and `Address Key`=%d",
+                 $this->id
+                 ,$address_key
+                );
+    mysql_query($sql);
+    $sql=sprintf("update `Address Bridge`  set `Is Main`='Yes' where `Subject Type`='$parent' and  `Subject Key`=%d  and `Address Key`=%d",
+                 $this->id
+                 ,$address_key
+                );
+    mysql_query($sql);
+    
+    $sql=sprintf("update `Supplier Dimension` set `Supplier Main Address Key`=%d where `Supplier Key`=%d"
+                                 ,$address_key
+                                 ,$this->id
+                                );
+                    mysql_query($sql);
+    
+    
+      $address=new Address($address_key);
+  $address->update_parents('Supplier');
+  $this->updated=true;
+  $this->new_value=$address_key;
+/*  
+    $this->data['Supplier Main Address Key']=$address_key;
+    $this->data['Supplier Main XHTML Address']=$address->display('xhtml');
+    $this->data['Supplier Main Plain Address']=$address->display('plain');
+    $this->data['Supplier Main Country Key']=$address->data['Address Country Key'];
+    $this->data['Supplier Main Country Code']=$address->data['Address Country Code'];
+    $this->data['Supplier Main Country']=$address->data['Address Country Name'];
+    $this->data['Supplier Main Location']=$address->display('location');
+
+
+    $sql=sprintf("update `Supplier Dimension` set `Supplier Main Address Key`=%d,`Supplier Main XHTML Address`=%s ,`Supplier Main Plain Address`=%s,`Supplier Main Country Key`=%d,`Supplier Main Country Code`=%s,`Supplier Main Country`=%s,`Supplier Main Location`=%s where `Supplier Key`=%d",
+                 $this->data['Supplier Main Address Key'],
+                 prepare_mysql($this->data['Supplier Main XHTML Address']),
+                 prepare_mysql($this->data['Supplier Main Plain Address']),
+                 $this->data['Supplier Main Country Key'],
+                 prepare_mysql($this->data['Supplier Main Country Code']),
+                 prepare_mysql($this->data['Supplier Main Country']),
+                 prepare_mysql($this->data['Supplier Main Location']),
+
+                 $this->id
+
+                );
+    mysql_query($sql);
+
+    //  $this->get_data('id',$this->id);
+    $this->updated=true;
+    //$this->msg=$subject->msg;
+    $this->new_value=$address_key;
+    */
+
+}
+    
+    
+    
     function update_principal_company($company_key) {
         $main_company_key=$this->get_principal_company_key();
 
@@ -1402,6 +1570,15 @@ $this->data['Supplier Main XHTML Email']='';
         return $main_contact_key;
     }
 
+function get_principal_contact_address_key() {
+    $main_address_key=0;
+    $sql=sprintf("select `Address Key` from `Address Bridge` where `Subject Type`='Supplier' and `Address Function`='Contact' and `Subject Key`=%d and `Is Main`='Yes'",$this->id );
+    $res=mysql_query($sql);
+    if ($row=mysql_fetch_array($res)) {
+        $main_address_key=$row['Address Key'];
+    }
+    return $main_address_key;
+}
 
     function get_principal_company_key() {
         $sql=sprintf("select `Company Key` from `Company Bridge` where `Subject Type`='Supplier' and `Subject Key`=%d and `Is Main`='Yes'",$this->id );
@@ -1444,8 +1621,23 @@ $this->data['Supplier Main XHTML Email']='';
         return $companies;
     }
 
+  function get_address_keys() {
 
 
+        $sql=sprintf("select * from `Address Bridge` CB where   `Subject Type`='Supplier' and `Subject Key`=%d  group by `Address Key` order by `Is Main` desc  ",$this->id);
+        $address_keys=array();
+        $result=mysql_query($sql);
+
+        while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+
+            $address_keys[$row['Address Key']]= $row['Address Key'];
+        }
+        return $address_keys;
+
+    }
+function get_main_address_key(){
+return $this->data['Supplier Main Address Key'];
+}   
 }
 
 

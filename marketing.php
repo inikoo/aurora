@@ -17,12 +17,12 @@ include_once('common.php');
 include_once('class.Product.php');
 include_once('class.Order.php');
 
-
+$page='marketing';
 
 $general_options_list=array();
 $general_options_list[]=array('tipo'=>'url','url'=>'marketing_reports.php','label'=>_('Reports'));
 
-$general_options_list[]=array('tipo'=>'url','url'=>'campaign.php?new','label'=>_('Create Campaign'));
+$general_options_list[]=array('tipo'=>'url','url'=>'new_email_campaign.php','label'=>_('Create Email Campaign'));
 $general_options_list[]=array('tipo'=>'url','url'=>'newsletter.php?new','label'=>_('Create Newsletter'));
 $smarty->assign('general_options_list',$general_options_list);
 
@@ -53,10 +53,18 @@ $js_files=array(
 		'common.js.php',
 		'table_common.js.php',
 		'js/search.js',
-		'index.js.php'
+		'marketing.js.php'
 		);
 
 
+ 
+if (isset($_REQUEST['view'])) {
+    $valid_views=array('metrics','email','web_internal','web','other','newsletter');
+    if (in_array($_REQUEST['view'], $valid_views))
+        $_SESSION['state'][$page]['view']=$_REQUEST['view'];
+
+}
+$smarty->assign('view',$_SESSION['state'][$page]['view']);
 
 
 $smarty->assign('parent','home');
@@ -65,7 +73,18 @@ $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
 
 
+$q='';
+$tipo_filter=($q==''?$_SESSION['state'][$page]['email_campaigns']['f_field']:'code');
+$smarty->assign('filter',$tipo_filter);
+$smarty->assign('filter_value',($q==''?$_SESSION['state'][$page]['email_campaigns']['f_value']:addslashes($q)));
+$filter_menu=array(
+                 'name'=>array('db_key'=>'name','menu_label'=>'Campaign with name like <i>x</i>','label'=>'Name')
+             );
+$smarty->assign('filter_menu0',$filter_menu);
 
+$smarty->assign('filter_name0',$filter_menu[$tipo_filter]['label']);
+$paginator_menu=array(10,25,50,100,500);
+$smarty->assign('paginator_menu0',$paginator_menu);
 
 
 $smarty->display('marketing.tpl');

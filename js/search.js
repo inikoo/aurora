@@ -2,8 +2,8 @@ var Dom   = YAHOO.util.Dom;
 var Event   = YAHOO.util.Event;
 var submit_search_on_enter=function(e,tipo){
      var key;     
-     if(window.event)
-          key = window.event.keyCode; //IE
+     if(window.YAHOO.util.Event)
+          key = window.YAHOO.util.Event.keyCode; //IE
      else
           key = e.which; //firefox     
 
@@ -13,9 +13,7 @@ var submit_search_on_enter=function(e,tipo){
 
 
 
-
 function init_search(type){
-
 
 switch(type)
 {
@@ -59,25 +57,32 @@ default:
 
 }
 
-  
+
+
+
      store_name_oACDS.queryMatchContains = true;
      var store_name_oAutoComp = new YAHOO.widget.AutoComplete(search_scope+"_search",search_scope+"_search_Container", store_name_oACDS);
-     store_name_oAutoComp.minQueryLength = 0; 
-     store_name_oAutoComp.queryDelay = 0.15;
-     
-     
-    
-    
 
-     Event.addListener(search_scope+"_search", "keyup",search_events,search_scope)
- 
-      Event.addListener(search_scope+"_clean_search", "click",clear_search,search_scope);
-      
-      //  
-        
-         x= Dom.getX(search_scope+'_clean_search');
-    y= Dom.getY(search_scope+'_clean_search');
-    Dom.setX(search_scope+"_search_results", x-500);
+ store_name_oAutoComp.minQueryLength = 0; 
+     store_name_oAutoComp.queryDelay = 0.25;
+    
+    
+    
+   
+   
+
+    
+    
+     YAHOO.util.Event.addListener(search_scope+"_clean_search", "click",clear_search,search_scope);
+
+  
+    YAHOO.util.Event.addListener(search_scope+"_search", "keyup",search_events,search_scope)
+    
+   
+     x= Dom.getX(search_scope+'_clean_search');
+     y= Dom.getY(search_scope+'_clean_search');
+     Dom.setX(search_scope+"_search_results", x-500);
+
 
 
 
@@ -90,7 +95,6 @@ default:
 
 
 var submit_search=function(e,data){
-
     if(typeof( data ) == 'string')
 	var data={tipo:data,container:data};
     
@@ -142,7 +146,7 @@ function search_orders(query){
 }
 
 function search_orders_in_store(query){
-    search(query,'orders_store','stores');
+    search(query,'orders_store','store');
 }
 
 function search_users(query){
@@ -172,12 +176,12 @@ function search(query,subject,scope){
 
     var request='tipo='+subject+'&q='+escape(query)+'&scope='+scope;
 
-   // alert(request)
+//  alert(request)
     YAHOO.util.Connect.asyncRequest(
 				    'POST',
 				    ar_file, {
 					success:function(o) {
-//alert(o.responseText)
+					//alert(o.responseText)
 					    var r = YAHOO.lang.JSON.parse(o.responseText);
 					    if (r.state == 200) {
 					
@@ -194,7 +198,7 @@ function search(query,subject,scope){
 						    
 						    
 						    
-						    
+						  
 						    
 						     Dom.get(subject+'_clean_search').src='art/icons/cross_bw.png';
 			 			    Dom.get(subject+'_search_results').style.display='';
@@ -232,6 +236,17 @@ function search(query,subject,scope){
 							    oTD.innerHTML=r.data[result_key ].name;
 							    var oTD= oTR.insertCell(3);
 							    oTD.innerHTML=r.data[result_key ].address;
+							}else if(subject=='orders' || subject=='orders_store'){
+							    oTR.setAttribute('key',result_key);
+							    oTR.setAttribute('link',link);
+							    var oTD= oTR.insertCell(1);
+							    oTD.innerHTML=r.data[result_key ].public_id;
+							    var oTD= oTR.insertCell(2);
+							    oTD.innerHTML=r.data[result_key ].customer;
+							    var oTD= oTR.insertCell(3);
+							    oTD.innerHTML=r.data[result_key ].state;
+							    var oTD= oTR.insertCell(4);
+							    oTD.innerHTML=r.data[result_key ].balance;
 							}else if(subject=='part'){
 							    oTR.setAttribute('key',r.data[result_key].sku);
 							    oTR.setAttribute('link',r.data[result_key].link);
@@ -248,13 +263,16 @@ function search(query,subject,scope){
 							}else if(subject=='all'){
 							    oTR.setAttribute('key',r.data[result_key ].key);
 							    oTR.setAttribute('link',r.data[result_key ].link);
-							   
-
-							    var oTD= oTR.insertCell(1);
-							    oTD.innerHTML=r.data[result_key ].image;
-							    var oTD= oTR.insertCell(2);
-							    oTD.innerHTML=r.data[result_key ].name;
+							   var oTD= oTR.insertCell(1);
+							    oTD.innerHTML=r.data[result_key ].store_code;
+                                var oTD= oTR.insertCell(2);
+							    oTD.innerHTML='<img src="art/icons/'+r.data[result_key ].icon+'" alt="'+r.data[result_key ].subject+'" />';
+							    Dom.setStyle(oTD,'width',20)
 							    var oTD= oTR.insertCell(3);
+							    oTD.innerHTML=r.data[result_key ].image;
+							    var oTD= oTR.insertCell(4);
+							    oTD.innerHTML=r.data[result_key ].name;
+							    var oTD= oTR.insertCell(5);
 							    oTD.innerHTML=r.data[result_key ].description;
 
 							}else if(subject=='products'){
@@ -293,24 +311,24 @@ function search(query,subject,scope){
 							}
 							oTR.setAttribute('prev',result_number-1);
 						oTR.setAttribute('next',result_number+1);
-					if(first){
+					    if(first){
                                 Dom.addClass(oTR,'selected');
-							first=false;
-							oTR.setAttribute('prev',1);
-							}
-							if(r.results==result_number){
-						oTR.setAttribute('next',1);
-}							
-							oTR.setAttribute('id','tr_result'+result_number);
-							 
-							 
-							oTR.onclick = go_to_result;
+						    	first=false;
+							    oTR.setAttribute('prev',1);
+							    }
+						if(r.results==result_number){
+						        oTR.setAttribute('next',1);
+                                }							
+						oTR.setAttribute('id','tr_result'+result_number);
+						oTR.onclick = go_to_result;
+						result_number++;
 							
-							result_number++;
-							
-						    }
-						    oTbl.id=subject+'_search_results_table';
-						    Dom.get(subject+'_search_results').appendChild(oTbl);
+						
+						}
+						
+						
+						oTbl.id=subject+'_search_results_table';
+						Dom.get(subject+'_search_results').appendChild(oTbl);
 						 
 // 						    
 						    
@@ -335,13 +353,17 @@ function search(query,subject,scope){
 
 
 function search_events(e,subject){
+
    var key;     
-     if(window.event)
-          key = window.event.keyCode; //IE
+     if(window.YAHOO.util.Event)
+          key = window.YAHOO.util.Event.keyCode; //IE
      else
           key = e.which; //firefox     
 
+
+
 var state=Dom.get(subject+'_search').getAttribute('state');
+
      if (key == 13 )
 	 goto_search_result(subject);
 	 else if(key == 40 ){

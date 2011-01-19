@@ -33,6 +33,11 @@ if ($user->data['User Type']=='Supplier') {
 }
 
 
+
+$smarty->assign('store_keys',join($user->stores));
+
+
+
 $css_files=array(
                $yui_path.'reset-fonts-grids/reset-fonts-grids.css',
                $yui_path.'menu/assets/skins/sam/menu.css',
@@ -44,6 +49,9 @@ $css_files=array(
                'table.css',
                'css/index.css'
            );
+           
+           
+        
 $js_files=array(
 
               $yui_path.'utilities/utilities.js',
@@ -58,11 +66,15 @@ $js_files=array(
               'common.js.php',
               'table_common.js.php',
               'js/search.js',
-              'js/index_tools.js',
+		 'external_libs/ampie/ampie/swfobject.js',
+
+        //      'js/index_tools.js',
               'index.js.php',
 
-              'js/index_sliding_tabs.js.php?slide='.$_SESSION['state']['home']['display'],
+          //    'js/index_sliding_tabs.js.php?slide='.$_SESSION['state']['home']['display'],
           );
+
+  
 
 
 $splinters=array(
@@ -91,7 +103,7 @@ $splinters=array(
                                   'js'=>'splinter_top_products.js.php'
                               ),
                'top_customers'=>array(
-                  'title'=>_('Top Customers'),
+                  		'title'=>_('Top Customers'),
                                    'index'=>2,
                                    'php'=>'splinter_top_customers.php',
                                    'tpl'=>'splinter_top_customers.tpl',

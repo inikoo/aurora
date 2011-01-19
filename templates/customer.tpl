@@ -1,10 +1,15 @@
 {include file='header.tpl'}
-<div id="bd">
+
+<div id="bd" style="padding:0px">
+
+ 
+
+<div style="padding:0px 20px"><span  id="export_csv0" style="float:right;margin-left:15px"  class="table_type state_details" tipo="delivery_notes" ><a href="pdf_customer.php?id={$customer->get('Customer Key')}">PDF Address</a></span>
   {include file='contacts_navigation.tpl'}
+
   <div id="no_details_title"  style="clear:left;xmargin:0 20px;{if $details!=0}display:none{/if}">
     <h1 style="padding-bottom:0px">{$customer->get('Customer Name')} <span style="color:SteelBlue">{$id}</span>
-      {if $next.id>0}<a class="prev" href="customer.php?id={$prev.id}" ><img src="art/icons/previous.png" alt="<" title="{$prev.name}"  /></a>{/if}
-      {if $next.id>0}<a class="next" href="customer.php?id={$next.id}" ><img src="art/icons/next.png" alt=">" title="{$next.name}"  /></a>{/if}
+     
       
     </h1> 
 
@@ -17,13 +22,13 @@
   <table class="quick_button" style="clear:both;float:right;margin-top:0px;">
     <tr><td  id="note">{t}Quick Note{/t}</td></tr>
     <tr><td  id="attach">{t}Attach File{/t}</td></tr>
-    
+    <tr style="display:none"><td  id="link">{t}Link File{/t}</td></tr>
     <tr><td id="take_order">{t}Take Order{/t}</td></tr>
-    <tr><td id="make_order">{t}Make Order{/t}</td></tr>
+    
 
 
     <tr style="display:none"><td  id="long_note">{t}Long Note{/t}</td></tr>
-    <tr style="display:none"><td  id="attach">{t}Attach File{/t}</td></tr>
+  
     <tr style="display:none"><td id="call" >{t}Call{/t}</td></tr>
 <tr style="display:none"><td  id="email" >{t}Email{/t}</td></tr>
     <tr style="display:none"><td id="others" >{t}Other{/t}</td></tr>
@@ -31,6 +36,8 @@
   </table>
        
 
+     
+     
      
 <table id="customer_data" style="width:500px" border=0>
 
@@ -44,15 +51,7 @@
 {if $customer->get('Customer Main Telephone Key')}<tr><td colspan=2 class="aright">{$customer->get('Customer Main XHTML Telephone')}</td ><td><img src="art/icons/telephone.png"/></td></tr>{/if}
 
 
-{foreach from=$telecoms item=telecom}
-<tr><td >
-{if $telecom[0]=='mob'}<img src="art/icons/phone.png"/ title="{t}Mobile Phone{/t}">
-{elseif   $telecom[0]=='tel'}<img src="art/icons/telephone.png"/ title="{t}Telephone{/t}">
-{elseif   $telecom[0]=='email'}<img src="art/icons/email.png"/ title="{t}Email Address{/t}">
-{elseif   $telecom[0]=='fax'}<img src="art/icons/printer.png"/ title="{t}Fax{/t}">
-{/if}
-</td><td class="aright" style="padding-left:10px">{$telecom[1]}</td></tr>
-{/foreach}
+
 </table>
 </td>
 </tr>
@@ -78,64 +77,71 @@
   </table>
 </div>
 
-      
-
-
- <div id="the_table" class="data_table" style="clear:both;margin-top:20px">
+</div>
+  <ul class="tabs" id="chooser_ul" style="clear:both;margin-top:25px">
+    <li> <span class="item {if $view=='history'}selected{/if}"  id="history">  <span> {t}History, Notes{/t}</span></span></li>
+  
+    <li {if !$customer->get('Customer Orders')}style="display:none"{/if}> <span class="item {if $view=='products'}selected{/if}" id="products"  ><span>  {t}Products Ordered{/t}</span></span></li>
+    <li {if !$customer->get('Customer Orders')}style="display:none"{/if}> <span class="item {if $view=='orders'}selected{/if}"  id="orders">  <span> {t}Orders{/t}</span></span></li>
+ 
+ </ul>
+  <div  style="clear:both;width:100%;border-bottom:1px solid #ccc">
+  </div>
+  
+ 
+ <div id="block_history" class="data_table" style="{if $view!='history'}display:none;{/if}clear:both;margin:20px 0 40px 0;padding:0 20px">
       <span class="clean_table_title">{t}History/Notes{/t}</span>
- 
- 
-
-      <div  class="clean_table_caption"  style="clear:both;">
-	<div style="float:left;">
-	  <div id="table_info0" class="clean_table_info"><span id="rtext0"></span> <span class="rtext_rpp" id="rtext_rpp0"></span> <span class="filter_msg"  id="filter_msg0"></span></div>
-	</div>
-	<div class="clean_table_filter clean_table_filter_show" id="clean_table_filter_show0" {if $filter_show0 or $filter_value0!=''}style="display:none"{/if}>{t}filter results{/t}</div>
-	<div class="clean_table_filter" id="clean_table_filter0" {if !$filter_show0 and $filter_value0==''}style="display:none"{/if}>
-	  <div class="clean_table_info" style="padding-bottom:1px; ">
-	    <span id="filter_name0" style="margin-right:5px">{$filter_name0}:</span>
-	    <input style="border-bottom:none;width:6em;" id='f_input0' value="{$filter_value0}" size=10/> <span class="clean_table_filter_show" id="clean_table_filter_hide0" style="margin-left:8px">{t}Close filter{/t}</span>
-	    <div id='f_container0'></div>
-	  </div>
-	</div>	
-	<div class="clean_table_controls" style="" ><div><span  style="margin:0 5px" id="paginator0"></span></div></div>
-      </div>
-	
-
+ {include file='table_splinter.tpl' table_id=0 filter_name=$filter_name0 filter_value=$filter_value0  }
       <div  id="table0"   class="data_table_container dtable btable "> </div>
-  
-  
-  
-  </div>
+    </div>
 
 
-<div id="the_table" class="data_table" style="clear:both;margin-top:21px">
-      <span class="clean_table_title">{t}Products Ordered{/t}</span>
+<div id="block_products" class="data_table" style="{if $view!='products'}display:none;{/if}clear:both;margin:20px 0 40px 0;padding:0 20px">
+
  
- 
-
-      <div  class="clean_table_caption"  style="clear:both;">
-	<div style="float:left;">
-	  <div id="table_info1" class="clean_table_info"><span id="rtext1"></span> <span class="rtext_rpp" id="rtext_rpp1"></span> <span class="filter_msg"  id="filter_msg1"></span></div>
+	<div style="float:left" id="plot1">
+		<strong>You need to upgrade your Flash Player</strong>
 	</div>
-	<div class="clean_table_filter clean_table_filter_show" id="clean_table_filter_show1" {if $filter_show1 or $filter_value1!=''}style="display:none"{/if}>{t}filter results{/t}</div>
-	<div class="clean_table_filter" id="clean_table_filter1" {if !$filter_show1 and $filter_value1==''}style="display:none"{/if}>
-	  <div class="clean_table_info" style="padding-bottom:1px; ">
-	    <span id="filter_name1" class="filter_name"  style="margin-right:5px">{$filter_name1}:</span>
-	    <input style="border-bottom:none;width:6em;" id='f_input1' value="{$filter_value1}" size=10/> <span class="clean_table_filter_show" id="clean_table_filter_hide1" style="margin-left:8px">{t}Close filter{/t}</span>
-	    <div id='f_container1'></div>
-	  </div>
-	</div>	
-	<div class="clean_table_controls" style="" ><div><span  style="margin:0 5px" id="paginator1"></span></div></div>
-      </div>
-	
 
-      <div  id="table1"   class="data_table_container dtable btable "> </div>
-  
-  
-  
+	<script type="text/javascript">
+		// <![CDATA[		
+		var so = new SWFObject("external_libs/ampie/ampie/ampie.swf", "ampie", "465", "380", "1", "#FFFFFF");
+		so.addVariable("path", "external_libs/ampie/ampie/");
+		so.addVariable("settings_file", encodeURIComponent("conf/pie_settings.xml.php"));                // you can set two or more different settings files here (separated by commas)
+		so.addVariable("data_file", encodeURIComponent("plot_data.csv.php?tipo=customer_departments_pie&customer_key={$customer->id}")); 
+		so.addVariable("loading_settings", "LOADING SETTINGS");                                         // you can set custom "loading settings" text here
+		so.addVariable("loading_data", "LOADING DATA");                                                 // you can set custom "loading data" text here
+
+		so.write("plot1");
+		// ]]>
+	</script>
+
+<div style="float:left" id="plot2">
+		<strong>You need to upgrade your Flash Player</strong>
+	</div>
+
+	<script type="text/javascript">
+		// <![CDATA[		
+		var so = new SWFObject("external_libs/ampie/ampie/ampie.swf", "ampie", "465", "380", "8", "#FFFFFF");
+		so.addVariable("path", "external_libs/ampie/ampie/");
+		so.addVariable("settings_file", encodeURIComponent("conf/pie_settings.xml.php"));                // you can set two or more different settings files here (separated by commas)
+		so.addVariable("data_file", encodeURIComponent("plot_data.csv.php?tipo=customer_families_pie&customer_key={$customer->id}")); 
+		so.addVariable("loading_settings", "LOADING SETTINGS");                                         // you can set custom "loading settings" text here
+		so.addVariable("loading_data", "LOADING DATA");                                                 // you can set custom "loading data" text here
+
+		so.write("plot2");
+		// ]]>
+	</script>
+      <span class="clean_table_title" style="clear:both">{t}Product Families Ordered{/t}</span>
+ {include file='table_splinter.tpl' table_id=1 filter_name=$filter_name1 filter_value=$filter_value1  }
+       <div  id="table1"   class="data_table_container dtable btable "> </div>
   </div>
 
+<div id="block_orders" class="data_table" style="{if $view!='orders'}display:none;{/if}clear:both;margin:20px 0 40px 0;padding:0 20px">
+      <span class="clean_table_title">{t}Orders{/t}</span>
+ {include file='table_splinter.tpl' table_id=2 filter_name=$filter_name2 filter_value=$filter_value2  }
+       <div  id="table2"   class="data_table_container dtable btable "> </div>
+  </div>
 </div> 
 
 <div id="dialog_note">
@@ -150,6 +156,32 @@
     <span  class="unselectable_text button" onClick="close_dialog('note')" >{t}Cancel{/t} <img src="art/icons/cross.png"/></span></td>
   <td style="text-align:center;width:50%">
     <span  onclick="save('note')" id="note_save"  class="unselectable_text button"     style="visibility:hidden;" >{t}Save{/t} <img src="art/icons/disk.png" ></span></td></tr>
+</table>
+</div>
+
+
+<div id="dialog_link">
+  <div id="link_msg"></div>
+  <table >
+     <tr><td colspan=2>
+
+	  {t}Link Note{/t}:<br/> <input type="text" id="link_note"/>
+
+    </td><tr>
+    <tr><td colspan=2>
+	<form action="upload.php" enctype="multipart/form-data" method="post" id="link_form">
+
+
+	  <input type="file" name="testFile" id="link_file" />
+
+	</form>
+    </td><tr>
+	
+    <tr class="buttons" style="font-size:100%">
+  <td style="text-align:center;width:50%">
+    <span  class="state_details" onClick="close_dialog('link')" >{t}Cancel{/t}</span></td>
+  <td style="text-align:center;width:50%">
+    <span  onclick="save('link')" id="upload_link"  class="state_details"     xstyle="visibility:hidden;" >{t}Upload{/t}</span></td></tr>
 </table>
 </div>
 

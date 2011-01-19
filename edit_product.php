@@ -96,7 +96,8 @@ $css_files=array(
 		 'common.css',
 		 'button.css',
 		 'table.css',
-		 'css/edit.css'
+		 'css/edit.css',
+		  'css/dropdown.css',
 		 );
 
 
@@ -115,6 +116,7 @@ $js_files=array(
 		'js/php.default.min.js',
 		'common.js.php',
 		'js/search.js',
+		 'js/dropdown.js',
 		'table_common.js.php',
 		'js/upload_image.js',
 		'js/edit_common.js'
@@ -132,7 +134,7 @@ $product_home="Products Home";
 
 
 
-$smarty->assign('date',date('d-m-Y'));
+$smarty->assign('date',date('Y-m-d'));
 $smarty->assign('time',date('H:i'));
 
 if(isset($_REQUEST['edit'])  ){
@@ -187,7 +189,8 @@ foreach($parts_info as $key=>$value){
 $_parts[$key]=$key;
 }
 
-$js_files[]=sprintf('edit_product.js.php?symbol=%s&product_id=%d&cats=%s&parts=%s',$product->data['Currency Symbol'],$product->pid,join(',',$nodes->root),join(',',$_parts));
+$js_files[]=sprintf('edit_product.js.php?symbol=%s&pid=%d&cats=%s&parts=%s',
+    $product->data['Currency Symbol'],$product->pid,join(',',$nodes->root),join(',',$_parts));
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
 
@@ -202,6 +205,9 @@ $smarty->assign('unit_type_options',$unit_type_options
                                 );
 $smarty->assign('unit_type',$product->data['Product Unit Type']);
 
+$paginator_menu=array(10,25,50,100,500);
+$smarty->assign('paginator_menu0',$paginator_menu);
+
 
 //while($row=mysql_fetch_array($res)){
   //$tree=preg_split('/>/',$row['Category Position']);
@@ -214,6 +220,8 @@ $smarty->assign('unit_type',$product->data['Product Unit Type']);
 //$smarty->assign('cat_use',$cat_use);
 //$smarty->assign('cat_material',$cat_material);
 //$smarty->assign('cat_theme',$cat_theme);
+
+
 $smarty->display('edit_product.tpl');
 
 

@@ -1,18 +1,19 @@
 {include file='header.tpl'}
 <div id="bd" >
-  <span class="nav2 onleft"><a class="selected" id="warehouse_operations" href="warehouse_orders.php">{t}Warehouse Operations{/t}</a></span>
+ {include file='orders_navigation.tpl'}
+
 
   <div  id="orders_table" class="data_table" style="clear:left;margin-top:23px">
     <span class="clean_table_title">{t}Orders In Warehouse{/t}</span>
-
+<span  id="export_csv0" style="float:right;margin-left:20px"  class="table_type state_details" tipo="ready_to_pick_orders" >{t}Export (CSV){/t}</span>
      
    <div  style="font-size:90%">
    
        
-          <span   style="float:right;margin-left:20px" class="table_type  state_details {if $table_type=='all_contacts'}selected{/if}"  id="restrictions_all_contacts" table_type="all_contacts"  >{t}All Wanting Orders{/t} ({$store->get('Total Customer Contacts')})</span>
-  <span   style="float:right;margin-left:20px" class="table_type  state_details {if $table_type=='all_customers'}selected{/if}"  id="restrictions_all_customers" table_type="all_customers"   >{t}Ready to Pick{/t} ({$store->get('Total Customers')})</span>
-  <span   style="float:right;margin-left:20px" class="table_type  state_details {if $table_type=='active_customers'}selected{/if}"  id="restrictions_active_customers"  table_type="active_customers"  >{t}Ready to Pack{/t} ({$store->get('Active Customers')})</span>
-  <span   style="float:right;margin-left:20px" class="table_type  state_details {if $table_type=='active_customers'}selected{/if}"  id="restrictions_active_customers"  table_type="active_customers"  >{t}Ready to Ship{/t} ({$store->get('Active Customers')})</span>
+          <span   style="float:right;margin-left:20px" class="table_type  state_details {if $table_type=='all_contacts'}selected{/if}"  id="restrictions_all_contacts" table_type="all_contacts"  >{t}All Wanting Orders{/t} ()</span>
+  <span   style="float:right;margin-left:20px" class="table_type  state_details {if $table_type=='all_customers'}selected{/if}"  id="restrictions_all_customers" table_type="all_customers"   >{t}Ready to Pick{/t} ()</span>
+  <span   style="float:right;margin-left:20px" class="table_type  state_details {if $table_type=='active_customers'}selected{/if}"  id="restrictions_active_customers"  table_type="active_customers"  >{t}Ready to Pack{/t} ()</span>
+  <span   style="float:right;margin-left:20px" class="table_type  state_details {if $table_type=='active_customers'}selected{/if}"  id="restrictions_active_customers"  table_type="active_customers"  >{t}Ready to Ship{/t} ()</span>
 
          
          
@@ -97,7 +98,6 @@
   <span class="button" onclick="assign_picker_save()" >Go</span><td></tr>
 </table>
 </div>
-
 <div id="pick_it_dialog" style="width:300px;">
 <div class="options" style="width:300px;padding:10px;text-align:center" >
 
@@ -136,8 +136,6 @@
   <span class="button" onclick="pick_it_save()" >Go</span><td></tr>
 </table>
 </div>
-
-
 <div id="pick_assigned_dialog" style="width:300px;">
 
 <table class="edit">
@@ -154,3 +152,100 @@
   <span class="button" onclick="pick_assigned_save()" >Go</span><td></tr>
 </table>
 </div>
+
+<div id="assign_packer_dialog" style="width:300px;">
+<div class="options" style="width:300px;padding:10px;text-align:center" >
+
+   <table border=1 style="margin:auto" id="assign_packer_buttons">
+      {foreach from=$packers item=packer_row name=foo}
+      <tr>
+	 {foreach from=$packer_row key=row_key item=packer }
+	
+	<td staff_id="{$packer.StaffKey}" id="packer{$packer.StaffKey}" class="assign_packer_button" onClick="select_staff(this,event)" >{$packer.StaffAlias}</td>
+	{/foreach}
+	</tr>
+      {/foreach}
+    </table>
+
+
+</div>
+<table class="edit">
+<input type="hidden" id="assign_packer_staff_key">
+<input type="hidden" id="assign_packer_dn_key">
+
+<tr class="first"><td style="" class="label">{t}Staff Name{/t}:</td>
+   <td  style="text-align:left">
+     <div  style="width:190px;position:relative;top:00px" >
+       <input style="text-align:left;width:180px" id="Assign_packer_Staff_Name" value="" ovalue="" valid="0">
+       <div id="Assign_packer_Staff_Name_Container" style="" ></div>
+     </div>
+   </td>
+   <td id="Assign_packer_Staff_Name_msg" class="edit_td_alert"></td>
+ </tr>
+<tr><td>{t}Supervisor PIN{/t}:</td><td><input id="assign_packer_sup_password" type="password" /></td></tr>
+</table>
+<table class="edit" style="margin-top:10px;float:right">
+  
+  <tr><td colspan="2">
+  <span class="button" onclick="close_dialog('assign_packer_dialog')">Cancel</span>
+  <span class="button" onclick="assign_packer_save()" >Go</span><td></tr>
+</table>
+</div>
+<div id="pack_it_dialog" style="width:300px;">
+<div class="options" style="width:300px;padding:10px;text-align:center" >
+
+   <table border=1 style="margin:auto" id="pack_it_buttons">
+      {foreach from=$packers item=packer_row name=foo}
+      <tr>
+	 {foreach from=$packer_row key=row_key item=packer }
+	
+	<td staff_id="{$packer.StaffKey}" id="packer_pack_it{$packer.StaffKey}" class="pack_it_button" onClick="select_staff_pack_it(this,event)" >{$packer.StaffAlias}</td>
+	{/foreach}
+	</tr>
+      {/foreach}
+    </table>
+
+
+</div>
+<table class="edit">
+<input type="hidden" id="pack_it_staff_key">
+<input type="hidden" id="pack_it_dn_key">
+
+<tr class="first"><td style="" class="label">{t}Staff Name{/t}:</td>
+   <td  style="text-align:left">
+     <div  style="width:190px;position:relative;top:00px" >
+       <input style="text-align:left;width:180px" id="pack_it_Staff_Name" value="" ovalue="" valid="0">
+       <div id="pack_it_Staff_Name_Container" style="" ></div>
+     </div>
+   </td>
+   <td id="pack_it_Staff_Name_msg" class="edit_td_alert"></td>
+ </tr>
+<tr id="pack_it_pin_tr" style="visibility:hidden"><td><span id="pack_it_pin_alias"></span> {t}PIN{/t}:</td><td><input id="pack_it_password" type="password" /></td></tr>
+</table>
+<table class="edit" style="margin-top:10px;float:right">
+  
+  <tr><td colspan="2">
+  <span class="button" onclick="close_dialog('pack_it_dialog')">Cancel</span>
+  <span class="button" onclick="pack_it_save()" >Go</span><td></tr>
+</table>
+</div>
+<div id="pack_assigned_dialog" style="width:300px;">
+
+<table class="edit">
+<input type="hidden" id="pack_assigned_staff_key">
+<input type="hidden" id="pack_assigned_dn_key">
+
+
+<tr><td>{t}PIN{/t} (<span id="pack_assigned_pin_alias"></span>):</td><td><input id="pack_assigned_password" type="password" /></td></tr>
+</table>
+<table class="edit" style="margin-top:10px;float:right">
+  
+  <tr><td colspan="2">
+  <span class="button" onclick="close_dialog('pack_assigned_dialog')">Cancel</span>
+  <span class="button" onclick="pack_assigned_save()" >Go</span><td></tr>
+</table>
+</div>
+
+
+
+{include file='export_csv_menu_splinter.tpl' id=0 cols=$export_csv_table_cols session_address="ready_to_pick_orders-table-csv_export" export_options=$csv_export_options }

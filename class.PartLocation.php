@@ -81,7 +81,6 @@ class PartLocation extends DB_Table {
             }
         }
 
-
         $this->found=false;
         $create='';
         $update='';
@@ -106,7 +105,7 @@ class PartLocation extends DB_Table {
                 $sql="INSERT INTO `Location Dimension` (`Location Key` ,`Location Warehouse Key` ,`Location Warehouse Area Key` ,`Location Code` ,`Location Mainly Used For` ,`Location Max Weight` ,`Location Max Volume` ,`Location Max Slots` ,`Location Distinct Parts` ,`Location Has Stock` ,`Location Stock Value`)VALUES ('1', '1', '1','Unknown', 'Picking', NULL , NULL , NULL , '0', 'Unknown', '0.00');";
                 mysql_query($sql);
                 $this->location=New Location(1);
-
+                $this->new=true;
 
             }
 
@@ -133,8 +132,6 @@ class PartLocation extends DB_Table {
             $this->found=true;
             $this->get_data();
         }
-
-
 
         if ($create and !$this->found)
             $this->create($data,$options);
@@ -808,8 +805,8 @@ class PartLocation extends DB_Table {
 
                         );
             mysql_query($sql);
-            // print "$sql\n";
-
+           
+            $this->new=true;
             $part=new Part($this->part_sku);
             $part->load('locations');
             $location=new Location($this->location_key);
@@ -1641,10 +1638,14 @@ $this->set_audits();
             list($lost,$lost_value)=$this->get_lost($row['Date'].' 23:59:59');
             $storing_cost=0;
             $comercial_value=$this->part->get_comercial_value($row['Date'].' 23:59:59');
-
-            $sql=sprintf("insert into `Inventory Spanshot Fact` values (%s,%d,%d,%f,%.2f ,%.2f,%.2f ,%.f,%f,%f,%f) "
+            $location_type="Unknown";
+            $warehouse_key=1;
+            $sql=sprintf("insert into `Inventory Spanshot Fact` values (%s,%d,%d,%d,%f,%.2f ,%.2f,%.2f ,%.f,%f,%f,%f,%s) "
                          ,prepare_mysql($row['Date'])
+
                          ,$this->part_sku
+                                                                           ,$warehouse_key
+
                          ,$this->location_key
 
                          ,$stock
@@ -1658,9 +1659,10 @@ $this->set_audits();
                          ,$sold
                          ,$in
                          ,$lost
+                         ,prepare_mysql($location_type)
                         );
             mysql_query($sql);
-            //print "$sql\n";
+           // print "$sql\n";
         }
 
     }

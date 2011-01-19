@@ -24,7 +24,8 @@ $smarty->assign('show_details',$show_details);
 get_header_info($user,$smarty);
 
 $general_options_list=array();
-if($modify)
+if($modify or true)
+
   $general_options_list[]=array('tipo'=>'url','url'=>'edit_warehouse.php','label'=>_('Edit Warehouse'));
   $general_options_list[]=array('tipo'=>'url','url'=>'warehouse_stock_history.php','label'=>_('Stock History'));
 

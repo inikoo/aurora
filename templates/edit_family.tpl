@@ -1,18 +1,8 @@
 {include file='header.tpl'}
-
 <div id="bd" >
+{include file='assets_navigation.tpl'}
 
-<div class="search_box" style="margin-top:15px">
-  <div class="general_options">
-    {foreach from=$general_options_list item=options }
-        {if $options.tipo=="url"}
-            <span onclick="window.location.href='{$options.url}'" >{$options.label}</span>
-        {else}
-            <span  id="{$options.id}" state="{$options.state}">{$options.label}</span>
-        {/if}
-    {/foreach}
-    </div>
-</div>
+
 <div style="clear:left;margin:0 0px">
     <h1>{t}Editing Family{/t}: <span id="title_name">{$family->get('Product Family Name')}</span> (<span id="title_code">{$family->get('Product Family Code')}</span>)</h1>
 </div>
@@ -121,27 +111,10 @@
 	    </td>
 	     <td id="description_msg" class="edit_td_alert" style="width:300px"></td>
 	  </tr>
-
-
-
-
-
-
-    
-      
-
     </table>
     </div>
      <div  id="d_pictures" class="edit_block" style="{if $edit!='pictures'}display:none{/if}" >
-
-
 {include file='edit_images_splinter.tpl'}
-
-  
- 
-
-
-
 </div>
       <div  class="edit_block" style="margin:0;padding:0 0px;{if $edit!="discounts"}display:none{/if}"  id="d_discounts">
 		<div  class="new_item_dialog"  id="new_deal_dialog" style="display:none">
@@ -172,7 +145,7 @@
       </div>
       <div  class="edit_block" style="margin:0;padding:0 0px;{if $edit!="web"}display:none{/if}"  id="d_web">
 
-<div class="general_options" style="float:right">
+      <div class="general_options" style="float:right">
 	     <span style="margin-right:10px;{if $family->get('Product Family Page Key')}display:none{/if}"  onclick="" id="web_create" class="state_details">{t}Create Page{/t}</span>
 	  
 	   </div>
@@ -742,12 +715,7 @@ YAHOO.util.Dom.setStyle(overlay, 'height', uiLayer.bottom-uiLayer.top + "px");
 
  <div id="the_table1" class="data_table" style=" clear:both">
   <span class="clean_table_title">{t}History{/t}</span>
-  <div  id="clean_table_caption1" class="clean_table_caption"  style="clear:both;">
-    <div style="float:left;"><div id="table_info1" class="clean_table_info"><span id="rtext1"></span> <span class="filter_msg"  id="filter_msg1"></span></div></div>
-    <div id="clean_table_filter1" class="clean_table_filter" style="display:none">
-      <div class="clean_table_info"><span id="filter_name1" class="filter_name" >{$filter_name}</span>: <input style="border-bottom:none" id='f_input1' value="{$filter_value}" size=10/><div id='f_container'></div></div></div>
-    <div class="clean_table_controls" style="" ><div><span  style="margin:0 5px" id="paginator1"></span></div></div>
-  </div>
+   {include file='table_splinter.tpl' table_id=1 filter_name=$filter_name1 filter_value=$filter_value1  }
   <div  id="table1"   class="data_table_container dtable btable "> </div>
 </div> 
   

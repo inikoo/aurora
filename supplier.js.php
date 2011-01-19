@@ -316,6 +316,14 @@ break;
 
 function init(){
 
+ YAHOO.util.Event.addListener('export_csv0', "click",download_csv,'supplier');
+ YAHOO.util.Event.addListener('export_csv0_in_dialog', "click",download_csv_from_dialog,{table:'export_csv_table0',tipo:'supplier'});
+  csvMenu = new YAHOO.widget.ContextMenu("export_csv_menu0", {trigger:"export_csv0" });
+	 csvMenu.render();
+	 csvMenu.subscribe("show", csvMenu.focus);
+   
+ YAHOO.util.Event.addListener('export_csv0_close_dialog', "click",csvMenu.hide,csvMenu,true);
+
     var oACDS = new YAHOO.util.FunctionDataSource(mygetTerms,{table_id:0});
     oACDS.queryMatchContains = true;
     var oAutoComp = new YAHOO.widget.AutoComplete("f_input0","f_container0", oACDS);

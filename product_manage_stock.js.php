@@ -1107,6 +1107,8 @@ YAHOO.util.Event.onDOMReady(init);
 	
 
 	// Use an XHRDataSource
+	
+	
 	var oDS = new YAHOO.util.XHRDataSource("ar_assets.php");
 
  	oDS.responseType = YAHOO.util.XHRDataSource.TYPE_JSON;

@@ -1,6 +1,7 @@
 <?php
 
 
+
 if ($tipo=='quick_this_month') {
     $tipo='m';
     $_SESSION['state'][$report_name]['y']=date('Y');
@@ -41,9 +42,9 @@ if ($tipo=='all_invoices' or $tipo=='all' or $tipo=='quick_all') {
 
     $res=mysql_query($sql);
     if ($row=mysql_fetch_array($res)) {
-        $from=date("d-m-Y",strtotime($row['date']));
+        $from=date("Y-m-d",strtotime($row['date']));
     }
-    $to=date("d-m-Y");
+    $to=date("Y-m-d");
     $title=$root_title.sprintf(" (%s-%s)",strftime('%x',strtotime($from)),strftime('%x'));
     $period=_('All Invoices');
     $link="&tipo=f&from=".$from."&to=".$to;
@@ -94,10 +95,10 @@ elseif($tipo=='w') {
 
     $ffrom=date("d/m", $_time);
     $fto=date("d/m", $_time_n);
-    $from=date("d-m-Y", $_time);
-    $to=date("d-m-Y", $_time_n);
+    $from=date("Y-m-d", $_time);
+    $to=date("Y-m-d", $_time_n);
     $period=_('Week').' '.date("W Y", $_time);
-    $title="$period ($ffrom-$fto)".$root_title;
+    $title="$period ($ffrom-$fto) ".$root_title;
 
     $smarty->assign('up',array('url'=>'tipo=y&y='.date("Y",$_time),'title'=>date("Y",$_time)));
     $smarty->assign('next',array('url'=>'tipo=w&w='.date("W",$_time_n).'&y='.date("Y",$_time_n),'title'=>_('Week').' '.date("W-Y",$_time_n)));
@@ -176,8 +177,8 @@ elseif($tipo=='m') {
     $_time_n=mktime(0, 0, 0,$month+1 ,1 , $year);
     $_time_p=mktime(0, 0, 0,$month-1 ,1 , $year);
 
-    $from=date("d-m-Y", $_time);
-    $to=date("d-m-Y", mktime(0, 0, 0, $month+1, 0, $year));
+    $from=date("Y-m-d", $_time);
+    $to=date("Y-m-d", mktime(0, 0, 0, $month+1, 0, $year));
     $period=strftime("%B %Y", $_time);
     $title="$period ".$root_title;
 
@@ -255,8 +256,8 @@ elseif($tipo=='y') {
     $_time_n=mktime(0, 0, 0,1 ,1 , $year+1);
     $_time_p=mktime(0, 0, 0,1 ,1 , $year-1);
 
-    $from=date("d-m-Y", $_time);
-    $to=date("d-m-Y", mktime(0, 0, 0, 1, 0, $year+1));
+    $from=date("Y-m-d", $_time);
+    $to=date("Y-m-d", mktime(0, 0, 0, 1, 0, $year+1));
     $period=date("Y", $_time);
     $title="$period ".$root_title;
 
@@ -324,8 +325,8 @@ elseif($tipo=='d') {
 
 
 
-    $from=date("d-m-Y", $_time);
-    $to=date("d-m-Y", $_time);
+    $from=date("Y-m-d", $_time);
+    $to=date("Y-m-d", $_time);
     $period=strftime("%a %e %b %Y", $_time);
     $title="$period ".$root_title;
 

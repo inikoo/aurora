@@ -1,16 +1,11 @@
 {include file='header.tpl'}
 <div id="bd" >
-<div class="search_box" style="margin-top:15px">
-  <div class="general_options">
-    {foreach from=$general_options_list item=options }
-        {if $options.tipo=="url"}
-            <span onclick="window.location.href='{$options.url}'" >{$options.label}</span>
-        {else}
-            <span  id="{$options.id}" state="{$options.state}">{$options.label}</span>
-        {/if}
-    {/foreach}
-    </div>
-</div>
+ {include file='suppliers_navigation.tpl'}
+
+
+
+
+
  <div id="no_details_title"  style="clear:left;xmargin:0 20px;{if $details!=0}display:none{/if}">
     <h1>{t}Edit Supplier{/t}: <span id="title_name">{$supplier->get('Supplier Name')}</span> (<span id="title_code">{$supplier->get('Supplier Code')}</span>)</h1>
   </div>
@@ -27,13 +22,11 @@
    <div  class="edit_block" style="{if $edit!="details"}display:none{/if}"  id="d_details">
   
        <div class="general_options" style="float:right">
-	
-	<span  style="margin-right:10px;visibility:hidden"  id="save_edit_supplier" class="state_details">{t}Save{/t}</span>
-	<span style="margin-right:10px;visibility:hidden" id="reset_edit_supplier" class="state_details">{t}Reset{/t}</span>
-	
+	<span  style="margin-right:10px;visibility:hidden"  id="save_edit_supplier" onClick="save_edit_general('supplier')" class="state_details">{t}Save{/t}</span>
+	<span style="margin-right:10px;visibility:hidden" id="reset_edit_supplier" onClick="reset_edit_general('supplier')" class="state_details">{t}Reset{/t}</span>
       </div>
   
-   <table class="edit" border=0 style="clear:both">
+   <table class="edit" border=1 style="clear:both">
 	<tr class="first"><td style="width:11em" class="label">Supplier Code:</td>
 	  <td  style="text-align:left;width:19em">
 	    <div  style="width:15em;position:relative;top:00px" >
@@ -54,8 +47,69 @@
 
 	</tr>
 
-
+ <tr class=""><td style=";width:12em" class="label" >{t}Contact Name{/t}:</td>
+   <td  style="text-align:left;width:18em;">
+     <div  style="width:15em;position:relative;top:00px" >
+       <input style="text-align:left;width:18em" id="Supplier_Main_Contact_Name" value="{$supplier->get('Supplier Main Contact Name')}" ovalue="{$supplier->get('Supplier Main Contact Name')}" valid="0">
+       <div id="Supplier_Main_Contact_Name_Container" style="" ></div>
+     </div>
+   </td>
+   <td id="Supplier_Main_Contact_Name_msg" class="edit_td_alert"></td>
+ </tr>
+ 
+ <tr class=""><td style="" class="label">{t}Contact Email{/t}:</td>
+   <td  style="text-align:left">
+     <div  style="width:15em;position:relative;top:00px" >
+       <input style="text-align:left;width:18em" id="Supplier_Main_Email" value="{$supplier->get('Supplier Main Plain Email')}" ovalue="{$supplier->get('Supplier Main Plain Email')}" valid="0">
+       <div id="Supplier_Main_Email_Container" style="" ></div>
+     </div>
+   </td>
+   <td id="Supplier_Main_Email_msg" class="edit_td_alert"></td>
+ </tr>
+ 
+ <tr class=""><td style="" class="label">{t}Telephone{/t}:</td>
+   <td  style="text-align:left">
+     <div  style="width:15em;" >
+       <input style="text-align:left;width:18em" id="Supplier_Main_Telephone" value="{$supplier->get('Supplier Main XHTML Telephone')}" ovalue="{$supplier->get('Supplier Main XHTML Telephone')}" valid="0">
+       <div id="Supplier_Main_Telephone_Container" style="" ></div>
+     </div>
+   </td>
+   <td id="Supplier_Main_Telephone_msg" class="edit_td_alert"></td>
+ </tr>
+ 
+<tr class=""><td style="" class="label">{t}Fax{/t}:</td>
+   <td  style="text-align:left">
+     <div  style="width:15em;" >
+       <input style="text-align:left;width:18em" id="Supplier_Main_Fax" value="{$supplier->get('Supplier Main XHTML FAX')}" ovalue="{$supplier->get('Supplier Main XHTML FAX')}" valid="0">
+       <div id="Supplier_Main_Fax_Container" style="" ></div>
+     </div>
+   </td>
+   <td id="Supplier_Main_Fax_msg" class="edit_td_alert"></td>
+ </tr>
+ <tr class=""><td style="" class="label">{t}Web Page{/t}:</td>
+   <td  style="text-align:left">
+     <div  style="width:15em;" >
+       <input style="text-align:left;width:18em" id="Supplier_Main_Web_Site" value="{$supplier->get('Supplier Main Web Site')}" ovalue="{$supplier->get('Supplier Main Web Site')}" valid="0">
+       <div id="Supplier_Main_Web_Site_Container" style="" ></div>
+     </div>
+   </td>
+   <td id="Supplier_Main_Web_Site_msg" class="edit_td_alert"></td>
+ </tr>
+ 
      </table>
+    
+    <div id="supplier_contact_address" style="float:left;width:400px;margin-right:40px;min-height:300px;margin-top:30px">
+     <div style="border-bottom:1px solid #777;margin-bottom:7px">
+       {t}Contact Address{/t}:
+     </div>
+     <table border=0>
+       {include file='edit_address_splinter.tpl' address_identifier='contact_' hide_type=true hide_description=true  }
+     </table>
+     <div style="display:none" id='contact_current_address' ></div>
+     <div style="display:none" id='contact_address_display{$supplier->get("Supplier Main Address Key")}' ></div>
+   </div>
+    
+  <div style="clear:both"></div>
    </div>
    
 
@@ -84,28 +138,138 @@
   <div  class="edit_block" style="{if $edit!="products"}display:none{/if}"  id="d_products">
    
   <div class="data_table" style="clear:both">
+  
+  <div class="general_options" style="float:right">
+		<span  style="margin-right:10px;visibility:hidden"  id="save_new_product" onClick="save_new_general('product')" class="state_details">{t}Save New Product{/t}</span>
+  	    <span style="margin-right:10px;visibility:hidden" id="cancel_new_product" onClick="cancel_new_general('product')" class="state_details">{t}Cancel New Product{/t}</span>
+	    <span  style="margin-right:10px;"  id="show_new_product_dialog_button" onClick="show_new_product_dialog()" class="state_details">{t}Create New Product{/t}</span>
+	    <span  style="margin-right:10px;"  id="import_new_product" class="state_details">{t}Import Products (CSV){/t}</span>
+</div>
+  
+  
+  
+  
+  
+   <table id="new_product_dialog" class="edit" border=0 style="clear:both;display:none">
+   <tr><td></td><td  id="new_product_dialog_msg"></td></tr>
+	<tr class="first"><td style="width:11em" class="label">Product Code:</td>
+	  <td  style="text-align:left;width:19em">
+	    <div  style="width:15em;position:relative;top:00px" >
+	      <input style="text-align:left;width:18em" id="Product_Code" value="" ovalue="" valid="0">
+	      <div id="Product_Code_Container" style="" ></div>
+	    </div>
+	  </td>
+	  <td id="Product_Code_msg" class="edit_td_alert"></td>
+	</tr>
+	<tr ><td style="" class="label">{t}Product Name{/t}:</td>
+	  <td  style="text-align:left">
+	    <div  style="width:15em;position:relative;top:00px" >
+	      <input style="text-align:left;width:18em" id="Product_Name" value="" ovalue="" valid="0">
+	      <div id="Product_Name_Container" style="" ></div>
+	    </div>
+	  </td>
+	  	  <td id="Product_Name_msg" class="edit_td_alert"></td>
+
+	</tr>
+
+<tr><td style="" class="label">{t}Unit{/t}:</td>
+	  <td  style="text-align:left">
+	  <select id="Product_Unit">
+	  {foreach from=$units_list key=key item=value}
+	    <option {if $units_list_selected==$key}selected="selected" default=1{else}default=0{/if} value="{$key}">{$value}</option>
+	  {/foreach}
+      </select>
+	   
+	  </td>
+	  	  <td id="Product_Unit_msg" class="edit_td_alert"></td>
+
+	</tr>
+<tr ><td style="" class="label">{t}Units per Case{/t}:</td>
+	  <td  style="text-align:left">
+	    <div  style="width:15em;position:relative;top:00px" >
+	      <input style="text-align:left;width:9em" id="Product_Units_Per_Case" value="1" ovalue="1" valid="0">
+	      <div id="Product_Units_Per_Case_Container" style="" ></div>
+	    </div>
+	  </td>
+	  	  <td id="Product_Units_Per_Case_msg" class="edit_td_alert"></td>
+
+	</tr>
+<tr ><td style="" class="label">{t}Price per Case{/t}:</td>
+	  <td  style="text-align:left">
+	  <table border=0>
+	  <tr>
+	  <td style="padding:2px 0px">
+	  <select id="Product_Currency">
+	  {foreach from=$currency_list key=key item=value}
+	    <option {if $currency_selected==$key}selected="selected" default=1{else}default=0{/if} value="{$key}"   >{$value}</option>
+	  {/foreach}
+      </select>
+	  
+	    </td>
+	    <td style="padding:2px 0px 2px 12px">
+	     <div  style="width:15em;position:relative;top:00px" >
+	      <input style="text-align:left;width:9em" id="Product_Price_Per_Case" value="" ovalue="" valid="0">
+	      <div id="Product_Price_Per_Case_Container" style="" ></div>
+	    </div>
+	    </td>
+	    
+	    </table>
+	  </td>
+	  	  <td ><table><tr><td id="Product_Price_Currency_msg" class="edit_td_alert"></td><td id="Product_Price_Per_Case_msg" class="edit_td_alert"></td></tr></table></td>
+
+	</tr>
+	
+	<tr ><td style="" class="label">{t}Description{/t}:</td>
+	  <td  style="text-align:left">
+	   <textarea id="Product_Description"></textarea>
+	  </td>
+	  	  <td id="Product_Description_msg" class="edit_td_alert"></td>
+
+	</tr>
+	
+     </table>
+  
+  <div id="suppliers_product_list"> 
     <span class="clean_table_title">{t}Suppliers Product List{/t}</span>
-    <div style="clear:both;margin:0 0px;padding:0 20px ;border-bottom:1px solid #999"></div>
-    <table style="float:left;margin:0 0 0 0px ;padding:0"  class="options" {if $products==0 }style="display:none"{/if}>
-      <tr><td  {if $view=='general'}class="selected"{/if} id="general" >{t}General{/t}</td>
-	  <td {if $view=='products'}class="selected"{/if}  id="products"  >{t}Products{/t}</td>
-	  {if $view_stock}<td {if $view=='stock'}class="selected"{/if}  id="stock"  >{t}Stock{/t}</td>{/if}
-	  {if $view_sales}<td  {if $view=='sales'}class="selected"{/if}  id="sales"  >{t}Sales{/t}</td>{/if}
-      </tr>
-      </table>
+    <div style="clear:both;margin:0 0px;padding:0 20px ;border-bottom:1px solid #999;margin-bottom:10px"></div>
     
-    <div  class="clean_table_caption"  style="clear:both;">
-      <div style="float:left;"><div id="table_info0" class="clean_table_info"><span id="rtext0"></span> <span class="filter_msg"  id="filter_msg0"></span></div></div>
-      <div class="clean_table_filter" id="clean_table_filter0"><div class="clean_table_info"><span  id="filter_name0" class="filter_name" >{$filter_name0}</span>: <input style="border-bottom:none;width:100px;position:relative;"  id='f_input0' value="{$filter_value}" size=10/><div id='f_container0'></div></div></div>
-      <div class="clean_table_controls" style="" ><div><span  style="margin:0 5px" id="paginator"></span></div></div>
-    </div>
+    {include file='table_splinter.tpl' table_id=0 filter_name=$filter_name0 filter_value=$filter_value0  }
     <div  id="table0"   class="data_table_container dtable btable "> </div>
+   </div>
+   </div>
+</div>
+
+</div>
+<div id="the_table1" class="data_table" style="">
+  <span class="clean_table_title">{t}History{/t}</span>
+     {include file='table_splinter.tpl' table_id=1 filter_name=$filter_name1 filter_value=$filter_value1  }
+
+  <div  id="table1"   class="data_table_container dtable btable "> </div>
+</div>
+</div>
+
+
+<div id="rppmenu1" class="yuimenu" >
+  <div class="bd">
+    <ul class="first-of-type">
+       <li style="text-align:left;margin-left:10px;border-bottom:1px solid #ddd">{t}Rows per Page{/t}:</li>
+      {foreach from=$paginator_menu1 item=menu }
+      <li class="yuimenuitem"><a class="yuimenuitemlabel" onClick="change_rpp_with_totals({$menu},1)"> {$menu}</a></li>
+      {/foreach}
+    </ul>
+  </div>
+</div>
+<div id="filtermenu1" class="yuimenu" >
+  <div class="bd">
+    <ul class="first-of-type">
+      <li style="text-align:left;margin-left:10px;border-bottom:1px solid #ddd">{t}Filter options{/t}:</li>
+      {foreach from=$filter_menu1 item=menu }
+      <li class="yuimenuitem"><a class="yuimenuitemlabel" onClick="change_filter('{$menu.db_key}','{$menu.label}',1)"> {$menu.menu_label}</a></li>
+      {/foreach}
+    </ul>
   </div>
 </div>
 
-</div>
-
-</div>
 
 <div id="filtermenu0" class="yuimenu">
   <div class="bd">

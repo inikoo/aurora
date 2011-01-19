@@ -94,7 +94,7 @@ function hide_details(){
 	    Dom.get(table.view).className="";
 	    Dom.get(tipo).className="selected";
 	    table.view=tipo
-		YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=department-view&value=' + escape(tipo) );
+		YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=department-view&value=' + escape(tipo),{} );
 	}
     }
 
@@ -152,7 +152,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 							 //draggableColumns:true,
 							   renderLoopSize: 50,generateRequest : myRequestBuilderwithTotals
 								       ,paginator : new YAHOO.widget.Paginator({
-									       rowsPerPage:<?php echo$_SESSION['state']['department']['table']['nr']+1?>,containers : 'paginator0', 
+									       rowsPerPage:<?php echo $_SESSION['state']['department']['table']['nr']+1?>,containers : 'paginator0', 
  									      pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',
 									      previousPageLinkLabel : "<",
  									      nextPageLinkLabel : ">",
@@ -360,6 +360,15 @@ function change_plot(o){
 
 
  function init(){
+
+  YAHOO.util.Event.addListener('export_csv0', "click",download_csv,'families_in_department');
+ YAHOO.util.Event.addListener('export_csv0_in_dialog', "click",download_csv_from_dialog,{table:'export_csv_table0',tipo:'families_in_department'});
+  csvMenu = new YAHOO.widget.ContextMenu("export_csv_menu0", {trigger:"export_csv0" });
+	 csvMenu.render();
+	 csvMenu.subscribe("show", csvMenu.focus);
+   
+ YAHOO.util.Event.addListener('export_csv0_close_dialog', "click",csvMenu.hide,csvMenu,true);
+
  init_search('products_store');
  
  

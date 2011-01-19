@@ -38,7 +38,7 @@ $data=array(
 		   ,'Page Description'=>'Quick snapshoot of the latest sales figures and the compation of these with previous data'
 		   ,'Page URL'=>'report_sales_activity.php'
 		   ,'Page Section'=>'Reports'
-		   ,'Page Parent Category'=>'Activity/Performace Reports'
+		   ,'Page Parent Category'=>'Activity/Performance Reports'
 		   )
 	     ,array(
 		   'Page Type'=>'Internal'
@@ -46,6 +46,15 @@ $data=array(
 		   ,'Page Short Title'=>'Sales Overview'
 		   ,'Page Description'=>''
 		   ,'Page URL'=>'report_sales_main.php'
+		   ,'Page Section'=>'Reports'
+		   ,'Page Parent Category'=>'Sales Reports'
+		   )
+		  ,array(
+		   'Page Type'=>'Internal'
+		   ,'Page Title'=>'Geographic Sales Report'
+		   ,'Page Short Title'=>'Geographic Sales'
+		   ,'Page Description'=>''
+		   ,'Page URL'=>'report_geo_sales.php'
 		   ,'Page Section'=>'Reports'
 		   ,'Page Parent Category'=>'Sales Reports'
 		   )
@@ -66,7 +75,25 @@ $data=array(
 		   ,'Page Description'=>''
 		   ,'Page URL'=>'report_pp.php'
 		   ,'Page Section'=>'Reports'
-		   ,'Page Parent Category'=>'Activity/Performace Reports'
+		   ,'Page Parent Category'=>'Activity/Performance Reports'
+		   )
+		     ,array(
+		    'Page Type'=>'Internal'
+		   ,'Page Title'=>'Marked as Out of Stock Report'
+		   ,'Page Short Title'=>'Mark as Out of Stock'
+		   ,'Page Description'=>''
+		   ,'Page URL'=>'report_out_of_stock.php'
+		   ,'Page Section'=>'Reports'
+		   ,'Page Parent Category'=>'Activity/Performance Reports'
+		   )
+		   	     ,array(
+		    'Page Type'=>'Internal'
+		   ,'Page Title'=>'Customer First Order Analysis'
+		   ,'Page Short Title'=>'First Order'
+		   ,'Page Description'=>''
+		   ,'Page URL'=>'report_first_order.php'
+		   ,'Page Section'=>'Reports'
+		   ,'Page Parent Category'=>'Sales Reports'
 		   )
 	       ,array(
 		    'Page Type'=>'Internal'
@@ -75,7 +102,7 @@ $data=array(
 		   ,'Page Description'=>''
 		   ,'Page URL'=>'report_customers.php'
 		   ,'Page Section'=>'Reports'
-		   ,'Page Parent Category'=>'Activity/Performace Reports'
+		   ,'Page Parent Category'=>'Activity/Performance Reports'
 		   )
 	     ,array(
 		    'Page Type'=>'Internal'
@@ -95,7 +122,7 @@ $data=array(
 foreach($data as $page_data){
   
   $page=new Page('find',$page_data,'create');
-  print_r($page);
+  //print_r($page);
   
 }
 

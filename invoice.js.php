@@ -19,7 +19,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 	    var InvoiceColumnDefs = [
 				     {key:"code", label:"<?php echo _('Code')?>",width:75,sortable:false,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				     ,{key:"description", label:"<?php echo _('Description')?>",width:380,sortable:false,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				     ,{key:"description", label:"<?php echo _('Description')?>",width:420,sortable:false,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				     // ,{key:"tariff_code", label:"<?php echo _('Tariff Code')?>",width:80,sortable:false,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				     ,{key:"quantity",label:"<?php echo _('Qty')?>", width:45,sortable:false,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 				     ,{key:"gross",label:"<?php echo _('Gross')?>", width:70,sortable:false,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}

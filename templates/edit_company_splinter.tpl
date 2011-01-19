@@ -88,7 +88,7 @@
     
     <tr id="contact_form" style="display:none">
       <td colspan=2 style="padding:0">
-	<table border=1 class="edit" style="margin:10px 0 0 0;padding:0" id="edit_contact_table">
+	<table border=0 sclass="edit" style="margin:10px 0 0 0;padding:0" id="edit_contact_table">
 	  <tr >
 	    <input type="hidden" id="Contact_Key" value="" ovalue=""  />
 	    <td style="width:160px;" class="" >Name:</td>
@@ -146,8 +146,8 @@
       <td class="label">{t}Title{/t}:</td><td><input id="Contact_Title"></td>
     </tr>
     
-    <tr class="titlev">
-      <td colspan=3 ><span id="title_email_and_mbiles" style='display:none'>{t}Contact Email & Mobiles{/t}:</span>
+    <tr class="title">
+      <td colspan=3 ><span id="title_email_and_mobiles" style='display:none'>{t}Contact Email & Mobiles{/t}:</span>
 	<span style="display:none" class="small_button" id="cancel_edit_contact_button"  onclick="cancel_save_email()" >Cancel Edit Email</span>
 	<span style="display:none" class="small_button" id="cancel_edit_contact_button"  onclick="cancel_save_email()">Cancel Edit Mobile</span>
 	<span style="display:none" class="small_button" id="save_add_email_button" onclick="save_email()" >Save Email</span>
@@ -158,7 +158,7 @@
       </td>
     </tr>
     
-    
+    <tr id=email_msg_mould style="display:none;"  ><td colspan="2" class="email_msg"></td></tr>
     <tr id="email_mould" class="mould" style="display:none;">
       <td  class="" style="padding-left:10px" >{t}Email{/t}:</td>
       <td style="padding-left:10px">
@@ -207,10 +207,10 @@
 	<input  class="Telecom" telecom_type="Mobile" telecom_type_description=""  container_key="" value="" ovalue="" to_delete=0  telecom_key=0 onkeyup="validate_telecom(this);telecom_change()"     /> 
       </td >
       <td>
-	<input class="Telecom_Is_Main" type="checkbox" ovalue="No"  telecom_type="mobile" onclick="update_is_main_telecom(this)"/><span>{t}Main{/t}</span>
+	<input class="Mobile_Is_Main" type="checkbox" ovalue="No"  telecom_type="mobile" onclick="update_is_main_mobile(this)"/><span>{t}Main{/t}</span>
 	
 	<span class="small_button undelete_telecom"  style="display:none" mobile_key="" onclick="unmark_telecom_to_delete(this)">{t}Cancel Delete{/t}</span>
-	<span class="small_button delete_telecom"   mobile_key="" onclick="mark_telcom_to_delete(this)">{t}Delete{/t}</span>
+	<span class="small_button delete_telecom"   mobile_key="" onclick="mark_telecom_to_delete(this)">{t}Delete{/t}</span>
 	
       </td>
     </tr>
@@ -261,7 +261,7 @@
 	    <td>
 	      <input class="Telecom_Is_Main" type="checkbox" ovalue="No"  telecom_type="telephone" onclick="update_is_main_telecom(this)"/><span>{t}Main{/t}</span>
 	      <span class="small_button undelete_telecom"  style="display:none" email_key="" onclick="unmark_telecom_to_delete(this)">{t}Cancel Delete{/t}</span>
-	      <span class="small_button delete_telecom"   telephone_key="" onclick="mark_telcom_to_delete(this)">{t}Delete{/t}</span>
+	      <span class="small_button delete_telecom"   telephone_key="" onclick="mark_telecom_to_delete(this)">{t}Delete{/t}</span>
 	      
 	    </td>
 	  </tr>	
@@ -301,7 +301,7 @@
 	    <td>
 	      <input class="Telecom_Is_Main" type="checkbox" ovalue="No"  telecom_type="fax" onclick="update_is_main_telecom(this)"/><span>{t}Main{/t}</span>
 	      <span class="small_button undelete_telecom"  style="display:none" email_key="" onclick="unmark_telecom_to_delete(this)">{t}Cancel Delete{/t}</span>
-	      <span class="small_button delete_telecom"   fax_key="" onclick="mark_telcom_to_delete(this)">{t}Delete{/t}</span>
+	      <span class="small_button delete_telecom"   fax_key="" onclick="mark_telecom_to_delete(this)">{t}Delete{/t}</span>
 	      
 	    </td>
 	  </tr>	
@@ -349,7 +349,7 @@
 	<table class="edit" border=0 >
 	  
 	  <tr class="title">
-	    <td style="width:160px">Address: <span class="state_details"  id="address_messages"></span>
+	    <td style="width:160px">{t}Address List{/t}: <span class="state_details"  id="address_messages"></span>
 	    </td>
 	    <td  style="text-align:right">
 	      <span class="small_button" id="save_address_button" style="display:none" address_key="" >Save Address</span>
@@ -374,7 +374,7 @@
 		  <span class="small_button small_button_edit" id="edit_address_button0" address_id="0" onclick="edit_address(0)" >{t}Edit{/t}</span>
 		</div>
 	      </div>
-	      
+	     
 	      {foreach from=$addresses item=address key=key }
 	      <div class="address_container"  id="address_container{$address->id}">
 		<div class="address_display"  id="address_display{$address->id}">{$address->display('xhtml')}</div>
@@ -396,105 +396,12 @@
 	  </tr>
 </tr>
 
-   {foreach from=$addresses item=address key=key }
-<tr>
-  
-</tr>
+        {include file='edit_address_splinter.tpl' close_if_reset=true address_identifier='contact_' address_function='Contact'  hide_type=true hide_description=true show_form=true  }
 
- {/foreach}
-
-<tbody id="address_form" style="display:none"   >
-	    
-	   
-
-	    <tr id="tr_address_type">
-	      <td class="label">
-		<span id="show_description" onclick="show_description()" class="small_button" style="padding:0 1px;font-size:50%;position:relative;top:-2px;">+</span> {t}Address Type{/t}:</td><td  style="text-align:left"   id="address_type" value="" ovalue=""  >
-		<span id="address_type_Office" label="Office" onclick="toggle_address_type(this)" class="small_button address_type" style="margin:0">Office</span>
-		<span id="address_type_Shop" label="Shop" onclick="toggle_address_type(this)" class="small_button  address_type" style="margin-left:3px">Shop</span>
-		<span id="address_type_Warehouse" label="Warehouse" onclick="toggle_address_type(this)" class="small_button  address_type" style="margin-left:3px">Warehouse</span>
-		<span id="address_type_Other" label="Other" onclick="toggle_address_type(this)" class="small_button  address_type" style="margin-left:3px">Other</span>
-	      </td>
-	    </tr>
-
-	    <tr id="tr_address_function" style="{if $scope=='Company'}display:none;{/if}">
-	      <td class="label">{t}Address Function{/t}:</td><td  style="text-align:left"   id="address_function" value="" ovalue=""  >
-		<span id="address_function_Contact" label="Contact" onclick="toggle_address_function(this)" class="small_button address_function" style="margin:0">Contact</span>
-		<span id="address_function_Billing" label="Billing" onclick="toggle_address_function(this)" class="small_button address_function" style="margin-left:3px">Billing</span>
-		<span id="address_function_Shipping" label="Shipping" onclick="toggle_address_function(this)" class="small_button address_function" style="margin-left:3px">Shipping</span>
-		<span id="address_function_Other" label="Other" onclick="toggle_address_function(this)" class="small_button address_function" style="margin-left:3px">Other</span>
-	      </td>
-	    </tr>
-
-	    
-
-	    <tr id="tr_address_description" style="display:none"> 
-	      <td class="label"><span id="hide_description" onclick="hide_description()" class="small_button" style="padding:0 1px;font-size:50%;position:relative;top:-2px;">x</span> {t}Description{/t}:</td><td  style="text-align:left"    ><input style="text-align:left" id="address_description" value="" ovalue=""   ></td>
-	    </tr>
-	    
-	    <tr >
-	      <td ></td><td style="text-align:left"><div  style="text-align:left;float:left;height:10px;width:210px;border-top:1px solid #ddd"></div></td>
-	    </tr>
-
-	  <input type="hidden" id="address_key" value="" ovalue="" >
-	  <input type="hidden" id="address_fuzzy" value="Yes" ovalue="Yes" >
-
-
-	    <tr class="first">
-	    
-	    <td class="label" style="width:160px">
-	      <span id="show_country_d1" onclick="toggle_country_d1()" class="small_button" style="padding:0 1px;font-size:50%;position:relative;top:-2px;display:none">+</span>
-	      Country:</td>
-	    <td  style="text-align:left">
-	      <div id="myAutoComplete" style="width:15em;position:relative;top:-10px" >
-		<input id="address_country" style="text-align:left;width:18em" type="text">
-		<div id="address_country_container" style="position:relative;top:18px" ></div>
-		
-	      </div>
-	    </td>
-	  </tr>
-	    <input id="address_country_code" value="" type="hidden">
-	     <input id="address_country_2acode" value="" type="hidden">
-
-	    
-	  <tr id="tr_address_country_d1">
-	    <td class="label" style="width:160px">
-	    <span id="show_country_d2" onclick="toggle_country_d2()" class="small_button" style="padding:0 1px;font-size:50%;position:relative;top:-2px;display:none">+</span> 
-	    <span id="label_address_country_d1">{t}Region{/t}</span>:</td><td  style="text-align:left"><input style="text-align:left;width:18em" id="address_country_d1" value="" ovalue="" ></td>
-	  </tr>
-	  <tr id="tr_address_country_d2">
-	    <td class="label" style="width:160px"><span id="label_address_country_d2">{t}Subregion{/t}</span>:</td><td  style="text-align:left">
-	    <input style="text-align:left;width:18em" id="address_country_d2" value="" ovalue="" ></td>
-	  </tr>
-	  
-	  <tr id="tr_address_postal_code">
-	    <td class="label" style="width:160px">{t}Postal Code{/t}:</td><td  style="text-align:left"><input style="text-align:left;width:18em" id="address_postal_code" value="" ovalue=""  ></td>
-	  </tr>
-
-	  <tr>
-	    <td class="label" style="width:160px">
-	      <span id="show_town_d1" onclick="toggle_town_d1()" class="small_button" style="padding:0 1px;font-size:50%;position:relative;top:-2px">+</span> {t}City{/t}:</td>
-	      <td  style="text-align:left"><input style="text-align:left;width:18em" id="address_town" value="" ovalue="" ></td>
-	  </tr>
-	  <tr style="display:none" id="tr_address_town_d1">
-	    <td class="label" style="width:160px" >
-	      <span id="show_town_d2" onclick="toggle_town_d2()" class="small_button" style="padding:0 1px;font-size:50%;position:relative;top:-2px">x</span> {t}City 1st Div{/t}:</td>
-	      <td  style="text-align:left"><input style="text-align:left;width:18em" id="address_town_d1" value="" ovalue="" ></td>
-	  </tr>
-	  <tr style="display:none;" id="tr_address_town_d2">
-	    <td class="label" style="width:160px">{t}City 2nd Div{/t}:</td><td  style="text-align:left"><input style="text-align:left;width:18em" id="address_town_d2" value="" ovalue="" ></td>
-	  </tr>
-	  <tr>
-	    <td class="label" style="width:160px">{t}Street/Number{/t}:</td><td  style="text-align:left"><input style="text-align:left;width:18em" id="address_street" value="" ovalue="" ></td>
-	  <tr>
-	    <td class="label" style="width:160px">{t}Building{/t}:</td><td  style="text-align:left"><input style="text-align:left;width:18em" id="address_building" value="" ovalue="" ></td>
-	  </tr>
-	  <tr >
-	    <td class="label" style="width:160px">{t}Internal{/t}:</td><td  style="text-align:left"><input style="text-align:left;width:18em" id="address_internal" value="" ovalue="" ></td>
-	  </tr>
-</tbody>
- 
 
 	</table>
+
+
+
 
       </div>

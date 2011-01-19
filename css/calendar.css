@@ -1,3 +1,10 @@
+.cal_menu_container{clear:both;float:right;position:relative;top:-14px ;width:180px;solid #ccc;padding:.5px 0px;}
+
+.cal_menu{clear:both;float:right;border:1px solid #ccc;padding:10px;width:180px;margin-top:0px;position:absolute;;background:#fff;z-index:10; }
+
+.cal_menu .custom_dates{text-align:right;font-size:80%;margin-top:5px}
+.cal_menu .custom_dates img{height:12.5px}
+
 .calendar_year { margin: 10px 0 0 0  }
 .calendar_year  td{text-align:center;font-size:10px;font-weight:800;width:16px;border:1px solid #82aadf;cursor:pointer;border-top:3px solid #ff9958;color:#777}
 .calendar_year td a{color:#777}

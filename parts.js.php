@@ -191,6 +191,17 @@ function change_avg(e,table_id){
 
  function init(){
 
+// ------------------------------------------------------------------------
+YAHOO.util.Event.addListener('export_csv0', "click",download_csv,'parts');
+ YAHOO.util.Event.addListener('export_csv0_in_dialog', "click",download_csv_from_dialog,{table:'export_csv_table0',tipo:'parts'});
+  csvMenu = new YAHOO.widget.ContextMenu("export_csv_menu0", {trigger:"export_csv0" });
+	 csvMenu.render();
+	 csvMenu.subscribe("show", csvMenu.focus);
+   
+ YAHOO.util.Event.addListener('export_csv0_close_dialog', "click",csvMenu.hide,csvMenu,true);
+// -------------------------------------------------------------------------
+
+
  
   init_search('part');
  
@@ -219,6 +230,9 @@ function change_avg(e,table_id){
 
  Event.addListener('submit_search', "click",submit_search);
  Event.addListener('prod_search', "keydown", submit_search_on_enter);
+
+
+
 
  }
 

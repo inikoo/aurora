@@ -27,16 +27,6 @@ switch($tipo){
      $_SESSION['state'][$keys[0]][$keys[1]]=$value;
      //print $_SESSION['state'][$keys[0]][$keys[1]]."\n";
    //  $data=$session->read(session_id( ));
-     
-     
-    
-     
-    
-
-
-
-
-
      break;
    case 3:
      $value=$_REQUEST['value'];

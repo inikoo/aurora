@@ -19,7 +19,7 @@ $_SESSION['locale_info'] = localeconv();
 $con=@mysql_connect($dns_host,$dns_user,$dns_pwd );
 
 if(!$con){print "Error can not connect with database server\n";exit;}
-$dns_db='dw';
+//$dns_db='dw';
 $db=@mysql_select_db($dns_db, $con);
 if (!$db){print "Error can not access the database\n";exit;}
   
@@ -38,10 +38,10 @@ date_default_timezone_set('UTC');
 
 
 
-$sql="select * from `Supplier Product Dimension`  ";
+$sql="select * from `Supplier Product Dimension` ";
 $result=mysql_query($sql);
 while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
-  $sp=new SupplierProduct('id',$row['Supplier Product Current Key']);
+  $sp=new SupplierProduct('pid',$row['Supplier Product Key']);
   $sp->load('used in');
   $sp->load('current_key_sales');
   $sp->load('sales');

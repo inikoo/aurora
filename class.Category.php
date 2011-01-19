@@ -12,6 +12,7 @@
  Version 2.0
 */
 include_once('class.DB_Table.php');
+include_once('class.Node.php');
 
 class Category extends DB_Table {
   
@@ -36,7 +37,7 @@ class Category extends DB_Table {
     
     $sql=sprintf("select * from `Category Dimension` where `Category Key`=%d",$tag);
     $result=mysql_query($sql);
-    
+    //print $sql;
     if ($this->data=mysql_fetch_array($result, MYSQL_ASSOC)  ) {
       $this->id=$this->data['Category Key'];
     }
@@ -73,20 +74,22 @@ class Category extends DB_Table {
       
     }
     $fields=array();
-    foreach($data as $key=>$value){
-      if(!($key=='Category Begin Date' 
-	   or $key=='Category Expiration Date' 
-	   or $key=='Category Terms Metadata' 
-	     or $key=='Category Metadata'   ))
-        $fields[]=$key;
-    }
+   
        
-    $sql="select `Category Key` from `Category Dimension` where  true ";
+    $sql=sprintf("select `Category Key` from `Category Dimension` where  `Category Parent Key`=%d and `Category Store Key`=%d and `Category Name`=%s ",
+    $data['Category Parent Key'],
+    $data['Category Store Key'],
+    prepare_mysql($data['Category Name'])
+    
+    );
     //print_r($fields);
     foreach($fields as $field) {
       $sql.=sprintf(' and `%s`=%s',$field,prepare_mysql($data[$field],false));
     }
-    
+   
+   
+   //print $sql;
+   
         $result=mysql_query($sql);
         $num_results=mysql_num_rows($result);
         if ($num_results==1) {
@@ -112,45 +115,38 @@ class Category extends DB_Table {
     function create($data) {
 
 
-      if($data['Category Trigger Key']=='')
-	$data['Category Trigger Key']=0;
-      
-      $data['Category Metadata']=Category::parse_category_metadata($data['Category Type'],$data['Category Description']);
-      $data['Category Terms Metadata']=Deal::parse_term_metadata($data['Category Terms Type'],$data['Category Terms Description']);
+ 
+// $data=array('`Category Name`'=>$data['Category Name']);
 
+$nodes=new Nodes('`Category Dimension`');
+$nodes->add_new($data['Category Parent Key'] , $data);
 
-     
-        //print_r($data);
-
-        $keys='(';
-        $values='values(';
-        foreach($data as $key=>$value) {
-            $keys.="`$key`,";
-            $values.=prepare_mysql($value).",";
-        }
-        $keys=preg_replace('/,$/',')',$keys);
-        $values=preg_replace('/,$/',')',$values);
-        $sql=sprintf("insert into `Category Dimension` %s %s",$keys,$values);
-        // print "$sql\n";
-        if (mysql_query($sql)) {
-            $this->id = mysql_insert_id();
-            $this->get_data('id',$this->id);
+if($nodes->id){
+     $this->get_data('id',$nodes->id);
+            //print_r($this->data);
+            
+            if($this->data['Category Parent Key']==0){
+            $abstract=_('Category')." (".$this->data['Category Subject'].")  ".$this->data['Category Name']." "._('Created');
+            $details=_trim(_('New Category')." (".$this->data['Category Subject'].")  \"".$this->data['Category Name']."\"  "._('added'));
+            }else{
+            $abstract=_('Category')." (".$this->data['Category Subject'].")  ".$this->data['Category Name']." "._('Created');
+            $details=_trim(_('New Category')." ".$this->data['Category Subject'].") \"".$this->data['Category Name']."\"  "._('added'));
+            
+            }
             
             
              $history_data=array(
-			  'History Abstract'=>_('Category Created')
-			  ,'History Details'=>_trim(_('New Category')." \"".$this->data['Category Name']."\"  "._('added'))
-			  ,'Action'=>'created'
+			  'History Abstract'=>$abstract,
+			  'History Details'=>$details,
+			'Indirect Object Key'=>$this->data['Category Parent Key'],
+						'Indirect Object'=>'Category',
+
+			'Action'=>'created'
 			  );
       $this->add_history($history_data);
       $this->new=true;
-            
-            
-        } else {
-            print "Error can not create category  $sql\n";
-            exit;
-
-        }
+            }
+    
     }
 
     function get($key='') {
@@ -164,6 +160,30 @@ class Category extends DB_Table {
 
         return false;
     }
+
+function get_smarty_tree($link=false) {
+    if (!$link)
+        return;
+
+//print_r($this);
+    $category_keys=preg_split('/\>/',preg_replace('/\>$/','',$this->data['Category Position']));
+
+                   $sql=sprintf("select `Category Name`,`Category Key` from `Category Dimension` where `Category Key` in (%s)",join(',',$category_keys));
+ //print $sql;
+  $result=mysql_query($sql);
+    while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
+        $category_data[$row['Category Key']]=$row['Category Name'];
+    }
+    $tree='';
+    foreach($category_keys as $key){
+        if(array_key_exists($key, $category_data)){
+            $tree.=sprintf(" <a href='%s?id=%d'>%s</a> &rarr;",$link,$key,$category_data[$key]);        
+        }
+    }
+    $tree=preg_replace('/\s*\&rarr\;$/', '', $tree);
+    return $tree;
+
+}
 
     function load($key,$args=''){
       switch($key){
@@ -667,5 +687,47 @@ $sql=sprintf("select sum(if(`Product Record Type`='In process',1,0)) as in_proce
        $this->get_data('id',$this->id);
 
   }
+
+
+function delete(){
+$this->deleted=false;
+/* if($this->data['Company Area Number Employees']>0){
+$this->msg=_('Company Area could not be deleted because').' '.gettext($this->data['Company Area Number Employees'],'employee','employees').' '.gettext($this->data['Company Area Number Employees'],'is','are').' '._('associated with it');
+return;
+}
+
+$this->load_positions();
+foreach($this->positions as $position_key=>$position){
+    $position=new CompanyPosition($position_key);
+    $position->editor=$this->editor;
+    $position->delete();
+}
+$this->load_departments();
+foreach($this->departments as $department_key=>$department){
+    $department=new CompanyArea($department_key);
+    $department->editor=$this->editor;
+    $department->delete();
+}
+
+*/
+
+$sql=sprintf('delete from `Category Dimension` where `Category Key`=%d',$this->id);
+mysql_query($sql);
+
+$history_data=array(
+                    'History Abstract'=>_('Category deleted').' ('.$this->data['Category Name'].')'
+                    ,'History Details'=>_trim(_('Category')." ".$this->data['Category Name'].' ('.$this->data['Category Key'].') '._('has been permanently') )
+		    ,'Action'=>'deleted'
+		    );
+ $this->add_history($history_data);
+$this->deleted=true;
+
+}
+
+
+
+
+
+
 
 }

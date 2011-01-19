@@ -49,27 +49,32 @@ $smarty->assign('parent','reports');
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
 
-if(isset($_REQUEST['tipo'])){
-$tipo=$_REQUEST['tipo'];
-$_SESSION['state']['report']['tipo']=$tipo;
-}else
-$tipo=$_SESSION['state']['report']['tipo'];
 
+
+$report_name='report_first_order';
+
+
+if(isset($_REQUEST['tipo'])){
+  $tipo=$_REQUEST['tipo'];
+  $_SESSION['state'][$report_name]['tipo']=$tipo;
+}else
+  $tipo=$_SESSION['state'][$report_name]['tipo'];
+  
 
 
 
 $root_title=_('Customer Report');
 $smarty->assign('report_url','report_customers.php');
 
-if($_SESSION['state']['report']['customers']['store_keys']=='all')
+if($_SESSION['state']['report_customers']['store_keys']=='all')
   $store_keys=join(',',$user->stores);
 else
-  $store_keys=$_SESSION['state']['report']['customers']['store_keys'];
+  $store_keys=$_SESSION['state']['report_customers']['store_keys'];
 
 
 include_once('report_dates.php');
-$_SESSION['state']['report']['customers']['from']=$from;
-$_SESSION['state']['report']['customers']['to']=$to;
+$_SESSION['state']['report_customers']['from']=$from;
+$_SESSION['state']['report_customers']['to']=$to;
 
 
 
@@ -80,8 +85,8 @@ $smarty->assign('export',$export_output);
 $smarty->assign('export_menu',$export_data);
 
 
-$smarty->assign('criteria',$_SESSION['state']['report']['customers']['criteria']);
-$smarty->assign('top',$_SESSION['state']['report']['customers']['top']);
+$smarty->assign('criteria',$_SESSION['state']['report_customers']['criteria']);
+$smarty->assign('top',$_SESSION['state']['report_customers']['top']);
 
 
 

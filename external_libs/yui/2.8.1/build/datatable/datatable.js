@@ -3625,6 +3625,8 @@ initAttributes : function(oConfigs) {
                     oOldColumn = this._oColumnSet.getColumn(oOldSortedBy.key);
                     nOldColumnKeyIndex = oOldColumn.getKeyIndex();
                     
+			//alert(nOldColumnKeyIndex);		
+		
                     // Remove previous UI from THEAD
                     var elOldTh = oOldColumn.getThEl();
                     Dom.removeClass(elOldTh, oOldSortedBy.dir);

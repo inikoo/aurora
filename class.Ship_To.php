@@ -80,7 +80,7 @@ class Ship_To extends DB_Table {
 
     /*
        Method: find
-       Find Company with similar data
+       
 
        Returns:
      Key of the Shipping Addreses found, if create is found in the options string  returns the new key
@@ -105,6 +105,11 @@ class Ship_To extends DB_Table {
             $data[$key]=$value;
 
         }
+        
+        // print_r($raw_data);
+       //  print_r($data);
+      //  exit("s");
+        
 
         $fields=array('Ship To Email','Ship To Telephone','Ship To Company Name','Ship To Contact Name','Ship To Country Code','Ship To Postal Code','Ship To Town','Ship To Line 1','Ship To Line 2','Ship To Line 3','Ship To Line 4');
 
@@ -148,24 +153,12 @@ class Ship_To extends DB_Table {
     }
 
 
-
-
-    /*
-        Function: get
-        Obtiene datos del producto de acuerdo al codigo de producto, al tipo de producto o la totalidad de productos (esto en base al criterio de seleccion)
-    */
-// JFA
-
     function get($key='') {
 
         if (isset($this->data[$key]))
             return $this->data[$key];
 
         switch ($key) {
-
-
-
-
         }
         $_key=ucfirst($key);
         if (isset($this->data[$_key]))
@@ -196,6 +189,9 @@ class Ship_To extends DB_Table {
             // }
 
         }
+        
+       
+        
         $values=preg_replace('/^,/','',$values);
         $keys=preg_replace('/^,/','',$keys);
 

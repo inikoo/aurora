@@ -34,21 +34,24 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 
 	    var OrdersColumnDefs = [
-				     {key:"code", label:"<?php echo _('Code')?>",width:80,sortable:false,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				     {key:"part", label:"<?php echo _('Part')?>",width:80,sortable:false,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				     				     ,{key:"used_in", label:"<?php echo _('Used In')?>",width:330,sortable:false,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+
 				     ,{key:"description", label:"<?php echo _('Description')?>",width:330,sortable:false,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				     
 				     ,{key:"quantity",label:"<?php echo _('Qty')?>", width:50,sortable:false,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 				      
 				  
 					 ];
 
-	    this.OrdersDataSource = new YAHOO.util.DataSource("ar_orders.php?tipo=transactions_in_dn&tid=0");
+	    this.OrdersDataSource = new YAHOO.util.DataSource("ar_orders.php?tipo=transactions_in_process_in_dn&tid=0");
 	    this.OrdersDataSource.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.OrdersDataSource.connXhrMode = "queueRequests";
 	    this.OrdersDataSource.responseSchema = {
 		resultsList: "resultset.data", 
 		totalRecords: 'resultset.total_records',
 		fields: [
-			 "code","description","quantity"
+			 "part","description","quantity","used_in"
 			
 
 			 //,{key:"families",parser:YAHOO.util.DataSource.parseNumber},

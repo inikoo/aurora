@@ -3,6 +3,10 @@ include_once('common.php');?>
   var Event = YAHOO.util.Event;
      var Dom   = YAHOO.util.Dom;
 
+var category_labels={'stock':'<?php echo _('Stock Keeping Units')?>','value':'<?php echo _('Stock value')?>'};
+
+
+
 YAHOO.util.Event.addListener(window, "load", function() {
 	tables = new function() {
 		
@@ -29,7 +33,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 		 
 		    
 		    
-		    this.dataSource0 = new YAHOO.util.DataSource("ar_assets.php?tipo=part_stock_history&tableid="+tableid);
+		    this.dataSource0 = new YAHOO.util.DataSource("ar_assets.php?tipo=part_stock_history&sf=0&tableid="+tableid);
 		    this.dataSource0.responseType = YAHOO.util.DataSource.TYPE_JSON;
 		    this.dataSource0.connXhrMode = "queueRequests";
 		    this.dataSource0.responseSchema = {
@@ -105,7 +109,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 		 
 		    
 		
-		    this.dataSource1 = new YAHOO.util.DataSource("ar_assets.php?tipo=part_transactions&tableid="+tableid);
+		    this.dataSource1 = new YAHOO.util.DataSource("ar_assets.php?tipo=part_transactions&sf=0&tableid="+tableid);
 		    this.dataSource1.responseType = YAHOO.util.DataSource.TYPE_JSON;
 		    this.dataSource1.connXhrMode = "queueRequests";
 		    this.dataSource1.responseSchema = {
@@ -235,10 +239,32 @@ var  change_web_status =function(tipo){
 
       }
 
+var change_snapshot_granularity=function(e){
+     var table=tables.table0;
+     var datasource=tables.dataSource0;
+     Dom.removeClass(Dom.getElementsByClassName('table_type','span' , 'stock_history_type'),'selected');;
+     Dom.addClass(this,'selected');     
+     var request='&type='+this.getAttribute('table_type');
+     datasource.sendRequest(request,table.onDataReturnInitializeTable, table);       
+ }
+ var change_transaction_type=function(e){
+     var table=tables.table1;
+     var datasource=tables.dataSource1;
+     Dom.removeClass(Dom.getElementsByClassName('transaction_type','span' , 'transaction_chooser'),'selected');;
+     Dom.addClass(this,'selected');     
+     var request='&type='+this.getAttribute('table_type');
+     datasource.sendRequest(request,table.onDataReturnInitializeTable, table);       
+ }
+
 function init(){
 
 init_search('part');
 
+
+var ids =Array("restrictions_all_transactions","restrictions_oip_transactions","restrictions_out_transactions","restrictions_in_transactions","restrictions_audit_transactions","restrictions_move_transactions") ;
+Event.addListener(ids, "click", change_transaction_type);
+var ids =Array("stock_history_type_month","stock_history_type_week","stock_history_type_day") ;
+Event.addListener(ids, "click", change_snapshot_granularity);
     
  YAHOO.util.Event.addListener('clean_table_filter_show1', "click",show_filter,1);
   YAHOO.util.Event.addListener('clean_table_filter_hide1', "click",hide_filter,1);

@@ -70,6 +70,9 @@ var myhandleDataReturnPayload= function(oRequest, oResponse, oPayload) {
   // oPayload.pagination = {  rowsPerPage:parseInt(oResponse.meta.rowsPerPage),recordOffset:0 }
    
    //alert(oResponse.meta.RecordOffset)
+   
+  // alert(oResponse.meta.rtext+' '+oResponse.meta.tableid)
+   
     if(oResponse.meta.rtext != undefined)
 
       YAHOO.util.Dom.get('rtext'+oResponse.meta.tableid).innerHTML=oResponse.meta.rtext;
@@ -83,7 +86,7 @@ var myhandleDataReturnPayload= function(oRequest, oResponse, oPayload) {
     YAHOO.util.Dom.get('filter_msg'+oResponse.meta.tableid).innerHTML=oPayload.filter_msg
 
     oPayload.totalRecords = parseInt(oResponse.meta.totalRecords);
-    
+  //  alert(oResponse.meta.totalRecords)
     if(oPayload.totalRecords==0){
 	    var table=YAHOO.util.Dom.get('table'+oResponse.meta.tableid).getElementsByTagName("table")[0];
 	    table.tHead.style.display='none';
@@ -96,6 +99,7 @@ var myhandleDataReturnPayload= function(oRequest, oResponse, oPayload) {
     }else{
 	    var table=YAHOO.util.Dom.get('table'+oResponse.meta.tableid).getElementsByTagName("table")[0];
 	    table.tHead.style.display='';
+	     Dom.get(table).style.display='';
 	    if(YAHOO.util.Dom.get('filter_div'+oResponse.meta.tableid)!=null)
 	        YAHOO.util.Dom.get('filter_div'+oResponse.meta.tableid).style.visibility='visible';
        
@@ -173,7 +177,7 @@ var myRequestBuilderwithTotals = function(oState, oSelf) {
 
 
 var mygetTerms =function (query) {
- 
+
     if(this.table_id==undefined)
 	var table_id=0;
     else
@@ -184,7 +188,7 @@ var mygetTerms =function (query) {
     var datasource=tables['dataSource'+table_id];
 
     table.filter.value=Dom.get('f_input'+table_id).value;
-    var request='&sf=0&f_field=' +table.filter.key + '&f_value=' + table.filter.value;
+    var request='&tableid='+table_id+'&sf=0&f_field=' +table.filter.key + '&f_value=' + table.filter.value;
    
     datasource.sendRequest(request,table.onDataReturnInitializeTable, table);       
 };
@@ -247,41 +251,42 @@ Dom.get('list_options'+table_id).style.display='none'
 }
 
 
- function get_thumbnails(data){
- parent=data.parent;
- tipo=data.tipo;
-	var table_id=0;
-	var request='ar_assets.php?tipo='+tipo+'&parent='+parent;
-	YAHOO.util.Connect.asyncRequest('POST',request ,{
-	    success:function(o) {
+function get_thumbnails(data) {
+    parent=data.parent;
+    tipo=data.tipo;
+    var table_id=0;
+    var request='ar_assets.php?tipo='+tipo+'&parent='+parent;
+    if (data.parent_key!= undefined) {
+        request+='&parent_key='+data.parent_key
+             }
+YAHOO.util.Connect.asyncRequest('POST',request , {success:function(o) {
+//alert(o.responseText)
+        var r =  YAHOO.lang.JSON.parse(o.responseText);
+        if (r.resultset.state==200) {
+            var container=Dom.get('thumbnails'+table_id);
+            for (x in r.resultset.data) {
+                if (r.resultset.data[x].type=='item') {
+                    var img = new YAHOO.util.Element(document.createElement('img'));
+                    img.set('src', r.resultset.data[x].image);
+                    img.set('alt', r.resultset.data[x].image);
+                    var internal_span = new YAHOO.util.Element(document.createElement('span'));
+                    internal_span.set('innerHTML', r.resultset.data[x].code);
 
-		var r =  YAHOO.lang.JSON.parse(o.responseText);
-		if(r.resultset.state==200){
-		    var container=Dom.get('thumbnails'+table_id);
-		    for(x in r.resultset.data){
-    if(r.resultset.data[x].type=='item'){
-			var img = new YAHOO.util.Element(document.createElement('img')); 
-			img.set('src', r.resultset.data[x].image); 
-			img.set('alt', r.resultset.data[x].image); 
-			var internal_span = new YAHOO.util.Element(document.createElement('span')); 
-			internal_span.set('innerHTML', r.resultset.data[x].code); 
-		 
-			var div = new YAHOO.util.Element(document.createElement('div')); 
-		
+                    var div = new YAHOO.util.Element(document.createElement('div'));
+                    Dom.addClass(div,'product_container');
+                    img.appendTo(div);
+                    internal_span.appendTo(div);
 
-			img.appendTo(div); 
-			internal_span.appendTo(div); 
-		
-		
 
-			div.appendTo(container); 
-			}
-		    
-		    }
-		      
-		}
-		
-	    }
-	    
-	    });
+
+                    div.appendTo(container);
+                }
+
+            }
+
+        }
+
     }
+
+                                                              });
+}

@@ -8,6 +8,34 @@ if(!$user->can_view('orders')){
    exit;
 }
   
+  if(!isset($_REQUEST['id']) or !is_numeric($_REQUEST['id'])){
+    header('Location: warehouse_orders.php?msg=wrong_id');
+   exit;
+}
+
+
+$dn_id=$_REQUEST['id'];
+$_SESSION['state']['dn']['id']=$dn_id;
+$dn=new DeliveryNote($dn_id);
+if(!$dn->id){
+   header('Location: warehouse_orders.php?msg=order_not_found');
+   exit;
+
+}
+$dn->update_picking_percentage();
+
+//$dn->start_packing(1);
+
+//print_r($dn);
+
+$number_transactions=$dn->get_number_transactions();
+$number_picked_transactions=$dn->get_number_picked_transactions();
+$smarty->assign('picked',($number_picked_transactions>=$number_transactions?true:false));
+$smarty->assign('number_transactions',$number_transactions);
+$smarty->assign('number_picked_transactions',$number_picked_transactions);
+
+  
+  
 $css_files=array(
 		 $yui_path.'reset-fonts-grids/reset-fonts-grids.css',
 		 $yui_path.'menu/assets/skins/sam/menu.css',
@@ -16,7 +44,8 @@ $css_files=array(
 		 'text_editor.css',
 		 'common.css',
 		 'container.css',
-		 'table.css'
+		 'table.css',
+		  'css/edit.css'
 		 );
 $js_files=array(
 
@@ -30,27 +59,14 @@ $js_files=array(
 		$yui_path.'menu/menu-min.js',
 		$yui_path.'calendar/calendar-min.js',
 		'common.js.php',
-		'table_common.js.php'
+		'table_common.js.php',
+		'js/edit_common.js',
+		'order_pick_aid.js.php?dn_key='.$dn->id
 		);
 
-if(!isset($_REQUEST['id']) or !is_numeric($_REQUEST['id'])){
-    header('Location: orders_server.php?msg=wrong_id');
-   exit;
-}
-
-
-$dn_id=$_REQUEST['id'];
-$_SESSION['state']['dn']['id']=$dn_id;
-$dn=new DeliveryNote($dn_id);
-if(!$dn->id){
-   header('Location: orders_server.php?msg=order_not_found');
-   exit;
-
-}
 
 
 
-  $js_files[]='order_pick_aid.js.php';
   $template='order_pick_aid.tpl';
 
 $customer=new Customer($dn->data['Delivery Note Customer Key']);

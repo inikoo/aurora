@@ -23,7 +23,7 @@ class Family extends DB_Table {
 
     var $products=false;
     public $images_slideshow=array();
-
+var $external_DB_link=false;
     /*
       Constructor: Family
       Initializes the class, trigger  Search/Load/Create for the data set
@@ -177,6 +177,9 @@ class Family extends DB_Table {
 
         if ($this->found) {
             $this->get_data('id',$this->found_key);
+            if($create){
+                $this->msg=_('Family').' '.$this->data['Product Family Code'].' '._('is already created');
+            }
         }
 
         if (!$this->found and $create) {
@@ -251,6 +254,7 @@ class Family extends DB_Table {
 
             $department->update_families();
             $store->update_families();
+            $this->update_full_search();
             $this->new=true;
 
         } else {
@@ -282,38 +286,25 @@ class Family extends DB_Table {
             $this->id=$this->data['Product Family Key'];
 
     }
-    /*
-        Function: update
-        Funcion que permite actualizar el nombre o el codigo en la tabla Product Family Dimension, evitando registros duplicados.
-    */
-// JFA
-    function update($key,$a1=false,$a2=false) {
-        $this->updated=false;
-        $this->msg='Nothing to change';
-
-        switch ($key) {
-        case('special_char'):
-        case('Product Family Special Characteristic'):
-            $this->update_field('Product Family Special Characteristic',$a1);
-            break;
-        case('code'):
-
-            if ($a1==$this->data['Product Family Code']) {
+   
+  
+  function update_code($value){
+    if ($value==$this->data['Product Family Code']) {
                 $this->updated=true;
-                $this->new_value=$a1;
+                $this->new_value=$value;
                 return;
 
             }
 
-            if ($a1=='') {
+            if ($value=='') {
                 $this->msg=_('Error: Wrong code (empty)');
                 return;
             }
-            if (!(strtolower($a1)==strtolower($this->data['Product Family Code']) and $a1!=$this->data['Product Family Code'])) {
+            if (!(strtolower($value)==strtolower($this->data['Product Family Code']) and $value!=$this->data['Product Family Code'])) {
 
                 $sql=sprintf("select count(*) as num from `Product Family Dimension` where `Product Family Store Key`=%d and `Product Family Code`=%s  COLLATE utf8_general_ci "
                              ,$this->data['Product Family Store Key']
-                             ,prepare_mysql($a1)
+                             ,prepare_mysql($value)
                             );
                 $res=mysql_query($sql);
                 $row=mysql_fetch_array($res);
@@ -324,16 +315,16 @@ class Family extends DB_Table {
             }
             $old_value=$this->get('Product Family Code') ;
             $sql=sprintf("update `Product Family Dimension` set `Product Family Code`=%s where `Product Family Key`=%d "
-                         ,prepare_mysql($a1)
+                         ,prepare_mysql($value)
                          ,$this->id
                         );
             if (mysql_query($sql)) {
                 $this->msg=_('Family code updated');
                 $this->updated=true;
-                $this->new_value=$a1;
+                $this->new_value=$value;
 
-                $this->data['Product Family Code']=$a1;
-
+                $this->data['Product Family Code']=$value;
+$this->update_full_search();
 
                 $data_for_history=array(
                                       'Indirect Object'=>'Product Family Code'
@@ -348,25 +339,25 @@ class Family extends DB_Table {
                 $this->updated=false;
 
             }
-            break;
-
-        case('name'):
-
-            if ($a1==$this->data['Product Family Name']) {
+  }
+  
+  
+  function update_name($value){
+   if ($value==$this->data['Product Family Name']) {
                 $this->updated=true;
-                $this->new_value=$a1;
+                $this->new_value=$value;
                 return;
 
             }
 
-            if ($a1=='') {
+            if ($value=='') {
                 $this->msg=_('Error: Wrong name (empty)');
                 return;
             }
-            if (!(strtolower($a1)==strtolower($this->data['Product Family Name']) and $a1!=$this->data['Product Family Name'])) {
+            if (!(strtolower($value)==strtolower($this->data['Product Family Name']) and $value!=$this->data['Product Family Name'])) {
                 $sql=sprintf("select count(*) as num from `Product Family Dimension` where `Product Family Store Key`=%d and `Product Family Name`=%s  COLLATE utf8_general_ci"
                              ,$this->data['Product Family Store Key']
-                             ,prepare_mysql($a1)
+                             ,prepare_mysql($value)
                             );
                 $res=mysql_query($sql);
                 $row=mysql_fetch_array($res);
@@ -377,16 +368,16 @@ class Family extends DB_Table {
             }
             $old_value=$this->get('Product Family Name') ;
             $sql=sprintf("update `Product Family Dimension` set `Product Family Name`=%s where `Product Family Key`=%d "
-                         ,prepare_mysql($a1)
+                         ,prepare_mysql($value)
                          ,$this->id
                         );
             if (mysql_query($sql)) {
                 $this->msg=_('Family name updated');
                 $this->updated=true;
-                $this->new_value=$a1;
+                $this->new_value=$value;
 
-                $this->data['Product Family Name']=$a1;
-
+                $this->data['Product Family Name']=$value;
+$this->update_full_search();
                 $this->add_history(array(
                                        'Indirect Object'=>'Product Family Name'
                                                          ,'History Abstract'=>('Product Family Name Changed').' ('.$this->get('Product Family Name').')'
@@ -401,18 +392,39 @@ class Family extends DB_Table {
                 $this->updated=false;
 
             }
-            break;
+  }
+  
+function update_field_switcher($field,$value,$options='') {
 
-        case('description'):
-            $this->update_description($a1);
-
-            break;
-
-
+    switch ($field) {
+    case('special_char'):
+    case('Product Family Special Characteristic'):
+        $this->update_field('Product Family Special Characteristic',$value);
+        break;
+    case('code'):
+        $this->update_code($value);
+        break;
+    case('name'):
+        $this->update_name($value);
+        break;
+    case('sales_type'):
+        $this->update_sales_type($value);
+        break;    
+    case('description'):
+        $this->update_description($value);
+        break;
+    default:
+        $base_data=$this->base_data();
+        if (array_key_exists($field,$base_data)) {
+            if ($value!=$this->data[$field]) {
+                $this->update_field($field,$value,$options);
+            }
         }
-
     }
+    }
+ 
 
+  
 
     function update_description($description) {
 
@@ -457,11 +469,41 @@ class Family extends DB_Table {
     }
 
 
+
+ function update_sales_type($value) {
+    if (
+        $value=='Public Sale' or $value=='Private Sale' or $value=='Not For Sale'
+    ) {
+        $sales_state=$value;
+
+        $sql=sprintf("update `Product Family Dimension` set `Product Family Sales Type`=%s  where  `Product Family Key`=%d "
+                     ,prepare_mysql($sales_state)
+                     ,$this->id
+                    );
+        //print $sql;
+        if (mysql_query($sql)) {
+            if ($this->external_DB_link)mysql_query($sql,$this->external_DB_link);
+            $this->msg=_('Family Sales Type updated');
+            $this->updated=true;
+
+            $this->new_value=$value;
+            return;
+        } else {
+            $this->msg=_("Error: Family sales type could not be updated ");
+            $this->updated=false;
+            return;
+        }
+    } else
+        $this->msg=_("Error: wrong value")." [Sales Type] ($value)";
+    $this->updated=false;
+}
+
+
     /*
         Function: delete
         Funcion que permite eliminar registros en la tabla Product Family Dimension,Product Family Department Bridge, cuidando la integridad referencial con los productos.
     */
-// JFA
+
     function delete() {
         $this->deleted=false;
         $this->load('products_info');
@@ -893,9 +935,9 @@ class Family extends DB_Table {
             break;
         case('weeks'):
             if (is_numeric($this->data['first_date'])) {
-                $date1=date('d-m-Y',strtotime('@'.$this->data['first_date']));
+                $date1=date('Y-m-d',strtotime('@'.$this->data['first_date']));
                 $day1=date('N')-1;
-                $date2=date('d-m-Y');
+                $date2=date('Y-m-d');
                 $days=datediff('d',$date1,$date2);
                 $weeks=number_weeks($days,$day1);
             } else
@@ -1531,47 +1573,47 @@ class Family extends DB_Table {
     }
 
 
-    function add_image($image_key,$args='') {
+function add_image($image_key,$args='') {
 
-        $tmp_images_dir='app_files/pics/';
-        $principal='No';
-        if (preg_match('/principal/i',$args))
-            $principal='Yes';
-        $sql=sprintf("select count(*) as num from `Image Bridge` PIB left join `Image Dimension` ID on (PIB.`Image Key`=ID.`Image Key`) where  `Subject Type`='Family' and `Subject Key`=%d",$this->id);
-        $res=mysql_query($sql);
-        $row=mysql_fetch_array($res,MYSQL_ASSOC );
-        $number_images=$row['num'];
-        if ($number_images==0)
-            $principal='Yes';
-        $sql=sprintf("insert into `Image Bridge` values ('Family',%d,%d,%s,'') on duplicate key update `Is Principal`=%s "
-                     ,$this->id
-                     ,$image_key
-                     ,prepare_mysql($principal)
-                     ,prepare_mysql($principal)
-                    );
-        //	print "$sql\n";
-        mysql_query($sql);
-        $sql=sprintf("select `Image Thumbnail URL`,`Image Small URL`,`Is Principal`,ID.`Image Key`,`Image Caption`,`Image URL`,`Image Filename`,`Image File Size`,`Image File Checksum`,`Image Width`,`Image Height`,`Image File Format` from `Image Bridge` PIB left join `Image Dimension` ID on (PIB.`Image Key`=ID.`Image Key`) where `Subject Type`='Product' and   `Subject Key`=%d and  PIB.`Image Key`=%d"
-                     ,$this->id
-                     ,$image_key
-                    );
-        //  print $sql;
-        $res=mysql_query($sql);
+    $tmp_images_dir='app_files/pics/';
+    $principal='No';
+    if (preg_match('/principal/i',$args))
+        $principal='Yes';
+    $sql=sprintf("select count(*) as num from `Image Bridge` PIB left join `Image Dimension` ID on (PIB.`Image Key`=ID.`Image Key`) where  `Subject Type`='Family' and `Subject Key`=%d",$this->id);
+    $res=mysql_query($sql);
+    $row=mysql_fetch_array($res,MYSQL_ASSOC );
+    $number_images=$row['num'];
+    if ($number_images==0)
+        $principal='Yes';
+    $sql=sprintf("insert into `Image Bridge` values ('Family',%d,%d,%s,'') on duplicate key update `Is Principal`=%s "
+                 ,$this->id
+                 ,$image_key
+                 ,prepare_mysql($principal)
+                 ,prepare_mysql($principal)
+                );
+    //	print "$sql\n";
+    mysql_query($sql);
+    $sql=sprintf("select `Image Thumbnail URL`,`Image Small URL`,`Is Principal`,ID.`Image Key`,`Image Caption`,`Image URL`,`Image Filename`,`Image File Size`,`Image File Checksum`,`Image Width`,`Image Height`,`Image File Format` from `Image Bridge` PIB left join `Image Dimension` ID on (PIB.`Image Key`=ID.`Image Key`) where `Subject Type`='Family' and   `Subject Key`=%d and  PIB.`Image Key`=%d"
+                 ,$this->id
+                 ,$image_key
+                );
+    //  print $sql;
+    $res=mysql_query($sql);
 
-        if ($row=mysql_fetch_array($res)) {
-            if ($row['Image Height']!=0)
-                $ratio=$row['Image Width']/$row['Image Height'];
-            else
-                $ratio=1;
-            $this->new_value=array('name'=>$row['Image Filename'],'small_url'=>$row['Image Small URL'],'thumbnail_url'=>$row['Image Thumbnail URL'],'filename'=>$row['Image Filename'],'ratio'=>$ratio,'caption'=>$row['Image Caption'],'is_principal'=>$row['Is Principal'],'id'=>$row['Image Key']);
-            $this->images_slideshow[]=$this->new_value;
-        }
-        $this->msg="image added";
+    if ($row=mysql_fetch_array($res)) {
+        if ($row['Image Height']!=0)
+            $ratio=$row['Image Width']/$row['Image Height'];
+        else
+            $ratio=1;
+        $this->new_value=array('name'=>$row['Image Filename'],'small_url'=>$row['Image Small URL'],'thumbnail_url'=>$row['Image Thumbnail URL'],'filename'=>$row['Image Filename'],'ratio'=>$ratio,'caption'=>$row['Image Caption'],'is_principal'=>$row['Is Principal'],'id'=>$row['Image Key']);
+        $this->images_slideshow[]=$this->new_value;
     }
+    $this->msg="image added";
+}
     function load_images() {
         $sql=sprintf("select PIB.`Is Principal`,ID.`Image Key`,`Image Caption`,`Image URL`,`Image Thumbnail URL`,`Image Small URL`,`Image Large URL`,`Image Filename`,`Image File Size`,`Image File Checksum`,`Image Width`,`Image Height`,`Image File Format` from `Image Bridge` PIB left join `Image Dimension` ID on (PIB.`Image Key`=ID.`Image Key`) where `Subject Type`='Family' and `Subject Key`=%d",$this->id);
 
-        //      print $sql;
+         //    print $sql;
         $res=mysql_query($sql);
         $this->images=array();
 
@@ -1587,7 +1629,7 @@ class Family extends DB_Table {
     }
     function load_images_slidesshow() {
         $sql=sprintf("select `Image Thumbnail URL`,`Image Small URL`,`Is Principal`,ID.`Image Key`,`Image Caption`,`Image URL`,`Image Filename`,`Image File Size`,`Image File Checksum`,`Image Width`,`Image Height`,`Image File Format` from `Image Bridge` PIB left join `Image Dimension` ID on (PIB.`Image Key`=ID.`Image Key`) where `Subject Type`='Family' and   `Subject Key`=%d",$this->id);
-        //       print $sql;
+            //  print $sql;
         $res=mysql_query($sql);
         $this->images_slideshow=array();
 
@@ -1604,7 +1646,7 @@ class Family extends DB_Table {
     function update_main_image() {
 
         $this->load_images();
-        print_r($this->images);
+       
         $num_images=count($this->images);
         $main_image_src='art/nopic.png';
         if ($num_images>0) {
@@ -1648,101 +1690,7 @@ class Family extends DB_Table {
     }
 
 
-    function create_page($data) {
 
-
-        $store=new Store($this->data['Product Family Store Key']);
-        $store_page_data=$store->get_page_data();
-
-        //      print_r($store_page_data);
-
-        if (!array_key_exists('Showcases',$data)) {
-
-            $showcases=array();
-
-            if ($store_page_data['Display Presentation']='Yes'  ) {
-                $showcases['Presentation']=array('Display'=>true,'Type'=>'Template','Contents'=>$this->data['Product Family Name']);
-            }
-            if ($store_page_data['Display Offers']='Yes' ) {
-                $showcases['Offers']=array('Display'=>true,'Type'=>'Auto');
-            }
-            if ($store_page_data['Display New Products']='Yes' ) {
-                $showcases['New']=array('Display'=>true,'Type'=>'Auto');
-            }
-        } else
-            $showcases=$data['Showcases'];
-
-
-        if (!array_key_exists('Product Layouts',$data)) {
-
-            $product_layouts=array();
-
-            if ($store_page_data['Product Thumbnails Layout']='Yes' ) {
-                $product_layouts['Thumbnails']=array('Display'=>true,'Type'=>'Auto');
-            }
-
-            if ($store_page_data['Product List Layout ']='Yes' ) {
-                $product_layouts['List']=array('Display'=>true,'Type'=>'Auto');
-            }
-
-            if ($store_page_data['Product Slideshow Layout']='Yes' ) {
-                $product_layouts['Slideshow']=array('Display'=>true,'Type'=>'Auto');
-            }
-            if ($store_page_data['Product Manual Layout']='Yes' ) {
-                $product_layouts['Manual']=array('Display'=>true,'Type'=>$store_page_data['Product Manual Layout Type'],'Data'=>$store_page_data['Product Manual Layout Data']);
-            }
-
-            if (count($product_layouts==0)) {
-                $product_layouts['Thumbnails']=array('Display'=>true,'Type'=>'Auto');
-            }
-        } else
-            $product_layouts=$data['Product Layouts'];
-
-        if (!array_key_exists('Showcases Layout',$data))
-            $showcases_layout=$store_page_data['Showcases Layout'];
-        else
-            $showcases_layout=$data['Showcases Layout'];
-
-
-
-
-
-
-        $page_data=array(
-                       'Page Code'=>'PD_'.$store->data['Store Code'].'_'.$this->data['Product Family Code']
-                                   ,'Page Source Template'=>''
-                                                           ,'Page URL'=>'family.php?code='.$this->data['Product Family Code']
-                                                                       ,'Page Source Template'=>'pages/'.$store->data['Store Code'].'/family.tpl'
-                                                                                               ,'Page Description'=>'Family Showcase Page'
-                                                                                                                   ,'Page Title'=>$this->data['Product Family Name']
-                                                                                                                                 ,'Page Short Title'=>$this->data['Product Family Name']
-                                                                                                                                                     ,'Page Store Title'=>$this->data['Product Family Name']
-                                                                                                                                                                         ,'Page Store Subtitle'=>''
-                                                                                                                                                                                                ,'Page Store Slogan'=>$data['Page Store Slogan']
-                                                                                                                                                                                                                     ,'Page Store Abstract'=>$data['Page Store Resume']
-                                                                                                                                                                                                                                            ,'Page Store Showcases'=>$showcases
-                                                                                                                                                                                                                                                                    ,'Page Store Showcases Layout'=>$showcases_layout
-                                                                                                                                                                                                                                                                                                   ,'Page Store Product Layouts'=>$product_layouts
-                   );
-
-        $page_data['Page Store Function']='Family Catalogue';
-        $page_data['Page Store Creation Date']=date('Y-m-d H:i:s');
-        $page_data['Page Store Last Update Date']=date('Y-m-d H:i:s');
-        $page_data['Page Store Last Structural Change Date']=date('Y-m-d H:i:s');
-        $page_data['Page Section']='catalogue';
-        $page_data['Page Type']='Store';
-        $page_data['Page Store Source Type'] ='Dynamic';
-        $page_data['Page Store Code']=$store->data['Store Code'];
-        $page_data['Page Parent Key']=$this->id;
-
-
-        $page=new Page('find',$page_data,'create');
-//print_r($page);
-//exit;
-        $sql=sprintf("update `Product Family Dimension` set `Product Family Page Key`=%d  where `Product Family Key`=%d",$page->id,$this->id);
-        mysql_query($sql);
-
-    }
 
 
 function has_layout($type){
@@ -1781,6 +1729,62 @@ switch ($type) {
 }
 
 return false;
+}
+
+
+function remove_image($image_key){
+
+$this->load_images();
+
+if(array_key_exists($image_key,$this->images)){
+$sql=sprintf("delete from `Image Bridge` where `Subject Type`='Family' and `Subject Key`=%d  and `Image Key`=%d",$this->id,$image_key);
+//print $sql;
+mysql_query($sql);
+if($this->external_DB_link)mysql_query($sql,$this->external_DB_link);
+$this->updated=true;
+$was_principal=($this->images[$image_key]['Is Principal']=='Yes'?true:false);
+unset($this->images[$image_key]);
+
+if($was_principal and count($this->images)>0){
+$this->update_principal_image();
+
+}
+
+}else{
+
+  $this->msg=_('Image not associated');
+}
+
+
+}
+
+
+function update_full_search(){
+
+$first_full_search=$this->data['Product Family Code'].' '.$this->data['Product Family Name'];
+$second_full_search='';
+
+if($this->data['Product Family Main Image']!='art/nopic.png')
+$img=preg_replace('/small/','thumbnails',$this->data['Product Family Main Image']);
+else
+$img='';
+$sql=sprintf("insert into `Search Full Text Dimension` (`Store Key`,`Subject`,`Subject Key`,`First Search Full Text`,`Second Search Full Text`,`Search Result Name`,`Search Result Description`,`Search Result Image`) values  (%s,'Family',%d,%s,%s,%s,%s,%s) on duplicate key 
+update `First Search Full Text`=%s ,`Second Search Full Text`=%s ,`Search Result Name`=%s,`Search Result Description`=%s,`Search Result Image`=%s"
+,$this->data['Product Family Store Key']
+,$this->id
+,prepare_mysql($first_full_search)
+,prepare_mysql($second_full_search,false)
+,prepare_mysql($this->data['Product Family Code'],false)
+,prepare_mysql($this->data['Product Family Name'],false)
+,prepare_mysql($img,false)
+,prepare_mysql($first_full_search)
+,prepare_mysql($second_full_search,false)
+,prepare_mysql($this->data['Product Family Code'],false)
+,prepare_mysql($this->data['Product Family Name'],false)
+,prepare_mysql($img,false)
+);
+mysql_query($sql);
+//exit($sql);
 }
 
 }

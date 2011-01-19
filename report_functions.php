@@ -988,14 +988,14 @@ $sql=sprintf("select count(*) as num ,sum(`Delivery Note Weight`) as w  from `De
   }
 mysql_free_result($result);
   $orders_state=array();
-  $sql=sprintf("Select count(*) as orders ,`Order Current Dispatch State` as state,sum(`Order Total Net Amount`) as net_potential ,sum(`Order Balance Net Amount`) as net_balance ,sum(`Order Outstanding Balance Net Amount`) as net_balance from `Order Dimension` where true  %s group by state",$_int);
+  $sql=sprintf("Select `Order Currency`,count(*) as orders ,`Order Current Dispatch State` as state,sum(`Order Total Net Amount`) as net_potential ,sum(`Order Balance Net Amount`) as net_balance ,sum(`Order Outstanding Balance Net Amount`) as net_balance from `Order Dimension` where true  %s group by state",$_int);
   //print $sql;
   $result=mysql_query($sql);
   while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
     $orders_state[$row['state']]=array(
 				       'orders'=>number($row['orders'])
 				       ,'orders_percentage'=>percentage($row['orders'],$orders_total)
-				        ,'net'=>money($row['net_potential'])
+				        ,'net'=>money($row['net_potential'],$row['Order Currency'])
 				       ,'net_percentage'=>percentage($row['net_potential'],$orders_total_net)
 				       
 				       

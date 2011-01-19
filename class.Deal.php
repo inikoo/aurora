@@ -271,11 +271,9 @@ class Deal extends DB_Table {
 	  $conditional='>';
 	if (preg_match('/(equal|exactly)\s*(\$|\£|\€)?\d+/i',$term_description))
 	  $conditional='>';
-
 	list($currency,$amount)=parse_money($term_description);
 	return _trim("$conditional $currency $amount");
-	
-	break;
+		break;
       case('Shipping Country'):	
 	$regex='/orders? (shipped |send |to be send |d(ie)spached )?to .*$/i';
 	if( preg_match('/orders? (shipped |send |to be send |d(ie)spached )?to .*$/i',$term_description,$match)){

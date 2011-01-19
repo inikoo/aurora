@@ -48,16 +48,6 @@ function parse_payment_method($method){
 
 
 
-function filter_header($data){
-  foreach($data as $key=>$value){
-    $data[$key]=_trim($value);
-  }
-  
-  if(preg_match('/\d{2}-\d{2}-\d{2}/',$data['notes2']))
-     $data['notes2']='';
-  return $data;
-}
-
 
 
 function guess_tel($raw_tel,$country_id='',$city_id=''){

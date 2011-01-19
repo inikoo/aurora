@@ -24,8 +24,9 @@ require_once '../../conf/conf.php';
 $_SESSION['lang']=1;
 
 
-$stores=array(1);
+//$stores=array(1);
 $forecast=true;
+
 
 //$sql="select * from `Part Dimension`  ";
 //$result=mysql_query($sql);
@@ -57,7 +58,7 @@ while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
   $tm->forecast();
 };
 */
-if(false){
+if(true){
   print "inv\n";
 
  $tm=new TimeSeries(array('d','invoices'));
@@ -96,7 +97,16 @@ $res=mysql_query($sql);
 
 while( $row=mysql_fetch_array($res)){
   $store=new Store($row['Store Key']);
-  print 'store ('.$row['Store Key'].') sales';
+  print 'store ('.$row['Store Key'].') sales'."\n";
+  
+  $tm=new TimeSeries(array('m','store ('.$row['Store Key'].') sales'));
+  $tm->get_values();
+  $tm->save_values();
+  if($forecast)
+    $tm->forecast();
+   
+  
+  
  /*  $tm=new TimeSeries(array('w','store ('.$row['Store Key'].') sales')); */
 /*   $tm->get_values(); */
 /*   $tm->save_values(); */
@@ -113,12 +123,7 @@ $tm=new TimeSeries(array('w','store ('.$row['Store Key'].') sales'));
     $tm->forecast();
 
 
-$tm=new TimeSeries(array('m','store ('.$row['Store Key'].') sales'));
-  $tm->get_values();
-  $tm->save_values();
-  if($forecast)
-    $tm->forecast();
-   
+
   $tm=new TimeSeries(array('q','store ('.$row['Store Key'].') sales'));
   $tm->get_values();
   $tm->save_values();
@@ -168,8 +173,7 @@ if($myconf['currency_code']!=$store->data['Store Currency Code']){
  
 }
  
-
-$sql="select * from `Product Department Dimension`  where `Product Department Store Key` in (".join(',',$stores).")    ";
+$sql="select * from `Product Department Dimension`  where `Product Department Store Key`    ";
 $res=mysql_query($sql);
 while($row=mysql_fetch_array($res)){
   print 'product department ('.$row['Product Department Key'].') sales'."\n";
@@ -178,6 +182,11 @@ while($row=mysql_fetch_array($res)){
 /*   $tm->save_values(); */
 /*   if($forecast) */
 /*     $tm->forecast(); */
+$tm=new TimeSeries(array('w','product department ('.$row['Product Department Key'].') sales'));
+  $tm->get_values();
+  $tm->save_values();
+  if($forecast)
+    $tm->forecast();
 $tm=new TimeSeries(array('m','product department ('.$row['Product Department Key'].') sales'));
   $tm->get_values();
   $tm->save_values();
@@ -197,7 +206,7 @@ $tm=new TimeSeries(array('y','product department ('.$row['Product Department Key
 
 
 
-$sql="select * from `Product Family Dimension`   where `Product Family Store Key` in (".join(',',$stores).")    ";
+$sql="select * from `Product Family Dimension`   where `Product Family Store Key`     ";
 $res=mysql_query($sql);
 while($row=mysql_fetch_array($res)){
   print 'product family ('.$row['Product Family Key'].') sales'."\n";
@@ -225,7 +234,7 @@ while($row=mysql_fetch_array($res)){
 }
 
 
-$sql="select * from `Product Dimension`   where `Product Store Key` in (".join(',',$stores).")      ";
+$sql="select * from `Product Dimension`   where `Product Store Key`     ";
 $res=mysql_query($sql);
 while($row=mysql_fetch_array($res)){
   //print 'product id ('.$row['Product Code'].') '.$row['Product ID'].' sales'."\n";

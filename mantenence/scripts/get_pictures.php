@@ -18,7 +18,7 @@ $to_stop=0;
 $con=@mysql_connect($dns_host,$dns_user,$dns_pwd );
 
 if(!$con){print "Error can not connect with database server\n";exit;}
-$dns_db='kaw';
+//$dns_db='kaw';
 $db=@mysql_select_db($dns_db, $con);
 if (!$db){print "Error can not access the database\n";exit;}
 
@@ -75,6 +75,7 @@ foreach($pics as $key=>$value){
   //print "$sql\n";
   $res=mysql_query($sql);
   while($row=mysql_fetch_array($res)){
+  
     $product=new Product('pid',$row['Product ID']);
     foreach($value as $img_filename){
      
@@ -87,23 +88,23 @@ foreach($pics as $key=>$value){
      
      $data=array(
 	    'file'=>'tmp'.$rand.'.jpg'
-	    ,'path'=>'assets/'
+	    ,'path'=>'app_files/pics/assets/'
 	    ,'name'=>$row['Product Code']
 	    ,'caption'=>''
 	    );
 
-     //print_r($data);
+ //    print_r($data);
 $image=new Image('find',$data,'create');
-      $product->add_image($image->id,'principal');
+ //    print_r($image);
+    // exit;
+     $product->add_image($image->id,'principal');
       //print_r($product);
       // print $product->msg."\n";
       $product->update_main_image();
       // unlink($tmp_file);
-if($image->new)
-	sleep(2);
-	$to_stop++;
-//if($to_stop>10)	
- //   exit;
+
+//exit;
+
     }
 
   }

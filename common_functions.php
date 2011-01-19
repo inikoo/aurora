@@ -20,6 +20,7 @@
 function getEnumValues($table, $field) {
     $enum_array = array();
     $query = 'SHOW COLUMNS FROM `' . $table . '` LIKE "' . $field . '"';
+   // print $query;
     $result = mysql_query($query);
     $row = mysql_fetch_row($result);
     preg_match_all('/\'(.*?)\'/', $row[1], $enum_array);
@@ -41,7 +42,7 @@ function money_locale($amount,$locale='',$currency_code=''){
   if(!is_numeric($amount))
     $amount=0;
   global $_client_locale;
-  $format="%n";
+  $format="%i";
   if($locale){
     $locale.='.UTF-8';
     setlocale(LC_MONETARY, ($locale));
@@ -52,10 +53,13 @@ function money_locale($amount,$locale='',$currency_code=''){
     $format="%i";
   }
   $money=money_format($format,$amount);
-  if($currency_code){
-    $money=preg_replace('/[A-Z]{3}/',currency_symbol($currency_code),$money);
-  }
+  
+  if(preg_match('/[A-Z]{3}/',$money,$match)){
+        $money=preg_replace('/[A-Z]{3}/',currency_symbol($match[0]),$money);
 
+  }
+  
+  
   setlocale(LC_MONETARY, ($_client_locale));
   return $money;
 }
@@ -137,14 +141,16 @@ function prepare_mysql_datetime($datetime,$tipo='datetime'){
     return array('mysql_date'=>'','status'=>'empty','ok'=>false);
   $time='';
   if(preg_match('/datetime/',$tipo)){
-     if(preg_match('/^[0123]\d[\-\/][01]\d[\-\/]\d{4}\s[012]\d:[0123456]\d$/',$datetime))
+     if(preg_match('/^[12]\d{3}[\-\/][01]\d[\-\/][0123]\d\s[012]\d:[0123456]\d$/',$datetime))
        $datetime=$datetime.':00';
-    if(!preg_match('/^[0123]\d[\-\/][01]\d[\-\/]\d{4}\s[012]\d:[0123456]\d:[0123456]\d$/',$datetime))
+    if(!preg_match('/^[12]\d{3}[\-\/][01]\d[\-\/][0123]\d\s[012]\d:[0123456]\d:[0123456]\d$/',$datetime))
       return array('mysql_date'=>'','status'=>_('error, date time not reconozied')." $datetime",'ok'=>false);
     $ts=date('U',strtotime($datetime));
     list($date,$time)=preg_split('/\s+/',$datetime);
   }else{
-    if(!preg_match('/^[0123]\d[\-\/][01]\d[\-\/]\d{4}/',$datetime))
+
+
+    if(!preg_match('/^[12]\d{3}[\-\/][01]\d[\-\/][0123]\d/',$datetime))
       return array('mysql_date'=>'','status'=>'wrong date','ok'=>false);
     $date=$datetime;
     $ts=date('U',strtotime($date));
@@ -159,11 +165,11 @@ function prepare_mysql_datetime($datetime,$tipo='datetime'){
 
  if(preg_match('/datetime/',$tipo)){
    
-   $mysql_datetime= trim(join ('-',array_reverse($date)).' '.$time);
+   $mysql_datetime= trim(join ('-',$date).' '.$time);
  }else{
    
 
-   $mysql_datetime= join ('-',array_reverse($date));
+   $mysql_datetime= join ('-',$date);
     if(preg_match('/start/i',$tipo))
       $mysql_datetime.=' 00:00:00';
      if(preg_match('/midday/i',$tipo))
@@ -392,9 +398,8 @@ $locale_info = localeconv();
       $currency=strtoupper($match[0]);
     }
   }
-  
-
-  
+  $locale_info = localeconv();
+  $amount=preg_replace("/[^\d\.".$locale_info['decimal_point']."\-]/i","",$amount);
   return array($currency,ParseFloat($amount));
 
 }
@@ -413,6 +418,7 @@ function currency_symbol($currency){
      return '£';
      break;
    case('EUR'):
+    case('EU'):
      return '€';
      break;
    case('USD'):
@@ -702,6 +708,7 @@ function ip()
 		// Returns the true IP if it has been found, else FALSE
 		if (empty($proxy_ip)) {
 			// True IP without proxy
+		
 			return $direct_ip;
 		} else {
 			$is_ip = preg_match('|^([0-9]{1,3}\.){3,3}[0-9]{1,3}|', $proxy_ip, $regs);
@@ -905,28 +912,34 @@ function _trim($string){
 
 
 function mb_ucwords($str) {
-
+$str=_trim($str);
     if(preg_match('/^PO BOX\s+/i',$str))
      return strtoupper($str);
 
+
+
     $result='';
-    $str=_trim($str);
+    
     
     $words=preg_split('/ /',$str);
     $first=true;
     foreach($words as $word){
-        
-        if(!$first and preg_match('/^(UK|USA|HP|IBM|GB|MB|CD|DVD|USB)$/i',$word)){
+        if(preg_match('/([a-z]\.){1,}$/i',$word)){
+            $result.=' '.strtoupper($word);
+            continue;
+        }elseif(!$first and preg_match('/^(UK|USA|HP|IBM|GB|MB|CD|DVD|USB)$/i',$word)){
              $result.=' '.strtoupper($word);
             continue;
         }
-        if(!$first and preg_match('/^(and|y|o|or|of|at|des|les|las|le)$/i',$word)){
+        elseif(!$first and preg_match('/^(and|y|o|or|of|at|des|les|las|le)$/i',$word)){
              $result.=' '.strtoupper($word);
             continue;
         }
         $result.=' '.capitalize($word);
         $first=false;
     }
+        
+    
         
     return _trim($result);
 }
@@ -1518,6 +1531,63 @@ function translate_written_number($string){
     }
 
 
+
+    function guess_file_format($filename) {
+
+        $mimetype='Unknown';
+       
+
+        ob_start();
+        system("uname");
+
+
+
+        $system='Unknown';
+        $_system = ob_get_clean();
+
+        // print "S:$system M:$mimetype\n";
+
+        if (preg_match('/darwin/i',$_system)) {
+            ob_start();
+            $system='Mac';
+            system("file -I $filename");
+            $mimetype=ob_get_clean();
+            $mimetype=preg_replace('/^.*\:/','',$mimetype);
+
+        }
+        elseif(preg_match('/linux/i',$_system)) {
+            ob_start();
+            $system='Linux';
+            $mimetype = system("file -ib $filename");
+            $mimetype=ob_get_clean();
+        }
+        else {
+            $system='Other';
+
+        }
+
+
+        if (preg_match('/png/i',$mimetype))
+            $format='png';
+        elseif(preg_match('/jpeg/i',$mimetype))
+        $format='jpeg';
+        elseif(preg_match('/image.psd/i',$mimetype))
+        $format='psd';
+        elseif(preg_match('/gif/i',$mimetype))
+        $format='gif';
+        elseif(preg_match('/wbmp$/i',$mimetype))
+        $format='wbmp';
+        
+        else {
+            $format='other';
+        }
+//  print "S:$system M:$mimetype\n";
+        // return;
+
+        return $format;
+
+    }
+
 function guess_file_mime($file){
     
     ob_start();
@@ -1532,7 +1602,8 @@ function guess_file_mime($file){
      $system='Mac';
      system("file -I $file");
      $mimetype=ob_get_clean();
-     
+      $mimetype=preg_replace('/^.*\:\s*/','',$mimetype);
+     $mimetype=preg_replace('/\s*;.*$/','',$mimetype);
    }elseif(preg_match('/linux/i',$_system)){
      $system='Linux'; 
      ob_start();
@@ -1569,6 +1640,7 @@ function getEnumVals($table,$field,$sorted=true)
 {
    
     $result=mysql_query('show columns from '.$table.';');
+  
     while($tuple=mysql_fetch_assoc($result))
     {
         if($tuple['Field'] == $field)

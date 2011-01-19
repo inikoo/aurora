@@ -29,7 +29,7 @@
       <td class="aright">
 	
 	<tr><td>{t}Status{/t}:</td><td>{$part->get('Part Status')}</td></tr>
-      <tr><td>{t}Keeping since{/t}:</td><td>{$part->get('Valid From')}</td></tr>
+      <tr><td>{t}Keeping since{/t}:</td><td>{$part->get('Valid From Datetime')}</td></tr>
 	<tr><td>{t}Supplied by{/t}:</td><td>{$part->get('Part XHTML Currently Supplied By')}</td></tr>
 	<tr><td>{t}Cost{/t}:</td><td>{$part->get('Cost')}</td></tr>
     </table>
@@ -181,23 +181,34 @@
   
  <div style="clear:both"></div>
  
+  <div id="block_stock_transaction" class="data_table" style="clear:both;margin-top:20px">
+    <span   class="clean_table_title">{t}Part Stock Transactions{/t}</span>
+     <div id="table_type" class="table_type">
+        <div  style="font-size:90%"   id="transaction_chooser" >
+            <span style="float:right;margin-left:20px" class="table_type transaction_type state_details {if $transaction_type=='all_transactions'}selected{/if}"  id="restrictions_all_transactions" table_type="all_transactions"  >{t}All{/t} ({$transactions.all_transactions})</span>
+            <span style="float:right;margin-left:20px" class="table_type transaction_type state_details {if $transaction_type=='oip_transactions'}selected{/if}"  id="restrictions_oip_transactions" table_type="oip_transactions"   >{t}OIP{/t} ({$transactions.oip_transactions})</span>
+            <span style="float:right;margin-left:20px" class="table_type transaction_type state_details {if $transaction_type=='out_transactions'}selected{/if}"  id="restrictions_out_transactions" table_type="out_transactions"   >{t}Out{/t} ({$transactions.out_transactions})</span>
+            <span style="float:right;margin-left:20px" class="table_type transaction_type state_details {if $transaction_type=='in_transactions'}selected{/if}"  id="restrictions_in_transactions" table_type="in_transactions"   >{t}In{/t} ({$transactions.in_transactions})</span>
+            <span style="float:right;margin-left:20px" class="table_type transaction_type state_details {if $transaction_type=='audit_transactions'}selected{/if}"  id="restrictions_audit_transactions" table_type="audit_transactions"   >{t}Audits{/t} ({$transactions.audit_transactions})</span>
+            <span style="float:right;margin-left:20px" class="table_type transaction_type state_details {if $transaction_type=='move_transactions'}selected{/if}"  id="restrictions_move_transactions" table_type="move_transactions"   >{t}Movements{/t} ({$transactions.move_transactions})</span>
+
+        </div>
+     </div>
+    
+    <div style="clear:both;margin:0 0px;padding:0 20px ;border-bottom:1px solid #999;margin-bottom:10px"></div>
+   
  
+    {include file='table_splinter.tpl' table_id=1 filter_name=$filter_name1 filter_value=$filter_value1   }
+    <div class="clean_table_controls" style="" ><div><span  style="margin:0 5px" id="paginator1"></span></div></div>
+<div  style="font-size:85%"  id="table1"   class="data_table_container dtable btable "> </div>
+</div>
  
- <div   id="block_plot" style="clear:both;{if $display.plot==0}display:none{/if};margin-top:20px;min-height:420px"  >
-   {include file='plot_splinter.tpl'}
- </div>
- 
- 
- 
- 
- <div id="block_stock_history" class="data_table" style="clear:both;">
+  <div id="block_stock_history" class="data_table" style="clear:both;margin-top:20px;">
     <span   class="clean_table_title">{t}Part Stock History{/t}</span>
-     <div >
-          <span id="stock_history_type_day" style="float:right" class="table_type state_details {if $stock_history_type=='day'}selected{/if}">{t}Monthly{/t}</span>
-
-     <span id="stock_history_type_week" style="float:right;margin-right:10px" class="table_type state_details {if $stock_history_type=='week'}selected{/if}">{t}Weekly{/t}</span>
-     <span id="stock_history_type_day" style="float:right;margin-right:10px" class="table_type state_details {if $stock_history_type=='day'}selected{/if}">{t}Daily{/t}</span>
-
+     <div id="stock_history_type">
+        <span id="stock_history_type_month" table_type="month" style="float:right" class="table_type state_details {if $stock_history_type=='month'}selected{/if}">{t}Monthly{/t}</span>
+        <span id="stock_history_type_week" table_type="week" style="float:right;margin-right:10px" class="table_type state_details {if $stock_history_type=='week'}selected{/if}">{t}Weekly{/t}</span>
+        <span id="stock_history_type_day" table_type="day" style="float:right;margin-right:10px" class="table_type state_details {if $stock_history_type=='day'}selected{/if}">{t}Daily{/t}</span>
      </div>
     
     <div style="clear:both;margin:0 0px;padding:0 20px ;border-bottom:1px solid #999;margin-bottom:10px"></div>
@@ -208,35 +219,9 @@
 <div  id="table0"  style="font-size:85%"   class="data_table_container dtable btable "> </div>
 </div>
  
- 
- 
- 
-  <div id="block_stock_transaction" class="data_table" style="clear:both;margin-top:20px">
-    <span   class="clean_table_title">{t}Part Stock Transactions{/t}</span>
-    
-    
-    <div style="clear:both;margin:0 0px;padding:0 20px ;border-bottom:1px solid #999;margin-bottom:10px"></div>
-   
- 
-    {include file='table_splinter.tpl' table_id=1 filter_name=$filter_name1 filter_value=$filter_value1   }
-    <div class="clean_table_controls" style="" ><div><span  style="margin:0 5px" id="paginator1"></span></div></div>
-<div  style="font-size:85%"  id="table1"   class="data_table_container dtable btable "> </div>
-</div>
- 
- 
-
-
-
-
-
-
-
-
-
-
-
-
-
+<div   id="block_plot" style="clear:both;{if $display.plot==0}display:none{/if};margin-top:50px;min-height:420px"  >
+   {include file='plot_splinter.tpl'}
+ </div>
 </div>
 </div>
 

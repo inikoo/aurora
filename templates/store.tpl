@@ -137,13 +137,89 @@
  </table>
 </div>
 
+
+
+
+
+
+<div  style="color:red;clear:both">
+<ul class="tabs" id="chooser_ul" style="margin-top:25px">
+    <li>
+	  <span class="item {if $plot_tipo=='store'}selected{/if}" onClick="change_plot(this)" id="plot_store" tipo="store"    >
+	    <span>{$store->get('Store Code')} {t}Store{/t}</span>
+	  </span>
+	</li>
+
+	<li>
+	  <span class="item {if $plot_tipo=='top_departments'}selected{/if}"  id="plot_top_departments" onClick="change_plot(this)" tipo="top_departments"  >
+	    <span>{t}Top Departments{/t}</span>
+	  </span>
+	</li>
+	<li>
+	  <span class="item {if $plot_tipo=='pie'}selected{/if}" onClick="change_plot(this)" id="plot_pie" tipo="pie"     forecast="{$plot_data.pie.forecast}" interval="{$plot_data.pie.interval}"  >
+	    <span>{t}Department's Pie{/t}</span>
+	  </span>
+	</li>
+
+  </ul>
+  
+<script type="text/javascript" src="external_libs/amstock/amstock/swfobject.js"></script>
+
+<div id="plot" style="clear:both;border:1px solid #ccc" >
+	<div id="single_data_set"  >
+		<strong>You need to upgrade your Flash Player</strong>
+	</div>
 </div>
-<div id="plot" class="top_bar" style="clear:both;padding:0;margin:0;{if !$show_details}display:none;{/if}">
-{include file='plot_splinter.tpl'}
-</div>     
-     
-<div class="data_table" style="clear:both;">
-    <span   class="clean_table_title">{t}Departments{/t}</span>
+<script type="text/javascript">
+		// <![CDATA[
+		var so = new SWFObject("external_libs/amstock/amstock/amstock.swf", "amstock", "905", "500", "8", "#FFFFFF");
+		so.addVariable("path", "");
+		so.addVariable("settings_file", encodeURIComponent("conf/plot_asset_sales.xml.php?tipo=store_sales&store_key={$store->id}"));
+		so.addVariable("preloader_color", "#999999");
+		so.write("plot");
+		// ]]>
+	</script>
+  
+  
+  <div style="clear:both"></div>
+</div>
+</div>
+
+
+<div class="data_table" style="clear:both;margin-top:25px">
+<div class="todo">
+<h1>TO DO (KAKTUS-319)</h1>
+<h2>List/thumbnails of store websites</h2>
+<h3>Objective</h3>
+<p>
+show code (link to:site.php?id=) ,url, type (created with kaktus,created by others),status (live/offline),
+some stats like (# visitors,# unique visitors etc)</br>
+</p>
+<h3>Files</h3>
+<p>
+ar fie: ar_sites.php?tipo=list_store_sites<br>
+DB: `Site Dimension` (To do: more fields have to be created in the DB, `Site Type`(enum[kaktus,other]),`Site Status`... etc )
+</p>
+</div>
+    <span   class="clean_table_title" style="">{t}Web Sites{/t}</span>
+ <div id="table_type">
+     <span id="table_type_list" style="float:right" class="table_type state_details {if $table_type=='list'}selected{/if}">{t}List{/t}</span>
+     <span id="table_type_thumbnail" style="float:right;margin-right:10px" class="table_type state_details {if $table_type=='thumbnails'}selected{/if}">{t}Thumbnails{/t}</span>
+     </div>
+   
+    <div style="clear:both;margin:0 0px;padding:0 20px ;border-bottom:1px solid #999;margin-bottom:15px"></div>
+    
+   
+ {include file='table_splinter.tpl' table_id=1 filter_name=$filter_name1 filter_value=$filter_value1 no_filter=1  }
+<div  id="table1"   class="data_table_container dtable btable"> </div>
+</div>
+
+
+<div class="data_table" style="clear:both;margin-top:25px">
+<span  id="export_csv0" style="float:right;margin-left:20px"  class="table_type state_details" tipo="families" >{t}Export (CSV){/t}</span>
+
+    <span   class="clean_table_title" style="">{t}Departments{/t}</span>
+
     <div style="clear:both;margin:0 0px;padding:0 20px ;border-bottom:1px solid #999"></div>
     <span   style="float:right;margin-left:80px" class="state_details" state="{$show_percentages}"  id="show_percentages"  atitle="{if $show_percentages}{t}Normal Mode{/t}{else}{t}Comparison Mode{/t}{/if}"  >{if $show_percentages}{t}Comparison Mode{/t}{else}{t}Normal Mode{/t}{/if}</span>
     <table style="float:left;margin:0 0 5px 0px ;padding:0"  class="options" >
@@ -199,6 +275,9 @@
   </div>
 </div>
 
+
+
+
 <div id="info_period_menu" class="yuimenu" >
   <div class="bd">
     <ul class="first-of-type">
@@ -210,5 +289,5 @@
   </div>
 </div>
 
-
+{include file='export_csv_menu_splinter.tpl' id=0 cols=$export_csv_table_cols session_address="store-table-csv_export" export_options=$csv_export_options }
 {include file='footer.tpl'}

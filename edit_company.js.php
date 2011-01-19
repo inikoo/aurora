@@ -54,7 +54,7 @@ foreach($contacts as $contact){
   $mobile_data='';
   foreach($mobiles as $mobile){
     $scope_related_mobile_type='Work Mobile';
-    if(isset($mobile->data['Telecom Type'][$scope_related_mobile_type])){
+    //if(isset($mobile->data['Telecom Type'][$scope_related_mobile_type])){
 	$mobile_data.=sprintf(',%d:{"Mobile_Key":%d,"Mobile":"%s","Country_Code":"%s","National_Access_Code":"%s","Number":%s,"Telecom_Is_Main":"%s","Telecom Type Description":"%s"}'
 			      ,$mobile->id
 			      ,$mobile->id
@@ -62,16 +62,19 @@ foreach($contacts as $contact){
 			      ,addslashes($mobile->data['Telecom Country Telephone Code'])
 			      ,addslashes($mobile->data['Telecom National Access Code'])
 			      ,addslashes($mobile->data['Telecom Number'])
-			      ,$mobile->data['Telecom Is Main'][$scope_related_mobile_type]
-			      ,$mobile->data['Telecom Type'][$scope_related_mobile_type]
+			      ,$mobile->data['Mobile Is Main']
+			      ,$mobile->data['Telecom Type']
 			      );
       }
-  }
+  //}
   $mobile_data=preg_replace('/^,/','',$mobile_data);
 
   $emails=$contact->get_emails();
   $number_of_emails=count($emails);
   $email_data='';
+  
+ // print_r($emails);
+  
   foreach($emails as $email){
     $email_data.=sprintf(',%d:{"Email_Key":%d,"Email":"%s","Email_Contact_Name":"%s","Email_Description":"%s","Email_Is_Main":"%s"}'
 			 ,$email->id
@@ -79,7 +82,7 @@ foreach($contacts as $contact){
 			 ,$email->data['Email']
 			 ,addslashes($email->data['Email Contact Name'])
 			 ,addslashes('')
-			 ,''
+			 ,$email->data['Email Is Main']
 			 );
   }
   $email_data=preg_replace('/^,/','',$email_data);
@@ -304,27 +307,6 @@ CountryDS.maxCacheEntries = 100;
 
 
 
-
-
-
-
-
-
-
-
-
-//var change_block = function(e){
-//   if(Dom.hasClass(this, 'selected'))
-//	return;
- //   Dom.removeClass(current_block, 'selected');
-//    Dom.addClass(this, 'selected');
-//    Dom.setStyle('d_'+current_block, 'display','none');
-//    Dom.setStyle('d_'+this.id, 'display','');
-//    current_block=this.id;
-//};
-
-
-
 var save_details=function(e){
     var items = ["name","fiscal_name","tax_number","registration_number"];
     var table='company';
@@ -332,22 +314,22 @@ var save_details=function(e){
     for ( var i in items )
 	{
 	    var key=items[i];
-	    var value=Dom.get(items[i]).value;
+	    var value=Dom.get(key).value;
 	    var request='ar_edit_contacts.php?tipo=edit_'+table+'&key=' + key + '&newvalue=' + encodeURIComponent(value)+'&id='+company_key; 
-	   
+	//   alert(request);
 	    YAHOO.util.Connect.asyncRequest('POST',request ,{
 		    success:function(o) {
-			alert(o.responseText);
+			//alert(o.responseText);
 			var r =  YAHOO.lang.JSON.parse(o.responseText);
 			if(r.action=='updated'){
-			    Dom.get(items[i]).value=r.value;
-			    Dom.get(items[i]).getAttribute('ovalue')=r.newvalue;
+			    Dom.get(r.key).value=r.newvalue;
+			    Dom.get(r.key).setAttribute('ovalue',r.newvalue);
 			    save_details++;
 			}else if(r.action=='error'){
 			    alert(r.msg);
 			}
 			    
-
+update_details()
 			
 		    }
 		});
@@ -412,85 +394,26 @@ function init(){
     var ids = ["name","fiscal_name","tax_number","registration_number"]; 
     YAHOO.util.Event.addListener(ids, "keyup", update_details);
     
-    var ids = ["address_description","address_country_d1","address_country_d2","address_town","address_town_d2","address_town_d1","address_postal_code","address_street","address_internal","address_building"]; 
-    YAHOO.util.Event.addListener(ids, "keyup", on_address_item_change);
-    YAHOO.util.Event.addListener(ids, "change",on_address_item_change);
-    //TODO: event when paste with the middle mouse (peroblem in  linux only)
     
-    YAHOO.util.Event.addListener('save_address_button', "click",save_address);
+    edit_address(1,'contact_');
+	var ids = ["contact_address_description","contact_address_country_d1","contact_address_country_d2","contact_address_town","contact_address_town_d2","contact_address_town_d1","contact_address_postal_code","contact_address_street","contact_address_internal","contact_address_building"]; 
+	YAHOO.util.Event.addListener(ids, "keyup", on_address_item_change,'contact_');
+	YAHOO.util.Event.addListener(ids, "change",on_address_item_change,'contact_');
+	 
+	YAHOO.util.Event.addListener('contact_save_address_button', "click",save_address,{prefix:'contact_',subject:'Customer',subject_key:customer_id,type:'contact'});
+	YAHOO.util.Event.addListener('contact_reset_address_button', "click",reset_address,'contact_');
 	
+	var Countries_DS = new YAHOO.util.FunctionDataSource(match_country);
+	Countries_DS.responseSchema = {fields: ["id", "name", "code","code2a","postal_regex"]}
+	var Countries_AC = new YAHOO.widget.AutoComplete("contact_address_country", "contact_address_country_container", Countries_DS);
+	Countries_AC.forceSelection = true; 
+	Countries_AC.useShadow = true;
+    Countries_AC.suffix='contact_';
+	Countries_AC.resultTypeList = false;
+	Countries_AC.formatResult = countries_format_results;
+	Countries_AC.itemSelectEvent.subscribe(onCountrySelected);
     
-
-
-    
-
-     // Use a FunctionDataSource
-    var Countries_DS = new YAHOO.util.FunctionDataSource(match_country);
-    Countries_DS.responseSchema = {
-        fields: ["id", "name", "code","code2a"]
-    }
-
-    // Instantiate AutoComplete
-    var Countries_AC = new YAHOO.widget.AutoComplete("address_country", "address_country_container", Countries_DS);
-    Countries_AC.useShadow = true;
-    Countries_AC.resultTypeList = false;
-
-    // Custom formatter to highlight the matching letters
-    Countries_AC.formatResult = function(oResultData, sQuery, sResultMatch) {
-        var query = sQuery.toLowerCase(),
-	name = oResultData.name,
-	code = oResultData.code,
-	
-	query = sQuery.toLowerCase(),
-	nameMatchIndex = name.toLowerCase().indexOf(query),
-	codeMatchIndex = code.toLowerCase().indexOf(query),
-        
-	displayname, displaycode;
-            
-        if(nameMatchIndex > -1) {
-            displayname = highlightMatch(name, query, nameMatchIndex);
-        }
-        else {
-            displayname = name;
-        }
-
-        if(codeMatchIndex > -1) {
-            displaycode = highlightMatch(code, query, codeMatchIndex);
-        }
-        else {
-            displaycode = code;
-        }
-
-     
-        return displayname + " (" + displaycode + ")";
-        
-    };
-
-    // Helper function for the formatter
-    var highlightMatch = function(full, snippet, matchindex) {
-        return full.substring(0, matchindex) + 
-                "<span class='match'>" + 
-                full.substr(matchindex, snippet.length) + 
-                "</span>" +
-                full.substring(matchindex + snippet.length);
-    };
-
   
-    var onCountrySelected = function(sType, aArgs) {
-        var myAC = aArgs[0]; // reference back to the AC instance
-        var elLI = aArgs[1]; // reference to the selected LI element
-        var oData = aArgs[2]; // object literal of selected item's result data
-        
-        // update hidden form field with the selected item's ID
-
-        Dom.get("address_country_code").value = oData.code;
-        Dom.get("address_country_2acode").value = oData.code2a;
-        myAC.getInputEl().value = oData.name + " (" + oData.code + ") ";
-on_address_item_change();
-	update_address_labels(oData.code);
-
-    };
-    Countries_AC.itemSelectEvent.subscribe(onCountrySelected);
 
  
 

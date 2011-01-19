@@ -1,7 +1,7 @@
 <?php include_once('common.php');
 
-print "var top=".$_SESSION['state']['report']['customers']['top'].";";
-print "var criteria='".$_SESSION['state']['report']['customers']['criteria']."';";
+print "var top=".$_SESSION['state']['report_customers']['top'].";";
+print "var criteria='".$_SESSION['state']['report_customers']['criteria']."';";
 
 
 ?>
@@ -105,7 +105,6 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    this.table0 = new YAHOO.widget.DataTable(tableDivEL, CustomersColumnDefs,
 								   this.dataSource0
 								 , {
-								     // sortedBy: {key:"<?php echo$_SESSION['tables']['customers_list'][0]?>", dir:"<?php echo$_SESSION['tables']['customers_list'][1]?>"},
 								     renderLoopSize: 50,generateRequest : myRequestBuilder
 								       ,paginator : new YAHOO.widget.Paginator({
 									      rowsPerPage    : top,containers : 'paginator', 

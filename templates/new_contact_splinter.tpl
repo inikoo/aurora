@@ -262,7 +262,7 @@
 
       <table class="options" style="float:right;padding:0;margin:0">
 	<tr>
-	  <td  class="disabled" id="save_new_Contact">{t}Save{/t}</td>
+	  <td  class="disabled" id="save_new_contact">{t}Save{/t}</td>
 	  <td  id="cancel_add_Contact" >{t}Cancel{/t}</td>
 	</tr>
       </table>

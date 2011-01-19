@@ -17,9 +17,6 @@ include_once('class.Page.php');
 /* class: Department
    Class to manage the *Product Department Dimension* table
 */
-// JFA
-
-
 
 
 class Department extends DB_Table {
@@ -33,7 +30,7 @@ public $new_value=false;
       Returns:
       void
     */
-
+var $external_DB_link=false;
     function Department ($a1=false,$a2=false,$a3=false) {
         $this->table_name='Product Department';
         $this->ignore_fields=array(
@@ -286,16 +283,43 @@ public $new_value=false;
 
     }
 
-    /*
-        Function: update
-        Funcion que permite actualizar el nombre o el codigo en la tabla Product Department Dimension, evitando registros duplicados.
-    */
-// JFA
+ function update_sales_type($value) {
+    if (
+        $value=='Public Sale' or $value=='Private Sale' or $value=='Not For Sale'
+    ) {
+        $sales_state=$value;
+
+        $sql=sprintf("update `Product Department Dimension` set `Product Department Sales Type`=%s  where  `Product Department Key`=%d "
+                     ,prepare_mysql($sales_state)
+                     ,$this->id
+                    );
+        //print $sql;
+        if (mysql_query($sql)) {
+            if ($this->external_DB_link)mysql_query($sql,$this->external_DB_link);
+            $this->msg=_('Department Sales Type updated');
+            $this->updated=true;
+
+            $this->new_value=$value;
+            return;
+        } else {
+            $this->msg=_("Error: Department sales type could not be updated ");
+            $this->updated=false;
+            return;
+        }
+    } else
+        $this->msg=_("Error: wrong value")." [Sales Type] ($value)";
+    $this->updated=false;
+}
+
+
     function update($key,$a1=false,$a2=false) {
         $this->updated=false;
         $this->msg='Nothing to change';
 
         switch ($key) {
+        case('sales_type'):
+        $this->update_sales_type($a1);
+        break;
         case('code'):
 
             if ($a1==$this->data['Product Department Code']) {
@@ -1304,100 +1328,7 @@ public $new_value=false;
     }
 
 
-    function create_page($data){
-      
-      
-      $store=new Store($this->data['Product Department Store Key']);
-      $store_page_data=$store->get_page_data();
-	
-      //print_r($store_page_data);
-//exit;
-      if(!array_key_exists('Showcases',$data)){
-
-	$showcases=array();
-
-      if($store_page_data['Display Presentation']='Yes'  ){
-	$showcases['Presentation']=array('Display'=>true,'Type'=>'Template','Contents'=>$this->data['Product Department Name']);
-      }
-       if($store_page_data['Display Offers']='Yes' ){
-	$showcases['Offers']=array('Display'=>true,'Type'=>'Auto');
-      }
-       if($store_page_data['Display New Products']='Yes' ){
-	$showcases['New']=array('Display'=>true,'Type'=>'Auto');
-      }
-      }else
-	$showcases=$data['Showcases'];
-       
-
-      if(!array_key_exists('Product Layouts',$data)){
-
-       $product_layouts=array();
-
-       if($store_page_data['Product Thumbnails Layout']='Yes' ){
-	 $product_layouts['Thumbnails']=array('Display'=>true,'Type'=>'Auto');
-       }
-       
-       if($store_page_data['Product List Layout ']='Yes' ){
-	 $product_layouts['List']=array('Display'=>true,'Type'=>'Auto');
-       }
-       
-       if($store_page_data['Product Slideshow Layout']='Yes' ){
-	 $product_layouts['Slideshow']=array('Display'=>true,'Type'=>'Auto');
-       }
-       if($store_page_data['Product Manual Layout']='Yes' ){
-	 $product_layouts['Manual']=array('Display'=>true,'Type'=>$store_page_data['Product Manual Layout Type'],'Data'=>$store_page_data['Product Manual Layout Data']);
-       }
-       
-       if(count($product_layouts==0)){
-	 $product_layouts['Thumbnails']=array('Display'=>true,'Type'=>'Auto');
-       }
-       }else
-	$product_layouts=$data['Product Layouts'];
-
-      if(!array_key_exists('Showcases Layout',$data))
-	$showcases_layout=$store_page_data['Showcases Layout'];
-      else
-	$showcases_layout=$data['Showcases Layout'];
-
-      
-      
-      
-
-
-      $page_data=array(
-		       'Page Code'=>'PD_'.$store->data['Store Code'].'_'.$this->data['Product Department Code']
-		       ,'Page Source Template'=>''
-		       ,'Page URL'=>'department.php?code='.$this->data['Product Department Code']
-		        ,'Page Source Template'=>'pages/'.$store->data['Store Code'].'/department.tpl'
-		       ,'Page Description'=>'Department Showcase Page'
-		       ,'Page Title'=>$this->data['Product Department Name']
-		       ,'Page Short Title'=>$this->data['Product Department Name']
-		       ,'Page Store Title'=>$this->data['Product Department Name']
-		       ,'Page Store Subtitle'=>''
-		       ,'Page Store Slogan'=>$data['Page Store Slogan']
-		       ,'Page Store Abstract'=>$data['Page Store Resume']
-		       ,'Page Store Showcases'=>$showcases
-		       ,'Page Store Showcases Layout'=>$showcases_layout
-		       ,'Page Store Product Layouts'=>$product_layouts
-		       );
-      
-      $page_data['Page Store Function']='Department Catalogue';
-      $page_data['Page Store Creation Date']=date('Y-m-d H:i:s');
-      $page_data['Page Store Last Update Date']=date('Y-m-d H:i:s');
-      $page_data['Page Store Last Structural Change Date']=date('Y-m-d H:i:s');
-      $page_data['Page Section']='catalogue';
-      $page_data['Page Type']='Store';
-      $page_data['Page Store Source Type'] ='Dynamic';
-      $page_data['Page Store Code']=$store->data['Store Code'];
-      $page_data['Page Parent Key']=$this->id;
-
-      $page=new Page('find',$page_data,'create');
-//print_r($page);
-//exit;
-      $sql=sprintf("update `Product Department Dimension` set `Product Department Page Key`=%d  where `Product Department Key`=%d",$page->id,$this->id);
-      mysql_query($sql);
-
-	}
+   
 
 function add_image($image_key,$args='') {
  
@@ -1419,7 +1350,7 @@ $number_images=$row['num'];
 	    );
 	//	print "$sql\n";
 	mysql_query($sql);
-       $sql=sprintf("select `Image Thumbnail URL`,`Image Small URL`,`Is Principal`,ID.`Image Key`,`Image Caption`,`Image URL`,`Image Filename`,`Image File Size`,`Image File Checksum`,`Image Width`,`Image Height`,`Image File Format` from `Image Bridge` PIB left join `Image Dimension` ID on (PIB.`Image Key`=ID.`Image Key`) where `Subject Type`='Product' and   `Subject Key`=%d and  PIB.`Image Key`=%d"
+       $sql=sprintf("select `Image Thumbnail URL`,`Image Small URL`,`Is Principal`,ID.`Image Key`,`Image Caption`,`Image URL`,`Image Filename`,`Image File Size`,`Image File Checksum`,`Image Width`,`Image Height`,`Image File Format` from `Image Bridge` PIB left join `Image Dimension` ID on (PIB.`Image Key`=ID.`Image Key`) where `Subject Type`='Department' and   `Subject Key`=%d and  PIB.`Image Key`=%d"
 		    ,$this->id
 		    ,$image_key
 		    );

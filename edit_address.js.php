@@ -73,9 +73,9 @@ success:function(o) {
                     Dom.addClass(options.prefix+'set_main'+address_key, 'hide');
 
                     if (options.type=='Delivery' && options.Subject=='Customer') {
-
+                        if(Dom.get(options.prefix+'current_address_bis')!=undefined)
                         Dom.get(options.prefix+'current_address_bis').innerHTML=r.new_main_address_bis;
-
+                        post_change_main_delivery_address();
                     }
 
 
@@ -92,7 +92,7 @@ success:function(o) {
 
 
 }
-
+//function post_change_main_delivery_address(){}
 
 var save_address=function(e,options) {
 
@@ -125,17 +125,17 @@ var save_address=function(e,options) {
 
         var json_value = YAHOO.lang.JSON.stringify(value);
         var request='ar_edit_contacts.php?tipo=edit_address&value=' + json_value+'&id='+address_key+'&key='+options.type+'&subject='+options.subject+'&subject_key='+options.subject_key;
-        //   alert(request);return;
+          
 
         YAHOO.util.Connect.asyncRequest('POST',request , {
 success:function(o) {
-         //       alert(o.responseText)
+                //alert(o.responseText)
                 var r =  YAHOO.lang.JSON.parse(o.responseText);
-                
+                if(r.state==200){
                 if (r.action=='updated') {
                
               
-                window.location.reload( false );
+               // window.location.reload( false );
 
                 
                     if (Dom.get(address_prefix+'address_display'+r.key)!=undefined)
@@ -153,7 +153,8 @@ success:function(o) {
 
                     if (r.is_main_delivery=='Yes') {
                         Dom.get('delivery_current_address').innerHTML=r.xhtml_address;
-
+                       post_change_main_delivery_address();
+                       
 
 
                     }
@@ -232,14 +233,16 @@ success:function(o) {
                         Address_Data[r.key][i]=address_item_value;
                     }
 
-                    edit_address(r.key,address_prefix)
+                   edit_address(r.key,address_prefix)
 
                     cancel_edit_address(address_prefix);
                     save_address_elements++;
                     
                     
                     
-                } else if (r.action=='error') {
+                }
+                }
+                else{
                     alert(r.msg);
                 }
             }
@@ -291,7 +294,6 @@ success:function(o) {
 
 
 };
-
 
 var create_address=function(options) {
 
@@ -418,9 +420,7 @@ var update_address_buttons=function() {
 
 };
 
-
 function reset_address(e,prefix) {
-
     changes_address=0;
     index=Dom.get(prefix+"reset_address_button").getAttribute('address_key');
     Dom.setStyle(['address_showcase','move_address_button','add_address_button'], 'display', '');
@@ -502,6 +502,8 @@ success:function(o) {
 
 
 function edit_address(index,address_identifier) {
+//alert(index+' x '+address_identifier)
+
     if (index==false)
         index=0;
 
@@ -522,7 +524,8 @@ function edit_address(index,address_identifier) {
     Dom.setStyle([address_identifier+'address_form'], 'display', '');
 
     // Dom.setStyle([address_identifier+'reset_address_button'], 'visibility', 'visible');
-    Dom.get(address_identifier+"reset_address_button").setAttribute('address_key',index);
+   //alert(address_identifier+"reset_address_button")
+   Dom.get(address_identifier+"reset_address_button").setAttribute('address_key',index);
 
     data=Address_Data[index];
 
@@ -598,7 +601,6 @@ var update_address_labels=function(country_code,suffix) {
         }
     }
 };
-
 
 var on_address_type_change=function() {
     Address_Type_Changes=0
@@ -793,9 +795,6 @@ var match_country = function(sQuery) {
     return matches;
 };
 
-
-
-
 var onCountrySelected = function(sType, aArgs) {
     var myAC = aArgs[0]; // reference back to the AC instance
     var elLI = aArgs[1]; // reference to the selected LI element
@@ -816,7 +815,6 @@ var onCountrySelected = function(sType, aArgs) {
     update_address_labels(oData.code,this.suffix);
 
 };
-
 
 function countries_format_results(oResultData, sQuery, sResultMatch) {
 

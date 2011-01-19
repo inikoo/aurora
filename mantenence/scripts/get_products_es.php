@@ -35,7 +35,7 @@ date_default_timezone_set('UTC');
 
 $_department_code='';
 $software='Get_Products.php';
-$version='V 1.0';
+$version='V 1.1';
 
 $Data_Audit_ETL_Software="$software $version";
 
@@ -52,313 +52,28 @@ $store_key=1;
 $create_cat=false;
 //----------------------------------OK
 
-if($create_cat){
 
-$nodes=new Nodes('`Category Dimension`');
-$data=array('`Category Name`'=>'Uso');
-$nodes->add_new(0 , $data);
-
-
-
-$data=array('`Category Name`'=>'Material');
-$nodes->add_new(0 , $data);
-$data=array('`Category Name`'=>'Tema');
-$nodes->add_new(0 , $data);
-
-$data=array('`Category Name`'=>'Otro','`Category Default`'=>'Yes');
-$nodes->add_new(1 , $data);
-$data=array('`Category Name`'=>'Velas');
-$nodes->add_new(1 , $data);
-$data=array('`Category Name`'=>'Jabón');
-$nodes->add_new(1 , $data);
-$data=array('`Category Name`'=>'Incenso');
-$nodes->add_new(1 , $data);
-$data=array('`Category Name`'=>'Terapias Holisticas');
-$nodes->add_new(1 , $data);
-$data=array('`Category Name`'=>'Productos de baño');
-$nodes->add_new(1 , $data);
-$data=array('`Category Name`'=>'Decoración');
-$nodes->add_new(1 , $data);
-
-$data=array('`Category Name`'=>'Otro','`Category Default`'=>'Yes');
-$nodes->add_new(2 , $data);
-$data=array('`Category Name`'=>'Madera');
-$nodes->add_new(2 , $data);
-$data=array('`Category Name`'=>'Metal');
-$nodes->add_new(2 , $data);
-$data=array('`Category Name`'=>'Vidrio');
-$nodes->add_new(2 , $data);
-$data=array('`Category Name`'=>'Resina');
-$nodes->add_new(2 , $data);
-$data=array('`Category Name`'=>'Ceramica');
-$nodes->add_new(2 , $data);
-$data=array('`Category Name`'=>'Mineral');
-$nodes->add_new(2 , $data);
-
-$data=array('`Category Name`'=>'Ninguna','`Category Default`'=>'Yes');
-$nodes->add_new(3 , $data);
-$data=array('`Category Name`'=>'Navidad');
-$nodes->add_new(3 , $data);
-$data=array('`Category Name`'=>'Halloween');
-$nodes->add_new(3 , $data);
-$data=array('`Category Name`'=>'Amor');
-$nodes->add_new(3 , $data);
-$data=array('`Category Name`'=>'Animales');
-$nodes->add_new(3 , $data);
-$data=array('`Category Name`'=>'Esoterico');
-$nodes->add_new(3 , $data);
-$data=array('`Category Name`'=>'Fantasia');
-$nodes->add_new(3 , $data);
-}
 $last_department_name='';
+$date=date("Y-m-d H:i:s");
+$editor=array(
+                            'Date'=>$date,
+                            'Author Name'=>'',
+                            'Author Alias'=>'',
+                            'Author Type'=>'',
+                            'Author Key'=>0,
+                            'User Key'=>0,
+                        );
 
 
-$store_data=array('Store Code'=>'AWR',
-		  'Store Name'=>'AW Regalos',
-		  'Store Locale'=>'es_ES',
-		  'Store Home Country Code 2 Alpha'=>'ES',
-		  'Store Currency Code'=>'EUR',
-		  'Store Home Country Name'=>'Spain', 
-		  'Store Home Country Short Name'=>'ES', 
-		  );
-$store=new Store('find',$store_data,'create');
+$store=new Store(1);
 
 
-
-$warehouse=new Warehouse('find',array('Warehouse Code'=>'A','Warehouse Name'=>'Málaga'),'create');;
-
-$unk_location=new Location('find',array('Location Code'=>'UNK','Location Name'=>'Locación Desconocida'),'create');;
-
-$unk_supplier=new Supplier('find',array('Supplier Code'=>'UNK','Supplier Name'=>'Provedor Desconocido'),'create');;
-
-$charge_data=array(
-		     'Charge Description'=>'€5.00 small order'
-		      ,'Store Key'=>$store_key
-		     ,'Charge Trigger'=>'Order'
-		     ,'Charge Type'=>'Amount'
-		     ,'Charge Name'=>'Small Order Charge'
-		     ,'Charge Terms Type'=>'Order Items Gross Amount'
-		     ,'Charge Terms Description'=>'when Order Items Gross Amount is less than €75.00'
-		     ,'Charge Begin Date'=>''
-		     ,'Charge Expiration Date'=>''
-		     );
-$small_order_charge=new Charge('find create',$charge_data);
-
-$dept_data=array(
-		   'Product Department Code'=>'ND',
-		   'Product Department Name'=>'Products sin Departamento',
-		   'Product Department Store Key'=>$store_key
-		   );
-
-$dept_no_dept=new Department('find',$dept_data,'create');
-if($dept_no_dept->error){
-  print_r($dept_no_dept);
-  exit;
-}
-
-$dept_no_dept_key=$dept_no_dept->id;
-
-$dept_data=array(
-		   'Product Department Code'=>'Promo',
-		   'Product Department Name'=>'Articulos Promotionales',
-		   'Product Department Store Key'=>$store_key
-		   );
-$dept_promo=new Department('find',$dept_data,'create');
-
-$dept_promo_key=$dept_promo->id;
-
-$fam_data=array(
-		   'Product Family Code'=>'PND_ES',
-		   'Product Family Name'=>'Productos sin Familia',
-		   'Product Family Main Department Key'=>$dept_no_dept_key,
-		   'Product Family Store Key'=>$store_key,
-		   'Product Family Special Characteristic'=>'None'
-		   );
-
-$fam_no_fam=new Family('find',$fam_data,'create');
-$fam_no_fam_key=$fam_no_fam->id;
-
-//print_r($fam_no_fam);
-
-$fam_data=array(
-		   'Product Family Code'=>'Promo_ES',
-		   'Product Family Name'=>'Promotional Items',
-		   'Product Family Main Department Key'=>$dept_promo_key,
-		   'Product Family Store Key'=>$store_key,
-		   'Product Family Special Characteristic'=>'None'
-		   );
-
-
-
-$fam_promo=new Family('find',$fam_data,'create');
-
-
-
-$fam_no_fam_key=$fam_no_fam->id;
+$gold_camp=new Campaign('code','Oro');
+$vol_camp=new Campaign('code','Mayo');
+$bogof_camp=new Campaign('code','Bogof');
+$fam_promo=$fam_promo=new Family('code','Promo_ES',$store_key);
 $fam_promo_key=$fam_promo->id;
 
-
- $campaign=array(
-		     'Campaign Name'=>'Club Oro'
-		     ,'Campaign Description'=>'Small order charge waive & discounts on seleted items if last order within 1 calendar month'
-		     ,'Campaign Begin Date'=>''
-		     ,'Campaign Expiration Date'=>''
-		     ,'Campaign Deal Terms Type'=>'Order Interval'
-		     ,'Campaign Deal Terms Description'=>'last order within 1 month'
-		     ,'Campaign Deal Terms Lock'=>'Yes'
-
-		     );
-$gold_camp=new Campaign('find create',$campaign);
-
-
-$data=array(
-	    'Deal Name'=>'[Product Family Code] Club Oro'
-	    ,'Deal Trigger'=>'Family'
-	    ,'Deal Allowance Type'=>'Percentage Off'
-	    ,'Deal Allowance Description'=>'[Percentage Off] off'
-	    ,'Deal Allowance Target'=>'Family'
-	    ,'Deal Allowance Lock'=>'No'
-		     );
-$gold_camp->add_deal_schema($data);
-
-$data=array(
-	    'Deal Name'=>'Free [Charge Name]'
-	    ,'Deal Trigger'=>'Order'
-	    ,'Deal Allowance Type'=>'Percentage Off'
-	    ,'Deal Allowance Description'=>'Free [Charge Name]'
-	    ,'Deal Allowance Target'=>'Charge'
-	    ,'Deal Allowance Key'=>$small_order_charge->id
-        ,'Deal Allowance Lock'=>'Yes'
-
-		   
-		     );
-$gold_camp->add_deal_schema($data);
-
-$data=array('Deal Allowance Target Key'=>$small_order_charge->id);
-$gold_camp->create_deal('Free [Charge Name]',$data);
-
-$gold_reward_cam_id=$gold_camp->id;
-
-$campaign=array(
-		     'Campaign Name'=>'Mayoreo en Familia'
-		     ,'Campaign Trigger'=>'Family'
-		     ,'Campaign Description'=>'Percentage off when order more than some quantity of products in the same family'
-		     ,'Campaign Begin Date'=>''
-		     ,'Campaign Expiration Date'=>''
-		      ,'Campaign Deal Terms Type'=>'Family Quantity Ordered'
-		     ,'Campaign Deal Terms Description'=>'order [Quantity] or more same family'
-		     ,'Campaign Deal Terms Lock'=>'No'
-		     );
-$vol_camp=new Campaign('find create',$campaign);
-
-
-$data=array(
-		     'Deal Name'=>'[Product Family Code] Volume Discount'
-		     ,'Deal Trigger'=>'Family'
-		     ,'Deal Allowance Type'=>'Percentage Off'
-		     ,'Deal Allowance Description'=>'[Percentage Off] off'
-		     ,'Deal Allowance Target'=>'Family'
-		   	 ,'Deal Allowance Lock'=>'No'
-
-		     );
-$vol_camp->add_deal_schema($data);
-
-$volume_cam_id=$vol_camp->id;
-
-
-$free_shipping_campaign_data=array(
-		     'Campaign Name'=>'Free Shipping'
-		     
-		     ,'Campaign Description'=>'Free shipping to selected destinations when order more than some amount'
-		     ,'Campaign Begin Date'=>''
-		     ,'Campaign Expiration Date'=>''
-		     ,'Campaign Deal Terms Type'=>'Order Items Net Amount AND Shipping Country'
-		     ,'Campaign Deal Terms Description'=>'Orders shipped to {Country Name} and Order Items Net Amount more than {Order Items Net Amount}'
-		     ,'Campaign Deal Terms Lock'=>'No'
-		     );
-$free_shipping_campaign=new Campaign('find create',$free_shipping_campaign_data);
-
-
-$data=array(
-		     'Deal Name'=>'[Country Name] Free Shipping'
-		     ,'Deal Trigger'=>'Order'
-		     ,'Deal Allowance Type'=>'Percentage Off'
-		     ,'Deal Allowance Description'=>'Free Shipping'
-		     ,'Deal Allowance Target'=>'Shipping'
-		     ,'Deal Allowance Lock'=>'Yes'
-
-		     );
-$free_shipping_campaign->add_deal_schema($data);
-
-$free_shipping_campaign_id=$free_shipping_campaign->id;
-
-$shipping_uk=new Shipping('find',array('Country Code'=>'GBR'));
-$terms_description=sprintf('Orders shipped to %s with Order Items Net Amount more than %s','GBR','£175');
-$data=array(
-	    'Deal Allowance Target Key'=>$shipping_uk->id
-	    ,'Deal Terms Description'=>$terms_description
-	    );
-$free_shipping_campaign->create_deal('[Country Name] Free Shipping',$data);
-
-
-
-$campaign=array(
-		     'Campaign Name'=>'BOGOF'
-		     ,'Campaign Description'=>'Buy one Get one Free'
-		     ,'Campaign Begin Date'=>''
-		     ,'Campaign Expiration Date'=>''
-		       ,'Campaign Deal Terms Type'=>'Product Quantity Ordered'
-		     ,'Campaign Deal Terms Description'=>'Buy 1'
-		     ,'Campaign Deal Terms Lock'=>'Yes'
-		     );
-$bogof_camp=new Campaign('find create',$campaign);
-$data=array(
-		     'Deal Name'=>'[Product Family Code] BOGOF'
-		     ,'Deal Trigger'=>'Family'
-		     ,'Deal Allowance Type'=>'Get Free'
-		     ,'Deal Allowance Description'=>'get 1 free'
-		     ,'Deal Allowance Target'=>'Product'
-		    ,'Deal Allowance Lock'=>'Yes'
-		     );
-$bogof_camp->add_deal_schema($data);
-
-$data=array(
-	    'Deal Name'=>'[Product Code] BOGOF'
-		     ,'Deal Trigger'=>'Product'
-		     ,'Deal Allowance Type'=>'Get Same Free'
-		     ,'Deal Allowance Description'=>'get 1 free'
-		     ,'Deal Allowance Target'=>'Product'
-		     ,'Deal Allowance Lock'=>'Yes'
-
-		     );
-$bogof_camp->add_deal_schema($data);
-
-
-$bogof_cam_id=$bogof_camp->id;
-$campaign=array(
-		     'Campaign Name'=>'First Order Bonus'
-		     ,'Campaign Trigger'=>'Order'
-		     ,'Campaign Description'=>'When you order over £100+vat for the first time we give you over a £100 of stock. (at retail value).'
-		     ,'Campaign Begin Date'=>''
-		     ,'Campaign Expiration Date'=>''
-		     ,'Campaign Deal Terms Type'=>'Order Total Net Amount AND Order Number'
-		     ,'Campaign Deal Terms Description'=>'order over £100+tax on the first order '
-		     ,'Campaign Deal Terms Lock'=>'Yes'
-		     );
-$camp=new Campaign('find create',$campaign);
-
-
-$data=array(
-	    'Deal Name'=>'First Order Bonus [Counter]'
-	    ,'Deal Trigger'=>'Order'
-            ,'Deal Description'=>'When you order over £100+vat for the first time we give you over a £100 of stock. (at retail value).'
-	    ,'Deal Allowance Type'=>'Get Free'
-	    ,'Deal Allowance Description'=>'Free Bonus Stock ([Product Code])'
-	    ,'Deal Allowance Target'=>'Product'
-	    ,'Deal Allowance Lock'=>'No'
-	    
-	    );
-$camp->add_deal_schema($data);
 
 
 
@@ -748,9 +463,13 @@ $description='Rose Garden (Red)';
 	  $department_code='Bath';
 	   if(preg_match('/Rincón Bisuteía/i',$department_name) )
 	  $department_code='Bisu';
+	  
+	   if(preg_match('/Cristales Nuevos/i',$department_name) )
+	  $department_code='Crist';
+	  
 	if($department_code==''){
 	
-	  exit("name: $department_name\n");
+	  exit("Error unknown department (get_product_es.php) name: $department_name\n");
 	
 	}
 
@@ -1014,7 +733,7 @@ $codigos[$code]=1;
 
 
 function update_supplier_part($code,$scode,$supplier_code,$units,$w,$product,$description,$supplier_cost){
-global $myconf;
+global $myconf,$editor;
  $product->update_for_sale_since(date("Y-m-d H:i:s",strtotime("now +1 seconds")));
 	if(preg_match('/^SG\-|^info\-/i',$code))
 	  $supplier_code='AW';
@@ -1693,15 +1412,20 @@ if(preg_match('/^Wenzels$/i',$supplier_code)){
 	  $scode='?'.$code;
 	}
 	$sp_data=array(
+	  'editor'=>$editor,
 		       'Supplier Key'=>$supplier->id,
 		       'Supplier Product Code'=>$scode,
-		       'Supplier Product Cost'=>sprintf("%.4f",$supplier_cost),
+		         'Supplier Product Units Per Case'=>1,
+		       'Supplier Product Cost Per Case'=>sprintf("%.2f",$supplier_cost),
 		       'Supplier Product Name'=>$description,
 		       'Supplier Product Description'=>$description,
-		       'Supplier Product Valid From'=>date('Y-m-d H:i:s'),
-		       'Supplier Product Valid To'=>date('Y-m-d H:i:s')
+		       'Supplier Product Valid From'=>$editor['Date'],
+		       'Supplier Product Valid To'=>$editor['Date']
 		       );
+	//	print_r($sp_data);
 	$supplier_product=new SupplierProduct('find',$sp_data,'create');
+	//	print_r($supplier_product->data);
+
 	if($supplier_product->found_in_key){
 	  print "$code (duplicate supplier code)\n";
 	}elseif($supplier_product->found_in_code){
@@ -1710,50 +1434,58 @@ if(preg_match('/^Wenzels$/i',$supplier_code)){
 	
 
 	$part_data=array(
+			 'editor'=>$editor,
 			 'Part Most Recent'=>'Yes',
 			 'Part XHTML Currently Supplied By'=>sprintf('<a href="supplier.php?id=%d">%s</a>',$supplier->id,$supplier->get('Supplier Code')),
 			 'Part XHTML Currently Used In'=>sprintf('<a href="product.php?id=%d">%s</a>',$product->id,$product->get('Product Code')),
 			 'Part XHTML Description'=>preg_replace('/\(.*\)\s*$/i','',$product->get('Product XHTML Short Description')),
-		     'Part Unit Description'=>strip_tags(preg_replace('/\(.*\)\s*$/i','',$product->get('Product XHTML Short Description'))),
-
-			 'part valid from'=>date('Y-m-d H:i:s'),
-			 'part valid to'=>date('Y-m-d H:i:s'),
+			 'Part Unit Description'=>strip_tags(preg_replace('/\(.*\)\s*$/i','',$product->get('Product XHTML Short Description'))),
+			 
+			 'part valid from'=>$editor['Date'],
+			 'part valid to'=>$editor['Date'],
 			 'Part Gross Weight'=>$w
 			 );
 	$part=new Part('new',$part_data);
-	//	print_r($part->data);
-	
+	if($part->new){
+	  
+	}
 
-	
 
-	
-	$rules[]=array('Part Sku'=>$part->data['Part SKU'],
-		       'Supplier Product Units Per Part'=>$units
-		       ,'supplier product part most recent'=>'Yes'
-		       ,'supplier product part valid from'=>date('Y-m-d H:i:s')
-		       ,'supplier product part valid to'=>date('Y-m-d H:i:s')
-		       ,'factor supplier product'=>1
+
+	$spp_header=array(
+			  'Supplier Product Part Type'=>'Simple',
+		       'Supplier Product Part Most Recent'=>'Yes',
+		       'Supplier Product Part Valid From'=>$editor['Date'],
+		       'Supplier Product Part Valid To'=>$editor['Date'],
+		       'Supplier Product Part In Use'=>'Yes'
 		       );
 
+	$spp_list=array(
+			array(
+			      'Part SKU'=>$part->data['Part SKU'],
+			      'Supplier Product Units Per Part'=>1,
+			      'Supplier Product Part Type'=>'Simple'
+			      )
+			);
 	
-
-	$supplier_product->new_part_list('',$rules);
+	
+	
+	$supplier_product->new_current_part_list($spp_header,$spp_list);
 	
 	$part_list[]=array(
 			   'Part SKU'=>$part->get('Part SKU'),
 			   'Parts Per Product'=>1,
 			   'Product Part Type'=>'Simple'
 			   );
-			   
+	
 			
-			   
-			 $product->new_current_part_list(array(),$part_list)  ;
-	//$product->new_part_list(array(),$part_list);
-$supplier_product->load('used in');
+	
+	$product->new_current_part_list(array(),$part_list)  ;
+	$supplier_product->load('used in');
 	$product->load('parts');
 	$part->load('used in');
 	$part->load('supplied by');
-	$product->load('cost');
+	$product->update_cost_supplier();
 
 }
 

@@ -9,7 +9,16 @@
     <span class="clean_table_title">{t}Order List{/t}</span>
     
     <div id="table_type" class="table_type">
-    <a  style="float:right"  class="table_type state_details"  href="orders_csv.php" >{t}Export (CSV){/t}</a>
+        <div  style="font-size:90%"   id="dispatch_chooser" style="display:{if $view!='orders'}none{/if}">
+            <span  id="export_csv0" style="float:right;margin-left:20px"  class="table_type state_details" tipo="orders" >{t}Export (CSV){/t}</span> 
+            <span style="float:right;margin-left:20px" class="table_type dispatch state_details {if $dispatch=='all_orders'}selected{/if}"  id="restrictions_all_orders" table_type="all_orders"  >{t}All Orders{/t} ({$store->get('Total Orders')})</span>
+            <span style="float:right;margin-left:20px" class="table_type dispatch  state_details {if $dispatch=='in_process'}selected{/if}"  id="restrictions_orders_in_process" table_type="in_process"   >{t}In Process{/t} ({$store->get('Orders In Process')})</span>
+            <span style="float:right;margin-left:20px" class="table_type dispatch state_details {if $dispatch=='dispatched'}selected{/if}"  id="restrictions_orders_dispatched"  table_type="dispatched"  >{t}Dispatched{/t} ({$store->get('Dispatched Orders')})</span>
+            <span style="float:right;margin-left:20px" class="table_type dispatch state_details {if $dispatch=='unknown'}selected{/if}"  id="restrictions_orders_unknown"  table_type="unknown"  >{t}Unknown{/t} ({$store->get('Unknown Orders')})</span>
+            <span style="float:right;margin-left:20px" class="table_type dispatch state_details {if $dispatch=='cancelled'}selected{/if}"  id="restrictions_orders_cancelled"  table_type="cancelled"  >{t}Cancel{/t} ({$store->get('Cancelled Orders')})</span>
+            <span style="float:right;margin-left:20px" class="table_type dispatch state_details {if $dispatch=='suspended'}selected{/if}"  id="restrictions_orders_suspended"  table_type="suspended"  >{t}Suspended{/t} ({$store->get('Suspended Orders')})</span>
+
+        </div>
      </div>
      
     
@@ -18,16 +27,9 @@
       
       <div style="">
    <table  style="float:left;margin:0 0 0 0px ;padding:0;clear:left"  class="options_mini" >
-     <tr  id="orders_show_only"  style="display:{if $view!='orders'}none{/if}"  >
-       <td  style="xmargin:5px 15px 0 0px ;padding:0;border:none;color:#555"  >{t}show only{/t}:</td>
-       
-       <td  style="" {if $dispatch=='in_process'}class="selected"{/if}  id="in_process"  >{t}In Process{/t}</td>
-       <td  style="" {if $dispatch=='dispached'}class="selected"{/if}  id="dispached"  >{t}Dispatched{/t}</td>
-       <td  style="" {if $dispatch=='cancelled'}class="selected"{/if}  id="cancelled"  >{t}Cancelled{/t}</td>
-       <td  style="" {if $dispatch=='unknown'}class="selected"{/if}  id="unknown"  >{t}Unknown{/t}</td>
-
-     </tr>
-   
+     
+     
+    
 
    </table>
 </div>
@@ -56,24 +58,24 @@
   
    <div  id="invoices_table"   class="data_table" style="{if $view!='invoices'}display:none{/if};clear:both">
     <span class="clean_table_title">{t}Invoice List{/t}</span>
-      
-    <div id="table_type" class="table_type">
-    <a  style="float:right"  class="table_type state_details"  href="invoices_csv.php" >{t}Export (CSV){/t}</a>
+     <div id="table_type" class="table_type">
+
+<span  id="export_csv1" style="float:right;margin-left:20px"  class="table_type state_details" tipo="invoices" >{t}Export (CSV){/t}</span>
+        <div  style="font-size:90%"   id="invoice_chooser"  style="display:{if $view!='orders'}none{/if}">
+           
+            <span style="float:right;margin-left:20px" class="table_type invoice_type state_details {if $invoice_type=='all'}selected{/if}"  id="restrictions_all_invoices" table_type="all"  >{t}All{/t} ({$store->get('Total Invoices')})</span>
+            <span style="float:right;margin-left:20px" class="table_type invoice_type state_details {if $invoice_type=='invoices'}selected{/if}"  id="restrictions_invoices" table_type="invoices"   >{t}Invoices{/t} ({$store->get('Invoices')})</span>
+            <span style="float:right;margin-left:20px" class="table_type invoice_type state_details {if $invoice_type=='refunds'}selected{/if}"  id="restrictions_refunds"  table_type="refunds"  >{t}Refunds{/t} ({$store->get('Refunds')})</span>
+            <span style="float:right;margin-left:20px" class="table_type invoice_type state_details {if $invoice_type=='to_pay'}selected{/if}"  id="restrictions_to_pay"  table_type="to_pay"  >{t}To pay{/t} ({$store->get('All To Pay Invoices')})</span>
+            <span style="float:right;margin-left:20px" class="table_type invoice_type state_details {if $invoice_type=='paid'}selected{/if}"  id="restrictions_paid"  table_type="paid"  >{t}Paid{/t} ({$store->get('All Paid Invoices')})</span>
+        </div>
      </div>
+
+
+
     <div id="list_options0"> 
       <div style="clear:both;margin:0 0px;padding:0 20px ;border-bottom:1px solid #999"></div>
-      <div style="">
-   <table  style="float:left;margin:0 0 0 0px ;padding:0;clear:left"  class="options_mini" >
-     <tr  id="orders_show_only"   >
-       <td  style="xmargin:5px 15px 0 0px ;padding:0;border:none;color:#555"  >{t}show only{/t}:</td>
-       
-       <td  style="" {if $invoice_type=='refunds'}class="selected"{/if}  id="refunds"  >{t}Refunds{/t}</td>
-     
-     </tr>
    
-
-   </table>
-</div>
     <div style="float:right;margin-top:0px;padding:0px;font-size:90%;position:relative;top:-7px">  
     <form action="orders.php?" method="GET" style="margin-top:10px">
       <div style="position:relative;left:18px">
@@ -105,8 +107,26 @@
  <div   id="dn_table"  class="data_table" style="{if $view!='dn'}display:none{/if};clear:both">
     <span class="clean_table_title">{t}Delivery Note List{/t}</span>
     
-        <div id="table_type" class="table_type">
-    <a  style="float:right"  class="table_type state_details"  href="dn_csv.php" >{t}Export (CSV){/t}</a>
+        <div style="font-size:90%"  id="dn_table_type" class="table_type">
+   <span  id="export_csv2" style="float:right;margin-left:20px"  class="table_type state_details" tipo="dn" >{t}Export (CSV){/t}</span>
+            <span style="float:right;margin-left:20px" class="table_type dn_view state_details {if $dn_state_type=='all'}selected{/if}"  id="restrictions_dn_all" table_type="all"  >{t}All{/t} ({$store->get('Total Orders')})</span>
+            <img onClick="change_dn_view(this)" state="{$dn_view}"   style="cursor:pointer;float:right;margin-left:20px;position:relative;top:5px;" src="art/icons/previous.png" alt="x"/>
+           <div id="dn_view_state_chooser"    style="{if $dn_view!='dn_state'}display:none{/if}">
+           <span style="float:right;margin-left:20px" class="table_type dn_view state_details {if $dn_state_type=='returned'}selected{/if}"  id="restrictions_dn_returned"  table_type="returned"  >{t}Return{/t} ({$store->get('Returned Delivery Notes')})</span>
+            <span style="float:right;margin-left:20px" class="table_type dn_view state_details {if $dn_state_type=='send'}selected{/if}"  id="restrictions_dn_send"  table_type="send"  >{t}Send{/t} ({$store->get('Dispatched Delivery Notes')})</span>
+            <span style="float:right;margin-left:20px" class="table_type dn_view state_details {if $dn_state_type=='ready'}selected{/if}"  id="restrictions_dn_ready"  table_type="ready"  >{t}Ready{/t} ({$store->get('Ready to dn_view Delivery Notes')})</span>
+            <span style="float:right;margin-left:20px" class="table_type dn_view state_details {if $dn_state_type=='packing'}selected{/if}"  id="restrictions_dn_packing"  table_type="packing"  >{t}Packing{/t} ({$store->get('Packing Delivery Notes')})</span>
+            <span style="float:right;margin-left:20px" class="table_type dn_view state_details {if $dn_state_type=='picking'}selected{/if}"  id="restrictions_dn_picking"  table_type="picking"  >{t}Picking{/t} ({$store->get('Picking Delivery Notes')})</span>
+            <span style="float:right;margin-left:20px" class="table_type dn_view  state_details {if $dn_state_type=='ready_to_pick'}selected{/if}"  id="restrictions_dn_ready_to_pick" table_type="ready_to_pick"   >{t}To Pick{/t} ({$store->get('Ready to Pick Delivery Notes')})</span>
+            </div>
+             <div id="dn_view_type_chooser" style="{if $dn_view!='dn_type'}display:none{/if}">
+            <span style="float:right;margin-left:20px" class="table_type dn_view state_details {if $dn_state_type=='shortages'}selected{/if}"  id="restrictions_dn_shortages"  table_type="shortages"  >{t}Shortages{/t} ({$store->get('Delivery Notes For Shortages')})</span>
+            <span style="float:right;margin-left:20px" class="table_type dn_view state_details {if $dn_state_type=='replacements'}selected{/if}"  id="restrictions_dn_replacements"  table_type="replacements"  >{t}Replacements{/t} ({$store->get('Delivery Notes For Replacements')})</span>
+            <span style="float:right;margin-left:20px" class="table_type dn_view state_details {if $dn_state_type=='donations'}selected{/if}"  id="restrictions_dn_donations"  table_type="donations"  >{t}Donations{/t} ({$store->get('Delivery Notes For Donations')})</span>
+            <span style="float:right;margin-left:20px" class="table_type dn_view state_details {if $dn_state_type=='samples'}selected{/if}"  id="restrictions_dn_samples"  table_type="samples"  >{t}Samples{/t} ({$store->get('Delivery Notes For Samples')})</span>
+            <span style="float:right;margin-left:20px" class="table_type dn_view  state_details {if $dn_state_type=='orders'}selected{/if}"  id="restrictions_dn_orders" table_type="orders"   >{t}Orders{/t} ({$store->get('Delivery Notes For Orders')})</span>
+            </div>
+            
      </div>
     <div id="list_options0"> 
       <div style="clear:both;margin:0 0px;padding:0 20px ;border-bottom:1px solid #999"></div>
@@ -165,5 +185,8 @@
     </ul>
   </div>
 </div>
+{include file='export_csv_menu_splinter.tpl' id=0 cols=$export_csv_table_cols session_address="orders-table-csv_export0" export_options=$csv_export_options0 }
+{include file='export_csv_menu_splinter.tpl' id=1 cols=$export_csv_table_cols1 session_address="orders-table-csv_export1" export_options=$csv_export_options1 }
+{include file='export_csv_menu_splinter.tpl' id=2 cols=$export_csv_table_cols2 session_address="orders-table-csv_export2" export_options=$csv_export_options2 }
 
 {include file='footer.tpl'}

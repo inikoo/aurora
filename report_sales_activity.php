@@ -43,38 +43,38 @@ $smarty->assign('js_files',$js_files);
 $mixed_currencies=false;
 
 
-$to=date('d-m-Y');
-$from=date('d-m-Y',strtotime('now -7 day'));
+$to=date('Y-m-d');
+$from=date('Y-m-d',strtotime('now -7 day'));
 
 
 
 
 if(isset($_REQUEST['period'])){
 $period=$_REQUEST['period'];
-$_SESSION['state']['report']['activity']['period']=$period;
+$_SESSION['state']['report_activity']['period']=$period;
 }else
-$period=$_SESSION['state']['report']['activity']['period'];
+$period=$_SESSION['state']['report_activity']['period'];
 
 switch($period){
 case('day'):
-$to=date('d-m-Y');
-$from=date('d-m-Y',strtotime('now -1 day'));
+$to=date('Y-m-d');
+$from=date('Y-m-d',strtotime('now -1 day'));
 $period_label=_('Last 24hrs Sales Activity');
 break;
 case('year'):
-$to=date('d-m-Y');
-$from=date('d-m-Y',strtotime('now -1 year'));
+$to=date('Y-m-d');
+$from=date('Y-m-d',strtotime('now -1 year'));
 $period_label=_('Last Year Sales Activity');
 break;
 case('month'):
-$to=date('d-m-Y');
-$from=date('d-m-Y',strtotime('now -1 month'));
+$to=date('Y-m-d');
+$from=date('Y-m-d',strtotime('now -1 month'));
 $period_label=_('Last Month Sales Activity');
 break;
 case('week'):
 default:
-$to=date('d-m-Y');
-$from=date('d-m-Y',strtotime('now -7 day'));
+$to=date('Y-m-d');
+$from=date('Y-m-d',strtotime('now -7 day'));
 $period_label=_('Last Week Sales Activity');
 
 
@@ -82,7 +82,7 @@ $period_label=_('Last Week Sales Activity');
 
 
 
-$compare_against=$_SESSION['state']['report']['activity']['compare'];
+$compare_against=$_SESSION['state']['report_activity']['compare'];
 switch($compare_against){
 case('previous_period'):
 $compare_label=_('Change against previous period');
@@ -90,27 +90,27 @@ $compare_label=_('Change against previous period');
 switch($period){
 
 case('day'):
-$compare_from=date('d-m-Y',strtotime("$to -2 day"));
-$compare_to=date('d-m-Y',strtotime("$to -1 day"));
+$compare_from=date('Y-m-d',strtotime("$to -2 day"));
+$compare_to=date('Y-m-d',strtotime("$to -1 day"));
 case('year'):
-$compare_from=date('d-m-Y',strtotime("$to -2 year"));
-$compare_to=date('d-m-Y',strtotime("$to -1 year"));
+$compare_from=date('Y-m-d',strtotime("$to -2 year"));
+$compare_to=date('Y-m-d',strtotime("$to -1 year"));
 case('month'):
-$compare_from=date('d-m-Y',strtotime("$to -2 month"));
-$compare_to=date('d-m-Y',strtotime("$to -1 month"));
+$compare_from=date('Y-m-d',strtotime("$to -2 month"));
+$compare_to=date('Y-m-d',strtotime("$to -1 month"));
 case('week'):
 default:
 
-$compare_from=date('d-m-Y',strtotime("$to -2 week"));
-$compare_to=date('d-m-Y',strtotime("$to -1 week"));
+$compare_from=date('Y-m-d',strtotime("$to -2 week"));
+$compare_to=date('Y-m-d',strtotime("$to -1 week"));
 
 }
 
 case('last_year'):
 default:
 $compare_label=_('Change against last year');
-$compare_from=date('d-m-Y',strtotime("$from -1 year"));
-$compare_to=date('d-m-Y',strtotime("$to -1 year"));
+$compare_from=date('Y-m-d',strtotime("$from -1 year"));
+$compare_to=date('Y-m-d',strtotime("$to -1 year"));
 }
 
 $smarty->assign('compare_label',$compare_label);
