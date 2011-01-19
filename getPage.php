@@ -8,11 +8,6 @@
 	$index = $_REQUEST['v'];
 	$r = $csv->getRow($index);
 ?>
-
-
-
-
-
 <table class="recordList">
 		
 		<tr>
