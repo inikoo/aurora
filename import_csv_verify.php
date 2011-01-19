@@ -12,12 +12,6 @@
  Version 2.0
 */
 include_once('common.php');
-include_once('class.Store.php');
-include_once('assets_header_functions.php');
-	
-
-
-
 $css_files=array(
 		 $yui_path.'reset-fonts-grids/reset-fonts-grids.css',
 		 $yui_path.'menu/assets/skins/sam/menu.css',
@@ -94,7 +88,7 @@ if(isset($_POST['submit']))
 				$csv = new CSV_PARSER;
 				//loading the CSV File
 				$csv->load($target_path);
-	
+				$_SESSION['file_path'] = $target_path;
 				$r = $csv->connect();
 						
 				//echo '<pre>'; print_r($r);
