@@ -34,7 +34,7 @@ if ($user->data['User Type']=='Supplier') {
 
 
 
-$smarty->assign('store_keys',join($user->stores));
+$smarty->assign('store_keys',join(',',$user->stores));
 
 
 
