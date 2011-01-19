@@ -1,8 +1,8 @@
 ﻿{include file='header.tpl'}
-{literal}<script language="Javascript">
+<script language="Javascript">
 	window.onload = get_default({$v});
 </script>
-{/literal}
+
 <div id="bd">
 <div id="no_details_title" style="clear:left;{if $show_details}display:none;{/if}">
     <h1>Import Contacts From CSV File
