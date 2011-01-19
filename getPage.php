@@ -8,6 +8,9 @@
 	$h = $csv->getHeaders();
 	$index = $_REQUEST['v'];
 	$r = $csv->getRow($index);
+	$leftColumnArray = array();
+	$rightColumnArray = array();
+	//$assign = $_POST['assign_field'];	
 ?>
 <table class="recordList">
 		
@@ -21,10 +24,9 @@
 		<th class="list-column-left" style="text-align: left; width: 30%;">
 		<span style="float: left;">Sample Values</span>
 		<span style="float: right;padding-right:5px;"> 
-
-	 &nbsp;
-
-	<a href="#" class="subtext"  onclick="getNext(<?php echo $index; ?>)">Next</a>
+			<a href="#" class="subtext"  onclick="getPrev(<?php echo $index; ?>)">Previous</a> &nbsp;&nbsp;
+			<a href="#" class="subtext"  onclick="getNext(<?php echo $index; ?>)">Next</a>
+	
 		</span>
 		</th>
 		</tr>
@@ -37,10 +39,10 @@
 	<tr>
 		<td width=150 align=center >
 		<!-- Header Output -->
-		<?php echo $h[$j];?>
+		<?php echo $h[$j]; 	$leftColumnArray = $h; ?>
 		</td>
 		<td align=center>
-		<select name="assign_field" id="assign_field">
+		<select name="assign_field[]" id="assign_field">
 		    <option value="0">Unknown Please Choose</option>
 		    <option value="Customer Main Contact Name">Customer Main Contact Name</option>
 		    <option value="Customer Name">Customer Name</option>
@@ -66,16 +68,16 @@
 		</td>
 		<td>
 			<!-- Value Output -->
-			<?php echo $r[$j];?>
+			<?php echo $r[$j];  	$rightColumnArray = $r;?>
 		</td>
 	</tr>
 	<?php
+		
 	}
 	?>
-<tr>
-
-</tr>
 </table>
-
-			
-
+<?php
+	echo '<pre>';
+	print_r($rightColumnArray);
+	
+?>

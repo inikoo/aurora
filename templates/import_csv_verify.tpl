@@ -2,16 +2,28 @@
 <script language="Javascript">
 	window.onload = get_default({$v});
 </script>
-
+{literal}
+<script language="Javascript">
+	function checkDropdown() { 
+	if(document.getElementById('assign_field').selectedIndex==0) 
+	{
+	 alert(document.getElementById('assign_field').selectedIndex);
+ //alert('Please assign the field');
+	  return false;
+	}
+	return true;
+}
+</script>
+{/literal}
 <div id="bd">
 <div id="no_details_title" style="clear:left;{if $show_details}display:none;{/if}">
     <h1>Import Contacts From CSV File
 </h1>
   </div>
 <br>
-<h3>{$wrong}</h3>
+
 <div class="left3Quarters">
- <form id="form" name="form" method="post" action="" enctype="multipart/form-data">
+ <form id="form" name="form" method="post" action="" enctype="multipart/form-data" onsubmit="return checkDropdown()">
 <input type="hidden" name="form" value="form" />
                     <div class="unframedsection"><div id="form:j_id68">
     <div class="prop">
@@ -26,11 +38,11 @@
                     <ul class="formActions">
                         <li>
                            <div class="framedsection">
-			<div id="call_table"></div>
+				<div id="call_table"></div>
     			  </div>
 		    <ul class="formActions">
                     		<li>
-				        <div class="bt"><input type="submit" value="Continue" name="" id=""></div>
+		     			<div class="bt"><input type="submit" value="Continue" name="" id=""></div>
                     		</li>
                 	  </ul>	
                         </li>

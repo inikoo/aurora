@@ -88,6 +88,7 @@ if(isset($_POST['submit']))
 				$csv = new CSV_PARSER;
 				//loading the CSV File
 				$csv->load($target_path);
+				$h = $csv->getHeaders();
 				$_SESSION['file_path'] = $target_path;
 				$r = $csv->connect();
 						
@@ -101,16 +102,6 @@ if(isset($_POST['submit']))
 	  }
 }
 
-if(isset($_REQUEST['assign_field']) && $_REQUEST['assign_field'] == 0)
-{
-	$wrong = '&nbsp;&nbsp;&nbsp;<img src="images/exclamation-red-frame.png"/>&nbsp;&nbsp;Please make a decision on all fields marked Unknown, Please Choose...';
-}
-else
-{
-	$wrong = '';
-}
-
-
 $v = 0;
 
 $smarty->assign('v',$v);
@@ -119,9 +110,7 @@ $smarty->assign('scope',$scope);
 $smarty->assign('scope_args',$scope_args);
 $smarty->assign('js_files',$js_files);
 $smarty->assign('css_files',$css_files);
-$smarty->assign('wrong',$wrong);
 
-
-  $smarty->display('import_csv_verify.tpl');
+$smarty->display('import_csv_verify.tpl');
 
 ?>
