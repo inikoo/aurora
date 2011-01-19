@@ -13,9 +13,9 @@ if(mysql_num_rows($result) > 0)
 
 <center>
 
-<table style="font-size:22px;" width="100%" align="center"><tr><td>
-<span style="font-size:22px;font-weight:bold;"><?php echo $row['Customer Company Name']; ?></span><br> 
-<span style="font-size:20px;font-weight:bold;"><?php echo $row['Customer Main Contact Name'];?></span><br><?php echo $row['Customer Main XHTML Address']; ?>
+<table style="font-size:30px;" width="100%" align="center"><tr><td>
+<span style="font-size:31px;font-weight:bold;"><?php echo $row['Customer Company Name']; ?></span><br> 
+<span style="font-size:30px;font-weight:bold;"><?php echo $row['Customer Main Contact Name'];?></span><br><?php echo $row['Customer Main XHTML Address']; ?>
 </td></tr></table>
 
 <?php
