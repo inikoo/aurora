@@ -14,7 +14,7 @@ table.edit tr.validated td.label { background:url('../art/icons/accept.png') no-
 
 table.edit td.icon{ padding:0 5px;width:16px}
 table.edit tr.top{ border-top:1px solid #1d4e85}
-table.edit tr.title{xheight:30px;text-align:left; border-bottom:1px solid #a5b6c8}
+table.edit tr.title{text-align:left; border-bottom:1px solid #a5b6c8;}
 table.edit tr.title td{vertical-align:bottom;font-weight:800;text-align:left;}
 table.edit img.icon{margin-left:10px;float:right;cursor:pointer}
 table.edit tr.last{ border-bottom:1px solid #a5b6c8}
@@ -39,8 +39,8 @@ table.form_state {width:300px;font-size:80%}
 table.form_state td{text-align:center;border-top:1px solid #ccc}
 table.form_state td.aright{text-align:right}
 table.form_state td.aleft{text-align:left}
-.disabled{cursor:default;color:#ddd}
-.disabled:hover{cursor:default;color:#ddd}
+.disabled{cursor:default;color:#999;text-decoration:line-through}
+.disabled:hover{color:#777}
 
 .edit_td_alert{font-size:80%;color:red}
 .edit_td_alert a{color:red;text-decoration:underline}
@@ -66,3 +66,14 @@ table.form_state td.aleft{text-align:left}
 
 .shelf_locations table td.cols_header{}
 .shelf_locations table td.rows_header{text-align:right;padding-right:10px}
+
+.image_radio{font-size:80%;color:#aaa}
+.image_radio div{float:left;text-align:center;margin-bottom:10px;cursor:pointer}
+.image_radio div img{border:1px solid #ccc}
+.image_radio div.selected img{border:1px solid #999}
+.image_radio div.selected {font-weight:800;color:black;cursor:default}
+.image_radio div:hover {font-weight:800;color:black}
+.image_radio div img:hover{border:1px solid #999}
+
+.list_options tr{border-top:1px solid #ccc}
+.list_options td.option {padding-left:40px}

@@ -2,59 +2,36 @@
 <div id="bd" >
 {include file='contacts_navigation.tpl'}
 
-  <div id="no_details_title"  style="clear:left;xmargin:0 20px;{if $details!=0}display:none{/if}">
+
+{literal}
+<script language="javascript">
+function poponload()
+{
+    testwindow = window.open("xml_import.php", "mywindow", "location=1,status=1,scrollbars=1,width=300,height=300");
+    testwindow.moveTo(500, 200);
+}
+</script>
+{/literal} 
+
+
+
+
+  <div id="no_details_title"  style="clear:left;xmargin:0 20px;">
     <h1>{t}Customers{/t} ({$store->get('Store Code')})</h1>
   </div>
-  <div id="info"  style="clear:left;margin-top:10px;padding:0 0px;width:910px;{if $details==0}display:none{/if}">
-    <h2>{t}Customers Information{/t} ({$store->get('Store Code')})</h2>
-      <p style="width:475px">{$overview_text}</p>
-      <div id="plot"  class="top_bar" style="width:100%;;position:relative;clear:both;padding:0;margin:0px;{if !$details}display:none;{/if}">
-<span id="plot_info" keys="{$store->get('Store Key')}">
-	<ul id="plot_chooser" class="tabs" style="margin:0 0px;padding:0 20px "  >
-	  <li>
-	    <span class="item  {if $plot_tipo=='customers'}selected{/if}" onClick="change_plot(this)" id="plot_customers" tipo="customers" category="{$plot_data.customers.category}" period="{$plot_data.customers.period}" >
-	      <span>{t}All Contacts{/t}</span>
-	    </span>
-	  </li>
-	  <li>
-	    <span class="item  {if $plot_tipo=='active_customers'}selected{/if}"  id="plot_active_customers" onClick="change_plot(this)" tipo="active_customers" category="{$plot_data.active_customers.category}" period="{$plot_data.active_customers.period}" name=""  >
-	      <span>{t}Actual Customers{/t}</span>
-	    </span>
-	  </li>
-	  
-	</ul> 
-	<ul id="plot_options" class="tabs" style="{if $plot_tipo=='pie'}display:none{/if};position:relative;top:.6em;float:right;margin:0 20px;padding:0 20px;font-size:90% "  >
-	  <li><span class="item option"> <span id="plot_category"  category="{$plot_category}" style="xborder:1px solid black;display:inline-block; vertical-align:middle">{$plot_formated_category}</span></span></li>
-	  <li><span class="item option"> <span id="plot_period"   period="{$plot_period}" style="xborder:1px solid black;display:inline-block; vertical-align:middle">{$plot_formated_period}</span></span></li>
-	</ul> 
-	
-	<div style="clear:both;margin:0 0px;padding:0 20px ;border-bottom:1px solid #999">
-	  
-      </div>
-      
-      <iframe id="the_plot" src ="{$plot_page}?{$plot_args}"  frameborder=0 height="400" scrolling="no" width="100%"></iframe>
-      </div>
-      <p style="width:475px">{$top_text}</p>
-      <p style="width:475px">{$export_text}</p>
 
-
-
-
-    </div>
-
-    
     <div id="the_table" class="data_table" style="clear:both">
       <span class="clean_table_title">Customers List</span>
       
    <div  style="font-size:90%">
-   
-         <a  style="float:right;margin-left:20px"  class="table_type state_details"  href="customers_csv.php" >{t}Export (CSV){/t}</a>
-          <span   style="float:right;margin-left:20px" class="table_type  state_details {if $table_type=='all_contacts'}selected{/if}"  id="restrictions_all_contacts" table_type="all_contacts"  >{t}All Contacts{/t} ({$store->get('Total Customer Contacts')})</span>
-  <span   style="float:right;margin-left:20px" class="table_type  state_details {if $table_type=='all_customers'}selected{/if}"  id="restrictions_all_customers" table_type="all_customers"   >{t}All Customers{/t} ({$store->get('Total Customers')})</span>
-  <span   style="float:right;margin-left:20px" class="table_type  state_details {if $table_type=='active_customers'}selected{/if}"  id="restrictions_active_customers"  table_type="active_customers"  >{t}Active Customers{/t} ({$store->get('Active Customers')})</span>
+<span  id="import_csv0" style="float:right;margin-left:20px" onclick="javascript: poponload();" class="table_type state_details" tipo="customers" >{t}Import (XML){/t}</span>
+         <span  id="export_csv0" style="float:right;margin-left:20px"  class="table_type state_details" tipo="customers" >{t}Export (CSV){/t}</span>
+          <span style="float:right;margin-left:20px" class="table_type  state_details {if $table_type=='all_contacts'}selected{/if}"  id="restrictions_all_contacts" table_type="all_contacts"  >{t}All Contacts{/t} ({$store->get('Total Customer Contacts')})</span>
+          <span style="float:right;margin-left:20px" class="table_type  state_details {if $table_type=='all_customers'}selected{/if}"  id="restrictions_all_customers" table_type="all_customers"   >{t}All Customers{/t} ({$store->get('Total Customers')})</span>
+          <span style="float:right;margin-left:20px" class="table_type  state_details {if $table_type=='active_customers'}selected{/if}"  id="restrictions_active_customers"  table_type="active_customers"  >{t}Active Customers{/t} ({$store->get('Active Customers')})</span>
 
-         
-         
+	
+
      </div>
   <div style="clear:both;margin:0 0px;padding:0 20px ;border-bottom:1px solid #999"></div>
   
@@ -104,26 +81,7 @@
   </div>
 </div>
 
-<div id="plot_period_menu" class="yuimenu">
-  <div class="bd">
-    <ul class="first-of-type">
-      <li style="text-align:left;margin-left:10px;border-bottom:1px solid #ddd">{t}Plot frequency{/t}:</li>
-      {foreach from=$plot_period_menu item=menu }
-      <li class="yuimenuitem"><a class="yuimenuitemlabel" onClick="change_plot_period('{$menu.period}')"> {$menu.label}</a></li>
-      {/foreach}
-    </ul>
-  </div>
-</div>
-<div id="plot_category_menu" class="yuimenu">
-  <div class="bd">
-    <ul class="first-of-type">
-      <li style="text-align:left;margin-left:10px;border-bottom:1px solid #ddd">{t}Plot Type{/t}:</li>
-      {foreach from=$plot_category_menu item=menu }
-      <li class="yuimenuitem"><a class="yuimenuitemlabel" onClick="change_plot_category('{$menu.category}')"> {$menu.label}</a></li>
-      {/foreach}
-    </ul>
-  </div>
-</div>
+
 
 
 <div id="dialog_new_customer" style="padding:10px">
@@ -144,6 +102,6 @@
 
 </div>
 
-
+{include file='export_csv_menu_splinter.tpl' id=0 cols=$export_csv_table_cols session_address="customers-csv_export0" export_options=$csv_export_options0 }
 
 {include file='footer.tpl'}

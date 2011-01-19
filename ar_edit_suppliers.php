@@ -24,6 +24,15 @@ $editor=array(
 
 $tipo=$_REQUEST['tipo'];
 switch($tipo){
+case('create_product'):
+
+$data=prepare_values($_REQUEST,array(
+                             'parent_key'=>array('type'=>'key'),
+                             'values'=>array('type'=>'json array')
+                         ));
+                         
+create_product($data);
+break;
 case('new_supplier'):
  $data=prepare_values($_REQUEST,array(
 			     'values'=>array('type'=>'json array')
@@ -32,20 +41,32 @@ case('new_supplier'):
  new_supplier($data);
  
  break;
- case('new_supplier'):
-  $data=prepare_values($_REQUEST,array(
-			     'values'=>array('type'=>'json array')
-			   
-			     ));
-  new_supplier($data);
-  break;
+
 case('supplier_products'):
   list_supplier_products();
   break;
+case('edit_product_description'):
+    $data=prepare_values($_REQUEST,array(
+                             'pid'=>array('type'=>'key'),
+                             'newvalue'=>array('type'=>'string'),
+			     'key'=>array('type'=>'string'),
+			         'okey'=>array('type'=>'string')
+                         ));
+  edit_supplier_product($data);
+  break;  
+  case('edit_product_supplier'):
+    $data=prepare_values($_REQUEST,array(
+                             'sph_key'=>array('type'=>'key'),
+                             'newvalue'=>array('type'=>'string'),
+			     'key'=>array('type'=>'string')
+			   
+                         ));
+  edit_supplier_product($data);
+  break;  
 case('edit_supplier'):
   edit_supplier();
   break;
-case('edit_product_supplier'):
+case('edit_supplier_product'):
 
 			     $data=prepare_values($_REQUEST,array(
 			     'newvalue'=>array('type'=>'string')
@@ -53,7 +74,7 @@ case('edit_product_supplier'):
 			     ,'sph_key'=>array('type'=>'key')
 			   
 			     ));
-  edit_product_supplier($data);
+  edit_supplier_product($data);
   break;
 case('complex_edit_supplier'):
   complex_edit_supplier();
@@ -74,7 +95,7 @@ $data['delete_type']=preg_replace('/delete/','Deleted',$data['delete_type']);
 $data['newvalue']=$data['delete_type'];
 $data['key']='Supplier Product Buy State';			     
 //print_r($data);
-  edit_product_supplier($data);
+  edit_supplier_product($data);
   break;
 default:
    $response=array('state'=>405,'resp'=>'Unknown Type');
@@ -109,9 +130,11 @@ function edit_supplier() {
     $key_dic=array(
 		   'name'=>'Supplier Company Name'
 		   ,'code'=>'Supplier Code'
-		   ,'email'=>'Supplier Email'
+		   ,'contact'=>'Supplier Main Contact Name'
+		   ,'email'=>'Supplier Main Plain Email'
 		   ,'telephone'=>'Supplier Main Plain Telephone'
-		   ,'contact_name'=>'Email'
+		   ,'fax'=>'Supplier Main Plain FAX'
+		   ,'www'=>'Supplier Main Web Site'
 		   ,"address"=>'Address'
 		   ,"town"=>'Main Address Town'
 		   ,"postcode"=>'Main Address Town'
@@ -127,8 +150,8 @@ function edit_supplier() {
     if(array_key_exists($_REQUEST['key'],$key_dic))
        $key=$key_dic[$_REQUEST['key']];
     
-    
-    $supplier->update(array($key=>stripslashes(urldecode($_REQUEST['newvalue']))));
+    $update_data=array($key=>stripslashes(urldecode($_REQUEST['newvalue'])));
+    $supplier->update($update_data);
   }
 
 
@@ -142,11 +165,26 @@ function edit_supplier() {
 
 }
 
-function edit_product_supplier($data) {
+function edit_supplier_product($data) {
   $key=$data['key'];
  
-  
+ if(!isset($data['okey'])){
+  $data['okey']=$data['key'];
+  }
+  if(isset($data['sph_key'])){
   $supplier_product=new SupplierProduct('id',$data['sph_key']);
+  }elseif(isset($data['pid'])){
+   $supplier_product=new SupplierProduct('pid',$data['pid']);
+  }
+  
+  if(!$supplier_product->id){
+     $response= array('state'=>400,'msg'=>$supplier_product->msg,'key'=>$key);
+       echo json_encode($response);
+       exit;
+  }
+  
+  
+
   global $editor;
   $supplier_product->editor=$editor;
   
@@ -172,7 +210,7 @@ function edit_product_supplier($data) {
 		   ,'description'=>'Supplier Product Description'
 		   ,'unit_type'=>'Supplier Product Unit Type'
 		   ,'units'=>'Supplier Product Units Per Case'
-		   ,"cost"=>'Supplier Product Cost'
+		   ,"cost"=>'Supplier Product Cost Per Case'
        
 		   
     );
@@ -188,9 +226,9 @@ function edit_product_supplier($data) {
         $response= array(
         'state'=>200,
         'newvalue'=>$supplier_product->new_value,
-        'key'=>$key,
-        'sp_current_key'=>$supplier_product->data['Supplier Product Current Key']
-        
+        'key'=>$data['okey'],
+        'sp_current_key'=>$supplier_product->data['Supplier Product Current Key'],
+         'sp_pid'=>$supplier_product->pid
         );
 
         if($key=='Supplier Product Buy State'){
@@ -516,12 +554,23 @@ function list_supplier_products() {
     $_dir=$order_direction;
 
 
-    $_SESSION['state']['supplier']['products']=array('order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value
-            ,'view'=>$product_view
-                    ,'percentage'=>$product_percentage
-                                  ,'period'=>$product_period
-                                                    );
+  
+ $_SESSION['state']['supplier']['products']['view']=$product_view;
+    $_SESSION['state']['supplier']['products']['percentage']=$product_percentage;
+    $_SESSION['state']['supplier']['products']['period']=$product_period;
+    $_SESSION['state']['supplier']['products']['order']=$order;
+    $_SESSION['state']['supplier']['products']['order_dir']=$order_dir;
+    $_SESSION['state']['supplier']['products']['nr']=$number_results;
+    $_SESSION['state']['supplier']['products']['sf']=$start_from;
+    $_SESSION['state']['supplier']['products']['where']=$where;
+    $_SESSION['state']['supplier']['products']['f_field']=$f_field;
+    $_SESSION['state']['supplier']['products']['f_value']=$f_value;
+
+
+
     $_SESSION['state']['supplier']['id']=$supplier_id;
+
+
 
     $where=$where.' and `Supplier Product Buy State` in ("Ok","Discontinued") and `supplier key`='.$supplier_id;
 
@@ -614,12 +663,12 @@ function list_supplier_products() {
         $data[]=array(
 		      'sph_key'=>$row['Supplier Product Current Key']
 		      ,'code'=>$row['Supplier Product Code']
-		      		   ,'go'=>sprintf("<a href='product_supplier.php?code=%s&supplier_key=%d&edit=1'><img src='art/icons/page_go.png' alt='go'></a>"
+		      		   ,'go'=>sprintf("<a href='supplier_supplier.php?code=%s&supplier_key=%d&edit=1'><img src='art/icons/page_go.png' alt='go'></a>"
 		      		   ,$row['Supplier Product Code'],$row['Supplier Key'])
 
                       
 		      ,'name'=>$row['Supplier Product Name']
-		      ,'cost'=>money($row['Supplier Product Cost'])
+		      ,'cost'=>money($row['Supplier Product Cost Per Case'])
 		      //,'usedin'=>$row['Supplier Product XHTML Used In']
 		      ,'unit_type'=>$row['Supplier Product Unit Type']
 		      ,'units'=>$row['Supplier Product Units Per Case']
@@ -678,6 +727,35 @@ $supplier_data['editor']=$editor;
 
 }
 
+function create_product($data) {
+    global $editor;
 
+    $sp_data=$data['values'];
+
+
+    $sp_data['editor']=$editor;
+    $sp_data['Supplier Key']=$data['parent_key'];
+    $sp_data['Supplier Key']=$data['parent_key'];
+    $sp_data['Supplier Product Valid From']=date("Y-m-d H:i:s");
+                                                     
+
+
+    $supplier_product=new SupplierProduct('find',$sp_data,'create');
+
+
+    if ($supplier_product->new) {
+    $msg=_('Supplier Product logged');
+        $response= array('state'=>200,'action'=>'created','object_key'=>$supplier_product->id,'msg'=>$msg);
+    } else {
+        if ($supplier_product->found)
+            $response= array('state'=>400,'action'=>'found','object_key'=>$supplier_product->found_key,'msg'=>_('Product already in the database'));
+        else
+            $response= array('state'=>400,'action'=>'error','object_key'=>0,'msg'=>$supplier_product->msg);
+    }
+
+
+    echo json_encode($response);
+
+}
 
 ?>

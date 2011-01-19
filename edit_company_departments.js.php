@@ -1,8 +1,5 @@
 <?php
 include_once('common.php');
-
-
-
 ?>
 
 var Event = YAHOO.util.Event;
@@ -15,8 +12,8 @@ var description_warnings= new Object();
 var description_errors= new Object();
 
 
-var scope='company_area';
-var scope_edit_ar_file='ar_edit_contacts.php';
+var scope='company_department';
+var scope_edit_ar_file='ar_edit_staff.php';
 var scope_key_name='id';
 var scope_key=0;
 
@@ -35,17 +32,17 @@ var validate_scope_data={
      'area':{'required':true,'validated':false,'name':'Company_Area_Key' ,'dbname':'Company Area Key','validation':[{'regexp':"^\\d+$",'invalid_msg':'<?php echo _('Choose a Company Area')?>'}]}
     ,'name':{'changed':false,'validated':true,'required':true,'group':1,'type':'item'
 	    ,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Department Name')?>'}],'name':'Company_Department_Name','dbname':'Company Department Name'
-	    ,'ar':'find','ar_request':'ar_contacts.php?tipo=is_company_department_name&company_key='+parent_key+'&query='}
+	    ,'ar':'find','ar_request':'ar_staff.php?tipo=is_company_department_name&company_key='+parent_key+'&query='}
     ,'code':{'changed':false,'validated':true,'required':false,'group':1,'type':'item'
 	     ,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Department Code')?>'}]
-	     ,'name':'Company_Department_Code' ,'dbname':'Company Department Code','ar':'find','ar_request':'ar_contacts.php?tipo=is_company_department_code&company_key='+parent_key+'&query='}
+	     ,'name':'Company_Department_Code' ,'dbname':'Company Department Code','ar':'find','ar_request':'ar_staff.php?tipo=is_company_department_code&company_key='+parent_key+'&query='}
     
 
    }
 };
 
 
-var validate_scope_metadata={'company_department':{'type':'new','ar_file':'ar_edit_warehouse.php'}};
+// var validate_scope_metadata={'company_department':{'type':'new','ar_file':'ar_edit_staff.php'}};
 
 function validate_code(query){
  validate_general('company_department','code',unescape(query));
@@ -122,16 +119,16 @@ YAHOO.util.Event.addListener(window, "load", function() {
 				    {key:"id", label:"<?php echo _('Key')?>", width:20,sortable:false,isPrimaryKey:true,hidden:true} 
 				    ,{key:"go",label:'',width:20,}
 
-				   ,{key:"code", label:"<?php echo _('Code')?>", width:100,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC},  editor: new YAHOO.widget.TextboxCellEditor({asyncSubmitter: CellEdit}),object:'company_department'}
-				    ,{key:"name", label:"<?php echo _('Name')?>", width:340,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}, editor: new YAHOO.widget.TextboxCellEditor({asyncSubmitter: CellEdit}),object:'company_department' }
-				   				    				   				   ,{key:"area", label:"<?php echo _('Area')?>", width:100,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				   ,{key:"code", label:"<?php echo _('Code')?>", width:100,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC},  editor: new YAHOO.widget.TextboxCellEditor({asyncSubmitter: CellEdit}),object:'ind_department'}
+				    ,{key:"name", label:"<?php echo _('Name')?>", width:340,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}, editor: new YAHOO.widget.TextboxCellEditor({asyncSubmitter: CellEdit}),object:'ind_department' }
+				   				    				   				  // ,{key:"area", label:"<?php echo _('Area')?>", width:100,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 
-				   ,{key:"delete", label:"", width:170,sortable:false,className:"aleft",action:'delete',object:'company_department'}
+				   ,{key:"delete", label:"", width:170,sortable:false,className:"aleft",action:'delete',object:'ind_department'}
 				    ,{key:"delete_type", label:"",hidden:true,isTypeKey:true}
 
 				     ];
 
-	    this.dataSource0 = new YAHOO.util.DataSource("ar_edit_contacts.php?tipo=edit_company_departments&parent=corporation");
+	    this.dataSource0 = new YAHOO.util.DataSource("ar_edit_staff.php?tipo=list_department_staff&parent=corporation");
 	    this.dataSource0.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource0.connXhrMode = "queueRequests";
 	    this.dataSource0.responseSchema = {

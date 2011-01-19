@@ -1,48 +1,52 @@
 <?php
 /*
- File: store.php 
+ File: store.php
 
  UI store page
 
- About: 
+ About:
  Autor: Raul Perusquia <rulovico@gmail.com>
- 
- Copyright (c) 2009, Kaktus 
- 
+
+ Copyright (c) 2009, Kaktus
+
  Version 2.0
 */
 include_once('common.php');
+
 include_once('class.Store.php');
 include_once('assets_header_functions.php');
-
 $page='store';
 $smarty->assign('page',$page);
-if(isset($_REQUEST['id']) and is_numeric($_REQUEST['id']) ){
-  $store_id=$_REQUEST['id'];
+if (isset($_REQUEST['id']) and is_numeric($_REQUEST['id']) ) {
+    $store_id=$_REQUEST['id'];
 
-}else{
-  $store_id=$_SESSION['state'][$page]['id'];
+} else {
+    $store_id=$_SESSION['state'][$page]['id'];
+}
+
+if (isset($_REQUEST['edit'])) {
+    header('Location: edit_store.php?id='.$store_id);
+
+    exit("E2");
 }
 
 
-if(!($user->can_view('stores') and in_array($store_id,$user->stores)   ) ){
-  header('Location: index.php');
-   exit;
+if (!($user->can_view('stores') and in_array($store_id,$user->stores)   ) ) {
+    header('Location: index.php');
+    exit;
 }
 
 
 
 $store=new Store($store_id);
 $_SESSION['state'][$page]['id']=$store->id;
+$smarty->assign('store_key',$store->id);
 
 $view_sales=$user->can_view('product sales');
 $view_stock=$user->can_view('product stock');
 $create=$user->can_create('product departments');
 
-
-
 $modify=$user->can_edit('stores');
-
 
 $smarty->assign('view_parts',$user->can_view('parts'));
 
@@ -63,79 +67,58 @@ $show_details=$_SESSION['state'][$page]['details'];
 $smarty->assign('show_details',$show_details);
 get_header_info($user,$smarty);
 
-if(isset($_REQUEST['edit']))
-  $edit=$_REQUEST['edit'];
-else
-  $edit=$_SESSION['state'][$page]['editing'];
 
 
-if(!$modify)
-  $edit=false;
 
-if(!$edit){
 $general_options_list=array();
 
-if($modify)
-  $general_options_list[]=array('tipo'=>'url','url'=>'store.php?edit=1','label'=>_('Edit Store'));
+if ($modify)
+    $general_options_list[]=array('tipo'=>'url','url'=>'store.php?edit=1','label'=>_('Edit Store'));
 $general_options_list[]=array('tipo'=>'js','state'=>$show_details,'id'=>'details','label'=>($show_details?_('Hide Details'):_('Show Details')));
 
-}else{
-  $general_options_list[]=array('tipo'=>'url','url'=>'store.php?edit=0','label'=>_('Exit Edit'));
-}
+
 $smarty->assign('general_options_list',$general_options_list);
-
-
-
 $smarty->assign('search_label',_('Products'));
 $smarty->assign('search_scope','products');
 
-
-
 $css_files=array(
-		 $yui_path.'reset-fonts-grids/reset-fonts-grids.css',
-		 $yui_path.'menu/assets/skins/sam/menu.css',
-		 $yui_path.'button/assets/skins/sam/button.css',
-		 $yui_path.'assets/skins/sam/autocomplete.css',
+               $yui_path.'reset-fonts-grids/reset-fonts-grids.css',
+               $yui_path.'menu/assets/skins/sam/menu.css',
+               $yui_path.'button/assets/skins/sam/button.css',
+               $yui_path.'assets/skins/sam/autocomplete.css',
 
-		 //	 $yui_path.'assets/skins/sam/autocomplete.css',
-		 'common.css',
-		 'container.css',
-		 'button.css',
-		 'table.css',
-		 'css/dropdown.css'
-		 );
+              	 $yui_path.'assets/skins/sam/autocomplete.css',
+               'common.css',
+               'container.css',
+               'button.css',
+               'table.css',
+               'css/dropdown.css'
+           );
 $js_files=array(
-		$yui_path.'utilities/utilities.js',
-		$yui_path.'json/json-min.js',
-		$yui_path.'paginator/paginator-min.js',
-		$yui_path.'dragdrop/dragdrop-min.js',
-		$yui_path.'datasource/datasource-min.js',
-		$yui_path.'autocomplete/autocomplete-min.js',
-		$yui_path.'datatable/datatable.js',
-		$yui_path.'container/container-min.js',
-		$yui_path.'menu/menu-min.js',
-		'js/php.default.min.js',
-		'common.js.php',
-		'table_common.js.php',
-		
-		'js/dropdown.js'
-		);
+              $yui_path.'utilities/utilities.js',
+              $yui_path.'json/json-min.js',
+              $yui_path.'paginator/paginator-min.js',
+              $yui_path.'dragdrop/dragdrop-min.js',
+              $yui_path.'datasource/datasource-min.js',
+              $yui_path.'autocomplete/autocomplete-min.js',
+              $yui_path.'datatable/datatable.js',
+              $yui_path.'container/container-min.js',
+              $yui_path.'menu/menu-min.js',
+              'js/php.default.min.js',
+              'common.js.php',
+              'table_common.js.php',
+	      'js/edit_common.js',
+              'js/csv_common.js',
+              'js/dropdown.js'
+          );
 
-if($edit){
 
-  $smarty->assign('edit',$_SESSION['state'][$page]['edit']);
-  $css_files[]='css/edit.css';
- 
-  $js_files[]='js/edit_common.js';
-  $js_files[]='country_select.js.php';
-  $js_files[]='edit_store.js.php';
- }else{
-   $js_files[]='js/search.js';
-      $js_files[]='common_plot.js.php?page='.$page;
+$js_files[]='js/search.js';
+$js_files[]='common_plot.js.php?page='.$page;
 
-   $js_files[]='store.js.php';
- }
+$js_files[]='store.js.php';
 
+//$js_files=array();
 
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
@@ -144,12 +127,12 @@ $smarty->assign('js_files',$js_files);
 
 
 $_SESSION['state']['assets']['page']=$page;
-if(isset($_REQUEST['view'])){
-  $valid_views=array('sales','general','stoke');
-  if (in_array($_REQUEST['view'], $valid_views)) 
-    $_SESSION['state'][$page]['view']=$_REQUEST['view'];
+if (isset($_REQUEST['view'])) {
+    $valid_views=array('sales','general','stoke');
+    if (in_array($_REQUEST['view'], $valid_views))
+        $_SESSION['state'][$page]['view']=$_REQUEST['view'];
 
- }
+}
 $smarty->assign('view',$_SESSION['state'][$page]['view']);
 
 
@@ -157,12 +140,12 @@ $smarty->assign('show_percentages',$_SESSION['state'][$page]['percentages']);
 $smarty->assign('avg',$_SESSION['state'][$page]['avg']);
 $smarty->assign('period',$_SESSION['state'][$page]['period']);
 $info_period_menu=array(
-			array("period"=>'week','label'=>_('Last Week'),'title'=> _('Last Week'))
-		     ,array("period"=>'month','label'=>_('Last Month'),'title'=>_('Last Month'))
-		     ,array("period"=>'quarter','label'=>_('Last Quarter'),'title'=>_('Last Quarter'))
-		     ,array("period"=>'year','label'=>_('Last Year'),'title'=>_('Last Year'))
-		     ,array("period"=>'all','label'=>_('All'),'title'=>_('All'))
-		     );
+                      array("period"=>'week','label'=>_('Last Week'),'title'=> _('Last Week'))
+                      ,array("period"=>'month','label'=>_('Last Month'),'title'=>_('Last Month'))
+                      ,array("period"=>'quarter','label'=>_('Last Quarter'),'title'=>_('Last Quarter'))
+                      ,array("period"=>'year','label'=>_('Last Year'),'title'=>_('Last Year'))
+                      ,array("period"=>'all','label'=>_('All'),'title'=>_('All'))
+                  );
 $smarty->assign('info_period_menu',$info_period_menu);
 
 
@@ -174,46 +157,114 @@ $smarty->assign($page,$store);
 $smarty->assign('parent','products');
 $smarty->assign('title', $store->data['Store Name']);
 
-if($edit){
+$q='';
+$tipo_filter=($q==''?$_SESSION['state'][$page]['table']['f_field']:'code');
+$smarty->assign('filter',$tipo_filter);
+$smarty->assign('filter_value',($q==''?$_SESSION['state'][$page]['table']['f_value']:addslashes($q)));
+$filter_menu=array(
+                 'code'=>array('db_key'=>'code','menu_label'=>'Store starting with  <i>x</i>','label'=>'Code')
+             );
+$smarty->assign('filter_menu0',$filter_menu);
+$smarty->assign('departments',$store->data['Store Departments']);
+$smarty->assign('filter_name0',$filter_menu[$tipo_filter]['label']);
+$paginator_menu=array(10,25,50,100,500);
+$smarty->assign('paginator_menu0',$paginator_menu);
 
-$stores=array();
-$sql=sprintf("select * from `Store Dimension` CD order by `Store Key`");
+ $csv_export_options=array(
+                            'description'=>array(
+                                              'title'=>_('Description'),
+                                              'rows'=>
+                                                     array(
+                                                         array(
+                                                             'code'=>array('label'=>_('Code'),'selected'=>$_SESSION['state']['store']['table']['csv_export']['code']),
+                                                             'name'=>array('label'=>_('Name'),'selected'=>$_SESSION['state']['store']['table']['csv_export']['name']),
+                                                            
+                                                             'families'=>array('label'=>_('Families'),'selected'=>$_SESSION['state']['store']['table']['csv_export']['families']),
+                                                             'products'=>array('label'=>_('Products'),'selected'=>$_SESSION['state']['store']['table']['csv_export']['products']),
+                                                   
+                                                             'discontinued'=>array('label'=>_('Discontinued'),'selected'=>$_SESSION['state']['store']['table']['csv_export']['discontinued']),
+                                                            
+                                                     
+                                                         )
+                                                     )
+                                          ),
+                            'stock'=>array(
+                                        'title'=>_('Stock'),
+                                        'rows'=>
+                                               array(
+                                                   array(
+                                                       'surplus'=>array('label'=>_('Surplus'),'selected'=>$_SESSION['state']['store']['table']['csv_export']['surplus']),
+                                                       'ok'=>array('label'=>_('Ok'),'selected'=>$_SESSION['state']['store']['table']['csv_export']['ok']),
+                                                       'low'=>array('label'=>_('Low'),'selected'=>$_SESSION['state']['store']['table']['csv_export']['low']),
+                                                       'critical'=>array('label'=>_('Critical'),'selected'=>$_SESSION['state']['store']['table']['csv_export']['critical']),
+                                                       'gone'=>array('label'=>_('Gone'),'selected'=>$_SESSION['state']['store']['table']['csv_export']['gone']),
+                                                
+                                                       'unknown'=>array('label'=>_('Unknown'),'selected'=>$_SESSION['state']['store']['table']['csv_export']['unknown']),
+                                                             array('label'=>''),
+                                                       
 
-$res=mysql_query($sql);
- $first=true;
-while($row=mysql_fetch_array($res)){
-    $stores[$row['Store Key']]=array('code'=>$row['Store Code'],'selected'=>0);
-    if($first){
-      $stores[$row['Store Key']]['selected']=1;
-      $first=FALSE;
-    }
-}
-mysql_free_result($res);
+                                                   )
+                                               )
+                                    ),
+                            'sales_all'=>array('title'=>_('Sales (All times)'),
+                            'rows'=>
+                                               array(
+                                                   array(
+                                                       'sales_all'=>array('label'=>_('Sales'),'selected'=>$_SESSION['state']['store']['table']['csv_export']['sales_all']),
+                                                       'profit_all'=>array('label'=>_('Profit'),'selected'=>$_SESSION['state']['store']['table']['csv_export']['profit_all']),
+                                                        array('label'=>''),
+                                                             array('label'=>''),
+                                                   )
+                            )
+                            ),
+'sales_1y'=>array('title'=>_('Sales (1 Year)'),
+                            'rows'=>
+                                               array(
+                                                   array(
+                                                       'sales_1y'=>array('label'=>_('Sales'),'selected'=>$_SESSION['state']['store']['table']['csv_export']['sales_1y']),
+                                                       'profit_1y'=>array('label'=>_('Profit'),'selected'=>$_SESSION['state']['store']['table']['csv_export']['profit_1y']),
+                                                        array('label'=>''),
+                                                             array('label'=>''),
+                                                   )
+                            )
+                            ),
+'sales_1q'=>array('title'=>_('Sales (1 Quarter)'),
+                            'rows'=>
+                                               array(
+                                                   array(
+                                                       'sales_1q'=>array('label'=>_('Sales'),'selected'=>$_SESSION['state']['store']['table']['csv_export']['sales_1q']),
+                                                       'profit_1q'=>array('label'=>_('Profit'),'selected'=>$_SESSION['state']['store']['table']['csv_export']['profit_1q']),
+                                                        array('label'=>''),
+                                                             array('label'=>''),
+                                                   )
+                            )
+                            ),
+'sales_1m'=>array('title'=>_('Sales (1 Month)'),
+                            'rows'=>
+                                               array(
+                                                   array(
+                                                       'sales_1m'=>array('label'=>_('Sales'),'selected'=>$_SESSION['state']['store']['table']['csv_export']['sales_1m']),
+                                                       'profit_1m'=>array('label'=>_('Profit'),'selected'=>$_SESSION['state']['store']['table']['csv_export']['profit_1m']),
+                                                        array('label'=>''),
+                                                             array('label'=>''),
+                                                   )
+                            )
+                            ),
+                            'sales_1w'=>array('title'=>_('Sales (1 Week)'),
+                            'rows'=>
+                                               array(
+                                                   array(
+                                                       'sales_1w'=>array('label'=>_('Sales'),'selected'=>$_SESSION['state']['store']['table']['csv_export']['sales_1w']),
+                                                       'profit_1w'=>array('label'=>_('Profit'),'selected'=>$_SESSION['state']['store']['table']['csv_export']['profit_1w']),
+                                                        array('label'=>''),
+                                                             array('label'=>''),
+                                                   )
+                            )
+                            )
+                        );
+$smarty->assign('export_csv_table_cols',7);
+$smarty->assign('csv_export_options',$csv_export_options);
 
+$smarty->display('store.tpl');
 
-
-
-
- $smarty->assign('stores',$stores);
-$smarty->display('edit_store.tpl');
- }else{
-
-
-
-  $q='';
-  $tipo_filter=($q==''?$_SESSION['state'][$page]['table']['f_field']:'code');
-  $smarty->assign('filter',$tipo_filter);
-  $smarty->assign('filter_value',($q==''?$_SESSION['state'][$page]['table']['f_value']:addslashes($q)));
-  $filter_menu=array(
-		   'code'=>array('db_key'=>'code','menu_label'=>'Store starting with  <i>x</i>','label'=>'Code')
-		     );
-  $smarty->assign('filter_menu0',$filter_menu);
-  $smarty->assign('departments',$store->data['Store Departments']);
-  $smarty->assign('filter_name0',$filter_menu[$tipo_filter]['label']);
-  $paginator_menu=array(10,25,50,100,500);
-  $smarty->assign('paginator_menu0',$paginator_menu);
-
- 
-  $smarty->display('store.tpl');
- }
 ?>

@@ -33,7 +33,8 @@ class Contact extends DB_Table {
     public $scope=false;
     public $scope_key=false;
     private  $new_home_telephone_keys=array();
-
+    public $inserted_email=false;
+	public $add_telecom=false;
 
 
 
@@ -1400,8 +1401,9 @@ $len_name=strlen($name_data['Contact Surname']);
                      ,$email_key
                      ,$this->id
                     );
-//print "+++++++++ $sql\n";
+
         mysql_query($sql);
+		$this->inserted_email=$email_key;
         if (!$this->get_principal_email_key()) {
             $this->update_principal_email($email_key);
         }
@@ -1414,6 +1416,13 @@ $len_name=strlen($name_data['Contact Surname']);
 
         if ($main_email_key!=$email_key) {
             $email=new Email($email_key);
+            
+            if(!$email->id){
+            	$this->error=true;
+            	$this->msg.='Email to set as principal not found';
+            	return;
+            }
+            
             $email->editor=$this->editor;
             $sql=sprintf("update `Email Bridge`  set `Is Main`='No' where `Subject Type`='Contact' and  `Subject Key`=%d  and `Email Key`=%d",
                          $this->id
@@ -1532,13 +1541,14 @@ $len_name=strlen($name_data['Contact Surname']);
     }
 
     function get_emails() {
-        $sql=sprintf("select `Email Key` from `Email Bridge` where  `Subject Type`='Contact' and `Subject Key`=%d "
+        $sql=sprintf("select `Email Key`,`Is Main` from `Email Bridge` where  `Subject Type`='Contact' and `Subject Key`=%d order by `Is Main`"
                      ,$this->id );
 
         $emails=array();
         $result=mysql_query($sql);
         while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
             $email=new Email($row['Email Key']);
+            $email->data['Email Is Main']=$row['Is Main'];
             $emails[$row['Email Key']]= $email;
         }
         return $emails;
@@ -1614,9 +1624,17 @@ $len_name=strlen($name_data['Contact Surname']);
 
     function update_parents() {
 
-        $parents=array('Company','Customer','Supplier');
+        $parents=array('Company','Customer','Supplier','Staff');
         foreach($parents as $parent) {
-            $sql=sprintf("select `$parent Key` as `Parent Key`   from  `$parent Dimension` where `$parent Main Contact Key`=%d group by `$parent Key`",$this->id);
+        	
+        	if($parent=='Staff'){
+        		$col_contact_key="Staff Contact Key";
+        		$col_contact_name="Staff Name";
+        		}else{
+        		$col_contact_key="$parent Main Contact Key";
+            $col_contact_name="$parent Main Contact Name";
+            }
+            $sql=sprintf("select `$parent Key` as `Parent Key`   from  `$parent Dimension` where `$col_contact_key`=%d group by `$parent Key`",$this->id);
             $res=mysql_query($sql);
             while ($row=mysql_fetch_array($res)) {
                 $principal_contact_changed=false;
@@ -1632,18 +1650,29 @@ $len_name=strlen($name_data['Contact Surname']);
                 elseif($parent=='Company') {
                     $parent_object=new Company($row['Parent Key']);
                     $parent_label=_('Company');
+                } elseif($parent=='Staff') {
+                    $parent_object=new Staff($row['Parent Key']);
+                    $parent_label=_('Staff');
                 }
-                $old_principal_contact=$parent_object->data[$parent.' Main Contact Name'];
-                $parent_object->data[$parent.' Main Contact Name']=$this->display('name');
-                $sql=sprintf("update `$parent Dimension` set `$parent Main Contact Name`=%s where `$parent Key`=%d"
-                             ,prepare_mysql($parent_object->data[$parent.' Main Contact Name'])
+                $old_principal_contact=$parent_object->data[$col_contact_name];
+                $parent_object->data[$col_contact_name]=$this->display('name');
+                $sql=sprintf("update `$parent Dimension` set `$col_contact_name`=%s where `$parent Key`=%d"
+                             ,prepare_mysql($parent_object->data[$col_contact_name])
                              ,$parent_object->id
                             );
                 mysql_query($sql);
 
+                if($parent=='Customer' and $parent_object->data['Customer Type']=='Person'){
+                	$sql=sprintf("update `Customer Dimension` set `Customer Name`=%s, `Customer File As`=%s  where `Customer Key`=%d"
+                             ,prepare_mysql($this->display('name'))
+                             ,prepare_mysql($this->data['Contact File As'])
+                             ,$parent_object->id
+                            );
+                mysql_query($sql);
+                
+                }
 
-
-                if ($old_principal_contact!=$parent_object->data[$parent.' Main Contact Name'])
+                if ($old_principal_contact!=$parent_object->data[$col_contact_name])
                     $principal_contact_changed=true;
                         
 
@@ -1661,8 +1690,16 @@ $len_name=strlen($name_data['Contact Surname']);
                        
                         $this->add_history($history_data);
                     } else {
+                    
+                    if($this->display('name')==''){
+                      $history_data['History Abstract']='Main Contact set to Unknown';
+                        $history_data['History Details']=_('Contact changed from').' '.$old_principal_contact.' '._('to an unknown name in')." ".$parent_object->get_name()." ".$parent_label;
+                   
+                    }else{
+                       
                         $history_data['History Abstract']='Main Contact Changed';
                         $history_data['History Details']=_('Contact changed from').' '.$old_principal_contact.' '._('to').' '.$this->display('name')." "._('in')." ".$parent_object->get_name()." ".$parent_label;
+                        }
                         $history_data['Action']='changed';
                         $history_data['Direct Object']=$parent;
                         $history_data['Direct Object Key']=$parent_object->id;
@@ -2342,8 +2379,9 @@ $this->updated=true;
                 $this->data['Contact Formal Greeting']=$this->unknown_formal_greting;
             }
 
-
+//print "updatin name \n\n\n\n";
             $parsed_data=$this->parse_name($value);
+  //          print_r($parsed_data);
             foreach($parsed_data as $key=>$val) {
                 if (array_key_exists($key,$this->data))
                     $this->data[$key]=$val;
@@ -2512,7 +2550,7 @@ $this->updated=true;
 
             $values='';
             foreach($this->data as $key=>$value) {
-                if (preg_match('/Contact Name|Contact File As|Greeting/i',$key)) {
+                if (preg_match('/Contact Name|Contact File As|Greeting|Salutation|First Name|Surname|Suffix/i',$key)) {
 
                     $values.=" `$key`=";
                     if (preg_match('/suffix|plain/i',$key))
@@ -3022,6 +3060,52 @@ $this->updated=true;
             global $myconf;
 
             switch ($tipo) {
+            case('card_principal'):
+              $email_label="E:";
+                $tel_label="T:";
+                $fax_label="F:";
+                $mobile_label="M:";
+
+                $email='';$company='';
+                $tel='';
+                $fax='';
+                $mobile='';
+                $name=sprintf('<span class="name">%s</span>',$this->data['Contact Name']);
+                if ($this->data['Contact Company Key'])
+                    $company=sprintf('<span class="company">%s</span><br/>',$this->data['Contact Company Name']);
+                
+              
+              
+        
+                
+                if ($this->data['Contact Main XHTML Email'])
+                    $email=sprintf('<span class="email">%s %s</span><br/>',$email_label,$this->data['Contact Main XHTML Email']);                
+                if ($this->data['Contact Main XHTML Telephone'])
+                    $tel=sprintf('<span class="tel">%s %s</span><br/>',$tel_label,$this->data['Contact Main XHTML Telephone']);
+                if ($this->data['Contact Main XHTML FAX'])
+                    $fax=sprintf('<span class="fax">%s %s</span><br/>',$fax_label,$this->data['Contact Main XHTML FAX']);
+                if ($this->data['Contact Main XHTML Mobile'])
+                    $mobile=sprintf('<span class="mobile">%s %s</span><br/>',$mobile_label,$this->data['Contact Main XHTML Mobile']);               
+           
+               
+              
+
+                $address=sprintf('<span class="mobile">%s</span>',$this->data['Contact Main XHTML Address']);
+                $card=sprintf('<div class="contact_card">%s <div  class="tels">%s %s %s %s %s</div><div  class="address">%s</div> </div>'
+                              ,$name
+                              ,$company
+                              ,$email
+                              ,$tel
+                              ,$fax
+                              ,$mobile
+                              ,$address
+                             );
+
+                return $card;
+            
+            
+            
+            break;
             case('card'):
 
 
@@ -3037,14 +3121,44 @@ $this->updated=true;
                 $name=sprintf('<span class="name">%s</span>',$this->data['Contact Name']);
                 if ($this->data['Contact Company Key'])
                     $company=sprintf('<span class="company">%s</span><br/>',$this->data['Contact Company Name']);
-                if ($this->data['Contact Main XHTML Email'])
-                    $email=sprintf('<span class="email">%s</span><br/>',$this->data['Contact Main XHTML Email']);
+                
+                $email='';
+      
+                $emails=$this->get_emails();
+                $number_emails=count($emails);
+                foreach ($emails as $email_object) {
+                if($email_object->data['Email Is Main']=='Yes' and $number_emails>1){
+                	$main_tag='&#9733; ';
+                }else{
+                	$main_tag='';
+                }
+                    $email.=sprintf('%s<span class="email">%s</span><br/>',$main_tag,$email_object->display());
+                }
+                
+                
+                
                 if ($this->data['Contact Main XHTML Telephone'])
                     $tel=sprintf('<span class="tel">%s %s</span><br/>',$tel_label,$this->data['Contact Main XHTML Telephone']);
                 if ($this->data['Contact Main XHTML FAX'])
                     $fax=sprintf('<span class="fax">%s %s</span><br/>',$fax_label,$this->data['Contact Main XHTML FAX']);
-                if ($this->data['Contact Main XHTML Mobile'])
-                    $mobile=sprintf('<span class="mobile">%s %s</span>',$mobile_label,$this->data['Contact Main XHTML Mobile']);
+               
+               
+              	$mobile=''; 
+                $mobiles=$this->get_mobiles();
+                $number_mobiles=count($mobiles);
+                
+                
+                
+                foreach ($mobiles as $mobile_object) {
+                if($mobile_object->data['Mobile Is Main']=='Yes' and $number_mobiles>1){
+                	$main_tag='&#9733; ';
+                }else{
+                	$main_tag='';
+                }
+                    $mobile.=sprintf('%s %s <span class="mobile">%s</span><br/>',$main_tag,$mobile_label,$mobile_object->display());
+                }               
+               
+              
 
                 $address=sprintf('<span class="mobile">%s</span>',$this->data['Contact Main XHTML Address']);
                 $card=sprintf('<div class="contact_card">%s <div  class="tels">%s %s %s %s %s</div><div  class="address">%s</div> </div>'
@@ -3133,9 +3247,6 @@ $this->updated=true;
             $name=_trim($data['Contact Salutation'].' '.$data['Contact First Name'].' '.$data['Contact Surname'].' '.$data['Contact Suffix']);
 
 
-
-            if ($name=='')
-                $name='';
 
             return $name;
 
@@ -3595,7 +3706,7 @@ $this->updated=true;
         function get_mobiles() {
 
 
-            $sql=sprintf("select TB.`Telecom Key` from `Telecom Bridge` TB   left join `Telecom Dimension` T on (T.`Telecom Key`=TB.`Telecom Key`) where `Telecom Type`='Mobile'    and `Subject Type`='Contact' and `Subject Key`=%d  group by TB.`Telecom Key` order by `Is Main` desc  ",$this->id);
+            $sql=sprintf("select TB.`Telecom Key`,`Is Main` from `Telecom Bridge` TB   left join `Telecom Dimension` T on (T.`Telecom Key`=TB.`Telecom Key`) where `Telecom Type`='Mobile'    and `Subject Type`='Contact' and `Subject Key`=%d  group by TB.`Telecom Key` order by `Is Main`   ",$this->id);
             $mobiles=array();
             $result=mysql_query($sql);
 //print $sql;
@@ -3603,6 +3714,7 @@ $this->updated=true;
                 $mobile= new Telecom($row['Telecom Key']);
                 $mobile->set_scope('Contact',$this->id);
                 $mobiles[]= $mobile;
+                $mobile->data['Mobile Is Main']=$row['Is Main'];
 
             }
             $this->number_mobiles=count($mobiles);
@@ -3844,6 +3956,13 @@ $this->updated=true;
 
    function associate_email($email_key) {
 
+
+if(!$email_key){
+$this->error=true;
+$this->msg='Wrong email key';
+
+}
+
             $email_keys=$this->get_emails_keys();
 
             if (!array_key_exists($email_key,$email_keys)) {
@@ -3895,8 +4014,11 @@ $this->updated=true;
 
         function get_principal_mobile_key() {
 
-            $sql=sprintf("select TB.`Telecom Key` from `Telecom Bridge`   TB left join `Telecom Dimension` T on (T.`Telecom Key`=TB.`Telecom Key`)  where  `Telecom Technology Type`='Mobile'  and   `Subject Type`='Contact' and `Subject Key`=%d and `Is Main`='Yes'"
+            $sql=sprintf("select TB.`Telecom Key` from `Telecom Bridge`   TB left join `Telecom Dimension` T on (T.`Telecom Key`=TB.`Telecom Key`)  where  `Telecom Type`='Mobile'  and   `Subject Type`='Contact' and `Subject Key`=%d and `Is Main`='Yes'"
                          ,$this->id );
+                         
+            //print "$sql\n";             
+                         
             $res=mysql_query($sql);
             if ($row=mysql_fetch_array($res)) {
                 $main_mobile_key=$row['Telecom Key'];
@@ -3913,6 +4035,7 @@ $this->updated=true;
                          $mobile_key
                         );
             mysql_query($sql);
+            $this->add_telecom=true;
             if (!$this->get_principal_mobile_key()) {
                 $this->update_principal_mobil($mobile_key);
             }
@@ -3932,6 +4055,7 @@ $this->updated=true;
                              ,$main_mobile_key
                             );
                 mysql_query($sql);
+               
                 $sql=sprintf("update `Telecom Bridge`  set `Is Main`='Yes' where `Subject Type`='Contact'  and  `Subject Key`=%d  and `Telecom Key`=%d"
                              ,$this->id
                              ,$mobil->id
@@ -3942,7 +4066,7 @@ $this->updated=true;
                 $sql=sprintf("update `Contact Dimension` set  `Contact Main Mobile Key`=%d where `Contact Key`=%d",$mobil->id,$this->id);
                 $this->data['Contact Main Mobile Key']=$mobil->id;
                 mysql_query($sql);
-
+				$this->updated=true;
                 $mobil->update_parents();
 
             }
@@ -3950,52 +4074,53 @@ $this->updated=true;
         }
 
 
-        function update_parents_principal_address_keys($address_key) {
-            $parents=array('Customer');
-            foreach($parents as $parent) {
-                $sql=sprintf("select `$parent Key` as `Parent Key`   from  `$parent Dimension` where `$parent Main Contact Key`=%d group by `$parent Key`",$this->id);
-                $res=mysql_query($sql);
-                while ($row=mysql_fetch_array($res)) {
+function update_parents_principal_address_keys($address_key) {
+    $parents=array('Customer');
+    foreach($parents as $parent) {
+        $sql=sprintf("select `$parent Key` as `Parent Key`   from  `$parent Dimension` where `$parent Main Contact Key`=%d group by `$parent Key`",$this->id);
+        $res=mysql_query($sql);
+        while ($row=mysql_fetch_array($res)) {
 
 
-                    if ($parent=='Customer') {
-                        $parent_object=new Customer($row['Parent Key']);
-                        $parent_label=_('Customer');
-                    }
+            if ($parent=='Customer') {
+                $parent_object=new Customer($row['Parent Key']);
+                $parent_label=_('Customer');
+            }
 
-                    $old_principal_name_key=$parent_object->data[$parent.' Main Address Key'];
-                    if ($old_principal_name_key!=$address_key) {
+            $old_principal_name_key=$parent_object->data[$parent.' Main Address Key'];
+            if ($old_principal_name_key!=$address_key) {
 
-                        $sql=sprintf("update `Address Bridge`  set `Is Main`='No' where `Subject Type`='$parent' and  `Subject Key`=%d  and `Address Key`=%d",
-                                     $parent_object->id
-                                     ,$address_key
-                                    );
-                        mysql_query($sql);
-                        $sql=sprintf("update `Address Bridge`  set `Is Main`='Yes' where `Subject Type`='$parent' and  `Subject Key`=%d  and `Address Key`=%d",
-                                     $parent_object->id
-                                     ,$address_key
-                                    );
-                        mysql_query($sql);
-                        $sql=sprintf("update `$parent Dimension` set `$parent Main Address Key`=%d where `$parent Key`=%d"
-                                     ,$address_key
-                                     ,$parent_object->id
-                                    );
-                        mysql_query($sql);
+                $sql=sprintf("update `Address Bridge`  set `Is Main`='No' where `Subject Type`='$parent' and  `Subject Key`=%d  and `Address Key`=%d",
+                             $parent_object->id
+                             ,$address_key
+                            );
+                mysql_query($sql);
+                $sql=sprintf("update `Address Bridge`  set `Is Main`='Yes' where `Subject Type`='$parent' and  `Subject Key`=%d  and `Address Key`=%d",
+                             $parent_object->id
+                             ,$address_key
+                            );
+                mysql_query($sql);
+                $sql=sprintf("update `$parent Dimension` set `$parent Main Address Key`=%d where `$parent Key`=%d"
+                             ,$address_key
+                             ,$parent_object->id
+                            );
+                mysql_query($sql);
 
- if($parent=='Customer'){
-                    if($parent_object->data['Customer Delivery Address Link']=='Contact'){
+                if ($parent=='Customer') {
+                $parent_object->get_data('id',$this->id);
+                    if ($parent_object->data['Customer Delivery Address Link']=='Contact') {
                         $parent_object->update_principal_delivery_address($address_key);
-                    
+
                     }
-                    
-                
+
+
                 }
 
 
-                    }
-                }
             }
         }
+    }
+}
 
 
 function get_contact_keys(){

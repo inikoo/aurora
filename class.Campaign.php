@@ -39,9 +39,9 @@ class Campaign extends DB_Table {
 
         if ($tipo=='id')
             $sql=sprintf("select * from `Campaign Dimension` where `Campaign Key`=%d",$tag);
-        //    elseif($tipo=='code')
-        //  $sql=sprintf("select * from `Campaign Dimension` where `Campaign Code`=%s",prepare_mysql($tag));
-        // print $sql;
+            elseif($tipo=='code')
+          $sql=sprintf("select * from `Campaign Dimension` where `Campaign Code`=%s",prepare_mysql($tag));
+	    //  print $sql;
         $result=mysql_query($sql);
 
         if ($this->data=mysql_fetch_array($result, MYSQL_ASSOC)  ) {
@@ -73,12 +73,15 @@ class Campaign extends DB_Table {
         }
 
         $data=$this->base_data();
+
+
         foreach($raw_data as $key=>$value) {
 
             if (array_key_exists($key,$data))
                 $data[$key]=$value;
 
         }
+
         $fields=array();
         foreach($data as $key=>$value){
         if(!($key=='Campaign Begin Date' or  $key=='Campaign Expiration Date' or $key=='Campaign Deal Terms Metadata'   ))
@@ -103,6 +106,7 @@ class Campaign extends DB_Table {
 	  $this->get_data('id',$this->found_key);
         }
         
+
         if($create and !$this->found){
         $this->create($data);
         
@@ -115,7 +119,7 @@ class Campaign extends DB_Table {
 
     function create($data) {
 
-        //print_r($data);
+      
       if($data['Campaign Deal Terms Metadata']=='' and $data['Campaign Deal Terms Lock']=='Yes')
 	$data['Campaign Deal Terms Metadata']=Deal::parse_term_metadata($data['Campaign Deal Terms Type'],$data['Campaign Deal Terms Description']);
       
@@ -134,7 +138,7 @@ class Campaign extends DB_Table {
 
 
 
-      //print_r($data);
+      // print_r($data);
         $sql=sprintf("insert into `Campaign Dimension` %s %s",$keys,$values);
 	// print "$sql\n";
         if (mysql_query($sql)) {

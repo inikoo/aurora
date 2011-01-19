@@ -9,7 +9,7 @@ require_once 'common.php';
 require_once 'class.Product.php';
 require_once 'class.Department.php';
 require_once 'class.Family.php';
-
+require_once 'class.Category.php';
 require_once 'class.Order.php';
 require_once 'class.Location.php';
 require_once 'class.PartLocation.php';
@@ -30,12 +30,7 @@ $data=prepare_values($_REQUEST,array(
                              'newvalue'=>array('type'=>'json array')
                              ,'key'=>array('type'=>'key')
                              ));
-                                                
-
-
-
-
-edit_part_list($data);
+ edit_part_list($data);
 break;
 case('store_pages'):
 list_pages_for_edition();
@@ -54,7 +49,13 @@ case('delete_part_new_product'):
 case('edit_family_page_html_head'):
 case('edit_family_page_header'):
 case('edit_family_page_content'):
- edit_page('family');
+$data=prepare_values($_REQUEST,array(
+                             'newvalue'=>array('type'=>'string'),
+                             'key'=>array('type'=>'srting'),
+                             'id'=>array('type'=>'key')
+                             ));
+
+ edit_page('family',$data);
   break;
 case('add_part_new_product'):
 
@@ -94,7 +95,13 @@ case('delete_department'):
 delete_department();
    break;
  case('edit_family'):
-  edit_family(); 
+ $data=prepare_values($_REQUEST,array(
+                             'newvalue'=>array('type'=>'string'),
+                             'key'=>array('type'=>'string'),
+                             'id'=>array('type'=>'key')
+                             ));
+
+  edit_family($data); 
    break;
 
 case('edit_product_advanced'):
@@ -107,6 +114,7 @@ case('edit_product_description'):
 case('edit_product'):
   edit_product();
    break;
+
  case('edit_department'):
  edit_department();
    break;
@@ -125,13 +133,18 @@ case('edit_product'):
  case('new_department'):
   create_department();
    break;
- case('new_family'):
-create_family();
+ case('create_family'):
+ $data=prepare_values($_REQUEST,array(
+                             'values'=>array('type'=>'json array')
+                             ,'parent_key'=>array('type'=>'key')
+                             ));
+create_family($data);
    break;
 case('edit_departments'):
   list_departments_for_edition();
  
    break;
+case('edit_stores_list'):
 
 case('edit_stores'):
    list_stores_for_edition();
@@ -194,27 +207,37 @@ function create_department(){
      $response=array('state'=>400,'resp'=>_('Error'));
    echo json_encode($response);
 }
-function create_family(){
+function create_family($data){
   global $editor;
- if(isset($_REQUEST['name'])  and  isset($_REQUEST['code'])   ){
-     $department_key=$_SESSION['state']['department']['id'];
+  
+  
+  
+ if(array_key_exists('Product Family Name',$data['values']) 
+ and  array_key_exists('Product Family Code',$data['values']) 
+ and  array_key_exists('Product Family Special Characteristic',$data['values']) 
+ and  array_key_exists('Product Family Description',$data['values']) 
+ 
+ ){
+     $department_key=$data['parent_key'];
      
      $family=new Family('create',array(
 					      
-				       'Product Family Code'=>$_REQUEST['code']
-				       ,'Product Family Name'=>$_REQUEST['name']
-				       ,'Product Family Description'=>$_REQUEST['description']
-				       ,'Product Family Special Characteristic'=>$_REQUEST['special_char']
+				       'Product Family Code'=>$data['values']['Product Family Code']
+				       ,'Product Family Name'=>$data['values']['Product Family Name']
+				       ,'Product Family Description'=>$data['values']['Product Family Description']
+				       ,'Product Family Special Characteristic'=>$data['values']['Product Family Special Characteristic']
 				       ,'Product Family Main Department Key'=>$department_key
 				       ,'editor'=>$editor
 				       ));
      if(!$family->new){
-       $state='401';
+      
+        $response=array('state'=>200,'msg'=>$family->msg,'action'=>'found','object_key'=>$family->id);
      }else{
-       $state='200';
+     
+        $response=array('state'=>200,'msg'=>$family->msg,'action'=>'created');
      }
 
-     $response=array('state'=>$state,'msg'=>$family->msg);
+    
 
 
  }
@@ -377,17 +400,110 @@ function edit_product(){
    echo json_encode($response); 
 }
 
+function edit_category(){
+  $category=new Category('category_key',$_REQUEST['category_key']);
+  global $editor;
+ $category->editor=$editor;
+$key=$_REQUEST['key'];
+  if($key=='Attach'){
+    // print_r($_FILES);
+    $note=stripslashes(urldecode($_REQUEST['newvalue']));
+    $target_path = "uploads/".'attach_'.date('U');
+    $original_name=$_FILES['testFile']['name'];
+    $type=$_FILES['testFile']['type'];
+    $data=array('Caption'=>$note,'Original Name'=>$original_name,'Type'=>$type);
 
-function edit_family(){
-  //print_r($_REQUEST);
-  $family=new family($_REQUEST['id']);
+    if(move_uploaded_file($_FILES['testFile']['tmp_name'],$target_path )) {
+      $category->add_attach($target_path,$data);
+      
+    }
+  }else{
+    
+
+    
+    $key_dic=array(
+		   'name'=>'Category Name'
+		   ,'id'=>'Category Key'
+		 // ,'alias'=>'Staff Alias'
+		  // ,'type'=>'Staff Type'
+		  
+		   
+    );
+    if(array_key_exists($_REQUEST['key'],$key_dic))
+       $key=$key_dic[$_REQUEST['key']];
+    
+    $update_data=array($key=>stripslashes(urldecode($_REQUEST['newvalue'])));
+    $category->update($update_data);
+  }
+
+
+    if ($category->updated) {
+        $response= array('state'=>200,'newvalue'=>$category->new_value,'key'=>$_REQUEST['key']);
+
+    } else {
+        $response= array('state'=>400,'msg'=>$category->msg,'key'=>$_REQUEST['key']);
+    }
+   echo json_encode($response); 
+}
+
+
+function edit_subcategory(){
+$category_key=$_REQUEST['category_key'];
+
+  $category=new Category('category_key',$_REQUEST['category_key']);
+  global $editor;
+ $category->editor=$editor;
+$key=$_REQUEST['key'];
+  if($key=='Attach'){
+    $note=stripslashes(urldecode($_REQUEST['newvalue']));
+    $target_path = "uploads/".'attach_'.date('U');
+    $original_name=$_FILES['testFile']['name'];
+    $type=$_FILES['testFile']['type'];
+    $data=array('Caption'=>$note,'Original Name'=>$original_name,'Type'=>$type);
+
+    if(move_uploaded_file($_FILES['testFile']['tmp_name'],$target_path )) {
+      $category->add_attach($target_path,$data);
+      
+    }
+  }else{
+    
+
+    
+    $key_dic=array(
+		   'name'=>'Category Name'
+		   ,'id'=>'Category Key'
+		 // ,'alias'=>'Staff Alias'
+		  // ,'type'=>'Staff Type'
+		  
+		   
+    );
+    if(array_key_exists($_REQUEST['key'],$key_dic))
+       $key=$key_dic[$_REQUEST['key']];
+if($key=='subcategory_name')$key='Category Name';
+    echo "key=".$key;
+    $update_data=array($key=>stripslashes(urldecode($_REQUEST['newvalue'])));echo " updte data=".$update_data;
+    $category->update($update_data);
+  }
+
+
+    if ($category->updated) {
+        $response= array('state'=>200,'newvalue'=>$category->new_value,'key'=>$_REQUEST['key']);
+
+    } else {
+        $response= array('state'=>400,'msg'=>$category->msg,'key'=>$_REQUEST['key']);
+    }
+   echo json_encode($response); 
+}
+
+function edit_family($data){
+  $family=new family($data['id']);
  global $editor;
  $family->editor=$editor;
- $family->update($_REQUEST['key'],stripslashes(urldecode($_REQUEST['newvalue'])),stripslashes(urldecode($_REQUEST['oldvalue'])));
+ $family->update(array($data['key']=>stripslashes(urldecode($data['newvalue']))));
  
 
    if($family->updated){
-     $response= array('state'=>200,'newvalue'=>$family->new_value,'key'=>$_REQUEST['key']);
+     $response= array('state'=>200,'newvalue'=>$family->new_value,'key'=>$data['key']);
 	  
    }else{
      $response= array('state'=>400,'msg'=>$family->msg,'key'=>$_REQUEST['key']);
@@ -415,15 +531,25 @@ function edit_deal(){
 
 
 function upload_image($subject='product'){
-	$target_path = "app_files/pics/tmp/";
+
+	$target_path = "app_files/tmp/";
  	$filename='pimg_'.date('U');
+ 	
+ 	if (!file_exists($target_path)) {
+    	$response= array('state'=>400,'msg'=>"Image tmp directory do not exist (".$target_path.")");
+ 			echo json_encode($response); 
+ 			return;
+	} 
+ 	
+ 
+                        
   	if(move_uploaded_file($_FILES['testFile']['tmp_name'],$target_path.$filename )) {
    		include_once('class.Image.php');
    		$name=preg_replace('/\.[a-z]+$/i','',$_FILES['testFile']['name']);
 	   	$name=preg_replace('/[^a-z^\.^0-9]/i','_',$name);
    		$data=array(
 	    	'file'=>$filename
-	   		,'path'=>'assets/'
+	   		,'path'=>'app_files/pics/assets/'
 	    	,'name'=>$name
 	    	,'original_name'=>$_FILES['testFile']['name']
 	    	,'type'=>$_FILES['testFile']['type']
@@ -983,8 +1109,16 @@ $conf=$_SESSION['state']['families']['table'];
   $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
   
   
-  $_SESSION['state']['families']['table']=array('order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value);
-  
+  //$_SESSION['state']['families']['table']=array('order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value);
+  $conf_table='families';
+    $_SESSION['state'][$conf_table]['table']['order']=$order;
+    $_SESSION['state'][$conf_table]['table']['order_dir']=$order_dir;
+    $_SESSION['state'][$conf_table]['table']['nr']=$number_results;
+    $_SESSION['state'][$conf_table]['table']['sf']=$start_from;
+    $_SESSION['state'][$conf_table]['table']['where']=$where;
+    $_SESSION['state'][$conf_table]['table']['f_field']=$f_field;
+    $_SESSION['state'][$conf_table]['table']['f_value']=$f_value;
+
   
   //  $where.=" and `Product Department Key`=".$id;
 
@@ -1018,7 +1152,7 @@ mysql_free_result($result);
    if($total_records>$number_results)
      $rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
    else
-     $rtext_rpp='';
+     $rtext_rpp='('._('Showing all').')';
    
    $_order=$order;
    $_dir=$order_direction;
@@ -1028,46 +1162,56 @@ mysql_free_result($result);
   elseif($order=='name')
     $order='`Product Family Name`';
   
-  $sql="select F.`Product Family Key`,`Product Family Code`,`Product Family Name`,`Product Family For Sale Products`+`Product Family In Process Products`+`Product Family Not For Sale Products`+`Product Family Discontinued Products`+`Product Family Unknown Sales State Products` as Products  from `Product Family Dimension` F  $where $wheref  order by $order $order_direction limit $start_from,$number_results    ";
-
+  $sql="select `Product Family Sales Type`,F.`Product Family Key`,`Product Family Code`,`Product Family Name`,`Product Family For Public Sale Products`+`Product Family In Process Products`+`Product Family Not For Sale Products`+`Product Family Discontinued Products`+`Product Family Unknown Sales State Products` as Products  from `Product Family Dimension` F  $where $wheref  order by $order $order_direction limit $start_from,$number_results    ";
+//print $sql;
   $res = mysql_query($sql);
   $adata=array();
   while($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
-    if($row['Products']>0){
-      $delete='<img src="art/icons/discontinue.png" /> <span xonclick="discontinue_family('.$row['Product Family Key'].')"  id="del_'.$row['Product Family Key'].'" style="cursor:pointer">'._('Discontinue').'<span>';
-      $delete_type='discontinue';
-    }else{
-      $delete='<img src="art/icons/delete.png" /> <span xonclick="delete_family('.$row['Product Family Key'].')"  id="del_'.$row['Product Family Key'].'" style="cursor:pointer">'._('Delete').'<span>';
-      $delete_type='delete';
-    }
+   
+    
+    switch ($row['Product Family Sales Type']) {
+    case 'Public Sale':
+        $sales_type=_('Public Sale');
+        break;
+    case 'Private Sale':
+        $sales_type=_('Private Sale');
+        break;
+    case 'Not for Sale':
+        $sales_type=_('Not for Sale');
+        break;        
+}
+
+    
+    
 $adata[]=array(
 	       'id'=>$row['Product Family Key'],
 	       'edit'=>sprintf('<a href="family.php?id=%d&edit=1">%03d<a>',$row['Product Family Key'],$row['Product Family Key']),
 	       'code'=>$row['Product Family Code'],
 	       'name'=>$row['Product Family Name'],
-	       'delete'=>$delete,
-	       'delete_type'=>$delete_type,
+	       'sales_type'=>$sales_type,
+	      
 	       'go'=>sprintf("<a href='family.php?id=%d&edit=1'><img src='art/icons/page_go.png' alt='go'></a>",$row['Product Family Key'])
 
 		   );
   }
 mysql_free_result($res);
   $response=array('resultset'=>
-		  array('state'=>200,
-			'data'=>$adata,
-			'sort_key'=>$_order,
-			'sort_dir'=>$_dir,
-			 'tableid'=>$tableid,
-			'filter_msg'=>$filter_msg,
-			'total_records'=>$total,
-			'records_offset'=>$start_from,
-			'records_returned'=>$start_from+$total,
-			'records_perpage'=>$number_results,
-			'records_order'=>$order,
-			'records_order_dir'=>$order_dir,
-			'rtext'=>$rtext,
-			'rtext_rpp'=>$rtext_rpp,
-			'filtered'=>$filtered
+		  array(
+		  
+		       'state'=>200,
+                                      'data'=>$adata,
+                                      'sort_key'=>$_order,
+                                      'sort_dir'=>$_dir,
+                                      'tableid'=>$tableid,
+                                      'filter_msg'=>$filter_msg,
+                                      'rtext'=>$rtext,
+                                      'rtext_rpp'=>$rtext_rpp,
+                                      'total_records'=>$total,
+                                      'records_offset'=>$start_from,
+                                      'records_perpage'=>$number_results,
+		  
+		  
+		 
 			)
 		  );
 
@@ -1203,7 +1347,7 @@ mysql_free_result($result);
    $adata=array();
    //   print "$sql";
    while($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
-     if($row['Store For Sale Products']>0){
+     if($row['Store For Public Sale Products']>0){
        $delete='<img src="art/icons/discontinue.png" /> <span conclick="close_store('.$row['Store Key'].')"  id="del_'.$row['Store Key'].'" style="cursor:pointer">'._('Close').'<span>';
        $delete_type='close';
      }else{
@@ -1319,9 +1463,17 @@ function list_departments_for_edition(){
    
    $store_id=$_SESSION['state']['store']['id'];
 
+$conf_table='store';
 
-
-   $_SESSION['state']['store']['table']=array('order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value);
+  // $_SESSION['state']['store']['table']=array('order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value);
+    $_SESSION['state'][$conf_table]['table']['order']=$order;
+    $_SESSION['state'][$conf_table]['table']['order_dir']=$order_dir;
+    $_SESSION['state'][$conf_table]['table']['nr']=$number_results;
+    $_SESSION['state'][$conf_table]['table']['sf']=$start_from;
+    $_SESSION['state'][$conf_table]['table']['where']=$where;
+    $_SESSION['state'][$conf_table]['table']['f_field']=$f_field;
+    $_SESSION['state'][$conf_table]['table']['f_value']=$f_value;
+   
    
    //$where=$where.' '.sprintf(" and `Product Department Store Key`=%d",$store_id);
    
@@ -1376,29 +1528,44 @@ function list_departments_for_edition(){
     $order='`Product Department Name`';
    elseif($order=='code')
     $order='`Product Department Code`';
-  
-
-    $sql="select D.`Product Department Key`,`Product Department Code`,`Product Department Name`,`Product Department For Public Sale Products`+`Product Department For Private Sale Products`+`Product Department In Process Products` as Products  from `Product Department Dimension` D  $where $wheref  order by $order $order_direction limit $start_from,$number_results    ";
+   elseif($order=='sales_type')
+    $order='`Product Department Sales Type`';
+else
+$order='`Product Department Name`';
+    $sql="select D.`Product Department Sales Type`, D.`Product Department Key`,`Product Department Code`,`Product Department Name`,`Product Department For Public Sale Products`+`Product Department For Private Sale Products`+`Product Department In Process Products` as Products  from `Product Department Dimension` D  $where $wheref  order by $order $order_direction limit $start_from,$number_results    ";
     
     $res = mysql_query($sql);
     $adata=array();
-    //print "$sql";
+   // print "$sql";
     while($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
-      if($row['Products']>0){
-	$delete='<img src="art/icons/discontinue.png" /> <span  style="cursor:pointer">'._('Discontinue').'<span>';
-	$delete_type='discontinue';
-      }else{
-	$delete='<img src="art/icons/delete.png" /> <span  style="cursor:pointer">'._('Delete').'<span>';
-      $delete_type='delete';
-    }
+//      if($row['Products']>0){
+//	$delete='<img src="art/icons/discontinue.png" /> <span  style="cursor:pointer">'._('Discontinue').'<span>';//
+//	$delete_type='discontinue';
+//      }else{
+//	$delete='<img src="art/icons/delete.png" /> <span  style="cursor:pointer">'._('Delete').'<span>';
+//      $delete_type='delete';
+//    }
+
+switch ($row['Product Department Sales Type']) {
+    case 'Public Sale':
+        $sales_type=_('Public Sale');
+        break;
+    case 'Private Sale':
+        $sales_type=_('Private Sale');
+        break;
+    case 'Not for Sale':
+        $sales_type=_('Not for Sale');
+        break;        
+}
+
 
 
       $adata[]=array(
 		     'id'=>$row['Product Department Key'],
 		     'name'=>$row['Product Department Name'],
 		     'code'=>$row['Product Department Code'],
-		     'delete'=>$delete,
-		     'delete_type'=>$delete_type,
+		     'sales_type'=>$sales_type,
+		     //'delete_type'=>$delete_type,
 		     'go'=>sprintf("<a href='department.php?id=%d&edit=1'><img src='art/icons/page_go.png' alt='go'></a>",$row['Product Department Key'])
 		     );
    }
@@ -1440,9 +1607,9 @@ function delete_image(){
 if($scope=='product')
     $subject=new Product('pid',$scope_key);
 elseif($scope=='family')
-    $subject=new Product($scope_key);
+    $subject=new Family($scope_key);
 elseif($scope=='department')
-    $subject=new Product($scope_key);    
+    $subject=new Department($scope_key);    
 
 
 $subject->remove_image($image_key);
@@ -1542,7 +1709,7 @@ function list_pages_for_edition(){
  
  $where=' where `Page Type`="Store" ';
  if($parent=='store')
-     $where=sprintf("and  `Page Parent Key`=%d ",$parent_id);
+     $where.=sprintf("and `Page Store Function` in ('Front Page Store','Search','Information','Unknown','Store Catalogue') and `Page Store Key`=%d ",$parent_id);
    
    
  $filter_msg='';
@@ -1566,7 +1733,6 @@ function list_pages_for_edition(){
      $total=$row['total'];
    }
 mysql_free_result($result);
-     
      if($wheref==''){
        $filtered=0;$total_records=$total;
    }else{
@@ -1631,9 +1797,11 @@ mysql_free_result($result);
     
     
     $adata[]=array(
+           'id'=>$row['Page Key'],		
 		  'section'=>$row['Page Section'],
-		  'title'=>$row['Page Title']
-		  
+		  'title'=>$row['Page Title'],
+		  'go'=>sprintf("<a href='edit_page.php?id=%d'><img src='art/icons/page_go.png' alt='go'></a>",$row['Page Key'])
+
 		  
 		   );
   }
@@ -2615,19 +2783,19 @@ function edit_part_new_product($sku){
 
 }
 
-function  edit_page($subject){
-$family=new family($_REQUEST['id']);
+function  edit_page($subject,$data){
+$family=new family($data['id']);
  global $editor;
  $family->editor=$editor;
  $page=new Page($family->data['Product Family Page Key']);
- $page->update_field_switcher($_REQUEST['key'],stripslashes(urldecode($_REQUEST['newvalue'])));
+ $page->update_field_switcher($data['key'],stripslashes(urldecode($data['newvalue'])));
  
 
    if($page->updated){
-     $response= array('state'=>200,'newvalue'=>$page->new_value,'key'=>$_REQUEST['key']);
+     $response= array('state'=>200,'newvalue'=>$page->new_value,'key'=>$data['key']);
 	  
    }else{
-     $response= array('state'=>400,'msg'=>$page->msg,'key'=>$_REQUEST['key']);
+     $response= array('state'=>400,'msg'=>$page->msg,'key'=>$data['key']);
    }
    echo json_encode($response); 
 
@@ -2665,6 +2833,9 @@ $values=$data['newvalue'];
 
 $part_list_data=array();
 foreach($values as $key =>$value){
+
+if(!$value['deleted']){
+
 	$part_list_data[$value['sku']]=array(
  			   'Product ID'=>$product->get('Product ID'),
  			   'Part SKU'=>$value['sku'],
@@ -2672,6 +2843,7 @@ foreach($values as $key =>$value){
  			   'Parts Per Product'=>$value['ppp'],
  			   'Product Part List Note'=>$value['note']
  			   );
+ 			   }
 
 }
 $date=date('Y-m-d H:i:s');
@@ -2686,6 +2858,8 @@ $value['confirm']='new';
 
 
 //print_r($part_list_data);
+
+
 $product_part_key=$product->find_product_part_list($part_list_data);
 
 
@@ -2712,6 +2886,7 @@ $product->set_duplicates_as_historic();
 
 
 }else{
+
 $product->new_current_part_list($header_data,$part_list_data);
 }
 
@@ -2743,7 +2918,6 @@ else{
  echo json_encode($response); 
 
 }
-
 
 
 ?>

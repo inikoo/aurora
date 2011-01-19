@@ -16,20 +16,15 @@
 <span  style="display:none"  class="nav2 onleft"><a  {if $nav_parent=='contacts'}class="selected"{/if}   href="contacts.php">{t}Personal Contacts{/t}</a></span>
 <span class="nav2 onleft"><a  {if $nav_parent=='requests'}class="selected"{/if}   href="requests.php">{t}Requests{/t}</a></span>
 <span class="nav2 onleft"><a  {if $nav_parent=='marketing'}class="selected"{/if}   href="marketing.php">{t}Marketing{/t}</a></span>
+<span class="nav2 onright" style="padding:0px">      {if $next.id>0}<a class="next" href="customer.php?{$parent_info}id={$next.id}" ><img src="art/icons/next_white.png" style="padding:0px 10px" alt=">" title="{$next.name}"  /></a>{/if}</span>
+
+{if $parent_url}<span class="nav2 onright"><a   href="{$parent_url}">{$parent_title}</a></span>{/if}
+<span class="nav2 onright" style="margin-left:20px; padding:0px"> {if $next.id>0}<a class="prev" href="customer.php?id={$prev.id}" ><img src="art/icons/previous_white.png" style="padding:0px 10px" alt="<" title="{$prev.name}"  /></a>{/if}</span>
 
 
-<div class="right_box">
-  <div class="general_options">
-    {foreach from=$general_options_list item=options }
-    {if $options.tipo=="url"}
-    <span onclick="window.location.href='{$options.url}'" >{$options.label}</span>
-    {else}
-    <span  id="{$options.id}" state="{$options.state}">{$options.label}</span>
-    {/if}
-    {/foreach}
-  </div>
-</div>
-<table class="search"  border=0>
+
+
+<table class="search"  border=0 style="{if $search_label==''}display:none{/if}">
 <tr>
 <td class="label" style="" >{$search_label}:</td>
 <td class="form" style="">
@@ -45,7 +40,17 @@
 <div id="{$search_scope}_search_results" style="font-size:10px;float:right;background:#fff;border:1px solid #777;padding:10px;margin-top:0px;width:500px;position:absolute;z-index:20;top:-500px">
 <table id="{$search_scope}_search_results_table"></table>
 </div>
-
+<div style="clear:both;margin-top:0px;margin-right:0px;width:500px;float:right;margin-bottom:10px" class="right_box">
+  <div class="general_options">
+    {foreach from=$general_options_list item=options }
+    {if $options.tipo=="url"}
+    <span onclick="window.location.href='{$options.url}'" >{$options.label}</span>
+    {else}
+    <span  id="{$options.id}" state="{$options.state}">{$options.label}</span>
+    {/if}
+    {/foreach}
+  </div>
+</div>
 
 
 

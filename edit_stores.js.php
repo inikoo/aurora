@@ -6,6 +6,31 @@ include_once('common.php');
 var Event = YAHOO.util.Event;
 var Dom   = YAHOO.util.Dom;
 var can_add_store=false;
+var editing='<?php echo $_SESSION['state']['stores']['edit']?>';
+
+
+
+var validate_scope_data=
+{
+    'corporation':{
+	'name':{'changed':false,'validated':true,'required':true,'group':1,'type':'item','name':'name','ar':false,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Corporation Name')?>'}],dbname:'Corporation Name'},
+	'currency':{'changed':false,'validated':true,'required':false,'group':1,'type':'item','name':'currency','validation':[{'regexp':"[a-z]{3}",'invalid_msg':'<?php echo _('Invalid Currency Code')?>'}],dbname:'Corporation Currency'}
+
+  }
+  
+};
+
+var validate_scope_metadata={
+'corporation':{'type':'edit','ar_file':'ar_edit_contacts.php','key_name':'','key':false}
+
+};
+
+
+
+
+
+
+
 
 
 var todo_after_select_country= function(){
@@ -82,6 +107,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    var tableDivEL="table"+tableid;
 	    var OrdersColumnDefs = [ 
 				    {key:"id", label:"<?php echo _('Key')?>", width:20,sortable:false,isPrimaryKey:true,hidden:true} 
+				    ,{key:"go", label:"", width:40,sortable:false,hidden:false} 
 
 				    ,{key:"code", label:"<?php echo _('Code')?>", width:100,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}, editor: new YAHOO.widget.TextboxCellEditor({asyncSubmitter: CellEdit}),object:'store'}
 				    ,{key:"name", label:"<?php echo _('Name')?>", width:350,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC},   editor: new YAHOO.widget.TextboxCellEditor({asyncSubmitter: CellEdit}),object:'store'}
@@ -104,7 +130,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 		},
 		
 		fields: [
-			 'id','code','name','delete',"delete_type"
+			 'id','code','name','delete',"delete_type","go"
 			 ]};
 	    
 	    this.table0 = new YAHOO.widget.DataTable(tableDivEL, OrdersColumnDefs,
@@ -166,7 +192,7 @@ function change_block(e){
 	 Dom.get('d_'+this.id).style.display='';
 	 Dom.removeClass(editing,'selected');
 	 Dom.addClass(this, 'selected');
-	 YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=stores-edit&value='+this.id );
+	 YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=stores-edit&value='+this.id ,{});
 	editing=this.id;
     }
 }

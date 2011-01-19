@@ -250,6 +250,7 @@ def getTickers(d1, d2, tickers, forcefailed=0):
 def getTickersNowChunk(tickers):
   url='http://finance.yahoo.com/d/quotes.csv?%s' % urllib.urlencode(
       {'s':''.join(tickers), 'f':'sohgpv', 'e':'.csv'})
+
   f=urllib.urlopen(url)
   lines,t,result=splitLines(f.read()),time.localtime(),[]
   for l in lines:

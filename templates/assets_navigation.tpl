@@ -9,7 +9,12 @@
     </ul>
   </dd>
 </dl>
-{else}
+{/if}
+
+
+
+{if $store_key}
+
 <dl class="dropdown">
   <dt id="one-ddheader" onmouseover="ddMenu('one',1)" onmouseout="ddMenu('one',-1)" onclick="window.location='store.php?id={$store_id}'" >{t}Departments{/t}</dt>
   <dd id="one-ddcontent" onmouseover="cancelHide('one')" onmouseout="ddMenu('one',-1)">
@@ -20,14 +25,12 @@
     </ul>
   </dd>
 </dl>
+ <span class="nav2 onleft"><a href="families.php?store_id={$store_key}">{t}Families{/t}</a></span>
+ <span class="nav2 onleft"><a href="products.php?store_id={$store_key}">{t}Products{/t}</a></span>
+  <span class="nav2 onleft"><a href="deals.php?store_id={$store_key}">{t}Deals{/t}</a></span>
+ <span class="nav2 onleft"><a href="product_categories.php?store_id={$store_key}id=0">{t}Products Categories{/t}</a></span>
 
 {/if}
- <span class="nav2 onleft"><a href="families.php">{t}Families{/t}</a></span>
- <span class="nav2 onleft"><a href="products.php?parent=none">{t}Products{/t}</a></span>
-  <span class="nav2 onleft"><a href="deals.php">{t}Deals{/t}</a></span>
-
- <span class="nav2 onleft"><a href="categories.php">{t}Categories{/t}</a></span>
-{if $view_parts}<span class="nav2 onleft"><a href="parts.php">{t}Parts{/t}</a></span>{/if}
 
 <div class="right_box">
   <div class="general_options">
@@ -40,6 +43,7 @@
     {/foreach}
   </div>
 </div>
+{if $search_scope}
 <table class="search"  border=0>
 <tr>
 <td class="label" style="" >{$search_label}:</td>
@@ -55,4 +59,8 @@
 </table>  
 <div id="{$search_scope}_search_results" style="font-size:10px;float:right;background:#fff;border:1px solid #777;padding:10px;margin-top:0px;width:500px;position:absolute;z-index:20;top:-500px">
 <table id="{$search_scope}_search_results_table"></table>
+
+
 </div>
+
+{/if}

@@ -28,25 +28,41 @@ mysql_query("SET NAMES 'utf8'");
 require_once '../../conf/conf.php';           
 date_default_timezone_set('UTC');
 
-$sql="select * from `Invoice Dimension` where `Invoice Store Key` in (2,3)";
+$sql="select * from `Invoice Dimension` ";
 $result=mysql_query($sql);
 while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
 
+  $id=$row['Invoice Key'];
+ $total_costs=0;
+  $sql=sprintf("select ifnull(sum(`Cost Supplier`/`Invoice Currency Exchange Rate`),0) as `Cost Supplier`  ,ifnull(sum(`Cost Manufacure`/`Invoice Currency Exchange Rate`),0) as `Cost Manufacure` ,ifnull(sum(`Cost Storing`/`Invoice Currency Exchange Rate`),0) as `Cost Storing`,ifnull(sum(`Cost Handing`/`Invoice Currency Exchange Rate`),0)  as  `Cost Handing`,ifnull(sum(`Cost Shipping`/`Invoice Currency Exchange Rate`),0) as `Cost Shipping` from `Order Transaction Fact` where `Invoice Key`=%d",$id);
 
-  $invoice=new Invoice($row['Invoice Key']);
+  $result2 = mysql_query ( $sql );
+   if ($row2 = mysql_fetch_array ( $result2, MYSQL_ASSOC )) {
+     $total_costs=$row2['Cost Supplier']+$row2['Cost Manufacure']+$row2['Cost Storing']+$row2['Cost Handing']+$row2['Cost Shipping'];
+ 
+   }
+   $profit= $row['Invoice Total Net Amount']- $row['Invoice Refund Net Amount']-$total_costs;
+
+   
+   $sql=sprintf("update `Invoice Dimension` set `Invoice Total Profit`=%f where `Invoice Key`=%d " ,$profit,$id);
+   print "$total_costs\n";  
+ mysql_query($sql);
+
+
+  //$invoice=new Invoice($row['Invoice Key']);
   
-  $invoice->categorize('save');
+  // $invoice->categorize('save');
 
-  $force_values=array(
-		      'Invoice Items Net Amount'=>$invoice->data['Invoice Items Net Amount']
-		      ,'Invoice Total Net Amount'=>$invoice->data['Invoice Total Net Amount']
-		      ,'Invoice Total Tax Amount'=>$invoice->data['Invoice Total Tax Amount']
-		      ,'Invoice Total Amount'=>$invoice->data['Invoice Total Amount']
-		      );
+  //$force_values=array(
+   // 'Invoice Items Net Amount'=>$invoice->data['Invoice Items Net Amount']
+   //	      ,'Invoice Total Net Amount'=>$invoice->data['Invoice Total Net Amount']
+   //	      ,'Invoice Total Tax Amount'=>$invoice->data['Invoice Total Tax Amount']
+   //	      ,'Invoice Total Amount'=>$invoice->data['Invoice Total Amount']
+   //	      );
   // print_r($force_values);
-    $invoice->get_totals();
+// $invoice->get_totals();
   // $invoice->get_totals($force_values);
-  print $invoice->id."\r";
+// print $invoice->id."\r";
  }
 
 

@@ -2,23 +2,30 @@
 include_once('common.php');
 include_once('class.CurrencyExchange.php');
 
+
+
 include_once('class.Order.php');
 if(!$user->can_view('orders')){
   header('Location: index.php');
    exit;
 }
+
+  $modify=$user->can_edit('orders');
   
 $css_files=array(
 		 $yui_path.'reset-fonts-grids/reset-fonts-grids.css',
 		 $yui_path.'menu/assets/skins/sam/menu.css',
 		 $yui_path.'button/assets/skins/sam/button.css',
-		 
-		 $yui_path.'editor/assets/skins/sam/editor.css',
-		 'text_editor.css',
+		 		 $yui_path.'assets/skins/sam/autocomplete.css',
+
+		// $yui_path.'editor/assets/skins/sam/editor.css',
+		// 'text_editor.css',
 		 'common.css',
 		 'container.css',
 		 'table.css'
 		 );
+
+
 $js_files=array(
 
 		$yui_path.'utilities/utilities.js',
@@ -28,15 +35,15 @@ $js_files=array(
 		$yui_path.'autocomplete/autocomplete-min.js',
 		$yui_path.'datatable/datatable-min.js',
 		$yui_path.'container/container-min.js',
-
 		$yui_path.'menu/menu-min.js',
 		$yui_path.'calendar/calendar-min.js',
 		'common.js.php',
-		'table_common.js.php'
+		'table_common.js.php',
+		'js/search.js'
 		);
 
 if(isset($_REQUEST['new']) ){
-  
+  date_default_timezone_set('UTC');
   if(isset($_REQUEST['customer_key']) and is_numeric($_REQUEST['customer_key']) ){
     $customer=new Customer($_REQUEST['customer_key']);
     if(!$customer->id)
@@ -45,6 +52,7 @@ if(isset($_REQUEST['new']) ){
     $customer=new Customer('create anonymous');
   $editor=array(
 		'Author Name'=>$user->data['User Alias'],
+		'Author Alias'=>$user->data['User Alias'],
 		'Author Type'=>$user->data['User Type'],
 		'Author Key'=>$user->data['User Parent Key'],
 		'User Key'=>$user->id
@@ -52,6 +60,7 @@ if(isset($_REQUEST['new']) ){
   
   $order_data=array('type'=>'system'
 		    ,'Customer Key'=>$customer->id
+		    ,'Order Original Data MIME Type'=>'application/kaktus'
 		    ,'Order Type'=>'Order'
 		    ,'editor'=>$editor
 		    
@@ -76,7 +85,7 @@ if(!isset($_REQUEST['id']) or !is_numeric($_REQUEST['id'])){
    exit;
 }
 
-
+ $general_options_list=array();
 $order_id=$_REQUEST['id'];
 $_SESSION['state']['order']['id']=$order_id;
 $order=new Order($order_id);
@@ -103,7 +112,17 @@ if(isset($_REQUEST['pick_aid'])){
   case('In Process'):
 
     $js_files[]='js/edit_common.js';
-    $js_files[]='order_in_process.js.php?order_key='.$order_id;
+  
+    
+    $js_files[]='edit_address.js.php';
+		$js_files[]='address_data.js.php?tipo=customer&id='.$customer->id;
+		
+		$js_files[]='edit_delivery_address_common.js.php';
+    	  $js_files[]='order_in_process.js.php?order_key='.$order_id.'&customer_key='.$customer->id;
+    	
+    	$css_files[]='css/edit_address.css';
+
+    
     $template='order_in_process.tpl';
     
    
@@ -135,26 +154,50 @@ if(isset($_REQUEST['pick_aid'])){
     $template='order_in_warehouse.tpl';
     break;
   case('Dispatched'):
-    
+  
+ 
+
+if ($modify){
+    $general_options_list[]=array('tipo'=>'url','url'=>'new_post_order.php?id='.$order->id,'label'=>_('Post Dispatch Operations'));
+ //   $general_options_list[]=array('tipo'=>'url','url'=>'new_post_order.php?type=sht&id='.$order->id,'label'=>_('Make Shortage'));
+   //     $general_options_list[]=array('tipo'=>'url','url'=>'new_refund.php?id='.$order->id,'label'=>_('Refund'));
+
+
+}
+  
+     $smarty->assign('search_label',_('Orders'));
+$smarty->assign('search_scope','orders_store');
     
     $js_files[]='order_dispatched.js.php';
     $template='order_dispatched.tpl';
   break; 
  case('Cancelled'):
-
+ $smarty->assign('search_label',_('Orders'));
+$smarty->assign('search_scope','orders_store');
     
     $js_files[]='order_cancelled.js.php';
     $template='order_cancelled.tpl';
   break; 
+  case('Suspended'):
+
+    
+    $js_files[]='order_suspended.js.php';
+    $template='order_suspended.tpl';
+  break; 
 case('Unknown'):
  $js_files[]='order_unknown.js.php';
     $template='order_unknown.tpl';
+break;
+case('Ready to Ship'):
+ $js_files[]='order_ready_to_ship.js.php';
+    $template='order_ready_to_ship.tpl';
 break;
  default:
    exit('todo '.$order->get('Order Current Dispatch State'));
   break;
 }  
 }
+$smarty->assign('general_options_list',$general_options_list);
 
 
 $smarty->assign('order',$order);

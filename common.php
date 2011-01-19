@@ -1,14 +1,17 @@
 <?php
-define('DEBUG', 1);
+define('DEBUG', 0);
 if(DEBUG){ error_reporting(E_ALL);}
 
 //$path = 'classes';set_include_path(get_include_path() . PATH_SEPARATOR . $path);
-require_once 'app_files/db/dns.php'; 
+
+require_once 'app_files/db/dns.php';
+
 require_once 'common_functions.php';
 require_once "class.Session.php";
 require_once "class.Auth.php";
 require_once "class.User.php";
 $external_DB_link=false;
+
 if(isset($connect_to_external) and isset($external_dns_user)){
 $external_DB_link=mysql_connect($external_dns_host,$external_dns_user,$external_dns_pwd );
 
@@ -40,53 +43,74 @@ require_once 'conf/conf.php';
 
 
 
-
 $session = new Session($myconf['max_session_time'],1,100);
+
 //print_r($_SESSION);
 //print '//'.session_id( );
 //print '//'.$_SESSION['state']['store']['plot'];
 require('external_libs/Smarty/Smarty.class.php');
 $smarty = new Smarty();
-
-
-
-
 $smarty->template_dir = $myconf['template_dir'];
 $smarty->compile_dir = $myconf['compile_dir'];
 $smarty->cache_dir = $myconf['cache_dir'];
 $smarty->config_dir = $myconf['config_dir'];
 
-
 $logout = (array_key_exists('logout', $_REQUEST)) ? $_REQUEST['logout'] : false;
 if ($logout){
-  $sql=sprintf("update session_history set end=NOW()  where session_id=%s  ",prepare_mysql(session_id()));
-  mysql_query($sql);
+
+/*  ?><script type = "text/javascript">alert("You are about to be signed out due to Inactivity");</script><?php   */
+$sql=sprintf("update `User Log Dimension` set `Logout Date`=NOW()  where `Session ID`=%s", prepare_mysql(session_id()));
+   mysql_query($sql);
+
+  session_regenerate_id();
   session_destroy();
   unset($_SESSION);
+
   include_once 'login.php';
   exit;
  }
 
-
-
 $is_already_logged_in=(isset($_SESSION['logged_in']) and $_SESSION['logged_in']? true : false);
 
-if(!$is_already_logged_in){
+
+if($is_already_logged_in){
+
+if($_SESSION['logged_in_page']!=0){
+
+
+    $sql=sprintf("update `User Log Dimension` set `Logout Date`=NOW()  where `Session ID`=%s", prepare_mysql(session_id()));
+   mysql_query($sql);
+
+  session_regenerate_id();
+  session_destroy();
+  unset($_SESSION);
+
+  include_once 'login.php';
+  exit;
+    
+    }
+$user=new User($_SESSION['user_key']);
+
+}else{
+  
+//   echo "<script>alert(\"Session Expired! You are signed out due to Inactivity!. Please login again!\")</script>"; 
+
   include_once('app_files/key.php');
   $auth=new Auth(IKEY,SKEY);
   $handle = (array_key_exists('_login_', $_REQUEST)) ? $_REQUEST['_login_'] : false;
-  
-  
   $sk = (array_key_exists('ep', $_REQUEST)) ? $_REQUEST['ep'] : false;
 
+    
+    
   if(!$sk and array_key_exists('mk', $_REQUEST)    ){
     $auth->authenticate_from_masterkey($_REQUEST['mk']);
-  }else{
-    $auth->authenticate($handle,$sk);
+  }elseif($handle){
+    $auth->authenticate($handle,$sk,'staff',0);
   }
   
   if($auth->is_authenticated()){
     $_SESSION['logged_in']=true;
+    $_SESSION['logged_in_page']=0;
     $_SESSION['user_key']=$auth->get_user_key();
     $user=new User($_SESSION['user_key']);  
     $_SESSION['text_locale']=$user->data['User Preferred Locale'];
@@ -96,15 +120,16 @@ if(!$is_already_logged_in){
       include_once 'login.php';
     exit;
   }  
-}else{
-	$user=new User($_SESSION['user_key']);
 }
 
 $_client_locale='en_GB.UTF-8';
 include_once('set_locales.php');
 require('locale.php');
+
+//print_r(localeconv());
 $_SESSION['locale_info'] = localeconv();
-$_SESSION['locale_info']['currency_symbol']=$myconf['currency_symbol'];
+if($_SESSION['locale_info']['currency_symbol']=='EU')
+$_SESSION['locale_info']['currency_symbol']='Û';
 
 $smarty->assign('lang_code',$_SESSION['text_locale_code']);
 $smarty->assign('lang_country_code',strtolower($_SESSION['text_locale_country_code']));
@@ -137,22 +162,33 @@ $user->read_suppliers();
 //exit;
 $nav_menu=array();
 if($user->can_view('users'))
-  	$nav_menu[] = array(_('Users'), 'users_staff.php','users');
+  	$nav_menu[] = array(_('Users'), 'users.php','users');
 else
 	 $nav_menu[] = array(_('Profile'), 'user.php','users');
+	 
+	 
 if($user->can_view('staff'))
   $nav_menu[] = array(_('Staff'), 'hr.php','staff');
-if($user->can_view('suppliers'))
-  $nav_menu[] = array(_('Suppliers'), 'suppliers.php','suppliers');
-//if($user->is('Supplier'))
-//  $nav_menu[] = array(_('My Products'), 'myproducts.php','myproducts');
 
 if($user->can_view('reports')){
-  // if(count($user->stores)==1){
-  //  $nav_menu[] = array(_('Reports'), sprintf('report_sales.php?store_key=%d&tipo=m&y=%d&m=%d',$user->stores[0],date('Y'),date('m')));
-  //  }else
-
  $nav_menu[] = array(_('Reports'), 'reports.php','reports');
+}
+if($user->can_view('suppliers'))
+  $nav_menu[] = array(_('Suppliers'), 'suppliers.php','suppliers');
+if($user->can_view('warehouses')){
+if($user->warehouses==1)
+$nav_menu[] = array(_('Warehouse'), 'warehouse.php','warehouses');
+
+else
+$nav_menu[] = array(_('Warehouses'), 'warehouses.php','warehouses');
+}
+
+  $nav_menu[] = array(_('Marketing'), 'marketing.php','marketing');
+if($user->can_view('stores')){
+    if(count($user->stores)==1){
+    $nav_menu[] = array(_('Products'), 'store.php?id='.$user->stores[0],'products');
+    }else
+    $nav_menu[] = array(_('Products'), 'stores.php','products');
 }
 
 if($user->can_view('orders')){
@@ -172,32 +208,21 @@ if($user->can_view('customers')){
   $nav_menu[] = array(_('Customers'), 'customers_server.php','customers');
 
 }
-if($user->can_view('warehouses')){
-if($user->warehouses==1)
-$nav_menu[] = array(_('Warehouse'), 'warehouse.php','warehouses');
 
-else
-$nav_menu[] = array(_('Warehouses'), 'warehouses.php','warehouses');
-}
 
-if($user->can_view('stores')){
-    if(count($user->stores)==1){
-    $nav_menu[] = array(_('Products'), 'store.php?id='.$user->stores[0],'products');
-    }else
-    $nav_menu[] = array(_('Products'), 'stores.php','products');
-}
+
 
 if($user->data['User Type']=='Supplier'){
 
 
 $nav_menu[] = array(_('Orders'), 'suppliers.php?orders'  ,'orders');
 $nav_menu[] = array(_('Products'), 'suppliers.php?products'  ,'products');
-$nav_menu[] = array(_('Home'), 'suppliers_index.php','home');
+$nav_menu[] = array(_('Dashboard'), 'suppliers_index.php','home');
 }
 
 
 else
-  $nav_menu[] = array(_('Home'), 'index.php','home');
+  $nav_menu[] = array(_('Dashboard'), 'index.php','home');
 
 $smarty->assign('nav_menu',$nav_menu);
 $smarty->assign('theme',$myconf['theme']);

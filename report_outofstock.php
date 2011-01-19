@@ -46,8 +46,8 @@ if($tipo=='f'){
    $_time_n=mktime(0, 0, 0,$month+1 ,1 , $year);
    $_time_p=mktime(0, 0, 0,$month-1 ,1 , $year);
 
-   $from=date("d-m-Y", $_time);
-   $to=date("d-m-Y", mktime(0, 0, 0, $month+1, 0, $year));
+   $from=date("Y-m-d", $_time);
+   $to=date("Y-m-d", mktime(0, 0, 0, $month+1, 0, $year));
    $period=date("F Y", $_time);
    $title="$period "._('Out od Stock Report');
 
@@ -63,8 +63,8 @@ if($tipo=='f'){
    $_time_n=mktime(0, 0, 0,1 ,1 , $year+1);
    $_time_p=mktime(0, 0, 0,1 ,1 , $year-1);
 
-   $from=date("d-m-Y", $_time);
-   $to=date("d-m-Y", mktime(0, 0, 0, 1, 0, $year+1));
+   $from=date("Y-m-d", $_time);
+   $to=date("Y-m-d", mktime(0, 0, 0, 1, 0, $year+1));
    $period=date("Y", $_time);
    $title="$period "._('Sales Report');
 

@@ -29,7 +29,10 @@ $js_files=array(
 		'table_common.js.php',
 		'js/search.js',
 		'parts.js.php',
-		 'js/dropdown.js'
+		 'js/dropdown.js',
+		 'js/edit_common.js',
+		 'js/dropdown.js',
+		 'js/csv_common.js'
 		);
 
 if(!$user->can_view('parts')){
@@ -106,6 +109,117 @@ $smarty->assign('avg',$_SESSION['state']['parts']['avg']);
 
 $smarty->assign('currency',$myconf['currency_symbol']);
 $smarty->assign('parts',$parts['total_parts']);
+
+
+
+
+
+ $csv_export_options=array(
+                            'description'=>array(
+                                              'title'=>_('Description'),
+                                              'rows'=>
+                                                     array(
+                                                         array(
+                                                             'sku'=>array('label'=>_('Code'),'selected'=>$_SESSION['state']['parts']['table']['csv_export']['sku']),
+                                                             'used_in'=>array('label'=>_('Name'),'selected'=>$_SESSION['state']['parts']['table']['csv_export']['used_in']),
+                                                             'description'=>array('label'=>_('Stores'),'selected'=>$_SESSION['state']['parts']['table']['csv_export']['description']),
+                                                             
+                                                             'stock'=>array('label'=>_('Products'),'selected'=>$_SESSION['state']['parts']['table']['csv_export']['stock']),
+							      'stock_cost'=>array('label'=>_('Products'),'selected'=>$_SESSION['state']['parts']['table']['csv_export']['stock_cost'])
+                                                   
+                                                            
+                                                     
+                                                         )
+                                                     )
+                                          ),
+                            'parts_details'=>array(
+                                        'title'=>_('Parts Details'),
+                                        'rows'=>
+                                               array(
+                                                   array(
+                                                       'unit'=>array('label'=>_('Surplus'),'selected'=>$_SESSION['state']['parts']['table']['csv_export']['unit']),
+                                                       'status'=>array('label'=>_('Ok'),'selected'=>$_SESSION['state']['parts']['table']['csv_export']['status']),
+                                                       'valid_from'=>array('label'=>_('Low'),'selected'=>$_SESSION['state']['parts']['table']['csv_export']['valid_from']),
+                                                       'valid_to'=>array('label'=>_('Critical'),'selected'=>$_SESSION['state']['parts']['table']['csv_export']['valid_to'])
+                                                      
+                                                
+
+                                                   )
+                                               )
+                                    ),
+			   'total'=>array(
+                                        'title'=>_('Total'),
+                                        'rows'=>
+                                               array(
+                                                   array(
+                                                       'total_lost'=>array('label'=>_('Surplus'),'selected'=>$_SESSION['state']['parts']['table']['csv_export']['total_lost']),
+                                                       'total_broken'=>array('label'=>_('Ok'),'selected'=>$_SESSION['state']['parts']['table']['csv_export']['total_broken']),
+                                                       'total_sold'=>array('label'=>_('Low'),'selected'=>$_SESSION['state']['parts']['table']['csv_export']['total_sold']),
+                                                       'total_given'=>array('label'=>_('Critical'),'selected'=>$_SESSION['state']['parts']['table']['csv_export']['total_given'])
+                                                      
+                                                
+
+                                                   )
+                                               )
+                                    ),
+                            'sales_all'=>array('title'=>_('Sales (All times)'),
+                            'rows'=>
+                                               array(
+                                                   array(
+                                                       'sales_all'=>array('label'=>_('Sales'),'selected'=>$_SESSION['state']['parts']['table']['csv_export']['sales_all']),
+                                                       'profit_all'=>array('label'=>_('Profit'),'selected'=>$_SESSION['state']['parts']['table']['csv_export']['profit_all']),
+                                                      
+                                                   )
+                            )
+                            ),
+'sales_1y'=>array('title'=>_('Sales (1 Year)'),
+                            'rows'=>
+                                               array(
+                                                   array(
+                                                       'sales_1y'=>array('label'=>_('Sales'),'selected'=>$_SESSION['state']['parts']['table']['csv_export']['sales_1y']),
+                                                       'profit_1y'=>array('label'=>_('Profit'),'selected'=>$_SESSION['state']['parts']['table']['csv_export']['profit_1y']),
+                                                       
+                                                   )
+                            )
+                            ),
+'sales_1q'=>array('title'=>_('Sales (1 Quarter)'),
+                            'rows'=>
+                                               array(
+                                                   array(
+                                                       'sales_1q'=>array('label'=>_('Sales'),'selected'=>$_SESSION['state']['parts']['table']['csv_export']['sales_1q']),
+                                                       'profit_1q'=>array('label'=>_('Profit'),'selected'=>$_SESSION['state']['parts']['table']['csv_export']['profit_1q']),
+                                                       
+                                                   )
+                            )
+                            ),
+'sales_1m'=>array('title'=>_('Sales (1 Month)'),
+                            'rows'=>
+                                               array(
+                                                   array(
+                                                       'sales_1m'=>array('label'=>_('Sales'),'selected'=>$_SESSION['state']['parts']['table']['csv_export']['sales_1m']),
+                                                       'profit_1m'=>array('label'=>_('Profit'),'selected'=>$_SESSION['state']['parts']['table']['csv_export']['profit_1m']),
+                                                      
+                                                   )
+                            )
+                            ),
+                            'sales_1w'=>array('title'=>_('Sales (1 Week)'),
+                            'rows'=>
+                                               array(
+                                                   array(
+                                                       'sales_1w'=>array('label'=>_('Sales'),'selected'=>$_SESSION['state']['parts']['table']['csv_export']['sales_1w']),
+                                                       'profit_1w'=>array('label'=>_('Profit'),'selected'=>$_SESSION['state']['parts']['table']['csv_export']['profit_1w']),
+                                                      
+                                                   )
+                            )
+                            )
+                        );
+$smarty->assign('export_csv_table_cols',8);
+
+                        
+$smarty->assign('csv_export_options',$csv_export_options);
+
+
+
 
 
 $smarty->display('parts.tpl');

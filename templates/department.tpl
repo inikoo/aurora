@@ -2,7 +2,7 @@
 <div id="bd" >
  {include file='assets_navigation.tpl'}
  <div style="clear:left;"> 
- <span class="branch" ><a  href="store.php?id={$store->id}">{$store->get('Store Name')}</a> &rarr; {$department->get('Product Department Name')}</span>
+ <span class="branch" ><a  href="store.php?id={$store->id}">{$store->get('Store Name')}</a>&rarr; {$department->get('Product Department Name')}</span>
  </div>
  <div id="no_details_title" style="clear:both;{if $show_details}display:none;{/if}">
     <h1>Department: {$department->get('Product Department Name')} ({$department->get('Product Department Code')})</h1>
@@ -204,12 +204,11 @@
   
 <div class="data_table" style="clear:both;">
   <span id="table_title" class="clean_table_title">{t}Families{/t}</span>
-  
+  <span  id="export_csv0" style="float:right;margin-left:20px"  class="table_type state_details" tipo="families_in_department" >{t}Export (CSV){/t}</span>
     <div id="table_type">
      <span id="table_type_list" style="float:right" class="table_type state_details {if $table_type=='list'}selected{/if}">{t}List{/t}</span>
      <span id="table_type_thumbnail" style="float:right;margin-right:10px" class="table_type state_details {if $table_type=='thumbnails'}selected{/if}">{t}Thumbnails{/t}</span>
      </div>
-     
      
   
   
@@ -318,5 +317,6 @@
     </ul>
   </div>
 </div>
+{include file='export_csv_menu_splinter.tpl' id=0 cols=$export_csv_table_cols session_address="family-table-csv_export" export_options=$csv_export_options }
 {include file='footer.tpl'}
 

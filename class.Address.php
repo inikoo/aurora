@@ -182,7 +182,6 @@ class Address extends DB_Table {
                 $data['Address Input Format']='DB Fields';
         }
 
-//print_r($data);
 
         switch ($data['Address Input Format']) {
         case('3 Line'):
@@ -212,18 +211,14 @@ class Address extends DB_Table {
     */
 
     function find($raw_data,$options='') {
-        // print "$options\n";
-        //  print_r($raw_data);
-
+      
         $find_fuzzy=false;
 
         if (preg_match('/fuzzy/i',$options)) {
             $find_fuzzy='fuzzy';
         }
-        //forcing fuzzy
         $find_fuzzy=false;
 
-        //print_r($raw_data);
 
 
         $this->found=false;
@@ -272,7 +267,6 @@ class Address extends DB_Table {
         $subject_key=0;
         $subject_type='';
         $in_contact=array();
-//print_r($raw_data);
 
         if (preg_match('/in contact \d+/i',$options,$match)) {
             $subject_key=preg_replace('/[^\d]/','',$match[0]);
@@ -350,9 +344,7 @@ class Address extends DB_Table {
                     foreach($fields as $field) {
                         $sql.=sprintf(' and `%s`=%s',$field,prepare_mysql($data[$field],false));
                     }
-                    //print_r($raw_data);
-                    // print "$sql\n";
-
+                    
                     $result=mysql_query($sql);
                     $num_results=mysql_num_rows($result);
                     if ($num_results==1) {
@@ -387,10 +379,6 @@ class Address extends DB_Table {
 
 
             $number_filled_fields=count($filled_fields);
-
-
-            //print $number_filled_fields;
-            //print_r($filled_fields);
 
 
             if ($number_filled_fields==1) {
@@ -513,9 +501,7 @@ class Address extends DB_Table {
                 unset($country_multiplicity_data);
 
 
-                //		print_r($data);
-                //if(  ($data['Address Street Name']!=''  and $data['Address Street Number']!=''  ) or $data['Address Building']!=''   ){
-                if (  ($data['Address Street Name']!=''   ) or $data['Address Building']!=''   ) {
+                   if (  ($data['Address Street Name']!=''   ) or $data['Address Building']!=''   ) {
                     $order='';
                     $sql_town='';
                     $sql_postal_code='';
@@ -603,22 +589,15 @@ class Address extends DB_Table {
                             $wrong_town_factor=(1-$dif)*(1-$dif);
 
                         }
-                        //print "$score $wrong_postal_code_factor $wrong_town_factor\n";
                         $score=$score*$wrong_postal_code_factor*$wrong_town_factor;
 
 
-                        //	print_r($this->candidate);
                         if (isset($this->candidate[$contact_key])) {
-                            // print "*** $score \n  ";
-                            //$old_candidate_score=$this->candidate[$contact_key];
-                            //				  $this->candidate[$contact_key]+=$score;
-                            if ($this->candidate[$contact_key]<$score)
+                                  if ($this->candidate[$contact_key]<$score)
                                 $this->candidate[$contact_key]=$score;
                         } else {
-                            // print "-- $score \n";
                             $this->candidate[$contact_key]=$score;
                         }
-                        //	print_r($this->candidate);
 
                         if ($this->candidate[$contact_key]>$max_score)
                             $max_score=$this->candidate[$contact_key];
@@ -626,9 +605,7 @@ class Address extends DB_Table {
 
                 }
 
-                //	print_r($this->candidate);
-                //print "$max_score\n";
-                //exit;
+           
                 if ($max_score>85)
                     $nothing_found=false;
 
@@ -698,9 +675,7 @@ class Address extends DB_Table {
                                      ,prepare_mysql(strtoupper($data['Address Town']))
                                     );
 
-                        //print_r($this->candidate);
-
-                        //	print "$sql\n";
+                       
                         $result=mysql_query($sql);
                         $len_town=strlen($data['Address Town']);
                         while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
@@ -733,8 +708,7 @@ class Address extends DB_Table {
 
                         }
                     }
-                    //	}
-                    //print_r($data);
+                  
                     if ($data['Address Street Name']!='' ) {
                         $sql=sprintf("select   `Address Country Code`,`Address Town`, A.`Address Key` ,damlev(UPPER(`Address Street Name`),%s) as dist1,`Subject Key` from `Address Dimension` A left join `Address Bridge` AB  on (AB.`Address Key`=A.`Address Key`)  where  `Subject Type`='Contact'     order by dist1  limit 50 "
                                      ,prepare_mysql(strtoupper($data['Address Street Name']))
@@ -829,11 +803,6 @@ class Address extends DB_Table {
 
 
 
-
-        // print_r($data);
-        //exit("");
-
-
         if ($update) {
             if ($this->found) {
                 $this->update($data,$options);
@@ -843,8 +812,7 @@ class Address extends DB_Table {
         }
 
         if ($create and !$this->found) {
-            //   print_r($data);
-            //    exit;
+     
             $this->create($data,$options);
 
         }
@@ -906,6 +874,9 @@ class Address extends DB_Table {
       <Address>
 
     */
+    
+    
+    
     function create($data) {
 
         //   print_r($data);
@@ -954,7 +925,6 @@ class Address extends DB_Table {
         $keys=preg_replace('/^,/','',$keys);
 
         $sql="insert into `Address Dimension` ($keys) values ($values)";
-        //print $sql;
         if (mysql_query($sql)) {
             $this->id = mysql_insert_id();
             $this->data['Address Key']= $this->id;
@@ -1348,6 +1318,12 @@ class Address extends DB_Table {
                 $ps_address=_trim($this->data['Address Postal Code']);
                 if ($ps_address!='')
                     $address.=$ps_address.$separator;
+
+              
+              
+              if($divisions=$this->display('Country Divisions')){
+              $address.=$divisions.$separator;
+              }
 
                 $address.='<a class="ninja" href="region.php?country='.$this->data['Address Country Code'].'" >'.$this->data['Address Country Name'].'</a>';
             }
@@ -2103,11 +2079,23 @@ class Address extends DB_Table {
             $data['Address Town']='St. Thomas';
         }
 
-        if (preg_match('/La Reunion/i',$data['Address Country Name'])) {
+        if (preg_match('/Reunion|Réunion/i',$data['Address Country Name'])) {
             $data['Address Country Name']='France';
             if ($data['Address Country First Division']=='')
-                $data['Address Country First Division']='La Reunion';
+                $data['Address Country First Division']='Réunion';
         }
+         if (preg_match('/Caledonia|Calédonie|Caledonie/i',$data['Address Country Name'])) {
+            $data['Address Country Name']='France';
+            if ($data['Address Country First Division']=='')
+                $data['Address Country First Division']='New Caledonia';
+        }
+         if (preg_match('/Saint Martin|St Martin/i',$data['Address Country Name'])) {
+            $data['Address Country Name']='France';
+            if ($data['Address Country First Division']=='')
+                $data['Address Country First Division']='Saint Martin';
+        }
+        //print_r($data);
+        
         if (preg_match('/SCOTLAND|wales/i',$data['Address Country Name']))
             $data['Address Country Name']='United Kingdom';
         if (preg_match('/^england$|^inglaterra$/i',$data['Address Country Name'])) {
@@ -3576,6 +3564,7 @@ class Address extends DB_Table {
                 $data['Address Postal Code']='L-'.$data['Address Postal Code'];
             break;
         case(165)://France
+       // print_r($data);
             $data['Address Postal Code']=_trim($data['Address Postal Code']);
             $data['Address Postal Code']=preg_replace('/FRANCE|french republic/i','',$data['Address Postal Code']);
             if ($data['Address Postal Code']=='' and preg_match('/\s*\d{4,5}\s*/',$data['Address Town'],$match)) {
@@ -3628,6 +3617,10 @@ class Address extends DB_Table {
             $data['Address Postal Code']=_trim($data['Address Postal Code']);
             if (preg_match('/^\d{4}$/',$data['Address Postal Code']))
                 $data['Address Postal Code']='0'.$data['Address Postal Code'];
+                
+                        //print_r($data);
+
+                
             break;
 
         case(196)://Switzerland
@@ -4235,8 +4228,7 @@ class Address extends DB_Table {
         $data['Address Fuzzy Type']=preg_replace('/^,\s*/','',$data['Address Fuzzy Type']);
 
         $data['Address Location']=Address::location($data);
-        //  print_r($data['Address Country 2 Alpha Code']);
-        //	print_r($data);
+       
         return $data;
     }
 
@@ -4263,7 +4255,6 @@ class Address extends DB_Table {
             $address.=$separator.$data['Address Country Code'];
 
         } else {
-            //print_r($data);
             $address='';
             $header_address=_trim($data['Address Internal'].' '.$data['Address Building']);
             if ($header_address!='')
@@ -4306,7 +4297,6 @@ class Address extends DB_Table {
             $address='[FZ] '.$address;
 
         }
-
 
         return _trim($address);
 
@@ -4460,125 +4450,135 @@ class Address extends DB_Table {
 
 
 
-    function update_parents() {
-   
-        $sql=sprintf("select `Customer Key`  from  `Customer Dimension` where `Customer Main Delivery Address Key`=%d group by `Customer Key`",$this->id);
+function update_parents($parents=false) {
+
+    if (!$parents) {
+        $parents=array('Contact','Company','Customer','Supplier');
+    }
+    elseif(is_string($parents)) {
+        $parents=array($parents);
+    }
+    foreach($parents as $parent) {
+
+
+
+
+
+
+        $sql=sprintf("select `$parent Key` as `Parent Key`   from  `$parent Dimension` where `$parent Main Address Key`=%d group by `$parent Key`",$this->id);
         $res=mysql_query($sql);
         while ($row=mysql_fetch_array($res)) {
+            $principal_address_changed=false;
+
+            if ($parent=='Contact') {
+                $parent_object=new Contact($row['Parent Key']);
+                $parent_label=_('Contact');
+            }
+            elseif($parent=='Customer') {
+                $parent_object=new Customer($row['Parent Key']);
+                $parent_label=_('Customer');
+
+                $sql=sprintf("select `Customer Key`  from  `Customer Dimension` where `Customer Main Delivery Address Key`=%d group by `Customer Key`",$this->id);
+                $res2=mysql_query($sql);
+                while ($row2=mysql_fetch_array($res2)) {
+
+                    $sql=sprintf('update `Customer Dimension` set `Customer Main Delivery Address Town`=%s,`Customer Main Delivery Address Country`=%s ,`Customer Main Delivery Address Postal Code`=%s,`Customer Main Delivery Address Country Code`=%s,`Customer Main Delivery Address Country 2 Alpha Code`=%s,`Customer Main Delivery Address Country Key`=%d  where `Customer Key`=%d '
+                                 , prepare_mysql($this->data['Address Town'])
+                                 ,prepare_mysql($this->data['Address Country Name'])
+                                 ,prepare_mysql($this->data['Address Postal Code'])
+                                 ,prepare_mysql($this->data['Address Country Code'])
+                                 ,prepare_mysql($this->data['Address Country 2 Alpha Code'])
+                                 ,$this->data['Address Country Key']
+                                 ,$row2['Customer Key']
+                                );
+                    mysql_query($sql);
+                }
 
 
-            $sql=sprintf('update `Customer Dimension` set `Customer Main Delivery Address Town`=%s,`Customer Main Delivery Address Country`=%s ,`Customer Main Delivery Address Postal Code`=%s,`Customer Main Delivery Address Country Code`=%s,`Customer Main Delivery Address Country 2 Alpha Code`=%s,`Customer Main Delivery Address Country Key`=%d  where `Customer Key`=%d '
-                         , prepare_mysql($this->data['Address Town'])
-                         ,prepare_mysql($this->data['Address Country Name'])
-                         ,prepare_mysql($this->data['Address Postal Code'])
-                         ,prepare_mysql($this->data['Address Country Code'])
-                         ,prepare_mysql($this->data['Address Country 2 Alpha Code'])
-                         ,$this->data['Address Country Key']
-                         ,$row['Customer Key']
+
+            }
+            elseif($parent=='Supplier') {
+                $parent_object=new Supplier($row['Parent Key']);
+                $parent_label=_('Supplier');
+            }
+            elseif($parent=='Company') {
+                $parent_object=new Company($row['Parent Key']);
+                $parent_label=_('Company');
+            }
+            $old_princial_address=$parent_object->data[$parent.' Main XHTML Address'];
+            $parent_object->data[$parent.' Main Plain Address']=$this->display('plain');
+            $parent_object->data[$parent.' Main XHTML Address']=$this->display('xhtml');
+            $parent_object->data[$parent.' Main Country Key']=$this->data['Address Country Key'];
+            $parent_object->data[$parent.' Main Country']=$this->data['Address Country Name'];
+            $parent_object->data[$parent.' Main Country Code']=$this->data['Address Country Code'];
+            $parent_object->data[$parent.' Main Location']=$this->location($this->data);
+
+
+            $sql=sprintf("update `$parent Dimension` set `$parent Main Plain Address`=%s,`$parent Main XHTML Address`=%s,`$parent Main Country Key` =%d,`$parent Main Country` =%s,`$parent Main Country Code` =%s,`$parent Main Location` =%s where `$parent Key`=%d"
+                         ,prepare_mysql($parent_object->data[$parent.' Main Plain Address'])
+                         ,prepare_mysql($parent_object->data[$parent.' Main XHTML Address'])
+                         ,$parent_object->data[$parent.' Main Country Key']
+                         ,prepare_mysql($parent_object->data[$parent.' Main Country'])
+                         ,prepare_mysql($parent_object->data[$parent.' Main Country Code'])
+                         ,prepare_mysql($parent_object->data[$parent.' Main Location'])
+                         ,$parent_object->id
                         );
             mysql_query($sql);
-        }
+            if ($parent=='Customer') {
 
 
-        $parents=array('Contact','Company','Customer','Supplier');
-        foreach($parents as $parent) {
-            $sql=sprintf("select `$parent Key` as `Parent Key`   from  `$parent Dimension` where `$parent Main Address Key`=%d group by `$parent Key`",$this->id);
+                $sql=sprintf("update `$parent Dimension` set `$parent Main Town` =%s,`$parent Main Postal Code` =%s,`$parent Main Country First Division` =%s ,`Customer Main Country 2 Alpha Code`=%s where `$parent Key`=%d"
+                             ,prepare_mysql($this->data['Address Town'])
+                             ,prepare_mysql($this->data['Address Postal Code'])
+                             ,prepare_mysql($this->data['Address Country First Division'])
+                             ,prepare_mysql($this->data['Address Country 2 Alpha Code'])
 
-            $res=mysql_query($sql);
-            while ($row=mysql_fetch_array($res)) {
-                $principal_address_changed=false;
-
-                if ($parent=='Contact') {
-                    $parent_object=new Contact($row['Parent Key']);
-                    $parent_label=_('Contact');
-                }
-                elseif($parent=='Customer') {
-                    $parent_object=new Customer($row['Parent Key']);
-                    $parent_label=_('Customer');
-                }
-                elseif($parent=='Supplier') {
-                    $parent_object=new Supplier($row['Parent Key']);
-                    $parent_label=_('Supplier');
-                }
-                elseif($parent=='Company') {
-                    $parent_object=new Company($row['Parent Key']);
-                    $parent_label=_('Company');
-                }
-                $old_princial_address=$parent_object->data[$parent.' Main XHTML Address'];
-                $parent_object->data[$parent.' Main Plain Address']=$this->display('plain');
-                $parent_object->data[$parent.' Main XHTML Address']=$this->display('xhtml');
-                $parent_object->data[$parent.' Main Country Key']=$this->data['Address Country Key'];
-                $parent_object->data[$parent.' Main Country']=$this->data['Address Country Name'];
-                $parent_object->data[$parent.' Main Country Code']=$this->data['Address Country Code'];
-                $parent_object->data[$parent.' Main Location']=$this->location($this->data);
-
-
-                $sql=sprintf("update `$parent Dimension` set `$parent Main Plain Address`=%s,`$parent Main XHTML Address`=%s,`$parent Main Country Key` =%d,`$parent Main Country` =%s,`$parent Main Country Code` =%s,`$parent Main Location` =%s where `$parent Key`=%d"
-                             ,prepare_mysql($parent_object->data[$parent.' Main Plain Address'])
-                             ,prepare_mysql($parent_object->data[$parent.' Main XHTML Address'])
-                             ,$parent_object->data[$parent.' Main Country Key']
-                             ,prepare_mysql($parent_object->data[$parent.' Main Country'])
-                             ,prepare_mysql($parent_object->data[$parent.' Main Country Code'])
-                             ,prepare_mysql($parent_object->data[$parent.' Main Location'])
                              ,$parent_object->id
                             );
                 mysql_query($sql);
-                if ($parent=='Customer') {
-
-
-                    $sql=sprintf("update `$parent Dimension` set `$parent Main Town` =%s,`$parent Main Postal Code` =%s,`$parent Main Country First Division` =%s ,`Customer Main Country 2 Alpha Code`=%s where `$parent Key`=%d"
-                                 ,prepare_mysql($this->data['Address Town'])
-                                 ,prepare_mysql($this->data['Address Postal Code'])
-                                 ,prepare_mysql($this->data['Address Country First Division'])
-                                 ,prepare_mysql($this->data['Address Country 2 Alpha Code'])
-
-                                 ,$parent_object->id
-                                );
-                    mysql_query($sql);
-
-                }
+            }
 
 
 
-                if ($old_princial_address!=$parent_object->data[$parent.' Main XHTML Address'])
-                    $principal_address_changed=true;
+            if ($old_princial_address!=$parent_object->data[$parent.' Main XHTML Address'])
+                $principal_address_changed=true;
 
-                if ($principal_address_changed) {
+            if ($principal_address_changed) {
 
-                    if ($old_princial_address=='') {
+                if ($old_princial_address=='') {
 
-                        $history_data['History Abstract']='Address Associated';
-                        $history_data['History Details']=$this->display('xhtml')." "._('address associated with')." ".$parent_object->get_name()." ".$parent_label;
-                        $history_data['Action']='associated';
-                        $history_data['Direct Object']=$parent;
-                        $history_data['Direct Object Key']=$parent_object->id;
-                        $history_data['Indirect Object']='Address';
-                        $history_data['Indirect Object Key']=$this->id;
-                     
-                        $this->add_history($history_data);
-                    } else {
-                        $history_data['History Abstract']='Address Changed';
-                        $history_data['History Details']=_('Address changed from').' '.$old_princial_address.' '._('to').' '.$this->display('xhtml')." "._('in')." ".$parent_object->get_name()." ".$parent_label;
-                        $history_data['Action']='changed';
-                        $history_data['Direct Object']=$parent;
-                        $history_data['Direct Object Key']=$parent_object->id;
-                        $history_data['Indirect Object']='Address';
-                        $history_data['Indirect Object Key']=$this->id;
+                    $history_data['History Abstract']='Address Associated';
+                    $history_data['History Details']=$this->display('xhtml')." "._('address associated with')." ".$parent_object->get_name()." ".$parent_label;
+                    $history_data['Action']='associated';
+                    $history_data['Direct Object']=$parent;
+                    $history_data['Direct Object Key']=$parent_object->id;
+                    $history_data['Indirect Object']='Address';
+                    $history_data['Indirect Object Key']=$this->id;
 
-                        $this->add_history($history_data);
+                    $this->add_history($history_data);
+                } else {
+                    $history_data['History Abstract']='Address Changed';
+                    $history_data['History Details']=_('Address changed from').' '.$old_princial_address.' '._('to').' '.$this->display('xhtml')." "._('in')." ".$parent_object->get_name()." ".$parent_label;
+                    $history_data['Action']='changed';
+                    $history_data['Direct Object']=$parent;
+                    $history_data['Direct Object Key']=$parent_object->id;
+                    $history_data['Indirect Object']='Address';
+                    $history_data['Indirect Object Key']=$this->id;
 
-                    }
+                    $this->add_history($history_data);
 
                 }
 
             }
+
         }
-
-
-
-
-
     }
+
+
+
+
+
+}
 
     function xupdate_parents() {
 //       $this->data['Company Main Address Key']=$address->id;
@@ -4717,8 +4717,7 @@ class Address extends DB_Table {
             $type='Telephone';
         }
         $telecom_key=$this->data["Address Main $type Key"];
-        //print_r($this->data);
-        //print "X--->$telecom_key\n";
+
 
         if (!$telecom_key)
             return;

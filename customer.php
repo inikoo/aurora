@@ -14,24 +14,14 @@
 
 include_once('common.php');
 include_once('class.Customer.php');
+include_once('class.Store.php');
 if(!$user->can_view('customers')){
-
-header('Location: customers.php');
+header('Location: index.php');
    exit;
- 
-
-}
+ }
 
 $modify=$user->can_edit('contacts');
 
-$edit=false;
-if(isset($_REQUEST['edit']) and $_REQUEST['edit']){
-  $edit=true;
-  $_REQUEST['id']=$_REQUEST['edit'];
- }
-
-if(!$modify)
-  $edit=false;
 
 if(isset($_REQUEST['id']) and is_numeric($_REQUEST['id']) ){
   $_SESSION['state']['customer']['id']=$_REQUEST['id'];
@@ -40,6 +30,31 @@ if(isset($_REQUEST['id']) and is_numeric($_REQUEST['id']) ){
   $customer_id=$_SESSION['state']['customer']['id'];
 }
 
+
+$customer=new customer($customer_id);
+
+if(!$customer->id){
+ header('Location: customers.php?error='._('Customer not exists'));
+  exit();
+
+}
+
+$_SESSION['state']['customer']['id']=$customer_id;
+$_SESSION['state']['customers']['store']=$customer->data['Customer Store Key'];
+
+
+if(isset($_REQUEST['view']) and preg_match('/^(history|products|orders)$/',$_REQUEST['view']) ){
+ 
+  $view=$_REQUEST['view'];
+}else{
+  $view=$_SESSION['state']['customer']['view'];
+}
+if(!$customer->data['Customer Orders']){
+$view='history';
+}
+
+$smarty->assign('view',$view);
+ $_SESSION['state']['customer']['view']=$view;
 
 $css_files=array(
 		 $yui_path.'reset-fonts-grids/reset-fonts-grids.css',
@@ -66,6 +81,7 @@ $js_files=array(
 		$yui_path.'editor/editor-min.js',
 		$yui_path.'menu/menu-min.js',
 		$yui_path.'calendar/calendar-min.js',
+		'external_libs/ampie/ampie/swfobject.js',
 		'common.js.php',
 		'table_common.js.php',
 		'js/search.js',
@@ -76,109 +92,17 @@ $smarty->assign('js_files',$js_files);
 
 
 
-$_SESSION['state']['customer']['id']=$customer_id;
-$_SESSION['state']['customer']['table']['sf']=0;
-
-$customer=new customer($customer_id);
-$_SESSION['state']['customers']['store']=$customer->data['Customer Store Key'];
-if(!$customer->id){
- header('Location: customers.php?error='._('Customer not exists'));
-  exit();
-
-}
 
 $customer->load('contacts');
 $smarty->assign('customer',$customer);
 
 
-if($edit ){
-$general_options_list=array();
-
- 
-$general_options_list[]=array('tipo'=>'url','url'=>'customer.php?id='.$customer->id,'label'=>_('Exit Edit'));
-$smarty->assign('general_options_list',$general_options_list);
-
-
-  $smarty->assign('customer_type',$customer->data['Customer Type']);
-   $css_files[]=$yui_path.'assets/skins/sam/autocomplete.css';
-    $css_files[]='css/edit_address.css';
-    $css_files[]='css/edit.css';
-    $js_files[]='js/edit_common.js';
-    $js_files[]='js/validate_telecom.js';
-  
-  if($customer->data['Customer Type']=='Company'){
-    $company=new Company($customer->data['Customer Company Key']);
-    if(!$company->id){
-      print "error no company found".print_r($customer);
-    }
-    $smarty->assign('company',$company);
-    
-    $offset=1;// 0 is reserved to new address
-    $addresses=$company->get_addresses($offset);
-    $smarty->assign('addresses',$addresses);
-    $number_of_addresses=count($addresses);
-    $smarty->assign('number_of_addresses',$number_of_addresses);
-    
-    $contacts=$company->get_contacts($offset);
-    $smarty->assign('contacts',$contacts);
-    $number_of_contacts=count($contacts);
-    $smarty->assign('number_of_contacts',$number_of_contacts);
-    $js_files[]=sprintf('edit_company.js.php?id=%d&scope=Customer&scope_key=%d',$company->id,$customer->id);
-    
-  }else{
-
-    $contact=new Contact($customer->data['Customer Main Contact Key']);
-    $smarty->assign('contact',$contact);
-    
-    $js_files[]=sprintf('edit_contact.js.php?id=%d&scope=Customer&scope_key=%d',$contact->id,$customer->id);
-
-
-  }    
-  
-
-    $smarty->assign('scope','customer');
-    $smarty->assign('scope_key',$customer->id);
-    
-    
-    
-    
-    $sql=sprintf("select * from kbase.`Salutation Dimension` S left join kbase.`Language Dimension` L on S.`Language Code`=L.`Language ISO 639-1 Code`  where `Language Code`=%s limit 1000",prepare_mysql($myconf['lang']));
-    $result=mysql_query($sql);
-    $salutations=array();
-    while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
-      $salutations[]=array('txt'=>$row['Salutation'],'relevance'=>$row['Relevance'],'id'=>$row['Salutation Key']);
-    }
-    mysql_free_result($result);
-    
-    $smarty->assign('prefix',$salutations);
-    
-    $editing_block=$_SESSION['state']['customer']['edit'];
-    $smarty->assign('edit',$editing_block);
-    
-   
-    $js_files[]='edit_address.js.php';
-    $js_files[]='edit_contact_from_parent.js.php';
-	
-    $js_files[]='edit_contact_telecom.js.php';
-    $js_files[]='edit_contact_name.js.php';
-    $js_files[]='edit_contact_email.js.php';
-    $js_files[]=sprintf('edit_customer.js.php');
-    
-
-  $smarty->assign('css_files',$css_files);
-  $smarty->assign('js_files',$js_files);
-   $delivery_addresses=$customer->get_address_objects();
-
-
- $smarty->assign('delivery_addresses',$delivery_addresses);
-  $smarty->display('edit_customer.tpl');
-  exit();
-  
-
-}else{
-  $smarty->assign('search_label',_('Customers'));
+$smarty->assign('search_label',_('Customers'));
 $smarty->assign('search_scope','customers');
 
+if(isset($_REQUEST['p'])){
+  
+  if($_REQUEST['p']=='cs'){
   
   $order=$_SESSION['state']['customers']['table']['order'];
   if($order=='name')
@@ -252,10 +176,20 @@ $result=mysql_query($sql);
 if(!$next=mysql_fetch_array($result, MYSQL_ASSOC))
   $next=array('id'=>0,'name'=>'');
 mysql_free_result($result);
+$smarty->assign('parent_info',"p=cs&");
 
 $smarty->assign('prev',$prev);
 $smarty->assign('next',$next);
+$store=new Store($customer->data['Customer Store Key']);
+$smarty->assign('parent_url','customers.php?store='.$store->id);
+$parent_title=$store->data['Store Name'].' '._('Customers');
+$smarty->assign('parent_title',$parent_title);
 
+}
+
+
+
+}
 
 
 $show_details=$_SESSION['state']['customer']['details'];
@@ -266,7 +200,8 @@ $general_options_list=array();
 
 
 if($modify)
-  $general_options_list[]=array('tipo'=>'url','url'=>'customer.php?edit='.$customer->id,'label'=>_('Edit Customer'));
+  $general_options_list[]=array('tipo'=>'url','url'=>'edit_customer.php?id='.$customer->id,'label'=>_('Edit Customer'));
+
 $general_options_list[]=array('tipo'=>'js','state'=>$show_details,'id'=>'details','label'=>($show_details?_('Hide Details'):_('Show Details')));
   $general_options_list[]=array('tipo'=>'url','url'=>'customer_csv.php?id='.$customer->id,'label'=>_('CSV Data'));
 
@@ -277,7 +212,7 @@ $smarty->assign('general_options_list',$general_options_list);
 
 
 
-
+$smarty->assign('number_orders',$customer->get('Customer Orders'));
 $smarty->assign('parent','customers');
 $smarty->assign('title','Customer: '.$customer->get('customer name'));
 $customer_home=_("Customers List");
@@ -308,12 +243,9 @@ $smarty->assign('orders_interval',$order_interval);
 $filter_menu=array(
 		   'notes'=>array('db_key'=>'notes','menu_label'=>'Records with  notes *<i>x</i>*','label'=>_('Notes')),
 		   'author'=>array('db_key'=>'author','menu_label'=>'Done by <i>x</i>*','label'=>_('Notes')),
-
 		   'uptu'=>array('db_key'=>'upto','menu_label'=>'Records up to <i>n</i> days','label'=>_('Up to (days)')),
 		   'older'=>array('db_key'=>'older','menu_label'=>'Records older than  <i>n</i> days','label'=>_('Older than (days)'))
-		 
-
-  );
+		   );
 $tipo_filter=$_SESSION['state']['customer']['table']['f_field'];
 $filter_value=$_SESSION['state']['customer']['table']['f_value'];
 
@@ -335,5 +267,5 @@ $smarty->assign('filter_name1',$filter_menu[$tipo_filter]['label']);
 $paginator_menu=array(10,25,50,100,500);
 $smarty->assign('paginator_menu1',$paginator_menu);
 $smarty->display('customer.tpl');
-}
+
 ?>

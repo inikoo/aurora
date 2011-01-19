@@ -15,7 +15,7 @@ include_once('class.DB_Table.php');
 include_once('class.Country.php');
 
 class Telecom extends DB_Table {
-
+var $deleted=false;
 
     /*
       Constructor: Telecom
@@ -946,7 +946,7 @@ class Telecom extends DB_Table {
       Find for the telephone access code in a number
      */
 
-    function find_area_code($number,$country_code='UNK') {
+    static function  find_area_code($number,$country_code='UNK') {
         // print "$number,$country_code\n  ";
 
         if (strlen($number>5)) {
@@ -1067,13 +1067,7 @@ class Telecom extends DB_Table {
 
 
 
-    /*Method: update
-      Switcher calling the apropiate update method
-      Parameters:
-      $data - associated array with Email Dimension fields
-        */
     public function update($data,$options='') {
-    
     
         if ($data['Telecom Number']=='') {
             $this->error=true;
@@ -1116,7 +1110,6 @@ class Telecom extends DB_Table {
 
 
     function update_number($value,$country_code='UNK') {
-    
           $_data=preg_replace('/[^\d]/','',$value);
 
             if (strlen($_data)<3) {
@@ -1142,7 +1135,6 @@ class Telecom extends DB_Table {
     }
 
     function update_parents() {
-//print_r($this);
         $parents=array('Address','Contact','Company','Customer','Supplier');
         $types=array("Mobile","FAX","Telephone");
         foreach($types as $type) {
@@ -1182,7 +1174,7 @@ class Telecom extends DB_Table {
                              ,prepare_mysql($parent_object->data[$parent." Main XHTML $type"])
                              ,$parent_object->id
                             );
-                          //  print "$sql\n";
+                         //   print "$sql\n";
                 mysql_query($sql);
 
 //print "$old_princial_telecom -> ".$parent_object->data[$parent." Main Plain $type"]."\n";
@@ -1224,85 +1216,90 @@ class Telecom extends DB_Table {
 
 
 
-  function delete() {
-        $sql=sprintf("delete from `Telecom Dimension` where `Telecom Key`=%d",$this->id);
-        mysql_query($sql);
-        $sql=sprintf("delete from `Telecom Bridge`  where  `Telecom Key`=%d", $this->id);
-        mysql_query($sql);
+function delete() {
+    $sql=sprintf("delete from `Telecom Dimension` where `Telecom Key`=%d",$this->id);
+    mysql_query($sql);
+    $sql=sprintf("delete from `Telecom Bridge`  where  `Telecom Key`=%d", $this->id);
+    mysql_query($sql);
+    $this->deleted=true;
+    $history_data['History Abstract']='Telecom Deleted';
+    $history_data['History Details']=$this->data['Telecom Type'].' '.$this->display('plain')." "._('has been deleted');
+    $history_data['Action']='deleted';
+    $history_data['Direct Object']='Telecom';
+    $history_data['Direct Object Key']=$this->id;
+    $history_data['Indirect Object']='';
+    $history_data['Indirect Object Key']='';
+    $this->add_history($history_data);
 
-        $history_data['History Abstract']='Telecom Deleted';
-        $history_data['History Details']=$this->data['Telecom Type'].' '.$this->display('plain')." "._('has been deleted');
-        $history_data['Action']='deleted';
-        $history_data['Direct Object']='Telecom';
-        $history_data['Direct Object Key']=$this->id;
-        $history_data['Indirect Object']='';
-        $history_data['Indirect Object Key']='';
-        $this->add_history($history_data);
+
+    $type=$this->data['Telecom Type'];
+    if ($type=='Fax')
+        $type="FAX";
 
 
-$type=$this->data['Telecom Type'];
-if($type=='Fax')$type="FAX";
-
+    if ($type=='Mobile')
+        $parents=array('Contact');
+    else
         $parents=array('Contact','Company','Customer','Supplier');
-        foreach($parents as $parent) {
-            $sql=sprintf("select `$parent Key` as `Parent Key`   from  `$parent Dimension` where `$parent Main $type Key`=%d group by `$parent Key`"
-                ,$this->id);
-            $res=mysql_query($sql);
-            while ($row=mysql_fetch_array($res)) {
-                $principal_Telecom_changed=false;
-
-                if ($parent=='Contact') {
-                    $parent_object=new Contact($row['Parent Key']);
-                    $parent_label=_('Contact');
-                }
-                elseif($parent=='Customer') {
-                    $parent_object=new Customer($row['Parent Key']);
-                    $parent_label=_('Customer');
-                }
-                elseif($parent=='Supplier') {
-                    $parent_object=new Supplier($row['Parent Key']);
-                    $parent_label=_('Supplier');
-                }
-                elseif($parent=='Company') {
-                    $parent_object=new Company($row['Parent Key']);
-                    $parent_label=_('Company');
-                }
-                
-                
-                
-                $sql=sprintf("update `$parent Dimension` set `$parent Main $type Key`=0, `$parent Main Plain $type`='',`$parent Main XHTML $type`='' where `$parent Key`=%d"
-
-                             ,$parent_object->id
-                            );
-                mysql_query($sql);
 
 
 
+    foreach($parents as $parent) {
+        $sql=sprintf("select `$parent Key` as `Parent Key`   from  `$parent Dimension` where `$parent Main $type Key`=%d group by `$parent Key`"
+                     ,$this->id);
+        // print "$sql";
+        $res=mysql_query($sql);
+        while ($row=mysql_fetch_array($res)) {
+            $principal_Telecom_changed=false;
 
-                $history_data['History Abstract']=$this->data['Telecom Type'].' Removed';
-                $history_data['History Details']=$this->data['Telecom Type'].' '.$this->display('plain')." "._('has been deleted from')." ".$parent_object->get_name()." ".$parent_label;
-                $history_data['Action']='disassociate';
-                $history_data['Direct Object']=$parent;
-                $history_data['Direct Object Key']=$parent_object->id;
-                $history_data['Indirect Object']='Telecom';
-                $history_data['Indirect Object Key']=$this->id;
-                $this->add_history($history_data);
+            if ($parent=='Contact') {
+                $parent_object=new Contact($row['Parent Key']);
+                $parent_label=_('Contact');
             }
+            elseif($parent=='Customer') {
+                $parent_object=new Customer($row['Parent Key']);
+                $parent_label=_('Customer');
+            }
+            elseif($parent=='Supplier') {
+                $parent_object=new Supplier($row['Parent Key']);
+                $parent_label=_('Supplier');
+            }
+            elseif($parent=='Company') {
+                $parent_object=new Company($row['Parent Key']);
+                $parent_label=_('Company');
+            }
+
+
+
+            $sql=sprintf("update `$parent Dimension` set `$parent Main $type Key`=0, `$parent Main Plain $type`='',`$parent Main XHTML $type`='' where `$parent Key`=%d"
+
+                         ,$parent_object->id
+                        );
+            mysql_query($sql);
+
+
+
+            $history_data['History Abstract']=$this->data['Telecom Type'].' Removed';
+            $history_data['History Details']=$this->data['Telecom Type'].' '.$this->display('plain')." "._('has been deleted from')." ".$parent_object->get_name()." ".$parent_label;
+            $history_data['Action']='disassociate';
+            $history_data['Direct Object']=$parent;
+            $history_data['Direct Object Key']=$parent_object->id;
+            $history_data['Indirect Object']='Telecom';
+            $history_data['Indirect Object Key']=$this->id;
+            $this->add_history($history_data);
+
+            if ($parent=='Contact' and $type=='Mobile') {
+                $mobiles=$parent_object->get_mobiles();
+                foreach($mobiles as $mobile) {
+                    $parent_object->update_principal_mobil($mobile->id);
+                    break;
+                }
+            }
+
+
         }
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
+}
 
 }
 ?>

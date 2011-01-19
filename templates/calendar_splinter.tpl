@@ -1,4 +1,9 @@
-<div class="cal_menu" style="width:155px" >
+<div  class="cal_menu_container" style="xborder:1px solid black" >
+<span id="show_calendar_div" onClick="show_calendar_div()" class="state_details">{t}Other Dates{/t} &darr;</span>
+<span id="hide_calendar_div" onClick="hide_calendar_div()" class="state_details" style="display:none">{t}Close{/t} &uarr;</span>
+
+<div  class="cal_menu" id="calendar_div"  style="display:none";   >
+
       {if $up}<a class="prev" href="{$report_url}?{$up.url}" ><img src="art/icons/up.png" alt="&uarr;" title="{$up.title}"  /></a>{/if}
 
 <span>{$tipo_title}</span> <span id="period">{$period}</span>
@@ -87,10 +92,21 @@
 </div>
 </div>
 
-<div style="float:right;position:relative;bottom:15px;margin-right:20px">
+
+</div>
+
+
+
+
+
+
+
+
+
+<div style="text-align:right;width:700px;margin-right:20px">
+
 <span id="quick_all" class="state_details" style="margin-left:12px" >{t}All{/t}</span>
 <span id="quick_this_year" class="state_details" style="margin-left:12px">{t}This Year{/t}</span>
-
 <span id="quick_this_month" class="state_details" style="margin-left:12px">{t}This Month{/t}</span>
 <span id="quick_this_week" class="state_details" style="margin-left:12px">{t}This Week{/t}</span>
 <span id="quick_yesterday" class="state_details" style="margin-left:12px">{t}Yesterday{/t}</span>

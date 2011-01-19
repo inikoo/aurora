@@ -5,23 +5,14 @@ require_once 'common.php';
 require_once 'class.Company.php';
 require_once 'class.Supplier.php';
 require_once 'ar_edit_common.php';
-
-
+include_once('class.CompanyDepartment.php');
+include_once('class.Staff.php');
 
 if (!isset($_REQUEST['tipo'])) {
     $response=array('state'=>405,'resp'=>_('Non acceptable request').' (t)');
     echo json_encode($response);
     exit;
 }
-
-$editor=array(
-            'Author Name'=>$user->data['User Alias'],
-            'Author Type'=>$user->data['User Type'],
-            'Author Key'=>$user->data['User Parent Key'],
-            'User Key'=>$user->id
-        );
-
-
 
 $tipo=$_REQUEST['tipo'];
 switch ($tipo) {
@@ -53,11 +44,10 @@ case('create_contact'):
 
 case('new_contact'):
     $data=prepare_values($_REQUEST,array(
-                             'value'=>array('type'=>'json array')
-                                     ,'subject'=>array('type'=>'string')
-                                                ,'subject_key'=>array('type'=>'key')
+                             'value'=>array('type'=>'json array'),
+                             'subject'=>array('type'=>'string'),
+                             'subject_key'=>array('type'=>'key')
                          ));
-    //   print_r($data);exit;
     new_contact($data);
 
     break;
@@ -73,7 +63,15 @@ case('edit_address_type'):
     edit_address_type();
     break;
 case('edit_address'):
-    edit_address();
+    $data=prepare_values($_REQUEST,array(
+                             'value'=>array('type'=>'json array'),
+                             'subject'=>array('type'=>'enum',
+                                              'valid values regex'=>'/company|contact|supplier|customer/i'
+                                             ),
+                             'subject_key'=>array('type'=>'key'),
+                             'id'=>array('type'=>'key')
+                         ));
+    edit_address($data);
     break;
 case('edit_delivery_address'):
     edit_delivery_address();
@@ -81,7 +79,7 @@ case('edit_delivery_address'):
 case('edit_company'):
     edit_company();
     break;
-    case('edit_billing_data'):
+case('edit_billing_data'):
 
 case('edit_customer'):
     edit_customer();
@@ -91,17 +89,41 @@ case('edit_customers'):
     break;
 case('create_company_area'):
     $data=prepare_values($_REQUEST,array(
+                             'parent_key'=>array('type'=>'key'),
                              'values'=>array('type'=>'json array')
-                                      ,'parent_key'=>array('type'=>'key')
+
                          ));
+
+
     new_company_area($data);
     break;
 case('create_company_department'):
     $data=prepare_values($_REQUEST,array(
+                             'parent_key'=>array('type'=>'key'),
+                             'values'=>array('type'=>'json array')
+
+                         ));
+
+    new_company_department($data);
+    break;
+case('create_company_position'):
+    $data=prepare_values($_REQUEST,array(
                              'values'=>array('type'=>'json array')
                                       ,'parent_key'=>array('type'=>'key')
                          ));
-    new_company_department($data);
+    new_company_position($data);
+    break;
+case('new_staff'):
+    $data=prepare_values($_REQUEST,array(
+                             'values'=>array('type'=>'json array')
+
+                         ));
+    new_staff($data);
+
+    break;
+
+case('edit_company_department'):
+    edit_company_department();
     break;
 case('edit_contact'):
     $data=prepare_values($_REQUEST,array(
@@ -113,13 +135,15 @@ case('edit_contact'):
     break;
 case('edit_email'):
     $data=prepare_values($_REQUEST,array(
-                             'id'=>array('type'=>'key')
-                                  ,'value'=>array('type'=>'json array','required elements'=>array(
-                                                      'Email'=>'string'
-                                                              ,'Email Key'=>'numeric'
-                                                  ))
-                                           ,'subject_key'=>array('type'=>'key')
-                                                          ,'subject'=>array('type'=>'enum','valid values regex'=>'/company|contact/i')
+                             'id'=>array('type'=>'key'),
+                             'value'=>array('type'=>'json array','required elements'=>array(
+                                                'Email'=>'string',
+                                                'Email Key'=>'numeric'
+                                            )),
+                             'subject_key'=>array('type'=>'key'),
+                             'subject'=>array('type'=>'enum',
+                                              'valid values regex'=>'/company|contact/i'
+                                             )
                          ));
 
     edit_email($data);
@@ -138,6 +162,14 @@ case('delete_company_department'):
                          ));
     delete_company_department($data);
     break;
+case ('edit_corporation'):
+    $data=prepare_values($_REQUEST,array(
+                             'key'=>array('type'=>'string'),
+                             'newvalue'=>array('type'=>'string')
+                         ));
+    edit_corporation($data);
+    break;
+
 case('delete_contact'):
     $data=prepare_values($_REQUEST,array(
                              'contact_key'=>array('type'=>'key')
@@ -152,20 +184,63 @@ case('remove_email'):
 case('delete_email'):
     delete_email();
     break;
+case('delete_mobile'):
+    delete_mobile();
+    break;
 case('edit_telecom'):
     $data=prepare_values($_REQUEST,array(
-                             'id'=>array('type'=>'key')
-                                  ,'value'=>array('type'=>'json array','required elements'=>array(
-                                                      'Telecom'=>'string'
-                                                                ,'Telecom Key'=>'numeric'
-                                                                               ,'Telecom Type'=>'string'
-                                                                                               ,'Telecom Container'=>'numeric'
-                                                                                                                    ,'Telecom Is Main'=>'string'
-                                                  ))
-                                           ,'subject_key'=>array('type'=>'key')
-                                                          ,'subject'=>array('type'=>'enum','valid values regex'=>'/company|contact/i')
+                             'id'=>array('type'=>'key'),
+                             'value'=>array(
+                                         'type'=>'json array',
+                                         'required elements'=>array(
+                                                                 'Telecom'=>'string',
+                                                                 'Telecom Key'=>'numeric',
+                                                                 'Telecom Type'=>'string',
+
+                                                                 'Telecom Is Main'=>'string',
+                                                             )),
+                             'subject_key'=>array('type'=>'key'),
+                             'subject'=>array('type'=>'enum',
+                                              'valid values regex'=>'/company|contact/i'
+                                             )
                          ));
     edit_telecom($data);
+    break;
+
+case('edit_mobile'):
+    $data=prepare_values($_REQUEST,array(
+                             'id'=>array('type'=>'key'),
+                             'value'=>array(
+                                         'type'=>'json array',
+                                         'required elements'=>array(
+                                                                 'Telecom'=>'string',
+                                                                 'Telecom Key'=>'numeric',
+                                                                 'Telecom Type'=>'string',
+                                                                 'Telecom Is Main'=>'string',
+                                                             )),
+                             'subject_key'=>array('type'=>'key'),
+                             'subject'=>array('type'=>'enum',
+                                              'valid values regex'=>'/company|contact/i'
+                                             )
+                         ));
+    edit_mobile($data);
+    break;
+case('add_mobile'):
+    $data=prepare_values($_REQUEST,array(
+                             'value'=>array(
+                                         'type'=>'json array',
+                                         'required elements'=>array(
+                                                                 'Telecom'=>'string',
+                                                                 'Telecom Key'=>'numeric',
+                                                                 'Telecom Type'=>'string',
+                                                                 'Telecom Is Main'=>'string',
+                                                             )),
+                             'subject_key'=>array('type'=>'key'),
+                             'subject'=>array('type'=>'enum',
+                                              'valid values regex'=>'/company|contact/i'
+                                             )
+                         ));
+    add_mobile($data);
     break;
 case('new_corporation'):
     $data=prepare_values($_REQUEST,array(
@@ -178,17 +253,13 @@ case('new_corporation'):
 case('edit_company_areas'):
     list_company_areas();
     break;
-case('edit_company_departments'):
-    list_company_departments();
-    break;
+
+
 case('edit_company_area'):
     $data=prepare_values($_REQUEST,array('id'=>array('type'=>'key'),'newvalue' =>array('type'=>'string'),'key' =>array('type'=>'string_value')));
     edit_company_area($data);
     break;
-case('edit_company_department'):
-    $data=prepare_values($_REQUEST,array('id'=>array('type'=>'key'),'newvalue' =>array('type'=>'string'),'key' =>array('type'=>'string_value')));
-    edit_company_area($data);
-    break;
+
 default:
 
     $response=array('state'=>404,'resp'=>_('Operation not found'));
@@ -307,10 +378,10 @@ function edit_company() {
     }
 
     $translator=array(
-                    'name'=>'Company Name'
-                           ,'fiscal_name'=>'Company Fiscal Name'
-                                          ,'tax_number'=>'Company Tax Number'
-                                                        ,'registration_number'=>'Company Registration Number'
+                    'name'=>'Company Name',
+                    'fiscal_name'=>'Company Fiscal Name',
+                    'tax_number'=>'Company Tax Number',
+                    'registration_number'=>'Company Registration Number'
 
 
                 );
@@ -321,7 +392,7 @@ function edit_company() {
 
                          $translator[$_REQUEST['key']]=>stripslashes(urldecode($_REQUEST['newvalue']))
                      );
-        print_r($update_data);
+        //print_r($update_data);
         $company->update($update_data);
 
         if ($company->error_updated) {
@@ -381,7 +452,7 @@ function edit_email($data) {
         $email->set_editor($editor);
         $email->update(array('Email'=>$data['value']['Email']));
         if ($email->error_updated) {
-            $response=array('state'=>200,'action'=>'error','msg'=>$email->msg_updated);
+            $response=array('state'=>200,'action'=>'error','msg'=>$email->msg_updated,'email_key'=>$data['value']['Email Key']);
             echo json_encode($response);
             return;
         }
@@ -390,60 +461,213 @@ function edit_email($data) {
             $msg=_('Email updated');
 
         $update_data=array(
-                         'Email Key'=>$data['value']['Email Key']
-                                     ,'Email Description'=>$data['value']['Email Description']
-                                                          ,'Email Is Main'=>$data['value']['Email Is Main']
-                                                                           ,'Email Contact Name'=>$data['value']['Email Contact Name']
+                         'Email Key'=>$data['value']['Email Key'],
+                         'Email Description'=>$data['value']['Email Description'],
+                         'Email Is Main'=>$data['value']['Email Is Main'],
+                         'Email Contact Name'=>$data['value']['Email Contact Name']
                      );
-        $subject->add_email($update_data);
+
+
+        $subject->associate_email($email->id);
+        if ($data['value']['Email Is Main']=='Yes')
+            $subject->update_principal_email($email->id);
         if ($subject->updated)
             $msg=_('Email updated');
         $email->set_scope($data['subject'],$data['subject_key']);
 
     } else {
         $action='created';
-        $update_data=array(
-                         'Email'=>$data['value']['Email']
-                                 ,'Email Description'=>$data['value']['Email Description']
-                                                      ,'Email Is Main'=>$data['value']['Email Is Main']
-                                                                       ,'Email Contact Name'=>$data['value']['Email Contact Name']
-                     );
-        $subject->add_email($update_data,'if found error');
+        $email_data=array(
+                        'Email'=>$data['value']['Email'],
+                        'Email Description'=>$data['value']['Email Description'],
+                        'Email Is Main'=>$data['value']['Email Is Main'],
+                        'Email Contact Name'=>$data['value']['Email Contact Name']
+                    );
+
+
+        $email=new Email('find create',$email_data);
+        if ($email->found) {
+            $response=array('state'=>200,'action'=>'error','msg'=>'Email Found','email_key'=>$email->id);
+            echo json_encode($response);
+            return;
+        }
+
+        $subject->associate_email($email->id);
+
+
         if ($subject->error) {
-            $response=array('state'=>200,'action'=>'error','msg'=>$subject->msg_updated);
+            $response=array('state'=>200,'action'=>'error','msg'=>$subject->msg_updated,'email_key'=>$data['value']['Email Key']);
             echo json_encode($response);
             return;
         }
         if ($subject->inserted_email) {
-            $email=new Email ($subject->inserted_email);
             $email->set_scope($data['subject'],$data['subject_key']);
             $msg=_("Email created");
         } else {
-            $response=array('state'=>200,'action'=>'nochange','msg'=>$subject->msg_updated);
+            $response=array('state'=>200,'action'=>'nochange','msg'=>$subject->msg_updated,'email_key'=>$data['value']['Email Key']);
             echo json_encode($response);
             return;
         }
     }
     $updated_email_data=array(
-                            'Email'=>$email->data['Email']
-                                    ,'Email_Description'=>$email->data['Email Description']
-                                                         ,'Email_Contact_Name'=> $email->data['Email Contact Name']
-                                                                               ,'Email_Is_Main'=> $email->data['Email Is Main']
+                            'Email'=>$email->data['Email'],
+                            'Email_Description'=>$email->data['Email Description'],
+                            'Email_Contact_Name'=> $email->data['Email Contact Name'],
+                            'Email_Is_Main'=> $email->data['Email Is Main']
                         );
     $subject->reread();
     $response=array(
-                  'state'=>200
-                          ,'action'=>$action
-                                    ,'msg'=>$msg
-                                           ,'email_key'=>$email->id
-                                                        ,'updated_data'=>$updated_email_data
-                                                                        ,'xhtml_subject'=>$subject->display('card')
-                                                                                         ,'main_email_key'=>$subject->get_main_email_key()
+                  'state'=>200,
+                  'action'=>$action,
+                  'msg'=>$msg,
+                  'email_key'=>$data['value']['Email Key'],
+                  'updated_data'=>$updated_email_data,
+                  'xhtml_subject'=>$subject->display('card'),
+                  'main_email_key'=>$subject->get_principal_email_key()
               );
 
     echo json_encode($response);
 
 }
+
+
+
+function add_mobile($data) {
+    global $editor;
+    if (preg_match('/^company$/i',$data['subject'])) {
+        //todo things here
+    }
+
+    $contact=new Contact($data['subject_key']);
+
+    $action='created';
+
+
+    $mobile_data=array(
+                     'Telecom'=>$data['value']['Telecom'],
+                     'Telecom Type'=>$data['value']['Telecom Type'],
+                     'Telecom Type'=>'Mobile',
+                     'Telecom Raw Number'=>$data['value']['Telecom'],
+                     'editor'=>$editor
+                 );
+
+    $mobile=new Telecom("find in Contact ".$contact->id." create  country code ".$contact->data['Contact Main Country Code']."   ",$mobile_data);
+
+
+
+
+    if (!$mobile->id) {
+        $response=array('state'=>200,'action'=>'error','msg'=>$mobile->msg);
+        echo json_encode($response);
+        return;
+    }
+
+    $contact->associate_mobile($mobile->id);
+    if ($data['value']['Telecom Is Main']=='Yes' ) {
+        $contact->update_principal_mobil($mobile->id);
+    }
+
+    if ($contact->add_telecom) {
+
+        $updated_telecom_data=array(
+                                  "Mobile_Key"=>$mobile->id,
+                                  "Mobile"=>$mobile->display(),
+                                  "Country_Code"=>$mobile->data['Telecom Country Telephone Code'],
+                                  "National_Access_Code"=>$mobile->data['Telecom National Access Code'],
+                                  "Number"=>$mobile->data['Telecom Number'],
+                                  "Telecom_Is_Main"=>$data['value']['Telecom Is Main'],
+                                  "Telecom Type Description"=>$mobile->data['Telecom Type'],
+                              );
+
+        $msg='';
+        $response=array(
+                      'state'=>200,
+                      'action'=>$action,
+                      'msg'=>$msg,
+                      'telecom_key'=>$mobile->id,
+                      'updated_data'=>$updated_telecom_data,
+                      'xhtml_subject'=>$contact->display('card'),
+                      'main_mobile_key'=>$contact->get_principal_mobile_key()
+                  );
+
+        echo json_encode($response);
+        return;
+    } else {
+        $response=array('state'=>200,'action'=>'nochange','msg'=>$contact->msg_updated);
+        echo json_encode($response);
+        return;
+
+    }
+
+
+
+}
+function edit_mobile($data) {
+    global $editor;
+    if (preg_match('/^company$/i',$data['subject'])) {
+        //todo things here
+    }
+
+    $contact=new Contact($data['subject_key']);
+
+
+    $mobile=new Telecom('id',$data['value']['Telecom Key']);
+    if (!$mobile->id) {
+        $response=array('state'=>400,'msg'=>'Telecom not found');
+        echo json_encode($response);
+        return;
+    }
+    $mobile->set_editor($editor);
+    $mobile->update_number($data['value']['Telecom']);
+    if ($mobile->error_updated) {
+        $response=array('state'=>200,'action'=>'error','msg'=>$mobile->msg_updated);
+        echo json_encode($response);
+        return;
+    }
+
+
+
+
+    if ($data['value']['Telecom Is Main']=='Yes' ) {
+        $contact->update_principal_mobil($mobile->id);
+    }
+
+    if ($mobile->updated or $contact->updated) {
+
+        $updated_telecom_data=array(
+                                  "Mobile_Key"=>$mobile->id,
+                                  "Mobile"=>$mobile->display(),
+                                  "Country_Code"=>$mobile->data['Telecom Country Telephone Code'],
+                                  "National_Access_Code"=>$mobile->data['Telecom National Access Code'],
+                                  "Number"=>$mobile->data['Telecom Number'],
+                                  "Telecom_Is_Main"=>$data['value']['Telecom Is Main'],
+                                  "Telecom Type Description"=>$mobile->data['Telecom Type'],
+                              );
+        $action='updated';
+        $msg=_('Telecom updated');
+        $response=array(
+                      'state'=>200,
+                      'action'=>$action,
+                      'msg'=>$msg,
+                      'telecom_key'=>$mobile->id,
+                      'updated_data'=>$updated_telecom_data,
+                      'xhtml_subject'=>$contact->display('card'),
+                      'main_mobile_key'=>$contact->get_principal_mobile_key()
+                  );
+
+        echo json_encode($response);
+        return;
+    } else {
+        $response=array('state'=>200,'action'=>'nochange','msg'=>$mobile->msg_updated);
+        echo json_encode($response);
+        return;
+
+    }
+
+
+}
+
+
 function edit_telecom($data) {
     global $editor;
 
@@ -490,54 +714,64 @@ function edit_telecom($data) {
 
         if ($telecom->updated)
             $msg=_('Telecom updated');
+        /*
+                $update_data=array(
+                                 'Telecom Key'=>$data['value']['Telecom Key'],
+                                 'Telecom Is Main'=>$data['value']['Telecom Is Main'],
+                                 'Telecom Type'=>$data['value']['Telecom Type']
+                             );
+                $subject->add_tel($update_data);
+                if ($subject->updated)
+                    $msg=_('Telecom updated');
+                $telecom->set_scope($data['subject'],$data['subject_key']);
+        */
 
-        $update_data=array(
-                         'Telecom Key'=>$data['value']['Telecom Key'],
-                         'Telecom Is Main'=>$data['value']['Telecom Is Main'],
-                         'Telecom Type'=>$data['value']['Telecom Type']
-                     );
-        $subject->add_tel($update_data);
-        if ($subject->updated)
-            $msg=_('Telecom updated');
-        $telecom->set_scope($data['subject'],$data['subject_key']);
 
     } else {
         $action='created';
 
 
-        $update_data=array(
-                         'Telecom'=>$data['value']['Telecom'],
-                         'Telecom Is Main'=>$data['value']['Telecom Is Main'],
-                         'Telecom Type'=>$data['value']['Telecom Type']
-                     );
+        $telephone_data=array(
+                            'Telecom'=>$data['value']['Telecom'],
+//                        'Telecom Is Main'=>$data['value']['Telecom Is Main'],
+                            'Telecom Type'=>$data['value']['Telecom Type']
+                        );
 
 
 
-        $telephone_data=array('Telecom Raw Number'=>$data['value']['Telecom']);
-        $telephone_data['editor']=$editor;
-        $telephone=new Telecom("find in $subject_type ".$subject->id." create  country code ".$subject->data[$subject_type.' Main Country Code']."   ",$telephone_data);
 
-        if ($telephone->is_mobile()) {
-            $subject->add_tel(array(
-                                  'Telecom Key'=>$telephone->id,
-                                  'Telecom Type'=>'Mobile'
-                              ));
-
-        } else {
-            $subject->add_tel(array(
-                                  'Telecom Key'=>$telephone->id,
-                                  'Telecom Type'=>'Home Telephone'
-                              ));
-            //  $this->new_home_telephone_keys[$telephone->id]=1;
-            $address_key=$subject->data[$subject_type.' Main Address Key'];
-            if ($address_key) {
-                $sql=sprintf("insert into `Address Telecom Bridge` values (%d,%d)",$address_key,$telephone->id);
-                mysql_query($sql);
-            }
+        if ($data['value']['Telecom Category']=='Mobile') {
+            $telephone_data['Telecom Type']='Mobile';
         }
 
 
+        $telephone_data['Telecom Raw Number']=$data['value']['Telecom'];
+        $telephone_data['editor']=$editor;
+        // print_r($telephone_data);
+        //exit;
+        $telephone=new Telecom("find in $subject_type ".$subject->id." create  country code ".$subject->data[$subject_type.' Main Country Code']."   ",$telephone_data);
+
+        if (!$telephone->id) {
+            $response=array('state'=>200,'action'=>'error','msg'=>'Error finding the telecom');
+            echo json_encode($response);
+            return;
+        }
+
+
+        if ($data['value']['Telecom Category']=='Mobile') {
+            $subject->associate_mobile($telephone->id);
+        }
+
     }
+
+
+
+    if ($data['value']['Telecom Is Main']=='Yes' and $data['value']['Telecom Category']=='Mobile') {
+        $subject->update_principal_mobil($telephone->id);
+
+    }
+
+
 
     if ($subject->error) {
         $response=array('state'=>200,'action'=>'error','msg'=>$subject->msg_updated);
@@ -547,13 +781,13 @@ function edit_telecom($data) {
 
     if ($subject->add_telecom) {
         $updated_telecom_data=array();
-        $action='';
+
         $msg='';
         $response=array(
                       'state'=>200,
                       'action'=>$action,
                       'msg'=>$msg,
-                      'telecom_key'=>$telecom->id,
+                      'telecom_key'=>$telephone->id,
                       'updated_data'=>$updated_telecom_data,
                       'xhtml_subject'=>$subject->display('card'),
                       'main_telecom_key'=>$subject->get_main_telecom_key()
@@ -977,53 +1211,53 @@ function edit_billing_address($raw_data) {
     }
 
 
-$deleted_address=0;
-$created_address=0;
+    $deleted_address=0;
+    $created_address=0;
 
 
     $proposed_address=new Address("find in Customer ".$customer->id,$update_data);
 
 
     if ($proposed_address->found and array_key_exists($proposed_address->id,$customer->get_address_keys())  ) {
-      $old_billing_address_key=$customer->data['Customer Billing Address Key'];
-      
-               $customer->update_principal_billing_address($proposed_address->id);
-               if($customer->data['Customer Delivery Address Link']=='Billing')
-                               $customer->update_principal_delivery_address($proposed_address->id);
+        $old_billing_address_key=$customer->data['Customer Billing Address Key'];
 
-               
-               if($old_billing_address_key!=$customer->data['Customer Main Address Key']  or !array_key_exists($old_billing_address_key,$customer->get_delivery_address_keys())   ){
-                $old_address=new Address($old_billing_address_key);
-                $deleted_address=$old_billing_address_key;
-               $old_address->delete();
-               }
-                $address=new Address($proposed_address->id);
-               
-        
-    }else{
-    
-    
-    if($customer->data['Customer Billing Address Link']=='Contact'){
-   
-   $address=new Address("find in Customer ".$customer->id." create force",$update_data);
+        $customer->update_principal_billing_address($proposed_address->id);
+        if ($customer->data['Customer Delivery Address Link']=='Billing')
+            $customer->update_principal_delivery_address($proposed_address->id);
+
+
+        if ($old_billing_address_key!=$customer->data['Customer Main Address Key']  or !array_key_exists($old_billing_address_key,$customer->get_delivery_address_keys())   ) {
+            $old_address=new Address($old_billing_address_key);
+            $deleted_address=$old_billing_address_key;
+            $old_address->delete();
+        }
+        $address=new Address($proposed_address->id);
+
+
+    } else {
+
+
+        if ($customer->data['Customer Billing Address Link']=='Contact') {
+
+            $address=new Address("find in Customer ".$customer->id." create force",$update_data);
             $customer->associate_billing_address($address->id);
-                           $customer->update_principal_billing_address($address->id);
-                           
-                           $created_address=$address->id;
+            $customer->update_principal_billing_address($address->id);
 
-    }else{
-    
+            $created_address=$address->id;
+
+        } else {
+
             $address->update($update_data,'cascade');
-}
+        }
 
 
 
-}
+    }
 
 
 
 
-  
+
     $updated_address_data=array(
                               'country'=>$address->data['Address Country Name'],
                               'country_code'=>$address->data['Address Country Code'],
@@ -1040,80 +1274,47 @@ $created_address=0;
                               'description'=>$address->data['Address Description']
 
                           );
-   
-$customer->update_principal_delivery_address($customer->data['Customer Main Delivery Address Key']);
 
- 
+    $customer->update_principal_delivery_address($customer->data['Customer Main Delivery Address Key']);
 
-            if ( ($customer->get('Customer Billing Address Link')=='Contact')  ) {
-                $billing_address='<span style="font-weight:600">'._('Same as contact address').'</span>';
 
-            }else{
-         
-                $billing_address=$customer->billing_address_xhtml();
-            }
 
- if ( ($customer->get('Customer Delivery Address Link')=='Contact') or ( $customer->get('Customer Delivery Address Link')=='Billing'  and  ($customer->get('Customer Main Address Key')==$customer->get('Customer Billing Address Key'))   ) ) {
-                $address_comment='<span style="font-weight:600">'._('Same as contact address').'</span>';
+    if ( ($customer->get('Customer Billing Address Link')=='Contact')  ) {
+        $billing_address='<span style="font-weight:600">'._('Same as contact address').'</span>';
 
-            }
-            elseif($customer->get('Customer Delivery Address Link')=='Billing') {
-                $address_comment='<span style="font-weight:600">'._('Same as billing address').'</span>';
-            }
-            else {
-                $address_comment=$customer->delivery_address_xhtml();
-            }
+    } else {
+
+        $billing_address=$customer->billing_address_xhtml();
+    }
+
+    if ( ($customer->get('Customer Delivery Address Link')=='Contact') or ( $customer->get('Customer Delivery Address Link')=='Billing'  and  ($customer->get('Customer Main Address Key')==$customer->get('Customer Billing Address Key'))   ) ) {
+        $address_comment='<span style="font-weight:600">'._('Same as contact address').'</span>';
+
+    }
+    elseif($customer->get('Customer Delivery Address Link')=='Billing') {
+        $address_comment='<span style="font-weight:600">'._('Same as billing address').'</span>';
+    }
+    else {
+        $address_comment=$customer->delivery_address_xhtml();
+    }
 
     $response=array('state'=>200,'action'=>'updated','deleted_address'=>$deleted_address,'created_address'=>$created_address,'warning'=>$warning,'is_main'=>false,'is_main_delivery'=>false,'msg'=>$address->msg_updated,'key'=>$address->id,'updated_data'=>$updated_address_data,'xhtml_address'=>$address->display('xhtml'),'xhtml_delivery_address_bis'=>$address_comment,'xhtml_billing_address'=>$billing_address);
 
- echo json_encode($response);
-        return;
+    echo json_encode($response);
+    return;
 
 
 }
 
 
-function edit_address() {
+function edit_address($data) {
     global $editor;
     $warning='';
-    if ( !isset($_REQUEST['value']) ) {
-        $response=array('state'=>400,'msg'=>'Error no value');
-        echo json_encode($response);
-        return;
-    }
 
-    $tmp=preg_replace('/\\\"/','"',$_REQUEST['value']);
-    $tmp=preg_replace('/\\\\\"/','"',$tmp);
-    //$tmp=$_REQUEST['value'];
-    $raw_data=json_decode($tmp, true);
-    //   print "$tmp";
-    // print_r($raw_data);
-
-    if (!is_array($raw_data)) {
-        $response=array('state'=>400,'msg'=>'Wrong value');
-        echo json_encode($response);
-        return;
-    }
-    if ( !isset($_REQUEST['id'])  or !is_numeric($_REQUEST['id']) or $_REQUEST['id']<=0  ) {
-        $response=array('state'=>400,'msg'=>'Error wrong id');
-        echo json_encode($response);
-        return;
-    }
-
-
-    if ( !isset($_REQUEST['subject'])
-            or !is_numeric($_REQUEST['subject_key'])
-            or $_REQUEST['subject_key']<=0
-            or !preg_match('/^(Company|Contact|Customer)$/',$_REQUEST['subject'])
-
-       ) {
-        $response=array('state'=>400,'msg'=>'Error wrong subject/subject key');
-        echo json_encode($response);
-        return;
-    }
-
-    $subject=$_REQUEST['subject'];
-
+    $id=$data['id'];
+    $subject=$data['subject'];
+    $subject_key=$data['subject_key'];
+    $raw_data=$data['value'];
     if ($subject=='Customer' and $_REQUEST['key']=='Billing') {
         edit_billing_address($raw_data);
         exit;
@@ -1130,19 +1331,14 @@ function edit_address() {
     case('Customer'):
         $subject_object=new Customer($subject_key);
         break;
-    default:
+    case('Supplier'):
+        $subject_object=new Supplier($subject_key);
+        break;
 
-        $response=array('state'=>400,'msg'=>'Error wrong subject/subject key (2)');
-        echo json_encode($response);
-        return;
 
     }
 
-
-
-
-
-    $address=new Address('id',$_REQUEST['id']);
+    $address=new Address('id',$id);
 
     if (!$address->id) {
         $response=array('state'=>400,'msg'=>'Address not found');
@@ -1154,16 +1350,17 @@ function edit_address() {
 
 
     $translator=array(
-                    'country_code'=>'Address Country Code'
-                                   ,'country_d1'=>'Address Country First Division'
-                                                 ,'country_d2'=>'Address Country Second Division'
-                                                               ,'town'=>'Address Town'
-                                                                       ,'town_d1'=>'Address Town First Division'
-                                                                                  ,'town_d2'=>'Address Town Second Division'
-                                                                                             ,'postal_code'=>'Address Postal Code'
-                                                                                                            ,'street'=>'Street Data'
-                                                                                                                      ,'internal'=>'Address Internal'
-                                                                                                                                  ,'building'=>'Address Building');
+                    'country_code'=>'Address Country Code',
+                    'country_d1'=>'Address Country First Division',
+                    'country_d2'=>'Address Country Second Division',
+                    'town'=>'Address Town',
+                    'town_d1'=>'Address Town First Division',
+                    'town_d2'=>'Address Town Second Division',
+                    'postal_code'=>'Address Postal Code',
+                    'street'=>'Street Data',
+                    'internal'=>'Address Internal',
+                    'building'=>'Address Building',
+                );
 
 
     $update_data=array('editor'=>$editor);
@@ -1180,7 +1377,7 @@ function edit_address() {
     if ($proposed_address->found) {
         $address_parents=  $proposed_address->get_parent_keys($subject);
         if (array_key_exists($subject_key,$address_parents)) {
-            if ($subject=='Customer')
+            if ($subject=='Customer') {
                 if (preg_match('/^contact$/i',$_REQUEST['key'])) {
                     $subject_object->update_principal_address($proposed_address->id);
 
@@ -1194,6 +1391,24 @@ function edit_address() {
                     echo json_encode($response);
                     return;
                 }
+            } else if ($subject=='Supplier') {
+                if (preg_match('/^contact$/i',$_REQUEST['key'])) {
+                    $subject_object->update_principal_address($proposed_address->id);
+
+                    // print "new Address address".$subject_object->data['Customer Main Address Key']."\n";
+                    $address->delete();
+
+                    return;
+                } else {
+                    $msg="This $subject has already another address with this data";
+                    $response=array('state'=>200,'action'=>'nochange','msg'=>$msg );
+                    echo json_encode($response);
+                    return;
+                }
+            }
+
+
+
         } else {
             $warning=_('Warning, address found also associated with')." ";
             switch ($subject) {
@@ -1205,6 +1420,15 @@ function edit_address() {
                 }
                 $parent_label=preg_replace('/^,/','',$parent_label);
                 $warning.=ngettext(count($address_parents),'Customer','Customers').' '.$parent_label;
+                break;
+            case 'Supplier':
+                $parent_label='';
+                foreach($address_parents as $parent_key) {
+                    $parent=new Supplier($parent_key);
+                    $parent_label.=sprintf(', <a href="supplier.php?id=%d">%s</a>',$parent->id,$parent->data['Customer Name']);
+                }
+                $parent_label=preg_replace('/^,/','',$parent_label);
+                $warning.=ngettext(count($address_parents),'Supplier','Suppliers').' '.$parent_label;
                 break;
             case 'Company':
                 $parent_label='';
@@ -1301,11 +1525,11 @@ function edit_address() {
             }
 
 
-   if ( ($subject_object->get('Customer Billing Address Link')=='Contact')  ) {
+            if ( ($subject_object->get('Customer Billing Address Link')=='Contact')  ) {
                 $billing_address='<span style="font-weight:600">'._('Same as contact address').'</span>';
 
-            }else{
-         
+            } else {
+
                 $billing_address=$subject_object->billing_address_xhtml();
             }
 
@@ -1314,7 +1538,16 @@ function edit_address() {
 
 
 
-        $response=array('state'=>200,'action'=>'updated','warning'=>$warning,'is_main'=>$is_main,'is_main_delivery'=>$is_main_delivery,'msg'=>$address->msg_updated,'key'=>$address->id,'updated_data'=>$updated_address_data,'xhtml_address'=>$address->display('xhtml'),'xhtml_delivery_address_bis'=>$address_comment,'xhtml_billing_address'=>$billing_address);
+        $response=array('state'=>200,'action'=>'updated','warning'=>$warning,'is_main'=>$is_main,'is_main_delivery'=>$is_main_delivery,'msg'=>$address->msg_updated,'key'=>$address->id,'updated_data'=>$updated_address_data,'xhtml_address'=>$address->display('xhtml'));
+
+        if ($subject=='Customer') {
+            $response['xhtml_delivery_address_bis']=$address_comment;
+            $response['xhtml_billing_address']=$billing_address;
+
+
+        }
+
+
     } else {
         if ($address->error_updated)
             $response=array('state'=>200,'action'=>'error','msg'=>$address->msg_updated,'key'=>$translator[$_REQUEST['key']]);
@@ -1334,10 +1567,6 @@ function delete_email() {
         echo json_encode($response);
         return;
     }
-
-
-
-
     if ( !isset($_REQUEST['subject'])
             or !is_numeric($_REQUEST['subject_key'])
             or $_REQUEST['subject_key']<=0       or !preg_match('/^company|contact$/i',$_REQUEST['subject'])
@@ -1366,43 +1595,95 @@ function delete_email() {
         return;
     }
 
-
     $email_key=$_REQUEST['value'];
     if (!is_numeric($email_key)) {
         $email = new Email('email',$email_key);
         $email_key=$email->id;
+    } else {
+        $email = new Email($email_key);
+        $email_key=$email->id;
+
     }
-
-
-    $subject->remove_email($email_key);
+    $email->delete();
     if ($is_company) {
         $contact_found_keys=$subject->get_contact_keys();
-        print_r($contact_found_keys);
+        //print_r($contact_found_keys);
         foreach($contact_found_keys as $contact_found_key) {
             $contact=new Contact($contact_found_key);
             $contact->editor=$subject->editor;
             $contact->remove_email($email->id);
         }
     }
-
-
-    if ($subject->updated) {
+    if ($email->deleted) {
         $action='deleted';
         $msg=_('Email deleted');
         $subject->reread();
     } else {
-        $action='nochage';
+        $action='nochange';
         $msg=_('Email could not be deleted');
+    }
+
+    $response=array('state'=>200,'action'=>$action,'msg'=>$msg,'email_key'=>$email_key,'xhtml_subject'=>$subject->display('card'),'main_email_key'=>$subject->get_principal_email_key());
+    echo json_encode($response);
+}
+function delete_mobile() {
+    global $editor;
+    if ( !isset($_REQUEST['value'])  ) {
+        $response=array('state'=>400,'msg'=>'Error no value');
+        echo json_encode($response);
+        return;
+    }
+    if ( !isset($_REQUEST['subject'])
+            or !is_numeric($_REQUEST['subject_key'])
+            or $_REQUEST['subject_key']<=0       or !preg_match('/^contact$/i',$_REQUEST['subject'])
+
+       ) {
+        $response=array('state'=>400,'msg'=>'Error wrong subject/subject key');
+        echo json_encode($response);
+        return;
+    }
+    $subject_type=$_REQUEST['subject'];
+    $subject_key=$_REQUEST['subject_key'];
+
+
+
+    $subject=new Contact($subject_key);
+
+
+
+    if (!$subject->id) {
+        $response=array('state'=>400,'msg'=>'Contact not found');
+        echo json_encode($response);
+        return;
+    }
+    $mobil = new Telecom($_REQUEST['value']);
+
+    if (!$mobil->id) {
+        $response=array('state'=>400,'msg'=>'Mobile not found');
+        echo json_encode($response);
+        return;
     }
 
 
 
-    $response=array('state'=>200,'action'=>$action,'msg'=>$msg,'email_key'=>$email_key,'xhtml_subject'=>$subject->display('card'),'main_email_key'=>$subject->get_main_email_key());
+
+    $mobil_key=$mobil->id;
 
 
+    $mobil->delete();
+
+    if ($mobil->deleted) {
+        $action='deleted';
+        $msg=_('Mobile deleted');
+        $subject->reread();
+    } else {
+        $action='nochange';
+        $msg=_('Mobile could not be deleted');
+    }
+
+    $response=array('state'=>200,'action'=>$action,'msg'=>$msg,'telecom_key'=>$mobil_key,'xhtml_subject'=>$subject->display('card'),'main_mobil_key'=>$subject->get_principal_mobile_key());
     echo json_encode($response);
 }
-
 
 function delete_address() {
     global $editor;
@@ -1484,7 +1765,7 @@ function delete_address() {
 
     $address_main_delivery='';
 
-$billing_address='';
+    $billing_address='';
     if ($subject=='Customer' ) {
 
         $address_main_delivery=$subject_object->delivery_address_xhtml();
@@ -1502,13 +1783,13 @@ $billing_address='';
 
 
 
-   if ( ($subject_object->get('Customer Billing Address Link')=='Contact')  ) {
-                $billing_address='<span style="font-weight:600">'._('Same as contact address').'</span>';
+        if ( ($subject_object->get('Customer Billing Address Link')=='Contact')  ) {
+            $billing_address='<span style="font-weight:600">'._('Same as contact address').'</span>';
 
-            }else{
-         
-                $billing_address=$subject_object->billing_address_xhtml();
-            }
+        } else {
+
+            $billing_address=$subject_object->billing_address_xhtml();
+        }
 
 
     }
@@ -1588,7 +1869,7 @@ function edit_company2() {
     echo json_encode($response);
 }
 function new_company($data) {
-    Timer::timing_milestone('begin');
+    //Timer::timing_milestone('begin');
     global $editor;
     $data['editor']=$editor;
 
@@ -1609,7 +1890,7 @@ function new_company($data) {
 }
 
 function new_customer($data) {
-    Timer::timing_milestone('begin');
+    //Timer::timing_milestone('begin');
     global $editor;
 
 
@@ -1663,7 +1944,7 @@ function new_customer($data) {
 
 
 function new_corporation($data) {
-    Timer::timing_milestone('begin');
+    //Timer::timing_milestone('begin');
     global $editor;
 
     $company=new Company('find create',$data['values']);
@@ -1711,7 +1992,7 @@ function new_contact($data) {
 
         $contact=new Contact('find create',$contact_data);
 
-  $company->create_contact_bridge($contact->id);
+        $company->create_contact_bridge($contact->id);
         break;
     default:
         $contact=new Contact('find create',$contact_data);
@@ -1748,7 +2029,7 @@ function edit_customer() {
     if ($key=='Attach') {
         // print_r($_FILES);
         $note=stripslashes(urldecode($_REQUEST['newvalue']));
-        $target_path = "uploads/".'attach_'.date('U');
+        $target_path = "app_files/uploads/".'attach_'.date('U');
         $original_name=$_FILES['testFile']['name'];
         $type=$_FILES['testFile']['type'];
         $data=array('Caption'=>$note,'Original Name'=>$original_name,'Type'=>$type);
@@ -1762,32 +2043,34 @@ function edit_customer() {
 
 
         $key_dic=array(
-        'fiscal_name'=>'Customer Fiscal Name'
-                     ,'name'=>'Customer Name'
-                            ,'email'=>'Customer Main Plain Email'
-                                     ,'telephone'=>'Customer Main Plain Telephone'
-                                                  ,'contact'=>'Customer Main Contact Name'
-                                                             ,"address"=>'Address'
-                                                                        ,"town"=>'Main Address Town'
-                                                                                ,"tax_number"=>'Customer Tax Number'
-                                                                                              ,"postcode"=>'Main Address Town'
-                                                                                                          ,"region"=>'Main Address Town'
-                                                                                                                    ,"country"=>'Main Address Country'
-                                                                                                                               ,"ship_address"=>'Main Ship To'
-                                                                                                                                               ,"ship_town"=>'Main Ship To Town'
-                                                                                                                                                            ,"ship_postcode"=>'Main Ship To Postal Code'
-                                                                                                                                                                             ,"ship_region"=>'Main Ship To Country Region'
-                                                                                                                                                                                            ,"ship_country"=>'Main Ship To Country'
+                     'fiscal_name'=>'Customer Fiscal Name',
+                     'name'=>'Customer Name',
+                     'email'=>'Customer Main Plain Email',
+                     'telephone'=>'Customer Main Plain Telephone',
+                     'contact'=>'Customer Main Contact Name',
+                     "address"=>'Address',
+                     "town"=>'Main Address Town',
+                     "tax_number"=>'Customer Tax Number',
+                     "postcode"=>'Main Address Town',
+                     "region"=>'Main Address Town',
+                     "country"=>'Main Address Country',
+                     "ship_address"=>'Main Ship To',
+                     "ship_town"=>'Main Ship To Town',
+                     "ship_postcode"=>'Main Ship To Postal Code',
+                     "ship_region"=>'Main Ship To Country Region',
+                     "ship_country"=>'Main Ship To Country'
 
                  );
         if (array_key_exists($_REQUEST['key'],$key_dic))
             $key=$key_dic[$_REQUEST['key']];
-            
-         if ($key=='Customer Fiscal Name') {
+
+        if ($key=='Customer Fiscal Name') {
             $customer->update_fiscal_name(stripslashes(urldecode($_REQUEST['newvalue'])  ));
-        }elseif ($key=='Customer Tax Number') {
+        }
+        elseif ($key=='Customer Tax Number') {
             $customer->update_tax_number(stripslashes(urldecode($_REQUEST['newvalue'])  ));
-        } else
+        }
+        else
             $customer->update(array($key=>stripslashes(urldecode($_REQUEST['newvalue'])  )  ));
     }
 
@@ -1853,7 +2136,16 @@ function list_customers() {
 
 
     $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
-    $_SESSION['state']['customers']['table']=array('order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value);
+    //$_SESSION['state']['customers']['table']=array('order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value);
+    $_SESSION['state']['customers']['table']['order']=$order;
+    $_SESSION['state']['customers']['table']['order_dir']=$order_direction;
+    $_SESSION['state']['customers']['table']['nr']=$number_results;
+    $_SESSION['state']['customers']['table']['sf']=$start_from;
+    $_SESSION['state']['customers']['table']['where']=$where;
+    $_SESSION['state']['customers']['table']['f_field']=$f_field;
+    $_SESSION['state']['customers']['table']['f_value']=$f_value;
+
+
     $filter_msg='';
     $wheref='';
 
@@ -2047,7 +2339,7 @@ function list_customers() {
 
                      'ship_town'=>$data['Customer Main Delivery Address Town'],
                      'ship_postcode'>$data['Customer Main Delivery Address Postal Code'],
-                     'ship_region'=>$data['Customer Main Delivery Address Country Region'],
+                     'ship_region'=>$data['Customer Main Delivery Address Region'],
                      'ship_country'=>$data['Customer Main Delivery Address Country'],
 
                      'go'=>sprintf("<a href='edit_customer.php?id=%d'><img src='art/icons/page_go.png' alt='go'></a>",$data['Customer Key'])
@@ -2081,11 +2373,6 @@ function list_customers() {
 
 
 function list_company_areas() {
-
-
-
-
-
     $conf=$_SESSION['state']['company_areas']['table'];
     if (isset( $_REQUEST['view']))
         $view=$_REQUEST['view'];
@@ -2306,246 +2593,6 @@ function list_company_areas() {
 }
 
 
-function list_company_departments() {
-
-    $conf=$_SESSION['state']['company_departments']['table'];
-    if (isset( $_REQUEST['parent'])) {
-        $parent=$_REQUEST['parent'];
-        $_SESSION['state']['company_departments']['parent']=$parent;
-    } else
-        $parent= $_SESSION['state']['company_departments']['parent'];
-
-    if ($parent=='area') {
-        $conf_table='company_area';
-
-        $conf=$_SESSION['state']['company_area']['departments'];
-
-    } else {
-        $conf_table='company_departments';
-        $conf=$_SESSION['state'][$conf_table]['table'];
-
-    }
-
-    if (isset( $_REQUEST['view']))
-        $view=$_REQUEST['view'];
-    else
-        $view=$_SESSION['state']['company_departments']['view'];
-
-    if (isset( $_REQUEST['sf']))
-        $start_from=$_REQUEST['sf'];
-    else
-        $start_from=$conf['sf'];
-    if (!is_numeric($start_from))
-        $start_from=0;
-
-    if (isset( $_REQUEST['nr'])) {
-        $number_results=$_REQUEST['nr'];
-    } else
-        $number_results=$conf['nr'];
-
-
-    if (isset( $_REQUEST['o']))
-        $order=$_REQUEST['o'];
-    else
-        $order=$conf['order'];
-
-    if (isset( $_REQUEST['od']))
-        $order_dir=$_REQUEST['od'];
-    else
-        $order_dir=$conf['order_dir'];
-    $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
-
-
-
-    if (isset( $_REQUEST['where']))
-        $where=addslashes($_REQUEST['where']);
-    else
-        $where=$conf['where'];
-
-
-    if (isset( $_REQUEST['f_field']))
-        $f_field=$_REQUEST['f_field'];
-    else
-        $f_field=$conf['f_field'];
-
-    if (isset( $_REQUEST['f_value']))
-        $f_value=$_REQUEST['f_value'];
-    else
-        $f_value=$conf['f_value'];
-
-
-    if (isset( $_REQUEST['tableid']))
-        $tableid=$_REQUEST['tableid'];
-    else
-        $tableid=0;
-
-
-
-
-
-
-    if (isset( $_REQUEST['restrictions']))
-        $restrictions=$_REQUEST['restrictions'];
-    else
-        $restrictions=$conf['restrictions'];
-
-
-    if ($parent=='area') {
-
-        $_SESSION['state']['company_area']['departments']=array('order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value
-                ,'restrictions'=>'','parent'=>$parent
-                                                               );
-    } else {
-        $_SESSION['state']['company_departments']['table']=array('order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value
-                ,'restrictions'=>'','parent'=>$parent
-                                                                );
-    }
-
-
-    if ($parent=='area') {
-        $where.=sprintf(' and `Company Area Key`=%d',$_SESSION['state']['company_area']['id']);
-    }
-
-
-    $group='';
-
-
-
-
-
-    $filter_msg='';
-
-    $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
-
-    //  if(!is_numeric($start_from))
-    //        $start_from=0;
-    //      if(!is_numeric($number_results))
-    //        $number_results=25;
-
-
-    $_order=$order;
-    $_dir=$order_direction;
-    $filter_msg='';
-    $wheref='';
-    if ($f_field=='company name' and $f_value!='')
-        $wheref.=" and  `Company Name` like '%".addslashes($f_value)."%'";
-    elseif($f_field=='email' and $f_value!='')
-    $wheref.=" and  `Company Main Plain Email` like '".addslashes($f_value)."%'";
-
-    $sql="select count(*) as total from `Company Department Dimension`  $where $wheref   ";
-//print $sql;
-    $res=mysql_query($sql);
-    if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
-        $total=$row['total'];
-    }
-    if ($wheref=='') {
-        $filtered=0;
-        $total_records=$total;
-    } else {
-        $sql="select count(*) as total from `Company Department Dimension`  $where   ";
-        $res=mysql_query($sql);
-        if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
-            $total_records=$row['total'];
-            $filtered=$total_records-$total;
-        }
-
-    }
-    mysql_free_result($res);
-
-    $rtext=$total_records." ".ngettext('company department','company departments',$total_records);
-    if ($total_records>$number_results)
-        $rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
-    else
-        $rtext_rpp=' '._('(Showing all)');
-
-    if ($total==0 and $filtered>0) {
-        switch ($f_field) {
-        case('name'):
-            $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any contact with name like ")." <b>".$f_value."*</b> ";
-            break;
-        case('email'):
-            $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any contact with email like ")." <b>".$f_value."*</b> ";
-            break;
-        }
-    }
-    elseif($filtered>0) {
-        switch ($f_field) {
-        case('name'):
-            $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total "._('companies with name like')." <b>".$f_value."*</b>";
-            break;
-        case('email'):
-            $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total "._('companies with email like')." <b>".$f_value."*</b>";
-            break;
-        }
-    }
-    else
-        $filter_msg='';
-
-    $_order=$order;
-    $_order_dir=$order_dir;
-    $order='`Company Department Name`';
-
-    if ($order=='code')
-        $order='`Company Department Code`';
-
-
-
-    $sql="select  * from `Company Department Dimension` P  $where $wheref $group order by $order $order_direction limit $start_from,$number_results    ";
-
-    $res = mysql_query($sql);
-    $adata=array();
-
-    // print "$sql";
-    while ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
-
-
-        if ($row['Company Department Number Employees']>0) {
-            $delete='';
-        } else {
-            $delete='<img src="art/icons/delete.png"/>';
-        }
-        $adata[]=array(
-
-
-                     'id'=>$row['Company Department Key']
-
-                          ,'go'=>sprintf("<a href='edit_company_department.php?id=%d'><img src='art/icons/page_go.png' alt='go'></a>",$row['Company Department Key'])
-
-                                ,'code'=>$row['Company Department Code']
-                                        ,'name'=>$row['Company Department Name']
-                                                ,'area'=>$row['Company Area Key']
-                                                        ,'delete'=>$delete
-                                                                  ,'delete_type'=>'delete'
-
-
-                 );
-    }
-    mysql_free_result($res);
-
-
-    // $total_records=ceil($total_records/$number_results)+$total_records;
-
-    $response=array('resultset'=>
-                                array('state'=>200,
-                                      'data'=>$adata,
-                                      'sort_key'=>$_order,
-                                      'sort_dir'=>$_dir,
-                                      'tableid'=>$tableid,
-                                      'filter_msg'=>$filter_msg,
-                                      'rtext'=>$rtext,
-                                      'rtext_rpp'=>$rtext_rpp,
-                                      'total_records'=>$total_records,
-                                      'records_offset'=>$start_from,
-                                      'records_perpage'=>$number_results,
-                                     )
-                   );
-
-
-
-
-    echo json_encode($response);
-
-}
 
 
 
@@ -2572,10 +2619,16 @@ function new_company_area($data) {
 }
 
 
+
 function new_company_department($data) {
+
     global $editor;
     $company=new Company($data['parent_key']);
     $company->editor=$editor;
+
+
+
+
     if ($company->id) {
         $company->add_department($data['values']);
         if ($company->updated) {
@@ -2593,6 +2646,60 @@ function new_company_department($data) {
     echo json_encode($response);
 
 }
+
+function new_staff($data) {
+    global $editor;
+    $staff_data=Array();
+    foreach($data['values'] as $key=>$value) {
+        $staff_data[preg_replace('/^company /i','Staff ',$key)]=$value;
+    }
+
+    $staff_data['editor']=$editor;
+//print_r($supplier_data);
+//return;
+
+    $staff=new Staff('find',$staff_data,'create');
+    if ($staff->new) {
+        $response= array('state'=>200,'action'=>'created','staff_key'=>$staff->id);
+    } else {
+        if ($staff->found)
+            $response= array('state'=>400,'action'=>'found','staff_key'=>$staff->found_key);
+        else
+            $response= array('state'=>400,'action'=>'error','staff_key'=>0,'msg'=>$staff->msg);
+    }
+
+
+    echo json_encode($response);
+
+}
+
+
+
+
+
+function new_company_position($data) {
+    global $editor;
+    $company=new Company($data['parent_key']);
+    $company->editor=$editor;
+    if ($company->id) {
+        $company->add_position($data['values']);
+        if ($company->updated) {
+            $response= array('state'=>200,'action'=>'created');
+
+        } else {
+            $response= array('state'=>400,'action'=>'error','company_key'=>0,'msg'=>$company->msg);
+
+        }
+
+    } else {
+        $response= array('state'=>400,'action'=>'error','company_key'=>0,'msg'=>$company->msg);
+
+    }
+    echo json_encode($response);
+
+}
+
+
 
 
 
@@ -2730,8 +2837,12 @@ function new_delivery_address() {
     }
 
     $ship_to= new Ship_To('find create',$data);
-
-    $customer->add_ship_to($ship_to->id,'No');
+    $data_ship_to=array(
+                      'Ship To Key'=>$ship_to->id,
+                      'Current Ship To Is Other Key'=>$customer->data['Customer Last Ship To Key'],
+                      'Date'=>$editor['Date']
+                  );
+    $customer->update_ship_to($data_ship_to);
 
     if ($ship_to->new ) {
 
@@ -2774,6 +2885,69 @@ function new_delivery_address() {
 }
 
 
+function edit_corporation($data) {
+    include_once('class.Corporation.php');
+    $corporation=new Corporation();
+    $corporation->update(array($data['key']=>$data['newvalue']));
+    if ($corporation->updated) {
+        $response= array('state'=>200,'newvalue'=>$corporation->new_value,'key'=>$_REQUEST['okey']);
 
+    } else {
+        $response= array('state'=>400,'msg'=>$corporation->msg,'key'=>$_REQUEST['okey']);
+    }
+    echo json_encode($response);
+
+}
+
+
+function edit_company_department() {
+    $key=$_REQUEST['key'];
+
+
+    $company_department=new CompanyDepartment($_REQUEST['department_key']);
+    global $editor;
+    $company_department->editor=$editor;
+
+    if ($key=='Attach') {
+        // print_r($_FILES);
+        $note=stripslashes(urldecode($_REQUEST['newvalue']));
+        $target_path = "uploads/".'attach_'.date('U');
+        $original_name=$_FILES['testFile']['name'];
+        $type=$_FILES['testFile']['type'];
+        $data=array('Caption'=>$note,'Original Name'=>$original_name,'Type'=>$type);
+
+        if (move_uploaded_file($_FILES['testFile']['tmp_name'],$target_path )) {
+            $company_department->add_attach($target_path,$data);
+
+        }
+    } else {
+
+
+
+        $key_dic=array(
+                     'name'=>'Company Department Name'
+                            ,'code'=>'Company Department Code'
+                                    ,'description'=>'Company Department Description'
+                                                   // ,'type'=>'Staff Type'
+
+
+                 );
+        if (array_key_exists($_REQUEST['key'],$key_dic))
+            $key=$key_dic[$_REQUEST['key']];
+
+        $update_data=array($key=>stripslashes(urldecode($_REQUEST['newvalue'])));
+        $company_department->update($update_data);
+    }
+
+
+    if ($company_department->updated) {
+        $response= array('state'=>200,'newvalue'=>$company_department->new_value,'key'=>$_REQUEST['key']);
+
+    } else {
+        $response= array('state'=>400,'msg'=>$company_department->msg,'key'=>$_REQUEST['key']);
+    }
+    echo json_encode($response);
+
+}
 
 ?>

@@ -15,7 +15,7 @@ var description_errors= new Object();
 
 
 var scope='company_area';
-var scope_edit_ar_file='ar_edit_contacts.php';
+var scope_edit_ar_file='ar_edit_staff.php';
 var scope_key_name='id';
 var scope_key=<?php echo $_SESSION['state']['company_area']['id']?>;
 
@@ -34,15 +34,17 @@ var validate_scope_data={
 
     'name':{'changed':false,'validated':true,'required':true,'group':1,'type':'item'
 	    ,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Area Name')?>'}],'name':'Company_Area_Name','dbname':'Company Area Name'
-	    ,'ar':'find','ar_request':'ar_contacts.php?tipo=is_company_area_name&company_key='+parent_key+'&query='}
+	    ,'ar':'find','ar_request':'ar_staff.php?tipo=is_company_area_name&company_key='+parent_key+'&query='}
     ,'code':{'changed':false,'validated':true,'required':false,'group':1,'type':'item'
 	     ,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Area Code')?>'}]
-	     ,'name':'Company_Area_Code' ,'dbname':'Company Area Code','ar':'find','ar_request':'ar_contacts.php?tipo=is_company_area_code&company_key='+parent_key+'&query='}
-    
+	     ,'name':'Company_Area_Code' ,'dbname':'Company Area Code','ar':'find','ar_request':'ar_staff.php?tipo=is_company_area_code&company_key='+parent_key+'&query='}
+    ,'description':{'changed':false,'validated':true,'required':true,'group':1,'type':'item'
+	    ,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Area Description')?>'}],'name':'Company_Area_Description','dbname':'Company Area Description'
+	    ,'ar':'false','ar_request':'false'}
 
    }
 
-,'company_department':{
+/*,'company_department':{
     'name':{'changed':false,'validated':true,'required':true,'group':1,'type':'item'
 	    ,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Department Name')?>'}],'name':'Company_Department_Name','dbname':'Company Department Name'
 	    ,'ar':'find','ar_request':'ar_contacts.php?tipo=is_company_department_name&company_key='+parent_key+'&query='}
@@ -51,11 +53,11 @@ var validate_scope_data={
 	     ,'name':'Company_Department_Code' ,'dbname':'Company Department Code','ar':'find','ar_request':'ar_contacts.php?tipo=is_company_department_code&company_key='+parent_key+'&query='}
     ,'area':{'validated':true,'name':'Company_Area_Key' ,'dbname':'Company Area Key'}
 
-   }
+   }*/
 };
 
 
-var validate_scope_metadata={'company_area':{'type':'edit','ar_file':'ar_edit_warehouse.php'},'company_department':{'type':'new','ar_file':'ar_edit_warehouse.php'}};
+var validate_scope_metadata={'company_area':{'type':'edit','ar_file':'ar_edit_staff.php','key_name':'company_key','key':<?php echo $_REQUEST['company_key']?>}};
 
 
 
@@ -64,6 +66,9 @@ function validate_code(query){
 }
 function validate_name(query){
  validate_general('company_area','name',unescape(query));
+}
+function validate_description(query){
+ validate_general('company_area','description',unescape(query));
 }
 function reset_new_area(){
  reset_edit_general('company_area');
@@ -125,7 +130,7 @@ var table=tables.table1;
 YAHOO.util.Event.addListener(window, "load", function() {
     tables = new function() {
 
-	    var tableid=0; // Change if you have more the 1 table
+	/*    var tableid=0; // Change if you have more the 1 table
 	    var tableDivEL="table"+tableid;
 	    var OrdersColumnDefs = [ 
 				    {key:"id", label:"<?php echo _('Key')?>", width:20,sortable:false,isPrimaryKey:true,hidden:true} 
@@ -165,8 +170,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
  									      nextPageLinkLabel : ">",
  									      firstPageLinkLabel :"<<",
  									      lastPageLinkLabel :">>",rowsPerPageOptions : [10,25,50,100,250,500],alwaysVisible:false
-									      ,template : "{FirstPageLink}{PreviousPageLink}<strong id='paginator_info0'>{CurrentPageReport}</strong>{NextPageLink}{LastPageLink}"
-									  })
+									      ,template : "{FirstPageLink}{PreviousPageLink}<strong id='paginator_info0'>{CurrentPageReport}</strong>{NextPageLink}{LastPageLink}" })
 								     
 							   ,sortedBy : {
 							    Key: "<?php echo$_SESSION['state']['company_areas']['table']['order']?>",
@@ -186,7 +190,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    this.table0.subscribe("cellMouseoutEvent", unhighlightEditableCell);
 	    this.table0.subscribe("cellClickEvent", onCellClick);
 
-
+*/
 		
  var tableid=1; // Change if you have more the 1 table
 	    var tableDivEL="table"+tableid;
@@ -335,7 +339,7 @@ function change_block(){
 	Dom.addClass(this, 'selected');
 	
 	YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=company_area-edit&value='+this.id );
-	
+
 	editing=this.id;
     }
 
@@ -350,9 +354,7 @@ function init(){
     YAHOO.util.Event.addListener('add_area', "click", show_add_area_dialog);
     YAHOO.util.Event.addListener('save_edit_company_area', "click",save_new_area);
     YAHOO.util.Event.addListener('reset_edit_company_area', "click", cancel_add_area);
-    YAHOO.util.Event.addListener('add_department', "click", show_add_department_dialog);
-    YAHOO.util.Event.addListener('save_edit_company_department', "click",save_new_department);
-    YAHOO.util.Event.addListener('reset_edit_company_department', "click", cancel_add_department);
+    
 
     var area_code_oACDS = new YAHOO.util.FunctionDataSource(validate_code);
     area_code_oACDS.queryMatchContains = true;
@@ -366,18 +368,11 @@ function init(){
     area_name_oAutoComp.minQueryLength = 0; 
     area_name_oAutoComp.queryDelay = 0.1;
 
-    var department_code_oACDS = new YAHOO.util.FunctionDataSource(validate_department_code);
-    department_code_oACDS.queryMatchContains = true;
-    var department_code_oAutoComp = new YAHOO.widget.AutoComplete("Company_Department_Code","Company_Department_Code_Container", department_code_oACDS);
-    department_code_oAutoComp.minQueryLength = 0; 
-    department_code_oAutoComp.queryDelay = 0.1;
-    
-     var department_name_oACDS = new YAHOO.util.FunctionDataSource(validate_department_name);
-    department_name_oACDS.queryMatchContains = true;
-    var department_name_oAutoComp = new YAHOO.widget.AutoComplete("Company_Department_Name","Company_Department_Name_Container", department_name_oACDS);
-    department_name_oAutoComp.minQueryLength = 0; 
-    department_name_oAutoComp.queryDelay = 0.1;
-
+      var area_description_oACDS = new YAHOO.util.FunctionDataSource(validate_description);
+    area_description_oACDS.queryMatchContains = true;
+    var area_description_oAutoComp = new YAHOO.widget.AutoComplete("Company_Area_Description","Company_Area_Description_Container", area_description_oACDS);
+    area_description_oAutoComp.minQueryLength = 0; 
+    area_description_oAutoComp.queryDelay = 0.1;
 
 
 }

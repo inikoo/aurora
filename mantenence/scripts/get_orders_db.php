@@ -12,6 +12,8 @@ include_once('../../class.DeliveryNote.php');
 include_once('../../class.Email.php');
 include_once('../../class.TimeSeries.php');
 include_once('../../class.CurrencyExchange.php');
+include_once('../../class.TaxCategory.php');
+
 include_once('common_read_orders_functions.php');
 
 
@@ -79,64 +81,31 @@ $version='V 1.0';
 $Data_Audit_ETL_Software="$software $version";
 srand(12344);
 
-$store_key=1;
-$dept_no_dept=new Department('code_store','ND',$store_key);
-if (!$dept_no_dept->id) {
-    $dept_data=array(
-                   'code'=>'ND',
-                   'name'=>'Products Without Department',
-                   'store_key'=>$store_key
-               );
-    $dept_no_dept=new Department('create',$dept_data);
-    $dept_no_dept_key=$dept_no_dept->id;
-}
-$dept_promo=new Department('code_store','Promo',$store_key);
-if (!$dept_promo->id) {
-    $dept_data=array(
-                   'code'=>'Promo',
-                   'name'=>'Promotional Items',
-                   'store_key'=>$store_key
-               );
-    $dept_promo=new Department('create',$dept_data);
+$store=new Store("code","UK");
+$store_key=$store->id;
 
-}
-
-
+$dept_no_dept=new Department('code','ND_UK',$store_key);
 $dept_no_dept_key=$dept_no_dept->id;
+$dept_promo=new Department('code','Promo_UK',$store_key);
 $dept_promo_key=$dept_promo->id;
 
-$fam_no_fam=new Family('code_store','PND_GB',$store_key);
-if (!$fam_no_fam->id) {
-    $fam_data=array(
-                  'Product Family Code'=>'PND_GB',
-                  'Product Family Name'=>'Products Without Family',
-                  'Product Family Main Department Key'=>$dept_no_dept_key
-              );
-    $fam_no_fam=new Family('create',$fam_data);
-    $fam_no_fam_key=$fam_no_fam->id;
-}
-$fam_promo=new Family('code_store','Promo_GB',$store_key);
-if (!$fam_promo->id) {
-    $fam_data=array(
-                  'code'=>'Promo_GB',
-                  'name'=>'Promotional Items',
-                  'Product Family Main Department Key'=>$dept_promo_key
-              );
-    $fam_promo=new Family('create',$fam_data);
 
-}
 
+$fam_no_fam=new Family('code','PND_UK',$store_key);
 $fam_no_fam_key=$fam_no_fam->id;
+$fam_promo=new Family('code','Promo_UK',$store_key);
 $fam_promo_key=$fam_promo->id;
 
 
-
-$sql="select *,replace(   replace(replace(replace(replace(replace(replace(replace(replace(filename,'r/Orders/','r/Orders/00'),'s/Orders/','s/Orders/0'),'y/Orders/','y/Orders/0'),'z/Orders/9','z/Orders/09'),'x/Orders/','x/Orders/0'),'t/Orders/','t/Orders/0'),'u/Orders/','u/Orders/0'),'z/Orders/8','z/Orders/08')     ,directory,'') as name from  orders_data.orders  where   (last_transcribed is NULL  or last_read>last_transcribed) and deleted='No'    order by name ";
-
+$sql="select *,replace(   replace(replace(replace(replace(replace(replace(replace(replace(filename,'r/Orders/','r/Orders/000'),'s/Orders/','s/Orders/00'),'y/Orders/','y/Orders/00'),'z/Orders/9','z/Orders/009'),'x/Orders/','x/Orders/00'),'t/Orders/','t/Orders/00'),'u/Orders/','u/Orders/00'),'z/Orders/8','z/Orders/008')     ,directory,'') as name from  orders_data.orders  where   (last_transcribed is NULL  or last_read>last_transcribed)  order by name  ";
+//and ( filename like '%/b/%.xls' or filename like '%/a/%.xls' or  filename like '%/c/%.xls' )
 //$sql="select * from  orders_data.orders  where    (last_transcribed is NULL  or last_read>last_transcribed) and deleted='No'  order by filename ";
+//$sql="select * from  orders_data.orders where filename like '%/b/%.xls' or like '%/a/%.xls' or  like '%/c/%.xls' order by filename";
+//$sql="select * from  orders_data.orders where filename like '%/6990.xls'   order by filename";
+//$sql="select * from  orders_data.orders where filename like '%/29321R.xls'   order by filename";
 
-//$sql="select * from  orders_data.orders where filename like '%refund.xls'   order by filename";
-//$sql="select * from  orders_data.orders  where filename like '/mnt/%/Orders/6954.xls' order by filename";
+//$sql="select * from  orders_data.orders where filename like '%/%ref%.xls'   order by filename";
+//$sql="select * from  orders_data.orders  where filename like '/mnt/%/Orders/93284.xls' order by filename";
 //$sql="select * from  orders_data.orders  where (filename like '/mnt/%/Orders/7318.xls' )or(filename like '/mnt/%/Orders/7530.xls' )order by filename";
 
 //$sql="select * from  orders_data.orders  where filename like '/mnt/%/Orders/15720.xls' or filename like '/mnt/%/Orders/60000.xls' or  filename like '/mnt/%/Orders/15sdfsd593.xls' order by filename";
@@ -155,17 +124,42 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
         $total_credit_value=0;
         $update=false;
         $old_order_key=0;
-        $sql=sprintf("select count(*) as num  from `Order Dimension`  where `Order Original Metadata`=%s  "
-                     ,prepare_mysql($store_code.$order_data_id));
+
+
+        //if($contador>50)
+        //exit;
+
+        $sql=sprintf("select count(*) as num  from `Order Dimension`  where `Order Original Metadata`=%s ",prepare_mysql($store_code.$order_data_id));
         $result_test=mysql_query($sql);
         if ($row_test=mysql_fetch_array($result_test, MYSQL_ASSOC)) {
             if ($row_test['num']==0) {
-                print "NEW $contador $order_data_id $filename \n";
+                $sql=sprintf("select count(*) as num  from `Invoice Dimension`  where `Invoice Metadata`=%s "
+                             ,prepare_mysql($store_code.$order_data_id));
+                $result_test2=mysql_query($sql);
+                if ($row_test2=mysql_fetch_array($result_test2, MYSQL_ASSOC)) {
+                    if ($row_test2['num']==0) {
+                        $sql=sprintf("select count(*) as num  from `Delivery Note Dimension`  where `Delivery Note Metadata`=%s "
+                                     ,prepare_mysql($store_code.$order_data_id));
+                        $result_test3=mysql_query($sql);
+                        if ($row_test3=mysql_fetch_array($result_test3, MYSQL_ASSOC)) {
+                            if ($row_test3['num']==0) {
+                                print "NEW $contador $order_data_id $filename ";
+                            } else {
+                                $update=true;
+                                print "UPD $contador $order_data_id $filename ";
+                            }
+                        }
+                    } else {
+                        $update=true;
+                        print "UPD $contador $order_data_id $filename ";
+                    }
+                }
             } else {
                 $update=true;
-                print "UPD $contador $order_data_id $filename \n";
+                print "UPD $contador $order_data_id $filename ";
             }
         }
+
         mysql_free_result($result_test);
 
         $header=mb_unserialize($row['header']);
@@ -207,9 +201,12 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
         $data=array();
         list($act_data,$header_data)=read_header($header,$map_act,$y_map,$map);
         $header_data=filter_header($header_data);
+        round_header_data_totals();
         //print_r($header_data);
         list($tipo_order,$parent_order_id,$header_data)=get_tipo_order($header_data['ltipo'],$header_data);
 
+        if (!$tipo_order)
+            continue;
         if (preg_match('/^1?\d{5}sh$/i',$filename_number)) {
             $tipo_order=7;
             $parent_order_id=preg_replace('/sh/i','',$filename_number);
@@ -230,10 +227,17 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
         }
 
         list($date_index,$date_order,$date_inv)=get_dates($row2['timestamp'],$header_data,$tipo_order,true);
+        $editor=array(
+                    'Date'=>$date_order,
+                    'Author Name'=>'',
+                    'Author Alias'=>'',
+                    'Author Type'=>'',
+                    'Author Key'=>0,
+                    'User Key'=>0,
+                );
 
-        $editor=array("Date"=>$date_order);
 
-
+        $data['editor']=$editor;
         if ($tipo_order==9) {
             if ( $date_inv=='NULL' or  strtotime($date_order)>strtotime($date_inv)) {
                 $date_inv=$date_order;
@@ -256,13 +260,13 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
             $date2=$date_inv;
         }
         elseif($tipo_order==4  or   $tipo_order==5 or    $tipo_order==8  )
-	  $date2=$date_index;
+        $date2=$date_index;
         else
-	  $date2=$date_order;
-	
+            $date2=$date_order;
+
         $header_data['Order Main Source Type']='Unknown';
         $header_data['Delivery Note Dispatch Method']='Unknown';
-	
+
         $header_data['collection']='No';
         $header_data['shipper_code']='';
         $header_data['staff sale']='No';
@@ -323,11 +327,14 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
         }
 
 
-
-
         $transactions=read_products($products,$prod_map);
+        // print_r($transactions);
         unset($products);
         $_customer_data=setup_contact($act_data,$header_data,$date_index2,$editor);
+
+
+        list($_customer_data['type'],$_customer_data['company_name'],$_customer_data['contact_name'])=parse_company_person($_customer_data['company_name'],$_customer_data['contact_name']);
+
         $customer_data=array();
 
         if (isset($header_data['tax_number']) and $header_data['tax_number']!='') {
@@ -393,7 +400,6 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
             $shipping_addresses['Address Country Second Division']=$_customer_data['shipping_data']['country_d2'];
             unset($customer_data['shipping_data']);
         }
-
         if (strtotime($date_order)>strtotime($date2)) {
             print "Warning (Fecha Factura anterior Fecha Orden) $filename $date_order  $date2 \n";
             $date2=date("Y-m-d H:i:s",strtotime($date_order.' +8 hour'));
@@ -416,7 +422,7 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
         $extra_shipping=0;
 
         $data=array();
-        $editor=array('Date'=>$date_order);
+
 
         $data['order date']=$date_order;
         $data['order id']=$header_data['order_num'];
@@ -443,18 +449,22 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
         $data_bonus_transactions=array();
 
         $credits=array();
-
+        $shipping_transactions=array();
         $total_credit_value=0;
         $estimated_w=0;
         //echo "Memory: ".memory_get_usage(true) . "\n";
         foreach($transactions as $transaction) {
+            // print_r($transaction);
             $transaction['code']=_trim($transaction['code']);
 
             if (preg_match('/credit|refund/i',$transaction['code'])) {
 
-
                 if (preg_match('/^Credit owed for order no\.\:\d{4,5}$/',$transaction['description'])) {
+
+
                     $credit_parent_public_id=preg_replace('/[^\d]/','',$transaction['description']);
+
+
                     $credit_value=$transaction['credit'];
                     $credit_description=$transaction['description'];
                     $total_credit_value+=$credit_value;
@@ -497,8 +507,8 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
                 continue;
             }
 
-            if (preg_match('/Freight|^frc-|Postage/i',$transaction['code'])) {
-
+            if (preg_match('/Freight|^frc-|Postage|shipping/i',$transaction['code'])) {
+                $shipping_transactions[]=$transaction;
                 $extra_shipping+=$transaction['price'];
                 continue;
 
@@ -514,6 +524,7 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
                       or $__code=='scrub-st' or $__code=='eye-st' or $__code=='tbm-st' or $__code=='tbc-st' or $__code=='tbs-st'
                       or $__code=='gemd-st' or $__code=='cryc-st' or $__code=='gp-st'  or $__code=='dc-st'
                ) {
+
                 continue;
 
             }
@@ -750,9 +761,9 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
             $transaction['supplier_product_code']=preg_replace('/\s*\"$/','',$transaction['supplier_product_code']);
 
 
-            if (preg_match('/\d+ or more|\d|0.10000007|0.050000038|0.150000076|0.8000006103|1.100000610|1.16666666|1.650001220|1.80000122070/i',$transaction['supplier_product_code']))
+            if (preg_match('/\d+ or more|\d|0.10000007|0\.300000152587891|0.050000038|0.150000076|0.8000006103|1.100000610|1.16666666|1.650001220|1.80000122070/i',$transaction['supplier_product_code']))
                 $transaction['supplier_product_code']='';
-            if (preg_match('/^(\?|new|0.25|0.5|0.8|8.0600048828125|0.8000006103|01 Glass Jewellery Box|1|0.1|0.05|1.5625|10|\d{1,2}\s?\+\s?\d{1,2}\%)$/i',$transaction['supplier_product_code']))
+            if (preg_match('/^(\?|new|0.25|0.5|0.8|0\.300000152587891|8.0600048828125|0.8000006103|01 Glass Jewellery Box|1|0.1|0.05|1.5625|10|\d{1,2}\s?\+\s?\d{1,2}\%)$/i',$transaction['supplier_product_code']))
                 $transaction['supplier_product_code']='';
             if ($transaction['supplier_product_code']=='same')
                 $transaction['supplier_product_code']=$transaction['code'];
@@ -780,12 +791,15 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
                 $transaction['supplier_code'] ='';
                 $supplier_product_cost='';
             }
-            if (preg_match('/^(SG|FO|EO|PS|BO)\-/i',$transaction['code']))
+            if (preg_match('/^(SG|FO|EO|PS|BO|EOB|AM)\-/i',$transaction['code']))
                 $transaction['supplier_code'] ='AW';
             if ($transaction['supplier_code']=='AW')
                 $transaction['supplier_product_code']=$transaction['code'];
-            if ($transaction['supplier_code']=='' or preg_match('/\d/',$transaction['supplier_code']) )
-                $transaction['supplier_code']='Unknown';
+            if ($transaction['supplier_code']=='' or preg_match('/\d/',$transaction['supplier_code'])
+                    or $transaction['supplier_code']=='?' or   preg_match('/\"[0-9]{3}/',$transaction['supplier_code']) or preg_match('/disc 20\+/i',$transaction['supplier_code'])
+
+               )
+                $transaction['supplier_code']='UNK';
             $unit_type='Piece';
             $description=_trim($transaction['description']);
             $description=str_replace("\\\"","\"",$description);
@@ -850,10 +864,12 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
             if ($transaction['units']=='' OR $transaction['units']<=0)
                 $transaction['units']=1;
+            $transaction['original_price']=$transaction['price'];
 
             if (!is_numeric($transaction['price']) or $transaction['price']<=0) {
                 //       print "Price Zero ".$transaction['code']."\n";
                 $transaction['price']=0;
+
             }
 
             if (!is_numeric($supplier_product_cost)  or $supplier_product_cost<=0 ) {
@@ -948,9 +964,8 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
                               'auto_add'=>true,
                               'product valid from'=>$date_order,
                               'product valid to'=>$date2,
-                              'editor'=>array('Date'=>$date_order)
+                              'editor'=>$editor
                           );
-
 
             $product=new Product('find',$product_data,'create');
 
@@ -971,8 +986,8 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
             $to_update['stores'][$product->data['Product Store Key']]=1;
 
             $supplier_code=_trim($transaction['supplier_code']);
-            if ($supplier_code=='' or $supplier_code=='0' or  preg_match('/^costa$/i',$supplier_code))
-                $supplier_code='Unknown';
+            if ($supplier_code=='' or $supplier_code=='0' or   $supplier_code=='?' or preg_match('/\"[0-9]{3}/',$supplier_code) or preg_match('/disc 20\+/i',$supplier_code)   or   preg_match('/^costa$/i',$supplier_code))
+                $supplier_code='UNK';
             $supplier=new Supplier('code',$supplier_code);
             if (!$supplier->id) {
                 $the_supplier_data=array(
@@ -1089,170 +1104,54 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
             // $scode= preg_replace('/\?/i','_unk',$scode);
 
+
+
+
+
             $sp_data=array(
                          'Supplier Key'=>$supplier->id,
                          'Supplier Product Status'=>'Not In Use',
                          'Supplier Product Code'=>$scode,
-                         'Supplier Product Cost'=>sprintf("%.4f",$supplier_product_cost),
+                         'Supplier Product Cost Per Case'=>sprintf("%.2f",$supplier_product_cost),
                          'Supplier Product Name'=>$description,
-                         'Supplier Product Description'=>$description
-                                                        ,'Supplier Product Valid From'=>$date_order
-                                                                                       ,'Supplier Product Valid To'=>$date2
+                         'Supplier Product Description'=>$description,
+                         'Supplier Product Valid From'=>$date_order,
+                         'Supplier Product Valid To'=>$date2
                      );
             // print "-----$scode <-------------\n";
             //print_r($sp_data);
-            $supplier_product=new SupplierProduct('find',$sp_data,'create');
+            $supplier_product=new SupplierProduct('find',$sp_data,'create update');
+
+
 
             $to_update['parts'][$part->sku]=1;
 
-            if ($supplier_product->new or $part->new) {
-                $rules=array();
-                $rules[]=array('Part Sku'=>$part->data['Part SKU'],
-                               'Supplier Product Units Per Part'=>$transaction['units']
-                                                                 ,'supplier product part most recent'=>'Yes'
-                                                                                                      ,'supplier product part valid from'=>$date_order
-                                                                                                                                          ,'supplier product part valid to'=>$date2
-                                                                                                                                                                            ,'factor supplier product'=>1
-                              );
-                $supplier_product->new_part_list('',$rules);
-            } else {
-                //Note assuming only one sppl
-                $sql=sprintf("update `Supplier Product Part List`  set  `Supplier Product Part Valid From`=%s where `Supplier Product Part Valid From`>%s and `Supplier Product Code`=%s and `Supplier Key`=%d and `Part SKU`=%d and  `Supplier Product Part Most Recent`='Yes'"
-                             ,prepare_mysql($date_order)
-                             ,prepare_mysql($date_order)
-                             ,prepare_mysql($supplier_product->code)
-                             ,$supplier_product->supplier_key
-                             ,$part->sku
-                            );
-                mysql_query($sql);
-                $sql=sprintf("update  `Supplier Product Part List` set `Supplier Product Part Valid To`=%s where `Supplier Product Part Valid To`<%s and `Supplier Product Code`=%s  and `Supplier Key`=%d and `Part SKU`=%d and  `Supplier Product Part Most Recent`='Yes'"
-                             ,prepare_mysql($date2)
-                             ,prepare_mysql($date2)
-                             ,prepare_mysql($supplier_product->code)
-                             ,$supplier_product->supplier_key
-                             ,$part->sku
-                            );
-                mysql_query($sql);
 
-            }
+            $spp_header=array(
+                            'Supplier Product Part Type'=>'Simple',
+                            'Supplier Product Part Most Recent'=>'Yes',
+                            'Supplier Product Part Valid From'=>$date_order,
+                            'Supplier Product Part Valid To'=>$date2,
+                            'Supplier Product Part In Use'=>'Yes',
+                            'Supplier Product Part Metadata'=>''
+                        );
+
+            $spp_list=array(
+                          array(
+                              'Part SKU'=>$part->data['Part SKU'],
+                              'Supplier Product Units Per Part'=>$transaction['units'],
+                              'Supplier Product Part Type'=>'Simple'
+                          )
+                      );
+            $supplier_product->new_historic_part_list($spp_header,$spp_list);
+
+
 
 
             $used_parts_sku[$part->sku]['supplier_product_key']=$supplier_product->id;
 
 
-            //here add the supplier product key
-
-
-            if ($transaction['order']!=0) {
-                $products_data[]=array(
-                                     'Product Key'=>$product->id,
-                                     'Estimated Weight'=>$product->data['Product Gross Weight']*$transaction['order'],
-                                     'qty'=>$transaction['order'],
-                                     'gross_amount'=>$transaction['order']*$transaction['price'],
-                                     'discount_amount'=>$transaction['order']*$transaction['price']*$transaction['discount'],
-                                     'units_per_case'=>$product->data['Product Units Per Case']
-                                 );
-
-                //      print_r($transaction);
-
-                $net_amount=round(($transaction['order']-$transaction['reorder'])*$transaction['price']*(1-$transaction['discount']),2 );
-                $gross_amount=round(($transaction['order']-$transaction['reorder'])*$transaction['price'],2);
-                $net_discount=-$net_amount+$gross_amount;
-
-                if ($net_amount>0 ) {
-                    $product->update_last_sold_date($date_order);
-                    $product->update_first_sold_date($date_order);
-                    $product->update_for_sale_since(date("Y-m-d H:i:s",strtotime("$date_order -1 second")));
-
-
-                    if ($product->updated_field['Product For Sale Since Date']) {
-                        $_date_order=date("Y-m-d H:i:s",strtotime("$date_order -2 second"));
-                        $sql=sprintf("update `History Dimension` set `History Date`=%s  where `Action`='created' and `Direct Object`='Product' and `Direct Object Key`=%d  ",prepare_mysql($_date_order),$product->pid);
-                        mysql_query($sql);
-
-
-                    }
-
-                }
-
-
-                $data_invoice_transactions[]=array(
-                                                 'Product Key'=>$product->id,
-                                                 'invoice qty'=>$transaction['order']-$transaction['reorder'],
-                                                 'gross amount'=>$gross_amount,
-                                                 'discount amount'=>$net_discount,
-                                                 'current payment state'=>'Paid'
-
-
-
-                                             );
-                // print_r($data_invoice_transactions);
-                $estimated_w+=$product->data['Product Gross Weight']*($transaction['order']-$transaction['reorder']);
-                //print "$estimated_w ".$product->data['Product Gross Weight']." ".($transaction['order']-$transaction['reorder'])."\n";
-                $data_dn_transactions[]=array(
-                                            'Product Key'=>$product->id,
-                                            'Estimated Weight'=>$product->data['Product Gross Weight']*($transaction['order']-$transaction['reorder']),
-                                            'Product ID'=>$product->data['Product ID'],
-                                            'Delivery Note Quantity'=>$transaction['order']-$transaction['reorder'],
-                                            'Current Autorized to Sell Quantity'=>$transaction['order'],
-                                            'Shipped Quantity'=>$transaction['order']-$transaction['reorder'],
-                                            'No Shipped Due Out of Stock'=>$transaction['reorder'],
-                                            'No Shipped Due No Authorized'=>0,
-                                            'No Shipped Due Not Found'=>0,
-                                            'No Shipped Due Other'=>0,
-                                            'amount in'=>(($transaction['order']-$transaction['reorder'])*$transaction['price'])*(1-$transaction['discount']),
-                                            'given'=>0,
-                                            'required'=>$transaction['order'],
-                                            'pick_method'=>'historic',
-                                            'pick_method_data'=>array(
-                                                                   'parts_sku'=>$used_parts_sku
-                                                               )
-                                        );
-
-            }
-            if ($transaction['bonus']>0) {
-                $products_data[]=array(
-                                     'Product Key'=>$product->id
-                                                   ,'qty'=>0
-                                                          ,'gross_amount'=>0
-                                                                          ,'discount_amount'=>0
-                                                                                             ,'Estimated Weight'=>0
-                                                                                                                 ,'units_per_case'=>$product->data['Product Units Per Case']
-                                 );
-                $data_invoice_transactions[]=array(
-                                                 'Product Key'=>$product->id
-                                                               ,'invoice qty'=>$transaction['bonus']
-                                                                              ,'gross amount'=>($transaction['bonus'])*$transaction['price']
-                                                                                              ,'discount amount'=>($transaction['bonus'])*$transaction['price']
-                                                                                                                 ,'current payment state'=>'No Applicable'
-                                             );
-
-                $estimated_w+=$product->data['Product Gross Weight']*$transaction['bonus'];
-                $data_dn_transactions[]=array(
-                                            'Product Key'=>$product->id
-                                                          ,'Product ID'=>$product->data['Product ID']
-                                                                        ,'Delivery Note Quantity'=>$transaction['bonus']
-                                                                                                  ,'Current Autorized to Sell Quantity'=>$transaction['bonus']
-                                                                                                                                        ,'Shipped Quantity'=>$transaction['bonus']
-                                                                                                                                                            ,'No Shipped Due Out of Stock'=>0
-                                                                                                                                                                                           ,'No Shipped Due No Authorized'=>0
-                                                                                                                                                                                                                           ,'No Shipped Due Not Found'=>0
-                                                                                                                                                                                                                                                       ,'No Shipped Due Other'=>0
-                                                                                                                                                                                                                                                                               ,'Estimated Weight'=>$product->data['Product Gross Weight']*($transaction['bonus'])
-                                                                                                                                                                                                                                                                                                   ,'amount in'=>0
-                                                                                                                                                                                                                                                                                                                ,'given'=>$transaction['bonus']
-                                                                                                                                                                                                                                                                                                                         ,'required'=>0
-                                                                                                                                                                                                                                                                                                                                     ,'pick_method'=>'historic'
-                                                                                                                                                                                                                                                                                                                                                    ,'pick_method_data'=>array(
-                                                                                                                                                                                                                                                                                                                                                                            'parts_sku'=>$used_parts_sku
-                                                                                                                                                                                                                                                                                                                                                                        )
-
-                                        );
-
-
-
-
-            }
+            create_dn_invoice_transactions($transaction,$product,$used_parts_sku);
 
         }
 
@@ -1260,7 +1159,7 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
         //echo "Memory: ".memory_get_usage(true) . "\n";
 
 
-        // print_r($products_data);
+        // print_r($transactions);
         $data['Order For']='Customer';
 
 
@@ -1327,9 +1226,16 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
         $data['Shipping Address']=$shipping_addresses;
         // $data['metadata_id']=$order_data_id;
         $data['tax_rate']=.15;
+
+
+
+
         if (strtotime($date_order)<strtotime('2008-11-01') or strtotime($date_order)>strtotime('2009-12-31'))
             $data['tax_rate']=.175;
         $currency=$__currency_code;
+
+
+
 
 
 
@@ -1354,7 +1260,7 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
             }
         }
         // print_r($products_data);
-        // exit;
+
 
         //Tipo order
         // 1 DELIVERY NOTE
@@ -1371,973 +1277,137 @@ while ($row2=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
 
         if ($update) {
-            print "Updated ";
-
-            $sql=sprintf("select `Order Key`  from `Order Dimension`  where `Order Original Metadata`=%s  ",prepare_mysql($store_code.$order_data_id));
-
-            $result_test=mysql_query($sql);
-            while ($row_test=mysql_fetch_array($result_test, MYSQL_ASSOC)) {
-
-                $sql=sprintf("delete from `History Dimension` where `Direct Object Key`=%d and `Direct Object`='Sale'   ",$row_test['Order Key']);
-                if (!mysql_query($sql))
-                    print "$sql Warning can no delete oldhidtfgf";
-
-            };
-
-
-
-            $sql=sprintf("delete from `Order No Product Transaction Fact` where `Metadata`=%s",prepare_mysql($store_code.$order_data_id));
-            if (!mysql_query($sql))
-                print "$sql Warning can no delete old order";
-
-            //delete things
-            $sql=sprintf("delete from `Order Dimension` where `Order Original Metadata`=%s",prepare_mysql($store_code.$order_data_id));
-            //	 print $sql;
-
-            if (!mysql_query($sql))
-                print "$sql Warning can no delete old order";
-            $sql=sprintf("delete from `Invoice Dimension` where `Invoice Metadata`=%s",prepare_mysql($store_code.$order_data_id));
-            if (!mysql_query($sql))
-                print "$sql Warning can no delete old inv";
-            $sql=sprintf("delete from `Delivery Note Dimension` where `Delivery Note Metadata`=%s",prepare_mysql($store_code.$order_data_id));
-            if (!mysql_query($sql))
-                print "$sql Warning can no delete old dn";
-            $sql=sprintf("delete from `Order Transaction Fact` where `Metadata`=%s",prepare_mysql($store_code.$order_data_id));
-            if (!mysql_query($sql))
-                print "$sql Warning can no delete tf";
-            $sql=sprintf("delete from `Inventory Transaction Fact` where `Metadata`=%s and `Inventory Transaction Type`='Sale'   ",prepare_mysql($store_code.$order_data_id));
-            if (!mysql_query($sql))
-                print "$sql Warning can no delete old inv";
-
-
-
-            $sql=sprintf("delete from `Order No Product Transaction Fact` where `Metadata`=%s ",prepare_mysql($store_code.$order_data_id));
-            if (!mysql_query($sql))
-                print "$sql Warning can no delete oldhidt nio prod";
-
+            delete_old_data();
         }
         $data['editor']=$editor;
 
-        //print "$tipo_order \n";
-        $data['Order Currency']=$currency;
-        $data['Order Currency Exchange']=$exchange;
-        $sales_rep_data=get_user_id($header_data['takenby'],true,'&view=processed',$header_data['order_num'],$editor);
-        $data['Order XHTML Sale Reps']=$sales_rep_data['xhtml'];
-        $data['Order Customer Contact Name']=$customer_data['Customer Main Contact Name'];
-        $data['Order Sale Reps IDs']=$sales_rep_data['id'];
-        $data['Order Currency']=$currency;
-        $data['Order Currency Exchange']=$exchange;
-        $data['store_id']=$store_key;
-        $payment_method=parse_payment_method($header_data['pay_method']);
-        $lag=(strtotime($date_inv)-strtotime($date_order))/24/3600;
-        if ($lag==0 or $lag<0)
-            $lag='';
-        $taxable='Yes';
-        $tax_code='UNK';
-        if ($header_data['total_net']!=0) {
-            if ($header_data['tax1']+$header_data['tax2']==0) {
-                $tax_code='EX0';
-            }
-            $tax_rate=($header_data['tax1']+$header_data['tax2'])/$header_data['total_net'];
-            foreach($myconf['tax_rates'] as $_tax_code=>$_tax_rate) {
-                $upper=1.1*$_tax_rate;
-                $lower=0.9*$_tax_rate;
-                if ($tax_rate>=$lower and $tax_rate<=$upper) {
-                    $tax_code=$_tax_code;
-                    break;
-                }
-            }
+        get_data($header_data);
+        $tax_category_object=get_tax_code($store_code,$header_data);
+        $data['Customer Data']['Customer Tax Category Code']=$tax_category_object->data['Tax Category Code'];
+        $data['Customer Data']['editor']=$data['editor'];
+        $data['Customer Data']['editor']['Date']=date("Y-m-d H:i:s",strtotime($data['Customer Data']['editor']['Date']." -1 second"));
+
+        // print_r($data);
+        //  print_r($data['Customer Data']);
+        if ($data['staff sale']=='Yes' and $data['staff sale key']) {
+            $staff=new Staff($data['staff sale key']);
+            $data['Customer Data']['Customer Type']='Person';
+            $data['Customer Data']['Customer Main Contact Key']=$staff->data['Staff Contact Key'];
+            $data['Customer Data']['Customer Main Contact Name']='';
+            $data['Customer Data']['Customer Company Name']='';
+            $data['Customer Data']['Customer Staff']='Yes';
+            $data['Customer Data']['Customer Name']='';
+            $data['Customer Data']['Customer Address Line 1']='';
+            $data['Customer Data']['Customer Address Line 2']='';
+            $data['Customer Data']['Customer Address Line 3']='';
+
+
+
+            $data['Customer Data']['Customer Staff Key']=$staff->id;
+            $data['Customer Data']['has_shipping']=false;
+
+            $data['Delivery Note Dispatch Method']='Collected';
+
+
+            //exit;
+            $customer = new Customer ( 'find staff create', $staff );
+            // print_r($customer);exit;
         } else {
-            $tax_code='ZV';
+
+            if ($data['staff sale']=='Yes' ) {
+                print "Warning staff not identified ";
+            }
+
+
+            $customer = new Customer ( 'find create', $data['Customer Data'] );
+            if (!$customer->id) {
+                exit("Error Customer can not found in get_order\n");
+
+            }
+
+
+            if ($customer_data['Customer Delivery Address Link']=='None') {
+                $shipping_addresses['Address Input Format']='3 Line';
+                $address=new Address('find in customer '.$customer->id." create update",$shipping_addresses);
+                // print_r($address);
+                $customer->create_delivery_address_bridge($address->id);
+            }
         }
 
-        $data['Order Tax Code']=$tax_code;
-        $data['Order Tax Rate']=$tax_rate;
+        $data['Order Customer Key']=$customer->id;
+        $customer_key=$customer->id;
 
-        if ($tipo_order==2 or $tipo_order==1  or $tipo_order==4 or $tipo_order==5 or   $tipo_order==3 or   $tipo_order==8    )  {
+        switch ($tipo_order) {
+        case 1://Delivery Note
+            print "DN";
+            $data['Order Type']='Order';
+            $order=create_order($data);
 
-            if ($tipo_order==1 or $tipo_order==2 or  $tipo_order==3  )
-                $data['Order Type']='Order';
-            else if ($tipo_order==4)
-                $data['Order Type']='Sample';
-            else if ($tipo_order==5)
-                $data['Order Type']='Donation';
-
-
-            foreach($data['products'] as $key=>$val) {
-                $data['products'][$key]['tax_rate']=$tax_rate;
-                $data['products'][$key]['tax_code']=$tax_code;
-                //   $data['products'][$key]['tax amount']=$tax_rate*($val['gross amount']-($val['discount amount']));
+            if (strtotime('today -1 month')>strtotime($date_order)) {
+                $order->suspend(_('Order automatically suspended'),date("Y-m-d H:i:s",strtotime($date_order." +1 month")));
+            }
+            if (strtotime('today -6 month')>strtotime($date_order)) {
+                $order->cancel(_('Order automatically cancelled'),date("Y-m-d H:i:s",strtotime($date_order." +6 month")));
             }
 
 
-            // print_r($data['products']);
 
-
-            //print_r($data);
-
-            if ( $tipo_order!=8 ) {
-                $order= new Order('new',$data);
-                $order->update_customer=false;
-                $order->categorize();
-                $order->set_shipping(round($header_data['shipping']+$extra_shipping,2),$tax_rate);
-                $order->set_charges(round($header_data['charges'],2),$tax_rate);
-            }
-
-
-	    if($tipo_order==1){
-                $order_type='Order';  ;
-                $data_dn=array(
-			       'Delivery Note Date Created'=>$date_order
-			       ,'Delivery Note ID'=>$header_data['order_num']
-			       ,'Delivery Note File As'=>$header_data['order_num']
-			     
-			     
-			       ,'Delivery Note Type'=>$order_type
-			       ,'Delivery Note Title'=>_('Delivery Note for').' '.$order_type.' '.$header_data['order_num']
-			     
-			     
-                         );
-
-                //$order->create_dn_simple($data_dn,$data_dn_transactions);
-		
-                $dn=new DeliveryNote('create',$data_dn,$data_dn_transactions,$order);
-                $order->update_delivery_notes('save');
-
-	    }
-
-            if ($tipo_order==2) {
-	      
-	      
-	      foreach($data_invoice_transactions as $key=>$val) {
-                    $data_invoice_transactions[$key]['tax rate']=$tax_rate;
-                    $data_invoice_transactions[$key]['tax code']=$tax_code;
-                    $data_invoice_transactions[$key]['tax amount']=$tax_rate*($val['gross amount']-($val['discount amount']));
-	      }
-
-	      
-	      
-	      $data_invoice=array(
-                                  'Invoice Date'=>$date_inv
-				  ,'Invoice Public ID'=>$header_data['order_num']
-				  ,'Invoice File As'=>$header_data['order_num']
-				  ,'Invoice Main Payment Method'=>$payment_method
-				  ,'Invoice Multiple Payment Methods'=>0
-				  ,'Invoice Shipping Net Amount'=>round($header_data['shipping']+$extra_shipping,2)
-				  ,'Invoice Charges Net Amount'=>round($header_data['charges'],2)
-				  ,'Invoice Total Tax Amount'=>round($header_data['tax1'],2)
-				  ,'Invoice Refund Net Amount'=>$total_credit_value
-				  ,'Invoice Refund Tax Amount'=>$tax_rate*$total_credit_value
-				  ,'Invoice Total Amount'=>round($header_data['total_topay'],2)
-				  ,'tax_rate'=>$tax_rate
-				  ,'Invoice Has Been Paid In Full'=>'No'
-				  ,'Invoice Items Net Amount'=>round($header_data['total_items_charge_value'],2)-$total_credit_value
-				  ,'Invoice XHTML Processed By'=>_('Unknown')
-				  ,'Invoice XHTML Charged By'=>_('Unknown')
-				  ,'Invoice Processed By Key'=>''
-				  ,'Invoice Charged By Key'=>''
-				  ,'Invoice Total Adjust Amount'=>round($header_data['total_topay'],2)-round($header_data['tax1'],2)-round($header_data['total_net'],2)
-				  ,'Invoice Tax Code'=>$tax_code
-				  ,'Invoice Taxable'=>$taxable
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      ,'Invoice Dispatching Lag'=>$lag
-				  ,'Invoice Customer Contact Name'=>$customer_data['Customer Main Contact Name']
-				  ,'Invoice Currency'=>$currency
-				  ,'Invoice Currency Exchange'=>$exchange
-				  );
-	      //print_r($data_invoice);
-	      //print_r($header_data);
-                //exit;
-	      if (!is_numeric($header_data['weight']))
-		$weight=$estimated_w;
-	      else
-		$weight=$header_data['weight'];
-
-	      
-                $picker_data=get_user_id($header_data['pickedby'],true,'&view=picks',$header_data['order_num'],$editor);
-                $packer_data=get_user_id($header_data['packedby'],true,'&view=packs',$header_data['order_num'],$editor);
-                $order_type=$data['Order Type'];
-
-                // TODO in the Ci, DE
-                list($parcels,$parcel_type)=parse_parcels($header_data['parcels']);
-
-
-                $data_dn=array(
-                             'Delivery Note Date'=>$date_inv,
-                             'Delivery Note Date Created'=>$date_order,
-                             'Delivery Note ID'=>$header_data['order_num'],
-                             'Delivery Note File As'=>$header_data['order_num'],
-                             'Delivery Note Weight'=>$weight,
-                             'Delivery Note XHTML Pickers'=>$picker_data['xhtml'],
-                             'Delivery Note Number Pickers'=>count($picker_data['id']),
-                             'Delivery Note Pickers IDs'=>$picker_data['id'],
-                             'Delivery Note XHTML Packers'=>$packer_data['xhtml'],
-                             'Delivery Note Number Packers'=>count($packer_data['id']),
-                             'Delivery Note Packers IDs'=>$packer_data['id'],
-                             'Delivery Note Type'=>$order_type,
-                             'Delivery Note Title'=>_('Delivery Note for').' '.$order_type.' '.$header_data['order_num'],
-                             'Delivery Note Has Shipping'=>$_customer_data['has_shipping'],
-                             'Delivery Note Shipper Code'=>$header_data['shipper_code'],
-                             'Delivery Note Dispatch Method'=>$data['Delivery Note Dispatch Method'],
-			     'Delivery Note State'=>'Dispatched'
-
-                         );
-
-                //$order->create_dn_simple($data_dn,$data_dn_transactions);
-                $dn=new DeliveryNote('create',$data_dn,$data_dn_transactions,$order);
-                $order->update_delivery_notes('save');
-                $order->update_dispatch_state('Ready to Pick');
-                $order->update_invoices('save');
-                if ($total_credit_value==0 and $header_data['total_topay']==0) {
-                    print "Zero value order ".$header_data['order_num']." \n";
-                    $order->no_payment_applicable();
-                    $dn->pick_simple($data_dn_transactions);
-                    $order->update_dispatch_state('Ready to Pack');
-                    $dn->pack('all');
-                    $dn->set_parcels($parcels,$parcel_type);
-                    $order->update_dispatch_state('Ready to Ship');
-                    $order->load('totals');
-                    $order->update_dispatch_state('Dispatched');
-                    $order-> update_payment_state('No Applicable');
-
-                } else {// paid for it
-                    //$order->create_invoice_simple($data_invoice,$data_invoice_transactions);
-
-                    $invoice=new Invoice ('create',$data_invoice,$data_invoice_transactions,$order->id);
-                    $invoice->update_customer=false;
-                    //to update otter scripts read TODO
-                    $invoice->add_tax_item('IVA',$header_data['tax1'],'Yes');
-                    $invoice->add_tax_item('I2',$header_data['tax2'],'Yes');
-
-                    foreach($credits as $credit) {
-
-                        //	  print_r($header_2data);
-                        $sql=sprintf("insert into `Order No Product Transaction Fact`  (`Order Date`,`Invoice Date`,`Order Key`,`Invoice Key`,`Transaction Type`,`Transaction Description`,`Transaction Net Amount`,`Transaction Tax Amount`,`Currency Code`,`Currency Exchange`,`Metadata`)  values  (%s,%s,%s,%s,'Credit',%s,%.2f,%.2f,%s,%f,%s)"
-                                     ,prepare_mysql($credit['parent_date'])
-                                     ,prepare_mysql($invoice->data['Invoice Date'])
-                                     ,$credit['parent_key']
-                                     ,prepare_mysql($invoice->data['Invoice Key'])
-                                     ,prepare_mysql($credit['description'])
-                                     ,$credit['value']
-                                     ,$tax_rate*$credit['value']
-                                     ,prepare_mysql($currency)
-                                     ,$exchange
-                                     ,prepare_mysql($store_code.$order_data_id)
-                                    );
-
-                        if (!mysql_query($sql))
-                            exit("$sql\n error can not inser orde rno pro trns");
-
-
-                        if ($credit['parent_key']!='NULL') {
-                            $parent=new Order($credit['parent_key']);
-                            $parent->load('totals');
-                            //   print "******************************************\n$sql\n";
-                            // 	    exit;
-                        }
-                    }
-                    //print_r($data_dn_transactions);
-
-                    $dn->pick_simple($data_dn_transactions);
-                    $order->update_dispatch_state('Ready to Pack');
-                    // print"xxxxxxxxxxxxxxxxxxxxxxxxxxxxx\n";
-
-                    $dn->pack('all');
-                    $dn->set_parcels($parcels,$parcel_type);
-                    $order->update_dispatch_state('Ready to Ship');
-                    $invoice->data['Invoice Paid Date']=$date_inv;
-                    $invoice->pay('full',
-                                  array(
-                                      'Invoice Items Net Amount'=>round($header_data['total_items_charge_value'],2)-$total_credit_value-$extra_shipping
-                                                                 ,'Invoice Total Net Amount'=>round($header_data['total_net'],2)
-                                                                                             ,'Invoice Total Tax Amount'=>round($header_data['tax1']+$header_data['tax2'],2)
-                                                                                                                         ,'Invoice Total Amount'=>round($header_data['total_topay'],2)
-
-                                  ));
-                    $order-> update_payment_state('Paid');
-                    $dn->dispatch('all',$data_dn_transactions);
-                    $order->update_dispatch_state('Dispatched');
-
-                    $order->load('totals');
-                    $invoice->categorize('save');
-                }
-
-
-            }
-            elseif($tipo_order==8) {
-
-                $parent_order=new Order('public_id',$parent_order_id);
-                $parent_order->update_customer=false;
-
-                if (!$parent_order->id) {
-                    // try to get same customer last order
-                    $customer = new Customer ( 'find', $data['Customer Data'] );
-                    $order_id=$customer->get_last_order();
-                    if ($order_id) {
-                        $parent_order=new Order('id',$order_id);
-                        $parent_order->update_customer=false;
-                        print "found last order\n";
-                    } else {
-                        print "ast order not found created new one\n";
-                        $data['Order Type']='Order';
-                        $parent_order=new Order('new',$data);
-                        $parent_order->update_customer=false;
-                        $order->categorize();
-
-
-                    }
-
-                }
-
-                if (!is_numeric($header_data['weight']))
-                    $weight=$estimated_w;
-                else
-                    $weight=$header_data['weight'];
-
-
-                $picker_data=get_user_id($header_data['pickedby'],true,'&view=picks',$header_data['order_num'],$editor);
-                $packer_data=get_user_id($header_data['packedby'],true,'&view=packs',$header_data['order_num'],$editor);
-                $order_type='Follow on';  ;
-                $data_dn=array(
-			       'Delivery Note Date'=>$date_inv  ,'Delivery Note Date Created'=>$date_order
-			       ,'Delivery Note ID'=>$header_data['order_num']
-			       ,'Delivery Note File As'=>$header_data['order_num']
-			       ,'Delivery Note Weight'=>$weight
-			       ,'Delivery Note XHTML Pickers'=>$picker_data['xhtml']
-			       ,'Delivery Note Number Pickers'=>count($picker_data['id'])
-			       ,'Delivery Note Pickers IDs'=>$picker_data['id']
-			       ,'Delivery Note XHTML Packers'=>$packer_data['xhtml']
-			       ,'Delivery Note Number Packers'=>count($packer_data['id'])
-			       ,'Delivery Note Packers IDs'=>$packer_data['id']
-			       ,'Delivery Note Type'=>$order_type
-			       ,'Delivery Note Title'=>_('Delivery Note for').' '.$order_type.' '.$header_data['order_num']
-			       ,'Delivery Note Has Shipping'=>$_customer_data['has_shipping']
-			       ,'Delivery Note Shipper Code'=>$header_data['shipper_code']
-			       ,'Delivery Note Dispatch Method'=>$data['Delivery Note Dispatch Method']
-			       ,'Delivery Note State'=>'Dispatched'
-                         );
-
-                //$order->create_dn_simple($data_dn,$data_dn_transactions);
-		
-                $dn=new DeliveryNote('create',$data_dn,$data_dn_transactions,$parent_order);
-                $parent_order->update_delivery_notes('save');
-                $parent_order->update_dispatch_state('Ready to Pick');
-                $parent_order->update_invoices('save');
-		
-		
-		
-                if ($header_data['total_topay']!=0) {
-		  foreach($data_invoice_transactions as $key=>$val) {
-		    $data_invoice_transactions[$key]['tax rate']=$tax_rate;
-		    $data_invoice_transactions[$key]['tax code']=$tax_code;
-		    $data_invoice_transactions[$key]['tax amount']=$tax_rate*($val['gross amount']-($val['discount amount']));
-                    }
-		  $data_invoice=array(
-                                      'Invoice Date'=>$date_inv
-				      ,'Invoice Public ID'=>$header_data['order_num']
-				      ,'Invoice File As'=>$header_data['order_num']
-				      ,'Invoice Main Payment Method'=>$payment_method
-				      ,'Invoice Multiple Payment Methods'=>0
-				      ,'Invoice Shipping Net Amount'=>round($header_data['shipping']+$extra_shipping,2)
-				      ,'Invoice Charges Net Amount'=>round($header_data['charges'],2)
-				      ,'Invoice Total Tax Amount'=>round($header_data['tax1'],2)
-				      ,'Invoice Refund Net Amount'=>$total_credit_value
-				      ,'Invoice Refund Tax Amount'=>$tax_rate*$total_credit_value
-				      ,'Invoice Total Amount'=>round($header_data['total_topay'],2)
-				      ,'tax_rate'=>$tax_rate
-				      ,'Invoice Has Been Paid In Full'=>'No'
-				      ,'Invoice Items Net Amount'=>round($header_data['total_items_charge_value'],2)-$total_credit_value
-				      ,'Invoice XHTML Processed By'=>_('Unknown')
-				      ,'Invoice XHTML Charged By'=>_('Unknown')
-				      ,'Invoice Processed By Key'=>''
-				      ,'Invoice Charged By Key'=>''
-				      ,'Invoice Total Adjust Amount'=>round($header_data['total_topay'],2)-round($header_data['tax1'],2)-round($header_data['total_net'],2)
-				      ,'Invoice Tax Code'=>$tax_code
-				      ,'Invoice Taxable'=>$taxable
-				      ,'Invoice Dispatching Lag'=>$lag
-				      ,'Invoice Customer Contact Name'=>$customer_data['Customer Main Contact Name']
-				      ,'Invoice Currency'=>$currency
-				      ,'Invoice Currency Exchange'=>$exchange
-                                  );
-		  
-		  $invoice=new Invoice ('create',$data_invoice,$data_invoice_transactions,$parent_order->id);
-		  $invoice->update_customer=false;
-		  
-                    $invoice->add_tax_item('IVA',$header_data['tax1'],'Yes');
-                    $invoice->add_tax_item('I2',$header_data['tax2'],'Yes');
-                } else {// no payment
-
-
-                }
-
-                $dn->pick_simple($data_dn_transactions);
-                $parent_order->update_dispatch_state('Ready to Pack');
-
-                $dn->pack('all');
-                $dn->set_parcels($parcels,$parcel_type);
-                $parent_order->update_dispatch_state('Ready to Ship');
-                if ($header_data['total_topay']!=0) {
-                    $invoice->data['Invoice Paid Date']=$date_inv;
-                    $invoice->pay('full',
-                                  array(
-                                      'Invoice Items Net Amount'=>round($header_data['total_items_charge_value'],2)-$total_credit_value-$extra_shipping
-                                                                 ,'Invoice Total Net Amount'=>round($header_data['total_net'],2)
-                                                                                             ,'Invoice Total Tax Amount'=>round($header_data['tax1']+$header_data['tax2'],2)
-                                                                                                                         ,'Invoice Total Amount'=>round($header_data['total_topay'],2)
-
-                                  ));
-                    $parent_order-> update_payment_state('Paid');
-                    $invoice->categorize('save');
-
-                }
-
-                $dn->dispatch('all',$data_dn_transactions);
-                $parent_order->update_dispatch_state('Dispatched');
-                $parent_order->load('totals');
-
-
-            }
-            else if ($tipo_order==4 or $tipo_order==5 ) {
-
-                if ($header_data['total_net']!=0)
-                    $tax_rate=$header_data['tax1']/$header_data['total_net'];
-                else
-                    $tax_rate=$data['tax_rate'];
-                if (!is_numeric($header_data['weight']))
-                    $weight=$estimated_w;
-                else
-                    $weight=$header_data['weight'];
-
-
-                $picker_data=get_user_id($header_data['pickedby'],true,'&view=picks',$header_data['order_num'],$editor);
-                $packer_data=get_user_id($header_data['packedby'],true,'&view=packs',$header_data['order_num'],$editor);
-
-                $order_type=$data['Order Type'];
-
-                $data_dn=array(
-			       'Delivery Note Date'=>$date2  ,'Delivery Note Date Created'=>$date_order
-			       ,'Delivery Note ID'=>$header_data['order_num']
-			       ,'Delivery Note File As'=>$header_data['order_num']
-			       ,'Delivery Note Weight'=>$weight
-			       ,'Delivery Note XHTML Pickers'=>$picker_data['xhtml']
-			       ,'Delivery Note Number Pickers'=>count($picker_data['id'])
-			       ,'Delivery Note Pickers IDs'=>$picker_data['id']
-			       ,'Delivery Note XHTML Packers'=>$packer_data['xhtml']
-			       ,'Delivery Note Number Packers'=>count($packer_data['id'])
-			       ,'Delivery Note Packers IDs'=>$packer_data['id']
-			       ,'tax_rate'=>$tax_rate
-			       ,'Invoice Has Been Paid In Full'=>'No'
-			       ,'Invoice Items Net Amount'=>$header_data['total_items_charge_value']-$total_credit_value
-			       ,'Delivery Note Type'=>$order_type
-			       ,'Delivery Note Title'=>_('Delivery Note for').' '.$order_type.' '.$header_data['order_num']
-			       
-			       ,'Delivery Note Has Shipping'=>$_customer_data['has_shipping']
-			       ,'Delivery Note Shipper Code'=>$header_data['shipper_code']
-			       ,'Delivery Note Dispatch Method'=>$data['Delivery Note Dispatch Method']
-			       ,'Delivery Note State'=>'Dispatched'
-			       );
-
-
-                //$order->create_dn_simple($data_dn,$data_dn_transactions);
-                $dn=new DeliveryNote('create',$data_dn,$data_dn_transactions,$order);
-
-                if ($header_data['total_topay']>0) {
-                    $payment_method=parse_payment_method($header_data['pay_method']);
-
-
-                    $taxable='Yes';
-                    $tax_code='UNK';
-
-                    if ($header_data['total_net']!=0) {
-
-                        if ($header_data['tax1']+$header_data['tax2']==0) {
-                            $tax_code='EX0';
-                        }
-                        $tax_rate=($header_data['tax1']+$header_data['tax2'])/$header_data['total_net'];
-                        foreach($myconf['tax_rates'] as $_tax_code=>$_tax_rate) {
-                            // print "$_tax_code => $_tax_rate $tax_rate\n ";
-                            $upper=1.1*$_tax_rate;
-                            $lower=0.9*$_tax_rate;
-                            if ($tax_rate>=$lower and $tax_rate<=$upper) {
-                                $tax_code=$_tax_code;
-                                break;
-                            }
-                        }
-                    } else {
-                        $tax_code='ZV';
-
-                    }
-
-                    $lag=(strtotime($date_inv)-strtotime($date_order))/24/3600;
-                    if ($lag==0 or $lag<0)
-                        $lag='';
-
-
-
-                    foreach($data_invoice_transactions as $key=>$val) {
-                        $data_invoice_transactions[$key]['tax rate']=$tax_rate;
-                        $data_invoice_transactions[$key]['tax code']=$tax_code;
-                        // print_r($val);exit;
-                        $data_invoice_transactions[$key]['tax amount']=$tax_rate*($val['gross amount']-($val['discount amount']));
-                    }
-
-                    $data_invoice=array(
-                                      'Invoice Date'=>$date2
-                                                     ,'Invoice Public ID'=>$header_data['order_num']
-                                                                          ,'Invoice File As'=>$header_data['order_num']
-                                                                                             ,'Invoice Main Payment Method'=>$payment_method
-                                                                                                                            ,'Invoice Multiple Payment Methods'=>0
-                                                                                                                                                                ,'Invoice Shipping Net Amount'=>round($header_data['shipping']+$extra_shipping,2)
-                                                                                                                                                                                               ,'Invoice Charges Net Amount'=>round($header_data['charges'],2)
-                                                                                                                                                                                                                             ,'tax_rate'=>$tax_rate
-                                                                                                                                                                                                                                         ,'tax_rate'=>$tax_rate
-                                                                                                                                                                                                                                                     ,'Invoice Has Been Paid In Full'=>'No'
-                                                                                                                                                                                                                                                                                      ,'Invoice Items Net Amount'=>round($header_data['total_items_charge_value'],2)-$total_credit_value
-                                                                                                                                                                                                                                                                                                                  ,'Invoice Total Tax Amount'=>$header_data['tax1']
-                                                                                                                                                                                                                                                                                                                                              ,'Invoice Refund Net Amount'=>$total_credit_value
-                                                                                                                                                                                                                                                                                                                                                                           ,'Invoice Refund Tax Amount'=>$tax_rate*$total_credit_value
-                                                                                                                                                                                                                                                                                                                                                                                                        ,'Invoice Total Amount'=>$header_data['total_topay']
-                                                                                                                                                                                                                                                                                                                                                                                                                                ,'Invoice XHTML Processed By'=>_('Unknown')
-                                                                                                                                                                                                                                                                                                                                                                                                                                                              ,'Invoice XHTML Charged By'=>_('Unknown')
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          ,'Invoice Processed By Key'=>0
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      ,'Invoice Charged By Key'=>0
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                ,'Invoice Tax Code'=>$tax_code
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    ,'Invoice Taxable'=>$taxable
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       ,'Invoice Dispatching Lag'=>$lag
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  ,'Invoice Currency'=>$currency
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      ,'Invoice Currency Exchange'=>$exchange
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   ,'Invoice Customer Contact Name'=>$customer_data['Customer Main Contact Name']
-
-                                  );
-                    // $order->create_invoice_simple($data_invoice,$data_invoice_transactions);
-                    $invoice=new Invoice ('create',$data_invoice,$data_invoice_transactions,$order->id);
-                    $invoice->update_customer=false;
-
-                    $invoice->add_tax_item('IVA',$header_data['tax1'],'Yes');
-                    $invoice->add_tax_item('I2',$header_data['tax2'],'Yes');
-                    $invoice->data['Invoice Paid Date']=$date_inv;
-                    $invoice->pay('full',
-                                  array(
-                                      'Invoice Items Net Amount'=>round($header_data['total_items_charge_value'],2)-$total_credit_value-$extra_shipping
-                                                                 ,'Invoice Total Net Amount'=>round($header_data['total_net'],2)
-                                                                                             ,'Invoice Total Tax Amount'=>round($header_data['tax1']+$header_data['tax2'],2)
-                                                                                                                         ,'Invoice Total Amount'=>round($header_data['total_topay'],2)
-                                  ));
-                    $order-> update_payment_state('Paid');
-
-
-
-
-                    $dn->pick_simple($data_dn_transactions);
-                    $order->update_dispatch_state('Ready to Pack');
-
-                    $dn->pack('all');
-                    $dn->set_parcels($parcels,$parcel_type);
-                    $order->update_dispatch_state('Ready to Ship');
-                    $dn->dispatch('all',$data_dn_transactions);
-                    $order->update_dispatch_state('Dispatched');
-
-
-                    $order->load('totals');
-                    $invoice->categorize('save');
-                } else {
-
-                    $dn->pick_simple($data_dn_transactions);
-                    $order->update_dispatch_state('Ready to Pack');
-
-                    $dn->pack('all');
-                    $dn->set_parcels($parcels,$parcel_type);
-                    $order->update_dispatch_state('Ready to Ship');
-                    $dn->dispatch('all',$data_dn_transactions);
-                    $order->update_dispatch_state('Dispatched');
-
-
-                    $order->no_payment_applicable();
-                    $order->load('totals');
-
-
-
-
-                }
-
-
-
-
-
-
-
-
-            } else if ($tipo_order==3) {
-             
-	$order->cancel('',$date_inv);
-	
-	
-	if (!is_numeric($header_data['weight']))
-	  $weight=$estimated_w;
-	else
-	  $weight=$header_data['weight'];
-
-
-	$picker_data=get_user_id($header_data['pickedby'],true,'&view=picks');
-	$packer_data=get_user_id($header_data['packedby'],true,'&view=packs');
-	$order_type=$data['Order Type'];
-	list($parcels,$parcel_type)=parse_parcels($header_data['parcels']);
-	
-	$data_dn=array(
-		       'Delivery Note Date'=>$date_inv
-		       ,'Delivery Note Date Created'=>$date_order
-		       ,'Delivery Note ID'=>$header_data['order_num']
-		       ,'Delivery Note File As'=>$header_data['order_num']
-		       ,'Delivery Note Weight'=>$weight
-		       ,'Delivery Note XHTML Pickers'=>$picker_data['xhtml']
-		       ,'Delivery Note Number Pickers'=>count($picker_data['id'])
-		       ,'Delivery Note Pickers IDs'=>$picker_data['id']
-		       ,'Delivery Note XHTML Packers'=>$packer_data['xhtml']
-		       ,'Delivery Note Number Packers'=>count($packer_data['id'])
-		       ,'Delivery Note Packers IDs'=>$packer_data['id']
-		       ,'Delivery Note Type'=>$order_type
-		       ,'Delivery Note Title'=>_('Delivery Note for').' '.$order_type.' '.$header_data['order_num']
-		       ,'Delivery Note Has Shipping'=>$_customer_data['has_shipping']
-		       ,'Delivery Note Shipper Code'=>$header_data['shipper_code']
-		       ,'Delivery Note Dispatch Method'=>$data['Delivery Note Dispatch Method']
-		       ,'Delivery Note State'=>'Ready to be Picked'
-		       );
-	$dn=new DeliveryNote('create',$data_dn,$data_dn_transactions,$order);
-	$dn->cancel();
-            } else {
-
-                $order->load('totals');
-
-            }
-
-
-            $sql="update orders_data.orders set last_transcribed=NOW() where id=".$order_data_id;
-            mysql_query($sql);
+            break;
+        case 2://Invoice
+        case 8: //follow
+            print "INV";
+            $data['Order Type']='Order';
+            create_order($data);
+            send_order($data,$data_dn_transactions);
+            break;
+        case 3://Cancel
+            print "Cancel";
+            $data['Order Type']='Order';
+            create_order($data);
+            $order->cancel('',$date_order);
+            break;
+        case 4://Sample
+            print "Sample";
+
+            $data['Order Type']='Sample';
+
+
+
+
+            create_order($data);
+            send_order($data,$data_dn_transactions);
+            break;
+        case 5://Donation
+            print "Donation";
+
+            $data['Order Type']='Donation';
+            create_order($data);
+            send_order($data,$data_dn_transactions);
+            break;
+        case(6)://REPLACEMENT
+        case(7)://MISSING
+            print "RPL/MISS ";
+            create_post_order($data,$data_dn_transactions);
+            send_order($data,$data_dn_transactions);
+
+            break;
+        case(9)://Refund
+            print "Refund ";
+
+            create_refund($data,$header_data, $data_dn_transactions);
+            break;
+        default:
+            print "Unknown Order $tipo_order\n";
+            break;
         }
-        elseif($tipo_order==9 ) {
-            // refund
+        $store=new Store($store_key);
+        $store->update_orders();
+        $store->update_customers_data();
 
-            $taxable='Yes';
-            $tax_code='UNK';
 
-            if ($header_data['total_net']!=0) {
-
-                if ($header_data['tax1']+$header_data['tax2']==0) {
-                    $tax_code='EX0';
-                }
-
-                $tax_rate=($header_data['tax1']+$header_data['tax2'])/$header_data['total_net'];
-                foreach($myconf['tax_rates'] as $_tax_code=>$_tax_rate) {
-                    // print "$_tax_code => $_tax_rate $tax_rate\n ";
-                    $upper=1.1*$_tax_rate;
-                    $lower=0.9*$_tax_rate;
-                    if ($tax_rate>=$lower and $tax_rate<=$upper) {
-                        $tax_code=$_tax_code;
-                        break;
-                    }
-                }
-            } else {
-                $tax_code='ZV';
-            }
-
-            foreach($data_invoice_transactions as $key=>$val) {
-                $data_invoice_transactions[$key]['tax rate']=$tax_rate;
-                $data_invoice_transactions[$key]['tax code']=$tax_code;
-                $data_invoice_transactions[$key]['tax amount']=$tax_rate*($val['gross amount']-($val['discount amount']));
-            }
-
-            $order=new Order('public_id',$parent_order_id);
-            $order->update_customer=false;
-
-            if (!$order->id) {// try to get last customer order
-                $customer = new Customer ( 'find', $data['Customer Data'] );
-                $order_id=$customer->get_last_order();
-                if ($order->id)
-                    print "Using last known customer order to scope the refund\n";
-            }
-
-
-
-            if (!$order->id) {
-
-                print "Unknown parent $parent_order_id\n";
-                // Create an invoice (refund not realted to the customer)
-
-                //	print_r($data);
-                //exit;
-                //$invoice=new Invoice ('create',$data_invoice,$data_invoice_transactions,false);
-
-                // create new invoice (negative)(no deliver note changes noting)
-                //	exit;
-                $data['ghost_order']=true;
-                $data['Order Type']='Order';
-                $data['store_id']=$store_key;
-                $order= new Order('new',$data);
-                $order->update_customer=false;
-
-                $order->categorize();
-
-
-
-
-            }
-
-            $payment_method=parse_payment_method($header_data['pay_method']);
-
-
-
-            $factor=1.0;
-            if ($header_data['total_topay']>0)
-                $factor=-1.0;
-
-
-
-
-            $data_invoice=array(
-                              'Invoice Date'=>$date_inv
-                                             ,'Invoice Public ID'=>$header_data['order_num']
-                                                                  ,'Invoice File As'=>$header_data['order_num']
-                                                                                     ,'Invoice Main Payment Method'=>$payment_method
-                                                                                                                    ,'Invoice Multiple Payment Methods'=>0
-                                                                                                                                                        ,'Invoice Shipping Net Amount'=>0
-                                                                                                                                                                                       ,'Invoice Charges Net Amount'=>0
-                                                                                                                                                                                                                     ,'Invoice Total Tax Amount'=>$header_data['tax1']*$factor
-                                                                                                                                                                                                                                                 ,'Invoice Refund Net Amount'=>$header_data['total_net']*$factor
-                                                                                                                                                                                                                                                                              ,'Invoice Refund Tax Amount'=>$header_data['tax1']*$factor
-                                                                                                                                                                                                                                                                                                           ,'Invoice Total Amount'=>$header_data['total_topay']*$factor
-                                                                                                                                                                                                                                                                                                                                   ,'tax_rate'=>$tax_rate
-                                                                                                                                                                                                                                                                                                                                               ,'Invoice Has Been Paid In Full'=>'No'
-                                                                                                                                                                                                                                                                                                                                                                                ,'Invoice Items Net Amount'=>0
-                                                                                                                                                                                                                                                                                                                                                                                                            ,'Invoice XHTML Processed By'=>_('Unknown')
-                                                                                                                                                                                                                                                                                                                                                                                                                                          ,'Invoice XHTML Charged By'=>_('Unknown')
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                      ,'Invoice Processed By Key'=>0
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  ,'Invoice Charged By Key'=>0
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            ,'Invoice Tax Code'=>$tax_code
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                ,'Invoice Taxable'=>$taxable
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   ,'Invoice Dispatching Lag'=>''
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              ,'Invoice Currency'=>$currency
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  ,'Invoice Currency Exchange'=>$exchange
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               ,'Invoice Customer Contact Name'=>$customer_data['Customer Main Contact Name']
-                          );
-            //	print_r($data_invoice);
-
-            $data_refund_transactions=array();
-            $sum_net=0;
-            $sum_tax=0;
-
-            if (is_numeric($header_data['shipping']) and $header_data['shipping']!=0) {
-                $data_refund_transactions[]=array(
-                                                'Transaction Net Amount'=>$header_data['shipping']*$factor,
-                                                'Description'=>_('Refund for Shipping')
-                                                              ,'Transaction Tax Amount'=>$header_data['shipping']*$factor*$tax_rate
-
-                                            );
-
-                $sum_net+=$header_data['shipping']*$factor;
-                $sum_tax+=$header_data['shipping']*$factor*$tax_rate;
-
-            }
-            if (is_numeric($header_data['charges']) and $header_data['charges']!=0) {
-                $data_refund_transactions[]=array(
-                                                'Transaction Net Amount'=>$header_data['charges']*$factor,
-                                                'Description'=>_('Refund for Charges')
-                                                              ,'Transaction Tax Amount'=>$header_data['charges']*$factor*$tax_rate
-
-                                            );
-
-                $sum_net+=$header_data['charges']*$factor;
-                $sum_tax+=$header_data['charges']*$factor*$tax_rate;
-            }
-
-
-
-            foreach($data_invoice_transactions as $key=>$data) {
-                $product=new Product($data_invoice_transactions[$key]['Product Key']);
-                if ($product->id) {
-                    $description=_('Refund for')." ".$data_invoice_transactions[$key]['invoice qty']." ".$product->data['Product Code'] ;
-                } else
-                    $description=_('Other Redunds');
-
-                $net=($data_invoice_transactions[$key]['gross amount']-$data_invoice_transactions[$key]['discount amount'])*$factor;
-                $tax=($data_invoice_transactions[$key]['gross amount']-$data_invoice_transactions[$key]['discount amount'])*$factor*$tax_rate;
-                $data_refund_transactions[]=array(
-                                                'Transaction Net Amount'=>$net
-                                                                         ,'Description'=>$description
-                                                                                        ,'Transaction Tax Amount'=>$tax
-
-                                            );
-
-                $sum_net+=$net;
-                $sum_tax+=$tax;
-            }
-
-            foreach($credits as $credit) {
-
-                $net=$credit['value']*$factor;
-                $tax=$credit['value']*$factor*$tax_rate;
-
-                $data_refund_transactions[]=array(
-                                                'Transaction Net Amount'=>$net
-                                                                         ,'Description'=>$credit['description']
-                                                                                        ,'Transaction Tax Amount'=>$tax
-
-                                            );
-
-                $sum_net+=$net;
-                $sum_tax+=$tax;
-            }
-
-            //	print $header_data['total_net']." ".$sum_net;
-
-            $diff_net=($factor*$header_data['total_net'])-$sum_net;
-            if (abs($diff_net)>0.01) {
-                $data_refund_transactions[]=array(
-                                                'Transaction Net Amount'=>$diff_net,
-                                                'Description'=>_('Other Refunds')
-                                                              ,'Transaction Tax Amount'=>$diff_net*$tax_rate
-
-                                            );
-            }
-
-
-            $diff_tax=($factor*$header_data['tax1'])-$sum_tax-$diff_net*$tax_rate;
-            if (abs($diff_tax)>0.01) {
-                $data_refund_transactions[]=array(
-                                                'Transaction Net Amount'=>0,
-                                                'Description'=>_('Other Tax Refunds')
-                                                              ,'Transaction Tax Amount'=>$diff_tax
-
-                                            );
-            }
-
-
-            //		print_r($data_refund_transactions);
-            //$order->create_refund_simple($data_invoice,$data_refund_transactions);
-            // print $order->id;
-
-            $refund = new Invoice('create refund',$data_invoice,$data_refund_transactions,$order);
-            $refund->update_customer=false;
-
-            $refund->add_tax_item('IVA',$header_data['tax1'],'Yes');
-            $refund->add_tax_item('I2',$header_data['tax2'],'Yes');
-            $refund->data['Invoice Paid Date']=$date_inv;
-            $refund->pay('full',
-                         array(
-
-                             'Invoice Total Net Amount'=>round($header_data['total_net']*$factor,2)
-                                                        ,'Invoice Total Tax Amount'=>round(($header_data['tax1']+$header_data['tax2'])*$factor,2)
-                                                                                    ,'Invoice Total Amount'=>round($header_data['total_topay']*$factor,2)
-                         )
-                        );
-            $refund->categorize('save');
-
-            if ($order->id)
-                $order-> update_payment_state('Paid');
-
-
-            //print "STSRT----------\n\n\n";
-            //$order->load('totals');
-            //	print "END------------\n\n\n";
-            $sql="update orders_data.orders set last_transcribed=NOW() where id=".$order_data_id;
-            mysql_query($sql);
-
-
-            //      exit("refund");
-        }
-        else if ($tipo_order==11) {
-            //TODO make quites and insert them in the customer space
-            $sql="update orders_data.orders set last_transcribed=NOW() where id=".$order_data_id;
-            mysql_query($sql);
-
-        }
-        elseif($tipo_order==6 or $tipo_order==7 ) {
-            if ($tipo_order==6)
-                $order_type='Replacement';
-            else
-                $order_type='Shortages';
-
-            print("$order_type\n");
-
-            if (!is_numeric($header_data['weight']))
-                $weight=$estimated_w;
-            else
-                $weight=$header_data['weight'];
-
-
-            $picker_data=get_user_id($header_data['pickedby'],true,'&view=picks',$header_data['order_num'],$editor);
-            $packer_data=get_user_id($header_data['packedby'],true,'&view=packs',$header_data['order_num'],$editor);
-
-            // 	print_r($picker_data);
-
-            $data_dn=array(
-			   'Delivery Note Date'=>$date_inv  ,'Delivery Note Date Created'=>$date_order
-			   ,'Delivery Note ID'=>$header_data['order_num']
-			   ,'Delivery Note Type'=>$order_type
-			   ,'Delivery Note Title'=>$order_type.' '.$header_data['order_num']
-			   ,'Delivery Note File As'=>$header_data['order_num']
-			   ,'Delivery Note Weight'=>$weight
-			   ,'Delivery Note XHTML Pickers'=>$picker_data['xhtml']
-			   ,'Delivery Note Number Pickers'=>count($picker_data['id'])
-			   ,'Delivery Note Pickers IDs'=>$picker_data['id']
-			   ,'Delivery Note XHTML Packers'=>$packer_data['xhtml']
-			   ,'Delivery Note Number Packers'=>count($packer_data['id'])
-			   ,'Delivery Note Packers IDs'=>$packer_data['id']
-			   ,'Delivery Note Metadata'=>$store_code.$order_data_id
-			   ,'Delivery Note Has Shipping'=>$_customer_data['has_shipping']
-			   ,'Delivery Note Shipper Code'=>$header_data['shipper_code']
-			   ,'Delivery Note Dispatch Method'=>$data['Delivery Note Dispatch Method']
-			   ,'Delivery Note State'=>'Dispatched'
-			   );
-	    
-            $parent_order=new Order('public_id',$parent_order_id);
-	    
-
-            if (!$parent_order->id) {
-                $customer = new Customer ( 'find', $data['Customer Data'] );
-                $order_id=$customer->get_last_order();
-                if ($order_id) {
-                    $parent_order=new Order('id',$order_id);
-                    $parent_order->update_customer=false;
-                    print "Parent Order not given, using customer last order\n";
-                } else {
-                    print "Parent order can not be found skipping (Rpl/Sht)\n";
-                    continue;
-                }
-            } else
-                print "Using given Parent Order\n";
-
-
-            $parent_order->load('items');
-            $customer=new Customer($parent_order->data['Order Customer Key']);
-
-            if ($_customer_data['has_shipping']  and isset($data['Shipping Address']) and is_array($data['Shipping Address']) and !array_empty($data['Shipping Address'])) {
-
-                $address=new Address('find create',$data['Shipping Address']);
-                $customer->update(array('Customer Delivery Address Link','None'));
-                $customer->associate_delivery_address($address->id);
-                $ship_to_data=$customer->get_ship_to_data();
-
-                $ship_to=new Ship_To('find create',$ship_to_data);
-
-                $parent_order->add_ship_to($ship_to->id);
-                $parent_order->data ['Order Ship To Key To Deliver']=$ship_to->id;
-
-            }
-
-
-
-
-            $parent_order->data['Backlog Date']=$date_inv;
-            if ($tipo_order==6)
-                $data_dn['Delivery Note Title']=_('Replacents for Order').' '.$parent_order->data['Order Public ID'];
-            else
-                $data_dn['Delivery Note Title']=_('Shotages for Order').' '.$parent_order->data['Order Public ID'];
-            $dn=new DEliveryNote('create',$data_dn,$data_dn_transactions,$parent_order);
-
-
-            $sql="update orders_data.orders set last_transcribed=NOW() where id=".$order_data_id;
-            mysql_query($sql);
-        }
-
+        print "\n";
+        $sql="update orders_data.orders set last_transcribed=NOW() where id=".$order_data_id;
+        mysql_query($sql);
 
 
         $time_data[]=microtime_float()-$base_time;

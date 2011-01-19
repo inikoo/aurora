@@ -35,7 +35,7 @@ YAHOO.util.Event.onContentReady("table<?php print $_REQUEST['table_id']?>", func
 				       
 
 					 ];
-	    this.dataSource0 = new YAHOO.util.DataSource("ar_reports.php?tipo=orders_in_process&tableid="+tableid);
+	    this.dataSource0 = new YAHOO.util.DataSource("ar_splinters.php?tipo=orders_in_process&tableid="+tableid);
 	    this.dataSource0.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource0.connXhrMode = "queueRequests";
 	    this.dataSource0.responseSchema = {

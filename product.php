@@ -91,11 +91,13 @@ if($mode=='pid'){
   if(mysql_num_rows($result)>1){
     $_SESSION['state']['product']['server']['tag']=$tag;
     $js_files[]= 'js/search.js';
-    $js_files[]='product.js.php'; 
+   // $js_files[]='product.js.php'; 
     $js_files[]='product_server.js.php'; 
     $smarty->assign('css_files',$css_files);
     $smarty->assign('js_files',$js_files);
     $smarty->assign('code',$tag);
+    $smarty->assign('search_label',_('Products'));
+$smarty->assign('search_scope','products');
     $smarty->display('product_server.tpl');
      mysql_free_result($result);
     exit;
@@ -221,7 +223,7 @@ get_header_info($user,$smarty);
 
 $general_options_list=array();
 if($modify)
-  $general_options_list[]=array('tipo'=>'url','url'=>'product.php?edit=1','label'=>_('Edit Product'));
+  $general_options_list[]=array('tipo'=>'url','url'=>'edit_product.php','label'=>_('Edit Product'));
 $smarty->assign('general_options_list',$general_options_list);
 
 
@@ -264,16 +266,9 @@ $smarty->assign('family_id',$product->get('Product Family Key'));
 
 $product->load('images_slideshow');
 $images=$product->images_slideshow;
-
 $smarty->assign('div_img_width',190);
-
 $smarty->assign('img_width',190);
-
-
-
 $smarty->assign('images',$images);
-
-
 $smarty->assign('num_images',count($images));
 
 $subject_id=$product->id;

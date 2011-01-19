@@ -37,9 +37,9 @@
     
     <td class="label" style="width:160px">
       <span id="{$address_identifier}show_country_d1" onclick="toggle_country_d1()" class="small_button" style="padding:0 1px;font-size:50%;display:none">+</span>
-      Country:</td>
+      {t}Country{/t}:</td>
     <td >
-      <div id="{$address_identifier}myAutoComplete" style="width:18em;position:relative;bottom:8px" >
+      <div id="{$address_identifier}myAutoComplete" style="width:18em;" >
 	<input id="{$address_identifier}address_country" style="text-align:left;width:18em" type="text">
 	<div id="{$address_identifier}address_country_container" ></div>
 	
@@ -55,7 +55,7 @@
 	        class="small_button" style="padding:0 1px;font-size:50%;position:relative;top:0px;display:none">+</span> 
 	    <span id="{$address_identifier}label_address_country_d1">{t}Region{/t}</span>:</td>
 	    <td  style="text-align:left">
-	     <div style="width:15em;position:relative;bottom:8px" >
+	     <div style="width:15em;" >
 	      <input style="text-align:left;width:18em" id="{$address_identifier}address_country_d1" value="" ovalue="" >
 	      <input id="{$address_identifier}address_country_d1_code" value="" type="hidden">
 	    <div id="{$address_identifier}address_country_d1_container" style="" ></div>

@@ -55,7 +55,6 @@ function calculate_num_changed_in_email(){
 	    changed[email_key]=1;
 	    break;
 	}
-	
     }
 
 
@@ -100,11 +99,11 @@ function show_details_email(o){
 }
 
 function validate_email(o){
-return;
+
 
     var email=o.value;
   //  var email_key=o.getAttribute('email_key');
-    
+    //alert(email)
     if(isValidEmail(email)){
 	o.setAttribute('valid',1);
 	Dom.removeClass(o,'invalid');
@@ -176,7 +175,19 @@ function add_email(description){
 }
 
 function clone_email(email_key){
-   
+
+
+
+var new_email_msg_container = Dom.get('email_msg_mould').cloneNode(true);
+     var the_parent=Dom.get('mobile_mould').parentNode;
+  
+   var insertedElement = the_parent.insertBefore(new_email_msg_container, Dom.get('mobile_mould'));
+Dom.addClass(insertedElement,'cloned_editor'); 
+  var element_array=Dom.getElementsByClassName('email_msg', 'td',insertedElement);
+     insertedElement.id='email_tr_msg'+email_key;
+     element_array[0].id='email_msg'+email_key;
+    
+
 
      var new_email_container = Dom.get('email_mould').cloneNode(true);
      var the_parent=Dom.get('mobile_mould').parentNode;
@@ -198,7 +209,9 @@ function clone_email(email_key){
       var element_array=Dom.getElementsByClassName('Email_Is_Main', 'input',insertedElement);
       element_array[0].setAttribute('email_key',email_key);
       element_array[0].id='Email_Is_Main'+email_key;
-     
+
+
+
      var element_array=Dom.getElementsByClassName('Email_Contact_Name', 'input',insertedElement);
      element_array[0].setAttribute('email_key',email_key);
      element_array[0].id='Email_Contact_Name'+email_key;
@@ -209,11 +222,7 @@ function clone_email(email_key){
 
  
    
-    var element_array=Dom.getElementsByClassName('cancel_new_email', 'span',insertedElement);
-     element_array[0].setAttribute('email_key',email_key);
-     element_array[0].id='cancel_new_email_button'+email_key;
-          element_array[0].style.display='';
-
+   
      
 
      var element_array=Dom.getElementsByClassName('email_to_delete', 'span',insertedElement);
@@ -223,6 +232,7 @@ function clone_email(email_key){
      var element_array=Dom.getElementsByClassName('delete_email', 'span',insertedElement);
      element_array[0].setAttribute('email_key',email_key);
      element_array[0].id='delete_email_button'+email_key;
+
      var element_array=Dom.getElementsByClassName('undelete_email', 'span',insertedElement);
      element_array[0].setAttribute('email_key',email_key);
      element_array[0].id='undelete_email_button'+email_key;
@@ -231,6 +241,12 @@ function clone_email(email_key){
      
          var patt1=new RegExp("new");
   if(patt1.test(email_key)){
+  
+   var element_array=Dom.getElementsByClassName('cancel_new_email', 'span',insertedElement);
+     element_array[0].setAttribute('email_key',email_key);
+     element_array[0].id='cancel_new_email_button'+email_key;
+          element_array[0].style.display='';
+  
       Dom.get('cancel_new_email_button'+email_key).style.display='';
      Dom.get('delete_email_button'+email_key).style.display='none';
   }

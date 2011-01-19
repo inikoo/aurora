@@ -15,6 +15,8 @@ include_once('class.Contact.php');
 include_once('class.Telecom.php');
 include_once('class.Email.php');
 include_once('class.Address.php');
+include_once('class.Corporation.php');
+
 //include_once('Name.php');
 /* class: Company
    Class to manage the *Company Dimension* table
@@ -632,9 +634,13 @@ class Company extends DB_Table {
 
 
             $address_data['editor']=$this->editor;
-            //print_r($address_data);print "====";
+            
+            //print "xxx crete company address";
+            //print_r($address_data);
+            
             $address=new Address("find in company ".$this->id." create",$address_data);
             $address->editor=$this->editor;
+            //print_r($address);
             $this->associate_address($address->id);
 
 
@@ -812,7 +818,6 @@ class Company extends DB_Table {
     protected function update_field_switcher($field,$value,$options='') {
 
 
-        //  print "$field -> $value\n";
 
 
         switch ($field) {
@@ -859,6 +864,7 @@ class Company extends DB_Table {
                     $address->update_principal_telecom_number($value,$type);
 
                 } else {
+
                     $telephone_data=array();
                     $telephone_data['editor']=$this->editor;
                     $telephone_data['Telecom Raw Number']=$value;
@@ -940,7 +946,6 @@ class Company extends DB_Table {
 
 
 
-
         if ($value=='') {
             $this->new=false;
             $this->msg.=" Company name should have a value";
@@ -965,7 +970,7 @@ class Company extends DB_Table {
             return;
         }
         elseif($affected==0) {
-            //$this->msg.=' '._('Same value as the old record');
+            $this->msg.=' '._('Same value as the old record');
 
         } else {
             $this->msg.=' '._('Company name updated')."\n";
@@ -1015,6 +1020,16 @@ class Company extends DB_Table {
             }
             mysql_free_result($res);
 
+
+$sql=sprintf("select * from `Corporation Dimension` where `Corporation Company Key`=%d  ",$this->id);
+            $res=mysql_query($sql);
+            while ($row=mysql_fetch_array($res)) {
+                $corporation=new Corporation ();
+                    $corporation->editor=$this->editor;
+                    $corporation->update_name($this->data['Company Name']);
+                 
+            }
+            mysql_free_result($res);
 
         }
 
@@ -2186,6 +2201,8 @@ class Company extends DB_Table {
     }
 
     function add_area($data) {
+$data1=$data;
+print_r($data1);
         include_once('class.CompanyArea.php');
         $data['Company Key']=$this->id;
         $data['editor']=$this->editor;
@@ -2202,6 +2219,16 @@ class Company extends DB_Table {
         $data['Company Key']=$this->id;
         $data['editor']=$this->editor;
         $department=new CompanyDepartment('find',$data,'create');
+        if ($department->id) {
+            $this->updated=true;
+
+        }
+    }
+   function add_position($data) {
+        include_once('class.CompanyPosition.php');
+        $data['Company Key']=$this->id;
+        $data['editor']=$this->editor;
+        $department=new CompanyPosition('find',$data,'create');
         if ($department->id) {
             $this->updated=true;
 

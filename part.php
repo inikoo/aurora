@@ -112,9 +112,6 @@ if(isset($_REQUEST['id']) and is_numeric($_REQUEST['id'])){
   
  }
 
-
-
-
 $subject_id=$part->id;
 include_once('plot.inc.php');
 
@@ -135,6 +132,17 @@ $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
 
 $smarty->assign('stock_history_type',$_SESSION['state']['part']['stock_history']['type']);
+
+$transactions=array('all_transactions'=>0,'in_transactions'=>0,'out_transactions'=>0,'audit_transactions'=>0,'oip_transactions'=>0,'move_transactions'=>0);
+
+$sql=sprintf("select count(*) as all_transactions , sum(if(`Inventory Transaction Type`='Not Found' or `Inventory Transaction Type`='No Dispatched' or `Inventory Transaction Type`='Associate' or `Inventory Transaction Type`='Disassociate' or `Inventory Transaction Type`='Adjust',1,0)) as audit_transactions,sum(if(`Inventory Transaction Type`='Move In' or `Inventory Transaction Type`='Move Out',1,0)) as move_transactions,sum(if(`Inventory Transaction Type`='Sale' or `Inventory Transaction Type`='Broken' or `Inventory Transaction Type`='Lost',1,0)) as out_transactions, sum(if(`Inventory Transaction Type`='Order In Process',1,0)) as oip_transactions, sum(if(`Inventory Transaction Type`='In',1,0)) as in_transactions from `Inventory Transaction Fact` where `Part SKU`=%d",$part_id);
+$res=mysql_query($sql);
+if($row=mysql_fetch_assoc($res)){
+$transactions=array('all_transactions'=>$row['all_transactions'],'in_transactions'=>$row['in_transactions'],'out_transactions'=>$row['out_transactions'],'audit_transactions'=>$row['audit_transactions'],'oip_transactions'=>$row['oip_transactions'],'move_transactions'=>$row['move_transactions']);
+
+}
+$smarty->assign('transactions',$transactions);
+$smarty->assign('transaction_type',$_SESSION['state']['part']['transactions']['view']);
 
 
 $q='';

@@ -39,7 +39,7 @@ var change_view=function(e){
 	table.hideColumn('surplus');
 	table.hideColumn('optimal');
 	table.hideColumn('low');
-	table.hideColumn('critcal');
+	table.hideColumn('critical');
 	
 	if(tipo=='sales'){
 	    Dom.get('period_options').style.display='';
@@ -63,7 +63,7 @@ var change_view=function(e){
 	    table.showColumn('surplus');
 	    table.showColumn('optimal');
 	    table.showColumn('low');
-	    table.showColumn('critcal');
+	    table.showColumn('critical');
 	    table.showColumn('stock_error');
 	    table.showColumn('outofstock');
 	}
@@ -72,13 +72,7 @@ var change_view=function(e){
 	Dom.get(tipo).className="selected";
 	table.view=tipo;
 	//alert('ar_sessions.php?tipo=update&keys=store-view&value=' + escape(tipo))
-	YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=store-view&value=' + escape(tipo) ,{
-					success:function(o) {
-					       
-					    }
-					    }
-	
-	);
+	YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=store-view&value=' + escape(tipo) ,{success:function(o) {}});
     }
 }
 
@@ -121,6 +115,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 				    ,{key:"outofstock", label:"<?php echo _('Gone')?>", width:70,sortable:true,className:"aright",<?php echo($_SESSION['state']['store']['view']=='stock'?'':'hidden:true,')?>sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 				    ,{key:"stock_error", label:"<?php echo _('Unknown')?>", width:70,sortable:true,className:"aright",<?php echo($_SESSION['state']['store']['view']=='stock'?'':'hidden:true,')?>sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				    ,{key:"sales_type", label:"<?php echo _('Sales Type')?>", width:70,sortable:true,className:"aright",<?php echo($_SESSION['state']['store']['view']=='web'?'':'hidden:true,')?>sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 
 
 				     ];
@@ -146,7 +141,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 		
 		fields: [
 			 'id',
-			 "name","code","aws_p","awp_p",
+			 "name","code","aws_p","awp_p","sales_type",
 			 'families',
 			 'active',"sales","stock_error","stock_value","outofstock","profit","surplus","optimal","low","critical","todo","discontinued"
 			 ]};
@@ -272,7 +267,15 @@ function change_avg(e,table_id){
 
 
  function init(){
- 
+// -------------------------Export(CSV) code for department under store --------------------
+  YAHOO.util.Event.addListener('export_csv0', "click",download_csv,'departments');
+ YAHOO.util.Event.addListener('export_csv0_in_dialog', "click",download_csv_from_dialog,{table:'export_csv_table0',tipo:'departments'});
+  csvMenu = new YAHOO.widget.ContextMenu("export_csv_menu0", {trigger:"export_csv0" });
+	 csvMenu.render();
+	 csvMenu.subscribe("show", csvMenu.focus);
+   
+ YAHOO.util.Event.addListener('export_csv0_close_dialog', "click",csvMenu.hide,csvMenu,true);
+// -------------------------Export(CSV) code for department under store ends here--------------
   init_search('products_store');
  
  
@@ -319,7 +322,6 @@ YAHOO.util.Event.onContentReady("filtermenu0", function () {
 	 var oMenu = new YAHOO.widget.ContextMenu("filtermenu0", {trigger:"filter_name0"});
 	 oMenu.render();
 	 oMenu.subscribe("show", oMenu.focus);
-	 
     });
 
 

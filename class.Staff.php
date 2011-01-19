@@ -14,6 +14,7 @@
 
   //require_once 'class.Name.php';
 require_once 'class.Email.php';
+require_once 'class.User.php';
 
 class Staff extends DB_Table{
 
@@ -173,7 +174,33 @@ class Staff extends DB_Table{
 
      if($create and !$this->found){
        
-	$this->create($raw_data);
+        $sql="select `Corporation Company Key` from `Corporation Dimension`";
+      $res=mysql_query($sql);
+    if($row=mysql_fetch_array($res)){
+    $company_key=$row['Corporation Company Key'];
+$company=new Company($company_key);
+    }else{
+    exit("Error no corporation\n");
+    }
+    
+     $data=array(
+                          'Staff Address Line 1'=>'',
+                          'Staff Address Town'=>'',
+                          'Staff Address Line 2'=>'',
+                          'Staff Address Line 3'=>'',
+                          'Staff Address Postal Code'=>'',
+                          'Staff Address Country Code'=>'',
+                          'Staff Address Country Name'=>$company->data['Company Main Country'],
+                          'Staff Address Country First Division'=>'',
+                          'Staff Address Country Second Division'=>''
+                      );
+       
+       foreach($raw_data as $key=>$value){
+       $data[$key]=$value;
+       }
+       
+       
+	$this->create($data);
 	
      }
 
@@ -191,6 +218,10 @@ $company=new Company($company_key);
     }else{
     exit("Error no corporation\n");
     }
+    
+    
+    
+    
    $child=new Contact ('find in staff create update',$data);
 
 	if($child->error){
@@ -237,6 +268,9 @@ $company=new Company($company_key);
       $this->id=mysql_insert_id();
       $this->get_data('id',$this->id);
       
+      
+      
+      
 
       if(!$this->data['Staff ID']){
 	$sql=sprintf("update `Staff Dimension` set `Staff ID`=%d where `Staff Key`=%d",$this->id,$this->id);
@@ -266,5 +300,71 @@ $company=new Company($company_key);
 
    }
 
+function create_user() {
+    $password=generatePassword(8,10);
+    $user_data=array(
+                   'User Handle'=>$this->data['Staff Alias'],
+                   'User Alias'=>$this->data['Staff Name'],
+
+                   'User Password'=>hash('sha256',$password),
+                   'User Active'=>'Yes',
+                   'User Type'=>'Staff',
+
+                   'User Parent Key'=>$this->id,
+
+               );
+     
+    $user= new User('find',$user_data,'create');
+  
+   return $user;
 
 }
+
+    function update_name($value) {
+    
+      if ($value=='') {
+            $this->error=true;
+            $this->msg=_('Invalid Name');
+            return;
+        }
+  
+        $contact=new Contact($this->data['Staff Contact Key']);
+        $contact->editor=$this->editor;
+        $contact->update(array('Contact Name'=>$value));
+
+
+        if ($contact->updated) {
+
+            $this->updated=true;
+            $this->new_value=$contact->new_value;
+        }
+
+    }
+
+   function update_field_switcher($field,$value,$options='') {
+        if (is_string($value))
+            $value=_trim($value);
+
+        switch ($field) {
+        case('Staff Name'):
+             case('name'):
+            $this->update_name($value);
+            break;
+
+        default:
+            $base_data=$this->base_data();
+            if (array_key_exists($field,$base_data)) {
+                $this->update_field($field,$value,$options);
+            }
+        }
+    }
+
+
+function get_name(){
+    return $this->data['Staff Name'];
+}
+
+}
+
+
+?>

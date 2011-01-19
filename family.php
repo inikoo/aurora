@@ -44,9 +44,10 @@ $_SESSION['state']['store']['id']=$family->data['Product Family Store Key'];
 
 
 
-if(!( $user->can_view('stores') and in_array($family->data['Product Family Store Key'],$user->stores)))
+if(!( $user->can_view('stores') and in_array($family->data['Product Family Store Key'],$user->stores))){
+header('Location: index.php');
   exit();
-
+}
 
 $store=new Store($family->data['Product Family Store Key']);
 $department=new Department($family->get('Product Family Main Department Key'));
@@ -56,15 +57,19 @@ $view_stock=$user->can_view('product stock');
 $create=$user->can_create('product families');
 $modify=$user->can_edit('stores');
 
+if(isset($_REQUEST['edit'])){
+header('Location: edit_department.php?id='.$department_id);
+  exit();
 
+}
 
 
 if(isset($_REQUEST['edit']))
   $edit=$_REQUEST['edit'];
 else
   $edit=$_SESSION['state']['family']['editing'];
-if(!$modify)
-  $edit=false;
+
+
 $smarty->assign('view_parts',$user->can_view('parts'));
 
 $smarty->assign('view_sales',$view_sales);
@@ -84,15 +89,12 @@ $show_details=$_SESSION['state']['family']['details'];
 $smarty->assign('table_type',$_SESSION['state']['family']['table_type']);
 $general_options_list=array();
 
-if($edit){
-  $general_options_list[]=array('tipo'=>'url','url'=>'family.php?edit=0','label'=>_('Exit Edit'));
 
-}else{
   if($modify)
-    $general_options_list[]=array('tipo'=>'url','url'=>'family.php?edit=1','label'=>_('Edit Family'));
+    $general_options_list[]=array('tipo'=>'url','url'=>'edit_family.php','label'=>_('Edit Family'));
   $general_options_list[]=array('tipo'=>'js','state'=>$show_details,'id'=>'details','label'=>($show_details?_('Hide Details'):_('Show Details')));
 
-}
+
   $smarty->assign('general_options_list',$general_options_list);
 $show_only=$_SESSION['state']['family']['table']['show_only'];
 $show_only_labels=array('forsale'=>_('For Sale Only'));
@@ -128,42 +130,17 @@ $js_files=array(
 		'js/php.default.min.js',
 		'common.js.php',
 		'table_common.js.php',
-
+		'js/edit_common.js',
+                'js/csv_common.js',
 		 'js/dropdown.js'
 		);
 
 
-if($edit){
-  $smarty->assign('edit',$_SESSION['state']['family']['edit']);
-  $css_files[]='css/edit.css';
-  $css_files[]='css/upload_files.css';
-  $js_files[]='js/edit_common.js';
-  $js_files[]='country_select.js.php';
-   $js_files[]='js/upload_image.js';
- 
-    // $js_files[]='upload_files.js.php';
 
-  $js_files[]='edit_family.js.php';
-  $smarty->assign('yui_path',$yui_path);
-
-  
-  
-$family->load_images_slidesshow();
-$images=$family->images_slideshow;
-$smarty->assign('images',$images);
-$smarty->assign('num_images',count($images));
-
-
- }else{
  $js_files[]='js/search.js';
  $js_files[]='family.js.php';
   
 
-
- }
-
- // print_r(parse_money('€2.50'));
-// exit;
 
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
@@ -373,26 +350,93 @@ $info_period_menu=array(
 $smarty->assign('info_period_menu',$info_period_menu);
 
 
-//print show_currency_conversion('USD','GBP');
 
-
-if($edit){
-$smarty->assign('view',$_SESSION['state']['family']['edit_view']);
-$units_tipo=array(
-		  'Piece'=>array('fname'=>_('Piece'),'name'=>'Piece','selected'=>false),
-		  'Grams'=>array('fname'=>_('Grams'),'name'=>'Grams','selected'=>false),
-		  'Liters'=>array('fname'=>_('Liters'),'name'=>'Liters','selected'=>false),
-		  'Meters'=>array('fname'=>_('Meters'),'name'=>'Meters','selected'=>false),
-		  'Other'=>array('fname'=>_('Other'),'name'=>'Other','selected'=>false),
-);
- $units_tipo['Piece']['selected']=true;
-
-$smarty->assign('units_tipo',$units_tipo);
-  $smarty->assign('title', _('Editing Family').': '.$family->get('Product Family Code'));
-  $smarty->display('edit_family.tpl');
- }else{
   $smarty->assign('title',_('Family').': '.$family->get('Product Family Name'));
-  $smarty->display('family.tpl');
- }
+// -----------------------------------------------export csv code starts here------------------------
+ $csv_export_options=array(
+                            'description'=>array(
+                                              'title'=>_('Description'),
+                                              'rows'=>
+                                                     array(
+                                                         array(
+                                                             'code'=>array('label'=>_('Code'),'selected'=>$_SESSION['state']['family']['table']['csv_export']['code']),
+                                                             'name'=>array('label'=>_('Name'),'selected'=>$_SESSION['state']['family']['table']['csv_export']['name']),
+                                                            
+                                                             'status'=>array('label'=>_('Status'),'selected'=>$_SESSION['state']['family']['table']['csv_export']['status']),
+                                                             'web'=>array('label'=>_('Web'),'selected'=>$_SESSION['state']['family']['table']['csv_export']['web']),
+                                                            
+                                                     
+                                                         )
+                                                     )
+                                          ),
+                          
+                            'sales_all'=>array('title'=>_('Sales (All times)'),
+                            'rows'=>
+                                               array(
+                                                   array(
+                                                       'sales_all'=>array('label'=>_('Sales'),'selected'=>$_SESSION['state']['family']['table']['csv_export']['sales_all']),
+                                                       'profit_all'=>array('label'=>_('Profit'),'selected'=>$_SESSION['state']['family']['table']['csv_export']['profit_all']),
+                                                        array('label'=>''),
+                                                             array('label'=>''),
+                                                   )
+                            )
+                            ),
+'sales_1y'=>array('title'=>_('Sales (1 Year)'),
+                            'rows'=>
+                                               array(
+                                                   array(
+                                                       'sales_1y'=>array('label'=>_('Sales'),'selected'=>$_SESSION['state']['family']['table']['csv_export']['sales_1y']),
+                                                       'profit_1y'=>array('label'=>_('Profit'),'selected'=>$_SESSION['state']['family']['table']['csv_export']['profit_1y']),
+                                                        array('label'=>''),
+                                                             array('label'=>''),
+                                                   )
+                            )
+                            ),
+'sales_1q'=>array('title'=>_('Sales (1 Quarter)'),
+                            'rows'=>
+                                               array(
+                                                   array(
+                                                       'sales_1q'=>array('label'=>_('Sales'),'selected'=>$_SESSION['state']['family']['table']['csv_export']['sales_1q']),
+                                                       'profit_1q'=>array('label'=>_('Profit'),'selected'=>$_SESSION['state']['family']['table']['csv_export']['profit_1q']),
+                                                        array('label'=>''),
+                                                             array('label'=>''),
+                                                   )
+                            )
+                            ),
+'sales_1m'=>array('title'=>_('Sales (1 Month)'),
+                            'rows'=>
+                                               array(
+                                                   array(
+                                                       'sales_1m'=>array('label'=>_('Sales'),'selected'=>$_SESSION['state']['family']['table']['csv_export']['sales_1m']),
+                                                       'profit_1m'=>array('label'=>_('Profit'),'selected'=>$_SESSION['state']['family']['table']['csv_export']['profit_1m']),
+                                                        array('label'=>''),
+                                                             array('label'=>''),
+                                                   )
+                            )
+                            ),
+                            'sales_1w'=>array('title'=>_('Sales (1 Week)'),
+                            'rows'=>
+                                               array(
+                                                   array(
+                                                       'sales_1w'=>array('label'=>_('Sales'),'selected'=>$_SESSION['state']['family']['table']['csv_export']['sales_1w']),
+                                                       'profit_1w'=>array('label'=>_('Profit'),'selected'=>$_SESSION['state']['family']['table']['csv_export']['profit_1w']),
+                                                        array('label'=>''),
+                                                             array('label'=>''),
+                                                   )
+                            )
+                            )
+                        );
+$smarty->assign('export_csv_table_cols',6);
+$smarty->assign('csv_export_options',$csv_export_options);
+// -----------------------------------------------export csv code ends here------------------------
+
+$family->load_images_slidesshow();
+$images=$family->images_slideshow;
+$smarty->assign('div_img_width',190);
+$smarty->assign('img_width',190);
+$smarty->assign('images',$images);
+$smarty->assign('num_images',count($images));
+$smarty->display('family.tpl');
+ 
 
 ?>

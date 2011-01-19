@@ -26,13 +26,8 @@ include_once('class.Contact.php');
 
 class Email extends DB_Table {
 
-    /*  public  $data=array(); */
-    /*   public $id=false; */
-    /*   public  $new=false; */
-    /*   public $error=false; */
-    /*   public $updated=false; */
-    /*   public $msg=''; */
-
+     public  $deleted=false;
+  
 
 
 
@@ -466,10 +461,11 @@ class Email extends DB_Table {
         $res=mysql_query($sql);
         // print $sql;
         while ($row=mysql_fetch_array($res)) {
-            print_r($row);
-            print"email $data alredy n the system whan trying to updating it !!!!!!!! cjack in class.Email.php\n";
-            return;
-
+            //print_r($row);
+            //print"email $data alredy n the system whan trying to updating it !!!!!!!! cjack in class.Email.php\n";
+            $this->msg_updated=_('Email is already associated with another contact');
+$this->error_updated=true;
+return;
         }
 
 
@@ -853,70 +849,69 @@ class Email extends DB_Table {
     }
 
 
-    function delete() {
-        $sql=sprintf("delete from `Email Dimension` where `Email Key`=%d",$this->id);
-        mysql_query($sql);
-        $sql=sprintf("delete from `Email Bridge`  where  `Email Key`=%d", $this->id);
-        mysql_query($sql);
+function delete() {
+    $sql=sprintf("delete from `Email Dimension` where `Email Key`=%d",$this->id);
+    mysql_query($sql);
+    $sql=sprintf("delete from `Email Bridge`  where  `Email Key`=%d", $this->id);
+    mysql_query($sql);
+    $this->deleted=true;
+    $history_data['History Abstract']='Email Deleted';
+    $history_data['History Details']=_('Email').' '.$this->display('plain')." "._('has been deleted');
+    $history_data['Action']='deleted';
+    $history_data['Direct Object']='Email';
+    $history_data['Direct Object Key']=$this->id;
+    $history_data['Indirect Object']='';
+    $history_data['Indirect Object Key']='';
+    $this->add_history($history_data);
+    $parents=array('Contact','Company','Customer','Supplier');
+    foreach($parents as $parent) {
+        $sql=sprintf("select `$parent Key` as `Parent Key`   from  `$parent Dimension` where `$parent Main Email Key`=%d group by `$parent Key`",$this->id);
 
-        $history_data['History Abstract']='Email Deleted';
-        $history_data['History Details']=_('Email').' '.$this->display('plain')." "._('has been deleted');
-        $history_data['Action']='deleted';
-        $history_data['Direct Object']='Email';
-        $history_data['Direct Object Key']=$this->id;
-        $history_data['Indirect Object']='';
-        $history_data['Indirect Object Key']='';
-        $this->add_history($history_data);
+        $res=mysql_query($sql);
+        while ($row=mysql_fetch_array($res)) {
+            $principal_email_changed=false;
 
-
-
-
-
-
-        $parents=array('Contact','Company','Customer','Supplier');
-        foreach($parents as $parent) {
-            $sql=sprintf("select `$parent Key` as `Parent Key`   from  `$parent Dimension` where `$parent Main Email Key`=%d group by `$parent Key`",$this->id);
-//print "$sql\n";
-            $res=mysql_query($sql);
-            while ($row=mysql_fetch_array($res)) {
-                $principal_email_changed=false;
-
-                if ($parent=='Contact') {
-                    $parent_object=new Contact($row['Parent Key']);
-                    $parent_label=_('Contact');
-                }
-                elseif($parent=='Customer') {
-                    $parent_object=new Customer($row['Parent Key']);
-                    $parent_label=_('Customer');
-                }
-                elseif($parent=='Supplier') {
-                    $parent_object=new Supplier($row['Parent Key']);
-                    $parent_label=_('Supplier');
-                }
-                elseif($parent=='Company') {
-                    $parent_object=new Company($row['Parent Key']);
-                    $parent_label=_('Company');
-                }
-                $sql=sprintf("update `$parent Dimension` set `$parent Main Email Key`=0, `$parent Main Plain Email`='',`$parent Main XHTML Email`='' where `$parent Key`=%d"
-
-                             ,$parent_object->id
-                            );
-                mysql_query($sql);
-
-
-
-
-                $history_data['History Abstract']='Email Removed';
-                $history_data['History Details']=_('Email').' '.$this->display('plain')." "._('has been deleted from')." ".$parent_object->get_name()." ".$parent_label;
-                $history_data['Action']='disassociate';
-                $history_data['Direct Object']=$parent;
-                $history_data['Direct Object Key']=$parent_object->id;
-                $history_data['Indirect Object']='Email';
-                $history_data['Indirect Object Key']=$this->id;
-                $this->add_history($history_data);
+            if ($parent=='Contact') {
+                $parent_object=new Contact($row['Parent Key']);
+                $parent_label=_('Contact');
             }
+            elseif($parent=='Customer') {
+                $parent_object=new Customer($row['Parent Key']);
+                $parent_label=_('Customer');
+            }
+            elseif($parent=='Supplier') {
+                $parent_object=new Supplier($row['Parent Key']);
+                $parent_label=_('Supplier');
+            }
+            elseif($parent=='Company') {
+                $parent_object=new Company($row['Parent Key']);
+                $parent_label=_('Company');
+            }
+            $sql=sprintf("update `$parent Dimension` set `$parent Main Email Key`=0, `$parent Main Plain Email`='',`$parent Main XHTML Email`='' where `$parent Key`=%d"
+
+                         ,$parent_object->id
+                        );
+            mysql_query($sql);
+            $history_data['History Abstract']='Email Removed';
+            $history_data['History Details']=_('Email').' '.$this->display('plain')." "._('has been deleted from')." ".$parent_object->get_name()." ".$parent_label;
+            $history_data['Action']='disassociate';
+            $history_data['Direct Object']=$parent;
+            $history_data['Direct Object Key']=$parent_object->id;
+            $history_data['Indirect Object']='Email';
+            $history_data['Indirect Object Key']=$this->id;
+            $this->add_history($history_data);
+            if ($parent=='Contact') {
+                $emails=$parent_object->get_emails();
+                foreach($emails as $email) {
+                    $parent_object->update_principal_email($email->id);
+                    break;
+                }
+            }
+
+
         }
     }
+}
 
 function get_parent_keys($type){
 $keys=array();

@@ -1,16 +1,7 @@
 {include file='header.tpl'}
 <div id="bd" >
-<div class="search_box" style="margin-top:15px">
-  <div class="general_options">
-    {foreach from=$general_options_list item=options }
-        {if $options.tipo=="url"}
-            <span onclick="window.location.href='{$options.url}'" >{$options.label}</span>
-        {else}
-            <span  id="{$options.id}" state="{$options.state}">{$options.label}</span>
-        {/if}
-    {/foreach}
-    </div>
-</div>
+{include file='assets_navigation.tpl'}
+
 <div style="clear:left;margin:0 0px">
     <h1>{t}Editing Store{/t}: <span id="title_name">{$store->get('Store Name')}</span> (<span id="title_code">{$store->get('Store Code')}</span>)</h1>
 </div>
@@ -26,7 +17,8 @@
     
       <li> <span class="item {if $edit=='pictures'}selected{/if}" id="pictures"  ><span>  {t}Pictures{/t}</span></span></li>
     <li> <span class="item {if $edit=='departments'}selected{/if}" id="departments"  ><span> {t}Departments{/t}</span></span></li>
-    <li> <span class="item {if $edit=='web'}selected{/if} " id="web" ><span> {t}Web Pages{/t}</span></span></li>
+      <li> <span class="item {if $edit=='website'}selected{/if} " id="website" ><span class="todo" style="background-color: #C8E02B">{t}Web Sites{/t}</span></span></li>
+    <li style="display:none" > <span class="item {if $edit=='web'}selected{/if} " id="web" ><span> {t}Web Pages{/t}</span></span></li>
   </ul>
   
   <div class="tabbed_container" > 
@@ -43,6 +35,57 @@
 	
       </table>
     </div>
+    
+    
+   
+    
+     <div  class="edit_block" style="{if $edit!='website'}display:none{/if}"  id="d_website">
+      
+      
+      
+      
+      <div class="todo" style="font-size:80%;width:50%">
+
+
+      <h1>TO DO (KAKTUS-317)</h1>
+
+<h2>New Site (Button/Form)</h2>
+<h3>Objective</h3>
+
+
+<p>
+[Create new Site] button will display a new site form (previously hidden).
+form submission should be done by AJAX (use yui flame-work, found in js/common_edit.js)
+
+</p>
+<h3>Files</h3>
+<p>
+ar fie: ar_edit_sites.php?tipo=create_site&...data... <br>
+DB: `Site Dimension`
+</p>
+      </div>
+      
+    
+     
+	 <div class="todo" style="font-size:80%;width:50%;margin-top:10px">
+      <h1>TO DO KAKTUS-318</h1>
+<h2>List Sites (editable table)</h2>
+<h3>Objective</h3>
+<p>
+List the store sites, link to edit_site.php?id= 
+</p>
+<h3>Files</h3>
+<p>
+ar fie: ar_edit_sites.php?tipo=list_store_&...data... <br>
+DB: `Site Dimension`
+</p>
+      </div>
+      
+	
+     
+      </div>
+    
+    
     <div  class="edit_block" style="{if $edit!="description"}display:none{/if}"  id="d_description">
       
      
@@ -303,14 +346,30 @@
 
 <div id="the_table1" class="data_table" style="">
   <span class="clean_table_title">{t}History{/t}</span>
-  <div  id="clean_table_caption1" class="clean_table_caption"  style="clear:both;">
-    <div style="float:left;"><div id="table_info1" class="clean_table_info"><span id="rtext1"></span> <span class="filter_msg"  id="filter_msg1"></span></div></div>
-    <div id="clean_table_filter1" class="clean_table_filter" style="display:none">
-      <div class="clean_table_info"><span id="filter_name1" class="filter_name" >{$filter_name}</span>: <input style="border-bottom:none" id='f_input0' value="{$filter_value}" size=10/><div id='f_container'></div></div></div>
-    <div class="clean_table_controls" style="" ><div><span  style="margin:0 5px" id="paginator1"></span></div></div>
-  </div>
+     {include file='table_splinter.tpl' table_id=1 filter_name=$filter_name1 filter_value=$filter_value1  }
   <div  id="table1"   class="data_table_container dtable btable "> </div>
 </div>
 
 </div>
+<div id="rppmenu1" class="yuimenu" >
+  <div class="bd">
+    <ul class="first-of-type">
+       <li style="text-align:left;margin-left:10px;border-bottom:1px solid #ddd">{t}Rows per Page{/t}:</li>
+      {foreach from=$paginator_menu1 item=menu }
+      <li class="yuimenuitem"><a class="yuimenuitemlabel" onClick="change_rpp_with_totals({$menu},1)"> {$menu}</a></li>
+      {/foreach}
+    </ul>
+  </div>
+</div>
+<div id="filtermenu1" class="yuimenu" >
+  <div class="bd">
+    <ul class="first-of-type">
+      <li style="text-align:left;margin-left:10px;border-bottom:1px solid #ddd">{t}Filter options{/t}:</li>
+      {foreach from=$filter_menu1 item=menu }
+      <li class="yuimenuitem"><a class="yuimenuitemlabel" onClick="change_filter('{$menu.db_key}','{$menu.label}',1)"> {$menu.menu_label}</a></li>
+      {/foreach}
+    </ul>
+  </div>
+</div>
+
 {include file='footer.tpl'}

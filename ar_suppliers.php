@@ -1,5 +1,6 @@
 <?php
 require_once 'common.php';
+require_once 'ar_common.php';
 
 
 
@@ -15,13 +16,41 @@ if(!isset($_REQUEST['tipo']))
 
 $tipo=$_REQUEST['tipo'];
 switch($tipo){
+case('is_supplier_product_code'):
+    $data=prepare_values($_REQUEST,array(
+                             'supplier_key'=>array('type'=>'key'),
+                             'query'=>array('type'=>'string')
+                         ));
+    is_supplier_product_code($data);
+    break;
+case('is_supplier_product_name'):
+    $data=prepare_values($_REQUEST,array(
+                             'supplier_key'=>array('type'=>'key'),
+                             'query'=>array('type'=>'string')
+                         ));
+    is_supplier_product_name($data);
+    break;
+
 case('find_supplier'):
 find_supplier();
 break;
 case('is_supplier_code'):
 is_supplier_code();
 break;
-
+case('is_product_name'):
+$data=prepare_values($_REQUEST,array(
+                             'supplier_key'=>array('type'=>'key'),
+                             'query'=>array('type'=>'string')
+                         ));
+is_product_name($data);
+break;
+case('is_product_code'):
+ $data=prepare_values($_REQUEST,array(
+                             'supplier_key'=>array('type'=>'key'),
+                             'query'=>array('type'=>'string')
+                         ));
+is_product_code($data);
+break;
 case('supplier_products'):
     list_supplier_products();
 
@@ -1335,11 +1364,19 @@ if(isset( $_REQUEST['where']))
   else
     $tableid=0;
    $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
-  $_SESSION['state']['suppliers']['table']=array('order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value);
-  $_order=$order;
+ /* $_SESSION['state']['suppliers']['table']=array('order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value);*/
+ 
+
+    $_SESSION['state']['suppliers']['table']['order']=$order;
+    $_SESSION['state']['suppliers']['table']['order_dir']=$order_direction;
+    $_SESSION['state']['suppliers']['table']['nr']=$number_results;
+    $_SESSION['state']['suppliers']['table']['sf']=$start_from;
+    $_SESSION['state']['suppliers']['table']['where']=$where;
+    $_SESSION['state']['suppliers']['table']['f_field']=$f_field;
+    $_SESSION['state']['suppliers']['table']['f_value']=$f_value;
+
+ $_order=$order;
   $_dir=$order_direction;
-
-
 
    $wheref='';
   if($f_field=='code'  and $f_value!='')
@@ -1436,6 +1473,7 @@ if(isset( $_REQUEST['where']))
 
      $id="<a href='supplier.php?id=".$row['Supplier Key']."'>".$myconf['supplier_id_prefix'].sprintf("%05d",$row['Supplier Key']).'</a>';
      $code="<a href='supplier.php?id=".$row['Supplier Key']."'>".$row['Supplier Code']."</a>";
+     $sales=money($row['Supplier Total Parts Sold Amount']);
 
      $profit=money($row['Supplier Total Parts Profit']);
      $profit_after_storing=money($row['Supplier Total Parts Profit After Storing']);
@@ -1450,6 +1488,7 @@ if(isset( $_REQUEST['where']))
 		   ,'outofstock'=>number($row['Supplier Out Of Stock Products'])
 		   ,'location'=>$row['Supplier Main Location']
 		   ,'email'=>$row['Supplier Main XHTML Email']
+		   ,'sales'=>$sales
 		   ,'profit'=>$profit		 
 		   ,'profit_after_storing'=>$profit_after_storing
 		   ,'cost'=>$cost
@@ -1544,18 +1583,29 @@ function list_supplier_products() {
     $_order=$order;
     $_dir=$order_direction;
 
-$parent='none';
-    $_SESSION['state']['supplier']['products']=array('order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value
-            ,'view'=>$product_view
-                    ,'percentage'=>$product_percentage
-                                  ,'period'=>$product_period
-                                                    );
+   
+  
+    $_SESSION['state']['supplier']['products']['view']=$product_view;
+    $_SESSION['state']['supplier']['products']['percentage']=$product_percentage;
+    $_SESSION['state']['supplier']['products']['period']=$product_period;
+    $_SESSION['state']['supplier']['products']['order']=$order;
+    $_SESSION['state']['supplier']['products']['order_dir']=$order_dir;
+    $_SESSION['state']['supplier']['products']['nr']=$number_results;
+    $_SESSION['state']['supplier']['products']['sf']=$start_from;
+    $_SESSION['state']['supplier']['products']['where']=$where;
+    $_SESSION['state']['supplier']['products']['f_field']=$f_field;
+    $_SESSION['state']['supplier']['products']['f_value']=$f_value;
+
+
+
+
+
     $_SESSION['state']['supplier']['id']=$supplier_id;
 
 
-if($parent=='none')
-$where.='';
-else
+    //if($parent=='none')
+    //$where.='';
+    //else
     $where=$where.' and `supplier key`='.$supplier_id;
 
 
@@ -1626,6 +1676,9 @@ else
         break;
 
     }
+    
+    //print "$order --\n";
+    
     if ($order=='id')
       $order='`Supplier Product ID`';
       if ($order=='supplier')
@@ -1640,7 +1693,22 @@ else
       $order='`Supplier Product Stock`';
     elseif($order=='name')
       $order='`Supplier Product Name`';
-    elseif($order=='required'){
+      elseif($order=='profit'){
+      
+        if ($product_period=='all') 
+            $order='`Supplier Product Total Parts Profit`';
+         elseif ($product_period=='year') 
+            $order='`Supplier Product 1 Year Acc Parts Profit`';
+      else if ($product_period=='quarter')
+                  $order='`Supplier Product 1 Quarter Acc Parts Profit`';
+
+      else if ($product_period=='month') 
+               $order='`Supplier Product 1 Month Acc Parts Profit`';
+
+   else if ($product_period=='week') 
+               $order='`Supplier Product 1 Week Acc Parts Profit`';
+
+   }elseif($order=='required'){
       if ($product_period=='all')
 	$order='`Supplier Product Total Parts Required`';
       elseif ($product_period=='year')
@@ -1666,6 +1734,8 @@ else
       $order='`Supplier Product Code`';
     
     $sql="select * from `Supplier Product Dimension`  $where $wheref  order by $order $order_direction limit $start_from,$number_results ";
+
+   //   print $sql;
     $data=array();
 
     $result=mysql_query($sql);
@@ -1725,7 +1795,7 @@ else
         }
 
 
-$code=$row['Supplier Product Code'];
+$code=sprintf('<a href="supplier_product.php?pid=%d">%s</a>',$row['Supplier Product Key'],$row['Supplier Product Code']);
 if($row['Supplier Product Days Available']=='')
 $weeks_until='ND';
 else
@@ -1739,8 +1809,8 @@ $weeks_until=round($row['Supplier Product Days Available']/7).' w';
 		      ,'tuos'=>$weeks_until
                 ,'supplier'=>sprintf('<a href="supplier.php?id=%d">%s</a>',$row['Supplier Key'],$row['Supplier Code'])
 		      ,'name'=>$row['Supplier Product Name']
-		      ,'description'=>'<span style="font-size:95%">'.number($row['Supplier Product Units Per Case']).'x '.$row['Supplier Product Name'].' @'.money($row['Supplier Product Cost']/$row['Supplier Product Units Per Case']).' '.$row['Supplier Product Unit Type'].'</span>'
-		      ,'cost'=>money($row['Supplier Product Cost'])
+		      ,'description'=>'<span style="font-size:95%">'.number($row['Supplier Product Units Per Case']).'x '.$row['Supplier Product Name'].' @'.money($row['Supplier Product Cost Per Case']).' '.$row['Supplier Product Unit Type'].'</span>'
+		      ,'cost'=>money($row['Supplier Product Cost Per Case'])
 		      ,'used_in'=>$row['Supplier Product XHTML Used In']
 		      ,'profit'=>$profit
 		      ,'allcost'=>$allcost
@@ -1828,6 +1898,96 @@ $res=mysql_query($sql);
 
 }
 
+function is_product_code($data){
+$query=$data['query'];
+$supplier_key=$data['supplier_key'];
+
+    if($query==''){
+       $response= array(
+                       'state'=>200,
+                       'found'=>0
+                   );
+        echo json_encode($response);
+        return;
+    }
+    
+    
+    
+$sql=sprintf("select `Supplier Product Name`,`Supplier Product Code`,`Supplier Product Name`,`Supplier Key` from `Supplier Product Dimension` where  `Supplier Key`=%d and `Supplier Product Code`=%s  ",
+        $supplier_key,
+        prepare_mysql($query)
+        );
+$res=mysql_query($sql);
+
+    if ($data=mysql_fetch_array($res)) {
+   $msg=sprintf('Product <a href="supplier_product.php?code=%s&supplier_key=%d">%s</a> already has this code (%s)',
+   $data['Supplier Product Code'],
+   $data['Supplier Key'],
+   $data['Supplier Product Name'],
+   $data['Supplier Product Code']
+   );
+   $response= array(
+                       'state'=>200,
+                       'found'=>1,
+                       'msg'=>$msg
+                   );
+        echo json_encode($response);
+        return;
+    }else{
+       $response= array(
+                       'state'=>200,
+                       'found'=>0
+                   );
+        echo json_encode($response);
+        return;
+    }
+
+}
+function is_product_name($data){
+$query=$data['query'];
+$supplier_key=$data['supplier_key'];
+
+    if($query==''){
+       $response= array(
+                       'state'=>200,
+                       'found'=>0
+                   );
+        echo json_encode($response);
+        return;
+    }
+    
+    
+    
+$sql=sprintf("select `Supplier Product Name`,`Supplier Product Code`,`Supplier Product Name`,`Supplier Key` from `Supplier Product Dimension` where  `Supplier Key`=%d and `Supplier Product Name`=%s  ",
+        $supplier_key,
+        prepare_mysql($query)
+        );
+$res=mysql_query($sql);
+
+    if ($data=mysql_fetch_array($res)) {
+   $msg=sprintf('Product <a href="supplier_product.php?code=%s&supplier_key=%d">%s</a> has the same name',
+   $data['Supplier Product Code'],
+   $data['Supplier Key'],
+   $data['Supplier Product Code']
+   );
+   $response= array(
+                       'state'=>200,
+                       'found'=>1,
+                       'msg'=>$msg
+                   );
+        echo json_encode($response);
+        return;
+    }else{
+       $response= array(
+                       'state'=>200,
+                       'found'=>0
+                   );
+        echo json_encode($response);
+        return;
+    }
+
+}
+
 
 function find_supplier() {
 
@@ -1874,6 +2034,108 @@ function find_supplier() {
                );
     echo json_encode($response);
 
+
+}
+
+function is_supplier_product_name($data) {
+    if (!isset($data['query']) or !isset($data['supplier_key'])) {
+        $response= array(
+                       'state'=>400,
+                       'msg'=>'Error'
+                   );
+        echo json_encode($response);
+        return;
+    } else
+        $query=$data['query'];
+    if ($query=='') {
+        $response= array(
+                       'state'=>200,
+                       'found'=>0
+                   );
+        echo json_encode($response);
+        return;
+    }
+
+    $supplier_key=$data['supplier_key'];
+
+    $sql=sprintf("select `Supplier Product Key`,`Supplier Product Code` from `Supplier Product Dimension` where  `Supplier Key`=%d and  `Supplier Product Name`=%s  "
+                 ,$supplier_key
+                 ,prepare_mysql($query)
+                );
+    $res=mysql_query($sql);
+
+    if ($data=mysql_fetch_array($res)) {
+        $msg=sprintf('Another supplier_product (<a href="supplier_product.php?pid=%d">%s</a>) already has this name'
+                     ,$data['Supplier Product Key']
+                     ,$data['Supplier Product Code']
+                    );
+        $response= array(
+                       'state'=>200,
+                       'found'=>1,
+                       'msg'=>$msg
+                   );
+        echo json_encode($response);
+        return;
+    } else {
+        $response= array(
+                       'state'=>200,
+                       'found'=>0
+                   );
+        echo json_encode($response);
+        return;
+    }
+
+}
+
+function is_supplier_product_code($data) {
+    if (!isset($data['query']) or !isset($data['supplier_key']) ) {
+        $response= array(
+                       'state'=>400,
+                       'msg'=>'Error'
+                   );
+        echo json_encode($response);
+        return;
+    } else
+        $query=$data['query'];
+    if ($query=='') {
+        $response= array(
+                       'state'=>200,
+                       'found'=>0
+                   );
+        echo json_encode($response);
+        return;
+    }
+
+    $supplier_key=$data['supplier_key'];
+
+    $sql=sprintf("select `Supplier Product Key`,`Supplier Product Name`,`Supplier Product Code` from `Supplier Product Dimension` where `Supplier Key`=%d and `Supplier Product Code`=%s  "
+                 ,$supplier_key
+                 ,prepare_mysql($query)
+                );
+                
+    $res=mysql_query($sql);
+
+    if ($data=mysql_fetch_array($res)) {
+        $msg=sprintf('Product: <a href="supplier_product.php?pid=%d">%s</a> already has this code (%s)'
+                     ,$data['Supplier Product Key']
+                     ,$data['Supplier Product Name']
+                     ,$data['Supplier Product Code']
+                    );
+        $response= array(
+                       'state'=>200,
+                       'found'=>1,
+                       'msg'=>$msg
+                   );
+        echo json_encode($response);
+        return;
+    } else {
+        $response= array(
+                       'state'=>200,
+                       'found'=>0
+                   );
+        echo json_encode($response);
+        return;
+    }
 
 }
 

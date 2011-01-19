@@ -89,16 +89,13 @@ function save_new_company(e){
         var ar_file='ar_edit_suppliers.php';
     }else
         var ar_file='ar_edit_contacts.php';
-    
-    
-    
-    
+   
     var json_value = YAHOO.lang.JSON.stringify(subject_data); 
     var request=ar_file+'?tipo=new_'+scope+'&delete_email='+subject_found_email+'&values=' + encodeURIComponent(json_value); 
      //alert(request);return;
     YAHOO.util.Connect.asyncRequest('POST',request ,{
 	    success:function(o) {
-		//alert(o.responseText);
+		alert(o.responseText);
 		//return;
 		var r =  YAHOO.lang.JSON.parse(o.responseText);
 		if(r.action=='created'){
@@ -110,7 +107,7 @@ function save_new_company(e){
 		           window.location='edit_company_areas.php?edit=new_company_areas';
 
 		        }else if(scope=='supplier'){
-		           window.location='edit_supplier.php?edit='+r.supplier_key;
+		           window.location='edit_supplier.php?id='+r.supplier_key;
 
 		        }else if(scope=='customer'){
 		           window.location='customer.php?id='+r.customer_key;

@@ -53,6 +53,7 @@
 
   <div class="data_table" style="clear:both;margin:25px 20px;">
     <span class="clean_table_title">{t}Supplier Products{/t}</span>
+<span  id="export_csv0" style="float:right;margin-left:20px"  class="table_type state_details" tipo="supplier_products" >{t}Export (CSV){/t}</span>
     <div  class="clean_table_caption"  style="clear:both;">
     {include file='table_splinter.tpl' table_id=0 filter_name=$filter_name0 filter_value=$filter_value0  }
 
@@ -85,6 +86,6 @@
     </ul>
   </div>
 </div>
-
+{include file='export_csv_menu_splinter.tpl' id=0 cols=$export_csv_table_cols session_address="supplier_products-table-csv_export" export_options=$csv_export_options }
 {include file='footer.tpl'}
 

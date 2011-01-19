@@ -109,8 +109,8 @@ function delete_image(o){
 
 	
 
-	var request='ar_edit_assets.php?tipo=delete_image&scope='+scope+'&scope_key='+scope_key+'&image_key='+escape(image_key);
-	//	alert(request)
+	var request='ar_edit_assets.php?tipo=delete_image&scope='+scope+'&scope_key='+scope_key+'&image_key='+escape(image_key);0
+	alert(request)
 	YAHOO.util.Connect.asyncRequest('POST',request ,{
 		success:function(o) {
 		     alert(o.responseText);
@@ -131,16 +131,17 @@ function delete_image(o){
 
 
 
-var onUploadButtonClick = function(e){
+var upload_image = function(e){
     //the second argument of setForm is crucial,
     //which tells Connection Manager this is a file upload form
     
     
     YAHOO.util.Connect.setForm('testForm', true);
     var request='ar_edit_assets.php?tipo=upload_product_image&subject='+scope+'&subject_key='+scope_key;
-    var uploadHandler = {
+   alert(request);
+   var uploadHandler = {
       upload: function(o) {
-//	   alert(o.responseText)
+	   alert(o.responseText)
 	    var r =  YAHOO.lang.JSON.parse(o.responseText);
 	   
 	    if(r.state==200){

@@ -84,7 +84,7 @@ color:red;
 height:auto !important;
 height:490px;}
 
-#ft{ font-size:77%;text-align:center;margin-top:5px;color:#777;margin-bottom:100px}
+#footer{ font-size:77%;text-align:center;margin-top:5px;color:#777;margin-bottom:100px}
 
 .bd labelc { display:block;float:left;width:30%;clear:left; }
 
@@ -375,9 +375,7 @@ table.options_mini{margin:0 ;float:right;border-collapse: separate;;border-spaci
 
 .edit_block{clear:both;margin:0 auto;xwidth:800px;padding:0px 0px;margin:0;xborder: 1px solid black}
 
-.cal_menu{clear:both;float:right;border:1px solid #ccc;padding:10px;width:180px;margin-top:00px;position:relative;top:-12px }
-.cal_menu .custom_dates{text-align:right;font-size:80%;margin-top:5px}
-.cal_menu .custom_dates img{height:12.5px}
+
 .plot_options{width:130px;float:right;text-align:right  }
 .plot_options h3{text-align:left;font-weight:bold;margin-top:10px  }
 .plot_options .other_options {clear:both;text-align:right;font-size:80%}
@@ -443,9 +441,6 @@ table.search  .submitsearch {xbottom:-1px;cursor:pointer;z-index:2;right:2px;pos
 
 
 
-span.state_details,search_sugestion{color:#777;cursor:pointer;} 
-span.state_details:hover ,search_sugestion:hover{color:#555;text-decoration:underline}
-span.selected{color:#444;text-decoration:underline} 
 
 
 
@@ -486,9 +481,6 @@ table.edit_location tr.totals {border-bottom:none }
 table.submit_order{ float:right;text-align:right ;border-spacing:0px  3px;border-collapse: separate;}
 table.submit_order td.but{ background:#238546;color:#fff;cursor:pointer;padding:2px 3px;text-align:center }
 
-
-.staff_list td{ text-align:center;cursor:pointer  }
-.staff_list td.selected{ background:#7296e1;color:white   }
 
 span.but{ xbackground:#238546;color:#bbb;cursor:pointer;padding:2px 3px;text-align:center ;border:1px solid #ccc}
 
@@ -583,7 +575,7 @@ background: #fff url(left-tab.gif) left top no-repeat;
 text-decoration: none;
 padding-left: 10px;
 border:1px solid #ddd;
-border-bottom:1px solid #999;
+border-bottom:1px solid #ccc;
 cursor:pointer
 }
 .tabs span.option
@@ -651,7 +643,8 @@ position:relative;top:1px;
 .messages_block{padding:10px}
 
 .branch {margin-top:10px;clear:left;font-style:italic; color:#666;font-size:85%}
-.branch .span{}
+.branch span{cursor:pointer}
+.branch span.selected{font-weight:800;color:#555}
 .product_info_sales_options{cursor:pointer}
 
 .block_list{width:800px}
@@ -723,3 +716,23 @@ position:relative;top:1px;
 .home_splinter_options span{color:#999;cursor:pointer}
 .home_splinter_options span:hover{color:#777}
 .home_splinter_options span.selected{color:#333;font-weight:100;text-decoration:none;}
+
+
+span.state_details,search_sugestion{cursor:pointer;}
+span.state_details.selected{color:#000 ;font-weight:600}
+span.state_details:hover{color:#222}
+
+
+a.state_details{cursor:pointer;}
+a.state_details.selected{color:#000 ;font-weight:600}
+a.state_details:hover{color:#000;text-decoration:none}
+
+.export_csv_menu{}
+
+
+.options_list td{ border:1px solid #999;text-align:center;cursor:pointer  }
+.options_list td.selected{ background:#7296e1;color:white   }
+.options_list td.empty{ border:none;cursor:default  }
+
+span.todo,div.todo {background-color: #C8E02B}
+div.todo {;padding:20px} 

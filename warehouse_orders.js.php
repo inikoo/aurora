@@ -7,9 +7,14 @@ if(!$user->can_view('orders'))
 ?>
 
 var Dom   = YAHOO.util.Dom;
+var Event   = YAHOO.util.Event;
 var assign_picker_dialog;
 var pick_it_dialog;
 var pick_assigned_dialog;
+
+var assign_packer_dialog;
+var pack_it_dialog;
+var pack_assigned_dialog;
 
 function close_dialog(dialog_name) {
 
@@ -45,6 +50,7 @@ Dom.get('Assign_Picker_Staff_Name').value=staff_alias;
 Dom.get('assign_picker_staff_key').value=staff_key;
 Dom.get('assign_picker_sup_password').focus();
 }
+
 function select_staff_pick_it(o){
 var staff_key=o.getAttribute('staff_id');
 var staff_alias=o.innerHTML;
@@ -84,7 +90,6 @@ var dn_key=Dom.get('assign_picker_dn_key').value;
 	});    
 
 }
-
 function pick_it_save(){
 
 var staff_key=Dom.get('pick_it_staff_key').value;
@@ -95,7 +100,7 @@ var dn_key=Dom.get('pick_it_dn_key').value;
     YAHOO.util.Connect.asyncRequest('POST',request ,{
 	    
 	    success:function(o) {
-				alert(o.responseText)
+				//alert(o.responseText)
 		var r =  YAHOO.lang.JSON.parse(o.responseText);
 		if (r.state==200) {
 		    
@@ -133,6 +138,98 @@ function pick_it(o,dn_key){
    Dom.get('pick_it_dn_key').value=dn_key;
     pick_it_dialog.show();
 }
+
+
+function select_staff_pack_it(o){
+var staff_key=o.getAttribute('staff_id');
+var staff_alias=o.innerHTML;
+Dom.removeClass(Dom.getElementsByClassName('pack_it_button', 'td', 'pack_it_buttons'),'selected');
+Dom.addClass(o,'selected');
+Dom.get('pack_it_Staff_Name').value=staff_alias;
+Dom.get('pack_it_staff_key').value=staff_key;
+
+Dom.setStyle('pack_it_pin_tr','visibility','visible');
+Dom.get("pack_it_pin_alias").innerHTML=staff_alias;
+Dom.get('pack_it_password').focus();
+}
+function assign_packer_save(){
+
+var staff_key=Dom.get('assign_packer_staff_key').value;
+ var sup_pwd=   Dom.get('assign_packer_sup_password').value;
+var dn_key=Dom.get('assign_packer_dn_key').value;
+    var request='ar_edit_orders.php?tipo=assign_packer&dn_key='+escape(dn_key)+'&staff_key='+escape(staff_key)+'&pin='+escape(sup_pwd);
+     
+    YAHOO.util.Connect.asyncRequest('POST',request ,{
+	    
+	    success:function(o) {
+				//alert(o.responseText)
+		var r =  YAHOO.lang.JSON.parse(o.responseText);
+		if (r.state==200) {
+		    
+		    if(r.action='updated'){
+		    Dom.get('operations'+dn_key).innerHTML=r.operations;
+		    Dom.get('dn_state'+dn_key).innerHTML=r.dn_state;
+		    }
+		    close_dialog('assign_packer_dialog');
+
+		}else{
+		  //  alert(r.msg);
+	    }
+	    }
+	});    
+
+}
+function pack_it_save(){
+
+var staff_key=Dom.get('pack_it_staff_key').value;
+var sup_pwd=   Dom.get('pack_it_password').value;
+var dn_key=Dom.get('pack_it_dn_key').value;
+    var request='ar_edit_orders.php?tipo=pack_it&dn_key='+escape(dn_key)+'&staff_key='+escape(staff_key)+'&pin='+escape(sup_pwd);
+     
+    YAHOO.util.Connect.asyncRequest('POST',request ,{
+	    
+	    success:function(o) {
+				//alert(o.responseText)
+		var r =  YAHOO.lang.JSON.parse(o.responseText);
+		if (r.state==200) {
+		    
+		    if(r.action='updated'){
+		    location.href='order_pack_aid.php?id='+dn_key;
+		    }
+		    close_dialog('pack_it_dialog');
+
+		}else{
+		  alert(r.msg);
+	    }
+	    }
+	});    
+
+}
+function assign_packer(o,dn_key){
+    var y=(Dom.getY(o))
+    var x=(Dom.getX(o))
+    x=x-120;
+    y=y+18;
+    Dom.setX('assign_packer_dialog', x)
+    Dom.setY('assign_packer_dialog', y)
+   Dom.get('Assign_packer_Staff_Name').focus();
+   Dom.get('assign_packer_dn_key').value=dn_key;
+    assign_packer_dialog.show();
+}
+function pack_it(o,dn_key){
+    var y=(Dom.getY(o))
+    var x=(Dom.getX(o))
+    x=x-120;
+    y=y+18;
+    Dom.setX('pack_it_dialog', x)
+    Dom.setY('pack_it_dialog', y)
+   Dom.get('pack_it_Staff_Name').focus();
+   Dom.get('pack_it_dn_key').value=dn_key;
+    pack_it_dialog.show();
+}
+
+
+
 YAHOO.util.Event.addListener(window, "load", function() {
     tables = new function() {
 	    var tableid=0; // Change if you have more the 1 table
@@ -204,6 +301,20 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	};
     });
 function init(){
+
+
+// ------------------------------------ready_to_pick_orders export csv code here------------------
+YAHOO.util.Event.addListener('export_csv0', "click",download_csv,'ready_to_pick_orders');
+ YAHOO.util.Event.addListener('export_csv0_in_dialog', "click",download_csv_from_dialog,{table:'export_csv_table0',tipo:'ready_to_pick_orders'});
+  csvMenu = new YAHOO.widget.ContextMenu("export_csv_menu0", {trigger:"export_csv0" });
+	 csvMenu.render();
+	 csvMenu.subscribe("show", csvMenu.focus);
+   
+ YAHOO.util.Event.addListener('export_csv0_close_dialog', "click",csvMenu.hide,csvMenu,true);
+// ----------------------------------ready_to_pick_orders export csv code ends here -------------------
+
+
+
  assign_picker_dialog = new YAHOO.widget.Dialog("assign_picker_dialog", {visible : false,close:true,underlay: "none",draggable:false});
  assign_picker_dialog.render();
  pick_assigned_dialog = new YAHOO.widget.Dialog("pick_assigned_dialog", {visible : false,close:true,underlay: "none",draggable:false});
@@ -211,7 +322,12 @@ function init(){
  pick_it_dialog = new YAHOO.widget.Dialog("pick_it_dialog", {visible : false,close:true,underlay: "none",draggable:false});
  pick_it_dialog.render();
 
-    
+assign_packer_dialog = new YAHOO.widget.Dialog("assign_packer_dialog", {visible : false,close:true,underlay: "none",draggable:false});
+ assign_packer_dialog.render();
+ pack_assigned_dialog = new YAHOO.widget.Dialog("pack_assigned_dialog", {visible : false,close:true,underlay: "none",draggable:false});
+ pack_assigned_dialog.render();
+ pack_it_dialog = new YAHOO.widget.Dialog("pack_it_dialog", {visible : false,close:true,underlay: "none",draggable:false});
+ pack_it_dialog.render();    
 
  var oACDS = new YAHOO.util.FunctionDataSource(mygetTerms);
  oACDS.queryMatchContains = true;
@@ -219,7 +335,11 @@ function init(){
  oAutoComp.minQueryLength = 0; 
 
 
-
+var change_view = function (e){
+	   window.location = "orders_server.php?view="+this.id;
+	 }
+	var ids=['orders','invoices','dn'];
+	Event.addListener(ids, "click", change_view);
  
 
 }

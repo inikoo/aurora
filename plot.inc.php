@@ -10,6 +10,7 @@ $plot_category=$_SESSION['state'][$page]['plot_category'];
 
 $plot_interval=$_SESSION['state'][$page]['plot_interval'][$plot_period]['plot_bins'];
 $plot_forecast=$_SESSION['state'][$page]['plot_interval'][$plot_period]['plot_forecast_bins'];
+//print $plot_forecast;
 
 
 $smarty->assign('plot_period',$plot_period);
@@ -39,7 +40,6 @@ else{
 
 $plot_args='tipo='.$page.'&category='.$plot_category.'&period='.$plot_period.'&keys='.$subject_id.'&currency='.$currency.'&from='.$plot_interval.'&to='.$plot_forecast;
 
-
 $smarty->assign('plot_keys',$subject_id);
 $smarty->assign('plot_currency',$subject_id);
 
@@ -52,8 +52,9 @@ if($plot_tipo=='top_departments'){
 
 
 
-
-    if($plot_period=='m')
+  if($plot_period=='d')
+      $plot_formated_period='Daily';
+    elseif($plot_period=='m')
       $plot_formated_period='Monthly';
     elseif($plot_period=='y')
       $plot_formated_period='Yearly';
@@ -84,9 +85,18 @@ $plot_period_menu=array(
 		     ,array("period"=>'q','label'=>_('Quarterly'))
 		     ,array("period"=>'y','label'=>_('Yearly'))
 		     );
-$smarty->assign('plot_period_menu',$plot_period_menu);
 
 if($page=='part'){
+
+$plot_period_menu=array(
+		     array("period"=>'d','label'=>_('Daily')),
+		     array("period"=>'w','label'=>_('Weekly')),
+		     array("period"=>'m','label'=>_('Montly')),
+		     array("period"=>'q','label'=>_('Quarterly'))
+		   
+		     );
+
+
   $plot_category_menu=array(
 			    array("category"=>'stock','label'=>_('Stock Keeping Units'))
 			    ,array("category"=>'value','label'=>_('Stock Value'))
@@ -100,7 +110,13 @@ $plot_category_menu=array(
 $smarty->assign('plot_category_menu',$plot_category_menu);
 }
 
+$smarty->assign('plot_period_menu',$plot_period_menu);
+
+
 $plot_interval_menu=array(
+  'd'=>array(
+		         array("value"=>100,'label'=>_('All')),
+		         array("value"=>30,'label'=>_('1 month'))),
             'y'=>array(
 		         array("value"=>100,'label'=>_('All')),
 		         array("value"=>5,'label'=>_('5 years'))),
@@ -122,19 +138,28 @@ $plot_interval_menu=array(
 )
 		     ;		     
 $plot_forecast_interval_menu=array(
+
+
+ 'd'=>array(
+		     array("value"=>0,'label'=>_('None')),
+		     array("value"=>5,'label'=>_('5 days'))
+  ),
  'y'=>array(
 		     array("value"=>0,'label'=>_('None')),
 		     array("value"=>3,'label'=>_('3 years'))
-),'q'=>array(
+  ),
+'q'=>array(
 		     array("value"=>0,'label'=>_('None')),
 		     array("value"=>3,'label'=>_('3 quarters'))
-),'m'=>array(
+),
+'m'=>array(
 		     array("value"=>0,'label'=>_('None')),
 		     array("value"=>3,'label'=>_('3 months')),
 		     array("value"=>12,'label'=>_('12 months')),
 		     array("value"=>24,'label'=>_('24 months'))
 
-),'w'=>array(
+),
+'w'=>array(
 		     array("value"=>0,'label'=>_('None')),
 		     array("value"=>5,'label'=>_('5 weeks'))
 )
