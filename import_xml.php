@@ -44,8 +44,10 @@ $js_files=array(
 		'js/php.default.min.js',
 		'common.js.php',
 		'table_common.js.php',
+		
 		'js/dropdown.js',
-        	);
+        'import_data.js.php'    
+		);
 
 
 if(!isset($_REQUEST['tipo'])){
@@ -54,34 +56,31 @@ exit("to do a page where the user can choose the correct options");
 
 $scope=$_REQUEST['tipo'];
 
+include_once('xml2array.php');
 
- 
 switch($scope){
 case('customers_store'):
 $scope_args=$_SESSION['state']['customers']['store'];
+
+// $xml=file_get_contents('conf/import_file_customers.xml');
+//$fields=xml2array($xml);
 
 
 break;
 default:
 $scope_args='';
 }
-	
-if(isset($_REQUEST['error']))
-{
-	$showerror = $_REQUEST['error'];
-}	
-else
-{
-	$showerror = '';
-}
 
 $smarty->assign('scope',$scope);
 $smarty->assign('scope_args',$scope_args);
 $smarty->assign('js_files',$js_files);
 $smarty->assign('css_files',$css_files);
-$smarty->assign('showerror',$showerror);
+$smarty->assign('js_files',$js_files);
+
+
+
 
  
-  $smarty->display('import_csv.tpl');
+  $smarty->display('import_xml.tpl');
 
 ?>

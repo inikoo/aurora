@@ -724,7 +724,7 @@ YAHOO.util.Event.onContentReady("panel2", function () {
 
 function focus_search_family(){
 
-//alert("reached to function focus_search_family()")
+
 panel2.show()
 
 var a=document.getElementById('family_search');
@@ -734,7 +734,7 @@ setTimeout((function() { a.focus() }), 0);
 }
 
 
-panel2 = new YAHOO.widget.Panel("panel2", { xy:[350,330], width:"250px", visible: false } );
+panel2 = new YAHOO.widget.Panel("panel2", { xy:[470,330], width:"250px", visible: false } );
 
 var kl = new YAHOO.util.KeyListener(document, { keys:27 },{ fn:panel2.hide,scope:panel2,correctScope:true }, "keyup" ); 
 													
@@ -746,7 +746,7 @@ var kl = new YAHOO.util.KeyListener(document, { keys:27 },{ fn:panel2.hide,scope
 { fn:focus_search_family } );
 	
 	kl2.enable();
- 
+
 
 
     });
