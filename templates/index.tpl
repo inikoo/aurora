@@ -22,7 +22,7 @@
 
 
 	<div id="wrapper">
-	<inpput type="hidden" value='{$store_keys}' id="store_keys">
+	<input type="hidden" value='{$store_keys}' id="store_keys">
 		<div id="wid_menu" >
 			<img style="position:relative;top:3px;display:none" src="art/icons/previous.png" alt="" id="previous"/>
 			<ul id="buttons">

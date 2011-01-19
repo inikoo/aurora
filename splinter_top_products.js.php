@@ -100,7 +100,7 @@ YAHOO.util.Event.onContentReady("table<?php print $_REQUEST['table_id']?>", func
 
 
 function change_product_period(){
-stores_keys=Dom.get('stores_keys');
+stores_keys=Dom.get('store_keys').value;
 var period=this.getAttribute('period');
 var tableid=<?php print $_REQUEST['table_id']?>;
 
