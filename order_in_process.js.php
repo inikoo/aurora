@@ -724,11 +724,12 @@ YAHOO.util.Event.onContentReady("panel2", function () {
 
 function focus_search_family(){
 
-alert("reached to function focus_search_family()")
+//alert("reached to function focus_search_family()")
 panel2.show()
 
-document.getElementById('family_search').focus()
-alert("caca")
+var a=document.getElementById('family_search');
+setTimeout((function() { a.focus() }), 0);
+
 // SOLVE THIS ONE DAY PLEASE
 }
 
