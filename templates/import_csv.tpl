@@ -6,11 +6,11 @@
     <h1>Import Contacts From CSV File</h1>
   </div>
 <br>
-
+{$showerror}
 <h3>Upload your File:</h3>
 <div class="left3Quarters">
-                
-{$error}
+
+
 <form id="form" name="form" method="post" action="import_csv_verify.php?tipo=customers_store" enctype="multipart/form-data">
 <input type="hidden" name="form" value="form" />
  

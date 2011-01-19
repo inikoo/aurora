@@ -66,14 +66,20 @@ default:
 $scope_args='';
 }
 	
-	
-
+if(isset($_REQUEST['error']))
+{
+	$showerror = $_REQUEST['error'];
+}	
+else
+{
+	$showerror = '';
+}
 
 $smarty->assign('scope',$scope);
 $smarty->assign('scope_args',$scope_args);
 $smarty->assign('js_files',$js_files);
 $smarty->assign('css_files',$css_files);
-
+$smarty->assign('showerror',$showerror);
 
  
   $smarty->display('import_csv.tpl');
