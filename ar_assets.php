@@ -2932,17 +2932,49 @@ function list_departments() {
     $order='`Product Department Low Availability Products`';
     elseif($_order=='critical')
     $order='`Product Department Critical Availability Products`';
+    elseif('descontinued')
+    $order='`Product Department Discontinued Products`';
+
+
+
 
 
     $sum_families=0;
     $sum_active=0;
     $sum_discontinued=0;
-    $sql="select sum(`Product Department For Public Sale Products`) as sum_active, sum(`Product Department Discontinued Products`) as sum_discontinued,sum(`Product Department Families`) as sum_families  from `Product Department Dimension` $where  $wheref ";
+
+    $sum_todo=0;
+    $sum_outofstock=0;
+    $sum_stock_error=0;
+    $sum_stock_value=0;
+    $sum_surplus=0;
+    $sum_optimal=0;
+    $sum_low=0;
+    $sum_critical=0;
+
+
+
+
+
+
+    $sql="select sum(`Product Department Out Of Stock Products`) outofstock,sum(`Product Department Unknown Stock Products`)stock_error,
+         sum(`Product Department Stock Value`)stock_value,sum(`Product Department Surplus Availability Products`)surplus,sum(`Product Department Optimal Availability Products`) optimal,
+         sum(`Product Department Low Availability Products`) low,sum(`Product Department Critical Availability Products`) critical,
+         sum(`Product Department In Process Products`) as todo,sum(`Product Department For Public Sale Products`) as sum_active, sum(`Product Department Discontinued Products`) as sum_discontinued,sum(`Product Department Families`) as sum_families  from `Product Department Dimension` $where  $wheref ";
     $result=mysql_query($sql);
+// print $sql;
     if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
         $sum_families=$row['sum_families'];
         $sum_active=$row['sum_active'];
         $sum_discontinued=$row['sum_discontinued'];
+        $sum_todo=$row['todo'];
+        $sum_outofstock=$row['outofstock'];
+        $sum_stock_error=$row['stock_error'];
+        $sum_stock_value=$row['stock_value'];
+        $sum_surplus=$row['surplus'];
+        $sum_optimal=$row['optimal'];
+        $sum_low=$row['low'];
+        $sum_critical=$row['critical'];
     }
 
     if ($period=='all') {
@@ -3273,6 +3305,22 @@ function list_departments() {
 
 
         if ($percentages) {
+            $families=percentage($row['Product Department Families'],$sum_families);
+
+            $todo=percentage($row['Product Department In Process Products'],$sum_todo);
+            $active=percentage($row['Product Department For Public Sale Products'],$sum_active);
+            $discontinued=percentage($row['Product Department Discontinued Products'],$sum_discontinued);
+            $outofstock=percentage($row['Product Department Out Of Stock Products'],$sum_outofstock);
+            $stock_error=percentage($row['Product Department Unknown Stock Products'],$sum_stock_error);
+            $stock_value=money($row['Product Department Stock Value'],$sum_stock_value);
+            $surplus=percentage($row['Product Department Surplus Availability Products'],$sum_surplus);
+            $optimal=percentage($row['Product Department Optimal Availability Products'],$sum_optimal);
+            $low=percentage($row['Product Department Low Availability Products'],$sum_low);
+            $critical=percentage($row['Product Department Critical Availability Products'],$sum_critical);
+
+
+
+
             if ($period=='all') {
                 $tsall=percentage($row['Product Department Total Invoiced Amount'],$sum_total_sales,2);
                 if ($row['Product Department Total Profit']>=0)
@@ -3523,26 +3571,37 @@ function list_departments() {
         if (!$percentages) {
             $tsall=money($tsall,$row['Product Department Currency Code']);
             $tprofit=money($tprofit,$row['Product Department Currency Code']);
+            $families=number($row['Product Department Families']);
+            $todo=number($row['Product Department In Process Products']);
+            $active=number($row['Product Department For Public Sale Products']);
+            $discontinued=number($row['Product Department Discontinued Products']);
+            $outofstock=number($row['Product Department Out Of Stock Products']);
+            $stock_error=number($row['Product Department Unknown Stock Products']);
+            $stock_value=money($row['Product Department Stock Value']);
+            $surplus=number($row['Product Department Surplus Availability Products']);
+            $optimal=number($row['Product Department Optimal Availability Products']);
+            $low=number($row['Product Department Low Availability Products']);
+            $critical=number($row['Product Department Critical Availability Products']);
+
         }
         $adata[]=array(
                      'code'=>$code,
                      'name'=>$name,
-                     'families'=>number($row['Product Department Families']),
-                     'active'=>number($row['Product Department For Public Sale Products']),
-                     'todo'=>number($row['Product Department In Process Products']),
-                     'discontinued'=>number($row['Product Department Discontinued Products']),
+                     'families'=>$families,
+                     'active'=>$active,
+                     'todo'=>$todo,
+                     'discontinued'=>$discontinued,
 
-                     'outofstock'=>number($row['Product Department Out Of Stock Products']),
-                     'stock_error'=>number($row['Product Department Unknown Stock Products']),
-                     'stock_value'=>money($row['Product Department Stock Value']),
-                     'surplus'=>number($row['Product Department Surplus Availability Products']),
-                     'optimal'=>number($row['Product Department Optimal Availability Products']),
-                     'low'=>number($row['Product Department Low Availability Products']),
-                     'critical'=>number($row['Product Department Critical Availability Products']),
+                     'outofstock'=>$outofstock,
+                     'stock_error'=>$stock_error,
+                     'stock_value'=>$stock_value,
+                     'surplus'=>$surplus,
+                     'optimal'=>$optimal,
+                     'low'=>$low,
+                     'critical'=>$critical,
                      'sales_type'=>$sales_type,
 
                      'sales'=>$tsall,
-
                      'profit'=>$tprofit,
                      'aws_p'=>$aws_p,
                      'awp_p'=>$awp_p
@@ -3556,29 +3615,74 @@ function list_departments() {
     if ($total<=$number_results and $total>1) {
 
         if ($percentages) {
-            $tsall='100.00%';
-            $tprofit='100.00%';
+
+            if ($tsall!=0)$tsall='100.00%';
+            else$tsall='';
+            if ($tprofit!=0)$tprofit='100.00%';
+            else$tprofit='';
+            if ($sum_families!=0)$tfamilies='100.00%';
+            else$tfamilies='';
+
+            if ($sum_outofstock!=0)$outofstock='100.00%';
+            else$outofstock='';
+            if ($sum_stock_error!=0)$stock_error='100.00%';
+            else$stock_error='';
+
+            if ($sum_surplus!=0)$surplus='100.00%';
+            else$surplus='';
+            if ($sum_optimal!=0)$optimal='100.00%';
+            else$optimal='';
+            if ($sum_low!=0)$low='100.00%';
+            else$low='';
+            if ($sum_critical!=0)$critical='100.00%';
+            else$critical='';
+            
+             if ($sum_active!=0)$active='100.00%';
+            else$active='';
+             if ($sum_discontinued!=0)$discontinued='100.00%';
+            else$discontinued='';
         } else {
             $tsall=money($sum_total_sales,$currency_code);
             $tprofit=money($sum_total_profit,$currency_code);
+            $tfamilies=number($sum_families);
+            $outofstock=number($sum_outofstock);
+            $stockerror=number($sum_stock_error);
+
+            $surplus=number($sum_surplus);
+            $optimal=number($sum_optimal);
+            $low=number($sum_low);
+            $critical=number($sum_critical);
+            $active=number($sum_active);
+            $discontinued=number($sum_discontinued);
+
         }
 
         $adata[]=array(
 
                      'code'=>_('Total'),
-                     'families'=>number($sum_families),
+                     
+                     
+                     
+                     
+                     'families'=>$tfamilies,
                      'active'=>number($sum_active),
                      'sales'=>$tsall,
                      'profit'=>$tprofit,
                      'discontinued'=>number($sum_discontinued),
-                     'sales_type'=>''
-// 		 'outofstock'=>number($row['product department out of stock products']),
-// 		 'stockerror'=>number($row['product department unknown stock products']),
-// 		 'stock_value'=>money($row['product department stock value']),
-// 		 'tsall'=>$tsall,'tprofit'=>$tprofit,
-// 		 'per_tsall'=>percentage($row['product department total invoiced amount'],$sum_total_sales,2),
-// 		 'tsm'=>money($row['product department 1 month acc invoiced amount']),
-// 		 'per_tsm'=>percentage($row['product department 1 month acc invoiced amount'],$sum_month_sales,2),
+                     'sales_type'=>'',
+                     'outofstock'=>$outofstock,
+                     'stock_error'=>$stock_error,
+                     'stock_value'=>$stock_value,
+                     'surplus'=>$surplus,
+                     'optimal'=>$optimal,
+                     'low'=>$low,
+                     'critical'=>$critical,
+                     'sales_type'=>$sales_type,
+                        'active'=>$active,
+                        'discontinued'=>$discontinued
+
+
+
                  );
 
     } else {
@@ -3606,6 +3710,9 @@ function list_departments() {
                    );
     echo json_encode($response);
 }
+
+
+
 function list_products() {
 
 
@@ -6010,18 +6117,18 @@ function list_families() {
     $number_results++;
     $response=array('resultset'=>
                                 array(
-                                        'state'=>200,
-                                      'data'=>$adata,
-                                      'sort_key'=>$_order,
-                                      'sort_dir'=>$_dir,
-                                      'tableid'=>$tableid,
-                                      'filter_msg'=>$filter_msg,
-                                      'rtext'=>$rtext,
-                                      'rtext_rpp'=>$rtext_rpp,
-                                      'total_records'=>$total_records,
-                                      'records_offset'=>$start_from+1,
-                                      'records_perpage'=>$number_results,
-                                     )
+                                    'state'=>200,
+                                    'data'=>$adata,
+                                    'sort_key'=>$_order,
+                                    'sort_dir'=>$_dir,
+                                    'tableid'=>$tableid,
+                                    'filter_msg'=>$filter_msg,
+                                    'rtext'=>$rtext,
+                                    'rtext_rpp'=>$rtext_rpp,
+                                    'total_records'=>$total_records,
+                                    'records_offset'=>$start_from+1,
+                                    'records_perpage'=>$number_results,
+                                )
                    );
 
     echo json_encode($response);
@@ -7279,28 +7386,27 @@ function list_deals() {
     else
         $tableid=0;
 
-    if ($parent=='store_with_children')
-	{
-    $_SESSION['state']['deals']['table']['order']=$order;
-    $_SESSION['state']['deals']['table']['order_dir']=$order_direction;
-    $_SESSION['state']['deals']['table']['nr']=$number_results;
-    $_SESSION['state']['deals']['table']['sf']=$start_from;
-    $_SESSION['state']['deals']['table']['where']=$where;
-    $_SESSION['state']['deals']['table']['f_field']=$f_field;
-    $_SESSION['state']['deals']['table']['f_value']=$f_value;
+    if ($parent=='store_with_children') {
+        $_SESSION['state']['deals']['table']['order']=$order;
+        $_SESSION['state']['deals']['table']['order_dir']=$order_direction;
+        $_SESSION['state']['deals']['table']['nr']=$number_results;
+        $_SESSION['state']['deals']['table']['sf']=$start_from;
+        $_SESSION['state']['deals']['table']['where']=$where;
+        $_SESSION['state']['deals']['table']['f_field']=$f_field;
+        $_SESSION['state']['deals']['table']['f_value']=$f_value;
 
 
-	}
-       // $conf=$_SESSION['state']['deals']['table']=array('order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value);
+    }
+    // $conf=$_SESSION['state']['deals']['table']=array('order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value);
     else
         $_SESSION['state'][$parent]['deals']=array('order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value);
 
-  
 
 
 
 
-  if ($parent=='store')
+
+    if ($parent=='store')
         $where=sprintf("where  (`Store Key`=%d and `Deal Trigger`='Order')     ",$parent_id);
     if ($parent=='store_with_children')
         $where=sprintf("where  `Store Key`=%d     ",$parent_id);
@@ -7509,9 +7615,9 @@ function list_customers_per_store() {
     } else
         $avg=$_SESSION['state']['stores']['customers']['avg'];
 
- 
 
- $_SESSION['state']['stores']['customers']['percentage']=$percentages;
+
+    $_SESSION['state']['stores']['customers']['percentage']=$percentages;
     $_SESSION['state']['stores']['customers']['period']=$period;
     $_SESSION['state']['stores']['customers']['avg']=$avg;
     $_SESSION['state']['stores']['customers']['order']=$order;
@@ -7916,7 +8022,7 @@ function list_orders_per_store() {
     $total_paid=0;
     $total_suspended=0;
     $sql="select  sum(`Store Total Orders`) as orders,sum(`Store Unknown Orders`) as unknown,sum(`Store Suspended Orders`) as suspended,sum(`Store Dispatched Orders`) as dispatched,sum(`Store Cancelled Orders`) cancelled,sum(`Store Orders In Process`) as todo   from `Store Dimension`  $where     ";
-   // print $sql;
+    // print $sql;
     $res = mysql_query($sql);
     if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
         $total_orders=$row['orders'];
@@ -8882,10 +8988,10 @@ function list_product_categories() {
 
 
 
-$store_key=$_SESSION['state']['store']['id'];
+    $store_key=$_SESSION['state']['store']['id'];
 
     $where=sprintf("where `Category Subject`='Product' and  `Category Parent Key`=%d and `Category Store Key`=%d",$root_category,$store_key);
-  //  $where=sprintf("where `Category Subject`='Product'  ");
+    //  $where=sprintf("where `Category Subject`='Product'  ");
 
     if ($stores_mode=='grouped')
         $group=' group by `Category Key`';
@@ -8901,15 +9007,15 @@ $store_key=$_SESSION['state']['store']['id'];
 
 
     $sql="select count(*) as total   from `Category Dimension`   $where $wheref";
-    
+
 //$sql=" describe `Category Dimension`;";
 // $sql="select *  from `Category Dimension` where `Category Parent Key`=1 ";
 //print $sql;
     $res=mysql_query($sql);
     if ($row=mysql_fetch_assoc($res)) {
-      $total=$row['total'];
+        $total=$row['total'];
 //   print_r($row);
-   }
+    }
     mysql_free_result($res);
 
 //exit;
@@ -9326,10 +9432,10 @@ $store_key=$_SESSION['state']['store']['id'];
         else
             $name=$row['Product Category Key'].' '.$row['Category Name']." (".$row['Product Category Store Key'].")";
         $adata[]=array(
-		     //'go'=>sprintf("<a href='edit_category.php?edit=1&id=%d'><img src='art/icons/page_go.png' alt='go'></a>",$row['Category Key']),
+                     //'go'=>sprintf("<a href='edit_category.php?edit=1&id=%d'><img src='art/icons/page_go.png' alt='go'></a>",$row['Category Key']),
                      'id'=>$row['Category Key'],
                      'name'=>$name,
-                   
+
                      'departments'=>number($row['Product Category Departments']),
                      'families'=>number($row['Product Category Families']),
                      'active'=>number($row['Product Category For Public Sale Products']),
