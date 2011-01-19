@@ -67,7 +67,7 @@ if(isset($_POST['submit']))
 {
 	if($_FILES['fileUpload']['name']=='') { header('location:import_csv.php?tipo=customers_store'); }
 		
-	if (($_FILES["fileUpload"]["type"] == "text/plain") && ($_FILES["fileUpload"]["size"] < 20000))
+	if (($_FILES["fileUpload"]["type"] == "text/plain") || ($_FILES["fileUpload"]["type"] == "text/csv") && ($_FILES["fileUpload"]["size"] < 20000))
 	  {
 	  if ($_FILES["fileUpload"]["error"] > 0)
 	    {
