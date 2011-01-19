@@ -118,7 +118,7 @@ $js_files[]='common_plot.js.php?page='.$page;
 
 $js_files[]='store.js.php';
 
-
+//$js_files=array();
 
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
