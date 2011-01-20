@@ -17,9 +17,11 @@
 {/literal}
 <div id="bd">
 <div id="no_details_title" style="clear:left;{if $show_details}display:none;{/if}">
-    <h1>Import Contacts From CSV File
+
+    <h1>Import Contacts From CSV File 
 </h1>
   </div>
+<div align="right"><form><input type="button" value="Cancel" name="cancel" onClick="history.go(-2)" class="bt"></form></div>
 <br>
 
 <div class="left3Quarters">

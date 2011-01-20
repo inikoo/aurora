@@ -32,7 +32,7 @@
  
 <div class="ImportSection"><h3>Import from Spreadsheets file</h3>
         <p>A spreadsheet is a grid that organizes data into columns and rows<br>
-        <a href="">Import from Spreadsheets file</a>
+        <a href="import_xls.php">Import from Spreadsheets file</a>
         </p>
         </div>
 
