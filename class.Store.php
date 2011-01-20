@@ -912,7 +912,7 @@ class Store extends DB_Table {
                      $this->id
                     );
         mysql_query($sql);
-// print "\n$sql\n";
+ //print "\n$sql\n";
 
 
 

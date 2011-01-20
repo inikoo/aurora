@@ -193,9 +193,9 @@ var CellEdit = function (callback, newValue) {
     ar_file, {
 success:function(o) {
           alert(o.responseText);
-//alert("before r");
+
             var r = YAHOO.lang.JSON.parse(o.responseText)
-            //;alert(r);alert("after r");
+           
 
             if (r.state == 200) {
 
@@ -431,7 +431,6 @@ function validate_scope_new(branch) {
 }
 
 function validate_general(branch,item,query) {
-alert("***********");
 alert(validate_scope_metadata[branch]['type']+' '+branch+' '+query)
     if (validate_scope_metadata[branch]['type']=='new') {  
         validate_general_new(branch,item,query)
@@ -654,8 +653,6 @@ function post_item_updated_actions(branch,key,newvalue) {
 }
 
 function save_edit_general(branch) {
-
-
     operation='edit';
     scope_edit_ar_file=validate_scope_metadata[branch]['ar_file'];
     branch_key=validate_scope_metadata[branch]['key'];
@@ -683,11 +680,11 @@ function save_edit_general(branch) {
                         encodeURIComponent(item_input.value) +  '&oldvalue=' +
                         encodeURIComponent(item_input.getAttribute('ovalue')) +
                         '&'+branch_key_name+'='+branch_key;
-              alert(request);
+             alert(request);
 
             YAHOO.util.Connect.asyncRequest('POST',request , {
 success:function(o) {
-                   	//calert(o.responseText)
+                   	alert(o.responseText)
                     var r =  YAHOO.lang.JSON.parse(o.responseText);
                     if (r.state==200) {
 
@@ -735,10 +732,10 @@ function save_new_general(branch) {
 
 
     var request=scope_edit_ar_file+'?tipo='+operation+'_'+branch+'&parent='+parent+'&parent_key=' + parent_key+ '&values=' + 	jsonificated_values;
-alert(request)
+//alert(request)
     YAHOO.util.Connect.asyncRequest('POST',request , {
 success:function(o) {
-             alert(o.responseText);
+            // alert(o.responseText);
 
             var r =  YAHOO.lang.JSON.parse(o.responseText);
             Dom.get("new_"+branch+"_dialog_msg").innerHTML=r.msg;
