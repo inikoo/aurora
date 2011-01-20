@@ -78,7 +78,7 @@ $js_files=array(
 					  echo"<div class='prop'>";
 		
 					  echo"<label class='import_level' style='font-size:14px';>Step 2 - Check contacts prior to importing:</label>";
-					  echo"<span style='font-size: 12px;'>We've scanned your file and found the following fields.It's important to select the fields, else all the fields will be imported.<br> When you're happy that the fields are assigned correctly press the continue button. </span>";
+					  echo"<span style='font-size: 12px;'>We've scanned your file and found the following fields.It's important to select the fields, else all the fields will be imported.<br> When you're happy with the selected fields press the continue button. </span>";
 					  echo"<div class='clear'></div>";				
 
 
