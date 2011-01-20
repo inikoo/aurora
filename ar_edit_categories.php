@@ -315,7 +315,7 @@ function delete_categories($data) {
     global $editor;
     $subject=new Category($data['id']);
     if (!$subject->id) {
-        $response=array('state'=>400,'msg'=>'Area not found');
+        $response=array('state'=>400,'msg'=>'Category not found');
         echo json_encode($response);
         return;
     }
