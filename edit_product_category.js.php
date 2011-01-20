@@ -76,8 +76,8 @@ function save_edit_category(){
 
 
 function post_item_updated_actions(branch,key,newvalue){
-if(key=='name')
-     Dom.get('title_name').innerHTML=newvalue;
+if(key=='name'){
+     Dom.get('title_name').innerHTML=newvalue;}
 
 
  
