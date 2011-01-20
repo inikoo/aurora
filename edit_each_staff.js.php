@@ -315,7 +315,7 @@ function init(){
     var staff_id_oAutoComp = new YAHOO.widget.AutoComplete("Company_Staff_Id","Company_Staff_Id_Container", staff_id_oACDS);
     staff_id_oAutoComp.minQueryLength = 0; 
     staff_id_oAutoComp.queryDelay = 0.1;
-    
+  
      var staff_name_oACDS = new YAHOO.util.FunctionDataSource(validate_name);
     staff_name_oACDS.queryMatchContains = true;
     var staff_name_oAutoComp = new YAHOO.widget.AutoComplete("Company_Staff_Name","Company_Staff_Name_Container", staff_name_oACDS);
