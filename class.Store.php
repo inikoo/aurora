@@ -880,7 +880,7 @@ class Store extends DB_Table {
         `Store 1 Quarter New Customers`=%d,
         `Store 1 Month New Customers`=%d,
         `Store 1 Week New Customers`=%d,
-                `Store 1 Year Lost Customers`=%d,
+        `Store 1 Year Lost Customers`=%d,
         `Store 1 Quarter Lost Customers`=%d,
         `Store 1 Month Lost Customers`=%d,
         `Store 1 Week Lost Customers`=%d,
