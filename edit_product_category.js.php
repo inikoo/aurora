@@ -61,31 +61,30 @@ function save_edit_subcategory(){
 function reset_edit_subcategory(){
     reset_edit_general('subcategory')
 }
+function reset_new_subcategory(){
+ reset_edit_general('subcategory');
+}
 
-
-function save_new_category(){
+/*function save_new_category(){
  save_edit_general('category');
 }
 function save_edit_category(){
     save_edit_general('category');
-}
+}*/
 
 
 
 
 function post_item_updated_actions(branch,key,newvalue){
-
- /*if(key=='name')
+if(key=='name')
      Dom.get('title_name').innerHTML=newvalue;
- 
- else if(key=='code')
-     Dom.get('title_code').innerHTML=newvalue;
+
 
  
  var table=tables.table1;
  var datasource=tables.dataSource1;
  var request='';
- datasource.sendRequest(request,table.onDataReturnInitializeTable, table); */
+ datasource.sendRequest(request,table.onDataReturnInitializeTable, table); 
 var table_id=1
 
 
@@ -272,11 +271,13 @@ function change_block(){
 	Dom.addClass(this, 'selected');
 	
 	YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=categories_view&value='+this.id ,{});
-
- 
-
-
 }
+function cancel_add_category(){
+   reset_new_category();
+  }
+function cancel_add_subcategory(){
+   reset_new_subcategory();
+  }
 
 function init(){
 
@@ -287,9 +288,7 @@ function init(){
     YAHOO.util.Event.addListener('save_edit_category', "click", save_new_category);   
     YAHOO.util.Event.addListener('reset_edit_category', "click", cancel_add_category);
 
-  //  YAHOO.util.Event.addListener('add_subcategory', "click", show_add_subcategory_dialog);
-    YAHOO.util.Event.addListener('save_edit_subcategory', "click", save_new_subcategory);   
-    YAHOO.util.Event.addListener('reset_edit_subcategory', "click", cancel_add_subcategory);
+  
    
  /*   var staff_id_oACDS = new YAHOO.util.FunctionDataSource(validate_id);
     staff_id_oACDS.queryMatchContains = true;
@@ -302,6 +301,11 @@ function init(){
     var category_name_oAutoComp = new YAHOO.widget.AutoComplete("Category_Name","Category_Name_Container", category_name_oACDS);
     category_name_oAutoComp.minQueryLength = 0; 
     category_name_oAutoComp.queryDelay = 0.1;
+
+
+//  YAHOO.util.Event.addListener('add_subcategory', "click", show_add_subcategory_dialog);
+    YAHOO.util.Event.addListener('save_edit_subcategory', "click", save_new_subcategory);
+    YAHOO.util.Event.addListener('reset_edit_subcategory', "click", cancel_add_subcategory); 
 
    var subcategory_name_oACDS = new YAHOO.util.FunctionDataSource(validate_subcategory_name);
     subcategory_name_oACDS.queryMatchContains = true;

@@ -26,12 +26,15 @@ case('edit_subcategory'):
     $data=prepare_values($_REQUEST,array('id'=>array('type'=>'key'),'newvalue' =>array('type'=>'string'),'key' =>array('type'=>'string_value')));
     edit_categories($data);
     break;
+
 case('edit_categories'):
     $data=prepare_values($_REQUEST,array('id'=>array('type'=>'key'),'newvalue' =>array('type'=>'string'),'key' =>array('type'=>'string_value')));
     edit_categories($data);
     break;
 case('edit_category'):
-    edit_category();
+   $data=prepare_values($_REQUEST,array('category_key'=>array('type'=>'key'),'newvalue' =>array('type'=>'string'),'key' =>array('type'=>'string_value')));
+
+   edit_category($data);
     break;
 case('edit_subcategory'):
     edit_subcategory();
@@ -292,6 +295,20 @@ function edit_categories($data) {
     }
     echo json_encode($response);
 }
+
+function edit_category($data) {
+    $category=new Category($data['category_key']);
+    $translate_keys=array('category_key'=>'Category Key','name'=>'Category Name');
+    $category->update(array($translate_keys[$data['key']]=>$data['newvalue']));//print($data['key']);
+    if ($category->updated) {
+        $response=array('state'=>200,'action'=>'updated','key'=>$data['key'],'newvalue'=>$category->new_value);
+    } else {
+        $response=array('state'=>200,'action'=>'nochange','key'=>$data['key'],'newvalue'=>$data['newvalue']);
+    }
+    echo json_encode($response);
+}
+
+
 
 function delete_categories($data) {
     include_once('class.Category.php');
