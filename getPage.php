@@ -6,11 +6,13 @@
 	$csv->load($_SESSION['file_path']);
 	//extracting the HEADERS
 	$h = $csv->getHeaders();
+	$count_rows = $csv->countRows();
 	$index = $_REQUEST['v'];
 	$r = $csv->getRow($index);
 	$leftColumnArray = array();
 	$rightColumnArray = array();
 	//$assign = $_POST['assign_field'];	
+	
 ?>
 <table class="recordList">
 		
@@ -24,9 +26,20 @@
 		<th class="list-column-left" style="text-align: left; width: 30%;">
 		<span style="float: left;">Sample Values</span>
 		<span style="float: right;padding-right:5px;"> 
-			<a href="#" class="subtext"  onclick="getPrev(<?php echo $index; ?>)">Previous</a> &nbsp;&nbsp;
-			<a href="#" class="subtext"  onclick="getNext(<?php echo $index; ?>)">Next</a>
-	
+			     <?php
+              			 if($index > 0)
+              			 {
+       			    ?>
+       				<a href="#" id="prev" onclick="getPrev(<?php echo $index; ?>)">Previous</a>
+		       	   <?php
+			         }
+			       if($index < $count_rows-1)        
+			         {
+		       	   ?>
+       				<a href="#" id="next" onclick="getNext(<?php echo $index; ?>)">Next</a>
+		          <?php
+			         }
+		          ?>
 		</span>
 		</th>
 		</tr>
