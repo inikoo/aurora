@@ -48,34 +48,7 @@ include_once('gb_create_main_pages.php');
 
 
 
-mysql_query('TRUNCATE TABLE `Site Dimension`');
 
-$sql=sprintf("select `Store Key` from  `Store Dimension  ");
-$res=mysql_query($sql);
-while ($row=mysql_fetch_array($res)) {
-    $sql=sprintf("delete from `Site Dimension` where `Store Key`=%d",$row['Store Key']);
-    mysql_query($sql);
-
-}
-
-//$sql=sprintf("select P.`Page Key` from `Page Dimension` P  left join `Page Store Dimension` PS on (P.`Page Key`=PS.`Page Key`)  where `Page Type`='Store'  and `Page Store Section`='Information' ");
-$sql=sprintf("select P.`Page Key` from `Page Dimension` P  left join `Page Store Dimension` PS on (P.`Page Key`=PS.`Page Key`)  where `Page Type`='Store'  ");
-$res=mysql_query($sql);
-while ($row=mysql_fetch_array($res)) {
-
-
-
-    $sql=sprintf("delete from `Page Dimension` where `Page Key`=%d",$row['Page Key']);
-    // print "$sql\n";
-    mysql_query($sql);
-    $sql=sprintf("delete from `Page Store Dimension` where `Page Key`=%d",$row['Page Key']);
-    mysql_query($sql);
-
-
-
-    //print "$sql\n";
-
-}
 
 chdir('../../');
 
@@ -393,6 +366,36 @@ while ($row=mysql_fetch_array($res)) {
 }
 
 
+function delete_old_sites(){
+mysql_query('TRUNCATE TABLE `Site Dimension`');
 
+$sql=sprintf("select `Store Key` from  `Store Dimension  ");
+$res=mysql_query($sql);
+while ($row=mysql_fetch_array($res)) {
+    $sql=sprintf("delete from `Site Dimension` where `Store Key`=%d",$row['Store Key']);
+    mysql_query($sql);
+
+}
+
+//$sql=sprintf("select P.`Page Key` from `Page Dimension` P  left join `Page Store Dimension` PS on (P.`Page Key`=PS.`Page Key`)  where `Page Type`='Store'  and `Page Store Section`='Information' ");
+$sql=sprintf("select P.`Page Key` from `Page Dimension` P  left join `Page Store Dimension` PS on (P.`Page Key`=PS.`Page Key`)  where `Page Type`='Store'  ");
+$res=mysql_query($sql);
+while ($row=mysql_fetch_array($res)) {
+
+
+
+    $sql=sprintf("delete from `Page Dimension` where `Page Key`=%d",$row['Page Key']);
+    // print "$sql\n";
+    mysql_query($sql);
+    $sql=sprintf("delete from `Page Store Dimension` where `Page Key`=%d",$row['Page Key']);
+    mysql_query($sql);
+
+
+
+    //print "$sql\n";
+
+}
+
+}
 
 ?>
