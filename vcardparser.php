@@ -115,29 +115,31 @@ class importvcard
 										
 										
 					}
+					if($delimeter=='REV')
+					{
+						continue;
+					}
 
 				}
 				else
 				{
-					#echo"semicolon:$pos_semicolon	";
 					$delimeter  = trim(substr($line, 0, $pos_semicolon));
 					$type=substr($line, $pos_semicolon+1);
-					#echo"type=$type";
+					$pos_semicolon2 = strpos($type,';');
+					$type_only=substr($type,0, $pos_semicolon2);
+					$type_only=str_replace(":","","$type_only");
+					#echo"Type only of $delimeter= $type_only<br>";
 					
-					if($delimeter=='FN')
-					{
-						if($type=='PREF'||$type='WORK'||$type=='VOICE'||$type=='MSG'||$type=='PAGER'||$type=='HOME')
-						{
-							$delimeter='Customer Main Contact Name';
-										
-						}				
-					}
 					if($delimeter=='TEL')
 					{
-						if($type=='PREF'||$type='WORK'||$type=='VOICE'||$type=='MSG'||$type=='PAGER'||$type=='HOME')
+						if($type_only=='WORK')
 						{
 							$delimeter='Customer Main Plain Telephone';
 										
+						}
+						if($type_only=='HOME')
+						{
+							$delimeter='Customer Main Plain Mobile';
 						}				
 					}
 
@@ -145,9 +147,21 @@ class importvcard
 					{
 						#$right_explode = explode(";", $right);
 						#print_r($right_explode);
-						$delimeter='Customer Main Plain Address';
+						if($type_only=='WORK')
+						{
+							$delimeter='Customer Main Office Address';
+										
+						}
+						if($type_only=='HOME')
+						{
+							$delimeter='Customer Main Plain Address';
+										
+						}
+						
 
 					 }
+					
+	
 					if($delimeter=='EMAIL')
 					{
 						$delimeter='Customer Main Plain Email';
@@ -158,18 +172,17 @@ class importvcard
 						continue;
 					}
 					
+					
 				}
 				#echo"<br>delimeter value: $delimeter<br><br><br>";
 	
 				$left=$delimeter;
 
 
-
-
 				$right = trim(substr($line, $pos+1, strlen($line)));
-				$right=str_replace(';',' ',$right);
-				#$right=str_replace('=0D=0A',' ',$right);
-				#$right=str_replace(',',' ',$right);
+				$right=str_replace(';;',' ',$right);
+				#$right=str_replace('=0D=0A',' + ',$right);
+				#$right=str_replace(',',' + ',$right);
 				if (! $begin) 
 				{
 					if (strtoupper($left) == 'BEGIN' && strtoupper($right) == 'VCARD') 
@@ -181,7 +194,7 @@ class importvcard
 
 				elseif (! $version) 
 				{
-					if (strtoupper($left) == 'VERSION' && strtoupper($right) == '2.1') 
+					if (strtoupper($left) == 'VERSION') 
 					{
 						$version = true;
 					}

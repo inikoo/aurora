@@ -41,7 +41,7 @@
 				                </th>
 				                <th class="list-column-left" style="text-align: left; width: 30%;">
 				                    <span style="float: left;">Sample Values</span>
-				                    <span style="float: right;padding-right:5px;"> <a href="#" class="subtext">next sample</a>
+				                    <span style="float: right;padding-right:5px;"> <a href="#" class="subtext">next sample</a><img src='art/icons/del.png' onclick='history.go(-2)'>
 				                    </span>
 				                 </th>
 		                          </tr>
