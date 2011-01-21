@@ -64,19 +64,18 @@
 		    <option value="Customer Company Name">Company Name</option>
 		    <option value="Customer Main Plain Email">Email</option>
 		    <option value="Contact Main Plain Mobile">Mobile</option>
-		    <option value="Customer Main Plain Telephone">Customer Main Plain Telephone</option>	
-		    <option value="Customer Main Plain FAX">Customer Main Plain FAX</option>
-		    <option value="Customer Main Plain Address">Customer Main Plain Address</option>
-		    <option value="Customer Address Line 1">Customer Address Line 1</option>
-		    <option value="Customer Address Line 2">Customer Address Line 2</option>
-		    <option value="Customer Address Line 3">Customer Address Line 3</option>
-		    <option value="Customer Address Line 2">Customer Address Line 2</option>
-		    <option value="Customer Address Town">Customer Address Town</option>
-		    <option value="Customer Address Postal Code">Customer Address Postal Code</option>
-		    <option value="Customer Address Country Name">Customer Address Country Name</option>
-		    <option value="Customer Address Country First Division">Customer Address Country First Division</option>
-		    <option value="Customer Address Country Second Division">Customer Address Country Second Division</option>
-		    <option value="Customer Tax Number">Customer Tax Number</option>
+		    <option value="Customer Main Plain Telephone">Telephone</option>	
+		    <option value="Customer Main Plain FAX">FAX</option>
+		    <option value="Customer Main Plain Address">Address</option>
+		    <option value="Customer Address Line 1">Address1</option>
+		    <option value="Customer Address Line 2">Address2</option>
+		    <option value="Customer Address Line 3">Address3</option>
+		   <option value="Customer Address Town">Town</option>
+		    <option value="Customer Address Postal Code">Postal Code</option>
+		    <option value="Customer Address Country Name">Country Name</option>
+		    <option value="Customer Address Country First Division">First Division</option>
+		    <option value="Customer Address Country Second Division">Second Division</option>
+		    <option value="Customer Tax Number">Tax Number</option>
 		 </select>
 		</td>
 		<td>
@@ -89,8 +88,3 @@
 	}
 	?>
 </table>
-<?php
-	echo '<pre>';
-	print_r($rightColumnArray);
-	
-?>
