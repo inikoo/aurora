@@ -5,6 +5,7 @@
     <h1>Import Contacts From vCard File</h1>
   </div>
 <br>
+	<a  style='font-size: 14px; color:#3B5998; text-decoration: none;'>{$showerror} </a>
 <strong><h3>Step 1 - Upload your File:</h3></strong>
 
 <div class="prop">
