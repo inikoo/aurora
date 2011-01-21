@@ -40,6 +40,7 @@
 		          <?php
 			         }
 		          ?>
+			<img src='art/icons/del.png' onclick='history.go(-2)'>
 		</span>
 		</th>
 		</tr>

@@ -9,6 +9,7 @@
 				
 				
 			<div class='framedsection'>
+			
 			<table>
 			</tr>
 				<tr><td>&nbsp;</td><td></td>
@@ -29,10 +30,10 @@
 					{if $key == 'Customer Main Plain Email'}
 						{assign var='email' value=$array_value}
 					{/if}
-					{if $key == 'Customer Main Plain Telephone'}
+					{if $key == 'Customer Main Plain Mobile'}
 						{assign var='telephone' value=$array_value}
 					{/if}
-					{if $key == 'ADR WORK'}
+					{if $key == 'Customer Main Office Address'}
 						{assign var='office_address' value=$array_value}
 					{/if}
 					
