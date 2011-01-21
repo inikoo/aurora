@@ -21,11 +21,11 @@
     <h1>Import Contacts From CSV File 
 </h1>
   </div>
-<div align="right"><form><input type="button" value="Cancel" name="cancel" onClick="history.go(-2)" class="bt"></form></div>
+	<div align="right"><form><input type="button" onclick="history.go(-2)" value="Cancel"></form></div>
 <br>
 
 <div class="left3Quarters">
- <form id="form" name="form" method="post" action="" enctype="multipart/form-data" onsubmit="return checkDropdown()">
+ <form id="form" name="form" method="post" action="insert_csv.php" enctype="multipart/form-data" onsubmit="return checkDropdown()">
 <input type="hidden" name="form" value="form" />
                     <div class="unframedsection"><div id="form:j_id68">
     <div class="prop">
