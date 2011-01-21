@@ -40,6 +40,7 @@
 		          <?php
 			         }
 		          ?>
+			<img src='art/icons/del.png' onclick='history.go(-2)'>
 		</span>
 		</th>
 		</tr>
@@ -57,13 +58,12 @@
 		<td align=center>
 		<select name="assign_field[]" id="assign_field">
 		    <option value="0">Unknown Please Choose</option>
-		    <option value="Customer Main Contact Name">Customer Main Contact Name</option>
-		    <option value="Customer Name">Customer Name</option>
-		    <option value="Customer Type">Customer Type</option>
-		    <option value="Customer Company Name">Customer Company Name</option>
-		    <option value="Customer Main Contact Name">Customer Main Contact Name</option>
-		    <option value="Customer Main Plain Email">Customer Main Plain Email</option>
-		    <option value="Contact Main Plain Mobile">Contact Main Plain Mobile</option>
+		    <option value="Customer Main Contact Name">Contact Name</option>
+		    <option value="Customer Name">Name</option>
+		    <option value="Customer Type">Type</option>
+		    <option value="Customer Company Name">Company Name</option>
+		    <option value="Customer Main Plain Email">Email</option>
+		    <option value="Contact Main Plain Mobile">Mobile</option>
 		    <option value="Customer Main Plain Telephone">Customer Main Plain Telephone</option>	
 		    <option value="Customer Main Plain FAX">Customer Main Plain FAX</option>
 		    <option value="Customer Main Plain Address">Customer Main Plain Address</option>

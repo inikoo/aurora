@@ -41,8 +41,12 @@
 				                </th>
 				                <th class="list-column-left" style="text-align: left; width: 30%;">
 				                    <span style="float: left;">Sample Values</span>
+<<<<<<< HEAD:templates/import_xml_verify.tpl
 				                    <span style="float: right;padding-right:5px;"> <a href="" class="subtext">next sample</a>
 							<a href="import_xml.php?tipo=customers_store" ><img class="cross" src="art/x.png"</a>
+=======
+				                    <span style="float: right;padding-right:5px;"> <a href="#" class="subtext">next sample</a><img src='art/icons/del.png' onclick='history.go(-2)'>
+>>>>>>> f7fc0b7465a975f8b7c977b7c07e79fa8248e557:templates/import_xml_verify.tpl
 				                    </span>
 				                 </th>
 		                          </tr>
