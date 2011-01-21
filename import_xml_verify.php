@@ -73,7 +73,7 @@ $scope_args='';
 
 if(isset($_POST['submit']))
 {
-$target_path = "uploads/";
+$target_path = "app_files/uploads";
 
 $target_path = $target_path . basename( $_FILES['fileUpload']['name']); 
 
