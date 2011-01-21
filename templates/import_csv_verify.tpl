@@ -21,6 +21,7 @@
     <h1>Import Contacts From CSV File 
 </h1>
   </div>
+	<div align="right"><form><input type="button" onclick="history.go(-2)" value="Cancel"></form></div>
 <br>
 
 <div class="left3Quarters">
