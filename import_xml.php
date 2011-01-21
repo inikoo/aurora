@@ -64,7 +64,10 @@ $scope_args=$_SESSION['state']['customers']['store'];
 
 // $xml=file_get_contents('conf/import_file_customers.xml');
 //$fields=xml2array($xml);
-
+if(isset($_GET['id']))
+{
+  $smarty->assign('wrong',"you choose wrong file");
+}
 
 break;
 default:

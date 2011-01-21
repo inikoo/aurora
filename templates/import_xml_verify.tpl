@@ -11,7 +11,7 @@
 <div class="left3Quarters">
                 
 
-<form id="form" name="form" method="post" action="" enctype="multipart/form-data">
+<form id="form" name="form" method="post" action="import_xml_verify_final.php?tipo=customers_store" enctype="multipart/form-data">
 <input type="hidden" name="form" value="form" />
  
                     <div class="unframedsection"><div id="form:j_id68">
@@ -41,7 +41,8 @@
 				                </th>
 				                <th class="list-column-left" style="text-align: left; width: 30%;">
 				                    <span style="float: left;">Sample Values</span>
-				                    <span style="float: right;padding-right:5px;"> <a href="#" class="subtext">next sample</a>
+				                    <span style="float: right;padding-right:5px;"> <a href="" class="subtext">next sample</a>
+							<a href="import_xml.php?tipo=customers_store" ><img class="cross" src="art/x.png"</a>
 				                    </span>
 				                 </th>
 		                          </tr>
@@ -57,7 +58,7 @@
 						        {$k}
 						</th>
 				                <th style="text-align: left; width: 40%;">
-				                    <select name="assign_field" id="assign_field">
+				                    <select name="assign_field[]" id="assign_field">
 						    <option>Unknown Please Choose</option>
 						    <option value="ignore">Ignore</option>
 						    <option value="Customer Main Contact Name">Customer Main Contact Name</option>
@@ -85,6 +86,7 @@
 				                </th>
 				                <th style="text-align: left; width:30%;">
 				                    <span style="float: left;">
+                                                  <input type ="hidden" name="val[]" id="val[]" value="{$v}">
 				         	 {$v}
 							
 						</span>
@@ -98,11 +100,10 @@
 		               	   </tbody>
 			    	</table>
                                 </div>
-
-                            </div>
+			     </div>
 			    <ul class="formActions">
                     		<li>
-				        <div class="bt"><input type="submit" value="Continue" name="" id="">
+				        <div class="bt"><input type="submit" value="Continue" name="final" id="submit">
 				        </div>
                     		</li>
                 	  </ul>	
