@@ -4258,8 +4258,8 @@ function list_customer_categories() {
 
 
 
-    $sql="select * from `Category Dimension` S  left join `Category Bridge` CB on (CB.`Category Key`=S.`Category Key`)  left join `Customer Dimension` CD on (CD.`Customer Key`=CB.`Subject Key`)  $where $wheref $group order by $order $order_direction limit $start_from,$number_results    ";
-  //  print $sql;
+    $sql="select S.`Category Key`, `Category Name` from `Category Dimension` S  left join `Category Bridge` CB on (CB.`Category Key`=S.`Category Key`)  left join `Customer Dimension` CD on (CD.`Customer Key`=CB.`Subject Key`)  $where $wheref $group order by $order $order_direction limit $start_from,$number_results    ";
+   // print $sql;
     $res = mysql_query($sql);
 
     $total=mysql_num_rows($res);
@@ -4568,6 +4568,7 @@ function list_customer_categories() {
             $profit=$tprofit;
         }
 */
+
         if ($stores_mode=='grouped')
             $name=sprintf('<a href="customer_categories.php?id=%d">%s</a>',$row['Category Key'],$row['Category Name']);
         else
