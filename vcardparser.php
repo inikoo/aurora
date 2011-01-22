@@ -154,7 +154,7 @@ class importvcard
 						}
 						if($type_only=='HOME')
 						{
-							$delimeter='Customer Main Plain Address';
+							continue;
 										
 						}
 						
@@ -232,6 +232,7 @@ class importvcard
 						{
 							$name=$right;
 						}
+						$contacts['Customer Type']='Unknown';
 						$contacts[$left]=$right;
 						$i++;
 					}

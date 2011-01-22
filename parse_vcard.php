@@ -93,7 +93,7 @@ $js_files=array(
 						  	echo"<ul class='formActions'>";
 						  	echo"<li>";
 						 	 echo"<div class='framedsection'>";
-								 echo"<div style='padding-left:610px' onclick='history.go(-2)'><img src='art/icons/del.png'></div>";
+								 
 								echo"<table>";
 								echo"<tr>
 								<th class='list-column-left' style='text-align: left; width: 50%; padding-left: 20px;'>Name</th>
@@ -117,10 +117,8 @@ $js_files=array(
 									echo"$card[$N],&nbsp; $card[$TITLE] at $card[$ORG]";
 									echo"</td>";
 									echo"<td style='text-align: left; width: 20%; padding-left: 30px;'>";
-									echo"<select name='$i' id='$i' >
-									<option value='import'>Import</option>
-									<option value='ignore'>Ignore</option>
-						     			</select>
+									echo"<input type='radio' name='$i' id='$i' value='import' checked='checked'/> Import 											&nbsp;&nbsp;&nbsp;&nbsp;
+									     <input type='radio' name='$i' id='$i' value='ignore' /> Ignore
 							  	  	";
 									echo"</td>";
 									echo"</tr>";
@@ -131,7 +129,8 @@ $js_files=array(
 							echo"</div>";
 					
 						echo"<input type='hidden' name='i' id='i' value='$i'>";
-						echo"<div class='bt'><input type='submit' value='Import Now' name='import_now' id='import_now'></div>";
+						echo"<table><tr><td><div class='bt'><input type='submit' value='Import Now' name='import_now' id='import_now'></div></td><td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td><td><div class='bt'><input type='button' value='Cancel' name='cancel' id='cancel' onClick='history.go(-2)'></div></td></tr></table>";
+						//echo"<div class='bt'><input type='button' value='Cancel' name='cancel' id='cancel' onClick='history.go(-2)'></div>";
 						echo"</li>";
 						echo"</ul>";
 						echo"</form>";
@@ -205,27 +204,28 @@ $js_files=array(
 				
 
 				}
-				//echo($right_explode[0]);
+				$count_final_array=count($final_full_array);
 				
-				
-				
-
-				#$vcard_array=array_merge($final_array,$address);	
+				if($count_final_array==0)
+				{
+					$num_records="None of the record is imported";	
+				}
+				else
+				{
+					$num_records="$count_final_array record have been imported";	
+				}
 							
-
-				
-					
-				
 				$smarty->assign('js_files',$js_files);
 				$smarty->assign('css_files',$css_files);
 
+				$smarty->assign('num_records',$num_records);
 				$smarty->assign('final_array',$final_array);
 				$smarty->display('vcard_view.tpl');
 				
 				echo"<br><pre><br>";
-				print_r($final_full_array);
+				print_r($final_full_array);    //This is the final array
 				echo"</pre><br><br>";				
-				#insert here, the $final_array into database
+				#insert here, the $final_full_array into database
 				#then move to another page to display all the data in the database.
 
 			
