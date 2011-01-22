@@ -38,7 +38,7 @@ $currency_symbol=currency_symbol($currency);
 $smarty->assign('store',$store);
 
 $_SESSION['state']['customers']['store']=$store_id;
-
+$smarty->assign('store_id',$store_id);
 $modify=$user->can_edit('customers');
 
 
