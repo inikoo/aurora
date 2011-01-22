@@ -33,9 +33,8 @@ $js_files=array(
 		'js/php.default.min.js',
 		'common.js.php',
 		'table_common.js.php',
-		
 		'js/dropdown.js',
-        'import_data.js.php'    
+        	'import_data.js.php'    
 		);
 
 		
@@ -56,7 +55,6 @@ $js_files=array(
 				$target_path = $target_path . basename( $_FILES['file']['name']); 
 
 				if(move_uploaded_file($_FILES['file']['tmp_name'], $target_path)) 
-				
 				{
 					require_once( 'vcardparser.php' );
 					$parse = new importvcard();
