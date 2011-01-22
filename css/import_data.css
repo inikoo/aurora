@@ -59,6 +59,7 @@ padding: 10px 10px 5px;
     margin-bottom: 10px;
     margin-top: 15px;
     padding: 10px 10px 5px;
+    min-height:200px;
 }
 .recordList{
     background: url("images/header-nav-background.png") repeat-x scroll 0 0 #F6F9F9;
@@ -97,4 +98,7 @@ th, td {
     margin: 8px 0 14px;
     padding: 0;
 }
-
+.cross{
+  height:15px;
+  width:15px;
+}

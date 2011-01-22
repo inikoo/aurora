@@ -7,6 +7,7 @@
   </div>
 <br>
 <h3>Upload your File:</h3>
+<h4 style="color:red;">{$wrong}</h4>
 <div class="left3Quarters">
                 
 
