@@ -66,7 +66,7 @@ $scope_args=$_SESSION['state']['customers']['store'];
 //$fields=xml2array($xml);
 if(isset($_GET['id']))
 {
-  $smarty->assign('wrong',"you choose wrong file");
+  $smarty->assign('wrong',"Invalid File");
 }
 
 break;
