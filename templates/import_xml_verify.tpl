@@ -3,7 +3,7 @@
  
 
 <div id="no_details_title" style="clear:left;{if $show_details}display:none;{/if}">
-    <h1>Import Contacts From XML File</h1> <a href="import_xml.php?tipo=customers_store"><div align="right"><form><input type="button" onclick="history.go(-2)" value="Cancel"></form></div></a>
+    <h1>Import Contacts From XML File</h1> <a href="import_data.php?tipo=customers_store"><div align="right"><form><input type="button" onclick="history.go(-2)" value="Cancel"></form></div></a>
   </div>
 <br>
 
