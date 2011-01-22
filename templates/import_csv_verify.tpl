@@ -2,30 +2,18 @@
 <script language="Javascript">
 	window.onload = get_default({$v});
 </script>
-{literal}
-<script language="Javascript">
-	function checkDropdown() { 
-	if(document.getElementById('assign_field').selectedIndex==0) 
-	{
-	
- 	alert('Please assign the field');
-	  return false;
-	}
-	return true;
-}
-</script>
-{/literal}
+
 <div id="bd">
 <div id="no_details_title" style="clear:left;{if $show_details}display:none;{/if}">
 
     <h1>Import Contacts From CSV File 
 </h1>
   </div>
-<div align="right"><form><input type="button" value="Cancel" name="cancel" onClick="history.go(-2)" class="bt"></form></div>
+	<div align="right"><form><input type="button" onclick="history.go(-2)" value="Cancel"></form></div>
 <br>
 
 <div class="left3Quarters">
- <form id="form" name="form" method="post" action="" enctype="multipart/form-data" onsubmit="return checkDropdown()">
+ <form id="form" name="form" method="post" action="insert_csv.php" enctype="multipart/form-data" onsubmit="return checkDropdown()">
 <input type="hidden" name="form" value="form" />
                     <div class="unframedsection"><div id="form:j_id68">
     <div class="prop">
@@ -41,14 +29,17 @@
                         <li>
                            <div class="framedsection">
 				<div id="call_table"></div>
-    			  </div>
+    			 
 		    <ul class="formActions">
                     		<li>
-		     			<div class="bt"><input type="submit" value="Continue" name="" id=""></div>
+		     			<div class="bt"><input type="submit" value="Next To Continue" name="" id="">
+					
+					</div>
                     		</li>
                 	  </ul>	
                         </li>
-                    </ul>
+                    </ul> 
+</div>
  </form>  
          </div>
 </div>

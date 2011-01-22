@@ -9,89 +9,96 @@
 	$count_rows = $csv->countRows();
 	$index = $_REQUEST['v'];
 	$r = $csv->getRow($index);
-	$leftColumnArray = array();
-	$rightColumnArray = array();
-	//$assign = $_POST['assign_field'];	
+	
+	//total number of rows in the file
+	for($y=0; $y<$count_rows; $y++)
+	{
+		$total_row = $csv->getRow($y);
+           	//print_r($total_rows);
+	}
 	
 ?>
 <table class="recordList">
 		
-		<tr>
-		<th class="list-column-left" style="text-align: left; width: 20%; padding-left:5px;">
+		
+		<!--<th class="list-column-left" style="text-align: left; width: 20%; padding-left:5px;">
 		    Column
-		</th>
-		<th class="list-column-left" style="text-align: left; width: 40%;padding-left:10px;">
+		</th>-->
+		<th class="list-column-left" style="text-align: left; width: 20%;padding-left:10px;">
 		Assigned Field
 		</th>
 		<th class="list-column-left" style="text-align: left; width: 30%;">
-		<span style="float: left;">Sample Values</span>
+		<span style="float: left;">
+		<?php 
+			echo 'Value '.($index + 1).' of '.$count_rows;
+
+		?>
+		</span>
 		<span style="float: right;padding-right:5px;"> 
 			     <?php
               			 if($index > 0)
               			 {
        			    ?>
-       				<a href="#" id="prev" onclick="getPrev(<?php echo $index; ?>)">Previous</a>
+       				<a href="#" class="subtext" id="prev" onclick="getPrev(<?php echo $index; ?>)">Previous</a>&nbsp;|&nbsp;
 		       	   <?php
 			         }
 			       if($index < $count_rows-1)        
 			         {
 		       	   ?>
-       				<a href="#" id="next" onclick="getNext(<?php echo $index; ?>)">Next</a>
+       				<a href="#"  class="subtext" id="next" onclick="getNext(<?php echo $index; ?>)">Next</a>
 		          <?php
 			         }
 		          ?>
-			<img src='art/icons/del.png' onclick='history.go(-2)'>
+		&nbsp;&nbsp;&nbsp;&nbsp; <a href="import_csv_verify.php?tipo=customers_store" id="result" class="subtext">Ignore Result</a>
 		</span>
 		</th>
-		</tr>
+		
 <tr>&nbsp;</tr>
 		
 	<?php
-	for($j=0; $j<count($h)-1; $j++)
+	for($j=0; $j<count($h); $j++)
 	{ 
 	?>
 	<tr>
-		<td width=150 align=center >
-		<!-- Header Output -->
-		<?php echo $h[$j]; 	$leftColumnArray = $h; ?>
-		</td>
+		<!--<td width=150 align=center >
+		
+		<?php //echo $h[$j]; 	$leftColumnArray = $h; ?>
+		</td>-->
 		<td align=center>
 		<select name="assign_field[]" id="assign_field">
-		    <option value="0">Unknown Please Choose</option>
-		    <option value="Customer Main Contact Name">Customer Main Contact Name</option>
-		    <option value="Customer Name">Customer Name</option>
-		    <option value="Customer Type">Customer Type</option>
-		    <option value="Customer Company Name">Customer Company Name</option>
-		    <option value="Customer Main Contact Name">Customer Main Contact Name</option>
-		    <option value="Customer Main Plain Email">Customer Main Plain Email</option>
-		    <option value="Contact Main Plain Mobile">Contact Main Plain Mobile</option>
-		    <option value="Customer Main Plain Telephone">Customer Main Plain Telephone</option>	
-		    <option value="Customer Main Plain FAX">Customer Main Plain FAX</option>
-		    <option value="Customer Main Plain Address">Customer Main Plain Address</option>
-		    <option value="Customer Address Line 1">Customer Address Line 1</option>
-		    <option value="Customer Address Line 2">Customer Address Line 2</option>
-		    <option value="Customer Address Line 3">Customer Address Line 3</option>
-		    <option value="Customer Address Line 2">Customer Address Line 2</option>
-		    <option value="Customer Address Town">Customer Address Town</option>
-		    <option value="Customer Address Postal Code">Customer Address Postal Code</option>
-		    <option value="Customer Address Country Name">Customer Address Country Name</option>
-		    <option value="Customer Address Country First Division">Customer Address Country First Division</option>
-		    <option value="Customer Address Country Second Division">Customer Address Country Second Division</option>
-		    <option value="Customer Tax Number">Customer Tax Number</option>
+		    <option value="0">Ignore</option>
+		    <option value="Customer Main Contact Name">Contact Name</option>
+		    <option value="Customer Name">Name</option>
+		    <option value="Customer Type">Type</option>
+		    <option value="Customer Company Name">Company Name</option>
+		    <option value="Customer Main Plain Email">Email</option>
+		    <option value="Contact Main Plain Mobile">Mobile</option>
+		    <option value="Customer Main Plain Telephone">Telephone</option>	
+		    <option value="Customer Main Plain FAX">FAX</option>
+		    <option value="Customer Main Plain Address">Address</option>
+		    <option value="Customer Address Line 1">Address Line1</option>
+		    <option value="Customer Address Line 2">Address Line2</option>
+		    <option value="Customer Address Line 3">Address Line3</option>
+		   <option value="Customer Address Town">Town</option>
+		    <option value="Customer Address Postal Code">Postal Code</option>
+		    <option value="Customer Address Country Name">Country Name</option>
+		    <option value="Customer Address Country First Division">First Division</option>
+		    <option value="Customer Address Country Second Division">Second Division</option>
+		    <option value="Customer Tax Number">Tax Number</option>
 		 </select>
 		</td>
 		<td>
 			<!-- Value Output -->
-			<?php echo $r[$j];  	$rightColumnArray = $r;?>
+			<?php echo $r[$j]; 
+				
+		 	?>
 		</td>
 	</tr>
+		<input type="hidden" name="values[]" value="<?php echo $r[$j]; ?>">
 	<?php
 		
 	}
-	?>
-</table>
-<?php
-	echo '<pre>';
-	print_r($rightColumnArray);
 	
-?>
+	?>
+	
+</table>
