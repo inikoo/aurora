@@ -5,7 +5,7 @@
 
 {if $category}
 <div class="branch"> 
- <span ><a  href="edit_product_category.php?store_id={$store->id}&id=0">{t}Customer Categories{/t}</a> &rarr; {$category->get_smarty_tree('edit_customer_category.php')}
+ <span ><a  href="edit_customer_category.php?store_id={$store->id}&id=0">{t}Customer Categories{/t}</a> &rarr; {$category->get_smarty_tree('edit_customer_category.php')}
  </div> 
     <h1 style="clear:both">{t}Editing Category{/t}: <span id="cat_title">{$category->get('Category Name')}</span></h1>
 {else}

@@ -196,7 +196,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 				       ];
 	    //?tipo=customers&tid=0"
 	    
-	    this.dataSource_history = new YAHOO.util.DataSource("ar_history.php?tipo=history&type=product_categories&tableid=_history");
+	    this.dataSource_history = new YAHOO.util.DataSource("ar_history.php?tipo=history&type=customer_categories&tableid=_history");
 	   this.dataSource_history.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource_history.connXhrMode = "queueRequests";
 	    this.dataSource_history.responseSchema = {
