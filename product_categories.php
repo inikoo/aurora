@@ -124,7 +124,7 @@ exit("Error wrong store");
 
 $_SESSION['state']['store']['id']=$store->id;
 $smarty->assign('store',$store);
-
+$smarty->assign('subject','Product');
 
 
 $smarty->assign('general_options_list',$general_options_list);
