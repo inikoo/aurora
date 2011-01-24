@@ -6,10 +6,10 @@
   </div>
 <br>
 
-				
+				<center><a style='font-size: 14px; color:#256B91; text-decoration: none;'>{$num_records}</a>	</center>
 			
-			<div class='framedsection'>
-			<center><a style='font-size: 14px; color:#256B91; text-decoration: none;'>{$num_records}</a>	</center>
+			<div class='framedsection'  style='height: 320px; overflow: auto; margin-left: 10px; '>
+			
 			<table>
 			</tr>
 				<tr><td>&nbsp;</td><td></td>

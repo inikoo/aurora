@@ -79,7 +79,7 @@ $js_files=array(
 				
 						  echo"<div class='prop'>";
 			
-						  echo"<label class='import_level' style='font-size:14px';>Step 2 - Check contacts prior to importing:</label>";
+						  echo"<label class='import_level' style='font-size:14px';>Check contacts prior to importing:</label>";
 						  echo"<span style='font-size: 12px;'>We've scanned your file and found the following fields.It's important to select 	the fields, else all the fields will be imported.<br> When you're happy with the selected fields press the continue button. </span>";
 					  	echo"<div class='clear'></div>";				
 	
@@ -87,20 +87,19 @@ $js_files=array(
 	
 	
 					  	  echo"<form action='' method='POST'>";
-						  echo"<div  style='width: 650px; height: 210px; overflow: auto; margin: auto; padding-right: 260px;'>";
+						  echo"<div class='framedsection' style='width:630px;'>";
 						  	echo"<ul class='formActions'>";
 						  	echo"<li>";
-						 	 echo"<div class='framedsection'>";
+							echo"<table>";
+								echo"<tr style=' border-bottom: 1px solid #CCCCCC;'>
+								<th class='list-column-left' style='text-align: left; width: 400px; padding-left: 20px;'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Name</th>
+								<th class='list-column-left' style='text-align: left; width: 32%; padding-left: 70px;'>Action</th>
+								</tr>";
+							echo"</table>";
+						 	 echo"<div style='width: 600px; height: 150px; overflow: auto; margin-left: 10px; '>";
 								 
 								echo"<table>";
-								echo"<tr>
-								<th class='list-column-left' style='text-align: left; width: 50%; padding-left: 20px;'>Name</th>
-								<th class='list-column-left' style='text-align: left; width: 20%; padding-left: 30px;'>Action</th>
-								</tr>
-								<tr>
-								<td>&nbsp;</td>
-								<td>&nbsp;</td>
-								</tr>";
+								
 								$i=0;
 								foreach($cardinfo as $card)
 								{
@@ -110,7 +109,7 @@ $js_files=array(
 									$ORG='Customer Company Name';
 									
 									#=============================
-									echo"<tr>";
+									echo"<tr style=' border-bottom: 1px solid #CCCCCC;'>";
 									echo"<td style='text-align: left; width: 50%; padding-left: 20px;'>";
 									echo"$card[$N],&nbsp; $card[$TITLE] at $card[$ORG]";
 									echo"</td>";
@@ -123,11 +122,30 @@ $js_files=array(
 									$i=$i+1;
 	
 					 			}
+								echo"<tr>
+								<td>&nbsp;</td>
+								<td>&nbsp;</td>
+								</tr>";
 					 			echo"</table>";
 							echo"</div>";
-					
+						echo"<div class='clear'></div>";	
 						echo"<input type='hidden' name='i' id='i' value='$i'>";
-						echo"<table><tr><td><div class='bt'><input type='submit' value='Import Now' name='import_now' id='import_now'></div></td><td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td><td><div class='bt'><input type='button' value='Cancel' name='cancel' id='cancel' onClick='history.go(-2)'></div></td></tr></table>";
+
+						
+								
+
+						echo"<table>
+							
+							<tr style='border-top: 1px solid rgb(204, 204, 204);' valign='bottom' heigth=100px;>
+							<td>&nbsp;</td></tr>
+							<tr>
+							<td class='list-column-left' style='text-align: left; width: 10px; padding-left: 20px;'>
+							<div class='bt'><input type='submit' value='Import Now' name='import_now' id='import_now'></div>
+							</td>
+							<td>&nbsp;&nbsp;</td>
+							<td class='list-column-left' style='text-align: left; width: 470px; padding-left: 20px;'>
+							<div class='bt'><a href='import_data.php?tipo=customers_store'><input type='button' value='Cancel' name='cancel' id='cancel' ></a>
+							</div></td></tr></table>";
 						//echo"<div class='bt'><input type='button' value='Cancel' name='cancel' id='cancel' onClick='history.go(-2)'></div>";
 						echo"</li>";
 						echo"</ul>";
