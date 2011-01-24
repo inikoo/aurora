@@ -12,11 +12,12 @@
 {else}
 <span class="nav2 onleft"><a href="customers.php">{t}Customers{/t}</a></span>
 {/if}
+
  <span style="display:none" class="nav2 onleft"><a {if $nav_parent=='companies'}class="selected"{/if}  href="companies.php">{t}Companies{/t}</a></span>
 <span  style="display:none"  class="nav2 onleft"><a  {if $nav_parent=='contacts'}class="selected"{/if}   href="contacts.php">{t}Personal Contacts{/t}</a></span>
 <span class="nav2 onleft"><a  {if $nav_parent=='requests'}class="selected"{/if}   href="requests.php">{t}Requests{/t}</a></span>
 <span class="nav2 onleft"><a  {if $nav_parent=='marketing'}class="selected"{/if}   href="marketing.php">{t}Marketing{/t}</a></span>
-<span class="nav2 onleft"><a href="customer_categories.php?store_id={$store_key}id=0">{t}Customer Categories{/t}</a></span>
+<span class="nav2 onleft"><a href="customer_categories.php?store_id={$store_id}&id=0">{t}Customer Categories{/t}</a></span>
 <span class="nav2 onright" style="padding:0px">      {if $next.id>0}<a class="next" href="customer.php?{$parent_info}id={$next.id}" ><img src="art/icons/next_white.png" style="padding:0px 10px" alt=">" title="{$next.name}"  /></a>{/if}</span>
 
 {if $parent_url}<span class="nav2 onright"><a   href="{$parent_url}">{$parent_title}</a></span>{/if}

@@ -33,9 +33,8 @@ $js_files=array(
 		'js/php.default.min.js',
 		'common.js.php',
 		'table_common.js.php',
-		
 		'js/dropdown.js',
-        'import_data.js.php'    
+        	'import_data.js.php'    
 		);
 
 		
@@ -56,7 +55,6 @@ $js_files=array(
 				$target_path = $target_path . basename( $_FILES['file']['name']); 
 
 				if(move_uploaded_file($_FILES['file']['tmp_name'], $target_path)) 
-				
 				{
 					require_once( 'vcardparser.php' );
 					$parse = new importvcard();
@@ -81,7 +79,7 @@ $js_files=array(
 				
 						  echo"<div class='prop'>";
 			
-						  echo"<label class='import_level' style='font-size:14px';>Step 2 - Check contacts prior to importing:</label>";
+						  echo"<label class='import_level' style='font-size:14px';>Check contacts prior to importing:</label>";
 						  echo"<span style='font-size: 12px;'>We've scanned your file and found the following fields.It's important to select 	the fields, else all the fields will be imported.<br> When you're happy with the selected fields press the continue button. </span>";
 					  	echo"<div class='clear'></div>";				
 	
@@ -89,20 +87,19 @@ $js_files=array(
 	
 	
 					  	  echo"<form action='' method='POST'>";
-						  echo"<div  style='width: 650px; height: 210px; overflow: auto; margin: auto; padding-right: 260px;'>";
+						  echo"<div class='framedsection' style='width:630px;'>";
 						  	echo"<ul class='formActions'>";
 						  	echo"<li>";
-						 	 echo"<div class='framedsection'>";
-								 echo"<div style='padding-left:610px' onclick='history.go(-2)'><img src='art/icons/del.png'></div>";
-								echo"<table>";
-								echo"<tr>
-								<th class='list-column-left' style='text-align: left; width: 50%; padding-left: 20px;'>Name</th>
-								<th class='list-column-left' style='text-align: left; width: 20%; padding-left: 30px;'>Action</th>
-								</tr>
-								<tr>
-								<td>&nbsp;</td>
-								<td>&nbsp;</td>
+							echo"<table>";
+								echo"<tr style=' border-bottom: 1px solid #CCCCCC;'>
+								<th class='list-column-left' style='text-align: left; width: 400px; padding-left: 20px;'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Name</th>
+								<th class='list-column-left' style='text-align: left; width: 32%; padding-left: 70px;'>Action</th>
 								</tr>";
+							echo"</table>";
+						 	 echo"<div style='width: 600px; height: 150px; overflow: auto; margin-left: 10px; '>";
+								 
+								echo"<table>";
+								
 								$i=0;
 								foreach($cardinfo as $card)
 								{
@@ -112,26 +109,44 @@ $js_files=array(
 									$ORG='Customer Company Name';
 									
 									#=============================
-									echo"<tr>";
+									echo"<tr style=' border-bottom: 1px solid #CCCCCC;'>";
 									echo"<td style='text-align: left; width: 50%; padding-left: 20px;'>";
 									echo"$card[$N],&nbsp; $card[$TITLE] at $card[$ORG]";
 									echo"</td>";
 									echo"<td style='text-align: left; width: 20%; padding-left: 30px;'>";
-									echo"<select name='$i' id='$i' >
-									<option value='import'>Import</option>
-									<option value='ignore'>Ignore</option>
-						     			</select>
+									echo"<input type='radio' name='$i' id='$i' value='import' checked='checked'/> Import 											&nbsp;&nbsp;&nbsp;&nbsp;
+									     <input type='radio' name='$i' id='$i' value='ignore' /> Ignore
 							  	  	";
 									echo"</td>";
 									echo"</tr>";
 									$i=$i+1;
 	
 					 			}
+								echo"<tr>
+								<td>&nbsp;</td>
+								<td>&nbsp;</td>
+								</tr>";
 					 			echo"</table>";
 							echo"</div>";
-					
+						echo"<div class='clear'></div>";	
 						echo"<input type='hidden' name='i' id='i' value='$i'>";
-						echo"<div class='bt'><input type='submit' value='Import Now' name='import_now' id='import_now'></div>";
+
+						
+								
+
+						echo"<table>
+							
+							<tr style='border-top: 1px solid rgb(204, 204, 204);' valign='bottom' heigth=100px;>
+							<td>&nbsp;</td></tr>
+							<tr>
+							<td class='list-column-left' style='text-align: left; width: 10px; padding-left: 20px;'>
+							<div class='bt'><input type='submit' value='Import Now' name='import_now' id='import_now'></div>
+							</td>
+							<td>&nbsp;&nbsp;</td>
+							<td class='list-column-left' style='text-align: left; width: 470px; padding-left: 20px;'>
+							<div class='bt'><a href='import_data.php?tipo=customers_store'><input type='button' value='Cancel' name='cancel' id='cancel' ></a>
+							</div></td></tr></table>";
+						//echo"<div class='bt'><input type='button' value='Cancel' name='cancel' id='cancel' onClick='history.go(-2)'></div>";
 						echo"</li>";
 						echo"</ul>";
 						echo"</form>";
@@ -205,27 +220,28 @@ $js_files=array(
 				
 
 				}
-				//echo($right_explode[0]);
+				$count_final_array=count($final_full_array);
 				
-				
-				
-
-				#$vcard_array=array_merge($final_array,$address);	
+				if($count_final_array==0)
+				{
+					$num_records="None of the record is imported";	
+				}
+				else
+				{
+					$num_records="$count_final_array record have been imported";	
+				}
 							
-
-				
-					
-				
 				$smarty->assign('js_files',$js_files);
 				$smarty->assign('css_files',$css_files);
 
+				$smarty->assign('num_records',$num_records);
 				$smarty->assign('final_array',$final_array);
 				$smarty->display('vcard_view.tpl');
 				
 				echo"<br><pre><br>";
-				print_r($final_full_array);
+				print_r($final_full_array);    //This is the final array
 				echo"</pre><br><br>";				
-				#insert here, the $final_array into database
+				#insert here, the $final_full_array into database
 				#then move to another page to display all the data in the database.
 
 			

@@ -624,7 +624,16 @@ function list_history($asset_type) {
         $asset='Category';
         $id_key='parent_key';
         $asset_type='categories';
+    }elseif($asset_type=='customer_categories') {
+        $asset='Category';
+        $id_key='parent_key';
+        $asset_type='categories';
+    }elseif($asset_type=='supplier_categories') {
+        $asset='Category';
+        $id_key='parent_key';
+        $asset_type='categories';
     }
+
 
 
 
@@ -805,7 +814,7 @@ function list_history($asset_type) {
     $_order='date';
 
     $sql=sprintf("select  * from `History Dimension` H left join `User Dimension` U on (U.`User Key`=H.`User Key`)   $where $wheref order by $order  limit $start_from,$number_results ");
-    //print $sql;
+ //print $sql;
     $result=mysql_query($sql);
     $adata=array();
     while ($data=mysql_fetch_array($result, MYSQL_ASSOC)) {

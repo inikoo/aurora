@@ -123,17 +123,14 @@ function objectsIntoArray($arrObjData, $arrSkipIndices = array())
 	else
 	{
          ?>
-           <script>location.href = "import_xml.php?tipo=customers_store" </script>
+           <script>location.href = "import_xml.php?tipo=customers_store&id=0" </script>
 	 <?php 
 	}}
 	else
 	{
-	echo "successfully got";
 	$smarty->assign('success',"not successfully");
 	}
-
-
-
+	
 
 
 $smarty->assign('scope',$scope);

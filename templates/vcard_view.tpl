@@ -6,9 +6,9 @@
   </div>
 <br>
 
-				
-				
-			<div class='framedsection'>
+				<center><a style='font-size: 14px; color:#256B91; text-decoration: none;'>{$num_records}</a>	</center>
+			
+			<div class='framedsection'  style='height: 320px; overflow: auto; margin-left: 10px; '>
 			
 			<table>
 			</tr>
@@ -40,9 +40,10 @@
 
 					
 				{/foreach}
+				
 				<tr>
 				    
-				     <td>
+				     <td>  
 					<a href="#" style='font-size: 14px; color:#256B91;'>{$name}</a>,&nbsp; {$title} at <a href="#" style='color:#256B91;'>{$org}</a><br>{$office_address}
 				     </td>
 				     <td width="250">

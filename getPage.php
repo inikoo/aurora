@@ -9,52 +9,61 @@
 	$count_rows = $csv->countRows();
 	$index = $_REQUEST['v'];
 	$r = $csv->getRow($index);
-	$leftColumnArray = array();
-	$rightColumnArray = array();
-	//$assign = $_POST['assign_field'];	
+	
+	//total number of rows in the file
+	for($y=0; $y<$count_rows; $y++)
+	{
+		$total_row = $csv->getRow($y);
+           	//print_r($total_rows);
+	}
 	
 ?>
 <table class="recordList">
 		
-		<tr>
-		<th class="list-column-left" style="text-align: left; width: 20%; padding-left:5px;">
+		
+		<!--<th class="list-column-left" style="text-align: left; width: 20%; padding-left:5px;">
 		    Column
-		</th>
-		<th class="list-column-left" style="text-align: left; width: 40%;padding-left:10px;">
+		</th>-->
+		<th class="list-column-left" style="text-align: left; width: 20%;padding-left:10px;">
 		Assigned Field
 		</th>
 		<th class="list-column-left" style="text-align: left; width: 30%;">
-		<span style="float: left;">Sample Values</span>
+		<span style="float: left;">
+		<?php 
+			echo 'Value '.($index + 1).' of '.$count_rows;
+
+		?>
+		</span>
 		<span style="float: right;padding-right:5px;"> 
 			     <?php
               			 if($index > 0)
               			 {
        			    ?>
-       				<a href="#" id="prev" onclick="getPrev(<?php echo $index; ?>)">Previous</a>
+       				<a href="#" class="subtext" id="prev" onclick="getPrev(<?php echo $index; ?>)">Previous</a>&nbsp;|&nbsp;
 		       	   <?php
 			         }
 			       if($index < $count_rows-1)        
 			         {
 		       	   ?>
-       				<a href="#" id="next" onclick="getNext(<?php echo $index; ?>)">Next</a>
+       				<a href="#"  class="subtext" id="next" onclick="getNext(<?php echo $index; ?>)">Next</a>
 		          <?php
 			         }
 		          ?>
-		
+		&nbsp;&nbsp;&nbsp;&nbsp; <a href="import_csv_verify.php?tipo=customers_store" id="result" class="subtext">Ignore Result</a>
 		</span>
 		</th>
-		</tr>
+		
 <tr>&nbsp;</tr>
 		
 	<?php
-	for($j=0; $j<count($h)-1; $j++)
+	for($j=0; $j<count($h); $j++)
 	{ 
 	?>
 	<tr>
-		<td width=150 align=center >
-		<!-- Header Output -->
-		<?php echo $h[$j]; 	$leftColumnArray = $h; ?>
-		</td>
+		<!--<td width=150 align=center >
+		
+		<?php //echo $h[$j]; 	$leftColumnArray = $h; ?>
+		</td>-->
 		<td align=center>
 		<select name="assign_field[]" id="assign_field">
 		    <option value="0">Ignore</option>
@@ -80,11 +89,16 @@
 		</td>
 		<td>
 			<!-- Value Output -->
-			<?php echo $r[$j];  	$rightColumnArray = $r;?>
+			<?php echo $r[$j]; 
+				
+		 	?>
 		</td>
 	</tr>
+		<input type="hidden" name="values[]" value="<?php echo $r[$j]; ?>">
 	<?php
 		
 	}
+	
 	?>
+	
 </table>

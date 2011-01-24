@@ -2,19 +2,7 @@
 <script language="Javascript">
 	window.onload = get_default({$v});
 </script>
-{literal}
-<script language="Javascript">
-	function checkDropdown() { 
-	if(document.getElementById('assign_field').selectedIndex==0) 
-	{
-	
- 	alert('Please assign the field');
-	  return false;
-	}
-	return true;
-}
-</script>
-{/literal}
+
 <div id="bd">
 <div id="no_details_title" style="clear:left;{if $show_details}display:none;{/if}">
 
@@ -41,14 +29,17 @@
                         <li>
                            <div class="framedsection">
 				<div id="call_table"></div>
-    			  </div>
+    			 
 		    <ul class="formActions">
                     		<li>
-		     			<div class="bt"><input type="submit" value="Continue" name="" id=""></div>
+		     			<div class="bt"><input type="submit" value="Next To Continue" name="" id="">
+					
+					</div>
                     		</li>
                 	  </ul>	
                         </li>
-                    </ul>
+                    </ul> 
+</div>
  </form>  
          </div>
 </div>
