@@ -50,7 +50,7 @@ $js_files=array(
 		'table_common.js.php',
 		'search.js',
 		'js/edit_category_common.js',
-		'customer_categories.js.php',
+		'supplier_categories.js.php',
 		'js/dropdown.js',
 		
 		);
@@ -61,7 +61,7 @@ $smarty->assign('js_files',$js_files);
 if(isset($_REQUEST['id'])){
 $category_key=$_REQUEST['id'];
 }else{
-$category_key=$_SESSION['state']['customer_categories']['category_key'];
+$category_key=$_SESSION['state']['supplier_categories']['category_key'];
 }
 
 if(!$category_key){
@@ -73,14 +73,13 @@ if (isset($_REQUEST['store_id']) and is_numeric($_REQUEST['store_id']) ) {
     $store_id=$_SESSION['state']['store']['id'];
 }
 
-
 if($modify){
 
      $general_options_list[]=array('tipo'=>'js','id'=>'new_category','label'=>_('Add Main Category'));
-  $general_options_list[]=array('tipo'=>'url','url'=>'edit_customer_category.php?store_id='.$store_id.'&id=0','label'=>_('Edit Categories'));
+  $general_options_list[]=array('tipo'=>'url','url'=>'edit_supplier_category.php?store_id='.$store_id.'&id=0','label'=>_('Edit Categories'));
 
 }
-$tpl_file='customer_categories_base.tpl';
+$tpl_file='supplier_categories_base.tpl';
 
 }else{
 
@@ -88,7 +87,7 @@ $tpl_file='customer_categories_base.tpl';
 
 $category=new Category($category_key);
 if(!$category->id){
-header('Location: customer_categories.php?id=0&error=cat_not_found');
+header('Location: supplier_categories.php?id=0&error=cat_not_found');
    exit;
 
 }
@@ -97,7 +96,7 @@ header('Location: customer_categories.php?id=0&error=cat_not_found');
 
 if($modify){
    $general_options_list[]=array('tipo'=>'js','id'=>'new_category','label'=>_('Add Subcategory'));
-  $general_options_list[]=array('tipo'=>'url','url'=>'edit_customer_category.php?&id='.$category->id,'label'=>_('Edit Category'));
+  $general_options_list[]=array('tipo'=>'url','url'=>'edit_supplier_category.php?&id='.$category->id,'label'=>_('Edit Category'));
 
 }
 
@@ -106,13 +105,13 @@ $store_id=$category->data['Category Store Key'];
 $smarty->assign('category',$category);
 
 
-$tpl_file='customer_category.tpl';
+$tpl_file='supplier_category.tpl';
 
 
 }
+$smarty->assign('subject','Supplier');
 
-
-$_SESSION['state']['customer_categories']['category_key']=$category_key;
+$_SESSION['state']['supplier_categories']['category_key']=$category_key;
 
 
 $store=new Store($store_id);
@@ -126,7 +125,7 @@ $_SESSION['state']['store']['id']=$store->id;
 $smarty->assign('store',$store);
 
 
-$smarty->assign('subject','Customer');
+
 $smarty->assign('general_options_list',$general_options_list);
 $smarty->assign('category_key',$category_key);
 $smarty->assign('store_id',$store_id);

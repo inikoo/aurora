@@ -5,7 +5,7 @@
  
   <input id="new_category_parent_key" value={$category_key} type="hidden"/>
     <input id="new_category_store_key" value="{$store->id}" type="hidden"/>
-
+   <input id="new_category_subject" value="{$subject}" type="hidden"/>
   <table style="margin:10px">
 <tr>
  <td> <span  style=""  >{t}Name{/t}:</span></td>
