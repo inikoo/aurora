@@ -17,7 +17,7 @@ function save_new_category(){
 var name=Dom.get("new_category_name").value;
 var store_key=Dom.get("new_category_store_key").value;
 var parent_key=Dom.get("new_category_parent_key").value;
-
+var subject=Dom.get("new_category_subject").value;
 
 if(name==''){
 Dom.setStyle('new_category_no_name_msg','display','')
@@ -28,14 +28,14 @@ Dom.setStyle('new_category_no_name_msg','display','none')
 }
 
 var ar_file='ar_edit_categories.php'; 
-    	var request='tipo=new_category&subject=Product&name='+name+'&store_key='+store_key+'&parent_key='+parent_key;
+    	var request='tipo=new_category&subject='+subject+'&name='+name+'&store_key='+store_key+'&parent_key='+parent_key;
 
-
+alert(request);
 	YAHOO.util.Connect.asyncRequest(
 					'POST',
 					ar_file, {
 					    success:function(o) {
-						//alert(o.responseText);
+						alert(o.responseText);
 						var r = YAHOO.lang.JSON.parse(o.responseText);
 						if (r.state == 200) {
 					table_id=0;

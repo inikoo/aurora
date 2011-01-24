@@ -12,8 +12,7 @@
  Version 2.0
 */
 include_once('common.php');
-include_once('class.Store.php');
-include_once('assets_header_functions.php');
+
 
 
 $css_files=array(
@@ -44,46 +43,42 @@ $js_files=array(
 		'js/php.default.min.js',
 		'common.js.php',
 		'table_common.js.php',
-		
 		'js/dropdown.js',
-        'import_data.js.php'    
-		);
+        	);
 
 
-if(!isset($_REQUEST['tipo'])){
-exit("to do a page where the user can choose the correct options");
-}
+	//value of the assigned field
+	$assign = $_REQUEST['assign_field'];
 
-$scope=$_REQUEST['tipo'];
 
-include_once('xml2array.php');
+	//value of the right column
+	$values = $_REQUEST['values'];
 
-switch($scope){
-case('customers_store'):
-$scope_args=$_SESSION['state']['customers']['store'];
+	
+	//code to generate the final array		
+	for($i = 0; $i < count($_REQUEST['assign_field']);  $i++) 
+	{
 
-// $xml=file_get_contents('conf/import_file_customers.xml');
-//$fields=xml2array($xml);
-if(isset($_GET['id']))
-{
-  $smarty->assign('wrong',"Invalid File");
-}
+		//restrict whether any ignore field is there 
+		if($_REQUEST['assign_field'][$i] != '0')
+		{
 
-break;
-default:
-$scope_args='';
-}
+		 	$rows[$_REQUEST['assign_field'][$i]] = $_REQUEST['values'][$i];
 
-$smarty->assign('scope',$scope);
-$smarty->assign('scope_args',$scope_args);
+		}		
+		
+	}
+	
+	
+	
+
 $smarty->assign('js_files',$js_files);
 $smarty->assign('css_files',$css_files);
-$smarty->assign('js_files',$js_files);
-
-
-
+$smarty->assign('assign',$assign);
+$smarty->assign('values',$values);
 
  
-  $smarty->display('import_xml.tpl');
+$smarty->display('insert_csv.tpl');
+echo '<pre>'; print_r($rows);
 
 ?>

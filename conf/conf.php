@@ -491,6 +491,89 @@ $default_state=array(
 
                                                        ),
                                         ),
+                   'customer_categories'=>array(
+                                            'category_key'=>0,
+                                            'from'=>'',
+                                            'to'=>'',
+                                            'period'=>'year',
+                                            'percentages'=>0,
+                                            'mode'=>'all',
+                                            'avg'=>'totals',
+                                            'view'=>'general',
+                                            'from'=>'',
+                                            'to'=>'',
+                                            'exchange_type'=>'day2day',
+                                            'stores'=>'all',
+                                            'stores_mode'=>'grouped',
+                                            'exchange_value'=>1,
+                                            'show_default_currency'=>false,
+				            'edit'=>'description',
+                                            'subcategories'=>array(
+
+                                                                'order'=>'name',
+                                                                'order_dir'=>'',
+                                                                'sf'=>0,
+                                                                'nr'=>1000,
+                                                                'where'=>'where true',
+                                                                'f_field'=>'name',
+                                                                'f_value'=>'','f_show'=>false,
+
+                                                            ),
+ 
+                                            'products'=>array(
+
+                                                           'order'=>'code',
+                                                           'order_dir'=>'',
+                                                           'sf'=>0,
+                                                           'nr'=>25,
+                                                           'where'=>'where true',
+                                                           'f_field'=>'code',
+                                                           'f_value'=>'','f_show'=>false,
+
+                                                       ),
+                                        ),
+
+                   'supplier_categories'=>array(
+                                            'category_key'=>0,
+                                            'from'=>'',
+                                            'to'=>'',
+                                            'period'=>'year',
+                                            'percentages'=>0,
+                                            'mode'=>'all',
+                                            'avg'=>'totals',
+                                            'view'=>'general',
+                                            'from'=>'',
+                                            'to'=>'',
+                                            'exchange_type'=>'day2day',
+                                            'stores'=>'all',
+                                            'stores_mode'=>'grouped',
+                                            'exchange_value'=>1,
+                                            'show_default_currency'=>false,
+				            'edit'=>'description',
+                                            'subcategories'=>array(
+
+                                                                'order'=>'name',
+                                                                'order_dir'=>'',
+                                                                'sf'=>0,
+                                                                'nr'=>1000,
+                                                                'where'=>'where true',
+                                                                'f_field'=>'name',
+                                                                'f_value'=>'','f_show'=>false,
+
+                                                            ),
+ 
+                                            'products'=>array(
+
+                                                           'order'=>'code',
+                                                           'order_dir'=>'',
+                                                           'sf'=>0,
+                                                           'nr'=>25,
+                                                           'where'=>'where true',
+                                                           'f_field'=>'code',
+                                                           'f_value'=>'','f_show'=>false,
+
+                                                       ),
+                                        ),
 
                    'products'=>array(
                                   'details'=>false,
