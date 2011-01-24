@@ -69,9 +69,11 @@ $js_files=array(
 		
 		$yui_path.'menu/menu-min.js',
 		'common.js.php',
+				'external_libs/ampie/ampie/swfobject.js',
+
 		'table_common.js.php',
 			'js/search.js',
-		'common_plot.js.php?page='.$page,
+		
 		'edit_stock.js.php',
 		'js/dropdown.js'
 		);
@@ -90,7 +92,7 @@ $smarty->assign('search_label',_('Parts'));
 $smarty->assign('search_scope','part');
 
 
-$smarty->assign('display',$_SESSION['state']['part']['display']);
+$smarty->assign('view',$_SESSION['state']['part']['view']);
 
 // $smarty->assign('view_plot',$_SESSION['views']['part_plot']);
 
@@ -113,15 +115,12 @@ if(isset($_REQUEST['id']) and is_numeric($_REQUEST['id'])){
  }
 
 $subject_id=$part->id;
-include_once('plot.inc.php');
+
 
 $smarty->assign('part',$part);
 $smarty->assign('parent','products');
 $smarty->assign('title',$part->get('SKU'));
-$plot_tipo=$_SESSION['state']['part']['plot'];
-$plot_data=$_SESSION['state']['part']['plot_data'];
-$smarty->assign('plot_tipo',$plot_tipo);
-$smarty->assign('plot_data',$plot_data);
+
 $smarty->assign('key_filter_number',$regex['key_filter_number']);
 $smarty->assign('key_filter_dimension',$regex['key_filter_dimension']);
 
@@ -161,21 +160,7 @@ $paginator_menu=array(10,25,50,100,500);
 $smarty->assign('paginator_menu1',$paginator_menu);
 
 
-/*
-$q='';
-$tipo_filter=($q==''?$_SESSION['state']['part']['stock_history']['f_field']:'note');
-$smarty->assign('filter_show0',$_SESSION['state']['part']['stock_history']['f_show']);
-$smarty->assign('filter0',$tipo_filter);
-$smarty->assign('filter_value0',($q==''?$_SESSION['state']['part']['stock_history']['f_value']:addslashes($q)));
-$filter_menu=array(
-		   'location'=>array('db_key'=>'location','menu_label'=>_('Location'),'label'=>_('Location')),
-		   );
-$smarty->assign('filter_menu0',$filter_menu);
-$smarty->assign('filter_name0',$filter_menu[$tipo_filter]['label']);
 
-$paginator_menu=array(10,25,50,100,500);
-$smarty->assign('paginator_menu0',$paginator_menu);
-*/
 
 $smarty->display('part.tpl');
 ?>
