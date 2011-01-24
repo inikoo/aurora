@@ -16,7 +16,7 @@ if (!$user->can_view('stores')  ) {
 
 $modify=$user->can_edit('stores');
 if (!$modify) {
-    header('Location: customer_categories.php');
+    header('Location: supplier_categories.php');
 }
 
 get_header_info($user,$smarty);
@@ -48,20 +48,20 @@ $js_files=array(
               'search.js',
               'js/edit_common.js',
               'js/dropdown.js',
-              'js/edit_category_common.js'
+              'js/edit_category_common.js?subject="Supplier"'
           );
 $smarty->assign('css_files',$css_files);
 
-
+$smarty->assign('subject','Supplier');
 
 if (isset($_REQUEST['id'])) {
     $category_key=$_REQUEST['id'];
 
 
 } else {
-    $category_key=$_SESSION['state']['customer_categories']['category_key'];
+    $category_key=$_SESSION['state']['supplier_categories']['category_key'];
 }
-$_SESSION['state']['customer_categories']['category_key']=$category_key;
+$_SESSION['state']['supplier_categories']['category_key']=$category_key;
 
 
 if (!$category_key) {
@@ -79,7 +79,7 @@ if (isset($_REQUEST['store_id']) and is_numeric($_REQUEST['store_id']) ) {
 
 
 
-    $general_options_list[]=array('tipo'=>'url','url'=>'customer_categories.php?store_id='.$store_id.'&id=0','label'=>_('Exit Edit'));
+    $general_options_list[]=array('tipo'=>'url','url'=>'supplier_categories.php?store_id='.$store_id.'&id=0','label'=>_('Exit Edit'));
     $general_options_list[]=array('tipo'=>'js','id'=>'new_category','label'=>_('Add Category'));
 
 
@@ -90,7 +90,7 @@ if (isset($_REQUEST['store_id']) and is_numeric($_REQUEST['store_id']) ) {
 
     $category=new Category($category_key);
     if (!$category->id) {
-        header('Location: customer_categories.php?id=0&error=cat_not_found');
+        header('Location: supplier_categories.php?id=0&error=cat_not_found');
         exit;
 
     }
@@ -98,7 +98,7 @@ if (isset($_REQUEST['store_id']) and is_numeric($_REQUEST['store_id']) ) {
 
 
     if ($modify) {
-        $general_options_list[]=array('tipo'=>'url','url'=>'customer_categories.php?id='.$category->id,'label'=>_('Exit Edit'));
+        $general_options_list[]=array('tipo'=>'url','url'=>'supplier_categories.php?id='.$category->id,'label'=>_('Exit Edit'));
         $general_options_list[]=array('tipo'=>'js','id'=>'new_category','label'=>_('Add Subcategory'));
 
     }
@@ -108,7 +108,7 @@ if (isset($_REQUEST['store_id']) and is_numeric($_REQUEST['store_id']) ) {
     $smarty->assign('category',$category);
 
 
-    $tpl_file='customer_category.tpl';
+    $tpl_file='supplier_category.tpl';
 $store_id=$category->data['Category Store Key'];
 
 
@@ -122,14 +122,14 @@ if (!$store->id) {
   
 }
 
-$_SESSION['state']['categories']['subject']='Customer';
+$_SESSION['state']['categories']['subject']='Supplier';
 
 $_SESSION['state']['categories']['parent_key']=$category_key;
 $_SESSION['state']['categories']['subject_key']=false;
 $_SESSION['state']['categories']['store_key']=$store->id;
 
 
-$js_files[]='edit_customer_category.js.php?key='.$category_key;
+$js_files[]='edit_supplier_category.js.php?key='.$category_key;
 $smarty->assign('js_files',$js_files);
 $smarty->assign('category_key',$category_key);
 
@@ -137,6 +137,6 @@ $smarty->assign('general_options_list',$general_options_list);
 $smarty->assign('edit',$view);
 $_SESSION['state']['store']['id']=$store->id;
 $smarty->assign('store',$store);
-$smarty->assign('subject','Customer');
-$smarty->display('edit_customer_category.tpl');
+
+$smarty->display('edit_supplier_category.tpl');
 ?>
