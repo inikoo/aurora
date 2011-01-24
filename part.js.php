@@ -256,9 +256,22 @@ var change_snapshot_granularity=function(e){
      datasource.sendRequest(request,table.onDataReturnInitializeTable, table);       
  }
 
+function change_block(){
+ids=['description','sales','transactions','history','purchase_orders'];
+block_ids=['block_description','block_sales','block_transactions','block_history','block_purchase_orders'];
+Dom.setStyle(block_ids,'display','none');
+Dom.setStyle('block_'+this.id,'display','');
+Dom.removeClass(ids,'selected');
+Dom.addClass(this,'selected');
+
+YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=part-view&value='+this.id ,{});
+}
+
+
 function init(){
 
 init_search('part');
+Event.addListener(['description','sales','transactions','history','purchase_orders'], "click",change_block);
 
 
 var ids =Array("restrictions_all_transactions","restrictions_oip_transactions","restrictions_out_transactions","restrictions_in_transactions","restrictions_audit_transactions","restrictions_move_transactions") ;
@@ -277,62 +290,11 @@ Event.addListener(ids, "click", change_snapshot_granularity);
 
 
 
-YAHOO.util.Event.onContentReady("web_status_menu", function () {
-	 var oMenu = new YAHOO.widget.Menu("web_status_menu", { context:["web_status","tl", "bl"]  });
-	 oMenu.render();
-	 oMenu.subscribe("show", oMenu.focus);
-	 YAHOO.util.Event.addListener("web_status", "click", oMenu.show, null, oMenu);
-    });
-
-     var change_view = function (e){
-	 block=this.getAttribute('block');
-	 state=this.getAttribute('state');
-	 new_title=this.getAttribute('atitle');
-	 old_title=this.getAttribute('title');
-
-	 this.setAttribute('title',new_title);
-	 this.setAttribute('atitle',old_title);
-	 
-	 if(state==1){
-	     Dom.get('block_'+block).style.display='none';
-	     this.setAttribute('state',0);
-	     YAHOO.util.Dom.setStyle('but_logo_'+block, 'opacity', .2);
-	     YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=product-display-'+block+'&value=0');
-	 }else{
-	     Dom.get('block_'+block).style.display='';
-	     this.setAttribute('state',1);
-	     YAHOO.util.Dom.setStyle('but_logo_'+block, 'opacity', 1);
-	     YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=product-display-'+block+'&value=1');
-	     
-	 }
-
-
-     }
 
 
 
 
-  var change_plot = function (e){
-
-
-
-      //      alert(plot)
-      Dom.get("the_plot").src='plot.php?tipo='+this.id;
-      YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=product-plot&value='+this.id );
-
-      this.className='selected';
-      Dom.get(plot).className='opaque';
-      plot=this.id;
-     }
-
-     var ids = ["change_view_details","change_view_plot","change_view_orders","change_view_customers","change_view_stock_history"]; 
-     Event.addListener(ids,"click",change_view);
-     var ids = ["product_week_sales","product_month_sales","product_quarter_sales","product_year_sales","product_week_outers","product_week_outers" ,"product_week_outers","product_week_outers","product_stock_history"]; 
-     Event.addListener(ids,"click",change_plot);
-
-     Event.addListener('product_submit_search', "click",submit_search,'product');
-     Event.addListener('product_search', "keydown", submit_search_on_enter,'product');
-
+  
 
 
 }

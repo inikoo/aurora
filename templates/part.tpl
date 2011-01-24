@@ -1,14 +1,15 @@
 {include file='header.tpl'}
-<div id="bd" >
+<div id="bd" style="padding:0">
+<div style="padding: 0 20px">
 {include file='assets_navigation.tpl'}
 
 
-<div style="clear:both">
+<div style="clear:left">
   <h1 style="padding:10px 0 0 0 ;font-size:140%"><span style="font-weight:800">{t}Part SKU{/t} {$part->get('Part SKU')}</span> {$part->get('Part XHTML Description')}</h1>
   <h2 style="padding:0">{t}Sold as{/t}: {$part->get('Part XHTML Currently Used In')}</h2>
 </div>
 
-<div class="" id="block_info"  style="margin-top:10px;width:790px">
+<div class="" id="block_info"  style="margin-top:20px;width:900px">
 
   <div id="photo_container" style="float:left;margin-top:0px">
     <div style="border:1px solid #ddd;padding-top:10;width:220px;text-align:center;margin:0 10px 0 0px">
@@ -23,7 +24,7 @@
     </div>
   </div>
 
-  <div style="width:240px;float:left;margin-left:10px">
+  <div style="width:340px;float:left;margin-left:10px">
   
     <table    class="show_info_product" >
       <td class="aright">
@@ -33,7 +34,7 @@
 	<tr><td>{t}Supplied by{/t}:</td><td>{$part->get('Part XHTML Currently Supplied By')}</td></tr>
 	<tr><td>{t}Cost{/t}:</td><td>{$part->get('Cost')}</td></tr>
     </table>
-    <table    class="show_info_product">
+    <table   {if !$details}style="display:none"{/if} class="show_info_product">
       <tr >
       <td colspan="2" class="aright" style="padding-right:10px"> <span class="product_info_sales_options" id="info_period"><span id="info_title">{$parts_period_title}</span></span>
       <img id="info_previous" class="previous_button" style="cursor:pointer" src="art/icons/previous.png" alt="<"  title="previous" /> <img id="info_next" class="next_button" style="cursor:pointer"  src="art/icons/next.png" alt=">" tite="next"/></td>
@@ -84,8 +85,8 @@
  </table>
 </div>
 
- <div style="width:250px;float:left;margin-left:20px">
-	<table   class="show_info_product" style="width:210px">
+ <div style="width:280px;float:left;margin-left:20px">
+	<table   class="show_info_product" style="width:260px">
 		  <tr>
 		    <td>{t}Stock{/t}:<br>{$stock_units}</td><td class="stock aright" id="stock">{$part->get('Part Current Stock')}</td>
 		  </tr>
@@ -99,7 +100,7 @@
 		    </tr>
 		  </table>
 		  {t}Locations{/t}:<div id="add_location_button" style="float:right;font-size:80%;color:#777;margin-right:40px;cursor:pointer"><span onClick="add_location({$part->sku})">{t}Add Location{/t}</span></div>
-		  <table  id="part_locations" class="show_info_product" style="width:210px" >
+		  <table  id="part_locations" class="show_info_product" style="width:260px" >
 	
 			{foreach from=$part->get_locations(true) item=location name=foo }
 			<tr id="part_location_tr_{$location.PartSKU}_{$location.LocationKey}">
@@ -116,7 +117,7 @@
 			
 		  </table>
 		  
-		   <table    class="show_info_product">
+		   <table  {if !$details}style="display:none"{/if}   class="show_info_product">
       <tr >
       <td colspan="2" class="aright" style="padding-right:10px"> <span class="product_info_sales_options" id="info_period"><span id="info_title">{$parts_period_title}</span></span>
       <img id="info_previous" class="previous_button" style="cursor:pointer" src="art/icons/previous.png" alt="<"  title="previous" /> <img id="info_next" class="next_button" style="cursor:pointer"  src="art/icons/next.png" alt=">" tite="next"/></td>
@@ -177,11 +178,31 @@
 </div>
 
 	
-
+</div>
   
  <div style="clear:both"></div>
  
-  <div id="block_stock_transaction" class="data_table" style="clear:both;margin-top:20px">
+ 
+ <ul class="tabs" id="chooser_ul" style="clear:both;margin-top:25px">
+      <li> <span class="item {if $view=='description'}selected{/if}"  id="description">  <span> {t}Description{/t}</span></span></li>
+
+     <li> <span class="item {if $view=='sales'}selected{/if}"  id="sales">  <span> {t}Sales{/t}</span></span></li>
+
+    <li> <span class="item {if $view=='transactions'}selected{/if}"  id="transactions">  <span> {t}Stock Transactions{/t}</span></span></li>
+        <li> <span class="item {if $view=='history'}selected{/if}"  id="history">  <span> {t}Stock History{/t}</span></span></li>
+        <li> <span class="item {if $view=='purchase_orders'}selected{/if}"  id="purchase_orders">  <span> {t}Purchase Orders{/t}</span></span></li>
+
+        
+  </ul>
+  <div  style="clear:both;width:100%;border-bottom:1px solid #ccc"></div>
+
+ 
+ 
+ 
+
+
+ 
+  <div id="block_transactions" class="data_table" style="{if $view!='transactions'}display:none;{/if}clear:both;margin-top:20px;;padding:0 20px 20px 30px">
     <span   class="clean_table_title">{t}Part Stock Transactions{/t}</span>
      <div id="table_type" class="table_type">
         <div  style="font-size:90%"   id="transaction_chooser" >
@@ -203,8 +224,31 @@
 <div  style="font-size:85%"  id="table1"   class="data_table_container dtable btable "> </div>
 </div>
  
-  <div id="block_stock_history" class="data_table" style="clear:both;margin-top:20px;">
-    <span   class="clean_table_title">{t}Part Stock History{/t}</span>
+  <div id="block_history" class="data_table" style="{if $view!='history'}display:none;{/if}clear:both;margin-top:20px;;padding:0 20px 30px 20px ">
+    <span   class="clean_table_title">{t}Stock History{/t}</span>
+
+
+ <div id="stock_history_plot"  >
+		<strong>You need to upgrade your Flash Player</strong>
+	</div>
+
+<script type="text/javascript">
+		// <![CDATA[
+		var so = new SWFObject("external_libs/amstock/amstock/amstock.swf", "amstock", "905", "500", "8", "#FFFFFF");
+		so.addVariable("path", "");
+		so.addVariable("settings_file", encodeURIComponent("conf/plot_general_candlestick.xml.php?tipo=part_stock_history&sku={$part->sku}"));
+		so.addVariable("preloader_color", "#999999");
+		so.write("stock_history_plot");
+		// ]]>
+	</script>
+
+    <span   class="clean_table_title" style="margin-top:30px">{t}Stock History{/t}</span>
+
+
+
+
+
+
      <div id="stock_history_type">
         <span id="stock_history_type_month" table_type="month" style="float:right" class="table_type state_details {if $stock_history_type=='month'}selected{/if}">{t}Monthly{/t}</span>
         <span id="stock_history_type_week" table_type="week" style="float:right;margin-right:10px" class="table_type state_details {if $stock_history_type=='week'}selected{/if}">{t}Weekly{/t}</span>
@@ -219,12 +263,139 @@
 <div  id="table0"  style="font-size:85%"   class="data_table_container dtable btable "> </div>
 </div>
  
-<div   id="block_plot" style="clear:both;{if $display.plot==0}display:none{/if};margin-top:50px;min-height:420px"  >
-   {include file='plot_splinter.tpl'}
- </div>
-</div>
+ 
+ <div id="block_description" class="data_table" style="{if $view!='description'}display:none;{/if}clear:both;margin-top:20px;;padding:0 20px 30px 20px "></div>
+  <div id="block_sales" class="data_table" style="{if $view!='sales'}display:none;{/if}clear:both;margin-top:20px;;padding:0 20px 30px 20px ">
+  
+  <div   style="margin-top:20px;width:900px">
+
+
+  <div style="width:340px;float:left;margin-left:10px">
+  
+  
+    <table   class="show_info_product">
+      <tr >
+      <td colspan="2" class="aright" style="padding-right:10px"> <span class="product_info_sales_options" id="info_period"><span id="info_title">{$parts_period_title}</span></span>
+      <img id="info_previous" class="previous_button" style="cursor:pointer" src="art/icons/previous.png" alt="<"  title="previous" /> <img id="info_next" class="next_button" style="cursor:pointer"  src="art/icons/next.png" alt=">" tite="next"/></td>
+    </tr>
+      <tbody id="info_all" style="{if $parts_period!='all'}display:none{/if}">
+	<tr><td>{t}Sales{/t}:</td><td class="aright">{$part->get('Total Sold Amount')}</td></tr>
+	<tr><td>{t}Profit{/t}:</td><td class="aright">{$part->get('Total Absolute Profit')}</td></tr>
+	<tr><td>{t}Margin{/t}:</td><td class="aright">{$part->get('Total Margin')}</td></tr>
+	<tr><td>{t}GMROI{/t}:</td><td class="aright">{$part->get('Total GMROI')}</td></tr>
+
+      </tbody>
+      <tbody id="info_year"  style="{if $parts_period!='year'}display:none{/if}">
+	<tr><td>{t}Sales{/t}:</td><td class="aright">{$part->get('1 Year Acc Required')}</td></tr>
+	<tr><td>{t}Profit{/t}:</td><td class="aright">{$part->get('1 Year Acc Provided')}</td></tr>
+	<tr><td>{t}GMROI{/t}:</td><td class="aright">{$part->get('1 Year Acc Adquired')}</td></tr>
+
+
+      </tbody>
+        <tbody id="info_quarter" style="{if $parts_period!='quarter'}display:none{/if}"  >
+       <tr<td>{t}Required{/t}:</td><td class="aright">{$part->get('1 Year Acc Required')}</td></tr>
+      <tr<td>{t}Provided{/t}:</td><td class="aright">{$part->get('1 Year Acc Provided')}</td></tr>
+      <tr><td>{t}Acquired{/t}:</td><td class="aright">{$part->get('1 Year Acc Adquired')}</td></tr>
+      <tr><td>{t}Sold{/t}:</td><td class="aright">{$part->get('1 Year Sold')}</td></tr>
+      <tr><td>{t}Given{/t}:</td><td class="aright">{$part->get('1 Year Given')}</td></tr>
+	  <tr><td>{t}Broken{/t}:</td><td class="aright">{$part->get('1 Year Broken')}</td></tr>
+      <tr><td>{t}Lost{/t}:</td><td class="aright">{$part->get('1 Year Lost')}</td></tr>
+      </tbody>
+        <tbody id="info_month" style="{if $parts_period!='month'}display:none{/if}"  >
+         <tr<td>{t}Required{/t}:</td><td class="aright">{$part->get('1 Year Acc Required')}</td></tr>
+      <tr<td>{t}Provided{/t}:</td><td class="aright">{$part->get('1 Year Acc Provided')}</td></tr>
+      <tr><td>{t}Acquired{/t}:</td><td class="aright">{$part->get('1 Year Acc Adquired')}</td></tr>
+      <tr><td>{t}Sold{/t}:</td><td class="aright">{$part->get('1 Year Sold')}</td></tr>
+      <tr><td>{t}Given{/t}:</td><td class="aright">{$part->get('1 Year Given')}</td></tr>
+	  <tr><td>{t}Broken{/t}:</td><td class="aright">{$part->get('1 Year Broken')}</td></tr>
+      <tr><td>{t}Lost{/t}:</td><td class="aright">{$part->get('1 Year Lost')}</td></tr>
+	  
+      </tbody>
+       <tbody id="info_week" style="{if $parts_period!='week'}display:none{/if}"  >
+         <tr<td>{t}Required{/t}:</td><td class="aright">{$part->get('1 Year Acc Required')}</td></tr>
+      <tr<td>{t}Provided{/t}:</td><td class="aright">{$part->get('1 Year Acc Provided')}</td></tr>
+      <tr><td>{t}Acquired{/t}:</td><td class="aright">{$part->get('1 Year Acc Adquired')}</td></tr>
+      <tr><td>{t}Sold{/t}:</td><td class="aright">{$part->get('1 Year Sold')}</td></tr>
+      <tr><td>{t}Given{/t}:</td><td class="aright">{$part->get('1 Year Given')}</td></tr>
+	  <tr><td>{t}Broken{/t}:</td><td class="aright">{$part->get('1 Year Broken')}</td></tr>
+      <tr><td>{t}Lost{/t}:</td><td class="aright">{$part->get('1 Year Lost')}</td></tr>
+	  
+      </tbody>
+ </table>
 </div>
 
+ <div style="width:280px;float:left;margin-left:20px">
+
+		  
+		   <table   class="show_info_product">
+      <tr >
+      <td colspan="2" class="aright" style="padding-right:10px"> <span class="product_info_sales_options" id="info_period"><span id="info_title">{$parts_period_title}</span></span>
+      <img id="info_previous" class="previous_button" style="cursor:pointer" src="art/icons/previous.png" alt="<"  title="previous" /> <img id="info_next" class="next_button" style="cursor:pointer"  src="art/icons/next.png" alt=">" tite="next"/></td>
+    </tr>
+       <tbody id="info_all" style="{if $parts_period!='all'}display:none{/if}">
+	<tr><td>{t}Required{/t}:</td><td class="aright">{$part->get('Total Required')}</td></tr>
+      <tr><td>{t}Provided{/t}:</td><td class="aright">{$part->get('Total Provided')}</td></tr>
+      <tr><td>{t}Adquired{/t}:</td><td class="aright">{$part->get('Total Adquired')}</td></tr>
+      <tr><td>{t}Sold{/t}:</td><td class="aright">{$part->get('Total Sold')}</td></tr>
+      <tr><td>{t}Given{/t}:</td><td class="aright">{$part->get('Total Given')}</td></tr>
+	  <tr><td>{t}Broken{/t}:</td><td class="aright">{$part->get('Total Broken')}</td></tr>
+      <tr><td>{t}Lost{/t}:</td><td class="aright">{$part->get('Total Lost')}</td></tr>
+     </tbody>
+      <tbody id="info_year"  style="{if $parts_period!='year'}display:none{/if}">
+      <tr<td>{t}Required{/t}:</td><td class="aright">{$part->get('1 Year Acc Required')}</td></tr>
+      <tr<td>{t}Provided{/t}:</td><td class="aright">{$part->get('1 Year Acc Provided')}</td></tr>
+      <tr><td>{t}Acquired{/t}:</td><td class="aright">{$part->get('1 Year Acc Adquired')}</td></tr>
+      <tr><td>{t}Sold{/t}:</td><td class="aright">{$part->get('1 Year Sold')}</td></tr>
+      <tr><td>{t}Given{/t}:</td><td class="aright">{$part->get('1 Year Given')}</td></tr>
+	  <tr><td>{t}Broken{/t}:</td><td class="aright">{$part->get('1 Year Broken')}</td></tr>
+      <tr><td>{t}Lost{/t}:</td><td class="aright">{$part->get('1 Year Lost')}</td></tr>
+
+
+      </tbody>
+        <tbody id="info_quarter" style="{if $parts_period!='quarter'}display:none{/if}"  >
+       <tr<td>{t}Required{/t}:</td><td class="aright">{$part->get('1 Year Acc Required')}</td></tr>
+      <tr<td>{t}Provided{/t}:</td><td class="aright">{$part->get('1 Year Acc Provided')}</td></tr>
+      <tr><td>{t}Acquired{/t}:</td><td class="aright">{$part->get('1 Year Acc Adquired')}</td></tr>
+      <tr><td>{t}Sold{/t}:</td><td class="aright">{$part->get('1 Year Sold')}</td></tr>
+      <tr><td>{t}Given{/t}:</td><td class="aright">{$part->get('1 Year Given')}</td></tr>
+	  <tr><td>{t}Broken{/t}:</td><td class="aright">{$part->get('1 Year Broken')}</td></tr>
+      <tr><td>{t}Lost{/t}:</td><td class="aright">{$part->get('1 Year Lost')}</td></tr>
+      </tbody>
+        <tbody id="info_month" style="{if $parts_period!='month'}display:none{/if}"  >
+         <tr<td>{t}Required{/t}:</td><td class="aright">{$part->get('1 Year Acc Required')}</td></tr>
+      <tr<td>{t}Provided{/t}:</td><td class="aright">{$part->get('1 Year Acc Provided')}</td></tr>
+      <tr><td>{t}Acquired{/t}:</td><td class="aright">{$part->get('1 Year Acc Adquired')}</td></tr>
+      <tr><td>{t}Sold{/t}:</td><td class="aright">{$part->get('1 Year Sold')}</td></tr>
+      <tr><td>{t}Given{/t}:</td><td class="aright">{$part->get('1 Year Given')}</td></tr>
+	  <tr><td>{t}Broken{/t}:</td><td class="aright">{$part->get('1 Year Broken')}</td></tr>
+      <tr><td>{t}Lost{/t}:</td><td class="aright">{$part->get('1 Year Lost')}</td></tr>
+	  
+      </tbody>
+       <tbody id="info_week" style="{if $parts_period!='week'}display:none{/if}"  >
+         <tr<td>{t}Required{/t}:</td><td class="aright">{$part->get('1 Year Acc Required')}</td></tr>
+      <tr<td>{t}Provided{/t}:</td><td class="aright">{$part->get('1 Year Acc Provided')}</td></tr>
+      <tr><td>{t}Acquired{/t}:</td><td class="aright">{$part->get('1 Year Acc Adquired')}</td></tr>
+      <tr><td>{t}Sold{/t}:</td><td class="aright">{$part->get('1 Year Sold')}</td></tr>
+      <tr><td>{t}Given{/t}:</td><td class="aright">{$part->get('1 Year Given')}</td></tr>
+	  <tr><td>{t}Broken{/t}:</td><td class="aright">{$part->get('1 Year Broken')}</td></tr>
+      <tr><td>{t}Lost{/t}:</td><td class="aright">{$part->get('1 Year Lost')}</td></tr>
+	  
+      </tbody>
+</table>
+</div>
+
+
+</div>
+  
+  </div>
+ <div id="block_purchase_orders" class="data_table" style="{if $view!='purchase_orders'}display:none;{/if}clear:both;margin-top:20px;;padding:0 20px 30px 20px "></div>
+
+ 
+ 
+ 
+
+</div>
+</div>
 
 
 
