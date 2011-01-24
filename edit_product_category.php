@@ -51,7 +51,7 @@ $js_files=array(
               'js/edit_category_common.js'
           );
 $smarty->assign('css_files',$css_files);
-
+$smarty->assign('subject','Product');
 
 
 if (isset($_REQUEST['id'])) {

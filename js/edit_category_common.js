@@ -30,12 +30,12 @@ Dom.setStyle('new_category_no_name_msg','display','none')
 var ar_file='ar_edit_categories.php'; 
     	var request='tipo=new_category&subject='+subject+'&name='+name+'&store_key='+store_key+'&parent_key='+parent_key;
 
-alert(request);
+//alert(request);
 	YAHOO.util.Connect.asyncRequest(
 					'POST',
 					ar_file, {
 					    success:function(o) {
-						alert(o.responseText);
+						//alert(o.responseText);
 						var r = YAHOO.lang.JSON.parse(o.responseText);
 						if (r.state == 200) {
 					table_id=0;
