@@ -51,7 +51,8 @@
 				<table class="recordtext">
 		                    <tbody>
 					{foreach from=$success item=foo}
-						 {foreach from=$foo key=k item=v}
+						
+						 {foreach from=$foo item=v}
 				    	  <tr>
 						
 				                <th style="text-align: left; width: 40%;padding-left:10px;">
