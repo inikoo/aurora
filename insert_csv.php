@@ -47,40 +47,38 @@ $js_files=array(
         	);
 
 
-if(!isset($_REQUEST['tipo'])){
-exit("to do a page where the user can choose the correct options");
-}
-
-$scope=$_REQUEST['tipo'];
+	//value of the assigned field
+	$assign = $_REQUEST['assign_field'];
 
 
- 
-switch($scope){
-case('customers_store'):
-$scope_args=$_SESSION['state']['customers']['store'];
+	//value of the right column
+	$values = $_REQUEST['values'];
 
-
-break;
-default:
-$scope_args='';
-}
 	
-if(isset($_REQUEST['error']))
-{
-	$showerror = $_REQUEST['error'];
-}	
-else
-{
-	$showerror = '';
-}
+	//code to generate the final array		
+	for($i = 0; $i < count($_REQUEST['assign_field']);  $i++) 
+	{
 
-$smarty->assign('scope',$scope);
-$smarty->assign('scope_args',$scope_args);
+		//restrict whether any ignore field is there 
+		if($_REQUEST['assign_field'][$i] != '0')
+		{
+
+		 	$rows[$_REQUEST['assign_field'][$i]] = $_REQUEST['values'][$i];
+
+		}		
+		
+	}
+	
+	
+	
+
 $smarty->assign('js_files',$js_files);
 $smarty->assign('css_files',$css_files);
-$smarty->assign('showerror',$showerror);
+$smarty->assign('assign',$assign);
+$smarty->assign('values',$values);
 
  
-  $smarty->display('import_csv.tpl');
+$smarty->display('insert_csv.tpl');
+echo '<pre>'; print_r($rows);
 
 ?>

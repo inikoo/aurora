@@ -624,6 +624,10 @@ function list_history($asset_type) {
         $asset='Category';
         $id_key='parent_key';
         $asset_type='categories';
+    }elseif($asset_type=='customer_categories') {
+        $asset='Category';
+        $id_key='parent_key';
+        $asset_type='categories';
     }
 
 
