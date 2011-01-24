@@ -422,7 +422,7 @@ function submit_edit_estimated_delivery(){
     
     var ar_file='ar_edit_porders.php';
 	request='tipo=edit_porder&key=estimated_delivery&newvalue='+encodeURIComponent(date)+'&id='+po_id;
-	//alert(ar_file+'?'+request)
+	alert(ar_file+'?'+request)
 	YAHOO.util.Connect.asyncRequest(
 					'POST',
 					ar_file, {
@@ -436,7 +436,7 @@ function submit_edit_estimated_delivery(){
 
 						    //	callback(true, r.newvalue);
 						} else {
-						    alert(r.msg);
+						    alert('xx'+r.msg);
 						    //	callback();
 						}
 					    },
