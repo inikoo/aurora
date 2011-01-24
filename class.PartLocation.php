@@ -255,7 +255,7 @@ class PartLocation extends DB_Table {
             $this->data['Quantity On Hand']=$qty;
             $this->data['Stock Value']=$value;
 
-            $this->part->load('stock');
+            $this->part->update_stock();
 
 
             $details='<a href="part.php?id='.$this->part_sku.'">'.$this->part->get_sku().'</a>'.' '._('adjust due to audit in').' <a href="location.php?id='.$this->location->id.'">'.$this->location->data['Location Code'].'</a>: '.($qty_change>0?'+':'').number($qty_change).' ('.($value_change>0?'+':'').money($value_change).')';
@@ -705,7 +705,7 @@ class PartLocation extends DB_Table {
                     print "error can no insert part location dimensiom $sql";
             }
             //$part=new Part('sku',$this->part_sku);
-            //$part->load('stock');
+            //$part->update_stock();
         } else {
 
             //  print "------------".$this->current."---------------------------";
@@ -950,7 +950,7 @@ class PartLocation extends DB_Table {
                 $part=new Part($this->part_sku);
 
                 $part->load('calculate_stock_history','last');
-                $part->load('stock');
+                $part->update_stock();
                 return;
 
 
@@ -999,7 +999,7 @@ class PartLocation extends DB_Table {
                 //	$unk=new PartLocation('1_'.$this->part_sku);
                 $part=new Part($this->part_sku);
                 $part->load('calculate_stock_history','last');
-                $part->load('stock');
+                $part->update_stock();
 
             }
         } else {
@@ -1017,7 +1017,7 @@ class PartLocation extends DB_Table {
             mysql_query($sql);
             $part=new Part($this->part_sku);
             $part->load('calculate_stock_history','last');
-            $part->load('stock');
+            $part->update_stock();
             return;
 
 
@@ -1471,6 +1471,35 @@ $this->set_audits();
     }
 
 
+function get_ohlc($date) {
+
+
+
+    $day_before_date = date ("Y-m-d", strtotime ($date."-1 day", strtotime($date)));
+
+    list ($open,$open_value)=$this->get_stock($day_before_date." 23:59:59");
+
+                             $high=$open;
+    $low=$open;
+    $close=$open;
+    $sql=sprintf("select `Inventory Transaction Quantity` as delta from `Inventory Transaction Fact` where  Date(`Date`)=%s and `Part SKU`=%d and `Location Key`=%d order by `Date` "
+                 ,prepare_mysql($date)
+                 ,$this->part_sku
+                 ,$this->location_key
+                );
+    $res=mysql_query($sql);
+
+    while ($row=mysql_fetch_array($res)) {
+        $close+=$row['delta'];
+        if ($high<$close)
+            $high=$close;
+        if ($low>$close)
+            $low=$close;
+
+    }
+    return array($open,$high,$low,$close);
+
+}
    
 
     function get_stock($date='') {
@@ -1633,36 +1662,45 @@ $this->set_audits();
         $result=mysql_query($sql);
         while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
             list($stock,$value)=$this->get_stock($row['Date'].' 23:59:59');
+
+
             list($sold,$sales_value)=$this->get_sales($row['Date'].' 23:59:59');
             list($in,$in_value)=$this->get_in($row['Date'].' 23:59:59');
             list($lost,$lost_value)=$this->get_lost($row['Date'].' 23:59:59');
+            list($open,$high,$low,$close)=$this->get_ohlc($row['Date']);
+            
+            
             $storing_cost=0;
             $comercial_value=$this->part->get_comercial_value($row['Date'].' 23:59:59');
             $location_type="Unknown";
             $warehouse_key=1;
-            $sql=sprintf("insert into `Inventory Spanshot Fact` values (%s,%d,%d,%d,%f,%.2f ,%.2f,%.2f ,%.f,%f,%f,%f,%s) "
-                         ,prepare_mysql($row['Date'])
+            $sql=sprintf("insert into `Inventory Spanshot Fact` values (%s,%d,%d,%d,%f,%.2f ,%.2f,%.2f ,%.f,%f,%f,%f,%f,%f,%f,%s) ",
+                         prepare_mysql($row['Date']),
 
-                         ,$this->part_sku
-                                                                           ,$warehouse_key
+                         $this->part_sku,
+                                                                           $warehouse_key,
 
-                         ,$this->location_key
+                         $this->location_key,
 
-                         ,$stock
-                         ,$value
+                         $stock,
+                         $value,
 
-                         ,$sales_value
-                         ,$comercial_value
+                         $sales_value,
+                         $comercial_value,
 
-                         ,$storing_cost
+                         $storing_cost,
 
-                         ,$sold
-                         ,$in
-                         ,$lost
-                         ,prepare_mysql($location_type)
+                         $sold,
+                         $in,
+                         $lost,
+                         $open,
+                         $high,
+                         $low,
+                         prepare_mysql($location_type)
+                         
                         );
             mysql_query($sql);
-           // print "$sql\n";
+            //print "$sql\n";
         }
 
     }

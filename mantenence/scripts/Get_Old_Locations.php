@@ -46,9 +46,9 @@ $loc= new Location(2);
 if (!$loc->id)
     mysql_query($sql2);
 
-$wa_data=array(	'Warehouse Area Name'=>'Unknown'
-                                      ,'Warehouse Area Code'=>'Unk'
-                                                             ,'Warehouse Key'=>1
+$wa_data=array(	'Warehouse Area Name'=>'Unknown',
+                'Warehouse Area Code'=>'Unk',
+                'Warehouse Key'=>1
               );
 
 $wa=new WarehouseArea('find',$wa_data,'create');
@@ -79,10 +79,10 @@ while ($row2=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
         // $location=new Location('code',$location_code);
         //  if(!$location->id){
         $location_data=array(
-                           'Location Warehouse Key'=>1
-                                                    ,'Location Warehouse Area Key'=>1
-                                                                                   ,'Location Code'=>$location_code
-                                                                                                    ,'Location Mainly Used For'=>$used_for
+                           'Location Warehouse Key'=>1,
+                           'Location Warehouse Area Key'=>1,
+                           'Location Code'=>$location_code,
+                           'Location Mainly Used For'=>$used_for
                        );
         $location=new Location('find',$location_data,'create');
 
@@ -102,22 +102,22 @@ while ($row2=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
 
             $part_skus=$product->get_current_part_list();
             if (count($part_skus)!=1) {
-            
-            
-            if($product->code=='SG-mix' or $product->code=='PI-09' ){
-                
-                continue;
-            }else{
-            
-                print"Product has more than ne sku\n";
-                print_r($part_skus);
-                print $product->code."\n";
-                exit('error');
-}
+
+
+                if ($product->code=='SG-mix' or $product->code=='PI-09' ) {
+
+                    continue;
+                } else {
+
+                    print"Product has more than ne sku\n";
+                    print_r($part_skus);
+                    print $product->code."\n";
+                    exit('error');
+                }
             }
 
-
-continue;
+                
+           // continue;
             $tmp=array_pop($part_skus);
             $sku=$tmp['Part SKU'];
             print "P: $product_code $location_code $used_for Stock: $stock_old_db\n";
@@ -150,13 +150,13 @@ continue;
                 foreach($associated as  $key=>$location_key) {
                     $part_location=new PartLocation($sku.'_'.$location_key);
                     $data=array(
-                              'user key'=>0
-                                         ,'note_out'=>''
-                                                     ,'note_associate'=>''
-                                                                       ,'note_in'=>$note
+                              'user key'=>0,
+                              'note_out'=>'',
+                              'note_associate'=>'',
+                              'note_in'=>$note,
 
-                                                                                  ,'Destination Key'=>$location->id
-                                                                                                     ,'Quantity To Move'=>'all'
+                              'Destination Key'=>$location->id,
+                              'Quantity To Move'=>'all'
                           );
                     $part_location->move_stock($data);
 
@@ -177,13 +177,13 @@ continue;
                             else
                                 $note.=" ("._("First part-location record").")";
                             $data=array(
-                                      'user key'=>0
-                                                 ,'note_out'=>''
-                                                             ,'note_associate'=>''
-                                                                               ,'note_in'=>$note
+                                      'user key'=>0,
+                                      'note_out'=>'',
+                                      'note_associate'=>'',
+                                      'note_in'=>$note,
 
-                                                                                          ,'Destination Key'=>$location->id
-                                                                                                             ,'Quantity To Move'=>'all'
+                                      'Destination Key'=>$location->id,
+                                      'Quantity To Move'=>'all'
 
                                   );
                             // EXIT;

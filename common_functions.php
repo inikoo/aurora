@@ -136,10 +136,11 @@ function getOrdinal($number){
 
 function prepare_mysql_datetime($datetime,$tipo='datetime'){
 
- 
+ print $datetime;
   if($datetime=='')
     return array('mysql_date'=>'','status'=>'empty','ok'=>false);
   $time='';
+
   if(preg_match('/datetime/',$tipo)){
      if(preg_match('/^[12]\d{3}[\-\/][01]\d[\-\/][0123]\d\s[012]\d:[0123456]\d$/',$datetime))
        $datetime=$datetime.':00';
@@ -148,7 +149,10 @@ function prepare_mysql_datetime($datetime,$tipo='datetime'){
     $ts=date('U',strtotime($datetime));
     list($date,$time)=preg_split('/\s+/',$datetime);
   }else{
-
+ if(!preg_match('/[0123]\d[\-\/][01]\d[\-\/][12]\d{3}/',$datetime)){
+ $tmp=preg_split('/\-|\//',$datetime);
+ 
+ }
 
     if(!preg_match('/^[12]\d{3}[\-\/][01]\d[\-\/][0123]\d/',$datetime))
       return array('mysql_date'=>'','status'=>'wrong date','ok'=>false);

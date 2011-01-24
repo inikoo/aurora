@@ -15,11 +15,13 @@ full list of available settings, check the amstock_settings.xml file in the amst
   </number_format>
   
   <data_sets> 
-    <data_set did="0">
-       <title>{$graphs_data.title}</title>
-       <short>{$graphs_data.short_title}</short>
+  {foreach from=$graphs_data item=graph_data}
+  
+    <data_set did="{$graph_data.gid}">
+       <title>{$graph_data.title}</title>
+       <short>{$graph_data.short_title}</short>
        <color>#00b8bf</color>
-       <file_name>plot_data.csv.php?{$data_args}</file_name>
+       <file_name>plot_data.csv.php?{$graph_data.csv_args}</file_name>
        <csv>
          <reverse>true</reverse>
          <separator>,</separator>
@@ -35,7 +37,7 @@ full list of available settings, check the amstock_settings.xml file in the amst
          </columns>
        </csv>
     </data_set>
-    
+    {/foreach}
  
   </data_sets>
 
@@ -74,7 +76,7 @@ full list of available settings, check the amstock_settings.xml file in the amst
       </legend>
 
       <column_width>70</column_width>
-
+        {foreach from=$graphs_data item=graph_data}
   		<graphs>
   			<graph gid="0">
   				<type>candlestick</type>
@@ -91,12 +93,14 @@ full list of available settings, check the amstock_settings.xml file in the amst
           <negative_color>db4c3c</negative_color>
   				<fill_alpha>70</fill_alpha>
   		    <legend>
-            <date key="true" title="true"><![CDATA[{t}Active Customers{/t}:  {literal}{close}{/literal}]]></date>
+            <date key="true" title="true"><![CDATA[{$graph_data.label}:  {literal}{close}{/literal}]]></date>
             <period key="true" title="true"><![CDATA[open:<b>{literal}{open}{/literal}</b> low:<b>{literal}{low}{/literal}</b> high:<b>{literal}{high}{/literal}</b> close:<b>{literal}{close}{/literal}</b>]]></period>
             <date_comparing key="true" title="true"><![CDATA[{t}Active Customers{/t}:  <b>{literal}{close}{/literal}]]></date_comparing>
             <period_comparing key="true" title="true"><![CDATA[{t}Active Customers{/t}: <b>{literal}{close}{/literal}]]></period_comparing>
           </legend>         
-  			</graph>  			
+  			</graph>
+  			{/foreach}
+  			
   		</graphs>
   	</chart>  
   </charts>

@@ -70,8 +70,33 @@ case('store_sales'):
                          ));
     store_sales($data);
     break;
+case('part_location_stock_history'):
+    $data=prepare_values($_REQUEST,array(
+                             'part_sku'=>array('type'=>'key'),
+                             'location_key'=>array('type'=>'key'),
+                         ));
+    part_location_stock_history($data);
+    break;
+}
+
+
+
+function  part_location_stock_history($data) {
+    $sql=sprintf("select `Date`,`Quantity Open`,`Quantity High`,`Quantity Low`,`Quantity On Hand`, (`Quantity Sold`+`Quantity In`+`Quantity Lost`) as `Volume` from `Inventory Spanshot Fact` where `Part SKU`=%d and `Location Key`=%d order by `Date` desc",
+                 $data['part_sku'],
+                 $data['location_key']
+                );
+     $res=mysql_query($sql);
+ 
+    while ($row=mysql_fetch_assoc($res)) {
+    printf("%s,%s,%s,%s,%s,%s\n",$row['Date'],$row['Quantity Open'],$row['Quantity High'],$row['Quantity Low'],$row['Quantity On Hand'],$row['Volume']);
+    }
+
 
 }
+
+
+
 
 function  number_of_contacts($data) {
 
