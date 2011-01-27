@@ -14,19 +14,18 @@
 
 include_once('common.php');
 
-include_once('class.Product.php');
-include_once('class.Order.php');
 
-$page='marketing';
+//$page='marketing';
 
-$general_options_list=array();
-$general_options_list[]=array('tipo'=>'url','url'=>'marketing_reports.php','label'=>_('Reports'));
+///$general_options_list=array();
+//$general_options_list[]=array('tipo'=>'url','url'=>'marketing_reports.php','label'=>_('Reports'));
 
-$general_options_list[]=array('tipo'=>'url','url'=>'new_email_campaign.php','label'=>_('Create Email Campaign'));
-$general_options_list[]=array('tipo'=>'url','url'=>'newsletter.php?new','label'=>_('Create Newsletter'));
-$smarty->assign('general_options_list',$general_options_list);
+//$general_options_list[]=array('tipo'=>'url','url'=>'new_email_campaign.php','label'=>_('Create Email Campaign'));
+//$general_options_list[]=array('tipo'=>'url','url'=>'newsletter.php?new','label'=>_('Create Newsletter'));
+//$smarty->assign('general_options_list',$general_options_list);
 
-$view_orders=$user->can_view('Orders');
+//$view_orders=$user->can_view('Orders');
+
 
 
 $css_files=array(
@@ -38,7 +37,8 @@ $css_files=array(
 		 'button.css',
 		 'container.css',
 		 'table.css',
-		 'css/marketing_menu.css'
+		 'css/marketing_menu.css',
+		 'css/marketing_campaign.css'
 		 );
 $js_files=array(
 
@@ -55,10 +55,29 @@ $js_files=array(
 		'table_common.js.php',
 		'js/search.js',
 		'marketing.js.php',
-		'js/menu.js'
+		'js/menu.js',
+		'js/jquery-1.4.4.js',
+		'js/marketing_ajax.js'
 		);
 
+		$sql = "select * from `Email Campaign Dimension`";
+		$res = mysql_query($sql);
+		
 
+	while($fetchArray = mysql_fetch_assoc($res))
+	{
+		$key[] = $fetchArray['Email Campaign Key'];
+		$name[] = $fetchArray['Email Campaign Name'];
+		$obj[] = $fetchArray['Email Campaign Objective'];
+		$status[] = $fetchArray['Email Campaign Status'];
+		$email[] = $fetchArray['Email Campaign Maximum Emails'];
+		$content[] = $fetchArray['Email Campaign Content'];
+
+	
+	}
+		
+
+	$fields = mysql_num_rows($res);
  
 if (isset($_REQUEST['view'])) {
     $valid_views=array('metrics','email','web_internal','web','other','newsletter');
@@ -69,31 +88,20 @@ if (isset($_REQUEST['view'])) {
 $smarty->assign('view',$_SESSION['state'][$page]['view']);
 
 
+
 $smarty->assign('parent','home');
 $smarty->assign('title', _('Marketing'));
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
+$smarty->assign('key',$key);
+$smarty->assign('name',$name);
+$smarty->assign('obj',$obj);
+$smarty->assign('status',$status);
+$smarty->assign('email',$email);
+$smarty->assign('content',$content);
+$smarty->assign('fields',$fields);
 
 
-$q='';
-$tipo_filter=($q==''?$_SESSION['state'][$page]['email_campaigns']['f_field']:'code');
-$smarty->assign('filter',$tipo_filter);
-$smarty->assign('filter_value',($q==''?$_SESSION['state'][$page]['email_campaigns']['f_value']:addslashes($q)));
-$filter_menu=array(
-                 'name'=>array('db_key'=>'name','menu_label'=>'Campaign with name like <i>x</i>','label'=>'Name')
-             );
-$smarty->assign('filter_menu0',$filter_menu);
-
-$smarty->assign('filter_name0',$filter_menu[$tipo_filter]['label']);
-$paginator_menu=array(10,25,50,100,500);
-$smarty->assign('paginator_menu0',$paginator_menu);
-
-
-$smarty->display('marketing.tpl');
-
-
-
-
+$smarty->display('marketing_campaign.tpl');
 
 ?>
-

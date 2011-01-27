@@ -68,17 +68,30 @@ $js_files=array(
 		}		
 		
 	}
+
+	
+	require_once 'csvparser.php';
+	$csv = new CSV_PARSER;
+	//loading the CSV File
+	$csv->load($_SESSION['file_path']);
+	//extracting the HEADERS
+	$h = $csv->getHeaders();
+	$count_rows = $csv->countRows();
 	
 	
+	for($y=0; $y<$count_rows; $y++)
+	{
+		
+		$total_row = $csv->getRow($y);
+		echo '<pre>'; print_r($total_row);
+	}
 	
 
 $smarty->assign('js_files',$js_files);
 $smarty->assign('css_files',$css_files);
 $smarty->assign('assign',$assign);
 $smarty->assign('values',$values);
-
- 
 $smarty->display('insert_csv.tpl');
-echo '<pre>'; print_r($rows);
+//echo '<pre>'; print_r($rows);
 
 ?>
