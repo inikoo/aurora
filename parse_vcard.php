@@ -68,6 +68,8 @@ $js_files=array(
 					
 					$smarty->assign('js_files',$js_files);
 					$smarty->assign('css_files',$css_files);
+					echo"<html>
+						<head><title>Import Data</title></head><body>";
 					$smarty->display('header.tpl');
 					echo"<div id='bd' >";
 					
@@ -154,7 +156,7 @@ $js_files=array(
 					echo"</div>";
 				echo"</div>";
 				$smarty->display('footer.tpl');
-				
+				echo"</body></html>";
 					
 					
 				}
@@ -230,13 +232,16 @@ $js_files=array(
 				{
 					$num_records="$count_final_array record have been imported";	
 				}
+				$title='Import Data';
 							
 				$smarty->assign('js_files',$js_files);
 				$smarty->assign('css_files',$css_files);
 
 				$smarty->assign('num_records',$num_records);
 				$smarty->assign('final_array',$final_array);
+				$smarty->assign('title',$title);
 				$smarty->display('vcard_view.tpl');
+				
 				
 				echo"<br><pre><br>";
 				print_r($final_full_array);    //This is the final array
@@ -264,11 +269,11 @@ $js_files=array(
 			$smarty->assign('showerror',$showerror);
 			unset($_REQUEST['error']);
 			#====================	
-			
+			$title='Import Data';
 			
 			$smarty->assign('js_files',$js_files);
 			$smarty->assign('css_files',$css_files);
-
+			$smarty->assign('title',$title);
 
 			$smarty->display('upload_vcard.tpl');
 		 }	
