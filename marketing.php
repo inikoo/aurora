@@ -37,7 +37,8 @@ $css_files=array(
 		 'common.css',
 		 'button.css',
 		 'container.css',
-		 'table.css'
+		 'css/marketing_campaign.css',
+	         'table.css'
 		 );
 $js_files=array(
 
@@ -54,6 +55,7 @@ $js_files=array(
 		'table_common.js.php',
 		'js/search.js',
 		'marketing.js.php'
+		
 		);
 
 

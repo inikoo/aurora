@@ -116,7 +116,7 @@ function objectsIntoArray($arrObjData, $arrSkipIndices = array())
 	$xmlStr = file_get_contents($xmlUrl);
 	$xmlObj = simplexml_load_string($xmlStr);
 	$arrXml = objectsIntoArray($xmlObj);
-
+	
 	$smarty->assign('success',$arrXml);
 	
 	}
