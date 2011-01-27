@@ -1,3 +1,4 @@
+
 <?php
 /*
  File: marketing.php 
@@ -11,6 +12,9 @@
  
  Version 2.0
 */
+
+
+
 
 include_once('common.php');
 
@@ -38,10 +42,12 @@ $css_files=array(
 		 'button.css',
 		 'container.css',
 		 'table.css',
-		 'css/marketing_menu.css'
+		'css/create_list.css',
+		'css/import_data.css',
+		
 		 );
 $js_files=array(
-
+		'http://code.jquery.com/jquery-1.4.4.js',
 		$yui_path.'utilities/utilities.js',
 		$yui_path.'json/json-min.js',
 		$yui_path.'paginator/paginator-min.js',
@@ -54,8 +60,9 @@ $js_files=array(
 		'common.js.php',
 		'table_common.js.php',
 		'js/search.js',
-		'marketing.js.php',
-		'js/menu.js'
+		'js/marketing_list.js',
+		
+		
 		);
 
 
@@ -88,7 +95,7 @@ $smarty->assign('filter_name0',$filter_menu[$tipo_filter]['label']);
 $paginator_menu=array(10,25,50,100,500);
 $smarty->assign('paginator_menu0',$paginator_menu);
 
-$smarty->display('marketing.tpl');
+$smarty->display('marketing_list.tpl');
 
 
 
