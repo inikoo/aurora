@@ -1,4 +1,9 @@
-﻿{include file='header.tpl'}
+<html>
+<head>
+<title>{$title}</title>
+<head>
+{include file='header.tpl'}
+<body>
 <div id="bd" >
 
 <div id="no_details_title" style="clear:left;{if $show_details}display:none;{/if}">
@@ -74,3 +79,6 @@
 </div>
 
 {include file='footer.tpl'}
+</body>
+</html>
+
