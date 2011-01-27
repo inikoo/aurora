@@ -712,7 +712,7 @@ function list_supplier_users() {
         $wheref.=sprintf(" and  $f_field=%d ",$f_value);
 
  $where.=" and `User Key` IS NOT NULL  ";
-   
+   // $where.=" and `User Key` IS NOT NULL and `User Type`='Supplier' ";     //will use this $where when will insert any supplier info in 'user dimension'
 
     $sql="select count(*) as total from `Supplier Dimension` SD  left join `User Dimension` on (`User Parent Key`=`Supplier Key`) $where $wheref";
 
