@@ -61,6 +61,11 @@ case('warehouse_areas'):
   case('warehouses'):
   list_warehouses();
   break;
+case('part_categories'):
+    list_part_categories();
+    break;
+
+
 default:
 
    $response=array('state'=>404,'resp'=>_('Operation not found'));
@@ -1647,5 +1652,313 @@ $order='`Date`';
                    );
     echo json_encode($response);
 }
+
+function list_part_categories() {
+   $conf=$_SESSION['state']['part_categories']['subcategories'];
+    $conf2=$_SESSION['state']['part_categories'];
+    if (isset( $_REQUEST['sf']))
+        $start_from=$_REQUEST['sf'];
+    else
+        $start_from=$conf['sf'];
+
+    if (isset( $_REQUEST['nr'])) {
+        $number_results=$_REQUEST['nr'];
+        if ($start_from>0) {
+            $page=floor($start_from/$number_results);
+            $start_from=$start_from-$page;
+        }
+
+    } else
+        $number_results=$conf['nr'];
+
+    if (isset( $_REQUEST['o']))
+        $order=$_REQUEST['o'];
+    else
+        $order=$conf['order'];
+    if (isset( $_REQUEST['od']))
+        $order_dir=$_REQUEST['od'];
+    else
+        $order_dir=$conf['order_dir'];
+    $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
+    if (isset( $_REQUEST['where']))
+        $where=addslashes($_REQUEST['where']);
+    else
+        $where=$conf['where'];
+
+
+    if (isset( $_REQUEST['exchange_type'])) {
+        $exchange_type=addslashes($_REQUEST['exchange_type']);
+        $_SESSION['state']['part_categories']['exchange_type']=$exchange_type;
+    } else
+        $exchange_type=$conf2['exchange_type'];
+
+    if (isset( $_REQUEST['exchange_value'])) {
+        $exchange_value=addslashes($_REQUEST['exchange_value']);
+        $_SESSION['state']['part_categories']['exchange_value']=$exchange_value;
+    } else
+        $exchange_value=$conf2['exchange_value'];
+
+    if (isset( $_REQUEST['show_default_currency'])) {
+        $show_default_currency=addslashes($_REQUEST['show_default_currency']);
+        $_SESSION['state']['part_categories']['show_default_currency']=$show_default_currency;
+    } else
+        $show_default_currency=$conf2['show_default_currency'];
+
+
+
+
+    if (isset( $_REQUEST['f_field']))
+        $f_field=$_REQUEST['f_field'];
+    else
+        $f_field=$conf['f_field'];
+
+    if (isset( $_REQUEST['f_value']))
+        $f_value=$_REQUEST['f_value'];
+    else
+        $f_value=$conf['f_value'];
+
+
+    if (isset( $_REQUEST['tableid']))
+        $tableid=$_REQUEST['tableid'];
+    else
+        $tableid=0;
+
+
+    if (isset( $_REQUEST['percentages'])) {
+        $percentages=$_REQUEST['percentages'];
+        $_SESSION['state']['part_categories']['percentages']=$percentages;
+    } else
+        $percentages=$_SESSION['state']['part_categories']['percentages'];
+
+
+
+    if (isset( $_REQUEST['period'])) {
+        $period=$_REQUEST['period'];
+        $_SESSION['state']['part_categories']['period']=$period;
+    } else
+        $period=$_SESSION['state']['part_categories']['period'];
+
+    if (isset( $_REQUEST['avg'])) {
+        $avg=$_REQUEST['avg'];
+        $_SESSION['state']['part_categories']['avg']=$avg;
+    } else
+        $avg=$_SESSION['state']['part_categories']['avg'];
+
+    if (isset( $_REQUEST['stores_mode'])) {
+        $stores_mode=$_REQUEST['stores_mode'];
+        $_SESSION['state']['part_categories']['stores_mode']=$stores_mode;
+    } else
+        $stores_mode=$_SESSION['state']['part_categories']['stores_mode'];
+
+    $_SESSION['state']['part_categories']['table']=array('order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value);
+    // print_r($_SESSION['tables']['families_list']);
+
+    //  print_r($_SESSION['tables']['families_list']);
+
+    if (isset( $_REQUEST['category'])) {
+        $root_category=$_REQUEST['category'];
+        $_SESSION['state']['part_categories']['category']=$avg;
+    } else
+        $root_category=$_SESSION['state']['part_categories']['category_key'];
+
+
+
+    $store_key=$_SESSION['state']['store']['id'];
+
+    $where=sprintf("where `Category Subject`='Part' and  `Category Parent Key`=%d",$root_category);
+    //  $where=sprintf("where `Category Subject`='Product'  ");
+
+    if ($stores_mode=='grouped')
+        $group=' group by S.`Category Key`';
+    else
+        $group='';
+
+    $filter_msg='';
+    $wheref='';
+    if ($f_field=='name' and $f_value!='')
+        $wheref.=" and  `Category Name` like '%".addslashes($f_value)."%'";
+
+
+
+
+    $sql="select count(*) as total   from `Category Dimension`   $where $wheref";
+
+//$sql=" describe `Category Dimension`;";
+// $sql="select *  from `Category Dimension` where `Category Parent Key`=1 ";
+//print $sql;
+    $res=mysql_query($sql);
+    if ($row=mysql_fetch_assoc($res)) {
+        $total=$row['total'];
+//   print_r($row);
+    }
+    mysql_free_result($res);
+
+//exit;
+    if ($wheref=='') {
+        $filtered=0;
+        $total_records=$total;
+    } else {
+        $sql="select count(*) as total  from `Category Dimension` S  left join `Category Bridge` CB on (CB.`Category Key`=S.`Category Key`)  left join `Customer Dimension` CD on (CD.`Customer Key`=CB.`Subject Key`) $where ";
+
+        $result=mysql_query($sql);
+        if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+            $total_records=$row['total'];
+            $filtered=$total_records-$total;
+        }
+        mysql_free_result($result);
+
+    }
+
+
+    $rtext=$total_records." ".ngettext('category','categories',$total_records);
+    if ($total_records>$number_results)
+        $rtext_rpp=sprintf("(%d%s)",$number_results,_('rpp'));
+    else
+        $rtext_rpp=' ('._('Showing all').')';
+
+    if ($total==0 and $filtered>0) {
+        switch ($f_field) {
+
+        case('name'):
+            $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There isn't any category with name like ")." <b>*".$f_value."*</b> ";
+            break;
+        }
+    }
+    elseif($filtered>0) {
+        switch ($f_field) {
+
+        case('name'):
+            $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total "._('categories with name like')." <b>*".$f_value."*</b>";
+            break;
+        }
+    }
+    else
+        $filter_msg='';
+
+    $_dir=$order_direction;
+    $_order=$order;
+
+    if ($order=='families')
+        $order='`Product Category Families`';
+    elseif($order=='departments')
+    $order='`Product Category Departments`';
+    elseif($order=='code')
+    $order='`Product Category Code`';
+    elseif($order=='todo')
+    $order='`Product Category In Process Products`';
+    elseif($order=='discontinued')
+    $order='`Product Category In Process Products`';
+    else if ($order=='profit') {
+        if ($period=='all')
+            $order='`Product Category Total Profit`';
+        elseif($period=='year')
+        $order='`Product Category 1 Year Acc Profit`';
+        elseif($period=='quarter')
+        $order='`Product Category 1 Quarter Acc Profit`';
+        elseif($period=='month')
+        $order='`Product Category 1 Month Acc Profit`';
+        elseif($period=='week')
+        $order='`Product Category 1 Week Acc Profit`';
+    }
+    elseif($order=='sales') {
+        if ($period=='all')
+            $order='`Product Category Total Invoiced Amount`';
+        elseif($period=='year')
+        $order='`Product Category 1 Year Acc Invoiced Amount`';
+        elseif($period=='quarter')
+        $order='`Product Category 1 Quarter Acc Invoiced Amount`';
+        elseif($period=='month')
+        $order='`Product Category 1 Month Acc Invoiced Amount`';
+        elseif($period=='week')
+        $order='`Product Category 1 Week Acc Invoiced Amount`';
+
+    }
+    elseif($order=='name')
+    $order='`Category Name`';
+    elseif($order=='active')
+    $order='`Product Category For Public Sale Products`';
+    elseif($order=='outofstock')
+    $order='`Product Category Out Of Stock Products`';
+    elseif($order=='stock_error')
+    $order='`Product Category Unknown Stock Products`';
+    elseif($order=='surplus')
+    $order='`Product Category Surplus Availability Products`';
+    elseif($order=='optimal')
+    $order='`Product Category Optimal Availability Products`';
+    elseif($order=='low')
+    $order='`Product Category Low Availability Products`';
+    elseif($order=='critical')
+    $order='`Product Category Critical Availability Products`';
+
+
+
+
+
+    $sql="select S.`Category Key`, `Category Name` from `Category Dimension` S  left join `Category Bridge` CB on (CB.`Category Key`=S.`Category Key`)  left join `Part Dimension` PD on (PD.`Part SKU`=CB.`Subject Key`)  $where $wheref $group order by $order $order_direction limit $start_from,$number_results    ";
+// print $sql;
+    $res = mysql_query($sql);
+
+    $total=mysql_num_rows($res);
+    $adata=array();
+    $sum_sales=0;
+    $sum_profit=0;
+    $sum_outofstock=0;
+    $sum_low=0;
+    $sum_optimal=0;
+    $sum_critical=0;
+    $sum_surplus=0;
+    $sum_unknown=0;
+    $sum_departments=0;
+    $sum_families=0;
+    $sum_todo=0;
+    $sum_discontinued=0;
+
+    $DC_tag='';
+    if ($exchange_type=='day2day' and $show_default_currency  )
+        $DC_tag=' DC';
+
+    // print "$sql";
+    while ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+
+        //$name=sprintf('<a href="store.php?id=%d">%s</a>',$row['Product Category Key'],$row['Product Category Name']);
+        //$code=sprintf('<a href="store.php?id=%d">%s</a>',$row['Product Category Key'],$row['Product Category Code']);
+
+
+
+        if ($stores_mode=='grouped')
+            $name=sprintf('<a href="part_categories.php?id=%d">%s</a>',$row['Category Key'],$row['Category Name']);
+        else
+            $name=$row['Category Key'].' '.$row['Category Name']." (".$row['Category Store Key'].")";
+        $adata[]=array(
+                     //'go'=>sprintf("<a href='edit_category.php?edit=1&id=%d'><img src='art/icons/page_go.png' alt='go'></a>",$row['Category Key']),
+                     'id'=>$row['Category Key'],
+                     'name'=>$name,
+
+                 
+
+
+                 );
+    }
+    mysql_free_result($res);
+
+   
+
+    $response=array('resultset'=>
+                                array('state'=>200,
+                                      'data'=>$adata,
+                                      'sort_key'=>$_order,
+                                      'sort_dir'=>$_dir,
+                                      'tableid'=>$tableid,
+                                      'filter_msg'=>$filter_msg,
+                                      'rtext'=>$rtext,
+                                      'rtext_rpp'=>$rtext_rpp,
+                                      'total_records'=>$total_records,
+                                      'records_offset'=>$start_from,
+                                      'records_perpage'=>$number_results,
+                                     )
+                   );
+    echo json_encode($response);
+}
+
 
 ?>

@@ -22,7 +22,7 @@ get_header_info($user,$smarty);
 $general_options_list=array();
 
 
-$smarty->assign('view',$_SESSION['state']['product_categories']['view']);
+$smarty->assign('view',$_SESSION['state']['part_categories']['view']);
 
 
 
@@ -50,7 +50,7 @@ $js_files=array(
 		'table_common.js.php',
 		'search.js',
 		'js/edit_category_common.js',
-		'product_categories.js.php',
+		'part_categories.js.php',
 		'js/dropdown.js',
 		
 		);
@@ -61,7 +61,7 @@ $smarty->assign('js_files',$js_files);
 if(isset($_REQUEST['id'])){
 $category_key=$_REQUEST['id'];
 }else{
-$category_key=$_SESSION['state']['product_categories']['category_key'];
+$category_key=$_SESSION['state']['part_categories']['category_key'];
 }
 
 if(!$category_key){
@@ -77,10 +77,10 @@ if (isset($_REQUEST['store_id']) and is_numeric($_REQUEST['store_id']) ) {
 if($modify){
 
      $general_options_list[]=array('tipo'=>'js','id'=>'new_category','label'=>_('Add Main Category'));
-  $general_options_list[]=array('tipo'=>'url','url'=>'edit_product_category.php?store_id='.$store_id.'&id=0','label'=>_('Edit Categories'));
+  $general_options_list[]=array('tipo'=>'url','url'=>'edit_part_category.php?id=0','label'=>_('Edit Categories'));
 
 }
-$tpl_file='product_categories_base.tpl';
+$tpl_file='part_categories_base.tpl';
 
 }else{
 
@@ -88,7 +88,7 @@ $tpl_file='product_categories_base.tpl';
 
 $category=new Category($category_key);
 if(!$category->id){
-header('Location: product_categories.php?id=0&error=cat_not_found');
+header('Location: part_categories.php?id=0&error=cat_not_found');
    exit;
 
 }
@@ -97,7 +97,7 @@ header('Location: product_categories.php?id=0&error=cat_not_found');
 
 if($modify){
    $general_options_list[]=array('tipo'=>'js','id'=>'new_category','label'=>_('Add Subcategory'));
-  $general_options_list[]=array('tipo'=>'url','url'=>'edit_product_category.php?&id='.$category->id,'label'=>_('Edit Category'));
+  $general_options_list[]=array('tipo'=>'url','url'=>'edit_part_category.php?&id='.$category->id,'label'=>_('Edit Category'));
 
 }
 
@@ -106,13 +106,13 @@ $store_id=$category->data['Category Store Key'];
 $smarty->assign('category',$category);
 
 
-$tpl_file='product_category.tpl';
+$tpl_file='part_category.tpl';
 
 
 }
 
 
-$_SESSION['state']['product_categories']['category_key']=$category_key;
+$_SESSION['state']['part_categories']['category_key']=$category_key;
 
 
 $store=new Store($store_id);
@@ -124,11 +124,11 @@ exit("Error wrong store");
 
 $_SESSION['state']['store']['id']=$store->id;
 $smarty->assign('store',$store);
-$smarty->assign('subject','Product');
 
 
+$smarty->assign('subject','Part');
 $smarty->assign('general_options_list',$general_options_list);
 $smarty->assign('category_key',$category_key);
-
+$smarty->assign('store_id',$store_id);
 $smarty->display($tpl_file);
 ?>

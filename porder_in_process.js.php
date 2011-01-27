@@ -26,7 +26,7 @@ var myCellEdit = function (callback, newValue) {
     ar_file='ar_edit_porders.php';
     
     var request='tipo=edit_'+column.object+'&key=' + column.key + '&newvalue=' + encodeURIComponent(newValue) + '&oldvalue=' + encodeURIComponent(oldValue)+ myBuildUrl(datatable,record);
-    //alert(ar_file+'?'+request);
+   // alert(ar_file+'?'+request);
     
     YAHOO.util.Connect.asyncRequest(
 				    'POST',
@@ -108,7 +108,7 @@ var myonCellClick = function(oArgs) {
 					'POST',
 					ar_file, {
 					    success:function(o) {
-						// alert(o.responseText);
+						//alert(o.responseText);
 						var r = YAHOO.lang.JSON.parse(o.responseText);
 						if (r.state == 200) {
 						    for(x in r.data){
@@ -230,7 +230,7 @@ var select_staff=function(o,e){
 	YAHOO.util.Connect.asyncRequest('POST',request ,{
 		
 		success:function(o) {
-		 // alert(o.responseText)
+		  alert(o.responseText)
 		    var r =  YAHOO.lang.JSON.parse(o.responseText);
 		    if (r.state == 200) {
 
