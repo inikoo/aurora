@@ -217,14 +217,13 @@ class part extends DB_Table {
 
         case('locations'):
             $this->load_locations($args);
-            if ($this->current_locations_loaded) {
+           
 
-            }
-
-
+break;
 
         case('stock'):
-        exit("use update stock\n");
+        $a.=$a;
+        exit("error use update stock method  \n");
         /*
             if (!$this->current_locations_loaded)
                 $this->load('locations');
@@ -931,8 +930,15 @@ return $this->get_supplier_products_historic($date);
 }
 
     $supplier_products=array();
-    $sql=sprintf("select (select GROUP_CONCAT(`SPH Key`) from `Supplier Product History Dimension` H where H.`Supplier Product Code`=SPPL.`Supplier Product Code` and H.`Supplier Key`=SPPL.`Supplier Key` ) as `Supplier Product Keys`,  `Supplier Product Units Per Part`,SPPL.`Supplier Product Code`,  SD.`Supplier Key`,`Supplier Code` from `Supplier Product Part List` SPPL   left join `Supplier Dimension` SD on (SD.`Supplier Key`=SPPL.`Supplier Key`) where `Part SKU`=%d ;",$this->data['Part SKU']);
-    $result=mysql_query($sql);
+    $sql=sprintf("
+    
+    select (select GROUP_CONCAT(`SPH Key`) from `Supplier Product History Dimension` H where H.`Supplier Product Key`=SPPD.`Supplier Product Key` ) as `Supplier Product Keys`, 
+    `Supplier Product Units Per Part`,SPD.`Supplier Product Code`,  SPD.`Supplier Key`,`Supplier Code` from `Supplier Product Part List` SPPL 
+    left join `Supplier Product Part Dimension` SPPD on (SPPD.`Supplier Product Part Key`=SPPL.`Supplier Product Part Key`) 
+    left join `Supplier Product Dimension` SPD on (SPD.`Supplier Product Key`=SPPD.`Supplier Product Key`) where `Part SKU`=%d and `Supplier Product Part Most Recent`='Yes';
+    ",$this->data['Part SKU']);
+   //print $sql;
+   $result=mysql_query($sql);
     while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
         $supplier_products[$row['Supplier Key'].$row['Supplier Product Code']]=array(
                     'Supplier Key'=>$row['Supplier Key'],
@@ -1449,13 +1455,23 @@ list($avg_cost,$min_cost)=$this->get_estimated_future_cost();
 
         if ($date) {
             // print "from date";
-            $sql=sprintf("select AVG(`Supplier Product Unit Cost`*`Supplier Product Units Per Part`) as cost from `Supplier Product Dimension` SP left join `Supplier Product Part List` B  on (SP.`Supplier Product Code`=B.`Supplier Product Code` and SP.`Supplier Key`=B.`Supplier Key`) where `Part SKU`=%d and ( (`Supplier Product Part Valid From`<=%s and `Supplier Product Part Valid To`>=%s and `Supplier Product Part Most Recent`='No') or (`Supplier Product Part Most Recent`='Yes' and `Supplier Product Part Valid From`<=%s )  )  "
-                         ,$this->sku
+            
+            $sql=sprintf("select AVG(`Supplier Product Cost Per Case`/`Supplier Product Units Per Case`*`Supplier Product Units Per Part`) as cost 
+from `Supplier Product Dimension` SP 
+left join `Supplier Product Part Dimension` SPPD  on (SP.`Supplier Product Key`=SPPD.`Supplier Product Key` )
+left join `Supplier Product Part List` B  on (SPPD.`Supplier Product Part Key`=B.`Supplier Product Part Key` )
+ where `Part SKU`=%d and (  ( `Supplier Product Part Most Recent`='Yes'  and `Supplier Product Part Valid From`<=%s ) or ( `Supplier Product Part Most Recent`='No' and `Supplier Product Part Valid From`<=%s and `Supplier Product Part Valid To`>=%s) ) ",
+ $this->sku
+  ,prepare_mysql($date)
                          ,prepare_mysql($date)
                          ,prepare_mysql($date)
-                         ,prepare_mysql($date)
-                        );
-            //	print $sql;
+ 
+ );
+ 
+ 
+          
+            	//print $sql;
+            //exit;
             $res=mysql_query($sql);
             if ($row=mysql_fetch_array($res)) {
                 if (is_numeric($row['cost']))
