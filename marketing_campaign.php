@@ -62,16 +62,21 @@ $js_files=array(
 
 		$sql = "select * from `Email Campaign Dimension`";
 		$res = mysql_query($sql);
-		
+		$key = array();
+		$name = array();
+		$obj = array();
+		$status = array();
+		$email = array();
+		$content = array();
 
 	while($fetchArray = mysql_fetch_assoc($res))
 	{
-		$key[] = $fetchArray['Email Campaign Key'];
-		$name[] = $fetchArray['Email Campaign Name'];
-		$obj[] = $fetchArray['Email Campaign Objective'];
-		$status[] = $fetchArray['Email Campaign Status'];
-		$email[] = $fetchArray['Email Campaign Maximum Emails'];
-		$content[] = $fetchArray['Email Campaign Content'];
+		$key = $fetchArray['Email Campaign Key'];
+		$name = $fetchArray['Email Campaign Name'];
+		$obj = $fetchArray['Email Campaign Objective'];
+		$status = $fetchArray['Email Campaign Status'];
+		$email = $fetchArray['Email Campaign Maximum Emails'];
+		$content = $fetchArray['Email Campaign Content'];
 
 	
 	}
@@ -85,7 +90,7 @@ if (isset($_REQUEST['view'])) {
         $_SESSION['state'][$page]['view']=$_REQUEST['view'];
 
 }
-$smarty->assign('view',$_SESSION['state'][$page]['view']);
+//$smarty->assign('view',$_SESSION['state'][$page]['view']);
 
 
 
