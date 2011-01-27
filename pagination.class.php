@@ -5,11 +5,11 @@
   class pagination
   {
     var $page = 1; // Current Page
-    var $perPage = 4; // Items on each page, defaulted to 10
+    var $perPage = 2; // Items on each page, defaulted to 10
     var $showFirstAndLast = false; // if you would like the first and last page options.
    
     
-    function generate($array, $perPage = 4)
+    function generate($array, $perPage = 2)
     {
       // Assign the items per page variable
       if (!empty($perPage))

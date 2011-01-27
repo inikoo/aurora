@@ -10,13 +10,6 @@
 	$index = $_REQUEST['v'];
 	$r = $csv->getRow($index);
 	
-	//total number of rows in the file
-	for($y=0; $y<$count_rows; $y++)
-	{
-		$total_row = $csv->getRow($y);
-           	//print_r($total_rows);
-	}
-	
 ?>
 <table class="recordList">
 		
@@ -71,7 +64,7 @@
 		    <option value="Customer Name">Name</option>
 		    <option value="Customer Type">Type</option>
 		    <option value="Customer Company Name">Company Name</option>
-		    <option value="Customer Main Plain Email">Email</option>
+		    <option value="Customer Main Plain Email">Email</option>$j
 		    <option value="Contact Main Plain Mobile">Mobile</option>
 		    <option value="Customer Main Plain Telephone">Telephone</option>	
 		    <option value="Customer Main Plain FAX">FAX</option>
@@ -89,12 +82,11 @@
 		</td>
 		<td>
 			<!-- Value Output -->
-			<?php echo $r[$j]; 
-				
-		 	?>
+			<?php echo $r[$j]; ?>
 		</td>
 	</tr>
 		<input type="hidden" name="values[]" value="<?php echo $r[$j]; ?>">
+		
 	<?php
 		
 	}
