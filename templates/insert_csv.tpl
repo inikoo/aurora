@@ -16,9 +16,9 @@
 
     
     				<div class="prop">
-					{section name ="as" loop="$ee"}
-						{$ee[as]}<br>
-					{/section}
+					//{section name ="as" loop="$ee"}
+						//{$ee[as]}<br>
+					//{/section}
 
 			<br>
 									
