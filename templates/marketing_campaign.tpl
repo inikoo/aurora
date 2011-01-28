@@ -18,7 +18,7 @@
  </table>
 
 </div> 	
-<div style="padding:10px 0px 0px 0px;"><span style="padding-left:300px;"><select name="folder"><option value="">New Folder</option></select> &nbsp;<input type="submit" name="move" value="Move"> &nbsp; <input type="submit" name="delete" value="Delete"></span>
+<div style="padding:10px 0px 0px 0px;"><span style="padding-left:750px;"><select name="folder"><option value="">New Folder</option></select> &nbsp;<input type="submit" name="move" value="Move"> &nbsp; <input type="submit" name="delete" value="Delete"></span>
 <table height="520" border="1">
 <tr>
  <td style="background-color:#d3dbe8">
@@ -37,11 +37,16 @@
  <a href ="">unfiled </a><br>
 
 </div>
-<form action="" method="POST"><span style="padding-left:60px;"><input type="button" name="newFolder" id="newFolder" value="New Folder" onClick="showFolder(this.value)"></span></form>
-<div id="folder"></div>
+<br>
+<form action="" method="POST"><span style="padding-left:20px;"><img src="art/icons/folder_add.png" / ><a href="#" name="newFolder" id="newFolder" onClick="showFolder()" style="text-decoration:none;">&nbsp; Create Folder</a></span>
+<div id="folder">
+	{section name="i" loop="$create"}
+	  <span style="padding-left:20px;"><img src="art/icons/folder_add.png" / >&nbsp; {$create[i].$folder_name}</span>&nbsp;&nbsp;<img src="art/icons/edit.ico" height="9" onClick="edit()" />&nbsp;<img src="art/icons/delete.ico" onClick="delete()" /><br>
+	{/section}
+</div></form>
 </td> 
 <td>
-  <table>
+  <table width="730">
 	  <tr>
 	   
 	   <td class="display_campaign1">Serial</td>
@@ -52,14 +57,15 @@
 	   <td class="display_campaign6">Content</td>
 		
 	</tr>
-		{section name=data loop=$fields}
+	
+		{section name=value loop=$value}
 		<tr>
-		<td>{$key}</td>
+		<td align="center" width="50"><input type="checkbox" name="chkbox" value=""> &nbsp; {$value[value].$key}</td>
 		<td>TYPE</td>
-		<td>{$status}</td>
+		<td align="center" width="50">{$value[value].$status}</td>
 		<td>LIST</td>
-		<td>{$email}</td>
-		<td>{$content}</td>
+		<td align="center" width="50">{$value[value].$email}</td>
+		<td>{$value[value].$content}</td>
 		</tr>
 		{/section}
      
