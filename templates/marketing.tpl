@@ -6,7 +6,7 @@
 
   <div style="background-color:#7080b1;height:60px;">
   <div class="campaign_head">Campaigns</div>
-  <table  style="margin-top:24px;" cellspacing="10" width="445">
+  <table  style="margin-top:25px;" cellspacing="10" width="445">
   	<tr>
 	<td><div class="topmenu current"><a href="">Emarketing</a></div></td>
 	<td><div class="topmenu"><a href="">Campaigns</a</div></td>
@@ -43,9 +43,9 @@
   Getting started with MailChimp is easy …
 
 </div><br><div style="height:75px;">
-<div style="float:left;"><img src="art/1.png"> </div><span style="float:left;line-height:50px;font-size:18px;">Create a list</span> <div style="float:right;width:51px;height:26px;background-color:#c1b798;line-height;10px;-moz-border-radius: 5px 5px 5px 5px;"><a class="button-small" title="create a mailing list" href="#">go »</a></div></div></div>
+<div style="float:left;"><img style="height:40px; width:40px;" src="art/1.png"> </div><span style="float:left;line-height:40px;font-size:18px;">Create a list</span> <div style="float:right;width:51px;height:26px;background-color:#c1b798;line-height;10px;-moz-border-radius: 5px 5px 5px 5px;"><a class="button-small" title="create a mailing list" href="#">go »</a></div></div></div>
 <div style="height:75px;">
-<div style="float:left;"><img src="art/2.png"> </div><span style="float:left;line-height:50px;font-size:18px;">Create a campaign</span> <div style="float:right;width:51px;height:26px;background-color:#c1b798;line-height;10px;-moz-border-radius: 5px 5px 5px 5px;"><a class="button-small" title="create a mailing list" href="marketing_create_campaign.php">go »</a></div></div></div>
+<div style="float:left;"><img style="height:40px; width:40px;" src="art/2.png"> </div><span style="float:left;line-height:40px;font-size:18px;">Create a campaign</span> <div style="float:right;width:51px;height:26px;background-color:#c1b798;line-height;10px;-moz-border-radius: 5px 5px 5px 5px;"><a class="button-small" title="create a mailing list" href="marketing_create_campaign.php">go »</a></div></div></div>
 
 </td>
 
