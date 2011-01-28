@@ -50,14 +50,14 @@
 .campaign_head{
    padding:20px 10px 7px 10px;
    font-size:19px;
-   width:120px;
+   width:140px;
    float:left;
    color:#ffffff;
 }
 
 
 .topmenu{
-   background: none repeat scroll 0 0 #c9d5e1;
+   background: none repeat scroll 0 0 #fbe4b6;
    min-width:40px;
    height:33px;
    line-height:35px;
@@ -149,11 +149,11 @@ padding:10px 2px 2px 15px;
    background: url("../art/title-bg.gif") repeat-x scroll left bottom #FFFFFF;
     font-weight: bold;
     text-align: center;
-<<<<<<< HEAD:css/marketing_campaign.css
+
     width:380px;
-=======
+
    
->>>>>>> 57f7fa59ca854a0a279b20794e67020ca4916f7f:css/marketing_campaign.css
+
     border-right:1px #666666 solid;
 }
 .display_campaign2{
@@ -167,11 +167,11 @@ padding:10px 2px 2px 15px;
    background: url("../art/title-bg.gif") repeat-x scroll left bottom #FFFFFF;
     font-weight: bold;
     text-align: center;
-<<<<<<< HEAD:css/marketing_campaign.css
+
     width:60px;
-=======
+
     width:80px;
->>>>>>> 57f7fa59ca854a0a279b20794e67020ca4916f7f:css/marketing_campaign.css
+
     border-right:1px #666666 solid;
 }
 .display_campaign4{
@@ -192,18 +192,104 @@ padding:10px 2px 2px 15px;
    background: url("../art/title-bg.gif") repeat-x scroll left bottom #FFFFFF;
     font-weight: bold;
     text-align: center;
-<<<<<<< HEAD:css/marketing_campaign.css
+
     width:20px;
     
 }
 .button-small{
-  padding:9px;
-
-  line-height;10px;
+  padding-left:10px;
+ line-height:23px;
 
 }
-=======
-    width:350px;
+.button-small:hover{
+   text-decoration:none;
+}
+.field_set{
+  -moz-border-radius: 4px 4px 4px 4px;
+    background-color: #F1EDE0;
+    border: 0 none;
+    clear: both;
+    margin: 1.2em 0 1.2em 0.3em;
+    padding: 1em 1.4em 1.4em;
+    min-height:10px;
+}
+.legend_part {
+    -moz-border-radius: 4px 4px 4px 4px;
+    background-color: #FFFFFF;
+    border: 1px solid #DDDDDD;
+    color: #333333;
+    font-size: 13px;
+    font-weight: bold;
+    margin: 0 -0.4em;
+    padding: 5px 15px;
+}
+.recipient-list {
+    border-bottom: 1px solid #FFFFFF;
+    line-height: 22px;
+    padding: 4px 8px;
+}
+.campaign_name{
+line-height: 0.3em;
+    margin-bottom: 14px;
+    padding: 0 0 0 14px;
+    font-size:13px;
+    font-weight:bold;
+}
+.segment{
+  float:right;
+  padding-right:15px;
+}
+.send_entire_list{
+ float:right;
+ background-color:#b95b00;
+color:#ffffff;
+
+}
+
+.button_campaignListCreate
+{
+  -moz-border-radius: 4px 4px 4px 4px;
+    background-color: #336699;
+    border: 0 none;
+    color: #FFFFFF;
+    cursor: pointer;
+    display: inline-block;
+    font-size: 13px;
+    font-style: normal;
+    font-weight: bold;
+    padding:6px;
+    text-align: center;
+    text-decoration: none;
+    vertical-align: top;
+    white-space: nowrap;
+    height:13px;
+    width: auto; 
     
 }
->>>>>>> 57f7fa59ca854a0a279b20794e67020ca4916f7f:css/marketing_campaign.css
+.button_campaignListCreate:hover{
+ text-decoration:none;
+}
+.campaignlist_outer{
+   min-height:25px;
+  
+   padding:5px;
+}
+.campaignlist_outer:hover{
+   background-color:#ffffff;
+
+}
+.value_sagement{
+  -moz-border-radius: 5px 5px 5px 5px;
+   
+}
+.go_next{
+   float:right;
+ width:51px;
+height:26px;
+background-color:#c1b798;
+-moz-border-radius: 5px 5px 5px 5px;
+}
+.go_next:hover{
+background-color:#999999;
+
+}
