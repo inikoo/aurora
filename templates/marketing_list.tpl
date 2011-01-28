@@ -51,9 +51,9 @@
 	</div>
 	<div id="block_other" style="{if $view!='other'}display:none;{/if}clear:both;margin:20px 0 40px 0;padding:0 20px">
 	</div>
-
+	<div id="check_div">Please Check Your Entry And Try Again</div>
 	<div id="left_panel">
-		<a href="#"onClick="" style="text-decoration:none"><div id="create_new_list">Create New List
+		<a href=""onClick="" style="text-decoration:none"><div id="create_new_list">Create New List
 		</div></a><br>
 		<div id="signup_forms">Design Sign up forms
 		</div><br>
@@ -64,7 +64,7 @@
 
 
 
-	<div id="list_or_group" style="border:1px solid #AAAAAA; margin-left: 220px; width: 670px; display:none;">AAAAAAAAAAAAAAAAA</div>
+	<div id="list_or_group" style="border:1px solid #AAAAAA; margin-left: 220px; width: 670px; display:none;">AAAAAAAAAA<br>AAAAAAA</div>
 	<div id="new_list">
 		<form action="" method="post" name="list_form" onSubmit="validate_form();">
 

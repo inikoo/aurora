@@ -121,3 +121,12 @@ label
 	-moz-border-radius: 5px 5px 5px 5px;
 	color:#999999;
 }
+
+#check_div
+{
+	border:1px solid #D9D9F3;
+	width:910px;
+	height: 15px; 
+	background:#D9D9F3;
+	text-align: center;
+}

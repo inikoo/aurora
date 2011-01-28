@@ -47,7 +47,9 @@ $css_files=array(
 		
 		 );
 $js_files=array(
-		'http://code.jquery.com/jquery-1.4.4.js',
+		'external_libs/jquery/jquery-1.3.2.min.js',
+		'js/jquery.js',
+		'js/jquery-1.4.4.js',
 		$yui_path.'utilities/utilities.js',
 		$yui_path.'json/json-min.js',
 		$yui_path.'paginator/paginator-min.js',
