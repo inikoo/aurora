@@ -1231,7 +1231,8 @@ if($date_inv!='NULL'){
             $exchange_date=$date_order;
 
         $currency_exchange = new CurrencyExchange($__currency_code.'GBP',$exchange_date);
-        $exchange= $currency_exchange->get_exchange();
+	//print "=============".$__currency_code.'GBP'."->  $exchange_date ================\n";
+	$exchange= $currency_exchange->get_exchange();
         chdir('mantenence/scripts/');
 
         if ($exchange==0) {
