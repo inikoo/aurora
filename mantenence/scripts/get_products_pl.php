@@ -47,7 +47,7 @@ $Data_Audit_ETL_Software="$software $version";
 //$file_name='/data/plaza/AWorder2009Poland.xls';
 
 
-$csv_file='AWorder2009Poland.csv';
+$csv_file='/data/plaza/AWorder2009Poland.csv';
 //$csv_file='pl.csv';
 
 //exec('/usr/local/bin/xls2csv    -s cp1252   -d 8859-1   '.$file_name.' > '.$tcsv_file);
@@ -79,7 +79,7 @@ while(($_cols = fgetcsv($handle_csv))!== false){
   $code=$_cols[3];
 
  
-  if($code=='FO-A1' and !$inicio){
+  if($code=='AWFO-A1' and !$inicio){
     $inicio=true;
     $x=$__cols[count($__cols)-4];
     $z=$__cols[count($__cols)-3];
@@ -132,8 +132,10 @@ $is_product=true;
   $fam_special_char='';
   $special_char='';
   
-  //if(preg_match('/fo-a3/i',$code))
-  //  exit($code);
+  //print "$code\n"; 
+
+  // if(preg_match('/awrp/i',$code))
+  //    exit($code);
   //  print_r($cols);
 
   if(!preg_match('/^DONE$/i',$cols[0]))
