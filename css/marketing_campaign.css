@@ -149,7 +149,11 @@ padding:10px 2px 2px 15px;
    background: url("../art/title-bg.gif") repeat-x scroll left bottom #FFFFFF;
     font-weight: bold;
     text-align: center;
+<<<<<<< HEAD:css/marketing_campaign.css
     width:380px;
+=======
+   
+>>>>>>> 57f7fa59ca854a0a279b20794e67020ca4916f7f:css/marketing_campaign.css
     border-right:1px #666666 solid;
 }
 .display_campaign2{
@@ -163,7 +167,11 @@ padding:10px 2px 2px 15px;
    background: url("../art/title-bg.gif") repeat-x scroll left bottom #FFFFFF;
     font-weight: bold;
     text-align: center;
+<<<<<<< HEAD:css/marketing_campaign.css
     width:60px;
+=======
+    width:80px;
+>>>>>>> 57f7fa59ca854a0a279b20794e67020ca4916f7f:css/marketing_campaign.css
     border-right:1px #666666 solid;
 }
 .display_campaign4{
@@ -184,6 +192,7 @@ padding:10px 2px 2px 15px;
    background: url("../art/title-bg.gif") repeat-x scroll left bottom #FFFFFF;
     font-weight: bold;
     text-align: center;
+<<<<<<< HEAD:css/marketing_campaign.css
     width:20px;
     
 }
@@ -193,3 +202,8 @@ padding:10px 2px 2px 15px;
   line-height;10px;
 
 }
+=======
+    width:350px;
+    
+}
+>>>>>>> 57f7fa59ca854a0a279b20794e67020ca4916f7f:css/marketing_campaign.css

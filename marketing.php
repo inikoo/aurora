@@ -37,8 +37,13 @@ $css_files=array(
 		 'common.css',
 		 'button.css',
 		 'container.css',
+<<<<<<< HEAD:marketing.php
 		 'css/marketing_campaign.css',
 	         'table.css'
+=======
+		 'table.css',
+		 'css/marketing_menu.css'
+>>>>>>> 57f7fa59ca854a0a279b20794e67020ca4916f7f:marketing.php
 		 );
 $js_files=array(
 
@@ -54,8 +59,13 @@ $js_files=array(
 		'common.js.php',
 		'table_common.js.php',
 		'js/search.js',
+<<<<<<< HEAD:marketing.php
 		'marketing.js.php'
 		
+=======
+		'marketing.js.php',
+		'js/menu.js'
+>>>>>>> 57f7fa59ca854a0a279b20794e67020ca4916f7f:marketing.php
 		);
 
 
