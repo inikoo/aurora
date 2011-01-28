@@ -62,12 +62,7 @@ $js_files=array(
 
 		$sql = "select * from `Email Campaign Dimension`";
 		$res = mysql_query($sql);
-		$key = array();
-		$name = array();
-		$obj = array();
-		$status = array();
-		$email = array();
-		$content = array();
+		
 
 	while($fetchArray = mysql_fetch_assoc($res))
 	{
@@ -80,7 +75,7 @@ $js_files=array(
 
 	
 	}
-		
+	
 
 	$fields = mysql_num_rows($res);
  

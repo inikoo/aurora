@@ -1,4 +1,5 @@
 {include file='header.tpl'}
+
 <div id="bd"  style="padding:0px">
 <div style="padding:0 0px">
 
@@ -53,12 +54,12 @@
 	</tr>
 		{section name=data loop=$fields}
 		<tr>
-		<td>{$key[data]}</td>
+		<td>{$key}</td>
 		<td>TYPE</td>
-		<td>{$status[data]}</td>
+		<td>{$status}</td>
 		<td>LIST</td>
-		<td>{$email[data]}</td>
-		<td>{$content[data]}</td>
+		<td>{$email}</td>
+		<td>{$content}</td>
 		</tr>
 		{/section}
      
