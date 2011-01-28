@@ -60,24 +60,36 @@ $js_files=array(
 		'js/marketing_ajax.js'
 		);
 
-		$sql = "select * from `Email Campaign Dimension`";
+
+
+
+		$sql = "select `Email Campaign Key`,`Email Campaign Status`,`Email Campaign Maximum Emails`,`Email Campaign Content` from `Email Campaign Dimension`";
 		$res = mysql_query($sql);
-		
+	
+	
+
+	$smarty->assign('status','Email Campaign Status');
+	$smarty->assign('email','Email Campaign Maximum Emails');
+	$smarty->assign('key','Email Campaign Key');
+	$smarty->assign('content','Email Campaign Content');
 
 	while($fetchArray = mysql_fetch_assoc($res))
 	{
-		$key = $fetchArray['Email Campaign Key'];
-		$name = $fetchArray['Email Campaign Name'];
-		$obj = $fetchArray['Email Campaign Objective'];
-		$status = $fetchArray['Email Campaign Status'];
-		$email = $fetchArray['Email Campaign Maximum Emails'];
-		$content = $fetchArray['Email Campaign Content'];
+		$value[] = $fetchArray;
 
-	
 	}
-	
 
-	$fields = mysql_num_rows($res);
+$mail = 'carlos@aw-regalos.com';	
+
+$folder_name = 'Mail Folder Name';
+	
+//fetch the folders
+$sqlString = "select `Mail Folder Name` from `Mail Folder` where `Mail Folder Email`='".$mail."'";
+$result = mysql_query($sqlString);
+while($ss=mysql_fetch_assoc($result))
+{
+  $create[] = $ss;
+}		
  
 if (isset($_REQUEST['view'])) {
     $valid_views=array('metrics','email','web_internal','web','other','newsletter');
@@ -93,14 +105,10 @@ $smarty->assign('parent','home');
 $smarty->assign('title', _('Marketing'));
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
-$smarty->assign('key',$key);
-$smarty->assign('name',$name);
-$smarty->assign('obj',$obj);
-$smarty->assign('status',$status);
-$smarty->assign('email',$email);
-$smarty->assign('content',$content);
-$smarty->assign('fields',$fields);
+$smarty->assign('create',$create);
 
+$smarty->assign('value',$value);
+$smarty->assign('folder_name',$folder_name);
 
 $smarty->display('marketing_campaign.tpl');
 
