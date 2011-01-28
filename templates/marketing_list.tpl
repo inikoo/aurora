@@ -4,12 +4,11 @@
 
 {include file='header.tpl'}
 
-
-
-     
-
-
-
+<script src="http://code.jquery.com/jquery-1.4.4.js"></script>
+  
+  <link href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/themes/base/jquery-ui.css" rel="stylesheet" type="text/css"/>
+	
+  
 <div id="bd" >
 	<div style="padding:0 20px">
 		{include file='marketing_navigation.tpl'}
@@ -53,7 +52,7 @@
 	</div>
 	<div id="check_div">Please Check Your Entry And Try Again</div>
 	<div id="left_panel">
-		<a href=""onClick="" style="text-decoration:none"><div id="create_new_list">Create New List
+		<a onClick="" style="text-decoration:none; padding:10px;"><div id="create_new_list">Create New List
 		</div></a><br>
 		<div id="signup_forms">Design Sign up forms
 		</div><br>
@@ -63,10 +62,63 @@
 	</div>
 
 
+	{literal}
+ 	<script>
+   	 $("#create_new_list").click(function () {
+     	 $('#list_or_group').slideDown("slow");
+    	 });
+	 function slideCrm()
+	 {
+      	 $('#list_or_group').slideDown("slow");
+		}
+	</script>
+	
+	
+	{/literal}
 
-	<div id="list_or_group" style="border:1px solid #AAAAAA; margin-left: 220px; width: 670px; display:none;">AAAAAAAAAA<br>AAAAAAA</div>
+
+	<div id="list_or_group" style="display:none;">
+		New List?.....or Groups?<br><br>
+		Do you really want to create a new list, or do you just want to sub-divide an existing list with groups?<br><br>
+		<div style="padding-left:10px;">		
+			<div class="list_bt" style=" float: left;">
+  			<input type="button" value="Create List" name="create_list" id="create_list" onClick="show_list();"/>
+  			</div>
+					
+			<div class="list_bt" id="create_group_div" style="padding-left:70px; width:170px">
+  			<input type="button" value="Create Group" name="create_group" id="create_group" onClick="show_group();"/>
+  			</div>
+		</div>
+	</div>
+	<div id="group_div" class="main_div" style="display:none">
+		Create Group<br><br>
+		These groups go in which list?<br>
+		<select>
+  		<option value="choose">Choose a list</option>
+ 		</select> <br><br>
+		How should we show group options on your signup form?<br>
+		<select>
+  		<option value="choose">Choose a list</option>
+ 		</select> <br><br>
+		Group Title<br>
+		<input type="text" name="group_title" id="group_title" class="av_text" style="width:670px;"">
+		<div id="group_msg" class="invalid-error">Example: "Interested in ..." or "Food Preferences".</div>
+		<div id="add_group"style="border:1px solid #AAAAAA; padding-left:10px; padding-right:10px; "></div>
+		<a style="cursor: pointer; text-decoration:underline;" onClick="CreateTextbox()">+ add group</a><br><br>
+		
+		<div style="padding-left:10px;">		
+			<div class="list_bt" style=" float: left;">
+  			<input type="button" value="Save" name="save_group" id="save_group" onClick=""/>
+  			</div>
+			<div style="padding-left:70px;">		
+			<div class="list_bt">
+  			<input type="button" value="Cancel" name="cancel_group" id="cancel_group" onClick="document.getElementById('group_div').style.display = 'none';"/>
+  			</div>
+			</div>
+		</div>
+	</div>
 	<div id="new_list">
-		<form action="" method="post" name="list_form" onSubmit="validate_form();">
+		<form action="" method="post" name="list_form" onSubmit="return validate_form();">
 
 		<div id="list_div" class="sub_head">List Name</div>
 		<div id="name_div"><input type="text" name="list_name" id="list_name" class="av_text" style="width:670px;" onClick="show('list_msg');"></div>
@@ -93,12 +145,12 @@
 		</select> <br><br>
 	
 	
-		<TEXTAREA NAME="description" COLS=88 ROWS=3 onClick="hide();" style="-moz-border-radius: 5px 5px 5px 5px; padding-right:5px; padding-left:5px; "></TEXTAREA>
+		<TEXTAREA id="description" NAME="description" COLS=88 ROWS=3 onClick="hide();" style="-moz-border-radius: 5px 5px 5px 5px; padding-right:5px; padding-left:5px; "></TEXTAREA>
 		<div id="remind_msg" class="invalid-error">You are receiving this email because you opted at our website....</div> <br><br>
 
 
 		<div id="info_div" class="sub_head">Is this the correct contact info for this list? why is this necessary?</div>
-		<div id="contact_div" style="border:1px solid #AAAAAA; padding:10px; -moz-border-radius: 5px 5px 5px 5px; padding-right:5px; padding-left:5px; ">asasss<br>
+		<div id="contact_div" style="border:1px solid #AAAAAA; padding:10px; -moz-border-radius: 5px 5px 5px 5px; padding-right:5px; padding-left:5px; ">This address<br> will come form database<br>
 			<div class="bt" id="edit_div"><input type="button" value="Edit" name="edit" id="edit" onClick="edit_contact();"/></div>
 				
 		</div>
@@ -124,8 +176,8 @@
 
 		<br><br>
 
-		<div id="email_me_div" class="sub_head">Email me at ******@****.com <a onClick="edit_email();">edit</a> when ...</div>
-		<div id="edit_email_div" class="sub_head">Email me at <input type="text" id="edit_email" name="edit_email"style="-moz-border-radius: 5px 5px 5px 5px;"> <a href="#">edit</a> when ...</div>
+		<div id="email_me_div" class="sub_head">Email me at ******@****.com <a onClick="edit_email();" style="text-decoration:underline" >edit</a> when ...</div>
+		<div id="edit_email_div" class="sub_head">Email me at <input type="text" id="edit_email" name="edit_email"style="-moz-border-radius: 5px 5px 5px 5px;">  when ...</div>
 		<br>
 		<hr>
 		<INPUT TYPE=CHECKBOX NAME="mushrooms"   >People Subscribe
@@ -140,9 +192,15 @@
 		<hr>
 		<INPUT TYPE=CHECKBOX NAME="mushrooms"   >Activate <a href="#">SocialPro</a><br><br>
 		
-		<div class="bt">
+		<div class="bt" style=" float: left;">
   		<input type="submit" value="Save" name="save_list" id="save_list" />
   		</div>
+		
+		<div style="padding-left:70px;">
+		<div class="bt">
+  		<input type="button" value="Cancel" name="cancel_list" id="cancel_list" onClick="document.location='marketing.php'; return false;"/>
+  		</div>
+		</div>
 		</form>
 	</div>
  	
