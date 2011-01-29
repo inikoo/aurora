@@ -83,94 +83,12 @@ class Company extends DB_Table {
 
     }
 
-
-    /*
-      Method: find
-      Find Company with similar data
-
-      Returns:
-    Key of the Compnay found, if create is found in the options string  returns the new key
-    */
-    function find($raw_data,$options) {
-        $find_fuzzy=false;
-
-        if (preg_match('/fuzzy/i',$options)) {
-            $find_fuzzy='fuzzy';
-        }
-
-        //Timer::timing_milestone('start find');
-
-        if (isset($raw_data['editor'])) {
-            foreach($raw_data['editor'] as $key=>$value) {
-
-                if (array_key_exists($key,$this->editor))
-                    $this->editor[$key]=$value;
-
-            }
-        }
-
-        $this->candidate=array();
-        $this->found=false;
-
-        $create='';
-        $update='';
-        if (preg_match('/create/i',$options)) {
-            $create='create';
-        }
-        if (preg_match('/update/i',$options)) {
-            $update='update';
-        }
-
-        $address_data=array('Company Address Line 1'=>'','Company Address Town'=>'','Company Address Line 2'=>'','Company Address Line 3'=>'','Company Address Postal Code'=>'','Company Address Country Name'=>'','Company Address Country Code'=>'','Company Address Country First Division'=>'','Company Address Country Second Division'=>'');
-
-
-
-        if (preg_match('/(from|on|in|at) supplier/',$options)) {
-            foreach($raw_data as $key=>$val) {
-                $_key=preg_replace('/Supplier /','Company ',$key);
-                $raw_data[$_key]=$val;
-            }
-            $parent='supplier';
-        }
-
-        elseif(preg_match('/(from|on|in|at) customer/',$options)) {
-            foreach($raw_data as $key=>$val) {
-                if ($key!='Customer Type') {
-                    $_key=preg_replace('/Customer /','Company ',$key);
-                    $raw_data[$_key]=$val;
-                }
-            }
-            $parent='customer';
-        }
-        else {
-
-            $parent='none';
-        }
-
-
-
-
-
-        foreach($raw_data as $key=>$value) {
-
-            if (array_key_exists($key,$address_data))
-                $address_data[$key]=$value;
-        }
-
-        //print_r($address_data);
-
-        if (!isset($raw_data['Company Name']) or $raw_data['Company Name']=='') {
-            $raw_data['Company Name']='';
-        }
-        if (!isset($raw_data['Company Main Contact Name'])) {
-            $raw_data['Company Main Contact Name']='';
-        }
-
+function find_fuzzy(){
 
         //Timer::timing_milestone('begin  find  contact');
-        $contact=new Contact("find in company $find_fuzzy ",$raw_data);
+        $this->find_contact=new Contact("find in company $find_fuzzy ",$raw_data);
         //Timer::timing_milestone('end find contact');
-        foreach($contact->candidate as $key=>$val) {
+        foreach($this->find_contact->candidate as $key=>$val) {
             if (isset($this->candidate[$key]))
                 $this->candidate[$key]+=$val;
             else
@@ -308,54 +226,292 @@ class Company extends DB_Table {
 
         $this->number_candidate_companies=count($this->candidate_companies);
 
-        /*   	if(count($this->candidate)>0){ */
-        /*     	  print "Contact candidates\n"; */
-        /*     	  print_r($this->candidate); */
-        /*     	} */
-        /*     	if(count($this->candidate_companies)>0){ */
-        /*     	  print "Company candidates\n"; */
-        /*     	  print_r($this->candidate_companies); */
-        /*     	} */
+}
 
+
+function find_complete($raw_data){
+
+
+
+        //Timer::timing_milestone('begin  find  contact');
+        $this->find_contact=new Contact("find in company complete ",$raw_data);
+        //Timer::timing_milestone('end find contact');
+        foreach($this->find_contact->candidate as $key=>$val) {
+            if (isset($this->candidate[$key]))
+                $this->candidate[$key]+=$val;
+            else
+                $this->candidate[$key]=$val;
+        }
+
+
+
+        foreach($this->candidate as $key=>$score) {
+            if ($score>5)
+                continue;
+            else
+                unset($this->candidate[$key]);
+        }
+
+
+        //addnow we have a list of  candidates, from this list make another list of companies
+        $this->candidate_companies=array();
+        $this->number_candidate_companies=0;
+        foreach($this->candidate as $contact_key=>$score) {
+            $_contact=new Contact($contact_key);
+
+            $company_key=$_contact->data['Contact Company Key'];
+            if ($company_key) {
+                // print "---- $company_key\n";
+                if (isset($this->candidate_companies[$company_key]))
+                    $this->candidate_companies[$company_key]+=$score;
+                else
+                    $this->candidate_companies[$company_key]=$score;
+            }
+        }
+
+        if ($raw_data['Company Name']!='') {
+
+            $max_score=80;
+            $score_plus_for_match=40;
+
+
+          
+            
+
+                $sql=sprintf("select `Company Key` from `Company Dimension` where `Company Name`=%s   limit 10"
+                             ,prepare_mysql($raw_data['Company Name'])
+                            );
+
+                $result=mysql_query($sql);
+                while ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+
+                    $score=$max_score;
+                    $extra_score=0;
+                    $company_key=$row['Company Key'];
+
+                    foreach($this->candidate as $candidate_key=>$candidate_score) {
+                        $sql=sprintf("select count(*) matched from `Contact Bridge` where `Contact Key`=%d and `Subject Key`=%d  and `Subject Type`='Company' and `Is Active`='Yes'  "
+                                     ,$candidate_key
+                                     ,$company_key
+                                    );
+                        $res=mysql_query($sql);
+                        $match_data=mysql_fetch_array($res);
+                        if ($match_data['matched']>0) {
+                            $this->candidate[$candidate_key]+=$score_plus_for_match;
+                            $extra_score=$score_plus_for_match;
+                        }
+
+                    }
+
+
+                    if (isset($this->candidate_companies[$company_key]))
+                        $this->candidate_companies[$company_key]+=$score+$extra_score;
+                    else
+                        $this->candidate_companies[$company_key]=$score+$extra_score;
+                }
+
+
+            
+
+        }
+
+        if (!empty($this->candidate_companies)) {
+            arsort($this->candidate_companies);
+            foreach($this->candidate_companies as $key=>$val) {
+                if ($val>=200) {
+                    $this->found=true;
+                    $this->found_key=$key;
+                    break;
+                }
+            }
+
+        }
+
+//print_r($this->candidate_companies);
+
+        $this->number_candidate_companies=count($this->candidate_companies);
+
+}
+
+
+
+
+
+
+function find_fast($raw_data) {
+
+    $this->find_contact=new Contact("find in company fast ",$raw_data);
+
+ $this->found_details=array();
+    $this->found=false;
+    $this->found_key=false;
+    $email=$raw_data['Company Main Plain Email'];
+
+    if (!$email)
+        return;
+
+    $sql=sprintf("select E.`Email Key`,`Subject Type`,`Subject Key` from `Email Dimension` E left join `Email Bridge` B on (E.`Email Key`=B.`Email Key`)where `Email`=%s",prepare_mysql($email));
+
+    $res=mysql_query($sql);
+   
+    while ($row=mysql_fetch_assoc($res)) {
+
+
+        $this->found_details[$row['Email Key']]=array('Subject Type'=>$row['Subject Type'],'Subject Key'=>$row['Subject Key']);
+
+        if ($row['Subject Type']=='Company') {
+            $this->found=true;
+            $this->found_key=$row['Subject Key'];
+
+        }
+
+    }
+}
+
+
+    /*
+      Method: find
+      Find Company with similar data
+
+      Returns:
+    Key of the Compnay found, if create is found in the options string  returns the new key
+    */
+    function find($raw_data,$options) {
+        $find_fuzzy=false;
+
+       
+        //print "XXX------------------> $options <-----------\n";
+           	$find_type='complete';
+        if (preg_match('/fuzzy/i',$options)) {
+            $find_type='fuzzy';
+        }elseif (preg_match('/fast/i',$options)) {
+            $find_type='fast';
+        }
+        
+        
+
+        //Timer::timing_milestone('start find');
+
+        if (isset($raw_data['editor'])) {
+            foreach($raw_data['editor'] as $key=>$value) {
+
+                if (array_key_exists($key,$this->editor))
+                    $this->editor[$key]=$value;
+
+            }
+        }
+
+        $this->candidate=array();
+        $this->found=false;
+
+        $create='';
+        $update='';
+        if (preg_match('/create/i',$options)) {
+            $create='create';
+        }
+        if (preg_match('/update/i',$options)) {
+            $update='update';
+        }
+
+        $address_data=array('Company Address Line 1'=>'','Company Address Town'=>'','Company Address Line 2'=>'','Company Address Line 3'=>'','Company Address Postal Code'=>'','Company Address Country Name'=>'','Company Address Country Code'=>'','Company Address Country First Division'=>'','Company Address Country Second Division'=>'');
+
+
+
+        if (preg_match('/(from|on|in|at) supplier/',$options)) {
+            foreach($raw_data as $key=>$val) {
+                $_key=preg_replace('/Supplier /','Company ',$key);
+                $raw_data[$_key]=$val;
+            }
+            $parent='supplier';
+        }
+
+        elseif(preg_match('/(from|on|in|at) customer/',$options)) {
+            foreach($raw_data as $key=>$val) {
+                if ($key!='Customer Type') {
+                    $_key=preg_replace('/Customer /','Company ',$key);
+                    $raw_data[$_key]=$val;
+                }
+            }
+            $parent='customer';
+        }
+        else {
+
+            $parent='none';
+        }
+
+
+
+
+
+        foreach($raw_data as $key=>$value) {
+
+            if (array_key_exists($key,$address_data))
+                $address_data[$key]=$value;
+        }
+
+        //print_r($address_data);
+
+        if (!isset($raw_data['Company Name']) or $raw_data['Company Name']=='') {
+            $raw_data['Company Name']='';
+        }
+        if (!isset($raw_data['Company Main Contact Name'])) {
+            $raw_data['Company Main Contact Name']='';
+        }
+
+
+	switch($find_type){
+		case 'fast':
+			$this->find_fast($raw_data);
+			break;
+		case 'complete':
+		
+		
+			$this->find_complete($raw_data);
+			 break;
+		case 'fuzzy':
+		exit("try find complete");
+			$this->find_fuzzy();
+			 break;
+		}
 
         if ($this->found )
             $this->get_data('id',$this->found_key);
 
 
-
+$contact_created=false;
 
         if ($create or $update) {
-
-            if ($raw_data['Company Main Contact Name']=='' and $this->found and !$contact->found) {
-                foreach($contact->candidate as $key=>$value) {
+/*
+            if ($raw_data['Company Main Contact Name']=='' and $this->found and !$this->find_contact->found) {
+                foreach($this->find_contact->candidate as $key=>$value) {
                     if ($value>100) {
-                        $contact=new Contact($key);
-                        $contact->set_scope('Company',$this->found_key);
+                        $contactx=new Contact($key);
+                        $contactx->set_scope('Company',$this->found_key);
                         //print_r($contact);
-                        if ($contact->associated_with_scope) {
-                            $raw_data['Company Main Contact Name']=$contact->display('name');
-                            $contact->found=true;;
-                            $contact->found_key=$contact->id;
+                        if ($contactx->associated_with_scope) {
+                            $raw_data['Company Main Contact Name']=$this->find_contact->display('name');
+                            $contactx->found=true;;
+                            $contactx->found_key=$this->find_contact->id;
                             break;
                         }
                     }
 
                 }
             }
+*/
+
+            //    print "$create $update   Company Found:".$this->found." ".$this->found_key."   \nContact Found:".$this->find_contact->found." ".$this->find_contact->found_key."  \n";
 
 
-            //    print "$create $update   Company Found:".$this->found." ".$this->found_key."   \nContact Found:".$contact->found." ".$contact->found_key."  \n";
+/*
 
-
-
-
-            if (!$contact->found and $this->found) {
+            if (!$this->find_contact->found and $this->found) {
 
                 // try to find again the contact now that we now the company
                 $contact=new Contact("find in company ".$this->found_key,$raw_data);
 
                 $this->candidate=array();
-                foreach($contact->candidate as $key=>$val) {
+                foreach($this->find_contact->candidate as $key=>$val) {
                     if (isset($this->candidate[$key]))
                         $this->candidate[$key]+=$val;
                     else
@@ -364,51 +520,51 @@ class Company extends DB_Table {
 
 
             }
-
+*/
             // print "Company founded ".$this->found_key."  \n";
 
-            //   print "Contact founded ".$contact->found."  \n";
+            //   print "Contact founded ".$this->find_contact->found."  \n";
 
             if ($create and !$this->found) {
 
-                if ($contact->found) {
+                if ($this->find_contact->found) {
 
-                    if ($contact->data['Contact Company Key']) {
-                        $this->get_data('id',$contact->data['Contact Company Key']);
+                    if ($this->find_contact->data['Contact Company Key']) {
+                        $this->get_data('id',$this->find_contact->data['Contact Company Key']);
                         // print_r($this->card());
                         $this->update_address($this->data['Company Main Address Key'],$address_data);
                         $this->update($raw_data);
                     } else {
 
-                        $this->create($raw_data,$address_data,'use contact '.$contact->id);
+                        $this->create($raw_data,$address_data,'use contact '.$this->find_contact->id);
 
                     }
 
                 } else {
                     $this->new_contact=true;
 
-                    $this->create($raw_data,$address_data);
+                    $this->create($raw_data,$address_data,$find_type);
 
                 }
-
+                return;
             }
 
 
             if ($update and $this->found) {
-                if (!$contact->found) {
+                if (!$this->find_contact->found) {
 
-                    $contact=new Contact("find in company create",$raw_data);
+                    $contact_new=new Contact("find in company create",$raw_data);
 
-                    $this->create_contact_bridge($contact->id);
-
+                    $this->create_contact_bridge($contact_new->id);
+$contact_created=false;
 
 
                 } else {
 
                     $contact_keys=$this->get_contact_keys();
-                    if (array_key_exists($contact->id,$contact_keys)) {
+                    if (array_key_exists($this->find_contact->id,$contact_keys)) {
 
-                        $this->update_principal_contact($contact->id);
+                        $this->update_principal_contact($this->find_contact->id);
                         $update_data=array('Contact Name'=>$raw_data['Company Main Contact Name']);
                         if (isset($raw_data['Company Mobile']))
                             $update_data['Contact Main XHTML Mobile']=$raw_data['Company Mobile'];
@@ -416,15 +572,15 @@ class Company extends DB_Table {
                             $update_data['Contact Main Plain Email']=$raw_data['Company Main Plain Email'];
                         }
 
-                        $contact->update($update_data);
+                        $this->find_contact->update($update_data,$find_type);
 
                     } else {
                         // contact not associated with Company
                         if (preg_match('/steal contacts/i',$options)) {
-                            $contact_companies=$contact->get_companies_keys();
+                            $contact_companies=$this->find_contact->get_companies_keys();
                             if (count($contact_companies)==0) {
 
-                                //$this->associate_contact($contact->id);
+                                //$this->associate_contact($this->find_contact->id);
 
                             }
 
@@ -442,7 +598,10 @@ class Company extends DB_Table {
                 }
 
                 unset($raw_data['Company Main Plain Email']);
-                $this->update_principal_contact($contact->id);
+
+             
+
+                $this->update_principal_contact($this->find_contact->id);
 
                 $this->get_data('id',$this->found_key);
 
@@ -457,8 +616,8 @@ class Company extends DB_Table {
                 $address->update($_address_data);
                 //print_r($address->data);
                 //exit;
-                if ($contact->new) {
-                    $contact->associate_address($address->id);
+                if ($contact_created) {
+                    $contact_new->associate_address($address->id);
                 }
 
 
@@ -471,7 +630,7 @@ class Company extends DB_Table {
 
 
 
-                $this->update($raw_data);
+                $this->update($raw_data,$find_type);
                 //		    print "shoooooooooooolddd be updated\n\n\n\n\n";
 
 
@@ -556,7 +715,8 @@ class Company extends DB_Table {
 
 
     function create($raw_data,$raw_address_data=array(),$options='') {
-        // print $options."\n";
+       
+       //print "create company ****** ".$options."\n";
         // print_r($raw_data);
 
 
@@ -635,10 +795,10 @@ class Company extends DB_Table {
 
             $address_data['editor']=$this->editor;
             
-            //print "xxx crete company address";
+           // print "xxx crete company address $options";
             //print_r($address_data);
             
-            $address=new Address("find in company ".$this->id." create",$address_data);
+            $address=new Address("find in company ".$this->id." $options create",$address_data);
             $address->editor=$this->editor;
             //print_r($address);
             $this->associate_address($address->id);
@@ -664,7 +824,7 @@ class Company extends DB_Table {
                     }
                 }
 
-                $contact=new Contact("find in company create",$raw_data);
+                $contact=new Contact("find in company fast create",$raw_data);
                 if ($contact->found) {
                     $this->error=true;
                     $this->msg='contact already in system';
@@ -711,7 +871,7 @@ class Company extends DB_Table {
                 $telephone_data['Telecom Raw Number']=$telephone;
                 $telephone_data['Telecom Type']='Telephone';
 
-                $telephone=new Telecom("find in company create country code ".$address->data['Address Country Code'],$telephone_data);
+                $telephone=new Telecom("find in company fast create country code ".$address->data['Address Country Code'],$telephone_data);
                 if (!$telephone->error) {
                     if ($telephone->is_mobile())
                         $mobile_keys[]=$telephone->id;
@@ -728,7 +888,7 @@ class Company extends DB_Table {
                 $telephone_data['Telecom Raw Number']=$fax;
                 $telephone_data['Telecom Type']='FAX';
 
-                $telephone=new Telecom("find in company create country code ".$address->data['Address Country Code'],$telephone_data);
+                $telephone=new Telecom("find in company fast create country code ".$address->data['Address Country Code'],$telephone_data);
 
                 if (!$telephone->error) {
 
@@ -869,7 +1029,6 @@ class Company extends DB_Table {
                     $telephone_data['editor']=$this->editor;
                     $telephone_data['Telecom Raw Number']=$value;
                     $telephone_data['Telecom Type']=$type;
-
                     $telephone=new Telecom("find in company create country code ".$address->data['Address Country Code'],$telephone_data);
                     $address->associate_telecom($telephone->id,$type);
 

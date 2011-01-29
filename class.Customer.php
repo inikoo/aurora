@@ -192,9 +192,12 @@ class Customer extends DB_Table {
 
             }
         }
-        $find_fuzzy='';
+        
+         $type_of_search='complete';
         if (preg_match('/fuzzy/i',$options)) {
-            $find_fuzzy='fuzzy';
+             $type_of_search='fuzzy';
+        }elseif(preg_match('/fast/i',$options)){
+              $type_of_search='fast';
         }
 
         $create='';
@@ -227,11 +230,13 @@ class Customer extends DB_Table {
 
         }
 
+
+
         $raw_data['Customer Type']=ucwords($raw_data['Customer Type']);
         if ($raw_data['Customer Type']=='Person') {
-            $child=new Contact ('find in customer $find_fuzzy use old_id',$raw_data);
+            $child=new Contact ("find in customer $type_of_search",$raw_data);
         } else {
-            $child=new Company ('find in customer $find_fuzzy use old_id',$raw_data);
+            $child=new Company ("find in customer $type_of_search",$raw_data);
         }
 
 
@@ -301,7 +306,7 @@ class Customer extends DB_Table {
                         $email->editor=$this->editor;
                         $email->delete();
 
-                        $_customer = new Customer ( 'find create  $find_fuzzy', $raw_data );
+                        $_customer = new Customer ( 'find create  $type_of_search', $raw_data );
 
                         $this->get_data('id',$_customer->id);
 
@@ -310,7 +315,7 @@ class Customer extends DB_Table {
                     }
 
                 
-                    $child=new Contact ('find in customer create update',$raw_data);
+                    $child=new Contact ("find in customer $type_of_search create update",$raw_data);
                 
 
 
@@ -319,7 +324,7 @@ class Customer extends DB_Table {
 
 
 
-                    $child=new Company ('find in customer $find_fuzzy create update',$raw_data);
+                    $child=new Company ("find in customer $type_of_search create update",$raw_data);
 
 
                     $raw_data_to_update=array();
@@ -352,7 +357,7 @@ class Customer extends DB_Table {
                             $email->delete();
                             //  print_r($child);
                             //exit;
-                            $_customer = new Customer ( 'find create $find_fuzzy', $raw_data );
+                            $_customer = new Customer ( 'find create $type_of_search', $raw_data );
 
                             $this->get_data('id',$_customer->id);
                             return;
@@ -364,13 +369,13 @@ class Customer extends DB_Table {
                         // print_r($contact->data);
                         // print_r($raw_data);
                         // print "lets update the contact\n";
-                        $contact=new contact('find in customer $find_fuzzy create update',$raw_data);
+                        $contact=new contact("find in customer $type_of_search create update",$raw_data);
                         //print "updated contact\n";
                         //print_r($contact);
                         $raw_data['Customer Main Contact Key']=$contact->id;
 
                     } else {
-                        $company=new company('find in customer $find_fuzzy create update',$raw_data);
+                        $company=new company("find in customer $type_of_search create update",$raw_data);
                         $raw_data['Customer Company Key']=$company->id;
                     }
 
@@ -614,9 +619,9 @@ function create($raw_data,$args='') {
 
 
         $history_data=array(
-                          'History Abstract'=>_('Customer Created')
-                                             ,'History Details'=>_trim(_('New customer')." ".$this->data['Customer Name']." "._('added'))
-                                                                ,'Action'=>'created'
+                          'History Abstract'=>_('Customer Created'),
+                                             'History Details'=>_trim(_('New customer')." ".$this->data['Customer Name']." "._('added')),
+                                                                'Action'=>'created'
                       );
         $this->add_customer_history($history_data);
         $this->new=true;
@@ -627,7 +632,7 @@ function create($raw_data,$args='') {
 
             if (!$this->data['Customer Company Key']) {
 
-                $company=new company('find in customer create update',$raw_data);
+                $company=new company('find in customer fast create update',$raw_data);
             } else {
                 $company=new company('id',$this->data['Customer Company Key']);
             }
@@ -650,7 +655,7 @@ function create($raw_data,$args='') {
 
             if (!$this->data['Customer Main Contact Key']) {
 
-                $contact=new contact('find in customer create update',$raw_data);
+                $contact=new contact('find in customer fast create update',$raw_data);
             } else {
                 $contact=new contact('id',$this->data['Customer Main Contact Key']);
                 $contact->editor=$this->editor;
