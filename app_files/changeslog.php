@@ -548,7 +548,7 @@ ALTER TABLE `Category Dimension` CHANGE `Category Subject` `Category Subject` EN
 ALTER TABLE `Search Full Text Dimension` CHANGE `Subject` `Subject` ENUM( 'Family', 'Customer', 'Product', 'Part', 'Order', 'Page' ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL ;
 ALTER TABLE `Inventory Spanshot Fact` ADD `Quantity Open` FLOAT NULL DEFAULT NULL AFTER `Quantity Lost` ,
 ADD `Quantity High` FLOAT NULL DEFAULT NULL AFTER `Quantity Open` ,
-ADD `Quantity Low` FLOAT NULL DEFAULT NULL AFTER `Quantity High` 
+ADD `Quantity Low` FLOAT NULL DEFAULT NULL AFTER `Quantity High` ;
 */
 
 ?>
