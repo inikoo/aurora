@@ -250,7 +250,10 @@ function submit_purchase_order() {
 
 
 function edit_porder() {
+
     global $user;
+
+
     if (isset( $_REQUEST['id']) and is_numeric( $_REQUEST['id'])) {
         $purchase_order_key=$_REQUEST['id'];
         $_SESSION['state']['porder']['id']=$purchase_order_key;
@@ -260,15 +263,15 @@ function edit_porder() {
     $po=new PurchaseOrder($purchase_order_key);
 
 
-  $key_dic=array(
-		   'estimated_delivery'=>'Purchase Order Estimated Receiving Date'
-		 
-		   
-    );
-    if(array_key_exists($_REQUEST['key'],$key_dic))
-       $key=$key_dic[$_REQUEST['key']];
-    
-    
+    $key_dic=array(
+                 'estimated_delivery'=>'Purchase Order Estimated Receiving Date'
+
+
+             );
+    if (array_key_exists($_REQUEST['key'],$key_dic))
+        $key=$key_dic[$_REQUEST['key']];
+
+
     $po->update(array($key=>stripslashes(urldecode($_REQUEST['newvalue']))));
 
 
