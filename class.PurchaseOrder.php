@@ -526,7 +526,9 @@ function cancel($data){
 
 
 function update_estimated_receiving_date($date){
+
 $date_data=prepare_mysql_datetime($date,'date');
+
 if($date_data['ok']){
 $this->update_field('Purchase Order Estimated Receiving Date',$date_data['mysql_date']);
 if($this->updated){

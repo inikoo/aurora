@@ -201,100 +201,15 @@ class Address extends DB_Table {
 
 
 
+function find_fast(){
 
-
-
-
-    /*
-      Method: find
-      Given a set of address components try to find it on the database updating properties, if not found creates a new record
-    */
-
-    function find($raw_data,$options='') {
-      
-        $find_fuzzy=false;
-
-        if (preg_match('/fuzzy/i',$options)) {
-            $find_fuzzy='fuzzy';
-        }
-        $find_fuzzy=false;
-
-
-
-        $this->found=false;
-        $this->found_key=0;
-
-        $this->found_in=false;
-        $this->found_out=false;
-        $this->candidate=array();
-        $this->address_candidate=array();
-
-        $create=false;
-        $update=false;
-        if (preg_match('/create/i',$options)) {
-            $create=true;
-        }
-        if (preg_match('/update/i',$options)) {
-            $update=true;
-        }
-
-
-        $auto=false;
-        if (preg_match('/auto/i',$options)) {
-            $auto=true;
-        }
-
-
-        if (!$raw_data) {
-            $this->new=false;
-            $this->msg=_('Error no address data');
-            if (preg_match('/exit on errors/',$options))
-                exit($this->msg);
-            return false;
-        }
-
-
-        if (isset($raw_data['editor']) and is_array($raw_data['editor'])) {
-            foreach($raw_data['editor'] as $key=>$value) {
-
-                if (array_key_exists($key,$this->editor))
-                    $this->editor[$key]=$value;
-
-            }
-        }
-
-        $data=$this->prepare_data($raw_data,$options);
-        $subject_key=0;
-        $subject_type='';
-        $in_contact=array();
-
-        if (preg_match('/in contact \d+/i',$options,$match)) {
-            $subject_key=preg_replace('/[^\d]/','',$match[0]);
-            $subject_type='Contact';
-            $subject_object=new Contact($subject_key);
-            $in_contact=array($subject_key);
-        }
-        if (preg_match('/in company \d+/i',$options,$match)) {
-            $subject_key=preg_replace('/[^\d]/','',$match[0]);
-            $subject_type='Company';
-            $subject_object=new Company($subject_key);
-            $in_contact=$subject_object->get_contact_keys();
-
-
-        }
-        if (preg_match('/in customer \d+/i',$options,$match)) {
-            $subject_key=preg_replace('/[^\d]/','',$match[0]);
-            $subject_type='Customer';
-            $subject_object=new Customer($subject_key);
-            $in_contact=$subject_object->get_contact_keys();
-
-
-        }
-
-
+}
+function find_complete($data,$subject_data){
 
        
-        if (!$find_fuzzy) {
+       $subject_type=$subject_data['subject_type'];
+              $subject_object=$subject_data['subject_object'];
+
 
             if ($subject_type!='') {
 
@@ -363,10 +278,12 @@ class Address extends DB_Table {
 
 
 
-        } else {
-            // Fuzzy search
+    
+}
 
+function fund_fuzzy(){
 
+       
 
             //special cases
             // Only one data
@@ -799,9 +716,120 @@ class Address extends DB_Table {
 
 
 
+        
+
+}
+
+
+    /*
+      Method: find
+      Given a set of address components try to find it on the database updating properties, if not found creates a new record
+    */
+
+    function find($raw_data,$options='') {
+      
+        $find_type='complete';
+        if (preg_match('/fuzzy/i',$options)) {
+            $find_type='fuzzy';
+        }
+        elseif (preg_match('/fast/i',$options)) {
+            $find_type='fast';
         }
 
 
+
+        $this->found=false;
+        $this->found_key=0;
+
+        $this->found_in=false;
+        $this->found_out=false;
+        $this->candidate=array();
+        $this->address_candidate=array();
+
+        $create=false;
+        $update=false;
+        if (preg_match('/create/i',$options)) {
+            $create=true;
+        }
+        if (preg_match('/update/i',$options)) {
+            $update=true;
+        }
+
+
+        $auto=false;
+        if (preg_match('/auto/i',$options)) {
+            $auto=true;
+        }
+
+
+        if (!$raw_data) {
+            $this->new=false;
+            $this->msg=_('Error no address data');
+            if (preg_match('/exit on errors/',$options))
+                exit($this->msg);
+            return false;
+        }
+
+
+        if (isset($raw_data['editor']) and is_array($raw_data['editor'])) {
+            foreach($raw_data['editor'] as $key=>$value) {
+
+                if (array_key_exists($key,$this->editor))
+                    $this->editor[$key]=$value;
+
+            }
+        }
+
+        $data=$this->prepare_data($raw_data,$options);
+        $subject_key=0;
+        $subject_type='';
+        $in_contact=array();
+$subject_object=false;
+        if (preg_match('/in contact \d+/i',$options,$match)) {
+            $subject_key=preg_replace('/[^\d]/','',$match[0]);
+            $subject_type='Contact';
+            $subject_object=new Contact($subject_key);
+            $in_contact=array($subject_key);
+        }
+        if (preg_match('/in company \d+/i',$options,$match)) {
+            $subject_key=preg_replace('/[^\d]/','',$match[0]);
+            $subject_type='Company';
+            $subject_object=new Company($subject_key);
+            $in_contact=$subject_object->get_contact_keys();
+
+
+        }
+        if (preg_match('/in customer \d+/i',$options,$match)) {
+            $subject_type=preg_replace('/[^\d]/','',$match[0]);
+            $subject_type='Customer';
+            $subject_object=new Customer($subject_key);
+            $in_contact=$subject_object->get_contact_keys();
+
+
+        }
+
+$subject_data=array(
+'subject_key'=>$subject_type,
+'subject_type'=>$subject_type,
+'subject_object'=>$subject_object,
+'in_contact'=>$in_contact
+);
+  
+
+switch($find_type){
+		case 'fast':
+			$this->find_fast();
+			break;
+		case 'complete':
+		
+		
+			$this->find_complete($data,$subject_data);
+			 break;
+		case 'fuzzy':
+		exit("try find complete");
+			$this->find_fuzzy();
+			 break;
+		}
 
         if ($update) {
             if ($this->found) {

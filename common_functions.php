@@ -161,7 +161,7 @@ function prepare_mysql_datetime($datetime,$tipo='datetime'){
   }
 
 
-
+//BfcGlE80Qt;D
   
   $date=str_replace('/','-',$date);
   $date=preg_split('/-/',$date);
