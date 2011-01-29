@@ -60,7 +60,7 @@
 <div style="float:left;"><img style="height:40px; width:40px;" src="art/1.png"> </div><span style="float:left;line-height:40px;font-size:18px;">Create a list</span> 
  
 <div class="go_next">
-<a class="button-small" title="create a mailing list" href="#">go »</a>
+<a class="button-small" title="create a mailing list" href="marketing_list.php">go »</a>
 </div>
 
 
