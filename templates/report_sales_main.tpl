@@ -81,19 +81,23 @@
 <div display="none" id="plot_info" keys="{$formated_store_keys}"  invoice_category_keys="{$invoice_category_keys}"   ></div>
     <ul id="plot_chooser" class="tabs" style="margin:0 20px;padding:0 20px "  >
 	    <li>
-	        <span class="item {if $plot_tipo=='per_store'}selected{/if}" onClick="change_plot(this)" id="plot_per_store" tipo="par_store" category="{$plot_data.per_store.category}" period="{$plot_data.per_store.period}" >
-	            <span>Invoices per Store</span>
+	        <span class="item {if $plot_tipo=='all'}selected{/if}" onClick="change_plot(this)" id="plot_all" tipo="par_all" " >
+	            <span>{t}All Stores{/t}</span>
+	        </span>
+	    </li>
+	   <li>
+	        <span class="item {if $plot_tipo=='per_store'}selected{/if}" onClick="change_plot(this)" id="plot_per_store" tipo="per_store"  >
+	            <span>{t}Invoices per Store{/t}</span>
 	        </span>
 	    </li>
 	    <li>
-	        <span class="item {if $plot_tipo=='per_category'}selected{/if}"  id="plot_per_category" onClick="change_plot(this)" tipo="per_category" category="{$plot_data.per_category.category}" period="{$plot_data.per_category.period}" name=""  >
+	        <span class="item {if $plot_tipo=='per_category'}selected{/if}"  id="plot_per_category" onClick="change_plot(this)" tipo="per_category"   >
 	            <span>{t}Invoices per Category{/t}</span>
 	        </span>
 	    </li>
     </ul> 
-    <script type="text/javascript" src="external_libs/amstock/amstock/swfobject.js"></script>
 
-	<div id="flashcontent" style="clear:both;border:1px solid #ccc" >
+	<div id="all_stores" style="clear:both;border:1px solid #ccc" >
 		<strong>You need to upgrade your Flash Player</strong>
 	</div>
 
@@ -102,13 +106,13 @@
 		
 		var so = new SWFObject("external_libs/amstock/amstock/amstock.swf", "amstock", "905", "500", "8", "#FFFFFF");
 		so.addVariable("path", "");
-		so.addVariable("settings_file", encodeURIComponent("conf/plot_asset_sales.xml.php?tipo=store_sales&store_key={$store_keys}&from={$from}&to={$to}"));
+		so.addVariable("settings_file", encodeURIComponent("conf/plot_asset_sales.xml.php?tipo=store_sales&stacked=1&store_key={$am_safe_store_keys}&from={$from}&to={$to}"));
 		so.addVariable("preloader_color", "#999999");
 
 		
 		
 
-		so.write("flashcontent");
+		so.write("all_stores");
 		// ]]>
 	</script>
   
