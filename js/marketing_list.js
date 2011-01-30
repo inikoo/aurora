@@ -187,6 +187,7 @@ function show(div_id)
 		document.getElementById('remind_msg').style.display = 'block';	
 	}
 	
+	
 }
 
 function edit_contact()
@@ -200,7 +201,7 @@ function edit_contact()
 function edit_email()
 {
 	document.getElementById('email_me_div').style.display = 'none';
-		document.getElementById('edit_email_div').style.display = 'block';	
+	document.getElementById('edit_email_div').style.display = 'block';	
 	
 }	
 
@@ -213,10 +214,8 @@ function empty_text()
 
 function CreateTextbox()
 {
-	
-	var i = 1;
-	
-	add_group.innerHTML = add_group.innerHTML +"<br> <input type=text name='group_text' class='av_text' style='width:650px;'/> ";
+	var i=1;
+	add_group.innerHTML = add_group.innerHTML +"<br> <input type=text name='group_text<script>+i</script>' class='av_text' style='width:650px;'/> ";
 	add_group.innerHTML = add_group.innerHTML +"<div id='group_msg' class='invalid-error'>Example: 'Interested in ... or Food Preferences'.</div>"; 
 }
  
@@ -225,11 +224,12 @@ function show_list()
 {
 	document.getElementById('list_or_group').style.display = 'none';
 	document.getElementById('group_div').style.display = 'none';
+	document.getElementById('new_list').style.display = 'block';
+	document.getElementById('list_details_div').style.display = 'none';
 }
 function show_group()
 {
 	document.getElementById('list_or_group').style.display = 'none';
 	document.getElementById('group_div').style.display = 'block';
 }
-
 
