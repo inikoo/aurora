@@ -10,10 +10,11 @@
 	
   
 <div id="bd" >
-	<div style="padding:0 20px">
+	<div>
 		{include file='marketing_navigation.tpl'}
 
 		</head>
+
 
 
 
@@ -21,7 +22,19 @@
 		<div style="clear:left;margin:0 0px">
    		 <h1>{t}List{/t}</h1>
 		</div>
+		
+		<ul class="tabs" id="chooser_ul" style="clear:both;margin-top:25px">
+		<li> <span class="item {if $view=='other'}selected{/if}"  id="other">  <span> {t}Emarketings{/t}</span></span></li>
+		<li> <span class="item {if $view=='email'}selected{/if}"  id="email">  <span> {t}Campaign{/t}</span></span></li>
+    		<li> <span class="item {if $view=='metrics'}selected{/if}" id="metrics"  ><span>  {t}Lists{/t}</span></span></li>
+    		<li> <span class="item {if $view=='web'}selected{/if}"  id="web">  <span> {t}Report{/t}</span></span></li>
+		<li> <span class="item {if $view==''}selected{/if}"  id="web">  <span> {t}Autoresponders{/t}</span></span></li>
+    		
+		</ul>
+ 		<div  style="clear:both;width:100%;border-bottom:1px solid #ccc"></div>
+	
 
+	
 	</div>
 	
  	
@@ -52,20 +65,29 @@
 	</div>
 	<div id="check_div">Please Check Your Entry And Try Again</div>
 	<div id="left_panel">
-		<a onClick="" style="text-decoration:none; padding:10px;"><div id="create_new_list">Create New List
+		<a onClick="" style="text-decoration:none; cursor:pointer"><div id="create_new_list">Create New List
 		</div></a><br>
-		<div id="signup_forms">Design Sign up forms
+		<div id="view_list" style="text-decoration:none; cursor:pointer">View Lists
 		</div><br>
+		<div id="signup_forms" onMouseover="show('left_slide');">Design Sign up forms ▼
+		</div><br>
+		
 		<input type="text" name="list_search" id="list_search" value="Search List Subscribers" onClick="empty_text();">
 		<input type="submit" value="Go" class="list_search_button">
 
 	</div>
+	
 
+	
 
 	{literal}
  	<script>
    	 $("#create_new_list").click(function () {
-     	 $('#list_or_group').slideDown("slow");
+     	 $('#list_or_group').slideDown("slow",function(){
+		 $('#group_div').fadeOut("slow",function(){
+			 $('#list_details_div').fadeOut("slow");
+	  });
+	 });
     	 });
 	 function slideCrm()
 	 {
@@ -73,38 +95,56 @@
 		}
 	</script>
 	
+	<script>
+   	 $("#view_list").click(function () {
+     	 $('#new_list').slideUp("slow",function(){
+		$('#list_or_group').slideUp("slow",function(){
+			$('#group_div').slideUp("slow",function(){
+			  $('#list_details_div').slideDown("slow");
+	});
+	
+	 });
+	 });
+    	 });
+	 function slideCrm()
+	 {
+      	 $('#new_list').slideDown("slow");
+		}
+	</script>
 	
 	{/literal}
-
+	
 
 	<div id="list_or_group" style="display:none;">
-		New List?.....or Groups?<br><br>
+		<h2>New List?.....or Groups?</h2><br>
 		Do you really want to create a new list, or do you just want to sub-divide an existing list with groups?<br><br>
-		<div style="padding-left:10px;">		
+		<div style="padding-left:150px;">		
 			<div class="list_bt" style=" float: left;">
   			<input type="button" value="Create List" name="create_list" id="create_list" onClick="show_list();"/>
   			</div>
 					
-			<div class="list_bt" id="create_group_div" style="padding-left:70px; width:170px">
+			<div class="list_bt" id="create_group_div" style="padding-left:70px; width:400px">
   			<input type="button" value="Create Group" name="create_group" id="create_group" onClick="show_group();"/>
   			</div>
 		</div>
 	</div>
 	<div id="group_div" class="main_div" style="display:none">
-		Create Group<br><br>
+		<h2>Create Group</h2><br>
 		These groups go in which list?<br>
-		<select>
+
+		<select style="clear: both; width: 50%;">
   		<option value="choose">Choose a list</option>
  		</select> <br><br>
 		How should we show group options on your signup form?<br>
-		<select>
+		<select style="clear: both; width: 50%;">
   		<option value="choose">Choose a list</option>
  		</select> <br><br>
 		Group Title<br>
 		<input type="text" name="group_title" id="group_title" class="av_text" style="width:670px;"">
 		<div id="group_msg" class="invalid-error">Example: "Interested in ..." or "Food Preferences".</div>
 		<div id="add_group"style="border:1px solid #AAAAAA; padding-left:10px; padding-right:10px; "></div>
-		<a style="cursor: pointer; text-decoration:underline;" onClick="CreateTextbox()">+ add group</a><br><br>
+		
+		<a style="cursor: pointer; text-decoration:underline; font-size: 14px;" onClick="CreateTextbox()">+ add group</a><br><br>
 		
 		<div style="padding-left:10px;">		
 			<div class="list_bt" style=" float: left;">
@@ -141,6 +181,9 @@
 		<div id="permission_list" style="width:250px; float: left;" >Copy permission reminder from other list</div> 
 		<select onClick="show('remind_msg')">
   		<option value="choose">Choose a list</option>
+		{foreach from=$list item=list_item}
+  		<option value="{$list_item[0]}">{$list_item[0]}</option>
+		{/foreach}
  		
 		</select> <br><br>
 	
@@ -203,6 +246,28 @@
 		</div>
 		</form>
 	</div>
+	<div id="list_details_div" class="main_div" style="display:none;">
+		{foreach from=$list item=list_item}
+		<div class="list-panel">
+			<h4 class="list-name">{$list_item[0]}</h4><br>
+			<ul>
+				<li style=" float: left; padding-left:50px;"><a>Import</a></li>
+				<li style="float: left; padding-left:50px;"><a href="add_people.php">Add People</a></li>
+				<li style="float: left; padding-left:50px;"><a>Remove People</a></li>
+				<li style="float: left; padding-left:50px;"><a>Send to a list</a></li>
+			</ul><br><br>
+			<ul>
+				<li style=" float: left; padding-left:50px;"><a>Settings</a></li>
+				<li style="float: left; padding-left:50px;"><a>Replicate</a></li>
+				<li style="float: left; padding-left:50px;"><a>Delete</a></li>
+				<li style="float: left; padding-left:50px;"><a>Forms</a></li>
+				<li style="float: left; padding-left:50px;"><a>List Data</a></li>
+				<li style="float: left; padding-left:50px;"><a>Groups</a></li>
+			</ul>
+		</div>
+		{/foreach}
+	</div>
+	
  	
 	<br>
 	
