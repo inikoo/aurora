@@ -158,6 +158,14 @@ $user->read_suppliers();
 }
 
 
+$sql=sprintf("select `Corporation Currency`,`Currency Symbol` from  `Corporation Dimension` left join kbase.`Currency Dimension` CD on (CD.`Currency Code`=`Corporation Currency`) ");
+$res=mysql_query($sql);
+
+if($row=mysql_fetch_array($res)){
+$corporate_currency=$row['Corporation Currency'];
+$corporate_symbol=$row['Currency Symbol'];
+}
+
 //print_r($user);
 //exit;
 $nav_menu=array();

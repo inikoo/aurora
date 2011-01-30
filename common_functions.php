@@ -34,11 +34,16 @@ function getEnumValues($table, $field) {
 
 
 function money($amount,$currency=''){
+
+
   return money_locale($amount,'',$currency);
 }
 
 
 function money_locale($amount,$locale='',$currency_code=''){
+
+
+
   if(!is_numeric($amount))
     $amount=0;
   global $_client_locale;
@@ -48,12 +53,23 @@ function money_locale($amount,$locale='',$currency_code=''){
     setlocale(LC_MONETARY, ($locale));
   }
   if($currency_code){
+ 
     $locale_info = localeconv();
-    $client_currency=$locale_info['int_curr_symbol'];
+
+
+  $client_currency=_trim($locale_info['int_curr_symbol']);
+ // print("->".$client_currency."<-");
     $format="%i";
+     $money=preg_replace("/$client_currency/",$currency_code,money_format($format,$amount));
+    
+  }else{
+   $money=money_format($format,$amount);
   }
-  $money=money_format($format,$amount);
-  
+
+
+
+ 
+  //exit($money);
   if(preg_match('/[A-Z]{3}/',$money,$match)){
         $money=preg_replace('/[A-Z]{3}/',currency_symbol($match[0]),$money);
 
@@ -136,7 +152,7 @@ function getOrdinal($number){
 
 function prepare_mysql_datetime($datetime,$tipo='datetime'){
 
- print $datetime;
+ 
   if($datetime=='')
     return array('mysql_date'=>'','status'=>'empty','ok'=>false);
   $time='';
