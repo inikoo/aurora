@@ -10,8 +10,7 @@
  Copyright (c) 2009, Kaktus 
  
  Version 2.0
-*/
-
+*/ 
 include_once('common.php');
 
 
@@ -63,9 +62,16 @@ $js_files=array(
 		);
 
 
+//get value of new folder name and all
+ $ss = $_REQUEST['t'];
+
+$ee = $_GET['n'];
+
+	echo $ss,$ee; 
+	
 
 
-		$sql = "select `Email Campaign Key`,`Email Campaign Status`,`Email Campaign Maximum Emails`,`Email Campaign Content` from `Email Campaign Dimension`";
+  $sql = sprintf("select `Email Campaign Key`,`Email Campaign Status`,`Email Campaign Maximum Emails`,`Email Campaign Content` from `Email Campaign Dimension`");
 		$res = mysql_query($sql);
 	
 	
@@ -77,6 +83,7 @@ $js_files=array(
 
 	while($fetchArray = mysql_fetch_assoc($res))
 	{
+		
 		$value[] = $fetchArray;
 
 	}
@@ -86,7 +93,7 @@ $mail = 'carlos@aw-regalos.com';
 $folder_name = 'Mail Folder Name';
 $edit_id = 'Mail Folder Key';	
 //fetch the folders
-$sqlString = "select `Mail Folder Name`,`Mail Folder Key` from `Mail Folder` where `Mail Folder Email`='".$mail."'";
+$sqlString = sprintf("select `Mail Folder Name`,`Mail Folder Key` from `Mail Folder` where `Mail Folder Email`='".$mail."'");
 $result = mysql_query($sqlString);
 while($ss=mysql_fetch_assoc($result))
 {
@@ -100,7 +107,7 @@ if (isset($_REQUEST['view'])) {
         $_SESSION['state'][$page]['view']=$_REQUEST['view'];
 
 }
-//$smarty->assign('view',$_SESSION['state'][$page]['view']);
+$smarty->assign('view',$_SESSION['state'][$page]['view']);
 
 
 

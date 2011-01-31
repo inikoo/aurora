@@ -1,5 +1,4 @@
 {include file='header.tpl'}
-
 <div id="bd"  style="padding:0px">
 <div style="padding:0 0px">
 
@@ -18,11 +17,15 @@
  </table>
 
 </div> 	
-<div style="padding:10px 0px 0px 0px;"><span style="padding-left:750px;"><select name="select_folder"><option value="">New Folder</option></select> &nbsp;<input type="submit" name="move" value="Move"> &nbsp; <input type="submit" name="delete" value="Delete"></span>
-<table height="520" border="1">
+<div style="padding:10px 0px 0px 0px;"><span style="padding-left:750px;"><select name="select_folder">
+	{section name="i" loop="$create"}	
+	<option value="folder_{$create[i].$edit_id}">{$create[i].$folder_name}</option>
+	{/section}
+	</select> &nbsp;<input type="submit" name="move" value="Move"> &nbsp; <input type="submit" name="delete" value="Delete"></span>
+<table height="520" border="0" height="100%">
 <tr>
  <td style="background-color:#d3dbe8">
-<div class="campaign_create"><a id="create_camp" href="">Create Campaign<span class="dwn">▼</span></a><div>
+<div class="campaign_create"><a id="create_camp" href="marketing_create_campaign.php">Create Campaign<span class="dwn">▼</span></a><div>
 
 <a style="margin: 5px 0pt;" title="create an inbox inspection test of your email" class="button p3" href="#">inbox inspection</a>
 
@@ -44,13 +47,14 @@
 	  <span style="padding-left:20px;" id="folder_{$create[i].$edit_id}">
 	  <img src="art/icons/folder_add.png" / > {$create[i].$folder_name}
 	  </span>&nbsp;&nbsp;
-<img src="art/icons/edit.ico" height="9"  class="click" id="edit_{$create[i].$edit_id}" onClick="edit('edit_{$create[i].$edit_id}','folder_{$create[i].$edit_id}','{$create[i].$folder_name}')" />&nbsp;
+<img src="art/icons/edit.ico" height="9"  class="click" id="edit_{$create[i].$edit_id}" onClick="edit('edit_{$create[i].$edit_id}','folder_{$create[i].$edit_id}','{$create[i].$folder_name}')" />
 <img src="art/icons/delete.ico" id="del_{$create[i].$edit_id}" onClick="del('del_{$create[i].$edit_id}')" /><br>
 	{/section}
-</div></form>
+</div>
+</form>
 </td> 
 <td>
-  <table width="790" border="2">
+  <table width="730" border="0">
 	  <tr bgcolor="#7080B1">
 	   
 	   <td class="display_campaign1">Serial</td>
@@ -64,11 +68,11 @@
 	
 		{section name=value loop=$value}
 		<tr>
-		<td align="center" width="50"><input type="checkbox" name="chkbox" value=""> &nbsp; {$value[value].$key}</td>
+		<td align="center"><input type="checkbox" name="chkbox" value=""> &nbsp; {$value[value].$key}</td>
 		<td>TYPE</td>
-		<td align="center" width="50">{$value[value].$status}</td>
+		<td align="center">{$value[value].$status}</td>
 		<td>LIST</td>
-		<td align="center" width="50">{$value[value].$email}</td>
+		<td align="center">{$value[value].$email}</td>
 		<td>{$value[value].$content}</td>
 		</tr>
 		{/section}
