@@ -439,7 +439,7 @@ $this->data['Invoice Refund Tax Amount']=$items_refund_tax;
     $this->data['Invoice Items Gross Amount']=$items_gross;
     $this->data['Invoice Items Discount Amount']=$items_discounts;
     $this->data['Invoice Total Net Amount']=$this->data['Invoice Refund Net Amount']+$this->data['Invoice Total Net Adjust Amount']+$this->data['Invoice Shipping Net Amount']+$this->data['Invoice Items Net Amount']+$this->data['Invoice Charges Net Amount'];
-    $this->data['Invoice Total Tax Amount']=round($this->data['Invoice Refund Tax Amount']+$this->data['Invoice Total Tax Adjust Amount']+$this->data['Invoice Shipping Tax Amount']+$this->data['Invoice Items Tax Amount']+$this->data['Invoice Charges Tax Amount'],2);
+    $this->data['Invoice Total Tax Amount']=round($this->data['Invoice Refund Tax Amount']+$this->data['Invoice Shipping Tax Amount']+$this->data['Invoice Items Tax Amount']+$this->data['Invoice Charges Tax Amount'],2)+$this->data['Invoice Total Tax Adjust Amount'];
    
   // print $this->data['Invoice Shipping Net Amount']."zz\n";
    $this->data['Invoice Outstanding Net Balance']=$items_net_outstanding_balance+$items_refund_net_outstanding_balance;
