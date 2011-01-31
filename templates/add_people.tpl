@@ -90,9 +90,13 @@
 			
    		 	<h2>{t}List{/t}</h2>
 			
-			<select style="clear: both; width: 50%;">
+			<select>
   			<option value="choose">Choose a list</option>
-	 		</select> <br><br>
+			{foreach from=$list item=list_item}
+  			<option value="{$list_item[1]}">{$list_item[0]}</option>
+			{/foreach}
+ 		
+			</select> <br><br>
 			<div class="sub_head">Email Address</div>
 			<input type="text" name="company_name" id="company_name"  class="av_text" style="width:649px;"><br><br>
 			<div class="sub_head">First Name</div>
