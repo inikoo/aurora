@@ -15,7 +15,7 @@
 	<span>regular ol' campaign</span><p>Send a lovely HTML email along with a plain-text alternative version</p></div></a>  </div>
 	</td>
 	<td><div class="campaign_outer"> 
-	<a href="#"><div class="create-campaign">
+	<a href="marketing_campaign_builder.php"><div class="create-campaign">
 	<span>plain-text campaign</span><p>Use this if you just want to send a simple plain-text email with no pictures or formatting</p></div></a>  </div></td>
    </tr>
    <tr>

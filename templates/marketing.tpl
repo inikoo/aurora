@@ -27,8 +27,8 @@
   <table  style="margin-top:25px;" cellspacing="10" width="445">
   	<tr>
 	<td><div class="topmenu current"><a href="">Dashboard</a></div></td>
-	<td><div class="topmenu"><a href="">Campaigns</a</div></td>
-       <td><div class="topmenu"><a href="">Lists</a</div></td>
+	<td><div class="topmenu"><a href="marketing_campaign.php">Campaigns</a</div></td>
+       <td><div class="topmenu"><a href="marketing_list.php">Lists</a</div></td>
 	<td><div class="topmenu"><a href="">Reports</a</div></td>
 	<td><div class="topmenu"><a href="">Autoresponders</a</div></td>
 	</tr>
@@ -40,7 +40,7 @@
 <table height="520" >
 <tr>
  <td >
-<div class="campaign_create"><a id="create_camp" href="">Create Campaign<span class="dwn">▼</span></a><div>
+<div class="campaign_create"><a id="create_camp" href="marketing_create_campaign.php">Create Campaign<span class="dwn">▼</span></a><div>
 
 
 </td> 
