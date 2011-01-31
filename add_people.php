@@ -72,7 +72,18 @@ if (isset($_REQUEST['view'])) {
 
 }
 
+$list_sql=mysql_query("SELECT `Campaign Name` FROM `Campaign Dimension`");
+$i=0;
+$list=array();
+while($list_name=mysql_fetch_array($list_sql))
+{
+	//echo"$list_name['$listname]<br>";
+	$list[$i]=$list_name;
+	
+	$i++;
+}
 
+$smarty->assign('list',$list);
 
 $smarty->assign('view',$_SESSION['state'][$page]['view']);
 
