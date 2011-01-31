@@ -11,7 +11,7 @@
 <table width=60%  style="margin-left:100px;">
    <tr>
 	<td><div class="campaign_outer"> 
-	<a href="#"><div class="create-campaign">
+	<a href="regular_campaign.php"><div class="create-campaign">
 	<span>regular ol' campaign</span><p>Send a lovely HTML email along with a plain-text alternative version</p></div></a>  </div>
 	</td>
 	<td><div class="campaign_outer"> 

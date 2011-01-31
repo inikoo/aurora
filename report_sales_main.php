@@ -28,6 +28,7 @@ $js_files=array(
 		$yui_path.'container/container-min.js',
 		$yui_path.'menu/menu-min.js',
 		$yui_path.'calendar/calendar-min.js',
+		'external_libs/amstock/amstock/swfobject.js',
 		'common.js.php',
 		'table_common.js.php',
 		'calendar_common.js.php',
@@ -81,6 +82,9 @@ if($store_keys=='all'){
 
 }
 
+$am_safe_store_keys=preg_replace('/,/','|',$store_keys);
+
+
 $sql=sprintf("select `Corporation Currency`,`Currency Symbol` from  `Corporation Dimension` left join kbase.`Currency Dimension` CD on (CD.`Currency Code`=`Corporation Currency`) ");
 $res=mysql_query($sql);
 
@@ -106,6 +110,7 @@ $smarty->assign('view',$_SESSION['state']['report_sales']['view']);
 //print_r($_SESSION['state']['report_sales']['currency']);
 
 $smarty->assign('currencies',$_SESSION['state']['report_sales']['currency']);
+$smarty->assign('am_safe_store_keys',$am_safe_store_keys);
 
 $smarty->assign('store_keys',$store_keys);
 $smarty->assign('formated_store_keys',$formated_store_keys);
@@ -113,12 +118,12 @@ $smarty->assign('invoice_category_keys','('.join(',',$invoice_category_key).')')
 $report_name='report_sales';
 
 include_once('report_dates.php');
-
 $smarty->assign('report_url','report_sales_main.php');
 
 $_SESSION['state']['report_sales']['to']=$to;
 $_SESSION['state']['report_sales']['from']=$from;
 $_SESSION['state']['report_sales']['period']=$period;
+
 
 
 global $myconf;
@@ -205,7 +210,6 @@ while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
 
 
 }
-
 
 
 

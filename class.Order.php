@@ -1256,7 +1256,7 @@ function add_order_transaction($data) {
             if (preg_match('/^(Invoiced Refund Net|Invoiced Refund Tax|Total|Items|Invoiced Items|Invoiced Tax|Invoiced Net|Invoiced Charges|Invoiced Shipping|Out of Stock|(Shipping |Charges )?Net).*(Amount)$/',$key)) {
 
                 $amount='Order '.$key;
-                
+                    
                 return money($this->data[$amount],$this->data['Order Currency']);
             }
 

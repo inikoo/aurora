@@ -100,6 +100,33 @@ label
 	padding-top:10px;
 }
 
+#view_list
+{
+	-moz-border-radius: 5px 5px 5px 5px;
+	 color:#4D4D4D;
+	border:1px solid #AAAAAA;
+	height: 30px; 
+	width:198px;
+	text-align: center;
+	font-size: 13px;
+    	font-weight: bold;
+	padding-top:10px;
+}
+#view_list:hover
+{
+	-moz-border-radius: 5px 5px 5px 5px;
+	 color:#080808;
+	border:1px solid #AAAAAA;
+	height: 30px; 
+	width:198px;
+	text-align: center;
+	font-size: 13px;
+    	font-weight: bold;
+	padding-top:10px;
+}
+
+
+
 .list_search_button
 {
 	    display: block;
@@ -129,4 +156,65 @@ label
 	height: 15px; 
 	background:#D9D9F3;
 	text-align: center;
+	color:#000000;
+}
+
+#list_or_group
+{
+	width: 670px;
+	border:1px solid #AAAAAA;
+	padding:10px;
+	margin-left: 220px;
+	text-align: center;
+}
+
+.list_bt input[type="button"] 
+{
+	-moz-border-radius: 4px 4px 4px 4px;
+    -moz-box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.247);
+    background: url("../images/button-background.png") repeat-x scroll 0 0 #FFFFFF;
+    border-color: #BBBBBB #BBBBBB #999999;
+    border-style: solid;
+    border-width: 1px;
+    color: #444444 !important;
+    cursor: pointer;
+    display: inline-block;
+    font-size: 13px;
+    font-weight: bold;
+    margin: 0;
+    overflow: visible;
+    padding: 4px 12px 5px;
+    text-decoration: none;
+    text-shadow: 0 1px 1px #FFFFFF;
+    width: auto;
+}
+
+.main_div
+{
+	width: 670px;
+	border:1px solid #AAAAAA;
+	padding:10px;
+	margin-left: 220px;
+}
+
+.list-panel {
+     -moz-border-radius: 4px 4px 4px 4px;
+    border: 2px solid #AAAAAA;
+    height: 124px;
+    margin-bottom: 10px;
+    min-width: 600px;
+    overflow: visible !important;
+    position: relative;
+    z-index: 1;
+}
+h4.list-name {
+    -moz-border-radius: 4px 4px 4px 4px;
+    background: none repeat scroll 0 0 #D9D9F3;
+    color: #4D4D4D;
+    font-size: 18px;
+    font-weight: bold;
+    margin: 0 0 0 0px;
+    padding: 6px 10px 7px;
+    position: relative;
+    width:646px;
 }

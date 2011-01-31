@@ -57,7 +57,9 @@ $js_files=array(
 		'marketing.js.php',
 		'js/menu.js',
 		'js/jquery-1.4.4.js',
-		'js/marketing_ajax.js'
+		'js/marketing_ajax.js',
+		'js/edit_delete.js',
+		'js/jquery.jeditable.js'
 		);
 
 
@@ -82,12 +84,13 @@ $js_files=array(
 $mail = 'carlos@aw-regalos.com';	
 
 $folder_name = 'Mail Folder Name';
-	
+$edit_id = 'Mail Folder Key';	
 //fetch the folders
-$sqlString = "select `Mail Folder Name` from `Mail Folder` where `Mail Folder Email`='".$mail."'";
+$sqlString = "select `Mail Folder Name`,`Mail Folder Key` from `Mail Folder` where `Mail Folder Email`='".$mail."'";
 $result = mysql_query($sqlString);
 while($ss=mysql_fetch_assoc($result))
 {
+
   $create[] = $ss;
 }		
  
@@ -109,6 +112,7 @@ $smarty->assign('create',$create);
 
 $smarty->assign('value',$value);
 $smarty->assign('folder_name',$folder_name);
+$smarty->assign('edit_id',$edit_id);
 
 $smarty->display('marketing_campaign.tpl');
 

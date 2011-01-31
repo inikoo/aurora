@@ -1,7 +1,6 @@
 <?php
 
 
-
 if ($tipo=='quick_this_month') {
     $tipo='m';
     $_SESSION['state'][$report_name]['y']=date('Y');
@@ -389,11 +388,11 @@ elseif($tipo=='d') {
 
 }
 
+
 $to_data=prepare_mysql_datetime($to,'date');
 $mysql_to=$to_data['mysql_date'];
 $from_data=prepare_mysql_datetime($from,'date');
 $mysql_from=$from_data['mysql_date'];
-
 
 
 
