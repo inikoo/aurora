@@ -40,7 +40,7 @@
 <table height="520" >
 <tr>
  <td >
-<div class="campaign_create"><a id="create_camp" href="">Create Campaign<span class="dwn">▼</span></a><div>
+<div class="campaign_create"><a id="create_camp" href="marketing_create_campaign.php">Create Campaign<span class="dwn">▼</span></a><div>
 
 
 </td> 
