@@ -65,11 +65,19 @@ case('customer_families_pie'):
 case('store_sales'):
     $data=prepare_values($_REQUEST,array(
                              'store_key'=>array('type'=>'string'),
-                        'from'=>array('type'=>'date','optional'=>true),
-                        'to'=>array('type'=>'date','optional'=>true),
+                             'from'=>array('type'=>'date','optional'=>true),
+                             'to'=>array('type'=>'date','optional'=>true),
                          ));
     store_sales($data);
     break;
+case('stacked_store_sales'):
+    $data=prepare_values($_REQUEST,array(
+                             'store_key'=>array('type'=>'string'),
+                             'from'=>array('type'=>'date','optional'=>true),
+                             'to'=>array('type'=>'date','optional'=>true),
+                         ));
+    stacked_store_sales($data);
+    break;    
 case('part_location_stock_history'):
     $data=prepare_values($_REQUEST,array(
                              'part_sku'=>array('type'=>'key'),
@@ -86,10 +94,10 @@ function  part_location_stock_history($data) {
                  $data['part_sku'],
                  $data['location_key']
                 );
-     $res=mysql_query($sql);
- 
+    $res=mysql_query($sql);
+
     while ($row=mysql_fetch_assoc($res)) {
-    printf("%s,%s,%s,%s,%s,%s\n",$row['Date'],$row['Quantity Open'],$row['Quantity High'],$row['Quantity Low'],$row['Quantity On Hand'],$row['Volume']);
+        printf("%s,%s,%s,%s,%s,%s\n",$row['Date'],$row['Quantity Open'],$row['Quantity High'],$row['Quantity Low'],$row['Quantity On Hand'],$row['Volume']);
     }
 
 
@@ -103,10 +111,10 @@ function  number_of_contacts($data) {
     $sql=sprintf("select `Time Series Date`,`Open`,`High`,`Low`,`Close`,`Volume` from `Time Series Dimension` where `Time Series Name`='contact population' and `Time Series Name Key`=%d order by `Time Series Date` desc",
                  $data['store_key']
                 );
-     $res=mysql_query($sql);
- 
+    $res=mysql_query($sql);
+
     while ($row=mysql_fetch_assoc($res)) {
-    printf("%s,%s,%s\n",$row['Time Series Date'],$row['Volume'],$row['Close']);
+        printf("%s,%s,%s\n",$row['Time Series Date'],$row['Volume'],$row['Close']);
     }
 
 
@@ -117,10 +125,10 @@ function  number_of_customers($data) {
     $sql=sprintf("select `Time Series Date`,`Open`,`High`,`Low`,`Close`,`Volume` from `Time Series Dimension` where `Time Series Name`='customer population' and `Time Series Name Key`=%d order by `Time Series Date` desc",
                  $data['store_key']
                 );
-     $res=mysql_query($sql);
- 
+    $res=mysql_query($sql);
+
     while ($row=mysql_fetch_assoc($res)) {
-    printf("%s,%s,%s,%s,%s,%s\n",$row['Time Series Date'],$row['Open'],$row['High'],$row['Low'],$row['Close'],$row['Volume']);
+        printf("%s,%s,%s,%s,%s,%s\n",$row['Time Series Date'],$row['Open'],$row['High'],$row['Low'],$row['Close'],$row['Volume']);
     }
 
 
@@ -331,7 +339,7 @@ function customer_families_pie($data) {
     $res=mysql_query($sql);
     $sum_slices=0;
     while ($row=mysql_fetch_assoc($res)) {
-        if ($row['amount']>0){
+        if ($row['amount']>0) {
             $descripton=$row['Product Family Name'];
             printf("%s;%.2f;;;family.php?id=%d;%s\n",$row['Product Family Code'],$row['amount'],$row['Product Family Key'],$descripton);
             $sum_slices+=$row['amount'];
@@ -345,38 +353,121 @@ function customer_families_pie($data) {
 
 
 function store_sales($data) {
-    
-    
-    
+    global $user;
+    $tmp=preg_split('/\,/', $data['store_key']);
+    $stores_keys=array();
+    foreach($tmp as $store_key) {
+
+        if (is_numeric($store_key) and in_array($store_key, $user->stores)) {
+            $stores_keys[]=$store_key;
+        }
+    }
+
     $graph_data=array();
 
-    $store_keys=preg_split('/,/',$data['store_key']);
-    $number_stores=count($store_keys);
-    $tmp=array();
-    for ($i=0; $i<$number_stores; $i++) {
 
-        $tmp['vol'.$i]=0;
+
+    if (array_key_exists('to',$data)) {
+        $dates=sprintf(" `Date`<=%s  ",prepare_mysql($data['to']));
+    } else {
+        $dates=sprintf(" `Date`<=NOW()  ");
     }
-    for ($i=0; $i<$number_stores; $i++) {
-
-        $tmp['value'.$i]=0;
+    if (array_key_exists('from',$data)) {
+        $dates.=sprintf("and `Date`>=%s  ",prepare_mysql($data['from']));
+    } else {
+        $dates.=sprintf("and  `Date`>= ( select min(`Invoice Date`)   from `Invoice Dimension` where `Invoice Store Key` in (%s) )  ",join(',',$stores_keys));
     }
-
-if(array_key_exists('to',$data)){
-$dates=sprintf(" `Date`<=%s  ",prepare_mysql($data['to']));    
-}else{
-$dates=sprintf(" `Date`<=NOW()  ");    
-}
-if(array_key_exists('from',$data)){
-$dates.=sprintf("and `Date`>=%s  ",prepare_mysql($data['from']));    
-}else{
-$dates.=sprintf("and  `Date`>= ( select min(`Invoice Date`)   from `Invoice Dimension` where `Invoice Store Key`=%d )  ",$data['store_key']);    
-}
 
     $sql=sprintf("select  `Date` from kbase.`Date Dimension` where  %s order by `Date` desc",
                  $dates
-                 
-                 );
+
+                );
+
+//print $sql;
+
+    $res=mysql_query($sql);
+    while ($row=mysql_fetch_assoc($res)) {
+
+        $graph_data[$row['Date']]['vol']=0;
+
+        $graph_data[$row['Date']]['value']=0;
+        //$graph_data[$row['Date']]['date']=$row['Date'];
+
+    }
+
+
+    if (array_key_exists('to',$data)) {
+        $dates=sprintf(" `Invoice Date`<=%s  ",prepare_mysql($data['to']));
+    } else {
+        $dates=sprintf(" `Invoice Date`<=NOW()  ");
+    }
+    if (array_key_exists('from',$data)) {
+        $dates.=sprintf("and `Invoice Date`>=%s  ",prepare_mysql($data['from']));
+    }
+
+    $sql=sprintf("select Date(`Invoice Date`) as date,sum(`Invoice Total Net Amount`) as net, count(*) as invoices  from `Invoice Dimension` where  %s and `Invoice Store Key`  in (%s)   group by Date(`Invoice Date`) order by `Date` desc",
+                 $dates,
+                 join(',',$stores_keys)
+                );
+    //print $sql;
+    $res=mysql_query($sql);
+    while ($row=mysql_fetch_assoc($res)) {
+        $graph_data[$row['date']]['vol']=$row['invoices'];
+        $graph_data[$row['date']]['value']=$row['net'];
+    }
+
+
+
+    $out='';
+//print_r($graph_data);
+    foreach($graph_data as $key=>$value) {
+        print $key.','.join(',',$value)."\n";
+    }
+
+
+}
+
+
+function stacked_store_sales($data) {
+
+
+
+    $graph_data=array();
+    
+    global $user;
+    $tmp=preg_split('/\,/', $data['store_key']);
+    $store_keys=array();
+    foreach($tmp as $store_key) {
+
+        if (is_numeric($store_key) and in_array($store_key, $user->stores)) {
+            $store_keys[]=$store_key;
+        }
+    }
+    
+
+   
+    $number_stores=count($store_keys);
+    $tmp=array();
+    for ($i=0; $i<$number_stores; $i++) {
+ $tmp['value'.$i]=0;
+        $tmp['vol'.$i]=0;
+    }
+   
+    if (array_key_exists('to',$data)) {
+        $dates=sprintf(" `Date`<=%s  ",prepare_mysql($data['to']));
+    } else {
+        $dates=sprintf(" `Date`<=NOW()  ");
+    }
+    if (array_key_exists('from',$data)) {
+        $dates.=sprintf("and `Date`>=%s  ",prepare_mysql($data['from']));
+    } else {
+        $dates.=sprintf("and  `Date`>= ( select min(DATE(`Invoice Date`))   from `Invoice Dimension` where `Invoice Store Key` in (%s) )  ",join(',',$store_keys));
+    }
+
+    $sql=sprintf("select  `Date` from kbase.`Date Dimension` where  %s order by `Date` ",
+                 $dates
+
+                );
 
 //print $sql;
 
@@ -392,24 +483,25 @@ $dates.=sprintf("and  `Date`>= ( select min(`Invoice Date`)   from `Invoice Dime
 //$graph_data=array();
     $i=0;
     foreach($store_keys as $store_key) {
-    
-    if(array_key_exists('to',$data)){
-$dates=sprintf(" `Invoice Date`<=%s  ",prepare_mysql($data['to']));    
-}else{
-$dates=sprintf(" `Invoice Date`<=NOW()  ");    
-}
-if(array_key_exists('from',$data)){
-$dates.=sprintf("and `Invoice Date`>=%s  ",prepare_mysql($data['from']));    
-}    
-    
+
+        if (array_key_exists('to',$data)) {
+            $dates=sprintf(" `Invoice Date`<=%s  ",prepare_mysql($data['to']));
+        } else {
+            $dates=sprintf(" `Invoice Date`<=NOW()  ");
+        }
+        if (array_key_exists('from',$data)) {
+            $dates.=sprintf("and `Invoice Date`>=%s  ",prepare_mysql($data['from']));
+        }
+
         $sql=sprintf("select Date(`Invoice Date`) as date,sum(`Invoice Total Net Amount`) as net, count(*) as invoices  from `Invoice Dimension` where  %s and `Invoice Store Key`=%d   group by Date(`Invoice Date`) order by `Date` desc",
                      $dates,
                      $store_key);
         //print $sql;
         $res=mysql_query($sql);
         while ($row=mysql_fetch_assoc($res)) {
-            $graph_data[$row['date']]['vol'.$i]=$row['invoices'];
-           $graph_data[$row['date']]['value'.$i]=$row['net'];
+           
+            $graph_data[$row['date']]['value'.$i]=$row['net'];
+             $graph_data[$row['date']]['vol'.$i]=$row['invoices'];
         }
         $i++;
     }
@@ -417,7 +509,7 @@ $dates.=sprintf("and `Invoice Date`>=%s  ",prepare_mysql($data['from']));
     $out='';
 //print_r($graph_data);
     foreach($graph_data as $key=>$value) {
-       print $key.','.join(',',$value)."\n";
+        print $key.','.join(',',$value)."\n";
     }
 
     /*
@@ -435,80 +527,80 @@ $dates.=sprintf("and `Invoice Date`>=%s  ",prepare_mysql($data['from']));
     */
 }
 
-function top_families($data){
+function top_families($data) {
 
-$max_slices=10;
-
-
-$store_keys=preg_split('/,/',$data['store_keys']);
-
-if(!is_array($store_keys) or count($store_keys)==0){
-return;
-}
-
-$valid_store_keys=array();
-foreach($store_keys as $store_key){
-if(is_numeric($store_key))
-    $valid_store_keys[]=$store_key;
-}
-if(count($valid_store_keys)==0)return;
-
-$period=$data['period'];
-
-$field='(`Product Family Total Invoiced Gross Amount`-`Product Family Total Invoiced Discount Amount`)';
+    $max_slices=10;
 
 
+    $store_keys=preg_split('/,/',$data['store_keys']);
 
- switch($period){
+    if (!is_array($store_keys) or count($store_keys)==0) {
+        return;
+    }
 
-case('1m'):
-$field='(`Product Family 1 Month Acc Quantity Invoiced`)';
+    $valid_store_keys=array();
+    foreach($store_keys as $store_key) {
+        if (is_numeric($store_key))
+            $valid_store_keys[]=$store_key;
+    }
+    if (count($valid_store_keys)==0)return;
 
-break;
-case('1y'):
-$field='(`Product Family 1 Year Acc Quantity Invoiced`)';
+    $period=$data['period'];
 
-break;
-case('1q'):
-$field='(`Product Family 1 Quarter Acc Quantity Invoiced`)';
-
-break;
- default:
-$field='(`Product Family Total Invoiced Gross Amount`-`Product Family Total Invoiced Discount Amount`)';
-
-
-}
+    $field='(`Product Family Total Invoiced Gross Amount`-`Product Family Total Invoiced Discount Amount`)';
 
 
+
+    switch ($period) {
+
+    case('1m'):
+        $field='(`Product Family 1 Month Acc Quantity Invoiced`)';
+
+        break;
+    case('1y'):
+        $field='(`Product Family 1 Year Acc Quantity Invoiced`)';
+
+        break;
+    case('1q'):
+        $field='(`Product Family 1 Quarter Acc Quantity Invoiced`)';
+
+        break;
+    default:
+        $field='(`Product Family Total Invoiced Gross Amount`-`Product Family Total Invoiced Discount Amount`)';
+
+
+    }
 
 
 
 
 
-$total=0;
-$sql=sprintf("select sum%s as sales from `Product Family Dimension` where `Product Family Store Key` in (%s)  ",
-$field,
-join(",",$valid_store_keys)
-);
-$res=mysql_query($sql);
-if($row=mysql_fetch_assoc($res)){
-$total=$row['sales'];
-}
 
-$others=$total;
-$sql=sprintf("select `Product Family Name`,`Product Family Key`,`Product Family Code`,%s as sales from `Product Family Dimension` where `Product Family Store Key` in (%s) order by sales desc limit %d ",
-$field,
-join(",",$valid_store_keys),
-$max_slices
-);
-$res=mysql_query($sql);
-while($row=mysql_fetch_assoc($res)){
-$descripton='';//$row['Product Family Name'];
-printf("%s;%.2f;;;family.php?id=%d;%s\n",$row['Product Family Code'],$row['sales'],$row['Product Family Key'],$descripton);
-$others-=$row['sales'];
-}
 
- if ($others) {
+    $total=0;
+    $sql=sprintf("select sum%s as sales from `Product Family Dimension` where `Product Family Store Key` in (%s)  ",
+                 $field,
+                 join(",",$valid_store_keys)
+                );
+    $res=mysql_query($sql);
+    if ($row=mysql_fetch_assoc($res)) {
+        $total=$row['sales'];
+    }
+
+    $others=$total;
+    $sql=sprintf("select `Product Family Name`,`Product Family Key`,`Product Family Code`,%s as sales from `Product Family Dimension` where `Product Family Store Key` in (%s) order by sales desc limit %d ",
+                 $field,
+                 join(",",$valid_store_keys),
+                 $max_slices
+                );
+    $res=mysql_query($sql);
+    while ($row=mysql_fetch_assoc($res)) {
+        $descripton='';//$row['Product Family Name'];
+        printf("%s;%.2f;;;family.php?id=%d;%s\n",$row['Product Family Code'],$row['sales'],$row['Product Family Key'],$descripton);
+        $others-=$row['sales'];
+    }
+
+    if ($others) {
         printf("%s;%.2f;true\n",_('Others'),$others);
     }
 

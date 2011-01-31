@@ -4,17 +4,17 @@
 
 {include file='header.tpl'}
 
-
-
-     
-
-
-
+<script src="http://code.jquery.com/jquery-1.4.4.js"></script>
+  
+  <link href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/themes/base/jquery-ui.css" rel="stylesheet" type="text/css"/>
+	
+  
 <div id="bd" >
-	<div style="padding:0 20px">
+	<div>
 		{include file='marketing_navigation.tpl'}
 
 		</head>
+
 
 
 
@@ -22,7 +22,19 @@
 		<div style="clear:left;margin:0 0px">
    		 <h1>{t}List{/t}</h1>
 		</div>
+		
+		<ul class="tabs" id="chooser_ul" style="clear:both;margin-top:25px">
+		<li> <span class="item {if $view=='other'}selected{/if}"  id="other">  <span> {t}Emarketings{/t}</span></span></li>
+		<li> <span class="item {if $view=='email'}selected{/if}"  id="email">  <span> {t}Campaign{/t}</span></span></li>
+    		<li> <span class="item {if $view=='metrics'}selected{/if}" id="metrics"  ><span>  {t}Lists{/t}</span></span></li>
+    		<li> <span class="item {if $view=='web'}selected{/if}"  id="web">  <span> {t}Report{/t}</span></span></li>
+		<li> <span class="item {if $view==''}selected{/if}"  id="web">  <span> {t}Autoresponders{/t}</span></span></li>
+    		
+		</ul>
+ 		<div  style="clear:both;width:100%;border-bottom:1px solid #ccc"></div>
+	
 
+	
 	</div>
 	
  	
@@ -53,20 +65,100 @@
 	</div>
 	<div id="check_div">Please Check Your Entry And Try Again</div>
 	<div id="left_panel">
-		<a href=""onClick="" style="text-decoration:none"><div id="create_new_list">Create New List
+		<a onClick="" style="text-decoration:none; cursor:pointer"><div id="create_new_list">Create New List
 		</div></a><br>
-		<div id="signup_forms">Design Sign up forms
+		<div id="view_list" style="text-decoration:none; cursor:pointer">View Lists
 		</div><br>
+		<div id="signup_forms" onMouseover="show('left_slide');">Design Sign up forms ▼
+		</div><br>
+		
 		<input type="text" name="list_search" id="list_search" value="Search List Subscribers" onClick="empty_text();">
 		<input type="submit" value="Go" class="list_search_button">
 
 	</div>
+	
 
+	
 
+	{literal}
+ 	<script>
+   	 $("#create_new_list").click(function () {
+     	 $('#list_or_group').slideDown("slow",function(){
+		 $('#group_div').fadeOut("slow",function(){
+			 $('#list_details_div').fadeOut("slow");
+	  });
+	 });
+    	 });
+	 function slideCrm()
+	 {
+      	 $('#list_or_group').slideDown("slow");
+		}
+	</script>
+	
+	<script>
+   	 $("#view_list").click(function () {
+     	 $('#new_list').slideUp("slow",function(){
+		$('#list_or_group').slideUp("slow",function(){
+			$('#group_div').slideUp("slow",function(){
+			  $('#list_details_div').slideDown("slow");
+	});
+	
+	 });
+	 });
+    	 });
+	 function slideCrm()
+	 {
+      	 $('#new_list').slideDown("slow");
+		}
+	</script>
+	
+	{/literal}
+	
 
-	<div id="list_or_group" style="border:1px solid #AAAAAA; margin-left: 220px; width: 670px; display:none;">AAAAAAAAAA<br>AAAAAAA</div>
+	<div id="list_or_group" style="display:none;">
+		<h2>New List?.....or Groups?</h2><br>
+		Do you really want to create a new list, or do you just want to sub-divide an existing list with groups?<br><br>
+		<div style="padding-left:150px;">		
+			<div class="list_bt" style=" float: left;">
+  			<input type="button" value="Create List" name="create_list" id="create_list" onClick="show_list();"/>
+  			</div>
+					
+			<div class="list_bt" id="create_group_div" style="padding-left:70px; width:400px">
+  			<input type="button" value="Create Group" name="create_group" id="create_group" onClick="show_group();"/>
+  			</div>
+		</div>
+	</div>
+	<div id="group_div" class="main_div" style="display:none">
+		<h2>Create Group</h2><br>
+		These groups go in which list?<br>
+
+		<select style="clear: both; width: 50%;">
+  		<option value="choose">Choose a list</option>
+ 		</select> <br><br>
+		How should we show group options on your signup form?<br>
+		<select style="clear: both; width: 50%;">
+  		<option value="choose">Choose a list</option>
+ 		</select> <br><br>
+		Group Title<br>
+		<input type="text" name="group_title" id="group_title" class="av_text" style="width:670px;"">
+		<div id="group_msg" class="invalid-error">Example: "Interested in ..." or "Food Preferences".</div>
+		<div id="add_group"style="border:1px solid #AAAAAA; padding-left:10px; padding-right:10px; "></div>
+		
+		<a style="cursor: pointer; text-decoration:underline; font-size: 14px;" onClick="CreateTextbox()">+ add group</a><br><br>
+		
+		<div style="padding-left:10px;">		
+			<div class="list_bt" style=" float: left;">
+  			<input type="button" value="Save" name="save_group" id="save_group" onClick=""/>
+  			</div>
+			<div style="padding-left:70px;">		
+			<div class="list_bt">
+  			<input type="button" value="Cancel" name="cancel_group" id="cancel_group" onClick="document.getElementById('group_div').style.display = 'none';"/>
+  			</div>
+			</div>
+		</div>
+	</div>
 	<div id="new_list">
-		<form action="" method="post" name="list_form" onSubmit="validate_form();">
+		<form action="" method="post" name="list_form" onSubmit="return validate_form();">
 
 		<div id="list_div" class="sub_head">List Name</div>
 		<div id="name_div"><input type="text" name="list_name" id="list_name" class="av_text" style="width:670px;" onClick="show('list_msg');"></div>
@@ -89,16 +181,19 @@
 		<div id="permission_list" style="width:250px; float: left;" >Copy permission reminder from other list</div> 
 		<select onClick="show('remind_msg')">
   		<option value="choose">Choose a list</option>
+		{foreach from=$list item=list_item}
+  		<option value="{$list_item[0]}">{$list_item[0]}</option>
+		{/foreach}
  		
 		</select> <br><br>
 	
 	
-		<TEXTAREA NAME="description" COLS=88 ROWS=3 onClick="hide();" style="-moz-border-radius: 5px 5px 5px 5px; padding-right:5px; padding-left:5px; "></TEXTAREA>
+		<TEXTAREA id="description" NAME="description" COLS=88 ROWS=3 onClick="hide();" style="-moz-border-radius: 5px 5px 5px 5px; padding-right:5px; padding-left:5px; "></TEXTAREA>
 		<div id="remind_msg" class="invalid-error">You are receiving this email because you opted at our website....</div> <br><br>
 
 
 		<div id="info_div" class="sub_head">Is this the correct contact info for this list? why is this necessary?</div>
-		<div id="contact_div" style="border:1px solid #AAAAAA; padding:10px; -moz-border-radius: 5px 5px 5px 5px; padding-right:5px; padding-left:5px; ">asasss<br>
+		<div id="contact_div" style="border:1px solid #AAAAAA; padding:10px; -moz-border-radius: 5px 5px 5px 5px; padding-right:5px; padding-left:5px; ">This address<br> will come form database<br>
 			<div class="bt" id="edit_div"><input type="button" value="Edit" name="edit" id="edit" onClick="edit_contact();"/></div>
 				
 		</div>
@@ -124,8 +219,8 @@
 
 		<br><br>
 
-		<div id="email_me_div" class="sub_head">Email me at ******@****.com <a onClick="edit_email();">edit</a> when ...</div>
-		<div id="edit_email_div" class="sub_head">Email me at <input type="text" id="edit_email" name="edit_email"style="-moz-border-radius: 5px 5px 5px 5px;"> <a href="#">edit</a> when ...</div>
+		<div id="email_me_div" class="sub_head">Email me at ******@****.com <a onClick="edit_email();" style="text-decoration:underline" >edit</a> when ...</div>
+		<div id="edit_email_div" class="sub_head">Email me at <input type="text" id="edit_email" name="edit_email"style="-moz-border-radius: 5px 5px 5px 5px;">  when ...</div>
 		<br>
 		<hr>
 		<INPUT TYPE=CHECKBOX NAME="mushrooms"   >People Subscribe
@@ -140,11 +235,39 @@
 		<hr>
 		<INPUT TYPE=CHECKBOX NAME="mushrooms"   >Activate <a href="#">SocialPro</a><br><br>
 		
-		<div class="bt">
+		<div class="bt" style=" float: left;">
   		<input type="submit" value="Save" name="save_list" id="save_list" />
   		</div>
+		
+		<div style="padding-left:70px;">
+		<div class="bt">
+  		<input type="button" value="Cancel" name="cancel_list" id="cancel_list" onClick="document.location='marketing.php'; return false;"/>
+  		</div>
+		</div>
 		</form>
 	</div>
+	<div id="list_details_div" class="main_div" style="display:none;">
+		{foreach from=$list item=list_item}
+		<div class="list-panel">
+			<h4 class="list-name">{$list_item[0]}</h4><br>
+			<ul>
+				<li style=" float: left; padding-left:50px;"><a>Import</a></li>
+				<li style="float: left; padding-left:50px;"><a href="add_people.php">Add People</a></li>
+				<li style="float: left; padding-left:50px;"><a>Remove People</a></li>
+				<li style="float: left; padding-left:50px;"><a>Send to a list</a></li>
+			</ul><br><br>
+			<ul>
+				<li style=" float: left; padding-left:50px;"><a>Settings</a></li>
+				<li style="float: left; padding-left:50px;"><a>Replicate</a></li>
+				<li style="float: left; padding-left:50px;"><a>Delete</a></li>
+				<li style="float: left; padding-left:50px;"><a>Forms</a></li>
+				<li style="float: left; padding-left:50px;"><a>List Data</a></li>
+				<li style="float: left; padding-left:50px;"><a>Groups</a></li>
+			</ul>
+		</div>
+		{/foreach}
+	</div>
+	
  	
 	<br>
 	

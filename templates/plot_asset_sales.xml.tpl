@@ -12,7 +12,7 @@
   <redraw></redraw>     
   
   
-  <add_time_stamp></add_time_stamp>                                                
+  <add_time_stamp>true</add_time_stamp>                                                
 
                                                                    
   <max_series></max_series>

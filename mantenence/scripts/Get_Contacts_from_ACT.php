@@ -182,8 +182,8 @@ if (($handle = fopen($filename, "r")) !== FALSE) {
 
         // if($act_data['tax_number']!='')
         //  print ($act_data['tax_number']."\n");
-        //     if($row>200)
-        //  break;
+             if($row>500)
+          break;
         //      print "$row\r";
 
         // print_r($cols);
@@ -396,9 +396,13 @@ foreach($contacts as $act_data) {
     }
 
     // print_r($act_data);
+    
+  //  if($customer_data['Customer Main Plain Email']=='')
+    //    continue;
 //print_r($customer_data);
 
     $customer = new Customer ( 'find create',  $customer_data);
+//exit;
 //print_r($customer);
 
     //   if(count($act_data['history'])>0){
@@ -422,7 +426,7 @@ foreach($contacts as $act_data) {
     }
 
 
-    print "Customers:\t$contador\t ".(microtime_float()-$start_time)/$contador."s/c \r";
+    print "Customers:\t$contador\t".number_format(microtime_float()-$base_time,4)."\t Avg:".number_format( (microtime_float()-$start_time)/$contador,4)."s/c \r";
 
     $time_data[]=microtime_float()-$base_time;
     if (fmod($contador,100)==0) {

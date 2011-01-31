@@ -1,4 +1,3 @@
-
 <?php
 /*
  File: marketing.php 
@@ -12,9 +11,6 @@
  
  Version 2.0
 */
-
-
-
 
 include_once('common.php');
 
@@ -75,6 +71,23 @@ if (isset($_REQUEST['view'])) {
         $_SESSION['state'][$page]['view']=$_REQUEST['view'];
 
 }
+
+$list_sql=mysql_query("SELECT `Campaign Mailling List Name` FROM `Campaign Mailling List`");
+$i=0;
+$list=array();
+while($list_name=mysql_fetch_array($list_sql))
+{
+	//echo"$list_name['$listname]<br>";
+	$list[$i]=$list_name;
+	$i++;
+}
+$list_count=mysql_num_rows($list_sql);
+$smarty->assign('list',$list);
+$smarty->assign('list_count',$list_count);
+
+
+
+
 $smarty->assign('view',$_SESSION['state'][$page]['view']);
 
 

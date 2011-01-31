@@ -34,6 +34,7 @@ var $same_currency=false;
 
   function get_exchange(){
   
+    //print_r($this);
     $this->get_data_scalar();
    
     
@@ -105,12 +106,13 @@ var $same_currency=false;
     return;
   }
   
+
     $this->exchange=false;
      $sql=sprintf("select `Exchange` from kbase.`History Currency Exchange Dimension` where `Currency Pair`=%s and `Date`=DATE(%s)     "
 		  ,prepare_mysql($this->currency_pair)
 		  ,prepare_mysql($this->from));
       $res3=mysql_query($sql);
-    
+      //print $sql;
       if($row3=mysql_fetch_array($res3, MYSQL_ASSOC)){
 	$this->exchange=$row3['Exchange'];
       }

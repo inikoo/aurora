@@ -4425,12 +4425,16 @@ function read_header($raw_header_data,$map_act,$y_map,$map,$convert_encoding=tru
 
 	break;
       case('date'):
+
+	//	print ("\nxxxxxxxxxxxxxx".$_data."xxxx\n");
 	$_data=preg_replace('/-cze-/i','-june-',$_data);
 	$_data=preg_replace('/-maj-/i','-may-',$_data);
 
 	$_data=preg_replace('/-lip-/i','-july-',$_data);
 		$_data=preg_replace('/-sie-/i','-august-',$_data);
 		$_data=preg_replace('/-sier-/i','-august-',$_data);
+		$_data=preg_replace('/-st-/i','-january-',$_data);
+		$_data=preg_replace('/-gr-/i','-december-',$_data);
 
 		$_data=preg_replace('/-wrz-/i','-september-',$_data);
 		$_data=preg_replace('/-sty-/i','-january-',$_data);
@@ -4446,7 +4450,7 @@ function read_header($raw_header_data,$map_act,$y_map,$map,$convert_encoding=tru
 
 
     $_date=strtotime($_data);
-//print "\n $_data ".date("Y-m-d",$_date)."\n";
+    //print "\n $_data ".date("Y-m-d",$_date)."\n";
 
 	$header[$key]=date("Y-m-d",$_date);
 	break;

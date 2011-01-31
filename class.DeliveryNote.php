@@ -703,7 +703,7 @@ class DeliveryNote extends DB_Table {
                 //  $location_key = $part->get ( 'Picking Location Key' );
                 $location_key=$part->get_picking_location_key($date);
                 $supplier_products=$part->get_supplier_products($date);
-
+                
                 $supplier_product_key=0;
                 if (count($supplier_products)>0) {
 
@@ -725,6 +725,20 @@ class DeliveryNote extends DB_Table {
                                , $this->data['Delivery Note ID']
                              );
                 unset ( $product );
+                
+                if($location_key){
+                    if($location_key==1){
+                     $a.=' '._('Taken from an')." ".sprintf("<a href='location.php?id=1'>%s</a>",_('Unknown Location'));
+                    }else{
+                    $location = new Location($location_key);
+                    $a.=' '._('Taken from').": ".sprintf("<a href='location.php?id=%d'>%s</a>",$location->id,$location->data['Location Code']);
+                    }
+                
+                }
+                
+                
+                
+                
                 //$note = $a . ', ' . $order->data ['Order Current XHTML State'];
                 $note = $a;
 

@@ -1613,7 +1613,7 @@ function get_ohlc($date) {
 
     function get_history_intervals() {
         $sql=sprintf("select  `Inventory Transaction Type`,(`Date`) as Date from `Inventory Transaction Fact` where  `Part Sku`=%d and `Inventory Transaction Type` in ('Associate','Disassociate')  order by `Date` ,`Inventory Transaction Key` ",$this->part_sku);
-        // print "$sql\n";
+        print "$sql\n";
         $dates=array();
         $result=mysql_query($sql);
         while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
@@ -1642,7 +1642,7 @@ function get_ohlc($date) {
         $intervals=$this-> get_history_intervals();
 
 
-        // print_r($intervals);
+//         print_r($intervals);
 
         foreach($intervals as $interval) {
             $this->update_stock_history_interval($interval['From'],($interval['To']?$interval['To']:date('Y-m-d',strtotime('now -1 day'))));
@@ -1650,60 +1650,57 @@ function get_ohlc($date) {
 
     }
 
-    function update_stock_history_interval($from,$to) {
+function update_stock_history_interval($from,$to) {
+   $sql=sprintf("select `Date` from kbase.`Date Dimension` where `Date`>=%s and `Date`<=%s order by `Date`"
+                 ,prepare_mysql($from)
+                 ,prepare_mysql($to)
+                );
+    $result=mysql_query($sql);
+
+    print $this->part_sku." ".$this->location_key." $from $to \n";
+    while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
+
+        list($stock,$value)=$this->get_stock($row['Date'].' 23:59:59');
+        list($sold,$sales_value)=$this->get_sales($row['Date'].' 23:59:59');
+        list($in,$in_value)=$this->get_in($row['Date'].' 23:59:59');
+        list($lost,$lost_value)=$this->get_lost($row['Date'].' 23:59:59');
+        list($open,$high,$low,$close)=$this->get_ohlc($row['Date']);
 
 
+        $storing_cost=0;
+        $comercial_value=$this->part->get_comercial_value($row['Date'].' 23:59:59');
+        $location_type="Unknown";
+        $warehouse_key=1;
+        $sql=sprintf("insert into `Inventory Spanshot Fact` values (%s,%d,%d,%d,%f,%.2f ,%.2f,%.2f ,%.f,%f,%f,%f,%f,%f,%f,%s) ",
+                     prepare_mysql($row['Date']),
 
+                     $this->part_sku,
+                     $warehouse_key,
 
-        $sql=sprintf("select `Date` from kbase.`Date Dimension` where `Date`>=%s and `Date`<=%s order by `Date`"
-                     ,prepare_mysql($from)
-                     ,prepare_mysql($to)
+                     $this->location_key,
+
+                     $stock,
+                     $value,
+
+                     $sales_value,
+                     $comercial_value,
+
+                     $storing_cost,
+
+                     $sold,
+                     $in,
+                     $lost,
+                     $open,
+                     $high,
+                     $low,
+                     prepare_mysql($location_type)
+
                     );
-        $result=mysql_query($sql);
-        while ($row=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
-            list($stock,$value)=$this->get_stock($row['Date'].' 23:59:59');
-
-
-            list($sold,$sales_value)=$this->get_sales($row['Date'].' 23:59:59');
-            list($in,$in_value)=$this->get_in($row['Date'].' 23:59:59');
-            list($lost,$lost_value)=$this->get_lost($row['Date'].' 23:59:59');
-            list($open,$high,$low,$close)=$this->get_ohlc($row['Date']);
-            
-            
-            $storing_cost=0;
-            $comercial_value=$this->part->get_comercial_value($row['Date'].' 23:59:59');
-            $location_type="Unknown";
-            $warehouse_key=1;
-            $sql=sprintf("insert into `Inventory Spanshot Fact` values (%s,%d,%d,%d,%f,%.2f ,%.2f,%.2f ,%.f,%f,%f,%f,%f,%f,%f,%s) ",
-                         prepare_mysql($row['Date']),
-
-                         $this->part_sku,
-                                                                           $warehouse_key,
-
-                         $this->location_key,
-
-                         $stock,
-                         $value,
-
-                         $sales_value,
-                         $comercial_value,
-
-                         $storing_cost,
-
-                         $sold,
-                         $in,
-                         $lost,
-                         $open,
-                         $high,
-                         $low,
-                         prepare_mysql($location_type)
-                         
-                        );
-            mysql_query($sql);
-            //print "$sql\n";
-        }
-
+        mysql_query($sql);
+        //print "$sql\n";
     }
+
+}
  function set_audits() {
 
         $sql=sprintf("delete from  `Inventory Transaction Fact` where `Inventory Transaction Type` in ('Audit') and `Part SKU`=%d and `Location Key`=%d"

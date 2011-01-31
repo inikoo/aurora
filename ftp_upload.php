@@ -13,12 +13,7 @@
 */
 include_once('common.php');
 if(!$user->can_view('users'))
-  exit();
-  
-  
- 
-
-		 
+  exit();		 
 $css_files=array(
 		 $yui_path.'reset-fonts-grids/reset-fonts-grids.css',
 		 $yui_path.'menu/assets/skins/sam/menu.css',
@@ -29,9 +24,7 @@ $css_files=array(
 		 'button.css',
 		 'table.css'
 		 
-		 );		 
-		 
-		 
+		 );		 	 
 $js_files=array(
 		$yui_path.'utilities/utilities.js',
 		$yui_path.'json/json-min.js',
@@ -45,12 +38,9 @@ $js_files=array(
 		'common.js.php',
 		'table_common.js.php',
 		'js/search.js',
-		
-		
 		);
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
-
 
 
 
@@ -104,6 +94,55 @@ ftp_close($conn_id);
 
 $smarty->assign('confirm1',$confirm1);
 $smarty->assign('confirm2',$confirm2);
+}
+
+
+
+
+if (isset($_POST['Download_Submit'])) {
+$ftp_server=$_POST['server'];
+$ftp_user_name=$_POST['username'];
+$ftp_user_pass=$_POST['password'];
+// make a connection to the ftp server 
+$conn_id = ftp_connect($ftp_server);
+// login with username and password 
+$login_result = ftp_login($conn_id , $ftp_user_name , $ftp_user_pass);
+// check connection 
+if((!$conn_id)||(!$login_result)){ 
+echo "FTP connection has failed!" ; 
+echo "Attempted to connect to $ftp_server for user $ftp_user_name" ; 
+exit; 
+}else{ 
+$confirm3="";
+$confirm3="Connection to $ftp_server, for user $ftp_user_name is established";
+//echo "Connected to $ftp_server, for user $ftp_user_name" ; 
+} 
+if(isset($_POST['Download_Submit']))
+{
+// path to remote file
+$remote_file = $_POST['file'];
+//chmod('app_files/uploads',0777);
+$local_file = "app_files/uploads/".$remote_file;
+
+// open some file to write to
+$handle = fopen($local_file, 'w');
+
+
+// try to download $remote_file and save it to $handle
+if (ftp_fget($conn_id, $handle, $remote_file, FTP_ASCII, 0)) {
+$confirm4="Downloaded $remote_file from $ftp_server and stored in folder app_files/uploads" ; 
+// echo "successfully written to $local_file\n";
+} else {
+$confirm4="There was a problem while downloading $remote_file" ; 
+// echo "There was a problem while downloading $remote_file to $local_file\n";
+}
+
+// close the connection and the file handler
+ftp_close($conn_id);
+fclose($handle);
+$smarty->assign('confirm3',$confirm3);
+$smarty->assign('confirm4',$confirm4);
+}
 }
  $smarty->display('ftp_upload.tpl'); 
 ?>
