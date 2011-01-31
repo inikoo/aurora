@@ -3,10 +3,6 @@
 <div style="padding:0 20px">
 {include file='marketing_navigation.tpl'}
 
-
-
-
- 
 <div style="clear:left;margin:0 0px">
     <h1>{t}Marketing{/t}</h1>
 </div>
