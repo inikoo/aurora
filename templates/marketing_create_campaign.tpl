@@ -1,5 +1,5 @@
 {include file='header.tpl'}
-<div id="bd"  style="padding:0px">
+<div id="bd"  style="padding:0px;">
 <div style="padding:0 20px">
 
  <br><br>
@@ -34,21 +34,6 @@
 	
 		</div>
 	</div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 </div>
