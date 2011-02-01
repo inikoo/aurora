@@ -40,7 +40,7 @@ $days=30;
 
 $currencies=array();
 $where='';
-$where="where  `Country Currency Code` in ('GBP','PLN') ";
+$where="where  `Country Currency Code` in ('GBP','EUR','PLN') ";
 
 $sql=sprintf("select `Country Currency Code` from kbase.`Country Dimension` $where   group by `Country Currency Code`");
 $res=mysql_query($sql);
