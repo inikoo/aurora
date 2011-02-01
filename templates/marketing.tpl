@@ -37,7 +37,7 @@
 </div> 	
 <div style="padding:30px 0px 0px 4px;">
 <h1 style="color: #CC6600; margin: 0px 0 0px 15px;text-transform: capitalize;">Dashboard</h3>
-<table height="520" >
+<table height="270" >
 <tr>
  <td >
 <div class="campaign_create"><a id="create_camp" href="marketing_create_campaign.php">Create Campaign<span class="dwn">▼</span></a><div>
@@ -58,13 +58,6 @@
 <div class="go_next">
 <a class="button-small" title="create a mailing list" href="marketing_list.php">go »</a>
 </div>
-
-
-
-
-
-
-
 
 
 </div></div>
