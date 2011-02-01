@@ -1,4 +1,49 @@
 {include file='header.tpl'}
+
+
+
+{literal}
+ 	<script>
+         $(document).ready(function(){
+   	 $("#segment_part").click(function () {
+          $('#part').slideDown("fast");
+    	 });
+       $("#sagement").click(function () {
+          $('#part').slideUp("fast");
+    	 });
+
+});
+function addEvent(m)
+{
+alert("fdsdfdfff");
+var m;
+mydiv = 'myDiv'+m;
+alert(mydiv);	
+var ni = document.getElementById(mydiv);
+var numi = document.getElementById('theValue');
+alert(numi);
+var num = (document.getElementById("theValue").value -1)+ 2;
+numi.value = num;
+var divIdName = "Condition"+num;
+var newdiv = document.createElement('div');
+newdiv.setAttribute("id",divIdName);
+
+
+	
+
+	newdiv.innerHTML = "<table border=\"0\"><tr><td>Match <select name=\"match\"><option value=\"any\">Any</option><option value=\"all\">All</option></select> of the following : </td></tr><tr><td><select name=\"match\"><option value=\"email_address\">Email Address</option><option value=\"first_name\">First Name</option><option value=\"last_name\">Last Name</option></select><select name=\"word\"><option value=\"is\">Is</option><option value=\"is_not\">Is not</option><option value=\"contains\">Contains</option><option value=\"does_not_contain\">Does not contain</option><option value=\"start_with\">Start With</option><option value=\"ends_with\">Ends With</option><option value=\"is_greater_than\">Is greater than</option><option value=\"is_less_than\">Is less than</option></select><input type=\"textbox\" name=\"box\" ></td></tr></table><a href=\"javascript:;\" onclick=\"removeEvent(\'"+divIdName+"\',\'"+m+"\')\" ><span style=\"font-size:10px; color:#CC66OD;\">Remove Condition</span></a>";
+ni.appendChild(newdiv);
+	
+
+
+}
+</script>
+
+{/literal}
+
+
+
+
 <div id="bd"  style="padding:0px">
 <div style="padding:0 20px">
 
@@ -15,8 +60,8 @@
 
 <div class="campaignlist_outer"><input type="radio" name="" id=""><label class="campaign_name">example (0 recipients)</label>
 <input type="submit" class="send_entire_list" value="send to entire list">
-<span class="segment"><img src="art/resultset_next.png">Send to segment</span>
-<div style="background-color:#ffffff;margin-top:14px;min-height:50px;">
+<span class="segment" id="segment_part"><img src="art/resultset_next.png">Send to segment</span>
+<div id="part" style="background-color:#ffffff;margin-top:14px;min-height:50px;display:none;">
 
 
   <p style="padding:7px;"> match 
@@ -35,9 +80,11 @@
        <input type="text" class="value_sagement" name="" id="">
 
 </p>
-<p>
-<input type="submit" class="" name="sagement" id="sagement" value="sagement">
-
+<p><a href="#" onclick="addEvent(1);"><span style="font-size:10px; color:#CC66OD;">Add Condition</span></a></p>
+<div id="myDiv{$value[value].$list_key}" style="font-size:10px; color:#CC66OD;"> </div>
+<p style="padding:10px;">
+<input type="submit" name="sagement" value="sagement">
+<input type="button" id="sagement" value="cancel"></p>
 </div>
 </div>
 
