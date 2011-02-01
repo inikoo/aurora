@@ -3,10 +3,6 @@
 <div style="padding:0 20px">
 {include file='marketing_navigation.tpl'}
 
-
-
-
- 
 <div style="clear:left;margin:0 0px">
     <h1>{t}Marketing{/t}</h1>
 </div>
@@ -31,8 +27,8 @@
   <table  style="margin-top:25px;" cellspacing="10" width="445">
   	<tr>
 	<td><div class="topmenu current"><a href="">Dashboard</a></div></td>
-	<td><div class="topmenu"><a href="">Campaigns</a</div></td>
-       <td><div class="topmenu"><a href="">Lists</a</div></td>
+	<td><div class="topmenu"><a href="marketing_campaign.php">Campaigns</a</div></td>
+       <td><div class="topmenu"><a href="marketing_list.php">Lists</a</div></td>
 	<td><div class="topmenu"><a href="">Reports</a</div></td>
 	<td><div class="topmenu"><a href="">Autoresponders</a</div></td>
 	</tr>
@@ -41,10 +37,27 @@
 </div> 	
 <div style="padding:30px 0px 0px 4px;">
 <h1 style="color: #CC6600; margin: 0px 0 0px 15px;text-transform: capitalize;">Dashboard</h3>
-<table height="520" >
+<table height="270" >
 <tr>
  <td >
-<div class="campaign_create"><a id="create_camp" href="">Create Campaign<span class="dwn">▼</span></a><div>
+<div class="campaign_create"><ul class="hover-list"><li><a id="create_camp" href="">Create Campaign<span class="dwn">▼</span></a>
+ <ul>
+       <li>
+<a href="">regular ol' campaign</a></li> <li><a href="marketing_campaign_builder.php">plain-text campaign</a></li> 
+<li><a href="">A/B split campaign</a></li> 
+<li><a href="">RSS-driven campaign</a></li> </ul> </li> </ul> 
+
+<div>
+
+
+
+
+
+
+
+
+
+
 
 
 </td> 
@@ -62,13 +75,6 @@
 <div class="go_next">
 <a class="button-small" title="create a mailing list" href="marketing_list.php">go »</a>
 </div>
-
-
-
-
-
-
-
 
 
 </div></div>
@@ -128,23 +134,4 @@
 
 {include file='footer.tpl'}
 
-<div id="rppmenu0" class="yuimenu" >
-  <div class="bd">
-    <ul class="first-of-type">
-       <li style="text-align:left;margin-left:10px;border-bottom:1px solid #ddd">{t}Rows per Page{/t}:</li>
-      {foreach from=$paginator_menu0 item=menu }
-      <li class="yuimenuitem"><a class="yuimenuitemlabel" onClick="change_rpp_with_totals({$menu},0)"> {$menu}</a></li>
-      {/foreach}
-    </ul>
-  </div>
-</div>
-<div id="filtermenu0" class="yuimenu" >
-  <div class="bd">
-    <ul class="first-of-type">
-      <li style="text-align:left;margin-left:10px;border-bottom:1px solid #ddd">{t}Filter options{/t}:</li>
-      {foreach from=$filter_menu0 item=menu }
-      <li class="yuimenuitem"><a class="yuimenuitemlabel" onClick="change_filter('{$menu.db_key}','{$menu.label}',0)"> {$menu.menu_label}</a></li>
-      {/foreach}
-    </ul>
-  </div>
-</div>
+

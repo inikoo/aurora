@@ -37,15 +37,11 @@ $css_files=array(
 		 'common.css',
 		 'button.css',
 		 'container.css',
-		 'table.css',
-		'css/create_list.css',
-		'css/import_data.css',
-		
+		 'css/marketing_campaigns.css',
+		 'table.css'
 		 );
 $js_files=array(
-		'external_libs/jquery/jquery-1.3.2.min.js',
-		'js/jquery.js',
-		'js/jquery-1.4.4.js',
+
 		$yui_path.'utilities/utilities.js',
 		$yui_path.'json/json-min.js',
 		$yui_path.'paginator/paginator-min.js',
@@ -55,13 +51,35 @@ $js_files=array(
 		$yui_path.'container/container-min.js',
 		$yui_path.'menu/menu-min.js',
 		$yui_path.'calendar/calendar-min.js',
+		'js/jquery-1.4.4.js',
+		'js/plain_campaign_builder.js',
 		'common.js.php',
 		'table_common.js.php',
 		'js/search.js',
-		'js/marketing_list.js',
-		
-		
+		'marketing_create_campaign.js.php'
 		);
+
+$sql = "select `Campaign Mailling List Id`,`Campaign Mailling List Name` from `Campaign Mailling List`";
+		$res = mysql_query($sql);
+	
+	
+
+	$smarty->assign('list_id','Campaign Mailling List Id');
+	$smarty->assign('list_name','Campaign Mailling List Name');
+	while($fetchArray = mysql_fetch_assoc($res))
+	{
+		$value[] = $fetchArray;
+
+	}
+ $smarty->assign('value',$value);
+
+
+
+
+
+
+
+
 
 
  
@@ -71,24 +89,6 @@ if (isset($_REQUEST['view'])) {
         $_SESSION['state'][$page]['view']=$_REQUEST['view'];
 
 }
-
-$list_sql=mysql_query("SELECT `Campaign Key`, `Campaign Name` FROM `Campaign Dimension`");
-$i=0;
-$list=array();
-while($list_name=mysql_fetch_array($list_sql))
-{
-	//echo"$list_name['$listname]<br>";
-	$list[$i]=$list_name;
-	
-	$i++;
-}
-
-$list_count=mysql_num_rows($list_sql);
-$smarty->assign('list',$list);
-$smarty->assign('list_count',$list_count);
-
-
-
 $smarty->assign('view',$_SESSION['state'][$page]['view']);
 
 
@@ -111,8 +111,8 @@ $smarty->assign('filter_name0',$filter_menu[$tipo_filter]['label']);
 $paginator_menu=array(10,25,50,100,500);
 $smarty->assign('paginator_menu0',$paginator_menu);
 
-$smarty->display('marketing_list.tpl');
 
+$smarty->display('marketing_campaign_builder_setup.tpl');
 
 
 

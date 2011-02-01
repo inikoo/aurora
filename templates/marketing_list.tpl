@@ -182,7 +182,7 @@
 		<select onClick="show('remind_msg')">
   		<option value="choose">Choose a list</option>
 		{foreach from=$list item=list_item}
-  		<option value="{$list_item[0]}">{$list_item[0]}</option>
+  		<option value="{$list_item[1]}">{$list_item[1]}</option>
 		{/foreach}
  		
 		</select> <br><br>
@@ -193,7 +193,7 @@
 
 
 		<div id="info_div" class="sub_head">Is this the correct contact info for this list? why is this necessary?</div>
-		<div id="contact_div" style="border:1px solid #AAAAAA; padding:10px; -moz-border-radius: 5px 5px 5px 5px; padding-right:5px; padding-left:5px; ">This address<br> will come form database<br>
+		<div id="contact_div" style="border:1px solid #AAAAAA; padding:10px; -moz-border-radius: 5px 5px 5px 5px; padding-right:5px; padding-left:5px; ">This is the address<br> of the logged-in person <br>which will come form database<br>
 			<div class="bt" id="edit_div"><input type="button" value="Edit" name="edit" id="edit" onClick="edit_contact();"/></div>
 				
 		</div>
@@ -219,7 +219,7 @@
 
 		<br><br>
 
-		<div id="email_me_div" class="sub_head">Email me at ******@****.com <a onClick="edit_email();" style="text-decoration:underline" >edit</a> when ...</div>
+		<div id="email_me_div" class="sub_head">Email me at ******@****.com <a onClick="edit_email();" style="text-decoration:underline; cursor:pointer;" >edit</a> when ...</div>
 		<div id="edit_email_div" class="sub_head">Email me at <input type="text" id="edit_email" name="edit_email"style="-moz-border-radius: 5px 5px 5px 5px;">  when ...</div>
 		<br>
 		<hr>
@@ -249,12 +249,12 @@
 	<div id="list_details_div" class="main_div" style="display:none;">
 		{foreach from=$list item=list_item}
 		<div class="list-panel">
-			<h4 class="list-name">{$list_item[0]}</h4><br>
+			<h4 class="list-name">{$list_item[1]}</h4><br>
 			<ul>
-				<li style=" float: left; padding-left:50px;"><a>Import</a></li>
-				<li style="float: left; padding-left:50px;"><a href="add_people.php">Add People</a></li>
-				<li style="float: left; padding-left:50px;"><a>Remove People</a></li>
-				<li style="float: left; padding-left:50px;"><a>Send to a list</a></li>
+				<li style=" float: left; padding-left:50px;"><a href="import_list.php?{$list_item[0]}">Import</a></li>
+				<li style="float: left; padding-left:50px;"><a href="add_people.php?{$list_item[0]}">Add People</a></li>
+				<li style="float: left; padding-left:50px;"><a href="unsubscribe.php?{$list_item[0]}">Remove People</a></li>
+				<li style="float: left; padding-left:50px;"><a href="send_to_list.php?{$list_item[0]}">Send to a list</a></li>
 			</ul><br><br>
 			<ul>
 				<li style=" float: left; padding-left:50px;"><a>Settings</a></li>

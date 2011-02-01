@@ -37,7 +37,7 @@ $css_files=array(
 		 'common.css',
 		 'button.css',
 		 'container.css',
-		 'css/marketing_campaign.css',
+		 'css/marketing_campaigns.css',
 	         'table.css',
 		 'css/marketing_menu.css'
 		 );

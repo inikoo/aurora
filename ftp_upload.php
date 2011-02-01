@@ -51,10 +51,13 @@ $ftp_user_pass=$_POST['password'];
 $source_file=$_FILES['file']['name'];// retrieve name of the file to be uploaded
 $destination_file=$source_file;
 // make a connection to the ftp server 
-$conn_id = ftp_connect($ftp_server);
+
+$ftp_port = '22'; 
+$conn_id = ftp_connect($ftp_server,$ftp_port) or die ("Can't connect to FTP Server");   
+//$conn_id = ftp_connect($ftp_server);
 
 // login with username and password 
-$login_result = ftp_login($conn_id , $ftp_user_name , $ftp_user_pass);
+$login_result = ftp_login($conn_id , $ftp_user_name , $ftp_user_pass)or die ("Can't login to FTP Server"); 
 
 // check connection 
 if((!$conn_id)||(!$login_result)){ 
@@ -69,7 +72,6 @@ $confirm1="Connection to $ftp_server, for user $ftp_user_name is established";
 if(isset($_POST['Submit']))
 { 
 $target_path = "app_files/uploads/";
-
 $target_path = $target_path . basename( $_FILES['file']['name']); 
 $name=basename( $_FILES['file']['name']); 
 if(move_uploaded_file($_FILES['file']['tmp_name'], $target_path)) {
