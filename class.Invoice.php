@@ -168,7 +168,8 @@ if(!isset($invoice_data['Invoice Date'])   ){
 protected function create($invoice_data) {
     $this->data=$this->base_data();
     $this->set_data_from_customer($invoice_data['Invoice Customer Key'],$invoice_data['Invoice Store Key']);
-    foreach($invoice_data as $key=>$value) {
+   
+ foreach($invoice_data as $key=>$value) {
         if (array_key_exists($key,$this->data)) {
             $this->data[$key]=_trim($value);
         }
@@ -1400,11 +1401,20 @@ function add_refund_no_product_transaction($refund_transaction_data) {
             $this->data['Invoice Customer Name']=$customer->get('Customer Name');
             $this->data['Invoice Customer Contact Name']=$customer->get('Customer Main Contact Name');
             
+
+
             $billing_address=new Address($customer->get_principal_billing_address_key());
-            
+	    if($billing_address->id){            
             $this->data['Invoice XHTML Address']=$billing_address->display('xhtml');
             $this->data['Invoice Billing Country 2 Alpha Code']=$billing_address->get('Address Country 2 Alpha Code');
-           
+           }else{
+ $this->data['Invoice XHTML Address']='???';
+            $this->data['Invoice Billing Country 2 Alpha Code']='XX';
+
+
+}
+
+
             $this->data['Invoice For Partner']=$customer->get('Customer Is Partner');
              $this->data['Invoice For']='Customer';
              if($customer->get('Customer Is Partner')=='Yes')
