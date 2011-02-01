@@ -149,59 +149,150 @@ function getOrdinal($number){
  return $number.$ext;
 }
 
-
-function prepare_mysql_datetime($datetime,$tipo='datetime'){
-
+function prepare_mysql_dates($date1='',$date2='',$date_field='date',$options=''){
  
-  if($datetime=='')
-    return array('mysql_date'=>'','status'=>'empty','ok'=>false);
-  $time='';
+ $start='';
+  $end='';
+  if(preg_match('/start.*end/i',$options)){
+    $start=' start';
+    $end=' end';
 
-  if(preg_match('/datetime/',$tipo)){
-     if(preg_match('/^[12]\d{3}[\-\/][01]\d[\-\/][0123]\d\s[012]\d:[0123456]\d$/',$datetime))
-       $datetime=$datetime.':00';
-    if(!preg_match('/^[12]\d{3}[\-\/][01]\d[\-\/][0123]\d\s[012]\d:[0123456]\d:[0123456]\d$/',$datetime))
-      return array('mysql_date'=>'','status'=>_('error, date time not reconozied')." $datetime",'ok'=>false);
-    $ts=date('U',strtotime($datetime));
-    list($date,$time)=preg_split('/\s+/',$datetime);
-  }else{
- if(!preg_match('/[0123]\d[\-\/][01]\d[\-\/][12]\d{3}/',$datetime)){
- $tmp=preg_split('/\-|\//',$datetime);
- 
- }
-
-    if(!preg_match('/^[12]\d{3}[\-\/][01]\d[\-\/][0123]\d/',$datetime))
-      return array('mysql_date'=>'','status'=>'wrong date','ok'=>false);
-    $date=$datetime;
-    $ts=date('U',strtotime($date));
   }
+  if(preg_match('/dates?_only|dates? only|only dates|date|only_dates?/i',$options)){
+    $d_option='date';
+
+    
+
+    $date_only=true;
+  }else{
+    $d_option='';
+    $date_only=false;
+  }
+  $tmp=prepare_mysql_datetime($date1,$d_option.$start);
+  $mysql_date1=$tmp['mysql_date'];
+  $ok1=$tmp['ok'];
+  if($tmp['status']=='empty')
+    $ok1=true;
+
+  $tmp=prepare_mysql_datetime($date2,$d_option.$end);
+  
+ 
+  
+  $mysql_date2=$tmp['mysql_date'];
+
+  $ok2=$tmp['ok'];
+  if($tmp['status']=='empty')
+    $ok2=true;
+
+  if(!$ok1 or !$ok2)
+    $error=1;
+  else
+    $error=0;
+
+   
+  if(preg_match('/complete months/i',$options)){
+    list($_date1['y'],$_date1['m'],$_date1['d'])=preg_split('/-/',$mysql_date1);
+    list($_date2['y'],$_date2['m'],$_date2['d'])=preg_split('/-/',$mysql_date2);
+    if($_date1['d']>1)
+      list($_date1['y'],$_date1['m'],$_date1['d'])=preg_split('/-/',date("Y-m-d", mktime(0, 0, 0, $_date1['m']+1, 1, $_date1['y'])));
+    $last_day= getLastDayOfMonth($_date2['m'], $_date2['y']);
+    if($_date2['d']!= $last_day  )
+      list($_date2['y'],$_date2['m'],$_date2['d'])=preg_split('/-/',date("Y-m-d", mktime(0, 0, 0, $_date2['m']-1,$last_day-1 , $_date2['y'])));
+    
+    $mysql_date1=$_date1['y'].'-'.$_date1['m'].'-'.$_date1['d'];
+    $mysql_date2=$_date2['y'].'-'.$_date2['m'].'-'.$_date2['d'];
+
+  }
+
+
+
+
+
+  $date_field=addslashes($date_field);
+  
+  if($mysql_date2=='' and $mysql_date1=='' )
+    $mysql_interval="";
+  else if($mysql_date2!='' and $mysql_date1!=''){
+    $mysql_interval=" and $date_field>='$mysql_date1' and $date_field<='$mysql_date2'";
+    
+  }else if($mysql_date2!='')
+    $mysql_interval=" and $date_field<='$mysql_date2'";
+  else
+    $mysql_interval=" and $date_field>='$mysql_date1' ";
+  
+  return array('0'=>$mysql_interval,'1'=>$date1,'2'=>$date2,'3'=>$error,'error'=>$error,'mysql'=>$mysql_interval,'from'=>$date1,'to'=>$date2);
+
+
+}
+
+
+function prepare_mysql_datetime($datetime,$tipo='datetime') {
+
+
+    if ($datetime=='')
+        return array('mysql_date'=>'','status'=>'empty','ok'=>false);
+    $time='';
+
+    if (preg_match('/datetime/',$tipo)) {
+        if (preg_match('/^[12]\d{3}[\-\/][01]\d[\-\/][0123]\d\s[012]\d:[0123456]\d$/',$datetime))
+            $datetime=$datetime.':00';
+        if (!preg_match('/^[12]\d{3}[\-\/][01]\d[\-\/][0123]\d\s[012]\d:[0123456]\d:[0123456]\d$/',$datetime))
+            return array('mysql_date'=>'','status'=>_('error, date time not reconozied')." $datetime",'ok'=>false);
+        $ts=date('U',strtotime($datetime));
+        list($date,$time)=preg_split('/\s+/',$datetime);
+    } else {
+   
+    
+        if (preg_match('/[0123]\d[\-\/][01]\d[\-\/][12]\d{3}/',$datetime)) {
+            $tmp=preg_split('/\-|\//',$datetime);
+            if(count($tmp)==3){
+$datetime=$tmp[2].'-'.$tmp[1].'-'.$tmp[0];
+}
+        }
+
+        if (!preg_match('/^[12]\d{3}[\-\/][01]\d[\-\/][0123]\d/',$datetime))
+            return array('mysql_date'=>'','status'=>'wrong date','ok'=>false);
+        $date=$datetime;
+        $ts=date('U',strtotime($date));
+    }
 
 
 //BfcGlE80Qt;D
-  
-  $date=str_replace('/','-',$date);
-  $date=preg_split('/-/',$date);
+
+    $date=str_replace('/','-',$date);
+    $date=preg_split('/-/',$date);
 
 
- if(preg_match('/datetime/',$tipo)){
-   
-   $mysql_datetime= trim(join ('-',$date).' '.$time);
- }else{
-   
+    if (preg_match('/datetime/',$tipo)) {
 
-   $mysql_datetime= join ('-',$date);
-    if(preg_match('/start/i',$tipo))
-      $mysql_datetime.=' 00:00:00';
-     if(preg_match('/midday/i',$tipo))
-      $mysql_datetime.=' 12:00:00';
-    elseif(preg_match('/end/i',$tipo))
-      $mysql_datetime.=' 23:59:59';
-    
-  }
-  return array('ts'=>$ts,'mysql_date'=>$mysql_datetime,'status'=>'ok','ok'=>true);
+        $mysql_datetime= trim(join ('-',$date).' '.$time);
+    } else {
+
+
+        $mysql_datetime= join ('-',$date);
+        if (preg_match('/start/i',$tipo))
+            $mysql_datetime.=' 00:00:00';
+        if (preg_match('/midday/i',$tipo))
+            $mysql_datetime.=' 12:00:00';
+        elseif(preg_match('/end/i',$tipo))
+        $mysql_datetime.=' 23:59:59';
+
+    }
+    return array('ts'=>$ts,'mysql_date'=>$mysql_datetime,'status'=>'ok','ok'=>true);
 
 }
- 
+
+function prepare_mysql_date($string,$default='NOW()'){
+  if($string=='')
+    return $default;
+  else{
+     $string=str_replace("'",'',$string);
+    return "'".addslashes($string)."'";
+  }
+} 
+
+
+
 
 function getLastDayOfMonth($month, $year)
 {
@@ -267,75 +358,7 @@ function date_base($from,$to,$step='m',$tipo='complete_both'){
   return $base;
 }
 
-function prepare_mysql_dates($date1='',$date2='',$date_field='date',$options=''){
-  $start='';
-  $end='';
-  if(preg_match('/start.*end/i',$options)){
-    $start=' start';
-    $end=' end';
 
-  }
-  if(preg_match('/dates?_only|dates? only|only dates?/i',$options)){
-    $d_option='date';
-
-    
-
-    $date_only=true;
-  }else{
-    $d_option='';
-    $date_only=false;
-  }
-  $tmp=prepare_mysql_datetime($date1,$d_option.$start);
-  $mysql_date1=$tmp['mysql_date'];
-  $ok1=$tmp['ok'];
-  if($tmp['status']=='empty')
-    $ok1=true;
-
-  $tmp=prepare_mysql_datetime($date2,$d_option.$end);
-  $mysql_date2=$tmp['mysql_date'];
-  $ok2=$tmp['ok'];
-  if($tmp['status']=='empty')
-    $ok2=true;
-  if(!$ok1 or !$ok2)
-    $error=1;
-  else
-    $error=0;
-
-  
-  if(preg_match('/complete months/i',$options)){
-    list($_date1['y'],$_date1['m'],$_date1['d'])=preg_split('/-/',$mysql_date1);
-    list($_date2['y'],$_date2['m'],$_date2['d'])=preg_split('/-/',$mysql_date2);
-    if($_date1['d']>1)
-      list($_date1['y'],$_date1['m'],$_date1['d'])=preg_split('/-/',date("Y-m-d", mktime(0, 0, 0, $_date1['m']+1, 1, $_date1['y'])));
-    $last_day= getLastDayOfMonth($_date2['m'], $_date2['y']);
-    if($_date2['d']!= $last_day  )
-      list($_date2['y'],$_date2['m'],$_date2['d'])=preg_split('/-/',date("Y-m-d", mktime(0, 0, 0, $_date2['m']-1,$last_day-1 , $_date2['y'])));
-    
-    $mysql_date1=$_date1['y'].'-'.$_date1['m'].'-'.$_date1['d'];
-    $mysql_date2=$_date2['y'].'-'.$_date2['m'].'-'.$_date2['d'];
-
-  }
-
-
-
-
-
-  $date_field=addslashes($date_field);
-  
-  if($mysql_date2=='' and $mysql_date1=='' )
-    $mysql_interval="";
-  else if($mysql_date2!='' and $mysql_date1!=''){
-    $mysql_interval=" and $date_field>='$mysql_date1' and $date_field<='$mysql_date2'";
-    
-  }else if($mysql_date2!='')
-    $mysql_interval=" and $date_field<='$mysql_date2'";
-  else
-    $mysql_interval=" and $date_field>='$mysql_date1' ";
-  
-  return array('0'=>$mysql_interval,'1'=>$date1,'2'=>$date2,'3'=>$error,'error'=>$error,'mysql'=>$mysql_interval,'from'=>$date1,'to'=>$date2);
-
-
-}
 
 
 
@@ -1133,14 +1156,7 @@ function prepare_mysql($string,$null_if_empty=true){
 }
 
 
-function prepare_mysql_date($string,$default='NOW()'){
-  if($string=='')
-    return $default;
-  else{
-     $string=str_replace("'",'',$string);
-    return "'".addslashes($string)."'";
-  }
-}
+
 
 
 function is_url($url){
