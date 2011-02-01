@@ -215,14 +215,14 @@ class DeliveryNote extends DB_Table {
                 $ship_to=new Ship_To($order->data ['Order Ship To Key To Deliver']);
                 $this->data ['Delivery Note Ship To Key'] =$ship_to->id;
                 $this->data ['Delivery Note XHTML Ship To'] =$ship_to->data['Ship To XHTML Address'];
-                $this->data ['Delivery Note Country 2 Alpha Code'] = $ship_to->data['Ship To Country 2 Alpha Code'];
+                $this->data ['Delivery Note Country 2 Alpha Code'] = ($ship_to->data['Ship To Country 2 Alpha Code']==''?'XX':$ship_to->data['Ship To Country 2 Alpha Code']);
 
 
             } else {
                 $ship_to=$customer->get_ship_to($this->data ['Delivery Note Date Created']);
                 $this->data ['Delivery Note Ship To Key'] =$ship_to->id;
                 $this->data ['Delivery Note XHTML Ship To'] =$ship_to->data['Ship To XHTML Address'];
-                $this->data ['Delivery Note Country 2 Alpha Code'] = $ship_to->data['Ship To Country 2 Alpha Code'];
+                $this->data ['Delivery Note Country 2 Alpha Code'] = ($ship_to->data['Ship To Country 2 Alpha Code']==''?'XX':$ship_to->data['Ship To Country 2 Alpha Code']);
 
             }
 
