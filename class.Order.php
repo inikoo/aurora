@@ -516,6 +516,7 @@ if(isset($data ['Order Public ID'])){
         $this->next_public_id();
 }
 
+	
 
         $this->create_order_header ();
         foreach ( $this->data ['Order Sale Reps IDs'] as $sale_rep_id ) {
@@ -2641,21 +2642,21 @@ if(!$store_key){
  $ship_to=$customer->get_ship_to($this->data['Order Date']);
  
  
-    
+   
 
 
 
             $this->data ['Order Ship To Key To Deliver']=$ship_to->id;
-            $this->data ['Destination Country 2 Alpha Code']=$ship_to->data['Ship To Country 2 Alpha Code'];
+            $this->data ['Destination Country 2 Alpha Code']=($ship_to->data['Ship To Country 2 Alpha Code']==''?'XX':$ship_to->data['Ship To Country 2 Alpha Code']);
             $this->data ['Order XHTML Ship Tos']=$ship_to->data['Ship To XHTML Address'];
             $this->data ['Order Ship To Keys']=$ship_to->id;
-            $this->data ['Order Ship To Country Code']=$ship_to->data['Ship To Country Code'];
+            $this->data ['Order Ship To Country Code']=($ship_to->data['Ship To Country Code']==''?'UNK':$ship_to->data['Ship To Country Code']);
 
             $this->billing_address=new Address($customer->data['Customer Main Address Key']);
             $this->data ['Order Customer Key'] = $customer->id;
             $this->data ['Order Customer Name'] = $customer->data[ 'Customer Name' ];
             $this->data ['Order Customer Contact Name'] = $customer->data ['Customer Main Contact Name'];
-            $this->data ['Order Main Country 2 Alpha Code'] = $customer->data ['Customer Main Country 2 Alpha Code'];
+            $this->data ['Order Main Country 2 Alpha Code'] = ($customer->data ['Customer Main Country 2 Alpha Code']==''?'UNK':$customer->data ['Customer Main Country 2 Alpha Code']);
 $this->data['Order Customer Order Number']=$customer->get_number_of_orders()+1;
 
 if($customer->data['Customer Tax Category Code']){
