@@ -19,35 +19,35 @@ switch(type)
 {
 case 'users':
 search_scope='users';
-    var store_name_oACDS = new YAHOO.util.FunctionDataSource(search_users);
+    var store_name_oACDS = new YAHOO.util.FunctionDataSource(search_all);
   break;
 case 'orders':
 search_scope='orders';
-    var store_name_oACDS = new YAHOO.util.FunctionDataSource(search_orders);
+    var store_name_oACDS = new YAHOO.util.FunctionDataSource(search_all);
   break;
   case 'orders_store':
 search_scope='orders_store';
-    var store_name_oACDS = new YAHOO.util.FunctionDataSource(search_orders_in_store);
+    var store_name_oACDS = new YAHOO.util.FunctionDataSource(search_all);
   break;
 case 'products':
 search_scope='products';
-    var store_name_oACDS = new YAHOO.util.FunctionDataSource(search_products);
+    var store_name_oACDS = new YAHOO.util.FunctionDataSource(search_all);
   break;
   case'customers':
 search_scope='customers';
-    var store_name_oACDS = new YAHOO.util.FunctionDataSource(search_customers);
+    var store_name_oACDS = new YAHOO.util.FunctionDataSource(search_all);
   break;  
   case 'customers_store':
- var store_name_oACDS = new YAHOO.util.FunctionDataSource(search_customers_in_store);
+ var store_name_oACDS = new YAHOO.util.FunctionDataSource(search_all);
   var search_scope='customers';
   break;
 case 'products_store':
- var store_name_oACDS = new YAHOO.util.FunctionDataSource(search_products_in_store);
+ var store_name_oACDS = new YAHOO.util.FunctionDataSource(search_all);
   var search_scope='products';
   break;
 case 'part':
 search_scope='part';
-    var store_name_oACDS = new YAHOO.util.FunctionDataSource(search_part);
+    var store_name_oACDS = new YAHOO.util.FunctionDataSource(search_all);
   
   break;  
   
@@ -134,6 +134,7 @@ function search_products_in_store(query){
 }
 
 function search_all(query){
+
     search(query,'all','');
 }
 
