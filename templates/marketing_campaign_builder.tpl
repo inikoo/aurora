@@ -13,30 +13,7 @@
     	 });
 
 });
-function addEvent(m)
-{
-alert("fdsdfdfff");
-var m;
-mydiv = 'myDiv'+m;
-alert(mydiv);	
-var ni = document.getElementById(mydiv);
-var numi = document.getElementById('theValue');
-alert(numi);
-var num = (document.getElementById("theValue").value -1)+ 2;
-numi.value = num;
-var divIdName = "Condition"+num;
-var newdiv = document.createElement('div');
-newdiv.setAttribute("id",divIdName);
 
-
-	
-
-	newdiv.innerHTML = "<table border=\"0\"><tr><td>Match <select name=\"match\"><option value=\"any\">Any</option><option value=\"all\">All</option></select> of the following : </td></tr><tr><td><select name=\"match\"><option value=\"email_address\">Email Address</option><option value=\"first_name\">First Name</option><option value=\"last_name\">Last Name</option></select><select name=\"word\"><option value=\"is\">Is</option><option value=\"is_not\">Is not</option><option value=\"contains\">Contains</option><option value=\"does_not_contain\">Does not contain</option><option value=\"start_with\">Start With</option><option value=\"ends_with\">Ends With</option><option value=\"is_greater_than\">Is greater than</option><option value=\"is_less_than\">Is less than</option></select><input type=\"textbox\" name=\"box\" ></td></tr></table><a href=\"javascript:;\" onclick=\"removeEvent(\'"+divIdName+"\',\'"+m+"\')\" ><span style=\"font-size:10px; color:#CC66OD;\">Remove Condition</span></a>";
-ni.appendChild(newdiv);
-	
-
-
-}
 </script>
 
 {/literal}
@@ -54,7 +31,7 @@ ni.appendChild(newdiv);
 </div>
 <br><br><hr style="color:#DDDDDD">
 
-<div><span style="font-size:18px;padding:5px;">Untitled</span> <a style="float:right;" href=""><img src="art/next-bottom.gif"</a> </div>
+<div><span style="font-size:18px;padding:5px;">Untitled</span> <a style="float:right;" href="marketing_campaign_builder_setup.php"><img src="art/next-bottom.gif"</a> </div>
 
 <fieldset class="field_set"> <legend class="legend_part">which list would you like to send this campaign to?</legend>
 
@@ -90,7 +67,7 @@ ni.appendChild(newdiv);
 
 </fieldset>
 <a class="button_campaignListCreate" href="">setup a new list</a>	
-<div> <a style="float:right;" href=""><img src="art/next-bottom.gif"</a> </div>
+<div> <a style="float:right;" href="marketing_campaign_builder_setup.php"><img src="art/next-bottom.gif"</a> </div>
 		</div>
 	</div>
 
