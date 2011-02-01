@@ -20,11 +20,11 @@
 </head>
 
 <body>
-<form action="ftp_upload.php" method="post" enctype="multipart/form-data" name="form1" >
+<form action="ftp_transfer.php" method="post" enctype="multipart/form-data" name="form1" >
 <table width="100%" border="0" cellspacing="0" cellpadding="0">
 <tr>
 <td width="14%">server name </td>
-<td width="75%"><input name="server" type="text" id="server"> <font size="1px">Write in the format "ftp.servername.com" </font></td>
+<td width="75%"><input name="server" type="text" id="server"> </td>
 <td width="11%">&nbsp;</td>
 </tr>
 <tr>
@@ -52,7 +52,7 @@
 </body>
 </html>
 </div>
-<div class="data_table" style="clear:both" align="center"><h3>{$confirm1}<br><br>{$confirm2}</h3></div>
+<div class="data_table" style="clear:both" align="center"><h3>{$confirm2}</h3></div>
 </div>
 
   
@@ -73,11 +73,11 @@
 </head>
 
 <body>
-<form action="ftp_upload.php" method="post" enctype="multipart/form-data" name="form1" >
+<form action="ftp_transfer.php" method="post" enctype="multipart/form-data" name="form1" >
 <table width="100%" border="0" cellspacing="0" cellpadding="0">
 <tr>
 <td width="14%">server name </td>
-<td width="75%"><input name="server" type="text" id="server"> <font size="1px">Write in the format "ftp.servername.com" </font></td>
+<td width="75%"><input name="server" type="text" id="server"> </td>
 <td width="11%">&nbsp;</td>
 </tr>
 <tr>
@@ -105,7 +105,7 @@
 </body>
 </html> 
 </div>
-<div class="data_table" style="clear:both" align="center"><h3>{$confirm3}<br><br>{$confirm4}</h3></div>
+<div class="data_table" style="clear:both" align="center"><h3>{$confirm4}</h3></div>
 </div>
 </div> 
 {include file='footer.tpl'}
