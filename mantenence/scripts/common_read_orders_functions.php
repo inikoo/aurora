@@ -373,8 +373,9 @@ function adjust_invoice($invoice,$continue=true) {
     if ($total_diff==0 and !$continue)
         return true;
 
-//printf("Diff Net %s Tax %s Total %s \n",$diff_net,$diff_tax,$total_diff);
-//exit;
+    // printf("\nDiff Net %s Tax %s Total %s \n",$diff_net,$diff_tax,$total_diff);
+    
+    
     if ($diff_net==0 and  $diff_tax==0 and $total_diff==0) {
         return;
     }
@@ -390,7 +391,7 @@ function adjust_invoice($invoice,$continue=true) {
 
     }
 
-//print_r($adjust_transactions);
+    //   print_r($adjust_transactions);
 
 
 
@@ -413,7 +414,7 @@ function adjust_invoice($invoice,$continue=true) {
                     );
 
         mysql_query($sql);
-        //  print "$continue $sql\n";
+        // print "$continue $sql\n";
     }
     $invoice->update_totals();
 
@@ -425,6 +426,14 @@ function adjust_invoice($invoice,$continue=true) {
     if (!$continue and $total_diff==0) {
         return true;
     }
+    //print_r($invoice->data);
+    // printf("\n***$tax  ".$invoice->data['Invoice Total Items']."   ".$invoice->data['Invoice Total Tax Amount']."\n
+
+//\nInvoice Totals: %f + %f =%f\n",$invoice->data['Invoice Total Net Amount'],$invoice->data['Invoice Total Tax Amount'],$invoice->data['Invoice Total Amount']);
+
+// printf("\nDiff Net %s Tax %s Total %s \n",$diff_net,$diff_tax,$total_diff);
+//  exit;
+
 
 
     if ($diff_net!=0 or  $diff_tax!=0 or $total_diff!=0 and $continue) {

@@ -102,8 +102,15 @@ $sql="select *,replace(   replace(replace(replace(replace(replace(replace(replac
 //and ( filename like '%/b/%.xls' or filename like '%/a/%.xls' or  filename like '%/c/%.xls' )
 //$sql="select * from  orders_data.orders  where    (last_transcribed is NULL  or last_read>last_transcribed) and deleted='No'  order by filename ";
 //$sql="select * from  orders_data.orders where filename like '%/b/%.xls' or like '%/a/%.xls' or  like '%/c/%.xls' order by filename";
+<<<<<<< HEAD:mantenence/scripts/get_orders_db.php
+//$sql="select * from  orders_data.orders where filename like '%/6990.xls'   order by filename";
+=======
+>>>>>>> 6285a411d866d409b6a1fe967372b5f5bf3894cf:mantenence/scripts/get_orders_db.php
 //$sql="select * from  orders_data.orders where filename like '%/102081.xls'   order by filename";
+<<<<<<< HEAD:mantenence/scripts/get_orders_db.php
+=======
 //$sql="select * from  orders_data.orders where filename like '%/69003.xls'   order by filename";
+>>>>>>> 6285a411d866d409b6a1fe967372b5f5bf3894cf:mantenence/scripts/get_orders_db.php
 
 //$sql="select * from  orders_data.orders where filename like '%/%ref%.xls'   order by filename";
 //$sql="select * from  orders_data.orders  where filename like '/mnt/%/Orders/93284.xls' order by filename";
