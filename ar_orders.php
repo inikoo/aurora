@@ -1982,6 +1982,7 @@ $store=$_SESSION['state']['report']['sales']['store'];
      
      $_SESSION['state']['orders']['view']=$view;
      $date_interval=prepare_mysql_dates($from,$to,'`Invoice Date`','only_dates');
+    
      if($date_interval['error']){
        $date_interval=prepare_mysql_dates($_SESSION['state']['orders']['from'],$_SESSION['state']['orders']['to']);
      }else{
