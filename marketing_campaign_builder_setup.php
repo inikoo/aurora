@@ -112,7 +112,7 @@ $paginator_menu=array(10,25,50,100,500);
 $smarty->assign('paginator_menu0',$paginator_menu);
 
 
-$smarty->display('marketing_campaign_builder.tpl');
+$smarty->display('marketing_campaign_builder_setup.tpl');
 
 
 

@@ -83,7 +83,7 @@ $js_files=array(
 		$yui_path.'datatable/datatable.js',
 		$yui_path.'container/container-min.js',
 		$yui_path.'menu/menu-min.js',
-		'external_libs/ampie/ampie/swfobject.js',
+		//'external_libs/ampie/ampie/swfobject.js',
 		'common.js.php',
 		'table_common.js.php',
 		'js/search.js',
