@@ -308,7 +308,7 @@ abstract class DB_Table {
 
 
 
-
+        if(!isset($data['Date']) or $data['Date']=='')
         $data['Date']=$editor_data['Date'];
 
         if ($data['History Abstract']=='') {

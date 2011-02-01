@@ -12,7 +12,7 @@ switch ($tipo) {
 
 case('store_sales'):
 
-$colors=array('0033CC','0099CC','00CC99','00CC33','CC9900');
+    $colors=array('0033CC','0099CC','00CC99','00CC33','CC9900');
 
     if (!isset($_REQUEST['store_key'])) {
         exit;
@@ -26,7 +26,7 @@ $colors=array('0033CC','0099CC','00CC99','00CC33','CC9900');
         }
     }
 
-    $use_corporate=false;
+    $use_corporate=0;
 
 //print_r($tmp);
 //print_r($user->stores);
@@ -34,9 +34,9 @@ $colors=array('0033CC','0099CC','00CC99','00CC33','CC9900');
 //print_r($stores_keys);
     $staked=false;
     if (isset($_REQUEST['stacked']) and $_REQUEST['stacked'])$staked=true;
-    
-    
-    
+
+
+
     $graphs_data=array();
     $gid=0;
     if ($staked) {
@@ -46,14 +46,14 @@ $colors=array('0033CC','0099CC','00CC99','00CC33','CC9900');
         while ($row=mysql_fetch_assoc($res)) {
             $graphs_data[]=array(
                                'gid'=>$gid,
-                               'title'=>$row['Store Name'].' '._('Sales'),
+                               'title'=>$row['Store Code'],
                                'currency_code'=>$corporate_currency,
                                'color'=>$colors[$gid]
                            );
             $gid++;
         }
         $data_args='tipo=stacked_store_sales&store_key='.join(',',$stores_keys);
-$template='plot_stacked_asset_sales.xml.tpl';
+        $template='plot_stacked_asset_sales.xml.tpl';
 
     } else {// no stakecked
 
@@ -73,7 +73,7 @@ $template='plot_stacked_asset_sales.xml.tpl';
 
 
         if (count($currencies)>1)
-            $use_corporate=true;
+            $use_corporate=1;
 
 
 
@@ -83,8 +83,9 @@ $template='plot_stacked_asset_sales.xml.tpl';
                            'title'=>$title.' '._('Sales'),
                            'currency_code'=>($use_corporate?$corporate_currency:$currency_code)
                        );
-        $data_args='tipo=store_sales&store_key='.join(',',$stores_keys);
-$template='plot_asset_sales.xml.tpl';
+        $data_args='tipo=store_sales&store_key='.join(',',$stores_keys).'&use_corporate='.$use_corporate;
+        
+        $template='plot_asset_sales.xml.tpl';
 
     }
 
@@ -94,12 +95,12 @@ $template='plot_asset_sales.xml.tpl';
     if (isset($_REQUEST['from'])) {
         $smarty->assign('from',$_REQUEST['from']);
 
-        //$data_args.=sprintf("&from=%s",$_REQUEST['from']);
+        $data_args.=sprintf("&from=%s",$_REQUEST['from']);
     }
     if (isset($_REQUEST['to'])) {
         $smarty->assign('to',$_REQUEST['to']);
 
-        //$data_args.=sprintf("&to=%s",$_REQUEST['to']);
+        $data_args.=sprintf("&to=%s",$_REQUEST['to']);
     }
 
     break;

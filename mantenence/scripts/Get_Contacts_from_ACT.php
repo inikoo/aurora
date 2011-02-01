@@ -182,8 +182,8 @@ if (($handle = fopen($filename, "r")) !== FALSE) {
 
         // if($act_data['tax_number']!='')
         //  print ($act_data['tax_number']."\n");
-             if($row>500)
-          break;
+      //      if($row>500)
+      //    break;
         //      print "$row\r";
 
         // print_r($cols);
@@ -401,7 +401,7 @@ foreach($contacts as $act_data) {
     //    continue;
 //print_r($customer_data);
 
-    $customer = new Customer ( 'find create',  $customer_data);
+    $customer = new Customer ( 'find create fast',  $customer_data);
 //exit;
 //print_r($customer);
 
@@ -534,7 +534,9 @@ function get_history_data($raw_history) {
 
     }
 
-//   print_r($history);
+ //  print_r($history);
+ // if(count($history)>2)
+ // exit("**\n");
     return $history;
 
 }

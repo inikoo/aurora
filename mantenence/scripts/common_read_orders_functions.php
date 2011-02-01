@@ -651,9 +651,12 @@ function send_order($data,$data_dn_transactions) {
 
     $dn->set_parcels($parcels,$parcel_type);
     $dn->ready_to_ship();
+
     if (!($tipo_order==6 or $tipo_order==7)) {
         if ($order->data['Order Type']=='Order' or ((  ($order->data['Order Type']=='Sample'  or $order->data['Order Type']=='Donation') and $order->data['Order Total Amount']!=0 ))) {
+
             $invoice=$dn->create_invoice($date_inv);
+
             // print_r($invoice);
              //exit("----\n");
             foreach($credits as $credit) {

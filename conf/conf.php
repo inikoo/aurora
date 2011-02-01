@@ -750,18 +750,8 @@ $default_state=array(
                                       'view'=>'invoices',
                                       'sf'=>0,
                                       'nr'=>25,
-                                      'plot'=>'per_store',
-                                      'plot_data'=>array('per_store'=>array(
-                                                                         'category'=>'sales',
-                                                                         'page'=>'plot.php',
-                                                                         'period'=>'m'
-
-                                                                     )
-                                                                     ,'per_category'=>array(
-                                                                                         'category'=>'sales',
-                                                                                         'page'=>'plot.php',
-                                                                                         'period'=>'m'
-                                                                                     )
+                                      'plot'=>'plot_all_stores',
+                                      'plot_data'=>array(
                                                         ),
                                   ),
 

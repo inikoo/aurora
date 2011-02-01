@@ -1240,7 +1240,7 @@ switch($find_type){
             return $this->data[$_key];
         print_r($this->data);
         print "Error $key not found in get from address\n";
-        asds();
+        asdsaaaa();
         exit;
         return false;
 

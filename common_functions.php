@@ -346,6 +346,11 @@ function getmicrotime(){
 
 
 
+function delta($current_value,$old_value){
+
+return percentage($current_value-$old_value,$old_value,1,'NA','%',true);
+}
+
 function percentage($a,$b,$fixed=1,$error_txt='NA',$psign='%',$plus_sing=false){
 
   $locale_info = localeconv();
