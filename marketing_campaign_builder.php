@@ -51,6 +51,8 @@ $js_files=array(
 		$yui_path.'container/container-min.js',
 		$yui_path.'menu/menu-min.js',
 		$yui_path.'calendar/calendar-min.js',
+		'js/jquery-1.4.4.js',
+		'js/plain_campaign_builder.js',
 		'common.js.php',
 		'table_common.js.php',
 		'js/search.js',
