@@ -247,6 +247,8 @@ line-height: 0.3em;
 .segment{
   float:right;
   padding-right:15px;
+  cursor:pointer;
+  text-decoration:underline;
 }
 .send_entire_list{
  float:right;
