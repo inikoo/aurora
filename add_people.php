@@ -72,7 +72,7 @@ if (isset($_REQUEST['view'])) {
 
 }
 
-$list_sql=mysql_query("SELECT `Campaign Key`, `Campaign Name` FROM `Campaign Dimension`");
+$list_sql=mysql_query("SELECT `Campaign Name` FROM `Campaign Dimension`");
 $i=0;
 $list=array();
 while($list_name=mysql_fetch_array($list_sql))
@@ -83,11 +83,7 @@ while($list_name=mysql_fetch_array($list_sql))
 	$i++;
 }
 
-$list_count=mysql_num_rows($list_sql);
 $smarty->assign('list',$list);
-$smarty->assign('list_count',$list_count);
-
-
 
 $smarty->assign('view',$_SESSION['state'][$page]['view']);
 
@@ -111,7 +107,7 @@ $smarty->assign('filter_name0',$filter_menu[$tipo_filter]['label']);
 $paginator_menu=array(10,25,50,100,500);
 $smarty->assign('paginator_menu0',$paginator_menu);
 
-$smarty->display('marketing_list.tpl');
+$smarty->display('add_people.tpl');
 
 
 

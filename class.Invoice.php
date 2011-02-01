@@ -168,7 +168,8 @@ if(!isset($invoice_data['Invoice Date'])   ){
 protected function create($invoice_data) {
     $this->data=$this->base_data();
     $this->set_data_from_customer($invoice_data['Invoice Customer Key'],$invoice_data['Invoice Store Key']);
-    foreach($invoice_data as $key=>$value) {
+   
+ foreach($invoice_data as $key=>$value) {
         if (array_key_exists($key,$this->data)) {
             $this->data[$key]=_trim($value);
         }
@@ -439,7 +440,7 @@ $this->data['Invoice Refund Tax Amount']=$items_refund_tax;
     $this->data['Invoice Items Gross Amount']=$items_gross;
     $this->data['Invoice Items Discount Amount']=$items_discounts;
     $this->data['Invoice Total Net Amount']=$this->data['Invoice Refund Net Amount']+$this->data['Invoice Total Net Adjust Amount']+$this->data['Invoice Shipping Net Amount']+$this->data['Invoice Items Net Amount']+$this->data['Invoice Charges Net Amount'];
-    $this->data['Invoice Total Tax Amount']=round($this->data['Invoice Refund Tax Amount']+$this->data['Invoice Total Tax Adjust Amount']+$this->data['Invoice Shipping Tax Amount']+$this->data['Invoice Items Tax Amount']+$this->data['Invoice Charges Tax Amount'],2);
+    $this->data['Invoice Total Tax Amount']=round($this->data['Invoice Refund Tax Amount']+$this->data['Invoice Shipping Tax Amount']+$this->data['Invoice Items Tax Amount']+$this->data['Invoice Charges Tax Amount'],2)+$this->data['Invoice Total Tax Adjust Amount'];
    
   // print $this->data['Invoice Shipping Net Amount']."zz\n";
    $this->data['Invoice Outstanding Net Balance']=$items_net_outstanding_balance+$items_refund_net_outstanding_balance;
@@ -1381,11 +1382,20 @@ function add_refund_no_product_transaction($refund_transaction_data) {
             $this->data['Invoice Customer Name']=$customer->get('Customer Name');
             $this->data['Invoice Customer Contact Name']=$customer->get('Customer Main Contact Name');
             
+
+
             $billing_address=new Address($customer->get_principal_billing_address_key());
-            
+	    if($billing_address->id){            
             $this->data['Invoice XHTML Address']=$billing_address->display('xhtml');
             $this->data['Invoice Billing Country 2 Alpha Code']=$billing_address->get('Address Country 2 Alpha Code');
-           
+           }else{
+ $this->data['Invoice XHTML Address']='???';
+            $this->data['Invoice Billing Country 2 Alpha Code']='XX';
+
+
+}
+
+
             $this->data['Invoice For Partner']=$customer->get('Customer Is Partner');
              $this->data['Invoice For']='Customer';
              if($customer->get('Customer Is Partner')=='Yes')

@@ -1,5 +1,4 @@
 {include file='header.tpl'}
-
 <div id="bd"  style="padding:0px">
 <div style="padding:0 0px">
 
@@ -18,11 +17,15 @@
  </table>
 
 </div> 	
-<div style="padding:10px 0px 0px 0px;"><span style="padding-left:300px;"><select name="folder"><option value="">New Folder</option></select> &nbsp;<input type="submit" name="move" value="Move"> &nbsp; <input type="submit" name="delete" value="Delete"></span>
-<table height="520" border="1">
+<div style="padding:10px 0px 0px 0px;"><span style="padding-left:750px;"><select name="select_folder">
+	{section name="i" loop="$create"}	
+	<option value="folder_{$create[i].$edit_id}">{$create[i].$folder_name}</option>
+	{/section}
+	</select> &nbsp;<input type="submit" name="move" value="Move"> &nbsp; <input type="submit" name="delete" value="Delete"></span>
+<table height="520" border="0" height="100%">
 <tr>
  <td style="background-color:#d3dbe8">
-<div class="campaign_create"><a id="create_camp" href="">Create Campaign<span class="dwn">▼</span></a><div>
+<div class="campaign_create"><a id="create_camp" href="marketing_create_campaign.php">Create Campaign<span class="dwn">▼</span></a><div>
 
 <a style="margin: 5px 0pt;" title="create an inbox inspection test of your email" class="button p3" href="#">inbox inspection</a>
 
@@ -37,12 +40,22 @@
  <a href ="">unfiled </a><br>
 
 </div>
-<form action="" method="POST"><span style="padding-left:60px;"><input type="button" name="newFolder" id="newFolder" value="New Folder" onClick="showFolder(this.value)"></span></form>
-<div id="folder"></div>
+<br>
+<form action="" method="POST"><span style="padding-left:20px;"><img src="art/icons/folder_add.png" / ><a href="#" name="newFolder" id="newFolder" onClick="showFolder()" style="text-decoration:none;">&nbsp; Create Folder</a></span>
+<div id="folder">
+	{section name="i" loop="$create"}
+	  <span style="padding-left:20px;" id="folder_{$create[i].$edit_id}">
+	  <img src="art/icons/folder_add.png" / > {$create[i].$folder_name}
+	  </span>&nbsp;&nbsp;
+<img src="art/icons/edit.ico" height="9"  class="click" id="edit_{$create[i].$edit_id}" onClick="edit('edit_{$create[i].$edit_id}','folder_{$create[i].$edit_id}','{$create[i].$folder_name}')" />
+<img src="art/icons/delete.ico" id="del_{$create[i].$edit_id}" onClick="del('del_{$create[i].$edit_id}')" /><br>
+	{/section}
+</div>
+</form>
 </td> 
 <td>
-  <table>
-	  <tr>
+  <table width="730" border="0">
+	  <tr bgcolor="#7080B1">
 	   
 	   <td class="display_campaign1">Serial</td>
 	   <td class="display_campaign2">Type</td>
@@ -52,14 +65,15 @@
 	   <td class="display_campaign6">Content</td>
 		
 	</tr>
-		{section name=data loop=$fields}
+	
+		{section name=value loop=$value}
 		<tr>
-		<td>{$key}</td>
+		<td align="center"><input type="checkbox" name="chkbox" value=""> &nbsp; {$value[value].$key}</td>
 		<td>TYPE</td>
-		<td>{$status}</td>
+		<td align="center">{$value[value].$status}</td>
 		<td>LIST</td>
-		<td>{$email}</td>
-		<td>{$content}</td>
+		<td align="center">{$value[value].$email}</td>
+		<td>{$value[value].$content}</td>
 		</tr>
 		{/section}
      
@@ -78,26 +92,6 @@
 </div>
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    
-
-
-	
 		</div>
 
 	</div>
@@ -107,24 +101,3 @@
 </div>
 
 {include file='footer.tpl'}
-
-<div id="rppmenu0" class="yuimenu" >
-  <div class="bd">
-    <ul class="first-of-type">
-       <li style="text-align:left;margin-left:10px;border-bottom:1px solid #ddd">{t}Rows per Page{/t}:</li>
-      {foreach from=$paginator_menu0 item=menu }
-      <li class="yuimenuitem"><a class="yuimenuitemlabel" onClick="change_rpp_with_totals({$menu},0)"> {$menu}</a></li>
-      {/foreach}
-    </ul>
-  </div>
-</div>
-<div id="filtermenu0" class="yuimenu" >
-  <div class="bd">
-    <ul class="first-of-type">
-      <li style="text-align:left;margin-left:10px;border-bottom:1px solid #ddd">{t}Filter options{/t}:</li>
-      {foreach from=$filter_menu0 item=menu }
-      <li class="yuimenuitem"><a class="yuimenuitemlabel" onClick="change_filter('{$menu.db_key}','{$menu.label}',0)"> {$menu.menu_label}</a></li>
-      {/foreach}
-    </ul>
-  </div>
-</div>

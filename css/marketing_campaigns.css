@@ -1,6 +1,4 @@
 
-
-
 .create-campaign{
    background-image:url('../art/campaign_button.png');
    background-repeat: no-repeat;
@@ -15,6 +13,11 @@
    font-size:19px;
    display: block;
    width:303px;
+  text-decoration:none;
+}
+.create-campaign span:hover{
+  text-decoration:none;
+  color:#DC143C;
 }
 .create-campaign p{
    clear: left;
@@ -22,10 +25,16 @@
     text-align: center;
     padding:10px 0px 20px 20px;
     width: 250px;
+   text-decoration:none;
 }
+.create-campaign p:hover{
+  text-decoration:none;
+}
+
 
 .campaign_outer a div span:hover{
     color:#000000;
+   text-decoration:none;
 }
 .campaign_cancel{
      width:108px;
@@ -238,6 +247,8 @@ line-height: 0.3em;
 .segment{
   float:right;
   padding-right:15px;
+  cursor:pointer;
+  text-decoration:underline;
 }
 .send_entire_list{
  float:right;
@@ -293,3 +304,102 @@ background-color:#c1b798;
 background-color:#999999;
 
 }
+
+
+
+
+
+.hover-list{position:relative;}
+.hover-list>li{position:relative;height:auto;}
+.hover-list a.hover-trigger{display:inline-block;padding:0 15px 5px 0;background:url(/release/5.5.1/images/list-panel-nested.png) no-repeat right 5px;}
+.hover-list ul{display:none;position:absolute;z-index:999;top:100%;left:0;padding:5px;border:1px solid #ccc;background:#fff;width:205px;height:auto;-moz-box-shadow:2px 2px 3px #7e7267;-webkit-box-shadow:0px 0px 4px #ffffff;box-shadow:0px 0px 4px #ffffff;}
+.hover-list ul.right-edge{left:auto;right:0;}
+.hover-list>li:hover ul{display:block;}
+.hover-list>li:hover a.hover-trigger{color:#774d21;background-position:right -15px;}
+.hover-list ul li{display:inline;margin:0;padding:0;float:none;border:none;}
+.hover-list ul li a{display:block;color:#777;padding:6px 15px;text-decoration:none;line-height:14px;}
+.hover-list ul li a:hover{background:#D1EBF1;color:#222;}
+.dwn{font-size:75%;padding-left:.2em;}
+
+                           /*marketing campaign builder setup part */
+
+
+.indicates-required {
+    color: #333333;
+    font-style: italic;
+    margin: -10px 8px 10px 0;
+    text-align: right;
+}
+.asterisk {
+    color: #ED5D3B;
+    font-family: 'Times New Roman',Times,serif;
+    font-size: 120%;
+    font-style: normal;
+    font-weight: bold;
+}
+
+.field-wrapper {
+    -moz-border-radius: 4px 4px 4px 4px;
+    background: none repeat scroll 0 0 #FFFFFF;
+    border: 2px solid #CCCCCC;
+    padding: 0;
+    width: 438px;
+   margin: 0px 0px 10px 0px;
+}
+
+
+.av-text{
+-moz-border-radius: 4px 4px 4px 4px;
+
+}
+ input[type="checkbox"] {
+    background: none repeat scroll 0 0 transparent !important;
+    border: 0 none !important;
+    width: 16px !important;
+    vertical-align:text-top;
+}
+.inline-label {
+    display: inline;
+    line-height: 30px;
+    padding-right: 8px;
+}
+
+.group-label {
+    border-bottom: 1px solid #CCCCCC;
+    clear: both;
+    color: #333333;
+    font-size: 12px;
+    font-weight: bold;
+    margin: 15px 0 2px;
+    padding-bottom: 4px;
+    
+}
+.checkbox-help {
+    margin: 1px 0 0;
+}
+#back-next-bottom {
+    clear: both;
+    
+    text-align: right;
+    width:150px;
+    float:right;
+}
+
+#back-next-bottom input, #back-next-top input {
+    background: none repeat scroll 0 0 transparent;
+    border: 0 none !important;
+    height: 25px;
+    padding: 0;
+    width: 65px;
+}
+.right_field{
+   vertical-align:text-top;
+
+}
+
+
+
+
+
+
+

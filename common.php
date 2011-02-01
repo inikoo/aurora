@@ -166,7 +166,7 @@ $corporate_currency=$row['Corporation Currency'];
 $corporate_symbol=$row['Currency Symbol'];
 }
 
-//print_r($user);
+//print_r($row);
 //exit;
 $nav_menu=array();
 if($user->can_view('users'))
