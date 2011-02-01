@@ -550,6 +550,14 @@ ALTER TABLE `Search Full Text Dimension` CHANGE `Subject` `Subject` ENUM( 'Famil
 ALTER TABLE `Inventory Spanshot Fact` ADD `Quantity Open` FLOAT NULL DEFAULT NULL AFTER `Quantity Lost` ,ADD `Quantity High` FLOAT NULL DEFAULT NULL AFTER `Quantity Open` ,ADD `Quantity Low` FLOAT NULL DEFAULT NULL AFTER `Quantity High` ;
 ALTER TABLE `Category Dimension` CHANGE `Category Subject` `Category Subject` ENUM( 'Product', 'Supplier', 'Customer', 'Family', 'Invoice', 'Part' ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'Product';
 
+
+0.9.24
+ALTER TABLE `Category Dimension` ADD `Category Function` TEXT NULL DEFAULT NULL ;
+ALTER TABLE `Category Dimension` CHANGE `Category Subject` `Category Subject` ENUM( 'Product', 'Supplier', 'Customer', 'Family', 'Invoice', 'Part' ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'Product';
+ALTER TABLE `Invoice Dimension` CHANGE `Invoice For` `Invoice For` ENUM( 'Staff', 'Customer' ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'Customer';
+ALTER TABLE `Category Dimension` ADD `Category Function Order` MEDIUMINT UNSIGNED NULL DEFAULT NULL ;
+ALTER TABLE `Category Bridge` CHANGE `Subject` `Subject` ENUM( 'Product', 'Supplier', 'Customer', 'Family', 'Invoice', 'Part' ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL ;
+ALTER TABLE `Invoice Dimension` DROP `Invoice Category`,DROP `Invoice Category Key`;
 */
 
 ?>

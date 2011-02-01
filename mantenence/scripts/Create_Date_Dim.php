@@ -14,7 +14,7 @@ error_reporting(E_ALL);
 $con=@mysql_connect($dns_host,$dns_user,$dns_pwd );
 
 if(!$con){print "Error can not connect with database server\n";exit;}
-$dns_db='dw';
+//$dns_db='dw';
 $db=@mysql_select_db($dns_db, $con);
 if (!$db){print "Error can not access the database\n";exit;}
   
@@ -35,16 +35,16 @@ $version='V 1.0';
 $Data_Audit_ETL_Software="$software $version";
 
 
-$start_date='2003-01-07';
+$start_date='1970-01-01';
 
-$end_date='2012-01-04';
+$end_date='2015-01-04';
 
 $i=0;
 $date=strtotime($start_date);
 //print "$date ". strtotime($end_date)."\n";
 while($date<strtotime($end_date)){
   $i++;
-  $sql=sprintf("insert into `Date Dimension` (`Date`) values ('%s')",date('Y-m-d',$date));
+  $sql=sprintf("insert into kbase.`Date Dimension` (`Date`) values ('%s')",date('Y-m-d',$date));
   mysql_query($sql);
   print "$sql\n";
   $date=strtotime(date('Y-m-d',$date).' +1 day');

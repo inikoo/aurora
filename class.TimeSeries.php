@@ -1612,7 +1612,7 @@ $save=false;
                  ,prepare_mysql($this->start_date)
                  ,prepare_mysql($this->last_date)
                 );
-
+print $sql;
     $data=array();
     $all_data=array();
     $res = mysql_query($sql);
@@ -2130,7 +2130,7 @@ $last_day=date("Y-m-d");
                     
                     );
 
-      //  print "$sql\n";
+     //   print "$sql\n";
 
         $res=mysql_query($sql);
         if ($row=mysql_fetch_array($res)) {
