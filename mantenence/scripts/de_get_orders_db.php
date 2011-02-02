@@ -1314,6 +1314,9 @@ get_data($header_data);
         $data['Order Customer Key']=$customer->id;
       $customer_key=$customer->id;
 
+
+     
+
 switch ($tipo_order) {
 case 1://Delivery Note
     print "DN";
@@ -1332,8 +1335,9 @@ case 8: //follow
     $data['Order Type']='Order';
 
     create_order($data);
-
+    
     send_order($data,$data_dn_transactions);
+   
     break;
 case 3://Cancel
     print "Cancel";

@@ -708,6 +708,22 @@ class Store extends DB_Table {
 
     function update_customers_data() {
 
+$current_from=strtotime($this->data['Store Valid From']);
+
+  $sql="select min(`Customer First Contacted Date`) as ffrom ,count(*) as number   from `Customer Dimension` as C   where `Customer Store Key`=".$this->id;
+   $result=mysql_query($sql);
+        if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
+            $from=strtotime($row['ffrom']);
+            //print "-->".$row['ffrom']."\n" ;    
+            if($from<$current_from and $row['number']>0 and $row['ffrom']!=''){
+            $_from=date("Y-m-d H:i:s",$from);
+           $this->data['Store Valid From']=$_from;
+
+           }
+        }
+
+
+//print "$current_from \n ".$this->data['Store Valid From'];
 
 
         $sql=sprintf("select count(*) as num ,sum(IF(`Customer Orders`>0,1,0)) as customers,sum(IF(`New Served Customer`='Yes',1,0)) as new_served,sum(IF(`New Customer`='Yes',1,0)) as new_contact,sum(IF(`Active Customer`='Yes'   ,1,0)) as active, sum(IF(`Active Customer`='No'  and `Actual Customer`='Yes',1,0)) as lost  from   `Customer Dimension` where `Customer Store Key`=%d",$this->id);
@@ -875,7 +891,7 @@ class Store extends DB_Table {
         }
        
        
-        $sql=sprintf("update `Store Dimension` set `Store Total Customer Contacts`=%d , `Store New Customer Contacts`=%d ,`Store Total Customers`=%d,`Store Active Customers`=%d,`Store New Customers`=%d , `Store Lost Customers`=%d ,
+        $sql=sprintf("update `Store Dimension` set `Store Valid From`=%s,`Store Total Customer Contacts`=%d , `Store New Customer Contacts`=%d ,`Store Total Customers`=%d,`Store Active Customers`=%d,`Store New Customers`=%d , `Store Lost Customers`=%d ,
         `Store 1 Year New Customers`=%d,
         `Store 1 Quarter New Customers`=%d,
         `Store 1 Month New Customers`=%d,
@@ -890,6 +906,7 @@ class Store extends DB_Table {
         `Store 1 Week New Customers Contacts`=%d,
           `Store 1 Day New Customers Contacts`=%d
         where `Store Key`=%d  ",
+       prepare_mysql( $this->data['Store Valid From']),
                      $this->data['Store Total Customer Contacts'],
                      $this->data['Store New Customer Contacts'],
                      $this->data['Store Total Customers'],
@@ -912,7 +929,7 @@ class Store extends DB_Table {
                      $this->id
                     );
         mysql_query($sql);
- //print "\n$sql\n";
+//print "\n$sql\n";
 
 
 
@@ -1086,12 +1103,25 @@ class Store extends DB_Table {
     function update_store_sales() {
         $on_sale_days=0;
 
+$current_from=strtotime($this->data['Store Valid From']);
+//print "**** ".$this->data['Store Valid From']."\n";
         $sql="select count(*) as prods,min(`Product For Sale Since Date`) as ffrom ,max(`Product Last Sold Date`) as tto, sum(if(`Product Sales Type`='Public Sale',1,0)) as for_sale   from `Product Dimension` as P   where `Product Store Key`=".$this->id;
+
+
 
         $result=mysql_query($sql);
         if ($row=mysql_fetch_array($result, MYSQL_ASSOC)) {
             $from=strtotime($row['ffrom']);
             $_from=date("Y-m-d H:i:s",$from);
+            
+           
+              if($from<$current_from and $row['prods']>0 and $row['ffrom']!=''){
+            $_from=date("Y-m-d H:i:s",$from);
+           $this->data['Store Valid From']=$_from;
+
+           }
+          
+            
             if ($row['for_sale']>0) {
                 $to=strtotime('today');
                 $_to=date("Y-m-d H:i:s");
@@ -1105,6 +1135,9 @@ class Store extends DB_Table {
                 $on_sale_days=0;
 
         }
+
+
+//print "**** ".$this->data['Store Valid From']."\n";
 
         $sql="select    count(Distinct `Customer Key`)as customers , sum(`Cost Supplier`/`Invoice Currency Exchange Rate`) as cost_sup,sum(`Invoice Transaction Gross Amount`) as gross ,sum(`Invoice Transaction Total Discount Amount`)as disc ,sum(`Shipped Quantity`) as delivered,sum(`Order Quantity`) as ordered,sum(`Invoice Quantity`) as invoiced  from `Order Transaction Fact`  OTF   where `Store Key`=".$this->id;
 
@@ -1123,7 +1156,7 @@ class Store extends DB_Table {
             $this->data['Store Total Quantity Invoiced']=$row['invoiced'];
             $this->data['Store Total Quantity Delivered']=$row['delivered'];
             $this->data['Store Total Days On Sale']=$on_sale_days;
-            $this->data['Store Valid From']=$_from;
+            //$this->data['Store Valid From']=$_from;
             $this->data['Store Valid To']=$_to;
             $this->data['Store Total Customers']=$row['customers'];
 
@@ -1147,7 +1180,8 @@ class Store extends DB_Table {
             if (!mysql_query($sql))
                 exit("$sql\ncan not update dept sales\n");
         }
-     //   print "$sql\n\n";
+  //    print "$sql\n\n";
+ //    exit;
         // days on sale
 
         $on_sale_days=0;

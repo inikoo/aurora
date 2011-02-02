@@ -54,6 +54,7 @@ YAHOO.util.Event.addListener("calpop1", "click", cal1.show, cal1, true);
 //cal2.cfg.setProperty("zIndex", 10);
 
 
+YAHOO.util.Event.addListener("submit_interval", "click",submit_interval);
 
 
 

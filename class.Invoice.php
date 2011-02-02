@@ -1254,51 +1254,32 @@ Assig a category inside rhe store to the invoice
  */
 
  function categorize($args=''){
-   $store=new store($this->data['Invoice Store Key']);
-   
-   
-   
-   if($store->id==1){
-     $this->data['Invoice Category']=$store->data['Store Code'].'-'.$store->data['Store Home Country Short Name'];
-     $this->data['Invoice Category Key']=2;
-     if($this->data['Invoice Billing Country 2 Alpha Code']!=$store->data['Store Home Country Code 2 Alpha']){
-       $this->data['Invoice Category']=$store->data['Store Code'].'-Export';
-       $this->data['Invoice Category Key']=4;
-       
-     }
-     if($this->data['Invoice For']=='Staff'){
-       $this->data['Invoice Category']=$store->data['Store Code'].'-Staff';
-       $this->data['Invoice Category Key']=3;
-       
-     }
-     if($this->data['Invoice For']=='Partner'){
-       $this->data['Invoice Category']=$store->data['Store Code'].'-Partner';
-       $this->data['Invoice Category Key']=5;
+    $sql=sprintf("delete from `Category Bridge` where `Subject`='Invoice'  and `Subject Key`=%d",$this->id);
+    mysql_query($sql);
+ 
+ $sql=sprintf("select * from `Category Dimension` where `Category Subject`='Invoice' and `Category Store Key`=%d order by `Category Function Order`, `Category Key` ",$this->data['Invoice Store Key']);
+ $res=mysql_query($sql);
+ $function_code='';
+ while($row=mysql_fetch_assoc($res)){
+ if($row['Category Function']!=''){
+    $function_code.=sprintf("%s return %d;",$row['Category Function'],$row['Category Key']);
+ }
 
-     }
-
-   }else if($store->id==2){
-      $this->data['Invoice Category']=$store->data['Store Code'].'-All';
-      $this->data['Invoice Category Key']=7;
-	     
-
-   }elseif($store->id==3){
-     $this->data['Invoice Category']=$store->data['Store Code'].'-All';
-     $this->data['Invoice Category Key']=9;
-
-   }
-   if(!preg_match('/nosave|no_save/i',$args)){
-
-     $sql = sprintf ( "update `Invoice Dimension` set `Invoice Category`=%s ,`Invoice Category Key`=%d  where `Invoice Key`=%d"
-		      , prepare_mysql($this->data['Invoice Category'])
-		      , $this->data ['Invoice Category Key'] 
-		      , $this->data ['Invoice Key'] 
-		      );
-     if (! mysql_query ( $sql ))
-       exit ( "$sql\n xcan not update invoice dimension after cat\n" );
-     
-   }
-
+ 
+ }
+   $function_code.="return 0;";
+// print $function_code."\n";exit;
+ $newfunc = create_function('$data',$function_code);
+ 
+ $category_key=$newfunc($this->data);
+ 
+ if($category_key){
+    $sql=sprintf("insert into `Category Bridge` values (%d,'Invoice',%d)",$category_key,$this->id);
+    mysql_query($sql);
+ }
+ 
+ 
+ 
  }
  
  

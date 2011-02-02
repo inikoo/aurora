@@ -6,18 +6,17 @@ include_once('../../class.Department.php');
 include_once('../../class.Family.php');
 include_once('../../class.Product.php');
 include_once('../../class.Supplier.php');
-include_once('../../class.Part.php');
-include_once('../../class.Store.php');
-include_once('../../class.Customer.php');
 include_once('../../class.Invoice.php');
-
+include_once('../../class.SupplierProduct.php');
 error_reporting(E_ALL);
 
+date_default_timezone_set('UTC');
 
 
 $con=@mysql_connect($dns_host,$dns_user,$dns_pwd );
 
 if(!$con){print "Error can not connect with database server\n";exit;}
+//$dns_db='dw_avant';
 $db=@mysql_select_db($dns_db, $con);
 if (!$db){print "Error can not access the database\n";exit;}
   
@@ -26,12 +25,11 @@ require_once '../../common_functions.php';
 mysql_query("SET time_zone ='+0:00'");
 mysql_query("SET NAMES 'utf8'");
 require_once '../../conf/conf.php';           
-date_default_timezone_set('UTC');
 
 $sql="select * from `Invoice Dimension` ";
 $result=mysql_query($sql);
 while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
-
+/*
   $id=$row['Invoice Key'];
  $total_costs=0;
   $sql=sprintf("select ifnull(sum(`Cost Supplier`/`Invoice Currency Exchange Rate`),0) as `Cost Supplier`  ,ifnull(sum(`Cost Manufacure`/`Invoice Currency Exchange Rate`),0) as `Cost Manufacure` ,ifnull(sum(`Cost Storing`/`Invoice Currency Exchange Rate`),0) as `Cost Storing`,ifnull(sum(`Cost Handing`/`Invoice Currency Exchange Rate`),0)  as  `Cost Handing`,ifnull(sum(`Cost Shipping`/`Invoice Currency Exchange Rate`),0) as `Cost Shipping` from `Order Transaction Fact` where `Invoice Key`=%d",$id);
@@ -47,11 +45,14 @@ while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
    $sql=sprintf("update `Invoice Dimension` set `Invoice Total Profit`=%f where `Invoice Key`=%d " ,$profit,$id);
    print "$total_costs\n";  
  mysql_query($sql);
+*/
+// print $invoice->id."\n";
 
 
-  //$invoice=new Invoice($row['Invoice Key']);
-  
-  // $invoice->categorize('save');
+
+  $invoice=new Invoice($row['Invoice Key']);
+ // print $invoice->id."\n";
+   $invoice->categorize('save');
 
   //$force_values=array(
    // 'Invoice Items Net Amount'=>$invoice->data['Invoice Items Net Amount']
@@ -62,7 +63,6 @@ while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
   // print_r($force_values);
 // $invoice->get_totals();
   // $invoice->get_totals($force_values);
-// print $invoice->id."\r";
  }
 
 

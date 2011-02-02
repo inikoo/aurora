@@ -13,7 +13,7 @@
 
 <h1 style="clear:left">{$title}</h1>
 
-<table class="report_sales1" id="report_sales_invoices" style="width:700px;{if $view!='invoices'}display:none{/if}">
+<table class="report_sales1" id="report_sales_invoices" style="width:900px;{if $view!='invoices'}display:none{/if}">
 <tr style="border-bottom:1px solid #ccc;margin-bottom:5px"><td colspan=7>
 <div  style="margin-bottom:5px;color:#999;">
 <span id="invoices_profits_button"  view="profit" class="state_details" style="margin-right:20px">{t}Profit{/t}</span>
@@ -25,25 +25,37 @@
 </td></tr>
 <tr>
 <td style="width:150px">{t}Store{/t}</td>
-<td></td><td>{t}Invoices{/t}</td>
+<td>{t}Invoices{/t}</td>
+ <td class="aleft">{t}% of total{/t}</td>
+ 
+   <td >&Delta;1{t}Yr{/t}</td>
     <td style="{if $currencies=='corporation'}display:none{/if}">{t}Net Sales{/t}</td>
     <td style="{if $currencies!='corporation'}display:none{/if}">{t}Net Sales{/t}</td>
-    <td></td>
-    <td></td>
+    <td style="{if $currencies=='corporation'}display:none{/if}" class="aleft">{t}{/t}</td>
+    <td style="{if $currencies!='corporation'}display:none{/if}" class="aleft">{t}% of total{/t}</td>
+
+  
+        <td >&Delta;1{t}Yr{/t}</td>
+
+    {*
     <td style="{if $currencies=='corporation'}display:none{/if}">{t}Tax{/t}</td>
     <td style="{if $currencies!='corporation'}display:none{/if}">{t}Tax{/t}</td>
+*}
 </tr>
 {foreach from=$store_data   item=data }
-<tr class="geo">
-    <td class="label"> {$data.store}</td>
-    <td style="text-align:left">{$data.substore}</td>
+<tr class="{$data.class}">
+    <td class="label aleft" ><span {if $data.substore!=''}style="margin-left:50px"{/if}> {$data.store}{$data.substore}<span></td>
+   
     <td>{$data.invoices}</td>
+     <td class="aleft"><span  {if $data.substore!=''}style="margin-left:50px"{/if}>{$data.per_invoices}</span></td>
+      <td>{$data.last_yr_invoices}</td>
     <td class="currency_stores" style="{if $currencies=='corporation'}display:none{/if}">{$data.net}</td>
     <td class="currency_corporate" style="{if $currencies!='corporation'}display:none{/if}">{$data.eq_net}</td>
-    <td>{$data.per_eq_net}</td>
-    <td>{$data.sub_per_eq_net}</td>
-    <td class="currency_stores" style="{if $currencies=='corporation'}display:none{/if}">{$data.tax}</td>
-    <td class="currency_corporate" style="{if $currencies!='corporation'}display:none{/if}">{$data.eq_tax}</td></tr>
+    <td class="currency_corporate aleft" style="{if $currencies!='corporation'}display:none;{/if}"><span {if $data.substore!=''}style="margin-left:50px"{/if}>{$data.per_eq_net}</span></td>
+    <td class="currency_stores aleft" style="{if $currencies=='corporation'}display:none{/if}"></td>
+         <td>{$data.last_yr_net}</td>
+
+  
 {/foreach}
 </table>
 
@@ -65,7 +77,7 @@
 <td style="{if $currencies!='corporation'}display:none{/if}">{t}Profit{/t}</td>
 <td>{t}Margin{/t}</td></tr>
 {foreach from=$store_data_profit   item=data }
-<tr class="geo">
+<tr  class="{$data.class}">
     <td class="label"> {$data.store}</td>
     <td style="text-align:left">{$data.substore}</td>
     <td class="currency_stores" style="{if $currencies=='corporation'}display:none{/if}">{$data.net}</td>
@@ -77,42 +89,55 @@
 {/foreach}
 </table>
 
-<div id="plot" class="top_bar" style="position:relative;left:-20px;clear:both;padding:0;margin:0;{if !$display_plot}display:none{/if}">
-<div display="none" id="plot_info" keys="{$formated_store_keys}"  invoice_category_keys="{$invoice_category_keys}"   ></div>
+<div id="plot" class="top_bar" style="position:relative;clear:both;padding:0;margin:0">
     <ul id="plot_chooser" class="tabs" style="margin:0 20px;padding:0 20px "  >
 	    <li>
-	        <span class="item {if $plot_tipo=='all'}selected{/if}" onClick="change_plot(this)" id="plot_all" tipo="par_all" " >
+	        <span class="item {if $plot_tipo=='plot_all_stores'}selected{/if}" onClick="change_plot(this)" id="plot_all_stores" tipo="par_all" " >
 	            <span>{t}All Stores{/t}</span>
 	        </span>
 	    </li>
 	   <li>
-	        <span class="item {if $plot_tipo=='per_store'}selected{/if}" onClick="change_plot(this)" id="plot_per_store" tipo="per_store"  >
+	        <span class="item {if $plot_tipo=='plot_per_store'}selected{/if}" onClick="change_plot(this)" id="plot_per_store" tipo="per_store"  >
 	            <span>{t}Invoices per Store{/t}</span>
 	        </span>
 	    </li>
 	    <li>
-	        <span class="item {if $plot_tipo=='per_category'}selected{/if}"  id="plot_per_category" onClick="change_plot(this)" tipo="per_category"   >
+	        <span class="item {if $plot_tipo=='plot_per_category'}selected{/if}"  id="plot_per_category" onClick="change_plot(this)" tipo="per_category"   >
 	            <span>{t}Invoices per Category{/t}</span>
 	        </span>
 	    </li>
     </ul> 
 
-	<div id="all_stores" style="clear:both;border:1px solid #ccc" >
-		<strong>You need to upgrade your Flash Player</strong>
-	</div>
-
+	<div  id="div_plot_all_stores" style="{if $plot_tipo!='plot_all_stores'}display:none;{/if}clear:both;border:1px solid #ccc" ><strong>{t}You need to upgrade your Flash Player{/t}</strong></div>
 	<script type="text/javascript">
 		// <![CDATA[
-		
+		var so = new SWFObject("external_libs/amstock/amstock/amstock.swf", "amstock", "905", "500", "8", "#FFFFFF");
+		so.addVariable("path", "");
+		so.addVariable("settings_file", encodeURIComponent("conf/plot_asset_sales.xml.php?tipo=store_sales&store_key={$am_safe_store_keys}&from={$from}&to={$to}"));
+		so.addVariable("preloader_color", "#999999");
+		so.write("div_plot_all_stores");
+		// ]]>
+	</script>
+
+	<div id="div_plot_per_store" style="{if $plot_tipo!='plot_per_store'}display:none;{/if}clear:both;border:1px solid #ccc" ><strong>{t}You need to upgrade your Flash Player{/t}</strong></div>
+	<script type="text/javascript">
+		// <![CDATA[
 		var so = new SWFObject("external_libs/amstock/amstock/amstock.swf", "amstock", "905", "500", "8", "#FFFFFF");
 		so.addVariable("path", "");
 		so.addVariable("settings_file", encodeURIComponent("conf/plot_asset_sales.xml.php?tipo=store_sales&stacked=1&store_key={$am_safe_store_keys}&from={$from}&to={$to}"));
 		so.addVariable("preloader_color", "#999999");
-
-		
-		
-
-		so.write("all_stores");
+		so.write("div_plot_per_store");
+		// ]]>
+	</script>
+	
+		<div id="div_plot_per_category" style="{if $plot_tipo!='plot_per_category'}display:none;{/if}clear:both;border:1px solid #ccc" ><strong>{t}You need to upgrade your Flash Player{/t}</strong></div>
+	<script type="text/javascript">
+		// <![CDATA[
+		var so = new SWFObject("external_libs/amstock/amstock/amstock.swf", "amstock", "905", "500", "8", "#FFFFFF");
+		so.addVariable("path", "");
+		so.addVariable("settings_file", encodeURIComponent("conf/plot_asset_sales.xml.php?tipo=store_sales&stacked=1&per_category=1&store_key={$am_safe_store_keys}&from={$from}&to={$to}"));
+		so.addVariable("preloader_color", "#999999");
+		so.write("div_plot_per_category");
 		// ]]>
 	</script>
   

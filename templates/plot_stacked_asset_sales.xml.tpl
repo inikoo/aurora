@@ -90,6 +90,8 @@
       <period pid="5" type="YTD" count="0">YTD</period>
       <period pid="6" type="MAX" count="0">MAX</period>
     </periods>
+    <from>{$from}</from>
+    <to>{$to}</to>
   </period_selector>
   <header>
     <enabled>0</enabled>
