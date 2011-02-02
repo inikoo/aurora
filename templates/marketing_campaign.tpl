@@ -4,13 +4,13 @@
 
 <div style="clear:left;margin:0 0px">
 
-  <div style="background-color:#7080b1;height:60px;">
+  <div style="background-color:#f8d285;height:60px;">
   <div class="campaign_head">Campaigns</div>
   <table  style="margin-top:24px;" cellspacing="10" width="445">
   	<tr>
-	<td><div class="topmenu"><a href="">Emarketing</a></div></td>
+	<td><div class="topmenu"><a href="marketing.php">Emarketing</a></div></td>
 	<td><div class="topmenu current"><a href="">Campaigns</a</div></td>
-       <td><div class="topmenu"><a href="">Lists</a</div></td>
+       <td><div class="topmenu"><a href="marketing_list.php">Lists</a</div></td>
 	<td><div class="topmenu"><a href="">Reports</a</div></td>
 	<td><div class="topmenu"><a href="">Autoresponders</a</div></td>
 	</tr>

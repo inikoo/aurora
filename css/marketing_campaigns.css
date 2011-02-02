@@ -61,7 +61,7 @@
    font-size:19px;
    width:140px;
    float:left;
-   color:#ffffff;
+   color:#e18707;
 }
 
 
@@ -248,7 +248,6 @@ line-height: 0.3em;
   float:right;
   padding-right:15px;
   cursor:pointer;
-  text-decoration:underline;
 }
 .send_entire_list{
  float:right;
@@ -352,11 +351,11 @@ background-color:#999999;
 -moz-border-radius: 4px 4px 4px 4px;
 
 }
- input[type="checkbox"] {
+ input[type="checkbox"] ,input[type="radio"]{
     background: none repeat scroll 0 0 transparent !important;
     border: 0 none !important;
     width: 16px !important;
-    vertical-align:text-top;
+    vertical-align:text-bottom;
 }
 .inline-label {
     display: inline;
