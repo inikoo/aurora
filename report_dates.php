@@ -388,6 +388,10 @@ elseif($tipo=='d') {
 
 }
 
+$to_little_edian=date("d-m-Y",strtotime($to));
+$from_little_edian=date("d-m-Y",strtotime($from));
+    $smarty->assign('to_little_edian',$to_little_edian);
+    $smarty->assign('from_little_edian',$from_little_edian);
 
 $to_data=prepare_mysql_datetime($to,'date');
 $mysql_to=$to_data['mysql_date'];

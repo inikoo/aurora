@@ -67,6 +67,7 @@ case('store_sales'):
                              'store_key'=>array('type'=>'string'),
                              'from'=>array('type'=>'date','optional'=>true),
                              'to'=>array('type'=>'date','optional'=>true),
+                             'use_corporate'=>array('type'=>'number')
                          ));
     store_sales($data);
     break;
@@ -405,15 +406,18 @@ function store_sales($data) {
         $dates.=sprintf("and `Invoice Date`>=%s  ",prepare_mysql($data['from']));
     }
 
-    $sql=sprintf("select Date(`Invoice Date`) as date,sum(`Invoice Total Net Amount`) as net, count(*) as invoices  from `Invoice Dimension` where  %s and `Invoice Store Key`  in (%s)   group by Date(`Invoice Date`) order by `Date` desc",
+    $corporate_currency='';
+    if($data['use_corporate'])$corporate_currency=' *`Invoice Currency Exchange`';
+    $sql=sprintf("select Date(`Invoice Date`) as date,sum(`Invoice Total Net Amount` %s) as net, count(*) as invoices  from `Invoice Dimension` where  %s and `Invoice Store Key`  in (%s)   group by Date(`Invoice Date`) order by `Date` desc",
+                 $corporate_currency,
                  $dates,
                  join(',',$stores_keys)
                 );
-    //print $sql;
+   // print $sql;
     $res=mysql_query($sql);
     while ($row=mysql_fetch_assoc($res)) {
         $graph_data[$row['date']]['vol']=$row['invoices'];
-        $graph_data[$row['date']]['value']=$row['net'];
+        $graph_data[$row['date']]['value']=sprintf("%.2f",$row['net']);
     }
 
 
@@ -493,14 +497,14 @@ function stacked_store_sales($data) {
             $dates.=sprintf("and `Invoice Date`>=%s  ",prepare_mysql($data['from']));
         }
 
-        $sql=sprintf("select Date(`Invoice Date`) as date,sum(`Invoice Total Net Amount`) as net, count(*) as invoices  from `Invoice Dimension` where  %s and `Invoice Store Key`=%d   group by Date(`Invoice Date`) order by `Date` desc",
+        $sql=sprintf("select Date(`Invoice Date`) as date,sum(`Invoice Total Net Amount`*`Invoice Currency Exchange`) as net, count(*) as invoices  from `Invoice Dimension` where  %s and `Invoice Store Key`=%d   group by Date(`Invoice Date`) order by `Date` desc",
                      $dates,
                      $store_key);
         //print $sql;
         $res=mysql_query($sql);
         while ($row=mysql_fetch_assoc($res)) {
            
-            $graph_data[$row['date']]['value'.$i]=$row['net'];
+            $graph_data[$row['date']]['value'.$i]=sprintf("%.2f",$row['net']);
              $graph_data[$row['date']]['vol'.$i]=$row['invoices'];
         }
         $i++;

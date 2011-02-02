@@ -204,7 +204,7 @@ if($modify)
 
 $general_options_list[]=array('tipo'=>'js','state'=>$show_details,'id'=>'details','label'=>($show_details?_('Hide Details'):_('Show Details')));
   $general_options_list[]=array('tipo'=>'url','url'=>'customer_csv.php?id='.$customer->id,'label'=>_('CSV Data'));
-
+  $general_options_list[]=array('tipo'=>'url','url'=>'pdf_customer.php?id='.$customer->id,'label'=>_('Address Label'));
 
 
 $smarty->assign('general_options_list',$general_options_list);

@@ -42,7 +42,7 @@
        </div>
   
   
-    <div  id="table0"   class="data_table_container dtable btable with_total"> </div>
+    <div  id="table0"   class="data_table_container dtable btable " style="font-size:85%"> </div>
   </div>
  
 
