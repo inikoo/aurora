@@ -64,6 +64,19 @@ $js_files=array(
 $dbvalue = array();
 $create = array();
 
+
+	if(isset($_POST['chkbox']))
+	{
+		foreach ($_POST['chkbox'] as $arr)
+		{
+		$query = "update `Email Campaign Dimension` set `Flag` = '1', `Folder ID` = '".$_POST['select_folder']."' where `Email Campaign Key` = '".$arr."'";
+		mysql_query($query);
+			
+		}
+	}
+
+
+
 //extract the id 
 $http = $_REQUEST['t'];
 $extract = explode('_',$http);
@@ -88,9 +101,16 @@ if($r[1] > 0)
 	mysql_query($sqlDelete);
 	
 }
-
-  $sql = sprintf("select `Email Campaign Key`,`Email Campaign Status`,`Email Campaign Maximum Emails`,`Email Campaign Content` from `Email Campaign Dimension`");
-		$res = mysql_query($sql);
+if(isset($_REQUEST['fid']) && $_REQUEST['fid'] != '')
+{
+ $sql = sprintf("select `Email Campaign Key`,`Email Campaign Status`,`Email Campaign Maximum Emails`,`Email Campaign Content`,`Flag`,`Folder ID` from `Email Campaign Dimension` where `Flag` = '1' and `Folder ID` = '".$_REQUEST['fid']."'");	
+}
+else
+{
+ $sql = sprintf("select `Email Campaign Key`,`Email Campaign Status`,`Email Campaign Maximum Emails`,`Email Campaign Content`,`Flag`,`Folder ID` from `Email Campaign Dimension` where `Flag` = '0'");
+}
+ 
+  $res = mysql_query($sql);
 	
 	
 
