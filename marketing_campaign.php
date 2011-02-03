@@ -73,26 +73,29 @@ $js_files=array(
 	$smarty->assign('email','Email Campaign Maximum Emails');
 	$smarty->assign('key','Email Campaign Key');
 	$smarty->assign('content','Email Campaign Content');
-
-	while($fetchArray = mysql_fetch_assoc($res))
+	if(mysql_num_rows($res) > 0)
 	{
+		while($fetchArray = mysql_fetch_assoc($res))
+		{
 		
-		$dbvalue[] = $fetchArray;
+		$smarty->assign('value',$fetchArray);
 
+		}
 	}
-
 $mail = 'carlos@aw-regalos.com';	
 
 $folder_name = 'Mail Folder Name';
 $edit_id = 'Mail Folder Key';	
 $sqlString = sprintf("select `Mail Folder Name`,`Mail Folder Key` from `Mail Folder` where `Mail Folder Email`='".$mail."'");
 $result = mysql_query($sqlString);
-while($ss=mysql_fetch_assoc($result))
+if(mysql_num_rows($result) > 0)
 {
+	while($ss=mysql_fetch_assoc($result))
+	{
 
-  $mailarray[] = $ss;
-}		
- 
+ 	$smarty->assign('create',$ss);
+	}		
+} 
 if (isset($_REQUEST['view'])) {
     $valid_views=array('metrics','email','web_internal','web','other','newsletter');
     if (in_array($_REQUEST['view'], $valid_views))
@@ -107,9 +110,9 @@ $smarty->assign('parent','home');
 $smarty->assign('title', _('Marketing'));
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
-$smarty->assign('create',$mailarray);
 
-$smarty->assign('value',$dbvalue);
+
+
 $smarty->assign('folder_name',$folder_name);
 $smarty->assign('edit_id',$edit_id);
 

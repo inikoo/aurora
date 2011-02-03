@@ -19,7 +19,7 @@
 </div> 	
 <div style="padding:10px 0px 0px 0px;"><span style="padding-left:750px;"><select name="select_folder">
 	<option value="0">Select Folder</option>
-		{section name="i" loop="$create"}
+	{section name="i" loop="$create"}
 		
 	<option value="folder_{$create[i].$edit_id}">{$create[i].$folder_name}</option>
 	{/section}
