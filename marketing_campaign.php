@@ -85,13 +85,12 @@ $mail = 'carlos@aw-regalos.com';
 
 $folder_name = 'Mail Folder Name';
 $edit_id = 'Mail Folder Key';	
-//fetch the folders
 $sqlString = sprintf("select `Mail Folder Name`,`Mail Folder Key` from `Mail Folder` where `Mail Folder Email`='".$mail."'");
 $result = mysql_query($sqlString);
 while($ss=mysql_fetch_assoc($result))
 {
 
-  $mailArray[] = $ss;
+  $mailarray[] = $ss;
 }		
  
 if (isset($_REQUEST['view'])) {
@@ -108,7 +107,7 @@ $smarty->assign('parent','home');
 $smarty->assign('title', _('Marketing'));
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
-$smarty->assign('create',$mailArray);
+$smarty->assign('create',$mailarray);
 
 $smarty->assign('value',$dbvalue);
 $smarty->assign('folder_name',$folder_name);
