@@ -9,7 +9,7 @@
   <table  style="margin-top:24px;" cellspacing="10" width="445">
   	<tr>
 	<td><div class="topmenu"><a href="marketing.php">Emarketing</a></div></td>
-	<td><div class="topmenu current"><a href="">Campaigns</a</div></td>
+	<td><div class="topmenu current"><a href="marketing_campaign.php">Campaigns</a</div></td>
        <td><div class="topmenu"><a href="marketing_list.php">Lists</a</div></td>
 	<td><div class="topmenu"><a href="">Reports</a</div></td>
 	<td><div class="topmenu"><a href="">Autoresponders</a</div></td>
