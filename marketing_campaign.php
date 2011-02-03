@@ -91,7 +91,7 @@ $result = mysql_query($sqlString);
 while($ss=mysql_fetch_assoc($result))
 {
 
-  $create[] = $ss;
+  $mailArray[] = $ss;
 }		
  
 if (isset($_REQUEST['view'])) {
@@ -108,7 +108,7 @@ $smarty->assign('parent','home');
 $smarty->assign('title', _('Marketing'));
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
-$smarty->assign('create',$create);
+$smarty->assign('create',$mailArray);
 
 $smarty->assign('value',$dbvalue);
 $smarty->assign('folder_name',$folder_name);
