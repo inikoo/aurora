@@ -54,7 +54,7 @@
 </form>
 </td> 
 <td>
-  <table width="730" border="0">
+  <table width="730" border="2">
 	  <tr bgcolor="#7080B1">
 	   
 	   <td class="display_campaign1">Serial</td>
@@ -68,7 +68,7 @@
 	
 		{section name=value loop=$value}
 		<tr>
-		<td align="center"><input type="checkbox" name="chkbox" value=""> &nbsp; {$value[value].$key}</td>
+		<td align="center"><input type="checkbox" name="chkbox" value=""> {$value[value].$key}</td>
 		<td>TYPE</td>
 		<td align="center">{$value[value].$status}</td>
 		<td>LIST</td>
