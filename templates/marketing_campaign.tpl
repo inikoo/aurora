@@ -18,7 +18,7 @@
 
 </div> 	
 <div style="padding:10px 0px 0px 0px;"><span style="padding-left:750px;"><select name="select_folder">
-	<option value="0">Select Folder</option>
+	<option value="0">Select</option>
 	{section name="i" loop="$create"}
 		
 	<option value="folder_{$create[i].$edit_id}">{$create[i].$folder_name}</option>
@@ -45,12 +45,15 @@
 <br>
 <form action="" method="POST"><span style="padding-left:20px;"><img src="art/icons/folder_add.png" / ><a href="#" name="newFolder" id="newFolder" onClick="showFolder()" style="text-decoration:none;">&nbsp; Create Folder</a></span>
 <div id="folder">
-	{section name="i" loop="$create"}
-	  <span style="padding-left:20px;" id="folder_{$create[i].$edit_id}">
-	  <img src="art/icons/folder_add.png" / > {$create[i].$folder_name}
-	  </span>&nbsp;&nbsp;
-<img src="art/icons/edit.ico" height="9"  class="click" id="edit_{$create[i].$edit_id}" onClick="edit('edit_{$create[i].$edit_id}','folder_{$create[i].$edit_id}','{$create[i].$folder_name}')" />
-<img src="art/icons/delete.ico" id="del_{$create[i].$edit_id}" onClick="del('del_{$create[i].$edit_id}')" /><br>
+	{section name="j" loop="$create"}
+	  <span style="padding-left:20px;" id="folder_{$create[j].$edit_id}">
+	  <img src="art/icons/folder_add.png" / > {$create[j].$folder_name}
+	  </span>
+<div style="float:right; padding-right:30px;">
+<img src="art/icons/edit.ico" height="9"  class="click" id="edit_{$create[j].$edit_id}" onClick="edit('edit_{$create[j].$edit_id}','folder_{$create[j].$edit_id}','{$create[j].$folder_name}')" />
+<img src="art/icons/delete.ico" id="del_{$create[j].$edit_id}" onClick="del('del_{$create[j].$edit_id}')" />
+</div>
+<br>
 	{/section}
 </div>
 </form>

@@ -61,8 +61,33 @@ $js_files=array(
 		'js/jquery.jeditable.js'
 		);
 
+$dbvalue = array();
+$create = array();
+
+//extract the id 
+$http = $_REQUEST['t'];
+$extract = explode('_',$http);
+
+//delete a folder
+$request = $_REQUEST['del'];
+$r = explode('_',$request);
 
 
+if($extract[1] > 0)
+{
+	
+	$queryString = "update `Mail Folder` set `Mail Folder Name` = '".$_REQUEST['n']."' where `Mail Folder Key` = '".$extract[1]."'";
+	mysql_query($queryString);
+	
+}
+
+if($r[1] > 0)
+{
+	
+	$sqlDelete = "delete from `Mail Folder` where `Mail Folder Key` = '".$r[1]."'";
+	mysql_query($sqlDelete);
+	
+}
 
   $sql = sprintf("select `Email Campaign Key`,`Email Campaign Status`,`Email Campaign Maximum Emails`,`Email Campaign Content` from `Email Campaign Dimension`");
 		$res = mysql_query($sql);
@@ -78,11 +103,13 @@ $js_files=array(
 		while($fetchArray = mysql_fetch_assoc($res))
 		{
 		
-		$smarty->assign('value',$fetchArray);
+		$dbvalue[] = $fetchArray;
 
 		}
 	}
+//change email as per login credentials
 $mail = 'carlos@aw-regalos.com';	
+
 
 $folder_name = 'Mail Folder Name';
 $edit_id = 'Mail Folder Key';	
@@ -93,9 +120,12 @@ if(mysql_num_rows($result) > 0)
 	while($ss=mysql_fetch_assoc($result))
 	{
 
- 	$smarty->assign('create',$ss);
-	}		
+ 	$create[] = $ss;
+	}
+
+	
 } 
+
 if (isset($_REQUEST['view'])) {
     $valid_views=array('metrics','email','web_internal','web','other','newsletter');
     if (in_array($_REQUEST['view'], $valid_views))
@@ -111,8 +141,8 @@ $smarty->assign('title', _('Marketing'));
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
 
-
-
+$smarty->assign('create',$create);
+$smarty->assign('value',$dbvalue);
 $smarty->assign('folder_name',$folder_name);
 $smarty->assign('edit_id',$edit_id);
 
