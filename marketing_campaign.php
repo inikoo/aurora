@@ -78,25 +78,25 @@ $create = array();
 
 
 //extract the id 
-$http = $_REQUEST['t'];
-$extract = explode('_',$http);
+$http = isset($_REQUEST['t'])?$_REQUEST['t']:'';
+
 
 //delete a folder
-$request = $_REQUEST['del'];
-$r = explode('_',$request);
+$request = isset($_REQUEST['del'])?$_REQUEST['del']:'';
 
 
-if($extract[1] > 0)
+
+if($http)
 {
-	
+	$extract = explode('_',$http);
 	$queryString = "update `Mail Folder` set `Mail Folder Name` = '".$_REQUEST['n']."' where `Mail Folder Key` = '".$extract[1]."'";
 	mysql_query($queryString);
 	
 }
 
-if($r[1] > 0)
+if($request)
 {
-	
+	$r = explode('_',$request);
 	$sqlDelete = "delete from `Mail Folder` where `Mail Folder Key` = '".$r[1]."'";
 	mysql_query($sqlDelete);
 	
