@@ -159,7 +159,7 @@ padding:10px 2px 2px 15px;
     font-weight: bold;
     text-align: center;
 
-    width:380px;
+    width:3px;
 
    
 
@@ -169,7 +169,7 @@ padding:10px 2px 2px 15px;
    background: url("../art/title-bg.gif") repeat-x scroll left bottom #FFFFFF;
     font-weight: bold;
     text-align: center;
-    width:80px;
+    width:3px;
     border-right:1px #666666 solid;
 }
 .display_campaign3{
@@ -177,9 +177,7 @@ padding:10px 2px 2px 15px;
     font-weight: bold;
     text-align: center;
 
-    width:60px;
-
-    width:80px;
+   width:3px;
 
     border-right:1px #666666 solid;
 }
@@ -187,14 +185,14 @@ padding:10px 2px 2px 15px;
    background: url("../art/title-bg.gif") repeat-x scroll left bottom #FFFFFF;
     font-weight: bold;
     text-align: center;
-    width:100px;
+    width:150px;
     border-right:1px #666666 solid;
 }
 .display_campaign5{
    background: url("../art/title-bg.gif") repeat-x scroll left bottom #FFFFFF;
     font-weight: bold;
     text-align: center;
-    width:30px;
+    width:3px;
     border-right:1px #666666 solid;
 }
 .display_campaign6{
@@ -202,7 +200,7 @@ padding:10px 2px 2px 15px;
     font-weight: bold;
     text-align: center;
 
-    width:20px;
+    width:300px;
     
 }
 .button-small{
