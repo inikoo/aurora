@@ -19,13 +19,13 @@
 </div> 	
 <div style="padding:10px 0px 0px 0px;">
 	<form action="" method="post">
-	<span style="padding-left:750px;"><select name="select_folder">
+	<span style="padding-left:750px;"><select name="select_folder" id="select_folder">
 	<option value="0">Select</option>
 	{section name="i" loop="$create"}
 		
 	<option value="folder_{$create[i].$edit_id}">{$create[i].$folder_name}</option>
 	{/section}
-	</select> &nbsp;<input type="submit" name="move" value="Move"> &nbsp; <input type="submit" name="delete" value="Delete"></span>
+	</select> &nbsp;<input type="submit" name="move" value="Move"> &nbsp; <input type="button" name="delete" value="Delete" onclick="delFolder()"></span>
 	
 <table height="520" border="0" height="100%">
 <tr>

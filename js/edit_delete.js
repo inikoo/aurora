@@ -24,5 +24,21 @@ function del(del_key)
 	location.href='marketing_campaign.php?del='+del_key;
 }
 
+function delFolder()
+{
+	var selObj;
+
+	selObj = document.getElementById('select_folder').options[document.getElementById('select_folder').selectedIndex].value;
+	var answer = confirm('Are you sure to delete this data ?');
+
+	if (answer){
+		alert("Succefully Deleted")
+		location.href='marketing_campaign.php?did='+selObj;
+	}
+	else{
+		alert("Thanks for sticking around!")
+	}
+
+}
 
 

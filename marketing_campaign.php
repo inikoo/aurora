@@ -65,6 +65,18 @@ $dbvalue = array();
 $create = array();
 
 
+//delete a folder
+$did = isset($_REQUEST['did'])?$_REQUEST['did']:'';
+if($did)
+{
+	$tt = explode('_',$did);
+
+  $query = "delete from `Email Campaign Dimension` where `Folder ID` = '".$did."'";
+  mysql_query($query);
+  $queryToDelete = "DELETE FROM `Mail Folder` WHERE `Mail Folder Key` = '".$tt[1]."'";
+  mysql_query($queryToDelete);
+}
+
 	if(isset($_POST['chkbox']))
 	{
 		foreach ($_POST['chkbox'] as $arr)
