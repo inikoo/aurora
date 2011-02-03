@@ -18,7 +18,9 @@
 
 </div> 	
 <div style="padding:10px 0px 0px 0px;"><span style="padding-left:750px;"><select name="select_folder">
-	{section name="i" loop="$create"}	
+	<option value="0">Select Folder</option>
+		{section name="i" loop="$create"}
+		
 	<option value="folder_{$create[i].$edit_id}">{$create[i].$folder_name}</option>
 	{/section}
 	</select> &nbsp;<input type="submit" name="move" value="Move"> &nbsp; <input type="submit" name="delete" value="Delete"></span>
@@ -54,7 +56,7 @@
 </form>
 </td> 
 <td>
-  <table width="730" border="2">
+  <table width="730" border="0">
 	  <tr bgcolor="#7080B1">
 	   
 	   <td class="display_campaign1">Serial</td>

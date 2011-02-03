@@ -62,13 +62,6 @@ $js_files=array(
 		);
 
 
-//get value of new folder name and all
- $ss = $_REQUEST['t'];
-
-$ee = $_GET['n'];
-
-	echo $ss,$ee; 
-	
 
 
   $sql = sprintf("select `Email Campaign Key`,`Email Campaign Status`,`Email Campaign Maximum Emails`,`Email Campaign Content` from `Email Campaign Dimension`");
@@ -84,7 +77,7 @@ $ee = $_GET['n'];
 	while($fetchArray = mysql_fetch_assoc($res))
 	{
 		
-		$value[] = $fetchArray;
+		$dbvalue[] = $fetchArray;
 
 	}
 
@@ -107,7 +100,7 @@ if (isset($_REQUEST['view'])) {
         $_SESSION['state'][$page]['view']=$_REQUEST['view'];
 
 }
-$smarty->assign('view',$_SESSION['state'][$page]['view']);
+//$smarty->assign('view',$_SESSION['state'][$page]['view']);
 
 
 
@@ -117,7 +110,7 @@ $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
 $smarty->assign('create',$create);
 
-$smarty->assign('value',$value);
+$smarty->assign('value',$dbvalue);
 $smarty->assign('folder_name',$folder_name);
 $smarty->assign('edit_id',$edit_id);
 
