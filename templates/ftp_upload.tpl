@@ -15,7 +15,7 @@
   
 <html>
 <head>
-<title>ftp uploading class</title>
+<title>{$title}</title>
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
 </head>
 
@@ -68,7 +68,7 @@
   
 <html>
 <head>
-<title>ftp uploading class</title>
+<title>{$title}</title>
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
 </head>
 
