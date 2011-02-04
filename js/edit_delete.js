@@ -40,7 +40,6 @@ function delFolder()
 		var answer = confirm('Are you sure to delete this data ?');
 
 		if (answer){
-			alert("Succefully Deleted")
 			location.href='marketing_campaign.php?did='+selObj;
 		}
 		else{
