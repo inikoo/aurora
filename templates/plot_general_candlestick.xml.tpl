@@ -3,6 +3,10 @@
 full list of available settings, check the amstock_settings.xml file in the amstock folder. -->
 
 <settings>
+  <add_time_stamp>true</add_time_stamp>                                                
+
+  
+  
   <margins>0</margins>                                                   
   <max_series>100</max_series>
 
@@ -22,6 +26,8 @@ full list of available settings, check the amstock_settings.xml file in the amst
        <short>{$graph_data.short_title}</short>
        <color>#00b8bf</color>
        <file_name>plot_data.csv.php?{$graph_data.csv_args}</file_name>
+       <compare_list_box selected="false">false</compare_list_box>
+         <main_drop_down selected="false">true</main_drop_down>
        <csv>
          <reverse>true</reverse>
          <separator>,</separator>
@@ -40,6 +46,8 @@ full list of available settings, check the amstock_settings.xml file in the amst
     {/foreach}
  
   </data_sets>
+
+
 
   <charts>
   	<chart cid="0">
@@ -72,11 +80,10 @@ full list of available settings, check the amstock_settings.xml file in the amst
         <positive_color>#B3FF66</positive_color>
         <negative_color>#db4c3c</negative_color>
         <graph_on_off>false</graph_on_off>   
-        <show_balloon>true</show_balloon>     
+        <show_balloon>false</show_balloon>     
       </legend>
 
       <column_width>70</column_width>
-        {foreach from=$graphs_data item=graph_data}
   		<graphs>
   			<graph gid="0">
   				<type>candlestick</type>
@@ -93,22 +100,29 @@ full list of available settings, check the amstock_settings.xml file in the amst
           <negative_color>db4c3c</negative_color>
   				<fill_alpha>70</fill_alpha>
   		    <legend>
-            <date key="true" title="true"><![CDATA[{$graph_data.label}:  {literal}{close}{/literal}]]></date>
+            <date key="true" title="true"><![CDATA[{$graph_data.label}  {literal}{close}{/literal}]]></date>
             <period key="true" title="true"><![CDATA[open:<b>{literal}{open}{/literal}</b> low:<b>{literal}{low}{/literal}</b> high:<b>{literal}{high}{/literal}</b> close:<b>{literal}{close}{/literal}</b>]]></period>
-            <date_comparing key="true" title="true"><![CDATA[{t}Active Customers{/t}:  <b>{literal}{close}{/literal}]]></date_comparing>
-            <period_comparing key="true" title="true"><![CDATA[{t}Active Customers{/t}: <b>{literal}{close}{/literal}]]></period_comparing>
+           
           </legend>         
   			</graph>
-  			{/foreach}
   			
   		</graphs>
   	</chart>  
   </charts>
   
-
+  
   <data_set_selector>
-    <enabled>false</enabled>
+    <position>top</position>
+    <main_drop_down_title>{t}Select{/t}:</main_drop_down_title>
+    <compare_list_box_title>{t}Show also{/t}:</compare_list_box_title>
+    <drop_down>
+      <scroller_color>C7C7C7</scroller_color>
+    </drop_down>
   </data_set_selector>
+  
+
+
+ 
   
   <period_selector>
     

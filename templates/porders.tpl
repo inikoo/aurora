@@ -1,18 +1,6 @@
 {include file='header.tpl'}
 <div id="bd" >
- <div style="float:right;border: 0px solid #ddd;text-align:right;padding:10px">
-    <form  id="prod_search_form" action="orders.php" method="GET" >
-      <label>{t}Order Search{/t}:</label><input size="12" class="text search" id="prod_search" value="" name="search"/><img onclick="document.getElementById('prod_search_form').submit()"align="absbottom" id="submit_search" class="submitsearch" src="art/icons/zoom.png" alt="Submit search">
-    </form>
-    <form action="orders.php?" method="GET" style="margin-top:10px">
-      <div style="position:relative;left:18px">{t}Interval{/t}: <input id="v_calpop1" type="text" class="text" size="11" maxlength="10" name="from" value="{$from}"/><img   id="calpop1" class="calpop" src="art/icons/calendar_view_month.png" align="absbottom" alt=""   /> <span class="calpop">&rarr;</span> <input   class="calpop" id="v_calpop2" size="11" maxlength="10"   type="text" class="text" size="8" name="to" value="{$to}"/><img   id="calpop2" class="calpop_to" src="art/icons/calendar_view_month.png" align="absbottom" alt=""   /> 
-	<img style="position:relative;right:26px" align="absbottom" src="art/icons/application_go.png" style="cursor:pointer" id="submit_interval"  xonclick="document.forms[1].submit()" alt="{t}Go{/t}" /> 
-      </div>
-    </form>
-    <div id="cal1Container" style="position:absolute;display:none; z-index:2"></div>
-    <div style="position:relative;right:-80px"><div id="cal2Container" style="display:none; z-index:2;position:absolute"></div></div>
-    <span  class="state_details"  id="show_details">{t}Orders Overview{/t}</span>
-  </div>
+
 
   <div id="top" class="top_bar">
     <div id="short_menu" class="nodetails" style="{if $show_details}display:none;{/if}width:100%;margin-bottom:0px">
