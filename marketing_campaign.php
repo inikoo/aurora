@@ -61,18 +61,68 @@ $js_files=array(
 		'js/jquery.jeditable.js'
 		);
 
+$dbvalue = array();
+$create = array();
 
-//get value of new folder name and all
- $ss = $_REQUEST['t'];
 
-$ee = $_GET['n'];
+//delete a folder
+$did = isset($_REQUEST['did'])?$_REQUEST['did']:'';
+if($did)
+{
+	$tt = explode('_',$did);
 
-	echo $ss,$ee; 
+  $query = "delete from `Email Campaign Dimension` where `Folder ID` = '".$did."'";
+  mysql_query($query);
+  $queryToDelete = "DELETE FROM `Mail Folder` WHERE `Mail Folder Key` = '".$tt[1]."'";
+  mysql_query($queryToDelete);
+}
+
+	if(isset($_POST['chkbox']))
+	{
+		foreach ($_POST['chkbox'] as $arr)
+		{
+		$query = "update `Email Campaign Dimension` set `Flag` = '1', `Folder ID` = '".$_POST['select_folder']."' where `Email Campaign Key` = '".$arr."'";
+		mysql_query($query);
+			
+		}
+	}
+
+
+
+//extract the id 
+$http = isset($_REQUEST['t'])?$_REQUEST['t']:'';
+
+
+//delete a folder
+$request = isset($_REQUEST['del'])?$_REQUEST['del']:'';
+
+
+
+if($http)
+{
+	$extract = explode('_',$http);
+	$queryString = "update `Mail Folder` set `Mail Folder Name` = '".$_REQUEST['n']."' where `Mail Folder Key` = '".$extract[1]."'";
+	mysql_query($queryString);
 	
+}
 
-
-  $sql = sprintf("select `Email Campaign Key`,`Email Campaign Status`,`Email Campaign Maximum Emails`,`Email Campaign Content` from `Email Campaign Dimension`");
-		$res = mysql_query($sql);
+if($request)
+{
+	$r = explode('_',$request);
+	$sqlDelete = "delete from `Mail Folder` where `Mail Folder Key` = '".$r[1]."'";
+	mysql_query($sqlDelete);
+	
+}
+if(isset($_REQUEST['fid']) && $_REQUEST['fid'] != '')
+{
+ $sql = sprintf("select `Email Campaign Key`,`Email Campaign Status`,`Email Campaign Maximum Emails`,`Email Campaign Content`,`Flag`,`Folder ID` from `Email Campaign Dimension` where `Flag` = '1' and `Folder ID` = '".$_REQUEST['fid']."'");	
+}
+else
+{
+ $sql = sprintf("select `Email Campaign Key`,`Email Campaign Status`,`Email Campaign Maximum Emails`,`Email Campaign Content`,`Flag`,`Folder ID` from `Email Campaign Dimension` where `Flag` = '0'");
+}
+ 
+  $res = mysql_query($sql);
 	
 	
 
@@ -80,34 +130,41 @@ $ee = $_GET['n'];
 	$smarty->assign('email','Email Campaign Maximum Emails');
 	$smarty->assign('key','Email Campaign Key');
 	$smarty->assign('content','Email Campaign Content');
-
-	while($fetchArray = mysql_fetch_assoc($res))
+	if(mysql_num_rows($res) > 0)
 	{
+		while($fetchArray = mysql_fetch_assoc($res))
+		{
 		
-		$value[] = $fetchArray;
+		$dbvalue[] = $fetchArray;
 
+		}
 	}
-
+//change email as per login credentials
 $mail = 'carlos@aw-regalos.com';	
+
 
 $folder_name = 'Mail Folder Name';
 $edit_id = 'Mail Folder Key';	
-//fetch the folders
 $sqlString = sprintf("select `Mail Folder Name`,`Mail Folder Key` from `Mail Folder` where `Mail Folder Email`='".$mail."'");
 $result = mysql_query($sqlString);
-while($ss=mysql_fetch_assoc($result))
+if(mysql_num_rows($result) > 0)
 {
+	while($ss=mysql_fetch_assoc($result))
+	{
 
-  $create[] = $ss;
-}		
- 
+ 	$create[] = $ss;
+	}
+
+	
+} 
+
 if (isset($_REQUEST['view'])) {
     $valid_views=array('metrics','email','web_internal','web','other','newsletter');
     if (in_array($_REQUEST['view'], $valid_views))
         $_SESSION['state'][$page]['view']=$_REQUEST['view'];
 
 }
-$smarty->assign('view',$_SESSION['state'][$page]['view']);
+//$smarty->assign('view',$_SESSION['state'][$page]['view']);
 
 
 
@@ -115,9 +172,9 @@ $smarty->assign('parent','home');
 $smarty->assign('title', _('Marketing'));
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
-$smarty->assign('create',$create);
 
-$smarty->assign('value',$value);
+$smarty->assign('create',$create);
+$smarty->assign('value',$dbvalue);
 $smarty->assign('folder_name',$folder_name);
 $smarty->assign('edit_id',$edit_id);
 

@@ -151,13 +151,6 @@ $smarty->assign('show_details',$_SESSION['state']['products']['details']);
 $smarty->assign('show_percentages',$_SESSION['state']['products']['percentages']);
 $smarty->assign('avg',$_SESSION['state']['products']['avg']);
 $smarty->assign('period',$_SESSION['state']['products']['period']);
-
-
-
-
-// ----------------------------products export csv right clicking code----------------------------
-
-
  $csv_export_options=array(
                             'description'=>array(
                                               'title'=>_('Description'),
@@ -209,9 +202,7 @@ $smarty->assign('period',$_SESSION['state']['products']['period']);
                             )
                             )
                         );
-$smarty->assign('export_csv_table_cols',4);
-
-                     
+$smarty->assign('export_csv_table_cols',4);                     
 $smarty->assign('csv_export_options',$csv_export_options);
 $smarty->display('products.tpl');
 ?>
