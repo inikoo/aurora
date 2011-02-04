@@ -29,14 +29,22 @@ function delFolder()
 	var selObj;
 
 	selObj = document.getElementById('select_folder').options[document.getElementById('select_folder').selectedIndex].value;
-	var answer = confirm('Are you sure to delete this data ?');
-
-	if (answer){
-		alert("Succefully Deleted")
-		location.href='marketing_campaign.php?did='+selObj;
+	
+	if(selObj == 0)
+	{
+		alert("Please select the folder first");
 	}
-	else{
-		alert("Thanks for sticking around!")
+	else
+	{	
+		
+		var answer = confirm('Are you sure to delete this data ?');
+
+		if (answer){
+			location.href='marketing_campaign.php?did='+selObj;
+		}
+		else{
+			alert("Thanks for sticking around!")
+		}
 	}
 
 }
