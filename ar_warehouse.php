@@ -1406,9 +1406,12 @@ function list_warehouses(){
      $order='`Warehouse Name`';
    elseif($order=='code')
      $order='`Warehouse Code`';
- 
-
- 
+ elseif($order=='locations')
+     $order='`Warehouse Number Locations`';
+elseif($order=='areas')
+     $order='`Warehouse Number Areas`';
+ elseif($order=='shelfs')
+     $order='`Warehouse Number Shelfs`';
    $sql="select *  from `Warehouse Dimension` $where $wheref order by $order $order_direction limit $start_from,$number_results    ";
    // print $sql;
    $res = mysql_query($sql);
@@ -1420,13 +1423,19 @@ function list_warehouses(){
    while($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
      $code=sprintf('<a href="warehouse.php?id=%d">%s</a>',$row['Warehouse Key'],$row['Warehouse Code']);
      $name=sprintf('<a href="warehouse.php?id=%d">%s</a>',$row['Warehouse Key'],$row['Warehouse Name']);
-     //$locations=number($row['Locations']);
-   
+     $locations=number($row['Warehouse Number Locations']);
+        $areas=number($row['Warehouse Number Areas']);
+     $shelfs=number($row['Warehouse Number Shelfs']);
+
     $adata[]=array(
             'id'=>$row['Warehouse Key'],
 		   'code'=>$code,
 		   'name'=>$name,
-		   //'locations'=>$locations,
+		   'locations'=>$locations,
+		    'areas'=>$areas,
+		   'shelfs'=>$shelfs
+
+		   
 		   //'description'=>$row['Warehouse Area Description']
 		   );
   }

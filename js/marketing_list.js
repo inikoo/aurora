@@ -1,6 +1,3 @@
-
-
-
 function validate_form()
 {
 	var check=validate();
@@ -231,5 +228,6 @@ function show_group()
 {
 	document.getElementById('list_or_group').style.display = 'none';
 	document.getElementById('group_div').style.display = 'block';
+	document.getElementById('new_list').style.display = 'none';
 }
 

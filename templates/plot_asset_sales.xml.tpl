@@ -154,7 +154,7 @@
        data set with others. If you don't want this data set to appear in a "compare" list box, set
        this setting to false. "selected" attribute defines whether you want this data set to be 
        selected for comparing when the chart is loaded -->
-       <compare_list_box selected="false"></compare_list_box>
+       <compare_list_box>false</compare_list_box>
        
        <!-- configuration of data csv file. Using these settings you can make the chart to accept
        almost any configuration of csv file -->   

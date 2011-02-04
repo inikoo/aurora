@@ -43,7 +43,7 @@ class product extends DB_Table {
   public $mode='pid';
   public $system_format=true;
   public $msg='';
- public $images_slideshow=array();
+  public $images_slideshow=array();
  
  public $new_value=false;
  public $new_part_list=false;
