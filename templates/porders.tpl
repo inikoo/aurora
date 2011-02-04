@@ -1,62 +1,171 @@
 {include file='header.tpl'}
 <div id="bd" >
- <div style="float:right;border: 0px solid #ddd;text-align:right;padding:10px">
-    <form  id="prod_search_form" action="orders.php" method="GET" >
-      <label>{t}Order Search{/t}:</label><input size="12" class="text search" id="prod_search" value="" name="search"/><img onclick="document.getElementById('prod_search_form').submit()"align="absbottom" id="submit_search" class="submitsearch" src="art/icons/zoom.png" alt="Submit search">
-    </form>
+ {include file='porders_navigation.tpl'}
+
+
+
+
+  <div  id="orders_table" class="data_table" style="{if $view!='orders'}display:none{/if};clear:both">
+    <span class="clean_table_title">{t}Purchse Order List{/t}</span>
+    
+{*    <div id="table_type" class="table_type">
+        <div  style="font-size:90%"   id="dispatch_chooser" style="display:{if $view!='orders'}none{/if}">
+            <span  id="export_csv0" style="float:right;margin-left:20px"  class="table_type state_details" tipo="orders" >{t}Export (CSV){/t}</span> 
+            <span style="float:right;margin-left:20px" class="table_type dispatch state_details {if $dispatch=='all_orders'}selected{/if}"  id="restrictions_all_orders" table_type="all_orders"  >{t}All Orders{/t} ({$store->get('Total Orders')})</span>
+            <span style="float:right;margin-left:20px" class="table_type dispatch  state_details {if $dispatch=='in_process'}selected{/if}"  id="restrictions_orders_in_process" table_type="in_process"   >{t}In Process{/t} ({$store->get('Orders In Process')})</span>
+            <span style="float:right;margin-left:20px" class="table_type dispatch state_details {if $dispatch=='dispatched'}selected{/if}"  id="restrictions_orders_dispatched"  table_type="dispatched"  >{t}Dispatched{/t} ({$store->get('Dispatched Orders')})</span>
+            <span style="float:right;margin-left:20px" class="table_type dispatch state_details {if $dispatch=='unknown'}selected{/if}"  id="restrictions_orders_unknown"  table_type="unknown"  >{t}Unknown{/t} ({$store->get('Unknown Orders')})</span>
+            <span style="float:right;margin-left:20px" class="table_type dispatch state_details {if $dispatch=='cancelled'}selected{/if}"  id="restrictions_orders_cancelled"  table_type="cancelled"  >{t}Cancel{/t} ({$store->get('Cancelled Orders')})</span>
+            <span style="float:right;margin-left:20px" class="table_type dispatch state_details {if $dispatch=='suspended'}selected{/if}"  id="restrictions_orders_suspended"  table_type="suspended"  >{t}Suspended{/t} ({$store->get('Suspended Orders')})</span>
+
+        </div>
+     </div>
+ *}    
+    
+     <div id="list_options0"> 
+      <div style="clear:both;margin:0 0px;padding:0 20px ;border-bottom:1px solid #999"></div>
+      
+      <div style="">
+   <table  style="float:left;margin:0 0 0 0px ;padding:0;clear:left"  class="options_mini" >
+     
+     
+    
+
+   </table>
+</div>
+    <div style="float:right;margin-top:0px;padding:0px;font-size:90%;position:relative;top:-7px">  
     <form action="orders.php?" method="GET" style="margin-top:10px">
-      <div style="position:relative;left:18px">{t}Interval{/t}: <input id="v_calpop1" type="text" class="text" size="11" maxlength="10" name="from" value="{$from}"/><img   id="calpop1" class="calpop" src="art/icons/calendar_view_month.png" align="absbottom" alt=""   /> <span class="calpop">&rarr;</span> <input   class="calpop" id="v_calpop2" size="11" maxlength="10"   type="text" class="text" size="8" name="to" value="{$to}"/><img   id="calpop2" class="calpop_to" src="art/icons/calendar_view_month.png" align="absbottom" alt=""   /> 
-	<img style="position:relative;right:26px" align="absbottom" src="art/icons/application_go.png" style="cursor:pointer" id="submit_interval"  xonclick="document.forms[1].submit()" alt="{t}Go{/t}" /> 
+     <div style="position:relative;left:18px"><span id="clear_interval" style="font-size:80%;color:#777;cursor:pointer;{if $to=='' and $from=='' }display:none{/if}">{t}clear{/t}</span> {t}Interval{/t}: <input id="v_calpop1" type="text" class="text" size="11" maxlength="10" name="from" value="{$from}"/><img   id="calpop1" class="calpop" src="art/icons/calendar_view_month.png" align="absbottom" alt=""   /> <span class="calpop">&rarr;</span> <input   class="calpop" id="v_calpop2" size="11" maxlength="10"   type="text" class="text" size="8" name="to" value="{$to}"/><img   id="calpop2" class="calpop_to" src="art/icons/calendar_view_month.png" align="absbottom" alt=""   /> 
+	<img style="position:relative;right:26px;cursor:pointer;height:15px" align="absbottom" src="art/icons/application_go.png" style="cursor:pointer" id="submit_interval"  xonclick="document.forms[1].submit()" alt="{t}Go{/t}" /> 
       </div>
-    </form>
+    </form> 
     <div id="cal1Container" style="position:absolute;display:none; z-index:2"></div>
     <div style="position:relative;right:-80px"><div id="cal2Container" style="display:none; z-index:2;position:absolute"></div></div>
-    <span  class="state_details"  id="show_details">{t}Orders Overview{/t}</span>
-  </div>
+      </div>
+      
 
-  <div id="top" class="top_bar">
-    <div id="short_menu" class="nodetails" style="{if $show_details}display:none;{/if}width:100%;margin-bottom:0px">
-      <table style="float:left;margin:0 0 0 20px ;padding:0"  class="options" >
-	<tr>
-	  <td  {if $view=='all'}class="selected"{/if} id="all" >{t}Orders{/t}</td>
-	  <td {if $view=='invoices'}class="selected"{/if}  id="invoices"  >{t}Invoices{/t}</td>
-	  <td style="padding:0;font-weight:100;color:#777;padding:0 0 0 25px;cursor:default;;border:none"><span  class="state_details"  id="show_details">{t}show only{/t}</span></td>
-
-	  <td  style="" {if $view=='in_process'}class="selected"{/if}  id="in_process"  >{t}In Process{/t}</td>
-	  <td  style="" {if $view=='cancelled'}class="selected"{/if}  id="cancelled"  >{t}Cancelled{/t}</td>
-
-	  
-
-	</tr>
-      </table>
     </div>
     
-    <div id="details" class="details" style="{if !$show_details}display:none;{/if}">
-	<div id="details_all" style="font-size:90%;margin-top:10px" {if $view!='all'} style="display:none"{/if}></div>
-	<div id="details_invoices" style="font-size:90%;margin-top:10px" {if $view!='invoides'} style="display:none"{/if}></div>
-	<div id="details_in_process" style="font-size:90%;margin-top:10px" {if $view!='in_process'} style="display:none"{/if}></div>
-	<div id="details_cancelled" style="font-size:90%;margin-top:10px" {if $view!='cancelled'} style="display:none"{/if}></div>
-	</div>
-  </div>
-  
-  
-  
-  
-  <div class="data_table" style="margin:25px 20px;">
-    <span class="clean_table_title">{t}{$table_title}{/t}</span>
-    <div  class="clean_table_caption"  style="clear:both;">
-      <div style="float:left;"><div id="table_info0" class="clean_table_info"><span id="rtext0"></span> <span class="filter_msg"  id="filter_msg0"></span></div></div>
-      <div class="clean_table_filter"  id="clean_table_filter0"><div class="clean_table_info"><span id="filter_name0" class="filter_name" >{$filter_name}</span>: <input style="border-bottom:none" id='f_input0' value="{$filter_value}" size=10/><div id='f_container'></div></div></div>
-      <div class="clean_table_controls" style="" ><div><span  style="margin:0 5px" id="paginator"></span></div></div>
-    </div>
+    <br>
+   
+     {include file='table_splinter.tpl' table_id=0 filter_name=$filter_name0 filter_value=$filter_value0  }
+
     <div  id="table0"   class="data_table_container dtable btable "> </div>
+  
+  
   </div>
   
   
+   <div  id="invoices_table"   class="data_table" style="{if $view!='invoices'}display:none{/if};clear:both">
+    <span class="clean_table_title">{t}Invoice List{/t}</span>
+     <div id="table_type" class="table_type">
+
+<span  id="export_csv1" style="float:right;margin-left:20px"  class="table_type state_details" tipo="invoices" >{t}Export (CSV){/t}</span>
+        <div  style="font-size:90%"   id="invoice_chooser"  style="display:{if $view!='orders'}none{/if}">
+           
+            <span style="float:right;margin-left:20px" class="table_type invoice_type state_details {if $invoice_type=='all'}selected{/if}"  id="restrictions_all_invoices" table_type="all"  >{t}All{/t} ({$store->get('Total Invoices')})</span>
+            <span style="float:right;margin-left:20px" class="table_type invoice_type state_details {if $invoice_type=='invoices'}selected{/if}"  id="restrictions_invoices" table_type="invoices"   >{t}Invoices{/t} ({$store->get('Invoices')})</span>
+            <span style="float:right;margin-left:20px" class="table_type invoice_type state_details {if $invoice_type=='refunds'}selected{/if}"  id="restrictions_refunds"  table_type="refunds"  >{t}Refunds{/t} ({$store->get('Refunds')})</span>
+            <span style="float:right;margin-left:20px" class="table_type invoice_type state_details {if $invoice_type=='to_pay'}selected{/if}"  id="restrictions_to_pay"  table_type="to_pay"  >{t}To pay{/t} ({$store->get('All To Pay Invoices')})</span>
+            <span style="float:right;margin-left:20px" class="table_type invoice_type state_details {if $invoice_type=='paid'}selected{/if}"  id="restrictions_paid"  table_type="paid"  >{t}Paid{/t} ({$store->get('All Paid Invoices')})</span>
+        </div>
+     </div>
+
+
+
+    <div id="list_options0"> 
+      <div style="clear:both;margin:0 0px;padding:0 20px ;border-bottom:1px solid #999"></div>
+   
+    <div style="float:right;margin-top:0px;padding:0px;font-size:90%;position:relative;top:-7px">  
+    <form action="orders.php?" method="GET" style="margin-top:10px">
+      <div style="position:relative;left:18px">
+      <span id="clear_intervali" style="font-size:80%;color:#777;cursor:pointer;{if $to=='' and $from=='' }display:none{/if}">{t}clear{/t}
+      </span> {t}Interval{/t}: <input id="v_calpop1i" type="text" class="text" size="11" maxlength="10" name="from" value="{$from}"/>
+      <img   id="calpop1i" class="calpop" src="art/icons/calendar_view_month.png" align="absbottom" alt=""   /> 
+      <span class="calpop">&rarr;</span> 
+      <input   class="calpop" id="v_calpop2i" size="11" maxlength="10"   type="text" class="text" size="8" name="to" value="{$to}"/>
+      <img   id="calpop2i" class="calpop_to" src="art/icons/calendar_view_month.png" align="absbottom" alt=""   /> 
+	<img style="position:relative;right:26px;cursor:pointer;height:15px" align="absbottom" src="art/icons/application_go.png" style="cursor:pointer" id="submit_intervali"  xonclick="document.forms[1].submit()" alt="{t}Go{/t}" /> 
+      </div>
+    </form>
+    <div id="cal1iContainer" style="position:absolute;display:none; z-index:2"></div>
+    <div style="position:relative;right:-80px"><div id="cal2iContainer" style="display:none; z-index:2;position:absolute"></div></div>
+      </div>
+    
+    </div>
+    
+    
+    
+    {include file='table_splinter.tpl' table_id=1 filter_name=$filter_name1 filter_value=$filter_value1  }
+
+   
+    
+    <div  id="table1"   class="data_table_container dtable btable "> </div>
+ 
+</div>
+
+ <div   id="dn_table"  class="data_table" style="{if $view!='dn'}display:none{/if};clear:both">
+    <span class="clean_table_title">{t}Incoming Delivery Notes List{/t}</span>
+    
+      {*  
+<div style="font-size:90%"  id="dn_table_type" class="table_type">
+   <span  id="export_csv2" style="float:right;margin-left:20px"  class="table_type state_details" tipo="dn" >{t}Export (CSV){/t}</span>
+            <span style="float:right;margin-left:20px" class="table_type dn_view state_details {if $dn_state_type=='all'}selected{/if}"  id="restrictions_dn_all" table_type="all"  >{t}All{/t} ({$store->get('Total Orders')})</span>
+            <img onClick="change_dn_view(this)" state="{$dn_view}"   style="cursor:pointer;float:right;margin-left:20px;position:relative;top:5px;" src="art/icons/previous.png" alt="x"/>
+           <div id="dn_view_state_chooser"    style="{if $dn_view!='dn_state'}display:none{/if}">
+           <span style="float:right;margin-left:20px" class="table_type dn_view state_details {if $dn_state_type=='returned'}selected{/if}"  id="restrictions_dn_returned"  table_type="returned"  >{t}Return{/t} ({$store->get('Returned Delivery Notes')})</span>
+            <span style="float:right;margin-left:20px" class="table_type dn_view state_details {if $dn_state_type=='send'}selected{/if}"  id="restrictions_dn_send"  table_type="send"  >{t}Send{/t} ({$store->get('Dispatched Delivery Notes')})</span>
+            <span style="float:right;margin-left:20px" class="table_type dn_view state_details {if $dn_state_type=='ready'}selected{/if}"  id="restrictions_dn_ready"  table_type="ready"  >{t}Ready{/t} ({$store->get('Ready to dn_view Delivery Notes')})</span>
+            <span style="float:right;margin-left:20px" class="table_type dn_view state_details {if $dn_state_type=='packing'}selected{/if}"  id="restrictions_dn_packing"  table_type="packing"  >{t}Packing{/t} ({$store->get('Packing Delivery Notes')})</span>
+            <span style="float:right;margin-left:20px" class="table_type dn_view state_details {if $dn_state_type=='picking'}selected{/if}"  id="restrictions_dn_picking"  table_type="picking"  >{t}Picking{/t} ({$store->get('Picking Delivery Notes')})</span>
+            <span style="float:right;margin-left:20px" class="table_type dn_view  state_details {if $dn_state_type=='ready_to_pick'}selected{/if}"  id="restrictions_dn_ready_to_pick" table_type="ready_to_pick"   >{t}To Pick{/t} ({$store->get('Ready to Pick Delivery Notes')})</span>
+            </div>
+             <div id="dn_view_type_chooser" style="{if $dn_view!='dn_type'}display:none{/if}">
+            <span style="float:right;margin-left:20px" class="table_type dn_view state_details {if $dn_state_type=='shortages'}selected{/if}"  id="restrictions_dn_shortages"  table_type="shortages"  >{t}Shortages{/t} ({$store->get('Delivery Notes For Shortages')})</span>
+            <span style="float:right;margin-left:20px" class="table_type dn_view state_details {if $dn_state_type=='replacements'}selected{/if}"  id="restrictions_dn_replacements"  table_type="replacements"  >{t}Replacements{/t} ({$store->get('Delivery Notes For Replacements')})</span>
+            <span style="float:right;margin-left:20px" class="table_type dn_view state_details {if $dn_state_type=='donations'}selected{/if}"  id="restrictions_dn_donations"  table_type="donations"  >{t}Donations{/t} ({$store->get('Delivery Notes For Donations')})</span>
+            <span style="float:right;margin-left:20px" class="table_type dn_view state_details {if $dn_state_type=='samples'}selected{/if}"  id="restrictions_dn_samples"  table_type="samples"  >{t}Samples{/t} ({$store->get('Delivery Notes For Samples')})</span>
+            <span style="float:right;margin-left:20px" class="table_type dn_view  state_details {if $dn_state_type=='orders'}selected{/if}"  id="restrictions_dn_orders" table_type="orders"   >{t}Orders{/t} ({$store->get('Delivery Notes For Orders')})</span>
+            </div>
+            
+     </div>
+*}
+    <div id="list_options0"> 
+      <div style="clear:both;margin:0 0px;padding:0 20px ;border-bottom:1px solid #999"></div>
+      <div style="">
+   
+</div>
+    <div style="float:right;margin-top:0px;padding:0px;font-size:90%;position:relative;top:-7px">  
+    <form action="orders.php?" method="GET" style="margin-top:10px">
+      <div style="position:relative;left:18px">
+      <span id="clear_intervaldn" style="font-size:80%;color:#777;cursor:pointer;{if $to=='' and $from=='' }display:none{/if}">{t}clear{/t}
+      </span> {t}Interval{/t}: <input id="v_calpop1dn" type="text" class="text" size="11" maxlength="10" name="from" value="{$from}"/>
+      <img   id="calpop1dn" class="calpop" src="art/icons/calendar_view_month.png" align="absbottom" alt=""   /> 
+      <span class="calpop">&rarr;</span> 
+      <input   class="calpop" id="v_calpop2dn" size="11" maxlength="10"   type="text" class="text" size="8" name="to" value="{$to}"/>
+      <img   id="calpop2dn" class="calpop_to" src="art/icons/calendar_view_month.png" align="absbottom" alt=""   /> 
+	<img style="position:relative;right:26px;cursor:pointer;height:15px" align="absbottom" src="art/icons/application_go.png" style="cursor:pointer" id="submit_intervaldn"   alt="{t}Go{/t}" /> 
+      </div>
+    </form>
+    <div id="cal1dnContainer" style="position:absolute;display:none; z-index:2"></div>
+    <div style="position:relative;right:-80px"><div id="cal2dnContainer" style="display:none; z-index:2;position:absolute"></div></div>
+      </div>
+    
+    </div>
+
+    
+    {include file='table_splinter.tpl' table_id=2 filter_name=$filter_name2 filter_value=$filter_value2  }
+
+    
+   
+    <div  id="table2"   class="data_table_container dtable btable "> </div>
+ 
+
   
   
 </div>
 
+</div>
 <div id="filtermenu0" class="yuimenu">
   <div class="bd">
     <ul class="first-of-type">
@@ -78,5 +187,8 @@
     </ul>
   </div>
 </div>
+{include file='export_csv_menu_splinter.tpl' id=0 cols=$export_csv_table_cols session_address="orders-table-csv_export0" export_options=$csv_export_options0 }
+{include file='export_csv_menu_splinter.tpl' id=1 cols=$export_csv_table_cols1 session_address="orders-table-csv_export1" export_options=$csv_export_options1 }
+{include file='export_csv_menu_splinter.tpl' id=2 cols=$export_csv_table_cols2 session_address="orders-table-csv_export2" export_options=$csv_export_options2 }
 
 {include file='footer.tpl'}
