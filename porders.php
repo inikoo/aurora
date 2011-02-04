@@ -330,6 +330,7 @@ $smarty->assign('csv_export_options1',$csv_export_options1);
                             )
                             )
 
+
                         );
 $smarty->assign('export_csv_table_cols2',4);
 $smarty->assign('csv_export_options2',$csv_export_options2);

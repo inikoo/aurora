@@ -159,9 +159,34 @@ while ($row2=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
                               'Quantity To Move'=>'all'
                           );
                     $part_location->move_stock($data);
-
+                    print "Message:".$part_location->msg."\n";
                 }
 
+
+
+
+            } else {
+                print "STORING ".$row['code']." $product_code  LOC: ".$location->id." SKU: $sku \n";
+                $part_location=new PartLocation('find',array('Part SKU'=>$sku,'Location Key'=>$location->id),'create');
+
+                //$part_location->associate();
+
+
+// $location->load('parts_data');
+            }
+            $primary=false;
+
+
+        }
+  
+    }
+    mysql_free_result($result2xxx);
+
+}
+mysql_free_result($result);
+
+
+/*
 
                 if (false) {
                     switch ($num_associated) {
@@ -257,28 +282,7 @@ while ($row2=mysql_fetch_array($result, MYSQL_ASSOC)   ) {
                     }
 
                 }
-
-            } else {
-                print "STORING ".$row['code']." $product_code  LOC: ".$location->id." SKU: $sku \n";
-                $part_location=new PartLocation('find',array('Part SKU'=>$sku,'Location Key'=>$location->id),'create');
-
-                //$part_location->associate();
-
-
-// $location->load('parts_data');
-            }
-            $primary=false;
-
-
-        }
-
-    }
-    mysql_free_result($result2xxx);
-
-}
-mysql_free_result($result);
-
-
-
+                
+                */
 
 ?>
