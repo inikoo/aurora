@@ -1013,11 +1013,7 @@ $default_state=array(
                    'warehouse'=>array(
                                    'id'=>1,
                                    'edit'=>'description',
-
-
-
-
-                                   'display'=>array('details'=>0,'plot'=>1,'orders'=>0,'customers'=>0,'stock_history'=>0),
+                                   'view'=>'locations',
 
                                    'stock_history'=>array(
                                                        'order'=>'date',

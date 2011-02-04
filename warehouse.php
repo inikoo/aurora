@@ -19,19 +19,12 @@ if(!($user->can_view('warehouses') and in_array($warehouse_id,$user->warehouses)
 }
 $modify=$user->can_edit('warehouses');
 $smarty->assign('view_parts',$user->can_view('parts'));
-$show_details=$_SESSION['state']['store']['details'];
-$smarty->assign('show_details',$show_details);
 get_header_info($user,$smarty);
 
 $general_options_list=array();
 if($modify or true)
 
   $general_options_list[]=array('tipo'=>'url','url'=>'edit_warehouse.php','label'=>_('Edit Warehouse'));
-  $general_options_list[]=array('tipo'=>'url','url'=>'warehouse_stock_history.php','label'=>_('Stock History'));
-
-$general_options_list[]=array('tipo'=>'js','state'=>$show_details,'id'=>'details','label'=>($show_details?_('Hide Details'):_('Show Details')));
-$general_options_list[]=array('tipo'=>'js','state'=>$show_details,'id'=>'details','label'=>($show_details?_('Hide Map'):_('Show Map')));
-
 
 $smarty->assign('search_label',_('Locations'));
 $smarty->assign('search_scope','locations');
@@ -40,6 +33,7 @@ $smarty->assign('search_scope','locations');
 $smarty->assign('general_options_list',$general_options_list);
 
 
+$smarty->assign('view',$_SESSION['state']['warehouse']['view']);
 
 
 $css_files=array(
