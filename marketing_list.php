@@ -38,10 +38,9 @@ $css_files=array(
 		 'button.css',
 		 'container.css',
 		 'table.css',
-		'css/create_list.css',
-		
-     		'css/marketing_menu.css',
-		'css/marketing_campaigns.css'
+		 'css/create_list.css',
+		 'css/marketing_menu.css',
+		 'css/marketing_campaigns.css'
 		
 		 );
 $js_files=array(
@@ -60,9 +59,7 @@ $js_files=array(
 		'common.js.php',
 		'table_common.js.php',
 		'js/search.js',
-		'js/marketing_list.js',
-		
-		
+		'js/marketing_list.js',		
 		);
 
 
@@ -74,7 +71,70 @@ if (isset($_REQUEST['view'])) {
 
 }
 
-$list_sql=mysql_query("SELECT `Campaign Key`, `Campaign Name` FROM `Campaign Dimension`");
+
+// adding  new list
+if(isset($_POST['save_list'])){ 
+
+  $list_name = trim($_POST['list_name']);
+  $default_from_name = trim($_POST['default_name']);
+  $default_reply_to_email = trim($_POST['default_email']);
+  $default_subject = trim($_POST['default_subject']);	
+  $permission_reminder_list = trim($_POST['permission_reminder_list']);
+  $reminder_text = trim($_POST['description']);
+  $people_subscribe = trim($_POST['subscribe']);
+  $people_unsubscribe = trim($_POST['unsubscribe']);
+  $pick_email_format = trim($_POST['email_format']);
+  $activate_social_pro = trim($_POST['social_pro']);
+
+
+ $sql = "INSERT INTO `kaktus`.`Email Campaign Mailing List` (`List Name` ,`Default From Name` ,`Default Reply To Email` ,`Default Subject` ,`Permission Reminder List` ,`Reminder Text` ,`People Subscribe` ,`People Unsubscribe` ,`Pick Email Format` ,`Activate Social Pro`)VALUES (
+'$list_name', '$default_from_name', '$default_reply_to_email ', '$default_subject ', '$permission_reminder_list', '$reminder_text', '$people_subscribe', '$people_unsubscribe', '$pick_email_format', '$activate_social_pro');";
+	
+mysql_query($sql);
+
+
+}
+
+// adding new group
+if(isset($_POST['save_group'])){ 
+
+	$group_name_arr = array();
+
+	$list_group = trim($_POST['list_group']);
+	$how_show_options = trim($_POST['how_show_options']);
+ 	$group_title = trim($_POST['group_title']);
+  	
+	$group_name_arr[0] = trim($_POST['group_name0']);
+	$group_name_arr[1] = trim($_POST['group_name1']);
+	$group_name_arr[2] = trim($_POST['group_name2']);
+	$group_name_arr[3] = trim($_POST['group_name3']);
+	$group_name_arr[4] = trim($_POST['group_name4']);
+	
+	$group_key = time().mt_rand(111, 999);	
+	
+
+	$sql_1 = "INSERT INTO `Email Campaign Group Titile` (`Email Campaign Group Key` ,`Email List Key` ,`How Show Options` ,
+`Group Title`)VALUES ('$group_key' , '$list_group ', '$how_show_options', '$group_title');";
+	
+	mysql_query($sql_1);
+	
+	foreach($group_name_arr as $group_name){
+	
+	if(trim($group_name) == ''){
+		continue;
+	}
+		
+	$sql_2 = "INSERT INTO `Email Campaign Group Titile Name Bridge` (`Email Campaign Group Key` ,
+`Group Name`)VALUES ('$group_key', '$group_name');";
+
+	mysql_query($sql_2);
+       }
+	
+
+	unset($group_name_arr);
+}
+
+$list_sql=mysql_query("SELECT `Email Campaign Mailing List Key`, `List Name` FROM `Email Campaign Mailing List`");
 $i=0;
 $list=array();
 while($list_name=mysql_fetch_array($list_sql))
