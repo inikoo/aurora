@@ -55,7 +55,8 @@ $css_files=array(
 		 'button.css',
 		 'container.css',
 		 'table.css',
-		 'css/edit.css'
+		 'css/edit.css',
+		 'css/dropdown.css'
 		 );
 $js_files=array(
 
@@ -71,7 +72,8 @@ $js_files=array(
 		'table_common.js.php',
 		'js/edit_common.js',
 		'edit_warehouse_shelf.js.php',
-		'edit_warehouse.js.php'
+		'edit_warehouse.js.php',
+		'js/dropdown.js'
 		);
 
  

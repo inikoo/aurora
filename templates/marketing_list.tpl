@@ -41,9 +41,9 @@
 	</div>
 	<div id="block_other" style="{if $view!='other'}display:none;{/if}clear:both;margin:20px 0 40px 0;padding:0 20px">
 	</div>
-	<div id="check_div">Please Check Your Entry And Try Again</div>
+	<div id="check_div" style="display:none;">Please Check Your Entry And Try Again</div>
 	<div id="left_panel">
-		<a onClick="" style="text-decoration:none; cursor:pointer"><div id="create_new_list">Create New List
+		<a onClick="" style="text-decoration:none; cursor:pointer;"><div id="create_new_list">Create New List
 		</div></a><br>
 		<div id="view_list" style="text-decoration:none; cursor:pointer">View Lists
 		</div><br>
@@ -108,29 +108,63 @@
 	</div>
 	<div id="group_div" class="main_div" style="display:none">
 		<h2>Create Group</h2><br>
+		<form action="" method="post" name="group_form">
 		These groups go in which list?<br>
 
-		<select style="clear: both; width: 50%;">
-  		<option value="choose">Choose a list</option>
- 		</select> <br><br>
+		<select id="list_group" name="list_group">
+  		<option value="">Choose a list</option>
+		{foreach from=$list item=list_item}
+  		<option value="{$list_item[0]}">{$list_item[1]}</option>
+		{/foreach}
+ 		
+		</select> <br><br>
 		How should we show group options on your signup form?<br>
-		<select style="clear: both; width: 50%;">
-  		<option value="choose">Choose a list</option>
+		<select id="how_show_options" name="how_show_options" style="clear: both; width: 50%;">
+  		<option value="checkboxes">as checkboxes (people can select more than one)</option>
+		<option value="radio">as radio buttons (people can select just one)</option>
+		<option value="dropdown">as a select menu (people can select just one)</option>
+		<option value="none">don't show these groups on my signup form</option> 
  		</select> <br><br>
 		Group Title<br>
-		<input type="text" name="group_title" id="group_title" class="av_text" style="width:670px;"">
-		<div id="group_msg" class="invalid-error">Example: "Interested in ..." or "Food Preferences".</div>
+		<input type="text" name="group_title" id="group_title" class="av_text" style="width:670px;">
+		<div id="group_msg" class="invalid-error" style="display:none";>Example: "Interested in ..." or "Food Preferences".</div>
 		<div id="add_group"style="border:1px solid #AAAAAA; padding-left:10px; padding-right:10px; "></div>
 		
-		<a style="cursor: pointer; text-decoration:underline; font-size: 14px;" onClick="CreateTextbox()">+ add group</a><br><br>
+		<div id="d0" style="display:block;"><div style="padding-top:20px;">Group Name</div>
+		<input type="text" name="group_name0" id="group_name0" class="av_text" style="width:670px;">
+		<div id="group_msg" class="invalid-error" style="width:570px; display:none;">Example: "New products" or "Vegetarian"</div>
+		<div id="add_group"style="border:1px solid #AAAAAA; padding-left:10px; padding-right:10px; "></div></div>
+
+		<div id="d1" style="display:none;"><div style="padding-top:20px;">Group Name</div>
+		<input type="text" name="group_name1" id="group_name1" class="av_text" style="width:670px;">
+		<div id="group_msg" class="invalid-error" style="width:570px; display:none;">Example: "New products" or "Vegetarian"</div>
+		<div id="add_group"style="border:1px solid #AAAAAA; padding-left:10px; padding-right:10px; "></div></div>
+			
+		<div id="d2" style="display:none;"><div style="padding-top:20px;">Group Name</div>
+		<input type="text" name="group_name2" id="group_name2" class="av_text" style="width:670px;">
+		<div id="group_msg" class="invalid-error" style="width:570px; display:none;">Example: "New products" or "Vegetarian"</div>
+		<div id="add_group"style="border:1px solid #AAAAAA; padding-left:10px; padding-right:10px; "></div></div>
+
+		<div id="d3" style="display:none;"><div style="padding-top:20px;">Group Name</div>
+		<input type="text" name="group_name3" id="group_name3" class="av_text" style="width:670px;">
+		<div id="group_msg" class="invalid-error" style="width:570px; display:none;">Example: "New products" or "Vegetarian"</div>
+		<div id="add_group"style="border:1px solid #AAAAAA; padding-left:10px; padding-right:10px; "></div></div>
+
+		<div id="d4" style="display:none;"><div style="padding-top:20px;">Group Name</div>
+		<input type="text" name="group_name4" id="group_name4" class="av_text" style="width:670px;">
+		<div id="group_msg" class="invalid-error" style="width:570px; display:none;">Example: "New products" or "Vegetarian"</div>
+		<div id="add_group"style="border:1px solid #AAAAAA; padding-left:10px; padding-right:10px; "></div></div>
 		
+		<a style="cursor: pointer; text-decoration:underline; font-size: 14px;">+ add group</a><br><br>
+
 		<div style="padding-left:10px;">		
 			<div class="list_bt" style=" float: left;">
-  			<input type="button" value="Save" name="save_group" id="save_group" onClick=""/>
+  			<input type="submit" value="Save" name="save_group" id="save_group"/>
   			</div>
 			<div style="padding-left:70px;">		
 			<div class="list_bt">
-  			<input type="button" value="Cancel" name="cancel_group" id="cancel_group" onClick="document.getElementById('group_div').style.display = 'none';"/>
+  			<input type="button" value="Cancel" name="cancel_group" id="cancel_group" onClick="document.location='marketing.php'; return false;"/>
+		
   			</div>
 			</div>
 		</div>
@@ -140,34 +174,34 @@
 
 		<div id="list_div" class="sub_head">List Name</div>
 		<div id="name_div"><input type="text" name="list_name" id="list_name" class="av_text" style="width:670px;" onClick="show('list_msg');"></div>
-		<div id="list_msg" class="invalid-error">Please enter a value</div>  <br>
+		<div id="list_msg" class="invalid-error" style="display:none;">Please enter a value</div>  <br>
 
 		<div id="default_name_div" class="sub_head">Default from Name</div>
 		<input type="text" name="default_name" id="default_name" class="av_text" style="width:670px;"  onClick="show('default_name_msg');">  
-		<div id="default_name_msg" class="invalid-error">Use something recognizable</div> <br><br>
+		<div id="default_name_msg" class="invalid-error" style="display:none;">Use something recognizable</div> <br><br>
 
 		<div id="email_div" class="sub_head">Default reply-to email</div>
 		<input type="text" name="default_email" id="default_email" class="av_text" style="width:670px;"  onClick="show('email_msg');">  
-		<div id="email_msg" class="invalid-error">This is the address, people will reply to.</div><br><br>
+		<div id="email_msg" class="invalid-error" style="display:none;">This is the address, people will reply to.</div><br><br>
 	
 		<div ="subject_div" class="sub_head">Default subject</div>
 		<input type="text" name="default_subject" id="default_subject" class="av_text" style="width:670px;"  onClick="show('subject_msg');">  
-		<div id="subject_msg" class="invalid-error">Keep it relevent and non-spammy</div> <br><br>
+		<div id="subject_msg" class="invalid-error" style="display:none;">Keep it relevent and non-spammy</div> <br><br>
 	
 	
 		<div id="remind_div" class="sub_head">Remind people how they got on your list *</div>
 		<div id="permission_list" style="width:250px; float: left;" >Copy permission reminder from other list</div> 
-		<select onClick="show('remind_msg')">
-  		<option value="choose">Choose a list</option>
+		<select id="permission_reminder_list" name="permission_reminder_list" onClick="show('remind_msg')">
+  		<option value="">Choose a list</option>
 		{foreach from=$list item=list_item}
-  		<option value="{$list_item[1]}">{$list_item[1]}</option>
+  		<option value="{$list_item[0]}">{$list_item[1]}</option>
 		{/foreach}
  		
 		</select> <br><br>
 	
 	
-		<TEXTAREA id="description" NAME="description" COLS=88 ROWS=3 onClick="hide();" style="-moz-border-radius: 5px 5px 5px 5px; padding-right:5px; padding-left:5px; "></TEXTAREA>
-		<div id="remind_msg" class="invalid-error">You are receiving this email because you opted at our website....</div> <br><br>
+		<TEXTAREA id="description" NAME="description" COLS=79 ROWS=3 onClick="hide();" style="-moz-border-radius: 5px 5px 5px 5px; padding-right:5px; padding-left:5px; "></TEXTAREA>
+		<div id="remind_msg" class="invalid-error" style="display:none;">You are receiving this email because you opted at our website....</div> <br><br>
 
 
 		<div id="info_div" class="sub_head">Is this the correct contact info for this list? why is this necessary?</div>
@@ -175,7 +209,7 @@
 			<div class="bt" id="edit_div"><input type="button" value="Edit" name="edit" id="edit" onClick="edit_contact();"/></div>
 				
 		</div>
-		<div id="edit_contact_div"  style="border:1px solid #AAAAAA; padding:10px;">
+		<div id="edit_contact_div"  style="border:1px solid #AAAAAA; padding:10px; display:none;">
 			<div class="sub_head">Company</div>
 			<input type="text" name="company_name" id="company_name"  class="av_text" style="width:649px;"><br><br>
 			<div class="sub_head">Address</div>
@@ -198,20 +232,20 @@
 		<br><br>
 
 		<div id="email_me_div" class="sub_head">Email me at ******@****.com <a onClick="edit_email();" style="text-decoration:underline; cursor:pointer;" >edit</a> when ...</div>
-		<div id="edit_email_div" class="sub_head">Email me at <input type="text" id="edit_email" name="edit_email"style="-moz-border-radius: 5px 5px 5px 5px;">  when ...</div>
+		<div id="edit_email_div" class="sub_head" style="display:none;">Email me at <input type="text" id="edit_email" name="edit_email"style="-moz-border-radius: 5px 5px 5px 5px;">  when ...</div>
 		<br>
 		<hr>
-		<INPUT TYPE=CHECKBOX NAME="mushrooms"   >People Subscribe
+		<INPUT TYPE=CHECKBOX NAME="subscribe" id="subscribe"   >People Subscribe
 		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-		<INPUT TYPE=CHECKBOX NAME="greenpeppers">People Unsubscribe <br><br><br>
+		<INPUT TYPE=CHECKBOX NAME="unsubscribe" id="unsubscribe">People Unsubscribe <br><br><br>
 		
 		<div id="email_format_div" class="sub_head">Email Format</div>
 		<hr>
-		<INPUT TYPE=CHECKBOX NAME="mushrooms"   >People can pick Email format (HTML, plain-text, or Mobile)<br><br><br>
+		<INPUT TYPE=CHECKBOX NAME="email_format" id="email_format"   >People can pick Email format (HTML, plain-text, or Mobile)<br><br><br>
 
 		<div id="list_data_div" class="sub_head">Auto-enhance list data</div>
 		<hr>
-		<INPUT TYPE=CHECKBOX NAME="mushrooms"   >Activate <a href="#">SocialPro</a><br><br>
+		<INPUT TYPE=CHECKBOX NAME="social_pro" id="social_pro"   >Activate <a href="#">SocialPro</a><br><br>
 		
 		<div class="bt" style=" float: left;">
   		<input type="submit" value="Save" name="save_list" id="save_list" />

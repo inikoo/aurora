@@ -1,8 +1,19 @@
-<span class="nav2 onleft"><a href="suppliers.php">{t}Suppliers{/t}</a></span>
+{if $warehouse_list_length>1}
+<dl class="dropdown">
+  <dt id="one-ddheader" onmouseover="ddMenu('one',1)" onmouseout="ddMenu('one',-1)" onclick="window.location='warehouse_orders.php'" >{t}Warehouse Operations{/t}</dt>
+  <dd id="one-ddcontent" onmouseover="cancelHide('one')" onmouseout="ddMenu('one',-1)">
+    <ul>
+      {foreach from=$warehouse_list item=warehouse }
+      <li><a href="warehouse_orders.php?warehouse_id={$warehouse.id}" class="underline">{$warehouse.code}</a></li>
+      {/foreach}
+    </ul>
+  </dd>
+</dl>
+{/if}
+ <span class="nav2 onleft"><span   id="orders" {if $view=='orders'}class="selected"{/if} >{t}Purchase Orders{/t}</span></span>
+  <span class="nav2 onleft"><span id="invoices" {if $view=='invoices'}class="selected"{/if} >{t}Supplier's Invoices(not yet done){/t}</span></span>
+  <span class="nav2 onleft"><span  id="dn"  {if $view=='dn'}class="selected"{/if} >{t}Incoming Delivery Notes{/t}</span></span>
 
-<span class="nav2 onleft"><a href="porders.php?view=orders">{t}Purchase Orders{/t}</a></span>
-<span class="nav2 onleft"><a href="supplier_products.php">{t}Suppliers Products{/t}</a></span>
-<span class="nav2 onleft"><a href="supplier_categories.php">{t}Suppliers Categories{/t}</a></span>
 
 
 <div class="right_box">
@@ -16,9 +27,8 @@
     {/foreach}
   </div>
 </div>
-
 {if $search_scope}
-<table class="search"  border=0>
+<table class="search"  border=0   >
 <tr>
 <td class="label" style="" >{$search_label}:</td>
 <td class="form" style="">
@@ -35,6 +45,7 @@
 <table id="{$search_scope}_search_results_table"></table>
 </div>
 {/if}
+
 
 
 

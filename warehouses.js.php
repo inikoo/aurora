@@ -2,6 +2,7 @@
 include_once('common.php');
 
 ?>
+ var Dom   = YAHOO.util.Dom;
 
 
 YAHOO.util.Event.addListener(window, "load", function() {
@@ -12,7 +13,10 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    var LocationsColumnDefs = [
 				       {key:"code", label:"<?php echo _('Code')?>", width:100,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				       ,{key:"name", label:"<?php echo _('Name')?>", width:200,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				      
+				       ,{key:"areas", label:"<?php echo _('Areas')?>", width:150,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				       ,{key:"shelfs", label:"<?php echo _('Shelfs')?>", width:150,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				       ,{key:"locations", label:"<?php echo _('Locations')?>", width:150,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+
 				];
 	    //?tipo=locations&tid=0"
 	    this.dataSource0 = new YAHOO.util.DataSource("ar_warehouse.php?tipo=warehouses");
@@ -32,7 +36,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 		fields: [
 			 "id"
 			 ,"code"
-			 ,'name'
+			 ,'name','locations','areas','shelfs'
 			
 			 ]};
 	    this.table0 = new YAHOO.widget.DataTable(tableDivEL, LocationsColumnDefs,
@@ -70,8 +74,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 
  function init(){
- var Dom   = YAHOO.util.Dom;
-
+  init_search('locations');
 
  var oACDS0 = new YAHOO.util.FunctionDataSource(mygetTerms);
  oACDS0.queryMatchContains = true;
