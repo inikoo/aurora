@@ -234,7 +234,7 @@
 
 <script type="text/javascript">
 		// <![CDATA[
-		var so = new SWFObject("external_libs/amstock/amstock/amstock.swf", "amstock", "905", "500", "8", "#FFFFFF");
+		var so = new SWFObject("external_libs/amstock/amstock/amstock.swf", "amstock", "930", "500", "8", "#FFFFFF");
 		so.addVariable("path", "");
 		so.addVariable("settings_file", encodeURIComponent("conf/plot_general_candlestick.xml.php?tipo=part_stock_history&sku={$part->sku}"));
 		so.addVariable("preloader_color", "#999999");

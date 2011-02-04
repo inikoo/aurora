@@ -206,9 +206,10 @@ full list of available settings, check the amstock_settings.xml file in the amst
   
   
   <data_set_selector>
-    <width>130</width>
+  <position>top</position>
+    <width>300</width>
     <max_comparing_count>3</max_comparing_count>
- 		<main_drop_down_title>Select:</main_drop_down_title> 		
+ 		<main_drop_down_title>sSelect:</main_drop_down_title> 		
  		<compare_list_box_title>Compare to:</compare_list_box_title>
  		<balloon_text>{title}: {description}</balloon_text>
   </data_set_selector>

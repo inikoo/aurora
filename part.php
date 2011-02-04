@@ -69,7 +69,7 @@ $js_files=array(
 		
 		$yui_path.'menu/menu-min.js',
 		'common.js.php',
-				'external_libs/ampie/ampie/swfobject.js',
+				'external_libs/amstock/amstock/swfobject.js',
 
 		'table_common.js.php',
 			'js/search.js',

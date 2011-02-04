@@ -118,7 +118,7 @@ $this->found=false;
   $keys=preg_replace('/,$/',')',$keys);
   $values=preg_replace('/,$/',')',$values);
   $sql=sprintf("insert into `Inventory Audit Dimension` %s %s",$keys,$values);
- // print "\n\n$sql\n\n\n";
+ //print "\n\n$sql\n\n\n";
       if (mysql_query($sql)) {
 	$this->id=mysql_insert_id();
 	$this->get_data('id',$this->id);

@@ -1,5 +1,5 @@
 <span class="nav2 onleft"><a href="suppliers.php">{t}Suppliers{/t}</a></span>
-<span class="nav2 onleft"><a href=porders.php">{t}Purchase Orders{/t}</a></span>
+<span class="nav2 onleft"><a href="porders.php">{t}Purchase Orders{/t}</a></span>
 <span class="nav2 onleft"><a href="supplier_products.php">{t}Suppliers Products{/t}</a></span>
 <span class="nav2 onleft"><a href="supplier_categories.php">{t}Suppliers Categories{/t}</a></span>
 
