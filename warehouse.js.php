@@ -4,6 +4,9 @@ include_once('common.php');
 ?>
  var Dom   = YAHOO.util.Dom;
 
+
+
+
 YAHOO.util.Event.addListener(window, "load", function() {
     tables = new function() {
 
@@ -119,7 +122,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 	    this.table1.handleDataReturnPayload =myhandleDataReturnPayload;
 	    this.table1.doBeforeSortColumn = mydoBeforeSortColumn;
 	    this.table1.doBeforePaginatorChange = mydoBeforePaginatorChange;
-	    this.table1.filter={key:'<?php echo$_SESSION['state']['warehouse_areas']['table']['f_field']?>',value:'<?php echo$_SESSION['state']['warehouse_areas']['table']['f_value']?>'};
+	    this.table1.filter={key:'<?php echo $_SESSION['state']['warehouse_areas']['table']['f_field']?>',value:'<?php echo $_SESSION['state']['warehouse_areas']['table']['f_value']?>'};
 	    YAHOO.util.Event.addListener('yui-pg0-0-page-report', "click",myRowsPerPageDropdown)	
 
 
@@ -128,10 +131,22 @@ YAHOO.util.Event.addListener(window, "load", function() {
     });
 
 
+function change_block(){
+ids=['locations','areas','shelfs','map','stats','movements']
+block_ids=['block_locations','block_areas','block_shelfs','block_map','block_stats','block_movements']
+Dom.setStyle(block_ids,'display','none');
+Dom.setStyle('block_'+this.id,'display','');
+Dom.removeClass(ids,'selected');
+Dom.addClass(this,'selected');
+
+YAHOO.util.Connect.asyncRequest('POST','ar_sessions.php?tipo=update&keys=warehouse-view&value='+this.id ,{});
+}
+
 
 
  function init(){
   init_search('locations');
+Event.addListener(['locations','areas','shelfs','map','stats','movements'], "click",change_block);
 
    YAHOO.util.Event.addListener('clean_table_filter_show0', "click",show_filter,0);
  YAHOO.util.Event.addListener('clean_table_filter_hide0', "click",hide_filter,0);

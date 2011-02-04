@@ -103,7 +103,7 @@ $smarty->assign('store_keys',$store_keys);
 $smarty->assign('formated_store_keys',$formated_store_keys);
 $report_name='report_sales';
 
-include_once('report_dates.php');
+include_once('report_dates.php');ITF.Iiiiiidddd
 $smarty->assign('report_url','report_sales_main.php');
 
 $_SESSION['state']['report_sales']['to']=$to;

@@ -35,11 +35,8 @@ el.innerHTML =location_type_name[oData];
 	    var LocationsColumnDefs = [
 	    
 	       {key:"id", label:"", width:20,sortable:false,isPrimaryKey:true,hidden:true} 
-	    
 	    				       ,{key:"go", label:"", width:50,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-
 				       ,{key:"code", label:"<?php echo _('Code')?>", width:50,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC},  editor: new YAHOO.widget.TextboxCellEditor({asyncSubmitter: CellEdit}),object:'location'}
-				    
 				   // ,{key:"tipo", label:"<?php echo _('Used for')?>",width:100,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				      ,{key:"tipo",formatter:location_type_formatter,label:"<?php echo _('Used for')?>",className:"aleft"
 				, editor:new YAHOO.widget.RadioCellEditor({radioOptions:location_type_options,disableBtns:true,asyncSubmitter: CellEdit}),object:'location'
@@ -135,7 +132,7 @@ el.innerHTML =location_type_name[oData];
 			 "wa_key"
 			 ,"code"
 			 ,'description'
-			 ,'name'
+			 ,'name','go'
 			 ]};
 	    this.table1 = new YAHOO.widget.DataTable(tableDivEL, LocationsColumnDefs,
 								   this.dataSource1
