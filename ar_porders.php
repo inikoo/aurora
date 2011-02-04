@@ -344,7 +344,7 @@ function list_purchase_orders(){
    $_SESSION['state']['porders']['table']=array('order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value);
   
     $_SESSION['state']['porders']['table']['order']=$order;
-      $_SESSION['state']['porders']['table']['order_dir']=$order_direction;
+    $_SESSION['state']['porders']['table']['order_dir']=$order_direction;
     $_SESSION['state']['porders']['table']['nr']=$number_results;
     $_SESSION['state']['porders']['table']['sf']=$start_from;
     $_SESSION['state']['porders']['table']['where']=$where;
@@ -477,8 +477,8 @@ function list_purchase_orders(){
    $order='`Purchase Order Last Updated Date`';
 
    
-  $sql="select  PO.`Purchase Order Last Updated Date`,`Purchase Order Currency Code`,`Purchase Order Current Dispatch State`,PO.`Purchase Order Key`,`Purchase Order Public ID`,`Purchase Order Total Amount`,`Purchase Order Number Items` from  $db_table   $where $wheref  order by $order $order_direction limit $start_from,$number_results ";
- //  print $sql;
+  $sql="select  PO.`Purchase Order Last Updated Date`,`Purchase Order Currency Code`,`Purchase Order Main Buyer Name`,PO.`Purchase Order Current Dispatch State`,PO.`Purchase Order Key`,`Purchase Order Public ID`,`Purchase Order Total Amount`,`Purchase Order Number Items` from  $db_table   $where $wheref  order by $order $order_direction limit $start_from,$number_results ";
+// print $sql;
   //  print $sql;
    $result=mysql_query($sql);
    $data=array();
@@ -487,10 +487,16 @@ function list_purchase_orders(){
      $status=$row['Purchase Order Current Dispatch State'];
 
      $data[]=array(
-		   'id'=>'<a href="porder.php?id='.$row['Purchase Order Key'].'">'.$row['Purchase Order Public ID']."</a>",
+		  /* 'id'=>'<a href="porder.php?id='.$row['Purchase Order Key'].'">'.$row['Purchase Order Public ID']."</a>",
 		   'date'=>strftime("%e %b %Y %H:%M", strtotime($row['Purchase Order Last Updated Date'])),
 		   'total'=>money($row['Purchase Order Total Amount'],$row['Purchase Order Currency Code']),
 		   'items'=>number($row['Purchase Order Number Items']),
+		   'status'=>$status*/
+                   'id'=>'<a href="porder.php?id='.$row['Purchase Order Key'].'">'.$row['Purchase Order Public ID']."</a>",
+		   'last_date'=>strftime("%e %b %Y %H:%M", strtotime($row['Purchase Order Last Updated Date'])),
+		   'customer'=>money($row['Purchase Order Total Amount'],$row['Purchase Order Currency Code']),
+                   'buyer_name'=>$row['Purchase Order Main Buyer Name'],
+		   'state'=>number($row['Purchase Order Number Items']),
 		   'status'=>$status
 		   );
    }
@@ -604,8 +610,8 @@ function list_delivery_notes(){
      $_SESSION['state']['supplier_dns']['table']['to']=$date_interval['to'];
    }
 
-   if($parent=='supplier')
-     $where.=sprintf(' and `Supplier Delivery Note Supplier Key`=%d',$parent_key);
+  ////// if($parent=='supplier')
+  //////   $where.=sprintf(' and `Supplier Delivery Note Supplier Key`=%d',$parent_key);
  
    
 //    switch($view){
@@ -710,10 +716,11 @@ function list_delivery_notes(){
    $_dir=$order_direction;
    $order='`Supplier Delivery Note Last Updated Date`';
 
+$sql="select  SDND.`Supplier Delivery Note Last Updated Date`,SDND.`Supplier Delivery Note Current State`,SDND.`Supplier Delivery Note Key`,SDND.`Supplier Delivery Note Public ID`,SDND.`Supplier Delivery Note Number Items`,POD.`Purchase Order Public ID`,POD.`Purchase Order Supplier Name`,POD.`Purchase Order Total Amount`,POD.`Purchase Order Currency Code` from  `Supplier Delivery Note Dimension` SDND left join `Purchase Order Transaction Fact` POTF on (SDND.`Supplier Delivery Note Key`=POTF.`Supplier Delivery Note Key`) left join `Purchase Order Dimension` POD on (POD.`Purchase Order Key`=POTF.`Purchase Order Key`) $where $wheref  order by $order $order_direction limit $start_from,$number_results ";
    
-  $sql="select  `Supplier Delivery Note Last Updated Date`,`Supplier Delivery Note Current State`,`Supplier Delivery Note Key`,`Supplier Delivery Note Public ID`,`Supplier Delivery Note Number Items` from  `Supplier Delivery Note Dimension`   $where $wheref  order by $order $order_direction limit $start_from,$number_results ";
-  //print $sql;
-  //  print $sql;
+ // $sql="select  `Supplier Delivery Note Last Updated Date`,`Supplier Delivery Note Current State`,`Supplier Delivery Note Key`,`Supplier Delivery Note Public ID`,`Supplier Delivery Note Number Items` from  `Supplier Delivery Note Dimension`   $where $wheref  order by $order $order_direction limit $start_from,$number_results ";
+ 
+  // print $sql;
    $result=mysql_query($sql);
    $data=array();
    while($row=mysql_fetch_array($result, MYSQL_ASSOC)){
@@ -724,7 +731,10 @@ function list_delivery_notes(){
 		   'id'=>'<a href="supplier_dn.php?id='.$row['Supplier Delivery Note Key'].'">'.$row['Supplier Delivery Note Public ID']."</a>",
 		   'date'=>strftime("%e %b %Y %H:%M", strtotime($row['Supplier Delivery Note Last Updated Date'])),
 		   'items'=>number($row['Supplier Delivery Note Number Items']),
-		   'status'=>$status
+		   'status'=>$status,
+		   'order_id'=>$row['Purchase Order Public ID'],
+		   'supplier_name'=>$row['Purchase Order Supplier Name'],
+		   'total'=>money($row['Purchase Order Total Amount'],$row['Purchase Order Currency Code']),
 		   );
    }
 

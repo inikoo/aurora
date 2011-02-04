@@ -1,45 +1,23 @@
-<html>
-<head>
-
-
 {include file='header.tpl'}
+<div id="bd"  style="padding:0px">
+<div style="padding:0 0px">
 
-<script src="http://code.jquery.com/jquery-1.4.4.js"></script>
-  
-  <link href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/themes/base/jquery-ui.css" rel="stylesheet" type="text/css"/>
-	
-  
-<div id="bd" >
-	<div>
-		{include file='marketing_navigation.tpl'}
+<div style="clear:left;margin:0 0px">
 
-		</head>
+  <div style="background-color:#f8d285;height:60px;">
+  <div class="campaign_head">List</div>
+  <table  style="margin-top:24px;" cellspacing="10" width="445">
+  	<tr>
+	<td><div class="topmenu"><a href="marketing.php">Emarketing</a></div></td>
+	<td><div class="topmenu"><a href="marketing_campaign.php">Campaigns</a</div></td>
+       <td><div class="topmenu current"><a href="marketing_list.php">Lists</a</div></td>
+	<td><div class="topmenu"><a href="">Reports</a</div></td>
+	<td><div class="topmenu"><a href="">Autoresponders</a</div></td>
+	</tr>
+ </table>
 
-
-
-
-		<body onload="hide();">
-		<div style="clear:left;margin:0 0px">
-   		 <h1>{t}List{/t}</h1>
-		</div>
-		
-		<ul class="tabs" id="chooser_ul" style="clear:both;margin-top:25px">
-		<li> <span class="item {if $view=='other'}selected{/if}"  id="other">  <span> {t}Emarketings{/t}</span></span></li>
-		<li> <span class="item {if $view=='email'}selected{/if}"  id="email">  <span> {t}Campaign{/t}</span></span></li>
-    		<li> <span class="item {if $view=='metrics'}selected{/if}" id="metrics"  ><span>  {t}Lists{/t}</span></span></li>
-    		<li> <span class="item {if $view=='web'}selected{/if}"  id="web">  <span> {t}Report{/t}</span></span></li>
-		<li> <span class="item {if $view==''}selected{/if}"  id="web">  <span> {t}Autoresponders{/t}</span></span></li>
-    		
-		</ul>
- 		<div  style="clear:both;width:100%;border-bottom:1px solid #ccc"></div>
-	
-
-	
-	</div>
-	
- 	
-
-	<div id="block_metrics" style="{if $view!='metrics'}display:none;{/if}clear:both;margin:20px 0 40px 0;padding:0 20px">
+</div> 	
+<div id="block_metrics" style="{if $view!='metrics'}display:none;{/if}clear:both;margin:20px 0 40px 0;padding:0 20px">
 	</div>
 	<div id="block_newsletter" style="{if $view!='newsletter'}display:none;{/if}clear:both;margin:20px 0 40px 0;padding:0 20px">
 	</div>
@@ -266,16 +244,14 @@
 			</ul>
 		</div>
 		{/foreach}
+
+<br>
+		</div>
+
 	</div>
-	
- 	
-	<br>
-	
+
+
+</div>
 </div>
 
 {include file='footer.tpl'}
-
-
-
-</body>
-</html>
