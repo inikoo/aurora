@@ -3636,10 +3636,10 @@ function list_departments() {
             else$low='';
             if ($sum_critical!=0)$critical='100.00%';
             else$critical='';
-            
-             if ($sum_active!=0)$active='100.00%';
+
+            if ($sum_active!=0)$active='100.00%';
             else$active='';
-             if ($sum_discontinued!=0)$discontinued='100.00%';
+            if ($sum_discontinued!=0)$discontinued='100.00%';
             else$discontinued='';
         } else {
             $tsall=money($sum_total_sales,$currency_code);
@@ -3660,10 +3660,10 @@ function list_departments() {
         $adata[]=array(
 
                      'code'=>_('Total'),
-                     
-                     
-                     
-                     
+
+
+
+
                      'families'=>$tfamilies,
                      'active'=>number($sum_active),
                      'sales'=>$tsall,
@@ -3678,8 +3678,8 @@ function list_departments() {
                      'low'=>$low,
                      'critical'=>$critical,
                      'sales_type'=>$sales_type,
-                        'active'=>$active,
-                        'discontinued'=>$discontinued
+                     'active'=>$active,
+                     'discontinued'=>$discontinued
 
 
 
@@ -4668,12 +4668,12 @@ function list_parts() {
 
     if (isset( $_REQUEST['nr'])) {
         $number_results=$_REQUEST['nr'];
-      
+
     } else
         $number_results=$conf['nr'];
-        
-        
-        
+
+
+
     if (!is_numeric($number_results))
         $number_results=25;
 
@@ -5232,37 +5232,37 @@ function list_parts() {
 
         $adata[]=array(
                      'sku'=>sprintf(
-                     '<a href="part.php?id=%d">%06d</a>',$data['Part SKU'],$data['Part SKU']),
-                           'description'=>$data['Part XHTML Description'],
-                                          'used_in'=>$data['Part XHTML Currently Used In'],
-                                                     'supplied_by'=>$data['Part XHTML Currently Supplied By'],
-                                                                    'stock'=>number($data['Part Current Stock']),
-                                                                             'available_for'=>interval($data['Part XHTML Available For Forecast']),
-                                                                                              'stock_value'=>money($data['Part Current Value']),
-                                                                                                            'sold'=>$sold,
-                                                                                                                     'given'=>$given,
-                                                                                                                              'money_in'=>$sold_amount,
-                                                                                                                                          'profit'=>$abs_profit,
-                                                                                                                                                    'profit_sold'=>$profit_sold,
-                                                                                                                                                                   'margin'=>$margin,
-                                                                                                                                                                             'avg_stock'=>$avg_stock,
-                                                                                                                                                                                          'avg_stockvalue'=>$avg_stockvalue,
-                                                                                                                                                                                                            'keep_days'=>$keep_days,
-                                                                                                                                                                                                                         'outstock_days'=>$outstock_days,
-                                                                                                                                                                                                                                          'unknown_days'=>$unknown_days,
-                                                                                                                                                                                                                                                          'gmroi'=>$gmroi
+                               '<a href="part.php?id=%d">%06d</a>',$data['Part SKU'],$data['Part SKU']),
+                     'description'=>$data['Part XHTML Description'],
+                     'used_in'=>$data['Part XHTML Currently Used In'],
+                     'supplied_by'=>$data['Part XHTML Currently Supplied By'],
+                     'stock'=>number($data['Part Current Stock']),
+                     'available_for'=>interval($data['Part XHTML Available For Forecast']),
+                     'stock_value'=>money($data['Part Current Value']),
+                     'sold'=>$sold,
+                     'given'=>$given,
+                     'money_in'=>$sold_amount,
+                     'profit'=>$abs_profit,
+                     'profit_sold'=>$profit_sold,
+                     'margin'=>$margin,
+                     'avg_stock'=>$avg_stock,
+                     'avg_stockvalue'=>$avg_stockvalue,
+                     'keep_days'=>$keep_days,
+                     'outstock_days'=>$outstock_days,
+                     'unknown_days'=>$unknown_days,
+                     'gmroi'=>$gmroi
                  );
     }
-/*
-    $total_title=_('Total');
+    /*
+        $total_title=_('Total');
 
-    $adata[]=array(
+        $adata[]=array(
 
-                 'sku'=>$total_title,
-             );
+                     'sku'=>$total_title,
+                 );
 
-    $total_records=ceil($total_records/$number_results)+$total_records;
-*/
+        $total_records=ceil($total_records/$number_results)+$total_records;
+    */
     $response=array('resultset'=>
                                 array('state'=>200,
                                       'data'=>$adata,
@@ -10063,10 +10063,10 @@ function part_transactions() {
 
 
 
-    $order=' `Date` desc ,`Inventory Transaction Type`, `Inventory Transaction Key` desc ';
+    $order=' `Date` desc , `Inventory Transaction Key` desc ';
     $order_direction=' ';
 
-    $sql="select  `Note`,`Inventory Transaction Type`,`Inventory Transaction Quantity`,`Date`,ITF.`Location Key`,`Location Code`  from `Inventory Transaction Fact` ITF left join `Location Dimension` L on (ITF.`Location key`=L.`Location key`)  $where $wheref order by $order $order_direction limit $start_from,$number_results ";
+    $sql="select  `Note`,`Inventory Transaction Type`,`Inventory Transaction Quantity`,`Date`,ITF.`Location Key`,`Location Code` ,ITF.`Inventory Transaction Key` from `Inventory Transaction Fact` ITF left join `Location Dimension` L on (ITF.`Location key`=L.`Location key`)  $where $wheref order by $order $order_direction limit $start_from,$number_results ";
 
 
     //print $sql;

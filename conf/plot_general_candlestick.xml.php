@@ -34,7 +34,7 @@ case('part_stock_history'):
         exit;
     }
 
-    $sql=sprintf("select `Location Key` from `Inventory Spanshot Fact` where `part SKU` =%d group by `Location Key` ",addslashes($_REQUEST['sku']));
+    $sql=sprintf("select ISF.`Location Key`,`Location Code` from `Inventory Spanshot Fact` ISF left join `Location Dimension` L on (L.`Location Key`=ISF.`Location Key`) where `part SKU` =%d group by `Location Key` ",addslashes($_REQUEST['sku']));
     $res=mysql_query($sql);
     $graphs_data=array();
     $gid=0;
@@ -42,13 +42,25 @@ case('part_stock_history'):
         $graphs_data[]=array(
                            'gid'=>$gid,
                            'label'=>_('Stock').":",
-                           'title'=>_('Part').' '.$_REQUEST['sku'].''._('in location').": ".$row['Location Key'],
+                           'title'=>$row['Location Code'],
                             'csv_args'=>'tipo=part_location_stock_history&location_key='.$row['Location Key'].'&part_sku='.$_REQUEST['sku']
 
                        );
         $gid++;
     }
 
+if($gid>1 ){
+$all_locations=array(
+                           'gid'=>$gid,
+                           'label'=>_('Stock').":",
+                           'title'=>_('All locations'),
+                            'csv_args'=>'tipo=part_location_stock_history&location_key=0&part_sku='.$_REQUEST['sku']
+
+                    );
+                       
+        
+array_unshift($graphs_data, $all_locations);         
+}
 
 
     
