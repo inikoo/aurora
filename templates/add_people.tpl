@@ -1,6 +1,3 @@
-<html>
-<head>
-
 
 {include file='header.tpl'}
 
@@ -77,42 +74,35 @@
 
 	</div>
 	
-
-	
-
-	
-	
-
-	
 	
 	<div id="new_list">
-		<form action="" method="post" name="" onSubmit="">
+		<form name="add_people" id="add_people" action="" method="post" onSubmit="">
 			
    		 	<h2>{t}List{/t}</h2>
 			
-			<select>
+			<select id="list_name" name="list_name">
   			<option value="choose">Choose a list</option>
 			{foreach from=$list item=list_item}
-  			<option value="{$list_item[1]}">{$list_item[0]}</option>
+  			<option value="{$list_item[0]}">{$list_item[1]}</option>
 			{/foreach}
  		
 			</select> <br><br>
 			<div class="sub_head">Email Address</div>
-			<input type="text" name="company_name" id="company_name"  class="av_text" style="width:649px;"><br><br>
+			<input type="text" name="people_email" id="people_email"  class="av_text" style="width:649px;"><br><br>
 			<div class="sub_head">First Name</div>
-			<input type="text" name="company_name" id="company_name"  class="av_text" style="width:649px;"><br><br>
+			<input type="text" name="people_first_name" id="people_first_name" class="av_text" style="width:649px;"><br><br>
 			<div class="sub_head">Last Name</div>
-			<input type="text" name="company_name" id="company_name"  class="av_text" style="width:649px;"><br><br>
+			<input type="text"name="people_last_name" id="people_last_name"  class="av_text" style="width:649px;"><br><br>
 			<div class="sub_head">Email Type</div>
-			<INPUT TYPE=RADIO NAME="text" VALUE="text">Text&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-			<INPUT TYPE=RADIO NAME="HTML" VALUE="html">HTML&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-			<INPUT TYPE=RADIO NAME="Mobile" VALUE="mobile">Mobile
+			<INPUT id="people_email_type" TYPE=RADIO NAME="people_email_type" VALUE="text">Text&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			<INPUT id="people_email_type" TYPE=RADIO NAME="people_email_type" VALUE="html">HTML&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			<INPUT id="people_email_type" TYPE=RADIO NAME="people_email_type" VALUE="mobile">Mobile
 			<br>
 			<br>
-			<INPUT TYPE=CHECKBOX NAME="permission">This recipient has given me permission to add him/her to my MailChimp Managed List.
+			<INPUT TYPE=CHECKBOX id="permission" NAME="permission">This recipient has given me permission to add him/her to my MailChimp Managed List.
 			<br><br>
 			<div class="bt" style=" float: left;">
-  			<input type="submit" value="Subscribe" name="add_member_subscribe" id="add_member_subscribe" />
+  			<input type="submit" value="Subscribe" name="add_people" id="add_people" />
   			</div>
 			<div style="padding:10px; float:left"></div>
 			<div class="bt" style="float:left">
@@ -131,6 +121,3 @@
 {include file='footer.tpl'}
 
 
-
-</body>
-</html>
