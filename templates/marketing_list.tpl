@@ -192,7 +192,7 @@
 		<div id="remind_div" class="sub_head">Remind people how they got on your list *</div>
 		<div id="permission_list" style="width:250px; float: left;" >Copy permission reminder from other list</div> 
 		<select id="permission_reminder_list" name="permission_reminder_list" onClick="show('remind_msg')">
-  		<option value="">Choose a list</option>
+  		<option value="0">Choose a list</option>
 		{foreach from=$list item=list_item}
   		<option value="{$list_item[0]}">{$list_item[1]}</option>
 		{/foreach}
@@ -265,16 +265,16 @@
 			<ul>
 				<li style=" float: left; padding-left:50px;"><a href="import_list.php?{$list_item[0]}">Import</a></li>
 				<li style="float: left; padding-left:50px;"><a href="add_people.php?{$list_item[0]}">Add People</a></li>
-				<li style="float: left; padding-left:50px;"><a href="unsubscribe.php?{$list_item[0]}">Remove People</a></li>
+				<li style="float: left; padding-left:50px;"><a href="remove_people.php?{$list_item[0]}">Remove People</a></li>
 				<li style="float: left; padding-left:50px;"><a href="send_to_list.php?{$list_item[0]}">Send to a list</a></li>
 			</ul><br><br>
 			<ul>
-				<li style=" float: left; padding-left:50px;"><a>Settings</a></li>
-				<li style="float: left; padding-left:50px;"><a>Replicate</a></li>
-				<li style="float: left; padding-left:50px;"><a>Delete</a></li>
-				<li style="float: left; padding-left:50px;"><a>Forms</a></li>
-				<li style="float: left; padding-left:50px;"><a>List Data</a></li>
-				<li style="float: left; padding-left:50px;"><a>Groups</a></li>
+				<!--<li style=" float: left; padding-left:50px;"><a>Settings</a></li>
+				<li style="float: left; padding-left:50px;"><a>Replicate</a></li>-->
+				<li style="float: left; padding-left:50px;"><a href="delete_list.php?{$list_item[0]}">Delete</a></li>
+				<!--<li style="float: left; padding-left:50px;"><a>Forms</a></li>
+				<li style="float: left; padding-left:50px;"><a>List Data</a></li>-->
+				<li style="float: left; padding-left:50px;"><a>Groups▼</a></li>
 			</ul>
 		</div>
 		{/foreach}
