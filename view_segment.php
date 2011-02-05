@@ -60,39 +60,50 @@ $js_files=array(
 
 
  
-if (isset($_REQUEST['view'])) {
+/*if (isset($_REQUEST['view'])) {
     $valid_views=array('metrics','email','web_internal','web','other','newsletter');
     if (in_array($_REQUEST['view'], $valid_views))
         $_SESSION['state'][$page]['view']=$_REQUEST['view'];
 
-}
-$smarty->assign('view',$_SESSION['state'][$page]['view']);
+}*/
+//$smarty->assign('view',$_SESSION['state'][$page]['view']);
+
+$getValue = array();
 
 
-$list_key = 'Email Campaign Mailing List Key';
-$list_name = 'Campaign Mailling List Name';
-$list_email = 'Campaign Mailling List Email';
-$recipient = 'Campaign Mailling List Recipients';
-
-	$query = "select * from `Campaign Mailling List`";
-	$res = mysql_query($query);
-	while($print = mysql_fetch_assoc($res))
+if(isset($_REQUEST['segID']))
+{
+	
+	$sqlQuery = "select `Email People Key`,`People Email`,`People Last Name`,`People First Name`,`People Email Type` from `Email People Dimension` where `People Email` = '".$_REQUEST['segID']."' OR `People First Name` = '".$_REQUEST['segID']."' OR `People Last Name` = '".$_REQUEST['segID']."' ";
+	$res = mysql_query($sqlQuery);	
+	while($getRow = mysql_fetch_assoc($res))
 	{
-		$get_value[] = $print;
+		$getValue[] = $getRow;
 	}
+	
+}
+
+
+$people_key = 'Email People Key';
+$people_email = 'People Email';
+$people_fname = 'People First Name';
+$people_lname = 'People Last Name';
+$people_type = 'People Email Type';
+
 
 
 $smarty->assign('parent','home');
-$smarty->assign('title', _('Marketing'));
+$smarty->assign('title', _('Segment'));
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
-$smarty->assign('value',$get_value);
+$smarty->assign('value',$getValue);
 
 //assigning the database fields
-$smarty->assign('list_key',$list_key);
-$smarty->assign('list_name',$list_name);
-$smarty->assign('list_email',$list_email);
-$smarty->assign('recipient',$recipient);
+$smarty->assign('people_key',$people_key);
+$smarty->assign('people_fname',$people_fname);
+$smarty->assign('people_email',$people_email);
+$smarty->assign('people_lname',$people_lname);
+$smarty->assign('people_type',$people_type);
 
 
 

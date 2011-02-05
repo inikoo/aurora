@@ -14,7 +14,7 @@ newdiv.setAttribute("id",divIdName);
 
 	
 
-	newdiv.innerHTML = "<table border=\"0\"><tr><td>Match <select name=\"match\"><option value=\"any\">Any</option><option value=\"all\">All</option></select> of the following : </td></tr><tr><td><select name=\"drpDwn1\" id=\"drpDwn1\"><option value=\"email_address\">Email Address</option><option value=\"first_name\">First Name</option><option value=\"last_name\">Last Name</option></select><select name=\"drpDwn2\" id=\"drpDwn2\"><option value=\"is\">Is</option><option value=\"is_not\">Is not</option><option value=\"contains\">Contains</option><option value=\"does_not_contain\">Does not contain</option><option value=\"start_with\">Start With</option><option value=\"ends_with\">Ends With</option><option value=\"is_greater_than\">Is greater than</option><option value=\"is_less_than\">Is less than</option></select><input type=\"textbox\" name=\"box\" id=\"box\" ></td></tr></table><a href=\"javascript:;\" onclick=\"removeEvent(\'"+divIdName+"\',\'"+m+"\')\" ><span style=\"font-size:10px; color:#CC66OD;\">Remove Condition</span></a><div style=\"font-size:10px; color:#CC66OD; width:700px;\">Campaign will go to <div id=\"count_segment\" style=\"width:20px;\">0</div> segment <a href=\"#\" onClick=\"popup('view_segment.php')\">View Segment</a> &nbsp;<a href=\"#\"  onClick=\"getRefreshValue()\">Count Refresh</a>&nbsp;&nbsp;<a href=\"#\" onClick=\"showSlidingDiv(\'"+m+"\'); return false;\">Cancel</a></div>";
+	newdiv.innerHTML = "<table border=\"0\"><tr><td>Match <select name=\"match\"><option value=\"any\">Any</option><option value=\"all\">All</option></select> of the following : </td></tr><tr><td><select name=\"drpDwn1\" id=\"drpDwn1\"><option value=\"email_address\">Email Address</option><option value=\"first_name\">First Name</option><option value=\"last_name\">Last Name</option></select><select name=\"drpDwn2\" id=\"drpDwn2\"><option value=\"is\">Is</option><option value=\"is_not\">Is not</option><option value=\"contains\">Contains</option><option value=\"does_not_contain\">Does not contain</option><option value=\"start_with\">Start With</option><option value=\"ends_with\">Ends With</option><option value=\"is_greater_than\">Is greater than</option><option value=\"is_less_than\">Is less than</option></select><input type=\"textbox\" name=\"box\" id=\"box\" ></td></tr></table><a href=\"javascript:;\" onclick=\"removeEvent(\'"+divIdName+"\',\'"+m+"\')\" ><span style=\"font-size:10px; color:#CC66OD;\">Remove Condition</span></a><div style=\"font-size:10px; color:#CC66OD; width:700px;\">Campaign will go to <div id=\"count_segment\" style=\"width:20px;\">0</div> segment <a href=\"#\" onClick=\"popup()\">View Segment</a> &nbsp;<a href=\"#\"  onClick=\"getRefreshValue()\">Count Refresh</a>&nbsp;&nbsp;<a href=\"#\" onClick=\"showSlidingDiv(\'"+m+"\'); return false;\">Cancel</a></div>";
 
 ni.appendChild(newdiv);
 }
@@ -32,9 +32,14 @@ d.removeChild(olddiv);
 
 
 
-function popup(url)
-{	
-	window.open(url,'segment','height=400, width=400');
+function popup()
+{
+	var querystring;
+	querystring = document.getElementById('box').value;
+	
+	nW = window.open("",'segment','height=400, width=400');
+	nW.location.href = 'view_segment.php?segID='+querystring;
+	nW=null;
 }
 
 
