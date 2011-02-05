@@ -59,7 +59,7 @@ $js_files=array(
 		'common.js.php',
 		'table_common.js.php',
 		'js/search.js',
-		'js/marketing_list.js',
+		'js/add_people.js',
 		
 		
 		);
@@ -78,6 +78,34 @@ if(!isset($_GET['l'])){
 
 	header('Location:marketing.php');
 
+}else{
+
+$current_list_id = trim($_GET['l']);
+$qry1=mysql_query("SELECT `List Name` FROM `Email Campaign Mailing List` WHERE  `Email Campaign Mailing List Key` LIKE '$current_list_id'"); 
+$r1 = mysql_fetch_assoc($qry1);
+$current_list = $r1['List Name'];
+$smarty->assign('current_list', $current_list);
+
+
+$qry2=mysql_query("SELECT `Email Campaign Group Key` , `Group Title` FROM `Email Campaign Group Titile` WHERE `Email List Key` LIKE '$current_list_id'"); 
+$r2 = mysql_fetch_assoc($qry2);
+$group_title = $r2['Group Title'];
+$group_key = $r2['Email Campaign Group Key'];
+$smarty->assign('group_title', $group_title);
+
+$qry3=mysql_query("SELECT `Email Campaign Group Name Key`, `Group Name` FROM `Email Campaign Group Titile Name Bridge` WHERE `Email Campaign Group Key` LIKE '$group_key'"); 
+$k=0;
+$group=array();
+while($group_name=mysql_fetch_array($qry3))
+{
+	$group[$k]=$group_name;
+	
+	$k++;
+}
+
+$smarty->assign('group',$group);
+
+
 }
 
 
@@ -89,8 +117,17 @@ $people_first_name = trim($_POST['people_first_name']);
 $people_last_name = trim($_POST['people_last_name']);
 $people_email_type = trim($_POST['people_email_type']);
 
+if(count($_POST['group_name']) > 0){
+	$group = implode(',', $_POST['group_name']);
 
- $sql = "INSERT INTO `Email People Dimension` (`People List Key` ,`People Group Key` ,`People Email` ,`People First Name` ,`People Last Name` ,`People Email Type`)VALUES('', '', '$people_email', '$people_first_name', '$people_last_name', '$people_email_type');";
+}else{
+
+	$group = '';
+}
+
+
+
+ $sql = "INSERT INTO `Email People Dimension` (`People List Key` ,`People Group Key` ,`People Email` ,`People First Name` ,`People Last Name` ,`People Email Type`)VALUES('$list_name', '$group', '$people_email', '$people_first_name', '$people_last_name', '$people_email_type');";
 	
  mysql_query($sql);
 
