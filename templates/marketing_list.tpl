@@ -263,15 +263,15 @@
 		<div class="list-panel">
 			<h4 class="list-name">{$list_item[1]}</h4><br>
 			<ul>
-				<li style=" float: left; padding-left:50px;"><a href="import_list.php?{$list_item[0]}">Import</a></li>
-				<li style="float: left; padding-left:50px;"><a href="add_people.php?{$list_item[0]}">Add People</a></li>
-				<li style="float: left; padding-left:50px;"><a href="remove_people.php?{$list_item[0]}">Remove People</a></li>
-				<li style="float: left; padding-left:50px;"><a href="send_to_list.php?{$list_item[0]}">Send to a list</a></li>
+				<li style=" float: left; padding-left:50px;"><a href="import_list.php?l={$list_item[0]}">Import</a></li>
+				<li style="float: left; padding-left:50px;"><a href="add_people.php?l={$list_item[0]}">Add People</a></li>
+				<li style="float: left; padding-left:50px;"><a href="remove_people.php?l={$list_item[0]}">Remove People</a></li>
+				<li style="float: left; padding-left:50px;"><a href="send_to_list.php?l={$list_item[0]}">Send to a list</a></li>
 			</ul><br><br>
 			<ul>
 				<!--<li style=" float: left; padding-left:50px;"><a>Settings</a></li>
 				<li style="float: left; padding-left:50px;"><a>Replicate</a></li>-->
-				<li style="float: left; padding-left:50px;"><a href="delete_list.php?{$list_item[0]}">Delete</a></li>
+				<li style="float: left; padding-left:50px;"><a href="delete_list.php?l={$list_item[0]}">Delete</a></li>
 				<!--<li style="float: left; padding-left:50px;"><a>Forms</a></li>
 				<li style="float: left; padding-left:50px;"><a>List Data</a></li>-->
 				<li style="float: left; padding-left:50px;"><a>Groups▼</a></li>
