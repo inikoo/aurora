@@ -20,7 +20,51 @@ print 'var location_type_name={'.$ln."};\n";
 ?>
 var editing='<?php echo $_SESSION['state']['warehouse']['edit']?>';
 
+   var Dom   = YAHOO.util.Dom;
+     
+     
+      var area_dialog;
+ var shelf_dialog;
 
+
+var thisonCellClick = function(oArgs) {
+    var target = oArgs.target,
+                 column = this.getColumn(target),
+                          record = this.getRecord(target);
+
+    var recordIndex = this.getRecordIndex(record);
+    var data = record.getData();
+
+
+    switch (column.action) {
+
+  case 'change_area':
+   var y=(Dom.getY(target))
+   var x=(Dom.getX(target))
+
+  
+ // x=x-120;
+   // y=y+18;
+    Dom.setX('area_dialog', x)
+    Dom.setY('area_dialog', y)
+  area_dialog.show();
+  
+  Dom.get('location_key').value=data['id'];
+    Dom.get('record_index').value=recordIndex;
+
+   Dom.get('Area_Code').focus();    
+
+    default:
+
+        this.onEventShowCellEditor(oArgs);
+        break;
+    }
+};
+
+function close_area_dialog(){
+  area_dialog.hide();
+
+}
 
 
 YAHOO.util.Event.addListener(window, "load", function() {
@@ -36,8 +80,13 @@ el.innerHTML =location_type_name[oData];
 	    
 	       {key:"id", label:"", width:20,sortable:false,isPrimaryKey:true,hidden:true} 
 	    				       ,{key:"go", label:"", width:50,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-				       ,{key:"code", label:"<?php echo _('Code')?>", width:50,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC},  editor: new YAHOO.widget.TextboxCellEditor({asyncSubmitter: CellEdit}),object:'location'}
-				   // ,{key:"tipo", label:"<?php echo _('Used for')?>",width:100,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				   
+				   				   ,{key:"area", label:"<?php echo _('Area')?>", width:60,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}, action:'change_area',object:'location'}
+				   				   ,{key:"shelf", label:"<?php echo _('Shelf')?>", width:60,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC},  editor: new YAHOO.widget.TextboxCellEditor({asyncSubmitter: CellEdit}),object:'location'}
+                                    ,{key:"area_key", label:"", width:60,sortable:false,hidden:true}
+                                    ,{key:"shelf_key", label:"", width:60,sortable:false,hidden:true}
+
+				   ,{key:"code", label:"<?php echo _('Code')?>", width:100,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC},  editor: new YAHOO.widget.TextboxCellEditor({asyncSubmitter: CellEdit}),object:'location'}
 				      ,{key:"tipo",formatter:location_type_formatter,label:"<?php echo _('Used for')?>",className:"aleft"
 				, editor:new YAHOO.widget.RadioCellEditor({radioOptions:location_type_options,disableBtns:true,asyncSubmitter: CellEdit}),object:'location'
 			      }
@@ -68,14 +117,14 @@ el.innerHTML =location_type_name[oData];
 			 ,"code"
 			 
 			 ,'max_weight'
-			 ,'max_volumen','tipo',"go"
+			 ,'max_volumen','tipo',"go","shelf_key","shelf","area","area_key"
 			 ]};
 	    this.table0 = new YAHOO.widget.DataTable(tableDivEL, LocationsColumnDefs,
 								   this.dataSource0
 								 , {
 								     renderLoopSize: 50,generateRequest : myRequestBuilder
 								       ,paginator : new YAHOO.widget.Paginator({
-									      rowsPerPage    : <?php echo$_SESSION['state']['locations']['table']['nr']?>,containers : 'paginator', 
+									      rowsPerPage    : <?php echo$_SESSION['state']['locations']['edit_table']['nr']?>,containers : 'paginator', 
  									      pageReportTemplate : '(<?php echo _('Page')?> {currentPage} <?php echo _('of')?> {totalPages})',
 									      previousPageLinkLabel : "<",
  									      nextPageLinkLabel : ">",
@@ -84,8 +133,8 @@ el.innerHTML =location_type_name[oData];
 									      ,template : "{FirstPageLink}{PreviousPageLink}<strong id='paginator_info0'>{CurrentPageReport}</strong>{NextPageLink}{LastPageLink}"
 									  })
 								     ,sortedBy : {
-									 key: "<?php echo$_SESSION['state']['locations']['table']['order']?>",
-									 dir: "<?php echo$_SESSION['state']['locations']['table']['order_dir']?>"
+									 key: "<?php echo$_SESSION['state']['locations']['edit_table']['order']?>",
+									 dir: "<?php echo$_SESSION['state']['locations']['edit_table']['order_dir']?>"
 								     },
 								     dynamicData : true
 								  }
@@ -93,12 +142,12 @@ el.innerHTML =location_type_name[oData];
 	    this.table0.handleDataReturnPayload =myhandleDataReturnPayload;
 	    this.table0.doBeforeSortColumn = mydoBeforeSortColumn;
 	    this.table0.doBeforePaginatorChange = mydoBeforePaginatorChange;
-	    this.table0.filter={key:'<?php echo$_SESSION['state']['locations']['table']['f_field']?>',value:'<?php echo$_SESSION['state']['locations']['table']['f_value']?>'};
+	    this.table0.filter={key:'<?php echo$_SESSION['state']['locations']['edit_table']['f_field']?>',value:'<?php echo$_SESSION['state']['locations']['edit_table']['f_value']?>'};
 	  
 	  
 	     this.table0.subscribe("cellMouseoverEvent", highlightEditableCell);
 	    this.table0.subscribe("cellMouseoutEvent", unhighlightEditableCell);
-	    this.table0.subscribe("cellClickEvent", onCellClick);
+	    this.table0.subscribe("cellClickEvent", thisonCellClick);
 
 	  
 	  
@@ -107,7 +156,9 @@ el.innerHTML =location_type_name[oData];
 	    var tableid=1; // Change if you have more the 1 table
 	    var tableDivEL="table"+tableid;
 	    var LocationsColumnDefs = [
-				       {key:"wa_key", label:"", hidden:true,action:"none",isPrimaryKey:true}
+	    				       {key:"go", label:"", width:20,sortable:false,className:"aleft"}
+
+				       ,{key:"wa_key", label:"", hidden:true,action:"none",isPrimaryKey:true}
 				       ,{key:"code", label:"<?php echo _('Code')?>", width:80,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC},editor: new YAHOO.widget.TextboxCellEditor({asyncSubmitter: CellEdit}),object:'warehouse_area'}
 				       ,{key:"name", label:"<?php echo _('Name')?>", width:120,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC},editor: new YAHOO.widget.TextboxCellEditor({asyncSubmitter: CellEdit}),object:'warehouse_area'}
 				       ,{key:"description", label:"<?php echo _('Description')?>",width:260,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC},editor: new YAHOO.widget.TextboxCellEditor({asyncSubmitter: CellEdit}),object:'warehouse_area'}
@@ -332,12 +383,76 @@ function add_area(){
 }
 
 
+function change_area_save(){
 
+
+
+area_key=Dom.get('area_key').value;
+location_key=Dom.get('location_key').value;
+record_index=Dom.get('record_index').value;
+
+ var ar_file='ar_edit_warehouse.php';
+	request='tipo=edit_location&id='+location_key+'&key=area_key&newvalue='+area_key+'&record_index='+record_index;
+	
+	YAHOO.util.Connect.asyncRequest(
+				    'POST',
+				    ar_file, {
+					success:function(o) {
+					 //alert(o.responseText);
+					    var r = YAHOO.lang.JSON.parse(o.responseText);
+					    if (r.state == 200) {
+					    if(r.action=='updated'){
+					    
+
+					    
+					          datatable=tables['table0'];
+					    		    record=datatable.getRecord(0);
+
+
+		    record=datatable.getRecord(parseFloat(r.record_index));
+									    close_area_dialog();
+
+					    datatable.updateCell(record,'area',r.newvalue['code']);
+					   
+					   datatable.updateCell(record,'area_key',r.newvalue['key']);
+
+					    
+                     
+                                   
+                        
+                        }
+					  
+					
+					    } else {
+						alert(r.msg);
+						//	callback();
+					    }
+					},
+					    failure:function(o) {
+					    alert(o.statusText);
+					    // callback();
+					},
+					    scope:this
+					    },
+				    request
+				    
+				    );  
+
+}
 
 
  function init(){
-     var Dom   = YAHOO.util.Dom;
+     
+     
+    area_dialog = new YAHOO.widget.Dialog("area_dialog", {visible : false,close:true,underlay: "none",draggable:false});
+    area_dialog.render();
+
+     
      var ids = ["description","areas","locations","shelfs","shelf_types","location_types"]; 
+     
+     
+     
+     
      YAHOO.util.Event.addListener(ids, "click", change_block);
      var ids = ["add_area","add_area_here"]; 
      YAHOO.util.Event.addListener(ids, "click", show_add_area_dialog);
@@ -386,6 +501,44 @@ function add_area(){
  }
 
 YAHOO.util.Event.onDOMReady(init);
+
+function warehouse_area_to_selected(sType,aArgs){
+
+ var myAC = aArgs[0]; var elLI = aArgs[1]; var oData = aArgs[2]; 
+
+	   Dom.get("area_key").value = oData[1];
+
+}
+
+
+YAHOO.util.Event.onContentReady("Area_Code", function () {
+	var oDS = new YAHOO.util.XHRDataSource("ar_warehouse.php");
+ 	oDS.responseType = YAHOO.util.XHRDataSource.TYPE_JSON;
+ 	oDS.responseSchema = {
+ 	    resultsList : "data",
+ 	    fields : ["code","key","name"]
+ 	};
+ 	var oAC = new YAHOO.widget.AutoComplete("Area_Code", "Area_Code_Container", oDS);
+ 	oAC.generateRequest = function(sQuery) {
+	    
+	    var warehouse_key=Dom.get("warehouse_key").value
+	    request="?tipo=find_warehouse_area&parent_key="+warehouse_key+"&query=" + sQuery;
+	   // alert(request )
+ 	    return  request;
+ 	};
+ 	
+ 	 oAC.formatResult = function(oResultData, sQuery, sResultMatch) {
+        return '<b>'+oResultData[0]+'</b> '+oResultData[2]
+        
+      
+      
+    };
+
+ 	
+	oAC.forceSelection = true; 
+	oAC.itemSelectEvent.subscribe(warehouse_area_to_selected); 
+    });
+
 
 YAHOO.util.Event.onContentReady("filtermenu0", function () {
 	 var oMenu = new YAHOO.widget.ContextMenu("filtermenu0", {  trigger: "filter_name0"  });
