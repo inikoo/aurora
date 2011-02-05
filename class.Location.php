@@ -427,6 +427,9 @@ function update_code($value){
 
     function update_field_switcher($field,$value,$options='') {
         switch ($field) {
+         case('Location Area Key'):
+            $this->update_area_key($value);
+            break;
         case('Location Mainly Used For'):
             $this->update_used_for($value);
             break;
@@ -448,6 +451,39 @@ function update_code($value){
         }
 
     }
+
+
+function update_area_key($data){
+if($data==$this->data['Location Warehouse Area Key']){
+$this->msg='no_change';
+return;
+}
+
+$old_area=new WarehouseArea($this->data['Location Warehouse Area Key']);
+
+$new_area=new WarehouseArea($data);
+
+if($new_area->id){
+$this->data['Location Warehouse Area Key']=$new_area->id;
+$this->data['Location Shelf Key']=0;
+
+
+$sql=sprintf("update `Location Dimension` set `Location Warehouse Area Key`=%d,`Location Shelf Key`=%d where `Location Key`=%d",
+$this->data['Location Warehouse Area Key'],
+$this->data['Location Shelf Key'],
+$this->id
+);
+mysql_query($sql);
+        $this->msg=_('Location warehouse area changed');
+        $this->updated=true;
+        $this->new_value=array('code'=>$new_area->data['Warehouse Area Code'],'key'=>$new_area->id);
+
+}
+
+
+
+
+}
 
     function update_max_weight($value) {
     list($value,$original_units)=parse_weight($value);
@@ -478,7 +514,7 @@ function update_code($value){
         mysql_query($sql);
         $this->data['Location Max Weight']=$value;
         $this->new_value=weight($this->data['Location Max Weight']);
-        $this->msg=_('Location manxium weight changed');
+        $this->msg=_('Location maximum weight changed');
         $this->updated=true;
     }
  function update_max_volume($value) {

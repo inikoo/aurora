@@ -36,7 +36,7 @@ case('parts_at_location'):
 case('find_warehouse_area'):
 $data=prepare_values($_REQUEST,array(
 			     'query'=>array('type'=>'string')
-			     ,'parent_key'=>array('type'=>'string')
+			     ,'parent_key'=>array('type'=>'key')
 			     ));
   find_warehouse_area($data);
   break;
@@ -642,7 +642,7 @@ function find_warehouse_area($data){
  $q=$data['query'];
 
 $where='';
-  if( $_REQUEST['parent_key'])
+  if( $data['parent_key'])
     $where=sprintf(' and `Warehouse Key`=%d ',$data['parent_key']);
 
 
@@ -655,9 +655,9 @@ $where='';
     $res=mysql_query($sql);
     while($row=mysql_fetch_array($res)){
       $adata[]=array(
-		     
+		       'code'=>$row['Warehouse Area Code'],
 		     'key'=>$row['Warehouse Area Key'],
-		     'code'=>$row['Warehouse Area Code'],
+		   
 		     'name'=>$row['Warehouse Area Name'],
 		     
 		     );

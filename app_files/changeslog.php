@@ -558,6 +558,21 @@ ALTER TABLE `Invoice Dimension` CHANGE `Invoice For` `Invoice For` ENUM( 'Staff'
 ALTER TABLE `Category Dimension` ADD `Category Function Order` MEDIUMINT UNSIGNED NULL DEFAULT NULL ;
 ALTER TABLE `Category Bridge` CHANGE `Subject` `Subject` ENUM( 'Product', 'Supplier', 'Customer', 'Family', 'Invoice', 'Part' ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL ;
 ALTER TABLE `Invoice Dimension` DROP `Invoice Category`,DROP `Invoice Category Key`;
+
+CREATE TABLE IF NOT EXISTS `Email Campaign Dimension` (
+ `Email Campaign Key` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+ `Email Campaign Name` varchar(256) NOT NULL,
+ `Email Campaign Objective` text NOT NULL,
+ `Email Campaign Maximum Emails` mediumint(8) unsigned DEFAULT NULL,
+ `Email Campaign Status` enum('Creating','Ready','Sending','Complete') NOT NULL,
+ `Email Campaign Engine` enum('Internal','External') NOT NULL DEFAULT 'Internal',
+ `Email Campaign Content` longtext,
+ `Flag` int(1) NOT NULL DEFAULT '0',
+ `Folder ID` varchar(100) NOT NULL,
+ PRIMARY KEY (`Email Campaign Key`),
+ KEY `Email Campaign Status` (`Email Campaign Status`)
+) ENGINE=MyISAM , DEFAULT CHARSET=utf8 AUTO_INCREMENT=7 ;
+
 */
 
 ?>

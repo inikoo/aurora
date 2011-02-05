@@ -217,4 +217,45 @@
     </ul>
   </div>
 </div>
+
+<div id="area_dialog" style="width:300px;">
+<div class="options" style="width:300px;padding:10px;text-align:center" >
+
+   <table border=1 style="margin:auto" id="pack_it_buttons">
+      {foreach from=$packers item=packer_row name=foo}
+      <tr>
+	 {foreach from=$packer_row key=row_key item=packer }
+	
+	<td staff_id="{$packer.StaffKey}" id="packer_pack_it{$packer.StaffKey}" class="pack_it_button" onClick="select_staff_pack_it(this,event)" >{$packer.StaffAlias}</td>
+	{/foreach}
+	</tr>
+      {/foreach}
+    </table>
+
+
+</div>
+<table class="edit">
+<input type="hidden" id="area_key">
+<input type="hidden" id="warehouse_key" value="$warehouse->id">
+<input type="hidden" id="location_key" value="">
+<input type="hidden" id="record_index" value="">
+
+<tr class="first"><td style="" class="label">{t}Area{/t}:</td>
+   <td  style="text-align:left">
+     <div  style="width:190px;position:relative;top:00px" >
+       <input style="text-align:left;width:180px" id="Area_Code" value="" ovalue="" valid="0">
+       <div id="Area_Code_Container" style="" ></div>
+     </div>
+   </td>
+   <td id="Area_Code_msg" class="edit_td_alert"></td>
+ </tr>
+</table>
+<table class="edit" style="margin-top:10px;float:right">
+  
+  <tr><td colspan="2">
+  <span class="button" onclick="close_area_dialog()">Cancel</span>
+  <span class="button" onclick="change_area_save()" >Go</span><td></tr>
+</table>
+</div>
+
 {include file='footer.tpl'}

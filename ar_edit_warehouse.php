@@ -230,8 +230,11 @@ function update_location(){
      return;
   }
     
+  $record_index=(isset($_REQUEST['record_index'])?$_REQUEST['record_index']:0);  
+    
   $id=$_REQUEST['id'];
   $key=$_REQUEST['key'];
+  $okey=$key;
   $new_value=stripslashes(urldecode($_REQUEST['newvalue']));
 
   $traslator=array(
@@ -242,6 +245,7 @@ function update_location(){
 		   'max_weight'=>'Location Max Weight',
 		   'max_volumen'=>'Location Max Volume',
 		   'tipo'=>'Location Mainly Used For',
+		   'area_key'=>'Location Area Key',
 		   );
   if(array_key_exists($_REQUEST['key'],$traslator)){
     $key=$traslator[$_REQUEST['key']];
@@ -250,7 +254,6 @@ function update_location(){
     echo json_encode($response);
     return;
   }    
-
 
   $location=new Location($id);
   if(!$location->id){
@@ -261,7 +264,7 @@ function update_location(){
   
   $location->update(array($key=>$new_value));
   if($location->updated){
-    $response=array('state'=>200,'action'=>'updates','msg'=>$location->msg,'newvalue'=>$location->new_value);
+    $response=array('state'=>200,'action'=>'updated','msg'=>$location->msg,'newvalue'=>$location->new_value,'okey'=>$okey,'record_index'=>$record_index);
      echo json_encode($response);
      return;
   }else{
@@ -943,7 +946,7 @@ function move_stock(){
   }
 
 function list_locations(){
-$conf=$_SESSION['state']['locations']['table'];
+$conf=$_SESSION['state']['locations']['edit_table'];
    
    if(isset( $_REQUEST['sf']))
      $start_from=$_REQUEST['sf'];
@@ -1001,7 +1004,7 @@ $conf=$_SESSION['state']['locations']['table'];
    
 
   
-   $_SESSION['state']['locations']['table']=array('order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value);
+   $_SESSION['state']['locations']['edit_table']=array('order'=>$order,'order_dir'=>$order_direction,'nr'=>$number_results,'sf'=>$start_from,'where'=>$where,'f_field'=>$f_field,'f_value'=>$f_value);
    
    
    
@@ -1080,7 +1083,7 @@ $conf=$_SESSION['state']['locations']['table'];
     $order='`Warehouse Area Code`';
 
   $data=array();
-  $sql="select * from `Location Dimension` left join `Warehouse Area Dimension` WAD on (`Location Warehouse Area Key`=WAD.`Warehouse Area Key`)  $where $wheref   order by $order $order_direction limit $start_from,$number_results    ";
+  $sql="select `Location Warehouse Area Key`,`Location Key`,`Location Distinct Parts`,`Location Mainly Used For`,`Location Max Weight`,`Location Max Volume`, `Warehouse Area Code`  ,`Location Code`,`Location Shelf Key`,`Shelf Code` from `Location Dimension` L left join `Shelf Dimension` S on (`Location Shelf Key`=S.`Shelf Key`) left join `Warehouse Area Dimension` WAD on (`Location Warehouse Area Key`=WAD.`Warehouse Area Key`)  $where $wheref   order by $order $order_direction limit $start_from,$number_results    ";
   //  print $sql;
   $result=mysql_query($sql);
   while($row=mysql_fetch_array($result, MYSQL_ASSOC)   ){
@@ -1111,18 +1114,19 @@ $conf=$_SESSION['state']['locations']['table'];
       
       
     $data[]=array(
-		 'id'=>$row['Location Key']
-		 ,'go'=>sprintf("<a href='location.php?edit=1&id=%d'><img src='art/icons/page_go.png' alt='go'></a>",$row['Location Key'])
-
-		  
-		   ,'delete'=>$delete
-		   ,'delete_type'=>'delete'
-		 ,'tipo'=>$tipo
-		 ,'code'=>$row['Location Code']
-		
-		 ,'parts'=>number($row['Location Distinct Parts'])
-		 ,'max_weight'=>$max_weight
-		 ,'max_volumen'=>$max_vol
+		 'id'=>$row['Location Key'],
+		 'go'=>sprintf("<a href='edit_location.php?id=%d'><img src='art/icons/page_go.png' alt='go'></a>",$row['Location Key']),
+		  'area'=>$row['Warehouse Area Code'],
+		  'area_key'=>$row['Location Warehouse Area Key'],
+		  'shelf'=>$row['Shelf Code'],
+		  'shelf_key'=>$row['Location Shelf Key'],
+		 'delete'=>$delete,
+		 'delete_type'=>'delete',
+		 'tipo'=>$tipo,
+		 'code'=>$row['Location Code'],
+		 'parts'=>number($row['Location Distinct Parts']),
+		 'max_weight'=>$max_weight,
+		 'max_volumen'=>$max_vol,
 		 );
   }
   $response=array('resultset'=>
