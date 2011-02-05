@@ -13,6 +13,11 @@
     
 
  }
+.text_color{
+  
+  color: #B67550 !important;
+    font-size: 11px;
+}
 </style>
 {/literal}
 <table width="100%" border="0" cellpadding="0" cellspacing="0">
@@ -43,6 +48,11 @@
   <td class="value">	00:00:00 00/00/0000  </td>
 
  </tr>
+
+{sectionelse}
+  <tr height="30px"><td colspan="6" align="center" class="text_color">{$no_result}</td></tr>
+
+
 {/section}
 
 </table>
