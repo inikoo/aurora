@@ -1,19 +1,12 @@
 
 {include file='header.tpl'}
 
-<script src="http://code.jquery.com/jquery-1.4.4.js"></script>
-  
-  <link href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/themes/base/jquery-ui.css" rel="stylesheet" type="text/css"/>
-	
   
 <div id="bd" >
 	<div>
 		{include file='marketing_navigation.tpl'}
 
 		</head>
-
-
-
 
 		<body>
 		<div style="clear:left;margin:0 0px">
@@ -78,7 +71,7 @@
 	<div id="new_list">
 		<form name="add_people" id="add_people" action="" method="post" onSubmit="">
 			
-   		 	<h2>{t}List{/t}</h2>
+   		 	<h2>{t}Add People To List{/t}</h2>
 			
 			<select id="list_name" name="list_name">
   			<option value="choose">Choose a list</option>

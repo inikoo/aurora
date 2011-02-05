@@ -74,6 +74,13 @@ if (isset($_REQUEST['view'])) {
 }
 
 // adding  new people to a list
+if(!isset($_GET['l'])){
+
+	header('Location:marketing.php');
+
+}
+
+
 if(isset($_POST['add_people'])){ 
 
 $list_name = $_POST['list_name'];
