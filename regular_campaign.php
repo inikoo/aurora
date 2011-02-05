@@ -60,13 +60,15 @@ $js_files=array(
 
 
  
-if (isset($_REQUEST['view'])) {
+/*if (isset($_REQUEST['view'])) {
     $valid_views=array('metrics','email','web_internal','web','other','newsletter');
     if (in_array($_REQUEST['view'], $valid_views))
         $_SESSION['state'][$page]['view']=$_REQUEST['view'];
 
-}
-$smarty->assign('view',$_SESSION['state'][$page]['view']);
+}*/
+//$smarty->assign('view',$_SESSION['state'][$page]['view']);
+
+$get_value = array();
 
 
 $list_key = 'Email Campaign Mailing List Key';
@@ -76,14 +78,16 @@ $recipient = 'Campaign Mailling List Recipients';
 
 	$query = "select * from `Campaign Mailling List`";
 	$res = mysql_query($query);
-	while($print = mysql_fetch_assoc($res))
+	if(mysql_num_rows($res)>0)
 	{
-		$get_value[] = $print;
+		while($print = mysql_fetch_assoc($res))
+		{
+			$get_value[] = $print;
+		}
 	}
 
-
 $smarty->assign('parent','home');
-$smarty->assign('title', _('Marketing'));
+$smarty->assign('title', _('Regular Campaign'));
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
 $smarty->assign('value',$get_value);
@@ -93,7 +97,6 @@ $smarty->assign('list_key',$list_key);
 $smarty->assign('list_name',$list_name);
 $smarty->assign('list_email',$list_email);
 $smarty->assign('recipient',$recipient);
-
 
 
 
