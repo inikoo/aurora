@@ -59,6 +59,8 @@ $js_files=array(
 		'marketing_create_campaign.js.php'
 		);
 
+$value = array();
+
 $sql = "select `Campaign Mailling List Id`,`Campaign Mailling List Name` from `Campaign Mailling List`";
 		$res = mysql_query($sql);
 	
