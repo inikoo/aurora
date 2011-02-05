@@ -1,6 +1,3 @@
-
-
-
 function validate_form()
 {
 	var check=validate();
@@ -80,6 +77,41 @@ function validate()
 
 
 	//return true
+}
+
+function validate_form2()
+{
+	var check=validate2();
+	if(check==false)
+	{
+		 window.scrollTo(0,0);
+		document.getElementById('check_div').style.display = 'block';
+		//alert('check your entry');
+				
+	}
+	else
+	{
+		check=true;	
+	}
+	//alert(check);
+	return check;
+}
+function validate2()
+{
+	hide();
+	if(document.getElementById("group_title").value=="")
+	{
+		return false;
+	}
+
+	if(document.getElementById("group_name0").value=="")
+	{
+		
+		return false;
+	}
+
+
+	
 }
 
 function echeck(str) 
@@ -231,5 +263,39 @@ function show_group()
 {
 	document.getElementById('list_or_group').style.display = 'none';
 	document.getElementById('group_div').style.display = 'block';
+	document.getElementById('new_list').style.display = 'none';
 }
 
+function add_group_div(){
+	
+	
+	if(document.getElementById('d3').style.display=='block')
+	{
+		document.getElementById('d4').style.display='block';
+		document.getElementById('add_group_link').innerHTML='';
+		exit;
+
+	}
+
+	if(document.getElementById('d2').style.display=='block')
+	{
+		document.getElementById('d3').style.display='block';
+		exit;
+
+	}
+
+	if(document.getElementById('d1').style.display=='block')
+	{
+		document.getElementById('d2').style.display='block';
+		exit;
+
+	}
+
+	if(document.getElementById('d0').style.display=='block')
+	{
+		document.getElementById('d1').style.display='block';
+		exit;
+
+	}
+
+}

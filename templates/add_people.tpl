@@ -1,22 +1,11 @@
-<html>
-<head>
-
 
 {include file='header.tpl'}
 
-<script src="http://code.jquery.com/jquery-1.4.4.js"></script>
-  
-  <link href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/themes/base/jquery-ui.css" rel="stylesheet" type="text/css"/>
-	
   
 <div id="bd" >
 	<div>
-		{include file='marketing_navigation.tpl'}
-
+		
 		</head>
-
-
-
 
 		<body>
 		<div style="clear:left;margin:0 0px">
@@ -77,42 +66,45 @@
 
 	</div>
 	
-
-	
-
-	
-	
-
-	
 	
 	<div id="new_list">
-		<form action="" method="post" name="" onSubmit="">
-			
-   		 	<h2>{t}List{/t}</h2>
-			
-			<select>
-  			<option value="choose">Choose a list</option>
-			{foreach from=$list item=list_item}
-  			<option value="{$list_item[1]}">{$list_item[0]}</option>
+		<form name="add_people" id="add_people" action="" method="post" onSubmit="">
+			<div id="change_list">
+			<select id="list_name" name="list_name" onChange=change_list();>
+  			{foreach from=$list item=list_item}
+  			<option value="{$list_item[0]}" {if $list_item[1]==$current_list}selected{/if}>{$list_item[1]}</option>
 			{/foreach}
+			</select>
+			</div>
+			<p style="padding-top:20px;"></p>
+
+   		 	<h2>{t}Add People To List "{$current_list}"{/t}</h2>
+			
+			
  		
-			</select> <br><br>
+			
 			<div class="sub_head">Email Address</div>
-			<input type="text" name="company_name" id="company_name"  class="av_text" style="width:649px;"><br><br>
+			<input type="text" name="people_email" id="people_email"  class="av_text" style="width:649px;"><br><br>
 			<div class="sub_head">First Name</div>
-			<input type="text" name="company_name" id="company_name"  class="av_text" style="width:649px;"><br><br>
+			<input type="text" name="people_first_name" id="people_first_name" class="av_text" style="width:649px;"><br><br>
 			<div class="sub_head">Last Name</div>
-			<input type="text" name="company_name" id="company_name"  class="av_text" style="width:649px;"><br><br>
+			<input type="text"name="people_last_name" id="people_last_name"  class="av_text" style="width:649px;"><br><br>
+			{if $group_title != ''}
+			<div class="sub_head" id="group_name" name="group_name" style="display:block;">{$group_title}</div>
+			<div>{foreach from=$group item=group_item}		
+			<input type="checkbox"name="group_name[]" id="group_name[]" value="{$group_item[0]}"> {$group_item[1]}<br>
+			{/foreach}</div>
+			{/if}
 			<div class="sub_head">Email Type</div>
-			<INPUT TYPE=RADIO NAME="text" VALUE="text">Text&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-			<INPUT TYPE=RADIO NAME="HTML" VALUE="html">HTML&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-			<INPUT TYPE=RADIO NAME="Mobile" VALUE="mobile">Mobile
+			<INPUT id="people_email_type" TYPE=RADIO NAME="people_email_type" VALUE="text">&nbsp;Text&nbsp;&nbsp;&nbsp;&nbsp;
+			<INPUT id="people_email_type" TYPE=RADIO NAME="people_email_type" VALUE="html">&nbsp;HTML&nbsp;&nbsp;&nbsp;&nbsp;
+			<INPUT id="people_email_type" TYPE=RADIO NAME="people_email_type" VALUE="mobile">&nbsp;Mobile
 			<br>
 			<br>
-			<INPUT TYPE=CHECKBOX NAME="permission">This recipient has given me permission to add him/her to my MailChimp Managed List.
+			<INPUT TYPE=CHECKBOX id="permission" NAME="permission">&nbsp;This recipient has given me permission to add him/her to my MailChimp Managed List.
 			<br><br>
 			<div class="bt" style=" float: left;">
-  			<input type="submit" value="Subscribe" name="add_member_subscribe" id="add_member_subscribe" />
+  			<input type="submit" value="Subscribe" name="add_people" id="add_people" />
   			</div>
 			<div style="padding:10px; float:left"></div>
 			<div class="bt" style="float:left">
@@ -131,6 +123,3 @@
 {include file='footer.tpl'}
 
 
-
-</body>
-</html>

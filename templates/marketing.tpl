@@ -43,7 +43,7 @@
 <div class="campaign_create"><ul class="hover-list"><li><a id="create_camp" href="">Create Campaign<span class="dwn">▼</span></a>
  <ul>
        <li>
-<a href="">regular ol' campaign</a></li> <li><a href="marketing_campaign_builder.php">plain-text campaign</a></li> 
+<a href="regular_campaign.php">regular ol' campaign</a></li> <li><a href="marketing_campaign_builder.php">plain-text campaign</a></li> 
 <li><a href="">A/B split campaign</a></li> 
 <li><a href="">RSS-driven campaign</a></li> </ul> </li> </ul> 
 
