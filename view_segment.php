@@ -76,11 +76,17 @@ if(isset($_REQUEST['segID']))
 	
 	$sqlQuery = "select `Email People Key`,`People Email`,`People Last Name`,`People First Name`,`People Email Type` from `Email People Dimension` where `People Email` = '".$_REQUEST['segID']."' OR `People First Name` = '".$_REQUEST['segID']."' OR `People Last Name` = '".$_REQUEST['segID']."' ";
 	$res = mysql_query($sqlQuery);	
-	while($getRow = mysql_fetch_assoc($res))
+	if(mysql_num_rows($res) > 0)
 	{
-		$getValue[] = $getRow;
+		while($getRow = mysql_fetch_assoc($res))
+		{
+			$getValue[] = $getRow;
+		}
 	}
-	
+	else
+	{
+		$no_result = 'No result is found';
+	}
 }
 
 
@@ -97,6 +103,9 @@ $smarty->assign('title', _('Segment'));
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
 $smarty->assign('value',$getValue);
+$smarty->assign('no_result',$no_result);
+
+
 
 //assigning the database fields
 $smarty->assign('people_key',$people_key);
