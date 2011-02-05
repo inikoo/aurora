@@ -10,6 +10,14 @@
 	$result = mysql_query($query);
 	$row = mysql_num_rows($result);
 	
-	echo $row;
+	if($row == 0)
+	{
+          echo 0;
+	}
+	else
+	{
+	  echo $row;
+	}
+	
 
 ?>
