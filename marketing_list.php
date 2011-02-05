@@ -75,6 +75,7 @@ if (isset($_REQUEST['view'])) {
 // adding  new list
 if(isset($_POST['save_list'])){ 
 
+  $user_key = $_SESSION['user_key'];	
   $list_name = trim($_POST['list_name']);
   $default_from_name = trim($_POST['default_name']);
   $default_reply_to_email = trim($_POST['default_email']);
@@ -87,8 +88,7 @@ if(isset($_POST['save_list'])){
   $activate_social_pro = trim($_POST['social_pro']);
 
 
- $sql = "INSERT INTO `kaktus`.`Email Campaign Mailing List` (`List Name` ,`Default From Name` ,`Default Reply To Email` ,`Default Subject` ,`Permission Reminder List` ,`Reminder Text` ,`People Subscribe` ,`People Unsubscribe` ,`Pick Email Format` ,`Activate Social Pro`)VALUES (
-'$list_name', '$default_from_name', '$default_reply_to_email ', '$default_subject ', '$permission_reminder_list', '$reminder_text', '$people_subscribe', '$people_unsubscribe', '$pick_email_format', '$activate_social_pro');";
+ $sql = "INSERT INTO `Email Campaign Mailing List` (`User Key`, `List Name` ,`Default From Name` ,`Default Reply To Email` ,`Default Subject` ,`Permission Reminder List` ,`Reminder Text` ,`People Subscribe` ,`People Unsubscribe` ,`Pick Email Format` ,`Activate Social Pro`)VALUES ('$user_key', '$list_name', '$default_from_name', '$default_reply_to_email ', '$default_subject ', '$permission_reminder_list', '$reminder_text', '$people_subscribe', '$people_unsubscribe', '$pick_email_format', '$activate_social_pro');";
 	
 mysql_query($sql);
 

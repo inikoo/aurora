@@ -17,6 +17,7 @@ include_once('common.php');
 include_once('class.Product.php');
 include_once('class.Order.php');
 
+
 $page='marketing';
 
 $general_options_list=array();
@@ -72,7 +73,31 @@ if (isset($_REQUEST['view'])) {
 
 }
 
-$list_sql=mysql_query("SELECT `Campaign Name` FROM `Campaign Dimension`");
+// adding  new people to a list
+if(!isset($_GET['l'])){
+
+	header('Location:marketing.php');
+
+}
+
+
+if(isset($_POST['add_people'])){ 
+
+$list_name = $_POST['list_name'];
+$people_email = trim($_POST['people_email']);
+$people_first_name = trim($_POST['people_first_name']);
+$people_last_name = trim($_POST['people_last_name']);
+$people_email_type = trim($_POST['people_email_type']);
+
+
+ $sql = "INSERT INTO `Email People Dimension` (`People List Key` ,`People Group Key` ,`People Email` ,`People First Name` ,`People Last Name` ,`People Email Type`)VALUES('', '', '$people_email', '$people_first_name', '$people_last_name', '$people_email_type');";
+	
+ mysql_query($sql);
+
+
+}
+
+$list_sql=mysql_query("SELECT `Email Campaign Mailing List Key`, `List Name` FROM `Email Campaign Mailing List`");
 $i=0;
 $list=array();
 while($list_name=mysql_fetch_array($list_sql))
@@ -106,6 +131,7 @@ $smarty->assign('filter_menu0',$filter_menu);
 $smarty->assign('filter_name0',$filter_menu[$tipo_filter]['label']);
 $paginator_menu=array(10,25,50,100,500);
 $smarty->assign('paginator_menu0',$paginator_menu);
+
 
 $smarty->display('add_people.tpl');
 

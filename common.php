@@ -30,9 +30,6 @@ if (!$db_selected){print "Error can not access the database\n";exit;}
 
 
 
-
-
-
 mysql_query("SET NAMES 'utf8'");
 require_once 'conf/timezone.php';   
 date_default_timezone_set(TIMEZONE) ;
@@ -56,6 +53,7 @@ $smarty->cache_dir = $myconf['cache_dir'];
 $smarty->config_dir = $myconf['config_dir'];
 
 $logout = (array_key_exists('logout', $_REQUEST)) ? $_REQUEST['logout'] : false;
+
 if ($logout){
 
 /*  ?><script type = "text/javascript">alert("You are about to be signed out due to Inactivity");</script><?php   */
