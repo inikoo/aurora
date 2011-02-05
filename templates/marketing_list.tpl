@@ -108,16 +108,15 @@
 	</div>
 	<div id="group_div" class="main_div" style="display:none">
 		<h2>Create Group</h2><br>
-		<form action="" method="post" name="group_form">
+		<form action="" method="post" name="group_form" onSubmit="return validate_form2();">
 		These groups go in which list?<br>
 
 		<select id="list_group" name="list_group">
-  		<option value="">Choose a list</option>
+  		
 		{foreach from=$list item=list_item}
   		<option value="{$list_item[0]}">{$list_item[1]}</option>
 		{/foreach}
- 		
-		</select> <br><br>
+ 		</select><br><br>
 		How should we show group options on your signup form?<br>
 		<select id="how_show_options" name="how_show_options" style="clear: both; width: 50%;">
   		<option value="checkboxes">as checkboxes (people can select more than one)</option>
@@ -127,47 +126,40 @@
  		</select> <br><br>
 		Group Title<br>
 		<input type="text" name="group_title" id="group_title" class="av_text" style="width:670px;">
-		<div id="group_msg" class="invalid-error" style="display:none";>Example: "Interested in ..." or "Food Preferences".</div>
+		<div id="group_msg" class="invalid-error" style="display:block;";>Example: "Interested in ..." or "Food Preferences".</div>
 		<div id="add_group"style="border:1px solid #AAAAAA; padding-left:10px; padding-right:10px; "></div>
 		
 		<div id="d0" style="display:block;"><div style="padding-top:20px;">Group Name</div>
-		<input type="text" name="group_name0" id="group_name0" class="av_text" style="width:670px;">
-		<div id="group_msg" class="invalid-error" style="width:570px; display:none;">Example: "New products" or "Vegetarian"</div>
+		<input type="text" name="group_name0" id="group_name0" class="av_text" style="width:570px;">
+		<div id="group_msg" class="invalid-error" style="width:570px; display:block;">Example: "New products" or "Vegetarian"</div>
 		<div id="add_group"style="border:1px solid #AAAAAA; padding-left:10px; padding-right:10px; "></div></div>
 
 		<div id="d1" style="display:none;"><div style="padding-top:20px;">Group Name</div>
-		<input type="text" name="group_name1" id="group_name1" class="av_text" style="width:670px;">
-		<div id="group_msg" class="invalid-error" style="width:570px; display:none;">Example: "New products" or "Vegetarian"</div>
+		<input type="text" name="group_name1" id="group_name1" class="av_text" style="width:570px;">
+		<div id="group_msg" class="invalid-error" style="width:570px; display:block;">Example: "New products" or "Vegetarian"</div>
 		<div id="add_group"style="border:1px solid #AAAAAA; padding-left:10px; padding-right:10px; "></div></div>
 			
 		<div id="d2" style="display:none;"><div style="padding-top:20px;">Group Name</div>
-		<input type="text" name="group_name2" id="group_name2" class="av_text" style="width:670px;">
-		<div id="group_msg" class="invalid-error" style="width:570px; display:none;">Example: "New products" or "Vegetarian"</div>
+		<input type="text" name="group_name2" id="group_name2" class="av_text" style="width:570px;">
+		<div id="group_msg" class="invalid-error" style="width:570px; display:block;">Example: "New products" or "Vegetarian"</div>
 		<div id="add_group"style="border:1px solid #AAAAAA; padding-left:10px; padding-right:10px; "></div></div>
 
 		<div id="d3" style="display:none;"><div style="padding-top:20px;">Group Name</div>
-		<input type="text" name="group_name3" id="group_name3" class="av_text" style="width:670px;">
-		<div id="group_msg" class="invalid-error" style="width:570px; display:none;">Example: "New products" or "Vegetarian"</div>
+		<input type="text" name="group_name3" id="group_name3" class="av_text" style="width:570px;">
+		<div id="group_msg" class="invalid-error" style="width:570px; display:block;">Example: "New products" or "Vegetarian"</div>
 		<div id="add_group"style="border:1px solid #AAAAAA; padding-left:10px; padding-right:10px; "></div></div>
 
 		<div id="d4" style="display:none;"><div style="padding-top:20px;">Group Name</div>
-		<input type="text" name="group_name4" id="group_name4" class="av_text" style="width:670px;">
-		<div id="group_msg" class="invalid-error" style="width:570px; display:none;">Example: "New products" or "Vegetarian"</div>
+		<input type="text" name="group_name4" id="group_name4" class="av_text" style="width:570px;">
+		<div id="group_msg" class="invalid-error" style="width:570px; display:block;">Example: "New products" or "Vegetarian"</div>
 		<div id="add_group"style="border:1px solid #AAAAAA; padding-left:10px; padding-right:10px; "></div></div>
 		
-		<a style="cursor: pointer; text-decoration:underline; font-size: 14px;">+ add group</a><br><br>
-
-		<div style="padding-left:10px;">		
-			<div class="list_bt" style=" float: left;">
-  			<input type="submit" value="Save" name="save_group" id="save_group"/>
-  			</div>
-			<div style="padding-left:70px;">		
-			<div class="list_bt">
-  			<input type="button" value="Cancel" name="cancel_group" id="cancel_group" onClick="document.location='marketing.php'; return false;"/>
-		
-  			</div>
-			</div>
-		</div>
+		<div id="add_group_link"><a style="cursor: pointer; text-decoration:underline; font-size: 14px;" onClick=add_group_div();>+ add group</a></div>
+		<div style="padding-top:10px;></div>
+		<div style="padding-left:10px;">
+			<input type="submit" value="Save" name="save_group" id="save_group"/>
+			<input type="button" value="Cancel" name="cancel_group" id="cancel_group" onClick="document.location='marketing.php'; return false;"/>					
+		</div></form>
 	</div>
 	<div id="new_list">
 		<form action="" method="post" name="list_form" onSubmit="return validate_form();">
