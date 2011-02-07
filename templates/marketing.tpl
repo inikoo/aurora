@@ -26,7 +26,7 @@
   <div class="campaign_head"></div>
   <table  style="margin-top:25px;" cellspacing="10" width="445">
   	<tr>
-	<td><div class="topmenu current"><a href="">Dashboard</a></div></td>
+	<td><div class="topmenu current"><a href="">Emarketing</a></div></td>
 	<td><div class="topmenu"><a href="marketing_campaign.php">Campaigns</a</div></td>
        <td><div class="topmenu"><a href="marketing_list.php">Lists</a</div></td>
 	<td><div class="topmenu"><a href="">Reports</a</div></td>
@@ -60,7 +60,7 @@
   Getting started with Emarketing is easy …
 
 </div><br><div style="height:40px;">
-<div style="float:left;"><img style="height:40px; width:40px;" src="art/1.png"> </div><span style="float:left;line-height:40px;font-size:18px;">Create a list</span> 
+<div style="float:left;"><img style="height:40px; width:40px;" src="art/1.png"> </div><span style="float:left;line-height:40px;font-size:18px;"><a href="marketing_list.php">Create a list</span> 
  
 <div class="go_next">
 <a class="button-small" title="create a mailing list" href="marketing_list.php">go »</a>
@@ -69,12 +69,12 @@
 
 </div></div>
 <div style="height:40px;">
-<div style="float:left;"><img style="height:40px; width:40px;" src="art/2.png"> </div><span style="float:left;line-height:40px;font-size:18px;">Create a campaign</span> <div class="go_next">
+<div style="float:left;"><img style="height:40px; width:40px;" src="art/2.png"> </div><span style="float:left;line-height:40px;font-size:18px;"><a href="marketing_create_campaign.php">Create a campaign</a></span> <div class="go_next">
 <a class="button-small" title="create a mailing list" href="marketing_create_campaign.php">go »</a>
 </div></div>
 
 <div style="height:40px;">
-<div style="float:left;"><img style="height:40px; width:40px;" src="art/3.png"> </div><span style="float:left;line-height:40px;font-size:18px;">View campaign reports </span> <div class="go_next">
+<div style="float:left;"><img style="height:40px; width:40px;" src="art/3.png"> </div><span style="float:left;line-height:40px;font-size:18px;"><a href="#">View campaign reports</a></span> <div class="go_next">
 <a class="button-small" title="View campaign reports" href="#">go »</a>
 </div></div>
 
