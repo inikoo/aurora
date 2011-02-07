@@ -73,86 +73,62 @@ if (isset($_REQUEST['view'])) {
 
 }
 
-// adding  new people to a list
+// removing people from a list
 if(!isset($_GET['l'])){
 
 	header('Location:marketing.php');
 
-}else{
+}else{ // General Display
 
+	$current_list_id = trim($_GET['l']);
+	$qry1=mysql_query("SELECT `List Name` FROM `Email Campaign Mailing List` WHERE  `Email Campaign Mailing List Key` LIKE '$current_list_id' AND `User Key` LIKE '$user_key'"); 
+	if(mysql_num_rows($qry1) == 0){
+		header('Location:marketing.php');
 
+	}
+	$r1 = mysql_fetch_assoc($qry1);
+	$current_list = $r1['List Name'];
+	$smarty->assign('current_list', $current_list);
 
-
-$current_list_id = trim($_GET['l']);
-$qry1=mysql_query("SELECT `List Name` FROM `Email Campaign Mailing List` WHERE  `Email Campaign Mailing List Key` LIKE '$current_list_id' AND `User Key` LIKE '$user_key'"); 
-if(mysql_num_rows($qry1) == 0){
-	header('Location:marketing.php');
 	
+
+
+
 }
-$r1 = mysql_fetch_assoc($qry1);
-$current_list = $r1['List Name'];
-$smarty->assign('current_list', $current_list);
 
+// Removing People - action part
+if(isset($_POST['remove_people'])){ 
 
-$qry2=mysql_query("SELECT `Email Campaign Group Key` , `Group Title` FROM `Email Campaign Group Titile` WHERE `Email List Key` LIKE '$current_list_id'"); 
-$r2 = mysql_fetch_assoc($qry2);
-$group_title = $r2['Group Title'];
-$group_key = $r2['Email Campaign Group Key'];
-$smarty->assign('group_title', $group_title);
-
-$qry3=mysql_query("SELECT `Email Campaign Group Name Key`, `Group Name` FROM `Email Campaign Group Titile Name Bridge` WHERE `Email Campaign Group Key` LIKE '$group_key'"); 
-$k=0;
-$group=array();
-while($group_name=mysql_fetch_array($qry3))
-{
-	$group[$k]=$group_name;
+	$email_addresses = $_POST['email_addresses'];
+	$email_addresses = nl2br($email_addresses);	
+	$remove_email_arr = explode('<br />', $email_addresses);
+	$remove_email_arr_clean = array();	
+	foreach($remove_email_arr as $remove_email){
 	
-	$k++;
-}
-
-$smarty->assign('group',$group);
-
-
-}
-
-
-if(isset($_POST['add_people'])){ 
-
-$list_name = $_POST['list_name'];
-$people_email = trim($_POST['people_email']);
-$people_first_name = trim($_POST['people_first_name']);
-$people_last_name = trim($_POST['people_last_name']);
-$people_email_type = trim($_POST['people_email_type']);
-
-if(count($_POST['group_name']) > 0){
-	$group = implode(',', $_POST['group_name']);
-
-}else{
-
-	$group = '';
-}
-
-
-
- $sql = "INSERT INTO `Email People Dimension` (`People List Key` ,`People Group Key` ,`People Email` ,`People First Name` ,`People Last Name` ,`People Email Type`)VALUES('$list_name', '$group', '$people_email', '$people_first_name', '$people_last_name', '$people_email_type');";
+		$remove_email=trim($remove_email);
+		if(trim($remove_email) != '' && $remove_email != false && $remove_email != NULL){	
+		
+					
+			array_push($remove_email_arr_clean, $remove_email);
+			 	
+		}
+		
+	}
+	$remove_email_arr_clean = array_unique($remove_email_arr_clean);
+	unset($remove_email_arr);
 	
- mysql_query($sql);
-
-
-}
-
-$list_sql=mysql_query("SELECT `Email Campaign Mailing List Key`, `List Name` FROM `Email Campaign Mailing List` WHERE `User Key` LIKE '$user_key'");
-$i=0;
-$list=array();
-while($list_name=mysql_fetch_array($list_sql))
-{
-	//echo"$list_name['$listname]<br>";
-	$list[$i]=$list_name;
+	foreach($remove_email_arr_clean as $remove_email){
 	
-	$i++;
+		mysql_query("DELETE FROM `Email People Dimension` WHERE `People Email` = '$remove_email' && `People List Key` = '$current_list_id'");
+			
+
+	}
+	
+	
+
+
 }
 
-$smarty->assign('list',$list);
 
 $smarty->assign('view',$_SESSION['state'][$page]['view']);
 
@@ -177,7 +153,7 @@ $paginator_menu=array(10,25,50,100,500);
 $smarty->assign('paginator_menu0',$paginator_menu);
 
 
-$smarty->display('add_people.tpl');
+$smarty->display('remove_people.tpl');
 
 
 

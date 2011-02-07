@@ -59,9 +59,9 @@
 </p>
 <p><a href="#" onclick="addEvent(1);"><span style="font-size:10px; color:#CC66OD;">Add Condition</span></a></p>
 <div id="myDiv{$value[value].$list_key}" style="font-size:10px; color:#CC66OD;"> </div>
-<p style="padding:10px;">
-<input type="submit" name="sagement" value="sagement">
-<input type="button" id="sagement" value="cancel"></p>
+<p style="padding:10px;height:35px; width:850px;">
+<input type="submit" name="sagement1" class="sagement_img" value="">
+<input type="button" id="sagement" class="cancel_img" value=""></p>
 </div>
 </div>
 
