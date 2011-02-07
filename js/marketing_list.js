@@ -265,6 +265,14 @@ function show_group()
 	document.getElementById('group_div').style.display = 'block';
 	document.getElementById('new_list').style.display = 'none';
 }
+function create_group()
+{       document.getElementById('new_list').style.display = 'none';
+	document.getElementById('list_or_group').style.display = 'none';
+	document.getElementById('group_div').style.display = 'block';
+        document.getElementById('list_details_div').style.display = 'none';
+	
+	
+}
 
 function add_group_div(){
 	
