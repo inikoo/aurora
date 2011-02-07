@@ -318,6 +318,9 @@ background-color:#999999;
 .hover-list ul li a:hover{background:#D1EBF1;color:#222;}
 .dwn{font-size:75%;padding-left:.2em;}
 
+.group_child{cursor:pointer;}
+.group_child:hover{background:none repeat scroll 00 #d1ebf1;color:#222222; }
+
                            /*marketing campaign builder setup part */
 
 
@@ -393,6 +396,52 @@ background-color:#999999;
    vertical-align:text-top;
 
 }
+
+.sagement_img{
+ background-image:url(../art/sagement.png);
+border:none;
+ height:30px;
+ width:131px;
+padding:0px;
+float:right;
+overflow:auto;
+}
+.cancel_img{
+ background-image:url(../art/sagement_cancel.png);
+border:none;
+ height:31px;
+ width:79px;
+padding:0px;
+margin-right:10px;
+float:right;
+overflow:auto;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

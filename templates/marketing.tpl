@@ -50,16 +50,6 @@
 <div>
 
 
-
-
-
-
-
-
-
-
-
-
 </td> 
 
 <td style="background-color:#f1ede0;width:720px;">
