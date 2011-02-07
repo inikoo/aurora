@@ -47,8 +47,6 @@
 		</div></a><br>
 		<div id="view_list" style="text-decoration:none; cursor:pointer">View Lists
 		</div><br>
-		<div id="signup_forms" onMouseover="show('left_slide');">Design Sign up forms ▼
-		</div><br>
 		
 		<input type="text" name="list_search" id="list_search" value="Search List Subscribers" onClick="empty_text();">
 		<input type="submit" value="Go" class="list_search_button">
@@ -266,7 +264,12 @@
 				<li style="float: left; padding-left:50px;"><a href="delete_list.php?l={$list_item[0]}">Delete</a></li>
 				<!--<li style="float: left; padding-left:50px;"><a>Forms</a></li>
 				<li style="float: left; padding-left:50px;"><a>List Data</a></li>-->
-				<li style="float: left; padding-left:50px;"><a>Groups▼</a></li>
+				<li style="float: left; padding-left:50px;"><ul class="hover-list"><li><a href="#">Group<span class="dwn">▼</span></a>
+				 <ul>
+				       <li>
+				<div class="group_child" onClick="create_group();">Create Group</div></li>  </ul></li>
+
+
 			</ul>
 		</div>
 		{/foreach}
