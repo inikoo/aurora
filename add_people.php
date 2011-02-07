@@ -19,7 +19,7 @@ include_once('class.Order.php');
 
 
 $page='marketing';
-
+$user_key = $_SESSION['user_key'];
 $general_options_list=array();
 $general_options_list[]=array('tipo'=>'url','url'=>'marketing_reports.php','label'=>_('Reports'));
 
@@ -80,8 +80,15 @@ if(!isset($_GET['l'])){
 
 }else{
 
+
+
+
 $current_list_id = trim($_GET['l']);
-$qry1=mysql_query("SELECT `List Name` FROM `Email Campaign Mailing List` WHERE  `Email Campaign Mailing List Key` LIKE '$current_list_id'"); 
+$qry1=mysql_query("SELECT `List Name` FROM `Email Campaign Mailing List` WHERE  `Email Campaign Mailing List Key` LIKE '$current_list_id' AND `User Key` LIKE '$user_key'"); 
+if(mysql_num_rows($qry1) == 0){
+	header('Location:marketing.php');
+	
+}
 $r1 = mysql_fetch_assoc($qry1);
 $current_list = $r1['List Name'];
 $smarty->assign('current_list', $current_list);
@@ -134,7 +141,7 @@ if(count($_POST['group_name']) > 0){
 
 }
 
-$list_sql=mysql_query("SELECT `Email Campaign Mailing List Key`, `List Name` FROM `Email Campaign Mailing List`");
+$list_sql=mysql_query("SELECT `Email Campaign Mailing List Key`, `List Name` FROM `Email Campaign Mailing List` WHERE `User Key` LIKE '$user_key'");
 $i=0;
 $list=array();
 while($list_name=mysql_fetch_array($list_sql))
