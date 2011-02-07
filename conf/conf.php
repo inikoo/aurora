@@ -181,7 +181,27 @@ $default_state=array(
                                              'f_field'=>'public_id',
                                              'f_value'=>'','f_show'=>false,
                                              'from'=>'',
-                                             'to'=>''
+                                             'to'=>'',
+
+
+                                            'csv_export'=>array(
+                                                             'public_id'=>true,
+                                                             'last_date'=>true,
+                                                             'supplier'=>true,
+                                                             'status'=>true,
+                                                             'totaltax'=>false,
+                                                             'totalnet'=>false,
+							     'shippingmethod'=>false,
+                                                             'total'=>true,
+                                                             'buyername'=>false,
+                                                             'sourcetype'=>false,
+                                                             'paymentstate'=>false,
+                                                             'actiontaken'=>false,
+                                                             'items'=>false,
+                                                             'currency_code'=>false
+                                                        )
+
+
                                          )
                              ),
                    'supplier_invoices'=>array(

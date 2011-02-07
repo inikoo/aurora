@@ -251,6 +251,15 @@ switch ($tipo) {
         $where=sprintf(' `Supplier Key`=%d ',$_SESSION['state']['supplier']['id']);
         $data=get_supplier_products_data($wheref,$where);
         break;
+   case 'porders':
+        $filename=_('porders').'.csv';
+        $f_field=$_SESSION['state']['porders']['table']['f_field'];
+        $f_value=$_SESSION['state']['porders']['table']['f_value'];
+        // $wheref=wheref_stores($f_field,$f_value);
+        $filename=_('porders').'.csv';
+        // $where=sprintf(' `Order Store Key`=%d ',$_SESSION['state']['store']['id']);
+        $data=get_porders_data();
+        break; 
                     
     default:
         
@@ -1526,6 +1535,63 @@ $data[]=$_data;
 return $data;
 
 }
+function get_porders_data(){
 
+$data=prepare_values($_REQUEST,array('fields'=>array('type'=>'json array','optional'=>true)));
+if(isset($data['fields'])){
+$fields_to_export=$data['fields'];
+}else{
+$fields_to_export=$_SESSION['state']['porders']['table']['csv_export'];
+}
+
+
+$fields=array(
+'public_id'=>array('title'=>_('Order Id'),'db_name'=>'Purchase Order Public ID'),
+'last_date'=>array('title'=>_('Last Updated'),'db_name'=>'Purchase Order Last Updated Date'),
+'supplier'=>array('title'=>_('Supplier'),'db_name'=>'Purchase Order Supplier Name'),
+'status'=>array('title'=>_('Status'),'db_name'=>'Purchase Order Current Dispatch State'),
+'totaltax'=>array('title'=>_('Total Tax'),'db_name'=>'Purchase Order Total Tax Amount'),
+'totalnet'=>array('title'=>_('Total Net'),'db_name'=>'Purchase Order Total Net Amount'),
+'shippingmethod'=>array('title'=>_('Total Shipping'),'db_name'=>'Purchase Order Shipping Net Amount'),
+'total'=>array('title'=>_('Total'),'db_name'=>'Purchase Order Total Amount'),
+'buyername'=>array('title'=>_('Buyer Name'),'db_name'=>'Purchase Order Main Buyer Name'),
+'sourcetype'=>array('title'=>_('Source Type'),'db_name'=>'Purchase Order Main Source Type'),
+'paymentstate'=>array('title'=>_('Payment State'),'db_name'=>'Purchase Order Current Payment State'),
+'actiontaken'=>array('title'=>_('Actions Taken'),'db_name'=>'Purchase Order Actions Taken'),
+'ordertype'=>array('title'=>_('Items'),'db_name'=>'Purchase Order Number Items'),
+'currency_code'=>array('title'=>_('Currency'),'db_name'=>'Purchase Order Currency Code'),
+
+);
+
+
+foreach($fields as $key=>$value){
+if(!isset($fields_to_export[$key]) or  !$fields_to_export[$key]  )
+unset($fields[$key]);
+}
+
+
+
+$data=array();
+$_data=array();
+foreach($fields as $key=>$options){
+$_data[]=$options['title'];
+}
+$data[]=$_data;
+$sql="select * from `Purchase Order Dimension` where true";
+$res=mysql_query($sql);
+echo $sql;
+while($row=mysql_fetch_assoc($res)){
+$_data=array();
+foreach($fields as $key=>$options){
+
+$_data[]=$row[$options['db_name']];
+}
+$data[]=$_data;
+}
+//print_r($data);exit;
+
+return $data;
+
+}
 
 ?>
