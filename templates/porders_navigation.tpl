@@ -11,7 +11,7 @@
 </dl>
 {/if}
  <span class="nav2 onleft"><span   id="orders" {if $view=='orders'}class="selected"{/if} >{t}Purchase Orders{/t}</span></span>
-  <span class="nav2 onleft"><span id="invoices" {if $view=='invoices'}class="selected"{/if} >{t}Supplier's Invoices(not yet done){/t}</span></span>
+  <span class="nav2 onleft"><span id="invoices" {if $view=='invoices'}class="selected"{/if} >{t}Supplier's Invoices{/t}</span></span>
   <span class="nav2 onleft"><span  id="dn"  {if $view=='dn'}class="selected"{/if} >{t}Incoming Delivery Notes{/t}</span></span>
 
 
