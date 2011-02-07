@@ -15,7 +15,7 @@ if(mysql_num_rows($result) > 0)
 
 <table style="font-size:30px;" width="100%" align="center"><tr><td>
 <span style="font-size:31px;font-weight:bold;"><?php echo $row['Customer Company Name']; ?></span><br> 
-<span style="font-size:30px;font-weight:bold;"><?php echo $row['Customer Main Contact Name'];?></span><br><?php echo $row['Customer Main XHTML Address']; ?>
+<span style="font-size:30px;font-weight:bold;"><?php echo $row['Customer Main Contact Name'];?></span><br><?php $addr=strip_tags($row['Customer Main XHTML Address'],'<br/>');echo $addr; ?>
 </td></tr></table>
 
 <?php
