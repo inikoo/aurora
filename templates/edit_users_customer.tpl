@@ -1,17 +1,18 @@
 {include file='header.tpl'}
 <div id="bd" >
-
+<div>
 <span class="nav2 onleft"><a class="selected" href="users_staff.php">Staff Users</a></span>
   <span class="nav2 onleft"><a href="users_customer.php">Customer Users</a></span>
   <span class="nav2 onleft"><a href="users_supplier.php">Supplier Users</a></span>
-
-
-<div class="search_box">
+</div>
+<div class="search_box" align='right'>
   <div class="general_options">
-  <span id="exit">{t}Exit Edit{/t}</span>
+<span id="exit">{t}Exit Edit{/t}</span>
 </div>  
          
 </div>  
+
+
 
   <div id="yui-main">
     
