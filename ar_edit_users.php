@@ -36,6 +36,9 @@ case('staff_users'):
 case('supplier_users'):
     list_supplier_users();
     break;
+case('customer_users'):
+    list_customer_users();
+    break;
 
 case('valid_handle'):
 
@@ -902,6 +905,205 @@ $password='';
     echo json_encode($response);
 }
 
+
+function list_customer_users() {
+    global $myconf;
+
+    $conf=$_SESSION['state']['users']['customer'];
+    if (isset( $_REQUEST['sf']))
+        $start_from=$_REQUEST['sf'];
+    else
+        $start_from=$conf['sf'];
+    if (isset( $_REQUEST['nr']))
+        $number_results=$_REQUEST['nr'];
+    else
+        $number_results=$conf['nr'];
+    if (isset( $_REQUEST['o']))
+        $order=$_REQUEST['o'];
+    else
+        $order=$conf['order'];
+    if (isset( $_REQUEST['od']))
+        $order_dir=$_REQUEST['od'];
+    else
+        $order_dir=$conf['order_dir'];
+    if (isset( $_REQUEST['f_field']))
+        $f_field=$_REQUEST['f_field'];
+    else
+        $f_field=$conf['f_field'];
+
+    if (isset( $_REQUEST['f_value']))
+        $f_value=$_REQUEST['f_value'];
+    else
+        $f_value=$conf['f_value'];
+    if (isset( $_REQUEST['where']))
+        $where=$_REQUEST['where'];
+    else
+        $where=$conf['where'];
+
+ /*   if (isset( $_REQUEST['display']))
+        $display=$_REQUEST['display'];
+    else
+        $display=$conf['display'];
+*/
+
+
+
+    if (isset( $_REQUEST['tableid']))
+        $tableid=$_REQUEST['tableid'];
+    else
+        $tableid=0;
+
+    $order_direction=(preg_match('/desc/',$order_dir)?'desc':'');
+    $_order=$order;
+    $_dir=$order_direction;
+
+
+
+    $_SESSION['state']['users']['customer']=array(
+                                           //  'display'=>$display,
+                                             'order'=>$order,
+                                             'order_dir'=>$order_direction,
+                                             'nr'=>$number_results,
+                                             'sf'=>$start_from,
+                                             'where'=>$where,
+                                             'f_field'=>$f_field,
+                                             'f_value'=>$f_value
+                                             );
+
+
+
+    $wheref='';
+    if ($f_field=='name' and $f_value!=''  )
+        $wheref.=" and  name like '%".addslashes($f_value)."%'    ";
+    else if ($f_field=='position_id' or $f_field=='area_id'   and is_numeric($f_value) )
+        $wheref.=sprintf(" and  $f_field=%d ",$f_value);
+
+
+ /*   switch ($display) {
+    case('all'):
+        break;
+    case('active'):
+        $where.=" and `User Key` IS NOT NULL  ";
+        break;
+    case('inactive_current'):
+        $where.=" and `Staff Currently Working`='Yes'   and `User Key` IS NULL ";
+        break;
+    case('inactive_ex'):
+        $where.=" and `Staff Currently Working`='No'";
+        break;
+
+    }
+*/
+    $sql="select count(*) as total from `Customer Dimension` SD  left join `User Dimension` on (`User Parent Key`=`Customer Key`) $where $wheref and  `User Type`='Customer' ";
+    $res=mysql_query($sql);
+    if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+        $total=$row['total'];
+    }
+    if ($wheref!='') {
+        $sql="select count(*) as total from `Customer Dimension` SD  left join `User Dimension` on (`User Parent Key`=`Customer Key`)  $where ";
+   $res=mysql_query($sql);
+        if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
+            $total_records=$row['total'];
+            $filtered=$row['total']-$total;
+        }
+
+    } else {
+        $filtered=0;
+        $total_records=$total;
+    }
+
+    mysql_free_result($res);
+    $rtext=$total_records." ".ngettext('record','records',$total_records);
+    if ($total_records>$number_results)
+        $rtext.=sprintf(" <span class='rtext_rpp'>(%d%s)</span>",$number_results,_('rpp'));
+    $filter_msg='';
+
+    switch ($f_field) {
+    case('name'):
+        if ($total==0 and $filtered>0)
+            $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There is no staff with name")." <b>*".$f_value."*</b> ";
+        elseif($filtered>0)
+        $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ("._('staff with name')." <b>*".$f_value."*</b>)";
+        break;
+    case('area_id'):
+        if ($total==0 and $filtered>0)
+            $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There is no staff on area")." <b>".$f_value."</b> ";
+        elseif($filtered>0)
+        $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ("._('staff on area')." <b>".$f_value."</b>)";
+        break;
+    case('position_id'):
+        if ($total==0 and $filtered>0)
+            $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._("There is no staff with position")." <b>".$f_value."</b> ";
+        elseif($filtered>0)
+        $filter_msg='<img style="vertical-align:bottom" src="art/icons/exclamation.png"/>'._('Showing')." $total ("._('staff with position')." <b>".$f_value."</b>)";
+        break;
+
+    }
+
+
+    if ($order=='name')
+        $order='`Customer Name`';
+    elseif($order=='position')
+    $order='position';
+    else
+        $order='`Customer Name`';
+ //   $sql="select (select GROUP_CONCAT(distinct `Company Position Title`) from `Company Position Staff Bridge` PSB  left join `Company Position Dimension` P on (`Company Position Key`=`Position Key`) where PSB.`Staff Key`= SD.`Staff Key`) as position, `Staff Alias`,`Staff Key`,`Staff Name` from `Staff Dimension` SD  left join `User Dimension` on (`User Parent Key`=`Staff Key`) $where  $wheref and `User Type`='Staff' order by $order $order_direction limit $start_from,$number_results";
+
+    $sql="select `User Alias`,`User Active`,`User Key`,`User Handle`,`User Password`,`Customer Key`,`Customer Name` from `Customer Dimension` SD  left join `User Dimension` U on (`User Parent Key`=`Customer Key`) $where  $wheref and (`User Type`='Customer') order by $order $order_direction limit $start_from,$number_results";
+   //  print $sql;
+    $adata=array();
+    $res=mysql_query($sql);
+    while ($data=mysql_fetch_array($res)) {
+
+ //$groups=preg_split('/,/',$data['Groups']);
+     // $stores=preg_split('/,/',$data['Stores']);
+    // $warehouses=preg_split('/,/',$data['Warehouses']);
+
+        //   $_id=$myconf['staff_prefix'].sprintf('%03d',$data['Staff Key']);
+        //  $id=sprintf('<a href="staff.php?id=%d">%s</a>',$data['Staff Key'],$_id);
+        $is_active='No';
+
+        if ($data['User Active']=='Yes')
+            $is_active='Yes';
+
+$password='';
+  if ($data['User Key']){
+  $password='<img style="cursor:pointer" user_name="'.$data['User Alias'].'" user_id="'.$data['User Key'].'" onClick="change_passwd(this)" src="art/icons/key.png"/>';
+  }
+
+        $adata[]=array(
+                     'id'=>$data['User Key'],
+                     'customer_id'=>$data['Customer Key'],
+                     'alias'=>$data['User Alias'],
+                     'name'=>$data['Customer Name'],
+                     		   'password'=>$password,
+
+		    //  'groups'=>$groups,
+                    //  'stores'=>$stores,
+		    // 'warehouses'=>$warehouses,
+                     'isactive'=>$is_active
+                 );
+    }
+    mysql_free_result($res);
+    $response=array('resultset'=>
+                                array('state'=>200,
+                                      'data'=>$adata,
+                                      'sort_key'=>$_order,
+                                      'sort_dir'=>$_dir,
+                                      'tableid'=>$tableid,
+                                      'filter_msg'=>$filter_msg,
+                                      'total_records'=>$total,
+                                      'records_offset'=>$start_from,
+                                      'records_returned'=>$start_from+$total,
+                                      'records_perpage'=>$number_results,
+                                      'rtext'=>$rtext,
+                                      'records_order'=>$order,
+                                      'records_order_dir'=>$order_dir,
+                                      'filtered'=>$filtered
+                                     )
+                   );
+    echo json_encode($response);
+}
 
 
 ?>
