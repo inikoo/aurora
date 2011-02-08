@@ -72,7 +72,10 @@ google.load("jquery", "1");
 		</tr>
 			
 		</div>
-		
+		{sectionelse}
+		<tr>
+		<td>{$rslt}</td>
+		</tr>
 		{/section}
 		
 </form>	
