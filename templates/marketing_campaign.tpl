@@ -85,6 +85,8 @@
 		<td>{$value[value].$content}</td>
 		
 		</tr>
+		{sectionelse}
+		<tr><td colspan="6">{$null_result}</td></tr>
 		{/section}
      
   </table>
