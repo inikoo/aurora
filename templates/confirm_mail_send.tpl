@@ -1,4 +1,15 @@
 {include file='header.tpl'}
+{literal}
+<style type="text/css">
+tr{
+	background-color:##DFDFDF;	
+}
+tr:hover{
+
+	background-color:#CFDCE6;
+}
+</style>
+{/literal}
 <div id="bd"  style="padding:0px;">
 <div style="padding:0 20px">
 
@@ -8,7 +19,7 @@
     <div class="campaign_cancel"> <a href="#">cancel &amp; exit</a> </div>
 </div>
 <br><br><hr style="color:#DDDDDD"><br><br><br>
-<table width=100%  border="1" cellpadding="10" cellspacing="10">
+<table width=100%  border="0" cellpadding="10" cellspacing="10">
    <tr height="60px">
 	<td><b>List : </b><br><br>Your segment of list "{$list_name}" is empty ({$recipients} recipients). <span style="float:right;">Edit</span></td>
    </tr>
@@ -22,7 +33,7 @@
    </tr>
 
  <tr height="60px">
-	<td><b>Tracking :</b> <br><br>  You chose to track clicks and opens in email. <span style="float:right;">Edit</span> </td>
+	<td><b>Tracking :</b> <br><br>  {$track} <span style="float:right;">Edit</span> </td>
    </tr>
 
    <tr height="60px">
