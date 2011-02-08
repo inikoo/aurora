@@ -2,8 +2,8 @@
 <div id="bd" >
 
 <span class="nav2 onleft"><a class="selected" href="users_staff.php">Staff Users</a></span>
-  <span class="nav2 onleft"><a href="users_customers.php">Customer Users</a></span>
-  <span class="nav2 onleft"><a href="users_suppliers.php">Supplier Users</a></span>
+  <span class="nav2 onleft"><a href="users_customer.php">Customer Users</a></span>
+  <span class="nav2 onleft"><a href="users_supplier.php">Supplier Users</a></span>
 
 
 <div class="search_box">

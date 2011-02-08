@@ -213,7 +213,6 @@ $lang=$match[0];
      
    echo json_encode($response);
 }
-//---------------------------login history list starts here----------
 function list_loginhistory(){
  $conf=$_SESSION['state']['users']['loginhistory'];
   if(isset( $_REQUEST['sf']))
@@ -368,12 +367,6 @@ $order='`Start Date`';
      
    echo json_encode($response);
 }
-//---------------------------login history list ends here---------
-
-
-
-
-
 function list_groups(){
 $conf=$_SESSION['state']['users']['groups'];
   if(isset( $_REQUEST['sf']))
