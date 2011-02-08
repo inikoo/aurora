@@ -706,7 +706,7 @@ $password='';
 function list_supplier_users() {
     global $myconf;
 
-    $conf=$_SESSION['state']['users']['staff'];
+    $conf=$_SESSION['state']['users']['supplier'];
     if (isset( $_REQUEST['sf']))
         $start_from=$_REQUEST['sf'];
     else
@@ -737,11 +737,11 @@ function list_supplier_users() {
     else
         $where=$conf['where'];
 
-    if (isset( $_REQUEST['display']))
+ /*   if (isset( $_REQUEST['display']))
         $display=$_REQUEST['display'];
     else
         $display=$conf['display'];
-
+*/
 
 
 
@@ -756,8 +756,8 @@ function list_supplier_users() {
 
 
 
-    $_SESSION['state']['users']['staff']=array(
-                                             'display'=>$display,
+    $_SESSION['state']['users']['supplier']=array(
+                                           //  'display'=>$display,
                                              'order'=>$order,
                                              'order_dir'=>$order_direction,
                                              'nr'=>$number_results,
@@ -776,7 +776,7 @@ function list_supplier_users() {
         $wheref.=sprintf(" and  $f_field=%d ",$f_value);
 
 
-    switch ($display) {
+ /*   switch ($display) {
     case('all'):
         break;
     case('active'):
@@ -790,17 +790,15 @@ function list_supplier_users() {
         break;
 
     }
-
-    $sql="select count(*) as total from `Staff Dimension` SD  left join `User Dimension` on (`User Parent Key`=`Staff Key`) $where $wheref";
-
-
+*/
+    $sql="select count(*) as total from `Supplier Dimension` SD  left join `User Dimension` on (`User Parent Key`=`Supplier Key`) $where $wheref and  `User Type`='Supplier' ";
     $res=mysql_query($sql);
     if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
         $total=$row['total'];
     }
     if ($wheref!='') {
-        $sql="select count(*) as total from `Staff Dimension` SD  left join `User Dimension` on (`User Parent Key`=`Staff Key`)  $where ";
-        $res=mysql_query($sql);
+        $sql="select count(*) as total from `Supplier Dimension` SD  left join `User Dimension` on (`User Parent Key`=`Supplier Key`)  $where ";
+   $res=mysql_query($sql);
         if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
             $total_records=$row['total'];
             $filtered=$row['total']-$total;
@@ -841,22 +839,22 @@ function list_supplier_users() {
 
 
     if ($order=='name')
-        $order='`Staff Name`';
+        $order='`Supplier Name`';
     elseif($order=='position')
     $order='position';
     else
-        $order='`Staff Name`';
-    $sql="select (select GROUP_CONCAT(distinct `Company Position Title`) from `Company Position Staff Bridge` PSB  left join `Company Position Dimension` P on (`Company Position Key`=`Position Key`) where PSB.`Staff Key`= SD.`Staff Key`) as position, `Staff Alias`,`Staff Key`,`Staff Name` from `Staff Dimension` SD  left join `User Dimension` on (`User Parent Key`=`Staff Key`) $where  $wheref and `User Type`='Staff' order by $order $order_direction limit $start_from,$number_results";
+        $order='`Supplier Name`';
+ //   $sql="select (select GROUP_CONCAT(distinct `Company Position Title`) from `Company Position Staff Bridge` PSB  left join `Company Position Dimension` P on (`Company Position Key`=`Position Key`) where PSB.`Staff Key`= SD.`Staff Key`) as position, `Staff Alias`,`Staff Key`,`Staff Name` from `Staff Dimension` SD  left join `User Dimension` on (`User Parent Key`=`Staff Key`) $where  $wheref and `User Type`='Staff' order by $order $order_direction limit $start_from,$number_results";
 
-    $sql="select `User Alias`,(select GROUP_CONCAT(URSB.`Scope Key`) from `User Right Scope Bridge` URSB where URSB.`User Key`=U.`User Key` and `Scope`='Store'  ) as Stores,(select GROUP_CONCAT(URSB.`Scope Key`) from `User Right Scope Bridge` URSB where URSB.`User Key`=U.`User Key`and `Scope`='Warehouse'  ) as Warehouses ,(select GROUP_CONCAT(UGUD.`User Group Key`) from `User Group User Bridge` UGUD left join  `User Group Dimension` UGD on (UGUD.`User Group Key`=UGD.`User Group Key`)      where UGUD.`User Key`=U.`User Key` ) as Groups,`User Key`,`User Active`, `Staff Alias`,`Staff Key`,`Staff Name` from `Staff Dimension` SD  left join `User Dimension` U on (`User Parent Key`=`Staff Key`) $where  $wheref and (`User Type`='Staff' or `User Type` is null ) order by $order $order_direction limit $start_from,$number_results";
-    // print $sql;
+    $sql="select `User Alias`,`User Active`,`User Key`,`User Handle`,`User Password`,`Supplier Key`,`Supplier Name` from `Supplier Dimension` SD  left join `User Dimension` U on (`User Parent Key`=`Supplier Key`) $where  $wheref and (`User Type`='Supplier') order by $order $order_direction limit $start_from,$number_results";
+   //  print $sql;
     $adata=array();
     $res=mysql_query($sql);
     while ($data=mysql_fetch_array($res)) {
 
- $groups=preg_split('/,/',$data['Groups']);
-      $stores=preg_split('/,/',$data['Stores']);
-     $warehouses=preg_split('/,/',$data['Warehouses']);
+ //$groups=preg_split('/,/',$data['Groups']);
+     // $stores=preg_split('/,/',$data['Stores']);
+    // $warehouses=preg_split('/,/',$data['Warehouses']);
 
         //   $_id=$myconf['staff_prefix'].sprintf('%03d',$data['Staff Key']);
         //  $id=sprintf('<a href="staff.php?id=%d">%s</a>',$data['Staff Key'],$_id);
@@ -872,14 +870,14 @@ $password='';
 
         $adata[]=array(
                      'id'=>$data['User Key'],
-                     'staff_id'=>$data['Staff Key'],
-                     'alias'=>$data['Staff Alias'],
-                     'name'=>$data['Staff Name'],
+                     'supplier_id'=>$data['Supplier Key'],
+                     'alias'=>$data['User Alias'],
+                     'name'=>$data['Supplier Name'],
                      		   'password'=>$password,
 
-		   'groups'=>$groups,
-   'stores'=>$stores,
-		   'warehouses'=>$warehouses,
+		    //  'groups'=>$groups,
+                    //  'stores'=>$stores,
+		    // 'warehouses'=>$warehouses,
                      'isactive'=>$is_active
                  );
     }
