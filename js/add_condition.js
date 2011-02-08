@@ -42,6 +42,13 @@ function popup()
 	nW=null;
 }
 
+function getValue()
+{
+	
+	location.href = 'campaign_use_segment.php';
+	
+}
+
 
 
 //call ajax

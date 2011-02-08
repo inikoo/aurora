@@ -51,8 +51,6 @@ $js_files=array(
 		$yui_path.'container/container-min.js',
 		$yui_path.'menu/menu-min.js',
 		$yui_path.'calendar/calendar-min.js',
-		'js/jquery-1.4.4.js',
-		'js/plain_campaign_builder.js',
 		'common.js.php',
 		'table_common.js.php',
 		'js/search.js',
@@ -62,23 +60,6 @@ $js_files=array(
 
 
 
-$getID = $_GET['getID']; 
-
-
-$sql = "select `Campaign Mailling List Id`,`Campaign Mailling List Name`,`Campaign Mailling List Default Name`,`Campaign Mailling List Email` from `Campaign Mailling List` where `Campaign Mailling List Id` = '".$getID."'";
-		$res = mysql_query($sql);
-		$row = mysql_fetch_assoc($res);
-	
-	//echo $sql; die();
-
-	$smarty->assign('list_id',$row['Campaign Mailling List Id']);
-	$smarty->assign('subject',$row['Campaign Mailling List Name']);
-	$smarty->assign('email',$row['Campaign Mailling List Email']);
-	$smarty->assign('default_name',$row['Campaign Mailling List Default Name']);
-
-
-
- 
 if (isset($_REQUEST['view'])) {
     $valid_views=array('metrics','email','web_internal','web','other','newsletter');
     if (in_array($_REQUEST['view'], $valid_views))
@@ -87,12 +68,30 @@ if (isset($_REQUEST['view'])) {
 }
 $smarty->assign('view',$_SESSION['state'][$page]['view']);
 
+//get the list
+$id = isset($_REQUEST['id'])?$_REQUEST['id']:'';
+
+	$query = "select `Campaign Mailling List Name`,`Campaign Mailling List Id`,`Campaign Mailling List Default Name`,`Campaign Mailling List Email`,`Campaign Mailling List Recipients` from `Campaign Mailling List` where `Campaign Mailling List Id` = '".$id."'";
+	$res = mysql_query($query);
+	if(mysql_num_rows($res) > 0)
+	{		
+		$row = mysql_fetch_array($res);
+	}
+	
+
 
 $smarty->assign('parent','home');
-$smarty->assign('title', _('Use Segment'));
+$smarty->assign('title', _('Marketing'));
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
 
+$smarty->assign('list_name',$row['Campaign Mailling List Name']);
+
+$smarty->assign('default_name',$row['Campaign Mailling List Default Name']);
+
+$smarty->assign('email',$row['Campaign Mailling List Email']);
+
+$smarty->assign('recipients',$row['Campaign Mailling List Recipients']);
 
 $q='';
 $tipo_filter=($q==''?$_SESSION['state'][$page]['email_campaigns']['f_field']:'code');
@@ -108,5 +107,6 @@ $paginator_menu=array(10,25,50,100,500);
 $smarty->assign('paginator_menu0',$paginator_menu);
 
 
-$smarty->display('campaign_use_segment.tpl');
+$smarty->display('confirm_mail_send.tpl');
+
 ?>
