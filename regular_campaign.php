@@ -69,7 +69,7 @@ $js_files=array(
 //$smarty->assign('view',$_SESSION['state'][$page]['view']);
 
 $get_value = array();
-
+$rslt = '';
 
 $list_key = 'Email Campaign Mailing List Key';
 $list_name = 'Campaign Mailling List Name';
