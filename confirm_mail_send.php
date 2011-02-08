@@ -71,14 +71,23 @@ $smarty->assign('view',$_SESSION['state'][$page]['view']);
 //get the list
 $id = isset($_REQUEST['id'])?$_REQUEST['id']:'';
 
-	$query = "select `Campaign Mailling List Name`,`Campaign Mailling List Id`,`Campaign Mailling List Default Name`,`Campaign Mailling List Email`,`Campaign Mailling List Recipients` from `Campaign Mailling List` where `Campaign Mailling List Id` = '".$id."'";
+	$query = "select `Campaign Mailling List Name`,`Campaign Mailling List Id`,`Campaign Mailling List Default Name`,`Campaign Mailling List Email`,`Campaign Mailling List Recipients`,`Campaign Mailling Track Click`,`Campaign Mailling Track Open` from `Campaign Mailling List` where `Campaign Mailling List Id` = '".$id."'";
 	$res = mysql_query($query);
 	if(mysql_num_rows($res) > 0)
 	{		
 		$row = mysql_fetch_array($res);
 	}
 	
+if($row['Campaign Mailling Track Click'] == 0 && $row['Campaign Mailling Track Open'] == 0)
+{
 
+	$track = 'You have not choosen any of the selection either Track click or open in email';
+
+}
+else
+{
+	$track = 'You chose to track clicks and opens in email';
+}
 
 $smarty->assign('parent','home');
 $smarty->assign('title', _('Marketing'));
@@ -92,6 +101,10 @@ $smarty->assign('default_name',$row['Campaign Mailling List Default Name']);
 $smarty->assign('email',$row['Campaign Mailling List Email']);
 
 $smarty->assign('recipients',$row['Campaign Mailling List Recipients']);
+
+$smarty->assign('track',$track);
+
+
 
 $q='';
 $tipo_filter=($q==''?$_SESSION['state'][$page]['email_campaigns']['f_field']:'code');
