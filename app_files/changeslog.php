@@ -146,7 +146,7 @@ CREATE TABLE `User Log Dimension` (`User Key` MEDIUMINT UNSIGNED NOT NULL ,`IP` 
 ALTER TABLE `Store Dimension` ADD `Store Total Users` MEDIUMINT UNSIGNED NOT NULL DEFAULT '0';
 ALTER TABLE `User Log Dimension` ADD `Session ID` VARCHAR( 256 ) NOT NULL AFTER `User Key` ,ADD INDEX ( `Session ID` ) ;
 ALTER TABLE `User Log Dimension` DROP INDEX `User Key` ;
-ALTER TABLE `kaktus_empty`.`User Log Dimension` ADD INDEX ( `User Key` ) ;
+ALTER TABLE  `User Log Dimension` ADD INDEX ( `User Key` ) ;
 
 0.9.11
 
@@ -559,6 +559,7 @@ ALTER TABLE `Category Dimension` ADD `Category Function Order` MEDIUMINT UNSIGNE
 ALTER TABLE `Category Bridge` CHANGE `Subject` `Subject` ENUM( 'Product', 'Supplier', 'Customer', 'Family', 'Invoice', 'Part' ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL ;
 ALTER TABLE `Invoice Dimension` DROP `Invoice Category`,DROP `Invoice Category Key`;
 
+DROP TABLE IF EXISTS `Email Campaign Dimension`;
 CREATE TABLE IF NOT EXISTS `Email Campaign Dimension` (
  `Email Campaign Key` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
  `Email Campaign Name` varchar(256) NOT NULL,
@@ -571,8 +572,117 @@ CREATE TABLE IF NOT EXISTS `Email Campaign Dimension` (
  `Folder ID` varchar(100) NOT NULL,
  PRIMARY KEY (`Email Campaign Key`),
  KEY `Email Campaign Status` (`Email Campaign Status`)
-) ENGINE=MyISAM , DEFAULT CHARSET=utf8 AUTO_INCREMENT=7 ;
+) ENGINE=MyISAM   CHARSET=utf8;
 
+DROP TABLE IF EXISTS `Email Campaign Group Title`;
+CREATE TABLE IF NOT EXISTS `Email Campaign Group Title` (
+  `Email Campaign Group Key` varchar(50) NOT NULL,
+  `Email List Key` mediumint(8) NOT NULL,
+  `How Show Options` varchar(50) NOT NULL,
+  `Group Title` varchar(100) NOT NULL,
+  PRIMARY KEY (`Email Campaign Group Key`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+DROP TABLE IF EXISTS `Email Campaign Group Title Name Bridge`;
+CREATE TABLE IF NOT EXISTS `Email Campaign Group Title Name Bridge` (
+  `Email Campaign Group Name Key` int(11) NOT NULL AUTO_INCREMENT,
+  `Email Campaign Group Key` varchar(50) NOT NULL,
+  `Group Name` varchar(50) NOT NULL,
+  PRIMARY KEY (`Email Campaign Group Name Key`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+DROP TABLE IF EXISTS `Email Campaign Mailing List`;
+CREATE TABLE IF NOT EXISTS `Email Campaign Mailing List` (
+  `Email Campaign Mailing List Key` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  `Email Campaign Key` mediumint(8) unsigned NOT NULL,
+  `Email Key` mediumint(8) unsigned NOT NULL,
+  `Email Send Key` mediumint(8) unsigned DEFAULT NULL,
+  `List Name` varchar(100) NOT NULL,
+  `Default From Name` varchar(100) NOT NULL,
+  `Default Reply To Email` varchar(100) NOT NULL,
+  `Default Subject` varchar(100) NOT NULL,
+  `Permission Reminder List` varchar(100) NOT NULL,
+  `Reminder Text` text NOT NULL,
+  `People Subscribe` tinyint(1) NOT NULL,
+  `People Unsubscribe` tinyint(1) NOT NULL,
+  `Pick Email Format` tinyint(1) NOT NULL,
+  `Activate Social Pro` tinyint(1) NOT NULL,
+  PRIMARY KEY (`Email Campaign Mailing List Key`),
+  KEY `Email Campaign Key` (`Email Campaign Key`,`Email Key`,`Email Send Key`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
+
+CREATE TABLE IF NOT EXISTS `Email People Dimension` (
+ `Email People Key` int(11) NOT NULL AUTO_INCREMENT,
+ `People List Key` int(11) NOT NULL,
+ `People Group Key` varchar(50) NOT NULL,
+ `People Email` varchar(50) NOT NULL,
+ `People First Name` varchar(50) NOT NULL,
+ `People Last Name` varchar(50) NOT NULL,
+ `People Email Type` varchar(50) NOT NULL,
+ PRIMARY KEY (`Email People Key`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+CREATE TABLE IF NOT EXISTS `Campaign Mailing List` (
+  `Campaign Mailing List Id` int(11) NOT NULL AUTO_INCREMENT,
+  `Email Campaign Mailing List Key` int(20) NOT NULL,
+  `Campaign Mailing List Name` varchar(255) NOT NULL,
+  `Campaign Mailing List Default Name` varchar(255) NOT NULL,
+  `Campaign Mailing List Email` varchar(255) NOT NULL,
+  `Campaign Mailing List Reminder` varchar(255) NOT NULL,
+  `Campaign Mailing List Recipients` int(100) NOT NULL,
+  `Campaign Mailing List Contact Info` varchar(255) NOT NULL,
+  `Campaign Mailing List Terms` int(5) NOT NULL,
+  PRIMARY KEY (`Campaign Mailing List Id`)
+) ENGINE=MyISAM;
+
+ALTER TABLE `Email Campaign Mailing List` ADD `User Key` INT NOT NULL AFTER `Email Campaign Mailing List Key` ;
+
+ALTER TABLE `Email Campaign Mailing List` DROP INDEX `Email Campaign Key`;
+
+ALTER TABLE `Email Campaign Mailing List` CHANGE `Email Campaign Key` `Email Campaign Key` MEDIUMINT( 8 ) UNSIGNED NULL ,CHANGE `Email Key` `Email Key` MEDIUMINT( 8 ) UNSIGNED NULL ,CHANGE `Email Send Key` `Email Send Key` MEDIUMINT( 8 ) UNSIGNED NULL DEFAULT NULL; 
+
+ALTER TABLE `Email People Dimension` CHANGE `People Group Key` `People Group Key` VARCHAR( 50 ) NOT NULL; 
+
+
+
+ALTER TABLE `Shelf Type Dimension` CHANGE `Shelf Type Type` `Shelf Type Type` ENUM( 'Pallet', 'Shelf', 'Drawer', 'Other' ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'Other';
+
+ALTER TABLE `Right Dimension` CHANGE `Rigth Access Keys` `Right Access Keys` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL ;
+INSERT INTO `Right Dimension` (`Right Key` ,`Right Type` ,`Right Name` ,`Right Access` ,`Right Access Keys`)VALUES (NULL , 'View', 'marketing', 'All', '');
+INSERT INTO `Right Dimension` (`Right Key` ,`Right Type` ,`Right Name` ,`Right Access` ,`Right Access Keys`)VALUES (NULL , 'Edit', 'marketing', 'All', '');
+INSERT INTO `Right Dimension` (`Right Key` ,`Right Type` ,`Right Name` ,`Right Access` ,`Right Access Keys`)VALUES (NULL , 'Delete', 'marketing', 'All', '');
+INSERT INTO `Right Dimension` (`Right Key` ,`Right Type` ,`Right Name` ,`Right Access` ,`Right Access Keys`)VALUES (NULL , 'Create', 'marketing', 'All', '');
+INSERT INTO `User Group Dimension` (`User Group Key` ,`User Group Name` ,`User Group Description`)VALUES (NULL , 'Marketing', 'Marketing is the process of performing market research, selling products and/or services to customers and promoting them via advertising to further enhance sales.');
+INSERT INTO `User Group Rights Bridge` (`Group Key` ,`Right Key`)VALUES ('9', '60');
+INSERT INTO `User Group Rights Bridge` (`Group Key` ,`Right Key`)VALUES ('9', '61');
+INSERT INTO `User Group Rights Bridge` (`Group Key` ,`Right Key`)VALUES ('9', '62');
+INSERT INTO `User Group Rights Bridge` (`Group Key` ,`Right Key`)VALUES ('9', '63');
+INSERT INTO `User Group User Bridge` (`User Key` ,`User Group Key`)VALUES ('1', '9');
+ALTER TABLE `Customer Dimension` ADD `Customer XHTML Billing Address` VARCHAR( 1024 ) NULL DEFAULT NULL AFTER `Customer Main Country 2 Alpha Code` ;
+ALTER TABLE `Customer Dimension` ADD `Customer Billing Address Country Code` VARCHAR( 3 ) NULL DEFAULT NULL AFTER `Customer XHTML Billing Address` ;
+ALTER TABLE `Customer Dimension` ADD `Customer Billing Address Town` VARCHAR( 256 ) NULL DEFAULT NULL AFTER `Customer Billing Address Country Code` ;
+ALTER TABLE `Customer Dimension` ADD `Customer XHTML Main Delivery Address` VARCHAR( 1024 ) NULL DEFAULT NULL AFTER `Customer Delivery Address Link` ;
+CREATE TABLE  `Customer List Dimension` (
+`Customer List Key` MEDIUMINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY ,
+`Customer List Name` VARCHAR( 256 ) NOT NULL ,
+`Customer List Type` ENUM( 'Dynamic', 'Static' ) NOT NULL DEFAULT 'Static',
+`Customer List Metadata` MEDIUMTEXT NULL DEFAULT NULL ,
+`Customer List Creation Date` DATETIME NOT NULL
+) ENGINE = MYISAM ;
+ALTER TABLE `Customer List Dimension` ADD `Customer List Store Key` SMALLINT UNSIGNED NOT NULL AFTER `Customer List Key` ;
+CREATE TABLE =`Customer List Customer Bridge` (
+`Customer List Key` SMALLINT UNSIGNED NOT NULL ,
+`Customer Key` MEDIUMINT UNSIGNED NOT NULL
+) ENGINE = MYISAM ;
+ALTER TABLE `Customer List Customer Bridge` ADD UNIQUE (
+`Customer List Key` ,
+`Customer Key`
+);;
+ALTER TABLE =`Customer List Dimension` ADD UNIQUE (
+`Customer List Store Key` ,
+`Customer List Name`
+)
+ALTER TABLE  `Customer List Customer Bridge` ADD INDEX ( `Customer List Key` ) 
 */
 
 ?>
