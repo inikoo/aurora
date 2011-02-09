@@ -204,41 +204,28 @@ $smarty->assign('csv_export_options',$csv_export_options0);
                                               'rows'=>
                                                      array(
                                                          array(
-                                                             'code'=>array('label'=>_('Code'),'selected'=>$_SESSION['state']['orders']['invoices']['csv_export']['code']),
-                                                             'date'=>array('label'=>_('Date'),'selected'=>$_SESSION['state']['orders']['invoices']['csv_export']['date']),
-                                                             'name'=>array('label'=>_('Customer'),'selected'=>$_SESSION['state']['orders']['invoices']['csv_export']['name']),
-                                                       
-                                                        
+                                                             'code'=>array('label'=>_('Code'),'selected'=>$_SESSION['state']['porder']['porder_invoices']['csv_export']['code']),
+                                                             'date'=>array('label'=>_('Date'),'selected'=>$_SESSION['state']['porder']['porder_invoices']['csv_export']['date']),
+                                                             'name'=>array('label'=>_('Supplier'),'selected'=>$_SESSION['state']['porder']['porder_invoices']['csv_export']['name']),
+                                                             'currency'=>array('label'=>_('Currency'),'selected'=>$_SESSION['state']['porder']['porder_invoices']['csv_export']['currency']),
+                                                             'items'=>array('label'=>_('Items'),'selected'=>$_SESSION['state']['porder']['porder_invoices']['csv_export']['items']),
                                                          )
                                                      )
                                           ),
                             
-                            'payment_details'=>array('title'=>_('Payment Details'),
+                            'total'=>array('title'=>_('Total'),
                             'rows'=>
                                                array(
                                                    array(
-                                                       'paymentmethod'=>array('label'=>_('Pament Method'),'selected'=>$_SESSION['state']['orders']['invoices']['csv_export']['paymentmethod']),
-                                                       'invoicefor'=>array('label'=>_('Invoice For'),'selected'=>$_SESSION['state']['orders']['invoices']['csv_export']['invoicefor']),
-                                                       'invoicepaid'=>array('label'=>_('Invoice Paid'),'selected'=>$_SESSION['state']['orders']['invoices']['csv_export']['invoicepaid']),
+                                                       'invoice_total_tax'=>array('label'=>_('Tax'),'selected'=>$_SESSION['state']['porder']['porder_invoices']['csv_export']['invoice_total_tax']),
+                                                       'invoice_total_net_amount'=>array('label'=>_('Net Amount'),'selected'=>$_SESSION['state']['porder']['porder_invoices']['csv_export']['invoice_total_net_amount']),
+                                                       'invoice_total'=>array('label'=>_('Total Amount'),'selected'=>$_SESSION['state']['porder']['porder_invoices']['csv_export']['invoice_total']),
                                                    
-                                                   )
-                            )
-                            ),
-'other_invoice_details'=>array('title'=>_('Other Invoice Details'),
-                            'rows'=>
-                                               array(
-                                                   array(
-                                                       'invoice_total_amount'=>array('label'=>_('Total Amount'),'selected'=>$_SESSION['state']['orders']['invoices']['csv_export']['invoice_total_amount']),
-                                                       'invoice_total_profit'=>array('label'=>_('Total Profit'),'selected'=>$_SESSION['state']['orders']['invoices']['csv_export']['invoice_total_profit']),
-							 'invoice_total_tax_amount'=>array('label'=>_('Total Tax Amount'),'selected'=>$_SESSION['state']['orders']['invoices']['csv_export']['invoice_total_tax_amount']),
-                                                       'invoice_total_tax_adjust_amount'=>array('label'=>_('Total Tax Adjust Amount'),'selected'=>$_SESSION['state']['orders']['invoices']['csv_export']['invoice_total_tax_adjust_amount']),
-							'invoice_total_adjust_amount'=>array('label'=>_('Total Adjust Amount'),'selected'=>$_SESSION['state']['orders']['invoices']['csv_export']['invoice_total_adjust_amount']),
-                                                        
                                                    )
                             )
                             )
                         );
-$smarty->assign('export_csv_table_cols1',3);
+$smarty->assign('export_csv_table_cols1',2);
 $smarty->assign('csv_export_options1',$csv_export_options1);
 
 
