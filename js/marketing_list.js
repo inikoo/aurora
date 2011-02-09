@@ -243,6 +243,7 @@ function empty_text()
 }
 
 
+
 function CreateTextbox()
 {
 	var i=1;
