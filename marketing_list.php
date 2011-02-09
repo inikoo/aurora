@@ -17,7 +17,7 @@ include_once('class.Product.php');
 include_once('class.Order.php');
 
 $page='marketing';
-
+$user_key = $_SESSION['user_key'];
 $general_options_list=array();
 $general_options_list[]=array('tipo'=>'url','url'=>'marketing_reports.php','label'=>_('Reports'));
 
@@ -133,7 +133,8 @@ if(isset($_POST['save_group'])){
 	unset($group_name_arr);
 }
 
-$list_sql=mysql_query("SELECT `Email Campaign Mailing List Key`, `List Name` FROM `Email Campaign Mailing List`");
+$list_sql=mysql_query("SELECT `Email Campaign Mailing List Key`, `List Name` FROM `Email Campaign Mailing List` WHERE `User Key` LIKE '$user_key'");
+
 $i=0;
 $list=array();
 while($list_name=mysql_fetch_array($list_sql))
