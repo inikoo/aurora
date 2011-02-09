@@ -169,7 +169,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 				       ,{key:"abstract", label:"<?php echo _('Description')?>", width:370,sortable:true,formatter:this.customer_name,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				       ];
 	    //?tipo=customers&tid=0"
-	    
+	    alert("ar_history.php?tipo=indirect_history&parent="+parent+"&parent_key="+parent_key+"&scope=company_area&tableid=1")
 	    this.dataSource1 = new YAHOO.util.DataSource("ar_history.php?tipo=indirect_history&parent="+parent+"&parent_key="+parent_key+"&scope=company_area&tableid=1");
 	   this.dataSource1.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource1.connXhrMode = "queueRequests";

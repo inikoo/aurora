@@ -79,6 +79,8 @@
 
 </div>
   <ul class="tabs" id="chooser_ul" style="clear:both;margin-top:25px">
+      <li> <span class="item {if $view=='details'}selected{/if}"  id="details">  <span> {t}Details{/t}</span></span></li>
+
     <li> <span class="item {if $view=='history'}selected{/if}"  id="history">  <span> {t}History, Notes{/t}</span></span></li>
   
     <li {if !$customer->get('Customer Orders')}style="display:none"{/if}> <span class="item {if $view=='products'}selected{/if}" id="products"  ><span>  {t}Products Ordered{/t}</span></span></li>
@@ -86,8 +88,88 @@
  
  </ul>
   <div  style="clear:both;width:100%;border-bottom:1px solid #ccc">
+
   </div>
   
+ 
+  <div id="block_details"  style="{if $view!='details'}display:none;{/if}clear:both;margin:20px 0 40px 0;padding:0 20px">
+<h2>{t}Contact Details{/t}</h2>
+<div style="float:left;width:450px">
+<table    class="show_info_product">
+  <tr>
+		    <td>{t}Customer Type{/t}:</td><td>{$customer->get('Customer Type')}</td>
+		    </tr>
+		    
+		    {if $customer->get('Customer Type')=='Company'}
+		    <tr>
+		      <td>{t}Company Name{/t}:</td><td>{$customer->get('Customer Name')}</td>
+		    </tr>
+		     <tr>
+		      <td>{t}Company Tax Number{/t}:</td><td>{$customer->get('Customer Tax Number')}</td>
+		    </tr>
+		  {/if}
+		  <tr style="border-top:1px solid #ccc">
+		  
+		      <td>{t}Contact Name{/t}:</td><td>{$customer->get('Customer Main Contact Name')}</td>
+		    </tr>
+		   <tr>
+		      <td>{t}Contact Email{/t}:</td><td>{$customer->get('Customer Main XHTML Email')}</td>
+		    </tr>
+		  <tr>
+		      <td>{t}Contact Telephone{/t}:</td><td>{$customer->get('Customer Main XHTML Telephone')}</td>
+		    </tr>
+		  <tr>
+		      <td>{t}Contact Fax{/t}:</td><td>{$customer->get('Customer Main XHTML FAX')}</td>
+		    </tr>
+		  
+		</table>
+</div>
+
+<div class="contact_cards"  >
+{foreach from=$customer->get_contact_cards() item=card}
+{$card}
+{/foreach}
+</div>
+<h2 style="clear:both">{t}Billing Details{/t}</h2>
+
+<div style="float:left;width:450px">
+<table    class="show_info_product">
+  <tr>
+		    <td>{t}Tax Category Code{/t}:</td><td>{$customer->get('Customer Tax Category Code')}</td>
+		    </tr>
+		
+		  <tr style="border-top:1px solid #ccc">
+		  		      <td>{t}Usual Payment Method{/t}:</td><td>{$customer->get('Customer Usual Payment Method')}</td>
+
+		    </tr>
+		    {if $customer->get('Customer Usual Payment Method')!=$customer->get('Customer Last Payment Method')}
+		   <tr>
+		   		      <td>{t}Last Payment Method{/t}:</td><td>{$customer->get('Customer Last Payment Method')}</td>
+
+		    </tr>
+		 {/if}
+		   <tr style="border-top:1px solid #ccc">
+		  		      <td>{t}Billing Address{/t}:</td><td>{$customer->get('Customer XHTML Billing Address')}</td>
+
+		    </tr>
+		</table>
+</div>
+
+<h2 style="clear:both">{t}Delivery Details{/t}</h2>
+
+<div style="float:left;width:450px">
+<table    class="show_info_product">
+
+		   <tr >
+		  		      <td>{t}Delivery Address{/t}:</td><td>{$customer->get('Customer XHTML Delivery Address')}</td>
+
+		    </tr>
+		</table>
+</div>
+
+<div style="clear:both"></div>
+
+</div>
  
  <div id="block_history" class="data_table" style="{if $view!='history'}display:none;{/if}clear:both;margin:20px 0 40px 0;padding:0 20px">
       <span class="clean_table_title">{t}History/Notes{/t}</span>

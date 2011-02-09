@@ -1,7 +1,8 @@
 <?php include_once('common.php')?> 
 
     function CalhandleSelect(type,args,obj) {
-  
+
+alert("hola")  
     var dates = args[0];
     var date = dates[0];
     var year = date[0], month = date[1], day = date[2];
@@ -19,7 +20,7 @@ function updateCal() {
     
     var Dom   = YAHOO.util.Dom;
     
-//alert('v_calpop'+this.id);
+alert('v_calpop'+this.id);
    
     var txtDate1 = Dom.get('v_calpop'+this.id);
    

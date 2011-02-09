@@ -3105,6 +3105,16 @@ Array
     }
 
 
+function get_contact_cards(){
+$cards=array();
+
+foreach($this->get_contact_keys() as $contact_key){
+$contact=new Contact($contact_key);
+$cards[]=$contact->display('card');
+}
+return $cards;
+}
+
     function get_company_keys() {
 
         $sql=sprintf("select `Company Key` from `Company Bridge` where  `Subject Type`='Customer' and `Subject Key`=%d   "

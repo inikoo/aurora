@@ -38,7 +38,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 
 
 	    var CustomersColumnDefs = [
-				       {key:"id", label:"<?php echo$customers_ids[0]?>",width:60,sortable:true,<?php echo($_SESSION['state']['customers']['view']=='general'?'':'hidden:true,')?>className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+				       {key:"id", label:"<?php echo$customers_ids[0]?>",width:45,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				       ,{key:"name", label:"<?php echo _('Customer Name')?>", width:250,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				       ,{key:"location", label:"<?php echo _('Location')?>",<?php echo($_SESSION['state']['customers']['view']=='general'?'':'hidden:true,')?> width:230,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 				       ,{key:"last_order", label:"<?php echo _('Last Order')?>",<?php echo($_SESSION['state']['customers']['view']=='general'?'':'hidden:true,')?>width:100,sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
@@ -46,21 +46,24 @@ YAHOO.util.Event.addListener(window, "load", function() {
 				       ,{key:"activity", label:"<?php echo _('Status')?>",<?php echo($_SESSION['state']['customers']['view']=='general'?'':'hidden:true,')?>sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 				       
 				       // ,{key:"total_payments", label:"<?php echo _('Total')?>",<?php echo($_SESSION['state']['customers']['view']=='general'?'':'hidden:true,')?>sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}} 
-				       ,{key:"contact_name", label:"<?php echo _('Contact Name')?>",<?php echo($_SESSION['state']['customers']['view']=='contact'?'':'hidden:true,')?>sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				       ,{key:"contact_name", label:"<?php echo _('Contact Name')?>",width:160,<?php echo($_SESSION['state']['customers']['view']=='contact'?'':'hidden:true,')?>sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 				       
-				       ,{key:"email", label:"<?php echo _('Email')?>",<?php echo($_SESSION['state']['customers']['view']=='contact'?'':'hidden:true,')?>sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
-				       ,{key:"telephone", label:"<?php echo _('Telephone')?>",<?php echo($_SESSION['state']['customers']['view']=='contact'?'':'hidden:true,')?>sortable:false,className:"aright"}
+				       ,{key:"email", label:"<?php echo _('Email')?>",width:210,<?php echo($_SESSION['state']['customers']['view']=='contact'?'':'hidden:true,')?>sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
+				       ,{key:"telephone", label:"<?php echo _('Telephone')?>", width:160,<?php echo($_SESSION['state']['customers']['view']=='contact'?'':'hidden:true,')?>sortable:true,sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC},className:"aright"}
 				       
-				       ,{key:"address", label:"<?php echo _('Main Address')?>",<?php echo($_SESSION['state']['customers']['view']=='address'?'':'hidden:true,')?>sortable:true,className:"aright"}
-				       ,{key:"town", label:"<?php echo _('Town')?>",<?php echo($_SESSION['state']['customers']['view']=='address'?'':'hidden:true,')?>sortable:true,className:"aright"}
-				       ,{key:"postcode", label:"<?php echo _('Postal Code')?>",<?php echo($_SESSION['state']['customers']['view']=='address'?'':'hidden:true,')?>sortable:true,className:"aright"}
-				       ,{key:"region", label:"<?php echo _('Region')?>",<?php echo($_SESSION['state']['customers']['view']=='address'?'':'hidden:true,')?>sortable:true,className:"aright"}
-				       ,{key:"country", label:"<?php echo _('Country')?>",<?php echo($_SESSION['state']['customers']['view']=='address'?'':'hidden:true,')?>sortable:true,className:"aright"}
+				       ,{key:"address", label:"<?php echo _('Contact Address')?>", width:176,<?php echo($_SESSION['state']['customers']['view']=='address'?'':'hidden:true,')?>sortable:true,className:"aleft"}
+				       ,{key:"billing_address", label:"<?php echo _('Billing Address')?>", width:170,<?php echo($_SESSION['state']['customers']['view']=='address'?'':'hidden:true,')?>sortable:true,className:"aleft"}
+				       ,{key:"delivery_address", label:"<?php echo _('Delivery Address')?>", width:170,<?php echo($_SESSION['state']['customers']['view']=='address'?'':'hidden:true,')?>sortable:true,className:"aleft"}
+
+				       //,{key:"town", label:"<?php echo _('Town')?>",<?php echo($_SESSION['state']['customers']['view']=='address'?'':'hidden:true,')?>sortable:true,className:"aright"}
+				       //,{key:"postcode", label:"<?php echo _('Postal Code')?>",<?php echo($_SESSION['state']['customers']['view']=='address'?'':'hidden:true,')?>sortable:true,className:"aright"}
+				       //,{key:"region", label:"<?php echo _('Region')?>",<?php echo($_SESSION['state']['customers']['view']=='address'?'':'hidden:true,')?>sortable:true,className:"aright"}
+				       //,{key:"country", label:"<?php echo _('Country')?>",<?php echo($_SESSION['state']['customers']['view']=='address'?'':'hidden:true,')?>sortable:true,className:"aright"}
 				       //				       ,{key:"ship_address", label:"<?php echo _('Ship to Address')?>",<?php echo($_SESSION['state']['customers']['view']=='ship_to_address'?'':'hidden:true,')?>sortable:true,className:"aright"}
-				       ,{key:"ship_town", label:"<?php echo _('Town')?>",<?php echo($_SESSION['state']['customers']['view']=='ship_to_address'?'':'hidden:true,')?>sortable:true,className:"aright"}
-				       ,{key:"ship_postcode", label:"<?php echo _('Postal Code')?>",<?php echo($_SESSION['state']['customers']['view']=='ship_to_address'?'':'hidden:true,')?>sortable:true,className:"aright"}
-				       ,{key:"ship_region", label:"<?php echo _('Region')?>",<?php echo($_SESSION['state']['customers']['view']=='ship_to_address'?'':'hidden:true,')?>sortable:true,className:"aright"}
-				       ,{key:"ship_country", label:"<?php echo _('Country')?>",<?php echo($_SESSION['state']['customers']['view']=='ship_to_address'?'':'hidden:true,')?>sortable:true,className:"aright"}
+				       //,{key:"ship_town", label:"<?php echo _('Town')?>",<?php echo($_SESSION['state']['customers']['view']=='ship_to_address'?'':'hidden:true,')?>sortable:true,className:"aright"}
+				       //,{key:"ship_postcode", label:"<?php echo _('Postal Code')?>",<?php echo($_SESSION['state']['customers']['view']=='ship_to_address'?'':'hidden:true,')?>sortable:true,className:"aright"}
+				       //,{key:"ship_region", label:"<?php echo _('Region')?>",<?php echo($_SESSION['state']['customers']['view']=='ship_to_address'?'':'hidden:true,')?>sortable:true,className:"aright"}
+				       //,{key:"ship_country", label:"<?php echo _('Country')?>",<?php echo($_SESSION['state']['customers']['view']=='ship_to_address'?'':'hidden:true,')?>sortable:true,className:"aright"}
 				       ,{key:"total_payments", label:"<?php echo _('Payments')?>",<?php echo($_SESSION['state']['customers']['view']=='balance'?'':'hidden:true,')?>sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 				       ,{key:"total_refunds", label:"<?php echo _('Refunds')?>",<?php echo($_SESSION['state']['customers']['view']=='balance'?'':'hidden:true,')?>sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
 				       ,{key:"net_balance", label:"<?php echo _('Balance')?>",<?php echo($_SESSION['state']['customers']['view']=='balance'?'':'hidden:true,')?>sortable:true,className:"aright",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_DESC}}
@@ -101,8 +104,8 @@ YAHOO.util.Event.addListener(window, "load", function() {
 			 'telephone',
 			 'last_order','activity',
 			 'total_payments','contact_name'
-			 ,"address","town","postcode","region","country"
-			 ,"ship_address","ship_town","ship_postcode","ship_region","ship_country"
+			 ,"address"
+			 ,"billing_address","delivery_address"
 			 ,"total_paymants","total_refunds","net_balance","total_profit","balance"
 			 ,"top_orders","top_invoices","top_balance","top_profits"
 			 ]};
@@ -220,7 +223,6 @@ function change_table_type(){
       Dom.get('general').className='';
       Dom.get('contact').className='';
       Dom.get('address').className='';
-      Dom.get('ship_to_address').className='';
       Dom.get('balance').className='';
       Dom.get('rank').className='';
       
@@ -234,15 +236,21 @@ function change_table_type(){
       table.hideColumn('contact_name');
       
       table.hideColumn('address');
-      table.hideColumn('town');
-      table.hideColumn('postcode');
-      table.hideColumn('region');
-      table.hideColumn('country');
+            table.hideColumn('billing_address');
+      table.hideColumn('delivery_address');
+
+
+    //  table.hideColumn('town');
+    //  table.hideColumn('postcode');
+    //  table.hideColumn('region');
+     // table.hideColumn('country');
       //      table.hideColumn('ship_address');
-      table.hideColumn('ship_town');
-      table.hideColumn('ship_postcode');
-      table.hideColumn('ship_region');
-      table.hideColumn('ship_country');
+      //table.hideColumn('ship_town');
+      //table.hideColumn('ship_postcode');
+      //table.hideColumn('ship_region');
+      //table.hideColumn('ship_country');
+      
+      
       table.hideColumn('total_payments');
       table.hideColumn('net_balance');
       table.hideColumn('total_refunds');
@@ -272,17 +280,17 @@ function change_table_type(){
 
       }else if(tipo=='address'){
 	  table.showColumn('address');
-	  table.showColumn('town');
-	  table.showColumn('postcode');
-	  table.showColumn('region');
-	  table.showColumn('country');
+	  table.showColumn('billing_address');
+	  table.showColumn('delivery_address');
+	 // table.showColumn('region');
+	 // table.showColumn('country');
 	  Dom.get('address').className='selected';
-      }else if(tipo=='ship_to_address'){
+   //   }else if(tipo=='ship_to_address'){
 	//	  table.showColumn('ship_address');
-	  table.showColumn('ship_town');
-	  table.showColumn('ship_postcode');
-	  table.showColumn('ship_region');
-	  table.showColumn('ship_country');
+	 // table.showColumn('ship_town');
+	 // table.showColumn('ship_postcode');
+	 // table.showColumn('ship_region');
+	 // table.showColumn('ship_country');
 
       }else if(tipo=='balance'){
 	     table.showColumn('name');

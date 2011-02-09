@@ -7,7 +7,7 @@
  About: 
  Autor: Raul Perusquia <rulovico@gmail.com>
  
- Copyright (c) 2009, Kaktus 
+ Copyright (c) 2011, Kaktus 
  
  Version 2.0
 */
@@ -51,16 +51,36 @@ $js_files=array(
 
 
 if(!isset($_REQUEST['tipo'])){
-exit("to do a page where the user can choose the correct options");
+header('Location: index.php?error=no_tipo');
+
+//exit("to do a page where the user can choose the correct options");
 }
 
 $scope=$_REQUEST['tipo'];
+
+
+
 
 include_once('xml2array.php');
 
 switch($scope){
 case('customers_store'):
+
+
+
+
 $scope_args=$_SESSION['state']['customers']['store'];
+$store_key=$scope_args;
+
+if(!($user->can_view('stores') and in_array($store_key,$user->stores)   ) ){
+  header('Location: index.php');
+   exit;
+}
+
+
+$smarty->assign('store_key',$store_key);
+
+
 
 // $xml=file_get_contents('conf/import_file_customers.xml');
 //$fields=xml2array($xml);

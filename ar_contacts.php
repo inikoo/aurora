@@ -1959,9 +1959,9 @@ if($type=='all_customers'){
     elseif($order=='orders')
     $order='`Customer Orders`';
     elseif($order=='email')
-    $order='`Customer Email`';
+    $order='`Customer Main Plain Email`';
     elseif($order=='telephone')
-    $order='`Customer Main Telehone`';
+    $order='`Customer Main Plain Telephone`';
     elseif($order=='last_order')
     $order='`Customer Last Order Date`';
     elseif($order=='contact_name')
@@ -2009,7 +2009,7 @@ if($type=='all_customers'){
     $order='`Customer Type by Activity`';
     else
         $order='`Customer File As`';
-    $sql="select   *,`Customer Net Refunds`+`Customer Tax Refunds` as `Customer Total Refunds` from  `Customer Dimension` $where $wheref  order by $order $order_direction limit $start_from,$number_results";
+    $sql="select   *,`Customer Net Refunds`+`Customer Tax Refunds` as `Customer Total Refunds` from  `Customer Dimension`   $where $wheref  order by $order $order_direction limit $start_from,$number_results";
     //print $sql;
     $adata=array();
 
@@ -2036,7 +2036,19 @@ if($type=='all_customers'){
         else
             $last_order_date=strftime("%e %b %Y", strtotime($data['Customer Last Order Date']));
 
-        $adata[]=array(
+if($data['Customer Billing Address Link']=='Contact')
+$billing_address='<i>'._('Same as Contact').'</i>';
+else
+$billing_address=$data['Customer XHTML Billing Address'];
+
+if($data['Customer Delivery Address Link']=='Contact')
+$delivery_address='<i>'._('Same as Contact').'</i>';
+elseif($data['Customer Delivery Address Link']=='Billing')
+$delivery_address='<i>'._('Same as Billing').'</i>';
+else
+$delivery_address=$data['Customer XHTML Main Delivery Address'];
+ 
+ $adata[]=array(
                      'id'=>$id,
                      'name'=>$name,
                      'location'=>$data['Customer Main Location'],
@@ -2058,16 +2070,19 @@ if($type=='all_customers'){
                      'top_balance'=>number($data['Customer Balance Top Percentage']).'%',
                      'top_profits'=>number($data['Customer Profits Top Percentage']).'%',
                      'contact_name'=>$data['Customer Main Contact Name'],
-                     'address'=>$data['Customer Main Location'],
-                     'town'=>$data['Customer Main Town'],
-                     'postcode'=>$data['Customer Main Postal Code'],
-                     'region'=>$data['Customer Main Country First Division'],
-                     'country'=>$data['Customer Main Country'],
+                     'address'=>$data['Customer Main XHTML Address'],
+                     'billing_address'=>$billing_address,
+                     'delivery_address'=>$delivery_address,
+
+                     //'town'=>$data['Customer Main Town'],
+                     //'postcode'=>$data['Customer Main Postal Code'],
+                     //'region'=>$data['Customer Main Country First Division'],
+                     //'country'=>$data['Customer Main Country'],
                      //		   'ship_address'=>$data['customer main ship to header'],
-                     'ship_town'=>$data['Customer Main Delivery Address Town'],
-                     'ship_postcode'>$data['Customer Main Delivery Address Postal Code'],
-                     'ship_region'=>$data['Customer Main Delivery Address Region'],
-                     'ship_country'=>$data['Customer Main Delivery Address Country'],
+                     //'ship_town'=>$data['Customer Main Delivery Address Town'],
+                     //'ship_postcode'>$data['Customer Main Delivery Address Postal Code'],
+                     //'ship_region'=>$data['Customer Main Delivery Address Region'],
+                     //'ship_country'=>$data['Customer Main Delivery Address Country'],
                      'activity'=>$data['Customer Type by Activity']
 
                  );

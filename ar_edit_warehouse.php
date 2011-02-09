@@ -1285,7 +1285,7 @@ function list_shelf_types_for_edition(){
      $height='';
      
      if($row['Shelf Type Location Max Volume']!='')
-       $max_vol=number($row['Location Max Volume']);
+       $max_vol=number($row['Shelf Type Location Max Volume']);
 
      if($row['Shelf Type Location Max Weight']!='')
        $max_weight=number($row['Shelf Type Location Max Weight']);

@@ -466,8 +466,8 @@ var upload_attach = function(e){
 }
 
 function change_view(){
-ids=['orders','history','products'];
-block_ids=['block_orders','block_history','block_products'];
+ids=['orders','history','products','details'];
+block_ids=['block_orders','block_history','block_products','block_details'];
 Dom.setStyle(block_ids,'display','none');
 Dom.setStyle('block_'+this.id,'display','');
 Dom.removeClass(ids,'selected');
@@ -480,7 +480,7 @@ var oMenu;
 function init(){
 
   init_search('customers_store');
-Event.addListener(['orders','history','products'], "click",change_view);
+Event.addListener(['orders','history','products','details'], "click",change_view);
 
 
 Event.addListener('clean_table_filter_show0', "click",show_filter,0);

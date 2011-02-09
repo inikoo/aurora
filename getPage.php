@@ -60,23 +60,23 @@
 		<td align=center>
 		<select name="assign_field[]" id="assign_field">
 		    <option value="0">Ignore</option>
-		    <option value="Customer Main Contact Name">Contact Name</option>
-		    <option value="Customer Name">Name</option>
-		    <option value="Customer Type">Type</option>
-		    <option value="Customer Company Name">Company Name</option>
-		    <option value="Customer Main Plain Email">Email</option>$j
+		     <option value="Customer Company Name">Company Name</option>
+		    <option value="Customer Main Contact Name">Contact Full Name</option>
+			<option value="Customer Main Contact Name">&nbsp; &nbsp;Contact Salutation</option>
+			<option value="Customer Main Contact Name">&nbsp; &nbsp;Contact First Name</option>
+			<option value="Customer Main Contact Name">&nbsp; &nbsp;Contact Surname</option>
+		    <option value="Customer Main Plain Email">Email</option>
 		    <option value="Contact Main Plain Mobile">Mobile</option>
 		    <option value="Customer Main Plain Telephone">Telephone</option>	
 		    <option value="Customer Main Plain FAX">FAX</option>
-		    <option value="Customer Main Plain Address">Address</option>
 		    <option value="Customer Address Line 1">Address Line1</option>
 		    <option value="Customer Address Line 2">Address Line2</option>
 		    <option value="Customer Address Line 3">Address Line3</option>
 		   <option value="Customer Address Town">Town</option>
 		    <option value="Customer Address Postal Code">Postal Code</option>
-		    <option value="Customer Address Country Name">Country Name</option>
-		    <option value="Customer Address Country First Division">First Division</option>
-		    <option value="Customer Address Country Second Division">Second Division</option>
+		    <option value="Customer Address Country Second Division">Country Sub-Region</option>
+		    <option value="Customer Address Country First Division">Country Region</option>
+		    <option value="Customer Address Country Name">Country</option>
 		    <option value="Customer Tax Number">Tax Number</option>
 		 </select>
 		</td>
