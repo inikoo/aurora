@@ -56,9 +56,8 @@ var Dom   = YAHOO.util.Dom;
 		},
 		
 		
-		fields: [
-			 "ip","user","login_date","logout_date"
-			 ]};
+		fields: ["user","ip","login_date","logout_date"]};
+
 
 	    this.table0 = new YAHOO.widget.DataTable(tableDivEL, ColumnDefs,
 								   this.dataSource0

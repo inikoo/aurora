@@ -20,7 +20,7 @@ if(isset($_REQUEST['store']) and is_numeric($_REQUEST['store']) ){
 $store=new Store($store_id);
 $smarty->assign('store',$store);
 
-$_SESSION['state']['orders']['store']=$store_id;
+//$_SESSION['state']['orders']['store']=$store_id;
 
 
 $q='';
@@ -53,17 +53,17 @@ if(isset($_REQUEST['dispatch']) and preg_match('/^all_orders|in_process|dispatch
 $_SESSION['state']['orders']['table']['dispatch']=$_REQUEST['dispatch'];
 }
 
-$smarty->assign('view',$_SESSION['state']['orders']['view']);
-$smarty->assign('dispatch',$_SESSION['state']['orders']['table']['dispatch']);
-$smarty->assign('invoice_type',$_SESSION['state']['orders']['invoices']['invoice_type']);
-$smarty->assign('dn_state_type',$_SESSION['state']['orders']['dn']['dn_state_type']);
+$smarty->assign('view',$_SESSION['state']['porder']['view']);
+$smarty->assign('dispatch',$_SESSION['state']['porder']['table']['dispatch']);
+$smarty->assign('invoice_type',$_SESSION['state']['porder']['porder_invoices']['invoice_type']);
+$smarty->assign('dn_state_type',$_SESSION['state']['porder']['porder_dn']['dn_state_type']);
 
 $smarty->assign('dn_view',$_SESSION['state']['stores']['delivery_notes']['view']);
 
 
 
-$smarty->assign('from',$_SESSION['state']['orders']['from']);
-$smarty->assign('to',$_SESSION['state']['orders']['to']);
+$smarty->assign('from',$_SESSION['state']['porder']['from']);
+$smarty->assign('to',$_SESSION['state']['porder']['to']);
 
 $smarty->assign('box_layout','yui-t0');
 
@@ -74,7 +74,7 @@ $css_files=array(
 		 $yui_path.'calendar/assets/skins/sam/calendar.css',
 		 $yui_path.'button/assets/skins/sam/button.css',
 		 $yui_path.'assets/skins/sam/autocomplete.css',
-
+		 'css/edit.css',
 		 'common.css',
 		 'button.css',
 		 'container.css',
@@ -153,23 +153,18 @@ $smarty->assign('filter_menu2',$filter_menu2);
 $smarty->assign('filter_name2',$filter_menu2[$tipo_filter2]['label']);
 $paginator_menu2=array(10,25,50,100,500);
 $smarty->assign('paginator_menu2',$paginator_menu2);
-
-
-
-// -----------------------------------------------export csv code starts here------------------------
  $csv_export_options0=array(
                             'description'=>array(
                                               'title'=>_('Description'),
                                               'rows'=>
                                                      array(
                                                          array(
-                                                             'code'=>array('label'=>_('Order Id'),'selected'=>$_SESSION['state']['orders']['table']['csv_export']['code']),
-                                                             'last_date'=>array('label'=>_('Last Updated'),'selected'=>$_SESSION['state']['orders']['table']['csv_export']['last_date']),
-                                                            
-                                                             'customer'=>array('label'=>_('Customer'),'selected'=>$_SESSION['state']['orders']['table']['csv_export']['customer']),
-                                                             'status'=>array('label'=>_('Status'),'selected'=>$_SESSION['state']['orders']['table']['csv_export']['status']),
-                                                            
-                                                     
+                                                             'public_id'=>array('label'=>_('Order Id'),'selected'=>$_SESSION['state']['porder']['table']['csv_export']['public_id']),
+                                                             'last_date'=>array('label'=>_('Last Updated'),'selected'=>$_SESSION['state']['porder']['table']['csv_export']['last_date']),
+                                                              'supplier'=>array('label'=>_('Customer'),'selected'=>$_SESSION['state']['porder']['table']['csv_export']['supplier']),
+							    'buyername'=>array('label'=>_('Customer'),'selected'=>$_SESSION['state']['porder']['table']['csv_export']['buyername']),
+                                                             'status'=>array('label'=>_('Status'),'selected'=>$_SESSION['state']['porder']['table']['csv_export']['status']),
+                                                                                                                
                                                          )
                                                      )
                                           ),
@@ -178,162 +173,92 @@ $smarty->assign('paginator_menu2',$paginator_menu2);
                             'rows'=>
                                                array(
                                                    array(
-                                                       'totalnet'=>array('label'=>_('Total Net'),'selected'=>$_SESSION['state']['orders']['table']['csv_export']['totalnet']),
-                                                       'totaltax'=>array('label'=>_('Total Tax'),'selected'=>$_SESSION['state']['orders']['table']['csv_export']['totaltax']),
-							 'total'=>array('label'=>_('Total'),'selected'=>$_SESSION['state']['orders']['table']['csv_export']['total']),
+                                                       'totalnet'=>array('label'=>_('Total Net'),'selected'=>$_SESSION['state']['porder']['table']['csv_export']['totalnet']),
+                                                       'totaltax'=>array('label'=>_('Total Tax'),'selected'=>$_SESSION['state']['porder']['table']['csv_export']['totaltax']),
+							'shippingmethod'=>array('label'=>_('Total'),'selected'=>$_SESSION['state']['porder']['table']['csv_export']['shippingmethod']),
+							 'total'=>array('label'=>_('Total'),'selected'=>$_SESSION['state']['porder']['table']['csv_export']['total']),
                                                        
                                                    )
                             )
                             ),
-			   'balance'=>array('title'=>_('Balance'),
+			   'payments'=>array('title'=>_('Payments'),
                             'rows'=>
                                                array(
                                                    array(
-                                                       'balancenet'=>array('label'=>_('Balance Net'),'selected'=>$_SESSION['state']['orders']['table']['csv_export']['balancenet']),
-                                                       'balancetax'=>array('label'=>_('Balance Tax'),'selected'=>$_SESSION['state']['orders']['table']['csv_export']['balancetax']),
-						       'balancetotal'=>array('label'=>_('Balance Total'),'selected'=>$_SESSION['state']['orders']['table']['csv_export']['balancetotal']),
-                                                        
-                                                   )
-                            )
-                            ),
-'outstanding'=>array('title'=>_('Outstanding Balance'),
-                            'rows'=>
-                                               array(
-                                                   array(
-                                                       'outstandingbalancenet'=>array('label'=>_('Outstanding Balance Net'),'selected'=>$_SESSION['state']['orders']['table']['csv_export']['outstandingbalancenet']),
-                                                       'outstandingbalancetax'=>array('label'=>_('Outstanding Balance Tax'),'selected'=>$_SESSION['state']['orders']['table']['csv_export']['outstandingbalancetax']),
-							'outstandingbalancetotal'=>array('label'=>_('Outstanding Balance Total'),'selected'=>$_SESSION['state']['orders']['table']['csv_export']['outstandingbalancetotal']),
-                                                       
-                                                   )
-                            )
-                            ),
-'otherdetails'=>array('title'=>_('Other Details'),
-                            'rows'=>
-                                               array(
-                                                   array(
-                                                       'contactname'=>array('label'=>_('Customer Contact Name'),'selected'=>$_SESSION['state']['orders']['table']['csv_export']['contactname']),
-                                                       'sourcetype'=>array('label'=>_('Source Type'),'selected'=>$_SESSION['state']['orders']['table']['csv_export']['sourcetype']),
-							'paymentstate'=>array('label'=>_('Payment State'),'selected'=>$_SESSION['state']['orders']['table']['csv_export']['paymentstate'])
-                                                       
-                                                       
-                                                   )
-                            )
-                            ),
-'orderdetails'=>array('title'=>_('Order Details'),
-                            'rows'=>
-                                               array(
-                                                   array(
-                                                      
-							'actiontaken'=>array('label'=>_('Actions Taken'),'selected'=>$_SESSION['state']['orders']['table']['csv_export']['actiontaken']),
-                                                       'ordertype'=>array('label'=>_('Type'),'selected'=>$_SESSION['state']['orders']['table']['csv_export']['ordertype']),
-							'shippingmethod'=>array('label'=>_('Shipping Method'),'selected'=>$_SESSION['state']['orders']['table']['csv_export']['shippingmethod']),
-                                                       
-                                                       
+                                                       'sourcetype'=>array('label'=>_('Balance Net'),'selected'=>$_SESSION['state']['porder']['table']['csv_export']['sourcetype']),
+                                                       'paymentstate'=>array('label'=>_('Balance Tax'),'selected'=>$_SESSION['state']['porder']['table']['csv_export']['paymentstate']),
+						       'currency_code'=>array('label'=>_('Balance Total'),'selected'=>$_SESSION['state']['porder']['table']['csv_export']['currency_code']),
+                                                        'actiontaken'=>array('label'=>_('Action Taken'),'selected'=>$_SESSION['state']['porder']['table']['csv_export']['actiontaken']),
+                                                        'items'=>array('label'=>_('Action Taken'),'selected'=>$_SESSION['state']['porder']['table']['csv_export']['items']),
                                                    )
                             )
                             )
                         );
-$smarty->assign('export_csv_table_cols',5);
+$smarty->assign('export_csv_table_cols',3);
 $smarty->assign('csv_export_options',$csv_export_options0);
-// -----------------------------------------------export csv code ends here------------------------
 
-// ----------------------------------export csv array for invoice list starts here -----------------------------------------------
+// ---------------------------------------------------------------------------------
  $csv_export_options1=array(
                             'description'=>array(
                                               'title'=>_('Description'),
                                               'rows'=>
                                                      array(
                                                          array(
-                                                             'code'=>array('label'=>_('Code'),'selected'=>$_SESSION['state']['orders']['invoices']['csv_export']['code']),
-                                                             'date'=>array('label'=>_('Date'),'selected'=>$_SESSION['state']['orders']['invoices']['csv_export']['date']),
-                                                             'name'=>array('label'=>_('Customer'),'selected'=>$_SESSION['state']['orders']['invoices']['csv_export']['name']),
-                                                       
-                                                        
+                                                             'code'=>array('label'=>_('Code'),'selected'=>$_SESSION['state']['porder']['porder_invoices']['csv_export']['code']),
+                                                             'date'=>array('label'=>_('Date'),'selected'=>$_SESSION['state']['porder']['porder_invoices']['csv_export']['date']),
+                                                             'name'=>array('label'=>_('Supplier'),'selected'=>$_SESSION['state']['porder']['porder_invoices']['csv_export']['name']),
+                                                             'currency'=>array('label'=>_('Currency'),'selected'=>$_SESSION['state']['porder']['porder_invoices']['csv_export']['currency']),
+                                                             'items'=>array('label'=>_('Items'),'selected'=>$_SESSION['state']['porder']['porder_invoices']['csv_export']['items']),
                                                          )
                                                      )
                                           ),
                             
-                            'payment_details'=>array('title'=>_('Payment Details'),
+                            'total'=>array('title'=>_('Total'),
                             'rows'=>
                                                array(
                                                    array(
-                                                       'paymentmethod'=>array('label'=>_('Pament Method'),'selected'=>$_SESSION['state']['orders']['invoices']['csv_export']['paymentmethod']),
-                                                       'invoicefor'=>array('label'=>_('Invoice For'),'selected'=>$_SESSION['state']['orders']['invoices']['csv_export']['invoicefor']),
-                                                       'invoicepaid'=>array('label'=>_('Invoice Paid'),'selected'=>$_SESSION['state']['orders']['invoices']['csv_export']['invoicepaid']),
+                                                       'invoice_total_tax'=>array('label'=>_('Tax'),'selected'=>$_SESSION['state']['porder']['porder_invoices']['csv_export']['invoice_total_tax']),
+                                                       'invoice_total_net_amount'=>array('label'=>_('Net Amount'),'selected'=>$_SESSION['state']['porder']['porder_invoices']['csv_export']['invoice_total_net_amount']),
+                                                       'invoice_total'=>array('label'=>_('Total Amount'),'selected'=>$_SESSION['state']['porder']['porder_invoices']['csv_export']['invoice_total']),
                                                    
-                                                   )
-                            )
-                            ),
-'other_invoice_details'=>array('title'=>_('Other Invoice Details'),
-                            'rows'=>
-                                               array(
-                                                   array(
-                                                       'invoice_total_amount'=>array('label'=>_('Total Amount'),'selected'=>$_SESSION['state']['orders']['invoices']['csv_export']['invoice_total_amount']),
-                                                       'invoice_total_profit'=>array('label'=>_('Total Profit'),'selected'=>$_SESSION['state']['orders']['invoices']['csv_export']['invoice_total_profit']),
-							 'invoice_total_tax_amount'=>array('label'=>_('Total Tax Amount'),'selected'=>$_SESSION['state']['orders']['invoices']['csv_export']['invoice_total_tax_amount']),
-                                                       'invoice_total_tax_adjust_amount'=>array('label'=>_('Total Tax Adjust Amount'),'selected'=>$_SESSION['state']['orders']['invoices']['csv_export']['invoice_total_tax_adjust_amount']),
-							'invoice_total_adjust_amount'=>array('label'=>_('Total Adjust Amount'),'selected'=>$_SESSION['state']['orders']['invoices']['csv_export']['invoice_total_adjust_amount']),
-                                                        
                                                    )
                             )
                             )
                         );
-$smarty->assign('export_csv_table_cols1',3);
+$smarty->assign('export_csv_table_cols1',2);
 $smarty->assign('csv_export_options1',$csv_export_options1);
-// ----------------------------------export csv array for invoices list ends here -----------------------------------------------
 
-// ----------------------------------export csv array for delivery notes list starts here ---------------------------------------
+
+// -------------------------------------------------------------------------
  $csv_export_options2=array(
-                            'description'=>array(
+                             'description'=>array(
                                               'title'=>_('Description'),
                                               'rows'=>
                                                      array(
                                                          array(
-                                                             'id'=>array('label'=>_('Delivery Note ID'),'selected'=>$_SESSION['state']['orders']['dn']['csv_export']['id']),
-                                                             'date'=>array('label'=>_('Date'),'selected'=>$_SESSION['state']['orders']['dn']['csv_export']['date']),
-                                                             'type'=>array('label'=>_('Type'),'selected'=>$_SESSION['state']['orders']['dn']['csv_export']['type']),
-                                                       'customer_name'=>array('label'=>_('Customer'),'selected'=>$_SESSION['state']['orders']['dn']['csv_export']['customer_name']),
-                                                       'weight'=>array('label'=>_('Weight'),'selected'=>$_SESSION['state']['orders']['dn']['csv_export']['weight']),
-                                                       'parcels_no'=>array('label'=>_('Parcels'),'selected'=>$_SESSION['state']['orders']['dn']['csv_export']['parcels_no'])
-                                                     
+                                                             'code'=>array('label'=>_('Code'),'selected'=>$_SESSION['state']['porder']['porder_dn']['csv_export']['code']),
+                                                             'date'=>array('label'=>_('Date'),'selected'=>$_SESSION['state']['porder']['porder_dn']['csv_export']['date']),
+                                                             'name'=>array('label'=>_('Supplier'),'selected'=>$_SESSION['state']['porder']['porder_dn']['csv_export']['name']),
+                                                             'currency'=>array('label'=>_('Currency'),'selected'=>$_SESSION['state']['porder']['porder_dn']['csv_export']['currency']),
+                                                             'items'=>array('label'=>_('Items'),'selected'=>$_SESSION['state']['porder']['porder_dn']['csv_export']['items']),
                                                          )
                                                      )
                                           ),
                             
-                            'picking'=>array('title'=>_('Picking'),
+                            'total'=>array('title'=>_('Total'),
                             'rows'=>
                                                array(
                                                    array(
-                                                       'start_picking_date'=>array('label'=>_('Start Picking Date'),'selected'=>$_SESSION['state']['orders']['dn']['csv_export']['start_picking_date']),
-                                                       'finish_picking_date'=>array('label'=>_('Finish Picking Date'),'selected'=>$_SESSION['state']['orders']['dn']['csv_export']['finish_picking_date'])
-                                                   )
-                            )
-                            ),
-'packing'=>array('title'=>_('Packing'),
-                            'rows'=>
-                                               array(
-                                                   array(
-                                                       'start_packing_date'=>array('label'=>_('Start Packing Date'),'selected'=>$_SESSION['state']['orders']['dn']['csv_export']['start_packing_date']),
-                                                       'finish_packing_date'=>array('label'=>_('Finish Packing Date'),'selected'=>$_SESSION['state']['orders']['dn']['csv_export']['finish_packing_date'])
-                                                   )
-                            )
-                            ),
-'other_details'=>array('title'=>_('Other Details'),
-                            'rows'=>
-                                               array(
-                                                   array(
-                                                       'state'=>array('label'=>_('State'),'selected'=>$_SESSION['state']['orders']['dn']['csv_export']['state']),
-                                                       'dispatched_method'=>array('label'=>_('Dispatch Method'),'selected'=>$_SESSION['state']['orders']['dn']['csv_export']['dispatched_method']),
-                                                       'parcel_type'=>array('label'=>_('Parcel Type'),'selected'=>$_SESSION['state']['orders']['dn']['csv_export']['parcel_type']),
-                                                       'boxes_no'=>array('label'=>_('Number Of Boxes'),'selected'=>$_SESSION['state']['orders']['dn']['csv_export']['boxes_no'])
+                                                       'invoice_total_tax'=>array('label'=>_('Tax'),'selected'=>$_SESSION['state']['porder']['porder_dn']['csv_export']['invoice_total_tax']),
+                                                       'invoice_total_net_amount'=>array('label'=>_('Net Amount'),'selected'=>$_SESSION['state']['porder']['porder_dn']['csv_export']['invoice_total_net_amount']),
+                                                       'invoice_total'=>array('label'=>_('Total Amount'),'selected'=>$_SESSION['state']['porder']['porder_dn']['csv_export']['invoice_total']),
+                                                   
                                                    )
                             )
                             )
-
-
                         );
-$smarty->assign('export_csv_table_cols2',4);
+$smarty->assign('export_csv_table_cols2',2);
 $smarty->assign('csv_export_options2',$csv_export_options2);
-// ----------------------------------export csv array for delivery notes list ends here-----------------------------------------------
+
 $smarty->display('porders.tpl');
 ?>

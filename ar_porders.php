@@ -353,9 +353,7 @@ function list_purchase_orders(){
     $_SESSION['state']['porders']['table']['order']=$order;
     $_SESSION['state']['porders']['table']['order']=$order;
     $_SESSION['state']['porders']['table']['order']=$order;
-
-
-
+    
   $_SESSION['state']['porders']['table']['view']=$view;
    $date_interval=prepare_mysql_dates($from,$to,'date_index','only_dates');
    if($date_interval['error']){

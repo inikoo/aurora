@@ -139,6 +139,10 @@ else
 
 		}
 	}
+	else
+	{
+		$smarty->assign('null_result','NO RESULT IS FOUND');
+	}
 //change email as per login credentials
 $mail = 'carlos@aw-regalos.com';	
 

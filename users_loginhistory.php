@@ -13,12 +13,7 @@
 */
 include_once('common.php');
 if(!$user->can_view('users'))
-  exit();
-  
-  
- 
-
-		 
+  exit();		 
 $css_files=array(
 		 $yui_path.'reset-fonts-grids/reset-fonts-grids.css',
 		 $yui_path.'menu/assets/skins/sam/menu.css',
@@ -28,10 +23,7 @@ $css_files=array(
 		 'container.css',
 		 'button.css',
 		 'table.css'
-		 
-		 );		 
-		 
-		 
+		 );		 		 
 $js_files=array(
 		$yui_path.'utilities/utilities.js',
 		$yui_path.'json/json-min.js',
@@ -45,46 +37,23 @@ $js_files=array(
 		'common.js.php',
 		'table_common.js.php',
 		'js/search.js',
-		'users_loginhistory.js.php',
-		
+		'users_loginhistory.js.php',	
 		);
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
-
-
 $general_options_list=array();
-
-
 $smarty->assign('general_options_list',$general_options_list);
-
-
-
 $smarty->assign('search_label',_('Users'));
 $smarty->assign('search_scope','users');
-
-
-
-
-
-
 $sql="select (select count(*) from `User Group Dimension`) as number_groups ,( select count(*) from `User Dimension`) as number_users ";
 $result = mysql_query($sql);
 if(!$user=mysql_fetch_array($result, MYSQL_ASSOC))
   exit;
 mysql_free_result($result);
 $smarty->assign('box_layout','yui-t4');
-
-
-
 $smarty->assign('parent','users');
 $smarty->assign('title', _('Users'));
-
-
-
-
-
 $tipo_filter=$_SESSION['state']['users']['loginhistory']['f_field'];
-
 $smarty->assign('filter0',$tipo_filter);
 $smarty->assign('filter_value0',$_SESSION['state']['users']['loginhistory']['f_value']);
 $filter_menu=array(
@@ -95,6 +64,5 @@ $smarty->assign('filter_menu0',$filter_menu);
 $smarty->assign('filter_name0',$filter_menu[$tipo_filter]['label']);
 $paginator_menu=array(10,25,50,100,500);
 $smarty->assign('paginator_menu0',$paginator_menu);
-
 $smarty->display('users_loginhistory.tpl');
 ?>

@@ -216,14 +216,14 @@ var edit_active=function (callback, newValue) {
 	   
 	    var ColumnDefs = [
 	     {key:"id", label:"", hidden:true,action:"none",isPrimaryKey:true}
-	     	     ,{key:"staff_id", label:"", hidden:true,action:"none"}
+	     	     ,{key:"supplier_id", label:"", hidden:true,action:"none"}
 
 			       ,{key:"password",label:"" ,width:16 }
 			      ,{key:"isactive",label:"<?php echo _('State')?>" ,className:'aright',formatter:active,width:45 ,editor: new YAHOO.widget.RadioCellEditor({radioOptions:[{label:"Yes", value:"Yes"}, {label:"No", value:"No"}]
 			      ,defaultValue:"0",asyncSubmitter:edit_active }) }
 			      , {key:"alias", label:"<?php echo _('Login')?>",width:70,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-			      ,{key:"name", label:"<?php echo _('Staff Name')?>",width:200,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-			      ,{key:"groups",formatter:group,label:"<?php echo _('Groups')?>",className:"aleft"
+			      ,{key:"name", label:"<?php echo _('Supplier Name')?>",width:200,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+		/*	     ,{key:"groups",formatter:group,label:"<?php echo _('Groups')?>",className:"aleft"
 				, editor: new YAHOO.widget.CheckboxCellEditor({
 					asyncSubmitter:edit_group,checkboxOptions:[
 										   <?php
@@ -282,15 +282,15 @@ var edit_active=function (callback, newValue) {
 										   print $s;
 										   ?>
 										   ]
-				    })  
+				    }) 
 				 
 			      
-	     }
+	     } */
 
 
 			      ];
 			       
-	    this.dataSource0 = new YAHOO.util.DataSource("ar_edit_users.php?tipo=staff_users&tableid=0");
+	    this.dataSource0 = new YAHOO.util.DataSource("ar_edit_users.php?tipo=supplier_users&tableid=0");
 	    this.dataSource0.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource0.connXhrMode = "queueRequests";
 	    this.dataSource0.responseSchema = {
@@ -308,7 +308,7 @@ var edit_active=function (callback, newValue) {
 		
 		
 		fields: [
-			 "id","isactive","alias","name","email","lang","groups","tipo","active","password","stores","warehouses","staff_id"
+			 "id","isactive","alias","name","email","lang","groups","tipo","active","password","stores","warehouses","supplier_id"
 			 ]};
 
 	    this.table0 = new YAHOO.widget.DataTable(tableDivEL, ColumnDefs,
@@ -505,12 +505,12 @@ var change_staff_pwd=function(){
     passwd=sha256_digest(Dom.get('change_staff_passwd1').value);
     user_id=Dom.get('change_staff_password_alias').getAttribute('user_id');
     var request='ar_edit_users.php?tipo=change_passwd&user_id='+escape(user_id)+'&value='+escape(passwd);
-    //  alert(request);
-    // exit;
+      alert(request);
+    //exit;
     YAHOO.util.Connect.asyncRequest('POST',request ,{
 	    
 	    success:function(o) {
-		//		alert(o.responseText)
+				alert(o.responseText)
 		var r =  YAHOO.lang.JSON.parse(o.responseText);
 		if (r.state==200) {
 		    

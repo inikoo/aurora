@@ -5,8 +5,7 @@ function validate_form()
 	{
 		 window.scrollTo(0,0);
 		document.getElementById('check_div').style.display = 'block';
-		//alert('check your entry');
-				
+		//alert('check your entry');				
 	}
 	else
 	{
@@ -242,6 +241,7 @@ function empty_text()
 {
 	document.getElementById('list_search').value='';
 }
+
 
 
 function CreateTextbox()

@@ -19,7 +19,7 @@ google.load("jquery", "1");
 <br><br><hr style="color:#DDDDDD"><br><br><br>
 
 	<table border=0 width="900px">
-	<form action="" method="post">
+	<form action="campaign_use_segment.php" method="post">
 	<tr>	
 		<td colspan=2>which list would you like to send this campaign to? <span style="padding-left:480px;">
 	<a href="#"><img src="art/next-bottom.gif"></a></span></td>
@@ -40,7 +40,7 @@ google.load("jquery", "1");
 		</script>
 		
 		{/literal}
-		<input type="radio" name="rdb" value="{$value[value].$list_key}"> &nbsp; 
+		<input type="radio" name="rdb" id="rdb" value="{$value[value].$list_key}"> &nbsp; 
 		{$value[value].$list_name} ({$value[value].$recipient} recipients) 
 		<div id="slidingDiv{$value[value].$list_key}" style="display: none; height:150px; padding:20px;">
 		
@@ -66,13 +66,16 @@ google.load("jquery", "1");
 		
 	
 		
-		<span style="float:right"><br><br><a href="campaign_use_segment.php"><img src="art/button1.png" /></a>&nbsp;&nbsp;<a href=""><img src="art/button2.png" /></a></span>
+		<span style="float:right"><br><br><a href="campaign_use_segment.php?getID={$value[value].$list_key}" name="use_segment"><img src="art/button1.png" /></a>&nbsp;&nbsp;<a href="" name="cancel"><img src="art/button2.png" /></a></span>
 
 		</td>
 		</tr>
 			
 		</div>
-		
+		{sectionelse}
+		<tr>
+		<td>{$rslt}</td>
+		</tr>
 		{/section}
 		
 </form>	

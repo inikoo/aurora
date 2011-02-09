@@ -216,81 +216,17 @@ var edit_active=function (callback, newValue) {
 	   
 	    var ColumnDefs = [
 	     {key:"id", label:"", hidden:true,action:"none",isPrimaryKey:true}
-	     	     ,{key:"staff_id", label:"", hidden:true,action:"none"}
+	     	     ,{key:"customer_id", label:"", hidden:true,action:"none"}
 
 			       ,{key:"password",label:"" ,width:16 }
 			      ,{key:"isactive",label:"<?php echo _('State')?>" ,className:'aright',formatter:active,width:45 ,editor: new YAHOO.widget.RadioCellEditor({radioOptions:[{label:"Yes", value:"Yes"}, {label:"No", value:"No"}]
 			      ,defaultValue:"0",asyncSubmitter:edit_active }) }
-			      , {key:"alias", label:"<?php echo _('Login')?>",width:70,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-			      ,{key:"name", label:"<?php echo _('Staff Name')?>",width:200,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
-			      ,{key:"groups",formatter:group,label:"<?php echo _('Groups')?>",className:"aleft"
-				, editor: new YAHOO.widget.CheckboxCellEditor({
-					asyncSubmitter:edit_group,checkboxOptions:[
-										   <?php
-										   $g='';
-										   $sql="select * from `User Group Dimension`  ";
-										   $res=mysql_query($sql);
-										   while($row=mysql_fetch_array($res)){
-										       $key=$row['User Group Key'];
-										       $name=$row['User Group Name'];
-										       $g.="{label:'$name<br>', value:$key},";
-										   }
-										   
-										   
-										   preg_replace('/,$/','',$g);
-										   print $g;
-										   ?>
-										   ]
-				    })  
-			      }
-			       ,{key:"stores",formatter:stores, label:"<?php echo _('Stores')?>",sortable:true,className:"aleft"
-				 	, editor: new YAHOO.widget.CheckboxCellEditor({
-					asyncSubmitter:edit_group,checkboxOptions:[
-										   <?php
-										   $s='';
-										   $sql="select `Store Key`,`Store Code`,`Store Name` from `Store Dimension`  ";
-										   $res=mysql_query($sql);
-										   while($row=mysql_fetch_array($res)){
-										       $code=$row['Store Code'];
-										       $key=$row['Store Key'];
-										       $name=$row['Store Name'];
-										       $s.="{label:'$code<br>', value:$key},";
-										   }
-										   mysql_free_result($res);
-										   preg_replace('/,$/','',$s);
-										   print $s;
-										   ?>
-										   ]
-				    })  
-				 
-			      
-	     } ,{key:"warehouses",formatter:warehouses, label:"<?php echo _('Warehouses')?>",sortable:true,className:"aleft"
-				 	, editor: new YAHOO.widget.CheckboxCellEditor({
-					asyncSubmitter:edit_group,checkboxOptions:[
-										   <?php
-										   $s='';
-										   $sql="select `Warehouse Key`,`Warehouse Code`,`Warehouse Name` from `Warehouse Dimension`  ";
-										   $res=mysql_query($sql);
-										   while($row=mysql_fetch_array($res)){
-										       $code=$row['Warehouse Code'];
-										       $key=$row['Warehouse Key'];
-										       $name=$row['Warehouse Name'];
-										       $s.="{label:'$code<br>', value:$key},";
-										   }
-										   mysql_free_result($res);
-										   preg_replace('/,$/','',$s);
-										   print $s;
-										   ?>
-										   ]
-				    })  
-				 
-			      
-	     }
-
-
+			      , {key:"alias", label:"<?php echo _('Login')?>",width:100,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+			      ,{key:"name", label:"<?php echo _('Customer Name')?>",width:180,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+		
 			      ];
 			       
-	    this.dataSource0 = new YAHOO.util.DataSource("ar_edit_users.php?tipo=staff_users&tableid=0");
+	    this.dataSource0 = new YAHOO.util.DataSource("ar_edit_users.php?tipo=customer_users&tableid=0");
 	    this.dataSource0.responseType = YAHOO.util.DataSource.TYPE_JSON;
 	    this.dataSource0.connXhrMode = "queueRequests";
 	    this.dataSource0.responseSchema = {
@@ -308,7 +244,7 @@ var edit_active=function (callback, newValue) {
 		
 		
 		fields: [
-			 "id","isactive","alias","name","email","lang","groups","tipo","active","password","stores","warehouses","staff_id"
+			 "id","isactive","alias","name","email","lang","groups","tipo","active","password","stores","warehouses","customer_id"
 			 ]};
 
 	    this.table0 = new YAHOO.widget.DataTable(tableDivEL, ColumnDefs,
@@ -415,18 +351,18 @@ var display_dialog=function(tipo){
     Dom.get("staff_form").style.display='none';
     add_user_dialog_staff.show();
     break;
-  case('supplier'):
+   case('supplier'):
     Dom.setX('add_user_supplier', x)
     Dom.setY('add_user_supplier', y)
     Dom.get("supplier_form").style.display='none';
     add_user_dialog_supplier.show();
     break;
- case('other'):
+   case('other'):
     Dom.setX('add_user_other', x)
     Dom.setY('add_user_other', y)
     add_user_dialog_other.show();
     break;
- case('other2'):
+   case('other2'):
     Dom.setX('add_user_other2', x)
     Dom.setY('add_user_other2', y)
     add_user_dialog_other2.show();
@@ -505,12 +441,12 @@ var change_staff_pwd=function(){
     passwd=sha256_digest(Dom.get('change_staff_passwd1').value);
     user_id=Dom.get('change_staff_password_alias').getAttribute('user_id');
     var request='ar_edit_users.php?tipo=change_passwd&user_id='+escape(user_id)+'&value='+escape(passwd);
-    //  alert(request);
-    // exit;
+      alert(request);
+    //exit;
     YAHOO.util.Connect.asyncRequest('POST',request ,{
 	    
 	    success:function(o) {
-		//		alert(o.responseText)
+				alert(o.responseText)
 		var r =  YAHOO.lang.JSON.parse(o.responseText);
 		if (r.state==200) {
 		    

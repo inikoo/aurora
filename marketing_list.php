@@ -13,11 +13,14 @@
 */
 
 include_once('common.php');
-
 include_once('class.Product.php');
 include_once('class.Order.php');
 
 $page='marketing';
+
+/* this line(s) is/are added by PrimeDiart Technologies (Kallol Chakraborty) */
+$user_key = $_SESSION['user_key']; 
+/* changes done up to this */
 
 $general_options_list=array();
 $general_options_list[]=array('tipo'=>'url','url'=>'marketing_reports.php','label'=>_('Reports'));
@@ -27,7 +30,6 @@ $general_options_list[]=array('tipo'=>'url','url'=>'newsletter.php?new','label'=
 $smarty->assign('general_options_list',$general_options_list);
 
 $view_orders=$user->can_view('Orders');
-
 
 $css_files=array(
 		 $yui_path.'reset-fonts-grids/reset-fonts-grids.css',
@@ -59,11 +61,11 @@ $js_files=array(
 		'common.js.php',
 		'table_common.js.php',
 		'js/search.js',
-		'js/marketing_list.js',		
+		'js/marketing_list.js',
+		'js/search_subscriber.js'		
 		);
 
 
- 
 if (isset($_REQUEST['view'])) {
     $valid_views=array('metrics','email','web_internal','web','other','newsletter');
     if (in_array($_REQUEST['view'], $valid_views))
@@ -71,11 +73,12 @@ if (isset($_REQUEST['view'])) {
 
 }
 
+/* this line(s) is/are added by PrimeDiart Technologies (Kallol Chakraborty) */
 
-// adding  new list
-if(isset($_POST['save_list'])){ 
+/* CREATE LIST */
 
-  $user_key = $_SESSION['user_key'];	
+if(isset($_POST['save_list'])){ // adding  new list
+
   $list_name = trim($_POST['list_name']);
   $default_from_name = trim($_POST['default_name']);
   $default_reply_to_email = trim($_POST['default_email']);
@@ -88,15 +91,15 @@ if(isset($_POST['save_list'])){
   $activate_social_pro = trim($_POST['social_pro']);
 
 
- $sql = "INSERT INTO `Email Campaign Mailing List` (`User Key`, `List Name` ,`Default From Name` ,`Default Reply To Email` ,`Default Subject` ,`Permission Reminder List` ,`Reminder Text` ,`People Subscribe` ,`People Unsubscribe` ,`Pick Email Format` ,`Activate Social Pro`)VALUES ('$user_key', '$list_name', '$default_from_name', '$default_reply_to_email ', '$default_subject ', '$permission_reminder_list', '$reminder_text', '$people_subscribe', '$people_unsubscribe', '$pick_email_format', '$activate_social_pro');";
+  $sql = "INSERT INTO `Email Campaign Mailing List` (`User Key`, `List Name` ,`Default From Name` ,`Default Reply To Email` ,`Default Subject` ,`Permission Reminder List` ,`Reminder Text` ,`People Subscribe` ,`People Unsubscribe` ,`Pick Email Format` ,`Activate Social Pro`)VALUES ('$user_key', '$list_name', '$default_from_name', '$default_reply_to_email ', '$default_subject ', '$permission_reminder_list', '$reminder_text', '$people_subscribe', '$people_unsubscribe', '$pick_email_format', '$activate_social_pro');";
 	
-mysql_query($sql);
-
+  mysql_query($sql); // new listed added
 
 }
 
-// adding new group
-if(isset($_POST['save_group'])){ 
+/* CREATE GROUP */
+
+if(isset($_POST['save_group'])){ // adding new group
 
 	$group_name_arr = array();
 
@@ -134,26 +137,25 @@ if(isset($_POST['save_group'])){
 	unset($group_name_arr);
 }
 
-$list_sql=mysql_query("SELECT `Email Campaign Mailing List Key`, `List Name` FROM `Email Campaign Mailing List`");
+/* VIEW LIST */
+
+$list_sql=mysql_query("SELECT `Email Campaign Mailing List Key`, `List Name` FROM `Email Campaign Mailing List` WHERE `User Key` LIKE '$user_key'");
+
 $i=0;
 $list=array();
 while($list_name=mysql_fetch_array($list_sql))
 {
-	//echo"$list_name['$listname]<br>";
 	$list[$i]=$list_name;
-	
 	$i++;
 }
 
 $list_count=mysql_num_rows($list_sql);
 $smarty->assign('list',$list);
 $smarty->assign('list_count',$list_count);
-
+/* changes done up to this */
 
 
 $smarty->assign('view',$_SESSION['state'][$page]['view']);
-
-
 $smarty->assign('parent','home');
 $smarty->assign('title', _('Marketing'));
 $smarty->assign('css_files',$css_files);
