@@ -91,9 +91,6 @@ if(!isset($_GET['l'])){
 	$smarty->assign('current_list', $current_list);
 
 	
-
-
-
 }
 
 // Removing People - action part
