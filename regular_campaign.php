@@ -37,7 +37,7 @@ $css_files=array(
 		 'common.css',
 		 'button.css',
 		 'container.css',
-		 'css/marketing_campaign.css',
+		 'css/marketing_campaigns.css',
 		 'table.css'
 		 );
 $js_files=array(
@@ -69,14 +69,14 @@ $js_files=array(
 //$smarty->assign('view',$_SESSION['state'][$page]['view']);
 
 $get_value = array();
-
+$rslt = '';
 
 $list_key = 'Email Campaign Mailing List Key';
 $list_name = 'Campaign Mailling List Name';
 $list_email = 'Campaign Mailling List Email';
 $recipient = 'Campaign Mailling List Recipients';
 
-	$query = "select * from `Campaign Mailling List`";
+	$query = "select * from `Campaign Mailling List` where 1";
 	$res = mysql_query($query);
 	if(mysql_num_rows($res)>0)
 	{
@@ -85,12 +85,18 @@ $recipient = 'Campaign Mailling List Recipients';
 			$get_value[] = $print;
 		}
 	}
+	else
+	{	
+		$rslt = 'No Result is found';
+	}
 
 $smarty->assign('parent','home');
 $smarty->assign('title', _('Regular Campaign'));
 $smarty->assign('css_files',$css_files);
 $smarty->assign('js_files',$js_files);
 $smarty->assign('value',$get_value);
+$smarty->assign('rslt',$rslt);
+
 
 //assigning the database fields
 $smarty->assign('list_key',$list_key);

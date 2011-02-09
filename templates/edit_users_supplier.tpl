@@ -16,11 +16,11 @@
   <div id="yui-main">
     
     <div class="data_table" >
-      <span class="clean_table_title">{t}Staff Users{/t}</span>
+      <span class="clean_table_title">{t}Supplier Users{/t}</span>
       
       
      
-       <table  style="float:left;margin:0 0 0 0px ;margin-left:0;padding:0;clear:left"  class="options_mini" >
+  {*     <table  style="float:left;margin:0 0 0 0px ;margin-left:0;padding:0;clear:left"  class="options_mini" >
      <tr  id="orders_show_only"   style="margin-left:0;padding:0"  >
 
        <td  style="margin-left:20px;xmargin:5px 15px 0 0px ;padding:0;border:none;color:#555"  >{t}show only{/t}:</td>
@@ -33,7 +33,7 @@
    
 
    </table>
-      
+ *}    
       
       
       

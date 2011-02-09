@@ -1,39 +1,35 @@
 {include file='header.tpl'}
 <div id="bd" >
-
+<div>
 <span class="nav2 onleft"><a class="selected" href="users_staff.php">Staff Users</a></span>
   <span class="nav2 onleft"><a href="users_customer.php">Customer Users</a></span>
   <span class="nav2 onleft"><a href="users_supplier.php">Supplier Users</a></span>
-
-
-<div class="search_box">
+</div>
+<div class="search_box" align='right'>
   <div class="general_options">
-  <span id="exit">{t}Exit Edit{/t}</span>
+<span id="exit">{t}Exit Edit{/t}</span>
 </div>  
          
 </div>  
 
+
+
   <div id="yui-main">
     
     <div class="data_table" >
-      <span class="clean_table_title">{t}Staff Users{/t}</span>
+      <span class="clean_table_title">{t}Customer Users{/t}</span>
       
       
      
-       <table  style="float:left;margin:0 0 0 0px ;margin-left:0;padding:0;clear:left"  class="options_mini" >
+  {*     <table  style="float:left;margin:0 0 0 0px ;margin-left:0;padding:0;clear:left"  class="options_mini" >
      <tr  id="orders_show_only"   style="margin-left:0;padding:0"  >
-
-       <td  style="margin-left:20px;xmargin:5px 15px 0 0px ;padding:0;border:none;color:#555"  >{t}show only{/t}:</td>
-       
+       <td  style="margin-left:20px;xmargin:5px 15px 0 0px ;padding:0;border:none;color:#555"  >{t}show only{/t}:</td>       
        <td  style="" {if $display=='active'}class="selected"{/if}  id="active"  >{t}Active (Employees){/t}</td>
        <td  style="" {if $dispply=='inactive_current'}class="selected"{/if}  id="inactive_current"  >{t}Inactive (Employees){/t}</td>
        <td  style="" {if $display=='inactive_ex'}class="selected"{/if}  id="inactive_ex"  >{t}Inactive (Ex-employees){/t}</td>
-
      </tr>
-   
-
-   </table>
-      
+       </table>
+ *}    
       
       
       

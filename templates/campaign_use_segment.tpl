@@ -11,7 +11,7 @@
 </div>
 <br><br><hr style="color:#DDDDDD">
 
-<div><span style="font-size:18px;padding:5px;">Blank Subject</span> <div id="back-next-bottom"> <a href="marketing_campaign_builder.php"><input type="image" title="back to previous step" value="back" name="back" class="back" src="art/back-bottom2.png"></a>  <input type="image" title="proceed to next step" value="next" name="next" class="next" src="art/next-bottom.png">  </div> </div>
+<div><span style="font-size:18px;padding:5px;">Blank Subject</span> <div id="back-next-bottom"> <a href="marketing_campaign_builder.php"><input type="image" title="back to previous step" value="back" name="back" class="back" src="art/back-bottom2.png"></a> <a href="confirm_mail_send.php?id={$list_id}"> <input type="image" title="proceed to next step" value="next" name="next" class="next" src="art/next-bottom.png"> </a> </div> </div>
 <div style="height:420px;">
 <div style="float:left;">
 <fieldset class="field_set"> <legend class="legend_part">campaign info</legend>
@@ -21,13 +21,13 @@
 <div class="field-wrapper"> <input type="text" value="" class="av-text" id="title" tabindex="1" name="content[title]" size="61" height="4"> 
 </div>
 <label class="" for="title">Message subject <span class="asterisk">*</span></label>
-<div class="field-wrapper"> <input type="text" value="" class=" av-text" id="title" tabindex="1" name="content[title]" size="61"> 
+<div class="field-wrapper"> <input type="text" value="{$subject}" class=" av-text" id="title" tabindex="1" name="content[title]" size="61"> 
 </div>
 <label class="" for="title">From name  <span class="asterisk">*</span></label>
-<div class="field-wrapper"> <input type="text" value="" class=" av-text" id="title" tabindex="1" name="content[title]" size="61"> 
+<div class="field-wrapper"> <input type="text" value="{$default_name}" class=" av-text" id="title" tabindex="1" name="content[title]" size="61"> 
 </div>
 <label class="" for="title">Reply-to email   <span class="asterisk">*</span></label>
-<div class="field-wrapper"> <input type="text" value="" class=" av-text" id="title" tabindex="1" name="content[title]" size="61"> 
+<div class="field-wrapper"> <input type="text" value="{$email}" class=" av-text" id="title" tabindex="1" name="content[title]" size="61"> 
 </div>
 <div>
 <input type="checkbox" name="content[personalizeToEmail]" value="on" id="personalize-to" style="-moz-user-select: none;">
@@ -72,7 +72,7 @@
 
 </div>
 
-<div id="back-next-bottom"> <a href="marketing_campaign_builder.php"><input type="image" title="back to previous step" value="back" name="back" class="back" src="art/back-bottom2.png"></a>  <input type="image" title="proceed to next step" value="next" name="next" class="next" src="art/next-bottom.png">  </div><br>
+<div id="back-next-bottom"> <a href="marketing_campaign_builder.php"><input type="image" title="back to previous step" value="back" name="back" class="back" src="art/back-bottom2.png"></a>  <a href="confirm_mail_send.php?id={$list_id}"><input type="image" title="proceed to next step" value="next" name="next" class="next" src="art/next-bottom.png"> </a> </div><br>
 
 
 

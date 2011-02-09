@@ -5,6 +5,9 @@
  
 
 <div style="padding:0px 20px">
+
+<div style="padding:0px 20px"><span  id="export_csv0" style="float:right;margin-left:15px"  class="table_type state_details" tipo="delivery_notes" ><a href="pdf_customer.php?id={$customer->get('Customer Key')}">PDF Address</a></span>
+
   {include file='contacts_navigation.tpl'}
 
   <div id="no_details_title"  style="clear:left;xmargin:0 20px;{if $details!=0}display:none{/if}">

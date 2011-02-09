@@ -166,7 +166,7 @@ $default_state=array(
                                                          'to'=>''
                                                      )
                                       ),
-                   'porders'=>array(
+                  'porders'=>array(
                                  'id'=>'',
                                  'show_all'=>false,
                                  'parent'=>'supplier',
@@ -183,7 +183,6 @@ $default_state=array(
                                              'from'=>'',
                                              'to'=>'',
 
-
                                             'csv_export'=>array(
                                                              'public_id'=>true,
                                                              'last_date'=>true,
@@ -199,8 +198,8 @@ $default_state=array(
                                                              'actiontaken'=>false,
                                                              'items'=>false,
                                                              'currency_code'=>false
+							    
                                                         )
-
 
                                          )
                              ),
@@ -470,6 +469,108 @@ $default_state=array(
 
 
                             ),
+//--------------------------------------------------------------------------------------------------------------------
+
+                   'porder'=>array(
+                                'details'=>false,
+                                'store'=>'',
+                                'view'=>'orders',
+                                'only'=>'',
+                                'from'=>'',
+                                'to'=>'',
+                                 'id'=>'',
+                                 'show_all'=>false,
+                                 'parent'=>'supplier',
+                                 'parent_key'=>0,
+
+                                'table'=>array(
+                                            'order'=>'last_date',
+                                            'order_dir'=>'desc',
+                                            'sf'=>0,
+                                            'nr'=>25,
+                                            'where'=>'where true',
+                                            'f_field'=>'public_id',
+                                            'f_value'=>'','f_show'=>false,
+                                            'from'=>'',
+                                            'to'=>'',
+                                            'elements'=>array(),
+                                            'dispatch'=>'all_orders',
+                                            'paid'=>'',
+                                            'order_type'=>'',
+
+                                            'csv_export'=>array(
+                                                             'public_id'=>true,
+                                                             'last_date'=>true,
+                                                             'supplier'=>true,
+                                                             'status'=>true,
+                                                             'totaltax'=>false,
+                                                             'totalnet'=>false,
+							     'shippingmethod'=>false,
+                                                             'total'=>true,
+                                                             'buyername'=>false,
+                                                             'sourcetype'=>false,
+                                                             'paymentstate'=>false,
+                                                             'actiontaken'=>false,
+                                                             'items'=>false,
+                                                             'currency_code'=>false
+							    
+                                                        )
+                                        ),
+                                'porder_invoices'=>array(
+                                               'order'=>'date',
+                                               'order_dir'=>'',
+                                               'sf'=>0,
+                                               'nr'=>25,
+                                               'invoice_type'=>'all',
+                                               'where'=>'where true',
+                                               'f_field'=>'public_id',
+                                               'f_value'=>'','f_show'=>false,
+                                               'from'=>'',
+                                               'to'=>'',
+                                               'elements'=>array(),
+                                               'csv_export'=>array(
+                                                                'code'=>true,
+                                                                'date'=>true,
+                                                                'name'=>true,
+                                                                'currency'=>false,
+                                                                'invoice_total_tax'=>false,
+                                                                'invoice_total_net_amount'=>false,
+								'items'=>false,
+                                                                'invoice_total'=>true
+                                                               
+                                                            )
+                                           ),
+                                'porder_dn'=>array(
+                                         'order'=>'date',
+                                         'order_dir'=>'',
+                                         'sf'=>0,
+                                         'nr'=>25,
+                                         'where'=>'where true',
+                                         'f_field'=>'public_id',
+                                         'f_value'=>'','f_show'=>false,
+                                         'from'=>'',
+                                         'to'=>'',
+                                         'dn_state_type'=>'all',
+                                         'elements'=>array(),
+                                         'csv_export'=>array(
+                                                           'code'=>true,
+                                                                'date'=>true,
+                                                                'name'=>true,
+                                                                'currency'=>false,
+                                                                'invoice_total_tax'=>false,
+                                                                'invoice_total_net_amount'=>false,
+								'items'=>false,
+                                                                'invoice_total'=>true
+
+
+
+                                                      )
+                                     )
+                                    
+
+
+                            ),
+//--------------------------------------------------------------------------------------------------------------------
 
                    'product_categories'=>array(
                                             'category_key'=>0,

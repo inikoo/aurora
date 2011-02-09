@@ -1,3 +1,4 @@
+
 {include file='header.tpl'}
 <div id="bd"  style="padding:0px">
 <div style="padding:0 0px">
@@ -44,12 +45,13 @@
 	<div id="check_div" style="display:none;">Please Check Your Entry And Try Again</div>
 	<div id="left_panel">
 		<a onClick="" style="text-decoration:none; cursor:pointer;"><div id="create_new_list">Create New List
-		</div></a><br>
+		</div></a><br/>
 		<div id="view_list" style="text-decoration:none; cursor:pointer">View Lists
 		</div><br>
-		
-		<input type="text" name="list_search" id="list_search" value="Search List Subscribers" onClick="empty_text();">
-		<input type="submit" value="Go" class="list_search_button">
+		<div style="padding-bottom:10px;">
+		<input type="text" style="padding-left:5px; width:145px;" name="list_search" id="list_search" value="Search List Subscribers" onClick="empty_text();">
+		<input type="submit" value="Go" class="list_search_button" onClick="search();"></div>
+		<div id="search_result" style="width:170px; padding-top:10px; padding-left:20px; display:none; height:300px; overflow:auto;">some text</div>
 
 	</div>
 	
