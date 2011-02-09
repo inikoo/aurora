@@ -92,7 +92,6 @@ if(!isset($_GET['l'])){
 
 	
 }
-
 // Removing People - action part
 if(isset($_POST['remove_people'])){ 
 
