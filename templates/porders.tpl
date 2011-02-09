@@ -57,7 +57,7 @@
   </div>
   
   
-   <div  id="invoices_table"   class="data_table" {*style="{if $view!='invoices'}display:none{/if};clear:both"*}>
+   <div  id="invoices_table"   class="data_table" style="{if $view!='invoices'}display:none{/if};clear:both">
     <span class="clean_table_title">{t}Invoice List{/t}</span>
      <div id="table_type" class="table_type">
 
@@ -107,7 +107,7 @@
 
  <div   id="dn_table"  class="data_table" style="{if $view!='dn'}display:none{/if};clear:both">
     <span class="clean_table_title">{t}Incoming Delivery Notes List{/t}</span>
-    
+     <span  id="export_csv2" style="float:right;margin-left:20px"  class="table_type state_details" tipo="porder_dn" >{t}Export (CSV){/t}</span>
       {*  
 <div style="font-size:90%"  id="dn_table_type" class="table_type">
    <span  id="export_csv2" style="float:right;margin-left:20px"  class="table_type state_details" tipo="porder_dn" >{t}Export (CSV){/t}</span>
