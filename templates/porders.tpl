@@ -57,19 +57,19 @@
   </div>
   
   
-   <div  id="invoices_table"   class="data_table" style="{if $view!='invoices'}display:none{/if};clear:both">
+   <div  id="invoices_table"   class="data_table" {*style="{if $view!='invoices'}display:none{/if};clear:both"*}>
     <span class="clean_table_title">{t}Invoice List{/t}</span>
      <div id="table_type" class="table_type">
 
-<span  id="export_csv1" style="float:right;margin-left:20px"  class="table_type state_details" tipo="invoices" >{t}Export (CSV){/t}</span>
-        <div  style="font-size:90%"   id="invoice_chooser"  style="display:{if $view!='orders'}none{/if}">
+<span  id="export_csv1" style="float:right;margin-left:20px"  class="table_type state_details" tipo="porder_invoices" >{t}Export (CSV){/t}</span>
+       {* <div  style="font-size:90%"   id="invoice_chooser"  style="display:{if $view!='orders'}none{/if}">
            
             <span style="float:right;margin-left:20px" class="table_type invoice_type state_details {if $invoice_type=='all'}selected{/if}"  id="restrictions_all_invoices" table_type="all"  >{t}All{/t} ({$store->get('Total Invoices')})</span>
             <span style="float:right;margin-left:20px" class="table_type invoice_type state_details {if $invoice_type=='invoices'}selected{/if}"  id="restrictions_invoices" table_type="invoices"   >{t}Invoices{/t} ({$store->get('Invoices')})</span>
             <span style="float:right;margin-left:20px" class="table_type invoice_type state_details {if $invoice_type=='refunds'}selected{/if}"  id="restrictions_refunds"  table_type="refunds"  >{t}Refunds{/t} ({$store->get('Refunds')})</span>
             <span style="float:right;margin-left:20px" class="table_type invoice_type state_details {if $invoice_type=='to_pay'}selected{/if}"  id="restrictions_to_pay"  table_type="to_pay"  >{t}To pay{/t} ({$store->get('All To Pay Invoices')})</span>
             <span style="float:right;margin-left:20px" class="table_type invoice_type state_details {if $invoice_type=='paid'}selected{/if}"  id="restrictions_paid"  table_type="paid"  >{t}Paid{/t} ({$store->get('All Paid Invoices')})</span>
-        </div>
+        </div>*}
      </div>
 
 
@@ -110,7 +110,7 @@
     
       {*  
 <div style="font-size:90%"  id="dn_table_type" class="table_type">
-   <span  id="export_csv2" style="float:right;margin-left:20px"  class="table_type state_details" tipo="dn" >{t}Export (CSV){/t}</span>
+   <span  id="export_csv2" style="float:right;margin-left:20px"  class="table_type state_details" tipo="porder_dn" >{t}Export (CSV){/t}</span>
             <span style="float:right;margin-left:20px" class="table_type dn_view state_details {if $dn_state_type=='all'}selected{/if}"  id="restrictions_dn_all" table_type="all"  >{t}All{/t} ({$store->get('Total Orders')})</span>
             <img onClick="change_dn_view(this)" state="{$dn_view}"   style="cursor:pointer;float:right;margin-left:20px;position:relative;top:5px;" src="art/icons/previous.png" alt="x"/>
            <div id="dn_view_state_chooser"    style="{if $dn_view!='dn_state'}display:none{/if}">

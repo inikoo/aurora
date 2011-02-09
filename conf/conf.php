@@ -516,7 +516,7 @@ $default_state=array(
 							    
                                                         )
                                         ),
-                                'invoices'=>array(
+                                'porder_invoices'=>array(
                                                'order'=>'date',
                                                'order_dir'=>'',
                                                'sf'=>0,
@@ -532,21 +532,15 @@ $default_state=array(
                                                                 'code'=>true,
                                                                 'date'=>true,
                                                                 'name'=>true,
-                                                                'paymentmethod'=>false,
-                                                                'invoicefor'=>false,
-                                                                'invoicepaid'=>false,
-
-                                                                'invoice_total_amount'=>true,
-                                                                'invoice_total_profit'=>false,
-                                                                'invoice_total_tax_amount'=>false,
-                                                                'invoice_total_tax_adjust_amount'=>false,
-                                                                'invoice_total_adjust_amount'=>false
-
-
-
+                                                                'currency'=>false,
+                                                                'invoice_total_tax'=>false,
+                                                                'invoice_total_net_amount'=>false,
+								'items'=>false,
+                                                                'invoice_total'=>true
+                                                               
                                                             )
                                            ),
-                                'dn'=>array(
+                                'porder_dn'=>array(
                                          'order'=>'date',
                                          'order_dir'=>'',
                                          'sf'=>0,
