@@ -61,7 +61,8 @@ $js_files=array(
 		'common.js.php',
 		'table_common.js.php',
 		'js/search.js',
-		'js/marketing_list.js',		
+		'js/marketing_list.js',
+		'js/search_subscriber.js'		
 		);
 
 
