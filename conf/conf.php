@@ -181,26 +181,7 @@ $default_state=array(
                                              'f_field'=>'public_id',
                                              'f_value'=>'','f_show'=>false,
                                              'from'=>'',
-                                             'to'=>'',
-
-
-                                            'csv_export'=>array(
-                                                             'public_id'=>true,
-                                                             'last_date'=>true,
-                                                             'supplier'=>true,
-                                                             'status'=>true,
-                                                             'totaltax'=>false,
-                                                             'totalnet'=>false,
-							     'shippingmethod'=>false,
-                                                             'total'=>true,
-                                                             'buyername'=>false,
-                                                             'sourcetype'=>false,
-                                                             'paymentstate'=>false,
-                                                             'actiontaken'=>false,
-                                                             'items'=>false,
-                                                             'currency_code'=>false
-                                                        )
-
+                                             'to'=>''
 
                                          )
                              ),
@@ -470,6 +451,116 @@ $default_state=array(
 
 
                             ),
+//--------------------------------------------------------------------------------------------------------------------
+
+                   'porder'=>array(
+                                'details'=>false,
+                                'store'=>'',
+                                'view'=>'orders',
+                                'only'=>'',
+                                'from'=>'',
+                                'to'=>'',
+
+                                'table'=>array(
+                                            'order'=>'last_date',
+                                            'order_dir'=>'desc',
+                                            'sf'=>0,
+                                            'nr'=>25,
+                                            'where'=>'where true',
+                                            'f_field'=>'public_id',
+                                            'f_value'=>'','f_show'=>false,
+                                            'from'=>'',
+                                            'to'=>'',
+                                            'elements'=>array(),
+                                            'dispatch'=>'all_orders',
+                                            'paid'=>'',
+                                            'order_type'=>'',
+
+                                            'csv_export'=>array(
+                                                             'public_id'=>true,
+                                                             'last_date'=>true,
+                                                             'supplier'=>true,
+                                                             'status'=>true,
+                                                             'totaltax'=>false,
+                                                             'totalnet'=>false,
+							     'shippingmethod'=>false,
+                                                             'total'=>true,
+                                                             'buyername'=>false,
+                                                             'sourcetype'=>false,
+                                                             'paymentstate'=>false,
+                                                             'actiontaken'=>false,
+                                                             'items'=>false,
+                                                             'currency_code'=>false
+                                                        )
+                                        ),
+                                'invoices'=>array(
+                                               'order'=>'date',
+                                               'order_dir'=>'',
+                                               'sf'=>0,
+                                               'nr'=>25,
+                                               'invoice_type'=>'all',
+                                               'where'=>'where true',
+                                               'f_field'=>'public_id',
+                                               'f_value'=>'','f_show'=>false,
+                                               'from'=>'',
+                                               'to'=>'',
+                                               'elements'=>array(),
+                                               'csv_export'=>array(
+                                                                'code'=>true,
+                                                                'date'=>true,
+                                                                'name'=>true,
+                                                                'paymentmethod'=>false,
+                                                                'invoicefor'=>false,
+                                                                'invoicepaid'=>false,
+
+                                                                'invoice_total_amount'=>true,
+                                                                'invoice_total_profit'=>false,
+                                                                'invoice_total_tax_amount'=>false,
+                                                                'invoice_total_tax_adjust_amount'=>false,
+                                                                'invoice_total_adjust_amount'=>false
+
+
+
+                                                            )
+                                           ),
+                                'dn'=>array(
+                                         'order'=>'date',
+                                         'order_dir'=>'',
+                                         'sf'=>0,
+                                         'nr'=>25,
+                                         'where'=>'where true',
+                                         'f_field'=>'public_id',
+                                         'f_value'=>'','f_show'=>false,
+                                         'from'=>'',
+                                         'to'=>'',
+                                         'dn_state_type'=>'all',
+                                         'elements'=>array(),
+                                         'csv_export'=>array(
+                                                          'id'=>true,
+                                                          'date'=>true,
+                                                          'type'=>true,
+                                                          'customer_name'=>true,
+                                                          'weight'=>false,
+                                                          'parcels_no'=>false,
+
+                                                          'start_picking_date'=>false,
+                                                          'finish_picking_date'=>false,
+                                                          'start_packing_date'=>false,
+                                                          'finish_packing_date'=>false,
+                                                          'state'=>false,
+                                                          'dispatched_method'=>false,
+                                                          'parcel_type'=>false,
+                                                          'boxes_no'=>false
+
+
+
+                                                      )
+                                     )
+                                    
+
+
+                            ),
+//--------------------------------------------------------------------------------------------------------------------
 
                    'product_categories'=>array(
                                             'category_key'=>0,
