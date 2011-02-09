@@ -1558,9 +1558,8 @@ $fields=array(
 'sourcetype'=>array('title'=>_('Source Type'),'db_name'=>'Purchase Order Main Source Type'),
 'paymentstate'=>array('title'=>_('Payment State'),'db_name'=>'Purchase Order Current Payment State'),
 'actiontaken'=>array('title'=>_('Actions Taken'),'db_name'=>'Purchase Order Actions Taken'),
-'ordertype'=>array('title'=>_('Items'),'db_name'=>'Purchase Order Number Items'),
-'currency_code'=>array('title'=>_('Currency'),'db_name'=>'Purchase Order Currency Code'),
-
+'items'=>array('title'=>_('Items'),'db_name'=>'Purchase Order Number Items'),
+'currency_code'=>array('title'=>_('Currency'),'db_name'=>'Purchase Order Currency Code'),                                                             
 );
 
 
@@ -1579,7 +1578,7 @@ $_data[]=$options['title'];
 $data[]=$_data;
 $sql="select * from `Purchase Order Dimension` where true";
 $res=mysql_query($sql);
-echo $sql;
+//echo $sql;
 while($row=mysql_fetch_assoc($res)){
 $_data=array();
 foreach($fields as $key=>$options){

@@ -166,7 +166,7 @@ $default_state=array(
                                                          'to'=>''
                                                      )
                                       ),
-                   'porders'=>array(
+                  'porders'=>array(
                                  'id'=>'',
                                  'show_all'=>false,
                                  'parent'=>'supplier',
@@ -181,7 +181,25 @@ $default_state=array(
                                              'f_field'=>'public_id',
                                              'f_value'=>'','f_show'=>false,
                                              'from'=>'',
-                                             'to'=>''
+                                             'to'=>'',
+
+                                            'csv_export'=>array(
+                                                             'public_id'=>true,
+                                                             'last_date'=>true,
+                                                             'supplier'=>true,
+                                                             'status'=>true,
+                                                             'totaltax'=>false,
+                                                             'totalnet'=>false,
+							     'shippingmethod'=>false,
+                                                             'total'=>true,
+                                                             'buyername'=>false,
+                                                             'sourcetype'=>false,
+                                                             'paymentstate'=>false,
+                                                             'actiontaken'=>false,
+                                                             'items'=>false,
+                                                             'currency_code'=>false
+							    
+                                                        )
 
                                          )
                              ),
@@ -460,6 +478,10 @@ $default_state=array(
                                 'only'=>'',
                                 'from'=>'',
                                 'to'=>'',
+                                 'id'=>'',
+                                 'show_all'=>false,
+                                 'parent'=>'supplier',
+                                 'parent_key'=>0,
 
                                 'table'=>array(
                                             'order'=>'last_date',
@@ -491,6 +513,7 @@ $default_state=array(
                                                              'actiontaken'=>false,
                                                              'items'=>false,
                                                              'currency_code'=>false
+							    
                                                         )
                                         ),
                                 'invoices'=>array(
