@@ -85,10 +85,10 @@
 
 	
 	<div class="add_people_list" style="float:left;"><fieldset class="field_set" style=" margin: 0em 0 1.2em 3em;"> <legend class="legend_part">Add People</legend>
-		<form action="" method="post" name="list_form" id="list_form" onSubmit="return validate_form();">
+		<form action="" method="post" name="list_form" id="list_form" onSubmit="return validate();">
 		
 	<div id="change_list">
-			<select id="listName" name="listName" onChange=change_list();>
+			<select id="list_name" name="list_name" onChange=change_list();>
   			{foreach from=$list item=list_item}
   			<option value="{$list_item[0]}" {if $list_item[1]==$current_list}selected{/if}>{$list_item[1]}</option>
 			{/foreach}
@@ -105,16 +105,16 @@
 		
 	
 		<div id="list_div" class="sub_head">First Name</div>
-		<div id="name_div"><input type="text" name="people_first_name" id="list_name" class="av_text" style="width:670px;" onClick="show('list_msg');"></div>
-		<div id="list_msg" class="invalid-error" style="display:none;width:671px;">Please enter First name</div>  <br>
+		<div id="name_div"><input type="text" name="people_first_name" id="people_first_name" class="av_text" style="width:670px;" onClick="show('people_first_name_msg');"></div>
+		<div id="people_first_name_msg" class="invalid-error" style="display:none;width:671px;">Please enter first name.</div>  <br>
 
 		<div id="default_name_div" class="sub_head">Last Name</div>
-		<input type="text" name="people_last_name" id="default_name" class="av_text" style="width:670px;"  onClick="show('default_name_msg');">  
-		<div id="default_name_msg" class="invalid-error" style="display:none;width:671px;">Please enter Last name</div> <br><br>
+		<input type="text" name="people_last_name" id="people_last_name" class="av_text" style="width:670px;"  onClick="show('people_last_name_msg');">
+		<div id="people_last_name_msg" class="invalid-error" style="display:none;width:671px;">Please enter last name.</div> <br><br>
 
 		<div id="email_div" class="sub_head">Email Address</div>
-		<input type="text" name="people_email" id="default_email" class="av_text" style="width:670px;"  onClick="show('email_msg');">  
-		<div id="email_msg" class="invalid-error" style="display:none;width:671px;">This is Email Address.</div><br><br>
+		<input type="text" name="people_email" id="people_email" class="av_text" style="width:670px;"  onClick="show('email_msg');">
+		<div id="email_msg" class="invalid-error" style="display:none;width:671px;">Please enter a valid email address.</div><br><br>
 		{if $group_title != ''}
 			<div class="sub_head" id="group_name" name="group_name" style="display:block;">{$group_title}</div>
 			<div>{foreach from=$group item=group_item}		
@@ -125,10 +125,11 @@
 			<INPUT id="people_email_type1" TYPE="radio" NAME="people_email_type" VALUE="text">&nbsp;Text&nbsp;&nbsp;&nbsp;&nbsp;
 			<INPUT id="people_email_type2" TYPE="radio" NAME="people_email_type" VALUE="html">&nbsp;HTML&nbsp;&nbsp;&nbsp;&nbsp;
 			<INPUT id="people_email_type3" TYPE="radio" NAME="people_email_type" VALUE="mobile">&nbsp;Mobile
-			<div id="list_etype" class="invalid-error" style="display:none;">Please Check one</div>  <br>
+			<div id="people_email_type_msg" class="invalid-error" style="display:none;">Please select your email type.</div>  <br>
 			<br>
 			<br>
-			<INPUT TYPE=CHECKBOX id="permission" NAME="permission">&nbsp;This recipient has given me permission to add him/her to my MailChimp Managed List.			<div id="list_ctype" class="invalid-error" style="display:none;">Please Check It</div>  <br>
+			<INPUT TYPE=CHECKBOX id="permission" NAME="permission">&nbsp;This recipient has given me permission to add him/her to my Managed List.
+			<div id="permission_msg" class="invalid-error" style="display:none;">Please check above to agree with the terms &amp; conditions.</div>  <br>
 			<br><br>
 				
 	
