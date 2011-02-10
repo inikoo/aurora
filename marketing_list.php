@@ -15,7 +15,6 @@
 include_once('common.php');
 include_once('class.Product.php');
 include_once('class.Order.php');
-
 $page='marketing';
 
 /* this line(s) is/are added by PrimeDiart Technologies (Kallol Chakraborty) */
