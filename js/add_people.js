@@ -1,7 +1,7 @@
 change_list()
 {
        var a;
-       a = document.getElementById('listName').value;
+       a = document.getElementById('list_name').value;
        window.location='add_people.php?l='+a;
 }
 
@@ -36,11 +36,7 @@ function validate()
 		document.getElementById('default_name_msg').style.display = 'block';
 		return false;
 	}
-	if(document.getElementById("people_email_type").value=="")
-	{
-		document.getElementById('list_etype').style.display = 'block';
-		return false;
-	}
+	
 
 
 	var emailID=document.getElementById("default_email").value;
@@ -67,7 +63,20 @@ function validate()
 		return false;
 	}
 
-	
+	var o = document.getElementById('people_email_type1');
+var t = document.getElementById('people_email_type2');
+var u= document.getElementById('people_email_type3');
+if ( (o.checked == false ) && (t.checked == false )  && (u.checked == false ) )
+{
+document.getElementById('list_etype').style.display = 'block';
+
+return false;
+}
+var b = document.getElementById('permission');
+if (b.checked == false) {
+  document.getElementById('list_ctype').style.display = 'block';
+  return false;
+}
 	
 
 	//return true

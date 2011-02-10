@@ -85,7 +85,7 @@
 
 	
 	<div class="add_people_list" style="float:left;"><fieldset class="field_set" style=" margin: 0em 0 1.2em 3em;"> <legend class="legend_part">Add People</legend>
-		<form action="" method="post" name="list_form" onSubmit="return validate_form();">
+		<form action="" method="post" name="list_form" id="list_form" onSubmit="return validate_form();">
 		
 	<div id="change_list">
 			<select id="listName" name="listName" onChange=change_list();>
@@ -122,13 +122,13 @@
 			{/foreach}</div>
 			{/if}
 			<div class="sub_head">Email Type</div>
-			<INPUT id="people_email_type" TYPE=RADIO NAME="people_email_type" VALUE="text">&nbsp;Text&nbsp;&nbsp;&nbsp;&nbsp;
-			<INPUT id="people_email_type" TYPE=RADIO NAME="people_email_type" VALUE="html">&nbsp;HTML&nbsp;&nbsp;&nbsp;&nbsp;
-			<INPUT id="people_email_type" TYPE=RADIO NAME="people_email_type" VALUE="mobile">&nbsp;Mobile
+			<INPUT id="people_email_type1" TYPE="radio" NAME="people_email_type" VALUE="text">&nbsp;Text&nbsp;&nbsp;&nbsp;&nbsp;
+			<INPUT id="people_email_type2" TYPE="radio" NAME="people_email_type" VALUE="html">&nbsp;HTML&nbsp;&nbsp;&nbsp;&nbsp;
+			<INPUT id="people_email_type3" TYPE="radio" NAME="people_email_type" VALUE="mobile">&nbsp;Mobile
 			<div id="list_etype" class="invalid-error" style="display:none;">Please Check one</div>  <br>
 			<br>
 			<br>
-			<INPUT TYPE=CHECKBOX id="permission" NAME="permission">&nbsp;This recipient has given me permission to add him/her to my MailChimp Managed List.
+			<INPUT TYPE=CHECKBOX id="permission" NAME="permission">&nbsp;This recipient has given me permission to add him/her to my MailChimp Managed List.			<div id="list_ctype" class="invalid-error" style="display:none;">Please Check It</div>  <br>
 			<br><br>
 				
 	
