@@ -94,20 +94,23 @@ $js_files=array(
 	}
 	
 
-	foreach($_POST['hidden_array'] as $value){
+	foreach($_POST['hidden_array'] as $value)
+	{
 
 
 		unset($new_arr[$value - 1]);
 
 	}
 
-print_r($new_arr);
+	print_r($new_arr);
 
 $smarty->assign('js_files',$js_files);
 $smarty->assign('css_files',$css_files);
 $smarty->assign('assign',$assign);
 $smarty->assign('values',$values);
+
+
 $smarty->display('insert_csv.tpl');
-	
+	unset($_SESSION['getQueryString']);
 
 ?>
