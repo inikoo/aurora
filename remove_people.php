@@ -40,9 +40,9 @@ $css_files=array(
 		 'container.css',
 		 'table.css',
 		'css/create_list.css',
-		'css/import_data.css',
-		
-		 );
+		'css/marketing_menu.css',
+		 'css/marketing_campaigns.css'
+	);
 $js_files=array(
 		'external_libs/jquery/jquery-1.3.2.min.js',
 		'js/jquery.js',
