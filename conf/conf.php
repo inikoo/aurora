@@ -553,21 +553,14 @@ $default_state=array(
                                          'dn_state_type'=>'all',
                                          'elements'=>array(),
                                          'csv_export'=>array(
-                                                          'id'=>true,
-                                                          'date'=>true,
-                                                          'type'=>true,
-                                                          'customer_name'=>true,
-                                                          'weight'=>false,
-                                                          'parcels_no'=>false,
-
-                                                          'start_picking_date'=>false,
-                                                          'finish_picking_date'=>false,
-                                                          'start_packing_date'=>false,
-                                                          'finish_packing_date'=>false,
-                                                          'state'=>false,
-                                                          'dispatched_method'=>false,
-                                                          'parcel_type'=>false,
-                                                          'boxes_no'=>false
+                                                           'code'=>true,
+                                                                'date'=>true,
+                                                                'name'=>true,
+                                                                'currency'=>false,
+                                                                'invoice_total_tax'=>false,
+                                                                'invoice_total_net_amount'=>false,
+								'items'=>false,
+                                                                'invoice_total'=>true
 
 
 

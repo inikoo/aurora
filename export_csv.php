@@ -269,6 +269,15 @@ switch ($tipo) {
        // $where=sprintf(' `Invoice Store Key`=%d ',$_SESSION['state']['store']['id']);
         $data=get_porder_invoices_data();
         break;
+   case 'porder_dn':
+        $filename=_('delivery notes').'.csv';
+        $f_field=$_SESSION['state']['porder']['porder_dn']['f_field'];
+        $f_value=$_SESSION['state']['porder']['porder_dn']['f_value'];
+       // $wheref=wheref_stores($f_field,$f_value);
+        $filename=_('delivery notes').'.csv';
+       // $where=sprintf(' `Invoice Store Key`=%d ',$_SESSION['state']['store']['id']);
+        $data=get_porder_dn_data();
+        break;
                     
     default:
         
@@ -1653,5 +1662,56 @@ return $data;
 
 }
 
+function get_porder_dn_data(){
+
+$data=prepare_values($_REQUEST,array('fields'=>array('type'=>'json array','optional'=>true)));
+if(isset($data['fields'])){
+$fields_to_export=$data['fields'];
+}else{
+$fields_to_export=$_SESSION['state']['porder']['porder_dn']['csv_export'];
+}
+
+
+$fields=array(
+'code'=>array('title'=>_('Code'),'db_name'=>'Supplier Delivery Note Public ID'),
+'date'=>array('title'=>_('Last Updated'),'db_name'=>'Supplier Delivery Note Last Updated Date'),
+'name'=>array('title'=>_('Supplier Name'),'db_name'=>'Purchase Order Supplier Name'),
+'items'=>array('title'=>_('Items'),'db_name'=>'Supplier Delivery Note Number Items'),
+'currency'=>array('title'=>_('Currency'),'db_name'=>'Purchase Order Currency Code'),
+'invoice_total_tax'=>array('title'=>_('Tax'),'db_name'=>'Purchase Order Total Tax Amount'),
+'invoice_total_net_amount'=>array('title'=>_('Net Amount'),'db_name'=>'Purchase Order Total Net Amount'),
+'invoice_total'=>array('title'=>_('Total Amount'),'db_name'=>'Purchase Order Total Amount')
+);
+
+
+foreach($fields as $key=>$value){
+if(!isset($fields_to_export[$key]) or  !$fields_to_export[$key]  )
+unset($fields[$key]);
+}
+
+
+
+$data=array();
+$_data=array();
+foreach($fields as $key=>$options){
+$_data[]=$options['title'];
+}
+$data[]=$_data;
+$sql="select  SDND.`Supplier Delivery Note Last Updated Date`,SDND.`Supplier Delivery Note Current State`,SDND.`Supplier Delivery Note Number Items`,SDND.`Supplier Delivery Note Key`,SDND.`Supplier Delivery Note Public ID`,POD.`Purchase Order Total Tax Amount`,SDND.`Supplier Delivery Note Number Items`,POD.`Purchase Order Public ID`,POD.`Purchase Order Supplier Name`,POD.`Purchase Order Total Amount`,POD.`Purchase Order Total Net Amount`,POD.`Purchase Order Currency Code` from  `Supplier Delivery Note Dimension` SDND left join `Purchase Order Transaction Fact` POTF on (SDND.`Supplier Delivery Note Key`=POTF.`Supplier Delivery Note Key`) left join `Purchase Order Dimension` POD on (POD.`Purchase Order Key`=POTF.`Purchase Order Key`)";
+$res=mysql_query($sql);
+
+while($row=mysql_fetch_assoc($res)){
+$_data=array();
+foreach($fields as $key=>$options){
+
+$_data[]=$row[$options['db_name']];
+}
+$data[]=$_data;
+}
+//print_r($data);exit;
+
+return $data;
+
+}
 
 ?>
