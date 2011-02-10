@@ -124,7 +124,8 @@ $people_first_name = trim($_POST['people_first_name']);
 $people_last_name = trim($_POST['people_last_name']);
 $people_email_type = trim($_POST['people_email_type']);
 
-if(count($_POST['group_name']) > 0){
+//print_r($_POST['group_name']);
+if(isset($_POST['group_name'])){
 	$group = implode(',', $_POST['group_name']);
 
 }else{
