@@ -35,6 +35,9 @@
 		     			<div class="bt"><input type="submit" value="Next To Continue" name="" id="">
 					
 					</div>
+					
+					<form action="insert_csv.php" method="post"><div id="show"></div></form>
+				
                     		</li>
                 	  </ul>	
                         </li>
