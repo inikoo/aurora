@@ -94,12 +94,15 @@ $js_files=array(
 	}
 	
 
-	foreach($_POST['hidden_array'] as $value)
+	if($_POST['hidden_array'] != '')
 	{
+		foreach($_POST['hidden_array'] as $value)
+		{
 
 
-		unset($new_arr[$value - 1]);
+			unset($new_arr[$value - 1]);
 
+		}
 	}
 
 	print_r($new_arr);
