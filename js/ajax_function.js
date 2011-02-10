@@ -64,4 +64,27 @@ function getNext(v) {
 }
 
 
+function getIgnore(v) {
+ var v;
+
+	
+// alert(v);
+ var req = Inint_AJAX();
+ req.onreadystatechange = function () {
+      if (req.readyState==4) {
+           if (req.status==200) {
+		//alert(req.responseText);
+		
+                document.getElementById('show').innerHTML=req.responseText; 
+           }
+      }
+ };
+	v=v+1;
+ //req.open("GET", "getPage.php?data="+r+"&val="+val); 
+   req.open("GET", "removeResult.php?v="+v); 
+ req.setRequestHeader("Content-Type", "application/x-www-form-urlencoded;charset=tis-620"); // set Header
+ req.send(null); 
+}
+
+
 
