@@ -16,12 +16,6 @@
 
     
     				<div class="prop">
-					//{section name ="as" loop="$ee"}
-						//{$ee[as]}<br>
-					//{/section}
-
-			<br>
-									
 			
 				</div>
 
