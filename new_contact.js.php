@@ -90,17 +90,17 @@ var values=new Object;
 
 
 var save_new_contact=function(e){
-   
-    if(!can_add_subject){
-
-	return;
-    }
+ 
+  //  if(!can_add_subject){
+	
+//	return;
+  //  }
 
     get_data();
 
-    
-    var json_value = YAHOO.lang.JSON.stringify(subject_data); 
    
+    var json_value = YAHOO.lang.JSON.stringify(subject_data); 
+  //alert(json_value);
     if(scope=='supplier'){
         var ar_file='ar_edit_suppliers.php';
     }else
@@ -109,7 +109,7 @@ var save_new_contact=function(e){
    
    var request=ar_file+'?tipo=new_'+scope+'&delete_email='+subject_found_email+'&values=' + encodeURIComponent(json_value); 
 
-    
+    alert(request);
    // var request='ar_edit_contacts.php?tipo=new_'+scope+'&values=' + encodeURIComponent(json_value); 
    
     YAHOO.util.Connect.asyncRequest('POST',request ,{

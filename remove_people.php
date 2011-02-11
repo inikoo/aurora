@@ -40,9 +40,9 @@ $css_files=array(
 		 'container.css',
 		 'table.css',
 		'css/create_list.css',
-		'css/import_data.css',
-		
-		 );
+		'css/marketing_menu.css',
+		 'css/marketing_campaigns.css'
+	);
 $js_files=array(
 		'external_libs/jquery/jquery-1.3.2.min.js',
 		'js/jquery.js',
@@ -59,7 +59,7 @@ $js_files=array(
 		'common.js.php',
 		'table_common.js.php',
 		'js/search.js',
-		'js/add_people.js',
+		
 		
 		
 		);
@@ -113,10 +113,11 @@ if(isset($_POST['remove_people'])){
 	$remove_email_arr_clean = array_unique($remove_email_arr_clean);
 	unset($remove_email_arr);
 	
+	
 	foreach($remove_email_arr_clean as $remove_email){
 	
 		mysql_query("DELETE FROM `Email People Dimension` WHERE `People Email` = '$remove_email' && `People List Key` = '$current_list_id'");
-			
+		//echo "DELETE FROM `Email People Dimension` WHERE `People Email` = '$remove_email' && `People List Key` = '$current_list_id'";	
 
 	}
 	

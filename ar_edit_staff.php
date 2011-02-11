@@ -280,10 +280,10 @@ $staff->update(array($data['key']=>$data['newvalue']));
 }
 
 function delete_ind_positions($data) {
-    include_once('class.Staff.php');
-    $staff=new Staff($data['company_position_key']);
-    $staff->delete();
-     if ($staff->deleted) {
+    include_once('class.CompanyPosition.php');
+    $companyposition=new CompanyPosition($data['company_position_key']);
+    $companyposition->delete();
+     if ($companyposition->deleted) {
         $action='deleted';
         $msg=_('Position deleted');
 
@@ -426,7 +426,7 @@ if($order=='name')
 
     
      $adata[]=array(
-		    'key'=>$data['Company Position Key'],
+		    'company_position_key'=>$data['Company Position Key'],
 		    'code'=>$data['Company Position Code'],
 		    'name'=>$data['Company Position Title'],
 		    'go'=>sprintf("<a href='edit_position.php?edit=1&id=%d'><img src='art/icons/page_go.png' alt='go'></a>",$data['Company Position Key'])

@@ -45,6 +45,8 @@ $js_files=array(
         	);
 
 
+	
+
 if(!isset($_REQUEST['tipo'])){
 exit("to do a page where the user can choose the correct options");
 }

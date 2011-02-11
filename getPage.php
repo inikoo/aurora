@@ -42,7 +42,7 @@
 		          <?php
 			         }
 		          ?>
-		&nbsp;&nbsp;&nbsp;&nbsp; <a href="import_csv_verify.php?tipo=customers_store" id="result" class="subtext">Ignore Result</a>
+		&nbsp;&nbsp;&nbsp;&nbsp; <a href="#" onclick="getIgnore(<?php echo $index; ?>)" id="result" class="subtext">Ignore Result</a>
 		</span>
 		</th>
 		

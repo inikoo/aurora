@@ -152,7 +152,7 @@ YAHOO.util.Event.addListener(window, "load", function() {
 				    ,{key:"name", label:"<?php echo _('Name')?>", width:340,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}, editor: new YAHOO.widget.TextboxCellEditor({asyncSubmitter: CellEdit}),object:'ind_positions' }
 				    ,{key:"delete", label:"", width:170,sortable:false,className:"aleft",action:'delete',object:'ind_positions'}
 				    ,{key:"delete_type", label:"",hidden:true,isTypeKey:true}
-				    				   				//   ,{key:"area", label:"<?php echo _('Area')?>", width:100,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
+			     //   ,{key:"area", label:"<?php echo _('Area')?>", width:100,sortable:true,className:"aleft",sortOptions:{defaultDir:YAHOO.widget.DataTable.CLASS_ASC}}
 
 				     ];
 
