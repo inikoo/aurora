@@ -157,14 +157,11 @@ validate_scope(branch);
 
 
 var CellEdit = function (callback, newValue) {
-
     var record = this.getRecord(),
                  column = this.getColumn(),
                           oldValue = this.value,
                                      datatable = this.getDataTable();
     recordIndex = datatable.getRecordIndex(record);
-
-
     if (column.object=='company' || column.object=='customer' || column.object=='contact' || column.object=='company_area' || column.object=='company_department' || column.object=='company_position')
         ar_file='ar_edit_contacts.php';
     else if (column.object=='warehouse_area' || column.object=='part_location'|| column.object=='shelf_type' || column.object=='location')
@@ -255,7 +252,7 @@ var onCellClick = function(oArgs) {
      		   ar_file='ar_edit_categories.php';
                 else
                     ar_file='ar_edit_assets.php';
-//alert(column.object)
+
 
 
            	//alert(ar_file+'?tipo=delete_'+column.object + myBuildUrl(this,record))
@@ -263,8 +260,8 @@ var onCellClick = function(oArgs) {
                 YAHOO.util.Connect.asyncRequest(
                     'GET',
                 ar_file+'?tipo=delete_'+column.object + myBuildUrl(this,record), {
-success: function (o) {
-                     alert(o.responseText);
+                success: function (o) {
+                    // alert(o.responseText);
                         var r = YAHOO.lang.JSON.parse(o.responseText);
                         if (r.state == 200 && r.action=='deleted') {
 
@@ -712,6 +709,7 @@ success:function(o) {
 
 }
 function save_new_general(branch) {
+//alert("within save new general");
     operation='create';
     var values=new Object();
 
@@ -735,7 +733,7 @@ function save_new_general(branch) {
 //alert(request)
     YAHOO.util.Connect.asyncRequest('POST',request , {
 success:function(o) {
-            // alert(o.responseText);
+             alert(o.responseText);
 
             var r =  YAHOO.lang.JSON.parse(o.responseText);
             Dom.get("new_"+branch+"_dialog_msg").innerHTML=r.msg;

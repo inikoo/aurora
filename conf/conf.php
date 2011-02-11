@@ -1892,6 +1892,7 @@ $default_state=array(
                                                   'display'=>'all',
                                                   'order'=>'login_date',
                                                   'order_dir'=>'',
+						  'type'=>'',
                                                   'sf'=>0,
                                                   'nr'=>50,
                                                   'where'=>'where true',

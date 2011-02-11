@@ -28,8 +28,6 @@ var validate_scope_data={
 	     ,'validation':[{'regexp':"[a-z\\d]+",'invalid_msg':'<?php echo _('Invalid Staff Id')?>'}]
 	     ,'name':'Company_Staff_Id' ,'dbname':'Staff Key','ar':'find','ar_request':'ar_staff.php?tipo=is_company_staff_id&company_key='+parent_key+'&query='}
    }
-
-
 };
 
 var validate_scope_metadata={'ind_staff':{'type':'edit','ar_file':'ar_edit_staff.php'}};
@@ -248,20 +246,14 @@ function show_add_staff_dialog(){
 function init(){
    // var ids = ["description","pictures","web","departments","discounts","charges","shipping","campaigns"]; 
    // YAHOO.util.Event.addListener(ids, "click", change_block);
-
  YAHOO.util.Event.addListener('add_staff', "click",show_add_staff_dialog);
     YAHOO.util.Event.addListener('save_edit_company_staff', "click",save_new_staff);
     YAHOO.util.Event.addListener('reset_edit_company_staff', "click",cancel_add_staff);
-
-
-
-
     var store_id_oACDS = new YAHOO.util.FunctionDataSource(validate_id);
     store_id_oACDS.queryMatchContains = true;
     var store_id_oAutoComp = new YAHOO.widget.AutoComplete("Company_Staff_Id","Company_Staff_Id_Container", staff_id_oACDS);
     store_id_oAutoComp.minQueryLength = 0; 
-    store_id_oAutoComp.queryDelay = 0.1;
-    
+    store_id_oAutoComp.queryDelay = 0.1;    
      var store_name_oACDS = new YAHOO.util.FunctionDataSource(validate_name);
     store_name_oACDS.queryMatchContains = true;
     var store_name_oAutoComp = new YAHOO.widget.AutoComplete("Company_Staff_Name","Company_Staff_Name_Container", staff_name_oACDS);
