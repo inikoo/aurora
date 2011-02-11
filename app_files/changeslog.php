@@ -648,6 +648,7 @@ ALTER TABLE `Email People Dimension` CHANGE `People Group Key` `People Group Key
 ALTER TABLE `Shelf Type Dimension` CHANGE `Shelf Type Type` `Shelf Type Type` ENUM( 'Pallet', 'Shelf', 'Drawer', 'Other' ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'Other';
 
 ALTER TABLE `Right Dimension` CHANGE `Rigth Access Keys` `Right Access Keys` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL ;
+
 INSERT INTO `Right Dimension` (`Right Key` ,`Right Type` ,`Right Name` ,`Right Access` ,`Right Access Keys`)VALUES (NULL , 'View', 'marketing', 'All', '');
 INSERT INTO `Right Dimension` (`Right Key` ,`Right Type` ,`Right Name` ,`Right Access` ,`Right Access Keys`)VALUES (NULL , 'Edit', 'marketing', 'All', '');
 INSERT INTO `Right Dimension` (`Right Key` ,`Right Type` ,`Right Name` ,`Right Access` ,`Right Access Keys`)VALUES (NULL , 'Delete', 'marketing', 'All', '');
@@ -678,11 +679,11 @@ ALTER TABLE `Customer List Customer Bridge` ADD UNIQUE (
 `Customer List Key` ,
 `Customer Key`
 );;
-ALTER TABLE =`Customer List Dimension` ADD UNIQUE (
+ALTER TABLE `Customer List Dimension` ADD UNIQUE (
 `Customer List Store Key` ,
 `Customer List Name`
-)
-ALTER TABLE  `Customer List Customer Bridge` ADD INDEX ( `Customer List Key` ) 
+);
+ALTER TABLE  `Customer List Customer Bridge` ADD INDEX ( `Customer List Key` ) ;
 */
 
 ?>

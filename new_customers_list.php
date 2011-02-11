@@ -44,7 +44,8 @@ $js_files=array(
 
 		'common.js.php',
 		'table_common.js.php',
-		'new_customers_list.js.php'
+		'new_customers_list.js.php',
+		'js/edit_common.js'
 		);
 
 $_SESSION['state']['customers']['list']['where']='';

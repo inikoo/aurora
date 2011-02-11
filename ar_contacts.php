@@ -1729,9 +1729,9 @@ function list_customers() {
     else
         $f_value=$conf['f_value'];
     if (isset( $_REQUEST['where']))
-        $where=$_REQUEST['where'];
+        $awhere=$_REQUEST['where'];
     else
-        $where=$conf['where'];
+        $awhere=$conf['where'];
 
 
     if (isset( $_REQUEST['tableid']))
@@ -1766,10 +1766,88 @@ function list_customers() {
     $_SESSION['state']['customers']['table']['order_dir']=$order_direction;
     $_SESSION['state']['customers']['table']['nr']=$number_results;
     $_SESSION['state']['customers']['table']['sf']=$start_from;
-    $_SESSION['state']['customers']['table']['where']=$where;
+   $_SESSION['state']['customers']['table']['where']=$awhere;
     $_SESSION['state']['customers']['table']['type']=$type;
     $_SESSION['state']['customers']['table']['f_field']=$f_field;
     $_SESSION['state']['customers']['table']['f_value']=$f_value;
+
+
+$table='`Customer Dimension` C ';
+
+    $awhere=preg_replace('/\\\"/','"',$awhere);
+    //    print "$awhere";
+    $awhere=json_decode($awhere,TRUE);
+    // print_r($awhere);
+    $where='where ';
+
+
+$use_otf =false;
+
+    if ($awhere['product_ordered1']!='') {
+        if ($awhere['product_ordered1']!='ANY') {
+        $use_otf=true;
+            $where_product_ordered1=extract_product_groups($awhere['product_ordered1']);
+        } else
+            $where_product_ordered1='true';
+    } else
+        $where_product_ordered1='false';
+
+    if ($awhere['product_not_ordered1']!='') {
+        if ($awhere['product_not_ordered1']!='ALL') {
+         $use_otf=true;
+            $where_product_not_ordered1=extract_product_groups($awhere['product_ordered1'],'P.`Product Code` not like','transaction.product_id not like','F.`Product Family Code` not like','P.`Product Family Key` like');
+        } else
+            $where_product_not_ordered1='false';
+    } else
+        $where_product_not_ordered1='true';
+
+    if ($awhere['product_not_received1']!='') {
+        if ($awhere['product_not_received1']!='ANY') {
+         $use_otf=true;
+            $where_product_not_received1=extract_product_groups($awhere['product_ordered1'],'(ordered-dispatched)>0 and    product.code  like','(ordered-dispatched)>0 and  transaction.product_id not like','(ordered-dispatched)>0 and  product_group.name not like','(ordered-dispatched)>0 and  product_group.id like');
+        } else{
+     $use_otf=true;
+    $where_product_not_received1=' ((ordered-dispatched)>0)  ';
+    }
+    }else
+        $where_product_not_received1='true';
+
+
+
+
+    $date_interval1=prepare_mysql_dates($awhere['from1'],$awhere['to1'],'`Invoice Date`','only_dates');
+    if($date_interval1['mysql']){
+     $use_otf=true;
+    }
+        
+
+if($use_otf){
+    $table=' `Order Transaction Fact` OTF left join `Customer Dimension` C on (C.`Customer Key`=OTF.`Customer Key`) left join `Product History Dimension` PHD on (OTF.`Product Key`=PHD.`Product Key`) left join `Product Dimension` P on (P.`Product ID`=PHD.`Product ID`)  ';
+}
+
+    $geo_base='';
+    if ($awhere['geo_base']=='home')
+        $geo_base='and list_country.id='.$myconf['country_id'];
+    elseif($awhere['geo_base']=='nohome')
+    $geo_base='and list_country.id!='.$myconf['country_id'];
+    $with_mail='';
+    if ($awhere['mail'])
+        $with_mail=' and `Customer Main Email Key`!=0 ';
+    $with_tel='';
+    if ($awhere['tel'])
+        $with_tel=' and `Customer Main Telephone Key`!=0 ';
+
+
+
+
+
+    $where='where ('.$where_product_ordered1.' and '.$where_product_not_ordered1.' and '.$where_product_not_received1.$date_interval1['mysql'].")  $geo_base $with_mail $with_tel";
+
+
+
+
+
+
 
 
 
@@ -1833,15 +1911,15 @@ if($type=='all_customers'){
 
 
 
-    $sql="select count(*) as total from `Customer Dimension`  $where $wheref";
-
+    $sql="select count(Distinct C.`Customer Key`) as total from $table  $where $wheref";
+print $sql;
     $res=mysql_query($sql);
     if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
         $total=$row['total'];
     }
     if ($wheref!='') {
-        $sql="select count(*) as total_without_filters from `Customer Dimension`  $where ";
+        $sql="select count(*) as total_without_filters from $table  $where ";
         $res=mysql_query($sql);
         if ($row=mysql_fetch_array($res, MYSQL_ASSOC)) {
 
@@ -2009,7 +2087,7 @@ if($type=='all_customers'){
     $order='`Customer Type by Activity`';
     else
         $order='`Customer File As`';
-    $sql="select   *,`Customer Net Refunds`+`Customer Tax Refunds` as `Customer Total Refunds` from  `Customer Dimension`   $where $wheref  order by $order $order_direction limit $start_from,$number_results";
+    $sql="select   *,`Customer Net Refunds`+`Customer Tax Refunds` as `Customer Total Refunds` from  $table   $where $wheref  order by $order $order_direction limit $start_from,$number_results";
     //print $sql;
     $adata=array();
 
@@ -2034,7 +2112,10 @@ if($type=='all_customers'){
         if ($data['Customer Orders']==0)
             $last_order_date='';
         else
-            $last_order_date=strftime("%e %b %Y", strtotime($data['Customer Last Order Date']));
+            $last_order_date=strftime("%e %b %y", strtotime($data['Customer Last Order Date']." +00:00"));
+
+$contact_since=strftime("%e %b %y", strtotime($data['Customer First Contacted Date']." +00:00"));
+
 
 if($data['Customer Billing Address Link']=='Contact')
 $billing_address='<i>'._('Same as Contact').'</i>';
@@ -2057,6 +2138,7 @@ $delivery_address=$data['Customer XHTML Main Delivery Address'];
                      'email'=>$data['Customer Main XHTML Email'],
                      'telephone'=>$data['Customer Main XHTML Telephone'],
                      'last_order'=>$last_order_date,
+                     'contact_since'=>$contact_since,
 
                      'total_payments'=>money($data['Customer Net Payments'],$currency),
                      'net_balance'=>money($data['Customer Net Balance'],$currency),
