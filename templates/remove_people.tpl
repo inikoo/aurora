@@ -85,7 +85,7 @@
   			</div>
 			<div style="padding:10px; float:left"></div>
 			<div class="bt" style="float:left">
-  			<input type="button" value="Cancel" name="remove_people_cancel" id="remove_people_cancel"/>
+  			<input type="button" value="Cancel" name="remove_people_cancel" id="remove_people_cancel" onClick="document.location='marketing.php'; return false;"/>
   			</div>
 			<br><br>
 		</form>	
