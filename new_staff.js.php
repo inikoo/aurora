@@ -177,8 +177,7 @@ function get_address_data(){
     contact_data['Contact Address Country First Division']=Dom.get('address_country_d1').value;
     contact_data['Contact Address Country Second Division']=Dom.get('address_country_d2').value;
     contact_data['Contact Address Country Third Division']=Dom.get('address_country_d3').value;
-    contact_data['Contact Address Country Forth Division']=Dom.get('address_country_d4').value;
-    
+    contact_data['Contact Address Country Forth Division']=Dom.get('address_country_d4').value;    
     contact_data['Contact Address Country Fifth Division']=Dom.get('address_country_d5').value;
 }
 
@@ -197,9 +196,7 @@ function get_data(){
 
 
 var save_new_contact=function(e){
-  
     if(!can_add_contact){
-
 	return;
     }
 
@@ -341,7 +338,7 @@ var find_contact=function(){
       
 	var valid_form=true;
 	for (item in validate_data ){
-	    //	    alert(item+' '+validate_data[item].required+' '+validate_data[item].validated)
+	    	                    // alert(item+' '+validate_data[item].required+' '+validate_data[item].validated)
 	    if(validate_data[item].required==true && validate_data[item].validated==false){
 		valid_form=false;
 		
@@ -365,7 +362,7 @@ var find_contact=function(){
 	    }
 
 	}
-	//alert(validate_data.email.validated+' '+validate_data.email.inputed)
+	                       //  alert(validate_data.email.validated+' '+validate_data.email.inputed)
 	if(valid_items_in_group<min_valid_items){
 	    //valid_form=false;
 	}

@@ -57,7 +57,10 @@ $js_files=array(
 		'marketing_create_campaign.js.php'
 		);
 
-
+	echo $_POST['op'];
+	echo $click;
+	echo $plain;
+	
 
 
 if (isset($_REQUEST['view'])) {
@@ -77,17 +80,41 @@ $id = isset($_REQUEST['id'])?$_REQUEST['id']:'';
 	{		
 		$row = mysql_fetch_array($res);
 	}
+
+
+$plain = $row['Campaign Mailling Plain Text Click'];
+$click = $row['Campaign Mailling Track Click'];
+$open = $row['Campaign Mailling Track Open'];
+$track = '';
 	
-if($row['Campaign Mailling Track Click'] == 0 && $row['Campaign Mailling Track Open'] == 0)
-{
+        if($plain == 0)
+	{
+		$track = $track.'Plain Text Click is disabled<br>';
+	}
+	else
+	{
+		$track = $track.'Plain Text Click is enabled<br>';
+	}
 
-	$track = 'You have not choosen any of the selection either Track click or open in email';
-
-}
-else
-{
-	$track = 'You chose to track clicks and opens in email';
-}
+	if($click == 0)
+	{
+		$track = $track.'Mailing track click is disabled<br>';
+	}
+	else
+	{
+		$track = $track.'Mailing track click is enabled<br>';
+	}
+		
+	if($open == 0)
+	{
+		$track = $track.'Mailing track open is disabled<br>';
+	}
+	else
+	{
+		$track = $track.'Mailing track open is enabled<br>';
+	}
+	
+	
 
 $smarty->assign('parent','home');
 $smarty->assign('title', _('Marketing'));

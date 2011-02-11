@@ -1,6 +1,5 @@
 {include file='header.tpl'}
 
-
 <div id="bd"  style="padding:0px">
 <div style="padding:0 20px">
 
@@ -51,19 +50,19 @@
 
 <div class="group-label">Email tracking</div>
 
-
-<input type="checkbox" name="" value="on" id="" style="-moz-user-select: none;">
-<label class="inline-label" for="track opens">track opens</label><br>
-<input type="checkbox" name="" value="on" id="" style="-moz-user-select: none;">
-<label class="inline-label" for="track opens">track click</label>
-<div class="checkbox-help">Required on free accounts, optional on paid account.</div>
-<input type="checkbox" name="" value="on" id="" style="-moz-user-select: none;">
-<label class="inline-label" for="track opens">track plain-text clicks</label>
-<div class="checkbox-help">Required on free accounts, optional on paid account.</div>
+<form action ="" method="post">
+<input type="checkbox" name="open" id="open" value="open" style="-moz-user-select: none;">
+	<label class="inline-label" for="track opens">track opens</label><br>
+<input type="checkbox" name="click" id="click" value="click" style="-moz-user-select: none;">
+	<label class="inline-label" for="track opens">track click</label><br>
+<input type="checkbox" name="plain" id="plain" value="plain" style="-moz-user-select: none;" >
+	<label class="inline-label" for="track opens">track plain-text clicks</label>
+</form>
 </div>
 
 </fieldset>
 
+<div id="show_message"></div>
 </div>
 
 
@@ -72,19 +71,9 @@
 
 </div>
 
-<div id="back-next-bottom"> <a href="marketing_campaign_builder.php"><input type="image" title="back to previous step" value="back" name="back" class="back" src="art/back-bottom2.png"></a>  <a href="confirm_mail_send.php?id={$list_id}"><input type="image" title="proceed to next step" value="next" name="next" class="next" src="art/next-bottom.png"> </a> </div><br>
+<div id="back-next-bottom"> <a href="marketing_campaign_builder.php"><input type="image" title="back to previous step" value="back" name="back" class="back" src="art/back-bottom2.png"></a>  <a href="#" onclick="trackvalue('{$list_id}')"><input type="image" title="proceed to next step" value="next" name="next" class="next" src="art/next-bottom.png"> </a> </div><br>
 
-
-
-
-
-
-
-
-
-	
-
-		</div>
+</div>
 	</div>
 
 

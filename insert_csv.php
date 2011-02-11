@@ -46,6 +46,8 @@ $js_files=array(
 		'js/dropdown.js',
         	);
 
+	
+	
 
 	//value of the assigned field
 	$assign = $_REQUEST['assign_field'];
@@ -78,20 +80,40 @@ $js_files=array(
 	$h = $csv->getHeaders();
 	$count_rows = $csv->countRows();
 	
+	//count the removed array
+	$numIndex = count($_POST['hidden_array']);	
 	
+	
+	$new_arr = array();
+
 	for($y=0; $y<$count_rows; $y++)
 	{
-		
 		$total_row = $csv->getRow($y);
-		echo '<pre>'; print_r($total_row);
+		array_push($new_arr, $total_row);
+
 	}
 	
+
+	if($_POST['hidden_array'] != '')
+	{
+		foreach($_POST['hidden_array'] as $value)
+		{
+
+
+			unset($new_arr[$value - 1]);
+
+		}
+	}
+
+	print_r($new_arr);
 
 $smarty->assign('js_files',$js_files);
 $smarty->assign('css_files',$css_files);
 $smarty->assign('assign',$assign);
 $smarty->assign('values',$values);
+
+
 $smarty->display('insert_csv.tpl');
-//echo '<pre>'; print_r($rows);
+	unset($_SESSION['getQueryString']);
 
 ?>
