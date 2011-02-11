@@ -59,7 +59,7 @@ $js_files=array(
 		'common.js.php',
 		'table_common.js.php',
 		'js/search.js',
-		'js/add_people.js',
+		
 		
 		
 		);
