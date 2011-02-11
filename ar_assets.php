@@ -36,7 +36,7 @@ if (!isset($_REQUEST['tipo'])) {
 
 $tipo=$_REQUEST['tipo'];
 switch ($tipo) {
-//--------------- search family code starts here-----------------------------------------
+
 case('is_valid_family_code'):
 
 
@@ -60,7 +60,7 @@ case('is_valid_family_code'):
         }
     }
     break;
-//--------------- search family code ends here-----------------------------------------
+
 
 case('is_store_code'):
     $data=prepare_values($_REQUEST,array(
@@ -3847,7 +3847,7 @@ function list_products() {
     $_SESSION['state'][$conf_table]['table']['f_value']=$f_value;
 
     //$_SESSION['state'][$conf_table]['period']=$period;
-    //$_SESSION['state'][$conf_table]['mode']=$mode;
+    $_SESSION['state'][$conf_table]['mode']=$mode;
     //$_SESSION['state'][$conf_table]['restrictions']=$restrictions;
     // $_SESSION['state'][$conf_table]['parent']=$parent;
 

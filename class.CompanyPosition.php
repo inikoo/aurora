@@ -313,6 +313,20 @@ function get_staff_keys(){
     return $staff_keys;
 }
 
+function delete(){
+
+$sql=sprintf('delete from `Company Position Dimension` where `Company Position Key`=%d',$this->id);
+mysql_query($sql);
+
+$history_data=array(
+                    'History Abstract'=>_('Company Position deleted').' ('.$this->data['Company Position Title'].')','subject'=>_(_('Position'))
+                    ,'History Details'=>_trim(_('Company Position')." ".$this->data['Company Position Title'].' ('.$this->data['Company Position Code'].') '._('has been permanently') )
+		    ,'Action'=>'deleted'
+		    );
+ $this->add_history($history_data);
+$this->deleted=true;
+
+}
 
 
 }
