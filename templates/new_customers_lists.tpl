@@ -11,18 +11,19 @@
 		<tr><td colspan="2"><b>{t}Contacts who...{/t}</b></td></tr>
       <tr>
         <td>{t}First contacted between{/t}:</td>
-        <td><input id="v_calpop1" type="text" class="text" size="11" maxlength="10" name="from" value="{$from}"/><img   id="calpop1" class="calpop" src="art/icons/calendar_view_month.png" align="absbottom" alt=""   /> <span class="calpop">&rarr;</span> <input   class="calpop" id="v_calpop2" size="11" maxlength="10"   type="text" class="text" size="8" name="to" value="{$to}"/><img   id="calpop2" class="calpop_to" src="art/icons/calendar_view_month.png" align="absbottom" alt=""   />
-            <div id="cal1Container" style="position:absolute;display:none; z-index:2"></div>
-            <div style="position:relative;right:-80px"><div id="cal2Container" style="display:none; z-index:2;position:absolute"></div></div>
-            </div>
-        </td>
+        <td>
+            <input id="v_calpop3" type="text" class="text" size="11" maxlength="10" name="from" value=""/><img   id="customer_first_contacted_from" class="calpop" src="art/icons/calendar_view_month.png" align="absbottom" alt=""   /> <span class="calpop">&rarr;</span> 
+            <input id="v_calpop4" class="calpop"  size="11" maxlength="10"   type="text" class="text" size="8" name="to" value=""/><img   id="customer_first_contacted_to" class="calpop_to" src="art/icons/calendar_view_month.png" align="absbottom" alt=""   />
+            <div id="customer_first_contacted_from_Container" style="position:absolute;display:none; z-index:2"></div>
+            <div id="customer_first_contacted_to_Container" style="display:none; z-index:2;position:absolute"></div>
+        </td>        
       </tr>
     <tr>
         <td>{t}have{/t}:</td>
         <td>
    <div id="have_options" default_cat=""   class="options" style="margin:5px 0">
-     {foreach from=$have_options item=cat3 key=have_option_id name=foo3}
-     <span  class="catbox {if $cat3.selected}selected{/if}" value="{$cat3.selected}" ovalue="{$cat3.selected}" onclick="checkbox_changed(this)" cat_id="{$cat3_id}" id="cat{$cat3_id}" parent="{$cat3.parent}" position="{$cat3.position}" default="{$cat3.default}"  >{$cat3.name}</span>
+     {foreach from=$have_options item=cat3 key=cat_key name=foo3}
+     <span  class="catbox {if $cat3.selected}selected{/if}"  onclick="checkbox_changed_have(this)" id="have_{$cat_key}"  parent="have_" cat="{$cat_key}"  >{$cat3.name}</span>
      {/foreach}
     </div>
         </td>
@@ -32,8 +33,8 @@
         <td>{t}don't have{/t}:</td>
         <td>
          <div id="dont_have_options" default_cat=""   class="options" style="margin:5px 0">
-     {foreach from=$have_options item=cat3 key=have_option_id name=foo3}
-     <span  class="catbox {if $cat3.selected}selected{/if}" value="{$cat3.selected}" ovalue="{$cat3.selected}" onclick="checkbox_changed(this)" cat_id="{$cat3_id}" id="cat{$cat3_id}" parent="{$cat3.parent}" position="{$cat3.position}" default="{$cat3.default}"  >{$cat3.name}</span>
+     {foreach from=$have_options item=cat3 key=cat_key name=foo3}
+     <span  class="catbox {if $cat3.selected}selected{/if}"  onclick="checkbox_changed_have(this)" id="dont_have_{$cat_key}" parent="dont_have_"  cat="{$cat_key}" >{$cat3.name}</span>
      {/foreach}
     </div>    
         </td>
@@ -47,11 +48,10 @@
       <tr>
         <td>{t}during this period{/t}:</td>
         <td>
-            <input id="v_product_ordered_or_from" type="text" class="text" size="11" maxlength="10" name="from" value=""/><img   id="product_ordered_or_from" class="calpop" src="art/icons/calendar_view_month.png" align="absbottom" alt=""   /> <span class="calpop">&rarr;</span> 
-            <input   class="calpop" id="v_product_ordered_or_to" size="11" maxlength="10"   type="text" class="text" size="8" name="to" value=""/><img   id="product_ordered_or_to" class="calpop_to" src="art/icons/calendar_view_month.png" align="absbottom" alt=""   />
+            <input id="v_calpop1" type="text" class="text" size="11" maxlength="10" name="from" value=""/><img   id="product_ordered_or_from" class="calpop" src="art/icons/calendar_view_month.png" align="absbottom" alt=""   /> <span class="calpop">&rarr;</span> 
+            <input id="v_calpop2" class="calpop"  size="11" maxlength="10"   type="text" class="text" size="8" name="to" value=""/><img   id="product_ordered_or_to" class="calpop_to" src="art/icons/calendar_view_month.png" align="absbottom" alt=""   />
             <div id="product_ordered_or_from_Container" style="position:absolute;display:none; z-index:2"></div>
-            <div style="position:relative;right:0px"><div id="product_ordered_or_to_Container" style="display:none; z-index:2;position:absolute"></div></div>
-            </div>
+            <div id="product_ordered_or_to_Container" style="display:none; z-index:2;position:absolute"></div>
         </td>
       </tr>
      
@@ -82,7 +82,19 @@
   <div style="clear:both;margin:0 0px;padding:0 20px ;border-bottom:1px solid #999"></div>
 
       <div id="short_menu" class="nodetails" style="clear:both;width:100%;margin-bottom:0px">
-      <table style="float:left;margin:0 0 0 0px ;padding:0"  class="options" >
+ 
+  <table style="float:left;margin:0 0 0 0px ;padding:0"  class="options" {if $customers==0 }style="display:none"{/if}>
+	<tr>
+	  <td  {if $view=='general'}class="selected"{/if} id="general" >{t}General{/t}</td>
+	  <td {if $view=='contact'}class="selected"{/if}  id="contact"  >{t}Contact{/t}</td>
+	  <td {if $view=='address'}class="selected"{/if}  id="address"  >{t}Address{/t}</td>
+	  <td {if $view=='balance'}class="selected"{/if}  id="balance"  >{t}Balance{/t}</td>
+	  <td {if $view=='rank'}class="selected"{/if}  id="rank"  >{t}Ranking{/t}</td>
+
+	</tr>
+      </table>
+ 
+ <table style="float:left;margin:0 0 0 0px ;padding:0"  class="options" >
 	<tr>
 	  <td  {if $view=='general'}class="selected"{/if} id="general" >{t}General{/t}</td>
 	  <td {if $view=='contact'}class="selected"{/if}  id="contact"  >{t}Contact{/t}</td>

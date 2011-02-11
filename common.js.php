@@ -342,6 +342,7 @@ keychar = String.fromCharCode(keynum);
 
 
  function updateCal() {
+
      var txtDate1 = document.getElementById("v_calpop"+this.id);
 
      if (txtDate1.value != "") {
@@ -361,7 +362,6 @@ keychar = String.fromCharCode(keynum);
 	    }
 	    
 	}
-
     }
 
  function handleSelect(type,args,obj) {
@@ -374,7 +374,6 @@ keychar = String.fromCharCode(keynum);
 		    month='0'+month;
 		if(day<10)
 		    day='0'+day;
-
 		var txtDate1 = document.getElementById("v_calpop"+this.id);
 		txtDate1.value = day + "-" + month + "-" + year;
 		this.hide();

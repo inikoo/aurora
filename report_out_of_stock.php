@@ -33,8 +33,6 @@ $js_files=array(
 		$yui_path.'calendar/calendar-min.js',
 		'common.js.php',
 		'table_common.js.php',
-		'calendar_common.js.php',
-
 		'report_out_of_stock.js.php',
 		'reports_calendar.js.php',
 		'js/dropdown.js',
