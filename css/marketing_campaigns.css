@@ -66,7 +66,7 @@
 
 
 .topmenu{
-   background: none repeat scroll 0 0 #fbe4b6;
+   background: none repeat scroll 0 0 #D4d4d4;
    min-width:40px;
    height:33px;
    line-height:35px;
@@ -140,7 +140,7 @@
 .campaign_type{
  margin:5px 5px 5px 1px;
  background-color:#ffffff;
- min-height:54px;
+ min-height:90px;
   width:220px;
   -moz-border-radius: 10px 10px 10px 10px;
 
@@ -148,14 +148,30 @@
 .campaign_type img{
 
 padding:10px 2px 2px 15px;
+width:25px;
+height:20px;
 }
 .campaign_type a{
    font-weight: bold;
    color:#976757;
 }
+.campaign_type2{
+ margin:5px 5px 5px 1px;
+ background-color:#c1c1c1;
+ min-height:90px;
+  width:220px;
+  -moz-border-radius: 10px 10px 10px 10px;
+
+}
+.campaign_type2 span a{
+   color:#000000;
+
+}
+
+
 
 .display_campaign1{
-   background: url("../art/title-bg.gif") repeat-x scroll left bottom #FFFFFF;
+   background: none repeat scroll 0 0 #D1EBF1 !important;
     font-weight: bold;
     text-align: center;
 
@@ -166,14 +182,14 @@ padding:10px 2px 2px 15px;
     border-right:1px #666666 solid;
 }
 .display_campaign2{
-   background: url("../art/title-bg.gif") repeat-x scroll left bottom #FFFFFF;
+   background: none repeat scroll 0 0 #D1EBF1 !important;
     font-weight: bold;
     text-align: center;
     width:3px;
     border-right:1px #666666 solid;
 }
 .display_campaign3{
-   background: url("../art/title-bg.gif") repeat-x scroll left bottom #FFFFFF;
+   background:none repeat scroll 0 0 #D1EBF1 !important;
     font-weight: bold;
     text-align: center;
 
@@ -182,21 +198,21 @@ padding:10px 2px 2px 15px;
     border-right:1px #666666 solid;
 }
 .display_campaign4{
-   background: url("../art/title-bg.gif") repeat-x scroll left bottom #FFFFFF;
+   background: none repeat scroll 0 0 #D1EBF1 !important;
     font-weight: bold;
     text-align: center;
     width:150px;
     border-right:1px #666666 solid;
 }
 .display_campaign5{
-   background: url("../art/title-bg.gif") repeat-x scroll left bottom #FFFFFF;
+   background: none repeat scroll 0 0 #D1EBF1 !important;
     font-weight: bold;
     text-align: center;
     width:3px;
     border-right:1px #666666 solid;
 }
 .display_campaign6{
-   background: url("../art/title-bg.gif") repeat-x scroll left bottom #FFFFFF;
+   background:none repeat scroll 0 0 #D1EBF1 !important;
     font-weight: bold;
     text-align: center;
 
@@ -417,13 +433,20 @@ float:right;
 overflow:auto;
 }
 
+.folder{
+   margin-bottom:10px;
+   height: 148px;
+   overflow: auto;
+   position:absolute;
+}
 
 
-
-
-
-
-
+.segment-count {
+    background-color: #DDDDDD;
+    margin: 10px;
+    padding: 10px 14px;
+    width: 160px;
+}
 
 
 
