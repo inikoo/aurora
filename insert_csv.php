@@ -47,7 +47,6 @@ $js_files=array(
         	);
 
 	
-	
 
 	//value of the assigned field
 	$assign = $_REQUEST['assign_field'];

@@ -26,8 +26,17 @@ function get_default(v) {
  req.send(null); 
 }
 
-function getPrev(v) {
+function getPrev(v,limit) {
  var v;
+	
+	
+	var prevArray = new Array();
+	
+	for(var l=0; l<limit; l++)
+	{
+	  prevArray.push(document.getElementById('assign_field_'+l).value);
+	}
+
  var req = Inint_AJAX();
  req.onreadystatechange = function () {
       if (req.readyState==4) {
@@ -39,14 +48,20 @@ function getPrev(v) {
  };
 	v = v-1;
  //req.open("GET", "getPage.php?data="+r+"&val="+val); 
-   req.open("GET", "getPage.php?v="+v); 
+   req.open("GET", "getPage.php?v="+v+"&prevArray="+prevArray); 
  req.setRequestHeader("Content-Type", "application/x-www-form-urlencoded;charset=tis-620"); // set Header
  req.send(null); 
 }
 
-function getNext(v) {
+function getNext(v,num) {
  var v;
-// alert(v);
+ 
+ var myArray = new Array();
+	
+	for(var k=0; k<num; k++)
+	{
+	  myArray.push(document.getElementById('assign_field_'+k).value);
+	}
  var req = Inint_AJAX();
  req.onreadystatechange = function () {
       if (req.readyState==4) {
@@ -57,8 +72,8 @@ function getNext(v) {
       }
  };
 	v=v+1;
- //req.open("GET", "getPage.php?data="+r+"&val="+val); 
-   req.open("GET", "getPage.php?v="+v); 
+
+   req.open("GET", "getPage.php?v="+v+"&myArray="+myArray); 
  req.setRequestHeader("Content-Type", "application/x-www-form-urlencoded;charset=tis-620"); // set Header
  req.send(null); 
 }
@@ -85,6 +100,8 @@ function getIgnore(v) {
  req.setRequestHeader("Content-Type", "application/x-www-form-urlencoded;charset=tis-620"); // set Header
  req.send(null); 
 }
+
+
 
 
 
