@@ -15,17 +15,10 @@
 	<span>regular ol' campaign</span><p>Send a lovely HTML email along with a plain-text alternative version</p></div></a>  </div>
 	</td>
 	<td><div class="campaign_outer"> 
-	<a href="marketing_campaign_builder.php"><div class="create-campaign">
-	<span>plain-text campaign</span><p>Use this if you just want to send a simple plain-text email with no pictures or formatting</p></div></a>  </div></td>
-   </tr>
-   <tr>
-	<td><div class="campaign_outer"> 
 	<a href="#"><div class="create-campaign">
 	<span>A/B split campaign</span><p>Campaign sent to two groups to determine the best subject line, from name, or time/day to send campaigns </p></div></a>  </div></td>
-	<td><div class="campaign_outer"> 
-	<a href="#"><div class="create-campaign">
-	<span>RSS-driven campaign</span><p>Campaign that sends content from an RSS feed to a list </p></div></a>  </div></td>
    </tr>
+   
 
 
 
