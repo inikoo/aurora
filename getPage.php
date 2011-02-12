@@ -10,6 +10,9 @@
 	$index = $_REQUEST['v'];
 	$r = $csv->getRow($index);
 	
+	$tt = '';
+
+	$prev = '';	
 
 	if(isset($_REQUEST['myArray'])) { $tt = explode(',',$_REQUEST['myArray']); }
 
