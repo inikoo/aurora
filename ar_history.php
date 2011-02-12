@@ -323,7 +323,7 @@ function list_customer_history() {
                    );
     echo json_encode($response);
 }
-// ----------------------------- history for staff.php starts here -------------------------------------------
+
 function list_staff_history() {
 
     $conf=$_SESSION['state']['staff_history']['table'];
@@ -570,7 +570,7 @@ function list_staff_history() {
                    );
     echo json_encode($response);
 }
-// ------------------------------history for staff.php ends here ---------------------------------
+
 
 function list_history($asset_type) {
 

@@ -6,7 +6,7 @@
 <div style="clear:left;margin:0 0px">
 
   <div style="background-color:#f8d285;height:60px;">
-  <div class="campaign_head">Removess People</div>
+  <div class="campaign_head">Remove People</div>
   <table  style="margin-top:24px;" cellspacing="10" width="445">
   	<tr>
 	<td><div class="topmenu"><a href="marketing.php">Emarketing</a></div></td>
@@ -85,7 +85,7 @@
   			</div>
 			<div style="padding:10px; float:left"></div>
 			<div class="bt" style="float:left">
-  			<input type="button" value="Cancel" name="remove_people_cancel" id="remove_people_cancel"/>
+  			<input type="button" value="Cancel" name="remove_people_cancel" id="remove_people_cancel" onClick="document.location='marketing.php'; return false;"/>
   			</div>
 			<br><br>
 		</form>	
