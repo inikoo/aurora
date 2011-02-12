@@ -10,9 +10,10 @@
 	$index = $_REQUEST['v'];
 	$r = $csv->getRow($index);
 	
-	$tt = explode(',',$_REQUEST['myArray']);
 
-	$prev = explode(',',$_REQUEST['prevArray']);
+	if(isset($_REQUEST['myArray'])) { $tt = explode(',',$_REQUEST['myArray']); }
+
+	if(isset($_REQUEST['prevArray'])) { $prev = explode(',',$_REQUEST['prevArray']); }
 	
 ?>
 <table class="recordList">
