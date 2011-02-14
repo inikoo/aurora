@@ -97,7 +97,7 @@ $js_files=array(
 		}
 	
 
-		if($hidden_array != '')
+		if($hidden_array != '0')
 		{
 			foreach($hidden_array as $value)
 			{
