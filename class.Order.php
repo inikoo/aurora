@@ -2300,7 +2300,7 @@ if($old_dispatch_state!=$this->data['Order Current Dispatch State']){
 
     mysql_query($sql);
 $this->update_customer_history();
-
+$this->update_full_search();
 }
 
 }
@@ -2480,7 +2480,7 @@ $this->update_customer_history();
                 $balance = 0;
             else if ($this->data ['Order Current Payment State'] == 'Waiting Payment')
                 $balance = $total;
-            else if ($this->data ['Order Current Payment State'] == 'Parcially Paid')
+            else if ($this->data ['Order Current Payment State'] == 'Partially Paid')
                 $balance = $this->data ['Order Balance Total Amount'];
             else
                 $balance = 0;
@@ -3432,45 +3432,53 @@ function update_ship_to($ship_to_key=false) {
             }
         }
 
-function update_full_search(){
+function update_full_search() {
 
-$first_full_search=$this->data['Order Public ID'].' '.$this->data['Order Customer Name'].' '.strftime("%d %b %B %Y",strtotime($this->data['Order Date']));
-$second_full_search=strip_tags(preg_replace('/\<br\/\>/',' ',$this->data['Order XHTML Ship Tos'])).' '.$this->data['Order Customer Contact Name'];
-$img='';
-
-$show_description=$this->data['Order Customer Name'].' ('.strftime("%e %b %Y", strtotime($this->data['Order Date'])).') '.$this->data['Order Current XHTML State'].' '.money($this->data['Order Balance Total Amount'],$this->data['Order Currency']);
+    $first_full_search=$this->data['Order Public ID'].' '.$this->data['Order Customer Name'].' '.strftime("%d %b %B %Y",strtotime($this->data['Order Date']));
+    $second_full_search=strip_tags(preg_replace('/\<br\/\>/',' ',$this->data['Order XHTML Ship Tos'])).' '.$this->data['Order Customer Contact Name'];
+    $img='';
 
 
-$sql=sprintf("insert into `Search Full Text Dimension` (`Store Key`,`Subject`,`Subject Key`,`First Search Full Text`,`Second Search Full Text`,`Search Result Name`,`Search Result Description`,`Search Result Image`) values  (%s,'Order',%d,%s,%s,%s,%s,%s) on duplicate key 
-update `First Search Full Text`=%s ,`Second Search Full Text`=%s ,`Search Result Name`=%s,`Search Result Description`=%s,`Search Result Image`=%s"
-,$this->data['Order Store Key']
-,$this->id
-,prepare_mysql($first_full_search)
-,prepare_mysql($second_full_search,false)
-,prepare_mysql($this->data['Order Public ID'],false)
-,prepare_mysql($show_description,false)
-,prepare_mysql($img,false)
-,prepare_mysql($first_full_search)
-,prepare_mysql($second_full_search,false)
-,prepare_mysql($this->data['Order Public ID'],false)
-,prepare_mysql($show_description,false)
+    if ($this->data['Order Current Payment State']=='Waiting Payment' or $this->data['Order Current Payment State']=='Partially Paid') {
+        $amount=' '.money($this->data['Order Total Amount'],$this->data['Order Currency']);
+    }
+    elseif($this->data['Order Current Payment State']=='Paid' or $this->data['Order Current Payment State']=='Payment Refunded') {
+        $amount=' '.money($this->data['Order Balance Total Amount'],$this->data['Order Currency']);
+    }
+
+    $show_description=$this->data['Order Customer Name'].' ('.strftime("%e %b %Y", strtotime($this->data['Order Date'])).') '.$this->data['Order Current XHTML State'].$amount;
 
 
-,prepare_mysql($img,false)
-);
-mysql_query($sql);
+    $sql=sprintf("insert into `Search Full Text Dimension` (`Store Key`,`Subject`,`Subject Key`,`First Search Full Text`,`Second Search Full Text`,`Search Result Name`,`Search Result Description`,`Search Result Image`) values  (%s,'Order',%d,%s,%s,%s,%s,%s) on duplicate key
+                 update `First Search Full Text`=%s ,`Second Search Full Text`=%s ,`Search Result Name`=%s,`Search Result Description`=%s,`Search Result Image`=%s"
+                 ,$this->data['Order Store Key']
+                 ,$this->id
+                 ,prepare_mysql($first_full_search)
+                 ,prepare_mysql($second_full_search,false)
+                 ,prepare_mysql($this->data['Order Public ID'],false)
+                 ,prepare_mysql($show_description,false)
+                 ,prepare_mysql($img,false)
+                 ,prepare_mysql($first_full_search)
+                 ,prepare_mysql($second_full_search,false)
+                 ,prepare_mysql($this->data['Order Public ID'],false)
+                 ,prepare_mysql($show_description,false)
+
+
+                 ,prepare_mysql($img,false)
+                );
+    mysql_query($sql);
 
 
 
-$sql=sprintf("insert into `Search Full Text Dimension` values  (%s,'Order',%d,%s,%s) on duplicate key update `First Search Full Text`=%s ,`Second Search Full Text`=%s "
-,$this->data['Order Store Key']
-,$this->id
-,prepare_mysql($first_full_search)
-,prepare_mysql($second_full_search)
-,prepare_mysql($first_full_search)
-,prepare_mysql($second_full_search)
-);
-mysql_query($sql);
+    $sql=sprintf("insert into `Search Full Text Dimension` values  (%s,'Order',%d,%s,%s) on duplicate key update `First Search Full Text`=%s ,`Second Search Full Text`=%s "
+                 ,$this->data['Order Store Key']
+                 ,$this->id
+                 ,prepare_mysql($first_full_search)
+                 ,prepare_mysql($second_full_search)
+                 ,prepare_mysql($first_full_search)
+                 ,prepare_mysql($second_full_search)
+                );
+    mysql_query($sql);
 
 }
 

@@ -202,10 +202,6 @@ have=Dom.getElementsByClassName('selected', 'span', 'have_options');
     datasource.sendRequest(request,table.onDataReturnInitializeTable, table);     
 
 }
-
-
-
-
 var submit_search_on_enter=function(e,tipo){
      var key;     
      if(window.event)
@@ -216,10 +212,6 @@ var submit_search_on_enter=function(e,tipo){
      if (key == 13)
 	 submit_search(e,tipo);
 };
-
-
-
-
 
 function init(){
 YAHOO.util.Event.addListener('submit_search', "click",submit_search);

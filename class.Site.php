@@ -50,7 +50,6 @@ class Site extends DB_Table {
 
 
         $sql=sprintf("select * from `Site Dimension` where  `Site Key`=%d",$tag);
-
         $result =mysql_query($sql);
         if ($this->data=mysql_fetch_array($result, MYSQL_ASSOC)) {
             $this->id=$this->data['Site Key'];
@@ -124,6 +123,8 @@ class Site extends DB_Table {
 
 
     function create($raw_data) {
+
+//print_r($raw_data);
 
         $data=$this->base_data();
      
@@ -647,7 +648,7 @@ return $page;
 
 function get_data_for_smarty(){
 
-
+//print_r($this->data);
 
 $data['logo']=$this->data['Site Logo Data']['Image Source'];
 

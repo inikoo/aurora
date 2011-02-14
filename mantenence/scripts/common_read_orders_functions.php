@@ -12,6 +12,20 @@ function genRandomString() {
     return $string;
 }
 
+
+
+function encrypt_tel($value,$do_it=true) {
+    if (!$do_it)
+        return $value;
+
+    $value=preg_replace('/3/','8',$value);
+    $value=preg_replace('/5/','3',$value);
+    $value=preg_replace('/6/','4',$value);
+    $value=preg_replace('/2/','6',$value);
+   
+    return $value;
+}
+
 function encrypt_email($value,$do_it=true) {
     if (!$do_it)
         return $value;
@@ -235,14 +249,17 @@ function delete_old_data() {
 
 
 
-        $sql=sprintf("delete from `Order Post Transaction Dimension`  where   `Order Post Transaction Metadata`=%s  ",prepare_mysql($store_code.$order_data_id));
-        mysql_query($sql);
+    $sql=sprintf("delete from `Order Post Transaction Dimension`  where   `Order Post Transaction Metadata`=%s  ",prepare_mysql($store_code.$order_data_id));
+    mysql_query($sql);
 
     $sql=sprintf("select `Order Key`  from `Order Dimension`  where `Order Original Metadata`=%s  ",prepare_mysql($store_code.$order_data_id));
     $result_test=mysql_query($sql);
     while ($row_test=mysql_fetch_array($result_test, MYSQL_ASSOC)) {
 
         $sql=sprintf("delete from `History Dimension`  where   `Direct Object`='Order' and `Direct Object Key`=%d",$row_test['Order Key']);
+        mysql_query($sql);
+
+  $sql=sprintf("delete from `Search Full Text Dimension`  where   `Subject`='Order' and `Subject Key`=%d",$row_test['Order Key']);
         mysql_query($sql);
 
 

@@ -278,6 +278,7 @@ foreach($this->get_orders_objects() as $key=>$order) {
             mysql_query ( $sql );
             $this->update_xhtml_orders();
             $order->update_xhtml_invoices();
+        
         }
 
 
@@ -1242,6 +1243,7 @@ $data['Invoice Paid Date']=date('Y-m-d H:i:s');
    foreach($this->get_orders_objects() as $order){
   
     $order->update_no_normal_totals();
+    $order-> update_full_search();
    }
   
  }

@@ -182,8 +182,8 @@ if (($handle = fopen($filename, "r")) !== FALSE) {
 
         // if($act_data['tax_number']!='')
         //  print ($act_data['tax_number']."\n");
-        //    if($row>1000)
-        //  break;
+            if($row>2000)
+          break;
         //      print "$row\r";
 
         // print_r($cols);
@@ -260,7 +260,7 @@ foreach($contacts as $act_data) {
     $_customer_data['date_created']=$act_data['creation_date'];
     $_customer_data['contact_name']=$act_data['contact'];
     $_customer_data['company_name']=$act_data['name'];
-    $_customer_data['email']=$email_data['email'];
+    $_customer_data['email']=encrypt_email($email_data['email']);
 
     $fr_customer=false;
 
@@ -305,9 +305,9 @@ foreach($contacts as $act_data) {
         $_customer_data['email']=$act_data['international_email'];
 
 
-    $_customer_data['telephone']=_trim($act_data['tel']);
-    $_customer_data['fax']=$act_data['fax'];
-    $_customer_data['mobile']=$act_data['mob'];
+    $_customer_data['telephone']=encrypt_tel(_trim($act_data['tel']));
+    $_customer_data['fax']=encrypt_tel(_trim($act_data['fax']));
+    $_customer_data['mobile']=encrypt_tel(_trim($act_data['mob']));
     $_customer_data['address_data']=$shop_address_data;
     $_customer_data['address_data']['type']='3line';
 
