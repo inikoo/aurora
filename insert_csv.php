@@ -80,9 +80,8 @@ $js_files=array(
 	$count_rows = $csv->countRows();
 	
 	//count the removed array
-	if(isset($_POST['hidden_array']))
-	{
-		$numIndex = count($_POST['hidden_array']);	
+	
+		$numIndex = count($_REQUEST['hidden_array']);	
 	
 	
 		$new_arr = array();
@@ -95,9 +94,9 @@ $js_files=array(
 		}
 	
 
-		if($_POST['hidden_array'] != '')
+		if($_REQUEST['hidden_array'] != '')
 		{
-			foreach($_POST['hidden_array'] as $value)
+			foreach($_REQUEST['hidden_array'] as $value)
 			{
 
 
@@ -106,10 +105,10 @@ $js_files=array(
 			}
 		}
 
-		print_r($new_arr);
-	}
-
+		
 	
+
+	print_r($new_arr);
 
 $smarty->assign('js_files',$js_files);
 $smarty->assign('css_files',$css_files);
