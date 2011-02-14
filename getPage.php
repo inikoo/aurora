@@ -85,7 +85,7 @@
 		foreach($selectBox as $key=>$value) { ?>
 
 		   
-	<option value="<?php echo $key;?>" <?php if($tt[$j]==$key || $prev[$j]==$key) { ?>selected="selected"<?php } ?> ><?php echo $value;?></option>
+	<option value="<?php echo $key;?>" <?php if($tt[$j]==$key) { ?>selected="selected"<?php } ?> ><?php echo $value;?></option>
 		
 		<?php } ?>
 		</select>
