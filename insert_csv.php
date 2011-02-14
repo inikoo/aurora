@@ -57,7 +57,7 @@ $js_files=array(
 
 	
 	//removed list of array
-	$hidden_array = isset($_REQUEST['hidden_array'])?$_REQUEST['hidden_array']:'';
+	$hidden_array = isset($_REQUEST['hidden_array'])?$_REQUEST['hidden_array']:'0';
 
 	//code to generate the final array		
 	for($i = 0; $i < count($assign);  $i++) 
@@ -67,7 +67,7 @@ $js_files=array(
 		if($assign[$i] != '0')
 		{
 
-		 	$rows[$_REQUEST['assign_field'][$i]] = $_REQUEST['values'][$i];
+		 	$rows[$assign[$i]] = $values[$i];
 
 		}		
 		
