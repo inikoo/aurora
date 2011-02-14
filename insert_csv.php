@@ -49,11 +49,11 @@ $js_files=array(
 	
 
 	//value of the assigned field
-	$assign = $_REQUEST['assign_field'];
+	$assign = isset($_REQUEST['assign_field'])?$_REQUEST['assign_field']:'';
 
 
 	//value of the right column
-	$values = $_REQUEST['values'];
+	$values = isset($_REQUEST['values'])?$_REQUEST['values']:'';
 
 	
 	//code to generate the final array		
