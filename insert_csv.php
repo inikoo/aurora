@@ -56,12 +56,15 @@ $js_files=array(
 	$values = isset($_REQUEST['values'])?$_REQUEST['values']:'';
 
 	
+	//removed list of array
+	$hidden_array = isset($_REQUEST['hidden_array'])?$_REQUEST['hidden_array']:'';
+
 	//code to generate the final array		
-	for($i = 0; $i < count($_REQUEST['assign_field']);  $i++) 
+	for($i = 0; $i < count($assign);  $i++) 
 	{
 
 		//restrict whether any ignore field is there 
-		if($_REQUEST['assign_field'][$i] != '0')
+		if($assign[$i] != '0')
 		{
 
 		 	$rows[$_REQUEST['assign_field'][$i]] = $_REQUEST['values'][$i];
@@ -81,7 +84,7 @@ $js_files=array(
 	
 	//count the removed array
 	
-		$numIndex = count($_REQUEST['hidden_array']);	
+		$numIndex = count($hidden_array);	
 	
 	
 		$new_arr = array();
@@ -94,9 +97,9 @@ $js_files=array(
 		}
 	
 
-		if($_REQUEST['hidden_array'] != '')
+		if($hidden_array != '')
 		{
-			foreach($_REQUEST['hidden_array'] as $value)
+			foreach($hidden_array as $value)
 			{
 
 
