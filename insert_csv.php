@@ -49,7 +49,7 @@ $js_files=array(
 	
 
 	//value of the assigned field
-	$assign = isset($_REQUEST['assign_field'])?$_REQUEST['assign_field']:'';
+	$assign = isset($_REQUEST['assign_field'])?$_REQUEST['assign_field']:'0';
 
 
 	//value of the right column
